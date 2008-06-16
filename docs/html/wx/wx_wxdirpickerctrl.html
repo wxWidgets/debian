@@ -1,0 +1,186 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDirPickerCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdirpickerctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdirdialog.html#wxdirdialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdirtraverser.html#wxdirtraverser"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDirPickerCtrl</H2>
+<P>
+This control allows the user to select a directory. The generic implementation is
+a button which brings up a <A HREF="wx_wxdirdialog.html#wxdirdialog">wxDirDialog</A> when clicked. Native implementation
+may differ but this is usually a (small) widget which give access to the dir-chooser
+dialog.
+It is only available if <TT>wxUSE_DIRPICKERCTRL</TT> is set to 1 (the default).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxpickerbase.html#wxpickerbase">wxPickerBase</A><BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/filepicker.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxDIRP_DEFAULT_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The default style: includes
+wxDIRP_DIR_MUST_EXIST and, under wxMSW only, wxDIRP_USE_TEXTCTRL.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxDIRP_USE_TEXTCTRL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a text control to the left of the
+picker button which is completely managed by the <A HREF="wx_wxdirpickerctrl.html#wxdirpickerctrl">wxDirPickerCtrl</A>
+and which can be used by the user to specify a path (see <A HREF="wx_wxdirpickerctrl.html#wxdirpickerctrlsetpath">SetPath</A>).
+The text control is automatically synchronized with button's value. Use functions defined in <A HREF="wx_wxpickerbase.html#wxpickerbase">wxPickerBase</A> to modify the text control.
+</FONT></TD></TR>
+<P>
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxDIRP_DIR_MUST_EXIST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a picker which allows to select only existing directories. wxGTK control always adds this flag internally as it does not support its absence.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxDIRP_CHANGE_DIR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Change current working directory on each user directory selection change.
+</FONT></TD></TR>
+<P>
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To process a directory picker event, use these event handler macros to direct input to member
+functions that take a <A HREF="wx_wxfiledirpickerevent.html#wxfiledirpickerevent">wxFileDirPickerEvent</A> argument.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_DIRPICKER_CHANGED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user changed the
+directory selected in the control either using the button or using text control
+(see wxDIRP_USE_TEXTCTRL; note that in this case the event is fired only if
+the user's input is valid, e.g. an existing directory path).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdirdialog.html#wxdirdialog">wxDirDialog</A>,<BR>
+
+<A HREF="wx_wxfiledirpickerevent.html#wxfiledirpickerevent">wxFileDirPickerEvent</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdirpickerctrlctor">wxDirPickerCtrl::wxDirPickerCtrl</A><BR>
+<A HREF="#wxdirpickerctrlcreate">wxDirPickerCtrl::Create</A><BR>
+<A HREF="#wxdirpickerctrlgetpath">wxDirPickerCtrl::GetPath</A><BR>
+<A HREF="#wxdirpickerctrlsetpath">wxDirPickerCtrl::SetPath</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdirpickerctrlctor"></A>
+<H3>wxDirPickerCtrl::wxDirPickerCtrl</H3>
+<P>
+<B></B> <B>wxDirPickerCtrl</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>,
+<B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path = wxEmptyString</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message = "Select a folder"</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxDIRP_DEFAULT_STYLE</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "dirpickerctrl"</I>)<P>
+Initializes the object and calls <A HREF="wx_wxdirpickerctrl.html#wxdirpickerctrlcreate">Create</A> with
+all the parameters.<P>
+
+
+<HR>
+<A NAME="wxdirpickerctrlcreate"></A>
+<H3>wxDirPickerCtrl::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>,
+<B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path = wxEmptyString</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message = "Select a folder"</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxDIRP_DEFAULT_STYLE</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "dirpickerctrl"</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window, must not be non-<TT>NULL</TT>.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The identifier for the control.</UL></UL>
+<P>
+<I>path</I><UL><UL>
+The initial directory shown in the control. Must be a valid path to a directory or the empty string.</UL></UL>
+<P>
+<I>message</I><UL><UL>
+The message shown to the user in the <A HREF="wx_wxdirdialog.html#wxdirdialog">wxDirDialog</A> shown by the control.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Initial position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Initial size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style, see <TT>wxDIRP_*</TT> flags.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Validator which can be used for additional date checks.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Control name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if the control was successfully created or <TT>false</TT> if creation failed.<P>
+
+
+<HR>
+<A NAME="wxdirpickerctrlgetpath"></A>
+<H3>wxDirPickerCtrl::GetPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPath</B>() <B>const</B><P>
+Returns the absolute path of the currently selected directory.<P>
+
+
+<HR>
+<A NAME="wxdirpickerctrlsetpath"></A>
+<H3>wxDirPickerCtrl::SetPath</H3>
+<P>
+<B>void</B> <B>SetPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>dirname</I>)<P>
+Sets the absolute path of the currently selected directory. This must be a valid directory if
+<TT>wxDIRP_DIR_MUST_EXIST</TT> style was given.<P>
+
+
+</FONT></BODY></HTML>

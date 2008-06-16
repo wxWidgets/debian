@@ -1,0 +1,399 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxZipEntry</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxzipentry"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxzipclassfactory.html#wxzipclassfactory"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxzipinputstream.html#wxzipinputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxZipEntry</H2>
+<P>
+Holds the meta-data for an entry in a zip.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/zipstrm.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+Constants for <A HREF="wx_wxzipentry.html#wxzipentrymethod">Get/SetMethod</A>:<P>
+<PRE>
+// Compression Method, only 0 (store) and 8 (deflate) are supported here
+//
+enum wxZipMethod
+{
+    wxZIP_METHOD_STORE,
+    wxZIP_METHOD_SHRINK,
+    wxZIP_METHOD_REDUCE1,
+    wxZIP_METHOD_REDUCE2,
+    wxZIP_METHOD_REDUCE3,
+    wxZIP_METHOD_REDUCE4,
+    wxZIP_METHOD_IMPLODE,
+    wxZIP_METHOD_TOKENIZE,
+    wxZIP_METHOD_DEFLATE,
+    wxZIP_METHOD_DEFLATE64,
+    wxZIP_METHOD_BZIP2 = 12,
+    wxZIP_METHOD_DEFAULT = 0xffff
+};
+
+</PRE>
+Constants for <A HREF="wx_wxzipentry.html#wxzipentrysystemmadeby">Get/SetSystemMadeBy</A>:<P>
+<PRE>
+// Originating File-System.
+// 
+// These are Pkware's values. Note that Info-zip disagree on some of them,
+// most notably NTFS.
+//
+enum wxZipSystem
+{
+    wxZIP_SYSTEM_MSDOS,
+    wxZIP_SYSTEM_AMIGA,
+    wxZIP_SYSTEM_OPENVMS,
+    wxZIP_SYSTEM_UNIX,
+    wxZIP_SYSTEM_VM_CMS,
+    wxZIP_SYSTEM_ATARI_ST,
+    wxZIP_SYSTEM_OS2_HPFS,
+    wxZIP_SYSTEM_MACINTOSH,
+    wxZIP_SYSTEM_Z_SYSTEM,
+    wxZIP_SYSTEM_CPM,
+    wxZIP_SYSTEM_WINDOWS_NTFS,
+    wxZIP_SYSTEM_MVS,
+    wxZIP_SYSTEM_VSE,
+    wxZIP_SYSTEM_ACORN_RISC,
+    wxZIP_SYSTEM_VFAT,
+    wxZIP_SYSTEM_ALTERNATE_MVS,
+    wxZIP_SYSTEM_BEOS,
+    wxZIP_SYSTEM_TANDEM,
+    wxZIP_SYSTEM_OS_400
+};
+
+</PRE>
+Constants for <A HREF="wx_wxzipentry.html#wxzipentryexternalattributes">Get/SetExternalAttributes</A>:<P>
+<PRE>
+// Dos/Win file attributes
+//
+enum wxZipAttributes
+{
+    wxZIP_A_RDONLY = 0x01,
+    wxZIP_A_HIDDEN = 0x02,
+    wxZIP_A_SYSTEM = 0x04,
+    wxZIP_A_SUBDIR = 0x10,
+    wxZIP_A_ARCH   = 0x20,
+
+    wxZIP_A_MASK   = 0x37
+};
+
+</PRE>
+Constants for <A HREF="wx_wxzipentry.html#wxzipentrygetflags">Get/SetFlags</A>:<P>
+<PRE>
+// Values for the flags field in the zip headers
+//
+enum wxZipFlags
+{
+    wxZIP_ENCRYPTED         = 0x0001,
+    wxZIP_DEFLATE_NORMAL    = 0x0000,   // normal compression
+    wxZIP_DEFLATE_EXTRA     = 0x0002,   // extra compression
+    wxZIP_DEFLATE_FAST      = 0x0004,   // fast compression
+    wxZIP_DEFLATE_SUPERFAST = 0x0006,   // superfast compression
+    wxZIP_DEFLATE_MASK      = 0x0006,
+    wxZIP_SUMS_FOLLOW       = 0x0008,   // crc and sizes come after the data
+    wxZIP_ENHANCED          = 0x0010,
+    wxZIP_PATCH             = 0x0020,
+    wxZIP_STRONG_ENC        = 0x0040,
+    wxZIP_UNUSED            = 0x0F80,
+    wxZIP_RESERVED          = 0xF000
+};
+
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarc">Archive formats such as zip</A><BR>
+
+<A HREF="wx_wxzipinputstream.html#wxzipinputstream">wxZipInputStream</A><BR>
+
+<A HREF="wx_wxzipoutputstream.html#wxzipoutputstream">wxZipOutputStream</A><BR>
+
+<A HREF="wx_wxzipnotifier.html#wxzipnotifier">wxZipNotifier</A><P>
+<B><FONT COLOR="#FF0000">Field availability</FONT></B><P>
+When reading a zip from a stream that is seekable,
+ <A HREF="wx_wxzipinputstream.html#wxzipinputstreamgetnextentry">GetNextEntry()</A> returns
+a fully populated wxZipEntry object except for
+ <A HREF="wx_wxzipentry.html#wxzipentrylocalextra">wxZipEntry::GetLocalExtra()</A>. GetLocalExtra()
+becomes available when the entry is opened, either by calling
+ <A HREF="wx_wxzipinputstream.html#wxzipinputstreamopenentry">wxZipInputStream::OpenEntry</A> or by
+making an attempt to read the entry's data.<P>
+For zips on <A HREF="wx_wxarc.html#wxarcnoseek">non-seekable</A> streams, the following
+fields are always available when GetNextEntry() returns:<P>
+<A HREF="wx_wxarchiveentry.html#wxarchiveentrydatetime">GetDateTime</A><BR>
+
+<A HREF="wx_wxarchiveentry.html#wxarchiveentrygetinternalformat">GetInternalFormat</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentrygetinternalname">GetInternalName</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentrygetflags">GetFlags</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentrylocalextra">GetLocalExtra</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentrymethod">GetMethod</A><BR>
+
+<A HREF="wx_wxarchiveentry.html#wxarchiveentryname">GetName</A><BR>
+
+<A HREF="wx_wxarchiveentry.html#wxarchiveentrygetoffset">GetOffset</A><BR>
+
+<A HREF="wx_wxarchiveentry.html#wxarchiveentryisdir">IsDir</A><P>
+The following fields are also usually available when GetNextEntry()
+returns, however, if the zip was also written to a non-seekable stream
+the zipper is permitted to store them after the entry's data. In that
+case they become available when the entry's data has been read to Eof(),
+or <A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstreamcloseentry">CloseEntry()</A> has been called.
+<TT>(GetFlags() &amp; wxZIP_SUMS_FOLLOW) != 0</TT> indicates that one or
+more of these come after the data:<P>
+<A HREF="wx_wxzipentry.html#wxzipentrygetcompressedsize">GetCompressedSize</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentrygetcrc">GetCrc</A><BR>
+
+<A HREF="wx_wxarchiveentry.html#wxarchiveentrysize">GetSize</A><P>
+The following are stored at the end of the zip, and become available
+when the end of the zip has been reached, i.e. after GetNextEntry()
+returns NULL and Eof() is true:<P>
+<A HREF="wx_wxzipentry.html#wxzipentrycomment">GetComment</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentryexternalattributes">GetExternalAttributes</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentryextra">GetExtra</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentrymode">GetMode</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentrysystemmadeby">GetSystemMadeBy</A><BR>
+
+<A HREF="wx_wxarchiveentry.html#wxarchiveentryisreadonly">IsReadOnly</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentryismadebyunix">IsMadeByUnix</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentryistext">IsText</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxzipentrywxzipentry">wxZipEntry::wxZipEntry</A><BR>
+<A HREF="#wxzipentryclone">wxZipEntry::Clone</A><BR>
+<A HREF="#wxzipentrycomment">wxZipEntry::Get/SetComment</A><BR>
+<A HREF="#wxzipentrygetcompressedsize">wxZipEntry::GetCompressedSize</A><BR>
+<A HREF="#wxzipentrygetcrc">wxZipEntry::GetCrc</A><BR>
+<A HREF="#wxzipentryexternalattributes">wxZipEntry::Get/SetExternalAttributes</A><BR>
+<A HREF="#wxzipentryextra">wxZipEntry::Get/SetExtra</A><BR>
+<A HREF="#wxzipentrygetflags">wxZipEntry::GetFlags</A><BR>
+<A HREF="#wxzipentrygetinternalname">wxZipEntry::GetInternalName</A><BR>
+<A HREF="#wxzipentrylocalextra">wxZipEntry::Get/SetLocalExtra</A><BR>
+<A HREF="#wxzipentrymethod">wxZipEntry::Get/SetMethod</A><BR>
+<A HREF="#wxzipentrymode">wxZipEntry::Get/SetMode</A><BR>
+<A HREF="#wxzipentrynotifier">wxZipEntry::SetNotifier</A><BR>
+<A HREF="#wxzipentrysystemmadeby">wxZipEntry::Get/SetSystemMadeBy</A><BR>
+<A HREF="#wxzipentryismadebyunix">wxZipEntry::IsMadeByUnix</A><BR>
+<A HREF="#wxzipentryistext">wxZipEntry::IsText/SetIsText</A><BR>
+<A HREF="#wxzipentryoperatorassign">wxZipEntry::operator=</A><BR>
+<P>
+
+<HR>
+<A NAME="wxzipentrywxzipentry"></A>
+<H3>wxZipEntry::wxZipEntry</H3>
+<P>
+<B></B> <B>wxZipEntry</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxEmptyString</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt = wxDateTime::Now()</I>, <B>off_t </B><I>size = wxInvalidOffset</I>)<P>
+Constructor.<P>
+<B></B> <B>wxZipEntry</B>(<B>const <A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A>& </B></B><I>entry</I>)<P>
+Copy constructor.<P>
+
+
+<HR>
+<A NAME="wxzipentryclone"></A>
+<H3>wxZipEntry::Clone</H3>
+<P>
+<B><A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A>*</B> </B> <B>Clone</B>() <B>const</B><P>
+Make a copy of this entry.<P>
+
+
+<HR>
+<A NAME="wxzipentrycomment"></A>
+<H3>wxZipEntry::Get/SetComment</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetComment</B>() <B>const</B><P>
+<B>void</B> <B>SetComment</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>comment</I>)<P>
+A short comment for this entry.<P>
+
+
+<HR>
+<A NAME="wxzipentrygetcompressedsize"></A>
+<H3>wxZipEntry::GetCompressedSize</H3>
+<P>
+<B>off_t</B> <B>GetCompressedSize</B>() <B>const</B><P>
+The compressed size of this entry in bytes.<P>
+
+
+<HR>
+<A NAME="wxzipentrygetcrc"></A>
+<H3>wxZipEntry::GetCrc</H3>
+<P>
+<B>wxUint32</B> <B>GetCrc</B>() <B>const</B><P>
+CRC32 for this entry's data.<P>
+
+
+<HR>
+<A NAME="wxzipentryexternalattributes"></A>
+<H3>wxZipEntry::Get/SetExternalAttributes</H3>
+<P>
+<B>wxUint32</B> <B>GetExternalAttributes</B>() <B>const</B><P>
+<B>void</B> <B>SetExternalAttributes</B>(<B>wxUint32 </B><I>attr</I>)<P>
+The low 8 bits are always the DOS/Windows file attributes for this entry.
+The values of these attributes are given in the
+enumeration <TT>wxZipAttributes</TT>.<P>
+The remaining bits can store platform specific permission bits or
+attributes, and their meaning depends on the value
+of <A HREF="wx_wxzipentry.html#wxzipentrysystemmadeby">SetSystemMadeBy()</A>.
+If <A HREF="wx_wxzipentry.html#wxzipentryismadebyunix">IsMadeByUnix()</A> is true then the
+high 16 bits are unix mode bits.<P>
+The following other accessors access these bits:<P>
+<A HREF="wx_wxarchiveentry.html#wxarchiveentryisreadonly">IsReadOnly/SetIsReadOnly</A><BR>
+
+<A HREF="wx_wxarchiveentry.html#wxarchiveentryisdir">IsDir/SetIsDir</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentrymode">Get/SetMode</A><P>
+
+
+<HR>
+<A NAME="wxzipentryextra"></A>
+<H3>wxZipEntry::Get/SetExtra</H3>
+<P>
+<B>const char*</B> <B>GetExtra</B>() <B>const</B><P>
+<B>size_t</B> <B>GetExtraLen</B>() <B>const</B><P>
+<B>void</B> <B>SetExtra</B>(<B>const char* </B><I>extra</I>, <B>size_t </B><I>len</I>)<P>
+The extra field from the entry's central directory record.<P>
+The extra field is used to store platform or application specific
+data. See Pkware's document 'appnote.txt' for information on its format.<P>
+
+
+<HR>
+<A NAME="wxzipentrygetflags"></A>
+<H3>wxZipEntry::GetFlags</H3>
+<P>
+<B>int</B> <B>GetFlags</B>() <B>const</B><P>
+Returns a combination of the bits flags in the enumeration <TT>wxZipFlags</TT>.<P>
+
+
+<HR>
+<A NAME="wxzipentrygetinternalname"></A>
+<H3>wxZipEntry::GetInternalName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetInternalName</B>() <B>const</B><P>
+Returns the entry's filename in the internal format used within the
+archive. The name can include directory components, i.e. it can be a
+full path.<P>
+The names of directory entries are returned without any trailing path
+separator. This gives a canonical name that can be used in comparisons.<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetInternalName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>, <B>bool* </B><I>pIsDir = NULL</I>)<P>
+A static member that translates a filename into the internal format used
+within the archive. If the third parameter is provided, the bool pointed
+to is set to indicate whether the name looks like a directory name
+(i.e. has a trailing path separator).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarcbyname">Looking up an archive entry by name</A><P>
+
+
+<HR>
+<A NAME="wxzipentrylocalextra"></A>
+<H3>wxZipEntry::Get/SetLocalExtra</H3>
+<P>
+<B>const char*</B> <B>GetLocalExtra</B>() <B>const</B><P>
+<B>size_t</B> <B>GetLocalExtraLen</B>() <B>const</B><P>
+<B>void</B> <B>SetLocalExtra</B>(<B>const char* </B><I>extra</I>, <B>size_t </B><I>len</I>)<P>
+The extra field from the entry's local record.<P>
+The extra field is used to store platform or application specific
+data. See Pkware's document 'appnote.txt' for information on its format.<P>
+
+
+<HR>
+<A NAME="wxzipentrymethod"></A>
+<H3>wxZipEntry::Get/SetMethod</H3>
+<P>
+<B>int</B> <B>GetMethod</B>() <B>const</B><P>
+<B>void</B> <B>SetMethod</B>(<B>int </B><I>method</I>)<P>
+The compression method. The enumeration <TT>wxZipMethod</TT> lists the
+possible values.<P>
+The default constructor sets this to wxZIP_METHOD_DEFAULT,
+which allows <A HREF="wx_wxzipoutputstream.html#wxzipoutputstream">wxZipOutputStream</A> to
+choose the method when writing the entry.<P>
+
+
+<HR>
+<A NAME="wxzipentrymode"></A>
+<H3>wxZipEntry::Get/SetMode</H3>
+<P>
+<B>int</B> <B>GetMode</B>() <B>const</B><P>
+If <A HREF="wx_wxzipentry.html#wxzipentryismadebyunix">IsMadeByUnix()</A> is true then
+returns the unix permission bits stored in
+ <A HREF="wx_wxzipentry.html#wxzipentryexternalattributes">GetExternalAttributes()</A>.
+Otherwise synthesises them from the DOS attributes.<P>
+<B>void</B> <B>SetMode</B>(<B>int </B><I>mode</I>)<P>
+Sets the DOS attributes
+in <A HREF="wx_wxzipentry.html#wxzipentryexternalattributes">GetExternalAttributes()</A>
+to be consistent with the <TT>mode</TT> given.<P>
+If <A HREF="wx_wxzipentry.html#wxzipentryismadebyunix">IsMadeByUnix()</A> is true then also
+stores <TT>mode</TT> in GetExternalAttributes().<P>
+Note that the default constructor
+sets <A HREF="wx_wxzipentry.html#wxzipentrysystemmadeby">GetSystemMadeBy()</A> to 
+wxZIP_SYSTEM_MSDOS by default. So to be able to store unix
+permissions when creating zips, call SetSystemMadeBy(wxZIP_SYSTEM_UNIX).<P>
+
+
+<HR>
+<A NAME="wxzipentrynotifier"></A>
+<H3>wxZipEntry::SetNotifier</H3>
+<P>
+<B>void</B> <B>SetNotifier</B>(<B><A HREF="wx_wxzipnotifier.html#wxzipnotifier">wxZipNotifier</A>& </B></B><I>notifier</I>)<P>
+<B>void</B> <B>UnsetNotifier</B>()<P>
+Sets the <A HREF="wx_wxzipnotifier.html#wxzipnotifier">notifier</A> for this entry.
+Whenever the <A HREF="wx_wxzipinputstream.html#wxzipinputstream">wxZipInputStream</A> updates
+this entry, it will then invoke the associated
+notifier's <A HREF="wx_wxzipnotifier.html#wxzipnotifieronentryupdated">OnEntryUpdated</A>
+method.<P>
+Setting a notifier is not usually necessary. It is used to handle
+certain cases when modifying an zip in a pipeline (i.e. between
+non-seekable streams).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarcnoseek">Archives on non-seekable streams</A><BR>
+
+<A HREF="wx_wxzipnotifier.html#wxzipnotifier">wxZipNotifier</A><P>
+
+
+<HR>
+<A NAME="wxzipentrysystemmadeby"></A>
+<H3>wxZipEntry::Get/SetSystemMadeBy</H3>
+<P>
+<B>int</B> <B>GetSystemMadeBy</B>() <B>const</B><P>
+<B>void</B> <B>SetSystemMadeBy</B>(<B>int </B><I>system</I>)<P>
+The originating file-system. The default constructor sets this to
+wxZIP_SYSTEM_MSDOS. Set it to wxZIP_SYSTEM_UNIX in order to be
+able to store unix permissions using <A HREF="wx_wxzipentry.html#wxzipentrymode">SetMode()</A>.<P>
+
+
+<HR>
+<A NAME="wxzipentryismadebyunix"></A>
+<H3>wxZipEntry::IsMadeByUnix</H3>
+<P>
+<B>bool</B> <B>IsMadeByUnix</B>() <B>const</B><P>
+Returns true if <A HREF="wx_wxzipentry.html#wxzipentrysystemmadeby">GetSystemMadeBy()</A>
+is a flavour of unix.<P>
+
+
+<HR>
+<A NAME="wxzipentryistext"></A>
+<H3>wxZipEntry::IsText/SetIsText</H3>
+<P>
+<B>bool</B> <B>IsText</B>() <B>const</B><P>
+<B>void</B> <B>SetIsText</B>(<B>bool </B><I>isText = true</I>)<P>
+Indicates that this entry's data is text in an 8-bit encoding.<P>
+
+
+<HR>
+<A NAME="wxzipentryoperatorassign"></A>
+<H3>wxZipEntry::operator=</H3>
+<P>
+<B><A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A>& operator</B> </B> <B>operator=</B>(<B>const <A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A>& </B></B><I>entry</I>)<P>
+Assignment operator.<P>
+
+
+</FONT></BODY></HTML>

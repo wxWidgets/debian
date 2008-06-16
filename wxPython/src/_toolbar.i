@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-Aug-1998
-// RCS-ID:      $Id: _toolbar.i,v 1.11.2.1 2006/02/16 03:07:20 RD Exp $
+// RCS-ID:      $Id: _toolbar.i 44317 2007-01-25 23:35:07Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -34,6 +34,11 @@ enum wxToolBarToolStyle
 enum {
     wxTB_HORIZONTAL,
     wxTB_VERTICAL,
+    wxTB_TOP,
+    wxTB_LEFT,
+    wxTB_BOTTOM,
+    wxTB_RIGHT,
+
     wxTB_3DBUTTONS,
     wxTB_FLAT,
     wxTB_DOCKABLE,
@@ -43,6 +48,7 @@ enum {
     wxTB_NOALIGN,
     wxTB_HORZ_LAYOUT,
     wxTB_HORZ_TEXT,
+    wxTB_NO_TOOLTIPS
 };
 
 
@@ -121,6 +127,19 @@ public:
     SetBitmap1 = SetNormalBitmap
     SetBitmap2 = SetDisabledBitmap
     }
+    
+    %property(Bitmap, GetBitmap, doc="See `GetBitmap`");
+    %property(ClientData, GetClientData, SetClientData, doc="See `GetClientData` and `SetClientData`");
+    %property(Control, GetControl, doc="See `GetControl`");
+    %property(DisabledBitmap, GetDisabledBitmap, SetDisabledBitmap, doc="See `GetDisabledBitmap` and `SetDisabledBitmap`");
+    %property(Id, GetId, doc="See `GetId`");
+    %property(Kind, GetKind, doc="See `GetKind`");
+    %property(Label, GetLabel, SetLabel, doc="See `GetLabel` and `SetLabel`");
+    %property(LongHelp, GetLongHelp, SetLongHelp, doc="See `GetLongHelp` and `SetLongHelp`");
+    %property(NormalBitmap, GetNormalBitmap, SetNormalBitmap, doc="See `GetNormalBitmap` and `SetNormalBitmap`");
+    %property(ShortHelp, GetShortHelp, SetShortHelp, doc="See `GetShortHelp` and `SetShortHelp`");
+    %property(Style, GetStyle, doc="See `GetStyle`");
+    %property(ToolBar, GetToolBar, doc="See `GetToolBar`");
 };
 
 
@@ -382,6 +401,16 @@ public:
     bool IsVertical();
 
     size_t GetToolsCount() const;
+
+    %property(Margins, GetMargins, SetMargins, doc="See `GetMargins` and `SetMargins`");
+    %property(MaxCols, GetMaxCols, doc="See `GetMaxCols`");
+    %property(MaxRows, GetMaxRows, doc="See `GetMaxRows`");
+    %property(ToolBitmapSize, GetToolBitmapSize, SetToolBitmapSize, doc="See `GetToolBitmapSize` and `SetToolBitmapSize`");
+    %property(ToolMargins, GetToolMargins, doc="See `GetToolMargins`");
+    %property(ToolPacking, GetToolPacking, SetToolPacking, doc="See `GetToolPacking` and `SetToolPacking`");
+    %property(ToolSeparation, GetToolSeparation, SetToolSeparation, doc="See `GetToolSeparation` and `SetToolSeparation`");
+    %property(ToolSize, GetToolSize, doc="See `GetToolSize`");
+    %property(ToolsCount, GetToolsCount, doc="See `GetToolsCount`");
 };
 
 
@@ -413,10 +442,44 @@ public:
               long style = wxNO_BORDER | wxTB_HORIZONTAL,
               const wxString& name = wxPyToolBarNameStr);
 
-    wxToolBarToolBase *FindToolForPosition(wxCoord x, wxCoord y);
-
+    // TODO: In 2.9 move these to the base class...
+    void SetToolNormalBitmap(int id, const wxBitmap& bitmap);
+    void SetToolDisabledBitmap(int id, const wxBitmap& bitmap);
+    
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
 };
 
+//---------------------------------------------------------------------------
+
+#if 0
+%{
+#include <wx/generic/buttonbar.h>
+%}
+
+MustHaveApp(wxToolBar);
+class  wxButtonToolBar : public wxToolBarBase
+{
+public:
+    %pythonAppend wxButtonToolBar         "self._setOORInfo(self)"
+    %pythonAppend wxButtonToolBar()       ""
+
+    wxButtonToolBar(wxWindow *parent,
+                    wxWindowID id=-1,
+                    const wxPoint& pos = wxDefaultPosition,
+                    const wxSize& size = wxDefaultSize,
+                    long style = 0,
+                    const wxString& name = wxPyToolBarNameStr);
+    %RenameCtor(PreButtonToolBar, wxButtonToolBar());
+
+
+    bool Create(wxWindow *parent,
+              wxWindowID id=-1,
+              const wxPoint& pos = wxDefaultPosition,
+              const wxSize& size = wxDefaultSize,
+              long style = 0,
+              const wxString& name = wxPyToolBarNameStr);
+};
+
+#endif
 //---------------------------------------------------------------------------

@@ -63,19 +63,13 @@ class TestPanel(wx.Panel):
     def __init__(self, parent, log):
         self.log = log
         wx.Panel.__init__(self, parent, -1)
-        date = TestDateControl(self, -1, pos = (30,30), size = (100,22))
+        date = TestDateControl(self, -1, pos = (30,30), size = (120,22))
 
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    if wx.Platform == "__WXMAC__":
-        from Main import MessagePanel
-        win = MessagePanel(nb, 'This demo currently fails on the Mac.',
-                           'Sorry', wx.ICON_WARNING)
-        return win
-    else:
-        win = TestPanel(nb, log)
-        return win
+    win = TestPanel(nb, log)
+    return win
 
 #----------------------------------------------------------------------
 

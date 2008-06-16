@@ -9,7 +9,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: ScintillaWX.h,v 1.27.2.1 2006/03/12 06:03:52 RD Exp $
+// RCS-ID:      $Id: ScintillaWX.h 40086 2006-07-14 01:20:18Z RD $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,7 @@
 #include "Platform.h"
 
 #include "Scintilla.h"
+#include "CharClassify.h"
 #include "XPM.h"
 #ifdef SCI_LEXER
 #include "SciLexer.h"
@@ -47,7 +48,6 @@
 #include "Document.h"
 #include "Editor.h"
 #include "ScintillaBase.h"
-
 
 //----------------------------------------------------------------------
 

@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.02.1998
-// RCS-ID:      $Id: oleutils.h,v 1.25.2.1 2006/02/11 09:19:20 JS Exp $
+// RCS-ID:      $Id: oleutils.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _WX_OLEUTILS_H
 #define   _WX_OLEUTILS_H
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "oleutils.h"
-#endif
 
 #include "wx/defs.h"
 
@@ -232,11 +228,13 @@ private:
     OLECHAR *m_wzBuf;     // actual string
 };
 
+#if wxUSE_VARIANT
 // Convert variants
-class WXDLLIMPEXP_BASE wxVariant;
+class WXDLLIMPEXP_FWD_BASE wxVariant;
 
-WXDLLEXPORT bool wxConvertVariantToOle(const wxVariant& variant, VARIANTARG& oleVariant) ;
-WXDLLEXPORT bool wxConvertOleToVariant(const VARIANTARG& oleVariant, wxVariant& variant) ;
+WXDLLEXPORT bool wxConvertVariantToOle(const wxVariant& variant, VARIANTARG& oleVariant);
+WXDLLEXPORT bool wxConvertOleToVariant(const VARIANTARG& oleVariant, wxVariant& variant);
+#endif // wxUSE_VARIANT
 
 // Convert string to Unicode
 WXDLLEXPORT BSTR wxConvertStringToOle(const wxString& str);

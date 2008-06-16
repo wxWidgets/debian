@@ -1,0 +1,132 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxAppTraits</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxapptraits"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxapp.html#wxapp"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxarchiveclassfactory.html#wxarchiveclassfactory"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxAppTraits</H2>
+<P>
+The <B>wxAppTraits</B> class defines various configurable aspects of a <A HREF="wx_wxapp.html#wxapp">wxApp</A>.
+You can access it using <A HREF="wx_wxapp.html#wxappgettraits">wxApp::GetTraits</A> function and you can
+create your own <A HREF="wx_wxapptraits.html#wxapptraits">wxAppTraits</A> overriding the
+<A HREF="wx_wxapp.html#wxappcreatetraits">wxApp::CreateTraits</A> function.<P>
+By default, wxWidgets creates a <TT>wxConsoleAppTraits</TT> object for console applications
+(i.e. those applications linked against wxBase library only - see the
+<A HREF="wx_librarieslist.html#librarieslist">Libraries list</A> page) and a <TT>wxGUIAppTraits</TT> object for GUI
+applications.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/apptrait.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxappoverview.html#wxappoverview">wxApp overview</A>, <A HREF="wx_wxapp.html#wxapp">wxApp</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxapptraitscreatefontmapper">wxAppTraits::CreateFontMapper</A><BR>
+<A HREF="#wxapptraitscreatelogtarget">wxAppTraits::CreateLogTarget</A><BR>
+<A HREF="#wxapptraitscreatemessageoutput">wxAppTraits::CreateMessageOutput</A><BR>
+<A HREF="#wxapptraitscreaterenderer">wxAppTraits::CreateRenderer</A><BR>
+<A HREF="#wxapptraitsgetdesktopenvironment">wxAppTraits::GetDesktopEnvironment</A><BR>
+<A HREF="#wxapptraitsgetstandardpaths">wxAppTraits::GetStandardPaths</A><BR>
+<A HREF="#wxapptraitsgettoolkitversion">wxAppTraits::GetToolkitVersion</A><BR>
+<A HREF="#wxapptraitshasstderr">wxAppTraits::HasStderr</A><BR>
+<A HREF="#wxapptraitsisusinguniversalwidgets">wxAppTraits::IsUsingUniversalWidgets</A><BR>
+<A HREF="#wxapptraitsshowassertdialog">wxAppTraits::ShowAssertDialog</A><BR>
+<P>
+
+<HR>
+<A NAME="wxapptraitscreatefontmapper"></A>
+<H3>wxAppTraits::CreateFontMapper</H3>
+<P>
+<B>virtual <A HREF="wx_wxfontmapper.html#wxfontmapper">wxFontMapper</A> *</B> </B> <B>CreateFontMapper</B>()<P>
+Creates the global font mapper object used for encodings/charset mapping.<P>
+<P>
+
+<HR>
+<A NAME="wxapptraitscreatelogtarget"></A>
+<H3>wxAppTraits::CreateLogTarget</H3>
+<P>
+<B>virtual <A HREF="wx_wxlog.html#wxlog">wxLog</A> *</B> </B> <B>CreateLogTarget</B>()<P>
+Creates the default log target for the application.<P>
+
+
+<HR>
+<A NAME="wxapptraitscreatemessageoutput"></A>
+<H3>wxAppTraits::CreateMessageOutput</H3>
+<P>
+<B>virtual wxMessageOutput *</B> <B>CreateMessageOutput</B>()<P>
+Creates the global object used for printing out messages.<P>
+
+
+<HR>
+<A NAME="wxapptraitscreaterenderer"></A>
+<H3>wxAppTraits::CreateRenderer</H3>
+<P>
+<B>virtual <A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A> *</B> </B> <B>CreateRenderer</B>()<P>
+Returns the renderer to use for drawing the generic controls (return value may be <TT>NULL</TT>
+in which case the default renderer for the current platform is used);
+this is used in GUI mode only and always returns <TT>NULL</TT> in console.<P>
+NOTE: returned pointer will be deleted by the caller.<P>
+
+<HR>
+<A NAME="wxapptraitsgetdesktopenvironment"></A>
+<H3>wxAppTraits::GetDesktopEnvironment</H3>
+<P>
+<B>virtual <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetDesktopEnvironment</B>() <B>const</B><P>
+This method returns the name of the desktop environment currently
+running in a Unix desktop. Currently only "KDE" or "GNOME" are
+supported and the code uses the X11 session protocol vendor name
+to figure out, which desktop environment is running. The method
+returns an empty string otherwise and on all other platforms.<P>
+
+<HR>
+<A NAME="wxapptraitsgetstandardpaths"></A>
+<H3>wxAppTraits::GetStandardPaths</H3>
+<P>
+<B>virtual <A HREF="wx_wxstandardpaths.html#wxstandardpaths">wxStandardPaths</A> &</B> </B> <B>GetStandardPaths</B>()<P>
+Returns the wxStandardPaths object for the application.
+It's normally the same for wxBase and wxGUI except in the case of wxMac and wxCocoa.<P>
+
+<HR>
+<A NAME="wxapptraitsgettoolkitversion"></A>
+<H3>wxAppTraits::GetToolkitVersion</H3>
+<P>
+<B>virtual wxPortId</B> <B>GetToolkitVersion</B>(<B>int *</B><I>major = NULL</I>, <B>int *</B><I>minor = NULL</I>)<P>
+Returns the wxWidgets port ID used by the running program and eventually
+fills the given pointers with the values of the major and minor digits
+of the native toolkit currently used.
+The version numbers returned are thus detected at run-time and not compile-time
+(except when this is not possible e.g. wxMotif).<P>
+E.g. if your program is using wxGTK port this function will return wxPORT_GTK and
+put in given pointers the versions of the GTK library in use.<P>
+See <A HREF="wx_wxplatforminfo.html#wxplatforminfo">wxPlatformInfo</A> for more details.<P>
+
+
+<HR>
+<A NAME="wxapptraitshasstderr"></A>
+<H3>wxAppTraits::HasStderr</H3>
+<P>
+<B>virtual bool</B> <B>HasStderr</B>()<P>
+Returns <TT>true</TT> if <TT>fprintf(stderr)</TT> goes somewhere, <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxapptraitsisusinguniversalwidgets"></A>
+<H3>wxAppTraits::IsUsingUniversalWidgets</H3>
+<P>
+<B>bool</B> <B>IsUsingUniversalWidgets</B>() <B>const</B><P>
+Returns <TT>true</TT> if the library was built as wxUniversal. Always returns
+<TT>false</TT> for wxBase-only apps.<P>
+
+
+<HR>
+<A NAME="wxapptraitsshowassertdialog"></A>
+<H3>wxAppTraits::ShowAssertDialog</H3>
+<P>
+<B>virtual bool</B> <B>ShowAssertDialog</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I> msg</I>)<P>
+Shows the assert dialog with the specified message in GUI mode or just prints
+the string to stderr in console mode.<P>
+Returns <TT>true</TT> to suppress subsequent asserts, <TT>false</TT> to continue as before.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,49 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Writing a wxWidgets application: a rough guide</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="roughguide"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_referencenotes.html#referencenotes"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_helloworld.html#helloworld"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Writing a wxWidgets application: a rough guide</H2>
+<P>
+To set a wxWidgets application going, you will need to derive a <A HREF="wx_wxapp.html#wxapp">wxApp</A> class and
+override <A HREF="wx_wxapp.html#wxapponinit">wxApp::OnInit</A>.<P>
+An application must have a top-level <A HREF="wx_wxframe.html#wxframe">wxFrame</A> or <A HREF="wx_wxdialog.html#wxdialog">wxDialog</A> window.
+Each frame may contain one or more instances of classes such as <A HREF="wx_wxpanel.html#wxpanel">wxPanel</A>, <A HREF="wx_wxsplitterwindow.html#wxsplitterwindow">wxSplitterWindow</A>
+or other windows and controls.<P>
+A frame can have a <A HREF="wx_wxmenubar.html#wxmenubar">wxMenuBar</A>, a <A HREF="wx_wxtoolbar.html#wxtoolbar">wxToolBar</A>, a status line, and a <A HREF="wx_wxicon.html#wxicon">wxIcon</A> for
+when the frame is iconized.<P>
+A <A HREF="wx_wxpanel.html#wxpanel">wxPanel</A> is used to place controls (classes derived from <A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A>)
+which are used for user interaction. Examples of controls are <A HREF="wx_wxbutton.html#wxbutton">wxButton</A>,
+<A HREF="wx_wxcheckbox.html#wxcheckbox">wxCheckBox</A>, <A HREF="wx_wxchoice.html#wxchoice">wxChoice</A>, <A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A>,
+<A HREF="wx_wxradiobox.html#wxradiobox">wxRadioBox</A>, <A HREF="wx_wxslider.html#wxslider">wxSlider</A>.<P>
+Instances of <A HREF="wx_wxdialog.html#wxdialog">wxDialog</A> can also be used for controls and they have
+the advantage of not requiring a separate frame.<P>
+Instead of creating a dialog box and populating it with items, it is possible to choose
+one of the convenient common dialog classes, such as <A HREF="wx_wxmessagedialog.html#wxmessagedialog">wxMessageDialog</A>
+and <A HREF="wx_wxfiledialog.html#wxfiledialog">wxFileDialog</A>.<P>
+You never draw directly onto a window - you use a <I>device context</I> (DC). <A HREF="wx_wxdc.html#wxdc">wxDC</A> is
+the base for <A HREF="wx_wxclientdc.html#wxclientdc">wxClientDC</A>, <A HREF="wx_wxpaintdc.html#wxpaintdc">wxPaintDC</A>, <A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A>, <A HREF="wx_wxpostscriptdc.html#wxpostscriptdc">wxPostScriptDC</A>,
+<A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A>, <A HREF="wx_wxmetafiledc.html#wxmetafiledc">wxMetafileDC</A> and <A HREF="wx_wxprinterdc.html#wxprinterdc">wxPrinterDC</A>.
+If your drawing functions have <B>wxDC</B> as a parameter, you can pass any of these DCs
+to the function, and thus use the same code to draw to several different devices.
+You can draw using the member functions of <B>wxDC</B>, such as <A HREF="wx_wxdc.html#wxdcdrawline">wxDC::DrawLine</A>
+and <A HREF="wx_wxdc.html#wxdcdrawtext">wxDC::DrawText</A>. Control colour on a window (<A HREF="wx_wxcolour.html#wxcolour">wxColour</A>) with
+brushes (<A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>) and pens (<A HREF="wx_wxpen.html#wxpen">wxPen</A>).<P>
+To intercept events, you add a DECLARE_EVENT_TABLE macro to the window class declaration,
+and put a BEGIN_EVENT_TABLE ... END_EVENT_TABLE block in the implementation file. Between these
+macros, you add event macros which map the event (such as a mouse click) to a member function.
+These might override predefined event handlers such as for <A HREF="wx_wxkeyevent.html#wxkeyevent">wxKeyEvent</A> and
+<A HREF="wx_wxmouseevent.html#wxmouseevent">wxMouseEvent</A>.<P>
+Most modern applications will have an on-line, hypertext help system; for this, you
+need wxHelp and the <A HREF="wx_wxhelpcontroller.html#wxhelpcontroller">wxHelpController</A> class to control
+wxHelp.<P>
+GUI applications aren't all graphical wizardry. List and hash table needs are
+catered for by <A HREF="wx_wxlist.html#wxlist">wxList</A> and <A HREF="wx_wxhashmap.html#wxhashmap">wxHashMap</A>.
+You will undoubtedly need some platform-independent <A HREF="wx_filefunctions.html#filefunctions">file functions</A>,
+and you may find it handy to maintain and search a list of paths using <A HREF="wx_wxpathlist.html#wxpathlist">wxPathList</A>.
+There's a <A HREF="wx_miscellany.html#miscellany">miscellany</A> of operating system and other functions.<P>
+See also <A HREF="wx_classesbycat.html#classesbycat">Classes by Category</A> for a list of classes.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,229 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRegEx</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxregex"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrecursionguardflag.html#wxrecursionguardflag"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxregion.html#wxregion"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRegEx</H2>
+<P>
+wxRegEx represents a regular expression.  This class provides support
+for regular expressions matching and also replacement.<P>
+It is built on top of either the system library (if it has support
+for POSIX regular expressions - which is the case of the most modern
+Unices) or uses the built in Henry Spencer's library.  Henry Spencer
+would appreciate being given credit in the documentation of software
+which uses his library, but that is not a requirement.<P>
+Regular expressions, as defined by POSIX, come in two flavours: <I>extended</I>
+and <I>basic</I>.  The builtin library also adds a third flavour
+of expression <A HREF="wx_wxresyn.html#wxresyn">advanced</A>, which is not available
+when using the system library.<P>
+Unicode is fully supported only when using the builtin library.
+When using the system library in Unicode mode, the expressions and data
+are translated to the default 8-bit encoding before being passed to
+the library.<P>
+On platforms where a system library is available, the default is to use
+the builtin library for Unicode builds, and the system library otherwise.
+It is possible to use the other if preferred by selecting it when building
+the wxWidgets.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+Flags for regex compilation to be used with <A HREF="wx_wxregex.html#wxregexcompile">Compile()</A>:<P>
+<PRE>
+enum
+{
+    // use extended regex syntax
+    wxRE_EXTENDED = 0,
+    
+    // use advanced RE syntax (built-in regex only)
+#ifdef wxHAS_REGEX_ADVANCED
+    wxRE_ADVANCED = 1,
+#endif
+
+    // use basic RE syntax
+    wxRE_BASIC    = 2,
+
+    // ignore case in match
+    wxRE_ICASE    = 4,
+
+    // only check match, don't set back references
+    wxRE_NOSUB    = 8,
+
+    // if not set, treat '\n' as an ordinary character, otherwise it is
+    // special: it is not matched by '.' and '^' and '$' always match
+    // after/before it regardless of the setting of wxRE_NOT[BE]OL
+    wxRE_NEWLINE  = 16,
+
+    // default flags
+    wxRE_DEFAULT  = wxRE_EXTENDED
+}
+</PRE>
+Flags for regex matching to be used with <A HREF="wx_wxregex.html#wxregexmatches">Matches()</A>.<P>
+These flags are mainly useful when doing several matches in a long string
+to prevent erroneous matches for <TT>'<TT></TT>'</TT> and <TT>'$'</TT>:<P>
+<PRE>
+enum
+{
+    // '^' doesn't match at the start of line
+    wxRE_NOTBOL = 32,
+
+    // '$' doesn't match at the end of line
+    wxRE_NOTEOL = 64
+}
+</PRE>
+<B><FONT COLOR="#FF0000">Examples</FONT></B><P>
+A bad example of processing some text containing email addresses (the example
+is bad because the real email addresses can have more complicated form than
+<TT>user@host.net</TT>):<P>
+<PRE>
+wxString text;
+...
+wxRegEx reEmail = wxT("([^@]+)@([[:alnum:].-_].)+([[:alnum:]]+)");
+if ( reEmail.Matches(text) )
+{
+    wxString text = reEmail.GetMatch(email);
+    wxString username = reEmail.GetMatch(email, 1);
+    if ( reEmail.GetMatch(email, 3) == wxT("com") ) // .com TLD?
+    {
+        ...
+    }
+}
+
+// or we could do this to hide the email address
+size_t count = reEmail.ReplaceAll(text, wxT("HIDDEN@\\2\\3"));
+printf("text now contains %u hidden addresses", count);
+</PRE>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/regex.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxregexwxregex">wxRegEx::wxRegEx</A><BR>
+<A HREF="#wxregexdtor">wxRegEx::~wxRegEx</A><BR>
+<A HREF="#wxregexcompile">wxRegEx::Compile</A><BR>
+<A HREF="#wxregexisvalid">wxRegEx::IsValid</A><BR>
+<A HREF="#wxregexgetmatch">wxRegEx::GetMatch</A><BR>
+<A HREF="#wxregexgetmatchcount">wxRegEx::GetMatchCount</A><BR>
+<A HREF="#wxregexmatches">wxRegEx::Matches</A><BR>
+<A HREF="#wxregexreplace">wxRegEx::Replace</A><BR>
+<A HREF="#wxregexreplaceall">wxRegEx::ReplaceAll</A><BR>
+<A HREF="#wxregexreplacefirst">wxRegEx::ReplaceFirst</A><BR>
+<P>
+
+<HR>
+<A NAME="wxregexwxregex"></A>
+<H3>wxRegEx::wxRegEx</H3>
+<P>
+<B></B> <B>wxRegEx</B>()<P>
+Default ctor: use <A HREF="wx_wxregex.html#wxregexcompile">Compile()</A> later.<P>
+<B></B> <B>wxRegEx</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>expr</I>, <B>int </B><I>flags = wxRE_DEFAULT</I>)<P>
+Create and compile the regular expression, use 
+<A HREF="wx_wxregex.html#wxregexisvalid">IsValid</A> to test for compilation errors.<P>
+
+<HR>
+<A NAME="wxregexdtor"></A>
+<H3>wxRegEx::~wxRegEx</H3>
+<P>
+<B></B> <B>~wxRegEx</B>()<P>
+dtor not virtual, don't derive from this class<P>
+
+<HR>
+<A NAME="wxregexcompile"></A>
+<H3>wxRegEx::Compile</H3>
+<P>
+<B>bool</B> <B>Compile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>pattern</I>, <B>int </B><I>flags = wxRE_DEFAULT</I>)<P>
+Compile the string into regular expression, return <TT>true</TT> if ok or <TT>false</TT> 
+if string has a syntax error.<P>
+
+<HR>
+<A NAME="wxregexisvalid"></A>
+<H3>wxRegEx::IsValid</H3>
+<P>
+<B>bool</B> <B>IsValid</B>() <B>const</B><P>
+Return <TT>true</TT> if this is a valid compiled regular expression, <TT>false</TT> 
+otherwise.<P>
+
+<HR>
+<A NAME="wxregexgetmatch"></A>
+<H3>wxRegEx::GetMatch</H3>
+<P>
+<B>bool</B> <B>GetMatch</B>(<B>size_t* </B><I>start</I>, <B>size_t* </B><I>len</I>, <B>size_t </B><I>index = 0</I>) <B>const</B><P>
+Get the start index and the length of the match of the expression
+(if <I>index</I> is 0) or a bracketed subexpression (<I>index</I> different
+from 0).<P>
+May only be called after successful call to <A HREF="wx_wxregex.html#wxregexmatches">Matches()</A> 
+and only if <TT>wxRE_NOSUB</TT> was <B>not</B> used in 
+<A HREF="wx_wxregex.html#wxregexcompile">Compile()</A>.<P>
+Returns <TT>false</TT> if no match or if an error occurred.<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetMatch</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>size_t </B><I>index = 0</I>) <B>const</B><P>
+Returns the part of string corresponding to the match where <I>index</I> is
+interpreted as above. Empty string is returned if match failed<P>
+May only be called after successful call to <A HREF="wx_wxregex.html#wxregexmatches">Matches()</A> 
+and only if <TT>wxRE_NOSUB</TT> was <B>not</B> used in 
+<A HREF="wx_wxregex.html#wxregexcompile">Compile()</A>.<P>
+
+<HR>
+<A NAME="wxregexgetmatchcount"></A>
+<H3>wxRegEx::GetMatchCount</H3>
+<P>
+<B>size_t</B> <B>GetMatchCount</B>() <B>const</B><P>
+Returns the size of the array of matches, i.e. the number of bracketed
+subexpressions plus one for the expression itself, or 0 on error.<P>
+May only be called after successful call to <A HREF="wx_wxregex.html#wxregexcompile">Compile()</A>.
+and only if <TT>wxRE_NOSUB</TT> was <B>not</B> used.<P>
+
+<HR>
+<A NAME="wxregexmatches"></A>
+<H3>wxRegEx::Matches</H3>
+<P>
+<B>bool</B> <B>Matches</B>(<B>const wxChar* </B><I>text</I>, <B>int </B><I>flags = 0</I>) <B>const</B><P>
+<B>bool</B> <B>Matches</B>(<B>const wxChar* </B><I>text</I>, <B>int </B><I>flags</I>, <B>size_t </B><I>len</I>) <B>const</B><P>
+<B>bool</B> <B>Matches</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>int </B><I>flags = 0</I>) <B>const</B><P>
+Matches the precompiled regular expression against the string <I>text</I>,
+returns <TT>true</TT> if matches and <TT>false</TT> otherwise.<P>
+<I>Flags</I> may be combination of <TT>wxRE_NOTBOL</TT> and <TT>wxRE_NOTEOL</TT>.<P>
+Some regex libraries assume that the text given is null terminated, while
+others require the length be given as a separate parameter. Therefore for
+maximum portability assume that <I>text</I> cannot contain embedded nulls.<P>
+When the <I>Matches(const wxChar *text, int flags = 0)</I> form is used,
+a <I>wxStrlen()</I> will be done internally if the regex library requires the
+length. When using <I>Matches()</I> in a loop
+the <I>Matches(text, flags, len)</I> form can be used instead, making it
+possible to avoid a <I>wxStrlen()</I> inside the loop.<P>
+May only be called after successful call to <A HREF="wx_wxregex.html#wxregexcompile">Compile()</A>.<P>
+
+<HR>
+<A NAME="wxregexreplace"></A>
+<H3>wxRegEx::Replace</H3>
+<P>
+<B>int</B> <B>Replace</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>text</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>replacement</I>, <B>size_t </B><I>maxMatches = 0</I>) <B>const</B><P>
+Replaces the current regular expression in the string pointed to by
+<I>text</I>, with the text in <I>replacement</I> and return number of matches
+replaced (maybe 0 if none found) or -1 on error.<P>
+The replacement text may contain back references <TT>\number</TT> which will be
+replaced with the value of the corresponding subexpression in the
+pattern match. <TT>\0</TT> corresponds to the entire match and <TT>&amp;</TT> is a
+synonym for it. Backslash may be used to quote itself or <TT>&amp;</TT> character.<P>
+<I>maxMatches</I> may be used to limit the number of replacements made, setting
+it to 1, for example, will only replace first occurrence (if any) of the
+pattern in the text while default value of 0 means replace all.<P>
+
+<HR>
+<A NAME="wxregexreplaceall"></A>
+<H3>wxRegEx::ReplaceAll</H3>
+<P>
+<B>int</B> <B>ReplaceAll</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>text</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>replacement</I>) <B>const</B><P>
+Replace all occurrences: this is actually a synonym for 
+<A HREF="wx_wxregex.html#wxregexreplace">Replace()</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxregex.html#wxregexreplacefirst">ReplaceFirst</A><P>
+
+<HR>
+<A NAME="wxregexreplacefirst"></A>
+<H3>wxRegEx::ReplaceFirst</H3>
+<P>
+<B>int</B> <B>ReplaceFirst</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>text</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>replacement</I>) <B>const</B><P>
+Replace the first occurrence.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxregex.html#wxregexreplace">Replace</A><P>
+
+</FONT></BODY></HTML>

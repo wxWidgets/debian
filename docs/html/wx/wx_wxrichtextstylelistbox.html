@@ -1,0 +1,170 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextStyleListBox</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextstylelistbox"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextstylecomboctrl.html#wxrichtextstylecomboctrl"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextstylelistctrl.html#wxrichtextstylelistctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextStyleListBox</H2>
+<P>
+This is a listbox that can display the styles in a <A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>,
+and apply the selection to an associated <A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>.<P>
+See <TT>samples/richtext</TT> for an example of how to use it.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxhtmllistbox.html#wxhtmllistbox">wxHtmlListBox</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextstyles.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxrichtextstylecomboctrl.html#wxrichtextstylecomboctrl">wxRichTextStyleComboCtrl</A>, <A HREF="wx_wxrichtextctrloverview.html#wxrichtextctrloverview">wxRichTextCtrl overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextstylelistboxwxrichtextstylelistbox">wxRichTextStyleListBox::wxRichTextStyleListBox</A><BR>
+<A HREF="#wxrichtextstylelistboxdtor">wxRichTextStyleListBox::~wxRichTextStyleListBox</A><BR>
+<A HREF="#wxrichtextstylelistboxapplystyle">wxRichTextStyleListBox::ApplyStyle</A><BR>
+<A HREF="#wxrichtextstylelistboxconverttenthsmmtopixels">wxRichTextStyleListBox::ConvertTenthsMMToPixels</A><BR>
+<A HREF="#wxrichtextstylelistboxcreatehtml">wxRichTextStyleListBox::CreateHTML</A><BR>
+<A HREF="#wxrichtextstylelistboxgetapplyonselection">wxRichTextStyleListBox::GetApplyOnSelection</A><BR>
+<A HREF="#wxrichtextstylelistboxgetrichtextctrl">wxRichTextStyleListBox::GetRichTextCtrl</A><BR>
+<A HREF="#wxrichtextstylelistboxgetstyle">wxRichTextStyleListBox::GetStyle</A><BR>
+<A HREF="#wxrichtextstylelistboxgetstylesheet">wxRichTextStyleListBox::GetStyleSheet</A><BR>
+<A HREF="#wxrichtextstylelistboxgetstyletype">wxRichTextStyleListBox::GetStyleType</A><BR>
+<A HREF="#wxrichtextstylelistboxongetitem">wxRichTextStyleListBox::OnGetItem</A><BR>
+<A HREF="#wxrichtextstylelistboxonleftdown">wxRichTextStyleListBox::OnLeftDown</A><BR>
+<A HREF="#wxrichtextstylelistboxonselect">wxRichTextStyleListBox::OnSelect</A><BR>
+<A HREF="#wxrichtextstylelistboxsetapplyonselection">wxRichTextStyleListBox::SetApplyOnSelection</A><BR>
+<A HREF="#wxrichtextstylelistboxsetrichtextctrl">wxRichTextStyleListBox::SetRichTextCtrl</A><BR>
+<A HREF="#wxrichtextstylelistboxsetstylesheet">wxRichTextStyleListBox::SetStyleSheet</A><BR>
+<A HREF="#wxrichtextstylelistboxsetstyletype">wxRichTextStyleListBox::SetStyleType</A><BR>
+<A HREF="#wxrichtextstylelistboxupdatestyles">wxRichTextStyleListBox::UpdateStyles</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxwxrichtextstylelistbox"></A>
+<H3>wxRichTextStyleListBox::wxRichTextStyleListBox</H3>
+<P>
+<B></B> <B>wxRichTextStyleListBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxdtor"></A>
+<H3>wxRichTextStyleListBox::~wxRichTextStyleListBox</H3>
+<P>
+<B></B> <B>~wxRichTextStyleListBox</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxapplystyle"></A>
+<H3>wxRichTextStyleListBox::ApplyStyle</H3>
+<P>
+<B>void</B> <B>ApplyStyle</B>(<B>int </B><I>i</I>)<P>
+Applies the <I>i</I>th style to the associated rich text control.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxconverttenthsmmtopixels"></A>
+<H3>wxRichTextStyleListBox::ConvertTenthsMMToPixels</H3>
+<P>
+<B>int</B> <B>ConvertTenthsMMToPixels</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>int </B><I>units</I>) <B>const</B><P>
+Converts units in tenths of a millimetre to device units.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxcreatehtml"></A>
+<H3>wxRichTextStyleListBox::CreateHTML</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>CreateHTML</B>(<B><A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition">wxRichTextStyleDefinition</A>* </B></B><I>def</I>) <B>const</B><P>
+Creates a suitable HTML fragment for a definition.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxgetapplyonselection"></A>
+<H3>wxRichTextStyleListBox::GetApplyOnSelection</H3>
+<P>
+<B>bool</B> <B>GetApplyOnSelection</B>() <B>const</B><P>
+If the return value is <TT>true</TT>, clicking on a style name in the list will immediately
+apply the style to the associated rich text control.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxgetrichtextctrl"></A>
+<H3>wxRichTextStyleListBox::GetRichTextCtrl</H3>
+<P>
+<B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>*</B> </B> <B>GetRichTextCtrl</B>() <B>const</B><P>
+Returns the <A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A> associated with this listbox.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxgetstyle"></A>
+<H3>wxRichTextStyleListBox::GetStyle</H3>
+<P>
+<B><A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition">wxRichTextStyleDefinition</A>*</B> </B> <B>GetStyle</B>(<B>size_t </B><I>i</I>) <B>const</B><P>
+Gets a style for a listbox index.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxgetstylesheet"></A>
+<H3>wxRichTextStyleListBox::GetStyleSheet</H3>
+<P>
+<B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>*</B> </B> <B>GetStyleSheet</B>() <B>const</B><P>
+Returns the style sheet associated with this listbox.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxgetstyletype"></A>
+<H3>wxRichTextStyleListBox::GetStyleType</H3>
+<P>
+<B>wxRichTextStyleListBox::wxRichTextStyleType</B> <B>GetStyleType</B>() <B>const</B><P>
+Returns the type of style to show in the list box.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxongetitem"></A>
+<H3>wxRichTextStyleListBox::OnGetItem</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>OnGetItem</B>(<B>size_t </B><I>n</I>) <B>const</B><P>
+Returns the HTML for this item.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxonleftdown"></A>
+<H3>wxRichTextStyleListBox::OnLeftDown</H3>
+<P>
+<B>void</B> <B>OnLeftDown</B>(<B><A HREF="wx_wxmouseevent.html#wxmouseevent">wxMouseEvent</A>& </B></B><I>event</I>)<P>
+Implements left click behaviour, applying the clicked style to the wxRichTextCtrl.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxonselect"></A>
+<H3>wxRichTextStyleListBox::OnSelect</H3>
+<P>
+<B>void</B> <B>OnSelect</B>(<B><A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A>& </B></B><I>event</I>)<P>
+Reacts to selection.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxsetapplyonselection"></A>
+<H3>wxRichTextStyleListBox::SetApplyOnSelection</H3>
+<P>
+<B>void</B> <B>SetApplyOnSelection</B>(<B>bool </B><I>applyOnSelection</I>)<P>
+If <I>applyOnSelection</I> is <TT>true</TT>, clicking on a style name in the list will immediately
+apply the style to the associated rich text control.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxsetrichtextctrl"></A>
+<H3>wxRichTextStyleListBox::SetRichTextCtrl</H3>
+<P>
+<B>void</B> <B>SetRichTextCtrl</B>(<B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl</I>)<P>
+Associates the listbox with a <A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxsetstylesheet"></A>
+<H3>wxRichTextStyleListBox::SetStyleSheet</H3>
+<P>
+<B>void</B> <B>SetStyleSheet</B>(<B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>* </B></B><I>styleSheet</I>)<P>
+Associates the control with a style sheet.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxsetstyletype"></A>
+<H3>wxRichTextStyleListBox::SetStyleType</H3>
+<P>
+<B>void</B> <B>SetStyleType</B>(<B>wxRichTextStyleListBox::wxRichTextStyleType </B><I>styleType</I>)<P>
+Sets the style type to display. One of wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL, wxRichTextStyleListBox::wxRICHTEXT_STYLE_PARAGRAPH,
+wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER and wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistboxupdatestyles"></A>
+<H3>wxRichTextStyleListBox::UpdateStyles</H3>
+<P>
+<B>void</B> <B>UpdateStyles</B>()<P>
+Updates the list from the associated style sheet.<P>
+
+
+</FONT></BODY></HTML>

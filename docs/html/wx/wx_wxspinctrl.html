@@ -1,0 +1,188 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSpinCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxspinctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxspinbutton.html#wxspinbutton"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxspinevent.html#wxspinevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSpinCtrl</H2>
+<P>
+wxSpinCtrl combines <A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A> and 
+<A HREF="wx_wxspinbutton.html#wxspinbutton">wxSpinButton</A> in one control.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/spinctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSP_ARROW_KEYS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user can use arrow keys to change the value.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSP_WRAP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The value wraps at the minimum and maximum.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To process input from a spin button, use one of these event handler macros to direct input to member
+functions that take a <A HREF="wx_wxspinevent.html#wxspinevent">wxSpinEvent</A> argument:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SPINCTRL(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Generated whenever the numeric value
+of the spinctrl is updated
+</FONT></TD></TR>
+
+
+</TABLE>
+You may also use the <A HREF="wx_wxspinbutton.html#wxspinbutton">wxSpinButton</A> event macros, however
+the corresponding events will not be generated under all platforms. Finally, if
+the user modifies the text in the edit part of the spin control directly, the
+<TT>EVT_TEXT</TT> is generated, like for the <A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A>.<P>
+When the use enters text into the text area, the text is not
+validated until the control loses focus (e.g. by using the TAB
+key). The value is then adjusted to the range and a 
+<A HREF="wx_wxspinevent.html#wxspinevent">wxSpinEvent</A> sent then if the value
+is different from the last value sent.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A>,
+<A HREF="wx_wxspinbutton.html#wxspinbutton">wxSpinButton</A>,
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxspinctrlwxspinctrl">wxSpinCtrl::wxSpinCtrl</A><BR>
+<A HREF="#wxspinctrlcreate">wxSpinCtrl::Create</A><BR>
+<A HREF="#wxspinctrlsetvalue">wxSpinCtrl::SetValue</A><BR>
+<A HREF="#wxspinctrlgetvalue">wxSpinCtrl::GetValue</A><BR>
+<A HREF="#wxspinctrlsetrange">wxSpinCtrl::SetRange</A><BR>
+<A HREF="#wxspinctrlsetselection">wxSpinCtrl::SetSelection</A><BR>
+<A HREF="#wxspinctrlgetmin">wxSpinCtrl::GetMin</A><BR>
+<A HREF="#wxspinctrlgetmax">wxSpinCtrl::GetMax</A><BR>
+<P>
+
+<HR>
+<A NAME="wxspinctrlwxspinctrl"></A>
+<H3>wxSpinCtrl::wxSpinCtrl</H3>
+<P>
+<B></B> <B>wxSpinCtrl</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxSpinCtrl</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = -1</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value = wxEmptyString</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxSP_ARROW_KEYS</I>, <B>int </B><I>min = 0</I>, <B>int </B><I>max = 100</I>, <B>int </B><I>initial = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = _T("wxSpinCtrl")</I>)<P>
+Constructor, creating and showing a spin control.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>value</I><UL><UL>
+Default value.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position. If the position (-1, -1) is specified then a default position is chosen.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then a default size is chosen.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxspinbutton.html#wxspinbutton">wxSpinButton</A>.</UL></UL>
+<P>
+<I>min</I><UL><UL>
+Minimal value.</UL></UL>
+<P>
+<I>max</I><UL><UL>
+Maximal value.</UL></UL>
+<P>
+<I>initial</I><UL><UL>
+Initial value.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxspinctrl.html#wxspinctrlcreate">wxSpinCtrl::Create</A><P>
+
+<HR>
+<A NAME="wxspinctrlcreate"></A>
+<H3>wxSpinCtrl::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = -1</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value = wxEmptyString</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxSP_ARROW_KEYS</I>, <B>int </B><I>min = 0</I>, <B>int </B><I>max = 100</I>, <B>int </B><I>initial = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = _T("wxSpinCtrl")</I>)<P>
+Creation function called by the spin control constructor.<P>
+See <A HREF="wx_wxspinctrl.html#wxspinctrlwxspinctrl">wxSpinCtrl::wxSpinCtrl</A> for details.<P>
+
+<HR>
+<A NAME="wxspinctrlsetvalue"></A>
+<H3>wxSpinCtrl::SetValue</H3>
+<P>
+<B>void</B> <B>SetValue</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>)<P>
+<B>void</B> <B>SetValue</B>(<B>int </B><I>value</I>)<P>
+Sets the value of the spin control.<P>
+
+<HR>
+<A NAME="wxspinctrlgetvalue"></A>
+<H3>wxSpinCtrl::GetValue</H3>
+<P>
+<B>int</B> <B>GetValue</B>() <B>const</B><P>
+Gets the value of the spin control.<P>
+
+<HR>
+<A NAME="wxspinctrlsetrange"></A>
+<H3>wxSpinCtrl::SetRange</H3>
+<P>
+<B>void</B> <B>SetRange</B>(<B>int </B><I>minVal</I>, <B>int </B><I>maxVal</I>)<P>
+Sets range of allowable values.<P>
+
+<HR>
+<A NAME="wxspinctrlsetselection"></A>
+<H3>wxSpinCtrl::SetSelection</H3>
+<P>
+<B>void</B> <B>SetSelection</B>(<B>long </B><I>from</I>, <B>long </B><I>to</I>)<P>
+Select the text in the text part of the control between  positions 
+<I>from</I> (inclusive) and <I>to</I> (exclusive). This is similar to 
+<A HREF="wx_wxtextctrl.html#wxtextctrlsetselection">wxTextCtrl::SetSelection</A>.<P>
+<B>NB:</B> this is currently only implemented for Windows and generic versions
+of the control.<P>
+
+<HR>
+<A NAME="wxspinctrlgetmin"></A>
+<H3>wxSpinCtrl::GetMin</H3>
+<P>
+<B>int</B> <B>GetMin</B>() <B>const</B><P>
+Gets minimal allowable value.<P>
+
+<HR>
+<A NAME="wxspinctrlgetmax"></A>
+<H3>wxSpinCtrl::GetMax</H3>
+<P>
+<B>int</B> <B>GetMax</B>() <B>const</B><P>
+Gets maximal allowable value.<P>
+
+</FONT></BODY></HTML>

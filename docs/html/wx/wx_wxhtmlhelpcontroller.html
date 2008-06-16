@@ -1,0 +1,385 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlHelpController</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmlhelpcontroller"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmlfilter.html#wxhtmlfilter"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmlhelpdata.html#wxhtmlhelpdata"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlHelpController</H2>
+<P>
+This help controller provides an easy way of displaying HTML help in your
+application (see <I>test</I> sample). The help system is based on <B>books</B> 
+(see <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontrolleraddbook">AddBook</A>). A book is a logical
+section of documentation (for example "User's Guide" or "Programmer's Guide" or
+"C++ Reference" or "wxWidgets Reference"). The help controller can handle as
+many books as you want.<P>
+Although this class has an API compatible with other wxWidgets
+help controllers as documented by <A HREF="wx_wxhelpcontroller.html#wxhelpcontroller">wxHelpController</A>, it
+is recommended that you use the enhanced capabilities of wxHtmlHelpController's API.<P>
+wxHTML uses Microsoft's HTML Help Workshop project files (.hhp, .hhk, .hhc) as its
+native format. The file format is described <A HREF="wx_wxhtml.html#helpformat">here</A>.
+Have a look at docs/html/ directory where sample project files are stored.<P>
+You can use Tex2RTF to produce these files when generating HTML, if you set <B>htmlWorkshopFiles</B> to <B>true</B> in
+your tex2rtf.ini file. The commercial tool HelpBlocks (www.helpblocks.com) can also create these files.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+It is strongly recommended to use preprocessed <B>.hhp.cached</B> version of
+projects. It can be either created on-the-fly (see 
+<A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontrollersettempdir">SetTempDir</A>) or you can use 
+<B>hhp2cached</B> utility from <I>utils/hhp2cached</I> to create it and
+distribute the cached version together with helpfiles. See <I>samples/html/help</I> 
+sample for demonstration of its use.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxhelpcontroller.html#wxhelpcontroller">Information about wxBestHelpController</A>, 
+<A HREF="wx_wxhtmlhelpframe.html#wxhtmlhelpframe">wxHtmlHelpFrame</A>, 
+<A HREF="wx_wxhtmlhelpdialog.html#wxhtmlhelpdialog">wxHtmlHelpDialog</A>, 
+<A HREF="wx_wxhtmlhelpwindow.html#wxhtmlhelpwindow">wxHtmlHelpWindow</A>,
+<A HREF="wx_wxhtmlmodalhelp.html#wxhtmlmodalhelp">wxHtmlModalHelp</A><P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxHelpControllerBase<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/helpctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmlhelpcontrollerwxhtmlhelpcontroller">wxHtmlHelpController::wxHtmlHelpController</A><BR>
+<A HREF="#wxhtmlhelpcontrolleraddbook">wxHtmlHelpController::AddBook</A><BR>
+<A HREF="#wxhtmlhelpcontrollercreatehelpdialog">wxHtmlHelpController::CreateHelpDialog</A><BR>
+<A HREF="#wxhtmlhelpcontrollercreatehelpframe">wxHtmlHelpController::CreateHelpFrame</A><BR>
+<A HREF="#wxhtmlhelpcontrollerdisplay">wxHtmlHelpController::Display</A><BR>
+<A HREF="#wxhtmlhelpcontrollerdisplaycontents">wxHtmlHelpController::DisplayContents</A><BR>
+<A HREF="#wxhtmlhelpcontrollerdisplayindex">wxHtmlHelpController::DisplayIndex</A><BR>
+<A HREF="#wxhtmlhelpcontrollerkeywordsearch">wxHtmlHelpController::KeywordSearch</A><BR>
+<A HREF="#wxhtmlhelpcontrollerreadcustomization">wxHtmlHelpController::ReadCustomization</A><BR>
+<A HREF="#wxhtmlhelpcontrollersettempdir">wxHtmlHelpController::SetTempDir</A><BR>
+<A HREF="#wxhtmlhelpcontrollersettitleformat">wxHtmlHelpController::SetTitleFormat</A><BR>
+<A HREF="#wxhtmlhelpcontrolleruseconfig">wxHtmlHelpController::UseConfig</A><BR>
+<A HREF="#wxhtmlhelpcontrollerwritecustomization">wxHtmlHelpController::WriteCustomization</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrollerwxhtmlhelpcontroller"></A>
+<H3>wxHtmlHelpController::wxHtmlHelpController</H3>
+<P>
+<B></B> <B>wxHtmlHelpController</B>(<B>int </B><I>style = wxHF_DEFAULT_STYLE</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parentWindow = NULL</I>)<P>
+Constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>style</I> is a combination of these flags:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_TOOLBAR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The help window has a toolbar.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_FLAT_TOOLBAR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The help window has a toolbar with flat buttons (aka coolbar).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_CONTENTS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The help window has a contents panel.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_INDEX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The help window has an index panel.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_SEARCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The help window has a search panel.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_BOOKMARKS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The help window has bookmarks controls.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_OPEN_FILES</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Allows user to open arbitrary HTML document.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_PRINT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The toolbar contains "print" button.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_MERGE_BOOKS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The contents pane does not show
+book nodes. All books are merged together and appear as single book to the
+user.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_ICONS_BOOK</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+All nodes in contents pane
+have a book icon. This is how Microsoft's HTML help viewer behaves.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_ICONS_FOLDER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Book nodes in contents pane have
+a book icon, book's sections have a folder icon. This is the default.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_ICONS_BOOK_CHAPTER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Both book nodes and
+nodes of top-level sections of a book (i.e. chapters) have a book icon,
+all other sections (sections, subsections, ...) have a folder icon.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_EMBEDDED</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies that the help controller controls an embedded window of class <A HREF="wx_wxhtmlhelpwindow.html#wxhtmlhelpwindow">wxHtmlHelpWindow</A> that
+should not be destroyed when the controller is destroyed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_DIALOG</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies that the help controller should create a dialog containing the help window.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_FRAME</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies that the help controller should create a frame containing the help window. This is the default if neither wxHF_DIALOG nor wxHF_EMBEDDED is specified.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_MODAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies that the help controller should create a modal dialog containing the help window (used with the wxHF_DIALOG style).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHF_DEFAULT_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<TT>wxHF_TOOLBAR | wxHF_CONTENTS
+| wxHF_INDEX | wxHF_SEARCH | wxHF_BOOKMARKS | wxHF_PRINT</TT>
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<I>parentWindow</I> is an optional window to be used as the parent for the help window.<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrolleraddbook"></A>
+<H3>wxHtmlHelpController::AddBook</H3>
+<P>
+<B>bool</B> <B>AddBook</B>(<B>const <A HREF="wx_wxfilename.html#wxfilename">wxFileName</A>& </B></B><I>bookFile</I>, <B>bool </B><I>showWaitMsg</I>)<P>
+<B>bool</B> <B>AddBook</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>bookUrl</I>, <B>bool </B><I>showWaitMsg</I>)<P>
+Adds book (<A HREF="wx_wxhtml.html#helpformat">.hhp file</A> - HTML Help Workshop project file) into the list of loaded books.
+This must be called at least once before displaying  any help.<P>
+<I>bookFile</I> or <I>bookUrl</I>  may be either .hhp file or ZIP archive
+that contains arbitrary number of .hhp files in 
+top-level directory. This ZIP archive must have .zip or .htb extension
+(the latter stands for "HTML book"). In other words, <TT>AddBook(wxFileName("help.zip"))</TT> 
+is possible and is the recommended way.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>showWaitMsg</I><UL><UL>
+If true then a decoration-less window with progress message is displayed.</UL></UL>
+
+<I>bookFile</I><UL><UL>
+Help book filename. It is recommended to use this prototype
+instead of the one taking URL, because it is less error-prone.</UL></UL>
+
+<I>bookUrl</I><UL><UL>
+Help book URL (note that syntax of filename and URL is 
+different on most platforms)</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+Don't forget to install the archive wxFileSystem handler with
+<TT>wxFileSystem::AddHandler(new wxArchiveFSHandler);</TT> before calling this method
+on a .zip or .htb file!<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrollercreatehelpdialog"></A>
+<H3>wxHtmlHelpController::CreateHelpDialog</H3>
+<P>
+<B>virtual <A HREF="wx_wxhtmlhelpdialog.html#wxhtmlhelpdialog">wxHtmlHelpDialog</A>*</B> </B> <B>CreateHelpDialog</B>(<B><A HREF="wx_wxhtmlhelpdata.html#wxhtmlhelpdata">wxHtmlHelpData</A> * </B></B><I>data</I>)<P>
+This protected virtual method may be overridden so that when specifying the wxHF_DIALOG style, the controller
+uses a different dialog.<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrollercreatehelpframe"></A>
+<H3>wxHtmlHelpController::CreateHelpFrame</H3>
+<P>
+<B>virtual <A HREF="wx_wxhtmlhelpframe.html#wxhtmlhelpframe">wxHtmlHelpFrame</A>*</B> </B> <B>CreateHelpFrame</B>(<B><A HREF="wx_wxhtmlhelpdata.html#wxhtmlhelpdata">wxHtmlHelpData</A> * </B></B><I>data</I>)<P>
+This protected virtual method may be overridden so that the controller
+uses a different frame.<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrollerdisplay"></A>
+<H3>wxHtmlHelpController::Display</H3>
+<P>
+<B>void</B> <B>Display</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>x</I>)<P>
+Displays page <I>x</I>. This is THE important function - it is used to display
+the help in application.<P>
+You can specify the page in many ways:<P>
+<UL>
+
+<LI> as direct filename of HTML document
+<LI> as chapter name (from contents) or as a book name
+<LI> as some word from index
+<LI> even as any word (will be searched)
+</UL>
+<P>
+Looking for the page runs in these steps:<P>
+<OL>
+
+<LI> try to locate file named x (if x is for example "doc/howto.htm")
+<LI> try to open starting page of book named x
+<LI> try to find x in contents (if x is for example "How To ...")
+<LI> try to find x in index (if x is for example "How To ...")
+<LI> switch to Search panel and start searching
+</OL>
+<P>
+<B>void</B> <B>Display</B>(<B>const int </B><I>id</I>)<P>
+This alternative form is used to search help contents by numeric IDs.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The second form of this method is named DisplayId in
+wxPython.<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrollerdisplaycontents"></A>
+<H3>wxHtmlHelpController::DisplayContents</H3>
+<P>
+<B>void</B> <B>DisplayContents</B>()<P>
+Displays help window and focuses contents panel.<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrollerdisplayindex"></A>
+<H3>wxHtmlHelpController::DisplayIndex</H3>
+<P>
+<B>void</B> <B>DisplayIndex</B>()<P>
+Displays help window and focuses index panel.<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrollerkeywordsearch"></A>
+<H3>wxHtmlHelpController::KeywordSearch</H3>
+<P>
+<B>bool</B> <B>KeywordSearch</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>keyword</I>, <B>wxHelpSearchMode </B><I>mode = wxHELP_SEARCH_ALL</I>)<P>
+Displays help window, focuses search panel and starts searching.  Returns true
+if the keyword was found. Optionally it searches through the index (mode =
+wxHELP_SEARCH_INDEX), default the content (mode = wxHELP_SEARCH_ALL).<P>
+<B>Important:</B> KeywordSearch searches only pages listed in .hhc file(s).
+You should list all pages in the contents file.<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrollerreadcustomization"></A>
+<H3>wxHtmlHelpController::ReadCustomization</H3>
+<P>
+<B>void</B> <B>ReadCustomization</B>(<B><A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>* </B></B><I>cfg</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>path = wxEmptyString</I>)<P>
+Reads the controller's setting (position of window, etc.)<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrollersettempdir"></A>
+<H3>wxHtmlHelpController::SetTempDir</H3>
+<P>
+<B>void</B> <B>SetTempDir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>)<P>
+Sets the path for storing temporary files - cached binary versions of index and contents files. These binary
+forms are much faster to read. Default value is empty string (empty string means
+that no cached data are stored). Note that these files are <I>not</I> 
+deleted when program exits.<P>
+Once created these cached files will be used in all subsequent executions 
+of your application. If cached files become older than corresponding .hhp
+file (e.g. if you regenerate documentation) it will be refreshed.<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrollersettitleformat"></A>
+<H3>wxHtmlHelpController::SetTitleFormat</H3>
+<P>
+<B>void</B> <B>SetTitleFormat</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>format</I>)<P>
+Sets format of title of the frame. Must contain exactly one "%s"
+(for title of displayed HTML page).<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrolleruseconfig"></A>
+<H3>wxHtmlHelpController::UseConfig</H3>
+<P>
+<B>void</B> <B>UseConfig</B>(<B><A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>* </B></B><I>config</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>rootpath = wxEmptyString</I>)<P>
+Associates <I>config</I> object with the controller.<P>
+If there is associated config object, wxHtmlHelpController automatically
+reads and writes settings (including wxHtmlWindow's settings) when needed.<P>
+The only thing you must do is create wxConfig object and call UseConfig.<P>
+If you do not use <I>UseConfig</I>, wxHtmlHelpController will use 
+default wxConfig object if available (for details see 
+<A HREF="wx_wxconfigbase.html#wxconfigbaseget">wxConfigBase::Get</A> and 
+<A HREF="wx_wxconfigbase.html#wxconfigbaseset">wxConfigBase::Set</A>).<P>
+
+<HR>
+<A NAME="wxhtmlhelpcontrollerwritecustomization"></A>
+<H3>wxHtmlHelpController::WriteCustomization</H3>
+<P>
+<B>void</B> <B>WriteCustomization</B>(<B><A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>* </B></B><I>cfg</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>path = wxEmptyString</I>)<P>
+Stores controllers setting (position of window etc.)<P>
+
+</FONT></BODY></HTML>

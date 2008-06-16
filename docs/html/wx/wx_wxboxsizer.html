@@ -1,0 +1,61 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxBoxSizer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxboxsizer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxbitmaphandler.html#wxbitmaphandler"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxbrush.html#wxbrush"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxBoxSizer</H2>
+<P>
+The basic idea behind a box sizer is that windows will most often be laid out in rather
+simple basic geometry, typically in a row or a column or several hierarchies of either.<P>
+For more information, please see <A HREF="wx_sizeroverview.html#boxsizerprogramming">Programming with wxBoxSizer</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxsizer.html#wxsizer">wxSizer</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/sizer.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>, <A HREF="wx_sizeroverview.html#sizeroverview">Sizer overview</A><P>
+<A HREF="#wxboxsizerwxboxsizer">wxBoxSizer::wxBoxSizer</A><BR>
+<A HREF="#wxboxsizerrecalcsizes">wxBoxSizer::RecalcSizes</A><BR>
+<A HREF="#wxboxsizercalcmin">wxBoxSizer::CalcMin</A><BR>
+<A HREF="#wxboxsizergetorientation">wxBoxSizer::GetOrientation</A><BR>
+<P>
+
+<HR>
+<A NAME="wxboxsizerwxboxsizer"></A>
+<H3>wxBoxSizer::wxBoxSizer</H3>
+<P>
+<B></B> <B>wxBoxSizer</B>(<B>int </B><I>orient</I>)<P>
+Constructor for a wxBoxSizer. <I>orient</I> may be either of wxVERTICAL
+or wxHORIZONTAL for creating either a column sizer or a row sizer.<P>
+
+<HR>
+<A NAME="wxboxsizerrecalcsizes"></A>
+<H3>wxBoxSizer::RecalcSizes</H3>
+<P>
+<B>void</B> <B>RecalcSizes</B>()<P>
+Implements the calculation of a box sizer's dimensions and then sets
+the size of its children (calling <A HREF="wx_wxwindow.html#wxwindowsetsize">wxWindow::SetSize</A> 
+if the child is a window). It is used internally only and must not be called
+by the user. Documented for information.<P>
+
+<HR>
+<A NAME="wxboxsizercalcmin"></A>
+<H3>wxBoxSizer::CalcMin</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>CalcMin</B>()<P>
+Implements the calculation of a box sizer's minimal. It is used internally
+only and must not be called by the user. Documented for information.<P>
+
+<HR>
+<A NAME="wxboxsizergetorientation"></A>
+<H3>wxBoxSizer::GetOrientation</H3>
+<P>
+<B>int</B> <B>GetOrientation</B>()<P>
+Returns the orientation of the box sizer, either wxVERTICAL
+or wxHORIZONTAL.<P>
+
+</FONT></BODY></HTML>

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _brush.i,v 1.9 2005/04/27 18:57:17 RD Exp $
+// RCS-ID:      $Id: _brush.i 41774 2006-10-09 02:36:38Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -102,8 +102,9 @@ uninitialised bitmap (`wx.Bitmap.Ok` returns False).", "");
     
 
     DocDeclStr(
-        bool , Ok(),
+        bool , IsOk(),
         "Returns True if the brush is initialised and valid.", "");
+    %pythoncode { Ok = IsOk }
 
 
 #ifdef __WXMAC__
@@ -111,7 +112,12 @@ uninitialised bitmap (`wx.Bitmap.Ok` returns False).", "");
     void MacSetTheme(short macThemeBrush);
 #endif
 
-    %pythoncode { def __nonzero__(self): return self.Ok() }
+    %pythoncode { def __nonzero__(self): return self.IsOk() }
+
+    %property(Colour, GetColour, SetColour, doc="See `GetColour` and `SetColour`");
+    %property(Stipple, GetStipple, SetStipple, doc="See `GetStipple` and `SetStipple`");
+    %property(Style, GetStyle, SetStyle, doc="See `GetStyle` and `SetStyle`");
+
 };
 
 //---------------------------------------------------------------------------

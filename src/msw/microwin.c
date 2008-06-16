@@ -4,16 +4,12 @@
 // Purpose:     Extra implementation for MicroWindows
 // Author:      Julian Smart
 // Created:     2001-05-31
-// RCS-ID:      $Id: microwin.c,v 1.5 2004/05/23 14:55:52 JS Exp $
+// RCS-ID:      $Id: microwin.c 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
 
 */
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "microwin.h"
-#endif
 
 #include "mwtypes.h"
 #include "windows.h"

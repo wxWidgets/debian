@@ -1,0 +1,110 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxListItemAttr</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlistitemattr"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlistitem.html#wxlistitem"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlistview.html#wxlistview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxListItemAttr</H2>
+<P>
+Represents the attributes (color, font, ...) of a
+<A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A> <A HREF="wx_wxlistctrl.html#wxlistctrl">wxListItem</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/listctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistctrloverview.html#wxlistctrloverview">wxListCtrl overview</A>, <A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A>, <A HREF="wx_wxlistitem.html#wxlistitem">wxListItem</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxlistitemattrctor">wxListItemAttr::wxListItemAttr</A><BR>
+<A HREF="#wxlistitemattrgetbackgroundcolour">wxListItemAttr::GetBackgroundColour</A><BR>
+<A HREF="#wxlistitemattrgetfont">wxListItemAttr::GetFont</A><BR>
+<A HREF="#wxlistitemattrgettextcolour">wxListItemAttr::GetTextColour</A><BR>
+<A HREF="#wxlistitemattrhasbackgroundcolour">wxListItemAttr::HasBackgroundColour</A><BR>
+<A HREF="#wxlistitemattrhasfont">wxListItemAttr::HasFont</A><BR>
+<A HREF="#wxlistitemattrhastextcolour">wxListItemAttr::HasTextColour</A><BR>
+<A HREF="#wxlistitemattrsetbackgroundcolour">wxListItemAttr::SetBackgroundColour</A><BR>
+<A HREF="#wxlistitemattrsetfont">wxListItemAttr::SetFont</A><BR>
+<A HREF="#wxlistitemattrsettextcolour">wxListItemAttr::SetTextColour</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlistitemattrctor"></A>
+<H3>wxListItemAttr::wxListItemAttr</H3>
+<P>
+<B></B> <B>wxListItemAttr</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxListItemAttr</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B></B><I> colText</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B></B><I> colBack</I>, <B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A></B></B><I> font</I>)<P>
+Construct a wxListItemAttr with the specified foreground and
+background colors and font.<P>
+
+<HR>
+<A NAME="wxlistitemattrgetbackgroundcolour"></A>
+<H3>wxListItemAttr::GetBackgroundColour</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetBackgroundColour</B>() <B>const</B><P>
+Returns the currently set background color.<P>
+
+
+<HR>
+<A NAME="wxlistitemattrgetfont"></A>
+<H3>wxListItemAttr::GetFont</H3>
+<P>
+<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>&</B> </B> <B>GetFont</B>() <B>const</B><P>
+Returns the currently set font.<P>
+
+
+<HR>
+<A NAME="wxlistitemattrgettextcolour"></A>
+<H3>wxListItemAttr::GetTextColour</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetTextColour</B>() <B>const</B><P>
+Returns the currently set text color.<P>
+
+
+<HR>
+<A NAME="wxlistitemattrhasbackgroundcolour"></A>
+<H3>wxListItemAttr::HasBackgroundColour</H3>
+<P>
+<B>bool</B> <B>HasBackgroundColour</B>() <B>const</B><P>
+Returns <TT>true</TT> if the currently set background color is valid.<P>
+
+
+<HR>
+<A NAME="wxlistitemattrhasfont"></A>
+<H3>wxListItemAttr::HasFont</H3>
+<P>
+<B>bool</B> <B>HasFont</B>() <B>const</B><P>
+Returns <TT>true</TT> if the currently set font is valid.<P>
+
+
+<HR>
+<A NAME="wxlistitemattrhastextcolour"></A>
+<H3>wxListItemAttr::HasTextColour</H3>
+<P>
+<B>bool</B> <B>HasTextColour</B>() <B>const</B><P>
+Returns <TT>true</TT> if the currently set text color is valid.<P>
+
+
+<HR>
+<A NAME="wxlistitemattrsetbackgroundcolour"></A>
+<H3>wxListItemAttr::SetBackgroundColour</H3>
+<P>
+<B>void</B> <B>SetBackgroundColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+Sets a new background color.<P>
+
+
+<HR>
+<A NAME="wxlistitemattrsetfont"></A>
+<H3>wxListItemAttr::SetFont</H3>
+<P>
+<B>void</B> <B>SetFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets a new font.<P>
+
+
+<HR>
+<A NAME="wxlistitemattrsettextcolour"></A>
+<H3>wxListItemAttr::SetTextColour</H3>
+<P>
+<B>void</B> <B>SetTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+Sets a new text color.<P>
+
+</FONT></BODY></HTML>

@@ -9,13 +9,14 @@ class TestPanel(wx.Panel):
         wx.Panel.__init__(self, parent, -1)
 
         sizer = wx.FlexGridSizer(0, 3, 5, 5)
+        sizer.AddGrowableCol(1)
         box = wx.BoxSizer(wx.VERTICAL)
         fs = self.GetFont().GetPointSize()
         bf = wx.Font(fs+4, wx.SWISS, wx.NORMAL, wx.BOLD)
 
         t = wx.StaticText(self, -1, "StandardPaths")
         t.SetFont(bf)
-        box.Add(t, 0, wx.CENTER|wx.ALL, 5)
+        box.Add(t, 0, wx.CENTER|wx.ALL, 4)
         box.Add(wx.StaticLine(self, -1), 0, wx.EXPAND)
 
         # get the global (singleton) instance of wx.StandardPaths
@@ -32,27 +33,40 @@ class TestPanel(wx.Panel):
 
         # Loop through all of the getters in wx.StandardPaths and make
         # a set of items in the sizer for each.
+        def makeitem(name, *args):
+            func = getattr(sp, name)
+            sizer.Add(wx.StaticText(self, -1, "%s%s:" %(name, repr(args))),
+                      0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL)
+            sizer.Add(wx.TextCtrl(self, -1, func(*args),
+                                  size=(275,-1), style=wx.TE_READONLY),
+                      0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL)
+
+            btn = wx.Button(self, wx.ID_HELP)
+            sizer.Add(btn)
+            self.help[btn] = func.__doc__
+            
         for x in ['GetConfigDir',
                   'GetUserConfigDir',
                   'GetDataDir',
                   'GetLocalDataDir',
                   'GetUserDataDir',
                   'GetUserLocalDataDir',
+                  'GetDocumentsDir',
                   'GetPluginsDir',
                   'GetInstallPrefix',
+                  'GetResourcesDir',
+                  'GetTempDir',
+                  'GetExecutablePath',
                   ]:
-            func = getattr(sp, x)
-            sizer.Add(wx.StaticText(self, -1, x+'():'), 0,
-                      wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL)
-            sizer.Add(wx.TextCtrl(self, -1, func(), size=(275,-1), style=wx.TE_READONLY))
+            makeitem(x)
 
-            btn = wx.Button(self, wx.ID_HELP)
-            sizer.Add(btn)
-            self.help[btn] = func.__doc__
+        # this one needs parameters
+        makeitem('GetLocalizedResourcesDir', 'en',
+                 wx.StandardPaths.ResourceCat_Messages )
 
         self.Bind(wx.EVT_BUTTON, self.OnShowDoc, id=wx.ID_HELP)
 
-        box.Add(sizer, 0, wx.CENTER|wx.ALL, 25)
+        box.Add(sizer, 0, wx.CENTER|wx.EXPAND|wx.ALL, 20)
         self.SetSizer(box)
 
 

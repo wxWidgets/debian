@@ -1,0 +1,169 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxClipboard</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxclipboard"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxclientdatacontainer.html#wxclientdatacontainer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxclipboardtextevent.html#wxclipboardtextevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxClipboard</H2>
+<P>
+A class for manipulating the clipboard. Note that this is not compatible with the
+clipboard class from wxWidgets 1.xx, which has the same name but a different implementation.<P>
+To use the clipboard, you call member functions of the global <B>wxTheClipboard</B> object.<P>
+See also the <A HREF="wx_wxdataobjectoverview.html#wxdataobjectoverview">wxDataObject overview</A> for further information.<P>
+Call <A HREF="wx_wxclipboard.html#wxclipboardopen">wxClipboard::Open</A> to get ownership of the clipboard. If this operation returns true, you
+now own the clipboard. Call <A HREF="wx_wxclipboard.html#wxclipboardsetdata">wxClipboard::SetData</A> to put data
+on the clipboard, or <A HREF="wx_wxclipboard.html#wxclipboardgetdata">wxClipboard::GetData</A> to
+retrieve data from the clipboard. Call <A HREF="wx_wxclipboard.html#wxclipboardclose">wxClipboard::Close</A> to close
+the clipboard and relinquish ownership. You should keep the clipboard open only momentarily.<P>
+For example:<P>
+<PRE>
+  // Write some text to the clipboard
+  if (wxTheClipboard-&gt;Open())
+  {
+    // This data objects are held by the clipboard, 
+    // so do not delete them in the app.
+    wxTheClipboard-&gt;SetData( new wxTextDataObject("Some text") );
+    wxTheClipboard-&gt;Close();
+  }
+
+  // Read some text
+  if (wxTheClipboard-&gt;Open())
+  {
+    if (wxTheClipboard-&gt;IsSupported( wxDF_TEXT ))
+    {
+      wxTextDataObject data;
+      wxTheClipboard-&gt;GetData( data );
+      wxMessageBox( data.GetText() );
+    }  
+    wxTheClipboard-&gt;Close();
+  }
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/clipbrd.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdndoverview.html#wxdndoverview">Drag and drop overview</A>, <A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxclipboardctor">wxClipboard::wxClipboard</A><BR>
+<A HREF="#wxclipboarddtor">wxClipboard::~wxClipboard</A><BR>
+<A HREF="#wxclipboardadddata">wxClipboard::AddData</A><BR>
+<A HREF="#wxclipboardclear">wxClipboard::Clear</A><BR>
+<A HREF="#wxclipboardclose">wxClipboard::Close</A><BR>
+<A HREF="#wxclipboardflush">wxClipboard::Flush</A><BR>
+<A HREF="#wxclipboardgetdata">wxClipboard::GetData</A><BR>
+<A HREF="#wxclipboardisopened">wxClipboard::IsOpened</A><BR>
+<A HREF="#wxclipboardissupported">wxClipboard::IsSupported</A><BR>
+<A HREF="#wxclipboardopen">wxClipboard::Open</A><BR>
+<A HREF="#wxclipboardsetdata">wxClipboard::SetData</A><BR>
+<A HREF="#wxclipboarduseprimary">wxClipboard::UsePrimarySelection</A><BR>
+<P>
+
+<HR>
+<A NAME="wxclipboardctor"></A>
+<H3>wxClipboard::wxClipboard</H3>
+<P>
+<B></B> <B>wxClipboard</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxclipboarddtor"></A>
+<H3>wxClipboard::~wxClipboard</H3>
+<P>
+<B></B> <B>~wxClipboard</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxclipboardadddata"></A>
+<H3>wxClipboard::AddData</H3>
+<P>
+<B>bool</B> <B>AddData</B>(<B><A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A>*</B></B><I> data</I>)<P>
+Call this function to add the data object to the clipboard. You may call
+this function repeatedly after having cleared the clipboard using <A HREF="wx_wxclipboard.html#wxclipboardclear">wxClipboard::Clear</A>.<P>
+After this function has been called, the clipboard owns the data, so do not delete
+the data explicitly.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxclipboard.html#wxclipboardsetdata">wxClipboard::SetData</A><P>
+
+<HR>
+<A NAME="wxclipboardclear"></A>
+<H3>wxClipboard::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>()<P>
+Clears the global clipboard object and the system's clipboard if possible.<P>
+
+<HR>
+<A NAME="wxclipboardclose"></A>
+<H3>wxClipboard::Close</H3>
+<P>
+<B>void</B> <B>Close</B>()<P>
+Call this function to close the clipboard, having opened it with <A HREF="wx_wxclipboard.html#wxclipboardopen">wxClipboard::Open</A>.<P>
+
+<HR>
+<A NAME="wxclipboardflush"></A>
+<H3>wxClipboard::Flush</H3>
+<P>
+<B>bool</B> <B>Flush</B>()<P>
+Flushes the clipboard: this means that the data which is currently on
+clipboard will stay available even after the application exits (possibly
+eating memory), otherwise the clipboard will be emptied on exit.
+Returns false if the operation is unsuccessful for any reason.<P>
+
+<HR>
+<A NAME="wxclipboardgetdata"></A>
+<H3>wxClipboard::GetData</H3>
+<P>
+<B>bool</B> <B>GetData</B>(<B><A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A>&</B></B><I> data</I>)<P>
+Call this function to fill <I>data</I> with data on the clipboard, if available in the required
+format. Returns true on success.<P>
+
+<HR>
+<A NAME="wxclipboardisopened"></A>
+<H3>wxClipboard::IsOpened</H3>
+<P>
+<B>bool</B> <B>IsOpened</B>() <B>const</B><P>
+Returns true if the clipboard has been opened.<P>
+
+<HR>
+<A NAME="wxclipboardissupported"></A>
+<H3>wxClipboard::IsSupported</H3>
+<P>
+<B>bool</B> <B>IsSupported</B>(<B>const <A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A>&</B></B><I> format</I>)<P>
+Returns true if there is data which matches the data format of the given data object currently <B>available</B> (IsSupported sounds like a misnomer, FIXME: better deprecate this name?) on the clipboard.<P>
+
+<HR>
+<A NAME="wxclipboardopen"></A>
+<H3>wxClipboard::Open</H3>
+<P>
+<B>bool</B> <B>Open</B>()<P>
+Call this function to open the clipboard before calling <A HREF="wx_wxclipboard.html#wxclipboardsetdata">wxClipboard::SetData</A> 
+and <A HREF="wx_wxclipboard.html#wxclipboardgetdata">wxClipboard::GetData</A>.<P>
+Call <A HREF="wx_wxclipboard.html#wxclipboardclose">wxClipboard::Close</A> when you have finished with the clipboard. You
+should keep the clipboard open for only a very short time.<P>
+Returns true on success. This should be tested (as in the sample shown above).<P>
+
+<HR>
+<A NAME="wxclipboardsetdata"></A>
+<H3>wxClipboard::SetData</H3>
+<P>
+<B>bool</B> <B>SetData</B>(<B><A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A>*</B></B><I> data</I>)<P>
+Call this function to set the data object to the clipboard. This function will
+clear all previous contents in the clipboard, so calling it several times
+does not make any sense.<P>
+After this function has been called, the clipboard owns the data, so do not delete
+the data explicitly.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxclipboard.html#wxclipboardadddata">wxClipboard::AddData</A><P>
+
+<HR>
+<A NAME="wxclipboarduseprimary"></A>
+<H3>wxClipboard::UsePrimarySelection</H3>
+<P>
+<B>void</B> <B>UsePrimarySelection</B>(<B>bool</B><I> primary = true</I>)<P>
+On platforms supporting it (currently only GTK), selects the so called
+PRIMARY SELECTION as the clipboard as opposed to the normal clipboard,
+if <I>primary</I> is true.<P>
+
+
+</FONT></BODY></HTML>

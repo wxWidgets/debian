@@ -1,0 +1,110 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGraphicsRenderer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgraphicsrenderer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgraphicspen.html#wxgraphicspen"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgrid.html#wxgrid"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGraphicsRenderer</H2>
+<P>
+A wxGraphicsRenderer is the instance corresponding to the rendering engine used. There may be multiple instances on a system, if there are different rendering engines present, but there is always one instance per engine, eg there is ONE core graphics renderer instance on OSX. This instance is pointed back to by all objects created by it (wxGraphicsContext, wxGraphicsPath etc). Therefore you can create ag additional instances of paths etc. by calling GetRenderer() and then using the appropriate CreateXXX function.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/graphics.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgraphicsrenderergetdefaultrenderer">wxGraphicsRenderer::GetDefaultRenderer</A><BR>
+<A HREF="#wxgraphicsrenderercreatecontext">wxGraphicsRenderer::CreateContext</A><BR>
+<A HREF="#wxgraphicsrenderercreatecontextfromnativecontext">wxGraphicsRenderer::CreateContextFromNativeContext</A><BR>
+<A HREF="#wxgraphicsrenderercreatecontextfromnativewindow">wxGraphicsRenderer::CreateContextFromNativeWindow</A><BR>
+<A HREF="#wxgraphicsrenderercreatepen">wxGraphicsRenderer::CreatePen</A><BR>
+<A HREF="#wxgraphicsrenderercreatebrush">wxGraphicsRenderer::CreateBrush</A><BR>
+<A HREF="#wxgraphicsrenderercreatelineargradientbrush">wxGraphicsRenderer::CreateLinearGradientBrush</A><BR>
+<A HREF="#wxgraphicsrenderercreateradialgradientbrush">wxGraphicsRenderer::CreateRadialGradientBrush</A><BR>
+<A HREF="#wxgraphicsrenderercreatefont">wxGraphicsRenderer::CreateFont</A><BR>
+<A HREF="#wxgraphicsrenderercreatematrix">wxGraphicsRenderer::CreateMatrix</A><BR>
+<A HREF="#wxgraphicsrenderercreatepath">wxGraphicsRenderer::CreatePath</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgraphicsrenderergetdefaultrenderer"></A>
+<H3>wxGraphicsRenderer::GetDefaultRenderer</H3>
+<P>
+<B><A HREF="wx_wxgraphicsrenderer.html#wxgraphicsrenderer">wxGraphicsRenderer</A>*</B> </B> <B>GetDefaultRenderer</B>()<P>
+Returns the default renderer on this platform. On OS X this is the Core Graphics (a.k.a. Quartz 2D) renderer, on MSW the GDIPlus renderer, and on GTK we currently default to the cairo renderer.<P>
+
+<HR>
+<A NAME="wxgraphicsrenderercreatecontext"></A>
+<H3>wxGraphicsRenderer::CreateContext</H3>
+<P>
+<B><A HREF="wx_wxgraphicscontext.html#wxgraphicscontext">wxGraphicsContext</A> *</B> </B> <B>CreateContext</B>(<B>const <A HREF="wx_wxwindowdc.html#wxwindowdc">wxWindowDC</A>& </B></B><I>dc</I>)<P>
+Creates a wxGraphicsContext from a wxWindowDC (eg a wxPaintDC).<P>
+<B><A HREF="wx_wxgraphicscontext.html#wxgraphicscontext">wxGraphicsContext</A> *</B> </B> <B>CreateContext</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>)<P>
+Creates a wxGraphicsContext from a wxWindow.<P>
+
+<HR>
+<A NAME="wxgraphicsrenderercreatecontextfromnativecontext"></A>
+<H3>wxGraphicsRenderer::CreateContextFromNativeContext</H3>
+<P>
+<B><A HREF="wx_wxgraphicscontext.html#wxgraphicscontext">wxGraphicsContext</A> *</B> </B> <B>CreateContextFromNativeContext</B>(<B>void * </B><I>context</I>)<P>
+Creates a wxGraphicsContext from a native context. This native context must be eg a CGContextRef for Core Graphics, a Graphics pointer for GDIPlus or a cairo_t pointer for cairo.<P>
+
+<HR>
+<A NAME="wxgraphicsrenderercreatecontextfromnativewindow"></A>
+<H3>wxGraphicsRenderer::CreateContextFromNativeWindow</H3>
+<P>
+<B><A HREF="wx_wxgraphicscontext.html#wxgraphicscontext">wxGraphicsContext</A> *</B> </B> <B>CreateContextFromNativeWindow</B>(<B>void * </B><I>window</I>)<P>
+Creates a wxGraphicsContext from a native window. <P>
+
+<HR>
+<A NAME="wxgraphicsrenderercreatepen"></A>
+<H3>wxGraphicsRenderer::CreatePen</H3>
+<P>
+<B><A HREF="wx_wxgraphicspen.html#wxgraphicspen">wxGraphicsPen</A></B> </B> <B>CreatePen</B>(<B>const <A HREF="wx_wxpen.html#wxpen">wxPen</A>& </B></B><I>pen</I>)<P>
+Creates a native pen from a wxPen.<P>
+
+<HR>
+<A NAME="wxgraphicsrenderercreatebrush"></A>
+<H3>wxGraphicsRenderer::CreateBrush</H3>
+<P>
+<B><A HREF="wx_wxgraphicsbrush.html#wxgraphicsbrush">wxGraphicsBrush</A></B> </B> <B>CreateBrush</B>(<B>const <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>& </B></B><I>brush</I>)<P>
+Creates a native brush from a wxBrush.<P>
+
+<HR>
+<A NAME="wxgraphicsrenderercreatelineargradientbrush"></A>
+<H3>wxGraphicsRenderer::CreateLinearGradientBrush</H3>
+<P>
+<B><A HREF="wx_wxgraphicsbrush.html#wxgraphicsbrush">wxGraphicsBrush</A></B> </B> <B>CreateLinearGradientBrush</B>(<B>wxDouble </B><I>x1</I>, <B>wxDouble </B><I>y1</I>, <B>wxDouble </B><I>x2</I>, <B>wxDouble </B><I>y2</I>, <B>const </B><I>wxColour&amp;c1</I>, <B>const </B><I>wxColour&amp;c2</I>)<P>
+Creates a native brush, having a linear gradient, starting at (x1,y1) with color c1 to (x2,y2) with color c2<P>
+
+<HR>
+<A NAME="wxgraphicsrenderercreateradialgradientbrush"></A>
+<H3>wxGraphicsRenderer::CreateRadialGradientBrush</H3>
+<P>
+<B><A HREF="wx_wxgraphicsbrush.html#wxgraphicsbrush">wxGraphicsBrush</A></B> </B> <B>CreateRadialGradientBrush</B>(<B>wxDouble </B><I>xo</I>, <B>wxDouble </B><I>yo</I>, <B>wxDouble </B><I>xc</I>, <B>wxDouble </B><I>yc</I>, <B>wxDouble </B><I>radius</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>oColour</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>cColour</I>)<P>
+Creates a native brush, having a radial gradient originating at (xo,yc) with color oColour and ends on a circle around (xc,yc) with radius r and color cColour<P>
+
+<HR>
+<A NAME="wxgraphicsrenderercreatefont"></A>
+<H3>wxGraphicsRenderer::CreateFont</H3>
+<P>
+<B><A HREF="wx_wxgraphicsfont.html#wxgraphicsfont">wxGraphicsFont</A></B> </B> <B>CreateFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>col = *wxBLACK</I>)<P>
+Creates a native graphics font from a wxFont and a text colour.<P>
+
+<HR>
+<A NAME="wxgraphicsrenderercreatematrix"></A>
+<H3>wxGraphicsRenderer::CreateMatrix</H3>
+<P>
+<B><A HREF="wx_wxgraphicsmatrix.html#wxgraphicsmatrix">wxGraphicsMatrix</A></B> </B> <B>CreateMatrix</B>(<B>wxDouble </B><I>a = 1.0</I>, <B>wxDouble </B><I>b = 0.0</I>, <B>wxDouble </B><I>c = 0.0</I>, <B>wxDouble </B><I>d = 1.0</I>, <B>wxDouble </B><I>tx = 0.0</I>, <B>wxDouble </B><I>ty = 0.0</I>)<P>
+Creates a native affine transformation matrix from the passed in values. The defaults result in an identity matrix.<P>
+
+<HR>
+<A NAME="wxgraphicsrenderercreatepath"></A>
+<H3>wxGraphicsRenderer::CreatePath</H3>
+<P>
+<B><A HREF="wx_wxgraphicspath.html#wxgraphicspath">wxGraphicsPath</A></B> </B> <B>CreatePath</B>()<P>
+Creates a native graphics path which is initially empty.<P>
+
+
+</FONT></BODY></HTML>

@@ -1,0 +1,383 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxJoystick</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxjoystick"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxipv4address.html#wxipv4address"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxjoystickevent.html#wxjoystickevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxJoystick</H2>
+<P>
+wxJoystick allows an application to control one or more joysticks.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/joystick.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxjoystickevent.html#wxjoystickevent">wxJoystickEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxjoystickctor">wxJoystick::wxJoystick</A><BR>
+<A HREF="#wxjoystickdtor">wxJoystick::~wxJoystick</A><BR>
+<A HREF="#wxjoystickgetbuttonstate">wxJoystick::GetButtonState</A><BR>
+<A HREF="#wxjoystickgetmanufacturerid">wxJoystick::GetManufacturerId</A><BR>
+<A HREF="#wxjoystickgetmovementthreshold">wxJoystick::GetMovementThreshold</A><BR>
+<A HREF="#wxjoystickgetnumberaxes">wxJoystick::GetNumberAxes</A><BR>
+<A HREF="#wxjoystickgetnumberbuttons">wxJoystick::GetNumberButtons</A><BR>
+<A HREF="#wxjoystickgetnumberjoysticks">wxJoystick::GetNumberJoysticks</A><BR>
+<A HREF="#wxjoystickgetpollingmax">wxJoystick::GetPollingMax</A><BR>
+<A HREF="#wxjoystickgetpollingmin">wxJoystick::GetPollingMin</A><BR>
+<A HREF="#wxjoystickgetproductid">wxJoystick::GetProductId</A><BR>
+<A HREF="#wxjoystickgetproductname">wxJoystick::GetProductName</A><BR>
+<A HREF="#wxjoystickgetposition">wxJoystick::GetPosition</A><BR>
+<A HREF="#wxjoystickgetpovposition">wxJoystick::GetPOVPosition</A><BR>
+<A HREF="#wxjoystickgetpovctsposition">wxJoystick::GetPOVCTSPosition</A><BR>
+<A HREF="#wxjoystickgetruddermax">wxJoystick::GetRudderMax</A><BR>
+<A HREF="#wxjoystickgetruddermin">wxJoystick::GetRudderMin</A><BR>
+<A HREF="#wxjoystickgetrudderposition">wxJoystick::GetRudderPosition</A><BR>
+<A HREF="#wxjoystickgetumax">wxJoystick::GetUMax</A><BR>
+<A HREF="#wxjoystickgetumin">wxJoystick::GetUMin</A><BR>
+<A HREF="#wxjoystickgetuposition">wxJoystick::GetUPosition</A><BR>
+<A HREF="#wxjoystickgetvmax">wxJoystick::GetVMax</A><BR>
+<A HREF="#wxjoystickgetvmin">wxJoystick::GetVMin</A><BR>
+<A HREF="#wxjoystickgetvposition">wxJoystick::GetVPosition</A><BR>
+<A HREF="#wxjoystickgetxmax">wxJoystick::GetXMax</A><BR>
+<A HREF="#wxjoystickgetxmin">wxJoystick::GetXMin</A><BR>
+<A HREF="#wxjoystickgetymax">wxJoystick::GetYMax</A><BR>
+<A HREF="#wxjoystickgetymin">wxJoystick::GetYMin</A><BR>
+<A HREF="#wxjoystickgetzmax">wxJoystick::GetZMax</A><BR>
+<A HREF="#wxjoystickgetzmin">wxJoystick::GetZMin</A><BR>
+<A HREF="#wxjoystickgetzposition">wxJoystick::GetZPosition</A><BR>
+<A HREF="#wxjoystickhaspov">wxJoystick::HasPOV</A><BR>
+<A HREF="#wxjoystickhaspovfdir">wxJoystick::HasPOV4Dir</A><BR>
+<A HREF="#wxjoystickhaspovcts">wxJoystick::HasPOVCTS</A><BR>
+<A HREF="#wxjoystickhasrudder">wxJoystick::HasRudder</A><BR>
+<A HREF="#wxjoystickhasu">wxJoystick::HasU</A><BR>
+<A HREF="#wxjoystickhasv">wxJoystick::HasV</A><BR>
+<A HREF="#wxjoystickhasz">wxJoystick::HasZ</A><BR>
+<A HREF="#wxjoystickisok">wxJoystick::IsOk</A><BR>
+<A HREF="#wxjoystickreleasecapture">wxJoystick::ReleaseCapture</A><BR>
+<A HREF="#wxjoysticksetcapture">wxJoystick::SetCapture</A><BR>
+<A HREF="#wxjoysticksetmovementthreshold">wxJoystick::SetMovementThreshold</A><BR>
+<P>
+
+<HR>
+<A NAME="wxjoystickctor"></A>
+<H3>wxJoystick::wxJoystick</H3>
+<P>
+<B></B> <B>wxJoystick</B>(<B>int</B><I> joystick = wxJOYSTICK1</I>)<P>
+Constructor. <I>joystick</I> may be one of wxJOYSTICK1, wxJOYSTICK2, indicating the joystick
+controller of interest.<P>
+
+<HR>
+<A NAME="wxjoystickdtor"></A>
+<H3>wxJoystick::~wxJoystick</H3>
+<P>
+<B></B> <B>~wxJoystick</B>()<P>
+Destroys the wxJoystick object.<P>
+
+<HR>
+<A NAME="wxjoystickgetbuttonstate"></A>
+<H3>wxJoystick::GetButtonState</H3>
+<P>
+<B>int</B> <B>GetButtonState</B>() <B>const</B><P>
+Returns the state of the joystick buttons. Every button is mapped to a single
+bit in the returned integer, with the first button being mapped to the least
+significant bit, and so on.
+A bitlist of wxJOY_BUTTONn identifiers, where n is 1, 2, 3 or 4 
+is available for historical reasons.<P>
+
+<HR>
+<A NAME="wxjoystickgetmanufacturerid"></A>
+<H3>wxJoystick::GetManufacturerId</H3>
+<P>
+<B>int</B> <B>GetManufacturerId</B>() <B>const</B><P>
+Returns the manufacturer id.<P>
+
+<HR>
+<A NAME="wxjoystickgetmovementthreshold"></A>
+<H3>wxJoystick::GetMovementThreshold</H3>
+<P>
+<B>int</B> <B>GetMovementThreshold</B>() <B>const</B><P>
+Returns the movement threshold, the number of steps outside which the joystick is deemed to have
+moved.<P>
+
+<HR>
+<A NAME="wxjoystickgetnumberaxes"></A>
+<H3>wxJoystick::GetNumberAxes</H3>
+<P>
+<B>int</B> <B>GetNumberAxes</B>() <B>const</B><P>
+Returns the number of axes for this joystick.<P>
+
+<HR>
+<A NAME="wxjoystickgetnumberbuttons"></A>
+<H3>wxJoystick::GetNumberButtons</H3>
+<P>
+<B>int</B> <B>GetNumberButtons</B>() <B>const</B><P>
+Returns the number of buttons for this joystick.<P>
+
+<HR>
+<A NAME="wxjoystickgetnumberjoysticks"></A>
+<H3>wxJoystick::GetNumberJoysticks</H3>
+<P>
+<B>static int</B> <B>GetNumberJoysticks</B>()<P>
+Returns the number of joysticks currently attached to the computer.<P>
+
+<HR>
+<A NAME="wxjoystickgetpollingmax"></A>
+<H3>wxJoystick::GetPollingMax</H3>
+<P>
+<B>int</B> <B>GetPollingMax</B>() <B>const</B><P>
+Returns the maximum polling frequency.<P>
+
+<HR>
+<A NAME="wxjoystickgetpollingmin"></A>
+<H3>wxJoystick::GetPollingMin</H3>
+<P>
+<B>int</B> <B>GetPollingMin</B>() <B>const</B><P>
+Returns the minimum polling frequency.<P>
+
+<HR>
+<A NAME="wxjoystickgetproductid"></A>
+<H3>wxJoystick::GetProductId</H3>
+<P>
+<B>int</B> <B>GetProductId</B>() <B>const</B><P>
+Returns the product id for the joystick.<P>
+
+<HR>
+<A NAME="wxjoystickgetproductname"></A>
+<H3>wxJoystick::GetProductName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetProductName</B>() <B>const</B><P>
+Returns the product name for the joystick.<P>
+
+<HR>
+<A NAME="wxjoystickgetposition"></A>
+<H3>wxJoystick::GetPosition</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetPosition</B>() <B>const</B><P>
+Returns the x, y position of the joystick.<P>
+
+<HR>
+<A NAME="wxjoystickgetpovposition"></A>
+<H3>wxJoystick::GetPOVPosition</H3>
+<P>
+<B>int</B> <B>GetPOVPosition</B>() <B>const</B><P>
+Returns the point-of-view position, expressed in continuous, one-hundredth of a degree units,
+but limited to return 0, 9000, 18000 or 27000.
+Returns -1 on error.<P>
+
+<HR>
+<A NAME="wxjoystickgetpovctsposition"></A>
+<H3>wxJoystick::GetPOVCTSPosition</H3>
+<P>
+<B>int</B> <B>GetPOVCTSPosition</B>() <B>const</B><P>
+Returns the point-of-view position, expressed in continuous, one-hundredth of a degree units.
+Returns -1 on error.<P>
+
+<HR>
+<A NAME="wxjoystickgetruddermax"></A>
+<H3>wxJoystick::GetRudderMax</H3>
+<P>
+<B>int</B> <B>GetRudderMax</B>() <B>const</B><P>
+Returns the maximum rudder position.<P>
+
+<HR>
+<A NAME="wxjoystickgetruddermin"></A>
+<H3>wxJoystick::GetRudderMin</H3>
+<P>
+<B>int</B> <B>GetRudderMin</B>() <B>const</B><P>
+Returns the minimum rudder position.<P>
+
+<HR>
+<A NAME="wxjoystickgetrudderposition"></A>
+<H3>wxJoystick::GetRudderPosition</H3>
+<P>
+<B>int</B> <B>GetRudderPosition</B>() <B>const</B><P>
+Returns the rudder position.<P>
+
+<HR>
+<A NAME="wxjoystickgetumax"></A>
+<H3>wxJoystick::GetUMax</H3>
+<P>
+<B>int</B> <B>GetUMax</B>() <B>const</B><P>
+Returns the maximum U position.<P>
+
+<HR>
+<A NAME="wxjoystickgetumin"></A>
+<H3>wxJoystick::GetUMin</H3>
+<P>
+<B>int</B> <B>GetUMin</B>() <B>const</B><P>
+Returns the minimum U position.<P>
+
+<HR>
+<A NAME="wxjoystickgetuposition"></A>
+<H3>wxJoystick::GetUPosition</H3>
+<P>
+<B>int</B> <B>GetUPosition</B>() <B>const</B><P>
+Gets the position of the fifth axis of the joystick, if it exists.<P>
+
+<HR>
+<A NAME="wxjoystickgetvmax"></A>
+<H3>wxJoystick::GetVMax</H3>
+<P>
+<B>int</B> <B>GetVMax</B>() <B>const</B><P>
+Returns the maximum V position.<P>
+
+<HR>
+<A NAME="wxjoystickgetvmin"></A>
+<H3>wxJoystick::GetVMin</H3>
+<P>
+<B>int</B> <B>GetVMin</B>() <B>const</B><P>
+Returns the minimum V position.<P>
+
+<HR>
+<A NAME="wxjoystickgetvposition"></A>
+<H3>wxJoystick::GetVPosition</H3>
+<P>
+<B>int</B> <B>GetVPosition</B>() <B>const</B><P>
+Gets the position of the sixth axis of the joystick, if it exists.<P>
+
+<HR>
+<A NAME="wxjoystickgetxmax"></A>
+<H3>wxJoystick::GetXMax</H3>
+<P>
+<B>int</B> <B>GetXMax</B>() <B>const</B><P>
+Returns the maximum x position.<P>
+
+<HR>
+<A NAME="wxjoystickgetxmin"></A>
+<H3>wxJoystick::GetXMin</H3>
+<P>
+<B>int</B> <B>GetXMin</B>() <B>const</B><P>
+Returns the minimum x position.<P>
+
+<HR>
+<A NAME="wxjoystickgetymax"></A>
+<H3>wxJoystick::GetYMax</H3>
+<P>
+<B>int</B> <B>GetYMax</B>() <B>const</B><P>
+Returns the maximum y position.<P>
+
+<HR>
+<A NAME="wxjoystickgetymin"></A>
+<H3>wxJoystick::GetYMin</H3>
+<P>
+<B>int</B> <B>GetYMin</B>() <B>const</B><P>
+Returns the minimum y position.<P>
+
+<HR>
+<A NAME="wxjoystickgetzmax"></A>
+<H3>wxJoystick::GetZMax</H3>
+<P>
+<B>int</B> <B>GetZMax</B>() <B>const</B><P>
+Returns the maximum z position.<P>
+
+<HR>
+<A NAME="wxjoystickgetzmin"></A>
+<H3>wxJoystick::GetZMin</H3>
+<P>
+<B>int</B> <B>GetZMin</B>() <B>const</B><P>
+Returns the minimum z position.<P>
+
+<HR>
+<A NAME="wxjoystickgetzposition"></A>
+<H3>wxJoystick::GetZPosition</H3>
+<P>
+<B>int</B> <B>GetZPosition</B>() <B>const</B><P>
+Returns the z position of the joystick.<P>
+
+<HR>
+<A NAME="wxjoystickhaspov"></A>
+<H3>wxJoystick::HasPOV</H3>
+<P>
+<B>bool</B> <B>HasPOV</B>() <B>const</B><P>
+Returns true if the joystick has a point of view control.<P>
+
+<HR>
+<A NAME="wxjoystickhaspovfdir"></A>
+<H3>wxJoystick::HasPOV4Dir</H3>
+<P>
+<B>bool</B> <B>HasPOV4Dir</B>() <B>const</B><P>
+Returns true if the joystick point-of-view supports discrete values (centered, forward, backward, left, and right).<P>
+
+<HR>
+<A NAME="wxjoystickhaspovcts"></A>
+<H3>wxJoystick::HasPOVCTS</H3>
+<P>
+<B>bool</B> <B>HasPOVCTS</B>() <B>const</B><P>
+Returns true if the joystick point-of-view supports continuous degree bearings.<P>
+
+<HR>
+<A NAME="wxjoystickhasrudder"></A>
+<H3>wxJoystick::HasRudder</H3>
+<P>
+<B>bool</B> <B>HasRudder</B>() <B>const</B><P>
+Returns true if there is a rudder attached to the computer.<P>
+
+<HR>
+<A NAME="wxjoystickhasu"></A>
+<H3>wxJoystick::HasU</H3>
+<P>
+<B>bool</B> <B>HasU</B>() <B>const</B><P>
+Returns true if the joystick has a U axis.<P>
+
+<HR>
+<A NAME="wxjoystickhasv"></A>
+<H3>wxJoystick::HasV</H3>
+<P>
+<B>bool</B> <B>HasV</B>() <B>const</B><P>
+Returns true if the joystick has a V axis.<P>
+
+<HR>
+<A NAME="wxjoystickhasz"></A>
+<H3>wxJoystick::HasZ</H3>
+<P>
+<B>bool</B> <B>HasZ</B>() <B>const</B><P>
+Returns true if the joystick has a Z axis.<P>
+
+<HR>
+<A NAME="wxjoystickisok"></A>
+<H3>wxJoystick::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if the joystick is functioning.<P>
+
+<HR>
+<A NAME="wxjoystickreleasecapture"></A>
+<H3>wxJoystick::ReleaseCapture</H3>
+<P>
+<B>bool</B> <B>ReleaseCapture</B>()<P>
+Releases the capture set by <B>SetCapture</B>.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the capture release succeeded.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxjoystick.html#wxjoysticksetcapture">wxJoystick::SetCapture</A>, <A HREF="wx_wxjoystickevent.html#wxjoystickevent">wxJoystickEvent</A><P>
+
+<HR>
+<A NAME="wxjoysticksetcapture"></A>
+<H3>wxJoystick::SetCapture</H3>
+<P>
+<B>bool</B> <B>SetCapture</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> win</I>, <B>int</B><I> pollingFreq = 0</I>)<P>
+Sets the capture to direct joystick events to <I>win</I>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>win</I><UL><UL>
+The window that will receive joystick events.</UL></UL>
+<P>
+<I>pollingFreq</I><UL><UL>
+If zero, movement events are sent when above the
+threshold. If greater than zero, events are received every <I>pollingFreq</I> milliseconds.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the capture succeeded.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxjoystick.html#wxjoystickreleasecapture">wxJoystick::ReleaseCapture</A>, <A HREF="wx_wxjoystickevent.html#wxjoystickevent">wxJoystickEvent</A><P>
+
+<HR>
+<A NAME="wxjoysticksetmovementthreshold"></A>
+<H3>wxJoystick::SetMovementThreshold</H3>
+<P>
+<B>void</B> <B>SetMovementThreshold</B>(<B>int</B><I> threshold</I>)<P>
+Sets the movement threshold, the number of steps outside which the joystick is deemed to have
+moved.<P>
+
+
+</FONT></BODY></HTML>

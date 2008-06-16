@@ -1,8 +1,8 @@
 """Provides global signal dispatching services."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: dispatcher.py,v 1.5 2004/02/13 02:47:58 PKO Exp $"
-__revision__ = "$Revision: 1.5 $"[11:-2]
+__cvsid__ = "$Id: dispatcher.py 39667 2006-06-11 00:13:05Z RD $"
+__revision__ = "$Revision: 39667 $"[11:-2]
 
 import exceptions
 import types
@@ -32,16 +32,18 @@ _boundMethods = weakref.WeakKeyDictionary()
 
 
 def connect(receiver, signal=Any, sender=Any, weak=True):
-    """Connect receiver to sender for signal.
+    """
+    Connect receiver to sender for signal.
     
-    If sender is Any, receiver will receive signal from any sender.
-    If signal is Any, receiver will receive any signal from sender.
-    If sender is None, receiver will receive signal from Anonymous.
-    If signal is Any and sender is None, receiver will receive any 
-        signal from Anonymous.
-    If signal is Any and sender is Any, receiver will receive any 
-        signal from any sender.
-    If weak is true, weak references will be used."""
+    * If sender is Any, receiver will receive signal from any sender.
+    * If signal is Any, receiver will receive any signal from sender.
+    * If sender is None, receiver will receive signal from Anonymous.
+    * If signal is Any and sender is None, receiver will receive any 
+      signal from Anonymous.
+    * If signal is Any and sender is Any, receiver will receive any 
+      signal from any sender.
+    * If weak is true, weak references will be used.
+    """
     if signal is None:
         raise DispatcherError, 'signal cannot be None'
     if weak:

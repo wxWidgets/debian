@@ -1,0 +1,49 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMemoryInputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmeminputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmemoryfshandler.html#wxmemoryfshandler"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmemoutputstream.html#wxmemoutputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMemoryInputStream</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/mstream.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstreambuffer.html#wxstreambuffer">wxStreamBuffer</A>, <A HREF="wx_wxmemoutputstream.html#wxmemoutputstream">wxMemoryOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmemoryinputstreamctor">wxMemoryInputStream::wxMemoryInputStream</A><BR>
+<A HREF="#wxmemoryinputstreamdtor">wxMemoryInputStream::~wxMemoryInputStream</A><BR>
+<A HREF="#wxmemoryinputstreamgetistrmbuf">wxMemoryInputStream::GetInputStreamBuffer</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmemoryinputstreamctor"></A>
+<H3>wxMemoryInputStream::wxMemoryInputStream</H3>
+<P>
+<B></B> <B>wxMemoryInputStream</B>(<B>const char *</B><I> data</I>, <B>size_t</B><I> len</I>)<P>
+Initializes a new read-only memory stream which will use the specified buffer
+<I>data</I> of length <I>len</I>. The stream does not take ownership of the 
+buffer, i.e. the buffer will not be deleted in its destructor.<P>
+<B></B> <B>wxMemoryInputStream</B>(<B>const wxMemoryOutputStream&amp;</B><I> stream</I>)<P>
+Creates a new read-only memory stream, initializing it with the
+data from the given output stream <I>stream</I>.<P>
+
+<HR>
+<A NAME="wxmemoryinputstreamdtor"></A>
+<H3>wxMemoryInputStream::~wxMemoryInputStream</H3>
+<P>
+<B></B> <B>~wxMemoryInputStream</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxmemoryinputstreamgetistrmbuf"></A>
+<H3>wxMemoryInputStream::GetInputStreamBuffer</H3>
+<P>
+<B><A HREF="wx_wxstreambuffer.html#wxstreambuffer">wxStreamBuffer</A> *</B> </B> <B>GetInputStreamBuffer</B>() <B>const</B><P>
+Returns the pointer to the stream object used as an internal buffer
+for that stream.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,212 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFileHistory</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfilehistory"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfiledroptarget.html#wxfiledroptarget"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfileinputstream.html#wxfileinputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFileHistory</H2>
+<P>
+The wxFileHistory encapsulates a user interface convenience, the
+list of most recently visited files as shown on a menu (usually the File menu).<P>
+wxFileHistory can manage one or more file menus. More than one menu may be required
+in an MDI application, where the file history should appear on each MDI child menu
+as well as the MDI parent frame.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/docview.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_docviewoverview.html#wxfilehistoryoverview">wxFileHistory overview</A>, <A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxfilehistorymfilehistory">wxFileHistory::m_fileHistory</A><BR>
+<A HREF="#wxfilehistorymfilehistoryn">wxFileHistory::m_fileHistoryN</A><BR>
+<A HREF="#wxfilehistorymfilemaxfiles">wxFileHistory::m_fileMaxFiles</A><BR>
+<A HREF="#wxfilehistorymfilemenu">wxFileHistory::m_fileMenu</A><BR>
+<A HREF="#wxfilehistoryctor">wxFileHistory::wxFileHistory</A><BR>
+<A HREF="#wxfilehistorydtor">wxFileHistory::~wxFileHistory</A><BR>
+<A HREF="#wxfilehistoryaddfiletohistory">wxFileHistory::AddFileToHistory</A><BR>
+<A HREF="#wxfilehistoryaddfilestomenu">wxFileHistory::AddFilesToMenu</A><BR>
+<A HREF="#wxfilehistorygetbaseid">wxFileHistory::GetBaseId</A><BR>
+<A HREF="#wxfilehistorygetcount">wxFileHistory::GetCount</A><BR>
+<A HREF="#wxfilehistorygethistoryfile">wxFileHistory::GetHistoryFile</A><BR>
+<A HREF="#wxfilehistorygetmaxfiles">wxFileHistory::GetMaxFiles</A><BR>
+<A HREF="#wxfilehistorygetmenus">wxFileHistory::GetMenus</A><BR>
+<A HREF="#wxfilehistoryload">wxFileHistory::Load</A><BR>
+<A HREF="#wxfilehistoryfromfilefromhistory">wxFileHistory::RemoveFileFromHistory</A><BR>
+<A HREF="#wxfilehistoryremovemenu">wxFileHistory::RemoveMenu</A><BR>
+<A HREF="#wxfilehistorysave">wxFileHistory::Save</A><BR>
+<A HREF="#wxfilehistorysetbaseid">wxFileHistory::SetBaseId</A><BR>
+<A HREF="#wxfilehistoryusemenu">wxFileHistory::UseMenu</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfilehistorymfilehistory"></A>
+<H3>wxFileHistory::m_fileHistory</H3>
+<P>
+char** m_fileHistory<P>
+A character array of strings corresponding to the most recently opened
+files.<P>
+
+
+<HR>
+<A NAME="wxfilehistorymfilehistoryn"></A>
+<H3>wxFileHistory::m_fileHistoryN</H3>
+<P>
+size_t m_fileHistoryN<P>
+The number of files stored in the history array.<P>
+
+
+<HR>
+<A NAME="wxfilehistorymfilemaxfiles"></A>
+<H3>wxFileHistory::m_fileMaxFiles</H3>
+<P>
+size_t m_fileMaxFiles<P>
+The maximum number of files to be stored and displayed on the menu.<P>
+
+
+<HR>
+<A NAME="wxfilehistorymfilemenu"></A>
+<H3>wxFileHistory::m_fileMenu</H3>
+<P>
+wxMenu* m_fileMenu<P>
+The file menu used to display the file history list (if enabled).<P>
+
+
+<HR>
+<A NAME="wxfilehistoryctor"></A>
+<H3>wxFileHistory::wxFileHistory</H3>
+<P>
+<B></B> <B>wxFileHistory</B>(<B>size_t</B><I> maxFiles = 9</I>, <B>wxWindowID</B><I> idBase = wxID_FILE1</I>)<P>
+Constructor. Pass the maximum number of files that should be stored and
+displayed.<P>
+<I>idBase</I> defaults to wxID_FILE1 and represents the id given to the first
+history menu item.  Since menu items can't share the same ID you should change
+idBase (To one of your own defined IDs) when using more than one wxFileHistory
+in your application.<P>
+
+
+<HR>
+<A NAME="wxfilehistorydtor"></A>
+<H3>wxFileHistory::~wxFileHistory</H3>
+<P>
+<B></B> <B>~wxFileHistory</B>()<P>
+Destructor.<P>
+
+
+<HR>
+<A NAME="wxfilehistoryaddfiletohistory"></A>
+<H3>wxFileHistory::AddFileToHistory</H3>
+<P>
+<B>void</B> <B>AddFileToHistory</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Adds a file to the file history list, if the object has a pointer to an appropriate file menu.<P>
+
+
+<HR>
+<A NAME="wxfilehistoryaddfilestomenu"></A>
+<H3>wxFileHistory::AddFilesToMenu</H3>
+<P>
+<B>void</B> <B>AddFilesToMenu</B>()<P>
+Appends the files in the history list, to all menus managed by the file history object.<P>
+<B>void</B> <B>AddFilesToMenu</B>(<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B></B><I> menu</I>)<P>
+Appends the files in the history list, to the given menu only.<P>
+
+
+<HR>
+<A NAME="wxfilehistorygetbaseid"></A>
+<H3>wxFileHistory::GetBaseId</H3>
+<P>
+<B>wxWindowID</B> <B>GetBaseId</B>() <B>const</B><P>
+Returns the base identifier for the range used for appending items.<P>
+
+
+<HR>
+<A NAME="wxfilehistorygetcount"></A>
+<H3>wxFileHistory::GetCount</H3>
+<P>
+<B>size_t</B> <B>GetCount</B>() <B>const</B><P>
+Returns the number of files currently stored in the file history.<P>
+
+
+<HR>
+<A NAME="wxfilehistorygethistoryfile"></A>
+<H3>wxFileHistory::GetHistoryFile</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetHistoryFile</B>(<B>size_t</B><I> index</I>) <B>const</B><P>
+Returns the file at this index (zero-based).<P>
+
+
+<HR>
+<A NAME="wxfilehistorygetmaxfiles"></A>
+<H3>wxFileHistory::GetMaxFiles</H3>
+<P>
+<B>int</B> <B>GetMaxFiles</B>() <B>const</B><P>
+Returns the maximum number of files that can be stored.<P>
+
+
+<HR>
+<A NAME="wxfilehistorygetmenus"></A>
+<H3>wxFileHistory::GetMenus</H3>
+<P>
+<B>const <A HREF="wx_wxlist.html#wxlist">wxList</A>&</B> </B> <B>GetMenus</B>() <B>const</B><P>
+Returns the list of menus that are managed by this file history object.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilehistory.html#wxfilehistoryusemenu">wxFileHistory::UseMenu</A><P>
+
+
+<HR>
+<A NAME="wxfilehistoryload"></A>
+<H3>wxFileHistory::Load</H3>
+<P>
+<B>void</B> <B>Load</B>(<B><A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>& </B></B><I>config</I>)<P>
+Loads the file history from the given config object. This function should be called explicitly by the application.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfig</A><P>
+
+
+<HR>
+<A NAME="wxfilehistoryfromfilefromhistory"></A>
+<H3>wxFileHistory::RemoveFileFromHistory</H3>
+<P>
+<B>void</B> <B>RemoveFileFromHistory</B>(<B>size_t </B><I>i</I>)<P>
+Removes the specified file from the history.<P>
+
+<HR>
+<A NAME="wxfilehistoryremovemenu"></A>
+<H3>wxFileHistory::RemoveMenu</H3>
+<P>
+<B>void</B> <B>RemoveMenu</B>(<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>* </B></B><I>menu</I>)<P>
+Removes this menu from the list of those managed by this object.<P>
+
+
+<HR>
+<A NAME="wxfilehistorysave"></A>
+<H3>wxFileHistory::Save</H3>
+<P>
+<B>void</B> <B>Save</B>(<B><A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>& </B></B><I>config</I>)<P>
+Saves the file history into the given config object. This must be called
+explicitly by the application.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfig</A><P>
+
+
+<HR>
+<A NAME="wxfilehistorysetbaseid"></A>
+<H3>wxFileHistory::SetBaseId</H3>
+<P>
+<B>void</B> <B>SetBaseId</B>(<B>wxWindowID</B><I> baseId</I>)<P>
+Sets the base identifier for the range used for appending items.<P>
+
+
+<HR>
+<A NAME="wxfilehistoryusemenu"></A>
+<H3>wxFileHistory::UseMenu</H3>
+<P>
+<B>void</B> <B>UseMenu</B>(<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>* </B></B><I>menu</I>)<P>
+Adds this menu to the list of those menus that are managed by this file history object.
+Also see <A HREF="wx_wxfilehistory.html#wxfilehistoryaddfilestomenu">AddFilesToMenu()</A> for
+initializing the menu with filenames that are already in the history when this
+function is called, as this is not done automatically.<P>
+
+</FONT></BODY></HTML>

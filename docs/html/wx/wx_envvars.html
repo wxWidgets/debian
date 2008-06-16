@@ -1,0 +1,67 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Environment variables</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="envvars"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxauioverview.html#wxauioverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpython.html#wxpython"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Environment variables</H2>
+
+This section describes all environment variables that affect execution of
+wxWidgets programs.<P>
+
+<TABLE>
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<TT>WXTRACE</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(Debug build only.)
+This variable can be set to a comma-separated list of trace masks used in
+<A HREF="wx_logfunctions.html#wxlogtrace">wxLogTrace</A> calls;
+<A HREF="wx_wxlog.html#wxlogaddtracemask">wxLog::AddTraceMask</A> is called for every mask
+in the list during wxWidgets initialization.
+</FONT></TD></TR>
+<P>
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<TT>WXPREFIX</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(Unix only.)
+Overrides installation prefix. Normally, the prefix
+is hard-coded and is the same as the value passed to <TT>configure</TT> via
+the <TT>--prefix</TT> switch when compiling the library (typically
+<TT>/usr/local</TT> or <TT>/usr</TT>). You can set WXPREFIX if you are for example
+distributing a binary version of an application and you don't know in advance
+where it will be installed.
+</FONT></TD></TR>
+<P>
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<TT>WXMODE</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(wxMGL only.)
+Sets MGL video mode. The value must be in form
+<I>width</I>x<I>height</I>-<I>depth</I>. The default is <TT>640x480-16</TT>.
+</FONT></TD></TR>
+<P>
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<TT>WXSTDERR</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(wxMGL only.)
+Redirects stderr output to a file.
+</FONT></TD></TR>
+<P>
+
+</TABLE>
+
+
+</FONT></BODY></HTML>

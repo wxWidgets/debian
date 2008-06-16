@@ -1,0 +1,123 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Reference counting</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="trefcount"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_runtimeclassoverview.html#runtimeclassoverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstringoverview.html#wxstringoverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Reference counting</H2>
+<P>
+<A HREF="#refcount">Why you shouldn't care about it</A><BR>
+<A HREF="#refcountequality">Object comparison</A><BR>
+<A HREF="#refcountdestruct">Object destruction</A><BR>
+<A HREF="#refcountlist">List of reference-counted wxWidgets classes</A><BR>
+<A HREF="#wxobjectoverview">Make your own reference-counted class</A><BR>
+<P>
+
+<HR>
+<A NAME="refcount"></A>
+<H3>Why you shouldn't care about it</H3>
+<P>
+Many wxWidgets objects use a technique known as <I>reference counting</I>, also known
+as <I>copy on write</I> (COW).
+This means that when an object is assigned to another, no copying really takes place:
+only the reference count on the shared object data is incremented and both objects
+share the same data (a very fast operation).<P>
+But as soon as one of the two (or more) objects is modified, the data has to be
+copied because the changes to one of the objects shouldn't be seen in the
+others. As data copying only happens when the object is written to, this is
+known as COW.<P>
+What is important to understand is that all this happens absolutely
+transparently to the class users and that whether an object is shared or not
+is not seen from the outside of the class - in any case, the result of any
+operation on it is the same.<P>
+
+<HR>
+<A NAME="refcountequality"></A>
+<H3>Object comparison</H3>
+<P>
+The == and != operators of <A HREF="wx_trefcount.html#refcountlist">wxWidgets COW objects</A>
+always do a <TT>deep</TT> comparison.<P>
+This means that the equality operator will return <TT>true</TT> if two objects are
+identic and not only if they share the same data.<P>
+Note that wxWidgets follows the <I>STL philosophy</I>: when a comparison operator cannot
+be implemented efficiently (like for e.g. wxImage's == operator which would need to
+compare pixel-by-pixel the entire image's data), it's not implemented at all.<P>
+That's why not all reference-counted wxWidgets classes provide comparison operators.<P>
+Also note that if you only need to do a <TT>shallow</TT> comparison between two
+<A HREF="wx_wxobject.html#wxobject">wxObject</A>-derived classes, you should not use the == and != operators
+but rather the <A HREF="wx_wxobject.html#wxobjectissameas">wxObject::IsSameAs</A> function.<P>
+
+
+<HR>
+<A NAME="refcountdestruct"></A>
+<H3>Object destruction</H3>
+<P>
+When a COW object destructor is called, it may not delete the data: if it's shared,
+the destructor will just decrement the shared data's reference count without destroying it.<P>
+Only when the destructor of the last object owning the data is called, the data is really
+destroyed. As for all other COW-things, this happens transparently to the class users so
+that you shouldn't care about it.<P>
+
+
+<HR>
+<A NAME="refcountlist"></A>
+<H3>List of reference-counted wxWidgets classes</H3>
+<P>
+The following classes in wxWidgets have efficient (i.e. fast) assignment operators
+and copy constructors since they are reference-counted:<P>
+<A HREF="wx_wxacceleratortable.html#wxacceleratortable">wxAcceleratorTable</A><BR>
+
+<A HREF="wx_wxanimation.html#wxanimation">wxAnimation</A><BR>
+
+<A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A><BR>
+
+<A HREF="wx_wxbrush.html#wxbrush">wxBrush</A><BR>
+
+<A HREF="wx_wxcursor.html#wxcursor">wxCursor</A><BR>
+
+<A HREF="wx_wxfont.html#wxfont">wxFont</A><BR>
+
+<A HREF="wx_wxicon.html#wxicon">wxIcon</A><BR>
+
+<A HREF="wx_wximage.html#wximage">wxImage</A><BR>
+
+<A HREF="wx_wxmetafile.html#wxmetafile">wxMetafile</A><BR>
+
+<A HREF="wx_wxpalette.html#wxpalette">wxPalette</A><BR>
+
+<A HREF="wx_wxpen.html#wxpen">wxPen</A><BR>
+
+<A HREF="wx_wxregion.html#wxregion">wxRegion</A><BR>
+
+<A HREF="wx_wxstring.html#wxstring">wxString</A><BR>
+
+<A HREF="wx_wxvariant.html#wxvariant">wxVariant</A><BR>
+
+<A HREF="wx_wxvariantdata.html#wxvariantdata">wxVariantData</A><P>
+Note that the list above reports the objects which are reference-counted in all ports of
+wxWidgets; some ports may use this tecnique also for other classes.
+
+<HR>
+<A NAME="wxobjectoverview"></A>
+<H3>Make your own reference-counted class</H3>
+<P>
+Reference counting can be implemented easily using <A HREF="wx_wxobject.html#wxobject">wxObject</A>
+and <A HREF="wx_wxobjectrefdata.html#wxobjectrefdata">wxObjectRefData</A> classes.<P>
+First, derive a new class from <A HREF="wx_wxobjectrefdata.html#wxobjectrefdata">wxObjectRefData</A> and
+put there the memory-consuming data.<P>
+Then derive a new class from <A HREF="wx_wxobject.html#wxobject">wxObject</A> and implement there
+the public interface which will be seen by the user of your class.
+You'll probably want to add a function to your class which does the cast from
+<A HREF="wx_wxobjectrefdata.html#wxobjectrefdata">wxObjectRefData</A> to your class-specific shared data; e.g.:<P>
+<PRE>
+    MyClassRefData *GetData() const   { return wx_static_cast(MyClassRefData*, m_refData); }
+</PRE>
+in fact, all times you'll need to read the data from your wxObject-derived class,
+you'll need to call such function.<P>
+Very important, all times you need to actually modify the data placed inside your
+wxObject-derived class, you must first call the wxObject::UnShare
+function to be sure that the modifications won't affect other instances which are
+eventually sharing your object's data.<P>
+
+</FONT></BODY></HTML>

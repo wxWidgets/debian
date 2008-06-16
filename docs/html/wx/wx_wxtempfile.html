@@ -1,0 +1,161 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTempFile</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtempfile"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtcpserver.html#wxtcpserver"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtempfileoutputstream.html#wxtempfileoutputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTempFile</H2>
+<P>
+wxTempFile provides a relatively safe way to replace the contents of the
+existing file. The name is explained by the fact that it may be also used as
+just a temporary file if you don't replace the old file contents.<P>
+Usually, when a program replaces the contents of some file it first opens it for
+writing, thus losing all of the old data and then starts recreating it. This
+approach is not very safe because during the regeneration of the file bad things
+may happen: the program may find that there is an internal error preventing it
+from completing file generation, the user may interrupt it (especially if file
+generation takes long time) and, finally, any other external interrupts (power
+supply failure or a disk error) will leave you without either the original file
+or the new one.<P>
+wxTempFile addresses this problem by creating a temporary file which is meant to
+replace the original file - but only after it is fully written. So, if the user
+interrupts the program during the file generation, the old file won't be lost.
+Also, if the program discovers itself that it doesn't want to replace the old
+file there is no problem - in fact, wxTempFile will <B>not</B> replace the old
+file by default, you should explicitly call <A HREF="wx_wxtempfile.html#wxtempfilecommit">Commit</A> 
+to do it. Calling <A HREF="wx_wxtempfile.html#wxtempfilediscard">Discard</A> explicitly discards any
+modifications: it closes and deletes the temporary file and leaves the original
+file unchanged. If you don't call neither of Commit() and Discard(), the
+destructor will call Discard() automatically.<P>
+To summarize: if you want to replace another file, create an instance of
+wxTempFile passing the name of the file to be replaced to the constructor (you
+may also use default constructor and pass the file name to 
+<A HREF="wx_wxtempfile.html#wxtempfileopen">Open</A>). Then you can <A HREF="wx_wxtempfile.html#wxtempfilewrite">write</A> 
+to wxTempFile using <A HREF="wx_wxfile.html#wxfile">wxFile</A>-like functions and later call
+Commit() to replace the old file (and close this one) or call Discard() to cancel
+the modifications.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/file.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also:</FONT></B><P>
+<A HREF="wx_wxfile.html#wxfile">wxFile</A><BR>
+
+<A HREF="wx_wxtempfileoutputstream.html#wxtempfileoutputstream">wxTempFileOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxtempfilewxtempfilector">wxTempFile::wxTempFile</A><BR>
+<A HREF="#wxtempfilewxtempfile">wxTempFile::wxTempFile</A><BR>
+<A HREF="#wxtempfileopen">wxTempFile::Open</A><BR>
+<A HREF="#wxtempfileisopened">wxTempFile::IsOpened</A><BR>
+<A HREF="#wxtempfilelength">wxTempFile::Length</A><BR>
+<A HREF="#wxtempfileseek">wxTempFile::Seek</A><BR>
+<A HREF="#wxtempfiletell">wxTempFile::Tell</A><BR>
+<A HREF="#wxtempfilewrite">wxTempFile::Write</A><BR>
+<A HREF="#wxtempfilewrites">wxTempFile::Write</A><BR>
+<A HREF="#wxtempfilecommit">wxTempFile::Commit</A><BR>
+<A HREF="#wxtempfilediscard">wxTempFile::Discard</A><BR>
+<A HREF="#wxtempfiledtor">wxTempFile::~wxTempFile</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtempfilewxtempfilector"></A>
+<H3>wxTempFile::wxTempFile</H3>
+<P>
+<B></B> <B>wxTempFile</B>()<P>
+Default constructor - <A HREF="wx_wxtempfile.html#wxtempfileopen">Open</A> must be used to open the
+file.<P>
+
+<HR>
+<A NAME="wxtempfilewxtempfile"></A>
+<H3>wxTempFile::wxTempFile</H3>
+<P>
+<B></B> <B>wxTempFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>strName</I>)<P>
+Associates wxTempFile with the file to be replaced and opens it. You should use 
+<A HREF="wx_wxtempfile.html#wxtempfileisopened">IsOpened</A> to verify if the constructor succeeded.<P>
+
+<HR>
+<A NAME="wxtempfileopen"></A>
+<H3>wxTempFile::Open</H3>
+<P>
+<B>bool</B> <B>Open</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>strName</I>)<P>
+Open the temporary file, returns <TT>true</TT> on success, <TT>false</TT> if an error
+occurred.<P>
+<I>strName</I> is the name of file to be replaced. The temporary file is always
+created in the directory where <I>strName</I> is. In particular, if 
+<I>strName</I> doesn't include the path, it is created in the current directory
+and the program should have write access to it for the function to succeed.<P>
+
+<HR>
+<A NAME="wxtempfileisopened"></A>
+<H3>wxTempFile::IsOpened</H3>
+<P>
+<B>bool</B> <B>IsOpened</B>() <B>const</B><P>
+Returns <TT>true</TT> if the file was successfully opened.<P>
+
+<HR>
+<A NAME="wxtempfilelength"></A>
+<H3>wxTempFile::Length</H3>
+<P>
+<B>wxFileOffset</B> <B>Length</B>() <B>const</B><P>
+Returns the length of the file.<P>
+
+<HR>
+<A NAME="wxtempfileseek"></A>
+<H3>wxTempFile::Seek</H3>
+<P>
+<B>wxFileOffset</B> <B>Seek</B>(<B>wxFileOffset </B><I>ofs</I>, <B>wxSeekMode </B><I>mode = wxFromStart</I>)<P>
+Seeks to the specified position.<P>
+
+<HR>
+<A NAME="wxtempfiletell"></A>
+<H3>wxTempFile::Tell</H3>
+<P>
+<B>wxFileOffset</B> <B>Tell</B>() <B>const</B><P>
+Returns the current position or wxInvalidOffset if file is not opened or if another
+error occurred.<P>
+
+<HR>
+<A NAME="wxtempfilewrite"></A>
+<H3>wxTempFile::Write</H3>
+<P>
+<B>bool</B> <B>Write</B>(<B>const void </B><I>*p</I>, <B>size_t </B><I>n</I>)<P>
+Write to the file, return <TT>true</TT> on success, <TT>false</TT> on failure.<P>
+
+<HR>
+<A NAME="wxtempfilewrites"></A>
+<H3>wxTempFile::Write</H3>
+<P>
+<B>bool</B> <B>Write</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B></B><I> conv = wxConvLibc</I>)<P>
+Write to the file, return <TT>true</TT> on success, <TT>false</TT> on failure.<P>
+The second argument is only meaningful in Unicode build of wxWidgets when
+<I>conv</I> is used to convert <I>str</I> to multibyte representation.<P>
+
+<HR>
+<A NAME="wxtempfilecommit"></A>
+<H3>wxTempFile::Commit</H3>
+<P>
+<B>bool</B> <B>Commit</B>()<P>
+Validate changes: deletes the old file of name m_strName and renames the new
+file to the old name. Returns <TT>true</TT> if both actions succeeded. If <TT>false</TT> is
+returned it may unfortunately mean two quite different things: either that
+either the old file couldn't be deleted or that the new file couldn't be renamed
+to the old name.<P>
+
+<HR>
+<A NAME="wxtempfilediscard"></A>
+<H3>wxTempFile::Discard</H3>
+<P>
+<B>void</B> <B>Discard</B>()<P>
+Discard changes: the old file contents is not changed, temporary file is
+deleted.<P>
+
+<HR>
+<A NAME="wxtempfiledtor"></A>
+<H3>wxTempFile::~wxTempFile</H3>
+<P>
+<B></B> <B>~wxTempFile</B>()<P>
+Destructor calls <A HREF="wx_wxtempfile.html#wxtempfilediscard">Discard()</A> if temporary file
+is still opened.<P>
+
+</FONT></BODY></HTML>

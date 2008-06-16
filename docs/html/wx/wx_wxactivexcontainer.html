@@ -1,0 +1,227 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxActiveXContainer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxactivexcontainer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxactivateevent.html#wxactivateevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxactivexevent.html#wxactivexevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxActiveXContainer</H2>
+<P>
+wxActiveXContainer is a host for an activex control on Windows (and
+as such is a platform-specific class). Note that the HWND that the class
+contains is the actual HWND of the activex control so using dynamic events
+and connecting to wxEVT_SIZE, for example, will recieve the actual size
+message sent to the control.<P>
+It is somewhat similar to the ATL class CAxWindow in operation.<P>
+The size of the activex control's content is generally gauranteed to be that
+of the client size of the parent of this wxActiveXContainer.<P>
+You can also process activex events through wxEVT_ACTIVEX or the
+corresponding message map macro EVT_ACTIVEX.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxactivexevent.html#wxactivexevent">wxActiveXEvent</A><P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/msw/ole/activex.h&gt;<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+This is an example of how to use the Adobe Acrobat Reader ActiveX control to read PDF files
+(requires Acrobat Reader 4 and up). Controls like this are typically found and dumped from
+OLEVIEW.exe that is distributed with Microsoft Visual C++. This example also demonstrates
+how to create a backend for <A HREF="wx_wxmediactrl.html#wxmediactrl">wxMediaCtrl</A>.<P>
+<PRE>
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+// wxPDFMediaBackend
+//
+// http://partners.adobe.com/public/developer/en/acrobat/sdk/pdf/iac/IACOverview.pdf
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#include "wx/mediactrl.h"       // wxMediaBackendCommonBase
+#include "wx/msw/ole/activex.h" // wxActiveXContainer
+#include "wx/msw/ole/automtn.h" // wxAutomationObject
+
+const IID DIID__DPdf = {0xCA8A9781,0x280D,0x11CF,{0xA2,0x4D,0x44,0x45,0x53,0x54,0x00,0x00}};
+const IID DIID__DPdfEvents = {0xCA8A9782,0x280D,0x11CF,{0xA2,0x4D,0x44,0x45,0x53,0x54,0x00,0x00}};
+const CLSID CLSID_Pdf = {0xCA8A9780,0x280D,0x11CF,{0xA2,0x4D,0x44,0x45,0x53,0x54,0x00,0x00}};
+
+class WXDLLIMPEXP_MEDIA wxPDFMediaBackend : public wxMediaBackendCommonBase
+{
+public:
+    wxPDFMediaBackend() : m_pAX(NULL) {}
+    virtual ~wxPDFMediaBackend()
+    {
+        if(m_pAX)
+        {
+            m_pAX-&gt;DissociateHandle();
+            delete m_pAX;
+        }
+    }
+    virtual bool CreateControl(wxControl* ctrl, wxWindow* parent,
+                                     wxWindowID id,
+                                     const wxPoint& pos,
+                                     const wxSize& size,
+                                     long style,
+                                     const wxValidator& validator,
+                                     const wxString& name)
+    {
+        IDispatch* pDispatch;
+        if( ::CoCreateInstance(CLSID_Pdf, NULL,
+                                  CLSCTX_INPROC_SERVER,
+                                  DIID__DPdf, (void**)&pDispatch) != 0 )
+            return false;
+
+        m_PDF.SetDispatchPtr(pDispatch); // wxAutomationObject will release itself
+
+        if ( !ctrl-&gt;wxControl::Create(parent, id, pos, size,
+                                (style & ~wxBORDER_MASK) | wxBORDER_NONE,
+                                validator, name) )
+            return false;
+
+        m_ctrl = wxStaticCast(ctrl, wxMediaCtrl);
+        m_pAX = new wxActiveXContainer(ctrl,
+                    DIID__DPdf,
+                    pDispatch);
+
+        wxPDFMediaBackend::ShowPlayerControls(wxMEDIACTRLPLAYERCONTROLS_NONE);
+        return true;
+    }
+
+    virtual bool Play()
+    {
+        return true;
+    }
+    virtual bool Pause()
+    {
+        return true;
+    }
+    virtual bool Stop()
+    {
+        return true;
+    }
+
+    virtual bool Load(const wxString& fileName)
+    {
+        if(m_PDF.CallMethod(wxT("LoadFile"), fileName).GetBool())
+        {
+            m_PDF.CallMethod(wxT("setCurrentPage"), wxVariant((long)0));
+            NotifyMovieLoaded(); // initial refresh
+            wxSizeEvent event;
+            m_pAX-&gt;OnSize(event);
+            return true;
+        }
+
+        return false;
+    }
+    virtual bool Load(const wxURI& location)
+    {
+        return m_PDF.CallMethod(wxT("LoadFile"), location.BuildUnescapedURI()).GetBool();
+    }
+    virtual bool Load(const wxURI& WXUNUSED(location),
+                      const wxURI& WXUNUSED(proxy))
+    {
+        return false;
+    }
+
+    virtual wxMediaState GetState()
+    {
+        return wxMEDIASTATE_STOPPED;
+    }
+
+    virtual bool SetPosition(wxLongLong where)
+    {
+        m_PDF.CallMethod(wxT("setCurrentPage"), wxVariant((long)where.GetValue()));
+        return true;
+    }
+    virtual wxLongLong GetPosition()
+    {
+        return 0;
+    }
+    virtual wxLongLong GetDuration()
+    {
+        return 0;
+    }
+
+    virtual void Move(int WXUNUSED(x), int WXUNUSED(y),
+                      int WXUNUSED(w), int WXUNUSED(h))
+    {
+    }
+    wxSize GetVideoSize() const
+    {
+        return wxDefaultSize;
+    }
+
+    virtual double GetPlaybackRate()
+    {
+        return 0;
+    }
+    virtual bool SetPlaybackRate(double)
+    {
+        return false;
+    }
+
+    virtual double GetVolume()
+    {
+        return 0;
+    }
+    virtual bool SetVolume(double)
+    {
+        return false;
+    }
+
+    virtual bool ShowPlayerControls(wxMediaCtrlPlayerControls flags)
+    {
+        if(flags)
+        {
+            m_PDF.CallMethod(wxT("setShowToolbar"), true);
+            m_PDF.CallMethod(wxT("setShowScrollbars"), true);
+        }
+        else
+        {
+            m_PDF.CallMethod(wxT("setShowToolbar"), false);
+            m_PDF.CallMethod(wxT("setShowScrollbars"), false);
+        }
+
+        return true;
+    }
+
+    wxActiveXContainer* m_pAX;
+    wxAutomationObject m_PDF;
+
+    DECLARE_DYNAMIC_CLASS(wxPDFMediaBackend)
+};
+
+IMPLEMENT_DYNAMIC_CLASS(wxPDFMediaBackend, wxMediaBackend);
+</PRE>
+Put this in one of your existant source files and then create a wxMediaCtrl with
+<PRE>
+//[this] is the parent window, "myfile.pdf" is the PDF file to open
+wxMediaCtrl* mymediactrl = new wxMediaCtrl(this, wxT("myfile.pdf"), wxID_ANY,
+                                           wxDefaultPosition, wxSize(300,300),
+                                           0, wxT("wxPDFMediaBackend"));
+</PRE>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxactivexcontainerwxactivexcontainer">wxActiveXContainer::wxActiveXContainer</A><BR>
+<P>
+
+<HR>
+<A NAME="wxactivexcontainerwxactivexcontainer"></A>
+<H3>wxActiveXContainer::wxActiveXContainer</H3>
+<P>
+<B></B> <B>wxActiveXContainer</B>(
+        <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>,
+        <B>REFIID </B><I>iid</I>,
+        <B>IUnknown* </B><I>pUnk</I>,
+                   )<P>
+Creates this activex container.<P>
+<I>parent</I><UL><UL>
+parent of this control.  Must not be NULL.</UL></UL>
+
+<I>iid</I><UL><UL>
+COM IID of pUnk to query. Must be a valid interface to an activex control.</UL></UL>
+
+<I>pUnk</I><UL><UL>
+Interface of activex control</UL></UL>
+<P>
+
+</FONT></BODY></HTML>

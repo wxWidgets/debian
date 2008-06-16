@@ -46,7 +46,7 @@ See also \helpref{window styles overview}{windowstyles}.
 On Windows XP, the default theme paints a gradient on the notebook's pages.
 If you wish to suppress this theme, for aesthetic or performance reasons,
 there are three ways of doing it. You can use wxNB\_NOPAGETHEME to disable
-themed drawing for a particular notebook, you can call {\tt wxSystemOptions::SetOption} 
+themed drawing for a particular notebook, you can call {\tt wxSystemOptions::SetOption}
 to disable it for the whole application, or you can disable it for individual
 pages by using {\tt SetBackgroundColour}.
 
@@ -199,7 +199,7 @@ The call to this function generates the page changing events.
 
 \constfunc{wxWindow *}{GetCurrentPage}{\void}
 
-Returns the currently selected notebook age or \texttt{NULL}.
+Returns the currently selected notebook page or \NULL.
 
 
 \membersection{wxNotebook::GetImageList}\label{wxnotebookgetimagelist}
@@ -273,10 +273,8 @@ to {\tt SetBackgroundColour}. Otherwise, an uninitialised colour will be returne
 \func{int}{HitTest}{\param{const wxPoint\&}{ pt}, \param{long}{ *flags = {\tt NULL}}}
 
 Returns the index of the tab at the specified position or {\tt wxNOT\_FOUND}
-if none. If {\it flags} parameter is non {\tt NULL}, the position of the point
+if none. If {\it flags} parameter is non-{\tt NULL}, the position of the point
 inside the tab is returned as well.
-
-{\bf NB: } This method is currently only implemented under wxMSW and wxUniv.
 
 \wxheading{Parameters}
 
@@ -285,10 +283,11 @@ inside the tab is returned as well.
 \docparam{flags}{Return value for detailed information. One of the following values:
 \twocolwidtha{7cm}
 \begin{twocollist}\itemsep=0pt
-\twocolitem{{\bf wxNB\_HITTEST\_NOWHERE}}{There was no tab under this point.}
-\twocolitem{{\bf wxNB\_HITTEST\_ONICON}}{The point was over an icon (currently wxMSW only).}
-\twocolitem{{\bf wxNB\_HITTEST\_ONLABEL}}{The point was over a label (currently wxMSW only).}
-\twocolitem{{\bf wxNB\_HITTEST\_ONITEM}}{The point was over an item, but not on the label or icon.}
+\twocolitem{{\bf wxBK\_HITTEST\_NOWHERE}}{There was no tab under this point.}
+\twocolitem{{\bf wxBK\_HITTEST\_ONICON}}{The point was over an icon (currently wxMSW only).}
+\twocolitem{{\bf wxBK\_HITTEST\_ONLABEL}}{The point was over a label (currently wxMSW only).}
+\twocolitem{{\bf wxBK\_HITTEST\_ONITEM}}{The point was over an item, but not on the label or icon.}
+\twocolitem{{\bf wxBK\_HITTEST\_ONPAGE}}{The point was over a currently selected page, not over any tab. Note that this flag is present only if {\tt wxNOT\_FOUND} is returned.}
 \end{twocollist}
 }
 
@@ -405,8 +404,21 @@ Sets the selection for the given page, returning the previous selection.
 
 The call to this function generates the page changing events.
 
+This function is deprecated and should not be used in new code. Please use the
+\helpref{ChangeSelection}{wxnotebookchangeselection} function instead.
+
 \wxheading{See also}
 
 \helpref{wxNotebook::GetSelection}{wxnotebookgetselection}
 
+
+\membersection{wxNotebook::ChangeSelection}\label{wxnotebookchangeselection}
+
+\func{int}{ChangeSelection}{\param{size\_t}{ page}}
+
+Changes the selection for the given page, returning the previous selection.
+
+The call to this function \emph{does not} generate the page changing events.
+This is the only difference with \helpref{SetSelection}{wxnotebooksetselection}.
+See \helpref{this topic}{progevent} for more info.
 

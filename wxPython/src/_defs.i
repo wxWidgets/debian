@@ -5,30 +5,63 @@
 // Author:      Robin Dunn
 //
 // Created:     6/24/97
-// RCS-ID:      $Id: _defs.i,v 1.89.2.3 2006/03/31 23:25:43 RD Exp $
+// RCS-ID:      $Id: _defs.i 48374 2007-08-25 01:32:32Z RD $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 
 //---------------------------------------------------------------------------
-// Globally turn on the autodoc feature
 
+// Globally turn on the autodoc feature
 %feature("autodoc", "1");  // 0 == no param types, 1 == show param types
 
 // Turn on kwargs by default
 %feature("kwargs", "1");
 
-//---------------------------------------------------------------------------
-// Tell SWIG to wrap all the wrappers with our thread protection by default
+// Don't generate separate wrappers for each default args combination
+%feature("compactdefaultargs");
 
+#if SWIG_VERSION < 0x010328
+// Don't generate default ctors or dtors if the C++ doesn't have them
+%feature("nodefault");
+#else
+// This is the SWIG 1.3.28 way to do the above...
+%feature("nodefaultctor");
+%feature("nodefaultdtor");
+#endif
+
+// For all items that don't have a %rename already, give them a %rename that
+// removes the leading 'wx' (except for wxEVT_* items.)
+%rename("%(wxpy)s") "";
+
+// For now, just supress the warning about using Python keywords as parameter
+// names.  Will need to come back later and correct these rather than just
+// hide them...
+#pragma SWIG nowarn=314
+
+//---------------------------------------------------------------------------
+
+// Tell SWIG to wrap all the wrappers with our thread protection
+%define %threadWrapperOn
 %exception {
     PyThreadState* __tstate = wxPyBeginAllowThreads();
     $action
     wxPyEndAllowThreads(__tstate);
     if (PyErr_Occurred()) SWIG_fail;
 }
+%enddef
 
+// This one will turn off the generation of the thread wrapper code
+%define %threadWrapperOff
+%exception {
+    $action
+    if (PyErr_Occurred()) SWIG_fail;
+}
+%enddef
+
+// Turn it on by default
+%threadWrapperOn
 
 // This one can be used to add a check for an existing wxApp before the real
 // work is done.  An exception is raised if there isn't one.
@@ -44,7 +77,7 @@
 
 
 // This macro can be used to disable the releasing of the GIL when calling the
-// C++ function.
+// C++ function.  This is like using threadWrapperOff for just this function.
 %define KeepGIL(name)
 %exception name {
     $action
@@ -60,6 +93,7 @@ typedef unsigned int    size_t;
 typedef unsigned int    time_t;
 typedef unsigned char   byte;
 typedef unsigned long   wxUIntPtr;
+typedef double          wxDouble;
 
 #define wxWindowID      int
 #define wxCoord         int
@@ -72,9 +106,22 @@ typedef unsigned long   wxUIntPtr;
 
 #define %pythonAppend   %feature("pythonappend")
 #define %pythonPrepend  %feature("pythonprepend")
-#define %kwargs         %feature("kwargs")
-#define %nokwargs       %feature("kwargs", "0")
 #define %noautodoc      %feature("noautodoc")
+
+#if SWIG_VERSION >= 0x010327
+#undef %kwargs
+#define %kwargs         %feature("kwargs", "1")
+#define %nokwargs       %feature("kwargs", "0")
+#else
+#define %kwargs         %feature("kwargs")
+#define %nokwargs       %feature("nokwargs")
+#endif
+
+#define %disownarg(typespec)   %typemap(in) typespec = SWIGTYPE* DISOWN
+#define %cleardisown(typespec) %typemap(in) typespec
+    
+#define %ref   %feature("ref")
+#define %unref %feature("unref")
 
 
 #ifndef %pythoncode
@@ -111,6 +158,15 @@ typedef unsigned long   wxUIntPtr;
 %typemap(consttab) wxEventType; // TODO: how to prevent code inserted into the consttab?
 %typemap(constcode) wxEventType "PyDict_SetItemString(d, \"$symname\", PyInt_FromLong($value));";
 
+
+%define %property(NAME, STUFF...)
+    %pythoncode { NAME = property(STUFF) }
+%enddef
+
+
+%define setCallbackInfo(klass)
+    "klass._setCallbackInfo(self, self, klass)"
+%enddef
 
 
 //----------------------------------------------------------------------
@@ -353,6 +409,36 @@ typedef unsigned long   wxUIntPtr;
     %enddef
 #endif
 
+#ifdef _DO_FULL_DOCS
+    %define %RenameDocStr(newname, docstr, details, type, decl)
+        %feature("docstring") decl docstr;
+        %rename(newname) decl;
+        type decl
+    %enddef        
+#else
+    %define %RenameDocStr(newname, docstr, details, type, decl)
+        %feature("docstring") decl docstr details;
+        %rename(newname) decl;
+        type decl
+    %enddef        
+#endif
+
+//---------------------------------------------------------------------------
+// Generates a base_On* method that just wraps a call to the On*, and mark it
+// deprecated.  We need this because there is no longer any need for a
+// base_On* method to be able to call the C++ base class method, since our
+// virtualization code can now sense when an attempt is being made to call
+// the base class version from the derived class override.
+        
+%define %MAKE_BASE_FUNC(Class, Method)
+    %pythoncode {
+        def base_##Method(*args, **kw):
+            return Class.Method(*args, **kw)
+        base_##Method = wx._deprecated(base_##Method,
+                                       "Please use Class.Method instead.")
+    }
+%enddef    
+    
 //---------------------------------------------------------------------------
 // Forward declarations and %renames for some classes, so the autodoc strings
 // will be able to use the right types even when the real class declaration is
@@ -385,6 +471,214 @@ FORWARD_DECLARE(wxHtmlTagHandler, HtmlTagHandler);
 FORWARD_DECLARE(wxConfigBase,     ConfigBase);
 FORWARD_DECLARE(wxIcon,           Icon);
 FORWARD_DECLARE(wxStaticBox,      StaticBox);
+
+
+//---------------------------------------------------------------------------
+// This macro makes a class to wrap a type specific class derived from wxList,
+// and make it look like a Python sequence, including iterator support
+
+%define wxLIST_WRAPPER(ListClass, ItemClass)
+// first a bit of C++ code...    
+%{
+class ListClass##_iterator
+{
+public:
+    ListClass##_iterator(ListClass::compatibility_iterator start)
+        : m_node(start) {}
+    
+    ItemClass* next() {
+        ItemClass* obj = NULL;
+        if (m_node) {
+            obj = m_node->GetData();
+            m_node = m_node->GetNext();
+        }
+        else PyErr_SetString(PyExc_StopIteration, "");
+        return obj;
+    }
+private:
+    ListClass::compatibility_iterator m_node;
+};
+%}
+
+// Now declare the classes for SWIG
+
+DocStr(ListClass##_iterator,
+"This class serves as an iterator for a ListClass object.", "");
+
+class ListClass##_iterator
+{
+public:
+    //ListClass##_iterator();
+    ~ListClass_iterator();
+    KeepGIL(next);
+    ItemClass* next();
+};
+
+
+DocStr(ListClass,
+"This class wraps a wxList-based class and gives it a Python
+sequence-like interface.  Sequence operations supported are length,
+index access and iteration.", "");
+
+class ListClass
+{
+public:
+    //ListClass();      This will always be created by some C++ function
+    ~ListClass();
+
+    %extend {
+        KeepGIL(__len__);
+        size_t __len__() {
+            return self->size();
+        }
+
+        KeepGIL(__getitem__);
+        ItemClass* __getitem__(size_t index) {
+            if (index < self->size()) {
+                ListClass::compatibility_iterator node = self->Item(index);
+                if (node) return node->GetData();
+            }
+            PyErr_SetString(PyExc_IndexError, "sequence index out of range");
+            return NULL;
+        }
+
+        KeepGIL(__contains__);
+        bool __contains__(const ItemClass* obj) {
+            return self->Find(obj) != NULL;
+        }
+
+        KeepGIL(__iter__);
+        %newobject __iter__;
+        ListClass##_iterator* __iter__() {
+            return new ListClass##_iterator(self->GetFirst());
+        }
+
+        // TODO:  add support for index(value, [start, [stop]])
+        KeepGIL(index);
+        int index(ItemClass* obj) {
+            int idx = self->IndexOf(obj);
+            if (idx == wxNOT_FOUND)
+                PyErr_SetString(PyExc_ValueError,
+                                "sequence.index(x): x not in sequence");
+            return idx;
+        }        
+    }
+    %pythoncode {
+        def __repr__(self):
+            return "ListClass: " + repr(list(self))
+    }
+};
+%enddef
+
+
+
+// This macro is similar to the above, but it is to be used when there isn't a
+// type-specific C++ list class to use.  In other words the C++ code is using
+// a plain wxList and typecasting the node values, so we'll do the same.
+%define wxUNTYPED_LIST_WRAPPER(ListClass, ItemClass)
+// first a bit of C++ code...    
+%{
+class ListClass
+{
+public:
+    ListClass(wxList* theList)
+        : m_list(theList) {}
+    ~ListClass() {}
+public:
+    wxList* m_list;
+};
+
+class ListClass##_iterator
+{
+public:
+    ListClass##_iterator(wxList::compatibility_iterator start)
+        : m_node(start) {}
+    
+    ItemClass* next() {
+        ItemClass* obj = NULL;
+        if (m_node) {
+            obj = (ItemClass*)m_node->GetData();
+            m_node = m_node->GetNext();
+        }
+        else PyErr_SetString(PyExc_StopIteration, "");
+        return obj;
+    }
+private:
+    wxList::compatibility_iterator m_node;
+};
+%}
+
+// Now declare the classes for SWIG
+
+DocStr(ListClass##_iterator,
+"This class serves as an iterator for a ListClass object.", "");
+
+class ListClass##_iterator
+{
+public:
+    //ListClass##_iterator();
+    ~ListClass_iterator();
+    KeepGIL(next);
+    ItemClass* next();
+};
+
+
+DocStr(ListClass,
+"This class wraps a wxList-based class and gives it a Python
+sequence-like interface.  Sequence operations supported are length,
+index access and iteration.", "");
+class ListClass
+{
+public:
+    //ListClass();      This will always be created by some C++ function
+    ~ListClass();
+
+    %extend {
+        KeepGIL(__len__);
+        size_t __len__() {
+            return self->m_list->size();
+        }
+
+        KeepGIL(__getitem__);
+        ItemClass* __getitem__(size_t index) {
+            if (index < self->m_list->size()) {
+                wxList::compatibility_iterator node = self->m_list->Item(index);
+                if (node) return (ItemClass*)node->GetData();
+            }
+            PyErr_SetString(PyExc_IndexError, "Invalid list index");
+            return NULL;
+        }
+
+        KeepGIL(__contains__);
+        bool __contains__(const ItemClass* obj) {
+            return self->m_list->Find(obj) != NULL;
+        }
+
+        KeepGIL(__iter__);
+        %newobject __iter__;
+        ListClass##_iterator* __iter__() {
+            return new ListClass##_iterator(self->m_list->GetFirst());
+        }
+    }
+    %pythoncode {
+        def __repr__(self):
+            return "ListClass: " + repr(list(self))
+    }
+};
+
+// A typemap to handle converting a wxList& return value to this new list
+// type.  To use this just change the return value type in the class
+// definition to this typedef instead of wxList, then SWIG will use the
+// typemap.
+%{
+typedef wxList ListClass##_t;
+%}
+%typemap(out) ListClass##_t& {
+    ListClass* mylist = new ListClass($1);
+    $result = SWIG_NewPointerObj(SWIG_as_voidptr(mylist), SWIGTYPE_p_##ListClass, SWIG_POINTER_OWN );
+}
+%enddef
+
 
 
 //---------------------------------------------------------------------------
@@ -430,6 +724,8 @@ enum {
     wxCLIP_CHILDREN,
     wxCLIP_SIBLINGS,
 
+    wxWINDOW_STYLE_MASK,
+    
     wxALWAYS_SHOW_SB,
     
     wxRETAINED,
@@ -465,7 +761,9 @@ enum {
     wxRB_USE_CHECKBOX,
     wxST_SIZEGRIP,
     wxST_NO_AUTORESIZE,
-
+    wxST_DOTS_MIDDLE,
+    wxST_DOTS_END,
+    
     wxFLOOD_SURFACE,
     wxFLOOD_BORDER,
     wxODDEVEN_RULE,
@@ -529,15 +827,19 @@ enum {
     wxID_HELP,
     wxID_PRINT,
     wxID_PRINT_SETUP,
+    wxID_PAGE_SETUP,
     wxID_PREVIEW,
     wxID_ABOUT,
     wxID_HELP_CONTENTS,
     wxID_HELP_COMMANDS,
     wxID_HELP_PROCEDURES,
     wxID_HELP_CONTEXT,
+    wxID_HELP_INDEX,
+    wxID_HELP_SEARCH,
     wxID_CLOSE_ALL,
     wxID_PREFERENCES,
 
+    wxID_EDIT,
     wxID_CUT,
     wxID_COPY,
     wxID_PASTE,
@@ -560,6 +862,7 @@ enum {
     wxID_VIEW_SORTSIZE,
     wxID_VIEW_SORTTYPE,
 
+    wxID_FILE,
     wxID_FILE1,
     wxID_FILE2,
     wxID_FILE3,
@@ -616,31 +919,6 @@ enum {
     wxID_REVERT_TO_SAVED,
    
     wxID_HIGHEST,
-
-    wxOPEN,
-    wxSAVE,
-    wxHIDE_READONLY,
-    wxOVERWRITE_PROMPT,
-    wxFILE_MUST_EXIST,
-    wxMULTIPLE,
-    wxCHANGE_DIR,
-
-    wxACCEL_ALT,
-    wxACCEL_CTRL,
-    wxACCEL_SHIFT,
-    wxACCEL_NORMAL,
-
-    wxPD_AUTO_HIDE,
-    wxPD_APP_MODAL,
-    wxPD_CAN_ABORT,
-    wxPD_ELAPSED_TIME,
-    wxPD_ESTIMATED_TIME,
-    wxPD_REMAINING_TIME,
-    wxPD_SMOOTH,
-    wxPD_CAN_SKIP,
-
-    wxDD_NEW_DIR_BUTTON,
-    wxDD_DEFAULT_STYLE,
 
     wxMENU_TEAROFF,
     wxMB_DOCKABLE,
@@ -759,6 +1037,7 @@ enum wxBorder
     wxBORDER_RAISED,
     wxBORDER_SUNKEN,
     wxBORDER_DOUBLE,
+    wxBORDER_THEME,
     wxBORDER_MASK,
 };
 
@@ -1137,27 +1416,18 @@ enum wxHitTest
 };
 
 
-%{
-#if ! wxUSE_HOTKEY
-enum wxHotkeyModifier
-{
-    wxMOD_NONE = 0,
-    wxMOD_ALT = 1,
-    wxMOD_CONTROL = 2,
-    wxMOD_SHIFT = 4,
-    wxMOD_WIN = 8
-};
-#define wxEVT_HOTKEY 9999
-#endif
-%}
 
-enum wxHotkeyModifier
+enum wxKeyModifier
 {
-    wxMOD_NONE = 0,
-    wxMOD_ALT = 1,
-    wxMOD_CONTROL = 2,
-    wxMOD_SHIFT = 4,
-    wxMOD_WIN = 8
+    wxMOD_NONE,
+    wxMOD_ALT,
+    wxMOD_CONTROL,
+    wxMOD_ALTGR,
+    wxMOD_SHIFT,
+    wxMOD_META,
+    wxMOD_WIN,
+    wxMOD_CMD,
+    wxMOD_ALL       
 };
 
 
@@ -1166,6 +1436,14 @@ enum wxUpdateUI
     wxUPDATE_UI_NONE          = 0x0000,
     wxUPDATE_UI_RECURSE       = 0x0001,
     wxUPDATE_UI_FROMIDLE      = 0x0002 // Invoked from On(Internal)Idle
+};
+
+
+enum wxLayoutDirection
+{
+    wxLayout_Default,
+    wxLayout_LeftToRight,
+    wxLayout_RightToLeft
 };
 
 

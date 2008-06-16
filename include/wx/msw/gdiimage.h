@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.11.99
-// RCS-ID:      $Id: gdiimage.h,v 1.14 2005/03/08 20:16:44 VZ Exp $
+// RCS-ID:      $Id: gdiimage.h 41751 2006-10-08 21:56:55Z VZ $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 
 #ifndef _WX_MSW_GDIIMAGE_H_
 #define _WX_MSW_GDIIMAGE_H_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "gdiimage.h"
-#endif
 
 #include "wx/gdiobj.h"          // base class
 #include "wx/gdicmn.h"          // wxBITMAP_TYPE_INVALID
@@ -108,7 +104,7 @@ public:
 
     // real handler operations: to implement in derived classes
     virtual bool Create(wxGDIImage *image,
-                        void *data,
+                        const void* data,
                         long flags,
                         int width, int height, int depth = 1) = 0;
     virtual bool Load(wxGDIImage *image,
@@ -158,7 +154,8 @@ public:
     void SetHandle(WXHANDLE handle)
         { AllocExclusive(); GetGDIImageData()->m_handle = handle; }
 
-    bool Ok() const { return GetHandle() != 0; }
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const { return GetHandle() != 0; }
 
     int GetWidth() const { return IsNull() ? 0 : GetGDIImageData()->m_width; }
     int GetHeight() const { return IsNull() ? 0 : GetGDIImageData()->m_height; }

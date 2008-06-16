@@ -1,0 +1,70 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxBusyInfo</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxbusyinfo"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxbusycursor.html#wxbusycursor"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxbutton.html#wxbutton"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxBusyInfo</H2>
+<P>
+This class makes it easy to tell your user that the program is temporarily busy.
+Just create a wxBusyInfo object on the stack, and within the current scope,
+a message window will be shown.<P>
+For example:<P>
+<PRE>
+    wxBusyInfo wait("Please wait, working...");
+
+    for (int i = 0; i &lt; 100000; i++)
+    {
+        DoACalculation();
+    }
+</PRE>
+It works by creating a window in the constructor,
+and deleting it in the destructor.<P>
+You may also want to call wxTheApp-&gt;Yield() to refresh the window
+periodically (in case it had been obscured by other windows, for
+example) like this:<P>
+<PRE>
+    wxWindowDisabler disableAll;
+
+    wxBusyInfo wait("Please wait, working...");
+
+    for (int i = 0; i &lt; 100000; i++)
+    {
+        DoACalculation();
+
+        if ( !(i % 1000) )
+            wxTheApp-&gt;Yield();
+    }
+</PRE>
+but take care to not cause undesirable reentrancies when doing it (see 
+<A HREF="wx_wxapp.html#wxappyield">wxApp::Yield()</A> for more details). The simplest way to do
+it is to use <A HREF="wx_wxwindowdisabler.html#wxwindowdisabler">wxWindowDisabler</A> class as illustrated
+in the above example.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/busyinfo.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxbusyinfoctor">wxBusyInfo::wxBusyInfo</A><BR>
+<A HREF="#wxbusyinfodtor">wxBusyInfo::~wxBusyInfo</A><BR>
+<P>
+
+<HR>
+<A NAME="wxbusyinfoctor"></A>
+<H3>wxBusyInfo::wxBusyInfo</H3>
+<P>
+<B></B> <B>wxBusyInfo</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> msg</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent = NULL</I>)<P>
+Constructs a busy info window as child of <I>parent</I> and displays <I>msg</I>
+in it.<P>
+<B>NB:</B> If <I>parent</I> is not <TT>NULL</TT> you must ensure that it is not
+closed while the busy info is shown.<P>
+
+<HR>
+<A NAME="wxbusyinfodtor"></A>
+<H3>wxBusyInfo::~wxBusyInfo</H3>
+<P>
+<B></B> <B>~wxBusyInfo</B>()<P>
+Hides and closes the window containing the information text.<P>
+
+</FONT></BODY></HTML>

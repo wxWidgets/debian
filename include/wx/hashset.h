@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     11/08/2003
-// RCS-ID:      $Id: hashset.h,v 1.6.2.2 2006/01/18 16:32:38 JS Exp $
+// RCS-ID:      $Id: hashset.h 49056 2007-10-05 22:42:35Z VS $
 // Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 #endif
 
 #define _WX_DECLARE_HASH_SET( KEY_T, HASH_T, KEY_EQ_T, CLASSNAME, CLASSEXP )\
-    typedef WX_HASH_MAP_NAMESPACE::hash_set< KEY_T, HASH_T, KEY_EQ_T > CLASSNAME;
+    typedef WX_HASH_MAP_NAMESPACE::hash_set< KEY_T, HASH_T, KEY_EQ_T > CLASSNAME
 
 #else // !wxUSE_STL || !defined(HAVE_STL_HASH_MAP)
 
@@ -107,6 +107,11 @@ public:                                                                      \
 //     be called (a decent compiler should give a warning about it, but don't
 //     count on it)!
 #define WX_CLEAR_HASH_SET(type, hashset)                                     \
-    WX_CLEAR_HASH_MAP(type, hashset)
+    {                                                                        \
+        type::iterator it, en;                                               \
+        for( it = (hashset).begin(), en = (hashset).end(); it != en; ++it )  \
+            delete *it;                                                      \
+        (hashset).clear();                                                   \
+    }
 
 #endif // _WX_HASHSET_H_

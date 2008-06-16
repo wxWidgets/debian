@@ -1,0 +1,232 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCommandProcessor</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcommandprocessor"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcommandevent.html#wxcommandevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcondition.html#wxcondition"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCommandProcessor</H2>
+<P>
+wxCommandProcessor is a class that maintains a history of wxCommands,
+with undo/redo functionality built-in. Derive a new class from this
+if you want different behaviour.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/cmdproc.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_docviewoverview.html#wxcommandprocessoroverview">wxCommandProcessor overview</A>, <A HREF="wx_wxcommand.html#wxcommand">wxCommand</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxcommandprocessorctor">wxCommandProcessor::wxCommandProcessor</A><BR>
+<A HREF="#wxcommandprocessordtor">wxCommandProcessor::~wxCommandProcessor</A><BR>
+<A HREF="#wxcommandprocessorcanundo">wxCommandProcessor::CanUndo</A><BR>
+<A HREF="#wxcommandprocessorclearcommands">wxCommandProcessor::ClearCommands</A><BR>
+<A HREF="#wxcommandprocessorredo">wxCommandProcessor::Redo</A><BR>
+<A HREF="#wxcommandprocessorgetcommands">wxCommandProcessor::GetCommands</A><BR>
+<A HREF="#wxcommandprocessorgetmaxcommands">wxCommandProcessor::GetMaxCommands</A><BR>
+<A HREF="#wxcommandprocessorgeteditmenu">wxCommandProcessor::GetEditMenu</A><BR>
+<A HREF="#wxcommandprocessorgetredoaccelerator">wxCommandProcessor::GetRedoAccelerator</A><BR>
+<A HREF="#wxcommandprocessorgetredomenulabel">wxCommandProcessor::GetRedoMenuLabel</A><BR>
+<A HREF="#wxcommandprocessorgetundoaccelerator">wxCommandProcessor::GetUndoAccelerator</A><BR>
+<A HREF="#wxcommandprocessorgetundomenulabel">wxCommandProcessor::GetUndoMenuLabel</A><BR>
+<A HREF="#wxcommandprocessorinitialize">wxCommandProcessor::Initialize</A><BR>
+<A HREF="#wxcommandprocessorisdirty">wxCommandProcessor::IsDirty</A><BR>
+<A HREF="#wxcommandprocessormarkassaved">wxCommandProcessor::MarkAsSaved</A><BR>
+<A HREF="#wxcommandprocessorseteditmenu">wxCommandProcessor::SetEditMenu</A><BR>
+<A HREF="#wxcommandprocessorsetmenustrings">wxCommandProcessor::SetMenuStrings</A><BR>
+<A HREF="#wxcommandprocessorsetredoaccelerator">wxCommandProcessor::SetRedoAccelerator</A><BR>
+<A HREF="#wxcommandprocessorsetundoaccelerator">wxCommandProcessor::SetUndoAccelerator</A><BR>
+<A HREF="#wxcommandprocessorsubmit">wxCommandProcessor::Submit</A><BR>
+<A HREF="#wxcommandprocessorundo">wxCommandProcessor::Undo</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcommandprocessorctor"></A>
+<H3>wxCommandProcessor::wxCommandProcessor</H3>
+<P>
+<B></B> <B>wxCommandProcessor</B>(<B>int</B><I> maxCommands = -1</I>)<P>
+Constructor.<P>
+<I>maxCommands</I> may be set to a positive integer to limit the number of
+commands stored to it, otherwise (and by default) the list of commands can grow
+arbitrarily.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessordtor"></A>
+<H3>wxCommandProcessor::~wxCommandProcessor</H3>
+<P>
+<B></B> <B>~wxCommandProcessor</B>()<P>
+Destructor.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorcanundo"></A>
+<H3>wxCommandProcessor::CanUndo</H3>
+<P>
+<B>virtual bool</B> <B>CanUndo</B>()<P>
+Returns true if the currently-active command can be undone, false otherwise.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorclearcommands"></A>
+<H3>wxCommandProcessor::ClearCommands</H3>
+<P>
+<B>virtual void</B> <B>ClearCommands</B>()<P>
+Deletes all commands in the list and sets the current command pointer to <TT>NULL</TT>.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorredo"></A>
+<H3>wxCommandProcessor::Redo</H3>
+<P>
+<B>virtual bool</B> <B>Redo</B>()<P>
+Executes (redoes) the current command (the command that has just been undone if any).<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorgetcommands"></A>
+<H3>wxCommandProcessor::GetCommands</H3>
+<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A>&</B> </B> <B>GetCommands</B>() <B>const</B><P>
+Returns the list of commands.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorgetmaxcommands"></A>
+<H3>wxCommandProcessor::GetMaxCommands</H3>
+<P>
+<B>int</B> <B>GetMaxCommands</B>() <B>const</B><P>
+Returns the maximum number of commands that the command processor stores.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorgeteditmenu"></A>
+<H3>wxCommandProcessor::GetEditMenu</H3>
+<P>
+<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B> </B> <B>GetEditMenu</B>() <B>const</B><P>
+Returns the edit menu associated with the command processor.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorgetredoaccelerator"></A>
+<H3>wxCommandProcessor::GetRedoAccelerator</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetRedoAccelerator</B>() <B>const</B><P>
+Returns the string that will be appended to the Redo menu item.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorgetredomenulabel"></A>
+<H3>wxCommandProcessor::GetRedoMenuLabel</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetRedoMenuLabel</B>() <B>const</B><P>
+Returns the string that will be shown for the redo menu item.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorgetundoaccelerator"></A>
+<H3>wxCommandProcessor::GetUndoAccelerator</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetUndoAccelerator</B>() <B>const</B><P>
+Returns the string that will be appended to the Undo menu item.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorgetundomenulabel"></A>
+<H3>wxCommandProcessor::GetUndoMenuLabel</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetUndoMenuLabel</B>() <B>const</B><P>
+Returns the string that will be shown for the undo menu item.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorinitialize"></A>
+<H3>wxCommandProcessor::Initialize</H3>
+<P>
+<B>virtual void</B> <B>Initialize</B>()<P>
+Initializes the command processor, setting the current command to the
+last in the list (if any), and updating the edit menu (if one has been
+specified).<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorisdirty"></A>
+<H3>wxCommandProcessor::IsDirty</H3>
+<P>
+<B>virtual bool</B> <B>IsDirty</B>()<P>
+Returns a boolean value that indicates if changes have been made since
+the last save operation. This only works if 
+<A HREF="wx_wxcommandprocessor.html#wxcommandprocessormarkassaved">wxCommandProcessor::MarkAsSaved</A>
+is called whenever the project is saved.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessormarkassaved"></A>
+<H3>wxCommandProcessor::MarkAsSaved</H3>
+<P>
+<B>virtual void</B> <B>MarkAsSaved</B>()<P>
+You must call this method whenever the project is saved if you plan to use 
+<A HREF="wx_wxcommandprocessor.html#wxcommandprocessorisdirty">wxCommandProcessor::IsDirty</A>.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorseteditmenu"></A>
+<H3>wxCommandProcessor::SetEditMenu</H3>
+<P>
+<B>void</B> <B>SetEditMenu</B>(<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>* </B></B><I>menu</I>)<P>
+Tells the command processor to update the Undo and Redo items on this
+menu as appropriate. Set this to NULL if the menu is about to be
+destroyed and command operations may still be performed, or the command
+processor may try to access an invalid pointer.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorsetmenustrings"></A>
+<H3>wxCommandProcessor::SetMenuStrings</H3>
+<P>
+<B>void</B> <B>SetMenuStrings</B>()<P>
+Sets the menu labels according to the currently set menu and the current
+command state.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorsetredoaccelerator"></A>
+<H3>wxCommandProcessor::SetRedoAccelerator</H3>
+<P>
+<B>void</B> <B>SetRedoAccelerator</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I>accel</I>)<P>
+Sets the string that will be appended to the Redo menu item.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorsetundoaccelerator"></A>
+<H3>wxCommandProcessor::SetUndoAccelerator</H3>
+<P>
+<B>void</B> <B>SetUndoAccelerator</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I>accel</I>)<P>
+Sets the string that will be appended to the Undo menu item.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorsubmit"></A>
+<H3>wxCommandProcessor::Submit</H3>
+<P>
+<B>virtual bool</B> <B>Submit</B>(<B><A HREF="wx_wxcommand.html#wxcommand">wxCommand</A> *</B></B><I>command</I>, <B>bool</B><I> storeIt = true</I>)<P>
+Submits a new command to the command processor. The command processor
+calls wxCommand::Do to execute the command; if it succeeds, the command
+is stored in the history list, and the associated edit menu (if any) updated
+appropriately. If it fails, the command is deleted
+immediately. Once Submit has been called, the passed command should not
+be deleted directly by the application.<P>
+<I>storeIt</I> indicates whether the successful command should be stored
+in the history list.<P>
+
+
+<HR>
+<A NAME="wxcommandprocessorundo"></A>
+<H3>wxCommandProcessor::Undo</H3>
+<P>
+<B>virtual bool</B> <B>Undo</B>()<P>
+Undoes the command just executed.<P>
+
+
+</FONT></BODY></HTML>

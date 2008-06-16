@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xh_notbk.cpp
+// Name:        src/xrc/xh_notbk.cpp
 // Purpose:     XRC resource for wxNotebook
 // Author:      Vaclav Slavik
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_notbk.cpp,v 1.17 2005/03/28 09:40:25 VS Exp $
+// RCS-ID:      $Id: xh_notbk.cpp 39627 2006-06-08 06:57:39Z ABX $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_notbk.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -23,21 +19,34 @@
 
 #include "wx/xrc/xh_notbk.h"
 
-#include "wx/log.h"
+#ifndef WX_PRECOMP
+    #include "wx/log.h"
+    #include "wx/sizer.h"
+#endif
+
 #include "wx/notebook.h"
 #include "wx/imaglist.h"
-#include "wx/sizer.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxNotebookXmlHandler, wxXmlResourceHandler)
 
 wxNotebookXmlHandler::wxNotebookXmlHandler()
-: wxXmlResourceHandler(), m_isInside(false), m_notebook(NULL)
+                     :wxXmlResourceHandler(),
+                      m_isInside(false),
+                      m_notebook(NULL)
 {
+    XRC_ADD_STYLE(wxBK_DEFAULT);
+    XRC_ADD_STYLE(wxBK_LEFT);
+    XRC_ADD_STYLE(wxBK_RIGHT);
+    XRC_ADD_STYLE(wxBK_TOP);
+    XRC_ADD_STYLE(wxBK_BOTTOM);
+
+#if WXWIN_COMPATIBILITY_2_6
     XRC_ADD_STYLE(wxNB_DEFAULT);
     XRC_ADD_STYLE(wxNB_LEFT);
     XRC_ADD_STYLE(wxNB_RIGHT);
     XRC_ADD_STYLE(wxNB_TOP);
     XRC_ADD_STYLE(wxNB_BOTTOM);
+#endif
 
     XRC_ADD_STYLE(wxNB_FIXEDWIDTH);
     XRC_ADD_STYLE(wxNB_MULTILINE);

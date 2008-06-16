@@ -1,0 +1,99 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSplashScreen</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsplashscreen"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxspinevent.html#wxspinevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsplitterevent.html#wxsplitterevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSplashScreen</H2>
+<P>
+wxSplashScreen shows a window with a thin border, displaying a bitmap describing your
+application. Show it in application initialisation, and then either explicitly destroy
+it or let it time-out.<P>
+Example usage:<P>
+<PRE>
+  wxBitmap bitmap;
+  if (bitmap.LoadFile("splash16.png", wxBITMAP_TYPE_PNG))
+  {
+      wxSplashScreen* splash = new wxSplashScreen(bitmap,
+          wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+          6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+          wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+  }
+  wxYield();
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/splash.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsplashscreenwxsplashscreen">wxSplashScreen::wxSplashScreen</A><BR>
+<A HREF="#wxsplashscreendtor">wxSplashScreen::~wxSplashScreen</A><BR>
+<A HREF="#wxsplashscreenonclosewindow">wxSplashScreen::OnCloseWindow</A><BR>
+<A HREF="#wxsplashscreengetsplashstyle">wxSplashScreen::GetSplashStyle</A><BR>
+<A HREF="#wxsplashscreengetsplashwindow">wxSplashScreen::GetSplashWindow</A><BR>
+<A HREF="#wxsplashscreengettimeout">wxSplashScreen::GetTimeout</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsplashscreenwxsplashscreen"></A>
+<H3>wxSplashScreen::wxSplashScreen</H3>
+<P>
+<B></B> <B>wxSplashScreen</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B>long </B><I>splashStyle</I>, <B>int </B><I>milliseconds</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxSIMPLE_BORDER|wxFRAME_NO_TASKBAR|wxSTAY_ON_TOP</I>)<P>
+Construct the splash screen passing a bitmap, a style, a timeout, a window id, optional position
+and size, and a window style.<P>
+<I>splashStyle</I> is a bitlist of some of the following:<P>
+<UL>
+
+<LI> wxSPLASH_CENTRE_ON_PARENT
+<LI> wxSPLASH_CENTRE_ON_SCREEN
+<LI> wxSPLASH_NO_CENTRE
+<LI> wxSPLASH_TIMEOUT
+<LI> wxSPLASH_NO_TIMEOUT
+</UL>
+<P>
+<I>milliseconds</I> is the timeout in milliseconds.<P>
+
+<HR>
+<A NAME="wxsplashscreendtor"></A>
+<H3>wxSplashScreen::~wxSplashScreen</H3>
+<P>
+<B></B> <B>~wxSplashScreen</B>()<P>
+Destroys the splash screen.<P>
+
+<HR>
+<A NAME="wxsplashscreenonclosewindow"></A>
+<H3>wxSplashScreen::OnCloseWindow</H3>
+<P>
+<B>void</B> <B>OnCloseWindow</B>(<B><A HREF="wx_wxcloseevent.html#wxcloseevent">wxCloseEvent</A>& </B></B><I>event</I>)<P>
+Reimplement this event handler if you want to set an application variable on window destruction, for example.<P>
+
+<HR>
+<A NAME="wxsplashscreengetsplashstyle"></A>
+<H3>wxSplashScreen::GetSplashStyle</H3>
+<P>
+<B>long</B> <B>GetSplashStyle</B>() <B>const</B><P>
+Returns the splash style (see <A HREF="wx_wxsplashscreen.html#wxsplashscreenwxsplashscreen">wxSplashScreen::wxSplashScreen</A> for
+details).<P>
+
+<HR>
+<A NAME="wxsplashscreengetsplashwindow"></A>
+<H3>wxSplashScreen::GetSplashWindow</H3>
+<P>
+<B>wxSplashScreenWindow*</B> <B>GetSplashWindow</B>() <B>const</B><P>
+Returns the window used to display the bitmap.<P>
+
+<HR>
+<A NAME="wxsplashscreengettimeout"></A>
+<H3>wxSplashScreen::GetTimeout</H3>
+<P>
+<B>int</B> <B>GetTimeout</B>() <B>const</B><P>
+Returns the timeout in milliseconds.<P>
+
+</FONT></BODY></HTML>

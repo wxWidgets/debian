@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     01.06.03
-%% RCS-ID:      $Id: vlbox.tex,v 1.8 2005/02/22 15:09:55 ABX Exp $
+%% RCS-ID:      $Id: vlbox.tex 42257 2006-10-22 22:09:16Z VZ $
 %% Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -13,9 +13,9 @@
 
 wxVListBox is a listbox-like control with the following two main differences
 from a regular listbox: it can have an arbitrarily huge number of items because
-it doesn't store them itself but uses \helpref{OnDrawItem()}{wxvlistboxondrawitem} 
+it doesn't store them itself but uses \helpref{OnDrawItem()}{wxvlistboxondrawitem}
 callback to draw them (so it is a {\Large V}irtual listbox) and its items can
-have variable height as determined by 
+have variable height as determined by
 \helpref{OnMeasureItem()}{wxvlistboxonmeasureitem} (so it is also a listbox
 with the lines of {\Large V}ariable height).
 
@@ -28,14 +28,22 @@ derive your own class, such as \helpref{wxHtmlListBox}{wxhtmllistbox}, from it.
 
 However it emits the same events as \helpref{wxListBox}{wxlistbox} and the same
 event macros may be used with it.
- 
+
 \wxheading{Derived from}
 
-\helpref{wxVScrolledWindow}{wxvscrolledwindow}
+\helpref{wxVScrolledWindow}{wxvscrolledwindow}\\
+\helpref{wxPanel}{wxpanel}\\
+\helpref{wxWindow}{wxwindow}\\
+\helpref{wxEvtHandler}{wxevthandler}\\
+\helpref{wxObject}{wxobject}
 
 \wxheading{Include files}
 
 <wx/vlbox.h>
+
+\wxheading{See also}
+
+\helpref{wxSimpleHtmlListBox}{wxsimplehtmllistbox}, \helpref{wxHtmlListBox}{wxhtmllistbox}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
@@ -62,11 +70,11 @@ Deletes all items from the control.
 
 \func{bool}{Create}{\param{wxWindow* }{parent}, \param{wxWindowID }{id = wxID\_ANY}, \param{const wxPoint\& }{pos = wxDefaultPosition}, \param{const wxSize\& }{size = wxDefaultSize}, \param{long }{style = 0}, \param{const wxString\& }{name = wxVListBoxNameStr}}
 
-Creates the control. To finish creating it you also should call 
+Creates the control. To finish creating it you also should call
 \helpref{SetItemCount()}{wxvlistboxsetitemcount} to let it know about the
 number of items it contains.
 
-The only special style which may be used with wxVListBox is {\tt wxLB\_MULTIPLE} 
+The only special style which may be used with wxVListBox is {\tt wxLB\_MULTIPLE}
 which indicates that the listbox should support multiple selection.
 
 Returns {\tt true} on success or {\tt false} if the control couldn't be created
@@ -92,7 +100,7 @@ This method is only valid for multi selection listboxes.
 
 \constfunc{int}{GetFirstSelected}{\param{unsigned long\& }{cookie}}
 
-Returns the index of the first selected item in the listbox or 
+Returns the index of the first selected item in the listbox or
 {\tt wxNOT\_FOUND} if no items are currently selected.
 
 \arg{cookie} is an opaque parameter which should be passed to the subsequent
@@ -170,7 +178,7 @@ may only return $0$ or $1$ however.
 
 \constfunc{int}{GetSelection}{\void}
 
-Get the currently selected item or $-1$ if there is no selection.
+Get the currently selected item or {\tt wxNOT\_FOUND} if there is no selection.
 
 
 \membersection{wxVListBox::GetSelectionBackground}\label{wxvlistboxgetselectionbackground}
@@ -202,7 +210,7 @@ listbox.
 Returns {\tt true} if this item is the current one, {\tt false} otherwise.
 
 Current item is always the same as selected one for the single selection
-listbox and in this case this method is equivalent to 
+listbox and in this case this method is equivalent to
 \helpref{IsSelected}{wxvlistboxisselected} but they are different for multi
 selection listboxes where many items may be selected but only one (at most) is
 current.
@@ -282,7 +290,7 @@ equal to {\tt wxNOT\_FOUND}).
 Return {\tt true} if the items selection status has changed or {\tt false}
 otherwise.
 
-This function is only valid for the multiple selection listboxes, use 
+This function is only valid for the multiple selection listboxes, use
 \helpref{SetSelection}{wxvlistboxsetselection} for the single selection ones.
 
 
@@ -356,7 +364,7 @@ This method may be used both with single and multiple selection listboxes.
 \func{void}{SetSelectionBackground}{\param{const wxColour\& }{col}}
 
 Sets the colour to be used for the selected cells background. The background of
-the standard cells may be changed by simply calling 
+the standard cells may be changed by simply calling
 \helpref{SetBackgroundColour}{wxwindowsetbackgroundcolour}.
 
 \wxheading{See also}

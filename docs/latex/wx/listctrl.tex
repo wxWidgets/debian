@@ -4,7 +4,7 @@
 %% Author:
 %% Modified by:
 %% Created:
-%% RCS-ID:      $Id: listctrl.tex,v 1.64.2.7 2006/03/10 21:37:37 RD Exp $
+%% RCS-ID:      $Id: listctrl.tex 45935 2007-05-10 02:02:21Z VZ $
 %% Copyright:   (c) wxWidgets
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -23,7 +23,7 @@ itself only when needed which allows to have controls with millions of items
 without consuming much memory. To use virtual list control you must use
 \helpref{SetItemCount}{wxlistctrlsetitemcount} first and overload at least
 \helpref{OnGetItemText}{wxlistctrlongetitemtext} (and optionally
-\helpref{OnGetItemImage}{wxlistctrlongetitemimage} and
+\helpref{OnGetItemImage}{wxlistctrlongetitemimage} or \helpref{OnGetItemColumnImage}{wxlistctrlongetitemcolumnimage} and
 \helpref{OnGetItemAttr}{wxlistctrlongetitemattr}) to return the information
 about the items when the control requests it. Virtual list control can be used
 as a normal one except that no operations which can take time proportional to
@@ -37,6 +37,12 @@ Using many of wxListCtrl features is shown in the
 
 To intercept events from a list control, use the event table macros described
 in \helpref{wxListEvent}{wxlistevent}.
+
+{\bf Mac Note:} Starting with 2.8, wxListCtrl uses a native implementation for 
+report mode, and uses a generic implementation for other modes. You can use the
+generic implementation for report mode as well by setting the
+mac.listctrl.always\_use\_generic \helpref{wxSystemOption}{wxsystemoptions} to
+1.
 
 \wxheading{Derived from}
 
@@ -204,7 +210,7 @@ Creates the list control. See \helpref{wxListCtrl::wxListCtrl}{wxlistctrlctor} f
 
 \func{bool}{DeleteAllItems}{}
 
-Deletes all the items in the list control.
+Deletes all items in the list control.
 
 {\bf NB:} This function does {\it not} send the
 {\tt wxEVT\_COMMAND\_LIST\_DELETE\_ITEM} event because deleting many items
@@ -253,7 +259,9 @@ Ensures this item is visible.
 \func{long}{FindItem}{\param{long }{start}, \param{const wxString\& }{str}, \param{const bool }{partial = false}}
 
 Find an item whose label matches this string, starting from {\it start} or
-the beginning if {\it start} is -1.
+the beginning if {\it start} is -1. The string comparison is case
+insensitive. If {\it partial} is true then this method will look for
+items which begin with {\it str}.
 
 \func{long}{FindItem}{\param{long }{start}, \param{long }{data}}
 
@@ -326,7 +334,8 @@ or small icon view).
 Returns the edit control being currently used to edit a label. Returns {\tt NULL}
 if no label is being edited.
 
-{\bf NB:} It is currently only implemented for wxMSW.
+{\bf NB:} It is currently only implemented for wxMSW and the generic version,
+not for the native Mac OS X version.
 
 
 \membersection{wxListCtrl::GetImageList}\label{wxlistctrlgetimagelist}
@@ -425,6 +434,25 @@ returns a Wx::Rect ( or undef ).}
 
 
 
+\membersection{wxListCtrl::GetSubItemRect}\label{wxlistctrlgetsubitemrect}
+
+\constfunc{bool}{GetSubItemRect}{\param{long }{item}, \param{long }{subItem}, \param{wxRect\& }{rect}, \param{int }{code = wxLIST\_RECT\_BOUNDS}}
+
+Returns the rectangle representing the size and position, in physical
+coordinates, of the given subitem, i.e. the part of the row \arg{item} in the
+column \arg{subItem}.
+
+This method is only meaningfull when the wxListCtrl is in the report mode. If
+\arg{subItem} parameter is equal to the special value 
+\texttt{wxLIST\_GETSUBITEMRECT\_WHOLEITEM} the return value is the same as
+for \helpref{GetItemRect}{wxlistctrlgetitemrect}.
+
+\arg{code} can be one of \texttt{wxLIST\_RECT\_BOUNDS}, 
+\texttt{wxLIST\_RECT\_ICON} or \texttt{wxLIST\_RECT\_LABEL}.
+
+\newsince{2.7.0}
+
+
 \membersection{wxListCtrl::GetItemSpacing}\label{wxlistctrlgetitemspacing}
 
 \constfunc{wxSize}{GetItemSpacing}{\void}
@@ -486,7 +514,7 @@ This function may be used to find all selected items in the control like this:
             break;
 
         // this item is selected - do whatever is needed with it
-        wxLogMessage("Item %ld is selected."), item);
+        wxLogMessage("Item %ld is selected.", item);
     }
 \end{verbatim}
 
@@ -554,7 +582,7 @@ list or report views (this is a limitation of the native Win32 control).
 
 \membersection{wxListCtrl::HitTest}\label{wxlistctrlhittest}
 
-\func{long}{HitTest}{\param{const wxPoint\& }{point}, \param{int\& }{flags}}
+\constfunc{long}{HitTest}{\param{const wxPoint\& }{point}, \param{int\& }{flags}, \param{long *}{ptrSubItem}}
 
 Determines which item (if any) is at the specified point,
 giving details in {\it flags}. Returns index of the item or {\tt wxNOT\_FOUND}
@@ -575,6 +603,14 @@ if no item is at the specified point.
 \twocolitem{wxLIST\_HITTEST\_ONITEM}{Combination of wxLIST\_HITTEST\_ONITEMICON, wxLIST\_HITTEST\_ONITEMLABEL,
 wxLIST\_HITTEST\_ONITEMSTATEICON.}
 \end{twocollist}
+
+If \arg{ptrSubItem} is not \NULL and the wxListCtrl is in the report
+mode the subitem (or column) number will also be provided. 
+This feature is only available in version 2.7.0 or higher and is currently only
+implemented under wxMSW and requires at least comctl32.dll of verion 4.70 on
+the host system or the value stored in \arg{ptrSubItem} will be always -1. To
+compile this feature into wxWidgets library you need to have access to
+commctrl.h of version 4.70 that is provided by Microsoft.
 
 \pythonnote{A tuple of values is returned in the wxPython version of
 this method. The first value is the item id and the second is the
@@ -672,12 +708,13 @@ The base class version always returns {\tt NULL}.
 \wxheading{See also}
 
 \helpref{OnGetItemImage}{wxlistctrlongetitemimage},\\
+\helpref{OnGetItemColumnImage}{wxlistctrlongetitemcolumnimage},\\
 \helpref{OnGetItemText}{wxlistctrlongetitemtext}
 
 
 \membersection{wxListCtrl::OnGetItemImage}\label{wxlistctrlongetitemimage}
 
-\func{virtual int}{OnGetItemImage}{\param{long }{item}}
+\constfunc{virtual int}{OnGetItemImage}{\param{long }{item}}
 
 This function must be overloaded in the derived class for a control with
 {\tt wxLC\_VIRTUAL} style having an \helpref{image list}{wxlistctrlsetimagelist}
@@ -692,8 +729,25 @@ The base class version always returns $-1$.
 \wxheading{See also}
 
 \helpref{OnGetItemText}{wxlistctrlongetitemtext},\\
+\helpref{OnGetItemColumnImage}{wxlistctrlongetitemcolumnimage},\\
 \helpref{OnGetItemAttr}{wxlistctrlongetitemattr}
 
+\membersection{wxListCtrl::OnGetItemColumnImage}\label{wxlistctrlongetitemcolumnimage}
+
+\constfunc{virtual int}{OnGetItemColumnImage}{\param{long }{item}, \param{long }{column}}
+
+Overload this function in the derived class for a control with
+{\tt wxLC\_VIRTUAL} and {\tt wxLC\_REPORT} styles in order to specify the image
+index for the given line and column.
+
+The base class version always calls OnGetItemImage for the first column, else
+it returns $-1$.
+
+\wxheading{See also}
+
+\helpref{OnGetItemText}{wxlistctrlongetitemtext},\\
+\helpref{OnGetItemImage}{wxlistctrlongetitemimage},\\
+\helpref{OnGetItemAttr}{wxlistctrlongetitemattr}
 
 \membersection{wxListCtrl::OnGetItemText}\label{wxlistctrlongetitemtext}
 
@@ -707,6 +761,7 @@ the given {\it column} for the specified {\tt item}.
 
 \helpref{SetItemCount}{wxlistctrlsetitemcount},\\
 \helpref{OnGetItemImage}{wxlistctrlongetitemimage},\\
+\helpref{OnGetItemColumnImage}{wxlistctrlongetitemcolumnimage},\\
 \helpref{OnGetItemAttr}{wxlistctrlongetitemattr}
 
 
@@ -888,6 +943,9 @@ from $0$ to {\it count}.
 
 Associates application-defined data with this item.
 
+Notice that this function cannot be used to associate pointers with the control
+items, use \helpref{SetItemPtrData}{wxlistctrlsetitemptrdata} instead.
+
 
 \membersection{wxListCtrl::SetItemFont}\label{wxlistctrlsetitemfont}
 
@@ -924,6 +982,18 @@ The image is an index into the image list associated with the list control.
 \func{bool}{SetItemPosition}{\param{long }{item}, \param{const wxPoint\& }{pos}}
 
 Sets the position of the item, in icon or small icon view. Windows only.
+
+
+\membersection{wxListCtrl::SetItemPtrData}\label{wxlistctrlsetitemptrdata}
+
+\func{bool}{SetItemPtrData}{\param{long }{item}, \param{wxUIntPtr }{data}}
+
+Associates application-defined data with this item. The \arg{data} parameter may
+be either an integer or a pointer cast to the \texttt{wxUIntPtr} type which is
+guaranteed to be large enough to be able to contain all integer types and
+pointers.
+
+\newsince{2.8.4}
 
 
 \membersection{wxListCtrl::SetItemState}\label{wxlistctrlsetitemstate}

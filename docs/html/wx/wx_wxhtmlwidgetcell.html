@@ -1,0 +1,38 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlWidgetCell</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmlwidgetcell"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmltagsmodule.html#wxhtmltagsmodule"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmlwindow.html#wxhtmlwindow"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlWidgetCell</H2>
+<P>
+wxHtmlWidgetCell is a class that provides a connection between HTML cells and widgets (an object derived
+from wxWindow). You can use it to display things like forms, input boxes etc. in an HTML window.<P>
+wxHtmlWidgetCell takes care of resizing and moving window.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxhtmlcell.html#wxhtmlcell">wxHtmlCell</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/htmlcell.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmlwidgetcellwxhtmlwidgetcell">wxHtmlWidgetCell::wxHtmlWidgetCell</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlwidgetcellwxhtmlwidgetcell"></A>
+<H3>wxHtmlWidgetCell::wxHtmlWidgetCell</H3>
+<P>
+<B></B> <B>wxHtmlWidgetCell</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>wnd</I>, <B>int </B><I>w = 0</I>)<P>
+Constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>wnd</I><UL><UL>
+Connected window. It is parent window <B>must</B> be the wxHtmlWindow object within
+which it is displayed!</UL></UL>
+<P>
+<I>w</I><UL><UL>
+Floating width. If non-zero width of <I>wnd</I> window is adjusted so that it is
+always <I>w</I> percents of parent container's width. (For example w = 100 means that the window
+will always have same width as parent container)</UL></UL>
+<P>
+
+</FONT></BODY></HTML>

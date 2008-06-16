@@ -1,0 +1,455 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxScrollBar</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxscrollbar"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxscreendc.html#wxscreendc"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxscrolledwindow.html#wxscrolledwindow"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxScrollBar</H2>
+<P>
+A wxScrollBar is a control that represents a horizontal or
+vertical scrollbar. It is distinct from the two scrollbars that some windows
+provide automatically, but the two types of scrollbar share the way
+events are received.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/scrolbar.h&gt;<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+A scrollbar has the following main attributes: <I>range</I>, <I>thumb size</I>, <I>page size</I>, and <I>position</I>.<P>
+The range is the total number of units associated with the view represented by the scrollbar.
+For a table with 15 columns, the range would be 15.<P>
+The thumb size is the number of units that are currently visible. For the table example, the window
+might be sized so that only 5 columns are currently visible, in which case the application would
+set the thumb size to 5. When the thumb size becomes the same as or greater than the range,
+the scrollbar will be automatically hidden on most platforms.<P>
+The page size is the number of units that the scrollbar should scroll by, when 'paging' through
+the data. This value is normally the same as the thumb size length, because
+it is natural to assume that the visible window size defines a page.<P>
+The scrollbar position is the current thumb position.<P>
+Most applications will find it convenient to provide a function called <B>AdjustScrollbars</B> which can
+be called initially, from an <B>OnSize</B> event handler, and whenever the application data
+changes in size. It will adjust the view, object and page size according
+to the size of the window and the size of the data.<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSB_HORIZONTAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies a horizontal scrollbar.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSB_VERTICAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies a vertical scrollbar.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a scroll event, use these event handler macros to direct input to
+member functions that take a wxScrollEvent argument. You can use
+<TT>EVT_COMMAND_SCROLL...</TT> macros with window IDs for when intercepting
+scroll events from controls, or <TT>EVT_SCROLL...</TT> macros without window IDs
+for intercepting scroll events from the receiving window -- except for this,
+the macros behave exactly the same.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process all scroll events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_TOP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_TOP scroll-to-top events (minimum position).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_BOTTOM(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_BOTTOM scroll-to-bottom events (maximum position).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_LINEUP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_LINEUP line up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_LINEDOWN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_LINEDOWN line down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_PAGEUP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_PAGEUP page up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_PAGEDOWN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_PAGEDOWN page down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_THUMBTRACK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_THUMBTRACK thumbtrack events (frequent events
+sent as the user drags the thumbtrack).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_THUMBRELEASE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_THUMBRELEASE thumb release events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_CHANGED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_CHANGED end of scrolling events (MSW only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process all scroll events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_TOP(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_TOP scroll-to-top events (minimum position).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_BOTTOM(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_BOTTOM scroll-to-bottom events (maximum position).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_LINEUP(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_LINEUP line up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_LINEDOWN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_LINEDOWN line down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_PAGEUP(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_PAGEUP page up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_PAGEDOWN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_PAGEDOWN page down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_THUMBTRACK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_THUMBTRACK thumbtrack events (frequent events
+sent as the user drags the thumbtrack).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_THUMBRELEASE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_THUMBRELEASE thumb release events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_CHANGED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_CHANGED end of scrolling events (MSW only).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">The difference between <TT>EVT_SCROLL_THUMBRELEASE</TT> and <TT>EVT_SCROLL_CHANGED</TT></FONT></B><P>
+The <TT>EVT_SCROLL_THUMBRELEASE</TT> event is only emitted when actually dragging
+the thumb using the mouse and releasing it (This <TT>EVT_SCROLL_THUMBRELEASE</TT>
+event is also followed by an <TT>EVT_SCROLL_CHANGED</TT> event).<P>
+The <TT>EVT_SCROLL_CHANGED</TT> event also occurs when using the keyboard to
+change the thumb position, and when clicking next to the thumb (In all these
+cases the <TT>EVT_SCROLL_THUMBRELEASE</TT> event does not happen).<P>
+In short, the <TT>EVT_SCROLL_CHANGED</TT> event is triggered when scrolling/
+moving has finished independently of the way it had started. Please see the
+widgets sample ("Slider" page) to see the difference between <TT>
+EVT_SCROLL_THUMBRELEASE</TT> and <TT>EVT_SCROLL_CHANGED</TT> in action.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_scrollingoverview.html#scrollingoverview">Scrolling overview</A>,
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A>,
+<A HREF="wx_wxscrolledwindow.html#wxscrolledwindow">wxScrolledWindow</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxscrollbarctor">wxScrollBar::wxScrollBar</A><BR>
+<A HREF="#wxscrollbardtor">wxScrollBar::~wxScrollBar</A><BR>
+<A HREF="#wxscrollbarcreate">wxScrollBar::Create</A><BR>
+<A HREF="#wxscrollbargetrange">wxScrollBar::GetRange</A><BR>
+<A HREF="#wxscrollbargetpagesize">wxScrollBar::GetPageSize</A><BR>
+<A HREF="#wxscrollbargetthumbposition">wxScrollBar::GetThumbPosition</A><BR>
+<A HREF="#wxscrollbargetthumbsize">wxScrollBar::GetThumbSize</A><BR>
+<A HREF="#wxscrollbarsetthumbposition">wxScrollBar::SetThumbPosition</A><BR>
+<A HREF="#wxscrollbarsetscrollbar">wxScrollBar::SetScrollbar</A><BR>
+<P>
+
+<HR>
+<A NAME="wxscrollbarctor"></A>
+<H3>wxScrollBar::wxScrollBar</H3>
+<P>
+<B></B> <B>wxScrollBar</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxScrollBar</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxSB_HORIZONTAL</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "scrollBar"</I>)<P>
+Constructor, creating and showing a scrollbar.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must be non-NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position. If the position (-1, -1) is specified then a default position is chosen.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then a default size is chosen.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxscrollbar.html#wxscrollbar">wxScrollBar</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxscrollbar.html#wxscrollbarcreate">wxScrollBar::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+
+
+<HR>
+<A NAME="wxscrollbardtor"></A>
+<H3>wxScrollBar::~wxScrollBar</H3>
+<P>
+<B>void</B> <B>~wxScrollBar</B>()<P>
+Destructor, destroying the scrollbar.<P>
+
+
+<HR>
+<A NAME="wxscrollbarcreate"></A>
+<H3>wxScrollBar::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxSB_HORIZONTAL</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "scrollBar"</I>)<P>
+Scrollbar creation function called by the scrollbar constructor.
+See <A HREF="wx_wxscrollbar.html#wxscrollbarctor">wxScrollBar::wxScrollBar</A> for details.<P>
+
+
+<HR>
+<A NAME="wxscrollbargetrange"></A>
+<H3>wxScrollBar::GetRange</H3>
+<P>
+<B>int</B> <B>GetRange</B>() <B>const</B><P>
+Returns the length of the scrollbar.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxscrollbar.html#wxscrollbarsetscrollbar">wxScrollBar::SetScrollbar</A><P>
+
+
+<HR>
+<A NAME="wxscrollbargetpagesize"></A>
+<H3>wxScrollBar::GetPageSize</H3>
+<P>
+<B>int</B> <B>GetPageSize</B>() <B>const</B><P>
+Returns the page size of the scrollbar. This is the number of scroll units
+that will be scrolled when the user pages up or down. Often it is the
+same as the thumb size.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxscrollbar.html#wxscrollbarsetscrollbar">wxScrollBar::SetScrollbar</A><P>
+
+
+<HR>
+<A NAME="wxscrollbargetthumbposition"></A>
+<H3>wxScrollBar::GetThumbPosition</H3>
+<P>
+<B>int</B> <B>GetThumbPosition</B>() <B>const</B><P>
+Returns the current position of the scrollbar thumb.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxscrollbar.html#wxscrollbarsetthumbposition">wxScrollBar::SetThumbPosition</A><P>
+
+
+<HR>
+<A NAME="wxscrollbargetthumbsize"></A>
+<H3>wxScrollBar::GetThumbSize</H3>
+<P>
+<B>int</B> <B>GetThumbSize</B>() <B>const</B><P>
+Returns the thumb or 'view' size.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxscrollbar.html#wxscrollbarsetscrollbar">wxScrollBar::SetScrollbar</A><P>
+
+
+<HR>
+<A NAME="wxscrollbarsetthumbposition"></A>
+<H3>wxScrollBar::SetThumbPosition</H3>
+<P>
+<B>void</B> <B>SetThumbPosition</B>(<B>int</B><I> viewStart</I>)<P>
+Sets the position of the scrollbar.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>viewStart</I><UL><UL>
+The position of the scrollbar thumb.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxscrollbar.html#wxscrollbargetthumbposition">wxScrollBar::GetThumbPosition</A><P>
+
+
+<HR>
+<A NAME="wxscrollbarsetscrollbar"></A>
+<H3>wxScrollBar::SetScrollbar</H3>
+<P>
+<B>virtual void</B> <B>SetScrollbar</B>(<B>int </B><I>position</I>,
+<B>int </B><I>thumbSize</I>, <B>int </B><I>range</I>,
+<B>int </B><I>pageSize</I>,
+<B>const bool </B><I>refresh = true</I>)<P>
+Sets the scrollbar properties.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>position</I><UL><UL>
+The position of the scrollbar in scroll units.</UL></UL>
+<P>
+<I>thumbSize</I><UL><UL>
+The size of the thumb, or visible portion of the scrollbar, in scroll units.</UL></UL>
+<P>
+<I>range</I><UL><UL>
+The maximum position of the scrollbar.</UL></UL>
+<P>
+<I>pageSize</I><UL><UL>
+The size of the page size in scroll units. This is the number of units
+the scrollbar will scroll when it is paged up or down. Often it is the same as
+the thumb size.</UL></UL>
+<P>
+<I>refresh</I><UL><UL>
+true to redraw the scrollbar, false otherwise.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Let's say you wish to display 50 lines of text, using the same font.
+The window is sized so that you can only see 16 lines at a time.<P>
+You would use:<P>
+<FONT SIZE=2><PRE>
+  scrollbar-&gt;SetScrollbar(0, 16, 50, 15);
+</PRE>
+</FONT><P>
+The page size is 1 less than the thumb size so that the last line of the previous
+page will be visible on the next page, to help orient the user.<P>
+Note that with the window at this size, the thumb position can never go
+above 50 minus 16, or 34.<P>
+You can determine how many lines are currently visible by dividing the current view
+size by the character height in pixels.<P>
+When defining your own scrollbar behaviour, you will always need to recalculate
+the scrollbar settings when the window size changes. You could therefore put your
+scrollbar calculations and SetScrollbar
+call into a function named AdjustScrollbars, which can be called initially and also
+from a <A HREF="wx_wxsizeevent.html#wxsizeevent">wxSizeEvent</A> event handler function.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_scrollingoverview.html#scrollingoverview">Scrolling overview</A>,
+<A HREF="wx_wxwindow.html#wxwindowsetscrollbar">wxWindow::SetScrollbar</A>, <A HREF="wx_wxscrolledwindow.html#wxscrolledwindow">wxScrolledWindow</A><P>
+
+
+</FONT></BODY></HTML>

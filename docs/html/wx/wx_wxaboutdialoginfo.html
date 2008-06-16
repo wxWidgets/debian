@@ -1,0 +1,234 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxAboutDialogInfo</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxaboutdialoginfo"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_classref.html#classref"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxacceleratorentry.html#wxacceleratorentry"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxAboutDialogInfo</H2>
+<P>
+wxAboutDialogInfo contains information shown in the standard <I>About</I>
+dialog displayed by the <A HREF="wx_dialogfunctions.html#wxaboutbox">wxAboutBox()</A> function.<P>
+This class contains the general information about the program, such as its
+name, version, copyright and so on, as well as lists of the program developers,
+documentation writers, artists and translators. The simple properties from the
+former group are represented as a string with the exception of the program icon
+and the program web site, while the lists from the latter group are stored as 
+<A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A> and can be either set entirely at once
+using <A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfosetdevelopers">SetDevelopers</A> and similar
+functions or built one by one using <A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfoadddeveloper">AddDeveloper</A> 
+etc.<P>
+Please also notice that while all the main platforms have the native
+implementation of the about dialog, they are often more limited than the
+generic version provided by wxWidgets and so the generic version is used if
+wxAboutDialogInfo has any fields not supported by the native version. Currently
+GTK+ version supports all the possible fields natively but MSW and Mac versions
+don't support URLs, licence text nor custom icons in the about dialog and if
+either of those is used, <A HREF="wx_dialogfunctions.html#wxaboutbox">wxAboutBox()</A> will automatically
+use the generic version so you should avoid specifying these fields to achieve
+more native look and feel.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/aboutdlg.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxaboutdialoginfowxaboutdialoginfo">wxAboutDialogInfo::wxAboutDialogInfo</A><BR>
+<A HREF="#wxaboutdialoginfoaddartist">wxAboutDialogInfo::AddArtist</A><BR>
+<A HREF="#wxaboutdialoginfoadddeveloper">wxAboutDialogInfo::AddDeveloper</A><BR>
+<A HREF="#wxaboutdialoginfoadddocwriter">wxAboutDialogInfo::AddDocWriter</A><BR>
+<A HREF="#wxaboutdialoginfoaddtranslator">wxAboutDialogInfo::AddTranslator</A><BR>
+<A HREF="#wxaboutdialoginfosetartists">wxAboutDialogInfo::SetArtists</A><BR>
+<A HREF="#wxaboutdialoginfosetcopyright">wxAboutDialogInfo::SetCopyright</A><BR>
+<A HREF="#wxaboutdialoginfosetdescription">wxAboutDialogInfo::SetDescription</A><BR>
+<A HREF="#wxaboutdialoginfosetdevelopers">wxAboutDialogInfo::SetDevelopers</A><BR>
+<A HREF="#wxaboutdialoginfosetdocwriters">wxAboutDialogInfo::SetDocWriters</A><BR>
+<A HREF="#wxaboutdialoginfoseticon">wxAboutDialogInfo::SetIcon</A><BR>
+<A HREF="#wxaboutdialoginfosetlicence">wxAboutDialogInfo::SetLicence</A><BR>
+<A HREF="#wxaboutdialoginfosetlicense">wxAboutDialogInfo::SetLicense</A><BR>
+<A HREF="#wxaboutdialoginfosetname">wxAboutDialogInfo::SetName</A><BR>
+<A HREF="#wxaboutdialoginfosettranslators">wxAboutDialogInfo::SetTranslators</A><BR>
+<A HREF="#wxaboutdialoginfosetversion">wxAboutDialogInfo::SetVersion</A><BR>
+<A HREF="#wxaboutdialoginfosetwebsite">wxAboutDialogInfo::SetWebSite</A><BR>
+<P>
+
+<HR>
+<A NAME="wxaboutdialoginfowxaboutdialoginfo"></A>
+<H3>wxAboutDialogInfo::wxAboutDialogInfo</H3>
+<P>
+<B></B> <B>wxAboutDialogInfo</B>()<P>
+Default constructor leaves all fields are initially uninitialized, in general
+you should call at least <A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfosetversion">SetVersion</A>, 
+<A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfosetcopyright">SetCopyright</A> and 
+<A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfosetdescription">SetDescription</A>.<P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfoaddartist"></A>
+<H3>wxAboutDialogInfo::AddArtist</H3>
+<P>
+<B>void</B> <B>AddArtist</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>artist</I>)<P>
+Adds an artist name to be shown in the program credits.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfosetartists">SetArtists</A><P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfoadddeveloper"></A>
+<H3>wxAboutDialogInfo::AddDeveloper</H3>
+<P>
+<B>void</B> <B>AddDeveloper</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>developer</I>)<P>
+Adds a developer name to be shown in the program credits.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfosetdevelopers">SetDevelopers</A><P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfoadddocwriter"></A>
+<H3>wxAboutDialogInfo::AddDocWriter</H3>
+<P>
+<B>void</B> <B>AddDocWriter</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>docwriter</I>)<P>
+Adds a documentation writer name to be shown in the program credits.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfosetdocwriters">SetDocWriters</A><P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfoaddtranslator"></A>
+<H3>wxAboutDialogInfo::AddTranslator</H3>
+<P>
+<B>void</B> <B>AddTranslator</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>translator</I>)<P>
+Adds a translator name to be shown in the program credits. Notice that if no
+translator names are specified explicitely, <A HREF="wx_dialogfunctions.html#wxaboutbox">wxAboutBox()</A> 
+will try to use the translation of the string <TT>translator-credits</TT> from
+the currently used message catalog -- this can be used to show just the name of
+the translator of the program in the current language.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfosettranslators">SetTranslators</A><P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfosetartists"></A>
+<H3>wxAboutDialogInfo::SetArtists</H3>
+<P>
+<B>void</B> <B>SetArtists</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>artists</I>)<P>
+Sets the the list of artists to be shown in the program credits.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfoaddartist">AddArtist</A><P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfosetcopyright"></A>
+<H3>wxAboutDialogInfo::SetCopyright</H3>
+<P>
+<B>void</B> <B>SetCopyright</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>copyright</I>)<P>
+Set the short string containing the program copyright information. Notice that
+any occurrences of <TT>"(C)"</TT> in <I>copyright</I> will be replaced by the
+copyright symbol (circled C) automatically, which means that you can avoid
+using this symbol in the program source code which can be problematic,<P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfosetdescription"></A>
+<H3>wxAboutDialogInfo::SetDescription</H3>
+<P>
+<B>void</B> <B>SetDescription</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>desc</I>)<P>
+Set brief, but possibly multiline, description of the program.<P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfosetdevelopers"></A>
+<H3>wxAboutDialogInfo::SetDevelopers</H3>
+<P>
+<B>void</B> <B>SetDevelopers</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>developers</I>)<P>
+Set the list of developers of the program.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfoadddeveloper">AddDeveloper</A><P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfosetdocwriters"></A>
+<H3>wxAboutDialogInfo::SetDocWriters</H3>
+<P>
+<B>void</B> <B>SetDocWriters</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>docwriters</I>)<P>
+Set the list of documentation writers.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfoadddocwriter">AddDocWriter</A><P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfoseticon"></A>
+<H3>wxAboutDialogInfo::SetIcon</H3>
+<P>
+<B>void</B> <B>SetIcon</B>(<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>& </B></B><I>icon</I>)<P>
+Set the icon to be shown in the dialog. By default the icon of the main frame
+will be shown if the native about dialog supports custom icons. If it doesn't
+but a valid icon is specified using this method, the generic about dialog is
+used instead so you should avoid calling this function for maximally native
+look and feel.<P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfosetlicence"></A>
+<H3>wxAboutDialogInfo::SetLicence</H3>
+<P>
+<B>void</B> <B>SetLicence</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>licence</I>)<P>
+Set the long, multiline string containing the text of the program licence.<P>
+Only GTK+ version supports showing the licence text in the native about dialog
+currently so the generic version will be used under all the other platforms if
+this method is called. To preserve the native look and feel it is advised that
+you do not call this method but provide a separate menu item in the 
+<TT>"Help"</TT> menu for displaying the text of your program licence.<P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfosetlicense"></A>
+<H3>wxAboutDialogInfo::SetLicense</H3>
+<P>
+<B>void</B> <B>SetLicense</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>licence</I>)<P>
+This is the same as <A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfosetlicence">SetLicence</A>.<P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfosetname"></A>
+<H3>wxAboutDialogInfo::SetName</H3>
+<P>
+<B>void</B> <B>SetName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Set the name of the program. If this method is not called, the string returned
+by <A HREF="wx_wxapp.html#wxappgetappname">wxApp::GetAppName()</A> will be shown in the dialog.<P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfosettranslators"></A>
+<H3>wxAboutDialogInfo::SetTranslators</H3>
+<P>
+<B>void</B> <B>SetTranslators</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>translators</I>)<P>
+Set the list of translators. Please see 
+<A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfoaddtranslator">AddTranslator</A> for additional
+discussion.<P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfosetversion"></A>
+<H3>wxAboutDialogInfo::SetVersion</H3>
+<P>
+<B>void</B> <B>SetVersion</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>version</I>)<P>
+Set the version of the program. The version is in free format, i.e. not
+necessarily in the <TT>x.y.z</TT> form but it shouldn't contain the "version"
+word.<P>
+
+
+<HR>
+<A NAME="wxaboutdialoginfosetwebsite"></A>
+<H3>wxAboutDialogInfo::SetWebSite</H3>
+<P>
+<B>void</B> <B>SetWebSite</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>url</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>desc = wxEmptyString</I>)<P>
+Set the web site for the program and its description (which defaults to URL
+itself if empty).<P>
+Please notice that only GTK+ version currently supports showing the link in the
+native about dialog so if this method is called, the generic version will be
+used under all the other platforms.<P>
+
+
+</FONT></BODY></HTML>

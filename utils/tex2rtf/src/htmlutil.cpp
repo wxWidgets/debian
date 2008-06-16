@@ -5,14 +5,10 @@
 // Modified by: Wlodzimierz ABX Skiba 2003/2004 Unicode support
 //              Ron Lee
 // Created:     7.9.93
-// RCS-ID:      $Id: htmlutil.cpp,v 1.32 2005/08/24 17:56:27 ABX Exp $
+// RCS-ID:      $Id: htmlutil.cpp 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -118,7 +114,7 @@ class TexNextPage: public wxObject
     label = copystring(theLabel);
     filename = copystring(theFile);
   }
-  ~TexNextPage(void)
+  virtual ~TexNextPage(void)
   {
     delete[] label;
     delete[] filename;

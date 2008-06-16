@@ -1,0 +1,995 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextBuffer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextbuffer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextattr.html#wxrichtextattr"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextcharacterstyledefinition.html#wxrichtextcharacterstyledefinition"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextBuffer</H2>
+<P>
+This class represents the whole buffer associated with a <A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxRichTextParagraphLayoutBox<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextbuffer.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtextattr.html#wxtextattr">wxTextAttr</A>, <A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>, <A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A>, <A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextbufferwxrichtextbuffer">wxRichTextBuffer::wxRichTextBuffer</A><BR>
+<A HREF="#wxrichtextbufferdtor">wxRichTextBuffer::~wxRichTextBuffer</A><BR>
+<A HREF="#wxrichtextbufferaddeventhandler">wxRichTextBuffer::AddEventHandler</A><BR>
+<A HREF="#wxrichtextbufferaddhandler">wxRichTextBuffer::AddHandler</A><BR>
+<A HREF="#wxrichtextbufferaddparagraph">wxRichTextBuffer::AddParagraph</A><BR>
+<A HREF="#wxrichtextbufferbatchingundo">wxRichTextBuffer::BatchingUndo</A><BR>
+<A HREF="#wxrichtextbufferbeginalignment">wxRichTextBuffer::BeginAlignment</A><BR>
+<A HREF="#wxrichtextbufferbeginbatchundo">wxRichTextBuffer::BeginBatchUndo</A><BR>
+<A HREF="#wxrichtextbufferbeginbold">wxRichTextBuffer::BeginBold</A><BR>
+<A HREF="#wxrichtextbufferbegincharacterstyle">wxRichTextBuffer::BeginCharacterStyle</A><BR>
+<A HREF="#wxrichtextbufferbeginfont">wxRichTextBuffer::BeginFont</A><BR>
+<A HREF="#wxrichtextbufferbeginfontsize">wxRichTextBuffer::BeginFontSize</A><BR>
+<A HREF="#wxrichtextbufferbeginitalic">wxRichTextBuffer::BeginItalic</A><BR>
+<A HREF="#wxrichtextbufferbeginleftindent">wxRichTextBuffer::BeginLeftIndent</A><BR>
+<A HREF="#wxrichtextbufferbeginlinespacing">wxRichTextBuffer::BeginLineSpacing</A><BR>
+<A HREF="#wxrichtextbufferbeginliststyle">wxRichTextBuffer::BeginListStyle</A><BR>
+<A HREF="#wxrichtextbufferbeginnumberedbullet">wxRichTextBuffer::BeginNumberedBullet</A><BR>
+<A HREF="#wxrichtextbufferbeginparagraphspacing">wxRichTextBuffer::BeginParagraphSpacing</A><BR>
+<A HREF="#wxrichtextbufferbeginparagraphstyle">wxRichTextBuffer::BeginParagraphStyle</A><BR>
+<A HREF="#wxrichtextbufferbeginrightindent">wxRichTextBuffer::BeginRightIndent</A><BR>
+<A HREF="#wxrichtextbufferbeginstyle">wxRichTextBuffer::BeginStyle</A><BR>
+<A HREF="#wxrichtextbufferbeginsuppressundo">wxRichTextBuffer::BeginSuppressUndo</A><BR>
+<A HREF="#wxrichtextbufferbeginstandardbullet">wxRichTextBuffer::BeginStandardBullet</A><BR>
+<A HREF="#wxrichtextbufferbeginsymbolbullet">wxRichTextBuffer::BeginSymbolBullet</A><BR>
+<A HREF="#wxrichtextbufferbegintextcolour">wxRichTextBuffer::BeginTextColour</A><BR>
+<A HREF="#wxrichtextbufferbeginunderline">wxRichTextBuffer::BeginUnderline</A><BR>
+<A HREF="#wxrichtextbufferbeginurl">wxRichTextBuffer::BeginURL</A><BR>
+<A HREF="#wxrichtextbuffercanpastefromclipboard">wxRichTextBuffer::CanPasteFromClipboard</A><BR>
+<A HREF="#wxrichtextbuffercleanuphandlers">wxRichTextBuffer::CleanUpHandlers</A><BR>
+<A HREF="#wxrichtextbufferclear">wxRichTextBuffer::Clear</A><BR>
+<A HREF="#wxrichtextbufferclearliststyle">wxRichTextBuffer::ClearListStyle</A><BR>
+<A HREF="#wxrichtextbufferclearstylestack">wxRichTextBuffer::ClearStyleStack</A><BR>
+<A HREF="#wxrichtextbufferclone">wxRichTextBuffer::Clone</A><BR>
+<A HREF="#wxrichtextbuffercopy">wxRichTextBuffer::Copy</A><BR>
+<A HREF="#wxrichtextbuffercopytoclipboard">wxRichTextBuffer::CopyToClipboard</A><BR>
+<A HREF="#wxrichtextbufferdeleterangewithundo">wxRichTextBuffer::DeleteRangeWithUndo</A><BR>
+<A HREF="#wxrichtextbufferdump">wxRichTextBuffer::Dump</A><BR>
+<A HREF="#wxrichtextbufferendalignment">wxRichTextBuffer::EndAlignment</A><BR>
+<A HREF="#wxrichtextbufferendallstyles">wxRichTextBuffer::EndAllStyles</A><BR>
+<A HREF="#wxrichtextbufferendbatchundo">wxRichTextBuffer::EndBatchUndo</A><BR>
+<A HREF="#wxrichtextbufferendbold">wxRichTextBuffer::EndBold</A><BR>
+<A HREF="#wxrichtextbufferendcharacterstyle">wxRichTextBuffer::EndCharacterStyle</A><BR>
+<A HREF="#wxrichtextbufferendfont">wxRichTextBuffer::EndFont</A><BR>
+<A HREF="#wxrichtextbufferendfontsize">wxRichTextBuffer::EndFontSize</A><BR>
+<A HREF="#wxrichtextbufferenditalic">wxRichTextBuffer::EndItalic</A><BR>
+<A HREF="#wxrichtextbufferendleftindent">wxRichTextBuffer::EndLeftIndent</A><BR>
+<A HREF="#wxrichtextbufferendlinespacing">wxRichTextBuffer::EndLineSpacing</A><BR>
+<A HREF="#wxrichtextbufferendliststyle">wxRichTextBuffer::EndListStyle</A><BR>
+<A HREF="#wxrichtextbufferendnumberedbullet">wxRichTextBuffer::EndNumberedBullet</A><BR>
+<A HREF="#wxrichtextbufferendparagraphspacing">wxRichTextBuffer::EndParagraphSpacing</A><BR>
+<A HREF="#wxrichtextbufferendparagraphstyle">wxRichTextBuffer::EndParagraphStyle</A><BR>
+<A HREF="#wxrichtextbufferendrightindent">wxRichTextBuffer::EndRightIndent</A><BR>
+<A HREF="#wxrichtextbufferendstyle">wxRichTextBuffer::EndStyle</A><BR>
+<A HREF="#wxrichtextbufferendsuppressundo">wxRichTextBuffer::EndSuppressUndo</A><BR>
+<A HREF="#wxrichtextbufferendsymbolbullet">wxRichTextBuffer::EndSymbolBullet</A><BR>
+<A HREF="#wxrichtextbufferendstandardbullet">wxRichTextBuffer::EndStandardBullet</A><BR>
+<A HREF="#wxrichtextbufferendtextcolour">wxRichTextBuffer::EndTextColour</A><BR>
+<A HREF="#wxrichtextbufferendunderline">wxRichTextBuffer::EndUnderline</A><BR>
+<A HREF="#wxrichtextbufferendurl">wxRichTextBuffer::EndURL</A><BR>
+<A HREF="#wxrichtextbufferfindhandler">wxRichTextBuffer::FindHandler</A><BR>
+<A HREF="#wxrichtextbufferfindhandlerfilenameortype">wxRichTextBuffer::FindHandlerFilenameOrType</A><BR>
+<A HREF="#wxrichtextbuffergetbasicstyle">wxRichTextBuffer::GetBasicStyle</A><BR>
+<A HREF="#wxrichtextbuffergetbatchedcommand">wxRichTextBuffer::GetBatchedCommand</A><BR>
+<A HREF="#wxrichtextbuffergetcommandprocessor">wxRichTextBuffer::GetCommandProcessor</A><BR>
+<A HREF="#wxrichtextbuffergetdefaultstyle">wxRichTextBuffer::GetDefaultStyle</A><BR>
+<A HREF="#wxrichtextbuffergetextwildcard">wxRichTextBuffer::GetExtWildcard</A><BR>
+<A HREF="#wxrichtextbuffergethandlers">wxRichTextBuffer::GetHandlers</A><BR>
+<A HREF="#wxrichtextbuffergetrenderer">wxRichTextBuffer::GetRenderer</A><BR>
+<A HREF="#wxrichtextbuffergetstyle">wxRichTextBuffer::GetStyle</A><BR>
+<A HREF="#wxrichtextbuffergetstyleforrange">wxRichTextBuffer::GetStyleForRange</A><BR>
+<A HREF="#wxrichtextbuffergetstylesheet">wxRichTextBuffer::GetStyleSheet</A><BR>
+<A HREF="#wxrichtextbuffergetstylestacksize">wxRichTextBuffer::GetStyleStackSize</A><BR>
+<A HREF="#wxrichtextbuffergetuncombinedstyle">wxRichTextBuffer::GetUncombinedStyle</A><BR>
+<A HREF="#wxrichtextbufferhittest">wxRichTextBuffer::HitTest</A><BR>
+<A HREF="#wxrichtextbufferinit">wxRichTextBuffer::Init</A><BR>
+<A HREF="#wxrichtextbufferinitstandardhandlers">wxRichTextBuffer::InitStandardHandlers</A><BR>
+<A HREF="#wxrichtextbufferinserthandler">wxRichTextBuffer::InsertHandler</A><BR>
+<A HREF="#wxrichtextbufferinsertimagewithundo">wxRichTextBuffer::InsertImageWithUndo</A><BR>
+<A HREF="#wxrichtextbufferinsertnewlinewithundo">wxRichTextBuffer::InsertNewlineWithUndo</A><BR>
+<A HREF="#wxrichtextbufferinserttextwithundo">wxRichTextBuffer::InsertTextWithUndo</A><BR>
+<A HREF="#wxrichtextbufferismodified">wxRichTextBuffer::IsModified</A><BR>
+<A HREF="#wxrichtextbufferloadfile">wxRichTextBuffer::LoadFile</A><BR>
+<A HREF="#wxrichtextbuffermodify">wxRichTextBuffer::Modify</A><BR>
+<A HREF="#wxrichtextbuffernumberlist">wxRichTextBuffer::NumberList</A><BR>
+<A HREF="#wxrichtextbufferpastefromclipboard">wxRichTextBuffer::PasteFromClipboard</A><BR>
+<A HREF="#wxrichtextbufferpromotelist">wxRichTextBuffer::PromoteList</A><BR>
+<A HREF="#wxrichtextbufferremoveeventhandler">wxRichTextBuffer::RemoveEventHandler</A><BR>
+<A HREF="#wxrichtextbufferremovehandler">wxRichTextBuffer::RemoveHandler</A><BR>
+<A HREF="#wxrichtextbufferresetandclearcommands">wxRichTextBuffer::ResetAndClearCommands</A><BR>
+<A HREF="#wxrichtextbuffersavefile">wxRichTextBuffer::SaveFile</A><BR>
+<A HREF="#wxrichtextbuffersetbasicstyle">wxRichTextBuffer::SetBasicStyle</A><BR>
+<A HREF="#wxrichtextbuffersetdefaultstyle">wxRichTextBuffer::SetDefaultStyle</A><BR>
+<A HREF="#wxrichtextbuffersetliststyle">wxRichTextBuffer::SetListStyle</A><BR>
+<A HREF="#wxrichtextbuffersetrenderer">wxRichTextBuffer::SetRenderer</A><BR>
+<A HREF="#wxrichtextbuffersetstyle">wxRichTextBuffer::SetStyle</A><BR>
+<A HREF="#wxrichtextbuffersetstylesheet">wxRichTextBuffer::SetStyleSheet</A><BR>
+<A HREF="#wxrichtextbuffersubmitaction">wxRichTextBuffer::SubmitAction</A><BR>
+<A HREF="#wxrichtextbuffersuppressingundo">wxRichTextBuffer::SuppressingUndo</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextbufferwxrichtextbuffer"></A>
+<H3>wxRichTextBuffer::wxRichTextBuffer</H3>
+<P>
+<B></B> <B>wxRichTextBuffer</B>(<B>const <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>& </B></B><I>obj</I>)<P>
+Copy constructor.<P>
+<B></B> <B>wxRichTextBuffer</B>()<P>
+Default constructors.<P>
+
+<HR>
+<A NAME="wxrichtextbufferdtor"></A>
+<H3>wxRichTextBuffer::~wxRichTextBuffer</H3>
+<P>
+<B></B> <B>~wxRichTextBuffer</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxrichtextbufferaddeventhandler"></A>
+<H3>wxRichTextBuffer::AddEventHandler</H3>
+<P>
+<B>bool</B> <B>AddEventHandler</B>(<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>* </B></B><I>handler</I>)<P>
+Adds an event handler to the buffer's list of handlers. A buffer associated with
+a contol has the control as the only event handler, but the application is free
+to add more if further notification is required. All handlers are notified
+of an event originating from the buffer, such as the replacement of a style sheet
+during loading. The buffer never deletes any of the event handlers, unless 
+<A HREF="wx_wxrichtextbuffer.html#wxrichtextbufferremoveeventhandler">wxRichTextBuffer::RemoveEventHandler</A> is
+called with <TT>true</TT> as the second argument.<P>
+
+<HR>
+<A NAME="wxrichtextbufferaddhandler"></A>
+<H3>wxRichTextBuffer::AddHandler</H3>
+<P>
+<B>void</B> <B>AddHandler</B>(<B><A HREF="wx_wxrichtextfilehandler.html#wxrichtextfilehandler">wxRichTextFileHandler</A>* </B></B><I>handler</I>)<P>
+Adds a file handler.<P>
+
+<HR>
+<A NAME="wxrichtextbufferaddparagraph"></A>
+<H3>wxRichTextBuffer::AddParagraph</H3>
+<P>
+<B><A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A></B> </B> <B>AddParagraph</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>)<P>
+Adds a paragraph of text.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbatchingundo"></A>
+<H3>wxRichTextBuffer::BatchingUndo</H3>
+<P>
+<B>bool</B> <B>BatchingUndo</B>() <B>const</B><P>
+Returns <TT>true</TT> if the buffer is currently collapsing commands into a single notional command.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginalignment"></A>
+<H3>wxRichTextBuffer::BeginAlignment</H3>
+<P>
+<B>bool</B> <B>BeginAlignment</B>(<B>wxTextAttrAlignment </B><I>alignment</I>)<P>
+Begins using alignment.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginbatchundo"></A>
+<H3>wxRichTextBuffer::BeginBatchUndo</H3>
+<P>
+<B>bool</B> <B>BeginBatchUndo</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>cmdName</I>)<P>
+Begins collapsing undo/redo commands. Note that this may not work properly
+if combining commands that delete or insert content, changing ranges for
+subsequent actions.<P>
+<I>cmdName</I> should be the name of the combined command that will appear
+next to Undo and Redo in the edit menu.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginbold"></A>
+<H3>wxRichTextBuffer::BeginBold</H3>
+<P>
+<B>bool</B> <B>BeginBold</B>()<P>
+Begin applying bold.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbegincharacterstyle"></A>
+<H3>wxRichTextBuffer::BeginCharacterStyle</H3>
+<P>
+<B>bool</B> <B>BeginCharacterStyle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>characterStyle</I>)<P>
+Begins applying the named character style.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginfont"></A>
+<H3>wxRichTextBuffer::BeginFont</H3>
+<P>
+<B>bool</B> <B>BeginFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Begins using this font.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginfontsize"></A>
+<H3>wxRichTextBuffer::BeginFontSize</H3>
+<P>
+<B>bool</B> <B>BeginFontSize</B>(<B>int </B><I>pointSize</I>)<P>
+Begins using the given point size.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginitalic"></A>
+<H3>wxRichTextBuffer::BeginItalic</H3>
+<P>
+<B>bool</B> <B>BeginItalic</B>()<P>
+Begins using italic.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginleftindent"></A>
+<H3>wxRichTextBuffer::BeginLeftIndent</H3>
+<P>
+<B>bool</B> <B>BeginLeftIndent</B>(<B>int </B><I>leftIndent</I>, <B>int </B><I>leftSubIndent = 0</I>)<P>
+Begin using <I>leftIndent</I> for the left indent, and optionally <I>leftSubIndent</I> for
+the sub-indent. Both are expressed in tenths of a millimetre.<P>
+The sub-indent is an offset from the left of the paragraph, and is used for all but the
+first line in a paragraph. A positive value will cause the first line to appear to the left
+of the subsequent lines, and a negative value will cause the first line to be indented
+relative to the subsequent lines.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginlinespacing"></A>
+<H3>wxRichTextBuffer::BeginLineSpacing</H3>
+<P>
+<B>bool</B> <B>BeginLineSpacing</B>(<B>int </B><I>lineSpacing</I>)<P>
+Begins line spacing using the specified value. <I>spacing</I> is a multiple, where 10 means single-spacing,
+15 means 1.5 spacing, and 20 means double spacing. The following constants are
+defined for convenience:<P>
+<FONT SIZE=2>
+<PRE>
+#define wxTEXT_ATTR_LINE_SPACING_NORMAL         10
+#define wxTEXT_ATTR_LINE_SPACING_HALF           15
+#define wxTEXT_ATTR_LINE_SPACING_TWICE          20
+</PRE>
+</FONT><P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginliststyle"></A>
+<H3>wxRichTextBuffer::BeginListStyle</H3>
+<P>
+<B>bool</B> <B>BeginListStyle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> listStyle</I>, <B>int</B><I> level=1</I>, <B>int</B><I> number=1</I>)<P>
+Begins using a specified list style. Optionally, you can also pass a level and a number.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginnumberedbullet"></A>
+<H3>wxRichTextBuffer::BeginNumberedBullet</H3>
+<P>
+<B>bool</B> <B>BeginNumberedBullet</B>(<B>int </B><I>bulletNumber</I>, <B>int </B><I>leftIndent</I>, <B>int </B><I>leftSubIndent</I>, <B>int </B><I>bulletStyle = wxTEXT_ATTR_BULLET_STYLE_ARABIC|wxTEXT_ATTR_BULLET_STYLE_PERIOD</I>)<P>
+Begins a numbered bullet. This call will be needed for each item in the list, and the
+application should take care of incrementing the numbering.<P>
+<I>bulletNumber</I> is a number, usually starting with 1.<P>
+<I>leftIndent</I> and <I>leftSubIndent</I> are values in tenths of a millimetre.<P>
+<I>bulletStyle</I> is a bitlist of the following values:<P>
+<FONT SIZE=2>
+<PRE>
+#define wxTEXT_ATTR_BULLET_STYLE_NONE               0x00000000
+#define wxTEXT_ATTR_BULLET_STYLE_ARABIC             0x00000001
+#define wxTEXT_ATTR_BULLET_STYLE_LETTERS_UPPER      0x00000002
+#define wxTEXT_ATTR_BULLET_STYLE_LETTERS_LOWER      0x00000004
+#define wxTEXT_ATTR_BULLET_STYLE_ROMAN_UPPER        0x00000008
+#define wxTEXT_ATTR_BULLET_STYLE_ROMAN_LOWER        0x00000010
+#define wxTEXT_ATTR_BULLET_STYLE_SYMBOL             0x00000020
+#define wxTEXT_ATTR_BULLET_STYLE_BITMAP             0x00000040
+#define wxTEXT_ATTR_BULLET_STYLE_PARENTHESES        0x00000080
+#define wxTEXT_ATTR_BULLET_STYLE_PERIOD             0x00000100
+#define wxTEXT_ATTR_BULLET_STYLE_STANDARD           0x00000200
+#define wxTEXT_ATTR_BULLET_STYLE_RIGHT_PARENTHESIS  0x00000400
+#define wxTEXT_ATTR_BULLET_STYLE_OUTLINE            0x00000800
+#define wxTEXT_ATTR_BULLET_STYLE_ALIGN_LEFT         0x00000000
+#define wxTEXT_ATTR_BULLET_STYLE_ALIGN_RIGHT        0x00001000
+#define wxTEXT_ATTR_BULLET_STYLE_ALIGN_CENTRE       0x00002000
+</PRE>
+</FONT><P>
+wxRichTextBuffer uses indentation to render a bulleted item. The left indent is the distance between
+the margin and the bullet. The content of the paragraph, including the first line, starts
+at leftMargin + leftSubIndent. So the distance between the left edge of the bullet and the
+left of the actual paragraph is leftSubIndent.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginparagraphspacing"></A>
+<H3>wxRichTextBuffer::BeginParagraphSpacing</H3>
+<P>
+<B>bool</B> <B>BeginParagraphSpacing</B>(<B>int </B><I>before</I>, <B>int </B><I>after</I>)<P>
+Begins paragraph spacing; pass the before-paragraph and after-paragraph spacing in tenths of
+a millimetre.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginparagraphstyle"></A>
+<H3>wxRichTextBuffer::BeginParagraphStyle</H3>
+<P>
+<B>bool</B> <B>BeginParagraphStyle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>paragraphStyle</I>)<P>
+Begins applying the named paragraph style.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginrightindent"></A>
+<H3>wxRichTextBuffer::BeginRightIndent</H3>
+<P>
+<B>bool</B> <B>BeginRightIndent</B>(<B>int </B><I>rightIndent</I>)<P>
+Begins a right indent, specified in tenths of a millimetre.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginstyle"></A>
+<H3>wxRichTextBuffer::BeginStyle</H3>
+<P>
+<B>bool</B> <B>BeginStyle</B>(<B>const <A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>& </B></B><I>style</I>)<P>
+Begins using a specified style.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginsuppressundo"></A>
+<H3>wxRichTextBuffer::BeginSuppressUndo</H3>
+<P>
+<B>bool</B> <B>BeginSuppressUndo</B>()<P>
+Begins suppressing undo/redo commands. The way undo is suppressed may be implemented
+differently by each command. If not dealt with by a command implementation, then
+it will be implemented automatically by not storing the command in the undo history
+when the action is submitted to the command processor.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginstandardbullet"></A>
+<H3>wxRichTextBuffer::BeginStandardBullet</H3>
+<P>
+<B>bool</B> <B>BeginStandardBullet</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> bulletName</I>, <B>int </B><I>leftIndent</I>, <B>int </B><I>leftSubIndent</I>, <B>int </B><I>bulletStyle = wxTEXT_ATTR_BULLET_STYLE_STANDARD</I>)<P>
+Begins applying a standard bullet, using one of the standard bullet names (currently <TT>standard/circle</TT> or <TT>standard/square</TT>.
+See <A HREF="wx_wxrichtextbuffer.html#wxrichtextbufferbeginnumberedbullet">BeginNumberedBullet</A> for an explanation of how indentation is used to render the bulleted paragraph.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginsymbolbullet"></A>
+<H3>wxRichTextBuffer::BeginSymbolBullet</H3>
+<P>
+<B>bool</B> <B>BeginSymbolBullet</B>(<B>wxChar </B><I>symbol</I>, <B>int </B><I>leftIndent</I>, <B>int </B><I>leftSubIndent</I>, <B>int </B><I>bulletStyle = wxTEXT_ATTR_BULLET_STYLE_SYMBOL</I>)<P>
+Begins applying a symbol bullet, using a character from the current font. See <A HREF="wx_wxrichtextbuffer.html#wxrichtextbufferbeginnumberedbullet">BeginNumberedBullet</A> for
+an explanation of how indentation is used to render the bulleted paragraph.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbegintextcolour"></A>
+<H3>wxRichTextBuffer::BeginTextColour</H3>
+<P>
+<B>bool</B> <B>BeginTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+Begins using the specified text foreground colour.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginunderline"></A>
+<H3>wxRichTextBuffer::BeginUnderline</H3>
+<P>
+<B>bool</B> <B>BeginUnderline</B>()<P>
+Begins using underline.<P>
+
+<HR>
+<A NAME="wxrichtextbufferbeginurl"></A>
+<H3>wxRichTextBuffer::BeginURL</H3>
+<P>
+<B>bool</B> <B>BeginURL</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> url</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> characterStyle = wxEmptyString</I>)<P>
+Begins applying wxTEXT_ATTR_URL to the content. Pass a URL and optionally, a character style to apply,
+since it is common to mark a URL with a familiar style such as blue text with underlining.<P>
+
+<HR>
+<A NAME="wxrichtextbuffercanpastefromclipboard"></A>
+<H3>wxRichTextBuffer::CanPasteFromClipboard</H3>
+<P>
+<B>bool</B> <B>CanPasteFromClipboard</B>() <B>const</B><P>
+Returns <TT>true</TT> if content can be pasted from the clipboard.<P>
+
+<HR>
+<A NAME="wxrichtextbuffercleanuphandlers"></A>
+<H3>wxRichTextBuffer::CleanUpHandlers</H3>
+<P>
+<B>void</B> <B>CleanUpHandlers</B>()<P>
+Cleans up the file handlers.<P>
+
+<HR>
+<A NAME="wxrichtextbufferclear"></A>
+<H3>wxRichTextBuffer::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>()<P>
+Clears the buffer.<P>
+
+<HR>
+<A NAME="wxrichtextbufferclearliststyle"></A>
+<H3>wxRichTextBuffer::ClearListStyle</H3>
+<P>
+<B>bool</B> <B>ClearListStyle</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B>int </B><I>flags = wxRICHTEXT_SETSTYLE_WITH_UNDO</I>)<P>
+<B>bool</B> <B>ClearListStyle</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B>int </B><I>flags = wxRICHTEXT_SETSTYLE_WITH_UNDO</I>)<P>
+Clears the list style from the given range, clearing list-related attributes and applying any named paragraph style associated with each paragraph.<P>
+<I>flags</I> is a bit list of the following:<P>
+<UL>
+
+<LI> wxRICHTEXT_SETSTYLE_WITH_UNDO: specifies that this command will be undoable.
+</UL>
+<P>
+See also <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffersetliststyle">wxRichTextBuffer::SetListStyle</A>, <A HREF="wx_wxrichtextbuffer.html#wxrichtextbufferpromotelist">wxRichTextBuffer::PromoteList</A>, <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffernumberlist">wxRichTextBuffer::NumberList</A>.<P>
+
+<HR>
+<A NAME="wxrichtextbufferclearstylestack"></A>
+<H3>wxRichTextBuffer::ClearStyleStack</H3>
+<P>
+<B>void</B> <B>ClearStyleStack</B>()<P>
+Clears the style stack.<P>
+
+<HR>
+<A NAME="wxrichtextbufferclone"></A>
+<H3>wxRichTextBuffer::Clone</H3>
+<P>
+<B>wxRichTextObject*</B> <B>Clone</B>() <B>const</B><P>
+Clones the object.<P>
+
+<HR>
+<A NAME="wxrichtextbuffercopy"></A>
+<H3>wxRichTextBuffer::Copy</H3>
+<P>
+<B>void</B> <B>Copy</B>(<B>const <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>& </B></B><I>obj</I>)<P>
+Copies the given buffer.<P>
+
+<HR>
+<A NAME="wxrichtextbuffercopytoclipboard"></A>
+<H3>wxRichTextBuffer::CopyToClipboard</H3>
+<P>
+<B>bool</B> <B>CopyToClipboard</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>)<P>
+Copy the given range to the clipboard.<P>
+
+<HR>
+<A NAME="wxrichtextbufferdeleterangewithundo"></A>
+<H3>wxRichTextBuffer::DeleteRangeWithUndo</H3>
+<P>
+<B>bool</B> <B>DeleteRangeWithUndo</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl</I>)<P>
+Submits a command to delete the given range.<P>
+
+<HR>
+<A NAME="wxrichtextbufferdump"></A>
+<H3>wxRichTextBuffer::Dump</H3>
+<P>
+<B>void</B> <B>Dump</B>()<P>
+<B>void</B> <B>Dump</B>(<B><A HREF="wx_wxtextoutputstream.html#wxtextoutputstream">wxTextOutputStream</A>& </B></B><I>stream</I>)<P>
+Dumps the contents of the buffer for debugging purposes.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendalignment"></A>
+<H3>wxRichTextBuffer::EndAlignment</H3>
+<P>
+<B>bool</B> <B>EndAlignment</B>()<P>
+Ends alignment.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendallstyles"></A>
+<H3>wxRichTextBuffer::EndAllStyles</H3>
+<P>
+<B>bool</B> <B>EndAllStyles</B>()<P>
+Ends all styles that have been started with a Begin... command.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendbatchundo"></A>
+<H3>wxRichTextBuffer::EndBatchUndo</H3>
+<P>
+<B>bool</B> <B>EndBatchUndo</B>()<P>
+Ends collapsing undo/redo commands, and submits the combined command.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendbold"></A>
+<H3>wxRichTextBuffer::EndBold</H3>
+<P>
+<B>bool</B> <B>EndBold</B>()<P>
+Ends using bold.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendcharacterstyle"></A>
+<H3>wxRichTextBuffer::EndCharacterStyle</H3>
+<P>
+<B>bool</B> <B>EndCharacterStyle</B>()<P>
+Ends using the named character style.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendfont"></A>
+<H3>wxRichTextBuffer::EndFont</H3>
+<P>
+<B>bool</B> <B>EndFont</B>()<P>
+Ends using a font.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendfontsize"></A>
+<H3>wxRichTextBuffer::EndFontSize</H3>
+<P>
+<B>bool</B> <B>EndFontSize</B>()<P>
+Ends using a point size.<P>
+
+<HR>
+<A NAME="wxrichtextbufferenditalic"></A>
+<H3>wxRichTextBuffer::EndItalic</H3>
+<P>
+<B>bool</B> <B>EndItalic</B>()<P>
+Ends using italic.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendleftindent"></A>
+<H3>wxRichTextBuffer::EndLeftIndent</H3>
+<P>
+<B>bool</B> <B>EndLeftIndent</B>()<P>
+Ends using a left indent.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendlinespacing"></A>
+<H3>wxRichTextBuffer::EndLineSpacing</H3>
+<P>
+<B>bool</B> <B>EndLineSpacing</B>()<P>
+Ends using a line spacing.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendliststyle"></A>
+<H3>wxRichTextBuffer::EndListStyle</H3>
+<P>
+<B>bool</B> <B>EndListStyle</B>()<P>
+Ends using a specified list style.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendnumberedbullet"></A>
+<H3>wxRichTextBuffer::EndNumberedBullet</H3>
+<P>
+<B>bool</B> <B>EndNumberedBullet</B>()<P>
+Ends a numbered bullet.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendparagraphspacing"></A>
+<H3>wxRichTextBuffer::EndParagraphSpacing</H3>
+<P>
+<B>bool</B> <B>EndParagraphSpacing</B>()<P>
+Ends paragraph spacing.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendparagraphstyle"></A>
+<H3>wxRichTextBuffer::EndParagraphStyle</H3>
+<P>
+<B>bool</B> <B>EndParagraphStyle</B>()<P>
+Ends applying a named character style.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendrightindent"></A>
+<H3>wxRichTextBuffer::EndRightIndent</H3>
+<P>
+<B>bool</B> <B>EndRightIndent</B>()<P>
+Ends using a right indent.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendstyle"></A>
+<H3>wxRichTextBuffer::EndStyle</H3>
+<P>
+<B>bool</B> <B>EndStyle</B>()<P>
+Ends the current style.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendsuppressundo"></A>
+<H3>wxRichTextBuffer::EndSuppressUndo</H3>
+<P>
+<B>bool</B> <B>EndSuppressUndo</B>()<P>
+Ends suppressing undo/redo commands.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendsymbolbullet"></A>
+<H3>wxRichTextBuffer::EndSymbolBullet</H3>
+<P>
+<B>bool</B> <B>EndSymbolBullet</B>()<P>
+Ends using a symbol bullet.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendstandardbullet"></A>
+<H3>wxRichTextBuffer::EndStandardBullet</H3>
+<P>
+<B>bool</B> <B>EndStandardBullet</B>()<P>
+Ends using a standard bullet.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendtextcolour"></A>
+<H3>wxRichTextBuffer::EndTextColour</H3>
+<P>
+<B>bool</B> <B>EndTextColour</B>()<P>
+Ends using a text foreground colour.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendunderline"></A>
+<H3>wxRichTextBuffer::EndUnderline</H3>
+<P>
+<B>bool</B> <B>EndUnderline</B>()<P>
+Ends using underline.<P>
+
+<HR>
+<A NAME="wxrichtextbufferendurl"></A>
+<H3>wxRichTextBuffer::EndURL</H3>
+<P>
+<B>bool</B> <B>EndURL</B>()<P>
+Ends applying a URL.<P>
+
+<HR>
+<A NAME="wxrichtextbufferfindhandler"></A>
+<H3>wxRichTextBuffer::FindHandler</H3>
+<P>
+<B><A HREF="wx_wxrichtextfilehandler.html#wxrichtextfilehandler">wxRichTextFileHandler</A>*</B> </B> <B>FindHandler</B>(<B>int </B><I>imageType</I>)<P>
+Finds a handler by type.<P>
+<B><A HREF="wx_wxrichtextfilehandler.html#wxrichtextfilehandler">wxRichTextFileHandler</A>*</B> </B> <B>FindHandler</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>extension</I>, <B>int </B><I>imageType</I>)<P>
+Finds a handler by extension and type.<P>
+<B><A HREF="wx_wxrichtextfilehandler.html#wxrichtextfilehandler">wxRichTextFileHandler</A>*</B> </B> <B>FindHandler</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Finds a handler by name.<P>
+
+<HR>
+<A NAME="wxrichtextbufferfindhandlerfilenameortype"></A>
+<H3>wxRichTextBuffer::FindHandlerFilenameOrType</H3>
+<P>
+<B><A HREF="wx_wxrichtextfilehandler.html#wxrichtextfilehandler">wxRichTextFileHandler</A>*</B> </B> <B>FindHandlerFilenameOrType</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>int </B><I>imageType</I>)<P>
+Finds a handler by filename or, if supplied, type.<P>
+
+<HR>
+<A NAME="wxrichtextbuffergetbasicstyle"></A>
+<H3>wxRichTextBuffer::GetBasicStyle</H3>
+<P>
+<B>const <A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>&</B> </B> <B>GetBasicStyle</B>() <B>const</B><P>
+Gets the basic (overall) style. This is the style of the whole
+buffer before further styles are applied, unlike the default style, which
+only affects the style currently being applied (for example, setting the default
+style to bold will cause subsequently inserted text to be bold).<P>
+
+<HR>
+<A NAME="wxrichtextbuffergetbatchedcommand"></A>
+<H3>wxRichTextBuffer::GetBatchedCommand</H3>
+<P>
+<B>wxRichTextCommand*</B> <B>GetBatchedCommand</B>() <B>const</B><P>
+Gets the collapsed command.<P>
+
+<HR>
+<A NAME="wxrichtextbuffergetcommandprocessor"></A>
+<H3>wxRichTextBuffer::GetCommandProcessor</H3>
+<P>
+<B><A HREF="wx_wxcommandprocessor.html#wxcommandprocessor">wxCommandProcessor</A>*</B> </B> <B>GetCommandProcessor</B>() <B>const</B><P>
+Gets the command processor. A text buffer always creates its own command processor when it is
+initialized.<P>
+
+<HR>
+<A NAME="wxrichtextbuffergetdefaultstyle"></A>
+<H3>wxRichTextBuffer::GetDefaultStyle</H3>
+<P>
+<B>const <A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>&</B> </B> <B>GetDefaultStyle</B>() <B>const</B><P>
+Returns the current default style, affecting the style currently being applied (for example, setting the default
+style to bold will cause subsequently inserted text to be bold).<P>
+
+<HR>
+<A NAME="wxrichtextbuffergetextwildcard"></A>
+<H3>wxRichTextBuffer::GetExtWildcard</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetExtWildcard</B>(<B>bool </B><I>combine = false</I>, <B>bool </B><I>save = false</I>, <B>wxArrayInt* </B><I>types = NULL</I>)<P>
+Gets a wildcard incorporating all visible handlers. If <I>types</I> is present,
+it will be filled with the file type corresponding to each filter. This can be
+used to determine the type to pass to <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffergetextwildcard">LoadFile</A> given a selected filter.<P>
+
+<HR>
+<A NAME="wxrichtextbuffergethandlers"></A>
+<H3>wxRichTextBuffer::GetHandlers</H3>
+<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A>&</B> </B> <B>GetHandlers</B>()<P>
+Returns the list of file handlers.<P>
+
+<HR>
+<A NAME="wxrichtextbuffergetrenderer"></A>
+<H3>wxRichTextBuffer::GetRenderer</H3>
+<P>
+<B>static wxRichTextRenderer*</B> <B>GetRenderer</B>()<P>
+Returns the object to be used to render certain aspects of the content, such as bullets.<P>
+
+<HR>
+<A NAME="wxrichtextbuffergetstyle"></A>
+<H3>wxRichTextBuffer::GetStyle</H3>
+<P>
+<B>bool</B> <B>GetStyle</B>(<B>long </B><I>position</I>, <B><A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A>& </B></B><I>style</I>)<P>
+<B>bool</B> <B>GetStyle</B>(<B>long </B><I>position</I>, <B><A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>& </B></B><I>style</I>)<P>
+Gets the attributes at the given position.<P>
+This function gets the combined style - that is, the style you see on the screen as a result
+of combining base style, paragraph style and character style attributes. To get the character
+or paragraph style alone, use <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffergetuncombinedstyle">GetUncombinedStyle</A>.<P>
+
+<HR>
+<A NAME="wxrichtextbuffergetstyleforrange"></A>
+<H3>wxRichTextBuffer::GetStyleForRange</H3>
+<P>
+<B>bool</B> <B>GetStyleForRange</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>&</B></B><I> range</I>, <B><A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>& </B></B><I>style</I>)<P>
+This function gets a style representing the common, combined attributes in the given range.
+Attributes which have different values within the specified range will not be included the style
+flags.<P>
+The function is used to get the attributes to display in the formatting dialog: the user
+can edit the attributes common to the selection, and optionally specify the values of further
+attributes to be applied uniformly.<P>
+To apply the edited attributes, you can use <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffersetstyle">SetStyle</A> specifying
+the wxRICHTEXT_SETSTYLE_OPTIMIZE flag, which will only apply attributes that are different
+from the <I>combined</I> attributes within the range. So, the user edits the effective, displayed attributes
+for the range, but his choice won't be applied unnecessarily to content. As an example,
+say the style for a paragraph specifies bold, but the paragraph text doesn't specify a weight. The
+combined style is bold, and this is what the user will see on-screen and in the formatting
+dialog. The user now specifies red text, in addition to bold. When applying with
+SetStyle, the content font weight attributes won't be changed to bold because this is already specified
+by the paragraph. However the text colour attributes <I>will</I> be changed to
+show red.<P>
+
+<HR>
+<A NAME="wxrichtextbuffergetstylesheet"></A>
+<H3>wxRichTextBuffer::GetStyleSheet</H3>
+<P>
+<B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>*</B> </B> <B>GetStyleSheet</B>() <B>const</B><P>
+Returns the current style sheet associated with the buffer, if any.<P>
+
+<HR>
+<A NAME="wxrichtextbuffergetstylestacksize"></A>
+<H3>wxRichTextBuffer::GetStyleStackSize</H3>
+<P>
+<B>size_t</B> <B>GetStyleStackSize</B>() <B>const</B><P>
+Get the size of the style stack, for example to check correct nesting.<P>
+
+<HR>
+<A NAME="wxrichtextbuffergetuncombinedstyle"></A>
+<H3>wxRichTextBuffer::GetUncombinedStyle</H3>
+<P>
+<B>bool</B> <B>GetUncombinedStyle</B>(<B>long </B><I>position</I>, <B><A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A>& </B></B><I>style</I>)<P>
+<B>bool</B> <B>GetUncombinedStyle</B>(<B>long </B><I>position</I>, <B><A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>& </B></B><I>style</I>)<P>
+Gets the attributes at the given position.<P>
+This function gets the <I>uncombined style</I> - that is, the attributes associated with the
+paragraph or character content, and not necessarily the combined attributes you see on the
+screen. To get the combined attributes, use <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffergetstyle">GetStyle</A>.<P>
+If you specify (any) paragraph attribute in <I>style</I>'s flags, this function will fetch
+the paragraph attributes. Otherwise, it will return the character attributes.<P>
+
+<HR>
+<A NAME="wxrichtextbufferhittest"></A>
+<H3>wxRichTextBuffer::HitTest</H3>
+<P>
+<B>int</B> <B>HitTest</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>, <B>long&amp; </B><I>textPosition</I>)<P>
+Finds the text position for the given position, putting the position in <I>textPosition</I> if
+one is found. <I>pt</I> is in logical units (a zero y position is
+at the beginning of the buffer).<P>
+The function returns one of the following values:<P>
+<FONT SIZE=2>
+<PRE>
+// The point was not on this object
+#define wxRICHTEXT_HITTEST_NONE     0x01
+// The point was before the position returned from HitTest
+#define wxRICHTEXT_HITTEST_BEFORE   0x02
+// The point was after the position returned from HitTest
+#define wxRICHTEXT_HITTEST_AFTER    0x04
+// The point was on the position returned from HitTest
+#define wxRICHTEXT_HITTEST_ON       0x08
+// The point was on space outside content
+#define wxRICHTEXT_HITTEST_OUTSIDE  0x10
+</PRE>
+</FONT><P>
+
+<HR>
+<A NAME="wxrichtextbufferinit"></A>
+<H3>wxRichTextBuffer::Init</H3>
+<P>
+<B>void</B> <B>Init</B>()<P>
+Initialisation.<P>
+
+<HR>
+<A NAME="wxrichtextbufferinitstandardhandlers"></A>
+<H3>wxRichTextBuffer::InitStandardHandlers</H3>
+<P>
+<B>void</B> <B>InitStandardHandlers</B>()<P>
+Initialises the standard handlers. Currently, only the plain text loading/saving handler
+is initialised by default.<P>
+
+<HR>
+<A NAME="wxrichtextbufferinserthandler"></A>
+<H3>wxRichTextBuffer::InsertHandler</H3>
+<P>
+<B>void</B> <B>InsertHandler</B>(<B><A HREF="wx_wxrichtextfilehandler.html#wxrichtextfilehandler">wxRichTextFileHandler</A>* </B></B><I>handler</I>)<P>
+Inserts a handler at the front of the list.<P>
+
+<HR>
+<A NAME="wxrichtextbufferinsertimagewithundo"></A>
+<H3>wxRichTextBuffer::InsertImageWithUndo</H3>
+<P>
+<B>bool</B> <B>InsertImageWithUndo</B>(<B>long </B><I>pos</I>, <B>const wxRichTextImageBlock&amp; </B><I>imageBlock</I>, <B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl</I>)<P>
+Submits a command to insert the given image.<P>
+
+<HR>
+<A NAME="wxrichtextbufferinsertnewlinewithundo"></A>
+<H3>wxRichTextBuffer::InsertNewlineWithUndo</H3>
+<P>
+<B>bool</B> <B>InsertNewlineWithUndo</B>(<B>long </B><I>pos</I>, <B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl</I>)<P>
+Submits a command to insert a newline.<P>
+
+<HR>
+<A NAME="wxrichtextbufferinserttextwithundo"></A>
+<H3>wxRichTextBuffer::InsertTextWithUndo</H3>
+<P>
+<B>bool</B> <B>InsertTextWithUndo</B>(<B>long </B><I>pos</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl</I>)<P>
+Submits a command to insert the given text.<P>
+
+<HR>
+<A NAME="wxrichtextbufferismodified"></A>
+<H3>wxRichTextBuffer::IsModified</H3>
+<P>
+<B>bool</B> <B>IsModified</B>() <B>const</B><P>
+Returns <TT>true</TT> if the buffer has been modified.<P>
+
+<HR>
+<A NAME="wxrichtextbufferloadfile"></A>
+<H3>wxRichTextBuffer::LoadFile</H3>
+<P>
+<B>bool</B> <B>LoadFile</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>, <B>int </B><I>type = wxRICHTEXT_TYPE_ANY</I>)<P>
+Loads content from a stream.<P>
+<B>bool</B> <B>LoadFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>int </B><I>type = wxRICHTEXT_TYPE_ANY</I>)<P>
+Loads content from a file.<P>
+
+<HR>
+<A NAME="wxrichtextbuffermodify"></A>
+<H3>wxRichTextBuffer::Modify</H3>
+<P>
+<B>void</B> <B>Modify</B>(<B>bool </B><I>modify = true</I>)<P>
+Marks the buffer as modified or unmodified.<P>
+
+<HR>
+<A NAME="wxrichtextbuffernumberlist"></A>
+<H3>wxRichTextBuffer::NumberList</H3>
+<P>
+<B>bool</B> <B>NumberList</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B>const <A HREF="wx_wxrichtextliststyledefinition.html#wxrichtextliststyledefinition">wxRichTextListStyleDefinition</A>* </B></B><I>style</I>, <B>int </B><I>flags = wxRICHTEXT_SETSTYLE_WITH_UNDO</I>, <B>int</B><I> startFrom = -1</I>, <B>int</B><I> listLevel = -1</I>)<P>
+<B>bool</B> <B>Number</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>styleName</I>, <B>int </B><I>flags = wxRICHTEXT_SETSTYLE_WITH_UNDO</I>, <B>int</B><I> startFrom = -1</I>, <B>int</B><I> listLevel = -1</I>)<P>
+Numbers the paragraphs in the given range. Pass flags to determine how the attributes are set.
+Either the style definition or the name of the style definition (in the current sheet) can be passed.<P>
+<I>flags</I> is a bit list of the following:<P>
+<UL>
+
+<LI> wxRICHTEXT_SETSTYLE_WITH_UNDO: specifies that this command will be undoable.
+<LI> wxRICHTEXT_SETSTYLE_RENUMBER: specifies that numbering should start from <I>startFrom</I>, otherwise existing attributes are used.
+<LI> wxRICHTEXT_SETSTYLE_SPECIFY_LEVEL: specifies that <I>listLevel</I> should be used as the level for all paragraphs, otherwise the current indentation will be used.
+</UL>
+<P>
+See also <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffersetliststyle">wxRichTextBuffer::SetListStyle</A>, <A HREF="wx_wxrichtextbuffer.html#wxrichtextbufferpromotelist">wxRichTextBuffer::PromoteList</A>, <A HREF="wx_wxrichtextbuffer.html#wxrichtextbufferclearliststyle">wxRichTextBuffer::ClearListStyle</A>.<P>
+
+<HR>
+<A NAME="wxrichtextbufferpastefromclipboard"></A>
+<H3>wxRichTextBuffer::PasteFromClipboard</H3>
+<P>
+<B>bool</B> <B>PasteFromClipboard</B>(<B>long </B><I>position</I>)<P>
+Pastes the clipboard content to the buffer at the given position.<P>
+
+<HR>
+<A NAME="wxrichtextbufferpromotelist"></A>
+<H3>wxRichTextBuffer::PromoteList</H3>
+<P>
+<B>bool</B> <B>PromoteList</B>(<B>int</B><I> promoteBy</I>, <B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B>const <A HREF="wx_wxrichtextliststyledefinition.html#wxrichtextliststyledefinition">wxRichTextListStyleDefinition</A>* </B></B><I>style</I>, <B>int </B><I>flags = wxRICHTEXT_SETSTYLE_WITH_UNDO</I>, <B>int</B><I> listLevel = -1</I>)<P>
+<B>bool</B> <B>PromoteList</B>(<B>int</B><I> promoteBy</I>, <B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>styleName</I>, <B>int </B><I>flags = wxRICHTEXT_SETSTYLE_WITH_UNDO</I>, <B>int</B><I> listLevel = -1</I>)<P>
+Promotes or demotes the paragraphs in the given range. A positive <I>promoteBy</I> produces a smaller indent, and a negative number
+produces a larger indent. Pass flags to determine how the attributes are set.
+Either the style definition or the name of the style definition (in the current sheet) can be passed.<P>
+<I>flags</I> is a bit list of the following:<P>
+<UL>
+
+<LI> wxRICHTEXT_SETSTYLE_WITH_UNDO: specifies that this command will be undoable.
+<LI> wxRICHTEXT_SETSTYLE_RENUMBER: specifies that numbering should start from <I>startFrom</I>, otherwise existing attributes are used.
+<LI> wxRICHTEXT_SETSTYLE_SPECIFY_LEVEL: specifies that <I>listLevel</I> should be used as the level for all paragraphs, otherwise the current indentation will be used.
+</UL>
+<P>
+See also <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffersetliststyle">wxRichTextBuffer::SetListStyle</A>, See also <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffernumberlist">wxRichTextBuffer::SetListStyle</A>, <A HREF="wx_wxrichtextbuffer.html#wxrichtextbufferclearliststyle">wxRichTextBuffer::ClearListStyle</A>.<P>
+
+<HR>
+<A NAME="wxrichtextbufferremoveeventhandler"></A>
+<H3>wxRichTextBuffer::RemoveEventHandler</H3>
+<P>
+<B>bool</B> <B>RemoveEventHandler</B>(<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>* </B></B><I>handler</I>, <B>bool</B><I> deleteHandler = false</I>)<P>
+Removes an event handler from the buffer's list of handlers, deleting the object if <I>deleteHandler</I> is <TT>true</TT>.<P>
+
+<HR>
+<A NAME="wxrichtextbufferremovehandler"></A>
+<H3>wxRichTextBuffer::RemoveHandler</H3>
+<P>
+<B>bool</B> <B>RemoveHandler</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Removes a handler.<P>
+
+<HR>
+<A NAME="wxrichtextbufferresetandclearcommands"></A>
+<H3>wxRichTextBuffer::ResetAndClearCommands</H3>
+<P>
+<B>void</B> <B>ResetAndClearCommands</B>()<P>
+Clears the buffer, adds a new blank paragraph, and clears the command history.<P>
+
+<HR>
+<A NAME="wxrichtextbuffersavefile"></A>
+<H3>wxRichTextBuffer::SaveFile</H3>
+<P>
+<B>bool</B> <B>SaveFile</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>, <B>int </B><I>type = wxRICHTEXT_TYPE_ANY</I>)<P>
+Saves content to a stream.<P>
+<B>bool</B> <B>SaveFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>int </B><I>type = wxRICHTEXT_TYPE_ANY</I>)<P>
+Saves content to a file.<P>
+
+<HR>
+<A NAME="wxrichtextbuffersetbasicstyle"></A>
+<H3>wxRichTextBuffer::SetBasicStyle</H3>
+<P>
+<B>void</B> <B>SetBasicStyle</B>(<B>const <A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A>& </B></B><I>style</I>)<P>
+<B>void</B> <B>SetBasicStyle</B>(<B>const <A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>& </B></B><I>style</I>)<P>
+Sets the basic (overall) style. This is the style of the whole
+buffer before further styles are applied, unlike the default style, which
+only affects the style currently being applied (for example, setting the default
+style to bold will cause subsequently inserted text to be bold).<P>
+
+<HR>
+<A NAME="wxrichtextbuffersetdefaultstyle"></A>
+<H3>wxRichTextBuffer::SetDefaultStyle</H3>
+<P>
+<B>void</B> <B>SetDefaultStyle</B>(<B>const <A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>& </B></B><I>style</I>)<P>
+Sets the default style, affecting the style currently being applied (for example, setting the default
+style to bold will cause subsequently inserted text to be bold).<P>
+This is not cumulative - setting the default style will replace the previous default style.<P>
+
+<HR>
+<A NAME="wxrichtextbuffersetliststyle"></A>
+<H3>wxRichTextBuffer::SetListStyle</H3>
+<P>
+<B>bool</B> <B>SetListStyle</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B>const <A HREF="wx_wxrichtextliststyledefinition.html#wxrichtextliststyledefinition">wxRichTextListStyleDefinition</A>* </B></B><I>style</I>, <B>int </B><I>flags = wxRICHTEXT_SETSTYLE_WITH_UNDO</I>, <B>int</B><I> startFrom = -1</I>, <B>int</B><I> listLevel = -1</I>)<P>
+<B>bool</B> <B>SetListStyle</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>styleName</I>, <B>int </B><I>flags = wxRICHTEXT_SETSTYLE_WITH_UNDO</I>, <B>int</B><I> startFrom = -1</I>, <B>int</B><I> listLevel = -1</I>)<P>
+Sets the list attributes for the given range, passing flags to determine how the attributes are set.
+Either the style definition or the name of the style definition (in the current sheet) can be passed.<P>
+<I>flags</I> is a bit list of the following:<P>
+<UL>
+
+<LI> wxRICHTEXT_SETSTYLE_WITH_UNDO: specifies that this command will be undoable.
+<LI> wxRICHTEXT_SETSTYLE_RENUMBER: specifies that numbering should start from <I>startFrom</I>, otherwise existing attributes are used.
+<LI> wxRICHTEXT_SETSTYLE_SPECIFY_LEVEL: specifies that <I>listLevel</I> should be used as the level for all paragraphs, otherwise the current indentation will be used.
+</UL>
+<P>
+See also <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffernumberlist">wxRichTextBuffer::NumberList</A>, <A HREF="wx_wxrichtextbuffer.html#wxrichtextbufferpromotelist">wxRichTextBuffer::PromoteList</A>, <A HREF="wx_wxrichtextbuffer.html#wxrichtextbufferclearliststyle">wxRichTextBuffer::ClearListStyle</A>.<P>
+
+<HR>
+<A NAME="wxrichtextbuffersetrenderer"></A>
+<H3>wxRichTextBuffer::SetRenderer</H3>
+<P>
+<B>static void</B> <B>SetRenderer</B>(<B>wxRichTextRenderer* </B><I>renderer</I>)<P>
+Sets <I>renderer</I> as the object to be used to render certain aspects of the content, such as bullets.
+You can override default rendering by deriving a new class from wxRichTextRenderer or wxRichTextStdRenderer,
+overriding one or more virtual functions, and setting an instance of the class using this function.<P>
+
+<HR>
+<A NAME="wxrichtextbuffersetstyle"></A>
+<H3>wxRichTextBuffer::SetStyle</H3>
+<P>
+<B>bool</B> <B>SetStyle</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B>const <A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A>& </B></B><I>style</I>, <B>int </B><I>flags = wxRICHTEXT_SETSTYLE_WITH_UNDO</I>)<P>
+<B>bool</B> <B>SetStyle</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B>const <A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>& </B></B><I>style</I>, <B>int </B><I>flags = wxRICHTEXT_SETSTYLE_WITH_UNDO</I>)<P>
+Sets the attributes for the given range. Pass flags to determine how the attributes are set.<P>
+The end point of range is specified as the last character position of the span of text.
+So, for example, to set the style for a character at position 5, use the range (5,5).
+This differs from the wxRichTextCtrl API, where you would specify (5,6).<P>
+<I>flags</I> may contain a bit list of the following values:<P>
+<UL>
+
+<LI> wxRICHTEXT_SETSTYLE_NONE: no style flag.
+<LI> wxRICHTEXT_SETSTYLE_WITH_UNDO: specifies that this operation should be undoable.
+<LI> wxRICHTEXT_SETSTYLE_OPTIMIZE: specifies that the style should not be applied if the
+combined style at this point is already the style in question.
+<LI> wxRICHTEXT_SETSTYLE_PARAGRAPHS_ONLY: specifies that the style should only be applied to paragraphs,
+and not the content. This allows content styling to be preserved independently from that of e.g. a named paragraph style.
+<LI> wxRICHTEXT_SETSTYLE_CHARACTERS_ONLY: specifies that the style should only be applied to characters,
+and not the paragraph. This allows content styling to be preserved independently from that of e.g. a named paragraph style.
+<LI> wxRICHTEXT_SETSTYLE_RESET: resets (clears) the existing style before applying the new style.
+<LI> wxRICHTEXT_SETSTYLE_REMOVE: removes the specified style. Only the style flags are used in this operation.
+</UL>
+<P>
+
+<HR>
+<A NAME="wxrichtextbuffersetstylesheet"></A>
+<H3>wxRichTextBuffer::SetStyleSheet</H3>
+<P>
+<B>void</B> <B>SetStyleSheet</B>(<B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>* </B></B><I>styleSheet</I>)<P>
+Sets the current style sheet, if any. This will allow the application to use
+named character and paragraph styles found in the style sheet.<P>
+
+<HR>
+<A NAME="wxrichtextbuffersubmitaction"></A>
+<H3>wxRichTextBuffer::SubmitAction</H3>
+<P>
+<B>bool</B> <B>SubmitAction</B>(<B>wxRichTextAction* </B><I>action</I>)<P>
+Submit an action immediately, or delay it according to whether collapsing is on.<P>
+
+<HR>
+<A NAME="wxrichtextbuffersuppressingundo"></A>
+<H3>wxRichTextBuffer::SuppressingUndo</H3>
+<P>
+<B>bool</B> <B>SuppressingUndo</B>() <B>const</B><P>
+Returns <TT>true</TT> if undo suppression is currently on.<P>
+
+</FONT></BODY></HTML>

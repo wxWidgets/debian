@@ -1,0 +1,226 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTCPConnection</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtcpconnection"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtcpclient.html#wxtcpclient"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtcpserver.html#wxtcpserver"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTCPConnection</H2>
+<P>
+A wxTCPClient object represents the connection between a client and a server.
+It emulates a DDE-style protocol, but uses TCP/IP which is available on most platforms.<P>
+A DDE-based implementation for Windows is available using <A HREF="wx_wxddeconnection.html#wxddeconnection">wxDDEConnection</A>.<P>
+A wxTCPConnection object can be created by making a connection using a
+<A HREF="wx_wxtcpclient.html#wxtcpclient">wxTCPClient</A> object, or by the acceptance of a connection by a
+<A HREF="wx_wxtcpserver.html#wxtcpserver">wxTCPServer</A> object. The bulk of a conversation is controlled by
+calling members in a <B>wxTCPConnection</B> object or by overriding its
+members.<P>
+An application should normally derive a new connection class from
+wxTCPConnection, in order to override the communication event handlers
+to do something interesting.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxConnectionBase<BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/sckipc.h&gt;<P>
+<B><FONT COLOR="#FF0000">Types</FONT></B><P>
+wxIPCFormat is defined as follows:<P>
+<PRE>
+enum wxIPCFormat
+{
+  wxIPC_INVALID =          0,
+  wxIPC_TEXT =             1,  /* CF_TEXT */
+  wxIPC_BITMAP =           2,  /* CF_BITMAP */
+  wxIPC_METAFILE =         3,  /* CF_METAFILEPICT */
+  wxIPC_SYLK =             4,
+  wxIPC_DIF =              5,
+  wxIPC_TIFF =             6,
+  wxIPC_OEMTEXT =          7,  /* CF_OEMTEXT */
+  wxIPC_DIB =              8,  /* CF_DIB */
+  wxIPC_PALETTE =          9,
+  wxIPC_PENDATA =          10,
+  wxIPC_RIFF =             11,
+  wxIPC_WAVE =             12,
+  wxIPC_UNICODETEXT =      13,
+  wxIPC_ENHMETAFILE =      14,
+  wxIPC_FILENAME =         15, /* CF_HDROP */
+  wxIPC_LOCALE =           16,
+  wxIPC_PRIVATE =          20
+};
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtcpclient.html#wxtcpclient">wxTCPClient</A>, <A HREF="wx_wxtcpserver.html#wxtcpserver">wxTCPServer</A>, <A HREF="wx_ipcoverview.html#ipcoverview">Interprocess communications overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxtcpconnectionctor">wxTCPConnection::wxTCPConnection</A><BR>
+<A HREF="#wxtcpconnectionadvise">wxTCPConnection::Advise</A><BR>
+<A HREF="#wxtcpconnectionexecute">wxTCPConnection::Execute</A><BR>
+<A HREF="#wxtcpconnectiondisconnect">wxTCPConnection::Disconnect</A><BR>
+<A HREF="#wxtcpconnectiononadvise">wxTCPConnection::OnAdvise</A><BR>
+<A HREF="#wxtcpconnectionondisconnect">wxTCPConnection::OnDisconnect</A><BR>
+<A HREF="#wxtcpconnectiononexecute">wxTCPConnection::OnExecute</A><BR>
+<A HREF="#wxtcpconnectiononpoke">wxTCPConnection::OnPoke</A><BR>
+<A HREF="#wxtcpconnectiononrequest">wxTCPConnection::OnRequest</A><BR>
+<A HREF="#wxtcpconnectiononstartadvise">wxTCPConnection::OnStartAdvise</A><BR>
+<A HREF="#wxtcpconnectiononstopadvise">wxTCPConnection::OnStopAdvise</A><BR>
+<A HREF="#wxtcpconnectionpoke">wxTCPConnection::Poke</A><BR>
+<A HREF="#wxtcpconnectionrequest">wxTCPConnection::Request</A><BR>
+<A HREF="#wxtcpconnectionstartadvise">wxTCPConnection::StartAdvise</A><BR>
+<A HREF="#wxtcpconnectionstopadvise">wxTCPConnection::StopAdvise</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtcpconnectionctor"></A>
+<H3>wxTCPConnection::wxTCPConnection</H3>
+<P>
+<B></B> <B>wxTCPConnection</B>()<P>
+<B></B> <B>wxTCPConnection</B>(<B>char* </B><I>buffer</I>, <B>int</B><I> size</I>)<P>
+Constructs a connection object. If no user-defined connection object is
+to be derived from wxTCPConnection, then the constructor should not be
+called directly, since the default connection object will be provided on
+requesting (or accepting) a connection. However, if the user defines his
+or her own derived connection object, the <A HREF="wx_wxtcpserver.html#wxtcpserveronacceptconnection">wxTCPServer::OnAcceptConnection</A>
+and/or <A HREF="wx_wxtcpclient.html#wxtcpclientonmakeconnection">wxTCPClient::OnMakeConnection</A> members should be replaced by
+functions which construct the new connection object. If the arguments of
+the wxTCPConnection constructor are void, then a default buffer is
+associated with the connection. Otherwise, the programmer must provide a
+a buffer and size of the buffer for the connection object to use in
+transactions.<P>
+
+<HR>
+<A NAME="wxtcpconnectionadvise"></A>
+<H3>wxTCPConnection::Advise</H3>
+<P>
+<B>bool</B> <B>Advise</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>, <B>char* </B><I>data</I>, <B>int</B><I> size = -1</I>, <B>wxIPCFormat</B><I> format = wxCF_TEXT</I>)<P>
+Called by the server application to advise the client of a change in
+the data associated with the given item. Causes the client
+connection's <A HREF="wx_wxtcpconnection.html#wxtcpconnectiononadvise">wxTCPConnection::OnAdvise</A> 
+member to be called. Returns true if successful.<P>
+
+<HR>
+<A NAME="wxtcpconnectionexecute"></A>
+<H3>wxTCPConnection::Execute</H3>
+<P>
+<B>bool</B> <B>Execute</B>(<B>char* </B><I>data</I>, <B>int</B><I> size = -1</I>, <B>wxIPCFormat</B><I> format = wxCF_TEXT</I>)<P>
+Called by the client application to execute a command on the server. Can
+also be used to transfer arbitrary data to the server (similar
+to <A HREF="wx_wxtcpconnection.html#wxtcpconnectionpoke">wxTCPConnection::Poke</A> in that respect). Causes the
+server connection's <A HREF="wx_wxtcpconnection.html#wxtcpconnectiononexecute">wxTCPConnection::OnExecute</A> member to be
+called. Returns true if successful.<P>
+
+<HR>
+<A NAME="wxtcpconnectiondisconnect"></A>
+<H3>wxTCPConnection::Disconnect</H3>
+<P>
+<B>bool</B> <B>Disconnect</B>()<P>
+Called by the client or server application to disconnect from the other
+program; it causes the <A HREF="wx_wxtcpconnection.html#wxtcpconnectionondisconnect">wxTCPConnection::OnDisconnect</A> message
+to be sent to the corresponding connection object in the other
+program. The default behaviour of <B>OnDisconnect</B> is to delete the
+connection, but the calling application must explicitly delete its
+side of the connection having called <B>Disconnect</B>. Returns true if
+successful.<P>
+
+<HR>
+<A NAME="wxtcpconnectiononadvise"></A>
+<H3>wxTCPConnection::OnAdvise</H3>
+<P>
+<B>virtual bool</B> <B>OnAdvise</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>, <B>char* </B><I>data</I>, <B>int</B><I> size</I>, <B>wxIPCFormat</B><I> format</I>)<P>
+Message sent to the client application when the server notifies it of a
+change in the data associated with the given item.<P>
+
+<HR>
+<A NAME="wxtcpconnectionondisconnect"></A>
+<H3>wxTCPConnection::OnDisconnect</H3>
+<P>
+<B>virtual bool</B> <B>OnDisconnect</B>()<P>
+Message sent to the client or server application when the other
+application notifies it to delete the connection. Default behaviour is
+to delete the connection object.<P>
+
+<HR>
+<A NAME="wxtcpconnectiononexecute"></A>
+<H3>wxTCPConnection::OnExecute</H3>
+<P>
+<B>virtual bool</B> <B>OnExecute</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>, <B>char* </B><I>data</I>, <B>int</B><I> size</I>, <B>wxIPCFormat</B><I> format</I>)<P>
+Message sent to the server application when the client notifies it to
+execute the given data. Note that there is no item associated with
+this message.<P>
+
+<HR>
+<A NAME="wxtcpconnectiononpoke"></A>
+<H3>wxTCPConnection::OnPoke</H3>
+<P>
+<B>virtual bool</B> <B>OnPoke</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>, <B>char* </B><I>data</I>, <B>int</B><I> size</I>, <B>wxIPCFormat</B><I> format</I>)<P>
+Message sent to the server application when the client notifies it to
+accept the given data.<P>
+
+<HR>
+<A NAME="wxtcpconnectiononrequest"></A>
+<H3>wxTCPConnection::OnRequest</H3>
+<P>
+<B>virtual char*</B> <B>OnRequest</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>, <B>int *</B><I>size</I>, <B>wxIPCFormat</B><I> format</I>)<P>
+Message sent to the server application when the client
+calls <A HREF="wx_wxtcpconnection.html#wxtcpconnectionrequest">wxTCPConnection::Request</A>. The server
+should respond by returning a character string from <B>OnRequest</B>,
+or NULL to indicate no data.<P>
+
+<HR>
+<A NAME="wxtcpconnectiononstartadvise"></A>
+<H3>wxTCPConnection::OnStartAdvise</H3>
+<P>
+<B>virtual bool</B> <B>OnStartAdvise</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>)<P>
+Message sent to the server application by the client, when the client
+wishes to start an 'advise loop' for the given topic and item. The
+server can refuse to participate by returning false.<P>
+
+<HR>
+<A NAME="wxtcpconnectiononstopadvise"></A>
+<H3>wxTCPConnection::OnStopAdvise</H3>
+<P>
+<B>virtual bool</B> <B>OnStopAdvise</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>)<P>
+Message sent to the server application by the client, when the client
+wishes to stop an 'advise loop' for the given topic and item. The
+server can refuse to stop the advise loop by returning false, although
+this doesn't have much meaning in practice.<P>
+
+<HR>
+<A NAME="wxtcpconnectionpoke"></A>
+<H3>wxTCPConnection::Poke</H3>
+<P>
+<B>bool</B> <B>Poke</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>, <B>char* </B><I>data</I>, <B>int</B><I> size = -1</I>, <B>wxIPCFormat</B><I> format = wxCF_TEXT</I>)<P>
+Called by the client application to poke data into the server. Can be
+used to transfer arbitrary data to the server. Causes the server
+connection's <A HREF="wx_wxtcpconnection.html#wxtcpconnectiononpoke">wxTCPConnection::OnPoke</A> member
+to be called. Returns true if successful.<P>
+
+<HR>
+<A NAME="wxtcpconnectionrequest"></A>
+<H3>wxTCPConnection::Request</H3>
+<P>
+<B>char*</B> <B>Request</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>, <B>int *</B><I>size</I>, <B>wxIPCFormat</B><I> format = wxIPC_TEXT</I>)<P>
+Called by the client application to request data from the server. Causes
+the server connection's <A HREF="wx_wxtcpconnection.html#wxtcpconnectiononrequest">wxTCPConnection::OnRequest</A> member to be called. Returns a
+character string (actually a pointer to the connection's buffer) if
+successful, NULL otherwise.<P>
+
+<HR>
+<A NAME="wxtcpconnectionstartadvise"></A>
+<H3>wxTCPConnection::StartAdvise</H3>
+<P>
+<B>bool</B> <B>StartAdvise</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>)<P>
+Called by the client application to ask if an advise loop can be started
+with the server. Causes the server connection's <A HREF="wx_wxtcpconnection.html#wxtcpconnectiononstartadvise">wxTCPConnection::OnStartAdvise</A>
+member to be called. Returns true if the server okays it, false
+otherwise.<P>
+
+<HR>
+<A NAME="wxtcpconnectionstopadvise"></A>
+<H3>wxTCPConnection::StopAdvise</H3>
+<P>
+<B>bool</B> <B>StopAdvise</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>)<P>
+Called by the client application to ask if an advise loop can be
+stopped. Causes the server connection's <A HREF="wx_wxtcpconnection.html#wxtcpconnectiononstopadvise">wxTCPConnection::OnStopAdvise</A> member
+to be called. Returns true if the server okays it, false otherwise.<P>
+
+</FONT></BODY></HTML>

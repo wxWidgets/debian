@@ -1,0 +1,107 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxClassInfo</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxclassinfo"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxchoicebook.html#wxchoicebook"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxclient.html#wxclient"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxClassInfo</H2>
+<P>
+This class stores meta-information about classes. Instances of this class are
+not generally defined directly by an application, but indirectly through use
+of macros such as <B>DECLARE_DYNAMIC_CLASS</B> and <B>IMPLEMENT_DYNAMIC_CLASS</B>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No parent class.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/object.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_runtimeclassoverview.html#wxclassinfooverview">Overview</A>, <A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxclassinfoctor">wxClassInfo::wxClassInfo</A><BR>
+<A HREF="#wxclassinfocreateobject">wxClassInfo::CreateObject</A><BR>
+<A HREF="#wxclassinfofindclass">wxClassInfo::FindClass</A><BR>
+<A HREF="#wxclassinfogetbaseclassname1">wxClassInfo::GetBaseClassName1</A><BR>
+<A HREF="#wxclassinfogetbaseclassname2">wxClassInfo::GetBaseClassName2</A><BR>
+<A HREF="#wxclassinfogetclassname">wxClassInfo::GetClassName</A><BR>
+<A HREF="#wxclassinfogetsize">wxClassInfo::GetSize</A><BR>
+<A HREF="#wxclassinfoinitializeclasses">wxClassInfo::InitializeClasses</A><BR>
+<A HREF="#wxclassinfoisdynamic">wxClassInfo::IsDynamic</A><BR>
+<A HREF="#wxclassinfoiskindof">wxClassInfo::IsKindOf</A><BR>
+<P>
+
+<HR>
+<A NAME="wxclassinfoctor"></A>
+<H3>wxClassInfo::wxClassInfo</H3>
+<P>
+<B></B> <B>wxClassInfo</B>(<B>const wxChar * </B><I>className</I>, <B>const <A HREF="wx_wxclassinfo.html#wxclassinfo">wxClassInfo</A> * </B></B><I>baseClass1</I>, <B>const <A HREF="wx_wxclassinfo.html#wxclassinfo">wxClassInfo</A> * </B></B><I>baseClass2</I>,
+ <B>int</B><I> size</I>, <B>wxObjectConstructorFn </B><I>fn</I>)<P>
+Constructs a wxClassInfo object. The supplied macros implicitly construct objects of this
+class, so there is no need to create such objects explicitly in an application.<P>
+
+<HR>
+<A NAME="wxclassinfocreateobject"></A>
+<H3>wxClassInfo::CreateObject</H3>
+<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B> </B> <B>CreateObject</B>() <B>const</B><P>
+Creates an object of the appropriate kind. Returns NULL if the class has not been declared
+dynamically creatable (typically, it is an abstract class).<P>
+
+<HR>
+<A NAME="wxclassinfofindclass"></A>
+<H3>wxClassInfo::FindClass</H3>
+<P>
+<B>static <A HREF="wx_wxclassinfo.html#wxclassinfo">wxClassInfo</A> *</B> </B> <B>FindClass</B>(<B>wxChar * </B><I>name</I>)<P>
+Finds the wxClassInfo object for a class of the given string name.<P>
+
+<HR>
+<A NAME="wxclassinfogetbaseclassname1"></A>
+<H3>wxClassInfo::GetBaseClassName1</H3>
+<P>
+<B>wxChar *</B> <B>GetBaseClassName1</B>() <B>const</B><P>
+Returns the name of the first base class (NULL if none).<P>
+
+<HR>
+<A NAME="wxclassinfogetbaseclassname2"></A>
+<H3>wxClassInfo::GetBaseClassName2</H3>
+<P>
+<B>wxChar *</B> <B>GetBaseClassName2</B>() <B>const</B><P>
+Returns the name of the second base class (NULL if none).<P>
+
+<HR>
+<A NAME="wxclassinfogetclassname"></A>
+<H3>wxClassInfo::GetClassName</H3>
+<P>
+<B>wxChar *</B> <B>GetClassName</B>() <B>const</B><P>
+Returns the string form of the class name.<P>
+
+<HR>
+<A NAME="wxclassinfogetsize"></A>
+<H3>wxClassInfo::GetSize</H3>
+<P>
+<B>int</B> <B>GetSize</B>() <B>const</B><P>
+Returns the size of the class.<P>
+
+<HR>
+<A NAME="wxclassinfoinitializeclasses"></A>
+<H3>wxClassInfo::InitializeClasses</H3>
+<P>
+<B>static void</B> <B>InitializeClasses</B>()<P>
+Initializes pointers in the wxClassInfo objects for fast execution
+of IsKindOf. Called in base wxWidgets library initialization.<P>
+
+<HR>
+<A NAME="wxclassinfoisdynamic"></A>
+<H3>wxClassInfo::IsDynamic</H3>
+<P>
+<B>bool</B> <B>IsDynamic</B>() <B>const</B><P>
+Returns true if this class info can create objects of the associated class.<P>
+
+<HR>
+<A NAME="wxclassinfoiskindof"></A>
+<H3>wxClassInfo::IsKindOf</H3>
+<P>
+<B>bool</B> <B>IsKindOf</B>(<B><A HREF="wx_wxclassinfo.html#wxclassinfo">wxClassInfo</A>* </B></B><I>info</I>)<P>
+Returns true if this class is a kind of (inherits from) the given class.<P>
+
+
+</FONT></BODY></HTML>

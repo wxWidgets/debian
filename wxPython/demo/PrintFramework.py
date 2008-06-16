@@ -4,9 +4,6 @@ import  ScrolledWindow
 
 #----------------------------------------------------------------------
 
-ID_Setup    =   wx.NewId()
-ID_Preview  =   wx.NewId()
-ID_Print    =   wx.NewId()
 
 class MyPrintout(wx.Printout):
     def __init__(self, canvas, log):
@@ -15,38 +12,38 @@ class MyPrintout(wx.Printout):
         self.log = log
 
     def OnBeginDocument(self, start, end):
-        self.log.WriteText("wx.Printout.OnBeginDocument\n")
-        return self.base_OnBeginDocument(start, end)
+        self.log.WriteText("MyPrintout.OnBeginDocument\n")
+        return super(MyPrintout, self).OnBeginDocument(start, end)
 
     def OnEndDocument(self):
-        self.log.WriteText("wx.Printout.OnEndDocument\n")
-        self.base_OnEndDocument()
+        self.log.WriteText("MyPrintout.OnEndDocument\n")
+        super(MyPrintout, self).OnEndDocument()
 
     def OnBeginPrinting(self):
-        self.log.WriteText("wx.Printout.OnBeginPrinting\n")
-        self.base_OnBeginPrinting()
+        self.log.WriteText("MyPrintout.OnBeginPrinting\n")
+        super(MyPrintout, self).OnBeginPrinting()
 
     def OnEndPrinting(self):
-        self.log.WriteText("wx.Printout.OnEndPrinting\n")
-        self.base_OnEndPrinting()
+        self.log.WriteText("MyPrintout.OnEndPrinting\n")
+        super(MyPrintout, self).OnEndPrinting()
 
     def OnPreparePrinting(self):
-        self.log.WriteText("wx.Printout.OnPreparePrinting\n")
-        self.base_OnPreparePrinting()
+        self.log.WriteText("MyPrintout.OnPreparePrinting\n")
+        super(MyPrintout, self).OnPreparePrinting()
 
     def HasPage(self, page):
-        self.log.WriteText("wx.Printout.HasPage: %d\n" % page)
+        self.log.WriteText("MyPrintout.HasPage: %d\n" % page)
         if page <= 2:
             return True
         else:
             return False
 
     def GetPageInfo(self):
-        self.log.WriteText("wx.Printout.GetPageInfo\n")
+        self.log.WriteText("MyPrintout.GetPageInfo\n")
         return (1, 2, 1, 2)
 
     def OnPrintPage(self, page):
-        self.log.WriteText("wx.Printout.OnPrintPage: %d\n" % page)
+        self.log.WriteText("MyPrintout.OnPrintPage: %d\n" % page)
         dc = self.GetDC()
 
         #-------------------------------------------
@@ -107,15 +104,15 @@ class TestPrintPanel(wx.Panel):
         self.box.Add(self.canvas, 1, wx.GROW)
 
         subbox = wx.BoxSizer(wx.HORIZONTAL)
-        btn = wx.Button(self, ID_Setup, "Print Setup")
-        self.Bind(wx.EVT_BUTTON, self.OnPrintSetup, btn)
+        btn = wx.Button(self, -1, "Page Setup")
+        self.Bind(wx.EVT_BUTTON, self.OnPageSetup, btn)
         subbox.Add(btn, 1, wx.GROW | wx.ALL, 2)
 
-        btn = wx.Button(self, ID_Preview, "Print Preview")
+        btn = wx.Button(self, -1, "Print Preview")
         self.Bind(wx.EVT_BUTTON, self.OnPrintPreview, btn)
         subbox.Add(btn, 1, wx.GROW | wx.ALL, 2)
 
-        btn = wx.Button(self, ID_Print, "Print")
+        btn = wx.Button(self, -1, "Print")
         self.Bind(wx.EVT_BUTTON, self.OnDoPrint, btn)
         subbox.Add(btn, 1, wx.GROW | wx.ALL, 2)
 
@@ -125,22 +122,21 @@ class TestPrintPanel(wx.Panel):
         self.SetSizer(self.box)
 
 
-    def OnPrintSetup(self, event):
-        data = wx.PrintDialogData(self.printData)
-        printerDialog = wx.PrintDialog(self, data)
-        printerDialog.GetPrintDialogData().SetSetupDialog(True)
-        printerDialog.ShowModal();
+
+    def OnPageSetup(self, evt):
+        psdd = wx.PageSetupDialogData(self.printData)
+        psdd.CalculatePaperSizeFromId()
+        dlg = wx.PageSetupDialog(self, psdd)
+        dlg.ShowModal()
 
         # this makes a copy of the wx.PrintData instead of just saving
         # a reference to the one inside the PrintDialogData that will
         # be destroyed when the dialog is destroyed
-        self.printData = wx.PrintData( printerDialog.GetPrintDialogData().GetPrintData() )
-        
-        printerDialog.Destroy()
+        self.printData = wx.PrintData( dlg.GetPageSetupData().GetPrintData() )
 
+        dlg.Destroy()
 
     def OnPrintPreview(self, event):
-        self.log.WriteText("OnPrintPreview\n")
         data = wx.PrintDialogData(self.printData)
         printout = MyPrintout(self.canvas, self.log)
         printout2 = MyPrintout(self.canvas, self.log)
@@ -150,12 +146,12 @@ class TestPrintPanel(wx.Panel):
             self.log.WriteText("Houston, we have a problem...\n")
             return
 
-        frame = wx.PreviewFrame(self.preview, self.frame, "This is a print preview")
+        pfrm = wx.PreviewFrame(self.preview, self.frame, "This is a print preview")
 
-        frame.Initialize()
-        frame.SetPosition(self.frame.GetPosition())
-        frame.SetSize(self.frame.GetSize())
-        frame.Show(True)
+        pfrm.Initialize()
+        pfrm.SetPosition(self.frame.GetPosition())
+        pfrm.SetSize(self.frame.GetSize())
+        pfrm.Show(True)
 
 
 

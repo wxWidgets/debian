@@ -1,0 +1,68 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStreamToTextRedirector</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstreamtotextredirector"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstreambuffer.html#wxstreambuffer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstring.html#wxstring"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStreamToTextRedirector</H2>
+<P>
+This class can be used to (temporarily) redirect all output sent to a C++
+ostream object to a <A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A> instead.<P>
+<B>NB:</B> Some compilers and/or build configurations don't support multiply
+inheriting <A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A> from <TT>std::streambuf</TT> in which
+case this class is not compiled in. You also must have <TT>wxUSE_STD_IOSTREAM</TT> 
+option on (i.e. set to 1) in your setup.h to be able to use it. Under Unix,
+specify <TT>--enable-std_iostreams</TT> switch when running configure for this.<P>
+Example of usage:
+<FONT SIZE=2><PRE>
+  using namespace std;
+
+  wxTextCtrl *text = new wxTextCtrl(...);
+
+  {
+    wxStreamToTextRedirector redirect(text);
+
+    // this goes to the text control
+    cout &lt;&lt; "Hello, text!" &lt;&lt; endl;
+  }
+
+  // this goes somewhere else, presumably to stdout
+  cout &lt;&lt; "Hello, console!" &lt;&lt; endl;
+</PRE>
+</FONT><B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/textctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxstreamtotextredirectorctor">wxStreamToTextRedirector::wxStreamToTextRedirector</A><BR>
+<A HREF="#wxstreamtotextredirectordtor">wxStreamToTextRedirector::~wxStreamToTextRedirector</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstreamtotextredirectorctor"></A>
+<H3>wxStreamToTextRedirector::wxStreamToTextRedirector</H3>
+<P>
+<B></B> <B>wxStreamToTextRedirector</B>(<B><A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A> </B></B><I>*text</I>, <B>ostream *</B><I>ostr = NULL</I>)<P>
+The constructor starts redirecting output sent to <I>ostr</I> or <I>cout</I> for
+the default parameter value to the text control <I>text</I>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>text</I><UL><UL>
+The text control to append output too, must be non-NULL</UL></UL>
+<P>
+<I>ostr</I><UL><UL>
+The C++ stream to redirect, <I>cout</I> is used if it is NULL</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxstreamtotextredirectordtor"></A>
+<H3>wxStreamToTextRedirector::~wxStreamToTextRedirector</H3>
+<P>
+<B></B> <B>~wxStreamToTextRedirector</B>()<P>
+When a wxStreamToTextRedirector object is destroyed, the redirection is ended
+and any output sent to the C++ ostream which had been specified at the time of
+the object construction will go to its original destination.<P>
+
+</FONT></BODY></HTML>

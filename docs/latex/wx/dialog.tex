@@ -1,8 +1,37 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Name:        dialog.tex
+%% Purpose:     wxDialog documentation
+%% Author:      wxWidgets Team
+%% Modified by:
+%% Created:
+%% RCS-ID:      $Id: dialog.tex 42921 2006-11-01 20:38:35Z VZ $
+%% Copyright:   (c) wxWidgets Team
+%% License:     wxWindows license
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{\class{wxDialog}}\label{wxdialog}
 
 A dialog box is a window with a title bar and sometimes a system menu, which
 can be moved around the screen. It can contain controls and other windows and
-is usually used to allow the user to make some choice or to answer a question.
+is often used to allow the user to make some choice or to answer a question.
+
+
+\wxheading{Dialog Buttons}
+
+The dialog usually contains either a single button allowing to close the
+dialog or two buttons, one accepting the changes and the other one discarding
+them (such button, if present, is automatically activated if the user presses
+the \texttt{"Esc"} key). By default, buttons with the standard \texttt{wxID\_OK} 
+and \texttt{wxID\_CANCEL} identifiers behave as expected. Starting with
+wxWidgets 2.7 it is also possible to use a button with a different identifier
+instead, see \helpref{SetAffirmativeId}{wxdialogsetaffirmativeid} and 
+\helpref{SetEscapeId}{wxdialogsetescapeid}.
+
+Also notice that the \helpref{CreateButtonSizer()}{wxdialogcreatebuttonsizer} 
+should be used to create the buttons appropriate for the current platform and
+positioned correctly (including their order which is platform-dependent).
+
+
 
 \wxheading{Derived from}
 
@@ -15,7 +44,7 @@ is usually used to allow the user to make some choice or to answer a question.
 
 <wx/dialog.h>
 
-\wxheading{Remarks}
+\wxheading{Modal and modeless dialogs}
 
 There are two kinds of dialog -- {\it modal}\ and {\it modeless}. A modal dialog
 blocks program flow and user input on other windows until it is dismissed,
@@ -74,7 +103,7 @@ the dialog to respond to system close events.
 \twocolitem{\windowstyle{wxNO\_3D}}{Under Windows, specifies that the child controls
 should not have 3D borders unless specified in the control.}
 \twocolitem{\windowstyle{wxDIALOG\_NO\_PARENT}}{By default, a dialog created
-with a {\tt NULL} parent window will be given the 
+with a {\tt NULL} parent window will be given the
 \helpref{application's top level window}{wxappgettopwindow} as parent. Use this
 style to prevent this from happening and create an orphan dialog. This is not recommended for modal dialogs.}
 \twocolitem{\windowstyle{wxDIALOG\_EX\_CONTEXTHELP}}{Under Windows, puts a query button on the
@@ -96,6 +125,7 @@ See also \helpref{Generic window styles}{windowstyles}.
 \helpref{Validator overview}{validatoroverview}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
+
 
 \membersection{wxDialog::wxDialog}\label{wxdialogctor}
 
@@ -136,11 +166,13 @@ individual dialog boxes.}
 
 \helpref{wxDialog::Create}{wxdialogcreate}
 
+
 \membersection{wxDialog::\destruct{wxDialog}}\label{wxdialogdtor}
 
 \func{}{\destruct{wxDialog}}{\void}
 
 Destructor. Deletes any child windows before deleting the physical window.
+
 
 \membersection{wxDialog::Centre}\label{wxdialogcentre}
 
@@ -151,6 +183,7 @@ Centres the dialog box on the display.
 \wxheading{Parameters}
 
 \docparam{direction}{May be {\tt wxHORIZONTAL}, {\tt wxVERTICAL} or {\tt wxBOTH}.}
+
 
 \membersection{wxDialog::Create}\label{wxdialogcreate}
 
@@ -164,6 +197,7 @@ Centres the dialog box on the display.
 Used for two-step dialog box construction. See \helpref{wxDialog::wxDialog}{wxdialogctor}\rtfsp
 for details.
 
+
 \membersection{wxDialog::CreateButtonSizer}\label{wxdialogcreatebuttonsizer}
 
 \func{wxSizer*}{CreateButtonSizer}{\param{long}{ flags}}
@@ -173,7 +207,24 @@ of the following flags: wxOK, wxCANCEL, wxYES, wxNO, wxHELP, wxNO\_DEFAULT.
 
 The sizer lays out the buttons in a manner appropriate to the platform.
 
-This function simply calls \helpref{CreateStdDialogButtonSizer}{wxdialogcreatestddialogbuttonsizer}.
+This function uses \helpref{CreateStdDialogButtonSizer}{wxdialogcreatestddialogbuttonsizer} 
+internally for most platforms but doesn't create the sizer at all for the
+platforms with hardware buttons (such as smartphones) for which it sets up the
+hardware buttons appropriately and returns \NULL, so don't forget to test that
+the return value is valid before using it.
+
+
+\membersection{wxDialog::CreateSeparatedButtonSizer}\label{wxdialogcreateseparatedbuttonsizer}
+
+\func{wxSizer*}{CreateSeparatedButtonSizer}{\param{long}{ flags}}
+
+Creates a sizer with standard buttons using 
+\helpref{CreateButtonSizer}{wxdialogcreatebuttonsizer} separated from the rest
+of the dialog contents by a horizontal \helpref{wxStaticLine}{wxstaticline}.
+
+Please notice that just like CreateButtonSizer() this function may return \NULL 
+if no buttons were created.
+
 
 \membersection{wxDialog::CreateStdDialogButtonSizer}\label{wxdialogcreatestddialogbuttonsizer}
 
@@ -184,6 +235,7 @@ of the following flags: wxOK, wxCANCEL, wxYES, wxNO, wxHELP, wxNO\_DEFAULT.
 
 The sizer lays out the buttons in a manner appropriate to the platform.
 
+
 \membersection{wxDialog::DoOK}\label{wxdialogdook}
 
 \func{virtual bool}{DoOK}{\void}
@@ -192,6 +244,7 @@ This function is called when the titlebar OK button is pressed (PocketPC only).
 A command event for the identifier returned by GetAffirmativeId is sent by
 default. You can override this function. If the function returns false, wxWidgets
 will call Close() for the dialog.
+
 
 \membersection{wxDialog::EndModal}\label{wxdialogendmodal}
 
@@ -210,15 +263,30 @@ invocation.
 \helpref{wxDialog::GetReturnCode}{wxdialoggetreturncode},\rtfsp
 \helpref{wxDialog::SetReturnCode}{wxdialogsetreturncode}
 
+
 \membersection{wxDialog::GetAffirmativeId}\label{wxdialoggetaffirmativeid}
 
 \constfunc{int}{GetAffirmativeId}{\void}
 
-Gets the identifier to be used when the user presses an OK button in a PocketPC titlebar.
+Gets the identifier of the button which works like standard OK button in this
+dialog.
 
 \wxheading{See also}
 
 \helpref{wxDialog::SetAffirmativeId}{wxdialogsetaffirmativeid}
+
+
+\membersection{wxDialog::GetEscapeId}\label{wxdialoggetescapeid}
+
+\constfunc{int}{GetEscapeId}{\void}
+
+Gets the identifier of the button to map presses of \texttt{\textsc{ESC}}
+button to.
+
+\wxheading{See also}
+
+\helpref{wxDialog::SetEscapeId}{wxdialogsetescapeid}
+
 
 \membersection{wxDialog::GetReturnCode}\label{wxdialoggetreturncode}
 
@@ -236,11 +304,6 @@ a code to the application.
 \helpref{wxDialog::SetReturnCode}{wxdialogsetreturncode}, \helpref{wxDialog::ShowModal}{wxdialogshowmodal},\rtfsp
 \helpref{wxDialog::EndModal}{wxdialogendmodal}
 
-\membersection{wxDialog::GetTitle}\label{wxdialoggettitle}
-
-\constfunc{wxString}{GetTitle}{\void}
-
-Returns the title of the dialog box.
 
 \membersection{wxDialog::GetToolBar}\label{wxdialoggettoolbar}
 
@@ -251,6 +314,7 @@ allows you to access the toolbar and add tools to it. Removing tools and adding
 arbitrary controls are not currently supported.
 
 This function is not available on any other platform.
+
 
 \membersection{wxDialog::Iconize}\label{wxdialogiconized}
 
@@ -270,6 +334,7 @@ boxes under Motif which have user-iconizable frames, and under Windows
 calling {\tt Iconize(false)} will bring the window to the front, as does
 \rtfsp{\tt Show(true)}.
 
+
 \membersection{wxDialog::IsIconized}\label{wxdialogisiconized}
 
 \constfunc{bool}{IsIconized}{\void}
@@ -280,57 +345,14 @@ Returns true if the dialog box is iconized. Windows only.
 
 Always returns false under Windows since dialogs cannot be iconized.
 
+
 \membersection{wxDialog::IsModal}\label{wxdialogismodal}
 
 \constfunc{bool}{IsModal}{\void}
 
 Returns true if the dialog box is modal, false otherwise.
 
-\membersection{wxDialog::OnApply}\label{wxdialogonapply}
 
-\func{void}{OnApply}{\param{wxCommandEvent\& }{event}}
-
-The default handler for the wxID\_APPLY identifier.
-
-\wxheading{Remarks}
-
-This function calls \helpref{wxWindow::Validate}{wxwindowvalidate} and \helpref{wxWindow::TransferDataFromWindow}{wxwindowtransferdatafromwindow}.
-
-\wxheading{See also}
-
-\helpref{wxDialog::OnOK}{wxdialogonok}, \helpref{wxDialog::OnCancel}{wxdialogoncancel}
-
-\membersection{wxDialog::OnCancel}\label{wxdialogoncancel}
-
-\func{void}{OnCancel}{\param{wxCommandEvent\& }{event}}
-
-The default handler for the wxID\_CANCEL identifier.
-
-\wxheading{Remarks}
-
-The function either calls {\bf EndModal(wxID\_CANCEL)} if the dialog is modal, or
-sets the return value to wxID\_CANCEL and calls {\bf Show(false)} if the dialog is modeless.
-
-\wxheading{See also}
-
-\helpref{wxDialog::OnOK}{wxdialogonok}, \helpref{wxDialog::OnApply}{wxdialogonapply}
-
-\membersection{wxDialog::OnOK}\label{wxdialogonok}
-
-\func{void}{OnOK}{\param{wxCommandEvent\& }{event}}
-
-The default handler for the wxID\_OK identifier.
-
-\wxheading{Remarks}
-
-The function calls
-\rtfsp\helpref{wxWindow::Validate}{wxwindowvalidate}, then \helpref{wxWindow::TransferDataFromWindow}{wxwindowtransferdatafromwindow}.
-If this returns true, the function either calls {\bf EndModal(wxID\_OK)} if the dialog is modal, or
-sets the return value to wxID\_OK and calls {\bf Show(false)} if the dialog is modeless.
-
-\wxheading{See also}
-
-\helpref{wxDialog::OnCancel}{wxdialogoncancel}, \helpref{wxDialog::OnApply}{wxdialogonapply}
 
 \membersection{wxDialog::OnSysColourChanged}\label{wxdialogonsyscolourchanged}
 
@@ -354,16 +376,45 @@ propagate the notification to child windows and controls.
 
 \helpref{wxSysColourChangedEvent}{wxsyscolourchangedevent}
 
+
 \membersection{wxDialog::SetAffirmativeId}\label{wxdialogsetaffirmativeid}
 
 \func{void}{SetAffirmativeId}{\param{int }{id}}
 
-Sets the identifier to be used when the user presses an OK button in a PocketPC titlebar.
-By default, this is wxID\_OK.
+Sets the identifier to be used as OK button. When the button with this
+identifier is pressed, the dialog calls \helpref{Validate}{wxwindowvalidate} 
+and \helpref{wxWindow::TransferDataFromWindow}{wxwindowtransferdatafromwindow} 
+and, if they both return \true, closes the dialog with \texttt{wxID\_OK} return
+code.
+
+Also, when the user presses a hardware OK button on the devices having one or
+the special OK button in the PocketPC title bar, an event with this id is
+generated.
+
+By default, the affirmative id is wxID\_OK.
 
 \wxheading{See also}
 
-\helpref{wxDialog::GetAffirmativeId}{wxdialoggetaffirmativeid}
+\helpref{wxDialog::GetAffirmativeId}{wxdialoggetaffirmativeid}, \helpref{wxDialog::SetEscapeId}{wxdialogsetescapeid}
+
+
+\membersection{wxDialog::SetEscapeId}\label{wxdialogsetescapeid}
+
+\func{void}{SetEscapeId}{\param{int }{id}}
+
+Sets the identifier of the button which should work like the standard 
+\texttt{\textsc{Cancel}} button in this dialog. When the button with this id is
+clicked, the dialog is closed. Also, when the user presses \texttt{\textsc{ESC}} 
+key in the dialog or closes the dialog using the close button in the title bar,
+this is mapped to the click of the button with the specified id.
+
+By default, the escape id is the special value \texttt{wxID\_ANY} meaning that 
+\texttt{wxID\_CANCEL} button is used if it's present in the dialog and
+otherwise the button with \helpref{GetAffirmativeId()}{wxdialoggetaffirmativeid} 
+is used. Another special value for \arg{id} is \texttt{wxID\_NONE} meaning that
+\texttt{\textsc{ESC}} presses should be ignored. If any other value is given, it
+is interpreted as the id of the button to map the escape key to.
+
 
 \membersection{wxDialog::SetIcon}\label{wxdialogseticon}
 
@@ -377,6 +428,7 @@ Sets the icon for this dialog.
 
 See also \helpref{wxIcon}{wxicon}.
 
+
 \membersection{wxDialog::SetIcons}\label{wxdialogseticons}
 
 \func{void}{SetIcons}{\param{const wxIconBundle\& }{icons}}
@@ -389,11 +441,12 @@ Sets the icons for this dialog.
 
 See also \helpref{wxIconBundle}{wxiconbundle}.
 
+
 \membersection{wxDialog::SetModal}\label{wxdialogsetmodal}
 
 \func{void}{SetModal}{\param{const bool}{ flag}}
 
-{\bf NB:} This function is deprecated and doesn't work for all ports, just use 
+{\bf NB:} This function is deprecated and doesn't work for all ports, just use
 \helpref{ShowModal}{wxdialogshowmodal} to show a modal dialog instead.
 
 Allows the programmer to specify whether the dialog box is modal (wxDialog::Show blocks control
@@ -402,6 +455,7 @@ until the dialog is hidden) or modeless (control returns immediately).
 \wxheading{Parameters}
 
 \docparam{flag}{If true, the dialog will be modal, otherwise it will be modeless.}
+
 
 \membersection{wxDialog::SetReturnCode}\label{wxdialogsetreturncode}
 
@@ -423,15 +477,6 @@ a code to the application. The function \helpref{wxDialog::EndModal}{wxdialogend
 \helpref{wxDialog::GetReturnCode}{wxdialoggetreturncode}, \helpref{wxDialog::ShowModal}{wxdialogshowmodal},\rtfsp
 \helpref{wxDialog::EndModal}{wxdialogendmodal}
 
-\membersection{wxDialog::SetTitle}\label{wxdialogsettitle}
-
-\func{void}{SetTitle}{\param{const wxString\& }{ title}}
-
-Sets the title of the dialog box.
-
-\wxheading{Parameters}
-
-\docparam{title}{The dialog box title.}
 
 \membersection{wxDialog::Show}\label{wxdialogshow}
 
@@ -448,6 +493,7 @@ modal, control is returned to the calling program.}
 \wxheading{Remarks}
 
 The preferred way of dismissing a modal dialog is to use \helpref{wxDialog::EndModal}{wxdialogendmodal}.
+
 
 \membersection{wxDialog::ShowModal}\label{wxdialogshowmodal}
 

@@ -12,10 +12,6 @@
 #ifndef _WX_MSW_FDREPDLG_H_
 #define _WX_MSW_FDREPDLG_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "mswfdrepdlg.h"
-#endif
-
 // ----------------------------------------------------------------------------
 // wxFindReplaceDialog: dialog for searching / replacing text
 // ----------------------------------------------------------------------------

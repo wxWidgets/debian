@@ -4,14 +4,10 @@
 // Author:      Julian Smart, Robert Roebling, Markus Holzhem
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dcpsg.cpp,v 1.131.2.4 2006/03/08 23:03:24 MR Exp $
+// RCS-ID:      $Id: dcpsg.cpp 48979 2007-09-28 06:58:48Z RR $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "dcpsg.h"
-#endif
 
 #include "wx/wxprec.h"
 
@@ -19,28 +15,27 @@
     #pragma hdrstop
 #endif
 
+#if wxUSE_PRINTING_ARCHITECTURE && wxUSE_POSTSCRIPT
+
+#include "wx/generic/dcpsg.h"
+
 #ifndef WX_PRECOMP
+    #include "wx/intl.h"
+    #include "wx/log.h"
+    #include "wx/utils.h"
+    #include "wx/dcmemory.h"
+    #include "wx/math.h"
+    #include "wx/image.h"
+    #include "wx/icon.h"
 #endif // WX_PRECOMP
 
-#if wxUSE_PRINTING_ARCHITECTURE
-
-#if wxUSE_POSTSCRIPT
-
-#include "wx/setup.h"
-
-#include "wx/dcmemory.h"
-#include "wx/utils.h"
-#include "wx/intl.h"
-#include "wx/app.h"
-#include "wx/image.h"
-#include "wx/log.h"
-#include "wx/generic/dcpsg.h"
 #include "wx/prntbase.h"
 #include "wx/generic/prntdlgg.h"
 #include "wx/paper.h"
 #include "wx/filefn.h"
-#include "wx/math.h"
 #include "wx/stdpaths.h"
+
+WXDLLIMPEXP_DATA_CORE(int) wxPageNumber;
 
 #ifdef __WXMSW__
 
@@ -309,7 +304,7 @@ wxPostScriptDC::~wxPostScriptDC ()
     }
 }
 
-bool wxPostScriptDC::Ok() const
+bool wxPostScriptDC::IsOk() const
 {
   return m_ok;
 }
@@ -409,9 +404,10 @@ void wxPostScriptDC::DoDrawArc (wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2, 
         alpha1 = 0.0;
         alpha2 = 360.0;
     }
-    else if (radius == 0.0)
+    else if ( wxIsNullDouble(radius) )
     {
-        alpha1 = alpha2 = 0.0;
+        alpha1 =
+        alpha2 = 0.0;
     }
     else
     {
@@ -450,8 +446,8 @@ void wxPostScriptDC::DoDrawArc (wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2, 
         PsPrintf( wxT("newpath\n")
                   wxT("%d %d %d %d %d %d ellipse\n")
                   wxT("%d %d lineto\n")
-                  wxT("stroke\n")
-                  wxT("fill\n"),
+                  wxT("closepath\n")
+                  wxT("stroke\n"),
                 LogicalToDeviceX(xc), LogicalToDeviceY(yc), LogicalToDeviceXRel(radius), LogicalToDeviceYRel(radius), (wxCoord)alpha1, (wxCoord) alpha2,
                 LogicalToDeviceX(xc), LogicalToDeviceY(yc) );
 
@@ -464,12 +460,16 @@ void wxPostScriptDC::DoDrawEllipticArc(wxCoord x,wxCoord y,wxCoord w,wxCoord h,d
 {
     wxCHECK_RET( m_ok, wxT("invalid postscript dc") );
 
-    if (sa>=360 || sa<=-360) sa=sa-int(sa/360)*360;
-    if (ea>=360 || ea<=-360) ea=ea-int(ea/360)*360;
-    if (sa<0) sa+=360;
-    if (ea<0) ea+=360;
+    if ( sa >= 360 || sa <= -360 )
+        sa -= int(sa/360)*360;
+    if ( ea >= 360 || ea <=- 360 )
+        ea -= int(ea/360)*360;
+    if ( sa < 0 )
+        sa += 360;
+    if ( ea < 0 )
+        ea += 360;
 
-    if (sa==ea)
+    if ( wxIsSameDouble(sa, ea) )
     {
         DrawEllipse(x,y,w,h);
         return;
@@ -1049,15 +1049,15 @@ void wxPostScriptDC::SetPen( const wxPen& pen )
                 PsPrint( buffer );
             }
             PsPrint ("] 0 setdash\n");
-            psdash = 0; 
-        } 
+            psdash = 0;
+        }
         break;
         case wxSOLID:
         case wxTRANSPARENT:
         default:              psdash = "[] 0";         break;
     }
 
-    if (psdash && (oldStyle != m_pen.GetStyle()) )
+    if ( psdash && (oldStyle != m_pen.GetStyle()) )
     {
         PsPrint( psdash );
         PsPrint( " setdash\n" );
@@ -1088,7 +1088,6 @@ void wxPostScriptDC::SetPen( const wxPen& pen )
         double bluePS = (double)(blue) / 255.0;
         double greenPS = (double)(green) / 255.0;
 
-        char buffer[100];
         sprintf( buffer,
             "%.8f %.8f %.8f setrgbcolor\n",
             redPS, greenPS, bluePS );
@@ -1260,12 +1259,12 @@ void wxPostScriptDC::DoDrawText( const wxString& text, wxCoord x, wxCoord y )
     }
 
     CalcBoundingBox( x, y );
-    CalcBoundingBox( x + size * text.Length() * 2/3 , y );
+    CalcBoundingBox( x + size * text.length() * 2/3 , y );
 }
 
 void wxPostScriptDC::DoDrawRotatedText( const wxString& text, wxCoord x, wxCoord y, double angle )
 {
-    if (angle == 0.0)
+    if ( wxIsNullDouble(angle) )
     {
         DoDrawText(text, x, y);
         return;
@@ -1365,7 +1364,6 @@ void wxPostScriptDC::DoDrawRotatedText( const wxString& text, wxCoord x, wxCoord
     {
         wxCoord uy = (wxCoord)(y + size - m_underlinePosition);
         wxCoord w, h;
-        char buffer[100];
         GetTextExtent(text, &w, &h);
 
         sprintf( buffer,
@@ -1386,7 +1384,7 @@ void wxPostScriptDC::DoDrawRotatedText( const wxString& text, wxCoord x, wxCoord
     }
 
     CalcBoundingBox( x, y );
-    CalcBoundingBox( x + size * text.Length() * 2/3 , y );
+    CalcBoundingBox( x + size * text.length() * 2/3 , y );
 }
 
 void wxPostScriptDC::SetBackground (const wxBrush& brush)
@@ -1605,20 +1603,20 @@ bool wxPostScriptDC::StartDoc( const wxString& message )
     const wxChar *paper;
     switch (m_printData.GetPaperId())
     {
-       case wxPAPER_LETTER: paper = wxT("Letter"); break;             // Letter: paper ""; 8 1/2 by 11 inches
-       case wxPAPER_LEGAL: paper = wxT("Legal"); break;              // Legal, 8 1/2 by 14 inches
-       case wxPAPER_A4: paper = wxT("A4"); break;          // A4 Sheet, 210 by 297 millimeters
+       case wxPAPER_LETTER: paper = wxT("Letter"); break;       // Letter: paper ""; 8 1/2 by 11 inches
+       case wxPAPER_LEGAL: paper = wxT("Legal"); break;         // Legal, 8 1/2 by 14 inches
+       case wxPAPER_A4: paper = wxT("A4"); break;               // A4 Sheet, 210 by 297 millimeters
        case wxPAPER_TABLOID: paper = wxT("Tabloid"); break;     // Tabloid, 11 by 17 inches
-       case wxPAPER_LEDGER: paper = wxT("Ledger"); break;      // Ledger, 17 by 11 inches
-       case wxPAPER_STATEMENT: paper = wxT("Statement"); break;   // Statement, 5 1/2 by 8 1/2 inches
-       case wxPAPER_EXECUTIVE: paper = wxT("Executive"); break;   // Executive, 7 1/4 by 10 1/2 inches
-       case wxPAPER_A3: paper = wxT("A3"); break;          // A3 sheet, 297 by 420 millimeters
-       case wxPAPER_A5: paper = wxT("A5"); break;          // A5 sheet, 148 by 210 millimeters
-       case wxPAPER_B4: paper = wxT("B4"); break;          // B4 sheet, 250 by 354 millimeters
-       case wxPAPER_B5: paper = wxT("B5"); break;          // B5 sheet, 182-by-257-millimeter paper
-       case wxPAPER_FOLIO: paper = wxT("Folio"); break;       // Folio, 8-1/2-by-13-inch paper
-       case wxPAPER_QUARTO: paper = wxT("Quaro"); break;      // Quarto, 215-by-275-millimeter paper
-       case wxPAPER_10X14: paper = wxT("10x14"); break;       // 10-by-14-inch sheet
+       case wxPAPER_LEDGER: paper = wxT("Ledger"); break;       // Ledger, 17 by 11 inches
+       case wxPAPER_STATEMENT: paper = wxT("Statement"); break; // Statement, 5 1/2 by 8 1/2 inches
+       case wxPAPER_EXECUTIVE: paper = wxT("Executive"); break; // Executive, 7 1/4 by 10 1/2 inches
+       case wxPAPER_A3: paper = wxT("A3"); break;               // A3 sheet, 297 by 420 millimeters
+       case wxPAPER_A5: paper = wxT("A5"); break;               // A5 sheet, 148 by 210 millimeters
+       case wxPAPER_B4: paper = wxT("B4"); break;               // B4 sheet, 250 by 354 millimeters
+       case wxPAPER_B5: paper = wxT("B5"); break;               // B5 sheet, 182-by-257-millimeter paper
+       case wxPAPER_FOLIO: paper = wxT("Folio"); break;         // Folio, 8-1/2-by-13-inch paper
+       case wxPAPER_QUARTO: paper = wxT("Quaro"); break;        // Quarto, 215-by-275-millimeter paper
+       case wxPAPER_10X14: paper = wxT("10x14"); break;         // 10-by-14-inch sheet
        default: paper = wxT("A4");
     }
     PsPrintf( wxT("%%%%DocumentPaperSizes: %s\n"), paper );
@@ -2002,10 +2000,6 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
 
         if ( !afmFile )
         {
-        }
-
-        if ( !afmFile )
-        {
 #if defined(__UNIX__) && !defined(__VMS__)
            afmName = wxGetDataDir();
 #else // !__UNIX__
@@ -2265,11 +2259,6 @@ void wxPostScriptDC::PsPrint( int ch )
     }
 }
 
-#endif
-  // wxUSE_POSTSCRIPT
-
-#endif
-  // wxUSE_PRINTING_ARCHITECTURE
-
+#endif // wxUSE_PRINTING_ARCHITECTURE && wxUSE_POSTSCRIPT
 
 // vi:sts=4:sw=4:et

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: gdi.i,v 1.68 2005/06/09 20:11:08 RD Exp $
+// RCS-ID:      $Id: gdi.i 41924 2006-10-11 04:07:14Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -25,9 +25,6 @@
 %import core.i
 %pythoncode { wx = _core }
 
-%include __gdi_rename.i
-
-
 MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
 
 
@@ -45,11 +42,13 @@ MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
 %include _font.i
 %include _intl.i
 %include _dc.i
+%include _graphics.i
+%include _overlay.i
 %include _imaglist.i
 %include _stockobjs.i
 %include _effects.i
 %include _renderer.i
-
+%include _pseudodc.i
 
 //---------------------------------------------------------------------------
 %init %{

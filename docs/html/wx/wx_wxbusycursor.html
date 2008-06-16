@@ -1,0 +1,49 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxBusyCursor</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxbusycursor"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxbufferedoutputstream.html#wxbufferedoutputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxbusyinfo.html#wxbusyinfo"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxBusyCursor</H2>
+<P>
+This class makes it easy to tell your user that the program is temporarily busy.
+Just create a wxBusyCursor object on the stack, and within the current scope,
+the hourglass will be shown.<P>
+For example:<P>
+<PRE>
+  wxBusyCursor wait;
+
+  for (int i = 0; i &lt; 100000; i++)
+    DoACalculation();
+</PRE>
+It works by calling <A HREF="wx_dialogfunctions.html#wxbeginbusycursor">wxBeginBusyCursor</A> in the constructor,
+and <A HREF="wx_dialogfunctions.html#wxendbusycursor">wxEndBusyCursor</A> in the destructor.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_dialogfunctions.html#wxbeginbusycursor">wxBeginBusyCursor</A>,
+<A HREF="wx_dialogfunctions.html#wxendbusycursor">wxEndBusyCursor</A>,
+<A HREF="wx_wxwindowdisabler.html#wxwindowdisabler">wxWindowDisabler</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxbusycursorctor">wxBusyCursor::wxBusyCursor</A><BR>
+<A HREF="#wxbusycursordtor">wxBusyCursor::~wxBusyCursor</A><BR>
+<P>
+
+<HR>
+<A NAME="wxbusycursorctor"></A>
+<H3>wxBusyCursor::wxBusyCursor</H3>
+<P>
+<B></B> <B>wxBusyCursor</B>(<B><A HREF="wx_wxcursor.html#wxcursor">wxCursor</A>*</B></B><I> cursor = wxHOURGLASS_CURSOR</I>)<P>
+Constructs a busy cursor object, calling <A HREF="wx_dialogfunctions.html#wxbeginbusycursor">wxBeginBusyCursor</A>.<P>
+
+<HR>
+<A NAME="wxbusycursordtor"></A>
+<H3>wxBusyCursor::~wxBusyCursor</H3>
+<P>
+<B></B> <B>~wxBusyCursor</B>()<P>
+Destroys the busy cursor object, calling <A HREF="wx_dialogfunctions.html#wxendbusycursor">wxEndBusyCursor</A>.<P>
+
+</FONT></BODY></HTML>

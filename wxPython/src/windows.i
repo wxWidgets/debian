@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-June-1997
-// RCS-ID:      $Id: windows.i,v 1.63 2004/06/02 02:29:19 RD Exp $
+// RCS-ID:      $Id: windows.i 39219 2006-05-19 01:10:46Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -24,8 +24,6 @@
 
 %import core.i
 %pythoncode { wx = _core }
-
-%include __windows_rename.i
 
 
 MAKE_CONST_WXSTRING_NOSWIG(EmptyString);

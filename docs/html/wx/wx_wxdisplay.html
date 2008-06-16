@@ -1,0 +1,177 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDisplay</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdisplay"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdirtraverser.html#wxdirtraverser"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdllloader.html#wxdllloader"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDisplay</H2>
+<P>
+Determines the sizes and locations of displays connected to the system.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/display.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_gdifunctions.html#wxclientdisplayrect">wxClientDisplayRect</A>, <A HREF="wx_gdifunctions.html#wxdisplaysize">wxDisplaySize</A>, <A HREF="wx_gdifunctions.html#wxdisplaysizemm">wxDisplaySizeMM</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxdisplayctor">wxDisplay::wxDisplay</A><BR>
+<A HREF="#wxdisplaydtor">wxDisplay::~wxDisplay</A><BR>
+<A HREF="#wxdisplaychangemode">wxDisplay::ChangeMode</A><BR>
+<A HREF="#wxdisplaygetclientarea">wxDisplay::GetClientArea</A><BR>
+<A HREF="#wxdisplaygetcount">wxDisplay::GetCount</A><BR>
+<A HREF="#wxdisplaygetcurrentmode">wxDisplay::GetCurrentMode</A><BR>
+<A HREF="#wxdisplaygetdepth">wxDisplay::GetDepth</A><BR>
+<A HREF="#wxdisplaygetfrompoint">wxDisplay::GetFromPoint</A><BR>
+<A HREF="#wxdisplaygetfromwindow">wxDisplay::GetFromWindow</A><BR>
+<A HREF="#wxdisplaygetgeometry">wxDisplay::GetGeometry</A><BR>
+<A HREF="#wxdisplaygetmodes">wxDisplay::GetModes</A><BR>
+<A HREF="#wxdisplaygetname">wxDisplay::GetName</A><BR>
+<A HREF="#wxdisplayisprimary">wxDisplay::IsPrimary</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdisplayctor"></A>
+<H3>wxDisplay::wxDisplay</H3>
+<P>
+<B></B> <B>wxDisplay</B>(<B>unsigned </B><I>index = 0</I>)<P>
+Constructor, setting up a wxDisplay instance with the specified display.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>index</I><UL><UL>
+The index of the display to use.  This must be non-negative
+and lower than the value returned by <A HREF="wx_wxdisplay.html#wxdisplaygetcount">GetCount()</A>.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxdisplaydtor"></A>
+<H3>wxDisplay::~wxDisplay</H3>
+<P>
+<B>void</B> <B>~wxDisplay</B>()<P>
+Destructor.<P>
+
+
+<HR>
+<A NAME="wxdisplaychangemode"></A>
+<H3>wxDisplay::ChangeMode</H3>
+<P>
+<B>bool </B> <B>ChangeMode</B>(<B>const wxVideoMode&amp; </B><I>mode = wxDefaultVideoMode</I>)<P>
+Changes the video mode of this display to the mode specified
+in the mode parameter.<P>
+If wxDefaultVideoMode is passed in as the mode parameter,
+the defined behaviour is that wxDisplay will reset the video
+mode to the default mode used by the display.  On Windows, 
+the behavior is normal.  However, there are differences on other
+platforms. On Unix variations using X11 extensions it should
+behave as defined, but some irregularities may occur.  <P>
+On wxMac passing in wxDefaultVideoMode as the mode
+parameter does nothing.  This happens because carbon 
+no longer has access to DMUseScreenPrefs, an undocumented
+function that changed the video mode to the system
+default by using the system's 'scrn' resource.<P>
+
+
+<HR>
+<A NAME="wxdisplaygetclientarea"></A>
+<H3>wxDisplay::GetClientArea</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A> </B> </B> <B>GetClientArea</B>() <B>const</B><P>
+Returns the client area of the display. The client area is the part of the
+display available for the normal (non full screen) windows, usually it is the
+same as <A HREF="wx_wxdisplay.html#wxdisplaygetgeometry">GetGeometry</A> but it could be less if
+there is a taskbar (or equivalent) on this display.<P>
+<B><FONT COLOR="#FF0000">See also:</FONT></B><P>
+<A HREF="wx_gdifunctions.html#wxclientdisplayrect">wxClientDisplayRect</A><P>
+
+
+<HR>
+<A NAME="wxdisplaygetcount"></A>
+<H3>wxDisplay::GetCount</H3>
+<P>
+<B>static unsigned </B> <B>GetCount</B>()<P>
+Returns the number of connected displays.<P>
+
+
+<HR>
+<A NAME="wxdisplaygetcurrentmode"></A>
+<H3>wxDisplay::GetCurrentMode</H3>
+<P>
+<B>wxVideoMode </B> <B>GetCurrentMode</B>() <B>const</B><P>
+Returns the current video mode that this display is in. <P>
+
+
+<HR>
+<A NAME="wxdisplaygetdepth"></A>
+<H3>wxDisplay::GetDepth</H3>
+<P>
+<B>int </B> <B>GetDepth</B>() <B>const</B><P>
+Returns the bit depth of the display whose index was passed to the constructor.<P>
+
+
+<HR>
+<A NAME="wxdisplaygetfrompoint"></A>
+<H3>wxDisplay::GetFromPoint</H3>
+<P>
+<B>static int</B> <B>GetFromPoint</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>)<P>
+Returns the index of the display on which the given point lies.  Returns 
+<TT>wxNOT_FOUND</TT> if the point is not on any connected display.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pt</I><UL><UL>
+The point to locate.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxdisplaygetfromwindow"></A>
+<H3>wxDisplay::GetFromWindow</H3>
+<P>
+<B>static int</B> <B>GetFromWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win</I>)<P>
+Returns the index of the display on which the given window lies.<P>
+If the window is on more than one display it gets the display that overlaps the window the most.<P>
+Returns <TT>wxNOT_FOUND</TT> if the window is not on any connected display.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>win</I><UL><UL>
+The window to locate.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxdisplaygetgeometry"></A>
+<H3>wxDisplay::GetGeometry</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A> </B> </B> <B>GetGeometry</B>() <B>const</B><P>
+Returns the bounding rectangle of the display whose index was passed to the
+constructor.<P>
+<B><FONT COLOR="#FF0000">See also:</FONT></B><P>
+<A HREF="wx_wxdisplay.html#wxdisplaygetclientarea">GetClientArea</A>, <A HREF="wx_gdifunctions.html#wxdisplaysize">wxDisplaySize</A><P>
+
+
+<HR>
+<A NAME="wxdisplaygetmodes"></A>
+<H3>wxDisplay::GetModes</H3>
+<P>
+<B>wxArrayVideoModes </B> <B>GetModes</B>(<B>const wxVideoMode&amp; </B><I>mode = wxDefaultVideoMode</I>) <B>const</B><P>
+Fills and returns an array with all the video modes that
+are supported by this display, or video modes that are 
+supported by this display and match the mode parameter
+(if mode is not wxDefaultVideoMode).<P>
+
+
+<HR>
+<A NAME="wxdisplaygetname"></A>
+<H3>wxDisplay::GetName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B> </B> <B>GetName</B>() <B>const</B><P>
+Returns the display's name.  A name is not available on all platforms.<P>
+
+
+<HR>
+<A NAME="wxdisplayisprimary"></A>
+<H3>wxDisplay::IsPrimary</H3>
+<P>
+<B>bool </B> <B>IsPrimary</B>()<P>
+Returns true if the display is the primary display.  The primary display is the
+one whose index is 0.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,83 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPrintDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxprintdialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxprintdata.html#wxprintdata"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxprintdialogdata.html#wxprintdialogdata"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPrintDialog</H2>
+<P>
+This class represents the print and print setup common dialogs.
+You may obtain a <A HREF="wx_wxprinterdc.html#wxprinterdc">wxPrinterDC</A> device context from
+a successfully dismissed print dialog.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/printdlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_printingoverview.html#printingoverview">Printing framework overview</A>, 
+<A HREF="wx_commondialogsoverview.html#wxprintdialogoverview">wxPrintDialog Overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxprintdialogctor">wxPrintDialog::wxPrintDialog</A><BR>
+<A HREF="#wxprintdialogdtor">wxPrintDialog::~wxPrintDialog</A><BR>
+<A HREF="#wxprintdialoggetprintdialogdata">wxPrintDialog::GetPrintDialogData</A><BR>
+<A HREF="#wxprintdialoggetprintdc">wxPrintDialog::GetPrintDC</A><BR>
+<A HREF="#wxprintdialogshowmodal">wxPrintDialog::ShowModal</A><BR>
+<P>
+
+<HR>
+<A NAME="wxprintdialogctor"></A>
+<H3>wxPrintDialog::wxPrintDialog</H3>
+<P>
+<B></B> <B>wxPrintDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B><A HREF="wx_wxprintdialogdata.html#wxprintdialogdata">wxPrintDialogData</A>* </B></B><I>data = NULL</I>)<P>
+Constructor. Pass a parent window, and optionally a pointer to a block of print
+data, which will be copied to the print dialog's print data.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxprintdialogdata.html#wxprintdialogdata">wxPrintDialogData</A><P>
+
+
+<HR>
+<A NAME="wxprintdialogdtor"></A>
+<H3>wxPrintDialog::~wxPrintDialog</H3>
+<P>
+<B></B> <B>~wxPrintDialog</B>()<P>
+Destructor. If wxPrintDialog::GetPrintDC has <I>not</I> been called,
+the device context obtained by the dialog (if any) will be deleted.<P>
+
+
+<HR>
+<A NAME="wxprintdialoggetprintdialogdata"></A>
+<H3>wxPrintDialog::GetPrintDialogData</H3>
+<P>
+<B><A HREF="wx_wxprintdialogdata.html#wxprintdialogdata">wxPrintDialogData</A>&</B> </B> <B>GetPrintDialogData</B>()<P>
+Returns the <A HREF="wx_wxprintdialogdata.html#wxprintdialogdata">print dialog data</A> associated with the print dialog.<P>
+
+
+<HR>
+<A NAME="wxprintdialoggetprintdc"></A>
+<H3>wxPrintDialog::GetPrintDC</H3>
+<P>
+<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>* </B> </B> <B>GetPrintDC</B>()<P>
+Returns the device context created by the print dialog, if any.
+When this function has been called, the ownership of the device context
+is transferred to the application, so it must then be deleted
+explicitly.<P>
+
+
+<HR>
+<A NAME="wxprintdialogshowmodal"></A>
+<H3>wxPrintDialog::ShowModal</H3>
+<P>
+<B>int</B> <B>ShowModal</B>()<P>
+Shows the dialog, returning wxID_OK if the user pressed OK, and wxID_CANCEL
+otherwise. After this function is called, a device context may
+be retrievable using <A HREF="wx_wxprintdialog.html#wxprintdialoggetprintdc">wxPrintDialog::GetPrintDC</A>.<P>
+
+</FONT></BODY></HTML>

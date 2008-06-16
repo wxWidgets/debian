@@ -1,0 +1,229 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxAuiDockArt</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxauidockart"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxartprovider.html#wxartprovider"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxauitabart.html#wxauitabart"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxAuiDockArt</H2>
+<P>
+wxAuiDockArt is part of the wxAUI class framework.
+See also <A HREF="wx_wxauioverview.html#wxauioverview">wxAUI overview</A>.<P>
+Dock art provider code - a dock provider provides all drawing
+functionality to the wxAui dock manager. This allows the dock
+manager to have a plugable look-and-feel.<P>
+By default, a <A HREF="wx_wxauimanager.html#wxauimanager">wxAuiManager</A> uses an
+instance of this class called <B>wxAuiDefaultDockArt</B> which
+provides bitmap art and a colour scheme that is adapted to
+the major platforms' look. You can either derive from that
+class to alter its behaviour or write a completely new dock
+art class. Call <A HREF="wx_wxauimanager.html#wxauimanagersetartprovider">wxAuiManager::SetArtProvider</A>
+to make use this new dock art.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/aui/dockart.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxauimanager.html#wxauimanager">wxAuiManager</A>, 
+<A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A><P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<PRE>
+enum wxAuiPaneDockArtSetting
+{
+    wxAUI_DOCKART_SASH_SIZE = 0,
+    wxAUI_DOCKART_CAPTION_SIZE = 1,
+    wxAUI_DOCKART_GRIPPER_SIZE = 2,
+    wxAUI_DOCKART_PANE_BORDER_SIZE = 3,
+    wxAUI_DOCKART_PANE_BUTTON_SIZE = 4,
+    wxAUI_DOCKART_BACKGROUND_COLOUR = 5,
+    wxAUI_DOCKART_SASH_COLOUR = 6,
+    wxAUI_DOCKART_ACTIVE_CAPTION_COLOUR = 7,
+    wxAUI_DOCKART_ACTIVE_CAPTION_GRADIENT_COLOUR = 8,
+    wxAUI_DOCKART_INACTIVE_CAPTION_COLOUR = 9,
+    wxAUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR = 10,
+    wxAUI_DOCKART_ACTIVE_CAPTION_TEXT_COLOUR = 11,
+    wxAUI_DOCKART_INACTIVE_CAPTION_TEXT_COLOUR = 12,
+    wxAUI_DOCKART_BORDER_COLOUR = 13,
+    wxAUI_DOCKART_GRIPPER_COLOUR = 14,
+    wxAUI_DOCKART_CAPTION_FONT = 15,
+    wxAUI_DOCKART_GRADIENT_TYPE = 16
+}
+</PRE>
+<PRE>
+
+enum wxAuiPaneDockArtGradients
+
+    wxAUI_GRADIENT_NONE = 0,
+    wxAUI_GRADIENT_VERTICAL = 1,
+    wxAUI_GRADIENT_HORIZONTAL = 2
+
+</PRE>
+<P>
+<PRE>
+enum wxAuiPaneButtonState
+{
+    wxAUI_BUTTON_STATE_NORMAL = 0,
+    wxAUI_BUTTON_STATE_HOVER = 1,
+    wxAUI_BUTTON_STATE_PRESSED = 2
+}
+</PRE>
+<PRE>
+
+enum wxAuiButtonId
+
+    wxAUI_BUTTON_CLOSE = 101,
+    wxAUI_BUTTON_MAXIMIZE_RESTORE = 102,
+    wxAUI_BUTTON_MINIMIZE = 103,
+    wxAUI_BUTTON_PIN = 104,
+    wxAUI_BUTTON_OPTIONS = 105,
+    wxAUI_BUTTON_WINDOWLIST = 106,
+    wxAUI_BUTTON_LEFT = 107,
+    wxAUI_BUTTON_RIGHT = 108,
+    wxAUI_BUTTON_UP = 109,
+    wxAUI_BUTTON_DOWN = 110,
+    wxAUI_BUTTON_CUSTOM1 = 201,
+    wxAUI_BUTTON_CUSTOM2 = 202,
+    wxAUI_BUTTON_CUSTOM3 = 203
+;
+</PRE>
+<P>
+<P>
+<A HREF="#wxauidockartwxauidockart">wxAuiDockArt::wxAuiDockArt</A><BR>
+<A HREF="#wxauidockartdtor">wxAuiDockArt::~wxAuiDockArt</A><BR>
+<A HREF="#wxauidockartdrawbackground">wxAuiDockArt::DrawBackground</A><BR>
+<A HREF="#wxauidockartdrawborder">wxAuiDockArt::DrawBorder</A><BR>
+<A HREF="#wxauidockartdrawcaption">wxAuiDockArt::DrawCaption</A><BR>
+<A HREF="#wxauidockartdrawgripper">wxAuiDockArt::DrawGripper</A><BR>
+<A HREF="#wxauidockartdrawpanebutton">wxAuiDockArt::DrawPaneButton</A><BR>
+<A HREF="#wxauidockartdrawsash">wxAuiDockArt::DrawSash</A><BR>
+<A HREF="#wxauidockartgetcolor">wxAuiDockArt::GetColor</A><BR>
+<A HREF="#wxauidockartgetcolour">wxAuiDockArt::GetColour</A><BR>
+<A HREF="#wxauidockartgetfont">wxAuiDockArt::GetFont</A><BR>
+<A HREF="#wxauidockartgetmetric">wxAuiDockArt::GetMetric</A><BR>
+<A HREF="#wxauidockartsetcolor">wxAuiDockArt::SetColor</A><BR>
+<A HREF="#wxauidockartsetcolour">wxAuiDockArt::SetColour</A><BR>
+<A HREF="#wxauidockartsetfont">wxAuiDockArt::SetFont</A><BR>
+<A HREF="#wxauidockartsetmetric">wxAuiDockArt::SetMetric</A><BR>
+<P>
+
+<HR>
+<A NAME="wxauidockartwxauidockart"></A>
+<H3>wxAuiDockArt::wxAuiDockArt</H3>
+<P>
+<B></B> <B>wxAuiDockArt</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxauidockartdtor"></A>
+<H3>wxAuiDockArt::~wxAuiDockArt</H3>
+<P>
+<B></B> <B>~wxAuiDockArt</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxauidockartdrawbackground"></A>
+<H3>wxAuiDockArt::DrawBackground</H3>
+<P>
+<B>virtual void</B> <B>DrawBackground</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>, <B>int </B><I>orientation</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>)<P>
+Draws a background.<P>
+
+<HR>
+<A NAME="wxauidockartdrawborder"></A>
+<H3>wxAuiDockArt::DrawBorder</H3>
+<P>
+<B>virtual void</B> <B>DrawBorder</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>& </B></B><I>pane</I>)<P>
+Draws a border.<P>
+
+<HR>
+<A NAME="wxauidockartdrawcaption"></A>
+<H3>wxAuiDockArt::DrawCaption</H3>
+<P>
+<B>virtual void</B> <B>DrawCaption</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>& </B></B><I>pane</I>)<P>
+Draws a caption.<P>
+
+<HR>
+<A NAME="wxauidockartdrawgripper"></A>
+<H3>wxAuiDockArt::DrawGripper</H3>
+<P>
+<B>virtual void</B> <B>DrawGripper</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>& </B></B><I>pane</I>)<P>
+Draws a gripper.<P>
+
+<HR>
+<A NAME="wxauidockartdrawpanebutton"></A>
+<H3>wxAuiDockArt::DrawPaneButton</H3>
+<P>
+<B>virtual void</B> <B>DrawPaneButton</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>, <B>int </B><I>button</I>, <B>int </B><I>button_state</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>& </B></B><I>pane</I>)<P>
+Draws a button in the pane's title bar.<P>
+<I>button</I> can be one of the values of <B>wxAuiButtonId</B>.<P>
+<I>button_state</I> can be one of the values of <B>wxAuiPaneButtonState</B>.<P>
+
+<HR>
+<A NAME="wxauidockartdrawsash"></A>
+<H3>wxAuiDockArt::DrawSash</H3>
+<P>
+<B>virtual void</B> <B>DrawSash</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>, <B>int </B><I>orientation</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>)<P>
+Draws a sash between two windows.<P>
+
+<HR>
+<A NAME="wxauidockartgetcolor"></A>
+<H3>wxAuiDockArt::GetColor</H3>
+<P>
+<B>virtual <A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetColor</B>(<B>int </B><I>id</I>)<P>
+The same as <A HREF="wx_wxauidockart.html#wxauidockartgetcolour">GetColour</A>.<P>
+
+<HR>
+<A NAME="wxauidockartgetcolour"></A>
+<H3>wxAuiDockArt::GetColour</H3>
+<P>
+<B>virtual <A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetColour</B>(<B>int </B><I>id</I>)<P>
+Get the colour of a certain setting.<P>
+<I>id</I> can be one of the colour values of <B>wxAuiPaneDockArtSetting</B>.<P>
+
+
+<HR>
+<A NAME="wxauidockartgetfont"></A>
+<H3>wxAuiDockArt::GetFont</H3>
+<P>
+<B>virtual <A HREF="wx_wxfont.html#wxfont">wxFont</A></B> </B> <B>GetFont</B>(<B>int </B><I>id</I>)<P>
+Get a font setting.<P>
+
+<HR>
+<A NAME="wxauidockartgetmetric"></A>
+<H3>wxAuiDockArt::GetMetric</H3>
+<P>
+<B>virtual int</B> <B>GetMetric</B>(<B>int </B><I>id</I>)<P>
+Get the value of a certain setting.<P>
+<I>id</I> can be one of the size values of <B>wxAuiPaneDockArtSetting</B>.<P>
+
+
+<HR>
+<A NAME="wxauidockartsetcolor"></A>
+<H3>wxAuiDockArt::SetColor</H3>
+<P>
+<B>virtual void</B> <B>SetColor</B>(<B>int </B><I>id</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>color</I>)<P>
+The same as <A HREF="wx_wxauidockart.html#wxauidockartsetcolour">SetColour</A>.<P>
+
+<HR>
+<A NAME="wxauidockartsetcolour"></A>
+<H3>wxAuiDockArt::SetColour</H3>
+<P>
+<B>virtual void</B> <B>SetColour</B>(<B>int </B><I>id</I>, <B>const wxColor&amp; </B><I>colour</I>)<P>
+Set a certain setting with the value <I>colour</I>.<P>
+<I>id</I> can be one of the colour values of <B>wxAuiPaneDockArtSetting</B>.<P>
+
+<HR>
+<A NAME="wxauidockartsetfont"></A>
+<H3>wxAuiDockArt::SetFont</H3>
+<P>
+<B>virtual void</B> <B>SetFont</B>(<B>int </B><I>id</I>, <B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Set a font setting.<P>
+
+<HR>
+<A NAME="wxauidockartsetmetric"></A>
+<H3>wxAuiDockArt::SetMetric</H3>
+<P>
+<B>virtual void</B> <B>SetMetric</B>(<B>int </B><I>id</I>, <B>int </B><I>new_val</I>)<P>
+Set a certain setting with the value <I>new_val</I>.<P>
+<I>id</I> can be one of the size values of <B>wxAuiPaneDockArtSetting</B>.<P>
+
+</FONT></BODY></HTML>

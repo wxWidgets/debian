@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: sourcepainter.h,v 1.7 2005/06/02 09:44:45 ABX Exp $
+// RCS-ID:      $Id: sourcepainter.h 34519 2005-06-02 09:44:45Z ABX $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

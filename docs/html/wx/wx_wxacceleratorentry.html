@@ -1,0 +1,84 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxAcceleratorEntry</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxacceleratorentry"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfo"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxacceleratortable.html#wxacceleratortable"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxAcceleratorEntry</H2>
+<P>
+An object used by an application wishing to create an <A HREF="wx_wxacceleratortable.html#wxacceleratortable">accelerator table</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/accel.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxacceleratortable.html#wxacceleratortable">wxAcceleratorTable</A>, <A HREF="wx_wxwindow.html#wxwindowsetacceleratortable">wxWindow::SetAcceleratorTable</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxacceleratorentryctor">wxAcceleratorEntry::wxAcceleratorEntry</A><BR>
+<A HREF="#wxacceleratorentrygetcommand">wxAcceleratorEntry::GetCommand</A><BR>
+<A HREF="#wxacceleratorentrygetflags">wxAcceleratorEntry::GetFlags</A><BR>
+<A HREF="#wxacceleratorentrygetkeycode">wxAcceleratorEntry::GetKeyCode</A><BR>
+<A HREF="#wxacceleratorentryset">wxAcceleratorEntry::Set</A><BR>
+<P>
+
+<HR>
+<A NAME="wxacceleratorentryctor"></A>
+<H3>wxAcceleratorEntry::wxAcceleratorEntry</H3>
+<P>
+<B></B> <B>wxAcceleratorEntry</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxAcceleratorEntry</B>(<B>int</B><I> flags</I>, <B>int</B><I> keyCode</I>, <B>int</B><I> cmd</I>)<P>
+Constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>flags</I><UL><UL>
+One of wxACCEL_ALT, wxACCEL_SHIFT, wxACCEL_CTRL and wxACCEL_NORMAL. Indicates
+which modifier key is held down.</UL></UL>
+<P>
+<I>keyCode</I><UL><UL>
+The keycode to be detected. See <A HREF="wx_keycodes.html#keycodes">Keycodes</A> for a full list of keycodes.</UL></UL>
+<P>
+<I>cmd</I><UL><UL>
+The menu or control command identifier.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxacceleratorentrygetcommand"></A>
+<H3>wxAcceleratorEntry::GetCommand</H3>
+<P>
+<B>int</B> <B>GetCommand</B>() <B>const</B><P>
+Returns the command identifier for the accelerator table entry.<P>
+
+<HR>
+<A NAME="wxacceleratorentrygetflags"></A>
+<H3>wxAcceleratorEntry::GetFlags</H3>
+<P>
+<B>int</B> <B>GetFlags</B>() <B>const</B><P>
+Returns the flags for the accelerator table entry.<P>
+
+<HR>
+<A NAME="wxacceleratorentrygetkeycode"></A>
+<H3>wxAcceleratorEntry::GetKeyCode</H3>
+<P>
+<B>int</B> <B>GetKeyCode</B>() <B>const</B><P>
+Returns the keycode for the accelerator table entry.<P>
+
+<HR>
+<A NAME="wxacceleratorentryset"></A>
+<H3>wxAcceleratorEntry::Set</H3>
+<P>
+<B>void</B> <B>Set</B>(<B>int</B><I> flags</I>, <B>int</B><I> keyCode</I>, <B>int</B><I> cmd</I>)<P>
+Sets the accelerator entry parameters.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>flags</I><UL><UL>
+One of wxACCEL_ALT, wxACCEL_SHIFT, wxACCEL_CTRL and wxACCEL_NORMAL. Indicates
+which modifier key is held down.</UL></UL>
+<P>
+<I>keyCode</I><UL><UL>
+The keycode to be detected. See <A HREF="wx_keycodes.html#keycodes">Keycodes</A> for a full list of keycodes.</UL></UL>
+<P>
+<I>cmd</I><UL><UL>
+The menu or control command identifier.</UL></UL>
+<P>
+
+</FONT></BODY></HTML>

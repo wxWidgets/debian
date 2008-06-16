@@ -1,0 +1,238 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRegion</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxregion"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxregex.html#wxregex"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxregioniterator.html#wxregioniterator"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRegion</H2>
+<P>
+A wxRegion represents a simple or complex region on a device context or window.<P>
+This class uses <A HREF="wx_trefcount.html#trefcount">reference counting and copy-on-write</A>
+internally so that assignments between two instances of this class are very
+cheap. You can therefore use actual objects instead of pointers without
+efficiency problems. If an instance of this class is changed it will create
+its own data internally so that other instances, which previously shared the
+data using the reference counting, are not affected.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxgdiobject.html#wxgdiobject">wxGDIObject</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/region.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxregioniterator.html#wxregioniterator">wxRegionIterator</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxregionctor">wxRegion::wxRegion</A><BR>
+<A HREF="#wxregiondtor">wxRegion::~wxRegion</A><BR>
+<A HREF="#wxregionclear">wxRegion::Clear</A><BR>
+<A HREF="#wxregioncontains">wxRegion::Contains</A><BR>
+<A HREF="#wxregionconverttobitmap">wxRegion::ConvertToBitmap</A><BR>
+<A HREF="#wxregiongetbox">wxRegion::GetBox</A><BR>
+<A HREF="#wxregionintersect">wxRegion::Intersect</A><BR>
+<A HREF="#wxregionisempty">wxRegion::IsEmpty</A><BR>
+<A HREF="#wxregionisequal">wxRegion::IsEqual</A><BR>
+<A HREF="#wxregionsubtract">wxRegion::Subtract</A><BR>
+<A HREF="#wxregionoffset">wxRegion::Offset</A><BR>
+<A HREF="#wxregionunion">wxRegion::Union</A><BR>
+<A HREF="#wxregionxor">wxRegion::Xor</A><BR>
+<A HREF="#wxregionassign">wxRegion::operator =</A><BR>
+<P>
+
+<HR>
+<A NAME="wxregionctor"></A>
+<H3>wxRegion::wxRegion</H3>
+<P>
+<B></B> <B>wxRegion</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxRegion</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxCoord</B><I> width</I>, <B>wxCoord</B><I> height</I>)<P>
+Constructs a rectangular region with the given position and size.<P>
+<B></B> <B>wxRegion</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> topLeft</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> bottomRight</I>)<P>
+Constructs a rectangular region from the top left point and the bottom right point.<P>
+<B></B> <B>wxRegion</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>)<P>
+Constructs a rectangular region a wxRect object.<P>
+<B></B> <B>wxRegion</B>(<B>const <A HREF="wx_wxregion.html#wxregion">wxRegion</A>&</B></B><I> region</I>)<P>
+Copy constructor, uses <A HREF="wx_trefcount.html#trefcount">reference counting</A>.<P>
+<B></B> <B>wxRegion</B>(<B>size_t</B><I> n</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A> </B></B><I>*points</I>, <B>int </B><I>fillStyle = wxWINDING_RULE</I>)<P>
+Constructs a region corresponding to the polygon made of <I>n</I> points in the
+provided array. <I>fillStyle</I> parameter may have values
+<TT>wxWINDING_RULE</TT> or <TT>wxODDEVEN_RULE</TT>.<P>
+<B></B> <B>wxRegion</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bmp</I>)<P>
+<B></B> <B>wxRegion</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bmp</I>,
+                  <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> transColour</I>,
+                  <B>int</B><I> tolerance = 0</I>)<P>
+Constructs a region using the non-transparent pixels of a bitmap.  See
+<A HREF="wx_wxregion.html#wxregionunion">Union</A> for more details.<P>
+<P>
+
+<HR>
+<A NAME="wxregiondtor"></A>
+<H3>wxRegion::~wxRegion</H3>
+<P>
+<B></B> <B>~wxRegion</B>()<P>
+Destructor.
+See <A HREF="wx_trefcount.html#refcountdestruct">reference-counted object destruction</A> for more info.<P>
+
+
+<HR>
+<A NAME="wxregionclear"></A>
+<H3>wxRegion::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>()<P>
+Clears the current region.<P>
+
+
+<HR>
+<A NAME="wxregioncontains"></A>
+<H3>wxRegion::Contains</H3>
+<P>
+<B>wxRegionContain</B> <B>Contains</B>(<B>long&amp; </B><I>x</I>, <B>long&amp; </B><I>y</I>) <B>const</B><P>
+Returns a value indicating whether the given point is contained within the region.<P>
+<B>wxRegionContain</B> <B>Contains</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pt</I>) <B>const</B><P>
+Returns a value indicating whether the given point is contained within the region.<P>
+<B>wxRegionContain</B> <B>Contains</B>(<B>long&amp; </B><I>x</I>, <B>long&amp; </B><I>y</I>, <B>long&amp; </B><I>width</I>, <B>long&amp; </B><I>height</I>) <B>const</B><P>
+Returns a value indicating whether the given rectangle is contained within the region.<P>
+<B>wxRegionContain</B> <B>Contains</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>) <B>const</B><P>
+Returns a value indicating whether the given rectangle is contained within the region.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The return value is one of wxOutRegion, wxPartRegion and wxInRegion.<P>
+On Windows, only wxOutRegion and wxInRegion are returned; a value wxInRegion then indicates that
+all or some part of the region is contained in this region.<P>
+
+
+<HR>
+<A NAME="wxregionconverttobitmap"></A>
+<H3>wxRegion::ConvertToBitmap</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A></B> </B> <B>ConvertToBitmap</B>() <B>const</B><P>
+Convert the region to a black and white bitmap with the white pixels
+being inside the region.<P>
+
+
+<HR>
+<A NAME="wxregiongetbox"></A>
+<H3>wxRegion::GetBox</H3>
+<P>
+<B>void</B> <B>GetBox</B>(<B>wxCoord&amp; </B><I>x</I>, <B>wxCoord&amp; </B><I>y</I>, <B>wxCoord&amp; </B><I>width</I>, <B>wxCoord&amp; </B><I>height</I>) <B>const</B><P>
+Returns the outer bounds of the region.<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>GetBox</B>() <B>const</B><P>
+Returns the outer bounds of the region.<P>
+
+
+<HR>
+<A NAME="wxregionintersect"></A>
+<H3>wxRegion::Intersect</H3>
+<P>
+<B>bool</B> <B>Intersect</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxCoord</B><I> width</I>, <B>wxCoord</B><I> height</I>)<P>
+Finds the intersection of this region and another, rectangular region, specified using position and size.<P>
+<B>bool</B> <B>Intersect</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>)<P>
+Finds the intersection of this region and another, rectangular region.<P>
+<B>bool</B> <B>Intersect</B>(<B>const <A HREF="wx_wxregion.html#wxregion">wxRegion</A>&</B></B><I> region</I>)<P>
+Finds the intersection of this region and another region.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if successful, <TT>false</TT> otherwise.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Creates the intersection of the two regions, that is, the parts which are in both regions. The result
+is stored in this region.<P>
+
+
+<HR>
+<A NAME="wxregionisempty"></A>
+<H3>wxRegion::IsEmpty</H3>
+<P>
+<B>bool</B> <B>IsEmpty</B>() <B>const</B><P>
+Returns <TT>true</TT> if the region is empty, <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxregionisequal"></A>
+<H3>wxRegion::IsEqual</H3>
+<P>
+<B>bool</B> <B>IsEqual</B>(<B>const <A HREF="wx_wxregion.html#wxregion">wxRegion</A>& </B></B><I>region</I>) <B>const</B><P>
+Returns <TT>true</TT> if the region is equal to, i.e. covers the same area as,
+another one. Note that if both this region and <I>region</I> are invalid, they
+are considered to be equal.<P>
+
+
+<HR>
+<A NAME="wxregionsubtract"></A>
+<H3>wxRegion::Subtract</H3>
+<P>
+<B>bool</B> <B>Subtract</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>)<P>
+Subtracts a rectangular region from this region.<P>
+<B>bool</B> <B>Subtract</B>(<B>const <A HREF="wx_wxregion.html#wxregion">wxRegion</A>&</B></B><I> region</I>)<P>
+Subtracts a region from this region.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if successful, <TT>false</TT> otherwise.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This operation combines the parts of 'this' region that are not part of the second region.
+The result is stored in this region.<P>
+
+
+<HR>
+<A NAME="wxregionoffset"></A>
+<H3>wxRegion::Offset</H3>
+<P>
+<B>bool</B> <B>Offset</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>)<P>
+<B>bool</B> <B>Offset</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I> pt</I>)<P>
+Moves the region by the specified offsets in horizontal and vertical
+directions.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if successful, <TT>false</TT> otherwise (the region is unchanged then).<P>
+
+
+<HR>
+<A NAME="wxregionunion"></A>
+<H3>wxRegion::Union</H3>
+<P>
+<B>bool</B> <B>Union</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxCoord</B><I> width</I>, <B>wxCoord</B><I> height</I>)<P>
+Finds the union of this region and another, rectangular region, specified using position and size.<P>
+<B>bool</B> <B>Union</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>)<P>
+Finds the union of this region and another, rectangular region.<P>
+<B>bool</B> <B>Union</B>(<B>const <A HREF="wx_wxregion.html#wxregion">wxRegion</A>&</B></B><I> region</I>)<P>
+Finds the union of this region and another region.<P>
+<B>bool</B> <B>Union</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bmp</I>)<P>
+Finds the union of this region and the non-transparent pixels of a
+bitmap. Bitmap's mask is used to determine transparency. If the bitmap doesn't
+have a mask, solid rectangle of bitmap's dimensions is used.<P>
+<B>bool</B> <B>Union</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bmp</I>,
+                  <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> transColour</I>,
+                  <B>int</B><I> tolerance = 0</I>)<P>
+Finds the union of this region and the non-transparent pixels of a
+bitmap. Colour to be treated as transparent is specified in the
+<I>transColour</I> argument, along with an
+optional colour tolerance value.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if successful, <TT>false</TT> otherwise.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This operation creates a region that combines all of this region and the second region.
+The result is stored in this region.<P>
+
+
+<HR>
+<A NAME="wxregionxor"></A>
+<H3>wxRegion::Xor</H3>
+<P>
+<B>bool</B> <B>Xor</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxCoord</B><I> width</I>, <B>wxCoord</B><I> height</I>)<P>
+Finds the Xor of this region and another, rectangular region, specified using position and size.<P>
+<B>bool</B> <B>Xor</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>)<P>
+Finds the Xor of this region and another, rectangular region.<P>
+<B>bool</B> <B>Xor</B>(<B>const <A HREF="wx_wxregion.html#wxregion">wxRegion</A>&</B></B><I> region</I>)<P>
+Finds the Xor of this region and another region.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if successful, <TT>false</TT> otherwise.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This operation creates a region that combines all of this region and the second region, except
+for any overlapping areas. The result is stored in this region.<P>
+
+
+<HR>
+<A NAME="wxregionassign"></A>
+<H3>wxRegion::operator =</H3>
+<P>
+<B>void</B> <B>operator =</B>(<B>const <A HREF="wx_wxregion.html#wxregion">wxRegion</A>&</B></B><I> region</I>)<P>
+Assignment operator, using <A HREF="wx_trefcount.html#trefcount">reference counting</A>.<P>
+<P>
+
+</FONT></BODY></HTML>

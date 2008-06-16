@@ -1,0 +1,203 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCondition</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcondition"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcommandprocessor.html#wxcommandprocessor"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxconfigbase.html#wxconfigbase"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCondition</H2>
+<P>
+wxCondition variables correspond to pthread conditions or to Win32 event
+objects. They may be used in a multithreaded application to wait until the
+given condition becomes true which happens when the condition becomes signaled.<P>
+For example, if a worker thread is doing some long task and another thread has
+to wait until it is finished, the latter thread will wait on the condition
+object and the worker thread will signal it on exit (this example is not
+perfect because in this particular case it would be much better to just 
+<A HREF="wx_wxthread.html#wxthreadwait">Wait()</A> for the worker thread, but if there are several
+worker threads it already makes much more sense).<P>
+Note that a call to <A HREF="wx_wxcondition.html#wxconditionsignal">Signal()</A> may happen before the
+other thread calls <A HREF="wx_wxcondition.html#wxconditionwait">Wait()</A> and, just as with the
+pthread conditions, the signal is then lost and so if you want to be sure that
+you don't miss it you must keep the mutex associated with the condition
+initially locked and lock it again before calling 
+<A HREF="wx_wxcondition.html#wxconditionsignal">Signal()</A>. Of course, this means that this call is
+going to block until <A HREF="wx_wxcondition.html#wxconditionwait">Wait()</A> is called by another
+thread.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+This example shows how a main thread may launch a worker thread which starts
+running and then waits until the main thread signals it to continue:<P>
+<PRE>
+class MySignallingThread : public wxThread
+{
+public:
+    MySignallingThread(wxMutex *mutex, wxCondition *condition)
+    {
+        m_mutex = mutex;
+        m_condition = condition;
+
+        Create();
+    }
+
+    virtual ExitCode Entry()
+    {
+        ... do our job ...
+
+        // tell the other(s) thread(s) that we're about to terminate: we must
+        // lock the mutex first or we might signal the condition before the
+        // waiting threads start waiting on it!
+        wxMutexLocker lock(*m_mutex);
+        m_condition-&gt;Broadcast(); // same as Signal() here -- one waiter only
+
+        return 0;
+    }
+
+private:
+    wxCondition *m_condition;
+    wxMutex *m_mutex;
+};
+
+int main()
+{
+    wxMutex mutex;
+    wxCondition condition(mutex);
+
+    // the mutex should be initially locked
+    mutex.Lock();
+
+    // create and run the thread but notice that it won't be able to
+    // exit (and signal its exit) before we unlock the mutex below
+    MySignallingThread *thread = new MySignallingThread(&mutex, &condition);
+
+    thread-&gt;Run();
+
+    // wait for the thread termination: Wait() atomically unlocks the mutex
+    // which allows the thread to continue and starts waiting
+    condition.Wait();
+
+    // now we can exit
+    return 0;
+}
+</PRE>
+Of course, here it would be much better to simply use a joinable thread and
+call <A HREF="wx_wxthread.html#wxthreadwait">wxThread::Wait</A> on it, but this example does
+illustrate the importance of properly locking the mutex when using
+wxCondition.<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+The following return codes are returned by wxCondition member functions:<P>
+<PRE>
+enum wxCondError
+{
+    wxCOND_NO_ERROR = 0,    // successful completion
+    wxCOND_INVALID,         // object hasn't been initialized successfully
+    wxCOND_TIMEOUT,         // WaitTimeout() has timed out
+    wxCOND_MISC_ERROR       // some other error
+};
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/thread.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxthread.html#wxthread">wxThread</A>, <A HREF="wx_wxmutex.html#wxmutex">wxMutex</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxconditionctor">wxCondition::wxCondition</A><BR>
+<A HREF="#wxconditiondtor">wxCondition::~wxCondition</A><BR>
+<A HREF="#wxconditionbroadcast">wxCondition::Broadcast</A><BR>
+<A HREF="#wxconditionisok">wxCondition::IsOk</A><BR>
+<A HREF="#wxconditionsignal">wxCondition::Signal</A><BR>
+<A HREF="#wxconditionwait">wxCondition::Wait</A><BR>
+<A HREF="#wxconditionwaittimeout">wxCondition::WaitTimeout</A><BR>
+<P>
+
+<HR>
+<A NAME="wxconditionctor"></A>
+<H3>wxCondition::wxCondition</H3>
+<P>
+<B></B> <B>wxCondition</B>(<B><A HREF="wx_wxmutex.html#wxmutex">wxMutex</A>& </B></B><I>mutex</I>)<P>
+Default and only constructor. The <I>mutex</I> must be locked by the caller
+before calling <A HREF="wx_wxcondition.html#wxconditionwait">Wait</A> function.<P>
+Use <A HREF="wx_wxcondition.html#wxconditionisok">IsOk</A> to check if the object was successfully
+initialized.<P>
+
+<HR>
+<A NAME="wxconditiondtor"></A>
+<H3>wxCondition::~wxCondition</H3>
+<P>
+<B></B> <B>~wxCondition</B>()<P>
+Destroys the wxCondition object. The destructor is not virtual so this class
+should not be used polymorphically.<P>
+
+<HR>
+<A NAME="wxconditionbroadcast"></A>
+<H3>wxCondition::Broadcast</H3>
+<P>
+<B>void</B> <B>Broadcast</B>()<P>
+Broadcasts to all waiting threads, waking all of them up. Note that this method
+may be called whether the mutex associated with this condition is locked or
+not.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcondition.html#wxconditionsignal">wxCondition::Signal</A><P>
+
+<HR>
+<A NAME="wxconditionisok"></A>
+<H3>wxCondition::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns <TT>true</TT> if the object had been initialized successfully, <TT>false</TT> 
+if an error occurred.<P>
+
+<HR>
+<A NAME="wxconditionsignal"></A>
+<H3>wxCondition::Signal</H3>
+<P>
+<B>void</B> <B>Signal</B>()<P>
+Signals the object waking up at most one thread. If several threads are waiting
+on the same condition, the exact thread which is woken up is undefined. If no
+threads are waiting, the signal is lost and the condition would have to be
+signalled again to wake up any thread which may start waiting on it later.<P>
+Note that this method may be called whether the mutex associated with this
+condition is locked or not.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcondition.html#wxconditionbroadcast">wxCondition::Broadcast</A><P>
+
+<HR>
+<A NAME="wxconditionwait"></A>
+<H3>wxCondition::Wait</H3>
+<P>
+<B>wxCondError</B> <B>Wait</B>()<P>
+Waits until the condition is signalled.<P>
+This method atomically releases the lock on the mutex associated with this
+condition (this is why it must be locked prior to calling Wait) and puts the
+thread to sleep until <A HREF="wx_wxcondition.html#wxconditionsignal">Signal</A> or 
+<A HREF="wx_wxcondition.html#wxconditionbroadcast">Broadcast</A> is called. It then locks the mutex
+again and returns.<P>
+Note that even if <A HREF="wx_wxcondition.html#wxconditionsignal">Signal</A> had been called before
+Wait without waking up any thread, the thread would still wait for another one
+and so it is important to ensure that the condition will be signalled after
+Wait or the thread may sleep forever.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns <TT>wxCOND_NO_ERROR</TT> on success, another value if an error occurred.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcondition.html#wxconditionwaittimeout">WaitTimeout</A><P>
+
+
+<HR>
+<A NAME="wxconditionwaittimeout"></A>
+<H3>wxCondition::WaitTimeout</H3>
+<P>
+<B>wxCondError</B> <B>WaitTimeout</B>(<B>unsigned long</B><I> milliseconds</I>)<P>
+Waits until the condition is signalled or the timeout has elapsed.<P>
+This method is identical to <A HREF="wx_wxcondition.html#wxconditionwait">Wait</A> except that it
+returns, with the return code of <TT>wxCOND_TIMEOUT</TT> as soon as the given
+timeout expires.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>milliseconds</I><UL><UL>
+Timeout in milliseconds</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns <TT>wxCOND_NO_ERROR</TT> if the condition was signalled, 
+<TT>wxCOND_TIMEOUT</TT> if the timeout elapsed before this happened or another
+error code from wxCondError enum.<P>
+
+</FONT></BODY></HTML>

@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_acorn.c,v 1.3 2004/11/19 22:29:41 VZ Exp $ */
+/* $Header$ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler

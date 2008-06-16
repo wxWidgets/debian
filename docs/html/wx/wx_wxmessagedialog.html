@@ -1,0 +1,176 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMessageDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmessagedialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmenuitem.html#wxmenuitem"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmetafile.html#wxmetafile"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMessageDialog</H2>
+<P>
+This class represents a dialog that shows a single or multi-line message,
+with a choice of OK, Yes, No and Cancel buttons.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/msgdlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_commondialogsoverview.html#wxmessagedialogoverview">wxMessageDialog overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmessagedialogctor">wxMessageDialog::wxMessageDialog</A><BR>
+<A HREF="#wxmessagedialogdtor">wxMessageDialog::~wxMessageDialog</A><BR>
+<A HREF="#wxmessagedialogshowmodal">wxMessageDialog::ShowModal</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmessagedialogctor"></A>
+<H3>wxMessageDialog::wxMessageDialog</H3>
+<P>
+<B></B> <B>wxMessageDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption = "Message box"</I>, <B>long </B><I>style = wxOK |  wxCANCEL</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>)<P>
+Constructor. Use <A HREF="wx_wxmessagedialog.html#wxmessagedialogshowmodal">wxMessageDialog::ShowModal</A> to show the dialog.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window.</UL></UL>
+<P>
+<I>message</I><UL><UL>
+Message to show on the dialog.</UL></UL>
+<P>
+<I>caption</I><UL><UL>
+The dialog caption.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+A dialog style (bitlist) containing flags chosen from the following:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxOK</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Show an OK button.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCANCEL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Show a Cancel button.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxYES_NO</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Show Yes and No buttons.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxYES_DEFAULT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Used with <B>wxYES_NO</B>, makes <B>Yes</B> button the default - which is the default behaviour.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxNO_DEFAULT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Used with <B>wxYES_NO</B>, makes <B>No</B> button the default.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxICON_EXCLAMATION</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Shows an exclamation mark icon.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxICON_HAND</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Shows an error icon.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxICON_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Shows an error icon - the same as wxICON_HAND.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxICON_QUESTION</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Shows a question mark icon.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxICON_INFORMATION</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Shows an information (i) icon.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSTAY_ON_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The message box stays on top of all other window, even those of the other applications (Windows only).
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Dialog position. Not Windows.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxmessagedialogdtor"></A>
+<H3>wxMessageDialog::~wxMessageDialog</H3>
+<P>
+<B></B> <B>~wxMessageDialog</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxmessagedialogshowmodal"></A>
+<H3>wxMessageDialog::ShowModal</H3>
+<P>
+<B>int</B> <B>ShowModal</B>()<P>
+Shows the dialog, returning one of wxID_OK, wxID_CANCEL, wxID_YES, wxID_NO.<P>
+
+</FONT></BODY></HTML>

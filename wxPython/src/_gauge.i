@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _gauge.i,v 1.8 2004/12/23 20:43:52 RD Exp $
+// RCS-ID:      $Id: _gauge.i 41109 2006-09-09 19:36:27Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -23,8 +23,8 @@ enum {
     wxGA_HORIZONTAL,
     wxGA_VERTICAL,
     wxGA_SMOOTH,
-    wxGA_PROGRESSBAR   // obsolete
 };
+%pythoncode { GA_PROGRESSBAR = 0 %# obsolete }
 
 //---------------------------------------------------------------------------
 
@@ -59,6 +59,9 @@ public:
     virtual void SetValue(int pos);
     virtual int GetValue() const;
 
+    // indeterminate mode API
+    virtual void Pulse();
+
     // simple accessors
     bool IsVertical() const;
 
@@ -71,6 +74,12 @@ public:
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    %property(BezelFace, GetBezelFace, SetBezelFace, doc="See `GetBezelFace` and `SetBezelFace`");
+    %property(Range, GetRange, SetRange, doc="See `GetRange` and `SetRange`");
+    %property(ShadowWidth, GetShadowWidth, SetShadowWidth, doc="See `GetShadowWidth` and `SetShadowWidth`");
+    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
+   
 };
 
 //---------------------------------------------------------------------------

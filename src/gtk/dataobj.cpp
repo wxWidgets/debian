@@ -1,31 +1,29 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        dataobj.cpp
+// Name:        src/gtk/dataobj.cpp
 // Purpose:     wxDataObject class
 // Author:      Robert Roebling
-// Id:          $Id: dataobj.cpp,v 1.48.2.1 2006/03/14 23:54:18 MR Exp $
+// Id:          $Id: dataobj.cpp 48566 2007-09-05 12:39:06Z RR $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "dataobj.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
-#include "wx/dataobj.h"
-
 #if wxUSE_DATAOBJ
 
-#include "wx/app.h"
-#include "wx/debug.h"
+#include "wx/dataobj.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/log.h"
+    #include "wx/app.h"
+    #include "wx/image.h"
+#endif
+
 #include "wx/mstream.h"
-#include "wx/image.h"
-#include "wx/log.h"
 #include "wx/uri.h"
 
-#include <gdk/gdk.h>
+#include "wx/gtk/private.h"
 
 //-------------------------------------------------------------------------
 // global data
@@ -112,10 +110,8 @@ wxDataFormatId wxDataFormat::GetType() const
 
 wxString wxDataFormat::GetId() const
 {
-    gchar* atom_name = gdk_atom_name( m_format );
-    wxString ret = wxString::FromAscii( atom_name );
-    g_free(atom_name);
-    return ret;
+    wxGtkString atom_name(gdk_atom_name(m_format));
+    return wxString::FromAscii(atom_name);
 }
 
 void wxDataFormat::SetId( NativeFormat format )
@@ -238,9 +234,9 @@ bool wxFileDataObject::GetDataHere(void *buf) const
         filenames += wxT("\r\n");
     }
 
-    memcpy( buf, filenames.mbc_str(), filenames.Len() + 1 );
+    memcpy( buf, filenames.mbc_str(), filenames.length() + 1 );
 
-    return TRUE;
+    return true;
 }
 
 size_t wxFileDataObject::GetDataSize() const
@@ -250,7 +246,7 @@ size_t wxFileDataObject::GetDataSize() const
     for (size_t i = 0; i < m_filenames.GetCount(); i++)
     {
         // This is junk in UTF-8
-        res += m_filenames[i].Len();
+        res += m_filenames[i].length();
         res += 5 + 2; // "file:" (5) + "\r\n" (2)
     }
 
@@ -259,52 +255,60 @@ size_t wxFileDataObject::GetDataSize() const
 
 bool wxFileDataObject::SetData(size_t WXUNUSED(size), const void *buf)
 {
+    // we get data in the text/uri-list format, i.e. as a sequence of URIs
+    // (filenames prefixed by "file:") delimited by "\r\n". size includes
+    // the trailing zero (in theory, not for Nautilus in early GNOME
+    // versions).
+    
     m_filenames.Empty();
 
-    // we get data in the text/uri-list format, i.e. as a sequence of URIs
-    // (filenames prefixed by "file:") delimited by "\r\n"
-    wxString filename;
-    for ( const char *p = (const char *)buf; ; p++ )
+    const gchar *nexttemp = (const gchar*) buf;
+    for ( ; ; )
     {
-        // some broken programs (testdnd GTK+ sample!) omit the trailing
-        // "\r\n", so check for '\0' explicitly here instead of doing it in
-        // the loop statement to account for it
-        if ( (*p == '\r' && *(p+1) == '\n') || !*p )
+        int len = 0;
+        const gchar *temp = nexttemp;
+        for (;;)
         {
-            size_t lenPrefix = 5; // strlen("file:")
-            if ( filename.Left(lenPrefix).MakeLower() == _T("file:") )
+            if (temp[len] == 0)
             {
-                // sometimes the syntax is "file:filename", sometimes it's
-                // URL-like: "file://filename" - deal with both
-                if ( filename[lenPrefix] == _T('/') &&
-                     filename[lenPrefix + 1] == _T('/') )
+                if (len > 0)
                 {
-                    // skip the slashes
-                    lenPrefix += 2;
+                    // if an app omits '\r''\n'
+                    nexttemp = temp+len;
+                    break;
                 }
-
-                AddFile(wxURI::Unescape(filename.c_str() + lenPrefix));
-                filename.Empty();
+                    
+                return true;
             }
-            else
+            if (temp[len] == '\r')
             {
-                wxLogDebug(_T("Unsupported URI '%s' in wxFileDataObject"),
-                           filename.c_str());
-            }
-
-            if ( !*p )
+                if (temp[len+1] == '\n')
+                    nexttemp = temp+len+2;
+                else
+                    nexttemp = temp+len+1;
                 break;
-
-            // skip '\r'
-            p++;
+            }
+            len++;
         }
-        else
+        
+        if (len == 0)
+            break;
+        
+        // required to give it a trailing zero
+        gchar *uri = g_strndup( temp, len );
+    
+        gchar *fn = g_filename_from_uri( uri, NULL, NULL );
+        
+        g_free( uri );
+    
+        if (fn)
         {
-            filename += *p;
+            AddFile( wxConvFileName->cMB2WX( fn ) );
+            g_free( fn );
         }
     }
 
-    return TRUE;
+    return true;
 }
 
 void wxFileDataObject::AddFile( const wxString &filename )
@@ -349,12 +353,12 @@ bool wxBitmapDataObject::GetDataHere(void *buf) const
     {
         wxFAIL_MSG( wxT("attempt to copy empty bitmap failed") );
 
-        return FALSE;
+        return false;
     }
 
     memcpy(buf, m_pngData, m_pngSize);
 
-    return TRUE;
+    return true;
 }
 
 bool wxBitmapDataObject::SetData(size_t size, const void *buf)
@@ -362,7 +366,7 @@ bool wxBitmapDataObject::SetData(size_t size, const void *buf)
     Clear();
 
     wxCHECK_MSG( wxImage::FindHandler(wxBITMAP_TYPE_PNG) != NULL,
-                 FALSE, wxT("You must call wxImage::AddHandler(new wxPNGHandler); to be able to use clipboard with bitmaps!") );
+                 false, wxT("You must call wxImage::AddHandler(new wxPNGHandler); to be able to use clipboard with bitmaps!") );
 
     m_pngSize = size;
     m_pngData = malloc(m_pngSize);
@@ -373,7 +377,7 @@ bool wxBitmapDataObject::SetData(size_t size, const void *buf)
     wxImage image;
     if ( !image.LoadFile( mstream, wxBITMAP_TYPE_PNG ) )
     {
-        return FALSE;
+        return false;
     }
 
     m_bitmap = wxBitmap(image);

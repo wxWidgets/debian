@@ -1,0 +1,232 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTextValidator</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtextvalidator"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtextoutputstream.html#wxtextoutputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxthread.html#wxthread"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTextValidator</H2>
+<P>
+wxTextValidator validates text controls, providing a variety of filtering behaviours.<P>
+For more information, please see <A HREF="wx_validatoroverview.html#validatoroverview">Validator overview</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/valtext.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_validatoroverview.html#validatoroverview">Validator overview</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>,
+<A HREF="wx_wxgenericvalidator.html#wxgenericvalidator">wxGenericValidator</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxtextvalidatorctor">wxTextValidator::wxTextValidator</A><BR>
+<A HREF="#wxtextvalidatorclone">wxTextValidator::Clone</A><BR>
+<A HREF="#wxtextvalidatorgetexcludes">wxTextValidator::GetExcludes</A><BR>
+<A HREF="#wxtextvalidatorgetincludes">wxTextValidator::GetIncludes</A><BR>
+<A HREF="#wxtextvalidatorgetstyle">wxTextValidator::GetStyle</A><BR>
+<A HREF="#wxtextvalidatoronchar">wxTextValidator::OnChar</A><BR>
+<A HREF="#wxtextvalidatorsetexcludes">wxTextValidator::SetExcludes</A><BR>
+<A HREF="#wxtextvalidatorsetincludes">wxTextValidator::SetIncludes</A><BR>
+<A HREF="#wxtextvalidatorsetstyle">wxTextValidator::SetStyle</A><BR>
+<A HREF="#wxtextvalidatortransferfromwindow">wxTextValidator::TransferFromWindow</A><BR>
+<A HREF="#wxtextvalidatortransfertowindow">wxTextValidator::TransferToWindow</A><BR>
+<A HREF="#wxtextvalidatorvalidate">wxTextValidator::Validate</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtextvalidatorctor"></A>
+<H3>wxTextValidator::wxTextValidator</H3>
+<P>
+<B></B> <B>wxTextValidator</B>(<B>const <A HREF="wx_wxtextvalidator.html#wxtextvalidator">wxTextValidator</A>&</B></B><I> validator</I>)<P>
+Copy constructor.<P>
+<B></B> <B>wxTextValidator</B>(<B>long</B><I> style = wxFILTER_NONE</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>valPtr = NULL</I>)<P>
+Constructor, taking a style and optional pointer to a wxString variable.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>style</I><UL><UL>
+A bitlist of flags, which can be:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFILTER_NONE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+No filtering takes place.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFILTER_ASCII</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Non-ASCII characters are filtered out.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFILTER_ALPHA</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Non-alpha characters are filtered out.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFILTER_ALPHANUMERIC</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Non-alphanumeric characters are filtered out.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFILTER_NUMERIC</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Non-numeric characters are filtered out.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFILTER_INCLUDE_LIST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Use an include list. The validator
+checks if the user input is on the list, complaining if not. See 
+<A HREF="wx_wxtextvalidator.html#wxtextvalidatorsetincludes">wxTextValidator::SetIncludes</A>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFILTER_EXCLUDE_LIST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Use an exclude list. The validator
+checks if the user input is on the list, complaining if it is. See 
+<A HREF="wx_wxtextvalidator.html#wxtextvalidatorsetexcludes">wxTextValidator::SetExcludes</A>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFILTER_INCLUDE_CHAR_LIST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Use an include list. The validator
+checks if each input character is in the list (one character per list element), complaining if not.
+See <A HREF="wx_wxtextvalidator.html#wxtextvalidatorsetincludes">wxTextValidator::SetIncludes</A>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFILTER_EXCLUDE_CHAR_LIST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Use an include list. The validator
+checks if each input character is in the list (one character per list element), complaining if it is.
+See <A HREF="wx_wxtextvalidator.html#wxtextvalidatorsetexcludes">wxTextValidator::SetExcludes</A>.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+<I>valPtr</I><UL><UL>
+A pointer to a wxString variable that contains the value. This variable
+should have a lifetime equal to or longer than the validator lifetime (which is usually
+determined by the lifetime of the window). </UL></UL>
+<P>
+
+<HR>
+<A NAME="wxtextvalidatorclone"></A>
+<H3>wxTextValidator::Clone</H3>
+<P>
+<B>virtual <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>*</B> </B> <B>Clone</B>() <B>const</B><P>
+Clones the text validator using the copy constructor.<P>
+
+<HR>
+<A NAME="wxtextvalidatorgetexcludes"></A>
+<H3>wxTextValidator::GetExcludes</H3>
+<P>
+<B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B> </B> <B>GetExcludes</B>() <B>const</B><P>
+Returns a reference to the exclude list (the list of invalid values).<P>
+
+<HR>
+<A NAME="wxtextvalidatorgetincludes"></A>
+<H3>wxTextValidator::GetIncludes</H3>
+<P>
+<B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B> </B> <B>GetIncludes</B>() <B>const</B><P>
+Returns a reference to the include list (the list of valid values).<P>
+
+<HR>
+<A NAME="wxtextvalidatorgetstyle"></A>
+<H3>wxTextValidator::GetStyle</H3>
+<P>
+<B>long</B> <B>GetStyle</B>() <B>const</B><P>
+Returns the validator style.<P>
+
+<HR>
+<A NAME="wxtextvalidatoronchar"></A>
+<H3>wxTextValidator::OnChar</H3>
+<P>
+<B>void</B> <B>OnChar</B>(<B><A HREF="wx_wxkeyevent.html#wxkeyevent">wxKeyEvent</A>&</B></B><I> event</I>)<P>
+Receives character input from the window and filters it according to the
+current validator style.<P>
+
+<HR>
+<A NAME="wxtextvalidatorsetexcludes"></A>
+<H3>wxTextValidator::SetExcludes</H3>
+<P>
+<B>void</B> <B>SetExcludes</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B></B><I> stringList</I>)<P>
+Sets the exclude list (invalid values for the user input).<P>
+
+<HR>
+<A NAME="wxtextvalidatorsetincludes"></A>
+<H3>wxTextValidator::SetIncludes</H3>
+<P>
+<B>void</B> <B>SetIncludes</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B></B><I> stringList</I>)<P>
+Sets the include list (valid values for the user input).<P>
+
+<HR>
+<A NAME="wxtextvalidatorsetstyle"></A>
+<H3>wxTextValidator::SetStyle</H3>
+<P>
+<B>void</B> <B>SetStyle</B>(<B>long</B><I> style</I>)<P>
+Sets the validator style.<P>
+
+<HR>
+<A NAME="wxtextvalidatortransferfromwindow"></A>
+<H3>wxTextValidator::TransferFromWindow</H3>
+<P>
+<B>virtual bool</B> <B>TransferFromWindow</B>()<P>
+Transfers the value in the text control to the string.<P>
+
+<HR>
+<A NAME="wxtextvalidatortransfertowindow"></A>
+<H3>wxTextValidator::TransferToWindow</H3>
+<P>
+<B>virtual bool</B> <B>TransferToWindow</B>()<P>
+Transfers the string value to the text control.<P>
+
+<HR>
+<A NAME="wxtextvalidatorvalidate"></A>
+<H3>wxTextValidator::Validate</H3>
+<P>
+<B>virtual bool</B> <B>Validate</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>)<P>
+Validates the window contents against the include or exclude lists, depending
+on the validator style.<P>
+
+</FONT></BODY></HTML>

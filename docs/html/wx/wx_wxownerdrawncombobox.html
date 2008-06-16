@@ -1,0 +1,279 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxOwnerDrawnComboBox</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxownerdrawncombobox"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxobjectrefdata.html#wxobjectrefdata"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxoutputstream.html#wxoutputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxOwnerDrawnComboBox</H2>
+<P>
+wxOwnerDrawnComboBox is a combobox with owner-drawn list items.
+In essence, it is a <A HREF="wx_wxcomboctrl.html#wxcomboctrl">wxComboCtrl</A> with
+<A HREF="wx_wxvlistbox.html#wxvlistbox">wxVListBox</A> popup and <A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitems">wxControlWithItems</A>
+interface.<P>
+Implementing item drawing and measuring is similar to <A HREF="wx_wxvlistbox.html#wxvlistbox">wxVListBox</A>.
+Application needs to subclass wxOwnerDrawnComboBox and implement
+<A HREF="wx_wxownerdrawncombobox.html#wxownerdrawncomboboxondrawitem">OnDrawItem()</A>, <A HREF="wx_wxownerdrawncombobox.html#wxownerdrawncomboboxonmeasureitem">OnMeasureItem()</A>
+and <A HREF="wx_wxownerdrawncombobox.html#wxownerdrawncomboboxonmeasureitemwidth">OnMeasureItemWidth()</A>.<P>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcomboctrl.html#wxcomboctrl">wxComboCtrl</A><BR>
+
+<A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitems">wxControlWithItems</A><BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;odcombo.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxODCB_DCLICK_CYCLES</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Double-clicking cycles item
+if wxCB_READONLY is also used. Synonymous with wxCC_SPECIAL_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxODCB_STD_CONTROL_PAINT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Control itself is not
+custom painted using OnDrawItem. Even if this style is not used, writable
+wxOwnerDrawnComboBox is never custom painted unless SetCustomPaintWidth is
+called.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_wxcomboctrl.html#wxcomboctrl">wxComboCtrl window styles</A> and
+base <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_COMBOBOX(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_COMBOBOX_SELECTED event,
+when an item on the list is selected. Note that calling
+<A HREF="wx_wxcomboctrl.html#wxcomboctrlgetvalue">GetValue</A> returns the new value of selection.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also events emitted by <A HREF="wx_wxcomboctrl.html#wxcomboctrl">wxComboCtrl</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcomboctrl.html#wxcomboctrl">wxComboCtrl</A>, <A HREF="wx_wxcombobox.html#wxcombobox">wxComboBox</A>, <A HREF="wx_wxvlistbox.html#wxvlistbox">wxVListBox</A>,
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxownerdrawncomboboxctor">wxOwnerDrawnComboBox::wxOwnerDrawnComboBox</A><BR>
+<A HREF="#wxownerdrawncomboboxdtor">wxOwnerDrawnComboBox::~wxOwnerDrawnComboBox</A><BR>
+<A HREF="#wxownerdrawncomboboxcreate">wxOwnerDrawnComboBox::Create</A><BR>
+<A HREF="#wxownerdrawncomboboxgetwidestitem">wxOwnerDrawnComboBox::GetWidestItem</A><BR>
+<A HREF="#wxownerdrawncomboboxgetwidestitemwidth">wxOwnerDrawnComboBox::GetWidestItemWidth</A><BR>
+<A HREF="#wxownerdrawncomboboxondrawbackground">wxOwnerDrawnComboBox::OnDrawBackground</A><BR>
+<A HREF="#wxownerdrawncomboboxondrawitem">wxOwnerDrawnComboBox::OnDrawItem</A><BR>
+<A HREF="#wxownerdrawncomboboxonmeasureitem">wxOwnerDrawnComboBox::OnMeasureItem</A><BR>
+<A HREF="#wxownerdrawncomboboxonmeasureitemwidth">wxOwnerDrawnComboBox::OnMeasureItemWidth</A><BR>
+<P>
+
+<HR>
+<A NAME="wxownerdrawncomboboxctor"></A>
+<H3>wxOwnerDrawnComboBox::wxOwnerDrawnComboBox</H3>
+<P>
+<B></B> <B>wxOwnerDrawnComboBox</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxOwnerDrawnComboBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value = ""</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>int</B><I> n = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>choices[] = NULL</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "comboBox"</I>)<P>
+<B></B> <B>wxOwnerDrawnComboBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "comboBox"</I>)<P>
+Constructor, creating and showing a owner-drawn combobox.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>value</I><UL><UL>
+Initial selection string. An empty string indicates no selection.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then the window is sized
+appropriately.</UL></UL>
+<P>
+<I>n</I><UL><UL>
+Number of strings with which to initialise the control.</UL></UL>
+<P>
+<I>choices</I><UL><UL>
+An array of strings with which to initialise the control.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxownerdrawncombobox.html#wxownerdrawncombobox">wxOwnerDrawnComboBox</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxownerdrawncombobox.html#wxownerdrawncomboboxcreate">wxOwnerDrawnComboBox::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+
+
+<HR>
+<A NAME="wxownerdrawncomboboxdtor"></A>
+<H3>wxOwnerDrawnComboBox::~wxOwnerDrawnComboBox</H3>
+<P>
+<B></B> <B>~wxOwnerDrawnComboBox</B>()<P>
+Destructor, destroying the owner-drawn combobox.<P>
+
+
+<HR>
+<A NAME="wxownerdrawncomboboxcreate"></A>
+<H3>wxOwnerDrawnComboBox::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value = ""</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>int</B><I> n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>choices[]</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "comboBox"</I>)<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "comboBox"</I>)<P>
+Creates the combobox for two-step construction. Derived classes
+should call or replace this function. See
+<A HREF="wx_wxownerdrawncombobox.html#wxownerdrawncomboboxctor">wxOwnerDrawnComboBox::wxOwnerDrawnComboBox</A>
+for further details.<P>
+
+
+<HR>
+<A NAME="wxownerdrawncomboboxgetwidestitem"></A>
+<H3>wxOwnerDrawnComboBox::GetWidestItem</H3>
+<P>
+<B>int</B> <B>GetWidestItem</B>() <B>const</B><P>
+Returns index to the widest item in the list.<P>
+
+
+<HR>
+<A NAME="wxownerdrawncomboboxgetwidestitemwidth"></A>
+<H3>wxOwnerDrawnComboBox::GetWidestItemWidth</H3>
+<P>
+<B>int</B> <B>GetWidestItemWidth</B>() <B>const</B><P>
+Returns width of the widest item in the list.<P>
+
+
+<HR>
+<A NAME="wxownerdrawncomboboxondrawbackground"></A>
+<H3>wxOwnerDrawnComboBox::OnDrawBackground</H3>
+<P>
+<B>void</B> <B>OnDrawBackground</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>item</I>, <B>int </B><I>flags</I>) <B>const</B><P>
+This method is used to draw the items background and, maybe, a border around it.<P>
+The base class version implements a reasonable default behaviour which consists
+in drawing the selected item with the standard background colour and drawing a
+border around the item if it is either selected or current.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+<I>flags</I> has the same meaning as with <A HREF="wx_wxownerdrawncombobox.html#wxownerdrawncomboboxondrawitem">OnDrawItem</A>.<P>
+
+
+<HR>
+<A NAME="wxownerdrawncomboboxondrawitem"></A>
+<H3>wxOwnerDrawnComboBox::OnDrawItem</H3>
+<P>
+<B>void</B> <B>OnDrawItem</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>item</I>, <B>int </B><I>flags</I>) <B>const</B><P>
+The derived class may implement this function to actually draw the item
+with the given index on the provided DC. If function is not implemented,
+the item text is simply drawn, as if the control was a normal combobox.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>dc</I><UL><UL>
+The device context to use for drawing</UL></UL>
+<P>
+<I>rect</I><UL><UL>
+The bounding rectangle for the item being drawn (DC clipping
+region is set to this rectangle before calling this function)</UL></UL>
+<P>
+<I>item</I><UL><UL>
+The index of the item to be drawn</UL></UL>
+<P>
+<I>flags</I><UL><UL>
+Combines any of the following flag values:</UL></UL>
+<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<TT>wxODCB_PAINTING_CONTROL</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Combo control is being
+painted, instead of a list item. Argument item may be wxNOT_FOUND in this
+case.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<TT>wxODCB_PAINTING_SELECTED</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+An item with selection
+background is being painted. DC text colour should already be correct.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="wxownerdrawncomboboxonmeasureitem"></A>
+<H3>wxOwnerDrawnComboBox::OnMeasureItem</H3>
+<P>
+<B>wxCoord</B> <B>OnMeasureItem</B>(<B>size_t </B><I>item</I>) <B>const</B><P>
+The derived class may implement this method to return the height of the
+specified item (in pixels).<P>
+The default implementation returns text height, as if this control was
+a normal combobox.<P>
+
+
+<HR>
+<A NAME="wxownerdrawncomboboxonmeasureitemwidth"></A>
+<H3>wxOwnerDrawnComboBox::OnMeasureItemWidth</H3>
+<P>
+<B>wxCoord</B> <B>OnMeasureItemWidth</B>(<B>size_t </B><I>item</I>) <B>const</B><P>
+The derived class may implement this method to return the width of the
+specified item (in pixels). If -1 is returned, then the item text width
+is used.<P>
+The default implementation returns -1.<P>
+
+</FONT></BODY></HTML>

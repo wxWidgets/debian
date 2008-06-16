@@ -1,0 +1,58 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTempFileOutputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtempfileoutputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtempfile.html#wxtempfile"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtextattr.html#wxtextattr"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTempFileOutputStream</H2>
+<P>
+wxTempFileOutputStream is an output stream based on <A HREF="wx_wxtempfile.html#wxtempfile">wxTempFile</A>. It
+provides a relatively safe way to replace the contents of the
+existing file.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/wfstream.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtempfile.html#wxtempfile">wxTempFile</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxtempfileoutputstreamwxtempfileoutputstream">wxTempFileOutputStream::wxTempFileOutputStream</A><BR>
+<A HREF="#wxtempfileoutputstreamcommit">wxTempFileOutputStream::Commit</A><BR>
+<A HREF="#wxtempfileoutputstreamdiscard">wxTempFileOutputStream::Discard</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtempfileoutputstreamwxtempfileoutputstream"></A>
+<H3>wxTempFileOutputStream::wxTempFileOutputStream</H3>
+<P>
+<B></B> <B>wxTempFileOutputStream</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fileName</I>)<P>
+Associates wxTempFileOutputStream with the file to be replaced and opens it. You should use 
+<A HREF="wx_wxstreambase.html#wxstreambaseisok">IsOk</A> to verify if the constructor succeeded.<P>
+Call <A HREF="wx_wxtempfileoutputstream.html#wxtempfileoutputstreamcommit">Commit()</A> or <A HREF="wx_wxoutputstream.html#wxoutputstreamclose">Close()</A> to
+replace the old file and close this one. Calling <A HREF="wx_wxtempfileoutputstream.html#wxtempfileoutputstreamdiscard">Discard()</A> 
+(or allowing the destructor to do it) will discard the changes.<P>
+
+
+<HR>
+<A NAME="wxtempfileoutputstreamcommit"></A>
+<H3>wxTempFileOutputStream::Commit</H3>
+<P>
+<B>bool</B> <B>Commit</B>()<P>
+Validate changes: deletes the old file of the given name and renames the new
+file to the old name. Returns <TT>true</TT> if both actions succeeded. If <TT>false</TT> is
+returned it may unfortunately mean two quite different things: either that
+either the old file couldn't be deleted or that the new file couldn't be renamed
+to the old name.<P>
+
+
+<HR>
+<A NAME="wxtempfileoutputstreamdiscard"></A>
+<H3>wxTempFileOutputStream::Discard</H3>
+<P>
+<B>void</B> <B>Discard</B>()<P>
+Discard changes: the old file contents are not changed, the temporary file is
+deleted.<P>
+
+</FONT></BODY></HTML>

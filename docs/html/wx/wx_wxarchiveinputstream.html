@@ -1,0 +1,73 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxArchiveInputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxarchiveinputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxarchiveentry.html#wxarchiveentry"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxarchiveiterator.html#wxarchiveiterator"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxArchiveInputStream</H2>
+<P>
+An abstract base class which serves as a common interface to
+archive input streams such as <A HREF="wx_wxzipinputstream.html#wxzipinputstream">wxZipInputStream</A>.<P>
+<A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstreamgetnextentry">GetNextEntry()</A> returns an
+ <A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A> object containing the meta-data
+for the next entry in the archive (and gives away ownership). Reading from
+the wxArchiveInputStream then returns the entry's data. Eof() becomes true
+after an attempt has been made to read past the end of the entry's data.
+When there are no more entries, GetNextEntry() returns NULL and sets Eof().<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxfilterinputstream.html#wxfilterinputstream">wxFilterInputStream</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/archive.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B>
+<PRE>
+typedef wxArchiveEntry entry_type
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarc">Archive formats such as zip</A><BR>
+
+<A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A><BR>
+
+<A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstream">wxArchiveOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxarchiveinputstreamcloseentry">wxArchiveInputStream::CloseEntry</A><BR>
+<A HREF="#wxarchiveinputstreamgetnextentry">wxArchiveInputStream::GetNextEntry</A><BR>
+<A HREF="#wxarchiveinputstreamopenentry">wxArchiveInputStream::OpenEntry</A><BR>
+<P>
+
+<HR>
+<A NAME="wxarchiveinputstreamcloseentry"></A>
+<H3>wxArchiveInputStream::CloseEntry</H3>
+<P>
+<B>bool</B> <B>CloseEntry</B>()<P>
+Closes the current entry. On a non-seekable stream reads to the end of
+the current entry first.<P>
+
+
+<HR>
+<A NAME="wxarchiveinputstreamgetnextentry"></A>
+<H3>wxArchiveInputStream::GetNextEntry</H3>
+<P>
+<B><A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A>*</B> </B> <B>GetNextEntry</B>()<P>
+Closes the current entry if one is open, then reads the meta-data for
+the next entry and returns it in a <A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A>
+object, giving away ownership. Reading this wxArchiveInputStream then
+returns the entry's data.<P>
+
+
+<HR>
+<A NAME="wxarchiveinputstreamopenentry"></A>
+<H3>wxArchiveInputStream::OpenEntry</H3>
+<P>
+<B>bool</B> <B>OpenEntry</B>(<B><A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A>& </B></B><I>entry</I>)<P>
+Closes the current entry if one is open, then opens the entry specified
+by the <A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A> object.<P>
+<I>entry</I> must be from the same archive file that this
+wxArchiveInputStream is reading, and it must be reading it from a
+seekable stream.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarcbyname">Looking up an archive entry by name</A><P>
+
+
+</FONT></BODY></HTML>

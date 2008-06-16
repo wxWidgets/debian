@@ -1,0 +1,236 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSpinButton</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxspinbutton"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsound.html#wxsound"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxspinctrl.html#wxspinctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSpinButton</H2>
+<P>
+A wxSpinButton has two small up and down (or left and right) arrow buttons. It
+is often used next to a text control for increment and decrementing a value.
+Portable programs should try to use <A HREF="wx_wxspinctrl.html#wxspinctrl">wxSpinCtrl</A> instead
+as wxSpinButton is not implemented for all platforms but wxSpinCtrl is as it
+degenerates to a simple <A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A> on such platforms.<P>
+<B>NB:</B> the range supported by this control (and wxSpinCtrl) depends on the
+platform but is at least <TT>-0x8000</TT> to <TT>0x7fff</TT>. Under GTK and
+Win32 with sufficiently new version of <TT>comctrl32.dll</TT> (at least 4.71 is
+required, 5.80 is recommended) the full 32 bit range is supported.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxspinctrl.html#wxspinctrl">wxSpinCtrl</A> <P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/spinbutt.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSP_HORIZONTAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies a horizontal spin button (note that this style is not supported in wxGTK).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSP_VERTICAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies a vertical spin button.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSP_ARROW_KEYS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user can use arrow keys to change the value.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSP_WRAP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The value wraps at the minimum and maximum.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To process input from a spin button, use one of these event handler macros to
+direct input to member functions that take a 
+<A HREF="wx_wxspinevent.html#wxspinevent">wxSpinEvent</A> argument:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SPIN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Generated whenever an arrow is pressed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SPIN_UP(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Generated when left/up arrow is pressed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SPIN_DOWN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Generated when right/down arrow is pressed.
+</FONT></TD></TR>
+
+
+</TABLE>
+Note that if you handle both SPIN and UP or DOWN events, you will be notified
+about each of them twice: first the UP/DOWN event will be receieved and then,
+if it wasn't vetoed, the SPIN event will be sent.
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxspinbuttonctor">wxSpinButton::wxSpinButton</A><BR>
+<A HREF="#wxspinbuttondtor">wxSpinButton::~wxSpinButton</A><BR>
+<A HREF="#wxspinbuttoncreate">wxSpinButton::Create</A><BR>
+<A HREF="#wxspinbuttongetmax">wxSpinButton::GetMax</A><BR>
+<A HREF="#wxspinbuttongetmin">wxSpinButton::GetMin</A><BR>
+<A HREF="#wxspinbuttongetvalue">wxSpinButton::GetValue</A><BR>
+<A HREF="#wxspinbuttonsetrange">wxSpinButton::SetRange</A><BR>
+<A HREF="#wxspinbuttonsetvalue">wxSpinButton::SetValue</A><BR>
+<P>
+
+<HR>
+<A NAME="wxspinbuttonctor"></A>
+<H3>wxSpinButton::wxSpinButton</H3>
+<P>
+<B></B> <B>wxSpinButton</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxSpinButton</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxSP_HORIZONTAL</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "spinButton"</I>)<P>
+Constructor, creating and showing a spin button.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position. If the position (-1, -1) is specified then a default position is chosen.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then a default size is chosen.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxspinbutton.html#wxspinbutton">wxSpinButton</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxspinbutton.html#wxspinbuttoncreate">wxSpinButton::Create</A><P>
+
+<HR>
+<A NAME="wxspinbuttondtor"></A>
+<H3>wxSpinButton::~wxSpinButton</H3>
+<P>
+<B>void</B> <B>~wxSpinButton</B>()<P>
+Destructor, destroys the spin button control.<P>
+
+<HR>
+<A NAME="wxspinbuttoncreate"></A>
+<H3>wxSpinButton::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxSP_HORIZONTAL</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "spinButton"</I>)<P>
+Scrollbar creation function called by the spin button constructor.
+See <A HREF="wx_wxspinbutton.html#wxspinbuttonctor">wxSpinButton::wxSpinButton</A> for details.<P>
+
+<HR>
+<A NAME="wxspinbuttongetmax"></A>
+<H3>wxSpinButton::GetMax</H3>
+<P>
+<B>int</B> <B>GetMax</B>() <B>const</B><P>
+Returns the maximum permissible value.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxspinbutton.html#wxspinbuttonsetrange">wxSpinButton::SetRange</A><P>
+
+<HR>
+<A NAME="wxspinbuttongetmin"></A>
+<H3>wxSpinButton::GetMin</H3>
+<P>
+<B>int</B> <B>GetMin</B>() <B>const</B><P>
+Returns the minimum permissible value.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxspinbutton.html#wxspinbuttonsetrange">wxSpinButton::SetRange</A><P>
+
+<HR>
+<A NAME="wxspinbuttongetvalue"></A>
+<H3>wxSpinButton::GetValue</H3>
+<P>
+<B>int</B> <B>GetValue</B>() <B>const</B><P>
+Returns the current spin button value.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxspinbutton.html#wxspinbuttonsetvalue">wxSpinButton::SetValue</A><P>
+
+<HR>
+<A NAME="wxspinbuttonsetrange"></A>
+<H3>wxSpinButton::SetRange</H3>
+<P>
+<B>void</B> <B>SetRange</B>(<B>int</B><I> min</I>, <B>int</B><I> max</I>)<P>
+Sets the range of the spin button.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>min</I><UL><UL>
+The minimum value for the spin button.</UL></UL>
+<P>
+<I>max</I><UL><UL>
+The maximum value for the spin button.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxspinbutton.html#wxspinbuttongetmin">wxSpinButton::GetMin</A>, <A HREF="wx_wxspinbutton.html#wxspinbuttongetmax">wxSpinButton::GetMax</A><P>
+
+<HR>
+<A NAME="wxspinbuttonsetvalue"></A>
+<H3>wxSpinButton::SetValue</H3>
+<P>
+<B>void</B> <B>SetValue</B>(<B>int</B><I> value</I>)<P>
+Sets the value of the spin button.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>value</I><UL><UL>
+The value for the spin button.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxspinbutton.html#wxspinbuttongetvalue">wxSpinButton::GetValue</A><P>
+
+</FONT></BODY></HTML>

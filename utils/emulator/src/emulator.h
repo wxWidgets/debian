@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2002-03-10
-// RCS-ID:      $Id: emulator.h,v 1.8 2005/02/01 20:36:10 ABX Exp $
+// RCS-ID:      $Id: emulator.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_EMULATOR_H_
 #define _WX_EMULATOR_H_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "emulator.h"
-#endif
 
 #define wxEMULATOR_VERSION 0.1
 

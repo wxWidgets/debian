@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xh_listc.cpp
+// Name:        src/xrc/xh_listc.cpp
 // Purpose:     XRC resource for wxListCtrl
 // Author:      Brian Gavin
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_listc.cpp,v 1.12 2005/01/07 21:33:13 VS Exp $
+// RCS-ID:      $Id: xh_listc.cpp 39583 2006-06-06 07:23:19Z ABX $
 // Copyright:   (c) 2000 Brian Gavin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_listc.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -19,10 +15,14 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_XRC
+#if wxUSE_XRC && wxUSE_LISTCTRL
 
-#include "wx/textctrl.h"
 #include "wx/xrc/xh_listc.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/textctrl.h"
+#endif
+
 #include "wx/listctrl.h"
 
 
@@ -74,4 +74,4 @@ bool wxListCtrlXmlHandler::CanHandle(wxXmlNode *node)
     return IsOfClass(node, wxT("wxListCtrl"));
 }
 
-#endif // wxUSE_XRC
+#endif // wxUSE_XRC && wxUSE_LISTCTRL

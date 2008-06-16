@@ -1,0 +1,76 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFontDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfontdialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfontdata.html#wxfontdata"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfontenumerator.html#wxfontenumerator"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFontDialog</H2>
+<P>
+This class represents the font chooser dialog.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/fontdlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_commondialogsoverview.html#wxfontdialogoverview">Overview</A>,<BR>
+
+<A HREF="wx_wxfontdata.html#wxfontdata">wxFontData</A>,<BR>
+
+<A HREF="wx_dialogfunctions.html#wxgetfontfromuser">wxGetFontFromUser</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfontdialogctor">wxFontDialog::wxFontDialog</A><BR>
+<A HREF="#wxfontdialogcreate">wxFontDialog::Create</A><BR>
+<A HREF="#wxfontdialoggetfontdata">wxFontDialog::GetFontData</A><BR>
+<A HREF="#wxfontdialogshowmodal">wxFontDialog::ShowModal</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfontdialogctor"></A>
+<H3>wxFontDialog::wxFontDialog</H3>
+<P>
+<B></B> <B>wxFontDialog</B>()<P>
+<B></B> <B>wxFontDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>)<P>
+<B></B> <B>wxFontDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxfontdata.html#wxfontdata">wxFontData</A>& </B></B><I>data</I>)<P>
+Constructor. Pass a parent window, and optionally the 
+<A HREF="wx_wxfontdata.html#wxfontdata">font data</A> object to be used to initialize the dialog
+controls. If the default constructor is used, 
+<A HREF="wx_wxfontdialog.html#wxfontdialogcreate">Create()</A> must be called before the dialog can be
+shown.<P>
+
+<HR>
+<A NAME="wxfontdialogcreate"></A>
+<H3>wxFontDialog::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>)<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxfontdata.html#wxfontdata">wxFontData</A>& </B></B><I>data</I>)<P>
+Creates the dialog if it the wxFontDialog object had been initialized using the
+default constructor. Returns <TT>true</TT> on success and <TT>false</TT> if an error
+occurred.<P>
+
+<HR>
+<A NAME="wxfontdialoggetfontdata"></A>
+<H3>wxFontDialog::GetFontData</H3>
+<P>
+<B>const <A HREF="wx_wxfontdata.html#wxfontdata">wxFontData</A>&</B> </B> <B>GetFontData</B>() <B>const</B><P>
+<B><A HREF="wx_wxfontdata.html#wxfontdata">wxFontData</A>&</B> </B> <B>GetFontData</B>()<P>
+Returns the <A HREF="wx_wxfontdata.html#wxfontdata">font data</A> associated with the font dialog.<P>
+
+<HR>
+<A NAME="wxfontdialogshowmodal"></A>
+<H3>wxFontDialog::ShowModal</H3>
+<P>
+<B>int</B> <B>ShowModal</B>()<P>
+Shows the dialog, returning <TT>wxID_OK</TT> if the user pressed Ok, and 
+<TT>wxID_CANCEL</TT> otherwise.<P>
+If the user cancels the dialog (ShowModal returns <TT>wxID_CANCEL</TT>), no font
+will be created. If the user presses OK, a new wxFont will be created and
+stored in the font dialog's wxFontData structure.<P>
+
+</FONT></BODY></HTML>

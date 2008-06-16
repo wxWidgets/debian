@@ -1,0 +1,64 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGridCellNumberEditor</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgridcellnumbereditor"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgridcellfloateditor.html#wxgridcellfloateditor"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgridcelltexteditor.html#wxgridcelltexteditor"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGridCellNumberEditor</H2>
+<P>
+The editor for numeric integer data.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxgridcelltexteditor.html#wxgridcelltexteditor">wxGridCellTextEditor</A><BR>
+
+<A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>,
+<A HREF="wx_wxgridcellfloateditor.html#wxgridcellfloateditor">wxGridCellFloatEditor</A>,
+<A HREF="wx_wxgridcellbooleditor.html#wxgridcellbooleditor">wxGridCellBoolEditor</A>,
+<A HREF="wx_wxgridcelltexteditor.html#wxgridcelltexteditor">wxGridCellTextEditor</A>,
+<A HREF="wx_wxgridcellchoiceeditor.html#wxgridcellchoiceeditor">wxGridCellChoiceEditor</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/grid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgridcellnumbereditorconstr">wxGridCellNumberEditor::wxGridCellNumberEditor</A><BR>
+<A HREF="#wxgridcellnumbereditorgetstring">wxGridCellNumberEditor::GetString</A><BR>
+<A HREF="#wxgridcellnumbereditorhasrange">wxGridCellNumberEditor::HasRange</A><BR>
+<A HREF="#wxgridcellnumbereditorsetparameters">wxGridCellNumberEditor::SetParameters</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgridcellnumbereditorconstr"></A>
+<H3>wxGridCellNumberEditor::wxGridCellNumberEditor</H3>
+<P>
+<B></B> <B>wxGridCellNumberEditor</B>(<B>int </B><I>min = -1</I>, <B>int </B><I>max = -1</I>)<P>
+Allows to specify the range for acceptable data;
+if min == max == -1, no range checking is done<P>
+
+
+<HR>
+<A NAME="wxgridcellnumbereditorgetstring"></A>
+<H3>wxGridCellNumberEditor::GetString</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetString</B>() <B>const</B><P>
+String representation of the value.<P>
+
+
+<HR>
+<A NAME="wxgridcellnumbereditorhasrange"></A>
+<H3>wxGridCellNumberEditor::HasRange</H3>
+<P>
+<B>bool</B> <B>HasRange</B>() <B>const</B><P>
+If the return value is true, the editor uses a wxSpinCtrl to get user input,
+otherwise it uses a wxTextCtrl.<P>
+
+
+<HR>
+<A NAME="wxgridcellnumbereditorsetparameters"></A>
+<H3>wxGridCellNumberEditor::SetParameters</H3>
+<P>
+<B>void</B> <B>SetParameters</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>params</I>)<P>
+Parameters string format is "min,max".<P>
+
+
+</FONT></BODY></HTML>

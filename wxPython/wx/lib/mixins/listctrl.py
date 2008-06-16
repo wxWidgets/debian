@@ -5,7 +5,7 @@
 # Author:      Robin Dunn
 #
 # Created:     15-May-2001
-# RCS-ID:      $Id: listctrl.py,v 1.17.2.1 2006/03/15 23:57:18 RD Exp $
+# RCS-ID:      $Id: listctrl.py 49526 2007-10-29 20:40:35Z RD $
 # Copyright:   (c) 2001 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------------
@@ -115,10 +115,20 @@ class ColumnSorterMixin:
     def __OnColClick(self, evt):
         oldCol = self._col
         self._col = col = evt.GetColumn()
-        self._colSortFlag[col] = not self._colSortFlag[col]
+        self._colSortFlag[col] = int(not self._colSortFlag[col])
         self.GetListCtrl().SortItems(self.GetColumnSorter())
-        self.__updateImages(oldCol)
+        if wx.Platform != "__WXMAC__" or wx.SystemOptions.GetOptionInt("mac.listctrl.always_use_generic") == 1:
+            self.__updateImages(oldCol)
         evt.Skip()
+        self.OnSortOrderChanged()
+        
+        
+    def OnSortOrderChanged(self):
+        """
+        Callback called after sort order has changed (whenever user
+        clicked column header).
+        """
+        pass
 
 
     def __ColumnSorter(self, key1, key2):
@@ -248,6 +258,9 @@ class ListCtrlAutoWidthMixin:
         
         if not self:  # avoid a PyDeadObject error
             return
+
+        if self.GetSize().height < 32:
+            return  # avoid an endless update bug when the height is small.
         
         numCols = self.GetColumnCount()
         if numCols == 0: return # Nothing to resize.
@@ -424,7 +437,6 @@ class TextEditMixin:
 
 
     def make_editor(self, col_style=wx.LIST_FORMAT_LEFT):
-        editor = wx.PreTextCtrl()
         
         style =wx.TE_PROCESS_ENTER|wx.TE_PROCESS_TAB|wx.TE_RICH2
         style |= {wx.LIST_FORMAT_LEFT: wx.TE_LEFT,
@@ -432,7 +444,7 @@ class TextEditMixin:
                   wx.LIST_FORMAT_CENTRE : wx.TE_CENTRE
                   }[col_style]
         
-        editor.Create(self, -1, style=style)
+        editor = wx.TextCtrl(self, -1, style=style)
         editor.SetBackgroundColour(self.editorBgColour)
         editor.SetForegroundColour(self.editorFgColour)
         font = self.GetFont()
@@ -442,6 +454,8 @@ class TextEditMixin:
         self.curCol = 0
 
         editor.Hide()
+        if hasattr(self, 'editor'):
+            self.editor.Destroy()
         self.editor = editor
 
         self.col_style = col_style
@@ -522,6 +536,19 @@ class TextEditMixin:
     def OpenEditor(self, col, row):
         ''' Opens an editor at the current position. '''
 
+        # give the derived class a chance to Allow/Veto this edit.
+        evt = wx.ListEvent(wx.wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT, self.GetId())
+        evt.m_itemIndex = row
+        evt.m_col = col
+        item = self.GetItem(row, col)
+        evt.m_item.SetId(item.GetId()) 
+        evt.m_item.SetColumn(item.GetColumn()) 
+        evt.m_item.SetData(item.GetData()) 
+        evt.m_item.SetText(item.GetText()) 
+        ret = self.GetEventHandler().ProcessEvent(evt)
+        if ret and not evt.IsAllowed():
+            return   # user code doesn't allow the edit.
+
         if self.GetColumn(col).m_format != self.col_style:
             self.make_editor(self.GetColumn(col).m_format)
     
@@ -574,6 +601,8 @@ class TextEditMixin:
     # it is binded to wx.EVT_KILL_FOCUS. Can it be avoided? (MW)
     def CloseEditor(self, evt=None):
         ''' Close the editor and save the new value to the ListCtrl. '''
+        if not self.editor.IsShown():
+            return
         text = self.editor.GetValue()
         self.editor.Hide()
         self.SetFocus()
@@ -621,7 +650,7 @@ class TextEditMixin:
 FILENAME: CheckListCtrlMixin.py
 AUTHOR:   Bruce Who (bruce.who.hk at gmail.com)
 DATE:     2006-02-09
-$Revision: 1.17.2.1 $
+$Revision: 49526 $
 DESCRIPTION:
     This script provide a mixin for ListCtrl which add a checkbox in the first
     column of each row. It is inspired by limodou's CheckList.py(which can be
@@ -643,64 +672,33 @@ HISTORY:
 1.1     - Initial version
 """
 
-from wx import ImageFromStream, BitmapFromImage
-import cStringIO, zlib
-
-def getUncheckData():
-    return zlib.decompress(
-"x\xda\xeb\x0c\xf0s\xe7\xe5\x92\xe2b``\xe0\xf5\xf4p\t\x02\xd2\x02 \xcc\xc1\
-\x06$\xe5?\xffO\x04R,\xc5N\x9e!\x1c@P\xc3\x91\xd2\x01\xe4\xbb{\xba8\x86X\xf4\
-&\xa7\xa4$\xa5-`1\x08\\2\xbb\xb1\xb1\x91\xf5\xd8\x84o\xeb\xff\xfaw\x1d[.=[2\
-\x90'\x01\x08v\xec]\xd3\xa3qvU`l\x81\xd9\xd18\t\xd3\x84+\x0cll[\xa6t\xcc9\
-\xd4\xc1\xda\xc3<O\x9a1\xc3\x88\xc3j\xfa\x86_\xee@#\x19<]\xfd\\\xd69%4\x01\
-\x00\xdc\x80-\x05" )
-
-def getUncheckBitmap():
-    return BitmapFromImage(getUncheckImage())
-
-def getUncheckImage():
-    stream = cStringIO.StringIO(getUncheckData())
-    return ImageFromStream(stream)
-
-def getCheckData():
-    return zlib.decompress(
-'x\xda\xeb\x0c\xf0s\xe7\xe5\x92\xe2b``\xe0\xf5\xf4p\t\x02\xd2\x02 \xcc\xc1\
-\x06$\xe5?\xffO\x04R,\xc5N\x9e!\x1c@P\xc3\x91\xd2\x01\xe47{\xba8\x86X\xf4&\
-\xa7\xa4$\xa5-`1\x08\\2\xbb\xb1\xb1\x91\xf5\xd8\x84o\xeb\xff\xfaw\x1d[.=[2\
-\x90\'\x01\x08v\xec\\2C\xe3\xec+\xc3\xbd\x05fG\xe3\x14n1\xcc5\xad\x8a8\x1a\
-\xb9\xa1\xeb\xd1\x853-\xaa\xc76\xecb\xb8i\x16c&\\\xc2\xb8\xe9Xvbx\xa1T\xc3U\
-\xd6p\'\xbd\x85\x19\xff\xbe\xbf\xd7\xe7R\xcb`\xd8\xa5\xf8\x83\xe1^\xc4\x0e\
-\xa1"\xce\xc3n\x93x\x14\xd8\x16\xb0(\x15q)\x8b\x19\xf0U\xe4\xb10\x08V\xa8\
-\x99\xf3\xdd\xde\xad\x06t\x0e\x83\xa7\xab\x9f\xcb:\xa7\x84&\x00\xe0HE\xab' )
-
-def getCheckBitmap():
-    return BitmapFromImage(getCheckImage())
-
-def getCheckImage():
-    stream = cStringIO.StringIO(getCheckData())
-    return ImageFromStream(stream)
-
-
-
 class CheckListCtrlMixin:
     """
     This is a mixin for ListCtrl which add a checkbox in the first
     column of each row. It is inspired by limodou's CheckList.py(which
-    can be got from his NewEdit) and improved:    
+    can be got from his NewEdit) and improved:
+    
         - You can just use InsertStringItem() to insert new items;
-        - Once a checkbox is checked/unchecked, the corresponding item is not
-          selected;
+
+        - Once a checkbox is checked/unchecked, the corresponding item
+          is not selected;
+
         - You can use SetItemData() and GetItemData();
-        - Interfaces are changed to OnCheckItem(), IsChecked(), CheckItem().
+
+        - Interfaces are changed to OnCheckItem(), IsChecked(),
+          CheckItem().
 
     You should not set a imagelist for the ListCtrl once this mixin is used.
     """
     def __init__(self, check_image=None, uncheck_image=None):
         self.__imagelist_ = wx.ImageList(16, 16)
+
         if not check_image:
-            check_image = getCheckBitmap()
+            check_image = self.__CreateBitmap(wx.CONTROL_CHECKED)
+
         if not uncheck_image:
-            uncheck_image = getUncheckBitmap()
+            uncheck_image = self.__CreateBitmap()
+
         self.uncheck_image = self.__imagelist_.Add(uncheck_image)
         self.check_image = self.__imagelist_.Add(check_image)
         self.SetImageList(self.__imagelist_, wx.IMAGE_LIST_SMALL)
@@ -710,6 +708,18 @@ class CheckListCtrlMixin:
         
         # override the default methods of ListCtrl/ListView
         self.InsertStringItem = self.__InsertStringItem_
+
+    def __CreateBitmap(self, flag=0):
+        """Create a bitmap of the platforms native checkbox. The flag
+        is used to determine the checkboxes state (see wx.CONTROL_*)
+
+        """
+        bmp = wx.EmptyBitmap(16, 16)
+        dc = wx.MemoryDC(bmp)
+        dc.Clear()
+        wx.RendererNative.Get().DrawCheckBox(self, dc, (0, 0, 16, 16), flag)
+        dc.SelectObject(wx.NullBitmap)
+        return bmp
 
     # NOTE: if you use InsertItem, InsertImageItem or InsertImageStringItem,
     #       you must set the image yourself.

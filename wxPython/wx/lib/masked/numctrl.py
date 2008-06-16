@@ -2,8 +2,8 @@
 # Name:         wxPython.lib.masked.numctrl.py
 # Author:       Will Sadkin
 # Created:      09/06/2003
-# Copyright:   (c) 2003 by Will Sadkin
-# RCS-ID:      $Id: numctrl.py,v 1.4.2.1 2005/12/29 17:52:41 RD Exp $
+# Copyright:   (c) 2003-2007 by Will Sadkin
+# RCS-ID:      $Id: numctrl.py 45743 2007-05-02 01:00:30Z RD $
 # License:     wxWidgets license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -81,6 +81,7 @@ masked.NumCtrl:
              min = None,
              max = None,
              limited = False,
+             limitOnFieldChange = False,
              selectOnEntry = True,
              foregroundColour = "Black",
              signedForegroundColour = "Red",
@@ -154,6 +155,12 @@ masked.NumCtrl:
         exceeding the currently set minimum and maximum values (bounds).
         If False and bounds are set, out-of-bounds values will
         result in a background colored with the current invalidBackgroundColour.
+
+  limitOnFieldChange
+        An alternative to limited, this boolean indicates whether or not a
+        field change should be allowed if the value in the control
+        is out of bounds.  If True, and control focus is lost, this will also
+        cause the control to take on the nearest bound value.
 
   selectOnEntry
         Boolean indicating whether or not the value in each field of the
@@ -312,6 +319,18 @@ IsLimited()
     Returns <I>True</I> if the control is currently limiting the
     value to fall within the current bounds.
 
+SetLimitOnFieldChange()
+    If called with a value of True, will cause the control to allow
+    out-of-bounds values, but will prevent field change if attempted
+    via navigation, and if the control loses focus, it will change
+    the value to the nearest bound.
+    
+GetLimitOnFieldChange()
+
+IsLimitedOnFieldChange()
+    Returns <I>True</I> if the control is currently limiting the
+    value on field change.
+
 
 SetAllowNone(bool)
     If called with a value of True, this function will cause the control
@@ -390,7 +409,7 @@ MININT = -maxint-1
 
 from wx.tools.dbg import Logger
 from wx.lib.masked import MaskedEditMixin, Field, BaseMaskedTextCtrl
-dbg = Logger()
+##dbg = Logger()
 ##dbg(enable=1)
 
 #----------------------------------------------------------------------------
@@ -442,6 +461,7 @@ class NumCtrlAccessorsMixin:
          'emptyInvalid',
          'validFunc',
          'validRequired',
+         'stopFieldChangeIfInvalid',
         )
     for param in exposed_basectrl_params:
         propname = param[0].upper() + param[1:]
@@ -478,6 +498,7 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
         'min': None,                        # by default, no bounds set
         'max': None,
         'limited': False,                   # by default, no limiting even if bounds set
+        'limitOnFieldChange': False,        # by default, don't limit if changing fields, even if bounds set
         'allowNone': False,                 # by default, don't allow empty value
         'selectOnEntry': True,              # by default, select the value of each field on entry
         'foregroundColour': "Black",
@@ -678,6 +699,7 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
 ##            dbg("old_decimalchar: '%s'" % old_decimalchar)
             groupchar = old_groupchar
             decimalchar = old_decimalchar
+            old_numvalue = self._GetNumValue(self._GetValue())
 
             if kwargs.has_key('groupChar'):
                 maskededit_kwargs['groupChar'] = kwargs['groupChar']
@@ -758,6 +780,12 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
                 maskededit_kwargs['validRequired'] = False
             self._limited = kwargs['limited']
 
+        if kwargs.has_key('limitOnFieldChange'):
+            if kwargs['limitOnFieldChange'] and not self._limitOnFieldChange:
+                maskededit_kwargs['stopFieldChangeIfInvalid'] = True
+            elif kwargs['limitOnFieldChange'] and self._limitOnFieldChange:
+                maskededit_kwargs['stopFieldChangeIfInvalid'] = False
+
 ##        dbg('maskededit_kwargs:', maskededit_kwargs)
         if maskededit_kwargs.keys():
             self.SetCtrlParameters(**maskededit_kwargs)
@@ -829,12 +857,20 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
         # Ensure current value of control obeys any new restrictions imposed:
         text = self._GetValue()
 ##        dbg('text value: "%s"' % text)
-        if kwargs.has_key('groupChar') and text.find(old_groupchar) != -1:
-            text = text.replace(old_groupchar, self._groupChar)
-        if kwargs.has_key('decimalChar') and text.find(old_decimalchar) != -1:
-            text = text.replace(old_decimalchar, self._decimalChar)
+        if kwargs.has_key('groupChar') and self._groupChar != old_groupchar and text.find(old_groupchar) != -1:
+            text = old_numvalue
+##            dbg('old_groupchar: "%s" newgroupchar: "%s"' % (old_groupchar, self._groupChar))
+        if kwargs.has_key('decimalChar') and self._decimalChar != old_decimalchar and text.find(old_decimalchar) != -1:
+            text = old_numvalue
+        
         if text != self._GetValue():
-            wx.TextCtrl.SetValue(self, text)
+            if self._decimalChar != '.':
+                # ensure latest decimal char is in "numeric value" so it won't be removed
+                # when going to the GUI:
+                text = text.replace('.', self._decimalChar)
+            newtext = self._toGUI(text)
+##            dbg('calling wx.TextCtrl.SetValue(self, %s)' % newtext)
+            wx.TextCtrl.SetValue(self, newtext)
 
         value = self.GetValue()
 
@@ -914,6 +950,43 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
         wx.CallAfter(self.SetInsertionPoint, sel_start)      # preserve current selection/position
         wx.CallAfter(self.SetSelection, sel_start, sel_to)
 
+
+    def _OnChangeField(self, event):
+        """
+        This routine enhances the base masked control _OnFieldChange().  It's job
+        is to ensure limits are imposed if limitOnFieldChange is enabled.
+        """
+##        dbg('NumCtrl::_OnFieldChange', indent=1)
+        if self._limitOnFieldChange and not (self._min <= self.GetValue() <= self._max):
+            self._disallowValue()
+##            dbg('oob - field change disallowed',indent=0)
+            return False
+        else:
+##            dbg(indent=0)
+            return MaskedEditMixin._OnChangeField(self, event)     # call the baseclass function
+
+
+    def _LostFocus(self):
+        """
+        On loss of focus, if limitOnFieldChange is set, ensure value conforms to limits.
+        """
+##        dbg('NumCtrl::_LostFocus', indent=1)
+        if self._limitOnFieldChange:
+##            dbg("limiting on loss of focus")
+            value = self.GetValue()
+            if self._min is not None and value < self._min:
+##                dbg('Set to min value:', self._min)
+                self._SetValue(self._toGUI(self._min))
+
+            elif self._max is not None and value > self._max:
+##                dbg('Setting to max value:', self._max)
+                self._SetValue(self._toGUI(self._max))
+            # (else do nothing.)
+        # (else do nothing.)
+##        dbg(indent=0)
+        return True
+
+
     def _SetValue(self, value):
         """
         This routine supersedes the base masked control _SetValue().  It is
@@ -938,6 +1011,7 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
 ##                dbg('calling base BaseMaskedTextCtrl._SetValue(self, "%s")' % value)
                 BaseMaskedTextCtrl._SetValue(self, value)
                 self.Refresh()
+##                dbg(indent=0)
                 return
             elif self._min > 0 and self.IsLimited():
                 replacement = self._min
@@ -955,6 +1029,11 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
 
 ##            dbg('integer: "%s"' % int)
             try:
+                # if a float value, this will implicitly verify against limits,
+                # and generate an exception if out-of-bounds and limited
+                # if not a float, it will just return 0.0, and we therefore
+                # have to test against the limits explicitly after testing
+                # special cases for handling -0 and empty controls...
                 fracval = self.GetFraction(value)
             except ValueError, e:
 ##                dbg('Exception:', e, 'must be out of bounds; disallow value')
@@ -962,13 +1041,20 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
 ##                dbg(indent=0)
                 return
 
-            if fracval == 0.0:
+            if fracval == 0.0: # (can be 0 for floats as well as integers)
+                # we have to do special testing to account for emptying controls, or -0
+                # and/or just leaving the sign character or changing the sign,
+                # so we can do appropriate things to the value of the control,
+                # we can't just immediately test to see if the value is valid
+                # If all of these special cases are not in play, THEN we can do 
+                # a limits check and see if the value is otherwise ok...
+
 ##                dbg('self._isNeg?', self._isNeg)
                 if int == '-' and self._oldvalue < 0 and not self._typedSign:
 ##                    dbg('just a negative sign; old value < 0; setting replacement of 0')
                     replacement = 0
                     self._isNeg = False
-                elif int[:2] == '-0' and self._fractionWidth == 0:
+                elif int[:2] == '-0': 
                     if self._oldvalue < 0:
 ##                        dbg('-0; setting replacement of 0')
                         replacement = 0
@@ -983,7 +1069,7 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
 ##                        dbg(indent=0)
                         return
 
-                elif int == '-' and (self._oldvalue >= 0 or self._typedSign) and self._fractionWidth == 0:
+                elif int == '-' and (self._oldvalue >= 0 or self._typedSign):
                     if not self._limited or (self._min < -1 and self._max >= -1):
 ##                        dbg('just a negative sign; setting replacement of -1')
                         replacement = -1
@@ -1021,13 +1107,21 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
 ##                        dbg(indent=0)
                         return
 
-                    if int[0] == '0' and len(int) > 1:
-##                        dbg('numvalue: "%s"' % numvalue.replace(' ', ''))
+##                    dbg('numvalue: "%s"' % numvalue.replace(' ', ''))
+                    # finally, (potentially re) verify that numvalue will pass any limits imposed:
+                    try:
                         if self._fractionWidth:
                             value = self._toGUI(string.atof(numvalue))
                         else:
                             value = self._toGUI(string.atol(numvalue))
+                    except ValueError, e:
+##                        dbg('Exception:', e, 'must be out of bounds; disallow value')
+                        self._disallowValue()
+##                        dbg(indent=0)
+                        return
+
 ##                        dbg('modified value: "%s"' % value)
+
 
         self._typedSign = False     # reset state var
 
@@ -1316,7 +1410,32 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
 
     def GetLimited(self):
         """ (For regularization of property accessors) """
-        return self.IsLimited
+        return self.IsLimited()
+
+    def SetLimitOnFieldChange(self, limit):
+        """
+        If called with a value of True, this function will cause the control
+        to prevent navigation out of the current field if its value is out-of-bounds,
+        and limit the value to fall within the bounds currently specified if the
+        control loses focus.
+
+        If called with a value of False, this function will disable value
+        limiting, but coloring of out-of-bounds values will still take
+        place if bounds have been set for the control.
+        """
+        self.SetParameters(limitOnFieldChange = limit)
+
+
+    def IsLimitedOnFieldChange(self):
+        """
+        Returns True if the control is currently limiting the
+        value to fall within the current bounds.
+        """
+        return self._limitOnFieldChange
+
+    def GetLimitOnFieldChange(self):
+        """ (For regularization of property accessors) """
+        return self.IsLimitedOnFieldChange()
 
 
     def IsInBounds(self, value=None):
@@ -1568,7 +1687,12 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
         #
         field = self._FindField(sel_start)
         edit_start, edit_end = field._extent
-        paste_text = paste_text.replace(self._groupChar, '').replace('(', '-').replace(')','')
+
+        # handle possibility of groupChar being a space:
+        newtext = paste_text.lstrip()
+        lspace_count = len(paste_text) - len(newtext)
+        paste_text = ' ' * lspace_count  + newtext.replace(self._groupChar, '').replace('(', '-').replace(')','')
+
         if field._insertRight and self._groupDigits:
             # want to paste to the left; see if it will fit:
             left_text = old_value[edit_start:sel_start].lstrip()
@@ -1758,6 +1882,16 @@ __i=0
 ## =============================##
 ##   1. Add support for printf-style format specification.
 ##   2. Add option for repositioning on 'illegal' insertion point.
+##
+## Version 1.4
+##   1. In response to user request, added limitOnFieldChange feature, so that
+##      out-of-bounds values can be temporarily added to the control, but should
+##      navigation be attempted out of an invalid field, it will not navigate,
+##      and if focus is lost on a control so limited with an invalid value, it
+##      will change the value to the nearest bound.
+##
+## Version 1.3
+##   1. fixed to allow space for a group char.
 ##
 ## Version 1.2
 ##   1. Allowed select/replace digits.

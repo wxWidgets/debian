@@ -2,17 +2,13 @@
 // Name:        tbargtk.h
 // Purpose:     GTK toolbar
 // Author:      Robert Roebling
-// RCS-ID:      $Id: tbargtk.h,v 1.34 2005/08/02 22:57:58 MW Exp $
+// RCS-ID:      $Id: tbargtk.h 44317 2007-01-25 23:35:07Z RD $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_GTK_TBARGTK_H_
 #define _WX_GTK_TBARGTK_H_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "tbargtk.h"
-#endif
 
 #if wxUSE_TOOLBAR
 
@@ -29,7 +25,7 @@ public:
                wxWindowID id,
                const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize,
-               long style = 0,
+               long style = wxTB_HORIZONTAL,
                const wxString& name = wxToolBarNameStr )
     {
         Init();
@@ -56,6 +52,12 @@ public:
 
     virtual void SetWindowStyleFlag( long style );
 
+#if wxABI_VERSION >= 20802
+    // TODO: In 2.9 these should probably be virtual, and declared in the base class...
+    void SetToolNormalBitmap(int id, const wxBitmap& bitmap);
+    void SetToolDisabledBitmap(int id, const wxBitmap& bitmap);
+#endif
+    
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
     
@@ -75,6 +77,8 @@ protected:
     // set the GTK toolbar style and orientation
     void GtkSetStyle();
 
+    virtual GdkWindow *GTKGetWindow(wxArrayGdkWindows& windows) const;
+    
     // implement base class pure virtuals
     virtual bool DoInsertTool(size_t pos, wxToolBarToolBase *tool);
     virtual bool DoDeleteTool(size_t pos, wxToolBarToolBase *tool);

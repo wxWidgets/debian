@@ -1,0 +1,202 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Application initialization and termination</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="appinifunctions"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_versionfunctions.html#versionfunctions"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_processfunctions.html#processfunctions"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Application initialization and termination</H2>
+<P>
+The functions in this section are used on application startup/shutdown and also
+to control the behaviour of the main event loop of the GUI programs.<P>
+
+<A HREF="#wxentry">::wxEntry</A><BR>
+<A HREF="#wxentrycleanup">::wxEntryCleanup</A><BR>
+<A HREF="#wxentrystart">::wxEntryStart</A><BR>
+<A HREF="#wxgetapp">::wxGetApp</A><BR>
+<A HREF="#wxhandlefatalexceptions">::wxHandleFatalExceptions</A><BR>
+<A HREF="#wxinitallimagehandlers">::wxInitAllImageHandlers</A><BR>
+<A HREF="#wxinitialize">::wxInitialize</A><BR>
+<A HREF="#wxsafeyield">::wxSafeYield</A><BR>
+<A HREF="#wxuninitialize">::wxUninitialize</A><BR>
+<A HREF="#wxyield">::wxYield</A><BR>
+<A HREF="#wxwakeupidle">::wxWakeUpIdle</A><BR>
+<P>
+
+<HR>
+<A NAME="wxentry"></A>
+<H3>::wxEntry</H3>
+<P>
+This initializes wxWidgets in a platform-dependent way. Use this if you are not
+using the default wxWidgets entry code (e.g. main or WinMain). For example, you
+can initialize wxWidgets from an Microsoft Foundation Classes application using
+this function.<P>
+The following overload of wxEntry is available under all platforms:<P>
+<B>int</B> <B>wxEntry</B>(<B>int&amp;</B><I> argc</I>, <B>wxChar **</B><I>argv</I>)<P>
+Under MS Windows, an additional overload suitable for calling from 
+<TT>WinMain</TT> is available:<P>
+<B>int</B> <B>wxEntry</B>(<B>HINSTANCE </B><I>hInstance</I>, <B>HINSTANCE </B><I>hPrevInstance = <TT>NULL</TT></I>, <B>char *</B><I>pCmdLine = <TT>NULL</TT></I>, <B>int </B><I>nCmdShow = <TT>SW_SHOWNORMAL</TT></I>)<P>
+(notice that under Windows CE platform, and only there, the type of 
+<I>pCmdLine</I> is <TT>wchar_t *</TT>, otherwise it is <TT>char *</TT>, even in
+Unicode build).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_appinifunctions.html#wxentrystart">wxEntryStart</A><P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+To clean up wxWidgets, call wxApp::OnExit followed by the static function
+wxApp::CleanUp. For example, if exiting from an MFC application that also uses wxWidgets:<P>
+<PRE>
+int CTheApp::ExitInstance()
+{
+  // OnExit isn't called by CleanUp so must be called explicitly.
+  wxTheApp-&gt;OnExit();
+  wxApp::CleanUp();
+
+  return CWinApp::ExitInstance();
+}
+</PRE>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/app.h&gt;<P>
+<P>
+
+<HR>
+<A NAME="wxentrycleanup"></A>
+<H3>::wxEntryCleanup</H3>
+<P>
+<B>void</B> <B>wxEntryCleanup</B>()<P>
+Free resources allocated by a successful call to <A HREF="wx_appinifunctions.html#wxentrystart">wxEntryStart</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/init.h&gt;<P>
+
+
+<HR>
+<A NAME="wxentrystart"></A>
+<H3>::wxEntryStart</H3>
+<P>
+<B>bool</B> <B>wxEntryStart</B>(<B>int&amp;</B><I> argc</I>, <B>wxChar **</B><I>argv</I>)<P>
+This function can be used to perform the initialization of wxWidgets if you
+can't use the default initialization code for any reason.<P>
+If the function returns <TT>true</TT>, the initialization was successful and the global 
+<A HREF="wx_wxapp.html#wxapp">wxApp</A> object <TT>wxTheApp</TT> has been created. Moreover, 
+<A HREF="wx_appinifunctions.html#wxentrycleanup">wxEntryCleanup</A> must be called afterwards. If the
+function returns <TT>false</TT>, a catastrophic initialization error occured and (at
+least the GUI part of) the library can't be used at all.<P>
+Notice that parameters <I>argc</I> and <I>argv</I> may be modified by this
+function.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/init.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetapp"></A>
+<H3>::wxGetApp</H3>
+<P>
+<B>wxAppDerivedClass&amp;</B> <B>wxGetApp</B>()<P>
+This function doesn't exist in wxWidgets but it is created by using
+the <A HREF="wx_rttimacros.html#implementapp">IMPLEMENT_APP</A> macro. Thus, before using it
+anywhere but in the same module where this macro is used, you must make it
+available using <A HREF="wx_rttimacros.html#declareapp">DECLARE_APP</A>.<P>
+The advantage of using this function compared to directly using the global
+wxTheApp pointer is that the latter is of type <TT>wxApp *</TT> and so wouldn't
+allow you to access the functions specific to your application class but not
+present in wxApp while wxGetApp() returns the object of the right type.<P>
+
+
+<HR>
+<A NAME="wxhandlefatalexceptions"></A>
+<H3>::wxHandleFatalExceptions</H3>
+<P>
+<B>bool</B> <B>wxHandleFatalExceptions</B>(<B>bool</B><I> doIt = true</I>)<P>
+If <I>doIt</I> is true, the fatal exceptions (also known as general protection
+faults under Windows or segmentation violations in the Unix world) will be
+caught and passed to <A HREF="wx_wxapp.html#wxapponfatalexception">wxApp::OnFatalException</A>.
+By default, i.e. before this function is called, they will be handled in the
+normal way which usually just means that the application will be terminated.
+Calling wxHandleFatalExceptions() with <I>doIt</I> equal to false will restore
+this default behaviour.<P>
+
+
+<HR>
+<A NAME="wxinitallimagehandlers"></A>
+<H3>::wxInitAllImageHandlers</H3>
+<P>
+<B>void</B> <B>wxInitAllImageHandlers</B>()<P>
+Initializes all available image handlers. For a list of available handlers,
+see <A HREF="wx_wximage.html#wximage">wxImage</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximage">wxImage</A>, <A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/image.h&gt;<P>
+
+
+<HR>
+<A NAME="wxinitialize"></A>
+<H3>::wxInitialize</H3>
+<P>
+<B>bool</B> <B>wxInitialize</B>()<P>
+This function is used in wxBase only and only if you don't create
+<A HREF="wx_wxapp.html#wxapp">wxApp</A> object at all. In this case you must call it from your
+<TT>main()</TT> function before calling any other wxWidgets functions.<P>
+If the function returns <TT>false</TT> the initialization could not be performed,
+in this case the library cannot be used and
+<A HREF="wx_appinifunctions.html#wxuninitialize">wxUninitialize</A> shouldn't be called neither.<P>
+This function may be called several times but
+<A HREF="wx_appinifunctions.html#wxuninitialize">wxUninitialize</A> must be called for each successful
+call to this function.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/app.h&gt;<P>
+
+
+<HR>
+<A NAME="wxsafeyield"></A>
+<H3>::wxSafeYield</H3>
+<P>
+<B>bool</B> <B>wxSafeYield</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> win = NULL</I>, <B>bool</B><I>
+    onlyIfNeeded = false</I>)<P>
+This function is similar to wxYield, except that it disables the user input to
+all program windows before calling wxYield and re-enables it again
+afterwards. If <I>win</I> is not NULL, this window will remain enabled,
+allowing the implementation of some limited user interaction.<P>
+Returns the result of the call to <A HREF="wx_appinifunctions.html#wxyield">::wxYield</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxuninitialize"></A>
+<H3>::wxUninitialize</H3>
+<P>
+<B>void</B> <B>wxUninitialize</B>()<P>
+This function is for use in console (wxBase) programs only. It must be called
+once for each previous successful call to <A HREF="wx_appinifunctions.html#wxinitialize">wxInitialize</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/app.h&gt;<P>
+
+
+<HR>
+<A NAME="wxyield"></A>
+<H3>::wxYield</H3>
+<P>
+<B>bool</B> <B>wxYield</B>()<P>
+Calls <A HREF="wx_wxapp.html#wxappyield">wxApp::Yield</A>.<P>
+This function is kept only for backwards compatibility. Please use
+the <A HREF="wx_wxapp.html#wxappyield">wxApp::Yield</A> method instead in any new code.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/app.h&gt; or &lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxwakeupidle"></A>
+<H3>::wxWakeUpIdle</H3>
+<P>
+<B>void</B> <B>wxWakeUpIdle</B>()<P>
+This functions wakes up the (internal and platform dependent) idle system, i.e. it
+will force the system to send an idle event even if the system currently <I>is</I>
+ idle and thus would not send any idle event until after some other event would get
+sent. This is also useful for sending events between two threads and is used by
+the corresponding functions <A HREF="wx_miscellany.html#wxpostevent">::wxPostEvent</A> and
+<A HREF="wx_wxevthandler.html#wxevthandleraddpendingevent">wxEvtHandler::AddPendingEvent</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/app.h&gt;<P>
+<P>
+
+</FONT></BODY></HTML>

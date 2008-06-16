@@ -1,0 +1,76 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStopWatch</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstopwatch"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstreambase.html#wxstreambase"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStopWatch</H2>
+<P>
+The wxStopWatch class allow you to measure time intervals. For example, you may
+use it to measure the time elapsed by some function:<P>
+<PRE>
+    wxStopWatch sw;
+    CallLongRunningFunction();
+    wxLogMessage("The long running function took %ldms to execute",
+                 sw.Time());
+    sw.Pause();
+    ... stopwatch is stopped now ...
+    sw.Resume();
+    CallLongRunningFunction();
+    wxLogMessage("And calling it twice took $ldms in all", sw.Time());
+</PRE>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/stopwatch.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_timefunctions.html#wxstarttimer">::wxStartTimer</A>, <A HREF="wx_timefunctions.html#wxgetelapsedtime">::wxGetElapsedTime</A>, <A HREF="wx_wxtimer.html#wxtimer">wxTimer</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxstopwatchctor">wxStopWatch::wxStopWatch</A><BR>
+<A HREF="#wxstopwatchpause">wxStopWatch::Pause</A><BR>
+<A HREF="#wxstopwatchresume">wxStopWatch::Resume</A><BR>
+<A HREF="#wxstopwatchstart">wxStopWatch::Start</A><BR>
+<A HREF="#wxstopwatchtime">wxStopWatch::Time</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstopwatchctor"></A>
+<H3>wxStopWatch::wxStopWatch</H3>
+<P>
+<B></B> <B>wxStopWatch</B>()<P>
+Constructor. This starts the stop watch.<P>
+
+<HR>
+<A NAME="wxstopwatchpause"></A>
+<H3>wxStopWatch::Pause</H3>
+<P>
+<B>void</B> <B>Pause</B>()<P>
+Pauses the stop watch. Call <A HREF="wx_wxstopwatch.html#wxstopwatchresume">wxStopWatch::Resume</A> to resume 
+time measuring again.<P>
+If this method is called several times, <TT>Resume()</TT> must be called the same
+number of times to really resume the stop watch. You may, however, call 
+<A HREF="wx_wxstopwatch.html#wxstopwatchstart">Start</A> to resume it unconditionally.<P>
+
+<HR>
+<A NAME="wxstopwatchresume"></A>
+<H3>wxStopWatch::Resume</H3>
+<P>
+<B>void</B> <B>Resume</B>()<P>
+Resumes the stop watch which had been paused with 
+<A HREF="wx_wxstopwatch.html#wxstopwatchpause">wxStopWatch::Pause</A>.<P>
+
+<HR>
+<A NAME="wxstopwatchstart"></A>
+<H3>wxStopWatch::Start</H3>
+<P>
+<B>void</B> <B>Start</B>(<B>long</B><I> milliseconds = 0</I>)<P>
+(Re)starts the stop watch with a given initial value.<P>
+
+<HR>
+<A NAME="wxstopwatchtime"></A>
+<H3>wxStopWatch::Time</H3>
+<P>
+<B>long</B> <B>Time</B>() <B>const</B><P>
+Returns the time in milliseconds since the start (or restart) or the last call of 
+<A HREF="wx_wxstopwatch.html#wxstopwatchpause">wxStopWatch::Pause</A>.<P>
+
+</FONT></BODY></HTML>

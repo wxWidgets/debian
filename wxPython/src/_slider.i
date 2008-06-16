@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _slider.i,v 1.11 2005/04/11 19:58:15 RD Exp $
+// RCS-ID:      $Id: _slider.i 47393 2007-07-12 21:04:00Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -72,13 +72,17 @@ public:
     virtual void SetValue(int value);
 
     // retrieve/change the range
-    virtual void SetRange(int minValue, int maxValue);
     virtual int GetMin() const;
     virtual int GetMax() const;
-    
     void SetMin( int minValue );
     void SetMax( int maxValue );
 
+    virtual void SetRange(int minValue, int maxValue);
+    %pythoncode {
+        def GetRange(self):
+            return self.GetMin(), self.GetMax()
+    }
+    
     // the line/page size is the increment by which the slider moves when
     // cursor arrow key/page up or down are pressed (clicking the mouse is like
     // pressing PageUp/Down) and are by default set to 1 and 1/10 of the range
@@ -104,6 +108,16 @@ public:
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+    
+    %property(LineSize, GetLineSize, SetLineSize, doc="See `GetLineSize` and `SetLineSize`");
+    %property(Max, GetMax, SetMax, doc="See `GetMax` and `SetMax`");
+    %property(Min, GetMin, SetMin, doc="See `GetMin` and `SetMin`");
+    %property(PageSize, GetPageSize, SetPageSize, doc="See `GetPageSize` and `SetPageSize`");
+    %property(SelEnd, GetSelEnd, doc="See `GetSelEnd`");
+    %property(SelStart, GetSelStart, doc="See `GetSelStart`");
+    %property(ThumbLength, GetThumbLength, SetThumbLength, doc="See `GetThumbLength` and `SetThumbLength`");
+    %property(TickFreq, GetTickFreq, SetTickFreq, doc="See `GetTickFreq` and `SetTickFreq`");
+    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
 };
 
 //---------------------------------------------------------------------------

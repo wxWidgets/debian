@@ -2,17 +2,13 @@
 // Name:        wx/gtk/checkbox.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: checkbox.h,v 1.31 2005/08/02 22:57:51 MW Exp $
+// Id:          $Id: checkbox.h 40815 2006-08-25 12:59:28Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKCHECKBOXH__
 #define __GTKCHECKBOXH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
 
 // ----------------------------------------------------------------------------
 // wxCheckBox
@@ -47,13 +43,9 @@ public:
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
-    
+
     // implementation
     // --------------
-
-    void DoApplyWidgetStyle(GtkRcStyle *style);
-    bool IsOwnGtkWindow( GdkWindow *window );
-    void OnInternalIdle();
 
     GtkWidget *m_widgetCheckbox;
     GtkWidget *m_widgetLabel;
@@ -62,11 +54,11 @@ public:
 
 protected:
     virtual wxSize DoGetBestSize() const;
+    virtual void DoApplyWidgetStyle(GtkRcStyle *style);
+    virtual GdkWindow *GTKGetWindow(wxArrayGdkWindows& windows) const;
 
-#ifdef __WXGTK20__
     void DoSet3StateValue(wxCheckBoxState state);
     wxCheckBoxState DoGet3StateValue() const;
-#endif
 
 private:
     DECLARE_DYNAMIC_CLASS(wxCheckBox)

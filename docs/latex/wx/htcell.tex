@@ -4,7 +4,7 @@
 %% Author:      wxWidgets Team
 %% Modified by:
 %% Created:     21/Mar/99 22:45:23
-%% RCS-ID:      $Id: htcell.tex,v 1.18 2005/05/13 18:43:38 ABX Exp $
+%% RCS-ID:      $Id: htcell.tex 39365 2006-05-28 09:47:08Z MR $
 %% Copyright:   (c) wxWidgets Team
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -171,6 +171,19 @@ See \helpref{wxHtmlLinkInfo}{wxhtmllinkinfo}.
 These coordinates are used e.g. by COLORMAP. Values are relative to the
 upper left corner of THIS cell (i.e. from 0 to m\_Width or m\_Height)}
 
+\membersection{wxHtmlCell::GetMouseCursor}\label{wxhtmlcellgetmousecursor}
+
+\func{virtual wxCursor}{GetMouseCursor}{\param{wxHtmlWindowInterface* }{window}}
+
+Returns cursor to show when mouse pointer is over the cell.
+
+\wxheading{Parameters}
+
+\docparam{window}{interface to the parent HTML window}
+
+\newsince{2.7.0} (before \tt{GetCursor} method served a similar purpose, which is now deprecated).
+
+
 \membersection{wxHtmlCell::GetNext}\label{wxhtmlcellgetnext}
 
 \constfunc{wxHtmlCell*}{GetNext}{\void}
@@ -223,13 +236,14 @@ It must be called before displaying cells structure because
 m\_PosX and m\_PosY are undefined (or invalid)
 before calling Layout.
 
-\membersection{wxHtmlCell::OnMouseClick}\label{wxhtmlcellonmouseclick}
+\membersection{wxHtmlCell::ProcessMouseClick}\label{wxhtmlcellprocessmouseclick}
 
-\func{virtual void}{OnMouseClick}{\param{wxWindow* }{parent}, \param{int}{x}, \param{int }{y}, \param{const wxMouseEvent\& }{event}}
+\func{virtual bool}{ProcessMouseClick}{\param{wxHtmlWindowInterface* }{window}, \param{const wxPoint\& }{pos}, \param{const wxMouseEvent\& }{event}}
 
-This function is simple event handler. Each time the user clicks mouse button over a cell
-within \helpref{wxHtmlWindow}{wxhtmlwindow} this method of that cell is called. Default behavior is
-that it calls \helpref{wxHtmlWindow::LoadPage}{wxhtmlwindowloadpage}.
+This function is simple event handler. Each time the user clicks mouse button
+over a cell within \helpref{wxHtmlWindow}{wxhtmlwindow} this method of that
+cell is called. Default behavior is to call
+\helpref{wxHtmlWindow::LoadPage}{wxhtmlwindowloadpage}.
 
 \wxheading{Note}
 
@@ -238,12 +252,18 @@ you should use wxHtmlBinderCell instead.
 
 \wxheading{Parameters}
 
-\docparam{parent}{parent window (always wxHtmlWindow!)}
+\docparam{window}{interface to the parent HTML window}
 
-\docparam{x, y}{coordinates of mouse click (this is relative to cell's origin}
+\docparam{pos}{coordinates of mouse click (this is relative to cell's origin}
 
-\docparam{left, middle, right}{boolean flags for mouse buttons. true if the left/middle/right
-button is pressed, false otherwise}
+\docparam{event}{mouse event that triggered the call}
+
+\wxheading{Return value}
+
+\true if a link was clicked, \false otherwise.
+
+\newsince{2.7.0} (before \tt{OnMouseClick} method served a similar purpose).
+
 
 \membersection{wxHtmlCell::SetId}\label{wxhtmlcellsetid}
 

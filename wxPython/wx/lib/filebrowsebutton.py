@@ -7,7 +7,7 @@
 #
 # Author:      Mike Fletcher
 #
-# RCS-ID:      $Id: filebrowsebutton.py,v 1.12.2.1 2005/12/17 04:56:54 RD Exp $
+# RCS-ID:      $Id: filebrowsebutton.py 50288 2007-11-28 00:18:44Z RD $
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -42,7 +42,8 @@ class FileBrowseButton(wx.Panel):
                   fileMask = "*.*",
                   fileMode = wx.OPEN,
                   # callback for when value changes (optional)
-                  changeCallback= lambda x:x
+                  changeCallback= lambda x:x,
+                  labelWidth = 0
         ):
         """
         :param labelText:      Text for label to left of text field
@@ -53,6 +54,7 @@ class FileBrowseButton(wx.Panel):
         :param fileMask:       File mask (glob pattern, such as *.*) to use in file dialog
         :param fileMode:       wx.OPEN or wx.SAVE, indicates type of file dialog to use
         :param changeCallback: Optional callback called for all changes in value of the control
+        :param labelWidth:     Width of the label
         """
       
         # store variables
@@ -66,7 +68,7 @@ class FileBrowseButton(wx.Panel):
         self.fileMode = fileMode
         self.changeCallback = changeCallback
         self.callCallback = True
-
+        self.labelWidth = labelWidth
 
         # create the dialog
         self.createDialog(parent, id, pos, size, style )
@@ -117,7 +119,10 @@ class FileBrowseButton(wx.Panel):
         label = wx.StaticText(self, -1, self.labelText, style =wx.ALIGN_RIGHT )
         font = label.GetFont()
         w, h, d, e = self.GetFullTextExtent(self.labelText, font)
-        label.SetSize((w+5, h))
+        if self.labelWidth > 0:
+            label.SetSize((self.labelWidth+5, h))
+        else:
+            label.SetSize((w+5, h))
         return label
 
     def createTextControl( self):
@@ -175,11 +180,15 @@ class FileBrowseButton(wx.Panel):
         self.callCallback =  save
 
 
-    def Enable (self, value):
+    def Enable (self, value=True):
         """ Convenient enabling/disabling of entire control """
         self.label.Enable (value)
         self.textControl.Enable (value)
         return self.browseButton.Enable (value)
+
+    def Disable (self,):
+        """ Convenient disabling of entire control """
+        self.Enable(False)
 
     def GetLabel( self ):
         """ Retrieve the label's current text """
@@ -346,8 +355,8 @@ class DirBrowseButton(FileBrowseButton):
     def OnBrowse(self, ev = None):
         style=0
 
-        if self.newDirectory:
-          style|=wx.DD_NEW_DIR_BUTTON
+        if not self.newDirectory:
+          style |= wx.DD_DIR_MUST_EXIST
 
         dialog = self.dialogClass(self,
                                   message = self.dialogTitle,

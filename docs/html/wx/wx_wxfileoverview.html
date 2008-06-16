@@ -1,0 +1,33 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>File classes and functions overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfileoverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcontaineroverview.html#wxcontaineroverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstreamoverview.html#wxstreamoverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>File classes and functions overview</H2>
+<P>
+Classes: <A HREF="wx_wxfile.html#wxfile">wxFile</A>, <A HREF="wx_wxdir.html#wxdir">wxDir</A>, <A HREF="wx_wxtempfile.html#wxtempfile">wxTempFile</A>, 
+<A HREF="wx_wxtextfile.html#wxtextfile">wxTextFile</A><P>
+Functions: see <A HREF="wx_filefunctions.html#filefunctions">file functions</A>.<P>
+wxWidgets provides some functions and classes to facilitate working with files.
+As usual, the accent is put on cross-platform features which explains, for
+example, the <A HREF="wx_wxtextfile.html#wxtextfile">wxTextFile</A> class which may be used to convert
+between different types of text files (DOS/Unix/Mac).<P>
+wxFile may be used for low-level IO. It contains all the usual functions to work
+with files (opening/closing, reading/writing, seeking, and so on) but compared with
+using standard C functions, has error checking (in case of an error a message
+is logged using <A HREF="wx_wxlog.html#wxlog">wxLog</A> facilities) and closes the file
+automatically in the destructor which may be quite convenient.<P>
+wxTempFile is a very small file designed to make replacing the files contents
+safer - see its <A HREF="wx_wxtempfile.html#wxtempfile">documentation</A> for more details.<P>
+wxTextFile is a general purpose class for working with small text files on line
+by line basis. It is especially well suited for working with configuration files
+and program source files. It can be also used to work with files with "non
+native" line termination characters and write them as "native" files if needed
+(in fact, the files may be written in any format).<P>
+wxDir is a helper class for enumerating the files or subdirectories of a
+directory. It may be used to enumerate all files, only files satisfying the
+given template mask or only non-hidden files.<P>
+
+</FONT></BODY></HTML>

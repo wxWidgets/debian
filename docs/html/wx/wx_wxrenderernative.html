@@ -1,0 +1,290 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRendererNative</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrenderernative"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxregkey.html#wxregkey"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrendererversion.html#wxrendererversion"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRendererNative</H2>
+<P>
+First, a brief introduction to wxRenderer and why it is needed.<P>
+Usually wxWidgets uses the underlying low level GUI system to draw all the
+controls - this is what we mean when we say that it is a "native'' framework.
+However not all controls exist under all (or even any) platforms and in this
+case wxWidgets provides a default, generic, implementation of them written in
+wxWidgets itself.<P>
+These controls don't have the native appearance if only the standard
+line drawing and other graphics primitives are used, because the native
+appearance is different under different platforms while the lines are always
+drawn in the same way.<P>
+This is why we have renderers: wxRenderer is a class which virtualizes the
+drawing, i.e. it abstracts the drawing operations and allows you to draw say, a
+button, without caring about exactly how this is done. Of course, as we
+can draw the button differently in different renderers, this also allows us to
+emulate the native look and feel.<P>
+So the renderers work by exposing a large set of high-level drawing functions
+which are used by the generic controls. There is always a default global
+renderer but it may be changed or extended by the user, see 
+<A HREF="wx_samples.html#samplerender">Render sample</A>.<P>
+All drawing functions take some standard parameters:
+<UL>
+
+<LI> <I>win</I> is the window being drawn. It is normally not used and when
+it is it should only be used as a generic <A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> 
+(in order to get its low level handle, for example), but you should
+<EM>not</EM> assume that it is of some given type as the same renderer
+function may be reused for drawing different kinds of control.
+<LI> <I>dc</I> is the <A HREF="wx_wxdc.html#wxdc">wxDC</A> to draw on. Only this device
+context should be used for drawing. It is not necessary to restore
+pens and brushes for it on function exit but, on the other hand, you
+shouldn't assume that it is in any specific state on function entry:
+the rendering functions should always prepare it.
+<LI> <I>rect</I> the bounding rectangle for the element to be drawn.
+<LI> <I>flags</I> the optional flags (none by default) which can be a
+combination of the <TT>wxCONTROL_XXX</TT> constants below.
+</UL>
+<P>
+Note that each drawing function restores the <A HREF="wx_wxdc.html#wxdc">wxDC</A> attributes if
+it changes them, so it is safe to assume that the same pen, brush and colours
+that were active before the call to this function are still in effect after it.<P>
+
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+The following rendering flags are defined:<P>
+<PRE>
+enum
+{
+    wxCONTROL_DISABLED   = 0x00000001,  // control is disabled
+    wxCONTROL_FOCUSED    = 0x00000002,  // currently has keyboard focus
+    wxCONTROL_PRESSED    = 0x00000004,  // (button) is pressed
+    wxCONTROL_ISDEFAULT  = 0x00000008,  // only applies to the buttons
+    wxCONTROL_ISSUBMENU  = wxCONTROL_ISDEFAULT, // only for menu items
+    wxCONTROL_EXPANDED   = wxCONTROL_ISDEFAULT, // only for the tree items
+    wxCONTROL_CURRENT    = 0x00000010,  // mouse is currently over the control
+    wxCONTROL_SELECTED   = 0x00000020,  // selected item in e.g. listbox
+    wxCONTROL_CHECKED    = 0x00000040,  // (check/radio button) is checked
+    wxCONTROL_CHECKABLE  = 0x00000080,  // (menu) item can be checked
+    wxCONTROL_UNDETERMINED = wxCONTROL_CHECKABLE  // (check) undetermined state
+};
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/renderer.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxrenderernativedtor">wxRendererNative::~wxRendererNative</A><BR>
+<A HREF="#wxrenderernativedrawcheckbox">wxRendererNative::DrawCheckBox</A><BR>
+<A HREF="#wxrenderernativedrawcomboboxdropbutton">wxRendererNative::DrawComboBoxDropButton</A><BR>
+<A HREF="#wxrenderernativedrawdroparrow">wxRendererNative::DrawDropArrow</A><BR>
+<A HREF="#wxrenderernativedrawheaderbutton">wxRendererNative::DrawHeaderButton</A><BR>
+<A HREF="#wxrenderernativedrawitemselectionrect">wxRendererNative::DrawItemSelectionRect</A><BR>
+<A HREF="#wxrenderernativedrawpushbutton">wxRendererNative::DrawPushButton</A><BR>
+<A HREF="#wxrenderernativedrawsplitterborder">wxRendererNative::DrawSplitterBorder</A><BR>
+<A HREF="#wxrenderernativedrawsplittersash">wxRendererNative::DrawSplitterSash</A><BR>
+<A HREF="#wxrenderernativedrawtreeitembutton">wxRendererNative::DrawTreeItemButton</A><BR>
+<A HREF="#wxrenderernativeget">wxRendererNative::Get</A><BR>
+<A HREF="#wxrenderernativegetdefault">wxRendererNative::GetDefault</A><BR>
+<A HREF="#wxrenderernativegetgeneric">wxRendererNative::GetGeneric</A><BR>
+<A HREF="#wxrenderernativegetheaderbuttonheight">wxRendererNative::GetHeaderButtonHeight</A><BR>
+<A HREF="#wxrenderernativegetsplitterparams">wxRendererNative::GetSplitterParams</A><BR>
+<A HREF="#wxrenderernativegetversion">wxRendererNative::GetVersion</A><BR>
+<A HREF="#wxrenderernativeload">wxRendererNative::Load</A><BR>
+<A HREF="#wxrenderernativeset">wxRendererNative::Set</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrenderernativedtor"></A>
+<H3>wxRendererNative::~wxRendererNative</H3>
+<P>
+<B></B> <B>~wxRendererNative</B>()<P>
+Virtual destructor as for any base class.<P>
+
+
+<HR>
+<A NAME="wxrenderernativedrawcheckbox"></A>
+<H3>wxRendererNative::DrawCheckBox</H3>
+<P>
+<B>void</B> <B>DrawCheckBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>win</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>flags</I>)<P>
+Draw a check box (used by wxDataViewCtrl).<P>
+<I>flags</I> may have the <TT>wxCONTROL_CHECKED</TT>, <TT>wxCONTROL_CURRENT</TT> or
+<TT>wxCONTROL_UNDETERMINED</TT> bit set.<P>
+
+
+<HR>
+<A NAME="wxrenderernativedrawcomboboxdropbutton"></A>
+<H3>wxRendererNative::DrawComboBoxDropButton</H3>
+<P>
+<B>void</B> <B>DrawComboBoxDropButton</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>win</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>flags</I>)<P>
+Draw a button like the one used by <A HREF="wx_wxcombobox.html#wxcombobox">wxComboBox</A> to show a
+drop down window. The usual appearance is a downwards pointing arrow.<P>
+<I>flags</I> may have the <TT>wxCONTROL_PRESSED</TT> or <TT>wxCONTROL_CURRENT</TT> bit set.<P>
+
+
+<HR>
+<A NAME="wxrenderernativedrawdroparrow"></A>
+<H3>wxRendererNative::DrawDropArrow</H3>
+<P>
+<B>void</B> <B>DrawDropArrow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>win</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>flags</I>)<P>
+Draw a drop down arrow that is suitable for use outside a combo box. Arrow will have
+transparent background.<P>
+<I>rect</I> is not entirely filled by the arrow. Instead, you should use bounding
+rectangle of a drop down button which arrow matches the size you need.
+<I>flags</I> may have the <TT>wxCONTROL_PRESSED</TT> or <TT>wxCONTROL_CURRENT</TT> bit set.<P>
+
+
+<HR>
+<A NAME="wxrenderernativedrawheaderbutton"></A>
+<H3>wxRendererNative::DrawHeaderButton</H3>
+<P>
+<B>int</B> <B>DrawHeaderButton</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>flags = 0</I>, <B>wxHeaderSortIconType </B><I>sortArrow = wxHDR_SORT_ICON_NONE</I>, <B>wxHeaderButtonParams* </B><I>params = NULL</I>)<P>
+Draw the header control button (used, for example, by
+<A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A>).  Depending on platforms the
+<I>flags</I> parameter may support the <TT>wxCONTROL_SELECTED</TT>
+<TT>wxCONTROL_DISABLED</TT> and <TT>wxCONTROL_CURRENT</TT> bits.
+The <I>sortArrow</I> parameter can be one of
+<TT>wxHDR_SORT_ICON_NONE</TT>, <TT>wxHDR_SORT_ICON_UP</TT>, or
+<TT>wxHDR_SORT_ICON_DOWN</TT>.  Additional values controlling the
+drawing of a text or bitmap label can be passed in <I>params</I>.  The
+value returned is the optimal width to contain the the unabreviated
+label text or bitmap, the sort arrow if present, and internal margins.<P>
+<P>
+
+<HR>
+<A NAME="wxrenderernativedrawitemselectionrect"></A>
+<H3>wxRendererNative::DrawItemSelectionRect</H3>
+<P>
+<B>void</B> <B>DrawItemSelectionRect</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>flags = 0</I>)<P>
+Draw a selection rectangle underneath the text as used e.g. in a 
+<A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A>. The supported <I>flags</I> are
+<TT>wxCONTROL_SELECTED</TT> for items which are selected (e.g. often a blue
+rectangle) and <TT>wxCONTROL_CURRENT</TT> for the item that has the focus
+(often a dotted line around the item's text). <TT>wxCONTROL_FOCUSED</TT> may
+be used to indicate if the control has the focus (othewise the the selection
+rectangle is e.g. often grey and not blue). This may be ignored by the renderer
+or deduced by the code directly from the <I>win</I>.<P>
+
+
+<HR>
+<A NAME="wxrenderernativedrawpushbutton"></A>
+<H3>wxRendererNative::DrawPushButton</H3>
+<P>
+<B>void</B> <B>DrawPushButton</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>win</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>flags</I>)<P>
+Draw a blank push button that looks very similar to <A HREF="wx_wxbutton.html#wxbutton">wxButton</A>.<P>
+<I>flags</I> may have the <TT>wxCONTROL_PRESSED</TT>, <TT>wxCONTROL_CURRENT</TT> or
+<TT>wxCONTROL_ISDEFAULT</TT> bit set.<P>
+
+
+<HR>
+<A NAME="wxrenderernativedrawsplitterborder"></A>
+<H3>wxRendererNative::DrawSplitterBorder</H3>
+<P>
+<B>void</B> <B>DrawSplitterBorder</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>flags = 0</I>)<P>
+Draw the border for sash window: this border must be such that the sash
+drawn by <A HREF="wx_wxrenderernative.html#wxrenderernativedrawsplittersash">DrawSash</A> blends into it
+well.<P>
+
+
+<HR>
+<A NAME="wxrenderernativedrawsplittersash"></A>
+<H3>wxRendererNative::DrawSplitterSash</H3>
+<P>
+<B>void</B> <B>DrawSplitterSash</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>, <B>wxCoord </B><I>position</I>, <B>wxOrientation </B><I>orient</I>, <B>int </B><I>flags = 0</I>)<P>
+Draw a sash. The <I>orient</I> parameter defines whether the sash should be
+vertical or horizontal and how the <I>position</I> should be interpreted.<P>
+
+
+<HR>
+<A NAME="wxrenderernativedrawtreeitembutton"></A>
+<H3>wxRendererNative::DrawTreeItemButton</H3>
+<P>
+<B>void</B> <B>DrawTreeItemButton</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>flags = 0</I>)<P>
+Draw the expanded/collapsed icon for a tree control item. To draw an expanded
+button the <I>flags</I> parameter must contain <TT>wxCONTROL_EXPANDED</TT> bit.<P>
+
+
+<HR>
+<A NAME="wxrenderernativeget"></A>
+<H3>wxRendererNative::Get</H3>
+<P>
+<B><A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A>&</B> </B> <B>Get</B>()<P>
+Return the currently used renderer.<P>
+
+
+<HR>
+<A NAME="wxrenderernativegetdefault"></A>
+<H3>wxRendererNative::GetDefault</H3>
+<P>
+<B><A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A>&</B> </B> <B>GetDefault</B>()<P>
+Return the default (native) implementation for this platform -- this is also
+the one used by default but this may be changed by calling 
+<A HREF="wx_wxrenderernative.html#wxrenderernativeset">Set</A> in which case the return value of this
+method may be different from the return value of <A HREF="wx_wxrenderernative.html#wxrenderernativeget">Get</A>.<P>
+
+
+<HR>
+<A NAME="wxrenderernativegetgeneric"></A>
+<H3>wxRendererNative::GetGeneric</H3>
+<P>
+<B><A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A>&</B> </B> <B>GetGeneric</B>()<P>
+Return the generic implementation of the renderer. Under some platforms, this
+is the default renderer implementation, others have platform-specific default
+renderer which can be retrieved by calling <A HREF="wx_wxrenderernative.html#wxrenderernativegetdefault">GetDefault</A>.<P>
+
+
+<HR>
+<A NAME="wxrenderernativegetheaderbuttonheight"></A>
+<H3>wxRendererNative::GetHeaderButtonHeight</H3>
+<P>
+<B>int</B> <B>GetHeaderButtonHeight</B>(<B>const <A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win</I>)<P>
+Returns the height of a header button, either a fixed platform height if available, or a 
+generic height based on the window's font.<P>
+
+
+<HR>
+<A NAME="wxrenderernativegetsplitterparams"></A>
+<H3>wxRendererNative::GetSplitterParams</H3>
+<P>
+<B><A HREF="wx_wxsplitterrenderparams.html#wxsplitterrenderparams">wxSplitterRenderParams</A></B> </B> <B>GetSplitterParams</B>(<B>const <A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win</I>)<P>
+Get the splitter parameters, see 
+<A HREF="wx_wxsplitterrenderparams.html#wxsplitterrenderparams">wxSplitterRenderParams</A>.<P>
+
+
+<HR>
+<A NAME="wxrenderernativegetversion"></A>
+<H3>wxRendererNative::GetVersion</H3>
+<P>
+<B><A HREF="wx_wxrendererversion.html#wxrendererversion">wxRendererVersion</A></B> </B> <B>GetVersion</B>() <B>const</B><P>
+This function is used for version checking: <A HREF="wx_wxrenderernative.html#wxrenderernativeload">Load</A> 
+refuses to load any shared libraries implementing an older or incompatible
+version.<P>
+The implementation of this method is always the same in all renderers (simply
+construct <A HREF="wx_wxrendererversion.html#wxrendererversion">wxRendererVersion</A> using the 
+<TT>wxRendererVersion::Current_XXX</TT> values), but it has to be in the derived,
+not base, class, to detect mismatches between the renderers versions and so you
+have to implement it anew in all renderers.<P>
+
+
+<HR>
+<A NAME="wxrenderernativeload"></A>
+<H3>wxRendererNative::Load</H3>
+<P>
+<B><A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A>*</B> </B> <B>Load</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Load the renderer from the specified DLL, the returned pointer must be
+deleted by caller if not <TT>NULL</TT> when it is not used any more.<P>
+The <I>name</I> should be just the base name of the renderer and not the full
+name of the DLL file which is constructed differently (using 
+<A HREF="wx_wxdynamiclibrary.html#wxdynamiclibrarycanonicalizepluginname">wxDynamicLibrary::CanonicalizePluginName</A>) 
+on different systems.<P>
+
+
+<HR>
+<A NAME="wxrenderernativeset"></A>
+<H3>wxRendererNative::Set</H3>
+<P>
+<B><A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A>*</B> </B> <B>Set</B>(<B><A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A>* </B></B><I>renderer</I>)<P>
+Set the renderer to use, passing <TT>NULL</TT> reverts to using the default
+renderer (the global renderer must always exist).<P>
+Return the previous renderer used with Set() or <TT>NULL</TT> if none.<P>
+
+</FONT></BODY></HTML>

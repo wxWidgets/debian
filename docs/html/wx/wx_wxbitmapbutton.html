@@ -1,0 +1,409 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxBitmapButton</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxbitmapbutton"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxbitmapcombobox.html#wxbitmapcombobox"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxbitmapdataobject.html#wxbitmapdataobject"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxBitmapButton</H2>
+<P>
+A bitmap button is a control that contains a bitmap.
+It may be placed on a <A HREF="wx_wxdialog.html#wxdialog">dialog box</A> or <A HREF="wx_wxpanel.html#wxpanel">panel</A>, or indeed
+almost any other window.<P>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxbutton.html#wxbutton">wxButton</A><BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/bmpbuttn.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+A bitmap button can be supplied with a single bitmap, and wxWidgets will draw
+all button states using this bitmap. If the application needs more control, additional bitmaps for
+the selected state, unpressed focused state, and greyed-out state may be supplied.<P>
+
+<B><FONT COLOR="#FF0000">Button states</FONT></B><P>
+This class supports bitmaps for several different states:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>normal</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This is the bitmap shown in the default state,
+it must be always valid while all the other bitmaps are optional and don't have
+to be set.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>disabled</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Bitmap shown when the button is disabled.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>selected</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Bitmap shown when the button is pushed
+(e.g. while the user keeps the mouse button pressed on it)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>focus</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Bitmap shown when the button has keyboard
+focus but is not pressed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>hover</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Bitmap shown when the mouse is over the
+button (but it is not pressed). Notice that if hover bitmap is not specified
+but the current platform UI uses hover images for the buttons (such as Windows
+XP or GTK+), then the focus bitmap is used for hover state as well. This makes
+it possible to set focus bitmap only to get reasonably good behaviour on all
+platforms.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBU_AUTODRAW</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+If
+this is specified, the button will be drawn automatically using the label bitmap only, providing
+a 3D-look border. If this style is not specified, the button will be drawn without borders and using all
+provided bitmaps. WIN32 only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBU_LEFT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Left-justifies the bitmap label. WIN32 only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBU_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Aligns the bitmap label to the top of the button. WIN32 only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBU_RIGHT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Right-justifies the bitmap label. WIN32 only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBU_BOTTOM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Aligns the bitmap label to the bottom of the button. WIN32 only.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Note that <B>wxBU_EXACTFIT</B> supported by 
+<A HREF="wx_wxbutton.html#wxbutton">wxButton</A> is <EM>not</EM> used by this class as bitmap buttons
+don't have any minimal standard size by default.<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_BUTTON(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_BUTTON_CLICKED event,
+when the button is clicked.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbutton.html#wxbutton">wxButton</A><P>
+<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxbitmapbuttonctor">wxBitmapButton::wxBitmapButton</A><BR>
+<A HREF="#wxbitmapbuttondtor">wxBitmapButton::~wxBitmapButton</A><BR>
+<A HREF="#wxbitmapbuttoncreate">wxBitmapButton::Create</A><BR>
+<A HREF="#wxbitmapbuttongetbitmapdisabled">wxBitmapButton::GetBitmapDisabled</A><BR>
+<A HREF="#wxbitmapbuttongetbitmapfocus">wxBitmapButton::GetBitmapFocus</A><BR>
+<A HREF="#wxbitmapbuttongetbitmaphover">wxBitmapButton::GetBitmapHover</A><BR>
+<A HREF="#wxbitmapbuttongetbitmaplabel">wxBitmapButton::GetBitmapLabel</A><BR>
+<A HREF="#wxbitmapbuttongetbitmapselected">wxBitmapButton::GetBitmapSelected</A><BR>
+<A HREF="#wxbitmapbuttonsetbitmapdisabled">wxBitmapButton::SetBitmapDisabled</A><BR>
+<A HREF="#wxbitmapbuttonsetbitmapfocus">wxBitmapButton::SetBitmapFocus</A><BR>
+<A HREF="#wxbitmapbuttonsetbitmaphover">wxBitmapButton::SetBitmapHover</A><BR>
+<A HREF="#wxbitmapbuttonsetbitmaplabel">wxBitmapButton::SetBitmapLabel</A><BR>
+<A HREF="#wxbitmapbuttonsetbitmapselected">wxBitmapButton::SetBitmapSelected</A><BR>
+<P>
+
+<HR>
+<A NAME="wxbitmapbuttonctor"></A>
+<H3>wxBitmapButton::wxBitmapButton</H3>
+<P>
+<B></B> <B>wxBitmapButton</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxBitmapButton</B>(
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, 
+<B>wxWindowID </B><I>id</I>, 
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, 
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long </B><I>style = wxBU_AUTODRAW</I>, 
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, 
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "button"</I>)<P>
+Constructor, creating and showing a button.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Button identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>bitmap</I><UL><UL>
+Bitmap to be displayed.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Button position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Button size. If the default size (-1, -1) is specified then the button is sized
+appropriately for the bitmap.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxbitmapbutton.html#wxbitmapbutton">wxBitmapButton</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The <I>bitmap</I> parameter is normally the only bitmap you need to provide, and wxWidgets will
+draw the button correctly in its different states. If you want more control, call
+any of the functions <A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapselected">wxBitmapButton::SetBitmapSelected</A>,
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapfocus">wxBitmapButton::SetBitmapFocus</A>,
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapdisabled">wxBitmapButton::SetBitmapDisabled</A>.<P>
+Note that the bitmap passed is smaller than the actual button created.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttoncreate">wxBitmapButton::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+
+
+<HR>
+<A NAME="wxbitmapbuttondtor"></A>
+<H3>wxBitmapButton::~wxBitmapButton</H3>
+<P>
+<B></B> <B>~wxBitmapButton</B>()<P>
+Destructor, destroying the button.<P>
+
+
+<HR>
+<A NAME="wxbitmapbuttoncreate"></A>
+<H3>wxBitmapButton::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "button"</I>)<P>
+Button creation function for two-step creation. For more details, see <A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonctor">wxBitmapButton::wxBitmapButton</A>.<P>
+
+
+<HR>
+<A NAME="wxbitmapbuttongetbitmapdisabled"></A>
+<H3>wxBitmapButton::GetBitmapDisabled</H3>
+<P>
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B> </B> <B>GetBitmapDisabled</B>() <B>const</B>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B> </B> <B>GetBitmapDisabled</B>()<P>
+Returns the bitmap for the disabled state, may be invalid.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+A reference to the disabled state bitmap.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapdisabled">wxBitmapButton::SetBitmapDisabled</A><P>
+
+
+<HR>
+<A NAME="wxbitmapbuttongetbitmapfocus"></A>
+<H3>wxBitmapButton::GetBitmapFocus</H3>
+<P>
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B> </B> <B>GetBitmapFocus</B>() <B>const</B>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B> </B> <B>GetBitmapFocus</B>()<P>
+Returns the bitmap for the focused state, may be invalid.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+A reference to the focused state bitmap.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapfocus">wxBitmapButton::SetBitmapFocus</A><P>
+
+
+<HR>
+<A NAME="wxbitmapbuttongetbitmaphover"></A>
+<H3>wxBitmapButton::GetBitmapHover</H3>
+<P>
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B> </B> <B>GetBitmapHover</B>() <B>const</B>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B> </B> <B>GetBitmapHover</B>()<P>
+Returns the bitmap used when the mouse is over the button, may be invalid.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmaphover">wxBitmapButton::SetBitmapHover</A><P>
+
+
+<HR>
+<A NAME="wxbitmapbuttongetbitmaplabel"></A>
+<H3>wxBitmapButton::GetBitmapLabel</H3>
+<P>
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B> </B> <B>GetBitmapLabel</B>() <B>const</B>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B> </B> <B>GetBitmapLabel</B>()<P>
+Returns the label bitmap (the one passed to the constructor), always valid.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+A reference to the button's label bitmap.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmaplabel">wxBitmapButton::SetBitmapLabel</A><P>
+
+
+<HR>
+<A NAME="wxbitmapbuttongetbitmapselected"></A>
+<H3>wxBitmapButton::GetBitmapSelected</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B> </B> <B>GetBitmapSelected</B>() <B>const</B>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B> </B> <B>GetBitmapSelected</B>()<P>
+Returns the bitmap for the pushed button state, may be invalid.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+A reference to the selected state bitmap.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapselected">wxBitmapButton::SetBitmapSelected</A><P>
+
+
+<HR>
+<A NAME="wxbitmapbuttonsetbitmapdisabled"></A>
+<H3>wxBitmapButton::SetBitmapDisabled</H3>
+<P>
+<B>void</B> <B>SetBitmapDisabled</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Sets the bitmap for the disabled button appearance.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bitmap</I><UL><UL>
+The bitmap to set.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttongetbitmapdisabled">wxBitmapButton::GetBitmapDisabled</A>,
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmaplabel">wxBitmapButton::SetBitmapLabel</A>,
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapselected">wxBitmapButton::SetBitmapSelected</A>,
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapfocus">wxBitmapButton::SetBitmapFocus</A><P>
+
+
+<HR>
+<A NAME="wxbitmapbuttonsetbitmapfocus"></A>
+<H3>wxBitmapButton::SetBitmapFocus</H3>
+<P>
+<B>void</B> <B>SetBitmapFocus</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Sets the bitmap for the button appearance when it has the keyboard focus.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bitmap</I><UL><UL>
+The bitmap to set.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttongetbitmapfocus">wxBitmapButton::GetBitmapFocus</A>,
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmaplabel">wxBitmapButton::SetBitmapLabel</A>,
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapselected">wxBitmapButton::SetBitmapSelected</A>,
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapdisabled">wxBitmapButton::SetBitmapDisabled</A><P>
+
+
+<HR>
+<A NAME="wxbitmapbuttonsetbitmaphover"></A>
+<H3>wxBitmapButton::SetBitmapHover</H3>
+<P>
+<B>void</B> <B>SetBitmapHover</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Sets the bitmap to be shown when the mouse is over the button.<P>
+This function is new since wxWidgets version 2.7.0 and the hover bitmap is currently only supported in wxMSW. <P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttongetbitmaphover">wxBitmapButton::GetBitmapHover</A><P>
+
+<HR>
+<A NAME="wxbitmapbuttonsetbitmaplabel"></A>
+<H3>wxBitmapButton::SetBitmapLabel</H3>
+<P>
+<B>void</B> <B>SetBitmapLabel</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Sets the bitmap label for the button.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bitmap</I><UL><UL>
+The bitmap label to set.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This is the bitmap used for the unselected state, and for all other states
+if no other bitmaps are provided.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttongetbitmaplabel">wxBitmapButton::GetBitmapLabel</A><P>
+
+
+<HR>
+<A NAME="wxbitmapbuttonsetbitmapselected"></A>
+<H3>wxBitmapButton::SetBitmapSelected</H3>
+<P>
+<B>void</B> <B>SetBitmapSelected</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Sets the bitmap for the selected (depressed) button appearance.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bitmap</I><UL><UL>
+The bitmap to set.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttongetbitmapselected">wxBitmapButton::GetBitmapSelected</A>,
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmaplabel">wxBitmapButton::SetBitmapLabel</A>,
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapfocus">wxBitmapButton::SetBitmapFocus</A>,
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapdisabled">wxBitmapButton::SetBitmapDisabled</A><P>
+
+
+</FONT></BODY></HTML>

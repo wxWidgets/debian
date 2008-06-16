@@ -1,0 +1,186 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Constraints overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="constraintsoverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_validatoroverview.html#validatoroverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_sizeroverview.html#sizeroverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Constraints overview</H2>
+<P>
+Classes: <A HREF="wx_wxlayoutconstraints.html#wxlayoutconstraints">wxLayoutConstraints</A>, <A HREF="wx_wxindividuallayoutconstraint.html#wxindividuallayoutconstraint">wxIndividualLayoutConstraint</A>.<P>
+<B>Note:</B> constraints are now deprecated and you should use <A HREF="wx_sizeroverview.html#sizeroverview">sizers</A> instead.<P>
+Objects of class wxLayoutConstraint can be associated with a window to define
+the way it is laid out, with respect to its siblings or the parent.<P>
+The class consists of the following eight constraints of class wxIndividualLayoutConstraint,
+some or all of which should be accessed directly to set the appropriate
+constraints.<P>
+<UL>
+
+<LI> <B>left:</B> represents the left hand edge of the window
+<LI> <B>right:</B> represents the right hand edge of the window
+<LI> <B>top:</B> represents the top edge of the window
+<LI> <B>bottom:</B> represents the bottom edge of the window
+<LI> <B>width:</B> represents the width of the window
+<LI> <B>height:</B> represents the height of the window
+<LI> <B>centreX:</B> represents the horizontal centre point of the window
+<LI> <B>centreY:</B> represents the vertical centre point of the window
+</UL>
+<P>
+The constraints are initially set to have the relationship wxUnconstrained,
+which means that their values should be calculated by looking at known constraints.
+To calculate the position and size of the control, the layout algorithm needs to
+know exactly 4 constraints (as it has 4 numbers to calculate from them), so you
+should always set exactly 4 of the constraints from the above table.<P>
+If you want the controls height or width to have the default value, you may use
+a special value for the constraint: wxAsIs. If the constraint is wxAsIs, the
+dimension will not be changed which is useful for the dialog controls which
+often have the default size (e.g. the buttons whose size is determined by their
+label).<P>
+The constrains calculation is done in <A HREF="wx_wxwindow.html#wxwindowlayout">wxWindow::Layout</A> 
+function which evaluates constraints. To call it you can either call
+<A HREF="wx_wxwindow.html#wxwindowsetautolayout">wxWindow::SetAutoLayout</A> if the parent window
+is a frame, panel or a dialog to tell default OnSize handlers to call Layout
+automatically whenever the window size changes, or override OnSize and call
+Layout yourself (note that you do have to call 
+<A HREF="wx_wxwindow.html#wxwindowlayout">Layout</A> yourself if the parent window is not a
+frame, panel or dialog).<P>
+<A HREF="#constraintlayoutdetails">Constraint layout: more details</A><BR>
+<A HREF="#layoutexamples">Window layout examples</A><BR>
+<P>
+
+<HR>
+<A NAME="constraintlayoutdetails"></A>
+<H3>Constraint layout: more details</H3>
+<P>
+By default, windows do not have a wxLayoutConstraints object. In this case, much layout
+must be done explicitly, by performing calculations in OnSize members, except
+for the case of frames that have exactly one subwindow (not counting toolbar and
+statusbar which are also positioned by the frame automatically), where wxFrame::OnSize
+takes care of resizing the child to always fill the frame.<P>
+To avoid the need for these rather awkward calculations, the user can create
+a wxLayoutConstraints object and associate it with a window with wxWindow::SetConstraints.
+This object contains a constraint for each of the window edges, two for the centre point,
+and two for the window size. By setting some or all of these constraints appropriately,
+the user can achieve quite complex layout by defining relationships between windows.<P>
+In wxWidgets, each window can be constrained relative to either its <I>
+siblings</I> on the same window, or the <I>parent</I>. The layout algorithm
+therefore operates in a top-down manner, finding the correct layout for
+the children of a window, then the layout for the grandchildren, and so
+on. Note that this differs markedly from native Motif layout, where
+constraints can ripple upwards and can eventually change the frame
+window or dialog box size. We assume in wxWidgets that the <I>user</I> is
+always 'boss' and specifies the size of the outer window, to which
+subwindows must conform. Obviously, this might be a limitation in some
+circumstances, but it suffices for most situations, and the
+simplification avoids some of the nightmarish problems associated with
+programming Motif.<P>
+When the user sets constraints, many of the constraints for windows
+edges and dimensions remain unconstrained. For a given window,
+the wxWindow::Layout algorithm first resets all constraints
+in all children to have unknown edge or dimension values, and then iterates through the constraints,
+evaluating them. For unconstrained edges and dimensions, it
+tries to find the value using known relationships that always hold. For example,
+an unconstrained <I>width</I> may be calculated from the <I>left</I> and <I>right edges</I>, if
+both are currently known. For edges and dimensions with user-supplied constraints, these
+constraints are evaluated if the inputs of the constraint are known.<P>
+The algorithm stops when all child edges and dimension are known (success), or 
+there are unknown edges or dimensions but there has been no change in this cycle (failure).<P>
+It then sets all the window positions and sizes according to the values it has found.<P>
+Because the algorithm is iterative, the order in which constraints are considered is
+irrelevant, however you may reduce the number of iterations (and thus speed up
+the layout calculations) by creating the controls in such order that as many
+constraints as possible can be calculated during the first iteration. For example, if
+you have 2 buttons which you'd like to position in the lower right corner, it is
+slightly more efficient to first create the second button and specify that its
+right border IsSameAs(parent, wxRight) and then create the first one by
+specifying that it should be LeftOf() the second one than to do in a more
+natural left-to-right order.<P>
+
+<HR>
+<A NAME="layoutexamples"></A>
+<H3>Window layout examples</H3>
+<P>
+
+<HR>
+<A NAME="subwindowlayoutexample"></A>
+<H3>Example 1: subwindow layout</H3>
+<P>
+This example specifies a panel and a window side by side,
+with a text subwindow below it.<P>
+<PRE>
+  frame-&gt;panel = new wxPanel(frame, -1, wxPoint(0, 0), wxSize(1000, 500), 0);
+  frame-&gt;scrollWindow = new MyScrolledWindow(frame, -1, wxPoint(0, 0), wxSize(400, 400), wxRETAINED);
+  frame-&gt;text_window = new MyTextWindow(frame, -1, wxPoint(0, 250), wxSize(400, 250));
+
+  // Set constraints for panel subwindow
+  wxLayoutConstraints *c1 = new wxLayoutConstraints;
+
+  c1-&gt;left.SameAs       (frame, wxLeft);
+  c1-&gt;top.SameAs        (frame, wxTop);
+  c1-&gt;right.PercentOf   (frame, wxWidth, 50);
+  c1-&gt;height.PercentOf  (frame, wxHeight, 50);
+
+  frame-&gt;panel-&gt;SetConstraints(c1);
+
+  // Set constraints for scrollWindow subwindow
+  wxLayoutConstraints *c2 = new wxLayoutConstraints;
+
+  c2-&gt;left.SameAs       (frame-&gt;panel, wxRight);
+  c2-&gt;top.SameAs        (frame, wxTop);
+  c2-&gt;right.SameAs      (frame, wxRight);
+  c2-&gt;height.PercentOf  (frame, wxHeight, 50);
+
+  frame-&gt;scrollWindow-&gt;SetConstraints(c2);
+
+  // Set constraints for text subwindow
+  wxLayoutConstraints *c3 = new wxLayoutConstraints;
+  c3-&gt;left.SameAs       (frame, wxLeft);
+  c3-&gt;top.Below         (frame-&gt;panel);
+  c3-&gt;right.SameAs      (frame, wxRight);
+  c3-&gt;bottom.SameAs     (frame, wxBottom);
+
+  frame-&gt;text_window-&gt;SetConstraints(c3);
+</PRE>
+
+<HR>
+<A NAME="panelitemlayoutexample"></A>
+<H3>Example 2: panel item layout</H3>
+<P>
+This example sizes a button width to 80 percent of the panel width, and centres
+it horizontally. A listbox and multitext item are placed below it. The listbox
+takes up 40 percent of the panel width, and the multitext item takes up
+the remainder of the width. Margins of 5 pixels are used.<P>
+<PRE>
+  // Create some panel items
+  wxButton *btn1 = new wxButton(frame-&gt;panel, -1, "A button") ;
+
+  wxLayoutConstraints *b1 = new wxLayoutConstraints;
+  b1-&gt;centreX.SameAs    (frame-&gt;panel, wxCentreX);
+  b1-&gt;top.SameAs        (frame-&gt;panel, wxTop, 5);
+  b1-&gt;width.PercentOf   (frame-&gt;panel, wxWidth, 80);
+  b1-&gt;height.PercentOf  (frame-&gt;panel, wxHeight, 10);
+  btn1-&gt;SetConstraints(b1);
+
+  wxListBox *list = new wxListBox(frame-&gt;panel, -1, "A list",
+                                  wxPoint(-1, -1), wxSize(200, 100));
+
+  wxLayoutConstraints *b2 = new wxLayoutConstraints;
+  b2-&gt;top.Below         (btn1, 5);
+  b2-&gt;left.SameAs       (frame-&gt;panel, wxLeft, 5);
+  b2-&gt;width.PercentOf   (frame-&gt;panel, wxWidth, 40);
+  b2-&gt;bottom.SameAs     (frame-&gt;panel, wxBottom, 5);
+  list-&gt;SetConstraints(b2);
+
+  wxTextCtrl *mtext = new wxTextCtrl(frame-&gt;panel, -1, "Multiline text", "Some text",
+                        wxPoint(-1, -1), wxSize(150, 100), wxTE_MULTILINE);
+
+  wxLayoutConstraints *b3 = new wxLayoutConstraints;
+  b3-&gt;top.Below         (btn1, 5);
+  b3-&gt;left.RightOf      (list, 5);
+  b3-&gt;right.SameAs      (frame-&gt;panel, wxRight, 5);
+  b3-&gt;bottom.SameAs     (frame-&gt;panel, wxBottom, 5);
+  mtext-&gt;SetConstraints(b3);
+</PRE>
+
+
+</FONT></BODY></HTML>

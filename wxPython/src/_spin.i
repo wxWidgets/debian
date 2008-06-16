@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _spin.i,v 1.9 2004/12/23 20:43:50 RD Exp $
+// RCS-ID:      $Id: _spin.i 41166 2006-09-12 03:20:12Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -72,6 +72,10 @@ public:
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    %property(Max, GetMax, SetMax, doc="See `GetMax` and `SetMax`");
+    %property(Min, GetMin, SetMin, doc="See `GetMin` and `SetMin`");
+    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
 };
 
 
@@ -119,6 +123,10 @@ public:
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    %property(Max, GetMax, doc="See `GetMax`");
+    %property(Min, GetMin, doc="See `GetMin`");
+    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
 };
 
 
@@ -132,6 +140,8 @@ public:
     // get the current value of the control
     int GetPosition() const;
     void SetPosition(int pos);
+
+    %property(Position, GetPosition, SetPosition, doc="See `GetPosition` and `SetPosition`");
 };
 
 

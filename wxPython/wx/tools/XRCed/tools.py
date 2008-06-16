@@ -2,157 +2,205 @@
 # Purpose:      XRC editor, toolbar
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      19.03.2003
-# RCS-ID:       $Id: tools.py,v 1.8.2.2 2006/03/24 01:49:58 RD Exp $
+# RCS-ID:       $Id: tools.py 49701 2007-11-07 01:01:29Z RD $
 
-from xxx import *                       # xxx imports globals and params
-from tree import ID_NEW
-
-# Icons
+from globals import *
+from component import Manager, DEFAULT_POS
+import view
 import images
+import wx.lib.foldpanelbar as fpb
 
-# Groups of controls
-GROUPNUM = 4
-GROUP_WINDOWS, GROUP_MENUS, GROUP_SIZERS, GROUP_CONTROLS = range(GROUPNUM)
+#if wx.Platform in ['__WXMAC__', '__WXMSW__']:
+    # Mac and Win are better off with generic
+import wx.lib.buttons
+BitmapButton = wx.lib.buttons.GenBitmapButton
+#else:
+#    wx.BitmapButton.SetBezelWidth = lambda self, w: None
 
-# States depending on current selection and Control/Shift keys
-STATE_ROOT, STATE_MENUBAR, STATE_TOOLBAR, STATE_MENU, STATE_STDDLGBTN, STATE_ELSE = range(6)
-
-# Left toolbar for GUI elements
-class Tools(wxPanel):
-    TOOL_SIZE = (30, 30)
+class ToolPanel(wx.PyPanel):
+    '''Manages a Listbook with tool bitmap buttons.'''
+    defaultPos = wx.GBPosition(*DEFAULT_POS)
     def __init__(self, parent):
-        if wxPlatform == '__WXGTK__':
-            wxPanel.__init__(self, parent, -1,
-                             style=wxRAISED_BORDER|wxWANTS_CHARS)
+        if wx.Platform == '__WXGTK__':
+            wx.PyPanel.__init__(self, parent, -1,
+                             style=wx.RAISED_BORDER|wx.WANTS_CHARS)
         else:
-            wxPanel.__init__(self, parent, -1, style=wxWANTS_CHARS)
-        # Create sizer for groups
-        self.sizer = wxBoxSizer(wxVERTICAL)
-        # Data to create buttons
-        pullDownMenu = g.pullDownMenu
-        self.groups = []
-        self.ctrl = self.shift = False
-        # Current state (what to enable/disable)
-        self.state = None
-        groups = [
-            ["Windows",
-             (ID_NEW.FRAME, images.getToolFrameBitmap()),
-             (ID_NEW.DIALOG, images.getToolDialogBitmap()),
-             (ID_NEW.PANEL, images.getToolPanelBitmap())],
-            ["Menus",
-             (ID_NEW.TOOL_BAR, images.getToolToolBarBitmap()),
-             (ID_NEW.MENU_BAR, images.getToolMenuBarBitmap()),
-             (ID_NEW.MENU, images.getToolMenuBitmap()),
-             (ID_NEW.TOOL, images.getToolToolBitmap()),
-             (ID_NEW.MENU_ITEM, images.getToolMenuItemBitmap()),
-             (ID_NEW.SEPARATOR, images.getToolSeparatorBitmap())],
-            ["Sizers",
-             (ID_NEW.BOX_SIZER, images.getToolBoxSizerBitmap()),
-             (ID_NEW.STATIC_BOX_SIZER, images.getToolStaticBoxSizerBitmap()),
-             (ID_NEW.GRID_SIZER, images.getToolGridSizerBitmap()),
-             (ID_NEW.FLEX_GRID_SIZER, images.getToolFlexGridSizerBitmap()),
-             (ID_NEW.GRID_BAG_SIZER, images.getToolGridBagSizerBitmap()),
-             (ID_NEW.SPACER, images.getToolSpacerBitmap())],
-            ["Controls",
-             (ID_NEW.STATIC_TEXT, images.getToolStaticTextBitmap()),
-             (ID_NEW.STATIC_BITMAP, images.getToolStaticBitmapBitmap()),
-             (ID_NEW.STATIC_LINE, images.getToolStaticLineBitmap()),
-             
-             (ID_NEW.BUTTON, images.getToolButtonBitmap()),
-             (ID_NEW.BITMAP_BUTTON, images.getToolBitmapButtonBitmap()),
-             (ID_NEW.STATIC_BOX, images.getToolStaticBoxBitmap()),
-             
-             (ID_NEW.TEXT_CTRL, images.getToolTextCtrlBitmap()),
-             (ID_NEW.COMBO_BOX, images.getToolComboBoxBitmap()),
-             (ID_NEW.CHOICE, images.getToolChoiceBitmap()),
-             
-             (ID_NEW.RADIO_BUTTON, images.getToolRadioButtonBitmap()),
-             (ID_NEW.CHECK_BOX, images.getToolCheckBoxBitmap()),
-             (ID_NEW.RADIO_BOX, images.getToolRadioBoxBitmap()),
-             
-             (ID_NEW.SPIN_CTRL, images.getToolSpinCtrlBitmap()),
-             (ID_NEW.SPIN_BUTTON, images.getToolSpinButtonBitmap()),
-             (ID_NEW.SCROLL_BAR, images.getToolScrollBarBitmap()),
-
-             (ID_NEW.SLIDER, images.getToolSliderBitmap()),
-             (ID_NEW.GAUGE, images.getToolGaugeBitmap()),
-             (ID_NEW.TREE_CTRL, images.getToolTreeCtrlBitmap()),
-             
-             (ID_NEW.LIST_BOX, images.getToolListBoxBitmap()),
-             (ID_NEW.CHECK_LIST, images.getToolCheckListBitmap()),
-             (ID_NEW.LIST_CTRL, images.getToolListCtrlBitmap()),
-             
-             (ID_NEW.NOTEBOOK, images.getToolNotebookBitmap()),
-             (ID_NEW.SPLITTER_WINDOW, images.getToolSplitterWindowBitmap()),
-
-             (ID_NEW.UNKNOWN, images.getToolUnknownBitmap())]
-            ]
-        for grp in groups:
-            self.AddGroup(grp[0])
-            for b in grp[1:]:
-                self.AddButton(b[0], b[1], g.pullDownMenu.createMap[b[0]])
-        self.SetAutoLayout(True)
-        self.SetSizerAndFit(self.sizer)
-        # Allow to be resized in vertical direction only
-        self.SetSizeHints(self.GetSize()[0], -1)
+            wx.PyPanel.__init__(self, parent, -1, style=wx.WANTS_CHARS)
+        self.bg = wx.Colour(115, 180, 215)
+        # Top sizer
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        # Use toolbook or foldpanelbar depending of preferences
+        if g.conf.toolPanelType == 'TB':
+            self.tp = wx.Toolbook(self, -1, style=wx.BK_TOP)
+            sizer.Add(self.tp, 1, wx.EXPAND)
+            # Image list
+            thumbSize = g.conf.toolThumbSize
+            il = wx.ImageList(thumbSize, thumbSize, True)
+            # Default Id 0
+            il.Add(images.getToolPanel_DefaultImage().Scale(thumbSize, thumbSize).ConvertToBitmap())
+            self.il = il
+            self.tp.AssignImageList(il)
+        elif g.conf.toolPanelType == 'FPB':
+            self.tp = fpb.FoldPanelBar(self, -1, wx.DefaultPosition, wx.DefaultSize, 
+                                       fpb.FPB_DEFAULT_STYLE | fpb.FPB_VERTICAL)
+            sizer.Add(self.tp, 1, wx.EXPAND)
+        self.panels = []
+        for name in Manager.panelNames:
+            panelData = Manager.getPanelData(name)
+            if not panelData: continue
+            try:
+                im = Manager.panelImages[name]
+                imageId = il.Add(im.Scale(thumbSize, thumbSize).ConvertToBitmap())
+            except:
+                imageId = 0
+            panel = self.AddPanel(name)
+            self.panels.append(panel)
+            for pos,span,comp,bmp in panelData:
+                self.AddButton(panel, pos, span, comp.id, bmp, comp.klass)
+            panel.Fit()
+            if g.conf.toolPanelType == 'TB':
+                self.tp.AddPage(panel, '', imageId=imageId)
+            else:
+                p = self.tp.AddFoldPanel(name, collapsed=False)
+                p.SetBackgroundColour(self.bg)
+                panel.Reparent(p)
+                p.AddWindow(panel, fpb.FPB_ALIGN_WIDTH)
+        self.tp.Fit()
+        
+        self.SetSizer(sizer)
+        # Allow to be resized in horizontal direction only
         # Events
-        EVT_COMMAND_RANGE(self, ID_NEW.PANEL, ID_NEW.LAST,
-                          wxEVT_COMMAND_BUTTON_CLICKED, g.frame.OnCreate)
-        EVT_KEY_DOWN(self, self.OnKeyDown)
-        EVT_KEY_UP(self, self.OnKeyUp)
+#        wx.EVT_KEY_DOWN(self, self.OnKeyDown)
+#        wx.EVT_KEY_UP(self, self.OnKeyUp)
+        self.drag = None
 
-    def AddButton(self, id, image, text):
-        from wxPython.lib import buttons
-        button = buttons.wxGenBitmapButton(self, id, image, size=self.TOOL_SIZE,
-                                           style=wxNO_BORDER|wxWANTS_CHARS)
+    def DoGetBestSize(self):
+        # Do our own DoGetBestSize because the FoldPanelBar doesn't
+        h = w = 0
+        for p in self.panels:
+            ems = p.GetEffectiveMinSize()
+            w = max(w, ems.width)
+            h = max(h, ems.height)
+        h += 64
+        return wx.Size(w,h)
+
+    def AddButton(self, panel, pos, span, id, bmp, text):
+        button = BitmapButton(panel, id, bmp, 
+                              style=wx.NO_BORDER)# | wx.WANTS_CHARS)
         button.SetBezelWidth(0)
-        EVT_KEY_DOWN(button, self.OnKeyDown)
-        EVT_KEY_UP(button, self.OnKeyUp)
+#        wx.EVT_KEY_DOWN(button, self.OnKeyDown)
+#        wx.EVT_KEY_UP(button, self.OnKeyUp)
+        button.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDownOnButton)
+        button.Bind(wx.EVT_MOTION, self.OnMotionOnButton)
+        button.Bind(wx.EVT_BUTTON, self.OnButton)
         button.SetToolTipString(text)
-        self.curSizer.Add(button)
-        self.groups[-1][1][id] = button
+        # Look for an available place if not specified
+        r0,c0 = 0,0
+        if pos != self.defaultPos:
+            if panel.sizer.CheckForIntersectionPos(pos, span):
+                r0,c0 = pos     # start from pos
+                pos = self.defaultPos   # reset to default
+        if pos == self.defaultPos:
+            # Find the smallest position we can insert into
+            try:
+                for r in range(r0, panel.size.rowspan):
+                    for c in range(c0, panel.size.colspan):
+                        if not panel.sizer.CheckForIntersectionPos((r,c), span):
+                            pos = (r,c)
+                            raise StopIteration
+            except StopIteration:
+                pass
+            if pos == self.defaultPos:  # insert new col/row
+                if panel.size.colspan + span[0] <= panel.size.rowspan + span[1]:
+                    pos = (0,panel.size.colspan)
+                else:
+                    pos = (panel.size.rowspan,0)
+        assert pos[0] >= 0 and pos[1] >= 0, 'invalid position'
+        panel.sizer.Add(button, pos, span, wx.ALIGN_CENTRE)
+        panel.controls[id] = button
+        panel.size.rowspan = max(panel.size.rowspan, pos[0]+span[0])
+        panel.size.colspan = max(panel.size.colspan, pos[1]+span[1])
 
-    def AddGroup(self, name):
+    def AddPanel(self, name):
         # Each group is inside box
-        box = wxStaticBox(self, -1, name, style=wxWANTS_CHARS)
-        box.SetFont(g.smallerFont())
-        boxSizer = wxStaticBoxSizer(box, wxVERTICAL)
-        boxSizer.Add((0, 4))
-        self.curSizer = wxGridSizer(0, 3)
-        boxSizer.Add(self.curSizer)
-        self.sizer.Add(boxSizer, 0, wxTOP | wxLEFT | wxRIGHT, 4)
-        self.groups.append((box,{}))
+        panel = wx.Panel(self.tp)
+        panel.SetBackgroundColour(self.bg)
+        panel.name = name
+        panel.controls = {}
+        panel.size = wx.GBSpan(0, 0) # current size
+        topSizer = wx.BoxSizer()
+        panel.sizer = wx.GridBagSizer(0, 0)
+        panel.sizer.SetEmptyCellSize((24, 24))
+        topSizer.Add(panel.sizer, 1, wx.EXPAND | wx.ALL, 5)
+        panel.SetSizer(topSizer)
+        return panel
 
-    # Enable/disable group
-    def EnableGroup(self, gnum, enable = True):
-        grp = self.groups[gnum]
-        grp[0].Enable(enable)
-        for b in grp[1].values(): b.Enable(enable)
+    # Mouse events for DnD and append/insert mode
+    def OnLeftDownOnButton(self, evt):
+        self.posDown = evt.GetPosition()
+        self.btnDown = evt.GetEventObject()
+        forceSibling = evt.ControlDown()
+        forceInsert = evt.ShiftDown()
+        g.Presenter.updateCreateState(forceSibling, forceInsert)
+        evt.Skip()
 
-    # Enable/disable group item
-    def EnableGroupItem(self, gnum, id, enable = True):
-        grp = self.groups[gnum]
-        grp[1][id].Enable(enable)
+    def OnButton(self, evt):
+        if not self.drag: evt.Skip()
+        self.drag = False
+        if view.frame.miniFrame:
+            if not g.useAUI and not g.conf.embedPanel:
+                view.frame.miniFrame.Raise()
+        else:
+            view.frame.Raise()
 
-    # Enable/disable group items
-    def EnableGroupItems(self, gnum, ids, enable = True):
-        grp = self.groups[gnum]
-        for id in ids:
-            grp[1][id].Enable(enable)
+    def OnMotionOnButton(self, evt):
+        # Detect dragging
+        if evt.Dragging() and evt.LeftIsDown():
+            d = evt.GetPosition() - self.posDown
+            if max(abs(d[0]), abs(d[1])) >= 5:
+                if self.btnDown.HasCapture(): 
+                    # Generate up event to release mouse
+                    evt = wx.MouseEvent(wx.EVT_LEFT_UP.typeId)
+                    #evt.SetId(self.btnDown.GetId())
+                    # Set flag to prevent normal button operation
+                    self.drag = True
+                    self.btnDown.ProcessEvent(evt)
+                self.StartDrag()
+        evt.Skip()
+
+    def StartDrag(self):
+        bm = self.btnDown.GetBitmapLabel()
+        # wxGTK requires wxIcon cursor, wxWIN and wxMAC require wxCursor
+        if wx.Platform == '__WXGTK__':
+            icon = wx.EmptyIcon()
+            icon.CopyFromBitmap(bm)
+            dragSource = wx.DropSource(self, icon)
+        else:
+            curs = wx.CursorFromImage(wx.ImageFromBitmap(bm))
+            dragSource = wx.DropSource(self, curs)
+        do = MyDataObject(str(self.btnDown.GetId()))
+        dragSource.SetData(do)
+        view.frame.SetStatusText('Release the mouse button over the test window')
+        dragSource.DoDragDrop()
+        view.testWin.RemoveHighlightDT()
+        view.testWin.EmptyTrash()
 
     # Process key events
     def OnKeyDown(self, evt):
-        if evt.GetKeyCode() == WXK_CONTROL:
+        print evt.GetEventObject(), evt.GetKeyCode()
+        evt.Skip()
+        return
+        if evt.GetKeyCode() == wx.WXK_CONTROL:
             g.tree.ctrl = True
-        elif evt.GetKeyCode() == WXK_SHIFT:
+        elif evt.GetKeyCode() == wx.WXK_SHIFT:
             g.tree.shift = True
         self.UpdateIfNeeded()
         evt.Skip()
 
     def OnKeyUp(self, evt):
-        if evt.GetKeyCode() == WXK_CONTROL:
+        if evt.GetKeyCode() == wx.WXK_CONTROL:
             g.tree.ctrl = False
-        elif evt.GetKeyCode() == WXK_SHIFT:
+        elif evt.GetKeyCode() == wx.WXK_SHIFT:
             g.tree.shift = False
         self.UpdateIfNeeded()
         evt.Skip()
@@ -180,112 +228,3 @@ class Tools(wxPanel):
                 status = ''
             g.frame.SetStatusText(status, 1)
 
-    # Update interface
-    def UpdateUI(self):
-        if not self.IsShown(): return
-        # Update status bar
-        pullDownMenu = g.pullDownMenu
-        tree = g.tree
-        item = tree.selection
-        # If nothing selected, disable everything and return
-        if not item:
-            # Disable everything
-            for grp in range(GROUPNUM):
-                self.EnableGroup(grp, False)
-            self.state = None
-            return
-        if tree.ctrl: needInsert = True
-        else: needInsert = tree.NeedInsert(item)
-        # Enable depending on selection
-        if item == tree.root or needInsert and tree.GetItemParent(item) == tree.root:
-            state = STATE_ROOT
-        else:            
-            xxx = tree.GetPyData(item).treeObject()
-            # Check parent for possible child nodes if inserting sibling
-            if needInsert: xxx = xxx.parent
-            if xxx.__class__ == xxxMenuBar:
-                state = STATE_MENUBAR
-            elif xxx.__class__ in [xxxToolBar, xxxTool] or \
-                 xxx.__class__ == xxxSeparator and xxx.parent.__class__ == xxxToolBar:
-                state = STATE_TOOLBAR
-            elif xxx.__class__ in [xxxMenu, xxxMenuItem]:
-                state = STATE_MENU
-            elif xxx.__class__ == xxxStdDialogButtonSizer:
-                state = STATE_STDDLGBTN
-            else:
-                state = STATE_ELSE
-
-        # Enable depending on selection
-        if state != self.state:
-            # Disable everything
-            for grp in range(GROUPNUM):
-                self.EnableGroup(grp, False)
-            # Enable some
-            if state == STATE_ROOT:
-                self.EnableGroup(GROUP_WINDOWS, True)
-                self.EnableGroup(GROUP_MENUS, True)
-                # But disable items
-                self.EnableGroupItems(GROUP_MENUS,
-                                      [ ID_NEW.TOOL,
-                                        ID_NEW.MENU_ITEM,
-                                        ID_NEW.SEPARATOR ],
-                                      False)
-            elif state == STATE_STDDLGBTN:
-                pass                    # nothing can be added from toolbar
-            elif state == STATE_MENUBAR:
-                self.EnableGroup(GROUP_MENUS)
-                self.EnableGroupItems(GROUP_MENUS,
-                                      [ ID_NEW.TOOL_BAR,
-                                        ID_NEW.MENU_BAR,
-                                        ID_NEW.TOOL ],
-                                      False)
-            elif state == STATE_TOOLBAR:
-                self.EnableGroup(GROUP_MENUS)
-                self.EnableGroupItems(GROUP_MENUS,
-                                      [ ID_NEW.TOOL_BAR,
-                                        ID_NEW.MENU,
-                                        ID_NEW.MENU_BAR,
-                                        ID_NEW.MENU_ITEM ],
-                                      False)
-                self.EnableGroup(GROUP_CONTROLS)
-                self.EnableGroupItems(GROUP_CONTROLS,
-                                      [ ID_NEW.TREE_CTRL,
-                                        ID_NEW.NOTEBOOK,
-                                        ID_NEW.SPLITTER_WINDOW ],
-                                      False)
-            elif state == STATE_MENU:
-                self.EnableGroup(GROUP_MENUS)
-                self.EnableGroupItems(GROUP_MENUS,
-                                      [ ID_NEW.TOOL_BAR,
-                                        ID_NEW.MENU_BAR,
-                                        ID_NEW.TOOL ],
-                                      False)
-            else:
-                self.EnableGroup(GROUP_WINDOWS)
-                self.EnableGroupItems(GROUP_WINDOWS,
-                                      [ ID_NEW.FRAME,
-                                        ID_NEW.DIALOG ],
-                                      False)
-                self.EnableGroup(GROUP_MENUS)
-                self.EnableGroupItems(GROUP_MENUS,
-                                      [ ID_NEW.MENU_BAR,
-                                        ID_NEW.MENU_BAR,
-                                        ID_NEW.MENU,
-                                        ID_NEW.MENU_ITEM,
-                                        ID_NEW.TOOL,
-                                        ID_NEW.SEPARATOR ],
-                                      False)
-                self.EnableGroup(GROUP_SIZERS)
-                self.EnableGroup(GROUP_CONTROLS)
-        # Special case for *book (always executed)
-        if state == STATE_ELSE:
-            if xxx.__class__ in [xxxNotebook, xxxChoicebook, xxxListbook]:
-                self.EnableGroup(GROUP_SIZERS, False)
-            else:
-                self.EnableGroup(GROUP_SIZERS)
-                if not (xxx.isSizer or xxx.parent and xxx.parent.isSizer):
-                    self.EnableGroupItem(GROUP_SIZERS, ID_NEW.SPACER, False)
-            if xxx.__class__ == xxxFrame:
-                self.EnableGroupItem(GROUP_MENUS, ID_NEW.MENU_BAR)
-        # Save state
-        self.state = state

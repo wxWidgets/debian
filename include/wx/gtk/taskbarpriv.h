@@ -4,20 +4,15 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2004/05/29
-// RCS-ID:      $Id: taskbarpriv.h,v 1.3 2005/02/18 04:06:08 RD Exp $
+// RCS-ID:      $Id: taskbarpriv.h 40923 2006-08-30 05:55:56Z PC $
 // Copyright:   (c) Vaclav Slavik, 2004
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_TASKBARPRIV_H_
-#define _WX_TASKBARPRIV_H_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "taskbarpriv.h"
-#endif
+#ifndef _WX_GTK_TASKBARPRIV_H_
+#define _WX_GTK_TASKBARPRIV_H_
 
 #include "wx/toplevel.h"
-#include "wx/bitmap.h"
 
 #ifdef __WXGTK20__
 #include <gtk/gtkversion.h>
@@ -32,7 +27,8 @@ public:
     bool IsProtocolSupported();
     
     wxEvtHandler *m_invokingWindow;
-    
+
+protected:
 #if wxUSE_MENUS_NATIVE
     virtual bool DoPopupMenu( wxMenu *menu, int x, int y );
 #endif // wxUSE_MENUS_NATIVE
@@ -40,4 +36,4 @@ public:
 
 #endif // __WXGTK20__
 #endif // GTK_CHECK_VERSION(2, 1, 0)
-#endif // _WX_TASKBARPRIV_H_
+#endif // _WX_GTK_TASKBARPRIV_H_

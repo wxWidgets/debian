@@ -1,0 +1,88 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Version macros</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="versionfunctions"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_functionsalphabetically.html#functionsalphabetically"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_appinifunctions.html#appinifunctions"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Version macros</H2>
+<P>
+The following constants are defined in wxWidgets:<P>
+<UL>
+
+<LI> <TT>wxMAJOR_VERSION</TT> is the major version of wxWidgets
+<LI> <TT>wxMINOR_VERSION</TT> is the minor version of wxWidgets
+<LI> <TT>wxRELEASE_NUMBER</TT> is the release number
+<LI> <TT>wxSUBRELEASE_NUMBER</TT> is the subrelease number which is 0 for all
+official releases
+</UL>
+<P>
+For example, the values or these constants for wxWidgets 2.1.15 are 2, 1 and
+15.<P>
+Additionally, <TT>wxVERSION_STRING</TT> is a user-readable string containing
+the full wxWidgets version and <TT>wxVERSION_NUMBER</TT> is a combination of the
+three version numbers above: for 2.1.15, it is 2115 and it is 2200 for
+wxWidgets 2.2.<P>
+The subrelease number is only used for the sources in between official releases
+and so normally is not useful.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/version.h&gt; or &lt;wx/defs.h&gt;<P>
+
+<A HREF="#wxcheckgccversion">wxCHECK_GCC_VERSION</A><BR>
+<A HREF="#wxcheckversion">wxCHECK_VERSION</A><BR>
+<A HREF="#wxcheckversionfull">wxCHECK_VERSION_FULL</A><BR>
+<A HREF="#wxcheckw32apiversion">wxCHECK_W32API_VERSION</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcheckgccversion"></A>
+<H3>wxCHECK_GCC_VERSION</H3>
+<P>
+<B>bool</B> <B>wxCHECK_GCC_VERSION</B>(<B></B><I>major, minor</I>)<P>
+Returns 1 if the compiler being used to compile the code is GNU C++
+compiler (g++) version major.minor or greater. Otherwise, and also if
+the compiler is not GNU C++ at all, returns 0.<P>
+
+
+<HR>
+<A NAME="wxcheckversion"></A>
+<H3>wxCHECK_VERSION</H3>
+<P>
+<B>bool</B> <B>wxCHECK_VERSION</B>(<B></B><I>major, minor, release</I>)<P>
+This is a macro which evaluates to true if the current wxWidgets version is at
+least major.minor.release.<P>
+For example, to test if the program is compiled with wxWidgets 2.2 or higher,
+the following can be done:<P>
+<PRE>
+    wxString s;
+#if wxCHECK_VERSION(2, 2, 0)
+    if ( s.StartsWith("foo") )
+#else // replacement code for old version
+    if ( strncmp(s, "foo", 3) == 0 )
+#endif
+    {
+        ...
+    }
+</PRE>
+
+
+<HR>
+<A NAME="wxcheckversionfull"></A>
+<H3>wxCHECK_VERSION_FULL</H3>
+<P>
+<B>bool</B> <B>wxCHECK_VERSION_FULL</B>(<B></B><I>major, minor, release, subrel</I>)<P>
+Same as <A HREF="wx_versionfunctions.html#wxcheckversion">wxCHECK_VERSION</A> but also checks that
+<TT>wxSUBRELEASE_NUMBER</TT> is at least <I>subrel</I>.<P>
+
+
+<HR>
+<A NAME="wxcheckw32apiversion"></A>
+<H3>wxCHECK_W32API_VERSION</H3>
+<P>
+<B>bool</B> <B>wxCHECK_W32API_VERSION</B>(<B></B><I>major, minor, release</I>)<P>
+Returns 1 if the version of w32api headers used is major.minor.release or
+greater. Otherwise, and also if we are not compiling with mingw32/cygwin under
+Win32 at all, returns 0.<P>
+<P>
+
+</FONT></BODY></HTML>

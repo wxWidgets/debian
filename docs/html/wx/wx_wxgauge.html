@@ -1,0 +1,256 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGauge</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgauge"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxftp.html#wxftp"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgbposition.html#wxgbposition"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGauge</H2>
+<P>
+A gauge is a horizontal or vertical bar which shows a quantity (often time).<P>
+wxGauge supports two working modes: determinate and indeterminate progress.<P>
+The first is the usual working mode (see <A HREF="wx_wxgauge.html#wxgaugesetvalue">SetValue</A>
+and <A HREF="wx_wxgauge.html#wxgaugesetrange">SetRange</A>) while the second can be used when
+the program is doing some processing but you don't know how much progress is
+being done.
+In this case, you can periodically call the <A HREF="wx_wxgauge.html#wxgaugepulse">Pulse</A>
+function to make the progress bar switch to indeterminate mode (graphically
+it's usually a set of blocks which move or bounce in the bar control).<P>
+wxGauge supports dynamic switch between these two work modes.<P>
+There are no user commands for the gauge.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/gauge.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxGA_HORIZONTAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a horizontal gauge.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxGA_VERTICAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a vertical gauge.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxGA_SMOOTH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates smooth progress bar with one pixel wide update step (not supported by all platforms).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+wxGauge is read-only so generates no events.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslider">wxSlider</A>, <A HREF="wx_wxscrollbar.html#wxscrollbar">wxScrollBar</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxgaugector">wxGauge::wxGauge</A><BR>
+<A HREF="#wxgaugedtor">wxGauge::~wxGauge</A><BR>
+<A HREF="#wxgaugecreate">wxGauge::Create</A><BR>
+<A HREF="#wxgaugegetbezelface">wxGauge::GetBezelFace</A><BR>
+<A HREF="#wxgaugegetrange">wxGauge::GetRange</A><BR>
+<A HREF="#wxgaugegetshadowwidth">wxGauge::GetShadowWidth</A><BR>
+<A HREF="#wxgaugegetvalue">wxGauge::GetValue</A><BR>
+<A HREF="#wxgaugeisvertical">wxGauge::IsVertical</A><BR>
+<A HREF="#wxgaugesetbezelface">wxGauge::SetBezelFace</A><BR>
+<A HREF="#wxgaugesetrange">wxGauge::SetRange</A><BR>
+<A HREF="#wxgaugesetshadowwidth">wxGauge::SetShadowWidth</A><BR>
+<A HREF="#wxgaugesetvalue">wxGauge::SetValue</A><BR>
+<A HREF="#wxgaugepulse">wxGauge::Pulse</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgaugector"></A>
+<H3>wxGauge::wxGauge</H3>
+<P>
+<B></B> <B>wxGauge</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxGauge</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>int</B><I> range</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>long</B><I> style = wxGA_HORIZONTAL</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "gauge"</I>)<P>
+Constructor, creating and showing a gauge.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Window parent.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier.</UL></UL>
+<P>
+<I>range</I><UL><UL>
+Integer range (maximum value) of the gauge. It is ignored when the gauge is used in indeterminate mode.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Gauge style. See <A HREF="wx_wxgauge.html#wxgauge">wxGauge</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgauge.html#wxgaugecreate">wxGauge::Create</A><P>
+
+
+<HR>
+<A NAME="wxgaugedtor"></A>
+<H3>wxGauge::~wxGauge</H3>
+<P>
+<B></B> <B>~wxGauge</B>()<P>
+Destructor, destroying the gauge.<P>
+
+
+<HR>
+<A NAME="wxgaugecreate"></A>
+<H3>wxGauge::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>int</B><I> range</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>long</B><I> style = wxGA_HORIZONTAL</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "gauge"</I>)<P>
+Creates the gauge for two-step construction. See <A HREF="wx_wxgauge.html#wxgaugector">wxGauge::wxGauge</A>
+for further details.<P>
+
+
+<HR>
+<A NAME="wxgaugegetbezelface"></A>
+<H3>wxGauge::GetBezelFace</H3>
+<P>
+<B>int</B> <B>GetBezelFace</B>() <B>const</B><P>
+Returns the width of the 3D bezel face.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This method is not implemented (returns 0) for most platforms.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgauge.html#wxgaugesetbezelface">wxGauge::SetBezelFace</A><P>
+
+
+<HR>
+<A NAME="wxgaugegetrange"></A>
+<H3>wxGauge::GetRange</H3>
+<P>
+<B>int</B> <B>GetRange</B>() <B>const</B><P>
+Returns the maximum position of the gauge.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgauge.html#wxgaugesetrange">wxGauge::SetRange</A><P>
+
+
+<HR>
+<A NAME="wxgaugegetshadowwidth"></A>
+<H3>wxGauge::GetShadowWidth</H3>
+<P>
+<B>int</B> <B>GetShadowWidth</B>() <B>const</B><P>
+Returns the 3D shadow margin width.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This method is not implemented (returns 0) for most platforms.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgauge.html#wxgaugesetshadowwidth">wxGauge::SetShadowWidth</A><P>
+
+
+<HR>
+<A NAME="wxgaugegetvalue"></A>
+<H3>wxGauge::GetValue</H3>
+<P>
+<B>int</B> <B>GetValue</B>() <B>const</B><P>
+Returns the current position of the gauge.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgauge.html#wxgaugesetvalue">wxGauge::SetValue</A><P>
+
+
+<HR>
+<A NAME="wxgaugeisvertical"></A>
+<H3>wxGauge::IsVertical</H3>
+<P>
+<B>bool</B> <B>IsVertical</B>() <B>const</B><P>
+Returns <TT>true</TT> if the gauge is vertical (has <TT>wxGA_VERTICAL</TT> style) and 
+<TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxgaugesetbezelface"></A>
+<H3>wxGauge::SetBezelFace</H3>
+<P>
+<B>void</B> <B>SetBezelFace</B>(<B>int </B><I>width</I>)<P>
+Sets the 3D bezel face width.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This method is not implemented (doesn't do anything) for most platforms.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgauge.html#wxgaugegetbezelface">wxGauge::GetBezelFace</A><P>
+
+
+<HR>
+<A NAME="wxgaugesetrange"></A>
+<H3>wxGauge::SetRange</H3>
+<P>
+<B>void</B> <B>SetRange</B>(<B>int </B><I>range</I>)<P>
+Sets the range (maximum value) of the gauge.
+This function makes the gauge switch to determinate mode, if it's not already.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgauge.html#wxgaugegetrange">wxGauge::GetRange</A><P>
+
+
+<HR>
+<A NAME="wxgaugesetshadowwidth"></A>
+<H3>wxGauge::SetShadowWidth</H3>
+<P>
+<B>void</B> <B>SetShadowWidth</B>(<B>int </B><I>width</I>)<P>
+Sets the 3D shadow width.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This method is not implemented (doesn't do anything) for most platforms.<P>
+
+
+<HR>
+<A NAME="wxgaugesetvalue"></A>
+<H3>wxGauge::SetValue</H3>
+<P>
+<B>void</B> <B>SetValue</B>(<B>int </B><I>pos</I>)<P>
+Sets the position of the gauge.
+This function makes the gauge switch to determinate mode, if it's not already.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pos</I><UL><UL>
+Position for the gauge level.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgauge.html#wxgaugegetvalue">wxGauge::GetValue</A><P>
+
+
+<HR>
+<A NAME="wxgaugepulse"></A>
+<H3>wxGauge::Pulse</H3>
+<P>
+<B>void</B> <B>Pulse</B>()<P>
+Switch the gauge to indeterminate mode (if required) and makes the gauge move
+a bit to indicate the user that some progress has been made.<P>
+Note that after calling this function the value returned by <A HREF="wx_wxgauge.html#wxgaugegetvalue">GetValue</A>
+is undefined and thus you need to explicitely call <A HREF="wx_wxgauge.html#wxgaugesetvalue">SetValue</A> if you
+want to restore the determinate mode.<P>
+
+
+</FONT></BODY></HTML>

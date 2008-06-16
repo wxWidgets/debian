@@ -1,0 +1,81 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxColourDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcolourdialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcolourdatabase.html#wxcolourdatabase"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcolourpickerctrl.html#wxcolourpickerctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxColourDialog</H2>
+<P>
+This class represents the colour chooser dialog.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/colordlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_commondialogsoverview.html#wxcolourdialogoverview">wxColourDialog Overview</A>,<BR>
+
+<A HREF="wx_wxcolour.html#wxcolour">wxColour</A>,<BR>
+
+<A HREF="wx_wxcolourdata.html#wxcolourdata">wxColourData</A>,<BR>
+
+<A HREF="wx_dialogfunctions.html#wxgetcolourfromuser">wxGetColourFromUser</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxcolourdialogctor">wxColourDialog::wxColourDialog</A><BR>
+<A HREF="#wxcolourdialogdtor">wxColourDialog::~wxColourDialog</A><BR>
+<A HREF="#wxcolourdialogcreate">wxColourDialog::Create</A><BR>
+<A HREF="#wxcolourdialoggetcolourdata">wxColourDialog::GetColourData</A><BR>
+<A HREF="#wxcolourdialogshowmodal">wxColourDialog::ShowModal</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcolourdialogctor"></A>
+<H3>wxColourDialog::wxColourDialog</H3>
+<P>
+<B></B> <B>wxColourDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B><A HREF="wx_wxcolourdata.html#wxcolourdata">wxColourData</A>* </B></B><I>data = NULL</I>)<P>
+Constructor. Pass a parent window, and optionally a pointer to a block of colour
+data, which will be copied to the colour dialog's colour data. Custom
+colours from colour data object will be be used in dialog's colour palette.
+Invalid entries in custom colours list will be ignored on some platforms (GTK)
+or replaced with white colour on platforms where custom colours palette has
+fixed size (MSW).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcolourdata.html#wxcolourdata">wxColourData</A><P>
+
+<HR>
+<A NAME="wxcolourdialogdtor"></A>
+<H3>wxColourDialog::~wxColourDialog</H3>
+<P>
+<B></B> <B>~wxColourDialog</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxcolourdialogcreate"></A>
+<H3>wxColourDialog::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B><A HREF="wx_wxcolourdata.html#wxcolourdata">wxColourData</A>* </B></B><I>data = NULL</I>)<P>
+Same as <A HREF="wx_wxcolourdialog.html#wxcolourdialogctor">constructor</A>.<P>
+
+<HR>
+<A NAME="wxcolourdialoggetcolourdata"></A>
+<H3>wxColourDialog::GetColourData</H3>
+<P>
+<B><A HREF="wx_wxcolourdata.html#wxcolourdata">wxColourData</A>&</B> </B> <B>GetColourData</B>()<P>
+Returns the <A HREF="wx_wxcolourdata.html#wxcolourdata">colour data</A> associated with the colour dialog.<P>
+
+<HR>
+<A NAME="wxcolourdialogshowmodal"></A>
+<H3>wxColourDialog::ShowModal</H3>
+<P>
+<B>int</B> <B>ShowModal</B>()<P>
+Shows the dialog, returning wxID_OK if the user pressed OK, and wxID_CANCEL
+otherwise.<P>
+
+
+</FONT></BODY></HTML>

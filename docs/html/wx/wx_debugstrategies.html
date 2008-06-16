@@ -1,0 +1,79 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Strategies for debugging</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="debugstrategies"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_strategies.html#strategies"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_portability.html#portability"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_librarieslist.html#librarieslist"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Strategies for debugging</H2>
+<P>
+<A HREF="#positivethinking">Positive thinking</A><BR>
+<A HREF="#simplifyproblem">Simplify the problem</A><BR>
+<A HREF="#usedebugger">Use a debugger</A><BR>
+<A HREF="#uselogging">Use logging functions</A><BR>
+<A HREF="#usedebuggingfacilities">Use the wxWidgets debugging facilities</A><BR>
+<P>
+
+<HR>
+<A NAME="positivethinking"></A>
+<H3>Positive thinking</H3>
+<P>
+It is common to blow up the problem in one's imagination, so that it seems to threaten
+weeks, months or even years of work. The problem you face may seem insurmountable:
+but almost never is. Once you have been programming for some time, you will be able
+to remember similar incidents that threw you into the depths of despair. But
+remember, you always solved the problem, somehow!<P>
+Perseverance is often the key, even though a seemingly trivial problem
+can take an apparently inordinate amount of time to solve. In the end,
+you will probably wonder why you worried so much. That's not to say it
+isn't painful at the time. Try not to worry -- there are many more important
+things in life.<P>
+
+<HR>
+<A NAME="simplifyproblem"></A>
+<H3>Simplify the problem</H3>
+<P>
+Reduce the code exhibiting the problem to the smallest program possible
+that exhibits the problem. If it is not possible to reduce a large and
+complex program to a very small program, then try to ensure your code
+doesn't hide the problem (you may have attempted to minimize the problem
+in some way: but now you want to expose it).<P>
+With luck, you can add a small amount of code that causes the program
+to go from functioning to non-functioning state. This should give a clue
+to the problem. In some cases though, such as memory leaks or wrong
+deallocation, this can still give totally spurious results!<P>
+
+<HR>
+<A NAME="usedebugger"></A>
+<H3>Use a debugger</H3>
+<P>
+This sounds like facetious advice, but it is surprising how often people
+don't use a debugger. Often it is an overhead to install or learn how to
+use a debugger, but it really is essential for anything but the most
+trivial programs.<P>
+
+<HR>
+<A NAME="uselogging"></A>
+<H3>Use logging functions</H3>
+<P>
+There is a variety of logging functions that you can use in your program:
+see <A HREF="wx_logfunctions.html#logfunctions">Logging functions</A>.<P>
+Using tracing statements may be more convenient than using the debugger
+in some circumstances (such as when your debugger doesn't support a lot
+of debugging code, or you wish to print a bunch of variables).<P>
+
+<HR>
+<A NAME="usedebuggingfacilities"></A>
+<H3>Use the wxWidgets debugging facilities</H3>
+<P>
+You can use wxDebugContext to check for
+memory leaks and corrupt memory: in fact in debugging mode, wxWidgets will
+automatically check for memory leaks at the end of the program if wxWidgets is suitably
+configured. Depending on the operating system and compiler, more or less
+specific information about the problem will be logged.<P>
+You should also use <A HREF="wx_debugmacros.html#debugmacros">debug macros</A> as part of a 'defensive programming' strategy,
+scattering wxASSERTs liberally to test for problems in your code as early as possible. Forward thinking
+will save a surprising amount of time in the long run.<P>
+See the <A HREF="wx_debuggingoverview.html#debuggingoverview">debugging overview</A> for further information.<P>
+
+</FONT></BODY></HTML>

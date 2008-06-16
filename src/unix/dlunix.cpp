@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-16 (extracted from common/dynlib.cpp)
-// RCS-ID:      $Id: dlunix.cpp,v 1.11 2005/04/19 12:38:24 SC Exp $
+// RCS-ID:      $Id: dlunix.cpp 40455 2006-08-04 22:32:08Z VZ $
 // Copyright:   (c) 2000-2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -98,29 +98,6 @@
 
 static char dl_last_error[1024];
 
-static
-void TranslateError(const char *path, int number)
-{
-    unsigned int index;
-    static const char *OFIErrorStrings[] =
-    {
-        "%s(%d): Object Image Load Failure\n",
-        "%s(%d): Object Image Load Success\n",
-        "%s(%d): Not an recognisable object file\n",
-        "%s(%d): No valid architecture\n",
-        "%s(%d): Object image has an invalid format\n",
-        "%s(%d): Invalid access (permissions?)\n",
-        "%s(%d): Unknown error code from NSCreateObjectFileImageFromFile\n"
-    };
-#define NUM_OFI_ERRORS (sizeof(OFIErrorStrings) / sizeof(OFIErrorStrings[0]))
-
-    index = number;
-    if (index > NUM_OFI_ERRORS - 1) {
-        index = NUM_OFI_ERRORS - 1;
-    }
-    sprintf(dl_last_error, OFIErrorStrings[index], path, number);
-}
-
 const char *dlerror()
 {
     return dl_last_error;
@@ -131,10 +108,29 @@ void *dlopen(const char *path, int WXUNUSED(mode) /* mode is ignored */)
     NSObjectFileImage ofile;
     NSModule handle = NULL;
 
-    int dyld_result = NSCreateObjectFileImageFromFile(path, &ofile);
+    unsigned dyld_result = NSCreateObjectFileImageFromFile(path, &ofile);
     if ( dyld_result != NSObjectFileImageSuccess )
     {
         handle = NULL;
+
+        static const char *errorStrings[] =
+        {
+            "%d: Object Image Load Failure",
+            "%d: Object Image Load Success",
+            "%d: Not an recognisable object file",
+            "%d: No valid architecture",
+            "%d: Object image has an invalid format",
+            "%d: Invalid access (permissions?)",
+            "%d: Unknown error code from NSCreateObjectFileImageFromFile"
+        };
+
+        const int index = dyld_result < WXSIZEOF(errorStrings)
+                            ? dyld_result
+                            : WXSIZEOF(errorStrings) - 1;
+
+        // this call to sprintf() is safe as strings above are fixed at
+        // compile-time and are shorter than WXSIZEOF(dl_last_error)
+        sprintf(dl_last_error, errorStrings[index], dyld_result);
     }
     else
     {
@@ -145,10 +141,20 @@ void *dlopen(const char *path, int WXUNUSED(mode) /* mode is ignored */)
                     NSLINKMODULE_OPTION_BINDNOW |
                     NSLINKMODULE_OPTION_RETURN_ON_ERROR
                  );
+
+        if ( !handle )
+        {
+            NSLinkEditErrors err;
+            int code;
+            const char *filename;
+            const char *errmsg;
+
+            NSLinkEditError(&err, &code, &filename, &errmsg);
+            strncpy(dl_last_error, errmsg, WXSIZEOF(dl_last_error)-1);
+            dl_last_error[WXSIZEOF(dl_last_error)-1] = '\0';
+        }
     }
 
-    if ( !handle )
-        TranslateError(path, dyld_result);
 
     return handle;
 }
@@ -288,13 +294,13 @@ class wxDynamicLibraryDetailsCreator
 public:
     // create a new wxDynamicLibraryDetails from the given data
     static wxDynamicLibraryDetails *
-    New(unsigned long start, unsigned long end, const wxString& path)
+    New(void *start, void *end, const wxString& path)
     {
         wxDynamicLibraryDetails *details = new wxDynamicLibraryDetails;
         details->m_path = path;
         details->m_name = path.AfterLast(_T('/'));
-        details->m_address = wx_reinterpret_cast(void *, start);
-        details->m_length = end - start;
+        details->m_address = start;
+        details->m_length = (char *)end - (char *)start;
 
         // try to extract the library version from its name
         const size_t posExt = path.rfind(_T(".so"));
@@ -333,16 +339,17 @@ wxDynamicLibraryDetailsArray wxDynamicLibrary::ListLoaded()
     {
         // details of the module currently being parsed
         wxString pathCur;
-        unsigned long startCur = 0,
-                      endCur = 0;
+        void *startCur = NULL,
+             *endCur = NULL;
 
         char path[1024];
         char buf[1024];
         while ( fgets(buf, WXSIZEOF(buf), file.fp()) )
         {
-            // format is: start-end perm something? maj:min inode path
-            unsigned long start, end;
-            switch ( sscanf(buf, "%08lx-%08lx %*4s %*08x %*02d:%*02d %*d %1024s\n",
+            // format is: "start-end perm offset maj:min inode path", see proc(5)
+            void *start,
+                 *end;
+            switch ( sscanf(buf, "%p-%p %*4s %*p %*02x:%*02x %*d %1024s\n",
                             &start, &end, path) )
             {
                 case 2:
@@ -362,6 +369,9 @@ wxDynamicLibraryDetailsArray wxDynamicLibrary::ListLoaded()
                     continue;
             }
 
+            wxASSERT_MSG( start >= endCur,
+                          _T("overlapping regions in /proc/self/maps?") );
+
             wxString pathNew = wxString::FromAscii(path);
             if ( pathCur.empty() )
             {
@@ -370,10 +380,9 @@ wxDynamicLibraryDetailsArray wxDynamicLibrary::ListLoaded()
                 startCur = start;
                 endCur = end;
             }
-            else if ( pathCur == pathNew )
+            else if ( pathCur == pathNew && endCur == end )
             {
-                // continuation of the same module
-                wxASSERT_MSG( start == endCur, _T("hole in /proc/self/maps?") );
+                // continuation of the same module in the address space
                 endCur = end;
             }
             else // end of the current module

@@ -1,0 +1,122 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxValidator</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxvalidator"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxurldataobject.html#wxurldataobject"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxvariant.html#wxvariant"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxValidator</H2>
+<P>
+wxValidator is the base class for a family of validator classes that mediate
+between a class of control, and application data.<P>
+A validator has three major roles:<P>
+<OL>
+
+<LI> to transfer data from a C++ variable or own storage to and from a control;
+<LI> to validate data in a control, and show an appropriate error message;
+<LI> to filter events (such as keystrokes), thereby changing the behaviour of the
+associated control.
+</OL>
+<P>
+Validators can be plugged into controls dynamically.<P>
+To specify a default, 'null' validator, use the symbol <B>wxDefaultValidator</B>.<P>
+For more information, please see <A HREF="wx_validatoroverview.html#validatoroverview">Validator overview</A>.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> If you wish to create a validator class in wxPython you should
+derive the class from <TT>wxPyValidator</TT> in order to get Python-aware
+capabilities for the various virtual methods.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/validate.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_validatoroverview.html#validatoroverview">Validator overview</A>, 
+<A HREF="wx_wxtextvalidator.html#wxtextvalidator">wxTextValidator</A>, 
+<A HREF="wx_wxgenericvalidator.html#wxgenericvalidator">wxGenericValidator</A>,<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxvalidatorctor">wxValidator::wxValidator</A><BR>
+<A HREF="#wxvalidatordtor">wxValidator::~wxValidator</A><BR>
+<A HREF="#wxvalidatorclone">wxValidator::Clone</A><BR>
+<A HREF="#wxvalidatorgetwindow">wxValidator::GetWindow</A><BR>
+<A HREF="#wxvalidatorsetbellonerror">wxValidator::SetBellOnError</A><BR>
+<A HREF="#wxvalidatorsetwindow">wxValidator::SetWindow</A><BR>
+<A HREF="#wxvalidatortransferfromwindow">wxValidator::TransferFromWindow</A><BR>
+<A HREF="#wxvalidatortransfertowindow">wxValidator::TransferToWindow</A><BR>
+<A HREF="#wxvalidatorvalidate">wxValidator::Validate</A><BR>
+<P>
+
+<HR>
+<A NAME="wxvalidatorctor"></A>
+<H3>wxValidator::wxValidator</H3>
+<P>
+<B></B> <B>wxValidator</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxvalidatordtor"></A>
+<H3>wxValidator::~wxValidator</H3>
+<P>
+<B></B> <B>~wxValidator</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxvalidatorclone"></A>
+<H3>wxValidator::Clone</H3>
+<P>
+<B>virtual <A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B> </B> <B>Clone</B>() <B>const</B><P>
+All validator classes must implement the <B>Clone</B> function, which returns
+an identical copy of itself. This is because validators are passed to control
+constructors as references which must be copied. Unlike objects such as pens
+and brushes, it does not make sense to have a reference counting scheme
+to do this cloning, because all validators should have separate
+data.<P>
+This base function returns NULL.<P>
+
+<HR>
+<A NAME="wxvalidatorgetwindow"></A>
+<H3>wxValidator::GetWindow</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetWindow</B>() <B>const</B><P>
+Returns the window associated with the validator.<P>
+
+<HR>
+<A NAME="wxvalidatorsetbellonerror"></A>
+<H3>wxValidator::SetBellOnError</H3>
+<P>
+<B>void</B> <B>SetBellOnError</B>(<B>bool</B><I> doIt = true</I>)<P>
+This functions switches on or turns off the error sound produced by the
+validators if an invalid key is pressed.<P>
+
+<HR>
+<A NAME="wxvalidatorsetwindow"></A>
+<H3>wxValidator::SetWindow</H3>
+<P>
+<B>void</B> <B>SetWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> window</I>)<P>
+Associates a window with the validator.<P>
+
+<HR>
+<A NAME="wxvalidatortransferfromwindow"></A>
+<H3>wxValidator::TransferFromWindow</H3>
+<P>
+<B>virtual bool</B> <B>TransferToWindow</B>()<P>
+This overridable function is called when the value in the window must be
+transferred to the validator. Return false if there is a problem.<P>
+
+<HR>
+<A NAME="wxvalidatortransfertowindow"></A>
+<H3>wxValidator::TransferToWindow</H3>
+<P>
+<B>virtual bool</B> <B>TransferToWindow</B>()<P>
+This overridable function is called when the value associated with the validator must be
+transferred to the window. Return false if there is a problem.<P>
+
+<HR>
+<A NAME="wxvalidatorvalidate"></A>
+<H3>wxValidator::Validate</H3>
+<P>
+<B>virtual bool</B> <B>Validate</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>)<P>
+This overridable function is called when the value in the associated window must be validated.
+Return false if the value in the window is not valid; you may pop up an error dialog.<P>
+
+</FONT></BODY></HTML>

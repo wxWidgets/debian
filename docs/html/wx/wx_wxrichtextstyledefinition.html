@@ -1,0 +1,108 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextStyleDefinition</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextstyledefinition"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextrange.html#wxrichtextrange"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextstylecomboctrl.html#wxrichtextstylecomboctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextStyleDefinition</H2>
+<P>
+This is a base class for paragraph and character styles.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextstyles.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextstyledefinitionwxrichtextstyledefinition">wxRichTextStyleDefinition::wxRichTextStyleDefinition</A><BR>
+<A HREF="#wxrichtextstyledefinitiondtor">wxRichTextStyleDefinition::~wxRichTextStyleDefinition</A><BR>
+<A HREF="#wxrichtextstyledefinitiongetbasestyle">wxRichTextStyleDefinition::GetBaseStyle</A><BR>
+<A HREF="#wxrichtextstyledefinitiongetdescription">wxRichTextStyleDefinition::GetDescription</A><BR>
+<A HREF="#wxrichtextstyledefinitiongetname">wxRichTextStyleDefinition::GetName</A><BR>
+<A HREF="#wxrichtextstyledefinitiongetstyle">wxRichTextStyleDefinition::GetStyle</A><BR>
+<A HREF="#wxrichtextstyledefinitiongetstylemergedwithbase">wxRichTextStyleDefinition::GetStyleMergedWithBase</A><BR>
+<A HREF="#wxrichtextstyledefinitionsetbasestyle">wxRichTextStyleDefinition::SetBaseStyle</A><BR>
+<A HREF="#wxrichtextstyledefinitionsetdescription">wxRichTextStyleDefinition::SetDescription</A><BR>
+<A HREF="#wxrichtextstyledefinitionsetname">wxRichTextStyleDefinition::SetName</A><BR>
+<A HREF="#wxrichtextstyledefinitionsetstyle">wxRichTextStyleDefinition::SetStyle</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextstyledefinitionwxrichtextstyledefinition"></A>
+<H3>wxRichTextStyleDefinition::wxRichTextStyleDefinition</H3>
+<P>
+<B></B> <B>wxRichTextStyleDefinition</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxEmptyString</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxrichtextstyledefinitiondtor"></A>
+<H3>wxRichTextStyleDefinition::~wxRichTextStyleDefinition</H3>
+<P>
+<B></B> <B>~wxRichTextStyleDefinition</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxrichtextstyledefinitiongetbasestyle"></A>
+<H3>wxRichTextStyleDefinition::GetBaseStyle</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetBaseStyle</B>() <B>const</B><P>
+Returns the style on which this style is based.<P>
+
+<HR>
+<A NAME="wxrichtextstyledefinitiongetdescription"></A>
+<H3>wxRichTextStyleDefinition::GetDescription</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetDescription</B>() <B>const</B><P>
+Returns the style's description.<P>
+
+<HR>
+<A NAME="wxrichtextstyledefinitiongetname"></A>
+<H3>wxRichTextStyleDefinition::GetName</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetName</B>() <B>const</B><P>
+Returns the style name.<P>
+
+<HR>
+<A NAME="wxrichtextstyledefinitiongetstyle"></A>
+<H3>wxRichTextStyleDefinition::GetStyle</H3>
+<P>
+<B><A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A>&</B> </B> <B>GetStyle</B>()<P>
+<B>const <A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A>&</B> </B> <B>GetStyle</B>() <B>const</B><P>
+Returns the attributes associated with this style.<P>
+
+<HR>
+<A NAME="wxrichtextstyledefinitiongetstylemergedwithbase"></A>
+<H3>wxRichTextStyleDefinition::GetStyleMergedWithBase</H3>
+<P>
+<B><A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A></B> </B> <B>GetStyleMergedWithBase</B>(<B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>*</B></B><I> sheet</I>) <B>const</B><P>
+Returns the style attributes combined with the attributes of the specified base style, if any. This function works recursively.<P>
+
+<HR>
+<A NAME="wxrichtextstyledefinitionsetbasestyle"></A>
+<H3>wxRichTextStyleDefinition::SetBaseStyle</H3>
+<P>
+<B>void</B> <B>SetBaseStyle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the name of the style that this style is based on.<P>
+
+<HR>
+<A NAME="wxrichtextstyledefinitionsetdescription"></A>
+<H3>wxRichTextStyleDefinition::SetDescription</H3>
+<P>
+<B>void</B> <B>SetDescription</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>descr</I>)<P>
+Sets the style description.<P>
+
+<HR>
+<A NAME="wxrichtextstyledefinitionsetname"></A>
+<H3>wxRichTextStyleDefinition::SetName</H3>
+<P>
+<B>void</B> <B>SetName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the name of the style.<P>
+
+<HR>
+<A NAME="wxrichtextstyledefinitionsetstyle"></A>
+<H3>wxRichTextStyleDefinition::SetStyle</H3>
+<P>
+<B>void</B> <B>SetStyle</B>(<B>const <A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A>& </B></B><I>style</I>)<P>
+Sets the attributes for this style.<P>
+
+</FONT></BODY></HTML>

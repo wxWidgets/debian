@@ -1,0 +1,72 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxZlibOutputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxzliboutputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxzlibinputstream.html#wxzlibinputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_functions.html#functions"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxZlibOutputStream</H2>
+<P>
+This stream compresses all data written to it. The compressed output can be
+in zlib or gzip format.
+Note that writing the gzip format requires zlib version 1.2.1 or greater
+(the builtin version does support gzip format).<P>
+The stream is not seekable, <A HREF="wx_wxoutputstream.html#wxoutputstreamseeko">SeekO()</A> returns
+ <I>wxInvalidOffset</I>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxfilteroutputstream.html#wxfilteroutputstream">wxFilterOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/zstream.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>,
+ <A HREF="wx_wxzlibinputstream.html#wxzlibinputstream">wxZlibInputStream</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxzliboutputstreamwxzliboutputstream">wxZlibOutputStream::wxZlibOutputStream</A><BR>
+<A HREF="#wxoutputstreamcanhandlegzip">wxZlibOutputStream::CanHandleGZip</A><BR>
+<P>
+
+<HR>
+<A NAME="wxzliboutputstreamwxzliboutputstream"></A>
+<H3>wxZlibOutputStream::wxZlibOutputStream</H3>
+<P>
+<B></B> <B>wxZlibOutputStream</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>&</B></B><I> stream</I>, <B>int</B><I> level = -1</I>, <B>int</B><I> flags = wxZLIB_ZLIB</I>)<P>
+<B></B> <B>wxZlibOutputStream</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>*</B></B><I> stream</I>, <B>int</B><I> level = -1</I>, <B>int</B><I> flags = wxZLIB_ZLIB</I>)<P>
+Creates a new write-only compressed stream. <I>level</I> means level of 
+compression. It is number between 0 and 9 (including these values) where
+0 means no compression and 9 best but slowest compression. -1 is default
+value (currently equivalent to 6).<P>
+If the parent stream is passed as a pointer then the new filter stream
+takes ownership of it. If it is passed by reference then it does not.<P>
+The <I>flags</I> wxZLIB_ZLIB and wxZLIB_GZIP specify whether the output data
+will be in zlib or gzip format. wxZLIB_ZLIB is the default.<P>
+If <I>flags</I> is wxZLIB_NO_HEADER, then a raw deflate stream is output
+without either zlib or gzip headers. This is a lower level
+mode, which is not usually used directly. It can be used to embed a raw
+deflate stream in a higher level protocol.<P>
+The following symbols can be use for the compression level and flags:<P>
+<PRE>
+// Compression level
+enum {
+    wxZ_DEFAULT_COMPRESSION = -1,
+    wxZ_NO_COMPRESSION = 0,
+    wxZ_BEST_SPEED = 1,
+    wxZ_BEST_COMPRESSION = 9
+};
+
+// Flags
+enum {
+    wxZLIB_NO_HEADER = 0,   // raw deflate stream, no header or checksum
+    wxZLIB_ZLIB = 1,        // zlib header and checksum
+    wxZLIB_GZIP = 2         // gzip header and checksum, requires zlib 1.2.1+
+};
+</PRE>
+
+<HR>
+<A NAME="wxoutputstreamcanhandlegzip"></A>
+<H3>wxZlibOutputStream::CanHandleGZip</H3>
+<P>
+<B>static bool</B> <B>CanHandleGZip</B>()<P>
+Returns true if zlib library in use can handle gzip compressed data.<P>
+
+</FONT></BODY></HTML>

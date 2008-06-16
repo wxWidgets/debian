@@ -1,0 +1,211 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxObject</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxobject"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxnotifyevent.html#wxnotifyevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxobjectrefdata.html#wxobjectrefdata"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxObject</H2>
+<P>
+This is the root class of all wxWidgets classes.
+It declares a virtual destructor which ensures that
+destructors get called for all derived class objects where necessary.<P>
+wxObject is the hub of a dynamic object creation
+scheme, enabling a program to create instances of a class only knowing
+its string class name, and to query the class hierarchy.<P>
+The class contains optional debugging versions
+of <B>new</B> and <B>delete</B>, which can help trace memory allocation
+and deallocation problems.<P>
+wxObject can be used to implement <A HREF="wx_trefcount.html#trefcount">reference counted</A> objects,
+such as wxPen, wxBitmap and others (see <A HREF="wx_trefcount.html#refcountlist">this list</A>).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxclassinfo.html#wxclassinfo">wxClassInfo</A>, <A HREF="wx_debuggingoverview.html#debuggingoverview">Debugging overview</A>,
+<A HREF="wx_wxobjectrefdata.html#wxobjectrefdata">wxObjectRefData</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxobjectctor">wxObject::wxObject</A><BR>
+<A HREF="#wxobjectdtor">wxObject::~wxObject</A><BR>
+<A HREF="#wxobjectmrefdata">wxObject::m_refData</A><BR>
+<A HREF="#wxobjectdump">wxObject::Dump</A><BR>
+<A HREF="#wxobjectgetclassinfo">wxObject::GetClassInfo</A><BR>
+<A HREF="#wxobjectgetrefdata">wxObject::GetRefData</A><BR>
+<A HREF="#wxobjectiskindof">wxObject::IsKindOf</A><BR>
+<A HREF="#wxobjectissameas">wxObject::IsSameAs</A><BR>
+<A HREF="#wxobjectref">wxObject::Ref</A><BR>
+<A HREF="#wxobjectsetrefdata">wxObject::SetRefData</A><BR>
+<A HREF="#wxobjectunref">wxObject::UnRef</A><BR>
+<A HREF="#wxobjectunshare">wxObject::UnShare</A><BR>
+<A HREF="#wxobjectnew">wxObject::operator new</A><BR>
+<A HREF="#wxobjectdelete">wxObject::operator delete</A><BR>
+<P>
+
+<HR>
+<A NAME="wxobjectctor"></A>
+<H3>wxObject::wxObject</H3>
+<P>
+<B></B> <B>wxObject</B>()<P>
+<B></B> <B>wxObject</B>(<B>const <A HREF="wx_wxobject.html#wxobject">wxObject</A>&</B></B><I> other</I>)<P>
+Default and copy constructors.<P>
+
+<HR>
+<A NAME="wxobjectdtor"></A>
+<H3>wxObject::~wxObject</H3>
+<P>
+<B></B> <B>wxObject</B>()<P>
+Destructor. Performs dereferencing, for those objects
+that use reference counting.<P>
+
+<HR>
+<A NAME="wxobjectmrefdata"></A>
+<H3>wxObject::m_refData</H3>
+<P>
+wxObjectRefData*  m_refData<P>
+Pointer to an object which is the object's reference-counted data.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobjectref">wxObject::Ref</A>, <A HREF="wx_wxobject.html#wxobjectunref">wxObject::UnRef</A>,
+<A HREF="wx_wxobject.html#wxobjectsetrefdata">wxObject::SetRefData</A>,
+<A HREF="wx_wxobject.html#wxobjectgetrefdata">wxObject::GetRefData</A>,
+<A HREF="wx_wxobjectrefdata.html#wxobjectrefdata">wxObjectRefData</A><P>
+
+<HR>
+<A NAME="wxobjectdump"></A>
+<H3>wxObject::Dump</H3>
+<P>
+<B>void</B> <B>Dump</B>(<B>ostream&amp;</B><I> stream</I>)<P>
+A virtual function that may be redefined by derived classes to allow dumping of
+memory states.<P>
+This function is only defined in debug build and doesn't exist at all if
+<TT>__WXDEBUG__</TT> is not defined.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>stream</I><UL><UL>
+Stream on which to output dump information.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Currently wxWidgets does not define Dump for derived classes, but
+programmers may wish to use it for their own applications. Be sure to
+call the Dump member of the class's base class to allow all information to be
+dumped.<P>
+The implementation of this function in wxObject just writes the class name of
+the object.<P>
+
+<HR>
+<A NAME="wxobjectgetclassinfo"></A>
+<H3>wxObject::GetClassInfo</H3>
+<P>
+<B><A HREF="wx_wxclassinfo.html#wxclassinfo">wxClassInfo</A> *</B> </B> <B>GetClassInfo</B>()<P>
+This virtual function is redefined for every class that requires run-time
+type information, when using DECLARE_CLASS macros.<P>
+
+<HR>
+<A NAME="wxobjectgetrefdata"></A>
+<H3>wxObject::GetRefData</H3>
+<P>
+<B><A HREF="wx_wxobjectrefdata.html#wxobjectrefdata">wxObjectRefData</A>*</B> </B> <B>GetRefData</B>() <B>const</B><P>
+Returns the <B>m_refData</B> pointer.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobjectref">wxObject::Ref</A>, <A HREF="wx_wxobject.html#wxobjectunref">wxObject::UnRef</A>, <A HREF="wx_wxobject.html#wxobjectmrefdata">wxObject::m_refData</A>,
+<A HREF="wx_wxobject.html#wxobjectsetrefdata">wxObject::SetRefData</A>,
+<A HREF="wx_wxobjectrefdata.html#wxobjectrefdata">wxObjectRefData</A><P>
+
+<HR>
+<A NAME="wxobjectiskindof"></A>
+<H3>wxObject::IsKindOf</H3>
+<P>
+<B>bool</B> <B>IsKindOf</B>(<B><A HREF="wx_wxclassinfo.html#wxclassinfo">wxClassInfo</A> *</B></B><I>info</I>)<P>
+Determines whether this class is a subclass of (or the same class as)
+the given class.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>info</I><UL><UL>
+A pointer to a class information object, which may be obtained
+by using the CLASSINFO macro.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the class represented by <I>info</I> is the same class as
+this one or is derived from it.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+  bool tmp = obj-&gt;IsKindOf(CLASSINFO(wxFrame));
+</PRE>
+
+<HR>
+<A NAME="wxobjectissameas"></A>
+<H3>wxObject::IsSameAs</H3>
+<P>
+<B>bool</B> <B>IsSameAs</B>(<B>const <A HREF="wx_wxobject.html#wxobject">wxObject</A>& </B></B><I> obj</I>)<P>
+Returns <TT>true</TT> if this object has the same data pointer as <I>obj</I>. Notice
+that <TT>true</TT> is returned if the data pointers are <TT>NULL</TT> in both objects.<P>
+This function only does a <EM>shallow</EM> comparison, i.e. it doesn't compare
+the objects pointed to by the data pointers of these objects.<P>
+
+<HR>
+<A NAME="wxobjectref"></A>
+<H3>wxObject::Ref</H3>
+<P>
+<B>void</B> <B>Ref</B>(<B>const <A HREF="wx_wxobject.html#wxobject">wxObject</A>& </B></B><I>clone</I>)<P>
+Makes this object refer to the data in <I>clone</I>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>clone</I><UL><UL>
+The object to 'clone'.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+First this function calls <A HREF="wx_wxobject.html#wxobjectunref">wxObject::UnRef</A> on itself
+to decrement (and perhaps free) the data it is currently referring to.<P>
+It then sets its own m_refData to point to that of <I>clone</I>, and increments the reference count
+inside the data.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobjectunref">wxObject::UnRef</A>, <A HREF="wx_wxobject.html#wxobjectmrefdata">wxObject::m_refData</A>,
+<A HREF="wx_wxobject.html#wxobjectsetrefdata">wxObject::SetRefData</A>, <A HREF="wx_wxobject.html#wxobjectgetrefdata">wxObject::GetRefData</A>,
+<A HREF="wx_wxobjectrefdata.html#wxobjectrefdata">wxObjectRefData</A><P>
+
+<HR>
+<A NAME="wxobjectsetrefdata"></A>
+<H3>wxObject::SetRefData</H3>
+<P>
+<B>void</B> <B>SetRefData</B>(<B><A HREF="wx_wxobjectrefdata.html#wxobjectrefdata">wxObjectRefData</A>*</B></B><I> data</I>)<P>
+Sets the <B>m_refData</B> pointer.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobjectref">wxObject::Ref</A>, <A HREF="wx_wxobject.html#wxobjectunref">wxObject::UnRef</A>, <A HREF="wx_wxobject.html#wxobjectmrefdata">wxObject::m_refData</A>,
+<A HREF="wx_wxobject.html#wxobjectgetrefdata">wxObject::GetRefData</A>,
+<A HREF="wx_wxobjectrefdata.html#wxobjectrefdata">wxObjectRefData</A><P>
+
+<HR>
+<A NAME="wxobjectunref"></A>
+<H3>wxObject::UnRef</H3>
+<P>
+<B>void</B> <B>UnRef</B>()<P>
+Decrements the reference count in the associated data, and if it is zero, deletes the data.
+The <B>m_refData</B> member is set to NULL.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobjectref">wxObject::Ref</A>, <A HREF="wx_wxobject.html#wxobjectmrefdata">wxObject::m_refData</A>,
+<A HREF="wx_wxobject.html#wxobjectsetrefdata">wxObject::SetRefData</A>, <A HREF="wx_wxobject.html#wxobjectgetrefdata">wxObject::GetRefData</A>,
+<A HREF="wx_wxobjectrefdata.html#wxobjectrefdata">wxObjectRefData</A><P>
+
+<HR>
+<A NAME="wxobjectunshare"></A>
+<H3>wxObject::UnShare</H3>
+<P>
+<B>void</B> <B>UnShare</B>()<P>
+Ensure that this object's data is not shared with any other object.<P>
+if we have no
+data, it is created using CreateRefData() below, if we have shared data
+it is copied using CloneRefData(), otherwise nothing is done.<P>
+
+
+<HR>
+<A NAME="wxobjectnew"></A>
+<H3>wxObject::operator new</H3>
+<P>
+<B>void *</B> <B>new</B>(<B>size_t </B><I>size</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename = NULL</I>, <B>int</B><I> lineNum = 0</I>)<P>
+The <I>new</I> operator is defined for debugging versions of the library only, when
+the identifier __WXDEBUG__ is defined. It takes over memory allocation, allowing
+wxDebugContext operations.<P>
+
+<HR>
+<A NAME="wxobjectdelete"></A>
+<H3>wxObject::operator delete</H3>
+<P>
+<B>void</B> <B>delete</B>(<B>void </B><I>buf</I>)<P>
+The <I>delete</I> operator is defined for debugging versions of the library only, when
+the identifier __WXDEBUG__ is defined. It takes over memory deallocation, allowing
+wxDebugContext operations.<P>
+
+</FONT></BODY></HTML>

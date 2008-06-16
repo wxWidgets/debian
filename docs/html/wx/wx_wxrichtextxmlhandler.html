@@ -1,0 +1,155 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextXMLHandler</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextxmlhandler"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsashevent.html#wxsashevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextXMLHandler</H2>
+<P>
+A handler for loading and saving content in an XML format specific
+to wxRichTextBuffer. You can either add the handler to the buffer
+and load and save through the buffer or control API, or you can
+create an instance of the handler on the stack and call its
+functions directly.<P>
+<B><FONT COLOR="#FF0000">Handler flags</FONT></B><P>
+The following flags can be used with this handler, via
+the handler's SetFlags function or the buffer or control's
+SetHandlerFlags function:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_HANDLER_INCLUDE_STYLESHEET</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Include the style sheet in loading and saving operations.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxrichtextfilehandler.html#wxrichtextfilehandler">wxRichTextFileHandler</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextxml.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextxmlhandlerwxrichtextxmlhandler">wxRichTextXMLHandler::wxRichTextXMLHandler</A><BR>
+<A HREF="#wxrichtextxmlhandlercanload">wxRichTextXMLHandler::CanLoad</A><BR>
+<A HREF="#wxrichtextxmlhandlercansave">wxRichTextXMLHandler::CanSave</A><BR>
+<A HREF="#wxrichtextxmlhandlercreatestyle">wxRichTextXMLHandler::CreateStyle</A><BR>
+<A HREF="#wxrichtextxmlhandlerdoloadfile">wxRichTextXMLHandler::DoLoadFile</A><BR>
+<A HREF="#wxrichtextxmlhandlerdosavefile">wxRichTextXMLHandler::DoSaveFile</A><BR>
+<A HREF="#wxrichtextxmlhandlerexportxml">wxRichTextXMLHandler::ExportXML</A><BR>
+<A HREF="#wxrichtextxmlhandlergetnodecontent">wxRichTextXMLHandler::GetNodeContent</A><BR>
+<A HREF="#wxrichtextxmlhandlergetparamnode">wxRichTextXMLHandler::GetParamNode</A><BR>
+<A HREF="#wxrichtextxmlhandlergetparamvalue">wxRichTextXMLHandler::GetParamValue</A><BR>
+<A HREF="#wxrichtextxmlhandlergetstyle">wxRichTextXMLHandler::GetStyle</A><BR>
+<A HREF="#wxrichtextxmlhandlergettext">wxRichTextXMLHandler::GetText</A><BR>
+<A HREF="#wxrichtextxmlhandlerhasparam">wxRichTextXMLHandler::HasParam</A><BR>
+<A HREF="#wxrichtextxmlhandlerimportxml">wxRichTextXMLHandler::ImportXML</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlerwxrichtextxmlhandler"></A>
+<H3>wxRichTextXMLHandler::wxRichTextXMLHandler</H3>
+<P>
+<B></B> <B>wxRichTextXMLHandler</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxT("XML")</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext = wxT("xml")</I>, <B>int </B><I>type = wxRICHTEXT_TYPE_XML</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlercanload"></A>
+<H3>wxRichTextXMLHandler::CanLoad</H3>
+<P>
+<B>bool</B> <B>CanLoad</B>() <B>const</B><P>
+Returns <TT>true</TT>.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlercansave"></A>
+<H3>wxRichTextXMLHandler::CanSave</H3>
+<P>
+<B>bool</B> <B>CanSave</B>() <B>const</B><P>
+Returns <TT>true</TT>.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlercreatestyle"></A>
+<H3>wxRichTextXMLHandler::CreateStyle</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>CreateStyle</B>(<B>const <A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>& </B></B><I>attr</I>, <B>bool </B><I>isPara = false</I>)<P>
+Creates XML code for a given character or paragraph style.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlerdoloadfile"></A>
+<H3>wxRichTextXMLHandler::DoLoadFile</H3>
+<P>
+<B>bool</B> <B>DoLoadFile</B>(<B><A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>* </B></B><I>buffer</I>, <B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>)<P>
+Loads buffer context from the given stream.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlerdosavefile"></A>
+<H3>wxRichTextXMLHandler::DoSaveFile</H3>
+<P>
+<B>bool</B> <B>DoSaveFile</B>(<B><A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>* </B></B><I>buffer</I>, <B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>)<P>
+Saves buffer context to the given stream.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlerexportxml"></A>
+<H3>wxRichTextXMLHandler::ExportXML</H3>
+<P>
+<B>bool</B> <B>ExportXML</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>* </B></B><I>convMem</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>* </B></B><I>convFile</I>, <B>wxRichTextObject&amp; </B><I>obj</I>, <B>int </B><I>level</I>)<P>
+Recursively exports an object to the stream.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlergetnodecontent"></A>
+<H3>wxRichTextXMLHandler::GetNodeContent</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetNodeContent</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>)<P>
+Helper function: gets node context.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlergetparamnode"></A>
+<H3>wxRichTextXMLHandler::GetParamNode</H3>
+<P>
+<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>*</B> </B> <B>GetParamNode</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param</I>)<P>
+Helper function: gets a named parameter from the XML node.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlergetparamvalue"></A>
+<H3>wxRichTextXMLHandler::GetParamValue</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetParamValue</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param</I>)<P>
+Helper function: gets a named parameter from the XML node.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlergetstyle"></A>
+<H3>wxRichTextXMLHandler::GetStyle</H3>
+<P>
+<B>bool</B> <B>GetStyle</B>(<B><A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>& </B></B><I>attr</I>, <B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>, <B>bool </B><I>isPara = false</I>)<P>
+Helper function: gets style parameters from the given XML node.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlergettext"></A>
+<H3>wxRichTextXMLHandler::GetText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetText</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param = wxEmptyString</I>, <B>bool </B><I>translate = false</I>)<P>
+Helper function: gets text from the node.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlerhasparam"></A>
+<H3>wxRichTextXMLHandler::HasParam</H3>
+<P>
+<B>bool</B> <B>HasParam</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param</I>)<P>
+Helper function: returns <TT>true</TT> if the node has the given parameter.<P>
+
+<HR>
+<A NAME="wxrichtextxmlhandlerimportxml"></A>
+<H3>wxRichTextXMLHandler::ImportXML</H3>
+<P>
+<B>bool</B> <B>ImportXML</B>(<B><A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>* </B></B><I>buffer</I>, <B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>)<P>
+Recursively imports an object.<P>
+
+</FONT></BODY></HTML>

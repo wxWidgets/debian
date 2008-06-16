@@ -1,0 +1,148 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Time functions</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="timefunctions"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_logfunctions.html#logfunctions"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_debugmacros.html#debugmacros"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Time functions</H2>
+<P>
+The functions in this section deal with getting the current time and
+starting/stopping the global timers. Please note that the timer functions are
+deprecated because they work with one global timer only and
+<A HREF="wx_wxtimer.html#wxtimer">wxTimer</A> and/or <A HREF="wx_wxstopwatch.html#wxstopwatch">wxStopWatch</A> classes
+should be used instead. For retrieving the current time, you may also use
+<A HREF="wx_wxdatetime.html#wxdatetimenow">wxDateTime::Now</A> or
+<A HREF="wx_wxdatetime.html#wxdatetimeunow">wxDateTime::UNow</A> methods.<P>
+
+<A HREF="#wxgetelapsedtime">::wxGetElapsedTime</A><BR>
+<A HREF="#wxgetlocaltime">::wxGetLocalTime</A><BR>
+<A HREF="#wxgetlocaltimemillis">::wxGetLocalTimeMillis</A><BR>
+<A HREF="#wxgetutctime">::wxGetUTCTime</A><BR>
+<A HREF="#wxmicrosleep">::wxMicroSleep</A><BR>
+<A HREF="#wxmillisleep">::wxMilliSleep</A><BR>
+<A HREF="#wxnow">::wxNow</A><BR>
+<A HREF="#wxsleep">::wxSleep</A><BR>
+<A HREF="#wxstarttimer">::wxStartTimer</A><BR>
+<A HREF="#wxusleep">::wxUsleep</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgetelapsedtime"></A>
+<H3>::wxGetElapsedTime</H3>
+<P>
+<B>long</B> <B>wxGetElapsedTime</B>(<B>bool</B><I> resetTimer = true</I>)<P>
+Gets the time in milliseconds since the last <A HREF="wx_timefunctions.html#wxstarttimer">::wxStartTimer</A>.<P>
+If <I>resetTimer</I> is true (the default), the timer is reset to zero
+by this call.<P>
+See also <A HREF="wx_wxtimer.html#wxtimer">wxTimer</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/timer.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetlocaltime"></A>
+<H3>::wxGetLocalTime</H3>
+<P>
+<B>long</B> <B>wxGetLocalTime</B>()<P>
+Returns the number of seconds since local time 00:00:00 Jan 1st 1970.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimenow">wxDateTime::Now</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/timer.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetlocaltimemillis"></A>
+<H3>::wxGetLocalTimeMillis</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A></B> </B> <B>wxGetLocalTimeMillis</B>()<P>
+Returns the number of milliseconds since local time 00:00:00 Jan 1st 1970.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimenow">wxDateTime::Now</A>,<BR>
+
+<A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/timer.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetutctime"></A>
+<H3>::wxGetUTCTime</H3>
+<P>
+<B>long</B> <B>wxGetUTCTime</B>()<P>
+Returns the number of seconds since GMT 00:00:00 Jan 1st 1970.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimenow">wxDateTime::Now</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/timer.h&gt;<P>
+
+
+<HR>
+<A NAME="wxmicrosleep"></A>
+<H3>::wxMicroSleep</H3>
+<P>
+<B>void</B> <B>wxMicroSleep</B>(<B>unsigned long</B><I> microseconds</I>)<P>
+Sleeps for the specified number of microseconds. The microsecond resolution may
+not, in fact, be available on all platforms (currently only Unix platforms with
+nanosleep(2) may provide it) in which case this is the same as
+<A HREF="wx_timefunctions.html#wxmillisleep">wxMilliSleep</A>(<I>microseconds</I>/1000).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxmillisleep"></A>
+<H3>::wxMilliSleep</H3>
+<P>
+<B>void</B> <B>wxMilliSleep</B>(<B>unsigned long</B><I> milliseconds</I>)<P>
+Sleeps for the specified number of milliseconds. Notice that usage of this
+function is encouraged instead of calling usleep(3) directly because the
+standard usleep() function is not MT safe.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxnow"></A>
+<H3>::wxNow</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxNow</B>()<P>
+Returns a string representing the current date and time.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxsleep"></A>
+<H3>::wxSleep</H3>
+<P>
+<B>void</B> <B>wxSleep</B>(<B>int</B><I> secs</I>)<P>
+Sleeps for the specified number of seconds.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxstarttimer"></A>
+<H3>::wxStartTimer</H3>
+<P>
+<B>void</B> <B>wxStartTimer</B>()<P>
+Starts a stopwatch; use <A HREF="wx_timefunctions.html#wxgetelapsedtime">::wxGetElapsedTime</A> to get the elapsed time.<P>
+See also <A HREF="wx_wxtimer.html#wxtimer">wxTimer</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/timer.h&gt;<P>
+
+
+<HR>
+<A NAME="wxusleep"></A>
+<H3>::wxUsleep</H3>
+<P>
+<B>void</B> <B>wxUsleep</B>(<B>unsigned long</B><I> milliseconds</I>)<P>
+This function is deprecated because its name is misleading: notice that the
+argument is in milliseconds, not microseconds. Please use either
+<A HREF="wx_timefunctions.html#wxmillisleep">wxMilliSleep</A> or <A HREF="wx_timefunctions.html#wxmicrosleep">wxMicroSleep</A>
+depending on the resolution you need.<P>
+<P>
+
+</FONT></BODY></HTML>

@@ -1,20 +1,16 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        hashmap.h
+// Name:        wx/hashmap.h
 // Purpose:     wxHashMap class
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     29/01/2002
-// RCS-ID:      $Id: hashmap.h,v 1.46.2.5 2006/01/18 16:32:38 JS Exp $
+// RCS-ID:      $Id: hashmap.h 45498 2007-04-16 13:03:05Z VZ $
 // Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_HASHMAP_H_
 #define _WX_HASHMAP_H_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "hashmap.h"
-#endif
 
 #include "wx/string.h"
 
@@ -38,7 +34,7 @@
 #endif
 
 #define _WX_DECLARE_HASH_MAP( KEY_T, VALUE_T, HASH_T, KEY_EQ_T, CLASSNAME, CLASSEXP ) \
-    typedef WX_HASH_MAP_NAMESPACE::hash_map< KEY_T, VALUE_T, HASH_T, KEY_EQ_T > CLASSNAME;
+    typedef WX_HASH_MAP_NAMESPACE::hash_map< KEY_T, VALUE_T, HASH_T, KEY_EQ_T > CLASSNAME
 
 #else // !wxUSE_STL || !defined(HAVE_STL_HASH_MAP)
 
@@ -206,6 +202,7 @@ public: \
     { \
     public: \
         const_iterator() : Iterator() {} \
+        const_iterator(iterator i) : Iterator(i) {} \
         const_iterator( Node* node, const Self* ht ) \
             : Iterator( node, (Self*)ht ) {} \
         const_iterator& operator++() { PlusPlus();return *this; } \
@@ -274,9 +271,9 @@ public: \
     const_iterator end() const { return const_iterator( 0, this ); } \
     iterator end() { return iterator( 0, this ); } \
     const_iterator begin() const \
-        { return const_iterator( (Node*)GetFirstNode( m_tableBuckets, (_wxHashTable_NodeBase**)m_table ), this ); }; \
+        { return const_iterator( (Node*)GetFirstNode( m_tableBuckets, (_wxHashTable_NodeBase**)m_table ), this ); } \
     iterator begin() \
-        { return iterator( (Node*)GetFirstNode( m_tableBuckets, (_wxHashTable_NodeBase**)m_table ), this ); }; \
+        { return iterator( (Node*)GetFirstNode( m_tableBuckets, (_wxHashTable_NodeBase**)m_table ), this ); } \
  \
     size_type erase( const const_key_type& key ) \
     { \
@@ -348,10 +345,11 @@ protected: \
         { \
             if( m_equals( m_getKey( (*node)->m_value ), key ) ) \
                 return node; \
+            /* Tell the compiler to not do any strict-aliasing assumptions with a void cast? Can we make such a runtime guarantee? */ \
             node = (Node**)&(*node)->m_nxt; \
         } \
  \
-        return 0; \
+        return NULL; \
     } \
  \
     /* returns NULL if not found */ \
@@ -467,11 +465,19 @@ class WXDLLIMPEXP_BASE wxIntegerHash
     WX_HASH_MAP_NAMESPACE::hash<unsigned short> ushortHash;
 
 #if defined wxLongLong_t && !defined wxLongLongIsLong
+    // hash<wxLongLong_t> ought to work but doesn't on some compilers
+    #if (!defined SIZEOF_LONG_LONG && SIZEOF_LONG == 4) \
+        || (defined SIZEOF_LONG_LONG && SIZEOF_LONG_LONG == SIZEOF_LONG * 2)
     size_t longlongHash( wxLongLong_t x ) const
     {
         return longHash( wx_truncate_cast(long, x) ) ^
                longHash( wx_truncate_cast(long, x >> (sizeof(long) * 8)) );
     }
+    #elif defined SIZEOF_LONG_LONG && SIZEOF_LONG_LONG == SIZEOF_LONG
+    WX_HASH_MAP_NAMESPACE::hash<long> longlongHash;
+    #else
+    WX_HASH_MAP_NAMESPACE::hash<wxLongLong_t> longlongHash;
+    #endif
 #endif
 
 public:
@@ -643,7 +649,10 @@ public: \
  \
     /* count() == 0 | 1 */ \
     size_type count( const const_key_type& key ) \
-        { return GetNode( key ) ? 1 : 0; } \
+    { \
+        /* explicit cast needed to suppress CodeWarrior warnings */ \
+        return (size_type)(GetNode( key ) ? 1 : 0); \
+    } \
 }
 
 #endif // !wxUSE_STL || !defined(HAVE_STL_HASH_MAP)
@@ -707,4 +716,3 @@ WX_DECLARE_HASH_MAP_WITH_DECL( long, long, wxIntegerHash, wxIntegerEqual,
 
 
 #endif // _WX_HASHMAP_H_
-

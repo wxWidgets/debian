@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     04.04.00
-%% RCS-ID:      $Id: datespan.tex,v 1.10 2005/02/22 15:09:48 ABX Exp $
+%% RCS-ID:      $Id: datespan.tex 39409 2006-05-28 23:56:51Z VZ $
 %% Copyright:   (c) Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -19,7 +19,7 @@ one month to Feb, 15 -- we want to get Mar, 15, of course).
 
 When adding a month to the date, all lesser components (days, hours, ...)
 won't be changed unless the resulting date would be invalid: for example,
-Jan 31 + 1 month will be Feb 28, not (non existing) Feb 31.
+Jan 31 + 1 month will be Feb 28, not (non-existing) Feb 31.
 
 Because of this feature, adding and subtracting back again the same
 wxDateSpan will {\bf not}, in general give back the original date: Feb 28 - 1

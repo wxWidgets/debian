@@ -1,0 +1,39 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Include files</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="includefiles"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_multiplat.html#multiplat"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_multiplat.html#multiplat"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_libraries.html#libraries"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Include files</H2>
+<P>
+The main include file is <TT>"wx/wx.h"</TT>; this includes the most commonly
+used modules of wxWidgets.<P>
+To save on compilation time, include only those header files relevant to the
+source file. If you are using precompiled headers, you should include
+the following section before any other includes:<P>
+<PRE>
+// For compilers that support precompilation, includes "wx.h".
+#include &lt;wx/wxprec.h&gt;
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
+// Include your minimal set of headers here, or wx.h
+#include &lt;wx/wx.h&gt;
+#endif
+
+... now your other include files ...
+</PRE>
+The file <TT>"wx/wxprec.h"</TT> includes <TT>"wx/wx.h"</TT>. Although this incantation
+may seem quirky, it is in fact the end result of a lot of experimentation,
+and several Windows compilers to use precompilation which is largely automatic for
+compilers with necessary support. Currently it is used for Visual C++ (including
+embedded Visual C++), Borland C++, Open Watcom C++, Digital Mars C++
+and newer versions of GCC.
+Some compilers might need extra work from the application developer to set the
+build environment up as necessary for the support.<P>
+
+</FONT></BODY></HTML>

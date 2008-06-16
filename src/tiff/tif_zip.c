@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_zip.c,v 1.4 2004/11/19 22:29:47 VZ Exp $ */
+/* $Header$ */
 
 /*
  * Copyright (c) 1995-1997 Sam Leffler

@@ -1,0 +1,178 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextRange</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextrange"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextprintout.html#wxrichtextprintout"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextRange</H2>
+<P>
+This class stores beginning and end positions for a range of data.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextbuffer.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextrangewxrichtextrange">wxRichTextRange::wxRichTextRange</A><BR>
+<A HREF="#wxrichtextrangedtor">wxRichTextRange::~wxRichTextRange</A><BR>
+<A HREF="#wxrichtextrangecontains">wxRichTextRange::Contains</A><BR>
+<A HREF="#wxrichtextrangegetend">wxRichTextRange::GetEnd</A><BR>
+<A HREF="#wxrichtextrangegetlength">wxRichTextRange::GetLength</A><BR>
+<A HREF="#wxrichtextrangegetstart">wxRichTextRange::GetStart</A><BR>
+<A HREF="#wxrichtextrangefrominternal">wxRichTextRange::FromInternal</A><BR>
+<A HREF="#wxrichtextrangeisoutside">wxRichTextRange::IsOutside</A><BR>
+<A HREF="#wxrichtextrangeiswithin">wxRichTextRange::IsWithin</A><BR>
+<A HREF="#wxrichtextrangelimitto">wxRichTextRange::LimitTo</A><BR>
+<A HREF="#wxrichtextrangesetend">wxRichTextRange::SetEnd</A><BR>
+<A HREF="#wxrichtextrangesetrange">wxRichTextRange::SetRange</A><BR>
+<A HREF="#wxrichtextrangesetstart">wxRichTextRange::SetStart</A><BR>
+<A HREF="#wxrichtextrangeswap">wxRichTextRange::Swap</A><BR>
+<A HREF="#wxrichtextrangetointernal">wxRichTextRange::ToInternal</A><BR>
+<A HREF="#wxrichtextrangeoperatorplus">wxRichTextRange::operator+</A><BR>
+<A HREF="#wxrichtextrangeoperatorminus">wxRichTextRange::operator-</A><BR>
+<A HREF="#wxrichtextrangeoperatorassign">wxRichTextRange::operator=</A><BR>
+<A HREF="#wxrichtextrangeoperatorequal">wxRichTextRange::operator==</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextrangewxrichtextrange"></A>
+<H3>wxRichTextRange::wxRichTextRange</H3>
+<P>
+<B></B> <B>wxRichTextRange</B>(<B>long </B><I>start</I>, <B>long </B><I>end</I>)<P>
+<B></B> <B>wxRichTextRange</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>)<P>
+<B></B> <B>wxRichTextRange</B>()<P>
+Constructors.<P>
+
+<HR>
+<A NAME="wxrichtextrangedtor"></A>
+<H3>wxRichTextRange::~wxRichTextRange</H3>
+<P>
+<B></B> <B>~wxRichTextRange</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxrichtextrangecontains"></A>
+<H3>wxRichTextRange::Contains</H3>
+<P>
+<B>bool</B> <B>Contains</B>(<B>long </B><I>pos</I>) <B>const</B><P>
+Returns <TT>true</TT> if the given position is within this range. Does not
+match if the range is empty.<P>
+
+<HR>
+<A NAME="wxrichtextrangegetend"></A>
+<H3>wxRichTextRange::GetEnd</H3>
+<P>
+<B>long</B> <B>GetEnd</B>() <B>const</B><P>
+Returns the end position.<P>
+
+<HR>
+<A NAME="wxrichtextrangegetlength"></A>
+<H3>wxRichTextRange::GetLength</H3>
+<P>
+<B>long</B> <B>GetLength</B>() <B>const</B><P>
+Returns the length of the range.<P>
+
+<HR>
+<A NAME="wxrichtextrangegetstart"></A>
+<H3>wxRichTextRange::GetStart</H3>
+<P>
+<B>long</B> <B>GetStart</B>() <B>const</B><P>
+Returns the start of the range.<P>
+
+<HR>
+<A NAME="wxrichtextrangefrominternal"></A>
+<H3>wxRichTextRange::FromInternal</H3>
+<P>
+<B><A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A></B> </B> <B>FromInternal</B>() <B>const</B><P>
+Converts the internal range, which uses the first and last character positions of the range,
+to the API-standard range, whose end is one past the last character in the range.
+In other words, one is added to the end position.<P>
+
+<HR>
+<A NAME="wxrichtextrangeisoutside"></A>
+<H3>wxRichTextRange::IsOutside</H3>
+<P>
+<B>bool</B> <B>IsOutside</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>) <B>const</B><P>
+Returns <TT>true</TT> if this range is completely outside <I>range</I>.<P>
+
+<HR>
+<A NAME="wxrichtextrangeiswithin"></A>
+<H3>wxRichTextRange::IsWithin</H3>
+<P>
+<B>bool</B> <B>IsWithin</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>) <B>const</B><P>
+Returns <TT>true</TT> if this range is completely within <I>range</I>.<P>
+
+<HR>
+<A NAME="wxrichtextrangelimitto"></A>
+<H3>wxRichTextRange::LimitTo</H3>
+<P>
+<B>bool</B> <B>LimitTo</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>)<P>
+Limits this range to be within <I>range</I>.<P>
+
+<HR>
+<A NAME="wxrichtextrangesetend"></A>
+<H3>wxRichTextRange::SetEnd</H3>
+<P>
+<B>void</B> <B>SetEnd</B>(<B>long </B><I>end</I>)<P>
+Sets the end of the range.<P>
+
+<HR>
+<A NAME="wxrichtextrangesetrange"></A>
+<H3>wxRichTextRange::SetRange</H3>
+<P>
+<B>void</B> <B>SetRange</B>(<B>long </B><I>start</I>, <B>long </B><I>end</I>)<P>
+Sets the range.<P>
+
+<HR>
+<A NAME="wxrichtextrangesetstart"></A>
+<H3>wxRichTextRange::SetStart</H3>
+<P>
+<B>void</B> <B>SetStart</B>(<B>long </B><I>start</I>)<P>
+Sets the start of the range.<P>
+
+<HR>
+<A NAME="wxrichtextrangeswap"></A>
+<H3>wxRichTextRange::Swap</H3>
+<P>
+<B>void</B> <B>Swap</B>()<P>
+Swaps the start and end.<P>
+
+<HR>
+<A NAME="wxrichtextrangetointernal"></A>
+<H3>wxRichTextRange::ToInternal</H3>
+<P>
+<B><A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A></B> </B> <B>ToInternal</B>() <B>const</B><P>
+Converts the API-standard range, whose end is one past the last character in the range,
+to the internal form, which uses the first and last character positions of the range.
+In other words, one is subtracted from the end position.<P>
+
+<HR>
+<A NAME="wxrichtextrangeoperatorplus"></A>
+<H3>wxRichTextRange::operator+</H3>
+<P>
+<B><A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A></B> </B> <B>operator+</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>) <B>const</B><P>
+Adds <I>range</I> to this range.<P>
+
+<HR>
+<A NAME="wxrichtextrangeoperatorminus"></A>
+<H3>wxRichTextRange::operator-</H3>
+<P>
+<B><A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A></B> </B> <B>operator-</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>) <B>const</B><P>
+Subtracts <I>range</I> from this range.<P>
+
+<HR>
+<A NAME="wxrichtextrangeoperatorassign"></A>
+<H3>wxRichTextRange::operator=</H3>
+<P>
+<B>void</B> <B>operator=</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>)<P>
+Assigns <I>range</I> to this range.<P>
+
+<HR>
+<A NAME="wxrichtextrangeoperatorequal"></A>
+<H3>wxRichTextRange::operator==</H3>
+<P>
+<B>bool</B> <B>operator==</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>) <B>const</B><P>
+Returns <TT>true</TT> if <I>range</I> is the same as this range.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,75 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCSConv</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcsconv"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcriticalsectionlocker.html#wxcriticalsectionlocker"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcursor.html#wxcursor"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCSConv</H2>
+<P>
+This class converts between any character sets and Unicode.
+It has one predefined instance, <B>wxConvLocal</B>, for the
+default user character set.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/strconv.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>, 
+<A HREF="wx_wxencodingconverter.html#wxencodingconverter">wxEncodingConverter</A>, 
+<A HREF="wx_mbconvclasses.html#mbconvclasses">wxMBConv classes overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxcsconvwxcsconv">wxCSConv::wxCSConv</A><BR>
+<A HREF="#wxcsconvdtor">wxCSConv::~wxCSConv</A><BR>
+<A HREF="#wxcsconvisok">wxCSConv::IsOk</A><BR>
+<A HREF="#wxcsconvmb2wc">wxCSConv::MB2WC</A><BR>
+<A HREF="#wxcsconvwc2mb">wxCSConv::WC2MB</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcsconvwxcsconv"></A>
+<H3>wxCSConv::wxCSConv</H3>
+<P>
+<B></B> <B>wxCSConv</B>(<B>const wxChar* </B><I>charset</I>)<P>
+<B></B> <B>wxCSConv</B>(<B>wxFontEncoding </B><I>encoding</I>)<P>
+Constructor. You may specify either the name of the character set you want to
+convert from/to or an encoding constant. If the character set name (or the
+encoding) is not recognized, ISO 8859-1 is used as fall back.<P>
+
+
+<HR>
+<A NAME="wxcsconvdtor"></A>
+<H3>wxCSConv::~wxCSConv</H3>
+<P>
+<B></B> <B>~wxCSConv</B>()<P>
+Destructor frees any resources needed to perform the conversion.<P>
+
+
+<HR>
+<A NAME="wxcsconvisok"></A>
+<H3>wxCSConv::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns <TT>true</TT> if the charset (or the encoding) given at constructor is really
+available to use. Returns <TT>false</TT> if ISO 8859-1 will be used instead.<P>
+Note this does <EM>not</EM> mean that a given string will be correctly converted.
+A malformed string may still make conversion functions return <TT>wxCONV_FAILED</TT>.<P>
+This function is new since wxWidgets version 2.8.2<P>
+
+
+<HR>
+<A NAME="wxcsconvmb2wc"></A>
+<H3>wxCSConv::MB2WC</H3>
+<P>
+<B>size_t</B> <B>MB2WC</B>(<B>wchar_t* </B><I>buf</I>, <B>const char* </B><I>psz</I>, <B>size_t </B><I>n</I>) <B>const</B><P>
+Converts from the selected character set to Unicode. Returns length of string written to destination buffer.<P>
+
+
+<HR>
+<A NAME="wxcsconvwc2mb"></A>
+<H3>wxCSConv::WC2MB</H3>
+<P>
+<B>size_t</B> <B>WC2MB</B>(<B>char* </B><I>buf</I>, <B>const wchar_t* </B><I>psz</I>, <B>size_t </B><I>n</I>) <B>const</B><P>
+Converts from Unicode to the selected character set. Returns length of string written to destination buffer.<P>
+
+</FONT></BODY></HTML>

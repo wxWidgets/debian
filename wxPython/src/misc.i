@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-July-1997
-// RCS-ID:      $Id: misc.i,v 1.39 2004/11/11 02:26:16 RD Exp $
+// RCS-ID:      $Id: misc.i 41825 2006-10-09 18:55:10Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -24,8 +24,6 @@
 
 %import core.i
 %pythoncode { wx = _core }
-
-%include __misc_rename.i
 
 
 MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
@@ -50,5 +48,7 @@ MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
 %include _clipbrd.i
 %include _display.i
 %include _stdpaths.i
+%include _power.i
+%include _about.i
 
 //---------------------------------------------------------------------------

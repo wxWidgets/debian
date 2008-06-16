@@ -1,8 +1,8 @@
 """EditWindow class."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: editwindow.py,v 1.10.2.3 2006/02/24 01:21:26 RD Exp $"
-__revision__ = "$Revision: 1.10.2.3 $"[11:-2]
+__cvsid__ = "$Id: editwindow.py 48373 2007-08-25 01:32:08Z RD $"
+__revision__ = "$Revision: 48373 $"[11:-2]
 
 import wx
 from wx import stc
@@ -43,7 +43,7 @@ elif 'wxGTK' in wx.PlatformInfo and 'gtk2' in wx.PlatformInfo:
 
 elif 'wxMac' in wx.PlatformInfo:
     FACES = { 'times'     : 'Lucida Grande',
-              'mono'      : 'Courier New',
+              'mono'      : 'Monaco',
               'helv'      : 'Geneva',
               'other'     : 'new century schoolbook',
               'size'      : 13,
@@ -143,7 +143,9 @@ class EditWindow(stc.StyledTextCtrl):
                           faces)
 
         self.StyleClearAll()
-
+        self.SetSelForeground(True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT))
+        self.SetSelBackground(True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT))
+        
         # Built in styles
         self.StyleSetSpec(stc.STC_STYLE_LINENUMBER,
                           "back:#C0C0C0,face:%(mono)s,size:%(lnsize)d" % FACES)

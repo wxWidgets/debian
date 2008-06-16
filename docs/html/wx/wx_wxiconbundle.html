@@ -1,0 +1,76 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxIconBundle</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxiconbundle"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxicon.html#wxicon"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxiconlocation.html#wxiconlocation"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxIconBundle</H2>
+<P>
+This class contains multiple copies of an icon in different sizes,
+see also <A HREF="wx_wxdialog.html#wxdialogseticons">wxDialog::SetIcons</A> and
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowseticons">wxTopLevelWindow::SetIcons</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxiconbundlewxiconbundle">wxIconBundle::wxIconBundle</A><BR>
+<A HREF="#wxiconbundledtor">wxIconBundle::~wxIconBundle</A><BR>
+<A HREF="#wxiconbundleaddicon">wxIconBundle::AddIcon</A><BR>
+<A HREF="#wxiconbundlegeticon">wxIconBundle::GetIcon</A><BR>
+<A HREF="#wxiconbundleoperatorassign">wxIconBundle::operator=</A><BR>
+<P>
+
+<HR>
+<A NAME="wxiconbundlewxiconbundle"></A>
+<H3>wxIconBundle::wxIconBundle</H3>
+<P>
+<B></B> <B>wxIconBundle</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxIconBundle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>, <B>long </B><I>type</I>)<P>
+Initializes the bundle with the icon(s) found in the file.<P>
+<B></B> <B>wxIconBundle</B>(<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>& </B></B><I>icon</I>)<P>
+Initializes the bundle with a single icon.<P>
+<B></B> <B>wxIconBundle</B>(<B>const <A HREF="wx_wxiconbundle.html#wxiconbundle">wxIconBundle</A>& </B></B><I>ic</I>)<P>
+Copy constructor.<P>
+
+<HR>
+<A NAME="wxiconbundledtor"></A>
+<H3>wxIconBundle::~wxIconBundle</H3>
+<P>
+<B></B> <B>~wxIconBundle</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxiconbundleaddicon"></A>
+<H3>wxIconBundle::AddIcon</H3>
+<P>
+<B>void</B> <B>AddIcon</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>, <B>long </B><I>type</I>)<P>
+Adds all the icons contained in the file to the bundle;
+if the collection already contains icons with the same
+width and height, they are replaced by the new ones.<P>
+<B>void</B> <B>AddIcon</B>(<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>& </B></B><I>icon</I>)<P>
+Adds the icon to the collection; if the collection already
+contains an icon with the same width and height, it is
+replaced by the new one.<P>
+
+<HR>
+<A NAME="wxiconbundlegeticon"></A>
+<H3>wxIconBundle::GetIcon</H3>
+<P>
+<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>&</B> </B> <B>GetIcon</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>) <B>const</B><P>
+Returns the icon with the given size; if no such icon exists,
+returns the icon with size wxSYS_ICON_X/wxSYS_ICON_Y;
+if no such icon exists,
+returns the first icon in the bundle. If size = wxSize( -1, -1 ),
+returns the icon with size wxSYS_ICON_X/wxSYS_ICON_Y.<P>
+<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>&</B> </B> <B>GetIcon</B>(<B>wxCoord </B><I>size = -1</I>) <B>const</B><P>
+Same as GetIcon( wxSize( size, size ) ).<P>
+
+<HR>
+<A NAME="wxiconbundleoperatorassign"></A>
+<H3>wxIconBundle::operator=</H3>
+<P>
+<B>const <A HREF="wx_wxiconbundle.html#wxiconbundle">wxIconBundle</A>&</B> </B> <B>operator=</B>(<B>const <A HREF="wx_wxiconbundle.html#wxiconbundle">wxIconBundle</A>& </B></B><I>ic</I>)<P>
+Assignment operator.<P>
+
+</FONT></BODY></HTML>

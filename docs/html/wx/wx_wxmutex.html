@@ -1,0 +1,210 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMutex</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmutex"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmultichoicedialog.html#wxmultichoicedialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmutexlocker.html#wxmutexlocker"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMutex</H2>
+<P>
+A mutex object is a synchronization object whose state is set to signaled when
+it is not owned by any thread, and nonsignaled when it is owned. Its name comes
+from its usefulness in coordinating mutually-exclusive access to a shared
+resource as only one thread at a time can own a mutex object.<P>
+Mutexes may be recursive in the sense that a thread can lock a mutex which it
+had already locked before (instead of dead locking the entire process in this
+situation by starting to wait on a mutex which will never be released while the
+thread is waiting) but using them is not recommended and they are <B>not</B>
+recursive by default. The reason for this is that recursive mutexes are not
+supported by all Unix flavours and, worse, they cannot be used with 
+<A HREF="wx_wxcondition.html#wxcondition">wxCondition</A>.<P>
+For example, when several threads use the data stored in the linked list,
+modifications to the list should only be allowed to one thread at a time
+because during a new node addition the list integrity is temporarily broken
+(this is also called <I>program invariant</I>).<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<FONT SIZE=2><PRE>
+    // this variable has an "s_" prefix because it is static: seeing an "s_" in
+    // a multithreaded program is in general a good sign that you should use a
+    // mutex (or a critical section)
+    static wxMutex *s_mutexProtectingTheGlobalData;
+
+    // we store some numbers in this global array which is presumably used by
+    // several threads simultaneously
+    wxArrayInt s_data;
+
+    void MyThread::AddNewNode(int num)
+    {
+        // ensure that no other thread accesses the list
+        s_mutexProtectingTheGlobalList-&gt;Lock();
+
+        s_data.Add(num);
+
+        s_mutexProtectingTheGlobalList-&gt;Unlock();
+    }
+
+    // return true the given number is greater than all array elements
+    bool MyThread::IsGreater(int num)
+    {
+        // before using the list we must acquire the mutex
+        wxMutexLocker lock(s_mutexProtectingTheGlobalData);
+
+        size_t count = s_data.Count();
+        for ( size_t n = 0; n &lt; count; n++ )
+        {
+            if ( s_data[n] &gt; num )
+                return false;
+        }
+
+        return true;
+    }
+</PRE>
+</FONT><P>
+Notice how wxMutexLocker was used in the second function to ensure that the
+mutex is unlocked in any case: whether the function returns true or false
+(because the destructor of the local object <I>lock</I> is always called). Using
+this class instead of directly using wxMutex is, in general safer and is even
+more so if your program uses C++ exceptions.<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+<PRE>
+enum wxMutexType
+{
+    // normal mutex: try to always use this one
+    wxMUTEX_DEFAULT,
+
+    // recursive mutex: don't use these ones with wxCondition
+    wxMUTEX_RECURSIVE
+};
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/thread.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxthread.html#wxthread">wxThread</A>, <A HREF="wx_wxcondition.html#wxcondition">wxCondition</A>, 
+<A HREF="wx_wxmutexlocker.html#wxmutexlocker">wxMutexLocker</A>, <A HREF="wx_wxcriticalsection.html#wxcriticalsection">wxCriticalSection</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmutexctor">wxMutex::wxMutex</A><BR>
+<A HREF="#wxmutexdtor">wxMutex::~wxMutex</A><BR>
+<A HREF="#wxmutexlock">wxMutex::Lock</A><BR>
+<A HREF="#wxmutextrylock">wxMutex::TryLock</A><BR>
+<A HREF="#wxmutexunlock">wxMutex::Unlock</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmutexctor"></A>
+<H3>wxMutex::wxMutex</H3>
+<P>
+<B></B> <B>wxMutex</B>(<B>wxMutexType </B><I>type = <TT>wxMUTEX_DEFAULT</TT></I>)<P>
+Default constructor.<P>
+
+<HR>
+<A NAME="wxmutexdtor"></A>
+<H3>wxMutex::~wxMutex</H3>
+<P>
+<B></B> <B>~wxMutex</B>()<P>
+Destroys the wxMutex object.<P>
+
+<HR>
+<A NAME="wxmutexlock"></A>
+<H3>wxMutex::Lock</H3>
+<P>
+<B>wxMutexError</B> <B>Lock</B>()<P>
+Locks the mutex object.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+One of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxMUTEX_NO_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+There was no error.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxMUTEX_DEAD_LOCK</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A deadlock situation was detected.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="wxmutextrylock"></A>
+<H3>wxMutex::TryLock</H3>
+<P>
+<B>wxMutexError</B> <B>TryLock</B>()<P>
+Tries to lock the mutex object. If it can't, returns immediately with an error.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+One of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxMUTEX_NO_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+There was no error.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxMUTEX_BUSY</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The mutex is already locked by another thread.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="wxmutexunlock"></A>
+<H3>wxMutex::Unlock</H3>
+<P>
+<B>wxMutexError</B> <B>Unlock</B>()<P>
+Unlocks the mutex object.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+One of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxMUTEX_NO_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+There was no error.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxMUTEX_UNLOCKED</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The calling thread doesn't own the mutex.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+</FONT></BODY></HTML>

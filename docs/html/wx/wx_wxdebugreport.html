@@ -1,0 +1,299 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDebugReport</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdebugreport"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdebugstreambuf.html#wxdebugstreambuf"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdebugreportcompress.html#wxdebugreportcompress"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDebugReport</H2>
+<P>
+wxDebugReport is used to generate a debug report, containing information about
+the program current state. It is usually used from 
+<A HREF="wx_wxapp.html#wxapponfatalexception">wxApp::OnFatalException()</A> as shown in the 
+<A HREF="wx_samples.html#sampledebugrpt">sample</A>.<P>
+A wxDebugReport object contains one or more files. A few of them can be created by the
+class itself but more can be created from the outside and then added to the
+report. Also note that several virtual functions may be overridden to further
+customize the class behaviour.<P>
+Once a report is fully assembled, it can simply be left in the temporary
+directory so that the user can email it to the developers (in which case you
+should still use <A HREF="wx_wxdebugreportcompress.html#wxdebugreportcompress">wxDebugReportCompress</A> to
+compress it in a single file) or uploaded to a Web server using 
+<A HREF="wx_wxdebugreportupload.html#wxdebugreportupload">wxDebugReportUpload</A> (setting up the Web server
+to accept uploads is your responsibility, of course). Other handlers, for example for
+automatically emailing the report, can be defined as well but are not currently
+included in wxWidgets.<P>
+<B><FONT COLOR="#FF0000">Example of use</FONT></B><P>
+<PRE>
+    wxDebugReport report;
+    wxDebugReportPreviewStd preview;
+
+    report.AddCurrentContext();  // could also use AddAll()
+    report.AddCurrentDump();     // to do both at once
+
+    if ( preview.Show(report) )
+        report.Process();
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/debugrpt.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+This enum is used for functions that report either the current state
+or the state during the last (fatal) exception:<P>
+<PRE>
+enum wxDebugReport::Context
+{
+    Context_Current,
+    Context_Exception
+};
+</PRE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxdebugreportwxdebugreport">wxDebugReport::wxDebugReport</A><BR>
+<A HREF="#wxdebugreportdtor">wxDebugReport::~wxDebugReport</A><BR>
+<A HREF="#wxdebugreportaddall">wxDebugReport::AddAll</A><BR>
+<A HREF="#wxdebugreportaddcontext">wxDebugReport::AddContext</A><BR>
+<A HREF="#wxdebugreportaddcurrentcontext">wxDebugReport::AddCurrentContext</A><BR>
+<A HREF="#wxdebugreportaddcurrentdump">wxDebugReport::AddCurrentDump</A><BR>
+<A HREF="#wxdebugreportadddump">wxDebugReport::AddDump</A><BR>
+<A HREF="#wxdebugreportaddexceptioncontext">wxDebugReport::AddExceptionContext</A><BR>
+<A HREF="#wxdebugreportaddexceptiondump">wxDebugReport::AddExceptionDump</A><BR>
+<A HREF="#wxdebugreportaddfile">wxDebugReport::AddFile</A><BR>
+<A HREF="#wxdebugreportaddtext">wxDebugReport::AddText</A><BR>
+<A HREF="#wxdebugreportdoaddcustomcontext">wxDebugReport::DoAddCustomContext</A><BR>
+<A HREF="#wxdebugreportdoaddexceptioninfo">wxDebugReport::DoAddExceptionInfo</A><BR>
+<A HREF="#wxdebugreportdoaddloadedmodules">wxDebugReport::DoAddLoadedModules</A><BR>
+<A HREF="#wxdebugreportdoaddsysteminfo">wxDebugReport::DoAddSystemInfo</A><BR>
+<A HREF="#wxdebugreportgetdirectory">wxDebugReport::GetDirectory</A><BR>
+<A HREF="#wxdebugreportgetfile">wxDebugReport::GetFile</A><BR>
+<A HREF="#wxdebugreportgetfilescount">wxDebugReport::GetFilesCount</A><BR>
+<A HREF="#wxdebugreportgetreportname">wxDebugReport::GetReportName</A><BR>
+<A HREF="#wxdebugreportisok">wxDebugReport::IsOk</A><BR>
+<A HREF="#wxdebugreportprocess">wxDebugReport::Process</A><BR>
+<A HREF="#wxdebugreportremovefile">wxDebugReport::RemoveFile</A><BR>
+<A HREF="#wxdebugreportreset">wxDebugReport::Reset</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdebugreportwxdebugreport"></A>
+<H3>wxDebugReport::wxDebugReport</H3>
+<P>
+<B></B> <B>wxDebugReport</B>()<P>
+The constructor creates a temporary directory where the files that will
+be included in the report are created. Use 
+<A HREF="wx_wxdebugreport.html#wxdebugreportisok">IsOk()</A> to check for errors.<P>
+
+
+<HR>
+<A NAME="wxdebugreportdtor"></A>
+<H3>wxDebugReport::~wxDebugReport</H3>
+<P>
+<B></B> <B>~wxDebugReport</B>()<P>
+The destructor normally destroys the temporary directory created in the constructor
+with all the files it contains. Call <A HREF="wx_wxdebugreport.html#wxdebugreportreset">Reset()</A> to
+prevent this from happening.<P>
+
+
+<HR>
+<A NAME="wxdebugreportaddall"></A>
+<H3>wxDebugReport::AddAll</H3>
+<P>
+<B>void</B> <B>AddAll</B>(<B>Context </B><I>context = Context_Exception</I>)<P>
+Adds all available information to the report. Currently this includes a
+text (XML) file describing the process context and, under Win32, a minidump
+file.<P>
+
+
+<HR>
+<A NAME="wxdebugreportaddcontext"></A>
+<H3>wxDebugReport::AddContext</H3>
+<P>
+<B>bool</B> <B>AddContext</B>(<B>Context </B><I>ctx</I>)<P>
+Add an XML file containing the current or exception context and the
+stack trace.<P>
+
+
+<HR>
+<A NAME="wxdebugreportaddcurrentcontext"></A>
+<H3>wxDebugReport::AddCurrentContext</H3>
+<P>
+<B>bool</B> <B>AddCurrentContext</B>()<P>
+The same as <A HREF="wx_wxdebugreport.html#wxdebugreportaddcontext">AddContext(Context_Current)</A>.<P>
+
+
+<HR>
+<A NAME="wxdebugreportaddcurrentdump"></A>
+<H3>wxDebugReport::AddCurrentDump</H3>
+<P>
+<B>bool</B> <B>AddCurrentDump</B>()<P>
+The same as <A HREF="wx_wxdebugreport.html#wxdebugreportadddump">AddDump(Context_Current)</A>.<P>
+
+
+<HR>
+<A NAME="wxdebugreportadddump"></A>
+<H3>wxDebugReport::AddDump</H3>
+<P>
+<B>bool</B> <B>AddDump</B>(<B>Context </B><I>ctx</I>)<P>
+Adds the minidump file to the debug report.<P>
+Minidumps are only available under recent Win32 versions (<TT>dbghlp32.dll</TT> 
+can be installed under older systems to make minidumps available).<P>
+
+
+<HR>
+<A NAME="wxdebugreportaddexceptioncontext"></A>
+<H3>wxDebugReport::AddExceptionContext</H3>
+<P>
+<B>bool</B> <B>AddExceptionContext</B>()<P>
+The same as <A HREF="wx_wxdebugreport.html#wxdebugreportaddcontext">AddContext(Context_Exception)</A>.<P>
+
+
+<HR>
+<A NAME="wxdebugreportaddexceptiondump"></A>
+<H3>wxDebugReport::AddExceptionDump</H3>
+<P>
+<B>bool</B> <B>AddExceptionDump</B>()<P>
+The same as <A HREF="wx_wxdebugreport.html#wxdebugreportadddump">AddDump(Context_Exception)</A>.<P>
+
+
+<HR>
+<A NAME="wxdebugreportaddfile"></A>
+<H3>wxDebugReport::AddFile</H3>
+<P>
+<B>void</B> <B>AddFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>description</I>)<P>
+Add another file to the report. If <I>filename</I> is an absolute path, it is
+copied to a file in the debug report directory with the same name. Otherwise
+the file should already exist in this directory<P>
+<I>description</I> only exists to be displayed to the user in the report summary
+shown by <A HREF="wx_wxdebugreportpreview.html#wxdebugreportpreview">wxDebugReportPreview</A>.<P>
+<B><FONT COLOR="#FF0000">See also </FONT></B><P>
+<A HREF="wx_wxdebugreport.html#wxdebugreportgetdirectory">GetDirectory()</A>,<BR>
+
+<A HREF="wx_wxdebugreport.html#wxdebugreportaddtext">AddText()</A><P>
+
+
+<HR>
+<A NAME="wxdebugreportaddtext"></A>
+<H3>wxDebugReport::AddText</H3>
+<P>
+<B>bool</B> <B>AddText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>description</I>)<P>
+This is a convenient wrapper around <A HREF="wx_wxdebugreport.html#wxdebugreportaddfile">AddFile</A>. It
+creates the file with the given <I>name</I> and writes <I>text</I> to it, then
+adds the file to the report. The <I>filename</I> shouldn't contain the path.<P>
+Returns <TT>true</TT> if file could be added successfully, <TT>false</TT> if an IO error
+occurred.<P>
+
+
+<HR>
+<A NAME="wxdebugreportdoaddcustomcontext"></A>
+<H3>wxDebugReport::DoAddCustomContext</H3>
+<P>
+<B>void</B> <B>DoAddCustomContext</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A> * </B></B><I>nodeRoot</I>)<P>
+This function may be overridden to add arbitrary custom context to the XML
+context file created by <A HREF="wx_wxdebugreport.html#wxdebugreportaddcontext">AddContext</A>. By
+default, it does nothing.<P>
+
+
+<HR>
+<A NAME="wxdebugreportdoaddexceptioninfo"></A>
+<H3>wxDebugReport::DoAddExceptionInfo</H3>
+<P>
+<B>bool</B> <B>DoAddExceptionInfo</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>nodeContext</I>)<P>
+This function may be overridden to modify the contents of the exception tag in
+the XML context file.<P>
+
+
+<HR>
+<A NAME="wxdebugreportdoaddloadedmodules"></A>
+<H3>wxDebugReport::DoAddLoadedModules</H3>
+<P>
+<B>bool</B> <B>DoAddLoadedModules</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>nodeModules</I>)<P>
+This function may be overridden to modify the contents of the modules tag in
+the XML context file.<P>
+
+
+<HR>
+<A NAME="wxdebugreportdoaddsysteminfo"></A>
+<H3>wxDebugReport::DoAddSystemInfo</H3>
+<P>
+<B>bool</B> <B>DoAddSystemInfo</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>nodeSystemInfo</I>)<P>
+This function may be overridden to modify the contents of the system tag in
+the XML context file.<P>
+
+
+<HR>
+<A NAME="wxdebugreportgetdirectory"></A>
+<H3>wxDebugReport::GetDirectory</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetDirectory</B>() <B>const</B><P>
+Returns the name of the temporary directory used for the files in this report.<P>
+This method should be used to construct the full name of the files which you
+wish to add to the report using <A HREF="wx_wxdebugreport.html#wxdebugreportaddfile">AddFile</A>.<P>
+
+
+<HR>
+<A NAME="wxdebugreportgetfile"></A>
+<H3>wxDebugReport::GetFile</H3>
+<P>
+<B>bool</B> <B>GetFile</B>(<B>size_t </B><I>n</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>name</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>desc</I>) <B>const</B><P>
+Retrieves the name (relative to 
+<A HREF="wx_wxdebugreport.html#wxdebugreportgetdirectory">GetDirectory()</A>) and the description of the
+file with the given index. If <I>n</I> is greater than or equal to the number of
+filse, <TT>false</TT> is returned.<P>
+
+
+<HR>
+<A NAME="wxdebugreportgetfilescount"></A>
+<H3>wxDebugReport::GetFilesCount</H3>
+<P>
+<B>size_t</B> <B>GetFilesCount</B>() <B>const</B><P>
+Gets the current number files in this report.<P>
+
+
+<HR>
+<A NAME="wxdebugreportgetreportname"></A>
+<H3>wxDebugReport::GetReportName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetReportName</B>() <B>const</B><P>
+Gets the name used as a base name for various files, by default 
+<A HREF="wx_wxapp.html#wxappgetappname">wxApp::GetAppName()</A> is used.<P>
+
+
+<HR>
+<A NAME="wxdebugreportisok"></A>
+<H3>wxDebugReport::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns <TT>true</TT> if the object was successfully initialized. If this method returns 
+<TT>false</TT> the report can't be used.<P>
+
+
+<HR>
+<A NAME="wxdebugreportprocess"></A>
+<H3>wxDebugReport::Process</H3>
+<P>
+<B>bool</B> <B>Process</B>()<P>
+Processes this report: the base class simply notifies the user that the
+report has been generated. This is usually not enough -- instead you
+should override this method to do something more useful to you.<P>
+
+
+<HR>
+<A NAME="wxdebugreportremovefile"></A>
+<H3>wxDebugReport::RemoveFile</H3>
+<P>
+<B>void</B> <B>RemoveFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Removes the file from report: this is used by 
+<A HREF="wx_wxdebugreportpreview.html#wxdebugreportpreview">wxDebugReportPreview</A> to allow the user to
+remove files potentially containing private information from the report.<P>
+
+
+<HR>
+<A NAME="wxdebugreportreset"></A>
+<H3>wxDebugReport::Reset</H3>
+<P>
+<B>void</B> <B>Reset</B>()<P>
+Resets the directory name we use. The object can't be used any more after
+this as it becomes uninitialized and invalid.<P>
+
+</FONT></BODY></HTML>

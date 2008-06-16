@@ -1,0 +1,262 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSemaphore</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsemaphore"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxscrollwinevent.html#wxscrollwinevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsetcursorevent.html#wxsetcursorevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSemaphore</H2>
+<P>
+wxSemaphore is a counter limiting the number of threads concurrently accessing
+a shared resource. This counter is always between 0 and the maximum value
+specified during the semaphore creation. When the counter is strictly greater
+than 0, a call to <A HREF="wx_wxsemaphore.html#wxsemaphorewait">Wait</A> returns immediately and
+decrements the counter. As soon as it reaches 0, any subsequent calls to
+<A HREF="wx_wxsemaphore.html#wxsemaphorewait">Wait</A> block and only return when the semaphore
+counter becomes strictly positive again as the result of calling 
+<A HREF="wx_wxsemaphore.html#wxsemaphorepost">Post</A> which increments the counter.<P>
+In general, semaphores are useful to restrict access to a shared resource
+which can only be accessed by some fixed number of clients at the same time. For
+example, when modeling a hotel reservation system a semaphore with the counter
+equal to the total number of available rooms could be created. Each time a room
+is reserved, the semaphore should be acquired by calling 
+<A HREF="wx_wxsemaphore.html#wxsemaphorewait">Wait</A> and each time a room is freed it should be
+released by calling <A HREF="wx_wxsemaphore.html#wxsemaphorepost">Post</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/thread.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsemaphorewxsemaphore">wxSemaphore::wxSemaphore</A><BR>
+<A HREF="#wxsemaphoredtor">wxSemaphore::~wxSemaphore</A><BR>
+<A HREF="#wxsemaphorepost">wxSemaphore::Post</A><BR>
+<A HREF="#wxsemaphoretrywait">wxSemaphore::TryWait</A><BR>
+<A HREF="#wxsemaphorewait">wxSemaphore::Wait</A><BR>
+<A HREF="#wxsemaphorewaittimeout">wxSemaphore::WaitTimeout</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsemaphorewxsemaphore"></A>
+<H3>wxSemaphore::wxSemaphore</H3>
+<P>
+<B></B> <B>wxSemaphore</B>(<B>int </B><I>initialcount = 0</I>, <B>int </B><I>maxcount = 0</I>)<P>
+Specifying a <I>maxcount</I> of 0 actually makes wxSemaphore behave as if
+there is no upper limit. If maxcount is 1, the semaphore behaves exactly as a
+mutex.<P>
+<I>initialcount</I> is the initial value of the semaphore which must be between
+0 and <I>maxcount</I> (if it is not set to 0).<P>
+
+<HR>
+<A NAME="wxsemaphoredtor"></A>
+<H3>wxSemaphore::~wxSemaphore</H3>
+<P>
+<B></B> <B>~wxSemaphore</B>()<P>
+Destructor is not virtual, don't use this class polymorphically.<P>
+
+<HR>
+<A NAME="wxsemaphorepost"></A>
+<H3>wxSemaphore::Post</H3>
+<P>
+<B>wxSemaError </B> <B>Post</B>()<P>
+Increments the semaphore count and signals one of the waiting
+threads in an atomic way. Returns wxSEMA_OVERFLOW if the count
+would increase the counter past the maximum.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+One of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_NO_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+There was no error.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_INVALID</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Semaphore hasn't been initialized successfully.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_OVERFLOW</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Post() would increase counter past the max.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_MISC_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Miscellaneous error.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="wxsemaphoretrywait"></A>
+<H3>wxSemaphore::TryWait</H3>
+<P>
+<B>wxSemaError </B> <B>TryWait</B>()<P>
+Same as <A HREF="wx_wxsemaphore.html#wxsemaphorewait">Wait()</A>, but returns immediately.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+One of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_NO_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+There was no error.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_INVALID</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Semaphore hasn't been initialized successfully.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_BUSY</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returned by TryWait() if Wait() would block, i.e. the count is zero.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_MISC_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Miscellaneous error.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="wxsemaphorewait"></A>
+<H3>wxSemaphore::Wait</H3>
+<P>
+<B>wxSemaError </B> <B>Wait</B>()<P>
+Wait indefinitely until the semaphore count becomes strictly positive
+and then decrement it and return.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+One of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_NO_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+There was no error.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_INVALID</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Semaphore hasn't been initialized successfully.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_MISC_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Miscellaneous error.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="wxsemaphorewaittimeout"></A>
+<H3>wxSemaphore::WaitTimeout</H3>
+<P>
+<B>wxSemaError </B> <B>WaitTimeout</B>(<B>unsigned
+long</B><I>timeout_millis</I>)<P>
+Same as <A HREF="wx_wxsemaphore.html#wxsemaphorewait">Wait()</A>, but with a timeout
+limit.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+One of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_NO_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+There was no error.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_INVALID</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Semaphore hasn't been initialized successfully.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_TIMEOUT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Timeout occurred without receiving semaphore.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSEMA_MISC_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Miscellaneous error.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+
+</FONT></BODY></HTML>

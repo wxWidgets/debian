@@ -1,0 +1,71 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlLinkInfo</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmllinkinfo"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmlmodalhelp.html#wxhtmlmodalhelp"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmllistbox.html#wxhtmllistbox"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlLinkInfo</H2>
+<P>
+This class stores all necessary information about hypertext
+links (as represented by <TT>&lt;A&gt;</TT> tag in HTML documents). In 
+current implementation it stores URL and target frame name. 
+<I>Note that frames are not currently supported by wxHTML!</I><P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/htmlcell.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmllinkinfowxhtmllinkinfo">wxHtmlLinkInfo::wxHtmlLinkInfo</A><BR>
+<A HREF="#wxhtmllinkinfogetevent">wxHtmlLinkInfo::GetEvent</A><BR>
+<A HREF="#wxhtmllinkinfogethtmlcell">wxHtmlLinkInfo::GetHtmlCell</A><BR>
+<A HREF="#wxhtmllinkinfogethref">wxHtmlLinkInfo::GetHref</A><BR>
+<A HREF="#wxhtmllinkinfogettarget">wxHtmlLinkInfo::GetTarget</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmllinkinfowxhtmllinkinfo"></A>
+<H3>wxHtmlLinkInfo::wxHtmlLinkInfo</H3>
+<P>
+<B></B> <B>wxHtmlLinkInfo</B>()<P>
+Default ctor.<P>
+<B></B> <B>wxHtmlLinkInfo</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>href</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>target = wxEmptyString</I>)<P>
+Construct hypertext link from HREF (aka URL) and TARGET (name of target
+frame).<P>
+
+<HR>
+<A NAME="wxhtmllinkinfogetevent"></A>
+<H3>wxHtmlLinkInfo::GetEvent</H3>
+<P>
+<B>const <A HREF="wx_wxmouseevent.html#wxmouseevent">wxMouseEvent</A> *</B> </B> <B>GetEvent</B>()<P>
+Return pointer to event that generated OnLinkClicked event. Valid
+only within <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowonlinkclicked">wxHtmlWindow::OnLinkClicked</A>,
+NULL otherwise.<P>
+
+<HR>
+<A NAME="wxhtmllinkinfogethtmlcell"></A>
+<H3>wxHtmlLinkInfo::GetHtmlCell</H3>
+<P>
+<B>const <A HREF="wx_wxhtmlcell.html#wxhtmlcell">wxHtmlCell</A> *</B> </B> <B>GetHtmlCell</B>()<P>
+Return pointer to the cell that was clicked. Valid
+only within <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowonlinkclicked">wxHtmlWindow::OnLinkClicked</A>,
+NULL otherwise.<P>
+
+
+<HR>
+<A NAME="wxhtmllinkinfogethref"></A>
+<H3>wxHtmlLinkInfo::GetHref</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetHref</B>()<P>
+Return <I>HREF</I> value of the <TT>&lt;A&gt;</TT> tag.<P>
+
+<HR>
+<A NAME="wxhtmllinkinfogettarget"></A>
+<H3>wxHtmlLinkInfo::GetTarget</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetTarget</B>()<P>
+Return <I>TARGET</I> value of the <TT>&lt;A&gt;</TT> tag (this value
+is used to specify in which frame should be the page pointed
+by <A HREF="wx_wxhtmllinkinfo.html#wxhtmllinkinfogethref">Href</A> opened).<P>
+
+</FONT></BODY></HTML>

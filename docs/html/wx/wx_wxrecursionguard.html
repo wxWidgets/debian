@@ -1,0 +1,82 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRecursionGuard</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrecursionguard"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrect.html#wxrect"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrecursionguardflag.html#wxrecursionguardflag"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRecursionGuard</H2>
+<P>
+wxRecursionGuard is a very simple class which can be used to prevent reentrancy
+problems in a function. It is not thread-safe and so should be used only in
+single-threaded programs or in combination with some thread synchronization
+mechanisms.<P>
+wxRecursionGuard is always used together with the 
+<A HREF="wx_wxrecursionguardflag.html#wxrecursionguardflag">wxRecursionGuardFlag</A> like in this example:
+<PRE>
+    void Foo()
+    {
+        static wxRecursionGuardFlag s_flag;
+        wxRecursionGuard guard(s_flag);
+        if ( guard.IsInside() )
+        {
+            // don't allow reentrancy
+            return;
+        }
+
+        ...
+    }
+</PRE>
+As you can see, wxRecursionGuard simply tests the flag value and sets it to
+true if it hadn't been already set. 
+<A HREF="wx_wxrecursionguard.html#wxrecursionguardisinside">IsInside()</A> allows testing the old flag
+value. The advantage of using this class compared to directly manipulating the
+flag is that the flag is always reset in the wxRecursionGuard destructor and so
+you don't risk to forget to do it even if the function returns in an unexpected
+way (for example because an exception has been thrown).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/recguard.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrecursionguardctor">wxRecursionGuard::wxRecursionGuard</A><BR>
+<A HREF="#wxrecursionguarddtor">wxRecursionGuard::~wxRecursionGuard</A><BR>
+<A HREF="#wxrecursionguardisinside">wxRecursionGuard::IsInside</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrecursionguardctor"></A>
+<H3>wxRecursionGuard::wxRecursionGuard</H3>
+<P>
+<B></B> <B>wxRecursionGuard</B>(<B><A HREF="wx_wxrecursionguardflag.html#wxrecursionguardflag">wxRecursionGuardFlag</A>& </B></B><I>flag</I>)<P>
+A wxRecursionGuard object must always be initialized with a (static) 
+<A HREF="wx_wxrecursionguardflag.html#wxrecursionguardflag">wxRecursionGuardFlag</A>. The constructor saves the
+value of the flag to be able to return the correct value from 
+<A HREF="wx_wxrecursionguard.html#wxrecursionguardisinside">IsInside</A>.<P>
+
+
+<HR>
+<A NAME="wxrecursionguarddtor"></A>
+<H3>wxRecursionGuard::~wxRecursionGuard</H3>
+<P>
+<B></B> <B>~wxRecursionGuard</B>()<P>
+The destructor resets the flag value so that the function can be entered again
+the next time.<P>
+Note that it is not virtual and so this class is not meant to be derived from
+(besides, there is absolutely no reason to do it anyhow).<P>
+
+
+<HR>
+<A NAME="wxrecursionguardisinside"></A>
+<H3>wxRecursionGuard::IsInside</H3>
+<P>
+<B>bool</B> <B>IsInside</B>() <B>const</B><P>
+Returns <TT>true</TT> if we're already inside the code block "protected'' by this
+wxRecursionGuard (i.e. between this line and the end of current scope). Usually
+the function using wxRecursionGuard takes some specific actions in such case
+(may be simply returning) to prevent reentrant calls to itself.<P>
+If this method returns <TT>false</TT>, it is safe to continue.<P>
+<P>
+
+</FONT></BODY></HTML>

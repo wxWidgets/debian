@@ -1,0 +1,399 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>File functions</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="filefunctions"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_threadfunctions.html#threadfunctions"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_networkfunctions.html#networkfunctions"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>File functions</H2>
+<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/filefn.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpathlist.html#wxpathlist">wxPathList</A><BR>
+
+<A HREF="wx_wxdir.html#wxdir">wxDir</A><BR>
+
+<A HREF="wx_wxfile.html#wxfile">wxFile</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilename">wxFileName</A><P>
+
+<A HREF="#wxdos2unixfilename">::wxDos2UnixFilename</A><BR>
+<A HREF="#functionwxfileexists">::wxFileExists</A><BR>
+<A HREF="#wxfilemodificationtime">::wxFileModificationTime</A><BR>
+<A HREF="#wxfilenamefrompath">::wxFileNameFromPath</A><BR>
+<A HREF="#wxfindfirstfile">::wxFindFirstFile</A><BR>
+<A HREF="#wxfindnextfile">::wxFindNextFile</A><BR>
+<A HREF="#wxgetdiskspace">::wxGetDiskSpace</A><BR>
+<A HREF="#wxgetfilekind">::wxGetFileKind</A><BR>
+<A HREF="#wxgetosdirectory">::wxGetOSDirectory</A><BR>
+<A HREF="#wxisabsolutepath">::wxIsAbsolutePath</A><BR>
+<A HREF="#functionwxdirexists">::wxDirExists</A><BR>
+<A HREF="#wxpathonly">::wxPathOnly</A><BR>
+<A HREF="#wxunix2dosfilename">::wxUnix2DosFilename</A><BR>
+<A HREF="#wxchangeumask">wxCHANGE_UMASK</A><BR>
+<A HREF="#wxconcatfiles">::wxConcatFiles</A><BR>
+<A HREF="#wxcopyfile">::wxCopyFile</A><BR>
+<A HREF="#wxgetcwd">::wxGetCwd</A><BR>
+<A HREF="#wxgetworkingdirectory">::wxGetWorkingDirectory</A><BR>
+<A HREF="#wxgettempfilename">::wxGetTempFileName</A><BR>
+<A HREF="#wxiswild">::wxIsWild</A><BR>
+<A HREF="#wxmatchwild">::wxMatchWild</A><BR>
+<A HREF="#wxmkdir">::wxMkdir</A><BR>
+<A HREF="#wxparsecommondialogsfilter">::wxParseCommonDialogsFilter</A><BR>
+<A HREF="#wxremovefile">::wxRemoveFile</A><BR>
+<A HREF="#wxrenamefile">::wxRenameFile</A><BR>
+<A HREF="#wxrmdir">::wxRmdir</A><BR>
+<A HREF="#wxsetworkingdirectory">::wxSetWorkingDirectory</A><BR>
+<A HREF="#wxsplitfunction">::wxSplitPath</A><BR>
+<A HREF="#wxtransferfiletostream">::wxTransferFileToStream</A><BR>
+<A HREF="#wxtransferstreamtofile">::wxTransferStreamToFile</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdos2unixfilename"></A>
+<H3>::wxDos2UnixFilename</H3>
+<P>
+<B>void</B> <B>wxDos2UnixFilename</B>(<B>wxChar *</B><I>s</I>)<P>
+Converts a DOS to a Unix filename by replacing backslashes with forward
+slashes.<P>
+
+
+<HR>
+<A NAME="functionwxfileexists"></A>
+<H3>::wxFileExists</H3>
+<P>
+<B>bool</B> <B>wxFileExists</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Returns true if the file exists and is a plain file.<P>
+
+
+<HR>
+<A NAME="wxfilemodificationtime"></A>
+<H3>::wxFileModificationTime</H3>
+<P>
+<B>time_t</B> <B>wxFileModificationTime</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Returns time of last modification of given file.<P>
+The function returns <TT>(time_t)</TT>-1 if an error occurred (e.g. file not
+found).<P>
+
+
+<HR>
+<A NAME="wxfilenamefrompath"></A>
+<H3>::wxFileNameFromPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxFileNameFromPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>)<P>
+<B>char *</B> <B>wxFileNameFromPath</B>(<B>char *</B><I>path</I>)<P>
+<B>NB:</B> This function is obsolete, please use
+<A HREF="wx_wxfilename.html#wxfilenamesplitpath">wxFileName::SplitPath</A> instead.<P>
+Returns the filename for a full path. The second form returns a pointer to
+temporary storage that should not be deallocated.<P>
+
+
+<HR>
+<A NAME="wxfindfirstfile"></A>
+<H3>::wxFindFirstFile</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxFindFirstFile</B>(<B>const char *</B><I>spec</I>, <B>int</B><I> flags = 0</I>)<P>
+This function does directory searching; returns the first file
+that matches the path <I>spec</I>, or the empty string. Use <A HREF="wx_filefunctions.html#wxfindnextfile">wxFindNextFile</A> to
+get the next matching file. Neither will report the current directory "." or the
+parent directory "..".<P>
+<B><FONT COLOR="#FF0000">Warning</FONT></B><P>
+As of wx 2.5.2, these functions are not thread-safe! (they use static variables). You probably want to use <A HREF="wx_wxdir.html#wxdirgetfirst">wxDir::GetFirst</A> or <A HREF="wx_wxdirtraverser.html#wxdirtraverser">wxDirTraverser</A> instead.<P>
+<I>spec</I> may contain wildcards.<P>
+<I>flags</I> may be wxDIR for restricting the query to directories, wxFILE for files or zero for either.<P>
+For example:<P>
+<PRE>
+  wxString f = wxFindFirstFile("/home/project/*.*");
+  while ( !f.empty() )
+  {
+    ...
+    f = wxFindNextFile();
+  }
+</PRE>
+
+
+<HR>
+<A NAME="wxfindnextfile"></A>
+<H3>::wxFindNextFile</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxFindNextFile</B>()<P>
+Returns the next file that matches the path passed to <A HREF="wx_filefunctions.html#wxfindfirstfile">wxFindFirstFile</A>.<P>
+See <A HREF="wx_filefunctions.html#wxfindfirstfile">wxFindFirstFile</A> for an example.<P>
+
+
+<HR>
+<A NAME="wxgetdiskspace"></A>
+<H3>::wxGetDiskSpace</H3>
+<P>
+<B>bool</B> <B>wxGetDiskSpace</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>, <B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A> </B></B><I>*total = NULL</I>, <B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A> </B></B><I>*free = NULL</I>)<P>
+This function returns the total number of bytes and number of free bytes on
+the disk containing the directory <I>path</I> (it should exist). Both
+<I>total</I> and <I>free</I> parameters may be <TT>NULL</TT> if the corresponding
+information is not needed.<P>
+<B><FONT COLOR="#FF0000">Returns</FONT></B><P>
+<TT>true</TT> on success, <TT>false</TT> if an error occurred (for example, the
+directory doesn't exist).<P>
+<B><FONT COLOR="#FF0000">Portability</FONT></B><P>
+This function is implemented for Win32,
+Mac OS and generic Unix provided the system has <TT>statfs()</TT> function.<P>
+This function first appeared in wxWidgets 2.3.2.<P>
+
+
+<HR>
+<A NAME="wxgetfilekind"></A>
+<H3>::wxGetFileKind</H3>
+<P>
+<B>wxFileKind</B> <B>wxGetFileKind</B>(<B>int </B><I>fd</I>)<P>
+<B>wxFileKind</B> <B>wxGetFileKind</B>(<B>FILE *</B><I>fp</I>)<P>
+Returns the type of an open file. Possible return values are:<P>
+<PRE>
+enum wxFileKind
+{
+  wxFILE_KIND_UNKNOWN,
+  wxFILE_KIND_DISK,     // a file supporting seeking to arbitrary offsets
+  wxFILE_KIND_TERMINAL, // a tty
+  wxFILE_KIND_PIPE      // a pipe
+};
+
+</PRE>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/filefn.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetosdirectory"></A>
+<H3>::wxGetOSDirectory</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetOSDirectory</B>()<P>
+Returns the Windows directory under Windows; on other platforms returns the empty string.<P>
+
+
+<HR>
+<A NAME="wxisabsolutepath"></A>
+<H3>::wxIsAbsolutePath</H3>
+<P>
+<B>bool</B> <B>wxIsAbsolutePath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Returns true if the argument is an absolute filename, i.e. with a slash
+or drive name at the beginning.<P>
+
+
+<HR>
+<A NAME="functionwxdirexists"></A>
+<H3>::wxDirExists</H3>
+<P>
+<B>bool</B> <B>wxDirExists</B>(<B>const wxChar *</B><I>dirname</I>)<P>
+Returns true if <I>dirname</I> exists and is a directory.<P>
+
+
+<HR>
+<A NAME="wxpathonly"></A>
+<H3>::wxPathOnly</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxPathOnly</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>)<P>
+Returns the directory part of the filename.<P>
+
+
+<HR>
+<A NAME="wxunix2dosfilename"></A>
+<H3>::wxUnix2DosFilename</H3>
+<P>
+<B>void</B> <B>wxUnix2DosFilename</B>(<B>wxChar *</B><I>s</I>)<P>
+This function is deprecated, use <A HREF="wx_wxfilename.html#wxfilename">wxFileName</A> instead.<P>
+Converts a Unix to a DOS filename by replacing forward
+slashes with backslashes.<P>
+
+
+<HR>
+<A NAME="wxchangeumask"></A>
+<H3>wxCHANGE_UMASK</H3>
+<P>
+<B></B> <B>wxCHANGE_UMASK</B>(<B>int </B><I>mask</I>)<P>
+Under Unix this macro changes the current process umask to the given value,
+unless it is equal to -1 in which case nothing is done, and restores it to
+the original value on scope exit. It works by declaring a variable which sets
+umask to <I>mask</I> in its constructor and restores it in its destructor.<P>
+Under other platforms this macro expands to nothing.<P>
+
+
+<HR>
+<A NAME="wxconcatfiles"></A>
+<H3>::wxConcatFiles</H3>
+<P>
+<B>bool</B> <B>wxConcatFiles</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file1</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file2</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file3</I>)<P>
+Concatenates <I>file1</I> and <I>file2</I> to <I>file3</I>, returning
+true if successful.<P>
+
+
+<HR>
+<A NAME="wxcopyfile"></A>
+<H3>::wxCopyFile</H3>
+<P>
+<B>bool</B> <B>wxCopyFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file1</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file2</I>, <B>bool </B><I>overwrite = true</I>)<P>
+Copies <I>file1</I> to <I>file2</I>, returning true if successful. If
+<I>overwrite</I> parameter is true (default), the destination file is overwritten
+if it exists, but if <I>overwrite</I> is false, the functions fails in this
+case.<P>
+
+
+<HR>
+<A NAME="wxgetcwd"></A>
+<H3>::wxGetCwd</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetCwd</B>()<P>
+Returns a string containing the current (or working) directory.<P>
+
+
+<HR>
+<A NAME="wxgetworkingdirectory"></A>
+<H3>::wxGetWorkingDirectory</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetWorkingDirectory</B>(<B>char *</B><I>buf=NULL</I>, <B>int </B><I>sz=1000</I>)<P>
+<B>NB:</B> This function is deprecated: use <A HREF="wx_filefunctions.html#wxgetcwd">wxGetCwd</A> instead.<P>
+Copies the current working directory into the buffer if supplied, or
+copies the working directory into new storage (which you <EM>must</EM> delete
+yourself) if the buffer is NULL.<P>
+<I>sz</I> is the size of the buffer if supplied.<P>
+
+
+<HR>
+<A NAME="wxgettempfilename"></A>
+<H3>::wxGetTempFileName</H3>
+<P>
+<B>char *</B> <B>wxGetTempFileName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>prefix</I>, <B>char *</B><I>buf=NULL</I>)<P>
+<B>bool</B> <B>wxGetTempFileName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>prefix</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>buf</I>)<P>
+<B>NB:</B> These functions are obsolete, please use
+<A HREF="wx_wxfilename.html#wxfilenamecreatetempfilename">wxFileName::CreateTempFileName</A>
+instead.<P>
+
+
+<HR>
+<A NAME="wxiswild"></A>
+<H3>::wxIsWild</H3>
+<P>
+<B>bool</B> <B>wxIsWild</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>pattern</I>)<P>
+Returns true if the pattern contains wildcards. See <A HREF="wx_filefunctions.html#wxmatchwild">wxMatchWild</A>.<P>
+
+
+<HR>
+<A NAME="wxmatchwild"></A>
+<H3>::wxMatchWild</H3>
+<P>
+<B>bool</B> <B>wxMatchWild</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>pattern</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>bool</B><I> dot_special</I>)<P>
+Returns true if the <I>pattern</I> matches the <I>text</I>; if <I>
+dot_special</I> is true, filenames beginning with a dot are not matched
+with wildcard characters. See <A HREF="wx_filefunctions.html#wxiswild">wxIsWild</A>.<P>
+
+
+<HR>
+<A NAME="wxmkdir"></A>
+<H3>::wxMkdir</H3>
+<P>
+<B>bool</B> <B>wxMkdir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>, <B>int </B><I>perm = 0777</I>)<P>
+Makes the directory <I>dir</I>, returning true if successful.<P>
+<I>perm</I> is the access mask for the directory for the systems on which it is
+supported (Unix) and doesn't have any effect on the other ones.<P>
+
+
+<HR>
+<A NAME="wxparsecommondialogsfilter"></A>
+<H3>::wxParseCommonDialogsFilter</H3>
+<P>
+<B>int</B> <B>wxParseCommonDialogsFilter</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>wildCard</I>, <B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>descriptions</I>, <B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>filters</I>)<P>
+Parses the <I>wildCard</I>, returning the number of filters.
+Returns 0 if none or if there's a problem.
+The arrays will contain an equal number of items found before the error.
+On platforms where native dialogs handle only one filter per entry,
+entries in arrays are automatically adjusted.
+<I>wildCard</I> is in the form:
+<PRE>
+ "All files (*)|*|Image Files (*.jpeg *.png)|*.jpg;*.png"
+</PRE>
+
+<HR>
+<A NAME="wxremovefile"></A>
+<H3>::wxRemoveFile</H3>
+<P>
+<B>bool</B> <B>wxRemoveFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>)<P>
+Removes <I>file</I>, returning true if successful.<P>
+
+
+<HR>
+<A NAME="wxrenamefile"></A>
+<H3>::wxRenameFile</H3>
+<P>
+<B>bool</B> <B>wxRenameFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file1</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file2</I>, <B>bool </B><I>overwrite = true</I>)<P>
+Renames <I>file1</I> to <I>file2</I>, returning true if successful.<P>
+If <I>overwrite</I> parameter is true (default), the destination file is
+overwritten if it exists, but if <I>overwrite</I> is false, the functions fails
+in this case.<P>
+
+
+<HR>
+<A NAME="wxrmdir"></A>
+<H3>::wxRmdir</H3>
+<P>
+<B>bool</B> <B>wxRmdir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>, <B>int</B><I> flags=0</I>)<P>
+Removes the directory <I>dir</I>, returning true if successful. Does not work under VMS.<P>
+The <I>flags</I> parameter is reserved for future use.<P>
+Please notice that there is also a wxRmDir() function which simply wraps the
+standard POSIX rmdir() function and so return an integer error code instead of
+a boolean value (but otherwise is currently identical to wxRmdir), don't
+confuse these two functions.<P>
+
+
+<HR>
+<A NAME="wxsetworkingdirectory"></A>
+<H3>::wxSetWorkingDirectory</H3>
+<P>
+<B>bool</B> <B>wxSetWorkingDirectory</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>)<P>
+Sets the current working directory, returning true if the operation succeeded.
+Under MS Windows, the current drive is also changed if <I>dir</I> contains a drive specification.<P>
+
+
+<HR>
+<A NAME="wxsplitfunction"></A>
+<H3>::wxSplitPath</H3>
+<P>
+<B>void</B> <B>wxSplitPath</B>(<B>const char *</B><I> fullname</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A> *</B></B><I> path</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A> *</B></B><I> name</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A> *</B></B><I> ext</I>)<P>
+<B>NB:</B> This function is obsolete, please use
+<A HREF="wx_wxfilename.html#wxfilenamesplitpath">wxFileName::SplitPath</A> instead.<P>
+This function splits a full file name into components: the path (including possible disk/drive
+specification under Windows), the base name and the extension. Any of the output parameters
+(<I>path</I>, <I>name</I> or <I>ext</I>) may be NULL if you are not interested in the value of
+a particular component.<P>
+wxSplitPath() will correctly handle filenames with both DOS and Unix path separators under
+Windows, however it will not consider backslashes as path separators under Unix (where backslash
+is a valid character in a filename).<P>
+On entry, <I>fullname</I> should be non-NULL (it may be empty though).<P>
+On return, <I>path</I> contains the file path (without the trailing separator), <I>name</I>
+contains the file name and <I>ext</I> contains the file extension without leading dot. All
+three of them may be empty if the corresponding component is. The old contents of the
+strings pointed to by these parameters will be overwritten in any case (if the pointers
+are not NULL).<P>
+
+
+<HR>
+<A NAME="wxtransferfiletostream"></A>
+<H3>::wxTransferFileToStream</H3>
+<P>
+<B>bool</B> <B>wxTransferFileToStream</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>ostream&amp; </B><I>stream</I>)<P>
+Copies the given file to <I>stream</I>. Useful when converting an old application to
+use streams (within the document/view framework, for example).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/docview.h&gt;<P>
+
+
+<HR>
+<A NAME="wxtransferstreamtofile"></A>
+<H3>::wxTransferStreamToFile</H3>
+<P>
+<B>bool</B> <B>wxTransferStreamToFile</B>(<B>istream&amp; </B><I>stream</I> <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Copies the given stream to the file <I>filename</I>. Useful when converting an old application to
+use streams (within the document/view framework, for example).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/docview.h&gt;<P>
+<P>
+
+</FONT></BODY></HTML>

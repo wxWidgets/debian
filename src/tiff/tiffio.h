@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tiffio.h,v 1.5 2004/11/19 22:29:47 VZ Exp $ */
+/* $Header$ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler

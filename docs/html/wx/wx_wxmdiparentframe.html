@@ -1,0 +1,444 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMDIParentFrame</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmdiparentframe"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindow"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmediactrl.html#wxmediactrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMDIParentFrame</H2>
+<P>
+An MDI (Multiple Document Interface) parent frame is a window which can contain
+MDI child frames in its own 'desktop'. It is a convenient way to avoid window clutter,
+and is used in many popular Windows applications, such as Microsoft Word(TM).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/mdi.h&gt;<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+There may be multiple MDI parent frames in a single application, but this probably only makes sense
+within programming development environments.<P>
+Child frames may be of class <A HREF="wx_wxmdichildframe.html#wxmdichildframe">wxMDIChildFrame</A> (contained
+within the parent frame) or <A HREF="wx_wxframe.html#wxframe">wxFrame</A> (shown as a top-level frame).<P>
+An MDI parent frame always has a <A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindow">wxMDIClientWindow</A> associated with it, which
+is the parent for MDI child frames.
+This client window may be resized to accommodate non-MDI windows, as seen in Microsoft Visual C++ (TM) and
+Microsoft Publisher (TM), where a documentation window is placed to one side of the workspace.<P>
+MDI remains popular despite dire warnings from Microsoft itself that MDI is an obsolete
+user interface style.<P>
+The implementation is native in Windows, and simulated under Motif. Under Motif,
+the child window frames will often have a different appearance from other frames
+because the window decorations are simulated.<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCAPTION</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Puts a caption on the frame.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxDEFAULT_FRAME_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Defined as <B>wxMINIMIZE_BOX |  wxMAXIMIZE_BOX |  wxTHICK_FRAME |  wxSYSTEM_MENU |  wxCAPTION</B>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxHSCROLL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a horizontal scrollbar in the <I>client window</I>, allowing
+the user to view child frames that are off the current view.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxICONIZE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Display the frame iconized (minimized) (Windows only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMAXIMIZE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays the frame maximized (Windows only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMAXIMIZE_BOX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a maximize box on the frame (Windows and Motif only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMINIMIZE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Identical to <B>wxICONIZE</B>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMINIMIZE_BOX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a minimize box on the frame (Windows and Motif only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxRESIZE_BORDER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a resizeable border around the window (Motif only;
+for Windows, it is implicit in wxTHICK_FRAME).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSTAY_ON_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Stay on top of other windows (Windows only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSYSTEM_MENU</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a system menu (Windows and Motif only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTHICK_FRAME</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a thick frame around the window (Windows and Motif only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxVSCROLL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a vertical scrollbar in the <I>client window</I>, allowing
+the user to view child frames that are off the current view.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFRAME_NO_WINDOW_MENU</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Under Windows, removes the Window menu that is normally
+added automatically.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdichildframe.html#wxmdichildframe">wxMDIChildFrame</A>, <A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindow">wxMDIClientWindow</A>,
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A>, <A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmdiparentframector">wxMDIParentFrame::wxMDIParentFrame</A><BR>
+<A HREF="#wxmdiparentframedtor">wxMDIParentFrame::~wxMDIParentFrame</A><BR>
+<A HREF="#wxmdiparentframeactivatenext">wxMDIParentFrame::ActivateNext</A><BR>
+<A HREF="#wxmdiparentframeactivateprevious">wxMDIParentFrame::ActivatePrevious</A><BR>
+<A HREF="#wxmdiparentframearrangeicons">wxMDIParentFrame::ArrangeIcons</A><BR>
+<A HREF="#wxmdiparentframecascade">wxMDIParentFrame::Cascade</A><BR>
+<A HREF="#wxmdiparentframecreate">wxMDIParentFrame::Create</A><BR>
+<A HREF="#wxmdiparentframegetclientsize">wxMDIParentFrame::GetClientSize</A><BR>
+<A HREF="#wxmdiparentframegetactivechild">wxMDIParentFrame::GetActiveChild</A><BR>
+<A HREF="#wxmdiparentframegetclientwindow">wxMDIParentFrame::GetClientWindow</A><BR>
+<A HREF="#wxmdiparentframegettoolbar">wxMDIParentFrame::GetToolBar</A><BR>
+<A HREF="#wxmdiparentframegetwindowmenu">wxMDIParentFrame::GetWindowMenu</A><BR>
+<A HREF="#wxmdiparentframeoncreateclient">wxMDIParentFrame::OnCreateClient</A><BR>
+<A HREF="#wxmdiparentframesettoolbar">wxMDIParentFrame::SetToolBar</A><BR>
+<A HREF="#wxmdiparentframesetwindowmenu">wxMDIParentFrame::SetWindowMenu</A><BR>
+<A HREF="#wxmdiparentframetile">wxMDIParentFrame::Tile</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmdiparentframector"></A>
+<H3>wxMDIParentFrame::wxMDIParentFrame</H3>
+<P>
+<B></B> <B>wxMDIParentFrame</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxMDIParentFrame</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>, <B>long</B><I> style = wxDEFAULT_FRAME_STYLE |  wxVSCROLL |  wxHSCROLL</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "frame"</I>)<P>
+Constructor, creating the window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The window parent. This should be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The window identifier. It may take a value of -1 to indicate a default value.</UL></UL>
+<P>
+<I>title</I><UL><UL>
+The caption to be displayed on the frame's title bar.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+The window position. A value of (-1, -1) indicates a default position, chosen by
+either the windowing system or wxWidgets, depending on platform.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+The window size. A value of (-1, -1) indicates a default size, chosen by
+either the windowing system or wxWidgets, depending on platform.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style. See <A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+The name of the window. This parameter is used to associate a name with the item,
+allowing the application user to set Motif resource values for
+individual windows.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+During the construction of the frame, the client window will be created. To use a different class
+from <A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindow">wxMDIClientWindow</A>, override
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframeoncreateclient">wxMDIParentFrame::OnCreateClient</A>.<P>
+Under Windows 95, the client window will automatically have a sunken border style when
+the active child is not maximized, and no border style when a child is maximized.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframecreate">wxMDIParentFrame::Create</A>,
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframeoncreateclient">wxMDIParentFrame::OnCreateClient</A><P>
+
+<HR>
+<A NAME="wxmdiparentframedtor"></A>
+<H3>wxMDIParentFrame::~wxMDIParentFrame</H3>
+<P>
+<B></B> <B>~wxMDIParentFrame</B>()<P>
+Destructor. Destroys all child windows and menu bar if present.<P>
+
+<HR>
+<A NAME="wxmdiparentframeactivatenext"></A>
+<H3>wxMDIParentFrame::ActivateNext</H3>
+<P>
+<B>void</B> <B>ActivateNext</B>()<P>
+Activates the MDI child following the currently active one.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframeactivateprevious">wxMDIParentFrame::ActivatePrevious</A><P>
+
+<HR>
+<A NAME="wxmdiparentframeactivateprevious"></A>
+<H3>wxMDIParentFrame::ActivatePrevious</H3>
+<P>
+<B>void</B> <B>ActivatePrevious</B>()<P>
+Activates the MDI child preceding the currently active one.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframeactivatenext">wxMDIParentFrame::ActivateNext</A><P>
+
+
+<HR>
+<A NAME="wxmdiparentframearrangeicons"></A>
+<H3>wxMDIParentFrame::ArrangeIcons</H3>
+<P>
+<B>void</B> <B>ArrangeIcons</B>()<P>
+Arranges any iconized (minimized) MDI child windows.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframecascade">wxMDIParentFrame::Cascade</A>,
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframetile">wxMDIParentFrame::Tile</A><P>
+
+<HR>
+<A NAME="wxmdiparentframecascade"></A>
+<H3>wxMDIParentFrame::Cascade</H3>
+<P>
+<B>void</B> <B>Cascade</B>()<P>
+Arranges the MDI child windows in a cascade.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframetile">wxMDIParentFrame::Tile</A>,
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframearrangeicons">wxMDIParentFrame::ArrangeIcons</A><P>
+
+<HR>
+<A NAME="wxmdiparentframecreate"></A>
+<H3>wxMDIParentFrame::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>, <B>long</B><I> style = wxDEFAULT_FRAME_STYLE |  wxVSCROLL |  wxHSCROLL</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "frame"</I>)<P>
+Used in two-step frame construction. See <A HREF="wx_wxmdiparentframe.html#wxmdiparentframector">wxMDIParentFrame::wxMDIParentFrame</A>
+for further details.<P>
+
+<HR>
+<A NAME="wxmdiparentframegetclientsize"></A>
+<H3>wxMDIParentFrame::GetClientSize</H3>
+<P>
+<B>virtual void</B> <B>GetClientSize</B>(<B>int* </B><I>width</I>, <B>int* </B><I>height</I>) <B>const</B><P>
+This gets the size of the frame 'client area' in pixels.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>width</I><UL><UL>
+Receives the client width in pixels.</UL></UL>
+<P>
+<I>height</I><UL><UL>
+Receives the client height in pixels.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The client area is the area which may be drawn on by the programmer, excluding title bar, border, status bar,
+and toolbar if present.<P>
+If you wish to manage your own toolbar (or perhaps you have more than one),
+provide an <B>OnSize</B> event handler. Call <B>GetClientSize</B> to
+find how much space there is for your windows and don't forget to set the size and position
+of the MDI client window as well as your toolbar and other windows (but not the status bar).<P>
+If you have set a toolbar with <A HREF="wx_wxmdiparentframe.html#wxmdiparentframesettoolbar">wxMDIParentFrame::SetToolbar</A>,
+the client size returned will have subtracted the toolbar height. However, the available positions
+for the client window and other windows of the frame do not start at zero - you must add the toolbar height.<P>
+The position and size of the status bar and toolbar (if known to the frame) are always managed
+by <B>wxMDIParentFrame</B>, regardless of what behaviour is defined in your <B>OnSize</B> event handler.
+However, the client window position and size are always set in <B>OnSize</B>, so if you override this
+event handler, make sure you deal with the client window.<P>
+You do not have to manage the size and position of MDI child windows, since they are managed
+automatically by the client window.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframegettoolbar">wxMDIParentFrame::GetToolBar</A>,
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframesettoolbar">wxMDIParentFrame::SetToolBar</A>,
+<A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindow">wxMDIClientWindow</A><P>
+
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxPython version of this method takes no arguments and
+returns a tuple containing width and height.<P>
+
+<HR>
+<A NAME="wxmdiparentframegetactivechild"></A>
+<H3>wxMDIParentFrame::GetActiveChild</H3>
+<P>
+<B><A HREF="wx_wxmdichildframe.html#wxmdichildframe">wxMDIChildFrame</A>*</B> </B> <B>GetActiveChild</B>() <B>const</B><P>
+Returns a pointer to the active MDI child, if there is one.<P>
+
+<HR>
+<A NAME="wxmdiparentframegetclientwindow"></A>
+<H3>wxMDIParentFrame::GetClientWindow</H3>
+<P>
+<B><A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindow">wxMDIClientWindow</A>*</B> </B> <B>GetClientWindow</B>() <B>const</B><P>
+Returns a pointer to the client window.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframeoncreateclient">wxMDIParentFrame::OnCreateClient</A><P>
+
+<HR>
+<A NAME="wxmdiparentframegettoolbar"></A>
+<H3>wxMDIParentFrame::GetToolBar</H3>
+<P>
+<B>virtual <A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetToolBar</B>() <B>const</B><P>
+Returns the window being used as the toolbar for this frame.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframesettoolbar">wxMDIParentFrame::SetToolBar</A><P>
+
+<HR>
+<A NAME="wxmdiparentframegetwindowmenu"></A>
+<H3>wxMDIParentFrame::GetWindowMenu</H3>
+<P>
+<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B> </B> <B>GetWindowMenu</B>() <B>const</B><P>
+Returns the current Window menu (added by wxWidgets to the menubar). This function
+is available under Windows only.<P>
+
+<HR>
+<A NAME="wxmdiparentframeoncreateclient"></A>
+<H3>wxMDIParentFrame::OnCreateClient</H3>
+<P>
+<B>virtual <A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindow">wxMDIClientWindow</A>*</B> </B> <B>OnCreateClient</B>()<P>
+Override this to return a different kind of client window. If you override this function,
+you must create your parent frame in two stages, or your function will never be called,
+due to the way C++ treats virtual functions called from constructors. For example:<P>
+<PRE>
+  frame = new MyParentFrame;
+  frame-&gt;Create(parent, myParentFrameId, wxT("My Parent Frame"));
+</PRE>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+You might wish to derive from <A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindow">wxMDIClientWindow</A> in order
+to implement different erase behaviour, for example, such as painting a bitmap
+on the background.<P>
+Note that it is probably impossible to have a client window that scrolls as well as painting
+a bitmap or pattern, since in <B>OnScroll</B>, the scrollbar positions always return zero.
+(Solutions to: <TT>julian.smart@btopenworld.com</TT>).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframegetclientwindow">wxMDIParentFrame::GetClientWindow</A>,
+<A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindow">wxMDIClientWindow</A><P>
+
+<HR>
+<A NAME="wxmdiparentframesettoolbar"></A>
+<H3>wxMDIParentFrame::SetToolBar</H3>
+<P>
+<B>virtual void</B> <B>SetToolBar</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> toolbar</I>)<P>
+Sets the window to be used as a toolbar for this
+MDI parent window. It saves the application having to manage the positioning
+of the toolbar MDI client window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolbar</I><UL><UL>
+Toolbar to manage.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+When the frame is resized, the toolbar is resized to be the width of
+the frame client area, and the toolbar height is kept the same.<P>
+The parent of the toolbar must be this frame.<P>
+If you wish to manage your own toolbar (or perhaps you have more than one),
+don't call this function, and instead manage your subwindows and the MDI client window by
+providing an <B>OnSize</B> event handler. Call <A HREF="wx_wxmdiparentframe.html#wxmdiparentframegetclientsize">wxMDIParentFrame::GetClientSize</A> to
+find how much space there is for your windows.<P>
+Note that SDI (normal) frames and MDI child windows must always have their
+toolbars managed by the application.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframegettoolbar">wxMDIParentFrame::GetToolBar</A>,
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframegetclientsize">wxMDIParentFrame::GetClientSize</A><P>
+
+<HR>
+<A NAME="wxmdiparentframesetwindowmenu"></A>
+<H3>wxMDIParentFrame::SetWindowMenu</H3>
+<P>
+<B>void</B> <B>SetWindowMenu</B>(<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B></B><I> menu</I>)<P>
+Call this to change the current Window menu. Ownership of the menu object passes to
+the frame when you call this function.<P>
+This call is available under Windows only.<P>
+To remove the window completely, use the wxFRAME_NO_WINDOW_MENU window style.<P>
+
+<HR>
+<A NAME="wxmdiparentframetile"></A>
+<H3>wxMDIParentFrame::Tile</H3>
+<P>
+<B>void</B> <B>Tile</B>(<B>wxOrientation</B><I> orient = wxHORIZONTAL</I>)<P>
+Tiles the MDI child windows either horizontally or vertically depending on
+whether <I>orient</I> is wxHORIZONTAL or wxVERTICAL.<P>
+Currently only implemented for MSW, does nothing under the other platforms.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframecascade">wxMDIParentFrame::Cascade</A>,
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframearrangeicons">wxMDIParentFrame::ArrangeIcons</A><P>
+
+
+</FONT></BODY></HTML>

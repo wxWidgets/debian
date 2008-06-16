@@ -1,0 +1,1076 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSocketBase</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsocketbase"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsockaddress.html#wxsockaddress"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsocketclient.html#wxsocketclient"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSocketBase</H2>
+<P>
+wxSocketBase is the base class for all socket-related objects, and it
+defines all basic IO functionality.<P>
+Note: (Workaround for implementation limitation for wxWidgets up to 2.5.x)
+If you want to use sockets or derived classes such as wxFTP in a secondary thread,
+call wxSocketBase::Initialize() (undocumented) from the main thread before creating 
+any sockets - in wxApp::OnInit for example. 
+See http://wiki.wxwidgets.org/wiki.pl?WxSocket or
+http://www.litwindow.com/knowhow/knowhow.html for more details.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/socket.h&gt;<P>
+<B><FONT COLOR="#FF0000">wxSocket errors</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_NOERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+No error happened.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_INVOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Invalid operation.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_IOERR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Input/Output error.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_INVADDR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Invalid address passed to wxSocket.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_INVSOCK</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Invalid socket (uninitialized).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_NOHOST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+No corresponding host.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_INVPORT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Invalid port.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_WOULDBLOCK</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The socket is non-blocking and the operation would block.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_TIMEDOUT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The timeout for this operation expired.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_MEMERR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Memory exhausted.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">wxSocket events</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_INPUT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+There is data available for reading.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_OUTPUT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The socket is ready to be written to.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_CONNECTION</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Incoming connection request (server), or successful connection establishment (client).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_LOST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The connection has been closed.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+A brief note on how to use these events:<P>
+The <B>wxSOCKET_INPUT</B> event will be issued whenever there is data
+available for reading. This will be the case if the input queue was
+empty and new data arrives, or if the application has read some data
+yet there is still more data available. This means that the application
+does not need to read all available data in response to a 
+<B>wxSOCKET_INPUT</B> event, as more events will be produced as
+necessary.<P>
+The <B>wxSOCKET_OUTPUT</B> event is issued when a socket is first
+connected with <A HREF="wx_wxsocketclient.html#wxsocketclientconnect">Connect</A> or accepted
+with <A HREF="wx_wxsocketserver.html#wxsocketserveraccept">Accept</A>. After that, new
+events will be generated only after an output operation fails
+with <B>wxSOCKET_WOULDBLOCK</B> and buffer space becomes available
+again. This means that the application should assume that it
+can write data to the socket until an <B>wxSOCKET_WOULDBLOCK</B> 
+error occurs; after this, whenever the socket becomes writable
+again the application will be notified with another 
+<B>wxSOCKET_OUTPUT</B> event.<P>
+The <B>wxSOCKET_CONNECTION</B> event is issued when a delayed connection
+request completes successfully (client) or when a new connection arrives
+at the incoming queue (server).<P>
+The <B>wxSOCKET_LOST</B> event is issued when a close indication is
+received for the socket. This means that the connection broke down or
+that it was closed by the peer. Also, this event will be issued if
+a connection request fails.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To process events coming from a socket object, use the following event
+handler macro to direct events to member functions that take
+a <A HREF="wx_wxsocketevent.html#wxsocketevent">wxSocketEvent</A> argument.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SOCKET(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_SOCKET event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketevent.html#wxsocketevent">wxSocketEvent</A>, 
+<A HREF="wx_wxsocketclient.html#wxsocketclient">wxSocketClient</A>, 
+<A HREF="wx_wxsocketserver.html#wxsocketserver">wxSocketServer</A>, 
+<A HREF="wx_samples.html#samplesockets">Sockets sample</A><P>
+<B><FONT COLOR="#FF0000">Function groups</FONT></B><P>
+<A HREF="#socketconstruction">Construction and destruction</A><BR>
+<A HREF="#socketstate">Socket state</A><BR>
+<A HREF="#socketbasicio">Basic IO</A><BR>
+<A HREF="#socketevents">Handling socket events</A><BR>
+<A HREF="#wxsocketbaseconstruct">wxSocketBase::wxSocketBase</A><BR>
+<A HREF="#wxsocketbasedestruct">wxSocketBase::~wxSocketBase</A><BR>
+<A HREF="#wxsocketbaseclose">wxSocketBase::Close</A><BR>
+<A HREF="#wxsocketbasedestroy">wxSocketBase::Destroy</A><BR>
+<A HREF="#wxsocketbasediscard">wxSocketBase::Discard</A><BR>
+<A HREF="#wxsocketbaseerror">wxSocketBase::Error</A><BR>
+<A HREF="#wxsocketbasegetclientdata">wxSocketBase::GetClientData</A><BR>
+<A HREF="#wxsocketbasegetlocal">wxSocketBase::GetLocal</A><BR>
+<A HREF="#wxsocketbasegetflags">wxSocketBase::GetFlags</A><BR>
+<A HREF="#wxsocketbasegetpeer">wxSocketBase::GetPeer</A><BR>
+<A HREF="#wxsocketbaseinterruptwait">wxSocketBase::InterruptWait</A><BR>
+<A HREF="#wxsocketbaseisconnected">wxSocketBase::IsConnected</A><BR>
+<A HREF="#wxsocketbaseisdata">wxSocketBase::IsData</A><BR>
+<A HREF="#wxsocketbaseisdisconnected">wxSocketBase::IsDisconnected</A><BR>
+<A HREF="#wxsocketbaselastcount">wxSocketBase::LastCount</A><BR>
+<A HREF="#wxsocketbaselasterror">wxSocketBase::LastError</A><BR>
+<A HREF="#wxsocketbasenotify">wxSocketBase::Notify</A><BR>
+<A HREF="#wxsocketbaseisok">wxSocketBase::IsOk</A><BR>
+<A HREF="#wxsocketbaserestorestate">wxSocketBase::RestoreState</A><BR>
+<A HREF="#wxsocketbasesavestate">wxSocketBase::SaveState</A><BR>
+<A HREF="#wxsocketbasesetclientdata">wxSocketBase::SetClientData</A><BR>
+<A HREF="#wxsocketbaseseteventhandler">wxSocketBase::SetEventHandler</A><BR>
+<A HREF="#wxsocketbasesetflags">wxSocketBase::SetFlags</A><BR>
+<A HREF="#wxsocketbasesetlocal">wxSocketBase::SetLocal</A><BR>
+<A HREF="#wxsocketbasesetnotify">wxSocketBase::SetNotify</A><BR>
+<A HREF="#wxsocketbasesettimeout">wxSocketBase::SetTimeout</A><BR>
+<A HREF="#wxsocketbasepeek">wxSocketBase::Peek</A><BR>
+<A HREF="#wxsocketbaseread">wxSocketBase::Read</A><BR>
+<A HREF="#wxsocketbasereadmsg">wxSocketBase::ReadMsg</A><BR>
+<A HREF="#wxsocketbaseunread">wxSocketBase::Unread</A><BR>
+<A HREF="#wxsocketbasewait">wxSocketBase::Wait</A><BR>
+<A HREF="#wxsocketbasewaitforlost">wxSocketBase::WaitForLost</A><BR>
+<A HREF="#wxsocketbasewaitforread">wxSocketBase::WaitForRead</A><BR>
+<A HREF="#wxsocketbasewaitforwrite">wxSocketBase::WaitForWrite</A><BR>
+<A HREF="#wxsocketbasewrite">wxSocketBase::Write</A><BR>
+<A HREF="#wxsocketbasewritemsg">wxSocketBase::WriteMsg</A><BR>
+<P>
+
+<HR>
+<A NAME="socketconstruction"></A>
+<H3>Construction and destruction</H3>
+<P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseconstruct">wxSocketBase</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasedestruct">~wxSocketBase</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasedestroy">Destroy</A><P>
+
+<HR>
+<A NAME="socketstate"></A>
+<H3>Socket state</H3>
+<P>
+Functions to retrieve current state and miscellaneous info.<P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseerror">Error</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasegetlocal">GetLocal</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasegetpeer">GetPeer</A>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseisconnected">IsConnected</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbaseisdata">IsData</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbaseisdisconnected">IsDisconnected</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">LastCount</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbaselasterror">LastError</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbaseisok">IsOk</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasesavestate">SaveState</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbaserestorestate">RestoreState</A><P>
+
+<HR>
+<A NAME="socketbasicio"></A>
+<H3>Basic IO</H3>
+<P>
+Functions that perform basic IO functionality.<P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseclose">Close</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasediscard">Discard</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasepeek">Peek</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbaseread">Read</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasereadmsg">ReadMsg</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbaseunread">Unread</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasewrite">Write</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasewritemsg">WriteMsg</A><P>
+Functions that perform a timed wait on a certain IO condition.<P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseinterruptwait">InterruptWait</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasewait">Wait</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasewaitforlost">WaitForLost</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasewaitforread">WaitForRead</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasewaitforwrite">WaitForWrite</A><BR>
+<P>
+and also:<P>
+<A HREF="wx_wxsocketserver.html#wxsocketserverwaitforaccept">wxSocketServer::WaitForAccept</A><BR>
+
+<A HREF="wx_wxsocketclient.html#wxsocketclientwaitonconnect">wxSocketClient::WaitOnConnect</A><P>
+Functions that allow applications to customize socket IO as needed.<P>
+<A HREF="wx_wxsocketbase.html#wxsocketbasegetflags">GetFlags</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">SetFlags</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasesettimeout">SetTimeout</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetlocal">SetLocal</A><BR>
+<P>
+
+<HR>
+<A NAME="socketevents"></A>
+<H3>Handling socket events</H3>
+<P>
+Functions that allow applications to receive socket events.<P>
+<A HREF="wx_wxsocketbase.html#wxsocketbasenotify">Notify</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetnotify">SetNotify</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasegetclientdata">GetClientData</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetclientdata">SetClientData</A><BR>
+
+<A HREF="wx_wxsocketbase.html#wxsocketbaseseteventhandler">SetEventHandler</A><P>
+
+<P>
+
+<HR>
+<A NAME="wxsocketbaseconstruct"></A>
+<H3>wxSocketBase::wxSocketBase</H3>
+<P>
+<B></B> <B>wxSocketBase</B>()<P>
+Default constructor. Don't use it directly; instead, use 
+<A HREF="wx_wxsocketclient.html#wxsocketclient">wxSocketClient</A> to construct a socket client, or 
+<A HREF="wx_wxsocketserver.html#wxsocketserver">wxSocketServer</A> to construct a socket server.<P>
+
+<HR>
+<A NAME="wxsocketbasedestruct"></A>
+<H3>wxSocketBase::~wxSocketBase</H3>
+<P>
+<B></B> <B>~wxSocketBase</B>()<P>
+Destructor. Do not destroy a socket using the delete operator directly;
+use <A HREF="wx_wxsocketbase.html#wxsocketbasedestroy">Destroy</A> instead. Also, do not create
+socket objects in the stack.<P>
+
+
+<HR>
+<A NAME="wxsocketbaseclose"></A>
+<H3>wxSocketBase::Close</H3>
+<P>
+<B>void</B> <B>Close</B>()<P>
+This function shuts down the socket, disabling further transmission and
+reception of data; it also disables events for the socket and frees the
+associated system resources. Upon socket destruction, Close is automatically
+called, so in most cases you won't need to do it yourself, unless you
+explicitly want to shut down the socket, typically to notify the peer
+that you are closing the connection.<P>
+<B><FONT COLOR="#FF0000">Remark/Warning</FONT></B><P>
+Although Close immediately disables events for the socket, it is possible
+that event messages may be waiting in the application's event queue. The
+application must therefore be prepared to handle socket event messages
+even after calling Close.<P>
+
+<HR>
+<A NAME="wxsocketbasedestroy"></A>
+<H3>wxSocketBase::Destroy</H3>
+<P>
+<B>bool</B> <B>Destroy</B>()<P>
+Destroys the socket safely. Use this function instead of the delete operator,
+since otherwise socket events could reach the application even after the
+socket has been destroyed. To prevent this problem, this function appends
+the wxSocket to a list of object to be deleted on idle time, after all
+events have been processed. For the same reason, you should avoid creating
+socket objects in the stack.<P>
+Destroy calls <A HREF="wx_wxsocketbase.html#wxsocketbaseclose">Close</A> automatically.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Always true.<P>
+
+<HR>
+<A NAME="wxsocketbasediscard"></A>
+<H3>wxSocketBase::Discard</H3>
+<P>
+<B><A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>&</B> </B> <B>Discard</B>()<P>
+This function simply deletes all bytes in the incoming queue. This function
+always returns immediately and its operation is not affected by IO flags.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">LastCount</A> to verify the number of bytes actually discarded.<P>
+If you use <A HREF="wx_wxsocketbase.html#wxsocketbaseerror">Error</A>, it will always return false.<P>
+
+<HR>
+<A NAME="wxsocketbaseerror"></A>
+<H3>wxSocketBase::Error</H3>
+<P>
+<B>bool</B> <B>Error</B>() <B>const</B><P>
+Returns true if an error occurred in the last IO operation.<P>
+Use this function to check for an error condition after one of the
+following calls: Discard, Peek, Read, ReadMsg, Unread, Write, WriteMsg.<P>
+
+<HR>
+<A NAME="wxsocketbasegetclientdata"></A>
+<H3>wxSocketBase::GetClientData</H3>
+<P>
+<B>void *</B> <B>GetClientData</B>() <B>const</B><P>
+Returns a pointer of the client data for this socket, as set with 
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetclientdata">SetClientData</A><P>
+
+<HR>
+<A NAME="wxsocketbasegetlocal"></A>
+<H3>wxSocketBase::GetLocal</H3>
+<P>
+<B>bool</B> <B>GetLocal</B>(<B><A HREF="wx_wxsockaddress.html#wxsockaddress">wxSockAddress</A>& </B></B><I>addr</I>) <B>const</B><P>
+This function returns the local address field of the socket. The local
+address field contains the complete local address of the socket (local
+address, local port, ...).<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if no error happened, false otherwise.<P>
+
+<HR>
+<A NAME="wxsocketbasegetflags"></A>
+<H3>wxSocketBase::GetFlags</H3>
+<P>
+<B>wxSocketFlags</B> <B>GetFlags</B>() <B>const</B><P>
+Returns current IO flags, as set with <A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">SetFlags</A><P>
+
+<HR>
+<A NAME="wxsocketbasegetpeer"></A>
+<H3>wxSocketBase::GetPeer</H3>
+<P>
+<B>bool</B> <B>GetPeer</B>(<B><A HREF="wx_wxsockaddress.html#wxsockaddress">wxSockAddress</A>& </B></B><I>addr</I>) <B>const</B><P>
+This function returns the peer address field of the socket. The peer 
+address field contains the complete peer host address of the socket
+(address, port, ...).<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if no error happened, false otherwise.<P>
+
+<HR>
+<A NAME="wxsocketbaseinterruptwait"></A>
+<H3>wxSocketBase::InterruptWait</H3>
+<P>
+<B>void</B> <B>InterruptWait</B>()<P>
+Use this function to interrupt any wait operation currently in progress.
+Note that this is not intended as a regular way to interrupt a Wait call,
+but only as an escape mechanism for exceptional situations where it is
+absolutely necessary to use it, for example to abort an operation due to
+some exception or abnormal problem. InterruptWait is automatically called
+when you <A HREF="wx_wxsocketbase.html#wxsocketbaseclose">Close</A> a socket (and thus also upon
+socket destruction), so you don't need to use it in these cases.<P>
+<A HREF="wx_wxsocketbase.html#wxsocketbasewait">wxSocketBase::Wait</A>, 
+<A HREF="wx_wxsocketserver.html#wxsocketserverwaitforaccept">wxSocketServer::WaitForAccept</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasewaitforlost">wxSocketBase::WaitForLost</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasewaitforread">wxSocketBase::WaitForRead</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasewaitforwrite">wxSocketBase::WaitForWrite</A>, 
+<A HREF="wx_wxsocketclient.html#wxsocketclientwaitonconnect">wxSocketClient::WaitOnConnect</A><P>
+
+<HR>
+<A NAME="wxsocketbaseisconnected"></A>
+<H3>wxSocketBase::IsConnected</H3>
+<P>
+<B>bool</B> <B>IsConnected</B>() <B>const</B><P>
+Returns true if the socket is connected.<P>
+
+<HR>
+<A NAME="wxsocketbaseisdata"></A>
+<H3>wxSocketBase::IsData</H3>
+<P>
+<B>bool</B> <B>IsData</B>() <B>const</B><P>
+This function waits until the socket is readable. This might mean that
+queued data is available for reading or, for streamed sockets, that
+the connection has been closed, so that a read operation will complete
+immediately without blocking (unless the <B>wxSOCKET_WAITALL</B> flag
+is set, in which case the operation might still block).<P>
+
+<HR>
+<A NAME="wxsocketbaseisdisconnected"></A>
+<H3>wxSocketBase::IsDisconnected</H3>
+<P>
+<B>bool</B> <B>IsDisconnected</B>() <B>const</B><P>
+Returns true if the socket is not connected.<P>
+
+<HR>
+<A NAME="wxsocketbaselastcount"></A>
+<H3>wxSocketBase::LastCount</H3>
+<P>
+<B>wxUint32</B> <B>LastCount</B>() <B>const</B><P>
+Returns the number of bytes read or written by the last IO call.<P>
+Use this function to get the number of bytes actually transferred
+after using one of the following IO calls: Discard, Peek, Read,
+ReadMsg, Unread, Write, WriteMsg.<P>
+
+<HR>
+<A NAME="wxsocketbaselasterror"></A>
+<H3>wxSocketBase::LastError</H3>
+<P>
+<B>wxSocketError</B> <B>LastError</B>() <B>const</B><P>
+Returns the last wxSocket error. See <A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocket errors</A>.<P>
+Please note that this function merely returns the last error code,
+but it should not be used to determine if an error has occurred (this
+is because successful operations do not change the LastError value).
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaseerror">Error</A> first, in order to determine
+if the last IO call failed. If this returns true, use LastError
+to discover the cause of the error.<P>
+
+<HR>
+<A NAME="wxsocketbasenotify"></A>
+<H3>wxSocketBase::Notify</H3>
+<P>
+<B>void</B> <B>Notify</B>(<B>bool</B><I> notify</I>)<P>
+According to the <I>notify</I> value, this function enables
+or disables socket events. If <I>notify</I> is true, the events
+configured with <A HREF="wx_wxsocketbase.html#wxsocketbasesetnotify">SetNotify</A> will
+be sent to the application. If <I>notify</I> is false; no events
+will be sent.<P>
+
+<HR>
+<A NAME="wxsocketbaseisok"></A>
+<H3>wxSocketBase::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if the socket is initialized and ready and false in other
+cases.<P>
+<B><FONT COLOR="#FF0000">Remark/Warning</FONT></B><P>
+For <A HREF="wx_wxsocketclient.html#wxsocketclient">wxSocketClient</A>, Ok won't return true unless
+the client is connected to a server.<P>
+For <A HREF="wx_wxsocketserver.html#wxsocketserver">wxSocketServer</A>, Ok will return true if the
+server could bind to the specified address and is already listening for
+new connections.<P>
+Ok does not check for IO errors;
+use <A HREF="wx_wxsocketbase.html#wxsocketbaseerror">Error</A> instead for that purpose.<P>
+
+<HR>
+<A NAME="wxsocketbaserestorestate"></A>
+<H3>wxSocketBase::RestoreState</H3>
+<P>
+<B>void</B> <B>RestoreState</B>()<P>
+This function restores the previous state of the socket, as saved
+with <A HREF="wx_wxsocketbase.html#wxsocketbasesavestate">SaveState</A><P>
+Calls to SaveState and RestoreState can be nested.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbasesavestate">wxSocketBase::SaveState</A><P>
+
+<HR>
+<A NAME="wxsocketbasesavestate"></A>
+<H3>wxSocketBase::SaveState</H3>
+<P>
+<B>void</B> <B>SaveState</B>()<P>
+This function saves the current state of the socket in a stack. Socket
+state includes flags, as set with <A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">SetFlags</A>,
+event mask, as set with <A HREF="wx_wxsocketbase.html#wxsocketbasesetnotify">SetNotify</A> and 
+<A HREF="wx_wxsocketbase.html#wxsocketbasenotify">Notify</A>, user data, as set with 
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetclientdata">SetClientData</A>.<P>
+Calls to SaveState and RestoreState can be nested.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaserestorestate">wxSocketBase::RestoreState</A><P>
+
+<HR>
+<A NAME="wxsocketbasesetclientdata"></A>
+<H3>wxSocketBase::SetClientData</H3>
+<P>
+<B>void</B> <B>SetClientData</B>(<B>void *</B><I>data</I>)<P>
+Sets user-supplied client data for this socket. All socket events will
+contain a pointer to this data, which can be retrieved with
+the <A HREF="wx_wxsocketevent.html#wxsocketeventgetclientdata">wxSocketEvent::GetClientData</A> function.<P>
+
+<HR>
+<A NAME="wxsocketbaseseteventhandler"></A>
+<H3>wxSocketBase::SetEventHandler</H3>
+<P>
+<B>void</B> <B>SetEventHandler</B>(<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>&</B></B><I> handler</I>, <B>int</B><I> id = -1</I>)<P>
+Sets an event handler to be called when a socket event occurs. The
+handler will be called for those events for which notification is
+enabled with <A HREF="wx_wxsocketbase.html#wxsocketbasesetnotify">SetNotify</A> and 
+<A HREF="wx_wxsocketbase.html#wxsocketbasenotify">Notify</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>handler</I><UL><UL>
+Specifies the event handler you want to use.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The id of socket event.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetnotify">wxSocketBase::SetNotify</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasenotify">wxSocketBase::Notify</A>, 
+<A HREF="wx_wxsocketevent.html#wxsocketevent">wxSocketEvent</A>, 
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><P>
+
+<HR>
+<A NAME="wxsocketbasesetflags"></A>
+<H3>wxSocketBase::SetFlags</H3>
+<P>
+<B>void</B> <B>SetFlags</B>(<B>wxSocketFlags</B><I> flags</I>)<P>
+Use SetFlags to customize IO operation for this socket.
+The <I>flags</I> parameter may be a combination of flags ORed together.
+The following flags can be used:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_NONE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Normal functionality.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_NOWAIT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Read/write as much data as possible and return immediately.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_WAITALL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Wait for all required data to be read/written unless an error occurs.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_BLOCK</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Block the GUI (do not yield) while reading/writing data.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_REUSEADDR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Allows the use of an in-use port (wxServerSocket only)
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+A brief overview on how to use these flags follows.<P>
+If no flag is specified (this is the same as <B>wxSOCKET_NONE</B>),
+IO calls will return after some data has been read or written, even
+when the transfer might not be complete. This is the same as issuing
+exactly one blocking low-level call to recv() or send(). Note
+that <I>blocking</I> here refers to when the function returns, not
+to whether the GUI blocks during this time.<P>
+If <B>wxSOCKET_NOWAIT</B> is specified, IO calls will return immediately.
+Read operations will retrieve only available data. Write operations will
+write as much data as possible, depending on how much space is available
+in the output buffer. This is the same as issuing exactly one nonblocking
+low-level call to recv() or send(). Note that <I>nonblocking</I> here
+refers to when the function returns, not to whether the GUI blocks during
+this time.<P>
+If <B>wxSOCKET_WAITALL</B> is specified, IO calls won't return until ALL
+the data has been read or written (or until an error occurs), blocking if
+necessary, and issuing several low level calls if necessary. This is the
+same as having a loop which makes as many blocking low-level calls to
+recv() or send() as needed so as to transfer all the data. Note
+that <I>blocking</I> here refers to when the function returns, not
+to whether the GUI blocks during this time.<P>
+The <B>wxSOCKET_BLOCK</B> flag controls whether the GUI blocks during
+IO operations. If this flag is specified, the socket will not yield
+during IO calls, so the GUI will remain blocked until the operation
+completes. If it is not used, then the application must take extra
+care to avoid unwanted reentrance.<P>
+The <B>wxSOCKET_REUSEADDR</B> flag controls the use of the SO_REUSEADDR standard
+setsockopt() flag. This flag allows the socket to bind to a port that is already in use.
+This is mostly used on UNIX-based systems to allow rapid starting and stopping of a server - 
+otherwise you may have to wait several minutes for the port to become available.
+wxSOCKET_REUSEADDR can also be used with socket clients to (re)bind to a particular local port
+for an outgoing connection.
+This option can have surprising platform dependent behavior, so check the documentation for
+your platform's implementation of setsockopt(). Note that on BSD-based systems (e.g. Mac OS X),
+use of wxSOCKET_REUSEADDR implies SO_REUSEPORT in addition to SO_REUSEADDR to be consistent
+with Windows.<P>
+So:<P>
+<B>wxSOCKET_NONE</B> will try to read at least SOME data, no matter how much.<P>
+<B>wxSOCKET_NOWAIT</B> will always return immediately, even if it cannot
+read or write ANY data.<P>
+<B>wxSOCKET_WAITALL</B> will only return when it has read or written ALL
+the data.<P>
+<B>wxSOCKET_BLOCK</B> has nothing to do with the previous flags and
+it controls whether the GUI blocks.<P>
+<B>wxSOCKET_REUSEADDR</B> controls special platform-specific behavior for
+reusing local addresses/ports.<P>
+
+<HR>
+<A NAME="wxsocketbasesetlocal"></A>
+<H3>wxSocketBase::SetLocal</H3>
+<P>
+<B>bool</B> <B>SetLocal</B>(<B><A HREF="wx_wxipv4address.html#wxipv4address">wxIPV4address</A>&</B></B><I> local</I>)<P>
+This function allows you to set the local address and port,
+useful when an application needs to reuse a particular port. When
+a local port is set for a <A HREF="wx_wxsocketclient.html#wxsocketclient">wxSocketClient</A>,
+<B>bind</B> will be called before <B>connect</B>.<P>
+
+<HR>
+<A NAME="wxsocketbasesetnotify"></A>
+<H3>wxSocketBase::SetNotify</H3>
+<P>
+<B>void</B> <B>SetNotify</B>(<B>wxSocketEventFlags</B><I> flags</I>)<P>
+SetNotify specifies which socket events are to be sent to the event handler.
+The <I>flags</I> parameter may be combination of flags ORed together. The
+following flags can be used:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_INPUT_FLAG</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+to receive wxSOCKET_INPUT
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_OUTPUT_FLAG</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+to receive wxSOCKET_OUTPUT
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_CONNECTION_FLAG</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+to receive wxSOCKET_CONNECTION
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxSOCKET_LOST_FLAG</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+to receive wxSOCKET_LOST
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+For example:<P>
+<PRE>
+  sock.SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
+  sock.Notify(true);
+</PRE>
+In this example, the user will be notified about incoming socket data and
+whenever the connection is closed.<P>
+For more information on socket events see <A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocket events</A>.<P>
+
+<HR>
+<A NAME="wxsocketbasesettimeout"></A>
+<H3>wxSocketBase::SetTimeout</H3>
+<P>
+<B>void</B> <B>SetTimeout</B>(<B>int </B><I>seconds</I>)<P>
+This function sets the default socket timeout in seconds. This timeout
+applies to all IO calls, and also to the <A HREF="wx_wxsocketbase.html#wxsocketbasewait">Wait</A> family
+of functions if you don't specify a wait interval. Initially, the default
+timeout is 10 minutes.<P>
+
+<HR>
+<A NAME="wxsocketbasepeek"></A>
+<H3>wxSocketBase::Peek</H3>
+<P>
+<B><A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>&</B> </B> <B>Peek</B>(<B>void *</B><I> buffer</I>, <B>wxUint32</B><I> nbytes</I>)<P>
+This function peeks a buffer of <I>nbytes</I> bytes from the socket.
+Peeking a buffer doesn't delete it from the socket input queue.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">LastCount</A> to verify the number of bytes actually peeked.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaseerror">Error</A> to determine if the operation succeeded.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>buffer</I><UL><UL>
+Buffer where to put peeked data.</UL></UL>
+<P>
+<I>nbytes</I><UL><UL>
+Number of bytes.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns a reference to the current object.<P>
+<B><FONT COLOR="#FF0000">Remark/Warning</FONT></B><P>
+The exact behaviour of wxSocketBase::Peek depends on the combination
+of flags being used. For a detailed explanation, see <A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseerror">wxSocketBase::Error</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselasterror">wxSocketBase::LastError</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">wxSocketBase::LastCount</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A><P>
+
+<HR>
+<A NAME="wxsocketbaseread"></A>
+<H3>wxSocketBase::Read</H3>
+<P>
+<B><A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>&</B> </B> <B>Read</B>(<B>void *</B><I> buffer</I>, <B>wxUint32</B><I> nbytes</I>)<P>
+This function reads a buffer of <I>nbytes</I> bytes from the socket.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">LastCount</A> to verify the number of bytes actually read.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaseerror">Error</A> to determine if the operation succeeded.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>buffer</I><UL><UL>
+Buffer where to put read data.</UL></UL>
+<P>
+<I>nbytes</I><UL><UL>
+Number of bytes.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns a reference to the current object.<P>
+<B><FONT COLOR="#FF0000">Remark/Warning</FONT></B><P>
+The exact behaviour of wxSocketBase::Read depends on the combination
+of flags being used. For a detailed explanation, see <A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseerror">wxSocketBase::Error</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselasterror">wxSocketBase::LastError</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">wxSocketBase::LastCount</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A><P>
+
+<HR>
+<A NAME="wxsocketbasereadmsg"></A>
+<H3>wxSocketBase::ReadMsg</H3>
+<P>
+<B><A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>&</B> </B> <B>ReadMsg</B>(<B>void *</B><I> buffer</I>, <B>wxUint32</B><I> nbytes</I>)<P>
+This function reads a buffer sent by <A HREF="wx_wxsocketbase.html#wxsocketbasewritemsg">WriteMsg</A> 
+on a socket. If the buffer passed to the function isn't big enough, the
+remaining bytes will be discarded. This function always waits for the
+buffer to be entirely filled, unless an error occurs.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">LastCount</A> to verify the number of bytes actually read.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaseerror">Error</A> to determine if the operation succeeded.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>buffer</I><UL><UL>
+Buffer where to put read data.</UL></UL>
+<P>
+<I>nbytes</I><UL><UL>
+Size of the buffer.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns a reference to the current object.<P>
+<B><FONT COLOR="#FF0000">Remark/Warning</FONT></B><P>
+wxSocketBase::ReadMsg will behave as if the <B>wxSOCKET_WAITALL</B> flag
+was always set and it will always ignore the <B>wxSOCKET_NOWAIT</B> flag.
+The exact behaviour of ReadMsg depends on the <B>wxSOCKET_BLOCK</B> flag.
+For a detailed explanation, see <A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseerror">wxSocketBase::Error</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselasterror">wxSocketBase::LastError</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">wxSocketBase::LastCount</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasewritemsg">wxSocketBase::WriteMsg</A><P>
+
+<HR>
+<A NAME="wxsocketbaseunread"></A>
+<H3>wxSocketBase::Unread</H3>
+<P>
+<B><A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>&</B> </B> <B>Unread</B>(<B>const void *</B><I> buffer</I>, <B>wxUint32</B><I> nbytes</I>)<P>
+This function unreads a buffer. That is, the data in the buffer is put back
+in the incoming queue. This function is not affected by wxSocket flags.<P>
+If you use <A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">LastCount</A>, it will always return <I>nbytes</I>.<P>
+If you use <A HREF="wx_wxsocketbase.html#wxsocketbaseerror">Error</A>, it will always return false.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>buffer</I><UL><UL>
+Buffer to be unread.</UL></UL>
+<P>
+<I>nbytes</I><UL><UL>
+Number of bytes.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns a reference to the current object.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseerror">wxSocketBase::Error</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">wxSocketBase::LastCount</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselasterror">wxSocketBase::LastError</A><P>
+
+<HR>
+<A NAME="wxsocketbasewait"></A>
+<H3>wxSocketBase::Wait</H3>
+<P>
+<B>bool</B> <B>Wait</B>(<B>long</B><I> seconds = -1</I>, <B>long</B><I> millisecond = 0</I>)<P>
+This function waits until any of the following conditions is true:
+                                            
+<UL>
+
+<LI> The socket becomes readable.
+<LI> The socket becomes writable.
+<LI> An ongoing connection request has completed (<A HREF="wx_wxsocketclient.html#wxsocketclient">wxSocketClient</A> only)
+<LI> An incoming connection request has arrived (<A HREF="wx_wxsocketserver.html#wxsocketserver">wxSocketServer</A> only)
+<LI> The connection has been closed.
+</UL>
+<P>
+Note that it is recommended to use the individual Wait functions
+to wait for the required condition, instead of this one.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>seconds</I><UL><UL>
+Number of seconds to wait.
+If -1, it will wait for the default timeout,
+as set with <A HREF="wx_wxsocketbase.html#wxsocketbasesettimeout">SetTimeout</A>.</UL></UL>
+<P>
+<I>millisecond</I><UL><UL>
+Number of milliseconds to wait.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true when any of the above conditions is satisfied,
+false if the timeout was reached.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseinterruptwait">wxSocketBase::InterruptWait</A>, 
+<A HREF="wx_wxsocketserver.html#wxsocketserverwaitforaccept">wxSocketServer::WaitForAccept</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasewaitforlost">wxSocketBase::WaitForLost</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasewaitforread">wxSocketBase::WaitForRead</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasewaitforwrite">wxSocketBase::WaitForWrite</A>, 
+<A HREF="wx_wxsocketclient.html#wxsocketclientwaitonconnect">wxSocketClient::WaitOnConnect</A><P>
+
+<HR>
+<A NAME="wxsocketbasewaitforlost"></A>
+<H3>wxSocketBase::WaitForLost</H3>
+<P>
+<B>bool</B> <B>Wait</B>(<B>long</B><I> seconds = -1</I>, <B>long</B><I> millisecond = 0</I>)<P>
+This function waits until the connection is lost. This may happen if
+the peer gracefully closes the connection or if the connection breaks.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>seconds</I><UL><UL>
+Number of seconds to wait.
+If -1, it will wait for the default timeout,
+as set with <A HREF="wx_wxsocketbase.html#wxsocketbasesettimeout">SetTimeout</A>.</UL></UL>
+<P>
+<I>millisecond</I><UL><UL>
+Number of milliseconds to wait.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true if the connection was lost, false if the timeout was reached.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseinterruptwait">wxSocketBase::InterruptWait</A>,
+<A HREF="wx_wxsocketbase.html#wxsocketbasewait">wxSocketBase::Wait</A><P>
+
+<HR>
+<A NAME="wxsocketbasewaitforread"></A>
+<H3>wxSocketBase::WaitForRead</H3>
+<P>
+<B>bool</B> <B>WaitForRead</B>(<B>long</B><I> seconds = -1</I>, <B>long</B><I> millisecond = 0</I>)<P>
+This function waits until the socket is readable. This might mean that
+queued data is available for reading or, for streamed sockets, that
+the connection has been closed, so that a read operation will complete
+immediately without blocking (unless the <B>wxSOCKET_WAITALL</B> flag
+is set, in which case the operation might still block).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>seconds</I><UL><UL>
+Number of seconds to wait.
+If -1, it will wait for the default timeout,
+as set with <A HREF="wx_wxsocketbase.html#wxsocketbasesettimeout">SetTimeout</A>.</UL></UL>
+<P>
+<I>millisecond</I><UL><UL>
+Number of milliseconds to wait.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true if the socket becomes readable, false on timeout.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseinterruptwait">wxSocketBase::InterruptWait</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasewait">wxSocketBase::Wait</A><P>
+
+<HR>
+<A NAME="wxsocketbasewaitforwrite"></A>
+<H3>wxSocketBase::WaitForWrite</H3>
+<P>
+<B>bool</B> <B>WaitForWrite</B>(<B>long</B><I> seconds = -1</I>, <B>long</B><I> millisecond = 0</I>)<P>
+This function waits until the socket becomes writable. This might mean that
+the socket is ready to send new data, or for streamed sockets, that the
+connection has been closed, so that a write operation is guaranteed to
+complete immediately (unless the <B>wxSOCKET_WAITALL</B> flag is set,
+in which case the operation might still block).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>seconds</I><UL><UL>
+Number of seconds to wait.
+If -1, it will wait for the default timeout,
+as set with <A HREF="wx_wxsocketbase.html#wxsocketbasesettimeout">SetTimeout</A>.</UL></UL>
+<P>
+<I>millisecond</I><UL><UL>
+Number of milliseconds to wait.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true if the socket becomes writable, false on timeout.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseinterruptwait">wxSocketBase::InterruptWait</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasewait">wxSocketBase::Wait</A><P>
+
+<HR>
+<A NAME="wxsocketbasewrite"></A>
+<H3>wxSocketBase::Write</H3>
+<P>
+<B><A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>&</B> </B> <B>Write</B>(<B>const void *</B><I> buffer</I>, <B>wxUint32</B><I> nbytes</I>)<P>
+This function writes a buffer of <I>nbytes</I> bytes to the socket.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">LastCount</A> to verify the number of bytes actually written.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaseerror">Error</A> to determine if the operation succeeded.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>buffer</I><UL><UL>
+Buffer with the data to be sent.</UL></UL>
+<P>
+<I>nbytes</I><UL><UL>
+Number of bytes.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns a reference to the current object.<P>
+<B><FONT COLOR="#FF0000">Remark/Warning</FONT></B><P>
+The exact behaviour of wxSocketBase::Write depends on the combination
+of flags being used. For a detailed explanation, see <A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseerror">wxSocketBase::Error</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselasterror">wxSocketBase::LastError</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">wxSocketBase::LastCount</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A><P>
+
+<HR>
+<A NAME="wxsocketbasewritemsg"></A>
+<H3>wxSocketBase::WriteMsg</H3>
+<P>
+<B><A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>&</B> </B> <B>WriteMsg</B>(<B>const void *</B><I> buffer</I>, <B>wxUint32</B><I> nbytes</I>)<P>
+This function writes a buffer of <I>nbytes</I> bytes from the socket, but it
+writes a short header before so that <A HREF="wx_wxsocketbase.html#wxsocketbasereadmsg">ReadMsg</A> 
+knows how much data should it actually read. So, a buffer sent with WriteMsg 
+<B>must</B> be read with ReadMsg. This function always waits for the entire
+buffer to be sent, unless an error occurs.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">LastCount</A> to verify the number of bytes actually written.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaseerror">Error</A> to determine if the operation succeeded.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>buffer</I><UL><UL>
+Buffer with the data to be sent.</UL></UL>
+<P>
+<I>nbytes</I><UL><UL>
+Number of bytes to send.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns a reference to the current object.<P>
+<B><FONT COLOR="#FF0000">Remark/Warning</FONT></B><P>
+wxSocketBase::WriteMsg will behave as if the <B>wxSOCKET_WAITALL</B> flag
+was always set and it will always ignore the <B>wxSOCKET_NOWAIT</B> flag.
+The exact behaviour of WriteMsg depends on the <B>wxSOCKET_BLOCK</B> flag.
+For a detailed explanation, see <A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseerror">wxSocketBase::Error</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselasterror">wxSocketBase::LastError</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">wxSocketBase::LastCount</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasereadmsg">wxSocketBase::ReadMsg</A><P>
+
+
+</FONT></BODY></HTML>

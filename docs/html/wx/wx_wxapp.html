@@ -1,0 +1,668 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxApp</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxapp"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxanimationctrl.html#wxanimationctrl"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxapptraits.html#wxapptraits"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxApp</H2>
+<P>
+The <B>wxApp</B> class represents the application itself. It is used
+to:<P>
+<UL>
+
+<LI> set and get application-wide properties;
+<LI> implement the windowing system message or event loop;
+<LI> initiate application processing via <A HREF="wx_wxapp.html#wxapponinit">wxApp::OnInit</A>;
+<LI> allow default processing of events not handled by other
+objects in the application.
+</UL>
+<P>
+You should use the macro IMPLEMENT_APP(appClass) in your application implementation
+file to tell wxWidgets how to create an instance of your application class.<P>
+Use DECLARE_APP(appClass) in a header file if you want the wxGetApp function (which returns
+a reference to your application object) to be visible to other files.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/app.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxappoverview.html#wxappoverview">wxApp overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxappctor">wxApp::wxApp</A><BR>
+<A HREF="#wxappdtor">wxApp::~wxApp</A><BR>
+<A HREF="#wxappargc">wxApp::argc</A><BR>
+<A HREF="#wxappargv">wxApp::argv</A><BR>
+<A HREF="#wxappcreatelogtarget">wxApp::CreateLogTarget</A><BR>
+<A HREF="#wxappcreatetraits">wxApp::CreateTraits</A><BR>
+<A HREF="#wxappdispatch">wxApp::Dispatch</A><BR>
+<A HREF="#wxappexitmainloop">wxApp::ExitMainLoop</A><BR>
+<A HREF="#wxappfilterevent">wxApp::FilterEvent</A><BR>
+<A HREF="#wxappgetappname">wxApp::GetAppName</A><BR>
+<A HREF="#wxappgetclassname">wxApp::GetClassName</A><BR>
+<A HREF="#wxappgetexitonframedelete">wxApp::GetExitOnFrameDelete</A><BR>
+<A HREF="#wxappgetinstance">wxApp::GetInstance</A><BR>
+<A HREF="#wxappgettopwindow">wxApp::GetTopWindow</A><BR>
+<A HREF="#wxappgettraits">wxApp::GetTraits</A><BR>
+<A HREF="#wxappgetusebestvisual">wxApp::GetUseBestVisual</A><BR>
+<A HREF="#wxappgetvendorname">wxApp::GetVendorName</A><BR>
+<A HREF="#wxappisactive">wxApp::IsActive</A><BR>
+<A HREF="#wxappismainlooprunning">wxApp::IsMainLoopRunning</A><BR>
+<A HREF="#wxappmainloop">wxApp::MainLoop</A><BR>
+<A HREF="#wxapponassertfailure">wxApp::OnAssertFailure</A><BR>
+<A HREF="#wxapponcmdlineerror">wxApp::OnCmdLineError</A><BR>
+<A HREF="#wxapponcmdlinehelp">wxApp::OnCmdLineHelp</A><BR>
+<A HREF="#wxapponcmdlineparsed">wxApp::OnCmdLineParsed</A><BR>
+<A HREF="#wxapponexceptioninmainloop">wxApp::OnExceptionInMainLoop</A><BR>
+<A HREF="#wxapponexit">wxApp::OnExit</A><BR>
+<A HREF="#wxapponfatalexception">wxApp::OnFatalException</A><BR>
+<A HREF="#wxapponinit">wxApp::OnInit</A><BR>
+<A HREF="#wxapponinitcmdline">wxApp::OnInitCmdLine</A><BR>
+<A HREF="#wxapponrun">wxApp::OnRun</A><BR>
+<A HREF="#wxapponunhandledexception">wxApp::OnUnhandledException</A><BR>
+<A HREF="#wxappprocessmessage">wxApp::ProcessMessage</A><BR>
+<A HREF="#wxapppending">wxApp::Pending</A><BR>
+<A HREF="#wxappsendidleevents">wxApp::SendIdleEvents</A><BR>
+<A HREF="#wxappsetappname">wxApp::SetAppName</A><BR>
+<A HREF="#wxappsetclassname">wxApp::SetClassName</A><BR>
+<A HREF="#wxappsetexitonframedelete">wxApp::SetExitOnFrameDelete</A><BR>
+<A HREF="#wxappsetinstance">wxApp::SetInstance</A><BR>
+<A HREF="#wxappsettopwindow">wxApp::SetTopWindow</A><BR>
+<A HREF="#wxappsetvendorname">wxApp::SetVendorName</A><BR>
+<A HREF="#wxappsetusebestvisual">wxApp::SetUseBestVisual</A><BR>
+<A HREF="#wxapphandleevent">wxApp::HandleEvent</A><BR>
+<A HREF="#wxappyield">wxApp::Yield</A><BR>
+<P>
+
+<HR>
+<A NAME="wxappctor"></A>
+<H3>wxApp::wxApp</H3>
+<P>
+<B></B> <B>wxApp</B>()<P>
+Constructor. Called implicitly with a definition of a wxApp object.<P>
+
+
+<HR>
+<A NAME="wxappdtor"></A>
+<H3>wxApp::~wxApp</H3>
+<P>
+<B>virtual</B> <B>~wxApp</B>()<P>
+Destructor. Will be called implicitly on program exit if the wxApp
+object is created on the stack.<P>
+
+
+<HR>
+<A NAME="wxappargc"></A>
+<H3>wxApp::argc</H3>
+<P>
+int argc<P>
+Number of command line arguments (after environment-specific processing).<P>
+
+
+<HR>
+<A NAME="wxappargv"></A>
+<H3>wxApp::argv</H3>
+<P>
+wxChar ** argv<P>
+Command line arguments (after environment-specific processing).<P>
+
+
+<HR>
+<A NAME="wxappcreatelogtarget"></A>
+<H3>wxApp::CreateLogTarget</H3>
+<P>
+<B>virtual <A HREF="wx_wxlog.html#wxlog">wxLog</A>*</B> </B> <B>CreateLogTarget</B>()<P>
+Creates a wxLog class for the application to use for logging errors. The default
+implementation returns a new wxLogGui class.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlog.html#wxlog">wxLog</A><P>
+
+
+<HR>
+<A NAME="wxappcreatetraits"></A>
+<H3>wxApp::CreateTraits</H3>
+<P>
+<B>virtual <A HREF="wx_wxapptraits.html#wxapptraits">wxAppTraits</A> *</B> </B> <B>CreateTraits</B>()<P>
+Creates the <A HREF="wx_wxapptraits.html#wxapptraits">wxAppTraits</A> object when <A HREF="wx_wxapp.html#wxappgettraits">GetTraits</A>
+needs it for the first time.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapptraits.html#wxapptraits">wxAppTraits</A><P>
+
+
+<HR>
+<A NAME="wxappdispatch"></A>
+<H3>wxApp::Dispatch</H3>
+<P>
+<B>virtual void</B> <B>Dispatch</B>()<P>
+Dispatches the next event in the windowing system event queue.<P>
+This can be used for programming event loops, e.g.<P>
+<PRE>
+  while (app.Pending())
+    Dispatch();
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxapppending">wxApp::Pending</A><P>
+
+
+<HR>
+<A NAME="wxappexitmainloop"></A>
+<H3>wxApp::ExitMainLoop</H3>
+<P>
+<B>virtual void</B> <B>ExitMainLoop</B>()<P>
+Call this to explicitly exit the main message (event) loop.
+You should normally exit the main loop (and the application) by deleting
+the top window.<P>
+
+
+<HR>
+<A NAME="wxappfilterevent"></A>
+<H3>wxApp::FilterEvent</H3>
+<P>
+<B>int</B> <B>FilterEvent</B>(<B><A HREF="wx_wxevent.html#wxevent">wxEvent</A>& </B></B><I>event</I>)<P>
+This function is called before processing any event and allows the application
+to preempt the processing of some events. If this method returns -1 the event
+is processed normally, otherwise either <TT>true</TT> or <TT>false</TT> should be
+returned and the event processing stops immediately considering that the event
+had been already processed (for the former return value) or that it is not
+going to be processed at all (for the latter one).<P>
+
+
+<HR>
+<A NAME="wxappgetappname"></A>
+<H3>wxApp::GetAppName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetAppName</B>() <B>const</B><P>
+Returns the application name.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+wxWidgets sets this to a reasonable default before
+calling <A HREF="wx_wxapp.html#wxapponinit">wxApp::OnInit</A>, but the application can reset it at will.<P>
+
+
+<HR>
+<A NAME="wxappgetclassname"></A>
+<H3>wxApp::GetClassName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetClassName</B>() <B>const</B><P>
+Gets the class name of the application. The class name may be used in a platform specific
+manner to refer to the application.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappsetclassname">wxApp::SetClassName</A><P>
+
+
+<HR>
+<A NAME="wxappgetexitonframedelete"></A>
+<H3>wxApp::GetExitOnFrameDelete</H3>
+<P>
+<B>bool</B> <B>GetExitOnFrameDelete</B>() <B>const</B><P>
+Returns true if the application will exit when the top-level window is deleted, false
+otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappsetexitonframedelete">wxApp::SetExitOnFrameDelete</A>,<BR>
+
+<A HREF="wx_wxappoverview.html#wxappshutdownoverview">wxApp shutdown overview</A><P>
+
+
+<HR>
+<A NAME="wxappgetinstance"></A>
+<H3>wxApp::GetInstance</H3>
+<P>
+<B>static wxAppConsole *</B> <B>GetInstance</B>()<P>
+Returns the one and only global application object.
+Usually <TT>wxTheApp</TT> is usead instead.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappsetinstance">wxApp::SetInstance</A><P>
+
+
+<HR>
+<A NAME="wxappgettopwindow"></A>
+<H3>wxApp::GetTopWindow</H3>
+<P>
+<B>virtual <A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B> </B> <B>GetTopWindow</B>() <B>const</B><P>
+Returns a pointer to the top window.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+If the top window hasn't been set using <A HREF="wx_wxapp.html#wxappsettopwindow">wxApp::SetTopWindow</A>, this
+function will find the first top-level window (frame or dialog) and return that.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappsettopwindow">SetTopWindow</A><P>
+<P>
+
+<HR>
+<A NAME="wxappgettraits"></A>
+<H3>wxApp::GetTraits</H3>
+<P>
+<B><A HREF="wx_wxapptraits.html#wxapptraits">wxAppTraits</A> *</B> </B> <B>GetTraits</B>()<P>
+Returns a pointer to the <A HREF="wx_wxapptraits.html#wxapptraits">wxAppTraits</A> object for the application.
+If you want to customize the <A HREF="wx_wxapptraits.html#wxapptraits">wxAppTraits</A> object, you must override the
+<A HREF="wx_wxapp.html#wxappcreatetraits">CreateTraits</A> function.<P>
+<P>
+
+<HR>
+<A NAME="wxappgetusebestvisual"></A>
+<H3>wxApp::GetUseBestVisual</H3>
+<P>
+<B>bool</B> <B>GetUseBestVisual</B>() <B>const</B><P>
+Returns true if the application will use the best visual on systems that support
+different visuals, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappsetusebestvisual">SetUseBestVisual</A><P>
+
+
+<HR>
+<A NAME="wxappgetvendorname"></A>
+<H3>wxApp::GetVendorName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetVendorName</B>() <B>const</B><P>
+Returns the application's vendor name.<P>
+
+
+<HR>
+<A NAME="wxappisactive"></A>
+<H3>wxApp::IsActive</H3>
+<P>
+<B>bool</B> <B>IsActive</B>() <B>const</B><P>
+Returns <TT>true</TT> if the application is active, i.e. if one of its windows is
+currently in the foreground. If this function returns <TT>false</TT> and you need to
+attract users attention to the application, you may use 
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowrequestuserattention">wxTopLevelWindow::RequestUserAttention</A> 
+to do it.<P>
+
+
+<HR>
+<A NAME="wxappismainlooprunning"></A>
+<H3>wxApp::IsMainLoopRunning</H3>
+<P>
+<B>static bool</B> <B>IsMainLoopRunning</B>()<P>
+Returns <TT>true</TT> if the main event loop is currently running, i.e. if the
+application is inside <A HREF="wx_wxapp.html#wxapponrun">OnRun</A>.<P>
+This can be useful to test whether the events can be dispatched. For example,
+if this function returns <TT>false</TT>, non-blocking sockets cannot be used because
+the events from them would never be processed.<P>
+
+
+<HR>
+<A NAME="wxappmainloop"></A>
+<H3>wxApp::MainLoop</H3>
+<P>
+<B>virtual int</B> <B>MainLoop</B>()<P>
+Called by wxWidgets on creation of the application. Override this if you wish
+to provide your own (environment-dependent) main loop.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns 0 under X, and the wParam of the WM_QUIT message under Windows.<P>
+
+
+<HR>
+<A NAME="wxapponassertfailure"></A>
+<H3>wxApp::OnAssertFailure</H3>
+<P>
+<B>void</B> <B>OnAssertFailure</B>(<B>const wxChar </B><I>*file</I>, <B>int </B><I>line</I>, <B>const wxChar </B><I>*func</I>, <B>const wxChar </B><I>*cond</I>, <B>const wxChar </B><I>*msg</I>)<P>
+This function is called when an assert failure occurs, i.e. the condition
+specified in <A HREF="wx_debugmacros.html#wxassert">wxASSERT</A> macro evaluated to <TT>false</TT>.
+It is only called in debug mode (when <TT>__WXDEBUG__</TT> is defined) as
+asserts are not left in the release code at all.<P>
+The base class version shows the default assert failure dialog box proposing to
+the user to stop the program, continue or ignore all subsequent asserts.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>file</I><UL><UL>
+the name of the source file where the assert occurred</UL></UL>
+<P>
+<I>line</I><UL><UL>
+the line number in this file where the assert occurred</UL></UL>
+<P>
+<I>func</I><UL><UL>
+the name of the function where the assert occurred, may be
+empty if the compiler doesn't support C99 <TT>__FUNCTION__</TT></UL></UL>
+<P>
+<I>cond</I><UL><UL>
+the condition of the failed assert in text form</UL></UL>
+<P>
+<I>msg</I><UL><UL>
+the message specified as argument to 
+<A HREF="wx_debugmacros.html#wxassertmsg">wxASSERT_MSG</A> or <A HREF="wx_debugmacros.html#wxfailmsg">wxFAIL_MSG</A>, will
+be <TT>NULL</TT> if just <A HREF="wx_debugmacros.html#wxassert">wxASSERT</A> or <A HREF="wx_debugmacros.html#wxfail">wxFAIL</A> 
+was used</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxapponcmdlineerror"></A>
+<H3>wxApp::OnCmdLineError</H3>
+<P>
+<B>bool</B> <B>OnCmdLineError</B>(<B><A HREF="wx_wxcmdlineparser.html#wxcmdlineparser">wxCmdLineParser</A>& </B></B><I>parser</I>)<P>
+Called when command line parsing fails (i.e. an incorrect command line option
+was specified by the user). The default behaviour is to show the program usage
+text and abort the program.<P>
+Return <TT>true</TT> to continue normal execution or <TT>false</TT> to return 
+<TT>false</TT> from <A HREF="wx_wxapp.html#wxapponinit">OnInit</A> thus terminating the program.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxapponinitcmdline">OnInitCmdLine</A><P>
+
+
+<HR>
+<A NAME="wxapponcmdlinehelp"></A>
+<H3>wxApp::OnCmdLineHelp</H3>
+<P>
+<B>bool</B> <B>OnCmdLineHelp</B>(<B><A HREF="wx_wxcmdlineparser.html#wxcmdlineparser">wxCmdLineParser</A>& </B></B><I>parser</I>)<P>
+Called when the help option (<TT>--help</TT>) was specified on the command line.
+The default behaviour is to show the program usage text and abort the program.<P>
+Return <TT>true</TT> to continue normal execution or <TT>false</TT> to return 
+<TT>false</TT> from <A HREF="wx_wxapp.html#wxapponinit">OnInit</A> thus terminating the program.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxapponinitcmdline">OnInitCmdLine</A><P>
+
+
+<HR>
+<A NAME="wxapponcmdlineparsed"></A>
+<H3>wxApp::OnCmdLineParsed</H3>
+<P>
+<B>bool</B> <B>OnCmdLineParsed</B>(<B><A HREF="wx_wxcmdlineparser.html#wxcmdlineparser">wxCmdLineParser</A>& </B></B><I>parser</I>)<P>
+Called after the command line had been successfully parsed. You may override
+this method to test for the values of the various parameters which could be
+set from the command line.<P>
+Don't forget to call the base class version unless you want to suppress
+processing of the standard command line options.<P>
+Return <TT>true</TT> to continue normal execution or <TT>false</TT> to return 
+<TT>false</TT> from <A HREF="wx_wxapp.html#wxapponinit">OnInit</A> thus terminating the program.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxapponinitcmdline">OnInitCmdLine</A><P>
+
+
+<HR>
+<A NAME="wxapponexceptioninmainloop"></A>
+<H3>wxApp::OnExceptionInMainLoop</H3>
+<P>
+<B>virtual bool</B> <B>OnExceptionInMainLoop</B>()<P>
+This function is called if an unhandled exception occurs inside the main
+application event loop. It can return <TT>true</TT> to ignore the exception and to
+continue running the loop or <TT>false</TT> to exit the loop and terminate the
+program. In the latter case it can also use C++ <TT>throw</TT> keyword to
+rethrow the current exception.<P>
+The default behaviour of this function is the latter in all ports except under
+Windows where a dialog is shown to the user which allows him to choose between
+the different options. You may override this function in your class to do
+something more appropriate.<P>
+Finally note that if the exception is rethrown from here, it can be caught in 
+<A HREF="wx_wxapp.html#wxapponunhandledexception">OnUnhandledException</A>.<P>
+
+
+<HR>
+<A NAME="wxapponexit"></A>
+<H3>wxApp::OnExit</H3>
+<P>
+<B>virtual int</B> <B>OnExit</B>()<P>
+Override this member function for any processing which needs to be
+done as the application is about to exit. OnExit is called after
+destroying all application windows and controls, but before
+wxWidgets cleanup. Note that it is not called at all if 
+<A HREF="wx_wxapp.html#wxapponinit">OnInit</A> failed.<P>
+The return value of this function is currently ignored, return the same value
+as returned by the base class method if you override it.<P>
+
+
+<HR>
+<A NAME="wxapponfatalexception"></A>
+<H3>wxApp::OnFatalException</H3>
+<P>
+<B>void</B> <B>OnFatalException</B>()<P>
+This function may be called if something fatal happens: an unhandled
+exception under Win32 or a a fatal signal under Unix, for example. However,
+this will not happen by default: you have to explicitly call 
+<A HREF="wx_appinifunctions.html#wxhandlefatalexceptions">wxHandleFatalExceptions</A> to enable this.<P>
+Generally speaking, this function should only show a message to the user and
+return. You may attempt to save unsaved data but this is not guaranteed to
+work and, in fact, probably won't.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_appinifunctions.html#wxhandlefatalexceptions">wxHandleFatalExceptions</A><P>
+
+
+<HR>
+<A NAME="wxapponinit"></A>
+<H3>wxApp::OnInit</H3>
+<P>
+<B>bool</B> <B>OnInit</B>()<P>
+This must be provided by the application, and will usually create the
+application's main window, optionally calling 
+<A HREF="wx_wxapp.html#wxappsettopwindow">wxApp::SetTopWindow</A>. You may use 
+<A HREF="wx_wxapp.html#wxapponexit">OnExit</A> to clean up anything initialized here, provided
+that the function returns <TT>true</TT>.<P>
+Notice that if you want to to use the command line processing provided by
+wxWidgets you have to call the base class version in the derived class
+OnInit().<P>
+Return <TT>true</TT> to continue processing, <TT>false</TT> to exit the application
+immediately.<P>
+
+
+<HR>
+<A NAME="wxapponinitcmdline"></A>
+<H3>wxApp::OnInitCmdLine</H3>
+<P>
+<B>void</B> <B>OnInitCmdLine</B>(<B><A HREF="wx_wxcmdlineparser.html#wxcmdlineparser">wxCmdLineParser</A>& </B></B><I>parser</I>)<P>
+Called from <A HREF="wx_wxapp.html#wxapponinit">OnInit</A> and may be used to initialize the
+parser with the command line options for this application. The base class
+versions adds support for a few standard options only.<P>
+
+<HR>
+<A NAME="wxapponrun"></A>
+<H3>wxApp::OnRun</H3>
+<P>
+<B>virtual int</B> <B>OnRun</B>()<P>
+This virtual function is where the execution of a program written in wxWidgets
+starts. The default implementation just enters the main loop and starts
+handling the events until it terminates, either because 
+<A HREF="wx_wxapp.html#wxappexitmainloop">ExitMainLoop</A> has been explicitly called or because
+the last frame has been deleted and 
+<A HREF="wx_wxapp.html#wxappgetexitonframedelete">GetExitOnFrameDelete</A> flag is <TT>true</TT> (this
+is the default).<P>
+The return value of this function becomes the exit code of the program, so it
+should return 0 in case of successful termination.<P>
+
+
+<HR>
+<A NAME="wxapponunhandledexception"></A>
+<H3>wxApp::OnUnhandledException</H3>
+<P>
+<B>virtual void</B> <B>OnUnhandledException</B>()<P>
+This function is called when an unhandled C++ exception occurs inside 
+<A HREF="wx_wxapp.html#wxapponrun">OnRun()</A> (the exceptions which occur during the program
+startup and shutdown might not be caught at all).
+Note that the exception type is lost by now, so if you want to really handle
+the exception you should override <A HREF="wx_wxapp.html#wxapponrun">OnRun()</A> and put a
+try/catch clause around the call to the base class version there.<P>
+
+
+<HR>
+<A NAME="wxappprocessmessage"></A>
+<H3>wxApp::ProcessMessage</H3>
+<P>
+<B>bool</B> <B>ProcessMessage</B>(<B>WXMSG *</B><I>msg</I>)<P>
+Windows-only function for processing a message. This function
+is called from the main message loop, checking for windows that
+may wish to process it. The function returns true if the message
+was processed, false otherwise. If you use wxWidgets with another class
+library with its own message loop, you should make sure that this
+function is called to allow wxWidgets to receive messages. For example,
+to allow co-existence with the Microsoft Foundation Classes, override
+the PreTranslateMessage function:<P>
+<PRE>
+// Provide wxWidgets message loop compatibility
+BOOL CTheApp::PreTranslateMessage(MSG *msg)
+{
+  if (wxTheApp && wxTheApp-&gt;ProcessMessage((WXMSW *)msg))
+    return true;
+  else
+    return CWinApp::PreTranslateMessage(msg);
+}
+</PRE>
+
+
+<HR>
+<A NAME="wxapppending"></A>
+<H3>wxApp::Pending</H3>
+<P>
+<B>virtual bool</B> <B>Pending</B>()<P>
+Returns true if unprocessed events are in the window system event queue.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappdispatch">wxApp::Dispatch</A><P>
+
+
+<HR>
+<A NAME="wxappsendidleevents"></A>
+<H3>wxApp::SendIdleEvents</H3>
+<P>
+<B>bool</B> <B>SendIdleEvents</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> win</I>, <B><A HREF="wx_wxidleevent.html#wxidleevent">wxIdleEvent</A>& </B></B><I>event</I>)<P>
+Sends idle events to a window and its children.<P>
+Please note that this function is internal to wxWidgets and shouldn't be used
+by user code.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+These functions poll the top-level windows, and their children, for idle event processing.
+If true is returned, more OnIdle processing is requested by one or more window.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxidleevent.html#wxidleevent">wxIdleEvent</A><P>
+
+
+<HR>
+<A NAME="wxappsetappname"></A>
+<H3>wxApp::SetAppName</H3>
+<P>
+<B>void</B> <B>SetAppName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the name of the application. The name may be used in dialogs
+(for example by the document/view framework). A default name is set by
+wxWidgets.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappgetappname">wxApp::GetAppName</A><P>
+
+
+<HR>
+<A NAME="wxappsetclassname"></A>
+<H3>wxApp::SetClassName</H3>
+<P>
+<B>void</B> <B>SetClassName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the class name of the application. This may be used in a platform specific
+manner to refer to the application.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappgetclassname">wxApp::GetClassName</A><P>
+
+
+<HR>
+<A NAME="wxappsetexitonframedelete"></A>
+<H3>wxApp::SetExitOnFrameDelete</H3>
+<P>
+<B>void</B> <B>SetExitOnFrameDelete</B>(<B>bool</B><I> flag</I>)<P>
+Allows the programmer to specify whether the application will exit when the
+top-level frame is deleted.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>flag</I><UL><UL>
+If true (the default), the application will exit when the top-level frame is
+deleted. If false, the application will continue to run.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappgetexitonframedelete">wxApp::GetExitOnFrameDelete</A>,<BR>
+
+<A HREF="wx_wxappoverview.html#wxappshutdownoverview">wxApp shutdown overview</A><P>
+
+
+<HR>
+<A NAME="wxappsetinstance"></A>
+<H3>wxApp::SetInstance</H3>
+<P>
+<B>static void</B> <B>SetInstance</B>(<B>wxAppConsole* </B><I>app</I>)<P>
+Allows external code to modify global <TT>wxTheApp</TT>, but you should really
+know what you're doing if you call it.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>app</I><UL><UL>
+Replacement for the global application object.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappgetinstance">wxApp::GetInstance</A><P>
+
+
+<HR>
+<A NAME="wxappsettopwindow"></A>
+<H3>wxApp::SetTopWindow</H3>
+<P>
+<B>void</B> <B>SetTopWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>)<P>
+Sets the 'top' window. You can call this from within <A HREF="wx_wxapp.html#wxapponinit">wxApp::OnInit</A> to
+let wxWidgets know which is the main window. You don't have to set the top window;
+it is only a convenience so that (for example) certain dialogs without parents can use a
+specific window as the top window. If no top window is specified by the application,
+wxWidgets just uses the first frame or dialog in its top-level window list, when it
+needs to use the top window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>window</I><UL><UL>
+The new top window.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappgettopwindow">wxApp::GetTopWindow</A>, <A HREF="wx_wxapp.html#wxapponinit">wxApp::OnInit</A><P>
+<P>
+
+<HR>
+<A NAME="wxappsetvendorname"></A>
+<H3>wxApp::SetVendorName</H3>
+<P>
+<B>void</B> <B>SetVendorName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the name of application's vendor. The name will be used
+in registry access. A default name is set by
+wxWidgets.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappgetvendorname">wxApp::GetVendorName</A><P>
+
+
+<HR>
+<A NAME="wxappsetusebestvisual"></A>
+<H3>wxApp::SetUseBestVisual</H3>
+<P>
+<B>void</B> <B>SetUseBestVisual</B>(<B>bool</B><I> flag</I>, <B>bool</B><I> forceTrueColour = false</I>)<P>
+Allows the programmer to specify whether the application will use the best visual
+on systems that support several visual on the same display. This is typically the
+case under Solaris and IRIX, where the default visual is only 8-bit whereas certain
+applications are supposed to run in TrueColour mode.<P>
+If <I>forceTrueColour</I> is true then the application will try to force
+using a TrueColour visual and abort the app if none is found.<P>
+Note that this function has to be called in the constructor of the <TT>wxApp</TT> 
+instance and won't have any effect when called later on.<P>
+This function currently only has effect under GTK.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>flag</I><UL><UL>
+If true, the app will use the best visual.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxapphandleevent"></A>
+<H3>wxApp::HandleEvent</H3>
+<P>
+<B>virtual void</B> <B>HandleEvent</B>(<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A></B></B><I> *handler</I>, <B>wxEventFunction</B><I> func</I>, <B><A HREF="wx_wxevent.html#wxevent">wxEvent</A>& </B></B><I>event</I>) <B>const</B><P>
+This function simply invokes the given method <I>func</I> of the specified
+event handler <I>handler</I> with the <I>event</I> as parameter. It exists solely
+to allow to catch the C++ exceptions which could be thrown by all event
+handlers in the application in one place: if you want to do this, override this
+function in your wxApp-derived class and add try/catch clause(s) to it.<P>
+
+
+<HR>
+<A NAME="wxappyield"></A>
+<H3>wxApp::Yield</H3>
+<P>
+<B>bool</B> <B>Yield</B>(<B>bool</B><I> onlyIfNeeded = false</I>)<P>
+Yields control to pending messages in the windowing system. This can be useful, for example, when a
+time-consuming process writes to a text window. Without an occasional
+yield, the text window will not be updated properly, and on systems with
+cooperative multitasking, such as Windows 3.1 other processes will not respond.<P>
+Caution should be exercised, however, since yielding may allow the
+user to perform actions which are not compatible with the current task.
+Disabling menu items or whole menus during processing can avoid unwanted
+reentrance of code: see <A HREF="wx_appinifunctions.html#wxsafeyield">::wxSafeYield</A> for a better
+function.<P>
+Note that Yield() will not flush the message logs. This is intentional as
+calling Yield() is usually done to quickly update the screen and popping up a
+message box dialog may be undesirable. If you do wish to flush the log
+messages immediately (otherwise it will be done during the next idle loop
+iteration), call <A HREF="wx_wxlog.html#wxlogflushactive">wxLog::FlushActive</A>.<P>
+Calling Yield() recursively is normally an error and an assert failure is
+raised in debug build if such situation is detected. However if the 
+<I>onlyIfNeeded</I> parameter is <TT>true</TT>, the method will just silently
+return <TT>false</TT> instead.<P>
+
+</FONT></BODY></HTML>

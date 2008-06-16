@@ -1,0 +1,226 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxColour</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcolour"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcollapsiblepaneevent.html#wxcollapsiblepaneevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcolourdata.html#wxcolourdata"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxColour</H2>
+<P>
+A colour is an object representing a combination of Red, Green, and Blue (RGB) intensity values,
+and is used to determine drawing colours. See the
+entry for <A HREF="wx_wxcolourdatabase.html#wxcolourdatabase">wxColourDatabase</A> for how a pointer to a predefined,
+named colour may be returned instead of creating a new colour.<P>
+Valid RGB values are in the range 0 to 255.<P>
+You can retrieve the current system colour settings with <A HREF="wx_wxsystemsettings.html#wxsystemsettings">wxSystemSettings</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/colour.h&gt;<P>
+<B><FONT COLOR="#FF0000">Predefined objects</FONT></B><P>
+Objects:<P>
+<B>wxNullColour</B><P>
+Pointers:<P>
+<B>wxBLACK<BR>
+
+wxWHITE<BR>
+
+wxRED<BR>
+
+wxBLUE<BR>
+
+wxGREEN<BR>
+
+wxCYAN<BR>
+
+wxLIGHT_GREY</B><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcolourdatabase.html#wxcolourdatabase">wxColourDatabase</A>, <A HREF="wx_wxpen.html#wxpen">wxPen</A>, <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>,
+<A HREF="wx_wxcolourdialog.html#wxcolourdialog">wxColourDialog</A>, <A HREF="wx_wxsystemsettings.html#wxsystemsettings">wxSystemSettings</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxcolourconstr">wxColour::wxColour</A><BR>
+<A HREF="#wxcolouralpha">wxColour::Alpha</A><BR>
+<A HREF="#wxcolourblue">wxColour::Blue</A><BR>
+<A HREF="#wxcolourgetasstring">wxColour::GetAsString</A><BR>
+<A HREF="#wxcolourgetpixel">wxColour::GetPixel</A><BR>
+<A HREF="#wxcolourgreen">wxColour::Green</A><BR>
+<A HREF="#wxcolourisok">wxColour::IsOk</A><BR>
+<A HREF="#wxcolourred">wxColour::Red</A><BR>
+<A HREF="#wxcolourset">wxColour::Set</A><BR>
+<A HREF="#wxcolourassign">wxColour::operator =</A><BR>
+<A HREF="#wxcolourequality">wxColour::operator ==</A><BR>
+<A HREF="#wxcolourinequality">wxColour::operator !=</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcolourconstr"></A>
+<H3>wxColour::wxColour</H3>
+<P>
+<B></B> <B>wxColour</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxColour</B>(<B>unsigned char</B><I> red</I>, <B>unsigned char</B><I> green</I>, <B>unsigned char</B><I> blue</I>, <B>unsigned char</B><I> alpha=wxALPHA_OPAQUE</I>)<P>
+Constructs a colour from red, green, blue and alpha values.<P>
+<B></B> <B>wxColour</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>colourNname</I>)<P>
+Constructs a colour using the given string. See <A HREF="wx_wxcolour.html#wxcolourset">Set</A> for more info.<P>
+<B></B> <B>wxColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+Copy constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>red</I><UL><UL>
+The red value.</UL></UL>
+<P>
+<I>green</I><UL><UL>
+The green value.</UL></UL>
+<P>
+<I>blue</I><UL><UL>
+The blue value.</UL></UL>
+<P>
+<I>alpha</I><UL><UL>
+The alpha value. Alpha values range from 0 (wxALPHA_TRANSPARENT) to 255 (wxALPHA_OPAQUE).</UL></UL>
+<P>
+<I>colourName</I><UL><UL>
+The colour name.</UL></UL>
+<P>
+<I>colour</I><UL><UL>
+The colour to copy.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcolourdatabase.html#wxcolourdatabase">wxColourDatabase</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> Constructors supported by wxPython are:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxColour(red=0, green=0, blue=0)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxNamedColour(name)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+<P>
+
+<HR>
+<A NAME="wxcolouralpha"></A>
+<H3>wxColour::Alpha</H3>
+<P>
+<B>unsigned char</B> <B>Alpha</B>() <B>const</B><P>
+Returns the alpha value, on platforms where alpha is not yet supported, this always returns wxALPHA_OPAQUE.<P>
+
+
+<HR>
+<A NAME="wxcolourblue"></A>
+<H3>wxColour::Blue</H3>
+<P>
+<B>unsigned char</B> <B>Blue</B>() <B>const</B><P>
+Returns the blue intensity.<P>
+
+
+<HR>
+<A NAME="wxcolourgetasstring"></A>
+<H3>wxColour::GetAsString</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetAsString</B>(<B>long</B><I> flags</I>) <B>const</B><P>
+Converts this colour to a <A HREF="wx_wxstring.html#wxstring">wxString</A>
+using the given <I>flags</I>.<P>
+The supported flags are <B>wxC2S_NAME</B>, to obtain the colour
+name (e.g. wxColour(255,0,0) -&gt; <TT>"red"</TT>), <B>wxC2S_CSS_SYNTAX</B>, to obtain
+the colour in the <TT>"rgb(r,g,b)"</TT> syntax
+(e.g. wxColour(255,0,0) -&gt; <TT>"rgb(255,0,0)"</TT>), and <B>wxC2S_HTML_SYNTAX</B>, to obtain
+the colour as  <TT>"#"</TT> followed by 6 hexadecimal digits
+(e.g. wxColour(255,0,0) -&gt; <TT>"#FF0000"</TT>).<P>
+This function never fails and always returns a non-empty string.<P>
+This function is new since wxWidgets version 2.7.0<P>
+
+<HR>
+<A NAME="wxcolourgetpixel"></A>
+<H3>wxColour::GetPixel</H3>
+<P>
+<B>long</B> <B>GetPixel</B>() <B>const</B><P>
+Returns a pixel value which is platform-dependent. On Windows, a COLORREF is returned.
+On X, an allocated pixel value is returned.<P>
+-1 is returned if the pixel is invalid (on X, unallocated).<P>
+
+
+<HR>
+<A NAME="wxcolourgreen"></A>
+<H3>wxColour::Green</H3>
+<P>
+<B>unsigned char</B> <B>Green</B>() <B>const</B><P>
+Returns the green intensity.<P>
+
+
+<HR>
+<A NAME="wxcolourisok"></A>
+<H3>wxColour::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns <TT>true</TT> if the colour object is valid (the colour has been initialised with RGB values).<P>
+
+
+<HR>
+<A NAME="wxcolourred"></A>
+<H3>wxColour::Red</H3>
+<P>
+<B>unsigned char</B> <B>Red</B>() <B>const</B><P>
+Returns the red intensity.<P>
+
+
+<HR>
+<A NAME="wxcolourset"></A>
+<H3>wxColour::Set</H3>
+<P>
+<B>void</B> <B>Set</B>(<B>unsigned char</B><I> red</I>, <B>unsigned char</B><I> green</I>, <B>unsigned char</B><I> blue</I>, <B>unsigned char</B><I> alpha=wxALPHA_OPAQUE</I>)<P>
+<B>void</B> <B>Set</B>(<B>unsigned long</B><I> RGB</I>)<P>
+<B>bool</B> <B>Set</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I> str</I>)<P>
+Sets the RGB intensity values using the given values (first overload), extracting them from the packed long (second overload), using the given string (third overloard).<P>
+When using third form, Set() accepts: colour names (those listed in <A HREF="wx_wxcolourdatabase.html#wxcolourdatabase">wxTheColourDatabase</A>), the CSS-like <TT>"RGB(r,g,b)"</TT> syntax (case insensitive) and the HTML-like syntax (i.e. <TT>"#"</TT> followed by 6 hexadecimal digits for red, green, blue components).<P>
+Returns <TT>true</TT> if the conversion was successful, <TT>false</TT> otherwise.<P>
+This function is new since wxWidgets version 2.7.0<P>
+
+
+<HR>
+<A NAME="wxcolourassign"></A>
+<H3>wxColour::operator =</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>operator =</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+Assignment operator, taking another colour object.<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>operator =</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> colourName</I>)<P>
+Assignment operator, using a colour name to be found in the colour database.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcolourdatabase.html#wxcolourdatabase">wxColourDatabase</A><P>
+
+
+<HR>
+<A NAME="wxcolourequality"></A>
+<H3>wxColour::operator ==</H3>
+<P>
+<B>bool</B> <B>operator ==</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+Tests the equality of two colours by comparing individual red, green, blue colours and alpha values.<P>
+
+
+<HR>
+<A NAME="wxcolourinequality"></A>
+<H3>wxColour::operator !=</H3>
+<P>
+<B>bool</B> <B>operator !=</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+Tests the inequality of two colours by comparing individual red, green, blue colours and alpha values.<P>
+
+</FONT></BODY></HTML>

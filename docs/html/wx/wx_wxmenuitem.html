@@ -1,0 +1,449 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMenuItem</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmenuitem"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmenuevent.html#wxmenuevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmessagedialog.html#wxmessagedialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMenuItem</H2>
+<P>
+A menu item represents an item in a menu. Note that you usually don't have to
+deal with it directly as <A HREF="wx_wxmenu.html#wxmenu">wxMenu</A> methods usually construct an
+object of this class for you.<P>
+Also please note that the methods related to fonts and bitmaps are currently
+only implemented for Windows and GTK+.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/menuitem.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubar">wxMenuBar</A>, <A HREF="wx_wxmenu.html#wxmenu">wxMenu</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxmenuitemctor">wxMenuItem::wxMenuItem</A><BR>
+<A HREF="#wxmenuitemdtor">wxMenuItem::~wxMenuItem</A><BR>
+<A HREF="#wxmenuitemcheck">wxMenuItem::Check</A><BR>
+<A HREF="#wxmenuitemenable">wxMenuItem::Enable</A><BR>
+<A HREF="#wxmenuitemgetbackgroundcolour">wxMenuItem::GetBackgroundColour</A><BR>
+<A HREF="#wxmenuitemgetbitmap">wxMenuItem::GetBitmap</A><BR>
+<A HREF="#wxmenuitemgetfont">wxMenuItem::GetFont</A><BR>
+<A HREF="#wxmenuitemgethelp">wxMenuItem::GetHelp</A><BR>
+<A HREF="#wxmenuitemgetid">wxMenuItem::GetId</A><BR>
+<A HREF="#wxmenuitemgetitemlabel">wxMenuItem::GetItemLabel</A><BR>
+<A HREF="#wxmenuitemgetitemlabeltext">wxMenuItem::GetItemLabelText</A><BR>
+<A HREF="#wxmenuitemgetkind">wxMenuItem::GetKind</A><BR>
+<A HREF="#wxmenuitemgetlabel">wxMenuItem::GetLabel</A><BR>
+<A HREF="#wxmenuitemgetlabeltext">wxMenuItem::GetLabelText</A><BR>
+<A HREF="#wxmenuitemgetlabelfromtext">wxMenuItem::GetLabelFromText</A><BR>
+<A HREF="#wxmenuitemgetmarginwidth">wxMenuItem::GetMarginWidth</A><BR>
+<A HREF="#wxmenuitemgetmenu">wxMenuItem::GetMenu</A><BR>
+<A HREF="#wxmenuitemgetname">wxMenuItem::GetName</A><BR>
+<A HREF="#wxmenuitemgettext">wxMenuItem::GetText</A><BR>
+<A HREF="#wxmenuitemgetsubmenu">wxMenuItem::GetSubMenu</A><BR>
+<A HREF="#wxmenuitemgettextcolour">wxMenuItem::GetTextColour</A><BR>
+<A HREF="#wxmenuitemischeckable">wxMenuItem::IsCheckable</A><BR>
+<A HREF="#wxmenuitemischecked">wxMenuItem::IsChecked</A><BR>
+<A HREF="#wxmenuitemisenabled">wxMenuItem::IsEnabled</A><BR>
+<A HREF="#wxmenuitemisseparator">wxMenuItem::IsSeparator</A><BR>
+<A HREF="#wxmenuitemissubmenu">wxMenuItem::IsSubMenu</A><BR>
+<A HREF="#wxmenuitemsetbackgroundcolour">wxMenuItem::SetBackgroundColour</A><BR>
+<A HREF="#wxmenuitemsetbitmap">wxMenuItem::SetBitmap</A><BR>
+<A HREF="#wxmenuitemsetbitmaps">wxMenuItem::SetBitmaps</A><BR>
+<A HREF="#wxmenuitemsetfont">wxMenuItem::SetFont</A><BR>
+<A HREF="#wxmenuitemsethelp">wxMenuItem::SetHelp</A><BR>
+<A HREF="#wxmenuitemsetitemlabel">wxMenuItem::SetItemLabel</A><BR>
+<A HREF="#wxmenuitemsetmarginwidth">wxMenuItem::SetMarginWidth</A><BR>
+<A HREF="#wxmenuitemsetmenu">wxMenuItem::SetMenu</A><BR>
+<A HREF="#wxmenuitemsetsubmenu">wxMenuItem::SetSubMenu</A><BR>
+<A HREF="#wxmenuitemsettext">wxMenuItem::SetText</A><BR>
+<A HREF="#wxmenuitemsettextcolour">wxMenuItem::SetTextColour</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmenuitemctor"></A>
+<H3>wxMenuItem::wxMenuItem</H3>
+<P>
+<B></B> <B>wxMenuItem</B>(<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B></B><I> parentMenu = NULL</I>, <B>int</B><I> id = wxID_SEPARATOR</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text = ""</I>,  <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString = ""</I>,
+ <B>wxItemKind </B><I>kind = wxITEM_NORMAL</I>, <B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B></B><I> subMenu = NULL</I>)<P>
+Constructs a wxMenuItem object.<P>
+Menu items can be standard, or "stock menu items'', or custom. For the
+standard menu items (such as commands to open a file, exit the program and so
+on, see <A HREF="wx_stockitems.html#stockitems">stock items</A> for the full list) it is enough to
+specify just the stock ID and leave <I>text</I> and <I>helpString</I> empty. In
+fact, leaving at least <I>text</I> empty for the stock menu items is strongly
+recommended as they will have appearance and keyboard interface (including
+standard accelerators) familiar to the user.<P>
+For the custom (non-stock) menu items, <I>text</I> must be specified and while 
+<I>helpString</I> may be left empty, it's recommended to pass the item
+description (which is automatically shown by the library in the status bar when
+the menu item is selected) in this parameter.<P>
+Finally note that you can e.g. use a stock menu label without using its stock
+help string:<P>
+<PRE>
+// use all stock properties:
+helpMenu-&gt;Append(wxID_ABOUT);
+
+// use the stock label and the stock accelerator but not the stock help string:
+helpMenu-&gt;Append(wxID_ABOUT, wxEmptyString, wxT("My custom help string"));
+
+// use all stock properties except for the bitmap:
+wxMenuItem *mymenu = new wxMenuItem(helpMenu, wxID_ABOUT);
+mymenu-&gt;SetBitmap(wxArtProvider::GetBitmap(wxART_WARNING));
+helpMenu-&gt;Append(mymenu);
+</PRE>
+that is, stock properties are set independently one from the other.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parentMenu</I><UL><UL>
+Menu that the menu item belongs to.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Identifier for this menu item, or wxID_SEPARATOR to indicate a separator.</UL></UL>
+<P>
+<I>text</I><UL><UL>
+Text for the menu item, as shown on the menu. An accelerator
+key can be specified using the ampersand '&amp;' character. In order to embed an
+ampersand character in the menu item text, the ampersand must be doubled.</UL></UL>
+<P>
+<I>helpString</I><UL><UL>
+Optional help string that will be shown on the status bar.</UL></UL>
+<P>
+<I>kind</I><UL><UL>
+May be <TT>wxITEM_SEPARATOR</TT>, <TT>wxITEM_NORMAL</TT>, 
+<TT>wxITEM_CHECK</TT> or <TT>wxITEM_RADIO</TT></UL></UL>
+<P>
+<I>subMenu</I><UL><UL>
+If non-NULL, indicates that the menu item is a submenu.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxmenuitemdtor"></A>
+<H3>wxMenuItem::~wxMenuItem</H3>
+<P>
+<B></B> <B>~wxMenuItem</B>()<P>
+Destructor.<P>
+
+
+<HR>
+<A NAME="wxmenuitemcheck"></A>
+<H3>wxMenuItem::Check</H3>
+<P>
+<B>void</B> <B>Check</B>(<B>bool</B><I> check = true</I>)<P>
+Checks or unchecks the menu item.<P>
+Note that this only works when the item is already appended to a menu.<P>
+
+
+<HR>
+<A NAME="wxmenuitemenable"></A>
+<H3>wxMenuItem::Enable</H3>
+<P>
+<B>void</B> <B>Enable</B>(<B>bool</B><I> enable = true</I>)<P>
+Enables or disables the menu item.<P>
+
+
+<HR>
+<A NAME="wxmenuitemgetbackgroundcolour"></A>
+<H3>wxMenuItem::GetBackgroundColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetBackgroundColour</B>() <B>const</B><P>
+Returns the background colour associated with the menu item (Windows only).<P>
+
+
+<HR>
+<A NAME="wxmenuitemgetbitmap"></A>
+<H3>wxMenuItem::GetBitmap</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B> </B> <B>GetBitmap</B>(<B>bool</B><I> checked = true</I>) <B>const</B><P>
+Returns the checked or unchecked bitmap (Windows only).<P>
+
+
+<HR>
+<A NAME="wxmenuitemgetfont"></A>
+<H3>wxMenuItem::GetFont</H3>
+<P>
+<B><A HREF="wx_wxfont.html#wxfont">wxFont</A>&</B> </B> <B>GetFont</B>() <B>const</B><P>
+Returns the font associated with the menu item (Windows only).<P>
+
+
+<HR>
+<A NAME="wxmenuitemgethelp"></A>
+<H3>wxMenuItem::GetHelp</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetHelp</B>() <B>const</B><P>
+Returns the help string associated with the menu item.<P>
+
+
+<HR>
+<A NAME="wxmenuitemgetid"></A>
+<H3>wxMenuItem::GetId</H3>
+<P>
+<B>int</B> <B>GetId</B>() <B>const</B><P>
+Returns the menu item identifier.<P>
+
+<HR>
+<A NAME="wxmenuitemgetitemlabel"></A>
+<H3>wxMenuItem::GetItemLabel</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetItemLabel</B>() <B>const</B><P>
+Returns the text associated with the menu item including any accelerator
+characters that were passed to the constructor or SetItemLabel.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenuitem.html#wxmenuitemgetitemlabeltext">GetItemLabelText</A>, 
+<A HREF="wx_wxmenuitem.html#wxmenuitemgetlabeltext">GetLabelText</A><P>
+
+
+<HR>
+<A NAME="wxmenuitemgetitemlabeltext"></A>
+<H3>wxMenuItem::GetItemLabelText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetItemLabelText</B>() <B>const</B><P>
+Returns the text associated with the menu item, without any accelerator
+characters.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenuitem.html#wxmenuitemgetitemlabel">GetItemLabel</A>, 
+<A HREF="wx_wxmenuitem.html#wxmenuitemgetlabeltext">GetLabelText</A><P>
+
+
+<HR>
+<A NAME="wxmenuitemgetkind"></A>
+<H3>wxMenuItem::GetKind</H3>
+<P>
+<B>wxItemKind</B> <B>GetKind</B>() <B>const</B><P>
+Returns the item kind, one of <TT>wxITEM_SEPARATOR</TT>, <TT>wxITEM_NORMAL</TT>, 
+<TT>wxITEM_CHECK</TT> or <TT>wxITEM_RADIO</TT>.<P>
+
+
+<HR>
+<A NAME="wxmenuitemgetlabel"></A>
+<H3>wxMenuItem::GetLabel</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLabel</B>() <B>const</B><P>
+Returns the text associated with the menu item without any accelerator
+characters it might contain.<P>
+This function is deprecated in favour of <A HREF="wx_wxmenuitem.html#wxmenuitemgetitemlabeltext">GetItemLabelText</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenuitem.html#wxmenuitemgettext">GetText</A>, 
+<A HREF="wx_wxmenuitem.html#wxmenuitemgetlabelfromtext">GetLabelFromText</A><P>
+
+
+<HR>
+<A NAME="wxmenuitemgetlabeltext"></A>
+<H3>wxMenuItem::GetLabelText</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLabelText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>)<P>
+Strips all accelerator characters and mnemonics from the given <I>text</I>.
+For example,<P>
+<PRE>
+wxMenuItem::GetLabelFromText("&Hello\tCtrl-H");
+</PRE>
+will return just <TT>"Hello"</TT>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenuitem.html#wxmenuitemgetitemlabeltext">GetItemLabelText</A>, 
+<A HREF="wx_wxmenuitem.html#wxmenuitemgetitemlabel">GetItemLabel</A><P>
+
+
+<HR>
+<A NAME="wxmenuitemgetlabelfromtext"></A>
+<H3>wxMenuItem::GetLabelFromText</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLabelFromText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>)<P>
+Strips all accelerator characters and mnemonics from the given <I>text</I>.
+For example,<P>
+<PRE>
+wxMenuItem::GetLabelFromText("&Hello\tCtrl-H");
+</PRE>
+will return just <TT>"Hello"</TT>.<P>
+This function is deprecated; please use <A HREF="wx_wxmenuitem.html#wxmenuitemgetlabeltext">wxMenuItem::GetLabelText</A> instead.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenuitem.html#wxmenuitemgettext">GetText</A>, 
+<A HREF="wx_wxmenuitem.html#wxmenuitemgetlabel">GetLabel</A><P>
+
+<HR>
+<A NAME="wxmenuitemgetmarginwidth"></A>
+<H3>wxMenuItem::GetMarginWidth</H3>
+<P>
+<B>int</B> <B>GetMarginWidth</B>() <B>const</B><P>
+Gets the width of the menu item checkmark bitmap (Windows only).<P>
+
+
+<HR>
+<A NAME="wxmenuitemgetmenu"></A>
+<H3>wxMenuItem::GetMenu</H3>
+<P>
+<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B> </B> <B>GetMenu</B>() <B>const</B><P>
+Returns the menu this menu item is in, or NULL if this menu item is not attached.<P>
+
+
+<HR>
+<A NAME="wxmenuitemgetname"></A>
+<H3>wxMenuItem::GetName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetName</B>() <B>const</B><P>
+Returns the text associated with the menu item.<P>
+<B>NB:</B> this function is deprecated, please use 
+<A HREF="wx_wxmenuitem.html#wxmenuitemgetitemlabel">GetItemLabel</A> or <A HREF="wx_wxmenuitem.html#wxmenuitemgetitemlabeltext">GetItemLabelText</A> 
+instead.<P>
+
+
+<HR>
+<A NAME="wxmenuitemgettext"></A>
+<H3>wxMenuItem::GetText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetText</B>() <B>const</B><P>
+Returns the text associated with the menu item, such as it was passed to the
+wxMenuItem constructor, i.e. with any accelerator characters it may contain.<P>
+This function is deprecated in favour of <A HREF="wx_wxmenuitem.html#wxmenuitemgetitemlabel">GetItemLabel</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenuitem.html#wxmenuitemgetlabel">GetLabel</A>, 
+<A HREF="wx_wxmenuitem.html#wxmenuitemgetlabelfromtext">GetLabelFromText</A><P>
+
+
+<HR>
+<A NAME="wxmenuitemgetsubmenu"></A>
+<H3>wxMenuItem::GetSubMenu</H3>
+<P>
+<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B> </B> <B>GetSubMenu</B>() <B>const</B><P>
+Returns the submenu associated with the menu item, or NULL if there isn't one.<P>
+
+
+<HR>
+<A NAME="wxmenuitemgettextcolour"></A>
+<H3>wxMenuItem::GetTextColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetTextColour</B>() <B>const</B><P>
+Returns the text colour associated with the menu item (Windows only).<P>
+
+
+<HR>
+<A NAME="wxmenuitemischeckable"></A>
+<H3>wxMenuItem::IsCheckable</H3>
+<P>
+<B>bool</B> <B>IsCheckable</B>() <B>const</B><P>
+Returns true if the item is checkable.<P>
+
+
+<HR>
+<A NAME="wxmenuitemischecked"></A>
+<H3>wxMenuItem::IsChecked</H3>
+<P>
+<B>bool</B> <B>IsChecked</B>() <B>const</B><P>
+Returns true if the item is checked.<P>
+
+
+<HR>
+<A NAME="wxmenuitemisenabled"></A>
+<H3>wxMenuItem::IsEnabled</H3>
+<P>
+<B>bool</B> <B>IsEnabled</B>() <B>const</B><P>
+Returns true if the item is enabled.<P>
+
+
+<HR>
+<A NAME="wxmenuitemisseparator"></A>
+<H3>wxMenuItem::IsSeparator</H3>
+<P>
+<B>bool</B> <B>IsSeparator</B>() <B>const</B><P>
+Returns true if the item is a separator.<P>
+
+
+<HR>
+<A NAME="wxmenuitemissubmenu"></A>
+<H3>wxMenuItem::IsSubMenu</H3>
+<P>
+<B>bool</B> <B>IsSubMenu</B>() <B>const</B><P>
+Returns true if the item is a submenu.<P>
+
+
+<HR>
+<A NAME="wxmenuitemsetbackgroundcolour"></A>
+<H3>wxMenuItem::SetBackgroundColour</H3>
+<P>
+<B>void</B> <B>SetBackgroundColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>) <B>const</B><P>
+Sets the background colour associated with the menu item (Windows only).<P>
+
+
+<HR>
+<A NAME="wxmenuitemsetbitmap"></A>
+<H3>wxMenuItem::SetBitmap</H3>
+<P>
+<B>void</B> <B>SetBitmap</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bmp</I>)<P>
+Sets the bitmap for the menu item (Windows and GTK+ only). It is
+equivalent to <A HREF="wx_wxmenuitem.html#wxmenuitemsetbitmaps">SetBitmaps</A>(bmp, wxNullBitmap).<P>
+
+
+<HR>
+<A NAME="wxmenuitemsetbitmaps"></A>
+<H3>wxMenuItem::SetBitmaps</H3>
+<P>
+<B>void</B> <B>SetBitmaps</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>checked</I>,
+ <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>unchecked = wxNullBitmap</I>)<P>
+Sets the checked/unchecked bitmaps for the menu item (Windows only). The first bitmap
+is also used as the single bitmap for uncheckable menu items.<P>
+
+
+<HR>
+<A NAME="wxmenuitemsetfont"></A>
+<H3>wxMenuItem::SetFont</H3>
+<P>
+<B>void</B> <B>SetFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the font associated with the menu item (Windows only).<P>
+
+
+<HR>
+<A NAME="wxmenuitemsethelp"></A>
+<H3>wxMenuItem::SetHelp</H3>
+<P>
+<B>void</B> <B>SetHelp</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString</I>)<P>
+Sets the help string.<P>
+
+
+<HR>
+<A NAME="wxmenuitemsetitemlabel"></A>
+<H3>wxMenuItem::SetItemLabel</H3>
+<P>
+<B>void</B> <B>SetItemLabel</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>)<P>
+Sets the label associated with the menu item.<P>
+
+
+<HR>
+<A NAME="wxmenuitemsetmarginwidth"></A>
+<H3>wxMenuItem::SetMarginWidth</H3>
+<P>
+<B>void</B> <B>SetMarginWidth</B>(<B>int</B><I> width</I>) <B>const</B><P>
+Sets the width of the menu item checkmark bitmap (Windows only).<P>
+
+
+<HR>
+<A NAME="wxmenuitemsetmenu"></A>
+<H3>wxMenuItem::SetMenu</H3>
+<P>
+<B>void</B> <B>SetMenu</B>(<B>const <A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B></B><I>menu</I>)<P>
+Sets the parent menu which will contain this menu item.<P>
+
+
+<HR>
+<A NAME="wxmenuitemsetsubmenu"></A>
+<H3>wxMenuItem::SetSubMenu</H3>
+<P>
+<B>void</B> <B>SetSubMenu</B>(<B>const <A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B></B><I>menu</I>)<P>
+Sets the submenu of this menu item.<P>
+
+
+<HR>
+<A NAME="wxmenuitemsettext"></A>
+<H3>wxMenuItem::SetText</H3>
+<P>
+<B>void</B> <B>SetText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>)<P>
+Sets the text associated with the menu item.<P>
+This function is deprecated in favour of <A HREF="wx_wxmenuitem.html#wxmenuitemsetitemlabel">SetItemLabel</A>.<P>
+
+
+<HR>
+<A NAME="wxmenuitemsettextcolour"></A>
+<H3>wxMenuItem::SetTextColour</H3>
+<P>
+<B>void</B> <B>SetTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+Sets the text colour associated with the menu item (Windows only).<P>
+
+</FONT></BODY></HTML>

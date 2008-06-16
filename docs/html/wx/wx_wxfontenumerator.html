@@ -1,0 +1,116 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFontEnumerator</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfontenumerator"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfontdialog.html#wxfontdialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfontlist.html#wxfontlist"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFontEnumerator</H2>
+<P>
+wxFontEnumerator enumerates either all available fonts on the system or only
+the ones with given attributes - either only fixed-width (suited for use in
+programs such as terminal emulators and the like) or the fonts available in
+the given <A HREF="wx_wxfontencodingoverview.html#wxfontencodingoverview">encoding</A>.<P>
+To do this, you just have to call one of EnumerateXXX() functions - either 
+<A HREF="wx_wxfontenumerator.html#wxfontenumeratorenumeratefacenames">EnumerateFacenames</A> or 
+<A HREF="wx_wxfontenumerator.html#wxfontenumeratorenumerateencodings">EnumerateEncodings</A> and the
+corresponding callback (<A HREF="wx_wxfontenumerator.html#wxfontenumeratoronfacename">OnFacename</A> or 
+<A HREF="wx_wxfontenumerator.html#wxfontenumeratoronfontencoding">OnFontEncoding</A>) will be called
+repeatedly until either all fonts satisfying the specified criteria are
+exhausted or the callback returns false.<P>
+<B><FONT COLOR="#FF0000">Virtual functions to override</FONT></B><P>
+Either <A HREF="wx_wxfontenumerator.html#wxfontenumeratoronfacename">OnFacename</A> or 
+<A HREF="wx_wxfontenumerator.html#wxfontenumeratoronfontencoding">OnFontEncoding</A> should be overridden
+depending on whether you plan to call 
+<A HREF="wx_wxfontenumerator.html#wxfontenumeratorenumeratefacenames">EnumerateFacenames</A> or 
+<A HREF="wx_wxfontenumerator.html#wxfontenumeratorenumerateencodings">EnumerateEncodings</A>. Of course,
+if you call both of them, you should override both functions.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/fontenum.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfontencodingoverview.html#wxfontencodingoverview">Font encoding overview</A>, 
+<A HREF="wx_samples.html#samplefont">Font sample</A>, 
+<A HREF="wx_wxfont.html#wxfont">wxFont</A>, 
+<A HREF="wx_wxfontmapper.html#wxfontmapper">wxFontMapper</A><P>
+<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfontenumeratorenumeratefacenames">wxFontEnumerator::EnumerateFacenames</A><BR>
+<A HREF="#wxfontenumeratorenumerateencodings">wxFontEnumerator::EnumerateEncodings</A><BR>
+<A HREF="#wxfontenumeratorgetencodings">wxFontEnumerator::GetEncodings</A><BR>
+<A HREF="#wxfontenumeratorgetfacenames">wxFontEnumerator::GetFacenames</A><BR>
+<A HREF="#wxfontenumeratorisvalidfacename">wxFontEnumerator::IsValidFacename</A><BR>
+<A HREF="#wxfontenumeratoronfacename">wxFontEnumerator::OnFacename</A><BR>
+<A HREF="#wxfontenumeratoronfontencoding">wxFontEnumerator::OnFontEncoding</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfontenumeratorenumeratefacenames"></A>
+<H3>wxFontEnumerator::EnumerateFacenames</H3>
+<P>
+<B>virtual bool</B> <B>EnumerateFacenames</B>(
+    <B>wxFontEncoding </B><I>encoding = wxFONTENCODING_SYSTEM</I>,
+    <B>bool </B><I>fixedWidthOnly = false</I>)<P>
+Call <A HREF="wx_wxfontenumerator.html#wxfontenumeratoronfacename">OnFacename</A> for each font which
+supports given encoding (only if it is not wxFONTENCODING_SYSTEM) and is of
+fixed width (if <I>fixedWidthOnly</I> is true).<P>
+Calling this function with default arguments will result in enumerating all
+fonts available on the system.<P>
+
+
+<HR>
+<A NAME="wxfontenumeratorenumerateencodings"></A>
+<H3>wxFontEnumerator::EnumerateEncodings</H3>
+<P>
+<B>virtual bool</B> <B>EnumerateEncodings</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>font = ""</I>)<P>
+Call <A HREF="wx_wxfontenumerator.html#wxfontenumeratoronfontencoding">OnFontEncoding</A> for each
+encoding supported by the given font - or for each encoding supported by at
+least some font if <I>font</I> is not specified.<P>
+
+
+<HR>
+<A NAME="wxfontenumeratorgetencodings"></A>
+<H3>wxFontEnumerator::GetEncodings</H3>
+<P>
+<B>static <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A></B> </B> <B>GetEncodings</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> facename = ""</I>)<P>
+Return array of strings containing all encodings found by 
+<A HREF="wx_wxfontenumerator.html#wxfontenumeratorenumerateencodings">EnumerateEncodings</A>.<P>
+
+
+<HR>
+<A NAME="wxfontenumeratorgetfacenames"></A>
+<H3>wxFontEnumerator::GetFacenames</H3>
+<P>
+<B>static <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A></B> </B> <B>GetFacenames</B>(<B>wxFontEncoding </B><I>encoding = wxFONTENCODING_SYSTEM</I>, <B>bool </B><I>fixedWidthOnly = false</I>)<P>
+Return array of strings containing all facenames found by 
+<A HREF="wx_wxfontenumerator.html#wxfontenumeratorenumeratefacenames">EnumerateFacenames</A>.<P>
+
+
+<HR>
+<A NAME="wxfontenumeratorisvalidfacename"></A>
+<H3>wxFontEnumerator::IsValidFacename</H3>
+<P>
+<B>static bool</B> <B>IsValidFacename</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I> facename</I>)<P>
+Returns <TT>true</TT> if the given string is valid face name, i.e. it's the face name of an installed
+font and it can safely be used with <A HREF="wx_wxfont.html#wxfontsetfacename">wxFont::SetFaceName</A>.<P>
+
+
+<HR>
+<A NAME="wxfontenumeratoronfacename"></A>
+<H3>wxFontEnumerator::OnFacename</H3>
+<P>
+<B>virtual bool</B> <B>OnFacename</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>font</I>)<P>
+Called by <A HREF="wx_wxfontenumerator.html#wxfontenumeratorenumeratefacenames">EnumerateFacenames</A> for
+each match. Return true to continue enumeration or false to stop it.<P>
+
+
+<HR>
+<A NAME="wxfontenumeratoronfontencoding"></A>
+<H3>wxFontEnumerator::OnFontEncoding</H3>
+<P>
+<B>virtual bool</B> <B>OnFontEncoding</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>font</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>encoding</I>)<P>
+Called by <A HREF="wx_wxfontenumerator.html#wxfontenumeratorenumerateencodings">EnumerateEncodings</A> for
+each match. Return true to continue enumeration or false to stop it.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,155 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGridCellEditor</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgridcelleditor"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgridcellchoiceeditor.html#wxgridcellchoiceeditor"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgridcellfloateditor.html#wxgridcellfloateditor"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGridCellEditor</H2>
+<P>
+This class is responsible for providing and manipulating
+the in-place edit controls for the grid.  Instances of wxGridCellEditor
+(actually, instances of derived classes since it is an abstract class) can be
+associated with the cell attributes for individual cells, rows, columns, or
+even for the entire grid.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxGridCellWorker<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgridcelltexteditor.html#wxgridcelltexteditor">wxGridCellTextEditor</A>,
+<A HREF="wx_wxgridcellfloateditor.html#wxgridcellfloateditor">wxGridCellFloatEditor</A>,
+<A HREF="wx_wxgridcellbooleditor.html#wxgridcellbooleditor">wxGridCellBoolEditor</A>,
+<A HREF="wx_wxgridcellnumbereditor.html#wxgridcellnumbereditor">wxGridCellNumberEditor</A>,
+<A HREF="wx_wxgridcellchoiceeditor.html#wxgridcellchoiceeditor">wxGridCellChoiceEditor</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/grid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgridcelleditorwxgridcelleditor">wxGridCellEditor::wxGridCellEditor</A><BR>
+<A HREF="#wxgridcelleditoriscreated">wxGridCellEditor::IsCreated</A><BR>
+<A HREF="#wxgridcelleditorcreate">wxGridCellEditor::Create</A><BR>
+<A HREF="#wxgridcelleditorsetsize">wxGridCellEditor::SetSize</A><BR>
+<A HREF="#wxgridcelleditorshow">wxGridCellEditor::Show</A><BR>
+<A HREF="#wxgridcelleditorpaintbackground">wxGridCellEditor::PaintBackground</A><BR>
+<A HREF="#wxgridcelleditorbeginedit">wxGridCellEditor::BeginEdit</A><BR>
+<A HREF="#wxgridcelleditorendedit">wxGridCellEditor::EndEdit</A><BR>
+<A HREF="#wxgridcelleditorreset">wxGridCellEditor::Reset</A><BR>
+<A HREF="#wxgridcelleditorstartingkey">wxGridCellEditor::StartingKey</A><BR>
+<A HREF="#wxgridcelleditorstartingclick">wxGridCellEditor::StartingClick</A><BR>
+<A HREF="#wxgridcelleditorhandlereturn">wxGridCellEditor::HandleReturn</A><BR>
+<A HREF="#wxgridcelleditordestroy">wxGridCellEditor::Destroy</A><BR>
+<A HREF="#wxgridcelleditorclone">wxGridCellEditor::Clone</A><BR>
+<A HREF="#wxgridcelleditordtor">wxGridCellEditor::~wxGridCellEditor</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgridcelleditorwxgridcelleditor"></A>
+<H3>wxGridCellEditor::wxGridCellEditor</H3>
+<P>
+<B></B> <B>wxGridCellEditor</B>()<P>
+
+<HR>
+<A NAME="wxgridcelleditoriscreated"></A>
+<H3>wxGridCellEditor::IsCreated</H3>
+<P>
+<B>bool</B> <B>IsCreated</B>()<P>
+
+<HR>
+<A NAME="wxgridcelleditorcreate"></A>
+<H3>wxGridCellEditor::Create</H3>
+<P>
+<B>void</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>* </B></B><I>evtHandler</I>)<P>
+Creates the actual edit control.<P>
+
+<HR>
+<A NAME="wxgridcelleditorsetsize"></A>
+<H3>wxGridCellEditor::SetSize</H3>
+<P>
+<B>void</B> <B>SetSize</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>)<P>
+Size and position the edit control.<P>
+
+<HR>
+<A NAME="wxgridcelleditorshow"></A>
+<H3>wxGridCellEditor::Show</H3>
+<P>
+<B>void</B> <B>Show</B>(<B>bool </B><I>show</I>, <B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>* </B></B><I>attr = NULL</I>)<P>
+Show or hide the edit control, use the specified attributes to set
+colours/fonts for it.<P>
+
+<HR>
+<A NAME="wxgridcelleditorpaintbackground"></A>
+<H3>wxGridCellEditor::PaintBackground</H3>
+<P>
+<B>void</B> <B>PaintBackground</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rectCell</I>, <B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>* </B></B><I>attr</I>)<P>
+Draws the part of the cell not occupied by the control: the base class
+version just fills it with background colour from the attribute.<P>
+
+<HR>
+<A NAME="wxgridcelleditorbeginedit"></A>
+<H3>wxGridCellEditor::BeginEdit</H3>
+<P>
+<B>void</B> <B>BeginEdit</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B><A HREF="wx_wxgrid.html#wxgrid">wxGrid</A>* </B></B><I>grid</I>)<P>
+Fetch the value from the table and prepare the edit control
+to begin editing. Set the focus to the edit control.<P>
+
+<HR>
+<A NAME="wxgridcelleditorendedit"></A>
+<H3>wxGridCellEditor::EndEdit</H3>
+<P>
+<B>bool</B> <B>EndEdit</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B><A HREF="wx_wxgrid.html#wxgrid">wxGrid</A>* </B></B><I>grid</I>)<P>
+Complete the editing of the current cell. Returns true if the value has
+changed. If necessary, the control may be destroyed.<P>
+
+<HR>
+<A NAME="wxgridcelleditorreset"></A>
+<H3>wxGridCellEditor::Reset</H3>
+<P>
+<B>void</B> <B>Reset</B>()<P>
+Reset the value in the control back to its starting value.<P>
+
+<HR>
+<A NAME="wxgridcelleditorstartingkey"></A>
+<H3>wxGridCellEditor::StartingKey</H3>
+<P>
+<B>void</B> <B>StartingKey</B>(<B><A HREF="wx_wxkeyevent.html#wxkeyevent">wxKeyEvent</A>& </B></B><I>event</I>)<P>
+If the editor is enabled by pressing keys on the grid,
+this will be called to let the editor do something about
+that first key if desired.<P>
+
+<HR>
+<A NAME="wxgridcelleditorstartingclick"></A>
+<H3>wxGridCellEditor::StartingClick</H3>
+<P>
+<B>void</B> <B>StartingClick</B>()<P>
+If the editor is enabled by clicking on the cell, this method will be
+called.<P>
+
+<HR>
+<A NAME="wxgridcelleditorhandlereturn"></A>
+<H3>wxGridCellEditor::HandleReturn</H3>
+<P>
+<B>void</B> <B>HandleReturn</B>(<B><A HREF="wx_wxkeyevent.html#wxkeyevent">wxKeyEvent</A>& </B></B><I>event</I>)<P>
+Some types of controls on some platforms may need some help
+with the Return key.<P>
+
+<HR>
+<A NAME="wxgridcelleditordestroy"></A>
+<H3>wxGridCellEditor::Destroy</H3>
+<P>
+<B>void</B> <B>Destroy</B>()<P>
+Final cleanup.<P>
+
+<HR>
+<A NAME="wxgridcelleditorclone"></A>
+<H3>wxGridCellEditor::Clone</H3>
+<P>
+<B><A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>*</B> </B> <B>Clone</B>() <B>const</B><P>
+Create a new object which is the copy of this one.<P>
+
+<HR>
+<A NAME="wxgridcelleditordtor"></A>
+<H3>wxGridCellEditor::~wxGridCellEditor</H3>
+<P>
+<B></B> <B>~wxGridCellEditor</B>()<P>
+The dtor is private because only DecRef() can delete us.<P>
+
+
+</FONT></BODY></HTML>

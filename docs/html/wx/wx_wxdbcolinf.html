@@ -1,0 +1,59 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDbColInf</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdbcolinf"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdbcolfor.html#wxdbcolfor"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdbconnectinf.html#wxdbconnectinf"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDbColInf</H2>
+<P>
+Used with the <A HREF="wx_wxdb.html#wxdbgetcolumns">wxDb::GetColumns</A> functions for obtaining all retrievable information about a column's definition.<P>
+<PRE>
+    wxChar       catalog[128+1];
+    wxChar       schema[128+1];
+    wxChar       tableName[DB_MAX_TABLE_NAME_LEN+1];
+    wxChar       colName[DB_MAX_COLUMN_NAME_LEN+1];
+    SWORD        sqlDataType;
+    wxChar       typeName[128+1];
+    SWORD        columnSize;
+    SWORD        bufferLength;
+    short        decimalDigits;
+    short        numPrecRadix;
+    short        nullable;
+    wxChar       remarks[254+1];
+    int          dbDataType;  // conversion of the 'sqlDataType'
+                              // to the generic data type used by
+                              // these classes
+    int          PkCol;       // Primary key column
+                                    0 = No
+                                    1 = First Key
+                                    2 = Second Key, etc...
+    wxChar       PkTableName[DB_MAX_TABLE_NAME_LEN+1];
+                              // Tables that use this PKey as a FKey
+    int          FkCol;       // Foreign key column
+                                    0 = No
+                                    1 = First Key
+                                    2 = Second Key, etc...
+    wxChar       FkTableName[DB_MAX_TABLE_NAME_LEN+1];
+                              // Foreign key table name
+    wxDbColFor  *pColFor;     // How should this column be formatted
+</PRE>
+The constructor for this class initializes all the values to zero, "", or NULL.<P>
+The destructor for this class takes care of deleting the pColFor member if
+it is non-NULL.<P>
+See the <A HREF="wx_odbcoverview.html#odbcoverview">database classes overview</A> for
+an introduction to using the ODBC classes.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/db.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdbcolinfinitialize">wxDbColInf::Initialize</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdbcolinfinitialize"></A>
+<H3>wxDbColInf::Initialize</H3>
+<P>
+Simply initializes all member variables to a cleared state.  Called by
+the constructor automatically.<P>
+
+</FONT></BODY></HTML>

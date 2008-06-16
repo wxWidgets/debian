@@ -2,26 +2,13 @@
 // Name:        clipboard.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: clipbrd.h,v 1.21 2005/08/02 22:57:52 MW Exp $
+// Id:          $Id: clipbrd.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-
-#ifndef __GTKCLIPBOARDH__
-#define __GTKCLIPBOARDH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
-
-#if wxUSE_CLIPBOARD
-
-#include "wx/object.h"
-#include "wx/list.h"
-#include "wx/dataobj.h"
-#include "wx/control.h"
-#include "wx/module.h"
+#ifndef _WX_GTK_CLIPBOARD_H_
+#define _WX_GTK_CLIPBOARD_H_
 
 // ----------------------------------------------------------------------------
 // wxClipboard
@@ -31,7 +18,7 @@ class WXDLLIMPEXP_CORE wxClipboard : public wxClipboardBase
 {
 public:
     wxClipboard();
-    ~wxClipboard();
+    virtual ~wxClipboard();
 
     // open the clipboard before SetData() and GetData()
     virtual bool Open();
@@ -81,8 +68,4 @@ private:
     DECLARE_DYNAMIC_CLASS(wxClipboard)
 };
 
-#endif
-   // wxUSE_CLIPBOARD
-
-#endif
-    // __GTKCLIPBOARDH__
+#endif // _WX_GTK_CLIPBOARD_H_

@@ -1,0 +1,60 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxBufferedPaintDC</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxbufferedpaintdc"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxbuffereddc.html#wxbuffereddc"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxautobufferedpaintdc.html#wxautobufferedpaintdc"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxBufferedPaintDC</H2>
+<P>
+This is a subclass of <A HREF="wx_wxbuffereddc.html#wxbuffereddc">wxBufferedDC</A> which can be used
+inside of an <TT>OnPaint()</TT> event handler. Just create an object of this class instead
+of <A HREF="wx_wxpaintdc.html#wxpaintdc">wxPaintDC</A> and make sure <A HREF="wx_wxwindow.html#wxwindowgetbackgroundstyle">wxWindow::SetBackgroundStyle</A>
+is called with wxBG_STYLE_CUSTOM somewhere in the class initialization code, and that's all
+you have to do to (mostly) avoid flicker. The only thing to watch out for is that if you are
+using this class together with <A HREF="wx_wxscrolledwindow.html#wxscrolledwindow">wxScrolledWindow</A>, you probably
+do <B>not</B> want to call <A HREF="wx_wxscrolledwindow.html#wxscrolledwindowpreparedc">PrepareDC</A> on it as it
+already does this internally for the real underlying wxPaintDC.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxbuffereddc.html#wxbuffereddc">wxBufferedDC</A><BR>
+
+<A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A><BR>
+
+<A HREF="wx_wxdc.html#wxdc">wxDC</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dcbuffer.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdc">wxDC</A>,
+<A HREF="wx_wxbuffereddc.html#wxbuffereddc">wxBufferedDC</A>,
+<A HREF="wx_wxautobufferedpaintdc.html#wxautobufferedpaintdc">wxAutoBufferedPaintDC</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxbufferedpaintdcctor">wxBufferedPaintDC::wxBufferedPaintDC</A><BR>
+<A HREF="#wxbufferedpaintdcdtor">wxBufferedPaintDC::~wxBufferedPaintDC</A><BR>
+<P>
+
+<HR>
+<A NAME="wxbufferedpaintdcctor"></A>
+<H3>wxBufferedPaintDC::wxBufferedPaintDC</H3>
+<P>
+<B></B> <B>wxBufferedPaintDC</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>window</I>, <B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>buffer</I>, <B>int </B><I>style = wxBUFFER_CLIENT_AREA</I>)<P>
+<B></B> <B>wxBufferedPaintDC</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>window</I>, <B>int </B><I>style = wxBUFFER_CLIENT_AREA</I>)<P>
+As with <A HREF="wx_wxbuffereddc.html#wxbuffereddcctor">wxBufferedDC</A>, you may either provide the
+bitmap to be used for buffering or let this object create one internally (in
+the latter case, the size of the client part of the window is used).<P>
+Pass wxBUFFER_CLIENT_AREA for the <I>style</I> parameter to indicate that just the client area of
+the window is buffered, or wxBUFFER_VIRTUAL_AREA to indicate that the buffer bitmap
+covers the virtual area (in which case PrepareDC is automatically called for the actual window
+device context).<P>
+
+<HR>
+<A NAME="wxbufferedpaintdcdtor"></A>
+<H3>wxBufferedPaintDC::~wxBufferedPaintDC</H3>
+<P>
+Copies everything drawn on the DC so far to the window associated with this
+object, using a <A HREF="wx_wxpaintdc.html#wxpaintdc">wxPaintDC</A>.<P>
+
+
+</FONT></BODY></HTML>

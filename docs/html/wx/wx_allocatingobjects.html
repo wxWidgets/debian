@@ -1,0 +1,33 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Allocating and deleting wxWidgets objects</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="allocatingobjects"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_multiplat.html#multiplat"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_windowsfiles.html#windowsfiles"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_architecturedependency.html#architecturedependency"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Allocating and deleting wxWidgets objects</H2>
+<P>
+In general, classes derived from wxWindow must dynamically allocated
+with <I>new</I> and deleted with <I>delete</I>. If you delete a window,
+all of its children and descendants will be automatically deleted,
+so you don't need to delete these descendants explicitly.<P>
+When deleting a frame or dialog, use <B>Destroy</B> rather than <B>delete</B> so
+that the wxWidgets delayed deletion can take effect. This waits until idle time
+(when all messages have been processed) to actually delete the window, to avoid
+problems associated with the GUI sending events to deleted windows.<P>
+Don't create a window on the stack, because this will interfere
+with delayed deletion.<P>
+If you decide to allocate a C++ array of objects (such as wxBitmap) that may
+be cleaned up by wxWidgets, make sure you delete the array explicitly
+before wxWidgets has a chance to do so on exit, since calling <I>delete</I> on
+array members will cause memory problems.<P>
+wxColour can be created statically: it is not automatically cleaned
+up and is unlikely to be shared between other objects; it is lightweight
+enough for copies to be made.<P>
+Beware of deleting objects such as a wxPen or wxBitmap if they are still in use.
+Windows is particularly sensitive to this: so make sure you
+make calls like wxDC::SetPen(wxNullPen) or wxDC::SelectObject(wxNullBitmap) before deleting
+a drawing object that may be in use. Code that doesn't do this will probably work
+fine on some platforms, and then fail under Windows.<P>
+
+</FONT></BODY></HTML>

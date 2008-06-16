@@ -1,34 +1,14 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        stattext.h
+// Name:        wx/gtk/stattext.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: stattext.h,v 1.19 2005/08/17 13:47:35 VZ Exp $
+// Id:          $Id: stattext.h 42077 2006-10-17 14:44:52Z ABX $
 // Copyright:   (c) 1998 Robert Roebling
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-
-#ifndef __GTKSTATICTEXTH__
-#define __GTKSTATICTEXTH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
-
-#include "wx/defs.h"
-#include "wx/object.h"
-#include "wx/list.h"
-#include "wx/control.h"
-
-//-----------------------------------------------------------------------------
-// classes
-//-----------------------------------------------------------------------------
-
-class WXDLLIMPEXP_CORE wxStaticText;
-
-//-----------------------------------------------------------------------------
-// global data
-//-----------------------------------------------------------------------------
+#ifndef _WX_GTK_STATTEXT_H_
+#define _WX_GTK_STATTEXT_H_
 
 //-----------------------------------------------------------------------------
 // wxStaticText
@@ -42,7 +22,7 @@ public:
                  wxWindowID id,
                  const wxString &label,
                  const wxPoint &pos = wxDefaultPosition,
-                 const wxSize &size = wxDefaultSize, 
+                 const wxSize &size = wxDefaultSize,
                  long style = 0,
                  const wxString &name = wxStaticTextNameStr );
 
@@ -50,7 +30,7 @@ public:
                 wxWindowID id,
                 const wxString &label,
                 const wxPoint &pos = wxDefaultPosition,
-                const wxSize &size = wxDefaultSize, 
+                const wxSize &size = wxDefaultSize,
                 long style = 0,
                 const wxString &name = wxStaticTextNameStr );
 
@@ -62,7 +42,7 @@ public:
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
-    
+
     // see wx/stattext.h
     void Wrap(int width);
 
@@ -70,13 +50,17 @@ public:
     // --------------
 
 protected:
+    virtual bool GTKWidgetNeedsMnemonic() const;
+    virtual void GTKWidgetDoSetMnemonic(GtkWidget* w);
+
     virtual void DoSetSize(int x, int y,
                            int width, int height,
                            int sizeFlags = wxSIZE_AUTO);
-                           
+
     virtual wxSize DoGetBestSize() const;
 
     DECLARE_DYNAMIC_CLASS(wxStaticText)
 };
 
-#endif // __GTKSTATICTEXTH__
+#endif
+    // _WX_GTK_STATTEXT_H_

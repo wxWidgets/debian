@@ -1,0 +1,130 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGridSizeEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgridsizeevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgridrangeselectevent.html#wxgridrangeselectevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgridcellboolrenderer.html#wxgridcellboolrenderer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGridSizeEvent</H2>
+<P>
+This event class contains information about a row/column resize event.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxnotifyevent.html#wxnotifyevent">wxNotifyEvent</A><BR>
+
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><BR>
+
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/grid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+The event handler for the following functions takes a 
+ <A HREF="wx_wxgridsizeevent.html#wxgridsizeevent">wxGridSizeEvent</A> parameter.
+The ..._CMD_... variants also take a window identifier.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_COL_SIZE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user resized a column by dragging it. Processes a wxEVT_GRID_COL_SIZE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_ROW_SIZE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user resized a row by dragging it. Processes a wxEVT_GRID_ROW_SIZE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_COL_SIZE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user resized a column by dragging it; variant taking a window identifier. Processes a wxEVT_GRID_COL_SIZE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_ROW_SIZE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user resized a row by dragging it; variant taking a window identifier. Processes a wxEVT_GRID_ROW_SIZE.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgridsizeeventconstr">wxGridSizeEvent::wxGridSizeEvent</A><BR>
+<A HREF="#wxgridsizeeventaltdown">wxGridSizeEvent::AltDown</A><BR>
+<A HREF="#wxgridsizeeventcontroldown">wxGridSizeEvent::ControlDown</A><BR>
+<A HREF="#wxgridsizeeventgetposition">wxGridSizeEvent::GetPosition</A><BR>
+<A HREF="#wxgridsizeeventgetroworcol">wxGridSizeEvent::GetRowOrCol</A><BR>
+<A HREF="#wxgridsizeeventmetadown">wxGridSizeEvent::MetaDown</A><BR>
+<A HREF="#wxgridsizeeventshiftdown">wxGridSizeEvent::ShiftDown</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgridsizeeventconstr"></A>
+<H3>wxGridSizeEvent::wxGridSizeEvent</H3>
+<P>
+<B></B> <B>wxGridSizeEvent</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxGridSizeEvent</B>(<B>int </B><I>id</I>, <B>wxEventType </B><I>type</I>,
+ <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>obj</I>, <B>int </B><I>rowOrCol = -1</I>, <B>int </B><I>x = -1</I>,
+ <B>int </B><I>y = -1</I>, <B>bool </B><I>control = false</I>, <B>bool </B><I>shift = false</I>,
+ <B>bool </B><I>alt = false</I>, <B>bool </B><I>meta = false</I>)<P>
+
+<HR>
+<A NAME="wxgridsizeeventaltdown"></A>
+<H3>wxGridSizeEvent::AltDown</H3>
+<P>
+<B>bool</B> <B>AltDown</B>()<P>
+Returns true if the Alt key was down at the time of the event.<P>
+
+<HR>
+<A NAME="wxgridsizeeventcontroldown"></A>
+<H3>wxGridSizeEvent::ControlDown</H3>
+<P>
+<B>bool</B> <B>ControlDown</B>()<P>
+Returns true if the Control key was down at the time of the event.<P>
+
+<HR>
+<A NAME="wxgridsizeeventgetposition"></A>
+<H3>wxGridSizeEvent::GetPosition</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetPosition</B>()<P>
+Position in pixels at which the event occurred.<P>
+
+<HR>
+<A NAME="wxgridsizeeventgetroworcol"></A>
+<H3>wxGridSizeEvent::GetRowOrCol</H3>
+<P>
+<B>int</B> <B>GetRowOrCol</B>()<P>
+Row or column at that was resized.<P>
+
+<HR>
+<A NAME="wxgridsizeeventmetadown"></A>
+<H3>wxGridSizeEvent::MetaDown</H3>
+<P>
+<B>bool</B> <B>MetaDown</B>()<P>
+Returns true if the Meta key was down at the time of the event.<P>
+
+<HR>
+<A NAME="wxgridsizeeventshiftdown"></A>
+<H3>wxGridSizeEvent::ShiftDown</H3>
+<P>
+<B>bool</B> <B>ShiftDown</B>()<P>
+Returns true if the Shift key was down at the time of the event.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,168 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPickerBase</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxpickerbase"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpenlist.html#wxpenlist"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxplatforminfo.html#wxplatforminfo"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPickerBase</H2>
+<P>
+Base abstract class for all pickers which support an auxiliary text control.
+This class handles all positioning and sizing of the text control like a
+an horizontal <A HREF="wx_wxboxsizer.html#wxboxsizer">wxBoxSizer</A> would do, with the text control on
+the left of the picker button.
+The proportion (see <A HREF="wx_wxsizer.html#wxsizer">wxSizer</A> documentation for more info about
+proportion values) of the picker control defaults to 1 when there isn't a text control
+associated (see <TT>wxPB_USE_TEXTCTRL</TT> style) and to 0 otherwise.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/pickerbase.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxPB_USE_TEXTCTRL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a text control to the left of the
+picker which is completely managed by this <A HREF="wx_wxpickerbase.html#wxpickerbase">wxPickerBase</A>
+class.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcolourpickerctrl.html#wxcolourpickerctrl">wxColourPickerCtrl</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxpickerbasesetinternalmargin">wxPickerBase::SetInternalMargin</A><BR>
+<A HREF="#wxpickerbasegetinternalmargin">wxPickerBase::GetInternalMargin</A><BR>
+<A HREF="#wxpickerbasesettextctrlproportion">wxPickerBase::SetTextCtrlProportion</A><BR>
+<A HREF="#wxpickerbasesetpickerctrlproportion">wxPickerBase::SetPickerCtrlProportion</A><BR>
+<A HREF="#wxpickerbasegettextctrlproportion">wxPickerBase::GetTextCtrlProportion</A><BR>
+<A HREF="#wxpickerbasegetpickerctrlproportion">wxPickerBase::GetPickerCtrlProportion</A><BR>
+<A HREF="#wxpickerbasehastextctrl">wxPickerBase::HasTextCtrl</A><BR>
+<A HREF="#wxpickerbasegetextctrl">wxPickerBase::GetTextCtrl</A><BR>
+<A HREF="#wxpickerbaseistextctrlgrowable">wxPickerBase::IsTextCtrlGrowable</A><BR>
+<A HREF="#wxpickerbasesetpickerctrlgrowable">wxPickerBase::SetPickerCtrlGrowable</A><BR>
+<A HREF="#wxpickerbasesettextctrlgrowable">wxPickerBase::SetTextCtrlGrowable</A><BR>
+<A HREF="#wxpickerbaseispickerctrlgrowable">wxPickerBase::IsPickerCtrlGrowable</A><BR>
+<P>
+
+<HR>
+<A NAME="wxpickerbasesetinternalmargin"></A>
+<H3>wxPickerBase::SetInternalMargin</H3>
+<P>
+<B>void</B> <B>SetInternalMargin</B>(<B>int</B><I>margin</I>)<P>
+Sets the margin (in pixel) between the picker and the text control.
+This function can be used only when <A HREF="wx_wxpickerbase.html#wxpickerbasehastextctrl">HasTextCtrl</A> returns <TT>true</TT>.<P>
+
+
+<HR>
+<A NAME="wxpickerbasegetinternalmargin"></A>
+<H3>wxPickerBase::GetInternalMargin</H3>
+<P>
+<B>int</B> <B>GetInternalMargin</B>() <B>const</B><P>
+Returns the margin (in pixel) between the picker and the text control.
+This function can be used only when <A HREF="wx_wxpickerbase.html#wxpickerbasehastextctrl">HasTextCtrl</A> returns <TT>true</TT>.<P>
+
+
+<HR>
+<A NAME="wxpickerbasesettextctrlproportion"></A>
+<H3>wxPickerBase::SetTextCtrlProportion</H3>
+<P>
+<B>void</B> <B>SetTextCtrlProportion</B>(<B>int</B><I>prop</I>)<P>
+Sets the proportion value of the text control.
+Look at the overview of wxPickerBase for more details about this.
+This function can be used only when <A HREF="wx_wxpickerbase.html#wxpickerbasehastextctrl">HasTextCtrl</A> returns <TT>true</TT>.<P>
+
+
+<HR>
+<A NAME="wxpickerbasesetpickerctrlproportion"></A>
+<H3>wxPickerBase::SetPickerCtrlProportion</H3>
+<P>
+<B>void</B> <B>SetPickerCtrlProportion</B>(<B>int</B><I>prop</I>)<P>
+Sets the proportion value of the picker.
+Look at the overview of wxPickerBase for more details about this.<P>
+
+
+<HR>
+<A NAME="wxpickerbasegettextctrlproportion"></A>
+<H3>wxPickerBase::GetTextCtrlProportion</H3>
+<P>
+<B>int</B> <B>GetTextCtrlProportion</B>() <B>const</B><P>
+Returns the proportion value of the text control.
+This function can be used only when <A HREF="wx_wxpickerbase.html#wxpickerbasehastextctrl">HasTextCtrl</A> returns <TT>true</TT>.<P>
+
+
+<HR>
+<A NAME="wxpickerbasegetpickerctrlproportion"></A>
+<H3>wxPickerBase::GetPickerCtrlProportion</H3>
+<P>
+<B>int</B> <B>GetPickerCtrlProportion</B>() <B>const</B><P>
+Returns the proportion value of the picker.<P>
+
+
+<HR>
+<A NAME="wxpickerbasehastextctrl"></A>
+<H3>wxPickerBase::HasTextCtrl</H3>
+<P>
+<B>bool</B> <B>HasTextCtrl</B>() <B>const</B><P>
+Returns true if this window has a valid text control (i.e. if the <B>wxPB_USE_TEXTCTRL</B> style was
+given when creating this control).<P>
+
+
+<HR>
+<A NAME="wxpickerbasegetextctrl"></A>
+<H3>wxPickerBase::GetTextCtrl</H3>
+<P>
+<B><A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A> *</B> </B> <B>GetTextCtrl</B>()<P>
+Returns a pointer to the text control handled by this window or <TT>NULL</TT> if the <B>wxPB_USE_TEXTCTRL</B> style was not specified when this control was created.
+Very important: the contents of the text control could be containing an invalid representation of the entity which can be chosen through the picker (e.g. the user entered an invalid colour syntax because of a typo). Thus you should never parse the content of the textctrl to get the user's input; rather use the derived-class getter (e.g. <A HREF="wx_wxcolourpickerctrl.html#wxcolourpickerctrlgetcolour">wxColourPickerCtrl::GetColour</A>, <A HREF="wx_wxfilepickerctrl.html#wxfilepickerctrlgetpath">wxFilePickerCtrl::GetPath</A>, etc).<P>
+
+
+<HR>
+<A NAME="wxpickerbaseistextctrlgrowable"></A>
+<H3>wxPickerBase::IsTextCtrlGrowable</H3>
+<P>
+<B>bool</B> <B>IsTextCtrlGrowable</B>() <B>const</B><P>
+Returns <TT>true</TT> if the text control is growable.
+This function can be used only when <A HREF="wx_wxpickerbase.html#wxpickerbasehastextctrl">HasTextCtrl</A> returns <TT>true</TT>.<P>
+
+
+<HR>
+<A NAME="wxpickerbasesetpickerctrlgrowable"></A>
+<H3>wxPickerBase::SetPickerCtrlGrowable</H3>
+<P>
+<B>void</B> <B>SetPickerCtrlGrowable</B>(<B>bool</B><I> grow = true</I>)<P>
+Sets the picker control as growable when <TT>grow</TT> is <TT>true</TT>.<P>
+
+
+<HR>
+<A NAME="wxpickerbasesettextctrlgrowable"></A>
+<H3>wxPickerBase::SetTextCtrlGrowable</H3>
+<P>
+<B>void</B> <B>SetTextCtrlGrowable</B>(<B>bool</B><I> grow = true</I>)<P>
+Sets the text control as growable when <TT>grow</TT> is <TT>true</TT>.
+This function can be used only when <A HREF="wx_wxpickerbase.html#wxpickerbasehastextctrl">HasTextCtrl</A> returns <TT>true</TT>.<P>
+<P>
+
+<HR>
+<A NAME="wxpickerbaseispickerctrlgrowable"></A>
+<H3>wxPickerBase::IsPickerCtrlGrowable</H3>
+<P>
+<B>bool</B> <B>IsPickerCtrlGrowable</B>() <B>const</B><P>
+Returns <TT>true</TT> if the picker control is growable.<P>
+
+</FONT></BODY></HTML>

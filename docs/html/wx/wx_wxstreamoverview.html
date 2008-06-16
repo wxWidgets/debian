@@ -1,0 +1,84 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStreams overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstreamoverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfileoverview.html#wxfileoverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlogoverview.html#wxlogoverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStreams overview</H2>
+<P>
+Classes: <A HREF="wx_wxstreambase.html#wxstreambase">wxStreamBase</A>,
+ <A HREF="wx_wxstreambuffer.html#wxstreambuffer">wxStreamBuffer</A>, <A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>,
+ <A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>,
+ <A HREF="wx_wxfilterinputstream.html#wxfilterinputstream">wxFilterInputStream</A>,
+ <A HREF="wx_wxfilteroutputstream.html#wxfilteroutputstream">wxFilterOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Purpose of wxStream</FONT></B><P>
+Standard C++ streams can cause problems on several platforms:
+they work quite well in most cases, but in the multi-threaded case, for example,
+they have many problems. Some Borland compilers refuse to work at all
+with them and using iostreams on Linux makes writing programs that are
+binary compatible across different Linux distributions, impossible.<P>
+Therefore, wxStreams have been added to wxWidgets so that applications can
+reliably compile and run on all supported platforms without dependence on a
+particular release of libg++.<P>
+wxStreams is divided in two main parts:<P>
+<OL>
+
+<LI> the core: wxStreamBase, wxStreamBuffer, wxInputStream, wxOutputStream,
+wxFilterIn/OutputStream
+<LI> the "IO" classes: wxSocketIn/OutputStream, wxDataIn/OutputStream, wxFileIn/OutputStream, ...
+</OL>
+<P>
+wxStreamBase is the base definition of a stream. It defines, for example,
+the API of OnSysRead, OnSysWrite, OnSysSeek and OnSysTell. These functions 
+are really implemented by the "IO" classes.
+wxInputStream and wxOutputStream inherit from it.<P>
+wxStreamBuffer is a cache manager for wxStreamBase: it manages a stream buffer
+linked to a stream. One stream can have multiple stream buffers  but one stream
+have always one autoinitialized stream buffer.<P>
+wxInputStream is the base class for read-only streams. It implements Read,
+SeekI (I for Input), and all read or IO generic related functions.
+wxOutputStream does the same thing but it is for write-only streams.<P>
+wxFilterIn/OutputStream is the base class definition for stream filtering.
+Stream filtering means a stream which does no syscall but filters data
+which are passed to it and then pass them to another stream.
+For example, wxZLibInputStream is an inline stream decompressor.<P>
+The "IO" classes implements the specific parts of the stream. This could be
+nothing in the case of wxMemoryIn/OutputStream which bases itself on
+wxStreamBuffer. This could also be a simple link to the a true syscall
+(for example read(...), write(...)).<P>
+<B><FONT COLOR="#FF0000">Generic usage: an example</FONT></B><P>
+Usage is simple. We can take the example of wxFileInputStream and here is some sample
+code:<P>
+<PRE>
+ ...
+ // The constructor initializes the stream buffer and open the file descriptor
+ // associated to the name of the file.
+ wxFileInputStream in_stream("the_file_to_be_read");
+
+ // Ok, read some bytes ... nb_datas is expressed in bytes.
+ in_stream.Read(data, nb_datas);
+ if (in_stream.LastError() != wxSTREAM_NOERROR) {
+   // Oh oh, something bad happens.
+   // For a complete list, look into the documentation at wxStreamBase.
+ }
+
+ // You can also inline all like this.
+ if (in_stream.Read(data, nb_datas).LastError() != wxSTREAM_NOERROR) {
+   // Do something.
+ }
+
+ // You can also get the last number of bytes REALLY put into the buffer.
+ size_t really_read = in_stream.LastRead();
+
+ // Ok, moves to the beginning of the stream. SeekI returns the last position 
+ // in the stream counted from the beginning.
+ off_t old_position = in_stream.SeekI(0, wxFromBeginning);
+ 
+ // What is my current position ?
+ off_t position = in_stream.TellI();
+
+ // wxFileInputStream will close the file descriptor on destruction.
+</PRE>
+
+</FONT></BODY></HTML>

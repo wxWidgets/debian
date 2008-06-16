@@ -1,5 +1,5 @@
-<?xml version="1.0" ?>
-<!-- $Id: wx_win32.bkl,v 1.16.2.3 2006/02/26 09:31:48 KO Exp $ -->
+﻿<?xml version="1.0" ?>
+<!-- $Id: wx_win32.bkl 46375 2007-06-08 18:25:40Z KO $ -->
 
 <!-- Original source: http://wiki.wxwidgets.org/wiki.pl?Bakefile    -->
 <!-- Modified by: Francesco Montorsi <frm@users.sourceforge.net>    -->
@@ -7,7 +7,8 @@
                   into Bakefile's presets                           -->
 <!-- Creation date: 6/9/2004                                        -->
 <!-- Last revision: 22/1/2005 off-CVS                               -->
-<!--                $Id: wx_win32.bkl,v 1.16.2.3 2006/02/26 09:31:48 KO Exp $ -->
+<!--                $Id: wx_win32.bkl 46375 2007-06-08 18:25:40Z KO $ -->
+
 
 <!--
 
@@ -41,33 +42,14 @@ FIXME: this template has (at least) the following bugs:
     <!--    is not constant, i.e. if it cannot be determined        -->
     <!--    by bakefile itself.                                     -->
 
-    <!-- this is a temporary variable until there is non general    -->
-    <!-- function in bakefiles for returning native markup for      -->
-    <!-- reading envrionment variables                              -->
-    <set var="ENV_VAR">
-        <if cond="FORMAT=='watcom'">%</if>
-        <if cond="FORMAT!='watcom'"></if>
-    </set>
-
-
     <!-- Presets for limited dmars make.exe format: -->
     <if cond="FORMAT=='dmars'">
         <set var="WX_UNICODE">0</set>
         <set var="WX_DEBUG">1</set>
         <set var="WX_SHARED">0</set>
+        <set var="WX_PYTHON">0</set>
     </if>
 
-
-    <!-- The directory where wxWidgets is installed: -->
-    <if cond="not isdefined('WX_DIR')">
-        <set var="WX_DIR_DEFAULT" overwrite="0">$(DOLLAR)($(ENV_VAR)WXWIN)</set>
-        <option name="WX_DIR" category="path">
-            <default-value>$(WX_DIR_DEFAULT)</default-value>
-            <description>
-                The directory where wxWidgets library is installed
-            </description>
-        </option>
-    </if>
 
     <!--    This is a standard option that determines               -->
     <!--    whether the user wants to build this library as         -->
@@ -111,7 +93,7 @@ FIXME: this template has (at least) the following bugs:
     </if>
 
     <if cond="not isdefined('WX_VERSION')">
-        <set var="WX_VERSION_DEFAULT" overwrite="0">26</set>
+        <set var="WX_VERSION_DEFAULT" overwrite="0">28</set>
         <option name="WX_VERSION">
             <default-value>$(WX_VERSION_DEFAULT)</default-value>
             <description>
@@ -132,6 +114,16 @@ FIXME: this template has (at least) the following bugs:
         </option>
     </if>
 
+    <!-- set this to 1 to use specific settings for wxPython -->
+    <if cond="not isdefined('WX_PYTHON')">
+        <option name="WX_PYTHON" category="path">
+            <values>0,1</values>
+            <default-value>0</default-value>
+            <description>
+                Whether or not we're building against wxPython libraries.
+            </description>
+        </option>
+    </if>
 
     <!--                     HELPER VARIABLES                       -->
     <!--                                                            -->
@@ -148,19 +140,23 @@ FIXME: this template has (at least) the following bugs:
     <!--    The debug define we need with win32 compilers           -->
     <!--    (on Linux, the wx-config program is used).              -->
     <set var="WXDEBUG_DEFINE">
-        <if cond="WX_DEBUG=='1'">__WXDEBUG__</if>
+        <if cond="WX_PYTHON=='1'">__WXDEBUG__</if>
+        <if cond="WX_PYTHON=='0' and WX_DEBUG=='1'">__WXDEBUG__</if>
     </set>
 
     <!--    These are handy ways of dealing with the                -->
     <!--    extensions in the library names of the                  -->
     <!--    wxWindows library.                                      -->
     <set var="WXLIBPOSTFIX">
-        <if cond="WX_DEBUG=='1' and WX_UNICODE=='1'">ud</if>
-        <if cond="WX_DEBUG=='1' and WX_UNICODE=='0'">d</if>
-        <if cond="WX_DEBUG=='0' and WX_UNICODE=='1'">u</if>
+        <if cond="WX_PYTHON=='1' and WX_UNICODE=='1'">uh</if>
+        <if cond="WX_PYTHON=='1' and WX_UNICODE=='0'">h</if>
+        <if cond="WX_PYTHON=='0' and WX_DEBUG=='1' and WX_UNICODE=='1'">ud</if>
+        <if cond="WX_PYTHON=='0' and WX_DEBUG=='1' and WX_UNICODE=='0'">d</if>
+        <if cond="WX_PYTHON=='0' and WX_DEBUG=='0' and WX_UNICODE=='1'">u</if>
     </set>
     <set var="WX3RDPARTYLIBPOSTFIX">
-        <if cond="WX_DEBUG=='1'">d</if>
+        <if cond="WX_PYTHON==0 and WX_DEBUG=='1'">d</if>
+        <if cond="WX_PYTHON==1">h</if>
     </set>
 
     <set var="WXCPU">
@@ -181,10 +177,7 @@ FIXME: this template has (at least) the following bugs:
 
     <!--    All the possible mixes for the wx library names          -->
     <set var="WXLIB_BASE_NAME">
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='0'">wxbase$(WX_VERSION)</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='1'">wxbase$(WX_VERSION)d</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='0'">wxbase$(WX_VERSION)u</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='1'">wxbase$(WX_VERSION)ud</if>
+        <if cond="WX_MONOLITHIC=='0'">wxbase$(WX_VERSION)$(WXLIBPOSTFIX)</if>
 
         <!--
             the trick used to support monolithic builds is here: when the
@@ -192,80 +185,50 @@ FIXME: this template has (at least) the following bugs:
             WX_MONOLITHIC=1, then the base library is translated to the
             monolithic library
         -->
-        <if cond="WX_MONOLITHIC=='1' and WX_UNICODE=='0' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)</if>
-        <if cond="WX_MONOLITHIC=='1' and WX_UNICODE=='0' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)d</if>
-        <if cond="WX_MONOLITHIC=='1' and WX_UNICODE=='1' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)u</if>
-        <if cond="WX_MONOLITHIC=='1' and WX_UNICODE=='1' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)ud</if>
+        <if cond="WX_MONOLITHIC=='1'">wx$(WXPORT)$(WX_VERSION)$(WXLIBPOSTFIX)</if>
     </set>
 
     <!--   Libraries whose name is prefixed with 'wxbase'            -->
     <set var="WXLIB_NET_NAME">
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='0'">wxbase$(WX_VERSION)_net</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='1'">wxbase$(WX_VERSION)d_net</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='0'">wxbase$(WX_VERSION)u_net</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='1'">wxbase$(WX_VERSION)ud_net</if>
+        <if cond="WX_MONOLITHIC=='0'">wxbase$(WX_VERSION)$(WXLIBPOSTFIX)_net</if>
     </set>
     <set var="WXLIB_XML_NAME">
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='0'">wxbase$(WX_VERSION)_xml</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='1'">wxbase$(WX_VERSION)d_xml</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='0'">wxbase$(WX_VERSION)u_xml</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='1'">wxbase$(WX_VERSION)ud_xml</if>
+        <if cond="WX_MONOLITHIC=='0'">wxbase$(WX_VERSION)$(WXLIBPOSTFIX)_xml</if>
     </set>
     <set var="WXLIB_ODBC_NAME">
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='0'">wxbase$(WX_VERSION)_odbc</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='1'">wxbase$(WX_VERSION)d_odbc</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='0'">wxbase$(WX_VERSION)u_odbc</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='1'">wxbase$(WX_VERSION)ud_odbc</if>
+        <if cond="WX_MONOLITHIC=='0'">wxbase$(WX_VERSION)$(WXLIBPOSTFIX)_odbc</if>
     </set>
 
     <!--   Libraries whose name is prefixed with 'wx' only          -->
     <set var="WXLIB_CORE_NAME">
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)_core</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)d_core</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)u_core</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)ud_core</if>
+        <if cond="WX_MONOLITHIC=='0'">wx$(WXPORT)$(WX_VERSION)$(WXLIBPOSTFIX)_core</if>
     </set>
     <set var="WXLIB_MEDIA_NAME">
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)_media</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)d_media</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)u_media</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)ud_media</if>
+        <if cond="WX_MONOLITHIC=='0'">wx$(WXPORT)$(WX_VERSION)$(WXLIBPOSTFIX)_media</if>
     </set>
     <set var="WXLIB_XRC_NAME">
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)_xrc</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)d_xrc</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)u_xrc</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)ud_xrc</if>
+        <if cond="WX_MONOLITHIC=='0'">wx$(WXPORT)$(WX_VERSION)$(WXLIBPOSTFIX)_xrc</if>
     </set>
     <set var="WXLIB_HTML_NAME">
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)_html</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)d_html</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)u_html</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)ud_html</if>
+        <if cond="WX_MONOLITHIC=='0'">wx$(WXPORT)$(WX_VERSION)$(WXLIBPOSTFIX)_html</if>
     </set>
     <set var="WXLIB_ADV_NAME">
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)_adv</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)d_adv</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)u_adv</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)ud_adv</if>
+        <if cond="WX_MONOLITHIC=='0'">wx$(WXPORT)$(WX_VERSION)$(WXLIBPOSTFIX)_adv</if>
     </set>
     <set var="WXLIB_QA_NAME">
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)_qa</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)d_qa</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)u_qa</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)ud_qa</if>
+        <if cond="WX_MONOLITHIC=='0'">wx$(WXPORT)$(WX_VERSION)$(WXLIBPOSTFIX)_qa</if>
     </set>
     <set var="WXLIB_DBGRID_NAME">
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)_dbgrid</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)d_dbgrid</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)u_dbgrid</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)ud_dbgrid</if>
+        <if cond="WX_MONOLITHIC=='0'">wx$(WXPORT)$(WX_VERSION)$(WXLIBPOSTFIX)_dbgrid</if>
     </set>
     <set var="WXLIB_GL_NAME">
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)_gl</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='0' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)d_gl</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='0'">wx$(WXPORT)$(WX_VERSION)u_gl</if>
-        <if cond="WX_MONOLITHIC=='0' and WX_UNICODE=='1' and WX_DEBUG=='1'">wx$(WXPORT)$(WX_VERSION)ud_gl</if>
+        <if cond="WX_MONOLITHIC=='0'">wx$(WXPORT)$(WX_VERSION)$(WXLIBPOSTFIX)_gl</if>
+    </set>
+    <set var="WXLIB_AUI_NAME">
+        <if cond="WX_MONOLITHIC=='0'">wx$(WXPORT)$(WX_VERSION)$(WXLIBPOSTFIX)_aui</if>
+    </set>
+    <set var="WXLIB_RICHTEXT_NAME">
+        <if cond="WX_MONOLITHIC=='0'">wx$(WXPORT)$(WX_VERSION)($WXLIBPOSTFIX)_richtext</if>
     </set>
 
 
@@ -291,15 +254,6 @@ FIXME: this template has (at least) the following bugs:
     <!--    libraries required by the platform, the libraries       -->
     <!--    we want for our stuff, and the wxWindows libs.          -->
 
-
-    <!-- list of known libraries used by wx-lib tag below -->
-    <set var="LIB_LIST">base core net xml odbc xrc html adv media gl dbgrid qa</set>
-
-    <!-- NOTE: refer to the NET contrib using NETUTILS instead of NET
-               (which is already in LIB_LIST) -->
-    <set var="CONTRIBLIB_LIST">animate applet deprecated fl foldbar gizmos mmedia netutils ogl plot stc svg</set>
-    <set var="ALLLIB_LIST">$(LIB_LIST) $(CONTRIBLIB_LIST)</set>
-
     <!-- this tag is used to include wx libraries: -->
     <define-tag name="wx-lib" rules="exe,dll,module">
         <if cond="value=='base'"><sys-lib>$(WXLIB_BASE_NAME)</sys-lib></if>
@@ -316,6 +270,8 @@ FIXME: this template has (at least) the following bugs:
         <if cond="value=='gl'"><sys-lib>$(WXLIB_GL_NAME)</sys-lib></if>
         <if cond="value=='dbgrid'"><sys-lib>$(WXLIB_DBGRID_NAME)</sys-lib></if>
         <if cond="value=='qa'"><sys-lib>$(WXLIB_QA_NAME)</sys-lib></if>
+        <if cond="value=='aui'"><sys-lib>$(WXLIB_AUI_NAME)</sys-lib></if>
+        <if cond="value=='richtext'"><sys-lib>$(WXLIB_RICHTEXT_NAME)</sys-lib></if>
 
         <!-- wx-lib can be used also to link against contrib libraries
              (which always have the same name, regardless of WX_MONOLITHIC value) -->

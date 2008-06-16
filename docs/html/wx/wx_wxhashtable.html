@@ -1,0 +1,154 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHashTable</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhashtable"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhashset.html#wxhashset"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhelpcontroller.html#wxhelpcontroller"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHashTable</H2>
+<P>
+<B>Please note</B> that this class is retained for backward compatibility
+reasons; you should use <A HREF="wx_wxhashmap.html#wxhashmap">wxHashMap</A>.<P>
+This class provides hash table functionality for wxWidgets, and for an
+application if it wishes.  Data can be hashed on an integer or string
+key.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/hash.h&gt;<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+Below is an example of using a hash table.<P>
+<PRE>
+  wxHashTable table(wxKEY_STRING);
+
+  wxPoint *point = new wxPoint(100, 200);
+  table.Put("point 1", point);
+
+  ....
+
+  wxPoint *found_point = (wxPoint *)table.Get("point 1");
+</PRE>
+A hash table is implemented as an array of pointers to lists. When no
+data has been stored, the hash table takes only a little more space than
+this array (default size is 1000).  When a data item is added, an
+integer is constructed from the integer or string key that is within the
+bounds of the array. If the array element is NULL, a new (keyed) list is
+created for the element. Then the data object is appended to the list,
+storing the key in case other data objects need to be stored in the list
+also (when a 'collision' occurs).<P>
+Retrieval involves recalculating the array index from the key, and searching
+along the keyed list for the data object whose stored key matches the passed
+key. Obviously this is quicker when there are fewer collisions, so hashing
+will become inefficient if the number of items to be stored greatly exceeds
+the size of the hash table.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlist.html#wxlist">wxList</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhashtablector">wxHashTable::wxHashTable</A><BR>
+<A HREF="#wxhashtabledtor">wxHashTable::~wxHashTable</A><BR>
+<A HREF="#wxhashtablebeginfind">wxHashTable::BeginFind</A><BR>
+<A HREF="#wxhashtableclear">wxHashTable::Clear</A><BR>
+<A HREF="#wxhashtabledelete">wxHashTable::Delete</A><BR>
+<A HREF="#wxhashtabledeletecontents">wxHashTable::DeleteContents</A><BR>
+<A HREF="#wxhashtableget">wxHashTable::Get</A><BR>
+<A HREF="#wxhashtablemakekey">wxHashTable::MakeKey</A><BR>
+<A HREF="#wxhashtablenext">wxHashTable::Next</A><BR>
+<A HREF="#wxhashtableput">wxHashTable::Put</A><BR>
+<A HREF="#wxhashtablegetcount">wxHashTable::GetCount</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhashtablector"></A>
+<H3>wxHashTable::wxHashTable</H3>
+<P>
+<B></B> <B>wxHashTable</B>(<B>unsigned int</B><I> key_type</I>, <B>int</B><I> size = 1000</I>)<P>
+Constructor. <I>key_type</I> is one of wxKEY_INTEGER, or wxKEY_STRING,
+and indicates what sort of keying is required. <I>size</I> is optional.<P>
+
+<HR>
+<A NAME="wxhashtabledtor"></A>
+<H3>wxHashTable::~wxHashTable</H3>
+<P>
+<B></B> <B>~wxHashTable</B>()<P>
+Destroys the hash table.<P>
+
+<HR>
+<A NAME="wxhashtablebeginfind"></A>
+<H3>wxHashTable::BeginFind</H3>
+<P>
+<B>void</B> <B>BeginFind</B>()<P>
+The counterpart of <I>Next</I>.  If the application wishes to iterate
+through all the data in the hash table, it can call <I>BeginFind</I> and
+then loop on <I>Next</I>.<P>
+
+<HR>
+<A NAME="wxhashtableclear"></A>
+<H3>wxHashTable::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>()<P>
+Clears the hash table of all nodes (but as usual, doesn't delete user data).<P>
+
+<HR>
+<A NAME="wxhashtabledelete"></A>
+<H3>wxHashTable::Delete</H3>
+<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A> *</B> </B> <B>Delete</B>(<B>long</B><I> key</I>)<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A> *</B> </B> <B>Delete</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>)<P>
+Deletes entry in hash table and returns the user's data (if found).<P>
+
+<HR>
+<A NAME="wxhashtabledeletecontents"></A>
+<H3>wxHashTable::DeleteContents</H3>
+<P>
+<B>void</B> <B>DeleteContents</B>(<B>bool</B><I> flag</I>)<P>
+If set to true data stored in hash table will be deleted when hash table object
+is destroyed.<P>
+
+
+<HR>
+<A NAME="wxhashtableget"></A>
+<H3>wxHashTable::Get</H3>
+<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A> *</B> </B> <B>Get</B>(<B>long</B><I> key</I>)<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A> *</B> </B> <B>Get</B>(<B>const char*</B><I> key</I>)<P>
+Gets data from the hash table, using an integer or string key (depending on which
+has table constructor was used).<P>
+
+<HR>
+<A NAME="wxhashtablemakekey"></A>
+<H3>wxHashTable::MakeKey</H3>
+<P>
+<B>long</B> <B>MakeKey</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>string</I>)<P>
+Makes an integer key out of a string. An application may wish to make a key
+explicitly (for instance when combining two data values to form a key).<P>
+
+<HR>
+<A NAME="wxhashtablenext"></A>
+<H3>wxHashTable::Next</H3>
+<P>
+<B>wxHashTable::Node *</B> <B>Next</B>()<P>
+If the application wishes to iterate through all the data in the hash
+table, it can call <I>BeginFind</I> and then loop on <I>Next</I>. This function
+returns a <B>wxHashTable::Node</B> pointer (or NULL if there are no more nodes).
+The return value is functionally equivalent to <B>wxNode</B> but might not be
+implemented as a <B>wxNode</B>. The user will probably only wish to use the
+<B>GetData</B> method to retrieve the data; the node may also be deleted.<P>
+
+<HR>
+<A NAME="wxhashtableput"></A>
+<H3>wxHashTable::Put</H3>
+<P>
+<B>void</B> <B>Put</B>(<B>long</B><I> key</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A> *</B></B><I>object</I>)<P>
+<B>void</B> <B>Put</B>(<B>const char*</B><I> key</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A> *</B></B><I>object</I>)<P>
+Inserts data into the hash table, using an integer or string key (depending on which
+has table constructor was used). The key string is copied and stored by the hash
+table implementation.<P>
+
+<HR>
+<A NAME="wxhashtablegetcount"></A>
+<H3>wxHashTable::GetCount</H3>
+<P>
+<B>size_t</B> <B>GetCount</B>() <B>const</B><P>
+Returns the number of elements in the hash table.<P>
+
+</FONT></BODY></HTML>

@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xh_radbt.cpp
+// Name:        src/xrc/xh_radbt.cpp
 // Purpose:     XRC resource for wxRadioButton
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_radbt.cpp,v 1.12 2005/01/07 21:33:14 VS Exp $
+// RCS-ID:      $Id: xh_radbt.cpp 39567 2006-06-05 16:46:15Z ABX $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_radbt.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -22,7 +18,10 @@
 #if wxUSE_XRC && wxUSE_RADIOBTN
 
 #include "wx/xrc/xh_radbt.h"
-#include "wx/radiobut.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/radiobut.h"
+#endif
 
 IMPLEMENT_DYNAMIC_CLASS(wxRadioButtonXmlHandler, wxXmlResourceHandler)
 

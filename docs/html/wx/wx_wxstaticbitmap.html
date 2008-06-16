@@ -1,0 +1,140 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStaticBitmap</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstaticbitmap"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstandardpaths.html#wxstandardpaths"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstaticbox.html#wxstaticbox"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStaticBitmap</H2>
+<P>
+A static bitmap control displays a bitmap. It is meant for display of the
+small icons in the dialog boxes and is not meant to be a general purpose image
+display control. In particular, under Windows 9x the size of bitmap is limited
+to 64*64 pixels and thus you should use your own control if you want to
+display larger images portably.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/statbmp.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+There are no special styles for this control.<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstaticbitmap.html#wxstaticbitmap">wxStaticBitmap</A>, <A HREF="wx_wxstaticbox.html#wxstaticbox">wxStaticBox</A><P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The bitmap to be displayed should have a small number of colours, such as 16, to avoid
+palette problems.<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxstaticbitmapconstr">wxStaticBitmap::wxStaticBitmap</A><BR>
+<A HREF="#wxstaticbitmapcreate">wxStaticBitmap::Create</A><BR>
+<A HREF="#wxstaticbitmapgetbitmap">wxStaticBitmap::GetBitmap</A><BR>
+<A HREF="#wxstaticbitmapgeticon">wxStaticBitmap::GetIcon</A><BR>
+<A HREF="#wxstaticbitmapsetbitmap">wxStaticBitmap::SetBitmap</A><BR>
+<A HREF="#wxstaticbitmapseticon">wxStaticBitmap::SetIcon</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstaticbitmapconstr"></A>
+<H3>wxStaticBitmap::wxStaticBitmap</H3>
+<P>
+<B></B> <B>wxStaticBitmap</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxStaticBitmap</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>label</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "staticBitmap"</I>)<P>
+Constructor, creating and showing a static bitmap control.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Should not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Control identifier. A value of -1 denotes a default value.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+Bitmap label.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxstaticbitmap.html#wxstaticbitmap">wxStaticBitmap</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstaticbitmap.html#wxstaticbitmapcreate">wxStaticBitmap::Create</A><P>
+
+
+<HR>
+<A NAME="wxstaticbitmapcreate"></A>
+<H3>wxStaticBitmap::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>label</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "staticBitmap"</I>)<P>
+Creation function, for two-step construction. For details see <A HREF="wx_wxstaticbitmap.html#wxstaticbitmapconstr">wxStaticBitmap::wxStaticBitmap</A>.<P>
+
+
+<HR>
+<A NAME="wxstaticbitmapgetbitmap"></A>
+<H3>wxStaticBitmap::GetBitmap</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A></B> </B> <B>GetBitmap</B>() <B>const</B><P>
+Returns the bitmap currently used in the control. Notice that this method can
+be called even if <A HREF="wx_wxstaticbitmap.html#wxstaticbitmapseticon">SetIcon</A> had been used.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstaticbitmap.html#wxstaticbitmapsetbitmap">wxStaticBitmap::SetBitmap</A><P>
+
+
+<HR>
+<A NAME="wxstaticbitmapgeticon"></A>
+<H3>wxStaticBitmap::GetIcon</H3>
+<P>
+<B><A HREF="wx_wxicon.html#wxicon">wxIcon</A></B> </B> <B>GetIcon</B>() <B>const</B><P>
+Returns the icon currently used in the control. Notice that this method can
+only be called if <A HREF="wx_wxstaticbitmap.html#wxstaticbitmapseticon">SetIcon</A> had been used: an icon
+can't be retrieved from the control if a bitmap had been set (using 
+<A HREF="wx_wxstaticbitmap.html#wxstaticbitmapsetbitmap">SetBitmap</A>).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstaticbitmap.html#wxstaticbitmapseticon">wxStaticBitmap::SetIcon</A><P>
+
+
+<HR>
+<A NAME="wxstaticbitmapsetbitmap"></A>
+<H3>wxStaticBitmap::SetBitmap</H3>
+<P>
+<B>virtual void</B> <B>SetBitmap</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I> label</I>)<P>
+Sets the bitmap label.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>label</I><UL><UL>
+The new bitmap.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstaticbitmap.html#wxstaticbitmapgetbitmap">wxStaticBitmap::GetBitmap</A><P>
+
+
+<HR>
+<A NAME="wxstaticbitmapseticon"></A>
+<H3>wxStaticBitmap::SetIcon</H3>
+<P>
+<B>virtual void</B> <B>SetIcon</B>(<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>& </B></B><I> label</I>)<P>
+Sets the label to the given icon.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>label</I><UL><UL>
+The new icon.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstaticbitmap.html#wxstaticbitmapgeticon">wxStaticBitmap::GetIcon</A><P>
+
+</FONT></BODY></HTML>

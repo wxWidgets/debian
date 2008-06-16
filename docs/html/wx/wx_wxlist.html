@@ -1,0 +1,465 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxList&lt;T&gt;</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlist"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlayoutconstraints.html#wxlayoutconstraints"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlistbook.html#wxlistbook"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxList&lt;T&gt;</H2>
+<P>
+The wxList&lt;T&gt; class provides linked list functionality. It has been written
+to be type safe and to provide the full API of the STL std::list container and
+should be used like it. The exception is that wxList&lt;T&gt; actually stores
+pointers and therefore its iterators return pointers and not references
+to the actual objets in the list (see example below). In other words
+<I>value_type</I> is defined as <I>T*</I>.<P>
+
+Unfortunately, the
+new wxList&lt;T&gt; class requires that you declare and define each wxList&lt;T&gt;
+class in your program. This is done with <I>WX_DECLARE_LIST</I> and 
+<I>WX_DEFINE_LIST</I> macros (see example). We hope that we'll be able
+to provide a proper template class providing both the STL std::list
+and the old wxList API in the future.<P>
+Please refer to the STL std::list documentation for further
+information on how to use the class. Below we documented both
+the supported STL and the legacy API that originated from the 
+old wxList class and which can still be used alternatively for
+the the same class.<P>
+Note that if you compile wxWidgets in STL mode (wxUSE_STL defined as 1) 
+then wxList&lt;T&gt; will actually derive from std::list and just add a legacy 
+compatibility layer for the old wxList class.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    // this part might be in a header or source (.cpp) file
+    class MyListElement
+    {
+        ... // whatever
+    };
+
+    // this macro declares and partly implements MyList class
+    WX_DECLARE_LIST(MyListElement, MyList);
+
+    ...
+
+    // the only requirement for the rest is to be AFTER the full declaration of
+    // MyListElement (for WX_DECLARE_LIST forward declaration is enough), but
+    // usually it will be found in the source file and not in the header
+
+    #include &lt;wx/listimpl.cpp&gt;
+    WX_DEFINE_LIST(MyList);
+
+
+    MyList list;
+    MyListElement element;
+    list.Append(&element);     // ok
+    list.Append(17);           // error: incorrect type
+
+    // let's iterate over the list in STL syntax
+    MyList::iterator iter;
+    for (iter = list.begin(); iter != list.end(); ++iter)
+    {
+        MyListElement *current = *iter;
+
+        ...process the current element...
+    }
+
+    // the same with the legacy API from the old wxList class
+    MyList::compatibility_iterator node = list.GetFirst();
+    while (node)
+    {
+        MyListElement *current = node-&gt;GetData();
+
+        ...process the current element...
+        
+        node = node-&gt;GetNext();
+    }
+
+</PRE>
+For compatibility with previous versions wxList and wxStringList classes are
+still defined, but their usage is deprecated and they will disappear in the
+future versions completely. The use of the latter is especially discouraged as
+it is not only unsafe but is also much less efficient than
+<A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A> class.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/list.h&gt;<P>
+<B><FONT COLOR="#FF0000">Library</FONT></B><P>
+<A HREF="wx_librarieslist.html#librarieslist">wxBase</A><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarray.html#wxarray">wxArray</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxlistctor">wxList&lt;T&gt;::wxList&lt;T&gt;</A><BR>
+<A HREF="#wxlistdtor">wxList&lt;T&gt;::~wxList&lt;T&gt;</A><BR>
+<A HREF="#wxlistappend">wxList&lt;T&gt;::Append</A><BR>
+<A HREF="#wxlistclear1">wxList&lt;T&gt;::Clear</A><BR>
+<A HREF="#wxlistdeletecontents">wxList&lt;T&gt;::DeleteContents</A><BR>
+<A HREF="#wxlistdeletenode">wxList&lt;T&gt;::DeleteNode</A><BR>
+<A HREF="#wxlistdeleteobject">wxList&lt;T&gt;::DeleteObject</A><BR>
+<A HREF="#wxlisterase">wxList&lt;T&gt;::Erase</A><BR>
+<A HREF="#wxlistfind">wxList&lt;T&gt;::Find</A><BR>
+<A HREF="#wxlistgetcount">wxList&lt;T&gt;::GetCount</A><BR>
+<A HREF="#wxlistgetfirst">wxList&lt;T&gt;::GetFirst</A><BR>
+<A HREF="#wxlistgetlast">wxList&lt;T&gt;::GetLast</A><BR>
+<A HREF="#wxlistindexof">wxList&lt;T&gt;::IndexOf</A><BR>
+<A HREF="#wxlistinsert1">wxList&lt;T&gt;::Insert</A><BR>
+<A HREF="#wxlistisempty">wxList&lt;T&gt;::IsEmpty</A><BR>
+<A HREF="#wxlistitemfunc">wxList&lt;T&gt;::Item</A><BR>
+<A HREF="#wxlistmember">wxList&lt;T&gt;::Member</A><BR>
+<A HREF="#wxlistnth">wxList&lt;T&gt;::Nth</A><BR>
+<A HREF="#wxlistnumber">wxList&lt;T&gt;::Number</A><BR>
+<A HREF="#wxlistsort">wxList&lt;T&gt;::Sort</A><BR>
+<A HREF="#wxlistassign">wxList&lt;T&gt;::assign</A><BR>
+<A HREF="#wxlistback">wxList&lt;T&gt;::back</A><BR>
+<A HREF="#wxlistbegin">wxList&lt;T&gt;::begin</A><BR>
+<A HREF="#wxlistclear">wxList&lt;T&gt;::clear</A><BR>
+<A HREF="#wxlistempty">wxList&lt;T&gt;::empty</A><BR>
+<A HREF="#wxlistend">wxList&lt;T&gt;::end</A><BR>
+<A HREF="#wxlisterase2">wxList&lt;T&gt;::erase</A><BR>
+<A HREF="#wxlistfront">wxList&lt;T&gt;::front</A><BR>
+<A HREF="#wxlistinsert">wxList&lt;T&gt;::insert</A><BR>
+<A HREF="#wxlistmax">wxList&lt;T&gt;::max_size</A><BR>
+<A HREF="#wxlistpopback">wxList&lt;T&gt;::pop_back</A><BR>
+<A HREF="#wxlistpopfront">wxList&lt;T&gt;::pop_front</A><BR>
+<A HREF="#wxlistpushback">wxList&lt;T&gt;::push_back</A><BR>
+<A HREF="#wxlistpushfront">wxList&lt;T&gt;::push_front</A><BR>
+<A HREF="#wxlistrbegin">wxList&lt;T&gt;::rbegin</A><BR>
+<A HREF="#wxlistremove">wxList&lt;T&gt;::remove</A><BR>
+<A HREF="#wxlistrend">wxList&lt;T&gt;::rend</A><BR>
+<A HREF="#wxlistresize">wxList&lt;T&gt;::resize</A><BR>
+<A HREF="#wxlistreverse">wxList&lt;T&gt;::reverse</A><BR>
+<A HREF="#wxlistsize">wxList&lt;T&gt;::size</A><BR>
+<A HREF="#wxlistsplice">wxList&lt;T&gt;::splice</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlistctor"></A>
+<H3>wxList&lt;T&gt;::wxList&lt;T&gt;</H3>
+<P>
+<B></B> <B>wxList&lt;T&gt;</B>()<P>
+<B></B> <B>wxList&lt;T&gt;</B>(<B>size_t</B><I> count</I>, <B>T *</B><I>elements[]</I>)<P>
+Constructors.<P>
+
+<HR>
+<A NAME="wxlistdtor"></A>
+<H3>wxList&lt;T&gt;::~wxList&lt;T&gt;</H3>
+<P>
+<B></B> <B>~wxList&lt;T&gt;</B>()<P>
+Destroys the list, but does not delete the objects stored in the list
+unless you called DeleteContents(<TT>true</TT> ).<P>
+
+<HR>
+<A NAME="wxlistappend"></A>
+<H3>wxList&lt;T&gt;::Append</H3>
+<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;::compatibility_iterator </B> </B> <B>Append</B>(<B>T *</B><I>object</I>)<P>
+Appends the pointer to <I>object</I> to the list.<P>
+
+<HR>
+<A NAME="wxlistclear1"></A>
+<H3>wxList&lt;T&gt;::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>()<P>
+Clears the list, but does not delete the objects stored in the list
+unless you called DeleteContents(<TT>true</TT> ).<P>
+
+<HR>
+<A NAME="wxlistdeletecontents"></A>
+<H3>wxList&lt;T&gt;::DeleteContents</H3>
+<P>
+<B>void</B> <B>DeleteContents</B>(<B>bool</B><I> destroy</I>)<P>
+If <I>destroy</I> is <TT>true</TT>, instructs the list to call <I>delete</I>
+on objects stored in the list whenever they are removed.
+The default is <TT>false</TT>.<P>
+
+<HR>
+<A NAME="wxlistdeletenode"></A>
+<H3>wxList&lt;T&gt;::DeleteNode</H3>
+<P>
+<B>bool</B> <B>DeleteNode</B>(<B>const compatibility_iterator&amp;</B><I>iter</I>)<P>
+Deletes the given element refered to by <TT>iter</TT> from the list, 
+returning <TT>true</TT> if successful.<P>
+
+<HR>
+<A NAME="wxlistdeleteobject"></A>
+<H3>wxList&lt;T&gt;::DeleteObject</H3>
+<P>
+<B>bool</B> <B>DeleteObject</B>(<B>T *</B><I>object</I>)<P>
+Finds the given <I>object</I> and removes it from the list, returning
+<TT>true</TT> if successful. The application must delete the actual object
+separately.<P>
+
+<HR>
+<A NAME="wxlisterase"></A>
+<H3>wxList&lt;T&gt;::Erase</H3>
+<P>
+<B>void</B> <B>Erase</B>(<B>const compatibility_iterator&amp;</B><I>iter</I>)<P>
+Removes element refered to be <TT>iter</TT>.<P>
+
+<HR>
+<A NAME="wxlistfind"></A>
+<H3>wxList&lt;T&gt;::Find</H3>
+<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;::compatibility_iterator</B> </B> <B>Find</B>(<B>T *</B><I> object</I>) <B>const</B><P>
+Returns the iterator refering to <I>object</I> or NULL if none found.<P>
+
+<HR>
+<A NAME="wxlistgetcount"></A>
+<H3>wxList&lt;T&gt;::GetCount</H3>
+<P>
+<B>size_t</B> <B>GetCount</B>() <B>const</B><P>
+Returns the number of elements in the list.<P>
+
+<HR>
+<A NAME="wxlistgetfirst"></A>
+<H3>wxList&lt;T&gt;::GetFirst</H3>
+<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;::compatibility_iterator</B> </B> <B>GetFirst</B>() <B>const</B><P>
+Returns the first iterator in the list (NULL if the list is empty).<P>
+
+<HR>
+<A NAME="wxlistgetlast"></A>
+<H3>wxList&lt;T&gt;::GetLast</H3>
+<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;::compatibility_iterator</B> </B> <B>GetLast</B>() <B>const</B><P>
+Returns the last iterator in the list (NULL if the list is empty).<P>
+
+<HR>
+<A NAME="wxlistindexof"></A>
+<H3>wxList&lt;T&gt;::IndexOf</H3>
+<P>
+<B>int</B> <B>IndexOf</B>(<B>T*</B><I> obj </I>) <B>const</B><P>
+Returns the index of <I>obj</I> within the list or <TT>wxNOT_FOUND</TT> if
+<I>obj</I> is not found in the list.<P>
+
+<HR>
+<A NAME="wxlistinsert1"></A>
+<H3>wxList&lt;T&gt;::Insert</H3>
+<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;::compatibility_iterator</B> </B> <B>Insert</B>(<B>T *</B><I>object</I>)<P>
+Insert object at the front of list.<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;::compatibility_iterator</B> </B> <B>Insert</B>(<B>size_t </B><I>position</I>, <B>T *</B><I>object</I>)<P>
+Insert object before <I>position</I>, i.e. the index of the new item in the
+list will be equal to <I>position</I>. <I>position</I> should be less than or
+equal to <A HREF="wx_wxlist.html#wxlistgetcount">GetCount</A>; if it is equal to it, this is the
+same as calling <A HREF="wx_wxlist.html#wxlistappend">Append</A>.<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;::compatibility_iterator</B> </B> <B>Insert</B>(<B>compatibility_iterator</B><I>iter</I>, <B>T *</B><I>object</I>)<P>
+Inserts the object before the object refered to be <I>iter</I>.<P>
+
+<HR>
+<A NAME="wxlistisempty"></A>
+<H3>wxList&lt;T&gt;::IsEmpty</H3>
+<P>
+<B>bool</B> <B>IsEmpty</B>() <B>const</B><P>
+Returns <TT>true</TT> if the list is empty, <TT>false</TT> otherwise.<P>
+
+<HR>
+<A NAME="wxlistitemfunc"></A>
+<H3>wxList&lt;T&gt;::Item</H3>
+<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;::compatibility_iterator</B> </B> <B>Item</B>(<B>size_t </B><I>index</I>) <B>const</B><P>
+Returns the iterator refering to the object at the given
+<TT>index</TT> in the list.<P>
+
+<HR>
+<A NAME="wxlistmember"></A>
+<H3>wxList&lt;T&gt;::Member</H3>
+<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;::compatibility_iterator</B> </B> <B>Member</B>(<B>T *</B><I> object</I>) <B>const</B><P>
+<B>NB:</B> This function is deprecated, use <A HREF="wx_wxlist.html#wxlistfind">Find</A> instead.<P>
+
+<HR>
+<A NAME="wxlistnth"></A>
+<H3>wxList&lt;T&gt;::Nth</H3>
+<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;::compatibility_iterator</B> </B> <B>Nth</B>(<B>int </B><I>n</I>) <B>const</B><P>
+<B>NB:</B> This function is deprecated, use <A HREF="wx_wxlist.html#wxlistitemfunc">Item</A> instead.<P>
+Returns the <I>nth</I> node in the list, indexing from zero (NULL if the list is empty
+or the nth node could not be found).<P>
+
+<HR>
+<A NAME="wxlistnumber"></A>
+<H3>wxList&lt;T&gt;::Number</H3>
+<P>
+<B>int</B> <B>Number</B>() <B>const</B><P>
+<B>NB:</B> This function is deprecated, use <A HREF="wx_wxlist.html#wxlistgetcount">GetCount</A> instead.<P>
+Returns the number of elements in the list.<P>
+
+<HR>
+<A NAME="wxlistsort"></A>
+<H3>wxList&lt;T&gt;::Sort</H3>
+<P>
+<B>void</B> <B>Sort</B>(<B>wxSortCompareFunction</B><I> compfunc</I>)<P>
+<PRE>
+  // Type of compare function for list sort operation (as in 'qsort')
+  typedef int (*wxSortCompareFunction)(const void *elem1, const void *elem2);
+</PRE>
+Allows the sorting of arbitrary lists by giving a function to compare
+two list elements. We use the system <B>qsort</B> function for the actual
+sorting process.<P>
+<P>
+
+<HR>
+<A NAME="wxlistassign"></A>
+<H3>wxList&lt;T&gt;::assign</H3>
+<P>
+<B>void</B> <B>assign</B>(<B>const_iterator </B><I>first</I>, <B>const const_iterator&amp; </B><I>last</I>)<P>
+
+<B>void</B> <B>assign</B>(<B>size_type </B><I>n</I>, <B>const_reference </B><I>v = value_type()</I>)<P>
+
+
+<HR>
+<A NAME="wxlistback"></A>
+<H3>wxList&lt;T&gt;::back</H3>
+<P>
+<B>reference</B> <B>back</B>()<P>
+<B>const_reference</B> <B>back</B>() <B>const</B><P>
+Returns the last item of the list.<P>
+
+<HR>
+<A NAME="wxlistbegin"></A>
+<H3>wxList&lt;T&gt;::begin</H3>
+<P>
+<B>iterator</B> <B>begin</B>()<P>
+<B>const_iterator</B> <B>begin</B>() <B>const</B><P>
+Returns a (const) iterator pointing to the beginning of the list.<P>
+
+<HR>
+<A NAME="wxlistclear"></A>
+<H3>wxList&lt;T&gt;::clear</H3>
+<P>
+<B>void</B> <B>clear</B>()<P>
+Removes all items from the list.<P>
+
+<HR>
+<A NAME="wxlistempty"></A>
+<H3>wxList&lt;T&gt;::empty</H3>
+<P>
+<B>bool</B> <B>empty</B>() <B>const</B><P>
+Returns <I>true</I> if the list is empty.<P>
+
+<HR>
+<A NAME="wxlistend"></A>
+<H3>wxList&lt;T&gt;::end</H3>
+<P>
+<B>iterator</B> <B>end</B>()<P>
+<B>const_iterator</B> <B>end</B>() <B>const</B><P>
+Returns a (const) iterator pointing at the end of the list.<P>
+
+<HR>
+<A NAME="wxlisterase2"></A>
+<H3>wxList&lt;T&gt;::erase</H3>
+<P>
+<B>iterator</B> <B>erase</B>(<B>const iterator&amp; </B><I>it</I>)<P>
+Erases the item pointed to by <I>it</I>.<P>
+<B>iterator</B> <B>erase</B>(<B>const iterator&amp; </B><I>first</I>, <B>const iterator&amp; </B><I>last</I>)<P>
+Erases the items from <I>first</I> to <I>last</I>.<P>
+
+<HR>
+<A NAME="wxlistfront"></A>
+<H3>wxList&lt;T&gt;::front</H3>
+<P>
+<B>reference</B> <B>front</B>()<P>
+<B>const_reference</B> <B>front</B>() <B>const</B><P>
+Returns the first item in the list.<P>
+
+<HR>
+<A NAME="wxlistinsert"></A>
+<H3>wxList&lt;T&gt;::insert</H3>
+<P>
+<B>iterator</B> <B>insert</B>(<B>const iterator&amp; </B><I>it</I>, <B>const_reference </B><I>v = value_type()</I>)<P>
+<B>void</B> <B>insert</B>(<B>const iterator&amp; </B><I>it</I>, <B>size_type </B><I>n</I>, <B>const_reference </B><I>v = value_type()</I>)<P>
+<B>void</B> <B>insert</B>(<B>const iterator&amp; </B><I>it</I>, <B>const_iterator </B><I>first</I>, <B>const const_iterator&amp; </B><I>last</I>)<P>
+Inserts an item (or several) at the given position.<P>
+
+<HR>
+<A NAME="wxlistmax"></A>
+<H3>wxList&lt;T&gt;::max_size</H3>
+<P>
+<B>size_type</B> <B>max_size</B>() <B>const</B><P>
+Returns the largest possible size of the list.<P>
+
+<HR>
+<A NAME="wxlistpopback"></A>
+<H3>wxList&lt;T&gt;::pop_back</H3>
+<P>
+<B>void</B> <B>pop_back</B>()<P>
+Removes the list item.<P>
+
+<HR>
+<A NAME="wxlistpopfront"></A>
+<H3>wxList&lt;T&gt;::pop_front</H3>
+<P>
+<B>void</B> <B>pop_front</B>()<P>
+Removes the first item.<P>
+
+<HR>
+<A NAME="wxlistpushback"></A>
+<H3>wxList&lt;T&gt;::push_back</H3>
+<P>
+<B>void</B> <B>push_back</B>(<B>const_reference </B><I>v = value_type()</I>)<P>
+Adds an item to end of the list.<P>
+
+<HR>
+<A NAME="wxlistpushfront"></A>
+<H3>wxList&lt;T&gt;::push_front</H3>
+<P>
+<B>void</B> <B>push_front</B>(<B>const_reference </B><I>v = value_type()</I>)<P>
+Adds an item to the front of the list.<P>
+
+<HR>
+<A NAME="wxlistrbegin"></A>
+<H3>wxList&lt;T&gt;::rbegin</H3>
+<P>
+<B>reverse_iterator</B> <B>rbegin</B>()<P>
+<B>const_reverse_iterator</B> <B>rbegin</B>() <B>const</B><P>
+Returns a (const) reverse iterator pointer to the beginning of the
+reversed list.<P>
+
+<HR>
+<A NAME="wxlistremove"></A>
+<H3>wxList&lt;T&gt;::remove</H3>
+<P>
+<B>void</B> <B>remove</B>(<B>const_reference </B><I>v</I>)<P>
+Removes an item from the list.<P>
+
+<HR>
+<A NAME="wxlistrend"></A>
+<H3>wxList&lt;T&gt;::rend</H3>
+<P>
+<B>reverse_iterator</B> <B>rend</B>()<P>
+<B>const_reverse_iterator</B> <B>rend</B>() <B>const</B><P>
+Returns a (const) reverse iterator pointer to the end of the
+reversed list.<P>
+
+<HR>
+<A NAME="wxlistresize"></A>
+<H3>wxList&lt;T&gt;::resize</H3>
+<P>
+<B>void</B> <B>resize</B>(<B>size_type </B><I>n</I>, <B>value_type </B><I>v = value_type()</I>)<P>
+Resizes the list. If the the list is enlarges items with
+the value <I>v</I> are appended to the list.<P>
+
+<HR>
+<A NAME="wxlistreverse"></A>
+<H3>wxList&lt;T&gt;::reverse</H3>
+<P>
+<B>void</B> <B>reverse</B>()<P>
+Reverses the list.<P>
+
+<HR>
+<A NAME="wxlistsize"></A>
+<H3>wxList&lt;T&gt;::size</H3>
+<P>
+<B>size_type</B> <B>size</B>() <B>const</B><P>
+Returns the size of the list.<P>
+
+<HR>
+<A NAME="wxlistsplice"></A>
+<H3>wxList&lt;T&gt;::splice</H3>
+<P>
+<B>void</B> <B>splice</B>(<B>const iterator&amp; </B><I>it</I>, <B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;& </B></B><I>l</I>)<P>
+<B>void</B> <B>splice</B>(<B>const iterator&amp; </B><I>it</I>, <B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;& </B></B><I>l</I>, <B>const iterator&amp; </B><I>first</I>)<P>
+<B>void</B> <B>splice</B>(<B>const iterator&amp; </B><I>it</I>, <B><A HREF="wx_wxlist.html#wxlist">wxList</A>&lt;T&gt;& </B></B><I>l</I>, <B>const iterator&amp; </B><I>first</I>, <B>const iterator&amp; </B><I>last</I>)<P>
+Moves part of the list into another list, starting from <I>first</I> and 
+ending at <I>last</I> if specified.<P>
+
+</FONT></BODY></HTML>

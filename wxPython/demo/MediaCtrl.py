@@ -25,7 +25,11 @@ class TestPanel(wx.Panel):
 
         # Create some controls
         try:
-            self.mc = wx.media.MediaCtrl(self, style=wx.SIMPLE_BORDER)
+            self.mc = wx.media.MediaCtrl(self, style=wx.SIMPLE_BORDER,
+                                         #szBackend=wx.media.MEDIABACKEND_DIRECTSHOW
+                                         #szBackend=wx.media.MEDIABACKEND_QUICKTIME
+                                         #szBackend=wx.media.MEDIABACKEND_WMP10
+                                         )
         except NotImplementedError:
             self.Destroy()
             raise
@@ -89,13 +93,13 @@ class TestPanel(wx.Panel):
 
     def DoLoadFile(self, path):
         self.playBtn.Disable()
-        noLog = wx.LogNull()
+        #noLog = wx.LogNull()
         if not self.mc.Load(path):
             wx.MessageBox("Unable to load %s: Unsupported format?" % path,
                           "ERROR",
                           wx.ICON_ERROR | wx.OK)
         else:
-            self.mc.SetBestFittingSize()
+            self.mc.SetInitialSize()
             self.GetSizer().Layout()
             self.slider.SetRange(0, self.mc.Length())
 
@@ -108,6 +112,8 @@ class TestPanel(wx.Panel):
                           "ERROR",
                           wx.ICON_ERROR | wx.OK)
         else:
+            self.mc.SetInitialSize()
+            self.GetSizer().Layout()
             self.slider.SetRange(0, self.mc.Length())
 
     def OnPause(self, evt):
@@ -128,6 +134,9 @@ class TestPanel(wx.Panel):
         self.st_len.SetLabel('length: %d seconds' % (self.mc.Length()/1000))
         self.st_pos.SetLabel('position: %d' % offset)
 
+    def ShutdownDemo(self):
+        self.timer.Stop()
+        del self.timer
 
 #----------------------------------------------------------------------
 

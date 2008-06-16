@@ -1,0 +1,61 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMemoryOutputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmemoutputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmeminputstream.html#wxmeminputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmenu.html#wxmenu"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMemoryOutputStream</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/mstream.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstreambuffer.html#wxstreambuffer">wxStreamBuffer</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmemoryoutputstreamctor">wxMemoryOutputStream::wxMemoryOutputStream</A><BR>
+<A HREF="#wxmemoryoutputstreamdtor">wxMemoryOutputStream::~wxMemoryOutputStream</A><BR>
+<A HREF="#wxmemoryoutputstreamcopyto">wxMemoryOutputStream::CopyTo</A><BR>
+<A HREF="#wxmemoryoutputstreamgetostrmbuf">wxMemoryOutputStream::GetOutputStreamBuffer</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmemoryoutputstreamctor"></A>
+<H3>wxMemoryOutputStream::wxMemoryOutputStream</H3>
+<P>
+<B></B> <B>wxMemoryOutputStream</B>(<B>char *</B><I> data = NULL</I>, <B>size_t</B><I> length = 0</I>)<P>
+If <I>data</I> is NULL, then it will initialize a new empty buffer which will
+grow if required.<P>
+<B><FONT COLOR="#FF0000">Warning</FONT></B><P>
+If the buffer is created, it will be destroyed at the destruction of the
+stream.<P>
+
+<HR>
+<A NAME="wxmemoryoutputstreamdtor"></A>
+<H3>wxMemoryOutputStream::~wxMemoryOutputStream</H3>
+<P>
+<B></B> <B>~wxMemoryOutputStream</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxmemoryoutputstreamcopyto"></A>
+<H3>wxMemoryOutputStream::CopyTo</H3>
+<P>
+<B>size_t</B> <B>CopyTo</B>(<B>char *</B><I>buffer</I>, <B>size_t </B><I>len</I>) <B>const</B><P>
+CopyTo allowed you to transfer data from the internal buffer of
+wxMemoryOutputStream to an external buffer. <I>len</I> specifies the size of
+the buffer.<P>
+<B><FONT COLOR="#FF0000">Returned value</FONT></B><P>
+CopyTo returns the number of bytes copied to the buffer. Generally it is either
+len or the size of the stream buffer.<P>
+
+<HR>
+<A NAME="wxmemoryoutputstreamgetostrmbuf"></A>
+<H3>wxMemoryOutputStream::GetOutputStreamBuffer</H3>
+<P>
+<B><A HREF="wx_wxstreambuffer.html#wxstreambuffer">wxStreamBuffer</A> *</B> </B> <B>GetOutputStreamBuffer</B>() <B>const</B><P>
+Returns the pointer to the stream object used as an internal buffer
+for that stream.<P>
+
+</FONT></BODY></HTML>

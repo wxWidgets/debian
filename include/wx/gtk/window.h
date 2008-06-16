@@ -2,22 +2,21 @@
 // Name:        wx/gtk/window.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: window.h,v 1.128.2.1 2006/03/18 13:59:33 RR Exp $
+// Id:          $Id: window.h 41810 2006-10-09 16:39:34Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _WX_GTK_WINDOW_H_
+#define _WX_GTK_WINDOW_H_
 
-#ifndef __GTKWINDOWH__
-#define __GTKWINDOWH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface
-#endif
+#include "wx/dynarray.h"
 
 // helper structure that holds class that holds GtkIMContext object and
 // some additional data needed for key events processing
 struct wxGtkIMData;
+
+WX_DEFINE_EXPORTED_ARRAY_PTR(GdkWindow *, wxArrayGdkWindows);
 
 //-----------------------------------------------------------------------------
 // callback definition for inserting a window (internal)
@@ -53,13 +52,18 @@ public:
     // implement base class (pure) virtual methods
     // -------------------------------------------
 
+    virtual void SetLabel(const wxString& WXUNUSED(label)) { }
+    virtual wxString GetLabel() const { return wxEmptyString; }
+
     virtual bool Destroy();
 
     virtual void Raise();
     virtual void Lower();
 
-    virtual bool Show( bool show = TRUE );
-    virtual bool Enable( bool enable = TRUE );
+    virtual bool Show( bool show = true );
+    virtual bool Enable( bool enable = true );
+
+    virtual void SetWindowStyleFlag( long style );
 
     virtual bool IsRetained() const;
 
@@ -70,7 +74,7 @@ public:
 
     virtual void WarpPointer(int x, int y);
 
-    virtual void Refresh( bool eraseBackground = TRUE,
+    virtual void Refresh( bool eraseBackground = true,
                           const wxRect *rect = (const wxRect *) NULL );
     virtual void Update();
     virtual void ClearBackground();
@@ -91,42 +95,44 @@ public:
                                const wxFont *theFont = (const wxFont *) NULL)
                                const;
 
-#if wxUSE_MENUS_NATIVE
-    virtual bool DoPopupMenu( wxMenu *menu, int x, int y );
-#endif // wxUSE_MENUS_NATIVE
-
     virtual void SetScrollbar( int orient, int pos, int thumbVisible,
-                               int range, bool refresh = TRUE );
-    virtual void SetScrollPos( int orient, int pos, bool refresh = TRUE );
+                               int range, bool refresh = true );
+    virtual void SetScrollPos( int orient, int pos, bool refresh = true );
     virtual int GetScrollPos( int orient ) const;
     virtual int GetScrollThumb( int orient ) const;
     virtual int GetScrollRange( int orient ) const;
     virtual void ScrollWindow( int dx, int dy,
                                const wxRect* rect = (wxRect *) NULL );
+    virtual bool ScrollLines(int lines);
+    virtual bool ScrollPages(int pages);
 
 #if wxUSE_DRAG_AND_DROP
     virtual void SetDropTarget( wxDropTarget *dropTarget );
 #endif // wxUSE_DRAG_AND_DROP
 
-#ifdef __WXGTK20__
     virtual void AddChild( wxWindowBase *child );
     virtual void RemoveChild( wxWindowBase *child );
-#endif
 
-#ifdef __WXGTK20__
-#if wxABI_VERSION >= 20603 /* 2.6.3+ only */
-    void SetDoubleBuffered( bool on );
-#endif
-#endif
+    virtual void SetLayoutDirection(wxLayoutDirection dir);
+    virtual wxLayoutDirection GetLayoutDirection() const;
+    virtual wxCoord AdjustForLayoutDirection(wxCoord x,
+                                             wxCoord width,
+                                             wxCoord widthTotal) const;
+
+    virtual bool DoIsExposed( int x, int y ) const;
+    virtual bool DoIsExposed( int x, int y, int w, int h ) const;
+
+    // currently wxGTK2-only
+    void SetDoubleBuffered(bool on);
+    virtual bool IsDoubleBuffered() const;
 
     // implementation
     // --------------
 
     virtual WXWidget GetHandle() const { return m_widget; }
 
-    // I don't want users to override what's done in idle so everything that
-    // has to be done in idle time in order for wxGTK to work is done in
-    // OnInternalIdle
+    // many important things are done here, this function must be called
+    // regularly
     virtual void OnInternalIdle();
 
     // Internal represention of Update()
@@ -136,7 +142,7 @@ public:
     void OnIdle(wxIdleEvent& WXUNUSED(event)) {}
 
     // wxGTK-specific: called recursively by Enable,
-    // to give widgets an oppprtunity to correct their colours after they
+    // to give widgets an opportunity to correct their colours after they
     // have been changed by Enable
     virtual void OnParentEnable( bool WXUNUSED(enable) ) {}
 
@@ -159,35 +165,74 @@ public:
     // The methods below are required because many native widgets
     // are composed of several subwidgets and setting a style for
     // the widget means setting it for all subwidgets as well.
-    // also, it is nor clear, which native widget is the top
+    // also, it is not clear which native widget is the top
     // widget where (most of) the input goes. even tooltips have
     // to be applied to all subwidgets.
     virtual GtkWidget* GetConnectWidget();
-    virtual bool IsOwnGtkWindow( GdkWindow *window );
     void ConnectWidget( GtkWidget *widget );
 
-#ifdef __WXGTK20__
+    // Called from several event handlers, if it returns true or false, the
+    // same value should be immediately returned by the handler without doing
+    // anything else. If it returns -1, the handler should continue as usual
+    int GTKCallbackCommonPrologue(struct _GdkEventAny *event) const;
+
+    // override this if some events should never be consumed by wxWidgets but
+    // but have to be left for the native control
+    //
+    // base version just does GetEventHandler()->ProcessEvent()
+    virtual bool GTKProcessEvent(wxEvent& event) const;
+
+    // Map GTK widget direction of the given widget to/from wxLayoutDirection
+    static wxLayoutDirection GTKGetLayout(GtkWidget *widget);
+    static void GTKSetLayout(GtkWidget *widget, wxLayoutDirection dir);
+
+protected:
+    // Override GTKWidgetNeedsMnemonic and return true if your
+    // needs to set its mnemonic widget, such as for a 
+    // GtkLabel for wxStaticText, then do the actual
+    // setting of the widget inside GTKWidgetDoSetMnemonic
+    virtual bool GTKWidgetNeedsMnemonic() const;
+    virtual void GTKWidgetDoSetMnemonic(GtkWidget* w);
+
+    // Get the GdkWindows making part of this window: usually there will be
+    // only one of them in which case it should be returned directly by this
+    // function. If there is more than one GdkWindow (can be the case for
+    // composite widgets), return NULL and fill in the provided array
+    //
+    // This is not pure virtual for backwards compatibility but almost
+    // certainly must be overridden in any wxControl-derived class!
+    virtual GdkWindow *GTKGetWindow(wxArrayGdkWindows& windows) const;
+
+    // Check if the given window makes part of this widget
+    bool GTKIsOwnWindow(GdkWindow *window) const;
+
+    // Set the focus to this window if its setting was delayed because the
+    // widget hadn't been realized when SetFocus() was called
+    //
+    // Return true if focus was set to us, false if nothing was done
+    bool GTKSetDelayedFocusIfNeeded();
+
+public:
     // Returns the default context which usually is anti-aliased
     PangoContext   *GtkGetPangoDefaultContext();
-
-    // Returns the X11 context which renders on the X11 client
-    // side (which can be remote) and which usually is not
-    // anti-aliased and is thus faster
-    // MR: Now returns the default pango_context for the widget as GtkGetPangoDefaultContext to
-    // not depend on libpangox - which is completely deprecated.
-    //BCI: Remove GtkGetPangoX11Context and m_x11Context completely when symbols may be removed
-    PangoContext   *GtkGetPangoX11Context();
-    PangoContext   *m_x11Context; // MR: Now unused
-#endif
 
 #if wxUSE_TOOLTIPS
     virtual void ApplyToolTip( GtkTooltips *tips, const wxChar *tip );
 #endif // wxUSE_TOOLTIPS
 
-    // Called from GTK signales handlers. it indicates that
+    // Called from GTK signal handlers. it indicates that
     // the layouting functions have to be called later on
     // (i.e. in idle time, implemented in OnInternalIdle() ).
-    void GtkUpdateSize() { m_sizeSet = FALSE; }
+    void GtkUpdateSize() { m_sizeSet = false; }
+    
+    
+    // Called when a window should delay showing itself
+    // until idle time. This partly mimmicks defered
+    // sizing under MSW.
+    void GtkShowOnIdle() { m_showOnIdle = true; }
+    
+    // This is called from the various OnInternalIdle methods
+    bool GtkShowFromOnIdle();
 
     // fix up the mouse event coords, used by wxListBox only so far
     virtual void FixUpMouseEvent(GtkWidget * WXUNUSED(widget),
@@ -195,10 +240,16 @@ public:
                                  wxCoord& WXUNUSED(y)) { }
 
     // is this window transparent for the mouse events (as wxStaticBox is)?
-    virtual bool IsTransparentForMouse() const { return FALSE; }
+    virtual bool IsTransparentForMouse() const { return false; }
 
     // is this a radiobutton (used by radiobutton code itself only)?
-    virtual bool IsRadioButton() const { return FALSE; }
+    virtual bool IsRadioButton() const { return false; }
+
+    // Common scroll event handling code for wxWindow and wxScrollBar
+    wxEventType GetScrollEventType(GtkRange* range);
+
+    void BlockScrollEvent();
+    void UnblockScrollEvent();
 
     // position and size of the window
     int                  m_x, m_y;
@@ -212,26 +263,38 @@ public:
     // this widget will be queried for GTK's focus events
     GtkWidget           *m_focusWidget;
 
-#ifdef __WXGTK20__
     wxGtkIMData         *m_imData;
-#else // GTK 1
-#ifdef HAVE_XIM
-    // XIM support for wxWidgets
-    GdkIC               *m_ic;
-    GdkICAttr           *m_icattr;
-#endif // HAVE_XIM
-#endif // GTK 2/1
 
-#ifndef __WXGTK20__
-    // The area to be cleared (and not just refreshed)
-    // We cannot make this distinction under GTK 2.0.
-    wxRegion             m_clearRegion;
-#endif
 
-    // scrolling stuff
-    GtkAdjustment       *m_hAdjust,*m_vAdjust;
-    float                m_oldHorizontalPos;
-    float                m_oldVerticalPos;
+    // indices for the arrays below
+    enum ScrollDir { ScrollDir_Horz, ScrollDir_Vert, ScrollDir_Max };
+
+    // horizontal/vertical scroll bar
+    GtkRange* m_scrollBar[ScrollDir_Max];
+
+    // horizontal/vertical scroll position
+    double m_scrollPos[ScrollDir_Max];
+
+    // if true, don't notify about adjustment change (without resetting the
+    // flag, so this has to be done manually)
+    bool m_blockValueChanged[ScrollDir_Max];
+
+    // return the scroll direction index corresponding to the given orientation
+    // (which is wxVERTICAL or wxHORIZONTAL)
+    static ScrollDir ScrollDirFromOrient(int orient)
+    {
+        return orient == wxVERTICAL ? ScrollDir_Vert : ScrollDir_Horz;
+    }
+
+    // return the orientation for the given scrolling direction
+    static int OrientFromScrollDir(ScrollDir dir)
+    {
+        return dir == ScrollDir_Horz ? wxHORIZONTAL : wxVERTICAL;
+    }
+
+    // find the direction of the given scrollbar (must be one of ours)
+    ScrollDir ScrollDirFromRange(GtkRange *range) const;
+
 
     // extra (wxGTK-specific) flags
     bool                 m_needParent:1;        // ! wxFrame, wxDialog, wxNotebookPage ?
@@ -244,19 +307,23 @@ public:
     bool                 m_acceptsFocus:1;      // true if not static
     bool                 m_hasFocus:1;          // true if == FindFocus()
     bool                 m_isScrolling:1;       // dragging scrollbar thumb?
-    bool                 m_clipPaintRegion:1;   // TRUE after ScrollWindow()
-#ifdef __WXGTK20__
+    bool                 m_clipPaintRegion:1;   // true after ScrollWindow()
+    wxRegion             m_nativeUpdateRegion;  // not transformed for RTL
     bool                 m_dirtyTabOrder:1;     // tab order changed, GTK focus
                                                 // chain needs update
-#endif
     bool                 m_needsStyleChange:1;  // May not be able to change
                                                 // background style until OnIdle
+    bool                 m_mouseButtonDown:1;
+    bool                 m_blockScrollEvent:1;
+    
+    bool                 m_showOnIdle:1;        // postpone showing the window until idle
 
     // C++ has no virtual methods in the constrcutor of any class but we need
     // different methods of inserting a child window into a wxFrame,
     // wxMDIFrame, wxNotebook etc. this is the callback that will get used.
     wxInsertChildFunction  m_insertCallback;
 
+protected:
     // implement the base class pure virtuals
     virtual void DoClientToScreen( int *x, int *y ) const;
     virtual void DoScreenToClient( int *x, int *y ) const;
@@ -269,6 +336,10 @@ public:
     virtual void DoSetClientSize(int width, int height);
     virtual void DoMoveWindow(int x, int y, int width, int height);
 
+#if wxUSE_MENUS_NATIVE
+    virtual bool DoPopupMenu( wxMenu *menu, int x, int y );
+#endif // wxUSE_MENUS_NATIVE
+
     virtual void DoCaptureMouse();
     virtual void DoReleaseMouse();
 
@@ -276,16 +347,13 @@ public:
     virtual void DoSetToolTip( wxToolTip *tip );
 #endif // wxUSE_TOOLTIPS
 
-protected:
     // common part of all ctors (not virtual because called from ctor)
     void Init();
 
-#ifdef __WXGTK20__
     virtual void DoMoveInTabOrder(wxWindow *win, MoveKind move);
 
     // Copies m_children tab order to GTK focus chain:
     void RealizeTabOrder();
-#endif
 
     // Called by ApplyWidgetStyle (which is called by SetFont() and
     // SetXXXColour etc to apply style changed to native widgets) to create
@@ -297,15 +365,34 @@ protected:
     // Overridden in many GTK widgets who have to handle subwidgets
     virtual void ApplyWidgetStyle(bool forceStyle = false);
 
-    // helper function to ease native widgets wrapping, called by 
+    // helper function to ease native widgets wrapping, called by
     // ApplyWidgetStyle -- override this, not ApplyWidgetStyle
     virtual void DoApplyWidgetStyle(GtkRcStyle *style);
 
+    // sets the border of a given GtkScrolledWindow from a wx style
+    static void GtkScrolledWindowSetBorder(GtkWidget* w, int style);
+
+    // set the current cursor for all GdkWindows making part of this widget
+    // (see GTKGetWindow)
+    //
+    // should be called from OnInternalIdle() if it's overridden
+    void GTKUpdateCursor();
+
 private:
+    enum ScrollUnit { ScrollUnit_Line, ScrollUnit_Page, ScrollUnit_Max };
+
+    // common part of ScrollLines() and ScrollPages() and could be used, in the
+    // future, for horizontal scrolling as well
+    //
+    // return true if we scrolled, false otherwise (on error or simply if we
+    // are already at the end)
+    bool DoScrollByUnits(ScrollDir dir, ScrollUnit unit, int units);
+
+
     DECLARE_DYNAMIC_CLASS(wxWindowGTK)
     DECLARE_NO_COPY_CLASS(wxWindowGTK)
 };
 
 extern WXDLLIMPEXP_CORE wxWindow *wxFindFocusedChild(wxWindowGTK *win);
 
-#endif // __GTKWINDOWH__
+#endif // _WX_GTK_WINDOW_H_

@@ -1,0 +1,86 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStringBufferLength</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstringbufferlength"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstringbuffer.html#wxstringbuffer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstringclientdata.html#wxstringclientdata"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStringBufferLength</H2>
+<P>
+This tiny class allows to conveniently access the <A HREF="wx_wxstring.html#wxstring">wxString</A> 
+internal buffer as a writable pointer without any risk of forgetting to restore
+the string to the usable state later, and allows the user to set the internal
+length of the string.<P>
+For example, assuming you have a low-level OS function called 
+<TT>int GetMeaningOfLifeAsString(char *)</TT> copying the value in the provided
+buffer (which must be writable, of course), and returning the actual length
+of the string, you might call it like this:<P>
+<PRE>
+    wxString theAnswer;
+    wxStringBuffer theAnswerBuffer(theAnswer, 1024);
+    int nLength = GetMeaningOfLifeAsString(theAnswerBuffer);
+    theAnswerBuffer.SetLength(nLength);
+    if ( theAnswer != "42" )
+    {
+        wxLogError("Something is very wrong!");
+    }
+</PRE>
+Note that the exact usage of this depends on whether on not wxUSE_STL is enabled.  If
+wxUSE_STL is enabled, wxStringBuffer creates a separate empty character buffer, and
+if wxUSE_STL is disabled, it uses GetWriteBuf() from wxString, keeping the same buffer
+wxString uses intact.  In other words, relying on wxStringBuffer containing the old 
+wxString data is probably not a good idea if you want to build your program in both
+with and without wxUSE_STL.<P>
+Note that SetLength <TT>must</TT> be called before wxStringBufferLength destructs.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/string.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxstringbufferlengthctor">wxStringBufferLength::wxStringBufferLength</A><BR>
+<A HREF="#wxstringbufferlengthdtor">wxStringBufferLength::~wxStringBufferLength</A><BR>
+<A HREF="#wxstringbufferlengthsetlength">wxStringBufferLength::SetLength</A><BR>
+<A HREF="#wxstringbufferlengthwxchar">wxStringBufferLength::operator wxChar *</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstringbufferlengthctor"></A>
+<H3>wxStringBufferLength::wxStringBufferLength</H3>
+<P>
+<B></B> <B>wxStringBufferLength</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>size_t </B><I>len</I>)<P>
+Constructs a writable string buffer object associated with the given string
+and containing enough space for at least <I>len</I> characters. Basically, this
+is equivalent to calling <A HREF="wx_wxstring.html#wxstringgetwritebuf">GetWriteBuf</A> and
+saving the result.<P>
+
+
+<HR>
+<A NAME="wxstringbufferlengthdtor"></A>
+<H3>wxStringBufferLength::~wxStringBufferLength</H3>
+<P>
+<B></B> <B>~wxStringBufferLength</B>()<P>
+Restores the string passed to the constructor to the usable state by calling 
+<A HREF="wx_wxstring.html#wxstringungetwritebuf">UngetWriteBuf</A> on it.<P>
+
+
+<HR>
+<A NAME="wxstringbufferlengthsetlength"></A>
+<H3>wxStringBufferLength::SetLength</H3>
+<P>
+<B>void</B> <B>SetLength</B>(<B>size_t </B><I>nLength</I>)<P>
+Sets the internal length of the string referred to by wxStringBufferLength to 
+<I>nLength</I> characters.<P>
+Must be called before wxStringBufferLength destructs.<P>
+
+
+<HR>
+<A NAME="wxstringbufferlengthwxchar"></A>
+<H3>wxStringBufferLength::operator wxChar *</H3>
+<P>
+<B>wxChar *</B> <B>operator wxChar *</B>()<P>
+Returns the writable pointer to a buffer of the size at least equal to the
+length specified in the constructor.<P>
+
+
+</FONT></BODY></HTML>

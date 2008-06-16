@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xh_unkwn.cpp
+// Name:        src/xrc/xh_unkwn.cpp
 // Purpose:     XRC resource for unknown widget
 // Author:      Vaclav Slavik
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_unkwn.cpp,v 1.17 2005/01/07 21:33:15 VS Exp $
+// RCS-ID:      $Id: xh_unkwn.cpp 44457 2007-02-11 02:34:57Z VZ $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_unkwn.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -22,10 +18,13 @@
 #if wxUSE_XRC
 
 #include "wx/xrc/xh_unkwn.h"
-#include "wx/window.h"
-#include "wx/log.h"
-#include "wx/sizer.h"
-#include "wx/panel.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/log.h"
+    #include "wx/window.h"
+    #include "wx/panel.h"
+    #include "wx/sizer.h"
+#endif
 
 
 class wxUnknownControlContainer : public wxPanel
@@ -69,8 +68,7 @@ void wxUnknownControlContainer::AddChild(wxWindowBase *child)
 
     wxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
     sizer->Add((wxWindow*)child, 1, wxEXPAND);
-    SetSizer(sizer);
-    Layout();
+    SetSizerAndFit(sizer);
 }
 
 void wxUnknownControlContainer::RemoveChild(wxWindowBase *child)

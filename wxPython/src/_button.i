@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _button.i,v 1.17 2004/11/17 23:50:46 RD Exp $
+// RCS-ID:      $Id: _button.i 47670 2007-07-23 15:53:27Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -81,63 +81,68 @@ public:
                  const wxString& name = wxPyButtonNameStr),
         "Create and show a button.  The preferred way to create standard
 buttons is to use a standard ID and an empty label.  In this case
-wxWigets will automatically use a stock label that coresponds to the
-ID given.  In additon, the button will be decorated with stock icons
-under GTK+ 2.", "
+wxWigets will automatically use a stock label that corresponds to the
+ID given.  These labels may vary across platforms as the platform
+itself will provide the label if possible.  In addition, the button
+will be decorated with stock icons under GTK+ 2.", "
 
-The stock IDs and coresponding labels are
+The stock IDs and sample labels are
 
     =====================   ======================
+    wx.ID_ABOUT             '&About'
     wx.ID_ADD               'Add'
-    wx.ID_APPLY             '\&Apply'
-    wx.ID_BOLD              '\&Bold'
-    wx.ID_CANCEL            '\&Cancel'
-    wx.ID_CLEAR             '\&Clear'
-    wx.ID_CLOSE             '\&Close'
-    wx.ID_COPY              '\&Copy'
-    wx.ID_CUT               'Cu\&t'
-    wx.ID_DELETE            '\&Delete'
-    wx.ID_FIND              '\&Find'
-    wx.ID_REPLACE           'Find and rep\&lace'
-    wx.ID_BACKWARD          '\&Back'
-    wx.ID_DOWN              '\&Down'
-    wx.ID_FORWARD           '\&Forward'
-    wx.ID_UP                '\&Up'
-    wx.ID_HELP              '\&Help'
-    wx.ID_HOME              '\&Home'
+    wx.ID_APPLY             '&Apply'
+    wx.ID_BOLD              '&Bold'
+    wx.ID_CANCEL            '&Cancel'
+    wx.ID_CLEAR             '&Clear'
+    wx.ID_CLOSE             '&Close'
+    wx.ID_COPY              '&Copy'
+    wx.ID_CUT               'Cu&t'
+    wx.ID_DELETE            '&Delete'
+    wx.ID_EDIT              '&Edit'
+    wx.ID_FIND              '&Find'
+    wx.ID_FILE              '&File'
+    wx.ID_REPLACE           'Rep&lace'
+    wx.ID_BACKWARD          '&Back'
+    wx.ID_DOWN              '&Down'
+    wx.ID_FORWARD           '&Forward'
+    wx.ID_UP                '&Up'
+    wx.ID_HELP              '&Help'
+    wx.ID_HOME              '&Home'
     wx.ID_INDENT            'Indent'
-    wx.ID_INDEX             '\&Index'
-    wx.ID_ITALIC            '\&Italic'
+    wx.ID_INDEX             '&Index'
+    wx.ID_ITALIC            '&Italic'
     wx.ID_JUSTIFY_CENTER    'Centered'
     wx.ID_JUSTIFY_FILL      'Justified'
     wx.ID_JUSTIFY_LEFT      'Align Left'
     wx.ID_JUSTIFY_RIGHT     'Align Right'
-    wx.ID_NEW               '\&New'
-    wx.ID_NO                '\&No'
-    wx.ID_OK                '\&OK'
-    wx.ID_OPEN              '\&Open'
-    wx.ID_PASTE             '\&Paste'
-    wx.ID_PREFERENCES       '\&Preferences'
-    wx.ID_PRINT             '\&Print'
-    wx.ID_PREVIEW           'Print previe\&w'
-    wx.ID_PROPERTIES        '\&Properties'
-    wx.ID_EXIT              '\&Quit'
-    wx.ID_REDO              '\&Redo'
+    wx.ID_NEW               '&New'
+    wx.ID_NO                '&No'
+    wx.ID_OK                '&OK'
+    wx.ID_OPEN              '&Open'
+    wx.ID_PASTE             '&Paste'
+    wx.ID_PREFERENCES       '&Preferences'
+    wx.ID_PRINT             '&Print'
+    wx.ID_PREVIEW           'Print previe&w'
+    wx.ID_PROPERTIES        '&Properties'
+    wx.ID_EXIT              '&Quit'
+    wx.ID_REDO              '&Redo'
     wx.ID_REFRESH           'Refresh'
     wx.ID_REMOVE            'Remove'
     wx.ID_REVERT_TO_SAVED   'Revert to Saved'
-    wx.ID_SAVE              '\&Save'
-    wx.ID_SAVEAS            'Save \&As...'
-    wx.ID_STOP              '\&Stop'
+    wx.ID_SAVE              '&Save'
+    wx.ID_SAVEAS            'Save &As...'
+    wx.ID_SELECTALL         'Select all'
+    wx.ID_STOP              '&Stop'
     wx.ID_UNDELETE          'Undelete'
-    wx.ID_UNDERLINE         '\&Underline'
-    wx.ID_UNDO              '\&Undo'
-    wx.ID_UNINDENT          '\&Unindent'
-    wx.ID_YES               '\&Yes'
-    wx.ID_ZOOM_100          '\&Actual Size'
-    wx.ID_ZOOM_FIT          'Zoom to \&Fit'
-    wx.ID_ZOOM_IN           'Zoom \&In'
-    wx.ID_ZOOM_OUT          'Zoom \&Out'
+    wx.ID_UNDERLINE         '&Underline'
+    wx.ID_UNDO              '&Undo'
+    wx.ID_UNINDENT          '&Unindent'
+    wx.ID_YES               '&Yes'
+    wx.ID_ZOOM_100          '&Actual Size'
+    wx.ID_ZOOM_FIT          'Zoom to &Fit'
+    wx.ID_ZOOM_IN           'Zoom &In'
+    wx.ID_ZOOM_OUT          'Zoom &Out'
     =====================   ======================
 ");
 
@@ -271,6 +276,10 @@ public:
         wxBitmap , GetBitmapSelected(),
         "Returns the bitmap for the selected state.", "");
     
+    DocDeclStr(
+        wxBitmap , GetBitmapHover(),
+        "Returns the bitmap used when the mouse is over the button, may be invalid.", "");
+   
 
     DocDeclStr(
         void , SetBitmapDisabled(const wxBitmap& bitmap),
@@ -291,11 +300,25 @@ public:
         void , SetBitmapLabel(const wxBitmap& bitmap),
         "Sets the bitmap label for the button.  This is the bitmap used for the
 unselected state, and for all other states if no other bitmaps are provided.", "");
-    
 
+    
+    DocDeclStr(
+        void , SetBitmapHover(const wxBitmap& hover),
+        "Sets the bitmap to be shown when the mouse is over the button.  This function
+is new since wxWidgets version 2.7.0 and the hover bitmap is currently only
+supported in wxMSW.", "");
+    
     void SetMargins(int x, int y);
     int GetMarginX() const;
     int GetMarginY() const;
+    
+    %property(BitmapDisabled, GetBitmapDisabled, SetBitmapDisabled, doc="See `GetBitmapDisabled` and `SetBitmapDisabled`");
+    %property(BitmapFocus, GetBitmapFocus, SetBitmapFocus, doc="See `GetBitmapFocus` and `SetBitmapFocus`");
+    %property(BitmapHover, GetBitmapHover, SetBitmapHover, doc="See `GetBitmapHover` and `SetBitmapHover`");
+    %property(BitmapLabel, GetBitmapLabel, SetBitmapLabel, doc="See `GetBitmapLabel` and `SetBitmapLabel`");
+    %property(BitmapSelected, GetBitmapSelected, SetBitmapSelected, doc="See `GetBitmapSelected` and `SetBitmapSelected`");
+    %property(MarginX, GetMarginX, doc="See `GetMarginX`");
+    %property(MarginY, GetMarginY, doc="See `GetMarginY`");
 };
 
 

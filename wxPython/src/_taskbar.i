@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _taskbar.i,v 1.11.2.1 2006/01/16 23:47:30 RD Exp $
+// RCS-ID:      $Id: _taskbar.i 44173 2007-01-08 23:10:39Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -101,12 +101,14 @@ MustHaveApp(wxPyTaskBarIcon);
 class wxPyTaskBarIcon : public wxEvtHandler
 {
 public:
-    %pythonAppend wxPyTaskBarIcon   "self._setCallbackInfo(self, TaskBarIcon, 0)"
+    %pythonAppend wxPyTaskBarIcon   setCallbackInfo(TaskBarIcon)
 
     wxPyTaskBarIcon();
+    ~wxPyTaskBarIcon();
 
-    void _setCallbackInfo(PyObject* self, PyObject* _class, int incref);
+    void _setCallbackInfo(PyObject* self, PyObject* _class, int incref=0);
 
+    %pythonPrepend Destroy "args[0].this.own(False)";
     %extend {
         void Destroy() {
             self->RemoveIcon();
@@ -141,6 +143,7 @@ public:
 %constant wxEventType wxEVT_TASKBAR_RIGHT_UP;
 %constant wxEventType wxEVT_TASKBAR_LEFT_DCLICK;
 %constant wxEventType wxEVT_TASKBAR_RIGHT_DCLICK;
+%constant wxEventType wxEVT_TASKBAR_CLICK;
 
 
 %pythoncode {
@@ -151,6 +154,7 @@ EVT_TASKBAR_RIGHT_DOWN = wx.PyEventBinder (   wxEVT_TASKBAR_RIGHT_DOWN )
 EVT_TASKBAR_RIGHT_UP = wx.PyEventBinder (     wxEVT_TASKBAR_RIGHT_UP )
 EVT_TASKBAR_LEFT_DCLICK = wx.PyEventBinder (  wxEVT_TASKBAR_LEFT_DCLICK )
 EVT_TASKBAR_RIGHT_DCLICK = wx.PyEventBinder ( wxEVT_TASKBAR_RIGHT_DCLICK )
+EVT_TASKBAR_CLICK =  wx.PyEventBinder (       wxEVT_TASKBAR_CLICK )
 }
 
 //---------------------------------------------------------------------------

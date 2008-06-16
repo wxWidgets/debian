@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/mkspans.c,v 1.1 2004/11/20 00:17:38 VZ Exp $ */
+/* $Header$ */
 
 /*
  * Copyright (c) 1991-1997 Sam Leffler

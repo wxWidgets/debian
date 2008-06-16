@@ -1,0 +1,55 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxClientData</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxclientdata"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxclientdc.html#wxclientdc"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxclientdatacontainer.html#wxclientdatacontainer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxClientData</H2>
+<P>
+All classes deriving from <A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>
+(such as all controls and <A HREF="wx_wxapp.html#wxapp">wxApp</A>)
+can hold arbitrary data which is here referred to as "client data".
+This is useful e.g. for scripting languages which need to handle
+shadow objects for most of wxWidgets' classes and which store
+a handle to such a shadow class as client data in that class.
+This data can either be of type void - in which case the data
+<I>container</I> does not take care of freeing the data again
+or it is of type wxClientData or its derivatives. In that case the
+container (e.g. a control) will free the memory itself later.
+Note that you <I>must not</I> assign both void data and data
+derived from the wxClientData class to a container.<P>
+Some controls can hold various items and these controls can
+additionally hold client data for each item. This is the case for
+<A HREF="wx_wxchoice.html#wxchoice">wxChoice</A>, <A HREF="wx_wxcombobox.html#wxcombobox">wxComboBox</A>
+and <A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A>. <A HREF="wx_wxtreectrl.html#wxtreectrl">wxTreeCtrl</A>
+has a specialized class <A HREF="wx_wxtreeitemdata.html#wxtreeitemdata">wxTreeItemData</A>
+for each item in the tree.<P>
+If you want to add client data to your own classes, you may
+use the mix-in class <A HREF="wx_wxclientdatacontainer.html#wxclientdatacontainer">wxClientDataContainer</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/clntdata.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>, <A HREF="wx_wxtreeitemdata.html#wxtreeitemdata">wxTreeItemData</A>,
+<A HREF="wx_wxstringclientdata.html#wxstringclientdata">wxStringClientData</A>, <A HREF="wx_wxclientdatacontainer.html#wxclientdatacontainer">wxClientDataContainer</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxclientdatawxclientdata">wxClientData::wxClientData</A><BR>
+<A HREF="#wxclientdatadtor">wxClientData::~wxClientData</A><BR>
+<P>
+
+<HR>
+<A NAME="wxclientdatawxclientdata"></A>
+<H3>wxClientData::wxClientData</H3>
+<P>
+<B></B> <B>wxClientData</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxclientdatadtor"></A>
+<H3>wxClientData::~wxClientData</H3>
+<P>
+<B></B> <B>~wxClientData</B>()<P>
+Virtual destructor.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,158 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Thread functions</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="threadfunctions"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_processfunctions.html#processfunctions"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_filefunctions.html#filefunctions"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Thread functions</H2>
+<P>
+The functions and macros here mainly exist to make it writing the code which
+may be compiled in multi thread build (<TT>wxUSE_THREADS</TT> = 1) as well as
+in single thread configuration (<TT>wxUSE_THREADS</TT> = 0).<P>
+For example, a static variable must be protected against simultaneous access by
+multiple threads in the former configuration but in the latter the extra
+overhead of using the critical section is not needed. To solve this problem,
+the <A HREF="wx_threadfunctions.html#wxcriticalsectionmacro">wxCRITICAL_SECTION</A> macro may be used
+to create and use the critical section only when needed.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/thread.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxthread.html#wxthread">wxThread</A>, <A HREF="wx_wxmutex.html#wxmutex">wxMutex</A>, <A HREF="wx_wxthreadoverview.html#wxthreadoverview">Multithreading overview</A><P>
+<P>
+<A HREF="#wxcritsectdeclare">wxCRIT_SECT_DECLARE</A><BR>
+<A HREF="#wxcritsectdeclaremember">wxCRIT_SECT_DECLARE_MEMBER</A><BR>
+<A HREF="#wxcritsectlocker">wxCRIT_SECT_LOCKER</A><BR>
+<A HREF="#wxcriticalsectionmacro">wxCRITICAL_SECTION</A><BR>
+<A HREF="#wxentercritsect">wxENTER_CRIT_SECT</A><BR>
+<A HREF="#wxismainthread">::wxIsMainThread</A><BR>
+<A HREF="#wxleavecritsect">wxLEAVE_CRIT_SECT</A><BR>
+<A HREF="#wxmutexguienter">::wxMutexGuiEnter</A><BR>
+<A HREF="#wxmutexguileave">::wxMutexGuiLeave</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcritsectdeclare"></A>
+<H3>wxCRIT_SECT_DECLARE</H3>
+<P>
+<B></B> <B>wxCRIT_SECT_DECLARE</B>(<B></B><I>cs</I>)<P>
+This macro declares a (static) critical section object named <I>cs</I> if
+<TT>wxUSE_THREADS</TT> is 1 and does nothing if it is 0.<P>
+<P>
+
+<HR>
+<A NAME="wxcritsectdeclaremember"></A>
+<H3>wxCRIT_SECT_DECLARE_MEMBER</H3>
+<P>
+<B></B> <B>wxCRIT_SECT_DECLARE</B>(<B></B><I>cs</I>)<P>
+This macro declares a critical section object named <I>cs</I> if
+<TT>wxUSE_THREADS</TT> is 1 and does nothing if it is 0. As it doesn't
+include the <TT>static</TT> keyword (unlike
+<A HREF="wx_threadfunctions.html#wxcritsectdeclare">wxCRIT_SECT_DECLARE</A>), it can be used to declare
+a class or struct member which explains its name.<P>
+<P>
+
+<HR>
+<A NAME="wxcritsectlocker"></A>
+<H3>wxCRIT_SECT_LOCKER</H3>
+<P>
+<B></B> <B>wxCRIT_SECT_LOCKER</B>(<B></B><I>name</I>, <B></B><I>cs</I>)<P>
+This macro creates a <A HREF="wx_wxcriticalsectionlocker.html#wxcriticalsectionlocker">critical section lock</A>
+object named <I>name</I> and associated with the critical section <I>cs</I> if
+<TT>wxUSE_THREADS</TT> is 1 and does nothing if it is 0.<P>
+<P>
+
+<HR>
+<A NAME="wxcriticalsectionmacro"></A>
+<H3>wxCRITICAL_SECTION</H3>
+<P>
+<B></B> <B>wxCRITICAL_SECTION</B>(<B></B><I>name</I>)<P>
+This macro combines <A HREF="wx_threadfunctions.html#wxcritsectdeclare">wxCRIT_SECT_DECLARE</A> and
+<A HREF="wx_threadfunctions.html#wxcritsectlocker">wxCRIT_SECT_LOCKER</A>: it creates a static critical
+section object and also the lock object associated with it. Because of this, it
+can be only used inside a function, not at global scope. For example:<P>
+<PRE>
+int IncCount()
+{
+    static int s_counter = 0;
+
+    wxCRITICAL_SECTION(counter);
+
+    return ++s_counter;
+}
+</PRE>
+(note that we suppose that the function is called the first time from the main
+thread so that the critical section object is initialized correctly by the time
+other threads start calling it, if this is not the case this approach can
+<B>not</B> be used and the critical section must be made a global instead).<P>
+<P>
+
+<HR>
+<A NAME="wxentercritsect"></A>
+<H3>wxENTER_CRIT_SECT</H3>
+<P>
+<B></B> <B>wxENTER_CRIT_SECT</B>(<B><A HREF="wx_wxcriticalsection.html#wxcriticalsection">wxCriticalSection</A>& </B></B><I>cs</I>)<P>
+This macro is equivalent to <A HREF="wx_wxcriticalsection.html#wxcriticalsectionenter">cs.Enter()</A> if
+<TT>wxUSE_THREADS</TT> is 1 and does nothing if it is 0.<P>
+<P>
+
+<HR>
+<A NAME="wxismainthread"></A>
+<H3>::wxIsMainThread</H3>
+<P>
+<B>bool</B> <B>wxIsMainThread</B>()<P>
+Returns <TT>true</TT> if this thread is the main one. Always returns <TT>true</TT> if
+<TT>wxUSE_THREADS</TT> is 0.<P>
+<P>
+
+<HR>
+<A NAME="wxleavecritsect"></A>
+<H3>wxLEAVE_CRIT_SECT</H3>
+<P>
+<B></B> <B>wxLEAVE_CRIT_SECT</B>(<B><A HREF="wx_wxcriticalsection.html#wxcriticalsection">wxCriticalSection</A>& </B></B><I>cs</I>)<P>
+This macro is equivalent to <A HREF="wx_wxcriticalsection.html#wxcriticalsectionleave">cs.Leave()</A> if
+<TT>wxUSE_THREADS</TT> is 1 and does nothing if it is 0.<P>
+<P>
+
+<HR>
+<A NAME="wxmutexguienter"></A>
+<H3>::wxMutexGuiEnter</H3>
+<P>
+<B>void</B> <B>wxMutexGuiEnter</B>()<P>
+This function must be called when any thread other than the main GUI thread
+wants to get access to the GUI library. This function will block the execution
+of the calling thread until the main thread (or any other thread holding the
+main GUI lock) leaves the GUI library and no other thread will enter the GUI
+library until the calling thread calls <A HREF="wx_threadfunctions.html#wxmutexguileave">::wxMutexGuiLeave()</A>.<P>
+Typically, these functions are used like this:<P>
+<PRE>
+void MyThread::Foo(void)
+{
+    // before doing any GUI calls we must ensure that this thread is the only
+    // one doing it!
+
+    wxMutexGuiEnter();
+
+    // Call GUI here:
+    my_window-&gt;DrawSomething();
+
+    wxMutexGuiLeave();
+}
+</PRE>
+Note that under GTK, no creation of top-level windows is allowed in any
+thread but the main one.<P>
+This function is only defined on platforms which support preemptive
+threads.<P>
+
+
+<HR>
+<A NAME="wxmutexguileave"></A>
+<H3>::wxMutexGuiLeave</H3>
+<P>
+<B>void</B> <B>wxMutexGuiLeave</B>()<P>
+See <A HREF="wx_threadfunctions.html#wxmutexguienter">::wxMutexGuiEnter()</A>.<P>
+This function is only defined on platforms which support preemptive
+threads.<P>
+<P>
+
+</FONT></BODY></HTML>

@@ -4,14 +4,14 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     2004-09-07 (partly extracted from frame.tex)
-%% RCS-ID:      $Id: tlw.tex,v 1.9.2.1 2006/02/05 20:40:25 MR Exp $
+%% RCS-ID:      $Id: tlw.tex 42718 2006-10-30 13:18:35Z RR $
 %% Copyright:   (c) 2004 Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{\class{wxTopLevelWindow}}\label{wxtoplevelwindow}
 
-wxTopLevelWindow is a common base class for \helpref{wxDialog}{wxdialog} and 
+wxTopLevelWindow is a common base class for \helpref{wxDialog}{wxdialog} and
 \helpref{wxFrame}{wxframe}. It is an abstract base class meaning that you never
 work with objects of this class directly, but all of its methods are also
 applicable for the two classes above.
@@ -28,6 +28,36 @@ applicable for the two classes above.
 
 
 \latexignore{\rtfignore{\wxheading{Members}}}
+
+\membersection{wxTopLevelWindow::CanSetTransparent}\label{wxtoplevelwindowcansettransparent}
+
+\func{virtual bool}{CanSetTransparent}{\void}
+
+Returns \true if the platform supports making the window translucent.
+
+\wxheading{See also}
+
+\helpref{wxTopLevelWindow::SetTransparent}{wxtoplevelwindowsettransparent}
+
+
+\membersection{wxTopLevelWindow::EnableCloseButton}\label{wxtoplevelenableclosebutton}
+
+\func{bool}{EnableCloseButton}{\param{bool}{ enable = true}}
+
+Enables or disables the Close button (most often in the right
+upper corner of a dialog) and the Close entry of the system
+menu (most often in the left upper corner of the dialog).
+Currently only implemented for wxMSW and wxGTK. Returns
+true if operation was successful. This may be wrong on
+X11 (including GTK+) where the window manager may not support
+this operation and there is no way to find out.
+
+\membersection{wxTopLevelWindow::GetDefaultItem}\label{wxtoplevelwindowgetdefaultitem}
+
+\constfunc{wxWindow *}{GetDefaultItem}{\void}
+
+Returns a pointer to the button which is the default for this window, or \NULL.
+The default button is the one activated by pressing the Enter key.
 
 
 \membersection{wxTopLevelWindow::GetIcon}\label{wxtoplevelwindowgeticon}
@@ -47,7 +77,7 @@ been previously set by \helpref{SetIcon}{wxtoplevelwindowseticon}.
 \constfunc{const wxIconBundle\&}{GetIcons}{\void}
 
 Returns all icons associated with the window, there will be none of them if
-neither \helpref{SetIcon}{wxtoplevelwindowseticon} nor 
+neither \helpref{SetIcon}{wxtoplevelwindowseticon} nor
 \helpref{SetIcons}{wxtoplevelwindowseticons} had been called before.
 
 Use \helpref{GetIcon}{wxtoplevelwindowgeticon} to get the main icon of the
@@ -64,7 +94,18 @@ window.
 
 Gets a string containing the window title.
 
-See \helpref{wxTopLevelWindow::SetTitle}{wxtoplevelwindowsettitle}.
+\wxheading{See also}
+
+\helpref{wxTopLevelWindow::SetTitle}{wxtoplevelwindowsettitle}
+
+
+\membersection{wxTopLevelWindow::HandleSettingChange}\label{wxtoplevelwindowhandlesettingchange}
+
+\func{virtual bool}{HandleSettingChange}{\param{WXWPARAM}{ wParam}, \param{WXLPARAM}{ lParam}}
+
+Unique to the wxWinCE port. Responds to showing/hiding SIP (soft input panel) area and resize
+window accordingly. Override this if you want to avoid resizing or do additional
+operations.
 
 
 \membersection{wxTopLevelWindow::IsActive}\label{wxtoplevelwindowisactive}
@@ -73,6 +114,14 @@ See \helpref{wxTopLevelWindow::SetTitle}{wxtoplevelwindowsettitle}.
 
 Returns \true if this window is currently active, i.e. if the user is currently
 working with it.
+
+
+\membersection{wxTopLevelWindow::IsAlwaysMaximized}\label{wxtoplevelwindowisalwaysmaximized}
+
+\constfunc{virtual bool}{IsAlwaysMaximized}{\void}
+
+Returns \true if this window is expected to be always maximized, either due to platform policy
+or due to local policy regarding particular class.
 
 
 \membersection{wxTopLevelWindow::Iconize}\label{wxtoplevelwindowiconize}
@@ -115,6 +164,21 @@ Returns \true if the window is iconized.
 Returns \true if the window is maximized.
 
 
+\membersection{wxTopLevelWindow::IsUsingNativeDecorations}\label{wxtoplevelwindowisusingnativedecorations}
+
+\constfunc{bool}{IsUsingNativeDecorations}{\void}
+
+\bftt{This method is specific to wxUniversal port}
+
+Returns \true if this window is using native decorations, \false if we draw
+them ourselves.
+
+\wxheading{See also}
+
+\helpref{UseNativeDecorations}{wxtoplevelwindowusenativedecorations},\\
+\helpref{UseNativeDecorationsByDefault}{wxtoplevelwindowusenativedecorationsbydefault}
+
+
 \membersection{wxTopLevelWindow::Maximize}\label{wxtoplevelwindowmaximize}
 
 \func{void}{Maximize}{\param{bool }{maximize}}
@@ -146,6 +210,17 @@ not already in foreground.
 
 This function is currently implemented for Win32 where it flashes the
 window icon in the taskbar, and for wxGTK with task bars supporting it.
+
+
+\membersection{wxTopLevelWindow::SetDefaultItem}\label{wxtoplevelwindowsetdefaultitem}
+
+\func{void}{SetDefaultItem}{\param{wxWindow }{*win}}
+
+Changes the default item for the panel, usually \arg{win} is a button.
+
+\wxheading{See also}
+
+\helpref{GetDefaultItem}{wxtoplevelwindowgetdefaultitem}
 
 
 \membersection{wxTopLevelWindow::SetIcon}\label{wxtoplevelwindowseticon}
@@ -205,6 +280,43 @@ Unavailable on full keyboard machines.
 \helpref{wxTopLevelWindow::SetRightMenu}{wxtoplevelwindowsetrightmenu}.
 
 
+\membersection{wxTopLevelWindow::SetMaxSize}\label{wxtoplevelwindowsetmaxsize}
+
+\func{void}{SetMaxSize}{\param{const wxSize\& }{size}}
+
+A simpler interface for setting the size hints than
+\helpref{SetSizeHints}{wxtoplevelwindowsetsizehints}.
+
+\membersection{wxTopLevelWindow::SetMinSize}\label{wxtoplevelwindowsetminsize}
+
+\func{void}{SetMinSize}{\param{const wxSize\& }{size}}
+
+A simpler interface for setting the size hints than
+\helpref{SetSizeHints}{wxtoplevelwindowsetsizehints}.
+
+\membersection{wxTopLevelWindow::SetSizeHints}\label{wxtoplevelwindowsetsizehints}
+
+\func{virtual void}{SetSizeHints}{\param{int}{ minW}, \param{int}{ minH}, \param{int}{ maxW=-1}, \param{int}{ maxH=-1},
+ \param{int}{ incW=-1}, \param{int}{ incH=-1}}
+
+\func{void}{SetSizeHints}{\param{const wxSize\&}{ minSize},
+\param{const wxSize\&}{ maxSize=wxDefaultSize}, \param{const wxSize\&}{ incSize=wxDefaultSize}}
+
+Allows specification of minimum and maximum window sizes, and window size increments.
+If a pair of values is not set (or set to -1), the default values will be used.
+
+\docparam{incW}{Specifies the increment for sizing the width (Motif/Xt only).}
+
+\docparam{incH}{Specifies the increment for sizing the height (Motif/Xt only).}
+
+\docparam{incSize}{Increment size (Motif/Xt only).}
+
+\wxheading{Remarks}
+
+If this function is called, the user will not be able to size the window outside
+the given bounds. The resizing increments are only significant under Motif or Xt.
+
+
 \membersection{wxTopLevelWindow::SetRightMenu}\label{wxtoplevelwindowsetrightmenu}
 
 \func{void}{SetRightMenu}{\param{int}{ id = wxID\_ANY}, \param{const wxString\&}{ label = wxEmptyString}, \param{wxMenu *}{ subMenu = NULL}}
@@ -233,7 +345,7 @@ If the platform supports it, sets the shape of the window to that
 depicted by {\it region}.  The system will not display or
 respond to any mouse event for the pixels that lie outside of the
 region.  To reset the window to the normal rectangular shape simply
-call {\it SetShape} again with an empty region.  Returns TRUE if the
+call {\it SetShape} again with an empty region.  Returns true if the
 operation is successful.
 
 
@@ -250,6 +362,34 @@ Sets the window title.
 \wxheading{See also}
 
 \helpref{wxTopLevelWindow::GetTitle}{wxtoplevelwindowgettitle}
+
+
+\membersection{wxTopLevelWindow::SetTransparent}\label{wxtoplevelwindowsettransparent}
+
+\func{virtual bool}{SetTransparent}{\param{int }{ alpha}}
+
+If the platform supports it will set the window to be translucent
+
+\wxheading{Parameters}
+
+\docparam{alpha}{Determines how opaque or transparent the window will
+  be, if the platform supports the opreration.  A value of 0 sets the
+  window to be fully transparent, and a value of 255 sets the window
+  to be fully opaque.}
+
+Returns \true if the transparency was successfully changed.
+
+
+
+\membersection{wxTopLevelWindow::ShouldPreventAppExit}\label{wxtoplevelwindowshouldpreventappexit}
+
+\constfunc{virtual bool}{ShouldPreventAppExit}{\void}
+
+This virtual function is not meant to be called directly but can be overridden
+to return \false (it returns \true by default) to allow the application to
+close even if this, presumably not very important, window is still opened.
+By default, the application stays alive as long as there are any open top level
+windows.
 
 
 \membersection{wxTopLevelWindow::ShowFullScreen}\label{wxtoplevelwindowshowfullscreen}
@@ -278,4 +418,47 @@ Note that showing a window full screen also actually
 \wxheading{See also}
 
 \helpref{wxTopLevelWindow::IsFullScreen}{wxtoplevelwindowisfullscreen}
+
+
+\membersection{wxTopLevelWindow::UseNativeDecorations}\label{wxtoplevelwindowusenativedecorations}
+
+\func{void}{UseNativeDecorations}{\param{bool }{native = \true}}
+
+\bftt{This method is specific to wxUniversal port}
+
+Use native or custom-drawn decorations for this window only. Notice that to
+have any effect this method must be called before really creating the window,
+i.e. two step creation must be used:
+\begin{verbatim}
+    MyFrame *frame = new MyFrame;           // use default ctor
+    frame->UseNativeDecorations(false);     // change from default "true"
+    frame->Create(parent, title, ...);      // really create the frame
+\end{verbatim}
+
+\wxheading{See also}
+
+\helpref{UseNativeDecorationsByDefault}{wxtoplevelwindowusenativedecorationsbydefault},\\
+\helpref{IsUsingNativeDecorations}{wxtoplevelwindowisusingnativedecorations}
+
+
+\membersection{wxTopLevelWindow::UseNativeDecorationsByDefault}\label{wxtoplevelwindowusenativedecorationsbydefault}
+
+\func{void}{UseNativeDecorationsByDefault}{\param{bool }{native = \true}}
+
+\bftt{This method is specific to wxUniversal port}
+
+Top level windows in wxUniversal port can use either system-provided window
+decorations (i.e. title bar and various icons, buttons and menus in it) or draw
+the decorations themselves. By default the system decorations are used if they
+are available, but this method can be called with \arg{native} set to \false to
+change this for all windows created after this point.
+
+Also note that if \texttt{WXDECOR} environment variable is set, then custom
+decorations are used by default and so it may make sense to call this method
+with default argument if the application can't use custom decorations at all
+for some reason.
+
+\wxheading{See also}
+
+\helpref{UseNativeDecorations}{wxtoplevelwindowusenativedecorations}
 

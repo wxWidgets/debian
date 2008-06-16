@@ -1,37 +1,31 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        winpars.cpp
+// Name:        src/html/winpars.cpp
 // Purpose:     wxHtmlParser class (generic parser)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: winpars.cpp,v 1.58 2005/02/08 13:00:05 ABX Exp $
+// RCS-ID:      $Id: winpars.cpp 42513 2006-10-27 10:14:03Z MW $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "winpars.h"
-#endif
-
 #include "wx/wxprec.h"
 
-#include "wx/defs.h"
-#if wxUSE_HTML && wxUSE_STREAMS
-
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
+
+#if wxUSE_HTML && wxUSE_STREAMS
 
 #ifndef WXPRECOMP
     #include "wx/intl.h"
     #include "wx/dc.h"
+    #include "wx/log.h"
+    #include "wx/settings.h"
 #endif
 
 #include "wx/html/htmldefs.h"
 #include "wx/html/winpars.h"
 #include "wx/html/htmlwin.h"
 #include "wx/fontmap.h"
-#include "wx/log.h"
-#include "wx/settings.h"
 #include "wx/uri.h"
 
 
@@ -43,11 +37,11 @@ IMPLEMENT_ABSTRACT_CLASS(wxHtmlWinParser, wxHtmlParser)
 
 wxList wxHtmlWinParser::m_Modules;
 
-wxHtmlWinParser::wxHtmlWinParser(wxHtmlWindow *wnd) : wxHtmlParser()
+wxHtmlWinParser::wxHtmlWinParser(wxHtmlWindowInterface *wndIface)
 {
     m_tmpStrBuf = NULL;
     m_tmpStrBufSize = 0;
-    m_Window = wnd;
+    m_windowInterface = wndIface;
     m_Container = NULL;
     m_DC = NULL;
     m_CharHeight = m_CharWidth = 0;
@@ -116,25 +110,50 @@ void wxHtmlWinParser::RemoveModule(wxHtmlTagsModule *module)
     m_Modules.DeleteObject(module);
 }
 
-void wxHtmlWinParser::SetFonts(wxString normal_face, wxString fixed_face,
+// build all HTML font sizes (1..7) from the given base size
+static void wxBuildFontSizes(int *sizes, int size)
+{
+    // using a fixed factor (1.2, from CSS2) is a bad idea as explained at
+    // http://www.w3.org/TR/CSS21/fonts.html#font-size-props but this is by far
+    // simplest thing to do so still do it like this for now
+    sizes[0] = int(size * 0.75); // exception to 1.2 rule, otherwise too small
+    sizes[1] = int(size * 0.83);
+    sizes[2] = size;
+    sizes[3] = int(size * 1.2);
+    sizes[4] = int(size * 1.44);
+    sizes[5] = int(size * 1.73);
+    sizes[6] = int(size * 2);
+}
+
+static int wxGetDefaultHTMLFontSize()
+{
+    // base the default font size on the size of the default system font but
+    // also ensure that we have a font of reasonable size, otherwise small HTML
+    // fonts are unreadable
+    int size = wxNORMAL_FONT->GetPointSize();
+    if ( size < 10 )
+        size = 10;
+    return size;
+}
+
+void wxHtmlWinParser::SetFonts(const wxString& normal_face,
+                               const wxString& fixed_face,
                                const int *sizes)
 {
-    static int default_sizes[7] =
-        {
-            wxHTML_FONT_SIZE_1,
-            wxHTML_FONT_SIZE_2,
-            wxHTML_FONT_SIZE_3,
-            wxHTML_FONT_SIZE_4,
-            wxHTML_FONT_SIZE_5,
-            wxHTML_FONT_SIZE_6,
-            wxHTML_FONT_SIZE_7
-        };
+    static int default_sizes[7] = { 0 };
+    if ( !sizes )
+    {
+        if ( !default_sizes[0] )
+            wxBuildFontSizes(default_sizes, wxGetDefaultHTMLFontSize());
 
-    if (sizes == NULL) sizes = default_sizes;
+        sizes = default_sizes;
+    }
 
     int i, j, k, l, m;
 
-    for (i = 0; i < 7; i++) m_FontsSizes[i] = sizes[i];
+    for (i = 0; i < 7; i++)
+        m_FontsSizes[i] = sizes[i];
+
     m_FontFaceFixed = fixed_face;
     m_FontFaceNormal = normal_face;
 
@@ -159,22 +178,15 @@ void wxHtmlWinParser::SetStandardFonts(int size,
                                        const wxString& normal_face,
                                        const wxString& fixed_face)
 {
-    wxFont defaultFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+    if (size == -1)
+        size = wxGetDefaultHTMLFontSize();
 
     int f_sizes[7];
-    if (size == -1)
-        size = defaultFont.GetPointSize();
+    wxBuildFontSizes(f_sizes, size);
 
-    f_sizes[0] = int(size * 0.6);
-    f_sizes[1] = int(size * 0.8);
-    f_sizes[2] = size;
-    f_sizes[3] = int(size * 1.2);
-    f_sizes[4] = int(size * 1.4);
-    f_sizes[5] = int(size * 1.6);
-    f_sizes[6] = int(size * 1.8);
-
-    wxString normal = normal_face.empty() ?
-                      defaultFont.GetFaceName() : normal_face;
+    wxString normal = normal_face;
+    if ( normal.empty() )
+        normal = wxNORMAL_FONT->GetFaceName();
 
     SetFonts(normal, fixed_face, f_sizes);
 }
@@ -197,10 +209,16 @@ void wxHtmlWinParser::InitParser(const wxString& source)
     m_LinkColor.Set(0, 0, 0xFF);
     m_ActualColor.Set(0, 0, 0);
     m_Align = wxHTML_ALIGN_LEFT;
+    m_ScriptMode = wxHTML_SCRIPT_NORMAL;
+    m_ScriptBaseline = 0;
     m_tmpLastWasSpace = false;
     m_lastWordCell = NULL;
 
+    // open the toplevel container that contains everything else and that
+    // is never closed (this makes parser's life easier):
     OpenContainer();
+
+    // then open the first container into which page's content will go:
     OpenContainer();
 
 #if !wxUSE_UNICODE
@@ -215,11 +233,18 @@ void wxHtmlWinParser::InitParser(const wxString& source)
 
     m_Container->InsertCell(new wxHtmlColourCell(m_ActualColor));
     wxColour windowColour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW) ;
-    m_Container->InsertCell(
-            new wxHtmlColourCell(GetWindow() ?
-                                     GetWindow()->GetBackgroundColour() :
-                                     windowColour,
-                                 wxHTML_CLR_BACKGROUND));
+
+    m_Container->InsertCell
+                 (
+                   new wxHtmlColourCell
+                       (
+                         m_windowInterface
+                            ? m_windowInterface->GetHTMLBackgroundColour()
+                            : windowColour,
+                         wxHTML_CLR_BACKGROUND
+                       )
+                  );
+
     m_Container->InsertCell(new wxHtmlFontCell(CreateCurrentFont()));
 }
 
@@ -231,6 +256,15 @@ void wxHtmlWinParser::DoneParser()
 #endif
     wxHtmlParser::DoneParser();
 }
+
+#if WXWIN_COMPATIBILITY_2_6
+wxHtmlWindow *wxHtmlWinParser::GetWindow()
+{
+    if (!m_windowInterface)
+        return NULL;
+    return wxDynamicCast(m_windowInterface->GetHTMLWindow(), wxHtmlWindow);
+}
+#endif
 
 wxObject* wxHtmlWinParser::GetProduct()
 {
@@ -249,63 +283,64 @@ wxObject* wxHtmlWinParser::GetProduct()
 wxFSFile *wxHtmlWinParser::OpenURL(wxHtmlURLType type,
                                    const wxString& url) const
 {
-    if ( m_Window )
+    if ( !m_windowInterface )
+        return wxHtmlParser::OpenURL(type, url);
+
+    wxString myurl(url);
+    wxHtmlOpeningStatus status;
+    for (;;)
     {
-        wxString myurl(url);
-        wxHtmlOpeningStatus status;
-        for (;;)
+        wxString myfullurl(myurl);
+
+        // consider url as absolute path first
+        wxURI current(myurl);
+        myfullurl = current.BuildUnescapedURI();
+
+        // if not absolute then ...
+        if( current.IsReference() )
         {
-            wxString myfullurl(myurl);
+            wxString basepath = GetFS()->GetPath();
+            wxURI base(basepath);
 
-            // consider url as absolute path first
-            wxURI current(myurl);
-            myfullurl = current.BuildUnescapedURI();
-
-            // if not absolute then ...
-            if( current.IsReference() )
+            // ... try to apply base path if valid ...
+            if( !base.IsReference() )
             {
-                wxString basepath = GetFS()->GetPath();
-                wxURI base(basepath);
-
-                // ... try to apply base path if valid ...
-                if( !base.IsReference() )
+                wxURI path(myfullurl);
+                path.Resolve( base );
+                myfullurl = path.BuildUnescapedURI();
+            }
+            else
+            {
+                // ... or force such addition if not included already
+                if( !current.GetPath().Contains(base.GetPath()) )
                 {
-                    wxURI path(myfullurl);
-                    path.Resolve( base );
-                    myfullurl = path.BuildUnescapedURI();
-                }
-                else
-                {
-                    // ... or force such addition if not included already
-                    if( !current.GetPath().Contains(base.GetPath()) )
-                    {
-                        basepath += myurl;
-                        wxURI connected( basepath );
-                        myfullurl = connected.BuildUnescapedURI();
-                    }
+                    basepath += myurl;
+                    wxURI connected( basepath );
+                    myfullurl = connected.BuildUnescapedURI();
                 }
             }
-
-            wxString redirect;
-            status = m_Window->OnOpeningURL(type, myfullurl, &redirect);
-            if ( status != wxHTML_REDIRECT )
-                break;
-
-            myurl = redirect;
         }
 
-        if ( status == wxHTML_BLOCK )
-            return NULL;
+        wxString redirect;
+        status = m_windowInterface->OnHTMLOpeningURL(type, myfullurl, &redirect);
+        if ( status != wxHTML_REDIRECT )
+            break;
 
-        return GetFS()->OpenFile(myurl);
+        myurl = redirect;
     }
 
-    return wxHtmlParser::OpenURL(type, url);
+    if ( status == wxHTML_BLOCK )
+        return NULL;
+
+    int flags = wxFS_READ;
+    if (type == wxHTML_URL_IMAGE)
+        flags |= wxFS_SEEKABLE;
+
+    return GetFS()->OpenFile(myurl, flags);
 }
 
 void wxHtmlWinParser::AddText(const wxChar* txt)
 {
-    wxHtmlCell *c;
     size_t i = 0,
            x,
            lng = wxStrlen(txt);
@@ -343,45 +378,40 @@ void wxHtmlWinParser::AddText(const wxChar* txt)
         if (x)
         {
             temp[templen-1] = wxT(' ');
-            temp[templen] = 0;
-            templen = 0;
-#if !wxUSE_UNICODE
-            if (m_EncConv)
-                m_EncConv->Convert(temp);
-#endif
-            size_t len = wxStrlen(temp);
-            for (size_t j = 0; j < len; j++)
-                if (temp[j] == nbsp)
-                    temp[j] = wxT(' ');
-            c = new wxHtmlWordCell(temp, *(GetDC()));
-            if (m_UseLink)
-                c->SetLink(m_Link);
-            m_Container->InsertCell(c);
-            ((wxHtmlWordCell*)c)->SetPreviousWord(m_lastWordCell);
-            m_lastWordCell = (wxHtmlWordCell*)c;
+            DoAddText(temp, templen, nbsp);
             m_tmpLastWasSpace = true;
         }
     }
 
     if (templen && (templen > 1 || temp[0] != wxT(' ')))
     {
-        temp[templen] = 0;
-#if !wxUSE_UNICODE
-        if (m_EncConv)
-            m_EncConv->Convert(temp);
-#endif
-        size_t len = wxStrlen(temp);
-        for (size_t j = 0; j < len; j++)
-            if (temp[j] == nbsp)
-                temp[j] = wxT(' ');
-        c = new wxHtmlWordCell(temp, *(GetDC()));
-        if (m_UseLink)
-            c->SetLink(m_Link);
-        m_Container->InsertCell(c);
-        ((wxHtmlWordCell*)c)->SetPreviousWord(m_lastWordCell);
-        m_lastWordCell = (wxHtmlWordCell*)c;
+        DoAddText(temp, templen, nbsp);
         m_tmpLastWasSpace = false;
     }
+}
+
+void wxHtmlWinParser::DoAddText(wxChar *temp, int& templen, wxChar nbsp)
+{
+    temp[templen] = 0;
+    templen = 0;
+#if !wxUSE_UNICODE
+    if (m_EncConv)
+        m_EncConv->Convert(temp);
+#endif
+    size_t len = wxStrlen(temp);
+    for (size_t j = 0; j < len; j++)
+    {
+        if (temp[j] == nbsp)
+            temp[j] = wxT(' ');
+    }
+
+    wxHtmlCell *c = new wxHtmlWordCell(temp, *(GetDC()));
+
+    ApplyStateToCell(c);
+
+    m_Container->InsertCell(c);
+    ((wxHtmlWordCell*)c)->SetPreviousWord(m_lastWordCell);
+    m_lastWordCell = (wxHtmlWordCell*)c;
 }
 
 
@@ -475,7 +505,6 @@ void wxHtmlWinParser::SetLink(const wxHtmlLinkInfo& link)
     m_UseLink = (link.GetHref() != wxEmptyString);
 }
 
-
 void wxHtmlWinParser::SetFontFace(const wxString& face)
 {
     if (GetFontFixed()) m_FontFaceFixed = face;
@@ -487,6 +516,15 @@ void wxHtmlWinParser::SetFontFace(const wxString& face)
 #endif
 }
 
+void wxHtmlWinParser::ApplyStateToCell(wxHtmlCell *cell)
+{
+    // set the link:
+    if (m_UseLink)
+        cell->SetLink(GetLink());
+
+    // apply current script mode settings:
+    cell->SetScriptMode(GetScriptMode(), GetScriptBaseline());
+}
 
 
 #if !wxUSE_UNICODE
@@ -525,7 +563,7 @@ void wxHtmlWinParser::SetInputEncoding(wxFontEncoding enc)
     else
     {
 #ifndef __WXMAC__
-        // okay, let convert to ISO_8859-1, available always
+        // okay, let's convert to ISO_8859-1, available always
         m_OutputEnc = wxFONTENCODING_DEFAULT;
 #else
         m_OutputEnc = wxLocale::GetSystemEncoding() ;
@@ -545,7 +583,7 @@ void wxHtmlWinParser::SetInputEncoding(wxFontEncoding enc)
                            (m_OutputEnc == wxFONTENCODING_DEFAULT) ?
                                       wxFONTENCODING_ISO8859_1 : m_OutputEnc,
                            wxCONVERT_SUBSTITUTE))
-    { // total failture :-(
+    { // total failure :-(
         wxLogError(_("Failed to display HTML document in %s encoding"),
                    wxFontMapper::GetEncodingName(enc).c_str());
         m_InputEnc = m_OutputEnc = wxFONTENCODING_DEFAULT;
@@ -589,4 +627,3 @@ void wxHtmlTagsModule::OnExit()
 }
 
 #endif
-

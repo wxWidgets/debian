@@ -1,0 +1,121 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMenuEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmenuevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmenubar.html#wxmenubar"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmenuitem.html#wxmenuitem"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMenuEvent</H2>
+<P>
+This class is used for a variety of menu-related events. Note that
+these do not include menu command events, which are
+handled using <A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A> objects.<P>
+The default handler for wxEVT_MENU_HIGHLIGHT displays help
+text in the first field of the status bar.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a menu event, use these event handler macros to direct input to member
+functions that take a wxMenuEvent argument. They can only be processed by
+a menubar's frame.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MENU_OPEN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A menu is about to be opened. On Windows,
+this is only sent once for each navigation of the menubar (up until all menus have closed).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MENU_CLOSE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A menu has been just closed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MENU_HIGHLIGHT(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The menu item with the
+specified id has been highlighted: used to show help prompts in the status bar
+by <A HREF="wx_wxframe.html#wxframe">wxFrame</A>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MENU_HIGHLIGHT_ALL(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A menu item has been
+highlighted, i.e. the currently selected menu item has changed.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcommandevent.html#wxcommandevent">Command events</A>,<BR>
+
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxmenueventctor">wxMenuEvent::wxMenuEvent</A><BR>
+<A HREF="#wxmenueventgetmenu">wxMenuEvent::GetMenu</A><BR>
+<A HREF="#wxmenueventgetmenuid">wxMenuEvent::GetMenuId</A><BR>
+<A HREF="#wxmenueventispopup">wxMenuEvent::IsPopup</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmenueventctor"></A>
+<H3>wxMenuEvent::wxMenuEvent</H3>
+<P>
+<B></B> <B>wxMenuEvent</B>(<B>WXTYPE </B><I>id = 0</I>, <B>int </B><I>id = 0</I>, <B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>* </B></B><I>menu = NULL</I>)<P>
+Constructor.<P>
+
+
+<HR>
+<A NAME="wxmenueventgetmenu"></A>
+<H3>wxMenuEvent::GetMenu</H3>
+<P>
+<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A> *</B> </B> <B>GetMenu</B>() <B>const</B><P>
+Returns the menu which is being opened or closed. This method should only be
+used with the <TT>OPEN</TT> and <TT>CLOSE</TT> events and even for them the
+returned pointer may be <TT>NULL</TT> in some ports.<P>
+
+
+<HR>
+<A NAME="wxmenueventgetmenuid"></A>
+<H3>wxMenuEvent::GetMenuId</H3>
+<P>
+<B>int</B> <B>GetMenuId</B>() <B>const</B><P>
+Returns the menu identifier associated with the event. This method should be
+only used with the <TT>HIGHLIGHT</TT> events.<P>
+
+
+<HR>
+<A NAME="wxmenueventispopup"></A>
+<H3>wxMenuEvent::IsPopup</H3>
+<P>
+<B>bool</B> <B>IsPopup</B>() <B>const</B><P>
+Returns <TT>true</TT> if the menu which is being opened or closed is a popup menu, 
+<TT>false</TT> if it is a normal one.<P>
+This method should only be used with the <TT>OPEN</TT> and <TT>CLOSE</TT> events.<P>
+
+
+</FONT></BODY></HTML>

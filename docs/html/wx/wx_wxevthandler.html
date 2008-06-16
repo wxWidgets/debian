@@ -1,0 +1,390 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxEvtHandler</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxevthandler"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxevent.html#wxevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxffile.html#wxffile"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxEvtHandler</H2>
+<P>
+A class that can handle events from the windowing system.
+wxWindow (and therefore all window classes) are derived from
+this class.<P>
+When events are received, wxEvtHandler invokes the method listed in the
+event table using itself as the object.  When using multiple inheritance
+it is imperative that the wxEvtHandler(-derived) class be the first
+class inherited such that the "this" pointer for the overall object
+will be identical to the "this" pointer for the wxEvtHandler portion.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxevthandlerctor">wxEvtHandler::wxEvtHandler</A><BR>
+<A HREF="#wxevthandlerdtor">wxEvtHandler::~wxEvtHandler</A><BR>
+<A HREF="#wxevthandleraddpendingevent">wxEvtHandler::AddPendingEvent</A><BR>
+<A HREF="#wxevthandlerconnect">wxEvtHandler::Connect</A><BR>
+<A HREF="#wxevthandlerdisconnect">wxEvtHandler::Disconnect</A><BR>
+<A HREF="#wxevthandlergetclientdata">wxEvtHandler::GetClientData</A><BR>
+<A HREF="#wxevthandlergetclientobject">wxEvtHandler::GetClientObject</A><BR>
+<A HREF="#wxevthandlergetevthandlerenabled">wxEvtHandler::GetEvtHandlerEnabled</A><BR>
+<A HREF="#wxevthandlergetnexthandler">wxEvtHandler::GetNextHandler</A><BR>
+<A HREF="#wxevthandlergetprevioushandler">wxEvtHandler::GetPreviousHandler</A><BR>
+<A HREF="#wxevthandlerprocessevent">wxEvtHandler::ProcessEvent</A><BR>
+<A HREF="#wxevthandlersearcheventtable">wxEvtHandler::SearchEventTable</A><BR>
+<A HREF="#wxevthandlersetclientdata">wxEvtHandler::SetClientData</A><BR>
+<A HREF="#wxevthandlersetclientobject">wxEvtHandler::SetClientObject</A><BR>
+<A HREF="#wxevthandlersetevthandlerenabled">wxEvtHandler::SetEvtHandlerEnabled</A><BR>
+<A HREF="#wxevthandlersetnexthandler">wxEvtHandler::SetNextHandler</A><BR>
+<A HREF="#wxevthandlersetprevioushandler">wxEvtHandler::SetPreviousHandler</A><BR>
+<P>
+
+<HR>
+<A NAME="wxevthandlerctor"></A>
+<H3>wxEvtHandler::wxEvtHandler</H3>
+<P>
+<B></B> <B>wxEvtHandler</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxevthandlerdtor"></A>
+<H3>wxEvtHandler::~wxEvtHandler</H3>
+<P>
+<B></B> <B>~wxEvtHandler</B>()<P>
+Destructor. If the handler is part of a chain, the destructor will
+unlink itself and restore the previous and next handlers so that they point to
+each other.<P>
+
+<HR>
+<A NAME="wxevthandleraddpendingevent"></A>
+<H3>wxEvtHandler::AddPendingEvent</H3>
+<P>
+<B>void</B> <B>AddPendingEvent</B>(<B><A HREF="wx_wxevent.html#wxevent">wxEvent</A>& </B></B><I>event</I>)<P>
+This function posts an event to be processed later.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>event</I><UL><UL>
+Event to add to process queue.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The difference between sending an event (using the
+<A HREF="wx_wxevthandler.html#wxevthandlerprocessevent">ProcessEvent</A> method) and posting it is
+that in the first case the event is processed before the function returns,
+while in the second case, the function returns immediately and the event will
+be processed sometime later (usually during the next event loop iteration).<P>
+A copy of <I>event</I> is made by the function, so the original can be deleted
+as soon as function returns (it is common that the original is created on the
+stack).  This requires that the <A HREF="wx_wxevent.html#wxeventclone">wxEvent::Clone</A> method
+be implemented by <I>event</I> so that it can be duplicated and stored until
+it gets processed.<P>
+This is also the method to call for inter-thread communication---it will
+post events safely between different threads which means that this method is
+thread-safe by using critical sections where needed.  In a multi-threaded
+program, you often need to inform the main GUI thread about the status of
+other working threads and such notification should be done using this method.<P>
+This method automatically wakes up idle handling if the underlying window 
+system is currently idle and thus would not send any idle events. (Waking
+up idle handling is done calling <A HREF="wx_appinifunctions.html#wxwakeupidle">::wxWakeUpIdle</A>.)<P>
+
+<HR>
+<A NAME="wxevthandlerconnect"></A>
+<H3>wxEvtHandler::Connect</H3>
+<P>
+<B>void</B> <B>Connect</B>(<B>int</B><I> id</I>, <B>int</B><I> lastId</I>,
+ <B>wxEventType </B><I>eventType</I>, <B>wxObjectEventFunction</B><I> function</I>,
+ <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B></B><I> userData = NULL</I>, <B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>*</B></B><I> eventSink = NULL</I>)<P>
+<B>void</B> <B>Connect</B>(<B>int</B><I> id</I>,
+ <B>wxEventType </B><I>eventType</I>, <B>wxObjectEventFunction</B><I> function</I>,
+ <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B></B><I> userData = NULL</I>, <B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>*</B></B><I> eventSink = NULL</I>)<P>
+<B>void</B> <B>Connect</B>(<B>wxEventType </B><I>eventType</I>, <B>wxObjectEventFunction</B><I> function</I>,
+ <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B></B><I> userData = NULL</I>, <B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>*</B></B><I> eventSink = NULL</I>)<P>
+Connects the given function dynamically with the event handler, id and event type. This
+is an alternative to the use of static event tables. See the 'event' or the old 'dynamic' sample for usage.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The identifier (or first of the identifier range) to be
+associated with the event handler function. For the version not taking this
+argument, it defaults to <TT>wxID_ANY</TT>.</UL></UL>
+<P>
+<I>lastId</I><UL><UL>
+The second part of the identifier range to be associated with the event handler function.</UL></UL>
+<P>
+<I>eventType</I><UL><UL>
+The event type to be associated with this event handler.</UL></UL>
+<P>
+<I>function</I><UL><UL>
+The event handler function. Note that this function should
+be explicitly converted to the correct type which can be done using a macro
+called <TT>wxFooHandler</TT> for the handler for any <TT>wxFooEvent</TT>.</UL></UL>
+<P>
+<I>userData</I><UL><UL>
+Data to be associated with the event table entry.</UL></UL>
+<P>
+<I>eventSink</I><UL><UL>
+Object whose member function should be called. If this is NULL,
+<I>this</I> will be used.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+  frame-&gt;Connect( wxID_EXIT,
+    wxEVT_COMMAND_MENU_SELECTED,
+    wxCommandEventHandler(MyFrame::OnQuit) );
+</PRE>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this function takes 4 arguments: <TT>id,
+lastid, type, method</TT>; if <TT>method</TT> is <TT>undef</TT>, the
+handler is disconnected.<P>
+
+<HR>
+<A NAME="wxevthandlerdisconnect"></A>
+<H3>wxEvtHandler::Disconnect</H3>
+<P>
+<B>bool</B> <B>Disconnect</B>(<B>wxEventType </B><I>eventType = wxEVT_NULL</I>, <B>wxObjectEventFunction</B><I> function = NULL</I>,
+ <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B></B><I> userData = NULL</I>, <B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>*</B></B><I> eventSink = NULL</I>)<P>
+<B>bool</B> <B>Disconnect</B>(<B>int</B><I> id = <TT>wxID_ANY</TT></I>,
+ <B>wxEventType </B><I>eventType = wxEVT_NULL</I>, <B>wxObjectEventFunction</B><I> function = NULL</I>,
+ <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B></B><I> userData = NULL</I>, <B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>*</B></B><I> eventSink = NULL</I>)<P>
+<B>bool</B> <B>Disconnect</B>(<B>int</B><I> id</I>, <B>int</B><I> lastId = <TT>wxID_ANY</TT></I>,
+ <B>wxEventType </B><I>eventType = wxEVT_NULL</I>, <B>wxObjectEventFunction</B><I> function = NULL</I>,
+ <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B></B><I> userData = NULL</I>, <B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>*</B></B><I> eventSink = NULL</I>)<P>
+Disconnects the given function dynamically from the event handler, using the specified
+parameters as search criteria and returning true if a matching function has been
+found and removed. This method can only disconnect functions which have been added
+using the <A HREF="wx_wxevthandler.html#wxevthandlerconnect">wxEvtHandler::Connect</A> method. There is no way
+to disconnect functions connected using the (static) event tables.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The identifier (or first of the identifier range) associated with the event handler function.</UL></UL>
+<P>
+<I>lastId</I><UL><UL>
+The second part of the identifier range associated with the event handler function.</UL></UL>
+<P>
+<I>eventType</I><UL><UL>
+The event type associated with this event handler.</UL></UL>
+<P>
+<I>function</I><UL><UL>
+The event handler function.</UL></UL>
+<P>
+<I>userData</I><UL><UL>
+Data associated with the event table entry.</UL></UL>
+<P>
+<I>eventSink</I><UL><UL>
+Object whose member function should be called.</UL></UL>
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this function takes 3 arguments: <TT>id,
+lastid, type</TT>.<P>
+
+<HR>
+<A NAME="wxevthandlergetclientdata"></A>
+<H3>wxEvtHandler::GetClientData</H3>
+<P>
+<B>void* </B> <B>GetClientData</B>()<P>
+Gets user-supplied client data.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Normally, any extra data the programmer wishes to associate with the object
+should be made available by deriving a new class with new data members.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandlersetclientdata">wxEvtHandler::SetClientData</A><P>
+
+<HR>
+<A NAME="wxevthandlergetclientobject"></A>
+<H3>wxEvtHandler::GetClientObject</H3>
+<P>
+<B><A HREF="wx_wxclientdata.html#wxclientdata">wxClientData</A>*</B> </B> <B>GetClientObject</B>() <B>const</B><P>
+Get a pointer to the user-supplied client data object.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandlersetclientobject">wxEvtHandler::SetClientObject</A>,
+<A HREF="wx_wxclientdata.html#wxclientdata">wxClientData</A><P>
+
+<HR>
+<A NAME="wxevthandlergetevthandlerenabled"></A>
+<H3>wxEvtHandler::GetEvtHandlerEnabled</H3>
+<P>
+<B>bool</B> <B>GetEvtHandlerEnabled</B>()<P>
+Returns true if the event handler is enabled, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandlersetevthandlerenabled">wxEvtHandler::SetEvtHandlerEnabled</A><P>
+
+<HR>
+<A NAME="wxevthandlergetnexthandler"></A>
+<H3>wxEvtHandler::GetNextHandler</H3>
+<P>
+<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>*</B> </B> <B>GetNextHandler</B>()<P>
+Gets the pointer to the next handler in the chain.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandlersetnexthandler">wxEvtHandler::SetNextHandler</A>,
+<A HREF="wx_wxevthandler.html#wxevthandlergetprevioushandler">wxEvtHandler::GetPreviousHandler</A>,
+<A HREF="wx_wxevthandler.html#wxevthandlersetprevioushandler">wxEvtHandler::SetPreviousHandler</A>,
+<A HREF="wx_wxwindow.html#wxwindowpusheventhandler">wxWindow::PushEventHandler</A>,
+<A HREF="wx_wxwindow.html#wxwindowpopeventhandler">wxWindow::PopEventHandler</A><P>
+
+<HR>
+<A NAME="wxevthandlergetprevioushandler"></A>
+<H3>wxEvtHandler::GetPreviousHandler</H3>
+<P>
+<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>*</B> </B> <B>GetPreviousHandler</B>()<P>
+Gets the pointer to the previous handler in the chain.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandlersetprevioushandler">wxEvtHandler::SetPreviousHandler</A>,
+<A HREF="wx_wxevthandler.html#wxevthandlergetnexthandler">wxEvtHandler::GetNextHandler</A>,
+<A HREF="wx_wxevthandler.html#wxevthandlersetnexthandler">wxEvtHandler::SetNextHandler</A>,
+<A HREF="wx_wxwindow.html#wxwindowpusheventhandler">wxWindow::PushEventHandler</A>,
+<A HREF="wx_wxwindow.html#wxwindowpopeventhandler">wxWindow::PopEventHandler</A><P>
+
+<HR>
+<A NAME="wxevthandlerprocessevent"></A>
+<H3>wxEvtHandler::ProcessEvent</H3>
+<P>
+<B>virtual bool</B> <B>ProcessEvent</B>(<B><A HREF="wx_wxevent.html#wxevent">wxEvent</A>& </B></B><I>event</I>)<P>
+Processes an event, searching event tables and calling zero or more suitable event handler function(s).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>event</I><UL><UL>
+Event to process.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if a suitable event handler function was found and executed, and the function did not
+call <A HREF="wx_wxevent.html#wxeventskip">wxEvent::Skip</A>.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Normally, your application would not call this function: it is called in the wxWidgets
+implementation to dispatch incoming user interface events to the framework (and application).<P>
+However, you might need to call it if implementing new functionality (such as a new control) where
+you define new event types, as opposed to allowing the user to override virtual functions.<P>
+An instance where you might actually override the <B>ProcessEvent</B> function is where you want
+to direct event processing to event handlers not normally noticed by wxWidgets. For example,
+in the document/view architecture, documents and views are potential event handlers.
+When an event reaches a frame, <B>ProcessEvent</B> will need to be called on the associated
+document and view in case event handler functions are associated with these objects.
+The property classes library (wxProperty) also overrides <B>ProcessEvent</B> for similar reasons.<P>
+The normal order of event table searching is as follows:<P>
+<OL>
+
+<LI> If the object is disabled (via a call to <A HREF="wx_wxevthandler.html#wxevthandlersetevthandlerenabled">wxEvtHandler::SetEvtHandlerEnabled</A>)
+the function skips to step (6).
+<LI> If the object is a wxWindow, <B>ProcessEvent</B> is recursively called on the window's
+<A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>. If this returns true, the function exits.
+<LI> <B>SearchEventTable</B> is called for this event handler. If this fails, the base
+class table is tried, and so on until no more tables exist or an appropriate function was found,
+in which case the function exits.
+<LI> The search is applied down the entire chain of event handlers (usually the chain has a length
+of one). If this succeeds, the function exits.
+<LI> If the object is a wxWindow and the event is a wxCommandEvent, <B>ProcessEvent</B> is
+recursively applied to the parent window's event handler. If this returns true, the function exits.
+<LI> Finally, <B>ProcessEvent</B> is called on the wxApp object.
+</OL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandlersearcheventtable">wxEvtHandler::SearchEventTable</A><P>
+
+<HR>
+<A NAME="wxevthandlersearcheventtable"></A>
+<H3>wxEvtHandler::SearchEventTable</H3>
+<P>
+<B>virtual bool</B> <B>SearchEventTable</B>(<B>wxEventTable&amp; </B><I>table</I>, <B><A HREF="wx_wxevent.html#wxevent">wxEvent</A>& </B></B><I>event</I>)<P>
+Searches the event table, executing an event handler function if an appropriate one
+is found.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>table</I><UL><UL>
+Event table to be searched.</UL></UL>
+<P>
+<I>event</I><UL><UL>
+Event to be matched against an event table entry.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if a suitable event handler function was found and executed, and the function did not
+call <A HREF="wx_wxevent.html#wxeventskip">wxEvent::Skip</A>.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function looks through the object's event table and tries to find an entry
+that will match the event.<P>
+An entry will match if:<P>
+<OL>
+
+<LI> The event type matches, and
+<LI> the identifier or identifier range matches, or the event table entry's identifier is zero.
+</OL>
+<P>
+If a suitable function is called but calls <A HREF="wx_wxevent.html#wxeventskip">wxEvent::Skip</A>, this function will
+fail, and searching will continue.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandlerprocessevent">wxEvtHandler::ProcessEvent</A><P>
+
+<HR>
+<A NAME="wxevthandlersetclientdata"></A>
+<H3>wxEvtHandler::SetClientData</H3>
+<P>
+<B>void</B> <B>SetClientData</B>(<B>void* </B><I>data</I>)<P>
+Sets user-supplied client data.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>data</I><UL><UL>
+Data to be associated with the event handler.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Normally, any extra data the programmer wishes to associate with 
+the object should be made available by deriving a new class
+with new data members. You must not call this method and
+<A HREF="wx_wxevthandler.html#wxevthandlersetclientobject">SetClientObject</A> on the
+same class - only one of them.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandlergetclientdata">wxEvtHandler::GetClientData</A><P>
+
+<HR>
+<A NAME="wxevthandlersetclientobject"></A>
+<H3>wxEvtHandler::SetClientObject</H3>
+<P>
+<B>void</B> <B>SetClientObject</B>(<B><A HREF="wx_wxclientdata.html#wxclientdata">wxClientData</A>* </B></B><I>data</I>)<P>
+Set the client data object. Any previous object will be deleted.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandlergetclientobject">wxEvtHandler::GetClientObject</A>,
+<A HREF="wx_wxclientdata.html#wxclientdata">wxClientData</A><P>
+
+<HR>
+<A NAME="wxevthandlersetevthandlerenabled"></A>
+<H3>wxEvtHandler::SetEvtHandlerEnabled</H3>
+<P>
+<B>void</B> <B>SetEvtHandlerEnabled</B>(<B>bool </B><I>enabled</I>)<P>
+Enables or disables the event handler.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>enabled</I><UL><UL>
+true if the event handler is to be enabled, false if it is to be disabled.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+You can use this function to avoid having to remove the event handler from the chain, for example
+when implementing a dialog editor and changing from edit to test mode.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandlergetevthandlerenabled">wxEvtHandler::GetEvtHandlerEnabled</A><P>
+
+<HR>
+<A NAME="wxevthandlersetnexthandler"></A>
+<H3>wxEvtHandler::SetNextHandler</H3>
+<P>
+<B>void</B> <B>SetNextHandler</B>(<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>* </B></B><I>handler</I>)<P>
+Sets the pointer to the next handler.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>handler</I><UL><UL>
+Event handler to be set as the next handler.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandlergetnexthandler">wxEvtHandler::GetNextHandler</A>,
+<A HREF="wx_wxevthandler.html#wxevthandlersetprevioushandler">wxEvtHandler::SetPreviousHandler</A>,
+<A HREF="wx_wxevthandler.html#wxevthandlergetprevioushandler">wxEvtHandler::GetPreviousHandler</A>,
+<A HREF="wx_wxwindow.html#wxwindowpusheventhandler">wxWindow::PushEventHandler</A>,
+<A HREF="wx_wxwindow.html#wxwindowpopeventhandler">wxWindow::PopEventHandler</A><P>
+
+<HR>
+<A NAME="wxevthandlersetprevioushandler"></A>
+<H3>wxEvtHandler::SetPreviousHandler</H3>
+<P>
+<B>void</B> <B>SetPreviousHandler</B>(<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>* </B></B><I>handler</I>)<P>
+Sets the pointer to the previous handler.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>handler</I><UL><UL>
+Event handler to be set as the previous handler.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandlergetprevioushandler">wxEvtHandler::GetPreviousHandler</A>,
+<A HREF="wx_wxevthandler.html#wxevthandlersetnexthandler">wxEvtHandler::SetNextHandler</A>,
+<A HREF="wx_wxevthandler.html#wxevthandlergetnexthandler">wxEvtHandler::GetNextHandler</A>,
+<A HREF="wx_wxwindow.html#wxwindowpusheventhandler">wxWindow::PushEventHandler</A>,
+<A HREF="wx_wxwindow.html#wxwindowpopeventhandler">wxWindow::PopEventHandler</A><P>
+
+
+</FONT></BODY></HTML>

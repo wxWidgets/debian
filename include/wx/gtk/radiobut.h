@@ -2,18 +2,13 @@
 // Name:        wx/gtk/radiobut.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobut.h,v 1.25 2005/08/02 22:57:57 MW Exp $
+// Id:          $Id: radiobut.h 40815 2006-08-25 12:59:28Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-
-#ifndef __GTKRADIOBUTTONH__
-#define __GTKRADIOBUTTONH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
+#ifndef _WX_GTK_RADIOBUT_H_
+#define _WX_GTK_RADIOBUT_H_
 
 //-----------------------------------------------------------------------------
 // wxRadioButton
@@ -56,18 +51,15 @@ public:
 
     virtual bool IsRadioButton() const { return TRUE; }
 
-    GSList *m_radioButtonGroup;
-    void DoApplyWidgetStyle(GtkRcStyle *style);
-    bool IsOwnGtkWindow( GdkWindow *window );
-    void OnInternalIdle();
-
     bool m_blockEvent;
 
 protected:
     virtual wxSize DoGetBestSize() const;
+    virtual void DoApplyWidgetStyle(GtkRcStyle *style);
+    virtual GdkWindow *GTKGetWindow(wxArrayGdkWindows& windows) const;
 
 private:
     DECLARE_DYNAMIC_CLASS(wxRadioButton)
 };
 
-#endif // __GTKRADIOBUTTONH__
+#endif // _WX_GTK_RADIOBUT_H_

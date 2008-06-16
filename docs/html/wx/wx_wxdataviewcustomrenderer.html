@@ -1,0 +1,94 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataViewCustomRenderer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataviewcustomrenderer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdataviewdaterenderer.html#wxdataviewdaterenderer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdataobjectcomposite.html#wxdataobjectcomposite"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataViewCustomRenderer</H2>
+<P>
+wxDataViewCustomRenderer<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdataviewrenderer.html#wxdataviewrenderer">wxDataViewRenderer</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataview.h&gt;<P>
+<A HREF="#wxdataviewcustomrendererwxdataviewcustomrenderer">wxDataViewCustomRenderer::wxDataViewCustomRenderer</A><BR>
+<A HREF="#wxdataviewcustomrendererdtor">wxDataViewCustomRenderer::~wxDataViewCustomRenderer</A><BR>
+<A HREF="#wxdataviewcustomrendereractivate">wxDataViewCustomRenderer::Activate</A><BR>
+<A HREF="#wxdataviewcustomrenderergetdc">wxDataViewCustomRenderer::GetDC</A><BR>
+<A HREF="#wxdataviewcustomrenderergetsize">wxDataViewCustomRenderer::GetSize</A><BR>
+<A HREF="#wxdataviewcustomrendererleftclick">wxDataViewCustomRenderer::LeftClick</A><BR>
+<A HREF="#wxdataviewcustomrendererrender">wxDataViewCustomRenderer::Render</A><BR>
+<A HREF="#wxdataviewcustomrendererrightclick">wxDataViewCustomRenderer::RightClick</A><BR>
+<A HREF="#wxdataviewcustomrendererstartdrag">wxDataViewCustomRenderer::StartDrag</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataviewcustomrendererwxdataviewcustomrenderer"></A>
+<H3>wxDataViewCustomRenderer::wxDataViewCustomRenderer</H3>
+<P>
+<B></B> <B>wxDataViewCustomRenderer</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>varianttype = wxT("string")</I>, <B>wxDataViewCellMode </B><I>mode = wxDATAVIEW_CELL_INERT</I>, <B>bool </B><I>no_init = false</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxdataviewcustomrendererdtor"></A>
+<H3>wxDataViewCustomRenderer::~wxDataViewCustomRenderer</H3>
+<P>
+<B></B> <B>~wxDataViewCustomRenderer</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdataviewcustomrendereractivate"></A>
+<H3>wxDataViewCustomRenderer::Activate</H3>
+<P>
+<B>virtual bool</B> <B>Activate</B>(<B><A HREF="wx_wxrect.html#wxrect">wxRect</A> </B></B><I>cell</I>, <B><A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A>* </B></B><I>model</I>, <B>unsigned int </B><I>col</I>, <B>unsigned int </B><I>row</I>)<P>
+Override this to react to double clicks or &lt;ENTER&gt;.<P>
+
+<HR>
+<A NAME="wxdataviewcustomrenderergetdc"></A>
+<H3>wxDataViewCustomRenderer::GetDC</H3>
+<P>
+<B>virtual <A HREF="wx_wxdc.html#wxdc">wxDC</A>*</B> </B> <B>GetDC</B>()<P>
+Create DC on request. Internal.<P>
+
+
+<HR>
+<A NAME="wxdataviewcustomrenderergetsize"></A>
+<H3>wxDataViewCustomRenderer::GetSize</H3>
+<P>
+<B>virtual <A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetSize</B>()<P>
+Return size required to show content.<P>
+
+
+<HR>
+<A NAME="wxdataviewcustomrendererleftclick"></A>
+<H3>wxDataViewCustomRenderer::LeftClick</H3>
+<P>
+<B>virtual bool</B> <B>LeftClick</B>(<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A> </B></B><I>cursor</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A> </B></B><I>cell</I>, <B><A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A>* </B></B><I>model</I>, <B>unsigned int </B><I>col</I>, <B>unsigned int </B><I>row</I>)<P>
+Overrride this to react to a left click.<P>
+
+<HR>
+<A NAME="wxdataviewcustomrendererrender"></A>
+<H3>wxDataViewCustomRenderer::Render</H3>
+<P>
+<B>virtual bool</B> <B>Render</B>(<B><A HREF="wx_wxrect.html#wxrect">wxRect</A> </B></B><I>cell</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>* </B></B><I>dc</I>, <B>int </B><I>state</I>)<P>
+Override this to render the cell. Before this is called,
+<A HREF="wx_wxdataviewrenderer.html#wxdataviewrenderersetvalue">SetValue</A> was called
+so that this instance knows what to render.<P>
+
+<HR>
+<A NAME="wxdataviewcustomrendererrightclick"></A>
+<H3>wxDataViewCustomRenderer::RightClick</H3>
+<P>
+<B>virtual bool</B> <B>RightClick</B>(<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A> </B></B><I>cursor</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A> </B></B><I>cell</I>, <B><A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A>* </B></B><I>model</I>, <B>unsigned int </B><I>col</I>, <B>unsigned int </B><I>row</I>)<P>
+Overrride this to react to a right click.<P>
+
+<HR>
+<A NAME="wxdataviewcustomrendererstartdrag"></A>
+<H3>wxDataViewCustomRenderer::StartDrag</H3>
+<P>
+<B>virtual bool</B> <B>StartDrag</B>(<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A> </B></B><I>cursor</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A> </B></B><I>cell</I>, <B><A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A>* </B></B><I>model</I>, <B>unsigned int </B><I>col</I>, <B>unsigned int </B><I>row</I>)<P>
+Overrride this to start a drag operation.<P>
+<P>
+
+</FONT></BODY></HTML>

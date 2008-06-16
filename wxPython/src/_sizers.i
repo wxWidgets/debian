@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-Sept-1999
-// RCS-ID:      $Id: _sizers.i,v 1.35.2.4 2006/02/20 20:02:55 RD Exp $
+// RCS-ID:      $Id: _sizers.i 46280 2007-06-02 23:42:18Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -21,12 +21,169 @@
 //---------------------------------------------------------------------------
 %newgroup;
 
+DocStr(wxSizerFlags,
+"Normally, when you add an item to a sizer via `wx.Sizer.Add`, you have
+to specify a lot of flags and parameters which can be unwieldy. This
+is where wx.SizerFlags comes in: it allows you to specify all
+parameters using the named methods instead. For example, instead of::
+
+    sizer.Add(ctrl, 0, wx.EXPAND | wx.ALL, 10)
+
+you can now write::
+
+    sizer.AddF(ctrl, wx.SizerFlags().Expand().Border(wx.ALL, 10))
+
+This is more readable and also allows you to create wx.SizerFlags
+objects which can be reused for several sizer items.::
+
+    flagsExpand = wx.SizerFlags(1)
+    flagsExpand.Expand().Border(wx.ALL, 10)
+    sizer.AddF(ctrl1, flagsExpand)
+    sizer.AddF(ctrl2, flagsExpand)
+
+Note that by specification, all methods of wx.SizerFlags return the
+wx.SizerFlags object itself allowing chaining multiple method calls
+like in the examples above.", "");
+
+class wxSizerFlags
+{
+public:
+    // construct the flags object initialized with the given proportion (0 by
+    // default)
+    DocCtorStr(
+        wxSizerFlags(int proportion = 0),
+        "Constructs the flags object with the specified proportion.", "");
+    
+    ~wxSizerFlags();
+
+    // This typemap ensures that the returned object is the same
+    // Python instance as what was passed in as `self`, instead of
+    // creating a new proxy as SWIG would normally do.
+    %typemap(out) wxSizerFlags& { $result = $self; Py_INCREF($result); }
+
+    DocDeclStr(
+        wxSizerFlags& , Proportion(int proportion),
+        "Sets the item's proportion value.", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , Align(int alignment),
+        "Sets the item's alignment", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , Expand(),
+        "Sets the wx.EXPAND flag, which will cause the item to be expanded to
+fill as much space as it is given by the sizer.", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , Centre(),
+        "Same as `Center` for those with an alternate dialect of English.", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , Center(),
+        "Sets the centering alignment flags.", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , Left(),
+        "Aligns the object to the left, a shortcut for calling
+Align(wx.ALIGN_LEFT)", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , Right(),
+        "Aligns the object to the right, a shortcut for calling
+Align(wx.ALIGN_RIGHT)", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , Top(),
+        "Aligns the object to the top of the available space, a shortcut for
+calling Align(wx.ALIGN_TOP)", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , Bottom(),
+        "Aligns the object to the bottom of the available space, a shortcut for
+calling Align(wx.ALIGN_BOTTOM)", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , Shaped(),
+        "Sets the wx.SHAPED flag.", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , FixedMinSize(),
+        "Sets the wx.FIXED_MINSIZE flag.", "");
+    
+
+    
+    %extend {
+        DocDeclStr(
+            wxSizerFlags& , Border(int direction=wxALL, int borderInPixels=-1),
+            "Sets the border of the item in the direction(s) or sides given by the
+direction parameter.  If the borderInPixels value is not given then
+the default border size (see `GetDefaultBorder`) will be used.", "")
+        {
+            if (borderInPixels == -1)
+                return self->Border(direction);
+            else
+                return self->Border(direction, borderInPixels);
+        }
+    }
+
+    DocDeclStr(
+        wxSizerFlags& , DoubleBorder(int direction = wxALL),
+        "Sets the border in the given direction to twice the default border
+size.", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , TripleBorder(int direction = wxALL),
+        "Sets the border in the given direction to three times the default
+border size.", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , HorzBorder(),
+        "Sets the left and right borders to the default border size.", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , DoubleHorzBorder(),
+        "Sets the left and right borders to twice the default border size.", "");
+    
+
+    // Clear the typemap
+    %typemap(out) wxSizerFlags& ;
+    
+
+    
+    DocDeclStr(
+        static int , GetDefaultBorder(),
+        "Returns the default border size used by the other border methods", "");
+    
+
+    DocDeclStr(
+        int , GetProportion() const,
+        "Returns the proportion value to be used in the sizer item.", "");
+    
+    DocDeclStr(
+        int , GetFlags() const,
+        "Returns the flags value to be used in the sizer item.", "");
+    
+    DocDeclStr(
+        int , GetBorderInPixels() const,
+        "Returns the border value in pixels to be used in the sizer item.", "");
+};
+
+//---------------------------------------------------------------------------
+%newgroup
+
+wxLIST_WRAPPER( wxSizerItemList, wxSizerItem );
+
+
+
 DocStr(wxSizerItem,
 "The wx.SizerItem class is used to track the position, size and other
-attributes of each item managed by a `wx.Sizer`. In normal usage user
-code should never need to deal directly with a wx.SizerItem, but
-custom classes derived from `wx.PySizer` will probably need to use the
-collection of wx.SizerItems held by wx.Sizer when calculating layout.
+attributes of each item managed by a `wx.Sizer`. It is not usually
+necessary to use this class because the sizer elements can also be
+identified by their positions or window or sizer references but
+sometimes it may be more convenient to use wx.SizerItem directly.
+Also, custom classes derived from `wx.PySizer` will probably need to
+use the collection of wx.SizerItems held by wx.Sizer when calculating
+layout.
 
 :see: `wx.Sizer`, `wx.GBSizerItem`", "");
 
@@ -43,6 +200,8 @@ methods are called.
 
 :see: `wx.SizerItemSpacer`, `wx.SizerItemWindow`, `wx.SizerItemSizer`", "");
 
+    
+    ~wxSizerItem();
 
 
     %extend {
@@ -86,6 +245,7 @@ methods are called.
                          int border, PyObject* userData=NULL ),
             "Constructs a `wx.SizerItem` for tracking a subsizer", "");
 
+        %disownarg( wxSizer *sizer );
         %RenameCtor(SizerItemSizer,  wxSizerItem( wxSizer *sizer, int proportion, int flag,
                                                   int border, PyObject* userData=NULL ))
         {
@@ -97,6 +257,7 @@ methods are called.
             }
             return new wxSizerItem(sizer, proportion, flag, border, data);
         }
+        %cleardisown( wxSizer *sizer );
     }
 
 
@@ -214,13 +375,15 @@ added, if needed.", "");
         wxSizer *, GetSizer(),
         "Get the subsizer (if any) that is managed by this sizer item.", "");
 
+    %disownarg( wxSizer *sizer );
     DocDeclStr(
         void , SetSizer( wxSizer *sizer ),
         "Set the subsizer to be managed by this sizer item.", "");
+    %cleardisown( wxSizer *sizer );
 
 
     DocDeclStr(
-        const wxSize& , GetSpacer(),
+        wxSize , GetSpacer(),
         "Get the size of the spacer managed by this sizer item.", "");
 
     DocDeclStr(
@@ -274,6 +437,20 @@ isn't any.", "");
             self->SetUserData(data);
         }
     }
+
+    %property(Border, GetBorder, SetBorder, doc="See `GetBorder` and `SetBorder`");
+    %property(Flag, GetFlag, SetFlag, doc="See `GetFlag` and `SetFlag`");
+    %property(MinSize, GetMinSize, doc="See `GetMinSize`");
+    %property(MinSizeWithBorder, GetMinSizeWithBorder, doc="See `GetMinSizeWithBorder`");
+    %property(Position, GetPosition, doc="See `GetPosition`");
+    %property(Proportion, GetProportion, SetProportion, doc="See `GetProportion` and `SetProportion`");
+    %property(Ratio, GetRatio, SetRatio, doc="See `GetRatio` and `SetRatio`");
+    %property(Rect, GetRect, doc="See `GetRect`");
+    %property(Size, GetSize, doc="See `GetSize`");
+    %property(Sizer, GetSizer, SetSizer, doc="See `GetSizer` and `SetSizer`");
+    %property(Spacer, GetSpacer, SetSpacer, doc="See `GetSpacer` and `SetSpacer`");
+    %property(UserData, GetUserData, SetUserData, doc="See `GetUserData` and `SetUserData`");
+    %property(Window, GetWindow, SetWindow, doc="See `GetWindow` and `SetWindow`");
 };
 
 
@@ -351,8 +528,8 @@ DocStr(wxSizer,
 "wx.Sizer is the abstract base class used for laying out subwindows in
 a window.  You cannot use wx.Sizer directly; instead, you will have to
 use one of the sizer classes derived from it such as `wx.BoxSizer`,
-`wx.StaticBoxSizer`, `wx.NotebookSizer`, `wx.GridSizer`,  `wx.FlexGridSizer`
-and `wx.GridBagSizer`.
+`wx.StaticBoxSizer`, `wx.GridSizer`, `wx.FlexGridSizer` and
+`wx.GridBagSizer`.
 
 The concept implemented by sizers in wxWidgets is closely related to
 layout tools in other GUI toolkits, such as Java's AWT, the GTK
@@ -395,7 +572,8 @@ method to determine where the drawing operations should take place.
 class wxSizer : public wxObject {
 public:
     // wxSizer();      ****  abstract, can't instantiate
-    // ~wxSizer();
+
+    ~wxSizer();
 
     %extend {
         void _setOORInfo(PyObject* _self) {
@@ -420,7 +598,7 @@ public:
 
         - **sizer**: The (child-)sizer to be added to the sizer. This
           allows placing a child sizer in a sizer and thus to create
-          hierarchies of sizers (typically a vertical box as the top
+          hierarchies of sizers (for example a vertical box as the top
           sizer and several horizontal boxes on the level beneath).
 
         - **size**: A `wx.Size` or a 2-element sequence of integers
@@ -512,6 +690,8 @@ public:
             wxPySizerItemInfo info = wxPySizerItemTypeHelper(item, true, false);
             if ( userData && (info.window || info.sizer || info.gotSize) )
                 data = new wxPyUserData(userData);
+            if ( info.sizer )
+                PyObject_SetAttrString(item,"thisown",Py_False);
             wxPyEndBlockThreads(blocked);
 
             // Now call the real Add method if a valid item type was found
@@ -526,8 +706,34 @@ public:
                 return NULL;
         }
 
-//    virtual wxSizerItem* AddSpacer(int size);
-//    virtual wxSizerItem* AddStretchSpacer(int prop = 1);
+
+        DocAStr(AddF,
+                "AddF(self, item, wx.SizerFlags flags) -> wx.SizerItem",
+                "Similar to `Add` but uses the `wx.SizerFlags` convenience class for
+setting the various flags, options and borders.", "");
+        wxSizerItem* AddF(PyObject* item, wxSizerFlags& flags) {
+            
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
+            wxPySizerItemInfo info = wxPySizerItemTypeHelper(item, true, false);
+            if ( info.sizer )
+                PyObject_SetAttrString(item,"thisown",Py_False);
+            wxPyEndBlockThreads(blocked);
+
+            // Now call the real Add method if a valid item type was found
+            if ( info.window )
+                return self->Add(info.window, flags);
+            else if ( info.sizer )
+                return self->Add(info.sizer, flags);
+            else if (info.gotSize)
+                return self->Add(info.size.GetWidth(), info.size.GetHeight(),
+                                 flags.GetProportion(),
+                                 flags.GetFlags(),
+                                 flags.GetBorderInPixels());
+            else
+                return NULL;
+        }
+
+        
 
         DocAStr(Insert,
                 "Insert(self, int before, item, int proportion=0, int flag=0, int border=0,
@@ -543,6 +749,8 @@ the item at index *before*.  See `Add` for a description of the parameters.", ""
             wxPySizerItemInfo info = wxPySizerItemTypeHelper(item, true, false);
             if ( userData && (info.window || info.sizer || info.gotSize) )
                 data = new wxPyUserData(userData);
+            if ( info.sizer )
+                PyObject_SetAttrString(item,"thisown",Py_False);
             wxPyEndBlockThreads(blocked);
 
             // Now call the real Insert method if a valid item type was found
@@ -558,8 +766,35 @@ the item at index *before*.  See `Add` for a description of the parameters.", ""
         }
 
 
-//    virtual wxSizerItem* InsertSpacer(size_t index, int size);
-//    virtual wxSizerItem* InsertStretchSpacer(size_t index, int prop = 1);
+        
+        DocAStr(InsertF,
+                "InsertF(self, int before, item, wx.SizerFlags flags) -> wx.SizerItem",
+                "Similar to `Insert`, but uses the `wx.SizerFlags` convenience class
+for setting the various flags, options and borders.", "");
+        wxSizerItem* InsertF(int before, PyObject* item, wxSizerFlags& flags) {
+
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
+            wxPySizerItemInfo info = wxPySizerItemTypeHelper(item, true, false);
+            if ( info.sizer )
+                PyObject_SetAttrString(item,"thisown",Py_False);
+            wxPyEndBlockThreads(blocked);
+
+            // Now call the real Insert method if a valid item type was found
+            if ( info.window )
+                return self->Insert(before, info.window, flags);
+            else if ( info.sizer )
+                return self->Insert(before, info.sizer, flags);
+            else if (info.gotSize)
+                return self->Insert(before, info.size.GetWidth(), info.size.GetHeight(),
+                                    flags.GetProportion(),
+                                    flags.GetFlags(),
+                                    flags.GetBorderInPixels());
+            else
+                return NULL;
+        }
+
+
+        
 
         DocAStr(Prepend,
                 "Prepend(self, item, int proportion=0, int flag=0, int border=0,
@@ -575,6 +810,8 @@ this sizer.  See `Add` for a description of the parameters.", "");
             wxPySizerItemInfo info = wxPySizerItemTypeHelper(item, true, false);
             if ( userData && (info.window || info.sizer || info.gotSize) )
                 data = new wxPyUserData(userData);
+            if ( info.sizer )
+                PyObject_SetAttrString(item,"thisown",Py_False);
             wxPyEndBlockThreads(blocked);
 
             // Now call the real Prepend method if a valid item type was found
@@ -589,8 +826,35 @@ this sizer.  See `Add` for a description of the parameters.", "");
                 return NULL;
         }
 
-//    virtual wxSizerItem* PrependSpacer(int size);
-//    virtual wxSizerItem* PrependStretchSpacer(int prop = 1);
+
+        
+        DocAStr(PrependF,
+                "PrependF(self, item, wx.SizerFlags flags) -> wx.SizerItem",
+                "Similar to `Prepend` but uses the `wx.SizerFlags` convenience class
+for setting the various flags, options and borders.", "");
+        wxSizerItem* PrependF(PyObject* item, wxSizerFlags& flags) {
+            
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
+            wxPySizerItemInfo info = wxPySizerItemTypeHelper(item, true, false);
+            if ( info.sizer )
+                PyObject_SetAttrString(item,"thisown",Py_False);
+            wxPyEndBlockThreads(blocked);
+
+            // Now call the real Add method if a valid item type was found
+            if ( info.window )
+                return self->Prepend(info.window, flags);
+            else if ( info.sizer )
+                return self->Prepend(info.sizer, flags);
+            else if (info.gotSize)
+                return self->Prepend(info.size.GetWidth(), info.size.GetHeight(),
+                                     flags.GetProportion(),
+                                     flags.GetFlags(),
+                                     flags.GetBorderInPixels());
+            else
+                return NULL;
+        }
+
+
 
         DocAStr(Remove,
                 "Remove(self, item) -> bool",
@@ -644,18 +908,18 @@ was found and detached.", "");
 
 
         DocAStr(GetItem,
-                "GetItem(self, item) -> wx.SizerItem",
+                "GetItem(self, item, recursive=False) -> wx.SizerItem",
                 "Returns the `wx.SizerItem` which holds the *item* given.  The *item*
 parameter can be either a window, a sizer, or the zero-based index of
 the item to be found.", "");
-        wxSizerItem* GetItem(PyObject* item) {
+        wxSizerItem* GetItem(PyObject* item, bool recursive=false) {
             wxPyBlock_t blocked = wxPyBeginBlockThreads();
             wxPySizerItemInfo info = wxPySizerItemTypeHelper(item, false, true);
             wxPyEndBlockThreads(blocked);
             if ( info.window )
-                return self->GetItem(info.window);
+                return self->GetItem(info.window, recursive);
             else if ( info.sizer )
-                return self->GetItem(info.sizer);
+                return self->GetItem(info.sizer, recursive);
             else if ( info.gotPos )
                 return self->GetItem(info.pos);
             else
@@ -676,6 +940,48 @@ the item to be found.", "");
         }
     }
 
+    
+    %Rename(_ReplaceWin,
+            bool, Replace( wxWindow *oldwin, wxWindow *newwin, bool recursive = false ));
+    %Rename(_ReplaceSizer,
+            bool, Replace( wxSizer *oldsz, wxSizer *newsz, bool recursive = false ));
+    %Rename(_ReplaceItem,
+            bool, Replace( size_t index, wxSizerItem *newitem ));
+    %pythoncode {
+        def Replace(self, olditem, item, recursive=False):
+            """
+            Detaches the given ``olditem`` from the sizer and replaces it with
+            ``item`` which can be a window, sizer, or `wx.SizerItem`.  The
+            detached child is destroyed only if it is not a window, (because
+            windows are owned by their parent, not the sizer.)  The
+            ``recursive`` parameter can be used to search for the given
+            element recursivly in subsizers.
+
+            This method does not cause any layout or resizing to take place,
+            call `Layout` to do so.
+
+            Returns ``True`` if the child item was found and removed.
+            """
+            if isinstance(olditem, wx.Window):
+                return self._ReplaceWin(olditem, item, recursive)
+            elif isinstance(olditem, wx.Sizer):
+                return self._ReplaceSizer(olditem, item, recursive)
+            elif isinstance(olditem, int):
+                return self._ReplaceItem(olditem, item)
+            else:
+                raise TypeError("Expected Window, Sizer, or integer for first parameter.")
+    }
+    
+    
+    DocDeclStr(
+        void , SetContainingWindow(wxWindow *window),
+        "Set (or unset) the window this sizer is used in.", "");
+    
+    DocDeclStr(
+        wxWindow *, GetContainingWindow() const,
+        "Get the window this sizer is used in.", "");
+        
+
     %pythoncode {
     def SetItemMinSize(self, item, *args):
         """
@@ -692,6 +998,9 @@ the item to be found.", "");
         else:
             return self._SetItemMinSize(item, args[0])
     }
+
+
+    %disownarg( wxSizerItem *item ); 
 
     DocDeclAStrName(
         wxSizerItem* , Add( wxSizerItem *item ),
@@ -711,6 +1020,7 @@ the item to be found.", "");
         "Prepends a `wx.SizerItem` to the sizer.", "",
         PrependItem);
 
+    %cleardisown( wxSizerItem *item );
 
 
     %pythoncode {
@@ -726,14 +1036,55 @@ the item to be found.", "");
                 item = (item, )
             self.Add(*item)
 
+    def AddSpacer(self, *args, **kw):
+        """AddSpacer(int size) --> SizerItem
+
+        Add a spacer that is (size,size) pixels.
+        """
+        if args and type(args[0]) == int:
+            return self.Add( (args[0],args[0] ), 0)
+        else: %# otherwise stay compatible with old AddSpacer
+            return self.Add(*args, **kw)
+    def PrependSpacer(self, *args, **kw):
+        """PrependSpacer(int size) --> SizerItem
+
+        Prepend a spacer that is (size, size) pixels."""
+        if args and type(args[0]) == int:
+            return self.Prepend( (args[0],args[0] ), 0)
+        else: %# otherwise stay compatible with old PrependSpacer
+            return self.Prepend(*args, **kw)
+    def InsertSpacer(self, index, *args, **kw):
+        """InsertSpacer(int index, int size) --> SizerItem
+
+        Insert a spacer at position index that is (size, size) pixels."""
+        if args and type(args[0]) == int:
+            return self.Insert( index, (args[0],args[0] ), 0)
+        else: %# otherwise stay compatible with old InsertSpacer
+            return self.Insert(index, *args, **kw)
+
+                   
+    def AddStretchSpacer(self, prop=1):
+        """AddStretchSpacer(int prop=1) --> SizerItem
+
+        Add a stretchable spacer."""
+        return self.Add((0,0), prop)
+    def PrependStretchSpacer(self, prop=1):
+        """PrependStretchSpacer(int prop=1) --> SizerItem
+
+        Prepend a stretchable spacer."""
+        return self.Prepend((0,0), prop)
+    def InsertStretchSpacer(self, index, prop=1):
+        """InsertStretchSpacer(int index, int prop=1) --> SizerItem
+
+        Insert a stretchable spacer."""
+        return self.Insert(index, (0,0), prop)
+
+            
     %# for backwards compatibility only, please do not use in new code
     def AddWindow(self, *args, **kw):
         """Compatibility alias for `Add`."""
         return self.Add(*args, **kw)
     def AddSizer(self, *args, **kw):
-        """Compatibility alias for `Add`."""
-        return self.Add(*args, **kw)
-    def AddSpacer(self, *args, **kw):
         """Compatibility alias for `Add`."""
         return self.Add(*args, **kw)
 
@@ -743,17 +1094,11 @@ the item to be found.", "");
     def PrependSizer(self, *args, **kw):
         """Compatibility alias for `Prepend`."""
         return self.Prepend(*args, **kw)
-    def PrependSpacer(self, *args, **kw):
-        """Compatibility alias for `Prepend`."""
-        return self.Prepend(*args, **kw)
 
     def InsertWindow(self, *args, **kw):
         """Compatibility alias for `Insert`."""
         return self.Insert(*args, **kw)
     def InsertSizer(self, *args, **kw):
-        """Compatibility alias for `Insert`."""
-        return self.Insert(*args, **kw)
-    def InsertSpacer(self, *args, **kw):
         """Compatibility alias for `Insert`."""
         return self.Insert(*args, **kw)
 
@@ -883,20 +1228,11 @@ as well.", "");
 
 
 
-    // wxList& GetChildren();
-    %extend {
-        DocAStr(GetChildren,
-                "GetChildren(self) -> list",
-                "Returns a list of all the `wx.SizerItem` objects managed by the sizer.", "");
-        PyObject* GetChildren() {
-            wxSizerItemList& list = self->GetChildren();
-            return wxPy_ConvertList(&list);
-        }
-    }
+    DocStr(GetChildren,
+           "Returns all of the `wx.SizerItem` objects managed by the sizer in a
+list-like object.", "");
+    wxSizerItemList& GetChildren();
 
-
-    // Manage whether individual windows or subsizers are considered
-    // in the layout calculations or not.
 
     %extend {
         DocAStr(Show,
@@ -922,7 +1258,7 @@ subsizer.  Returns True if the item was found.", "");
 
         DocAStr(IsShown,
                 "IsShown(self, item)",
-                "Determines if the item is currently shown. sizer.  To make a sizer
+                "Determines if the item is currently shown. To make a sizer
 item disappear or reappear, use Show followed by `Layout`.  The *item*
 parameter can be either a window, a sizer, or the zero-based index of
 the item.", "");
@@ -954,10 +1290,11 @@ the item.", "");
         void , ShowItems(bool show),
         "Recursively call `wx.SizerItem.Show` on all sizer items.", "");
 
-    // TODO:
-    //          void Show(bool show);
-    //          bool IsShown();
-    
+    %property(Children, GetChildren, doc="See `GetChildren`");
+    %property(ContainingWindow, GetContainingWindow, SetContainingWindow, doc="See `GetContainingWindow` and `SetContainingWindow`");
+    %property(MinSize, GetMinSize, SetMinSize, doc="See `GetMinSize` and `SetMinSize`");
+    %property(Position, GetPosition, doc="See `GetPosition`");
+    %property(Size, GetSize, doc="See `GetSize`");
 };
 
 
@@ -1013,7 +1350,7 @@ When `Layout` is called it first calls `CalcMin` followed by
 ", "");
 class wxPySizer : public wxSizer {
 public:
-    %pythonAppend wxPySizer "self._setCallbackInfo(self, PySizer);self._setOORInfo(self)"
+    %pythonAppend wxPySizer "self._setOORInfo(self);" setCallbackInfo(PySizer)
 
     DocCtorStr(
         wxPySizer(),
@@ -1071,6 +1408,7 @@ sizer.", "");
         void , SetOrientation(int orient),
         "Resets the orientation of the sizer.", "");
 
+    %property(Orientation, GetOrientation, SetOrientation, doc="See `GetOrientation` and `SetOrientation`");
 };
 
 //---------------------------------------------------------------------------
@@ -1099,6 +1437,7 @@ public:
         wxStaticBox *, GetStaticBox(),
         "Returns the static box associated with this sizer.", "");
 
+    %property(StaticBox, GetStaticBox, doc="See `GetStaticBox`");
 };
 
 //---------------------------------------------------------------------------
@@ -1152,11 +1491,11 @@ define extra space between all children.", "");
 
     DocDeclStr(
         int , GetCols(),
-        "Returns the number of columns in the sizer, as specified in the constructor.", "");
+        "Returns the number of columns in the sizer.", "");
 
     DocDeclStr(
         int , GetRows(),
-        "Returns the number of rows in the sizer, as specified in the constructor.", "");
+        "Returns the number of rows in the sizer.", "");
 
     DocDeclStr(
         int , GetVGap(),
@@ -1185,6 +1524,11 @@ define extra space between all children.", "");
                 cols = (nitems + rows - 1) / rows
             return (rows, cols)
     }
+    
+    %property(Cols, GetCols, SetCols, doc="See `GetCols` and `SetCols`");
+    %property(HGap, GetHGap, SetHGap, doc="See `GetHGap` and `SetHGap`");
+    %property(Rows, GetRows, SetRows, doc="See `GetRows` and `SetRows`");
+    %property(VGap, GetVGap, SetVGap, doc="See `GetVGap` and `SetVGap`");
 };
 
 //---------------------------------------------------------------------------
@@ -1305,9 +1649,7 @@ previously). Argument *mode* can be one of the following values:
                                 growable or not in the flexbile direction.
     ==========================  =================================================
 
-Note that this method does not trigger relayout.
-
-", "");
+Note that this method does not trigger relayout.", "");
 
     DocDeclStr(
         wxFlexSizerGrowMode , GetNonFlexibleGrowMode(),
@@ -1330,6 +1672,12 @@ rows in the sizer.", "");
         "Returns a list of integers representing the widths of each of the
 columns in the sizer.", "");
 
+
+    %property(ColWidths, GetColWidths, doc="See `GetColWidths`");
+    %property(FlexibleDirection, GetFlexibleDirection, SetFlexibleDirection, doc="See `GetFlexibleDirection` and `SetFlexibleDirection`");
+    %property(NonFlexibleGrowMode, GetNonFlexibleGrowMode, SetNonFlexibleGrowMode, doc="See `GetNonFlexibleGrowMode` and `SetNonFlexibleGrowMode`");
+    %property(RowHeights, GetRowHeights, doc="See `GetRowHeights`");
+    
 };
 
 //---------------------------------------------------------------------------
@@ -1369,6 +1717,12 @@ specifc manner.", "");
     wxButton* GetNegativeButton() const;
     wxButton* GetCancelButton() const;
     wxButton* GetHelpButton() const;
+
+    %property(AffirmativeButton, GetAffirmativeButton, SetAffirmativeButton, doc="See `GetAffirmativeButton` and `SetAffirmativeButton`");
+    %property(ApplyButton, GetApplyButton, doc="See `GetApplyButton`");
+    %property(CancelButton, GetCancelButton, SetCancelButton, doc="See `GetCancelButton` and `SetCancelButton`");
+    %property(HelpButton, GetHelpButton, doc="See `GetHelpButton`");
+    %property(NegativeButton, GetNegativeButton, SetNegativeButton, doc="See `GetNegativeButton` and `SetNegativeButton`");
 };
 
 

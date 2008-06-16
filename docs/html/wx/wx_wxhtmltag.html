@@ -1,0 +1,204 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlTag</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmltag"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmlprintout.html#wxhtmlprintout"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmltaghandler.html#wxhtmltaghandler"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlTag</H2>
+<P>
+This class represents a single HTML tag. 
+It is used by <A HREF="wx_wxhtml.html#handlers">tag handlers</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxObject<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/htmltag.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmltagwxhtmltag">wxHtmlTag::wxHtmlTag</A><BR>
+<A HREF="#wxhtmltaggetallparams">wxHtmlTag::GetAllParams</A><BR>
+<A HREF="#wxhtmltaggetbeginpos">wxHtmlTag::GetBeginPos</A><BR>
+<A HREF="#wxhtmltaggetendpos1">wxHtmlTag::GetEndPos1</A><BR>
+<A HREF="#wxhtmltaggetendpos2">wxHtmlTag::GetEndPos2</A><BR>
+<A HREF="#wxhtmltaggetname">wxHtmlTag::GetName</A><BR>
+<A HREF="#wxhtmltaggetparam">wxHtmlTag::GetParam</A><BR>
+<A HREF="#wxhtmltaggetparamascolour">wxHtmlTag::GetParamAsColour</A><BR>
+<A HREF="#wxhtmltaggetparamasint">wxHtmlTag::GetParamAsInt</A><BR>
+<A HREF="#wxhtmltaghasending">wxHtmlTag::HasEnding</A><BR>
+<A HREF="#wxhtmltaghasparam">wxHtmlTag::HasParam</A><BR>
+<A HREF="#wxhtmltagscanparam">wxHtmlTag::ScanParam</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmltagwxhtmltag"></A>
+<H3>wxHtmlTag::wxHtmlTag</H3>
+<P>
+<B></B> <B>wxHtmlTag</B>(<B><A HREF="wx_wxhtmltag.html#wxhtmltag">wxHtmlTag</A> *</B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>source</I>, 
+<B>int </B><I>pos</I>, <B>int </B><I>end_pos</I>, 
+<B>wxHtmlTagsCache* </B><I>cache</I>, <B>wxHtmlEntitiesParser *</B><I>entParser</I>)<P>
+Constructor. You will probably never have to construct a wxHtmlTag object
+yourself. Feel free to ignore the constructor parameters.
+Have a look at src/html/htmlpars.cpp if you're interested in creating it.<P>
+
+<HR>
+<A NAME="wxhtmltaggetallparams"></A>
+<H3>wxHtmlTag::GetAllParams</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetAllParams</B>() <B>const</B><P>
+Returns a string containing all parameters.<P>
+Example : tag contains <TT>&lt;FONT SIZE=+2 COLOR="#000000"&gt;</TT>. Call to
+tag.GetAllParams() would return <TT>SIZE=+2 COLOR="#000000"</TT>.<P>
+
+
+<HR>
+<A NAME="wxhtmltaggetbeginpos"></A>
+<H3>wxHtmlTag::GetBeginPos</H3>
+<P>
+<B>int</B> <B>GetBeginPos</B>() <B>const</B><P>
+Returns beginning position of the text <I>between</I> this tag and paired
+ending tag. 
+See explanation (returned position is marked with '|'):<P>
+<PRE>
+bla bla bla &lt;MYTAG&gt; bla bla internal text&lt;/MYTAG&gt; bla bla
+                   |
+</PRE>
+
+
+<HR>
+<A NAME="wxhtmltaggetendpos1"></A>
+<H3>wxHtmlTag::GetEndPos1</H3>
+<P>
+<B>int</B> <B>GetEndPos1</B>() <B>const</B><P>
+Returns ending position of the text <I>between</I> this tag and paired
+ending tag.
+See explanation (returned position is marked with '|'):<P>
+<PRE>
+bla bla bla &lt;MYTAG&gt; bla bla internal text&lt;/MYTAG&gt; bla bla
+                                        |
+</PRE>
+
+
+<HR>
+<A NAME="wxhtmltaggetendpos2"></A>
+<H3>wxHtmlTag::GetEndPos2</H3>
+<P>
+<B>int</B> <B>GetEndPos2</B>() <B>const</B><P>
+Returns ending position 2 of the text <I>between</I> this tag and paired
+ending tag.
+See explanation (returned position is marked with '|'):<P>
+<PRE>
+bla bla bla &lt;MYTAG&gt; bla bla internal text&lt;/MYTAG&gt; bla bla
+                                               |
+</PRE>
+
+<HR>
+<A NAME="wxhtmltaggetname"></A>
+<H3>wxHtmlTag::GetName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetName</B>() <B>const</B><P>
+Returns tag's name. The name is always in uppercase and it doesn't contain
+'&lt;' or '/' characters. (So the name of <TT>&lt;FONT SIZE=+2&gt;</TT> tag is "FONT"
+and name of <TT>&lt;/table&gt;</TT> is "TABLE")<P>
+
+
+<HR>
+<A NAME="wxhtmltaggetparam"></A>
+<H3>wxHtmlTag::GetParam</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetParam</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>par</I>, <B>bool </B><I>with_commas = false</I>) <B>const</B><P>
+Returns the value of the parameter. You should check whether the
+parameter exists or not (use <A HREF="wx_wxhtmltag.html#wxhtmltaghasparam">HasParam</A>) first.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>par</I><UL><UL>
+The parameter's name.</UL></UL>
+<P>
+<I>with_commas</I><UL><UL>
+true if you want to get commas as well. See example.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+...
+/* you have wxHtmlTag variable tag which is equal to
+   HTML tag &lt;FONT SIZE=+2 COLOR="#0000FF"&gt; */
+dummy = tag.GetParam("SIZE");
+   // dummy == "+2"
+dummy = tag.GetParam("COLOR");
+   // dummy == "#0000FF"
+dummy = tag.GetParam("COLOR", true);
+   // dummy == "\"#0000FF\"" -- see the difference!!
+</PRE>
+
+<HR>
+<A NAME="wxhtmltaggetparamascolour"></A>
+<H3>wxHtmlTag::GetParamAsColour</H3>
+<P>
+<B>bool</B> <B>GetParamAsColour</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>par</I>, <B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A> *</B></B><I>clr</I>) <B>const</B><P>
+Interprets tag parameter <I>par</I> as colour specification and saves its value
+into wxColour variable pointed by <I>clr</I>.<P>
+Returns true on success and false if <I>par</I> is not colour specification or
+if the tag has no such parameter.<P>
+
+<HR>
+<A NAME="wxhtmltaggetparamasint"></A>
+<H3>wxHtmlTag::GetParamAsInt</H3>
+<P>
+<B>bool</B> <B>GetParamAsInt</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>par</I>, <B>int *</B><I>value</I>) <B>const</B><P>
+Interprets tag parameter <I>par</I> as an integer and saves its value
+into int variable pointed by <I>value</I>.<P>
+Returns true on success and false if <I>par</I> is not an integer or
+if the tag has no such parameter.<P>
+
+<HR>
+<A NAME="wxhtmltaghasending"></A>
+<H3>wxHtmlTag::HasEnding</H3>
+<P>
+<B>bool</B> <B>HasEnding</B>() <B>const</B><P>
+Returns true if this tag is paired with ending tag, false otherwise.<P>
+See the example of HTML document:<P>
+<PRE>
+&lt;html&gt;&lt;body&gt;
+Hello&lt;p&gt;
+How are you?
+&lt;p align=center&gt;This is centered...&lt;/p&gt;
+Oops&lt;br&gt;Oooops!
+&lt;/body&gt;&lt;/html&gt;
+</PRE>
+In this example tags HTML and BODY have ending tags, first P and BR 
+doesn't have ending tag while the second P has. The third P tag (which
+is ending itself) of course doesn't have ending tag.<P>
+
+<HR>
+<A NAME="wxhtmltaghasparam"></A>
+<H3>wxHtmlTag::HasParam</H3>
+<P>
+<B>bool</B> <B>HasParam</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>par</I>) <B>const</B><P>
+Returns true if the tag has a parameter of the given name. 
+Example : <TT>&lt;FONT SIZE=+2 COLOR="#FF00FF"&gt;</TT> has two parameters named
+"SIZE" and "COLOR".<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>par</I><UL><UL>
+the parameter you're looking for.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmltagscanparam"></A>
+<H3>wxHtmlTag::ScanParam</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>ScanParam</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>par</I>, <B>const wxChar *</B><I>format</I>, <B>void *</B><I>value</I>) <B>const</B><P>
+This method scans the given parameter. Usage is exactly the same as sscanf's 
+usage except that you don't pass a string but a parameter name as the first
+argument
+and you can only retrieve one value (i.e. you can use only one "%" element
+in <I>format</I>).<P>
+
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>par</I><UL><UL>
+The name of the tag you want to query</UL></UL>
+<P>
+<I>format</I><UL><UL>
+scanf()-like format string.</UL></UL>
+<P>
+<I>value</I><UL><UL>
+pointer to a variable to store the value in </UL></UL>
+<P>
+
+</FONT></BODY></HTML>

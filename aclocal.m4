@@ -11,6 +11,9 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
+m4_include([build/aclocal/ac_raf_func_which_getservbyname_r.m4])
+m4_include([build/aclocal/ax_func_which_gethostbyname_r.m4])
+m4_include([build/aclocal/bakefile-dllar.m4])
 m4_include([build/aclocal/bakefile-lang.m4])
 m4_include([build/aclocal/bakefile.m4])
 m4_include([build/aclocal/cppunit.m4])

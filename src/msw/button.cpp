@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        msw/button.cpp
+// Name:        src/msw/button.cpp
 // Purpose:     wxButton
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: button.cpp,v 1.93.2.6 2006/04/18 21:57:19 JG Exp $
+// RCS-ID:      $Id: button.cpp 45958 2007-05-11 13:04:33Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "button.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -30,14 +26,17 @@
 
 #if wxUSE_BUTTON
 
+#include "wx/button.h"
+
 #ifndef WX_PRECOMP
     #include "wx/app.h"
-    #include "wx/button.h"
     #include "wx/brush.h"
     #include "wx/panel.h"
     #include "wx/bmpbuttn.h"
     #include "wx/settings.h"
     #include "wx/dcscreen.h"
+    #include "wx/dcclient.h"
+    #include "wx/toplevel.h"
 #endif
 
 #include "wx/stockitem.h"
@@ -164,16 +163,16 @@ bool wxButton::Create(wxWindow *parent,
     {
         // On Windows, some buttons aren't supposed to have
         // mnemonics, so strip them out.
-        
-        label = wxGetStockLabel(id 
+
+        label = wxGetStockLabel(id
 #if defined(__WXMSW__) || defined(__WXWINCE__)
                                         , ( id != wxID_OK &&
                                             id != wxID_CANCEL &&
                                             id != wxID_CLOSE )
 #endif
                                 );
-     }
-    
+    }
+
     if ( !CreateControl(parent, id, pos, size, style, validator, name) )
         return false;
 
@@ -199,6 +198,11 @@ bool wxButton::Create(wxWindow *parent,
 
 wxButton::~wxButton()
 {
+    wxTopLevelWindow *tlw = wxDynamicCast(wxGetTopLevelParent(this), wxTopLevelWindow);
+    if ( tlw && tlw->GetTmpDefaultItem() == this )
+    {
+        UnsetTmpDefault();
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -250,7 +254,7 @@ wxSize wxButton::DoGetBestSize() const
 
     wxCoord wBtn,
             hBtn;
-    dc.GetMultiLineTextExtent(wxStripMenuCodes(GetLabel()), &wBtn, &hBtn);
+    dc.GetMultiLineTextExtent(GetLabelText(), &wBtn, &hBtn);
 
     // add a margin -- the button is wider than just its label
     wBtn += 3*GetCharWidth();
@@ -341,27 +345,48 @@ wxSize wxButtonBase::GetDefaultSize()
 // set this button as the (permanently) default one in its panel
 void wxButton::SetDefault()
 {
-    wxWindow *parent = GetParent();
+    wxTopLevelWindow *tlw = wxDynamicCast(wxGetTopLevelParent(this), wxTopLevelWindow);
 
-    wxCHECK_RET( parent, _T("button without parent?") );
+    wxCHECK_RET( tlw, _T("button without top level window?") );
 
     // set this one as the default button both for wxWidgets ...
-    wxWindow *winOldDefault = parent->SetDefaultItem(this);
+    wxWindow *winOldDefault = tlw->SetDefaultItem(this);
 
     // ... and Windows
     SetDefaultStyle(wxDynamicCast(winOldDefault, wxButton), false);
     SetDefaultStyle(this, true);
 }
 
+// special version of wxGetTopLevelParent() which is safe to call when the
+// parent is being destroyed: wxGetTopLevelParent() would just return NULL in
+// this case because wxWindow version of IsTopLevel() is used when it's called
+// during window destruction instead of wxTLW one, but we want to distinguish
+// between these cases
+static wxTopLevelWindow *GetTLWParentIfNotBeingDeleted(wxWindow *win)
+{
+    for ( ; win; win = win->GetParent() )
+    {
+        if ( win->IsBeingDeleted() )
+            return NULL;
+
+        if ( win->IsTopLevel() )
+            break;
+    }
+
+    wxASSERT_MSG( win, _T("button without top level parent?") );
+
+    return wxDynamicCast(win, wxTopLevelWindow);
+}
+
 // set this button as being currently default
 void wxButton::SetTmpDefault()
 {
-    wxWindow *parent = GetParent();
+    wxTopLevelWindow * const tlw = GetTLWParentIfNotBeingDeleted(GetParent());
+    if ( !tlw )
+        return;
 
-    wxCHECK_RET( parent, _T("button without parent?") );
-
-    wxWindow *winOldDefault = parent->GetDefaultItem();
-    parent->SetTmpDefaultItem(this);
+    wxWindow *winOldDefault = tlw->GetDefaultItem();
+    tlw->SetTmpDefaultItem(this);
 
     SetDefaultStyle(wxDynamicCast(winOldDefault, wxButton), false);
     SetDefaultStyle(this, true);
@@ -370,13 +395,13 @@ void wxButton::SetTmpDefault()
 // unset this button as currently default, it may still stay permanent default
 void wxButton::UnsetTmpDefault()
 {
-    wxWindow *parent = GetParent();
+    wxTopLevelWindow * const tlw = GetTLWParentIfNotBeingDeleted(GetParent());
+    if ( !tlw )
+        return;
 
-    wxCHECK_RET( parent, _T("button without parent?") );
+    tlw->SetTmpDefaultItem(NULL);
 
-    parent->SetTmpDefaultItem(NULL);
-
-    wxWindow *winOldDefault = parent->GetDefaultItem();
+    wxWindow *winOldDefault = tlw->GetDefaultItem();
 
     SetDefaultStyle(this, false);
     SetDefaultStyle(wxDynamicCast(winOldDefault, wxButton), true);
@@ -399,18 +424,13 @@ wxButton::SetDefaultStyle(wxButton *btn, bool on)
         if ( !wxTheApp->IsActive() )
             return;
 
-        // look for a panel-like window
-        wxWindow *win = btn->GetParent();
-        while ( win && !win->HasFlag(wxTAB_TRAVERSAL) )
-            win = win->GetParent();
+        wxWindow * const tlw = wxGetTopLevelParent(btn);
+        wxCHECK_RET( tlw, _T("button without top level window?") );
 
-        if ( win )
-        {
-            ::SendMessage(GetHwndOf(win), DM_SETDEFID, btn->GetId(), 0L);
+        ::SendMessage(GetHwndOf(tlw), DM_SETDEFID, btn->GetId(), 0L);
 
-            // sending DM_SETDEFID also changes the button style to
-            // BS_DEFPUSHBUTTON so there is nothing more to do
-        }
+        // sending DM_SETDEFID also changes the button style to
+        // BS_DEFPUSHBUTTON so there is nothing more to do
     }
 
     // then also change the style as needed
@@ -819,10 +839,10 @@ bool wxButton::MSWOnDraw(WXDRAWITEMSTRUCT *wxdis)
         bool selected = (state & ODS_SELECTED) != 0;
         if ( !selected )
         {
-            wxPanel *panel = wxDynamicCast(GetParent(), wxPanel);
-            if ( panel )
+            wxTopLevelWindow *tlw = wxDynamicCast(wxGetTopLevelParent(this), wxTopLevelWindow);
+            if ( tlw )
             {
-                selected = panel->GetDefaultItem() == this;
+                selected = tlw->GetDefaultItem() == this;
             }
         }
         bool pushed = (SendMessage(GetHwnd(), BM_GETSTATE, 0, 0) & BST_PUSHED) != 0;
@@ -850,11 +870,10 @@ bool wxButton::MSWOnDraw(WXDRAWITEMSTRUCT *wxdis)
     }
 
     COLORREF colFg = wxColourToRGB(GetForegroundColour());
-    DrawButtonText(hdc, &rectBtn,
-                   (state & ODS_NOACCEL ? wxStripMenuCodes(GetLabel())
-                                        : GetLabel()),
-                   state & ODS_DISABLED ? GetSysColor(COLOR_GRAYTEXT)
-                                        : colFg);
+    if ( state & ODS_DISABLED ) colFg = GetSysColor(COLOR_GRAYTEXT) ;
+    wxString label = GetLabel();
+    if ( state & ODS_NOACCEL ) label = GetLabelText() ;
+    DrawButtonText(hdc, &rectBtn, label, colFg);
 
     return true;
 }
@@ -862,4 +881,3 @@ bool wxButton::MSWOnDraw(WXDRAWITEMSTRUCT *wxdis)
 #endif // __WIN32__
 
 #endif // wxUSE_BUTTON
-

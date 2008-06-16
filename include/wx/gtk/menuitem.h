@@ -2,17 +2,13 @@
 // Name:        menuitem.h
 // Purpose:     wxMenuItem class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: menuitem.h,v 1.24 2005/08/02 22:57:56 MW Exp $
+// RCS-ID:      $Id: menuitem.h 48053 2007-08-13 17:07:01Z JS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKMENUITEMH__
 #define __GTKMENUITEMH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
 
 #include "wx/bitmap.h"
 
@@ -29,7 +25,7 @@ public:
                const wxString& help = wxEmptyString,
                wxItemKind kind = wxITEM_NORMAL,
                wxMenu *subMenu = (wxMenu *)NULL);
-    ~wxMenuItem();
+    virtual ~wxMenuItem();
 
     // implement base class virtuals
     virtual void SetText( const wxString& str );
@@ -51,6 +47,10 @@ public:
     wxString GetFactoryPath() const;
 
     wxString GetHotKey() const { return m_hotKey; }
+
+    // splits given string in the label, doing & => _ translation, which is returned,
+    // and in the hotkey which is used to set given pointer
+    static wxString GTKProcessMenuItemLabel(const wxString& str, wxString *hotKey);
 
     // compatibility only, don't use in new code
     wxMenuItem(wxMenu *parentMenu,
@@ -75,6 +75,14 @@ private:
     GtkWidget* m_labelWidget; // Label widget
 
     DECLARE_DYNAMIC_CLASS(wxMenuItem)
+
+public:
+#if wxABI_VERSION >= 20805
+    // return the item label including any mnemonics and accelerators.
+    // This used to be called GetText.
+    wxString GetItemLabel() const;
+#endif
+
 };
 
 

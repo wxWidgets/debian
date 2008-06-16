@@ -1,0 +1,173 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxColourPickerCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcolourpickerctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcolourdialog.html#wxcolourdialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcolourpickerevent.html#wxcolourpickerevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxColourPickerCtrl</H2>
+<P>
+This control allows the user to select a colour. The generic implementation is
+a button which brings up a <A HREF="wx_wxcolourdialog.html#wxcolourdialog">wxColourDialog</A> when clicked. Native implementation
+may differ but this is usually a (small) widget which give access to the colour-chooser
+dialog.
+It is only available if <TT>wxUSE_COLOURPICKERCTRL</TT> is set to 1 (the default).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxpickerbase.html#wxpickerbase">wxPickerBase</A><BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/clrpicker.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCLRP_DEFAULT_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The default style: 0.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCLRP_USE_TEXTCTRL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a text control to the left of the
+picker button which is completely managed by the <A HREF="wx_wxcolourpickerctrl.html#wxcolourpickerctrl">wxColourPickerCtrl</A>
+and which can be used by the user to specify a colour (see <A HREF="wx_wxcolourpickerctrl.html#wxcolourpickerctrlsetcolour">SetColour</A>).
+The text control is automatically synchronized with button's value. Use functions defined in <A HREF="wx_wxpickerbase.html#wxpickerbase">wxPickerBase</A> to modify the text control.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCLRP_SHOW_LABEL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Shows the colour in HTML form (AABBCC) as colour button label
+(instead of no label at all).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To process a colour picker event, use these event handler macros to direct input to member
+functions that take a <A HREF="wx_wxcolourpickerevent.html#wxcolourpickerevent">wxColourPickerEvent</A> argument.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_COLOURPICKER_CHANGED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user changed the
+colour selected in the control either using the button or using text control
+(see wxCLRP_USE_TEXTCTRL; note that in this case the event is fired only if
+the user's input is valid, i.e. recognizable). 
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcolourdialog.html#wxcolourdialog">wxColourDialog</A>,<BR>
+
+<A HREF="wx_wxcolourpickerevent.html#wxcolourpickerevent">wxColourPickerEvent</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxcolourpickerctrlctor">wxColourPickerCtrl::wxColourPickerCtrl</A><BR>
+<A HREF="#wxcolourpickerctrlcreate">wxColourPickerCtrl::Create</A><BR>
+<A HREF="#wxcolourpickerctrlgetcolour">wxColourPickerCtrl::GetColour</A><BR>
+<A HREF="#wxcolourpickerctrlsetcolour">wxColourPickerCtrl::SetColour</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcolourpickerctrlctor"></A>
+<H3>wxColourPickerCtrl::wxColourPickerCtrl</H3>
+<P>
+<B></B> <B>wxColourPickerCtrl</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>,
+<B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour = *wxBLACK</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxCLRP_DEFAULT_STYLE</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "colourpickerctrl"</I>)<P>
+Initializes the object and calls <A HREF="wx_wxcolourpickerctrl.html#wxcolourpickerctrlcreate">Create</A> with
+all the parameters.<P>
+
+
+<HR>
+<A NAME="wxcolourpickerctrlcreate"></A>
+<H3>wxColourPickerCtrl::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>,
+<B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour = *wxBLACK</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxCLRP_DEFAULT_STYLE</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "colourpickerctrl"</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window, must not be non-<TT>NULL</TT>.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The identifier for the control.</UL></UL>
+<P>
+<I>colour</I><UL><UL>
+The initial colour shown in the control.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Initial position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Initial size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style, see <TT>wxCRLP_*</TT> flags.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Validator which can be used for additional date checks.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Control name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if the control was successfully created or <TT>false</TT> if creation failed.<P>
+
+
+<HR>
+<A NAME="wxcolourpickerctrlgetcolour"></A>
+<H3>wxColourPickerCtrl::GetColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetColour</B>() <B>const</B><P>
+Returns the currently selected colour.<P>
+
+
+<HR>
+<A NAME="wxcolourpickerctrlsetcolour"></A>
+<H3>wxColourPickerCtrl::SetColour</H3>
+<P>
+<B>void</B> <B>SetColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A> &</B></B><I>col</I>)<P>
+<B>void</B> <B>SetColour</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>colname</I>)<P>
+Sets the currently selected colour. See <A HREF="wx_wxcolour.html#wxcolourset">wxColour::Set</A>.<P>
+<P>
+
+
+</FONT></BODY></HTML>

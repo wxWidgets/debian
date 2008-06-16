@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_dirread.c,v 1.4 2004/12/24 11:48:14 VS Exp $ */
+/* $Header$ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler

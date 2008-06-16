@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     15-Mar-1999
-// RCS-ID:      $Id: glcanvas.i,v 1.32 2004/12/23 20:44:06 RD Exp $
+// RCS-ID:      $Id: glcanvas.i 42319 2006-10-24 01:08:17Z RD $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -35,9 +35,6 @@
 MAKE_CONST_WXSTRING2(GLCanvasNameStr, wxT("GLCanvas"));
 MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
 
-
-%include _glcanvas_rename.i
-
 //---------------------------------------------------------------------------
 
 class wxPalette;
@@ -49,9 +46,7 @@ MustHaveApp(wxGLContext);
 class wxGLContext : public wxObject {
 public:
 #ifndef __WXMAC__  
-    wxGLContext(bool isRGB, wxGLCanvas *win,
-                const wxPalette& palette = wxNullPalette,
-                const wxGLContext* other = NULL);
+    wxGLContext(wxGLCanvas *win, const wxGLContext* other = NULL);
 #else
     %extend {
         wxGLContext(bool isRGB, wxGLCanvas *win,
@@ -65,18 +60,9 @@ public:
 #endif
     ~wxGLContext();
 
-    void SetCurrent();
-    void SetColour(const wxString& colour);
-    void SwapBuffers();
-
-#ifdef __WXGTK__
-    void SetupPixelFormat();
-    void SetupPalette(const wxPalette& palette);
-    wxPalette CreateDefaultPalette();
-    wxPalette* GetPalette();
+#ifndef __WXMAC__  
+    void SetCurrent(const wxGLCanvas& win);
 #endif
-
-    wxWindow* GetWindow();
 };
 
 //---------------------------------------------------------------------------
@@ -145,8 +131,11 @@ public:
                     int *attribList = NULL,
                     const wxPalette& palette = wxNullPalette ));
 
-
+    %nokwargs SetCurrent;
     void SetCurrent();
+#ifndef __WXMAC__
+    void SetCurrent(const wxGLContext& RC);
+#endif
     void SetColour(const wxString& colour);
     void SwapBuffers();
 
@@ -158,6 +147,8 @@ public:
     wxPalette CreateDefaultPalette();
     wxPalette* GetPalette();
 #endif
+
+    %property(Context, GetContext, doc="See `GetContext`");
 };
 
 

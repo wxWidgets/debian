@@ -1,0 +1,481 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTopLevelWindow</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtoplevelwindow"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtooltip.html#wxtooltip"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtreebook.html#wxtreebook"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTopLevelWindow</H2>
+<P>
+wxTopLevelWindow is a common base class for <A HREF="wx_wxdialog.html#wxdialog">wxDialog</A> and
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A>. It is an abstract base class meaning that you never
+work with objects of this class directly, but all of its methods are also
+applicable for the two classes above.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/toplevel.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxtoplevelwindowcansettransparent">wxTopLevelWindow::CanSetTransparent</A><BR>
+<A HREF="#wxtoplevelenableclosebutton">wxTopLevelWindow::EnableCloseButton</A><BR>
+<A HREF="#wxtoplevelwindowgetdefaultitem">wxTopLevelWindow::GetDefaultItem</A><BR>
+<A HREF="#wxtoplevelwindowgeticon">wxTopLevelWindow::GetIcon</A><BR>
+<A HREF="#wxtoplevelwindowgeticons">wxTopLevelWindow::GetIcons</A><BR>
+<A HREF="#wxtoplevelwindowgettitle">wxTopLevelWindow::GetTitle</A><BR>
+<A HREF="#wxtoplevelwindowhandlesettingchange">wxTopLevelWindow::HandleSettingChange</A><BR>
+<A HREF="#wxtoplevelwindowisactive">wxTopLevelWindow::IsActive</A><BR>
+<A HREF="#wxtoplevelwindowisalwaysmaximized">wxTopLevelWindow::IsAlwaysMaximized</A><BR>
+<A HREF="#wxtoplevelwindowiconize">wxTopLevelWindow::Iconize</A><BR>
+<A HREF="#wxtoplevelwindowisfullscreen">wxTopLevelWindow::IsFullScreen</A><BR>
+<A HREF="#wxtoplevelwindowisiconized">wxTopLevelWindow::IsIconized</A><BR>
+<A HREF="#wxtoplevelwindowismaximized">wxTopLevelWindow::IsMaximized</A><BR>
+<A HREF="#wxtoplevelwindowisusingnativedecorations">wxTopLevelWindow::IsUsingNativeDecorations</A><BR>
+<A HREF="#wxtoplevelwindowmaximize">wxTopLevelWindow::Maximize</A><BR>
+<A HREF="#wxtoplevelwindowrequestuserattention">wxTopLevelWindow::RequestUserAttention</A><BR>
+<A HREF="#wxtoplevelwindowsetdefaultitem">wxTopLevelWindow::SetDefaultItem</A><BR>
+<A HREF="#wxtoplevelwindowseticon">wxTopLevelWindow::SetIcon</A><BR>
+<A HREF="#wxtoplevelwindowseticons">wxTopLevelWindow::SetIcons</A><BR>
+<A HREF="#wxtoplevelwindowsetleftmenu">wxTopLevelWindow::SetLeftMenu</A><BR>
+<A HREF="#wxtoplevelwindowsetmaxsize">wxTopLevelWindow::SetMaxSize</A><BR>
+<A HREF="#wxtoplevelwindowsetminsize">wxTopLevelWindow::SetMinSize</A><BR>
+<A HREF="#wxtoplevelwindowsetsizehints">wxTopLevelWindow::SetSizeHints</A><BR>
+<A HREF="#wxtoplevelwindowsetrightmenu">wxTopLevelWindow::SetRightMenu</A><BR>
+<A HREF="#wxtoplevelwindowsetshape">wxTopLevelWindow::SetShape</A><BR>
+<A HREF="#wxtoplevelwindowsettitle">wxTopLevelWindow::SetTitle</A><BR>
+<A HREF="#wxtoplevelwindowsettransparent">wxTopLevelWindow::SetTransparent</A><BR>
+<A HREF="#wxtoplevelwindowshouldpreventappexit">wxTopLevelWindow::ShouldPreventAppExit</A><BR>
+<A HREF="#wxtoplevelwindowshowfullscreen">wxTopLevelWindow::ShowFullScreen</A><BR>
+<A HREF="#wxtoplevelwindowusenativedecorations">wxTopLevelWindow::UseNativeDecorations</A><BR>
+<A HREF="#wxtoplevelwindowusenativedecorationsbydefault">wxTopLevelWindow::UseNativeDecorationsByDefault</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtoplevelwindowcansettransparent"></A>
+<H3>wxTopLevelWindow::CanSetTransparent</H3>
+<P>
+<B>virtual bool</B> <B>CanSetTransparent</B>()<P>
+Returns <TT>true</TT> if the platform supports making the window translucent.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowsettransparent">wxTopLevelWindow::SetTransparent</A><P>
+
+
+<HR>
+<A NAME="wxtoplevelenableclosebutton"></A>
+<H3>wxTopLevelWindow::EnableCloseButton</H3>
+<P>
+<B>bool</B> <B>EnableCloseButton</B>(<B>bool</B><I> enable = true</I>)<P>
+Enables or disables the Close button (most often in the right
+upper corner of a dialog) and the Close entry of the system
+menu (most often in the left upper corner of the dialog).
+Currently only implemented for wxMSW and wxGTK. Returns
+true if operation was successful. This may be wrong on
+X11 (including GTK+) where the window manager may not support
+this operation and there is no way to find out.<P>
+
+<HR>
+<A NAME="wxtoplevelwindowgetdefaultitem"></A>
+<H3>wxTopLevelWindow::GetDefaultItem</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B> </B> <B>GetDefaultItem</B>() <B>const</B><P>
+Returns a pointer to the button which is the default for this window, or <TT>NULL</TT>.
+The default button is the one activated by pressing the Enter key.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowgeticon"></A>
+<H3>wxTopLevelWindow::GetIcon</H3>
+<P>
+<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>&</B> </B> <B>GetIcon</B>() <B>const</B><P>
+Returns the standard icon of the window. The icon will be invalid if it hadn't
+been previously set by <A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowseticon">SetIcon</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowgeticons">GetIcons</A><P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowgeticons"></A>
+<H3>wxTopLevelWindow::GetIcons</H3>
+<P>
+<B>const <A HREF="wx_wxiconbundle.html#wxiconbundle">wxIconBundle</A>&</B> </B> <B>GetIcons</B>() <B>const</B><P>
+Returns all icons associated with the window, there will be none of them if
+neither <A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowseticon">SetIcon</A> nor
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowseticons">SetIcons</A> had been called before.<P>
+Use <A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowgeticon">GetIcon</A> to get the main icon of the
+window.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxiconbundle.html#wxiconbundle">wxIconBundle</A><P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowgettitle"></A>
+<H3>wxTopLevelWindow::GetTitle</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetTitle</B>() <B>const</B><P>
+Gets a string containing the window title.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowsettitle">wxTopLevelWindow::SetTitle</A><P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowhandlesettingchange"></A>
+<H3>wxTopLevelWindow::HandleSettingChange</H3>
+<P>
+<B>virtual bool</B> <B>HandleSettingChange</B>(<B>WXWPARAM</B><I> wParam</I>, <B>WXLPARAM</B><I> lParam</I>)<P>
+Unique to the wxWinCE port. Responds to showing/hiding SIP (soft input panel) area and resize
+window accordingly. Override this if you want to avoid resizing or do additional
+operations.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowisactive"></A>
+<H3>wxTopLevelWindow::IsActive</H3>
+<P>
+<B>bool</B> <B>IsActive</B>() <B>const</B><P>
+Returns <TT>true</TT> if this window is currently active, i.e. if the user is currently
+working with it.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowisalwaysmaximized"></A>
+<H3>wxTopLevelWindow::IsAlwaysMaximized</H3>
+<P>
+<B>virtual bool</B> <B>IsAlwaysMaximized</B>() <B>const</B><P>
+Returns <TT>true</TT> if this window is expected to be always maximized, either due to platform policy
+or due to local policy regarding particular class.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowiconize"></A>
+<H3>wxTopLevelWindow::Iconize</H3>
+<P>
+<B>void</B> <B>Iconize</B>(<B>bool</B><I> iconize</I>)<P>
+Iconizes or restores the window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>iconize</I><UL><UL>
+If <TT>true</TT>, iconizes the window; if <TT>false</TT>, shows and restores it.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowisiconized">wxTopLevelWindow::IsIconized</A>, <A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowmaximize">wxTopLevelWindow::Maximize</A>.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowisfullscreen"></A>
+<H3>wxTopLevelWindow::IsFullScreen</H3>
+<P>
+<B>bool</B> <B>IsFullScreen</B>()<P>
+Returns <TT>true</TT> if the window is in fullscreen mode.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowshowfullscreen">wxTopLevelWindow::ShowFullScreen</A><P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowisiconized"></A>
+<H3>wxTopLevelWindow::IsIconized</H3>
+<P>
+<B>bool</B> <B>IsIconized</B>() <B>const</B><P>
+Returns <TT>true</TT> if the window is iconized.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowismaximized"></A>
+<H3>wxTopLevelWindow::IsMaximized</H3>
+<P>
+<B>bool</B> <B>IsMaximized</B>() <B>const</B><P>
+Returns <TT>true</TT> if the window is maximized.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowisusingnativedecorations"></A>
+<H3>wxTopLevelWindow::IsUsingNativeDecorations</H3>
+<P>
+<B>bool</B> <B>IsUsingNativeDecorations</B>() <B>const</B><P>
+<B><TT>This method is specific to wxUniversal port</TT></B><P>
+Returns <TT>true</TT> if this window is using native decorations, <TT>false</TT> if we draw
+them ourselves.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowusenativedecorations">UseNativeDecorations</A>,<BR>
+
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowusenativedecorationsbydefault">UseNativeDecorationsByDefault</A><P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowmaximize"></A>
+<H3>wxTopLevelWindow::Maximize</H3>
+<P>
+<B>void</B> <B>Maximize</B>(<B>bool </B><I>maximize</I>)<P>
+Maximizes or restores the window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>maximize</I><UL><UL>
+If <TT>true</TT>, maximizes the window, otherwise it restores it.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowiconize">wxTopLevelWindow::Iconize</A><P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowrequestuserattention"></A>
+<H3>wxTopLevelWindow::RequestUserAttention</H3>
+<P>
+<B>void</B> <B>RequestUserAttention</B>(<B>int </B><I>flags = wxUSER_ATTENTION_INFO</I>)<P>
+Use a system-dependent way to attract users attention to the window when it is
+in background.<P>
+<I>flags</I> may have the value of either <TT>wxUSER_ATTENTION_INFO</TT>
+(default) or <TT>wxUSER_ATTENTION_ERROR</TT> which results in a more drastic
+action. When in doubt, use the default value.<P>
+Note that this function should normally be only used when the application is
+not already in foreground.<P>
+This function is currently implemented for Win32 where it flashes the
+window icon in the taskbar, and for wxGTK with task bars supporting it.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowsetdefaultitem"></A>
+<H3>wxTopLevelWindow::SetDefaultItem</H3>
+<P>
+<B>void</B> <B>SetDefaultItem</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> </B></B><I>*win</I>)<P>
+Changes the default item for the panel, usually <I>win</I> is a button.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowgetdefaultitem">GetDefaultItem</A><P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowseticon"></A>
+<H3>wxTopLevelWindow::SetIcon</H3>
+<P>
+<B>void</B> <B>SetIcon</B>(<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>& </B></B><I>icon</I>)<P>
+Sets the icon for this window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>icon</I><UL><UL>
+The icon to associate with this window.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The window takes a 'copy' of <I>icon</I>, but since it uses reference
+counting, the copy is very quick. It is safe to delete <I>icon</I> after
+calling this function.<P>
+See also <A HREF="wx_wxicon.html#wxicon">wxIcon</A>.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowseticons"></A>
+<H3>wxTopLevelWindow::SetIcons</H3>
+<P>
+<B>void</B> <B>SetIcons</B>(<B>const <A HREF="wx_wxiconbundle.html#wxiconbundle">wxIconBundle</A>& </B></B><I>icons</I>)<P>
+Sets several icons of different sizes for this window: this allows to use
+different icons for different situations (e.g. task switching bar, taskbar,
+window title bar) instead of scaling, with possibly bad looking results, the
+only icon set by <A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowseticon">SetIcon</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>icons</I><UL><UL>
+The icons to associate with this window.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxiconbundle.html#wxiconbundle">wxIconBundle</A>.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowsetleftmenu"></A>
+<H3>wxTopLevelWindow::SetLeftMenu</H3>
+<P>
+<B>void</B> <B>SetLeftMenu</B>(<B>int</B><I> id = wxID_ANY</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> label = wxEmptyString</I>, <B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A> *</B></B><I> subMenu = NULL</I>)<P>
+Sets action or menu activated by pressing left hardware button on the smart phones.
+Unavailable on full keyboard machines.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+Identifier for this button.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+Text to be displayed on the screen area dedicated to this hardware button.</UL></UL>
+<P>
+<I>subMenu</I><UL><UL>
+The menu to be opened after pressing this hardware button.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowsetrightmenu">wxTopLevelWindow::SetRightMenu</A>.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowsetmaxsize"></A>
+<H3>wxTopLevelWindow::SetMaxSize</H3>
+<P>
+<B>void</B> <B>SetMaxSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+A simpler interface for setting the size hints than
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowsetsizehints">SetSizeHints</A>.<P>
+
+<HR>
+<A NAME="wxtoplevelwindowsetminsize"></A>
+<H3>wxTopLevelWindow::SetMinSize</H3>
+<P>
+<B>void</B> <B>SetMinSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+A simpler interface for setting the size hints than
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowsetsizehints">SetSizeHints</A>.<P>
+
+<HR>
+<A NAME="wxtoplevelwindowsetsizehints"></A>
+<H3>wxTopLevelWindow::SetSizeHints</H3>
+<P>
+<B>virtual void</B> <B>SetSizeHints</B>(<B>int</B><I> minW</I>, <B>int</B><I> minH</I>, <B>int</B><I> maxW=-1</I>, <B>int</B><I> maxH=-1</I>,
+ <B>int</B><I> incW=-1</I>, <B>int</B><I> incH=-1</I>)<P>
+<B>void</B> <B>SetSizeHints</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> minSize</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> maxSize=wxDefaultSize</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> incSize=wxDefaultSize</I>)<P>
+Allows specification of minimum and maximum window sizes, and window size increments.
+If a pair of values is not set (or set to -1), the default values will be used.<P>
+<I>incW</I><UL><UL>
+Specifies the increment for sizing the width (Motif/Xt only).</UL></UL>
+<P>
+<I>incH</I><UL><UL>
+Specifies the increment for sizing the height (Motif/Xt only).</UL></UL>
+<P>
+<I>incSize</I><UL><UL>
+Increment size (Motif/Xt only).</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+If this function is called, the user will not be able to size the window outside
+the given bounds. The resizing increments are only significant under Motif or Xt.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowsetrightmenu"></A>
+<H3>wxTopLevelWindow::SetRightMenu</H3>
+<P>
+<B>void</B> <B>SetRightMenu</B>(<B>int</B><I> id = wxID_ANY</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> label = wxEmptyString</I>, <B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A> *</B></B><I> subMenu = NULL</I>)<P>
+Sets action or menu activated by pressing right hardware button on the smart phones.
+Unavailable on full keyboard machines.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+Identifier for this button.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+Text to be displayed on the screen area dedicated to this hardware button.</UL></UL>
+<P>
+<I>subMenu</I><UL><UL>
+The menu to be opened after pressing this hardware button.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowsetleftmenu">wxTopLevelWindow::SetLeftMenu</A>.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowsetshape"></A>
+<H3>wxTopLevelWindow::SetShape</H3>
+<P>
+<B>bool</B> <B>SetShape</B>(<B>const <A HREF="wx_wxregion.html#wxregion">wxRegion</A>&</B></B><I> region</I>)<P>
+If the platform supports it, sets the shape of the window to that
+depicted by <I>region</I>.  The system will not display or
+respond to any mouse event for the pixels that lie outside of the
+region.  To reset the window to the normal rectangular shape simply
+call <I>SetShape</I> again with an empty region.  Returns true if the
+operation is successful.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowsettitle"></A>
+<H3>wxTopLevelWindow::SetTitle</H3>
+<P>
+<B>virtual void</B> <B>SetTitle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> title</I>)<P>
+Sets the window title.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>title</I><UL><UL>
+The window title.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowgettitle">wxTopLevelWindow::GetTitle</A><P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowsettransparent"></A>
+<H3>wxTopLevelWindow::SetTransparent</H3>
+<P>
+<B>virtual bool</B> <B>SetTransparent</B>(<B>int </B><I> alpha</I>)<P>
+If the platform supports it will set the window to be translucent<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>alpha</I><UL><UL>
+Determines how opaque or transparent the window will
+  be, if the platform supports the opreration.  A value of 0 sets the
+  window to be fully transparent, and a value of 255 sets the window
+  to be fully opaque.</UL></UL>
+<P>
+Returns <TT>true</TT> if the transparency was successfully changed.<P>
+<P>
+
+<HR>
+<A NAME="wxtoplevelwindowshouldpreventappexit"></A>
+<H3>wxTopLevelWindow::ShouldPreventAppExit</H3>
+<P>
+<B>virtual bool</B> <B>ShouldPreventAppExit</B>() <B>const</B><P>
+This virtual function is not meant to be called directly but can be overridden
+to return <TT>false</TT> (it returns <TT>true</TT> by default) to allow the application to
+close even if this, presumably not very important, window is still opened.
+By default, the application stays alive as long as there are any open top level
+windows.<P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowshowfullscreen"></A>
+<H3>wxTopLevelWindow::ShowFullScreen</H3>
+<P>
+<B>bool</B> <B>ShowFullScreen</B>(<B>bool</B><I> show</I>, <B>long</B><I> style = wxFULLSCREEN_ALL</I>)<P>
+Depending on the value of <I>show</I> parameter the window is either shown full
+screen or restored to its normal state. <I>style</I> is a bit list containing
+some or all of the following values, which indicate what elements of the window
+to hide in full-screen mode:<P>
+<UL>
+
+<LI> wxFULLSCREEN_NOMENUBAR
+<LI> wxFULLSCREEN_NOTOOLBAR
+<LI> wxFULLSCREEN_NOSTATUSBAR
+<LI> wxFULLSCREEN_NOBORDER
+<LI> wxFULLSCREEN_NOCAPTION
+<LI> wxFULLSCREEN_ALL (all of the above)
+</UL>
+<P>
+This function has not been tested with MDI frames.<P>
+Note that showing a window full screen also actually
+<A HREF="wx_wxwindow.html#wxwindowshow">Show()s</A> if it hadn't been shown yet.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowisfullscreen">wxTopLevelWindow::IsFullScreen</A><P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowusenativedecorations"></A>
+<H3>wxTopLevelWindow::UseNativeDecorations</H3>
+<P>
+<B>void</B> <B>UseNativeDecorations</B>(<B>bool </B><I>native = <TT>true</TT></I>)<P>
+<B><TT>This method is specific to wxUniversal port</TT></B><P>
+Use native or custom-drawn decorations for this window only. Notice that to
+have any effect this method must be called before really creating the window,
+i.e. two step creation must be used:
+<PRE>
+    MyFrame *frame = new MyFrame;           // use default ctor
+    frame-&gt;UseNativeDecorations(false);     // change from default "true"
+    frame-&gt;Create(parent, title, ...);      // really create the frame
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowusenativedecorationsbydefault">UseNativeDecorationsByDefault</A>,<BR>
+
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowisusingnativedecorations">IsUsingNativeDecorations</A><P>
+
+
+<HR>
+<A NAME="wxtoplevelwindowusenativedecorationsbydefault"></A>
+<H3>wxTopLevelWindow::UseNativeDecorationsByDefault</H3>
+<P>
+<B>void</B> <B>UseNativeDecorationsByDefault</B>(<B>bool </B><I>native = <TT>true</TT></I>)<P>
+<B><TT>This method is specific to wxUniversal port</TT></B><P>
+Top level windows in wxUniversal port can use either system-provided window
+decorations (i.e. title bar and various icons, buttons and menus in it) or draw
+the decorations themselves. By default the system decorations are used if they
+are available, but this method can be called with <I>native</I> set to <TT>false</TT> to
+change this for all windows created after this point.<P>
+Also note that if <TT>WXDECOR</TT> environment variable is set, then custom
+decorations are used by default and so it may make sense to call this method
+with default argument if the application can't use custom decorations at all
+for some reason.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowusenativedecorations">UseNativeDecorations</A><P>
+
+</FONT></BODY></HTML>

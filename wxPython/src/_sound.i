@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _sound.i,v 1.14 2005/03/09 22:28:40 RD Exp $
+// RCS-ID:      $Id: _sound.i 45905 2007-05-09 00:36:40Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,15 @@ enum wxSoundFlags
 
 %{
 #if !wxUSE_SOUND
-// A C++ stub class for wxWave for platforms that don't have it.
+// A C++ stub class for wxSound for platforms that don't have it.
+
+enum wxSoundFlags
+{
+    wxSOUND_SYNC,
+    wxSOUND_ASYNC,
+    wxSOUND_LOOP
+};
+    
 class wxSound : public wxObject
 {
 public:

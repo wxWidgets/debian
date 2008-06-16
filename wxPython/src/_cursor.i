@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _cursor.i,v 1.15 2005/03/05 00:52:48 RD Exp $
+// RCS-ID:      $Id: _cursor.i 41774 2006-10-09 02:36:38Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -140,10 +140,11 @@ On MacOS the cursor is resized to 16x16 if it was larger.",
 #endif
     
     DocDeclStr(
-        bool , Ok(),
+        bool , IsOk(),
         "", "");
+    %pythoncode { Ok = IsOk }
 
-    %pythoncode { def __nonzero__(self): return self.Ok() }
+    %pythoncode { def __nonzero__(self): return self.IsOk() }
 
     
 #ifdef __WXMSW__

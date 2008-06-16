@@ -1,0 +1,55 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFileOutputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfileoutputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfilename.html#wxfilename"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfilepickerctrl.html#wxfilepickerctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFileOutputStream</H2>
+<P>
+This class represents data written to a file. There are actually
+two such groups of classes: this one is based on <A HREF="wx_wxfile.html#wxfile">wxFile</A> 
+whereas <A HREF="wx_wxffileinputstream.html#wxffileinputstream">wxFFileInputStream</A> is based in
+the <A HREF="wx_wxffile.html#wxffile">wxFFile</A> class.<P>
+Note that <A HREF="wx_wxoutputstream.html#wxoutputstreamseeko">SeekO()</A> 
+can seek beyond the end of the stream (file) and will thus not return 
+<I>wxInvalidOffset</I> for that.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/wfstream.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbufferedoutputstream.html#wxbufferedoutputstream">wxBufferedOutputStream</A>, <A HREF="wx_wxfileinputstream.html#wxfileinputstream">wxFileInputStream</A>, <A HREF="wx_wxffileinputstream.html#wxffileinputstream">wxFFileInputStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfileoutputstreamctor">wxFileOutputStream::wxFileOutputStream</A><BR>
+<A HREF="#wxfileoutputstreamdtor">wxFileOutputStream::~wxFileOutputStream</A><BR>
+<A HREF="#wxfileoutputstreamisok">wxFileOutputStream::IsOk</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfileoutputstreamctor"></A>
+<H3>wxFileOutputStream::wxFileOutputStream</H3>
+<P>
+<B></B> <B>wxFileOutputStream</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> ofileName</I>)<P>
+Creates a new file with <I>ofilename</I> name and initializes the stream in
+write-only mode. <P>
+<B></B> <B>wxFileOutputStream</B>(<B><A HREF="wx_wxfile.html#wxfile">wxFile</A>&</B></B><I> file</I>)<P>
+Initializes a file stream in write-only mode using the file I/O object <I>file</I>.<P>
+<B></B> <B>wxFileOutputStream</B>(<B>int</B><I> fd</I>)<P>
+Initializes a file stream in write-only mode using the file descriptor <I>fd</I>.<P>
+
+<HR>
+<A NAME="wxfileoutputstreamdtor"></A>
+<H3>wxFileOutputStream::~wxFileOutputStream</H3>
+<P>
+<B></B> <B>~wxFileOutputStream</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxfileoutputstreamisok"></A>
+<H3>wxFileOutputStream::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if the stream is initialized and ready.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,256 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHyperlinkCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhyperlinkctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhttp.html#wxhttp"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhyperlinkevent.html#wxhyperlinkevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHyperlinkCtrl</H2>
+<P>
+This class shows a static text element which links to an URL.
+Appearance and behaviour is completely customizable. In fact, when the user
+clicks on the hyperlink, a <A HREF="wx_wxhyperlinkevent.html#wxhyperlinkevent">wxHyperlinkEvent</A> is
+sent but if that event is not handled (or it's skipped; see
+<A HREF="wx_wxevent.html#wxeventskip">wxEvent::Skip</A>), then a call to
+<A HREF="wx_miscellany.html#wxlaunchdefaultbrowser">wxLaunchDefaultBrowser</A> is done with the
+hyperlink's URL.<P>
+Note that standard <A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> functions like <A HREF="wx_wxwindow.html#wxwindowsetbackgroundcolour">SetBackgroundColour</A>, <A HREF="wx_wxwindow.html#wxwindowsetfont">SetFont</A>, <A HREF="wx_wxwindow.html#wxwindowsetcursor">SetCursor</A>, <A HREF="wx_wxwindow.html#wxwindowsetlabel">SetLabel</A> can be used to customize appearance of the hyperlink.<P>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/hyperlink.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxHL_ALIGN_LEFT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Align the text to the left.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxHL_ALIGN_RIGHT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Align the text to the right.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxHL_ALIGN_CENTRE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Center the text (horizontally).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxHL_CONTEXTMENU</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Pop up a context menu when the hyperlink is right-clicked. The context menu contains a <TT>"Copy URL"</TT> menu item which is automatically handled by the hyperlink and which just copies in the clipboard the URL (not the label) of the control.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxHL_DEFAULT_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The default style for wxHyperlinkCtrl: <TT>wxNO_BORDER|wxHL_CONTEXTMENU|wxHL_ALIGN_CENTRE</TT>.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To process input from an hyperlink control, use these event handler macros to
+direct input to member functions that take a
+<A HREF="wx_wxhyperlinkevent.html#wxhyperlinkevent">wxHyperlinkEvent</A> argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_HYPERLINK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The hyperlink was (left) clicked. If this event is not handled in user's code (or it's skipped; see <A HREF="wx_wxevent.html#wxeventskip">wxEvent::Skip</A>), then a call to <A HREF="wx_miscellany.html#wxlaunchdefaultbrowser">wxLaunchDefaultBrowser</A> is done with the hyperlink's URL.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxurl.html#wxurl">wxURL</A>, <A HREF="wx_wxhyperlinkevent.html#wxhyperlinkevent">wxHyperlinkEvent</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhyperlinkctrlctor">wxHyperlinkCtrl::wxHyperLink</A><BR>
+<A HREF="#wxhyperlinkctrlcreate">wxHyperlinkCtrl::Create</A><BR>
+<A HREF="#wxhyperlinkctrlgethovercolour">wxHyperlinkCtrl::GetHoverColour</A><BR>
+<A HREF="#wxhyperlinkctrlsethovercolour">wxHyperlinkCtrl::SetHoverColour</A><BR>
+<A HREF="#wxhyperlinkctrlgetnormalcolour">wxHyperlinkCtrl::GetNormalColour</A><BR>
+<A HREF="#wxhyperlinkctrlsetnormalcolour">wxHyperlinkCtrl::SetNormalColour</A><BR>
+<A HREF="#wxhyperlinkctrlgetvisitedcolour">wxHyperlinkCtrl::GetVisitedColour</A><BR>
+<A HREF="#wxhyperlinkctrlsetvisitedcolour">wxHyperlinkCtrl::SetVisitedColour</A><BR>
+<A HREF="#wxhyperlinkctrlgetvisited">wxHyperlinkCtrl::GetVisited</A><BR>
+<A HREF="#wxhyperlinkctrlsetvisited">wxHyperlinkCtrl::SetVisited</A><BR>
+<A HREF="#wxhyperlinkctrlgeturl">wxHyperlinkCtrl::GetURL</A><BR>
+<A HREF="#wxhyperlinkctrlseturl">wxHyperlinkCtrl::SetURL</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhyperlinkctrlctor"></A>
+<H3>wxHyperlinkCtrl::wxHyperLink</H3>
+<P>
+<B></B> <B>wxHyperLink</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I> label</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I> url</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>, <B>long</B><I> style</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "hyperlink"</I>)<P>
+Constructor. See <A HREF="wx_wxhyperlinkctrl.html#wxhyperlinkctrlcreate">Create</A> for more info.<P>
+
+
+<HR>
+<A NAME="wxhyperlinkctrlcreate"></A>
+<H3>wxHyperlinkCtrl::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I> label</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I> url</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>, <B>long</B><I> style</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "hyperlink"</I>)<P>
+Creates the hyperlink control.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be <TT>NULL</TT>.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of wxID_ANY indicates a default value.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+The label of the hyperlink.</UL></UL>
+<P>
+<I>url</I><UL><UL>
+The URL associated with the given label.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the wxDefaultSize is specified then the window is sized
+appropriately.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxhyperlinkctrl.html#wxhyperlinkctrl">wxHyperlinkCtrl</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxhyperlinkctrlgethovercolour"></A>
+<H3>wxHyperlinkCtrl::GetHoverColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetHoverColour</B>() <B>const</B><P>
+Returns the colour used to print the label of the hyperlink when the mouse is over the control.<P>
+
+
+<HR>
+<A NAME="wxhyperlinkctrlsethovercolour"></A>
+<H3>wxHyperlinkCtrl::SetHoverColour</H3>
+<P>
+<B>void</B> <B>SetHoverColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A> &</B></B><I> colour</I>)<P>
+Sets the colour used to print the label of the hyperlink when the mouse is over the control.<P>
+
+
+<HR>
+<A NAME="wxhyperlinkctrlgetnormalcolour"></A>
+<H3>wxHyperlinkCtrl::GetNormalColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetNormalColour</B>() <B>const</B><P>
+Returns the colour used to print the label when the link has never been clicked before
+(i.e. the link has not been <I>visited</I>) and the mouse is not over the control.<P>
+
+
+<HR>
+<A NAME="wxhyperlinkctrlsetnormalcolour"></A>
+<H3>wxHyperlinkCtrl::SetNormalColour</H3>
+<P>
+<B>void</B> <B>SetNormalColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A> &</B></B><I> colour</I>)<P>
+Sets the colour used to print the label when the link has never been clicked before
+(i.e. the link has not been <I>visited</I>) and the mouse is not over the control.<P>
+
+
+<HR>
+<A NAME="wxhyperlinkctrlgetvisitedcolour"></A>
+<H3>wxHyperlinkCtrl::GetVisitedColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetVisitedColour</B>() <B>const</B><P>
+Returns the colour used to print the label when the mouse is not over the control
+and the link has already been clicked before (i.e. the link has been <I>visited</I>).<P>
+
+
+<HR>
+<A NAME="wxhyperlinkctrlsetvisitedcolour"></A>
+<H3>wxHyperlinkCtrl::SetVisitedColour</H3>
+<P>
+<B>void</B> <B>SetVisitedColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A> &</B></B><I> colour</I>)<P>
+Sets the colour used to print the label when the mouse is not over the control
+and the link has already been clicked before (i.e. the link has been <I>visited</I>).<P>
+
+
+<HR>
+<A NAME="wxhyperlinkctrlgetvisited"></A>
+<H3>wxHyperlinkCtrl::GetVisited</H3>
+<P>
+<B>bool</B> <B>GetVisited</B>() <B>const</B><P>
+Returns <TT>true</TT> if the hyperlink has already been clicked by the user at least one time.<P>
+
+
+<HR>
+<A NAME="wxhyperlinkctrlsetvisited"></A>
+<H3>wxHyperlinkCtrl::SetVisited</H3>
+<P>
+<B>void</B> <B>SetVisited</B>(<B>bool</B><I> visited = true</I>)<P>
+Marks the hyperlink as visited (see <A HREF="wx_wxhyperlinkctrl.html#wxhyperlinkctrlsetvisitedcolour">SetVisitedColour</A>).<P>
+
+
+<HR>
+<A NAME="wxhyperlinkctrlgeturl"></A>
+<H3>wxHyperlinkCtrl::GetURL</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetURL</B>() <B>const</B><P>
+Returns the URL associated with the hyperlink.<P>
+
+
+<HR>
+<A NAME="wxhyperlinkctrlseturl"></A>
+<H3>wxHyperlinkCtrl::SetURL</H3>
+<P>
+<B>void</B> <B>SetURL</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I> url</I>)<P>
+Sets the URL associated with the hyperlink.<P>
+<P>
+<P>
+
+
+</FONT></BODY></HTML>

@@ -1,0 +1,138 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRegionIterator</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxregioniterator"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxregion.html#wxregion"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxregkey.html#wxregkey"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRegionIterator</H2>
+<P>
+This class is used to iterate through the rectangles in a region,
+typically when examining the damaged regions of a window within an OnPaint call.<P>
+To use it, construct an iterator object on the stack and loop through the
+regions, testing the object and incrementing the iterator at the end of the loop.<P>
+See <A HREF="wx_wxpaintevent.html#wxpaintevent">wxPaintEvent</A> for an example of use.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/region.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpaintevent.html#wxpaintevent">wxPaintEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxregioniteratorctor">wxRegionIterator::wxRegionIterator</A><BR>
+<A HREF="#wxregioniteratorgetx">wxRegionIterator::GetX</A><BR>
+<A HREF="#wxregioniteratorgety">wxRegionIterator::GetY</A><BR>
+<A HREF="#wxregioniteratorgetw">wxRegionIterator::GetW</A><BR>
+<A HREF="#wxregioniteratorgetheight">wxRegionIterator::GetHeight</A><BR>
+<A HREF="#wxregioniteratorgeth">wxRegionIterator::GetH</A><BR>
+<A HREF="#wxregioniteratorgetrect">wxRegionIterator::GetRect</A><BR>
+<A HREF="#wxregioniteratorgetwidth">wxRegionIterator::GetWidth</A><BR>
+<A HREF="#wxregioniteratorhaverects">wxRegionIterator::HaveRects</A><BR>
+<A HREF="#wxregioniteratorreset">wxRegionIterator::Reset</A><BR>
+<A HREF="#wxregioniteratorinc">wxRegionIterator::operator ++</A><BR>
+<A HREF="#wxregioniteratorbool">wxRegionIterator::operator bool</A><BR>
+<P>
+
+<HR>
+<A NAME="wxregioniteratorctor"></A>
+<H3>wxRegionIterator::wxRegionIterator</H3>
+<P>
+<B></B> <B>wxRegionIterator</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxRegionIterator</B>(<B>const <A HREF="wx_wxregion.html#wxregion">wxRegion</A>&</B></B><I> region</I>)<P>
+Creates an iterator object given a region.<P>
+
+
+<HR>
+<A NAME="wxregioniteratorgetx"></A>
+<H3>wxRegionIterator::GetX</H3>
+<P>
+<B>wxCoord</B> <B>GetX</B>() <B>const</B><P>
+Returns the x value for the current region.<P>
+
+
+<HR>
+<A NAME="wxregioniteratorgety"></A>
+<H3>wxRegionIterator::GetY</H3>
+<P>
+<B>wxCoord</B> <B>GetY</B>() <B>const</B><P>
+Returns the y value for the current region.<P>
+
+
+<HR>
+<A NAME="wxregioniteratorgetw"></A>
+<H3>wxRegionIterator::GetW</H3>
+<P>
+<B>wxCoord</B> <B>GetW</B>() <B>const</B><P>
+An alias for GetWidth.<P>
+
+
+<HR>
+<A NAME="wxregioniteratorgetheight"></A>
+<H3>wxRegionIterator::GetHeight</H3>
+<P>
+<B>wxCoord</B> <B>GetHeight</B>() <B>const</B><P>
+Returns the height value for the current region.<P>
+
+
+<HR>
+<A NAME="wxregioniteratorgeth"></A>
+<H3>wxRegionIterator::GetH</H3>
+<P>
+<B>wxCoord</B> <B>GetH</B>() <B>const</B><P>
+An alias for GetHeight.<P>
+
+
+<HR>
+<A NAME="wxregioniteratorgetrect"></A>
+<H3>wxRegionIterator::GetRect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>GetRect</B>() <B>const</B><P>
+Returns the current rectangle.<P>
+
+
+<HR>
+<A NAME="wxregioniteratorgetwidth"></A>
+<H3>wxRegionIterator::GetWidth</H3>
+<P>
+<B>wxCoord</B> <B>GetWidth</B>() <B>const</B><P>
+Returns the width value for the current region.<P>
+
+
+<HR>
+<A NAME="wxregioniteratorhaverects"></A>
+<H3>wxRegionIterator::HaveRects</H3>
+<P>
+<B>bool</B> <B>HaveRects</B>() <B>const</B><P>
+Returns <TT>true</TT> if there are still some rectangles; otherwise returns <TT>false</TT>.<P>
+
+
+<HR>
+<A NAME="wxregioniteratorreset"></A>
+<H3>wxRegionIterator::Reset</H3>
+<P>
+<B>void</B> <B>Reset</B>()<P>
+Resets the iterator to the beginning of the rectangles.<P>
+<B>void</B> <B>Reset</B>(<B>const <A HREF="wx_wxregion.html#wxregion">wxRegion</A>&</B></B><I> region</I>)<P>
+Resets the iterator to the given region.<P>
+
+
+<HR>
+<A NAME="wxregioniteratorinc"></A>
+<H3>wxRegionIterator::operator ++</H3>
+<P>
+<B>void</B> <B>operator ++</B>()<P>
+Increment operator. Increments the iterator to the next region.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> A wxPython alias for this operator is called <TT>Next</TT>.<P>
+
+
+<HR>
+<A NAME="wxregioniteratorbool"></A>
+<H3>wxRegionIterator::operator bool</H3>
+<P>
+<B></B> <B>operator bool</B>() <B>const</B><P>
+Returns <TT>true</TT> if there are still some rectangles; otherwise returns <TT>false</TT>.<P>
+You can use this to test the iterator object as if it were of type bool.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,57 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTCPServer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtcpserver"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtcpconnection.html#wxtcpconnection"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtempfile.html#wxtempfile"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTCPServer</H2>
+<P>
+A wxTCPServer object represents the server part of a client-server conversation.
+It emulates a DDE-style protocol, but uses TCP/IP which is available on most platforms.<P>
+A DDE-based implementation for Windows is available using <A HREF="wx_wxddeserver.html#wxddeserver">wxDDEServer</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxServerBase<BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/sckipc.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtcpclient.html#wxtcpclient">wxTCPClient</A>, <A HREF="wx_wxtcpconnection.html#wxtcpconnection">wxTCPConnection</A>, <A HREF="wx_ipcoverview.html#ipcoverview">IPC overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxtcpserverctor">wxTCPServer::wxTCPServer</A><BR>
+<A HREF="#wxtcpservercreate">wxTCPServer::Create</A><BR>
+<A HREF="#wxtcpserveronacceptconnection">wxTCPServer::OnAcceptConnection</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtcpserverctor"></A>
+<H3>wxTCPServer::wxTCPServer</H3>
+<P>
+<B></B> <B>wxTCPServer</B>()<P>
+Constructs a server object.<P>
+
+<HR>
+<A NAME="wxtcpservercreate"></A>
+<H3>wxTCPServer::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>service</I>)<P>
+Registers the server using the given service name. Under Unix, the
+string must contain an integer id which is used as an Internet port
+number. false is returned if the call failed (for example, the port
+number is already in use).<P>
+
+<HR>
+<A NAME="wxtcpserveronacceptconnection"></A>
+<H3>wxTCPServer::OnAcceptConnection</H3>
+<P>
+<B>virtual wxConnectionBase *</B> <B>OnAcceptConnection</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>)<P>
+When a client calls <B>MakeConnection</B>, the server receives the
+message and this member is called. The application should derive a
+member to intercept this message and return a connection object of
+either the standard wxTCPConnection type, or of a user-derived type. If the
+topic is "STDIO'', the application may wish to refuse the connection.
+Under Unix, when a server is created the OnAcceptConnection message is
+always sent for standard input and output.<P>
+
+</FONT></BODY></HTML>

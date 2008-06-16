@@ -1,0 +1,131 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFont overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfontoverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_dcoverview.html#dcoverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfontencodingoverview.html#wxfontencodingoverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFont overview</H2>
+<P>
+Class: <A HREF="wx_wxfont.html#wxfont">wxFont</A>, <A HREF="wx_wxfontdialog.html#wxfontdialog">wxFontDialog</A><P>
+A font is an object which determines the appearance of text, primarily
+when drawing text to a window or device context. A font is determined by
+the following parameters (not all of them have to be specified, of course):<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+Point size
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This is the standard way of referring to text size.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+Family
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Supported families are:
+ <B>wxDEFAULT, wxDECORATIVE, wxROMAN, wxSCRIPT, wxSWISS, wxMODERN</B>.
+ <B>wxMODERN</B> is a fixed pitch font; the others are either fixed or variable pitch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+Style
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The value can be <B>wxNORMAL, wxSLANT</B> or <B>wxITALIC</B>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+Weight
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The value can be <B>wxNORMAL, wxLIGHT</B> or <B>wxBOLD</B>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+Underlining
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The value can be true or false.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+Face name
+</FONT></TD>
+
+<TD VALIGN=TOP>
+An optional string specifying the actual typeface to be used. If NULL,
+a default typeface will chosen based on the family.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+Encoding
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The font encoding (see <B>wxFONTENCODING_XXX</B>
+constants and the <A HREF="wx_wxfontencodingoverview.html#wxfontencodingoverview">font overview</A> for more
+details)
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Specifying a family, rather than a specific typeface name, ensures a degree of
+portability across platforms because a suitable font will be chosen for the
+given font family, however it doesn't allow to choose a font precisely as the
+parameters above don't suffice, in general, to identify all the available fonts
+and this is where using the native font descriptions may be helpful - see
+below.<P>
+Under Windows, the face name can be one of the installed fonts on the user's
+system. Since the choice of fonts differs from system to system, either choose
+standard Windows fonts, or if allowing the user to specify a face name, store
+the family name with any file that might be transported to a different Windows
+machine or other platform.<P>
+<HR>
+<B>Note:</B> There is currently a difference between the appearance
+of fonts on the two platforms, if the mapping mode is anything other than
+wxMM_TEXT. Under X, font size is always specified in points. Under MS
+Windows, the unit for text is points but the text is scaled according to the
+current mapping mode. However, user scaling on a device context will also
+scale fonts under both environments.<HR><P>
+<P>
+<A HREF="#nativefontinformation">Native font information</A><BR>
+<P>
+
+<HR>
+<A NAME="nativefontinformation"></A>
+<H3>Native font information</H3>
+<P>
+An alternative way of choosing fonts is to use the native font description.
+This is the only acceptable solution if the user is allowed to choose the font
+using the <A HREF="wx_wxfontdialog.html#wxfontdialog">wxFontDialog</A> because the selected font cannot
+be described using only the family name and so, if only family name is stored
+permanently, the user would almost surely see a different font in the program
+later.<P>
+Instead, you should store the value returned by 
+<A HREF="wx_wxfont.html#wxfontgetnativefontinfodesc">wxFont::GetNativeFontInfoDesc</A> and pass
+it to <A HREF="wx_wxfont.html#wxfontsetnativefontinfo">wxFont::SetNativeFontInfo</A> later to
+recreate exactly the same font.<P>
+Note that the contents of this string depends on the platform and shouldn't be
+used for any other purpose (in particular, it is not meant to be shown to the
+user). Also please note that although the native font information is currently
+implemented for Windows and Unix (GTK+ and Motif) ports only, all the methods
+are available for all the ports and should be used to make your program work
+correctly when they are implemented later.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,68 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataObjectComposite</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataobjectcomposite"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdataviewcustomrenderer.html#wxdataviewcustomrenderer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataObjectComposite</H2>
+<P>
+wxDataObjectComposite is the simplest 
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> derivation which may be used to support
+multiple formats. It contains several 
+<A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple">wxDataObjectSimple</A> objects and supports any
+format supported by at least one of them. Only one of these data objects is
+<I>preferred</I> (the first one if not explicitly changed by using the second
+parameter of <A HREF="wx_wxdataobjectcomposite.html#wxdataobjectcompositeadd">Add</A>) and its format determines
+the preferred format of the composite data object as well.<P>
+See <A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> documentation for the reasons why you
+might prefer to use wxDataObject directly instead of wxDataObjectComposite for
+efficiency reasons.<P>
+<B><FONT COLOR="#FF0000">Virtual functions to override</FONT></B><P>
+None, this class should be used directly.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataobj.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdndoverview.html#wxdndoverview">Clipboard and drag and drop overview</A>, 
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A>, 
+<A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple">wxDataObjectSimple</A>, 
+<A HREF="wx_wxfiledataobject.html#wxfiledataobject">wxFileDataObject</A>, 
+<A HREF="wx_wxtextdataobject.html#wxtextdataobject">wxTextDataObject</A>, 
+<A HREF="wx_wxbitmapdataobject.html#wxbitmapdataobject">wxBitmapDataObject</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdataobjectcompositewxdataobjectcomposite">wxDataObjectComposite::wxDataObjectComposite</A><BR>
+<A HREF="#wxdataobjectcompositeadd">wxDataObjectComposite::Add</A><BR>
+<A HREF="#wxdataobjectcompositegetreceivedformat">wxDataObjectComposite::GetReceivedFormat</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataobjectcompositewxdataobjectcomposite"></A>
+<H3>wxDataObjectComposite::wxDataObjectComposite</H3>
+<P>
+<B></B> <B>wxDataObjectComposite</B>()<P>
+The default constructor.<P>
+
+<HR>
+<A NAME="wxdataobjectcompositeadd"></A>
+<H3>wxDataObjectComposite::Add</H3>
+<P>
+<B>void</B> <B>Add</B>(
+    <B><A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple">wxDataObjectSimple</A> </B></B><I>*dataObject</I>,
+    <B>bool </B><I>preferred = false</I>)<P>
+Adds the <I>dataObject</I> to the list of supported objects and it becomes the
+preferred object if <I>preferred</I> is true.<P>
+
+
+<HR>
+<A NAME="wxdataobjectcompositegetreceivedformat"></A>
+<H3>wxDataObjectComposite::GetReceivedFormat</H3>
+<P>
+<B><A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A></B> </B> <B>GetReceivedFormat</B>() <B>const</B><P>
+Report the format passed to the SetData method.  This should be the
+format of the data object within the composite that recieved data from
+the clipboard or the DnD operation.  You can use this method to find
+out what kind of data object was recieved.<P>
+
+</FONT></BODY></HTML>

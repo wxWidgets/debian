@@ -1,0 +1,142 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCloseEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcloseevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxclipboardtextevent.html#wxclipboardtextevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcmdlineparser.html#wxcmdlineparser"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCloseEvent</H2>
+<P>
+This event class contains information about window and session close events.<P>
+The handler function for EVT_CLOSE is called when the user has tried to close a a frame
+or dialog box using the window manager (X) or system menu (Windows). It can
+also be invoked by the application itself programmatically, for example by
+calling the <A HREF="wx_wxwindow.html#wxwindowclose">wxWindow::Close</A> function.<P>
+You should check whether the application is forcing the deletion of the window
+using <A HREF="wx_wxcloseevent.html#wxcloseeventcanveto">wxCloseEvent::CanVeto</A>. If this is <TT>false</TT>,
+you <I>must</I> destroy the window using <A HREF="wx_wxwindow.html#wxwindowdestroy">wxWindow::Destroy</A>.
+If the return value is true, it is up to you whether you respond by destroying the window.<P>
+If you don't destroy the window, you should call <A HREF="wx_wxcloseevent.html#wxcloseeventveto">wxCloseEvent::Veto</A> to
+let the calling code know that you did not destroy the window. This allows the <A HREF="wx_wxwindow.html#wxwindowclose">wxWindow::Close</A> function
+to return <TT>true</TT> or <TT>false</TT> depending on whether the close instruction was honoured or not.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a close event, use these event handler macros to direct input to member
+functions that take a wxCloseEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CLOSE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a close event, supplying the member function. This
+event applies to wxFrame and wxDialog classes.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_QUERY_END_SESSION(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a query end session event, supplying the member function.
+This event applies to wxApp only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_END_SESSION(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process an end session event, supplying the member function.
+This event applies to wxApp only.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindowclose">wxWindow::Close</A>,
+<A HREF="wx_windowdeletionoverview.html#windowdeletionoverview">Window deletion overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxcloseeventctor">wxCloseEvent::wxCloseEvent</A><BR>
+<A HREF="#wxcloseeventcanveto">wxCloseEvent::CanVeto</A><BR>
+<A HREF="#wxcloseeventgetloggingoff">wxCloseEvent::GetLoggingOff</A><BR>
+<A HREF="#wxcloseeventsetcanveto">wxCloseEvent::SetCanVeto</A><BR>
+<A HREF="#wxcloseeventsetforce">wxCloseEvent::SetForce</A><BR>
+<A HREF="#wxcloseeventsetloggingoff">wxCloseEvent::SetLoggingOff</A><BR>
+<A HREF="#wxcloseeventveto">wxCloseEvent::Veto</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcloseeventctor"></A>
+<H3>wxCloseEvent::wxCloseEvent</H3>
+<P>
+<B></B> <B>wxCloseEvent</B>(<B>WXTYPE</B><I> commandEventType = 0</I>, <B>int</B><I> id = 0</I>)<P>
+Constructor.<P>
+
+
+<HR>
+<A NAME="wxcloseeventcanveto"></A>
+<H3>wxCloseEvent::CanVeto</H3>
+<P>
+<B>bool</B> <B>CanVeto</B>()<P>
+Returns true if you can veto a system shutdown or a window close event.
+Vetoing a window close event is not possible if the calling code wishes to
+force the application to exit, and so this function must be called to check this.<P>
+
+
+<HR>
+<A NAME="wxcloseeventgetloggingoff"></A>
+<H3>wxCloseEvent::GetLoggingOff</H3>
+<P>
+<B>bool</B> <B>GetLoggingOff</B>() <B>const</B><P>
+Returns true if the user is just logging off or false if the system is
+shutting down. This method can only be called for end session and query end
+session events, it doesn't make sense for close window event.<P>
+
+
+<HR>
+<A NAME="wxcloseeventsetcanveto"></A>
+<H3>wxCloseEvent::SetCanVeto</H3>
+<P>
+<B>void</B> <B>SetCanVeto</B>(<B>bool</B><I> canVeto</I>)<P>
+Sets the 'can veto' flag.<P>
+
+
+<HR>
+<A NAME="wxcloseeventsetforce"></A>
+<H3>wxCloseEvent::SetForce</H3>
+<P>
+<B>void</B> <B>SetForce</B>(<B>bool</B><I> force</I>) <B>const</B><P>
+Sets the 'force' flag.<P>
+
+
+<HR>
+<A NAME="wxcloseeventsetloggingoff"></A>
+<H3>wxCloseEvent::SetLoggingOff</H3>
+<P>
+<B>void</B> <B>SetLoggingOff</B>(<B>bool</B><I> loggingOff</I>) <B>const</B><P>
+Sets the 'logging off' flag.<P>
+
+
+<HR>
+<A NAME="wxcloseeventveto"></A>
+<H3>wxCloseEvent::Veto</H3>
+<P>
+<B>void</B> <B>Veto</B>(<B>bool</B><I> veto = true</I>)<P>
+Call this from your event handler to veto a system shutdown or to signal
+to the calling application that a window close did not happen.<P>
+You can only veto a shutdown if <A HREF="wx_wxcloseevent.html#wxcloseeventcanveto">wxCloseEvent::CanVeto</A> returns
+true.<P>
+
+
+</FONT></BODY></HTML>

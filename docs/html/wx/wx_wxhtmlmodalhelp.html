@@ -1,0 +1,41 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlModalHelp</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmlmodalhelp"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmlhelpwindow.html#wxhtmlhelpwindow"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmllinkinfo.html#wxhtmllinkinfo"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlModalHelp</H2>
+<P>
+This class uses <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A> 
+to display help in a modal dialog. This is useful on platforms such as wxMac
+where if you display help from a modal dialog, the help window must itself be a modal
+dialog.<P>
+Create objects of this class on the stack, for example:<P>
+<PRE>
+    // The help can be browsed during the lifetime of this object; when the user quits
+    // the help, program execution will continue.
+    wxHtmlModalHelp help(parent, wxT("help"), wxT("My topic"));
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/helpctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmlmodalhelpctor">wxHtmlModalHelp::wxHtmlModalHelp</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlmodalhelpctor"></A>
+<H3>wxHtmlModalHelp::wxHtmlModalHelp</H3>
+<P>
+<B></B> <B>wxHtmlModalHelp</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpFile</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic = wxEmptyString</I>,
+        <B>int </B><I>style = wxHF_DEFAULT_STYLE | wxHF_DIALOG | wxHF_MODAL</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I> is the parent of the dialog.<P>
+<I>helpFile</I> is the HTML help file to show.<P>
+<I>topic</I> is an optional topic. If this is empty, the help contents will be shown.<P>
+<I>style</I> is a combination of the flags described in the <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A> documentation.<P>
+
+
+</FONT></BODY></HTML>

@@ -1,0 +1,128 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxArchiveOutputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxarchiveoutputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxarchivenotifier.html#wxarchivenotifier"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxarray.html#wxarray"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxArchiveOutputStream</H2>
+<P>
+An abstract base class which serves as a common interface to
+archive output streams such as <A HREF="wx_wxzipoutputstream.html#wxzipoutputstream">wxZipOutputStream</A>.<P>
+<A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstreamputnextentry">PutNextEntry()</A> is used
+to create a new entry in the output archive, then the entry's data is
+written to the wxArchiveOutputStream.  Another call to PutNextEntry()
+closes the current entry and begins the next.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxfilteroutputstream.html#wxfilteroutputstream">wxFilterOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/archive.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarc">Archive formats such as zip</A><BR>
+
+<A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A><BR>
+
+<A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxarchiveoutputstreamdtor">wxArchiveOutputStream::~wxArchiveOutputStream</A><BR>
+<A HREF="#wxarchiveoutputstreamclose">wxArchiveOutputStream::Close</A><BR>
+<A HREF="#wxarchiveoutputstreamcloseentry">wxArchiveOutputStream::CloseEntry</A><BR>
+<A HREF="#wxarchiveoutputstreamcopyarchivemetadata">wxArchiveOutputStream::CopyArchiveMetaData</A><BR>
+<A HREF="#wxarchiveoutputstreamcopyentry">wxArchiveOutputStream::CopyEntry</A><BR>
+<A HREF="#wxarchiveoutputstreamputnextdirentry">wxArchiveOutputStream::PutNextDirEntry</A><BR>
+<A HREF="#wxarchiveoutputstreamputnextentry">wxArchiveOutputStream::PutNextEntry</A><BR>
+<P>
+
+<HR>
+<A NAME="wxarchiveoutputstreamdtor"></A>
+<H3>wxArchiveOutputStream::~wxArchiveOutputStream</H3>
+<P>
+<B></B> <B>~wxArchiveOutputStream</B>()<P>
+Calls <A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstreamclose">Close()</A> if it has not already
+been called.<P>
+
+
+<HR>
+<A NAME="wxarchiveoutputstreamclose"></A>
+<H3>wxArchiveOutputStream::Close</H3>
+<P>
+<B>bool</B> <B>Close</B>()<P>
+Closes the archive, returning true if it was successfully written.
+Called by the destructor if not called explicitly.<P>
+
+
+<HR>
+<A NAME="wxarchiveoutputstreamcloseentry"></A>
+<H3>wxArchiveOutputStream::CloseEntry</H3>
+<P>
+<B>bool</B> <B>CloseEntry</B>()<P>
+Close the current entry. It is called implicitly whenever another new
+entry is created with <A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstreamcopyentry">CopyEntry()</A>
+or <A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstreamputnextentry">PutNextEntry()</A>, or
+when the archive is closed.<P>
+
+
+<HR>
+<A NAME="wxarchiveoutputstreamcopyarchivemetadata"></A>
+<H3>wxArchiveOutputStream::CopyArchiveMetaData</H3>
+<P>
+<B>bool</B> <B>CopyArchiveMetaData</B>(<B><A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A>& </B></B><I>stream</I>)<P>
+Some archive formats have additional meta-data that applies to the archive
+as a whole.  For example in the case of zip there is a comment, which
+is stored at the end of the zip file.  CopyArchiveMetaData() can be used
+to transfer such information when writing a modified copy of an archive.<P>
+Since the position of the meta-data can vary between the various archive
+formats, it is best to call CopyArchiveMetaData() before transferring
+the entries.  The <A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstream">wxArchiveOutputStream</A>
+will then hold on to the meta-data and write it at the correct point in
+the output file.<P>
+When the input archive is being read from a non-seekable stream, the
+meta-data may not be available when CopyArchiveMetaData() is called,
+in which case the two streams set up a link and transfer the data
+when it becomes available.<P>
+
+
+<HR>
+<A NAME="wxarchiveoutputstreamcopyentry"></A>
+<H3>wxArchiveOutputStream::CopyEntry</H3>
+<P>
+<B>bool</B> <B>CopyEntry</B>(<B><A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A>* </B></B><I>entry</I>, <B><A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A>& </B></B><I>stream</I>)<P>
+Takes ownership of <I>entry</I> and uses it to create a new entry in the
+archive. <I>entry</I> is then opened in the input stream <I>stream</I>
+and its contents copied to this stream.<P>
+For archive types which compress entry data, CopyEntry() is likely to be
+much more efficient than transferring the data using Read() and Write()
+since it will copy them without decompressing and recompressing them.<P>
+<I>entry</I> must be from the same archive file that <I>stream</I> is
+accessing. For non-seekable streams, <I>entry</I> must also be the last
+thing read from <I>stream</I>.<P>
+
+
+<HR>
+<A NAME="wxarchiveoutputstreamputnextdirentry"></A>
+<H3>wxArchiveOutputStream::PutNextDirEntry</H3>
+<P>
+<B>bool</B> <B>PutNextDirEntry</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt = wxDateTime::Now()</I>)<P>
+Create a new directory entry
+(see <A HREF="wx_wxarchiveentry.html#wxarchiveentryisdir">wxArchiveEntry::IsDir()</A>)
+with the given name and timestamp.<P>
+<A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstreamputnextentry">PutNextEntry()</A> can
+also be used to create directory entries, by supplying a name with
+a trailing path separator.<P>
+
+
+<HR>
+<A NAME="wxarchiveoutputstreamputnextentry"></A>
+<H3>wxArchiveOutputStream::PutNextEntry</H3>
+<P>
+<B>bool</B> <B>PutNextEntry</B>(<B><A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A>* </B></B><I>entry</I>)<P>
+Takes ownership of <I>entry</I> and uses it to create a new entry in
+the archive. The entry's data can then be written by writing to this
+wxArchiveOutputStream.<P>
+<B>bool</B> <B>PutNextEntry</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt = wxDateTime::Now()</I>, <B>off_t </B><I>size = wxInvalidOffset</I>)<P>
+Create a new entry with the given name, timestamp and size. The entry's
+data can then be written by writing to this wxArchiveOutputStream.<P>
+
+
+</FONT></BODY></HTML>

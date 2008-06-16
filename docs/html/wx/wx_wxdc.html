@@ -1,0 +1,1315 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDC</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdc"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdbgridtablebase.html#wxdbgridtablebase"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdcclipper.html#wxdcclipper"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDC</H2>
+<P>
+A wxDC is a <I>device context</I> onto which graphics and text can be drawn.
+It is intended to represent a number of output devices in a generic way,
+so a window can have a device context associated with it, and a printer also has a device context.
+In this way, the same piece of code may write to a number of different devices,
+if the device context is used as a parameter.<P>
+Notice that wxDC is an abstract base class and can't be created directly,
+please use <A HREF="wx_wxpaintdc.html#wxpaintdc">wxPaintDC</A>, <A HREF="wx_wxclientdc.html#wxclientdc">wxClientDC</A>, 
+<A HREF="wx_wxwindowdc.html#wxwindowdc">wxWindowDC</A>, <A HREF="wx_wxscreendc.html#wxscreendc">wxScreenDC</A>, 
+<A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A> or <A HREF="wx_wxprinterdc.html#wxprinterdc">wxPrinterDC</A>.<P>
+Please note that in addition to the versions of the methods documented here,
+there are also versions which accept single <TT>wxPoint</TT> parameter instead of
+two <TT>wxCoord</TT> ones or <TT>wxPoint</TT> and <TT>wxSize</TT> instead of four of
+them.<P>
+<B><FONT COLOR="#FF0000">Support for Transparency / Alpha Channel</FONT></B><P>
+On Mac OS X when using Core Graphics (wx_MAC_USE_CORE_GRAPHICS set to 1) 
+colors with alpha are supported, so instances  <TT>wxPen</TT> or  <TT>wxBrush</TT> that are built from  <TT>wxColour</TT> use
+the color's alpha values when stroking or filling.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dc.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_dcoverview.html#dcoverview">Overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxdcblit">wxDC::Blit</A><BR>
+<A HREF="#wxdccalcboundingbox">wxDC::CalcBoundingBox</A><BR>
+<A HREF="#wxdcclear">wxDC::Clear</A><BR>
+<A HREF="#wxdccomputescaleandorigin">wxDC::ComputeScaleAndOrigin</A><BR>
+<A HREF="#wxdccrosshair">wxDC::CrossHair</A><BR>
+<A HREF="#wxdcdestroyclippingregion">wxDC::DestroyClippingRegion</A><BR>
+<A HREF="#wxdcdevicetologicalx">wxDC::DeviceToLogicalX</A><BR>
+<A HREF="#wxdcdevicetologicalxrel">wxDC::DeviceToLogicalXRel</A><BR>
+<A HREF="#wxdcdevicetologicaly">wxDC::DeviceToLogicalY</A><BR>
+<A HREF="#wxdcdevicetologicalyrel">wxDC::DeviceToLogicalYRel</A><BR>
+<A HREF="#wxdcdrawarc">wxDC::DrawArc</A><BR>
+<A HREF="#wxdcdrawbitmap">wxDC::DrawBitmap</A><BR>
+<A HREF="#wxdcdrawcheckmark">wxDC::DrawCheckMark</A><BR>
+<A HREF="#wxdcdrawcircle">wxDC::DrawCircle</A><BR>
+<A HREF="#wxdcdrawellipse">wxDC::DrawEllipse</A><BR>
+<A HREF="#wxdcdrawellipticarc">wxDC::DrawEllipticArc</A><BR>
+<A HREF="#wxdcdrawicon">wxDC::DrawIcon</A><BR>
+<A HREF="#wxdcdrawlabel">wxDC::DrawLabel</A><BR>
+<A HREF="#wxdcdrawline">wxDC::DrawLine</A><BR>
+<A HREF="#wxdcdrawlines">wxDC::DrawLines</A><BR>
+<A HREF="#wxdcdrawpolygon">wxDC::DrawPolygon</A><BR>
+<A HREF="#wxdcdrawpolypolygon">wxDC::DrawPolyPolygon</A><BR>
+<A HREF="#wxdcdrawpoint">wxDC::DrawPoint</A><BR>
+<A HREF="#wxdcdrawrectangle">wxDC::DrawRectangle</A><BR>
+<A HREF="#wxdcdrawrotatedtext">wxDC::DrawRotatedText</A><BR>
+<A HREF="#wxdcdrawroundedrectangle">wxDC::DrawRoundedRectangle</A><BR>
+<A HREF="#wxdcdrawspline">wxDC::DrawSpline</A><BR>
+<A HREF="#wxdcdrawtext">wxDC::DrawText</A><BR>
+<A HREF="#wxdcenddoc">wxDC::EndDoc</A><BR>
+<A HREF="#wxdcendpage">wxDC::EndPage</A><BR>
+<A HREF="#wxdcfloodfill">wxDC::FloodFill</A><BR>
+<A HREF="#wxdcgetbackground">wxDC::GetBackground</A><BR>
+<A HREF="#wxdcgetbackgroundmode">wxDC::GetBackgroundMode</A><BR>
+<A HREF="#wxdcgetbrush">wxDC::GetBrush</A><BR>
+<A HREF="#wxdcgetcharheight">wxDC::GetCharHeight</A><BR>
+<A HREF="#wxdcgetcharwidth">wxDC::GetCharWidth</A><BR>
+<A HREF="#wxdcgetclippingbox">wxDC::GetClippingBox</A><BR>
+<A HREF="#wxdcgetfont">wxDC::GetFont</A><BR>
+<A HREF="#wxdcgetlayoutdirection">wxDC::GetLayoutDirection</A><BR>
+<A HREF="#wxdcgetlogicalfunction">wxDC::GetLogicalFunction</A><BR>
+<A HREF="#wxdcgetmapmode">wxDC::GetMapMode</A><BR>
+<A HREF="#wxdcgetmultilinetextextent">wxDC::GetMultiLineTextExtent</A><BR>
+<A HREF="#wxdcgetpartialtextextents">wxDC::GetPartialTextExtents</A><BR>
+<A HREF="#wxdcgetpen">wxDC::GetPen</A><BR>
+<A HREF="#wxdcgetpixel">wxDC::GetPixel</A><BR>
+<A HREF="#wxdcgetppi">wxDC::GetPPI</A><BR>
+<A HREF="#wxdcgetsize">wxDC::GetSize</A><BR>
+<A HREF="#wxdcgetsizemm">wxDC::GetSizeMM</A><BR>
+<A HREF="#wxdcgettextbackground">wxDC::GetTextBackground</A><BR>
+<A HREF="#wxdcgettextextent">wxDC::GetTextExtent</A><BR>
+<A HREF="#wxdcgettextforeground">wxDC::GetTextForeground</A><BR>
+<A HREF="#wxdcgetuserscale">wxDC::GetUserScale</A><BR>
+<A HREF="#wxdcgradientfillconcentric">wxDC::GradientFillConcentric</A><BR>
+<A HREF="#wxdcgradientfilllinear">wxDC::GradientFillLinear</A><BR>
+<A HREF="#wxdclogicaltodevicex">wxDC::LogicalToDeviceX</A><BR>
+<A HREF="#wxdclogicaltodevicexrel">wxDC::LogicalToDeviceXRel</A><BR>
+<A HREF="#wxdclogicaltodevicey">wxDC::LogicalToDeviceY</A><BR>
+<A HREF="#wxdclogicaltodeviceyrel">wxDC::LogicalToDeviceYRel</A><BR>
+<A HREF="#wxdcmaxx">wxDC::MaxX</A><BR>
+<A HREF="#wxdcmaxy">wxDC::MaxY</A><BR>
+<A HREF="#wxdcminx">wxDC::MinX</A><BR>
+<A HREF="#wxdcminy">wxDC::MinY</A><BR>
+<A HREF="#wxdcisok">wxDC::IsOk</A><BR>
+<A HREF="#wxdcresetboundingbox">wxDC::ResetBoundingBox</A><BR>
+<A HREF="#wxdcsetaxisorientation">wxDC::SetAxisOrientation</A><BR>
+<A HREF="#wxdcsetbackground">wxDC::SetBackground</A><BR>
+<A HREF="#wxdcsetbackgroundmode">wxDC::SetBackgroundMode</A><BR>
+<A HREF="#wxdcsetbrush">wxDC::SetBrush</A><BR>
+<A HREF="#wxdcsetclippingregion">wxDC::SetClippingRegion</A><BR>
+<A HREF="#wxdcsetdeviceorigin">wxDC::SetDeviceOrigin</A><BR>
+<A HREF="#wxdcsetfont">wxDC::SetFont</A><BR>
+<A HREF="#wxdcsetlayoutdirection">wxDC::SetLayoutDirection</A><BR>
+<A HREF="#wxdcsetlogicalfunction">wxDC::SetLogicalFunction</A><BR>
+<A HREF="#wxdcsetmapmode">wxDC::SetMapMode</A><BR>
+<A HREF="#wxdcsetpalette">wxDC::SetPalette</A><BR>
+<A HREF="#wxdcsetpen">wxDC::SetPen</A><BR>
+<A HREF="#wxdcsettextbackground">wxDC::SetTextBackground</A><BR>
+<A HREF="#wxdcsettextforeground">wxDC::SetTextForeground</A><BR>
+<A HREF="#wxdcsetuserscale">wxDC::SetUserScale</A><BR>
+<A HREF="#wxdcstartdoc">wxDC::StartDoc</A><BR>
+<A HREF="#wxdcstartpage">wxDC::StartPage</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdcblit"></A>
+<H3>wxDC::Blit</H3>
+<P>
+<B>bool</B> <B>Blit</B>(<B>wxCoord</B><I> xdest</I>, <B>wxCoord</B><I> ydest</I>, <B>wxCoord</B><I> width</I>, <B>wxCoord</B><I> height</I>,
+  <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>* </B></B><I>source</I>, <B>wxCoord</B><I> xsrc</I>, <B>wxCoord</B><I> ysrc</I>, <B>int</B><I> logicalFunc = wxCOPY</I>,
+  <B>bool </B><I>useMask = false</I>, <B>wxCoord</B><I> xsrcMask = -1</I>, <B>wxCoord</B><I> ysrcMask = -1</I>)<P>
+Copy from a source DC to this DC, specifying the destination
+coordinates, size of area to copy, source DC, source coordinates,
+logical function, whether to use a bitmap mask, and mask source position.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>xdest</I><UL><UL>
+Destination device context x position.</UL></UL>
+<P>
+<I>ydest</I><UL><UL>
+Destination device context y position.</UL></UL>
+<P>
+<I>width</I><UL><UL>
+Width of source area to be copied.</UL></UL>
+<P>
+<I>height</I><UL><UL>
+Height of source area to be copied.</UL></UL>
+<P>
+<I>source</I><UL><UL>
+Source device context.</UL></UL>
+<P>
+<I>xsrc</I><UL><UL>
+Source device context x position.</UL></UL>
+<P>
+<I>ysrc</I><UL><UL>
+Source device context y position.</UL></UL>
+<P>
+<I>logicalFunc</I><UL><UL>
+Logical function to use: see <A HREF="wx_wxdc.html#wxdcsetlogicalfunction">wxDC::SetLogicalFunction</A>.</UL></UL>
+<P>
+<I>useMask</I><UL><UL>
+If true, Blit does a transparent blit using the mask that is associated with the bitmap
+selected into the source device context. The Windows implementation does the following if MaskBlt cannot be used:<P>
+<OL>
+
+<LI> Creates a temporary bitmap and copies the destination area into it.
+<LI> Copies the source area into the temporary bitmap using the specified logical function.
+<LI> Sets the masked area in the temporary bitmap to BLACK by ANDing the
+mask bitmap with the temp bitmap with the foreground colour set to WHITE
+and the bg colour set to BLACK.
+<LI> Sets the unmasked area in the destination area to BLACK by ANDing the
+mask bitmap with the destination area with the foreground colour set to BLACK
+and the background colour set to WHITE.
+<LI> ORs the temporary bitmap with the destination area.
+<LI> Deletes the temporary bitmap.
+</OL>
+<P>
+This sequence of operations ensures that the source's transparent area need not be black,
+and logical functions are supported.<P>
+<B>Note:</B> on Windows, blitting with masks can be speeded up considerably by compiling
+wxWidgets with the wxUSE_DC_CACHE option enabled. You can also influence whether MaskBlt
+or the explicit mask blitting code above is used, by using <A HREF="wx_wxsystemoptions.html#wxsystemoptions">wxSystemOptions</A> and
+setting the <B>no-maskblt</B> option to 1.<P>
+</UL></UL>
+<P>
+<I>xsrcMask</I><UL><UL>
+Source x position on the mask. If both xsrcMask and ysrcMask are -1, xsrc and ysrc
+will be assumed for the mask source position. Currently only implemented on Windows.</UL></UL>
+<P>
+<I>ysrcMask</I><UL><UL>
+Source y position on the mask. If both xsrcMask and ysrcMask are -1, xsrc and ysrc
+will be assumed for the mask source position. Currently only implemented on Windows.</UL></UL>
+<P>
+
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+There is partial support for Blit in wxPostScriptDC, under X.<P>
+See <A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A> for typical usage.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A>, <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>, <A HREF="wx_wxmask.html#wxmask">wxMask</A><P>
+
+
+<HR>
+<A NAME="wxdccalcboundingbox"></A>
+<H3>wxDC::CalcBoundingBox</H3>
+<P>
+<B>void</B> <B>CalcBoundingBox</B>(<B>wxCoord </B><I>x</I>, <B>wxCoord </B><I>y</I>)<P>
+Adds the specified point to the bounding box which can be retrieved with 
+<A HREF="wx_wxdc.html#wxdcminx">MinX</A>, <A HREF="wx_wxdc.html#wxdcmaxx">MaxX</A> and 
+<A HREF="wx_wxdc.html#wxdcminy">MinY</A>, <A HREF="wx_wxdc.html#wxdcmaxy">MaxY</A> functions.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdcresetboundingbox">ResetBoundingBox</A><P>
+
+
+<HR>
+<A NAME="wxdcclear"></A>
+<H3>wxDC::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>()<P>
+Clears the device context using the current background brush.<P>
+
+
+<HR>
+<A NAME="wxdccomputescaleandorigin"></A>
+<H3>wxDC::ComputeScaleAndOrigin</H3>
+<P>
+<B>virtual void</B> <B>ComputeScaleAndOrigin</B>()<P>
+Performs all necessary computations for given platform and context type
+after each change of scale and origin parameters. Usually called automatically 
+internally after such changes.<P>
+
+
+<HR>
+<A NAME="wxdccrosshair"></A>
+<H3>wxDC::CrossHair</H3>
+<P>
+<B>void</B> <B>CrossHair</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>)<P>
+Displays a cross hair using the current pen. This is a vertical
+and horizontal line the height and width of the window, centred
+on the given point.<P>
+
+
+<HR>
+<A NAME="wxdcdestroyclippingregion"></A>
+<H3>wxDC::DestroyClippingRegion</H3>
+<P>
+<B>void</B> <B>DestroyClippingRegion</B>()<P>
+Destroys the current clipping region so that none of the DC is clipped.
+See also <A HREF="wx_wxdc.html#wxdcsetclippingregion">wxDC::SetClippingRegion</A>.<P>
+
+
+<HR>
+<A NAME="wxdcdevicetologicalx"></A>
+<H3>wxDC::DeviceToLogicalX</H3>
+<P>
+<B>wxCoord</B> <B>DeviceToLogicalX</B>(<B>wxCoord</B><I> x</I>)<P>
+Convert device X coordinate to logical coordinate, using the current
+mapping mode.<P>
+
+
+<HR>
+<A NAME="wxdcdevicetologicalxrel"></A>
+<H3>wxDC::DeviceToLogicalXRel</H3>
+<P>
+<B>wxCoord</B> <B>DeviceToLogicalXRel</B>(<B>wxCoord</B><I> x</I>)<P>
+Convert device X coordinate to relative logical coordinate, using the current
+mapping mode but ignoring the x axis orientation.
+Use this function for converting a width, for example.<P>
+
+
+<HR>
+<A NAME="wxdcdevicetologicaly"></A>
+<H3>wxDC::DeviceToLogicalY</H3>
+<P>
+<B>wxCoord</B> <B>DeviceToLogicalY</B>(<B>wxCoord</B><I> y</I>)<P>
+Converts device Y coordinate to logical coordinate, using the current
+mapping mode.<P>
+
+
+<HR>
+<A NAME="wxdcdevicetologicalyrel"></A>
+<H3>wxDC::DeviceToLogicalYRel</H3>
+<P>
+<B>wxCoord</B> <B>DeviceToLogicalYRel</B>(<B>wxCoord</B><I> y</I>)<P>
+Convert device Y coordinate to relative logical coordinate, using the current
+mapping mode but ignoring the y axis orientation.
+Use this function for converting a height, for example.<P>
+
+
+<HR>
+<A NAME="wxdcdrawarc"></A>
+<H3>wxDC::DrawArc</H3>
+<P>
+<B>void</B> <B>DrawArc</B>(<B>wxCoord</B><I> x1</I>, <B>wxCoord</B><I> y1</I>, <B>wxCoord</B><I> x2</I>, <B>wxCoord</B><I> y2</I>, <B>wxCoord</B><I> xc</I>, <B>wxCoord</B><I> yc</I>)<P>
+Draws an arc of a circle, centred on (<I>xc, yc</I>), with starting point (<I>x1, y1</I>)
+and ending at (<I>x2, y2</I>).   The current pen is used for the outline
+and the current brush for filling the shape.<P>
+The arc is drawn in an anticlockwise direction from the start point to the end point.<P>
+
+
+<HR>
+<A NAME="wxdcdrawbitmap"></A>
+<H3>wxDC::DrawBitmap</H3>
+<P>
+<B>void</B> <B>DrawBitmap</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap</I>, <B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>bool</B><I> transparent</I>)<P>
+Draw a bitmap on the device context at the specified point. If <I>transparent</I> is true and the bitmap has
+a transparency mask, the bitmap will be drawn transparently.<P>
+When drawing a mono-bitmap, the current text foreground colour will be used to draw the foreground
+of the bitmap (all bits set to 1), and the current text background colour to draw the background
+(all bits set to 0). See also <A HREF="wx_wxdc.html#wxdcsettextforeground">SetTextForeground</A>, 
+<A HREF="wx_wxdc.html#wxdcsettextbackground">SetTextBackground</A> and <A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A>.<P>
+
+
+<HR>
+<A NAME="wxdcdrawcheckmark"></A>
+<H3>wxDC::DrawCheckMark</H3>
+<P>
+<B>void</B> <B>DrawCheckMark</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxCoord</B><I> width</I>, <B>wxCoord</B><I> height</I>)<P>
+<B>void</B> <B>DrawCheckMark</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A> &</B></B><I>rect</I>)<P>
+Draws a check mark inside the given rectangle.<P>
+
+
+<HR>
+<A NAME="wxdcdrawcircle"></A>
+<H3>wxDC::DrawCircle</H3>
+<P>
+<B>void</B> <B>DrawCircle</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxCoord</B><I> radius</I>)<P>
+<B>void</B> <B>DrawCircle</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pt</I>, <B>wxCoord</B><I> radius</I>)<P>
+Draws a circle with the given centre and radius.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdcdrawellipse">DrawEllipse</A><P>
+
+
+<HR>
+<A NAME="wxdcdrawellipse"></A>
+<H3>wxDC::DrawEllipse</H3>
+<P>
+<B>void</B> <B>DrawEllipse</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxCoord</B><I> width</I>, <B>wxCoord</B><I> height</I>)<P>
+<B>void</B> <B>DrawEllipse</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pt</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>)<P>
+<B>void</B> <B>DrawEllipse</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>)<P>
+Draws an ellipse contained in the rectangle specified either with the given top
+left corner and the given size or directly. The current pen is used for the
+outline and the current brush for filling the shape.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdcdrawcircle">DrawCircle</A><P>
+
+
+<HR>
+<A NAME="wxdcdrawellipticarc"></A>
+<H3>wxDC::DrawEllipticArc</H3>
+<P>
+<B>void</B> <B>DrawEllipticArc</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxCoord</B><I> width</I>, <B>wxCoord</B><I> height</I>,
+ <B>double</B><I> start</I>, <B>double</B><I> end</I>)<P>
+Draws an arc of an ellipse. The current pen is used for drawing the arc and
+the current brush is used for drawing the pie.<P>
+<I>x</I> and <I>y</I> specify the x and y coordinates of the upper-left corner of the rectangle that contains
+the ellipse.<P>
+<I>width</I> and <I>height</I> specify the width and height of the rectangle that contains
+the ellipse.<P>
+<I>start</I> and <I>end</I> specify the start and end of the arc relative to the three-o'clock
+position from the center of the rectangle. Angles are specified
+in degrees (360 is a complete circle). Positive values mean
+counter-clockwise motion. If <I>start</I> is equal to <I>end</I>, a
+complete ellipse will be drawn.<P>
+
+
+<HR>
+<A NAME="wxdcdrawicon"></A>
+<H3>wxDC::DrawIcon</H3>
+<P>
+<B>void</B> <B>DrawIcon</B>(<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>&</B></B><I> icon</I>, <B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>)<P>
+Draw an icon on the display (does nothing if the device context is PostScript).
+This can be the simplest way of drawing bitmaps on a window.<P>
+
+
+<HR>
+<A NAME="wxdcdrawlabel"></A>
+<H3>wxDC::DrawLabel</H3>
+<P>
+<B>virtual void</B> <B>DrawLabel</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> text</I>,
+                               <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> image</I>,
+                               <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>,
+                               <B>int</B><I> alignment = wxALIGN_LEFT | wxALIGN_TOP</I>,
+                               <B>int</B><I> indexAccel = -1</I>,
+                               <B><A HREF="wx_wxrect.html#wxrect">wxRect</A> *</B></B><I>rectBounding = NULL</I>)<P>
+<B>void</B> <B>DrawLabel</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> text</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>,
+                       <B>int</B><I> alignment = wxALIGN_LEFT | wxALIGN_TOP</I>,
+                       <B>int</B><I> indexAccel = -1</I>)<P>
+Draw optional bitmap and the text into the given rectangle and aligns it as specified
+by alignment parameter; it also will emphasize the character with the given index if
+it is != -1 and return the bounding rectangle if required.<P>
+
+
+<HR>
+<A NAME="wxdcdrawline"></A>
+<H3>wxDC::DrawLine</H3>
+<P>
+<B>void</B> <B>DrawLine</B>(<B>wxCoord</B><I> x1</I>, <B>wxCoord</B><I> y1</I>, <B>wxCoord</B><I> x2</I>, <B>wxCoord</B><I> y2</I>)<P>
+Draws a line from the first point to the second. The current pen is used
+for drawing the line. Note that the point (x2, y2) is <EM>not</EM> part of the
+line and is not drawn by this function (this is consistent with the behaviour
+of many other toolkits).<P>
+
+
+<HR>
+<A NAME="wxdcdrawlines"></A>
+<H3>wxDC::DrawLines</H3>
+<P>
+<B>void</B> <B>DrawLines</B>(<B>int</B><I> n</I>, <B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B></B><I> points[]</I>, <B>wxCoord</B><I> xoffset = 0</I>, <B>wxCoord</B><I> yoffset = 0</I>)<P>
+<B>void</B> <B>DrawLines</B>(<B><A HREF="wx_wxlist.html#wxlist">wxList</A> *</B></B><I>points</I>, <B>wxCoord</B><I> xoffset = 0</I>, <B>wxCoord</B><I> yoffset = 0</I>)<P>
+Draws lines using an array of <I>points</I> of size <I>n</I>, or list of
+pointers to points, adding the optional offset coordinate. The current
+pen is used for drawing the lines.  The programmer is responsible for
+deleting the list of points.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxPython version of this method accepts a Python list
+of wxPoint objects.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> The wxPerl version of this method accepts 
+  as its first parameter a reference to an array
+  of wxPoint objects.<P>
+
+
+<HR>
+<A NAME="wxdcdrawpolygon"></A>
+<H3>wxDC::DrawPolygon</H3>
+<P>
+<B>void</B> <B>DrawPolygon</B>(<B>int</B><I> n</I>, <B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B></B><I> points[]</I>, <B>wxCoord</B><I> xoffset = 0</I>, <B>wxCoord</B><I> yoffset = 0</I>,<BR>
+
+  <B>int </B><I>fill_style = wxODDEVEN_RULE</I>)<P>
+<B>void</B> <B>DrawPolygon</B>(<B><A HREF="wx_wxlist.html#wxlist">wxList</A> *</B></B><I>points</I>, <B>wxCoord</B><I> xoffset = 0</I>, <B>wxCoord</B><I> yoffset = 0</I>,<BR>
+
+  <B>int </B><I>fill_style = wxODDEVEN_RULE</I>)<P>
+Draws a filled polygon using an array of <I>points</I> of size <I>n</I>,
+or list of pointers to points, adding the optional offset coordinate.<P>
+The last argument specifies the fill rule: <B>wxODDEVEN_RULE</B> (the
+default) or <B>wxWINDING_RULE</B>.<P>
+The current pen is used for drawing the outline, and the current brush
+for filling the shape.  Using a transparent brush suppresses filling.
+The programmer is responsible for deleting the list of points.<P>
+Note that wxWidgets automatically closes the first and last points.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxPython version of this method accepts a Python list
+of wxPoint objects.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> The wxPerl version of this method accepts 
+  as its first parameter a reference to an array
+  of wxPoint objects.<P>
+
+
+<HR>
+<A NAME="wxdcdrawpolypolygon"></A>
+<H3>wxDC::DrawPolyPolygon</H3>
+<P>
+<B>void</B> <B>DrawPolyPolygon</B>(<B>int</B><I> n</I>, <B>int</B><I> count[]</I>, <B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B></B><I> points[]</I>, <B>wxCoord</B><I> xoffset = 0</I>, <B>wxCoord</B><I> yoffset = 0</I>,<BR>
+
+  <B>int </B><I>fill_style = wxODDEVEN_RULE</I>)<P>
+Draws two or more filled polygons using an array of <I>points</I>, adding the
+optional offset coordinates.<P>
+Notice that for the platforms providing a native implementation
+of this function (Windows and PostScript-based wxDC currently), this is more
+efficient than using <A HREF="wx_wxdc.html#wxdcdrawpolygon">DrawPolygon</A> in a loop.<P>
+<I>n</I> specifies the number of polygons to draw, the array <I>count</I> of size 
+<I>n</I> specifies the number of points in each of the polygons in the 
+<I>points</I> array.<P>
+The last argument specifies the fill rule: <B>wxODDEVEN_RULE</B> (the default)
+or <B>wxWINDING_RULE</B>.<P>
+The current pen is used for drawing the outline, and the current brush for
+filling the shape.  Using a transparent brush suppresses filling.<P>
+The polygons maybe disjoint or overlapping. Each polygon specified in a call to
+<B>DrawPolyPolygon</B> must be closed. Unlike polygons created by the
+<A HREF="wx_wxdc.html#wxdcdrawpolygon">DrawPolygon</A> member function, the polygons created by
+<B>DrawPolyPolygon</B> are not closed automatically.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> Not implemented yet<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> Not implemented yet<P>
+
+
+<HR>
+<A NAME="wxdcdrawpoint"></A>
+<H3>wxDC::DrawPoint</H3>
+<P>
+<B>void</B> <B>DrawPoint</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>)<P>
+Draws a point using the color of the current pen. Note that the other properties of the pen are not used, such as width etc..<P>
+
+
+<HR>
+<A NAME="wxdcdrawrectangle"></A>
+<H3>wxDC::DrawRectangle</H3>
+<P>
+<B>void</B> <B>DrawRectangle</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxCoord</B><I> width</I>, <B>wxCoord</B><I> height</I>)<P>
+Draws a rectangle with the given top left corner, and with the given
+size.  The current pen is used for the outline and the current brush
+for filling the shape.<P>
+
+
+<HR>
+<A NAME="wxdcdrawrotatedtext"></A>
+<H3>wxDC::DrawRotatedText</H3>
+<P>
+<B>void</B> <B>DrawRotatedText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>double</B><I> angle</I>)<P>
+Draws the text rotated by <I>angle</I> degrees.<P>
+<B>NB:</B> Under Win9x only TrueType fonts can be drawn by this function. In
+particular, a font different from <TT>wxNORMAL_FONT</TT> should be used as the
+latter is not a TrueType font. <TT>wxSWISS_FONT</TT> is an example of a font
+which is.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdcdrawtext">DrawText</A><P>
+
+
+<HR>
+<A NAME="wxdcdrawroundedrectangle"></A>
+<H3>wxDC::DrawRoundedRectangle</H3>
+<P>
+<B>void</B> <B>DrawRoundedRectangle</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxCoord</B><I> width</I>, <B>wxCoord</B><I> height</I>, <B>double</B><I> radius</I>)<P>
+Draws a rectangle with the given top left corner, and with the given
+size.  The corners are quarter-circles using the given radius. The
+current pen is used for the outline and the current brush for filling
+the shape.<P>
+If <I>radius</I> is positive, the value is assumed to be the
+radius of the rounded corner. If <I>radius</I> is negative,
+the absolute value is assumed to be the <I>proportion</I> of the smallest
+dimension of the rectangle. This means that the corner can be
+a sensible size relative to the size of the rectangle, and also avoids
+the strange effects X produces when the corners are too big for
+the rectangle.<P>
+
+
+<HR>
+<A NAME="wxdcdrawspline"></A>
+<H3>wxDC::DrawSpline</H3>
+<P>
+<B>void</B> <B>DrawSpline</B>(<B>int </B><I>n</I>, <B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A> </B></B><I>points[]</I>)<P>
+Draws a spline between all given control points, using the current
+pen.<P>
+<B>void</B> <B>DrawSpline</B>(<B><A HREF="wx_wxlist.html#wxlist">wxList</A> *</B></B><I>points</I>)<P>
+Draws a spline between all given control points, using the current
+pen.  Doesn't delete the wxList and contents.<P>
+<B>void</B> <B>DrawSpline</B>(<B>wxCoord</B><I> x1</I>, <B>wxCoord</B><I> y1</I>, <B>wxCoord</B><I> x2</I>, <B>wxCoord</B><I> y2</I>, <B>wxCoord</B><I> x3</I>, <B>wxCoord</B><I> y3</I>)<P>
+Draws a three-point spline using the current pen.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxPython version of this method accepts a Python list
+of wxPoint objects.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> The wxPerl version of this method accepts a reference to an array
+  of wxPoint objects.<P>
+
+
+<HR>
+<A NAME="wxdcdrawtext"></A>
+<H3>wxDC::DrawText</H3>
+<P>
+<B>void</B> <B>DrawText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>)<P>
+Draws a text string at the specified point, using the current text font,
+and the current text foreground and background colours.<P>
+The coordinates refer to the top-left corner of the rectangle bounding
+the string. See <A HREF="wx_wxdc.html#wxdcgettextextent">wxDC::GetTextExtent</A> for how
+to get the dimensions of a text string, which can be used to position the
+text more precisely.<P>
+<B>NB:</B> under wxGTK the current 
+<A HREF="wx_wxdc.html#wxdcgetlogicalfunction">logical function</A> is used by this function
+but it is ignored by wxMSW. Thus, you should avoid using logical functions
+with this function in portable programs.<P>
+
+
+<HR>
+<A NAME="wxdcenddoc"></A>
+<H3>wxDC::EndDoc</H3>
+<P>
+<B>void</B> <B>EndDoc</B>()<P>
+Ends a document (only relevant when outputting to a printer).<P>
+
+
+<HR>
+<A NAME="wxdcendpage"></A>
+<H3>wxDC::EndPage</H3>
+<P>
+<B>void</B> <B>EndPage</B>()<P>
+Ends a document page (only relevant when outputting to a printer).<P>
+
+
+<HR>
+<A NAME="wxdcfloodfill"></A>
+<H3>wxDC::FloodFill</H3>
+<P>
+<B>bool</B> <B>FloodFill</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>, <B>int</B><I> style=wxFLOOD_SURFACE</I>)<P>
+Flood fills the device context starting from the given point, using
+the <I>current brush colour</I>, and using a style:<P>
+<UL>
+
+<LI> wxFLOOD_SURFACE: the flooding occurs until a colour other than the given colour is encountered.
+<LI> wxFLOOD_BORDER: the area to be flooded is bounded by the given colour.
+</UL>
+<P>
+Returns false if the operation failed.<P>
+<I>Note:</I> The present implementation for non-Windows platforms may fail to find
+colour borders if the pixels do not match the colour exactly. However the
+function will still return true.<P>
+
+
+<HR>
+<A NAME="wxdcgetbackground"></A>
+<H3>wxDC::GetBackground</H3>
+<P>
+<B>const <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>&</B> </B> <B>GetBackground</B>() <B>const</B><P>
+Gets the brush used for painting the background (see <A HREF="wx_wxdc.html#wxdcsetbackground">wxDC::SetBackground</A>).<P>
+
+
+<HR>
+<A NAME="wxdcgetbackgroundmode"></A>
+<H3>wxDC::GetBackgroundMode</H3>
+<P>
+<B>int</B> <B>GetBackgroundMode</B>() <B>const</B><P>
+Returns the current background mode: <TT>wxSOLID</TT> or <TT>wxTRANSPARENT</TT>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdcsetbackgroundmode">SetBackgroundMode</A><P>
+
+
+<HR>
+<A NAME="wxdcgetbrush"></A>
+<H3>wxDC::GetBrush</H3>
+<P>
+<B>const <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>&</B> </B> <B>GetBrush</B>() <B>const</B><P>
+Gets the current brush (see <A HREF="wx_wxdc.html#wxdcsetbrush">wxDC::SetBrush</A>).<P>
+
+
+<HR>
+<A NAME="wxdcgetcharheight"></A>
+<H3>wxDC::GetCharHeight</H3>
+<P>
+<B>wxCoord</B> <B>GetCharHeight</B>()<P>
+Gets the character height of the currently set font.<P>
+
+
+<HR>
+<A NAME="wxdcgetcharwidth"></A>
+<H3>wxDC::GetCharWidth</H3>
+<P>
+<B>wxCoord</B> <B>GetCharWidth</B>()<P>
+Gets the average character width of the currently set font.<P>
+
+
+<HR>
+<A NAME="wxdcgetclippingbox"></A>
+<H3>wxDC::GetClippingBox</H3>
+<P>
+<B>void</B> <B>GetClippingBox</B>(<B>wxCoord</B><I> *x</I>, <B>wxCoord</B><I> *y</I>, <B>wxCoord</B><I> *width</I>, <B>wxCoord</B><I> *height</I>)<P>
+Gets the rectangle surrounding the current clipping region.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> No arguments are required and the four values defining the
+rectangle are returned as a tuple.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> This method takes no arguments and returns a four element list
+<TT>( x, y, width, height )</TT><P>
+
+
+<HR>
+<A NAME="wxdcgetfont"></A>
+<H3>wxDC::GetFont</H3>
+<P>
+<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>&</B> </B> <B>GetFont</B>() <B>const</B><P>
+Gets the current font. Notice that even although each device context object has
+some default font after creation, this method would return a <TT>wxNullFont</TT> 
+initially and only after calling <A HREF="wx_wxdc.html#wxdcsetfont">wxDC::SetFont</A> a valid
+font is returned.<P>
+
+
+<HR>
+<A NAME="wxdcgetlayoutdirection"></A>
+<H3>wxDC::GetLayoutDirection</H3>
+<P>
+<B>wxLayoutDirection</B> <B>GetLayoutDirection</B>() <B>const</B><P>
+Gets the current layout direction of the device context. On platforms where RTL layout
+is supported, the return value will either be <TT>wxLayout_LeftToRight</TT> or 
+<TT>wxLayout_RightToLeft</TT>. If RTL layout is not supported, the return value will 
+be <TT>wxLayout_Default</TT>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdcsetlayoutdirection">SetLayoutDirection</A><P>
+
+
+<HR>
+<A NAME="wxdcgetlogicalfunction"></A>
+<H3>wxDC::GetLogicalFunction</H3>
+<P>
+<B>int</B> <B>GetLogicalFunction</B>()<P>
+Gets the current logical function (see <A HREF="wx_wxdc.html#wxdcsetlogicalfunction">wxDC::SetLogicalFunction</A>).<P>
+
+
+<HR>
+<A NAME="wxdcgetmapmode"></A>
+<H3>wxDC::GetMapMode</H3>
+<P>
+<B>int</B> <B>GetMapMode</B>()<P>
+Gets the <I>mapping mode</I> for the device context (see <A HREF="wx_wxdc.html#wxdcsetmapmode">wxDC::SetMapMode</A>).<P>
+
+
+<HR>
+<A NAME="wxdcgetmultilinetextextent"></A>
+<H3>wxDC::GetMultiLineTextExtent</H3>
+<P>
+<B>void</B> <B>GetMultiLineTextExtent</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>string</I>, <B>wxCoord *</B><I>w</I>,<BR>
+
+  <B>wxCoord *</B><I>h</I>, <B>wxCoord *</B><I>heightLine = NULL</I>, <B><A HREF="wx_wxfont.html#wxfont">wxFont</A> *</B></B><I>font = NULL</I>) <B>const</B><P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetMultiLineTextExtent</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>string</I>) <B>const</B><P>
+Gets the dimensions of the string using the currently selected font.
+<I>string</I> is the text string to measure, <I>heightLine</I>, if non NULL,
+is where to store the height of a single line.<P>
+The text extent is returned in <I>w</I> and <I>h</I> pointers (first form) or as
+a <A HREF="wx_wxsize.html#wxsize">wxSize</A> object (second form).<P>
+If the optional parameter <I>font</I> is specified and valid, then it is used
+for the text extent calculation. Otherwise the currently selected font is.<P>
+Note that this function works both with single-line and multi-line strings.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfont.html#wxfont">wxFont</A>,
+<A HREF="wx_wxdc.html#wxdcsetfont">wxDC::SetFont</A>,
+<A HREF="wx_wxdc.html#wxdcgetpartialtextextents">wxDC::GetPartialTextExtents</A>,
+<A HREF="wx_wxdc.html#wxdcgettextextent">wxDC::GetTextExtent</A><P>
+
+
+<HR>
+<A NAME="wxdcgetpartialtextextents"></A>
+<H3>wxDC::GetPartialTextExtents</H3>
+<P>
+<B>bool</B> <B>GetPartialTextExtents</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&  </B></B><I>text</I>, 
+<B>wxArrayInt&amp; </B><I>widths</I>) <B>const</B><P>
+Fills the <I>widths</I> array with the widths from the beginning of 
+<I>text</I> to the corresponding character of <I>text</I>.  The generic
+version simply builds a running total of the widths of each character
+using <A HREF="wx_wxdc.html#wxdcgettextextent">GetTextExtent</A>, however if the
+various platforms have a native API function that is faster or more
+accurate than the generic implementation then it should be used
+instead. <P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdcgetmultilinetextextent">wxDC::GetMultiLineTextExtent</A>,
+<A HREF="wx_wxdc.html#wxdcgettextextent">wxDC::GetTextExtent</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method only takes the <I>text</I> parameter and
+  returns a Python list of integers.<P>
+
+
+<HR>
+<A NAME="wxdcgetpen"></A>
+<H3>wxDC::GetPen</H3>
+<P>
+<B>const <A HREF="wx_wxpen.html#wxpen">wxPen</A>&</B> </B> <B>GetPen</B>() <B>const</B><P>
+Gets the current pen (see <A HREF="wx_wxdc.html#wxdcsetpen">wxDC::SetPen</A>).<P>
+
+
+<HR>
+<A NAME="wxdcgetpixel"></A>
+<H3>wxDC::GetPixel</H3>
+<P>
+<B>bool</B> <B>GetPixel</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A> *</B></B><I>colour</I>)<P>
+Gets in <I>colour</I> the colour at the specified location.
+Not available for wxPostScriptDC or wxMetafileDC.<P>
+Note that setting a pixel can be done using <A HREF="wx_wxdc.html#wxdcdrawpoint">DrawPoint</A>.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> For wxPython the wxColour value is returned and is not
+required as a parameter.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> This method only takes the parameters <TT>x</TT> and <TT>y</TT> and returns
+a Wx::Colour value<P>
+
+<HR>
+<A NAME="wxdcgetppi"></A>
+<H3>wxDC::GetPPI</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetPPI</B>() <B>const</B><P>
+Returns the resolution of the device in pixels per inch.<P>
+
+<HR>
+<A NAME="wxdcgetsize"></A>
+<H3>wxDC::GetSize</H3>
+<P>
+<B>void</B> <B>GetSize</B>(<B>wxCoord *</B><I>width</I>, <B>wxCoord *</B><I>height</I>) <B>const</B><P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetSize</B>() <B>const</B><P>
+This gets the horizontal and vertical resolution in device units. It can be used to scale graphics to fit the page.
+For example, if <I>maxX</I> and <I>maxY</I>
+represent the maximum horizontal and vertical 'pixel' values used in your
+application, the following code will scale the graphic to fit on the
+printer page:<P>
+<PRE>
+  wxCoord w, h;
+  dc.GetSize(&w, &h);
+  double scaleX=(double)(maxX/w);
+  double scaleY=(double)(maxY/h);
+  dc.SetUserScale(min(scaleX,scaleY),min(scaleX,scaleY));
+</PRE>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetSize()</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a wxSize
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetSizeTuple()</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a 2-tuple (width, height)
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In place of a single overloaded method, wxPerl uses:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetSize()</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a Wx::Size
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetSizeWH()</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a 2-element list
+  <TT>( width, height )</TT>
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdcgetsizemm"></A>
+<H3>wxDC::GetSizeMM</H3>
+<P>
+<B>void</B> <B>GetSizeMM</B>(<B>wxCoord *</B><I>width</I>, <B>wxCoord *</B><I>height</I>) <B>const</B><P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetSizeMM</B>() <B>const</B><P>
+Returns the horizontal and vertical resolution in millimetres.<P>
+
+<HR>
+<A NAME="wxdcgettextbackground"></A>
+<H3>wxDC::GetTextBackground</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetTextBackground</B>() <B>const</B><P>
+Gets the current text background colour (see <A HREF="wx_wxdc.html#wxdcsettextbackground">wxDC::SetTextBackground</A>).<P>
+
+
+<HR>
+<A NAME="wxdcgettextextent"></A>
+<H3>wxDC::GetTextExtent</H3>
+<P>
+<B>void</B> <B>GetTextExtent</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>string</I>, <B>wxCoord *</B><I>w</I>, <B>wxCoord *</B><I>h</I>,<BR>
+
+  <B>wxCoord *</B><I>descent = NULL</I>, <B>wxCoord *</B><I>externalLeading = NULL</I>, <B><A HREF="wx_wxfont.html#wxfont">wxFont</A> *</B></B><I>font = NULL</I>) <B>const</B><P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetTextExtent</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>string</I>) <B>const</B><P>
+Gets the dimensions of the string using the currently selected font.
+<I>string</I> is the text string to measure, <I>descent</I> is the
+dimension from the baseline of the font to the bottom of the
+descender, and <I>externalLeading</I> is any extra vertical space added
+to the font by the font designer (usually is zero).<P>
+The text extent is returned in <I>w</I> and <I>h</I> pointers (first form) or as
+a <A HREF="wx_wxsize.html#wxsize">wxSize</A> object (second form).<P>
+If the optional parameter <I>font</I> is specified and valid, then it is used
+for the text extent calculation. Otherwise the currently selected font is.<P>
+Note that this function only works with single-line strings.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfont.html#wxfont">wxFont</A>,
+<A HREF="wx_wxdc.html#wxdcsetfont">wxDC::SetFont</A>,
+<A HREF="wx_wxdc.html#wxdcgetpartialtextextents">wxDC::GetPartialTextExtents</A>,
+<A HREF="wx_wxdc.html#wxdcgetmultilinetextextent">wxDC::GetMultiLineTextExtent</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The following methods are implemented in wxPython:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetTextExtent(string)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a 2-tuple, (width, height)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetFullTextExtent(string, font=NULL)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a
+4-tuple, (width, height, descent, externalLeading) 
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method is implemented as 
+  <B>GetTextExtent( string, font = undef )</B> returning a four element
+  array <TT>( width, height, descent, externalLeading )</TT>
+<P>
+
+
+<HR>
+<A NAME="wxdcgettextforeground"></A>
+<H3>wxDC::GetTextForeground</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetTextForeground</B>() <B>const</B><P>
+Gets the current text foreground colour (see <A HREF="wx_wxdc.html#wxdcsettextforeground">wxDC::SetTextForeground</A>).<P>
+
+
+<HR>
+<A NAME="wxdcgetuserscale"></A>
+<H3>wxDC::GetUserScale</H3>
+<P>
+<B>void</B> <B>GetUserScale</B>(<B>double</B><I> *x</I>, <B>double</B><I> *y</I>)<P>
+Gets the current user scale factor (set by <A HREF="wx_wxdc.html#wxdcsetuserscale">SetUserScale</A>).<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes no arguments and return a two element
+ array <TT>( x, y )</TT><P>
+
+
+<HR>
+<A NAME="wxdcgradientfillconcentric"></A>
+<H3>wxDC::GradientFillConcentric</H3>
+<P>
+<B>void</B> <B>GradientFillConcentric</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> initialColour</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> destColour</I>)<P>
+<B>void</B> <B>GradientFillConcentric</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> initialColour</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> destColour</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>circleCenter</I>)<P>
+Fill the area specified by rect with a radial gradient, starting from 
+<I>initialColour</I> at the centre of the circle and fading to <I>destColour</I> 
+on the circle outside.<P>
+<I>circleCenter</I> are the relative coordinates of centre of the circle in
+the specified <I>rect</I>. If not specified, the cercle is placed at the
+centre of rect.<P>
+<B>Note: </B> Currently this function is very slow, don't use it for
+real-time drawing.<P>
+
+
+<HR>
+<A NAME="wxdcgradientfilllinear"></A>
+<H3>wxDC::GradientFillLinear</H3>
+<P>
+<B>void</B> <B>GradientFillLinear</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> initialColour</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> destColour</I>, <B>wxDirection</B><I> nDirection = wxEAST</I>)<P>
+Fill the area specified by <I>rect</I> with a linear gradient, starting from 
+<I>initialColour</I> and eventually fading to <I>destColour</I>. The 
+<I>nDirection</I> specifies the direction of the colour change, default is to
+use <I>initialColour</I> on the left part of the rectangle and 
+<I>destColour</I> on the right one.<P>
+
+
+<HR>
+<A NAME="wxdclogicaltodevicex"></A>
+<H3>wxDC::LogicalToDeviceX</H3>
+<P>
+<B>wxCoord</B> <B>LogicalToDeviceX</B>(<B>wxCoord</B><I> x</I>)<P>
+Converts logical X coordinate to device coordinate, using the current
+mapping mode.<P>
+
+
+<HR>
+<A NAME="wxdclogicaltodevicexrel"></A>
+<H3>wxDC::LogicalToDeviceXRel</H3>
+<P>
+<B>wxCoord</B> <B>LogicalToDeviceXRel</B>(<B>wxCoord</B><I> x</I>)<P>
+Converts logical X coordinate to relative device coordinate, using the current
+mapping mode but ignoring the x axis orientation.
+Use this for converting a width, for example.<P>
+
+
+<HR>
+<A NAME="wxdclogicaltodevicey"></A>
+<H3>wxDC::LogicalToDeviceY</H3>
+<P>
+<B>wxCoord</B> <B>LogicalToDeviceY</B>(<B>wxCoord</B><I> y</I>)<P>
+Converts logical Y coordinate to device coordinate, using the current
+mapping mode.<P>
+
+
+<HR>
+<A NAME="wxdclogicaltodeviceyrel"></A>
+<H3>wxDC::LogicalToDeviceYRel</H3>
+<P>
+<B>wxCoord</B> <B>LogicalToDeviceYRel</B>(<B>wxCoord</B><I> y</I>)<P>
+Converts logical Y coordinate to relative device coordinate, using the current
+mapping mode but ignoring the y axis orientation.
+Use this for converting a height, for example.<P>
+
+
+<HR>
+<A NAME="wxdcmaxx"></A>
+<H3>wxDC::MaxX</H3>
+<P>
+<B>wxCoord</B> <B>MaxX</B>()<P>
+Gets the maximum horizontal extent used in drawing commands so far.<P>
+
+
+<HR>
+<A NAME="wxdcmaxy"></A>
+<H3>wxDC::MaxY</H3>
+<P>
+<B>wxCoord</B> <B>MaxY</B>()<P>
+Gets the maximum vertical extent used in drawing commands so far.<P>
+
+
+<HR>
+<A NAME="wxdcminx"></A>
+<H3>wxDC::MinX</H3>
+<P>
+<B>wxCoord</B> <B>MinX</B>()<P>
+Gets the minimum horizontal extent used in drawing commands so far.<P>
+
+
+<HR>
+<A NAME="wxdcminy"></A>
+<H3>wxDC::MinY</H3>
+<P>
+<B>wxCoord</B> <B>MinY</B>()<P>
+Gets the minimum vertical extent used in drawing commands so far.<P>
+
+
+<HR>
+<A NAME="wxdcisok"></A>
+<H3>wxDC::IsOk</H3>
+<P>
+<B>bool</B> <B>Ok</B>()<P>
+Returns true if the DC is ok to use.<P>
+
+
+<HR>
+<A NAME="wxdcresetboundingbox"></A>
+<H3>wxDC::ResetBoundingBox</H3>
+<P>
+<B>void</B> <B>ResetBoundingBox</B>()<P>
+Resets the bounding box: after a call to this function, the bounding box
+doesn't contain anything.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdccalcboundingbox">CalcBoundingBox</A><P>
+
+
+<HR>
+<A NAME="wxdcsetaxisorientation"></A>
+<H3>wxDC::SetAxisOrientation</H3>
+<P>
+<B>void</B> <B>SetAxisOrientation</B>(<B>bool</B><I> xLeftRight</I>,
+                                <B>bool</B><I> yBottomUp</I>)<P>
+Sets the x and y axis orientation (i.e., the direction from lowest to
+highest values on the axis). The default orientation is 
+x axis from left to right and y axis from top down.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>xLeftRight</I><UL><UL>
+True to set the x axis orientation to the natural
+left to right orientation, false to invert it.</UL></UL>
+<P>
+<I>yBottomUp</I><UL><UL>
+True to set the y axis orientation to the natural
+bottom up orientation, false to invert it.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxdcsetbackground"></A>
+<H3>wxDC::SetBackground</H3>
+<P>
+<B>void</B> <B>SetBackground</B>(<B>const <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>& </B></B><I>brush</I>)<P>
+Sets the current background brush for the DC.<P>
+
+
+<HR>
+<A NAME="wxdcsetbackgroundmode"></A>
+<H3>wxDC::SetBackgroundMode</H3>
+<P>
+<B>void</B> <B>SetBackgroundMode</B>(<B>int</B><I> mode</I>)<P>
+<I>mode</I> may be one of wxSOLID and wxTRANSPARENT. This setting determines
+whether text will be drawn with a background colour or not.<P>
+
+
+<HR>
+<A NAME="wxdcsetbrush"></A>
+<H3>wxDC::SetBrush</H3>
+<P>
+<B>void</B> <B>SetBrush</B>(<B>const <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>& </B></B><I>brush</I>)<P>
+Sets the current brush for the DC.<P>
+If the argument is wxNullBrush, the current brush is selected out of the device
+context, and the original brush restored, allowing the current brush to
+be destroyed safely.<P>
+See also <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>.<P>
+See also <A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A> for the interpretation of colours
+when drawing into a monochrome bitmap.<P>
+ 
+
+<HR>
+<A NAME="wxdcsetclippingregion"></A>
+<H3>wxDC::SetClippingRegion</H3>
+<P>
+<B>void</B> <B>SetClippingRegion</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxCoord</B><I> width</I>, <B>wxCoord</B><I> height</I>)<P>
+<B>void</B> <B>SetClippingRegion</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sz</I>)<P>
+<B>void</B> <B>SetClippingRegion</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>)<P>
+<B>void</B> <B>SetClippingRegion</B>(<B>const <A HREF="wx_wxregion.html#wxregion">wxRegion</A>&</B></B><I> region</I>)<P>
+Sets the clipping region for this device context to the intersection of the
+given region described by the parameters of this method and the previously set
+clipping region. You should call 
+<A HREF="wx_wxdc.html#wxdcdestroyclippingregion">DestroyClippingRegion</A> if you want to set
+the clipping region exactly to the region specified.<P>
+The clipping region is an area to which drawing is restricted. Possible uses
+for the clipping region are for clipping text or for speeding up window redraws
+when only a known area of the screen is damaged.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdcdestroyclippingregion">wxDC::DestroyClippingRegion</A>, <A HREF="wx_wxregion.html#wxregion">wxRegion</A><P>
+
+
+<HR>
+<A NAME="wxdcsetdeviceorigin"></A>
+<H3>wxDC::SetDeviceOrigin</H3>
+<P>
+<B>void</B> <B>SetDeviceOrigin</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>)<P>
+Sets the device origin (i.e., the origin in pixels after scaling has been
+applied).<P>
+This function may be useful in Windows printing
+operations for placing a graphic on a page.<P>
+
+
+<HR>
+<A NAME="wxdcsetfont"></A>
+<H3>wxDC::SetFont</H3>
+<P>
+<B>void</B> <B>SetFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the current font for the DC. It must be a valid font, in particular you
+should not pass <TT>wxNullFont</TT> to this method.<P>
+See also <A HREF="wx_wxfont.html#wxfont">wxFont</A>.<P>
+
+
+<HR>
+<A NAME="wxdcsetlayoutdirection"></A>
+<H3>wxDC::SetLayoutDirection</H3>
+<P>
+<B>void</B> <B>SetLayoutDirection</B>(<B>wxLayoutDirection</B><I> dir</I>)<P>
+Sets the current layout direction for the device context. <I>dir</I> may be either
+<TT>wxLayout_Default</TT>, <TT>wxLayout_LeftToRight</TT> or <TT>wxLayout_RightToLeft</TT>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdcgetlayoutdirection">GetLayoutDirection</A><P>
+
+
+<HR>
+<A NAME="wxdcsetlogicalfunction"></A>
+<H3>wxDC::SetLogicalFunction</H3>
+<P>
+<B>void</B> <B>SetLogicalFunction</B>(<B>int</B><I> function</I>)<P>
+Sets the current logical function for the device context.  This determines how
+a source pixel (from a pen or brush colour, or source device context if
+using <A HREF="wx_wxdc.html#wxdcblit">wxDC::Blit</A>) combines with a destination pixel in the
+current device context.<P>
+The possible values
+and their meaning in terms of source and destination pixel values are
+as follows:<P>
+<PRE>
+wxAND                 src AND dst
+wxAND_INVERT          (NOT src) AND dst
+wxAND_REVERSE         src AND (NOT dst)
+wxCLEAR               0
+wxCOPY                src
+wxEQUIV               (NOT src) XOR dst
+wxINVERT              NOT dst
+wxNAND                (NOT src) OR (NOT dst)
+wxNOR                 (NOT src) AND (NOT dst)
+wxNO_OP               dst
+wxOR                  src OR dst
+wxOR_INVERT           (NOT src) OR dst
+wxOR_REVERSE          src OR (NOT dst)
+wxSET                 1
+wxSRC_INVERT          NOT src
+wxXOR                 src XOR dst
+</PRE>
+The default is wxCOPY, which simply draws with the current colour.
+The others combine the current colour and the background using a
+logical operation.  wxINVERT is commonly used for drawing rubber bands or
+moving outlines, since drawing twice reverts to the original colour.<P>
+
+
+<HR>
+<A NAME="wxdcsetmapmode"></A>
+<H3>wxDC::SetMapMode</H3>
+<P>
+<B>void</B> <B>SetMapMode</B>(<B>int</B><I> int</I>)<P>
+The <I>mapping mode</I> of the device context defines the unit of
+measurement used to convert logical units to device units. Note that
+in X, text drawing isn't handled consistently with the mapping mode; a
+font is always specified in point size. However, setting the <I>
+user scale</I> (see <A HREF="wx_wxdc.html#wxdcsetuserscale">wxDC::SetUserScale</A>) scales the text appropriately. In
+Windows, scalable TrueType fonts are always used; in X, results depend
+on availability of fonts, but usually a reasonable match is found.<P>
+The coordinate origin is always at the top left of the screen/printer.<P>
+Drawing to a Windows printer device context uses the current mapping mode,
+but mapping mode is currently ignored for PostScript output.<P>
+The mapping mode can be one of the following:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxMM_TWIPS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Each logical unit is 1/20 of a point, or 1/1440 of
+  an inch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxMM_POINTS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Each logical unit is a point, or 1/72 of an inch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxMM_METRIC
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Each logical unit is 1 mm.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxMM_LOMETRIC
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Each logical unit is 1/10 of a mm.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxMM_TEXT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Each logical unit is 1 pixel.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="wxdcsetpalette"></A>
+<H3>wxDC::SetPalette</H3>
+<P>
+<B>void</B> <B>SetPalette</B>(<B>const <A HREF="wx_wxpalette.html#wxpalette">wxPalette</A>& </B></B><I>palette</I>)<P>
+If this is a window DC or memory DC, assigns the given palette to the window
+or bitmap associated with the DC. If the argument is wxNullPalette, the current
+palette is selected out of the device context, and the original palette
+restored.<P>
+See <A HREF="wx_wxpalette.html#wxpalette">wxPalette</A> for further details. <P>
+
+
+<HR>
+<A NAME="wxdcsetpen"></A>
+<H3>wxDC::SetPen</H3>
+<P>
+<B>void</B> <B>SetPen</B>(<B>const <A HREF="wx_wxpen.html#wxpen">wxPen</A>& </B></B><I>pen</I>)<P>
+Sets the current pen for the DC.<P>
+If the argument is wxNullPen, the current pen is selected out of the device
+context, and the original pen restored.<P>
+See also <A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A> for the interpretation of colours
+when drawing into a monochrome bitmap.<P>
+
+
+<HR>
+<A NAME="wxdcsettextbackground"></A>
+<H3>wxDC::SetTextBackground</H3>
+<P>
+<B>void</B> <B>SetTextBackground</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+Sets the current text background colour for the DC.<P>
+
+
+<HR>
+<A NAME="wxdcsettextforeground"></A>
+<H3>wxDC::SetTextForeground</H3>
+<P>
+<B>void</B> <B>SetTextForeground</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+Sets the current text foreground colour for the DC.<P>
+See also <A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A> for the interpretation of colours
+when drawing into a monochrome bitmap.<P>
+
+
+<HR>
+<A NAME="wxdcsetuserscale"></A>
+<H3>wxDC::SetUserScale</H3>
+<P>
+<B>void</B> <B>SetUserScale</B>(<B>double</B><I> xScale</I>, <B>double</B><I> yScale</I>)<P>
+Sets the user scaling factor, useful for applications which require
+'zooming'.<P>
+
+
+<HR>
+<A NAME="wxdcstartdoc"></A>
+<H3>wxDC::StartDoc</H3>
+<P>
+<B>bool</B> <B>StartDoc</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>)<P>
+Starts a document (only relevant when outputting to a printer).
+Message is a message to show while printing.<P>
+
+
+<HR>
+<A NAME="wxdcstartpage"></A>
+<H3>wxDC::StartPage</H3>
+<P>
+<B>bool</B> <B>StartPage</B>()<P>
+Starts a document page (only relevant when outputting to a printer).<P>
+
+</FONT></BODY></HTML>

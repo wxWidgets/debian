@@ -1,0 +1,137 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxIdleEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxidleevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxiconizeevent.html#wxiconizeevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wximage.html#wximage"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxIdleEvent</H2>
+<P>
+This class is used for idle events, which are generated when the system becomes
+idle. Note that, unless you do something specifically, the idle events are not
+sent if the system remains idle once it has become it, e.g. only a single idle
+event will be generated until something else resulting in more normal events
+happens and only then is the next idle event sent again. If you need to ensure
+a continuous stream of idle events, you can either use 
+<A HREF="wx_wxidleevent.html#wxidleeventrequestmore">RequestMore</A> method in your handler or call 
+<A HREF="wx_appinifunctions.html#wxwakeupidle">wxWakeUpIdle</A> periodically (for example from timer
+event), but note that both of these approaches (and especially the first one)
+increase the system load and so should be avoided if possible.<P>
+By default, idle events are sent to all windows (and also 
+<A HREF="wx_wxapp.html#wxapp">wxApp</A>, as usual). If this is causing a significant
+overhead in your application, you can call <A HREF="wx_wxidleevent.html#wxidleeventsetmode">wxIdleEvent::SetMode</A> with
+the value wxIDLE_PROCESS_SPECIFIED, and set the wxWS_EX_PROCESS_IDLE extra
+window style for every window which should receive idle events.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process an idle event, use this event handler macro to direct input to a member
+function that takes a wxIdleEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_IDLE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_IDLE event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A>, <A HREF="wx_wxupdateuievent.html#wxupdateuievent">wxUpdateUIEvent</A>, 
+<A HREF="wx_wxwindow.html#wxwindowoninternalidle">wxWindow::OnInternalIdle</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxidleeventctor">wxIdleEvent::wxIdleEvent</A><BR>
+<A HREF="#wxidleeventcansend">wxIdleEvent::CanSend</A><BR>
+<A HREF="#wxidleeventgetmode">wxIdleEvent::GetMode</A><BR>
+<A HREF="#wxidleeventrequestmore">wxIdleEvent::RequestMore</A><BR>
+<A HREF="#wxidleeventmorerequested">wxIdleEvent::MoreRequested</A><BR>
+<A HREF="#wxidleeventsetmode">wxIdleEvent::SetMode</A><BR>
+<P>
+
+<HR>
+<A NAME="wxidleeventctor"></A>
+<H3>wxIdleEvent::wxIdleEvent</H3>
+<P>
+<B></B> <B>wxIdleEvent</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxidleeventcansend"></A>
+<H3>wxIdleEvent::CanSend</H3>
+<P>
+<B>static bool</B> <B>CanSend</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> window</I>)<P>
+Returns <TT>true</TT> if it is appropriate to send idle events to
+this window.<P>
+This function looks at the mode used (see <A HREF="wx_wxidleevent.html#wxidleeventsetmode">wxIdleEvent::SetMode</A>),
+and the wxWS_EX_PROCESS_IDLE style in <I>window</I> to determine whether idle events should be sent to
+this window now. By default this will always return <TT>true</TT> because
+the update mode is initially wxIDLE_PROCESS_ALL. You can change the mode
+to only send idle events to windows with the wxWS_EX_PROCESS_IDLE extra window style set.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxidleevent.html#wxidleeventsetmode">wxIdleEvent::SetMode</A><P>
+
+<HR>
+<A NAME="wxidleeventgetmode"></A>
+<H3>wxIdleEvent::GetMode</H3>
+<P>
+<B>static wxIdleMode</B> <B>GetMode</B>()<P>
+Static function returning a value specifying how wxWidgets
+will send idle events: to all windows, or only to those which specify that they
+will process the events.<P>
+See <A HREF="wx_wxidleevent.html#wxidleeventsetmode">wxIdleEvent::SetMode</A>.<P>
+
+<HR>
+<A NAME="wxidleeventrequestmore"></A>
+<H3>wxIdleEvent::RequestMore</H3>
+<P>
+<B>void</B> <B>RequestMore</B>(<B>bool</B><I> needMore = true</I>)<P>
+Tells wxWidgets that more processing is required. This function can be called by an OnIdle
+handler for a window or window event handler to indicate that wxApp::OnIdle should
+forward the OnIdle event once more to the application windows. If no window calls this function
+during OnIdle, then the application will remain in a passive event loop (not calling OnIdle) until a
+new event is posted to the application by the windowing system.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxidleevent.html#wxidleeventmorerequested">wxIdleEvent::MoreRequested</A><P>
+
+<HR>
+<A NAME="wxidleeventmorerequested"></A>
+<H3>wxIdleEvent::MoreRequested</H3>
+<P>
+<B>bool</B> <B>MoreRequested</B>() <B>const</B><P>
+Returns true if the OnIdle function processing this event requested more processing time.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxidleevent.html#wxidleeventrequestmore">wxIdleEvent::RequestMore</A><P>
+
+<HR>
+<A NAME="wxidleeventsetmode"></A>
+<H3>wxIdleEvent::SetMode</H3>
+<P>
+<B>static void</B> <B>SetMode</B>(<B>wxIdleMode </B><I>mode</I>)<P>
+Static function for specifying how wxWidgets will send idle events: to
+all windows, or only to those which specify that they
+will process the events.<P>
+<I>mode</I> can be one of the following values.
+The default is wxIDLE_PROCESS_ALL.<P>
+<PRE>
+enum wxIdleMode
+{
+        // Send idle events to all windows
+    wxIDLE_PROCESS_ALL,
+
+        // Send idle events to windows that have
+        // the wxWS_EX_PROCESS_IDLE flag specified
+    wxIDLE_PROCESS_SPECIFIED
+};
+</PRE>
+
+</FONT></BODY></HTML>

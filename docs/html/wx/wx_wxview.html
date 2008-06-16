@@ -1,0 +1,242 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxView</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxvariantdata.html#wxvariantdata"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxvlistbox.html#wxvlistbox"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxView</H2>
+<P>
+The view class can be used to model the viewing and editing component of
+an application's file-based data. It is part of the document/view framework supported by wxWidgets,
+and cooperates with the <A HREF="wx_wxdocument.html#wxdocument">wxDocument</A>, <A HREF="wx_wxdoctemplate.html#wxdoctemplate">wxDocTemplate</A>
+and <A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A> classes.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/docview.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_docviewoverview.html#wxviewoverview">wxView overview</A>, <A HREF="wx_wxdocument.html#wxdocument">wxDocument</A>, <A HREF="wx_wxdoctemplate.html#wxdoctemplate">wxDocTemplate</A>,
+<A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxviewmviewdocument">wxView::m_viewDocument</A><BR>
+<A HREF="#wxviewmviewframe">wxView::m_viewFrame</A><BR>
+<A HREF="#wxviewmviewtypename">wxView::m_viewTypeName</A><BR>
+<A HREF="#wxviewctor">wxView::wxView</A><BR>
+<A HREF="#wxviewdtor">wxView::~wxView</A><BR>
+<A HREF="#wxviewactivate">wxView::Activate</A><BR>
+<A HREF="#wxviewclose">wxView::Close</A><BR>
+<A HREF="#wxviewgetdocument">wxView::GetDocument</A><BR>
+<A HREF="#wxviewgetdocumentmanager">wxView::GetDocumentManager</A><BR>
+<A HREF="#wxviewgetframe">wxView::GetFrame</A><BR>
+<A HREF="#wxviewgetviewname">wxView::GetViewName</A><BR>
+<A HREF="#wxviewonactivateview">wxView::OnActivateView</A><BR>
+<A HREF="#wxviewonchangefilename">wxView::OnChangeFilename</A><BR>
+<A HREF="#wxviewonclose">wxView::OnClose</A><BR>
+<A HREF="#wxviewonclosingdocument">wxView::OnClosingDocument</A><BR>
+<A HREF="#wxviewoncreate">wxView::OnCreate</A><BR>
+<A HREF="#wxviewoncreateprintout">wxView::OnCreatePrintout</A><BR>
+<A HREF="#onviewondraw">wxView::OnDraw</A><BR>
+<A HREF="#onviewonupdate">wxView::OnUpdate</A><BR>
+<A HREF="#wxviewsetdocument">wxView::SetDocument</A><BR>
+<A HREF="#wxviewsetframe">wxView::SetFrame</A><BR>
+<A HREF="#wxviewsetviewname">wxView::SetViewName</A><BR>
+<P>
+
+<HR>
+<A NAME="wxviewmviewdocument"></A>
+<H3>wxView::m_viewDocument</H3>
+<P>
+wxDocument* m_viewDocument<P>
+The document associated with this view. There may be more than one view per
+document, but there can never be more than one document for one view.<P>
+
+<HR>
+<A NAME="wxviewmviewframe"></A>
+<H3>wxView::m_viewFrame</H3>
+<P>
+wxFrame* m_viewFrame<P>
+Frame associated with the view, if any.<P>
+
+<HR>
+<A NAME="wxviewmviewtypename"></A>
+<H3>wxView::m_viewTypeName</H3>
+<P>
+wxString m_viewTypeName<P>
+The view type name given to the wxDocTemplate constructor, copied to this
+variable when the view is created. Not currently used by the framework.<P>
+
+<HR>
+<A NAME="wxviewctor"></A>
+<H3>wxView::wxView</H3>
+<P>
+<B></B> <B>wxView</B>()<P>
+Constructor. Define your own default constructor to initialize application-specific
+data.<P>
+
+<HR>
+<A NAME="wxviewdtor"></A>
+<H3>wxView::~wxView</H3>
+<P>
+<B></B> <B>~wxView</B>()<P>
+Destructor. Removes itself from the document's list of views.<P>
+
+<HR>
+<A NAME="wxviewactivate"></A>
+<H3>wxView::Activate</H3>
+<P>
+<B>virtual void</B> <B>Activate</B>(<B>bool</B><I> activate</I>)<P>
+Call this from your view frame's OnActivate member to tell the framework which view is
+currently active. If your windowing system doesn't call OnActivate, you may need to
+call this function from any place where you know the view must
+be active, and the framework will need to get the current view.<P>
+The prepackaged view frame wxDocChildFrame calls wxView::Activate from its OnActivate member.<P>
+This function calls wxView::OnActivateView.<P>
+
+<HR>
+<A NAME="wxviewclose"></A>
+<H3>wxView::Close</H3>
+<P>
+<B>virtual bool</B> <B>Close</B>(<B>bool</B><I> deleteWindow = true</I>)<P>
+Closes the view by calling OnClose. If <I>deleteWindow</I> is true, this function should
+delete the window associated with the view.<P>
+
+<HR>
+<A NAME="wxviewgetdocument"></A>
+<H3>wxView::GetDocument</H3>
+<P>
+<B><A HREF="wx_wxdocument.html#wxdocument">wxDocument</A>*</B> </B> <B>GetDocument</B>() <B>const</B><P>
+Gets a pointer to the document associated with the view.<P>
+
+<HR>
+<A NAME="wxviewgetdocumentmanager"></A>
+<H3>wxView::GetDocumentManager</H3>
+<P>
+<B><A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A>*</B> </B> <B>GetDocumentManager</B>() <B>const</B><P>
+Returns a pointer to the document manager instance associated with this view.<P>
+
+<HR>
+<A NAME="wxviewgetframe"></A>
+<H3>wxView::GetFrame</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B> </B> <B>GetFrame</B>()<P>
+Gets the frame associated with the view (if any). Note that this "frame'' is
+not a wxFrame at all in the generic MDI implementation which uses the notebook
+pages instead of the frames and this is why this method returns a wxWindow and
+not a wxFrame.<P>
+
+<HR>
+<A NAME="wxviewgetviewname"></A>
+<H3>wxView::GetViewName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetViewName</B>() <B>const</B><P>
+Gets the name associated with the view (passed to the wxDocTemplate constructor).
+Not currently used by the framework.<P>
+
+<HR>
+<A NAME="wxviewonactivateview"></A>
+<H3>wxView::OnActivateView</H3>
+<P>
+<B>virtual void</B> <B>OnActivateView</B>(<B>bool </B><I>activate</I>, <B><A HREF="wx_wxview.html#wxview">wxView</A> *</B></B><I>activeView</I>, <B><A HREF="wx_wxview.html#wxview">wxView</A> *</B></B><I>deactiveView</I>)<P>
+Called when a view is activated by means of wxView::Activate. The default implementation does
+nothing.<P>
+
+<HR>
+<A NAME="wxviewonchangefilename"></A>
+<H3>wxView::OnChangeFilename</H3>
+<P>
+<B>virtual void</B> <B>OnChangeFilename</B>()<P>
+Called when the filename has changed. The default implementation constructs a
+suitable title and sets the title of the view frame (if any).<P>
+
+<HR>
+<A NAME="wxviewonclose"></A>
+<H3>wxView::OnClose</H3>
+<P>
+<B>virtual bool</B> <B>OnClose</B>(<B>bool</B><I> deleteWindow</I>)<P>
+Implements closing behaviour. The default implementation calls wxDocument::Close
+to close the associated document. Does not delete the view. The application
+may wish to do some cleaning up operations in this function, <I>if</I> a
+call to wxDocument::Close succeeded. For example, if your views
+all share the same window, you need to disassociate the window from the view
+and perhaps clear the window. If <I>deleteWindow</I> is true, delete the
+frame associated with the view.<P>
+
+<HR>
+<A NAME="wxviewonclosingdocument"></A>
+<H3>wxView::OnClosingDocument</H3>
+<P>
+<B>virtual void</B> <B>OnClosingDoocument</B>()<P>
+Override this to clean up the view when the document is being
+closed.<P>
+
+<HR>
+<A NAME="wxviewoncreate"></A>
+<H3>wxView::OnCreate</H3>
+<P>
+<B>virtual bool</B> <B>OnCreate</B>(<B><A HREF="wx_wxdocument.html#wxdocument">wxDocument</A>* </B></B><I>doc</I>, <B>long</B><I> flags</I>)<P>
+wxDocManager or wxDocument creates a wxView via a wxDocTemplate.
+Just after the wxDocTemplate creates the wxView, it calls
+wxView::OnCreate. In its OnCreate member function, the wxView can create a wxDocChildFrame
+or a derived class. This wxDocChildFrame provides user interface
+elements to view and/or edit the contents of the wxDocument.<P>
+By default, simply returns true. If the function returns false, the
+view will be deleted.<P>
+
+<HR>
+<A NAME="wxviewoncreateprintout"></A>
+<H3>wxView::OnCreatePrintout</H3>
+<P>
+<B>virtual <A HREF="wx_wxprintout.html#wxprintout">wxPrintout</A>*</B> </B> <B>OnCreatePrintout</B>()<P>
+If the printing framework is enabled in the library, this function returns a
+<A HREF="wx_wxprintout.html#wxprintout">wxPrintout</A> object for the purposes of printing. It should create a new object
+every time it is called; the framework will delete objects it creates.<P>
+By default, this function returns an instance of wxDocPrintout, which prints
+and previews one page by calling wxView::OnDraw.<P>
+Override to return an instance of a class other than wxDocPrintout.<P>
+
+<HR>
+<A NAME="onviewondraw"></A>
+<H3>wxView::OnDraw</H3>
+<P>
+<B>virtual void</B> <B>OnDraw</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>* </B></B><I>dc</I>)<P>
+Override this function to render the view on the given device context.<P>
+
+<HR>
+<A NAME="onviewonupdate"></A>
+<H3>wxView::OnUpdate</H3>
+<P>
+<B>virtual void</B> <B>OnUpdate</B>(<B><A HREF="wx_wxview.html#wxview">wxView</A>* </B></B><I>sender</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>hint</I>)<P>
+Called when the view should be updated. <I>sender</I> is a pointer to the view
+that sent the update request, or NULL if no single view requested the update (for instance,
+when the document is opened). <I>hint</I> is as yet unused but may in future contain
+application-specific information for making updating more efficient.<P>
+
+<HR>
+<A NAME="wxviewsetdocument"></A>
+<H3>wxView::SetDocument</H3>
+<P>
+<B>void</B> <B>SetDocument</B>(<B><A HREF="wx_wxdocument.html#wxdocument">wxDocument</A>* </B></B><I>doc</I>)<P>
+Associates the given document with the view. Normally called by the
+framework.<P>
+
+<HR>
+<A NAME="wxviewsetframe"></A>
+<H3>wxView::SetFrame</H3>
+<P>
+<B>void</B> <B>SetFrame</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>frame</I>)<P>
+Sets the frame associated with this view. The application should call this
+if possible, to tell the view about the frame.<P>
+See <A HREF="wx_wxview.html#wxviewgetframe">GetFrame</A> for the explanation about the mismatch
+between the "Frame'' in the method name and the type of its parameter.<P>
+
+<HR>
+<A NAME="wxviewsetviewname"></A>
+<H3>wxView::SetViewName</H3>
+<P>
+<B>void</B> <B>SetViewName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the view type name. Should only be called by the framework.<P>
+
+</FONT></BODY></HTML>

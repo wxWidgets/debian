@@ -83,10 +83,35 @@ class TestVirtualList(wx.ListCtrl):
             return None
 
 
+class TestVirtualListPanel(wx.Panel):
+    def __init__(self, parent, log):
+        wx.Panel.__init__(self, parent, -1, style=wx.WANTS_CHARS)
+        
+        self.log = log
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        
+        if wx.Platform == "__WXMAC__" and \
+               hasattr(wx.GetApp().GetTopWindow(), "LoadDemo"):
+            self.useNative = wx.CheckBox(self, -1, "Use native listctrl")
+            self.useNative.SetValue( 
+                not wx.SystemOptions.GetOptionInt("mac.listctrl.always_use_generic") )
+            self.Bind(wx.EVT_CHECKBOX, self.OnUseNative, self.useNative)
+            sizer.Add(self.useNative, 0, wx.ALL | wx.ALIGN_RIGHT, 4)
+            
+        self.list = TestVirtualList(self, self.log)
+        sizer.Add(self.list, 1, wx.EXPAND)
+        
+        self.SetSizer(sizer)
+        self.SetAutoLayout(True)
+        
+    def OnUseNative(self, event):
+        wx.SystemOptions.SetOptionInt("mac.listctrl.always_use_generic", not event.IsChecked())
+        wx.GetApp().GetTopWindow().LoadDemo("ListCtrl_virtual")
+
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestVirtualList(nb, log)
+    win = TestVirtualListPanel(nb, log)
     return win
 
 #----------------------------------------------------------------------

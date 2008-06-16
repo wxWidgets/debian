@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     28-July-2001
-// RCS-ID:      $Id: _cshelp.i,v 1.8 2004/09/23 20:23:19 RD Exp $
+// RCS-ID:      $Id: _cshelp.i 41850 2006-10-10 03:30:33Z RD $
 // Copyright:   (c) 2001 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -20,10 +20,6 @@
 
 //----------------------------------------------------------------------
 
-enum {
-    wxFRAME_EX_CONTEXTHELP,
-    wxDIALOG_EX_CONTEXTHELP,
-};
 %constant wxEventType wxEVT_HELP;
 %constant wxEventType wxEVT_DETAILED_HELP;
 
@@ -70,10 +66,19 @@ Events
 class wxHelpEvent : public wxCommandEvent
 {
 public:
+    // how was this help event generated?
+    enum Origin
+    {
+        Origin_Unknown,    // unrecognized event source
+        Origin_Keyboard,   // event generated from F1 key press
+        Origin_HelpButton  // event from [?] button on the title bar (Windows)
+    };
+
     DocCtorStr(
         wxHelpEvent(wxEventType type = wxEVT_NULL,
                     wxWindowID winid = 0,
-                    const wxPoint& pt = wxDefaultPosition),
+                    const wxPoint& pt = wxDefaultPosition,
+                    Origin origin = Origin_Unknown ),
         "", "");
     
 
@@ -104,7 +109,20 @@ appropriately.", "");
     DocDeclStr(
         void , SetTarget(const wxString& target),
         "Set an optional target to display help in. E.g. a window specification", "");
+
+    // optional indication of the event source
+    DocDeclStr(
+        Origin , GetOrigin() const,
+        "Optiononal indication of the source of the event.", "");
     
+    DocDeclStr(
+        void , SetOrigin(Origin origin),
+        "", "");
+        
+    %property(Link, GetLink, SetLink, doc="See `GetLink` and `SetLink`");
+    %property(Origin, GetOrigin, SetOrigin, doc="See `GetOrigin` and `SetOrigin`");
+    %property(Position, GetPosition, SetPosition, doc="See `GetPosition` and `SetPosition`");
+    %property(Target, GetTarget, SetTarget, doc="See `GetTarget` and `SetTarget`");
 };
 
 //---------------------------------------------------------------------------
@@ -119,7 +137,7 @@ help.
 
 There are a couple of ways to invoke this behaviour implicitly:
 
-    * Use the wx.DIALOG_EX_CONTEXTHELP extended style for a dialog
+    * Use the wx.WS_EX_CONTEXTHELP extended style for a dialog or frame
       (Windows only). This will put a question mark in the titlebar,
       and Windows will put the application into context-sensitive help
       mode automatically, with further programming.
@@ -127,7 +145,7 @@ There are a couple of ways to invoke this behaviour implicitly:
     * Create a `wx.ContextHelpButton`, whose predefined behaviour is
       to create a context help object. Normally you will write your
       application so that this button is only added to a dialog for
-      non-Windows platforms (use ``wx.DIALOG_EX_CONTEXTHELP`` on
+      non-Windows platforms (use ``wx.WS_EX_CONTEXTHELP`` on
       Windows).
 
 :see: `wx.ContextHelpButton`
@@ -208,11 +226,18 @@ application using wx.HelpProvider.Set().", "");
 class wxHelpProvider 
 {
 public:
+    
+    ~wxHelpProvider();
+    
+    
+    %disownarg( wxHelpProvider *helpProvider );
+    %newobject Set;
     DocDeclStr(
         static wxHelpProvider *, Set(wxHelpProvider *helpProvider),
         "Sset the current, application-wide help provider. Returns the previous
 one.  Unlike some other classes, the help provider is not created on
 demand. This must be explicitly done by the application.", "");
+    %cleardisown( wxHelpProvider *helpProvider );
     
     DocDeclStr(
         static wxHelpProvider *, Get(),
@@ -230,6 +255,16 @@ help is associated with the window.", "");
         "Shows help for the given window. Uses GetHelp internally if
 applicable. Returns True if it was done, or False if no help was
 available for this window.", "");
+
+    DocDeclStr(
+        virtual bool , ShowHelpAtPoint(wxWindowBase *window,
+                                       const wxPoint& pt,
+                                       wxHelpEvent::Origin origin),
+        "Show help for the given window (uses window.GetHelpAtPoint()
+internally if applicable), return true if it was done or false if no
+help available for this window.", "");
+    
+
     
     DocDeclStr(
         void , AddHelp(wxWindow *window, const wxString& text),
@@ -250,6 +285,7 @@ table of help strings will fill up and when window pointers are
 reused, the wrong help string will be found.", "");
     
     
+    %pythonPrepend Destroy "args[0].this.own(False)"
     %extend { void Destroy() { delete self; } }
 };
 

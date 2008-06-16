@@ -3,7 +3,7 @@
 %% Purpose:     wxDatePickerCtrl documentation
 %% Author:      Vadim Zeitlin
 %% Created:     2005-01-15
-%% RCS-ID:      $Id: datectrl.tex,v 1.12 2005/06/23 09:55:35 JS Exp $
+%% RCS-ID:      $Id: datectrl.tex 43742 2006-12-02 12:50:24Z VZ $
 %% Copyright:   (c) 2005 Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -149,6 +149,21 @@ set.
 
 Returns the currently selected. If there is no selection or the selection is
 outside of the current range, an invalid object is returned.
+
+\membersection{wxDatePickerCtrl::SetFormat}\label{wxdatepickerctrlsetformat}
+
+\func{void}{SetFormat}{\param{const wxChar*}{ format}}
+
+Please note that this function is only available in the generic version of this
+control. The native version always uses the current system locale.
+
+Sets the display format for the date in the control. See wxDateTime for the
+meaning of format strings.
+
+\wxheading{Remarks}
+
+If the format parameter is invalid,
+the behaviour is undefined.
 
 
 \membersection{wxDatePickerCtrl::SetRange}\label{wxdatepickerctrlsetrange}

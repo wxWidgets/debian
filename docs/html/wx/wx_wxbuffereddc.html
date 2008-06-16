@@ -1,0 +1,104 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxBufferedDC</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxbuffereddc"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxbrushlist.html#wxbrushlist"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxbufferedpaintdc.html#wxbufferedpaintdc"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxBufferedDC</H2>
+<P>
+This class provides a simple way to avoid flicker: when drawing on it,
+everything is in fact first drawn on an in-memory buffer (a
+<A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>) and then copied to the screen, using the
+associated wxDC, only once, when this object is destroyed. wxBufferedDC itself
+is typically associated with <A HREF="wx_wxclientdc.html#wxclientdc">wxClientDC</A>, if you want to
+use it in your <TT>EVT_PAINT</TT> handler, you should look at
+<A HREF="wx_wxbufferedpaintdc.html#wxbufferedpaintdc">wxBufferedPaintDC</A> instead.<P>
+When used like this, a valid <I>dc</I> must be specified in the constructor
+while the <I>buffer</I> bitmap doesn't have to be explicitly provided, by
+default this class will allocate the bitmap of required size itself. However
+using a dedicated bitmap can speed up the redrawing process by eliminating the
+repeated creation and destruction of a possibly big bitmap. Otherwise,
+wxBufferedDC can be used in the same way as any other device context. <P>
+There is another possible use for wxBufferedDC is to use it to maintain a
+backing store for the window contents. In this case, the associated <I>dc</I>
+may be <TT>NULL</TT> but a valid backing store bitmap should be specified.<P>
+Finally, please note that GTK+ 2.0 as well as OS X provide double buffering
+themselves natively. You can either use <A HREF="wx_wxwindow.html#wxwindowisdoublebuffered">wxWindow::IsDoubleBuffered</A> 
+to determine whether you need to use buffering or not, or use 
+<A HREF="wx_wxautobufferedpaintdc.html#wxautobufferedpaintdc">wxAutoBufferedPaintDC</A> to avoid needless double
+buffering on the systems which already do it automatically.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A><BR>
+
+<A HREF="wx_wxdc.html#wxdc">wxDC</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dcbuffer.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdc">wxDC</A>,
+<A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A>,
+<A HREF="wx_wxbufferedpaintdc.html#wxbufferedpaintdc">wxBufferedPaintDC</A>,
+<A HREF="wx_wxautobufferedpaintdc.html#wxautobufferedpaintdc">wxAutoBufferedPaintDC</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxbuffereddcctor">wxBufferedDC::wxBufferedDC</A><BR>
+<A HREF="#wxbuffereddcinit">wxBufferedDC::Init</A><BR>
+<A HREF="#wxbuffereddcdtor">wxBufferedDC::~wxBufferedDC</A><BR>
+<P>
+
+<HR>
+<A NAME="wxbuffereddcctor"></A>
+<H3>wxBufferedDC::wxBufferedDC</H3>
+<P>
+<B></B> <B>wxBufferedDC</B>()<P>
+<B></B> <B>wxBufferedDC</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A> *</B></B><I>dc</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>area</I>, <B>int </B><I>style = wxBUFFER_CLIENT_AREA</I>)<P>
+<B></B> <B>wxBufferedDC</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A> *</B></B><I>dc</I>, <B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>buffer</I>, <B>int </B><I>style = wxBUFFER_CLIENT_AREA</I>)<P>
+If you use the first, default, constructor, you must call one of the 
+<A HREF="wx_wxbuffereddc.html#wxbuffereddcinit">Init</A> methods later in order to use the object.<P>
+The other constructors initialize the object immediately and <TT>Init()</TT> 
+must not be called after using them.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>dc</I><UL><UL>
+The underlying DC: everything drawn to this object will be
+flushed to this DC when this object is destroyed.  You may pass NULL
+in order to just initialize the buffer, and not flush it.</UL></UL>
+<P>
+<I>area</I><UL><UL>
+The size of the bitmap to be used for buffering (this bitmap is
+created internally when it is not given explicitly).</UL></UL>
+<P>
+<I>buffer</I><UL><UL>
+Explicitly provided bitmap to be used for buffering: this is
+the most efficient solution as the bitmap doesn't have to be recreated each
+time but it also requires more memory as the bitmap is never freed. The bitmap
+should have appropriate size, anything drawn outside of its bounds is clipped.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+wxBUFFER_CLIENT_AREA to indicate that just the client area of
+the window is buffered, or wxBUFFER_VIRTUAL_AREA to indicate that the buffer bitmap
+covers the virtual area (in which case PrepareDC is automatically called for the actual window
+device context).</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxbuffereddcinit"></A>
+<H3>wxBufferedDC::Init</H3>
+<P>
+<B>void</B> <B>Init</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A> *</B></B><I>dc</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>area</I>, <B>int </B><I>style = wxBUFFER_CLIENT_AREA</I>)<P>
+<B>void</B> <B>Init</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A> *</B></B><I>dc</I>, <B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>buffer</I>, <B>int </B><I>style = wxBUFFER_CLIENT_AREA</I>)<P>
+These functions initialize the object created using the default constructor.
+Please see <A HREF="wx_wxbuffereddc.html#wxbuffereddcctor">constructors documentation</A> for details.<P>
+<P>
+
+
+<HR>
+<A NAME="wxbuffereddcdtor"></A>
+<H3>wxBufferedDC::~wxBufferedDC</H3>
+<P>
+Copies everything drawn on the DC so far to the underlying DC associated with
+this object, if any.<P>
+
+
+</FONT></BODY></HTML>

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: app.h,v 1.47 2004/09/13 09:16:39 VZ Exp $
+// RCS-ID:      $Id: app.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,18 +12,14 @@
 #ifndef _WX_APP_H_
 #define _WX_APP_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "app.h"
-#endif
-
 #include "wx/event.h"
 #include "wx/icon.h"
 
-class WXDLLIMPEXP_CORE wxFrame;
-class WXDLLIMPEXP_CORE wxWindow;
-class WXDLLIMPEXP_CORE wxApp;
-class WXDLLIMPEXP_CORE wxKeyEvent;
-class WXDLLIMPEXP_BASE wxLog;
+class WXDLLIMPEXP_FWD_CORE wxFrame;
+class WXDLLIMPEXP_FWD_CORE wxWindow;
+class WXDLLIMPEXP_FWD_CORE wxApp;
+class WXDLLIMPEXP_FWD_CORE wxKeyEvent;
+class WXDLLIMPEXP_FWD_BASE wxLog;
 
 // Represents the application. Derive OnInit and declare
 // a new App object to start application

@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        threadpsx.cpp
+// Name:        src/unix/threadpsx.cpp
 // Purpose:     wxThread (Posix) Implementation
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by: K. S. Sreeram (2002): POSIXified wxCondition, added wxSemaphore
 // Created:     04/22/98
-// RCS-ID:      $Id: threadpsx.cpp,v 1.83.2.1 2006/01/17 19:17:24 JS Exp $
+// RCS-ID:      $Id: threadpsx.cpp 48537 2007-09-03 22:52:38Z VZ $
 // Copyright:   (c) Wolfram Gloger (1996, 1997)
 //                  Guilhem Lavaux (1998)
 //                  Vadim Zeitlin (1999-2002)
@@ -21,23 +21,22 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "thread.h"
-#endif
-
 // for compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #if wxUSE_THREADS
 
 #include "wx/thread.h"
-#include "wx/module.h"
-#include "wx/utils.h"
-#include "wx/log.h"
-#include "wx/intl.h"
-#include "wx/dynarray.h"
-#include "wx/timer.h"
-#include "wx/stopwatch.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/dynarray.h"
+    #include "wx/intl.h"
+    #include "wx/log.h"
+    #include "wx/utils.h"
+    #include "wx/timer.h"
+    #include "wx/stopwatch.h"
+    #include "wx/module.h"
+#endif
 
 #include <stdio.h>
 #include <unistd.h>
@@ -113,6 +112,9 @@ WX_DEFINE_ARRAY_PTR(wxThread *, wxArrayThread);
 // be left in memory
 static wxArrayThread gs_allThreads;
 
+// a mutex to protect gs_allThreads
+static wxMutex *gs_mutexAllThreads = NULL;
+
 // the id of the main thread
 static pthread_t gs_tidMain = (pthread_t)-1;
 
@@ -174,7 +176,8 @@ private:
     friend class wxConditionInternal;
 };
 
-#ifdef HAVE_PTHREAD_MUTEXATTR_T
+#if defined(HAVE_PTHREAD_MUTEXATTR_T) && \
+        wxUSE_UNIX && !defined(HAVE_PTHREAD_MUTEXATTR_SETTYPE_DECL)
 // on some systems pthread_mutexattr_settype() is not in the headers (but it is
 // in the library, otherwise we wouldn't compile this code at all)
 extern "C" int pthread_mutexattr_settype(pthread_mutexattr_t *, int);
@@ -484,7 +487,7 @@ wxSemaphoreInternal::wxSemaphoreInternal(int initialcount, int maxcount)
     {
         wxFAIL_MSG( _T("wxSemaphore: invalid initial or maximal count") );
 
-        m_isOk = FALSE;
+        m_isOk = false;
     }
     else
     {
@@ -652,7 +655,7 @@ public:
     pthread_t GetId() const { return m_threadId; }
     pthread_t *GetIdPtr() { return &m_threadId; }
         // "cancelled" flag
-    void SetCancelFlag() { m_cancelled = TRUE; }
+    void SetCancelFlag() { m_cancelled = true; }
     bool WasCancelled() const { return m_cancelled; }
         // exit code
     void SetExitCode(wxThread::ExitCode exitcode) { m_exitcode = exitcode; }
@@ -667,8 +670,8 @@ public:
     {
         wxCriticalSectionLocker lock(m_csJoinFlag);
 
-        m_shouldBeJoined = FALSE;
-        m_isDetached = TRUE;
+        m_shouldBeJoined = false;
+        m_isDetached = true;
     }
 
 #ifdef wxHAVE_PTHREAD_CLEANUP
@@ -764,7 +767,7 @@ void *wxThreadInternal::PthreadStart(wxThread *thread)
 
         wxLogTrace(TRACE_THREADS,
                    _T("Thread %ld Entry() returned %lu."),
-                   THR_ID(pthread), (unsigned long)pthread->m_exitcode);
+                   THR_ID(pthread), wxPtrToUInt(pthread->m_exitcode));
 
         {
             wxCriticalSectionLocker lock(thread->m_critsect);
@@ -776,12 +779,21 @@ void *wxThreadInternal::PthreadStart(wxThread *thread)
         }
     }
 
-    // NB: at least under Linux, pthread_cleanup_push/pop are macros and pop
-    //     contains the matching '}' for the '{' in push, so they must be used
-    //     in the same block!
+    // NB: pthread_cleanup_push/pop() are macros and pop contains the matching
+    //     '}' for the '{' in push, so they must be used in the same block!
 #ifdef wxHAVE_PTHREAD_CLEANUP
+    #ifdef __DECCXX
+        // under Tru64 we get a warning from macro expansion
+        #pragma message save
+        #pragma message disable(declbutnotref)
+    #endif
+
     // remove the cleanup handler without executing it
     pthread_cleanup_pop(FALSE);
+
+    #ifdef __DECCXX
+        #pragma message restore
+    #endif
 #endif // wxHAVE_PTHREAD_CLEANUP
 
     if ( dontRunAtAll )
@@ -835,17 +847,17 @@ void wxThreadInternal::Cleanup(wxThread *thread)
 wxThreadInternal::wxThreadInternal()
 {
     m_state = STATE_NEW;
-    m_cancelled = FALSE;
+    m_cancelled = false;
     m_prio = WXTHREAD_DEFAULT_PRIORITY;
     m_threadId = 0;
     m_exitcode = 0;
 
-    // set to TRUE only when the thread starts waiting on m_semSuspend
-    m_isPaused = FALSE;
+    // set to true only when the thread starts waiting on m_semSuspend
+    m_isPaused = false;
 
     // defaults for joinable threads
-    m_shouldBeJoined = TRUE;
-    m_isDetached = FALSE;
+    m_shouldBeJoined = true;
+    m_isDetached = false;
 }
 
 wxThreadInternal::~wxThreadInternal()
@@ -898,7 +910,7 @@ void wxThreadInternal::Wait()
                 wxLogError(_("Failed to join a thread, potential memory leak detected - please restart the program"));
             }
 
-            m_shouldBeJoined = FALSE;
+            m_shouldBeJoined = false;
         }
     }
 
@@ -937,7 +949,7 @@ void wxThreadInternal::Resume()
         m_semSuspend.Post();
 
         // reset the flag
-        SetReallyPaused(FALSE);
+        SetReallyPaused(false);
     }
     else
     {
@@ -976,7 +988,14 @@ void wxThread::Sleep(unsigned long milliseconds)
 
 int wxThread::GetCPUCount()
 {
-#if defined(__LINUX__) && wxUSE_FFILE
+#if defined(_SC_NPROCESSORS_ONLN)
+    // this works for Solaris and Linux 2.6
+    int rc = sysconf(_SC_NPROCESSORS_ONLN);
+    if ( rc != -1 )
+    {
+        return rc;
+    }
+#elif defined(__LINUX__) && wxUSE_FFILE
     // read from proc (can't use wxTextFile here because it's a special file:
     // it has 0 size but still can be read from)
     wxLogNull nolog;
@@ -1001,13 +1020,6 @@ int wxThread::GetCPUCount()
         {
             wxLogDebug(_T("failed to read /proc/cpuinfo"));
         }
-    }
-#elif defined(_SC_NPROCESSORS_ONLN)
-    // this works for Solaris
-    int rc = sysconf(_SC_NPROCESSORS_ONLN);
-    if ( rc != -1 )
-    {
-        return rc;
     }
 #endif // different ways to get number of CPUs
 
@@ -1056,14 +1068,24 @@ bool wxThread::SetConcurrency(size_t level)
 wxThread::wxThread(wxThreadKind kind)
 {
     // add this thread to the global list of all threads
-    gs_allThreads.Add(this);
+    {
+        wxMutexLocker lock(*gs_mutexAllThreads);
+
+        gs_allThreads.Add(this);
+    }
 
     m_internal = new wxThreadInternal();
 
     m_isDetached = kind == wxTHREAD_DETACHED;
 }
 
-wxThreadError wxThread::Create(unsigned int WXUNUSED(stackSize))
+#ifdef HAVE_PTHREAD_ATTR_SETSTACKSIZE
+    #define WXUNUSED_STACKSIZE(identifier)  identifier
+#else
+    #define WXUNUSED_STACKSIZE(identifier)  WXUNUSED(identifier)
+#endif
+
+wxThreadError wxThread::Create(unsigned int WXUNUSED_STACKSIZE(stackSize))
 {
     if ( m_internal->GetState() != STATE_NEW )
     {
@@ -1074,6 +1096,11 @@ wxThreadError wxThread::Create(unsigned int WXUNUSED(stackSize))
     // set up the thread attribute: right now, we only set thread priority
     pthread_attr_t attr;
     pthread_attr_init(&attr);
+
+#ifdef HAVE_PTHREAD_ATTR_SETSTACKSIZE
+    if (stackSize)
+      pthread_attr_setstacksize(&attr, stackSize);
+#endif
 
 #ifdef HAVE_THREAD_PRIORITY_FUNCTIONS
     int policy;
@@ -1209,42 +1236,21 @@ void wxThread::SetPriority(unsigned int prio)
         case STATE_PAUSED:
 #ifdef HAVE_THREAD_PRIORITY_FUNCTIONS
 #if defined(__LINUX__)
-// On Linux, pthread_setschedparam with SCHED_OTHER does not allow
-// a priority other than 0.  Instead, we use the BSD setpriority
-// which alllows us to set a 'nice' value between 20 to -20.  Only
-// super user can set a value less than zero (more negative yields
-// higher priority).  setpriority set the static priority of a process,
-// but this is OK since Linux is configured as a thread per process.
+            // On Linux, pthread_setschedparam with SCHED_OTHER does not allow
+            // a priority other than 0.  Instead, we use the BSD setpriority
+            // which alllows us to set a 'nice' value between 20 to -20.  Only
+            // super user can set a value less than zero (more negative yields
+            // higher priority).  setpriority set the static priority of a
+            // process, but this is OK since Linux is configured as a thread
+            // per process.
+            //
+            // FIXME this is not true for 2.6!!
+
+            // map wx priorites WXTHREAD_MIN_PRIORITY..WXTHREAD_MAX_PRIORITY
+            // to Unix priorities 20..-20
+            if ( setpriority(PRIO_PROCESS, 0, -(2*(int)prio)/5 + 20) == -1 )
             {
-                float   fPrio;
-                float	pSpan;
-                int		iPrio;
-
-                // Map Wx priorites (WXTHREAD_MIN_PRIORITY -
-                // WXTHREAD_MAX_PRIORITY) into BSD priorities (20 - -20).
-                // Do calculation of values instead of hard coding them
-                // to make maintenance easier.
-
-                pSpan = ((float)(WXTHREAD_MAX_PRIORITY - WXTHREAD_MIN_PRIORITY)) / 2.0;
-
-                // prio starts as ...................  // value =>  (0) >=  p  <=  (n)
-
-                fPrio = ((float)prio) -  pSpan;        // value =>  (-n) >=  p  <=  (+n)
-
-                fPrio = 0.0 - fPrio;                   // value =>  (+n) <=  p  >=  (-n)
-
-                fPrio = fPrio * (20. / pSpan) + .5;    // value =>  (20) <=  p  >=  (-20)
-
-                iPrio = (int)fPrio;
-
-                // Clamp prio from 20 - -20;
-                iPrio = (iPrio > 20)  ?  20 : iPrio;
-                iPrio = (iPrio < -20) ? -20 : iPrio;
-
-                if (setpriority(PRIO_PROCESS, 0, iPrio) == -1)
-                {
-                    wxLogError(_("Failed to set thread priority %d."), prio);
-                }
+                wxLogError(_("Failed to set thread priority %d."), prio);
             }
 #else // __LINUX__
             {
@@ -1425,13 +1431,14 @@ wxThreadError wxThread::Kill()
         default:
 #ifdef HAVE_PTHREAD_CANCEL
             if ( pthread_cancel(m_internal->GetId()) != 0 )
-#endif
+#endif // HAVE_PTHREAD_CANCEL
             {
                 wxLogError(_("Failed to terminate a thread."));
 
                 return wxTHREAD_MISC_ERROR;
             }
 
+#ifdef HAVE_PTHREAD_CANCEL
             if ( m_isDetached )
             {
                 // if we use cleanup function, this will be done from
@@ -1451,6 +1458,7 @@ wxThreadError wxThread::Kill()
             }
 
             return wxTHREAD_NO_ERROR;
+#endif // HAVE_PTHREAD_CANCEL
     }
 }
 
@@ -1509,7 +1517,7 @@ bool wxThread::TestDestroy()
 
     if ( m_internal->GetState() == STATE_PAUSED )
     {
-        m_internal->SetReallyPaused(TRUE);
+        m_internal->SetReallyPaused(true);
 
         // leave the crit section or the other threads will stop too if they
         // try to call any of (seemingly harmless) IsXXX() functions while we
@@ -1536,7 +1544,8 @@ wxThread::~wxThread()
     if ( m_internal->GetState() != STATE_EXITED &&
          m_internal->GetState() != STATE_NEW )
     {
-        wxLogDebug(_T("The thread %ld is being destroyed although it is still running! The application may crash."), GetId());
+        wxLogDebug(_T("The thread %ld is being destroyed although it is still running! The application may crash."),
+                   (long)GetId());
     }
 
     m_critsect.Leave();
@@ -1545,7 +1554,11 @@ wxThread::~wxThread()
     delete m_internal;
 
     // remove this thread from the global array
-    gs_allThreads.Remove(this);
+    {
+        wxMutexLocker lock(*gs_mutexAllThreads);
+
+        gs_allThreads.Remove(this);
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -1567,10 +1580,10 @@ bool wxThread::IsAlive() const
     {
         case STATE_RUNNING:
         case STATE_PAUSED:
-            return TRUE;
+            return true;
 
         default:
-            return FALSE;
+            return false;
     }
 }
 
@@ -1604,18 +1617,20 @@ bool wxThreadModule::OnInit()
     {
         wxLogSysError(rc, _("Thread module initialization failed: failed to create thread key"));
 
-        return FALSE;
+        return false;
     }
 
     gs_tidMain = pthread_self();
+
+    gs_mutexAllThreads = new wxMutex();
 
     gs_mutexGui = new wxMutex();
     gs_mutexGui->Lock();
 
     gs_mutexDeleteThread = new wxMutex();
-    gs_condAllDeleted = new wxCondition( *gs_mutexDeleteThread );
+    gs_condAllDeleted = new wxCondition(*gs_mutexDeleteThread);
 
-    return TRUE;
+    return true;
 }
 
 void wxThreadModule::OnExit()
@@ -1640,13 +1655,19 @@ void wxThreadModule::OnExit()
         }
     }
 
-    // terminate any threads left
-    size_t count = gs_allThreads.GetCount();
-    if ( count != 0u )
+    size_t count;
+
     {
-        wxLogDebug(wxT("%lu threads were not terminated by the application."),
-                   (unsigned long)count);
-    }
+        wxMutexLocker lock(*gs_mutexAllThreads);
+
+        // terminate any threads left
+        count = gs_allThreads.GetCount();
+        if ( count != 0u )
+        {
+            wxLogDebug(wxT("%lu threads were not terminated by the application."),
+                       (unsigned long)count);
+        }
+    } // unlock mutex before deleting the threads as they lock it in their dtor
 
     for ( size_t n = 0u; n < count; n++ )
     {
@@ -1654,6 +1675,8 @@ void wxThreadModule::OnExit()
         // should only delete the first one each time.
         gs_allThreads[0]->Delete();
     }
+
+    delete gs_mutexAllThreads;
 
     // destroy GUI mutex
     gs_mutexGui->Unlock();
@@ -1678,7 +1701,7 @@ static void ScheduleThreadForDeletion()
 
     wxLogTrace(TRACE_THREADS, _T("%lu thread%s waiting to be deleted"),
                (unsigned long)gs_nThreadsBeingDeleted,
-               gs_nThreadsBeingDeleted == 1 ? "" : "s");
+               gs_nThreadsBeingDeleted == 1 ? _T("") : _T("s"));
 }
 
 static void DeleteThread(wxThread *This)
@@ -1721,4 +1744,3 @@ void wxMutexGuiLeave()
 #include "wx/thrimpl.cpp"
 
 #endif // wxUSE_THREADS
-

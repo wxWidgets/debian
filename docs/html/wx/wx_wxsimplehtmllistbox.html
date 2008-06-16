@@ -1,0 +1,227 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSimpleHtmlListBox</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsimplehtmllistbox"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmllistbox.html#wxhtmllistbox"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmlparser.html#wxhtmlparser"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSimpleHtmlListBox</H2>
+<P>
+wxSimpleHtmlListBox is an implementation of <A HREF="wx_wxhtmllistbox.html#wxhtmllistbox">wxHtmlListBox</A> which
+shows HTML content in the listbox rows.<P>
+Unlike <A HREF="wx_wxhtmllistbox.html#wxhtmllistbox">wxHtmlListBox</A>, this is not an abstract class and thus it
+has the advantage that you can use it without deriving your own class from it.
+However, it also has the disadvantage that this is not a virtual control and thus it's not
+well-suited for those cases where you need to show a huge number of items: every time you
+add/insert a string, it will be stored internally and thus will take memory.<P>
+The interface exposed by wxSimpleHtmlListBox fully implements the
+<A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitems">wxControlWithItems</A> interface, thus you should refer to
+<A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitems">wxControlWithItems</A>'s documentation for the API reference
+for adding/removing/retrieving items in the listbox.
+Also note that the <A HREF="wx_wxvlistbox.html#wxvlistboxsetitemcount">wxVListBox::SetItemCount</A> function is
+<TT>protected</TT> in wxSimpleHtmlListBox's context so that you cannot call it directly,
+wxSimpleHtmlListBox will do it for you.<P>
+Note: in case you need to append a lot of items to the control at once, make sure to use the
+<A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitemsappend">Append(const wxArrayString &amp;)</A> function.<P>
+Thus the only difference between a <A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A> and a wxSimpleHtmlListBox
+is that the latter stores strings which can contain HTML fragments (see the list of
+<A HREF="wx_wxhtml.html#htmltagssupported">tags supported by wxHTML</A>).<P>
+Note that the HTML strings you fetch to wxSimpleHtmlListBox should not contain the <TT>&lt;html&gt;</TT> 
+or <TT>&lt;body&gt;</TT> tags.<P>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxhtmllistbox.html#wxhtmllistbox">wxHtmlListBox</A>, <A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitems">wxControlWithItems</A><BR>
+
+<A HREF="wx_wxvlistbox.html#wxvlistbox">wxVListBox</A><BR>
+
+<A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindow">wxVScrolledWindow</A><BR>
+
+<A HREF="wx_wxpanel.html#wxpanel">wxPanel</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/htmllbox.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxHLB_DEFAULT_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The default style: wxSUNKEN_BORDER
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxHLB_MULTIPLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Multiple-selection list: the user can toggle multiple
+items on and off.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+A wxSimpleHtmlListBox emits the same events used by <A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A> and by
+<A HREF="wx_wxhtmllistbox.html#wxhtmllistbox">wxHtmlListBox</A>.<P>
+The event handlers for the following events take a <A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A>:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LISTBOX(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_LISTBOX_SELECTED event,
+when an item on the list is selected.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LISTBOX_DCLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event,
+when the listbox is double-clicked.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The event handlers for the following events take a <A HREF="wx_wxhtmlcellevent.html#wxhtmlcellevent">wxHtmlCellEvent</A>
+or a <A HREF="wx_wxhtmllinkevent.html#wxhtmllinkevent">wxHtmlLinkEvent</A>:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_HTML_CELL_CLICKED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A <A HREF="wx_wxhtmlcell.html#wxhtmlcell">wxHtmlCell</A> was clicked.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_HTML_CELL_HOVER(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The mouse passed over a <A HREF="wx_wxhtmlcell.html#wxhtmlcell">wxHtmlCell</A>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_HTML_LINK_CLICKED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A <A HREF="wx_wxhtmlcell.html#wxhtmlcell">wxHtmlCell</A> which contains an hyperlink was clicked.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxsimplehtmllistboxctor">wxSimpleHtmlListBox::wxSimpleHtmlListBox</A><BR>
+<A HREF="#wxsimplehtmllistboxdtor">wxSimpleHtmlListBox::~wxSimpleHtmlListBox</A><BR>
+<A HREF="#wxsimplehtmllistboxcreate">wxSimpleHtmlListBox::Create</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsimplehtmllistboxctor"></A>
+<H3>wxSimpleHtmlListBox::wxSimpleHtmlListBox</H3>
+<P>
+<B></B> <B>wxHtmlListBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>int</B><I> n = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>choices[] = NULL</I>,
+<B>long</B><I> style = wxHLB_DEFAULT_STYLE</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "simpleHtmlListBox"</I>)<P>
+<B></B> <B>wxHtmlListBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>,
+<B>long</B><I> style = wxHLB_DEFAULT_STYLE</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "simpleHtmlListBox"</I>)<P>
+Constructor, creating and showing the HTML list box.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then the window is sized
+appropriately.</UL></UL>
+<P>
+<I>n</I><UL><UL>
+Number of strings with which to initialise the control.</UL></UL>
+<P>
+<I>choices</I><UL><UL>
+An array of strings with which to initialise the control.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <TT>wxHLB_*</TT> flags.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsimplehtmllistbox.html#wxsimplehtmllistboxcreate">wxSimpleHtmlListBox::Create</A><P>
+<P>
+<B></B> <B>wxSimpleHtmlListBox</B>()<P>
+Default constructor, you must call <A HREF="wx_wxsimplehtmllistbox.html#wxsimplehtmllistboxcreate">Create()</A>
+later.<P>
+
+
+<HR>
+<A NAME="wxsimplehtmllistboxdtor"></A>
+<H3>wxSimpleHtmlListBox::~wxSimpleHtmlListBox</H3>
+<P>
+<B></B> <B>~wxSimpleHtmlListBox</B>()<P>
+Frees the array of stored items and relative client data.<P>
+
+
+<HR>
+<A NAME="wxsimplehtmllistboxcreate"></A>
+<H3>wxSimpleHtmlListBox::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>int</B><I> n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>choices[] = NULL</I>,
+<B>long</B><I> style = wxHLB_DEFAULT_STYLE</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "simpleHtmlListBox"</I>)<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>,
+<B>long</B><I> style = wxHLB_DEFAULT_STYLE</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "simpleHtmlListBox"</I>)<P>
+Creates the HTML listbox for two-step construction. 
+See <A HREF="wx_wxsimplehtmllistbox.html#wxsimplehtmllistboxctor">wxSimpleHtmlListBox::wxSimpleHtmlListBox</A> for further details.<P>
+
+</FONT></BODY></HTML>

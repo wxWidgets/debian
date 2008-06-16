@@ -1,0 +1,58 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMoveEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmoveevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmouseevent.html#wxmouseevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmultichoicedialog.html#wxmultichoicedialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMoveEvent</H2>
+<P>
+A move event holds information about move change events.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a move event, use this event handler macro to direct input to a member
+function that takes a wxMoveEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MOVE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_MOVE event, which is generated
+when a window is moved.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>, <A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmoveeventctor">wxMoveEvent::wxMoveEvent</A><BR>
+<A HREF="#wxmoveeventgetposition">wxMoveEvent::GetPosition</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmoveeventctor"></A>
+<H3>wxMoveEvent::wxMoveEvent</H3>
+<P>
+<B></B> <B>wxMoveEvent</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>, <B>int </B><I>id = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxmoveeventgetposition"></A>
+<H3>wxMoveEvent::GetPosition</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetPosition</B>() <B>const</B><P>
+Returns the position of the window generating the move change event.<P>
+
+</FONT></BODY></HTML>

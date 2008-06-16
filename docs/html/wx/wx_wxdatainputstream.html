@@ -1,0 +1,150 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataInputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdatainputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdatagramsocket.html#wxdatagramsocket"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdataobject.html#wxdataobject"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataInputStream</H2>
+<P>
+This class provides functions that read binary data types in a
+portable way. Data can be read in either big-endian or little-endian
+format, little-endian being the default on all architectures.<P>
+If you want to read data from text files (or streams) use 
+<A HREF="wx_wxtextinputstream.html#wxtextinputstream">wxTextInputStream</A> instead.<P>
+The &gt;&gt; operator is overloaded and you can use this class like a standard C++ iostream.
+Note, however, that the arguments are the fixed size types wxUint32, wxInt32 etc
+and on a typical 32-bit computer, none of these match to the "long" type (wxInt32
+is defined as signed int on 32-bit architectures) so that you cannot use long. To avoid
+problems (here and elsewhere), make use of the wxInt32, wxUint32, etc types.<P>
+For example:<P>
+<PRE>
+  wxFileInputStream input( "mytext.dat" );
+  wxDataInputStream store( input );
+  wxUint8 i1;
+  float f2;
+  wxString line;
+
+  store &gt;&gt; i1;       // read a 8 bit integer.
+  store &gt;&gt; i1 &gt;&gt; f2; // read a 8 bit integer followed by float.
+  store &gt;&gt; line;     // read a text line
+</PRE>
+See also <A HREF="wx_wxdataoutputstream.html#wxdataoutputstream">wxDataOutputStream</A>. <P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/datstrm.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdatainputstreamctor">wxDataInputStream::wxDataInputStream</A><BR>
+<A HREF="#wxdatainputstreamdtor">wxDataInputStream::~wxDataInputStream</A><BR>
+<A HREF="#wxdatainputstreambigendianordered">wxDataInputStream::BigEndianOrdered</A><BR>
+<A HREF="#wxdatainputstreamread8">wxDataInputStream::Read8</A><BR>
+<A HREF="#wxdatainputstreamread16">wxDataInputStream::Read16</A><BR>
+<A HREF="#wxdatainputstreamread32">wxDataInputStream::Read32</A><BR>
+<A HREF="#wxdatainputstreamread64">wxDataInputStream::Read64</A><BR>
+<A HREF="#wxdatainputstreamreaddouble">wxDataInputStream::ReadDouble</A><BR>
+<A HREF="#wxdatainputstreamreadstring">wxDataInputStream::ReadString</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdatainputstreamctor"></A>
+<H3>wxDataInputStream::wxDataInputStream</H3>
+<P>
+<B></B> <B>wxDataInputStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B></B><I> stream</I>)<P>
+<B></B> <B>wxDataInputStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B></B><I> stream</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B></B><I> conv = wxMBConvUTF8</I>)<P>
+Constructs a datastream object from an input stream. Only read methods will
+be available. The second form is only available in Unicode build of wxWidgets.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>stream</I><UL><UL>
+The input stream.</UL></UL>
+<P>
+<I>conv</I><UL><UL>
+Charset conversion object object used to decode strings in Unicode 
+mode (see <A HREF="wx_wxdatainputstream.html#wxdatainputstreamreadstring">wxDataInputStream::ReadString</A>
+documentation for detailed description). Note that you must not destroy
+<I>conv</I> before you destroy this wxDataInputStream instance!</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdatainputstreamdtor"></A>
+<H3>wxDataInputStream::~wxDataInputStream</H3>
+<P>
+<B></B> <B>~wxDataInputStream</B>()<P>
+Destroys the wxDataInputStream object.<P>
+
+<HR>
+<A NAME="wxdatainputstreambigendianordered"></A>
+<H3>wxDataInputStream::BigEndianOrdered</H3>
+<P>
+<B>void</B> <B>BigEndianOrdered</B>(<B>bool</B><I> be_order</I>)<P>
+If <I>be_order</I> is true, all data will be read in big-endian
+order, such as written by programs on a big endian architecture 
+(e.g. Sparc) or written by Java-Streams (which always use 
+big-endian order).
+  
+
+<HR>
+<A NAME="wxdatainputstreamread8"></A>
+<H3>wxDataInputStream::Read8</H3>
+<P>
+<B>wxUint8</B> <B>Read8</B>()<P>
+Reads a single byte from the stream.<P>
+<B>void</B> <B>Read8</B>(<B>wxUint8 *</B><I>buffer</I>, <B>size_t </B><I>size</I>)<P>
+Reads bytes from the stream in a specified buffer. The amount of
+bytes to read is specified by the <I>size</I> variable.<P>
+
+<HR>
+<A NAME="wxdatainputstreamread16"></A>
+<H3>wxDataInputStream::Read16</H3>
+<P>
+<B>wxUint16</B> <B>Read16</B>()<P>
+Reads a 16 bit unsigned integer from the stream.<P>
+<B>void</B> <B>Read16</B>(<B>wxUint16 *</B><I>buffer</I>, <B>size_t </B><I>size</I>)<P>
+Reads 16 bit unsigned integers from the stream in a specified buffer. the
+amount of 16 bit unsigned integer to read is specified by the <I>size</I> variable.<P>
+
+<HR>
+<A NAME="wxdatainputstreamread32"></A>
+<H3>wxDataInputStream::Read32</H3>
+<P>
+<B>wxUint32</B> <B>Read32</B>()<P>
+Reads a 32 bit unsigned integer from the stream.<P>
+<B>void</B> <B>Read32</B>(<B>wxUint32 *</B><I>buffer</I>, <B>size_t </B><I>size</I>)<P>
+Reads 32 bit unsigned integers from the stream in a specified buffer. the amount of
+32 bit unsigned integer to read is specified by the <I>size</I> variable.<P>
+
+<HR>
+<A NAME="wxdatainputstreamread64"></A>
+<H3>wxDataInputStream::Read64</H3>
+<P>
+<B>wxUint64</B> <B>Read64</B>()<P>
+Reads a 64 bit unsigned integer from the stream.<P>
+<B>void</B> <B>Read64</B>(<B>wxUint64 *</B><I>buffer</I>, <B>size_t </B><I>size</I>)<P>
+Reads 64 bit unsigned integers from the stream in a specified buffer. the amount of
+64 bit unsigned integer to read is specified by the <I>size</I> variable.<P>
+
+<HR>
+<A NAME="wxdatainputstreamreaddouble"></A>
+<H3>wxDataInputStream::ReadDouble</H3>
+<P>
+<B>double</B> <B>ReadDouble</B>()<P>
+Reads a double (IEEE encoded) from the stream.<P>
+<B>void</B> <B>ReadDouble</B>(<B>double *</B><I>buffer</I>, <B>size_t </B><I>size</I>)<P>
+Reads double data (IEEE encoded) from the stream in a specified buffer. the amount of
+double to read is specified by the <I>size</I> variable.<P>
+
+<HR>
+<A NAME="wxdatainputstreamreadstring"></A>
+<H3>wxDataInputStream::ReadString</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>ReadString</B>()<P>
+Reads a string from a stream. Actually, this function first reads a long 
+integer specifying the length of the string (without the last null character) 
+and then reads the string.<P>
+In Unicode build of wxWidgets, the fuction first reads multibyte (char*)
+string from the stream and then converts it to Unicode using the <I>conv</I>
+object passed to constructor and returns the result as wxString. You are
+responsible for using the same convertor as when writing the stream.<P>
+See also <A HREF="wx_wxdataoutputstream.html#wxdataoutputstreamwritestring">wxDataOutputStream::WriteString</A>.<P>
+
+</FONT></BODY></HTML>

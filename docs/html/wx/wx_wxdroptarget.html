@@ -1,0 +1,159 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDropTarget</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdroptarget"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdropsource.html#wxdropsource"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdynamiclibrary.html#wxdynamiclibrary"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDropTarget</H2>
+<P>
+This class represents a target for a drag and drop operation. A <A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A>
+can be associated with it and by default, this object will be filled with the data from the
+drag source, if the data formats supported by the data object match the drag source data 
+format.<P>
+There are various virtual handler functions defined in this class which may be overridden
+to give visual feedback or react in a more fine-tuned way, e.g. by not accepting data on
+the whole window area, but only a small portion of it. The normal sequence of calls is
+<A HREF="wx_wxdroptarget.html#wxdroptargetonenter">OnEnter</A>, possibly many times <A HREF="wx_wxdroptarget.html#wxdroptargetondragover">OnDragOver</A>,
+<A HREF="wx_wxdroptarget.html#wxdroptargetondrop">OnDrop</A> and finally <A HREF="wx_wxdroptarget.html#wxdroptargetondata">OnData</A>.<P>
+See <A HREF="wx_wxdndoverview.html#wxdndoverview">Drag and drop overview</A> and <A HREF="wx_wxdataobjectoverview.html#wxdataobjectoverview">wxDataObject overview</A>
+for more information.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dnd.h&gt;<P>
+<B><FONT COLOR="#FF0000">Types</FONT></B><P>
+wxDragResult is defined as follows:<P>
+<PRE>
+enum wxDragResult
+{
+    wxDragError,    // error prevented the d&d operation from completing
+    wxDragNone,     // drag target didn't accept the data
+    wxDragCopy,     // the data was successfully copied
+    wxDragMove,     // the data was successfully moved (MSW only)
+    wxDragLink,     // operation is a drag-link
+    wxDragCancel    // the operation was cancelled by user (not an error)
+};
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdropsource.html#wxdropsource">wxDropSource</A>, 
+<A HREF="wx_wxtextdroptarget.html#wxtextdroptarget">wxTextDropTarget</A>, <A HREF="wx_wxfiledroptarget.html#wxfiledroptarget">wxFileDropTarget</A>,
+<A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A>, <A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdroptargetwxdroptarget">wxDropTarget::wxDropTarget</A><BR>
+<A HREF="#wxdroptargetdtor">wxDropTarget::~wxDropTarget</A><BR>
+<A HREF="#wxdroptargetgetdata">wxDropTarget::GetData</A><BR>
+<A HREF="#wxdroptargetondata">wxDropTarget::OnData</A><BR>
+<A HREF="#wxdroptargetondrop">wxDropTarget::OnDrop</A><BR>
+<A HREF="#wxdroptargetonenter">wxDropTarget::OnEnter</A><BR>
+<A HREF="#wxdroptargetondragover">wxDropTarget::OnDragOver</A><BR>
+<A HREF="#wxdroptargetonleave">wxDropTarget::OnLeave</A><BR>
+<A HREF="#wxdroptargetsetdataobject">wxDropTarget::SetDataObject</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdroptargetwxdroptarget"></A>
+<H3>wxDropTarget::wxDropTarget</H3>
+<P>
+<B></B> <B>wxDropTarget</B>(<B><A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A>*</B></B><I> data = NULL</I>)<P>
+Constructor. <I>data</I> is the data to be associated with the drop target.<P>
+
+<HR>
+<A NAME="wxdroptargetdtor"></A>
+<H3>wxDropTarget::~wxDropTarget</H3>
+<P>
+<B></B> <B>~wxDropTarget</B>()<P>
+Destructor. Deletes the associated data object, if any.<P>
+
+<HR>
+<A NAME="wxdroptargetgetdata"></A>
+<H3>wxDropTarget::GetData</H3>
+<P>
+<B>virtual void</B> <B>GetData</B>()<P>
+This method may only be called from within <A HREF="wx_wxdroptarget.html#wxdroptargetondata">OnData</A>.
+By default, this method copies the data from the drop source to the 
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> associated with this drop target,
+calling its <A HREF="wx_wxdataobject.html#wxdataobjectsetdata">wxDataObject::SetData</A> method.<P>
+
+<HR>
+<A NAME="wxdroptargetondata"></A>
+<H3>wxDropTarget::OnData</H3>
+<P>
+<B>virtual wxDragResult</B> <B>OnData</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxDragResult</B><I> def</I>)<P>
+Called after <A HREF="wx_wxdroptarget.html#wxdroptargetondrop">OnDrop</A> returns true. By default this
+will usually <A HREF="wx_wxdroptarget.html#wxdroptargetgetdata">GetData</A> and will return the suggested
+default value <I>def</I>.<P>
+
+<HR>
+<A NAME="wxdroptargetondrop"></A>
+<H3>wxDropTarget::OnDrop</H3>
+<P>
+<B>virtual bool</B> <B>OnDrop</B>(<B>wxCoord </B><I>x</I>, <B>wxCoord </B><I>y</I>)<P>
+Called when the user drops a data object on the target. Return false to veto the operation.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>x</I><UL><UL>
+The x coordinate of the mouse.</UL></UL>
+<P>
+<I>y</I><UL><UL>
+The y coordinate of the mouse.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Return true to accept the data, false to veto the operation.<P>
+
+<HR>
+<A NAME="wxdroptargetonenter"></A>
+<H3>wxDropTarget::OnEnter</H3>
+<P>
+<B>virtual wxDragResult</B> <B>OnEnter</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxDragResult</B><I> def</I>)<P>
+Called when the mouse enters the drop target. By default, this calls <A HREF="wx_wxdroptarget.html#wxdroptargetondragover">OnDragOver</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>x</I><UL><UL>
+The x coordinate of the mouse.</UL></UL>
+<P>
+<I>y</I><UL><UL>
+The y coordinate of the mouse.</UL></UL>
+<P>
+<I>def</I><UL><UL>
+Suggested default for return value. Determined by SHIFT or CONTROL key states.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns the desired operation or <TT>wxDragNone</TT>. This is used for optical feedback
+from the side of the drop source, typically in form of changing the icon.<P>
+
+<HR>
+<A NAME="wxdroptargetondragover"></A>
+<H3>wxDropTarget::OnDragOver</H3>
+<P>
+<B>virtual wxDragResult</B> <B>OnDragOver</B>(<B>wxCoord</B><I> x</I>, <B>wxCoord</B><I> y</I>, <B>wxDragResult</B><I> def</I>)<P>
+Called when the mouse is being dragged over the drop target. By default, 
+this calls functions return the suggested return value <I>def</I>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>x</I><UL><UL>
+The x coordinate of the mouse.</UL></UL>
+<P>
+<I>y</I><UL><UL>
+The y coordinate of the mouse.</UL></UL>
+<P>
+<I>def</I><UL><UL>
+Suggested value for return value. Determined by SHIFT or CONTROL key states.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns the desired operation or <TT>wxDragNone</TT>. This is used for optical feedback
+from the side of the drop source, typically in form of changing the icon.<P>
+
+<HR>
+<A NAME="wxdroptargetonleave"></A>
+<H3>wxDropTarget::OnLeave</H3>
+<P>
+<B>virtual void</B> <B>OnLeave</B>()<P>
+Called when the mouse leaves the drop target.<P>
+
+<HR>
+<A NAME="wxdroptargetsetdataobject"></A>
+<H3>wxDropTarget::SetDataObject</H3>
+<P>
+<B>void</B> <B>SetDataObject</B>(<B><A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A>*</B></B><I> data</I>)<P>
+Sets the data <A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> associated with the 
+drop target and deletes any previously associated data object.<P>
+
+</FONT></BODY></HTML>

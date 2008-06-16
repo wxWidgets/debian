@@ -1,0 +1,479 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxLocale</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlocale"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlistview.html#wxlistview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlog.html#wxlog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxLocale</H2>
+<P>
+wxLocale class encapsulates all language-dependent settings and is a
+generalization of the C locale concept.<P>
+In wxWidgets this class manages message catalogs which contain the translations
+of the strings used to the current language.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl you can't use the '_' function name, so
+the <TT>Wx::Locale</TT> module can export the <TT>gettext</TT> and 
+<TT>gettext_noop</TT> under any given name. <P>
+<PRE>
+  # this imports gettext ( equivalent to Wx::GetTranslation
+  # and gettext_noop ( a noop )
+  # into your module
+  use Wx::Locale qw(:default);
+
+  # ....
+
+  # use the functions
+  print gettext( ``Panic!'' ); 
+
+  button = Wx::Button-&gt;new( window, -1, gettext( ``Label'' ) );
+</PRE>
+If you need to translate a lot of strings, then adding gettext( ) around
+each one is a long task ( that is why _( ) was introduced ), so just choose
+a shorter name for gettext:<P>
+<PRE>
+  #
+  use Wx::Locale 'gettext' =&gt; 't',
+                 'gettext_noop' =&gt; 'gettext_noop';
+
+  # ...
+
+  # use the functions
+  print t( ``Panic!!'' );
+
+  # ...
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_internationalization.html#internationalization">Internationalization overview</A>,<BR>
+
+<A HREF="wx_samples.html#sampleinternat">Internat sample</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/intl.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<P>
+<A HREF="#wxlanguage">Supported languages</A><BR>
+<A HREF="#wxlocaledefctor">wxLocale::wxLocale</A><BR>
+<A HREF="#wxlocaledtor">wxLocale::~wxLocale</A><BR>
+<A HREF="#wxlocaleaddcatalog">wxLocale::AddCatalog</A><BR>
+<A HREF="#wxlocaleaddcataloglookuppathprefix">wxLocale::AddCatalogLookupPathPrefix</A><BR>
+<A HREF="#wxlocaleaddlanguage">wxLocale::AddLanguage</A><BR>
+<A HREF="#wxlocalefindlanguageinfo">wxLocale::FindLanguageInfo</A><BR>
+<A HREF="#wxlocalegetcanonicalname">wxLocale::GetCanonicalName</A><BR>
+<A HREF="#wxlocalegetlanguage">wxLocale::GetLanguage</A><BR>
+<A HREF="#wxlocalegetlanguageinfo">wxLocale::GetLanguageInfo</A><BR>
+<A HREF="#wxlocalegetlanguagename">wxLocale::GetLanguageName</A><BR>
+<A HREF="#wxlocalegetlocale">wxLocale::GetLocale</A><BR>
+<A HREF="#wxlocalegetname">wxLocale::GetName</A><BR>
+<A HREF="#wxlocalegetstring">wxLocale::GetString</A><BR>
+<A HREF="#wxlocalegetheadervalue">wxLocale::GetHeaderValue</A><BR>
+<A HREF="#wxlocalegetsysname">wxLocale::GetSysName</A><BR>
+<A HREF="#wxlocalegetsystemencoding">wxLocale::GetSystemEncoding</A><BR>
+<A HREF="#wxlocalegetsystemencodingname">wxLocale::GetSystemEncodingName</A><BR>
+<A HREF="#wxlocalegetsystemlanguage">wxLocale::GetSystemLanguage</A><BR>
+<A HREF="#wxlocaleinit">wxLocale::Init</A><BR>
+<A HREF="#wxlocaleisavailable">wxLocale::IsAvailable</A><BR>
+<A HREF="#wxlocaleisloaded">wxLocale::IsLoaded</A><BR>
+<A HREF="#wxlocaleisok">wxLocale::IsOk</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlanguage"></A>
+<H3>Supported languages</H3>
+<P>
+See <A HREF="wx_languagecodes.html#languagecodes">list of recognized language constants</A>.
+These constants may be used to specify the language
+in <A HREF="wx_wxlocale.html#wxlocaleinit">Init</A> and are returned by 
+<A HREF="wx_wxlocale.html#wxlocalegetsystemlanguage">GetSystemLanguage</A>:<P>
+
+
+<HR>
+<A NAME="wxlocaledefctor"></A>
+<H3>wxLocale::wxLocale</H3>
+<P>
+<B></B> <B>wxLocale</B>()<P>
+This is the default constructor and it does nothing to initialize the object: 
+<A HREF="wx_wxlocale.html#wxlocaleinit">Init()</A> must be used to do that.<P>
+<B></B> <B>wxLocale</B>(<B>int </B><I>language</I>, <B>int </B><I>flags =
+                          wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING</I>)<P>
+See <A HREF="wx_wxlocale.html#wxlocaleinit">Init()</A> for parameters description.<P>
+<B></B> <B>wxLocale</B>(<B>const char </B><I>*szName</I>, <B>const char </B><I>*szShort = NULL</I>, <B>const char </B><I>*szLocale = NULL</I>, <B>bool </B><I>bLoadDefault = true</I>, <B>bool </B><I>bConvertEncoding = false</I>)<P>
+See <A HREF="wx_wxlocale.html#wxlocaleinit">Init()</A> for parameters description.<P>
+The call of this function has several global side effects which you should
+understand: first of all, the application locale is changed - note that this
+will affect many of standard C library functions such as printf() or strftime().
+Second, this wxLocale object becomes the new current global locale for the
+application and so all subsequent calls to wxGetTranslation() will try to
+translate the messages using the message catalogs for this locale.<P>
+<P>
+
+<HR>
+<A NAME="wxlocaledtor"></A>
+<H3>wxLocale::~wxLocale</H3>
+<P>
+<B></B> <B>~wxLocale</B>()<P>
+The destructor, like the constructor, also has global side effects: the previously
+set locale is restored and so the changes described in 
+<A HREF="wx_wxlocale.html#wxlocaleinit">Init</A> documentation are rolled back.<P>
+
+
+<HR>
+<A NAME="wxlocaleaddcatalog"></A>
+<H3>wxLocale::AddCatalog</H3>
+<P>
+<B>bool</B> <B>AddCatalog</B>(<B>const char </B><I>*szDomain</I>)<P>
+<B>bool</B> <B>AddCatalog</B>(<B>const char </B><I>*szDomain</I>, <B><A HREF="wx_wxlocale.html#wxlanguage">wxLanguage</A></B></B><I>msgIdLanguage</I>, <B>const char </B><I>*msgIdCharset</I>)<P>
+Add a catalog for use with the current locale: it is searched for in standard
+places (current directory first, then the system one), but you may also prepend
+additional directories to the search path with 
+<A HREF="wx_wxlocale.html#wxlocaleaddcataloglookuppathprefix">AddCatalogLookupPathPrefix()</A>.<P>
+All loaded catalogs will be used for message lookup by
+<A HREF="wx_wxlocale.html#wxlocalegetstring">GetString()</A> for the current locale.<P>
+Returns true if catalog was successfully loaded, false otherwise (which might
+mean that the catalog is not found or that it isn't in the correct format).<P>
+The second form of this method takes two additional arguments,
+<I>msgIdLanguage</I> and <I>msgIdCharset</I>.<P>
+<I>msgIdLanguage</I> specifies the language of "msgid" strings in source code
+(i.e. arguments to <A HREF="wx_wxlocale.html#wxlocalegetstring">GetString</A>,
+<A HREF="wx_stringfunctions.html#wxgettranslation">wxGetTranslation</A> and the 
+<A HREF="wx_stringfunctions.html#underscore">_()</A> macro). It is used if AddCatalog cannot find any
+catalog for current language: if the language is same as source code language,
+then strings from source code are used instead. <P>
+<I>msgIdCharset</I> lets you specify the charset used for msgids in sources
+in case they use 8-bit characters (e.g. German or French strings).  This
+argument has no effect in Unicode build, because literals in sources are
+Unicode strings; you have to use compiler-specific method of setting the right
+charset when compiling with Unicode.<P>
+By default (i.e. when you use the first form), msgid strings are assumed
+to be in English and written only using 7-bit ASCII characters.<P>
+If you have to deal with non-English strings or 8-bit characters in the source
+code, see the instructions in 
+<A HREF="wx_nonenglishoverview.html#nonenglishoverview">Writing non-English applications</A>.<P>
+
+
+<HR>
+<A NAME="wxlocaleaddcataloglookuppathprefix"></A>
+<H3>wxLocale::AddCatalogLookupPathPrefix</H3>
+<P>
+<B>void</B> <B>AddCatalogLookupPathPrefix</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>prefix</I>)<P>
+Add a prefix to the catalog lookup path: the message catalog files will be
+looked up under prefix/&lt;lang&gt;/LC_MESSAGES, prefix/&lt;lang&gt; and prefix
+(in this order).<P>
+This only applies to subsequent invocations of AddCatalog().<P>
+
+<HR>
+<A NAME="wxlocaleaddlanguage"></A>
+<H3>wxLocale::AddLanguage</H3>
+<P>
+<B>static void</B> <B>AddLanguage</B>(<B>const wxLanguageInfo&amp; </B><I>info</I>)<P>
+Adds custom, user-defined language to the database of known languages. This
+database is used in conjunction with the first form of 
+<A HREF="wx_wxlocale.html#wxlocaleinit">Init</A>. <P>
+wxLanguageInfo is defined as follows:<P>
+<PRE>
+struct WXDLLEXPORT wxLanguageInfo
+{
+    int Language;                   // wxLanguage id
+    wxString CanonicalName;         // Canonical name, e.g. fr_FR
+#ifdef __WIN32__
+    wxUint32 WinLang, WinSublang;   // Win32 language identifiers
+                                    // (LANG_xxxx, SUBLANG_xxxx)
+#endif
+    wxString Description;           // human-readable name of the language
+};
+</PRE>
+
+<I>Language</I> should be greater than wxLANGUAGE_USER_DEFINED.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl Wx::LanguageInfo has only one method:<P>
+
+Wx::LanguageInfo-&gt;new( language, canonicalName, WinLang, WinSubLang, Description )<P>
+
+
+<HR>
+<A NAME="wxlocalefindlanguageinfo"></A>
+<H3>wxLocale::FindLanguageInfo</H3>
+<P>
+<B>static wxLanguageInfo *</B> <B>FindLanguageInfo</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>locale</I>)<P>
+This function may be used to find the language description structure for the
+given locale, specified either as a two letter ISO language code (for example,
+"pt"), a language code followed by the country code ("pt_BR") or a full, human
+readable, language description ("Portuguese-Brazil").<P>
+Returns the information for the given language or <TT>NULL</TT> if this language
+is unknown. Note that even if the returned pointer is valid, the caller should
+<I>not</I> delete it.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlocale.html#wxlocalegetlanguageinfo">GetLanguageInfo</A><P>
+
+
+<HR>
+<A NAME="wxlocalegetcanonicalname"></A>
+<H3>wxLocale::GetCanonicalName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetCanonicalName</B>() <B>const</B><P>
+Returns the canonical form of current locale name. Canonical form is the
+one that is used on UNIX systems: it is a two- or five-letter string in xx or
+xx_YY format, where xx is ISO 639 code of language and YY is ISO 3166 code of
+the country. Examples are "en", "en_GB", "en_US" or "fr_FR".<P>
+This form is internally used when looking up message catalogs.<P>
+Compare <A HREF="wx_wxlocale.html#wxlocalegetsysname">GetSysName</A>.<P>
+<P>
+
+
+<HR>
+<A NAME="wxlocalegetlanguage"></A>
+<H3>wxLocale::GetLanguage</H3>
+<P>
+<B>int</B> <B>GetLanguage</B>() <B>const</B><P>
+Returns <A HREF="wx_wxlocale.html#wxlanguage">wxLanguage</A> constant of current language.
+Note that you can call this function only if you used the form of
+<A HREF="wx_wxlocale.html#wxlocaleinit">Init</A> that takes wxLanguage argument.<P>
+
+
+<HR>
+<A NAME="wxlocalegetlanguageinfo"></A>
+<H3>wxLocale::GetLanguageInfo</H3>
+<P>
+<B>static wxLanguageInfo *</B> <B>GetLanguageInfo</B>(<B>int </B><I>lang</I>) <B>const</B><P>
+Returns a pointer to wxLanguageInfo structure containing information about the
+given language or <TT>NULL</TT> if this language is unknown. Note that even if the
+returned pointer is valid, the caller should <I>not</I> delete it.<P>
+See <A HREF="wx_wxlocale.html#wxlocaleaddlanguage">AddLanguage</A> for the wxLanguageInfo
+description.<P>
+As with <A HREF="wx_wxlocale.html#wxlocaleinit">Init</A>, <TT>wxLANGUAGE_DEFAULT</TT> has the
+special meaning if passed as an argument to this function and in this case the
+result of <A HREF="wx_wxlocale.html#wxlocalegetsystemlanguage">GetSystemLanguage()</A> is used.<P>
+
+
+<HR>
+<A NAME="wxlocalegetlanguagename"></A>
+<H3>wxLocale::GetLanguageName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLanguageName</B>(<B>int </B><I>lang</I>) <B>const</B><P>
+Returns English name of the given language or empty string if this
+language is unknown.<P>
+See <A HREF="wx_wxlocale.html#wxlocalegetlanguageinfo">GetLanguageInfo</A> for a remark about
+special meaning of <TT>wxLANGUAGE_DEFAULT</TT>.<P>
+
+
+<HR>
+<A NAME="wxlocalegetlocale"></A>
+<H3>wxLocale::GetLocale</H3>
+<P>
+<B>const char*</B> <B>GetLocale</B>() <B>const</B><P>
+Returns the locale name as passed to the constructor or 
+<A HREF="wx_wxlocale.html#wxlocaleinit">Init()</A>. This is full, human-readable name,
+e.g. "English" or "French".<P>
+<P>
+
+<HR>
+<A NAME="wxlocalegetname"></A>
+<H3>wxLocale::GetName</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetName</B>() <B>const</B><P>
+Returns the current short name for the locale (as given to the constructor or
+the Init() function).<P>
+
+
+<HR>
+<A NAME="wxlocalegetstring"></A>
+<H3>wxLocale::GetString</H3>
+<P>
+<B>const char*</B> <B>GetString</B>(<B>const char </B><I>*szOrigString</I>, <B>const char </B><I>*szDomain = NULL</I>) <B>const</B><P>
+<B>const char*</B> <B>GetString</B>(<B>const char </B><I>*szOrigString</I>, <B>const char </B><I>*szOrigString2</I>, <B>size_t </B><I>n</I>, <B>const char </B><I>*szDomain = NULL</I>) <B>const</B><P>
+Retrieves the translation for a string in all loaded domains unless the szDomain
+parameter is specified (and then only this catalog/domain is searched).<P>
+Returns original string if translation is not available
+(in this case an error message is generated the first time
+a string is not found; use <A HREF="wx_wxlogoverview.html#wxlogoverview">wxLogNull</A> to suppress it).<P>
+The second form is used when retrieving translation of string that has
+different singular and plural form in English or different plural forms in some
+other language. It takes two extra arguments: <I>szOrigString</I>
+parameter must contain the singular form of the string to be converted.
+It is also used as the key for the search in the catalog.
+The <I>szOrigString2</I> parameter is the plural form (in English).
+The parameter <I>n</I> is used to determine the plural form.  If no
+message catalog is found <I>szOrigString</I> is returned if 'n == 1',
+otherwise <I>szOrigString2</I>.
+See <A HREF="http://www.gnu.org/manual/gettext/html_chapter/gettext_10.html#SEC150">GNU gettext manual</A> for additional information on plural forms handling.<P>
+This method is called by the <A HREF="wx_stringfunctions.html#wxgettranslation">wxGetTranslation</A>
+function and <A HREF="wx_stringfunctions.html#underscore">_()</A> macro.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Domains are searched in the last to first order, i.e. catalogs
+added later override those added before.<P>
+
+
+<HR>
+<A NAME="wxlocalegetheadervalue"></A>
+<H3>wxLocale::GetHeaderValue</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetHeaderValue</B>(<B>const char </B><I>*szHeader</I>, <B>const char </B><I>*szDomain = NULL</I>) <B>const</B><P>
+Returns the header value for header <I>szHeader</I>. The search for <I>szHeader</I> is case sensitive. If an <I>szDomain</I>
+is passed, this domain is searched. Else all domains will be searched until a header has been found.
+The return value is the value of the header if found. Else this will be empty.<P>
+
+<HR>
+<A NAME="wxlocalegetsysname"></A>
+<H3>wxLocale::GetSysName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetSysName</B>() <B>const</B><P>
+Returns current platform-specific locale name as passed to setlocale().<P>
+Compare <A HREF="wx_wxlocale.html#wxlocalegetcanonicalname">GetCanonicalName</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxlocalegetsystemencoding"></A>
+<H3>wxLocale::GetSystemEncoding</H3>
+<P>
+<B>static wxFontEncoding</B> <B>GetSystemEncoding</B>() <B>const</B><P>
+Tries to detect the user's default font encoding.
+Returns <A HREF="wx_wxfont.html#wxfont">wxFontEncoding</A> value or 
+<B>wxFONTENCODING_SYSTEM</B> if it couldn't be determined.<P>
+
+
+<HR>
+<A NAME="wxlocalegetsystemencodingname"></A>
+<H3>wxLocale::GetSystemEncodingName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetSystemEncodingName</B>() <B>const</B><P>
+Tries to detect the name of the user's default font encoding. This string isn't
+particularly useful for the application as its form is platform-dependent and
+so you should probably use 
+<A HREF="wx_wxlocale.html#wxlocalegetsystemencoding">GetSystemEncoding</A> instead.<P>
+Returns a user-readable string value or an empty string if it couldn't be
+determined.<P>
+
+
+<HR>
+<A NAME="wxlocalegetsystemlanguage"></A>
+<H3>wxLocale::GetSystemLanguage</H3>
+<P>
+<B>static int</B> <B>GetSystemLanguage</B>() <B>const</B><P>
+Tries to detect the user's default language setting.
+Returns <A HREF="wx_wxlocale.html#wxlanguage">wxLanguage</A> value or 
+ <B>wxLANGUAGE_UNKNOWN</B> if the language-guessing algorithm failed.<P>
+<P>
+
+<HR>
+<A NAME="wxlocaleinit"></A>
+<H3>wxLocale::Init</H3>
+<P>
+
+<B>bool</B> <B>Init</B>(<B>int </B><I>language = wxLANGUAGE_DEFAULT</I>, <B>int </B><I>flags =
+                          wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING</I>)<P>
+<B>bool</B> <B>Init</B>(<B>const char </B><I>*szName</I>, <B>const char </B><I>*szShort = NULL</I>, <B>const char </B><I>*szLocale = NULL</I>, <B>bool </B><I>bLoadDefault = true</I>, <B>bool </B><I>bConvertEncoding = false</I>)<P>
+The second form is deprecated, use the first one unless you know what you are
+doing. <P>
+
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>language</I><UL><UL>
+<A HREF="wx_wxlocale.html#wxlanguage">wxLanguage</A> identifier of the locale. 
+wxLANGUAGE_DEFAULT has special meaning -- wxLocale will use system's default 
+language (see <A HREF="wx_wxlocale.html#wxlocalegetsystemlanguage">GetSystemLanguage</A>).</UL></UL>
+<P>
+<I>flags</I><UL><UL>
+Combination of the following:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxLOCALE_LOAD_DEFAULT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load the message catalog
+for the given locale containing the translations of standard wxWidgets messages
+automatically.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxLOCALE_CONV_ENCODING</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Automatically convert message
+catalogs to platform's default encoding. Note that it will do only basic 
+conversion between well-known pair like iso8859-1 and windows-1252 or
+iso8859-2 and windows-1250. See <A HREF="wx_nonenglishoverview.html#nonenglishoverview">Writing non-English applications</A> for detailed
+description of this behaviour. Note that this flag is meaningless in Unicode build.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+<I>szName</I><UL><UL>
+The name of the locale. Only used in diagnostic messages.</UL></UL>
+<P>
+<I>szShort</I><UL><UL>
+The standard 2 letter locale abbreviation; it is used as the
+directory prefix when looking for the message catalog files.</UL></UL>
+<P>
+<I>szLocale</I><UL><UL>
+The parameter for the call to setlocale(). Note that it is
+platform-specific.</UL></UL>
+<P>
+<I>bLoadDefault</I><UL><UL>
+May be set to false to prevent loading of the message catalog
+for the given locale containing the translations of standard wxWidgets messages.
+This parameter would be rarely used in normal circumstances.</UL></UL>
+<P>
+<I>bConvertEncoding</I><UL><UL>
+May be set to true to do automatic conversion of message
+catalogs to platform's native encoding. Note that it will do only basic 
+conversion between well-known pair like iso8859-1 and windows-1252 or
+iso8859-2 and windows-1250. 
+See <A HREF="wx_nonenglishoverview.html#nonenglishoverview">Writing non-English applications</A> for detailed
+description of this behaviour.</UL></UL>
+<P>
+
+The call of this function has several global side effects which you should
+understand: first of all, the application locale is changed - note that this
+will affect many of standard C library functions such as printf() or strftime().
+Second, this wxLocale object becomes the new current global locale for the
+application and so all subsequent calls to
+<A HREF="wx_stringfunctions.html#wxgettranslation">wxGetTranslation()</A> will try to
+translate the messages using the message catalogs for this locale.<P>
+Returns true on success or false if the given locale couldn't be set.<P>
+
+
+<HR>
+<A NAME="wxlocaleisavailable"></A>
+<H3>wxLocale::IsAvailable</H3>
+<P>
+<B>static bool</B> <B>IsAvailable</B>(<B>int </B><I>lang</I>)<P>
+Check whether the operating system and/or C run time environment supports
+this locale. For example in Windows 2000 and Windows XP, support for many
+locales is not installed by default. Returns <TT>true</TT> if the locale is
+supported.<P>
+The argument <I>lang</I> is the wxLanguage identifier. To obtain this for a
+given a two letter ISO language code, use 
+<A HREF="wx_wxlocale.html#wxlocalefindlanguageinfo">FindLanguageInfo</A> to obtain its
+wxLanguageInfo structure. See <A HREF="wx_wxlocale.html#wxlocaleaddlanguage">AddLanguage</A> for
+the wxLanguageInfo description.<P>
+This function is new since wxWidgets version 2.7.1. <P>
+
+
+<HR>
+<A NAME="wxlocaleisloaded"></A>
+<H3>wxLocale::IsLoaded</H3>
+<P>
+<B>bool</B> <B>IsLoaded</B>(<B>const char* </B><I>domain</I>) <B>const</B><P>
+Check if the given catalog is loaded, and returns true if it is.<P>
+According to GNU gettext tradition, each catalog
+normally corresponds to 'domain' which is more or less the application name.<P>
+See also: <A HREF="wx_wxlocale.html#wxlocaleaddcatalog">AddCatalog</A><P>
+
+
+<HR>
+<A NAME="wxlocaleisok"></A>
+<H3>wxLocale::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if the locale could be set successfully.<P>
+
+</FONT></BODY></HTML>

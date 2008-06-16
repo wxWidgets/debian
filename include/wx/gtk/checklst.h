@@ -1,19 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        checklst.h
+// Name:        wx/gtk/checklst.h
 // Purpose:     wxCheckListBox class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: checklst.h,v 1.17 2005/08/02 22:57:52 MW Exp $
+// RCS-ID:      $Id: checklst.h 42469 2006-10-26 20:29:02Z RR $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKCHECKLISTH__
 #define __GTKCHECKLISTH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
 
 // ----------------------------------------------------------------------------
 // macros
@@ -52,11 +48,13 @@ public:
             const wxValidator& validator = wxDefaultValidator,
             const wxString& name = wxListBoxNameStr);
 
-    bool IsChecked( int index ) const;
-    void Check( int index, bool check = TRUE );
+    bool IsChecked(unsigned int index) const;
+    void Check(unsigned int index, bool check = true);
 
     int GetItemHeight() const;
-    
+
+    void DoCreateCheckList();
+
 private:
     DECLARE_DYNAMIC_CLASS(wxCheckListBox)
 };

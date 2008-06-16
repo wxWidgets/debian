@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: markup.cpp,v 1.2 2003/10/22 20:54:50 MBN Exp $
+// RCS-ID:      $Id: markup.cpp 24263 2003-10-22 20:54:50Z MBN $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

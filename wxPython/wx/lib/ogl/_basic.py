@@ -6,7 +6,7 @@
 # Author:       Pierre Hjälm (from C++ original by Julian Smart)
 #
 # Created:      2004-05-08
-# RCS-ID:       $Id: _basic.py,v 1.12.2.4 2006/03/25 00:08:15 RD Exp $
+# RCS-ID:       $Id: _basic.py 44515 2007-02-16 23:32:37Z RD $
 # Copyright:    (c) 2004 Pierre Hjälm - 1998 Julian Smart
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -66,9 +66,6 @@ class ShapeEvtHandler(object):
     def __init__(self, prev = None, shape = None):
         self._previousHandler = prev
         self._handlerShape = shape
-
-    def __del__(self):
-        pass
 
     def SetShape(self, sh):
         self._handlerShape = sh
@@ -232,9 +229,9 @@ class Shape(ShapeEvtHandler):
         self._canvas = canvas
         self._xpos = 0.0
         self._ypos = 0.0
-        self._pen = wx.Pen(wx.BLACK, 1, wx.SOLID)
+        self._pen = BlackForegroundPen
         self._brush = wx.WHITE_BRUSH
-        self._font = wx.Font(10, wx.SWISS, wx.NORMAL, wx.NORMAL)
+        self._font = NormalFont
         self._textColour = wx.BLACK
         self._textColourName = wx.BLACK
         self._visible = False
@@ -276,7 +273,7 @@ class Shape(ShapeEvtHandler):
         # the region eventually (the duplication is for compatibility)
         region = ShapeRegion()
         region.SetName("0")
-        region.SetFont(wx.Font(10, wx.SWISS, wx.NORMAL, wx.NORMAL))
+        region.SetFont(NormalFont)
         region.SetFormatMode(FORMAT_CENTRE_HORIZ | FORMAT_CENTRE_VERT)
         region.SetColour("BLACK")
         self._regions.append(region)
@@ -311,9 +308,6 @@ class Shape(ShapeEvtHandler):
             self.GetEventHandler().OnDelete()
         self._eventHandler = None
         
-    def __del__(self):
-        ShapeEvtHandler.__del__(self)
-
     def Draggable(self):
         """TRUE if the shape may be dragged by the user."""
         return True
@@ -2178,7 +2172,7 @@ class Shape(ShapeEvtHandler):
         dc.SetLogicalFunction(OGLRBLF)
 
         bound_x, bound_y = self.GetBoundingBoxMin()
-        self.GetEventHandler().OnEndSize(bound_x, bound_y)
+        self.GetEventHandler().OnBeginSize(bound_x, bound_y)
 
         # Choose the 'opposite corner' of the object as the stationary
         # point in case this is non-centring resizing.

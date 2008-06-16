@@ -1,0 +1,319 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataViewCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataviewctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdataviewevent.html#wxdataviewevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataViewCtrl</H2>
+<P>
+This class and its documentation are work in progress and
+certainly subject to change.<P>
+wxDataViewCtrl is planned to be a control to display data either
+in a tree like fashion or in a tabular form or both. Currently,
+only the tabular form is implemented. wxDataViewCtrl doesn't
+get its data from the user through virtual functions or events,
+instead you need to write your own 
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A> and associate
+it with this control. Then you need to add a number of
+<A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A> to this control to
+define what each column shall display. Each wxDataViewColumn
+in turn owns 1 instance of a 
+<A HREF="wx_wxdataviewrenderer.html#wxdataviewrenderer">wxDataViewRenderer</A> to render its
+cells. A number of standard renderers for rendering text, dates,
+images, toggle, a progress bar etc. are provided. Additionally,
+the user can write custom renderes deriving from 
+<A HREF="wx_wxdataviewcustomrenderer.html#wxdataviewcustomrenderer">wxDataViewCustomRenderer</A>
+for displaying anything.<P>
+All data transfer from the control to the model and the user
+code is done through <A HREF="wx_wxvariant.html#wxvariant">wxVariant</A> which can
+be extended to support more data formats as necessary. 
+Accordingly, all type information uses the strings returned
+from <A HREF="wx_wxvariant.html#wxvariantgettype">wxVariant::GetType</A>.<P>
+So far, this control has only be implemented for GTK+ and
+there are only barely working stubs for a generic implementation.
+It is planned to implement the control natively under OS X
+and use generic code under Windows (and elsewhere).<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxDV_SINGLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Single selection mode. This is the default.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxDV_MULTIPLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Multiple selection mode.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To process input from a dataview control, use the following event handler
+macros to direct input to member functions that take a 
+<A HREF="wx_wxdataviewevent.html#wxdataviewevent">wxDataViewEvent</A> argument.<P>
+
+
+<TABLE>
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_DATAVIEW_ROW_SELECTED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Processes a wxEVT_COMMAND_DATAVIEW_ROW_SELECTED event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_DATAVIEW_ROW_ACTIVATED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Processes a wxEVT_COMMAND_DATAVIEW_ROW_ACTIVATED event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_DATAVIEW_COLUMN_HEADER_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Processes a wxEVT_COMMAND_DATAVIEW_COLUMN_HEADER_CLICKED event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_DATAVIEW_COLUMN_HEADER_RIGHT_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Processes a wxEVT_COMMAND_DATAVIEW_COLUMN_HEADER_RIGHT_CLICKED event.
+</FONT></TD></TR>
+<P>
+
+</TABLE>
+<P>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataview.h&gt;<P>
+
+<A HREF="#wxdataviewctrlwxdataviewctrl">wxDataViewCtrl::wxDataViewCtrl</A><BR>
+<A HREF="#wxdataviewctrldtor">wxDataViewCtrl::~wxDataViewCtrl</A><BR>
+<A HREF="#wxdataviewctrlappendcolumn">wxDataViewCtrl::AppendColumn</A><BR>
+<A HREF="#wxdataviewctrlappendbitmapcolumn">wxDataViewCtrl::AppendBitmapColumn</A><BR>
+<A HREF="#wxdataviewctrlappenddatecolumn">wxDataViewCtrl::AppendDateColumn</A><BR>
+<A HREF="#wxdataviewctrlappendprogresscolumn">wxDataViewCtrl::AppendProgressColumn</A><BR>
+<A HREF="#wxdataviewctrlappendtextcolumn">wxDataViewCtrl::AppendTextColumn</A><BR>
+<A HREF="#wxdataviewctrlappendtogglecolumn">wxDataViewCtrl::AppendToggleColumn</A><BR>
+<A HREF="#wxdataviewctrlassociatemodel">wxDataViewCtrl::AssociateModel</A><BR>
+<A HREF="#wxdataviewctrlcreate">wxDataViewCtrl::Create</A><BR>
+<A HREF="#wxdataviewctrlclearcolumns">wxDataViewCtrl::ClearColumns</A><BR>
+<A HREF="#wxdataviewctrlclearselection">wxDataViewCtrl::ClearSelection</A><BR>
+<A HREF="#wxdataviewctrldeletecolumn">wxDataViewCtrl::DeleteColumn</A><BR>
+<A HREF="#wxdataviewctrlgetcolumn">wxDataViewCtrl::GetColumn</A><BR>
+<A HREF="#wxdataviewctrlgetmodel">wxDataViewCtrl::GetModel</A><BR>
+<A HREF="#wxdataviewctrlgetnumberofcolumns">wxDataViewCtrl::GetNumberOfColumns</A><BR>
+<A HREF="#wxdataviewctrlgetselection">wxDataViewCtrl::GetSelection</A><BR>
+<A HREF="#wxdataviewctrlgetselections">wxDataViewCtrl::GetSelections</A><BR>
+<A HREF="#wxdataviewctrlisselected">wxDataViewCtrl::IsSelected</A><BR>
+<A HREF="#wxdataviewctrlsetselection">wxDataViewCtrl::SetSelection</A><BR>
+<A HREF="#wxdataviewctrlsetselectionrange">wxDataViewCtrl::SetSelectionRange</A><BR>
+<A HREF="#wxdataviewctrlsetselections">wxDataViewCtrl::SetSelections</A><BR>
+<A HREF="#wxdataviewctrlunselect">wxDataViewCtrl::Unselect</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataviewctrlwxdataviewctrl"></A>
+<H3>wxDataViewCtrl::wxDataViewCtrl</H3>
+<P>
+<B></B> <B>wxDataViewCtrl</B>()<P>
+<B></B> <B>wxDataViewCtrl</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>)<P>
+Constructor. Calls <A HREF="wx_wxdataviewctrl.html#wxdataviewctrlcreate">Create</A>.<P>
+
+<HR>
+<A NAME="wxdataviewctrldtor"></A>
+<H3>wxDataViewCtrl::~wxDataViewCtrl</H3>
+<P>
+<B></B> <B>~wxDataViewCtrl</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdataviewctrlappendcolumn"></A>
+<H3>wxDataViewCtrl::AppendColumn</H3>
+<P>
+<B>virtual bool</B> <B>AppendColumn</B>(<B><A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A>* </B></B><I>col</I>)<P>
+Add a <A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A> to the control. Note
+that there is a number of short cut methods which implicitly create
+a <A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A> and a 
+<A HREF="wx_wxdataviewrenderer.html#wxdataviewrenderer">wxDataViewRenderer</A> for it (see below).<P>
+
+
+<HR>
+<A NAME="wxdataviewctrlappendbitmapcolumn"></A>
+<H3>wxDataViewCtrl::AppendBitmapColumn</H3>
+<P>
+<B>bool</B> <B>AppendBitmapColumn</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>unsigned int </B><I>model_column</I>, <B>wxDataViewCellMode </B><I>mode = wxDATAVIEW_CELL_INERT</I>, <B>int </B><I>width = -1</I>)<P>
+<B>bool</B> <B>AppendBitmapColumn</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>label</I>, <B>unsigned int </B><I>model_column</I>, <B>wxDataViewCellMode </B><I>mode = wxDATAVIEW_CELL_INERT</I>, <B>int </B><I>width = -1</I>)<P>
+Appends a column for rendering a bitmap.<P>
+
+<HR>
+<A NAME="wxdataviewctrlappenddatecolumn"></A>
+<H3>wxDataViewCtrl::AppendDateColumn</H3>
+<P>
+<B>bool</B> <B>AppendDateColumn</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>unsigned int </B><I>model_column</I>, <B>wxDataViewCellMode </B><I>mode = wxDATAVIEW_CELL_ACTIVATABLE</I>, <B>int </B><I>width = -1</I>)<P>
+<B>bool</B> <B>AppendDateColumn</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>label</I>, <B>unsigned int </B><I>model_column</I>, <B>wxDataViewCellMode </B><I>mode = wxDATAVIEW_CELL_ACTIVATABLE</I>, <B>int </B><I>width = -1</I>)<P>
+Appends a column for rendering a date.<P>
+
+<HR>
+<A NAME="wxdataviewctrlappendprogresscolumn"></A>
+<H3>wxDataViewCtrl::AppendProgressColumn</H3>
+<P>
+<B>bool</B> <B>AppendProgressColumn</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>unsigned int </B><I>model_column</I>, <B>wxDataViewCellMode </B><I>mode = wxDATAVIEW_CELL_INERT</I>, <B>int </B><I>width = 80</I>)<P>
+<B>bool</B> <B>AppendProgressColumn</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>label</I>, <B>unsigned int </B><I>model_column</I>, <B>wxDataViewCellMode </B><I>mode = wxDATAVIEW_CELL_INERT</I>, <B>int </B><I>width = 80</I>)<P>
+Appends a column for rendering a progress indicator.<P>
+
+<HR>
+<A NAME="wxdataviewctrlappendtextcolumn"></A>
+<H3>wxDataViewCtrl::AppendTextColumn</H3>
+<P>
+<B>bool</B> <B>AppendTextColumn</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>unsigned int </B><I>model_column</I>, <B>wxDataViewCellMode </B><I>mode = wxDATAVIEW_CELL_INERT</I>, <B>int </B><I>width = -1</I>)<P>
+<B>bool</B> <B>AppendTextColumn</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>label</I>, <B>unsigned int </B><I>model_column</I>, <B>wxDataViewCellMode </B><I>mode = wxDATAVIEW_CELL_INERT</I>, <B>int </B><I>width = -1</I>)<P>
+Appends a column for rendering text.<P>
+
+<HR>
+<A NAME="wxdataviewctrlappendtogglecolumn"></A>
+<H3>wxDataViewCtrl::AppendToggleColumn</H3>
+<P>
+<B>bool</B> <B>AppendToggleColumn</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>unsigned int </B><I>model_column</I>, <B>wxDataViewCellMode </B><I>mode = wxDATAVIEW_CELL_INERT</I>, <B>int </B><I>width = 30</I>)<P>
+<B>bool</B> <B>AppendToggleColumn</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>label</I>, <B>unsigned int </B><I>model_column</I>, <B>wxDataViewCellMode </B><I>mode = wxDATAVIEW_CELL_INERT</I>, <B>int </B><I>width = 30</I>)<P>
+Appends a column for rendering a toggle.<P>
+
+<HR>
+<A NAME="wxdataviewctrlassociatemodel"></A>
+<H3>wxDataViewCtrl::AssociateModel</H3>
+<P>
+<B>virtual bool</B> <B>AssociateModel</B>(<B><A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A>* </B></B><I>model</I>)<P>
+Associates a <A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A> with the
+control. In the future this should be changed to supporting any data
+model including a to-be-written wxDataViewTreeModel.<P>
+
+<HR>
+<A NAME="wxdataviewctrlcreate"></A>
+<H3>wxDataViewCtrl::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>)<P>
+Create the control. Useful for two step creation.<P>
+
+<HR>
+<A NAME="wxdataviewctrlclearcolumns"></A>
+<H3>wxDataViewCtrl::ClearColumns</H3>
+<P>
+<B>virtual bool</B> <B>ClearColumns</B>()<P>
+Removes all columns.<P>
+
+<HR>
+<A NAME="wxdataviewctrlclearselection"></A>
+<H3>wxDataViewCtrl::ClearSelection</H3>
+<P>
+<B>void</B> <B>ClearSelection</B>()<P>
+Unselects all rows.<P>
+
+<HR>
+<A NAME="wxdataviewctrldeletecolumn"></A>
+<H3>wxDataViewCtrl::DeleteColumn</H3>
+<P>
+<B>virtual bool</B> <B>DeleteColumn</B>(<B>unsigned int </B><I>pos</I>)<P>
+Deletes given column.<P>
+
+<HR>
+<A NAME="wxdataviewctrlgetcolumn"></A>
+<H3>wxDataViewCtrl::GetColumn</H3>
+<P>
+<B>virtual <A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A>*</B> </B> <B>GetColumn</B>(<B>unsigned int </B><I>pos</I>)<P>
+Returns pointer to the column.<P>
+
+<HR>
+<A NAME="wxdataviewctrlgetmodel"></A>
+<H3>wxDataViewCtrl::GetModel</H3>
+<P>
+<B>virtual <A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A>*</B> </B> <B>GetModel</B>()<P>
+Returns pointer to the data model associated with the
+control (if any).<P>
+
+<HR>
+<A NAME="wxdataviewctrlgetnumberofcolumns"></A>
+<H3>wxDataViewCtrl::GetNumberOfColumns</H3>
+<P>
+<B>virtual unsigned int</B> <B>GetNumberOfColumns</B>()<P>
+Returns the number of columns.<P>
+
+<HR>
+<A NAME="wxdataviewctrlgetselection"></A>
+<H3>wxDataViewCtrl::GetSelection</H3>
+<P>
+<B>virtual int</B> <B>GetSelection</B>() <B>const</B><P>
+Returns the index of the currently selected row. It will 
+return -1 if no row is selected and the index of the first
+selected row if more than one row are selected.<P>
+
+<HR>
+<A NAME="wxdataviewctrlgetselections"></A>
+<H3>wxDataViewCtrl::GetSelections</H3>
+<P>
+<B>virtual int</B> <B>GetSelections</B>(<B>wxArrayInt&amp; </B><I>aSelections</I>) <B>const</B><P>
+Returns the number of selected rows and fills an array of int
+with the indeces of the selected rows.<P>
+
+<HR>
+<A NAME="wxdataviewctrlisselected"></A>
+<H3>wxDataViewCtrl::IsSelected</H3>
+<P>
+<B>virtual bool</B> <B>IsSelected</B>(<B>unsigned int </B><I>row</I>) <B>const</B><P>
+Returns <I>true</I> if the row is selected, <I>false</I> otherwise.<P>
+
+<HR>
+<A NAME="wxdataviewctrlsetselection"></A>
+<H3>wxDataViewCtrl::SetSelection</H3>
+<P>
+<B>virtual void</B> <B>SetSelection</B>(<B>int </B><I>row</I>)<P>
+Sets the selection. Use -1 to unselect all rows.<P>
+
+<HR>
+<A NAME="wxdataviewctrlsetselectionrange"></A>
+<H3>wxDataViewCtrl::SetSelectionRange</H3>
+<P>
+<B>virtual void</B> <B>SetSelectionRange</B>(<B>unsigned int </B><I>from</I>, <B>unsigned int </B><I>to</I>)<P>
+Set a range of selection.<P>
+
+<HR>
+<A NAME="wxdataviewctrlsetselections"></A>
+<H3>wxDataViewCtrl::SetSelections</H3>
+<P>
+<B>virtual void</B> <B>SetSelections</B>(<B>const wxArrayInt&amp; </B><I>aSelections</I>)<P>
+Set the selection to the array of int.<P>
+
+<HR>
+<A NAME="wxdataviewctrlunselect"></A>
+<H3>wxDataViewCtrl::Unselect</H3>
+<P>
+<B>virtual void</B> <B>Unselect</B>(<B>unsigned int </B><I>row</I>)<P>
+Unselect a particular row.<P>
+
+
+</FONT></BODY></HTML>

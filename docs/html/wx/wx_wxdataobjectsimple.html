@@ -1,0 +1,100 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataObjectSimple</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataobjectsimple"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdataobjectcomposite.html#wxdataobjectcomposite"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdataoutputstream.html#wxdataoutputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataObjectSimple</H2>
+<P>
+This is the simplest possible implementation of the 
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> class. The data object of (a class derived
+from) this class only supports one format, so the number of virtual functions
+to be implemented is reduced.<P>
+Notice that this is still an abstract base class and cannot be used but should
+be derived from.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> If you wish to create a derived wxDataObjectSimple class in
+wxPython you should derive the class from wxPyDataObjectSimple
+in order to get Python-aware capabilities for the various virtual
+methods.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl, you need to derive your data object class
+from Wx::PlDataObjectSimple.<P>
+<B><FONT COLOR="#FF0000">Virtual functions to override</FONT></B><P>
+The objects supporting rendering the data must override 
+<A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimplegetdatasize">GetDataSize</A> and 
+<A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimplegetdatahere">GetDataHere</A> while the objects which
+may be set must override <A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimplesetdata">SetData</A>. Of
+course, the objects supporting both operations must override all three
+methods.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataobj.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdndoverview.html#wxdndoverview">Clipboard and drag and drop overview</A>, 
+<A HREF="wx_samples.html#samplednd">DnD sample</A>, 
+<A HREF="wx_wxfiledataobject.html#wxfiledataobject">wxFileDataObject</A>, 
+<A HREF="wx_wxtextdataobject.html#wxtextdataobject">wxTextDataObject</A>, 
+<A HREF="wx_wxbitmapdataobject.html#wxbitmapdataobject">wxBitmapDataObject</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdataobjectsimplewxdataobjectsimple">wxDataObjectSimple::wxDataObjectSimple</A><BR>
+<A HREF="#wxdataobjectsimplegetformat">wxDataObjectSimple::GetFormat</A><BR>
+<A HREF="#wxdataobjectsimplesetformat">wxDataObjectSimple::SetFormat</A><BR>
+<A HREF="#wxdataobjectsimplegetdatasize">wxDataObjectSimple::GetDataSize</A><BR>
+<A HREF="#wxdataobjectsimplegetdatahere">wxDataObjectSimple::GetDataHere</A><BR>
+<A HREF="#wxdataobjectsimplesetdata">wxDataObjectSimple::SetData</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataobjectsimplewxdataobjectsimple"></A>
+<H3>wxDataObjectSimple::wxDataObjectSimple</H3>
+<P>
+<B></B> <B>wxDataObjectSimple</B>(<B>const <A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A>&</B></B><I> format = wxFormatInvalid</I>)<P>
+Constructor accepts the supported format (none by default) which may also be
+set later with <A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimplesetformat">SetFormat</A>.<P>
+
+<HR>
+<A NAME="wxdataobjectsimplegetformat"></A>
+<H3>wxDataObjectSimple::GetFormat</H3>
+<P>
+<B>const <A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A>&</B> </B> <B>GetFormat</B>() <B>const</B><P>
+Returns the (one and only one) format supported by this object. It is supposed
+that the format is supported in both directions.<P>
+
+<HR>
+<A NAME="wxdataobjectsimplesetformat"></A>
+<H3>wxDataObjectSimple::SetFormat</H3>
+<P>
+<B>void</B> <B>SetFormat</B>(<B>const <A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A>&</B></B><I> format</I>)<P>
+Sets the supported format.<P>
+
+<HR>
+<A NAME="wxdataobjectsimplegetdatasize"></A>
+<H3>wxDataObjectSimple::GetDataSize</H3>
+<P>
+<B>virtual size_t</B> <B>GetDataSize</B>() <B>const</B><P>
+Gets the size of our data. Must be implemented in the derived class if the
+object supports rendering its data.<P>
+
+<HR>
+<A NAME="wxdataobjectsimplegetdatahere"></A>
+<H3>wxDataObjectSimple::GetDataHere</H3>
+<P>
+<B>virtual bool</B> <B>GetDataHere</B>(<B>void </B><I>*buf</I>) <B>const</B><P>
+Copy the data to the buffer, return true on success. Must be implemented in the
+derived class if the object supports rendering its data.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> When implementing this method in wxPython, no additional
+parameters are required and the data should be returned from the
+method as a string.<P>
+
+<HR>
+<A NAME="wxdataobjectsimplesetdata"></A>
+<H3>wxDataObjectSimple::SetData</H3>
+<P>
+<B>virtual bool</B> <B>SetData</B>(<B>size_t </B><I>len</I>, <B>const void </B><I>*buf</I>)<P>
+Copy the data from the buffer, return true on success. Must be implemented in
+the derived class if the object supports setting its data.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> When implementing this method in wxPython, the data comes
+as a single string parameter rather than the two shown here.<P>
+
+</FONT></BODY></HTML>

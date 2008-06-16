@@ -7,7 +7,7 @@
 // Author:      Robin Dunn
 //
 // Created:     11-Oct-2003
-// RCS-ID:      $Id: pyclasses.h,v 1.12.2.1 2006/01/16 23:47:37 RD Exp $
+// RCS-ID:      $Id: pyclasses.h 43595 2006-11-22 01:57:47Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,8 @@ class wxPyTimer : public wxTimer
 {
 public:
     wxPyTimer(wxEvtHandler *owner=NULL, int id = -1);
-
+    ~wxPyTimer();
+    
     DEC_PYCALLBACK__(Notify);
     PYPRIVATE;
     DECLARE_ABSTRACT_CLASS(wxPyTimer)

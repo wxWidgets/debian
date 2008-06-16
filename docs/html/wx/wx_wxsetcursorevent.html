@@ -1,0 +1,104 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSetCursorEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsetcursorevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsemaphore.html#wxsemaphore"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxserver.html#wxserver"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSetCursorEvent</H2>
+<P>
+A SetCursorEvent is generated when the mouse cursor is about to be set as a
+result of mouse motion. This event gives the application the chance to perform
+specific mouse cursor processing based on the current position of the mouse
+within the window. Use <A HREF="wx_wxsetcursorevent.html#wxsetcursoreventsetcursor">SetCursor</A> to
+specify the cursor you want to be displayed.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_gdifunctions.html#wxsetcursor">::wxSetCursor</A>
+<A HREF="wx_wxwindow.html#wxwindowsetcursor">wxWindow::wxSetCursor</A><P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a set cursor event, use this event handler macro to direct input to a member
+function that takes a wxSetCursorEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SET_CURSOR(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_SET_CURSOR event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<P>
+<A HREF="#wxsetcursoreventctor">wxSetCursorEvent::wxSetCursorEvent</A><BR>
+<A HREF="#wxsetcursoreventgetcursor">wxSetCursorEvent::GetCursor</A><BR>
+<A HREF="#wxsetcursoreventgetx">wxSetCursorEvent::GetX</A><BR>
+<A HREF="#wxsetcursoreventgety">wxSetCursorEvent::GetY</A><BR>
+<A HREF="#wxsetcursoreventhascursor">wxSetCursorEvent::HasCursor</A><BR>
+<A HREF="#wxsetcursoreventsetcursor">wxSetCursorEvent::SetCursor</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsetcursoreventctor"></A>
+<H3>wxSetCursorEvent::wxSetCursorEvent</H3>
+<P>
+<B></B> <B>wxSetCursorEvent</B>(<B>wxCoord</B><I>x = 0</I>, <B>wxCoord</B><I>y = 0</I>)<P>
+Constructor, used by the library itself internally to initialize the event
+object.<P>
+
+
+<HR>
+<A NAME="wxsetcursoreventgetcursor"></A>
+<H3>wxSetCursorEvent::GetCursor</H3>
+<P>
+<B><A HREF="wx_wxcursor.html#wxcursor">wxCursor</A></B> </B> <B>GetCursor</B>() <B>const</B><P>
+Returns a reference to the cursor specified by this event.<P>
+
+
+<HR>
+<A NAME="wxsetcursoreventgetx"></A>
+<H3>wxSetCursorEvent::GetX</H3>
+<P>
+<B>wxCoord</B> <B>GetX</B>() <B>const</B><P>
+Returns the X coordinate of the mouse in client coordinates.<P>
+
+
+<HR>
+<A NAME="wxsetcursoreventgety"></A>
+<H3>wxSetCursorEvent::GetY</H3>
+<P>
+<B>wxCoord</B> <B>GetY</B>() <B>const</B><P>
+Returns the Y coordinate of the mouse in client coordinates.<P>
+
+
+<HR>
+<A NAME="wxsetcursoreventhascursor"></A>
+<H3>wxSetCursorEvent::HasCursor</H3>
+<P>
+<B>bool</B> <B>HasCursor</B>() <B>const</B><P>
+Returns <TT>true</TT> if the cursor specified by this event is a valid cursor.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+You cannot specify <TT>wxNullCursor</TT> with this event, as it is not
+considered a valid cursor.<P>
+
+
+<HR>
+<A NAME="wxsetcursoreventsetcursor"></A>
+<H3>wxSetCursorEvent::SetCursor</H3>
+<P>
+<B>void</B> <B>SetCursor</B>(<B>const <A HREF="wx_wxcursor.html#wxcursor">wxCursor</A>&</B></B><I>cursor</I>)<P>
+Sets the cursor associated with this event.<P>
+
+
+</FONT></BODY></HTML>

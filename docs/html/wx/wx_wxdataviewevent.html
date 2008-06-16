@@ -1,0 +1,136 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataViewEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataviewevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdataviewctrl.html#wxdataviewctrl"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdataviewlistmodelnotifier.html#wxdataviewlistmodelnotifier"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataViewEvent</H2>
+<P>
+
+wxDataViewEvent - the event class for the wxDataViewCtrl notifications<P>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxnotifyevent.html#wxnotifyevent">wxNotifyEvent</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataview.h&gt;<P>
+
+<A HREF="#wxdatavieweventwxdataviewevent">wxDataViewEvent::wxDataViewEvent</A><BR>
+<A HREF="#wxdatavieweventclone">wxDataViewEvent::Clone</A><BR>
+<A HREF="#wxdatavieweventgetcolumn">wxDataViewEvent::GetColumn</A><BR>
+<A HREF="#wxdatavieweventgetdataviewcolumn">wxDataViewEvent::GetDataViewColumn</A><BR>
+<A HREF="#wxdatavieweventgetmodel">wxDataViewEvent::GetModel</A><BR>
+<A HREF="#wxdatavieweventgetrow">wxDataViewEvent::GetRow</A><BR>
+<A HREF="#wxdatavieweventgetvalue">wxDataViewEvent::GetValue</A><BR>
+<A HREF="#wxdatavieweventiseditcancelled">wxDataViewEvent::IsEditCancelled</A><BR>
+<A HREF="#wxdatavieweventsetcolumn">wxDataViewEvent::SetColumn</A><BR>
+<A HREF="#wxdatavieweventsetdataviewcolumn">wxDataViewEvent::SetDataViewColumn</A><BR>
+<A HREF="#wxdatavieweventseteditcanceled">wxDataViewEvent::SetEditCanceled</A><BR>
+<A HREF="#wxdatavieweventsetmodel">wxDataViewEvent::SetModel</A><BR>
+<A HREF="#wxdatavieweventsetrow">wxDataViewEvent::SetRow</A><BR>
+<A HREF="#wxdatavieweventsetvalue">wxDataViewEvent::SetValue</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdatavieweventwxdataviewevent"></A>
+<H3>wxDataViewEvent::wxDataViewEvent</H3>
+<P>
+<B></B> <B>wxDataViewEvent</B>(<B>wxEventType </B><I>commandType = wxEVT_NULL</I>, <B>int </B><I>winid = 0</I>)<P>
+
+<B></B> <B>wxDataViewEvent</B>(<B>const <A HREF="wx_wxdataviewevent.html#wxdataviewevent">wxDataViewEvent</A>& </B></B><I>event</I>)<P>
+
+
+<HR>
+<A NAME="wxdatavieweventclone"></A>
+<H3>wxDataViewEvent::Clone</H3>
+<P>
+<B><A HREF="wx_wxevent.html#wxevent">wxEvent</A>*</B> </B> <B>Clone</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxdatavieweventgetcolumn"></A>
+<H3>wxDataViewEvent::GetColumn</H3>
+<P>
+<B>int</B> <B>GetColumn</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxdatavieweventgetdataviewcolumn"></A>
+<H3>wxDataViewEvent::GetDataViewColumn</H3>
+<P>
+<B><A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A>*</B> </B> <B>GetDataViewColumn</B>()<P>
+
+
+<HR>
+<A NAME="wxdatavieweventgetmodel"></A>
+<H3>wxDataViewEvent::GetModel</H3>
+<P>
+<B><A HREF="wx_wxdataviewmodel.html#wxdataviewmodel">wxDataViewModel</A>*</B> </B> <B>GetModel</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxdatavieweventgetrow"></A>
+<H3>wxDataViewEvent::GetRow</H3>
+<P>
+<B>int</B> <B>GetRow</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxdatavieweventgetvalue"></A>
+<H3>wxDataViewEvent::GetValue</H3>
+<P>
+<B>const <A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>&</B> </B> <B>GetValue</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxdatavieweventiseditcancelled"></A>
+<H3>wxDataViewEvent::IsEditCancelled</H3>
+<P>
+<B>bool</B> <B>IsEditCancelled</B>() <B>const</B><P>
+Was cell editing canceled? For wxEVT_COMMAND_DATAVIEW_END_CELL_EDIT only.<P>
+
+
+<HR>
+<A NAME="wxdatavieweventsetcolumn"></A>
+<H3>wxDataViewEvent::SetColumn</H3>
+<P>
+<B>void</B> <B>SetColumn</B>(<B>int </B><I>col</I>)<P>
+
+
+<HR>
+<A NAME="wxdatavieweventsetdataviewcolumn"></A>
+<H3>wxDataViewEvent::SetDataViewColumn</H3>
+<P>
+<B>void</B> <B>SetDataViewColumn</B>(<B><A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A>* </B></B><I>col</I>)<P>
+For wxEVT_DATAVIEW_COLUMN_HEADER_CLICKED only.<P>
+
+
+<HR>
+<A NAME="wxdatavieweventseteditcanceled"></A>
+<H3>wxDataViewEvent::SetEditCanceled</H3>
+<P>
+<B>void</B> <B>SetEditCanceled</B>(<B>bool </B><I>editCancelled</I>)<P>
+
+
+<HR>
+<A NAME="wxdatavieweventsetmodel"></A>
+<H3>wxDataViewEvent::SetModel</H3>
+<P>
+<B>void</B> <B>SetModel</B>(<B><A HREF="wx_wxdataviewmodel.html#wxdataviewmodel">wxDataViewModel</A>* </B></B><I>model</I>)<P>
+
+
+<HR>
+<A NAME="wxdatavieweventsetrow"></A>
+<H3>wxDataViewEvent::SetRow</H3>
+<P>
+<B>void</B> <B>SetRow</B>(<B>int </B><I>row</I>)<P>
+
+
+<HR>
+<A NAME="wxdatavieweventsetvalue"></A>
+<H3>wxDataViewEvent::SetValue</H3>
+<P>
+<B>void</B> <B>SetValue</B>(<B>const <A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>& </B></B><I>value</I>)<P>
+
+
+</FONT></BODY></HTML>

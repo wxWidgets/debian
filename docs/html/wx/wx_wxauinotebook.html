@@ -1,0 +1,380 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxAuiNotebook</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxauinotebook"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxauimanager.html#wxauimanager"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxauipaneinfo.html#wxauipaneinfo"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxAuiNotebook</H2>
+<P>
+wxAuiNotebook is part of the wxAUI class framework.
+See also <A HREF="wx_wxauioverview.html#wxauioverview">wxAUI overview</A>.<P>
+wxAuiNotebook is a notebook control which implements many features common in applications with dockable panes.
+Specifically, wxAuiNotebook implements functionality which allows the user to rearrange tab order via drag-and-drop,
+split the tab window into many different splitter configurations, and toggle through different themes to customize
+the control's look and feel.<P>
+An effort has been made to try to maintain an API as similar to that of wxNotebook.<P>
+The default theme that is used is wxAuiDefaultTabArt, which provides a modern, glossy look and feel.
+The theme can be changed by calling <A HREF="wx_wxauinotebook.html#wxauinotebooksetartprovider">wxAuiNotebook::SetArtProvider</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/aui/auibook.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAUI_NB_DEFAULT_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Defined as wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_CLOSE_ON_ACTIVE_TAB
+.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAUI_NB_TAB_SPLIT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Allows the tab control to be split by dragging a tab.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAUI_NB_TAB_MOVE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Allows a tab to be moved horizontally by dragging.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAUI_NB_TAB_EXTERNAL_MOVE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Allows a tab to be moved to another tab control.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAUI_NB_TAB_FIXED_WIDTH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+With this style, all tabs have the same width.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAUI_NB_SCROLL_BUTTONS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+With this style, left and right scroll buttons are displayed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAUI_NB_WINDOWLIST_BUTTON</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+With this style, a drop-down list of windows is available.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAUI_NB_CLOSE_BUTTON</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+With this style, a close button is available on the tab bar.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAUI_NB_CLOSE_ON_ACTIVE_TAB</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+With this style, the close button is visible on the active tab.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAUI_NB_CLOSE_ON_ALL_TABS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+With this style, the close button is visible on all tabs.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAUI_NB_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+With this style, tabs are drawn along the top of the notebook.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAUI_NB_BOTTOM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+With this style, tabs are drawn along the bottom of the notebook.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxauinotebookwxauinotebook">wxAuiNotebook::wxAuiNotebook</A><BR>
+<A HREF="#wxauinotebookaddpage">wxAuiNotebook::AddPage</A><BR>
+<A HREF="#wxauinotebookadvanceselection">wxAuiNotebook::AdvanceSelection</A><BR>
+<A HREF="#wxauinotebookcreate">wxAuiNotebook::Create</A><BR>
+<A HREF="#wxauinotebookdeletepage">wxAuiNotebook::DeletePage</A><BR>
+<A HREF="#wxauinotebookgetartprovider">wxAuiNotebook::GetArtProvider</A><BR>
+<A HREF="#wxauinotebookgetheightforpageheight">wxAuiNotebook::GetHeightForPageHeight</A><BR>
+<A HREF="#wxauinotebookgetpage">wxAuiNotebook::GetPage</A><BR>
+<A HREF="#wxauinotebookgetpagebitmap">wxAuiNotebook::GetPageBitmap</A><BR>
+<A HREF="#wxauinotebookgetpagecount">wxAuiNotebook::GetPageCount</A><BR>
+<A HREF="#wxauinotebookgetpageindex">wxAuiNotebook::GetPageIndex</A><BR>
+<A HREF="#wxauinotebookgetpagetext">wxAuiNotebook::GetPageText</A><BR>
+<A HREF="#wxauinotebookgetselection">wxAuiNotebook::GetSelection</A><BR>
+<A HREF="#wxauinotebookgettabctrlheight">wxAuiNotebook::GetTabCtrlHeight</A><BR>
+<A HREF="#wxauinotebookinsertpage">wxAuiNotebook::InsertPage</A><BR>
+<A HREF="#wxauinotebookremovepage">wxAuiNotebook::RemovePage</A><BR>
+<A HREF="#wxauinotebooksetartprovider">wxAuiNotebook::SetArtProvider</A><BR>
+<A HREF="#wxauinotebooksetfont">wxAuiNotebook::SetFont</A><BR>
+<A HREF="#wxauinotebooksetnormalfont">wxAuiNotebook::SetNormalFont</A><BR>
+<A HREF="#wxauinotebooksetselectedfont">wxAuiNotebook::SetSelectedFont</A><BR>
+<A HREF="#wxauinotebooksetmeasuringfont">wxAuiNotebook::SetMeasuringFont</A><BR>
+<A HREF="#wxauinotebooksetpagebitmap">wxAuiNotebook::SetPageBitmap</A><BR>
+<A HREF="#wxauinotebooksetpagetext">wxAuiNotebook::SetPageText</A><BR>
+<A HREF="#wxauinotebooksetselection">wxAuiNotebook::SetSelection</A><BR>
+<A HREF="#wxauinotebooksettabctrlheight">wxAuiNotebook::SetTabCtrlHeight</A><BR>
+<A HREF="#wxauinotebooksetuniformbitmapsize">wxAuiNotebook::SetUniformBitmapSize</A><BR>
+<A HREF="#wxauinotebookshowwindowmenu">wxAuiNotebook::ShowWindowMenu</A><BR>
+<P>
+
+<HR>
+<A NAME="wxauinotebookwxauinotebook"></A>
+<H3>wxAuiNotebook::wxAuiNotebook</H3>
+<P>
+<B></B> <B>wxAuiNotebook</B>()<P>
+<B></B> <B>wxAuiNotebook</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxAUI_NB_DEFAULT_STYLE</I>)<P>
+Constructor. Creates a wxAuiNotebok control.<P>
+
+<HR>
+<A NAME="wxauinotebookaddpage"></A>
+<H3>wxAuiNotebook::AddPage</H3>
+<P>
+<B>bool</B> <B>AddPage</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>page</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>, <B>bool </B><I>select = false</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap = wxNullBitmap</I>)<P>
+Adds a page.  If the <I>select</I> parameter is true, calling this will generate a page change event.<P>
+
+<HR>
+<A NAME="wxauinotebookadvanceselection"></A>
+<H3>wxAuiNotebook::AdvanceSelection</H3>
+<P>
+<B>void</B> <B>AdvanceSelection</B>(<B>bool </B><I>forward = true</I>)<P>
+Sets the selection to the next or previous page.<P>
+
+<HR>
+<A NAME="wxauinotebookcreate"></A>
+<H3>wxAuiNotebook::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = 0</I>)<P>
+Creates the notebook window.<P>
+
+<HR>
+<A NAME="wxauinotebookdeletepage"></A>
+<H3>wxAuiNotebook::DeletePage</H3>
+<P>
+<B>bool</B> <B>DeletePage</B>(<B>size_t </B><I>page</I>)<P>
+Deletes a page at the given index.  Calling this method will generate a page change event.<P>
+
+<HR>
+<A NAME="wxauinotebookgetartprovider"></A>
+<H3>wxAuiNotebook::GetArtProvider</H3>
+<P>
+<B><A HREF="wx_wxauitabart.html#wxauitabart">wxAuiTabArt</A>*</B> </B> <B>GetArtProvider</B>() <B>const</B><P>
+Returns the associated art provider.<P>
+
+<HR>
+<A NAME="wxauinotebookgetheightforpageheight"></A>
+<H3>wxAuiNotebook::GetHeightForPageHeight</H3>
+<P>
+<B>int</B> <B>GetHeightForPageHeight</B>(<B>int </B><I>pageHeight</I>)<P>
+Returns the desired height of the notebook for the given page height. Use this to fit the notebook to
+a given page size.<P>
+
+<HR>
+<A NAME="wxauinotebookgetpage"></A>
+<H3>wxAuiNotebook::GetPage</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetPage</B>(<B>size_t </B><I>page_idx</I>) <B>const</B><P>
+Returns the page specified by the given index.<P>
+
+<HR>
+<A NAME="wxauinotebookgetpagebitmap"></A>
+<H3>wxAuiNotebook::GetPageBitmap</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A></B> </B> <B>GetPageBitmap</B>(<B>size_t </B><I>page</I>) <B>const</B><P>
+Returns the tab bitmap for the page.<P>
+
+<HR>
+<A NAME="wxauinotebookgetpagecount"></A>
+<H3>wxAuiNotebook::GetPageCount</H3>
+<P>
+<B>size_t</B> <B>GetPageCount</B>() <B>const</B><P>
+Returns the number of pages in the notebook.<P>
+
+<HR>
+<A NAME="wxauinotebookgetpageindex"></A>
+<H3>wxAuiNotebook::GetPageIndex</H3>
+<P>
+<B>int</B> <B>GetPageIndex</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>page_wnd</I>) <B>const</B><P>
+Returns the page index for the specified window.  If the window is not found in
+the notebook, wxNOT_FOUND is returned.<P>
+
+<HR>
+<A NAME="wxauinotebookgetpagetext"></A>
+<H3>wxAuiNotebook::GetPageText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPageText</B>(<B>size_t </B><I>page</I>) <B>const</B><P>
+Returns the tab label for the page.<P>
+
+<HR>
+<A NAME="wxauinotebookgetselection"></A>
+<H3>wxAuiNotebook::GetSelection</H3>
+<P>
+<B>int</B> <B>GetSelection</B>() <B>const</B><P>
+Returns the currently selected page.<P>
+
+<HR>
+<A NAME="wxauinotebookgettabctrlheight"></A>
+<H3>wxAuiNotebook::GetTabCtrlHeight</H3>
+<P>
+<B>int</B> <B>GetTabCtrlHeight</B>() <B>const</B><P>
+Returns the height of the tab control.<P>
+
+<HR>
+<A NAME="wxauinotebookinsertpage"></A>
+<H3>wxAuiNotebook::InsertPage</H3>
+<P>
+<B>bool</B> <B>InsertPage</B>(<B>size_t </B><I>page_idx</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>page</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>, <B>bool </B><I>select = false</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap = wxNullBitmap</I>)<P>
+InsertPage() is similar to AddPage, but allows the ability to specify the insert location.
+If the <I>select</I> parameter is true, calling this will generate a page change event.<P>
+
+<HR>
+<A NAME="wxauinotebookremovepage"></A>
+<H3>wxAuiNotebook::RemovePage</H3>
+<P>
+<B>bool</B> <B>RemovePage</B>(<B>size_t </B><I>page</I>)<P>
+Removes a page, without deleting the window pointer.<P>
+
+<HR>
+<A NAME="wxauinotebooksetartprovider"></A>
+<H3>wxAuiNotebook::SetArtProvider</H3>
+<P>
+<B>void</B> <B>SetArtProvider</B>(<B><A HREF="wx_wxauitabart.html#wxauitabart">wxAuiTabArt</A>* </B></B><I>art</I>)<P>
+Sets the art provider to be used by the notebook.<P>
+
+<HR>
+<A NAME="wxauinotebooksetfont"></A>
+<H3>wxAuiNotebook::SetFont</H3>
+<P>
+<B>bool</B> <B>SetFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the font for drawing the tab labels, using a bold version of the font for selected tab labels.<P>
+
+<HR>
+<A NAME="wxauinotebooksetnormalfont"></A>
+<H3>wxAuiNotebook::SetNormalFont</H3>
+<P>
+<B>void</B> <B>SetNormalFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the font for drawing unselected tab labels.<P>
+
+<HR>
+<A NAME="wxauinotebooksetselectedfont"></A>
+<H3>wxAuiNotebook::SetSelectedFont</H3>
+<P>
+<B>void</B> <B>SetSelectedFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the font for drawing selected tab labels.<P>
+
+<HR>
+<A NAME="wxauinotebooksetmeasuringfont"></A>
+<H3>wxAuiNotebook::SetMeasuringFont</H3>
+<P>
+<B>void</B> <B>SetMeasuringFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the font for measuring tab labels.<P>
+
+<HR>
+<A NAME="wxauinotebooksetpagebitmap"></A>
+<H3>wxAuiNotebook::SetPageBitmap</H3>
+<P>
+<B>bool</B> <B>SetPageBitmap</B>(<B>size_t </B><I>page</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Sets the bitmap for the page.  To remove a bitmap from the tab caption, pass
+wxNullBitmap.<P>
+
+<HR>
+<A NAME="wxauinotebooksetpagetext"></A>
+<H3>wxAuiNotebook::SetPageText</H3>
+<P>
+<B>bool</B> <B>SetPageText</B>(<B>size_t </B><I>page</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>)<P>
+Sets the tab label for the page.<P>
+
+<HR>
+<A NAME="wxauinotebooksetselection"></A>
+<H3>wxAuiNotebook::SetSelection</H3>
+<P>
+<B>size_t</B> <B>SetSelection</B>(<B>size_t </B><I>new_page</I>)<P>
+Sets the page selection.  Calling this method will generate a page change event.<P>
+
+<HR>
+<A NAME="wxauinotebooksettabctrlheight"></A>
+<H3>wxAuiNotebook::SetTabCtrlHeight</H3>
+<P>
+<B>void</B> <B>SetTabCtrlHeight</B>(<B>int </B><I>height</I>)<P>
+Sets the tab height.  By default, the tab control height is calculated
+by measuring the text height and bitmap sizes on the tab captions.  Calling this
+method will override that calculation and set the tab control to the specified
+height parameter.  A call to this method will override any call to SetUniformBitmapSize().
+Specifying -1 as the height will return the control to its default auto-sizing behaviour.<P>
+
+<HR>
+<A NAME="wxauinotebooksetuniformbitmapsize"></A>
+<H3>wxAuiNotebook::SetUniformBitmapSize</H3>
+<P>
+<B>void</B> <B>SetUniformBitmapSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+SetUniformBitmapSize() ensures that all tabs will have the same height, even
+if some tabs don't have bitmaps.  Passing wxDefaultSize to this function will
+instruct the control to use dynamic tab height, which is the default behaviour.
+Under the default behaviour, when a tab with a large bitmap is added, the tab control's
+height will automatically increase to accommodate the larger bitmap.<P>
+<B>void</B> <B>Split</B>(<B>size_t </B><I>page</I>, <B>int </B><I>direction</I>)<P>
+Split performs a split operation programmatically. The argument <I>page</I> indicates
+the page that will be split off.  This page will also become the active page after the
+split.  The <I>direction</I> argument specifies where the pane should go, it should be one
+of the following: wxTOP, wxBOTTOM, wxLEFT, or wxRIGHT.<P>
+
+<HR>
+<A NAME="wxauinotebookshowwindowmenu"></A>
+<H3>wxAuiNotebook::ShowWindowMenu</H3>
+<P>
+<B>bool</B> <B>ShowWindowMenu</B>()<P>
+Shows the window menu for the active tab control associated with this notebook,
+and returns <TT>true</TT> if a selection was made.<P>
+
+</FONT></BODY></HTML>

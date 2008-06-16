@@ -1,0 +1,539 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMSW port</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmswport"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_platformdetails.html#platformdetails"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgtkport.html#wxgtkport"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmacport.html#wxmacport"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMSW port</H2>
+<P>
+wxMSW is a port of wxWidgets for the Windows platforms
+including Windows 95, 98, ME, 2000, NT, XP in ANSI and
+Unicode mode (for Windows 95 through the MSLU extension
+library). wxMSW ensures native look and feel for XP
+as well when using wxWidgets version 2.3.3 or higher.
+wxMSW can be compile with a great variety of compilers
+including MS VC++, Borland 5.5, MinGW32, Cygwin and
+Watcom as well as cross-compilation with a Linux hosted
+MinGW32 tool chain.<P>
+For further information, please see the files in docs/msw
+in the distribution.<P>
+<A HREF="#wxmswthemedborders">Themed borders on Windows</A><BR>
+<A HREF="#wxwince">wxWinCE</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmswthemedborders"></A>
+<H3>Themed borders on Windows</H3>
+<P>
+Starting with wxWidgets 2.8.5, you can specify the wxBORDER_THEME style to have wxWidgets
+use a themed border. Using the default XP theme, this is a thin 1-pixel blue border,
+with an extra 1-pixel border in the window client background colour (usually white) to
+separate the client area's scrollbars from the border.<P>
+If you don't specify a border style for a wxTextCtrl in rich edit mode, wxWidgets now gives
+the control themed borders automatically, where previously they would take the Windows 95-style
+sunken border. Other native controls such as wxTextCtrl in non-rich edit mode, and wxComboBox,
+already paint themed borders where appropriate. To use themed borders on other windows, such
+as wxPanel, pass the wxBORDER_THEME style.<P>
+Note that in wxWidgets 2.9 and above, wxBORDER_THEME will be used on all platforms to
+indicate that there should definitely be a border, whose style is determined by wxWidgets for the current platform.
+wxWidgets 2.9 and above will also be better at determining whether there should be a themed border
+Because of the requirements of binary compatibility, this automatic border
+capability could not be put into wxWidgets 2.8 except for built-in, native controls. In 2.8, the border
+must be specified for custom controls and windows. However, to make it easier to decide
+what style should be passed, you can use (on Windows only) the function wxWindow::GetThemedBorderStyle()
+and it will return a suitable style for the current version of Windows. On Windows CE,
+wxBORDER_SIMPLE will be returned; on Windows 95/98/NT/2K, wxBORDER_SUNKEN will be
+returned, and on XP and above where theming is turned on, wxBORDER_THEME will be returned.
+This function does not exist in wxWidgets 2.9 and is not part of the official API.<P>
+In 2.8, wxBORDER_THEME is normally interpreted as a wxBORDER_SUNKEN on platforms other than Windows.<P>
+
+<HR>
+<A NAME="wxwince"></A>
+<H3>wxWinCE</H3>
+<P>
+wxWinCE is the name given to wxMSW when compiled on Windows CE devices;
+most of wxMSW is common to Win32 and Windows CE but there are
+some simplifications, enhancements, and differences in
+behaviour.<P>
+For building instructions, see docs/msw/wince in the
+distribution, also the section about Visual Studio 2005 project
+files below. The rest of this section documents issues you
+need to be aware of when programming for Windows CE devices.<P>
+
+<HR>
+<A NAME="topic18"></A>
+<H3>General issues for wxWinCE programming</H3>
+<P>
+Mobile applications generally have fewer features and
+simpler user interfaces. Simply omit whole sizers, static
+lines and controls in your dialogs, and use comboboxes instead
+of listboxes where appropriate. You also need to reduce
+the amount of spacing used by sizers, for which you can
+use a macro such as this:<P>
+<PRE>
+#if defined(__WXWINCE__)
+    #define wxLARGESMALL(large,small) small
+#else
+    #define wxLARGESMALL(large,small) large
+#endif
+
+// Usage
+topsizer-&gt;Add( CreateTextSizer( message ), 0, wxALL, wxLARGESMALL(10,0) );
+</PRE>
+There is only ever one instance of a Windows CE application running,
+and wxWidgets will take care of showing the current instance and
+shutting down the second instance if necessary.<P>
+You can test the return value of wxSystemSettings::GetScreenType()
+for a qualitative assessment of what kind of display is available,
+or use wxGetDisplaySize() if you need more information.<P>
+You can also use wxGetOsVersion to test for a version of Windows CE at
+run-time (see the next section). However, because different builds
+are currently required to target different kinds of device, these
+values are hard-wired according to the build, and you cannot
+dynamically adapt the same executable for different major Windows CE
+platforms. This would require a different approach to the way
+wxWidgets adapts its behaviour (such as for menubars) to suit the
+style of device.<P>
+See the "Life!" example (demos/life) for an example of
+an application that has been tailored for PocketPC and Smartphone use.<P>
+<B>Note:</B> don't forget to have this line in your .rc file, as for
+desktop Windows applications:<P>
+<PRE>
+#include "wx/msw/wx.rc"
+</PRE>
+
+<HR>
+<A NAME="topic19"></A>
+<H3>Testing for WinCE SDKs</H3>
+<P>
+Use these preprocessor symbols to test for the different types of device or SDK:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+__SMARTPHONE__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Generic mobile devices with phone buttons and a small display
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__PDA__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Generic mobile devices with no phone
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__HANDHELDPC__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Generic mobile device with a keyboard
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXWINCE__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Microsoft-powered Windows CE devices, whether PocketPC, Smartphone or Standard SDK
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+WIN32_PLATFORM_WFSP
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Microsoft-powered smartphone
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__POCKETPC__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Microsoft-powered PocketPC devices with touch-screen
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WINCE_STANDARDSDK__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Microsoft-powered Windows CE devices, for generic Windows CE applications
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WINCE_NET__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Microsoft-powered Windows CE .NET devices (_WIN32_WCE is 400 or greater)
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+wxGetOsVersion will return these values:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxWINDOWS_POCKETPC
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The application is running under PocketPC.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxWINDOWS_SMARTPHONE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The application is running under Smartphone.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxWINDOWS_CE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The application is running under Windows CE (built with the Standard SDK).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="topic20"></A>
+<H3>Window sizing in wxWinCE</H3>
+<P>
+Top level windows (dialogs, frames) are created always full-screen. Fit() of sizers will not rescale top
+level windows but instead will scale window content.<P>
+If the screen orientation changes, the windows will automatically be resized
+so no further action needs to be taken (unless you want to change the layout
+according to the orientation, which you could detect in idle time, for example).
+When input panel (SIP) is shown, top level windows (frames and dialogs) resize
+accordingly (see <A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowhandlesettingchange">wxTopLevelWindow::HandleSettingChange</A>).<P>
+
+<HR>
+<A NAME="topic21"></A>
+<H3>Closing top-level windows in wxWinCE</H3>
+<P>
+You won't get a wxCloseEvent when the user clicks on the X in the titlebar
+on Smartphone and PocketPC; the window is simply hidden instead. However the system may send the
+event to force the application to close down.<P>
+
+<HR>
+<A NAME="topic22"></A>
+<H3>Hibernation in wxWinCE</H3>
+<P>
+Smartphone and PocketPC will send a wxEVT_HIBERNATE to the application object in low
+memory conditions. Your application should release memory and close dialogs,
+and wake up again when the next wxEVT_ACTIVATE or wxEVT_ACTIVATE_APP message is received.
+(wxEVT_ACTIVATE_APP is generated whenever a wxEVT_ACTIVATE event is received
+in Smartphone and PocketPC, since these platforms do not support WM_ACTIVATEAPP.)<P>
+
+<HR>
+<A NAME="topic23"></A>
+<H3>Hardware buttons in wxWinCE</H3>
+<P>
+Special hardware buttons are sent to a window via the wxEVT_HOTKEY event
+under Smartphone and PocketPC. You should first register each required button with <A HREF="wx_wxwindow.html#wxwindowregisterhotkey">wxWindow::RegisterHotKey</A>,
+and unregister the button when you're done with it. For example:<P>
+<PRE>
+  win-&gt;RegisterHotKey(0, wxMOD_WIN, WXK_SPECIAL1);
+  win-&gt;UnregisterHotKey(0);
+</PRE>
+You may have to register the buttons in a wxEVT_ACTIVATE event handler
+since other applications will grab the buttons.<P>
+There is currently no method of finding out the names of the special
+buttons or how many there are.<P>
+
+<HR>
+<A NAME="topic24"></A>
+<H3>Dialogs in wxWinCE</H3>
+<P>
+PocketPC dialogs have an OK button on the caption, and so you should generally
+not repeat an OK button on the dialog. You can add a Cancel button if necessary, but some dialogs
+simply don't offer you the choice (the guidelines recommend you offer an Undo facility
+to make up for it). When the user clicks on the OK button, your dialog will receive
+a wxID_OK event by default. If you wish to change this, call <A HREF="wx_wxdialog.html#wxdialogsetaffirmativeid">wxDialog::SetAffirmativeId</A>
+with the required identifier to be used. Or, override <A HREF="wx_wxdialog.html#wxdialogdook">wxDialog::DoOK</A> (return false to
+have wxWidgets simply call Close to dismiss the dialog).<P>
+Smartphone dialogs do <I>not</I> have an OK button on the caption, and are closed
+using one of the two menu buttons. You need to assign these using <A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowsetleftmenu">wxTopLevelWindow::SetLeftMenu</A>
+and <A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowsetrightmenu">wxTopLevelWindow::SetRightMenu</A>, for example:<P>
+<PRE>
+#ifdef __SMARTPHONE__
+    SetLeftMenu(wxID_OK);
+    SetRightMenu(wxID_CANCEL, _("Cancel"));
+#elif defined(__POCKETPC__)
+    // No OK/Cancel buttons on PocketPC, OK on caption will close
+#else
+    topsizer-&gt;Add( CreateButtonSizer( wxOK|wxCANCEL ), 0, wxEXPAND | wxALL, 10 );
+#endif
+</PRE>
+For implementing property sheets (flat tabs), use a wxNotebook with wxNB_FLAT|wxNB_BOTTOM
+and have the notebook left, top and right sides overlap the dialog by about 3 pixels
+to eliminate spurious borders. You can do this by using a negative spacing in your
+sizer Add() call. The cross-platform property sheet dialog <A HREF="wx_wxpropertysheetdialog.html#wxpropertysheetdialog">wxPropertySheetDialog</A> is
+provided, to show settings in the correct style on PocketPC and on other platforms.<P>
+Notifications (bubble HTML text with optional buttons and links) will also be
+implemented in the future for PocketPC.<P>
+Modeless dialogs probably don't make sense for PocketPC and Smartphone, since
+frames and dialogs are normally full-screen, and a modeless dialog is normally
+intended to co-exist with the main application frame.<P>
+
+<HR>
+<A NAME="topic25"></A>
+<H3>Menubars and toolbars in wxWinCE</H3>
+<P>
+<B><FONT COLOR="#FF0000">Menubars and toolbars in PocketPC</FONT></B><P>
+On PocketPC, a frame must always have a menubar, even if it's empty.
+An empty menubar/toolbar is automatically provided for dialogs, to hide
+any existing menubar for the duration of the dialog.<P>
+Menubars and toolbars are implemented using a combined control,
+but you can use essentially the usual wxWidgets API; wxWidgets will combine the menubar
+and toolbar. However, there are some restrictions:<P>
+
+<UL>
+
+<LI> You must create the frame's primary toolbar with wxFrame::CreateToolBar,
+because this uses the special wxToolMenuBar class (derived from wxToolBar)
+to implement the combined toolbar and menubar. Otherwise, you can create and manage toolbars
+using the wxToolBar class as usual, for example to implement an optional
+formatting toolbar above the menubar as Pocket Word does. But don't assign
+a wxToolBar to a frame using SetToolBar - you should always use CreateToolBar
+for the main frame toolbar.
+<LI> Deleting and adding tools to wxToolMenuBar after Realize is called is not supported.
+<LI> For speed, colours are not remapped to the system colours as they are
+in wxMSW. Provide the tool bitmaps either with the correct system button background,
+or with transparency (for example, using XPMs).
+<LI> Adding controls to wxToolMenuBar is not supported. However, wxToolBar supports
+controls.
+</UL>
+<P>
+Unlike in all other ports, a wxDialog has a wxToolBar, automatically created
+for you. You may either leave it blank, or access it with wxDialog::GetToolBar
+and add buttons, then calling wxToolBar::Realize. You cannot set or recreate
+the toolbar.<P>
+<B><FONT COLOR="#FF0000">Menubars and toolbars in Smartphone</FONT></B><P>
+On Smartphone, there are only two menu buttons, so a menubar is simulated
+using a nested menu on the right menu button. Any toolbars are simply ignored on
+Smartphone.<P>
+
+<HR>
+<A NAME="topic26"></A>
+<H3>Closing windows in wxWinCE</H3>
+<P>
+The guidelines state that applications should not have a Quit menu item,
+since the user should not have to know whether an application is in memory
+or not. The close button on a window does not call the window's
+close handler; it simply hides the window. However, the guidelines say that
+the Ctrl+Q accelerator can be used to quit the application, so wxWidgets
+defines this accelerator by default and if your application handles
+wxID_EXIT, it will do the right thing.<P>
+
+<HR>
+<A NAME="topic27"></A>
+<H3>Context menus in wxWinCE</H3>
+<P>
+To enable context menus in PocketPC, you currently need to call wxWindow::EnableContextMenu,
+a wxWinCE-only function. Otherwise the context menu event (wxContextMenuEvent) will
+never be sent. This API is subject to change.<P>
+Context menus are not supported in Smartphone.<P>
+
+<HR>
+<A NAME="topic28"></A>
+<H3>Control differences on wxWinCE</H3>
+<P>
+These controls and styles are specific to wxWinCE:<P>
+
+<UL>
+
+<LI> <B>wxTextCtrl</B> The wxTE_CAPITALIZE style causes a CAPEDIT control to
+be created, which capitalizes the first letter.
+</UL>
+<P>
+These controls are missing from wxWinCE:<P>
+
+<UL>
+
+<LI> <B>MDI classes</B> MDI is not supported under Windows CE.
+<LI> <B>wxMiniFrame</B> Not supported under Windows CE.
+</UL>
+<P>
+Tooltips are not currently supported for controls, since on PocketPC controls with
+tooltips are distinct controls, and it will be hard to add dynamic
+tooltip support.<P>
+Control borders on PocketPC and Smartphone should normally be specified with
+wxSIMPLE_BORDER instead of wxSUNKEN_BORDER. Controls will usually adapt
+appropriately by virtue of their GetDefaultBorder() function, but if you
+wish to specify a style explicitly you can use wxDEFAULT_CONTROL_BORDER
+which will give a simple border on PocketPC and Smartphone, and the sunken border on
+other platforms.<P>
+
+<HR>
+<A NAME="topic29"></A>
+<H3>Online help in wxWinCE</H3>
+<P>
+You can use the help controller wxWinceHelpController which controls
+simple <TT>.htm</TT> files, usually installed in the Windows directory.
+See the Windows CE reference for how to format the HTML files.<P>
+
+<HR>
+<A NAME="topic30"></A>
+<H3>Installing your PocketPC and Smartphone applications</H3>
+<P>
+To install your application, you need to build a CAB file using
+the parameters defined in a special .inf file. The CabWiz program
+in your SDK will compile the CAB file from the .inf file and
+files that it specifies.<P>
+For delivery, you can simply ask the user to copy the CAB file to the
+device and execute the CAB file using File Explorer. Or, you can
+write a program for the desktop PC that will find the ActiveSync
+Application Manager and install the CAB file on the device,
+which is obviously much easier for the user.<P>
+Here are some links that may help.<P>
+
+<UL>
+
+<LI> A setup builder that takes CABs and builds a setup program is at <A HREF="http://www.eskimo.com/~scottlu/win/index.html">http://www.eskimo.com/~scottlu/win/index.html</A>.
+<LI> Sample installation files can be found in <TT>Windows CE Tools/wce420/POCKET PC 2003/Samples/Win32/AppInst</TT>.
+<LI> An installer generator using wxPython can be found at <A HREF="http://ppcquicksoft.iespana.es/ppcquicksoft/myinstall.html">http://ppcquicksoft.iespana.es/ppcquicksoft/myinstall.html</A>.
+<LI> Miscellaneous Windows CE resources can be found at <A HREF="http://www.orbworks.com/pcce/resources.html">http://www.orbworks.com/pcce/resources.html</A>.
+<LI> Installer creation instructions with a setup.exe for installing to PPC can be found at <A HREF="http://www.pocketpcdn.com/articles/creatingsetup.html">http://www.pocketpcdn.com/articles/creatingsetup.html</A>.
+<LI> Microsoft instructions are at <A HREF="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnce30/html/appinstall30.asp?frame=true&amp;hidetoc=true">http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnce30/html/appinstall30.asp?frame=true&amp;hidetoc=true</A>.
+<LI> Troubleshooting WinCE application installations: <A HREF="http://support.microsoft.com/default.aspx?scid=KB;en-us;q181007">http://support.microsoft.com/default.aspx?scid=KB;en-us;q181007</A>
+</UL>
+<P>
+You may also check out <TT>demos/life/setup/wince</TT> which contains
+scripts to create a PocketPC installation for ARM-based
+devices. In particular, <TT>build.bat</TT> builds the distribution and
+copies it to a directory called <TT>Deliver</TT>.<P>
+
+<HR>
+<A NAME="topic31"></A>
+<H3>wxFileDialog in PocketPC</H3>
+<P>
+Allowing the user to access files on memory cards, or on arbitrary
+parts of the filesystem, is a pain; the standard file dialog only
+shows folders under My Documents or folders on memory cards
+(not the system or card root directory, for example). This is
+a known problem for PocketPC developers.<P>
+If you need a file dialog that allows access to all folders,
+you can use wxGenericFileDialog instead. You will need to include 
+<TT>wx/generic/filedlgg.h</TT>.<P>
+
+<HR>
+<A NAME="topic32"></A>
+<H3>Embedded Visual C++ Issues</H3>
+<P>
+<B><FONT COLOR="#FF0000">Run-time type information</FONT></B><P>
+If you wish to use runtime type information (RTTI) with eVC++ 4, you need to download
+an extra library, <TT>ccrtrtti.lib</TT>, and link with it. At the time of
+writing you can get it from here:<P>
+<PRE>
+http://support.microsoft.com/kb/830482/en-us
+</PRE>
+Otherwise you will get linker errors similar to this:<P>
+<PRE>
+wxwince26d.lib(control.obj) : error LNK2001: unresolved external symbol "const type_info::`vftable'" (??_7type_info@@6B@)
+</PRE>
+<B><FONT COLOR="#FF0000">Windows Mobile 5.0 emulator</FONT></B><P>
+Note that there is no separate emulator configuration for Windows Mobile 5.0: the
+emulator runs the ARM code directly.<P>
+<B><FONT COLOR="#FF0000">Visual Studio 2005 project files</FONT></B><P>
+Unfortunately, Visual Studio 2005, required to build Windows Mobile 5.0 applications,
+doesn't do a perfect job of converting the project files from eVC++ format.<P>
+When you have converted the wxWidgets workspace, edit the configuration properties
+for each configuration and in the Librarian, add a relative path ..\..\lib to
+each library path. For example: <TT>..\$(PlatformName)\$(ConfigurationName)\wx_mono.lib</TT>.<P>
+Then, for a sample you want to compile, edit the configuration properties
+and make sure <TT>..\..\lib\$(PlatformName)\$(ConfigurationName)</TT> is in the Linker/General/Additional
+Library Directories property. Also change the Linker/Input/Additional Dependencies
+property to something like <TT>coredll.lib wx_mono.lib wx_wxjpeg.lib wx_wxpng.lib wx_wxzlib.lib wx_wxexpat.lib commctrl.lib winsock.lib wininet.lib</TT>
+(since the library names in the wxWidgets workspace were changed by VS 2005).<P>
+Alternately, you could could edit all the names to be identical to the original eVC++
+names, but this will probably be more fiddly.<P>
+
+<HR>
+<A NAME="topic33"></A>
+<H3>Remaining issues</H3>
+<P>
+These are some of the remaining problems to be sorted out, and features
+to be supported.<P>
+
+<UL>
+
+<LI> <B>Windows Mobile 5 issues.</B> It is not possible to get the HMENU for
+the command bar on Mobile 5, so the menubar functions need to be rewritten
+to get the individual menus without use of a menubar handle. Also the
+new Mobile 5 convention of using only two menus (and no bitmap buttons) needs to be
+considered.
+<LI> <B>Sizer speed.</B> Particularly for dialogs containing notebooks,
+layout seems slow. Some analysis is required.
+<LI> <B>Notification boxes.</B> The balloon-like notification messages, and their
+icons, should be implemented. This will be quite straightforward.
+<LI> <B>SIP size.</B> We need to be able to get the area taken up by the SIP (input panel),
+and the remaining area, by calling SHSipInfo. We also may need to be able to show and hide
+the SIP programmatically, with SHSipPreference. See also the <I>Input Dialogs</I> topic in
+the <I>Programming Windows CE</I> guide for more on this, and how to have dialogs
+show the SIP automatically using the WC_SIPREF control.
+<LI> <B>wxStaticBitmap.</B> The About box in the "Life!" demo shows a bitmap that is
+the correct size on the emulator, but too small on a VGA Pocket Loox device.
+<LI> <B>wxStaticLine.</B> Lines don't show up, and the documentation suggests that
+missing styles are implemented with WM_PAINT.
+<LI> <B>HTML control.</B> PocketPC has its own HTML control which can be used for showing
+local pages or navigating the web. We should create a version of wxHtmlWindow that uses this
+control, or have a separately-named control (wxHtmlCtrl), with a syntax as close as possible to wxHtmlWindow.
+<LI> <B>Tooltip control.</B> PocketPC uses special TTBUTTON and TTSTATIC controls for adding
+tooltips, with the tooltip separated from the label with a double tilde. We need to support this using SetToolTip.
+(Unfortunately it does not seem possible to dynamically remove the tooltip, so an extra style may
+be required.)
+<LI> <B>Focus.</B> In the wxPropertySheetDialog demo on Smartphone, it's not possible to navigate
+between controls. The focus handling in wxWidgets needs investigation. See in particular src/common/containr.cpp,
+and note that the default OnActivate handler in src/msw/toplevel.cpp sets the focus to the first child of the dialog.
+<LI> <B>OK button.</B> We should allow the OK button on a dialog to be optional, perhaps
+by using wxCLOSE_BOX to indicate when the OK button should be displayed.
+<LI> <B>Dynamic adaptation.</B> We should probably be using run-time tests more
+than preprocessor tests, so that the same WinCE application can run on different
+versions of the operating system.
+<LI> <B>Modeless dialogs.</B> When a modeless dialog is hidden with the OK button, it doesn't restore the
+frame's menubar. See for example the find dialog in the dialogs sample. However, the menubar is restored
+if pressing Cancel (the window is closed). This reflects the fact that modeless dialogs are
+not very useful on Windows CE; however, we could perhaps destroy/restore a modeless dialog's menubar
+on deactivation and activation.
+<LI> <B>Home screen plugins.</B> Figure out how to make home screen plugins for use with wxWidgets
+applications (see <TT>http://www.codeproject.com/ce/CTodayWindow.asp</TT> for inspiration).
+Although we can't use wxWidgets to create the plugin (too large), we could perhaps write
+a generic plugin that takes registry information from a given application, with
+options to display information in a particular way using icons and text from
+a specified location.
+<LI> <B>Further abstraction.</B> We should be able to abstract away more of the differences
+between desktop and mobile applications, in particular for sizer layout.
+<LI> <B>Dialog captions.</B> The blue, bold captions on dialogs - with optional help button -
+should be catered for, either by hard-wiring the capability into all dialogs and panels,
+or by providing a standard component and sizer.
+</UL>
+<P>
+
+</FONT></BODY></HTML>

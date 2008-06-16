@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: statbmp.h,v 1.34 2005/08/30 13:54:24 VZ Exp $
+// RCS-ID:      $Id: statbmp.h 37393 2006-02-08 21:47:09Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,15 +12,11 @@
 #ifndef _WX_STATBMP_H_
 #define _WX_STATBMP_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "statbmp.h"
-#endif
-
 #include "wx/control.h"
 #include "wx/icon.h"
 #include "wx/bitmap.h"
 
-extern WXDLLEXPORT_DATA(const wxChar*) wxStaticBitmapNameStr;
+extern WXDLLEXPORT_DATA(const wxChar) wxStaticBitmapNameStr[];
 
 // a control showing an icon or a bitmap
 class WXDLLEXPORT wxStaticBitmap : public wxStaticBitmapBase
@@ -53,33 +49,17 @@ public:
 
     virtual void SetIcon(const wxIcon& icon) { SetImage(&icon); }
     virtual void SetBitmap(const wxBitmap& bitmap) { SetImage(&bitmap); }
+    virtual wxBitmap GetBitmap() const;
+    virtual wxIcon GetIcon() const;
 
-    // assert failure is provoked by an attempt to get an icon from bitmap or
-    // vice versa
-    wxIcon GetIcon() const
-    {
-        wxASSERT_MSG( m_isIcon, _T("no icon in this wxStaticBitmap") );
-
-        return *(wxIcon *)m_image;
-    }
-
-    wxBitmap GetBitmap() const
-    {
-        wxASSERT_MSG( !m_isIcon, _T("no bitmap in this wxStaticBitmap") );
-
-        return *(wxBitmap *)m_image;
-    }
-
-    // implementation only from now on
-    // -------------------------------
+    virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
 
 protected:
     virtual wxBorder GetDefaultBorder() const;
     virtual wxSize DoGetBestSize() const;
-    virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
 
     // ctor/dtor helpers
-    void Init() { m_isIcon = true; m_image = NULL; }
+    void Init() { m_isIcon = true; m_image = NULL; m_currentHandle = 0; }
     void Free();
 
     // true if icon/bitmap is valid
@@ -91,6 +71,9 @@ protected:
     // we can have either an icon or a bitmap
     bool m_isIcon;
     wxGDIImage *m_image;
+
+    // handle used in last call to STM_SETIMAGE
+    WXHANDLE m_currentHandle;
 
 private:
     DECLARE_DYNAMIC_CLASS(wxStaticBitmap)

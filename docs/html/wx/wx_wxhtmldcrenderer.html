@@ -1,0 +1,123 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlDCRenderer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmldcrenderer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercell"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmleasyprinting.html#wxhtmleasyprinting"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlDCRenderer</H2>
+<P>
+This class can render HTML document into a specified area of a DC. You can use it
+in your own printing code, although use of <A HREF="wx_wxhtmleasyprinting.html#wxhtmleasyprinting">wxHtmlEasyPrinting</A> 
+or <A HREF="wx_wxhtmlprintout.html#wxhtmlprintout">wxHtmlPrintout</A> is strongly recommended.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/htmprint.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmldcrendererwxhtmldcrenderer">wxHtmlDCRenderer::wxHtmlDCRenderer</A><BR>
+<A HREF="#wxhtmldcrenderersetdc">wxHtmlDCRenderer::SetDC</A><BR>
+<A HREF="#wxhtmldcrenderersetfonts">wxHtmlDCRenderer::SetFonts</A><BR>
+<A HREF="#wxhtmldcrenderersetsize">wxHtmlDCRenderer::SetSize</A><BR>
+<A HREF="#wxhtmldcrenderersethtmltext">wxHtmlDCRenderer::SetHtmlText</A><BR>
+<A HREF="#wxhtmldcrendererrender">wxHtmlDCRenderer::Render</A><BR>
+<A HREF="#wxhtmldcrenderergettotalheight">wxHtmlDCRenderer::GetTotalHeight</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmldcrendererwxhtmldcrenderer"></A>
+<H3>wxHtmlDCRenderer::wxHtmlDCRenderer</H3>
+<P>
+<B></B> <B>wxHtmlDCRenderer</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxhtmldcrenderersetdc"></A>
+<H3>wxHtmlDCRenderer::SetDC</H3>
+<P>
+<B>void</B> <B>SetDC</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>* </B></B><I>dc</I>, <B>double </B><I>pixel_scale = 1.0</I>)<P>
+Assign DC instance to the renderer.<P>
+<I>pixel_scale</I> can be used when rendering to high-resolution DCs (e.g. printer) to adjust size of pixel metrics.
+(Many dimensions in HTML are given in pixels -- e.g. image sizes. 300x300 image would be only one
+inch wide on typical printer. With pixel_scale = 3.0 it would be 3 inches.)<P>
+
+<HR>
+<A NAME="wxhtmldcrenderersetfonts"></A>
+<H3>wxHtmlDCRenderer::SetFonts</H3>
+<P>
+<B>void</B> <B>SetFonts</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>normal_face</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fixed_face</I>, <B>const int </B><I>*sizes = NULL</I>)<P>
+Sets fonts. See <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowsetfonts">wxHtmlWindow::SetFonts</A> for
+detailed description.<P>
+See also <A HREF="wx_wxhtmldcrenderer.html#wxhtmldcrenderersetsize">SetSize</A>.<P>
+
+<HR>
+<A NAME="wxhtmldcrenderersetsize"></A>
+<H3>wxHtmlDCRenderer::SetSize</H3>
+<P>
+<B>void</B> <B>SetSize</B>(<B>int </B><I>width</I>, <B>int </B><I>height</I>)<P>
+Set size of output rectangle, in pixels. Note that you <B>can't</B> change
+width of the rectangle between calls to <A HREF="wx_wxhtmldcrenderer.html#wxhtmldcrendererrender">Render</A>!
+(You can freely change height.)<P>
+
+<HR>
+<A NAME="wxhtmldcrenderersethtmltext"></A>
+<H3>wxHtmlDCRenderer::SetHtmlText</H3>
+<P>
+<B>void</B> <B>SetHtmlText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>html</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>basepath = wxEmptyString</I>, <B>bool </B><I>isdir = true</I>)<P>
+Assign text to the renderer. <A HREF="wx_wxhtmldcrenderer.html#wxhtmldcrendererrender">Render</A> then draws 
+the text onto DC.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>html</I><UL><UL>
+HTML text. This is <I>not</I> a filename.</UL></UL>
+<P>
+<I>basepath</I><UL><UL>
+base directory (html string would be stored there if it was in
+file). It is used to determine path for loading images, for example.</UL></UL>
+<P>
+<I>isdir</I><UL><UL>
+false if basepath is filename, true if it is directory name
+(see <A HREF="wx_wxfilesystem.html#wxfilesystem">wxFileSystem</A> for detailed explanation)</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmldcrendererrender"></A>
+<H3>wxHtmlDCRenderer::Render</H3>
+<P>
+<B>int</B> <B>Render</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>, <B>int </B><I>from = 0</I>, <B>int </B><I>dont_render = false</I>)<P>
+Renders HTML text to the DC.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>x,y</I><UL><UL>
+ position of upper-left corner of printing rectangle (see <A HREF="wx_wxhtmldcrenderer.html#wxhtmldcrenderersetsize">SetSize</A>)</UL></UL>
+<P>
+<I>from</I><UL><UL>
+y-coordinate of the very first visible cell</UL></UL>
+<P>
+<I>dont_render</I><UL><UL>
+if true then this method only returns y coordinate of the next page
+and does not output anything</UL></UL>
+<P>
+Returned value is y coordinate of first cell than didn't fit onto page.
+Use this value as <I>from</I> in next call to Render in order to print multipages
+document.<P>
+<B><FONT COLOR="#FF0000">Caution!</FONT></B><P>
+The Following three methods <B>must</B> always be called before any call to Render (preferably
+in this order):<P>
+<UL>
+
+<LI> <A HREF="wx_wxhtmldcrenderer.html#wxhtmldcrenderersetdc">SetDC</A>
+<LI> <A HREF="wx_wxhtmldcrenderer.html#wxhtmldcrenderersetsize">SetSize</A>
+<LI> <A HREF="wx_wxhtmldcrenderer.html#wxhtmldcrenderersethtmltext">SetHtmlText</A>
+</UL>
+<P>
+<B>Render() changes the DC's user scale and does NOT restore it.</B><P>
+
+<HR>
+<A NAME="wxhtmldcrenderergettotalheight"></A>
+<H3>wxHtmlDCRenderer::GetTotalHeight</H3>
+<P>
+<B>int</B> <B>GetTotalHeight</B>()<P>
+Returns the height of the HTML text. This is important if area height (see <A HREF="wx_wxhtmldcrenderer.html#wxhtmldcrenderersetsize">SetSize</A>)
+is smaller that total height and thus the page cannot fit into it. In that case you're supposed to
+call <A HREF="wx_wxhtmldcrenderer.html#wxhtmldcrendererrender">Render</A> as long as its return value is smaller than GetTotalHeight's.<P>
+
+</FONT></BODY></HTML>

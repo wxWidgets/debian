@@ -1,23 +1,19 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        m_pre.cpp
+// Name:        src/html/m_pre.cpp
 // Purpose:     wxHtml module for <PRE> ... </PRE> tag (code citation)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_pre.cpp,v 1.30 2004/09/27 19:15:06 ABX Exp $
+// RCS-ID:      $Id: m_pre.cpp 38788 2006-04-18 08:11:26Z ABX $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation
-#endif
-
 #include "wx/wxprec.h"
 
-#include "wx/defs.h"
-#if wxUSE_HTML && wxUSE_STREAMS
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
+
+#if wxUSE_HTML && wxUSE_STREAMS
 
 #ifndef WXPRECOMP
 #endif
@@ -108,14 +104,8 @@ TAG_HANDLER_BEGIN(PRE, "PRE")
         c->SetAlignHor(wxHTML_ALIGN_LEFT);
         c->SetIndent(m_WParser->GetCharHeight(), wxHTML_INDENT_TOP);
 
-        wxString srcMid =
-            m_WParser->GetSource()->Mid(tag.GetBeginPos(),
-                                        tag.GetEndPos1() - tag.GetBeginPos());
-        // It is safe to temporarily change the source being parsed,
-        // provided we restore the state back after parsing
-        m_Parser->SetSourceAndSaveState(HtmlizeWhitespaces(srcMid));
-        m_Parser->DoParsing();
-        m_Parser->RestoreState();
+        wxString srcMid = m_WParser->GetInnerSource(tag);
+        ParseInnerSource(HtmlizeWhitespaces(srcMid));
 
         m_WParser->CloseContainer();
         m_WParser->CloseContainer();

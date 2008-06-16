@@ -24,13 +24,16 @@ For more information about events, see the \helpref{Event handling overview}{eve
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
+
 \membersection{wxEvent::wxEvent}\label{wxeventctor}
 
 \func{}{wxEvent}{\param{int }{id = 0}, \param{wxEventType }{eventType = {\tt wxEVT\_NULL}}}
 
 Constructor. Should not need to be used directly by an application.
 
+
 \membersection{wxEvent::m\_propagationLevel}\label{wxeventmpropagationlevel}
+
 
 \member{int}{m\_propagationLevel}
 
@@ -48,6 +51,7 @@ propagated as much as necessary.
 Any positive number means that the event should be propagated but no more than
 the given number of times. E.g. the propagation level may be set to $1$ to
 propagate the event to its parent only, but not to its grandparent.
+
 
 \membersection{wxEvent::Clone}\label{wxeventclone}
 
@@ -70,6 +74,7 @@ a new event (call it MyEvent) and then define the Clone function like this:
     wxEvent *Clone(void) const { return new MyEvent(*this); }
 \end{verbatim}
 
+
 \membersection{wxEvent::GetEventObject}\label{wxeventgeteventobject}
 
 \func{wxObject*}{GetEventObject}{\void}
@@ -77,12 +82,14 @@ a new event (call it MyEvent) and then define the Clone function like this:
 Returns the object (usually a window) associated with the
 event, if any.
 
+
 \membersection{wxEvent::GetEventType}\label{wxeventgeteventtype}
 
-\func{WXTYPE}{GetEventType}{\void}
+\func{wxEventType}{GetEventType}{\void}
 
 Returns the identifier of the given event type,
-such as wxEVENT\_TYPE\_BUTTON\_COMMAND.
+such as \texttt{wxEVT\_COMMAND\_BUTTON\_CLICKED}.
+
 
 \membersection{wxEvent::GetId}\label{wxeventgetid}
 
@@ -90,17 +97,23 @@ such as wxEVENT\_TYPE\_BUTTON\_COMMAND.
 
 Returns the identifier associated with this event, such as a button command id.
 
+
 \membersection{wxEvent::GetSkipped}\label{wxeventgetskipped}
 
 \constfunc{bool}{GetSkipped}{\void}
 
 Returns true if the event handler should be skipped, false otherwise.
 
+
 \membersection{wxEvent::GetTimestamp}\label{wxeventgettimestamp}
 
 \func{long}{GetTimestamp}{\void}
 
-Gets the timestamp for the event.
+Gets the timestamp for the event. The timestamp is the time in milliseconds
+since some fixed moment (\emph{not} necessarily the standard Unix Epoch, so
+only differences between the timestamps and not their absolute values usually
+make sense).
+
 
 \membersection{wxEvent::IsCommandEvent}\label{wxeventiscommandevent}
 
@@ -125,11 +138,13 @@ earlier call to \helpref{StopPropagation}{wxeventstoppropagation}).
 
 Sets the originating object.
 
+
 \membersection{wxEvent::SetEventType}\label{wxeventseteventtype}
 
-\func{void}{SetEventType}{\param{WXTYPE }{typ}}
+\func{void}{SetEventType}{\param{wxEventType }{type}}
 
 Sets the event type.
+
 
 \membersection{wxEvent::SetId}\label{wxeventsetid}
 
@@ -137,11 +152,13 @@ Sets the event type.
 
 Sets the identifier associated with this event, such as a button command id.
 
+
 \membersection{wxEvent::SetTimestamp}\label{wxeventsettimestamp}
 
 \func{void}{SetTimestamp}{\param{long }{timeStamp}}
 
 Sets the timestamp for the event.
+
 
 \membersection{wxEvent::ShouldPropagate}\label{wxeventshouldpropagate}
 
@@ -150,17 +167,22 @@ Sets the timestamp for the event.
 Test if this event should be propagated or not, i.e. if the propagation level
 is currently greater than $0$.
 
+
 \membersection{wxEvent::Skip}\label{wxeventskip}
 
 \func{void}{Skip}{\param{bool}{ skip = true}}
 
-Called by an event handler, it controls whether additional event
-handlers bound to this event will be called after the current event
-handler returns.  Skip(false) (the default behavior) will prevent
-additional event handlers from being called and control will be
-returned to the sender of the event immediately after the current
-handler has finished.  Skip(true) will cause the event processing
-system to continue searching for a handler function for this event.
+This method can be used inside an event handler to control whether further
+event handlers bound to this event will be called after the current one
+returns. Without Skip() (or equivalently if Skip(false) is used),
+the event will not be processed any more. If Skip(true) is called, the event
+processing system continues searching for a further handler function for this
+event, even though it has been processed already in the current handler.
+
+In general, it is recommended to skip all non-command events to allow the
+default handling to take place. The command events are, however, normally not
+skipped as usually a single command such as a button click or menu item
+selection must only be processed by one handler.
 
 
 \membersection{wxEvent::StopPropagation}\label{wxeventstoppropagation}

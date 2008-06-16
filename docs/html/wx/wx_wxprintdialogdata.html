@@ -1,0 +1,286 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPrintDialogData</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxprintdialogdata"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxprintdialog.html#wxprintdialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxprinter.html#wxprinter"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPrintDialogData</H2>
+<P>
+This class holds information related to the visual characteristics of wxPrintDialog.
+It contains a wxPrintData object with underlying printing settings.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/cmndata.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_printingoverview.html#printingoverview">Printing framework overview</A>, 
+<A HREF="wx_wxprintdialog.html#wxprintdialog">wxPrintDialog</A>, 
+<A HREF="wx_commondialogsoverview.html#wxprintdialogoverview">wxPrintDialog Overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxprintdialogdatactor">wxPrintDialogData::wxPrintDialogData</A><BR>
+<A HREF="#wxprintdialogdatadtor">wxPrintDialogData::~wxPrintDialogData</A><BR>
+<A HREF="#wxprintdialogdataenablehelp">wxPrintDialogData::EnableHelp</A><BR>
+<A HREF="#wxprintdialogdataenablepagenumbers">wxPrintDialogData::EnablePageNumbers</A><BR>
+<A HREF="#wxprintdialogdataenableprinttofile">wxPrintDialogData::EnablePrintToFile</A><BR>
+<A HREF="#wxprintdialogdataenableselection">wxPrintDialogData::EnableSelection</A><BR>
+<A HREF="#wxprintdialogdatagetallpages">wxPrintDialogData::GetAllPages</A><BR>
+<A HREF="#wxprintdialogdatagetcollate">wxPrintDialogData::GetCollate</A><BR>
+<A HREF="#wxprintdialogdatagetfrompage">wxPrintDialogData::GetFromPage</A><BR>
+<A HREF="#wxprintdialogdatagetmaxpage">wxPrintDialogData::GetMaxPage</A><BR>
+<A HREF="#wxprintdialogdatagetminpage">wxPrintDialogData::GetMinPage</A><BR>
+<A HREF="#wxprintdialogdatagetnocopies">wxPrintDialogData::GetNoCopies</A><BR>
+<A HREF="#wxprintdialogdatagetprintdata">wxPrintDialogData::GetPrintData</A><BR>
+<A HREF="#wxprintdialogdatagetprinttofile">wxPrintDialogData::GetPrintToFile</A><BR>
+<A HREF="#wxprintdialogdatagetselection">wxPrintDialogData::GetSelection</A><BR>
+<A HREF="#wxprintdialogdatagettopage">wxPrintDialogData::GetToPage</A><BR>
+<A HREF="#wxprintdialogdataisok">wxPrintDialogData::IsOk</A><BR>
+<A HREF="#wxprintdialogdatasetcollate">wxPrintDialogData::SetCollate</A><BR>
+<A HREF="#wxprintdialogdatasetfrompage">wxPrintDialogData::SetFromPage</A><BR>
+<A HREF="#wxprintdialogdatasetmaxpage">wxPrintDialogData::SetMaxPage</A><BR>
+<A HREF="#wxprintdialogdatasetminpage">wxPrintDialogData::SetMinPage</A><BR>
+<A HREF="#wxprintdialogdatasetnocopies">wxPrintDialogData::SetNoCopies</A><BR>
+<A HREF="#wxprintdialogdatasetprintdata">wxPrintDialogData::SetPrintData</A><BR>
+<A HREF="#wxprintdialogdatasetprinttofile">wxPrintDialogData::SetPrintToFile</A><BR>
+<A HREF="#wxprintdialogdatasetselection">wxPrintDialogData::SetSelection</A><BR>
+<A HREF="#wxprintdialogdatasetsetupdialog">wxPrintDialogData::SetSetupDialog</A><BR>
+<A HREF="#wxprintdialogdatasettopage">wxPrintDialogData::SetToPage</A><BR>
+<A HREF="#wxprintdialogdataassign">wxPrintDialogData::operator =</A><BR>
+<P>
+
+<HR>
+<A NAME="wxprintdialogdatactor"></A>
+<H3>wxPrintDialogData::wxPrintDialogData</H3>
+<P>
+<B></B> <B>wxPrintDialogData</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxPrintDialogData</B>(<B><A HREF="wx_wxprintdialogdata.html#wxprintdialogdata">wxPrintDialogData</A>&</B></B><I> dialogData</I>)<P>
+Copy constructor.<P>
+<B></B> <B>wxPrintDialogData</B>(<B><A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>&</B></B><I> printData</I>)<P>
+Construct an object from a print dialog data object.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatadtor"></A>
+<H3>wxPrintDialogData::~wxPrintDialogData</H3>
+<P>
+<B></B> <B>~wxPrintDialogData</B>()<P>
+Destructor.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdataenablehelp"></A>
+<H3>wxPrintDialogData::EnableHelp</H3>
+<P>
+<B>void</B> <B>EnableHelp</B>(<B>bool </B><I>flag</I>)<P>
+Enables or disables the 'Help' button.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdataenablepagenumbers"></A>
+<H3>wxPrintDialogData::EnablePageNumbers</H3>
+<P>
+<B>void</B> <B>EnablePageNumbers</B>(<B>bool </B><I>flag</I>)<P>
+Enables or disables the 'Page numbers' controls.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdataenableprinttofile"></A>
+<H3>wxPrintDialogData::EnablePrintToFile</H3>
+<P>
+<B>void</B> <B>EnablePrintToFile</B>(<B>bool </B><I>flag</I>)<P>
+Enables or disables the 'Print to file' checkbox.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdataenableselection"></A>
+<H3>wxPrintDialogData::EnableSelection</H3>
+<P>
+<B>void</B> <B>EnableSelection</B>(<B>bool </B><I>flag</I>)<P>
+Enables or disables the 'Selection' radio button.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatagetallpages"></A>
+<H3>wxPrintDialogData::GetAllPages</H3>
+<P>
+<B>bool</B> <B>GetAllPages</B>() <B>const</B><P>
+Returns true if the user requested that all pages be printed.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatagetcollate"></A>
+<H3>wxPrintDialogData::GetCollate</H3>
+<P>
+<B>bool</B> <B>GetCollate</B>() <B>const</B><P>
+Returns true if the user requested that the document(s) be collated.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatagetfrompage"></A>
+<H3>wxPrintDialogData::GetFromPage</H3>
+<P>
+<B>int</B> <B>GetFromPage</B>() <B>const</B><P>
+Returns the <I>from</I> page number, as entered by the user.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatagetmaxpage"></A>
+<H3>wxPrintDialogData::GetMaxPage</H3>
+<P>
+<B>int</B> <B>GetMaxPage</B>() <B>const</B><P>
+Returns the <I>maximum</I> page number.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatagetminpage"></A>
+<H3>wxPrintDialogData::GetMinPage</H3>
+<P>
+<B>int</B> <B>GetMinPage</B>() <B>const</B><P>
+Returns the <I>minimum</I> page number.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatagetnocopies"></A>
+<H3>wxPrintDialogData::GetNoCopies</H3>
+<P>
+<B>int</B> <B>GetNoCopies</B>() <B>const</B><P>
+Returns the number of copies requested by the user.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatagetprintdata"></A>
+<H3>wxPrintDialogData::GetPrintData</H3>
+<P>
+<B><A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>&</B> </B> <B>GetPrintData</B>()<P>
+Returns a reference to the internal wxPrintData object.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatagetprinttofile"></A>
+<H3>wxPrintDialogData::GetPrintToFile</H3>
+<P>
+<B>bool</B> <B>GetPrintToFile</B>() <B>const</B><P>
+Returns true if the user has selected printing to a file.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatagetselection"></A>
+<H3>wxPrintDialogData::GetSelection</H3>
+<P>
+<B>bool</B> <B>GetSelection</B>() <B>const</B><P>
+Returns true if the user requested that the selection be printed (where 'selection' is
+a concept specific to the application).<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatagettopage"></A>
+<H3>wxPrintDialogData::GetToPage</H3>
+<P>
+<B>int</B> <B>GetToPage</B>() <B>const</B><P>
+Returns the <I>to</I> page number, as entered by the user.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdataisok"></A>
+<H3>wxPrintDialogData::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if the print data is valid for using in print dialogs.
+This can return false on Windows if the current printer is not set, for example.
+On all other platforms, it returns true.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatasetcollate"></A>
+<H3>wxPrintDialogData::SetCollate</H3>
+<P>
+<B>void</B> <B>SetCollate</B>(<B>bool </B><I>flag</I>)<P>
+Sets the 'Collate' checkbox to true or false.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatasetfrompage"></A>
+<H3>wxPrintDialogData::SetFromPage</H3>
+<P>
+<B>void</B> <B>SetFromPage</B>(<B>int </B><I>page</I>)<P>
+Sets the <I>from</I> page number.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatasetmaxpage"></A>
+<H3>wxPrintDialogData::SetMaxPage</H3>
+<P>
+<B>void</B> <B>SetMaxPage</B>(<B>int </B><I>page</I>)<P>
+Sets the <I>maximum</I> page number.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatasetminpage"></A>
+<H3>wxPrintDialogData::SetMinPage</H3>
+<P>
+<B>void</B> <B>SetMinPage</B>(<B>int </B><I>page</I>)<P>
+Sets the <I>minimum</I> page number.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatasetnocopies"></A>
+<H3>wxPrintDialogData::SetNoCopies</H3>
+<P>
+<B>void</B> <B>SetNoCopies</B>(<B>int </B><I>n</I>)<P>
+Sets the default number of copies the user has requested to be printed out.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatasetprintdata"></A>
+<H3>wxPrintDialogData::SetPrintData</H3>
+<P>
+<B>void</B> <B>SetPrintData</B>(<B>const <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>& </B></B><I>printData</I>)<P>
+Sets the internal wxPrintData.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatasetprinttofile"></A>
+<H3>wxPrintDialogData::SetPrintToFile</H3>
+<P>
+<B>void</B> <B>SetPrintToFile</B>(<B>bool </B><I>flag</I>)<P>
+Sets the 'Print to file' checkbox to true or false.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatasetselection"></A>
+<H3>wxPrintDialogData::SetSelection</H3>
+<P>
+<B>void</B> <B>SetSelection</B>(<B>bool</B><I> flag</I>)<P>
+Selects the 'Selection' radio button. The effect of printing the selection depends on how the application
+implements this command, if at all.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdatasetsetupdialog"></A>
+<H3>wxPrintDialogData::SetSetupDialog</H3>
+<P>
+<B>void</B> <B>SetSetupDialog</B>(<B>bool </B><I>flag</I>)<P>
+Determines whether the dialog to be shown will be the Print dialog
+(pass false) or Print Setup dialog (pass true).<P>
+This function has been deprecated since version 2.5.4.<P>
+
+<HR>
+<A NAME="wxprintdialogdatasettopage"></A>
+<H3>wxPrintDialogData::SetToPage</H3>
+<P>
+<B>void</B> <B>SetToPage</B>(<B>int </B><I>page</I>)<P>
+Sets the <I>to</I> page number.<P>
+
+
+<HR>
+<A NAME="wxprintdialogdataassign"></A>
+<H3>wxPrintDialogData::operator =</H3>
+<P>
+<B>void</B> <B>operator =</B>(<B>const <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>&</B></B><I> data</I>)<P>
+Assigns print data to this object.<P>
+<B>void</B> <B>operator =</B>(<B>const <A HREF="wx_wxprintdialogdata.html#wxprintdialogdata">wxPrintDialogData</A>&</B></B><I> data</I>)<P>
+Assigns another print dialog data object to this object.<P>
+
+</FONT></BODY></HTML>

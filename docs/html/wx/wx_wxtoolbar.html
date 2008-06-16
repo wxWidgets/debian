@@ -1,0 +1,1047 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxToolBar</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtoolbar"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtogglebutton.html#wxtogglebutton"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtoolbook.html#wxtoolbook"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxToolBar</H2>
+<P>
+The name wxToolBar is defined to be a synonym for one of the following classes:<P>
+<UL>
+
+<LI> <B>wxToolBar95</B> The native Windows 95 toolbar. Used on Windows 95, NT 4 and above.
+<LI> <B>wxToolBarMSW</B> A Windows implementation. Used on 16-bit Windows.
+<LI> <B>wxToolBarGTK</B> The GTK toolbar.
+</UL>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxToolBarBase<BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/toolbar.h&gt; (to allow wxWidgets to select an appropriate toolbar class)<BR>
+
+&lt;wx/tbarbase.h&gt; (the base class)<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+You may also create a toolbar that is managed by the frame, by
+calling <A HREF="wx_wxframe.html#wxframecreatetoolbar">wxFrame::CreateToolBar</A>. Under Pocket PC,
+you should <I>always</I> use this function for creating the toolbar
+to be managed by the frame, so that wxWidgets can use a combined
+menubar and toolbar. Where you manage your own toolbars, create a wxToolBar
+as usual.<P>
+The meaning of a "separator" is a vertical line under Windows and simple space under GTK+.<P>
+<B>wxToolBar95:</B> Note that this toolbar paints tools to reflect system-wide colours.
+If you use more than 16 colours in your tool bitmaps, you may wish to suppress
+this behaviour, otherwise system colours in your bitmaps will inadvertently be
+mapped to system colours. To do this, set the <TT>msw.remap</TT> system option
+before creating the toolbar:<P>
+<PRE>
+  wxSystemOptions::SetOption(wxT("msw.remap"), 0);
+</PRE>
+If you wish to use 32-bit images (which include an alpha channel for transparency)
+use:<P>
+<PRE>
+  wxSystemOptions::SetOption(wxT("msw.remap"), 2);
+</PRE>
+then colour remapping is switched off, and a transparent background used. But only
+use this option under Windows XP with true colour:<P>
+<PRE>
+  (wxTheApp-&gt;GetComCtl32Version() &gt;= 600 && ::wxDisplayDepth() &gt;= 32)
+</PRE>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_FLAT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Gives the toolbar a flat look (Windows and GTK only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_DOCKABLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Makes the toolbar floatable and dockable (GTK only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_HORIZONTAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies horizontal layout (default).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_VERTICAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies vertical layout.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_TEXT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Shows the text in the toolbar buttons; by default only icons are shown.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_NOICONS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies no icons in the toolbar buttons; by default they are shown.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_NODIVIDER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies no divider (border) above the toolbar (Windows only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_NOALIGN</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Specifies no alignment with the parent window (Windows only, not very useful).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_HORZ_LAYOUT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Shows the text and the icons alongside, not vertically stacked (Windows and GTK
+2 only). This style must be used with wxTB_TEXT.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_HORZ_TEXT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Combination of wxTB_HORZ_LAYOUT and wxTB_TEXT.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_NO_TOOLTIPS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Don't show the short help tooltips for the tools when the mouse hovers over them.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_BOTTOM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Align the toolbar at the bottom of parent window.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTB_RIGHT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Align the toolbar at the right side of parent window.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>. Note that the Win32
+native toolbar ignores <TT>wxTB_NOICONS</TT> style. Also, toggling the 
+<TT>wxTB_TEXT</TT> works only if the style was initially on.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+The toolbar class emits menu commands in the same way that a frame menubar does,
+so you can use one EVT_MENU macro for both a menu item and a toolbar button.
+The event handler functions take a wxCommandEvent argument. For most event macros,
+the identifier of the tool is passed, but for EVT_TOOL_ENTER the toolbar
+window identifier is passed and the tool identifier is retrieved from the wxCommandEvent.
+This is because the identifier may be -1 when the mouse moves off a tool, and -1 is not
+allowed as an identifier in the event system.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_TOOL(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_TOOL_CLICKED event
+(a synonym for wxEVT_COMMAND_MENU_SELECTED). Pass the id of the tool.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MENU(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The same as EVT_TOOL.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_TOOL_RANGE(id1, id2, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_TOOL_CLICKED event
+for a range of identifiers. Pass the ids of the tools.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MENU_RANGE(id1, id2, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The same as EVT_TOOL_RANGE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_TOOL_RCLICKED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_TOOL_RCLICKED event.
+Pass the id of the tool.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_TOOL_RCLICKED_RANGE(id1, id2, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_TOOL_RCLICKED event
+for a range of ids. Pass the ids of the tools.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_TOOL_ENTER(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_TOOL_ENTER event.
+Pass the id of the toolbar itself. The value of wxCommandEvent::GetSelection is the tool id, or -1 if the mouse cursor has moved off a tool.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbaroverview.html#wxtoolbaroverview">Toolbar overview</A>,
+<A HREF="wx_wxscrolledwindow.html#wxscrolledwindow">wxScrolledWindow</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxtoolbarconstr">wxToolBar::wxToolBar</A><BR>
+<A HREF="#wxtoolbardtor">wxToolBar::~wxToolBar</A><BR>
+<A HREF="#wxtoolbaraddcontrol">wxToolBar::AddControl</A><BR>
+<A HREF="#wxtoolbaraddseparator">wxToolBar::AddSeparator</A><BR>
+<A HREF="#wxtoolbaraddtool">wxToolBar::AddTool</A><BR>
+<A HREF="#wxtoolbaraddchecktool">wxToolBar::AddCheckTool</A><BR>
+<A HREF="#wxtoolbaraddradiotool">wxToolBar::AddRadioTool</A><BR>
+<A HREF="#wxtoolbarcleartools">wxToolBar::ClearTools</A><BR>
+<A HREF="#wxtoolbardeletetool">wxToolBar::DeleteTool</A><BR>
+<A HREF="#wxtoolbardeletetoolbypos">wxToolBar::DeleteToolByPos</A><BR>
+<A HREF="#wxtoolbarenabletool">wxToolBar::EnableTool</A><BR>
+<A HREF="#wxtoolbarfindbyid">wxToolBar::FindById</A><BR>
+<A HREF="#wxtoolbarfindcontrol">wxToolBar::FindControl</A><BR>
+<A HREF="#wxtoolbarfindtoolforposition">wxToolBar::FindToolForPosition</A><BR>
+<A HREF="#wxtoolbargettoolscount">wxToolBar::GetToolsCount</A><BR>
+<A HREF="#wxtoolbargettoolsize">wxToolBar::GetToolSize</A><BR>
+<A HREF="#wxtoolbargettoolbitmapsize">wxToolBar::GetToolBitmapSize</A><BR>
+<A HREF="#wxtoolbargetmargins">wxToolBar::GetMargins</A><BR>
+<A HREF="#wxtoolbargettoolclientdata">wxToolBar::GetToolClientData</A><BR>
+<A HREF="#wxtoolbargettoolenabled">wxToolBar::GetToolEnabled</A><BR>
+<A HREF="#wxtoolbargettoollonghelp">wxToolBar::GetToolLongHelp</A><BR>
+<A HREF="#wxtoolbargettoolpacking">wxToolBar::GetToolPacking</A><BR>
+<A HREF="#wxtoolbargettoolpos">wxToolBar::GetToolPos</A><BR>
+<A HREF="#wxtoolbargettoolseparation">wxToolBar::GetToolSeparation</A><BR>
+<A HREF="#wxtoolbargettoolshorthelp">wxToolBar::GetToolShortHelp</A><BR>
+<A HREF="#wxtoolbargettoolstate">wxToolBar::GetToolState</A><BR>
+<A HREF="#wxtoolbarinsertcontrol">wxToolBar::InsertControl</A><BR>
+<A HREF="#wxtoolbarinsertseparator">wxToolBar::InsertSeparator</A><BR>
+<A HREF="#wxtoolbarinserttool">wxToolBar::InsertTool</A><BR>
+<A HREF="#wxtoolbaronleftclick">wxToolBar::OnLeftClick</A><BR>
+<A HREF="#wxtoolbaronmouseenter">wxToolBar::OnMouseEnter</A><BR>
+<A HREF="#wxtoolbaronrightclick">wxToolBar::OnRightClick</A><BR>
+<A HREF="#wxtoolbarrealize">wxToolBar::Realize</A><BR>
+<A HREF="#wxtoolbarremovetool">wxToolBar::RemoveTool</A><BR>
+<A HREF="#wxtoolbarsetbitmapresource">wxToolBar::SetBitmapResource</A><BR>
+<A HREF="#wxtoolbarsetmargins">wxToolBar::SetMargins</A><BR>
+<A HREF="#wxtoolbarsettoolbitmapsize">wxToolBar::SetToolBitmapSize</A><BR>
+<A HREF="#wxtoolbarsettoolclientdata">wxToolBar::SetToolClientData</A><BR>
+<A HREF="#wxtoolbarsettooldisabledbitmap">wxToolBar::SetToolDisabledBitmap</A><BR>
+<A HREF="#wxtoolbarsettoollonghelp">wxToolBar::SetToolLongHelp</A><BR>
+<A HREF="#wxtoolbarsettoolpacking">wxToolBar::SetToolPacking</A><BR>
+<A HREF="#wxtoolbarsettoolshorthelp">wxToolBar::SetToolShortHelp</A><BR>
+<A HREF="#wxtoolbarsettoolnormalbitmap">wxToolBar::SetToolNormalBitmap</A><BR>
+<A HREF="#wxtoolbarsettoolseparation">wxToolBar::SetToolSeparation</A><BR>
+<A HREF="#wxtoolbartoggletool">wxToolBar::ToggleTool</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtoolbarconstr"></A>
+<H3>wxToolBar::wxToolBar</H3>
+<P>
+<B></B> <B>wxToolBar</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxToolBar</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID </B><I>id</I>,
+ <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+ <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+ <B>long </B><I>style = wxTB_HORIZONTAL |  wxNO_BORDER</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxPanelNameStr</I>)<P>
+Constructs a toolbar.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Pointer to a parent window.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. If -1, will automatically create an identifier.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position. wxDefaultPosition is (-1, -1) which indicates that wxWidgets
+should generate a default position for the window. If using the wxWindow class directly, supply
+an actual position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. wxDefaultSize is (-1, -1) which indicates that wxWidgets
+should generate a default size for the window.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxtoolbar.html#wxtoolbar">wxToolBar</A> for details.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+After a toolbar is created, you use <A HREF="wx_wxtoolbar.html#wxtoolbaraddtool">wxToolBar::AddTool</A> and
+perhaps <A HREF="wx_wxtoolbar.html#wxtoolbaraddseparator">wxToolBar::AddSeparator</A>, and then you
+must call <A HREF="wx_wxtoolbar.html#wxtoolbarrealize">wxToolBar::Realize</A> to construct and display the toolbar
+tools.<P>
+You may also create a toolbar that is managed by the frame, by
+calling <A HREF="wx_wxframe.html#wxframecreatetoolbar">wxFrame::CreateToolBar</A>.<P>
+
+
+<HR>
+<A NAME="wxtoolbardtor"></A>
+<H3>wxToolBar::~wxToolBar</H3>
+<P>
+<B>void</B> <B>~wxToolBar</B>()<P>
+Toolbar destructor.<P>
+
+
+<HR>
+<A NAME="wxtoolbaraddcontrol"></A>
+<H3>wxToolBar::AddControl</H3>
+<P>
+<B>bool</B> <B>AddControl</B>(<B><A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A>*</B></B><I> control</I>)<P>
+Adds any control to the toolbar, typically e.g. a combobox.<P>
+<I>control</I><UL><UL>
+The control to be added.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxtoolbaraddseparator"></A>
+<H3>wxToolBar::AddSeparator</H3>
+<P>
+<B>void</B> <B>AddSeparator</B>()<P>
+Adds a separator for spacing groups of tools.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbaraddtool">wxToolBar::AddTool</A>, <A HREF="wx_wxtoolbar.html#wxtoolbarsettoolseparation">wxToolBar::SetToolSeparation</A><P>
+
+
+<HR>
+<A NAME="wxtoolbaraddtool"></A>
+<H3>wxToolBar::AddTool</H3>
+<P>
+<B>wxToolBarToolBase*</B> <B>AddTool</B>(<B>int</B><I> toolId</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> label</I>,
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap1</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>shortHelpString = ""</I>,
+<B>wxItemKind</B><I> kind = wxITEM_NORMAL</I>)<P>
+<B>wxToolBarToolBase*</B> <B>AddTool</B>(<B>int</B><I> toolId</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> label</I>,
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap1</I>,
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap2 = wxNullBitmap</I>,
+<B>wxItemKind</B><I> kind = wxITEM_NORMAL</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>shortHelpString = ""</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>longHelpString = ""</I>,
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>clientData = <TT>NULL</TT></I>)<P>
+<B>wxToolBarToolBase*</B> <B>AddTool</B>(<B>wxToolBarToolBase* </B><I>tool</I>)<P>
+Adds a tool to the toolbar. The first (short and most commonly used) version
+has fewer parameters than the full version at the price of not being able to
+specify some of the more rarely used button features. The last version allows
+you to add an existing tool.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+An integer by which
+the tool may be identified in subsequent operations.</UL></UL>
+<P>
+<I>kind</I><UL><UL>
+May be wxITEM_NORMAL for a normal button (default),
+wxITEM_CHECK for a checkable tool (such tool stays pressed after it had been
+toggled) or wxITEM_RADIO for a checkable tool which makes part of a radio
+group of tools each of which is automatically unchecked whenever another button
+in the group is checked</UL></UL>
+<P>
+<I>bitmap1</I><UL><UL>
+The primary tool bitmap.</UL></UL>
+<P>
+<I>bitmap2</I><UL><UL>
+The bitmap used when the tool is disabled. If it is equal to
+wxNullBitmap, the disabled bitmap is automatically generated by greing the
+normal one.</UL></UL>
+<P>
+<I>shortHelpString</I><UL><UL>
+This string is used for the tools tooltip</UL></UL>
+<P>
+<I>longHelpString</I><UL><UL>
+This string is shown in the statusbar (if any) of the
+parent frame when the mouse pointer is inside the tool</UL></UL>
+<P>
+<I>clientData</I><UL><UL>
+An optional pointer to client data which can be
+retrieved later using <A HREF="wx_wxtoolbar.html#wxtoolbargettoolclientdata">wxToolBar::GetToolClientData</A>.</UL></UL>
+<P>
+<I>tool</I><UL><UL>
+The tool to be added.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+After you have added tools to a toolbar, you must call <A HREF="wx_wxtoolbar.html#wxtoolbarrealize">wxToolBar::Realize</A> in
+order to have the tools appear.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbaraddseparator">wxToolBar::AddSeparator</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbaraddchecktool">wxToolBar::AddCheckTool</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbaraddradiotool">wxToolBar::AddRadioTool</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbarinserttool">wxToolBar::InsertTool</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbardeletetool">wxToolBar::DeleteTool</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbarrealize">wxToolBar::Realize</A><P>
+
+
+<HR>
+<A NAME="wxtoolbaraddchecktool"></A>
+<H3>wxToolBar::AddCheckTool</H3>
+<P>
+<B>wxToolBarToolBase*</B> <B>AddCheckTool</B>(<B>int</B><I> toolId</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> label</I>,
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap1</I>,
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap2</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>shortHelpString = ""</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>longHelpString = ""</I>,
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>clientData = <TT>NULL</TT></I>)<P>
+Adds a new check (or toggle) tool to the toolbar. The parameters are the same
+as in <A HREF="wx_wxtoolbar.html#wxtoolbaraddtool">wxToolBar::AddTool</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbaraddtool">wxToolBar::AddTool</A><P>
+
+
+<HR>
+<A NAME="wxtoolbaraddradiotool"></A>
+<H3>wxToolBar::AddRadioTool</H3>
+<P>
+<B>wxToolBarToolBase*</B> <B>AddRadioTool</B>(<B>int</B><I> toolId</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> label</I>,
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap1</I>,
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap2</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>shortHelpString = ""</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>longHelpString = ""</I>,
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>clientData = <TT>NULL</TT></I>)<P>
+Adds a new radio tool to the toolbar. Consecutive radio tools form a radio
+group such that exactly one button in the group is pressed at any moment, in
+other words whenever a button in the group is pressed the previously pressed
+button is automatically released. You should avoid having the radio groups of
+only one element as it would be impossible for the user to use such button.<P>
+By default, the first button in the radio group is initially pressed, the
+others are not.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbaraddtool">wxToolBar::AddTool</A><P>
+
+<HR>
+<A NAME="wxtoolbarcleartools"></A>
+<H3>wxToolBar::ClearTools</H3>
+<P>
+<B>void</B> <B>ClearTools</B>()<P>
+Deletes all the tools in the toolbar.<P>
+
+<HR>
+<A NAME="wxtoolbardeletetool"></A>
+<H3>wxToolBar::DeleteTool</H3>
+<P>
+<B>bool</B> <B>DeleteTool</B>(<B>int </B><I>toolId</I>)<P>
+Removes the specified tool from the toolbar and deletes it. If you don't want
+to delete the tool, but just to remove it from the toolbar (to possibly add it
+back later), you may use <A HREF="wx_wxtoolbar.html#wxtoolbarremovetool">RemoveTool</A> instead.<P>
+Note that it is unnecessary to call <A HREF="wx_wxtoolbar.html#wxtoolbarrealize">Realize</A> for the
+change to take place, it will happen immediately.<P>
+Returns true if the tool was deleted, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbardeletetoolbypos">DeleteToolByPos</A><P>
+
+
+<HR>
+<A NAME="wxtoolbardeletetoolbypos"></A>
+<H3>wxToolBar::DeleteToolByPos</H3>
+<P>
+<B>bool</B> <B>DeleteToolByPos</B>(<B>size_t </B><I>pos</I>)<P>
+This function behaves like <A HREF="wx_wxtoolbar.html#wxtoolbardeletetool">DeleteTool</A> but it
+deletes the tool at the specified position and not the one with the given id.<P>
+
+
+<HR>
+<A NAME="wxtoolbarenabletool"></A>
+<H3>wxToolBar::EnableTool</H3>
+<P>
+<B>void</B> <B>EnableTool</B>(<B>int </B><I>toolId</I>, <B>const bool</B><I> enable</I>)<P>
+Enables or disables the tool.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+Tool to enable or disable.</UL></UL>
+<P>
+<I>enable</I><UL><UL>
+If true, enables the tool, otherwise disables it.</UL></UL>
+<P>
+<B>NB:</B> This function should only be called after 
+<A HREF="wx_wxtoolbar.html#wxtoolbarrealize">Realize</A>.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Some implementations will change the visible state of the tool to indicate that it is disabled.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbargettoolenabled">wxToolBar::GetToolEnabled</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbartoggletool">wxToolBar::ToggleTool</A><P>
+
+
+<HR>
+<A NAME="wxtoolbarfindbyid"></A>
+<H3>wxToolBar::FindById</H3>
+<P>
+<B>wxToolBarToolBase*</B> <B>FindById</B>(<B>int </B><I>id</I>)<P>
+Returns a pointer to the tool identified by <I>id</I> or
+<TT>NULL</TT> if no corresponding tool is found.<P>
+
+
+<HR>
+<A NAME="wxtoolbarfindcontrol"></A>
+<H3>wxToolBar::FindControl</H3>
+<P>
+<B><A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A>*</B> </B> <B>FindControl</B>(<B>int </B><I>id</I>)<P>
+Returns a pointer to the control identified by <I>id</I> or 
+<TT>NULL</TT> if no corresponding control is found.<P>
+
+
+<HR>
+<A NAME="wxtoolbarfindtoolforposition"></A>
+<H3>wxToolBar::FindToolForPosition</H3>
+<P>
+<B>wxToolBarToolBase*</B> <B>FindToolForPosition</B>(<B>wxCoord </B><I>x</I>, <B>wxCoord </B><I>y</I>) <B>const</B><P>
+Finds a tool for the given mouse position.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>x</I><UL><UL>
+X position.</UL></UL>
+<P>
+<I>y</I><UL><UL>
+Y position.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+A pointer to a tool if a tool is found, or <TT>NULL</TT> otherwise.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Currently not implemented in wxGTK (always returns <TT>NULL</TT> there).<P>
+
+
+<HR>
+<A NAME="wxtoolbargettoolscount"></A>
+<H3>wxToolBar::GetToolsCount</H3>
+<P>
+<B>int</B> <B>GetToolsCount</B>() <B>const</B><P>
+Returns the number of tools in the toolbar.<P>
+
+
+<HR>
+<A NAME="wxtoolbargettoolsize"></A>
+<H3>wxToolBar::GetToolSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetToolSize</B>()<P>
+Returns the size of a whole button, which is usually larger than a tool bitmap because
+of added 3D effects.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbarsettoolbitmapsize">wxToolBar::SetToolBitmapSize</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbargettoolbitmapsize">wxToolBar::GetToolBitmapSize</A><P>
+
+
+<HR>
+<A NAME="wxtoolbargettoolbitmapsize"></A>
+<H3>wxToolBar::GetToolBitmapSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetToolBitmapSize</B>()<P>
+Returns the size of bitmap that the toolbar expects to have. The default bitmap size is 16 by 15 pixels.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Note that this is the size of the bitmap you pass to <A HREF="wx_wxtoolbar.html#wxtoolbaraddtool">wxToolBar::AddTool</A>,
+and not the eventual size of the tool button.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbarsettoolbitmapsize">wxToolBar::SetToolBitmapSize</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbargettoolsize">wxToolBar::GetToolSize</A><P>
+
+
+<HR>
+<A NAME="wxtoolbargetmargins"></A>
+<H3>wxToolBar::GetMargins</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetMargins</B>() <B>const</B><P>
+Returns the left/right and top/bottom margins, which are also used for inter-toolspacing.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbarsetmargins">wxToolBar::SetMargins</A><P>
+
+
+<HR>
+<A NAME="wxtoolbargettoolclientdata"></A>
+<H3>wxToolBar::GetToolClientData</H3>
+<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B> </B> <B>GetToolClientData</B>(<B>int </B><I>toolId</I>) <B>const</B><P>
+Get any client data associated with the tool.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+Id of the tool, as passed to <A HREF="wx_wxtoolbar.html#wxtoolbaraddtool">wxToolBar::AddTool</A>.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Client data, or <TT>NULL</TT> if there is none.<P>
+
+
+<HR>
+<A NAME="wxtoolbargettoolenabled"></A>
+<H3>wxToolBar::GetToolEnabled</H3>
+<P>
+<B>bool</B> <B>GetToolEnabled</B>(<B>int </B><I>toolId</I>) <B>const</B><P>
+Called to determine whether a tool is enabled (responds to user input).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+Id of the tool in question.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the tool is enabled, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbarenabletool">wxToolBar::EnableTool</A><P>
+
+
+<HR>
+<A NAME="wxtoolbargettoollonghelp"></A>
+<H3>wxToolBar::GetToolLongHelp</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetToolLongHelp</B>(<B>int </B><I>toolId</I>) <B>const</B><P>
+Returns the long help for the given tool.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+The tool in question.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbarsettoollonghelp">wxToolBar::SetToolLongHelp</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbarsettoolshorthelp">wxToolBar::SetToolShortHelp</A><P>
+
+
+<HR>
+<A NAME="wxtoolbargettoolpacking"></A>
+<H3>wxToolBar::GetToolPacking</H3>
+<P>
+<B>int</B> <B>GetToolPacking</B>() <B>const</B><P>
+Returns the value used for packing tools.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbarsettoolpacking">wxToolBar::SetToolPacking</A><P>
+
+
+<HR>
+<A NAME="wxtoolbargettoolpos"></A>
+<H3>wxToolBar::GetToolPos</H3>
+<P>
+<B>int</B> <B>GetToolPos</B>(<B>int </B><I>toolId</I>) <B>const</B><P>
+Returns the tool position in the toolbar, or <TT>wxNOT_FOUND</TT> if the tool is not found.<P>
+
+
+<HR>
+<A NAME="wxtoolbargettoolseparation"></A>
+<H3>wxToolBar::GetToolSeparation</H3>
+<P>
+<B>int</B> <B>GetToolSeparation</B>() <B>const</B><P>
+Returns the default separator size.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbarsettoolseparation">wxToolBar::SetToolSeparation</A><P>
+
+
+<HR>
+<A NAME="wxtoolbargettoolshorthelp"></A>
+<H3>wxToolBar::GetToolShortHelp</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetToolShortHelp</B>(<B>int </B><I>toolId</I>) <B>const</B><P>
+Returns the short help for the given tool.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+The tool in question.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbargettoollonghelp">wxToolBar::GetToolLongHelp</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbarsettoolshorthelp">wxToolBar::SetToolShortHelp</A><P>
+
+
+<HR>
+<A NAME="wxtoolbargettoolstate"></A>
+<H3>wxToolBar::GetToolState</H3>
+<P>
+<B>bool</B> <B>GetToolState</B>(<B>int </B><I>toolId</I>) <B>const</B><P>
+Gets the on/off state of a toggle tool.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+The tool in question.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the tool is toggled on, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbartoggletool">wxToolBar::ToggleTool</A><P>
+
+
+<HR>
+<A NAME="wxtoolbarinsertcontrol"></A>
+<H3>wxToolBar::InsertControl</H3>
+<P>
+<B>wxToolBarToolBase *</B> <B>InsertControl</B>(<B>size_t </B><I>pos</I>, <B><A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A> *</B></B><I>control</I>)<P>
+Inserts the control into the toolbar at the given position.<P>
+You must call <A HREF="wx_wxtoolbar.html#wxtoolbarrealize">Realize</A> for the change to take place.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbaraddcontrol">AddControl</A>,<BR>
+
+<A HREF="wx_wxtoolbar.html#wxtoolbarinserttool">InsertTool</A><P>
+
+
+<HR>
+<A NAME="wxtoolbarinsertseparator"></A>
+<H3>wxToolBar::InsertSeparator</H3>
+<P>
+<B>wxToolBarToolBase *</B> <B>InsertSeparator</B>(<B>size_t </B><I>pos</I>)<P>
+Inserts the separator into the toolbar at the given position.<P>
+You must call <A HREF="wx_wxtoolbar.html#wxtoolbarrealize">Realize</A> for the change to take place.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbaraddseparator">AddSeparator</A>,<BR>
+
+<A HREF="wx_wxtoolbar.html#wxtoolbarinserttool">InsertTool</A><P>
+
+
+<HR>
+<A NAME="wxtoolbarinserttool"></A>
+<H3>wxToolBar::InsertTool</H3>
+<P>
+<B>wxToolBarToolBase *</B> <B>InsertTool</B>(<B>size_t </B><I>pos</I>,
+<B>int</B><I> toolId</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap1</I>,
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap2 = wxNullBitmap</I>, <B>bool</B><I> isToggle = false</I>,
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>clientData = <TT>NULL</TT></I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>shortHelpString = ""</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>longHelpString = ""</I>)<P>
+<B>wxToolBarToolBase *</B> <B>InsertTool</B>(<B>size_t </B><I>pos</I>,
+<B>wxToolBarToolBase* </B><I>tool</I>)<P>
+Inserts the tool with the specified attributes into the toolbar at the given
+position.<P>
+You must call <A HREF="wx_wxtoolbar.html#wxtoolbarrealize">Realize</A> for the change to take place.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbaraddtool">AddTool</A>,<BR>
+
+<A HREF="wx_wxtoolbar.html#wxtoolbarinsertcontrol">InsertControl</A>,<BR>
+
+<A HREF="wx_wxtoolbar.html#wxtoolbarinsertseparator">InsertSeparator</A><P>
+
+
+<HR>
+<A NAME="wxtoolbaronleftclick"></A>
+<H3>wxToolBar::OnLeftClick</H3>
+<P>
+<B>bool</B> <B>OnLeftClick</B>(<B>int</B><I> toolId</I>, <B>bool</B><I> toggleDown</I>)<P>
+Called when the user clicks on a tool with the left mouse button.<P>
+This is the old way of detecting tool clicks; although it will still work,
+you should use the EVT_MENU or EVT_TOOL macro instead.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+The identifier passed to <A HREF="wx_wxtoolbar.html#wxtoolbaraddtool">wxToolBar::AddTool</A>.</UL></UL>
+<P>
+<I>toggleDown</I><UL><UL>
+true if the tool is a toggle and the toggle is down, otherwise is false.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+If the tool is a toggle and this function returns false, the toggle
+toggle state (internal and visual) will not be changed. This provides a way of
+specifying that toggle operations are not permitted in some circumstances.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbaronmouseenter">wxToolBar::OnMouseEnter</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbaronrightclick">wxToolBar::OnRightClick</A><P>
+
+
+<HR>
+<A NAME="wxtoolbaronmouseenter"></A>
+<H3>wxToolBar::OnMouseEnter</H3>
+<P>
+<B>void</B> <B>OnMouseEnter</B>(<B>int</B><I> toolId</I>)<P>
+This is called when the mouse cursor moves into a tool or out of
+the toolbar.<P>
+This is the old way of detecting mouse enter events; although it will still work,
+you should use the EVT_TOOL_ENTER macro instead.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+Greater than -1 if the mouse cursor has moved into the tool,
+or -1 if the mouse cursor has moved. The
+programmer can override this to provide extra information about the tool,
+such as a short description on the status line.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+With some derived toolbar classes, if the mouse moves quickly out of the toolbar, wxWidgets may not be able to
+detect it. Therefore this function may not always be called when expected.<P>
+
+
+<HR>
+<A NAME="wxtoolbaronrightclick"></A>
+<H3>wxToolBar::OnRightClick</H3>
+<P>
+<B>void</B> <B>OnRightClick</B>(<B>int</B><I> toolId</I>, <B>float</B><I> x</I>, <B>float</B><I> y</I>)<P>
+Called when the user clicks on a tool with the right mouse button. The
+programmer should override this function to detect right tool clicks.<P>
+This is the old way of detecting tool right clicks; although it will still work,
+you should use the EVT_TOOL_RCLICKED macro instead.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+The identifier passed to <A HREF="wx_wxtoolbar.html#wxtoolbaraddtool">wxToolBar::AddTool</A>.</UL></UL>
+<P>
+<I>x</I><UL><UL>
+The x position of the mouse cursor.</UL></UL>
+<P>
+<I>y</I><UL><UL>
+The y position of the mouse cursor.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+A typical use of this member might be to pop up a menu.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbaronmouseenter">wxToolBar::OnMouseEnter</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbaronleftclick">wxToolBar::OnLeftClick</A><P>
+
+
+<HR>
+<A NAME="wxtoolbarrealize"></A>
+<H3>wxToolBar::Realize</H3>
+<P>
+<B>bool</B> <B>Realize</B>()<P>
+This function should be called after you have added tools.<P>
+
+
+<HR>
+<A NAME="wxtoolbarremovetool"></A>
+<H3>wxToolBar::RemoveTool</H3>
+<P>
+<B>wxToolBarToolBase *</B> <B>RemoveTool</B>(<B>int </B><I>id</I>)<P>
+Removes the given tool from the toolbar but doesn't delete it. This allows to
+insert/add this tool back to this (or another) toolbar later.<P>
+Note that it is unnecessary to call <A HREF="wx_wxtoolbar.html#wxtoolbarrealize">Realize</A> for the
+change to take place, it will happen immediately.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbardeletetool">DeleteTool</A><P>
+
+
+<HR>
+<A NAME="wxtoolbarsetbitmapresource"></A>
+<H3>wxToolBar::SetBitmapResource</H3>
+<P>
+<B>void</B> <B>SetBitmapResource</B>(<B>int </B><I>resourceId</I>)<P>
+Sets the bitmap resource identifier for specifying tool bitmaps as indices
+into a custom bitmap. Windows CE only.<P>
+
+
+<HR>
+<A NAME="wxtoolbarsetmargins"></A>
+<H3>wxToolBar::SetMargins</H3>
+<P>
+<B>void</B> <B>SetMargins</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>)<P>
+<B>void</B> <B>SetMargins</B>(<B>int</B><I> x</I>, <B>int</B><I> y</I>)<P>
+Set the values to be used as margins for the toolbar.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>size</I><UL><UL>
+Margin size.</UL></UL>
+<P>
+<I>x</I><UL><UL>
+Left margin, right margin and inter-tool separation value.</UL></UL>
+<P>
+<I>y</I><UL><UL>
+Top margin, bottom margin and inter-tool separation value.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This must be called before the tools are added if absolute positioning is to be used, and the
+default (zero-size) margins are to be overridden.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbargetmargins">wxToolBar::GetMargins</A>, <A HREF="wx_wxsize.html#wxsize">wxSize</A><P>
+
+
+<HR>
+<A NAME="wxtoolbarsettoolbitmapsize"></A>
+<H3>wxToolBar::SetToolBitmapSize</H3>
+<P>
+<B>void</B> <B>SetToolBitmapSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>)<P>
+Sets the default size of each tool bitmap. The default bitmap size is 16 by 15 pixels.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>size</I><UL><UL>
+The size of the bitmaps in the toolbar.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This should be called to tell the toolbar what the tool bitmap size is. Call
+it before you add tools.<P>
+Note that this is the size of the bitmap you pass to <A HREF="wx_wxtoolbar.html#wxtoolbaraddtool">wxToolBar::AddTool</A>,
+and not the eventual size of the tool button.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbargettoolbitmapsize">wxToolBar::GetToolBitmapSize</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbargettoolsize">wxToolBar::GetToolSize</A><P>
+
+
+<HR>
+<A NAME="wxtoolbarsettoolclientdata"></A>
+<H3>wxToolBar::SetToolClientData</H3>
+<P>
+<B>void</B> <B>SetToolClientData</B>(<B>int </B><I>id</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>clientData</I>)<P>
+Sets the client data associated with the tool.<P>
+
+
+<HR>
+<A NAME="wxtoolbarsettooldisabledbitmap"></A>
+<H3>wxToolBar::SetToolDisabledBitmap</H3>
+<P>
+<B>void</B> <B>SetToolDisabledBitmap</B>(<B>int </B><I>id</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Sets the bitmap to be used by the tool with the given ID when the tool
+is in a disabled state.  This can only be used on Button tools, not
+controls.  NOTE: The native toolbar classes on the main platforms all
+synthesize the disabled bitmap from the normal bitmap, so this
+function will have no effect on those platforms.<P>
+
+
+<HR>
+<A NAME="wxtoolbarsettoollonghelp"></A>
+<H3>wxToolBar::SetToolLongHelp</H3>
+<P>
+<B>void</B> <B>SetToolLongHelp</B>(<B>int </B><I>toolId</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString</I>)<P>
+Sets the long help for the given tool.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+The tool in question.</UL></UL>
+<P>
+<I>helpString</I><UL><UL>
+A string for the long help.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+You might use the long help for displaying the tool purpose on the status line.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbargettoollonghelp">wxToolBar::GetToolLongHelp</A>,
+<A HREF="wx_wxtoolbar.html#wxtoolbarsettoolshorthelp">wxToolBar::SetToolShortHelp</A>,<P>
+
+
+<HR>
+<A NAME="wxtoolbarsettoolpacking"></A>
+<H3>wxToolBar::SetToolPacking</H3>
+<P>
+<B>void</B> <B>SetToolPacking</B>(<B>int</B><I> packing</I>)<P>
+Sets the value used for spacing tools. The default value is 1.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>packing</I><UL><UL>
+The value for packing.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The packing is used for spacing in the vertical direction if the toolbar is horizontal,
+and for spacing in the horizontal direction if the toolbar is vertical.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbargettoolpacking">wxToolBar::GetToolPacking</A><P>
+
+
+<HR>
+<A NAME="wxtoolbarsettoolshorthelp"></A>
+<H3>wxToolBar::SetToolShortHelp</H3>
+<P>
+<B>void</B> <B>SetToolShortHelp</B>(<B>int </B><I>toolId</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString</I>)<P>
+Sets the short help for the given tool.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+The tool in question.</UL></UL>
+<P>
+<I>helpString</I><UL><UL>
+The string for the short help.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+An application might use short help for identifying the tool purpose in a tooltip.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbargettoolshorthelp">wxToolBar::GetToolShortHelp</A>, <A HREF="wx_wxtoolbar.html#wxtoolbarsettoollonghelp">wxToolBar::SetToolLongHelp</A><P>
+
+
+<HR>
+<A NAME="wxtoolbarsettoolnormalbitmap"></A>
+<H3>wxToolBar::SetToolNormalBitmap</H3>
+<P>
+<B>void</B> <B>SetToolNormalBitmap</B>(<B>int </B><I>id</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Sets the bitmap to be used by the tool with the given ID.  This can
+only be used on Button tools, not controls.<P>
+<P>
+
+<HR>
+<A NAME="wxtoolbarsettoolseparation"></A>
+<H3>wxToolBar::SetToolSeparation</H3>
+<P>
+<B>void</B> <B>SetToolSeparation</B>(<B>int</B><I> separation</I>)<P>
+Sets the default separator size. The default value is 5.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>separation</I><UL><UL>
+The separator size.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbaraddseparator">wxToolBar::AddSeparator</A><P>
+
+
+<HR>
+<A NAME="wxtoolbartoggletool"></A>
+<H3>wxToolBar::ToggleTool</H3>
+<P>
+<B>void</B> <B>ToggleTool</B>(<B>int </B><I>toolId</I>, <B>const bool</B><I> toggle</I>)<P>
+Toggles a tool on or off. This does not cause any event to get emitted.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toolId</I><UL><UL>
+Tool in question.</UL></UL>
+<P>
+<I>toggle</I><UL><UL>
+If true, toggles the tool on, otherwise toggles it off.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Only applies to a tool that has been specified as a toggle tool.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtoolbar.html#wxtoolbargettoolstate">wxToolBar::GetToolState</A><P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,452 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPen</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxpen"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpathlist.html#wxpathlist"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpenlist.html#wxpenlist"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPen</H2>
+<P>
+A pen is a drawing tool for drawing outlines. It is used for drawing
+lines and painting the outline of rectangles, ellipses, etc. It has a
+colour, a width and a style.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxgdiobject.html#wxgdiobject">wxGDIObject</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/pen.h&gt;<P>
+<B><FONT COLOR="#FF0000">Predefined objects</FONT></B><P>
+Objects:<P>
+<B>wxNullPen</B><P>
+Pointers:<P>
+<B>wxRED_PEN<BR>
+
+wxCYAN_PEN<BR>
+
+wxGREEN_PEN<BR>
+
+wxBLACK_PEN<BR>
+
+wxWHITE_PEN<BR>
+
+wxTRANSPARENT_PEN<BR>
+
+wxBLACK_DASHED_PEN<BR>
+
+wxGREY_PEN<BR>
+
+wxMEDIUM_GREY_PEN<BR>
+
+wxLIGHT_GREY_PEN</B><P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+On a monochrome display, wxWidgets shows all non-white pens as black.<P>
+Do not initialize objects on the stack before the program commences,
+since other required structures may not have been set up yet. Instead,
+define global pointers to objects and create them in <I>OnInit</I> or
+when required.<P>
+An application may wish to dynamically create pens with different
+characteristics, and there is the consequent danger that a large number
+of duplicate pens will be created. Therefore an application may wish to
+get a pointer to a pen by using the global list of pens <B>
+wxThePenList</B>, and calling the member function <B>FindOrCreatePen</B>.
+See the entry for <A HREF="wx_wxpenlist.html#wxpenlist">wxPenList</A>.<P>
+This class uses <A HREF="wx_trefcount.html#trefcount">reference counting and copy-on-write</A>
+internally so that assignments between two instances of this class are very
+cheap. You can therefore use actual objects instead of pointers without
+efficiency problems. If an instance of this class is changed it will create
+its own data internally so that other instances, which previously shared the
+data using the reference counting, are not affected.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpenlist.html#wxpenlist">wxPenList</A>, <A HREF="wx_wxdc.html#wxdc">wxDC</A>, <A HREF="wx_wxdc.html#wxdcsetpen">wxDC::SetPen</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxpenctor">wxPen::wxPen</A><BR>
+<A HREF="#wxpendtor">wxPen::~wxPen</A><BR>
+<A HREF="#wxpengetcap">wxPen::GetCap</A><BR>
+<A HREF="#wxpengetcolour">wxPen::GetColour</A><BR>
+<A HREF="#wxpengetdashes">wxPen::GetDashes</A><BR>
+<A HREF="#wxpengetjoin">wxPen::GetJoin</A><BR>
+<A HREF="#wxpengetstipple">wxPen::GetStipple</A><BR>
+<A HREF="#wxpengetstyle">wxPen::GetStyle</A><BR>
+<A HREF="#wxpengetwidth">wxPen::GetWidth</A><BR>
+<A HREF="#wxpenisok">wxPen::IsOk</A><BR>
+<A HREF="#wxpensetcap">wxPen::SetCap</A><BR>
+<A HREF="#wxpensetcolour">wxPen::SetColour</A><BR>
+<A HREF="#wxpensetdashes">wxPen::SetDashes</A><BR>
+<A HREF="#wxpensetjoin">wxPen::SetJoin</A><BR>
+<A HREF="#wxpensetstipple">wxPen::SetStipple</A><BR>
+<A HREF="#wxpensetstyle">wxPen::SetStyle</A><BR>
+<A HREF="#wxpensetwidth">wxPen::SetWidth</A><BR>
+<A HREF="#wxpenassignment">wxPen::operator =</A><BR>
+<A HREF="#wxpenequals">wxPen::operator ==</A><BR>
+<A HREF="#wxpennotequals">wxPen::operator !=</A><BR>
+<P>
+
+<HR>
+<A NAME="wxpenctor"></A>
+<H3>wxPen::wxPen</H3>
+<P>
+<B></B> <B>wxPen</B>()<P>
+Default constructor. The pen will be uninitialised, and <A HREF="wx_wxpen.html#wxpenisok">wxPen:IsOk</A> will
+return false.<P>
+<B></B> <B>wxPen</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>, <B>int</B><I> width = 1</I>, <B>int</B><I> style = <TT>wxSOLID</TT></I>)<P>
+Constructs a pen from a colour object, pen width and style.<P>
+<B></B> <B>wxPen</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>colourName</I>, <B>int</B><I> width</I>, <B>int</B><I> style</I>)<P>
+Constructs a pen from a colour name, pen width and style.<P>
+<B></B> <B>wxPen</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> stipple</I>, <B>int</B><I> width</I>)<P>
+Constructs a stippled pen from a stipple bitmap and a width.<P>
+<B></B> <B>wxPen</B>(<B>const <A HREF="wx_wxpen.html#wxpen">wxPen</A>&</B></B><I> pen</I>)<P>
+Copy constructor, uses <A HREF="wx_trefcount.html#trefcount">reference counting</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>colour</I><UL><UL>
+A colour object.</UL></UL>
+<P>
+<I>colourName</I><UL><UL>
+A colour name.</UL></UL>
+<P>
+<I>width</I><UL><UL>
+Pen width. Under Windows, the pen width cannot be greater than 1 if
+the style is wxDOT, wxLONG_DASH, wxSHORT_DASH, wxDOT_DASH, or wxUSER_DASH.</UL></UL>
+<P>
+<I>stipple</I><UL><UL>
+A stipple bitmap.</UL></UL>
+<P>
+<I>pen</I><UL><UL>
+A pointer or reference to a pen to copy.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The style may be one of the following:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSOLID</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Solid style.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxTRANSPARENT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+No pen is used.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxDOT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Dotted style.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxLONG_DASH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Long dashed style.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSHORT_DASH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Short dashed style.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxDOT_DASH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Dot and dash style.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSTIPPLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Use the stipple bitmap.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxUSER_DASH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Use the user dashes: see <A HREF="wx_wxpen.html#wxpensetdashes">wxPen::SetDashes</A>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxBDIAGONAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Backward diagonal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCROSSDIAG_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Cross-diagonal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFDIAGONAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Forward diagonal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCROSS_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Cross hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHORIZONTAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Horizontal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxVERTICAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Vertical hatch.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Different versions of Windows and different versions of other platforms
+support <I>very</I> different subsets of the styles above - there is no
+similarity even between Windows95 and Windows98 - so handle with care.<P>
+If the named colour form is used, an appropriate <B>wxColour</B> structure
+is found in the colour database.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpensetstyle">wxPen::SetStyle</A>, <A HREF="wx_wxpen.html#wxpensetcolour">wxPen::SetColour</A>,
+<A HREF="wx_wxpen.html#wxpensetwidth">wxPen::SetWidth</A>, <A HREF="wx_wxpen.html#wxpensetstipple">wxPen::SetStipple</A><P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> Constructors supported by wxPerl are:<P>
+
+<UL>
+
+<LI>Wx::Pen-&gt;new( colour, width, style )
+<LI>Wx::Pen-&gt;new( colourName, width, style )
+<LI>Wx::Pen-&gt;new( stipple, width )
+</UL>
+
+<P>
+
+<HR>
+<A NAME="wxpendtor"></A>
+<H3>wxPen::~wxPen</H3>
+<P>
+<B></B> <B>~wxPen</B>()<P>
+Destructor.
+See <A HREF="wx_trefcount.html#refcountdestruct">reference-counted object destruction</A> for more info.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Although all remaining pens are deleted when the application exits,
+the application should try to clean up all pens itself. This is because
+wxWidgets cannot know if a pointer to the pen object is stored in an
+application data structure, and there is a risk of double deletion.<P>
+
+<HR>
+<A NAME="wxpengetcap"></A>
+<H3>wxPen::GetCap</H3>
+<P>
+<B>int</B> <B>GetCap</B>() <B>const</B><P>
+Returns the pen cap style, which may be one of <B>wxCAP_ROUND</B>, <B>wxCAP_PROJECTING</B> and
+<B>wxCAP_BUTT</B>. The default is <B>wxCAP_ROUND</B>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpensetcap">wxPen::SetCap</A><P>
+
+<HR>
+<A NAME="wxpengetcolour"></A>
+<H3>wxPen::GetColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetColour</B>() <B>const</B><P>
+Returns a reference to the pen colour.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpensetcolour">wxPen::SetColour</A><P>
+
+<HR>
+<A NAME="wxpengetdashes"></A>
+<H3>wxPen::GetDashes</H3>
+<P>
+<B>int</B> <B>GetDashes</B>(<B>wxDash**</B><I> dashes</I>) <B>const</B><P>
+Gets an array of dashes (defined as char in X, DWORD under Windows).
+<I>dashes</I> is a pointer to the internal array. Do not deallocate or store this pointer.
+The function returns the number of dashes associated with this pen.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpensetdashes">wxPen::SetDashes</A><P>
+
+<HR>
+<A NAME="wxpengetjoin"></A>
+<H3>wxPen::GetJoin</H3>
+<P>
+<B>int</B> <B>GetJoin</B>() <B>const</B><P>
+Returns the pen join style, which may be one of <B>wxJOIN_BEVEL</B>, <B>wxJOIN_ROUND</B> and
+<B>wxJOIN_MITER</B>. The default is <B>wxJOIN_ROUND</B>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpensetjoin">wxPen::SetJoin</A><P>
+
+<HR>
+<A NAME="wxpengetstipple"></A>
+<H3>wxPen::GetStipple</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>* </B> </B> <B>GetStipple</B>() <B>const</B><P>
+Gets a pointer to the stipple bitmap.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpensetstipple">wxPen::SetStipple</A><P>
+
+<HR>
+<A NAME="wxpengetstyle"></A>
+<H3>wxPen::GetStyle</H3>
+<P>
+<B>int</B> <B>GetStyle</B>() <B>const</B><P>
+Returns the pen style.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpenctor">wxPen::wxPen</A>, <A HREF="wx_wxpen.html#wxpensetstyle">wxPen::SetStyle</A><P>
+
+<HR>
+<A NAME="wxpengetwidth"></A>
+<H3>wxPen::GetWidth</H3>
+<P>
+<B>int</B> <B>GetWidth</B>() <B>const</B><P>
+Returns the pen width.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpensetwidth">wxPen::SetWidth</A><P>
+
+<HR>
+<A NAME="wxpenisok"></A>
+<H3>wxPen::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if the pen is initialised.<P>
+
+<HR>
+<A NAME="wxpensetcap"></A>
+<H3>wxPen::SetCap</H3>
+<P>
+<B>void</B> <B>SetCap</B>(<B>int</B><I> capStyle</I>)<P>
+Sets the pen cap style, which may be one of <B>wxCAP_ROUND</B>, <B>wxCAP_PROJECTING</B> and
+<B>wxCAP_BUTT</B>. The default is <B>wxCAP_ROUND</B>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpengetcap">wxPen::GetCap</A><P>
+
+<HR>
+<A NAME="wxpensetcolour"></A>
+<H3>wxPen::SetColour</H3>
+<P>
+<B>void</B> <B>SetColour</B>(<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+<B>void</B> <B>SetColour</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>colourName</I>)<P>
+<B>void</B> <B>SetColour</B>(<B>unsigned char</B><I> red</I>, <B>unsigned char</B><I> green</I>, <B>unsigned char</B><I> blue</I>)<P>
+The pen's colour is changed to the given colour.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpengetcolour">wxPen::GetColour</A><P>
+
+<HR>
+<A NAME="wxpensetdashes"></A>
+<H3>wxPen::SetDashes</H3>
+<P>
+<B>void</B> <B>SetDashes</B>(<B>int </B><I>n</I>, <B>wxDash*</B><I> dashes</I>)<P>
+Associates an array of pointers to dashes (defined as char in X, DWORD under Windows)
+with the pen. The array is not deallocated by wxPen, but neither must it be
+deallocated by the calling application until the pen is deleted or this
+function is called with a NULL array.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpengetdashes">wxPen::GetDashes</A><P>
+
+<HR>
+<A NAME="wxpensetjoin"></A>
+<H3>wxPen::SetJoin</H3>
+<P>
+<B>void</B> <B>SetJoin</B>(<B>int </B><I>join_style</I>)<P>
+Sets the pen join style, which may be one of <B>wxJOIN_BEVEL</B>, <B>wxJOIN_ROUND</B> and
+<B>wxJOIN_MITER</B>. The default is <B>wxJOIN_ROUND</B>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpengetjoin">wxPen::GetJoin</A><P>
+
+<HR>
+<A NAME="wxpensetstipple"></A>
+<H3>wxPen::SetStipple</H3>
+<P>
+<B>void</B> <B>SetStipple</B>(<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>* </B></B><I>stipple</I>)<P>
+Sets the bitmap for stippling.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpengetstipple">wxPen::GetStipple</A><P>
+
+<HR>
+<A NAME="wxpensetstyle"></A>
+<H3>wxPen::SetStyle</H3>
+<P>
+<B>void</B> <B>SetStyle</B>(<B>int</B><I> style</I>)<P>
+Set the pen style.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpenctor">wxPen::wxPen</A><P>
+
+<HR>
+<A NAME="wxpensetwidth"></A>
+<H3>wxPen::SetWidth</H3>
+<P>
+<B>void</B> <B>SetWidth</B>(<B>int</B><I> width</I>)<P>
+Sets the pen width.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpen.html#wxpengetwidth">wxPen::GetWidth</A><P>
+
+<HR>
+<A NAME="wxpenassignment"></A>
+<H3>wxPen::operator =</H3>
+<P>
+<B><A HREF="wx_wxpen.html#wxpen">wxPen</A>&</B> </B> <B>operator =</B>(<B>const <A HREF="wx_wxpen.html#wxpen">wxPen</A>& </B></B><I>pen</I>)<P>
+Assignment operator, using <A HREF="wx_trefcount.html#trefcount">reference counting</A>.<P>
+
+<HR>
+<A NAME="wxpenequals"></A>
+<H3>wxPen::operator ==</H3>
+<P>
+<B>bool</B> <B>operator ==</B>(<B>const <A HREF="wx_wxpen.html#wxpen">wxPen</A>& </B></B><I>pen</I>)<P>
+Equality operator.
+See <A HREF="wx_trefcount.html#refcountequality">reference-counted object comparison</A> for more info.<P>
+
+<HR>
+<A NAME="wxpennotequals"></A>
+<H3>wxPen::operator !=</H3>
+<P>
+<B>bool</B> <B>operator !=</B>(<B>const <A HREF="wx_wxpen.html#wxpen">wxPen</A>& </B></B><I>pen</I>)<P>
+Inequality operator.
+See <A HREF="wx_trefcount.html#refcountequality">reference-counted object comparison</A> for more info.<P>
+
+</FONT></BODY></HTML>

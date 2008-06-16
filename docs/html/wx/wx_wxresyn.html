@@ -1,0 +1,1995 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Syntax of the builtin regular expression library</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxresyn"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpython.html#wxpython"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxarc.html#wxarc"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Syntax of the builtin regular expression library</H2>
+<P>
+A <I>regular expression</I> describes strings of characters. It's a
+pattern that matches certain strings and doesn't match others.  <P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxregex.html#wxregex">wxRegEx</A><P>
+<A HREF="#differentflavors">Different Flavors of REs</A><BR>
+<A HREF="#resyntax">Regular Expression Syntax</A><BR>
+<A HREF="#wxresynbracket">Bracket Expressions</A><BR>
+<A HREF="#wxresynescapes">Escapes</A><BR>
+<A HREF="#remetasyntax">Metasyntax</A><BR>
+<A HREF="#wxresynmatching">Matching</A><BR>
+<A HREF="#relimits">Limits And Compatibility</A><BR>
+<A HREF="#wxresynbre">Basic Regular Expressions</A><BR>
+<A HREF="#wxresynchars">Regular Expression Character Names</A><BR>
+<P>
+
+<HR>
+<A NAME="differentflavors"></A>
+<H3>Different Flavors of REs</H3>
+<P>
+<A HREF="wx_wxresyn.html#wxresyn">Syntax of the builtin regular expression library</A><P>
+Regular expressions ("RE''s), as defined by POSIX, come in two
+flavors: <I>extended</I> REs ("EREs'') and <I>basic</I> REs ("BREs''). EREs are roughly those
+of the traditional <I>egrep</I>, while BREs are roughly those of the traditional
+ <I>ed</I>.  This implementation adds a third flavor, <I>advanced</I> REs ("AREs''), basically
+EREs with some significant extensions. <P>
+This manual page primarily describes
+AREs. BREs mostly exist for backward compatibility in some old programs;
+they will be discussed at the <A HREF="wx_wxresyn.html#wxresynbre">end</A>. POSIX EREs are almost an exact subset
+of AREs. Features of AREs that are not present in EREs will be indicated.<P>
+
+<HR>
+<A NAME="resyntax"></A>
+<H3>Regular Expression Syntax</H3>
+<P>
+<A HREF="wx_wxresyn.html#wxresyn">Syntax of the builtin regular expression library</A><P>
+These regular expressions are implemented using
+the package written by Henry Spencer, based on the 1003.2 spec and some
+(not quite all) of the Perl5 extensions (thanks, Henry!).  Much of the description
+of regular expressions below is copied verbatim from his manual entry. <P>
+An ARE is one or more <I>branches</I>, separated by '<B>|</B>', matching anything that matches
+any of the branches. <P>
+A branch is zero or more <I>constraints</I> or <I>quantified
+atoms</I>, concatenated. It matches a match for the first, followed by a match
+for the second, etc; an empty branch matches the empty string. <P>
+A quantified atom is an <I>atom</I> possibly followed by a single <I>quantifier</I>. Without a quantifier,
+it matches a match for the atom. The quantifiers, and what a so-quantified
+atom matches, are:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>*</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+a sequence of 0 or more matches of the atom
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>+</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+a sequence of 1 or more matches of the atom
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>?</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+a sequence of 0 or 1 matches of the atom
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>{m}</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+a sequence of exactly <I>m</I> matches of the atom
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>{m,}</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+a sequence of <I>m</I> or more matches of the atom
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>{m,n}</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+a sequence of <I>m</I> through <I>n</I> (inclusive)
+matches of the atom; <I>m</I> may not exceed <I>n</I>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>*?  +?  ??  {m}?  {m,}?  {m,n}?</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<I>non-greedy</I> quantifiers,
+which match the same possibilities, but prefer the
+smallest number rather than the largest number of matches (see <A HREF="wx_wxresyn.html#wxresynmatching">Matching</A>)
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The forms using <B>{</B> and <B>}</B> are known as <I>bound</I>s. The numbers <I>m</I> and <I>n</I> are unsigned
+decimal integers with permissible values from 0 to 255 inclusive. 
+An atom is one of:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>(re)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(where <I>re</I> is any regular expression) matches a match for
+ <I>re</I>, with the match noted for possible reporting
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>(?:re)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+as previous, but
+does no reporting (a "non-capturing'' set of parentheses)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>()</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+matches an empty
+string, noted for possible reporting
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>(?:)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+matches an empty string, without reporting
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>[chars]</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+a <I>bracket expression</I>, matching any one of the <I>chars</I>
+(see <A HREF="wx_wxresyn.html#wxresynbracket">Bracket Expressions</A> for more detail)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>.</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+matches any single character 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\k</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(where <I>k</I> is a non-alphanumeric character)
+matches that character taken as an ordinary character, e.g. \\ matches a backslash
+character
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\c</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+where <I>c</I> is alphanumeric (possibly followed by other characters),
+an <I>escape</I> (AREs only), see <A HREF="wx_wxresyn.html#wxresynescapes">Escapes</A> below
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>{</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+when followed by a character
+other than a digit, matches the left-brace character '<B>{</B>'; when followed by
+a digit, it is the beginning of a <I>bound</I> (see above)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>x</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+where <I>x</I> is a single
+character with no other significance, matches that character.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+A <I>constraint</I> matches an empty string when specific conditions are met. A constraint may
+not be followed by a quantifier. The simple constraints are as follows;
+some more constraints are described later, under <A HREF="wx_wxresyn.html#wxresynescapes">Escapes</A>.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>^</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+matches at the beginning of a line
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>$</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+matches at the end of a line
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>(?=re)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<I>positive lookahead</I>
+(AREs only), matches at any point where a substring matching <I>re</I> begins
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>(?!re)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<I>negative lookahead</I> (AREs only),
+matches at any point where no substring matching <I>re</I> begins
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The lookahead constraints may not contain back references
+(see later), and all parentheses within them are considered non-capturing.<P>
+An RE may not end with '<B>\</B>'.<P>
+
+<HR>
+<A NAME="wxresynbracket"></A>
+<H3>Bracket Expressions</H3>
+<P>
+<A HREF="wx_wxresyn.html#wxresyn">Syntax of the builtin regular expression library</A><P>
+A <I>bracket expression</I> is a list
+of characters enclosed in '<B>[]</B>'. It normally matches any single character from
+the list (but see below). If the list begins with '<B>^</B>', it matches any single
+character (but see below) <I>not</I> from the rest of the list. <P>
+If two characters
+in the list are separated by '<B>-</B>', this is shorthand for the full <I>range</I> of
+characters between those two (inclusive) in the collating sequence, e.g.
+ <B>[0-9]</B> in ASCII matches any decimal digit. Two ranges may not share an endpoint,
+so e.g. <B>a-c-e</B> is illegal. Ranges are very collating-sequence-dependent, and portable
+programs should avoid relying on them. <P>
+To include a literal <B>]</B> or <B>-</B> in the
+list, the simplest method is to enclose it in <B>[.</B> and <B>.]</B> to make it a collating
+element (see below). Alternatively, make it the first character (following
+a possible '<B>^</B>'), or (AREs only) precede it with '<B>\</B>'.
+Alternatively, for '<B>-</B>', make
+it the last character, or the second endpoint of a range. To use a literal
+ <B>-</B> as the first endpoint of a range, make it a collating element or (AREs
+only) precede it with '<B>\</B>'. With the exception of these, some combinations using
+ <B>[</B> (see next paragraphs), and escapes, all other special characters lose
+their special significance within a bracket expression. <P>
+Within a bracket
+expression, a collating element (a character, a multi-character sequence
+that collates as if it were a single character, or a collating-sequence
+name for either) enclosed in <B>[.</B> and <B>.]</B> stands for the
+sequence of characters of that collating element.<P>
+<I>wxWidgets</I>: Currently no multi-character collating elements are defined.
+So in <B>[.X.]</B>, <I>X</I> can either be a single character literal or
+the name of a character. For example, the following are both identical
+ <B>[[.0.]-[.9.]]</B> and <B>[[.zero.]-[.nine.]]</B> and mean the same as
+ <B>[0-9]</B>.
+ See <A HREF="wx_wxresyn.html#wxresynchars">Character Names</A>.<P>
+Within a bracket expression, a collating element enclosed in <B>[=</B> and <B>=]</B>
+is an equivalence class, standing for the sequences of characters of all
+collating elements equivalent to that one, including itself.
+An equivalence class may not be an endpoint of a range.<P>
+<I>wxWidgets</I>: Currently no equivalence classes are defined, so 
+<B>[=X=]</B> stands for just the single character <I>X</I>. 
+ <I>X</I> can either be a single character literal or the name of a character,
+see <A HREF="wx_wxresyn.html#wxresynchars">Character Names</A>.<P>
+Within a bracket expression,
+the name of a <I>character class</I> enclosed in <B>[:</B> and <B>:]</B> stands for the list
+of all characters (not all collating elements!) belonging to that class.
+Standard character classes are:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<B>alpha</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A letter.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<B>upper</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+An upper-case letter.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<B>lower</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A lower-case letter.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<B>digit</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A decimal digit.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<B>xdigit</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A hexadecimal digit.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<B>alnum</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+An alphanumeric (letter or digit).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<B>print</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+An alphanumeric (same as alnum).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<B>blank</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A space or tab character.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<B>space</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A character producing white space in displayed text.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<B>punct</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A punctuation character.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<B>graph</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A character with a visible representation.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<B>cntrl</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A control character.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+A character class may not be used as an endpoint of a range. <P>
+<I>wxWidgets</I>: In a non-Unicode build, these character classifications depend on the
+current locale, and correspond to the values return by the ANSI C 'is'
+functions: isalpha, isupper, etc. In Unicode mode they are based on
+Unicode classifications, and are not affected by the current locale.<P>
+There are two special cases of bracket expressions:
+the bracket expressions <B>[[:&lt;:]]</B> and <B>[[:&gt;:]]</B> are constraints, matching empty
+strings at the beginning and end of a word respectively.  A word is defined
+as a sequence of word characters that is neither preceded nor followed
+by word characters. A word character is an <I>alnum</I> character or an underscore
+(<B>_</B>). These special bracket expressions are deprecated; users of AREs should
+use constraint escapes instead (see <A HREF="wx_wxresyn.html#wxresynescapes">Escapes</A> below). <P>
+
+<HR>
+<A NAME="wxresynescapes"></A>
+<H3>Escapes</H3>
+<P>
+<A HREF="wx_wxresyn.html#wxresyn">Syntax of the builtin regular expression library</A><P>
+Escapes (AREs only),
+which begin with a <B>\</B> followed by an alphanumeric character, come in several
+varieties: character entry, class shorthands, constraint escapes, and back
+references. A <B>\</B> followed by an alphanumeric character but not constituting
+a valid escape is illegal in AREs. In EREs, there are no escapes: outside
+a bracket expression, a <B>\</B> followed by an alphanumeric character merely stands
+for that character as an ordinary character, and inside a bracket expression,
+ <B>\</B> is an ordinary character. (The latter is the one actual incompatibility
+between EREs and AREs.) <P>
+Character-entry escapes (AREs only) exist to make
+it easier to specify non-printing and otherwise inconvenient characters
+in REs:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\a</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+alert (bell) character, as in C
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\b</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+backspace, as in C
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\B</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+synonym
+for <B>\</B> to help reduce backslash doubling in some applications where there
+are multiple levels of backslash processing
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\c<I>X</I></B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(where X is any character)
+the character whose low-order 5 bits are the same as those of <I>X</I>, and whose
+other bits are all zero
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\e</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+the character whose collating-sequence name is
+'<B>ESC</B>', or failing that, the character with octal value 033
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\f</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+formfeed, as in C
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\n</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+newline, as in C
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\r</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+carriage return, as in C
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\t</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+horizontal tab, as in C
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\u<I>wxyz</I></B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(where <I>wxyz</I> is exactly four hexadecimal digits)
+the Unicode
+character <B>U+<I>wxyz</I></B> in the local byte ordering
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\U<I>stuvwxyz</I></B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(where <I>stuvwxyz</I> is
+exactly eight hexadecimal digits) reserved for a somewhat-hypothetical Unicode
+extension to 32 bits
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\v</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+vertical tab, as in C are all available.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\x<I>hhh</I></B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(where
+ <I>hhh</I> is any sequence of hexadecimal digits) the character whose hexadecimal
+value is <B>0x<I>hhh</I></B> (a single character no matter how many hexadecimal digits
+are used).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\0</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+the character whose value is <B>0</B>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\<I>xy</I></B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(where <I>xy</I> is exactly two
+octal digits, and is not a <I>back reference</I> (see below)) the character whose
+octal value is <B>0<I>xy</I></B>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\<I>xyz</I></B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(where <I>xyz</I> is exactly three octal digits, and is
+not a back reference (see below))
+the character whose octal value is <B>0<I>xyz</I></B>
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Hexadecimal digits are '<B>0</B>'-'<B>9</B>', '<B>a</B>'-'<B>f</B>', and '<B>A</B>'-'<B>F</B>'. Octal
+digits are '<B>0</B>'-'<B>7</B>'. <P>
+The character-entry
+escapes are always taken as ordinary characters. For example, <B>\135</B> is <B>]</B> in
+ASCII, but <B>\135</B> does not terminate a bracket expression. Beware, however,
+that some applications (e.g., C compilers) interpret  such sequences themselves
+before the regular-expression package gets to see them, which may require
+doubling (quadrupling, etc.) the '<B>\</B>'. <P>
+Class-shorthand escapes (AREs only) provide
+shorthands for certain commonly-used character classes:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\d</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>[[:digit:]]</B>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\s</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>[[:space:]]</B>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\w</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>[[:alnum:]_]</B> (note underscore)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\D</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>[^[:digit:]]</B>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\S</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>[^[:space:]]</B>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\W</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>[^[:alnum:]_]</B> (note underscore)
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Within bracket expressions, '<B>\d</B>', '<B>\s</B>', and
+'<B>\w</B>' lose their outer brackets, and '<B>\D</B>',
+'<B>\S</B>', and '<B>\W</B>' are illegal. (So, for example,
+ <B>[a-c\d]</B> is equivalent to <B>[a-c[:digit:]]</B>.
+Also, <B>[a-c\D]</B>, which is equivalent to
+ <B>[a-c^[:digit:]]</B>, is illegal.) <P>
+A constraint escape (AREs only) is a constraint,
+matching the empty string if specific conditions are met, written as an
+escape:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\A</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+matches only at the beginning of the string
+(see <A HREF="wx_wxresyn.html#wxresynmatching">Matching</A>, below,
+for how this differs from '<B>^</B>')
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\m</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+matches only at the beginning of a word
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\M</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+matches only at the end of a word
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\y</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+matches only at the beginning or end of a word
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\Y</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+matches only at a point that is not the beginning or end of
+a word
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\Z</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+matches only at the end of the string
+(see <A HREF="wx_wxresyn.html#wxresynmatching">Matching</A>, below, for
+how this differs from '<B>$</B>')
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\<I>m</I></B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(where <I>m</I> is a nonzero digit) a <I>back reference</I>,
+see below
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>\<I>mnn</I></B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(where <I>m</I> is a nonzero digit, and <I>nn</I> is some more digits,
+and the decimal value <I>mnn</I> is not greater than the number of closing capturing
+parentheses seen so far) a <I>back reference</I>, see below
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+A word is defined
+as in the specification of <B>[[:&lt;:]]</B> and <B>[[:&gt;:]]</B> above. Constraint escapes are
+illegal within bracket expressions. <P>
+A back reference (AREs only) matches
+the same string matched by the parenthesized subexpression specified by
+the number, so that (e.g.) <B>([bc])\1</B> matches <B>bb</B> or <B>cc</B> but not '<B>bc</B>'.
+The subexpression
+must entirely precede the back reference in the RE. Subexpressions are numbered
+in the order of their leading parentheses. Non-capturing parentheses do not
+define subexpressions. <P>
+There is an inherent historical ambiguity between
+octal character-entry  escapes and back references, which is resolved by
+heuristics, as hinted at above. A leading zero always indicates an octal
+escape. A single non-zero digit, not followed by another digit, is always
+taken as a back reference. A multi-digit sequence not starting with a zero
+is taken as a back  reference if it comes after a suitable subexpression
+(i.e. the number is in the legal range for a back reference), and otherwise
+is taken as octal. <P>
+
+<HR>
+<A NAME="remetasyntax"></A>
+<H3>Metasyntax</H3>
+<P>
+<A HREF="wx_wxresyn.html#wxresyn">Syntax of the builtin regular expression library</A><P>
+In addition to the main syntax described above,
+there are some special forms and miscellaneous syntactic facilities available.<P>
+Normally the flavor of RE being used is specified by application-dependent
+means. However, this can be overridden by a <I>director</I>. If an RE of any flavor
+begins with '<B>***:</B>', the rest of the RE is an ARE. If an RE of any flavor begins
+with '<B>***=</B>', the rest of the RE is taken to be a literal string, with all
+characters considered ordinary characters. <P>
+An ARE may begin with <I>embedded options</I>: a sequence <B>(?xyz)</B>
+(where <I>xyz</I> is one or more alphabetic characters)
+specifies options affecting the rest of the RE. These supplement, and can
+override, any options specified by the application. The available option
+letters are:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>b</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+rest of RE is a BRE
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>c</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+case-sensitive matching (usual default)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>e</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+rest of RE is an ERE
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>i</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+case-insensitive matching (see <A HREF="wx_wxresyn.html#wxresynmatching">Matching</A>, below)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>m</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+historical synonym for <B>n</B>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>n</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+newline-sensitive matching (see <A HREF="wx_wxresyn.html#wxresynmatching">Matching</A>, below)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>p</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+partial newline-sensitive matching (see <A HREF="wx_wxresyn.html#wxresynmatching">Matching</A>, below)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>q</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+rest of RE
+is a literal ("quoted'') string, all ordinary characters
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>s</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+non-newline-sensitive matching (usual default)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>t</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+tight syntax (usual default; see below)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>w</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+inverse
+partial newline-sensitive ("weird'') matching (see <A HREF="wx_wxresyn.html#wxresynmatching">Matching</A>, below)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=158>
+<B>x</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+expanded syntax (see below)
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Embedded options take effect at the <B>)</B> terminating the
+sequence. They are available only at the start of an ARE, and may not be
+used later within it. <P>
+In addition to the usual (<I>tight</I>) RE syntax, in which
+all characters are significant, there is an <I>expanded</I> syntax, available
+in AREs with the embedded
+x option. In the expanded syntax, white-space characters are ignored and
+all characters between a <B>#</B> and the following newline (or the end of the
+RE) are ignored, permitting paragraphing and commenting a complex RE. There
+are three exceptions to that basic rule:
+<UL>
+
+<LI>a white-space character or '<B>#</B>' preceded
+by '<B>\</B>' is retained 
+<LI>white space or '<B>#</B>' within a bracket expression is retained
+<LI>white space and comments are illegal within multi-character symbols like
+the ARE '<B>(?:</B>' or the BRE '<B>\(</B>' 
+</UL>
+
+Expanded-syntax white-space characters are blank,
+tab, newline, and any character that belongs to the <I>space</I> character class.<P>
+Finally, in an ARE, outside bracket expressions, the sequence '<B>(?#ttt)</B>' (where
+ <I>ttt</I> is any text not containing a '<B>)</B>') is a comment, completely ignored. Again,
+this is not allowed between the characters of multi-character symbols like
+'<B>(?:</B>'. Such comments are more a historical artifact than a useful facility,
+and their use is deprecated; use the expanded syntax instead. <P>
+<I>None</I> of these
+metasyntax extensions is available if the application (or an initial <B>***=</B>
+director) has specified that the user's input be treated as a literal string
+rather than as an RE. <P>
+
+<HR>
+<A NAME="wxresynmatching"></A>
+<H3>Matching</H3>
+<P>
+<A HREF="wx_wxresyn.html#wxresyn">Syntax of the builtin regular expression library</A><P>
+In the event that an RE could match more than
+one substring of a given string, the RE matches the one starting earliest
+in the string. If the RE could match more than one substring starting at
+that point, its choice is determined by its <I>preference</I>: either the longest
+substring, or the shortest. <P>
+Most atoms, and all constraints, have no preference.
+A parenthesized RE has the same preference (possibly none) as the RE. A
+quantified atom with quantifier <B>{m}</B> or <B>{m}?</B> has the same preference (possibly
+none) as the atom itself. A quantified atom with other normal quantifiers
+(including <B>{m,n}</B> with <I>m</I> equal to <I>n</I>) prefers longest match. A quantified
+atom with other non-greedy quantifiers (including <B>{m,n}?</B> with <I>m</I> equal to
+ <I>n</I>) prefers shortest match. A branch has the same preference as the first
+quantified atom in it which has a preference. An RE consisting of two or
+more branches connected by the <B>|</B> operator prefers longest match. <P>
+Subject to the constraints imposed by the rules for matching the whole RE, subexpressions
+also match the longest or shortest possible substrings, based on their
+preferences, with subexpressions starting earlier in the RE taking priority
+over ones starting later. Note that outer subexpressions thus take priority
+over their component subexpressions. <P>
+Note that the quantifiers <B>{1,1}</B> and
+ <B>{1,1}?</B> can be used to force longest and shortest preference, respectively,
+on a subexpression or a whole RE. <P>
+Match lengths are measured in characters,
+not collating elements. An empty string is considered longer than no match
+at all. For example, <B>bb*</B> matches the three middle characters
+of '<B>abbbc</B>', <B>(week|wee)(night|knights)</B>
+matches all ten characters of '<B>weeknights</B>', when <B>(.*).*</B> is matched against
+ <B>abc</B> the parenthesized subexpression matches all three characters, and when
+ <B>(a*)*</B> is matched against <B>bc</B> both the whole RE and the parenthesized subexpression
+match an empty string. <P>
+If case-independent matching is specified, the effect
+is much as if all case distinctions had vanished from the alphabet. When
+an alphabetic that exists in multiple cases appears as an ordinary character
+outside a bracket expression, it is effectively transformed into a bracket
+expression containing both cases, so that <B>x</B> becomes '<B>[xX]</B>'. When it appears
+inside a bracket expression, all case counterparts of it are added to the
+bracket expression, so that <B>[x]</B> becomes <B>[xX]</B> and <B>[^x]</B> becomes '<B>[^xX]</B>'. <P>
+If newline-sensitive
+matching is specified, <B>.</B> and bracket expressions using <B>^</B> will never match
+the newline character (so that matches will never cross newlines unless
+the RE explicitly arranges it) and <B>^</B> and <B>$</B> will match the empty string after
+and before a newline respectively, in addition to matching at beginning
+and end of string respectively. ARE <B>\A</B> and <B>\Z</B> continue to match beginning
+or end of string <I>only</I>. <P>
+If partial newline-sensitive matching is specified,
+this affects <B>.</B> and bracket expressions as with newline-sensitive matching,
+but not <B>^</B> and '<B>$</B>'. <P>
+If inverse partial newline-sensitive matching is specified,
+this affects <B>^</B> and <B>$</B> as with newline-sensitive matching, but not <B>.</B> and bracket
+expressions. This isn't very useful but is provided for symmetry. <P>
+
+<HR>
+<A NAME="relimits"></A>
+<H3>Limits And Compatibility</H3>
+<P>
+<A HREF="wx_wxresyn.html#wxresyn">Syntax of the builtin regular expression library</A><P>
+No particular limit is imposed on the length of REs. Programs
+intended to be highly portable should not employ REs longer than 256 bytes,
+as a POSIX-compliant implementation can refuse to accept such REs. <P>
+The only
+feature of AREs that is actually incompatible with POSIX EREs is that <B>\</B>
+does not lose its special significance inside bracket expressions. All other
+ARE features use syntax which is illegal or has undefined or unspecified
+effects in POSIX EREs; the <B>***</B> syntax of directors likewise is outside
+the POSIX syntax for both BREs and EREs. <P>
+Many of the ARE extensions are
+borrowed from Perl, but some have been changed to clean them up, and a
+few Perl extensions are not present. Incompatibilities of note include '<B>\b</B>',
+'<B>\B</B>', the lack of special treatment for a trailing newline, the addition of
+complemented bracket expressions to the things affected by newline-sensitive
+matching, the restrictions on parentheses and back references in lookahead
+constraints, and the longest/shortest-match (rather than first-match) matching
+semantics. <P>
+The matching rules for REs containing both normal and non-greedy
+quantifiers have changed since early beta-test versions of this package.
+(The new rules are much simpler and cleaner, but don't work as hard at guessing
+the user's real intentions.) <P>
+Henry Spencer's original 1986 <I>regexp</I> package, still in widespread use,
+implemented an early version of today's EREs. There are four incompatibilities between <I>regexp</I>'s
+near-EREs ('RREs' for short) and AREs. In roughly increasing order of significance:
+<UL>
+
+<LI> In AREs, <B>\</B> followed by an alphanumeric character is either an escape or
+an error, while in RREs, it was just another way of writing the  alphanumeric.
+This should not be a problem because there was no reason to write such
+a sequence in RREs. <P>
+<LI> <B>{</B> followed by a digit in an ARE is the beginning of
+a bound, while in RREs, <B>{</B> was always an ordinary character. Such sequences
+should be rare, and will often result in an error because following characters
+will not look like a valid bound. <P>
+<LI> In AREs, <B>\</B> remains a special character
+within '<B>[]</B>', so a literal <B>\</B> within <B>[]</B> must be
+written '<B>\\</B>'. <B>\\</B> also gives a literal
+ <B>\</B> within <B>[]</B> in RREs, but only truly paranoid programmers routinely doubled
+the backslash. <P>
+<LI> AREs report the longest/shortest match for the RE, rather
+than the first found in a specified search order. This may affect some RREs
+which were written in the expectation that the first match would be reported.
+(The careful crafting of RREs to optimize the search order for fast matching
+is obsolete (AREs examine all possible matches in parallel, and their performance
+is largely insensitive to their complexity) but cases where the search
+order was exploited to deliberately  find a match which was <I>not</I> the longest/shortest
+will need rewriting.)  
+</UL>
+<P>
+
+<HR>
+<A NAME="wxresynbre"></A>
+<H3>Basic Regular Expressions</H3>
+<P>
+<A HREF="wx_wxresyn.html#wxresyn">Syntax of the builtin regular expression library</A><P>
+BREs differ from EREs in
+several respects.  '<B>|</B>', '<B>+</B>', and <B>?</B> are ordinary characters and there is no equivalent
+for their functionality. The delimiters for bounds
+are <B>\{</B> and '<B>\}</B>', with <B>{</B> and
+ <B>}</B> by themselves ordinary characters. The parentheses for nested subexpressions
+are <B>\(</B> and '<B>\)</B>', with <B>(</B> and <B>)</B> by themselves
+ordinary characters. <B>^</B> is an ordinary
+character except at the beginning of the RE or the beginning of a parenthesized
+subexpression, <B>$</B> is an ordinary character except at the end of the RE or
+the end of a parenthesized subexpression, and <B>*</B> is an ordinary character
+if it appears at the beginning of the RE or the beginning of a parenthesized
+subexpression (after a possible leading '<B>^</B>'). Finally, single-digit back references
+are available, and <B>\&lt;</B> and <B>\&gt;</B> are synonyms
+for <B>[[:&lt;:]]</B> and <B>[[:&gt;:]]</B> respectively;
+no other escapes are available.  <P>
+
+<HR>
+<A NAME="wxresynchars"></A>
+<H3>Regular Expression Character Names</H3>
+<P>
+<A HREF="wx_wxresyn.html#wxresyn">Syntax of the builtin regular expression library</A><P>
+Note that the character names are case sensitive.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+NUL
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\0'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+SOH
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\001'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+STX
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\002'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+ETX
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\003'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+EOT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\004'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+ENQ
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\005'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+ACK
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\006'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+BEL
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\007'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+alert
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\007'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+BS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\010'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+backspace
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\b'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+HT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\011'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+tab
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\t'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+LF
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\012'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+newline
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\n'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+VT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\013'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+vertical-tab
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\v'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+FF
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\014'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+form-feed
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\f'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+CR
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\015'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+carriage-return
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\r'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+SO
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\016'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+SI
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\017'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+DLE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\020'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+DC1
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\021'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+DC2
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\022'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+DC3
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\023'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+DC4
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\024'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+NAK
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\025'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+SYN
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\026'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+ETB
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\027'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+CAN
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\030'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+EM
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\031'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+SUB
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\032'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+ESC
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\033'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+IS4
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\034'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+FS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\034'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+IS3
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\035'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+GS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\035'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+IS2
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\036'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+RS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\036'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+IS1
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\037'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+US
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\037'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+space
+</FONT></TD>
+
+<TD VALIGN=TOP>
+' '
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+exclamation-mark
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'!'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+quotation-mark
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'"'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+number-sign
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'#'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+dollar-sign
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'$'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+percent-sign
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'%'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+ampersand
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'&amp;'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+apostrophe
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\''
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+left-parenthesis
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'('
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+right-parenthesis
+</FONT></TD>
+
+<TD VALIGN=TOP>
+')'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+asterisk
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'*'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+plus-sign
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'+'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+comma
+</FONT></TD>
+
+<TD VALIGN=TOP>
+','
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+hyphen
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'-'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+hyphen-minus
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'-'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+period
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'.'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+full-stop
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'.'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+slash
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'/'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+solidus
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'/'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+zero
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'0'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+one
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'1'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+two
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'2'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+three
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'3'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+four
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'4'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+five
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'5'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+six
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'6'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+seven
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'7'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+eight
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'8'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+nine
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'9'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+colon
+</FONT></TD>
+
+<TD VALIGN=TOP>
+':'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+semicolon
+</FONT></TD>
+
+<TD VALIGN=TOP>
+';'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+less-than-sign
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'&lt;'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+equals-sign
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'='
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+greater-than-sign
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'&gt;'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+question-mark
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'?'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+commercial-at
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'@'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+left-square-bracket
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'['
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+backslash
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+reverse-solidus
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+right-square-bracket
+</FONT></TD>
+
+<TD VALIGN=TOP>
+']'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+circumflex
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'^'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+circumflex-accent
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'^'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+underscore
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'_'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+low-line
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'_'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+grave-accent
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'''
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+left-brace
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'{'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+left-curly-bracket
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'{'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+vertical-line
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'|'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+right-brace
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'}'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+right-curly-bracket
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'}'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+tilde
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'~'
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+DEL
+</FONT></TD>
+
+<TD VALIGN=TOP>
+'\177'
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+</FONT></BODY></HTML>

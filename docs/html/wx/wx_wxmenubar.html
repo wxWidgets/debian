@@ -1,0 +1,499 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMenuBar</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmenubar"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmenu.html#wxmenu"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmenuevent.html#wxmenuevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMenuBar</H2>
+<P>
+A menu bar is a series of menus accessible from the top of a frame.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/menu.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To respond to a menu selection, provide a handler for EVT_MENU, in the frame
+that contains the menu bar. If you have a toolbar which uses the same identifiers
+as your EVT_MENU entries, events from the toolbar will also be processed by your
+EVT_MENU event handlers.<P>
+<B>Tip:</B> under Windows, if you discover that menu shortcuts (for example, Alt-F to show the file menu)
+are not working, check any EVT_CHAR events you are handling in child windows.
+If you are not calling <TT>event.Skip()</TT> for events that you don't process in these event handlers,
+menu shortcuts may cease to work.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>, <A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxmenubarctor">wxMenuBar::wxMenuBar</A><BR>
+<A HREF="#wxmenubardtor">wxMenuBar::~wxMenuBar</A><BR>
+<A HREF="#wxmenubarappend">wxMenuBar::Append</A><BR>
+<A HREF="#wxmenubarcheck">wxMenuBar::Check</A><BR>
+<A HREF="#wxmenubarenable">wxMenuBar::Enable</A><BR>
+<A HREF="#wxmenubarenabletop">wxMenuBar::EnableTop</A><BR>
+<A HREF="#wxmenubarfindmenu">wxMenuBar::FindMenu</A><BR>
+<A HREF="#wxmenubarfindmenuitem">wxMenuBar::FindMenuItem</A><BR>
+<A HREF="#wxmenubarfinditem">wxMenuBar::FindItem</A><BR>
+<A HREF="#wxmenubargethelpstring">wxMenuBar::GetHelpString</A><BR>
+<A HREF="#wxmenubargetlabel">wxMenuBar::GetLabel</A><BR>
+<A HREF="#wxmenubargetlabeltop">wxMenuBar::GetLabelTop</A><BR>
+<A HREF="#wxmenubargetmenu">wxMenuBar::GetMenu</A><BR>
+<A HREF="#wxmenubargetmenucount">wxMenuBar::GetMenuCount</A><BR>
+<A HREF="#wxmenubargetmenulabel">wxMenuBar::GetMenuLabel</A><BR>
+<A HREF="#wxmenubargetmenulabeltext">wxMenuBar::GetMenuLabelText</A><BR>
+<A HREF="#wxmenubarinsert">wxMenuBar::Insert</A><BR>
+<A HREF="#wxmenubarischecked">wxMenuBar::IsChecked</A><BR>
+<A HREF="#wxmenubarisenabled">wxMenuBar::IsEnabled</A><BR>
+<A HREF="#wxmenubarrefresh">wxMenuBar::Refresh</A><BR>
+<A HREF="#wxmenubarremove">wxMenuBar::Remove</A><BR>
+<A HREF="#wxmenubarreplace">wxMenuBar::Replace</A><BR>
+<A HREF="#wxmenubarsethelpstring">wxMenuBar::SetHelpString</A><BR>
+<A HREF="#wxmenubarsetlabel">wxMenuBar::SetLabel</A><BR>
+<A HREF="#wxmenubarsetlabeltop">wxMenuBar::SetLabelTop</A><BR>
+<A HREF="#wxmenubarsetmenulabel">wxMenuBar::SetMenuLabel</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmenubarctor"></A>
+<H3>wxMenuBar::wxMenuBar</H3>
+<P>
+<B></B> <B>wxMenuBar</B>(<B>long </B><I>style = 0</I>)<P>
+Default constructor.<P>
+<B></B> <B>wxMenuBar</B>(<B>size_t</B><I> n</I>, <B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B></B><I> menus[]</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>titles[]</I>, <B>long </B><I>style = 0</I>)<P>
+Construct a menu bar from arrays of menus and titles.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>n</I><UL><UL>
+The number of menus.</UL></UL>
+<P>
+<I>menus</I><UL><UL>
+An array of menus. Do not use this array again - it now belongs to the
+menu bar.</UL></UL>
+<P>
+<I>titles</I><UL><UL>
+An array of title strings. Deallocate this array after creating the menu bar.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+If <TT>wxMB_DOCKABLE</TT> the menu bar can be detached (wxGTK only).</UL></UL>
+<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> Only the default constructor is supported in wxPython.
+Use <A HREF="wx_wxmenubar.html#wxmenubarappend">wxMenuBar::Append</A> instead.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> wxPerl only supports the first constructor: 
+use <A HREF="wx_wxmenubar.html#wxmenubarappend">wxMenuBar::Append</A> instead.<P>
+
+
+<HR>
+<A NAME="wxmenubardtor"></A>
+<H3>wxMenuBar::~wxMenuBar</H3>
+<P>
+<B>void</B> <B>~wxMenuBar</B>()<P>
+Destructor, destroying the menu bar and removing it from the parent frame (if any).<P>
+
+
+<HR>
+<A NAME="wxmenubarappend"></A>
+<H3>wxMenuBar::Append</H3>
+<P>
+<B>bool</B> <B>Append</B>(<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A> *</B></B><I>menu</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>)<P>
+Adds the item to the end of the menu bar.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>menu</I><UL><UL>
+The menu to add. Do not deallocate this menu after calling <B>Append</B>.</UL></UL>
+<P>
+<I>title</I><UL><UL>
+The title of the menu.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true on success, false if an error occurred.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubarinsert">wxMenuBar::Insert</A><P>
+
+
+<HR>
+<A NAME="wxmenubarcheck"></A>
+<H3>wxMenuBar::Check</H3>
+<P>
+<B>void</B> <B>Check</B>(<B>int</B><I> id</I>, <B>const bool</B><I> check</I>)<P>
+Checks or unchecks a menu item.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<I>check</I><UL><UL>
+If true, checks the menu item, otherwise the item is unchecked.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Only use this when the menu bar has been associated
+with a frame; otherwise, use the wxMenu equivalent call.<P>
+
+
+<HR>
+<A NAME="wxmenubarenable"></A>
+<H3>wxMenuBar::Enable</H3>
+<P>
+<B>void</B> <B>Enable</B>(<B>int</B><I> id</I>, <B>const bool</B><I> enable</I>)<P>
+Enables or disables (greys out) a menu item.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<I>enable</I><UL><UL>
+true to enable the item, false to disable it.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Only use this when the menu bar has been
+associated with a frame; otherwise, use the wxMenu equivalent call.<P>
+
+
+<HR>
+<A NAME="wxmenubarenabletop"></A>
+<H3>wxMenuBar::EnableTop</H3>
+<P>
+<B>void</B> <B>EnableTop</B>(<B>int</B><I> pos</I>, <B>const bool</B><I> enable</I>)<P>
+Enables or disables a whole menu.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pos</I><UL><UL>
+The position of the menu, starting from zero.</UL></UL>
+<P>
+<I>enable</I><UL><UL>
+true to enable the menu, false to disable it.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Only use this when the menu bar has been
+associated with a frame.<P>
+
+
+<HR>
+<A NAME="wxmenubarfindmenu"></A>
+<H3>wxMenuBar::FindMenu</H3>
+<P>
+<B>int</B> <B>FindMenu</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>) <B>const</B><P>
+Returns the index of the menu with the given <I>title</I> or <TT>wxNOT_FOUND</TT> if no
+such menu exists in this menubar. The <I>title</I> parameter may specify either
+the menu title (with accelerator characters, i.e. <TT>"&amp;File"</TT>) or just the
+menu label (<TT>"File"</TT>) indifferently.<P>
+
+
+<HR>
+<A NAME="wxmenubarfindmenuitem"></A>
+<H3>wxMenuBar::FindMenuItem</H3>
+<P>
+<B>int</B> <B>FindMenuItem</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>menuString</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>itemString</I>) <B>const</B><P>
+Finds the menu item id for a menu name/menu item string pair.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>menuString</I><UL><UL>
+Menu title to find.</UL></UL>
+<P>
+<I>itemString</I><UL><UL>
+Item to find.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The menu item identifier, or <TT>wxNOT_FOUND</TT> if none was found.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Any special menu codes are stripped out of source and target strings
+before matching.<P>
+
+
+<HR>
+<A NAME="wxmenubarfinditem"></A>
+<H3>wxMenuBar::FindItem</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A> *</B> </B> <B>FindItem</B>(<B>int</B><I> id</I>, <B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A></B></B><I> **menu = NULL</I>) <B>const</B><P>
+Finds the menu item object associated with the given menu item identifier.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+Menu item identifier.</UL></UL>
+<P>
+<I>menu</I><UL><UL>
+If not NULL, menu will get set to the associated menu.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The found menu item object, or NULL if one was not found.<P>
+
+
+<HR>
+<A NAME="wxmenubargethelpstring"></A>
+<H3>wxMenuBar::GetHelpString</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetHelpString</B>(<B>int</B><I> id</I>) <B>const</B><P>
+Gets the help string associated with the menu item identifier.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The help string, or the empty string if there was no help string or the menu item
+was not found.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubarsethelpstring">wxMenuBar::SetHelpString</A><P>
+
+
+<HR>
+<A NAME="wxmenubargetlabel"></A>
+<H3>wxMenuBar::GetLabel</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLabel</B>(<B>int</B><I> id</I>) <B>const</B><P>
+Gets the label associated with a menu item.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The menu item label, or the empty string if the item was not found.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Use only after the menubar has been associated with a frame.<P>
+
+
+<HR>
+<A NAME="wxmenubargetlabeltop"></A>
+<H3>wxMenuBar::GetLabelTop</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLabelTop</B>(<B>int</B><I> pos</I>) <B>const</B><P>
+Returns the label of a top-level menu. Note that the returned string does not
+include the accelerator characters which could have been specified in the menu
+title string during its construction.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pos</I><UL><UL>
+Position of the menu on the menu bar, starting from zero.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The menu label, or the empty string if the menu was not found.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Use only after the menubar has been associated with a frame.<P>
+This function is deprecated in favour of <A HREF="wx_wxmenubar.html#wxmenubargetmenulabel">GetMenuLabel</A> and <A HREF="wx_wxmenubar.html#wxmenubargetmenulabeltext">GetMenuLabelText</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubarsetlabeltop">wxMenuBar::SetLabelTop</A><P>
+
+
+<HR>
+<A NAME="wxmenubargetmenu"></A>
+<H3>wxMenuBar::GetMenu</H3>
+<P>
+<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B> </B> <B>GetMenu</B>(<B>int</B><I> menuIndex</I>) <B>const</B><P>
+Returns the menu at <I>menuIndex</I> (zero-based).<P>
+
+
+<HR>
+<A NAME="wxmenubargetmenucount"></A>
+<H3>wxMenuBar::GetMenuCount</H3>
+<P>
+<B>int</B> <B>GetMenuCount</B>() <B>const</B><P>
+Returns the number of menus in this menubar.<P>
+
+
+<HR>
+<A NAME="wxmenubargetmenulabel"></A>
+<H3>wxMenuBar::GetMenuLabel</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetMenuLabel</B>(<B>int</B><I> pos</I>) <B>const</B><P>
+Returns the label of a top-level menu. Note that the returned string
+includes the accelerator characters that have been specified in the menu
+title string during its construction.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pos</I><UL><UL>
+Position of the menu on the menu bar, starting from zero.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The menu label, or the empty string if the menu was not found.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Use only after the menubar has been associated with a frame.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubargetmenulabeltext">wxMenuBar::GetMenuLabelText</A>, <A HREF="wx_wxmenubar.html#wxmenubarsetmenulabel">wxMenuBar::SetMenuLabel</A><P>
+
+
+<HR>
+<A NAME="wxmenubargetmenulabeltext"></A>
+<H3>wxMenuBar::GetMenuLabelText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetMenuLabelText</B>(<B>int</B><I> pos</I>) <B>const</B><P>
+Returns the label of a top-level menu. Note that the returned string does not
+include any accelerator characters that may have been specified in the menu
+title string during its construction.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pos</I><UL><UL>
+Position of the menu on the menu bar, starting from zero.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The menu label, or the empty string if the menu was not found.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Use only after the menubar has been associated with a frame.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubargetmenulabel">wxMenuBar::GetMenuLabel</A>, <A HREF="wx_wxmenubar.html#wxmenubarsetmenulabel">wxMenuBar::SetMenuLabel</A><P>
+
+
+<HR>
+<A NAME="wxmenubarinsert"></A>
+<H3>wxMenuBar::Insert</H3>
+<P>
+<B>bool</B> <B>Insert</B>(<B>size_t </B><I>pos</I>, <B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A> *</B></B><I>menu</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>)<P>
+Inserts the menu at the given position into the menu bar. Inserting menu at
+position 0 will insert it in the very beginning of it, inserting at position 
+<A HREF="wx_wxmenubar.html#wxmenubargetmenucount">GetMenuCount()</A> is the same as calling 
+<A HREF="wx_wxmenubar.html#wxmenubarappend">Append()</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pos</I><UL><UL>
+The position of the new menu in the menu bar</UL></UL>
+<P>
+<I>menu</I><UL><UL>
+The menu to add. wxMenuBar owns the menu and will free it.</UL></UL>
+<P>
+<I>title</I><UL><UL>
+The title of the menu.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true on success, false if an error occurred.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubarappend">wxMenuBar::Append</A><P>
+
+
+<HR>
+<A NAME="wxmenubarischecked"></A>
+<H3>wxMenuBar::IsChecked</H3>
+<P>
+<B>bool</B> <B>IsChecked</B>(<B>int</B><I> id</I>) <B>const</B><P>
+Determines whether an item is checked.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the item was found and is checked, false otherwise.<P>
+
+
+<HR>
+<A NAME="wxmenubarisenabled"></A>
+<H3>wxMenuBar::IsEnabled</H3>
+<P>
+<B>bool</B> <B>IsEnabled</B>(<B>int</B><I> id</I>) <B>const</B><P>
+Determines whether an item is enabled.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the item was found and is enabled, false otherwise.<P>
+
+
+<HR>
+<A NAME="wxmenubarrefresh"></A>
+<H3>wxMenuBar::Refresh</H3>
+<P>
+<B>void</B> <B>Refresh</B>()<P>
+Redraw the menu bar<P>
+
+
+<HR>
+<A NAME="wxmenubarremove"></A>
+<H3>wxMenuBar::Remove</H3>
+<P>
+<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A> *</B> </B> <B>Remove</B>(<B>size_t </B><I>pos</I>)<P>
+Removes the menu from the menu bar and returns the menu object - the caller is
+responsible for deleting it. This function may be used together with 
+<A HREF="wx_wxmenubar.html#wxmenubarinsert">wxMenuBar::Insert</A> to change the menubar
+dynamically.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubarreplace">wxMenuBar::Replace</A><P>
+
+
+<HR>
+<A NAME="wxmenubarreplace"></A>
+<H3>wxMenuBar::Replace</H3>
+<P>
+<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A> *</B> </B> <B>Replace</B>(<B>size_t </B><I>pos</I>, <B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A> *</B></B><I>menu</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>)<P>
+Replaces the menu at the given position with another one.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pos</I><UL><UL>
+The position of the new menu in the menu bar</UL></UL>
+<P>
+<I>menu</I><UL><UL>
+The menu to add.</UL></UL>
+<P>
+<I>title</I><UL><UL>
+The title of the menu.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The menu which was previously at position <I>pos</I>. The caller is
+responsible for deleting it.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubarinsert">wxMenuBar::Insert</A>,
+<A HREF="wx_wxmenubar.html#wxmenubarremove">wxMenuBar::Remove</A><P>
+
+
+<HR>
+<A NAME="wxmenubarsethelpstring"></A>
+<H3>wxMenuBar::SetHelpString</H3>
+<P>
+<B>void</B> <B>SetHelpString</B>(<B>int</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString</I>)<P>
+Sets the help string associated with a menu item.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+Menu item identifier.</UL></UL>
+<P>
+<I>helpString</I><UL><UL>
+Help string to associate with the menu item.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubargethelpstring">wxMenuBar::GetHelpString</A><P>
+
+
+<HR>
+<A NAME="wxmenubarsetlabel"></A>
+<H3>wxMenuBar::SetLabel</H3>
+<P>
+<B>void</B> <B>SetLabel</B>(<B>int</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>)<P>
+Sets the label of a menu item.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+Menu item identifier.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+Menu item label.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Use only after the menubar has been associated with a frame.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubargetlabel">wxMenuBar::GetLabel</A><P>
+
+
+<HR>
+<A NAME="wxmenubarsetlabeltop"></A>
+<H3>wxMenuBar::SetLabelTop</H3>
+<P>
+<B>void</B> <B>SetLabelTop</B>(<B>int</B><I> pos</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>)<P>
+Sets the label of a top-level menu.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pos</I><UL><UL>
+The position of a menu on the menu bar, starting from zero.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+The menu label.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Use only after the menubar has been associated with a frame.<P>
+This function has been deprecated in favour of <A HREF="wx_wxmenubar.html#wxmenubarsetmenulabel">SetMenuLabel</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubargetlabeltop">wxMenuBar::GetLabelTop</A><P>
+
+
+<HR>
+<A NAME="wxmenubarsetmenulabel"></A>
+<H3>wxMenuBar::SetMenuLabel</H3>
+<P>
+<B>void</B> <B>SetMenuLabel</B>(<B>int</B><I> pos</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>)<P>
+Sets the label of a top-level menu.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pos</I><UL><UL>
+The position of a menu on the menu bar, starting from zero.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+The menu label.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Use only after the menubar has been associated with a frame.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubargetmenulabel">wxMenuBar::GetMenuLabel</A>, <A HREF="wx_wxmenubar.html#wxmenubargetmenulabeltext">wxMenuBar::GetMenuLabelText</A><P>
+
+</FONT></BODY></HTML>

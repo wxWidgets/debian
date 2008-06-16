@@ -3,17 +3,13 @@
 // Purpose:
 // Author:      Robert Roebling
 // Created:
-// Id:          $Id: dialog.h,v 1.33 2005/08/02 22:57:54 MW Exp $
+// Id:          $Id: dialog.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:           wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKDIALOGH__
 #define __GTKDIALOGH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
 
 #include "wx/defs.h"
 
@@ -27,7 +23,7 @@ class WXDLLIMPEXP_CORE wxDialog;
 // global data
 //-----------------------------------------------------------------------------
 
-extern WXDLLIMPEXP_CORE const wxChar *wxDialogNameStr;
+extern WXDLLIMPEXP_CORE const wxChar wxDialogNameStr[];
 
 //-----------------------------------------------------------------------------
 // wxDialog
@@ -49,16 +45,7 @@ public:
             const wxSize &size = wxDefaultSize,
             long style = wxDEFAULT_DIALOG_STYLE,
             const wxString &name = wxDialogNameStr );
-    ~wxDialog() {}
-
-    void OnApply( wxCommandEvent &event );
-    void OnCancel( wxCommandEvent &event );
-    void OnOK( wxCommandEvent &event );
-    void OnPaint( wxPaintEvent& event );
-    void OnCloseWindow( wxCloseEvent& event );
-    /*
-       void OnCharHook( wxKeyEvent& event );
-     */
+    virtual ~wxDialog() {}
 
     virtual bool Show( bool show = TRUE );
     virtual int ShowModal();
@@ -71,12 +58,10 @@ public:
 
     bool       m_modalShowing;
 
-protected:
+private:
     // common part of all ctors
     void Init();
 
-private:
-    DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxDialog)
 };
 

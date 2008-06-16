@@ -1,0 +1,361 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxListItem</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlistitem"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlistevent.html#wxlistevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlistitemattr.html#wxlistitemattr"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxListItem</H2>
+<P>
+This class stores information about a wxListCtrl item or column.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/listctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxlistitemwxlistitem">wxListItem::wxListItem</A><BR>
+<A HREF="#wxlistitemclear">wxListItem::Clear</A><BR>
+<A HREF="#wxlistitemgetalign">wxListItem::GetAlign</A><BR>
+<A HREF="#wxlistitemgetbackgroundcolour">wxListItem::GetBackgroundColour</A><BR>
+<A HREF="#wxlistitemgetcolumn">wxListItem::GetColumn</A><BR>
+<A HREF="#wxlistitemgetdata">wxListItem::GetData</A><BR>
+<A HREF="#wxlistitemgetfont">wxListItem::GetFont</A><BR>
+<A HREF="#wxlistitemgetid">wxListItem::GetId</A><BR>
+<A HREF="#wxlistitemgetimage">wxListItem::GetImage</A><BR>
+<A HREF="#wxlistitemgetmask">wxListItem::GetMask</A><BR>
+<A HREF="#wxlistitemgetstate">wxListItem::GetState</A><BR>
+<A HREF="#wxlistitemgettext">wxListItem::GetText</A><BR>
+<A HREF="#wxlistitemgettextcolour">wxListItem::GetTextColour</A><BR>
+<A HREF="#wxlistitemgetwidth">wxListItem::GetWidth</A><BR>
+<A HREF="#wxlistitemsetalign">wxListItem::SetAlign</A><BR>
+<A HREF="#wxlistitemsetbackgroundcolour">wxListItem::SetBackgroundColour</A><BR>
+<A HREF="#wxlistitemsetcolumn">wxListItem::SetColumn</A><BR>
+<A HREF="#wxlistitemsetdata">wxListItem::SetData</A><BR>
+<A HREF="#wxlistitemsetfont">wxListItem::SetFont</A><BR>
+<A HREF="#wxlistitemsetid">wxListItem::SetId</A><BR>
+<A HREF="#wxlistitemsetimage">wxListItem::SetImage</A><BR>
+<A HREF="#wxlistitemsetmask">wxListItem::SetMask</A><BR>
+<A HREF="#wxlistitemsetstate">wxListItem::SetState</A><BR>
+<A HREF="#wxlistitemsetstatemask">wxListItem::SetStateMask</A><BR>
+<A HREF="#wxlistitemsettext">wxListItem::SetText</A><BR>
+<A HREF="#wxlistitemsettextcolour">wxListItem::SetTextColour</A><BR>
+<A HREF="#wxlistitemsetwidth">wxListItem::SetWidth</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlistitemwxlistitem"></A>
+<H3>wxListItem::wxListItem</H3>
+<P>
+<B></B> <B>wxListItem</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxlistitemclear"></A>
+<H3>wxListItem::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>()<P>
+Resets the item state to the default.<P>
+
+<HR>
+<A NAME="wxlistitemgetalign"></A>
+<H3>wxListItem::GetAlign</H3>
+<P>
+<B>wxListColumnFormat</B> <B>GetAlign</B>() <B>const</B><P>
+Returns the alignment for this item. Can be one of
+wxLIST_FORMAT_LEFT, wxLIST_FORMAT_RIGHT or wxLIST_FORMAT_CENTRE.<P>
+
+<HR>
+<A NAME="wxlistitemgetbackgroundcolour"></A>
+<H3>wxListItem::GetBackgroundColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetBackgroundColour</B>() <B>const</B><P>
+Returns the background colour for this item.<P>
+
+<HR>
+<A NAME="wxlistitemgetcolumn"></A>
+<H3>wxListItem::GetColumn</H3>
+<P>
+<B>int</B> <B>GetColumn</B>() <B>const</B><P>
+Returns the zero-based column; meaningful only in report mode.<P>
+
+<HR>
+<A NAME="wxlistitemgetdata"></A>
+<H3>wxListItem::GetData</H3>
+<P>
+<B>long</B> <B>GetData</B>() <B>const</B><P>
+Returns client data associated with the control. Please note that
+client data is associated with the item and not with subitems.<P>
+
+<HR>
+<A NAME="wxlistitemgetfont"></A>
+<H3>wxListItem::GetFont</H3>
+<P>
+<B><A HREF="wx_wxfont.html#wxfont">wxFont</A></B> </B> <B>GetFont</B>() <B>const</B><P>
+Returns the font used to display the item.<P>
+
+<HR>
+<A NAME="wxlistitemgetid"></A>
+<H3>wxListItem::GetId</H3>
+<P>
+<B>long</B> <B>GetId</B>() <B>const</B><P>
+Returns the zero-based item position.<P>
+
+<HR>
+<A NAME="wxlistitemgetimage"></A>
+<H3>wxListItem::GetImage</H3>
+<P>
+<B>int</B> <B>GetImage</B>() <B>const</B><P>
+Returns the zero-based index of the image
+associated with the item into the image list.<P>
+
+<HR>
+<A NAME="wxlistitemgetmask"></A>
+<H3>wxListItem::GetMask</H3>
+<P>
+<B>long</B> <B>GetMask</B>() <B>const</B><P>
+Returns a bit mask indicating which fields of the structure are valid;
+can be any combination of the following values:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_MASK_STATE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>GetState</B> is valid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_MASK_TEXT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>GetText</B> is valid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_MASK_IMAGE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>GetImage</B> is valid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_MASK_DATA
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>GetData</B> is valid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_MASK_WIDTH
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>GetWidth</B> is valid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_MASK_FORMAT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>GetFormat</B> is valid.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="wxlistitemgetstate"></A>
+<H3>wxListItem::GetState</H3>
+<P>
+<B>long</B> <B>GetState</B>() <B>const</B><P>
+Returns a bit field representing the state of the item. Can be any
+combination of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_DONTCARE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Don't care what the state is. Win32 only. 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_DROPHILITED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item is highlighted to receive a drop event. Win32 only. 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_FOCUSED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item has the focus.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_SELECTED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item is selected.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_CUT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item is in the cut state. Win32 only. 
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="wxlistitemgettext"></A>
+<H3>wxListItem::GetText</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetText</B>() <B>const</B><P>
+Returns the label/header text.<P>
+
+<HR>
+<A NAME="wxlistitemgettextcolour"></A>
+<H3>wxListItem::GetTextColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetTextColour</B>() <B>const</B><P>
+Returns the text colour.<P>
+
+<HR>
+<A NAME="wxlistitemgetwidth"></A>
+<H3>wxListItem::GetWidth</H3>
+<P>
+<B>int</B> <B>GetWidth</B>() <B>const</B><P>
+Meaningful only for column headers in report mode. Returns the column width.<P>
+
+<HR>
+<A NAME="wxlistitemsetalign"></A>
+<H3>wxListItem::SetAlign</H3>
+<P>
+<B>void</B> <B>SetAlign</B>(<B>wxListColumnFormat </B><I>align</I>)<P>
+Sets the alignment for the item. See also
+<A HREF="wx_wxlistitem.html#wxlistitemgetalign">wxListItem::GetAlign</A><P>
+
+<HR>
+<A NAME="wxlistitemsetbackgroundcolour"></A>
+<H3>wxListItem::SetBackgroundColour</H3>
+<P>
+<B>void</B> <B>SetBackgroundColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colBack</I>)<P>
+Sets the background colour for the item.<P>
+
+<HR>
+<A NAME="wxlistitemsetcolumn"></A>
+<H3>wxListItem::SetColumn</H3>
+<P>
+<B>void</B> <B>SetColumn</B>(<B>int </B><I>col</I>)<P>
+Sets the zero-based column. Meaningful only in report mode.<P>
+
+<HR>
+<A NAME="wxlistitemsetdata"></A>
+<H3>wxListItem::SetData</H3>
+<P>
+<B>void</B> <B>SetData</B>(<B>long </B><I>data</I>)<P>
+<B>void</B> <B>SetData</B>(<B>void* </B><I>data</I>)<P>
+Sets client data for the item. Please note that
+client data is associated with the item and not with subitems.<P>
+
+<HR>
+<A NAME="wxlistitemsetfont"></A>
+<H3>wxListItem::SetFont</H3>
+<P>
+<B>void</B> <B>SetFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the font for the item.<P>
+
+<HR>
+<A NAME="wxlistitemsetid"></A>
+<H3>wxListItem::SetId</H3>
+<P>
+<B>void</B> <B>SetId</B>(<B>long </B><I>id</I>)<P>
+Sets the zero-based item position.<P>
+
+<HR>
+<A NAME="wxlistitemsetimage"></A>
+<H3>wxListItem::SetImage</H3>
+<P>
+<B>void</B> <B>SetImage</B>(<B>int </B><I>image</I>)<P>
+Sets the zero-based index of the image associated with the item
+into the image list.<P>
+
+<HR>
+<A NAME="wxlistitemsetmask"></A>
+<H3>wxListItem::SetMask</H3>
+<P>
+<B>void</B> <B>SetMask</B>(<B>long </B><I>mask</I>)<P>
+Sets the mask of valid fields. See <A HREF="wx_wxlistitem.html#wxlistitemgetmask">wxListItem::GetMask</A>.<P>
+
+<HR>
+<A NAME="wxlistitemsetstate"></A>
+<H3>wxListItem::SetState</H3>
+<P>
+<B>void</B> <B>SetState</B>(<B>long </B><I>state</I>)<P>
+Sets the item state flags (note that the valid state flags are influenced
+by the value of the state mask, see
+<A HREF="wx_wxlistitem.html#wxlistitemsetstatemask">wxListItem::SetStateMask</A>).
+See <A HREF="wx_wxlistitem.html#wxlistitemgetstate">wxListItem::GetState</A> for valid flag
+values.<P>
+
+<HR>
+<A NAME="wxlistitemsetstatemask"></A>
+<H3>wxListItem::SetStateMask</H3>
+<P>
+<B>void</B> <B>SetStateMask</B>(<B>long </B><I>stateMask</I>)<P>
+Sets the bitmask that is used to determine which of the state flags
+are to be set. See also <A HREF="wx_wxlistitem.html#wxlistitemsetstate">wxListItem::SetState</A>.<P>
+
+<HR>
+<A NAME="wxlistitemsettext"></A>
+<H3>wxListItem::SetText</H3>
+<P>
+<B>void</B> <B>SetText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>)<P>
+Sets the text label for the item.<P>
+
+<HR>
+<A NAME="wxlistitemsettextcolour"></A>
+<H3>wxListItem::SetTextColour</H3>
+<P>
+<B>void</B> <B>SetTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colText</I>)<P>
+Sets the text colour for the item.<P>
+
+<HR>
+<A NAME="wxlistitemsetwidth"></A>
+<H3>wxListItem::SetWidth</H3>
+<P>
+<B>void</B> <B>SetWidth</B>(<B>int </B><I>width</I>)<P>
+Meaningful only for column headers in report mode. Sets the column width.<P>
+
+</FONT></BODY></HTML>

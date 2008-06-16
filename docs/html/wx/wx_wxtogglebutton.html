@@ -1,0 +1,133 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxToggleButton</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtogglebutton"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtipwindow.html#wxtipwindow"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtoolbar.html#wxtoolbar"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxToggleButton</H2>
+<P>
+wxToggleButton is a button that stays pressed when clicked by the user. In
+other words, it is similar to <A HREF="wx_wxcheckbox.html#wxcheckbox">wxCheckBox</A> in
+functionality but looks like a <A HREF="wx_wxbutton.html#wxbutton">wxButton</A>.<P>
+You can see wxToggleButton in action in the sixth page of the
+<A HREF="wx_samples.html#samplecontrols">controls</A> sample.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/tglbtn.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+There are no special styles for wxToggleButton.<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_TOGGLEBUTTON(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Handles a toggle button click event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcheckbox.html#wxcheckbox">wxCheckBox</A>, <A HREF="wx_wxbutton.html#wxbutton">wxButton</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxtogglebuttonconstr">wxToggleButton::wxToggleButton</A><BR>
+<A HREF="#wxtogglebuttondtor">wxToggleButton::~wxToggleButton</A><BR>
+<A HREF="#wxtogglebuttoncreate">wxToggleButton::Create</A><BR>
+<A HREF="#wxtogglebuttongetvalue">wxToggleButton::GetValue</A><BR>
+<A HREF="#wxtogglebuttonsetvalue">wxToggleButton::SetValue</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtogglebuttonconstr"></A>
+<H3>wxToggleButton::wxToggleButton</H3>
+<P>
+<B></B> <B>wxToggleButton</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxToggleButton</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long</B><I> style = 0</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>val</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "checkBox"</I>)<P>
+Constructor, creating and showing a toggle button.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be <TT>NULL</TT>.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Toggle button identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+Text to be displayed next to the toggle button.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Toggle button position. If the position (-1, -1) is specified then a default position is chosen.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Toggle button size. If the default size (-1, -1) is specified then a default size is chosen.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxtogglebutton.html#wxtogglebutton">wxToggleButton</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtogglebutton.html#wxtogglebuttoncreate">wxToggleButton::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+
+<HR>
+<A NAME="wxtogglebuttondtor"></A>
+<H3>wxToggleButton::~wxToggleButton</H3>
+<P>
+<B></B> <B>~wxToggleButton</B>()<P>
+Destructor, destroying the toggle button.<P>
+
+<HR>
+<A NAME="wxtogglebuttoncreate"></A>
+<H3>wxToggleButton::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long</B><I> style = 0</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>val</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "checkBox"</I>)<P>
+Creates the toggle button for two-step construction. See <A HREF="wx_wxtogglebutton.html#wxtogglebuttonconstr">wxToggleButton::wxToggleButton</A>
+for details.<P>
+
+<HR>
+<A NAME="wxtogglebuttongetvalue"></A>
+<H3>wxToggleButton::GetValue</H3>
+<P>
+<B>bool</B> <B>GetValue</B>() <B>const</B><P>
+Gets the state of the toggle button.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns <TT>true</TT> if it is pressed, <TT>false</TT> otherwise.<P>
+
+<HR>
+<A NAME="wxtogglebuttonsetvalue"></A>
+<H3>wxToggleButton::SetValue</H3>
+<P>
+<B>void</B> <B>SetValue</B>(<B>const bool</B><I> state</I>)<P>
+Sets the toggle button to the given state. This does not cause a
+<TT>EVT_TOGGLEBUTTON</TT> event to be emitted.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>state</I><UL><UL>
+If <TT>true</TT>, the button is pressed.</UL></UL>
+
+
+</FONT></BODY></HTML>

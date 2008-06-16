@@ -19,7 +19,7 @@ None
 
 \membersection{wxDisplay::wxDisplay}\label{wxdisplayctor}
 
-\func{}{wxDisplay}{\param{size\_t }{index = 0}}
+\func{}{wxDisplay}{\param{unsigned }{index = 0}}
 
 Constructor, setting up a wxDisplay instance with the specified display.
 
@@ -57,9 +57,23 @@ function that changed the video mode to the system
 default by using the system's 'scrn' resource.
 
 
+\membersection{wxDisplay::GetClientArea}\label{wxdisplaygetclientarea}
+
+\constfunc{wxRect }{GetClientArea}{\void}
+
+Returns the client area of the display. The client area is the part of the
+display available for the normal (non full screen) windows, usually it is the
+same as \helpref{GetGeometry}{wxdisplaygetgeometry} but it could be less if
+there is a taskbar (or equivalent) on this display.
+
+\wxheading{See also:}
+
+\helpref{wxClientDisplayRect}{wxclientdisplayrect}
+
+
 \membersection{wxDisplay::GetCount}\label{wxdisplaygetcount}
 
-\func{static size\_t}{GetCount}{\void}
+\func{static unsigned }{GetCount}{\void}
 
 Returns the number of connected displays.
 
@@ -82,8 +96,8 @@ Returns the bit depth of the display whose index was passed to the constructor.
 
 \func{static int}{GetFromPoint}{\param{const wxPoint\& }{pt}}
 
-Returns the index of the display on which the given point lies.  Returns -1 if
-the point is not on any connected display.
+Returns the index of the display on which the given point lies.  Returns 
+\texttt{wxNOT\_FOUND} if the point is not on any connected display.
 
 \wxheading{Parameters}
 
@@ -98,9 +112,7 @@ Returns the index of the display on which the given window lies.
 
 If the window is on more than one display it gets the display that overlaps the window the most.
 
-Returns -1 if the window is not on any connected display.
-
-Currently wxMSW only.
+Returns \texttt{wxNOT\_FOUND} if the window is not on any connected display.
 
 \wxheading{Parameters}
 
@@ -113,6 +125,10 @@ Currently wxMSW only.
 
 Returns the bounding rectangle of the display whose index was passed to the
 constructor.
+
+\wxheading{See also:}
+
+\helpref{GetClientArea}{wxdisplaygetclientarea}, \helpref{wxDisplaySize}{wxdisplaysize}
 
 
 \membersection{wxDisplay::GetModes}\label{wxdisplaygetmodes}

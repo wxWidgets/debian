@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Nov-1998
-// RCS-ID:      $Id: _config.i,v 1.11 2005/05/04 21:47:41 RD Exp $
+// RCS-ID:      $Id: _config.i 40964 2006-09-02 19:46:44Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -24,12 +24,14 @@
 
 %{
     static PyObject* __EnumerationHelper(bool flag, wxString& str, long index) {
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
         PyObject* ret = PyTuple_New(3);
         if (ret) {
             PyTuple_SET_ITEM(ret, 0, PyInt_FromLong(flag));
 	    PyTuple_SET_ITEM(ret, 1, wx2PyString(str));
             PyTuple_SET_ITEM(ret, 2, PyInt_FromLong(index));
         }
+        wxPyEndBlockThreads(blocked);
         return ret;
     }
 %}
@@ -85,12 +87,12 @@ public:
     };
 
 
-    %apply SWIGTYPE *DISOWN { wxConfigBase *config };
+    %disownarg( wxConfigBase *config );
     DocDeclStr(
         static wxConfigBase *, Set(wxConfigBase *config),
         "Sets the global config object (the one returned by Get) and returns a
 reference to the previous global config object.", "");
-    %clear wxConfigBase *config;
+    %cleardisown( wxConfigBase *config );
 
     DocDeclStr(
         static wxConfigBase *, Get(bool createOnDemand = true),
@@ -369,6 +371,17 @@ time)", "");
         long , GetStyle() const,
         "", "");
     
+    %property(AppName, GetAppName, SetAppName, doc="See `GetAppName` and `SetAppName`");
+    %property(EntryType, GetEntryType, doc="See `GetEntryType`");
+    %property(FirstEntry, GetFirstEntry, doc="See `GetFirstEntry`");
+    %property(FirstGroup, GetFirstGroup, doc="See `GetFirstGroup`");
+    %property(NextEntry, GetNextEntry, doc="See `GetNextEntry`");
+    %property(NextGroup, GetNextGroup, doc="See `GetNextGroup`");
+    %property(NumberOfEntries, GetNumberOfEntries, doc="See `GetNumberOfEntries`");
+    %property(NumberOfGroups, GetNumberOfGroups, doc="See `GetNumberOfGroups`");
+    %property(Path, GetPath, SetPath, doc="See `GetPath` and `SetPath`");
+    %property(Style, GetStyle, SetStyle, doc="See `GetStyle` and `SetStyle`");
+    %property(VendorName, GetVendorName, SetVendorName, doc="See `GetVendorName` and `SetVendorName`");
 };
 
 

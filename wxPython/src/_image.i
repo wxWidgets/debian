@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: _image.i,v 1.32.2.3 2006/03/09 00:47:33 RD Exp $
+// RCS-ID:      $Id: _image.i 49758 2007-11-09 17:45:04Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,13 @@ enum {
 };
 
 
+// Constants for wxImage::Scale() for determining the level of quality
+enum
+{
+    wxIMAGE_QUALITY_NORMAL = 0,
+    wxIMAGE_QUALITY_HIGH = 1
+};
+
 //---------------------------------------------------------------------------
 %newgroup
 
@@ -46,14 +53,19 @@ public:
     //bool LoadFile(wxImage* image, wxInputStream& stream);
     //bool SaveFile(wxImage* image, wxOutputStream& stream);
     //virtual int GetImageCount( wxInputStream& stream );
-    //bool CanRead( wxInputStream& stream );
 
     bool CanRead( const wxString& name );
-
+    %Rename(CanReadStream, bool, CanRead( wxInputStream& stream ));
+    
     void SetName(const wxString& name);
     void SetExtension(const wxString& extension);
     void SetType(long type);
     void SetMimeType(const wxString& mimetype);
+
+    %property(Extension, GetExtension, SetExtension, doc="See `GetExtension` and `SetExtension`");
+    %property(MimeType, GetMimeType, SetMimeType, doc="See `GetMimeType` and `SetMimeType`");
+    %property(Name, GetName, SetName, doc="See `GetName` and `SetName`");
+    %property(Type, GetType, SetType, doc="See `GetType` and `SetType`");
 };
 
 
@@ -83,8 +95,8 @@ the following methods::
 To activate your handler create an instance of it and pass it to
 `wx.Image_AddHandler`.  Be sure to call `SetName`, `SetType`, and
 `SetExtension` from your constructor.
-
 ", "");
+
 class wxPyImageHandler: public wxImageHandler {
 public:
     %pythonAppend wxPyImageHandler() "self._SetSelf(self)"
@@ -153,19 +165,6 @@ key value from a RGB tripple.", "");
 
 //---------------------------------------------------------------------------
 
-%{
-    typedef unsigned char* buffer;
-%}    
-
-%typemap(in) (buffer data, int DATASIZE)
-    { if (!PyArg_Parse($input, "t#", &$1, &$2)) SWIG_fail; }
-
-%typemap(in) (buffer alpha, int ALPHASIZE)
-    { if (!PyArg_Parse($input, "t#", &$1, &$2)) SWIG_fail; }
-
-//---------------------------------------------------------------------------
-
-
 DocStr(wxImage,
 "A platform-independent image class.  An image can be created from
 data, or using `wx.Bitmap.ConvertToImage`, or loaded from a file in a
@@ -210,6 +209,7 @@ public:
     DocCtorStr(
         wxImage_RGBValue(byte r=0, byte g=0, byte b=0),
         "Constructor.", "");
+    ~wxImage_RGBValue();
     byte red;  
     byte green;
     byte blue;
@@ -227,10 +227,12 @@ public:
     DocCtorStr(
         wxImage_HSVValue(double h=0.0, double s=0.0, double v=0.0),
         "Constructor.", "");
+    ~wxImage_HSVValue();
     double hue;  
     double saturation;
     double value;
 };
+
 
 
 class wxImage : public wxObject {
@@ -268,8 +270,8 @@ public:
         largest and most colourful one by the ICO handler.
 
 :see: `wx.ImageFromMime`, `wx.ImageFromStream`, `wx.ImageFromStreamMime`,
-      `wx.EmptyImage`, `wx.ImageFromBitmap`, `wx.ImageFromData`,
-      `wx.ImageFromDataWithAlpha`
+      `wx.EmptyImage`, `wx.ImageFromBitmap`, `wx.ImageFromBuffer`,
+      `wx.ImageFromData`, `wx.ImageFromDataWithAlpha`
 ");
     
     ~wxImage();
@@ -392,7 +394,7 @@ alpha data must be width*height bytes.", "
 
     // TODO: wxImage( char** xpmData );
 
-    // Turn it back on again
+    // Turn the typemap back on again
     %typemap(out) wxImage* { $result = wxPyMake_wxObject($1, $owner); }
 
 
@@ -407,19 +409,60 @@ initialized to black. Otherwise, the image data will be uninitialized.", "");
     
 
     DocDeclStr(
-        wxImage , Scale( int width, int height ),
+        wxImage , Scale( int width, int height, int quality = wxIMAGE_QUALITY_NORMAL ),
         "Returns a scaled version of the image. This is also useful for scaling
 bitmaps in general as the only other way to scale bitmaps is to blit a
-`wx.MemoryDC` into another `wx.MemoryDC`.", "
+`wx.MemoryDC` into another `wx.MemoryDC`.  The ``quality`` parameter
+specifies what method to use for resampling the image.  It can be
+either wx.IMAGE_QUALITY_NORMAL, which uses the normal default scaling
+method of pixel replication, or wx.IMAGE_QUALITY_HIGH which uses
+bicubic and box averaging resampling methods for upsampling and
+downsampling respectively.", "
+
+It should be noted that although using wx.IMAGE_QUALITY_HIGH produces
+much nicer looking results it is a slower method.  Downsampling will
+use the box averaging method which seems to operate very fast.  If you
+are upsampling larger images using this method you will most likely
+notice that it is a bit slower and in extreme cases it will be quite
+substantially slower as the bicubic algorithm has to process a lot of
+data.
+
+It should also be noted that the high quality scaling may not work as
+expected when using a single mask colour for transparency, as the
+scaling will blur the image and will therefore remove the mask
+partially. Using the alpha channel will work.
 
 :see: `Rescale`");
+
+    
+    wxImage ResampleBox(int width, int height) const;
+    wxImage ResampleBicubic(int width, int height) const;
+
+    DocDeclStr(
+        wxImage , Blur(int radius),
+        "Blurs the image in both horizontal and vertical directions by the
+specified pixel ``radius``. This should not be used when using a
+single mask colour for transparency.", "");
+    
+    DocDeclStr(
+        wxImage , BlurHorizontal(int radius),
+        "Blurs the image in the horizontal direction only. This should not be
+used when using a single mask colour for transparency.
+", "");
+    
+    DocDeclStr(
+        wxImage , BlurVertical(int radius),
+        "Blurs the image in the vertical direction only. This should not be
+used when using a single mask colour for transparency.", "");
+    
+
     
     DocDeclStr(
         wxImage , ShrinkBy( int xFactor , int yFactor ) const ,
         "Return a version of the image scaled smaller by the given factors.", "");
     
     DocDeclStr(
-        wxImage& , Rescale(int width, int height),
+        wxImage& , Rescale(int width, int height, int quality = wxIMAGE_QUALITY_NORMAL),
         "Changes the size of the image in-place by scaling it: after a call to
 this function, the image will have the given width and height.
 
@@ -602,6 +645,17 @@ string.", "",
         bool , SaveFile( const wxString& name, const wxString& mimetype ),
         "Saves an image in the named file.", "",
         SaveMimeFile);
+
+    DocDeclStrName(
+        bool , SaveFile( wxOutputStream& stream, int type ),
+        "Saves an image in the named file.", "",
+        SaveStream);
+
+    
+    DocDeclStrName(
+        bool , SaveFile( wxOutputStream& stream, const wxString& mimetype ),
+        "Saves an image in the named file.", "",
+        SaveMimeStream);
     
 
     DocDeclStrName(
@@ -628,8 +682,9 @@ object, using a MIME type string to specify the image file format.", "",
     
 
     DocDeclStr(
-        bool , Ok(),
+        bool , IsOk(),
         "Returns true if image data is present.", "");
+    %pythoncode { Ok = IsOk }
     
     DocDeclStr(
         int , GetWidth(),
@@ -779,7 +834,7 @@ data must be width*height.", "");
 
 
         
-        DocStr(GetDataBuffer,
+        DocStr(GetAlphaBuffer,
                "Returns a writable Python buffer object that is pointing at the Alpha
 data buffer inside the wx.Image. You need to ensure that you do not
 use this buffer object after the image has been destroyed.", "");
@@ -793,7 +848,7 @@ use this buffer object after the image has been destroyed.", "");
         }
 
         
-        DocStr(SetDataBuffer,
+        DocStr(SetAlphaBuffer,
                "Sets the internal image alpha pointer to point at a Python buffer
 object.  This can save making an extra copy of the data but you must
 ensure that the buffer object lives as long as the wx.Image does.", "");
@@ -872,6 +927,14 @@ indicates the orientation.", "");
                         byte r2, byte g2, byte b2 ),
         "Replaces the colour specified by ``(r1,g1,b1)`` by the colour
 ``(r2,g2,b2)``.", "");
+
+    DocDeclStr(
+        wxImage , ConvertToGreyscale( double lr = 0.299,
+                                      double lg = 0.587,
+                                      double lb = 0.114 ) const,
+        "Convert to greyscale image. Uses the luminance component (Y) of the
+image.  The luma value (YUV) is calculated using (R * lr) + (G * lg) + (B * lb),
+defaults to ITU-T BT.601", "");
     
 
     DocDeclStr(
@@ -987,9 +1050,192 @@ range -1.0..1.0 where -1.0 is -360 degrees and 1.0 is 360 degrees", "");
         "Converts a color in HSV color space to RGB color space.", "");
     
 
-    %pythoncode { def __nonzero__(self): return self.Ok() }
+    %pythoncode { def __nonzero__(self): return self.IsOk() }
+
+
+    DocStr(AdjustChannels,
+           "This function muliplies all 4 channels (red, green, blue, alpha) with
+a factor (around 1.0). Useful for gamma correction, colour correction
+and to add a certain amount of transparency to a image (fade in fade
+out effects). If factor_alpha is given but the original image has no
+alpha channel then a alpha channel will be added.", "");
+    %extend {
+        wxImage AdjustChannels(double factor_red,
+                               double factor_green,
+                               double factor_blue,
+                               double factor_alpha=1.0)
+        {
+            wxCHECK_MSG( self->Ok(), wxNullImage, wxT("invalid image") );
+
+            wxImage dst_image( self->GetWidth(), self->GetHeight(), false );
+
+            unsigned rgblen =   3 * self->GetWidth() * self->GetHeight();
+            unsigned alphalen = self->GetWidth() * self->GetHeight();
+            unsigned char* src_data =  self->GetData();
+            unsigned char* src_alpha = self->GetAlpha();
+            unsigned char* dst_data =  dst_image.GetData();
+            unsigned char* dst_alpha = NULL;
+
+            wxCHECK_MSG( dst_data, wxNullImage, wxT("unable to create image") );
+
+            // adjust rgb
+            if ( factor_red == 1.0 && factor_green == 1.0 && factor_blue == 1.0)
+            {
+                // nothing to do for RGB
+                memcpy(dst_data, src_data, rgblen);
+            }
+            else
+            {
+                // rgb pixel for pixel
+                for ( unsigned i = 0; i < rgblen; i= i + 3 )
+                {
+                    dst_data[i] =     (unsigned char) wxMin( 255, (int) (factor_red * src_data[i]) );
+                    dst_data[i + 1] = (unsigned char) wxMin( 255, (int) (factor_green * src_data[i + 1]) );
+                    dst_data[i + 2] = (unsigned char) wxMin( 255, (int) (factor_blue * src_data[i + 2]) );
+                }
+            }
+    
+            // adjust the mask colour
+            if ( self->HasMask() )
+            {
+                dst_image.SetMaskColour((unsigned char) wxMin( 255, (int) (factor_red * self->GetMaskRed() ) ),
+                                        (unsigned char) wxMin( 255, (int) (factor_green * self->GetMaskGreen() ) ),
+                                        (unsigned char) wxMin( 255, (int) (factor_blue * self->GetMaskBlue() ) ) );
+            }
+    
+            // adjust the alpha channel
+            if ( src_alpha )
+            {
+                // source image already has alpha information
+                dst_image.SetAlpha(); // create an empty alpha channel (not initialized)
+                dst_alpha = dst_image.GetAlpha();
+
+                wxCHECK_MSG( dst_alpha, wxNullImage, wxT("unable to create alpha data") );
+
+                if ( factor_alpha == 1.0)
+                {
+                    // no need to adjust
+                    memcpy(dst_alpha, src_alpha, alphalen);
+                }
+                else
+                {
+                    // alpha value for alpha value
+                    for ( unsigned i = 0; i < alphalen; ++i )
+                    {
+                        dst_alpha[i] = (unsigned char) wxMin( 255, (int) (factor_alpha * src_alpha[i]) );
+                    }
+                }
+            }
+            else if ( factor_alpha != 1.0 )
+            {
+                // no alpha yet but we want to adjust -> create
+                dst_image.SetAlpha(); // create an empty alpha channel (not initialized)
+                dst_alpha = dst_image.GetAlpha();
+        
+                wxCHECK_MSG( dst_alpha, wxNullImage, wxT("unable to create alpha data") );
+        
+                for ( unsigned i = 0; i < alphalen; ++i )
+                {
+                    dst_alpha[i] = (unsigned char) wxMin( 255, (int) (factor_alpha * 255) );
+                }
+            }
+
+            // do we have an alpha channel and a mask in the new image?
+            if ( dst_alpha && dst_image.HasMask() )
+            {
+                // make the mask transparent honoring the alpha channel
+                const unsigned char mr = dst_image.GetMaskRed();
+                const unsigned char mg = dst_image.GetMaskGreen();
+                const unsigned char mb = dst_image.GetMaskBlue();
+
+                for ( unsigned i = 0; i < alphalen; ++i )
+                {
+                    int n = i * 3;
+                    dst_alpha[i] = ( dst_data[n] == mr && dst_data[n + 1] == mg && dst_data[n + 2] == mb )
+                        ? wxIMAGE_ALPHA_TRANSPARENT
+                        : dst_alpha[i];
+                }
+
+                // remove the now mask
+                dst_image.SetMask(false);
+            }
+
+            return dst_image;
+        }
+    }
+
+    
+    %property(AlphaBuffer, GetAlphaBuffer, SetAlphaBuffer, doc="See `GetAlphaBuffer` and `SetAlphaBuffer`");
+    %property(AlphaData, GetAlphaData, SetAlphaData, doc="See `GetAlphaData` and `SetAlphaData`");
+    %property(Data, GetData, SetData, doc="See `GetData` and `SetData`");
+    %property(DataBuffer, GetDataBuffer, SetDataBuffer, doc="See `GetDataBuffer` and `SetDataBuffer`");
+    %property(Height, GetHeight, doc="See `GetHeight`");
+    %property(MaskBlue, GetMaskBlue, doc="See `GetMaskBlue`");
+    %property(MaskGreen, GetMaskGreen, doc="See `GetMaskGreen`");
+    %property(MaskRed, GetMaskRed, doc="See `GetMaskRed`");
+    %property(Width, GetWidth, doc="See `GetWidth`");
+    
 };
 
+
+
+// Make an image from buffer objects.  Not that this is here instead of in the
+// wxImage class (as a constructor) because there is already another one with
+// the exact same signature, so there woudl be ambiguities in the generated
+// C++.  Doing it as an independent factory function like this accomplishes
+// the same thing however.
+%newobject _ImageFromBuffer;
+%inline %{
+    wxImage* _ImageFromBuffer(int width, int height,
+                              buffer data, int DATASIZE,
+                              buffer alpha=NULL, int ALPHASIZE=0)
+    {
+        if (DATASIZE != width*height*3) {
+            wxPyErr_SetString(PyExc_ValueError, "Invalid data buffer size.");
+            return NULL;
+        }
+        if (alpha != NULL) {
+            if (ALPHASIZE != width*height) {
+                wxPyErr_SetString(PyExc_ValueError, "Invalid alpha buffer size.");
+                return NULL;
+            }
+            return new wxImage(width, height, data, alpha, true);
+        }                
+        return new wxImage(width, height, data, true);
+    }                              
+%}
+
+%pythoncode {
+def ImageFromBuffer(width, height, dataBuffer, alphaBuffer=None):
+    """
+    Creates a `wx.Image` from the data in dataBuffer.  The dataBuffer
+    parameter must be a Python object that implements the buffer interface,
+    such as a string, array, etc.  The dataBuffer object is expected to
+    contain a series of RGB bytes and be width*height*3 bytes long.  A buffer
+    object can optionally be supplied for the image's alpha channel data, and
+    it is expected to be width*height bytes long.
+
+    The wx.Image will be created with its data and alpha pointers initialized
+    to the memory address pointed to by the buffer objects, thus saving the
+    time needed to copy the image data from the buffer object to the wx.Image.
+    While this has advantages, it also has the shoot-yourself-in-the-foot
+    risks associated with sharing a C pointer between two objects.
+
+    To help alleviate the risk a reference to the data and alpha buffer
+    objects are kept with the wx.Image, so that they won't get deleted until
+    after the wx.Image is deleted.  However please be aware that it is not
+    guaranteed that an object won't move its memory buffer to a new location
+    when it needs to resize its contents.  If that happens then the wx.Image
+    will end up referring to an invalid memory location and could cause the
+    application to crash.  Therefore care should be taken to not manipulate
+    the objects used for the data and alpha buffers in a way that would cause
+    them to change size.
+    """
+    image = _core_._ImageFromBuffer(width, height, dataBuffer, alphaBuffer)
+    image._buffer = dataBuffer
+    image._alpha = alphaBuffer
+    return image
+}
 
 
 ///void wxInitAllImageHandlers();
@@ -1005,7 +1251,6 @@ range -1.0..1.0 where -1.0 is -360 degrees and 1.0 is 360 degrees", "");
 
 
 
-// See also wxPy_ReinitStockObjects in helpers.cpp
 %immutable;
 const wxImage    wxNullImage;
 %mutable;
@@ -1144,7 +1389,12 @@ public:
 };
 
 
-#if wxUSE_IFF
+
+#if 0
+%{
+#include <wx/imagiff.h>
+%}
+
 DocStr(wxIFFHandler,
 "A `wx.ImageHandler` for IFF image files.", "");
 class wxIFFHandler : public wxImageHandler {
@@ -1152,6 +1402,19 @@ public:
     wxIFFHandler();
 };
 #endif
+
+
+%{
+#include <wx/imagtga.h>
+%}
+
+DocStr(wxTGAHandler,
+"A `wx.ImageHandler` for TGA image files.", "");
+class wxTGAHandler : public wxImageHandler {
+public:
+    wxTGAHandler();
+};
+
 
 //---------------------------------------------------------------------------
 

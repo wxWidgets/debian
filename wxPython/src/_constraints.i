@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-July-1997
-// RCS-ID:      $Id: _constraints.i,v 1.5 2004/05/12 00:17:40 RD Exp $
+// RCS-ID:      $Id: _constraints.i 41057 2006-09-08 01:08:36Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -231,7 +231,18 @@ button label.", "");
         int , GetEdge(wxEdge which, wxWindow *thisWin, wxWindow *other) const,
         "Get the value of this edge or dimension, or if this\n"
         "is not determinable, -1.", "");
+
+    %property(Done, GetDone, SetDone, doc="See `GetDone` and `SetDone`");
+    %property(Margin, GetMargin, SetMargin, doc="See `GetMargin` and `SetMargin`");
+    %property(MyEdge, GetMyEdge, doc="See `GetMyEdge`");
+    %property(OtherEdge, GetOtherEdge, doc="See `GetOtherEdge`");
+    %property(OtherWindow, GetOtherWindow, doc="See `GetOtherWindow`");
+    %property(Percent, GetPercent, doc="See `GetPercent`");
+    %property(Relationship, GetRelationship, SetRelationship, doc="See `GetRelationship` and `SetRelationship`");
+    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
+    
 };
+
 
 DocStr(wxLayoutConstraints,
 "**Note:** constraints are now deprecated and you should use sizers
@@ -289,6 +300,8 @@ public:
     DocCtorStr(
         wxLayoutConstraints(),
         "", "");
+
+    ~wxLayoutConstraints();
     
     DocDeclA(
         bool, SatisfyConstraints(wxWindow *win, int *OUTPUT),

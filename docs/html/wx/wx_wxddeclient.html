@@ -1,0 +1,79 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDDEClient</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxddeclient"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdcclipper.html#wxdcclipper"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxddeconnection.html#wxddeconnection"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDDEClient</H2>
+<P>
+A wxDDEClient object represents the client part of a client-server DDE
+(Dynamic Data Exchange) conversation.<P>
+To create a client which can communicate with a suitable server,
+you need to derive a class from wxDDEConnection and another from wxDDEClient.
+The custom wxDDEConnection class will intercept communications in
+a 'conversation' with a server, and the custom wxDDEServer is required
+so that a user-overridden <A HREF="wx_wxddeclient.html#wxddeclientonmakeconnection">wxDDEClient::OnMakeConnection</A> member can return
+a wxDDEConnection of the required class, when a connection is made.<P>
+This DDE-based implementation is
+available on Windows only, but a platform-independent, socket-based version
+of this API is available using <A HREF="wx_wxtcpclient.html#wxtcpclient">wxTCPClient</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxClientBase<BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dde.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxddeserver.html#wxddeserver">wxDDEServer</A>, <A HREF="wx_wxddeconnection.html#wxddeconnection">wxDDEConnection</A>, 
+<A HREF="wx_ipcoverview.html#ipcoverview">Interprocess communications overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxddeclientctor">wxDDEClient::wxDDEClient</A><BR>
+<A HREF="#wxddeclientmakeconnection">wxDDEClient::MakeConnection</A><BR>
+<A HREF="#wxddeclientonmakeconnection">wxDDEClient::OnMakeConnection</A><BR>
+<A HREF="#wxddeclientvalidhost">wxDDEClient::ValidHost</A><BR>
+<P>
+
+<HR>
+<A NAME="wxddeclientctor"></A>
+<H3>wxDDEClient::wxDDEClient</H3>
+<P>
+<B></B> <B>wxDDEClient</B>()<P>
+Constructs a client object.<P>
+
+<HR>
+<A NAME="wxddeclientmakeconnection"></A>
+<H3>wxDDEClient::MakeConnection</H3>
+<P>
+<B>wxConnectionBase *</B> <B>MakeConnection</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>host</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>service</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>)<P>
+Tries to make a connection with a server specified by the host
+(machine name under UNIX, ignored under Windows), service name (must
+contain an integer port number under UNIX), and topic string. If the
+server allows a connection, a wxDDEConnection object will be returned.
+The type of wxDDEConnection returned can be altered by overriding
+the <A HREF="wx_wxddeclient.html#wxddeclientonmakeconnection">wxDDEClient::OnMakeConnection</A> member to return your own
+derived connection object.<P>
+
+<HR>
+<A NAME="wxddeclientonmakeconnection"></A>
+<H3>wxDDEClient::OnMakeConnection</H3>
+<P>
+<B>wxConnectionBase *</B> <B>OnMakeConnection</B>()<P>
+The type of <A HREF="wx_wxddeconnection.html#wxddeconnection">wxDDEConnection</A> returned from a <A HREF="wx_wxddeclient.html#wxddeclientmakeconnection">wxDDEClient::MakeConnection</A> call can
+be altered by deriving the <B>OnMakeConnection</B> member to return your
+own derived connection object. By default, a wxDDEConnection
+object is returned.<P>
+The advantage of deriving your own connection class is that it will
+enable you to intercept messages initiated by the server, such
+as <A HREF="wx_wxconnection.html#wxconnectiononadvise">wxDDEConnection::OnAdvise</A>. You may also want to
+store application-specific data in instances of the new class.<P>
+
+<HR>
+<A NAME="wxddeclientvalidhost"></A>
+<H3>wxDDEClient::ValidHost</H3>
+<P>
+<B>bool</B> <B>ValidHost</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>host</I>)<P>
+Returns <TT>true</TT> if this is a valid host name, <TT>false</TT> otherwise. This always
+returns <TT>true</TT> under MS Windows.<P>
+
+</FONT></BODY></HTML>

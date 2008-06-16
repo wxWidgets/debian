@@ -1,17 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        msw/statbr95.cpp
+// Name:        src/msw/statbr95.cpp
 // Purpose:     native implementation of wxStatusBar
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.04.98
-// RCS-ID:      $Id: statbr95.cpp,v 1.61.2.4 2006/01/17 19:56:36 JS Exp $
+// RCS-ID:      $Id: statbr95.cpp 48670 2007-09-14 07:15:51Z JS $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "statbr95.h"
-#endif
 
 // for compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -20,25 +16,21 @@
   #pragma hdrstop
 #endif
 
-#ifndef WX_PRECOMP
-  #include "wx/setup.h"
-  #include "wx/frame.h"
-  #include "wx/settings.h"
-  #include "wx/dcclient.h"
-#endif
+#if wxUSE_STATUSBAR && wxUSE_NATIVE_STATUSBAR
 
-#if wxUSE_STATUSBAR && defined(__WIN95__) && wxUSE_NATIVE_STATUSBAR
-
-#include "wx/intl.h"
-#include "wx/log.h"
 #include "wx/statusbr.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/msw/wrapcctl.h" // include <commctrl.h> "properly"
+    #include "wx/frame.h"
+    #include "wx/settings.h"
+    #include "wx/dcclient.h"
+    #include "wx/intl.h"
+    #include "wx/log.h"
+#endif
 
 #include "wx/msw/private.h"
 #include <windowsx.h>
-
-#if defined(__WIN95__) && !(defined(__GNUWIN32_OLD__) && !defined(__CYGWIN10__))
-    #include <commctrl.h>
-#endif
 
 #if wxUSE_UXTHEME
     #include "wx/msw/uxtheme.h"
@@ -75,6 +67,9 @@ bool wxStatusBar95::Create(wxWindow *parent,
                            const wxString& name)
 {
     wxCHECK_MSG( parent, false, wxT("status bar must have a parent") );
+
+    // Avoid giving the status bar a themed window
+    style = (style & ~wxBORDER_MASK) | wxBORDER_NONE;
 
     SetName(name);
     SetWindowStyleFlag(style);
@@ -196,6 +191,12 @@ void wxStatusBar95::SetStatusText(const wxString& strText, int nField)
 {
     wxCHECK_RET( (nField >= 0) && (nField < m_nFields),
                  _T("invalid statusbar field index") );
+
+    if ( strText == GetStatusText(nField) )
+    {
+       // don't call StatusBar_SetText() to avoid flicker
+       return;
+    }
 
     // Get field style, if any
     int style;
@@ -413,5 +414,4 @@ wxStatusBar95::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
     return wxStatusBarBase::MSWWindowProc(nMsg, wParam, lParam);
 }
 
-#endif // __WIN95__ && wxUSE_NATIVE_STATUSBAR
-
+#endif // wxUSE_STATUSBAR && wxUSE_NATIVE_STATUSBAR

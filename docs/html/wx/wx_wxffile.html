@@ -1,0 +1,334 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFFile</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxffile"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxevthandler.html#wxevthandler"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxffileinputstream.html#wxffileinputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFFile</H2>
+<P>
+wxFFile implements buffered file I/O. This is a very small class designed to
+minimize the overhead of using it - in fact, there is hardly any overhead at
+all, but using it brings you automatic error checking and hides differences
+between platforms and compilers. It wraps inside it a <TT>FILE *</TT> handle used
+by standard C IO library (also known as <TT>stdio</TT>).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/ffile.h&gt;<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxFromStart</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Count offset from the start of the file
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxFromCurrent</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Count offset from the current position of the file pointer
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxFromEnd</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Count offset from the end of the file (backwards)
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxffilector">wxFFile::wxFFile</A><BR>
+<A HREF="#wxffiledtor">wxFFile::~wxFFile</A><BR>
+<A HREF="#wxffileattach">wxFFile::Attach</A><BR>
+<A HREF="#wxffileclose">wxFFile::Close</A><BR>
+<A HREF="#wxffiledetach">wxFFile::Detach</A><BR>
+<A HREF="#wxffilefp">wxFFile::fp</A><BR>
+<A HREF="#wxffileeof">wxFFile::Eof</A><BR>
+<A HREF="#wxffileerror">wxFFile::Error</A><BR>
+<A HREF="#wxffileflush">wxFFile::Flush</A><BR>
+<A HREF="#wxffilegetfilekind">wxFFile::GetKind</A><BR>
+<A HREF="#wxffileisopened">wxFFile::IsOpened</A><BR>
+<A HREF="#wxffilelength">wxFFile::Length</A><BR>
+<A HREF="#wxffileopen">wxFFile::Open</A><BR>
+<A HREF="#wxffileread">wxFFile::Read</A><BR>
+<A HREF="#wxffilereadall">wxFFile::ReadAll</A><BR>
+<A HREF="#wxffileseek">wxFFile::Seek</A><BR>
+<A HREF="#wxffileseekend">wxFFile::SeekEnd</A><BR>
+<A HREF="#wxffiletell">wxFFile::Tell</A><BR>
+<A HREF="#wxffilewrite">wxFFile::Write</A><BR>
+<A HREF="#wxffilewrites">wxFFile::Write</A><BR>
+<P>
+
+<HR>
+<A NAME="wxffilector"></A>
+<H3>wxFFile::wxFFile</H3>
+<P>
+<B></B> <B>wxFFile</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxFFile</B>(<B>const char*</B><I> filename</I>, <B>const char*</B><I> mode = "r"</I>)<P>
+Opens a file with the given mode. As there is no way to return whether the
+operation was successful or not from the constructor you should test the
+return value of <A HREF="wx_wxffile.html#wxffileisopened">IsOpened</A> to check that it didn't
+fail.<P>
+<B></B> <B>wxFFile</B>(<B>FILE*</B><I> fp</I>)<P>
+Opens a file with the given file pointer, which has already been opened.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>filename</I><UL><UL>
+The filename.</UL></UL>
+<P>
+<I>mode</I><UL><UL>
+The mode in which to open the file using standard C strings.
+Note that you should use <TT>"b"</TT> flag if you use binary files under Windows
+or the results might be unexpected due to automatic newline conversion done
+for the text files.</UL></UL>
+<P>
+<I>fp</I><UL><UL>
+An existing file descriptor, such as stderr.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxffiledtor"></A>
+<H3>wxFFile::~wxFFile</H3>
+<P>
+<B></B> <B>~wxFFile</B>()<P>
+Destructor will close the file.<P>
+NB: it is not virtual so you should <I>not</I> derive from wxFFile!<P>
+
+
+<HR>
+<A NAME="wxffileattach"></A>
+<H3>wxFFile::Attach</H3>
+<P>
+<B>void</B> <B>Attach</B>(<B>FILE*</B><I> fp</I>)<P>
+Attaches an existing file pointer to the wxFFile object.<P>
+The descriptor should be already opened and it will be closed by wxFFile
+object.<P>
+
+
+<HR>
+<A NAME="wxffileclose"></A>
+<H3>wxFFile::Close</H3>
+<P>
+<B>bool</B> <B>Close</B>()<P>
+Closes the file and returns <TT>true</TT> on success.<P>
+
+
+<HR>
+<A NAME="wxffiledetach"></A>
+<H3>wxFFile::Detach</H3>
+<P>
+<B>void</B> <B>Detach</B>()<P>
+Get back a file pointer from wxFFile object -- the caller is responsible for closing the file if this
+descriptor is opened. <A HREF="wx_wxffile.html#wxffileisopened">IsOpened()</A> will return <TT>false</TT> after call to Detach().<P>
+
+
+<HR>
+<A NAME="wxffilefp"></A>
+<H3>wxFFile::fp</H3>
+<P>
+<B>FILE *</B> <B>fp</B>() <B>const</B><P>
+Returns the file pointer associated with the file.<P>
+
+
+<HR>
+<A NAME="wxffileeof"></A>
+<H3>wxFFile::Eof</H3>
+<P>
+<B>bool</B> <B>Eof</B>() <B>const</B><P>
+Returns <TT>true</TT> if the an attempt has been made to read <I>past</I>
+the end of the file. <P>
+Note that the behaviour of the file descriptor based class
+<A HREF="wx_wxfile.html#wxfile">wxFile</A> is different as <A HREF="wx_wxfile.html#wxfileeof">wxFile::Eof</A>
+will return <TT>true</TT> here as soon as the last byte of the file has been
+read.<P>
+Also note that this method may only be called for opened files and may crash if
+the file is not opened.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxffile.html#wxffileisopened">IsOpened</A><P>
+
+
+<HR>
+<A NAME="wxffileerror"></A>
+<H3>wxFFile::Error</H3>
+<P>
+Returns <TT>true</TT> if an error has occurred on this file, similar to the standard
+<TT>ferror()</TT> function.<P>
+Please note that this method may only be called for opened files and may crash
+if the file is not opened.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxffile.html#wxffileisopened">IsOpened</A><P>
+
+
+<HR>
+<A NAME="wxffileflush"></A>
+<H3>wxFFile::Flush</H3>
+<P>
+<B>bool</B> <B>Flush</B>()<P>
+Flushes the file and returns <TT>true</TT> on success.<P>
+
+
+<HR>
+<A NAME="wxffilegetfilekind"></A>
+<H3>wxFFile::GetKind</H3>
+<P>
+<B>wxFileKind</B> <B>GetKind</B>() <B>const</B><P>
+Returns the type of the file. Possible return values are:<P>
+<PRE>
+enum wxFileKind
+{
+  wxFILE_KIND_UNKNOWN,
+  wxFILE_KIND_DISK,     // a file supporting seeking to arbitrary offsets
+  wxFILE_KIND_TERMINAL, // a tty
+  wxFILE_KIND_PIPE      // a pipe
+};
+
+</PRE>
+
+
+<HR>
+<A NAME="wxffileisopened"></A>
+<H3>wxFFile::IsOpened</H3>
+<P>
+<B>bool</B> <B>IsOpened</B>() <B>const</B><P>
+Returns <TT>true</TT> if the file is opened. Most of the methods of this class may only
+be used for an opened file.<P>
+
+
+<HR>
+<A NAME="wxffilelength"></A>
+<H3>wxFFile::Length</H3>
+<P>
+<B>wxFileOffset</B> <B>Length</B>() <B>const</B><P>
+Returns the length of the file.<P>
+
+
+<HR>
+<A NAME="wxffileopen"></A>
+<H3>wxFFile::Open</H3>
+<P>
+<B>bool</B> <B>Open</B>(<B>const char*</B><I> filename</I>, <B>const char*</B><I> mode = "r"</I>)<P>
+Opens the file, returning <TT>true</TT> if successful.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>filename</I><UL><UL>
+The filename.</UL></UL>
+<P>
+<I>mode</I><UL><UL>
+The mode in which to open the file.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxffileread"></A>
+<H3>wxFFile::Read</H3>
+<P>
+<B>size_t</B> <B>Read</B>(<B>void*</B><I> buffer</I>, <B>size_t</B><I> count</I>)<P>
+Reads the specified number of bytes into a buffer, returning the actual number read.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>buffer</I><UL><UL>
+A buffer to receive the data.</UL></UL>
+<P>
+<I>count</I><UL><UL>
+The number of bytes to read.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The number of bytes read.<P>
+
+
+<HR>
+<A NAME="wxffilereadall"></A>
+<H3>wxFFile::ReadAll</H3>
+<P>
+<B>bool</B> <B>ReadAll</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A> *</B></B><I> str</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B></B><I> conv = wxConvUTF8</I>)<P>
+Reads the entire contents of the file into a string.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>str</I><UL><UL>
+String to read data into.</UL></UL>
+<P>
+<I>conv</I><UL><UL>
+Conversion object to use in Unicode build; by default supposes
+that file contents is encoded in UTF-8.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if file was read successfully, <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxffileseek"></A>
+<H3>wxFFile::Seek</H3>
+<P>
+<B>bool</B> <B>Seek</B>(<B>wxFileOffset </B><I>ofs</I>, <B>wxSeekMode </B><I>mode = wxFromStart</I>)<P>
+Seeks to the specified position and returns <TT>true</TT> on success.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>ofs</I><UL><UL>
+Offset to seek to.</UL></UL>
+<P>
+<I>mode</I><UL><UL>
+One of <B>wxFromStart</B>, <B>wxFromEnd</B>, <B>wxFromCurrent</B>.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxffileseekend"></A>
+<H3>wxFFile::SeekEnd</H3>
+<P>
+<B>bool</B> <B>SeekEnd</B>(<B>wxFileOffset </B><I>ofs = 0</I>)<P>
+Moves the file pointer to the specified number of bytes before the end of the file
+and returns <TT>true</TT> on success.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>ofs</I><UL><UL>
+Number of bytes before the end of the file.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxffiletell"></A>
+<H3>wxFFile::Tell</H3>
+<P>
+<B>wxFileOffset</B> <B>Tell</B>() <B>const</B><P>
+Returns the current position.<P>
+
+
+<HR>
+<A NAME="wxffilewrite"></A>
+<H3>wxFFile::Write</H3>
+<P>
+<B>size_t</B> <B>Write</B>(<B>const void*</B><I> buffer</I>, <B>size_t</B><I> count</I>)<P>
+Writes the specified number of bytes from a buffer.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>buffer</I><UL><UL>
+A buffer containing the data.</UL></UL>
+<P>
+<I>count</I><UL><UL>
+The number of bytes to write.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Number of bytes written.<P>
+
+
+<HR>
+<A NAME="wxffilewrites"></A>
+<H3>wxFFile::Write</H3>
+<P>
+<B>bool</B> <B>Write</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>s</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B></B><I> conv = wxConvUTF8</I>)<P>
+Writes the contents of the string to the file, returns <TT>true</TT> on success.<P>
+The second argument is only meaningful in Unicode build of wxWidgets when
+<I>conv</I> is used to convert <I>s</I> to multibyte representation.<P>
+
+
+</FONT></BODY></HTML>

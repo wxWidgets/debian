@@ -6,15 +6,10 @@
 //
 // Author:      Robin Dunn
 // Created:     03-Nov-2003
-// RCS-ID:      $Id: gbsizer.cpp,v 1.12 2004/11/09 18:33:00 ABX Exp $
+// RCS-ID:      $Id: gbsizer.cpp 45407 2007-04-11 21:54:15Z RD $
 // Copyright:   (c) Robin Dunn
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "gbsizer.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -414,7 +409,7 @@ wxGBSizerItem* wxGridBagSizer::FindItemAtPoint(const wxPoint& pt)
         wxGBSizerItem* item = (wxGBSizerItem*)node->GetData();
         wxRect rect(item->GetPosition(), item->GetSize());
         rect.Inflate(m_hgap, m_vgap);
-        if ( rect.Inside(pt) )
+        if ( rect.Contains(pt) )
             return item;
         node = node->GetNext();
     }
@@ -542,20 +537,24 @@ void wxGridBagSizer::RecalcSizes()
     {
         int row, col, endrow, endcol;
         wxGBSizerItem* item = (wxGBSizerItem*)node->GetData();
-        item->GetPos(row, col);
-        item->GetEndPos(endrow, endcol);
 
-        height = 0;
-        for(idx=row; idx <= endrow; idx++)
-            height += m_rowHeights[idx];
-        height += (endrow - row) * m_vgap; // add a vgap for every row spanned
+        if ( item->IsShown() )
+        {
+            item->GetPos(row, col);
+            item->GetEndPos(endrow, endcol);
 
-        width = 0;
-        for (idx=col; idx <= endcol; idx++)
-            width += m_colWidths[idx];
-        width += (endcol - col) * m_hgap; // add a hgap for every col spanned
+            height = 0;
+            for(idx=row; idx <= endrow; idx++)
+                height += m_rowHeights[idx];
+            height += (endrow - row) * m_vgap; // add a vgap for every row spanned
 
-        SetItemBounds(item, colpos[col], rowpos[row], width, height);
+            width = 0;
+            for (idx=col; idx <= endcol; idx++)
+                width += m_colWidths[idx];
+            width += (endcol - col) * m_hgap; // add a hgap for every col spanned
+
+            SetItemBounds(item, colpos[col], rowpos[row], width, height);
+        }
 
         node = node->GetNext();
     }

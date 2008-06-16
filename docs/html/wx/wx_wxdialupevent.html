@@ -1,0 +1,48 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDialUpEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdialupevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdialog.html#wxdialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdialupmanager.html#wxdialupmanager"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDialUpEvent</H2>
+<P>
+This is the event class for the dialup events sent by 
+<A HREF="wx_wxdialupmanager.html#wxdialupmanager">wxDialUpManager</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dialup.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdialupeventwxdialupevent">wxDialUpEvent::wxDialUpEvent</A><BR>
+<A HREF="#wxdialupeventisconnectedevent">wxDialUpEvent::IsConnectedEvent</A><BR>
+<A HREF="#wxdialupeventisownevent">wxDialUpEvent::IsOwnEvent</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdialupeventwxdialupevent"></A>
+<H3>wxDialUpEvent::wxDialUpEvent</H3>
+<P>
+<B></B> <B>wxDialUpEvent</B>(<B>bool </B><I>isConnected</I>, <B>bool </B><I>isOwnEvent</I>)<P>
+Constructor is only used by <A HREF="wx_wxdialupmanager.html#wxdialupmanager">wxDialUpManager</A>.<P>
+
+<HR>
+<A NAME="wxdialupeventisconnectedevent"></A>
+<H3>wxDialUpEvent::IsConnectedEvent</H3>
+<P>
+<B>bool</B> <B>IsConnectedEvent</B>() <B>const</B><P>
+Is this a <TT>CONNECTED</TT> or <TT>DISCONNECTED</TT> event? In other words, does it
+notify about transition from offline to online state or vice versa?<P>
+
+<HR>
+<A NAME="wxdialupeventisownevent"></A>
+<H3>wxDialUpEvent::IsOwnEvent</H3>
+<P>
+<B>bool</B> <B>IsOwnEvent</B>() <B>const</B><P>
+Does this event come from wxDialUpManager::Dial() or from some extrenal
+process (i.e. does it result from our own attempt to establish the
+connection)?<P>
+
+</FONT></BODY></HTML>

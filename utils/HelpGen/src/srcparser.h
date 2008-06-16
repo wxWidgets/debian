@@ -6,7 +6,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by: AG on 28/12/98
 // Created:     22/09/98
-// RCS-ID:      $Id: srcparser.h,v 1.14 2005/06/02 09:44:45 ABX Exp $
+// RCS-ID:      $Id: srcparser.h 41718 2006-10-08 14:34:37Z VZ $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -217,6 +217,8 @@ public:
     virtual void VisitParameter( spParameter& WXUNUSED(param) ) {}
 
     virtual void VisitCustomContext( spContext& WXUNUSED(ctx) ) {}
+
+    virtual ~spVisitor() { }
 };
 
 // stores one section of comments,
@@ -712,6 +714,8 @@ class SourceParserPlugin
 public:
     virtual bool CanUnderstandContext( char* cur, char* end, spContext* pOuttterCtx ) = 0;
     virtual void ParseContext( char* start, char*& cur, char* end, spContext* pOuttterCtx ) = 0;
+
+    virtual ~SourceParserPlugin() { }
 };
 
 // abstract interface for source parsers

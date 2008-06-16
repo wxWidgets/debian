@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: paper.h,v 1.11.2.2 2006/01/18 16:32:39 JS Exp $
+// RCS-ID:      $Id: paper.h 36973 2006-01-18 16:45:41Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_PAPERH__
 #define _WX_PAPERH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "paper.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/event.h"

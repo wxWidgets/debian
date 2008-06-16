@@ -1,0 +1,323 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxXmlResource</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxxmlresource"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxxmlproperty.html#wxxmlproperty"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxxmlresourcehandler.html#wxxmlresourcehandler"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxXmlResource</H2>
+<P>
+This is the main class for interacting with the XML-based resource system.<P>
+The class holds XML resources from one or more .xml files, binary files or zip archive files.<P>
+See <A HREF="wx_xrcoverview.html#xrcoverview">XML-based resource system overview</A> for details.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/xrc/xmlres.h&gt;<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+<PRE>
+enum wxXmlResourceFlags
+{
+    wxXRC_USE_LOCALE     = 1,
+    wxXRC_NO_SUBCLASSING = 2,
+    wxXRC_NO_RELOADING   = 4
+};
+</PRE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxxmlresourcector">wxXmlResource::wxXmlResource</A><BR>
+<A HREF="#wxxmlresourcedtor">wxXmlResource::~wxXmlResource</A><BR>
+<A HREF="#wxxmlresourceaddhandler">wxXmlResource::AddHandler</A><BR>
+<A HREF="#wxxmlresourceattachunknowncontrol">wxXmlResource::AttachUnknownControl</A><BR>
+<A HREF="#wxxmlresourceclearhandlers">wxXmlResource::ClearHandlers</A><BR>
+<A HREF="#wxxmlresourcecompareversion">wxXmlResource::CompareVersion</A><BR>
+<A HREF="#wxxmlresourceget">wxXmlResource::Get</A><BR>
+<A HREF="#wxxmlresourcegetflags">wxXmlResource::GetFlags</A><BR>
+<A HREF="#wxxmlresourcegetversion">wxXmlResource::GetVersion</A><BR>
+<A HREF="#wxxmlresourcegetxmlid">wxXmlResource::GetXRCID</A><BR>
+<A HREF="#wxxmlresourceinitallhandlers">wxXmlResource::InitAllHandlers</A><BR>
+<A HREF="#wxxmlresourceload">wxXmlResource::Load</A><BR>
+<A HREF="#wxxmlresourceloadbitmap">wxXmlResource::LoadBitmap</A><BR>
+<A HREF="#wxxmlresourceloaddialog">wxXmlResource::LoadDialog</A><BR>
+<A HREF="#wxxmlresourceloadframe">wxXmlResource::LoadFrame</A><BR>
+<A HREF="#wxxmlresourceloadicon">wxXmlResource::LoadIcon</A><BR>
+<A HREF="#wxxmlresourceloadmenu">wxXmlResource::LoadMenu</A><BR>
+<A HREF="#wxxmlresourceloadmenubar">wxXmlResource::LoadMenuBar</A><BR>
+<A HREF="#wxxmlresourceloadpanel">wxXmlResource::LoadPanel</A><BR>
+<A HREF="#wxxmlresourceloadtoolbar">wxXmlResource::LoadToolBar</A><BR>
+<A HREF="#wxxmlresourceset">wxXmlResource::Set</A><BR>
+<A HREF="#wxxmlresourcesetflags">wxXmlResource::SetFlags</A><BR>
+<A HREF="#wxxmlresourceunload">wxXmlResource::Unload</A><BR>
+<A HREF="#wxxmlresourcegetdomain">wxXmlResource::GetDomain</A><BR>
+<A HREF="#wxxmlresourcesetdomain">wxXmlResource::SetDomain</A><BR>
+<P>
+
+<HR>
+<A NAME="wxxmlresourcector"></A>
+<H3>wxXmlResource::wxXmlResource</H3>
+<P>
+<B></B> <B>wxXmlResource</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filemask</I>, 
+    <B>int </B><I>flags = wxXRC_USE_LOCALE</I>,
+    <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B></B><I>domain = wxEmptyString</I>)<P>
+Constructor.<P>
+<I>filemask</I><UL><UL>
+The XRC file, archive file, or wildcard specification that will be used to
+load all resource files inside a zip archive.</UL></UL>
+<P>
+<I>flags</I><UL><UL>
+wxXRC_USE_LOCALE: translatable strings will be translated via _().
+wxXRC_NO_SUBCLASSING: subclass property of object nodes will be ignored
+(useful for previews in XRC editors).</UL></UL>
+<P>
+<I>domain</I><UL><UL>
+The name of the gettext catalog to search for
+  translatable strings.  By default all loaded catalogs will be
+  searched.  This provides a way to allow the strings to only come
+  from a specific catalog.</UL></UL>
+<P>
+<B></B> <B>wxXmlResource</B>(<B>int </B><I>flags = wxXRC_USE_LOCALE</I>,
+    <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B></B><I>domain = wxEmptyString</I>)<P>
+Constructor.<P>
+<I>flags</I><UL><UL>
+wxXRC_USE_LOCALE: translatable strings will be translated via _().
+wxXRC_NO_SUBCLASSING: subclass property of object nodes will be ignored
+(useful for previews in XRC editors). wxXRC_NO_RELOADING will prevent the
+XRC files from being reloaded from disk in case they have been modified there
+since being last loaded (may slightly speed up loading them).</UL></UL>
+<P>
+<I>domain</I><UL><UL>
+The name of the gettext catalog to search for
+  translatable strings.  By default all loaded catalogs will be
+  searched.  This provides a way to allow the strings to only come
+  from a specific catalog.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxxmlresourcedtor"></A>
+<H3>wxXmlResource::~wxXmlResource</H3>
+<P>
+<B></B> <B>~wxXmlResource</B>()<P>
+Destructor.<P>
+
+
+<HR>
+<A NAME="wxxmlresourceaddhandler"></A>
+<H3>wxXmlResource::AddHandler</H3>
+<P>
+<B>void</B> <B>AddHandler</B>(<B><A HREF="wx_wxxmlresourcehandler.html#wxxmlresourcehandler">wxXmlResourceHandler</A>* </B></B><I>handler</I>)<P>
+Initializes only a specific handler (or custom handler). Convention says
+that the handler name is equal to the control's name plus 'XmlHandler', for example
+wxTextCtrlXmlHandler, wxHtmlWindowXmlHandler. The XML resource compiler
+(wxxrc) can create include file that contains initialization code for
+all controls used within the resource. Note that this handler should be
+allocated on the heap, since it will be delete by 
+<A HREF="wx_wxxmlresource.html#wxxmlresourceclearhandlers">ClearHandlers</A> later.<P>
+
+
+<HR>
+<A NAME="wxxmlresourceattachunknowncontrol"></A>
+<H3>wxXmlResource::AttachUnknownControl</H3>
+<P>
+<B>bool</B> <B>AttachUnknownControl</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>control</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent = NULL</I>)<P>
+Attaches an unknown control to the given panel/window/dialog.
+Unknown controls are used in conjunction with &lt;object class="unknown"&gt;.<P>
+
+
+<HR>
+<A NAME="wxxmlresourceclearhandlers"></A>
+<H3>wxXmlResource::ClearHandlers</H3>
+<P>
+<B>void</B> <B>ClearHandlers</B>()<P>
+Removes all handlers and deletes them (this means that any handlers added using 
+<A HREF="wx_wxxmlresource.html#wxxmlresourceaddhandler">AddHandler</A> must be allocated on the heap).<P>
+
+
+<HR>
+<A NAME="wxxmlresourcecompareversion"></A>
+<H3>wxXmlResource::CompareVersion</H3>
+<P>
+<B>int</B> <B>CompareVersion</B>(<B>int </B><I>major</I>, <B>int </B><I>minor</I>, <B>int </B><I>release</I>, <B>int </B><I>revision</I>) <B>const</B><P>
+Compares the XRC version to the argument. Returns -1 if the XRC version
+is less than the argument, +1 if greater, and 0 if they equal.<P>
+
+
+<HR>
+<A NAME="wxxmlresourceget"></A>
+<H3>wxXmlResource::Get</H3>
+<P>
+<B><A HREF="wx_wxxmlresource.html#wxxmlresource">wxXmlResource</A>*</B> </B> <B>Get</B>()<P>
+Gets the global resources object or creates one if none exists.<P>
+
+
+<HR>
+<A NAME="wxxmlresourcegetflags"></A>
+<H3>wxXmlResource::GetFlags</H3>
+<P>
+<B>int</B> <B>GetFlags</B>()<P>
+Returns flags, which may be a bitlist of wxXRC_USE_LOCALE and wxXRC_NO_SUBCLASSING.<P>
+
+
+<HR>
+<A NAME="wxxmlresourcegetversion"></A>
+<H3>wxXmlResource::GetVersion</H3>
+<P>
+<B>long</B> <B>GetVersion</B>() <B>const</B><P>
+Returns version information (a.b.c.d = d+ 256*c + 256<TT></TT>2*b + 256<TT></TT>3*a).<P>
+
+
+<HR>
+<A NAME="wxxmlresourcegetxmlid"></A>
+<H3>wxXmlResource::GetXRCID</H3>
+<P>
+<B>int</B> <B>GetXRCID</B>(<B>const wxChar* </B><I>str_id</I>, <B>int </B><I>value_if_not_found = -2</I>)<P>
+Returns a numeric ID that is equivalent to the string ID used in an XML
+resource. If an unknown <I>str_id</I> is requested (i.e. other than wxID_XXX
+or integer), a new record is created which associates the given string with
+a number. If <I>value_if_not_found</I> is <TT>wxID_NONE</TT>, the number is obtained via
+<A HREF="wx_miscellany.html#wxnewid">wxNewId()</A>. Otherwise <I>value_if_not_found</I> is used.
+Macro <TT>XRCID(name)</TT> is provided for convenient use in event tables.<P>
+
+<HR>
+<A NAME="wxxmlresourceinitallhandlers"></A>
+<H3>wxXmlResource::InitAllHandlers</H3>
+<P>
+<B>void</B> <B>InitAllHandlers</B>()<P>
+Initializes handlers for all supported controls/windows. This will
+make the executable quite big because it forces linking against
+most of the wxWidgets library.<P>
+
+
+<HR>
+<A NAME="wxxmlresourceload"></A>
+<H3>wxXmlResource::Load</H3>
+<P>
+<B>bool</B> <B>Load</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filemask</I>)<P>
+Loads resources from XML files that match given filemask.
+This method understands VFS (see filesys.h).<P>
+
+
+<HR>
+<A NAME="wxxmlresourceloadbitmap"></A>
+<H3>wxXmlResource::LoadBitmap</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A></B> </B> <B>LoadBitmap</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Loads a bitmap resource from a file.<P>
+
+
+<HR>
+<A NAME="wxxmlresourceloaddialog"></A>
+<H3>wxXmlResource::LoadDialog</H3>
+<P>
+<B><A HREF="wx_wxdialog.html#wxdialog">wxDialog</A>*</B> </B> <B>LoadDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Loads a dialog. <I>dlg</I> points to a parent window (if any).<P>
+<B>bool</B> <B>LoadDialog</B>(<B><A HREF="wx_wxdialog.html#wxdialog">wxDialog</A>* </B></B><I>dlg</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Loads a dialog. <I>dlg</I> points to parent window (if any).<P>
+This form is used to finish creation of an already existing instance (the main reason
+for this is that you may want to use derived class with a new event table).<P>
+Example:<P>
+<PRE>
+  MyDialog dlg;
+  wxTheXmlResource-&gt;LoadDialog(&dlg, mainFrame, "my_dialog");
+  dlg.ShowModal();
+</PRE>
+
+
+<HR>
+<A NAME="wxxmlresourceloadframe"></A>
+<H3>wxXmlResource::LoadFrame</H3>
+<P>
+<B>bool</B> <B>LoadFrame</B>(<B><A HREF="wx_wxframe.html#wxframe">wxFrame</A>* </B></B><I>frame</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Loads a frame.<P>
+
+
+<HR>
+<A NAME="wxxmlresourceloadicon"></A>
+<H3>wxXmlResource::LoadIcon</H3>
+<P>
+<B><A HREF="wx_wxicon.html#wxicon">wxIcon</A></B> </B> <B>LoadIcon</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Loads an icon resource from a file.<P>
+
+
+<HR>
+<A NAME="wxxmlresourceloadmenu"></A>
+<H3>wxXmlResource::LoadMenu</H3>
+<P>
+<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B> </B> <B>LoadMenu</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Loads menu from resource. Returns NULL on failure.<P>
+
+
+<HR>
+<A NAME="wxxmlresourceloadmenubar"></A>
+<H3>wxXmlResource::LoadMenuBar</H3>
+<P>
+<B><A HREF="wx_wxmenubar.html#wxmenubar">wxMenuBar</A>*</B> </B> <B>LoadMenuBar</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Loads a menubar from resource. Returns NULL on failure.<P>
+<B><A HREF="wx_wxmenubar.html#wxmenubar">wxMenuBar</A>*</B> </B> <B>LoadMenuBar</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Loads a menubar from resource. Returns NULL on failure.<P>
+
+
+<HR>
+<A NAME="wxxmlresourceloadpanel"></A>
+<H3>wxXmlResource::LoadPanel</H3>
+<P>
+<B><A HREF="wx_wxpanel.html#wxpanel">wxPanel</A>*</B> </B> <B>LoadPanel</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Loads a panel. <I>panel</I> points to parent window (if any).<P>
+<B>bool</B> <B>LoadPanel</B>(<B><A HREF="wx_wxpanel.html#wxpanel">wxPanel</A>* </B></B><I>panel</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Loads a panel. <I>panel</I> points to parent window (if any). This form
+is used to finish creation of an already existing instance.<P>
+
+
+<HR>
+<A NAME="wxxmlresourceloadtoolbar"></A>
+<H3>wxXmlResource::LoadToolBar</H3>
+<P>
+<B><A HREF="wx_wxtoolbar.html#wxtoolbar">wxToolBar</A>*</B> </B> <B>LoadToolBar</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Loads a toolbar.<P>
+
+
+<HR>
+<A NAME="wxxmlresourceset"></A>
+<H3>wxXmlResource::Set</H3>
+<P>
+<B><A HREF="wx_wxxmlresource.html#wxxmlresource">wxXmlResource</A>*</B> </B> <B>Set</B>(<B><A HREF="wx_wxxmlresource.html#wxxmlresource">wxXmlResource</A>* </B></B><I>res</I>)<P>
+Sets the global resources object and returns a pointer to the previous one (may be NULL).<P>
+
+
+<HR>
+<A NAME="wxxmlresourcesetflags"></A>
+<H3>wxXmlResource::SetFlags</H3>
+<P>
+<B>void</B> <B>SetFlags</B>(<B>int </B><I>flags</I>)<P>
+Sets flags (bitlist of wxXRC_USE_LOCALE and wxXRC_NO_SUBCLASSING).<P>
+
+
+<HR>
+<A NAME="wxxmlresourceunload"></A>
+<H3>wxXmlResource::Unload</H3>
+<P>
+<B>bool</B> <B>Unload</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+This function unloads a resource previously loaded by 
+<A HREF="wx_wxxmlresource.html#wxxmlresourceload">Load()</A>.<P>
+Returns <TT>true</TT> if the resource was successfully unloaded and <TT>false</TT> if it hasn't
+been found in the list of loaded resources.<P>
+<P>
+
+<HR>
+<A NAME="wxxmlresourcegetdomain"></A>
+<H3>wxXmlResource::GetDomain</H3>
+<P>
+<B>wxChar*</B> <B>GetDomain</B>()<P>
+Returns the domain (message catalog) that will be used to load
+translatable strings in the XRC.<P>
+
+
+<HR>
+<A NAME="wxxmlresourcesetdomain"></A>
+<H3>wxXmlResource::SetDomain</H3>
+<P>
+<B>wxChar*</B> <B>SetDomain</B>(<B>const wxChar* </B><I>domain</I>)<P>
+Sets the domain (message catalog) that will be used to load
+translatable strings in the XRC.<P>
+
+</FONT></BODY></HTML>

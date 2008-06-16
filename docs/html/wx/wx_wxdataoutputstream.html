@@ -1,0 +1,138 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataOutputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataoutputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdateevent.html#wxdateevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataOutputStream</H2>
+<P>
+This class provides functions that write binary data types in a
+portable way. Data can be written in either big-endian or little-endian
+format, little-endian being the default on all architectures.<P>
+If you want to write data to text files (or streams) use 
+<A HREF="wx_wxtextoutputstream.html#wxtextoutputstream">wxTextOutputStream</A> instead.<P>
+The &lt;&lt; operator is overloaded and you can use this class like a standard 
+C++ iostream. See <A HREF="wx_wxdatainputstream.html#wxdatainputstream">wxDataInputStream</A> for its 
+usage and caveats.<P>
+See also <A HREF="wx_wxdatainputstream.html#wxdatainputstream">wxDataInputStream</A>. <P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/datstrm.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdataoutputstreamctor">wxDataOutputStream::wxDataOutputStream</A><BR>
+<A HREF="#wxdataoutputstreamdtor">wxDataOutputStream::~wxDataOutputStream</A><BR>
+<A HREF="#wxdataoutputstreambigendianorder">wxDataOutputStream::BigEndianOrdered</A><BR>
+<A HREF="#wxdataoutputstreamwrite8">wxDataOutputStream::Write8</A><BR>
+<A HREF="#wxdataoutputstreamwrite16">wxDataOutputStream::Write16</A><BR>
+<A HREF="#wxdataoutputstreamwrite32">wxDataOutputStream::Write32</A><BR>
+<A HREF="#wxdataoutputstreamwrite64">wxDataOutputStream::Write64</A><BR>
+<A HREF="#wxdataoutputstreamwritedouble">wxDataOutputStream::WriteDouble</A><BR>
+<A HREF="#wxdataoutputstreamwritestring">wxDataOutputStream::WriteString</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataoutputstreamctor"></A>
+<H3>wxDataOutputStream::wxDataOutputStream</H3>
+<P>
+<B></B> <B>wxDataOutputStream</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>&</B></B><I> stream</I>)<P>
+<B></B> <B>wxDataOutputStream</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>&</B></B><I> stream</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B></B><I> conv = wxMBConvUTF8</I>)<P>
+Constructs a datastream object from an output stream. Only write methods will
+be available. The second form is only available in Unicode build of wxWidgets.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>stream</I><UL><UL>
+The output stream.</UL></UL>
+<P>
+<I>conv</I><UL><UL>
+Charset conversion object object used to encoding Unicode 
+strings before writing them to the stream
+in Unicode mode (see <A HREF="wx_wxdataoutputstream.html#wxdataoutputstreamwritestring">wxDataOutputStream::WriteString</A>
+documentation for detailed description). Note that you must not destroy
+<I>conv</I> before you destroy this wxDataOutputStream instance! It is
+recommended to use default value (UTF-8).</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdataoutputstreamdtor"></A>
+<H3>wxDataOutputStream::~wxDataOutputStream</H3>
+<P>
+<B></B> <B>~wxDataOutputStream</B>()<P>
+Destroys the wxDataOutputStream object.<P>
+
+<HR>
+<A NAME="wxdataoutputstreambigendianorder"></A>
+<H3>wxDataOutputStream::BigEndianOrdered</H3>
+<P>
+<B>void</B> <B>BigEndianOrdered</B>(<B>bool</B><I> be_order</I>)<P>
+If <I>be_order</I> is true, all data will be written in big-endian
+order, e.g. for reading on a Sparc or from Java-Streams (which
+always use big-endian order), otherwise data will be written in
+little-endian order.
+ 
+
+<HR>
+<A NAME="wxdataoutputstreamwrite8"></A>
+<H3>wxDataOutputStream::Write8</H3>
+<P>
+<B>void</B> <B>Write8</B>(<B>wxUint8 </B><I>i8</I>)<P>
+Writes the single byte <I>i8</I> to the stream.<P>
+<B>void</B> <B>Write8</B>(<B>const wxUint8 *</B><I>buffer</I>, <B>size_t </B><I>size</I>)<P>
+Writes an array of bytes to the stream. The amount of bytes to write is
+specified with the <I>size</I> variable.<P>
+
+<HR>
+<A NAME="wxdataoutputstreamwrite16"></A>
+<H3>wxDataOutputStream::Write16</H3>
+<P>
+<B>void</B> <B>Write16</B>(<B>wxUint16 </B><I>i16</I>)<P>
+Writes the 16 bit unsigned integer <I>i16</I> to the stream.<P>
+<B>void</B> <B>Write16</B>(<B>const wxUint16 *</B><I>buffer</I>, <B>size_t </B><I>size</I>)<P>
+Writes an array of 16 bit unsigned integer to the stream. The amount of
+16 bit unsigned integer to write is specified with the <I>size</I> variable.<P>
+
+<HR>
+<A NAME="wxdataoutputstreamwrite32"></A>
+<H3>wxDataOutputStream::Write32</H3>
+<P>
+<B>void</B> <B>Write32</B>(<B>wxUint32 </B><I>i32</I>)<P>
+Writes the 32 bit unsigned integer <I>i32</I> to the stream.<P>
+<B>void</B> <B>Write32</B>(<B>const wxUint32 *</B><I>buffer</I>, <B>size_t </B><I>size</I>)<P>
+Writes an array of 32 bit unsigned integer to the stream. The amount of
+32 bit unsigned integer to write is specified with the <I>size</I> variable.<P>
+
+<HR>
+<A NAME="wxdataoutputstreamwrite64"></A>
+<H3>wxDataOutputStream::Write64</H3>
+<P>
+<B>void</B> <B>Write64</B>(<B>wxUint64 </B><I>i64</I>)<P>
+Writes the 64 bit unsigned integer <I>i64</I> to the stream.<P>
+<B>void</B> <B>Write64</B>(<B>const wxUint64 *</B><I>buffer</I>, <B>size_t </B><I>size</I>)<P>
+Writes an array of 64 bit unsigned integer to the stream. The amount of
+64 bit unsigned integer to write is specified with the <I>size</I> variable.<P>
+
+<HR>
+<A NAME="wxdataoutputstreamwritedouble"></A>
+<H3>wxDataOutputStream::WriteDouble</H3>
+<P>
+<B>void</B> <B>WriteDouble</B>(<B>double </B><I>f</I>)<P>
+Writes the double <I>f</I> to the stream using the IEEE format.<P>
+<B>void</B> <B>WriteDouble</B>(<B>const double *</B><I>buffer</I>, <B>size_t </B><I>size</I>)<P>
+Writes an array of double to the stream. The amount of double to write is
+specified with the <I>size</I> variable.<P>
+
+<HR>
+<A NAME="wxdataoutputstreamwritestring"></A>
+<H3>wxDataOutputStream::WriteString</H3>
+<P>
+<B>void</B> <B>WriteString</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I>string</I>)<P>
+Writes <I>string</I> to the stream. Actually, this method writes the size of
+the string before writing <I>string</I> itself.<P>
+In ANSI build of wxWidgets, the string is written to the stream in exactly
+same way it is represented in memory. In Unicode build, however, the string
+is first converted to multibyte representation with <I>conv</I> object passed
+to stream's constructor (consequently, ANSI application can read data 
+written by Unicode application, as long as they agree on encoding) and this
+representation is written to the stream. UTF-8 is used by default.<P>
+
+</FONT></BODY></HTML>

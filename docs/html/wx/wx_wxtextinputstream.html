@@ -1,0 +1,204 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTextInputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtextinputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtextfile.html#wxtextfile"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtextoutputstream.html#wxtextoutputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTextInputStream</H2>
+<P>
+This class provides functions that read text datas using an input stream.
+So, you can read <I>text</I> floats, integers.<P>
+The wxTextInputStream correctly reads text files (or streams) in DOS, Macintosh
+and Unix formats and reports a single newline char as a line ending.<P>
+Operator &gt;&gt; is overloaded and you can use this class like a standard C++ iostream.
+Note, however, that the arguments are the fixed size types wxUint32, wxInt32 etc
+and on a typical 32-bit computer, none of these match to the "long" type (wxInt32
+is defined as int on 32-bit architectures) so that you cannot use long. To avoid
+problems (here and elsewhere), make use of wxInt32, wxUint32 and similar types.<P>
+If you're scanning through a file using wxTextInputStream, you should check for EOF <B>before</B>
+reading the next item (word / number), because otherwise the last item may get lost. 
+You should however be prepared to receive an empty item (empty string / zero number) at the
+end of file, especially on Windows systems. This is unavoidable because most (but not all) files end
+with whitespace (i.e. usually a newline).<P>
+For example:<P>
+<PRE>
+  wxFileInputStream input( "mytext.txt" );
+  wxTextInputStream text( input );
+  wxUint8 i1;
+  float f2;
+  wxString line;
+
+  text &gt;&gt; i1;       // read a 8 bit integer.
+  text &gt;&gt; i1 &gt;&gt; f2; // read a 8 bit integer followed by float.
+  text &gt;&gt; line;     // read a text line
+</PRE>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/txtstrm.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxtextinputstreamctor">wxTextInputStream::wxTextInputStream</A><BR>
+<A HREF="#wxtextinputstreamdtor">wxTextInputStream::~wxTextInputStream</A><BR>
+<A HREF="#wxtextinputstreamread8">wxTextInputStream::Read8</A><BR>
+<A HREF="#wxtextinputstreamread8s">wxTextInputStream::Read8S</A><BR>
+<A HREF="#wxtextinputstreamread16">wxTextInputStream::Read16</A><BR>
+<A HREF="#wxtextinputstreamread16s">wxTextInputStream::Read16S</A><BR>
+<A HREF="#wxtextinputstreamread32">wxTextInputStream::Read32</A><BR>
+<A HREF="#wxtextinputstreamread32s">wxTextInputStream::Read32S</A><BR>
+<A HREF="#wxtextinputstreamgetchar">wxTextInputStream::GetChar</A><BR>
+<A HREF="#wxtextinputstreamreaddouble">wxTextInputStream::ReadDouble</A><BR>
+<A HREF="#wxtextinputstreamreadline">wxTextInputStream::ReadLine</A><BR>
+<A HREF="#wxtextinputstreamreadstring">wxTextInputStream::ReadString</A><BR>
+<A HREF="#wxtextinputstreamreadword">wxTextInputStream::ReadWord</A><BR>
+<A HREF="#wxtextinputstreamsetstringseparators">wxTextInputStream::SetStringSeparators</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtextinputstreamctor"></A>
+<H3>wxTextInputStream::wxTextInputStream</H3>
+<P>
+<B></B> <B>wxTextInputStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B></B><I> stream</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> sep=" \t"</I>, 
+  <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B></B><I> conv = wxConvUTF8</I> )<P>
+Constructs a text stream associated to the given input stream.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>stream</I><UL><UL>
+The underlying input stream.</UL></UL>
+<P>
+<I>sep</I><UL><UL>
+The initial string separator characters.</UL></UL>
+<P>
+<I>conv</I><UL><UL>
+<I>In Unicode build only:</I> The encoding converter used to convert the bytes in the
+  underlying input stream to characters.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxtextinputstreamdtor"></A>
+<H3>wxTextInputStream::~wxTextInputStream</H3>
+<P>
+<B></B> <B>~wxTextInputStream</B>()<P>
+Destroys the wxTextInputStream object.<P>
+
+
+<HR>
+<A NAME="wxtextinputstreamread8"></A>
+<H3>wxTextInputStream::Read8</H3>
+<P>
+<B>wxUint8</B> <B>Read8</B>(<B>int</B><I> base = 10</I>)<P>
+Reads a single unsigned byte from the stream, given in base <I>base</I>.<P>
+The value of <I>base</I> must be comprised between 2 and 36, inclusive, or
+be a special value 0 which means that the usual rules of <TT>C</TT> numbers are
+applied: if the number starts with <TT>0x</TT> it is considered to be in base
+16, if it starts with <TT>0</TT> - in base 8 and in base 10 otherwise. Note
+that you may not want to specify the base 0 if you are parsing the numbers
+which may have leading zeroes as they can yield unexpected (to the user not
+familiar with C) results.<P>
+
+
+<HR>
+<A NAME="wxtextinputstreamread8s"></A>
+<H3>wxTextInputStream::Read8S</H3>
+<P>
+<B>wxInt8</B> <B>Read8S</B>(<B>int</B><I> base = 10</I>)<P>
+Reads a single signed byte from the stream.<P>
+See <A HREF="wx_wxtextinputstream.html#wxtextinputstreamread8">wxTextInputStream::Read8</A> for the
+description of the <I>base</I> parameter.<P>
+
+
+<HR>
+<A NAME="wxtextinputstreamread16"></A>
+<H3>wxTextInputStream::Read16</H3>
+<P>
+<B>wxUint16</B> <B>Read16</B>(<B>int</B><I> base = 10</I>)<P>
+Reads a unsigned 16 bit integer from the stream.<P>
+See <A HREF="wx_wxtextinputstream.html#wxtextinputstreamread8">wxTextInputStream::Read8</A> for the
+description of the <I>base</I> parameter.<P>
+
+
+<HR>
+<A NAME="wxtextinputstreamread16s"></A>
+<H3>wxTextInputStream::Read16S</H3>
+<P>
+<B>wxInt16</B> <B>Read16S</B>(<B>int</B><I> base = 10</I>)<P>
+Reads a signed 16 bit integer from the stream.<P>
+See <A HREF="wx_wxtextinputstream.html#wxtextinputstreamread8">wxTextInputStream::Read8</A> for the
+description of the <I>base</I> parameter.<P>
+
+
+<HR>
+<A NAME="wxtextinputstreamread32"></A>
+<H3>wxTextInputStream::Read32</H3>
+<P>
+<B>wxUint32</B> <B>Read32</B>(<B>int</B><I> base = 10</I>)<P>
+Reads a 32 bit unsigned integer from the stream.<P>
+See <A HREF="wx_wxtextinputstream.html#wxtextinputstreamread8">wxTextInputStream::Read8</A> for the
+description of the <I>base</I> parameter.<P>
+
+
+<HR>
+<A NAME="wxtextinputstreamread32s"></A>
+<H3>wxTextInputStream::Read32S</H3>
+<P>
+<B>wxInt32</B> <B>Read32S</B>(<B>int</B><I> base = 10</I>)<P>
+Reads a 32 bit signed integer from the stream.<P>
+See <A HREF="wx_wxtextinputstream.html#wxtextinputstreamread8">wxTextInputStream::Read8</A> for the
+description of the <I>base</I> parameter.<P>
+
+
+<HR>
+<A NAME="wxtextinputstreamgetchar"></A>
+<H3>wxTextInputStream::GetChar</H3>
+<P>
+<B>wxChar</B> <B>GetChar</B>()<P>
+Reads a character, returns 0 if there are no more characters in the stream.<P>
+
+
+<HR>
+<A NAME="wxtextinputstreamreaddouble"></A>
+<H3>wxTextInputStream::ReadDouble</H3>
+<P>
+<B>double</B> <B>ReadDouble</B>()<P>
+Reads a double (IEEE encoded) from the stream.<P>
+
+
+<HR>
+<A NAME="wxtextinputstreamreadline"></A>
+<H3>wxTextInputStream::ReadLine</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>ReadLine</B>()<P>
+Reads a line from the input stream and returns it (without the end of line
+character).<P>
+
+
+<HR>
+<A NAME="wxtextinputstreamreadstring"></A>
+<H3>wxTextInputStream::ReadString</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>ReadString</B>()<P>
+<B>NB:</B> This method is deprecated, use <A HREF="wx_wxtextinputstream.html#wxtextinputstreamreadline">ReadLine</A> 
+or <A HREF="wx_wxtextinputstream.html#wxtextinputstreamreadword">ReadWord</A> instead.<P>
+Same as <A HREF="wx_wxtextinputstream.html#wxtextinputstreamreadline">ReadLine</A>.<P>
+
+
+<HR>
+<A NAME="wxtextinputstreamreadword"></A>
+<H3>wxTextInputStream::ReadWord</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>ReadWord</B>()<P>
+Reads a word (a sequence of characters until the next separator) from the
+input stream.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtextinputstream.html#wxtextinputstreamsetstringseparators">SetStringSeparators</A><P>
+
+
+<HR>
+<A NAME="wxtextinputstreamsetstringseparators"></A>
+<H3>wxTextInputStream::SetStringSeparators</H3>
+<P>
+<B>void</B> <B>SetStringSeparators</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>sep</I>)<P>
+Sets the characters which are used to define the word boundaries in 
+<A HREF="wx_wxtextinputstream.html#wxtextinputstreamreadword">ReadWord</A>.<P>
+The default separators are the space and <TT>TAB</TT> characters.<P>
+
+</FONT></BODY></HTML>

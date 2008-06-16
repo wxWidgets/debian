@@ -1,0 +1,64 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFindReplaceDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfindreplacedialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfindreplacedata.html#wxfindreplacedata"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxflexgridsizer.html#wxflexgridsizer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFindReplaceDialog</H2>
+<P>
+wxFindReplaceDialog is a standard modeless dialog which is used to allow the
+user to search for some text (and possibly replace it with something else).
+The actual searching is supposed to be done in the owner window which is the
+parent of this dialog. Note that it means that unlike for the other standard
+dialogs this one <B>must</B> have a parent window. Also note that there is no
+way to use this dialog in a modal way; it is always, by design and
+implementation, modeless.<P>
+Please see the dialogs sample for an example of using it.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+<PRE>
+#include &lt;wx/fdrepdlg.h&gt;
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfindreplacedialogctor">wxFindReplaceDialog::wxFindReplaceDialog</A><BR>
+<A HREF="#wxfindreplacedialogdtor">wxFindReplaceDialog::~wxFindReplaceDialog</A><BR>
+<A HREF="#wxfindreplacedialogcreate">wxFindReplaceDialog::Create</A><BR>
+<A HREF="#wxfindreplacedialoggetdata">wxFindReplaceDialog::GetData</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfindreplacedialogctor"></A>
+<H3>wxFindReplaceDialog::wxFindReplaceDialog</H3>
+<P>
+<B></B> <B>wxFindReplaceDialog</B>()<P>
+<B></B> <B>wxFindReplaceDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> * </B></B><I>parent</I>, <B><A HREF="wx_wxfindreplacedata.html#wxfindreplacedata">wxFindReplaceData</A>* </B></B><I>data</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>int </B><I>style = 0</I>)<P>
+After using default constructor <A HREF="wx_wxfindreplacedialog.html#wxfindreplacedialogcreate">Create()</A> 
+must be called.<P>
+The <I>parent</I> and <I>data</I> parameters must be non-<TT>NULL</TT>.<P>
+
+<HR>
+<A NAME="wxfindreplacedialogdtor"></A>
+<H3>wxFindReplaceDialog::~wxFindReplaceDialog</H3>
+<P>
+<B></B> <B>~wxFindReplaceDialog</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxfindreplacedialogcreate"></A>
+<H3>wxFindReplaceDialog::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> * </B></B><I>parent</I>, <B><A HREF="wx_wxfindreplacedata.html#wxfindreplacedata">wxFindReplaceData</A>* </B></B><I>data</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>int </B><I>style = 0</I>)<P>
+Creates the dialog; use <A HREF="wx_wxwindow.html#wxwindowshow">Show</A> to show it on screen.<P>
+The <I>parent</I> and <I>data</I> parameters must be non-<TT>NULL</TT>.
+
+<HR>
+<A NAME="wxfindreplacedialoggetdata"></A>
+<H3>wxFindReplaceDialog::GetData</H3>
+<P>
+<B>const <A HREF="wx_wxfindreplacedata.html#wxfindreplacedata">wxFindReplaceData</A>*</B> </B> <B>GetData</B>() <B>const</B><P>
+Get the <A HREF="wx_wxfindreplacedata.html#wxfindreplacedata">wxFindReplaceData</A> object used by this
+dialog.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,116 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStaticLine</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstaticline"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstaticboxsizer.html#wxstaticboxsizer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstatictext.html#wxstatictext"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStaticLine</H2>
+<P>
+A static line is just a line which may be used in a dialog to separate the
+groups of controls. The line may be only vertical or horizontal.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/statline.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxLI_HORIZONTAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a horizontal line.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxLI_VERTICAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a vertical line.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstaticbox.html#wxstaticbox">wxStaticBox</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxstaticlinector">wxStaticLine::wxStaticLine</A><BR>
+<A HREF="#wxstaticlinecreate">wxStaticLine::Create</A><BR>
+<A HREF="#wxstaticlineisvertical">wxStaticLine::IsVertical</A><BR>
+<A HREF="#wxstaticlinegetdefaultsize">wxStaticLine::GetDefaultSize</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstaticlinector"></A>
+<H3>wxStaticLine::wxStaticLine</H3>
+<P>
+<B></B> <B>wxStaticLine</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxStaticLine</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxLI_HORIZONTAL</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "staticLine"</I>)<P>
+Constructor, creating and showing a static line.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position. If the position (-1, -1) is specified then a default position is chosen.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Size. Note that either the height or the width (depending on
+whether the line if horizontal or vertical) is ignored.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style (either wxLI_HORIZONTAL or wxLI_VERTICAL).</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstaticline.html#wxstaticlinecreate">wxStaticLine::Create</A><P>
+
+<HR>
+<A NAME="wxstaticlinecreate"></A>
+<H3>wxStaticLine::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "staticLine"</I>)<P>
+Creates the static line for two-step construction. See <A HREF="wx_wxstaticline.html#wxstaticlinector">wxStaticLine::wxStaticLine</A>
+for further details.<P>
+
+<HR>
+<A NAME="wxstaticlineisvertical"></A>
+<H3>wxStaticLine::IsVertical</H3>
+<P>
+<B>bool</B> <B>IsVertical</B>() <B>const</B><P>
+Returns true if the line is vertical, false if horizontal.<P>
+
+<HR>
+<A NAME="wxstaticlinegetdefaultsize"></A>
+<H3>wxStaticLine::GetDefaultSize</H3>
+<P>
+<B>int</B> <B>GetDefaultSize</B>()<P>
+This static function returns the size which will be given to the smaller
+dimension of the static line, i.e. its height for a horizontal line or its
+width for a vertical one.<P>
+
+</FONT></BODY></HTML>

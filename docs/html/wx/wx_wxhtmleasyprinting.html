@@ -1,0 +1,200 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlEasyPrinting</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmleasyprinting"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmldcrenderer.html#wxhtmldcrenderer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmlfilter.html#wxhtmlfilter"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlEasyPrinting</H2>
+<P>
+This class provides very simple interface to printing 
+architecture. It allows you to print HTML documents using
+only a few commands. <P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+Do not create this class on the stack only. You should create an instance on app 
+startup and use this instance for all printing operations. The reason is that
+this class stores various settings in it.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/htmprint.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmleasyprintingwxhtmleasyprinting">wxHtmlEasyPrinting::wxHtmlEasyPrinting</A><BR>
+<A HREF="#wxhtmleasyprintinggetparentwindow">wxHtmlEasyPrinting::GetParentWindow</A><BR>
+<A HREF="#wxhtmleasyprintinggetprintdata">wxHtmlEasyPrinting::GetPrintData</A><BR>
+<A HREF="#wxhtmleasyprintinggetpagesetupdata">wxHtmlEasyPrinting::GetPageSetupData</A><BR>
+<A HREF="#wxhtmleasyprintingpreviewfile">wxHtmlEasyPrinting::PreviewFile</A><BR>
+<A HREF="#wxhtmleasyprintingpreviewtext">wxHtmlEasyPrinting::PreviewText</A><BR>
+<A HREF="#wxhtmleasyprintingprintfile">wxHtmlEasyPrinting::PrintFile</A><BR>
+<A HREF="#wxhtmleasyprintingprinttext">wxHtmlEasyPrinting::PrintText</A><BR>
+<A HREF="#wxhtmleasyprintingpagesetup">wxHtmlEasyPrinting::PageSetup</A><BR>
+<A HREF="#wxhtmleasyprintingsetfonts">wxHtmlEasyPrinting::SetFonts</A><BR>
+<A HREF="#wxhtmleasyprintingsetheader">wxHtmlEasyPrinting::SetHeader</A><BR>
+<A HREF="#wxhtmleasyprintingsetfooter">wxHtmlEasyPrinting::SetFooter</A><BR>
+<A HREF="#wxhtmleasyprintingsetparentwindow">wxHtmlEasyPrinting::SetParentWindow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmleasyprintingwxhtmleasyprinting"></A>
+<H3>wxHtmlEasyPrinting::wxHtmlEasyPrinting</H3>
+<P>
+<B></B> <B>wxHtmlEasyPrinting</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "Printing"</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parentWindow = NULL</I>)<P>
+Constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>name</I><UL><UL>
+Name of the printing object. Used by preview frames and setup dialogs.</UL></UL>
+<P>
+<I>parentWindow</I><UL><UL>
+pointer to the window that will own the preview frame and setup dialogs. May be NULL.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmleasyprintinggetparentwindow"></A>
+<H3>wxHtmlEasyPrinting::GetParentWindow</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetParentWindow</B>() <B>const</B><P>
+Gets the parent window for dialogs.<P>
+
+<HR>
+<A NAME="wxhtmleasyprintinggetprintdata"></A>
+<H3>wxHtmlEasyPrinting::GetPrintData</H3>
+<P>
+<B><A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>*</B> </B> <B>GetPrintData</B>()<P>
+Returns pointer to <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A> instance used by this class. You can
+set its parameters (via SetXXXX methods).<P>
+
+<HR>
+<A NAME="wxhtmleasyprintinggetpagesetupdata"></A>
+<H3>wxHtmlEasyPrinting::GetPageSetupData</H3>
+<P>
+<B><A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A>*</B> </B> <B>GetPageSetupData</B>()<P>
+Returns a pointer to <A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A> instance used by 
+this class. You can set its parameters (via SetXXXX methods).<P>
+
+<HR>
+<A NAME="wxhtmleasyprintingpreviewfile"></A>
+<H3>wxHtmlEasyPrinting::PreviewFile</H3>
+<P>
+<B>bool</B> <B>PreviewFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>htmlfile</I>)<P>
+Preview HTML file. <P>
+Returns false in case of error -- call
+<A HREF="wx_wxprinter.html#wxprintergetlasterror">wxPrinter::GetLastError</A> to get detailed
+information about the kind of the error.<P>
+
+
+<HR>
+<A NAME="wxhtmleasyprintingpreviewtext"></A>
+<H3>wxHtmlEasyPrinting::PreviewText</H3>
+<P>
+<B>bool</B> <B>PreviewText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>htmltext</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>basepath = wxEmptyString</I>)<P>
+Preview HTML text (not file!). <P>
+Returns false in case of error -- call
+<A HREF="wx_wxprinter.html#wxprintergetlasterror">wxPrinter::GetLastError</A> to get detailed
+information about the kind of the error.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>htmltext</I><UL><UL>
+HTML text.</UL></UL>
+<P>
+<I>basepath</I><UL><UL>
+base directory (html string would be stored there if it was in
+file). It is used to determine path for loading images, for example.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmleasyprintingprintfile"></A>
+<H3>wxHtmlEasyPrinting::PrintFile</H3>
+<P>
+<B>bool</B> <B>PrintFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>htmlfile</I>)<P>
+Print HTML file.<P>
+Returns false in case of error -- call
+<A HREF="wx_wxprinter.html#wxprintergetlasterror">wxPrinter::GetLastError</A> to get detailed
+information about the kind of the error.<P>
+
+<HR>
+<A NAME="wxhtmleasyprintingprinttext"></A>
+<H3>wxHtmlEasyPrinting::PrintText</H3>
+<P>
+<B>bool</B> <B>PrintText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>htmltext</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>basepath = wxEmptyString</I>)<P>
+Print HTML text (not file!). <P>
+Returns false in case of error -- call
+<A HREF="wx_wxprinter.html#wxprintergetlasterror">wxPrinter::GetLastError</A> to get detailed
+information about the kind of the error.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>htmltext</I><UL><UL>
+HTML text.</UL></UL>
+<P>
+<I>basepath</I><UL><UL>
+base directory (html string would be stored there if it was in
+file). It is used to determine path for loading images, for example.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmleasyprintingpagesetup"></A>
+<H3>wxHtmlEasyPrinting::PageSetup</H3>
+<P>
+<B>void</B> <B>PageSetup</B>()<P>
+Display page setup dialog and allows the user to modify settings. <P>
+
+<HR>
+<A NAME="wxhtmleasyprintingsetfonts"></A>
+<H3>wxHtmlEasyPrinting::SetFonts</H3>
+<P>
+<B>void</B> <B>SetFonts</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>normal_face</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fixed_face</I>, <B>const int </B><I>*sizes = NULL</I>)<P>
+Sets fonts. See <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowsetfonts">wxHtmlWindow::SetFonts</A> for
+detailed description.<P>
+
+<HR>
+<A NAME="wxhtmleasyprintingsetheader"></A>
+<H3>wxHtmlEasyPrinting::SetHeader</H3>
+<P>
+<B>void</B> <B>SetHeader</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>header</I>, <B>int </B><I>pg = wxPAGE_ALL</I>)<P>
+Set page header. The following macros can be used inside it:
+<UL>
+
+<LI> @DATE@ is replaced by the current date in default format
+<LI> @PAGENUM@ is replaced by page number
+<LI> @PAGESCNT@ is replaced by total number of pages
+<LI> @TIME@ is replaced by the current time in default format
+<LI> @TITLE@ is replaced with the title of the document
+</UL>
+<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>header</I><UL><UL>
+HTML text to be used as header.</UL></UL>
+<P>
+<I>pg</I><UL><UL>
+one of wxPAGE_ODD, wxPAGE_EVEN and wxPAGE_ALL constants.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmleasyprintingsetfooter"></A>
+<H3>wxHtmlEasyPrinting::SetFooter</H3>
+<P>
+<B>void</B> <B>SetFooter</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>footer</I>, <B>int </B><I>pg = wxPAGE_ALL</I>)<P>
+Set page footer. The following macros can be used inside it:
+<UL>
+
+<LI> @DATE@ is replaced by the current date in default format
+<LI> @PAGENUM@ is replaced by page number
+<LI> @PAGESCNT@ is replaced by total number of pages
+<LI> @TIME@ is replaced by the current time in default format
+<LI> @TITLE@ is replaced with the title of the document
+</UL>
+<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>footer</I><UL><UL>
+HTML text to be used as footer.</UL></UL>
+<P>
+<I>pg</I><UL><UL>
+one of wxPAGE_ODD, wxPAGE_EVEN and wxPAGE_ALL constants.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmleasyprintingsetparentwindow"></A>
+<H3>wxHtmlEasyPrinting::SetParentWindow</H3>
+<P>
+<B>void</B> <B>SetParentWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> window</I>)<P>
+Sets the parent window for dialogs.<P>
+
+</FONT></BODY></HTML>

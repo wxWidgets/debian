@@ -1,0 +1,171 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRadioButton</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxradiobutton"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxradiobox.html#wxradiobox"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrealpoint.html#wxrealpoint"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRadioButton</H2>
+<P>
+A radio button item is a button which usually denotes one of several mutually
+exclusive options. It has a text label next to a (usually) round button.<P>
+You can create a group of mutually-exclusive radio buttons by specifying <TT>wxRB_GROUP</TT> for
+the first in the group. The group ends when another radio button group is created, or there are no more radio buttons.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/radiobut.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxRB_GROUP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Marks the beginning of a new group of radio buttons.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxRB_SINGLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+In some circumstances, radio buttons that are not
+consecutive siblings trigger a hang bug in Windows (only). If this happens, add this style
+to mark the button as not belonging to a group, and implement the mutually-exclusive group behaviour yourself.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxRB_USE_CHECKBOX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Use a checkbox button instead of radio
+button (currently supported only on PalmOS).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_RADIOBUTTON(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_RADIOBUTTON_SELECTED event,
+when the radiobutton is clicked.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A>, <A HREF="wx_wxradiobox.html#wxradiobox">wxRadioBox</A>,
+<A HREF="wx_wxcheckbox.html#wxcheckbox">wxCheckBox</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxradiobuttonctor">wxRadioButton::wxRadioButton</A><BR>
+<A HREF="#wxradiobuttondtor">wxRadioButton::~wxRadioButton</A><BR>
+<A HREF="#wxradiobuttoncreate">wxRadioButton::Create</A><BR>
+<A HREF="#wxradiobuttongetvalue">wxRadioButton::GetValue</A><BR>
+<A HREF="#wxradiobuttonsetvalue">wxRadioButton::SetValue</A><BR>
+<P>
+
+<HR>
+<A NAME="wxradiobuttonctor"></A>
+<H3>wxRadioButton::wxRadioButton</H3>
+<P>
+<B></B> <B>wxRadioButton</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxRadioButton</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "radioButton"</I>)<P>
+Constructor, creating and showing a radio button.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+Label for the radio button.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position. If the position (-1, -1) is specified then a default position is chosen.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then a default size is chosen.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxradiobutton.html#wxradiobutton">wxRadioButton</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxradiobutton.html#wxradiobuttoncreate">wxRadioButton::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+
+<HR>
+<A NAME="wxradiobuttondtor"></A>
+<H3>wxRadioButton::~wxRadioButton</H3>
+<P>
+<B>void</B> <B>~wxRadioButton</B>()<P>
+Destructor, destroying the radio button item.<P>
+
+<HR>
+<A NAME="wxradiobuttoncreate"></A>
+<H3>wxRadioButton::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "radioButton"</I>)<P>
+Creates the choice for two-step construction. See <A HREF="wx_wxradiobutton.html#wxradiobuttonctor">wxRadioButton::wxRadioButton</A> for
+further details.<P>
+
+<HR>
+<A NAME="wxradiobuttongetvalue"></A>
+<H3>wxRadioButton::GetValue</H3>
+<P>
+<B>bool</B> <B>GetValue</B>() <B>const</B><P>
+Returns true if the radio button is depressed, false otherwise.<P>
+
+<HR>
+<A NAME="wxradiobuttonsetvalue"></A>
+<H3>wxRadioButton::SetValue</H3>
+<P>
+<B>void</B> <B>SetValue</B>(<B>const bool</B><I> value</I>)<P>
+Sets the radio button to selected or deselected status. This does not cause a
+wxEVT_COMMAND_RADIOBUTTON_SELECTED event to get emitted.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>value</I><UL><UL>
+true to select, false to deselect.</UL></UL>
+<P>
+
+
+</FONT></BODY></HTML>

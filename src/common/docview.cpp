@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docview.cpp,v 1.136.2.2 2006/02/21 19:51:32 ABX Exp $
+// RCS-ID:      $Id: docview.cpp 49483 2007-10-27 09:25:04Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,30 +17,31 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "docview.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-  #pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #if wxUSE_DOC_VIEW_ARCHITECTURE
 
+#include "wx/docview.h"
+
 #ifndef WX_PRECOMP
+    #include "wx/list.h"
     #include "wx/string.h"
     #include "wx/utils.h"
     #include "wx/app.h"
     #include "wx/dc.h"
     #include "wx/dialog.h"
     #include "wx/menu.h"
-    #include "wx/list.h"
     #include "wx/filedlg.h"
     #include "wx/intl.h"
     #include "wx/log.h"
+    #include "wx/msgdlg.h"
+    #include "wx/mdi.h"
+    #include "wx/choicdlg.h"
 #endif
 
 #include "wx/ffile.h"
@@ -49,18 +50,11 @@
     #include "wx/filename.h"
 #endif
 
-#ifdef __WXGTK__
-    #include "wx/mdi.h"
-#endif
-
 #if wxUSE_PRINTING_ARCHITECTURE
     #include "wx/prntbase.h"
     #include "wx/printdlg.h"
 #endif
 
-#include "wx/msgdlg.h"
-#include "wx/choicdlg.h"
-#include "wx/docview.h"
 #include "wx/confbase.h"
 #include "wx/file.h"
 #include "wx/cmdproc.h"
@@ -101,7 +95,6 @@ IMPLEMENT_DYNAMIC_CLASS(wxFileHistory, wxObject)
 // function prototypes
 // ----------------------------------------------------------------------------
 
-static inline wxString FindExtension(const wxChar *path);
 static wxWindow* wxFindSuitableParent(void);
 
 // ----------------------------------------------------------------------------
@@ -280,7 +273,7 @@ bool wxDocument::SaveAs()
 
     if (docTemplate->GetViewClassInfo() && docTemplate->GetDocClassInfo())
     {
-        wxList::compatibility_iterator node = wxDocManager::GetDocumentManager()->GetTemplates().GetFirst();
+        wxList::compatibility_iterator node = docTemplate->GetDocumentManager()->GetTemplates().GetFirst();
         while (node)
         {
             wxDocTemplate *t = (wxDocTemplate*) node->GetData();
@@ -308,7 +301,7 @@ bool wxDocument::SaveAs()
             wxFileNameFromPath(GetFilename()),
             docTemplate->GetDefaultExtension(),
             filter,
-            wxSAVE | wxOVERWRITE_PROMPT,
+            wxFD_SAVE | wxFD_OVERWRITE_PROMPT,
             GetDocumentWindow());
 
     if (tmp.empty())
@@ -661,14 +654,18 @@ void wxView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 
 void wxView::OnChangeFilename()
 {
-    if (GetFrame() && GetDocument())
-    {
-        wxString title;
+    // GetFrame can return wxWindow rather than wxTopLevelWindow due to
+    // generic MDI implementation so use SetLabel rather than SetTitle.
+    // It should cause SetTitle() for top level windows.
+    wxWindow *win = GetFrame();
+    if (!win) return;
 
-        GetDocument()->GetPrintableName(title);
+    wxDocument *doc = GetDocument();
+    if (!doc) return;
 
-        GetFrame()->SetTitle(title);
-    }
+    wxString name;
+    doc->GetPrintableName(name);
+    win->SetLabel(name);
 }
 
 void wxView::SetDocument(wxDocument *doc)
@@ -1925,6 +1922,11 @@ BEGIN_EVENT_TABLE(wxDocParentFrame, wxFrame)
     EVT_CLOSE(wxDocParentFrame::OnCloseWindow)
 END_EVENT_TABLE()
 
+wxDocParentFrame::wxDocParentFrame()
+{
+    m_docManager = NULL;
+}
+
 wxDocParentFrame::wxDocParentFrame(wxDocManager *manager,
                                    wxFrame *frame,
                                    wxWindowID id,
@@ -1936,6 +1938,19 @@ wxDocParentFrame::wxDocParentFrame(wxDocManager *manager,
                 : wxFrame(frame, id, title, pos, size, style, name)
 {
     m_docManager = manager;
+}
+
+bool wxDocParentFrame::Create(wxDocManager *manager,
+                              wxFrame *frame,
+                              wxWindowID id,
+                              const wxString& title,
+                              const wxPoint& pos,
+                              const wxSize& size,
+                              long style,
+                              const wxString& name)
+{
+    m_docManager = manager;
+    return base_type::Create(frame, id, title, pos, size, style, name);
 }
 
 void wxDocParentFrame::OnExit(wxCommandEvent& WXUNUSED(event))
@@ -2231,10 +2246,10 @@ void wxFileHistory::RemoveFileFromHistory(size_t i)
         // delete the last separator too if no more files are left
         if ( m_fileHistoryN == 1 )
         {
-            wxMenuItemList::compatibility_iterator node = menu->GetMenuItems().GetLast();
-            if ( node )
+            wxMenuItemList::compatibility_iterator nodeLast = menu->GetMenuItems().GetLast();
+            if ( nodeLast )
             {
-                wxMenuItem *menuItem = node->GetData();
+                wxMenuItem *menuItem = nodeLast->GetData();
                 if ( menuItem->IsSeparator() )
                 {
                     menu->Delete(menuItem);

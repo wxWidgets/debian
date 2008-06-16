@@ -1,0 +1,235 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCheckBox</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcheckbox"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcaret.html#wxcaret"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxchecklistbox.html#wxchecklistbox"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCheckBox</H2>
+<P>
+A checkbox is a labelled box which by default is either on (checkmark is
+visible) or off (no checkmark). Optionally (when the wxCHK_3STATE style flag
+is set) it can have a third state, called the mixed or undetermined state.
+Often this is used as a "Does Not Apply" state.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/checkbox.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxCHK_2STATE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Create a 2-state checkbox. This is the default.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxCHK_3STATE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Create a 3-state checkbox.
+Not implemented in wxMGL, wxOS2 and wxGTK built against GTK+ 1.2.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxCHK_ALLOW_3RD_STATE_FOR_USER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+By default a user can't set a 3-state checkbox
+to the third state. It can only be done from code. Using this flags allows the user to set the checkbox to the third state by clicking. 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxALIGN_RIGHT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Makes the text appear on the left of the checkbox.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CHECKBOX(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_CHECKBOX_CLICKED event,
+when the checkbox is clicked.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxradiobutton.html#wxradiobutton">wxRadioButton</A>, <A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxcheckboxctor">wxCheckBox::wxCheckBox</A><BR>
+<A HREF="#wxcheckboxdtor">wxCheckBox::~wxCheckBox</A><BR>
+<A HREF="#wxcheckboxcreate">wxCheckBox::Create</A><BR>
+<A HREF="#wxcheckboxgetvalue">wxCheckBox::GetValue</A><BR>
+<A HREF="#wxcheckboxgetthreestatevalue">wxCheckBox::Get3StateValue</A><BR>
+<A HREF="#wxcheckboxis3rdstateallowedforuser">wxCheckBox::Is3rdStateAllowedForUser</A><BR>
+<A HREF="#wxcheckboxis3state">wxCheckBox::Is3State</A><BR>
+<A HREF="#wxcheckboxischecked">wxCheckBox::IsChecked</A><BR>
+<A HREF="#wxcheckboxsetvalue">wxCheckBox::SetValue</A><BR>
+<A HREF="#wxcheckboxset3statevalue">wxCheckBox::Set3StateValue</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcheckboxctor"></A>
+<H3>wxCheckBox::wxCheckBox</H3>
+<P>
+<B></B> <B>wxCheckBox</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxCheckBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long</B><I> style = 0</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>val</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "checkBox"</I>)<P>
+Constructor, creating and showing a checkbox.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Checkbox identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+Text to be displayed next to the checkbox.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Checkbox position. If the position (-1, -1) is specified then a default position is chosen.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Checkbox size. If the default size (-1, -1) is specified then a default size is chosen.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxcheckbox.html#wxcheckbox">wxCheckBox</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcheckbox.html#wxcheckboxcreate">wxCheckBox::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+
+<HR>
+<A NAME="wxcheckboxdtor"></A>
+<H3>wxCheckBox::~wxCheckBox</H3>
+<P>
+<B></B> <B>~wxCheckBox</B>()<P>
+Destructor, destroying the checkbox.<P>
+
+<HR>
+<A NAME="wxcheckboxcreate"></A>
+<H3>wxCheckBox::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long</B><I> style = 0</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>val</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "checkBox"</I>)<P>
+Creates the checkbox for two-step construction. See <A HREF="wx_wxcheckbox.html#wxcheckboxctor">wxCheckBox::wxCheckBox</A>
+for details.<P>
+
+<HR>
+<A NAME="wxcheckboxgetvalue"></A>
+<H3>wxCheckBox::GetValue</H3>
+<P>
+<B>bool</B> <B>GetValue</B>() <B>const</B><P>
+Gets the state of a 2-state checkbox.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns <TT>true</TT> if it is checked, <TT>false</TT> otherwise.<P>
+
+<HR>
+<A NAME="wxcheckboxgetthreestatevalue"></A>
+<H3>wxCheckBox::Get3StateValue</H3>
+<P>
+<B>wxCheckBoxState</B> <B>Get3StateValue</B>() <B>const</B><P>
+Gets the state of a 3-state checkbox.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns wxCHK_UNCHECKED when the checkbox is unchecked, wxCHK_CHECKED
+ when it is checked and wxCHK_UNDETERMINED when it's in the undetermined
+state. Asserts when the function is used with a 2-state checkbox.<P>
+
+<HR>
+<A NAME="wxcheckboxis3rdstateallowedforuser"></A>
+<H3>wxCheckBox::Is3rdStateAllowedForUser</H3>
+<P>
+<B>bool</B> <B>Is3rdStateAllowedForUser</B>() <B>const</B><P>
+Returns whether or not the user can set the checkbox to the third state.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns <TT>true</TT> if the user can set the third state of this checkbox, <TT>false</TT> if it can only be set
+programmatically or if it's a 2-state checkbox.<P>
+
+<HR>
+<A NAME="wxcheckboxis3state"></A>
+<H3>wxCheckBox::Is3State</H3>
+<P>
+<B>bool</B> <B>Is3State</B>() <B>const</B><P>
+Returns whether or not the checkbox is a 3-state checkbox.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns <TT>true</TT> if this checkbox is a 3-state checkbox, <TT>false</TT> if it's a 2-state checkbox.<P>
+
+<HR>
+<A NAME="wxcheckboxischecked"></A>
+<H3>wxCheckBox::IsChecked</H3>
+<P>
+<B>bool</B> <B>IsChecked</B>() <B>const</B><P>
+This is just a maybe more readable synonym for 
+<A HREF="wx_wxcheckbox.html#wxcheckboxgetvalue">GetValue</A>: just as the latter, it returns 
+<TT>true</TT> if the checkbox is checked and <TT>false</TT> otherwise.<P>
+
+<HR>
+<A NAME="wxcheckboxsetvalue"></A>
+<H3>wxCheckBox::SetValue</H3>
+<P>
+<B>void</B> <B>SetValue</B>(<B>bool</B><I> state</I>)<P>
+Sets the checkbox to the given state. This does not cause a
+wxEVT_COMMAND_CHECKBOX_CLICKED event to get emitted.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>state</I><UL><UL>
+If <TT>true</TT>, the check is on, otherwise it is off.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxcheckboxset3statevalue"></A>
+<H3>wxCheckBox::Set3StateValue</H3>
+<P>
+<B>void</B> <B>Set3StateValue</B>(<B>const wxCheckBoxState</B><I> state</I>)<P>
+Sets the checkbox to the given state. This does not cause a
+wxEVT_COMMAND_CHECKBOX_CLICKED event to get emitted.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>state</I><UL><UL>
+Can be one of: wxCHK_UNCHECKED (Check is off), wxCHK_CHECKED
+ (Check is on) or wxCHK_UNDETERMINED (Check is mixed). Asserts when the checkbox
+ is a 2-state checkbox and setting the state to wxCHK_UNDETERMINED.</UL></UL>
+
+
+</FONT></BODY></HTML>

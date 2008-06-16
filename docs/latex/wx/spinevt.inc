@@ -5,7 +5,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     26.05.02 (extracted from spinbutt.tex)
-%% RCS-ID:      $Id: spinevt.inc,v 1.1 2002/05/26 12:46:20 VZ Exp $
+%% RCS-ID:      $Id: spinevt.inc 15675 2002-05-26 12:46:20Z VZ $
 %% Copyright:   (c) wxWindows team
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

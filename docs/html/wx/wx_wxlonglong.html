@@ -1,0 +1,255 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxLongLong</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlonglong"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlogwindow.html#wxlogwindow"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmask.html#wxmask"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxLongLong</H2>
+<P>
+This class represents a signed 64 bit long number. It is implemented using the
+native 64 bit type where available (machines with 64 bit longs or compilers
+which have (an analog of) <I>long long</I> type) and uses the emulation code in
+the other cases which ensures that it is the most efficient solution for
+working with 64 bit integers independently of the architecture.<P>
+wxLongLong defines all usual arithmetic operations such as addition,
+subtraction, bitwise shifts and logical operations as well as multiplication
+and division (not yet for the machines without native <I>long long</I>). It
+also has operators for implicit construction from and conversion to the native 
+<I>long long</I> type if it exists and <I>long</I>.<P>
+You would usually use this type in exactly the same manner as any other
+(built-in) arithmetic type. Note that wxLongLong is a signed type, if you
+want unsigned values use wxULongLong which has exactly the same API as
+wxLongLong except when explicitly mentioned otherwise.<P>
+If a native (i.e. supported directly by the compiler) 64 bit integer type was
+found to exist, <I>wxLongLong_t</I> macro will be defined to correspond to it.
+Also, in this case only, two additional macros will be defined: 
+<A HREF="wx_miscellany.html#wxlonglongfmtspec">wxLongLongFmtSpec</A> for printing 64 bit integers
+using the standard <TT>printf()</TT> function (but see also 
+<A HREF="wx_wxlonglong.html#wxlonglongtostring">ToString()</A> for a more portable solution) and
+<A HREF="wx_miscellany.html#wxll">wxLL</A> for defining 64 bit integer compile-time constants.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/longlong.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxlonglongwxlonglongdef">wxLongLong::wxLongLong</A><BR>
+<A HREF="#wxlonglongwxlonglongll">wxLongLong::wxLongLong</A><BR>
+<A HREF="#wxlonglongwxlonglong">wxLongLong::wxLongLong</A><BR>
+<A HREF="#wxlonglongoperatorassign">wxLongLong::operator=</A><BR>
+<A HREF="#wxlonglongoperatorassignull">wxLongLong::operator=</A><BR>
+<A HREF="#wxlonglongoperatorassignlong">wxLongLong::operator=</A><BR>
+<A HREF="#wxlonglongoperatorassignulong">wxLongLong::operator=</A><BR>
+<A HREF="#wxlonglongoperatorassignulonglong">wxLongLong::operator=</A><BR>
+<A HREF="#wxlonglongabs">wxLongLong::Abs</A><BR>
+<A HREF="#wxlonglongassign">wxLongLong::Assign</A><BR>
+<A HREF="#wxlonglonggethi">wxLongLong::GetHi</A><BR>
+<A HREF="#wxlonglonggetlo">wxLongLong::GetLo</A><BR>
+<A HREF="#wxlonglonggetvalue">wxLongLong::GetValue</A><BR>
+<A HREF="#wxlonglonggetdouble">wxLongLong::ToDouble</A><BR>
+<A HREF="#wxlonglongtolong">wxLongLong::ToLong</A><BR>
+<A HREF="#wxlonglongtostring">wxLongLong::ToString</A><BR>
+<A HREF="#wxlonglongoperatorplus">wxLongLong::operator+</A><BR>
+<A HREF="#wxlonglongoperatorplusassign">wxLongLong::operator+=</A><BR>
+<A HREF="#wxlonglongoperatorinc">wxLongLong::operator++</A><BR>
+<A HREF="#wxlonglongoperatorunaryminus">wxLongLong::operator-</A><BR>
+<A HREF="#wxlonglongoperatorminus">wxLongLong::operator-</A><BR>
+<A HREF="#wxlonglongoperatorminusassign">wxLongLong::operator-=</A><BR>
+<A HREF="#wxlonglongoperatordec">wxLongLong::operator--</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlonglongwxlonglongdef"></A>
+<H3>wxLongLong::wxLongLong</H3>
+<P>
+<B></B> <B>wxLongLong</B>()<P>
+Default constructor initializes the object to 0.<P>
+
+
+<HR>
+<A NAME="wxlonglongwxlonglongll"></A>
+<H3>wxLongLong::wxLongLong</H3>
+<P>
+<B></B> <B>wxLongLong</B>(<B>wxLongLong_t </B><I>ll</I>)<P>
+Constructor from native long long (only for compilers supporting it).<P>
+
+
+<HR>
+<A NAME="wxlonglongwxlonglong"></A>
+<H3>wxLongLong::wxLongLong</H3>
+<P>
+<B></B> <B>wxLongLong</B>(<B>long </B><I>hi</I>, <B>unsigned long </B><I>lo</I>)<P>
+Constructor from 2 longs: the high and low part are combined into one
+wxLongLong.<P>
+
+
+<HR>
+<A NAME="wxlonglongoperatorassign"></A>
+<H3>wxLongLong::operator=</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>& operator</B> </B> <B>operator=</B>(<B>wxLongLong_t </B><I>ll</I>)<P>
+Assignment operator from native long long (only for compilers supporting it).<P>
+
+
+<HR>
+<A NAME="wxlonglongoperatorassignull"></A>
+<H3>wxLongLong::operator=</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>& operator</B> </B> <B>operator=</B>(<B>wxULongLong_t </B><I>ll</I>)<P>
+Assignment operator from native unsigned long long (only for compilers 
+supporting it).<P>
+This function is new since wxWidgets version 2.7.0<P>
+
+<HR>
+<A NAME="wxlonglongoperatorassignlong"></A>
+<H3>wxLongLong::operator=</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>& operator</B> </B> <B>operator=</B>(<B>long </B><I>l</I>)<P>
+Assignment operator from long.<P>
+This function is new since wxWidgets version 2.7.0<P>
+
+<HR>
+<A NAME="wxlonglongoperatorassignulong"></A>
+<H3>wxLongLong::operator=</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>& operator</B> </B> <B>operator=</B>(<B>unsigned long </B><I>l</I>)<P>
+Assignment operator from unsigned long.<P>
+This function is new since wxWidgets version 2.7.0<P>
+
+<HR>
+<A NAME="wxlonglongoperatorassignulonglong"></A>
+<H3>wxLongLong::operator=</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>& operator</B> </B> <B>operator=</B>(<B>const wxULongLong &amp; </B><I>ll</I>)<P>
+Assignment operator from unsigned long long. The sign bit will be copied too.<P>
+This function is new since wxWidgets version 2.7.0<P>
+
+<HR>
+<A NAME="wxlonglongabs"></A>
+<H3>wxLongLong::Abs</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A></B> </B> <B>Abs</B>() <B>const</B><P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>&</B> </B> <B>Abs</B>()<P>
+Returns an absolute value of wxLongLong - either making a copy (const version)
+or modifying it in place (the second one).  Not in wxULongLong.<P>
+
+
+<HR>
+<A NAME="wxlonglongassign"></A>
+<H3>wxLongLong::Assign</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>&</B> </B> <B>Assign</B>(<B>double </B><I>d</I>)<P>
+This allows to convert a double value to wxLongLong type. Such conversion is
+not always possible in which case the result will be silently truncated in a
+platform-dependent way.  Not in wxULongLong.<P>
+
+
+<HR>
+<A NAME="wxlonglonggethi"></A>
+<H3>wxLongLong::GetHi</H3>
+<P>
+<B>long</B> <B>GetHi</B>() <B>const</B><P>
+Returns the high 32 bits of 64 bit integer.<P>
+
+
+<HR>
+<A NAME="wxlonglonggetlo"></A>
+<H3>wxLongLong::GetLo</H3>
+<P>
+<B>unsigned long</B> <B>GetLo</B>() <B>const</B><P>
+Returns the low 32 bits of 64 bit integer.<P>
+
+
+<HR>
+<A NAME="wxlonglonggetvalue"></A>
+<H3>wxLongLong::GetValue</H3>
+<P>
+<B>wxLongLong_t</B> <B>GetValue</B>() <B>const</B><P>
+Convert to native long long (only for compilers supporting it)<P>
+
+
+<HR>
+<A NAME="wxlonglonggetdouble"></A>
+<H3>wxLongLong::ToDouble</H3>
+<P>
+<B>double</B> <B>ToDouble</B>() <B>const</B><P>
+Returns the value as <TT>double</TT>.<P>
+
+
+<HR>
+<A NAME="wxlonglongtolong"></A>
+<H3>wxLongLong::ToLong</H3>
+<P>
+<B>long</B> <B>ToLong</B>() <B>const</B><P>
+Truncate wxLongLong to long. If the conversion loses data (i.e. the wxLongLong
+value is outside the range of built-in long type), an assert will be triggered
+in debug mode.<P>
+
+
+<HR>
+<A NAME="wxlonglongtostring"></A>
+<H3>wxLongLong::ToString</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>ToString</B>() <B>const</B><P>
+Returns the string representation of a wxLongLong.<P>
+
+
+<HR>
+<A NAME="wxlonglongoperatorplus"></A>
+<H3>wxLongLong::operator+</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A></B> </B> <B>operator+</B>(<B>const <A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>& </B></B><I>ll</I>) <B>const</B><P>
+Adds 2 wxLongLongs together and returns the result.<P>
+
+
+<HR>
+<A NAME="wxlonglongoperatorplusassign"></A>
+<H3>wxLongLong::operator+=</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>&</B> </B> <B>operator+</B>(<B>const <A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>& </B></B><I>ll</I>)<P>
+Add another wxLongLong to this one.<P>
+
+
+<HR>
+<A NAME="wxlonglongoperatorinc"></A>
+<H3>wxLongLong::operator++</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>&</B> </B> <B>operator++</B>()<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>&</B> </B> <B>operator++</B>(<B>int</B><I></I>)<P>
+Pre/post increment operator.<P>
+
+
+<HR>
+<A NAME="wxlonglongoperatorunaryminus"></A>
+<H3>wxLongLong::operator-</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A></B> </B> <B>operator-</B>() <B>const</B><P>
+Returns the value of this wxLongLong with opposite sign.  Not in wxULongLong.<P>
+
+
+<HR>
+<A NAME="wxlonglongoperatorminus"></A>
+<H3>wxLongLong::operator-</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A></B> </B> <B>operator-</B>(<B>const <A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>& </B></B><I>ll</I>) <B>const</B><P>
+Subtracts 2 wxLongLongs and returns the result.<P>
+
+
+<HR>
+<A NAME="wxlonglongoperatorminusassign"></A>
+<H3>wxLongLong::operator-=</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>&</B> </B> <B>operator-</B>(<B>const <A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>& </B></B><I>ll</I>)<P>
+Subtracts another wxLongLong from this one.<P>
+
+
+<HR>
+<A NAME="wxlonglongoperatordec"></A>
+<H3>wxLongLong::operator--</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>&</B> </B> <B>operator--</B>()<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A>&</B> </B> <B>operator--</B>(<B>int</B><I></I>)<P>
+Pre/post decrement operator.<P>
+
+</FONT></BODY></HTML>

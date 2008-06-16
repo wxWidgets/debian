@@ -4,7 +4,7 @@
 %% Author:      Ryan Norton <wxprojects@comcast.net>
 %% Modified by:
 %% Created:     7/7/2004
-%% RCS-ID:      $Id: uri.tex,v 1.16.2.1 2006/02/09 03:11:52 VZ Exp $
+%% RCS-ID:      $Id: uri.tex 41263 2006-09-17 10:59:18Z RR $
 %% Copyright:   (c) Ryan Norton
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,7 +34,11 @@ furthur functionality.
 
 \wxheading{Include files}
 
-<uri.h>
+<wx/uri.h>
+
+\wxheading{See also}
+
+\helpref{wxURL}{wxurl}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
@@ -46,7 +50,7 @@ one of the following methods
 \helpref{GetScheme}{wxurigetscheme}\\
 \helpref{GetUserInfo}{wxurigetuserinfo}\\
 \helpref{GetServer}{wxurigetserver}\\
-\helpref{GetPort}{wxurigetserver}\\
+\helpref{GetPort}{wxurigetport}\\
 \helpref{GetPath}{wxurigetpath}\\
 \helpref{GetQuery}{wxurigetquery}\\
 \helpref{GetFragment}{wxurigetfragment}
@@ -350,7 +354,7 @@ of the base's is merged with this URI's path, resulting in the URI
 "http://mysite.com/john/mydir".
 
 \docparam{base}{Base URI to inherit from.  Must be a full URI and not a reference}
-\docparam{flags}{Currently either \texttt{wxURI\_STRICT} or $0$, in non strict
+\docparam{flags}{Currently either \texttt{wxURI\_STRICT} or $0$, in non-strict
 mode some compatibility layers are enabled to allow loopholes from RFCs prior
 to 2396}
 

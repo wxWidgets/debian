@@ -1,12 +1,12 @@
 /* -------------------------------------------------------------------------
  * Project: GSocket (Generic Socket) for WX
- * Name:    gsockosx.c
+ * Name:    src/mac/corefoundation/gsockosx.c
  * Purpose: GSocket: Mac OS X mach-o part
- * CVSID:   $Id: gsockosx.cpp,v 1.9 2005/04/28 02:29:01 KH Exp $
+ * CVSID:   $Id: gsockosx.cpp 49205 2007-10-17 21:52:02Z DE $
  * Mac code by Brian Victor, February 2002.  Email comments to bhv1@psu.edu
  * ------------------------------------------------------------------------- */
 
-#include "wx/setup.h"
+#include "wx/wxprec.h"
 
 #if wxUSE_SOCKETS
 
@@ -75,7 +75,7 @@ struct MacGSocketData* _GSocket_Get_Mac_Socket(GSocket *socket)
   cont.info = socket;
 
   CFSocketRef cf = CFSocketCreateWithNative(NULL, socket->m_fd,
-  			ALL_CALLBACK_TYPES, Mac_Socket_Callback, &cont);
+                   ALL_CALLBACK_TYPES, Mac_Socket_Callback, &cont);
   CFRunLoopSourceRef source = CFSocketCreateRunLoopSource(NULL, cf, 0);
   assert(source);
   socket->m_gui_dependent = (char*)data;
@@ -206,6 +206,9 @@ void GSocketGUIFunctionsTableConcrete::Disable_Events(GSocket *socket)
     /* CFSocketInvalidate does CFRunLoopRemoveSource anyway */
     CFRunLoopRemoveSource(s_mainRunLoop, data->source, kCFRunLoopCommonModes);
     CFSocketInvalidate(data->socket);
+
+    // CFSocketInvalidate has closed the socket so we want to make sure GSocket knows this
+    socket->m_fd = -1 /*INVALID_SOCKET*/;
 }
 
 #endif // wxUSE_SOCKETS

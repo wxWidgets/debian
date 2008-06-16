@@ -1,0 +1,154 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFileSystemHandler</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfilesystemhandler"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfilesystem.html#wxfilesystem"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfiletype.html#wxfiletype"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFileSystemHandler</H2>
+<P>
+Classes derived from wxFileSystemHandler are used
+to access virtual file systems. Its public interface consists
+of two methods: <A HREF="wx_wxfilesystemhandler.html#wxfilesystemhandlercanopen">CanOpen</A> 
+and <A HREF="wx_wxfilesystemhandler.html#wxfilesystemhandleropenfile">OpenFile</A>. 
+It provides additional protected methods to simplify the process
+of opening the file: GetProtocol, GetLeftLocation, GetRightLocation,
+GetAnchor, GetMimeTypeFromExt.<P>
+Please have a look at <A HREF="wx_fs.html#fs">overview</A> if you don't know how locations
+are constructed.<P>
+Also consult <A HREF="wx_fs.html#fs">list of available handlers</A>.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl, you need to derive your file system handler class
+from Wx::PlFileSystemHandler.<P>
+<B><FONT COLOR="#FF0000">Notes</FONT></B><P>
+<UL>
+
+<LI> The handlers are shared by all instances of wxFileSystem.
+<LI> wxHTML library provides handlers for local files and HTTP or FTP protocol
+<LI> The <I>location</I> parameter passed to OpenFile or CanOpen methods
+is always an <B>absolute</B> path. You don't need to check the FS's current path.
+</UL>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/filesys.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilesystem.html#wxfilesystem">wxFileSystem</A>, 
+<A HREF="wx_wxfsfile.html#wxfsfile">wxFSFile</A>, 
+<A HREF="wx_fs.html#fs">Overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxfilesystemhandlerwxfilesystemhandler">wxFileSystemHandler::wxFileSystemHandler</A><BR>
+<A HREF="#wxfilesystemhandlercanopen">wxFileSystemHandler::CanOpen</A><BR>
+<A HREF="#wxfilesystemhandlergetanchor">wxFileSystemHandler::GetAnchor</A><BR>
+<A HREF="#wxfilesystemhandlergetleftlocation">wxFileSystemHandler::GetLeftLocation</A><BR>
+<A HREF="#wxfilesystemhandlergetmimetypefromext">wxFileSystemHandler::GetMimeTypeFromExt</A><BR>
+<A HREF="#wxfilesystemhandlergetprotocol">wxFileSystemHandler::GetProtocol</A><BR>
+<A HREF="#wxfilesystemhandlergetrightlocation">wxFileSystemHandler::GetRightLocation</A><BR>
+<A HREF="#wxfilesystemhandlerfindfirst">wxFileSystemHandler::FindFirst</A><BR>
+<A HREF="#wxfilesystemhandlerfindnext">wxFileSystemHandler::FindNext</A><BR>
+<A HREF="#wxfilesystemhandleropenfile">wxFileSystemHandler::OpenFile</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfilesystemhandlerwxfilesystemhandler"></A>
+<H3>wxFileSystemHandler::wxFileSystemHandler</H3>
+<P>
+<B></B> <B>wxFileSystemHandler</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxfilesystemhandlercanopen"></A>
+<H3>wxFileSystemHandler::CanOpen</H3>
+<P>
+<B>virtual bool</B> <B>CanOpen</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>location</I>)<P>
+Returns true if the handler is able to open this file. This function doesn't
+check whether the file exists or not, it only checks if it knows the protocol.
+Example:<P>
+<PRE>
+bool MyHand::CanOpen(const wxString& location) 
+{
+    return (GetProtocol(location) == "http");
+}
+</PRE>
+Must be overridden in derived handlers.<P>
+
+<HR>
+<A NAME="wxfilesystemhandlergetanchor"></A>
+<H3>wxFileSystemHandler::GetAnchor</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetAnchor</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>location</I>) <B>const</B><P>
+Returns the anchor if present in the location.
+See <A HREF="wx_wxfsfile.html#wxfsfilegetanchor">wxFSFile</A> for details.<P>
+Example: GetAnchor("index.htm#chapter2") == "chapter2"<P>
+<B>Note:</B> the anchor is NOT part of the left location.<P>
+
+<HR>
+<A NAME="wxfilesystemhandlergetleftlocation"></A>
+<H3>wxFileSystemHandler::GetLeftLocation</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLeftLocation</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>location</I>) <B>const</B><P>
+Returns the left location string extracted from <I>location</I>. <P>
+Example: GetLeftLocation("file:myzipfile.zip#zip:index.htm") == "file:myzipfile.zip"<P>
+
+<HR>
+<A NAME="wxfilesystemhandlergetmimetypefromext"></A>
+<H3>wxFileSystemHandler::GetMimeTypeFromExt</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetMimeTypeFromExt</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>location</I>)<P>
+Returns the MIME type based on <B>extension</B> of <I>location</I>. (While wxFSFile::GetMimeType
+returns real MIME type - either extension-based or queried from HTTP.)<P>
+Example : GetMimeTypeFromExt("index.htm") == "text/html"<P>
+
+<HR>
+<A NAME="wxfilesystemhandlergetprotocol"></A>
+<H3>wxFileSystemHandler::GetProtocol</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetProtocol</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>location</I>) <B>const</B><P>
+Returns the protocol string extracted from <I>location</I>. <P>
+Example: GetProtocol("file:myzipfile.zip#zip:index.htm") == "zip"<P>
+
+<HR>
+<A NAME="wxfilesystemhandlergetrightlocation"></A>
+<H3>wxFileSystemHandler::GetRightLocation</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetRightLocation</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>location</I>) <B>const</B><P>
+Returns the right location string extracted from <I>location</I>. <P>
+Example : GetRightLocation("file:myzipfile.zip#zip:index.htm") == "index.htm"<P>
+
+<HR>
+<A NAME="wxfilesystemhandlerfindfirst"></A>
+<H3>wxFileSystemHandler::FindFirst</H3>
+<P>
+<B>virtual <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>FindFirst</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>wildcard</I>, <B>int </B><I>flags = 0</I>)<P>
+Works like <A HREF="wx_filefunctions.html#wxfindfirstfile">wxFindFirstFile</A>. Returns name of the first
+filename (within filesystem's current path) that matches <I>wildcard</I>. <I>flags</I> may be one of
+wxFILE (only files), wxDIR (only directories) or 0 (both).<P>
+This method is only called if <A HREF="wx_wxfilesystemhandler.html#wxfilesystemhandlercanopen">CanOpen</A> returns true.<P>
+
+<HR>
+<A NAME="wxfilesystemhandlerfindnext"></A>
+<H3>wxFileSystemHandler::FindNext</H3>
+<P>
+<B>virtual <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>FindNext</B>()<P>
+Returns next filename that matches parameters passed to <A HREF="wx_wxfilesystem.html#wxfilesystemfindfirst">FindFirst</A>.<P>
+This method is only called if <A HREF="wx_wxfilesystemhandler.html#wxfilesystemhandlercanopen">CanOpen</A> returns true and FindFirst
+returned a non-empty string.<P>
+
+<HR>
+<A NAME="wxfilesystemhandleropenfile"></A>
+<H3>wxFileSystemHandler::OpenFile</H3>
+<P>
+<B>virtual <A HREF="wx_wxfsfile.html#wxfsfile">wxFSFile</A>*</B> </B> <B>OpenFile</B>(<B><A HREF="wx_wxfilesystem.html#wxfilesystem">wxFileSystem</A>& </B></B><I>fs</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>location</I>)<P>
+Opens the file and returns wxFSFile pointer or NULL if failed.<P>
+Must be overridden in derived handlers.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>fs</I><UL><UL>
+Parent FS (the FS from that OpenFile was called). See ZIP handler
+for details of how to use it.</UL></UL>
+<P>
+<I>location</I><UL><UL>
+The <B>absolute</B> location of file.</UL></UL>
+<P>
+
+</FONT></BODY></HTML>

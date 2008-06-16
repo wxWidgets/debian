@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      5-Sept-2000
-# RCS-ID:       $Id: gen_iface.py,v 1.30.2.1 2006/03/12 06:03:52 RD Exp $
+# RCS-ID:       $Id: gen_iface.py 40934 2006-08-31 05:35:26Z RD $
 # Copyright:    (c) 2000 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -488,7 +488,9 @@ methodOverrideMap = {
 
     'SetHotspotActiveFore' : ('SetHotspotActiveForeground', 0, 0, 0),
     'SetHotspotActiveBack' : ('SetHotspotActiveBackground', 0, 0, 0),
-
+    
+    'GetCaretLineBack' : ('GetCaretLineBackground', 0, 0, 0),
+    'SetCaretLineBack' : ('SetCaretLineBackground', 0, 0, 0),
 
     'ReplaceTarget' :
     (0,

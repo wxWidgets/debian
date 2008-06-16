@@ -1,0 +1,94 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStaticBox</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstaticbox"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstaticbitmap.html#wxstaticbitmap"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstaticboxsizer.html#wxstaticboxsizer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStaticBox</H2>
+<P>
+A static box is a rectangle drawn around other panel items to denote
+a logical grouping of items.<P>
+Please note that a static box should <B>not</B> be used as the parent for the
+controls it contains, instead they should be siblings of each other. Although
+using a static box as a parent might work in some versions of wxWidgets, it
+results in a crash under, for example, wxGTK. <P>
+Also, please note that because of this, the order in which you create new 
+controls is important. Create your wxStaticBox control <B>before</B> any 
+siblings that are to appear inside the wxStaticBox in order to preserve the 
+correct Z-Order of controls.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/statbox.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+There are no special styles for this control.<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstatictext.html#wxstatictext">wxStaticText</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxstaticboxctor">wxStaticBox::wxStaticBox</A><BR>
+<A HREF="#wxstaticboxdtor">wxStaticBox::~wxStaticBox</A><BR>
+<A HREF="#wxstaticboxcreate">wxStaticBox::Create</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstaticboxctor"></A>
+<H3>wxStaticBox::wxStaticBox</H3>
+<P>
+<B></B> <B>wxStaticBox</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxStaticBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "staticBox"</I>)<P>
+Constructor, creating and showing a static box.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+Text to be displayed in the static box, the empty string for no label.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position. If the position (-1, -1) is specified then a default position is chosen.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Checkbox size. If the size (-1, -1) is specified then a default size is chosen.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxstaticbox.html#wxstaticbox">wxStaticBox</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstaticbox.html#wxstaticboxcreate">wxStaticBox::Create</A><P>
+
+<HR>
+<A NAME="wxstaticboxdtor"></A>
+<H3>wxStaticBox::~wxStaticBox</H3>
+<P>
+<B>void</B> <B>~wxStaticBox</B>()<P>
+Destructor, destroying the group box.<P>
+
+<HR>
+<A NAME="wxstaticboxcreate"></A>
+<H3>wxStaticBox::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "staticBox"</I>)<P>
+Creates the static box for two-step construction. See <A HREF="wx_wxstaticbox.html#wxstaticboxctor">wxStaticBox::wxStaticBox</A>
+for further details.<P>
+
+
+</FONT></BODY></HTML>

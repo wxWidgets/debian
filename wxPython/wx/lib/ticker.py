@@ -5,19 +5,23 @@
 # Author:      Chris Mellon
 #
 # Created:     29-Aug-2004
-# RCS-ID:      $Id: ticker.py,v 1.1 2004/09/01 22:00:16 RD Exp $
+# RCS-ID:      $Id: ticker.py 42816 2006-10-31 08:50:17Z RD $
 # Copyright:   (c) 2004 by Chris Mellon
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
 
 """News-ticker style scrolling text control
 
-    Can scroll from right to left or left to right.
-    Speed of the ticking is controlled by two parameters:
-        Frames per Second(FPS): How many times per second the ticker updates
-        Pixels per Frame(PPF): How many pixels the text moves each update
-    Low FPS with high PPF will result in "jumpy" text, lower PPF with higher FPS
-    is smoother (but blurrier and more CPU intensive) text.
+    * Can scroll from right to left or left to right.
+    
+    * Speed of the ticking is controlled by two parameters:
+    
+      - Frames per Second(FPS): How many times per second the ticker updates
+      
+      - Pixels per Frame(PPF): How many pixels the text moves each update
+
+Low FPS with high PPF will result in "jumpy" text, lower PPF with higher FPS
+is smoother (but blurrier and more CPU intensive) text.
 """
 
 import wx
@@ -46,7 +50,7 @@ class Ticker(wx.PyControl):
         self._ppf = ppf  #pixels per frame
         self.SetDirection(direction)
         self.SetText(text)
-        self.SetBestFittingSize(size)
+        self.SetInitialSize(size)
         self.SetForegroundColour(fgcolor)
         self.SetBackgroundColour(bgcolor)
         wx.EVT_TIMER(self, -1, self.OnTick)

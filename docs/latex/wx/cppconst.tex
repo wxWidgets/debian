@@ -1,4 +1,14 @@
-\section{Preprocesser symbols defined by wxWidgets}\label{cppconst}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Name:        cppconst.tex
+%% Purpose:     Preprocessor symbols
+%% Author:      Vadim Zeitlin
+%% Created:     2002-08-22
+%% RCS-ID:      $Id: cppconst.tex 42307 2006-10-23 21:59:15Z VZ $
+%% Copyright:   (c) 2002-2006 wxWidgets
+%% License:     wxWindows license
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Preprocessor symbols defined by wxWidgets}\label{cppconst}
 
 These are preprocessor symbols used in the wxWidgets source, grouped
 by category (and sorted by alphabetical order inside each category). All of
@@ -12,7 +22,6 @@ always tested using \texttt{#ifdef} and not \texttt{#if}.
 \twocolitem{\_\_WINDOWS\_\_}{any Windows, yom may also use \_\_WXMSW\_\_}
 \twocolitem{\_\_WIN16\_\_}{Win16 API (not supported since wxWidgets 2.6)}
 \twocolitem{\_\_WIN32\_\_}{Win32 API}
-\twocolitem{\_\_WIN95\_\_}{Windows 95 or NT 4.0 and above system (not NT 3.5x)}
 \twocolitem{\_\_WXBASE\_\_}{Only wxBase, no GUI features (same as \texttt{wxUSE\_GUI} $== 0$)}
 \twocolitem{\_\_WXCOCOA\_\_}{OS X using Cocoa API}
 \twocolitem{\_\_WXWINCE\_\_}{Windows CE}
@@ -28,7 +37,6 @@ always tested using \texttt{#ifdef} and not \texttt{#if}.
 \twocolitem{\_\_WXMGL\_\_}{SciTech Soft MGL (\_\_WXUNIVERSAL\_\_ will be also
 defined)}
 \twocolitem{\_\_WXMSW\_\_}{Any Windows}
-\twocolitem{\_\_WXOS2\_\_}{Identical to \_\_WXPM\_\_}
 \twocolitem{\_\_WXOSX\_\_}{Any Mac OS X port (either Carbon or Cocoa)}
 \twocolitem{\_\_WXPALMOS\_\_}{PalmOS}
 \twocolitem{\_\_WXPM\_\_}{OS/2 native Presentation Manager}
@@ -52,7 +60,7 @@ summarize:
 \begin{itemize}
 \item If you want to test for all Mac platforms, classic and OS X, you
 should test both \texttt{\_\_WXMAC\_\_} and \texttt{\_\_WXCOCOA\_\_}.
-\item If you want to test for any GUI Mac port under OS X, use 
+\item If you want to test for any GUI Mac port under OS X, use
 \texttt{\_\_WXOSX\_\_}.
 \item If you want to test for any port under Mac OS X, including, for
 example, wxGTK and also wxBase, use \texttt{\_\_DARWIN\_\_} (see below).
@@ -89,6 +97,7 @@ symbols, although this has not always been followed.
 \twocolitem{\_\_UNIX\_LIKE\_\_}{Unix, BeOS or VMS}
 \twocolitem{\_\_VMS\_\_}{VMS}
 \twocolitem{\_\_WINDOWS\_\_}{any Windows}
+\twocolitem{\_\_WINE\_\_}{Wine}
 \end{twocollist}
 
 
@@ -125,9 +134,9 @@ compiler used.
 to the compiler version: $500$ is $5.0$.}
 \twocolitem{\_\_DJGPP\_\_}{DJGPP}
 \twocolitem{\_\_DIGITALMARS\_\_}{Digital Mars}
-\twocolitem{\_\_GNUG\_\_}{Gnu C++ on any platform, see also 
+\twocolitem{\_\_GNUG\_\_}{Gnu C++ on any platform, see also
 \helpref{wxCHECK\_GCC\_VERSION}{wxcheckgccversion}}
-\twocolitem{\_\_GNUWIN32\_\_}{Gnu-Win32 compiler, see also 
+\twocolitem{\_\_GNUWIN32\_\_}{Gnu-Win32 compiler, see also
 \helpref{wxCHECK\_W32API\_VERSION}{wxcheckw32apiversion}}
 \twocolitem{\_\_MINGW32\_\_}{MinGW}
 \twocolitem{\_\_MWERKS\_\_}{CodeWarrior MetroWerks compiler}
@@ -144,6 +153,35 @@ the compiler version, $1100$ is $11.0$ and $1200$ is OpenWatcom.}
 \end{twocollist}
 
 
+\subsection{Feature tests}\label{featuretests}
+
+Some library features may not be always available even if they were selected by
+the user. To make it possible to check if this is the case, the library
+predefines the symbols in the form \texttt{wxHAS\_FEATURE}. Unlike 
+\texttt{wxUSE\_FEATURE} symbols which are defined by the library user (directly
+in \texttt{setup.h} or by running configure script) and which must be always
+defined as either $0$ or $1$, the \texttt{wxHAS} symbols are only defined if
+the corresponding feature is available and not defined at all otherwise.
+
+Currently the following symbols exist:
+\begin{twocollist}\itemsep=0pt
+\twocolitem{wxHAS\_LARGE\_FILES}{Defined if \helpref{wxFile}{wxfile} supports
+files more than 4GB in size.}
+\twocolitem{wxHAS\_LARGE\_FFILES}{Defined if \helpref{wxFFile}{wxffile}
+supports files more than 4GB in size.}
+\twocolitem{wxHAS\_POWER\_EVENTS}{Defined if 
+\helpref{wxPowerEvent}{wxpowerevent} are ever generated on the current platform.}
+\twocolitem{wxHAS\_RADIO\_MENU\_ITEMS}{Defined if the current port supports 
+\helpref{radio menu items}{wxmenuappendradioitem}.}
+\twocolitem{wxHAS\_RAW\_KEY\_CODES}{Defined if 
+\helpref{raw key codes}{wxkeyeventgetrawkeycode} are supported.}
+\twocolitem{wxHAS\_REGEX\_ADVANCED}{Defined if advanced syntax is available in 
+\helpref{wxRegEx}{wxregex}.}
+\twocolitem{wxHAS\_TASK\_BAR\_ICON}{Defined if 
+\helpref{wxTaskBarIcon}{wxtaskbaricon} is available on the current platform.}
+\end{twocollist}
+
+
 \subsection{Miscellaneous}\label{miscellaneousconst}
 
 \begin{twocollist}\itemsep=0pt
@@ -157,7 +195,7 @@ also \helpref{wxCHECK\_VERSION}{wxcheckversion}}
 this case, \texttt{wx/wxprec.h} includes \texttt{wx/wx.h} which, in turn,
 includes a number of wxWidgets headers thus making it unnecessary to include
 them explicitly. However if this is not defined, you do need to include them
-and so the usual idiom which allows to support both cases is to first include 
+and so the usual idiom which allows to support both cases is to first include
 \texttt{wx/wxprec.h} and then, inside \texttt{#ifndef WX\_PRECOMP}, individual
 headers you need.}
 \twocolitem{\_UNICODE and UNICODE}{both are defined if wxUSE\_UNICODE is set to $1$}
@@ -172,7 +210,6 @@ monolithic wxWidgets library, defined as $0$ when building GUI library only)}
 exceptions has been switched off}
 \twocolitem{wxNO\_THREADS}{if this macro is defined, the compilation options
 don't include compiler flags needed for multithreaded code generation. This
-implies that wxUSE\_THREADS is $0$ and also that other (non wx-based) threading
+implies that wxUSE\_THREADS is $0$ and also that other (non-wx-based) threading
 packages cannot be used neither.}
 \end{twocollist}
-

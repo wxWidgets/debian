@@ -1,0 +1,108 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxValidator overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="validatoroverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdialogoverview.html#wxdialogoverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_constraintsoverview.html#constraintsoverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxValidator overview</H2>
+<P>
+Classes: <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>, <A HREF="wx_wxtextvalidator.html#wxtextvalidator">wxTextValidator</A>, 
+<A HREF="wx_wxgenericvalidator.html#wxgenericvalidator">wxGenericValidator</A><P>
+The aim of the validator concept is to make dialogs very much easier to write.
+A validator is an object that can be plugged into a control (such as a wxTextCtrl), and
+mediates between C++ data and the control, transferring the data in either direction
+and validating it. It also is able to intercept events generated
+by the control, providing filtering behaviour without the need to derive a new control class.<P>
+You can use a stock validator, such as <A HREF="wx_wxtextvalidator.html#wxtextvalidator">wxTextValidator</A> (which does text
+control data transfer, validation and filtering) and 
+<A HREF="wx_wxgenericvalidator.html#wxgenericvalidator">wxGenericValidator</A> (which does data transfer for a range of controls);
+or you can write your own.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+Here is an example of wxTextValidator usage.<P>
+<PRE>
+  wxTextCtrl *txt1 = new wxTextCtrl(this, -1, wxT(""),
+    wxPoint(10, 10), wxSize(100, 80), 0,
+    wxTextValidator(wxFILTER_ALPHA, &g_data.m_string));
+</PRE>
+In this example, the text validator object provides the following functionality:<P>
+<OL>
+
+<LI> It transfers the value of g_data.m_string (a wxString variable) to the wxTextCtrl when
+the dialog is initialised.
+<LI> It transfers the wxTextCtrl data back to this variable when the dialog is dismissed.
+<LI> It filters input characters so that only alphabetic characters are allowed.
+</OL>
+<P>
+The validation and filtering of input is accomplished in two ways. When a character is input,
+wxTextValidator checks the character against the allowed filter flag (wxFILTER_ALPHA in this case). If
+the character is inappropriate, it is vetoed (does not appear) and a warning beep sounds.
+The second type of validation is performed when the dialog is about to be dismissed, so if
+the default string contained invalid characters already, a dialog box is shown giving the
+error, and the dialog is not dismissed.<P>
+<B><FONT COLOR="#FF0000">Anatomy of a validator</FONT></B><P>
+A programmer creating a new validator class should provide the following functionality.<P>
+A validator constructor is responsible for allowing the programmer to specify the kind
+of validation required, and perhaps a pointer to a C++ variable that is used for storing the
+data for the control. If such a variable address is not supplied by the user, then
+the validator should store the data internally.<P>
+The <A HREF="wx_wxvalidator.html#wxvalidatorvalidate">wxValidator::Validate</A> member function should return
+true if the data in the control (not the C++ variable) is valid. It should also show
+an appropriate message if data was not valid.<P>
+The <A HREF="wx_wxvalidator.html#wxvalidatortransfertowindow">wxValidator::TransferToWindow</A> member function should
+transfer the data from the validator or associated C++ variable to the control.<P>
+The <A HREF="wx_wxvalidator.html#wxvalidatortransferfromwindow">wxValidator::TransferFromWindow</A> member function should
+transfer the data from the control to the validator or associated C++ variable.<P>
+There should be a copy constructor, and a <A HREF="wx_wxvalidator.html#wxvalidatorclone">wxValidator::Clone</A> function
+which returns a copy of the validator object. This is important because validators
+are passed by reference to window constructors, and must therefore be cloned internally.<P>
+You can optionally define event handlers for the validator, to implement filtering. These handlers
+will capture events before the control itself does.<P>
+For an example implementation, see the valtext.h and valtext.cpp files in the wxWidgets library.<P>
+<B><FONT COLOR="#FF0000">How validators interact with dialogs</FONT></B><P>
+For validators to work correctly, validator functions must be called at the right times during
+dialog initialisation and dismissal.<P>
+When a <A HREF="wx_wxdialog.html#wxdialogshow">wxDialog::Show</A> is called (for a modeless dialog)
+or <A HREF="wx_wxdialog.html#wxdialogshowmodal">wxDialog::ShowModal</A> is called (for a modal dialog),
+the function <A HREF="wx_wxwindow.html#wxwindowinitdialog">wxWindow::InitDialog</A> is automatically called.
+This in turn sends an initialisation event to the dialog. The default handler for
+the wxEVT_INIT_DIALOG event is defined in the wxWindow class to simply call
+the function <A HREF="wx_wxwindow.html#wxwindowtransferdatatowindow">wxWindow::TransferDataToWindow</A>. This
+function finds all the validators in the window's children and calls the TransferToWindow
+function for each. Thus, data is transferred from C++ variables to the dialog
+just as the dialog is being shown.<P>
+<HR>
+If you are using a window or panel instead of a dialog, you will need to
+call <A HREF="wx_wxwindow.html#wxwindowinitdialog">wxWindow::InitDialog</A> explicitly before showing the
+window.<HR><P>
+<P>
+When the user clicks on a button, for example the OK button, the application should
+first call <A HREF="wx_wxwindow.html#wxwindowvalidate">wxWindow::Validate</A>, which returns false if
+any of the child window validators failed to validate the window data. The button handler
+should return immediately if validation failed. Secondly, the application should
+call <A HREF="wx_wxwindow.html#wxwindowtransferdatafromwindow">wxWindow::TransferDataFromWindow</A> and
+return if this failed. It is then safe to end the dialog by calling EndModal (if modal)
+or Show (if modeless).<P>
+In fact, wxDialog contains a default command event handler for the wxID_OK button. It goes like
+this:<P>
+<PRE>
+void wxDialog::OnOK(wxCommandEvent& event)
+{
+    if ( Validate() && TransferDataFromWindow() )
+    {
+        if ( IsModal() )
+            EndModal(wxID_OK);
+        else
+        {
+            SetReturnCode(wxID_OK);
+            this-&gt;Show(false);
+        }
+    }
+}
+</PRE>
+So if using validators and a normal OK button, you may not even need to write any
+code for handling dialog dismissal.<P>
+If you load your dialog from a resource file, you will need to iterate through the controls
+setting validators, since validators can't be specified in a dialog resource.<P>
+
+</FONT></BODY></HTML>

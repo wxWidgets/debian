@@ -1,0 +1,93 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMediaEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmediaevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmediactrl.html#wxmediactrl"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmemorybuffer.html#wxmemorybuffer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMediaEvent</H2>
+<P>
+Event <A HREF="wx_wxmediactrl.html#wxmediactrl">wxMediaCtrl</A> uses.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxnotifyevent.html#wxnotifyevent">wxNotifyEvent</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/mediactrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MEDIA_LOADED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+Sent when a media has loaded enough data that it can start playing.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MEDIA_STOP(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+Send when a media has switched to the wxMEDIASTATE_STOPPED state.
+You may be able to Veto this event to prevent it from stopping,
+causing it to continue playing - even if it has reached that end of the media
+(note that this may not have the desired effect - if you want to loop the
+media, for example, catch the EVT_MEDIA_FINISHED and play there instead). 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MEDIA_FINISHED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+Sent when a media has finished playing in a <A HREF="wx_wxmediactrl.html#wxmediactrl">wxMediaCtrl</A>.
+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MEDIA_STATECHANGED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+Send when a media has switched its state (from any media state).
+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MEDIA_PLAY(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+Send when a media has switched to the wxMEDIASTATE_PLAYING state.
+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MEDIA_PAUSE(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+Send when a media has switched to the wxMEDIASTATE_PAUSED state.
+
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+</FONT></BODY></HTML>

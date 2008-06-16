@@ -1,0 +1,47 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxObjectRefData</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxobjectrefdata"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxobject.html#wxobject"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxownerdrawncombobox.html#wxownerdrawncombobox"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxObjectRefData</H2>
+<P>
+This class is used to store reference-counted data. Derive classes from this to
+store your own data. When retrieving information from a <B>wxObject</B>'s reference data,
+you will need to cast to your own derived class.<P>
+<B><FONT COLOR="#FF0000">Friends</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxobjectrefdatactor">wxObjectRefData::wxObjectRefData</A><BR>
+<A HREF="#wxobjectrefdatadtor">wxObjectRefData::~wxObjectRefData</A><BR>
+<A HREF="#wxobjectrefdatagetrefcount">wxObjectRefData::GetRefCount</A><BR>
+<P>
+
+<HR>
+<A NAME="wxobjectrefdatactor"></A>
+<H3>wxObjectRefData::wxObjectRefData</H3>
+<P>
+<B></B> <B>wxObjectRefData</B>()<P>
+Default constructor. Initialises the <B>m_count</B> member to 1.<P>
+
+<HR>
+<A NAME="wxobjectrefdatadtor"></A>
+<H3>wxObjectRefData::~wxObjectRefData</H3>
+<P>
+<B></B> <B>wxObjectRefData</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxobjectrefdatagetrefcount"></A>
+<H3>wxObjectRefData::GetRefCount</H3>
+<P>
+<B>int</B> <B>GetRefCount</B>() <B>const</B><P>
+Returns the reference count associated with this shared data.
+When this goes to zero during a <A HREF="wx_wxobject.html#wxobjectunref">wxObject::UnRef</A>, an object
+can delete this <B>wxObjectRefData</B> object.<P>
+
+</FONT></BODY></HTML>

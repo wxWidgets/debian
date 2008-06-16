@@ -1,0 +1,50 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStaticBoxSizer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstaticboxsizer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstaticbox.html#wxstaticbox"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstaticline.html#wxstaticline"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStaticBoxSizer</H2>
+<P>
+wxStaticBoxSizer is a sizer derived from wxBoxSizer but adds a static
+box around the sizer. This static box may be either created independently or
+the sizer may create it itself as a convenience. In any case, the sizer owns
+the <A HREF="wx_wxstaticbox.html#wxstaticbox">wxStaticBox</A> control and will delete it if it is
+deleted.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxboxsizer.html#wxboxsizer">wxBoxSizer</A><BR>
+
+<A HREF="wx_wxsizer.html#wxsizer">wxSizer</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/sizer.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>, <A HREF="wx_wxstaticbox.html#wxstaticbox">wxStaticBox</A>, <A HREF="wx_wxboxsizer.html#wxboxsizer">wxBoxSizer</A>, <A HREF="wx_sizeroverview.html#sizeroverview">Sizer overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxstaticboxsizerwxstaticboxsizer">wxStaticBoxSizer::wxStaticBoxSizer</A><BR>
+<A HREF="#wxstaticboxsizergetstaticbox">wxStaticBoxSizer::GetStaticBox</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstaticboxsizerwxstaticboxsizer"></A>
+<H3>wxStaticBoxSizer::wxStaticBoxSizer</H3>
+<P>
+<B></B> <B>wxStaticBoxSizer</B>(<B><A HREF="wx_wxstaticbox.html#wxstaticbox">wxStaticBox</A>* </B></B><I>box</I>, <B>int </B><I>orient</I>)<P>
+<B></B> <B>wxStaticBoxSizer</B>(<B>int </B><I>orient</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> </B></B><I>*parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label = wxEmptyString</I>)<P>
+The first constructor uses an already existing static box. It takes the
+associated static box and the orientation <I>orient</I>, which can be either
+<TT>wxVERTICAL</TT> or <TT>wxHORIZONTAL</TT> as parameters.<P>
+The second one creates a new static box with the given label and parent window.<P>
+
+
+<HR>
+<A NAME="wxstaticboxsizergetstaticbox"></A>
+<H3>wxStaticBoxSizer::GetStaticBox</H3>
+<P>
+<B><A HREF="wx_wxstaticbox.html#wxstaticbox">wxStaticBox</A>*</B> </B> <B>GetStaticBox</B>()<P>
+Returns the static box associated with the sizer.<P>
+
+</FONT></BODY></HTML>

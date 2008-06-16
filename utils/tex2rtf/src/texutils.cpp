@@ -5,14 +5,10 @@
 // Modified by: Wlodzimiez ABX Skiba 2003/2004 Unicode support
 //              Ron Lee
 // Created:     7.9.93
-// RCS-ID:      $Id: texutils.cpp,v 1.32.2.2 2006/01/27 03:08:36 MW Exp $
+// RCS-ID:      $Id: texutils.cpp 47536 2007-07-17 22:47:30Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -27,6 +23,7 @@
 
 #include "wx/app.h"
 #include "wx/hash.h"
+#include "wx/textfile.h"
 
 #ifdef new
 #undef new
@@ -390,95 +387,79 @@ void AddTexRef(wxChar *name, wxChar *file, wxChar *sectionName,
 
 void WriteTexReferences(wxChar *filename)
 {
-  wxString converter;
-  wxString name = filename;
-  wxSTD ofstream ostr((char const *)name.fn_str());
-  if (ostr.bad()) return;
+    wxString name = filename;
+    wxTextFile file;
 
-  TexReferences.BeginFind();
-  wxHashTable::Node *node = TexReferences.Next();
-  while (node)
-  {
-    Tex2RTFYield();
-    TexRef *ref = (TexRef *)node->GetData();
-    converter = ref->refLabel;
-    ostr << converter.mb_str();
-    ostr << " ";
-    converter = (ref->refFile ? ref->refFile : _T("??"));
-    ostr << converter.mb_str();
-    ostr << " ";
-    converter = (ref->sectionName ? ref->sectionName : _T("??")) ;
-    ostr << converter.mb_str();
-    ostr << " ";
-    converter = (ref->sectionNumber ? ref->sectionNumber : _T("??")) ;
-    ostr << converter.mb_str();
-    ostr << "\n";
-    if (!ref->sectionNumber || (wxStrcmp(ref->sectionNumber, _T("??")) == 0 && wxStrcmp(ref->sectionName, _T("??")) == 0))
+    if (!(wxFileExists(name)?file.Open(name):file.Create(name)))
+        return;
+
+    file.Clear();
+
+    TexReferences.BeginFind();
+    wxHashTable::Node *node = TexReferences.Next();
+    while (node)
     {
-      wxChar buf[200];
-      wxSnprintf(buf, sizeof(buf), _T("Warning: reference %s not resolved."), ref->refLabel);
-      OnInform(buf);
+        Tex2RTFYield();
+        TexRef *ref = (TexRef *)node->GetData();
+        wxString converter = ref->refLabel;
+        converter << wxT(" ");
+        converter << (ref->refFile ? ref->refFile : _T("??"));
+        converter << wxT(" ");
+        converter << (ref->sectionName ? ref->sectionName : _T("??")) ;
+        converter << wxT(" ");
+        converter << (ref->sectionNumber ? ref->sectionNumber : _T("??")) ;
+        file.AddLine(converter);
+
+        if (!ref->sectionNumber || (wxStrcmp(ref->sectionNumber, _T("??")) == 0 && wxStrcmp(ref->sectionName, _T("??")) == 0))
+        {
+            wxChar buf[200];
+            wxSnprintf(buf, sizeof(buf), _T("Warning: reference %s not resolved."), ref->refLabel);
+            OnInform(buf);
+        }
+        node = TexReferences.Next();
     }
-    node = TexReferences.Next();
-  }
+
+    file.Write();
+    file.Close();
 }
 
 void ReadTexReferences(wxChar *filename)
 {
-  if (!wxFileExists(filename))
-      return;
+    wxString name = filename;
 
-  wxString name = filename;
-  wxSTD ifstream istr((char const *)name.fn_str(), wxSTD ios::in);
+    if (!wxFileExists(name))
+        return;
 
-  if (istr.bad()) return;
+    wxTextFile file;
+    if (!file.Open(name))
+        return;
 
-  char label[100];
-  char file[400];
-  char section[100];
-  char sectionName[100];
-
-  while (!istr.eof())
-  {
-    istr >> label;
-    if (!istr.eof())
+    wxString line;
+    for ( line = file.GetFirstLine(); !file.Eof(); line = file.GetNextLine() )
     {
-      istr >> file;
-      istr >> sectionName;
-      char ch;
-      istr.get(ch); // Read past space
-      istr.get(ch);
-      int i = 0;
-      while (ch != '\n' && !istr.eof())
-      {
-        section[i] = ch;
-        i ++;
-        istr.get(ch);
-      }
-      section[i] = 0;
+        wxString labelStr = line.BeforeFirst(wxT(' '));
+        line = line.AfterFirst(wxT(' '));
+        wxString fileStr  = line.BeforeFirst(wxT(' '));
+        line = line.AfterFirst(wxT(' '));
+        wxString sectionNameStr = line.BeforeFirst(wxT(' '));
+        wxString sectionStr = line.AfterFirst(wxT(' '));
 
-      wxString label_string       = wxString::FromAscii(label);
-      wxString file_string        = wxString::FromAscii(file);
-      wxString sectionName_string = wxString::FromAscii(sectionName);
-      wxString section_string     = wxString::FromAscii(section);
-
-      // gt - needed to trick the hash table "TexReferences" into deleting the key
-      // strings it creates in the Put() function, but not the item that is
-      // created here, as that is destroyed elsewhere.  Without doing this, there
-      // were massive memory leaks
-      TexReferences.DeleteContents(true);
-      TexReferences.Put(
-        label_string.c_str(),
-        new TexRef(
-              label_string.c_str(),
-              file_string.c_str(),
-              section_string.c_str(),
-              sectionName_string.c_str()
-        )
-      );
-      TexReferences.DeleteContents(false);
+        // gt - needed to trick the hash table "TexReferences" into deleting the key
+        // strings it creates in the Put() function, but not the item that is
+        // created here, as that is destroyed elsewhere.  Without doing this, there
+        // were massive memory leaks
+        TexReferences.DeleteContents(true);
+        TexReferences.Put(
+            labelStr.c_str(),
+            new TexRef(
+                labelStr.c_str(),
+                fileStr.c_str(),
+                sectionStr.c_str(),
+                sectionNameStr.c_str()
+            )
+        );
+        TexReferences.DeleteContents(false);
     }
-  }
 }
 
 
@@ -497,37 +478,37 @@ void BibEatWhiteSpace(wxString& line)
     }
 
     // Ignore end-of-line comments
-    if (line[0] == _T('%') || line[0] == _T(';') || line[0] == _T('#'))
+    if ( !line.empty() && (line[0] == _T('%') || line[0] == _T(';') || line[0] == _T('#')))
     {
-        line = wxEmptyString;
+        line.clear();
     }
 }
 
 void BibEatWhiteSpace(wxSTD istream& str)
 {
-    char ch = (char)str.peek();
+  char ch = (char)str.peek();
 
-    while (!str.eof() && (ch == ' ' || ch == '\t' || ch == 13 || ch == 10 || ch == (char)EOF))
-    {
-        if (ch == 10)
-            BibLine ++;
-        str.get(ch);
-        if ((ch == (char)EOF) || str.eof()) return;
-        ch = (char)str.peek();
-    }
+  while (!str.eof() && (ch == ' ' || ch == '\t' || ch == 13 || ch == 10 || ch == (char)EOF))
+  {
+    if (ch == 10)
+      BibLine ++;
+    str.get(ch);
+    if ((ch == (char)EOF) || str.eof()) return;
+    ch = (char)str.peek();
+  }
 
-    // Ignore end-of-line comments
-    if (ch == '%' || ch == ';' || ch == '#')
+  // Ignore end-of-line comments
+  if (ch == '%' || ch == ';' || ch == '#')
+  {
+    str.get(ch);
+    ch = (char)str.peek();
+    while (ch != 10 && ch != 13 && !str.eof())
     {
-        str.get(ch);
-        ch = (char)str.peek();
-        while (ch != 10 && ch != 13 && !str.eof())
-        {
-            str.get(ch);
-            ch = (char)str.peek();
-        }
-        BibEatWhiteSpace(str);
+      str.get(ch);
+      ch = (char)str.peek();
     }
+    BibEatWhiteSpace(str);
+  }
 }
 
 // Read word up to { or , or space
@@ -551,18 +532,18 @@ wxString BibReadWord(wxString& line)
 
 void BibReadWord(wxSTD istream& istr, wxChar *buffer)
 {
-    int i = 0;
-    buffer[i] = 0;
-    char ch = (char)istr.peek();
-    while (!istr.eof() && ch != ' ' && ch != '{' && ch != '(' && ch != 13 && ch != 10 && ch != '\t' &&
-           ch != ',' && ch != '=')
-    {
-        istr.get(ch);
-        buffer[i] = ch;
-        i ++;
-        ch = (char)istr.peek();
-    }
-    buffer[i] = 0;
+  int i = 0;
+  buffer[i] = 0;
+  char ch = (char)istr.peek();
+  while (!istr.eof() && ch != ' ' && ch != '{' && ch != '(' && ch != 13 && ch != 10 && ch != '\t' &&
+         ch != ',' && ch != '=')
+  {
+    istr.get(ch);
+    buffer[i] = ch;
+    i ++;
+    ch = (char)istr.peek();
+  }
+  buffer[i] = 0;
 }
 
 // Read string (double-quoted or not) to end quote or EOL
@@ -587,7 +568,7 @@ wxString BibReadToEOL(wxString& line)
         val << line[0];
         line = line.substr(1);
     }
-    if (line[0] == '"')
+    if (!line.empty() && line[0] == '"')
         line = line.substr(1);
 
     return val;
@@ -1204,6 +1185,7 @@ bool StringTobool(const wxString& val)
     up.MakeUpper();
 
     if (up.IsSameAs(_T("YES")) ||
+        up.IsSameAs(_T("TRUE")) ||
         up.IsSameAs(_T("ON")) ||
         up.IsSameAs(_T("OK")) |
         up.IsSameAs(_T("1")))

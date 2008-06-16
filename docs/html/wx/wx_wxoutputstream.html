@@ -1,0 +1,117 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxOutputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxoutputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxownerdrawncombobox.html#wxownerdrawncombobox"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpagesetupdialog.html#wxpagesetupdialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxOutputStream</H2>
+<P>
+wxOutputStream is an abstract base class which may not be used directly.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxstreambase.html#wxstreambase">wxStreamBase</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/stream.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxoutputstreamctor">wxOutputStream::wxOutputStream</A><BR>
+<A HREF="#wxoutputstreamdtor">wxOutputStream::~wxOutputStream</A><BR>
+<A HREF="#wxoutputstreamclose">wxOutputStream::Close</A><BR>
+<A HREF="#wxoutputstreamlastwrite">wxOutputStream::LastWrite</A><BR>
+<A HREF="#wxoutputstreamputc">wxOutputStream::PutC</A><BR>
+<A HREF="#wxoutputstreamseeko">wxOutputStream::SeekO</A><BR>
+<A HREF="#wxoutputstreamtello">wxOutputStream::TellO</A><BR>
+<A HREF="#wxoutputstreamwrite">wxOutputStream::Write</A><BR>
+<P>
+
+<HR>
+<A NAME="wxoutputstreamctor"></A>
+<H3>wxOutputStream::wxOutputStream</H3>
+<P>
+<B></B> <B>wxOutputStream</B>()<P>
+Creates a dummy wxOutputStream object.<P>
+
+
+<HR>
+<A NAME="wxoutputstreamdtor"></A>
+<H3>wxOutputStream::~wxOutputStream</H3>
+<P>
+<B></B> <B>~wxOutputStream</B>()<P>
+Destructor.<P>
+
+
+<HR>
+<A NAME="wxoutputstreamclose"></A>
+<H3>wxOutputStream::Close</H3>
+<P>
+<B>bool</B> <B>Close</B>()<P>
+Closes the stream, returning <TT>false</TT> if an error occurs. The
+stream is closed implicitly in the destructor if Close() is not
+called explicitly.<P>
+If this stream wraps another stream or some other resource such
+as a file, then the underlying resource is closed too if it is owned
+by this stream, or left open otherwise.<P>
+
+
+<HR>
+<A NAME="wxoutputstreamlastwrite"></A>
+<H3>wxOutputStream::LastWrite</H3>
+<P>
+<B>size_t</B> <B>LastWrite</B>() <B>const</B><P>
+Returns the number of bytes written during the last 
+<A HREF="wx_wxoutputstream.html#wxoutputstreamwrite">Write()</A>. It may return 0 even if there is no
+error on the stream if it is only temporarily impossible to write to it.<P>
+
+
+<HR>
+<A NAME="wxoutputstreamputc"></A>
+<H3>wxOutputStream::PutC</H3>
+<P>
+<B>void</B> <B>PutC</B>(<B>char</B><I> c</I>)<P>
+Puts the specified character in the output queue and increments the
+stream position.<P>
+
+
+<HR>
+<A NAME="wxoutputstreamseeko"></A>
+<H3>wxOutputStream::SeekO</H3>
+<P>
+<B>off_t</B> <B>SeekO</B>(<B>off_t</B><I> pos</I>, <B>wxSeekMode</B><I> mode = wxFromStart</I>)<P>
+Changes the stream current position.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pos</I><UL><UL>
+Offset to seek to.</UL></UL>
+<P>
+<I>mode</I><UL><UL>
+One of <B>wxFromStart</B>, <B>wxFromEnd</B>, <B>wxFromCurrent</B>.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The new stream position or wxInvalidOffset on error.<P>
+
+
+<HR>
+<A NAME="wxoutputstreamtello"></A>
+<H3>wxOutputStream::TellO</H3>
+<P>
+<B>off_t</B> <B>TellO</B>() <B>const</B><P>
+Returns the current stream position.<P>
+
+
+<HR>
+<A NAME="wxoutputstreamwrite"></A>
+<H3>wxOutputStream::Write</H3>
+<P>
+<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>&</B> </B> <B>Write</B>(<B>const void *</B><I>buffer</I>, <B>size_t</B><I> size</I>)<P>
+Writes up to the specified amount of bytes using the data of <I>buffer</I>. Note
+that not all data can always be written so you must check the number of bytes
+really written to the stream using <A HREF="wx_wxoutputstream.html#wxoutputstreamlastwrite">LastWrite()</A> 
+when this function returns. In some cases (for example a write end of a pipe
+which is currently full) it is even possible that there is no errors and zero
+bytes have been written.<P>
+This function returns a reference on the current object, so the user can test
+any states of the stream right away.<P>
+<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>&</B> </B> <B>Write</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B></B><I> stream_in</I>)<P>
+Reads data from the specified input stream and stores them 
+in the current stream. The data is read until an error is raised
+by one of the two streams.<P>
+
+</FONT></BODY></HTML>

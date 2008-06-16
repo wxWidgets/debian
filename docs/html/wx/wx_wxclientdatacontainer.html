@@ -1,0 +1,78 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxClientDataContainer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxclientdatacontainer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxclientdata.html#wxclientdata"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxclipboard.html#wxclipboard"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxClientDataContainer</H2>
+<P>
+This class is a mixin that provides storage and management of "client
+data." This data can either be of type void - in which case the data
+<I>container</I> does not take care of freeing the data again
+or it is of type wxClientData or its derivatives. In that case the
+container will free the memory itself later.
+Note that you <I>must not</I> assign both void data and data
+derived from the wxClientData class to a container.<P>
+NOTE: This functionality is currently duplicated in wxEvtHandler in
+order to avoid having more than one vtable in that class hierarchy.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>, <A HREF="wx_wxclientdata.html#wxclientdata">wxClientData</A><P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/clntdata.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxclientdatacontainerwxclientdatacontainer">wxClientDataContainer::wxClientDataContainer</A><BR>
+<A HREF="#wxclientdatacontainerdtor">wxClientDataContainer::~wxClientDataContainer</A><BR>
+<A HREF="#wxclientdatacontainergetclientdata">wxClientDataContainer::GetClientData</A><BR>
+<A HREF="#wxclientdatacontainergetclientobject">wxClientDataContainer::GetClientObject</A><BR>
+<A HREF="#wxclientdatacontainersetclientdata">wxClientDataContainer::SetClientData</A><BR>
+<A HREF="#wxclientdatacontainersetclientobject">wxClientDataContainer::SetClientObject</A><BR>
+<P>
+
+<HR>
+<A NAME="wxclientdatacontainerwxclientdatacontainer"></A>
+<H3>wxClientDataContainer::wxClientDataContainer</H3>
+<P>
+<B></B> <B>wxClientDataContainer</B>()<P>
+
+
+<HR>
+<A NAME="wxclientdatacontainerdtor"></A>
+<H3>wxClientDataContainer::~wxClientDataContainer</H3>
+<P>
+<B></B> <B>~wxClientDataContainer</B>()<P>
+
+
+<HR>
+<A NAME="wxclientdatacontainergetclientdata"></A>
+<H3>wxClientDataContainer::GetClientData</H3>
+<P>
+<B>void*</B> <B>GetClientData</B>() <B>const</B><P>
+Get the untyped client data.<P>
+
+<HR>
+<A NAME="wxclientdatacontainergetclientobject"></A>
+<H3>wxClientDataContainer::GetClientObject</H3>
+<P>
+<B><A HREF="wx_wxclientdata.html#wxclientdata">wxClientData</A>*</B> </B> <B>GetClientObject</B>() <B>const</B><P>
+Get a pointer to the client data object.<P>
+
+<HR>
+<A NAME="wxclientdatacontainersetclientdata"></A>
+<H3>wxClientDataContainer::SetClientData</H3>
+<P>
+<B>void</B> <B>SetClientData</B>(<B>void* </B><I>data</I>)<P>
+Set the untyped client data.<P>
+
+<HR>
+<A NAME="wxclientdatacontainersetclientobject"></A>
+<H3>wxClientDataContainer::SetClientObject</H3>
+<P>
+<B>void</B> <B>SetClientObject</B>(<B><A HREF="wx_wxclientdata.html#wxclientdata">wxClientData</A>* </B></B><I>data</I>)<P>
+Set the client data object. Any previous object will be deleted.<P>
+
+</FONT></BODY></HTML>

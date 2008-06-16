@@ -1,0 +1,228 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDDEConnection</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxddeconnection"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxddeclient.html#wxddeclient"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxddeserver.html#wxddeserver"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDDEConnection</H2>
+<P>
+A wxDDEConnection object represents the connection between a client and a
+server. It can be created by making a connection using a
+<A HREF="wx_wxddeclient.html#wxddeclient">wxDDEClient</A> object, or by the acceptance of a connection by a
+<A HREF="wx_wxddeserver.html#wxddeserver">wxDDEServer</A> object. The bulk of a DDE (Dynamic Data Exchange)
+conversation is controlled by
+calling members in a <B>wxDDEConnection</B> object or by overriding its
+members.<P>
+An application should normally derive a new connection class from
+wxDDEConnection, in order to override the communication event handlers
+to do something interesting.<P>
+This DDE-based implementation is available on Windows only,
+but a platform-independent, socket-based version
+of this API is available using <A HREF="wx_wxtcpconnection.html#wxtcpconnection">wxTCPConnection</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxConnectionBase<BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dde.h&gt;<P>
+<B><FONT COLOR="#FF0000">Types</FONT></B><P>
+wxIPCFormat is defined as follows:<P>
+<PRE>
+enum wxIPCFormat
+{
+  wxIPC_INVALID =          0,
+  wxIPC_TEXT =             1,  /* CF_TEXT */
+  wxIPC_BITMAP =           2,  /* CF_BITMAP */
+  wxIPC_METAFILE =         3,  /* CF_METAFILEPICT */
+  wxIPC_SYLK =             4,
+  wxIPC_DIF =              5,
+  wxIPC_TIFF =             6,
+  wxIPC_OEMTEXT =          7,  /* CF_OEMTEXT */
+  wxIPC_DIB =              8,  /* CF_DIB */
+  wxIPC_PALETTE =          9,
+  wxIPC_PENDATA =          10,
+  wxIPC_RIFF =             11,
+  wxIPC_WAVE =             12,
+  wxIPC_UNICODETEXT =      13,
+  wxIPC_ENHMETAFILE =      14,
+  wxIPC_FILENAME =         15, /* CF_HDROP */
+  wxIPC_LOCALE =           16,
+  wxIPC_PRIVATE =          20
+};
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxddeclient.html#wxddeclient">wxDDEClient</A>, <A HREF="wx_wxddeserver.html#wxddeserver">wxDDEServer</A>, <A HREF="wx_ipcoverview.html#ipcoverview">Interprocess communications overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxddeconnectionctor">wxDDEConnection::wxDDEConnection</A><BR>
+<A HREF="#wxddeconnectionadvise">wxDDEConnection::Advise</A><BR>
+<A HREF="#wxddeconnectionexecute">wxDDEConnection::Execute</A><BR>
+<A HREF="#wxddeconnectiondisconnect">wxDDEConnection::Disconnect</A><BR>
+<A HREF="#wxddeconnectiononadvise">wxDDEConnection::OnAdvise</A><BR>
+<A HREF="#wxddeconnectionondisconnect">wxDDEConnection::OnDisconnect</A><BR>
+<A HREF="#wxddeconnectiononexecute">wxDDEConnection::OnExecute</A><BR>
+<A HREF="#wxddeconnectiononpoke">wxDDEConnection::OnPoke</A><BR>
+<A HREF="#wxddeconnectiononrequest">wxDDEConnection::OnRequest</A><BR>
+<A HREF="#wxddeconnectiononstartadvise">wxDDEConnection::OnStartAdvise</A><BR>
+<A HREF="#wxddeconnectiononstopadvise">wxDDEConnection::OnStopAdvise</A><BR>
+<A HREF="#wxddeconnectionpoke">wxDDEConnection::Poke</A><BR>
+<A HREF="#wxddeconnectionrequest">wxDDEConnection::Request</A><BR>
+<A HREF="#wxddeconnectionstartadvise">wxDDEConnection::StartAdvise</A><BR>
+<A HREF="#wxddeconnectionstopadvise">wxDDEConnection::StopAdvise</A><BR>
+<P>
+
+<HR>
+<A NAME="wxddeconnectionctor"></A>
+<H3>wxDDEConnection::wxDDEConnection</H3>
+<P>
+<B></B> <B>wxDDEConnection</B>()<P>
+<B></B> <B>wxDDEConnection</B>(<B>char* </B><I>buffer</I>, <B>int</B><I> size</I>)<P>
+Constructs a connection object. If no user-defined connection object is
+to be derived from wxDDEConnection, then the constructor should not be
+called directly, since the default connection object will be provided on
+requesting (or accepting) a connection. However, if the user defines his
+or her own derived connection object, the <A HREF="wx_wxddeserver.html#wxddeserveronacceptconnection">wxDDEServer::OnAcceptConnection</A>
+and/or <A HREF="wx_wxddeclient.html#wxddeclientonmakeconnection">wxDDEClient::OnMakeConnection</A> members should be replaced by
+functions which construct the new connection object. If the arguments of
+the wxDDEConnection constructor are void, then a default buffer is
+associated with the connection. Otherwise, the programmer must provide a
+a buffer and size of the buffer for the connection object to use in
+transactions.<P>
+
+<HR>
+<A NAME="wxddeconnectionadvise"></A>
+<H3>wxDDEConnection::Advise</H3>
+<P>
+<B>bool</B> <B>Advise</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>, <B>char* </B><I>data</I>, <B>int</B><I> size = -1</I>, <B>wxIPCFormat</B><I> format = wxCF_TEXT</I>)<P>
+Called by the server application to advise the client of a change in
+the data associated with the given item. Causes the client
+connection's <A HREF="wx_wxddeconnection.html#wxddeconnectiononadvise">wxDDEConnection::OnAdvise</A>
+member to be called. Returns true if successful.<P>
+
+<HR>
+<A NAME="wxddeconnectionexecute"></A>
+<H3>wxDDEConnection::Execute</H3>
+<P>
+<B>bool</B> <B>Execute</B>(<B>char* </B><I>data</I>, <B>int</B><I> size = -1</I>, <B>wxIPCFormat</B><I> format = wxCF_TEXT</I>)<P>
+Called by the client application to execute a command on the server. Can
+also be used to transfer arbitrary data to the server (similar
+to <A HREF="wx_wxddeconnection.html#wxddeconnectionpoke">wxDDEConnection::Poke</A> in that respect). Causes the
+server connection's <A HREF="wx_wxddeconnection.html#wxddeconnectiononexecute">wxDDEConnection::OnExecute</A> member to be
+called. Returns true if successful.<P>
+
+<HR>
+<A NAME="wxddeconnectiondisconnect"></A>
+<H3>wxDDEConnection::Disconnect</H3>
+<P>
+<B>bool</B> <B>Disconnect</B>()<P>
+Called by the client or server application to disconnect from the other
+program; it causes the <A HREF="wx_wxddeconnection.html#wxddeconnectionondisconnect">wxDDEConnection::OnDisconnect</A> message
+to be sent to the corresponding connection object in the other
+program. The default behaviour of <B>OnDisconnect</B> is to delete the
+connection, but the calling application must explicitly delete its
+side of the connection having called <B>Disconnect</B>. Returns true if
+successful.<P>
+
+<HR>
+<A NAME="wxddeconnectiononadvise"></A>
+<H3>wxDDEConnection::OnAdvise</H3>
+<P>
+<B>virtual bool</B> <B>OnAdvise</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>, <B>char* </B><I>data</I>, <B>int</B><I> size</I>, <B>wxIPCFormat</B><I> format</I>)<P>
+Message sent to the client application when the server notifies it of a
+change in the data associated with the given item.<P>
+
+<HR>
+<A NAME="wxddeconnectionondisconnect"></A>
+<H3>wxDDEConnection::OnDisconnect</H3>
+<P>
+<B>virtual bool</B> <B>OnDisconnect</B>()<P>
+Message sent to the client or server application when the other
+application notifies it to delete the connection. Default behaviour is
+to delete the connection object.<P>
+
+<HR>
+<A NAME="wxddeconnectiononexecute"></A>
+<H3>wxDDEConnection::OnExecute</H3>
+<P>
+<B>virtual bool</B> <B>OnExecute</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>, <B>char* </B><I>data</I>, <B>int</B><I> size</I>, <B>wxIPCFormat</B><I> format</I>)<P>
+Message sent to the server application when the client notifies it to
+execute the given data. Note that there is no item associated with
+this message.<P>
+
+<HR>
+<A NAME="wxddeconnectiononpoke"></A>
+<H3>wxDDEConnection::OnPoke</H3>
+<P>
+<B>virtual bool</B> <B>OnPoke</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>, <B>char* </B><I>data</I>, <B>int</B><I> size</I>, <B>wxIPCFormat</B><I> format</I>)<P>
+Message sent to the server application when the client notifies it to
+accept the given data.<P>
+
+<HR>
+<A NAME="wxddeconnectiononrequest"></A>
+<H3>wxDDEConnection::OnRequest</H3>
+<P>
+<B>virtual char*</B> <B>OnRequest</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>, <B>int *</B><I>size</I>, <B>wxIPCFormat</B><I> format</I>)<P>
+Message sent to the server application when the client
+calls <A HREF="wx_wxddeconnection.html#wxddeconnectionrequest">wxDDEConnection::Request</A>. The server
+should respond by returning a character string from <B>OnRequest</B>,
+or NULL to indicate no data.<P>
+
+<HR>
+<A NAME="wxddeconnectiononstartadvise"></A>
+<H3>wxDDEConnection::OnStartAdvise</H3>
+<P>
+<B>virtual bool</B> <B>OnStartAdvise</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>)<P>
+Message sent to the server application by the client, when the client
+wishes to start an 'advise loop' for the given topic and item. The
+server can refuse to participate by returning false.<P>
+
+<HR>
+<A NAME="wxddeconnectiononstopadvise"></A>
+<H3>wxDDEConnection::OnStopAdvise</H3>
+<P>
+<B>virtual bool</B> <B>OnStopAdvise</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>)<P>
+Message sent to the server application by the client, when the client
+wishes to stop an 'advise loop' for the given topic and item. The
+server can refuse to stop the advise loop by returning false, although
+this doesn't have much meaning in practice.<P>
+
+<HR>
+<A NAME="wxddeconnectionpoke"></A>
+<H3>wxDDEConnection::Poke</H3>
+<P>
+<B>bool</B> <B>Poke</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>, <B>char* </B><I>data</I>, <B>int</B><I> size = -1</I>, <B>wxIPCFormat</B><I> format = wxCF_TEXT</I>)<P>
+Called by the client application to poke data into the server. Can be
+used to transfer arbitrary data to the server. Causes the server
+connection's <A HREF="wx_wxddeconnection.html#wxddeconnectiononpoke">wxDDEConnection::OnPoke</A> member
+to be called. Returns true if successful.<P>
+
+<HR>
+<A NAME="wxddeconnectionrequest"></A>
+<H3>wxDDEConnection::Request</H3>
+<P>
+<B>char*</B> <B>Request</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>, <B>int *</B><I>size</I>, <B>wxIPCFormat</B><I> format = wxIPC_TEXT</I>)<P>
+Called by the client application to request data from the server. Causes
+the server connection's <A HREF="wx_wxddeconnection.html#wxddeconnectiononrequest">wxDDEConnection::OnRequest</A> member to be called. Returns a
+character string (actually a pointer to the connection's buffer) if
+successful, NULL otherwise.<P>
+
+<HR>
+<A NAME="wxddeconnectionstartadvise"></A>
+<H3>wxDDEConnection::StartAdvise</H3>
+<P>
+<B>bool</B> <B>StartAdvise</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>)<P>
+Called by the client application to ask if an advise loop can be started
+with the server. Causes the server connection's <A HREF="wx_wxddeconnection.html#wxddeconnectiononstartadvise">wxDDEConnection::OnStartAdvise</A>
+member to be called. Returns true if the server okays it, false
+otherwise.<P>
+
+<HR>
+<A NAME="wxddeconnectionstopadvise"></A>
+<H3>wxDDEConnection::StopAdvise</H3>
+<P>
+<B>bool</B> <B>StopAdvise</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>item</I>)<P>
+Called by the client application to ask if an advise loop can be
+stopped. Causes the server connection's <A HREF="wx_wxddeconnection.html#wxddeconnectiononstopadvise">wxDDEConnection::OnStopAdvise</A> member
+to be called. Returns true if the server okays it, false otherwise.<P>
+
+</FONT></BODY></HTML>

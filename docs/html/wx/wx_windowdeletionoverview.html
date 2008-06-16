@@ -1,0 +1,112 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Window deletion overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="windowdeletionoverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_windowstyles.html#windowstyles"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdialogoverview.html#wxdialogoverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Window deletion overview</H2>
+<P>
+Classes: <A HREF="wx_wxcloseevent.html#wxcloseevent">wxCloseEvent</A>, <A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><P>
+Window deletion can be a confusing subject, so this overview is provided
+to help make it clear when and how you delete windows, or respond to user requests
+to close windows.<P>
+<B><FONT COLOR="#FF0000">What is the sequence of events in a window deletion?</FONT></B><P>
+When the user clicks on the system close button or system close command,
+in a frame or a dialog, wxWidgets calls <A HREF="wx_wxwindow.html#wxwindowclose">wxWindow::Close</A>. This
+in turn generates an EVT_CLOSE event: see <A HREF="wx_wxcloseevent.html#wxcloseevent">wxCloseEvent</A>.<P>
+It is the duty of the application to define a suitable event handler, and
+decide whether or not to destroy the window.
+If the application is for some reason forcing the application to close
+(<A HREF="wx_wxcloseevent.html#wxcloseeventcanveto">wxCloseEvent::CanVeto</A> returns false), the window should always be destroyed, otherwise there is the option to
+ignore the request, or maybe wait until the user has answered a question
+before deciding whether it is safe to close. The handler for EVT_CLOSE should
+signal to the calling code if it does not destroy the window, by calling 
+<A HREF="wx_wxcloseevent.html#wxcloseeventveto">wxCloseEvent::Veto</A>. Calling this provides useful information
+to the calling code.<P>
+The wxCloseEvent handler should only call <A HREF="wx_wxwindow.html#wxwindowdestroy">wxWindow::Destroy</A> to
+delete the window, and not use the <B>delete</B> operator. This is because
+for some window classes, wxWidgets delays actual deletion of the window until all events have been processed,
+since otherwise there is the danger that events will be sent to a non-existent window.<P>
+As reinforced in the next section, calling Close does not guarantee that the window
+will be destroyed. Call <A HREF="wx_wxwindow.html#wxwindowdestroy">wxWindow::Destroy</A> if you want to be
+certain that the window is destroyed.<P>
+<B><FONT COLOR="#FF0000">How can the application close a window itself?</FONT></B><P>
+Your application can either use <A HREF="wx_wxwindow.html#wxwindowclose">wxWindow::Close</A> event just as
+the framework does, or it can call <A HREF="wx_wxwindow.html#wxwindowdestroy">wxWindow::Destroy</A> directly.
+If using Close(), you can pass a true argument to this function to tell the event handler
+that we definitely want to delete the frame and it cannot be vetoed.<P>
+The advantage of using Close instead of Destroy is that it will call any clean-up code
+defined by the EVT_CLOSE handler; for example it may close a document contained in
+a window after first asking the user whether the work should be saved. Close can be vetoed
+by this process (return false), whereas Destroy definitely destroys the window.<P>
+<B><FONT COLOR="#FF0000">What is the default behaviour?</FONT></B><P>
+The default close event handler for wxDialog simulates a Cancel command,
+generating a wxID_CANCEL event. Since the handler for this cancel event might
+itself call <B>Close</B>, there is a check for infinite looping. The default handler
+for wxID_CANCEL hides the dialog (if modeless) or calls EndModal(wxID_CANCEL) (if modal).
+In other words, by default, the dialog <I>is not destroyed</I> (it might have been created
+on the stack, so the assumption of dynamic creation cannot be made).<P>
+The default close event handler for wxFrame destroys the frame using Destroy().<P>
+<B><FONT COLOR="#FF0000">What should I do when the user calls up Exit from a menu?</FONT></B><P>
+You can simply call <A HREF="wx_wxwindow.html#wxwindowclose">wxWindow::Close</A> on the frame. This
+will invoke your own close event handler which may destroy the frame.<P>
+You can do checking to see if your application can be safely exited at this point,
+either from within your close event handler, or from within your exit menu command
+handler. For example, you may wish to check that all files have been saved.
+Give the user a chance to save and quit, to not save but quit anyway, or to cancel
+the exit command altogether.<P>
+<B><FONT COLOR="#FF0000">What should I do to upgrade my 1.xx OnClose to 2.0?</FONT></B><P>
+In wxWidgets 1.xx, the <B>OnClose</B> function did not actually delete 'this', but signaled
+to the calling function (either <B>Close</B>, or the wxWidgets framework) to delete
+or not delete the window.<P>
+To update your code, you should provide an event table entry in your frame or
+dialog, using the EVT_CLOSE macro. The event handler function might look like this:<P>
+<FONT SIZE=2><PRE>
+  void MyFrame::OnCloseWindow(wxCloseEvent& event)
+  {
+    if (MyDataHasBeenModified())
+    {
+      wxMessageDialog* dialog = new wxMessageDialog(this,
+        "Save changed data?", "My app", wxYES_NO|wxCANCEL);
+
+      int ans = dialog-&gt;ShowModal();
+      dialog-&gt;Destroy();
+
+      switch (ans)
+      {
+        case wxID_YES:      // Save, then destroy, quitting app
+          SaveMyData();
+          this-&gt;Destroy();
+          break;
+        case wxID_NO:       // Don't save; just destroy, quitting app
+          this-&gt;Destroy();
+          break;
+        case wxID_CANCEL:   // Do nothing - so don't quit app.
+        default:
+          if (!event.CanVeto()) // Test if we can veto this deletion
+            this-&gt;Destroy();    // If not, destroy the window anyway.
+          else
+            event.Veto();     // Notify the calling code that we didn't delete the frame.
+          break;
+      }
+    }
+  }
+</PRE>
+</FONT><B><FONT COLOR="#FF0000">How do I exit the application gracefully?</FONT></B><P>
+A wxWidgets application automatically exits when the last top level window
+(<A HREF="wx_wxframe.html#wxframe">wxFrame</A> or <A HREF="wx_wxdialog.html#wxdialog">wxDialog</A>), is destroyed. Put
+any application-wide cleanup code in <A HREF="wx_wxapp.html#wxapponexit">wxApp::OnExit</A> (this
+is a virtual function, not an event handler).<P>
+<B><FONT COLOR="#FF0000">Do child windows get deleted automatically?</FONT></B><P>
+Yes, child windows are deleted from within the parent destructor. This includes any children
+that are themselves frames or dialogs, so you may wish to close these child frame or dialog windows
+explicitly from within the parent close handler.<P>
+<B><FONT COLOR="#FF0000">What about other kinds of window?</FONT></B><P>
+So far we've been talking about 'managed' windows, i.e. frames and dialogs. Windows
+with parents, such as controls, don't have delayed destruction and don't usually have
+close event handlers, though you can implement them if you wish. For consistency,
+continue to use the <A HREF="wx_wxwindow.html#wxwindowdestroy">wxWindow::Destroy</A> function instead
+of the <B>delete</B> operator when deleting these kinds of windows explicitly.<P>
+
+</FONT></BODY></HTML>

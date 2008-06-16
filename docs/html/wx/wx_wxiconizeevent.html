@@ -1,0 +1,60 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxIconizeEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxiconizeevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxiconlocation.html#wxiconlocation"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxidleevent.html#wxidleevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxIconizeEvent</H2>
+<P>
+An event being sent when the frame is iconized (minimized) or restored.<P>
+Currently only wxMSW and wxGTK generate such events.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process an iconize event, use this event handler macro to direct input to a
+member function that takes a wxIconizeEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_ICONIZE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_ICONIZE event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A>,
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowiconize">wxTopLevelWindow::Iconize</A>,
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowisiconized">wxTopLevelWindow::IsIconized</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxiconizeeventctor">wxIconizeEvent::wxIconizeEvent</A><BR>
+<A HREF="#wxiconizeeventiconized">wxIconizeEvent::Iconized</A><BR>
+<P>
+
+<HR>
+<A NAME="wxiconizeeventctor"></A>
+<H3>wxIconizeEvent::wxIconizeEvent</H3>
+<P>
+<B></B> <B>wxIconizeEvent</B>(<B>int </B><I>id = 0</I>, <B>bool </B><I>iconized = true</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxiconizeeventiconized"></A>
+<H3>wxIconizeEvent::Iconized</H3>
+<P>
+<B>bool</B> <B>Iconized</B>() <B>const</B><P>
+Returns <TT>true</TT> if the frame has been iconized, <TT>false</TT> if it has been
+restored.<P>
+
+</FONT></BODY></HTML>

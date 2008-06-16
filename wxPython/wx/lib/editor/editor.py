@@ -16,7 +16,7 @@
 #
 #
 # Created:     15-Dec-1999
-# RCS-ID:      $Id: editor.py,v 1.10.2.1 2006/01/01 20:17:17 KO Exp $
+# RCS-ID:      $Id: editor.py 43556 2006-11-21 03:44:35Z RD $
 # Copyright:   (c) 1999 by Dirk Holtwick, 1999
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -241,9 +241,8 @@ class Editor(wx.ScrolledWindow):
         if not odc:
             odc = wx.ClientDC(self)
 
-        bmp = wx.EmptyBitmap(max(1,self.bw), max(1,self.bh))
-        dc = wx.BufferedDC(odc, bmp)
-        if dc.Ok():
+        dc = wx.BufferedDC(odc)
+        if dc.IsOk():
             dc.SetFont(self.font)
             dc.SetBackgroundMode(wx.SOLID)
             dc.SetTextBackground(self.bgColor)
@@ -552,12 +551,13 @@ class Editor(wx.ScrolledWindow):
 
 
     def AdjustScrollbars(self):
-        for i in range(2):
-            self.SetCharDimensions()
-            self.scroller.SetScrollbars(
-                self.fw, self.fh,
-                self.CalcMaxLineLen()+3, max(self.LinesInFile()+1, self.sh),
-                self.sx, self.sy)
+        if self:
+            for i in range(2):
+                self.SetCharDimensions()
+                self.scroller.SetScrollbars(
+                    self.fw, self.fh,
+                    self.CalcMaxLineLen()+3, max(self.LinesInFile()+1, self.sh),
+                    self.sx, self.sy)
 
 #------------ backspace, delete, return
 
@@ -941,7 +941,7 @@ class Editor(wx.ScrolledWindow):
         self.AdjustScrollbars()
 
     def OnChar(self, event):
-        key = event.KeyCode()
+        key = event.GetKeyCode()
         filters = [self.AltKey,
                    self.MoveSpecialControlKey,
                    self.ControlKey,

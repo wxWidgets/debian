@@ -1,8 +1,8 @@
 """Support for icons."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: images.py,v 1.4 2003/11/12 21:28:54 RD Exp $"
-__revision__ = "$Revision: 1.4 $"[11:-2]
+__cvsid__ = "$Id: images.py 24541 2003-11-12 21:34:20Z RD $"
+__revision__ = "$Revision: 24541 $"[11:-2]
 
 import wx
 import cStringIO

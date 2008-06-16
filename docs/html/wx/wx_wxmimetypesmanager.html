@@ -1,0 +1,201 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMimeTypesManager</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmimetypesmanager"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmetafiledc.html#wxmetafiledc"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxminiframe.html#wxminiframe"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMimeTypesManager</H2>
+<P>
+This class allows the application to retrieve the information about all known
+MIME types from a system-specific location and the filename extensions to the
+MIME types and vice versa. After initialization the functions
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagergetfiletypefrommimetype">wxMimeTypesManager::GetFileTypeFromMimeType</A> 
+and <A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagergetfiletypefromextension">wxMimeTypesManager::GetFileTypeFromExtension</A> 
+may be called: they will return a <A HREF="wx_wxfiletype.html#wxfiletype">wxFileType</A> object which
+may be further queried for file description, icon and other attributes.<P>
+<B>Windows:</B> MIME type information is stored in the registry and no additional
+initialization is needed.<P>
+<B>Unix:</B> MIME type information is stored in the files mailcap and mime.types
+(system-wide) and .mailcap and .mime.types in the current user's home directory:
+all of these files are searched for and loaded if found by default. However,
+additional functions 
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagerreadmailcap">wxMimeTypesManager::ReadMailcap</A> and 
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagerreadmimetypes">wxMimeTypesManager::ReadMimeTypes</A> are
+provided to load additional files.<P>
+If GNOME or KDE desktop environment is installed, then wxMimeTypesManager 
+gathers MIME information from respective files (e.g. .kdelnk files under KDE).<P>
+NB: Currently, wxMimeTypesManager is limited to reading MIME type information
+but it will support modifying it as well in future versions.<P>
+<B><FONT COLOR="#FF0000">Global objects</FONT></B><P>
+Global instance of wxMimeTypesManager is always available. It is defined
+as follows:<P>
+<PRE>
+wxMimeTypesManager *wxTheMimeTypesManager;
+</PRE>
+It is recommended to use this instance instead of creating your own because
+gathering MIME information may take quite a long time on Unix systems.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/mimetype.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfiletype.html#wxfiletype">wxFileType</A><P>
+<B><FONT COLOR="#FF0000">Function groups</FONT></B><P>
+
+<A HREF="#mimehelperfunctions">Helper functions</A><BR>
+<A HREF="#mimeconstructordestructor">Constructor and destructor</A><BR>
+<A HREF="#mimequerydatabase">Query database</A><BR>
+<A HREF="#wxmimetypesmanagerinit">Initialization functions</A><BR>
+<A HREF="#wxmimetypesmanagerctor">wxMimeTypesManager::wxMimeTypesManager</A><BR>
+<A HREF="#wxmimetypesmanagerdtor">wxMimeTypesManager::~wxMimeTypesManager</A><BR>
+<A HREF="#wxmimetypesmanageraddfallbacks">wxMimeTypesManager::AddFallbacks</A><BR>
+<A HREF="#wxmimetypesmanagergetfiletypefromextension">wxMimeTypesManager::GetFileTypeFromExtension</A><BR>
+<A HREF="#wxmimetypesmanagergetfiletypefrommimetype">wxMimeTypesManager::GetFileTypeFromMimeType</A><BR>
+<A HREF="#wxmimetypesmanagerisoftype">wxMimeTypesManager::IsOfType</A><BR>
+<A HREF="#wxmimetypesmanagerreadmailcap">wxMimeTypesManager::ReadMailcap</A><BR>
+<A HREF="#wxmimetypesmanagerreadmimetypes">wxMimeTypesManager::ReadMimeTypes</A><BR>
+<P>
+
+<HR>
+<A NAME="mimehelperfunctions"></A>
+<H3>Helper functions</H3>
+<P>
+All of these functions are static (i.e. don't need a wxMimeTypesManager object
+to call them) and provide some useful operations for string representations of
+MIME types. Their usage is recommended instead of directly working with MIME
+types using wxString functions.<P>
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagerisoftype">IsOfType</A><P>
+
+
+<HR>
+<A NAME="mimeconstructordestructor"></A>
+<H3>Constructor and destructor</H3>
+<P>
+NB: You won't normally need to use more than one wxMimeTypesManager object in a
+program.<P>
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagerctor">wxMimeTypesManager</A><BR>
+
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagerdtor">~wxMimeTypesManager</A><P>
+
+
+<HR>
+<A NAME="mimequerydatabase"></A>
+<H3>Query database</H3>
+<P>
+These functions are the heart of this class: they allow to find a <A HREF="wx_wxfiletype.html#wxfiletype">file type</A> object
+from either file extension or MIME type.
+If the function is successful, it returns a pointer to the wxFileType object
+which <B>must</B> be deleted by the caller, otherwise <TT>NULL</TT> will be returned.<P>
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagergetfiletypefrommimetype">GetFileTypeFromMimeType</A><BR>
+
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagergetfiletypefromextension">GetFileTypeFromExtension</A><P>
+
+
+<HR>
+<A NAME="wxmimetypesmanagerinit"></A>
+<H3>Initialization functions</H3>
+<P>
+<B>Unix:</B> These functions may be used to load additional files (except for the
+default ones which are loaded automatically) containing MIME
+information in either mailcap(5) or mime.types(5) format.<P>
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagerreadmailcap">ReadMailcap</A><BR>
+
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagerreadmimetypes">ReadMimeTypes</A><BR>
+
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanageraddfallbacks">AddFallbacks</A><P>
+<P>
+
+
+<HR>
+<A NAME="wxmimetypesmanagerctor"></A>
+<H3>wxMimeTypesManager::wxMimeTypesManager</H3>
+<P>
+<B></B> <B>wxMimeTypesManager</B>()<P>
+Constructor puts the object in the "working" state, no additional initialization
+are needed - but <A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagerinit">ReadXXX</A> may be used to load
+additional mailcap/mime.types files.<P>
+
+
+<HR>
+<A NAME="wxmimetypesmanagerdtor"></A>
+<H3>wxMimeTypesManager::~wxMimeTypesManager</H3>
+<P>
+<B></B> <B>~wxMimeTypesManager</B>()<P>
+Destructor is not virtual, so this class should not be derived from.<P>
+
+
+<HR>
+<A NAME="wxmimetypesmanageraddfallbacks"></A>
+<H3>wxMimeTypesManager::AddFallbacks</H3>
+<P>
+<B>void</B> <B>AddFallbacks</B>(<B>const wxFileTypeInfo *</B><I>fallbacks</I>)<P>
+This function may be used to provide hard-wired fallbacks for the MIME types
+and extensions that might not be present in the system MIME database.<P>
+Please see the typetest sample for an example of using it.<P>
+
+
+<HR>
+<A NAME="wxmimetypesmanagergetfiletypefromextension"></A>
+<H3>wxMimeTypesManager::GetFileTypeFromExtension</H3>
+<P>
+<B><A HREF="wx_wxfiletype.html#wxfiletype">wxFileType</A>*</B> </B> <B>GetFileTypeFromExtension</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> extension</I>)<P>
+Gather information about the files with given extension and return the
+corresponding <A HREF="wx_wxfiletype.html#wxfiletype">wxFileType</A> object or <TT>NULL</TT> if the extension
+is unknown.<P>
+The <I>extension</I> parameter may have, or not, the leading dot, if it has it,
+it is stripped automatically. It must not however be empty.<P>
+
+
+<HR>
+<A NAME="wxmimetypesmanagergetfiletypefrommimetype"></A>
+<H3>wxMimeTypesManager::GetFileTypeFromMimeType</H3>
+<P>
+<B><A HREF="wx_wxfiletype.html#wxfiletype">wxFileType</A>*</B> </B> <B>GetFileTypeFromMimeType</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> mimeType</I>)<P>
+Gather information about the files with given MIME type and return the
+corresponding <A HREF="wx_wxfiletype.html#wxfiletype">wxFileType</A> object or <TT>NULL</TT> if the MIME type
+is unknown.<P>
+
+
+<HR>
+<A NAME="wxmimetypesmanagerisoftype"></A>
+<H3>wxMimeTypesManager::IsOfType</H3>
+<P>
+<B>bool</B> <B>IsOfType</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> mimeType</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> wildcard</I>)<P>
+This function returns true if either the given <I>mimeType</I> is exactly the
+same as <I>wildcard</I> or if it has the same category and the subtype of
+<I>wildcard</I> is '*'. Note that the '*' wildcard is not allowed in
+<I>mimeType</I> itself.<P>
+The comparison don by this function is case insensitive so it is not
+necessary to convert the strings to the same case before calling it.<P>
+
+
+<HR>
+<A NAME="wxmimetypesmanagerreadmailcap"></A>
+<H3>wxMimeTypesManager::ReadMailcap</H3>
+<P>
+<B>bool</B> <B>ReadMailcap</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> filename</I>, <B>bool</B><I> fallback = false</I>)<P>
+Load additional file containing information about MIME types and associated
+information in mailcap format. See metamail(1) and mailcap(5) for more
+information.<P>
+<I>fallback</I> parameter may be used to load additional mailcap files without
+overriding the settings found in the standard files: normally, entries from
+files loaded with ReadMailcap will override the entries from files loaded
+previously (and the standard ones are loaded in the very beginning), but this
+will not happen if this parameter is set to true (default is false).<P>
+The return value is true if there were no errors in the file or false
+otherwise.<P>
+
+
+<HR>
+<A NAME="wxmimetypesmanagerreadmimetypes"></A>
+<H3>wxMimeTypesManager::ReadMimeTypes</H3>
+<P>
+<B>bool</B> <B>ReadMimeTypes</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> filename</I>)<P>
+Load additional file containing information about MIME types and associated
+information in mime.types file format. See metamail(1) and mailcap(5) for more
+information.<P>
+The return value is true if there were no errors in the file or false
+otherwise.<P>
+
+</FONT></BODY></HTML>

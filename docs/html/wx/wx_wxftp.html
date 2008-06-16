@@ -1,0 +1,397 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFTP</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxftp"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfsfile.html#wxfsfile"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgauge.html#wxgauge"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFTP</H2>
+<P>
+wxFTP can be used to establish a connection to an FTP server and perform all the
+usual operations. Please consult the RFC 959 for more details about the FTP
+protocol.<P>
+To use a commands which doesn't involve file transfer (i.e. directory oriented
+commands) you just need to call a corresponding member function or use the
+generic <A HREF="wx_wxftp.html#wxftpsendcommand">SendCommand</A> method. However to actually
+transfer files you just get or give a stream to or from this class and the
+actual data are read or written using the usual stream methods.<P>
+Example of using wxFTP for file downloading:<P>
+<PRE>
+    wxFTP ftp;
+
+    // if you don't use these lines anonymous login will be used
+    ftp.SetUser("user");
+    ftp.SetPassword("password");
+
+    if ( !ftp.Connect("ftp.wxwindows.org") )
+    {
+        wxLogError("Couldn't connect");
+        return;
+    }
+
+    ftp.ChDir("/pub");
+    wxInputStream *in = ftp.GetInputStream("wxWidgets-4.2.0.tar.gz");
+    if ( !in )
+    {
+        wxLogError("Coudln't get file");
+    }
+    else
+    {
+        size_t size = in-&gt;GetSize();
+        char *data = new char[size];
+        if ( !in-&gt;Read(data, size) )
+        {
+            wxLogError("Read error");
+        }
+        else
+        {
+            // file data is in the buffer
+            ...
+        }
+
+        delete [] data;
+        delete in;
+    }
+</PRE>
+To upload a file you would do (assuming the connection to the server was opened
+successfully):<P>
+<PRE>
+        wxOutputStream *out = ftp.GetOutputStream("filename");
+        if ( out )
+        {
+            out-&gt;Write(...); // your data
+            delete out;
+        }
+</PRE>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+wxFTP defines constants corresponding to the two supported transfer modes:<P>
+<PRE>
+enum TransferMode
+{
+    ASCII,
+    BINARY
+};
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxprotocol.html#wxprotocol">wxProtocol</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/protocol/ftp.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxftpctor">wxFTP::wxFTP</A><BR>
+<A HREF="#wxftpdtor">wxFTP::~wxFTP</A><BR>
+<A HREF="#wxftpabort">wxFTP::Abort</A><BR>
+<A HREF="#wxftpcheckcommand">wxFTP::CheckCommand</A><BR>
+<A HREF="#wxftpsendcommand">wxFTP::SendCommand</A><BR>
+<A HREF="#wxftpgetlastresult">wxFTP::GetLastResult</A><BR>
+<A HREF="#wxftpchdir">wxFTP::ChDir</A><BR>
+<A HREF="#wxftpmkdir">wxFTP::MkDir</A><BR>
+<A HREF="#wxftprmdir">wxFTP::RmDir</A><BR>
+<A HREF="#wxftppwd">wxFTP::Pwd</A><BR>
+<A HREF="#wxftprename">wxFTP::Rename</A><BR>
+<A HREF="#wxftprmfile">wxFTP::RmFile</A><BR>
+<A HREF="#wxftpsetascii">wxFTP::SetAscii</A><BR>
+<A HREF="#wxftpsetbinary">wxFTP::SetBinary</A><BR>
+<A HREF="#wxftpsetpassive">wxFTP::SetPassive</A><BR>
+<A HREF="#wxftpsettransfermode">wxFTP::SetTransferMode</A><BR>
+<A HREF="#wxftpsetuser">wxFTP::SetUser</A><BR>
+<A HREF="#wxftpsetpassword">wxFTP::SetPassword</A><BR>
+<A HREF="#wxftpfileexists">wxFTP::FileExists</A><BR>
+<A HREF="#wxftpgetfilesize">wxFTP::GetFileSize</A><BR>
+<A HREF="#wxftpgetdirlist">wxFTP::GetDirList</A><BR>
+<A HREF="#wxftpgetfileslist">wxFTP::GetFilesList</A><BR>
+<A HREF="#wxftpgetoutputstream">wxFTP::GetOutputStream</A><BR>
+<A HREF="#wxftpgetinputstream">wxFTP::GetInputStream</A><BR>
+<P>
+
+<HR>
+<A NAME="wxftpctor"></A>
+<H3>wxFTP::wxFTP</H3>
+<P>
+<B></B> <B>wxFTP</B>()<P>
+Default constructor.<P>
+
+
+<HR>
+<A NAME="wxftpdtor"></A>
+<H3>wxFTP::~wxFTP</H3>
+<P>
+<B></B> <B>~wxFTP</B>()<P>
+Destructor will close the connection if connected.<P>
+
+
+<HR>
+<A NAME="wxftpabort"></A>
+<H3>wxFTP::Abort</H3>
+<P>
+<B>bool</B> <B>Abort</B>()<P>
+Aborts the download currently in process, returns <TT>true</TT> if ok, <TT>false</TT> 
+if an error occurred.<P>
+
+
+<HR>
+<A NAME="wxftpcheckcommand"></A>
+<H3>wxFTP::CheckCommand</H3>
+<P>
+<B>bool</B> <B>CheckCommand</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> command</I>, <B>char </B><I>ret</I>)<P>
+Send the specified <I>command</I> to the FTP server. <I>ret</I> specifies
+the expected result.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the command has been sent successfully, else false.<P>
+
+
+<HR>
+<A NAME="wxftpsendcommand"></A>
+<H3>wxFTP::SendCommand</H3>
+<P>
+<B>char</B> <B>SendCommand</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> command</I>)<P>
+Send the specified <I>command</I> to the FTP server and return the first
+character of the return code.<P>
+
+
+<HR>
+<A NAME="wxftpgetlastresult"></A>
+<H3>wxFTP::GetLastResult</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetLastResult</B>()<P>
+Returns the last command result, i.e. the full server reply for the last
+command.<P>
+
+
+<HR>
+<A NAME="wxftpchdir"></A>
+<H3>wxFTP::ChDir</H3>
+<P>
+<B>bool</B> <B>ChDir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> dir</I>)<P>
+Change the current FTP working directory.
+Returns true if successful.<P>
+
+
+<HR>
+<A NAME="wxftpmkdir"></A>
+<H3>wxFTP::MkDir</H3>
+<P>
+<B>bool</B> <B>MkDir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> dir</I>)<P>
+Create the specified directory in the current FTP working directory.
+Returns true if successful.<P>
+
+
+<HR>
+<A NAME="wxftprmdir"></A>
+<H3>wxFTP::RmDir</H3>
+<P>
+<B>bool</B> <B>RmDir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> dir</I>)<P>
+Remove the specified directory from the current FTP working directory.
+Returns true if successful.<P>
+
+
+<HR>
+<A NAME="wxftppwd"></A>
+<H3>wxFTP::Pwd</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>Pwd</B>()<P>
+Returns the current FTP working directory.<P>
+
+
+<HR>
+<A NAME="wxftprename"></A>
+<H3>wxFTP::Rename</H3>
+<P>
+<B>bool</B> <B>Rename</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> src</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> dst</I>)<P>
+Rename the specified <I>src</I> element to <I>dst</I>. Returns true if successful.<P>
+
+
+<HR>
+<A NAME="wxftprmfile"></A>
+<H3>wxFTP::RmFile</H3>
+<P>
+<B>bool</B> <B>RmFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> path</I>)<P>
+Delete the file specified by <I>path</I>. Returns true if successful.<P>
+
+
+<HR>
+<A NAME="wxftpsetascii"></A>
+<H3>wxFTP::SetAscii</H3>
+<P>
+<B>bool</B> <B>SetAscii</B>()<P>
+Sets the transfer mode to ASCII. It will be used for the next transfer.<P>
+
+
+<HR>
+<A NAME="wxftpsetbinary"></A>
+<H3>wxFTP::SetBinary</H3>
+<P>
+<B>bool</B> <B>SetBinary</B>()<P>
+Sets the transfer mode to binary (IMAGE). It will be used for the next transfer.<P>
+
+
+<HR>
+<A NAME="wxftpsetpassive"></A>
+<H3>wxFTP::SetPassive</H3>
+<P>
+<B>void</B> <B>SetPassive</B>(<B>bool </B><I>pasv</I>)<P>
+If <I>pasv</I> is <TT>true</TT>, passive connection to the FTP server is used. This is
+the default as it works with practically all firewalls. If the server doesn't
+support passive move, you may call this function with <TT>false</TT> argument to use
+active connection.<P>
+
+
+<HR>
+<A NAME="wxftpsettransfermode"></A>
+<H3>wxFTP::SetTransferMode</H3>
+<P>
+<B>bool</B> <B>SetTransferMode</B>(<B>TransferMode </B><I>mode</I>)<P>
+Sets the transfer mode to the specified one. It will be used for the next
+transfer.<P>
+If this function is never called, binary transfer mode is used by default.<P>
+
+
+<HR>
+<A NAME="wxftpsetuser"></A>
+<H3>wxFTP::SetUser</H3>
+<P>
+<B>void</B> <B>SetUser</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> user</I>)<P>
+Sets the user name to be sent to the FTP server to be allowed to log in.<P>
+<B><FONT COLOR="#FF0000">Default value</FONT></B><P>
+The default value of the user name is "anonymous".<P>
+<B><FONT COLOR="#FF0000">Remark</FONT></B><P>
+This parameter can be included in a URL if you want to use the URL manager.
+For example, you can use: "ftp://a_user:a_password@a.host:service/a_directory/a_file"
+to specify a user and a password.<P>
+
+
+<HR>
+<A NAME="wxftpsetpassword"></A>
+<H3>wxFTP::SetPassword</H3>
+<P>
+<B>void</B> <B>SetPassword</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> passwd</I>)<P>
+Sets the password to be sent to the FTP server to be allowed to log in.<P>
+<B><FONT COLOR="#FF0000">Default value</FONT></B><P>
+The default value of the user name is your email address. For example, it could
+be "username@userhost.domain". This password is built by getting the current
+user name and the host name of the local machine from the system.<P>
+<B><FONT COLOR="#FF0000">Remark</FONT></B><P>
+This parameter can be included in a URL if you want to use the URL manager.
+For example, you can use: "ftp://a_user:a_password@a.host:service/a_directory/a_file"
+to specify a user and a password.<P>
+
+
+<HR>
+<A NAME="wxftpfileexists"></A>
+<H3>wxFTP::FileExists</H3>
+<P>
+<B>bool</B> <B>FileExists</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> filename</I>)<P>
+Returns <TT>true</TT> if the given remote file exists, <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxftpgetfilesize"></A>
+<H3>wxFTP::GetFileSize</H3>
+<P>
+<B>int</B> <B>GetFileSize</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> filename</I>)<P>
+Returns the file size in bytes or -1 if the file doesn't exist or the size
+couldn't be determined. Notice that this size can be approximative size only
+and shouldn't be used for allocating the buffer in which the remote file is
+copied, for example.<P>
+
+
+<HR>
+<A NAME="wxftpgetdirlist"></A>
+<H3>wxFTP::GetDirList</H3>
+<P>
+<B>bool</B> <B>GetDirList</B>(<B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>files</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> wildcard = ""</I>)<P>
+The GetList function is quite low-level. It returns the list of the files in
+the current directory. The list can be filtered using the <I>wildcard</I> string.
+If <I>wildcard</I> is empty (default), it will return all files in directory.<P>
+The form of the list can change from one peer system to another. For example,
+for a UNIX peer system, it will look like this:<P>
+<PRE>
+-r--r--r--   1 guilhem  lavaux      12738 Jan 16 20:17 cmndata.cpp
+-r--r--r--   1 guilhem  lavaux      10866 Jan 24 16:41 config.cpp
+-rw-rw-rw-   1 guilhem  lavaux      29967 Dec 21 19:17 cwlex_yy.c
+-rw-rw-rw-   1 guilhem  lavaux      14342 Jan 22 19:51 cwy_tab.c
+-r--r--r--   1 guilhem  lavaux      13890 Jan 29 19:18 date.cpp
+-r--r--r--   1 guilhem  lavaux       3989 Feb  8 19:18 datstrm.cpp
+</PRE>
+But on Windows system, it will look like this:<P>
+<PRE>
+winamp~1 exe    520196 02-25-1999  19:28  winamp204.exe
+        1 file(s)           520 196 bytes
+</PRE>
+Return value: true if the file list was successfully retrieved, false
+otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxftp.html#wxftpgetfileslist">GetFilesList</A><P>
+
+
+<HR>
+<A NAME="wxftpgetfileslist"></A>
+<H3>wxFTP::GetFilesList</H3>
+<P>
+<B>bool</B> <B>GetFilesList</B>(<B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>files</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> wildcard = ""</I>)<P>
+This function returns the computer-parsable list of the files in the current
+directory (optionally only of the files matching the <I>wildcard</I>, all files
+by default). This list always has the same format and contains one full
+(including the directory path) file name per line.<P>
+Return value: true if the file list was successfully retrieved, false
+otherwise.<P>
+
+
+<HR>
+<A NAME="wxftpgetoutputstream"></A>
+<H3>wxFTP::GetOutputStream</H3>
+<P>
+<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A> *</B> </B> <B>GetOutputStream</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> file</I>)<P>
+Initializes an output stream to the specified <I>file</I>. The returned
+stream has all but the seek functionality of wxStreams. When the user finishes
+writing data, he has to delete the stream to close it.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+An initialized write-only stream.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A><P>
+
+
+<HR>
+<A NAME="wxftpgetinputstream"></A>
+<H3>wxFTP::GetInputStream</H3>
+<P>
+<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A> *</B> </B> <B>GetInputStream</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> path</I>)<P>
+Creates a new input stream on the specified path. You can use all but the seek
+functionality of wxStream. Seek isn't available on all streams. For example,
+HTTP or FTP streams do not deal with it. Other functions like Tell
+are not available for this sort of stream, at present.
+You will be notified when the EOF is reached by an error.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns NULL if an error occurred (it could be a network failure or the fact
+that the file doesn't exist).<P>
+Returns the initialized stream. You will have to delete it yourself when you
+don't need it anymore. The destructor closes the DATA stream connection but
+will leave the COMMAND stream connection opened. It means that you can still
+send new commands without reconnecting.<P>
+<B><FONT COLOR="#FF0000">Example of a standalone connection (without wxURL)</FONT></B><P>
+<PRE>
+  wxFTP ftp;
+  wxInputStream *in_stream;
+  char *data;
+
+  ftp.Connect("a.host.domain");
+  ftp.ChDir("a_directory");
+  in_stream = ftp.GetInputStream("a_file_to_get");
+
+  data = new char[in_stream-&gt;GetSize()];
+
+  in_stream-&gt;Read(data, in_stream-&gt;GetSize());
+  if (in_stream-&gt;LastError() != wxStream_NOERROR) {
+    // Do something.
+  }
+
+  delete in_stream; /* Close the DATA connection */
+
+  ftp.Close(); /* Close the COMMAND connection */
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A><P>
+
+</FONT></BODY></HTML>

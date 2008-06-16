@@ -4,28 +4,24 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: msgdlg.cpp,v 1.21 2005/03/11 15:34:32 ABX Exp $
+// RCS-ID:      $Id: msgdlg.cpp 44062 2006-12-25 14:39:11Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "msgdlg.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
+
+#include "wx/msgdlg.h"
 
 #ifndef WX_PRECOMP
     #include "wx/app.h"
-    #include "wx/defs.h"
     #include "wx/utils.h"
     #include "wx/dialog.h"
-    #include "wx/msgdlg.h"
 #endif
 
 #include "wx/msw/private.h"
@@ -101,13 +97,31 @@ int wxMessageDialog::ShowModal()
     if ( wxStyle & wxSTAY_ON_TOP )
         msStyle |= MB_TOPMOST;
 
+#ifndef __WXWINCE__
+    if ( wxTheApp->GetLayoutDirection() == wxLayout_RightToLeft )
+        msStyle |= MB_RTLREADING | MB_RIGHT;
+#endif
+
     if (hWnd)
         msStyle |= MB_APPLMODAL;
     else
         msStyle |= MB_TASKMODAL;
 
+    // per MSDN documentation for MessageBox() we can prefix the message with 2
+    // right-to-left mark characters to tell the function to use RTL layout
+    // (unfortunately this only works in Unicode builds)
+    wxString message = m_message;
+#if wxUSE_UNICODE
+    if ( wxTheApp->GetLayoutDirection() == wxLayout_RightToLeft )
+    {
+        // NB: not all compilers support \u escapes
+        static const wchar_t wchRLM = 0x200f;
+        message.Prepend(wxString(wchRLM, 2));
+    }
+#endif // wxUSE_UNICODE
+
     // do show the dialog
-    int msAns = MessageBox(hWnd, m_message.c_str(), m_caption.c_str(), msStyle);
+    int msAns = MessageBox(hWnd, message, m_caption, msStyle);
     int ans;
     switch (msAns)
     {
@@ -130,4 +144,3 @@ int wxMessageDialog::ShowModal()
     }
     return ans;
 }
-

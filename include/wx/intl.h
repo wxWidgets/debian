@@ -5,7 +5,7 @@
 // Modified by: Michael N. Filippov <michael@idisys.iae.nsk.su>
 //              (2003/09/30 - plural forms support)
 // Created:     29/01/98
-// RCS-ID:      $Id: intl.h,v 1.58 2005/06/01 21:16:27 VZ Exp $
+// RCS-ID:      $Id: intl.h 45738 2007-05-01 21:10:46Z VS $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,12 +13,18 @@
 #ifndef _WX_INTL_H_
 #define _WX_INTL_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "intl.h"
-#endif
-
 #include "wx/defs.h"
 #include "wx/string.h"
+
+// Make wxLayoutDirection enum available without need for wxUSE_INTL so wxWindow, wxApp
+// and other classes are not distrubed by wxUSE_INTL
+
+enum wxLayoutDirection
+{
+    wxLayout_Default,
+    wxLayout_LeftToRight,
+    wxLayout_RightToLeft
+};
 
 #if wxUSE_INTL
 
@@ -320,6 +326,7 @@ struct WXDLLIMPEXP_BASE wxLanguageInfo
              WinSublang;
 #endif // __WIN32__
     wxString Description;           // human-readable name of the language
+    wxLayoutDirection LayoutDirection;
 };
 
 // ----------------------------------------------------------------------------
@@ -406,7 +413,7 @@ public:
               int flags = wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING);
 
         // restores old locale
-    ~wxLocale();
+    virtual ~wxLocale();
 
     // Try to get user's (or OS's) preferred language setting.
     // Return wxLANGUAGE_UNKNOWN if language-guessing algorithm failed
@@ -459,6 +466,9 @@ public:
     bool AddCatalog(const wxChar *szDomain,
                     wxLanguage msgIdLanguage, const wxChar *msgIdCharset);
 
+    // check if the given locale is provided by OS and C run time
+    static bool IsAvailable(int lang);
+
     // check if the given catalog is loaded
     bool IsLoaded(const wxChar *szDomain) const;
 
@@ -494,13 +504,13 @@ public:
     //
     // domains are searched in the last to first order, i.e. catalogs
     // added later override those added before.
-    const wxChar *GetString(const wxChar *szOrigString,
-                            const wxChar *szDomain = NULL) const;
+    virtual const wxChar *GetString(const wxChar *szOrigString,
+                                    const wxChar *szDomain = NULL) const;
     // plural form version of the same:
-    const wxChar *GetString(const wxChar *szOrigString,
-                            const wxChar *szOrigString2,
-                            size_t n,
-                            const wxChar *szDomain = NULL) const;
+    virtual const wxChar *GetString(const wxChar *szOrigString,
+                                    const wxChar *szOrigString2,
+                                    size_t n,
+                                    const wxChar *szDomain = NULL) const;
 
     // Returns the current short name for the locale
     const wxString& GetName() const { return m_strShort; }
@@ -552,20 +562,24 @@ private:
 extern WXDLLIMPEXP_BASE wxLocale* wxGetLocale();
 
 // get the translation of the string in the current locale
-inline const wxChar *wxGetTranslation(const wxChar *sz)
+inline const wxChar *
+wxGetTranslation(const wxChar *sz, const wxChar* domain = NULL)
 {
     wxLocale *pLoc = wxGetLocale();
     if (pLoc)
-        return pLoc->GetString(sz);
+        return pLoc->GetString(sz, domain);
     else
         return sz;
 }
-inline const wxChar *wxGetTranslation(const wxChar *sz1, const wxChar *sz2,
-                                      size_t n)
+
+inline const wxChar *
+wxGetTranslation(const wxChar *sz1, const wxChar *sz2,
+                 size_t n,
+                 const wxChar *domain = NULL)
 {
     wxLocale *pLoc = wxGetLocale();
     if (pLoc)
-        return pLoc->GetString(sz1, sz2, n);
+        return pLoc->GetString(sz1, sz2, n, domain);
     else
         return n == 1 ? sz1 : sz2;
 }
@@ -578,13 +592,16 @@ inline const wxChar *wxGetTranslation(const wxChar *sz1, const wxChar *sz2,
     #if !defined(_)
         #define _(s)                 (_T(s))
     #endif
+    #define wxPLURAL(sing, plur, n)  ((n) == 1 ? _T(sing) : _T(plur))
 #endif
 
 #define wxTRANSLATE(str) _T(str)
 
-// Note: use of 'inline' here can cause this symbol not to be found when compiled with gcc
-//const wxChar *wxGetTranslation(const wxChar *sz);
-#define wxGetTranslation(sz) (sz)
+inline const wxChar *
+wxGetTranslation(const wxChar *sz, const wxChar * WXUNUSED(domain) = NULL)
+{
+    return sz;
+}
 
 #endif // wxUSE_INTL/!wxUSE_INTL
 
@@ -600,4 +617,3 @@ inline const wxChar *wxGetTranslation(const wxChar *sz1, const wxChar *sz2,
 #endif
 
 #endif // _WX_INTL_H_
-

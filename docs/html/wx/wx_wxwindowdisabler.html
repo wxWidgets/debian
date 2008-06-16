@@ -1,0 +1,40 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxWindowDisabler</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxwindowdisabler"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxwindowdestroyevent.html#wxwindowdestroyevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxwizard.html#wxwizard"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxWindowDisabler</H2>
+<P>
+This class disables all windows of the application (may be with the exception
+of one of them) in its constructor and enables them back in its destructor.
+This comes in handy when you want to indicate to the user that the application
+is currently busy and cannot respond to user input.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbusycursor.html#wxbusycursor">wxBusyCursor</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxwindowdisablerctor">wxWindowDisabler::wxWindowDisabler</A><BR>
+<A HREF="#wxwindowdisablerdtor">wxWindowDisabler::~wxWindowDisabler</A><BR>
+<P>
+
+<HR>
+<A NAME="wxwindowdisablerctor"></A>
+<H3>wxWindowDisabler::wxWindowDisabler</H3>
+<P>
+<B></B> <B>wxWindowDisabler</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>winToSkip = NULL</I>)<P>
+Disables all top level windows of the applications with the exception of 
+<I>winToSkip</I> if it is not <TT>NULL</TT>.<P>
+
+<HR>
+<A NAME="wxwindowdisablerdtor"></A>
+<H3>wxWindowDisabler::~wxWindowDisabler</H3>
+<P>
+<B></B> <B>~wxWindowDisabler</B>()<P>
+Reenables back the windows disabled by the constructor.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,152 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxZipOutputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxzipoutputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxzipnotifier.html#wxzipnotifier"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxzlibinputstream.html#wxzlibinputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxZipOutputStream</H2>
+<P>
+Output stream for writing zip files.<P>
+<A HREF="wx_wxzipoutputstream.html#wxzipoutputstreamputnextentry">PutNextEntry()</A> is used to create
+a new entry in the output zip, then the entry's data is written to the
+wxZipOutputStream.  Another call to PutNextEntry() closes the current
+entry and begins the next.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstream">wxArchiveOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/zipstrm.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarc">Archive formats such as zip</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A><BR>
+
+<A HREF="wx_wxzipinputstream.html#wxzipinputstream">wxZipInputStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxzipoutputstreamwxzipoutputstream">wxZipOutputStream::wxZipOutputStream</A><BR>
+<A HREF="#wxzipoutputstreamdtor">wxZipOutputStream::~wxZipOutputStream</A><BR>
+<A HREF="#wxzipoutputstreamclose">wxZipOutputStream::Close</A><BR>
+<A HREF="#wxzipoutputstreamcloseentry">wxZipOutputStream::CloseEntry</A><BR>
+<A HREF="#wxzipoutputstreamcopyarchivemetadata">wxZipOutputStream::CopyArchiveMetaData</A><BR>
+<A HREF="#wxzipoutputstreamcopyentry">wxZipOutputStream::CopyEntry</A><BR>
+<A HREF="#wxzipoutputstreamlevel">wxZipOutputStream::Get/SetLevel</A><BR>
+<A HREF="#wxzipoutputstreamputnextdirentry">wxZipOutputStream::PutNextDirEntry</A><BR>
+<A HREF="#wxzipoutputstreamputnextentry">wxZipOutputStream::PutNextEntry</A><BR>
+<A HREF="#wxzipoutputstreamsetcomment">wxZipOutputStream::SetComment</A><BR>
+<P>
+
+<HR>
+<A NAME="wxzipoutputstreamwxzipoutputstream"></A>
+<H3>wxZipOutputStream::wxZipOutputStream</H3>
+<P>
+<B></B> <B>wxZipOutputStream</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>, <B>int </B><I>level = -1</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>& </B></B><I>conv = wxConvLocal</I>)<P>
+<B></B> <B>wxZipOutputStream</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>*</B></B><I>stream</I>, <B>int </B><I>level = -1</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>& </B></B><I>conv = wxConvLocal</I>)<P>
+Constructor. <TT>level</TT> is the compression level to use.
+It can be a value between 0 and 9 or -1 to use the default value
+which currently is equivalent to 6.<P>
+If the parent stream is passed as a pointer then the new filter stream
+takes ownership of it. If it is passed by reference then it does not.<P>
+In a Unicode build the third parameter <TT>conv</TT> is used to translate
+the filename and comment fields to an 8-bit encoding. It has no effect on the
+stream's data.<P>
+
+
+<HR>
+<A NAME="wxzipoutputstreamdtor"></A>
+<H3>wxZipOutputStream::~wxZipOutputStream</H3>
+<P>
+<B></B> <B>~wxZipOutputStream</B>()<P>
+The destructor calls <A HREF="wx_wxzipoutputstream.html#wxzipoutputstreamclose">Close()</A> to finish
+writing the zip if it has not been called already.<P>
+
+
+<HR>
+<A NAME="wxzipoutputstreamclose"></A>
+<H3>wxZipOutputStream::Close</H3>
+<P>
+<B>bool</B> <B>Close</B>()<P>
+Finishes writing the zip, returning true if successful.
+Called by the destructor if not called explicitly.<P>
+
+
+<HR>
+<A NAME="wxzipoutputstreamcloseentry"></A>
+<H3>wxZipOutputStream::CloseEntry</H3>
+<P>
+<B>bool</B> <B>CloseEntry</B>()<P>
+Close the current entry. It is called implicitly whenever another new
+entry is created with <A HREF="wx_wxzipoutputstream.html#wxzipoutputstreamcopyentry">CopyEntry()</A>
+or <A HREF="wx_wxzipoutputstream.html#wxzipoutputstreamputnextentry">PutNextEntry()</A>, or
+when the zip is closed.<P>
+
+
+<HR>
+<A NAME="wxzipoutputstreamcopyarchivemetadata"></A>
+<H3>wxZipOutputStream::CopyArchiveMetaData</H3>
+<P>
+<B>bool</B> <B>CopyArchiveMetaData</B>(<B><A HREF="wx_wxzipinputstream.html#wxzipinputstream">wxZipInputStream</A>& </B></B><I>inputStream</I>)<P>
+Transfers the zip comment from the <A HREF="wx_wxzipinputstream.html#wxzipinputstream">wxZipInputStream</A>
+to this output stream.<P>
+
+
+<HR>
+<A NAME="wxzipoutputstreamcopyentry"></A>
+<H3>wxZipOutputStream::CopyEntry</H3>
+<P>
+<B>bool</B> <B>CopyEntry</B>(<B><A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A>* </B></B><I>entry</I>, <B><A HREF="wx_wxzipinputstream.html#wxzipinputstream">wxZipInputStream</A>& </B></B><I>inputStream</I>)<P>
+Takes ownership of <TT>entry</TT> and uses it to create a new entry
+in the zip. <TT>entry</TT> is then opened in <TT>inputStream</TT> and its contents
+copied to this stream.<P>
+CopyEntry() is much more efficient than transferring the data using
+Read() and Write() since it will copy them without decompressing and
+recompressing them.<P>
+For zips on seekable streams, <TT>entry</TT> must be from the same zip file
+as <TT>stream</TT>. For non-seekable streams, <TT>entry</TT> must also be the
+last thing read from <TT>inputStream</TT>.<P>
+
+
+<HR>
+<A NAME="wxzipoutputstreamlevel"></A>
+<H3>wxZipOutputStream::Get/SetLevel</H3>
+<P>
+<B>int</B> <B>GetLevel</B>() <B>const</B><P>
+<B>void</B> <B>SetLevel</B>(<B>int </B><I>level</I>)<P>
+Set the compression level that will be used the next time an entry is
+created. It can be a value between 0 and 9 or -1 to use the default value
+which currently is equivalent to 6.<P>
+
+
+<HR>
+<A NAME="wxzipoutputstreamputnextdirentry"></A>
+<H3>wxZipOutputStream::PutNextDirEntry</H3>
+<P>
+<B>bool</B> <B>PutNextDirEntry</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt = wxDateTime::Now()</I>)<P>
+Create a new directory entry
+(see <A HREF="wx_wxarchiveentry.html#wxarchiveentryisdir">wxArchiveEntry::IsDir()</A>)
+with the given name and timestamp.<P>
+<A HREF="wx_wxzipoutputstream.html#wxzipoutputstreamputnextentry">PutNextEntry()</A> can
+also be used to create directory entries, by supplying a name with
+a trailing path separator.<P>
+
+
+<HR>
+<A NAME="wxzipoutputstreamputnextentry"></A>
+<H3>wxZipOutputStream::PutNextEntry</H3>
+<P>
+<B>bool</B> <B>PutNextEntry</B>(<B><A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A>* </B></B><I>entry</I>)<P>
+Takes ownership of <TT>entry</TT> and uses it to create a new entry
+in the zip. <P>
+<B>bool</B> <B>PutNextEntry</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt = wxDateTime::Now()</I>, <B>off_t </B><I>size = wxInvalidOffset</I>)<P>
+Create a new entry with the given name, timestamp and size.<P>
+
+
+<HR>
+<A NAME="wxzipoutputstreamsetcomment"></A>
+<H3>wxZipOutputStream::SetComment</H3>
+<P>
+<B>void</B> <B>SetComment</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>comment</I>)<P>
+Sets a comment for the zip as a whole. It is written at the end of the
+zip.<P>
+
+</FONT></BODY></HTML>

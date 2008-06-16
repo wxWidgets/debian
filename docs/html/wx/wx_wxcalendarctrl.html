@@ -1,0 +1,428 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCalendarCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcalendarctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcalculatelayoutevent.html#wxcalculatelayoutevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcalendardateattr.html#wxcalendardateattr"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCalendarCtrl</H2>
+<P>
+The calendar control allows the user to pick a date. For this,
+it displays a window containing several parts: a control at the top to pick the month
+and the year (either or both of them may be disabled), and a month
+area below them which shows all the days in the month. The user can move the
+current selection using the keyboard and select the date (generating 
+<TT>EVT_CALENDAR</TT> event) by pressing <TT>&lt;Return&gt;</TT> or double clicking it.<P>
+It has advanced possibilities for the customization of its display. All global
+settings (such as colours and fonts used) can, of course, be changed. But
+also, the display style for each day in the month can be set independently
+using <A HREF="wx_wxcalendardateattr.html#wxcalendardateattr">wxCalendarDateAttr</A> class.<P>
+An item without custom attributes is drawn with the default colours and
+font and without border, but setting custom attributes with 
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrlsetattr">SetAttr</A> allows to modify its appearance. Just
+create a custom attribute object and set it for the day you want to be
+displayed specially (note that the control will take ownership of the pointer,
+i.e. it will delete it itself). A day may be marked as being a holiday, even
+if it is not recognized as one by <A HREF="wx_wxdatetimeoverview.html#tdateholidays">wxDateTime</A> using 
+<A HREF="wx_wxcalendardateattr.html#wxcalendardateattrsetholiday">SetHoliday</A> method.<P>
+As the attributes are specified for each day, they may change when the month
+is changed, so you will often want to update them in 
+<TT>EVT_CALENDAR_MONTH</TT> event handler.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/calctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCAL_SUNDAY_FIRST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Show Sunday as the first day in the week
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCAL_MONDAY_FIRST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Show Monday as the first day in the week
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCAL_SHOW_HOLIDAYS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Highlight holidays in the calendar
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCAL_NO_YEAR_CHANGE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Disable the year changing
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCAL_NO_MONTH_CHANGE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Disable the month (and, implicitly, the year) changing
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCAL_SHOW_SURROUNDING_WEEKS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Show the neighbouring weeks in the previous and next months
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCAL_SEQUENTIAL_MONTH_SELECTION</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Use alternative, more compact, style for the month and year selection controls.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The default calendar style is <TT>wxCAL_SHOW_HOLIDAYS</TT>.<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process input from a calendar control, use these event handler macros to
+direct input to member functions that take a 
+<A HREF="wx_wxcalendarevent.html#wxcalendarevent">wxCalendarEvent</A> argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CALENDAR(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A day was double clicked in the calendar.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CALENDAR_SEL_CHANGED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The selected date changed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CALENDAR_DAY(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The selected day changed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CALENDAR_MONTH(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The selected month changed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CALENDAR_YEAR(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The selected year changed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CALENDAR_WEEKDAY_CLICKED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+User clicked on the week day header
+</FONT></TD></TR>
+
+
+</TABLE>
+Note that changing the selected date will result in either of 
+<TT>EVT_CALENDAR_DAY</TT>, <TT>MONTH</TT> or <TT>YEAR</TT> events and 
+<TT>EVT_CALENDAR_SEL_CHANGED</TT> one.<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+The following are the possible return values for 
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrlhittest">HitTest</A> method:<P>
+<FONT SIZE=2>
+<PRE>
+enum wxCalendarHitTestResult
+{
+    wxCAL_HITTEST_NOWHERE,      // outside of anything
+    wxCAL_HITTEST_HEADER,       // on the header (weekdays)
+    wxCAL_HITTEST_DAY           // on a day in the calendar
+}
+</PRE>
+</FONT><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_samples.html#samplecalendar">Calendar sample</A><BR>
+
+<A HREF="wx_wxcalendardateattr.html#wxcalendardateattr">wxCalendarDateAttr</A><BR>
+
+<A HREF="wx_wxcalendarevent.html#wxcalendarevent">wxCalendarEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxcalendarctrlwxcalendarctrldef">wxCalendarCtrl::wxCalendarCtrl</A><BR>
+<A HREF="#wxcalendarctrlcreate">wxCalendarCtrl::Create</A><BR>
+<A HREF="#wxcalendarctrldtor">wxCalendarCtrl::~wxCalendarCtrl</A><BR>
+<A HREF="#wxcalendarctrlsetdate">wxCalendarCtrl::SetDate</A><BR>
+<A HREF="#wxcalendarctrlgetdate">wxCalendarCtrl::GetDate</A><BR>
+<A HREF="#wxcalendarctrlenableyearchange">wxCalendarCtrl::EnableYearChange</A><BR>
+<A HREF="#wxcalendarctrlenablemonthchange">wxCalendarCtrl::EnableMonthChange</A><BR>
+<A HREF="#wxcalendarctrlenableholidaydisplay">wxCalendarCtrl::EnableHolidayDisplay</A><BR>
+<A HREF="#wxcalendarctrlsetheadercolours">wxCalendarCtrl::SetHeaderColours</A><BR>
+<A HREF="#wxcalendarctrlgetheadercolourfg">wxCalendarCtrl::GetHeaderColourFg</A><BR>
+<A HREF="#wxcalendarctrlgetheadercolourbg">wxCalendarCtrl::GetHeaderColourBg</A><BR>
+<A HREF="#wxcalendarctrlsethighlightcolours">wxCalendarCtrl::SetHighlightColours</A><BR>
+<A HREF="#wxcalendarctrlgethighlightcolourfg">wxCalendarCtrl::GetHighlightColourFg</A><BR>
+<A HREF="#wxcalendarctrlgethighlightcolourbg">wxCalendarCtrl::GetHighlightColourBg</A><BR>
+<A HREF="#wxcalendarctrlsetholidaycolours">wxCalendarCtrl::SetHolidayColours</A><BR>
+<A HREF="#wxcalendarctrlgetholidaycolourfg">wxCalendarCtrl::GetHolidayColourFg</A><BR>
+<A HREF="#wxcalendarctrlgetholidaycolourbg">wxCalendarCtrl::GetHolidayColourBg</A><BR>
+<A HREF="#wxcalendarctrlgetattr">wxCalendarCtrl::GetAttr</A><BR>
+<A HREF="#wxcalendarctrlsetattr">wxCalendarCtrl::SetAttr</A><BR>
+<A HREF="#wxcalendarctrlsetholiday">wxCalendarCtrl::SetHoliday</A><BR>
+<A HREF="#wxcalendarctrlresetattr">wxCalendarCtrl::ResetAttr</A><BR>
+<A HREF="#wxcalendarctrlhittest">wxCalendarCtrl::HitTest</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcalendarctrlwxcalendarctrldef"></A>
+<H3>wxCalendarCtrl::wxCalendarCtrl</H3>
+<P>
+<B></B> <B>wxCalendarCtrl</B>()<P>
+Default constructor, use <A HREF="wx_wxcalendarctrl.html#wxcalendarctrlcreate">Create</A> after it.<P>
+<B></B> <B>wxCalendarCtrl</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>date = wxDefaultDateTime</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxCAL_SHOW_HOLIDAYS</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxCalendarNameStr</I>)<P>
+Does the same as <A HREF="wx_wxcalendarctrl.html#wxcalendarctrlcreate">Create</A> method.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlcreate"></A>
+<H3>wxCalendarCtrl::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>date = wxDefaultDateTime</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxCAL_SHOW_HOLIDAYS</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxCalendarNameStr</I>)<P>
+Creates the control. See <A HREF="wx_wxwindow.html#wxwindowctor">wxWindow</A> for the meaning of
+the parameters and the control overview for the possible styles.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrldtor"></A>
+<H3>wxCalendarCtrl::~wxCalendarCtrl</H3>
+<P>
+<B></B> <B>~wxCalendarCtrl</B>()<P>
+Destroys the control.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlsetdate"></A>
+<H3>wxCalendarCtrl::SetDate</H3>
+<P>
+<B>void</B> <B>SetDate</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>date</I>)<P>
+Sets the current date.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlgetdate"></A>
+<H3>wxCalendarCtrl::GetDate</H3>
+<P>
+<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>GetDate</B>() <B>const</B><P>
+Gets the currently selected date.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlenableyearchange"></A>
+<H3>wxCalendarCtrl::EnableYearChange</H3>
+<P>
+<B>void</B> <B>EnableYearChange</B>(<B>bool </B><I>enable = true</I>)<P>
+This function should be used instead of changing <TT>wxCAL_NO_YEAR_CHANGE</TT>
+style bit directly. It allows or disallows the user to change the year
+interactively.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlenablemonthchange"></A>
+<H3>wxCalendarCtrl::EnableMonthChange</H3>
+<P>
+<B>void</B> <B>EnableMonthChange</B>(<B>bool </B><I>enable = true</I>)<P>
+This function should be used instead of changing 
+<TT>wxCAL_NO_MONTH_CHANGE</TT> style bit. It allows or disallows the user to
+change the month interactively. Note that if the month can not be changed, the
+year can not be changed neither.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlenableholidaydisplay"></A>
+<H3>wxCalendarCtrl::EnableHolidayDisplay</H3>
+<P>
+<B>void</B> <B>EnableHolidayDisplay</B>(<B>bool </B><I>display = true</I>)<P>
+This function should be used instead of changing <TT>wxCAL_SHOW_HOLIDAYS</TT>
+style bit directly. It enables or disables the special highlighting of the
+holidays.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlsetheadercolours"></A>
+<H3>wxCalendarCtrl::SetHeaderColours</H3>
+<P>
+<B>void</B> <B>SetHeaderColours</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colFg</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colBg</I>)<P>
+Set the colours used for painting the weekdays at the top of the control.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlgetheadercolourfg"></A>
+<H3>wxCalendarCtrl::GetHeaderColourFg</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetHeaderColourFg</B>() <B>const</B><P>
+Gets the foreground colour of the header part of the calendar window.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrlsetheadercolours">SetHeaderColours</A><P>
+
+
+<HR>
+<A NAME="wxcalendarctrlgetheadercolourbg"></A>
+<H3>wxCalendarCtrl::GetHeaderColourBg</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetHeaderColourBg</B>() <B>const</B><P>
+Gets the background colour of the header part of the calendar window.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrlsetheadercolours">SetHeaderColours</A><P>
+
+
+<HR>
+<A NAME="wxcalendarctrlsethighlightcolours"></A>
+<H3>wxCalendarCtrl::SetHighlightColours</H3>
+<P>
+<B>void</B> <B>SetHighlightColours</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colFg</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colBg</I>)<P>
+Set the colours to be used for highlighting the currently selected date.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlgethighlightcolourfg"></A>
+<H3>wxCalendarCtrl::GetHighlightColourFg</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetHighlightColourFg</B>() <B>const</B><P>
+Gets the foreground highlight colour.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrlsethighlightcolours">SetHighlightColours</A><P>
+
+
+<HR>
+<A NAME="wxcalendarctrlgethighlightcolourbg"></A>
+<H3>wxCalendarCtrl::GetHighlightColourBg</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetHighlightColourBg</B>() <B>const</B><P>
+Gets the background highlight colour.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrlsethighlightcolours">SetHighlightColours</A><P>
+
+
+<HR>
+<A NAME="wxcalendarctrlsetholidaycolours"></A>
+<H3>wxCalendarCtrl::SetHolidayColours</H3>
+<P>
+<B>void</B> <B>SetHolidayColours</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colFg</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colBg</I>)<P>
+Sets the colours to be used for the holidays highlighting (only used if the
+window style includes <TT>wxCAL_SHOW_HOLIDAYS</TT> flag).<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlgetholidaycolourfg"></A>
+<H3>wxCalendarCtrl::GetHolidayColourFg</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetHolidayColourFg</B>() <B>const</B><P>
+Return the foreground colour currently used for holiday highlighting.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrlsetholidaycolours">SetHolidayColours</A><P>
+
+
+<HR>
+<A NAME="wxcalendarctrlgetholidaycolourbg"></A>
+<H3>wxCalendarCtrl::GetHolidayColourBg</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetHolidayColourBg</B>() <B>const</B><P>
+Return the background colour currently used for holiday highlighting.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrlsetholidaycolours">SetHolidayColours</A><P>
+
+
+<HR>
+<A NAME="wxcalendarctrlgetattr"></A>
+<H3>wxCalendarCtrl::GetAttr</H3>
+<P>
+<B><A HREF="wx_wxcalendardateattr.html#wxcalendardateattr">wxCalendarDateAttr</A> *</B> </B> <B>GetAttr</B>(<B>size_t </B><I>day</I>) <B>const</B><P>
+Returns the attribute for the given date (should be in the range 1...31).<P>
+The returned pointer may be <TT>NULL</TT>.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlsetattr"></A>
+<H3>wxCalendarCtrl::SetAttr</H3>
+<P>
+<B>void</B> <B>SetAttr</B>(<B>size_t </B><I>day</I>, <B><A HREF="wx_wxcalendardateattr.html#wxcalendardateattr">wxCalendarDateAttr</A>* </B></B><I>attr</I>)<P>
+Associates the attribute with the specified date (in the range 1...31).<P>
+If the pointer is <TT>NULL</TT>, the items attribute is cleared.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlsetholiday"></A>
+<H3>wxCalendarCtrl::SetHoliday</H3>
+<P>
+<B>void</B> <B>SetHoliday</B>(<B>size_t </B><I>day</I>)<P>
+Marks the specified day as being a holiday in the current month.<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlresetattr"></A>
+<H3>wxCalendarCtrl::ResetAttr</H3>
+<P>
+<B>void</B> <B>ResetAttr</B>(<B>size_t </B><I>day</I>)<P>
+Clears any attributes associated with the given day (in the range
+1...31).<P>
+
+
+<HR>
+<A NAME="wxcalendarctrlhittest"></A>
+<H3>wxCalendarCtrl::HitTest</H3>
+<P>
+<B>wxCalendarHitTestResult</B> <B>HitTest</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos</I>, <B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>* </B></B><I>date = NULL</I>, <B>wxDateTime::WeekDay* </B><I>wd = NULL</I>)<P>
+Returns one of <TT>wxCAL_HITTEST_XXX</TT> 
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrl">constants</A> and fills either <I>date</I> or 
+<I>wd</I> pointer with the corresponding value depending on the hit test code.<P>
+
+</FONT></BODY></HTML>

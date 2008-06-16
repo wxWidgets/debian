@@ -1,0 +1,62 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDelegateRendererNative</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdelegaterenderernative"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdebugreportupload.html#wxdebugreportupload"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdialog.html#wxdialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDelegateRendererNative</H2>
+<P>
+wxDelegateRendererNative allows reuse of renderers code by forwarding all the 
+<A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A> methods to the given object and
+thus allowing you to only modify some of its methods -- without having to
+reimplement all of them.<P>
+Note that the "normal'', inheritance-based approach, doesn't work with the
+renderers as it is impossible to derive from a class unknown at compile-time
+and the renderer is only chosen at run-time. So suppose that you want to only
+add something to the drawing of the tree control buttons but leave all the
+other methods unchanged -- the only way to do it, considering that the renderer
+class which you want to customize might not even be written yet when you write
+your code (it could be written later and loaded from a DLL during run-time), is
+by using this class.<P>
+Except for the constructor, it has exactly the same methods as 
+<A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A> and their implementation is
+trivial: they are simply forwarded to the real renderer. Note that the "real''
+renderer may, in turn, be a wxDelegateRendererNative as well and that there may
+be arbitrarily many levels like this -- but at the end of the chain there must
+be a real renderer which does the drawing.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/renderer.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdelegaterenderernativector">wxDelegateRendererNative::wxDelegateRendererNative</A><BR>
+<A HREF="#wxdelegaterenderernativedrawxxx">wxDelegateRendererNative::DrawXXX</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdelegaterenderernativector"></A>
+<H3>wxDelegateRendererNative::wxDelegateRendererNative</H3>
+<P>
+<B></B> <B>wxDelegateRendererNative</B>()<P>
+<B></B> <B>wxDelegateRendererNative</B>(<B><A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A>& </B></B><I>rendererNative</I>)<P>
+The default constructor does the same thing as the other one except that it
+uses the <A HREF="wx_wxrenderernative.html#wxrenderernativegetgeneric">generic renderer</A> instead of the
+user-specified <I>rendererNative</I>.<P>
+In any case, this sets up the delegate renderer object to follow all calls to
+the specified real renderer.<P>
+Note that this object does <EM>not</EM> take ownership of (i.e. won't delete)
+<I>rendererNative</I>.<P>
+
+
+<HR>
+<A NAME="wxdelegaterenderernativedrawxxx"></A>
+<H3>wxDelegateRendererNative::DrawXXX</H3>
+<P>
+<B></B> <B>DrawXXX</B>(<B></B><I>...</I>)<P>
+This class also provides all the virtual methods of 
+<A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A>, please refer to that class
+documentation for the details.<P>
+
+</FONT></BODY></HTML>

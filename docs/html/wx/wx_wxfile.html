@@ -1,0 +1,432 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFile</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfile"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxffilestream.html#wxffilestream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfileconfig.html#wxfileconfig"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFile</H2>
+<P>
+A wxFile performs raw file I/O. This is a very small class designed to
+minimize the overhead of using it - in fact, there is hardly any overhead at
+all, but using it brings you automatic error checking and hides differences
+between platforms and compilers. wxFile also automatically closes the file in
+its destructor making it unnecessary to worry about forgetting to do it.
+wxFile is a wrapper around <TT>file descriptor.</TT> - see also 
+<A HREF="wx_wxffile.html#wxffile">wxFFile</A> for a wrapper around <TT>FILE</TT> structure.<P>
+<TT>wxFileOffset</TT> is used by the wxFile functions which require offsets as 
+parameter or return them. If the platform supports it, wxFileOffset is a typedef
+for a native 64 bit integer, otherwise a 32 bit integer is used for wxFileOffset.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/file.h&gt;<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+wx/file.h defines the following constants:<P>
+<PRE>
+#define wxS_IRUSR 00400
+#define wxS_IWUSR 00200
+#define wxS_IXUSR 00100
+
+#define wxS_IRGRP 00040
+#define wxS_IWGRP 00020
+#define wxS_IXGRP 00010
+
+#define wxS_IROTH 00004
+#define wxS_IWOTH 00002
+#define wxS_IXOTH 00001
+
+// default mode for the new files: corresponds to umask 022
+#define wxS_DEFAULT  (wxS_IRUSR | wxS_IWUSR | wxS_IRGRP | wxS_IWGRP | wxS_IROTH | wxS_IWOTH)
+</PRE>
+These constants define the file access rights and are used with 
+<A HREF="wx_wxfile.html#wxfilecreate">wxFile::Create</A> and <A HREF="wx_wxfile.html#wxfileopen">wxFile::Open</A>.<P>
+The <I>OpenMode</I> enumeration defines the different modes for opening a file,
+it is defined inside wxFile class so its members should be specified with <I>wxFile::</I> scope
+resolution prefix. It is also used with <A HREF="wx_wxfile.html#wxfileaccess">wxFile::Access</A> function.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxFile::read</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Open file for reading or test if it can be opened for reading with Access()
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxFile::write</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Open file for writing deleting the contents of the file if it already exists
+or test if it can be opened for writing with Access()
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxFile::read_write</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Open file for reading and writing; can not be used with Access()
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxFile::write_append</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Open file for appending: the file is opened for writing, but the old
+contents of the file is not erased and the file pointer is initially placed at the end of the file;
+can not be used with Access(). This is the same as <B>wxFile::write</B> if the
+file doesn't exist.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxFile::write_excl</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Open the file securely for writing (Uses O_EXCL | O_CREAT).
+Will fail if the file already exists, else create and open it atomically.  Useful for opening temporary files without being vulnerable to race exploits.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Other constants defined elsewhere but used by wxFile functions are wxInvalidOffset which represents an
+invalid value of type <I>wxFileOffset</I> and is returned by functions returning <I>wxFileOffset</I> on error and the seek
+mode constants used with <A HREF="wx_wxfile.html#wxfileseek">Seek()</A>:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxFromStart</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Count offset from the start of the file
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxFromCurrent</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Count offset from the current position of the file pointer
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxFromEnd</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Count offset from the end of the file (backwards)
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxfilector">wxFile::wxFile</A><BR>
+<A HREF="#wxfiledtor">wxFile::~wxFile</A><BR>
+<A HREF="#wxfileaccess">wxFile::Access</A><BR>
+<A HREF="#wxfileattach">wxFile::Attach</A><BR>
+<A HREF="#wxfileclose">wxFile::Close</A><BR>
+<A HREF="#wxfilecreate">wxFile::Create</A><BR>
+<A HREF="#wxfiledetach">wxFile::Detach</A><BR>
+<A HREF="#wxfilefd">wxFile::fd</A><BR>
+<A HREF="#wxfileeof">wxFile::Eof</A><BR>
+<A HREF="#wxfileexists">wxFile::Exists</A><BR>
+<A HREF="#wxfileflush">wxFile::Flush</A><BR>
+<A HREF="#wxfilegetfilekind">wxFile::GetKind</A><BR>
+<A HREF="#wxfileisopened">wxFile::IsOpened</A><BR>
+<A HREF="#wxfilelength">wxFile::Length</A><BR>
+<A HREF="#wxfileopen">wxFile::Open</A><BR>
+<A HREF="#wxfileread">wxFile::Read</A><BR>
+<A HREF="#wxfileseek">wxFile::Seek</A><BR>
+<A HREF="#wxfileseekend">wxFile::SeekEnd</A><BR>
+<A HREF="#wxfiletell">wxFile::Tell</A><BR>
+<A HREF="#wxfilewrite">wxFile::Write</A><BR>
+<A HREF="#wxfilewrites">wxFile::Write</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfilector"></A>
+<H3>wxFile::wxFile</H3>
+<P>
+<B></B> <B>wxFile</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxFile</B>(<B>const char*</B><I> filename</I>, <B>wxFile::OpenMode</B><I> mode = wxFile::read</I>)<P>
+Opens a file with the given mode. As there is no way to return whether the
+operation was successful or not from the constructor you should test the
+return value of <A HREF="wx_wxfile.html#wxfileisopened">IsOpened</A> to check that it didn't
+fail.<P>
+<B></B> <B>wxFile</B>(<B>int</B><I> fd</I>)<P>
+Associates the file with the given file descriptor, which has already been opened.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>filename</I><UL><UL>
+The filename.</UL></UL>
+<P>
+<I>mode</I><UL><UL>
+The mode in which to open the file. May be one of <B>wxFile::read</B>, <B>wxFile::write</B> and <B>wxFile::read_write</B>.</UL></UL>
+<P>
+<I>fd</I><UL><UL>
+An existing file descriptor (see <A HREF="wx_wxfile.html#wxfileattach">Attach()</A> for the list of predefined descriptors)</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxfiledtor"></A>
+<H3>wxFile::~wxFile</H3>
+<P>
+<B></B> <B>~wxFile</B>()<P>
+Destructor will close the file.<P>
+<B>NB:</B> it is not virtual so you should not use wxFile polymorphically.<P>
+
+
+<HR>
+<A NAME="wxfileaccess"></A>
+<H3>wxFile::Access</H3>
+<P>
+<B>static bool</B> <B>Access</B>(<B>const char *</B><I> name</I>, <B>OpenMode</B><I> mode</I>)<P>
+This function verifies if we may access the given file in specified mode. Only
+values of wxFile::read or wxFile::write really make sense here.<P>
+
+
+<HR>
+<A NAME="wxfileattach"></A>
+<H3>wxFile::Attach</H3>
+<P>
+<B>void</B> <B>Attach</B>(<B>int</B><I> fd</I>)<P>
+Attaches an existing file descriptor to the wxFile object. Example of predefined
+file descriptors are 0, 1 and 2 which correspond to stdin, stdout and stderr (and
+have symbolic names of <B>wxFile::fd_stdin</B>, <B>wxFile::fd_stdout</B> and <B>wxFile::fd_stderr</B>).<P>
+The descriptor should be already opened and it will be closed by wxFile
+object.<P>
+
+
+<HR>
+<A NAME="wxfileclose"></A>
+<H3>wxFile::Close</H3>
+<P>
+<B>void</B> <B>Close</B>()<P>
+Closes the file.<P>
+
+
+<HR>
+<A NAME="wxfilecreate"></A>
+<H3>wxFile::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>const char*</B><I> filename</I>, <B>bool</B><I> overwrite = false</I>, <B>int </B><I>access = wxS_DEFAULT</I>)<P>
+Creates a file for writing. If the file already exists, setting <B>overwrite</B> to true
+will ensure it is overwritten.<P>
+
+
+<HR>
+<A NAME="wxfiledetach"></A>
+<H3>wxFile::Detach</H3>
+<P>
+<B>void</B> <B>Detach</B>()<P>
+Get back a file descriptor from wxFile object - the caller is responsible for closing the file if this
+descriptor is opened. <A HREF="wx_wxfile.html#wxfileisopened">IsOpened()</A> will return false after call to Detach().<P>
+
+
+<HR>
+<A NAME="wxfilefd"></A>
+<H3>wxFile::fd</H3>
+<P>
+<B>int</B> <B>fd</B>() <B>const</B><P>
+Returns the file descriptor associated with the file.<P>
+
+
+<HR>
+<A NAME="wxfileeof"></A>
+<H3>wxFile::Eof</H3>
+<P>
+<B>bool</B> <B>Eof</B>() <B>const</B><P>
+Returns true if the end of the file has been reached.<P>
+Note that the behaviour of the file pointer based class 
+<A HREF="wx_wxffile.html#wxffile">wxFFile</A> is different as <A HREF="wx_wxffile.html#wxffileeof">wxFFile::Eof</A> 
+will return true here only if an attempt has been made to read 
+<I>past</I> the last byte of the file, while wxFile::Eof() will return true
+even before such attempt is made if the file pointer is at the last position
+in the file.<P>
+Note also that this function doesn't work on unseekable file descriptors
+(examples include pipes, terminals and sockets under Unix) and an attempt to
+use it will result in an error message in such case. So, to read the entire
+file into memory, you should write a loop which uses 
+<A HREF="wx_wxfile.html#wxfileread">Read</A> repeatedly and tests its return condition instead
+of using Eof() as this will not work for special files under Unix.<P>
+
+
+<HR>
+<A NAME="wxfileexists"></A>
+<H3>wxFile::Exists</H3>
+<P>
+<B>static bool</B> <B>Exists</B>(<B>const char*</B><I> filename</I>)<P>
+Returns true if the given name specifies an existing regular file (not a
+directory or a link)<P>
+
+
+<HR>
+<A NAME="wxfileflush"></A>
+<H3>wxFile::Flush</H3>
+<P>
+<B>bool</B> <B>Flush</B>()<P>
+Flushes the file descriptor.<P>
+Note that wxFile::Flush is not implemented on some Windows compilers
+due to a missing fsync function, which reduces the usefulness of this function
+(it can still be called but it will do nothing on unsupported compilers).<P>
+
+
+<HR>
+<A NAME="wxfilegetfilekind"></A>
+<H3>wxFile::GetKind</H3>
+<P>
+<B>wxFileKind</B> <B>GetKind</B>() <B>const</B><P>
+Returns the type of the file. Possible return values are:<P>
+<PRE>
+enum wxFileKind
+{
+  wxFILE_KIND_UNKNOWN,
+  wxFILE_KIND_DISK,     // a file supporting seeking to arbitrary offsets
+  wxFILE_KIND_TERMINAL, // a tty
+  wxFILE_KIND_PIPE      // a pipe
+};
+
+</PRE>
+
+
+<HR>
+<A NAME="wxfileisopened"></A>
+<H3>wxFile::IsOpened</H3>
+<P>
+<B>bool</B> <B>IsOpened</B>() <B>const</B><P>
+Returns true if the file has been opened.<P>
+
+
+<HR>
+<A NAME="wxfilelength"></A>
+<H3>wxFile::Length</H3>
+<P>
+<B>wxFileOffset</B> <B>Length</B>() <B>const</B><P>
+Returns the length of the file.<P>
+
+
+<HR>
+<A NAME="wxfileopen"></A>
+<H3>wxFile::Open</H3>
+<P>
+<B>bool</B> <B>Open</B>(<B>const char*</B><I> filename</I>, <B>wxFile::OpenMode</B><I> mode = wxFile::read</I>)<P>
+Opens the file, returning true if successful.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>filename</I><UL><UL>
+The filename.</UL></UL>
+<P>
+<I>mode</I><UL><UL>
+The mode in which to open the file. May be one of <B>wxFile::read</B>, <B>wxFile::write</B> and <B>wxFile::read_write</B>.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxfileread"></A>
+<H3>wxFile::Read</H3>
+<P>
+<B>size_t</B> <B>Read</B>(<B>void*</B><I> buffer</I>, <B>size_t</B><I> count</I>)<P>
+Reads the specified number of bytes into a buffer, returning the actual number read.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>buffer</I><UL><UL>
+A buffer to receive the data.</UL></UL>
+<P>
+<I>count</I><UL><UL>
+The number of bytes to read.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The number of bytes read, or the symbol <B>wxInvalidOffset</B> (-1) if there was an error.<P>
+
+
+<HR>
+<A NAME="wxfileseek"></A>
+<H3>wxFile::Seek</H3>
+<P>
+<B>wxFileOffset</B> <B>Seek</B>(<B>wxFileOffset </B><I>ofs</I>, <B>wxSeekMode </B><I>mode = wxFromStart</I>)<P>
+Seeks to the specified position.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>ofs</I><UL><UL>
+Offset to seek to.</UL></UL>
+<P>
+<I>mode</I><UL><UL>
+One of <B>wxFromStart</B>, <B>wxFromEnd</B>, <B>wxFromCurrent</B>.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The actual offset position achieved, or wxInvalidOffset on failure.<P>
+
+
+<HR>
+<A NAME="wxfileseekend"></A>
+<H3>wxFile::SeekEnd</H3>
+<P>
+<B>wxFileOffset</B> <B>SeekEnd</B>(<B>wxFileOffset </B><I>ofs = 0</I>)<P>
+Moves the file pointer to the specified number of bytes relative to the end of
+the file. For example, <TT>SeekEnd(-5)</TT> would position the pointer 5
+bytes before the end.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>ofs</I><UL><UL>
+Number of bytes before the end of the file.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The actual offset position achieved, or wxInvalidOffset on failure.<P>
+
+
+<HR>
+<A NAME="wxfiletell"></A>
+<H3>wxFile::Tell</H3>
+<P>
+<B>wxFileOffset</B> <B>Tell</B>() <B>const</B><P>
+Returns the current position or wxInvalidOffset if file is not opened or if another
+error occurred.<P>
+
+
+<HR>
+<A NAME="wxfilewrite"></A>
+<H3>wxFile::Write</H3>
+<P>
+<B>size_t</B> <B>Write</B>(<B>const void*</B><I> buffer</I>, <B>size_t</B><I> count</I>)<P>
+Writes the specified number of bytes from a buffer.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>buffer</I><UL><UL>
+A buffer containing the data.</UL></UL>
+<P>
+<I>count</I><UL><UL>
+The number of bytes to write.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+the number of bytes actually written<P>
+
+
+<HR>
+<A NAME="wxfilewrites"></A>
+<H3>wxFile::Write</H3>
+<P>
+<B>bool</B> <B>Write</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>s</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B></B><I> conv = wxConvUTF8</I>)<P>
+Writes the contents of the string to the file, returns true on success.<P>
+The second argument is only meaningful in Unicode build of wxWidgets when
+<I>conv</I> is used to convert <I>s</I> to multibyte representation.<P>
+Note that this method only works with <TT>NUL</TT>-terminated strings, if you want
+to write data with embedded <TT>NUL</TT>s to the file you should use the other 
+<A HREF="wx_wxfile.html#wxfilewrite">Write() overload</A>.<P>
+
+</FONT></BODY></HTML>

@@ -9,12 +9,8 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WXGRIDSEL_H__
-#define __WXGRIDSEL_H__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "gridsel.h"
-#endif
+#ifndef _WX_GENERIC_GRIDSEL_H_
+#define _WX_GENERIC_GRIDSEL_H_
 
 #include "wx/defs.h"
 
@@ -22,7 +18,8 @@
 
 #include "wx/grid.h"
 
-class WXDLLIMPEXP_ADV wxGridSelection{
+class WXDLLIMPEXP_ADV wxGridSelection
+{
 public:
     wxGridSelection( wxGrid * grid, wxGrid::wxGridSelectionModes sel =
                      wxGrid::wxGridSelectCells );
@@ -82,11 +79,10 @@ private:
     wxGrid                              *m_grid;
     wxGrid::wxGridSelectionModes        m_selectionMode;
 
-    friend class WXDLLIMPEXP_ADV wxGrid;
+    friend class WXDLLIMPEXP_FWD_ADV wxGrid;
 
     DECLARE_NO_COPY_CLASS(wxGridSelection)
 };
 
-#endif  // #ifndef wxUSE_GRID
-#endif  // #ifdef __WXGRIDSEL_H__
-
+#endif  // wxUSE_GRID
+#endif  // _WX_GENERIC_GRIDSEL_H_

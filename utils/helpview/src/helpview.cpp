@@ -5,14 +5,10 @@
 // Author:      Vaclav Slavik, Julian Smart
 // Modified by:
 // Created:     2002-07-09
-// RCS-ID:      $Id: helpview.cpp,v 1.14.2.1 2006/03/30 11:35:12 JS Exp $
+// RCS-ID:      $Id: helpview.cpp 44611 2007-03-05 11:34:19Z JS $
 // Copyright:   (c) 2002 Vaclav Slavik, Julian Smart and others
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "help.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -46,11 +42,16 @@ protected:
 
 IMPLEMENT_APP(hvApp)
 
+BEGIN_EVENT_TABLE(hvApp, wxApp)
+    EVT_IDLE(hvApp::OnIdle)
+END_EVENT_TABLE()
+
 hvApp::hvApp()
 {
 #if wxUSE_IPC
     m_server = NULL;
 #endif
+    m_exitIfNoMainWindow = false;
 }
 
 bool hvApp::OnInit()
@@ -59,14 +60,19 @@ bool hvApp::OnInit()
     delete wxLog::SetActiveTarget(new wxLogStderr); // So dialog boxes aren't used
 #endif
 
-    wxArtProvider::PushProvider(new AlternateArtProvider);
+    // Don't exit on frame deletion, since the help window is programmed
+    // to cause the app to exit even if it is still open. We need to have the app
+    // close by other means.
+    SetExitOnFrameDelete(false);
+
+    wxArtProvider::Push(new AlternateArtProvider);
 
 #ifdef __WXMAC__
     wxApp::s_macAboutMenuItemId = wxID_ABOUT;
     wxFileName::MacRegisterDefaultTypeAndCreator( wxT("htb") , 'HTBD' , 'HTBA' ) ;
 #endif
 
-    int istyle = wxHF_DEFAULT_STYLE;
+    int istyle = wxHF_DEFAULT_STYLE|wxHF_OPEN_FILES;
 
     wxString service, windowName, titleFormat, argStr;
     wxString book[10];
@@ -156,7 +162,7 @@ bool hvApp::OnInit()
             wxEmptyString,
             wxEmptyString,
             wxT("Help books (*.htb)|*.htb|Help books (*.zip)|*.zip|HTML Help Project (*.hhp)|*.hhp"),
-            wxOPEN | wxFILE_MUST_EXIST,
+            wxFD_OPEN | wxFD_FILE_MUST_EXIST,
             NULL);
 
         if (!s.empty())
@@ -222,10 +228,20 @@ bool hvApp::OnInit()
 #endif
 
     m_helpController->DisplayContents();
+    SetTopWindow(m_helpController->GetFrame());
+    m_exitIfNoMainWindow = true;
 
     return true;
 }
 
+void hvApp::OnIdle(wxIdleEvent& event)
+{
+    if (m_exitIfNoMainWindow && !GetTopWindow())
+        ExitMainLoop();
+
+    event.Skip();
+    event.RequestMore();
+}
 
 int hvApp::OnExit()
 {
@@ -263,7 +279,7 @@ bool hvApp::OpenBook(wxHtmlHelpController* controller)
         _(
         "Help books (*.htb)|*.htb|Help books (*.zip)|*.zip|\
         HTML Help Project (*.hhp)|*.hhp"),
-        wxOPEN | wxFILE_MUST_EXIST,
+        wxFD_OPEN | wxFD_FILE_MUST_EXIST,
         NULL);
 
     if ( !s.empty() )
@@ -305,22 +321,7 @@ void hvApp::MacOpenFile(const wxString& filename)
 #define ART(artId, xpmRc) \
 if ( id == artId ) return wxBitmap(xpmRc##_xpm);
 
-// Compatibility hack to use wxApp::GetStdIcon of overriden by the user
-#if WXWIN_COMPATIBILITY_2_2
-#define GET_STD_ICON_FROM_APP(iconId) \
-    if ( client == wxART_MESSAGE_BOX ) \
-{ \
-    wxIcon icon = wxTheApp->GetStdIcon(iconId); \
-    if ( icon.Ok() ) \
-{ \
-    wxBitmap bmp; \
-    bmp.CopyFromIcon(icon); \
-    return bmp; \
-} \
-}
-#else
 #define GET_STD_ICON_FROM_APP(iconId)
-#endif
 
 // There are two ways of getting the standard icon: either via XPMs or via
 // wxIcon ctor. This depends on the platform:

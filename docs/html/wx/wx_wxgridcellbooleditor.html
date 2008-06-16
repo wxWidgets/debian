@@ -1,0 +1,57 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGridCellBoolEditor</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgridcellbooleditor"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgridbagsizer.html#wxgridbagsizer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgridcellchoiceeditor.html#wxgridcellchoiceeditor"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGridCellBoolEditor</H2>
+<P>
+The editor for boolean data.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>,
+<A HREF="wx_wxgridcellfloateditor.html#wxgridcellfloateditor">wxGridCellFloatEditor</A>,
+<A HREF="wx_wxgridcellnumbereditor.html#wxgridcellnumbereditor">wxGridCellNumberEditor</A>,
+<A HREF="wx_wxgridcelltexteditor.html#wxgridcelltexteditor">wxGridCellTextEditor</A>,
+<A HREF="wx_wxgridcellchoiceeditor.html#wxgridcellchoiceeditor">wxGridCellChoiceEditor</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/grid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxgridcellbooleditorconstr">wxGridCellBoolEditor::wxGridCellBoolEditor</A><BR>
+<A HREF="#wxgridcellbooleditoristruevalue">wxGridCellBoolEditor::IsTrueValue</A><BR>
+<A HREF="#wxgridcellbooleditorusestringvalues">wxGridCellBoolEditor::UseStringValues</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgridcellbooleditorconstr"></A>
+<H3>wxGridCellBoolEditor::wxGridCellBoolEditor</H3>
+<P>
+<B></B> <B>wxGridCellBoolEditor</B>()<P>
+Default constructor.<P>
+
+
+<HR>
+<A NAME="wxgridcellbooleditoristruevalue"></A>
+<H3>wxGridCellBoolEditor::IsTrueValue</H3>
+<P>
+<B>static bool</B> <B>IsTrueValue</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>)<P>
+Returns <TT>true</TT> if the given <I>value</I> is equal to the string representation of
+the truth value we currently use (see 
+<A HREF="wx_wxgridcellbooleditor.html#wxgridcellbooleditorusestringvalues">UseStringValues</A>).<P>
+
+
+<HR>
+<A NAME="wxgridcellbooleditorusestringvalues"></A>
+<H3>wxGridCellBoolEditor::UseStringValues</H3>
+<P>
+<B>static void</B> <B>UseStringValues</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>valueTrue = _T("1")</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>valueFalse = _T("")</I>)<P>
+This method allows to customize the values returned by GetValue() method for
+the cell using this editor. By default, the default values of the arguments are
+used, i.e. <TT>"1"</TT> is returned if the cell is checked and an empty string
+otherwise, using this method allows to change this.<P>
+
+
+</FONT></BODY></HTML>

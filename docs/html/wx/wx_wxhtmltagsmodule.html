@@ -1,0 +1,41 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlTagsModule</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmltagsmodule"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmltaghandler.html#wxhtmltaghandler"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmlwidgetcell.html#wxhtmlwidgetcell"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlTagsModule</H2>
+<P>
+This class provides easy way of filling wxHtmlWinParser's table of
+tag handlers. It is used almost exclusively together with the set of
+<A HREF="wx_wxhtml.html#handlers">TAGS_MODULE_* macros</A><P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxmodule.html#wxmodule">wxModule</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/winpars.h&gt;<P>
+<B><FONT COLOR="#FF0000">See Also</FONT></B><P>
+<A HREF="wx_wxhtml.html#handlers">Tag Handlers</A>,
+<A HREF="wx_wxhtmltaghandler.html#wxhtmltaghandler">wxHtmlTagHandler</A>,
+<A HREF="wx_wxhtmlwintaghandler.html#wxhtmlwintaghandler">wxHtmlWinTagHandler</A>,<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmltagsmodulefillhandlerstable">wxHtmlTagsModule::FillHandlersTable</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmltagsmodulefillhandlerstable"></A>
+<H3>wxHtmlTagsModule::FillHandlersTable</H3>
+<P>
+<B>virtual void</B> <B>FillHandlersTable</B>(<B><A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparser">wxHtmlWinParser</A> </B></B><I>*parser</I>)<P>
+You must override this method. In most common case its body consists
+only of lines of the following type:<P>
+<PRE>
+parser -&gt; AddTagHandler(new MyHandler);
+</PRE>
+I recommend using the <B>TAGS_MODULE_*</B> macros.<P>
+<B><FONT COLOR="#FF0000">Paremeters</FONT></B><P>
+<I>parser</I><UL><UL>
+Pointer to the parser that requested tables filling.</UL></UL>
+<P>
+
+</FONT></BODY></HTML>

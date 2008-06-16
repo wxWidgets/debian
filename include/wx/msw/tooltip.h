@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        msw/tooltip.h
+// Name:        wx/msw/tooltip.h
 // Purpose:     wxToolTip class - tooltip control
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.01.99
-// RCS-ID:      $Id: tooltip.h,v 1.13.2.2 2006/01/06 12:53:09 VZ Exp $
+// RCS-ID:      $Id: tooltip.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) 1999 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -13,6 +13,8 @@
 #define _WX_MSW_TOOLTIP_H_
 
 #include "wx/object.h"
+
+class WXDLLIMPEXP_FWD_CORE wxWindow;
 
 class WXDLLEXPORT wxToolTip : public wxObject
 {
@@ -40,10 +42,13 @@ public:
     // -------------------------------
 
     // should be called in responde to WM_MOUSEMOVE
-    void RelayEvent(WXMSG *msg);
+    static void RelayEvent(WXMSG *msg);
 
     // add a window to the tooltip control
     void Add(WXHWND hwnd);
+
+    // remove any tooltip from the window
+    static void Remove(WXHWND hwnd);
 
 private:
     // the one and only one tooltip control we use - never access it directly

@@ -4,7 +4,7 @@
 // Author:      Markus Greither and Vadim Zeitlin
 // Modified by:
 // Created:     23/03/2001
-// RCS-ID:
+// RCS-ID:      $Id: fdrepdlg.cpp 46184 2007-05-23 23:40:12Z VZ $
 // Copyright:   (c) Markus Greither
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "mswfdrepdlg.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -31,19 +27,21 @@
 #if wxUSE_FINDREPLDLG
 
 #ifndef WX_PRECOMP
+    #include "wx/msw/wrapcdlg.h"
     #include "wx/intl.h"
     #include "wx/log.h"
 #endif
 
-#include "wx/msw/wrapcdlg.h"
 #include "wx/fdrepdlg.h"
+
+#include "wx/msw/mslu.h"
 
 // ----------------------------------------------------------------------------
 // functions prototypes
 // ----------------------------------------------------------------------------
 
-LRESULT APIENTRY wxFindReplaceWindowProc(HWND hwnd, WXUINT nMsg,
-                                       WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK wxFindReplaceWindowProc(HWND hwnd, WXUINT nMsg,
+                                         WPARAM wParam, LPARAM lParam);
 
 UINT_PTR CALLBACK wxFindReplaceDialogHookProc(HWND hwnd,
                                               UINT uiMsg,
@@ -220,7 +218,7 @@ wxFindReplaceDialogImpl::~wxFindReplaceDialogImpl()
 // Window Proc for handling RegisterWindowMessage(FINDMSGSTRING)
 // ----------------------------------------------------------------------------
 
-LRESULT APIENTRY wxFindReplaceWindowProc(HWND hwnd, WXUINT nMsg,
+LRESULT CALLBACK wxFindReplaceWindowProc(HWND hwnd, WXUINT nMsg,
                                          WPARAM wParam, LPARAM lParam)
 {
 #if wxUSE_UNICODE_MSLU
@@ -383,20 +381,23 @@ wxFindReplaceDialog::wxFindReplaceDialog(wxWindow *parent,
 
 wxFindReplaceDialog::~wxFindReplaceDialog()
 {
-    // the dialog might have been already deleted if the user closed it
-    // manually but in this case we should have got a notification about it and
-    // the flagmust have been set
-    if ( !m_impl->WasClosedByUser() )
+    if ( m_impl )
     {
-        // if it wasn't, delete the dialog ourselves
-        if ( !::DestroyWindow(GetHwnd()) )
+        // the dialog might have been already deleted if the user closed it
+        // manually but in this case we should have got a notification about it
+        // and the flag must have been set
+        if ( !m_impl->WasClosedByUser() )
         {
-            wxLogLastError(_T("DestroyWindow(find dialog)"));
+            // if it wasn't, delete the dialog ourselves
+            if ( !::DestroyWindow(GetHwnd()) )
+            {
+                wxLogLastError(_T("DestroyWindow(find dialog)"));
+            }
         }
-    }
 
-    // unsubclass the parent
-    delete m_impl;
+        // unsubclass the parent
+        delete m_impl;
+    }
 
     // prevent the base class dtor from trying to hide us!
     m_isShown = false;
@@ -543,4 +544,3 @@ void wxFindReplaceDialog::DoGetClientSize(int *width, int *height) const
 }
 
 #endif // wxUSE_FINDREPLDLG
-

@@ -1,0 +1,312 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxVScrolledWindow</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxvscrolledwindow"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxvlistbox.html#wxvlistbox"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxwindow.html#wxwindow"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxVScrolledWindow</H2>
+<P>
+In the name of this class, "V" may stand for "variable" because it can be
+used for scrolling lines of variable heights; "virtual" because it is not
+necessary to know the heights of all lines in advance -- only those which
+are shown on the screen need to be measured; or, even, "vertical" because
+this class only supports scrolling in one direction currently (this could
+and probably will change in the future however).<P>
+In any case, this is a generalization of the
+<A HREF="wx_wxscrolledwindow.html#wxscrolledwindow">wxScrolledWindow</A> class which can be only used when
+all lines have the same height. It lacks some other wxScrolledWindow features
+however, notably there is currently no support for horizontal scrolling; it
+can't scroll another window nor only a rectangle of the window and not its
+entire client area.<P>
+To use this class, you need to derive from it and implement
+<A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowongetlineheight">OnGetLineHeight()</A> pure virtual
+method. You also must call <A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowsetlinecount">SetLineCount</A>
+to let the base class know how many lines it should display but from that
+moment on the scrolling is handled entirely by wxVScrolledWindow, you only
+need to draw the visible part of contents in your <TT>OnPaint()</TT> method as
+usual. You should use <A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowgetfirstvisibleline">GetFirstVisibleLine()</A>
+and <A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowgetlastvisibleline">GetLastVisibleLine()</A> to
+select the lines to display. Note that the device context origin is not shifted
+so the first visible line always appears at the point (0, 0) in physical as
+well as logical coordinates.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxpanel.html#wxpanel">wxPanel</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/vscroll.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxvscrolledwindowctor">wxVScrolledWindow::wxVScrolledWindow</A><BR>
+<A HREF="#wxvscrolledwindowcreate">wxVScrolledWindow::Create</A><BR>
+<A HREF="#wxvscrolledwindowestimatetotalheight">wxVScrolledWindow::EstimateTotalHeight</A><BR>
+<A HREF="#wxvscrolledwindowgetfirstvisibleline">wxVScrolledWindow::GetFirstVisibleLine</A><BR>
+<A HREF="#wxvscrolledwindowgetlastvisibleline">wxVScrolledWindow::GetLastVisibleLine</A><BR>
+<A HREF="#wxvscrolledwindowgetlinecount">wxVScrolledWindow::GetLineCount</A><BR>
+<A HREF="#wxvscrolledwindowgetvisiblebegin">wxVScrolledWindow::GetVisibleBegin</A><BR>
+<A HREF="#wxvscrolledwindowgetvisibleend">wxVScrolledWindow::GetVisibleEnd</A><BR>
+<A HREF="#wxvscrolledwindowhittest">wxVScrolledWindow::HitTest</A><BR>
+<A HREF="#wxvscrolledwindowisvisible">wxVScrolledWindow::IsVisible</A><BR>
+<A HREF="#wxvscrolledwindowongetlineheight">wxVScrolledWindow::OnGetLineHeight</A><BR>
+<A HREF="#wxvscrolledwindowongetlineshint">wxVScrolledWindow::OnGetLinesHint</A><BR>
+<A HREF="#wxvscrolledwindowrefreshline">wxVScrolledWindow::RefreshLine</A><BR>
+<A HREF="#wxvscrolledwindowrefreshlines">wxVScrolledWindow::RefreshLines</A><BR>
+<A HREF="#wxvscrolledwindowrefreshall">wxVScrolledWindow::RefreshAll</A><BR>
+<A HREF="#wxvscrolledwindowscrolllines">wxVScrolledWindow::ScrollLines</A><BR>
+<A HREF="#wxvscrolledwindowscrollpages">wxVScrolledWindow::ScrollPages</A><BR>
+<A HREF="#wxvscrolledwindowscrolltoline">wxVScrolledWindow::ScrollToLine</A><BR>
+<A HREF="#wxvscrolledwindowsetlinecount">wxVScrolledWindow::SetLineCount</A><BR>
+<P>
+
+<HR>
+<A NAME="wxvscrolledwindowctor"></A>
+<H3>wxVScrolledWindow::wxVScrolledWindow</H3>
+<P>
+<B></B> <B>wxVScrolledWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxPanelNameStr</I>)<P>
+This is the normal constructor, no need to call Create() after using this one.<P>
+Note that <TT>wxVSCROLL</TT> is always automatically added to our style, there is
+no need to specify it explicitly.<P>
+<B></B> <B>wxVScrolledWindow</B>()<P>
+Default constructor, you must call <A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowcreate">Create()</A>
+later.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The parent window, must not be <TT>NULL</TT></UL></UL>
+<P>
+<I>id</I><UL><UL>
+The identifier of this window, <TT>wxID_ANY</TT> by default</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+The initial window position</UL></UL>
+<P>
+<I>size</I><UL><UL>
+The initial window size</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style. There are no special style bits defined for
+this class.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+The name for this window; usually not used</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowcreate"></A>
+<H3>wxVScrolledWindow::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxPanelNameStr</I>)<P>
+Same as the <A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowctor">non default ctor</A> but returns
+status code: <TT>true</TT> if ok, <TT>false</TT> if the window couldn't have been created.<P>
+Just as with the ctor above, <TT>wxVSCROLL</TT> style is always used, there is no
+need to specify it explicitly.<P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowestimatetotalheight"></A>
+<H3>wxVScrolledWindow::EstimateTotalHeight</H3>
+<P>
+<B>virtual wxCoord</B> <B>EstimateTotalHeight</B>() <B>const</B><P>
+This protected function is used internally by wxVScrolledWindow to estimate the
+total height of the window when <A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowsetlinecount">SetLineCount</A>
+is called. The default implementation uses the brute force approach if the
+number of the items in the control is small enough. Otherwise, it tries to find
+the average line height using some lines in the beginning, middle and the end.<P>
+If it is undesirable to access all these lines (some of which might be never
+shown) just for the total height calculation, you may override the function and
+provide your own guess better and/or faster.<P>
+Note that although returning a totally wrong value would still work, it risks
+to result in very strange scrollbar behaviour so this function should really
+try to make the best guess possible.<P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowgetfirstvisibleline"></A>
+<H3>wxVScrolledWindow::GetFirstVisibleLine</H3>
+<P>
+<B>size_t</B> <B>GetFirstVisibleLine</B>() <B>const</B><P>
+Returns the index of the first currently visible line.<P>
+This is same as <A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowgetvisiblebegin">GetVisibleBegin</A> and
+exists only for symmetry with <A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowgetlastvisibleline">GetLastVisibleLine</A>.<P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowgetlastvisibleline"></A>
+<H3>wxVScrolledWindow::GetLastVisibleLine</H3>
+<P>
+<B>size_t</B> <B>GetLastVisibleLine</B>() <B>const</B><P>
+Returns the index of the last currently visible line. Note that this method
+returns <TT>(size_t)-1</TT> (i.e. a huge positive number) if the control is
+empty so if this is possible you should use <A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowgetvisibleend">GetVisibleEnd</A>
+instead.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowgetfirstvisibleline">GetFirstVisibleLine</A><P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowgetlinecount"></A>
+<H3>wxVScrolledWindow::GetLineCount</H3>
+<P>
+<B>size_t</B> <B>GetLineCount</B>() <B>const</B><P>
+Get the number of lines this window contains (previously set by
+<A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowsetlinecount">SetLineCount()</A>)<P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowgetvisiblebegin"></A>
+<H3>wxVScrolledWindow::GetVisibleBegin</H3>
+<P>
+<B>size_t</B> <B>GetVisibleBegin</B>() <B>const</B><P>
+Returns the index of the first currently visible line.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowgetvisibleend">GetVisibleEnd</A><P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowgetvisibleend"></A>
+<H3>wxVScrolledWindow::GetVisibleEnd</H3>
+<P>
+<B>size_t</B> <B>GetVisibleEnd</B>() <B>const</B><P>
+Returns the index of the first line after the currently visible one. If the
+return value is 0 it means that no lines are currently shown (which only
+happens if the control is empty). Note that the index returned by this method
+is not always a valid index as it may be equal to <A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowgetlinecount">GetLineCount</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowgetvisiblebegin">GetVisibleBegin</A><P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowhittest"></A>
+<H3>wxVScrolledWindow::HitTest</H3>
+<P>
+<B>int</B> <B>HitTest</B>(<B>wxCoord </B><I>x</I>, <B>wxCoord </B><I>y</I>) <B>const</B><P>
+<B>int</B> <B>HitTest</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>) <B>const</B><P>
+Return the item at the specified (in physical coordinates) position or
+<TT>wxNOT_FOUND</TT> if none, i.e. if it is below the last item.<P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowisvisible"></A>
+<H3>wxVScrolledWindow::IsVisible</H3>
+<P>
+<B>bool</B> <B>IsVisible</B>(<B>size_t </B><I>line</I>) <B>const</B><P>
+Returns <TT>true</TT> if the given line is (at least partially) visible or
+<TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowongetlineheight"></A>
+<H3>wxVScrolledWindow::OnGetLineHeight</H3>
+<P>
+<B>virtual wxCoord</B> <B>OnGetLineHeight</B>(<B>size_t </B><I>n</I>) <B>const</B><P>
+This protected virtual function must be overridden in the derived class and it
+should return the height of the given line in pixels.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowongetlineshint">OnGetLinesHint</A><P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowongetlineshint"></A>
+<H3>wxVScrolledWindow::OnGetLinesHint</H3>
+<P>
+<B>virtual void</B> <B>OnGetLinesHint</B>(<B>size_t </B><I>lineMin</I>, <B>size_t </B><I>lineMax</I>) <B>const</B><P>
+This function doesn't have to be overridden but it may be useful to do
+it if calculating the lines heights is a relatively expensive operation
+as it gives the user code a possibility to calculate several of them at
+once.<P>
+<TT>OnGetLinesHint()</TT> is normally called just before
+<A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowongetlineheight">OnGetLineHeight()</A> but you
+shouldn't rely on the latter being called for all lines in the interval
+specified here. It is also possible that OnGetLineHeight() will be
+called for the lines outside of this interval, so this is really just a
+hint, not a promise.<P>
+Finally note that <I>lineMin</I> is inclusive, while <I>lineMax</I> is exclusive,
+as usual.<P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowrefreshline"></A>
+<H3>wxVScrolledWindow::RefreshLine</H3>
+<P>
+<B>void</B> <B>RefreshLine</B>(<B>size_t </B><I>line</I>)<P>
+Refreshes the specified line -- it will be redrawn during the next main loop
+iteration.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowrefreshlines">RefreshLines</A><P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowrefreshlines"></A>
+<H3>wxVScrolledWindow::RefreshLines</H3>
+<P>
+<B>void</B> <B>RefreshLines</B>(<B>size_t </B><I>from</I>, <B>size_t </B><I>to</I>)<P>
+Refreshes all lines between <I>from</I> and <I>to</I>, inclusive. <I>from</I>
+should be less than or equal to <I>to</I>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowrefreshline">RefreshLine</A><P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowrefreshall"></A>
+<H3>wxVScrolledWindow::RefreshAll</H3>
+<P>
+<B>void</B> <B>RefreshAll</B>()<P>
+This function completely refreshes the control, recalculating the number of
+items shown on screen and repainting them. It should be called when the values
+returned by <A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowongetlineheight">OnGetLineHeight</A> change
+for some reason and the window must be updated to reflect this.<P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowscrolllines"></A>
+<H3>wxVScrolledWindow::ScrollLines</H3>
+<P>
+<B>bool</B> <B>ScrollLines</B>(<B>int </B><I>lines</I>)<P>
+Scroll by the specified number of lines which may be positive (to scroll down)
+or negative (to scroll up).<P>
+Returns <TT>true</TT> if the window was scrolled, <TT>false</TT> otherwise (for
+example if we're trying to scroll down but we are already showing the last
+line).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindowlineup">LineUp</A>, <A HREF="wx_wxwindow.html#wxwindowlinedown">LineDown</A><P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowscrollpages"></A>
+<H3>wxVScrolledWindow::ScrollPages</H3>
+<P>
+<B>bool</B> <B>ScrollPages</B>(<B>int </B><I>pages</I>)<P>
+Scroll by the specified number of pages which may be positive (to scroll down)
+or negative (to scroll up).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowscrolllines">ScrollLines</A>,<BR>
+
+<A HREF="wx_wxwindow.html#wxwindowpageup">PageUp</A>, <A HREF="wx_wxwindow.html#wxwindowpagedown">PageDown</A><P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowscrolltoline"></A>
+<H3>wxVScrolledWindow::ScrollToLine</H3>
+<P>
+<B>bool</B> <B>ScrollToLine</B>(<B>size_t </B><I>line</I>)<P>
+Scroll to the specified line: it will become the first visible line in
+the window.<P>
+Return <TT>true</TT> if we scrolled the window, <TT>false</TT> if nothing was done.<P>
+
+
+<HR>
+<A NAME="wxvscrolledwindowsetlinecount"></A>
+<H3>wxVScrolledWindow::SetLineCount</H3>
+<P>
+<B>void</B> <B>SetLineCount</B>(<B>size_t </B><I>count</I>)<P>
+Set the number of lines the window contains: the derived class must
+provide the heights for all lines with indices up to the one given here
+in its <A HREF="wx_wxvscrolledwindow.html#wxvscrolledwindowongetlineheight">OnGetLineHeight()</A>.<P>
+
+</FONT></BODY></HTML>

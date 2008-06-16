@@ -1,37 +1,38 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        automtn.cpp
+// Name:        src/msw/ole/automtn.cpp
 // Purpose:     OLE automation utilities
 // Author:      Julian Smart
 // Modified by:
 // Created:     11/6/98
-// RCS-ID:      $Id: automtn.cpp,v 1.42.2.3 2006/02/11 14:51:16 JS Exp $
+// RCS-ID:      $Id: automtn.cpp 44961 2007-03-19 20:00:59Z VZ $
 // Copyright:   (c) 1998, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "automtn.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #if defined(__BORLANDC__)
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
-#include "wx/defs.h"
-
-// Watcom C++ gives a linker error if this is compiled in.
 // With Borland C++, all samples crash if this is compiled in.
-#if wxUSE_OLE && !(defined(__BORLANDC__) && (__BORLANDC__ < 0x520)) && !defined(__CYGWIN10__)
+#if (defined(__BORLANDC__) && (__BORLANDC__ < 0x520)) || defined(__CYGWIN10__)
+    #undef wxUSE_OLE_AUTOMATION
+    #define wxUSE_OLE_AUTOMATION 0
+#endif
+
+#if wxUSE_OLE_AUTOMATION
+
+#ifndef WX_PRECOMP
+    #include "wx/log.h"
+    #include "wx/math.h"
+#endif
 
 #define _FORCENAMELESSUNION
-#include "wx/log.h"
 #include "wx/msw/private.h"
 #include "wx/msw/ole/oleutils.h"
 #include "wx/msw/ole/automtn.h"
-#include "wx/math.h"
 
 #ifdef __WXWINCE__
 #include "wx/msw/wince/time.h"
@@ -53,7 +54,6 @@
 
 #if wxUSE_DATETIME
 #include "wx/datetime.h"
-
 #endif // wxUSE_TIMEDATE
 
 static void ClearVariant(VARIANTARG *pvarg) ;
@@ -95,7 +95,7 @@ bool wxAutomationObject::Invoke(const wxString& member, int action,
     {
         // Use dot notation to get the next object
         wxString member2(nonConstMember.Left((size_t) ch));
-        wxString rest(nonConstMember.Right(nonConstMember.Length() - ch - 1));
+        wxString rest(nonConstMember.Right(nonConstMember.length() - ch - 1));
         wxAutomationObject obj;
         if (!GetObject(obj, member2))
             return false;
@@ -600,11 +600,11 @@ WXDLLEXPORT bool wxConvertVariantToOle(const wxVariant& variant, VARIANTARG& ole
     {
         wxDateTime date( variant.GetDateTime() );
         oleVariant.vt = VT_DATE;
-        
+
         long dosDateTime = date.GetAsDOS();
-        short dosDate = (dosDateTime & 0xFFFF0000) >> 16;
-        short dosTime = dosDateTime & 0xFFFF;
-        
+        short dosDate = short((dosDateTime & 0xFFFF0000) >> 16);
+        short dosTime = short(dosDateTime & 0xFFFF);
+
         DosDateTimeToVariantTime(dosDate, dosTime, & oleVariant.date);
     }
 #endif
@@ -687,12 +687,12 @@ WXDLLEXPORT bool wxConvertOleToVariant(const VARIANTARG& oleVariant, wxVariant& 
             unsigned short dosDate = 0;
             unsigned short dosTime = 0;
             VariantTimeToDosDateTime(oleVariant.date, & dosDate, & dosTime);
-            
-            long dosDateTime = (dosDate << 16) || dosTime;
+
+            long dosDateTime = (dosDate << 16) | dosTime;
             wxDateTime date;
             date.SetFromDOS(dosDateTime);
             variant = date;
-#endif            
+#endif
             break;
         }
     case VT_I4:
@@ -804,7 +804,7 @@ static void ReleaseVariant(VARIANTARG *pvarg)
 {
     VARTYPE vt;
     VARIANTARG _huge *pvargArray;
-    long lLBound, lUBound, l;
+    LONG lLBound, lUBound, l;
 
     vt = (VARTYPE)(pvarg->vt & 0xfff);        // mask off flags
 
@@ -936,5 +936,4 @@ void ShowException(LPOLESTR szMember, HRESULT hr, EXCEPINFO *pexcep, unsigned in
 
 #endif
 
-#endif // wxUSE_OLE && !(defined(__BORLANDC__) && (__BORLANDC__ < 0x520)) && !defined(__CYGWIN10__)
-
+#endif // wxUSE_OLE_AUTOMATION

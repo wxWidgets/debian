@@ -1,0 +1,115 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxZipInputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxzipinputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxzipentry.html#wxzipentry"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxzipnotifier.html#wxzipnotifier"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxZipInputStream</H2>
+<P>
+Input stream for reading zip files.<P>
+<A HREF="wx_wxzipinputstream.html#wxzipinputstreamgetnextentry">GetNextEntry()</A> returns an
+ <A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A> object containing the meta-data
+for the next entry in the zip (and gives away ownership). Reading from
+the wxZipInputStream then returns the entry's data. Eof() becomes true
+after an attempt has been made to read past the end of the entry's data.
+When there are no more entries, GetNextEntry() returns NULL and sets Eof().<P>
+Note that in general zip entries are not seekable, and
+wxZipInputStream::SeekI() always returns wxInvalidOffset.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/zipstrm.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B>
+<PRE>
+typedef wxZipEntry entry_type
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarc">Archive formats such as zip</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A><BR>
+
+<A HREF="wx_wxzipoutputstream.html#wxzipoutputstream">wxZipOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxzipinputstreamwxzipinputstream">wxZipInputStream::wxZipInputStream</A><BR>
+<A HREF="#wxzipinputstreamcloseentry">wxZipInputStream::CloseEntry</A><BR>
+<A HREF="#wxzipinputstreamgetcomment">wxZipInputStream::GetComment</A><BR>
+<A HREF="#wxzipinputstreamgetnextentry">wxZipInputStream::GetNextEntry</A><BR>
+<A HREF="#wxzipinputstreamgettotalentries">wxZipInputStream::GetTotalEntries</A><BR>
+<A HREF="#wxzipinputstreamopenentry">wxZipInputStream::OpenEntry</A><BR>
+<P>
+
+<HR>
+<A NAME="wxzipinputstreamwxzipinputstream"></A>
+<H3>wxZipInputStream::wxZipInputStream</H3>
+<P>
+<B></B> <B>wxZipInputStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>& </B></B><I>conv = wxConvLocal</I>)<P>
+<B></B> <B>wxZipInputStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>*</B></B><I>stream</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>& </B></B><I>conv = wxConvLocal</I>)<P>
+Constructor. In a Unicode build the second parameter <TT>conv</TT> is
+used to translate the filename and comment fields into Unicode. It has
+no effect on the stream's data.<P>
+If the parent stream is passed as a pointer then the new filter stream
+takes ownership of it. If it is passed by reference then it does not.<P>
+<B></B> <B>wxZipInputStream</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>archive</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>)<P>
+Compatibility constructor (requires WXWIN_COMPATIBILITY_2_6).<P>
+When this constructor is used, an emulation of seeking is
+switched on for compatibility with previous versions. Note however,
+that it is deprecated.<P>
+
+
+<HR>
+<A NAME="wxzipinputstreamcloseentry"></A>
+<H3>wxZipInputStream::CloseEntry</H3>
+<P>
+<B>bool</B> <B>CloseEntry</B>()<P>
+Closes the current entry. On a non-seekable stream reads to the end of
+the current entry first.<P>
+
+
+<HR>
+<A NAME="wxzipinputstreamgetcomment"></A>
+<H3>wxZipInputStream::GetComment</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetComment</B>()<P>
+Returns the zip comment.<P>
+This is stored at the end of the zip, therefore when reading a zip
+from a non-seekable stream, it returns the empty string until the
+end of the zip has been reached, i.e. when GetNextEntry() returns
+NULL.<P>
+
+
+<HR>
+<A NAME="wxzipinputstreamgetnextentry"></A>
+<H3>wxZipInputStream::GetNextEntry</H3>
+<P>
+<B><A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A>*</B> </B> <B>GetNextEntry</B>()<P>
+Closes the current entry if one is open, then reads the meta-data for
+the next entry and returns it in a <A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A>
+object, giving away ownership. The stream is then open and can be read.<P>
+
+
+<HR>
+<A NAME="wxzipinputstreamgettotalentries"></A>
+<H3>wxZipInputStream::GetTotalEntries</H3>
+<P>
+<B>int</B> <B>GetTotalEntries</B>()<P>
+For a zip on a seekable stream returns the total number of entries in
+the zip. For zips on non-seekable streams returns the number of entries
+returned so far by <A HREF="wx_wxzipinputstream.html#wxzipinputstreamgetnextentry">GetNextEntry()</A>.<P>
+
+
+<HR>
+<A NAME="wxzipinputstreamopenentry"></A>
+<H3>wxZipInputStream::OpenEntry</H3>
+<P>
+<B>bool</B> <B>OpenEntry</B>(<B><A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A>& </B></B><I>entry</I>)<P>
+Closes the current entry if one is open, then opens the entry specified
+by the <I>entry</I> object.<P>
+<I>entry</I> should be from the same zip file, and the zip should
+be on a seekable stream.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarcbyname">Looking up an archive entry by name</A><P>
+
+
+</FONT></BODY></HTML>

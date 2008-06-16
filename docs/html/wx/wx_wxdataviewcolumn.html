@@ -1,0 +1,163 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataViewColumn</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataviewcolumn"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdataobject.html#wxdataobject"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdataviewctrl.html#wxdataviewctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataViewColumn</H2>
+<P>
+
+This class represents a column in a <A HREF="wx_wxdataviewctrl.html#wxdataviewctrl">wxDataViewCtrl</A>.
+One wxDataViewColumn is bound to one column in the data model,
+to which the wxDataViewCtrl has been associated. <P>
+An instance of <A HREF="wx_wxdataviewrenderer.html#wxdataviewrenderer">wxDataViewRenderer</A> is used by
+this class to render its data.<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+These flags define behavi<P>
+<FONT SIZE=2>
+<PRE>
+enum wxDataViewColumnFlags
+{
+    wxDATAVIEW_COL_RESIZABLE  = 1,    // the user can resize the column
+    wxDATAVIEW_COL_SORTABLE   = 2,    // same as SetSortable()
+    wxDATAVIEW_COL_HIDDEN     = 4     // column is hidden
+};
+</PRE>
+</FONT><P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataview.h&gt;<P>
+
+<A HREF="#wxdataviewcolumnwxdataviewcolumn">wxDataViewColumn::wxDataViewColumn</A><BR>
+<A HREF="#wxdataviewcolumndtor">wxDataViewColumn::~wxDataViewColumn</A><BR>
+<A HREF="#wxdataviewcolumngetbitmap">wxDataViewColumn::GetBitmap</A><BR>
+<A HREF="#wxdataviewcolumngetmodelcolumn">wxDataViewColumn::GetModelColumn</A><BR>
+<A HREF="#wxdataviewcolumngetowner">wxDataViewColumn::GetOwner</A><BR>
+<A HREF="#wxdataviewcolumngetrenderer">wxDataViewColumn::GetRenderer</A><BR>
+<A HREF="#wxdataviewcolumngetsortable">wxDataViewColumn::GetSortable</A><BR>
+<A HREF="#wxdataviewcolumngetwidth">wxDataViewColumn::GetWidth</A><BR>
+<A HREF="#wxdataviewcolumnissortorderascending">wxDataViewColumn::IsSortOrderAscending</A><BR>
+<A HREF="#wxdataviewcolumnsetalignment">wxDataViewColumn::SetAlignment</A><BR>
+<A HREF="#wxdataviewcolumnsetbitmap">wxDataViewColumn::SetBitmap</A><BR>
+<A HREF="#wxdataviewcolumnsetsortorder">wxDataViewColumn::SetSortOrder</A><BR>
+<A HREF="#wxdataviewcolumnsetsortable">wxDataViewColumn::SetSortable</A><BR>
+<A HREF="#wxdataviewcolumnsettitle">wxDataViewColumn::SetTitle</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataviewcolumnwxdataviewcolumn"></A>
+<H3>wxDataViewColumn::wxDataViewColumn</H3>
+<P>
+<B></B> <B>wxDataViewColumn</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B><A HREF="wx_wxdataviewrenderer.html#wxdataviewrenderer">wxDataViewRenderer</A>* </B></B><I>renderer</I>, <B>unsigned int </B><I>model_column</I>, <B>int </B><I>width = 80</I>, <B>int </B><I>flags = wxDATAVIEW_COL_RESIZABLE</I>)<P>
+
+<B></B> <B>wxDataViewColumn</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B><A HREF="wx_wxdataviewrenderer.html#wxdataviewrenderer">wxDataViewRenderer</A>* </B></B><I>renderer</I>, <B>unsigned int </B><I>model_column</I>, <B>int </B><I>width = 80</I>, <B>int </B><I>flags = wxDATAVIEW_COL_RESIZABLE</I>)<P>
+Constructors.<P>
+
+
+<HR>
+<A NAME="wxdataviewcolumndtor"></A>
+<H3>wxDataViewColumn::~wxDataViewColumn</H3>
+<P>
+<B></B> <B>~wxDataViewColumn</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdataviewcolumngetbitmap"></A>
+<H3>wxDataViewColumn::GetBitmap</H3>
+<P>
+<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B> </B> <B>GetBitmap</B>()<P>
+Returns the bitmap in the header of the column, if any.<P>
+
+<HR>
+<A NAME="wxdataviewcolumngetmodelcolumn"></A>
+<H3>wxDataViewColumn::GetModelColumn</H3>
+<P>
+<B>unsigned int</B> <B>GetModelColumn</B>()<P>
+Returns the index of the column of the model, which this
+wxDataViewColumn is displaying.<P>
+
+<HR>
+<A NAME="wxdataviewcolumngetowner"></A>
+<H3>wxDataViewColumn::GetOwner</H3>
+<P>
+<B><A HREF="wx_wxdataviewctrl.html#wxdataviewctrl">wxDataViewCtrl</A>*</B> </B> <B>GetOwner</B>()<P>
+Returns the owning <A HREF="wx_wxdataviewctrl.html#wxdataviewctrl">wxDataViewCtrl</A>.<P>
+
+<HR>
+<A NAME="wxdataviewcolumngetrenderer"></A>
+<H3>wxDataViewColumn::GetRenderer</H3>
+<P>
+<B><A HREF="wx_wxdataviewrenderer.html#wxdataviewrenderer">wxDataViewRenderer</A>*</B> </B> <B>GetRenderer</B>()<P>
+Returns the renderer of this wxDataViewColumn.<P>
+See also <A HREF="wx_wxdataviewrenderer.html#wxdataviewrenderer">wxDataViewRenderer</A>.<P>
+
+<HR>
+<A NAME="wxdataviewcolumngetsortable"></A>
+<H3>wxDataViewColumn::GetSortable</H3>
+<P>
+<B>bool</B> <B>GetSortable</B>()<P>
+Returns true if the column is sortable.<P>
+See <A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumnsetsortable">SetSortable</A><P>
+
+<HR>
+<A NAME="wxdataviewcolumngetwidth"></A>
+<H3>wxDataViewColumn::GetWidth</H3>
+<P>
+<B>int</B> <B>GetWidth</B>()<P>
+Returns the width of the column.<P>
+
+<HR>
+<A NAME="wxdataviewcolumnissortorderascending"></A>
+<H3>wxDataViewColumn::IsSortOrderAscending</H3>
+<P>
+<B>bool</B> <B>IsSortOrderAscending</B>()<P>
+Returns true, if the sort order is ascending.<P>
+See also <A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumnsetsortorder">SetSortOrder</A><P>
+
+<HR>
+<A NAME="wxdataviewcolumnsetalignment"></A>
+<H3>wxDataViewColumn::SetAlignment</H3>
+<P>
+<B>void</B> <B>SetAlignment</B>(<B>wxAlignment </B><I>align</I>)<P>
+Set the alignment of the column header.<P>
+
+<HR>
+<A NAME="wxdataviewcolumnsetbitmap"></A>
+<H3>wxDataViewColumn::SetBitmap</H3>
+<P>
+<B>void</B> <B>SetBitmap</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Set the bitmap of the column header.<P>
+
+<HR>
+<A NAME="wxdataviewcolumnsetsortorder"></A>
+<H3>wxDataViewColumn::SetSortOrder</H3>
+<P>
+<B>void</B> <B>SetSortOrder</B>(<B>bool </B><I>ascending</I>)<P>
+Indicate the sort order if the implementation of the
+wxDataViewCtrl supports it, most commonly by showing
+a little arrow. Use this in conjunction with 
+<A HREF="wx_wxdataviewsortedlistmodel.html#wxdataviewsortedlistmodelsetascending">wxDataViewSortedListModel::SetAscending</A>
+to sort the actual data.<P>
+
+<HR>
+<A NAME="wxdataviewcolumnsetsortable"></A>
+<H3>wxDataViewColumn::SetSortable</H3>
+<P>
+<B>void</B> <B>SetSortable</B>(<B>bool </B><I>sortable</I>)<P>
+Indicate that the column is sortable. This is only to provide a
+visual hint in the column (such as a sort order indicator). It
+will not actually sort the data. Use a 
+<A HREF="wx_wxdataviewsortedlistmodel.html#wxdataviewsortedlistmodel">wxDataViewSortedListModel</A>
+to so the sorting.<P>
+
+<HR>
+<A NAME="wxdataviewcolumnsettitle"></A>
+<H3>wxDataViewColumn::SetTitle</H3>
+<P>
+<B>void</B> <B>SetTitle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>)<P>
+Set the title of the column header to <I>title</I>.<P>
+
+
+</FONT></BODY></HTML>

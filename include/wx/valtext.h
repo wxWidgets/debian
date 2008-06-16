@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: valtext.h,v 1.21.2.2 2006/02/06 04:24:40 KH Exp $
+// RCS-ID:      $Id: valtext.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_VALTEXTH__
 #define _WX_VALTEXTH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "valtext.h"
-#endif
 
 #include "wx/defs.h"
 
@@ -41,7 +37,7 @@ public:
     wxTextValidator(long style = wxFILTER_NONE, wxString *val = 0);
     wxTextValidator(const wxTextValidator& val);
 
-    ~wxTextValidator(){}
+    virtual ~wxTextValidator(){}
 
     // Make a clone of this validator (or return NULL) - currently necessary
     // if you're passing a reference to a validator.

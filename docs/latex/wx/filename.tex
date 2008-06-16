@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     30.11.01
-%% RCS-ID:      $Id: filename.tex,v 1.40 2005/08/28 16:25:42 VZ Exp $
+%% RCS-ID:      $Id: filename.tex 44096 2007-01-05 14:30:39Z VZ $
 %% Copyright:   (c) 2001 Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -18,6 +18,47 @@ functions (and \helpref{wxWidgets functions}{filefunctions} wrapping them).
 Second, it includes the functions for working with the files itself. Note that
 to change the file data you should use \helpref{wxFile}{wxfile} class instead.
 wxFileName provides functions for working with the file attributes.
+
+When working with directory names (i.e. without filename and extension)
+make sure not to misuse the file name part of this class with the last
+directory. Instead initialize the wxFileName instance like this:
+
+\begin{verbatim}
+wxFileName dirname( wxT("C:\mydir"), wxEmptyString );
+MyMethod( dirname.GetPath() );
+\end{verbatim}
+
+The same can be done using the static method \helpref{wxFileName::DirName}{wxfilenamedirname}:
+
+\begin{verbatim}
+wxFileName dirname = wxFileName::DirName( wxT("C:\mydir") );
+MyMethod( dirname.GetPath() );
+\end{verbatim}
+
+Accordingly, methods dealing with directories or directory names
+like \helpref{IsDirReadable}{wxfilenameisdirreadable} use
+\helpref{GetPath}{wxfilenamegetpath} whereas methods dealing 
+with file names like \helpref{IsFileReadable}{wxfilenameisfilereadable}
+use \helpref{GetFullPath}{wxfilenamegetfullpath}.
+
+If it is not known wether a string contains a directory name or
+a complete file name (such as when interpreting user input) you need to use
+the static function \helpref{wxFileName::DirExists}{wxfilenamedirexists}
+(or its identical variants \helpref{wxDir::Exists}{wxdirexists} and
+\helpref{wxDirExists}{functionwxdirexists}) and construct the wxFileName
+instance accordingly. This will only work if the directory actually exists,
+of course:
+
+\begin{verbatim}
+wxString user_input;
+// get input from user
+
+wxFileName fname;
+if (wxDirExists(user_input))
+    fname.AssignDir( user_input );
+else
+    fname.Assign( user_input );
+\end{verbatim}
 
 \wxheading{Derived from}
 
@@ -73,36 +114,57 @@ state and \helpref{IsOk}{wxfilenameisok} returns {\tt false} for it.
 File names can be case-sensitive or not, the function\rtfsp
 \helpref{IsCaseSensitive}{wxfilenameiscasesensitive} allows to determine this.
 
-The rules for determining if the file name is absolute or relative also depends
-on the file name format and the only portable way to answer to this question is
-to use \helpref{IsAbsolute}{wxfilenameisabsolute} method. To ensure that the
-filename is absolute you may use \helpref{MakeAbsolute}{wxfilenamemakeabsolute}.
-There is also an inverse function 
-\helpref{MakeRelativeTo}{wxfilenamemakerelativeto} which undoes what
-\helpref{Normalize(wxPATH\_NORM\_DOTS)}{wxfilenamenormalize} does.
+The rules for determining whether the file name is absolute or relative also
+depend on the file name format and the only portable way to answer this
+question is to use \helpref{IsAbsolute}{wxfilenameisabsolute} or\rtfsp
+\helpref{IsRelative}{wxfilenameisrelative} method. Note that on Windows, "X:"
+refers to the current working directory on drive X. Therefore, a wxFileName
+instance constructed from for example "X:dir/file.ext" treats the portion 
+beyond drive separator as being relative to that directory.
+
+To ensure that the filename is absolute, you may use\rtfsp
+\helpref{MakeAbsolute}{wxfilenamemakeabsolute}. There is also an inverse
+function \helpref{MakeRelativeTo}{wxfilenamemakerelativeto} which undoes
+what \helpref{Normalize(wxPATH\_NORM\_DOTS)}{wxfilenamenormalize} does.
 
 Other functions returning information about the file format provided by this
 class are \helpref{GetVolumeSeparator}{wxfilenamegetvolumeseparator},\rtfsp
 \helpref{IsPathSeparator}{wxfilenameispathseparator}.
 
-\helpref{IsRelative}{wxfilenameisrelative}
-
 
 \membersection{File name construction}\label{filenameconstruction}
 
-TODO.
+You can initialize a wxFileName instance using one of the following functions:
+
+\helpref{wxFileName constructors}{wxfilenamewxfilename}\\
+\helpref{Assign}{wxfilenameassign}\\
+\helpref{AssignCwd}{wxfilenameassigncwd}\\
+\helpref{AssignDir}{wxfilenameassigndir}\\
+\helpref{AssignHomeDir}{wxfilenameassignhomedir}\\
+\helpref{AssignHomeTempFileName}{wxfilenameassigntempfilename}\\
+\helpref{DirName}{wxfilenamedirname}\\
+\helpref{FileName}{wxfilenamefilename}\\
+\helpref{operator $=$}{wxfilenameoperatorassign}
 
 
 \membersection{File tests}\label{filetests}
 
-Before doing the other tests you should use \helpref{IsOk}{wxfilenameisok} to
-verify that the filename is well defined. If it is, 
-\helpref{FileExists}{wxfilenamefileexists} can be used to test if a file with
-such name exists and \helpref{DirExists}{wxfilenamedirexists} - if a directory
-with this name exists.
+Before doing other tests, you should use \helpref{IsOk}{wxfilenameisok} to
+verify that the filename is well defined. If it is,\rtfsp
+\helpref{FileExists}{wxfilenamefileexists} can be used to test whether a file
+with such name exists and \helpref{DirExists}{wxfilenamedirexists} can be used
+to test for directory existence.
 
 File names should be compared using \helpref{SameAs}{wxfilenamesameas} method
-or \helpref{$==$}{wxfilenameoperatorequal}.
+or \helpref{operator $==$}{wxfilenameoperatorequal}.
+
+For testing basic access modes, you can use:
+
+\helpref{IsDirWritable}{wxfilenameisdirwritable}\\
+\helpref{IsDirReadable}{wxfilenameisdirreadable}\\
+\helpref{IsFileWritable}{wxfilenameisfilewritable}\\
+\helpref{IsFileReadable}{wxfilenameisfilereadable}\\
+\helpref{IsFileExecutable}{wxfilenameisfileexecutable}
 
 
 \membersection{File name components}\label{filenamecomponents}
@@ -429,7 +491,12 @@ Returns the last time the file was last modified.
 
 \constfunc{wxString}{GetName}{\void}
 
-Returns the name part of the filename.
+Returns the name part of the filename (without extension).
+
+\wxheading{See also}
+
+\helpref{GetFullName}{wxfilenamegetfullname}
+
 
 
 \membersection{wxFileName::GetPath}\label{wxfilenamegetpath}
@@ -487,11 +554,56 @@ same as \helpref{GetPathSeparators}{wxfilenamegetpathseparators} except for VMS
 path format where $]$ is used at the end of the path part.
 
 
+\membersection{wxFileName::GetPathWithSep}\label{wxfilenamegetpathwithsep}
+
+\constfunc{wxString}{GetPathWithSep}{\param{wxPathFormat }{format = wxPATH\_NATIVE}}
+
+Returns the path with the trailing separator, useful for appending the name to
+the given path.
+
+This is the same as calling \helpref{GetPath}{wxfilenamegetpath}
+\texttt{(wxPATH\_GET\_VOLUME | wxPATH\_GET\_SEPARATOR, format)}.
+
+
 \membersection{wxFileName::GetShortPath}\label{wxfilenamegetshortpath}
 
 \constfunc{wxString}{GetShortPath}{\void}
 
 Return the short form of the path (returns identity on non-Windows platforms).
+
+
+\membersection{wxFileName::GetSize}\label{wxfilenamegetsize}
+
+\constfunc{wxULongLong}{GetSize}{\void}
+
+\func{static wxULongLong}{GetSize}{\param{const wxString\& }{filename}}
+
+Returns the size of this file (first form) or the size of the given file (second form).
+If the file does not exist or its size could not be read (because e.g. the file is locked
+by another process) the returned value is {\tt wxInvalidSize}.
+
+
+\membersection{wxFileName::GetHumanReadableSize}\label{wxfilenamegethumanreadablesize}
+
+\constfunc{wxString}{GetHumanReadableSize}{\param{const wxString\& }{failmsg = "Not available"}, \param{int }{precision = 1}}
+
+\func{static wxString}{GetHumanReadableSize}{\param{const wxULongLong\& }{bytes}, \param{const wxString\& }{nullsize = "Not available"}, \param{int }{precision = 1}}
+
+Returns the size of this file (first form) or the given number of bytes (second form)
+in a human-readable form.
+
+If the size could not be retrieved the {\tt failmsg} string is returned (first form).
+If {\tt bytes} is {\tt wxInvalidSize} or zero, then {\tt nullsize} is returned (second form).
+
+In case of success, the returned string is a floating-point number with {\tt precision} decimal digits
+followed by the size unit (B, kB, MB, GB, TB: respectively bytes, kilobytes, megabytes, gigabytes, terabytes).
+
+
+\membersection{wxFileName::GetTempDir}\label{wxfilenamegettempdir}
+
+\func{static wxString}{GetTempDir}{\void}
+
+Returns the directory used for temporary files.
 
 
 \membersection{wxFileName::GetTimes}\label{wxfilenamegettimes}
@@ -505,6 +617,12 @@ to. Finally, the creation time is indeed the time when the file was created
 under Windows and the inode change time under Unix (as it is impossible to
 retrieve the real file creation time there anyhow) which can also be changed
 by many operations after the file creation.
+
+If no filename or extension is specified in this instance of wxFileName
+(and therefore \helpref{IsDir}{wxfilenameisdir} returns {\tt true}) then
+this function will return the directory times of the path specified by
+\helpref{GetPath}{wxfilenamegetpath}, otherwise the file times of the
+file specified by \helpref{GetFullPath}{wxfilenamegetfullpath}.
 
 Any of the pointers may be {\tt NULL} if the corresponding time is not
 needed.
@@ -571,6 +689,56 @@ Returns {\tt true} if this filename is absolute.
 \func{static bool}{IsCaseSensitive}{\param{wxPathFormat }{format = wxPATH\_NATIVE}}
 
 Returns {\tt true} if the file names of this type are case-sensitive.
+
+
+\membersection{wxFileName::IsDirReadable}\label{wxfilenameisdirreadable}
+
+\constfunc{bool}{IsDirReadable}{\void}
+
+\func{static bool}{IsDirReadable}{\param{const wxString\& }{dir}}
+
+Returns {\tt true} if the directory component of this instance (or given \arg{dir})
+is an existing directory and this process has read permissions on it.
+Read permissions on a directory mean that you can list the directory contents but it
+doesn't imply that you have read permissions on the files contained.
+
+
+\membersection{wxFileName::IsDirWritable}\label{wxfilenameisdirwritable}
+
+\constfunc{bool}{IsDirWritable}{\void}
+
+\func{static bool}{IsDirWritable}{\param{const wxString\& }{dir}}
+
+Returns {\tt true} if the directory component of this instance (or given \arg{dir})
+is an existing directory and this process has write permissions on it.
+Write permissions on a directory mean that you can create new files in the directory.
+
+
+\membersection{wxFileName::IsFileExecutable}\label{wxfilenameisfileexecutable}
+
+\constfunc{bool}{IsFileExecutable}{\void}
+
+\func{static bool}{IsFileExecutable}{\param{const wxString\& }{file}}
+
+Returns {\tt true} if a file with this name exists and if this process has execute permissions on it.
+
+
+\membersection{wxFileName::IsFileReadable}\label{wxfilenameisfilereadable}
+
+\constfunc{bool}{IsFileReadable}{\void}
+
+\func{static bool}{IsFileReadable}{\param{const wxString\& }{file}}
+
+Returns {\tt true} if a file with this name exists and if this process has read permissions on it.
+
+
+\membersection{wxFileName::IsFileWritable}\label{wxfilenameisfilewritable}
+
+\constfunc{bool}{IsFileWritable}{\void}
+
+\func{static bool}{IsFileWritable}{\param{const wxString\& }{file}}
+
+Returns {\tt true} if a file with this name exists and if this process has write permissions on it.
 
 
 \membersection{wxFileName::IsOk}\label{wxfilenameisok}
@@ -696,20 +864,25 @@ any or-combination of the following constants:
 
 \begin{twocollist}
 \twocolitem{{\bf wxPATH\_NORM\_ENV\_VARS}}{replace env vars with their values}
-\twocolitem{{\bf wxPATH\_NORM\_DOTS}}{squeeze all .. and . and prepend cwd}
-\twocolitem{{\bf wxPATH\_NORM\_TILDE}}{Unix only: replace ~ and ~user}
+\twocolitem{{\bf wxPATH\_NORM\_DOTS}}{squeeze all .. and . when possible; if there are too many .. and thus they cannot be all removed, \false will be returned}
 \twocolitem{{\bf wxPATH\_NORM\_CASE}}{if filesystem is case insensitive, transform to lower case}
-\twocolitem{{\bf wxPATH\_NORM\_ABSOLUTE}}{make the path absolute}
+\twocolitem{{\bf wxPATH\_NORM\_ABSOLUTE}}{make the path absolute prepending \arg{cwd}}
 \twocolitem{{\bf wxPATH\_NORM\_LONG}}{make the path the long form}
 \twocolitem{{\bf wxPATH\_NORM\_SHORTCUT}}{resolve if it is a shortcut (Windows only)}
+\twocolitem{{\bf wxPATH\_NORM\_TILDE}}{replace ~ and ~user (Unix only)}
 \twocolitem{{\bf wxPATH\_NORM\_ALL}}{all of previous flags except \texttt{wxPATH\_NORM\_CASE}}
 \end{twocollist}
 }%
 
 \docparam{cwd}{If not empty, this directory will be used instead of current
-working directory in normalization.}
+working directory in normalization (see wxPATH\_NORM\_ABSOLUTE).}
 
-\docparam{format}{The file name format, native by default.}
+\docparam{format}{The file name format to use when processing the paths, native by default.}
+
+
+\wxheading{Return value}
+
+\true if normalization was successfully or \false otherwise.
 
 
 \membersection{wxFileName::PrependDir}\label{wxfilenameprependdir}
@@ -802,7 +975,11 @@ The full name is the file name and extension (but without the path).
 
 \func{void}{SetName}{\param{const wxString\& }{name}}
 
-Sets the name.
+Sets the name part (without extension).
+
+\wxheading{See also}
+
+\helpref{SetFullName}{wxfilenamesetfullname}
 
 
 \membersection{wxFileName::SetTimes}\label{wxfilenamesettimes}

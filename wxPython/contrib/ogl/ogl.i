@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     30-June-1999
-// RCS-ID:      $Id: ogl.i,v 1.30 2005/03/09 22:28:49 RD Exp $
+// RCS-ID:      $Id: ogl.i 39219 2006-05-19 01:10:46Z RD $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -38,8 +38,6 @@ of 2D objects.  (This version is deprecated, please use wx.lib.ogl instead.)"
 
 
 MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
-
-%include _ogl_rename.i
 
 %include _ogldefs.i
 %include _oglbasic.i

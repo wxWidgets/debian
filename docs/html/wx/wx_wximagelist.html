@@ -1,0 +1,291 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxImageList</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wximagelist"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wximagehandler.html#wximagehandler"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxindividuallayoutconstraint.html#wxindividuallayoutconstraint"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxImageList</H2>
+<P>
+A wxImageList contains a list of images, which are stored in
+an unspecified form. Images can have masks for transparent
+drawing, and can be made from a variety of sources including bitmaps
+and icons.<P>
+wxImageList is used principally in conjunction with <A HREF="wx_wxtreectrl.html#wxtreectrl">wxTreeCtrl</A> and
+<A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A> classes.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/imaglist.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtreectrl.html#wxtreectrl">wxTreeCtrl</A>, <A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wximagelistconstr">wxImageList::wxImageList</A><BR>
+<A HREF="#wximagelistadd">wxImageList::Add</A><BR>
+<A HREF="#wximagelistcreate">wxImageList::Create</A><BR>
+<A HREF="#wximagelistdraw">wxImageList::Draw</A><BR>
+<A HREF="#wximagelistgetbitmap">wxImageList::GetBitmap</A><BR>
+<A HREF="#wximagelistgeticon">wxImageList::GetIcon</A><BR>
+<A HREF="#wximagelistgetimagecount">wxImageList::GetImageCount</A><BR>
+<A HREF="#wximagelistgetsize">wxImageList::GetSize</A><BR>
+<A HREF="#wximagelistremove">wxImageList::Remove</A><BR>
+<A HREF="#wximagelistremoveall">wxImageList::RemoveAll</A><BR>
+<A HREF="#wximagelistreplace">wxImageList::Replace</A><BR>
+<P>
+
+<HR>
+<A NAME="wximagelistconstr"></A>
+<H3>wxImageList::wxImageList</H3>
+<P>
+<B></B> <B>wxImageList</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxImageList</B>(<B>int </B><I>width</I>, <B>int </B><I>height</I>, <B>const bool </B><I>mask = true</I>,
+<B>int </B><I>initialCount = 1</I>)<P>
+Constructor specifying the image size, whether image masks should be created, and the initial size of the list.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>width</I><UL><UL>
+Width of the images in the list.</UL></UL>
+<P>
+<I>height</I><UL><UL>
+Height of the images in the list.</UL></UL>
+<P>
+<I>mask</I><UL><UL>
+true if masks should be created for all images.</UL></UL>
+<P>
+<I>initialCount</I><UL><UL>
+The initial size of the list.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximagelist.html#wximagelistcreate">wxImageList::Create</A><P>
+
+<HR>
+<A NAME="wximagelistadd"></A>
+<H3>wxImageList::Add</H3>
+<P>
+<B>int</B> <B>Add</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> mask = wxNullBitmap</I>)<P>
+Adds a new image or images using a bitmap and optional mask bitmap.<P>
+<B>int</B> <B>Add</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> maskColour</I>)<P>
+Adds a new image or images using a bitmap and mask colour.<P>
+<B>int</B> <B>Add</B>(<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>&</B></B><I> icon</I>)<P>
+Adds a new image using an icon.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bitmap</I><UL><UL>
+Bitmap representing the opaque areas of the image.</UL></UL>
+<P>
+<I>mask</I><UL><UL>
+Monochrome mask bitmap, representing the transparent areas of the image.</UL></UL>
+<P>
+<I>maskColour</I><UL><UL>
+Colour indicating which parts of the image are transparent.</UL></UL>
+<P>
+<I>icon</I><UL><UL>
+Icon to use as the image.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The new zero-based image index.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The original bitmap or icon is not affected by the <B>Add</B> operation, and can be deleted afterwards.<P>
+If the bitmap is wider than the images in the list, then the bitmap will automatically be split into smaller images, each matching the dimensions of the image list.  This does not apply when adding icons.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>Add(bitmap, mask=wxNullBitmap)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>AddWithColourMask(bitmap, colour)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>AddIcon(icon)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+
+
+<HR>
+<A NAME="wximagelistcreate"></A>
+<H3>wxImageList::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>int </B><I>width</I>, <B>int </B><I>height</I>, <B>const bool </B><I>mask = true</I>,
+<B>int </B><I>initialCount = 1</I>)<P>
+Initializes the list. See <A HREF="wx_wximagelist.html#wximagelistconstr">wxImageList::wxImageList</A> for details.<P>
+
+<HR>
+<A NAME="wximagelistdraw"></A>
+<H3>wxImageList::Draw</H3>
+<P>
+<B>bool</B> <B>Draw</B>(<B>int</B><I> index</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>&</B></B><I> dc</I>, <B>int </B><I>x</I>,
+<B>int </B><I>y</I>, <B>int </B><I>flags = wxIMAGELIST_DRAW_NORMAL</I>,
+<B>const bool </B><I>solidBackground = false</I>)<P>
+Draws a specified image onto a device context.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>index</I><UL><UL>
+Image index, starting from zero.</UL></UL>
+<P>
+<I>dc</I><UL><UL>
+Device context to draw on.</UL></UL>
+<P>
+<I>x</I><UL><UL>
+X position on the device context.</UL></UL>
+<P>
+<I>y</I><UL><UL>
+Y position on the device context.</UL></UL>
+<P>
+<I>flags</I><UL><UL>
+How to draw the image. A bitlist of a selection of the following:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxIMAGELIST_DRAW_NORMAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draw the image normally.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxIMAGELIST_DRAW_TRANSPARENT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draw the image with transparency.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxIMAGELIST_DRAW_SELECTED</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draw the image in selected state.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxIMAGELIST_DRAW_FOCUSED</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draw the image in a focused state.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+<I>solidBackground</I><UL><UL>
+For optimisation - drawing can be faster if the function is told
+that the background is solid.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wximagelistgetbitmap"></A>
+<H3>wxImageList::GetBitmap</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A></B> </B> <B>GetBitmap</B>(<B>int </B><I>index</I>) <B>const</B><P>
+Returns the bitmap corresponding to the given index.<P>
+
+<HR>
+<A NAME="wximagelistgeticon"></A>
+<H3>wxImageList::GetIcon</H3>
+<P>
+<B><A HREF="wx_wxicon.html#wxicon">wxIcon</A></B> </B> <B>GetIcon</B>(<B>int </B><I>index</I>) <B>const</B><P>
+Returns the icon corresponding to the given index.<P>
+
+<HR>
+<A NAME="wximagelistgetimagecount"></A>
+<H3>wxImageList::GetImageCount</H3>
+<P>
+<B>int</B> <B>GetImageCount</B>() <B>const</B><P>
+Returns the number of images in the list.<P>
+
+<HR>
+<A NAME="wximagelistgetsize"></A>
+<H3>wxImageList::GetSize</H3>
+<P>
+<B>bool</B> <B>GetSize</B>(<B>int </B><I>index</I>, <B>int&amp; </B><I>width</I>, <B>int &amp;</B><I>height</I>) <B>const</B><P>
+Retrieves the size of the images in the list. Currently, the <I>index</I> 
+parameter is ignored as all images in the list have the same size.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>index</I><UL><UL>
+currently unused, should be 0</UL></UL>
+<P>
+<I>width</I><UL><UL>
+receives the width of the images in the list</UL></UL>
+<P>
+<I>height</I><UL><UL>
+receives the height of the images in the list</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the function succeeded, false if it failed (for example, if the image
+list was not yet initialized).<P>
+
+<HR>
+<A NAME="wximagelistremove"></A>
+<H3>wxImageList::Remove</H3>
+<P>
+<B>bool</B> <B>Remove</B>(<B>int</B><I> index</I>)<P>
+Removes the image at the given position.<P>
+
+<HR>
+<A NAME="wximagelistremoveall"></A>
+<H3>wxImageList::RemoveAll</H3>
+<P>
+<B>bool</B> <B>RemoveAll</B>()<P>
+Removes all the images in the list.<P>
+
+<HR>
+<A NAME="wximagelistreplace"></A>
+<H3>wxImageList::Replace</H3>
+<P>
+<B>bool</B> <B>Replace</B>(<B>int</B><I> index</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> mask = wxNullBitmap</I>)<P>
+Replaces the existing image with the new image.<P>
+Windows only.<P>
+<B>bool</B> <B>Replace</B>(<B>int</B><I> index</I>, <B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>&</B></B><I> icon</I>)<P>
+Replaces the existing image with the new image.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bitmap</I><UL><UL>
+Bitmap representing the opaque areas of the image.</UL></UL>
+<P>
+<I>mask</I><UL><UL>
+Monochrome mask bitmap, representing the transparent areas of the image.</UL></UL>
+<P>
+<I>icon</I><UL><UL>
+Icon to use as the image.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the replacement was successful, false otherwise.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The original bitmap or icon is not affected by the <B>Replace</B> operation, and can be deleted afterwards.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The second form is called <TT>ReplaceIcon</TT> in wxPython.<P>
+
+
+</FONT></BODY></HTML>

@@ -1,0 +1,106 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPathList</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxpathlist"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpasswordentrydialog.html#wxpasswordentrydialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpen.html#wxpen"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPathList</H2>
+<P>
+The path list is a convenient way of storing a number of directories, and
+when presented with a filename without a directory, searching for an existing file
+in those directories.<P>
+Be sure to look also at <A HREF="wx_wxstandardpaths.html#wxstandardpaths">wxStandardPaths</A> if you only
+want to search files in some standard paths.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/filefn.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>, <A HREF="wx_wxstandardpaths.html#wxstandardpaths">wxStandardPaths</A>, <A HREF="wx_wxfilename.html#wxfilename">wxFileName</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxpathlistctor">wxPathList::wxPathList</A><BR>
+<A HREF="#wxpathlistaddenvlist">wxPathList::AddEnvList</A><BR>
+<A HREF="#wxpathlistadd">wxPathList::Add</A><BR>
+<A HREF="#wxpathlistensurefileaccessible">wxPathList::EnsureFileAccessible</A><BR>
+<A HREF="#wxpathlistfindabsolutepath">wxPathList::FindAbsoluteValidPath</A><BR>
+<A HREF="#wxpathlistfindvalidpath">wxPathList::FindValidPath</A><BR>
+<P>
+
+<HR>
+<A NAME="wxpathlistctor"></A>
+<H3>wxPathList::wxPathList</H3>
+<P>
+<B></B> <B>wxPathList</B>()<P>
+Empty constructor.<P>
+<B></B> <B>wxPathList</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>arr</I>)<P>
+Constructs the object calling the <A HREF="wx_wxpathlist.html#wxpathlistadd">Add</A> function.<P>
+
+
+<HR>
+<A NAME="wxpathlistaddenvlist"></A>
+<H3>wxPathList::AddEnvList</H3>
+<P>
+<B>void</B> <B>AddEnvList</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>env_variable</I>)<P>
+Finds the value of the given environment variable, and adds all paths
+to the path list. Useful for finding files in the <TT>PATH</TT> variable, for
+example.<P>
+
+
+<HR>
+<A NAME="wxpathlistadd"></A>
+<H3>wxPathList::Add</H3>
+<P>
+<B>bool</B> <B>Add</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>)<P>
+<B>void</B> <B>Add</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>arr</I>)<P>
+The first form adds the given directory to the path list, if the path is not already in the list.
+If the path cannot be normalized for some reason, it returns <TT>false</TT>.<P>
+The second form just calls the first form on all elements of the given array.<P>
+The <I>path</I> is always considered a directory but no existence checks will be done on it
+(because if it doesn't exist, it could be created later and thus result a valid path when
+<A HREF="wx_wxpathlist.html#wxpathlistfindvalidpath">FindValidPath</A> is called).<P>
+<B>Note:</B> if the given path is relative, it won't be made absolute before adding it
+(this is why <A HREF="wx_wxpathlist.html#wxpathlistfindvalidpath">FindValidPath</A> may return relative paths).<P>
+
+
+<HR>
+<A NAME="wxpathlistensurefileaccessible"></A>
+<H3>wxPathList::EnsureFileAccessible</H3>
+<P>
+<B>bool</B> <B>EnsureFileAccessible</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Given a full filename (with path), calls <A HREF="wx_wxpathlist.html#wxpathlistadd">Add</A> with the path
+of the file.<P>
+
+
+<HR>
+<A NAME="wxpathlistfindabsolutepath"></A>
+<H3>wxPathList::FindAbsoluteValidPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>FindAbsoluteValidPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>) <B>const</B><P>
+Like <A HREF="wx_wxpathlist.html#wxpathlistfindvalidpath">FindValidPath</A> but this function always
+returns an absolute path (eventually prepending the current working directory
+to the value returned <A HREF="wx_wxpathlist.html#wxpathlistfindvalidpath">FindValidPath</A>) or an
+empty string.<P>
+
+
+<HR>
+<A NAME="wxpathlistfindvalidpath"></A>
+<H3>wxPathList::FindValidPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>FindValidPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>) <B>const</B><P>
+Searches the given file in all paths stored in this class.
+The first path which concatenated to the given string points to an existing
+file (see <A HREF="wx_wxfile.html#wxfileexists">wxFileExists</A>) is returned.<P>
+If the file wasn't found in any of the stored paths, an empty string is returned.<P>
+The given string must be a file name, eventually with a path prefix (if the path
+prefix is absolute, only its name will be searched); i.e. it must not end with
+a directory separator (see <A HREF="wx_wxfilename.html#wxfilenamegetpathseparator">wxFileName::GetPathSeparator</A>)
+otherwise an assertion will fail.<P>
+The returned path may be relative to the current working directory.
+Note in fact that wxPathList can be used to store both relative and absolute paths so that
+if you <A HREF="wx_wxpathlist.html#wxpathlistadd">Add()</A>ed relative paths, then the current working directory
+(see <A HREF="wx_filefunctions.html#wxgetcwd">wxGetCwd</A> and <A HREF="wx_filefunctions.html#wxsetworkingdirectory">wxSetWorkingDirectory</A>)
+may affect the value returned by this function!<P>
+
+</FONT></BODY></HTML>

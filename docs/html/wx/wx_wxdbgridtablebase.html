@@ -1,0 +1,147 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDbGridTableBase</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdbgridtablebase"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdbgridcolinfo.html#wxdbgridcolinfo"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdc.html#wxdc"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDbGridTableBase</H2>
+<P>
+You can view a database table in a grid using this class.<P>
+If you are deriving your own wxDbTable subclass for your table , then you may consider
+overriding GetCol() and SetCol() to provide calculated fields. This does work but care should
+be taken when using wxDbGridTableBase in this way.<P>
+The constructor and AssignDbTable() call allows you to specify the ownership if the wxDbTable
+object pointer. If you tell wxGridTableBase to take ownership , it will delete the passed wxDbTable
+when an new on is assigned or wxGridTableBase's destructor is called.
+However no checks for aliasing are done so Assign(table,..,true); Assign(table,..,true); 
+is  an error. If you need to requery an table object the preferred way is
+that the client keeps ownership.<P>
+<B><FONT COLOR="#FF0000">Derived From</FONT></B><P>
+<A HREF="wx_wxgridtablebase.html#wxgridtablebase">wxGridTableBase</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dbgrid.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+	// First step, let's define wxDbTable
+	int numColumns = 2;
+	wxDbTable *table = new wxDbTable (db, tblName, numColumns);
+	int int_var;
+	wxChar string_name[255];
+	table-&gt;SetColDef (0, "column 0", DB_DATA_TYPE_INTEGER, &int_var,
+			SQL_C_LONG, sizeof(int_var), true);
+	table-&gt;SetColDef (1, "column 1", DB_DATA_TYPE_VARCHAR, &string_name,
+			SQL_C_LONG, sizeof(string_name), false);
+
+    // now let's define columns in the grid
+
+    // first way to do it
+    wxDbGridColInfo *columns;
+    columns = new wxDbGridColInfo(0, wxGRID_VALUE_LONG, "first column",
+              new wxDbGridColInfo(1, wxGRID_VALUE_STRING, "second column",
+              NULL);
+
+    // second way to do it
+    wxDbGridColInfo *columns;
+    // first column is special
+    columns = new wxDbGridColInfo(0, wxGRID_VALUE_LONG, "first column", NULL);
+    // all the rest
+    columns-&gt;AddColInfo (1, wxGRID_VALUE_STRING, "second column");
+
+    // second way may be better when columns are not known at compile time
+
+    // now, let's open the table and make a Query()
+    table-&gt;Open();
+    // this step is very important
+    table-&gt;SetRowMode (wxDbTable::WX_ROW_MODE_QUERY);
+    // in the grid we will see only the rows of the result query
+    m_dbTable-&gt;Query();
+
+    wxDbGridTableBase *dbgrid = new wxDbGridTableBase(table, columns, wxUSE_QUERY, true);
+    delete columns;  // not needed anymore
+    wxGrid *grid = new wxGrid ( ... );
+    grid-&gt;SetTable(dbgrid, true);
+    grid-&gt;Fit();
+</PRE>
+
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dbgrid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Helper classes and data structures</FONT></B><P>
+<A HREF="#wxdbgridtablebaseconstr">wxDbGridTableBase::wxDbGridTableBase</A><BR>
+<A HREF="#wxdbgridtablebasevalidate">wxDbGridTableBase::ValidateRow</A><BR>
+<A HREF="#wxdbgridtablebaseupdaterow">wxDbGridTableBase::UpdateRow</A><BR>
+<A HREF="#wxdbgridtablebaseassigndbtable">wxDbGridTableBase::AssignDbTable</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdbgridtablebaseconstr"></A>
+<H3>wxDbGridTableBase::wxDbGridTableBase</H3>
+<P>
+<B></B> <B>wxDbGridTableBase</B>(<B><A HREF="wx_wxdbtable.html#wxdbtable">wxDbTable</A> *</B></B><I>tab</I>, <B><A HREF="wx_wxdbgridcolinfo.html#wxdbgridcolinfo">wxDbGridColInfo</A> *</B></B><I>ColInfo</I>,
+  <B>int </B><I>count = wxUSE_QUERY</I>, <B>bool </B><I>takeOwnership = true</I>)<P>
+Constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>tab</I><UL><UL>
+ The database table you want to display. Must be opened and queried before display the grid.
+See the example <A HREF="wx_wxdbgridtablebase.html#wxdbgridtablebase">above</A>.</UL></UL>
+
+<I>ColInfo</I><UL><UL>
+ Columns titles, and other values. See <A HREF="wx_wxdbgridcolinfo.html#wxdbgridcolinfo">wxDbGridColInfo</A>.</UL></UL>
+
+<I>count</I><UL><UL>
+You can use a query result set (wxUSE_QUERY, to use wxDbTable::Count(wxDbTable::Count() 
+ or you can fix the total number of rows (count &gt;= 0) to display, or specify it if you already know the size in avoid calling </UL></UL>
+<P>
+<I>takeOwnership</I><UL><UL>
+ If true, this class deletes wxDbTable when it stops
+referring to it, if false application must
+take care of deleting it.  </UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdbgridtablebasevalidate"></A>
+<H3>wxDbGridTableBase::ValidateRow</H3>
+<P>
+<B>void</B> <B>ValidateRow</B>(<B>int </B><I>row</I>)<P>
+It ensures that the row data is fetched from the database, and it the wxDbTable local buffer,
+the row number passed should be the grid row.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>row</I><UL><UL>
+ Row where validation must be done. </UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdbgridtablebaseupdaterow"></A>
+<H3>wxDbGridTableBase::UpdateRow</H3>
+<P>
+<B>bool</B> <B>UpdateRow</B>(<B>int </B><I>row</I>)<P>
+If row has changed it forces that row to be written back to the database, however support
+for detecting whether insert/update is required is currently not in wxDbTable, so this 
+function is currently unsupported.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>row</I><UL><UL>
+ Row you want to update. </UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdbgridtablebaseassigndbtable"></A>
+<H3>wxDbGridTableBase::AssignDbTable</H3>
+<P>
+<B>bool</B> <B>AssignDbTable</B>(<B><A HREF="wx_wxdbtable.html#wxdbtable">wxDbTable</A> *</B></B><I>tab</I>,<B>int </B><I>count = wxUSE_QUERY</I>,
+<B>bool </B><I>takeOwnership = true</I>)<P>
+Resets the grid for using with a new database table, but using the same columns definition.
+This can be useful when re-querying the database and want to see the changes. <P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>tab</I><UL><UL>
+ Database table you want to assign to the grid. </UL></UL>
+
+<I>count</I><UL><UL>
+ Number of rows you want to show or wxUSE_QUERY for using a query. </UL></UL>
+
+<I>takeOwnership</I><UL><UL>
+ If false, user must take care of deleting tab after deleting
+the wxDbGridTableBase. If true, deletion is made by destructor class. </UL></UL>
+<P>
+
+</FONT></BODY></HTML>

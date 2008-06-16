@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Eric Dowty
 // Created:     25/01/99
-// RCS-ID:      $Id: client.cpp,v 1.5 2004/06/12 23:44:06 DS Exp $
+// RCS-ID:      $Id: client.cpp 27764 2004-06-12 23:44:08Z DS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

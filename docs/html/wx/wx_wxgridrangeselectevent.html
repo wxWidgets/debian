@@ -1,0 +1,152 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGridRangeSelectEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgridrangeselectevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgridevent.html#wxgridevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgridsizeevent.html#wxgridsizeevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGridRangeSelectEvent</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxnotifyevent.html#wxnotifyevent">wxNotifyEvent</A><BR>
+
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><BR>
+
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+The event handler for the following functions takes a 
+ <A HREF="wx_wxgridrangeselectevent.html#wxgridrangeselectevent">wxGridRangeSelectEvent</A> parameter.
+The ..._CMD_... variants also take a window identifier.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_RANGE_SELECT(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user selected a group of contiguous cells. Processes a wxEVT_GRID_RANGE_SELECT.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_RANGE_SELECT(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user selected a group of contiguous cells; variant taking a window identifier. Processes a wxEVT_GRID_RANGE_SELECT.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/grid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgridrangeselecteventconstr">wxGridRangeSelectEvent::wxGridRangeSelectEvent</A><BR>
+<A HREF="#wxgridrangeselecteventaltdown">wxGridRangeSelectEvent::AltDown</A><BR>
+<A HREF="#wxgridrangeselecteventcontroldown">wxGridRangeSelectEvent::ControlDown</A><BR>
+<A HREF="#wxgridrangeselecteventgetbottomrightcoords">wxGridRangeSelectEvent::GetBottomRightCoords</A><BR>
+<A HREF="#wxgridrangeselecteventgetbottomrow">wxGridRangeSelectEvent::GetBottomRow</A><BR>
+<A HREF="#wxgridrangeselecteventgetleftcol">wxGridRangeSelectEvent::GetLeftCol</A><BR>
+<A HREF="#wxgridrangeselecteventgetrightcol">wxGridRangeSelectEvent::GetRightCol</A><BR>
+<A HREF="#wxgridrangeselecteventgettopleftcoords">wxGridRangeSelectEvent::GetTopLeftCoords</A><BR>
+<A HREF="#wxgridrangeselecteventgettoprow">wxGridRangeSelectEvent::GetTopRow</A><BR>
+<A HREF="#wxgridrangeselecteventmetadown">wxGridRangeSelectEvent::MetaDown</A><BR>
+<A HREF="#wxgridrangeselecteventselecting">wxGridRangeSelectEvent::Selecting</A><BR>
+<A HREF="#wxgridrangeselecteventshiftdown">wxGridRangeSelectEvent::ShiftDown</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgridrangeselecteventconstr"></A>
+<H3>wxGridRangeSelectEvent::wxGridRangeSelectEvent</H3>
+<P>
+<B></B> <B>wxGridRangeSelectEvent</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxGridRangeSelectEvent</B>(<B>int </B><I>id</I>, <B>wxEventType </B><I>type</I>,
+ <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>obj</I>, <B>const wxGridCellCoords&amp; </B><I>topLeft</I>,
+ <B>const wxGridCellCoords&amp; </B><I>bottomRight</I>, <B>bool </B><I>sel = true</I>,
+ <B>bool </B><I>control = false</I>, <B>bool </B><I>shift = false</I>, <B>bool </B><I>alt = false</I>,
+ <B>bool </B><I>meta = false</I>)<P>
+
+<HR>
+<A NAME="wxgridrangeselecteventaltdown"></A>
+<H3>wxGridRangeSelectEvent::AltDown</H3>
+<P>
+<B>bool</B> <B>AltDown</B>()<P>
+Returns true if the Alt key was down at the time of the event.<P>
+
+<HR>
+<A NAME="wxgridrangeselecteventcontroldown"></A>
+<H3>wxGridRangeSelectEvent::ControlDown</H3>
+<P>
+<B>bool</B> <B>ControlDown</B>()<P>
+Returns true if the Control key was down at the time of the event.<P>
+
+<HR>
+<A NAME="wxgridrangeselecteventgetbottomrightcoords"></A>
+<H3>wxGridRangeSelectEvent::GetBottomRightCoords</H3>
+<P>
+<B>wxGridCellCoords</B> <B>GetBottomRightCoords</B>()<P>
+Top left corner of the rectangular area that was (de)selected.<P>
+
+<HR>
+<A NAME="wxgridrangeselecteventgetbottomrow"></A>
+<H3>wxGridRangeSelectEvent::GetBottomRow</H3>
+<P>
+<B>int</B> <B>GetBottomRow</B>()<P>
+Bottom row of the rectangular area that was (de)selected.<P>
+
+<HR>
+<A NAME="wxgridrangeselecteventgetleftcol"></A>
+<H3>wxGridRangeSelectEvent::GetLeftCol</H3>
+<P>
+<B>int</B> <B>GetLeftCol</B>()<P>
+Left column of the rectangular area that was (de)selected.<P>
+
+<HR>
+<A NAME="wxgridrangeselecteventgetrightcol"></A>
+<H3>wxGridRangeSelectEvent::GetRightCol</H3>
+<P>
+<B>int</B> <B>GetRightCol</B>()<P>
+Right column of the rectangular area that was (de)selected.<P>
+
+<HR>
+<A NAME="wxgridrangeselecteventgettopleftcoords"></A>
+<H3>wxGridRangeSelectEvent::GetTopLeftCoords</H3>
+<P>
+<B>wxGridCellCoords</B> <B>GetTopLeftCoords</B>()<P>
+Top left corner of the rectangular area that was (de)selected.<P>
+
+<HR>
+<A NAME="wxgridrangeselecteventgettoprow"></A>
+<H3>wxGridRangeSelectEvent::GetTopRow</H3>
+<P>
+<B>int</B> <B>GetTopRow</B>()<P>
+Top row of the rectangular area that was (de)selected.<P>
+
+<HR>
+<A NAME="wxgridrangeselecteventmetadown"></A>
+<H3>wxGridRangeSelectEvent::MetaDown</H3>
+<P>
+<B>bool</B> <B>MetaDown</B>()<P>
+Returns true if the Meta key was down at the time of the event.<P>
+
+<HR>
+<A NAME="wxgridrangeselecteventselecting"></A>
+<H3>wxGridRangeSelectEvent::Selecting</H3>
+<P>
+<B>bool</B> <B>Selecting</B>()<P>
+Returns true if the area was selected, false otherwise.<P>
+
+<HR>
+<A NAME="wxgridrangeselecteventshiftdown"></A>
+<H3>wxGridRangeSelectEvent::ShiftDown</H3>
+<P>
+<B>bool</B> <B>ShiftDown</B>()<P>
+Returns true if the Shift key was down at the time of the event.<P>
+
+</FONT></BODY></HTML>

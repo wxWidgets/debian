@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: _filesys.i,v 1.10 2005/03/09 22:28:41 RD Exp $
+// RCS-ID:      $Id: _filesys.i 46591 2007-06-21 15:26:35Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -26,20 +26,31 @@
 class wxFSFile : public wxObject
 {
 public:
-    %pythonAppend wxFSFile
-        "self.thisown = 0   # It will normally be deleted by the user of the wx.FileSystem";
+    %typemap(out) wxFSFile*;    // turn off this typemap
 
     wxFSFile(wxInputStream *stream, const wxString& loc,
              const wxString& mimetype, const wxString& anchor,
              wxDateTime modif);
-    
-    ~wxFSFile();  
+
+    // Turn it back on.
+    %typemap(out) wxFSFile* { $result = wxPyMake_wxObject($1, $owner); }
+
+    ~wxFSFile();
 
     wxInputStream *GetStream();
+    void DetachStream();
+    
     const wxString& GetMimeType();
     const wxString& GetLocation();
     const wxString& GetAnchor();
     wxDateTime GetModificationTime();
+
+    %property(Anchor, GetAnchor, doc="See `GetAnchor`");
+    %property(Location, GetLocation, doc="See `GetLocation`");
+    %property(MimeType, GetMimeType, doc="See `GetMimeType`");
+    %property(ModificationTime, GetModificationTime, doc="See `GetModificationTime`");
+    %property(Stream, GetStream, doc="See `GetStream`");
+    
 };
 
 
@@ -93,6 +104,7 @@ class wxFileSystemHandler //: public wxObject
 {
 public:
     //wxFileSystemHandler();
+    ~wxFileSystemHandler();
 };
 
 
@@ -101,8 +113,8 @@ public:
 class wxPyFileSystemHandler : public wxFileSystemHandler
 {
 public:
-    %pythonAppend    wxPyFileSystemHandler "self._setCallbackInfo(self, FileSystemHandler)";
-    
+    %pythonAppend    wxPyFileSystemHandler setCallbackInfo(FileSystemHandler)
+
     wxPyFileSystemHandler();
 
     void _setCallbackInfo(PyObject* self, PyObject* _class);
@@ -118,6 +130,12 @@ public:
     wxString GetAnchor(const wxString& location);
     wxString GetRightLocation(const wxString& location);
     wxString GetMimeTypeFromExt(const wxString& location);
+    
+    %property(Anchor, GetAnchor, doc="See `GetAnchor`");
+    %property(LeftLocation, GetLeftLocation, doc="See `GetLeftLocation`");
+    %property(MimeTypeFromExt, GetMimeTypeFromExt, doc="See `GetMimeTypeFromExt`");
+    %property(Protocol, GetProtocol, doc="See `GetProtocol`");
+    %property(RightLocation, GetRightLocation, doc="See `GetRightLocation`");
 };
 
 
@@ -126,8 +144,14 @@ public:
 
 class wxFileSystem : public wxObject {
 public:
+    // turn off this typemap
+    %typemap(out) wxFileSystem*;    
+
     wxFileSystem();
     ~wxFileSystem();
+
+    // Turn it back on again
+    %typemap(out) wxFileSystem* { $result = wxPyMake_wxObject($1, $owner); }
 
     void ChangePathTo(const wxString& location, bool is_dir = false);
     wxString GetPath();
@@ -138,7 +162,14 @@ public:
     wxString FindFirst(const wxString& spec, int flags = 0);
     wxString FindNext();
 
+    %disownarg(wxFileSystemHandler *handler);
     static void AddHandler(wxFileSystemHandler *handler);
+    %cleardisown(wxFileSystemHandler *handler);
+
+    // Removes FS handler
+    %newobject RemoveHandler;
+    static wxFileSystemHandler* RemoveHandler(wxFileSystemHandler *handler);
+
     static void CleanUpHandlers();
 
     // Returns the file URL for a native path
@@ -151,7 +182,9 @@ public:
             wxFileName fname = wxFileSystem::URLToFileName(url);
             return fname.GetFullPath();
         }
-    }   
+    }
+
+    %property(Path, GetPath, doc="See `GetPath`");
 };
 
 
@@ -212,7 +245,7 @@ public:
         wxPyEndBlockThreads(blocked);
 
         wxMemoryFSHandler::AddFile(filename, ptr, size);
-    }
+    }    
 %}
 
 
@@ -246,6 +279,26 @@ public:
 
     // Add a file to the memory FS
     %pythoncode { AddFile = staticmethod(MemoryFSHandler_AddFile) }
+
+    %extend {
+        static void AddFileWithMimeType(const wxString& filename,
+                                        PyObject* data,
+                                        const wxString& mimetype)
+        {
+            if (! PyString_Check(data)) {
+                wxPyBLOCK_THREADS(PyErr_SetString(PyExc_TypeError,
+                                                  "Expected string object"));
+                return;
+            }
+
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
+            void*  ptr = (void*)PyString_AsString(data);
+            size_t size = PyString_Size(data);
+            wxPyEndBlockThreads(blocked);
+
+            wxMemoryFSHandler::AddFileWithMimeType(filename, ptr, size, mimetype);
+        }
+    }
     
     bool CanOpen(const wxString& location);
     %newobject OpenFile;

@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     7-July-2000
-# RCS-ID:      $Id: pyshell.py,v 1.5 2003/12/17 00:34:15 RD Exp $
+# RCS-ID:      $Id: pyshell.py 41077 2006-09-08 20:09:27Z RD $
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -216,7 +216,7 @@ class PyShellWindow(stc.StyledTextCtrl, InteractiveInterpreter):
 
 
     def OnKey(self, evt):
-        key = evt.KeyCode()
+        key = evt.GetKeyCode()
         if key == wx.WXK_RETURN:
             pos = self.GetCurrentPos()
             lastPos = self.GetTextLength()

@@ -2,8 +2,8 @@
 the local namespace or any object."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: filling.py,v 1.5.2.3 2006/02/18 21:40:00 RD Exp $"
-__revision__ = "$Revision: 1.5.2.3 $"[11:-2]
+__cvsid__ = "$Id: filling.py 37633 2006-02-18 21:40:57Z RD $"
+__revision__ = "$Revision: 37633 $"[11:-2]
 
 import wx
 

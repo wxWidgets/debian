@@ -1,0 +1,101 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxWizardPage</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxwizardpage"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxwizardevent.html#wxwizardevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxwizardpagesimple.html#wxwizardpagesimple"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxWizardPage</H2>
+<P>
+wxWizardPage is one of the screens in <A HREF="wx_wxwizard.html#wxwizard">wxWizard</A>: it must
+know what are the following and preceding pages (which may be <TT>NULL</TT> for the
+first/last page). Except for this extra knowledge, wxWizardPage is just a
+panel, so the controls may be placed directly on it in the usual way.<P>
+This class allows the programmer to decide the order of pages in the wizard
+dynamically (during run-time) and so provides maximal flexibility. Usually,
+however, the order of pages is known in advance in which case 
+<A HREF="wx_wxwizardpagesimple.html#wxwizardpagesimple">wxWizardPageSimple</A> class is enough and it is simpler
+to use.<P>
+<B><FONT COLOR="#FF0000">Virtual functions to override</FONT></B><P>
+To use this class, you must override <A HREF="wx_wxwizardpage.html#wxwizardpagegetprev">GetPrev</A> 
+and <A HREF="wx_wxwizardpage.html#wxwizardpagegetnext">GetNext</A> pure virtual functions (or you
+may use <A HREF="wx_wxwizardpagesimple.html#wxwizardpagesimple">wxWizardPageSimple</A> instead).<P>
+<A HREF="wx_wxwizardpage.html#wxwizardpagegetbitmap">GetBitmap</A> can also be overridden, but this
+should be very rarely needed.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxpanel.html#wxpanel">wxPanel</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/wizard.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxwizard.html#wxwizard">wxWizard</A>, <A HREF="wx_samples.html#samplewizard">wxWizard sample</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxwizardpagewxwizardpage">wxWizardPage::wxWizardPage</A><BR>
+<A HREF="#wxwizardpagegetprev">wxWizardPage::GetPrev</A><BR>
+<A HREF="#wxwizardpagegetnext">wxWizardPage::GetNext</A><BR>
+<A HREF="#wxwizardpagegetbitmap">wxWizardPage::GetBitmap</A><BR>
+<P>
+
+<HR>
+<A NAME="wxwizardpagewxwizardpage"></A>
+<H3>wxWizardPage::wxWizardPage</H3>
+<P>
+<B></B> <B>wxWizardPage</B>(<B><A HREF="wx_wxwizard.html#wxwizard">wxWizard</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap = wxNullBitmap</I>, <B>const wxChar </B><I>*resource = NULL</I>)<P>
+Constructor accepts an optional bitmap which will be used for this page
+instead of the default one for this wizard (note that all bitmaps used should
+be of the same size). Notice that no other parameters are needed because the
+wizard will resize and reposition the page anyhow.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The parent wizard</UL></UL>
+<P>
+<I>bitmap</I><UL><UL>
+The page-specific bitmap if different from the global one</UL></UL>
+<P>
+<I>resource</I><UL><UL>
+Load the page from the specified resource if non-NULL</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxwizardpagegetprev"></A>
+<H3>wxWizardPage::GetPrev</H3>
+<P>
+<B><A HREF="wx_wxwizardpage.html#wxwizardpage">wxWizardPage</A>*</B> </B> <B>GetPrev</B>() <B>const</B><P>
+Get the page which should be shown when the user chooses the <TT>"Back"</TT>
+button: if <TT>NULL</TT> is returned, this button will be disabled. The first
+page of the wizard will usually return <TT>NULL</TT> from here, but the others
+will not.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxwizardpage.html#wxwizardpagegetnext">GetNext</A><P>
+
+<HR>
+<A NAME="wxwizardpagegetnext"></A>
+<H3>wxWizardPage::GetNext</H3>
+<P>
+<B><A HREF="wx_wxwizardpage.html#wxwizardpage">wxWizardPage</A>*</B> </B> <B>GetNext</B>() <B>const</B><P>
+Get the page which should be shown when the user chooses the <TT>"Next"</TT>
+button: if <TT>NULL</TT> is returned, this button will be disabled. The last
+page of the wizard will usually return <TT>NULL</TT> from here, but the others
+will not.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxwizardpage.html#wxwizardpagegetprev">GetPrev</A><P>
+
+<HR>
+<A NAME="wxwizardpagegetbitmap"></A>
+<H3>wxWizardPage::GetBitmap</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A></B> </B> <B>GetBitmap</B>() <B>const</B><P>
+This method is called by wxWizard to get the bitmap to display alongside the
+page. By default, <TT>m_bitmap</TT> member variable which was set in the 
+<A HREF="wx_wxwizardpage.html#wxwizardpagewxwizardpage">constructor</A>.<P>
+If the bitmap was not explicitly set (i.e. if <TT>wxNullBitmap</TT> is returned),
+the default bitmap for the wizard should be used.<P>
+The only cases when you would want to override this function is if the page
+bitmap depends dynamically on the user choices, i.e. almost never.<P>
+
+</FONT></BODY></HTML>

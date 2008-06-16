@@ -622,9 +622,9 @@ bool MSWVariantToVariant(VARIANTARG& va, wxVariant& vx)
     case VT_I1:
     case VT_UI1:
         if (byRef)
-            vx = (char) *va.pbVal;
+            vx = (wxChar) *va.pbVal;
         else
-            vx = (char) va.bVal;
+            vx = (wxChar) va.bVal;
         return true;
 
     // 2 byte shorts
@@ -757,9 +757,9 @@ bool VariantToMSWVariant(const wxVariant& vx, VARIANTARG& va)
     case VT_I1:
     case VT_UI1:
         if (byRef)
-            *va.pbVal = (char) vx;
+            *va.pbVal = (wxChar) vx;
         else
-            va.bVal = (char) vx;
+            va.bVal = (wxChar) vx;
         return true;
 
     // 2 byte shorts
@@ -1706,7 +1706,6 @@ void wxActiveX::OnPaint(wxPaintEvent& event)
 {
     wxLogTrace(wxT(""),wxT("repainting activex win"));
     wxPaintDC dc(this);
-    dc.BeginDrawing();
     int w, h;
     GetSize(&w, &h);
     RECT posRect;
@@ -1731,7 +1730,6 @@ void wxActiveX::OnPaint(wxPaintEvent& event)
         dc.DrawRectangle(0, 0, w, h);
         dc.SetBrush(wxNullBrush);
     }
-    dc.EndDrawing();
 }
 
 
@@ -1803,12 +1801,15 @@ void wxActiveX::OnMouse(wxMouseEvent& event)
 
 bool wxActiveX::MSWTranslateMessage(WXMSG *msg){
 	
-	if (msg->message == WM_KEYDOWN){		
-		HRESULT result = m_oleInPlaceActiveObject->TranslateAccelerator(msg);
-		return (result == S_OK);
-	}
+    if (msg->message == WM_KEYDOWN) {
+        if ( m_oleInPlaceActiveObject.Ok() )
+        {
+            HRESULT result = m_oleInPlaceActiveObject->TranslateAccelerator(msg);
+            return (result == S_OK);
+        }
+    }
 	
-	return wxWindow::MSWTranslateMessage(msg);
+    return wxWindow::MSWTranslateMessage(msg);
 }
 
 long wxActiveX::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)

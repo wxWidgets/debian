@@ -1,0 +1,286 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxIndividualLayoutConstraint</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxindividuallayoutconstraint"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wximagelist.html#wximagelist"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxinitdialogevent.html#wxinitdialogevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxIndividualLayoutConstraint</H2>
+<P>
+Objects of this class are stored in the wxLayoutConstraint class
+as one of eight possible constraints that a window can be involved in.<P>
+Constraints are initially set to have the relationship wxUnconstrained,
+which means that their values should be calculated by looking at known constraints.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/layout.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_constraintsoverview.html#constraintsoverview">Overview and examples</A>,
+<A HREF="wx_wxlayoutconstraints.html#wxlayoutconstraints">wxLayoutConstraints</A>, <A HREF="wx_wxwindow.html#wxwindowsetconstraints">wxWindow::SetConstraints</A>.<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#edgesandrelationships">Edges and relationships</A><BR>
+<A HREF="#wxindividuallayoutconstraintctor">wxIndividualLayoutConstraint::wxIndividualLayoutConstraint</A><BR>
+<A HREF="#wxindividuallayoutconstraintabove">wxIndividualLayoutConstraint::Above</A><BR>
+<A HREF="#wxindividuallayoutconstraintabsolute">wxIndividualLayoutConstraint::Absolute</A><BR>
+<A HREF="#wxindividuallayoutconstraintasis">wxIndividualLayoutConstraint::AsIs</A><BR>
+<A HREF="#wxindividuallayoutconstraintbelow">wxIndividualLayoutConstraint::Below</A><BR>
+<A HREF="#wxindividuallayoutconstraintunconstrained">wxIndividualLayoutConstraint::Unconstrained</A><BR>
+<A HREF="#wxindividuallayoutconstraintleftof">wxIndividualLayoutConstraint::LeftOf</A><BR>
+<A HREF="#wxindividuallayoutconstraintpercentof">wxIndividualLayoutConstraint::PercentOf</A><BR>
+<A HREF="#wxindividuallayoutconstraintrightof">wxIndividualLayoutConstraint::RightOf</A><BR>
+<A HREF="#wxindividuallayoutconstraintsameas">wxIndividualLayoutConstraint::SameAs</A><BR>
+<A HREF="#wxindividuallayoutconstraintset">wxIndividualLayoutConstraint::Set</A><BR>
+<P>
+
+<HR>
+<A NAME="edgesandrelationships"></A>
+<H3>Edges and relationships</H3>
+<P>
+The <I>wxEdge</I> enumerated type specifies the type of edge or dimension of a window.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxLeft
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The left edge.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxTop
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The top edge.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxRight
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The right edge.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxBottom
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The bottom edge.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxCentreX
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The x-coordinate of the centre of the window.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxCentreY
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The y-coordinate of the centre of the window.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The <I>wxRelationship</I> enumerated type specifies the relationship that
+this edge or dimension has with another specified edge or dimension. Normally, the user
+doesn't use these directly because functions such as <I>Below</I> and <I>RightOf</I> are a convenience
+for using the more general <I>Set</I> function.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxUnconstrained
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The edge or dimension is unconstrained (the default for edges.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxAsIs
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The edge or dimension is to be taken from the current window position or size (the
+default for dimensions.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxAbove
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The edge should be above another edge.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxBelow
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The edge should be below another edge.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxLeftOf
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The edge should be to the left of another edge.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxRightOf
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The edge should be to the right of another edge.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxSameAs
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The edge or dimension should be the same as another edge or dimension.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxPercentOf
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The edge or dimension should be a percentage of another edge or dimension.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxAbsolute
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The edge or dimension should be a given absolute value.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="wxindividuallayoutconstraintctor"></A>
+<H3>wxIndividualLayoutConstraint::wxIndividualLayoutConstraint</H3>
+<P>
+<B>void</B> <B>wxIndividualLayoutConstraint</B>()<P>
+Constructor. Not used by the end-user.<P>
+
+<HR>
+<A NAME="wxindividuallayoutconstraintabove"></A>
+<H3>wxIndividualLayoutConstraint::Above</H3>
+<P>
+<B>void</B> <B>Above</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>otherWin</I>, <B>int</B><I> margin = 0</I>)<P>
+Constrains this edge to be above the given window, with an
+optional margin. Implicitly, this is relative to the top edge of the other window.<P>
+
+<HR>
+<A NAME="wxindividuallayoutconstraintabsolute"></A>
+<H3>wxIndividualLayoutConstraint::Absolute</H3>
+<P>
+<B>void</B> <B>Absolute</B>(<B>int</B><I> value</I>)<P>
+Constrains this edge or dimension to be the given absolute value.<P>
+
+<HR>
+<A NAME="wxindividuallayoutconstraintasis"></A>
+<H3>wxIndividualLayoutConstraint::AsIs</H3>
+<P>
+<B>void</B> <B>AsIs</B>()<P>
+Sets this edge or constraint to be whatever the window's value is
+at the moment. If either of the width and height constraints
+are <I>as is</I>, the window will not be resized, but moved instead.
+This is important when considering panel items which are intended
+to have a default size, such as a button, which may take its size
+from the size of the button label.<P>
+
+<HR>
+<A NAME="wxindividuallayoutconstraintbelow"></A>
+<H3>wxIndividualLayoutConstraint::Below</H3>
+<P>
+<B>void</B> <B>Below</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>otherWin</I>, <B>int</B><I> margin = 0</I>)<P>
+Constrains this edge to be below the given window, with an
+optional margin. Implicitly, this is relative to the bottom edge of the other window.<P>
+
+<HR>
+<A NAME="wxindividuallayoutconstraintunconstrained"></A>
+<H3>wxIndividualLayoutConstraint::Unconstrained</H3>
+<P>
+<B>void</B> <B>Unconstrained</B>()<P>
+Sets this edge or dimension to be unconstrained, that is, dependent on
+other edges and dimensions from which this value can be deduced.<P>
+
+<HR>
+<A NAME="wxindividuallayoutconstraintleftof"></A>
+<H3>wxIndividualLayoutConstraint::LeftOf</H3>
+<P>
+<B>void</B> <B>LeftOf</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>otherWin</I>, <B>int</B><I> margin = 0</I>)<P>
+Constrains this edge to be to the left of the given window, with an
+optional margin. Implicitly, this is relative to the left edge of the other window.<P>
+
+<HR>
+<A NAME="wxindividuallayoutconstraintpercentof"></A>
+<H3>wxIndividualLayoutConstraint::PercentOf</H3>
+<P>
+<B>void</B> <B>PercentOf</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>otherWin</I>, <B>wxEdge</B><I> edge</I>, <B>int</B><I> per</I>)<P>
+Constrains this edge or dimension to be to a percentage of the given window, with an
+optional margin.<P>
+
+<HR>
+<A NAME="wxindividuallayoutconstraintrightof"></A>
+<H3>wxIndividualLayoutConstraint::RightOf</H3>
+<P>
+<B>void</B> <B>RightOf</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>otherWin</I>, <B>int</B><I> margin = 0</I>)<P>
+Constrains this edge to be to the right of the given window, with an
+optional margin. Implicitly, this is relative to the right edge of the other window.<P>
+
+<HR>
+<A NAME="wxindividuallayoutconstraintsameas"></A>
+<H3>wxIndividualLayoutConstraint::SameAs</H3>
+<P>
+<B>void</B> <B>SameAs</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>otherWin</I>, <B>wxEdge</B><I> edge</I>, <B>int</B><I> margin = 0</I>)<P>
+Constrains this edge or dimension to be to the same as the edge of the given window, with an
+optional margin.<P>
+
+<HR>
+<A NAME="wxindividuallayoutconstraintset"></A>
+<H3>wxIndividualLayoutConstraint::Set</H3>
+<P>
+<B>void</B> <B>Set</B>(<B>wxRelationship</B><I> rel</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>otherWin</I>, <B>wxEdge</B><I> otherEdge</I>,
+ <B>int</B><I> value = 0</I>, <B>int</B><I> margin = 0</I>)<P>
+Sets the properties of the constraint. Normally called by one of the convenience
+functions such as Above, RightOf, SameAs.<P>
+
+
+</FONT></BODY></HTML>

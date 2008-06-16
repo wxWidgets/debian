@@ -1,0 +1,290 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxXmlResourceHandler</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxxmlresourcehandler"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxxmlresource.html#wxxmlresource"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxzipclassfactory.html#wxzipclassfactory"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxXmlResourceHandler</H2>
+<P>
+wxXmlResourceHandler is an abstract base class for resource handlers
+capable of creating a control from an XML node.<P>
+See <A HREF="wx_xrcoverview.html#xrcoverview">XML-based resource system overview</A> for details.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/xrc/xmlres.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxxmlresourcehandlerctor">wxXmlResourceHandler::wxXmlResourceHandler</A><BR>
+<A HREF="#wxxmlresourcehandlerdtor">wxXmlResourceHandler::~wxXmlResourceHandler</A><BR>
+<A HREF="#wxxmlresourcehandleraddstyle">wxXmlResourceHandler::AddStyle</A><BR>
+<A HREF="#wxxmlresourcehandleraddwindowstyles">wxXmlResourceHandler::AddWindowStyles</A><BR>
+<A HREF="#wxxmlresourcehandlercanhandle">wxXmlResourceHandler::CanHandle</A><BR>
+<A HREF="#wxxmlresourcehandlercreatechildren">wxXmlResourceHandler::CreateChildren</A><BR>
+<A HREF="#wxxmlresourcehandlercreatechildrenprivately">wxXmlResourceHandler::CreateChildrenPrivately</A><BR>
+<A HREF="#wxxmlresourcehandlercreateresfromnode">wxXmlResourceHandler::CreateResFromNode</A><BR>
+<A HREF="#wxxmlresourcehandlercreateresource">wxXmlResourceHandler::CreateResource</A><BR>
+<A HREF="#wxxmlresourcehandlerdocreateresource">wxXmlResourceHandler::DoCreateResource</A><BR>
+<A HREF="#wxxmlresourcehandlergetbitmap">wxXmlResourceHandler::GetBitmap</A><BR>
+<A HREF="#wxxmlresourcehandlergetbool">wxXmlResourceHandler::GetBool</A><BR>
+<A HREF="#wxxmlresourcehandlergetcolour">wxXmlResourceHandler::GetColour</A><BR>
+<A HREF="#wxxmlresourcehandlergetcurfilesystem">wxXmlResourceHandler::GetCurFileSystem</A><BR>
+<A HREF="#wxxmlresourcehandlergetdimension">wxXmlResourceHandler::GetDimension</A><BR>
+<A HREF="#wxxmlresourcehandlergetfont">wxXmlResourceHandler::GetFont</A><BR>
+<A HREF="#wxxmlresourcehandlergetid">wxXmlResourceHandler::GetID</A><BR>
+<A HREF="#wxxmlresourcehandlergeticon">wxXmlResourceHandler::GetIcon</A><BR>
+<A HREF="#wxxmlresourcehandlergetlong">wxXmlResourceHandler::GetLong</A><BR>
+<A HREF="#wxxmlresourcehandlergetname">wxXmlResourceHandler::GetName</A><BR>
+<A HREF="#wxxmlresourcehandlergetnodecontent">wxXmlResourceHandler::GetNodeContent</A><BR>
+<A HREF="#wxxmlresourcehandlergetparamnode">wxXmlResourceHandler::GetParamNode</A><BR>
+<A HREF="#wxxmlresourcehandlergetparamvalue">wxXmlResourceHandler::GetParamValue</A><BR>
+<A HREF="#wxxmlresourcehandlergetposition">wxXmlResourceHandler::GetPosition</A><BR>
+<A HREF="#wxxmlresourcehandlergetsize">wxXmlResourceHandler::GetSize</A><BR>
+<A HREF="#wxxmlresourcehandlergetstyle">wxXmlResourceHandler::GetStyle</A><BR>
+<A HREF="#wxxmlresourcehandlergettext">wxXmlResourceHandler::GetText</A><BR>
+<A HREF="#wxxmlresourcehandlerhasparam">wxXmlResourceHandler::HasParam</A><BR>
+<A HREF="#wxxmlresourcehandlerisofclass">wxXmlResourceHandler::IsOfClass</A><BR>
+<A HREF="#wxxmlresourcehandlersetparentresource">wxXmlResourceHandler::SetParentResource</A><BR>
+<A HREF="#wxxmlresourcehandlersetupwindow">wxXmlResourceHandler::SetupWindow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlerctor"></A>
+<H3>wxXmlResourceHandler::wxXmlResourceHandler</H3>
+<P>
+<B></B> <B>wxXmlResourceHandler</B>()<P>
+Default constructor.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlerdtor"></A>
+<H3>wxXmlResourceHandler::~wxXmlResourceHandler</H3>
+<P>
+<B></B> <B>~wxXmlResourceHandler</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandleraddstyle"></A>
+<H3>wxXmlResourceHandler::AddStyle</H3>
+<P>
+<B>void</B> <B>AddStyle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>int </B><I>value</I>)<P>
+Add a style flag (e.g. wxMB_DOCKABLE) to the list of flags
+understood by this handler.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandleraddwindowstyles"></A>
+<H3>wxXmlResourceHandler::AddWindowStyles</H3>
+<P>
+<B>void</B> <B>AddWindowStyles</B>()<P>
+Add styles common to all wxWindow-derived classes.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlercanhandle"></A>
+<H3>wxXmlResourceHandler::CanHandle</H3>
+<P>
+<B>bool</B> <B>CanHandle</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>)<P>
+Returns true if it understands this node and can create
+a resource from it, false otherwise.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+You must <B>not</B> call any wxXmlResourceHandler methods except 
+<A HREF="wx_wxxmlresourcehandler.html#wxxmlresourcehandlerisofclass">IsOfClass</A> from this method! The instance
+is not yet initialized with node data at the time CanHandle is called and it is only
+safe to operate on <I>node</I> directly or to call IsOfClass.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlercreatechildren"></A>
+<H3>wxXmlResourceHandler::CreateChildren</H3>
+<P>
+<B>void</B> <B>CreateChildren</B>(<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>parent</I>, <B>bool </B><I>this_hnd_only = false</I>)<P>
+Creates children.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlercreatechildrenprivately"></A>
+<H3>wxXmlResourceHandler::CreateChildrenPrivately</H3>
+<P>
+<B>void</B> <B>CreateChildrenPrivately</B>(<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>parent</I>, <B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>rootnode = NULL</I>)<P>
+Helper function.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlercreateresfromnode"></A>
+<H3>wxXmlResourceHandler::CreateResFromNode</H3>
+<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B> </B> <B>CreateResFromNode</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>parent</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>instance = NULL</I>)<P>
+Creates a resource from a node.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlercreateresource"></A>
+<H3>wxXmlResourceHandler::CreateResource</H3>
+<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B> </B> <B>CreateResource</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>parent</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>instance</I>)<P>
+Creates an object (menu, dialog, control, ...) from an XML node.
+Should check for validity. <I>parent</I> is a higher-level object (usually window, dialog or panel)
+that is often necessary to create the resource.
+If <B>instance</B> is non-NULL it should not create a new instance via 'new' but
+should rather use this one, and call its Create method.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlerdocreateresource"></A>
+<H3>wxXmlResourceHandler::DoCreateResource</H3>
+<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B> </B> <B>DoCreateResource</B>()<P>
+Called from CreateResource after variables
+were filled.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetbitmap"></A>
+<H3>wxXmlResourceHandler::GetBitmap</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A></B> </B> <B>GetBitmap</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param = wxT("bitmap")</I>, <B><A HREF="wx_wxsize.html#wxsize">wxSize</A> </B></B><I>size = wxDefaultSize</I>)<P>
+Gets a bitmap.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetbool"></A>
+<H3>wxXmlResourceHandler::GetBool</H3>
+<P>
+<B>bool</B> <B>GetBool</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param</I>, <B>bool </B><I>defaultv = false</I>)<P>
+Gets a bool flag (1, t, yes, on, true are true, everything else is false).<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetcolour"></A>
+<H3>wxXmlResourceHandler::GetColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetColour</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>default = wxNullColour</I>)<P>
+Gets colour in HTML syntax (#RRGGBB).<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetcurfilesystem"></A>
+<H3>wxXmlResourceHandler::GetCurFileSystem</H3>
+<P>
+<B><A HREF="wx_wxfilesystem.html#wxfilesystem">wxFileSystem</A>&</B> </B> <B>GetCurFileSystem</B>()<P>
+Returns the current file system.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetdimension"></A>
+<H3>wxXmlResourceHandler::GetDimension</H3>
+<P>
+<B>wxCoord</B> <B>GetDimension</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param</I>, <B>wxCoord </B><I>defaultv = 0</I>)<P>
+Gets a dimension (may be in dialog units).<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetfont"></A>
+<H3>wxXmlResourceHandler::GetFont</H3>
+<P>
+<B><A HREF="wx_wxfont.html#wxfont">wxFont</A></B> </B> <B>GetFont</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param = wxT("font")</I>)<P>
+Gets a font.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetid"></A>
+<H3>wxXmlResourceHandler::GetID</H3>
+<P>
+<B>int</B> <B>GetID</B>()<P>
+Returns the XRCID.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergeticon"></A>
+<H3>wxXmlResourceHandler::GetIcon</H3>
+<P>
+<B><A HREF="wx_wxicon.html#wxicon">wxIcon</A></B> </B> <B>GetIcon</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param = wxT("icon")</I>, <B><A HREF="wx_wxsize.html#wxsize">wxSize</A> </B></B><I>size = wxDefaultSize</I>)<P>
+Returns an icon.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetlong"></A>
+<H3>wxXmlResourceHandler::GetLong</H3>
+<P>
+<B>long</B> <B>GetLong</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param</I>, <B>long </B><I>defaultv = 0</I>)<P>
+Gets the integer value from the parameter.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetname"></A>
+<H3>wxXmlResourceHandler::GetName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetName</B>()<P>
+Returns the resource name.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetnodecontent"></A>
+<H3>wxXmlResourceHandler::GetNodeContent</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetNodeContent</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>)<P>
+Gets node content from wxXML_ENTITY_NODE.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetparamnode"></A>
+<H3>wxXmlResourceHandler::GetParamNode</H3>
+<P>
+<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>*</B> </B> <B>GetParamNode</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param</I>)<P>
+Finds the node or returns NULL.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetparamvalue"></A>
+<H3>wxXmlResourceHandler::GetParamValue</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetParamValue</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param</I>)<P>
+Finds the parameter value or returns the empty string.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetposition"></A>
+<H3>wxXmlResourceHandler::GetPosition</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetPosition</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param = wxT("pos")</I>)<P>
+Gets the position (may be in dialog units).<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetsize"></A>
+<H3>wxXmlResourceHandler::GetSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetSize</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param = wxT("size")</I>)<P>
+Gets the size (may be in dialog units).<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergetstyle"></A>
+<H3>wxXmlResourceHandler::GetStyle</H3>
+<P>
+<B>int</B> <B>GetStyle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param = wxT("style")</I>, <B>int </B><I>defaults = 0</I>)<P>
+Gets style flags from text in form "flag | flag2| flag3 |..."
+Only understands flags added with AddStyle.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlergettext"></A>
+<H3>wxXmlResourceHandler::GetText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param</I>)<P>
+Gets text from param and does some conversions:<P>
+<UL>
+
+<LI> replaces \n, \r, \t by respective characters (according to C syntax)
+<LI> replaces <TT>$</TT> by <TT>&amp;</TT> and <TT>$$</TT> by <TT>$</TT> (needed for <TT>_File</TT> to <TT>&amp;File</TT>
+translation because of XML syntax)
+<LI> calls wxGetTranslations (unless disabled in wxXmlResource)
+</UL>
+<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlerhasparam"></A>
+<H3>wxXmlResourceHandler::HasParam</H3>
+<P>
+<B>bool</B> <B>HasParam</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>param</I>)<P>
+Check to see if a parameter exists.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlerisofclass"></A>
+<H3>wxXmlResourceHandler::IsOfClass</H3>
+<P>
+<B>bool</B> <B>IsOfClass</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>classname</I>)<P>
+Convenience function. Returns true if the node has a property class equal to classname,
+e.g. &lt;object class="wxDialog"&gt;.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlersetparentresource"></A>
+<H3>wxXmlResourceHandler::SetParentResource</H3>
+<P>
+<B>void</B> <B>SetParentResource</B>(<B><A HREF="wx_wxxmlresource.html#wxxmlresource">wxXmlResource</A>* </B></B><I>res</I>)<P>
+Sets the parent resource.<P>
+
+<HR>
+<A NAME="wxxmlresourcehandlersetupwindow"></A>
+<H3>wxXmlResourceHandler::SetupWindow</H3>
+<P>
+<B>void</B> <B>SetupWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>wnd</I>)<P>
+Sets common window options.<P>
+
+</FONT></BODY></HTML>

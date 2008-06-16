@@ -1,0 +1,213 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCaret</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcaret"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcalendarevent.html#wxcalendarevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcheckbox.html#wxcheckbox"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCaret</H2>
+<P>
+A caret is a blinking cursor showing the position where the typed text will
+appear. The text controls usually have a caret but wxCaret class also allows
+to use a caret in other windows.<P>
+Currently, the caret appears as a rectangle of the given size. In the future,
+it will be possible to specify a bitmap to be used for the caret shape.<P>
+A caret is always associated with a window and the current caret can be
+retrieved using <A HREF="wx_wxwindow.html#wxwindowgetcaret">wxWindow::GetCaret</A>. The same caret
+can't be reused in two different windows.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/caret.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxcaretwxcaret">wxCaret::wxCaret</A><BR>
+<A HREF="#wxcaretcreate">wxCaret::Create</A><BR>
+<A HREF="#wxcaretgetblinktime">wxCaret::GetBlinkTime</A><BR>
+<A HREF="#wxcaretgetposition">wxCaret::GetPosition</A><BR>
+<A HREF="#wxcaretgetsize">wxCaret::GetSize</A><BR>
+<A HREF="#wxcaretgetwindow">wxCaret::GetWindow</A><BR>
+<A HREF="#wxcarethide">wxCaret::Hide</A><BR>
+<A HREF="#wxcaretisok">wxCaret::IsOk</A><BR>
+<A HREF="#wxcaretisvisible">wxCaret::IsVisible</A><BR>
+<A HREF="#wxcaretmove">wxCaret::Move</A><BR>
+<A HREF="#wxcaretsetblinktime">wxCaret::SetBlinkTime</A><BR>
+<A HREF="#wxcaretsetsize">wxCaret::SetSize</A><BR>
+<A HREF="#wxcaretshow">wxCaret::Show</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcaretwxcaret"></A>
+<H3>wxCaret::wxCaret</H3>
+<P>
+<B></B> <B>wxCaret</B>()<P>
+Default constructor: you must use one of Create() functions later.<P>
+<B></B> <B>wxCaret</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>, <B>int </B><I>width</I>, <B>int </B><I>height</I>)<P>
+<B></B> <B>wxCaret</B>(<B>wxWindowBase* </B><I>window</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+Create the caret of given (in pixels) width and height and associates it
+with the given window.<P>
+
+<HR>
+<A NAME="wxcaretcreate"></A>
+<H3>wxCaret::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>wxWindowBase* </B><I>window</I>, <B>int </B><I>width</I>, <B>int </B><I>height</I>)<P>
+<B>bool</B> <B>Create</B>(<B>wxWindowBase* </B><I>window</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+Create the caret of given (in pixels) width and height and associates it
+with the given window (same as constructor).<P>
+
+<HR>
+<A NAME="wxcaretgetblinktime"></A>
+<H3>wxCaret::GetBlinkTime</H3>
+<P>
+<B>static int</B> <B>GetBlinkTime</B>()<P>
+Returns the blink time which is measured in milliseconds and is the time elapsed
+between 2 inversions of the caret (blink time of the caret is the same
+for all carets, so this functions is static).<P>
+
+<HR>
+<A NAME="wxcaretgetposition"></A>
+<H3>wxCaret::GetPosition</H3>
+<P>
+<B>void</B> <B>GetPosition</B>(<B>int* </B><I>x</I>, <B>int* </B><I>y</I>) <B>const</B><P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetPosition</B>() <B>const</B><P>
+Get the caret position (in pixels).<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there are two methods instead of a single overloaded
+method:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetPosition()</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a Wx::Point
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetPositionXY()</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a 2-element list
+ <TT>( x, y )</TT>
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxcaretgetsize"></A>
+<H3>wxCaret::GetSize</H3>
+<P>
+<B>void</B> <B>GetSize</B>(<B>int* </B><I>width</I>, <B>int* </B><I>height</I>) <B>const</B><P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetSize</B>() <B>const</B><P>
+Get the caret size.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there are two methods instead of a single overloaded
+method:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetSize()</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a Wx::Size
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetSizeWH()</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a 2-element list
+ <TT>( width, height )</TT>
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxcaretgetwindow"></A>
+<H3>wxCaret::GetWindow</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetWindow</B>() <B>const</B><P>
+Get the window the caret is associated with.<P>
+
+<HR>
+<A NAME="wxcarethide"></A>
+<H3>wxCaret::Hide</H3>
+<P>
+<B>void</B> <B>Hide</B>()<P>
+Same as <A HREF="wx_wxcaret.html#wxcaretshow">wxCaret::Show(false)</A>.<P>
+
+<HR>
+<A NAME="wxcaretisok"></A>
+<H3>wxCaret::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if the caret was created successfully.<P>
+
+<HR>
+<A NAME="wxcaretisvisible"></A>
+<H3>wxCaret::IsVisible</H3>
+<P>
+<B>bool</B> <B>IsVisible</B>() <B>const</B><P>
+Returns true if the caret is visible and false if it is permanently
+hidden (if it is is blinking and not shown currently but will be after the
+next blink, this method still returns true).<P>
+
+<HR>
+<A NAME="wxcaretmove"></A>
+<H3>wxCaret::Move</H3>
+<P>
+<B>void</B> <B>Move</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>)<P>
+<B>void</B> <B>Move</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>)<P>
+Move the caret to given position (in logical coordinates).<P>
+
+<HR>
+<A NAME="wxcaretsetblinktime"></A>
+<H3>wxCaret::SetBlinkTime</H3>
+<P>
+<B>static void</B> <B>SetBlinkTime</B>(<B>int </B><I>milliseconds</I>)<P>
+Sets the blink time for all the carets.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Under Windows, this function will change the blink time for <B>all</B> carets
+permanently (until the next time it is called), even for the carets in other
+applications.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcaret.html#wxcaretgetblinktime">GetBlinkTime</A><P>
+
+<HR>
+<A NAME="wxcaretsetsize"></A>
+<H3>wxCaret::SetSize</H3>
+<P>
+<B>void</B> <B>SetSize</B>(<B>int </B><I>width</I>, <B>int </B><I>height</I>)<P>
+<B>void</B> <B>SetSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+Changes the size of the caret.<P>
+
+<HR>
+<A NAME="wxcaretshow"></A>
+<H3>wxCaret::Show</H3>
+<P>
+<B>void</B> <B>Show</B>(<B>bool </B><I>show = true</I>)<P>
+Shows or hides the caret. Notice that if the caret was hidden N times, it
+must be shown N times as well to reappear on the screen.<P>
+
+</FONT></BODY></HTML>

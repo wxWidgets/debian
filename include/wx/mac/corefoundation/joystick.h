@@ -4,17 +4,13 @@
 // Author:      Ryan Norton
 // Modified by:
 // Created:     2/13/2005
-// RCS-ID:      $Id: joystick.h,v 1.1 2005/02/14 09:38:36 RN Exp $
+// RCS-ID:      $Id: joystick.h 36284 2005-11-29 12:50:13Z MR $
 // Copyright:   (c) Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_JOYSTICK_H_
 #define _WX_JOYSTICK_H_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "joystick.h"
-#endif
 
 #include "wx/event.h"
 
@@ -46,7 +42,7 @@ class WXDLLEXPORT wxJoystick: public wxObject
     ////////////////////////////////////////////////////////////////////////////
 
     bool IsOk() const; // Checks that the joystick is functioning
-    int GetNumberJoysticks() const ;
+    static int GetNumberJoysticks() ;
     int GetManufacturerId() const ;
     int GetProductId() const ;
     wxString GetProductName() const ;

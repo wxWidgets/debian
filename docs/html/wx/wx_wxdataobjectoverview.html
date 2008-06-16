@@ -1,0 +1,80 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataObject overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataobjectoverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdndoverview.html#wxdndoverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_odbcoverview.html#odbcoverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataObject overview</H2>
+<P>
+Classes: <A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A>,
+ <A HREF="wx_wxclipboard.html#wxclipboard">wxClipboard</A>,
+ <A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A>,
+ <A HREF="wx_wxdropsource.html#wxdropsource">wxDropSource</A>,
+ <A HREF="wx_wxdroptarget.html#wxdroptarget">wxDropTarget</A><P>
+See also: <A HREF="wx_wxdndoverview.html#wxdndoverview">Drag and drop overview</A> and <A HREF="wx_samples.html#samplednd">DnD sample</A><P>
+This overview discusses data transfer through clipboard or drag and drop. In
+wxWidgets, these two ways to transfer data (either between different
+applications or inside one and the same) are very similar which allows to
+implement both of them using almost the same code - or, in other
+words, if you implement drag and drop support for your application, you get
+clipboard support for free and vice versa.<P>
+At the heart of both clipboard and drag and drop operations lies the 
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> class. The objects of this class (or, to
+be precise, classes derived from it) represent the data which is being carried
+by the mouse during drag and drop operation or copied to or pasted from the
+clipboard. wxDataObject is a "smart" piece of data because it knows which
+formats it supports (see GetFormatCount and GetAllFormats) and knows how to
+render itself in any of them (see GetDataHere). It can also receive its value
+from the outside in a format it supports if it implements the SetData method.
+Please see the documentation of this class for more details.<P>
+Both clipboard and drag and drop operations have two sides: the source and
+target, the data provider and the data receiver. These which may be in the same
+application and even the same window when, for example, you drag some text from
+one position to another in a word processor. Let us describe what each of them
+should do.<P>
+<A HREF="#wxdataobjectsource">The data provider (source) duties</A><BR>
+<A HREF="#wxdataobjecttarget">The data receiver (target) duties</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataobjectsource"></A>
+<H3>The data provider (source) duties</H3>
+<P>
+The data provider is responsible for creating a 
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> containing the data to be
+transferred. Then it should either pass it to the clipboard using 
+<A HREF="wx_wxclipboard.html#wxclipboardsetdata">SetData</A> function or to 
+<A HREF="wx_wxdropsource.html#wxdropsource">wxDropSource</A> and call 
+<A HREF="wx_wxdropsource.html#wxdropsourcedodragdrop">DoDragDrop</A> function.<P>
+The only (but important) difference is that the object for the clipboard
+transfer must always be created on the heap (i.e. using <TT>new</TT>) and it will
+be freed by the clipboard when it is no longer needed (indeed, it is not known
+in advance when, if ever, the data will be pasted from the clipboard). On the
+other hand, the object for drag and drop operation must only exist while 
+<A HREF="wx_wxdropsource.html#wxdropsourcedodragdrop">DoDragDrop</A> executes and may be safely deleted
+afterwards and so can be created either on heap or on stack (i.e. as a local
+variable).<P>
+Another small difference is that in the case of clipboard operation, the
+application usually knows in advance whether it copies or cuts (i.e. copies and
+deletes) data - in fact, this usually depends on which menu item the user
+chose. But for drag and drop it can only know it after 
+<A HREF="wx_wxdropsource.html#wxdropsourcedodragdrop">DoDragDrop</A> returns (from its return value).<P>
+
+<HR>
+<A NAME="wxdataobjecttarget"></A>
+<H3>The data receiver (target) duties</H3>
+<P>
+To receive (paste in usual terminology) data from the clipboard, you should
+create a <A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> derived class which supports the
+data formats you need and pass it as argument to 
+<A HREF="wx_wxclipboard.html#wxclipboardgetdata">wxClipboard::GetData</A>. If it returns <TT>false</TT>,
+no data in (any of) the supported format(s) is available. If it returns <TT>
+true</TT>, the data has been successfully transferred to wxDataObject.<P>
+For drag and drop case, the <A HREF="wx_wxdroptarget.html#wxdroptargetondata">wxDropTarget::OnData</A> 
+virtual function will be called when a data object is dropped, from which the
+data itself may be requested by calling 
+<A HREF="wx_wxdroptarget.html#wxdroptargetwxdroptarget">wxDropTarget::GetData</A> method which fills
+the data object.<P>
+
+</FONT></BODY></HTML>

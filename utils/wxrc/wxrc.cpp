@@ -3,15 +3,10 @@
 // Purpose:     XML resource compiler
 // Author:      Vaclav Slavik, Eduardo Marques <edrdo@netcabo.pt>
 // Created:     2000/03/05
-// RCS-ID:      $Id: wxrc.cpp,v 1.46 2005/05/31 09:28:59 JS Exp $
+// RCS-ID:      $Id: wxrc.cpp 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation
-    #pragma interface
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -32,7 +27,10 @@
 #include "wx/filename.h"
 #include "wx/wfstream.h"
 #include "wx/utils.h"
+#include "wx/hashset.h"
+#include "wx/mimetype.h"
 
+WX_DECLARE_HASH_SET(wxString, wxStringHash, wxStringEqual, StringSet);
 
 class XRCWidgetData
 {
@@ -48,13 +46,14 @@ private:
 
 #include "wx/arrimpl.cpp"
 WX_DECLARE_OBJARRAY(XRCWidgetData,ArrayOfXRCWidgetData);
-WX_DEFINE_OBJARRAY(ArrayOfXRCWidgetData);
+WX_DEFINE_OBJARRAY(ArrayOfXRCWidgetData)
 
 class XRCWndClassData
 {
 private:
     wxString m_className;
     wxString m_parentClassName;
+    StringSet m_ancestorClassNames;
     ArrayOfXRCWidgetData m_wdata;
 
     void BrowseXmlNode(wxXmlNode* node)
@@ -78,9 +77,31 @@ private:
     }
 
 public:
-    XRCWndClassData(const wxString& className,const wxString& parentClassName, const wxXmlNode* node) :
+    XRCWndClassData(const wxString& className,
+                    const wxString& parentClassName,
+                    const wxXmlNode* node) :
         m_className(className) , m_parentClassName(parentClassName)
     {
+        if ( className == _T("wxMenu") )
+        {
+            m_ancestorClassNames.insert(_T("wxMenu"));
+            m_ancestorClassNames.insert(_T("wxMenuBar"));
+        }
+        else if ( className == _T("wxMDIChildFrame") )
+        {
+            m_ancestorClassNames.insert(_T("wxMDIParentFrame"));
+        }
+        else if( className == _T("wxMenuBar") ||
+                    className == _T("wxStatusBar") ||
+                        className == _T("wxToolBar") )
+        {
+            m_ancestorClassNames.insert(_T("wxFrame"));
+        }
+        else
+        {
+            m_ancestorClassNames.insert(_T("wxWindow"));
+        }
+
         BrowseXmlNode(node->GetChildren());
     }
 
@@ -118,8 +139,8 @@ public:
                 _T(" ") + w.GetClass() + _T("* ") + w.GetName()
                 + _T(";\n"));
         }
-        file.Write(_T("\nprivate:\n void InitWidgetsFromXRC(){\n")
-                   _T("  wxXmlResource::Get()->LoadObject(this,NULL,_T(\"")
+        file.Write(_T("\nprivate:\n void InitWidgetsFromXRC(wxWindow *parent){\n")
+                   _T("  wxXmlResource::Get()->LoadObject(this,parent,_T(\"")
                    +  m_className
                    +  _T("\"), _T(\"")
                    +  m_parentClassName
@@ -135,25 +156,46 @@ public:
                         + w.GetName()
                         + _T("\",")
                         + w.GetClass()
-                        + _T(");\n")
-                );
+                        + _T(");\n"));
         }
         file.Write(_T(" }\n"));
 
-        file.Write(
-            _T("public:\n")
-            + m_className
-            + _T("::")
-            + m_className
-            + _T("(){\n")
-            + _T("  InitWidgetsFromXRC();\n")
-              _T(" }\n")
-              _T("};\n")
-        );
-    };
+        file.Write( _T("public:\n"));
+
+        if ( m_ancestorClassNames.size() == 1 )
+        {
+            file.Write
+                 (
+                    m_className +
+                    _T("(") +
+                        *m_ancestorClassNames.begin() +
+                        _T(" *parent=NULL){\n") +
+                    _T("  InitWidgetsFromXRC((wxWindow *)parent);\n")
+                    _T(" }\n")
+                    _T("};\n")
+                 );
+        }
+        else
+        {
+            file.Write(m_className + _T("(){\n") +
+                       _T("  InitWidgetsFromXRC(NULL);\n")
+                       _T(" }\n")
+                       _T("};\n"));
+
+            for ( StringSet::const_iterator it = m_ancestorClassNames.begin();
+                  it != m_ancestorClassNames.end();
+                  ++it )
+            {
+                file.Write(m_className + _T("(") + *it + _T(" *parent){\n") +
+                            _T("  InitWidgetsFromXRC((wxWindow *)parent);\n")
+                            _T(" }\n")
+                            _T("};\n"));
+            }
+        }
+    }
 };
 WX_DECLARE_OBJARRAY(XRCWndClassData,ArrayOfXRCWndClassData);
-WX_DEFINE_OBJARRAY(ArrayOfXRCWndClassData);
+WX_DEFINE_OBJARRAY(ArrayOfXRCWndClassData)
 
 
 class XmlResApp : public wxAppConsole
@@ -386,32 +428,40 @@ wxArrayString XmlResApp::PrepareTempFiles()
 // Does 'node' contain filename information at all?
 static bool NodeContainsFilename(wxXmlNode *node)
 {
-   // Any bitmaps:
-   if (node->GetName() == _T("bitmap"))
+   const wxString name = node->GetName();
+
+   // Any bitmaps (bitmap2 is used for disabled toolbar buttons):
+   if ( name == _T("bitmap") || name == _T("bitmap2") )
        return true;
 
-   if (node->GetName() == _T("icon"))
-       return true;
-
-   // URLs in wxHtmlWindow:
-   if (node->GetName() == _T("url"))
+   if ( name == _T("icon") )
        return true;
 
    // wxBitmapButton:
    wxXmlNode *parent = node->GetParent();
    if (parent != NULL &&
        parent->GetPropVal(_T("class"), _T("")) == _T("wxBitmapButton") &&
-       (node->GetName() == _T("focus") ||
-        node->GetName() == _T("disabled") ||
-        node->GetName() == _T("selected")))
+       (name == _T("focus") ||
+        name == _T("disabled") ||
+        name == _T("hover") ||
+        name == _T("selected")))
        return true;
 
    // wxBitmap or wxIcon toplevel resources:
-   if (node->GetName() == _T("object"))
+   if ( name == _T("object") )
    {
        wxString klass = node->GetPropVal(_T("class"), wxEmptyString);
        if (klass == _T("wxBitmap") || klass == _T("wxIcon"))
            return true;
+   }
+
+   // URLs in wxHtmlWindow:
+   if ( name == _T("url") &&
+        parent != NULL &&
+        parent->GetPropVal(_T("class"), _T("")) == _T("wxHtmlWindow") )
+   {
+       // FIXME: this is wrong for e.g. http:// URLs
+       return true;
    }
 
    return false;
@@ -507,8 +557,9 @@ static wxString FileToCppArray(wxString filename, int num)
     wxFFile file(filename, wxT("rb"));
     wxFileOffset offset = file.Length();
     wxASSERT_MSG( offset >= 0 , wxT("Invalid file length") );
-    wxASSERT_MSG( offset == wxFileOffset(size_t(offset)) , wxT("Huge file not supported") );
-    size_t lng = (size_t)offset;
+
+    const size_t lng = wx_truncate_cast(size_t, offset);
+    wxASSERT_MSG( !(lng - offset), wxT("Huge file not supported") );
 
     snum.Printf(_T("%i"), num);
     output.Printf(_T("static size_t xml_res_size_") + snum + _T(" = %i;\n"), lng);
@@ -563,6 +614,14 @@ _T("#include <wx/filesys.h>\n")
 _T("#include <wx/fs_mem.h>\n")
 _T("#include <wx/xrc/xmlres.h>\n")
 _T("#include <wx/xrc/xh_all.h>\n")
+_T("\n")
+_T("#if wxCHECK_VERSION(2,8,5) && wxABI_VERSION >= 20805\n")
+_T("    #define XRC_ADD_FILE(name, data, size, mime) \\\n")
+_T("        wxMemoryFSHandler::AddFileWithMimeType(name, data, size, mime)\n")
+_T("#else\n")
+_T("    #define XRC_ADD_FILE(name, data, size, mime) \\\n")
+_T("        wxMemoryFSHandler::AddFile(name, data, size)\n")
+_T("#endif\n")
 _T("\n"));
 
     for (i = 0; i < flist.Count(); i++)
@@ -587,8 +646,26 @@ _T("\n"));
     for (i = 0; i < flist.Count(); i++)
     {
         wxString s;
-        s.Printf(_T("    wxMemoryFSHandler::AddFile(wxT(\"XRC_resource/") + flist[i] +
-                 _T("\"), xml_res_file_%i, xml_res_size_%i);\n"), i, i);
+
+        wxString mime;
+        wxString ext = wxFileName(flist[i]).GetExt();
+        if ( ext.Lower() == _T("xrc") )
+            mime = _T("text/xml");
+#if wxUSE_MIMETYPE
+        else
+        {
+            wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(ext);
+            if ( ft )
+            {
+                ft->GetMimeType(&mime);
+                delete ft;
+            }
+        }
+#endif // wxUSE_MIMETYPE
+
+        s.Printf(_T("    XRC_ADD_FILE(wxT(\"XRC_resource/") + flist[i] +
+                 _T("\"), xml_res_file_%i, xml_res_size_%i, _T(\"%s\"));\n"),
+                 i, i, mime.c_str());
         file.Write(s);
     }
 
@@ -633,8 +710,9 @@ static wxString FileToPythonArray(wxString filename, int num)
     wxFFile file(filename, wxT("rb"));
     wxFileOffset offset = file.Length();
     wxASSERT_MSG( offset >= 0 , wxT("Invalid file length") );
-    wxASSERT_MSG( offset == wxFileOffset(size_t(offset)) , wxT("Huge file not supported") );
-    size_t lng = (size_t)offset;
+
+    const size_t lng = wx_truncate_cast(size_t, offset);
+    wxASSERT_MSG( !(offset - lng), wxT("Huge file not supported") );
 
     snum.Printf(_T("%i"), num);
     output = _T("    xml_res_file_") + snum + _T(" = '''\\\n");

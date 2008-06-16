@@ -1,0 +1,100 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDirTraverser</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdirtraverser"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdirpickerctrl.html#wxdirpickerctrl"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdisplay.html#wxdisplay"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDirTraverser</H2>
+<P>
+wxDirTraverser is an abstract interface which must be implemented by objects
+passed to <A HREF="wx_wxdir.html#wxdirtraverse">Traverse</A> function.<P>
+Example of use (this works almost like <A HREF="wx_wxdir.html#wxdirgetallfiles">GetAllFiles</A>):<P>
+<PRE>
+    class wxDirTraverserSimple : public wxDirTraverser
+    {
+    public:
+        wxDirTraverserSimple(wxArrayString& files) : m_files(files) { }
+
+        virtual wxDirTraverseResult OnFile(const wxString& filename)
+        {
+            m_files.Add(filename);
+            return wxDIR_CONTINUE;
+        }
+
+        virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname))
+        {
+            return wxDIR_CONTINUE;
+        }
+
+    private:
+        wxArrayString& m_files;
+    };
+
+    // get the names of all files in the array
+    wxArrayString files;
+    wxDirTraverserSimple traverser(files);
+
+    wxDir dir(dirname);
+    dir.Traverse(traverser);
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+The elements of <TT>wxDirTraverseResult</TT> are the possible return values of the
+callback functions:<P>
+<FONT SIZE=2>
+<PRE>
+enum wxDirTraverseResult
+{
+    wxDIR_IGNORE = -1,      // ignore this directory but continue with others
+    wxDIR_STOP,             // stop traversing
+    wxDIR_CONTINUE          // continue into this directory
+};
+</PRE>
+</FONT><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dir.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxdirtraverserondir">wxDirTraverser::OnDir</A><BR>
+<A HREF="#wxdirtraverseronfile">wxDirTraverser::OnFile</A><BR>
+<A HREF="#wxopenerrortraverseronopenerror">wxDirTraverser::OnOpenError</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdirtraverserondir"></A>
+<H3>wxDirTraverser::OnDir</H3>
+<P>
+<B>virtual wxDirTraverseResult</B> <B>OnDir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dirname</I>)<P>
+This function is called for each directory. It may return <TT>wxSIR_STOP</TT> 
+to abort traversing completely, <TT>wxDIR_IGNORE</TT> to skip this directory but
+continue with others or <TT>wxDIR_CONTINUE</TT> to enumerate all files and
+subdirectories in this directory.<P>
+This is a pure virtual function and must be implemented in the derived class.<P>
+
+
+<HR>
+<A NAME="wxdirtraverseronfile"></A>
+<H3>wxDirTraverser::OnFile</H3>
+<P>
+<B>virtual wxDirTraverseResult</B> <B>OnFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+This function is called for each file. It may return <TT>wxDIR_STOP</TT> to abort
+traversing (for example, if the file being searched is found) or 
+<TT>wxDIR_CONTINUE</TT> to proceed.<P>
+This is a pure virtual function and must be implemented in the derived class.<P>
+
+
+<HR>
+<A NAME="wxopenerrortraverseronopenerror"></A>
+<H3>wxDirTraverser::OnOpenError</H3>
+<P>
+<B>virtual wxDirTraverseResult</B> <B>OnOpenError</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>openerrorname</I>)<P>
+This function is called for each directory which we failed to open for
+enumerating. It may return <TT>wxSIR_STOP</TT> to abort traversing completely,
+<TT>wxDIR_IGNORE</TT> to skip this directory but continue with others or 
+<TT>wxDIR_CONTINUE</TT> to retry opening this directory once again.<P>
+The base class version always returns <TT>wxDIR_IGNORE</TT>.<P>
+
+
+</FONT></BODY></HTML>

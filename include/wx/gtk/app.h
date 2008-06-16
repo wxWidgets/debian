@@ -2,21 +2,13 @@
 // Name:        wx/gtk/app.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: app.h,v 1.56 2005/08/02 22:57:51 MW Exp $
+// Id:          $Id: app.h 43879 2006-12-09 17:46:20Z PC $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __GTKAPPH__
-#define __GTKAPPH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
-
-#include "wx/frame.h"
-#include "wx/icon.h"
-#include "wx/strconv.h"
+#ifndef _WX_GTK_APP_H_
+#define _WX_GTK_APP_H_
 
 //-----------------------------------------------------------------------------
 // classes
@@ -51,15 +43,18 @@ public:
     static bool InitialzeVisual();
 
 #ifdef __WXDEBUG__
-    virtual void OnAssert(const wxChar *file, int line, const wxChar *cond, const wxChar *msg);
+    virtual void OnAssertFailure(const wxChar *file,
+                                 int line,
+                                 const wxChar *func,
+                                 const wxChar *cond,
+                                 const wxChar *msg);
 
     bool IsInAssert() const { return m_isInAssert; }
 #endif // __WXDEBUG__
 
-    gint            m_idleTag;
-    void RemoveIdleTag();
-    
-    unsigned char  *m_colorCube;
+    guint m_idleTag;
+    // temporarily disable idle events
+    void SuspendIdleCallback();
 
     // Used by the the wxGLApp and wxGLCanvas class for GL-based X visual
     // selection.
@@ -79,4 +74,4 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-#endif // __GTKAPPH__
+#endif // _WX_GTK_APP_H_

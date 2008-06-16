@@ -1,22 +1,18 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        gauge.cpp
+// Name:        src/gtk/gauge.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: gauge.cpp,v 1.30 2004/06/24 20:04:01 RD Exp $
+// Id:          $Id: gauge.cpp 42816 2006-10-31 08:50:17Z RD $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "gauge.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
-#include "wx/gauge.h"
-
 #if wxUSE_GAUGE
+
+#include "wx/gauge.h"
 
 #include <gtk/gtk.h>
 
@@ -35,13 +31,13 @@ bool wxGauge::Create( wxWindow *parent,
                       const wxValidator& validator,
                       const wxString& name )
 {
-    m_needParent = TRUE;
+    m_needParent = true;
 
     if (!PreCreation( parent, pos, size ) ||
         !CreateBase( parent, id, pos, size, style, validator, name ))
     {
         wxFAIL_MSG( wxT("wxGauge creation failed") );
-        return FALSE;
+        return false;
     }
 
     m_rangeMax = range;
@@ -53,12 +49,15 @@ bool wxGauge::Create( wxWindow *parent,
                                           GTK_PROGRESS_BOTTOM_TO_TOP );
     }
 
+    // when using the gauge in indeterminate mode, we need this:
+    gtk_progress_bar_set_pulse_step(GTK_PROGRESS_BAR (m_widget), 0.05);
+
     m_parent->DoAddChild( this );
 
     PostCreation(size);
-    SetBestSize(size);
-    
-    return TRUE;
+    SetInitialSize(size);
+
+    return true;
 }
 
 void wxGauge::DoSetGauge()
@@ -66,8 +65,8 @@ void wxGauge::DoSetGauge()
     wxASSERT_MSG( 0 <= m_gaugePos && m_gaugePos <= m_rangeMax,
                   _T("invalid gauge position in DoSetGauge()") );
 
-    gtk_progress_bar_update( GTK_PROGRESS_BAR(m_widget),
-                             m_rangeMax ? ((float)m_gaugePos)/m_rangeMax : 0.);
+    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (m_widget),
+                                   m_rangeMax ? ((double)m_gaugePos)/m_rangeMax : 0.0);
 }
 
 wxSize wxGauge::DoGetBestSize() const
@@ -109,6 +108,11 @@ int wxGauge::GetValue() const
     return m_gaugePos;
 }
 
+void wxGauge::Pulse()
+{
+    gtk_progress_bar_pulse(GTK_PROGRESS_BAR (m_widget));
+}
+
 wxVisualAttributes wxGauge::GetDefaultAttributes() const
 {
     // Visible gauge colours use a different colour state
@@ -127,4 +131,3 @@ wxGauge::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
 }
 
 #endif // wxUSE_GAUGE
-

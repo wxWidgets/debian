@@ -1,63 +1,32 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        frame.cpp
+// Name:        src/gtk/frame.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: frame.cpp,v 1.204 2005/07/22 18:01:45 ABX Exp $
+// Id:          $Id: frame.cpp 43974 2006-12-14 07:19:21Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-// ============================================================================
-// declarations
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// headers
-// ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "frame.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
-#include "wx/defs.h"
-
 #include "wx/frame.h"
-#include "wx/dialog.h"
-#include "wx/control.h"
-#include "wx/app.h"
-#include "wx/menu.h"
-#if wxUSE_TOOLBAR
+
+#ifndef WX_PRECOMP
+    #include "wx/menu.h"
     #include "wx/toolbar.h"
-#endif
-#if wxUSE_STATUSBAR
     #include "wx/statusbr.h"
-#endif
-#include "wx/dcclient.h"
+#endif // WX_PRECOMP
 
-#include <glib.h>
 #include "wx/gtk/private.h"
-
-#include <gdk/gdkkeysyms.h>
-#include <gdk/gdkx.h>
-
 #include "wx/gtk/win_gtk.h"
 
 // ----------------------------------------------------------------------------
 // constants
 // ----------------------------------------------------------------------------
 
-const int wxSTATUS_HEIGHT  = 25;
-const int wxPLACE_HOLDER   = 0;
-
-// ----------------------------------------------------------------------------
-// idle system
-// ----------------------------------------------------------------------------
-
-extern void wxapp_install_idle_handler();
-extern bool g_isIdle;
+static const int wxSTATUS_HEIGHT  = 25;
+static const int wxPLACE_HOLDER   = 0;
 
 // ----------------------------------------------------------------------------
 // event tables
@@ -184,11 +153,12 @@ static void wxInsertChildInFrame( wxFrame* parent, wxWindow* child )
             wxToolBar *toolBar = (wxToolBar*) child;
             if (toolBar->GetWindowStyle() & wxTB_DOCKABLE)
             {
-                gtk_signal_connect( GTK_OBJECT(toolBar->m_widget), "child_attached",
-                    GTK_SIGNAL_FUNC(gtk_toolbar_attached_callback), (gpointer)parent );
-
-                gtk_signal_connect( GTK_OBJECT(toolBar->m_widget), "child_detached",
-                    GTK_SIGNAL_FUNC(gtk_toolbar_detached_callback), (gpointer)parent );
+                g_signal_connect (toolBar->m_widget, "child_attached",
+                                  G_CALLBACK (gtk_toolbar_attached_callback),
+                                  parent);
+                g_signal_connect (toolBar->m_widget, "child_detached",
+                                  G_CALLBACK (gtk_toolbar_detached_callback),
+                                  parent);
             }
         }
 #endif // wxUSE_TOOLBAR
@@ -203,9 +173,6 @@ static void wxInsertChildInFrame( wxFrame* parent, wxWindow* child )
                          child->m_width,
                          child->m_height );
     }
-
-    // Resize on OnInternalIdle
-    parent->GtkUpdateSize();
 }
 
 // ----------------------------------------------------------------------------
@@ -254,7 +221,7 @@ void wxFrame::DoGetClientSize( int *width, int *height ) const
     {
 #if wxUSE_MENUS_NATIVE
         // menu bar
-        if (m_frameMenuBar)
+        if (m_frameMenuBar && !(m_fsIsShowing && (m_fsSaveFlag & wxFULLSCREEN_NOMENUBAR) != 0))
         {
             if (!m_menuBarDetached)
                 (*height) -= m_menuBarHeight;
@@ -265,34 +232,43 @@ void wxFrame::DoGetClientSize( int *width, int *height ) const
 
 #if wxUSE_STATUSBAR
         // status bar
-        if (m_frameStatusBar && m_frameStatusBar->IsShown())
+        if (m_frameStatusBar && m_frameStatusBar->IsShown() && 
+            !(m_fsIsShowing && (m_fsSaveFlag & wxFULLSCREEN_NOSTATUSBAR) != 0))
             (*height) -= wxSTATUS_HEIGHT;
 #endif // wxUSE_STATUSBAR
+    }
 
 #if wxUSE_TOOLBAR
-        // tool bar
-        if (m_frameToolBar && m_frameToolBar->IsShown())
+    // tool bar
+    if (m_frameToolBar && m_frameToolBar->IsShown())
+    {
+        if (m_toolBarDetached)
         {
-            if (m_toolBarDetached)
-            {
+            if (height != NULL)
                 *height -= wxPLACE_HOLDER;
+        }
+        else
+        {
+            int x, y;
+            m_frameToolBar->GetSize( &x, &y );
+            if ( m_frameToolBar->IsVertical() )
+            {
+                if (width != NULL)
+                    *width -= x;
             }
             else
             {
-                int x, y;
-                m_frameToolBar->GetSize( &x, &y );
-                if ( m_frameToolBar->GetWindowStyle() & wxTB_VERTICAL )
-                {
-                    *width -= x;
-                }
-                else
-                {
+                if (height != NULL)
                     *height -= y;
-                }
             }
         }
-#endif // wxUSE_TOOLBAR
     }
+#endif // wxUSE_TOOLBAR
+
+    if (width != NULL && *width < 0)
+        *width = 0;
+    if (height != NULL && *height < 0)
+        *height = 0;
 }
 
 void wxFrame::DoSetClientSize( int width, int height )
@@ -301,7 +277,7 @@ void wxFrame::DoSetClientSize( int width, int height )
 
 #if wxUSE_MENUS_NATIVE
         // menu bar
-        if (m_frameMenuBar)
+        if (m_frameMenuBar && !(m_fsIsShowing && (m_fsSaveFlag & wxFULLSCREEN_NOMENUBAR) != 0))
         {
             if (!m_menuBarDetached)
                 height += m_menuBarHeight;
@@ -312,7 +288,9 @@ void wxFrame::DoSetClientSize( int width, int height )
 
 #if wxUSE_STATUSBAR
         // status bar
-        if (m_frameStatusBar && m_frameStatusBar->IsShown()) height += wxSTATUS_HEIGHT;
+        if (m_frameStatusBar && m_frameStatusBar->IsShown() && 
+            !(m_fsIsShowing && (m_fsSaveFlag & wxFULLSCREEN_NOSTATUSBAR) != 0))
+            height += wxSTATUS_HEIGHT;
 #endif
 
 #if wxUSE_TOOLBAR
@@ -327,7 +305,7 @@ void wxFrame::DoSetClientSize( int width, int height )
             {
                 int x, y;
                 m_frameToolBar->GetSize( &x, &y );
-                if ( m_frameToolBar->GetWindowStyle() & wxTB_VERTICAL )
+                if ( m_frameToolBar->IsVertical() )
                 {
                     width += x;
                 }
@@ -342,22 +320,14 @@ void wxFrame::DoSetClientSize( int width, int height )
     wxTopLevelWindow::DoSetClientSize( width, height );
 }
 
-void wxFrame::GtkOnSize( int WXUNUSED(x), int WXUNUSED(y),
-                         int width, int height )
+void wxFrame::GtkOnSize()
 {
-    // due to a bug in gtk, x,y are always 0
-    // m_x = x;
-    // m_y = y;
-
     // avoid recursions
     if (m_resizing) return;
     m_resizing = true;
 
     // this shouldn't happen: wxFrame, wxMDIParentFrame and wxMDIChildFrame have m_wxwindow
     wxASSERT_MSG( (m_wxwindow != NULL), wxT("invalid frame") );
-
-    m_width = width;
-    m_height = height;
 
     // space occupied by m_frameToolBar and m_frameMenuBar
     int client_area_x_offset = 0,
@@ -382,32 +352,22 @@ void wxFrame::GtkOnSize( int WXUNUSED(x), int WXUNUSED(y),
 
     if (m_mainWidget)
     {
-        // set size hints
-        gint flag = 0; // GDK_HINT_POS;
-        if ((minWidth != -1) || (minHeight != -1)) flag |= GDK_HINT_MIN_SIZE;
-        if ((maxWidth != -1) || (maxHeight != -1)) flag |= GDK_HINT_MAX_SIZE;
-        GdkGeometry geom;
-        geom.min_width = minWidth;
-        geom.min_height = minHeight;
-        geom.max_width = maxWidth;
-        geom.max_height = maxHeight;
-        gtk_window_set_geometry_hints( GTK_WINDOW(m_widget),
-                                       (GtkWidget*) NULL,
-                                       &geom,
-                                       (GdkWindowHints) flag );
+        // TODO
+        // Rewrite this terrible code to using GtkVBox
 
-        // I revert back to wxGTK's original behaviour. m_mainWidget holds
-        // the menubar, the toolbar and the client area, which is represented
-        // by m_wxwindow.
-        // This hurts in the eye, but I don't want to call SetSize()
-        // because I don't want to call any non-native functions here.
+        // m_mainWidget holds the menubar, the toolbar and the client
+        // area, which is represented by m_wxwindow.
 
 #if wxUSE_MENUS_NATIVE
-        if (m_frameMenuBar)
+        if (m_frameMenuBar && !(m_fsIsShowing && (m_fsSaveFlag & wxFULLSCREEN_NOMENUBAR) != 0))
         {
+            if (!GTK_WIDGET_VISIBLE(m_frameMenuBar->m_widget))
+                gtk_widget_show( m_frameMenuBar->m_widget );
             int xx = m_miniEdge;
             int yy = m_miniEdge + m_miniTitle;
             int ww = m_width  - 2*m_miniEdge;
+            if (ww < 0)
+                ww = 0;
             int hh = m_menuBarHeight;
             if (m_menuBarDetached) hh = wxPLACE_HOLDER;
             m_frameMenuBar->m_x = xx;
@@ -418,6 +378,14 @@ void wxFrame::GtkOnSize( int WXUNUSED(x), int WXUNUSED(y),
                                   m_frameMenuBar->m_widget,
                                   xx, yy, ww, hh );
             client_area_y_offset += hh;
+        }
+        else
+        {
+            if (m_frameMenuBar)
+            {
+                if (GTK_WIDGET_VISIBLE(m_frameMenuBar->m_widget))
+                    gtk_widget_hide( m_frameMenuBar->m_widget );
+            }
         }
 #endif // wxUSE_MENUS_NATIVE
 
@@ -450,6 +418,30 @@ void wxFrame::GtkOnSize( int WXUNUSED(x), int WXUNUSED(y),
 
                 client_area_x_offset += ww;
             }
+            else if( m_frameToolBar->HasFlag(wxTB_RIGHT) )
+            {
+               yy += 2;
+               ww = m_toolBarDetached ? wxPLACE_HOLDER
+                                      : m_frameToolBar->m_width;
+               xx = GetClientSize().x - 1;
+               hh = m_height - 2*m_miniEdge;
+               if( hh < 0 )
+                  hh = 0;
+
+            }
+            else if( m_frameToolBar->GetWindowStyle() & wxTB_BOTTOM )
+            {
+                xx = m_miniEdge;
+                yy = GetClientSize().y;
+#if wxUSE_MENUS_NATIVE
+                yy += m_menuBarHeight;
+#endif // wxUSE_MENU_NATIVE
+                m_frameToolBar->m_x = xx;
+                m_frameToolBar->m_y = yy;
+                ww = m_width - 2*m_miniEdge;
+                hh = m_toolBarDetached ? wxPLACE_HOLDER
+                                       : m_frameToolBar->m_height;
+            }
             else
             {
                 ww = m_width - 2*m_miniEdge;
@@ -459,6 +451,10 @@ void wxFrame::GtkOnSize( int WXUNUSED(x), int WXUNUSED(y),
                 client_area_y_offset += hh;
             }
 
+            if (ww < 0)
+                ww = 0;
+            if (hh < 0)
+                hh = 0;
             gtk_pizza_set_size( GTK_PIZZA(m_mainWidget),
                                   m_frameToolBar->m_widget,
                                   xx, yy, ww, hh );
@@ -469,6 +465,10 @@ void wxFrame::GtkOnSize( int WXUNUSED(x), int WXUNUSED(y),
         int client_y = client_area_y_offset + m_miniEdge + m_miniTitle;
         int client_w = m_width - client_area_x_offset - 2*m_miniEdge;
         int client_h = m_height - client_area_y_offset- 2*m_miniEdge - m_miniTitle;
+        if (client_w < 0)
+            client_w = 0;
+        if (client_h < 0)
+            client_h = 0;
         gtk_pizza_set_size( GTK_PIZZA(m_mainWidget),
                               m_wxwindow,
                               client_x, client_y, client_w, client_h );
@@ -480,11 +480,17 @@ void wxFrame::GtkOnSize( int WXUNUSED(x), int WXUNUSED(y),
     }
 
 #if wxUSE_STATUSBAR
-    if (m_frameStatusBar && m_frameStatusBar->IsShown())
+    if (m_frameStatusBar && m_frameStatusBar->IsShown() &&
+        !(m_fsIsShowing && (m_fsSaveFlag & wxFULLSCREEN_NOSTATUSBAR) != 0))
     {
+        if (!GTK_WIDGET_VISIBLE(m_frameStatusBar->m_widget))
+            gtk_widget_show( m_frameStatusBar->m_widget );
+            
         int xx = 0 + m_miniEdge;
         int yy = m_height - wxSTATUS_HEIGHT - m_miniEdge - client_area_y_offset;
         int ww = m_width - 2*m_miniEdge;
+        if (ww < 0)
+            ww = 0;
         int hh = wxSTATUS_HEIGHT;
         m_frameStatusBar->m_x = xx;
         m_frameStatusBar->m_y = yy;
@@ -493,7 +499,14 @@ void wxFrame::GtkOnSize( int WXUNUSED(x), int WXUNUSED(y),
         gtk_pizza_set_size( GTK_PIZZA(m_wxwindow),
                             m_frameStatusBar->m_widget,
                             xx, yy, ww, hh );
-        gtk_widget_draw( m_frameStatusBar->m_widget, (GdkRectangle*) NULL );
+    }
+    else
+    {
+        if (m_frameStatusBar)
+        {
+            if (GTK_WIDGET_VISIBLE(m_frameStatusBar->m_widget))
+                gtk_widget_hide( m_frameStatusBar->m_widget );
+        }
     }
 #endif // wxUSE_STATUSBAR
 
@@ -562,11 +575,13 @@ void wxFrame::DetachMenuBar()
 
         if (m_frameMenuBar->GetWindowStyle() & wxMB_DOCKABLE)
         {
-            gtk_signal_disconnect_by_func( GTK_OBJECT(m_frameMenuBar->m_widget),
-                GTK_SIGNAL_FUNC(gtk_menu_attached_callback), (gpointer)this );
+            g_signal_handlers_disconnect_by_func (m_frameMenuBar->m_widget,
+                    (gpointer) gtk_menu_attached_callback,
+                    this);
 
-            gtk_signal_disconnect_by_func( GTK_OBJECT(m_frameMenuBar->m_widget),
-                GTK_SIGNAL_FUNC(gtk_menu_detached_callback), (gpointer)this );
+            g_signal_handlers_disconnect_by_func (m_frameMenuBar->m_widget,
+                    (gpointer) gtk_menu_detached_callback,
+                    this);
         }
 
         gtk_widget_ref( m_frameMenuBar->m_widget );
@@ -595,11 +610,12 @@ void wxFrame::AttachMenuBar( wxMenuBar *menuBar )
 
         if (menuBar->GetWindowStyle() & wxMB_DOCKABLE)
         {
-            gtk_signal_connect( GTK_OBJECT(menuBar->m_widget), "child_attached",
-                GTK_SIGNAL_FUNC(gtk_menu_attached_callback), (gpointer)this );
-
-            gtk_signal_connect( GTK_OBJECT(menuBar->m_widget), "child_detached",
-                GTK_SIGNAL_FUNC(gtk_menu_detached_callback), (gpointer)this );
+            g_signal_connect (menuBar->m_widget, "child_attached",
+                              G_CALLBACK (gtk_menu_attached_callback),
+                              this);
+            g_signal_connect (menuBar->m_widget, "child_detached",
+                              G_CALLBACK (gtk_menu_detached_callback),
+                              this);
         }
 
         gtk_widget_show( m_frameMenuBar->m_widget );
@@ -615,20 +631,22 @@ void wxFrame::AttachMenuBar( wxMenuBar *menuBar )
 
 void wxFrame::UpdateMenuBarSize()
 {
-    GtkRequisition  req;
-
-    req.width = 2;
-    req.height = 2;
+    m_menuBarHeight = 2;
 
     // this is called after Remove with a NULL m_frameMenuBar
     if ( m_frameMenuBar )
-        (* GTK_WIDGET_CLASS( GTK_OBJECT_GET_CLASS(m_frameMenuBar->m_widget) )->size_request )
-            (m_frameMenuBar->m_widget, &req );
+    {
+        GtkRequisition req;
+        gtk_widget_ensure_style(m_frameMenuBar->m_widget);
+        // have to call class method directly because
+        // "size_request" signal is overridden by wx
+        GTK_WIDGET_GET_CLASS(m_frameMenuBar->m_widget)->size_request(
+            m_frameMenuBar->m_widget, &req);
 
-    m_menuBarHeight = req.height;
+        m_menuBarHeight = req.height;
+    }
 
     // resize window in OnInternalIdle
-
     GtkUpdateSize();
 }
 

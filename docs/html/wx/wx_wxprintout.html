@@ -1,0 +1,431 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPrintout</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxprintout"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxprinterdc.html#wxprinterdc"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxprintpreview.html#wxprintpreview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPrintout</H2>
+<P>
+This class encapsulates the functionality of printing out an application
+document. A new class must be derived and members overridden to respond to calls
+such as OnPrintPage and HasPage and to render the print image onto an associated
+<A HREF="wx_wxdc.html#wxdc">wxDC</A>. Instances of this class are passed to wxPrinter::Print or
+to a wxPrintPreview object to initiate printing or previewing.<P>
+Your derived wxPrintout is responsible for drawing both the preview image and
+the printed page. If your windows' drawing routines accept an arbitrary DC as an
+argument, you can re-use those routines within your wxPrintout subclass to draw
+the printout image. You may also add additional drawing elements within your
+wxPrintout subclass, like headers, footers, and/or page numbers. However, the
+image on the printed page will often differ from the image drawn on the screen,
+as will the print preview image -- not just in the presence of headers and
+footers, but typically in scale. A high-resolution printer presents a much
+larger drawing surface (i.e., a higher-resolution DC); a zoomed-out preview
+image presents a much smaller drawing surface (lower-resolution DC). By using
+the routines FitThisSizeToXXX() and/or MapScreenSizeToXXX() within your
+wxPrintout subclass to set the user scale and origin of the associated DC, you
+can easily use a single drawing routine to draw on your application's windows,
+to create the print preview image, and to create the printed paper image, and
+achieve a common appearance to the preview image and the printed page.<P>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/print.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_printingoverview.html#printingoverview">Printing framework overview</A>, 
+<A HREF="wx_wxprinterdc.html#wxprinterdc">wxPrinterDC</A>, 
+<A HREF="wx_wxprintdialog.html#wxprintdialog">wxPrintDialog</A>, 
+<A HREF="wx_wxpagesetupdialog.html#wxpagesetupdialog">wxPageSetupDialog</A>, 
+<A HREF="wx_wxprinter.html#wxprinter">wxPrinter</A>, 
+<A HREF="wx_wxprintpreview.html#wxprintpreview">wxPrintPreview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxprintoutctor">wxPrintout::wxPrintout</A><BR>
+<A HREF="#wxprintoutdtor">wxPrintout::~wxPrintout</A><BR>
+<A HREF="#wxprintoutgetdc">wxPrintout::GetDC</A><BR>
+<A HREF="#wxprintoutgetpageinfo">wxPrintout::GetPageInfo</A><BR>
+<A HREF="#wxprintoutgetpagesizemm">wxPrintout::GetPageSizeMM</A><BR>
+<A HREF="#wxprintoutgetpagesizepixels">wxPrintout::GetPageSizePixels</A><BR>
+<A HREF="#wxprintoutgetpaperrectpixels">wxPrintout::GetPaperRectPixels</A><BR>
+<A HREF="#wxprintoutgetppiprinter">wxPrintout::GetPPIPrinter</A><BR>
+<A HREF="#wxprintoutgetppiscreen">wxPrintout::GetPPIScreen</A><BR>
+<A HREF="#wxprintoutgettitle">wxPrintout::GetTitle</A><BR>
+<A HREF="#wxprintouthaspage">wxPrintout::HasPage</A><BR>
+<A HREF="#wxprintoutispreview">wxPrintout::IsPreview</A><BR>
+<A HREF="#wxprintoutfitthissizetopaper">wxPrintout::FitThisSizeToPaper</A><BR>
+<A HREF="#wxprintoutfitthissizetopage">wxPrintout::FitThisSizeToPage</A><BR>
+<A HREF="#wxprintoutfitthissizetopagemargins">wxPrintout::FitThisSizeToPageMargins</A><BR>
+<A HREF="#wxprintoutmapscreensizetopaper">wxPrintout::MapScreenSizeToPaper</A><BR>
+<A HREF="#wxprintoutmapscreensizetopage">wxPrintout::MapScreenSizeToPage</A><BR>
+<A HREF="#wxprintoutmapscreensizetopagemargins">wxPrintout::MapScreenSizeToPageMargins</A><BR>
+<A HREF="#wxprintoutmapscreensizetodevice">wxPrintout::MapScreenSizeToDevice</A><BR>
+<A HREF="#wxprintoutgetlogicalpaperrect">wxPrintout::GetLogicalPaperRect</A><BR>
+<A HREF="#wxprintoutgetlogicalpagerect">wxPrintout::GetLogicalPageRect</A><BR>
+<A HREF="#wxprintoutgetlogicalpagemarginsrect">wxPrintout::GetLogicalPageMarginsRect</A><BR>
+<A HREF="#wxprintoutsetlogicalorigin">wxPrintout::SetLogicalOrigin</A><BR>
+<A HREF="#wxprintoutoffsetlogicalorigin">wxPrintout::OffsetLogicalOrigin</A><BR>
+<A HREF="#wxprintoutonbegindocument">wxPrintout::OnBeginDocument</A><BR>
+<A HREF="#wxprintoutonenddocument">wxPrintout::OnEndDocument</A><BR>
+<A HREF="#wxprintoutonbeginprinting">wxPrintout::OnBeginPrinting</A><BR>
+<A HREF="#wxprintoutonendprinting">wxPrintout::OnEndPrinting</A><BR>
+<A HREF="#wxprintoutonprepareprinting">wxPrintout::OnPreparePrinting</A><BR>
+<A HREF="#wxprintoutonprintpage">wxPrintout::OnPrintPage</A><BR>
+<P>
+
+<HR>
+<A NAME="wxprintoutctor"></A>
+<H3>wxPrintout::wxPrintout</H3>
+<P>
+<B></B> <B>wxPrintout</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title = "Printout"</I>)<P>
+Constructor. Pass an optional title argument - the current filename would be a good idea. This will appear in the printing list
+(at least in MSW)<P>
+
+
+<HR>
+<A NAME="wxprintoutdtor"></A>
+<H3>wxPrintout::~wxPrintout</H3>
+<P>
+<B></B> <B>~wxPrintout</B>()<P>
+Destructor.<P>
+
+
+<HR>
+<A NAME="wxprintoutgetdc"></A>
+<H3>wxPrintout::GetDC</H3>
+<P>
+<B><A HREF="wx_wxdc.html#wxdc">wxDC</A> *</B> </B> <B>GetDC</B>()<P>
+Returns the device context associated with the printout (given to the printout at start of
+printing or previewing). This will be a wxPrinterDC if printing under Windows or Mac,
+a wxPostScriptDC if printing on other platforms, and a wxMemoryDC if previewing.<P>
+
+
+<HR>
+<A NAME="wxprintoutgetpageinfo"></A>
+<H3>wxPrintout::GetPageInfo</H3>
+<P>
+<B>void</B> <B>GetPageInfo</B>(<B>int *</B><I>minPage</I>, <B>int *</B><I>maxPage</I>, <B>int *</B><I>pageFrom</I>, <B>int *</B><I>pageTo</I>)<P>
+Called by the framework to obtain information from the application about minimum
+and maximum page values that the user can select, and the required page range to
+be printed. By default this returns 1, 32000 for the page minimum and maximum
+values, and 1, 1 for the required page range.<P>
+If <I>minPage</I> is zero, the page number controls in the print dialog will be disabled.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> When this method is implemented in a derived Python class,
+it should be designed to take no parameters (other than the self
+reference) and to return a tuple of four integers.
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> When this method is overridden in a derived class,
+it must not take any parameters, and returns a 4-element list.
+<P>
+
+
+<HR>
+<A NAME="wxprintoutgetpagesizemm"></A>
+<H3>wxPrintout::GetPageSizeMM</H3>
+<P>
+<B>void</B> <B>GetPageSizeMM</B>(<B>int *</B><I>w</I>, <B>int *</B><I>h</I>)<P>
+Returns the size of the printer page in millimetres.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method returns the output-only parameters as a tuple.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes no arguments and returns a
+2-element list <TT>( w, h )</TT><P>
+
+
+<HR>
+<A NAME="wxprintoutgetpagesizepixels"></A>
+<H3>wxPrintout::GetPageSizePixels</H3>
+<P>
+<B>void</B> <B>GetPageSizePixels</B>(<B>int *</B><I>w</I>, <B>int *</B><I>h</I>)<P>
+Returns the size of the printer page in pixels, called the <EM>page rectangle</EM>.
+The page rectangle has a top left corner at (0,0) and a bottom right corner at
+(w,h). These values may not be the same as the values returned from
+<A HREF="wx_wxdc.html#wxdcgetsize">wxDC::GetSize</A>; if the printout is being used for
+previewing, a memory device context is used, which uses a bitmap size reflecting
+the current preview zoom. The application must take this discrepancy into
+account if previewing is to be supported.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method returns the output-only parameters as a tuple.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes no arguments and returns a
+2-element list <TT>( w, h )</TT><P>
+
+
+<HR>
+<A NAME="wxprintoutgetpaperrectpixels"></A>
+<H3>wxPrintout::GetPaperRectPixels</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>GetPaperRectPixels</B>()<P>
+Returns the rectangle that corresponds to the entire paper in pixels, called the
+<EM>paper rectangle</EM>. This distinction between paper rectangle and page
+rectangle reflects the fact that most printers cannot print all the way to the
+edge of the paper. The page rectangle is a rectangle whose top left corner is at
+(0,0) and whose width and height are given by
+<A HREF="wx_wxprintout.html#wxprintoutgetpagesizepixels">wxDC::GetPageSizePixels</A>. On MSW and Mac,
+the page rectangle gives the printable area of the paper, while the paper
+rectangle represents the entire paper, including non-printable borders. Thus,
+the rectangle returned by GetPaperRectPixels will have a top left corner whose
+coordinates are small negative numbers and the bottom right corner will have
+values somewhat larger than the width and height given by
+<A HREF="wx_wxprintout.html#wxprintoutgetpagesizepixels">wxDC::GetPageSizePixels</A>. On other
+platforms and for PostScript printing, the paper is treated as if its entire
+area were printable, so this function will return the same rectangle as the page
+rectangle.<P>
+
+
+<HR>
+<A NAME="wxprintoutgetppiprinter"></A>
+<H3>wxPrintout::GetPPIPrinter</H3>
+<P>
+<B>void</B> <B>GetPPIPrinter</B>(<B>int *</B><I>w</I>, <B>int *</B><I>h</I>)<P>
+Returns the number of pixels per logical inch of the printer device context.
+Dividing the printer PPI by the screen PPI can give a suitable scaling factor
+for drawing text onto the printer. Remember to multiply this by a scaling factor
+to take the preview DC size into account. Or you can just use the
+FitThisSizeToXXX() and MapScreenSizeToXXX routines below, which do most of the
+scaling calculations for you.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method returns the output-only parameters as a tuple.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes no arguments and returns a
+2-element list <TT>( w, h )</TT><P>
+
+
+<HR>
+<A NAME="wxprintoutgetppiscreen"></A>
+<H3>wxPrintout::GetPPIScreen</H3>
+<P>
+<B>void</B> <B>GetPPIScreen</B>(<B>int *</B><I>w</I>, <B>int *</B><I>h</I>)<P>
+Returns the number of pixels per logical inch of the screen device context.
+Dividing the printer PPI by the screen PPI can give a suitable scaling factor
+for drawing text onto the printer. If you are doing your own scaling, remember
+to multiply this by a scaling factor to take the preview DC size into account.<P>
+
+
+<HR>
+<A NAME="wxprintoutgettitle"></A>
+<H3>wxPrintout::GetTitle</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetTitle</B>()<P>
+Returns the title of the printout<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method returns the output-only parameters as a tuple.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes no arguments and returns a
+2-element list <TT>( w, h )</TT><P>
+
+
+<HR>
+<A NAME="wxprintouthaspage"></A>
+<H3>wxPrintout::HasPage</H3>
+<P>
+<B>bool</B> <B>HasPage</B>(<B>int</B><I> pageNum</I>)<P>
+Should be overridden to return true if the document has this page, or false
+if not. Returning false signifies the end of the document. By default,
+HasPage behaves as if the document has only one page.<P>
+
+
+<HR>
+<A NAME="wxprintoutispreview"></A>
+<H3>wxPrintout::IsPreview</H3>
+<P>
+<B>bool</B> <B>IsPreview</B>()<P>
+Returns true if the printout is currently being used for previewing.<P>
+
+
+<HR>
+<A NAME="wxprintoutfitthissizetopaper"></A>
+<H3>wxPrintout::FitThisSizeToPaper</H3>
+<P>
+<B>void</B> <B>FitThisSizeToPaper</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>imageSize</I>)<P>
+Set the user scale and device origin of the wxDC associated with this wxPrintout
+so that the given image size fits entirely within the paper and the origin is at
+the top left corner of the paper. Note that with most printers, the region
+around the edges of the paper are not printable so that the edges of the image
+could be cut off. Use this if you're managing your own page margins.<P>
+
+<HR>
+<A NAME="wxprintoutfitthissizetopage"></A>
+<H3>wxPrintout::FitThisSizeToPage</H3>
+<P>
+
+<B>void</B> <B>FitThisSizeToPage</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>imageSize</I>)<P>
+Set the user scale and device origin of the wxDC associated with this wxPrintout
+so that the given image size fits entirely within the page rectangle and the
+origin is at the top left corner of the page rectangle. On MSW and Mac, the page
+rectangle is the printable area of the page. On other platforms and PostScript
+printing, the page rectangle is the entire paper. Use this if you want your
+printed image as large as possible, but with the caveat that on some platforms, 
+portions of the image might be cut off at the edges.<P>
+
+
+<HR>
+<A NAME="wxprintoutfitthissizetopagemargins"></A>
+<H3>wxPrintout::FitThisSizeToPageMargins</H3>
+<P>
+<B>void</B> <B>FitThisSizeToPageMargins</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>imageSize</I>, <B>const <A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A>& </B></B><I>pageSetupData</I>)<P>
+Set the user scale and device origin of the wxDC associated with this wxPrintout
+so that the given image size fits entirely within the page margins set in the
+given wxPageSetupDialogData object. This function provides the greatest
+consistency across all platforms because it does not depend on having access to
+the printable area of the paper. Note that on Mac, the native wxPageSetupDialog
+does not let you set the page margins; you'll have to provide your own mechanism,
+or you can use the Mac-only class wxMacPageMarginsDialog.<P>
+
+
+<HR>
+<A NAME="wxprintoutmapscreensizetopaper"></A>
+<H3>wxPrintout::MapScreenSizeToPaper</H3>
+<P>
+<B>void</B> <B>MapScreenSizeToPaper</B>()<P>
+Set the user scale and device origin of the wxDC associated with this wxPrintout
+so that the printed page matches the screen size as closely as possible
+and the logical origin is in the top left corner of the paper rectangle.
+That is,
+a 100-pixel object on screen should appear at the same size on the printed page. (It
+will, of course, be larger or smaller in the preview image, depending on the zoom
+factor.) Use this if you want WYSIWYG behavior, e.g., in a text editor.<P>
+
+
+<HR>
+<A NAME="wxprintoutmapscreensizetopage"></A>
+<H3>wxPrintout::MapScreenSizeToPage</H3>
+<P>
+<B>void</B> <B>MapScreenSizeToPage</B>()<P>
+This sets the user scale of the wxDC assocated with this wxPrintout to the same
+scale as <A HREF="wx_wxprintout.html#wxprintoutmapscreensizetopaper">MapScreenSizeToPaper</A> but sets
+the logical origin to the top left corner of the page rectangle.<P>
+
+
+<HR>
+<A NAME="wxprintoutmapscreensizetopagemargins"></A>
+<H3>wxPrintout::MapScreenSizeToPageMargins</H3>
+<P>
+<B>void</B> <B>MapScreenSizeToPageMargins</B>(<B>const <A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A>& </B></B><I>pageSetupData</I>)<P>
+This sets the user scale of the wxDC assocated with this wxPrintout to the same
+scale as
+<A HREF="wx_wxprintout.html#wxprintoutmapscreensizetopagemargins">MapScreenSizeToPageMargins</A> but
+sets the logical origin to the top left corner of the page margins specified by
+the given wxPageSetupDialogData object.<P>
+
+
+<HR>
+<A NAME="wxprintoutmapscreensizetodevice"></A>
+<H3>wxPrintout::MapScreenSizeToDevice</H3>
+<P>
+<B>void</B> <B>MapScreenSizeToDevice</B>()<P>
+Set the user scale and device origin of the wxDC associated with this wxPrintout
+so that one screen pixel maps to one device pixel on the DC. That is, the user
+scale is set to (1,1) and the device origin is set to (0,0). Use this if you
+want to do your own scaling prior to calling wxDC drawing calls, for example, if
+your underlying model is floating-point and you want to achieve maximum drawing
+precision on high-resolution printers. (Note that while the underlying drawing
+model of Mac OS X is floating-point, wxWidgets's drawing model scales from integer
+coordinates.) You can use the GetLogicalXXXRect() routines below to obtain the
+paper rectangle, page rectangle, or page margins rectangle to perform your own scaling.<P>
+
+
+<HR>
+<A NAME="wxprintoutgetlogicalpaperrect"></A>
+<H3>wxPrintout::GetLogicalPaperRect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>GetLogicalPaperRect</B>()<P>
+Return the rectangle corresponding to the paper in the associated wxDC's
+logical coordinates for the current user scale and device origin.<P>
+
+
+<HR>
+<A NAME="wxprintoutgetlogicalpagerect"></A>
+<H3>wxPrintout::GetLogicalPageRect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>GetLogicalPageRect</B>()<P>
+Return the rectangle corresponding to the page in the associated wxDC's
+logical coordinates for the current user scale and device origin. 
+On MSW and Mac, this will be the printable area of the paper. On other platforms
+and PostScript printing, this will be the full paper rectangle.<P>
+
+
+<HR>
+<A NAME="wxprintoutgetlogicalpagemarginsrect"></A>
+<H3>wxPrintout::GetLogicalPageMarginsRect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>GetLogicalPageMarginsRect</B>(<B>const <A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A>& </B></B><I>pageSetupData</I>)<P>
+Return the rectangle corresponding to the page margins specified by the given
+wxPageSetupDialogData object in the associated wxDC's logical coordinates for the
+current user scale and device origin. The page margins are specified
+with respect to the edges of the paper on all platforms.<P>
+
+
+<HR>
+<A NAME="wxprintoutsetlogicalorigin"></A>
+<H3>wxPrintout::SetLogicalOrigin</H3>
+<P>
+<B>void</B> <B>SetLogicalOrigin</B>(<B>wxCoord </B><I>x</I>, <B>wxCoord </B><I>y</I>)<P>
+Set the device origin of the associated wxDC so that the current logical point
+becomes the new logical origin.<P>
+
+
+<HR>
+<A NAME="wxprintoutoffsetlogicalorigin"></A>
+<H3>wxPrintout::OffsetLogicalOrigin</H3>
+<P>
+<B>void</B> <B>OffsetLogicalOrigin</B>(<B>wxCoord </B><I>xoff</I>, <B>wxCoord </B><I>yoff</I>)<P>
+Shift the device origin by an amount specified in logical coordinates.<P>
+
+
+<HR>
+<A NAME="wxprintoutonbegindocument"></A>
+<H3>wxPrintout::OnBeginDocument</H3>
+<P>
+<B>bool</B> <B>OnBeginDocument</B>(<B>int</B><I> startPage</I>, <B>int</B><I> endPage</I>)<P>
+Called by the framework at the start of document printing. Return false from
+this function cancels the print job. OnBeginDocument is called once for every
+copy printed.<P>
+The base wxPrintout::OnBeginDocument <I>must</I> be called (and the return value
+checked) from within the overridden function, since it calls wxDC::StartDoc.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> If this method is overridden in a Python class then the
+base class version can be called by using the method
+<TT>base_OnBeginDocument(startPage, endPage)</TT>. <P>
+
+
+<HR>
+<A NAME="wxprintoutonenddocument"></A>
+<H3>wxPrintout::OnEndDocument</H3>
+<P>
+<B>void</B> <B>OnEndDocument</B>()<P>
+Called by the framework at the end of document printing. OnEndDocument
+is called once for every copy printed.<P>
+The base wxPrintout::OnEndDocument <I>must</I> be called
+from within the overridden function, since it calls wxDC::EndDoc.<P>
+
+
+<HR>
+<A NAME="wxprintoutonbeginprinting"></A>
+<H3>wxPrintout::OnBeginPrinting</H3>
+<P>
+<B>void</B> <B>OnBeginPrinting</B>()<P>
+Called by the framework at the start of printing. OnBeginPrinting is called once for every
+print job (regardless of how many copies are being printed).<P>
+
+
+<HR>
+<A NAME="wxprintoutonendprinting"></A>
+<H3>wxPrintout::OnEndPrinting</H3>
+<P>
+<B>void</B> <B>OnEndPrinting</B>()<P>
+Called by the framework at the end of printing. OnEndPrinting
+is called once for every print job (regardless of how many copies are being printed).<P>
+
+
+<HR>
+<A NAME="wxprintoutonprepareprinting"></A>
+<H3>wxPrintout::OnPreparePrinting</H3>
+<P>
+<B>void</B> <B>OnPreparePrinting</B>()<P>
+Called once by the framework before any other demands are made of the
+wxPrintout object. This gives the object an opportunity to calculate the
+number of pages in the document, for example.<P>
+
+
+<HR>
+<A NAME="wxprintoutonprintpage"></A>
+<H3>wxPrintout::OnPrintPage</H3>
+<P>
+<B>bool</B> <B>OnPrintPage</B>(<B>int</B><I> pageNum</I>)<P>
+Called by the framework when a page should be printed. Returning false cancels
+the print job. The application can use wxPrintout::GetDC to obtain a device
+context to draw on.<P>
+
+</FONT></BODY></HTML>

@@ -2,18 +2,13 @@
 // Name:        wx/gtk/frame.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: frame.h,v 1.75 2005/08/02 22:57:55 MW Exp $
+// Id:          $Id: frame.h 41045 2006-09-07 16:06:47Z PC $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-
-#ifndef __GTKFRAMEH__
-#define __GTKFRAMEH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "frame.h"
-#endif
+#ifndef _WX_GTK_FRAME_H_
+#define _WX_GTK_FRAME_H_
 
 //-----------------------------------------------------------------------------
 // classes
@@ -59,8 +54,6 @@ public:
     virtual ~wxFrame();
 
 #if wxUSE_STATUSBAR
-    virtual void PositionStatusBar();
-
     virtual wxStatusBar* CreateStatusBar(int number = 1,
                                          long style = wxST_SIZEGRIP|wxFULL_REPAINT_ON_RESIZE,
                                          wxWindowID id = 0,
@@ -82,7 +75,7 @@ public:
     // --------------------------
 
     // GTK callbacks
-    virtual void GtkOnSize( int x, int y, int width, int height );
+    virtual void GtkOnSize();
     virtual void OnInternalIdle();
 
     bool          m_menuBarDetached;
@@ -92,6 +85,10 @@ public:
 protected:
     // common part of all ctors
     void Init();
+
+#if wxUSE_STATUSBAR
+    virtual void PositionStatusBar();
+#endif // wxUSE_STATUSBAR
 
     // override wxWindow methods to take into account tool/menu/statusbars
     virtual void DoSetClientSize(int width, int height);
@@ -111,4 +108,4 @@ public:
     DECLARE_DYNAMIC_CLASS(wxFrame)
 };
 
-#endif // __GTKFRAMEH__
+#endif // _WX_GTK_FRAME_H_

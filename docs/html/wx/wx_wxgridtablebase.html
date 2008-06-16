@@ -1,0 +1,346 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGridTableBase</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgridtablebase"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgridcellstringrenderer.html#wxgridcellstringrenderer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgridsizer.html#wxgridsizer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGridTableBase</H2>
+<P>
+Grid table classes.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/grid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgridtablebasewxgridtablebase">wxGridTableBase::wxGridTableBase</A><BR>
+<A HREF="#wxgridtablebasedtor">wxGridTableBase::~wxGridTableBase</A><BR>
+<A HREF="#wxgridtablebasegetnumberrows">wxGridTableBase::GetNumberRows</A><BR>
+<A HREF="#wxgridtablebasegetnumbercols">wxGridTableBase::GetNumberCols</A><BR>
+<A HREF="#wxgridtablebaseisemptycell">wxGridTableBase::IsEmptyCell</A><BR>
+<A HREF="#wxgridtablebasegetvalue">wxGridTableBase::GetValue</A><BR>
+<A HREF="#wxgridtablebasesetvalue">wxGridTableBase::SetValue</A><BR>
+<A HREF="#wxgridtablebasegettypename">wxGridTableBase::GetTypeName</A><BR>
+<A HREF="#wxgridtablebasecangetvalueas">wxGridTableBase::CanGetValueAs</A><BR>
+<A HREF="#wxgridtablebasecansetvalueas">wxGridTableBase::CanSetValueAs</A><BR>
+<A HREF="#wxgridtablebasegetvalueaslong">wxGridTableBase::GetValueAsLong</A><BR>
+<A HREF="#wxgridtablebasegetvalueasdouble">wxGridTableBase::GetValueAsDouble</A><BR>
+<A HREF="#wxgridtablebasegetvalueasbool">wxGridTableBase::GetValueAsBool</A><BR>
+<A HREF="#wxgridtablebasesetvalueaslong">wxGridTableBase::SetValueAsLong</A><BR>
+<A HREF="#wxgridtablebasesetvalueasdouble">wxGridTableBase::SetValueAsDouble</A><BR>
+<A HREF="#wxgridtablebasesetvalueasbool">wxGridTableBase::SetValueAsBool</A><BR>
+<A HREF="#wxgridtablebasegetvalueascustom">wxGridTableBase::GetValueAsCustom</A><BR>
+<A HREF="#wxgridtablebasesetvalueascustom">wxGridTableBase::SetValueAsCustom</A><BR>
+<A HREF="#wxgridtablebasesetview">wxGridTableBase::SetView</A><BR>
+<A HREF="#wxgridtablebasegetview">wxGridTableBase::GetView</A><BR>
+<A HREF="#wxgridtablebaseclear">wxGridTableBase::Clear</A><BR>
+<A HREF="#wxgridtablebaseinsertrows">wxGridTableBase::InsertRows</A><BR>
+<A HREF="#wxgridtablebaseappendrows">wxGridTableBase::AppendRows</A><BR>
+<A HREF="#wxgridtablebasedeleterows">wxGridTableBase::DeleteRows</A><BR>
+<A HREF="#wxgridtablebaseinsertcols">wxGridTableBase::InsertCols</A><BR>
+<A HREF="#wxgridtablebaseappendcols">wxGridTableBase::AppendCols</A><BR>
+<A HREF="#wxgridtablebasedeletecols">wxGridTableBase::DeleteCols</A><BR>
+<A HREF="#wxgridtablebasegetrowlabelvalue">wxGridTableBase::GetRowLabelValue</A><BR>
+<A HREF="#wxgridtablebasegetcollabelvalue">wxGridTableBase::GetColLabelValue</A><BR>
+<A HREF="#wxgridtablebasesetrowlabelvalue">wxGridTableBase::SetRowLabelValue</A><BR>
+<A HREF="#wxgridtablebasesetcollabelvalue">wxGridTableBase::SetColLabelValue</A><BR>
+<A HREF="#wxgridtablebasesetattrprovider">wxGridTableBase::SetAttrProvider</A><BR>
+<A HREF="#wxgridtablebasegetattrprovider">wxGridTableBase::GetAttrProvider</A><BR>
+<A HREF="#wxgridtablebasecanhaveattributes">wxGridTableBase::CanHaveAttributes</A><BR>
+<A HREF="#wxgridtablebaseupdateattrrows">wxGridTableBase::UpdateAttrRows</A><BR>
+<A HREF="#wxgridtablebaseupdateattrcols">wxGridTableBase::UpdateAttrCols</A><BR>
+<A HREF="#wxgridtablebasegetattr">wxGridTableBase::GetAttr</A><BR>
+<A HREF="#wxgridtablebasesetattr">wxGridTableBase::SetAttr</A><BR>
+<A HREF="#wxgridtablebasesetrowattr">wxGridTableBase::SetRowAttr</A><BR>
+<A HREF="#wxgridtablebasesetcolattr">wxGridTableBase::SetColAttr</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgridtablebasewxgridtablebase"></A>
+<H3>wxGridTableBase::wxGridTableBase</H3>
+<P>
+<B></B> <B>wxGridTableBase</B>()<P>
+
+<HR>
+<A NAME="wxgridtablebasedtor"></A>
+<H3>wxGridTableBase::~wxGridTableBase</H3>
+<P>
+<B></B> <B>~wxGridTableBase</B>()<P>
+
+<HR>
+<A NAME="wxgridtablebasegetnumberrows"></A>
+<H3>wxGridTableBase::GetNumberRows</H3>
+<P>
+<B>int</B> <B>GetNumberRows</B>()<P>
+You must override these functions in a derived table class.<P>
+
+<HR>
+<A NAME="wxgridtablebasegetnumbercols"></A>
+<H3>wxGridTableBase::GetNumberCols</H3>
+<P>
+<B>int</B> <B>GetNumberCols</B>()<P>
+
+
+<HR>
+<A NAME="wxgridtablebaseisemptycell"></A>
+<H3>wxGridTableBase::IsEmptyCell</H3>
+<P>
+<B>bool</B> <B>IsEmptyCell</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasegetvalue"></A>
+<H3>wxGridTableBase::GetValue</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetValue</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasesetvalue"></A>
+<H3>wxGridTableBase::SetValue</H3>
+<P>
+<B>void</B> <B>SetValue</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasegettypename"></A>
+<H3>wxGridTableBase::GetTypeName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetTypeName</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+Data type determination and value access.<P>
+
+<HR>
+<A NAME="wxgridtablebasecangetvalueas"></A>
+<H3>wxGridTableBase::CanGetValueAs</H3>
+<P>
+<B>bool</B> <B>CanGetValueAs</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>typeName</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasecansetvalueas"></A>
+<H3>wxGridTableBase::CanSetValueAs</H3>
+<P>
+<B>bool</B> <B>CanSetValueAs</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>typeName</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasegetvalueaslong"></A>
+<H3>wxGridTableBase::GetValueAsLong</H3>
+<P>
+<B>long</B> <B>GetValueAsLong</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasegetvalueasdouble"></A>
+<H3>wxGridTableBase::GetValueAsDouble</H3>
+<P>
+<B>double</B> <B>GetValueAsDouble</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasegetvalueasbool"></A>
+<H3>wxGridTableBase::GetValueAsBool</H3>
+<P>
+<B>bool</B> <B>GetValueAsBool</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasesetvalueaslong"></A>
+<H3>wxGridTableBase::SetValueAsLong</H3>
+<P>
+<B>void</B> <B>SetValueAsLong</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>long </B><I>value</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasesetvalueasdouble"></A>
+<H3>wxGridTableBase::SetValueAsDouble</H3>
+<P>
+<B>void</B> <B>SetValueAsDouble</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>double </B><I>value</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasesetvalueasbool"></A>
+<H3>wxGridTableBase::SetValueAsBool</H3>
+<P>
+<B>void</B> <B>SetValueAsBool</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>bool </B><I>value</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasegetvalueascustom"></A>
+<H3>wxGridTableBase::GetValueAsCustom</H3>
+<P>
+<B>void*</B> <B>GetValueAsCustom</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>typeName</I>)<P>
+For user defined types<P>
+
+
+<HR>
+<A NAME="wxgridtablebasesetvalueascustom"></A>
+<H3>wxGridTableBase::SetValueAsCustom</H3>
+<P>
+<B>void</B> <B>SetValueAsCustom</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>typeName</I>, <B>void* </B><I>value</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasesetview"></A>
+<H3>wxGridTableBase::SetView</H3>
+<P>
+<B>void</B> <B>SetView</B>(<B><A HREF="wx_wxgrid.html#wxgrid">wxGrid</A>* </B></B><I>grid</I>)<P>
+Overriding these is optional<P>
+
+
+<HR>
+<A NAME="wxgridtablebasegetview"></A>
+<H3>wxGridTableBase::GetView</H3>
+<P>
+<B><A HREF="wx_wxgrid.html#wxgrid">wxGrid</A> *</B> </B> <B>GetView</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxgridtablebaseclear"></A>
+<H3>wxGridTableBase::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>()<P>
+
+
+<HR>
+<A NAME="wxgridtablebaseinsertrows"></A>
+<H3>wxGridTableBase::InsertRows</H3>
+<P>
+<B>bool</B> <B>InsertRows</B>(<B>size_t </B><I>pos = 0</I>, <B>size_t </B><I>numRows = 1</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebaseappendrows"></A>
+<H3>wxGridTableBase::AppendRows</H3>
+<P>
+<B>bool</B> <B>AppendRows</B>(<B>size_t </B><I>numRows = 1</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasedeleterows"></A>
+<H3>wxGridTableBase::DeleteRows</H3>
+<P>
+<B>bool</B> <B>DeleteRows</B>(<B>size_t </B><I>pos = 0</I>, <B>size_t </B><I>numRows = 1</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebaseinsertcols"></A>
+<H3>wxGridTableBase::InsertCols</H3>
+<P>
+<B>bool</B> <B>InsertCols</B>(<B>size_t </B><I>pos = 0</I>, <B>size_t </B><I>numCols = 1</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebaseappendcols"></A>
+<H3>wxGridTableBase::AppendCols</H3>
+<P>
+<B>bool</B> <B>AppendCols</B>(<B>size_t </B><I>numCols = 1</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasedeletecols"></A>
+<H3>wxGridTableBase::DeleteCols</H3>
+<P>
+<B>bool</B> <B>DeleteCols</B>(<B>size_t </B><I>pos = 0</I>, <B>size_t </B><I>numCols = 1</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasegetrowlabelvalue"></A>
+<H3>wxGridTableBase::GetRowLabelValue</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetRowLabelValue</B>(<B>int </B><I>row</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasegetcollabelvalue"></A>
+<H3>wxGridTableBase::GetColLabelValue</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetColLabelValue</B>(<B>int </B><I>col</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasesetrowlabelvalue"></A>
+<H3>wxGridTableBase::SetRowLabelValue</H3>
+<P>
+<B>void</B> <B>SetRowLabelValue</B>(<B>int </B><I>WXUNUSED(row)</I>, <B>const </B><I>wxString&amp;</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasesetcollabelvalue"></A>
+<H3>wxGridTableBase::SetColLabelValue</H3>
+<P>
+<B>void</B> <B>SetColLabelValue</B>(<B>int </B><I>WXUNUSED(col)</I>, <B>const </B><I>wxString&amp;</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasesetattrprovider"></A>
+<H3>wxGridTableBase::SetAttrProvider</H3>
+<P>
+<B>void</B> <B>SetAttrProvider</B>(<B>wxGridCellAttrProvider* </B><I>attrProvider</I>)<P>
+Attribute handling
+give us the attr provider to use - we take ownership of the pointer<P>
+
+
+<HR>
+<A NAME="wxgridtablebasegetattrprovider"></A>
+<H3>wxGridTableBase::GetAttrProvider</H3>
+<P>
+<B>wxGridCellAttrProvider*</B> <B>GetAttrProvider</B>() <B>const</B><P>
+get the currently used attr provider (may be NULL)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasecanhaveattributes"></A>
+<H3>wxGridTableBase::CanHaveAttributes</H3>
+<P>
+<B>bool</B> <B>CanHaveAttributes</B>()<P>
+Does this table allow attributes?  Default implementation creates
+a wxGridCellAttrProvider if necessary.<P>
+
+
+<HR>
+<A NAME="wxgridtablebaseupdateattrrows"></A>
+<H3>wxGridTableBase::UpdateAttrRows</H3>
+<P>
+<B>void</B> <B>UpdateAttrRows</B>(<B>size_t </B><I>pos</I>, <B>int </B><I>numRows</I>)<P>
+change row/col number in attribute if needed<P>
+
+
+<HR>
+<A NAME="wxgridtablebaseupdateattrcols"></A>
+<H3>wxGridTableBase::UpdateAttrCols</H3>
+<P>
+<B>void</B> <B>UpdateAttrCols</B>(<B>size_t </B><I>pos</I>, <B>int </B><I>numCols</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasegetattr"></A>
+<H3>wxGridTableBase::GetAttr</H3>
+<P>
+<B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>*</B> </B> <B>GetAttr</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+by default forwarded to wxGridCellAttrProvider if any. May be
+overridden to handle attributes directly in the table.<P>
+
+
+<HR>
+<A NAME="wxgridtablebasesetattr"></A>
+<H3>wxGridTableBase::SetAttr</H3>
+<P>
+<B>void</B> <B>SetAttr</B>(<B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>* </B></B><I>attr</I>, <B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+these functions take ownership of the pointer<P>
+
+
+<HR>
+<A NAME="wxgridtablebasesetrowattr"></A>
+<H3>wxGridTableBase::SetRowAttr</H3>
+<P>
+<B>void</B> <B>SetRowAttr</B>(<B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>* </B></B><I>attr</I>, <B>int </B><I>row</I>)<P>
+
+
+<HR>
+<A NAME="wxgridtablebasesetcolattr"></A>
+<H3>wxGridTableBase::SetColAttr</H3>
+<P>
+<B>void</B> <B>SetColAttr</B>(<B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>* </B></B><I>attr</I>, <B>int </B><I>col</I>)<P>
+
+</FONT></BODY></HTML>

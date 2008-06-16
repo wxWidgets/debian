@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-June-1997
-// RCS-ID:      $Id: _menu.i,v 1.16.2.1 2006/01/10 21:23:25 RD Exp $
+// RCS-ID:      $Id: _menu.i 48312 2007-08-21 19:55:21Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,9 @@
 
 //---------------------------------------------------------------------------
 %newgroup
+
+wxLIST_WRAPPER(wxMenuItemList, wxMenuItem);
+
 
 
 MustHaveApp(wxMenu);
@@ -33,7 +36,7 @@ public:
     
     // append any kind of item (normal/check/radio/separator)
     wxMenuItem* Append(int id,
-                       const wxString& text,
+                       const wxString& text = wxPyEmptyString,
                        const wxString& help = wxPyEmptyString,
                        wxItemKind kind = wxITEM_NORMAL);
 
@@ -55,20 +58,28 @@ public:
                                            wxMenu *submenu,
                                            const wxString& help = wxPyEmptyString));
 
+    wxMenuItem* AppendSubMenu(wxMenu *submenu,
+                              const wxString& text,
+                              const wxString& help = wxPyEmptyString);
+
+    %disownarg(wxMenuItem*);
     // the most generic form of Append() - append anything
     %Rename(AppendItem, wxMenuItem*, Append(wxMenuItem *item));
+    // insert an item before given position
+    %Rename(InsertItem, wxMenuItem*, Insert(size_t pos, wxMenuItem *item));
+    // prepend an item to the menu
+    %Rename(PrependItem,  wxMenuItem*, Prepend(wxMenuItem *item));
+    %cleardisown(wxMenuItem*);
+
 
     // insert a break in the menu (only works when appending the items, not
     // inserting them)
     virtual void Break();
 
     // insert an item before given position
-    %Rename(InsertItem, wxMenuItem*, Insert(size_t pos, wxMenuItem *item));
-
-    // insert an item before given position
     wxMenuItem* Insert(size_t pos,
                        int id,
-                       const wxString& text,
+                       const wxString& text = wxPyEmptyString,
                        const wxString& help = wxPyEmptyString,
                        wxItemKind kind = wxITEM_NORMAL);
 
@@ -94,12 +105,9 @@ public:
                                          wxMenu *submenu,
                                          const wxString& help = wxPyEmptyString));
 
-    // prepend an item to the menu
-    %Rename(PrependItem,  wxMenuItem*, Prepend(wxMenuItem *item));
-
     // prepend any item to the menu
     wxMenuItem* Prepend(int id,
-                        const wxString& text,
+                        const wxString& text = wxPyEmptyString,
                         const wxString& help = wxPyEmptyString,
                         wxItemKind kind = wxITEM_NORMAL);
 
@@ -122,31 +130,49 @@ public:
                                            wxMenu *submenu,
                                            const wxString& help = wxPyEmptyString));
 
+    
     // detach an item from the menu, but don't delete it so that it can be
     // added back later (but if it's not, the caller is responsible for
     // deleting it!)
+    %newobject Remove;
     wxMenuItem *Remove(int id);
-    %Rename(RemoveItem,  wxMenuItem*, Remove(wxMenuItem *item));
 
+    %feature("shadow") Remove(wxMenuItem *item) %{
+        def RemoveItem(self, item):
+            """RemoveItem(self, MenuItem item) -> MenuItem"""
+            #// The return object is always the parameter, so return that 
+            #// proxy instead of the new one
+            val = _core_.Menu_RemoveItem(self, item)
+            item.this.own(val.this.own())
+            val.this.disown()
+            return item
+    %}
+    %Rename(RemoveItem,  wxMenuItem*, Remove(wxMenuItem *item));
+    
     // delete an item from the menu (submenus are not destroyed by this
     // function, see Destroy)
     bool Delete(int id);
     %Rename(DeleteItem,  bool, Delete(wxMenuItem *item));
 
-    // delete the item from menu and destroy it (if it's a submenu)
+    %pythonPrepend Destroy "args[0].this.own(False)"
     %extend { void Destroy() { delete self; } }
-    %Rename(DestroyId,  bool, Destroy(int id));
-    %Rename(DestroyItem,  bool, Destroy(wxMenuItem *item));
+    
+    // delete the item from menu and destroy it (if it's a submenu)
+    %pythonPrepend Destroy "";
+    DocDeclStrName(
+        bool , Destroy(int id),
+        "", "",
+        DestroyId);
+    
+    DocDeclStrName(
+        bool , Destroy(wxMenuItem *item),
+        "", "",
+        DestroyItem);
 
 
     // get the items
     size_t GetMenuItemCount() const;
-    %extend {
-        PyObject* GetMenuItems() {
-            wxMenuItemList& list = self->GetMenuItems();
-            return wxPy_ConvertList(&list);
-        }
-    }
+    wxMenuItemList& GetMenuItems();
 
     // search
     int FindItem(const wxString& item) const;
@@ -205,6 +231,21 @@ public:
     // set/get the parent of this menu
     void SetParent(wxMenu *parent);
     wxMenu *GetParent() const;
+
+    
+    //  Returns the stripped label
+    wxString GetLabelText(int itemid) const;
+
+    %property(EventHandler, GetEventHandler, SetEventHandler, doc="See `GetEventHandler` and `SetEventHandler`");
+    %property(HelpString, GetHelpString, SetHelpString, doc="See `GetHelpString` and `SetHelpString`");
+    %property(InvokingWindow, GetInvokingWindow, SetInvokingWindow, doc="See `GetInvokingWindow` and `SetInvokingWindow`");
+    %property(MenuBar, GetMenuBar, doc="See `GetMenuBar`");
+    %property(MenuItemCount, GetMenuItemCount, doc="See `GetMenuItemCount`");
+    %property(MenuItems, GetMenuItems, doc="See `GetMenuItems`");
+    %property(Parent, GetParent, SetParent, doc="See `GetParent` and `SetParent`");
+    %property(Style, GetStyle, doc="See `GetStyle`");
+    %property(Title, GetTitle, SetTitle, doc="See `GetTitle` and `SetTitle`");
+    
 };
 
 //---------------------------------------------------------------------------
@@ -300,6 +341,9 @@ public:
     // called before deleting the menubar normally
     virtual void Detach();
 
+    // update all menu item states in all menus
+    virtual void UpdateMenus();
+
 #ifdef __WXMAC__
     static void SetAutoWindowMenu( bool enable );
     static bool GetAutoWindowMenu();
@@ -309,6 +353,38 @@ public:
         static bool GetAutoWindowMenu() { return false; }
     }
 #endif
+
+    // Gets the original label at the top-level of the menubar
+    wxString GetMenuLabel(size_t pos) const;
+
+    // Replacement for SetLabelTop
+    void SetMenuLabel(size_t pos, const wxString& label) { SetLabelTop(pos, label); }
+
+    // Gets the original label at the top-level of the menubar
+    // Implemented per port, since we can't have virtual functions in the stable branch.
+    // wxString GetMenuLabel(size_t pos) const;
+
+    // Get the text only, from the label at the top-level of the menubar
+    wxString GetMenuLabelText(size_t pos) const;
+
+
+    %pythoncode {
+        def GetMenus(self):
+            """Return a list of (menu, label) items for the menus in the MenuBar. """
+            return [(self.GetMenu(i), self.GetLabelTop(i)) 
+                    for i in range(self.GetMenuCount())]
+            
+        def SetMenus(self, items):
+            """Clear and add new menus to the MenuBar from a list of (menu, label) items. """
+            for i in range(self.GetMenuCount()-1, -1, -1):
+                self.Remove(i)
+            for m, l in items:
+                self.Append(m, l)
+    }
+    
+    %property(Frame, GetFrame, doc="See `GetFrame`");
+    %property(MenuCount, GetMenuCount, doc="See `GetMenuCount`");
+    %property(Menus, GetMenus, SetMenus, doc="See `GetMenus` and `SetMenus`");
 };
 
 //---------------------------------------------------------------------------
@@ -316,12 +392,23 @@ public:
 
 class wxMenuItem : public wxObject {
 public:
-    wxMenuItem(wxMenu* parentMenu=NULL, int id=wxID_ANY,
+    // turn off this typemap
+    %typemap(out) wxMenuItem*;    
+
+    wxMenuItem(wxMenu* parentMenu=NULL, int id=wxID_SEPARATOR,
                const wxString& text = wxPyEmptyString,
                const wxString& help = wxPyEmptyString,
                wxItemKind kind = wxITEM_NORMAL,
                wxMenu* subMenu = NULL);
+    ~wxMenuItem();
 
+    // Turn it back on again
+    %typemap(out) wxMenuItem* { $result = wxPyMake_wxObject($1, $owner); }
+
+    // Make Destroy a NOP.  The destruction will be handled by SWIG.
+    %pythoncode { def Destroy(self): pass }
+
+    
     // the menu we're in
     wxMenu *GetMenu() const;
     void SetMenu(wxMenu* menu);
@@ -423,6 +510,37 @@ public:
         void ResetOwnerDrawn() {}
     }
 #endif
+
+    // return the item label including any mnemonics and accelerators.
+    // This used to be called GetText.
+    wxString GetItemLabel() const;
+
+    // Sets the label. This function replaces SetText.
+    void SetItemLabel(const wxString& str);
+
+    // return just the text of the item label, without any mnemonics
+    // This used to be called GetLabel.
+    wxString GetItemLabelText() const;
+
+    // return just the text part of the given label. In 2.9 and up, this is implemented in
+    // platform-specific code, but is now implemented in terms of GetLabelFromText.
+    static wxString GetLabelText(const wxString& label);
+    %property(Accel, GetAccel, SetAccel, doc="See `GetAccel` and `SetAccel`");
+    %property(BackgroundColour, GetBackgroundColour, SetBackgroundColour, doc="See `GetBackgroundColour` and `SetBackgroundColour`");
+    %property(Bitmap, GetBitmap, SetBitmap, doc="See `GetBitmap` and `SetBitmap`");
+    %property(DisabledBitmap, GetDisabledBitmap, SetDisabledBitmap, doc="See `GetDisabledBitmap` and `SetDisabledBitmap`");
+    %property(Font, GetFont, SetFont, doc="See `GetFont` and `SetFont`");
+    %property(Help, GetHelp, SetHelp, doc="See `GetHelp` and `SetHelp`");
+    %property(Id, GetId, SetId, doc="See `GetId` and `SetId`");
+    %property(Kind, GetKind, SetKind, doc="See `GetKind` and `SetKind`");
+    %property(Label, GetLabel, doc="See `GetLabel`");
+    %property(MarginWidth, GetMarginWidth, SetMarginWidth, doc="See `GetMarginWidth` and `SetMarginWidth`");
+    %property(Menu, GetMenu, SetMenu, doc="See `GetMenu` and `SetMenu`");
+    %property(SubMenu, GetSubMenu, SetSubMenu, doc="See `GetSubMenu` and `SetSubMenu`");
+    %property(Text, GetText, SetText, doc="See `GetText` and `SetText`");
+    %property(TextColour, GetTextColour, SetTextColour, doc="See `GetTextColour` and `SetTextColour`");
+    %property(ItemLabel, GetItemLabel);
+    
 };
 
 //---------------------------------------------------------------------------

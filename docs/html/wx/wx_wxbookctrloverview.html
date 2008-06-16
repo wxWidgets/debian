@@ -1,0 +1,155 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxBookCtrl overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxbookctrloverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wximagelistoverview.html#wximagelistoverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_commondialogsoverview.html#commondialogsoverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxBookCtrl overview</H2>
+<P>
+Classes: <A HREF="wx_wxnotebook.html#wxnotebook">wxNotebook</A>, <A HREF="wx_wxlistbook.html#wxlistbook">wxListbook</A>, <A HREF="wx_wxchoicebook.html#wxchoicebook">wxChoicebook</A>,
+<A HREF="wx_wxtreebook.html#wxtreebook">wxTreebook</A>, <A HREF="wx_wxtoolbook.html#wxtoolbook">wxToolbook</A><P>
+<A HREF="#wxbookctrlintro">Introduction</A><BR>
+<A HREF="#wxbestbookctrl">Best book</A><BR>
+<P>
+
+<HR>
+<A NAME="wxbookctrlintro"></A>
+<H3>Introduction</H3>
+<P>
+A book control is a convenient way of displaying multiple pages of information,
+displayed one page at a time. wxWidgets has five variants of this control:<P>
+<UL>
+
+<LI> <A HREF="wx_wxnotebook.html#wxnotebook">wxNotebook</A>: uses a row of tabs
+<LI> <A HREF="wx_wxlistbook.html#wxlistbook">wxListbook</A>: controlled by a <A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A>
+<LI> <A HREF="wx_wxchoicebook.html#wxchoicebook">wxChoicebook</A>: controlled by a <A HREF="wx_wxchoice.html#wxchoice">wxChoice</A>
+<LI> <A HREF="wx_wxtreebook.html#wxtreebook">wxTreebook</A>: controlled by a <A HREF="wx_wxtreectrl.html#wxtreectrl">wxTreeCtrl</A>
+<LI> <A HREF="wx_wxtoolbook.html#wxtoolbook">wxToolbook</A>: controlled by a <A HREF="wx_wxtoolbar.html#wxtoolbar">wxToolBar</A>
+</UL>
+<P>
+See <A HREF="wx_samples.html#samplenotebook">Notebook sample</A> for an example of wxBookCtrl usage.<P>
+
+<HR>
+<A NAME="wxbestbookctrl"></A>
+<H3>Best book</H3>
+<P>
+wxBookCtrl is mapped to the class best suited for a given platform.
+Currently it provides <A HREF="wx_wxchoicebook.html#wxchoicebook">wxChoicebook</A> for smartphones equipped with
+WinCE, and <A HREF="wx_wxnotebook.html#wxnotebook">wxNotebook</A> for all other platforms. The mapping consists of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBookCtrl
+</FONT></TD>
+
+<TD VALIGN=TOP>
+wxChoicebook or wxNotebook
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBookCtrlEvent
+</FONT></TD>
+
+<TD VALIGN=TOP>
+wxChoicebookEvent or wxNotebookEvent
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxEVT_COMMAND_BOOKCTRL_PAGE_CHANGED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED or wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxEVT_COMMAND_BOOKCTRL_PAGE_CHANGING
+</FONT></TD>
+
+<TD VALIGN=TOP>
+wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING or wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+EVT_BOOKCTRL_PAGE_CHANGED(id, fn)
+</FONT></TD>
+
+<TD VALIGN=TOP>
+EVT_CHOICEBOOK_PAGE_CHANGED(id, fn) or EVT_NOTEBOOK_PAGE_CHANGED(id, fn)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+EVT_BOOKCTRL_PAGE_CHANGING(id, fn)
+</FONT></TD>
+
+<TD VALIGN=TOP>
+EVT_CHOICEBOOK_PAGE_CHANGING(id, fn) or EVT_NOTEBOOK_PAGE_CHANGING(id, fn)
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+For orientation of the book controller, use following flags in style:
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBK_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+controller above pages
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBK_BOTTOM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+controller below pages
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBK_LEFT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+controller on the left
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBK_RIGHT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+controller on the right
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBK_DEFAULT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+native controller placement
+</FONT></TD></TR>
+
+
+</TABLE>
+
+
+</FONT></BODY></HTML>

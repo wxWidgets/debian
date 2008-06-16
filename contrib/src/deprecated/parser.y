@@ -1,4 +1,4 @@
-/* Version: $Id: parser.y,v 1.3 2005/05/04 18:57:50 JS Exp $ */
+/* Version: $Id: parser.y 33948 2005-05-04 18:57:50Z JS $ */
 /* Copyright:    (c) Julian Smart */
 /* Licence:      wxWindows Licence */
  %{

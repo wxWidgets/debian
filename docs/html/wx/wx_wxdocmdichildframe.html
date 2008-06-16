@@ -1,0 +1,118 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDocMDIChildFrame</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdocmdichildframe"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdocmanager.html#wxdocmanager"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdocmdiparentframe.html#wxdocmdiparentframe"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDocMDIChildFrame</H2>
+<P>
+The wxDocMDIChildFrame class provides a default frame for displaying documents
+on separate windows. This class can only be used for MDI child frames.<P>
+The class is part of the document/view framework supported by wxWidgets,
+and cooperates with the <A HREF="wx_wxview.html#wxview">wxView</A>, <A HREF="wx_wxdocument.html#wxdocument">wxDocument</A>,
+<A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A> and <A HREF="wx_wxdoctemplate.html#wxdoctemplate">wxDocTemplate</A> classes.<P>
+See the example application in <TT>samples/docview</TT>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxmdichildframe.html#wxmdichildframe">wxMDIChildFrame</A><BR>
+
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/docmdi.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_docviewoverview.html#docviewoverview">Document/view overview</A>, <A HREF="wx_wxmdichildframe.html#wxmdichildframe">wxMDIChildFrame</A><P>
+<A HREF="#wxdocmdichildframemchilddocument">wxDocMDIChildFrame::m_childDocument</A><BR>
+<A HREF="#wxdocmdichildframemchildview">wxDocMDIChildFrame::m_childView</A><BR>
+<A HREF="#wxdocmdichildframector">wxDocMDIChildFrame::wxDocMDIChildFrame</A><BR>
+<A HREF="#wxdocmdichildframedtor">wxDocMDIChildFrame::~wxDocMDIChildFrame</A><BR>
+<A HREF="#wxdocmdichildframegetdocument">wxDocMDIChildFrame::GetDocument</A><BR>
+<A HREF="#wxdocmdichildframegetview">wxDocMDIChildFrame::GetView</A><BR>
+<A HREF="#wxdocmdichildframeonactivate">wxDocMDIChildFrame::OnActivate</A><BR>
+<A HREF="#wxdocmdichildframeonclosewindow">wxDocMDIChildFrame::OnCloseWindow</A><BR>
+<A HREF="#wxdocmdichildframesetdocument">wxDocMDIChildFrame::SetDocument</A><BR>
+<A HREF="#wxdocmdichildframesetview">wxDocMDIChildFrame::SetView</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdocmdichildframemchilddocument"></A>
+<H3>wxDocMDIChildFrame::m_childDocument</H3>
+<P>
+wxDocument* m_childDocument<P>
+The document associated with the frame.<P>
+
+<HR>
+<A NAME="wxdocmdichildframemchildview"></A>
+<H3>wxDocMDIChildFrame::m_childView</H3>
+<P>
+wxView* m_childView<P>
+The view associated with the frame.<P>
+
+<HR>
+<A NAME="wxdocmdichildframector"></A>
+<H3>wxDocMDIChildFrame::wxDocMDIChildFrame</H3>
+<P>
+<B></B> <B>wxDocMDIChildFrame</B>(<B><A HREF="wx_wxdocument.html#wxdocument">wxDocument</A>* </B></B><I>doc</I>, <B><A HREF="wx_wxview.html#wxview">wxView</A>* </B></B><I>view</I>, <B><A HREF="wx_wxframe.html#wxframe">wxFrame</A>* </B></B><I>parent</I>,
+ <B>wxWindowID</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>,
+ <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+ <B>long</B><I> style = wxDEFAULT_FRAME_STYLE</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "frame"</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxdocmdichildframedtor"></A>
+<H3>wxDocMDIChildFrame::~wxDocMDIChildFrame</H3>
+<P>
+<B></B> <B>~wxDocMDIChildFrame</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdocmdichildframegetdocument"></A>
+<H3>wxDocMDIChildFrame::GetDocument</H3>
+<P>
+<B><A HREF="wx_wxdocument.html#wxdocument">wxDocument</A>*</B> </B> <B>GetDocument</B>() <B>const</B><P>
+Returns the document associated with this frame.<P>
+
+<HR>
+<A NAME="wxdocmdichildframegetview"></A>
+<H3>wxDocMDIChildFrame::GetView</H3>
+<P>
+<B><A HREF="wx_wxview.html#wxview">wxView</A>*</B> </B> <B>GetView</B>() <B>const</B><P>
+Returns the view associated with this frame.<P>
+
+<HR>
+<A NAME="wxdocmdichildframeonactivate"></A>
+<H3>wxDocMDIChildFrame::OnActivate</H3>
+<P>
+<B>void</B> <B>OnActivate</B>(<B><A HREF="wx_wxactivateevent.html#wxactivateevent">wxActivateEvent</A></B></B><I> event</I>)<P>
+Sets the currently active view to be the frame's view. You may need
+to override (but still call) this function in order to set the keyboard
+focus for your subwindow.<P>
+
+<HR>
+<A NAME="wxdocmdichildframeonclosewindow"></A>
+<H3>wxDocMDIChildFrame::OnCloseWindow</H3>
+<P>
+<B>void</B> <B>OnCloseWindow</B>(<B><A HREF="wx_wxcloseevent.html#wxcloseevent">wxCloseEvent</A>&</B></B><I> event</I>)<P>
+Closes and deletes the current view and document.<P>
+
+<HR>
+<A NAME="wxdocmdichildframesetdocument"></A>
+<H3>wxDocMDIChildFrame::SetDocument</H3>
+<P>
+<B>void</B> <B>SetDocument</B>(<B><A HREF="wx_wxdocument.html#wxdocument">wxDocument</A> *</B></B><I>doc</I>)<P>
+Sets the document for this frame.<P>
+
+<HR>
+<A NAME="wxdocmdichildframesetview"></A>
+<H3>wxDocMDIChildFrame::SetView</H3>
+<P>
+<B>void</B> <B>SetView</B>(<B><A HREF="wx_wxview.html#wxview">wxView</A> *</B></B><I>view</I>)<P>
+Sets the view for this frame.<P>
+
+
+</FONT></BODY></HTML>

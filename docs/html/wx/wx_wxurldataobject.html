@@ -1,0 +1,65 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxURLDataObject</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxurldataobject"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxurl.html#wxurl"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxvalidator.html#wxvalidator"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxURLDataObject</H2>
+<P>
+wxURLDataObject is a <A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> containing an URL
+and can be used e.g. when you need to put an URL on or retrieve it from the
+clipboard:
+<PRE>
+    wxTheClipboard-&gt;SetData(new wxURLDataObject(url));
+</PRE>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+Under MSW:<P>
+<A HREF="wx_wxdataobjectcomposite.html#wxdataobjectcomposite">wxDataObjectComposite</A><BR>
+
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A><P>
+Under the other platforms:<P>
+<A HREF="wx_wxtextdataobject.html#wxtextdataobject">wxTextDataObject</A><BR>
+
+<A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple">wxDataObjectSimple</A><BR>
+
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataobj.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdndoverview.html#wxdndoverview">Clipboard and drag and drop overview</A>,<BR>
+
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxurldataobjectctor">wxURLDataObject::wxURLDataObject</A><BR>
+<A HREF="#wxurldataobjectgeturl">wxURLDataObject::GetURL</A><BR>
+<A HREF="#wxurldataobjectseturl">wxURLDataObject::SetURL</A><BR>
+<P>
+
+<HR>
+<A NAME="wxurldataobjectctor"></A>
+<H3>wxURLDataObject::wxURLDataObject</H3>
+<P>
+<B></B> <B>wxURLDataObject</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>url = wxEmptyString</I>)<P>
+Constructor, may be used to initialize the URL. If <I>url</I> is empty, 
+<A HREF="wx_wxurldataobject.html#wxurldataobjectseturl">SetURL</A> can be used later.<P>
+
+
+<HR>
+<A NAME="wxurldataobjectgeturl"></A>
+<H3>wxURLDataObject::GetURL</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetURL</B>() <B>const</B><P>
+Returns the URL stored by this object, as a string.<P>
+
+
+<HR>
+<A NAME="wxurldataobjectseturl"></A>
+<H3>wxURLDataObject::SetURL</H3>
+<P>
+<B>void</B> <B>SetURL</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>url</I>)<P>
+Sets the URL stored by this object.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,123 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataViewRenderer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataviewrenderer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdataviewsortedlistmodel.html#wxdataviewsortedlistmodel"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdataviewtextrenderer.html#wxdataviewtextrenderer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataViewRenderer</H2>
+<P>
+
+This class is used by <A HREF="wx_wxdataviewctrl.html#wxdataviewctrl">wxDataViewCtrl</A> to
+render the individual cells. One instance of a renderer class is
+owned by <A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A>. There is
+a number of ready-to-use renderers provided:
+<A HREF="wx_wxdataviewtextrenderer.html#wxdataviewtextrenderer">wxDataViewTextRenderer</A>,
+<A HREF="wx_wxdataviewtogglerenderer.html#wxdataviewtogglerenderer">wxDataViewToggleRenderer</A>,
+<A HREF="wx_wxdataviewprogressrenderer.html#wxdataviewprogressrenderer">wxDataViewProgressRenderer</A>,
+<A HREF="wx_wxdataviewbitmaprenderer.html#wxdataviewbitmaprenderer">wxDataViewBitmapRenderer</A>,
+<A HREF="wx_wxdataviewdaterenderer.html#wxdataviewdaterenderer">wxDataViewDateRenderer</A>.<P>
+
+Additionally, the user can write own renderers by deriving from
+<A HREF="wx_wxdataviewcustomrenderer.html#wxdataviewcustomrenderer">wxDataViewCustomRenderer</A>.<P>
+These flags control the behaviour of the renderer and they
+are used for controlling in what mode the renderer shall
+render its contents:<P>
+<FONT SIZE=2>
+<PRE>
+enum wxDataViewCellMode
+{
+    wxDATAVIEW_CELL_INERT,
+    wxDATAVIEW_CELL_ACTIVATABLE,
+    wxDATAVIEW_CELL_EDITABLE
+};
+
+enum wxDataViewCellRenderState
+{
+    wxDATAVIEW_CELL_SELECTED    = 1,
+    wxDATAVIEW_CELL_PRELIT      = 2,
+    wxDATAVIEW_CELL_INSENSITIVE = 4,
+    wxDATAVIEW_CELL_FOCUSED     = 8
+};
+</PRE>
+</FONT><P>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataview.h&gt;<P>
+
+<A HREF="#wxdataviewrendererwxdataviewrenderer">wxDataViewRenderer::wxDataViewRenderer</A><BR>
+<A HREF="#wxdataviewrenderergetmode">wxDataViewRenderer::GetMode</A><BR>
+<A HREF="#wxdataviewrenderergetowner">wxDataViewRenderer::GetOwner</A><BR>
+<A HREF="#wxdataviewrenderergetvalue">wxDataViewRenderer::GetValue</A><BR>
+<A HREF="#wxdataviewrenderergetvarianttype">wxDataViewRenderer::GetVariantType</A><BR>
+<A HREF="#wxdataviewrenderersetowner">wxDataViewRenderer::SetOwner</A><BR>
+<A HREF="#wxdataviewrenderersetvalue">wxDataViewRenderer::SetValue</A><BR>
+<A HREF="#wxdataviewrenderervalidate">wxDataViewRenderer::Validate</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataviewrendererwxdataviewrenderer"></A>
+<H3>wxDataViewRenderer::wxDataViewRenderer</H3>
+<P>
+<B></B> <B>wxDataViewRenderer</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>varianttype</I>, <B>wxDataViewCellMode </B><I>mode = wxDATAVIEW_CELL_INERT</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxdataviewrenderergetmode"></A>
+<H3>wxDataViewRenderer::GetMode</H3>
+<P>
+<B>virtual wxDataViewCellMode</B> <B>GetMode</B>()<P>
+Returns the cell mode.<P>
+
+<HR>
+<A NAME="wxdataviewrenderergetowner"></A>
+<H3>wxDataViewRenderer::GetOwner</H3>
+<P>
+<B>virtual <A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A>*</B> </B> <B>GetOwner</B>()<P>
+Returns pointer to the owning <A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A>.<P>
+
+<HR>
+<A NAME="wxdataviewrenderergetvalue"></A>
+<H3>wxDataViewRenderer::GetValue</H3>
+<P>
+<B>virtual bool</B> <B>GetValue</B>(<B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>& </B></B><I>value</I>)<P>
+This methods retrieves the value from the renderer in order to
+transfer the value back to the data model. Returns <I>false</I>
+on failure.<P>
+
+<HR>
+<A NAME="wxdataviewrenderergetvarianttype"></A>
+<H3>wxDataViewRenderer::GetVariantType</H3>
+<P>
+<B>virtual <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetVariantType</B>()<P>
+Returns a string with the type of the <A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>
+supported by this renderer.<P>
+
+<HR>
+<A NAME="wxdataviewrenderersetowner"></A>
+<H3>wxDataViewRenderer::SetOwner</H3>
+<P>
+<B>virtual void</B> <B>SetOwner</B>(<B><A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A>* </B></B><I>owner</I>)<P>
+Sets the owning <A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A>. This
+is usually called from within wxDataViewColumn.<P>
+
+<HR>
+<A NAME="wxdataviewrenderersetvalue"></A>
+<H3>wxDataViewRenderer::SetValue</H3>
+<P>
+<B>virtual bool</B> <B>SetValue</B>(<B>const <A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>& </B></B><I>value</I>)<P>
+Set the value of the renderer (and thus its cell) to <I>value</I>.
+The internal code will then render this cell with this data.<P>
+
+
+<HR>
+<A NAME="wxdataviewrenderervalidate"></A>
+<H3>wxDataViewRenderer::Validate</H3>
+<P>
+<B>virtual bool</B> <B>Validate</B>(<B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>& </B></B><I>value</I>)<P>
+To be implemented.<P>
+
+
+</FONT></BODY></HTML>

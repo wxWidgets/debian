@@ -1,0 +1,84 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxColourDatabase</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcolourdatabase"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcolourdata.html#wxcolourdata"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcolourdialog.html#wxcolourdialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxColourDatabase</H2>
+<P>
+wxWidgets maintains a database of standard RGB colours for a predefined
+set of named colours (such as "BLACK'', "LIGHT GREY''). The
+application may add to this set if desired by using
+<A HREF="wx_wxcolourdatabase.html#wxcolourdatabaseaddcolour">AddColour</A> and may use it to look up
+colours by names using <A HREF="wx_wxcolourdatabase.html#wxcolourdatabasefind">Find</A> or find the names
+for the standard colour suing <A HREF="wx_wxcolourdatabase.html#wxcolourdatabasefindname">FindName</A>.<P>
+There is one predefined instance of this class called
+<B>wxTheColourDatabase</B>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/gdicmn.h&gt;<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The standard database contains at least the following colours:<P>
+AQUAMARINE, BLACK, BLUE, BLUE VIOLET, BROWN, CADET BLUE, CORAL,
+CORNFLOWER BLUE, CYAN, DARK GREY, DARK GREEN, DARK OLIVE GREEN, DARK
+ORCHID, DARK SLATE BLUE, DARK SLATE GREY DARK TURQUOISE, DIM GREY,
+FIREBRICK, FOREST GREEN, GOLD, GOLDENROD, GREY, GREEN, GREEN YELLOW,
+INDIAN RED, KHAKI, LIGHT BLUE, LIGHT GREY, LIGHT STEEL BLUE, LIME GREEN,
+MAGENTA, MAROON, MEDIUM AQUAMARINE, MEDIUM BLUE, MEDIUM FOREST GREEN,
+MEDIUM GOLDENROD, MEDIUM ORCHID, MEDIUM SEA GREEN, MEDIUM SLATE BLUE,
+MEDIUM SPRING GREEN, MEDIUM TURQUOISE, MEDIUM VIOLET RED, MIDNIGHT BLUE,
+NAVY, ORANGE, ORANGE RED, ORCHID, PALE GREEN, PINK, PLUM, PURPLE, RED,
+SALMON, SEA GREEN, SIENNA, SKY BLUE, SLATE BLUE, SPRING GREEN, STEEL
+BLUE, TAN, THISTLE, TURQUOISE, VIOLET, VIOLET RED, WHEAT, WHITE, YELLOW,
+YELLOW GREEN.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcolour.html#wxcolour">wxColour</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxcolourdatabaseconstr">wxColourDatabase::wxColourDatabase</A><BR>
+<A HREF="#wxcolourdatabaseaddcolour">wxColourDatabase::AddColour</A><BR>
+<A HREF="#wxcolourdatabasefind">wxColourDatabase::Find</A><BR>
+<A HREF="#wxcolourdatabasefindname">wxColourDatabase::FindName</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcolourdatabaseconstr"></A>
+<H3>wxColourDatabase::wxColourDatabase</H3>
+<P>
+<B></B> <B>wxColourDatabase</B>()<P>
+Constructs the colour database. It will be initialized at the first use.<P>
+
+
+<HR>
+<A NAME="wxcolourdatabaseaddcolour"></A>
+<H3>wxColourDatabase::AddColour</H3>
+<P>
+<B>void</B> <B>AddColour</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>colourName</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I>colour</I>)<P>
+<B>void</B> <B>AddColour</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>colourName</I>, <B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A>* </B></B><I>colour</I>)<P>
+Adds a colour to the database. If a colour with the same name already exists,
+it is replaced.<P>
+Please note that the overload taking a pointer is deprecated and will be
+removed in the next wxWidgets version, please don't use it.<P>
+
+
+<HR>
+<A NAME="wxcolourdatabasefind"></A>
+<H3>wxColourDatabase::Find</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>Find</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>colourName</I>)<P>
+Finds a colour given the name. Returns an invalid colour object (that is, such
+that its <A HREF="wx_wxcolour.html#wxcolourisok">Ok()</A> method returns <TT>false</TT>) if the colour wasn't
+found in the database.<P>
+
+
+<HR>
+<A NAME="wxcolourdatabasefindname"></A>
+<H3>wxColourDatabase::FindName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>FindName</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>) <B>const</B><P>
+Finds a colour name given the colour. Returns an empty string if the colour is
+not found in the database.<P>
+
+</FONT></BODY></HTML>

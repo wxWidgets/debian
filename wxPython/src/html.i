@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Nov-1998
-// RCS-ID:      $Id: html.i,v 1.69.2.2 2006/02/10 18:26:43 RD Exp $
+// RCS-ID:      $Id: html.i 47871 2007-08-04 04:11:56Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -25,6 +25,9 @@
 #include <wx/html/htmlwin.h>
 #include <wx/html/htmprint.h>
 #include <wx/html/helpctrl.h>
+#include <wx/html/helpwnd.h>
+#include <wx/html/helpfrm.h>
+#include <wx/html/helpdlg.h>
 
 %}
 
@@ -35,9 +38,6 @@
 %pythoncode { wx = _core }
 %pythoncode { __docfilter__ = wx.__DocFilter(globals()) }
 
-%include _html_rename.i
-
-
 MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
 MAKE_CONST_WXSTRING2(HtmlWindowNameStr,    wxT("htmlWindow"))
 MAKE_CONST_WXSTRING2(HtmlPrintoutTitleStr, wxT("Printout"))
@@ -46,11 +46,6 @@ MAKE_CONST_WXSTRING2(HtmlPrintingTitleStr, wxT("Printing"))
 
 // TODO: Split this file into multiple %included files that coresponds to the
 // wx/html include files (more or less.)
-
-//---------------------------------------------------------------------------
-
-%typemap(out) wxHtmlCell*         { $result = wxPyMake_wxObject($1, $owner); }
-%typemap(out) const wxHtmlCell*   { $result = wxPyMake_wxObject($1, $owner); }
 
 //---------------------------------------------------------------------------
 %newgroup
@@ -82,14 +77,6 @@ enum {
     wxHTML_COND_ISIMAGEMAP,
     wxHTML_COND_USER,
 
-
-    wxHTML_FONT_SIZE_1,
-    wxHTML_FONT_SIZE_2,
-    wxHTML_FONT_SIZE_3,
-    wxHTML_FONT_SIZE_4,
-    wxHTML_FONT_SIZE_5,
-    wxHTML_FONT_SIZE_6,
-    wxHTML_FONT_SIZE_7,
 };
 
 
@@ -130,6 +117,11 @@ public:
 
     void SetEvent(const wxMouseEvent *e);
     void SetHtmlCell(const wxHtmlCell * e);
+
+    %property(Event, GetEvent, SetEvent, doc="See `GetEvent` and `SetEvent`");
+    %property(Href, GetHref, doc="See `GetHref`");
+    %property(HtmlCell, GetHtmlCell, SetHtmlCell, doc="See `GetHtmlCell` and `SetHtmlCell`");
+    %property(Target, GetTarget, doc="See `GetTarget`");
 };
 
 //---------------------------------------------------------------------------
@@ -151,6 +143,12 @@ public:
     int GetBeginPos();
     int GetEndPos1();
     int GetEndPos2();
+    
+    %property(AllParams, GetAllParams, doc="See `GetAllParams`");
+    %property(BeginPos, GetBeginPos, doc="See `GetBeginPos`");
+    %property(EndPos1, GetEndPos1, doc="See `GetEndPos1`");
+    %property(EndPos2, GetEndPos2, doc="See `GetEndPos2`");
+    %property(Name, GetName, doc="See `GetName`");
 };
 
 //---------------------------------------------------------------------------
@@ -177,6 +175,14 @@ public:
 
     // void AddText(const char* txt) = 0;
     // void AddTag(const wxHtmlTag& tag);
+
+
+    // Returns HTML source inside the element (i.e. between the starting
+    // and ending tag)
+    wxString GetInnerSource(const wxHtmlTag& tag);
+
+    %property(FS, GetFS, SetFS, doc="See `GetFS` and `SetFS`");
+    %property(Source, GetSource, doc="See `GetSource`");
 };
 
 
@@ -191,6 +197,9 @@ public:
     int GetCharHeight();
     int GetCharWidth();
     wxPyHtmlWindow* GetWindow();
+    %pythoncode { GetWindow = wx._deprecated(GetWindow) }
+
+    wxHtmlWindowInterface *GetWindowInterface();
 
     // Sets fonts to be used when displaying HTML page. (if size null then default sizes used).
     %extend {
@@ -239,6 +248,21 @@ public:
     wxFont* CreateCurrentFont();
     wxHtmlLinkInfo GetLink();
 
+    %property(ActualColor, GetActualColor, SetActualColor, doc="See `GetActualColor` and `SetActualColor`");
+    %property(ActualColour, GetActualColour, SetActualColour, doc="See `GetActualColour` and `SetActualColour`");
+    %property(Align, GetAlign, SetAlign, doc="See `GetAlign` and `SetAlign`");
+    %property(CharHeight, GetCharHeight, doc="See `GetCharHeight`");
+    %property(CharWidth, GetCharWidth, doc="See `GetCharWidth`");
+    %property(Container, GetContainer, SetContainer, doc="See `GetContainer` and `SetContainer`");
+    %property(DC, GetDC, SetDC, doc="See `GetDC` and `SetDC`");
+    %property(FontBold, GetFontBold, SetFontBold, doc="See `GetFontBold` and `SetFontBold`");
+    %property(FontFixed, GetFontFixed, SetFontFixed, doc="See `GetFontFixed` and `SetFontFixed`");
+    %property(FontItalic, GetFontItalic, SetFontItalic, doc="See `GetFontItalic` and `SetFontItalic`");
+    %property(FontSize, GetFontSize, SetFontSize, doc="See `GetFontSize` and `SetFontSize`");
+    %property(FontUnderlined, GetFontUnderlined, SetFontUnderlined, doc="See `GetFontUnderlined` and `SetFontUnderlined`");
+    %property(Link, GetLink, SetLink, doc="See `GetLink` and `SetLink`");
+    %property(LinkColor, GetLinkColor, SetLinkColor, doc="See `GetLinkColor` and `SetLinkColor`");
+    %property(WindowInterface, GetWindowInterface, doc="See `GetWindowInterface`");
 };
 
 
@@ -269,7 +293,7 @@ IMP_PYCALLBACK_BOOL_TAG_pure(wxPyHtmlTagHandler, wxHtmlTagHandler, HandleTag);
 %rename(HtmlTagHandler) wxPyHtmlTagHandler;
 class wxPyHtmlTagHandler : public wxObject {
 public:
-    %pythonAppend wxPyHtmlTagHandler   "self._setCallbackInfo(self, HtmlTagHandler)"
+    %pythonAppend wxPyHtmlTagHandler   setCallbackInfo(HtmlTagHandler)
     wxPyHtmlTagHandler();
 
     void _setCallbackInfo(PyObject* self, PyObject* _class);
@@ -277,6 +301,8 @@ public:
     void SetParser(wxHtmlParser *parser);
     wxHtmlParser* GetParser();
     void ParseInner(const wxHtmlTag& tag);
+
+    %property(Parser, GetParser, SetParser, doc="See `GetParser` and `SetParser`");
 };
 
 
@@ -308,7 +334,7 @@ IMP_PYCALLBACK_BOOL_TAG_pure(wxPyHtmlWinTagHandler, wxHtmlWinTagHandler, HandleT
 %rename(HtmlWinTagHandler) wxPyHtmlWinTagHandler;
 class wxPyHtmlWinTagHandler : public wxPyHtmlTagHandler {
 public:
-    %pythonAppend wxPyHtmlWinTagHandler    "self._setCallbackInfo(self, HtmlWinTagHandler)"
+    %pythonAppend wxPyHtmlWinTagHandler    setCallbackInfo(HtmlWinTagHandler)
     wxPyHtmlWinTagHandler();
 
     void _setCallbackInfo(PyObject* self, PyObject* _class);
@@ -316,6 +342,8 @@ public:
     void SetParser(wxHtmlParser *parser);
     wxHtmlWinParser* GetParser();
     void ParseInner(const wxHtmlTag& tag);
+
+    %property(Parser, GetParser, SetParser, doc="See `GetParser` and `SetParser`");
 };
 
 
@@ -386,6 +414,10 @@ private:
 
 
 //---------------------------------------------------------------------------
+
+%typemap(out) wxHtmlCell*         { $result = wxPyMake_wxObject($1, $owner); }
+%typemap(out) const wxHtmlCell*   { $result = wxPyMake_wxObject($1, $owner); }
+
 //---------------------------------------------------------------------------
 %newgroup
 
@@ -419,6 +451,12 @@ public:
 
     const bool IsEmpty() const;
 
+    %property(FromCell, GetFromCell, doc="See `GetFromCell`");
+    %property(FromPos, GetFromPos, doc="See `GetFromPos`");
+    %property(FromPrivPos, GetFromPrivPos, SetFromPrivPos, doc="See `GetFromPrivPos` and `SetFromPrivPos`");
+    %property(ToCell, GetToCell, doc="See `GetToCell`");
+    %property(ToPos, GetToPos, doc="See `GetToPos`");
+    %property(ToPrivPos, GetToPrivPos, SetToPrivPos, doc="See `GetToPrivPos` and `SetToPrivPos`");
 };
 
 
@@ -446,6 +484,10 @@ public:
     const wxColour& GetFgColour() const;
     void SetBgColour(const wxColour& c);
     const wxColour& GetBgColour() const;
+
+    %property(BgColour, GetBgColour, SetBgColour, doc="See `GetBgColour` and `SetBgColour`");
+    %property(FgColour, GetFgColour, SetFgColour, doc="See `GetFgColour` and `SetFgColour`");
+    %property(SelectionState, GetSelectionState, SetSelectionState, doc="See `GetSelectionState` and `SetSelectionState`");
 };
 
 
@@ -457,14 +499,15 @@ class wxHtmlRenderingStyle
 public:
     virtual wxColour GetSelectedTextColour(const wxColour& clr) = 0;
     virtual wxColour GetSelectedTextBgColour(const wxColour& clr) = 0;
+
+    %property(SelectedTextBgColour, GetSelectedTextBgColour, doc="See `GetSelectedTextBgColour`");
+    %property(SelectedTextColour, GetSelectedTextColour, doc="See `GetSelectedTextColour`");
 };
 
 // Standard style:
 class wxDefaultHtmlRenderingStyle : public wxHtmlRenderingStyle
 {
 public:
-    virtual wxColour GetSelectedTextColour(const wxColour& clr);
-    virtual wxColour GetSelectedTextBgColour(const wxColour& clr);
 };
 
 
@@ -485,6 +528,10 @@ public:
     wxHtmlRenderingStyle& GetStyle();
 
     wxHtmlRenderingState& GetState();
+
+    %property(Selection, GetSelection, SetSelection, doc="See `GetSelection` and `SetSelection`");
+    %property(State, GetState, doc="See `GetState`");
+    %property(Style, GetStyle, SetStyle, doc="See `GetStyle` and `SetStyle`");
 };
 
 //---------------------------------------------------------------------------
@@ -504,6 +551,7 @@ public:
     %typemap(out) wxHtmlCell*;    // turn off this typemap
 
     wxHtmlCell();
+    ~wxHtmlCell();
 
     // Turn it back on again
     %typemap(out) wxHtmlCell* { $result = wxPyMake_wxObject($1, $owner); }
@@ -526,7 +574,11 @@ public:
     wxHtmlCell* GetFirstChild() const;
 
     // Returns cursor to be used when mouse is over the cell:
+    virtual wxCursor GetMouseCursor(wxHtmlWindowInterface *window) const;
+
+    // Returns cursor to be used when mouse is over the cell:
     wxCursor GetCursor() const;
+    %pythoncode { GetCursor = wx._deprecated(GetCursor) }
 
     // Formatting cells are not visible on the screen, they only alter
     // renderer's state.
@@ -534,7 +586,11 @@ public:
 
 
     void SetLink(const wxHtmlLinkInfo& link);
+
+    %disownarg(wxHtmlCell*);
     void SetNext(wxHtmlCell *cell);
+    %cleardisown(wxHtmlCell*);
+
     void SetParent(wxHtmlContainerCell *p);
     void SetPos(int x, int y);
     void Layout(int w);
@@ -544,7 +600,13 @@ public:
               wxHtmlRenderingInfo& info);
     const wxHtmlCell* Find(int condition, const void* param);
 
-    bool AdjustPagebreak(int* INOUT);
+
+    virtual bool ProcessMouseClick(wxHtmlWindowInterface *window,
+                                   const wxPoint& pos,
+                                   const wxMouseEvent& event);
+    
+// TODO:     bool AdjustPagebreak(int* INOUT,
+//                                 wxArrayInt& known_pagebreaks);
     void SetCanLiveOnPagebreak(bool can);
 
     // Can the line be broken before this cell?
@@ -563,7 +625,13 @@ public:
                                   unsigned flags = wxHTML_FIND_EXACT) const;
 
     // Returns absolute position of the cell on HTML canvas
-    wxPoint GetAbsPos() const;
+    // If rootCell is provided, then it's considered to be the root of the
+    // hierarchy and the returned value is relative to it.
+    wxPoint GetAbsPos(wxHtmlCell *rootCell = NULL) const;
+
+    // Returns root cell of the hierarchy (i.e. grand-grand-...-parent that
+    // doesn't have a parent itself)
+    wxHtmlCell *GetRootCell() const;
 
     // Returns first (last) terminal cell inside this cell. It may return NULL,
     // but it is rare -- only if there are no terminals in the tree.
@@ -582,6 +650,24 @@ public:
     // Converts the cell into text representation. If sel != NULL then
     // only part of the cell inside the selection is converted.
     wxString ConvertToText(wxHtmlSelection *sel) const;
+
+    %property(Cursor, GetCursor, doc="See `GetCursor`");
+    %property(Depth, GetDepth, doc="See `GetDepth`");
+    %property(Descent, GetDescent, doc="See `GetDescent`");
+    %property(FirstChild, GetFirstChild, doc="See `GetFirstChild`");
+    %property(FirstTerminal, GetFirstTerminal, doc="See `GetFirstTerminal`");
+    %property(Height, GetHeight, doc="See `GetHeight`");
+    %property(Id, GetId, SetId, doc="See `GetId` and `SetId`");
+    %property(LastTerminal, GetLastTerminal, doc="See `GetLastTerminal`");
+    %property(Link, GetLink, SetLink, doc="See `GetLink` and `SetLink`");
+    %property(MaxTotalWidth, GetMaxTotalWidth, doc="See `GetMaxTotalWidth`");
+    %property(MouseCursor, GetMouseCursor, doc="See `GetMouseCursor`");
+    %property(Next, GetNext, SetNext, doc="See `GetNext` and `SetNext`");
+    %property(Parent, GetParent, SetParent, doc="See `GetParent` and `SetParent`");
+    %property(PosX, GetPosX, doc="See `GetPosX`");
+    %property(PosY, GetPosY, doc="See `GetPosY`");
+    %property(RootCell, GetRootCell, doc="See `GetRootCell`");
+    %property(Width, GetWidth, doc="See `GetWidth`");
 };
 
 
@@ -599,7 +685,10 @@ class wxHtmlContainerCell : public wxHtmlCell {
 public:
     wxHtmlContainerCell(wxHtmlContainerCell *parent);
 
+    %disownarg(wxHtmlCell*);
     void InsertCell(wxHtmlCell *cell);
+    %cleardisown(wxHtmlCell*);
+
     void SetAlignHor(int al);
     int GetAlignHor();
     void SetAlignVer(int al);
@@ -616,6 +705,13 @@ public:
     void SetBorder(const wxColour& clr1, const wxColour& clr2);
     wxHtmlCell* GetFirstChild();
     %pragma(python) addtoclass = "GetFirstCell = GetFirstChild"
+
+    %property(AlignHor, GetAlignHor, SetAlignHor, doc="See `GetAlignHor` and `SetAlignHor`");
+    %property(AlignVer, GetAlignVer, SetAlignVer, doc="See `GetAlignVer` and `SetAlignVer`");
+    %property(BackgroundColour, GetBackgroundColour, SetBackgroundColour, doc="See `GetBackgroundColour` and `SetBackgroundColour`");
+    %property(FirstChild, GetFirstChild, doc="See `GetFirstChild`");
+    %property(Indent, GetIndent, SetIndent, doc="See `GetIndent` and `SetIndent`");
+    %property(IndentUnits, GetIndentUnits, doc="See `GetIndentUnits`");
 };
 
 
@@ -702,7 +798,7 @@ IMPLEMENT_ABSTRACT_CLASS(wxPyHtmlFilter, wxHtmlFilter);
 %rename(HtmlFilter) wxPyHtmlFilter;
 class wxPyHtmlFilter : public wxObject {
 public:
-    %pythonAppend wxPyHtmlFilter   "self._setCallbackInfo(self, HtmlFilter)"
+    %pythonAppend wxPyHtmlFilter   setCallbackInfo(HtmlFilter)
     wxPyHtmlFilter();
 
     void _setCallbackInfo(PyObject* self, PyObject* _class);
@@ -713,9 +809,93 @@ public:
 
 
 //---------------------------------------------------------------------------
-// wxHtmlWindow
+
+
+class wxHtmlWindowInterface
+{
+public:
+    /// Ctor
+    wxHtmlWindowInterface();
+    virtual ~wxHtmlWindowInterface();
+
+    /**
+        Called by the parser to set window's title to given text.
+     */
+    virtual void SetHTMLWindowTitle(const wxString& title) = 0;
+
+//     /**
+//         Called when a link is clicked.
+
+//         @param link information about the clicked link
+//      */
+//     virtual void OnHTMLLinkClicked(const wxHtmlLinkInfo& link) = 0;
+
+//     /**
+//         Called when the parser needs to open another URL (e.g. an image).
+
+//         @param type     Type of the URL request (e.g. image)
+//         @param url      URL the parser wants to open
+//         @param redirect If the return value is wxHTML_REDIRECT, then the
+//                         URL to redirect to will be stored in this variable
+//                         (the pointer must never be NULL)
+
+//         @return indicator of how to treat the request
+//      */
+//     virtual wxHtmlOpeningStatus OnHTMLOpeningURL(wxHtmlURLType type,
+//                                                  const wxString& url,
+//                                                  wxString *redirect) const = 0;
+
+    /**
+        Converts coordinates @a pos relative to given @a cell to
+        physical coordinates in the window.
+     */
+    virtual wxPoint HTMLCoordsToWindow(wxHtmlCell *cell,
+                                       const wxPoint& pos) const = 0;
+
+    /// Returns the window used for rendering (may be NULL).
+    virtual wxWindow* GetHTMLWindow() = 0;
+
+    /// Returns background colour to use by default.
+    virtual wxColour GetHTMLBackgroundColour() const = 0;
+
+    /// Sets window's background to colour @a clr.
+    virtual void SetHTMLBackgroundColour(const wxColour& clr) = 0;
+
+    /// Sets window's background to given bitmap.
+    virtual void SetHTMLBackgroundImage(const wxBitmap& bmpBg) = 0;
+
+    /// Sets status bar text.
+    virtual void SetHTMLStatusText(const wxString& text) = 0;
+
+    /// Type of mouse cursor
+    enum HTMLCursor
+    {
+        /// Standard mouse cursor (typically an arrow)
+        HTMLCursor_Default,
+        /// Cursor shown over links
+        HTMLCursor_Link,
+        /// Cursor shown over selectable text
+        HTMLCursor_Text
+    };
+
+    /**
+        Returns mouse cursor of given @a type.
+     */
+//    virtual wxCursor GetHTMLCursor(HTMLCursor type) const = 0;
+
+    %property(HTMLBackgroundColour, GetHTMLBackgroundColour, SetHTMLBackgroundColour, doc="See `GetHTMLBackgroundColour` and `SetHTMLBackgroundColour`");
+    %property(HTMLWindow, GetHTMLWindow, doc="See `GetHTMLWindow`");
+};
+
+
+//---------------------------------------------------------------------------
+// wxHtmlWindow 
 //---------------------------------------------------------------------------
 %newgroup
+
+// TODO?
+//      wxHtmlWindowInterface and wxHtmlWindowMouseHelper
+
 
 %{
 class wxPyHtmlWindow : public wxHtmlWindow {
@@ -739,7 +919,6 @@ public:
     }
 
     void OnLinkClicked(const wxHtmlLinkInfo& link);
-    void base_OnLinkClicked(const wxHtmlLinkInfo& link);
 
     wxHtmlOpeningStatus OnOpeningURL(wxHtmlURLType type,
                                       const wxString& url,
@@ -747,7 +926,7 @@ public:
 
     DEC_PYCALLBACK__STRING(OnSetTitle);
     DEC_PYCALLBACK__CELLINTINT(OnCellMouseHover);
-    DEC_PYCALLBACK__CELLINTINTME(OnCellClicked);
+    DEC_PYCALLBACK_BOOL_CELLINTINTME(OnCellClicked);
 
     PYPRIVATE;
 };
@@ -755,7 +934,7 @@ public:
 IMPLEMENT_ABSTRACT_CLASS( wxPyHtmlWindow, wxHtmlWindow );
 IMP_PYCALLBACK__STRING(wxPyHtmlWindow, wxHtmlWindow, OnSetTitle);
 IMP_PYCALLBACK__CELLINTINT(wxPyHtmlWindow, wxHtmlWindow, OnCellMouseHover);
-IMP_PYCALLBACK__CELLINTINTME(wxPyHtmlWindow, wxHtmlWindow, OnCellClicked);
+IMP_PYCALLBACK_BOOL_CELLINTINTME(wxPyHtmlWindow, wxHtmlWindow, OnCellClicked);
 
 
 void wxPyHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link) {
@@ -769,9 +948,6 @@ void wxPyHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link) {
     wxPyEndBlockThreads(blocked);
     if (! found)
         wxHtmlWindow::OnLinkClicked(link);
-}
-void wxPyHtmlWindow::base_OnLinkClicked(const wxHtmlLinkInfo& link) {
-    wxHtmlWindow::OnLinkClicked(link);
 }
 
 
@@ -815,9 +991,12 @@ wxHtmlOpeningStatus wxPyHtmlWindow::OnOpeningURL(wxHtmlURLType type,
 MustHaveApp(wxPyHtmlWindow);
 
 %rename(HtmlWindow) wxPyHtmlWindow;
-class wxPyHtmlWindow : public wxScrolledWindow {
+class wxPyHtmlWindow : public wxScrolledWindow //,
+                       // public wxHtmlWindowInterface //,
+                       // public wxHtmlWindowMouseHelper
+{
 public:
-    %pythonAppend wxPyHtmlWindow      "self._setCallbackInfo(self, HtmlWindow); self._setOORInfo(self)"
+    %pythonAppend wxPyHtmlWindow      "self._setOORInfo(self);" setCallbackInfo(HtmlWindow)
     %pythonAppend wxPyHtmlWindow()    ""
     %typemap(out) wxPyHtmlWindow*;    // turn off this typemap
 
@@ -843,7 +1022,7 @@ public:
 
     // Set HTML page and display it. !! source is HTML document itself,
     // it is NOT address/filename of HTML document. If you want to
-    // specify document location, use LoadPage() istead
+    // specify document location, use LoadPage() instead
     // Return value : False if an error occurred, True otherwise
     bool SetPage(const wxString& source);
 
@@ -900,7 +1079,7 @@ public:
                           const wxString& fixed_face = wxPyEmptyString);
 
     DocDeclStr(
-        void, SetTitle(const wxString& title),
+        void, SetLabel(const wxString& title),
         "", "");
 
     // Sets space between text and window borders.
@@ -949,15 +1128,60 @@ public:
     // Converts current page to text:
     wxString ToText();
 
-    void base_OnLinkClicked(const wxHtmlLinkInfo& link);
-    void base_OnSetTitle(const wxString& title);
-    void base_OnCellMouseHover(wxHtmlCell *cell, wxCoord x, wxCoord y);
-    void base_OnCellClicked(wxHtmlCell *cell,
-                            wxCoord x, wxCoord y,
-                            const wxMouseEvent& event);
+    void OnLinkClicked(const wxHtmlLinkInfo& link);
+    void OnSetTitle(const wxString& title);
+    void OnCellMouseHover(wxHtmlCell *cell, wxCoord x, wxCoord y);
+    bool OnCellClicked(wxHtmlCell *cell,
+                       wxCoord x, wxCoord y,
+                       const wxMouseEvent& event);
+    wxHtmlOpeningStatus OnOpeningURL(wxHtmlURLType type,
+                                      const wxString& url,
+                                      wxString *redirect) const;
+    %MAKE_BASE_FUNC(HtmlWindow, OnLinkClicked);
+    %MAKE_BASE_FUNC(HtmlWindow, OnSetTitle);
+    %MAKE_BASE_FUNC(HtmlWindow, OnCellMouseHover);
+    %MAKE_BASE_FUNC(HtmlWindow, OnCellClicked);
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    /// Type of mouse cursor
+    enum HTMLCursor
+    {
+        /// Standard mouse cursor (typically an arrow)
+        HTMLCursor_Default,
+        /// Cursor shown over links
+        HTMLCursor_Link,
+        /// Cursor shown over selectable text
+        HTMLCursor_Text
+    };
+
+    // Returns standard HTML cursor as used by wxHtmlWindow
+    static wxCursor GetDefaultHTMLCursor(HTMLCursor type);
+
+
+// private:
+//     // wxHtmlWindowInterface methods:
+//     virtual void SetHTMLWindowTitle(const wxString& title);
+//     virtual void OnHTMLLinkClicked(const wxHtmlLinkInfo& link);
+//     virtual wxHtmlOpeningStatus OnHTMLOpeningURL(wxHtmlURLType type,
+//                                                  const wxString& url,
+//                                                  wxString *redirect) const;
+//     virtual wxPoint HTMLCoordsToWindow(wxHtmlCell *cell,
+//                                        const wxPoint& pos) const;
+//     virtual wxWindow* GetHTMLWindow();
+//     virtual wxColour GetHTMLBackgroundColour() const;
+//     virtual void SetHTMLBackgroundColour(const wxColour& clr);
+//     virtual void SetHTMLBackgroundImage(const wxBitmap& bmpBg);
+//     virtual void SetHTMLStatusText(const wxString& text);
+//     virtual wxCursor GetHTMLCursor(HTMLCursor type) const;
+    
+    %property(InternalRepresentation, GetInternalRepresentation, doc="See `GetInternalRepresentation`");
+    %property(OpenedAnchor, GetOpenedAnchor, doc="See `GetOpenedAnchor`");
+    %property(OpenedPage, GetOpenedPage, doc="See `GetOpenedPage`");
+    %property(OpenedPageTitle, GetOpenedPageTitle, doc="See `GetOpenedPageTitle`");
+    %property(Parser, GetParser, doc="See `GetParser`");
+    %property(RelatedFrame, GetRelatedFrame, doc="See `GetRelatedFrame`");
 };
 
 
@@ -997,13 +1221,13 @@ public:
                           const wxString& normal_face = wxPyEmptyString,
                           const wxString& fixed_face = wxPyEmptyString);
 
-    int Render(int x, int y, int from = 0, int dont_render = false, int maxHeight = INT_MAX,
-               //int *known_pagebreaks = NULL, int number_of_pages = 0
-               int* choices=NULL, int LCOUNT = 0
-               );
+    int Render(int x, int y, wxArrayInt& known_pagebreaks, int from = 0,
+               int dont_render = FALSE, int to = INT_MAX);
     int GetTotalHeight();
                 // returns total height of the html document
                 // (compare Render's return value with this)
+
+    %property(TotalHeight, GetTotalHeight, doc="See `GetTotalHeight`");
 };
 
 
@@ -1091,9 +1315,15 @@ public:
                           const wxString& normal_face = wxPyEmptyString,
                           const wxString& fixed_face = wxPyEmptyString);
 
-    wxPrintData *GetPrintData() {return m_PrintData;}
-    wxPageSetupDialogData *GetPageSetupData() {return m_PageSetupData;}
+    wxPrintData *GetPrintData();
+    wxPageSetupDialogData *GetPageSetupData();
 
+    wxWindow* GetParentWindow() const;
+    void SetParentWindow(wxWindow* window);
+
+    
+    %property(PageSetupData, GetPageSetupData, doc="See `GetPageSetupData`");
+    %property(PrintData, GetPrintData, doc="See `GetPrintData`");
 };
 
 
@@ -1121,10 +1351,19 @@ public:
     void SetStart(const wxString& start);
 
     wxString GetFullPath(const wxString &page) const;
+
+    %property(BasePath, GetBasePath, SetBasePath, doc="See `GetBasePath` and `SetBasePath`");
+    %property(BookFile, GetBookFile, doc="See `GetBookFile`");
+    %property(ContentsEnd, GetContentsEnd, doc="See `GetContentsEnd`");
+    %property(ContentsStart, GetContentsStart, doc="See `GetContentsStart`");
+    %property(FullPath, GetFullPath, doc="See `GetFullPath`");
+    %property(Start, GetStart, SetStart, doc="See `GetStart` and `SetStart`");
+    %property(Title, GetTitle, SetTitle, doc="See `GetTitle` and `SetTitle`");
 };
 
 //---------------------------------------------------------------------------
-
+// WXWIN_COMPATIBILITY_2_4
+#if 0
 struct wxHtmlContentsItem
 {
     %extend {
@@ -1135,7 +1374,7 @@ struct wxHtmlContentsItem
         wxHtmlBookRecord* GetBook() { return self->m_Book; }
     }
 };
-
+#endif
 //---------------------------------------------------------------------------
 
 class wxHtmlSearchStatus
@@ -1148,8 +1387,10 @@ public:
     int GetCurIndex();
     int GetMaxIndex();
     const wxString& GetName();
-    wxHtmlContentsItem* GetContentsItem();
-    %pythoncode { GetContentsItem = wx._deprecated(GetContentsItem) }
+
+    %property(CurIndex, GetCurIndex, doc="See `GetCurIndex`");
+    %property(MaxIndex, GetMaxIndex, doc="See `GetMaxIndex`");
+    %property(Name, GetName, doc="See `GetName`");
 };
 
 //---------------------------------------------------------------------------
@@ -1172,69 +1413,411 @@ public:
     // TODO: this one needs fixed...
     const wxHtmlBookRecArray& GetBookRecArray();
 
-    wxHtmlContentsItem* GetContents();
-    %pythoncode { GetContents = wx._deprecated(GetContents) }
-
-    int GetContentsCnt();
-    %pythoncode { GetContentsCnt = wx._deprecated(GetContentsCnt) }
-
-    wxHtmlContentsItem* GetIndex();
-    %pythoncode { GetIndex = wx._deprecated(GetIndex) }
-
-    int GetIndexCnt();
-    %pythoncode { GetIndexCnt = wx._deprecated(GetIndexCnt) }
+    %property(BookRecArray, GetBookRecArray, doc="See `GetBookRecArray`");
 };
 
 //---------------------------------------------------------------------------
+
+enum {
+    wxHF_TOOLBAR,
+    wxHF_CONTENTS,
+    wxHF_INDEX,
+    wxHF_SEARCH,
+    wxHF_BOOKMARKS,
+    wxHF_OPEN_FILES,
+    wxHF_PRINT,
+    wxHF_FLAT_TOOLBAR,
+    wxHF_MERGE_BOOKS,
+    wxHF_ICONS_BOOK,
+    wxHF_ICONS_BOOK_CHAPTER,
+    wxHF_ICONS_FOLDER,
+    wxHF_DEFAULT_STYLE,
+
+    wxHF_EMBEDDED,
+    wxHF_DIALOG,
+    wxHF_FRAME,
+    wxHF_MODAL,
+};
+
+enum {
+    wxID_HTML_PANEL,
+    wxID_HTML_BACK,
+    wxID_HTML_FORWARD,
+    wxID_HTML_UPNODE,
+    wxID_HTML_UP,
+    wxID_HTML_DOWN,
+    wxID_HTML_PRINT,
+    wxID_HTML_OPENFILE,
+    wxID_HTML_OPTIONS,
+    wxID_HTML_BOOKMARKSLIST,
+    wxID_HTML_BOOKMARKSADD,
+    wxID_HTML_BOOKMARKSREMOVE,
+    wxID_HTML_TREECTRL,
+    wxID_HTML_INDEXPAGE,
+    wxID_HTML_INDEXLIST,
+    wxID_HTML_INDEXTEXT,
+    wxID_HTML_INDEXBUTTON,
+    wxID_HTML_INDEXBUTTONALL,
+    wxID_HTML_NOTEBOOK,
+    wxID_HTML_SEARCHPAGE,
+    wxID_HTML_SEARCHTEXT,
+    wxID_HTML_SEARCHLIST,
+    wxID_HTML_SEARCHBUTTON,
+    wxID_HTML_SEARCHCHOICE,
+    wxID_HTML_COUNTINFO
+};
+
+
+%{
+    typedef wxTreeCtrl wxPyTreeCtrl;
+%}
+
+MustHaveApp(wxHtmlHelpWindow);
+
+class wxHtmlHelpWindow : public wxWindow
+{
+public:
+    %pythonAppend wxHtmlHelpWindow    "self._setOORInfo(self)"
+    %pythonAppend wxHtmlHelpWindow()       ""
+    %typemap(out) wxHtmlHelpWindow*;    // turn off this typemap
+
+    wxHtmlHelpWindow(wxWindow* parent, wxWindowID wxWindowID,
+                     const wxPoint& pos = wxDefaultPosition,
+                     const wxSize& size = wxDefaultSize,
+                     int style = wxTAB_TRAVERSAL|wxNO_BORDER,
+                     int helpStyle = wxHF_DEFAULT_STYLE,
+                     wxHtmlHelpData* data = NULL);
+    %RenameCtor(PreHtmlHelpWindow, wxHtmlHelpWindow(wxHtmlHelpData* data = NULL));
+
+    // Turn it back on again
+    %typemap(out) wxHtmlHelpWindow* { $result = wxPyMake_wxObject($1, $owner); }
+
+    bool Create(wxWindow* parent, wxWindowID id,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
+                int style = wxTAB_TRAVERSAL|wxNO_BORDER,
+                int helpStyle = wxHF_DEFAULT_STYLE);
+
+    wxHtmlHelpData* GetData();
+    wxHtmlHelpController* GetController() const;
+
+    %disownarg( wxHtmlHelpController* controller );
+    void SetController(wxHtmlHelpController* controller);
+    %cleardisown( wxHtmlHelpController* controller );
+
+    // Displays page x. If not found it will offect the user a choice of
+    // searching books.
+    // Looking for the page runs in these steps:
+    // 1. try to locate file named x (if x is for example "doc/howto.htm")
+    // 2. try to open starting page of book x
+    // 3. try to find x in contents (if x is for example "How To ...")
+    // 4. try to find x in index (if x is for example "How To ...")
+    bool Display(const wxString& x);
+
+    // Alternative version that works with numeric ID.
+    // (uses extension to MS format, <param name="ID" value=id>, see docs)
+    %Rename(DisplayID,  bool,  Display(int id));
+
+    // Displays help window and focuses contents.
+    bool DisplayContents();
+
+    // Displays help window and focuses index.
+    bool DisplayIndex();
+
+    // Searches for keyword. Returns true and display page if found, return
+    // false otherwise
+    // Syntax of keyword is Altavista-like:
+    // * words are separated by spaces
+    //   (but "\"hello world\"" is only one world "hello world")
+    // * word may be pretended by + or -
+    //   (+ : page must contain the word ; - : page can't contain the word)
+    // * if there is no + or - before the word, + is default
+    bool KeywordSearch(const wxString& keyword,
+                       wxHelpSearchMode mode = wxHELP_SEARCH_ALL);
+
+    void UseConfig(wxConfigBase *config, const wxString& rootpath = wxEmptyString);
+
+    // Saves custom settings into cfg config. it will use the path 'path'
+    // if given, otherwise it will save info into currently selected path.
+    // saved values : things set by SetFonts, SetBorders.
+    void ReadCustomization(wxConfigBase *cfg, const wxString& path = wxEmptyString);
+    void WriteCustomization(wxConfigBase *cfg, const wxString& path = wxEmptyString);
+
+    // call this to let wxHtmlHelpWindow know page changed
+    void NotifyPageChanged();
+
+    // Refreshes Contents and Index tabs
+    void RefreshLists();
+
+    // Gets the HTML window
+    wxPyHtmlWindow* GetHtmlWindow() const;
+
+    // Gets the splitter window
+    wxSplitterWindow* GetSplitterWindow();
+
+    // Gets the toolbar
+    wxToolBar* GetToolBar() const;
+
+    // Gets the configuration data
+    wxHtmlHelpFrameCfg& GetCfgData();
+
+    // Gets the tree control
+    wxPyTreeCtrl *GetTreeCtrl() const;
+
+    %property(CfgData, GetCfgData, doc="See `GetCfgData`");
+    %property(Controller, GetController, SetController, doc="See `GetController` and `SetController`");
+    %property(Data, GetData, doc="See `GetData`");
+    %property(HtmlWindow, GetHtmlWindow, doc="See `GetHtmlWindow`");
+    %property(SplitterWindow, GetSplitterWindow, doc="See `GetSplitterWindow`");
+    %property(ToolBar, GetToolBar, doc="See `GetToolBar`");
+    %property(TreeCtrl, GetTreeCtrl, doc="See `GetTreeCtrl`");
+};
+
+//---------------------------------------------------------------------------
+
+
+%constant wxEventType wxEVT_COMMAND_HTML_CELL_CLICKED;
+%constant wxEventType wxEVT_COMMAND_HTML_CELL_HOVER;
+%constant wxEventType wxEVT_COMMAND_HTML_LINK_CLICKED;
+
+
+class wxHtmlCellEvent : public wxCommandEvent
+{
+public:
+    wxHtmlCellEvent(wxEventType commandType, int id,
+                    wxHtmlCell *cell, const wxPoint &pt,
+                    const wxMouseEvent &ev);
+
+    wxHtmlCell* GetCell() const;
+    wxPoint GetPoint() const;
+    wxMouseEvent GetMouseEvent() const;
+
+    void SetLinkClicked(bool linkclicked);
+    bool GetLinkClicked() const;
+};
+
+
+class wxHtmlLinkEvent : public wxCommandEvent
+{
+public:
+    wxHtmlLinkEvent(int id, const wxHtmlLinkInfo &linkinfo);
+    
+    const wxHtmlLinkInfo &GetLinkInfo() const;
+};
+
+
+%pythoncode {
+    EVT_HTML_CELL_CLICKED = wx.PyEventBinder( wxEVT_COMMAND_HTML_CELL_CLICKED, 1 )
+    EVT_HTML_CELL_HOVER   = wx.PyEventBinder( wxEVT_COMMAND_HTML_CELL_HOVER, 1 )
+    EVT_HTML_LINK_CLICKED = wx.PyEventBinder( wxEVT_COMMAND_HTML_LINK_CLICKED, 1 )
+}
+        
+//---------------------------------------------------------------------------
+
 
 MustHaveApp(wxHtmlHelpFrame);
 
 class wxHtmlHelpFrame : public wxFrame {
 public:
     %pythonAppend wxHtmlHelpFrame    "self._setOORInfo(self)"
+    %pythonAppend wxHtmlHelpFrame()       ""
+    %typemap(out) wxHtmlHelpFrame*;    // turn off this typemap
 
     wxHtmlHelpFrame(wxWindow* parent, int wxWindowID,
 		    const wxString& title = wxPyEmptyString,
-		    int style = wxHF_DEFAULTSTYLE, wxHtmlHelpData* data = NULL);
+		    int style = wxHF_DEFAULTSTYLE, wxHtmlHelpData* data = NULL,
+                    wxConfigBase *config=NULL,
+                    const wxString& rootpath = wxPyEmptyString);
+    %RenameCtor(PreHtmlHelpFrame, wxHtmlHelpFrame(wxHtmlHelpData* data = NULL));
+
+    // Turn it back on again
+    %typemap(out) wxHtmlHelpFrame* { $result = wxPyMake_wxObject($1, $owner); }
+
+    bool Create(wxWindow* parent, wxWindowID id,
+                const wxString& title = wxPyEmptyString,
+                int style = wxHF_DEFAULT_STYLE,
+                wxConfigBase *config=NULL,
+                const wxString& rootpath = wxPyEmptyString);
 
     wxHtmlHelpData* GetData();
     void SetTitleFormat(const wxString& format);
-    void Display(const wxString& x);
-    %Rename(DisplayID,  void,  Display(int id));
-    void DisplayContents();
-    void DisplayIndex();
-    bool KeywordSearch(const wxString& keyword);
-    void UseConfig(wxConfigBase *config, const wxString& rootpath = wxPyEmptyString);
-    void ReadCustomization(wxConfigBase *cfg, wxString path = wxPyEmptyString);
-    void WriteCustomization(wxConfigBase *cfg, wxString path = wxPyEmptyString);
+
+    void AddGrabIfNeeded();
+
+    /// Returns the help controller associated with the window.
+    wxHtmlHelpController* GetController() const;
+
+    /// Sets the help controller associated with the window.
+    %disownarg( wxHtmlHelpController* controller );
+    void SetController(wxHtmlHelpController* controller);
+    %cleardisown( wxHtmlHelpController* controller );
+
+    /// Returns the help window.
+    wxHtmlHelpWindow* GetHelpWindow() const;
+
+    %pythoncode {
+        %# For compatibility from before the refactor
+        def Display(self, x):
+            return self.GetHelpWindow().Display(x)
+        def DisplayID(self, x):
+            return self.GetHelpWindow().DisplayID(id)
+        def DisplayContents(self):
+            return self.GetHelpWindow().DisplayContents()
+        def DisplayIndex(self):
+            return self.GetHelpWindow().DisplayIndex()
+
+        def KeywordSearch(self, keyword):
+            return self.GetHelpWindow().KeywordSearch(keyword)
+
+        def UseConfig(self, config, rootpath=""):
+            return self.GetHelpWindow().UseConfig(config, rootpath)
+        def ReadCustomization(self, config, rootpath=""):
+            return self.GetHelpWindow().ReadCustomization(config, rootpath)
+        def WriteCustomization(self, config, rootpath=""):
+            return self.GetHelpWindow().WriteCustomization(config, rootpath)
+     %}
+
+    %property(Controller, GetController, SetController, doc="See `GetController` and `SetController`");
+    %property(Data, GetData, doc="See `GetData`");
+    %property(HelpWindow, GetHelpWindow, doc="See `GetHelpWindow`");
+};
+
+
+
+MustHaveApp(wxHtmlHelpDialog);
+
+class wxHtmlHelpDialog : public wxDialog
+{
+public:
+    %pythonAppend wxHtmlHelpDialog    "self._setOORInfo(self)"
+    %pythonAppend wxHtmlHelpDialog()       ""
+    %typemap(out) wxHtmlHelpDialog*;    // turn off this typemap
+
+    wxHtmlHelpDialog(wxWindow* parent, wxWindowID wxWindowID,
+                    const wxString& title = wxPyEmptyString,
+                    int style = wxHF_DEFAULT_STYLE, wxHtmlHelpData* data = NULL);
+    %RenameCtor(PreHtmlHelpDialog, wxHtmlHelpDialog(wxHtmlHelpData* data = NULL));
+
+    // Turn it back on again
+    %typemap(out) wxHtmlHelpDialog* { $result = wxPyMake_wxObject($1, $owner); }
+
+    bool Create(wxWindow* parent, wxWindowID id, const wxString& title = wxPyEmptyString,
+                int style = wxHF_DEFAULT_STYLE);
+
+    /// Returns the data associated with this dialog.
+    wxHtmlHelpData* GetData();
+
+    /// Returns the controller that created this dialog.
+    wxHtmlHelpController* GetController() const;
+
+    /// Sets the controller associated with this dialog.
+    %disownarg( wxHtmlHelpController* controller );
+    void SetController(wxHtmlHelpController* controller);
+    %cleardisown( wxHtmlHelpController* controller );
+
+    /// Returns the help window.
+    wxHtmlHelpWindow* GetHelpWindow() const;
+
+    // Sets format of title of the frame. Must contain exactly one "%s"
+    // (for title of displayed HTML page)
+    void SetTitleFormat(const wxString& format);
+
+    // Override to add custom buttons to the toolbar
+//    virtual void AddToolbarButtons(wxToolBar* WXUNUSED(toolBar), int WXUNUSED(style)) {};
+
+    %property(Controller, GetController, SetController, doc="See `GetController` and `SetController`");
+    %property(Data, GetData, doc="See `GetData`");
+    %property(HelpWindow, GetHelpWindow, doc="See `GetHelpWindow`");
 };
 
 
 //---------------------------------------------------------------------------
 
 
-enum {
-    wxHF_TOOLBAR,
-    wxHF_FLATTOOLBAR,
-    wxHF_CONTENTS,
-    wxHF_INDEX,
-    wxHF_SEARCH,
-    wxHF_BOOKMARKS,
-    wxHF_OPENFILES,
-    wxHF_PRINT,
-    wxHF_DEFAULTSTYLE,
+// TODO: Make virtual methods of this class overridable in Python.
+
+MustHaveApp(wxHelpControllerBase);
+
+class wxHelpControllerBase: public wxObject
+{
+public:
+//    wxHelpControllerBase(wxWindow* parentWindow = NULL);
+//    ~wxHelpControllerBase();
+
+    %nokwargs Initialize;
+    virtual bool Initialize(const wxString& file, int server );
+    virtual bool Initialize(const wxString& file);
+
+    virtual void SetViewer(const wxString& viewer, long flags = 0);
+
+    // If file is "", reloads file given  in Initialize
+    virtual bool LoadFile(const wxString& file = wxEmptyString) /* = 0 */;
+
+    // Displays the contents
+    virtual bool DisplayContents(void) /* = 0 */;
+
+    %nokwargs DisplaySection;
+
+    // Display the given section
+    virtual bool DisplaySection(int sectionNo) /* = 0 */;
+
+    // Display the section using a context id
+    virtual bool DisplayContextPopup(int contextId);
+
+    // Display the text in a popup, if possible
+    virtual bool DisplayTextPopup(const wxString& text, const wxPoint& pos);
+
+    // By default, uses KeywordSection to display a topic. Implementations
+    // may override this for more specific behaviour.
+    virtual bool DisplaySection(const wxString& section);
+
+    virtual bool DisplayBlock(long blockNo) /* = 0 */;
+    virtual bool KeywordSearch(const wxString& k,
+                               wxHelpSearchMode mode = wxHELP_SEARCH_ALL) /* = 0 */;
+
+    /// Allows one to override the default settings for the help frame.
+    virtual void SetFrameParameters(const wxString& title,
+                                    const wxSize& size,
+                                    const wxPoint& pos = wxDefaultPosition,
+                                    bool newFrameEachTime = false);
+
+    /// Obtains the latest settings used by the help frame and the help
+    /// frame.
+    virtual wxFrame *GetFrameParameters(wxSize *size = NULL,
+                                        wxPoint *pos = NULL,
+                                        bool *newFrameEachTime = NULL);
+
+    virtual bool Quit() /* = 0 */;
+
+    virtual void OnQuit();
+
+    /// Set the window that can optionally be used for the help window's parent.
+    virtual void SetParentWindow(wxWindow* win);
+
+    /// Get the window that can optionally be used for the help window's parent.
+    virtual wxWindow* GetParentWindow() const;
+
+    %property(ParentWindow, GetParentWindow, SetParentWindow, doc="See `GetParentWindow` and `SetParentWindow`");
 };
+
+
 
 
 MustHaveApp(wxHtmlHelpController);
 
-class wxHtmlHelpController : public wxObject  // wxHelpControllerBase
+class wxHtmlHelpController : public wxHelpControllerBase
 {
 public:
 //    %pythonAppend wxHtmlHelpController "self._setOORInfo(self)"
 
-    wxHtmlHelpController(int style = wxHF_DEFAULTSTYLE);
+    wxHtmlHelpController(int style = wxHF_DEFAULT_STYLE, wxWindow* parentWindow = NULL);
     ~wxHtmlHelpController();
+
+    wxHtmlHelpWindow* GetHelpWindow();
+    void SetHelpWindow(wxHtmlHelpWindow* helpWindow);
+
+    wxHtmlHelpFrame* GetFrame();
+    wxHtmlHelpDialog* GetDialog();
 
     void SetTitleFormat(const wxString& format);
     void SetTempDir(const wxString& path);
@@ -1247,12 +1830,36 @@ public:
     void UseConfig(wxConfigBase *config, const wxString& rootpath = wxPyEmptyString);
     void ReadCustomization(wxConfigBase *cfg, wxString path = wxPyEmptyString);
     void WriteCustomization(wxConfigBase *cfg, wxString path = wxPyEmptyString);
-    wxHtmlHelpFrame* GetFrame();
 
-    %pythoncode { def Destroy(self): pass }
+    void MakeModalIfNeeded();
+    wxWindow* FindTopLevelWindow();
+
+    %property(Dialog, GetDialog, doc="See `GetDialog`");
+    %property(Frame, GetFrame, doc="See `GetFrame`");
+    %property(HelpWindow, GetHelpWindow, SetHelpWindow, doc="See `GetHelpWindow` and `SetHelpWindow`");
 };
 
 
+/*
+ * wxHtmlModalHelp
+ * A convenience class particularly for use on wxMac,
+ * where you can only show modal dialogs from a modal
+ * dialog.
+ *
+ * Use like this:
+ *
+ * wxHtmlModalHelp help(parent, filename, topic);
+ *
+ * If topic is empty, the help contents is displayed.
+ */
+
+class wxHtmlModalHelp
+{
+public:
+    wxHtmlModalHelp(wxWindow* parent, const wxString& helpFile,
+                    const wxString& topic = wxEmptyString,
+                    int style = wxHF_DEFAULT_STYLE | wxHF_DIALOG | wxHF_MODAL);
+};
 
 
 //---------------------------------------------------------------------------

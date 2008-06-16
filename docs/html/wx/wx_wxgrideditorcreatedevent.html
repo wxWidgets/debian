@@ -1,0 +1,107 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGridEditorCreatedEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgrideditorcreatedevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgridcelltexteditor.html#wxgridcelltexteditor"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgridevent.html#wxgridevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGridEditorCreatedEvent</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><BR>
+
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+The event handler for the following functions takes a 
+ <A HREF="wx_wxgrideditorcreatedevent.html#wxgrideditorcreatedevent">wxGridEditorCreatedEvent</A> parameter.
+The ..._CMD_... variants also take a window identifier.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_EDITOR_CREATED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The editor for a cell was created. Processes a wxEVT_GRID_EDITOR_CREATED.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_EDITOR_CREATED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The editor for a cell was created; variant taking a window identifier. Processes a wxEVT_GRID_EDITOR_CREATED.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/grid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgrideditorcreatedeventconstr">wxGridEditorCreatedEvent::wxGridEditorCreatedEvent</A><BR>
+<A HREF="#wxgrideditorcreatedeventgetcol">wxGridEditorCreatedEvent::GetCol</A><BR>
+<A HREF="#wxgrideditorcreatedeventgetcontrol">wxGridEditorCreatedEvent::GetControl</A><BR>
+<A HREF="#wxgrideditorcreatedeventgetrow">wxGridEditorCreatedEvent::GetRow</A><BR>
+<A HREF="#wxgrideditorcreatedeventsetcol">wxGridEditorCreatedEvent::SetCol</A><BR>
+<A HREF="#wxgrideditorcreatedeventsetcontrol">wxGridEditorCreatedEvent::SetControl</A><BR>
+<A HREF="#wxgrideditorcreatedeventsetrow">wxGridEditorCreatedEvent::SetRow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgrideditorcreatedeventconstr"></A>
+<H3>wxGridEditorCreatedEvent::wxGridEditorCreatedEvent</H3>
+<P>
+<B></B> <B>wxGridEditorCreatedEvent</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxGridEditorCreatedEvent</B>(<B>int </B><I>id</I>, <B>wxEventType </B><I>type</I>,
+ <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>obj</I>, <B>int </B><I>row</I>, <B>int </B><I>col</I>, <B><A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A>* </B></B><I>ctrl</I>)<P>
+
+<HR>
+<A NAME="wxgrideditorcreatedeventgetcol"></A>
+<H3>wxGridEditorCreatedEvent::GetCol</H3>
+<P>
+<B>int</B> <B>GetCol</B>()<P>
+Returns the column at which the event occurred.<P>
+
+<HR>
+<A NAME="wxgrideditorcreatedeventgetcontrol"></A>
+<H3>wxGridEditorCreatedEvent::GetControl</H3>
+<P>
+<B><A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A>*</B> </B> <B>GetControl</B>()<P>
+Returns the edit control.<P>
+
+<HR>
+<A NAME="wxgrideditorcreatedeventgetrow"></A>
+<H3>wxGridEditorCreatedEvent::GetRow</H3>
+<P>
+<B>int</B> <B>GetRow</B>()<P>
+Returns the row at which the event occurred.<P>
+
+<HR>
+<A NAME="wxgrideditorcreatedeventsetcol"></A>
+<H3>wxGridEditorCreatedEvent::SetCol</H3>
+<P>
+<B>void</B> <B>SetCol</B>(<B>int </B><I>col</I>)<P>
+Sets the column at which the event occurred.<P>
+
+<HR>
+<A NAME="wxgrideditorcreatedeventsetcontrol"></A>
+<H3>wxGridEditorCreatedEvent::SetControl</H3>
+<P>
+<B>void</B> <B>SetControl</B>(<B><A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A>* </B></B><I>ctrl</I>)<P>
+Sets the edit control.<P>
+
+<HR>
+<A NAME="wxgrideditorcreatedeventsetrow"></A>
+<H3>wxGridEditorCreatedEvent::SetRow</H3>
+<P>
+<B>void</B> <B>SetRow</B>(<B>int </B><I>row</I>)<P>
+Sets the row at which the event occurred.<P>
+
+</FONT></BODY></HTML>

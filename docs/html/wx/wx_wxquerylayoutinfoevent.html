@@ -1,0 +1,154 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxQueryLayoutInfoEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxquerylayoutinfoevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxquantize.html#wxquantize"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxradiobox.html#wxradiobox"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxQueryLayoutInfoEvent</H2>
+<P>
+This event is sent when <A HREF="wx_wxlayoutalgorithm.html#wxlayoutalgorithm">wxLayoutAlgorithm</A> wishes to get
+the size, orientation and alignment of a window. More precisely, the event is sent
+by the OnCalculateLayout handler which is itself invoked by wxLayoutAlgorithm.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/laywin.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_QUERY_LAYOUT_INFO(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_QUERY_LAYOUT_INFO event,
+to get size, orientation and alignment from a window.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<FONT SIZE=2>
+<PRE>
+enum wxLayoutOrientation {
+    wxLAYOUT_HORIZONTAL,
+    wxLAYOUT_VERTICAL
+};
+
+enum wxLayoutAlignment {
+    wxLAYOUT_NONE,
+    wxLAYOUT_TOP,
+    wxLAYOUT_LEFT,
+    wxLAYOUT_RIGHT,
+    wxLAYOUT_BOTTOM,
+};
+</PRE>
+</FONT><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcalculatelayoutevent.html#wxcalculatelayoutevent">wxCalculateLayoutEvent</A>,
+<A HREF="wx_wxsashlayoutwindow.html#wxsashlayoutwindow">wxSashLayoutWindow</A>,
+<A HREF="wx_wxlayoutalgorithm.html#wxlayoutalgorithm">wxLayoutAlgorithm</A>.<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxquerylayoutinfoeventctor">wxQueryLayoutInfoEvent::wxQueryLayoutInfoEvent</A><BR>
+<A HREF="#wxquerylayoutinfoeventgetalignment">wxQueryLayoutInfoEvent::GetAlignment</A><BR>
+<A HREF="#wxquerylayoutinfoeventgetflags">wxQueryLayoutInfoEvent::GetFlags</A><BR>
+<A HREF="#wxquerylayoutinfoeventgetorientation">wxQueryLayoutInfoEvent::GetOrientation</A><BR>
+<A HREF="#wxquerylayoutinfoeventgetrequestedlength">wxQueryLayoutInfoEvent::GetRequestedLength</A><BR>
+<A HREF="#wxquerylayoutinfoeventgetsize">wxQueryLayoutInfoEvent::GetSize</A><BR>
+<A HREF="#wxquerylayoutinfoeventsetalignment">wxQueryLayoutInfoEvent::SetAlignment</A><BR>
+<A HREF="#wxquerylayoutinfoeventsetflags">wxQueryLayoutInfoEvent::SetFlags</A><BR>
+<A HREF="#wxquerylayoutinfoeventsetorientation">wxQueryLayoutInfoEvent::SetOrientation</A><BR>
+<A HREF="#wxquerylayoutinfoeventsetrequestedlength">wxQueryLayoutInfoEvent::SetRequestedLength</A><BR>
+<A HREF="#wxquerylayoutinfoeventsetsize">wxQueryLayoutInfoEvent::SetSize</A><BR>
+<P>
+
+<HR>
+<A NAME="wxquerylayoutinfoeventctor"></A>
+<H3>wxQueryLayoutInfoEvent::wxQueryLayoutInfoEvent</H3>
+<P>
+<B></B> <B>wxQueryLayoutInfoEvent</B>(<B>wxWindowID </B><I>id = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxquerylayoutinfoeventgetalignment"></A>
+<H3>wxQueryLayoutInfoEvent::GetAlignment</H3>
+<P>
+<B>void</B> <B>GetAlignment</B>() <B>const</B><P>
+Specifies the alignment of the window (which side of the remaining parent client area
+the window sticks to). One of wxLAYOUT_TOP, wxLAYOUT_LEFT, wxLAYOUT_RIGHT, wxLAYOUT_BOTTOM.<P>
+
+<HR>
+<A NAME="wxquerylayoutinfoeventgetflags"></A>
+<H3>wxQueryLayoutInfoEvent::GetFlags</H3>
+<P>
+<B>int</B> <B>GetFlags</B>() <B>const</B><P>
+Returns the flags associated with this event. Not currently used.<P>
+
+<HR>
+<A NAME="wxquerylayoutinfoeventgetorientation"></A>
+<H3>wxQueryLayoutInfoEvent::GetOrientation</H3>
+<P>
+<B>wxLayoutOrientation</B> <B>GetOrientation</B>() <B>const</B><P>
+Returns the orientation that the event handler specified to the event object. May be one of wxLAYOUT_HORIZONTAL,
+wxLAYOUT_VERTICAL.<P>
+
+<HR>
+<A NAME="wxquerylayoutinfoeventgetrequestedlength"></A>
+<H3>wxQueryLayoutInfoEvent::GetRequestedLength</H3>
+<P>
+<B>int</B> <B>GetRequestedLength</B>() <B>const</B><P>
+Returns the requested length of the window in the direction of the window orientation. This information
+is not yet used.<P>
+
+<HR>
+<A NAME="wxquerylayoutinfoeventgetsize"></A>
+<H3>wxQueryLayoutInfoEvent::GetSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetSize</B>() <B>const</B><P>
+Returns the size that the event handler specified to the event object as being the requested size of the window.<P>
+
+<HR>
+<A NAME="wxquerylayoutinfoeventsetalignment"></A>
+<H3>wxQueryLayoutInfoEvent::SetAlignment</H3>
+<P>
+<B>void</B> <B>SetAlignment</B>(<B>wxLayoutAlignment </B><I>alignment</I>)<P>
+Call this to specify the alignment of the window (which side of the remaining parent client area
+the window sticks to). May be one of wxLAYOUT_TOP, wxLAYOUT_LEFT, wxLAYOUT_RIGHT, wxLAYOUT_BOTTOM.<P>
+
+<HR>
+<A NAME="wxquerylayoutinfoeventsetflags"></A>
+<H3>wxQueryLayoutInfoEvent::SetFlags</H3>
+<P>
+<B>void</B> <B>SetFlags</B>(<B>int </B><I>flags</I>)<P>
+Sets the flags associated with this event. Not currently used.<P>
+
+<HR>
+<A NAME="wxquerylayoutinfoeventsetorientation"></A>
+<H3>wxQueryLayoutInfoEvent::SetOrientation</H3>
+<P>
+<B>void</B> <B>SetOrientation</B>(<B>wxLayoutOrientation </B><I>orientation</I>)<P>
+Call this to specify the orientation of the window. May be one of wxLAYOUT_HORIZONTAL,
+wxLAYOUT_VERTICAL.<P>
+
+<HR>
+<A NAME="wxquerylayoutinfoeventsetrequestedlength"></A>
+<H3>wxQueryLayoutInfoEvent::SetRequestedLength</H3>
+<P>
+<B>void</B> <B>SetRequestedLength</B>(<B>int</B><I> length</I>)<P>
+Sets the requested length of the window in the direction of the window orientation. This information
+is not yet used.<P>
+
+<HR>
+<A NAME="wxquerylayoutinfoeventsetsize"></A>
+<H3>wxQueryLayoutInfoEvent::SetSize</H3>
+<P>
+<B>void</B> <B>SetSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+Call this to let the calling code know what the size of the window is.<P>
+
+</FONT></BODY></HTML>

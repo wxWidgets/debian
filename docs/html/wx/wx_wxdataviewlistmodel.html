@@ -1,0 +1,238 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataViewListModel</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataviewlistmodel"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdataviewmodel.html#wxdataviewmodel"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdataviewsortedlistmodel.html#wxdataviewsortedlistmodel"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataViewListModel</H2>
+<P>
+wxDataViewListModel is currently the only existing variant
+of a <A HREF="wx_wxdataviewmodel.html#wxdataviewmodel">wxDataViewModel</A>. It allows
+to define a table like data model to be displayed by a
+<A HREF="wx_wxdataviewctrl.html#wxdataviewctrl">wxDataViewCtrl</A>. You need to derive
+from this class to define your own data model.<P>
+You need to override <A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelgetnumberofrows">GetNumberOfRows</A>,
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelgetnumberofcols">GetNumberOfCols</A>,
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelgetcoltype">GetColType</A> and
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelgetvalue">GetValue</A> in order to
+define the data model (which acts as an interface between 
+your actual data and the wxDataViewCtrl). Since you will
+usually also allow the wxDataViewCtrl to change your data
+through its graphical interface, you will also have to override
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelsetvalue">SetValue</A> which the
+wxDataViewCtrl will call when a change to some data has been
+commited.<P>
+The data that is presented through this data model is expected
+to change at run-time. You need to inform the data model that
+a change happens. Depending on what happened you need to call
+one of the following methods: 
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelvaluechanged">ValueChanged</A>,
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelrowchanged">RowChanged</A>,
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelrowappended">RowAppended</A>,
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelrowprepended">RowPrepended</A>,
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelrowinserted">RowInserted</A>,
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelrowdeleted">RowDeleted</A>,
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelrowsreordered">RowsReordered</A> or
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelcleared">RowsCleared</A>.<P>
+<P>
+wxDataViewModel and this class (as indeed the entire wxDataViewCtrl
+code) is using <A HREF="wx_wxvariant.html#wxvariant">wxVariant</A> to store data and
+its type in a generic way. wxVariant can be extended to contain
+almost any data without changes to the original class.<P>
+This class maintains a list of 
+<A HREF="wx_wxdataviewlistmodelnotifier.html#wxdataviewlistmodelnotifier">wxDataListViewListModelNotifier</A>
+which link this class to the specific implementations on the
+supported platforms so that e.g. calling 
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelvaluechanged">ValueChanged</A>
+on this model will just call 
+<A HREF="wx_wxdataviewlistmodelnotifier.html#wxdataviewlistmodelnotifiervaluechanged">wxDataListViewListModelNotifier::ValueChanged</A>
+for each notifier that has been added. This is used both for
+informing the native controls to redraw themselves and for informing
+e.g. the <A HREF="wx_wxdataviewsortedlistmodel.html#wxdataviewsortedlistmodel">wxDataViewSortedListModel</A>
+to resort itself. You can also add your own notifier in order
+to get informed about any changes to the data in the list model.<P>
+Additionally, this class maintains a list of all 
+<A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumns</A> which
+display a certain column of this list model. This is
+mostly used internally.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdataviewmodel.html#wxdataviewmodel">wxDataViewModel</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataview.h&gt;<P>
+
+<A HREF="#wxdataviewlistmodelwxdataviewlistmodel">wxDataViewListModel::wxDataViewListModel</A><BR>
+<A HREF="#wxdataviewlistmodeldtor">wxDataViewListModel::~wxDataViewListModel</A><BR>
+<A HREF="#wxdataviewlistmodeladdnotifier">wxDataViewListModel::AddNotifier</A><BR>
+<A HREF="#wxdataviewlistmodeladdviewingcolumn">wxDataViewListModel::AddViewingColumn</A><BR>
+<A HREF="#wxdataviewlistmodelcleared">wxDataViewListModel::Cleared</A><BR>
+<A HREF="#wxdataviewlistmodelgetcoltype">wxDataViewListModel::GetColType</A><BR>
+<A HREF="#wxdataviewlistmodelgetnumberofcols">wxDataViewListModel::GetNumberOfCols</A><BR>
+<A HREF="#wxdataviewlistmodelgetnumberofrows">wxDataViewListModel::GetNumberOfRows</A><BR>
+<A HREF="#wxdataviewlistmodelgetvalue">wxDataViewListModel::GetValue</A><BR>
+<A HREF="#wxdataviewlistmodelremovenotifier">wxDataViewListModel::RemoveNotifier</A><BR>
+<A HREF="#wxdataviewlistmodelremoveviewingcolumn">wxDataViewListModel::RemoveViewingColumn</A><BR>
+<A HREF="#wxdataviewlistmodelrowappended">wxDataViewListModel::RowAppended</A><BR>
+<A HREF="#wxdataviewlistmodelrowchanged">wxDataViewListModel::RowChanged</A><BR>
+<A HREF="#wxdataviewlistmodelrowdeleted">wxDataViewListModel::RowDeleted</A><BR>
+<A HREF="#wxdataviewlistmodelrowinserted">wxDataViewListModel::RowInserted</A><BR>
+<A HREF="#wxdataviewlistmodelrowprepended">wxDataViewListModel::RowPrepended</A><BR>
+<A HREF="#wxdataviewlistmodelrowsreordered">wxDataViewListModel::RowsReordered</A><BR>
+<A HREF="#wxdataviewlistmodelsetvalue">wxDataViewListModel::SetValue</A><BR>
+<A HREF="#wxdataviewlistmodelvaluechanged">wxDataViewListModel::ValueChanged</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelwxdataviewlistmodel"></A>
+<H3>wxDataViewListModel::wxDataViewListModel</H3>
+<P>
+<B></B> <B>wxDataViewListModel</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodeldtor"></A>
+<H3>wxDataViewListModel::~wxDataViewListModel</H3>
+<P>
+<B></B> <B>~wxDataViewListModel</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodeladdnotifier"></A>
+<H3>wxDataViewListModel::AddNotifier</H3>
+<P>
+<B>void</B> <B>AddNotifier</B>(<B><A HREF="wx_wxdataviewlistmodelnotifier.html#wxdataviewlistmodelnotifier">wxDataViewListModelNotifier</A>* </B></B><I>notifier</I>)<P>
+Adds <I>notifier</I> to the internal list of notifers.<P>
+See also <A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelremovenotifier">RemoveNotifier</A>.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodeladdviewingcolumn"></A>
+<H3>wxDataViewListModel::AddViewingColumn</H3>
+<P>
+<B>void</B> <B>AddViewingColumn</B>(<B><A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A>* </B></B><I>view_column</I>, <B>unsigned int </B><I>model_column</I>)<P>
+Used internally. Used for maintaining a list of
+<A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A> that
+display a certain column of this model.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelcleared"></A>
+<H3>wxDataViewListModel::Cleared</H3>
+<P>
+<B>bool</B> <B>virtual Cleared</B>()<P>
+Call this if all data in your model has been cleared.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelgetcoltype"></A>
+<H3>wxDataViewListModel::GetColType</H3>
+<P>
+<B>virtual <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetColType</B>(<B>unsigned int </B><I>col</I>)<P>
+Override this to indicate what type of data is stored in the
+column specified by <I>col</I>. This should return a string
+indicating the type of data as reported by <A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelgetnumberofcols"></A>
+<H3>wxDataViewListModel::GetNumberOfCols</H3>
+<P>
+<B>virtual unsigned int</B> <B>GetNumberOfCols</B>()<P>
+Override this to indicate, how many columns the list
+model has.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelgetnumberofrows"></A>
+<H3>wxDataViewListModel::GetNumberOfRows</H3>
+<P>
+<B>virtual unsigned int</B> <B>GetNumberOfRows</B>()<P>
+Override this to indicate, how many rows the list
+model has.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelgetvalue"></A>
+<H3>wxDataViewListModel::GetValue</H3>
+<P>
+<B>virtual void</B> <B>GetValue</B>(<B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>& </B></B><I>variant</I>, <B>unsigned int </B><I>col</I>, <B>unsigned int </B><I>row</I>)<P>
+Override this to indicate the value of a given value
+in the list model. A <A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>
+is used to store the data.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelremovenotifier"></A>
+<H3>wxDataViewListModel::RemoveNotifier</H3>
+<P>
+<B>void</B> <B>RemoveNotifier</B>(<B><A HREF="wx_wxdataviewlistmodelnotifier.html#wxdataviewlistmodelnotifier">wxDataViewListModelNotifier</A>* </B></B><I>notifier</I>)<P>
+Removes the notifier from the list of notifiers.<P>
+See also <A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodeladdnotifier">AddNotifier</A>.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelremoveviewingcolumn"></A>
+<H3>wxDataViewListModel::RemoveViewingColumn</H3>
+<P>
+<B>void</B> <B>RemoveViewingColumn</B>(<B><A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A>* </B></B><I>column</I>)<P>
+Used internally. Used for maintaining a list of
+<A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn">wxDataViewColumn</A> that
+display a certain column of this model.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelrowappended"></A>
+<H3>wxDataViewListModel::RowAppended</H3>
+<P>
+<B>virtual bool</B> <B>RowAppended</B>()<P>
+Call this if a row has been appended to the list model.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelrowchanged"></A>
+<H3>wxDataViewListModel::RowChanged</H3>
+<P>
+<B>virtual bool</B> <B>RowChanged</B>(<B>unsigned int </B><I>row</I>)<P>
+Call this if the values of this row have been changed.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelrowdeleted"></A>
+<H3>wxDataViewListModel::RowDeleted</H3>
+<P>
+<B>virtual bool</B> <B>RowDeleted</B>(<B>unsigned int </B><I>row</I>)<P>
+Call this if this row has been deleted.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelrowinserted"></A>
+<H3>wxDataViewListModel::RowInserted</H3>
+<P>
+<B>virtual bool</B> <B>RowInserted</B>(<B>unsigned int </B><I>before</I>)<P>
+Call this if a row has been inserted.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelrowprepended"></A>
+<H3>wxDataViewListModel::RowPrepended</H3>
+<P>
+<B>virtual bool</B> <B>RowPrepended</B>()<P>
+Call this if a row has been prepended.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelrowsreordered"></A>
+<H3>wxDataViewListModel::RowsReordered</H3>
+<P>
+<B>virtual bool</B> <B>RowsReordered</B>(<B>unsigned int* </B><I>new_order</I>)<P>
+Call this if the rows have been reorderd.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelsetvalue"></A>
+<H3>wxDataViewListModel::SetValue</H3>
+<P>
+<B>virtual bool</B> <B>SetValue</B>(<B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>& </B></B><I>variant</I>, <B>unsigned int </B><I>col</I>, <B>unsigned int </B><I>row</I>)<P>
+This method gets called by e.g. the wxDataViewCtrl class if a 
+value has been changed through its graphical interface. You
+need to override this method in order to update the data in
+the underlying data structur. Afterwards, 
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodelvaluechanged">ValueChanged</A> is called.<P>
+
+
+<HR>
+<A NAME="wxdataviewlistmodelvaluechanged"></A>
+<H3>wxDataViewListModel::ValueChanged</H3>
+<P>
+<B>virtual bool</B> <B>ValueChanged</B>(<B>unsigned int </B><I>col</I>, <B>unsigned int </B><I>row</I>)<P>
+Call this if a value in the model has been changed.<P>
+
+
+</FONT></BODY></HTML>

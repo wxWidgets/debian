@@ -1,0 +1,386 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPrintData</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxprintdata"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpreviewframe.html#wxpreviewframe"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxprintdialog.html#wxprintdialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPrintData</H2>
+<P>
+This class holds a variety of information related to printers and
+printer device contexts. This class is used to create a wxPrinterDC
+and a wxPostScriptDC. It is also used as a data member of wxPrintDialogData
+and wxPageSetupDialogData, as part of the mechanism for transferring data
+between the print dialogs and the application.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/cmndata.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_printingoverview.html#printingoverview">Printing framework overview</A>, 
+<A HREF="wx_wxprintdialog.html#wxprintdialog">wxPrintDialog</A>, 
+<A HREF="wx_wxpagesetupdialog.html#wxpagesetupdialog">wxPageSetupDialog</A>, 
+<A HREF="wx_wxprintdialogdata.html#wxprintdialogdata">wxPrintDialogData</A>, 
+<A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A>, 
+<A HREF="wx_commondialogsoverview.html#wxprintdialogoverview">wxPrintDialog Overview</A>, 
+<A HREF="wx_wxprinterdc.html#wxprinterdc">wxPrinterDC</A>, 
+<A HREF="wx_wxpostscriptdc.html#wxpostscriptdc">wxPostScriptDC</A><P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The following functions are specific to PostScript printing
+and have not yet been documented:<P>
+<PRE>
+const wxString& GetPrinterCommand() const ;
+const wxString& GetPrinterOptions() const ;
+const wxString& GetPreviewCommand() const ;
+const wxString& GetFilename() const ;
+const wxString& GetFontMetricPath() const ;
+double GetPrinterScaleX() const ;
+double GetPrinterScaleY() const ;
+long GetPrinterTranslateX() const ;
+long GetPrinterTranslateY() const ;
+// wxPRINT_MODE_PREVIEW, wxPRINT_MODE_FILE, wxPRINT_MODE_PRINTER
+wxPrintMode GetPrintMode() const ;
+
+void SetPrinterCommand(const wxString& command) ;
+void SetPrinterOptions(const wxString& options) ;
+void SetPreviewCommand(const wxString& command) ;
+void SetFilename(const wxString& filename) ;
+void SetFontMetricPath(const wxString& path) ;
+void SetPrinterScaleX(double x) ;
+void SetPrinterScaleY(double y) ;
+void SetPrinterScaling(double x, double y) ;
+void SetPrinterTranslateX(long x) ;
+void SetPrinterTranslateY(long y) ;
+void SetPrinterTranslation(long x, long y) ;
+void SetPrintMode(wxPrintMode printMode) ;
+</PRE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxprintdatactor">wxPrintData::wxPrintData</A><BR>
+<A HREF="#wxprintdatadtor">wxPrintData::~wxPrintData</A><BR>
+<A HREF="#wxprintdatagetcollate">wxPrintData::GetCollate</A><BR>
+<A HREF="#wxprintdatagetbin">wxPrintData::GetBin</A><BR>
+<A HREF="#wxprintdatagetcolour">wxPrintData::GetColour</A><BR>
+<A HREF="#wxprintdatagetduplex">wxPrintData::GetDuplex</A><BR>
+<A HREF="#wxprintdatagetnocopies">wxPrintData::GetNoCopies</A><BR>
+<A HREF="#wxprintdatagetorientation">wxPrintData::GetOrientation</A><BR>
+<A HREF="#wxprintdatagetpaperid">wxPrintData::GetPaperId</A><BR>
+<A HREF="#wxprintdatagetprintername">wxPrintData::GetPrinterName</A><BR>
+<A HREF="#wxprintdatagetquality">wxPrintData::GetQuality</A><BR>
+<A HREF="#wxprintdataisok">wxPrintData::IsOk</A><BR>
+<A HREF="#wxprintdatasetbin">wxPrintData::SetBin</A><BR>
+<A HREF="#wxprintdatasetcollate">wxPrintData::SetCollate</A><BR>
+<A HREF="#wxprintdatasetcolour">wxPrintData::SetColour</A><BR>
+<A HREF="#wxprintdatasetduplex">wxPrintData::SetDuplex</A><BR>
+<A HREF="#wxprintdatasetnocopies">wxPrintData::SetNoCopies</A><BR>
+<A HREF="#wxprintdatasetorientation">wxPrintData::SetOrientation</A><BR>
+<A HREF="#wxprintdatasetpaperid">wxPrintData::SetPaperId</A><BR>
+<A HREF="#wxprintdatasetprintername">wxPrintData::SetPrinterName</A><BR>
+<A HREF="#wxprintdatasetquality">wxPrintData::SetQuality</A><BR>
+<A HREF="#wxprintdataassign">wxPrintData::operator =</A><BR>
+<P>
+
+<HR>
+<A NAME="wxprintdatactor"></A>
+<H3>wxPrintData::wxPrintData</H3>
+<P>
+<B></B> <B>wxPrintData</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxPrintData</B>(<B>const <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>&</B></B><I> data</I>)<P>
+Copy constructor.<P>
+
+
+<HR>
+<A NAME="wxprintdatadtor"></A>
+<H3>wxPrintData::~wxPrintData</H3>
+<P>
+<B></B> <B>~wxPrintData</B>()<P>
+Destructor.<P>
+
+
+<HR>
+<A NAME="wxprintdatagetcollate"></A>
+<H3>wxPrintData::GetCollate</H3>
+<P>
+<B>bool</B> <B>GetCollate</B>() <B>const</B><P>
+Returns true if collation is on.<P>
+
+
+<HR>
+<A NAME="wxprintdatagetbin"></A>
+<H3>wxPrintData::GetBin</H3>
+<P>
+<B>wxPrintBin</B> <B>GetBin</B>() <B>const</B><P>
+Returns the current bin (papersource). By default, the system is left to select
+the bin (<TT>wxPRINTBIN_DEFAULT</TT> is returned).<P>
+See <A HREF="wx_wxprintdata.html#wxprintdatasetbin">SetBin()</A> for the full list of bin values.<P>
+
+
+<HR>
+<A NAME="wxprintdatagetcolour"></A>
+<H3>wxPrintData::GetColour</H3>
+<P>
+<B>bool</B> <B>GetColour</B>() <B>const</B><P>
+Returns true if colour printing is on.<P>
+
+
+<HR>
+<A NAME="wxprintdatagetduplex"></A>
+<H3>wxPrintData::GetDuplex</H3>
+<P>
+<B>wxDuplexMode</B> <B>GetDuplex</B>() <B>const</B><P>
+Returns the duplex mode. One of wxDUPLEX_SIMPLEX, wxDUPLEX_HORIZONTAL, wxDUPLEX_VERTICAL.<P>
+
+
+<HR>
+<A NAME="wxprintdatagetnocopies"></A>
+<H3>wxPrintData::GetNoCopies</H3>
+<P>
+<B>int</B> <B>GetNoCopies</B>() <B>const</B><P>
+Returns the number of copies requested by the user.<P>
+
+
+<HR>
+<A NAME="wxprintdatagetorientation"></A>
+<H3>wxPrintData::GetOrientation</H3>
+<P>
+<B>int</B> <B>GetOrientation</B>() <B>const</B><P>
+Gets the orientation. This can be wxLANDSCAPE or wxPORTRAIT.<P>
+
+
+<HR>
+<A NAME="wxprintdatagetpaperid"></A>
+<H3>wxPrintData::GetPaperId</H3>
+<P>
+<B>wxPaperSize</B> <B>GetPaperId</B>() <B>const</B><P>
+Returns the paper size id. For more information, see <A HREF="wx_wxprintdata.html#wxprintdatasetpaperid">wxPrintData::SetPaperId</A>.<P>
+
+
+<HR>
+<A NAME="wxprintdatagetprintername"></A>
+<H3>wxPrintData::GetPrinterName</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetPrinterName</B>() <B>const</B><P>
+Returns the printer name. If the printer name is the empty string, it indicates that the default
+printer should be used.<P>
+
+
+<HR>
+<A NAME="wxprintdatagetquality"></A>
+<H3>wxPrintData::GetQuality</H3>
+<P>
+<B>wxPrintQuality</B> <B>GetQuality</B>() <B>const</B><P>
+Returns the current print quality. This can be a positive integer, denoting the number of dots per inch, or
+one of the following identifiers:<P>
+<PRE>
+wxPRINT_QUALITY_HIGH
+wxPRINT_QUALITY_MEDIUM
+wxPRINT_QUALITY_LOW
+wxPRINT_QUALITY_DRAFT
+</PRE>
+On input you should pass one of these identifiers, but on return you may get back a positive integer
+indicating the current resolution setting.<P>
+
+
+<HR>
+<A NAME="wxprintdataisok"></A>
+<H3>wxPrintData::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if the print data is valid for using in print dialogs.
+This can return false on Windows if the current printer is not set, for example.
+On all other platforms, it returns true.<P>
+
+
+<HR>
+<A NAME="wxprintdatasetbin"></A>
+<H3>wxPrintData::SetBin</H3>
+<P>
+<B>void</B> <B>SetBin</B>(<B>wxPrintBin </B><I>flag</I>)<P>
+Sets the current bin. Possible values are:<P>
+<FONT SIZE=2>
+<PRE>
+enum wxPrintBin
+{
+    wxPRINTBIN_DEFAULT,
+
+    wxPRINTBIN_ONLYONE,
+    wxPRINTBIN_LOWER,
+    wxPRINTBIN_MIDDLE,
+    wxPRINTBIN_MANUAL,
+    wxPRINTBIN_ENVELOPE,
+    wxPRINTBIN_ENVMANUAL,
+    wxPRINTBIN_AUTO,
+    wxPRINTBIN_TRACTOR,
+    wxPRINTBIN_SMALLFMT,
+    wxPRINTBIN_LARGEFMT,
+    wxPRINTBIN_LARGECAPACITY,
+    wxPRINTBIN_CASSETTE,
+    wxPRINTBIN_FORMSOURCE,
+
+    wxPRINTBIN_USER,
+};
+</PRE>
+</FONT><P>
+
+
+<HR>
+<A NAME="wxprintdatasetcollate"></A>
+<H3>wxPrintData::SetCollate</H3>
+<P>
+<B>void</B> <B>SetCollate</B>(<B>bool </B><I>flag</I>)<P>
+Sets collation to on or off.<P>
+
+
+<HR>
+<A NAME="wxprintdatasetcolour"></A>
+<H3>wxPrintData::SetColour</H3>
+<P>
+<B>void</B> <B>SetColour</B>(<B>bool </B><I>flag</I>)<P>
+Sets colour printing on or off.<P>
+
+
+<HR>
+<A NAME="wxprintdatasetduplex"></A>
+<H3>wxPrintData::SetDuplex</H3>
+<P>
+<B>void</B> <B>SetDuplex</B>(<B>wxDuplexMode</B><I> mode</I>)<P>
+Returns the duplex mode. One of wxDUPLEX_SIMPLEX, wxDUPLEX_HORIZONTAL, wxDUPLEX_VERTICAL.<P>
+
+
+<HR>
+<A NAME="wxprintdatasetnocopies"></A>
+<H3>wxPrintData::SetNoCopies</H3>
+<P>
+<B>void</B> <B>SetNoCopies</B>(<B>int </B><I>n</I>)<P>
+Sets the default number of copies to be printed out.<P>
+
+
+<HR>
+<A NAME="wxprintdatasetorientation"></A>
+<H3>wxPrintData::SetOrientation</H3>
+<P>
+<B>void</B> <B>SetOrientation</B>(<B>int </B><I>orientation</I>)<P>
+Sets the orientation. This can be wxLANDSCAPE or wxPORTRAIT.<P>
+
+
+<HR>
+<A NAME="wxprintdatasetpaperid"></A>
+<H3>wxPrintData::SetPaperId</H3>
+<P>
+<B>void</B> <B>SetPaperId</B>(<B>wxPaperSize</B><I> paperId</I>)<P>
+Sets the paper id. This indicates the type of paper to be used. For a mapping between
+paper id, paper size and string name, see wxPrintPaperDatabase in <TT>paper.h</TT> (not yet documented).<P>
+<I>paperId</I> can be one of:<P>
+<FONT SIZE=2>
+<PRE>
+    wxPAPER_NONE,               // Use specific dimensions
+    wxPAPER_LETTER,             // Letter, 8 1/2 by 11 inches
+    wxPAPER_LEGAL,              // Legal, 8 1/2 by 14 inches
+    wxPAPER_A4,                 // A4 Sheet, 210 by 297 millimeters
+    wxPAPER_CSHEET,             // C Sheet, 17 by 22 inches
+    wxPAPER_DSHEET,             // D Sheet, 22 by 34 inches
+    wxPAPER_ESHEET,             // E Sheet, 34 by 44 inches
+    wxPAPER_LETTERSMALL,        // Letter Small, 8 1/2 by 11 inches
+    wxPAPER_TABLOID,            // Tabloid, 11 by 17 inches
+    wxPAPER_LEDGER,             // Ledger, 17 by 11 inches
+    wxPAPER_STATEMENT,          // Statement, 5 1/2 by 8 1/2 inches
+    wxPAPER_EXECUTIVE,          // Executive, 7 1/4 by 10 1/2 inches
+    wxPAPER_A3,                 // A3 sheet, 297 by 420 millimeters
+    wxPAPER_A4SMALL,            // A4 small sheet, 210 by 297 millimeters
+    wxPAPER_A5,                 // A5 sheet, 148 by 210 millimeters
+    wxPAPER_B4,                 // B4 sheet, 250 by 354 millimeters
+    wxPAPER_B5,                 // B5 sheet, 182-by-257-millimeter paper
+    wxPAPER_FOLIO,              // Folio, 8-1/2-by-13-inch paper
+    wxPAPER_QUARTO,             // Quarto, 215-by-275-millimeter paper
+    wxPAPER_10X14,              // 10-by-14-inch sheet
+    wxPAPER_11X17,              // 11-by-17-inch sheet
+    wxPAPER_NOTE,               // Note, 8 1/2 by 11 inches
+    wxPAPER_ENV_9,              // #9 Envelope, 3 7/8 by 8 7/8 inches
+    wxPAPER_ENV_10,             // #10 Envelope, 4 1/8 by 9 1/2 inches
+    wxPAPER_ENV_11,             // #11 Envelope, 4 1/2 by 10 3/8 inches
+    wxPAPER_ENV_12,             // #12 Envelope, 4 3/4 by 11 inches
+    wxPAPER_ENV_14,             // #14 Envelope, 5 by 11 1/2 inches
+    wxPAPER_ENV_DL,             // DL Envelope, 110 by 220 millimeters
+    wxPAPER_ENV_C5,             // C5 Envelope, 162 by 229 millimeters
+    wxPAPER_ENV_C3,             // C3 Envelope, 324 by 458 millimeters
+    wxPAPER_ENV_C4,             // C4 Envelope, 229 by 324 millimeters
+    wxPAPER_ENV_C6,             // C6 Envelope, 114 by 162 millimeters
+    wxPAPER_ENV_C65,            // C65 Envelope, 114 by 229 millimeters
+    wxPAPER_ENV_B4,             // B4 Envelope, 250 by 353 millimeters
+    wxPAPER_ENV_B5,             // B5 Envelope, 176 by 250 millimeters
+    wxPAPER_ENV_B6,             // B6 Envelope, 176 by 125 millimeters
+    wxPAPER_ENV_ITALY,          // Italy Envelope, 110 by 230 millimeters
+    wxPAPER_ENV_MONARCH,        // Monarch Envelope, 3 7/8 by 7 1/2 inches
+    wxPAPER_ENV_PERSONAL,       // 6 3/4 Envelope, 3 5/8 by 6 1/2 inches
+    wxPAPER_FANFOLD_US,         // US Std Fanfold, 14 7/8 by 11 inches
+    wxPAPER_FANFOLD_STD_GERMAN, // German Std Fanfold, 8 1/2 by 12 inches
+    wxPAPER_FANFOLD_LGL_GERMAN, // German Legal Fanfold, 8 1/2 by 13 inches
+
+Windows 95 only:
+    wxPAPER_ISO_B4,             // B4 (ISO) 250 x 353 mm
+    wxPAPER_JAPANESE_POSTCARD,  // Japanese Postcard 100 x 148 mm
+    wxPAPER_9X11,               // 9 x 11 in
+    wxPAPER_10X11,              // 10 x 11 in
+    wxPAPER_15X11,              // 15 x 11 in
+    wxPAPER_ENV_INVITE,         // Envelope Invite 220 x 220 mm
+    wxPAPER_LETTER_EXTRA,       // Letter Extra 9 \275 x 12 in
+    wxPAPER_LEGAL_EXTRA,        // Legal Extra 9 \275 x 15 in
+    wxPAPER_TABLOID_EXTRA,      // Tabloid Extra 11.69 x 18 in
+    wxPAPER_A4_EXTRA,           // A4 Extra 9.27 x 12.69 in
+    wxPAPER_LETTER_TRANSVERSE,  // Letter Transverse 8 \275 x 11 in
+    wxPAPER_A4_TRANSVERSE,      // A4 Transverse 210 x 297 mm
+    wxPAPER_LETTER_EXTRA_TRANSVERSE, // Letter Extra Transverse 9\275 x 12 in
+    wxPAPER_A_PLUS,             // SuperA/SuperA/A4 227 x 356 mm
+    wxPAPER_B_PLUS,             // SuperB/SuperB/A3 305 x 487 mm
+    wxPAPER_LETTER_PLUS,        // Letter Plus 8.5 x 12.69 in
+    wxPAPER_A4_PLUS,            // A4 Plus 210 x 330 mm
+    wxPAPER_A5_TRANSVERSE,      // A5 Transverse 148 x 210 mm
+    wxPAPER_B5_TRANSVERSE,      // B5 (JIS) Transverse 182 x 257 mm
+    wxPAPER_A3_EXTRA,           // A3 Extra 322 x 445 mm
+    wxPAPER_A5_EXTRA,           // A5 Extra 174 x 235 mm
+    wxPAPER_B5_EXTRA,           // B5 (ISO) Extra 201 x 276 mm
+    wxPAPER_A2,                 // A2 420 x 594 mm
+    wxPAPER_A3_TRANSVERSE,      // A3 Transverse 297 x 420 mm
+    wxPAPER_A3_EXTRA_TRANSVERSE // A3 Extra Transverse 322 x 445 mm
+</PRE>
+</FONT><P>
+
+
+<HR>
+<A NAME="wxprintdatasetprintername"></A>
+<H3>wxPrintData::SetPrinterName</H3>
+<P>
+<B>void</B> <B>SetPrinterName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>printerName</I>)<P>
+Sets the printer name. This can be the empty string to indicate that the default
+printer should be used.<P>
+
+
+<HR>
+<A NAME="wxprintdatasetquality"></A>
+<H3>wxPrintData::SetQuality</H3>
+<P>
+<B>void</B> <B>SetQuality</B>(<B>wxPrintQuality</B><I> quality</I>)<P>
+Sets the desired print quality. This can be a positive integer, denoting the number of dots per inch, or
+one of the following identifiers:<P>
+<PRE>
+wxPRINT_QUALITY_HIGH
+wxPRINT_QUALITY_MEDIUM
+wxPRINT_QUALITY_LOW
+wxPRINT_QUALITY_DRAFT
+</PRE>
+On input you should pass one of these identifiers, but on return you may get back a positive integer
+indicating the current resolution setting.<P>
+
+
+<HR>
+<A NAME="wxprintdataassign"></A>
+<H3>wxPrintData::operator =</H3>
+<P>
+<B>void</B> <B>operator =</B>(<B>const <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>&</B></B><I> data</I>)<P>
+Assigns print data to this object.<P>
+<B>void</B> <B>operator =</B>(<B>const wxPrintSetupData&amp;</B><I> data</I>)<P>
+Assigns print setup data to this object. wxPrintSetupData is deprecated,
+but retained for backward compatibility.<P>
+
+</FONT></BODY></HTML>

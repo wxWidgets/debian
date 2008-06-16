@@ -1,0 +1,223 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextStyleSheet</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextstylesheet"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextstyleorganiserdialog.html#wxrichtextstyleorganiserdialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextxmlhandler.html#wxrichtextxmlhandler"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextStyleSheet</H2>
+<P>
+A style sheet contains named paragraph and character styles that make it
+easy for a user to apply combinations of attributes to a <A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>.<P>
+You can use a <A HREF="wx_wxrichtextstylelistbox.html#wxrichtextstylelistbox">wxRichTextStyleListBox</A> in your
+user interface to show available styles to the user, and allow application
+of styles to the control.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextstyles.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextstylesheetwxrichtextstylesheet">wxRichTextStyleSheet::wxRichTextStyleSheet</A><BR>
+<A HREF="#wxrichtextstylesheetdtor">wxRichTextStyleSheet::~wxRichTextStyleSheet</A><BR>
+<A HREF="#wxrichtextstylesheetaddcharacterstyle">wxRichTextStyleSheet::AddCharacterStyle</A><BR>
+<A HREF="#wxrichtextstylesheetaddliststyle">wxRichTextStyleSheet::AddListStyle</A><BR>
+<A HREF="#wxrichtextstylesheetaddparagraphstyle">wxRichTextStyleSheet::AddParagraphStyle</A><BR>
+<A HREF="#wxrichtextstylesheetaddstyle">wxRichTextStyleSheet::AddStyle</A><BR>
+<A HREF="#wxrichtextstylesheetdeletestyles">wxRichTextStyleSheet::DeleteStyles</A><BR>
+<A HREF="#wxrichtextstylesheetfindcharacterstyle">wxRichTextStyleSheet::FindCharacterStyle</A><BR>
+<A HREF="#wxrichtextstylesheetfindliststyle">wxRichTextStyleSheet::FindListStyle</A><BR>
+<A HREF="#wxrichtextstylesheetfindparagraphstyle">wxRichTextStyleSheet::FindParagraphStyle</A><BR>
+<A HREF="#wxrichtextstylesheetfindstyle">wxRichTextStyleSheet::FindStyle</A><BR>
+<A HREF="#wxrichtextstylesheetgetcharacterstyle">wxRichTextStyleSheet::GetCharacterStyle</A><BR>
+<A HREF="#wxrichtextstylesheetgetcharacterstylecount">wxRichTextStyleSheet::GetCharacterStyleCount</A><BR>
+<A HREF="#wxrichtextstylesheetgetdescription">wxRichTextStyleSheet::GetDescription</A><BR>
+<A HREF="#wxrichtextstylesheetgetliststyle">wxRichTextStyleSheet::GetListStyle</A><BR>
+<A HREF="#wxrichtextstylesheetgetliststylecount">wxRichTextStyleSheet::GetListStyleCount</A><BR>
+<A HREF="#wxrichtextstylesheetgetname">wxRichTextStyleSheet::GetName</A><BR>
+<A HREF="#wxrichtextstylesheetgetparagraphstyle">wxRichTextStyleSheet::GetParagraphStyle</A><BR>
+<A HREF="#wxrichtextstylesheetgetparagraphstylecount">wxRichTextStyleSheet::GetParagraphStyleCount</A><BR>
+<A HREF="#wxrichtextstylesheetremovecharacterstyle">wxRichTextStyleSheet::RemoveCharacterStyle</A><BR>
+<A HREF="#wxrichtextstylesheetremoveliststyle">wxRichTextStyleSheet::RemoveListStyle</A><BR>
+<A HREF="#wxrichtextstylesheetremoveparagraphstyle">wxRichTextStyleSheet::RemoveParagraphStyle</A><BR>
+<A HREF="#wxrichtextstylesheetremovestyle">wxRichTextStyleSheet::RemoveStyle</A><BR>
+<A HREF="#wxrichtextstylesheetsetdescription">wxRichTextStyleSheet::SetDescription</A><BR>
+<A HREF="#wxrichtextstylesheetsetname">wxRichTextStyleSheet::SetName</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetwxrichtextstylesheet"></A>
+<H3>wxRichTextStyleSheet::wxRichTextStyleSheet</H3>
+<P>
+<B></B> <B>wxRichTextStyleSheet</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetdtor"></A>
+<H3>wxRichTextStyleSheet::~wxRichTextStyleSheet</H3>
+<P>
+<B></B> <B>~wxRichTextStyleSheet</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetaddcharacterstyle"></A>
+<H3>wxRichTextStyleSheet::AddCharacterStyle</H3>
+<P>
+<B>bool</B> <B>AddCharacterStyle</B>(<B><A HREF="wx_wxrichtextcharacterstyledefinition.html#wxrichtextcharacterstyledefinition">wxRichTextCharacterStyleDefinition</A>* </B></B><I>def</I>)<P>
+Adds a definition to the character style list.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetaddliststyle"></A>
+<H3>wxRichTextStyleSheet::AddListStyle</H3>
+<P>
+<B>bool</B> <B>AddListStyle</B>(<B><A HREF="wx_wxrichtextliststyledefinition.html#wxrichtextliststyledefinition">wxRichTextListStyleDefinition</A>* </B></B><I>def</I>)<P>
+Adds a definition to the list style list.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetaddparagraphstyle"></A>
+<H3>wxRichTextStyleSheet::AddParagraphStyle</H3>
+<P>
+<B>bool</B> <B>AddParagraphStyle</B>(<B><A HREF="wx_wxrichtextparagraphstyledefinition.html#wxrichtextparagraphstyledefinition">wxRichTextParagraphStyleDefinition</A>* </B></B><I>def</I>)<P>
+Adds a definition to the paragraph style list.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetaddstyle"></A>
+<H3>wxRichTextStyleSheet::AddStyle</H3>
+<P>
+<B>bool</B> <B>AddStyle</B>(<B><A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition">wxRichTextStyleDefinition</A>* </B></B><I>def</I>)<P>
+Adds a definition to the appropriate style list.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetdeletestyles"></A>
+<H3>wxRichTextStyleSheet::DeleteStyles</H3>
+<P>
+<B>void</B> <B>DeleteStyles</B>()<P>
+Deletes all styles.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetfindcharacterstyle"></A>
+<H3>wxRichTextStyleSheet::FindCharacterStyle</H3>
+<P>
+<B><A HREF="wx_wxrichtextcharacterstyledefinition.html#wxrichtextcharacterstyledefinition">wxRichTextCharacterStyleDefinition</A>*</B> </B> <B>FindCharacterStyle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>) <B>const</B><P>
+Finds a character definition by name.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetfindliststyle"></A>
+<H3>wxRichTextStyleSheet::FindListStyle</H3>
+<P>
+<B><A HREF="wx_wxrichtextliststyledefinition.html#wxrichtextliststyledefinition">wxRichTextListStyleDefinition</A>*</B> </B> <B>FindListStyle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>) <B>const</B><P>
+Finds a list definition by name.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetfindparagraphstyle"></A>
+<H3>wxRichTextStyleSheet::FindParagraphStyle</H3>
+<P>
+<B><A HREF="wx_wxrichtextparagraphstyledefinition.html#wxrichtextparagraphstyledefinition">wxRichTextParagraphStyleDefinition</A>*</B> </B> <B>FindParagraphStyle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>) <B>const</B><P>
+Finds a paragraph definition by name.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetfindstyle"></A>
+<H3>wxRichTextStyleSheet::FindStyle</H3>
+<P>
+<B><A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition">wxRichTextStyleDefinition</A>*</B> </B> <B>FindStyle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>) <B>const</B><P>
+Finds a style definition by name.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetgetcharacterstyle"></A>
+<H3>wxRichTextStyleSheet::GetCharacterStyle</H3>
+<P>
+<B><A HREF="wx_wxrichtextcharacterstyledefinition.html#wxrichtextcharacterstyledefinition">wxRichTextCharacterStyleDefinition</A>*</B> </B> <B>GetCharacterStyle</B>(<B>size_t </B><I>n</I>) <B>const</B><P>
+Returns the <I>n</I>th character style.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetgetcharacterstylecount"></A>
+<H3>wxRichTextStyleSheet::GetCharacterStyleCount</H3>
+<P>
+<B>size_t</B> <B>GetCharacterStyleCount</B>() <B>const</B><P>
+Returns the number of character styles.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetgetdescription"></A>
+<H3>wxRichTextStyleSheet::GetDescription</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetDescription</B>() <B>const</B><P>
+Returns the style sheet's description.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetgetliststyle"></A>
+<H3>wxRichTextStyleSheet::GetListStyle</H3>
+<P>
+<B><A HREF="wx_wxrichtextliststyledefinition.html#wxrichtextliststyledefinition">wxRichTextListStyleDefinition</A>*</B> </B> <B>GetListStyle</B>(<B>size_t </B><I>n</I>) <B>const</B><P>
+Returns the <I>n</I>th list style.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetgetliststylecount"></A>
+<H3>wxRichTextStyleSheet::GetListStyleCount</H3>
+<P>
+<B>size_t</B> <B>GetListStyleCount</B>() <B>const</B><P>
+Returns the number of list styles.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetgetname"></A>
+<H3>wxRichTextStyleSheet::GetName</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetName</B>() <B>const</B><P>
+Returns the style sheet's name.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetgetparagraphstyle"></A>
+<H3>wxRichTextStyleSheet::GetParagraphStyle</H3>
+<P>
+<B><A HREF="wx_wxrichtextparagraphstyledefinition.html#wxrichtextparagraphstyledefinition">wxRichTextParagraphStyleDefinition</A>*</B> </B> <B>GetParagraphStyle</B>(<B>size_t </B><I>n</I>) <B>const</B><P>
+Returns the <I>n</I>th paragraph style.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetgetparagraphstylecount"></A>
+<H3>wxRichTextStyleSheet::GetParagraphStyleCount</H3>
+<P>
+<B>size_t</B> <B>GetParagraphStyleCount</B>() <B>const</B><P>
+Returns the number of paragraph styles.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetremovecharacterstyle"></A>
+<H3>wxRichTextStyleSheet::RemoveCharacterStyle</H3>
+<P>
+<B>bool</B> <B>RemoveCharacterStyle</B>(<B><A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition">wxRichTextStyleDefinition</A>* </B></B><I>def</I>, <B>bool </B><I>deleteStyle = false</I>)<P>
+Removes a character style.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetremoveliststyle"></A>
+<H3>wxRichTextStyleSheet::RemoveListStyle</H3>
+<P>
+<B>bool</B> <B>RemoveListStyle</B>(<B><A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition">wxRichTextStyleDefinition</A>* </B></B><I>def</I>, <B>bool </B><I>deleteStyle = false</I>)<P>
+Removes a list style.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetremoveparagraphstyle"></A>
+<H3>wxRichTextStyleSheet::RemoveParagraphStyle</H3>
+<P>
+<B>bool</B> <B>RemoveParagraphStyle</B>(<B><A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition">wxRichTextStyleDefinition</A>* </B></B><I>def</I>, <B>bool </B><I>deleteStyle = false</I>)<P>
+Removes a paragraph style.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetremovestyle"></A>
+<H3>wxRichTextStyleSheet::RemoveStyle</H3>
+<P>
+<B>bool</B> <B>RemoveStyle</B>(<B><A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition">wxRichTextStyleDefinition</A>* </B></B><I>def</I>, <B>bool </B><I>deleteStyle = false</I>)<P>
+Removes a style.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetsetdescription"></A>
+<H3>wxRichTextStyleSheet::SetDescription</H3>
+<P>
+<B>void</B> <B>SetDescription</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>descr</I>)<P>
+Sets the style sheet's description.<P>
+
+<HR>
+<A NAME="wxrichtextstylesheetsetname"></A>
+<H3>wxRichTextStyleSheet::SetName</H3>
+<P>
+<B>void</B> <B>SetName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the style sheet's name.<P>
+
+</FONT></BODY></HTML>

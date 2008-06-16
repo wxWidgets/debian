@@ -1,0 +1,131 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTextOutputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtextoutputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtextinputstream.html#wxtextinputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtextvalidator.html#wxtextvalidator"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTextOutputStream</H2>
+<P>
+This class provides functions that write text datas using an output stream.
+So, you can write <I>text</I> floats, integers.<P>
+You can also simulate the C++ cout class:<P>
+<PRE>
+  wxFFileOutputStream output( stderr );
+  wxTextOutputStream cout( output );
+
+  cout &lt;&lt; "This is a text line" &lt;&lt; endl;
+  cout &lt;&lt; 1234;
+  cout &lt;&lt; 1.23456;
+</PRE>
+The wxTextOutputStream writes text files (or streams) on DOS, Macintosh
+and Unix in their native formats (concerning the line ending).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/txtstrm.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxtextoutputstreamctor">wxTextOutputStream::wxTextOutputStream</A><BR>
+<A HREF="#wxtextoutputstreamdtor">wxTextOutputStream::~wxTextOutputStream</A><BR>
+<A HREF="#wxtextoutputstreamgetmode">wxTextOutputStream::GetMode</A><BR>
+<A HREF="#wxtextoutputstreamputchar">wxTextOutputStream::PutChar</A><BR>
+<A HREF="#wxtextoutputstreamsetmode">wxTextOutputStream::SetMode</A><BR>
+<A HREF="#wxtextoutputstreamwrite8">wxTextOutputStream::Write8</A><BR>
+<A HREF="#wxtextoutputstreamwrite16">wxTextOutputStream::Write16</A><BR>
+<A HREF="#wxtextoutputstreamwrite32">wxTextOutputStream::Write32</A><BR>
+<A HREF="#wxtextoutputstreamwritedouble">wxTextOutputStream::WriteDouble</A><BR>
+<A HREF="#wxtextoutputstreamwritestring">wxTextOutputStream::WriteString</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtextoutputstreamctor"></A>
+<H3>wxTextOutputStream::wxTextOutputStream</H3>
+<P>
+<B></B> <B>wxTextOutputStream</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>&</B></B><I> stream</I>, <B>wxEOL</B><I> mode = wxEOL_NATIVE</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B></B><I> conv = wxConvUTF8</I>)<P>
+Constructs a text stream object associated to the given output stream.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>stream</I><UL><UL>
+The output stream.</UL></UL>
+<P>
+<I>mode</I><UL><UL>
+The end-of-line mode. One of <B>wxEOL_NATIVE</B>, <B>wxEOL_DOS</B>, <B>wxEOL_MAC</B> and <B>wxEOL_UNIX</B>.</UL></UL>
+<P>
+<I>conv</I><UL><UL>
+<I>In Unicode build only:</I> The object used to convert
+Unicode text into ASCII characters written to the output stream.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxtextoutputstreamdtor"></A>
+<H3>wxTextOutputStream::~wxTextOutputStream</H3>
+<P>
+<B></B> <B>~wxTextOutputStream</B>()<P>
+Destroys the wxTextOutputStream object.<P>
+
+
+<HR>
+<A NAME="wxtextoutputstreamgetmode"></A>
+<H3>wxTextOutputStream::GetMode</H3>
+<P>
+<B>wxEOL</B> <B>GetMode</B>()<P>
+Returns the end-of-line mode. One of <B>wxEOL_DOS</B>, <B>wxEOL_MAC</B> and <B>wxEOL_UNIX</B>.<P>
+
+
+<HR>
+<A NAME="wxtextoutputstreamputchar"></A>
+<H3>wxTextOutputStream::PutChar</H3>
+<P>
+<B>void</B> <B>PutChar</B>(<B>wxChar </B><I>c</I>)<P>
+Writes a character to the stream.<P>
+
+
+<HR>
+<A NAME="wxtextoutputstreamsetmode"></A>
+<H3>wxTextOutputStream::SetMode</H3>
+<P>
+<B>void</B> <B>SetMode</B>(<B>wxEOL</B><I> mode = wxEOL_NATIVE</I>)<P>
+Set the end-of-line mode. One of <B>wxEOL_NATIVE</B>, <B>wxEOL_DOS</B>, <B>wxEOL_MAC</B> and <B>wxEOL_UNIX</B>.<P>
+
+
+<HR>
+<A NAME="wxtextoutputstreamwrite8"></A>
+<H3>wxTextOutputStream::Write8</H3>
+<P>
+<B>void</B> <B>Write8</B>(<B>wxUint8 </B><I>i8</I>)<P>
+Writes the single byte <I>i8</I> to the stream.<P>
+
+
+<HR>
+<A NAME="wxtextoutputstreamwrite16"></A>
+<H3>wxTextOutputStream::Write16</H3>
+<P>
+<B>void</B> <B>Write16</B>(<B>wxUint16 </B><I>i16</I>)<P>
+Writes the 16 bit integer <I>i16</I> to the stream.<P>
+
+
+<HR>
+<A NAME="wxtextoutputstreamwrite32"></A>
+<H3>wxTextOutputStream::Write32</H3>
+<P>
+<B>void</B> <B>Write32</B>(<B>wxUint32 </B><I>i32</I>)<P>
+Writes the 32 bit integer <I>i32</I> to the stream.<P>
+
+
+<HR>
+<A NAME="wxtextoutputstreamwritedouble"></A>
+<H3>wxTextOutputStream::WriteDouble</H3>
+<P>
+<B>virtual void</B> <B>WriteDouble</B>(<B>double </B><I>f</I>)<P>
+Writes the double <I>f</I> to the stream using the IEEE format.<P>
+
+
+<HR>
+<A NAME="wxtextoutputstreamwritestring"></A>
+<H3>wxTextOutputStream::WriteString</H3>
+<P>
+<B>virtual void</B> <B>WriteString</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>string</I>)<P>
+Writes <I>string</I> as a line. Depending on the end-of-line mode the end of
+line ('\n') characters in the string are converted to the correct
+line ending terminator.<P>
+
+</FONT></BODY></HTML>

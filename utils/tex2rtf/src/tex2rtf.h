@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Wlodzimiez ABX Skiba 2003/2004 Unicode support
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2rtf.h,v 1.10 2005/08/24 17:56:29 ABX Exp $
+// RCS-ID:      $Id: tex2rtf.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,6 @@ class MyFrame: public wxFrame
 { public:
     wxTextCtrl *textWindow;
     MyFrame(wxFrame *frame, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size);
-    void OnMenuCommand(int id);
 
     void OnCloseWindow(wxCloseEvent& event);
     void OnExit(wxCommandEvent& event);
@@ -74,7 +73,7 @@ class Tex2RTFConnection: public wxDDEConnection
 {
  public:
   Tex2RTFConnection(wxChar *buf, int size);
-  ~Tex2RTFConnection(void){};
+  virtual ~Tex2RTFConnection(void){}
   bool OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format);
   wxChar *OnRequest(const wxString& topic, const wxString& item, int *size, wxIPCFormat format);
 };

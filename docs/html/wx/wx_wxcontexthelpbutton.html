@@ -1,0 +1,68 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxContextHelpButton</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcontexthelpbutton"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcontexthelp.html#wxcontexthelp"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcontrol.html#wxcontrol"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxContextHelpButton</H2>
+<P>
+Instances of this class may be used to add a question mark button that when pressed, puts the
+application into context-help mode. It does this by creating a <A HREF="wx_wxcontexthelp.html#wxcontexthelp">wxContextHelp</A> object which itself
+generates a wxEVT_HELP event when the user clicks on a window.<P>
+On Windows, you may add a question-mark icon to a dialog by use of the wxDIALOG_EX_CONTEXTHELP extra style, but
+on other platforms you will have to add a button explicitly, usually next to OK, Cancel or similar buttons.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbutton">wxBitmapButton</A><BR>
+
+<A HREF="wx_wxbutton.html#wxbutton">wxButton</A><BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/cshelp.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbutton">wxBitmapButton</A>, <A HREF="wx_wxcontexthelp.html#wxcontexthelp">wxContextHelp</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxcontexthelpbuttonconstr">wxContextHelpButton::wxContextHelpButton</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcontexthelpbuttonconstr"></A>
+<H3>wxContextHelpButton::wxContextHelpButton</H3>
+<P>
+<B></B> <B>wxContextHelpButton</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxContextHelpButton</B>(
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, 
+<B>wxWindowID </B><I>id = wxID_CONTEXT_HELP</I>, 
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, 
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, 
+<B>long </B><I>style = wxBU_AUTODRAW</I>)<P>
+Constructor, creating and showing a context help button.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Button identifier. Defaults to wxID_CONTEXT_HELP.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Button position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Button size. If the default size (-1, -1) is specified then the button is sized
+appropriately for the question mark bitmap.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Normally you need pass only the parent window to the constructor, and use the defaults for the remaining parameters.<P>
+
+</FONT></BODY></HTML>

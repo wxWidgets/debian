@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: controls.i,v 1.46 2005/02/18 04:45:38 RD Exp $
+// RCS-ID:      $Id: controls.i 43908 2006-12-11 06:19:27Z RD $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -23,8 +23,6 @@
 
 %import core.i
 %pythoncode { wx = _core }
-
-%include __controls_rename.i
 
 MAKE_CONST_WXSTRING_NOSWIG(PanelNameStr);
 MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
@@ -61,8 +59,10 @@ MAKE_CONST_WXSTRING_NOSWIG(ControlNameStr);
 %include _cshelp.i
 %include _dragimg.i
 %include _datectrl.i
-
-
+%include _hyperlink.i
+%include _picker.i
+%include _collpane.i
+%include _srchctrl.i
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

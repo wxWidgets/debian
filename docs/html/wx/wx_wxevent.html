@@ -1,0 +1,224 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxeraseevent.html#wxeraseevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxevthandler.html#wxevthandler"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxEvent</H2>
+<P>
+An event is a structure holding information about an event passed to a
+callback or member function. <B>wxEvent</B> used to be a multipurpose
+event object, and is an abstract base class for other event classes (see below).<P>
+For more information about events, see the <A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A>.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl custom event classes should be derived from
+<TT>Wx::PlEvent</TT> and <TT>Wx::PlCommandEvent</TT>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A>,
+<A HREF="wx_wxmouseevent.html#wxmouseevent">wxMouseEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxeventctor">wxEvent::wxEvent</A><BR>
+<A HREF="#wxeventmpropagationlevel">wxEvent::m_propagationLevel</A><BR>
+<A HREF="#wxeventclone">wxEvent::Clone</A><BR>
+<A HREF="#wxeventgeteventobject">wxEvent::GetEventObject</A><BR>
+<A HREF="#wxeventgeteventtype">wxEvent::GetEventType</A><BR>
+<A HREF="#wxeventgetid">wxEvent::GetId</A><BR>
+<A HREF="#wxeventgetskipped">wxEvent::GetSkipped</A><BR>
+<A HREF="#wxeventgettimestamp">wxEvent::GetTimestamp</A><BR>
+<A HREF="#wxeventiscommandevent">wxEvent::IsCommandEvent</A><BR>
+<A HREF="#wxeventresumepropagation">wxEvent::ResumePropagation</A><BR>
+<A HREF="#wxeventseteventobject">wxEvent::SetEventObject</A><BR>
+<A HREF="#wxeventseteventtype">wxEvent::SetEventType</A><BR>
+<A HREF="#wxeventsetid">wxEvent::SetId</A><BR>
+<A HREF="#wxeventsettimestamp">wxEvent::SetTimestamp</A><BR>
+<A HREF="#wxeventshouldpropagate">wxEvent::ShouldPropagate</A><BR>
+<A HREF="#wxeventskip">wxEvent::Skip</A><BR>
+<A HREF="#wxeventstoppropagation">wxEvent::StopPropagation</A><BR>
+<P>
+
+<HR>
+<A NAME="wxeventctor"></A>
+<H3>wxEvent::wxEvent</H3>
+<P>
+<B></B> <B>wxEvent</B>(<B>int </B><I>id = 0</I>, <B>wxEventType </B><I>eventType = <TT>wxEVT_NULL</TT></I>)<P>
+Constructor. Should not need to be used directly by an application.<P>
+
+
+<HR>
+<A NAME="wxeventmpropagationlevel"></A>
+<H3>wxEvent::m_propagationLevel</H3>
+<P>
+
+int m_propagationLevel<P>
+Indicates how many levels the event can propagate. This member is protected and
+should typically only be set in the constructors of the derived classes. It
+may be temporarily changed by <A HREF="wx_wxevent.html#wxeventstoppropagation">StopPropagation</A> 
+and <A HREF="wx_wxevent.html#wxeventresumepropagation">ResumePropagation</A> and tested with 
+<A HREF="wx_wxevent.html#wxeventshouldpropagate">ShouldPropagate</A>.<P>
+The initial value is set to either <TT>wxEVENT_PROPAGATE_NONE</TT> (by
+default) meaning that the event shouldn't be propagated at all or to 
+<TT>wxEVENT_PROPAGATE_MAX</TT> (for command events) meaning that it should be
+propagated as much as necessary.<P>
+Any positive number means that the event should be propagated but no more than
+the given number of times. E.g. the propagation level may be set to 1 to
+propagate the event to its parent only, but not to its grandparent.<P>
+
+
+<HR>
+<A NAME="wxeventclone"></A>
+<H3>wxEvent::Clone</H3>
+<P>
+<B>virtual <A HREF="wx_wxevent.html#wxevent">wxEvent</A>*</B> </B> <B>Clone</B>() <B>const</B><P>
+Returns a copy of the event.<P>
+Any event that is posted to the wxWidgets event system for later action (via
+<A HREF="wx_wxevthandler.html#wxevthandleraddpendingevent">wxEvtHandler::AddPendingEvent</A> or
+<A HREF="wx_miscellany.html#wxpostevent">wxPostEvent</A>) must implement this method. All wxWidgets
+events fully implement this method, but any derived events implemented by the
+user should also implement this method just in case they (or some event
+derived from them) are ever posted.<P>
+All wxWidgets events implement a copy constructor, so the easiest way of
+implementing the Clone function is to implement a copy constructor for
+a new event (call it MyEvent) and then define the Clone function like this:<P>
+<PRE>
+    wxEvent *Clone(void) const { return new MyEvent(*this); }
+</PRE>
+
+
+<HR>
+<A NAME="wxeventgeteventobject"></A>
+<H3>wxEvent::GetEventObject</H3>
+<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B> </B> <B>GetEventObject</B>()<P>
+Returns the object (usually a window) associated with the
+event, if any.<P>
+
+
+<HR>
+<A NAME="wxeventgeteventtype"></A>
+<H3>wxEvent::GetEventType</H3>
+<P>
+<B>wxEventType</B> <B>GetEventType</B>()<P>
+Returns the identifier of the given event type,
+such as <TT>wxEVT_COMMAND_BUTTON_CLICKED</TT>.<P>
+
+
+<HR>
+<A NAME="wxeventgetid"></A>
+<H3>wxEvent::GetId</H3>
+<P>
+<B>int</B> <B>GetId</B>() <B>const</B><P>
+Returns the identifier associated with this event, such as a button command id.<P>
+
+
+<HR>
+<A NAME="wxeventgetskipped"></A>
+<H3>wxEvent::GetSkipped</H3>
+<P>
+<B>bool</B> <B>GetSkipped</B>() <B>const</B><P>
+Returns true if the event handler should be skipped, false otherwise.<P>
+
+
+<HR>
+<A NAME="wxeventgettimestamp"></A>
+<H3>wxEvent::GetTimestamp</H3>
+<P>
+<B>long</B> <B>GetTimestamp</B>()<P>
+Gets the timestamp for the event. The timestamp is the time in milliseconds
+since some fixed moment (<EM>not</EM> necessarily the standard Unix Epoch, so
+only differences between the timestamps and not their absolute values usually
+make sense).<P>
+
+
+<HR>
+<A NAME="wxeventiscommandevent"></A>
+<H3>wxEvent::IsCommandEvent</H3>
+<P>
+<B>bool</B> <B>IsCommandEvent</B>() <B>const</B><P>
+Returns true if the event is or is derived from
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A> else it returns false.
+Note: Exists only for optimization purposes.<P>
+
+
+<HR>
+<A NAME="wxeventresumepropagation"></A>
+<H3>wxEvent::ResumePropagation</H3>
+<P>
+<B>void</B> <B>ResumePropagation</B>(<B>int </B><I>propagationLevel</I>)<P>
+Sets the propagation level to the given value (for example returned from an
+earlier call to <A HREF="wx_wxevent.html#wxeventstoppropagation">StopPropagation</A>).<P>
+
+
+<HR>
+<A NAME="wxeventseteventobject"></A>
+<H3>wxEvent::SetEventObject</H3>
+<P>
+<B>void</B> <B>SetEventObject</B>(<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>object</I>)<P>
+Sets the originating object.<P>
+
+
+<HR>
+<A NAME="wxeventseteventtype"></A>
+<H3>wxEvent::SetEventType</H3>
+<P>
+<B>void</B> <B>SetEventType</B>(<B>wxEventType </B><I>type</I>)<P>
+Sets the event type.<P>
+
+
+<HR>
+<A NAME="wxeventsetid"></A>
+<H3>wxEvent::SetId</H3>
+<P>
+<B>void</B> <B>SetId</B>(<B>int</B><I> id</I>)<P>
+Sets the identifier associated with this event, such as a button command id.<P>
+
+
+<HR>
+<A NAME="wxeventsettimestamp"></A>
+<H3>wxEvent::SetTimestamp</H3>
+<P>
+<B>void</B> <B>SetTimestamp</B>(<B>long </B><I>timeStamp</I>)<P>
+Sets the timestamp for the event.<P>
+
+
+<HR>
+<A NAME="wxeventshouldpropagate"></A>
+<H3>wxEvent::ShouldPropagate</H3>
+<P>
+<B>bool</B> <B>ShouldPropagate</B>() <B>const</B><P>
+Test if this event should be propagated or not, i.e. if the propagation level
+is currently greater than 0.<P>
+
+
+<HR>
+<A NAME="wxeventskip"></A>
+<H3>wxEvent::Skip</H3>
+<P>
+<B>void</B> <B>Skip</B>(<B>bool</B><I> skip = true</I>)<P>
+This method can be used inside an event handler to control whether further
+event handlers bound to this event will be called after the current one
+returns. Without Skip() (or equivalently if Skip(false) is used),
+the event will not be processed any more. If Skip(true) is called, the event
+processing system continues searching for a further handler function for this
+event, even though it has been processed already in the current handler.<P>
+In general, it is recommended to skip all non-command events to allow the
+default handling to take place. The command events are, however, normally not
+skipped as usually a single command such as a button click or menu item
+selection must only be processed by one handler.<P>
+
+
+<HR>
+<A NAME="wxeventstoppropagation"></A>
+<H3>wxEvent::StopPropagation</H3>
+<P>
+<B>int</B> <B>StopPropagation</B>()<P>
+Stop the event from propagating to its parent window.<P>
+Returns the old propagation level value which may be later passed to 
+<A HREF="wx_wxevent.html#wxeventresumepropagation">ResumePropagation</A> to allow propagating the
+event again.<P>
+
+</FONT></BODY></HTML>

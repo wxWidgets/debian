@@ -1,0 +1,67 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMouseCaptureChangedEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmousecapturechangedevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmodule.html#wxmodule"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmousecapturelostevent.html#wxmousecapturelostevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMouseCaptureChangedEvent</H2>
+<P>
+An mouse capture changed event is sent to a window that loses its
+mouse capture. This is called even if wxWindow::ReleaseCapture
+was called by the application code. Handling this event allows
+an application to cater for unexpected capture releases which
+might otherwise confuse mouse handling code.<P>
+This event is implemented under Windows only.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process this event, use the following event handler macro to direct input to a member
+function that takes a wxMouseCaptureChangedEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_MOUSE_CAPTURE_CHANGED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_MOUSE_CAPTURE_CHANGED event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmousecapturelostevent.html#wxmousecapturelostevent">wxMouseCaptureLostEvent</A>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A>, 
+<A HREF="wx_wxwindow.html#wxwindowcapturemouse">wxWindow::CaptureMouse</A>, 
+<A HREF="wx_wxwindow.html#wxwindowreleasemouse">wxWindow::ReleaseMouse</A>, 
+<A HREF="wx_wxwindow.html#wxwindowgetcapture">wxWindow::GetCapture</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmousecapturechangedeventctor">wxMouseCaptureChangedEvent::wxMouseCaptureChangedEvent</A><BR>
+<A HREF="#wxmousecapturechangedeventgetcapturedwindow">wxActivateEvent::GetCapturedWindow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmousecapturechangedeventctor"></A>
+<H3>wxMouseCaptureChangedEvent::wxMouseCaptureChangedEvent</H3>
+<P>
+<B></B> <B>wxMouseCaptureChangedEvent</B>(<B>wxWindowID </B><I>windowId = 0</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> gainedCapture = NULL</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxmousecapturechangedeventgetcapturedwindow"></A>
+<H3>wxActivateEvent::GetCapturedWindow</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetCapturedWindow</B>() <B>const</B><P>
+Returns the window that gained the capture, or NULL if it was a non-wxWidgets window.<P>
+
+
+</FONT></BODY></HTML>

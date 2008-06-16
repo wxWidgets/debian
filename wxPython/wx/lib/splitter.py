@@ -1,12 +1,12 @@
 #----------------------------------------------------------------------
 # Name:        wx.lib.splitter
 # Purpose:     A class similar to wx.SplitterWindow but that allows more
-#              a single split
+#              than a single split
 #
 # Author:      Robin Dunn
 #
 # Created:     9-June-2005
-# RCS-ID:      $Id: splitter.py,v 1.4.2.2 2006/03/30 17:09:53 RD Exp $
+# RCS-ID:      $Id: splitter.py 42816 2006-10-31 08:50:17Z RD $
 # Copyright:   (c) 2005 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -209,6 +209,16 @@ class MultiSplitterWindow(wx.PyPanel):
         return self._sashes[idx]
 
 
+    def SetSashPosition(self, idx, pos):
+        """
+        Set the psition of the idx'th sash, measured from the left/top
+        of the window preceding the sash.
+        """
+        assert idx < len(self._sashes)
+        self._sashes[idx] = pos
+        self._SizeWindows()
+        
+
     def SizeWindows(self):
         """
         Reposition and size the windows managed by the splitter.
@@ -230,14 +240,14 @@ class MultiSplitterWindow(wx.PyPanel):
         sashsize = self._GetSashSize()
         if self._orient == wx.HORIZONTAL:
             for win in self._windows:
-                winbest = win.GetAdjustedBestSize()
+                winbest = win.GetEffectiveMinSize()
                 best.width += max(self._minimumPaneSize, winbest.width)
                 best.height = max(best.height, winbest.height)
             best.width += sashsize * (len(self._windows)-1)
 
         else:
             for win in self._windows:
-                winbest = win.GetAdjustedBestSize()
+                winbest = win.GetEffectiveMinSize()
                 best.height += max(self._minimumPaneSize, winbest.height)
                 best.width = max(best.width, winbest.width)
             best.height += sashsize * (len(self._windows)-1)

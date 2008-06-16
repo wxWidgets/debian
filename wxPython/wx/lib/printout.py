@@ -612,6 +612,8 @@ class PrintTableDraw(wx.ScrolledWindow, PrintBase):
             except:
                 size = self.row_def_line_size
 
+            if size < 1: return
+
             try:
                 colour = self.row_line_colour[self.data_cnt]
             except:
@@ -632,6 +634,8 @@ class PrintTableDraw(wx.ScrolledWindow, PrintBase):
                     size = self.column_line_size[col]
                 except:
                     size = self.column_def_line_size
+
+                if size < 1: continue
 
                 try:
                     colour = self.column_line_colour[col]
@@ -911,7 +915,7 @@ class PrintTable:
         printout2 = SetPrintout(self)
         self.preview = wx.PrintPreview(printout, printout2, data)
         if not self.preview.Ok():
-            wxMessageBox("There was a problem printing!", "Printing", wx.OK)
+            wx.MessageBox("There was a problem printing!", "Printing", wx.OK)
             return
 
         self.preview.SetZoom(60)        # initial zoom value
@@ -928,7 +932,10 @@ class PrintTable:
         printer = wx.Printer(pdd)
         printout = SetPrintout(self)
         if not printer.Print(self.parentFrame, printout):
-            wx.MessageBox("There was a problem printing.\nPerhaps your current printer is not set correctly?", "Printing", wx.OK)
+            if wx.Printer.GetLastError() == wx.PRINTER_ERROR:
+                wx.MessageBox("There was a problem printing.\n"
+                              "Perhaps your current printer is not set correctly?",
+                              "Printing", wx.OK)
         else:
             self.printData = wx.PrintData( printer.GetPrintDialogData().GetPrintData() )
         printout.Destroy()
@@ -1056,10 +1063,10 @@ class SetPrintout(wx.Printout):
         self.end_pg = 1000
 
     def OnBeginDocument(self, start, end):
-        return self.base_OnBeginDocument(start, end)
+        return super(SetPrintout, self).OnBeginDocument(start, end)
 
     def OnEndDocument(self):
-        self.base_OnEndDocument()
+        super(SetPrintout, self).OnEndDocument()
 
     def HasPage(self, page):
         try:
@@ -1079,7 +1086,7 @@ class SetPrintout(wx.Printout):
         return (str_pg, end_pg, str_pg, end_pg)
 
     def OnPreparePrinting(self):
-        self.base_OnPreparePrinting()
+        super(SetPrintout, self).OnPreparePrinting()
 
     def OnBeginPrinting(self):
         dc = self.GetDC()
@@ -1095,7 +1102,7 @@ class SetPrintout(wx.Printout):
         scaleY = float(h) / 1000
         self.printUserScale = min(scaleX, scaleY)
 
-        self.base_OnBeginPrinting()
+        super(SetPrintout, self).OnBeginPrinting()
 
     def GetSize(self):
         self.psizew, self.psizeh = self.GetPPIPrinter()

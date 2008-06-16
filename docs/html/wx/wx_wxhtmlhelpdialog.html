@@ -1,0 +1,91 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlHelpDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmlhelpdialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmlhelpdata.html#wxhtmlhelpdata"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmlhelpframe.html#wxhtmlhelpframe"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlHelpDialog</H2>
+<P>
+This class is used by <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A> 
+to display help.
+It is an internal class and should not be used directly - except for the case
+when you're writing your own HTML help controller.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/helpdlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmlhelpdialogwxhtmlhelpdialog">wxHtmlHelpDialog::wxHtmlHelpDialog</A><BR>
+<A HREF="#wxhtmlhelpdialogaddtoolbarbuttons">wxHtmlHelpDialog::AddToolbarButtons</A><BR>
+<A HREF="#wxhtmlhelpdialogcreate">wxHtmlHelpDialog::Create</A><BR>
+<A HREF="#wxhtmlhelpdialoggetcontroller">wxHtmlHelpDialog::GetController</A><BR>
+<A HREF="#wxhtmlhelpdialogreadcustomization">wxHtmlHelpDialog::ReadCustomization</A><BR>
+<A HREF="#wxhtmlhelpdialogsetcontroller">wxHtmlHelpDialog::SetController</A><BR>
+<A HREF="#wxhtmlhelpdialogsettitleformat">wxHtmlHelpDialog::SetTitleFormat</A><BR>
+<A HREF="#wxhtmlhelpdialogwritecustomization">wxHtmlHelpDialog::WriteCustomization</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlhelpdialogwxhtmlhelpdialog"></A>
+<H3>wxHtmlHelpDialog::wxHtmlHelpDialog</H3>
+<P>
+<B></B> <B>wxHtmlHelpDialog</B>(<B><A HREF="wx_wxhtmlhelpdata.html#wxhtmlhelpdata">wxHtmlHelpData</A>* </B></B><I>data = NULL</I>)<P>
+<B></B> <B>wxHtmlHelpDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>int </B><I>wxWindowID</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title = wxEmptyString</I>, <B>int </B><I>style = wxHF_DEFAULT_STYLE</I>, <B><A HREF="wx_wxhtmlhelpdata.html#wxhtmlhelpdata">wxHtmlHelpData</A>* </B></B><I>data = NULL</I>)<P>
+Constructor. For the values of <I>style</I>, please see the documentation for <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A>.<P>
+
+<HR>
+<A NAME="wxhtmlhelpdialogaddtoolbarbuttons"></A>
+<H3>wxHtmlHelpDialog::AddToolbarButtons</H3>
+<P>
+<B>virtual void</B> <B>AddToolbarButtons</B>(<B><A HREF="wx_wxtoolbar.html#wxtoolbar">wxToolBar</A> *</B></B><I>toolBar</I>, <B>int </B><I>style</I>) <P>
+You may override this virtual method to add more buttons to the help window's
+toolbar. <I>toolBar</I> is a pointer to the toolbar and <I>style</I> is the style
+flag as passed to the Create method.<P>
+wxToolBar::Realize is called immediately after returning from this function.<P>
+
+<HR>
+<A NAME="wxhtmlhelpdialogcreate"></A>
+<H3>wxHtmlHelpDialog::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title = wxEmptyString</I>, <B>int </B><I>style = wxHF_DEFAULT_STYLE</I>)<P>
+Creates the dialog. See <A HREF="wx_wxhtmlhelpdialog.html#wxhtmlhelpdialogwxhtmlhelpdialog">the constructor</A>
+for a description of the parameters.<P>
+
+<HR>
+<A NAME="wxhtmlhelpdialoggetcontroller"></A>
+<H3>wxHtmlHelpDialog::GetController</H3>
+<P>
+<B><A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A>* </B> </B> <B>GetController</B>() <B>const</B> <P>
+Returns the help controller associated with the dialog.<P>
+
+<HR>
+<A NAME="wxhtmlhelpdialogreadcustomization"></A>
+<H3>wxHtmlHelpDialog::ReadCustomization</H3>
+<P>
+<B>void</B> <B>ReadCustomization</B>(<B><A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>* </B></B><I>cfg</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path = wxEmptyString</I>)<P>
+Reads the user's settings for this dialog see <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontrollerreadcustomization">wxHtmlHelpController::ReadCustomization</A>)<P>
+
+<HR>
+<A NAME="wxhtmlhelpdialogsetcontroller"></A>
+<H3>wxHtmlHelpDialog::SetController</H3>
+<P>
+<B>void</B> <B>SetController</B>(<B><A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A>* </B></B><I>contoller</I>) <P>
+Sets the help controller associated with the dialog.<P>
+
+<HR>
+<A NAME="wxhtmlhelpdialogsettitleformat"></A>
+<H3>wxHtmlHelpDialog::SetTitleFormat</H3>
+<P>
+<B>void</B> <B>SetTitleFormat</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>format</I>)<P>
+Sets the dialog's title format. <I>format</I> must contain exactly one "%s"
+(it will be replaced by the page title).<P>
+
+<HR>
+<A NAME="wxhtmlhelpdialogwritecustomization"></A>
+<H3>wxHtmlHelpDialog::WriteCustomization</H3>
+<P>
+<B>void</B> <B>WriteCustomization</B>(<B><A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>* </B></B><I>cfg</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path = wxEmptyString</I>)<P>
+Saves the user's settings for this dialog (see <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontrollerwritecustomization">wxHtmlHelpController::WriteCustomization</A>).<P>
+
+</FONT></BODY></HTML>

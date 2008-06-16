@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     04.04.00
-%% RCS-ID:      $Id: dir.tex,v 1.17 2005/04/08 14:33:31 MW Exp $
+%% RCS-ID:      $Id: dir.tex 40659 2006-08-18 15:30:28Z JS $
 %% Copyright:   (c) Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -12,8 +12,8 @@
 \section{\class{wxDir}}\label{wxdir}
 
 wxDir is a portable equivalent of Unix {open/read/close}dir functions which
-allow enumerating of the files in a directory. wxDir allows enumerate files as
-well as directories.
+allow enumerating of the files in a directory. wxDir allows to enumerate files
+as well as directories.
 
 wxDir also provides a flexible way to enumerate files recursively using 
 \helpref{Traverse}{wxdirtraverse} or a simpler 
@@ -116,12 +116,28 @@ subdirectories (both flags are included in the value by default).
 See also: \helpref{Traverse}{wxdirtraverse}
 
 
+\membersection{wxDir::FindFirst}\label{wxdirfindfirst}
+
+\func{static wxString}{FindFirst}{\param{const wxString\& }{dirname}, \param{const wxString\& }{filespec}, \param{int }{flags = wxDIR\_DEFAULT}}
+
+The function returns the path of the first file matching the given \arg{filespec}
+or an empty string if there are no files matching it.
+
+The \arg{flags} parameter may or may not include {\tt wxDIR\_FILES}, the
+function always behaves as if it were specified. By default, \arg{flags} 
+includes {\tt wxDIR\_DIRS} and so the function recurses into the subdirectories
+but if this flag is not specified, the function restricts the search only to
+the directory \arg{dirname} itself.
+
+See also: \helpref{Traverse}{wxdirtraverse}
+
+
 \membersection{wxDir::GetFirst}\label{wxdirgetfirst}
 
 \constfunc{bool}{GetFirst}{\param{wxString* }{filename}, \param{const wxString\& }{filespec = wxEmptyString}, \param{int }{flags = wxDIR\_DEFAULT}}
 
 Start enumerating all files matching {\it filespec} (or all files if it is
-empty) and flags, return true on success.
+empty) and {\it flags}, return \true on success.
 
 
 \membersection{wxDir::GetName}\label{wxdirgetname}
@@ -136,8 +152,27 @@ trailing path separator (slash or backslash).
 
 \constfunc{bool}{GetNext}{\param{wxString* }{filename}}
 
-Continue enumerating files satisfying the criteria specified by the last call
-to \helpref{GetFirst}{wxdirgetfirst}.
+Continue enumerating files which satisfy the criteria specified by the last
+call to \helpref{GetFirst}{wxdirgetfirst}.
+
+
+\membersection{wxDir::GetTotalSize}\label{wxdirgettotalsize}
+
+\func{static wxULongLong}{GetTotalSize}{\param{const wxString\& }{dir}, \param{wxArrayString* }{filesSkipped = NULL}}
+
+Returns the size (in bytes) of all files recursively found in {\tt dir} or
+{\tt wxInvalidSize} in case of error.
+
+In case it happens that while traversing folders a file's size can not be read,
+that file is added to the {\tt filesSkipped} array, if not \NULL, and then
+skipped.
+This usually happens with some special folders which are locked by the operating system
+or by another process. Remember that when {\tt filesSkipped->GetCount()} is not zero,
+then the returned value is not 100\% accurate and, if the skipped files were big, it could be
+far from real size of the directory.
+
+See also: \helpref{wxFileName::GetHumanReadableSize}{wxfilenamegethumanreadablesize},
+\helpref{wxGetDiskSpace}{wxgetdiskspace}
 
 
 \membersection{wxDir::HasFiles}\label{wxdirhasfiles}
@@ -170,8 +205,8 @@ Returns true if the directory was successfully opened by a previous call to
 
 \func{bool}{Open}{\param{const wxString\& }{dir}}
 
-Open the directory for enumerating, returns true on success or false if an
-error occurred.
+Open the directory for enumerating, returns {\tt true} on success
+or {\tt false} if an error occurred.
 
 
 \membersection{wxDir::Traverse}\label{wxdirtraverse}

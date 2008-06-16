@@ -4,7 +4,7 @@
 #
 # Author:      Robin Dunn
 #
-# RCS-ID:      $Id: activexwrapper.py,v 1.6 2004/06/16 02:22:30 RD Exp $
+# RCS-ID:      $Id: activexwrapper.py 41959 2006-10-11 23:51:03Z RD $
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -21,7 +21,17 @@ try:
     import pywin.mfc.activex
     import win32com.client
 except ImportError:
-    raise ImportError( "ActiveXWrapper requires PythonWin.  Please install the win32all-xxx.exe package.")
+    import sys
+    if hasattr(sys, "frozen"):
+        import os, win32api
+        dllpath = os.path.join(win32api.GetSystemDirectory(), 'MFC71.DLL')
+        if sys.version[:3] >= '2.4' and not os.path.exists(dllpath):
+            message = "%s not found" % dllpath
+        else:
+            raise       # original error message
+    else:
+        message = "ActiveXWrapper requires PythonWin. Please install the PyWin32 package." 
+    raise ImportError(message) 
 
 ##from win32con import WS_TABSTOP, WS_VISIBLE
 WS_TABSTOP = 0x00010000
@@ -89,12 +99,13 @@ def MakeActiveXClass(CoClass, eventClass=None, eventObj=None):
 
 
 # These functions will be used as methods in the new class
-def axw__init__(self, parent, ID, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
-
+def axw__init__(self, parent, ID=-1, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
+    
     # init base classes
     pywin.mfc.activex.Control.__init__(self)
     wx.Window.__init__( self, parent, -1, pos, size, style|wx.NO_FULL_REPAINT_ON_RESIZE)
-
+    self.this.own(False)  # this should be set in wx.Window.__init__ when it calls _setOORInfo, but...
+        
     win32ui.EnableControlContainer()
     self._eventObj = self._eventObj  # move from class to instance
 
@@ -112,7 +123,6 @@ def axw__init__(self, parent, ID, pos=wx.DefaultPosition, size=wx.DefaultSize, s
 
     # hook some wx events
     self.Bind(wx.EVT_SIZE, self.axw_OnSize)
-
 
 def axw__getattr__(self, attr):
     try:
@@ -135,7 +145,7 @@ def axw_OEB(self, event):
 
 
 def axw_Cleanup(self):
-    del self._wnd
+    #del self._wnd
     self.close()
     pass
 

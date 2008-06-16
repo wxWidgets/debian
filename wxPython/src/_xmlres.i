@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     4-June-2001
-// RCS-ID:      $Id: _xmlres.i,v 1.2.2.1 2005/12/16 20:02:28 RD Exp $
+// RCS-ID:      $Id: _xmlres.i 42223 2006-10-22 03:00:37Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -45,8 +45,10 @@ class wxXmlResource : public wxObject
 {
 public:
 
-    %pythonAppend wxXmlResource(const wxString& filemask, int flags)   "self.InitAllHandlers()"
-    %pythonAppend wxXmlResource(int flags)                             "val.InitAllHandlers()"
+    %pythonAppend wxXmlResource(const wxString& filemask, int flags,
+                  const wxString& domain=wxEmptyString)   "self.InitAllHandlers()"
+    %pythonAppend wxXmlResource(int flags,
+                  const wxString& domain=wxEmptyString)   "val.InitAllHandlers()"
 
     // Ctors.
     // Flags: wxXRC_USE_LOCALE
@@ -54,11 +56,15 @@ public:
     //        wxXRC_NO_SUBCLASSING
     //              subclass property of object nodes will be ignored
     //              (useful for previews in XRC editors)
-    wxXmlResource(const wxString& filemask, int flags = wxXRC_USE_LOCALE);
-    %RenameCtor(EmptyXmlResource,  wxXmlResource(int flags = wxXRC_USE_LOCALE));
+    wxXmlResource(const wxString& filemask, int flags = wxXRC_USE_LOCALE,
+                  const wxString& domain=wxEmptyString);
+    %RenameCtor(EmptyXmlResource,  wxXmlResource(int flags = wxXRC_USE_LOCALE,
+                  const wxString& domain=wxEmptyString));
+    
     ~wxXmlResource();
 
-
+    //wxXmlNode* GetFirstRoot();  ** Link error
+    
     // Loads resources from XML files that match given filemask.
     // This method understands VFS (see filesys.h).
     bool Load(const wxString& filemask);
@@ -97,6 +103,9 @@ public:
     // Initialize handlers for all supported controls/windows. 
     void InitAllHandlers();
 
+
+    %disownarg( wxPyXmlResourceHandler *handler );
+    
     // Initialize only specific handler (or custom handler). Convention says
     // that handler name is equal to control's name plus 'XmlHandler', e.g.
     // wxTextCtrlXmlHandler, wxHtmlWindowXmlHandler. XML resource compiler
@@ -107,6 +116,9 @@ public:
     // Add a new handler at the begining of the handler list
     void InsertHandler(wxPyXmlResourceHandler *handler);
 
+    %cleardisown( wxPyXmlResourceHandler *handler );
+
+    
     // Removes all handlers
     void ClearHandlers();
 
@@ -168,10 +180,13 @@ public:
     bool AttachUnknownControl(const wxString& name, wxWindow *control,
                               wxWindow *parent = NULL);
 
-    // Returns numeric ID that is equivalent to string id used in XML
-    // resource. To be used in event tables
-    // Macro XMLID is provided for convenience
-    static int GetXRCID(const wxString& str_id);
+    // Returns a numeric ID that is equivalent to the string ID used in an XML
+    // resource. If an unknown str_id is requested (i.e. other than wxID_XXX
+    // or integer), a new record is created which associates the given string
+    // with a number. If value_if_not_found == wxID_NONE, the number is obtained via
+    // wxNewId(). Otherwise value_if_not_found is used.
+    // Macro XRCID(name) is provided for convenient use in event tables.
+    static int GetXRCID(const wxString& str_id, int value_if_not_found = wxID_NONE);
 
     // Returns version info (a.b.c.d = d+ 256*c + 256^2*b + 256^3*a)
     long GetVersion() const;
@@ -192,13 +207,20 @@ public:
     // Set flags after construction.
     void SetFlags(int flags) { m_flags = flags; }
 
+    // Get/Set the domain to be passed to the translation functions, defaults to NULL.
+    wxString GetDomain() const;
+    void SetDomain(const wxString& domain);
+    
+    %property(Domain, GetDomain, SetDomain, doc="See `GetDomain` and `SetDomain`");
+    %property(Flags, GetFlags, SetFlags, doc="See `GetFlags` and `SetFlags`");
+    %property(Version, GetVersion, doc="See `GetVersion`");
 };
 
 //----------------------------------------------------------------------
 
 %pythoncode {
-def XRCID(str_id):
-    return XmlResource_GetXRCID(str_id)
+def XRCID(str_id, value_if_not_found = wx.ID_NONE):
+    return XmlResource_GetXRCID(str_id, value_if_not_found)
 
 def XRCCTRL(window, str_id, *ignoreargs):
     return window.FindWindowById(XRCID(str_id))

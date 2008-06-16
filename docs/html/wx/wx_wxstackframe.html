@@ -1,0 +1,132 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStackFrame</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstackframe"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsplitterrenderparams.html#wxsplitterrenderparams"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstackwalker.html#wxstackwalker"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStackFrame</H2>
+<P>
+
+wxStackFrame represents a single stack frame, or a single function in the call
+stack, and is used exclusively together with 
+<A HREF="wx_wxstackwalker.html#wxstackwalker">wxStackWalker</A>, see there for a more detailed
+discussion.<P>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/stackwalk.h&gt;<P>
+Only available if <TT>wxUSE_STACKWALKER</TT> is 1, currently only
+implemented for Win32 and Unix versions using recent version of GNU libc.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstackwalker.html#wxstackwalker">wxStackWalker</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxstackframegetaddress">wxStackFrame::GetAddress</A><BR>
+<A HREF="#wxstackframegetfilename">wxStackFrame::GetFileName</A><BR>
+<A HREF="#wxstackframegetlevel">wxStackFrame::GetLevel</A><BR>
+<A HREF="#wxstackframegetline">wxStackFrame::GetLine</A><BR>
+<A HREF="#wxstackframegetmodule">wxStackFrame::GetModule</A><BR>
+<A HREF="#wxstackframegetname">wxStackFrame::GetName</A><BR>
+<A HREF="#wxstackframegetoffset">wxStackFrame::GetOffset</A><BR>
+<A HREF="#wxstackframegetparam">wxStackFrame::GetParam</A><BR>
+<A HREF="#wxstackframegetparamcount">wxStackFrame::GetParamCount</A><BR>
+<A HREF="#wxstackframehassourcelocation">wxStackFrame::HasSourceLocation</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstackframegetaddress"></A>
+<H3>wxStackFrame::GetAddress</H3>
+<P>
+<B>void*</B> <B>GetAddress</B>() <B>const</B><P>
+Return the address of this frame.<P>
+
+
+<HR>
+<A NAME="wxstackframegetfilename"></A>
+<H3>wxStackFrame::GetFileName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFileName</B>() <B>const</B><P>
+Return the name of the file containing this frame, empty if
+unavailable (typically because debug info is missing).<P>
+Use <A HREF="wx_wxstackframe.html#wxstackframehassourcelocation">HasSourceLocation</A> to check whether
+the file name is available.<P>
+
+
+<HR>
+<A NAME="wxstackframegetlevel"></A>
+<H3>wxStackFrame::GetLevel</H3>
+<P>
+<B>size_t</B> <B>GetLevel</B>() <B>const</B><P>
+Get the level of this frame (deepest/innermost one is 0).<P>
+
+
+<HR>
+<A NAME="wxstackframegetline"></A>
+<H3>wxStackFrame::GetLine</H3>
+<P>
+<B>size_t</B> <B>GetLine</B>() <B>const</B><P>
+Return the line number of this frame, 0 if unavailable.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstackframe.html#wxstackframegetfilename">GetFileName</A><P>
+
+
+<HR>
+<A NAME="wxstackframegetmodule"></A>
+<H3>wxStackFrame::GetModule</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetModule</B>() <B>const</B><P>
+Get the module this function belongs to (empty if not available).<P>
+
+
+<HR>
+<A NAME="wxstackframegetname"></A>
+<H3>wxStackFrame::GetName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetName</B>() <B>const</B><P>
+Return the unmangled (if possible) name of the function containing this
+frame.<P>
+
+
+<HR>
+<A NAME="wxstackframegetoffset"></A>
+<H3>wxStackFrame::GetOffset</H3>
+<P>
+<B>size_t</B> <B>GetOffset</B>() <B>const</B><P>
+Return the return address of this frame.<P>
+
+
+<HR>
+<A NAME="wxstackframegetparam"></A>
+<H3>wxStackFrame::GetParam</H3>
+<P>
+<B>bool</B> <B>GetParam</B>(<B>size_t </B><I>n</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A> * </B></B><I>type</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A> * </B></B><I>name</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A> * </B></B><I>value</I>) <B>const</B><P>
+Get the name, type and value (in text form) of the given parameter.
+Any pointer may be <TT>NULL</TT> if you're not interested in the corresponding
+value.<P>
+Return <TT>true</TT> if at least some values could be retrieved.<P>
+This function currently is only implemented under Win32 and requires a PDB
+file.<P>
+
+
+<HR>
+<A NAME="wxstackframegetparamcount"></A>
+<H3>wxStackFrame::GetParamCount</H3>
+<P>
+<B>size_t</B> <B>GetParamCount</B>() <B>const</B><P>
+Return the number of parameters of this function (may return 0 if we
+can't retrieve the parameters info even although the function does have
+parameters).<P>
+
+
+<HR>
+<A NAME="wxstackframehassourcelocation"></A>
+<H3>wxStackFrame::HasSourceLocation</H3>
+<P>
+<B>bool</B> <B>HasSourceLocation</B>() <B>const</B><P>
+Return <TT>true</TT> if we have the file name and line number for this frame.<P>
+
+
+</FONT></BODY></HTML>

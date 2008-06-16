@@ -4,27 +4,27 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: joystick.cpp,v 1.23.2.2 2006/01/25 19:41:08 JS Exp $
+// RCS-ID:      $Id: joystick.cpp 39021 2006-05-04 07:57:04Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "joystick.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #if wxUSE_JOYSTICK
 
 #include "wx/joystick.h"
-#include "wx/string.h"
-#include "wx/window.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/string.h"
+    #include "wx/window.h"
+#endif
+
 #include "wx/msw/private.h"
 
 #if !defined(__GNUWIN32_OLD__) || defined(__CYGWIN10__)
@@ -36,7 +36,6 @@
 #define NO_JOYGETPOSEX
 #endif
 
-#include "wx/window.h"
 #include "wx/msw/registry.h"
 
 #include <regstr.h>
@@ -75,7 +74,7 @@ wxJoystick::wxJoystick(int joystick)
     /* No such joystick, return ID 0 */
     m_joystick = 0;
     return;
-};
+}
 
 wxPoint wxJoystick::GetPosition() const
 {
@@ -299,9 +298,8 @@ int wxJoystick::GetProductId() const
 
 wxString wxJoystick::GetProductName() const
 {
-#ifdef __WINE__
-    return wxEmptyString;
-#else
+    wxString str;
+#ifndef __WINE__
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, &joyCaps, sizeof(joyCaps)) != JOYERR_NOERROR)
         return wxEmptyString;
@@ -309,7 +307,6 @@ wxString wxJoystick::GetProductName() const
     wxRegKey key1(wxString::Format(wxT("HKEY_LOCAL_MACHINE\\%s\\%s\\%s"),
                    REGSTR_PATH_JOYCONFIG, joyCaps.szRegKey, REGSTR_KEY_JOYCURR));
 
-    wxString str;
     key1.QueryValue(wxString::Format(wxT("Joystick%d%s"),
                                      m_joystick + 1, REGSTR_VAL_JOYOEMNAME),
                     str);
@@ -317,9 +314,8 @@ wxString wxJoystick::GetProductName() const
     wxRegKey key2(wxString::Format(wxT("HKEY_LOCAL_MACHINE\\%s\\%s"),
                                         REGSTR_PATH_JOYOEM, str.c_str()));
     key2.QueryValue(REGSTR_VAL_JOYOEMNAME, str);
-
-    return str;
 #endif
+    return str;
 }
 
 int wxJoystick::GetXMin() const

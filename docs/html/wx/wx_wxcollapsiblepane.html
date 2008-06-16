@@ -1,0 +1,198 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCollapsiblePane</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcollapsiblepane"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcmdlineparser.html#wxcmdlineparser"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcollapsiblepaneevent.html#wxcollapsiblepaneevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCollapsiblePane</H2>
+<P>
+A collapsible pane is a container with an embedded button-like control which can be
+used by the user to collapse or expand the pane's contents.<P>
+Once constructed you should use the <A HREF="wx_wxcollapsiblepane.html#wxcollapsiblepanegetpane">GetPane</A>
+function to access the pane and add your controls inside it (i.e. use the
+<A HREF="wx_wxcollapsiblepane.html#wxcollapsiblepanegetpane">GetPane</A>'s returned pointer as parent for the
+controls which must go in the pane, NOT the wxCollapsiblePane itself!).<P>
+Note that because of its nature of control which can dynamically (and drastically)
+change its size at run-time under user-input, when putting wxCollapsiblePane inside
+a <A HREF="wx_wxsizer.html#wxsizer">wxSizer</A> you should be careful to add it with a proportion value
+of zero; this is because otherwise all other windows with non-null proportion values
+would automatically get resized each time the user expands or collapse the pane window
+resulting usually in a weird, flickering effect.<P>
+Usage sample:<P>
+<PRE>
+    wxCollapsiblePane *collpane = new wxCollapsiblePane(this, wxID_ANY, wxT("Details:"));
+
+    // add the pane with a zero proportion value to the 'sz' sizer which contains it
+    sz-&gt;Add(collpane, 0, wxGROW|wxALL, 5);
+
+    // now add a test label in the collapsible pane using a sizer to layout it:
+    wxWindow *win = collpane-&gt;GetPane();
+    wxSizer *paneSz = new wxBoxSizer(wxVERTICAL);
+    paneSz-&gt;Add(new wxStaticText(win, wxID_ANY, wxT("test!")), 1, wxGROW|wxALL, 2);
+    win-&gt;SetSizer(paneSz);
+    paneSz-&gt;SetSizeHints(win);
+
+</PRE>
+
+It is only available if <TT>wxUSE_COLLPANE</TT> is set to 1 (the default).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/collpane.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCP_DEFAULT_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The default style: 0.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To process a collapsible pane event, use these event handler macros to direct input to member
+functions that take a <A HREF="wx_wxcollapsiblepaneevent.html#wxcollapsiblepaneevent">wxCollapsiblePaneEvent</A> argument.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_COLLAPSIBLEPANE_CHANGED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user showed or hidden the collapsible pane. 
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpanel.html#wxpanel">wxPanel</A>,<BR>
+
+<A HREF="wx_wxcollapsiblepaneevent.html#wxcollapsiblepaneevent">wxCollapsiblePaneEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<P>
+<A HREF="#wxcollapsiblepanector">wxCollapsiblePane::wxCollapsiblePane</A><BR>
+<A HREF="#wxcollapsiblepanecreate">wxCollapsiblePane::Create</A><BR>
+<A HREF="#wxcollapsiblepaneiscollapsed">wxCollapsiblePane::IsCollapsed</A><BR>
+<A HREF="#wxcollapsiblepaneisexpanded">wxCollapsiblePane::IsExpanded</A><BR>
+<A HREF="#wxcollapsiblepanecollapse">wxCollapsiblePane::Collapse</A><BR>
+<A HREF="#wxcollapsiblepaneexpand">wxCollapsiblePane::Expand</A><BR>
+<A HREF="#wxcollapsiblepanegetpane">wxCollapsiblePane::GetPane</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcollapsiblepanector"></A>
+<H3>wxCollapsiblePane::wxCollapsiblePane</H3>
+<P>
+<B></B> <B>wxCollapsiblePane</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>,
+<B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxCP_DEFAULT_STYLE</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "collapsiblePane"</I>)<P>
+Initializes the object and calls <A HREF="wx_wxcollapsiblepane.html#wxcollapsiblepanecreate">Create</A> with
+all the parameters.<P>
+
+
+<HR>
+<A NAME="wxcollapsiblepanecreate"></A>
+<H3>wxCollapsiblePane::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>,
+<B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxCP_DEFAULT_STYLE</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "collapsiblePane"</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window, must not be non-<TT>NULL</TT>.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The identifier for the control.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+The initial label shown in the button which allows the user to expand or collapse the pane window.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Initial position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Initial size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style, see <TT>wxCP_*</TT> flags.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Validator which can be used for additional date checks.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Control name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if the control was successfully created or <TT>false</TT> if creation failed.<P>
+
+
+<HR>
+<A NAME="wxcollapsiblepaneiscollapsed"></A>
+<H3>wxCollapsiblePane::IsCollapsed</H3>
+<P>
+<B>bool</B> <B>IsCollapsed</B>() <B>const</B><P>
+Returns <TT>true</TT> if the pane window is currently hidden.<P>
+
+
+<HR>
+<A NAME="wxcollapsiblepaneisexpanded"></A>
+<H3>wxCollapsiblePane::IsExpanded</H3>
+<P>
+<B>bool</B> <B>IsExpanded</B>() <B>const</B><P>
+Returns <TT>true</TT> if the pane window is currently shown.<P>
+
+
+<HR>
+<A NAME="wxcollapsiblepanecollapse"></A>
+<H3>wxCollapsiblePane::Collapse</H3>
+<P>
+<B>void</B> <B>Collapse</B>(<B>bool </B><I>collapse = true</I>)<P>
+Collapses or expands the pane window.<P>
+
+
+<HR>
+<A NAME="wxcollapsiblepaneexpand"></A>
+<H3>wxCollapsiblePane::Expand</H3>
+<P>
+<B>void</B> <B>Expand</B>()<P>
+Same as <TT><A HREF="wx_wxcollapsiblepane.html#wxcollapsiblepanecollapse">Collapse</A>(false)</TT>.<P>
+
+
+<HR>
+<A NAME="wxcollapsiblepanegetpane"></A>
+<H3>wxCollapsiblePane::GetPane</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B> </B> <B>GetPane</B>() <B>const</B><P>
+Returns a pointer to the pane window. Add controls to the returned <A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>
+to make them collapsible.<P>
+<P>
+<P>
+
+</FONT></BODY></HTML>

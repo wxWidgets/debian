@@ -1,0 +1,138 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Clipboard functions</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="clipsboard"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_printersettings.html#printersettings"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_miscellany.html#miscellany"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Clipboard functions</H2>
+<P>
+These clipboard functions are implemented for Windows only. The use of these functions
+is deprecated and the code is no longer maintained. Use the <A HREF="wx_wxclipboard.html#wxclipboard">wxClipboard</A>
+class instead.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/clipbrd.h&gt;<P>
+
+<A HREF="#functionwxclipboardopen">::wxClipboardOpen</A><BR>
+<A HREF="#wxcloseclipboard">::wxCloseClipboard</A><BR>
+<A HREF="#wxemptyclipboard">::wxEmptyClipboard</A><BR>
+<A HREF="#wxenumclipboardformats">::wxEnumClipboardFormats</A><BR>
+<A HREF="#wxgetclipboarddata">::wxGetClipboardData</A><BR>
+<A HREF="#wxgetclipboardformatname">::wxGetClipboardFormatName</A><BR>
+<A HREF="#wxisclipboardformatavailable">::wxIsClipboardFormatAvailable</A><BR>
+<A HREF="#wxopenclipboard">::wxOpenClipboard</A><BR>
+<A HREF="#wxregisterclipboardformat">::wxRegisterClipboardFormat</A><BR>
+<A HREF="#wxsetclipboarddata">::wxSetClipboardData</A><BR>
+<P>
+
+<HR>
+<A NAME="functionwxclipboardopen"></A>
+<H3>::wxClipboardOpen</H3>
+<P>
+<B>bool</B> <B>wxClipboardOpen</B>()<P>
+Returns true if this application has already opened the clipboard.<P>
+
+
+<HR>
+<A NAME="wxcloseclipboard"></A>
+<H3>::wxCloseClipboard</H3>
+<P>
+<B>bool</B> <B>wxCloseClipboard</B>()<P>
+Closes the clipboard to allow other applications to use it.<P>
+
+
+<HR>
+<A NAME="wxemptyclipboard"></A>
+<H3>::wxEmptyClipboard</H3>
+<P>
+<B>bool</B> <B>wxEmptyClipboard</B>()<P>
+Empties the clipboard.<P>
+
+
+<HR>
+<A NAME="wxenumclipboardformats"></A>
+<H3>::wxEnumClipboardFormats</H3>
+<P>
+<B>int</B> <B>wxEnumClipboardFormats</B>(<B>int</B><I> dataFormat</I>)<P>
+Enumerates the formats found in a list of available formats that belong
+to the clipboard. Each call to this  function specifies a known
+available format; the function returns the format that appears next in
+the list.<P>
+<I>dataFormat</I> specifies a known format. If this parameter is zero,
+the function returns the first format in the list.<P>
+The return value specifies the next known clipboard data format if the
+function is successful. It is zero if the <I>dataFormat</I> parameter specifies
+the last  format in the list of available formats, or if the clipboard
+is not open.<P>
+Before it enumerates the formats function, an application must open the clipboard by using the
+wxOpenClipboard function.<P>
+
+
+<HR>
+<A NAME="wxgetclipboarddata"></A>
+<H3>::wxGetClipboardData</H3>
+<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A> *</B> </B> <B>wxGetClipboardData</B>(<B>int</B><I> dataFormat</I>)<P>
+Gets data from the clipboard.<P>
+<I>dataFormat</I> may be one of:<P>
+<UL>
+
+<LI> wxCF_TEXT or wxCF_OEMTEXT: returns a pointer to new memory containing a null-terminated text string.
+<LI> wxCF_BITMAP: returns a new wxBitmap.
+</UL>
+<P>
+The clipboard must have previously been opened for this call to succeed.<P>
+
+
+<HR>
+<A NAME="wxgetclipboardformatname"></A>
+<H3>::wxGetClipboardFormatName</H3>
+<P>
+<B>bool</B> <B>wxGetClipboardFormatName</B>(<B>int</B><I> dataFormat</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>formatName</I>, <B>int</B><I> maxCount</I>)<P>
+Gets the name of a registered clipboard format, and puts it into the buffer <I>formatName</I> which is of maximum
+length <I>maxCount</I>. <I>dataFormat</I> must not specify a predefined clipboard format.<P>
+
+
+<HR>
+<A NAME="wxisclipboardformatavailable"></A>
+<H3>::wxIsClipboardFormatAvailable</H3>
+<P>
+<B>bool</B> <B>wxIsClipboardFormatAvailable</B>(<B>int</B><I> dataFormat</I>)<P>
+Returns true if the given data format is available on the clipboard.<P>
+
+
+<HR>
+<A NAME="wxopenclipboard"></A>
+<H3>::wxOpenClipboard</H3>
+<P>
+<B>bool</B> <B>wxOpenClipboard</B>()<P>
+Opens the clipboard for passing data to it or getting data from it.<P>
+
+
+<HR>
+<A NAME="wxregisterclipboardformat"></A>
+<H3>::wxRegisterClipboardFormat</H3>
+<P>
+<B>int</B> <B>wxRegisterClipboardFormat</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>formatName</I>)<P>
+Registers the clipboard data format name and returns an identifier.<P>
+
+
+<HR>
+<A NAME="wxsetclipboarddata"></A>
+<H3>::wxSetClipboardData</H3>
+<P>
+<B>bool</B> <B>wxSetClipboardData</B>(<B>int</B><I> dataFormat</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B></B><I> data</I>, <B>int</B><I> width</I>, <B>int</B><I> height</I>)<P>
+Passes data to the clipboard.<P>
+<I>dataFormat</I> may be one of:<P>
+<UL>
+
+<LI> wxCF_TEXT or wxCF_OEMTEXT: <I>data</I> is a null-terminated text string.
+<LI> wxCF_BITMAP: <I>data</I> is a wxBitmap.
+<LI> wxCF_DIB: <I>data</I> is a wxBitmap. The bitmap is converted to a DIB (device independent bitmap).
+<LI> wxCF_METAFILE: <I>data</I> is a wxMetafile. <I>width</I> and <I>height</I> are used to give recommended dimensions.
+</UL>
+<P>
+The clipboard must have previously been opened for this call to succeed.<P>
+
+
+</FONT></BODY></HTML>

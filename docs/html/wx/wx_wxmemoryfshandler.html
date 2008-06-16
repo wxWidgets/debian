@@ -1,0 +1,113 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMemoryFSHandler</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmemoryfshandler"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmemorydc.html#wxmemorydc"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmeminputstream.html#wxmeminputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMemoryFSHandler</H2>
+<P>
+This <A HREF="wx_wxfilesystem.html#wxfilesystem">wxFileSystem</A> handler can store arbitrary 
+data in memory stream and make them accessible via URL. It is particularly
+suitable for storing bitmaps from resources or included XPM files so that
+they can be used with wxHTML.<P>
+Filenames are prefixed with "memory:", e.g. "memory:myfile.html".<P>
+Example:<P>
+<PRE>
+#ifndef __WXMSW__
+#include "logo.xpm"
+#endif
+
+void MyFrame::OnAbout(wxCommandEvent&)
+{
+    wxBusyCursor bcur;
+    wxFileSystem::AddHandler(new wxMemoryFSHandler);
+    wxMemoryFSHandler::AddFile("logo.pcx", wxBITMAP(logo), wxBITMAP_TYPE_PCX);
+    wxMemoryFSHandler::AddFile("about.htm", 
+                               "&lt;html&gt;&lt;body&gt;About: "
+                               "&lt;img src=\"memory:logo.pcx\"&gt;&lt;/body&gt;&lt;/html&gt;");
+
+    wxDialog dlg(this, -1, wxString(_("About")));
+    wxBoxSizer *topsizer;
+    wxHtmlWindow *html;
+    topsizer = new wxBoxSizer(wxVERTICAL);
+    html = new wxHtmlWindow(&dlg, -1, wxDefaultPosition, 
+                            wxSize(380, 160), wxHW_SCROLLBAR_NEVER);
+    html-&gt;SetBorders(0);
+    html-&gt;LoadPage("memory:about.htm");
+    html-&gt;SetSize(html-&gt;GetInternalRepresentation()-&gt;GetWidth(), 
+                  html-&gt;GetInternalRepresentation()-&gt;GetHeight());
+    topsizer-&gt;Add(html, 1, wxALL, 10);
+    topsizer-&gt;Add(new wxStaticLine(&dlg, -1), 0, wxEXPAND | wxLEFT | wxRIGHT, 10);
+    topsizer-&gt;Add(new wxButton(&dlg, wxID_OK, "Ok"), 
+                  0, wxALL | wxALIGN_RIGHT, 15);
+    dlg.SetAutoLayout(true);
+    dlg.SetSizer(topsizer);
+    topsizer-&gt;Fit(&dlg);
+    dlg.Centre();
+    dlg.ShowModal();
+    
+    wxMemoryFSHandler::RemoveFile("logo.pcx");
+    wxMemoryFSHandler::RemoveFile("about.htm");
+}
+</PRE>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxfilesystemhandler.html#wxfilesystemhandler">wxFileSystemHandler</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/fs_mem.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxmemoryfshandlerwxmemoryfshandler">wxMemoryFSHandler::wxMemoryFSHandler</A><BR>
+<A HREF="#wxmemoryfshandleraddfile">wxMemoryFSHandler::AddFile</A><BR>
+<A HREF="#wxmemoryfshandleraddfilewithmimetype">wxMemoryFSHandler::AddFileWithMimeType</A><BR>
+<A HREF="#wxmemoryfshandlerremovefile">wxMemoryFSHandler::RemoveFile</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmemoryfshandlerwxmemoryfshandler"></A>
+<H3>wxMemoryFSHandler::wxMemoryFSHandler</H3>
+<P>
+<B></B> <B>wxMemoryFSHandler</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxmemoryfshandleraddfile"></A>
+<H3>wxMemoryFSHandler::AddFile</H3>
+<P>
+<B>static void</B> <B>AddFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B><A HREF="wx_wximage.html#wximage">wxImage</A>& </B></B><I>image</I>, <B>long </B><I>type</I>)<P>
+<B>static void</B> <B>AddFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B>long </B><I>type</I>)<P>
+Add file to list of files stored in memory. Stored 
+data (bitmap, text or raw data)
+will be copied into private memory stream and available under 
+name "memory:" + <I>filename</I>.<P>
+The <I>type</I> argument is one of <TT>wxBITMAP_TYPE_XXX</TT> constants.
+Note that you must use a <I>type</I> value (aka image format)
+that wxWidgets can save (e.g. JPG, PNG, see <A HREF="wx_wximage.html#wximage">wxImage
+documentation</A>)!<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmemoryfshandler.html#wxmemoryfshandleraddfilewithmimetype">AddFileWithMimeType</A><P>
+
+
+<HR>
+<A NAME="wxmemoryfshandleraddfilewithmimetype"></A>
+<H3>wxMemoryFSHandler::AddFileWithMimeType</H3>
+<P>
+<B>static void</B> <B>AddFileWithMimeType</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>textdata</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>mimetype</I>)<P>
+<B>static void</B> <B>AddFileWithMimeType</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>const void* </B><I>binarydata</I>, <B>size_t </B><I>size</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>mimetype</I>)<P>
+Like <A HREF="wx_wxmemoryfshandler.html#wxmemoryfshandleraddfile">AddFile</A>, but lets you explicitly
+specify added file's MIME type. This version should be used whenever you know
+the MIME type, because it makes accessing the files faster.<P>
+This function is new since wxWidgets version 2.8.5<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmemoryfshandler.html#wxmemoryfshandleraddfile">AddFile</A><P>
+
+<HR>
+<A NAME="wxmemoryfshandlerremovefile"></A>
+<H3>wxMemoryFSHandler::RemoveFile</H3>
+<P>
+<B>static void</B> <B>RemoveFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Remove file from memory FS and free occupied memory.<P>
+
+</FONT></BODY></HTML>

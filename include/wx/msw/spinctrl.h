@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.07.99
-// RCS-ID:      $Id: spinctrl.h,v 1.24 2005/02/28 01:23:01 VZ Exp $
+// RCS-ID:      $Id: spinctrl.h 44196 2007-01-11 01:59:42Z VZ $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MSW_SPINCTRL_H_
 #define _WX_MSW_SPINCTRL_H_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "spinctrl.h"
-#endif
 
 #include "wx/spinbutt.h"    // the base class
 
@@ -69,7 +65,7 @@ public:
 
     virtual ~wxSpinCtrl();
 
-    virtual void SetValue(int val) { wxSpinButton::SetValue(val); }
+    virtual void SetValue(int val);
     virtual int  GetValue() const;
     virtual bool SetFont(const wxFont &font);
     virtual void SetFocus();
@@ -103,9 +99,21 @@ protected:
     // the handler for wxSpinButton events
     void OnSpinChange(wxSpinEvent& event);
 
-    // Handle processing of special keys
+    // handle processing of special keys
     void OnChar(wxKeyEvent& event);
     void OnSetFocus(wxFocusEvent& event);
+    void OnKillFocus(wxFocusEvent& event);
+
+    // generate spin control update event with the given value
+    void SendSpinUpdate(int value);
+
+    // called to ensure that the value is in the correct range
+    virtual void NormalizeValue();
+
+
+    // the value of the control before the latest change (which might not have
+    // changed anything in fact -- this is why we need this field)
+    int m_oldValue;
 
     // the data for the "buddy" text ctrl
     WXHWND     m_hwndBuddy;

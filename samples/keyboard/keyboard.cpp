@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.04.02
-// RCS-ID:      $Id: keyboard.cpp,v 1.11.4.1 2006/01/22 05:10:28 JG Exp $
+// RCS-ID:      $Id: keyboard.cpp 38333 2006-03-24 08:28:08Z ABX $
 // Copyright:   (c) 2002 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -377,8 +377,6 @@ void TextWindow::LogEvent(const wxChar *name, wxKeyEvent& event)
         case WXK_MENU: key = _T("MENU"); break;
         case WXK_PAUSE: key = _T("PAUSE"); break;
         case WXK_CAPITAL: key = _T("CAPITAL"); break;
-        case WXK_PRIOR: key = _T("PRIOR"); break;
-        case WXK_NEXT: key = _T("NEXT"); break;
         case WXK_END: key = _T("END"); break;
         case WXK_HOME: key = _T("HOME"); break;
         case WXK_LEFT: key = _T("LEFT"); break;
@@ -447,8 +445,6 @@ void TextWindow::LogEvent(const wxChar *name, wxKeyEvent& event)
         case WXK_NUMPAD_UP: key = _T("NUMPAD_UP"); break;
         case WXK_NUMPAD_RIGHT: key = _T("NUMPAD_RIGHT"); break;
         case WXK_NUMPAD_DOWN: key = _T("NUMPAD_DOWN"); break;
-        case WXK_NUMPAD_PRIOR: key = _T("NUMPAD_PRIOR"); break;
-        case WXK_NUMPAD_NEXT: key = _T("NUMPAD_NEXT"); break;
         case WXK_NUMPAD_PAGEUP: key = _T("NUMPAD_PAGEUP"); break;
         case WXK_NUMPAD_PAGEDOWN: key = _T("NUMPAD_PAGEDOWN"); break;
         case WXK_NUMPAD_END: key = _T("NUMPAD_END"); break;

@@ -1,0 +1,73 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxControl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcontrol"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcontexthelpbutton.html#wxcontexthelpbutton"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitems"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxControl</H2>
+<P>
+This is the base class for a control or "widget''.<P>
+A control is generally a small window which processes user input and/or
+displays one or more item of data.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/control.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxcontrolcommand">wxControl::Command</A><BR>
+<A HREF="#wxcontrolgetlabel">wxControl::GetLabel</A><BR>
+<A HREF="#wxcontrolgetlabeltext">wxControl::GetLabelText</A><BR>
+<A HREF="#wxcontrolsetlabel">wxControl::SetLabel</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcontrolcommand"></A>
+<H3>wxControl::Command</H3>
+<P>
+<B>void</B> <B>Command</B>(<B><A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A>& </B></B><I>event</I>)<P>
+Simulates the effect of the user issuing a command to the item. See <A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A>.<P>
+
+
+<HR>
+<A NAME="wxcontrolgetlabel"></A>
+<H3>wxControl::GetLabel</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetLabel</B>() <B>const</B><P>
+Returns the control's text.<P>
+Note that the returned string contains the mnemonics (<TT>&amp;</TT> characters) if
+any, use <A HREF="wx_wxcontrol.html#wxcontrolgetlabeltext">wxControl::GetLabelText</A> if they are
+undesired.<P>
+
+
+<HR>
+<A NAME="wxcontrolgetlabeltext"></A>
+<H3>wxControl::GetLabelText</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetLabelText</B>() <B>const</B><P>
+<B>static const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetLabelText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>)<P>
+Returns the control's label or the given <I>label</I> string for the static
+version without the mnemonics characters.<P>
+
+
+<HR>
+<A NAME="wxcontrolsetlabel"></A>
+<H3>wxControl::SetLabel</H3>
+<P>
+<B>void</B> <B>SetLabel</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>)<P>
+Sets the item's text.<P>
+The <TT>&amp;</TT> characters in the <I>label</I> are special and indicate that the
+following character is a mnemonic for this control and can be used to activate
+it from the keyboard (typically by using <I>Alt</I> key in combination with
+it). To insert a literal ampersand character, you need to double it, i.e. use 
+<TT>"&amp;&amp;"</TT>.<P>
+
+
+</FONT></BODY></HTML>

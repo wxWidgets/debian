@@ -1,0 +1,213 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSymbolPickerDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsymbolpickerdialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstringtokenizer.html#wxstringtokenizer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsyscolourchangedevent.html#wxsyscolourchangedevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSymbolPickerDialog</H2>
+<P>
+wxSymbolPickerDialog presents the user with a choice of fonts and a grid
+of available characters. This modal dialog provides the application with
+a selected symbol and optional font selection.<P>
+Although this dialog is contained in the rich text library, the dialog
+is generic and can be used in other contexts.<P>
+To use the dialog, pass a default symbol specified as a string, an initial font name,
+and a current font name. The difference between the initial font and
+current font is that the initial font determines what the font control will be
+set to when the dialog shows - an empty string will show the selection <I>normal text</I>.
+The current font, on the other hand, is used by the dialog to determine what font
+to display the characters in, even when no initial font is selected.
+This allows the user (and application) to distinguish between inserting a
+symbol in the current font, and inserting it with a specified font.<P>
+When the dialog is dismissed, the application can get the selected symbol
+with GetSymbol and test whether a font was specified with UseNormalFont,
+fetching the specified font with GetFontName.<P>
+Here's a realistic example, inserting the supplied symbol into a
+rich text control in either the current font or specified font.<P>
+<PRE>
+    wxRichTextCtrl* ctrl = (wxRichTextCtrl*) FindWindow(ID_RICHTEXT_CTRL);
+
+    wxTextAttrEx attr;
+    attr.SetFlags(wxTEXT_ATTR_FONT);
+    ctrl-&gt;GetStyle(ctrl-&gt;GetInsertionPoint(), attr);
+
+    wxString currentFontName;
+    if (attr.HasFont() && attr.GetFont().Ok())
+        currentFontName = attr.GetFont().GetFaceName();
+
+    // Don't set the initial font in the dialog (so the user is choosing
+    // 'normal text', i.e. the current font) but do tell the dialog
+    // what 'normal text' is.
+
+    wxSymbolPickerDialog dlg(wxT("*"), wxEmptyString, currentFontName, this);
+
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        if (dlg.HasSelection())
+        {
+            long insertionPoint = ctrl-&gt;GetInsertionPoint();
+
+            ctrl-&gt;WriteText(dlg.GetSymbol());
+
+            if (!dlg.UseNormalFont())
+            {
+                wxFont font(attr.GetFont());
+                font.SetFaceName(dlg.GetFontName());
+                attr.SetFont(font);
+                ctrl-&gt;SetStyle(insertionPoint, insertionPoint+1, attr);
+            }
+        }
+    }
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextsymboldlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxsymbolpickerdialogwxsymbolpickerdialog">wxSymbolPickerDialog::wxSymbolPickerDialog</A><BR>
+<A HREF="#wxsymbolpickerdialogcreate">wxSymbolPickerDialog::Create</A><BR>
+<A HREF="#wxsymbolpickerdialoggetfontname">wxSymbolPickerDialog::GetFontName</A><BR>
+<A HREF="#wxsymbolpickerdialoggetfromunicode">wxSymbolPickerDialog::GetFromUnicode</A><BR>
+<A HREF="#wxsymbolpickerdialoggetnormaltextfontname">wxSymbolPickerDialog::GetNormalTextFontName</A><BR>
+<A HREF="#wxsymbolpickerdialoggetsymbol">wxSymbolPickerDialog::GetSymbol</A><BR>
+<A HREF="#wxsymbolpickerdialoggetsymbolchar">wxSymbolPickerDialog::GetSymbolChar</A><BR>
+<A HREF="#wxsymbolpickerdialoghasselection">wxSymbolPickerDialog::HasSelection</A><BR>
+<A HREF="#wxsymbolpickerdialogsetfontname">wxSymbolPickerDialog::SetFontName</A><BR>
+<A HREF="#wxsymbolpickerdialogsetfromunicode">wxSymbolPickerDialog::SetFromUnicode</A><BR>
+<A HREF="#wxsymbolpickerdialogsetnormaltextfontname">wxSymbolPickerDialog::SetNormalTextFontName</A><BR>
+<A HREF="#wxsymbolpickerdialogsetsymbol">wxSymbolPickerDialog::SetSymbol</A><BR>
+<A HREF="#wxsymbolpickerdialogsetunicodemode">wxSymbolPickerDialog::SetUnicodeMode</A><BR>
+<A HREF="#wxsymbolpickerdialogusenormalfont">wxSymbolPickerDialog::UseNormalFont</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialogwxsymbolpickerdialog"></A>
+<H3>wxSymbolPickerDialog::wxSymbolPickerDialog</H3>
+<P>
+<B></B> <B>wxSymbolPickerDialog</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>symbol</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>initialFont</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>normalTextFont</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title = _("Symbols")</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX</I>)<P>
+<B></B> <B>wxSymbolPickerDialog</B>()<P>
+Constructors.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>symbol</I><UL><UL>
+The initial symbol to show. Specify a single character in a string, or an empty string.</UL></UL>
+<P>
+<I>initialFont</I><UL><UL>
+The initial font to be displayed in the font list. If empty, the item <I>normal text</I> will be selected.</UL></UL>
+<P>
+<I>normalTextFont</I><UL><UL>
+The font the dialog will use to display the symbols if the initial font is empty.</UL></UL>
+<P>
+<I>parent</I><UL><UL>
+The dialog's parent.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The dialog's identifier.</UL></UL>
+<P>
+<I>title</I><UL><UL>
+The dialog's caption.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+The dialog's position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+The dialog's size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The dialog's window style.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialogcreate"></A>
+<H3>wxSymbolPickerDialog::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>symbol</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>initialFont</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>normalTextFont</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title = _("Symbols")</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX</I>)<P>
+Creation: see <A HREF="wx_wxsymbolpickerdialog.html#wxsymbolpickerdialogwxsymbolpickerdialog">the constructor</A> for details about the parameters.<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialoggetfontname"></A>
+<H3>wxSymbolPickerDialog::GetFontName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFontName</B>() <B>const</B><P>
+Returns the font name (the font reflected in the font list).<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialoggetfromunicode"></A>
+<H3>wxSymbolPickerDialog::GetFromUnicode</H3>
+<P>
+<B>bool</B> <B>GetFromUnicode</B>() <B>const</B><P>
+Returns <TT>true</TT> if the dialog is showing the full range of Unicode characters.<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialoggetnormaltextfontname"></A>
+<H3>wxSymbolPickerDialog::GetNormalTextFontName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetNormalTextFontName</B>() <B>const</B><P>
+Gets the font name used for displaying symbols in the absence of a selected font.<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialoggetsymbol"></A>
+<H3>wxSymbolPickerDialog::GetSymbol</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetSymbol</B>() <B>const</B><P>
+Gets the current or initial symbol as a string.<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialoggetsymbolchar"></A>
+<H3>wxSymbolPickerDialog::GetSymbolChar</H3>
+<P>
+<B>int</B> <B>GetSymbolChar</B>() <B>const</B><P>
+Gets the selected symbol character as an integer.<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialoghasselection"></A>
+<H3>wxSymbolPickerDialog::HasSelection</H3>
+<P>
+<B>bool</B> <B>HasSelection</B>() <B>const</B><P>
+Returns <TT>true</TT> if a symbol is selected.<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialogsetfontname"></A>
+<H3>wxSymbolPickerDialog::SetFontName</H3>
+<P>
+<B>void</B> <B>SetFontName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>)<P>
+Sets the initial/selected font name.<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialogsetfromunicode"></A>
+<H3>wxSymbolPickerDialog::SetFromUnicode</H3>
+<P>
+<B>void</B> <B>SetFromUnicode</B>(<B>bool </B><I>value</I>)<P>
+Sets the internal flag indicating that the full Unicode range should be displayed.<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialogsetnormaltextfontname"></A>
+<H3>wxSymbolPickerDialog::SetNormalTextFontName</H3>
+<P>
+<B>void</B> <B>SetNormalTextFontName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>)<P>
+Sets the name of the font to be used in the absence of a selected font.<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialogsetsymbol"></A>
+<H3>wxSymbolPickerDialog::SetSymbol</H3>
+<P>
+<B>void</B> <B>SetSymbol</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>)<P>
+Sets the symbol as a one or zero character string.<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialogsetunicodemode"></A>
+<H3>wxSymbolPickerDialog::SetUnicodeMode</H3>
+<P>
+<B>void</B> <B>SetUnicodeMode</B>(<B>bool </B><I>unicodeMode</I>)<P>
+Sets Unicode display mode.<P>
+
+<HR>
+<A NAME="wxsymbolpickerdialogusenormalfont"></A>
+<H3>wxSymbolPickerDialog::UseNormalFont</H3>
+<P>
+<B>bool</B> <B>UseNormalFont</B>() <B>const</B><P>
+Returns true if the has specified normal text - that is, there is no selected font.<P>
+
+</FONT></BODY></HTML>

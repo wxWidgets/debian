@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xh_slidr.cpp
+// Name:        src/xrc/xh_slidr.cpp
 // Purpose:     XRC resource for wxSlider
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_slidr.cpp,v 1.11 2005/05/27 15:53:31 JS Exp $
+// RCS-ID:      $Id: xh_slidr.cpp 39600 2006-06-06 16:28:58Z ABX $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_slidr.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -22,12 +18,15 @@
 #if wxUSE_XRC && wxUSE_SLIDER
 
 #include "wx/xrc/xh_slidr.h"
-#include "wx/slider.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/slider.h"
+#endif
 
 IMPLEMENT_DYNAMIC_CLASS(wxSliderXmlHandler, wxXmlResourceHandler)
 
 wxSliderXmlHandler::wxSliderXmlHandler()
-: wxXmlResourceHandler()
+                   :wxXmlResourceHandler()
 {
     XRC_ADD_STYLE(wxSL_HORIZONTAL);
     XRC_ADD_STYLE(wxSL_VERTICAL);

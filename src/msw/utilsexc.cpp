@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: utilsexc.cpp,v 1.80.2.3 2005/11/24 20:34:42 ABX Exp $
+// RCS-ID:      $Id: utilsexc.cpp 40943 2006-08-31 19:31:43Z ABX $
 // Copyright:   (c) 1998-2002 wxWidgets dev team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -33,14 +29,16 @@
     #include "wx/app.h"
     #include "wx/intl.h"
     #include "wx/log.h"
+    #if wxUSE_STREAMS
+        #include "wx/stream.h"
+    #endif
+    #include "wx/module.h"
 #endif
 
-#include "wx/stream.h"
 #include "wx/process.h"
 
 #include "wx/apptrait.h"
 
-#include "wx/module.h"
 
 #include "wx/msw/private.h"
 
@@ -487,16 +485,16 @@ size_t wxPipeOutputStream::OnSysWrite(const void *buffer, size_t len)
 #if wxUSE_IPC
 
 // connect to the given server via DDE and ask it to execute the command
-static bool wxExecuteDDE(const wxString& ddeServer,
-                         const wxString& ddeTopic,
-                         const wxString& ddeCommand)
+bool
+wxExecuteDDE(const wxString& ddeServer,
+             const wxString& ddeTopic,
+             const wxString& ddeCommand)
 {
     bool ok wxDUMMY_INITIALIZE(false);
 
     wxDDEClient client;
-    wxConnectionBase *conn = client.MakeConnection(wxEmptyString,
-                                                   ddeServer,
-                                                   ddeTopic);
+    wxConnectionBase *
+        conn = client.MakeConnection(wxEmptyString, ddeServer, ddeTopic);
     if ( !conn )
     {
         ok = false;
@@ -956,4 +954,3 @@ long wxExecute(wxChar **argv, int flags, wxProcess *handler)
 
     return wxExecute(command, flags, handler);
 }
-

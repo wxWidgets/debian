@@ -4,6 +4,13 @@ A font is an object which determines the appearance of text. Fonts are
 used for drawing text to a device context, and setting the appearance of
 a window's text.
 
+This class uses \helpref{reference counting and copy-on-write}{trefcount}
+internally so that assignments between two instances of this class are very
+cheap. You can therefore use actual objects instead of pointers without
+efficiency problems. If an instance of this class is changed it will create
+its own data internally so that other instances, which previously shared the
+data using the reference counting, are not affected.
+
 You can retrieve the current system font settings with \helpref{wxSystemSettings}{wxsystemsettings}.
 
 \helpref{wxSystemSettings}{wxsystemsettings}
@@ -165,6 +172,10 @@ wxSWISS\_FONT}
 
 Default constructor.
 
+\func{}{wxFont}{\param{const wxFont\&}{ font}}
+
+Copy constructor, uses \helpref{reference counting}{trefcount}.
+
 \func{}{wxFont}{\param{int}{ pointSize}, \param{wxFontFamily}{ family}, \param{int}{ style}, \param{wxFontWeight}{ weight},
  \param{const bool}{ underline = false}, \param{const wxString\& }{faceName = ""},
  \param{wxFontEncoding }{encoding = wxFONTENCODING\_DEFAULT}}
@@ -244,11 +255,9 @@ and \helpref{wxDC::GetTextExtent}{wxdcgettextextent}.
 \func{}{\destruct{wxFont}}{\void}
 
 Destructor.
+See \helpref{reference-counted object destruction}{refcountdestruct} for more info.
 
 \wxheading{Remarks}
-
-The destructor may not delete the underlying font object of the native windowing
-system, since wxFont uses a reference counting system for efficiency.
 
 Although all remaining fonts are deleted when the application exits,
 the application should try to clean up all fonts itself. This is because
@@ -304,12 +313,26 @@ family identifiers.
 
 \constfunc{wxString}{GetNativeFontInfoDesc}{\void}
 
-Returns the platform-dependent string completely describing this font or an
-empty string if the font wasn't constructed using the native font description.
+Returns the platform-dependent string completely describing this font.
+Returned string is always non-empty.
+Note that the returned string is not meant to be shown or edited by the user: a typical
+use of this function is for serializing in string-form a wxFont object.
 
 \wxheading{See also}
 
-\helpref{wxFont::SetNativeFontInfo}{wxfontsetnativefontinfo}
+\helpref{wxFont::SetNativeFontInfo}{wxfontsetnativefontinfo},\helpref{wxFont::GetNativeFontInfoUserDesc}{wxfontgetnativefontinfouserdesc}
+
+
+\membersection{wxFont::GetNativeFontInfoUserDesc}\label{wxfontgetnativefontinfouserdesc}
+
+\func{wxString}{GetNativeFontInfoUserDesc}{\void}
+
+Returns a user-friendly string for this font object. Returned string is always non-empty.
+Some examples of the formats of returned strings (which are platform-dependent) are in \helpref{SetNativeFontInfoUserDesc}{wxfontsetnativefontinfouserdesc}.
+
+\wxheading{See also}
+
+\helpref{wxFont::GetNativeFontInfoDesc}{wxfontgetnativefontinfodesc}
 
 
 \membersection{wxFont::GetPointSize}\label{wxfontgetpointsize}
@@ -383,9 +406,9 @@ Using \texttt{New()} is currently the only way to directly create a font with
 the given size in pixels on platforms other than wxMSW.
 
 
-\membersection{wxFont::Ok}\label{wxfontok}
+\membersection{wxFont::IsOk}\label{wxfontisok}
 
-\constfunc{bool}{Ok}{\void}
+\constfunc{bool}{IsOk}{\void}
 
 Returns {\tt true} if this object is a valid font, {\tt false} otherwise.
 
@@ -404,9 +427,10 @@ Sets the default font encoding.
 
 \membersection{wxFont::SetFaceName}\label{wxfontsetfacename}
 
-\func{void}{SetFaceName}{\param{const wxString\& }{faceName}}
+\func{bool}{SetFaceName}{\param{const wxString\& }{faceName}}
 
 Sets the facename for the font.
+Returns \true if the given face name exists; \false otherwise.
 
 \wxheading{Parameters}
 
@@ -452,12 +476,44 @@ Sets the font family.
 
 \membersection{wxFont::SetNativeFontInfo}\label{wxfontsetnativefontinfo}
 
-\func{void}{SetNativeFontInfo}{\param{const wxString\& }{info}}
+\func{bool}{SetNativeFontInfo}{\param{const wxString\& }{info}}
 
-Creates the font corresponding to the given native font description string
+Creates the font corresponding to the given native font description string and returns \true if
+the creation was successful.
 which must have been previously returned by
 \helpref{GetNativeFontInfoDesc}{wxfontgetnativefontinfodesc}. If the string is
-invalid, font is unchanged.
+invalid, font is unchanged. This function is typically used for de-serializing a wxFont
+object previously saved in a string-form.
+
+\wxheading{See also}
+
+\helpref{wxFont::SetNativeFontInfoUserDesc}{wxfontsetnativefontinfouserdesc}
+
+
+\membersection{wxFont::SetNativeFontInfoUserDesc}\label{wxfontsetnativefontinfouserdesc}
+
+\func{bool}{SetNativeFontInfoUserDesc}{\param{const wxString\& }{info}}
+
+Creates the font corresponding to the given native font description string and returns \true if
+the creation was successful.
+Unlike \helpref{SetNativeFontInfo}{wxfontsetnativefontinfo}, this function accepts
+strings which are user-friendly.
+Examples of accepted string formats are:
+
+\twocolwidtha{15cm}
+\begin{twocollist}\itemsep=0pt
+\twocolitem{Generic syntax}{Example}
+\twocolitem{on {\bf wxGTK2}: {\tt $[FACE-NAME]$ $[bold]$ $[oblique|italic]$ $[POINTSIZE]$}}{Monospace bold 10}
+\twocolitem{on {\bf wxMSW}: {\tt $[light|bold]$ $[italic]$ $[FACE-NAME]$ $[POINTSIZE]$ $[ENCODING]$}}{Tahoma 10 WINDOWS-1252}
+\twocolitem{on {\bf wxMac}: FIXME}{FIXME}
+\end{twocollist}
+
+For more detailed information about the allowed syntaxes you can look at the documentation of the native API used for font-rendering (e.g. \urlref{pango\_font\_description\_from\_string}{http://developer.gnome.org/doc/API/2.0/pango/pango-Fonts.html\#pango-font-description-from-string}).
+
+\wxheading{See also}
+
+\helpref{wxFont::SetNativeFontInfo}{wxfontsetnativefontinfo}
+
 
 
 \membersection{wxFont::SetPointSize}\label{wxfontsetpointsize}
@@ -531,24 +587,21 @@ Sets the font weight.
 
 \func{wxFont\&}{operator $=$}{\param{const wxFont\& }{font}}
 
-Assignment operator, using reference counting. Returns a reference
-to `this'.
+Assignment operator, using \helpref{reference counting}{trefcount}.
 
 
 \membersection{wxFont::operator $==$}\label{wxfontequals}
 
 \func{bool}{operator $==$}{\param{const wxFont\& }{font}}
 
-Equality operator. Two fonts are equal if they contain pointers
-to the same underlying font data. It does not compare each attribute,
-so two independently-created fonts using the same parameters will
-fail the test.
+Equality operator.
+See \helpref{reference-counted object comparison}{refcountequality} for more info.
 
 
 \membersection{wxFont::operator $!=$}\label{wxfontnotequals}
 
 \func{bool}{operator $!=$}{\param{const wxFont\& }{font}}
 
-Inequality operator. Two fonts are not equal if they contain pointers
-to different underlying font data. It does not compare each attribute.
+Inequality operator.
+See \helpref{reference-counted object comparison}{refcountequality} for more info.
 

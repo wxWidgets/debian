@@ -1,0 +1,403 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxIcon</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxicon"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhyperlinkevent.html#wxhyperlinkevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxiconbundle.html#wxiconbundle"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxIcon</H2>
+<P>
+An icon is a small rectangular bitmap usually used for denoting a
+minimized application. It differs from a wxBitmap in always
+having a mask associated with it for transparent drawing. On some platforms,
+icons and bitmaps are implemented identically, since there is no real distinction between
+a wxBitmap with a mask and an icon; and there is no specific icon format on
+some platforms (X-based applications usually standardize on XPMs for small bitmaps
+and icons). However, some platforms (such as Windows) make the distinction, so
+a separate class is provided.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A><BR>
+
+<A HREF="wx_wxgdiobject.html#wxgdiobject">wxGDIObject</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/icon.h&gt;<P>
+<B><FONT COLOR="#FF0000">Predefined objects</FONT></B><P>
+Objects:<P>
+<B>wxNullIcon</B><P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+It is usually desirable to associate a pertinent icon with a frame. Icons
+can also be used for other purposes, for example with <A HREF="wx_wxtreectrl.html#wxtreectrl">wxTreeCtrl</A> 
+and <A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A>.<P>
+Icons have different formats on different platforms.
+Therefore, separate icons will usually be created for the different
+environments.  Platform-specific methods for creating a <B>wxIcon</B>
+structure are catered for, and this is an occasion where conditional
+compilation will probably be required.<P>
+Note that a new icon must be created for every time the icon is to be
+used for a new window. In Windows, the icon will not be
+reloaded if it has already been used. An icon allocated to a frame will
+be deleted when the frame is deleted.<P>
+For more information please see <A HREF="wx_wxbitmapoverview.html#wxbitmapoverview">Bitmap and icon overview</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapoverview.html#wxbitmapoverview">Bitmap and icon overview</A>, <A HREF="wx_wxbitmapoverview.html#supportedbitmapformats">supported bitmap file formats</A>, 
+<A HREF="wx_wxdc.html#wxdcdrawicon">wxDC::DrawIcon</A>, <A HREF="wx_wxcursor.html#wxcursor">wxCursor</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxiconctor">wxIcon::wxIcon</A><BR>
+<A HREF="#wxiconcopyfrombitmap">wxIcon::CopyFromBitmap</A><BR>
+<A HREF="#wxicondtor">wxIcon::~wxIcon</A><BR>
+<A HREF="#wxicongetdepth">wxIcon::GetDepth</A><BR>
+<A HREF="#wxicongetheight">wxIcon::GetHeight</A><BR>
+<A HREF="#wxicongetwidth">wxIcon::GetWidth</A><BR>
+<A HREF="#wxiconloadfile">wxIcon::LoadFile</A><BR>
+<A HREF="#wxiconisok">wxIcon::IsOk</A><BR>
+<A HREF="#wxiconsetdepth">wxIcon::SetDepth</A><BR>
+<A HREF="#wxiconsetheight">wxIcon::SetHeight</A><BR>
+<A HREF="#wxiconsetwidth">wxIcon::SetWidth</A><BR>
+<A HREF="#wxiconassign">wxIcon::operator =</A><BR>
+<P>
+
+<HR>
+<A NAME="wxiconctor"></A>
+<H3>wxIcon::wxIcon</H3>
+<P>
+<B></B> <B>wxIcon</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxIcon</B>(<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>& </B></B><I>icon</I>)<P>
+Copy constructor.<P>
+<B></B> <B>wxIcon</B>(<B>void*</B><I> data</I>, <B>int</B><I> type</I>, <B>int</B><I> width</I>, <B>int</B><I> height</I>, <B>int</B><I> depth = -1</I>)<P>
+Creates an icon from the given data, which can be of arbitrary type.<P>
+<B></B> <B>wxIcon</B>(<B>const char</B><I> bits[]</I>, <B>int</B><I> width</I>, <B>int</B><I> height</I><BR>
+
+  <B>int</B><I> depth = 1</I>)<P>
+Creates an icon from an array of bits.<P>
+<B></B> <B>wxIcon</B>(<B>int</B><I> width</I>, <B>int</B><I> height</I>, <B>int</B><I> depth = -1</I>)<P>
+Creates a new icon.<P>
+<B></B> <B>wxIcon</B>(<B>char**</B><I> bits</I>)<P>
+<B></B> <B>wxIcon</B>(<B>const char**</B><I> bits</I>)<P>
+Creates an icon from XPM data.<P>
+<B></B> <B>wxIcon</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>wxBitmapType</B><I> type</I>,
+  <B>int</B><I> desiredWidth = -1</I>, <B>int</B><I> desiredHeight = -1</I>)<P>
+Loads an icon from a file or resource.<P>
+<B></B> <B>wxIcon</B>(<B>const <A HREF="wx_wxiconlocation.html#wxiconlocation">wxIconLocation</A>& </B></B><I>loc</I>)<P>
+Loads an icon from the specified <A HREF="wx_wxiconlocation.html#wxiconlocation">location</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bits</I><UL><UL>
+Specifies an array of pixel values.</UL></UL>
+<P>
+<I>width</I><UL><UL>
+Specifies the width of the icon.</UL></UL>
+<P>
+<I>height</I><UL><UL>
+Specifies the height of the icon.</UL></UL>
+<P>
+<I>desiredWidth</I><UL><UL>
+Specifies the desired width of the icon. This
+parameter only has an effect in Windows (32-bit) where icon resources can contain
+several icons of different sizes.</UL></UL>
+<P>
+<I>desiredWidth</I><UL><UL>
+Specifies the desired height of the icon. This
+parameter only has an effect in Windows (32-bit) where icon resources can contain
+several icons of different sizes.</UL></UL>
+<P>
+<I>depth</I><UL><UL>
+Specifies the depth of the icon. If this is omitted, the display depth of the
+screen is used.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+This can refer to a resource name under MS Windows, or a filename under MS Windows and X.
+Its meaning is determined by the <I>flags</I> parameter.</UL></UL>
+<P>
+<I>loc</I><UL><UL>
+The object describing the location of the native icon, see 
+<A HREF="wx_wxiconlocation.html#wxiconlocation">wxIconLocation</A>.</UL></UL>
+<P>
+<I>type</I><UL><UL>
+May be one of the following:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_ICO
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows icon file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_ICO_RESOURCE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows icon from the resource database.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_GIF
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a GIF bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_XBM
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load an X bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_XPM
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load an XPM bitmap file.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The validity of these flags depends on the platform and wxWidgets configuration.
+If all possible wxWidgets settings are used, the Windows platform supports ICO file, ICO resource,
+XPM data, and XPM file. Under wxGTK, the available formats are BMP file, XPM data, XPM file, and PNG file.
+Under wxMotif, the available formats are XBM data, XBM file, XPM data, XPM file.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The first form constructs an icon object with no data; an assignment or another member function such as Create
+or LoadFile must be called subsequently.<P>
+The second and third forms provide copy constructors. Note that these do not copy the
+icon data, but instead a pointer to the data, keeping a reference count. They are therefore
+very efficient operations.<P>
+The fourth form constructs an icon from data whose type and value depends on
+the value of the <I>type</I> argument.<P>
+The fifth form constructs a (usually monochrome) icon from an array of pixel values, under both
+X and Windows.<P>
+The sixth form constructs a new icon.<P>
+The seventh form constructs an icon from pixmap (XPM) data, if wxWidgets has been configured
+to incorporate this feature.<P>
+To use this constructor, you must first include an XPM file. For
+example, assuming that the file <TT>mybitmap.xpm</TT> contains an XPM array
+of character pointers called mybitmap:<P>
+<PRE>
+#include "mybitmap.xpm"
+
+...
+
+wxIcon *icon = new wxIcon(mybitmap);
+</PRE>
+A macro, wxICON, is available which creates an icon using an XPM
+on the appropriate platform, or an icon resource on Windows.<P>
+<PRE>
+wxIcon icon(wxICON(mondrian));
+
+// Equivalent to:
+
+#if defined(__WXGTK__) || defined(__WXMOTIF__)
+wxIcon icon(mondrian_xpm);
+#endif
+
+#if defined(__WXMSW__)
+wxIcon icon("mondrian");
+#endif
+</PRE>
+The eighth form constructs an icon from a file or resource. <I>name</I> can refer
+to a resource name under MS Windows, or a filename under MS Windows and X.<P>
+Under Windows, <I>type</I> defaults to wxBITMAP_TYPE_ICO_RESOURCE.
+Under X, <I>type</I> defaults to wxBITMAP_TYPE_XPM.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+
+
+<HR>
+<A NAME="wxiconcopyfrombitmap"></A>
+<H3>wxIcon::CopyFromBitmap</H3>
+<P>
+<B>void</B> <B>CopyFromBitmap</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bmp</I>)<P>
+Copies <I>bmp</I> bitmap to this icon. Under MS Windows the bitmap
+must have mask colour set.<P>
+
+<A HREF="wx_wxicon.html#wxiconloadfile">wxIcon::LoadFile</A><P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> Constructors supported by wxPerl are:<P>
+
+<UL>
+
+<LI>Wx::Icon-&gt;new( width, height, depth = -1 )
+<LI>Wx::Icon-&gt;new( name, type, desiredWidth = -1, desiredHeight = -1 )
+<LI>Wx::Icon-&gt;newFromBits( bits, width, height, depth = 1 )
+<LI>Wx::Icon-&gt;newFromXPM( data )
+</UL>
+
+<P>
+
+<HR>
+<A NAME="wxicondtor"></A>
+<H3>wxIcon::~wxIcon</H3>
+<P>
+<B></B> <B>~wxIcon</B>()<P>
+Destructor.
+See <A HREF="wx_trefcount.html#refcountdestruct">reference-counted object destruction</A> for more info.<P>
+If the application omits to delete the icon explicitly, the icon will be
+destroyed automatically by wxWidgets when the application exits.<P>
+Do not delete an icon that is selected into a memory device context.<P>
+
+<HR>
+<A NAME="wxicongetdepth"></A>
+<H3>wxIcon::GetDepth</H3>
+<P>
+<B>int</B> <B>GetDepth</B>() <B>const</B><P>
+Gets the colour depth of the icon. A value of 1 indicates a
+monochrome icon.<P>
+
+<HR>
+<A NAME="wxicongetheight"></A>
+<H3>wxIcon::GetHeight</H3>
+<P>
+<B>int</B> <B>GetHeight</B>() <B>const</B><P>
+Gets the height of the icon in pixels.<P>
+
+<HR>
+<A NAME="wxicongetwidth"></A>
+<H3>wxIcon::GetWidth</H3>
+<P>
+<B>int</B> <B>GetWidth</B>() <B>const</B><P>
+Gets the width of the icon in pixels.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxicon.html#wxicongetheight">wxIcon::GetHeight</A><P>
+
+<HR>
+<A NAME="wxiconloadfile"></A>
+<H3>wxIcon::LoadFile</H3>
+<P>
+<B>bool</B> <B>LoadFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name</I>, <B>wxBitmapType</B><I> type</I>)<P>
+Loads an icon from a file or resource.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>name</I><UL><UL>
+Either a filename or a Windows resource name.
+The meaning of <I>name</I> is determined by the <I>type</I> parameter.</UL></UL>
+<P>
+<I>type</I><UL><UL>
+One of the following values:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_ICO</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows icon file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_ICO_RESOURCE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows icon from the resource database.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_GIF</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a GIF bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_XBM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load an X bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_XPM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load an XPM bitmap file.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The validity of these flags depends on the platform and wxWidgets configuration.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the operation succeeded, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxicon.html#wxiconctor">wxIcon::wxIcon</A><P>
+
+<HR>
+<A NAME="wxiconisok"></A>
+<H3>wxIcon::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if icon data is present.<P>
+
+<HR>
+<A NAME="wxiconsetdepth"></A>
+<H3>wxIcon::SetDepth</H3>
+<P>
+<B>void</B> <B>SetDepth</B>(<B>int </B><I>depth</I>)<P>
+Sets the depth member (does not affect the icon data).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>depth</I><UL><UL>
+Icon depth.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxiconsetheight"></A>
+<H3>wxIcon::SetHeight</H3>
+<P>
+<B>void</B> <B>SetHeight</B>(<B>int </B><I>height</I>)<P>
+Sets the height member (does not affect the icon data).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>height</I><UL><UL>
+Icon height in pixels.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxiconsetwidth"></A>
+<H3>wxIcon::SetWidth</H3>
+<P>
+<B>void</B> <B>SetWidth</B>(<B>int </B><I>width</I>)<P>
+Sets the width member (does not affect the icon data).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>width</I><UL><UL>
+Icon width in pixels.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxiconassign"></A>
+<H3>wxIcon::operator =</H3>
+<P>
+<B><A HREF="wx_wxicon.html#wxicon">wxIcon</A>& </B> </B> <B>operator =</B>(<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>& </B></B><I>icon</I>)<P>
+Assignment operator, using <A HREF="wx_trefcount.html#trefcount">reference counting</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>icon</I><UL><UL>
+Icon to assign.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns 'this' object.<P>
+
+
+</FONT></BODY></HTML>

@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xh_dlg.cpp
+// Name:        src/xrc/xh_dlg.cpp
 // Purpose:     XRC resource for dialogs
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_dlg.cpp,v 1.23 2005/08/16 15:06:39 JS Exp $
+// RCS-ID:      $Id: xh_dlg.cpp 39273 2006-05-22 20:54:04Z ABX $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_dlg.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -22,10 +18,13 @@
 #if wxUSE_XRC
 
 #include "wx/xrc/xh_dlg.h"
-#include "wx/dialog.h"
-#include "wx/frame.h"
-#include "wx/log.h"
-#include "wx/intl.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/intl.h"
+    #include "wx/log.h"
+    #include "wx/frame.h"
+    #include "wx/dialog.h"
+#endif
 
 IMPLEMENT_DYNAMIC_CLASS(wxDialogXmlHandler, wxXmlResourceHandler)
 
@@ -34,16 +33,11 @@ wxDialogXmlHandler::wxDialogXmlHandler() : wxXmlResourceHandler()
     XRC_ADD_STYLE(wxSTAY_ON_TOP);
     XRC_ADD_STYLE(wxCAPTION);
     XRC_ADD_STYLE(wxDEFAULT_DIALOG_STYLE);
-    XRC_ADD_STYLE(wxTHICK_FRAME);
     XRC_ADD_STYLE(wxSYSTEM_MENU);
     XRC_ADD_STYLE(wxRESIZE_BORDER);
-    XRC_ADD_STYLE(wxRESIZE_BOX);
     XRC_ADD_STYLE(wxCLOSE_BOX);
-    XRC_ADD_STYLE(wxDIALOG_MODAL);
-    XRC_ADD_STYLE(wxDIALOG_MODELESS);
     XRC_ADD_STYLE(wxDIALOG_NO_PARENT);
 
-    XRC_ADD_STYLE(wxNO_3D);
     XRC_ADD_STYLE(wxTAB_TRAVERSAL);
     XRC_ADD_STYLE(wxWS_EX_VALIDATE_RECURSIVELY);
     XRC_ADD_STYLE(wxDIALOG_EX_METAL);
@@ -51,6 +45,14 @@ wxDialogXmlHandler::wxDialogXmlHandler() : wxXmlResourceHandler()
     XRC_ADD_STYLE(wxMINIMIZE_BOX);
     XRC_ADD_STYLE(wxFRAME_SHAPED);
     XRC_ADD_STYLE(wxDIALOG_EX_CONTEXTHELP);
+
+#if WXWIN_COMPATIBILITY_2_6
+    XRC_ADD_STYLE(wxDIALOG_MODAL);
+    XRC_ADD_STYLE(wxTHICK_FRAME);
+    XRC_ADD_STYLE(wxRESIZE_BOX);
+    XRC_ADD_STYLE(wxDIALOG_MODELESS);
+    XRC_ADD_STYLE(wxNO_3D);
+#endif // WXWIN_COMPATIBILITY_2_6
 
     AddWindowStyles();
 }

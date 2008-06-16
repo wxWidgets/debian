@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     23-May-2000
-// RCS-ID:      $Id: calendar.i,v 1.40.2.1 2006/02/24 23:06:33 RD Exp $
+// RCS-ID:      $Id: calendar.i 41376 2006-09-22 21:46:26Z RD $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -29,8 +29,6 @@
 %import misc.i
 %pythoncode { wx = _core }
 %pythoncode { __docfilter__ = wx.__DocFilter(globals()) }
-
-%include _calendar_rename.i
 
 //---------------------------------------------------------------------------
 
@@ -80,6 +78,8 @@ public:
                        const wxFont& font = wxNullFont,
                        wxCalendarDateBorder border = wxCAL_BORDER_NONE);
 
+    ~wxCalendarDateAttr();
+    
     
     // setters
     void SetTextColour(const wxColour& colText);
@@ -103,6 +103,12 @@ public:
     wxColour GetBorderColour() const;
     wxFont GetFont() const;
     wxCalendarDateBorder GetBorder() const;
+
+    %property(BackgroundColour, GetBackgroundColour, SetBackgroundColour, doc="See `GetBackgroundColour` and `SetBackgroundColour`");
+    %property(Border, GetBorder, SetBorder, doc="See `GetBorder` and `SetBorder`");
+    %property(BorderColour, GetBorderColour, SetBorderColour, doc="See `GetBorderColour` and `SetBorderColour`");
+    %property(Font, GetFont, SetFont, doc="See `GetFont` and `SetFont`");
+    %property(TextColour, GetTextColour, SetTextColour, doc="See `GetTextColour` and `SetTextColour`");
 };
 
 //---------------------------------------------------------------------------
@@ -126,6 +132,8 @@ public:
         """returns datetime.date object"""
         return _wxdate2pydate(self.GetDate())
     }
+
+    %property(WeekDay, GetWeekDay, SetWeekDay, doc="See `GetWeekDay` and `SetWeekDay`");
 };
 
 
@@ -169,7 +177,7 @@ month can be set independently using CalendarDateAttr class.
 
 An item without custom attributes is drawn with the default colours
 and font and without border, but setting custom attributes with
-SetAttr allows to modify its appearance. Just create a custom
+`SetAttr` allows to modify its appearance. Just create a custom
 attribute object and set it for the day you want to be displayed
 specially A day may be marked as being a holiday, (even if it is not
 recognized as one by `wx.DateTime`) by using the SetHoliday method.
@@ -359,12 +367,14 @@ used).", "");
         wxCalendarDateAttr*, GetAttr(size_t day) const,
         "Returns the attribute for the given date (should be in the range
 1...31).  The returned value may be None", "");
-    
+
+    %disownarg(wxCalendarDateAttr *attr);
     DocDeclStr(
         void, SetAttr(size_t day, wxCalendarDateAttr *attr),
         "Associates the attribute with the specified date (in the range
 1...31).  If the attribute passed is None, the items attribute is
 cleared.", "");
+    %cleardisown(wxCalendarDateAttr *attr);
 
     DocDeclStr(
         void, SetHoliday(size_t day),
@@ -447,6 +457,18 @@ The result codes are:
         """returns datetime.date object"""
         return _wxdate2pydate(self.GetUpperDateLimit())
     }
+
+    %property(Date, GetDate, SetDate, doc="See `GetDate` and `SetDate`");
+    %property(HeaderColourBg, GetHeaderColourBg, doc="See `GetHeaderColourBg`");
+    %property(HeaderColourFg, GetHeaderColourFg, doc="See `GetHeaderColourFg`");
+    %property(HighlightColourBg, GetHighlightColourBg, doc="See `GetHighlightColourBg`");
+    %property(HighlightColourFg, GetHighlightColourFg, doc="See `GetHighlightColourFg`");
+    %property(HolidayColourBg, GetHolidayColourBg, doc="See `GetHolidayColourBg`");
+    %property(HolidayColourFg, GetHolidayColourFg, doc="See `GetHolidayColourFg`");
+    %property(LowerDateLimit, GetLowerDateLimit, SetLowerDateLimit, doc="See `GetLowerDateLimit` and `SetLowerDateLimit`");
+    %property(MonthControl, GetMonthControl, doc="See `GetMonthControl`");
+    %property(UpperDateLimit, GetUpperDateLimit, SetUpperDateLimit, doc="See `GetUpperDateLimit` and `SetUpperDateLimit`");
+    %property(YearControl, GetYearControl, doc="See `GetYearControl`");
 };
 
 %pythoncode {

@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id: scrolbar.h,v 1.14 2005/05/04 18:52:02 JS Exp $
+// RCS-ID:      $Id: scrolbar.h 37066 2006-01-23 03:27:34Z MR $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -18,7 +18,7 @@
 
 #include "wx/control.h"
 
-extern WXDLLEXPORT_DATA(const wxChar*) wxScrollBarNameStr;
+extern WXDLLEXPORT_DATA(const wxChar) wxScrollBarNameStr[];
 
 // ----------------------------------------------------------------------------
 // wxScrollBar: a scroll bar control
@@ -62,8 +62,10 @@ private:
     #include "wx/msw/scrolbar.h"
 #elif defined(__WXMOTIF__)
     #include "wx/motif/scrolbar.h"
-#elif defined(__WXGTK__)
+#elif defined(__WXGTK20__)
     #include "wx/gtk/scrolbar.h"
+#elif defined(__WXGTK__)
+    #include "wx/gtk1/scrolbar.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/scrolbar.h"
 #elif defined(__WXCOCOA__)

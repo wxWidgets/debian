@@ -1,0 +1,72 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>C++ issues</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="cpp"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_multiplat.html#multiplat"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_conditionalcompilation.html#conditionalcompilation"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_filehandling.html#filehandling"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>C++ issues</H2>
+<P>
+The following documents some miscellaneous C++ issues.<P>
+<A HREF="#templates">Templates</A><BR>
+<A HREF="#rtti">RTTI</A><BR>
+<A HREF="#null">Type of NULL</A><BR>
+<A HREF="#precompiledheaders">Precompiled headers</A><BR>
+<P>
+
+<HR>
+<A NAME="templates"></A>
+<H3>Templates</H3>
+<P>
+wxWidgets does not use templates (except for some advanced features that
+are switched off by default) since it is a notoriously unportable feature.<P>
+
+<HR>
+<A NAME="rtti"></A>
+<H3>RTTI</H3>
+<P>
+wxWidgets does not use C++ run-time type information since wxWidgets provides
+its own run-time type information system, implemented using macros.<P>
+
+<HR>
+<A NAME="null"></A>
+<H3>Type of NULL</H3>
+<P>
+Some compilers (e.g. the native IRIX cc) define NULL to be 0L so that
+no conversion to pointers is allowed. Because of that, all these
+occurrences of NULL in the GTK+ port use an explicit conversion such 
+as<P>
+<FONT SIZE=2>
+<PRE>
+  wxWindow *my_window = (wxWindow*) NULL;
+</PRE>
+</FONT>It is recommended to adhere to this in all code using wxWidgets as
+this make the code (a bit) more portable.<P>
+
+<HR>
+<A NAME="precompiledheaders"></A>
+<H3>Precompiled headers</H3>
+<P>
+Some compilers, such as Borland C++ and Microsoft C++, support
+precompiled headers. This can save a great deal of compiling time. The
+recommended approach is to precompile <TT>"wx.h"</TT>, using this
+precompiled header for compiling both wxWidgets itself and any
+wxWidgets applications. For Windows compilers, two dummy source files
+are provided (one for normal applications and one for creating DLLs)
+to allow initial creation of the precompiled header.<P>
+However, there are several downsides to using precompiled headers. One
+is that to take advantage of the facility, you often need to include
+more header files than would normally be the case. This means that
+changing a header file will cause more recompilations (in the case of
+wxWidgets, everything needs to be recompiled since everything includes <TT>"wx.h"</TT>!)<P>
+A related problem is that for compilers that don't have precompiled
+headers, including a lot of header files slows down compilation
+considerably. For this reason, you will find (in the common
+X and Windows parts of the library) conditional
+compilation that under Unix, includes a minimal set of headers;
+and when using Visual C++, includes <TT>wx.h</TT>. This should help provide
+the optimal compilation for each compiler, although it is
+biased towards the precompiled headers facility available
+in Microsoft C++.<P>
+
+</FONT></BODY></HTML>

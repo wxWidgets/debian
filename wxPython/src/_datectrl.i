@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     15-Feb-2005
-// RCS-ID:      $Id: _datectrl.i,v 1.1 2005/02/18 04:35:46 RD Exp $
+// RCS-ID:      $Id: _datectrl.i 40964 2006-09-02 19:46:44Z RD $
 // Copyright:   (c) 2005 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -169,6 +169,9 @@ If there is no range or there is no upper limit, then the
         }
     }
     
+    %property(LowerLimit, GetLowerLimit, doc="See `GetLowerLimit`");
+    %property(UpperLimit, GetUpperLimit, doc="See `GetUpperLimit`");
+    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
 };
 
 

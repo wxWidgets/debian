@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     22-Dec-1998
-// RCS-ID:      $Id: _popupwin.i,v 1.6 2004/12/23 20:43:51 RD Exp $
+// RCS-ID:      $Id: _popupwin.i 43425 2006-11-14 22:03:54Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ MustHaveApp(wxPyPopupTransientWindow);
 class wxPyPopupTransientWindow : public wxPopupWindow
 {
 public:
-    %pythonAppend wxPyPopupTransientWindow         "self._setOORInfo(self);self._setCallbackInfo(self, PopupTransientWindow)"
+    %pythonAppend wxPyPopupTransientWindow         "self._setOORInfo(self);" setCallbackInfo(PopupTransientWindow)
     %pythonAppend wxPyPopupTransientWindow()       ""
     
     wxPyPopupTransientWindow(wxWindow *parent, int style = wxBORDER_NONE);

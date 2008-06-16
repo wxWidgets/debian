@@ -1,0 +1,37 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Windows-specific files</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="windowsfiles"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_multiplat.html#multiplat"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_makefiles.html#makefiles"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_allocatingobjects.html#allocatingobjects"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Windows-specific files</H2>
+<P>
+wxWidgets application compilation under MS Windows requires at least one
+extra file: a resource file.<P>
+<A HREF="#resources">Resource file</A><BR>
+<P>
+
+<HR>
+<A NAME="resources"></A>
+<H3>Resource file</H3>
+<P>
+The least that must be defined in the Windows resource file (extension RC)
+is the following statement:<P>
+<PRE>
+#include "wx/msw/wx.rc"
+</PRE>
+which includes essential internal wxWidgets definitions.  The resource script
+may also contain references to icons, cursors, etc., for example:<P>
+<PRE>
+wxicon icon wx.ico
+</PRE>
+The icon can then be referenced by name when creating a frame icon. See
+the MS Windows SDK documentation.<P>
+<HR>
+Note: include wx.rc <I>after</I> any ICON statements
+so programs that search your executable for icons (such
+as the Program Manager) find your application icon first.<HR><P>
+<P>
+
+</FONT></BODY></HTML>

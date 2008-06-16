@@ -1,0 +1,226 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataObject</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataobject"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdatainputstream.html#wxdatainputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdataviewcolumn.html#wxdataviewcolumn"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataObject</H2>
+<P>
+A wxDataObject represents data that can be copied to or from the clipboard, or
+dragged and dropped. The important thing about wxDataObject is that this is a
+'smart' piece of data unlike 'dumb' data containers such as memory
+buffers or files. Being 'smart' here means that the data object itself should
+know what data formats it supports and how to render itself in each of
+its supported formats.<P>
+A supported format, incidentally, is exactly the format in which the data can
+be requested from a data object or from which the data object may be set. In
+the general case, an object may support different formats on 'input' and
+'output', i.e. it may be able to render itself in a given format but not be
+created from data on this format or vice versa. wxDataObject defines an
+enumeration type<P>
+<PRE>
+enum Direction
+{
+    Get  = 0x01,    // format is supported by GetDataHere()
+    Set  = 0x02     // format is supported by SetData()
+};
+</PRE>
+which distinguishes between them. See 
+<A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A> documentation for more about formats.<P>
+Not surprisingly, being 'smart' comes at a price of added complexity. This is
+reasonable for the situations when you really need to support multiple formats,
+but may be annoying if you only want to do something simple like cut and paste
+text.<P>
+To provide a solution for both cases, wxWidgets has two predefined classes
+which derive from wxDataObject: <A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple">wxDataObjectSimple</A> and 
+<A HREF="wx_wxdataobjectcomposite.html#wxdataobjectcomposite">wxDataObjectComposite</A>. 
+<A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple">wxDataObjectSimple</A> is
+the simplest wxDataObject possible and only holds data in a single format (such
+as HTML or text) and <A HREF="wx_wxdataobjectcomposite.html#wxdataobjectcomposite">wxDataObjectComposite</A> is
+the simplest way to implement a wxDataObject that does support multiple formats
+because it achieves this by simply holding several wxDataObjectSimple objects.<P>
+So, you have several solutions when you need a wxDataObject class (and you need
+one as soon as you want to transfer data via the clipboard or drag and drop):<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>1. Use one of the built-in classes</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+You may use wxTextDataObject,
+wxBitmapDataObject or wxFileDataObject in the simplest cases when you only need
+to support one format and your data is either text, bitmap or list of files.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>2. Use wxDataObjectSimple</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Deriving from wxDataObjectSimple is the simplest
+solution for custom data - you will only support one format and so probably
+won't be able to communicate with other programs, but data transfer will work
+in your program (or between different copies of it).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>3. Use wxDataObjectComposite</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This is a simple but powerful
+solution which allows you to support any number of formats (either
+standard or custom if you combine it with the previous solution).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>4. Use wxDataObject directly</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This is the solution for
+maximal flexibility and efficiency, but it is also the most difficult to
+implement.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Please note that the easiest way to use drag and drop and the clipboard with
+multiple formats is by using wxDataObjectComposite, but it is not the most
+efficient one as each wxDataObjectSimple would contain the whole data in its
+respective formats. Now imagine that you want to paste 200 pages of text in
+your proprietary format, as well as Word, RTF, HTML, Unicode and plain text to
+the clipboard and even today's computers are in trouble. For this case, you
+will have to derive from wxDataObject directly and make it enumerate its
+formats and provide the data in the requested format on demand.<P>
+Note that neither the GTK+ data transfer mechanisms for clipboard and
+drag and drop, nor OLE data transfer, copy any data until another application
+actually requests the data. This is in contrast to the 'feel' offered to the
+user of a program who would normally think that the data resides in the
+clipboard after having pressed 'Copy' - in reality it is only declared to be
+available.<P>
+There are several predefined data object classes derived from
+wxDataObjectSimple: <A HREF="wx_wxfiledataobject.html#wxfiledataobject">wxFileDataObject</A>, 
+<A HREF="wx_wxtextdataobject.html#wxtextdataobject">wxTextDataObject</A> and 
+<A HREF="wx_wxbitmapdataobject.html#wxbitmapdataobject">wxBitmapDataObject</A> which can be used without
+change.<P>
+You may also derive your own data object classes from 
+<A HREF="wx_wxcustomdataobject.html#wxcustomdataobject">wxCustomDataObject</A> for user-defined types. The
+format of user-defined data is given as a mime-type string literal, such as
+"application/word" or "image/png". These strings are used as they are under
+Unix (so far only GTK+) to identify a format and are translated into their
+Windows equivalent under Win32 (using the OLE IDataObject for data exchange to
+and from the clipboard and for drag and drop). Note that the format string
+translation under Windows is not yet finished.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> At this time this class is not directly usable from wxPython.
+Derive a class from <A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple">wxPyDataObjectSimple</A> 
+instead.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> This class is not currently usable from wxPerl; you may
+use <A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple">Wx::PlDataObjectSimple</A> instead.<P>
+<B><FONT COLOR="#FF0000">Virtual functions to override</FONT></B><P>
+Each class derived directly from wxDataObject must override and implement all
+of its functions which are pure virtual in the base class.<P>
+The data objects which only render their data or only set it (i.e. work in
+only one direction), should return 0 from 
+<A HREF="wx_wxdataobject.html#wxdataobjectgetformatcount">GetFormatCount</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataobj.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdndoverview.html#wxdndoverview">Clipboard and drag and drop overview</A>, 
+<A HREF="wx_samples.html#samplednd">DnD sample</A>, 
+<A HREF="wx_wxfiledataobject.html#wxfiledataobject">wxFileDataObject</A>, 
+<A HREF="wx_wxtextdataobject.html#wxtextdataobject">wxTextDataObject</A>, 
+<A HREF="wx_wxbitmapdataobject.html#wxbitmapdataobject">wxBitmapDataObject</A>, 
+<A HREF="wx_wxcustomdataobject.html#wxcustomdataobject">wxCustomDataObject</A>, 
+<A HREF="wx_wxdroptarget.html#wxdroptarget">wxDropTarget</A>, 
+<A HREF="wx_wxdropsource.html#wxdropsource">wxDropSource</A>, 
+<A HREF="wx_wxtextdroptarget.html#wxtextdroptarget">wxTextDropTarget</A>, 
+<A HREF="wx_wxfiledroptarget.html#wxfiledroptarget">wxFileDropTarget</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdataobjectwxdataobject">wxDataObject::wxDataObject</A><BR>
+<A HREF="#wxdataobjectdtor">wxDataObject::~wxDataObject</A><BR>
+<A HREF="#wxdataobjectgetallformats">wxDataObject::GetAllFormats</A><BR>
+<A HREF="#wxdataobjectgetdatahere">wxDataObject::GetDataHere</A><BR>
+<A HREF="#wxdataobjectgetdatasize">wxDataObject::GetDataSize</A><BR>
+<A HREF="#wxdataobjectgetformatcount">wxDataObject::GetFormatCount</A><BR>
+<A HREF="#wxdataobjectgetpreferredformat">wxDataObject::GetPreferredFormat</A><BR>
+<A HREF="#wxdataobjectsetdata">wxDataObject::SetData</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataobjectwxdataobject"></A>
+<H3>wxDataObject::wxDataObject</H3>
+<P>
+<B></B> <B>wxDataObject</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxdataobjectdtor"></A>
+<H3>wxDataObject::~wxDataObject</H3>
+<P>
+<B></B> <B>~wxDataObject</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdataobjectgetallformats"></A>
+<H3>wxDataObject::GetAllFormats</H3>
+<P>
+<B>virtual void</B> <B>GetAllFormats</B>( <B><A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A> *</B></B><I>formats</I>, <B>Direction</B><I> dir = Get</I>) <B>const</B><P>
+Copy all supported formats in the given direction to the array pointed to by 
+<I>formats</I>. There is enough space for GetFormatCount(dir) formats in it.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method only takes the <TT>dir</TT> parameter. 
+In scalar context it returns the first format,
+in list context it returns a list containing all the supported formats.<P>
+
+<HR>
+<A NAME="wxdataobjectgetdatahere"></A>
+<H3>wxDataObject::GetDataHere</H3>
+<P>
+<B>virtual bool</B> <B>GetDataHere</B>(<B>const <A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A>&</B></B><I> format</I>, <B>void </B><I>*buf</I> ) <B>const</B><P>
+The method will write the data of the format <I>format</I> in the buffer <I>
+buf</I> and return true on success, false on failure.<P>
+
+<HR>
+<A NAME="wxdataobjectgetdatasize"></A>
+<H3>wxDataObject::GetDataSize</H3>
+<P>
+<B>virtual size_t</B> <B>GetDataSize</B>(<B>const <A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A>&</B></B><I> format</I> ) <B>const</B><P>
+Returns the data size of the given format <I>format</I>.<P>
+
+<HR>
+<A NAME="wxdataobjectgetformatcount"></A>
+<H3>wxDataObject::GetFormatCount</H3>
+<P>
+<B>virtual size_t</B> <B>GetFormatCount</B>(<B>Direction</B><I> dir = Get</I>) <B>const</B><P>
+Returns the number of available formats for rendering or setting the data.<P>
+
+<HR>
+<A NAME="wxdataobjectgetpreferredformat"></A>
+<H3>wxDataObject::GetPreferredFormat</H3>
+<P>
+<B>virtual <A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A></B> </B> <B>GetPreferredFormat</B>(<B>Direction</B><I> dir = Get</I>) <B>const</B><P>
+Returns the preferred format for either rendering the data (if <I>dir</I> is <TT>Get</TT>,
+its default value) or for setting it. Usually this will be the
+native format of the wxDataObject.<P>
+
+<HR>
+<A NAME="wxdataobjectsetdata"></A>
+<H3>wxDataObject::SetData</H3>
+<P>
+<B>virtual bool</B> <B>SetData</B>( <B>const <A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A>&</B></B><I> format</I>, <B>size_t</B><I> len</I>, <B>const void </B><I>*buf</I> )<P>
+Set the data in the format <I>format</I> of the length <I>len</I> provided in the
+buffer <I>buf</I>.<P>
+Returns true on success, false on failure.<P>
+
+
+</FONT></BODY></HTML>

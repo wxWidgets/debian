@@ -1,0 +1,611 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdelegaterenderernative.html#wxdelegaterenderernative"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdialupevent.html#wxdialupevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDialog</H2>
+<P>
+A dialog box is a window with a title bar and sometimes a system menu, which
+can be moved around the screen. It can contain controls and other windows and
+is often used to allow the user to make some choice or to answer a question.<P>
+
+<B><FONT COLOR="#FF0000">Dialog Buttons</FONT></B><P>
+The dialog usually contains either a single button allowing to close the
+dialog or two buttons, one accepting the changes and the other one discarding
+them (such button, if present, is automatically activated if the user presses
+the <TT>"Esc"</TT> key). By default, buttons with the standard <TT>wxID_OK</TT> 
+and <TT>wxID_CANCEL</TT> identifiers behave as expected. Starting with
+wxWidgets 2.7 it is also possible to use a button with a different identifier
+instead, see <A HREF="wx_wxdialog.html#wxdialogsetaffirmativeid">SetAffirmativeId</A> and 
+<A HREF="wx_wxdialog.html#wxdialogsetescapeid">SetEscapeId</A>.<P>
+Also notice that the <A HREF="wx_wxdialog.html#wxdialogcreatebuttonsizer">CreateButtonSizer()</A> 
+should be used to create the buttons appropriate for the current platform and
+positioned correctly (including their order which is platform-dependent).<P>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindow">wxTopLevelWindow</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dialog.h&gt;<P>
+<B><FONT COLOR="#FF0000">Modal and modeless dialogs</FONT></B><P>
+There are two kinds of dialog -- <I>modal</I> and <I>modeless</I>. A modal dialog
+blocks program flow and user input on other windows until it is dismissed,
+whereas a modeless dialog behaves more like a frame in that program flow
+continues, and input in other windows is still possible. To show a modal dialog
+you should use the <A HREF="wx_wxdialog.html#wxdialogshowmodal">ShowModal</A> method while to show
+a dialog modelessly you simply use <A HREF="wx_wxdialog.html#wxdialogshow">Show</A>, just as with
+frames.<P>
+Note that the modal dialog is one of the very few examples of
+wxWindow-derived objects which may be created on the stack and not on the heap.
+In other words, although this code snippet:<P>
+<PRE>
+    void AskUser()
+    {
+        MyAskDialog *dlg = new MyAskDialog(...);
+        if ( dlg-&gt;ShowModal() == wxID_OK )
+            ...
+        //else: dialog was cancelled or some another button pressed
+
+        dlg-&gt;Destroy();
+    }
+</PRE>
+works, you can also achieve the same result by using a simpler code fragment
+below:<P>
+<PRE>
+    void AskUser()
+    {
+        MyAskDialog dlg(...);
+        if ( dlg.ShowModal() == wxID_OK )
+            ...
+
+        // no need to call Destroy() here
+    }
+</PRE>
+An application can define a <A HREF="wx_wxcloseevent.html#wxcloseevent">wxCloseEvent</A> handler for
+the dialog to respond to system close events.<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCAPTION</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Puts a caption on the dialog box.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxDEFAULT_DIALOG_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Equivalent to a combination of wxCAPTION, wxCLOSE_BOX and wxSYSTEM_MENU (the last one is not used under Unix)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxRESIZE_BORDER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Display a resizeable frame around the window.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSYSTEM_MENU</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Display a system menu.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCLOSE_BOX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a close box on the frame.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMAXIMIZE_BOX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a maximize box on the dialog.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMINIMIZE_BOX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a minimize box on the dialog.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTHICK_FRAME</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Display a thick frame around the window.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSTAY_ON_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The dialog stays on top of all other windows.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxNO_3D</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Under Windows, specifies that the child controls
+should not have 3D borders unless specified in the control.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxDIALOG_NO_PARENT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+By default, a dialog created
+with a <TT>NULL</TT> parent window will be given the
+<A HREF="wx_wxapp.html#wxappgettopwindow">application's top level window</A> as parent. Use this
+style to prevent this from happening and create an orphan dialog. This is not recommended for modal dialogs.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxDIALOG_EX_CONTEXTHELP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Under Windows, puts a query button on the
+caption. When pressed, Windows will go into a context-sensitive help mode and wxWidgets will send
+a wxEVT_HELP event if the user clicked on an application window. <I>Note</I> that this is an extended
+style and must be set by calling <A HREF="wx_wxwindow.html#wxwindowsetextrastyle">SetExtraStyle</A> before Create is called (two-step construction).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxDIALOG_EX_METAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+On Mac OS X, frames with this style will be shown with a metallic look. This is an <I>extra</I> style.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Under Unix or Linux, MWM (the Motif Window Manager) or other window managers
+recognizing the MHM hints should be running for any of these styles to have an
+effect.<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">Generic window styles</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialogoverview.html#wxdialogoverview">wxDialog overview</A>, <A HREF="wx_wxframe.html#wxframe">wxFrame</A>,
+<A HREF="wx_validatoroverview.html#validatoroverview">Validator overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxdialogctor">wxDialog::wxDialog</A><BR>
+<A HREF="#wxdialogdtor">wxDialog::~wxDialog</A><BR>
+<A HREF="#wxdialogcentre">wxDialog::Centre</A><BR>
+<A HREF="#wxdialogcreate">wxDialog::Create</A><BR>
+<A HREF="#wxdialogcreatebuttonsizer">wxDialog::CreateButtonSizer</A><BR>
+<A HREF="#wxdialogcreateseparatedbuttonsizer">wxDialog::CreateSeparatedButtonSizer</A><BR>
+<A HREF="#wxdialogcreatestddialogbuttonsizer">wxDialog::CreateStdDialogButtonSizer</A><BR>
+<A HREF="#wxdialogdook">wxDialog::DoOK</A><BR>
+<A HREF="#wxdialogendmodal">wxDialog::EndModal</A><BR>
+<A HREF="#wxdialoggetaffirmativeid">wxDialog::GetAffirmativeId</A><BR>
+<A HREF="#wxdialoggetescapeid">wxDialog::GetEscapeId</A><BR>
+<A HREF="#wxdialoggetreturncode">wxDialog::GetReturnCode</A><BR>
+<A HREF="#wxdialoggettoolbar">wxDialog::GetToolBar</A><BR>
+<A HREF="#wxdialogiconized">wxDialog::Iconize</A><BR>
+<A HREF="#wxdialogisiconized">wxDialog::IsIconized</A><BR>
+<A HREF="#wxdialogismodal">wxDialog::IsModal</A><BR>
+<A HREF="#wxdialogonsyscolourchanged">wxDialog::OnSysColourChanged</A><BR>
+<A HREF="#wxdialogsetaffirmativeid">wxDialog::SetAffirmativeId</A><BR>
+<A HREF="#wxdialogsetescapeid">wxDialog::SetEscapeId</A><BR>
+<A HREF="#wxdialogseticon">wxDialog::SetIcon</A><BR>
+<A HREF="#wxdialogseticons">wxDialog::SetIcons</A><BR>
+<A HREF="#wxdialogsetmodal">wxDialog::SetModal</A><BR>
+<A HREF="#wxdialogsetreturncode">wxDialog::SetReturnCode</A><BR>
+<A HREF="#wxdialogshow">wxDialog::Show</A><BR>
+<A HREF="#wxdialogshowmodal">wxDialog::ShowModal</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdialogctor"></A>
+<H3>wxDialog::wxDialog</H3>
+<P>
+<B></B> <B>wxDialog</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxDEFAULT_DIALOG_STYLE</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "dialogBox"</I>)<P>
+Constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Can be NULL, a frame or another dialog box.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+An identifier for the dialog. A value of -1 is taken to mean a default.</UL></UL>
+<P>
+<I>title</I><UL><UL>
+The title of the dialog.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+The dialog position. A value of (-1, -1) indicates a default position, chosen by
+either the windowing system or wxWidgets, depending on platform.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+The dialog size. A value of (-1, -1) indicates a default size, chosen by
+either the windowing system or wxWidgets, depending on platform.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style. See <A HREF="wx_wxdialog.html#wxdialog">wxDialog</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Used to associate a name with the window,
+allowing the application user to set Motif resource values for
+individual dialog boxes.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialogcreate">wxDialog::Create</A><P>
+
+
+<HR>
+<A NAME="wxdialogdtor"></A>
+<H3>wxDialog::~wxDialog</H3>
+<P>
+<B></B> <B>~wxDialog</B>()<P>
+Destructor. Deletes any child windows before deleting the physical window.<P>
+
+
+<HR>
+<A NAME="wxdialogcentre"></A>
+<H3>wxDialog::Centre</H3>
+<P>
+<B>void</B> <B>Centre</B>(<B>int</B><I> direction = wxBOTH</I>)<P>
+Centres the dialog box on the display.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>direction</I><UL><UL>
+May be <TT>wxHORIZONTAL</TT>, <TT>wxVERTICAL</TT> or <TT>wxBOTH</TT>.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxdialogcreate"></A>
+<H3>wxDialog::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxDEFAULT_DIALOG_STYLE</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "dialogBox"</I>)<P>
+Used for two-step dialog box construction. See <A HREF="wx_wxdialog.html#wxdialogctor">wxDialog::wxDialog</A>
+for details.<P>
+
+
+<HR>
+<A NAME="wxdialogcreatebuttonsizer"></A>
+<H3>wxDialog::CreateButtonSizer</H3>
+<P>
+<B><A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>*</B> </B> <B>CreateButtonSizer</B>(<B>long</B><I> flags</I>)<P>
+Creates a sizer with standard buttons. <I>flags</I> is a bit list
+of the following flags: wxOK, wxCANCEL, wxYES, wxNO, wxHELP, wxNO_DEFAULT.<P>
+The sizer lays out the buttons in a manner appropriate to the platform.<P>
+This function uses <A HREF="wx_wxdialog.html#wxdialogcreatestddialogbuttonsizer">CreateStdDialogButtonSizer</A> 
+internally for most platforms but doesn't create the sizer at all for the
+platforms with hardware buttons (such as smartphones) for which it sets up the
+hardware buttons appropriately and returns <TT>NULL</TT>, so don't forget to test that
+the return value is valid before using it.<P>
+
+
+<HR>
+<A NAME="wxdialogcreateseparatedbuttonsizer"></A>
+<H3>wxDialog::CreateSeparatedButtonSizer</H3>
+<P>
+<B><A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>*</B> </B> <B>CreateSeparatedButtonSizer</B>(<B>long</B><I> flags</I>)<P>
+Creates a sizer with standard buttons using 
+<A HREF="wx_wxdialog.html#wxdialogcreatebuttonsizer">CreateButtonSizer</A> separated from the rest
+of the dialog contents by a horizontal <A HREF="wx_wxstaticline.html#wxstaticline">wxStaticLine</A>.<P>
+Please notice that just like CreateButtonSizer() this function may return <TT>NULL</TT> 
+if no buttons were created.<P>
+
+
+<HR>
+<A NAME="wxdialogcreatestddialogbuttonsizer"></A>
+<H3>wxDialog::CreateStdDialogButtonSizer</H3>
+<P>
+<B><A HREF="wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizer">wxStdDialogButtonSizer</A>*</B> </B> <B>CreateStdDialogButtonSizer</B>(<B>long</B><I> flags</I>)<P>
+Creates a <A HREF="wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizer">wxStdDialogButtonSizer</A> with standard buttons. <I>flags</I> is a bit list
+of the following flags: wxOK, wxCANCEL, wxYES, wxNO, wxHELP, wxNO_DEFAULT.<P>
+The sizer lays out the buttons in a manner appropriate to the platform.<P>
+
+
+<HR>
+<A NAME="wxdialogdook"></A>
+<H3>wxDialog::DoOK</H3>
+<P>
+<B>virtual bool</B> <B>DoOK</B>()<P>
+This function is called when the titlebar OK button is pressed (PocketPC only).
+A command event for the identifier returned by GetAffirmativeId is sent by
+default. You can override this function. If the function returns false, wxWidgets
+will call Close() for the dialog.<P>
+
+
+<HR>
+<A NAME="wxdialogendmodal"></A>
+<H3>wxDialog::EndModal</H3>
+<P>
+<B>void</B> <B>EndModal</B>(<B>int </B><I>retCode</I>)<P>
+Ends a modal dialog, passing a value to be returned from the <A HREF="wx_wxdialog.html#wxdialogshowmodal">wxDialog::ShowModal</A>
+invocation.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>retCode</I><UL><UL>
+The value that should be returned by <B>ShowModal</B>.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialogshowmodal">wxDialog::ShowModal</A>,
+<A HREF="wx_wxdialog.html#wxdialoggetreturncode">wxDialog::GetReturnCode</A>,
+<A HREF="wx_wxdialog.html#wxdialogsetreturncode">wxDialog::SetReturnCode</A><P>
+
+
+<HR>
+<A NAME="wxdialoggetaffirmativeid"></A>
+<H3>wxDialog::GetAffirmativeId</H3>
+<P>
+<B>int</B> <B>GetAffirmativeId</B>() <B>const</B><P>
+Gets the identifier of the button which works like standard OK button in this
+dialog.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialogsetaffirmativeid">wxDialog::SetAffirmativeId</A><P>
+
+
+<HR>
+<A NAME="wxdialoggetescapeid"></A>
+<H3>wxDialog::GetEscapeId</H3>
+<P>
+<B>int</B> <B>GetEscapeId</B>() <B>const</B><P>
+Gets the identifier of the button to map presses of <TT>ESC</TT>
+button to.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialogsetescapeid">wxDialog::SetEscapeId</A><P>
+
+
+<HR>
+<A NAME="wxdialoggetreturncode"></A>
+<H3>wxDialog::GetReturnCode</H3>
+<P>
+<B>int</B> <B>GetReturnCode</B>()<P>
+Gets the return code for this window.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+A return code is normally associated with a modal dialog, where <A HREF="wx_wxdialog.html#wxdialogshowmodal">wxDialog::ShowModal</A> returns
+a code to the application.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialogsetreturncode">wxDialog::SetReturnCode</A>, <A HREF="wx_wxdialog.html#wxdialogshowmodal">wxDialog::ShowModal</A>,
+<A HREF="wx_wxdialog.html#wxdialogendmodal">wxDialog::EndModal</A><P>
+
+
+<HR>
+<A NAME="wxdialoggettoolbar"></A>
+<H3>wxDialog::GetToolBar</H3>
+<P>
+<B><A HREF="wx_wxtoolbar.html#wxtoolbar">wxToolBar</A>*</B> </B> <B>GetToolBar</B>() <B>const</B><P>
+On PocketPC, a dialog is automatically provided with an empty toolbar. GetToolBar
+allows you to access the toolbar and add tools to it. Removing tools and adding
+arbitrary controls are not currently supported.<P>
+This function is not available on any other platform.<P>
+
+
+<HR>
+<A NAME="wxdialogiconized"></A>
+<H3>wxDialog::Iconize</H3>
+<P>
+<B>void</B> <B>Iconize</B>(<B>const bool</B><I> iconize</I>)<P>
+Iconizes or restores the dialog. Windows only.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>iconize</I><UL><UL>
+If true, iconizes the dialog box; if false, shows and restores it.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Note that in Windows, iconization has no effect since dialog boxes cannot be
+iconized. However, applications may need to explicitly restore dialog
+boxes under Motif which have user-iconizable frames, and under Windows
+calling <TT>Iconize(false)</TT> will bring the window to the front, as does
+<TT>Show(true)</TT>.<P>
+
+
+<HR>
+<A NAME="wxdialogisiconized"></A>
+<H3>wxDialog::IsIconized</H3>
+<P>
+<B>bool</B> <B>IsIconized</B>() <B>const</B><P>
+Returns true if the dialog box is iconized. Windows only.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Always returns false under Windows since dialogs cannot be iconized.<P>
+
+
+<HR>
+<A NAME="wxdialogismodal"></A>
+<H3>wxDialog::IsModal</H3>
+<P>
+<B>bool</B> <B>IsModal</B>() <B>const</B><P>
+Returns true if the dialog box is modal, false otherwise.<P>
+<P>
+
+<HR>
+<A NAME="wxdialogonsyscolourchanged"></A>
+<H3>wxDialog::OnSysColourChanged</H3>
+<P>
+<B>void</B> <B>OnSysColourChanged</B>(<B><A HREF="wx_wxsyscolourchangedevent.html#wxsyscolourchangedevent">wxSysColourChangedEvent</A>& </B></B><I>event</I>)<P>
+The default handler for wxEVT_SYS_COLOUR_CHANGED.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>event</I><UL><UL>
+The colour change event.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Changes the dialog's colour to conform to the current settings (Windows only).
+Add an event table entry for your dialog class if you wish the behaviour
+to be different (such as keeping a user-defined
+background colour). If you do override this function, call wxEvent::Skip to
+propagate the notification to child windows and controls.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsyscolourchangedevent.html#wxsyscolourchangedevent">wxSysColourChangedEvent</A><P>
+
+
+<HR>
+<A NAME="wxdialogsetaffirmativeid"></A>
+<H3>wxDialog::SetAffirmativeId</H3>
+<P>
+<B>void</B> <B>SetAffirmativeId</B>(<B>int </B><I>id</I>)<P>
+Sets the identifier to be used as OK button. When the button with this
+identifier is pressed, the dialog calls <A HREF="wx_wxwindow.html#wxwindowvalidate">Validate</A> 
+and <A HREF="wx_wxwindow.html#wxwindowtransferdatafromwindow">wxWindow::TransferDataFromWindow</A> 
+and, if they both return <TT>true</TT>, closes the dialog with <TT>wxID_OK</TT> return
+code.<P>
+Also, when the user presses a hardware OK button on the devices having one or
+the special OK button in the PocketPC title bar, an event with this id is
+generated.<P>
+By default, the affirmative id is wxID_OK.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialoggetaffirmativeid">wxDialog::GetAffirmativeId</A>, <A HREF="wx_wxdialog.html#wxdialogsetescapeid">wxDialog::SetEscapeId</A><P>
+
+
+<HR>
+<A NAME="wxdialogsetescapeid"></A>
+<H3>wxDialog::SetEscapeId</H3>
+<P>
+<B>void</B> <B>SetEscapeId</B>(<B>int </B><I>id</I>)<P>
+Sets the identifier of the button which should work like the standard 
+<TT>CANCEL</TT> button in this dialog. When the button with this id is
+clicked, the dialog is closed. Also, when the user presses <TT>ESC</TT> 
+key in the dialog or closes the dialog using the close button in the title bar,
+this is mapped to the click of the button with the specified id.<P>
+By default, the escape id is the special value <TT>wxID_ANY</TT> meaning that 
+<TT>wxID_CANCEL</TT> button is used if it's present in the dialog and
+otherwise the button with <A HREF="wx_wxdialog.html#wxdialoggetaffirmativeid">GetAffirmativeId()</A> 
+is used. Another special value for <I>id</I> is <TT>wxID_NONE</TT> meaning that
+<TT>ESC</TT> presses should be ignored. If any other value is given, it
+is interpreted as the id of the button to map the escape key to.<P>
+
+
+<HR>
+<A NAME="wxdialogseticon"></A>
+<H3>wxDialog::SetIcon</H3>
+<P>
+<B>void</B> <B>SetIcon</B>(<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>& </B></B><I>icon</I>)<P>
+Sets the icon for this dialog.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>icon</I><UL><UL>
+The icon to associate with this dialog.</UL></UL>
+<P>
+See also <A HREF="wx_wxicon.html#wxicon">wxIcon</A>.<P>
+
+
+<HR>
+<A NAME="wxdialogseticons"></A>
+<H3>wxDialog::SetIcons</H3>
+<P>
+<B>void</B> <B>SetIcons</B>(<B>const <A HREF="wx_wxiconbundle.html#wxiconbundle">wxIconBundle</A>& </B></B><I>icons</I>)<P>
+Sets the icons for this dialog.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>icons</I><UL><UL>
+The icons to associate with this dialog.</UL></UL>
+<P>
+See also <A HREF="wx_wxiconbundle.html#wxiconbundle">wxIconBundle</A>.<P>
+
+
+<HR>
+<A NAME="wxdialogsetmodal"></A>
+<H3>wxDialog::SetModal</H3>
+<P>
+<B>void</B> <B>SetModal</B>(<B>const bool</B><I> flag</I>)<P>
+<B>NB:</B> This function is deprecated and doesn't work for all ports, just use
+<A HREF="wx_wxdialog.html#wxdialogshowmodal">ShowModal</A> to show a modal dialog instead.<P>
+Allows the programmer to specify whether the dialog box is modal (wxDialog::Show blocks control
+until the dialog is hidden) or modeless (control returns immediately).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>flag</I><UL><UL>
+If true, the dialog will be modal, otherwise it will be modeless.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxdialogsetreturncode"></A>
+<H3>wxDialog::SetReturnCode</H3>
+<P>
+<B>void</B> <B>SetReturnCode</B>(<B>int </B><I>retCode</I>)<P>
+Sets the return code for this window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>retCode</I><UL><UL>
+The integer return code, usually a control identifier.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+A return code is normally associated with a modal dialog, where <A HREF="wx_wxdialog.html#wxdialogshowmodal">wxDialog::ShowModal</A> returns
+a code to the application. The function <A HREF="wx_wxdialog.html#wxdialogendmodal">wxDialog::EndModal</A> calls <B>SetReturnCode</B>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialoggetreturncode">wxDialog::GetReturnCode</A>, <A HREF="wx_wxdialog.html#wxdialogshowmodal">wxDialog::ShowModal</A>,
+<A HREF="wx_wxdialog.html#wxdialogendmodal">wxDialog::EndModal</A><P>
+
+
+<HR>
+<A NAME="wxdialogshow"></A>
+<H3>wxDialog::Show</H3>
+<P>
+<B>bool</B> <B>Show</B>(<B>const bool</B><I> show</I>)<P>
+Hides or shows the dialog.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>show</I><UL><UL>
+If true, the dialog box is shown and brought to the front;
+otherwise the box is hidden. If false and the dialog is
+modal, control is returned to the calling program.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The preferred way of dismissing a modal dialog is to use <A HREF="wx_wxdialog.html#wxdialogendmodal">wxDialog::EndModal</A>.<P>
+
+
+<HR>
+<A NAME="wxdialogshowmodal"></A>
+<H3>wxDialog::ShowModal</H3>
+<P>
+<B>int</B> <B>ShowModal</B>()<P>
+Shows a modal dialog. Program flow does not return until the dialog has been dismissed with
+<A HREF="wx_wxdialog.html#wxdialogendmodal">wxDialog::EndModal</A>.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The return value is the value set with <A HREF="wx_wxdialog.html#wxdialogsetreturncode">wxDialog::SetReturnCode</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialogendmodal">wxDialog::EndModal</A>,
+<A HREF="wx_wxdialog.html#wxdialoggetreturncode">wxDialog:GetReturnCode</A>,
+<A HREF="wx_wxdialog.html#wxdialogsetreturncode">wxDialog::SetReturnCode</A><P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,46 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMBConvUTF32</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmbconvutf32"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmbconvutf16.html#wxmbconvutf16"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmdichildframe.html#wxmdichildframe"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMBConvUTF32</H2>
+<P>
+This class is used to convert between multibyte encodings and UTF-32 Unicode
+encoding (also known as UCS-4). Unlike <A HREF="wx_wxmbconvutf8.html#wxmbconvutf8">UTF-8</A> encoding,
+UTF-32 uses (double) words and not bytes and hence depends on the byte ordering:
+big or little endian. Hence this class is provided in two versions:
+wxMBConvUTF32LE and wxMBConvUTF32BE and wxMBConvUTF32 itself is just a typedef
+for one of them (native for the given platform, e.g. LE under Windows and BE
+under Mac).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/strconv.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmbconvutf8.html#wxmbconvutf8">wxMBConvUTF8</A>, 
+<A HREF="wx_wxmbconvutf16.html#wxmbconvutf16">wxMBConvUTF16</A>, 
+<A HREF="wx_mbconvclasses.html#mbconvclasses">wxMBConv classes overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmbconvutf32mb2wc">wxMBConvUTF32::MB2WC</A><BR>
+<A HREF="#wxmbconvutf32wc2mb">wxMBConvUTF32::WC2MB</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmbconvutf32mb2wc"></A>
+<H3>wxMBConvUTF32::MB2WC</H3>
+<P>
+<B>size_t</B> <B>MB2WC</B>(<B>wchar_t* </B><I>buf</I>, <B>const char* </B><I>psz</I>, <B>size_t </B><I>n</I>) <B>const</B><P>
+Converts from UTF-32 encoding to Unicode. Returns the size of the destination
+buffer.<P>
+
+<HR>
+<A NAME="wxmbconvutf32wc2mb"></A>
+<H3>wxMBConvUTF32::WC2MB</H3>
+<P>
+<B>size_t</B> <B>WC2MB</B>(<B>char* </B><I>buf</I>, <B>const wchar_t* </B><I>psz</I>, <B>size_t </B><I>n</I>) <B>const</B><P>
+Converts from Unicode to UTF-32 encoding. Returns the size of the destination
+buffer.<P>
+
+</FONT></BODY></HTML>

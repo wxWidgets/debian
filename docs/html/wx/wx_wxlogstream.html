@@ -1,0 +1,33 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxLogStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlogstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlogstderr.html#wxlogstderr"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlogtextctrl.html#wxlogtextctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxLogStream</H2>
+<P>
+This class can be used to redirect the log messages to a C++ stream.<P>
+Please note that this class is only available if wxWidgets was compiled with
+the standard iostream library support (<TT>wxUSE_STD_IOSTREAM</TT> must be on).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxlog.html#wxlog">wxLog</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/log.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlogstderr.html#wxlogstderr">wxLogStderr</A>,<BR>
+
+<A HREF="wx_wxstreamtotextredirector.html#wxstreamtotextredirector">wxStreamToTextRedirector</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxlogstreamctor">wxLogStream::wxLogStream</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlogstreamctor"></A>
+<H3>wxLogStream::wxLogStream</H3>
+<P>
+<B></B> <B>wxLogStream</B>(<B>std::ostream </B><I>*ostr = NULL</I>)<P>
+Constructs a log target which sends all the log messages to the given
+output stream. If it is <TT>NULL</TT>, the messages are sent to <TT>cerr</TT>.<P>
+
+</FONT></BODY></HTML>

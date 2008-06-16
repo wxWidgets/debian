@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.09.01
-// RCS-ID:      $Id: toplevel.h,v 1.32 2005/03/19 12:06:49 JS Exp $
+// RCS-ID:      $Id: toplevel.h 42541 2006-10-27 20:05:47Z RR $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MSW_TOPLEVEL_H_
 #define _WX_MSW_TOPLEVEL_H_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "toplevel.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // wxTopLevelWindowMSW
@@ -50,6 +46,8 @@ public:
     virtual ~wxTopLevelWindowMSW();
 
     // implement base class pure virtuals
+    virtual void SetTitle( const wxString& title);
+    virtual wxString GetTitle() const;
     virtual void Maximize(bool maximize = true);
     virtual bool IsMaximized() const;
     virtual void Iconize(bool iconize = true);
@@ -57,6 +55,8 @@ public:
     virtual void SetIcon(const wxIcon& icon);
     virtual void SetIcons(const wxIconBundle& icons );
     virtual void Restore();
+    
+    virtual void SetLayoutDirection(wxLayoutDirection dir);
 
 #ifndef __WXWINCE__
     virtual bool SetShape(const wxRegion& region);
@@ -70,8 +70,13 @@ public:
 
     // wxMSW only: EnableCloseButton(false) may be used to remove the "Close"
     // button from the title bar
-    bool EnableCloseButton(bool enable = true);
+    virtual bool EnableCloseButton(bool enable = true);
 
+    // Set window transparency if the platform supports it
+    virtual bool SetTransparent(wxByte alpha);
+    virtual bool CanSetTransparent();
+
+    
     // implementation from now on
     // --------------------------
 
@@ -86,7 +91,22 @@ public:
     virtual void SetLeftMenu(int id = wxID_ANY, const wxString& label = wxEmptyString, wxMenu *subMenu = NULL);
     virtual void SetRightMenu(int id = wxID_ANY, const wxString& label = wxEmptyString, wxMenu *subMenu = NULL);
     bool HandleCommand(WXWORD id, WXWORD cmd, WXHWND control);
+    virtual bool MSWShouldPreProcessMessage(WXMSG* pMsg);
 #endif // __SMARTPHONE__ && __WXWINCE__
+
+#if defined(__SMARTPHONE__) || defined(__POCKETPC__)
+    // Soft Input Panel (SIP) change notification
+    virtual bool HandleSettingChange(WXWPARAM wParam, WXLPARAM lParam);
+#endif
+
+    // translate wxWidgets flags to Windows ones
+    virtual WXDWORD MSWGetStyle(long flags, WXDWORD *exstyle) const;
+
+    // choose the right parent to use with CreateWindow()
+    virtual WXHWND MSWGetParent() const;
+
+    // window proc for the frames
+    WXLRESULT MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
 
 protected:
     // common part of all ctors
@@ -106,12 +126,6 @@ protected:
 
     // common part of Iconize(), Maximize() and Restore()
     void DoShowWindow(int nShowCmd);
-
-    // translate wxWidgets flags to Windows ones
-    virtual WXDWORD MSWGetStyle(long flags, WXDWORD *exstyle) const;
-
-    // choose the right parent to use with CreateWindow()
-    virtual WXHWND MSWGetParent() const;
 
     // is the window currently iconized?
     bool m_iconized;
@@ -165,9 +179,14 @@ protected:
     void ReloadAllButtons();
 #endif // __SMARTPHONE__ && __WXWINCE__
 
+private:
+
+#if defined(__SMARTPHONE__) || defined(__POCKETPC__)
+    void* m_activateInfo;
+#endif
+
     DECLARE_EVENT_TABLE()
     DECLARE_NO_COPY_CLASS(wxTopLevelWindowMSW)
 };
 
 #endif // _WX_MSW_TOPLEVEL_H_
-

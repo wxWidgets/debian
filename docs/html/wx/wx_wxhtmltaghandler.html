@@ -1,0 +1,94 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlTagHandler</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmltaghandler"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmltag.html#wxhtmltag"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmltagsmodule.html#wxhtmltagsmodule"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlTagHandler</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/htmlpars.h&gt;<P>
+<B><FONT COLOR="#FF0000">See Also</FONT></B><P>
+<A HREF="wx_wxhtml.html#handlers">Overview</A>,
+<A HREF="wx_wxhtmltag.html#wxhtmltag">wxHtmlTag</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmltaghandlermparser">wxHtmlTagHandler::m_Parser</A><BR>
+<A HREF="#wxhtmltaghandlerwxhtmltaghandler">wxHtmlTagHandler::wxHtmlTagHandler</A><BR>
+<A HREF="#wxhtmltaghandlergetsupportedtags">wxHtmlTagHandler::GetSupportedTags</A><BR>
+<A HREF="#wxhtmltaghandlerhandletag">wxHtmlTagHandler::HandleTag</A><BR>
+<A HREF="#wxhtmltaghandlerparseinner">wxHtmlTagHandler::ParseInner</A><BR>
+<A HREF="#wxhtmltaghandlersetparser">wxHtmlTagHandler::SetParser</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmltaghandlermparser"></A>
+<H3>wxHtmlTagHandler::m_Parser</H3>
+<P>
+<B>wxHtmlParser* m_Parser</B><P>
+This attribute is used to access parent parser. It is protected so that
+it can't be accessed by user but can be accessed from derived classes.<P>
+
+<HR>
+<A NAME="wxhtmltaghandlerwxhtmltaghandler"></A>
+<H3>wxHtmlTagHandler::wxHtmlTagHandler</H3>
+<P>
+<B></B> <B>wxHtmlTagHandler</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxhtmltaghandlergetsupportedtags"></A>
+<H3>wxHtmlTagHandler::GetSupportedTags</H3>
+<P>
+<B>virtual <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetSupportedTags</B>()<P>
+Returns list of supported tags. The list is in uppercase and tags
+are delimited by ','. Example : <TT>"I,B,FONT,P" </TT><P>
+
+<HR>
+<A NAME="wxhtmltaghandlerhandletag"></A>
+<H3>wxHtmlTagHandler::HandleTag</H3>
+<P>
+<B>virtual bool</B> <B>HandleTag</B>(<B>const <A HREF="wx_wxhtmltag.html#wxhtmltag">wxHtmlTag</A>& </B></B><I>tag</I>)<P>
+This is the core method of each handler. It is called each time
+one of supported tags is detected. <I>tag</I> contains all necessary
+info (see <A HREF="wx_wxhtmltag.html#wxhtmltag">wxHtmlTag</A> for details).<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if <A HREF="wx_wxhtmltaghandler.html#wxhtmltaghandlerparseinner">ParseInner</A> was called,
+false otherwise.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+bool MyHandler::HandleTag(const wxHtmlTag& tag)
+{
+    ...
+    // change state of parser (e.g. set bold face)
+    ParseInner(tag);
+    ...
+    // restore original state of parser
+}
+</PRE>
+You shouldn't call ParseInner if the tag is not paired with an ending one.<P>
+
+<HR>
+<A NAME="wxhtmltaghandlerparseinner"></A>
+<H3>wxHtmlTagHandler::ParseInner</H3>
+<P>
+<B>void</B> <B>ParseInner</B>(<B>const <A HREF="wx_wxhtmltag.html#wxhtmltag">wxHtmlTag</A>& </B></B><I>tag</I>)<P>
+This method calls parser's <A HREF="wx_wxhtmlparser.html#wxhtmlparserdoparsing">DoParsing</A> method
+for the string between this tag and the paired ending tag:<P>
+<PRE>
+...&lt;A HREF="x.htm"&gt;Hello, world!&lt;/A&gt;...
+</PRE>
+In this example, a call to ParseInner (with <I>tag</I> pointing to A tag)
+will parse 'Hello, world!'.<P>
+
+<HR>
+<A NAME="wxhtmltaghandlersetparser"></A>
+<H3>wxHtmlTagHandler::SetParser</H3>
+<P>
+<B>virtual void</B> <B>SetParser</B>(<B><A HREF="wx_wxhtmlparser.html#wxhtmlparser">wxHtmlParser</A> </B></B><I>*parser</I>)<P>
+Assigns <I>parser</I> to this handler. Each <B>instance</B> of handler 
+is guaranteed to be called only from the parser.<P>
+
+</FONT></BODY></HTML>

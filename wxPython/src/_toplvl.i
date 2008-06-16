@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     27-Aug-1998
-// RCS-ID:      $Id: _toplvl.i,v 1.26.2.1 2006/02/10 19:07:36 RD Exp $
+// RCS-ID:      $Id: _toplvl.i 48168 2007-08-18 21:58:42Z KO $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -53,13 +53,18 @@ enum
 
     wxFRAME_EX_METAL,
     wxDIALOG_EX_METAL,
+    wxWS_EX_CONTEXTHELP,
     
     // Obsolete
     wxDIALOG_MODAL,
     wxDIALOG_MODELESS,
     wxUSER_COLOURS,
     wxNO_3D,
+
+    wxFRAME_EX_CONTEXTHELP,
+    wxDIALOG_EX_CONTEXTHELP,
 };    
+
 
 enum
 {
@@ -100,6 +105,10 @@ public:
     // return True if the frame is maximized
     virtual bool IsMaximized() const;
 
+    // return true if the frame is always maximized
+    // due to native guidelines or current policy
+    virtual bool IsAlwaysMaximized() const;
+    
     // return True if the frame is iconized
     virtual bool IsIconized() const;
 
@@ -110,7 +119,7 @@ public:
     virtual void SetIcon(const wxIcon& icon);
 
     // set the frame icons
-    virtual void SetIcons(const wxIconBundle& icons );
+    virtual void SetIcons(const wxIconBundle& icons);
 
     // maximize the window to cover entire screen
     virtual bool ShowFullScreen(bool show, long style = wxFULLSCREEN_ALL);
@@ -121,34 +130,79 @@ public:
     virtual void SetTitle(const wxString& title);
     virtual wxString GetTitle() const;
 
+    // enable/disable close button [x]
+    virtual bool EnableCloseButton(bool enable );
+
     // Set the shape of the window to the given region.
-    // Returns True if the platform supports this feature (and the operation
-    // is successful.)
+    // Returns True if the platform supports this feature
+    // (and the operation is successful.)
     virtual bool SetShape(const wxRegion& region);
 
-
-    // Attracts the users attention to this window if the application is
-    // inactive (should be called when a background event occurs)
+    // Attracts the users attention to this window if the application is inactive
+    // (should be called when a background event occurs)
     virtual void RequestUserAttention(int flags = wxUSER_ATTENTION_INFO);
 
     // Is this the active frame (highlighted in the taskbar)?
     virtual bool IsActive();
-    
+
 #ifdef __WXMAC__
-    void MacSetMetalAppearance( bool on ) ;
-    bool MacGetMetalAppearance() const ;
-#else
     %extend {
+        void MacSetMetalAppearance( bool on ) {
+            int style = self->GetExtraStyle();
+            if ( on )
+                style |= wxFRAME_EX_METAL;
+            else
+                style &= ~wxFRAME_EX_METAL;
+            self->SetExtraStyle(style);
+        }
+    }
+    bool MacGetMetalAppearance() const;
+#else
+    %extend
+    {
         // TODO: Should they raise not implemented or just NOP???
         void MacSetMetalAppearance( bool on ) { /*wxPyRaiseNotImplemented();*/ }
         bool MacGetMetalAppearance() const    { /*wxPyRaiseNotImplemented();*/ return false; }
     }
 #endif
 
+#ifdef __WXMAC__
+    bool MacGetUnifiedAppearance() const;
+#else
+    %extend
+    {
+        bool MacGetUnifiedAppearance() const    { return false; }
+    }
+#endif
+
+
     DocDeclStr(
         void , CenterOnScreen(int dir = wxBOTH),
         "Center the window on screen", "");
     %pythoncode { CentreOnScreen = CenterOnScreen }
+
+    
+    DocDeclStr(
+        virtual wxWindow *, GetDefaultItem() const,
+        "Get the default child of this parent, i.e. the one which is activated
+by pressing <Enter> such as the OK button on a wx.Dialog.", "");
+    
+    DocDeclStr(
+        virtual wxWindow *, SetDefaultItem(wxWindow * child),
+        "Set this child as default, return the old default.", "");
+    
+    DocDeclStr(
+        virtual void , SetTmpDefaultItem(wxWindow * win),
+        "Set this child as temporary default", "");
+
+    DocDeclStr(
+        virtual wxWindow *, GetTmpDefaultItem() const,
+        "Return the temporary default item, which can be None.", "");
+       
+    %property(DefaultItem, GetDefaultItem, SetDefaultItem, doc="See `GetDefaultItem` and `SetDefaultItem`");
+    %property(Icon, GetIcon, SetIcon, doc="See `GetIcon` and `SetIcon`");
+    %property(Title, GetTitle, SetTitle, doc="See `GetTitle` and `SetTitle`");
+    %property(TmpDefaultItem, GetTmpDefaultItem, SetTmpDefaultItem, doc="See `GetTmpDefaultItem` and `SetTmpDefaultItem`");
 };
 
 
@@ -164,13 +218,15 @@ public:
 
 MustHaveApp(wxFrame);
 
-class wxFrame : public wxTopLevelWindow {
+class wxFrame : public wxTopLevelWindow
+{
 public:
     %pythonAppend wxFrame         "self._setOORInfo(self)"
     %pythonAppend wxFrame()       ""
     %typemap(out) wxFrame*;    // turn off this typemap
 
-    wxFrame(wxWindow* parent, const wxWindowID id=-1,
+    wxFrame(wxWindow* parent,
+            const wxWindowID id = -1,
             const wxString& title = wxPyEmptyString,
             const wxPoint& pos = wxDefaultPosition,
             const wxSize& size = wxDefaultSize,
@@ -181,14 +237,13 @@ public:
     // Turn it back on again
     %typemap(out) wxFrame* { $result = wxPyMake_wxObject($1, $owner); }
 
-    
-    bool Create(wxWindow* parent, const wxWindowID id=-1,
-                const wxString& title = wxPyEmptyString,
-                const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxDefaultSize,
-                long style = wxDEFAULT_FRAME_STYLE,
-                const wxString& name = wxPyFrameNameStr);
-
+    bool Create(wxWindow* parent,
+            const wxWindowID id = -1,
+            const wxString& title = wxPyEmptyString,
+            const wxPoint& pos = wxDefaultPosition,
+            const wxSize& size = wxDefaultSize,
+            long style = wxDEFAULT_FRAME_STYLE,
+            const wxString& name = wxPyFrameNameStr);
 
     // frame state
     // -----------
@@ -197,10 +252,9 @@ public:
     // if the frame has a toolbar) in client coordinates
     virtual wxPoint GetClientAreaOrigin() const;
 
-    // sends a size event to the window using its current size -- this has an
-    // effect of refreshing the window layout
+    // sends a size event to the window using its current size:
+    //  this has a side effect of refreshing the window layout
     virtual void SendSizeEvent();
-
 
     // menu bar functions
     // ------------------
@@ -208,11 +262,9 @@ public:
     virtual void SetMenuBar(wxMenuBar *menubar);
     virtual wxMenuBar *GetMenuBar() const;
 
-
     // process menu command: returns True if processed
     bool ProcessCommand(int winid);
     %pythoncode { Command = ProcessCommand }
-
 
     // status bar functions
     // --------------------
@@ -222,6 +274,7 @@ public:
                                          long style = wxDEFAULT_STATUSBAR_STYLE,
                                          wxWindowID winid = 0,
                                          const wxString& name = wxPyStatusLineNameStr);
+
 // TODO: with directors?
 //     // return a new status bar
 //     virtual wxStatusBar *OnCreateStatusBar(int number,
@@ -237,14 +290,13 @@ public:
 
     // forward these to status bar
     virtual void SetStatusText(const wxString &text, int number = 0);
-    virtual void SetStatusWidths(int widths, const int* widths_field); //uses typemap above
+    virtual void SetStatusWidths(int widths, const int* widths_field); // uses typemap above
     void PushStatusText(const wxString &text, int number = 0);
     void PopStatusText(int number = 0);
 
     // set the status bar pane the help will be shown in
     void SetStatusBarPane(int n);
     int GetStatusBarPane() const;
-
 
     // toolbar functions
     // -----------------
@@ -253,6 +305,7 @@ public:
     virtual wxToolBar* CreateToolBar(long style = -1,
                                      wxWindowID winid = -1,
                                      const wxString& name = wxPyToolBarNameStr);
+
 // TODO: with directors?
 //     // return a new toolbar
 //     virtual wxToolBar *OnCreateToolBar(long style,
@@ -263,11 +316,9 @@ public:
     virtual wxToolBar *GetToolBar() const;
     virtual void SetToolBar(wxToolBar *toolbar);
 
-
     // show help text (typically in the statusbar); show is False
     // if you are hiding the help, True otherwise
     virtual void DoGiveHelp(const wxString& text, bool show);
-
 
     // send wxUpdateUIEvents for all menu items in the menubar,
     // or just for menu if non-NULL
@@ -275,6 +326,11 @@ public:
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    %property(MenuBar, GetMenuBar, SetMenuBar, doc="See `GetMenuBar` and `SetMenuBar`");
+    %property(StatusBar, GetStatusBar, SetStatusBar, doc="See `GetStatusBar` and `SetStatusBar`");
+    %property(StatusBarPane, GetStatusBarPane, SetStatusBarPane, doc="See `GetStatusBarPane` and `SetStatusBarPane`");
+    %property(ToolBar, GetToolBar, SetToolBar, doc="See `GetToolBar` and `SetToolBar`");
 };
 
 //---------------------------------------------------------------------------
@@ -282,14 +338,21 @@ public:
 
 MustHaveApp(wxDialog);
 
-class wxDialog : public wxTopLevelWindow {
+class wxDialog : public wxTopLevelWindow
+{
 public:
+    enum
+    {
+        // all flags allowed in wxDialogBase::CreateButtonSizer()
+        ButtonSizerFlags = wxOK | wxCANCEL | wxYES | wxNO | wxHELP | wxNO_DEFAULT
+    };
+
     %pythonAppend wxDialog   "self._setOORInfo(self)"
     %pythonAppend wxDialog() ""
     %typemap(out) wxDialog*;    // turn off this typemap
 
     wxDialog(wxWindow* parent,
-             const wxWindowID id=-1,
+             const wxWindowID id = -1,
              const wxString& title = wxPyEmptyString,
              const wxPoint& pos = wxDefaultPosition,
              const wxSize& size = wxDefaultSize,
@@ -301,28 +364,55 @@ public:
     %typemap(out) wxDialog* { $result = wxPyMake_wxObject($1, $owner); }
 
     bool Create(wxWindow* parent,
-                const wxWindowID id=-1,
+                const wxWindowID id = -1,
                 const wxString& title = wxPyEmptyString,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
                 long style = wxDEFAULT_DIALOG_STYLE,
                 const wxString& name = wxPyDialogNameStr);
 
-
-    // the modal dialogs have a return code - usually the id of the last
+    // the modal dialogs have a return code - usually the ID of the last
     // pressed button
     void SetReturnCode(int returnCode);
     int GetReturnCode() const;
+
+    // Set the identifier for the affirmative button: this button will close
+    // the dialog after validating data and calling TransferDataFromWindow()
+    void SetAffirmativeId(int affirmativeId);
+    int GetAffirmativeId() const;
+
+    // Set identifier for Esc key translation: the button with this id will
+    // close the dialog without doing anything else; special value wxID_NONE
+    // means to not handle Esc at all while wxID_ANY means to map Esc to
+    // wxID_CANCEL if present and GetAffirmativeId() otherwise
+    void SetEscapeId(int escapeId);
+    int GetEscapeId() const;
 
     // splits text up at newlines and places the
     // lines into a vertical wxBoxSizer
     wxSizer* CreateTextSizer( const wxString &message );
 
-    // places buttons into a horizontal wxBoxSizer
-    wxSizer* CreateButtonSizer( long flags );
+
+    // returns a horizontal wxBoxSizer containing the given buttons
+    //
+    // notice that the returned sizer can be NULL if no buttons are put in the
+    // sizer (this mostly happens under smart phones and other atypical
+    // platforms which have hardware buttons replacing OK/Cancel and such)
+   %Rename(_CreateButtonSizer,
+           wxSizer* , CreateButtonSizer( long flags ));
+    %pythoncode {
+        def CreateButtonSizer(self, flags, *ignored):
+            return self._CreateButtonSizer(flags)
+    }
+
+    // returns the sizer containing CreateButtonSizer() below a separating
+    // static line for the platforms which use static lines for items
+    // separation (i.e. not Mac)
+    wxSizer *CreateSeparatedButtonSizer(long flags);
+   
     wxStdDialogButtonSizer* CreateStdDialogButtonSizer( long flags );
 
-    //void SetModal(bool flag);
+    //void SetModal( bool flag );
 
     // is the dialog in modal state right now?
     virtual bool IsModal() const;
@@ -337,38 +427,47 @@ public:
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
 
-    %pythoncode {
-        def SendSizeEvent(self):
-            self.ProcessEvent(wx.SizeEvent((-1,-1)))
-    }
+    %property(AffirmativeId, GetAffirmativeId, SetAffirmativeId, doc="See `GetAffirmativeId` and `SetAffirmativeId`");
+    %property(EscapeId, GetEscapeId, SetEscapeId, doc="See `GetEscapeId` and `SetEscapeId`");
+    %property(ReturnCode, GetReturnCode, SetReturnCode, doc="See `GetReturnCode` and `SetReturnCode`");
 };
 
 //---------------------------------------------------------------------------
 %newgroup
+
+%{
+#define wxDEFAULT_MINIFRAME_STYLE wxCAPTION | wxRESIZE_BORDER | wxTINY_CAPTION_HORIZ
+%}
+
+enum  {
+    wxDEFAULT_MINIFRAME_STYLE
+};
 
 
 MustHaveApp(wxMiniFrame);
 
-class wxMiniFrame : public wxFrame {
+class wxMiniFrame : public wxFrame
+{
 public:
     %pythonAppend wxMiniFrame         "self._setOORInfo(self)"
     %pythonAppend wxMiniFrame()       ""
 
-    wxMiniFrame(wxWindow* parent, const wxWindowID id=-1,
-                const wxString& title = wxPyEmptyString,
-                const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxDefaultSize,
-                long style = wxDEFAULT_FRAME_STYLE,
-                const wxString& name = wxPyFrameNameStr);
+    wxMiniFrame(wxWindow* parent,
+            const wxWindowID id = -1,
+            const wxString& title = wxPyEmptyString,
+            const wxPoint& pos = wxDefaultPosition,
+            const wxSize& size = wxDefaultSize,
+            long style = wxDEFAULT_MINIFRAME_STYLE,
+            const wxString& name = wxPyFrameNameStr);
     %RenameCtor(PreMiniFrame, wxMiniFrame());
 
-    bool Create(wxWindow* parent, const wxWindowID id=-1,
-                const wxString& title = wxPyEmptyString,
-                const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxDefaultSize,
-                long style = wxDEFAULT_FRAME_STYLE,
-                const wxString& name = wxPyFrameNameStr);
-
+    bool Create(wxWindow* parent,
+            const wxWindowID id = -1,
+            const wxString& title = wxPyEmptyString,
+            const wxPoint& pos = wxDefaultPosition,
+            const wxSize& size = wxDefaultSize,
+            long style = wxDEFAULT_MINIFRAME_STYLE,
+            const wxString& name = wxPyFrameNameStr);
 };
 
 
@@ -376,7 +475,8 @@ public:
 %newgroup
 
 
-enum {
+enum
+{
     wxSPLASH_CENTRE_ON_PARENT,
     wxSPLASH_CENTRE_ON_SCREEN,
     wxSPLASH_NO_CENTRE,
@@ -393,31 +493,41 @@ public:
     %pythonAppend wxSplashScreenWindow         "self._setOORInfo(self)"
 
     wxSplashScreenWindow(const wxBitmap& bitmap,
-                         wxWindow* parent, wxWindowID id,
-                         const wxPoint& pos = wxDefaultPosition,
-                         const wxSize& size = wxDefaultSize,
-                         long style = wxNO_BORDER);
+             wxWindow* parent,
+             wxWindowID id,
+             const wxPoint& pos = wxDefaultPosition,
+             const wxSize& size = wxDefaultSize,
+             long style = wxNO_BORDER);
 
     void SetBitmap(const wxBitmap& bitmap);
     wxBitmap& GetBitmap();
+
+    %property(Bitmap, GetBitmap, SetBitmap, doc="See `GetBitmap` and `SetBitmap`");
 };
 
 
 MustHaveApp(wxSplashScreen);
 
-class wxSplashScreen : public wxFrame {
+class wxSplashScreen : public wxFrame
+{
 public:
     %pythonAppend wxSplashScreen         "self._setOORInfo(self)"
 
-    wxSplashScreen(const wxBitmap& bitmap, long splashStyle, int milliseconds,
-                   wxWindow* parent, wxWindowID id=-1,
-                   const wxPoint& pos = wxDefaultPosition,
-                   const wxSize& size = wxDefaultSize,
-                   long style = wxSIMPLE_BORDER|wxFRAME_NO_TASKBAR|wxSTAY_ON_TOP);
+    wxSplashScreen(const wxBitmap& bitmap,
+            long splashStyle, int milliseconds,
+            wxWindow* parent,
+            wxWindowID id = -1,
+            const wxPoint& pos = wxDefaultPosition,
+            const wxSize& size = wxDefaultSize,
+            long style = wxSIMPLE_BORDER | wxFRAME_NO_TASKBAR | wxSTAY_ON_TOP);
 
     long GetSplashStyle() const;
     wxSplashScreenWindow* GetSplashWindow() const;
     int GetTimeout() const;
+
+    %property(SplashStyle, GetSplashStyle, doc="See `GetSplashStyle`");
+    %property(SplashWindow, GetSplashWindow, doc="See `GetSplashWindow`");
+    %property(Timeout, GetTimeout, doc="See `GetTimeout`");
 };
 
 

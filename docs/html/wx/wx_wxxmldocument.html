@@ -1,0 +1,245 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxXmlDocument</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxxmldocument"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxwizardpagesimple.html#wxwizardpagesimple"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxxmlnode.html#wxxmlnode"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxXmlDocument</H2>
+<P>
+This class holds XML data/document as parsed by XML parser in the root node.<P>
+wxXmlDocument internally uses the expat library which comes with wxWidgets to parse the given stream.<P>
+A simple example of using XML classes is:<P>
+<PRE>
+wxXmlDocument doc;
+if (!doc.Load(wxT("myfile.xml")))
+    return false;
+
+// start processing the XML file
+if (doc.GetRoot()-&gt;GetName() != wxT("myroot-node"))
+    return false;
+
+wxXmlNode *child = doc.GetRoot()-&gt;GetChildren();
+while (child) {
+
+    if (child-&gt;GetName() == wxT("tag1")) {
+
+        // process text enclosed by &lt;tag1&gt;&lt;/tag1&gt;
+        wxString content = child-&gt;GetNodeContent();
+
+        ...
+
+
+        // process properties of &lt;tag1&gt;
+        wxString propvalue1 = 
+            child-&gt;GetPropVal(wxT("prop1"), 
+                              wxT("default-value"));
+        wxString propvalue2 = 
+            child-&gt;GetPropVal(wxT("prop2"), 
+                              wxT("default-value"));
+
+        ...
+
+    } else if (child-&gt;GetName() == wxT("tag2")) {
+
+        // process tag2 ...
+    }
+
+    child = child-&gt;GetNext();
+}
+</PRE>
+<B>Note:</B> if you want to preserve the original formatting of the loaded file including whitespaces
+and indentation, you need to turn off whitespace-only textnode removal and automatic indentation:<P>
+<PRE>
+wxXmlDocument doc;
+doc.Load(wxT("myfile.xml"), wxT("UTF-8"), wxXMLDOC_KEEP_WHITESPACE_NODES);
+
+// myfile2.xml will be indentic to myfile.xml saving it this way:
+doc.Save(wxT("myfile2.xml"), wxXML_NO_INDENTATION);
+</PRE>
+Using default parameters, you will get a reformatted document which in general is different from
+the original loaded content:<P>
+<PRE>
+wxXmlDocument doc;
+doc.Load(wxT("myfile.xml"));
+doc.Save(wxT("myfile2.xml"));  // myfile2.xml != myfile.xml
+</PRE>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/xml/xml.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>, <A HREF="wx_wxxmlproperty.html#wxxmlproperty">wxXmlProperty</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<P>
+<A HREF="#wxxmldocumentwxxmldocument">wxXmlDocument::wxXmlDocument</A><BR>
+<A HREF="#wxxmldocumentdtor">wxXmlDocument::~wxXmlDocument</A><BR>
+<A HREF="#wxxmldocumentdetachroot">wxXmlDocument::DetachRoot</A><BR>
+<A HREF="#wxxmldocumentgetencoding">wxXmlDocument::GetEncoding</A><BR>
+<A HREF="#wxxmldocumentgetfileencoding">wxXmlDocument::GetFileEncoding</A><BR>
+<A HREF="#wxxmldocumentgetroot">wxXmlDocument::GetRoot</A><BR>
+<A HREF="#wxxmldocumentgetversion">wxXmlDocument::GetVersion</A><BR>
+<A HREF="#wxxmldocumentisok">wxXmlDocument::IsOk</A><BR>
+<A HREF="#wxxmldocumentload">wxXmlDocument::Load</A><BR>
+<A HREF="#wxxmldocumentsave">wxXmlDocument::Save</A><BR>
+<A HREF="#wxxmldocumentsetencoding">wxXmlDocument::SetEncoding</A><BR>
+<A HREF="#wxxmldocumentsetfileencoding">wxXmlDocument::SetFileEncoding</A><BR>
+<A HREF="#wxxmldocumentsetroot">wxXmlDocument::SetRoot</A><BR>
+<A HREF="#wxxmldocumentsetversion">wxXmlDocument::SetVersion</A><BR>
+<A HREF="#wxxmldocumentoperatorassign">wxXmlDocument::operator=</A><BR>
+<P>
+
+<HR>
+<A NAME="wxxmldocumentwxxmldocument"></A>
+<H3>wxXmlDocument::wxXmlDocument</H3>
+<P>
+<B></B> <B>wxXmlDocument</B>()<P>
+
+<B></B> <B>wxXmlDocument</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>encoding = wxT("UTF-8")</I>, <B>int </B><I>flags = wxXMLDOC_NONE</I>)<P>
+Loads the given <I>filename</I> using the given encoding. See <A HREF="wx_wxxmldocument.html#wxxmldocumentload">Load</A>.<P>
+<B></B> <B>wxXmlDocument</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>encoding = wxT("UTF-8")</I>, <B>int </B><I>flags = wxXMLDOC_NONE</I>)<P>
+Loads the XML document from given stream using the given encoding. See <A HREF="wx_wxxmldocument.html#wxxmldocumentload">Load</A>.<P>
+<B></B> <B>wxXmlDocument</B>(<B>const <A HREF="wx_wxxmldocument.html#wxxmldocument">wxXmlDocument</A>& </B></B><I>doc</I>)<P>
+Copy constructor. Deep copies all the XML tree of the given document.<P>
+
+
+<HR>
+<A NAME="wxxmldocumentdtor"></A>
+<H3>wxXmlDocument::~wxXmlDocument</H3>
+<P>
+<B></B> <B>~wxXmlDocument</B>()<P>
+Virtual destructor. Frees the document root node.<P>
+<P>
+
+<HR>
+<A NAME="wxxmldocumentdetachroot"></A>
+<H3>wxXmlDocument::DetachRoot</H3>
+<P>
+<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>*</B> </B> <B>DetachRoot</B>()<P>
+Detaches the document root node and returns it. The document root node will be set to <TT>NULL</TT>
+and thus <A HREF="wx_wxxmldocument.html#wxxmldocumentisok">IsOk</A> will return <TT>false</TT> after calling this function.<P>
+Note that the caller is reponsible for deleting the returned node in order to avoid memory leaks.<P>
+<P>
+
+<HR>
+<A NAME="wxxmldocumentgetencoding"></A>
+<H3>wxXmlDocument::GetEncoding</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetEncoding</B>() <B>const</B><P>
+Returns encoding of in-memory representation of the document
+(same as passed to <A HREF="wx_wxxmldocument.html#wxxmldocumentload">Load</A> or constructor, defaults to UTF-8).<P>
+NB: this is meaningless in Unicode build where data are stored as <TT>wchar_t*</TT>.<P>
+<P>
+
+<HR>
+<A NAME="wxxmldocumentgetfileencoding"></A>
+<H3>wxXmlDocument::GetFileEncoding</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFileEncoding</B>() <B>const</B><P>
+Returns encoding of document (may be empty).<P>
+Note: this is the encoding original file was saved in, <B>not</B> the
+encoding of in-memory representation!<P>
+<P>
+
+<HR>
+<A NAME="wxxmldocumentgetroot"></A>
+<H3>wxXmlDocument::GetRoot</H3>
+<P>
+<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>*</B> </B> <B>GetRoot</B>() <B>const</B><P>
+Returns the root node of the document.<P>
+<P>
+
+<HR>
+<A NAME="wxxmldocumentgetversion"></A>
+<H3>wxXmlDocument::GetVersion</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetVersion</B>() <B>const</B><P>
+Returns the version of document.
+This is the value in the <TT>&lt;?xml version="1.0"?&gt;</TT> header of the XML document.
+If the version property was not explicitely given in the header, this function
+returns an empty string.<P>
+<P>
+
+<HR>
+<A NAME="wxxmldocumentisok"></A>
+<H3>wxXmlDocument::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns <TT>true</TT> if the document has been loaded successfully.<P>
+<P>
+
+<HR>
+<A NAME="wxxmldocumentload"></A>
+<H3>wxXmlDocument::Load</H3>
+<P>
+<B>bool</B> <B>Load</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>encoding = wxT("UTF-8")</I>, <B>int </B><I>flags = wxXMLDOC_NONE</I>)<P>
+Parses <I>filename</I> as an xml document and loads its data.<P>
+If <TT>flags</TT> does not contain <TT>wxXMLDOC_KEEP_WHITESPACE_NODES</TT>, then, while loading, all nodes of
+type <TT>wxXML_TEXT_NODE</TT> (see <A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>) are automatically skipped if they
+contain whitespaces only.
+The removal of these nodes makes the load process slightly faster and requires less memory however
+makes impossible to recreate exactly the loaded text with a <A HREF="wx_wxxmldocument.html#wxxmldocumentsave">Save</A> call later.
+Read the initial description of this class for more info.<P>
+Returns <TT>true</TT> on success, <TT>false</TT> otherwise.<P>
+<B>bool</B> <B>Load</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>encoding = wxT("UTF-8")</I>, <B>int </B><I>flags = wxXMLDOC_NONE</I>)<P>
+Like above but takes the data from given input stream.<P>
+
+
+<HR>
+<A NAME="wxxmldocumentsave"></A>
+<H3>wxXmlDocument::Save</H3>
+<P>
+<B>bool</B> <B>Save</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>int </B><I>indentstep = 1</I>) <B>const</B><P>
+Saves XML tree creating a file named with given string.<P>
+If <TT>indentstep</TT> is greater than or equal to zero, then, while saving, an automatic indentation
+is added with steps composed by <TT>indentstep</TT> spaces.
+If <TT>indentstep</TT> is <TT>wxXML_NO_INDENTATION</TT>, then, automatic indentation is turned off.<P>
+<B>bool</B> <B>Save</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>, <B>int </B><I>indentstep = 1</I>) <B>const</B><P>
+Saves XML tree in the given output stream. See other overload for a description of <TT>indentstep</TT>.<P>
+
+
+<HR>
+<A NAME="wxxmldocumentsetencoding"></A>
+<H3>wxXmlDocument::SetEncoding</H3>
+<P>
+<B>void</B> <B>SetEncoding</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>enc</I>)<P>
+Sets the enconding of the document.<P>
+
+
+<HR>
+<A NAME="wxxmldocumentsetfileencoding"></A>
+<H3>wxXmlDocument::SetFileEncoding</H3>
+<P>
+<B>void</B> <B>SetFileEncoding</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>encoding</I>)<P>
+Sets the enconding of the file which will be used to save the document.<P>
+
+
+<HR>
+<A NAME="wxxmldocumentsetroot"></A>
+<H3>wxXmlDocument::SetRoot</H3>
+<P>
+<B>void</B> <B>SetRoot</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>node</I>)<P>
+Sets the root node of this document. Deletes previous root node.
+Use <A HREF="wx_wxxmldocument.html#wxxmldocumentdetachroot">DetachRoot</A> and then 
+<A HREF="wx_wxxmldocument.html#wxxmldocumentsetroot">SetRoot</A> if you want
+to replace the root node without deleting the old document tree.<P>
+
+
+<HR>
+<A NAME="wxxmldocumentsetversion"></A>
+<H3>wxXmlDocument::SetVersion</H3>
+<P>
+<B>void</B> <B>SetVersion</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>version</I>)<P>
+Sets the version of the XML file which will be used to save the document.<P>
+
+
+<HR>
+<A NAME="wxxmldocumentoperatorassign"></A>
+<H3>wxXmlDocument::operator=</H3>
+<P>
+<B><A HREF="wx_wxxmldocument.html#wxxmldocument">wxXmlDocument</A>& operator</B> </B> <B>operator=</B>(<B>const <A HREF="wx_wxxmldocument.html#wxxmldocument">wxXmlDocument</A>& </B></B><I>doc</I>)<P>
+Deep copies the given document.<P>
+
+</FONT></BODY></HTML>

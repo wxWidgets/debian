@@ -1,0 +1,36 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>File handling</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="filehandling"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_multiplat.html#multiplat"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_cpp.html#cpp"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_utilities.html#utilities"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>File handling</H2>
+<P>
+When building an application which may be used under different
+environments, one difficulty is coping with documents which may be
+moved to different directories on other machines. Saving a file which
+has pointers to full pathnames is going to be inherently unportable. One
+approach is to store filenames on their own, with no directory
+information.  The application searches through a number of locally
+defined directories to find the file. To support this, the class <B>
+wxPathList</B> makes adding directories and searching for files easy, and
+the global function <B>wxFileNameFromPath</B> allows the application to
+strip off the filename from the path if the filename must be stored.
+This has undesirable ramifications for people who have documents of the
+same name in different directories.<P>
+As regards the limitations of DOS 8+3 single-case filenames versus
+unrestricted Unix filenames, the best solution is to use DOS filenames
+for your application, and also for document filenames <I>if</I> the user
+is likely to be switching platforms regularly. Obviously this latter
+choice is up to the application user to decide.  Some programs (such as
+YACC and LEX) generate filenames incompatible with DOS; the best
+solution here is to have your Unix makefile rename the generated files
+to something more compatible before transferring the source to DOS.
+Transferring DOS files to Unix is no problem, of course, apart from EOL
+conversion for which there should be a utility available (such as
+dos2unix).<P>
+See also the File Functions section of the reference manual for
+descriptions of miscellaneous file handling functions.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,79 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextStyleComboCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextstylecomboctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextstylelistbox.html#wxrichtextstylelistbox"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextStyleComboCtrl</H2>
+<P>
+This is a combo control that can display the styles in a <A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>,
+and apply the selection to an associated <A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>.<P>
+See <TT>samples/richtext</TT> for an example of how to use it.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcomboctrl.html#wxcomboctrl">wxComboCtrl</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextstyles.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxrichtextstylelistbox.html#wxrichtextstylelistbox">wxRichTextStyleListBox</A>, <A HREF="wx_wxrichtextctrloverview.html#wxrichtextctrloverview">wxRichTextCtrl overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextstylecomboctrlwxrichtextstylecomboctrl">wxRichTextStyleComboCtrl::wxRichTextStyleComboCtrl</A><BR>
+<A HREF="#wxrichtextstylecomboctrldtor">wxRichTextStyleComboCtrl::~wxRichTextStyleComboCtrl</A><BR>
+<A HREF="#wxrichtextstylecomboctrlgetrichtextctrl">wxRichTextStyleComboCtrl::GetRichTextCtrl</A><BR>
+<A HREF="#wxrichtextstylecomboctrlgetstylesheet">wxRichTextStyleComboCtrl::GetStyleSheet</A><BR>
+<A HREF="#wxrichtextstylecomboctrlsetrichtextctrl">wxRichTextStyleComboCtrl::SetRichTextCtrl</A><BR>
+<A HREF="#wxrichtextstylecomboctrlsetstylesheet">wxRichTextStyleComboCtrl::SetStyleSheet</A><BR>
+<A HREF="#wxrichtextstylecomboctrlupdatestyles">wxRichTextStyleComboCtrl::UpdateStyles</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextstylecomboctrlwxrichtextstylecomboctrl"></A>
+<H3>wxRichTextStyleComboCtrl::wxRichTextStyleComboCtrl</H3>
+<P>
+<B></B> <B>wxRichTextStyleComboCtrl</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxrichtextstylecomboctrldtor"></A>
+<H3>wxRichTextStyleComboCtrl::~wxRichTextStyleComboCtrl</H3>
+<P>
+<B></B> <B>~wxRichTextStyleComboCtrl</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxrichtextstylecomboctrlgetrichtextctrl"></A>
+<H3>wxRichTextStyleComboCtrl::GetRichTextCtrl</H3>
+<P>
+<B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>*</B> </B> <B>GetRichTextCtrl</B>() <B>const</B><P>
+Returns the <A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A> associated with this control.<P>
+
+<HR>
+<A NAME="wxrichtextstylecomboctrlgetstylesheet"></A>
+<H3>wxRichTextStyleComboCtrl::GetStyleSheet</H3>
+<P>
+<B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>*</B> </B> <B>GetStyleSheet</B>() <B>const</B><P>
+Returns the style sheet associated with this control.<P>
+
+<HR>
+<A NAME="wxrichtextstylecomboctrlsetrichtextctrl"></A>
+<H3>wxRichTextStyleComboCtrl::SetRichTextCtrl</H3>
+<P>
+<B>void</B> <B>SetRichTextCtrl</B>(<B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl</I>)<P>
+Associates the control with a <A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>.<P>
+
+<HR>
+<A NAME="wxrichtextstylecomboctrlsetstylesheet"></A>
+<H3>wxRichTextStyleComboCtrl::SetStyleSheet</H3>
+<P>
+<B>void</B> <B>SetStyleSheet</B>(<B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>* </B></B><I>styleSheet</I>)<P>
+Associates the control with a style sheet.<P>
+
+<HR>
+<A NAME="wxrichtextstylecomboctrlupdatestyles"></A>
+<H3>wxRichTextStyleComboCtrl::UpdateStyles</H3>
+<P>
+<B>void</B> <B>UpdateStyles</B>()<P>
+Updates the combo control from the associated style sheet.<P>
+
+
+</FONT></BODY></HTML>

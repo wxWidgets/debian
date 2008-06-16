@@ -1,12 +1,13 @@
 /* -------------------------------------------------------------------------
  * Project: GSocket (Generic Socket) for WX
- * Name:    gsockgtk.c
+ * Name:    src/gtk/gsockgtk.cpp
  * Purpose: GSocket: GTK part
  * Licence: The wxWindows licence
- * CVSID:   $Id: gsockgtk.cpp,v 1.6 2005/09/03 01:01:06 KH Exp $
+ * CVSID:   $Id: gsockgtk.cpp 37159 2006-01-26 16:02:02Z ABX $
  * -------------------------------------------------------------------------
  */
-#include "wx/setup.h"
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #if wxUSE_SOCKETS
 
@@ -47,7 +48,7 @@ bool GSocketGUIFunctionsTableConcrete::OnInit(void)
 void GSocketGUIFunctionsTableConcrete::OnExit(void)
 {
 }
-    
+
 bool GSocketGUIFunctionsTableConcrete::Init_Socket(GSocket *socket)
 {
   gint *m_id;

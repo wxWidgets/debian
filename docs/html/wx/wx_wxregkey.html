@@ -1,0 +1,307 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRegKey</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxregkey"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxregioniterator.html#wxregioniterator"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrenderernative.html#wxrenderernative"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRegKey</H2>
+<P>
+wxRegKey is a class representing the Windows registry (it is only available
+under Windows). One can create, query and delete registry keys using this
+class.<P>
+The Windows registry is easy to understand. There are five registry keys,
+namely:<P>
+<OL>
+
+<LI> HKEY_CLASSES_ROOT (HKCR)
+<LI> HKEY_CURRENT_USER (HKCU)
+<LI> HKEY_LOCAL_MACHINE (HKLM)
+<LI> HKEY_CURRENT_CONFIG (HKCC)
+<LI> HKEY_USERS (HKU)
+</OL>
+<P>
+After creating a key, it can hold a value. The values can be:<P>
+<OL>
+
+<LI> String Value
+<LI> Binary Value
+<LI> DWORD Value
+<LI> Multi String Value
+<LI> Expandable String Value
+</OL>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/msw/registry.h&gt;<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+wxRegKey *pRegKey = new wxRegKey("HKEY_LOCAL_MACHINE\\Software\\MyKey");
+
+//will create the Key if it does not exist
+if( !pRegKey-&gt;Exists() )
+    pRegKey-&gt;Create();
+
+//will create a new value MYVALUE and set it to 12
+pRegKey-&gt;SetValue("MYVALUE",12);
+
+//Query for the Value and Retrieve it
+long lMyVal;
+wxString strTemp;
+pRegKey-&gt;QueryValue("MYVALUE",&lMyVal); 
+strTemp.Printf("%d",lMyVal);
+wxMessageBox(strTemp,"Registry Value",0,this);
+
+//Retrive the number of SubKeys and enumerate them
+size_t nSubKeys;
+pRegKey-&gt;GetKeyInfo(&nSubKeys,NULL,NULL,NULL);
+
+pRegKey-&gt;GetFirstKey(strTemp,1);
+for(int i=0;i&lt;nSubKeys;i++)
+{
+     wxMessageBox(strTemp,"SubKey Name",0,this);
+     pRegKey-&gt;GetNextKey(strTemp,1);
+}
+</PRE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxregkeyctor">wxRegKey::wxRegKey</A><BR>
+<A HREF="#wxregkeyclose">wxRegKey::Close</A><BR>
+<A HREF="#wxregkeycreate">wxRegKey::Create</A><BR>
+<A HREF="#wxregkeydeleteself">wxRegKey::DeleteSelf</A><BR>
+<A HREF="#wxregkeydeletekey">wxRegKey::DeleteKey</A><BR>
+<A HREF="#wxregkeydeletevalue">wxRegKey::DeleteValue</A><BR>
+<A HREF="#wxregkeyexists">wxRegKey::Exists</A><BR>
+<A HREF="#wxregkeygetname">wxRegKey::GetName</A><BR>
+<A HREF="#wxregkeygetfirstkey">wxRegKey::GetFirstKey</A><BR>
+<A HREF="#wxregkeygetfirstvalue">wxRegKey::GetFirstValue</A><BR>
+<A HREF="#wxregkeygetkeyinfo">wxRegKey::GetKeyInfo</A><BR>
+<A HREF="#wxregkeygetnextkey">wxRegKey::GetNextKey</A><BR>
+<A HREF="#wxregkeygetnextvalue">wxRegKey::GetNextValue</A><BR>
+<A HREF="#wxregkeyhasvalue">wxRegKey::HasValue</A><BR>
+<A HREF="#wxregkeyhasvalues">wxRegKey::HasValues</A><BR>
+<A HREF="#wxregkeyhassubkey">wxRegKey::HasSubKey</A><BR>
+<A HREF="#wxregkeyhassubkeys">wxRegKey::HasSubKeys</A><BR>
+<A HREF="#wxregkeyisempty">wxRegKey::IsEmpty</A><BR>
+<A HREF="#wxregkeyisopened">wxRegKey::IsOpened</A><BR>
+<A HREF="#wxregkeyopen">wxRegKey::Open</A><BR>
+<A HREF="#wxregkeyqueryvalue">wxRegKey::QueryValue</A><BR>
+<A HREF="#wxregkeyrename">wxRegKey::Rename</A><BR>
+<A HREF="#wxregkeyrenamevalue">wxRegKey::RenameValue</A><BR>
+<A HREF="#wxregkeysetvalue">wxRegKey::SetValue</A><BR>
+<P>
+
+<HR>
+<A NAME="wxregkeyctor"></A>
+<H3>wxRegKey::wxRegKey</H3>
+<P>
+<B></B> <B>wxRegKey</B>()<P>
+The Constructor to set to HKCR<P>
+<B></B> <B>wxRegKey</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> strKey</I>)<P>
+The constructor to set the full name of the key.<P>
+<B></B> <B>wxRegKey</B>(<B>const <A HREF="wx_wxregkey.html#wxregkey">wxRegKey</A>&</B></B><I> keyParent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> strKey</I>)<P>
+The constructor to set the full name of the key under a previously created parent.<P>
+
+
+<HR>
+<A NAME="wxregkeyclose"></A>
+<H3>wxRegKey::Close</H3>
+<P>
+<B>void</B> <B>Close</B>()<P>
+Closes the key.<P>
+
+
+<HR>
+<A NAME="wxregkeycreate"></A>
+<H3>wxRegKey::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>bool </B><I>bOkIfExists = true</I>)<P>
+Creates the key. Will fail if the key already exists and <I>bOkIfExists</I> is false.<P>
+
+
+<HR>
+<A NAME="wxregkeydeleteself"></A>
+<H3>wxRegKey::DeleteSelf</H3>
+<P>
+<B>void</B> <B>DeleteSelf</B>()<P>
+Deletes this key and all of its subkeys and values recursively.<P>
+
+
+<HR>
+<A NAME="wxregkeydeletekey"></A>
+<H3>wxRegKey::DeleteKey</H3>
+<P>
+<B>void</B> <B>DeleteKey</B>(<B>const wxChar *</B><I>szKey</I>)<P>
+Deletes the subkey with all of its subkeys/values recursively.<P>
+
+
+<HR>
+<A NAME="wxregkeydeletevalue"></A>
+<H3>wxRegKey::DeleteValue</H3>
+<P>
+<B>void</B> <B>DeleteValue</B>(<B>const wxChar *</B><I>szKey</I>)<P>
+Deletes the named value.<P>
+
+
+<HR>
+<A NAME="wxregkeyexists"></A>
+<H3>wxRegKey::Exists</H3>
+<P>
+<B>static bool</B> <B>Exists</B>() <B>const</B><P>
+Returns true if the key exists.<P>
+
+
+<HR>
+<A NAME="wxregkeygetname"></A>
+<H3>wxRegKey::GetName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetName</B>(<B>bool </B><I>bShortPrefix = true</I>) <B>const</B><P>
+Gets the name of the registry key.<P>
+
+
+<HR>
+<A NAME="wxregkeygetfirstkey"></A>
+<H3>wxRegKey::GetFirstKey</H3>
+<P>
+<B>bool</B> <B>GetFirstKey</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> strKeyName</I>, <B>long&amp;</B><I> lIndex</I>)<P>
+Gets the first key.<P>
+
+
+<HR>
+<A NAME="wxregkeygetfirstvalue"></A>
+<H3>wxRegKey::GetFirstValue</H3>
+<P>
+<B>bool</B> <B>GetFirstValue</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> strValueName</I>, <B>long&amp;</B><I> lIndex</I>)<P>
+Gets the first value of this key.<P>
+
+
+<HR>
+<A NAME="wxregkeygetkeyinfo"></A>
+<H3>wxRegKey::GetKeyInfo</H3>
+<P>
+<B>bool</B> <B>Exists</B>(<B>size_t *</B><I>pnSubKeys</I>, <B>size_t *</B><I>pnValues</I>, <B>size_t *</B><I>pnMaxValueLen</I>) <B>const</B><P>
+Gets information about the key.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pnSubKeys</I><UL><UL>
+The number of subkeys.</UL></UL>
+<P>
+<I>pnMaxKeyLen</I><UL><UL>
+The maximum length of the subkey name.</UL></UL>
+<P>
+<I>pnValues</I><UL><UL>
+The number of values.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxregkeygetnextkey"></A>
+<H3>wxRegKey::GetNextKey</H3>
+<P>
+<B>bool</B> <B>GetNextKey</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> strKeyName</I>, <B>long&amp;</B><I> lIndex</I>) <B>const</B><P>
+Gets the next key.<P>
+
+
+<HR>
+<A NAME="wxregkeygetnextvalue"></A>
+<H3>wxRegKey::GetNextValue</H3>
+<P>
+<B>bool</B> <B>GetNextValue</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> strValueName</I>, <B>long&amp;</B><I> lIndex</I>) <B>const</B><P>
+Gets the next key value for this key.<P>
+
+
+<HR>
+<A NAME="wxregkeyhasvalue"></A>
+<H3>wxRegKey::HasValue</H3>
+<P>
+<B>bool</B> <B>HasValue</B>(<B>const wxChar *</B><I>szValue</I>) <B>const</B><P>
+Returns true if the value exists.<P>
+
+
+<HR>
+<A NAME="wxregkeyhasvalues"></A>
+<H3>wxRegKey::HasValues</H3>
+<P>
+<B>bool</B> <B>HasValues</B>() <B>const</B><P>
+Returns true if any values exist.<P>
+
+
+<HR>
+<A NAME="wxregkeyhassubkey"></A>
+<H3>wxRegKey::HasSubKey</H3>
+<P>
+<B>bool</B> <B>HasSubKey</B>(<B>const wxChar *</B><I>szKey</I>) <B>const</B><P>
+Returns true if given subkey exists.<P>
+
+
+<HR>
+<A NAME="wxregkeyhassubkeys"></A>
+<H3>wxRegKey::HasSubKeys</H3>
+<P>
+<B>bool</B> <B>HasSubKeys</B>() <B>const</B><P>
+Returns true if any subkeys exist.<P>
+
+
+<HR>
+<A NAME="wxregkeyisempty"></A>
+<H3>wxRegKey::IsEmpty</H3>
+<P>
+<B>bool</B> <B>IsEmpty</B>() <B>const</B><P>
+Returns true if this key is empty, nothing under this key.<P>
+
+
+<HR>
+<A NAME="wxregkeyisopened"></A>
+<H3>wxRegKey::IsOpened</H3>
+<P>
+<B>bool</B> <B>IsOpened</B>() <B>const</B><P>
+Returns true if the key is opened.<P>
+
+
+<HR>
+<A NAME="wxregkeyopen"></A>
+<H3>wxRegKey::Open</H3>
+<P>
+<B>bool</B> <B>Open</B>(<B>AccessMode </B><I>mode = Write</I>)<P>
+Explicitly opens the key. This method also allows the key to be opened in
+read-only mode by passing <TT>wxRegKey::Read</TT> instead of default 
+<TT>wxRegKey::Write</TT> parameter.<P>
+
+
+<HR>
+<A NAME="wxregkeyqueryvalue"></A>
+<H3>wxRegKey::QueryValue</H3>
+<P>
+<B>bool</B> <B>QueryValue</B>(<B>const wxChar *</B><I>szValue</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> strValue</I>) <B>const</B><P>
+Retrieves the string value.<P>
+<B>bool</B> <B>QueryValue</B>(<B>const wxChar *</B><I>szValue</I>, <B>long *</B><I>plValue</I>) <B>const</B><P>
+Retrieves the numeric value.<P>
+
+
+<HR>
+<A NAME="wxregkeyrename"></A>
+<H3>wxRegKey::Rename</H3>
+<P>
+<B>bool</B> <B>Rename</B>(<B>const wxChar *</B><I> szNewName</I>)<P>
+Renames the key.<P>
+
+
+<HR>
+<A NAME="wxregkeyrenamevalue"></A>
+<H3>wxRegKey::RenameValue</H3>
+<P>
+<B>bool</B> <B>RenameValue</B>(<B>const wxChar *</B><I>szValueOld</I>, <B>const wxChar *</B><I>szValueNew</I>)<P>
+Renames a value.<P>
+
+
+<HR>
+<A NAME="wxregkeysetvalue"></A>
+<H3>wxRegKey::SetValue</H3>
+<P>
+<B>bool</B> <B>SetValue</B>(<B>const wxChar *</B><I>szValue</I>, <B>long</B><I> lValue</I>)<P>
+<B>bool</B> <B>SetValue</B>(<B>const wxChar *</B><I>szValue</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> strValue</I>)<P>
+<B>bool</B> <B>SetValue</B>(<B>const wxChar *</B><I>szValue</I>, <B>const <A HREF="wx_wxmemorybuffer.html#wxmemorybuffer">wxMemoryBuffer</A>&</B></B><I> buf</I>)<P>
+Sets the given <I>szValue</I> which must be numeric, string or binary depending
+on the overload used. If the value doesn't exist, it is created.<P>
+
+</FONT></BODY></HTML>

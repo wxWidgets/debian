@@ -1,0 +1,220 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFlexGridSizer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxflexgridsizer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfindreplacedialog.html#wxfindreplacedialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfocusevent.html#wxfocusevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFlexGridSizer</H2>
+<P>
+A flex grid sizer is a sizer which lays out its children in a two-dimensional
+table with all table fields in one row having the same
+height and all fields in one column having the same width, but all
+rows or all columns are not necessarily the same height or width as in
+the <A HREF="wx_wxgridsizer.html#wxgridsizer">wxGridSizer</A>.<P>
+Since wxWidgets 2.5.0, wxFlexGridSizer can also size items equally in one
+direction but unequally ("flexibly") in the other. If the sizer is only
+flexible in one direction (this can be changed using
+<A HREF="wx_wxflexgridsizer.html#wxflexgridsizersetflexibledirection">SetFlexibleDirection</A>),
+it needs to be decided how the sizer should grow in the other ("non-flexible")
+direction in order to fill the available space. The
+<A HREF="wx_wxflexgridsizer.html#wxflexgridsizersetnonflexiblegrowmode">SetNonFlexibleGrowMode</A> method
+serves this purpose.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxgridsizer.html#wxgridsizer">wxGridSizer</A><BR>
+
+<A HREF="wx_wxsizer.html#wxsizer">wxSizer</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/sizer.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>, <A HREF="wx_sizeroverview.html#sizeroverview">Sizer overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxflexgridsizerwxflexgridsizer">wxFlexGridSizer::wxFlexGridSizer</A><BR>
+<A HREF="#wxflexgridsizeraddgrowablecol">wxFlexGridSizer::AddGrowableCol</A><BR>
+<A HREF="#wxflexgridsizeraddgrowablerow">wxFlexGridSizer::AddGrowableRow</A><BR>
+<A HREF="#wxflexgridsizergetflexibledrection">wxFlexGridSizer::GetFlexibleDirection</A><BR>
+<A HREF="#wxflexgridsizergetnonflexiblegrowmode">wxFlexGridSizer::GetNonFlexibleGrowMode</A><BR>
+<A HREF="#wxflexgridsizerremovegrowablecol">wxFlexGridSizer::RemoveGrowableCol</A><BR>
+<A HREF="#wxflexgridsizerremovegrowablerow">wxFlexGridSizer::RemoveGrowableRow</A><BR>
+<A HREF="#wxflexgridsizersetflexibledirection">wxFlexGridSizer::SetFlexibleDirection</A><BR>
+<A HREF="#wxflexgridsizersetnonflexiblegrowmode">wxFlexGridSizer::SetNonFlexibleGrowMode</A><BR>
+<P>
+
+<HR>
+<A NAME="wxflexgridsizerwxflexgridsizer"></A>
+<H3>wxFlexGridSizer::wxFlexGridSizer</H3>
+<P>
+<B></B> <B>wxFlexGridSizer</B>(<B>int </B><I>rows</I>, <B>int </B><I>cols</I>, <B>int </B><I>vgap</I>, <B>int </B><I>hgap</I>)<P>
+<B></B> <B>wxFlexGridSizer</B>(<B>int </B><I>cols</I>, <B>int </B><I>vgap = 0</I>, <B>int </B><I>hgap = 0</I>)<P>
+Constructor for a wxGridSizer. <I>rows</I> and <I>cols</I> determine the number of
+columns and rows in the sizer - if either of the parameters is zero, it will be
+calculated to form the total number of children in the sizer, thus making the
+sizer grow dynamically. <I>vgap</I> and <I>hgap</I> define extra space between
+all children.<P>
+
+
+<HR>
+<A NAME="wxflexgridsizeraddgrowablecol"></A>
+<H3>wxFlexGridSizer::AddGrowableCol</H3>
+<P>
+<B>void</B> <B>AddGrowableCol</B>(<B>size_t </B><I>idx</I>, <B>int </B><I>proportion = 0</I>)<P>
+Specifies that column <I>idx</I> (starting from zero) should be grown if
+there is extra space available to the sizer.<P>
+The <I>proportion</I> parameter has the same meaning as the stretch factor for
+the <A HREF="wx_sizeroverview.html#sizeroverview">sizers</A> except that if all proportions are 0,
+then all columns are resized equally (instead of not being resized at all).<P>
+
+<HR>
+<A NAME="wxflexgridsizeraddgrowablerow"></A>
+<H3>wxFlexGridSizer::AddGrowableRow</H3>
+<P>
+<B>void</B> <B>AddGrowableRow</B>(<B>size_t </B><I>idx</I>, <B>int </B><I>proportion = 0</I>)<P>
+Specifies that row idx (starting from zero) should be grown if there
+is extra space available to the sizer.<P>
+See <A HREF="wx_wxflexgridsizer.html#wxflexgridsizeraddgrowablecol">AddGrowableCol</A> for the description
+of <I>proportion</I> parameter.<P>
+
+<HR>
+<A NAME="wxflexgridsizergetflexibledrection"></A>
+<H3>wxFlexGridSizer::GetFlexibleDirection</H3>
+<P>
+<B>int</B> <B>GetFlexibleDirection</B>() <B>const</B><P>
+Returns a wxOrientation value that specifies whether the sizer flexibly
+resizes its columns, rows, or both (default).<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+One of the following values:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxVERTICAL
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Rows are flexibly sized.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHORIZONTAL
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Columns are flexibly sized.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxBOTH
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Both rows and columns are flexibly sized (this is the default value).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxflexgridsizer.html#wxflexgridsizersetflexibledirection">SetFlexibleDirection</A><P>
+
+
+<HR>
+<A NAME="wxflexgridsizergetnonflexiblegrowmode"></A>
+<H3>wxFlexGridSizer::GetNonFlexibleGrowMode</H3>
+<P>
+<B>int</B> <B>GetNonFlexibleGrowMode</B>() <B>const</B><P>
+Returns the value that specifies how the sizer grows in the "non-flexible"
+direction if there is one.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+One of the following values:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxFLEX_GROWMODE_NONE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sizer doesn't grow in the non-flexible direction.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxFLEX_GROWMODE_SPECIFIED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sizer honors growable columns/rows set with
+<A HREF="wx_wxflexgridsizer.html#wxflexgridsizeraddgrowablecol">AddGrowableCol</A> and
+<A HREF="wx_wxflexgridsizer.html#wxflexgridsizeraddgrowablerow">AddGrowableRow</A>.
+In this case equal sizing applies to minimum sizes of columns or
+rows (this is the default value).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxFLEX_GROWMODE_ALL
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sizer equally stretches all columns or rows
+in the non-flexible direction, whether they are growable or not in the flexible
+direction.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxflexgridsizer.html#wxflexgridsizersetflexibledirection">SetFlexibleDirection</A>,
+<A HREF="wx_wxflexgridsizer.html#wxflexgridsizersetnonflexiblegrowmode">SetNonFlexibleGrowMode</A><P>
+
+
+<HR>
+<A NAME="wxflexgridsizerremovegrowablecol"></A>
+<H3>wxFlexGridSizer::RemoveGrowableCol</H3>
+<P>
+<B>void</B> <B>RemoveGrowableCol</B>(<B>size_t </B><I>idx</I>)<P>
+Specifies that column idx is no longer growable.<P>
+
+
+<HR>
+<A NAME="wxflexgridsizerremovegrowablerow"></A>
+<H3>wxFlexGridSizer::RemoveGrowableRow</H3>
+<P>
+<B>void</B> <B>RemoveGrowableRow</B>(<B>size_t </B><I>idx</I>)<P>
+Specifies that row idx is no longer growable.<P>
+
+
+<HR>
+<A NAME="wxflexgridsizersetflexibledirection"></A>
+<H3>wxFlexGridSizer::SetFlexibleDirection</H3>
+<P>
+<B>void</B> <B>SetFlexibleDirection</B>(<B>int </B><I>direction</I>)<P>
+Specifies whether the sizer should flexibly resize its columns, rows, or
+both. Argument <TT>direction</TT> can be <TT>wxVERTICAL</TT>, <TT>wxHORIZONTAL</TT>
+or <TT>wxBOTH</TT> (which is the default value). Any other value is ignored. See
+<A HREF="wx_wxflexgridsizer.html#wxflexgridsizergetflexibledrection">GetFlexibleDirection()</A> for the
+explanation of these values.<P>
+Note that this method does not trigger relayout.<P>
+
+
+<HR>
+<A NAME="wxflexgridsizersetnonflexiblegrowmode"></A>
+<H3>wxFlexGridSizer::SetNonFlexibleGrowMode</H3>
+<P>
+<B>void</B> <B>SetNonFlexibleGrowMode</B>(<B>wxFlexSizerGrowMode </B><I>mode</I>)<P>
+Specifies how the sizer should grow in the non-flexible direction if
+there is one (so
+<A HREF="wx_wxflexgridsizer.html#wxflexgridsizersetflexibledirection">SetFlexibleDirection()</A> must have
+been called previously). Argument <I>mode</I> can be one of those documented in
+<A HREF="wx_wxflexgridsizer.html#wxflexgridsizergetnonflexiblegrowmode">GetNonFlexibleGrowMode</A>, please
+see there for their explanation.<P>
+Note that this method does not trigger relayout.<P>
+
+</FONT></BODY></HTML>

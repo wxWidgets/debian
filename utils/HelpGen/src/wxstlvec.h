@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     27/09/98
-// RCS-ID:      $Id: wxstlvec.h,v 1.3 2004/07/15 06:27:13 ABX Exp $
+// RCS-ID:      $Id: wxstlvec.h 28244 2004-07-15 06:27:13Z ABX $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

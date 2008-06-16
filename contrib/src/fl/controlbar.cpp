@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: controlbar.cpp,v 1.26.2.1 2006/02/11 02:06:12 MR Exp $
+// RCS-ID:      $Id: controlbar.cpp 44043 2006-12-23 13:03:00Z MR $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "controlbar.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -891,9 +887,7 @@ void wxFrameLayout::DoSetBarState( cbBarInfo* pBar )
         pMiniFrm->Create( &GetParentFrame(), wxID_ANY, pBar->mName,
                           wxPoint( 50,50 ),
                           wxSize ( 0, 0  ),
-                          wxFRAME_FLOAT_ON_PARENT |
-                          wxNO_BORDER |
-                          wxFRAME_NO_TASKBAR
+                          wxFRAME_TOOL_WINDOW | wxFRAME_FLOAT_ON_PARENT
                         );
 
         pMiniFrm->SetClient( pBar->mpBarWnd );

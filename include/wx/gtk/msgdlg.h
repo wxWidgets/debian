@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2003/02/28
-// RCS-ID:      $Id: msgdlg.h,v 1.11 2005/03/11 15:33:22 ABX Exp $
+// RCS-ID:      $Id: msgdlg.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Vaclav Slavik, 2003
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,17 +12,13 @@
 #ifndef __MSGDLG_H__
 #define __MSGDLG_H__
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "msgdlg.h"
-#endif
-
-#include "wx/setup.h"
+#include "wx/defs.h"
 #include "wx/dialog.h"
 
 // type is an 'or' (|) of wxOK, wxCANCEL, wxYES_NO
 // Returns wxYES/NO/OK/CANCEL
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxMessageBoxCaptionStr;
+WXDLLEXPORT_DATA(extern const wxChar) wxMessageBoxCaptionStr[];
 
 class WXDLLEXPORT wxMessageDialog: public wxDialog, public wxMessageDialogBase
 {
@@ -31,7 +27,7 @@ public:
                     const wxString& caption = wxMessageBoxCaptionStr,
                     long style = wxOK|wxCENTRE,
                     const wxPoint& pos = wxDefaultPosition);
-    ~wxMessageDialog();
+    virtual ~wxMessageDialog();
 
     int ShowModal();
     virtual bool Show( bool WXUNUSED(show) = true ) { return false; };

@@ -1,0 +1,75 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSocketEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsocketevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsocketclient.html#wxsocketclient"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsocketinputstream.html#wxsocketinputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSocketEvent</H2>
+<P>
+This event class contains information about socket events.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/socket.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a socket event, use these event handler macros to direct input
+to member functions that take a wxSocketEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SOCKET(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a socket event, supplying the member function.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>, 
+<A HREF="wx_wxsocketclient.html#wxsocketclient">wxSocketClient</A>, 
+<A HREF="wx_wxsocketserver.html#wxsocketserver">wxSocketServer</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsocketeventctor">wxSocketEvent::wxSocketEvent</A><BR>
+<A HREF="#wxsocketeventgetclientdata">wxSocketEvent::GetClientData</A><BR>
+<A HREF="#wxsocketeventgetsocket">wxSocketEvent::GetSocket</A><BR>
+<A HREF="#wxsocketeventgetsocketevent">wxSocketEvent::GetSocketEvent</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsocketeventctor"></A>
+<H3>wxSocketEvent::wxSocketEvent</H3>
+<P>
+<B></B> <B>wxSocketEvent</B>(<B>int</B><I> id = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxsocketeventgetclientdata"></A>
+<H3>wxSocketEvent::GetClientData</H3>
+<P>
+<B>void *</B> <B>GetClientData</B>()<P>
+Gets the client data of the socket which generated this event, as
+set with <A HREF="wx_wxsocketbase.html#wxsocketbasesetclientdata">wxSocketBase::SetClientData</A>.<P>
+
+<HR>
+<A NAME="wxsocketeventgetsocket"></A>
+<H3>wxSocketEvent::GetSocket</H3>
+<P>
+<B><A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A> *</B> </B> <B>GetSocket</B>() <B>const</B><P>
+Returns the socket object to which this event refers to. This makes
+it possible to use the same event handler for different sockets.<P>
+
+<HR>
+<A NAME="wxsocketeventgetsocketevent"></A>
+<H3>wxSocketEvent::GetSocketEvent</H3>
+<P>
+<B>wxSocketNotify</B> <B>GetSocketEvent</B>() <B>const</B><P>
+Returns the socket event type.<P>
+
+</FONT></BODY></HTML>

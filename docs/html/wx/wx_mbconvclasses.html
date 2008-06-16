@@ -1,0 +1,169 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMBConv classes overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="mbconvclasses"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_unicode.html#unicode"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_internationalization.html#internationalization"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMBConv classes overview</H2>
+<P>
+Classes: <A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>, wxMBConvLibc, 
+<A HREF="wx_wxmbconvutf7.html#wxmbconvutf7">wxMBConvUTF7</A>, <A HREF="wx_wxmbconvutf8.html#wxmbconvutf8">wxMBConvUTF8</A>, 
+<A HREF="wx_wxcsconv.html#wxcsconv">wxCSConv</A>, 
+<A HREF="wx_wxmbconvutf16.html#wxmbconvutf16">wxMBConvUTF16</A>, <A HREF="wx_wxmbconvutf32.html#wxmbconvutf32">wxMBConvUTF32</A><P>
+The wxMBConv classes in wxWidgets enable an Unicode-aware application to
+easily convert between Unicode and the variety of 8-bit encoding systems still
+in use.<P>
+<A HREF="#needforconversion">Background: The need for conversion</A><BR>
+<A HREF="#conversionandwxstring">Background: The wxString class</A><BR>
+<A HREF="#wxmbconvclasses">wxMBConv classes</A><BR>
+<A HREF="#wxmbconvobjects">wxMBConv objects</A><BR>
+<A HREF="#wxcsconvclass">wxCSConv</A><BR>
+<A HREF="#convertingstrings">Converting strings</A><BR>
+<A HREF="#convertingbuffers">Converting buffers</A><BR>
+<P>
+
+<HR>
+<A NAME="needforconversion"></A>
+<H3>Background: The need for conversion</H3>
+<P>
+As programs are becoming more and more globalized, and users exchange documents
+across country boundaries as never before, applications increasingly need to
+take into account all the different character sets in use around the world. It
+is no longer enough to just depend on the default byte-sized character set that
+computers have traditionally used.<P>
+A few years ago, a solution was proposed: the Unicode standard. Able to contain
+the complete set of characters in use in one unified global coding system,
+it would resolve the character set problems once and for all.<P>
+But it hasn't happened yet, and the migration towards Unicode has created new
+challenges, resulting in "compatibility encodings" such as UTF-8. A large
+number of systems out there still depends on the old 8-bit encodings, hampered
+by the huge amounts of legacy code still widely deployed. Even sending
+Unicode data from one Unicode-aware system to another may need encoding to an
+8-bit multibyte encoding (UTF-7 or UTF-8 is typically used for this purpose), to
+pass unhindered through any traditional transport channels.<P>
+
+<HR>
+<A NAME="conversionandwxstring"></A>
+<H3>Background: The wxString class</H3>
+<P>
+If you have compiled wxWidgets in Unicode mode, the wxChar type will become
+identical to wchar_t rather than char, and a wxString stores wxChars. Hence,
+all wxString manipulation in your application will then operate on Unicode
+strings, and almost as easily as working with ordinary char strings (you
+just need to remember to use the wxT() macro to encapsulate any string
+literals).<P>
+But often, your environment doesn't want Unicode strings. You could be sending
+data over a network, or processing a text file for some other application. You
+need a way to quickly convert your easily-handled Unicode data to and from a
+traditional 8-bit encoding. And this is what the wxMBConv classes do.<P>
+
+<HR>
+<A NAME="wxmbconvclasses"></A>
+<H3>wxMBConv classes</H3>
+<P>
+The base class for all these conversions is the wxMBConv class (which itself
+implements standard libc locale conversion). Derived classes include
+wxMBConvLibc, several different wxMBConvUTFxxx classes, and wxCSConv, which
+implement different kinds of conversions. You can also derive your own class
+for your own custom encoding and use it, should you need it. All you need to do
+is override the MB2WC and WC2MB methods.<P>
+
+<HR>
+<A NAME="wxmbconvobjects"></A>
+<H3>wxMBConv objects</H3>
+<P>
+Several of the wxWidgets-provided wxMBConv classes have predefined instances
+(wxConvLibc, wxConvFileName, wxConvUTF7, wxConvUTF8, wxConvLocal). You can use
+these predefined objects directly, or you can instantiate your own objects.<P>
+A variable, wxConvCurrent, points to the conversion object that the user
+interface is supposed to use, in the case that the user interface is not
+Unicode-based (like with GTK+ 1.2). By default, it points to wxConvLibc or
+wxConvLocal, depending on which works best on the current platform.<P>
+
+<HR>
+<A NAME="wxcsconvclass"></A>
+<H3>wxCSConv</H3>
+<P>
+The wxCSConv class is special because when it is instantiated, you can tell it
+which character set it should use, which makes it meaningful to keep many
+instances of them around, each with a different character set (or you can
+create a wxCSConv instance on the fly).<P>
+The predefined wxCSConv instance, wxConvLocal, is preset to use the
+default user character set, but you should rarely need to use it directly,
+it is better to go through wxConvCurrent.<P>
+
+<HR>
+<A NAME="convertingstrings"></A>
+<H3>Converting strings</H3>
+<P>
+Once you have chosen which object you want to use to convert your text,
+here is how you would use them with wxString. These examples all assume
+that you are using a Unicode build of wxWidgets, although they will still
+compile in a non-Unicode build (they just won't convert anything).<P>
+Example 1: Constructing a wxString from input in current encoding.<P>
+<PRE>
+wxString str(input_data, *wxConvCurrent);
+</PRE>
+Example 2: Input in UTF-8 encoding.<P>
+<PRE>
+wxString str(input_data, wxConvUTF8);
+</PRE>
+Example 3: Input in KOI8-R. Construction of wxCSConv instance on the fly.<P>
+<PRE>
+wxString str(input_data, wxCSConv(wxT("koi8-r")));
+</PRE>
+Example 4: Printing a wxString to stdout in UTF-8 encoding.<P>
+<PRE>
+puts(str.mb_str(wxConvUTF8));
+</PRE>
+Example 5: Printing a wxString to stdout in custom encoding.
+Using preconstructed wxCSConv instance.<P>
+<PRE>
+wxCSConv cust(user_encoding);
+printf("Data: %s\n", (const char*) str.mb_str(cust));
+</PRE>
+Note: Since mb_str() returns a temporary wxCharBuffer to hold the result
+of the conversion, you need to explicitly cast it to const char* if you use
+it in a vararg context (like with printf).<P>
+
+<HR>
+<A NAME="convertingbuffers"></A>
+<H3>Converting buffers</H3>
+<P>
+If you have specialized needs, or just don't want to use wxString, you
+can also use the conversion methods of the conversion objects directly.
+This can even be useful if you need to do conversion in a non-Unicode
+build of wxWidgets; converting a string from UTF-8 to the current
+encoding should be possible by doing this:<P>
+<PRE>
+wxString str(wxConvUTF8.cMB2WC(input_data), *wxConvCurrent);
+</PRE>
+Here, cMB2WC of the UTF8 object returns a wxWCharBuffer containing a Unicode
+string. The wxString constructor then converts it back to an 8-bit character
+set using the passed conversion object, *wxConvCurrent. (In a Unicode build
+of wxWidgets, the constructor ignores the passed conversion object and
+retains the Unicode data.)<P>
+This could also be done by first making a wxString of the original data:<P>
+<PRE>
+wxString input_str(input_data);
+wxString str(input_str.wc_str(wxConvUTF8), *wxConvCurrent);
+</PRE>
+To print a wxChar buffer to a non-Unicode stdout:<P>
+<PRE>
+printf("Data: %s\n", (const char*) wxConvCurrent-&gt;cWX2MB(unicode_data));
+</PRE>
+If you need to do more complex processing on the converted data, you
+may want to store the temporary buffer in a local variable:<P>
+<PRE>
+const wxWX2MBbuf tmp_buf = wxConvCurrent-&gt;cWX2MB(unicode_data);
+const char *tmp_str = (const char*) tmp_buf;
+printf("Data: %s\n", tmp_str);
+process_data(tmp_str);
+</PRE>
+If a conversion had taken place in cWX2MB (i.e. in a Unicode build),
+the buffer will be deallocated as soon as tmp_buf goes out of scope.
+(The macro wxWX2MBbuf reflects the correct return value of cWX2MB
+(either char* or wxCharBuffer), except for the const.)<P>
+
+</FONT></BODY></HTML>

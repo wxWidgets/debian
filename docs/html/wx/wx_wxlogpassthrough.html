@@ -1,0 +1,31 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxLogPassThrough</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlogpassthrough"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlognull.html#wxlognull"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlogstderr.html#wxlogstderr"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxLogPassThrough</H2>
+<P>
+A special version of <A HREF="wx_wxlogchain.html#wxlogchain">wxLogChain</A> which uses itself as the
+new log target. Maybe more clearly, it means that this is a log target which
+forwards the log messages to the previously installed one in addition to
+processing them itself.<P>
+Unlike <A HREF="wx_wxlogchain.html#wxlogchain">wxLogChain</A> which is usually used directly as is,
+this class must be derived from to implement <A HREF="wx_wxlog.html#wxlogdolog">DoLog</A>
+and/or <A HREF="wx_wxlog.html#wxlogdologstring">DoLogString</A> methods.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxlogchain.html#wxlogchain">wxLogChain</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/log.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxlogpassthroughctor">wxLogPassThrough::wxLogPassThrough</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlogpassthroughctor"></A>
+<H3>wxLogPassThrough::wxLogPassThrough</H3>
+<P>
+Default ctor installs this object as the current active log target.<P>
+
+</FONT></BODY></HTML>

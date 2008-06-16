@@ -1,0 +1,109 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextPrintout</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextprintout"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextprinting.html#wxrichtextprinting"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextrange.html#wxrichtextrange"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextPrintout</H2>
+<P>
+This class implements print layout for <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>. Instead of using it directly, you
+should normally use the <A HREF="wx_wxrichtextprinting.html#wxrichtextprinting">wxRichTextPrinting</A> class.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxprintout.html#wxprintout">wxPrintout</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextprint.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextprintoutwxrichtextprintout">wxRichTextPrintout::wxRichTextPrintout</A><BR>
+<A HREF="#wxrichtextprintoutcalculatescaling">wxRichTextPrintout::CalculateScaling</A><BR>
+<A HREF="#wxrichtextprintoutgetheaderfooterdata">wxRichTextPrintout::GetHeaderFooterData</A><BR>
+<A HREF="#wxrichtextprintoutgetpageinfo">wxRichTextPrintout::GetPageInfo</A><BR>
+<A HREF="#wxrichtextprintoutgetrichtextbuffer">wxRichTextPrintout::GetRichTextBuffer</A><BR>
+<A HREF="#wxrichtextprintouthaspage">wxRichTextPrintout::HasPage</A><BR>
+<A HREF="#wxrichtextprintoutonprepareprinting">wxRichTextPrintout::OnPreparePrinting</A><BR>
+<A HREF="#wxrichtextprintoutonprintpage">wxRichTextPrintout::OnPrintPage</A><BR>
+<A HREF="#wxrichtextprintoutsetheaderfooterdata">wxRichTextPrintout::SetHeaderFooterData</A><BR>
+<A HREF="#wxrichtextprintoutsetmargins">wxRichTextPrintout::SetMargins</A><BR>
+<A HREF="#wxrichtextprintoutsetrichtextbuffer">wxRichTextPrintout::SetRichTextBuffer</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextprintoutwxrichtextprintout"></A>
+<H3>wxRichTextPrintout::wxRichTextPrintout</H3>
+<P>
+<B></B> <B>wxRichTextPrintout</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title = wxT("Printout")</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxrichtextprintoutcalculatescaling"></A>
+<H3>wxRichTextPrintout::CalculateScaling</H3>
+<P>
+<B>void</B> <B>CalculateScaling</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>* </B></B><I>dc</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>textRect</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>headerRect</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>footerRect</I>)<P>
+Calculates scaling and text, header and footer rectangles.<P>
+
+<HR>
+<A NAME="wxrichtextprintoutgetheaderfooterdata"></A>
+<H3>wxRichTextPrintout::GetHeaderFooterData</H3>
+<P>
+<B>const <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A>&</B> </B> <B>GetHeaderFooterData</B>() <B>const</B><P>
+Returns the header and footer data associated with the printout.<P>
+
+<HR>
+<A NAME="wxrichtextprintoutgetpageinfo"></A>
+<H3>wxRichTextPrintout::GetPageInfo</H3>
+<P>
+<B>void</B> <B>GetPageInfo</B>(<B>int* </B><I>minPage</I>, <B>int* </B><I>maxPage</I>, <B>int* </B><I>selPageFrom</I>, <B>int* </B><I>selPageTo</I>)<P>
+Gets the page information.<P>
+
+<HR>
+<A NAME="wxrichtextprintoutgetrichtextbuffer"></A>
+<H3>wxRichTextPrintout::GetRichTextBuffer</H3>
+<P>
+<B><A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>*</B> </B> <B>GetRichTextBuffer</B>() <B>const</B><P>
+Returns a pointer to the buffer being rendered.<P>
+
+<HR>
+<A NAME="wxrichtextprintouthaspage"></A>
+<H3>wxRichTextPrintout::HasPage</H3>
+<P>
+<B>bool</B> <B>HasPage</B>(<B>int </B><I>page</I>)<P>
+Returns <TT>true</TT> if the given page exists in the printout.<P>
+
+<HR>
+<A NAME="wxrichtextprintoutonprepareprinting"></A>
+<H3>wxRichTextPrintout::OnPreparePrinting</H3>
+<P>
+<B>void</B> <B>OnPreparePrinting</B>()<P>
+Prepares for printing, laying out the buffer and calculating pagination.<P>
+
+<HR>
+<A NAME="wxrichtextprintoutonprintpage"></A>
+<H3>wxRichTextPrintout::OnPrintPage</H3>
+<P>
+<B>bool</B> <B>OnPrintPage</B>(<B>int </B><I>page</I>)<P>
+Does the actual printing for this page.<P>
+
+<HR>
+<A NAME="wxrichtextprintoutsetheaderfooterdata"></A>
+<H3>wxRichTextPrintout::SetHeaderFooterData</H3>
+<P>
+<B>void</B> <B>SetHeaderFooterData</B>(<B>const <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A>& </B></B><I>data</I>)<P>
+Sets the header and footer data associated with the printout.<P>
+
+<HR>
+<A NAME="wxrichtextprintoutsetmargins"></A>
+<H3>wxRichTextPrintout::SetMargins</H3>
+<P>
+<B>void</B> <B>SetMargins</B>(<B>int </B><I>top = 252</I>, <B>int </B><I>bottom = 252</I>, <B>int </B><I>left = 252</I>, <B>int </B><I>right = 252</I>)<P>
+Sets margins in 10ths of millimetre. Defaults to 1 inch for margins.<P>
+
+<HR>
+<A NAME="wxrichtextprintoutsetrichtextbuffer"></A>
+<H3>wxRichTextPrintout::SetRichTextBuffer</H3>
+<P>
+<B>void</B> <B>SetRichTextBuffer</B>(<B><A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>* </B></B><I>buffer</I>)<P>
+Sets the buffer to print. wxRichTextPrintout does not manage this pointer; it should
+be managed by the calling code, such as wxRichTextPrinting.<P>
+
+</FONT></BODY></HTML>

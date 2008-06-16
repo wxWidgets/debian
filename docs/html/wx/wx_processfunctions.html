@@ -1,0 +1,221 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Process control functions</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="processfunctions"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_appinifunctions.html#appinifunctions"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_threadfunctions.html#threadfunctions"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Process control functions</H2>
+<P>
+The functions in this section are used to launch or terminate the other
+processes.<P>
+
+<A HREF="#wxexecute">::wxExecute</A><BR>
+<A HREF="#wxexit">::wxExit</A><BR>
+<A HREF="#wxkill">::wxKill</A><BR>
+<A HREF="#wxgetprocessid">::wxGetProcessId</A><BR>
+<A HREF="#wxshell">::wxShell</A><BR>
+<A HREF="#wxshutdown">::wxShutdown</A><BR>
+<P>
+
+<HR>
+<A NAME="wxexecute"></A>
+<H3>::wxExecute</H3>
+<P>
+<B>long</B> <B>wxExecute</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>command</I>, <B>int </B><I>sync = wxEXEC_ASYNC</I>, <B><A HREF="wx_wxprocess.html#wxprocess">wxProcess</A> *</B></B><I>callback = NULL</I>)<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this function is called <TT>Wx::ExecuteCommand</TT><P>
+<B>long</B> <B>wxExecute</B>(<B>char **</B><I>argv</I>, <B>int </B><I>flags = wxEXEC_ASYNC</I>, <B><A HREF="wx_wxprocess.html#wxprocess">wxProcess</A> *</B></B><I>callback = NULL</I>)<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this function is called <TT>Wx::ExecuteArgs</TT><P>
+<B>long</B> <B>wxExecute</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>command</I>, <B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>output</I>, <B>int </B><I>flags = 0</I>)<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this function is called <TT>Wx::ExecuteStdout</TT> and it
+only takes the <TT>command</TT> argument,
+and returns a 2-element list <TT>( status, output )</TT>, where <TT>output</TT> is
+an array reference.<P>
+<B>long</B> <B>wxExecute</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>command</I>, <B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>output</I>, <B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>errors</I>, <B>int </B><I>flags = 0</I>)<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this function is called <TT>Wx::ExecuteStdoutStderr</TT>
+and it only takes the <TT>command</TT> argument,
+and returns a 3-element list <TT>( status, output, errors )</TT>, where
+<TT>output</TT> and <TT>errors</TT> are array references.<P>
+Executes another program in Unix or Windows.<P>
+The first form takes a command string, such as <TT>"emacs file.txt"</TT>.<P>
+The second form takes an array of values: a command, any number of
+arguments, terminated by NULL.<P>
+The semantics of the third and fourth versions is different from the first two
+and is described in more details below.<P>
+If <I>flags</I> parameter contains <TT>wxEXEC_ASYNC</TT> flag (the default), flow
+of control immediately returns. If it contains <TT>wxEXEC_SYNC</TT>, the current
+application waits until the other program has terminated.<P>
+In the case of synchronous execution, the return value is the exit code of
+the process (which terminates by the moment the function returns) and will be
+-1 if the process couldn't be started and typically 0 if the process
+terminated successfully. Also, while waiting for the process to
+terminate, wxExecute will call <A HREF="wx_appinifunctions.html#wxyield">wxYield</A>. Because of this, by
+default this function disables all application windows to avoid unexpected
+reentrancies which could result from the users interaction with the program
+while the child process is running. If you are sure that it is safe to not
+disable the program windows, you may pass <TT>wxEXEC_NODISABLE</TT> flag to
+prevent this automatic disabling from happening.<P>
+For asynchronous execution, however, the return value is the process id and
+zero value indicates that the command could not be executed. As an added
+complication, the return value of -1 in this case indicates that we didn't
+launch a new process, but connected to the running one (this can only happen in
+case of using DDE under Windows for command execution). In particular, in this,
+and only this, case the calling code will not get the notification about
+process termination.<P>
+If callback isn't NULL and if execution is asynchronous,
+<A HREF="wx_wxprocess.html#wxprocessonterminate">wxProcess::OnTerminate</A> will be called when
+the process finishes. Specifying this parameter also allows you to redirect the
+standard input and/or output of the process being launched by calling
+<A HREF="wx_wxprocess.html#wxprocessredirect">Redirect</A>. If the child process IO is redirected,
+under Windows the process window is not shown by default (this avoids having to
+flush an unnecessary console for the processes which don't create any windows
+anyhow) but a <TT>wxEXEC_NOHIDE</TT> flag can be used to prevent this from
+happening, i.e. with this flag the child process window will be shown normally.<P>
+Under Unix the flag <TT>wxEXEC_MAKE_GROUP_LEADER</TT> may be used to ensure
+that the new process is a group leader (this will create a new session if
+needed). Calling <A HREF="wx_processfunctions.html#wxkill">wxKill</A> passing wxKILL_CHILDREN will
+kill this process as well as all of its children (except those which have
+started their own session).<P>
+Finally, you may use the third overloaded version of this function to execute
+a process (always synchronously, the contents of <I>flags</I> is or'd with
+<TT>wxEXEC_SYNC</TT>) and capture its output in the array <I>output</I>. The
+fourth version adds the possibility to additionally capture the messages from
+standard error output in the <I>errors</I> array.<P>
+<B>NB:</B> Currently wxExecute() can only be used from the main thread, calling
+this function from another thread will result in an assert failure in debug
+build and won't work.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_processfunctions.html#wxshell">wxShell</A>, <A HREF="wx_wxprocess.html#wxprocess">wxProcess</A>, <A HREF="wx_samples.html#sampleexec">Exec sample</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>command</I><UL><UL>
+The command to execute and any parameters to pass to it as a
+single string.</UL></UL>
+<P>
+<I>argv</I><UL><UL>
+The command to execute should be the first element of this
+array, any additional ones are the command parameters and the array must be
+terminated with a NULL pointer.</UL></UL>
+<P>
+<I>flags</I><UL><UL>
+Combination of bit masks <TT>wxEXEC_ASYNC</TT>,
+<TT>wxEXEC_SYNC</TT> and <TT>wxEXEC_NOHIDE</TT></UL></UL>
+<P>
+<I>callback</I><UL><UL>
+An optional pointer to <A HREF="wx_wxprocess.html#wxprocess">wxProcess</A></UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxexit"></A>
+<H3>::wxExit</H3>
+<P>
+<B>void</B> <B>wxExit</B>()<P>
+Exits application after calling <A HREF="wx_wxapp.html#wxapponexit">wxApp::OnExit</A>.
+Should only be used in an emergency: normally the top-level frame
+should be deleted (after deleting all other frames) to terminate the
+application. See <A HREF="wx_wxcloseevent.html#wxcloseevent">wxCloseEvent</A> and <A HREF="wx_wxapp.html#wxapp">wxApp</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/app.h&gt;<P>
+
+
+<HR>
+<A NAME="wxkill"></A>
+<H3>::wxKill</H3>
+<P>
+<B>int</B> <B>wxKill</B>(<B>long</B><I> pid</I>, <B>int</B><I> sig = wxSIGTERM</I>, <B>wxKillError </B><I>*rc = NULL</I>, <B>int </B><I>flags = 0</I>)<P>
+Equivalent to the Unix kill function: send the given signal <I>sig</I> to the
+process with PID <I>pid</I>. The valid signal values are<P>
+<PRE>
+enum wxSignal
+{
+    wxSIGNONE = 0,  // verify if the process exists under Unix
+    wxSIGHUP,
+    wxSIGINT,
+    wxSIGQUIT,
+    wxSIGILL,
+    wxSIGTRAP,
+    wxSIGABRT,
+    wxSIGEMT,
+    wxSIGFPE,
+    wxSIGKILL,      // forcefully kill, dangerous!
+    wxSIGBUS,
+    wxSIGSEGV,
+    wxSIGSYS,
+    wxSIGPIPE,
+    wxSIGALRM,
+    wxSIGTERM       // terminate the process gently
+};
+</PRE>
+<TT>wxSIGNONE</TT>, <TT>wxSIGKILL</TT> and <TT>wxSIGTERM</TT> have the same meaning
+under both Unix and Windows but all the other signals are equivalent to
+<TT>wxSIGTERM</TT> under Windows.<P>
+Returns 0 on success, -1 on failure. If <I>rc</I> parameter is not NULL, it will
+be filled with an element of <TT>wxKillError</TT> enum:<P>
+<PRE>
+enum wxKillError
+{
+    wxKILL_OK,              // no error
+    wxKILL_BAD_SIGNAL,      // no such signal
+    wxKILL_ACCESS_DENIED,   // permission denied
+    wxKILL_NO_PROCESS,      // no such process
+    wxKILL_ERROR            // another, unspecified error
+};
+</PRE>
+The <I>flags</I> parameter can be wxKILL_NOCHILDREN (the default),
+or wxKILL_CHILDREN, in which case the child processes of this
+process will be killed too. Note that under Unix, for wxKILL_CHILDREN
+to work you should have created the process by passing wxEXEC_MAKE_GROUP_LEADER
+to wxExecute.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxprocess.html#wxprocesskill">wxProcess::Kill</A>,
+<A HREF="wx_wxprocess.html#wxprocessexists">wxProcess::Exists</A>,
+<A HREF="wx_samples.html#sampleexec">Exec sample</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetprocessid"></A>
+<H3>::wxGetProcessId</H3>
+<P>
+<B>unsigned long</B> <B>wxGetProcessId</B>()<P>
+Returns the number uniquely identifying the current process in the system.<P>
+If an error occurs, 0 is returned.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxshell"></A>
+<H3>::wxShell</H3>
+<P>
+<B>bool</B> <B>wxShell</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>command = NULL</I>)<P>
+Executes a command in an interactive shell window. If no command is
+specified, then just the shell is spawned.<P>
+See also <A HREF="wx_processfunctions.html#wxexecute">wxExecute</A>, <A HREF="wx_samples.html#sampleexec">Exec sample</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxshutdown"></A>
+<H3>::wxShutdown</H3>
+<P>
+<B>bool</B> <B>wxShutdown</B>(<B>wxShutdownFlags</B><I>flags</I>)<P>
+This function shuts down or reboots the computer depending on the value of the
+<I>flags</I>. Please notice that doing this requires the corresponding access
+rights (superuser under Unix, <TT>SE_SHUTDOWN</TT> privilege under Windows NT)
+and that this function is only implemented under Unix and Win32.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>flags</I><UL><UL>
+Either <TT>wxSHUTDOWN_POWEROFF</TT> or <TT>wxSHUTDOWN_REBOOT</TT></UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Returns</FONT></B><P>
+<TT>true</TT> on success, <TT>false</TT> if an error occurred.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+<P>
+
+</FONT></BODY></HTML>

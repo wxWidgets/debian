@@ -1,0 +1,174 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGraphicsPath</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgraphicspath"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgraphicsobject.html#wxgraphicsobject"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgraphicspen.html#wxgraphicspen"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGraphicsPath</H2>
+<P>
+A wxGraphicsPath is a native representation of an geometric path. The contents are specific an private to the respective renderer. Instances are ref counted and can 
+therefore be assigned as usual. The only way to get a valid instance is via a CreatePath call on the graphics context or the renderer instance.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxgraphicsobject.html#wxgraphicsobject">wxGraphicsObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/graphics.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgraphicspathmovetopoint">wxGraphicsPath::MoveToPoint</A><BR>
+<A HREF="#wxgraphicspathaddarc">wxGraphicsPath::AddArc</A><BR>
+<A HREF="#wxgraphicspathaddarctopoint">wxGraphicsPath::AddArcToPoint</A><BR>
+<A HREF="#wxgraphicspathaddcircle">wxGraphicsPath::AddCircle</A><BR>
+<A HREF="#wxgraphicspathaddcurvetopoint">wxGraphicsPath::AddCurveToPoint</A><BR>
+<A HREF="#wxgraphicspathaddellipse">wxGraphicsPath::AddEllipse</A><BR>
+<A HREF="#wxgraphicspathaddlinetopoint">wxGraphicsPath::AddLineToPoint</A><BR>
+<A HREF="#wxgraphicspathaddpath">wxGraphicsPath::AddPath</A><BR>
+<A HREF="#wxgraphicspathaddquadcurvetopoint">wxGraphicsPath::AddQuadCurveToPoint</A><BR>
+<A HREF="#wxgraphicspathaddrectangle">wxGraphicsPath::AddRectangle</A><BR>
+<A HREF="#wxgraphicspathaddroundedrectangle">wxGraphicsPath::AddRoundedRectangle</A><BR>
+<A HREF="#wxgraphicspathclosesubpath">wxGraphicsPath::CloseSubpath</A><BR>
+<A HREF="#wxgraphicspathcontains">wxGraphicsPath::Contains</A><BR>
+<A HREF="#wxgraphicspathgetbox">wxGraphicsPath::GetBox</A><BR>
+<A HREF="#wxgraphicspathgetcurrentpoint">wxGraphicsPath::GetCurrentPoint</A><BR>
+<A HREF="#wxgraphicspathtransform">wxGraphicsPath::Transform</A><BR>
+<A HREF="#wxgraphicspathgetnativepath">wxGraphicsPath::GetNativePath</A><BR>
+<A HREF="#wxgraphicspathungetnativepath">wxGraphicsPath::UnGetNativePath</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgraphicspathmovetopoint"></A>
+<H3>wxGraphicsPath::MoveToPoint</H3>
+<P>
+<B>void</B> <B>MoveToPoint</B>(<B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>)<P>
+<B>void</B> <B>MoveToPoint</B>(<B>const wxPoint2DDouble&amp; </B><I>p</I>)<P>
+Begins a new subpath at (x,y)<P>
+
+<HR>
+<A NAME="wxgraphicspathaddarc"></A>
+<H3>wxGraphicsPath::AddArc</H3>
+<P>
+<B>void</B> <B>AddArc</B>(<B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>wxDouble </B><I>r</I>, <B>wxDouble </B><I>startAngle</I>, <B>wxDouble </B><I>endAngle</I>,
+ <B>bool </B><I>clockwise</I>)<P>
+Adds an arc of a circle centering at (x,y) with radius (r) from startAngle to endAngle.<P>
+<B>void</B> <B>AddArc</B>(<B>const wxPoint2DDouble&amp; </B><I>c</I>, <B>wxDouble </B><I>r</I>, <B>wxDouble </B><I>startAngle</I>, <B>wxDouble </B><I>endAngle</I>, 
+<B>bool </B><I>clockwise</I>)<P>
+
+<HR>
+<A NAME="wxgraphicspathaddarctopoint"></A>
+<H3>wxGraphicsPath::AddArcToPoint</H3>
+<P>
+<B>void</B> <B>AddArcToPoint</B>(<B>wxDouble </B><I>x1</I>, <B>wxDouble </B><I>y1</I>, <B>wxDouble </B><I>x2</I>, <B>wxDouble </B><I>y2</I>, <B>wxDouble </B><I>r</I>)<P>
+Appends a an arc to two tangents connecting (current) to (x1,y1) and (x1,y1) to (x2,y2), also a straight line from (current) to (x1,y1).<P>
+
+<HR>
+<A NAME="wxgraphicspathaddcircle"></A>
+<H3>wxGraphicsPath::AddCircle</H3>
+<P>
+<B>void</B> <B>AddCircle</B>(<B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>wxDouble </B><I>r</I>)<P>
+Appends a circle around (x,y) with radius r as a new closed subpath.<P>
+
+<HR>
+<A NAME="wxgraphicspathaddcurvetopoint"></A>
+<H3>wxGraphicsPath::AddCurveToPoint</H3>
+<P>
+<B>void</B> <B>AddCurveToPoint</B>(<B>wxDouble </B><I>cx1</I>, <B>wxDouble </B><I>cy1</I>, <B>wxDouble </B><I>cx2</I>, <B>wxDouble </B><I>cy2</I>, <B>wxDouble </B><I>x</I>, 
+<B>wxDouble </B><I>y</I>)<P>
+Adds a cubic Bezier curve from the current point, using two control points and an end point.<P>
+<B>void</B> <B>AddCurveToPoint</B>(<B>const wxPoint2DDouble&amp; </B><I>c1</I>, <B>const wxPoint2DDouble&amp; </B><I>c2</I>, <B>const wxPoint2DDouble&amp; </B><I>e</I>)<P>
+
+<HR>
+<A NAME="wxgraphicspathaddellipse"></A>
+<H3>wxGraphicsPath::AddEllipse</H3>
+<P>
+<B>void</B> <B>AddEllipse</B>(<B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>wxDouble </B><I>w</I>, <B>wxDouble </B><I>h</I>)<P>
+Appends an ellipse fitting into the passed in rectangle.<P>
+
+<HR>
+<A NAME="wxgraphicspathaddlinetopoint"></A>
+<H3>wxGraphicsPath::AddLineToPoint</H3>
+<P>
+<B>void</B> <B>AddLineToPoint</B>(<B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>)<P>
+Adds a straight line from the current point to (x,y).<P>
+<B>void</B> <B>AddLineToPoint</B>(<B>const wxPoint2DDouble&amp; </B><I>p</I>)<P>
+
+<HR>
+<A NAME="wxgraphicspathaddpath"></A>
+<H3>wxGraphicsPath::AddPath</H3>
+<P>
+<B>void</B> <B>AddPath</B>(<B>const <A HREF="wx_wxgraphicspath.html#wxgraphicspath">wxGraphicsPath</A>& </B></B><I>path</I>)<P>
+Adds another path.<P>
+
+<HR>
+<A NAME="wxgraphicspathaddquadcurvetopoint"></A>
+<H3>wxGraphicsPath::AddQuadCurveToPoint</H3>
+<P>
+<B>void</B> <B>AddQuadCurveToPoint</B>(<B>wxDouble </B><I>cx</I>, <B>wxDouble </B><I>cy</I>, <B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>)<P>
+Adds a quadratic Bezier curve from the current point, using a control point and an end point.<P>
+
+<HR>
+<A NAME="wxgraphicspathaddrectangle"></A>
+<H3>wxGraphicsPath::AddRectangle</H3>
+<P>
+<B>void</B> <B>AddRectangle</B>(<B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>wxDouble </B><I>w</I>, <B>wxDouble </B><I>h</I>)<P>
+Appends a rectangle as a new closed subpath.<P>
+
+<HR>
+<A NAME="wxgraphicspathaddroundedrectangle"></A>
+<H3>wxGraphicsPath::AddRoundedRectangle</H3>
+<P>
+<B>void</B> <B>AddRoundedRectangle</B>(<B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>wxDouble </B><I>w</I>, <B>wxDouble </B><I>h</I>, <B>wxDouble </B><I>radius</I>)<P>
+Appends a rounded rectangle as a new closed subpath.<P>
+
+<HR>
+<A NAME="wxgraphicspathclosesubpath"></A>
+<H3>wxGraphicsPath::CloseSubpath</H3>
+<P>
+<B>void</B> <B>CloseSubpath</B>()<P>
+Closes the current sub-path.<P>
+
+<HR>
+<A NAME="wxgraphicspathcontains"></A>
+<H3>wxGraphicsPath::Contains</H3>
+<P>
+<B>bool</B> <B>Contains</B>(<B>const wxPoint2DDouble&amp; </B><I>c</I>, <B>int </B><I>fillStyle = wxODDEVEN_RULE</I>) <B>const</B><P>
+<B>bool</B> <B>Contains</B>(<B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>int </B><I>fillStyle = wxODDEVEN_RULE</I>) <B>const</B><P>
+Returns true if the point is within the path.<P>
+
+<HR>
+<A NAME="wxgraphicspathgetbox"></A>
+<H3>wxGraphicsPath::GetBox</H3>
+<P>
+<B>wxRect2DDouble</B> <B>GetBox</B>() <B>const</B><P>
+<B>void</B> <B>GetBox</B>(<B>wxDouble* </B><I>x</I>, <B>wxDouble* </B><I>y</I>, <B>wxDouble* </B><I>w</I>, <B>wxDouble* </B><I>h</I>) <B>const</B><P>
+Gets the bounding box enclosing all points (possibly including control points).<P>
+
+<HR>
+<A NAME="wxgraphicspathgetcurrentpoint"></A>
+<H3>wxGraphicsPath::GetCurrentPoint</H3>
+<P>
+<B>void</B> <B>GetCurrentPoint</B>(<B>wxDouble* </B><I>x</I>, <B>wxDouble* </B><I>y</I>) <B>const</B><P>
+<B>wxPoint2DDouble</B> <B>GetCurrentPoint</B>() <B>const</B><P>
+Gets the last point of the current path, (0,0) if not yet set.<P>
+
+<HR>
+<A NAME="wxgraphicspathtransform"></A>
+<H3>wxGraphicsPath::Transform</H3>
+<P>
+<B>void</B> <B>Transform</B>(<B>const <A HREF="wx_wxgraphicsmatrix.html#wxgraphicsmatrix">wxGraphicsMatrix</A>& </B></B><I>matrix</I>)<P>
+Transforms each point of this path by the matrix.<P>
+
+<HR>
+<A NAME="wxgraphicspathgetnativepath"></A>
+<H3>wxGraphicsPath::GetNativePath</H3>
+<P>
+<B>void *</B> <B>GetNativePath</B>() <B>const</B><P>
+Returns the native path (CGPathRef for Core Graphics, Path pointer for GDIPlus and a cairo_path_t pointer for cairo).<P>
+
+<HR>
+<A NAME="wxgraphicspathungetnativepath"></A>
+<H3>wxGraphicsPath::UnGetNativePath</H3>
+<P>
+<B>void</B> <B>UnGetNativePath</B>(<B>void* </B><I>p</I>) <B>const</B><P>
+Gives back the native path returned by GetNativePath() because there might be some deallocations necessary (eg on cairo the native path returned by 
+GetNativePath is newly allocated each time).<P>
+
+</FONT></BODY></HTML>

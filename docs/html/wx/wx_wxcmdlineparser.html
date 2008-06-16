@@ -1,0 +1,560 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCmdLineParser</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcmdlineparser"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcloseevent.html#wxcloseevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcollapsiblepane.html#wxcollapsiblepane"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCmdLineParser</H2>
+<P>
+wxCmdLineParser is a class for parsing the command line.<P>
+It has the following features:<P>
+<OL>
+
+<LI> distinguishes options, switches and parameters; allows option grouping
+<LI> allows both short and long options
+<LI> automatically generates the usage message from the command line description
+<LI> does type checks on the options values (number, date, ...).
+</OL>
+<P>
+To use it you should follow these steps:<P>
+<OL>
+
+<LI> <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserconstruction">construct</A> an object of this class
+giving it the command line to parse and optionally its description or use 
+<TT>AddXXX()</TT> functions later
+<LI> call <TT>Parse()</TT>
+<LI> use <TT>Found()</TT> to retrieve the results
+</OL>
+<P>
+In the documentation below the following terminology is used:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+switch
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This is a boolean option which can be given or not, but
+which doesn't have any value. We use the word switch to distinguish such boolean
+options from more generic options like those described below. For example, 
+<TT>-v</TT> might be a switch meaning "enable verbose mode".
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+option
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Option for us here is something which comes with a value 0
+unlike a switch. For example, <TT>-o:filename</TT> might be an option which allows
+to specify the name of the output file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+parameter
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This is a required program argument.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/cmdline.h&gt;<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+The structure wxCmdLineEntryDesc is used to describe the one command
+line switch, option or parameter. An array of such structures should be passed
+to <A HREF="wx_wxcmdlineparser.html#wxcmdlineparsersetdesc">SetDesc()</A>. Also, the meanings of parameters
+of the <TT>AddXXX()</TT> functions are the same as of the corresponding fields in
+this structure:<P>
+<PRE>
+struct wxCmdLineEntryDesc
+{
+    wxCmdLineEntryType kind;
+    const wxChar *shortName;
+    const wxChar *longName;
+    const wxChar *description;
+    wxCmdLineParamType type;
+    int flags;
+};
+</PRE>
+The type of a command line entity is in the <TT>kind</TT> field and may be one of
+the following constants:<P>
+<FONT SIZE=2><PRE>
+enum wxCmdLineEntryType
+{
+    wxCMD_LINE_SWITCH,
+    wxCMD_LINE_OPTION,
+    wxCMD_LINE_PARAM,
+    wxCMD_LINE_NONE         // use this to terminate the list
+}
+</PRE>
+</FONT><P>
+The field <TT>shortName</TT> is the usual, short, name of the switch or the option.
+<TT>longName</TT> is the corresponding long name or NULL if the option has no long
+name. Both of these fields are unused for the parameters. Both the short and
+long option names can contain only letters, digits and the underscores.<P>
+<TT>description</TT> is used by the <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserusage">Usage()</A> method
+to construct a help message explaining the syntax of the program.<P>
+The possible values of <TT>type</TT> which specifies the type of the value accepted
+by an option or parameter are:<P>
+<FONT SIZE=2><PRE>
+enum wxCmdLineParamType
+{
+    wxCMD_LINE_VAL_STRING,  // default
+    wxCMD_LINE_VAL_NUMBER,
+    wxCMD_LINE_VAL_DATE,
+    wxCMD_LINE_VAL_NONE
+}
+</PRE>
+</FONT><P>
+Finally, the <TT>flags</TT> field is a combination of the following bit masks:<P>
+<FONT SIZE=2><PRE>
+enum
+{
+    wxCMD_LINE_OPTION_MANDATORY = 0x01, // this option must be given
+    wxCMD_LINE_PARAM_OPTIONAL   = 0x02, // the parameter may be omitted
+    wxCMD_LINE_PARAM_MULTIPLE   = 0x04, // the parameter may be repeated
+    wxCMD_LINE_OPTION_HELP      = 0x08, // this option is a help request
+    wxCMD_LINE_NEEDS_SEPARATOR  = 0x10, // must have sep before the value
+}
+</PRE>
+</FONT><P>
+Notice that by default (i.e. if flags are just 0), options are optional (sic)
+and each call to <A HREF="wx_wxcmdlineparser.html#wxcmdlineparseraddparam">AddParam()</A> allows one more
+parameter - this may be changed by giving non-default flags to it, i.e. use 
+<TT>wxCMD_LINE_OPTION_MANDATORY</TT> to require that the option is given and 
+<TT>wxCMD_LINE_PARAM_OPTIONAL</TT> to make a parameter optional. Also, 
+<TT>wxCMD_LINE_PARAM_MULTIPLE</TT> may be specified if the programs accepts a
+variable number of parameters - but it only can be given for the last parameter
+in the command line description. If you use this flag, you will probably need to
+use <A HREF="wx_wxcmdlineparser.html#wxcmdlineparsergetparamcount">GetParamCount</A> to retrieve the number
+of parameters effectively specified after calling 
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserparse">Parse</A>.<P>
+The last flag <TT>wxCMD_LINE_NEEDS_SEPARATOR</TT> can be specified to require a
+separator (either a colon, an equal sign or white space) between the option
+name and its value. By default, no separator is required.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxapp.html#wxappargc">wxApp::argc</A> and <A HREF="wx_wxapp.html#wxappargv">wxApp::argv</A><BR>
+
+console sample<P>
+<B><FONT COLOR="#FF0000">Function groups</FONT></B><P>
+
+<A HREF="#wxcmdlineparserconstruction">Construction</A><BR>
+<A HREF="#wxcmdlineparsercustomization">Customization</A><BR>
+<A HREF="#wxcmdlineparserparsing">Parsing command line</A><BR>
+<A HREF="#wxcmdlineparsergettingresults">Getting results</A><BR>
+<A HREF="#wxcmdlineparserwxcmdlineparserdef">wxCmdLineParser::wxCmdLineParser</A><BR>
+<A HREF="#wxcmdlineparserwxcmdlineparserargc">wxCmdLineParser::wxCmdLineParser</A><BR>
+<A HREF="#wxcmdlineparserwxcmdlineparserstr">wxCmdLineParser::wxCmdLineParser</A><BR>
+<A HREF="#wxcmdlineparserwxcmdlineparserdesc">wxCmdLineParser::wxCmdLineParser</A><BR>
+<A HREF="#wxcmdlineparserwxcmdlineparserdescargc">wxCmdLineParser::wxCmdLineParser</A><BR>
+<A HREF="#wxcmdlineparserwxcmdlineparserdescstr">wxCmdLineParser::wxCmdLineParser</A><BR>
+<A HREF="#wxcmdlineparserconvertstringtoargs">wxCmdLineParser::ConvertStringToArgs</A><BR>
+<A HREF="#wxcmdlineparsersetcmdlineargc">wxCmdLineParser::SetCmdLine</A><BR>
+<A HREF="#wxcmdlineparsersetcmdlinestr">wxCmdLineParser::SetCmdLine</A><BR>
+<A HREF="#wxcmdlineparserdtor">wxCmdLineParser::~wxCmdLineParser</A><BR>
+<A HREF="#wxcmdlineparsersetswitchchars">wxCmdLineParser::SetSwitchChars</A><BR>
+<A HREF="#wxcmdlineparserenablelongoptions">wxCmdLineParser::EnableLongOptions</A><BR>
+<A HREF="#wxcmdlineparserdisablelongoptions">wxCmdLineParser::DisableLongOptions</A><BR>
+<A HREF="#wxcmdlineparserarelongoptionsenabled">wxCmdLineParser::AreLongOptionsEnabled</A><BR>
+<A HREF="#wxcmdlineparsersetlogo">wxCmdLineParser::SetLogo</A><BR>
+<A HREF="#wxcmdlineparsersetdesc">wxCmdLineParser::SetDesc</A><BR>
+<A HREF="#wxcmdlineparseraddswitch">wxCmdLineParser::AddSwitch</A><BR>
+<A HREF="#wxcmdlineparseraddoption">wxCmdLineParser::AddOption</A><BR>
+<A HREF="#wxcmdlineparseraddparam">wxCmdLineParser::AddParam</A><BR>
+<A HREF="#wxcmdlineparserparse">wxCmdLineParser::Parse</A><BR>
+<A HREF="#wxcmdlineparserusage">wxCmdLineParser::Usage</A><BR>
+<A HREF="#wxcmdlineparserfoundswitch">wxCmdLineParser::Found</A><BR>
+<A HREF="#wxcmdlineparserfoundstringoption">wxCmdLineParser::Found</A><BR>
+<A HREF="#wxcmdlineparserfoundintoption">wxCmdLineParser::Found</A><BR>
+<A HREF="#wxcmdlineparserfounddateoption">wxCmdLineParser::Found</A><BR>
+<A HREF="#wxcmdlineparsergetparamcount">wxCmdLineParser::GetParamCount</A><BR>
+<A HREF="#wxcmdlineparsergetparam">wxCmdLineParser::GetParam</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcmdlineparserconstruction"></A>
+<H3>Construction</H3>
+<P>
+Before <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserparse">Parse</A> can be called, the command line
+parser object must have the command line to parse and also the rules saying
+which switches, options and parameters are valid - this is called command line
+description in what follows.<P>
+You have complete freedom of choice as to when specify the required information,
+the only restriction is that it must be done before calling 
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserparse">Parse</A>.<P>
+To specify the command line to parse you may use either one of constructors
+accepting it (<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserwxcmdlineparserargc">wxCmdLineParser(argc, argv)</A> or 
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserwxcmdlineparserdescargc">wxCmdLineParser</A> usually) or,
+if you use <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserwxcmdlineparserdef">the default constructor</A>,
+you can do it later by calling 
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparsersetcmdlineargc">SetCmdLine</A>.<P>
+The same holds for command line description: it can be specified either in
+the constructor (<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserwxcmdlineparserdesc">without command line</A> or 
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserwxcmdlineparserdescargc">together with it</A>) or
+constructed later using either <A HREF="wx_wxcmdlineparser.html#wxcmdlineparsersetdesc">SetDesc</A> or
+combination of <A HREF="wx_wxcmdlineparser.html#wxcmdlineparseraddswitch">AddSwitch</A>, 
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparseraddoption">AddOption</A> and 
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparseraddparam">AddParam</A> methods.<P>
+Using constructors or <A HREF="wx_wxcmdlineparser.html#wxcmdlineparsersetdesc">SetDesc</A> uses a (usually 
+<TT>const static</TT>) table containing the command line description. If you want
+to decide which options to accept during the run-time, using one of the 
+<TT>AddXXX()</TT> functions above might be preferable.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparsercustomization"></A>
+<H3>Customization</H3>
+<P>
+wxCmdLineParser has several global options which may be changed by the
+application. All of the functions described in this section should be called
+before <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserparse">Parse</A>.<P>
+First global option is the support for long (also known as GNU-style) options.
+The long options are the ones which start with two dashes (<TT>"--"</TT>) and look
+like this: <TT>--verbose</TT>, i.e. they generally are complete words and not some
+abbreviations of them. As long options are used by more and more applications,
+they are enabled by default, but may be disabled with 
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserdisablelongoptions">DisableLongOptions</A>.<P>
+Another global option is the set of characters which may be used to start an
+option (otherwise, the word on the command line is assumed to be a parameter).
+Under Unix, <TT>'-'</TT> is always used, but Windows has at least two common
+choices for this: <TT>'-'</TT> and <TT>'/'</TT>. Some programs also use <TT>'+'</TT>.
+The default is to use what suits most the current platform, but may be changed
+with <A HREF="wx_wxcmdlineparser.html#wxcmdlineparsersetswitchchars">SetSwitchChars</A> method.<P>
+Finally, <A HREF="wx_wxcmdlineparser.html#wxcmdlineparsersetlogo">SetLogo</A> can be used to show some
+application-specific text before the explanation given by 
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserusage">Usage</A> function.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserparsing"></A>
+<H3>Parsing command line</H3>
+<P>
+After the command line description was constructed and the desired options were
+set, you can finally call <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserparse">Parse</A> method.
+It returns 0 if the command line was correct and was parsed, -1 if the help
+option was specified (this is a separate case as, normally, the program will
+terminate after this) or a positive number if there was an error during the
+command line parsing.<P>
+In the latter case, the appropriate error message and usage information are
+logged by wxCmdLineParser itself using the standard wxWidgets logging functions.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparsergettingresults"></A>
+<H3>Getting results</H3>
+<P>
+After calling <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserparse">Parse</A> (and if it returned 0),
+you may access the results of parsing using one of overloaded <TT>Found()</TT>
+methods.<P>
+For a simple switch, you will simply call 
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserfoundswitch">Found</A> to determine if the switch was given
+or not, for an option or a parameter, you will call a version of <TT>Found()</TT> 
+which also returns the associated value in the provided variable. All 
+<TT>Found()</TT> functions return true if the switch or option were found in the
+command line or false if they were not specified.<P>
+<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserwxcmdlineparserdef"></A>
+<H3>wxCmdLineParser::wxCmdLineParser</H3>
+<P>
+<B></B> <B>wxCmdLineParser</B>()<P>
+Default constructor. You must use 
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparsersetcmdlineargc">SetCmdLine</A> later.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserwxcmdlineparserargc"></A>
+<H3>wxCmdLineParser::wxCmdLineParser</H3>
+<P>
+<B></B> <B>wxCmdLineParser</B>(<B>int </B><I>argc</I>, <B>char** </B><I>argv</I>)<P>
+<B></B> <B>wxCmdLineParser</B>(<B>int </B><I>argc</I>, <B>wchar_t** </B><I>argv</I>)<P>
+Constructor specifies the command line to parse. This is the traditional
+(Unix) command line format. The parameters <I>argc</I> and <I>argv</I> have the
+same meaning as for <TT>main()</TT> function.<P>
+The second overloaded constructor is only available in Unicode build. The
+first one is available in both ANSI and Unicode modes because under some
+platforms the command line arguments are passed as ASCII strings even to
+Unicode programs.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserwxcmdlineparserstr"></A>
+<H3>wxCmdLineParser::wxCmdLineParser</H3>
+<P>
+<B></B> <B>wxCmdLineParser</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>cmdline</I>)<P>
+Constructor specifies the command line to parse in Windows format. The parameter 
+<I>cmdline</I> has the same meaning as the corresponding parameter of 
+<TT>WinMain()</TT>.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserwxcmdlineparserdesc"></A>
+<H3>wxCmdLineParser::wxCmdLineParser</H3>
+<P>
+<B></B> <B>wxCmdLineParser</B>(<B>const wxCmdLineEntryDesc* </B><I>desc</I>)<P>
+Same as <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserwxcmdlineparserdef">wxCmdLineParser</A>, but also
+specifies the <A HREF="wx_wxcmdlineparser.html#wxcmdlineparsersetdesc">command line description</A>.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserwxcmdlineparserdescargc"></A>
+<H3>wxCmdLineParser::wxCmdLineParser</H3>
+<P>
+<B></B> <B>wxCmdLineParser</B>(<B>const wxCmdLineEntryDesc* </B><I>desc</I>, <B>int </B><I>argc</I>, <B>char** </B><I>argv</I>)<P>
+Same as <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserwxcmdlineparserargc">wxCmdLineParser</A>, but also
+specifies the <A HREF="wx_wxcmdlineparser.html#wxcmdlineparsersetdesc">command line description</A>.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserwxcmdlineparserdescstr"></A>
+<H3>wxCmdLineParser::wxCmdLineParser</H3>
+<P>
+<B></B> <B>wxCmdLineParser</B>(<B>const wxCmdLineEntryDesc* </B><I>desc</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>cmdline</I>)<P>
+Same as <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserwxcmdlineparserstr">wxCmdLineParser</A>, but also
+specifies the <A HREF="wx_wxcmdlineparser.html#wxcmdlineparsersetdesc">command line description</A>.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserconvertstringtoargs"></A>
+<H3>wxCmdLineParser::ConvertStringToArgs</H3>
+<P>
+<B>static <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A></B> </B> <B>ConvertStringToArgs</B>(<B>const wxChar </B><I>*cmdline</I>)<P>
+Breaks down the string containing the full command line in words. The words are
+separated by whitespace. The quotes can be used in the input string to quote
+the white space and the back slashes can be used to quote the quotes.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparsersetcmdlineargc"></A>
+<H3>wxCmdLineParser::SetCmdLine</H3>
+<P>
+<B>void</B> <B>SetCmdLine</B>(<B>int </B><I>argc</I>, <B>char** </B><I>argv</I>)<P>
+<B>void</B> <B>SetCmdLine</B>(<B>int </B><I>argc</I>, <B>wchar_t** </B><I>argv</I>)<P>
+Set command line to parse after using one of the constructors which don't do it.
+The second overload of this function is only available in Unicode build.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserwxcmdlineparserargc">wxCmdLineParser</A><P>
+
+
+<HR>
+<A NAME="wxcmdlineparsersetcmdlinestr"></A>
+<H3>wxCmdLineParser::SetCmdLine</H3>
+<P>
+<B>void</B> <B>SetCmdLine</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>cmdline</I>)<P>
+Set command line to parse after using one of the constructors which don't do it.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserwxcmdlineparserstr">wxCmdLineParser</A><P>
+
+
+<HR>
+<A NAME="wxcmdlineparserdtor"></A>
+<H3>wxCmdLineParser::~wxCmdLineParser</H3>
+<P>
+<B></B> <B>~wxCmdLineParser</B>()<P>
+Frees resources allocated by the object.<P>
+<B>NB:</B> destructor is not virtual, don't use this class polymorphically.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparsersetswitchchars"></A>
+<H3>wxCmdLineParser::SetSwitchChars</H3>
+<P>
+<B>void</B> <B>SetSwitchChars</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>switchChars</I>)<P>
+<I>switchChars</I> contains all characters with which an option or switch may
+start. Default is <TT>"-"</TT> for Unix, <TT>"-/"</TT> for Windows.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserenablelongoptions"></A>
+<H3>wxCmdLineParser::EnableLongOptions</H3>
+<P>
+<B>void</B> <B>EnableLongOptions</B>(<B>bool </B><I>enable = true</I>)<P>
+Enable or disable support for the long options.<P>
+As long options are not (yet) POSIX-compliant, this option allows to disable
+them.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparsercustomization">Customization</A> and <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserarelongoptionsenabled">AreLongOptionsEnabled</A><P>
+
+
+<HR>
+<A NAME="wxcmdlineparserdisablelongoptions"></A>
+<H3>wxCmdLineParser::DisableLongOptions</H3>
+<P>
+<B>void</B> <B>DisableLongOptions</B>()<P>
+Identical to <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserenablelongoptions">EnableLongOptions(false)</A>.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserarelongoptionsenabled"></A>
+<H3>wxCmdLineParser::AreLongOptionsEnabled</H3>
+<P>
+<B>bool</B> <B>AreLongOptionsEnabled</B>()<P>
+Returns true if long options are enabled, otherwise false.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserenablelongoptions">EnableLongOptions</A><P>
+
+
+<HR>
+<A NAME="wxcmdlineparsersetlogo"></A>
+<H3>wxCmdLineParser::SetLogo</H3>
+<P>
+<B>void</B> <B>SetLogo</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>logo</I>)<P>
+<I>logo</I> is some extra text which will be shown by 
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparserusage">Usage</A> method.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparsersetdesc"></A>
+<H3>wxCmdLineParser::SetDesc</H3>
+<P>
+<B>void</B> <B>SetDesc</B>(<B>const wxCmdLineEntryDesc* </B><I>desc</I>)<P>
+Construct the command line description<P>
+Take the command line description from the wxCMD_LINE_NONE terminated table.<P>
+Example of usage:<P>
+<PRE>
+static const wxCmdLineEntryDesc cmdLineDesc[] =
+{
+    { wxCMD_LINE_SWITCH, "v", "verbose", "be verbose" },
+    { wxCMD_LINE_SWITCH, "q", "quiet",   "be quiet" },
+
+    { wxCMD_LINE_OPTION, "o", "output",  "output file" },
+    { wxCMD_LINE_OPTION, "i", "input",   "input dir" },
+    { wxCMD_LINE_OPTION, "s", "size",    "output block size", wxCMD_LINE_VAL_NUMBER },
+    { wxCMD_LINE_OPTION, "d", "date",    "output file date", wxCMD_LINE_VAL_DATE },
+
+    { wxCMD_LINE_PARAM,  NULL, NULL, "input file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_MULTIPLE },
+
+    { wxCMD_LINE_NONE }
+};
+
+wxCmdLineParser parser;
+
+parser.SetDesc(cmdLineDesc);
+</PRE>
+
+
+<HR>
+<A NAME="wxcmdlineparseraddswitch"></A>
+<H3>wxCmdLineParser::AddSwitch</H3>
+<P>
+<B>void</B> <B>AddSwitch</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>lng = wxEmptyString</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>desc = wxEmptyString</I>, <B>int </B><I>flags = 0</I>)<P>
+Add a switch <I>name</I> with an optional long name <I>lng</I> (no long name if it
+is empty, which is default), description <I>desc</I> and flags <I>flags</I> to the
+command line description.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparseraddoption"></A>
+<H3>wxCmdLineParser::AddOption</H3>
+<P>
+<B>void</B> <B>AddOption</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>lng = wxEmptyString</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>desc = wxEmptyString</I>, <B>wxCmdLineParamType </B><I>type = wxCMD_LINE_VAL_STRING</I>, <B>int </B><I>flags = 0</I>)<P>
+Add an option <I>name</I> with an optional long name <I>lng</I> (no long name if
+it is empty, which is default) taking a value of the given type (string by
+default) to the command line description.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparseraddparam"></A>
+<H3>wxCmdLineParser::AddParam</H3>
+<P>
+<B>void</B> <B>AddParam</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>desc = wxEmptyString</I>, <B>wxCmdLineParamType </B><I>type = wxCMD_LINE_VAL_STRING</I>, <B>int </B><I>flags = 0</I>)<P>
+Add a parameter of the given <I>type</I> to the command line description.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserparse"></A>
+<H3>wxCmdLineParser::Parse</H3>
+<P>
+<B>int</B> <B>Parse</B>(<B>bool </B><I>giveUsage = <TT>true</TT></I>)<P>
+Parse the command line, return 0 if ok, -1 if <TT>"-h"</TT> or <TT>"--help"</TT> 
+option was encountered and the help message was given or a positive value if a
+syntax error occurred.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>giveUsage</I><UL><UL>
+If <TT>true</TT> (default), the usage message is given if a
+syntax error was encountered while parsing the command line or if help was
+requested. If <TT>false</TT>, only error messages about possible syntax errors
+are given, use <A HREF="wx_wxcmdlineparser.html#wxcmdlineparserusage">Usage</A> to show the usage message
+from the caller if needed.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserusage"></A>
+<H3>wxCmdLineParser::Usage</H3>
+<P>
+<B>void</B> <B>Usage</B>()<P>
+Give the standard usage message describing all program options. It will use the
+options and parameters descriptions specified earlier, so the resulting message
+will not be helpful to the user unless the descriptions were indeed specified.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparsersetlogo">SetLogo</A><P>
+
+
+<HR>
+<A NAME="wxcmdlineparserfoundswitch"></A>
+<H3>wxCmdLineParser::Found</H3>
+<P>
+<B>bool</B> <B>Found</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>) <B>const</B><P>
+Returns true if the given switch was found, false otherwise.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserfoundstringoption"></A>
+<H3>wxCmdLineParser::Found</H3>
+<P>
+<B>bool</B> <B>Found</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>value</I>) <B>const</B><P>
+Returns true if an option taking a string value was found and stores the
+value in the provided pointer (which should not be NULL).<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserfoundintoption"></A>
+<H3>wxCmdLineParser::Found</H3>
+<P>
+<B>bool</B> <B>Found</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>long* </B><I>value</I>) <B>const</B><P>
+Returns true if an option taking an integer value was found and stores
+the value in the provided pointer (which should not be NULL).<P>
+
+
+<HR>
+<A NAME="wxcmdlineparserfounddateoption"></A>
+<H3>wxCmdLineParser::Found</H3>
+<P>
+<B>bool</B> <B>Found</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>* </B></B><I>value</I>) <B>const</B><P>
+Returns true if an option taking a date value was found and stores the
+value in the provided pointer (which should not be NULL).<P>
+
+
+<HR>
+<A NAME="wxcmdlineparsergetparamcount"></A>
+<H3>wxCmdLineParser::GetParamCount</H3>
+<P>
+<B>size_t</B> <B>GetParamCount</B>() <B>const</B><P>
+Returns the number of parameters found. This function makes sense mostly if you
+had used <TT>wxCMD_LINE_PARAM_MULTIPLE</TT> flag.<P>
+
+
+<HR>
+<A NAME="wxcmdlineparsergetparam"></A>
+<H3>wxCmdLineParser::GetParam</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetParam</B>(<B>size_t </B><I>n = 0u</I>) <B>const</B><P>
+Returns the value of Nth parameter (as string only for now).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcmdlineparser.html#wxcmdlineparsergetparamcount">GetParamCount</A><P>
+
+</FONT></BODY></HTML>

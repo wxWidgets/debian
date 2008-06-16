@@ -1,8 +1,19 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Name:        pen.tex
+%% Purpose:     wxPen docs
+%% Author:
+%% Modified by:
+%% Created:
+%% RCS-ID:      $Id: pen.tex 43567 2006-11-21 09:27:10Z RR $
+%% Copyright:   (c) wxWidgets
+%% License:     wxWindows license
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{\class{wxPen}}\label{wxpen}
 
 A pen is a drawing tool for drawing outlines. It is used for drawing
 lines and painting the outline of rectangles, ellipses, etc. It has a
-colour, a width and a style. 
+colour, a width and a style.
 
 \wxheading{Derived from}
 
@@ -48,10 +59,11 @@ get a pointer to a pen by using the global list of pens {\bf
 wxThePenList}, and calling the member function {\bf FindOrCreatePen}.
 See the entry for \helpref{wxPenList}{wxpenlist}.
 
-wxPen uses a reference counting system, so assignments between brushes are very
-cheap. You can therefore use actual wxPen objects instead of pointers without
-efficiency problems. Once one wxPen object changes its data it will create its
-own pen data internally so that other pens, which previously shared the
+This class uses \helpref{reference counting and copy-on-write}{trefcount}
+internally so that assignments between two instances of this class are very
+cheap. You can therefore use actual objects instead of pointers without
+efficiency problems. If an instance of this class is changed it will create
+its own data internally so that other instances, which previously shared the
 data using the reference counting, are not affected.
 
 %TODO: an overview for wxPen.
@@ -65,7 +77,7 @@ data using the reference counting, are not affected.
 
 \func{}{wxPen}{\void}
 
-Default constructor. The pen will be uninitialised, and \helpref{wxPen::Ok}{wxpenok} will
+Default constructor. The pen will be uninitialised, and \helpref{wxPen:IsOk}{wxpenisok} will
 return false.
 
 \func{}{wxPen}{\param{const wxColour\&}{ colour}, \param{int}{ width = $1$}, \param{int}{ style = {\tt wxSOLID}}}
@@ -82,7 +94,7 @@ Constructs a stippled pen from a stipple bitmap and a width.
 
 \func{}{wxPen}{\param{const wxPen\&}{ pen}}
 
-Copy constructor. This uses reference counting so is a cheap operation.
+Copy constructor, uses \helpref{reference counting}{trefcount}.
 
 \wxheading{Parameters}
 
@@ -143,11 +155,9 @@ is found in the colour database.
 \func{}{\destruct{wxPen}}{\void}
 
 Destructor.
+See \helpref{reference-counted object destruction}{refcountdestruct} for more info.
 
 \wxheading{Remarks}
-
-The destructor may not delete the underlying pen object of the native windowing
-system, since wxBrush uses a reference counting system for efficiency.
 
 Although all remaining pens are deleted when the application exits,
 the application should try to clean up all pens itself. This is because
@@ -228,9 +238,9 @@ Returns the pen width.
 
 \helpref{wxPen::SetWidth}{wxpensetwidth}
 
-\membersection{wxPen::Ok}\label{wxpenok}
+\membersection{wxPen::IsOk}\label{wxpenisok}
 
-\constfunc{bool}{Ok}{\void}
+\constfunc{bool}{IsOk}{\void}
 
 Returns true if the pen is initialised.
 
@@ -251,7 +261,7 @@ Sets the pen cap style, which may be one of {\bf wxCAP\_ROUND}, {\bf wxCAP\_PROJ
 
 \func{void}{SetColour}{\param{const wxString\& }{colourName}}
 
-\func{void}{SetColour}{\param{int}{ red}, \param{int}{ green}, \param{int}{ blue}}
+\func{void}{SetColour}{\param{unsigned char}{ red}, \param{unsigned char}{ green}, \param{unsigned char}{ blue}}
 
 The pen's colour is changed to the given colour.
 
@@ -318,24 +328,21 @@ Sets the pen width.
 
 \func{wxPen\&}{operator $=$}{\param{const wxPen\& }{pen}}
 
-Assignment operator, using reference counting. Returns a reference
-to `this'.
+Assignment operator, using \helpref{reference counting}{trefcount}.
 
 \membersection{wxPen::operator $==$}\label{wxpenequals}
 
 \func{bool}{operator $==$}{\param{const wxPen\& }{pen}}
 
-Equality operator. Two pens are equal if they contain pointers
-to the same underlying pen data. It does not compare each attribute,
-so two independently-created pens using the same parameters will
-fail the test.
+Equality operator.
+See \helpref{reference-counted object comparison}{refcountequality} for more info.
 
 \membersection{wxPen::operator $!=$}\label{wxpennotequals}
 
 \func{bool}{operator $!=$}{\param{const wxPen\& }{pen}}
 
-Inequality operator. Two pens are not equal if they contain pointers
-to different underlying pen data. It does not compare each attribute.
+Inequality operator.
+See \helpref{reference-counted object comparison}{refcountequality} for more info.
 
 \section{\class{wxPenList}}\label{wxpenlist}
 
@@ -379,12 +386,6 @@ backward compatibility with earlier versions of wxWidgets.
 Constructor. The application should not construct its own pen list:
 use the object pointer {\bf wxThePenList}.
 
-\membersection{wxPenList::AddPen}\label{wxpenlistaddpen}
-
-\func{void}{AddPen}{\param{wxPen*}{ pen}}
-
-Used internally by wxWidgets to add a pen to the list.
-
 \membersection{wxPenList::FindOrCreatePen}\label{wxpenlistfindorcreatepen}
 
 \func{wxPen*}{FindOrCreatePen}{\param{const wxColour\& }{colour}, \param{int}{ width}, \param{int}{ style}}
@@ -406,11 +407,4 @@ to the pen list, and returns it.
 \docparam{width}{Width of pen.}
 
 \docparam{style}{Pen style. See \helpref{wxPen::wxPen}{wxpenctor} for a list of styles.}
-
-\membersection{wxPenList::RemovePen}\label{wxpenlistremovepen}
-
-\func{void}{RemovePen}{\param{wxPen*}{ pen}}
-
-Used by wxWidgets to remove a pen from the list.
-
 

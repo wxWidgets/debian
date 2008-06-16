@@ -1,0 +1,103 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextFormattingDialogFactory</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextformattingdialogfactory"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextformattingdialog.html#wxrichtextformattingdialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextFormattingDialogFactory</H2>
+<P>
+This class provides pages for wxRichTextFormattingDialog, and allows other customization of the dialog.
+A default instance of this class is provided automatically. If you wish to change the behaviour of the
+formatting dialog (for example add or replace a page), you may derive from this class,
+override one or more functions, and call the static function wxRichTextFormattingDialog::SetFormattingDialogFactory.
+ 
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextformatdlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxrichtextformattingdialogfactorywxrichtextformattingdialogfactory">wxRichTextFormattingDialogFactory::wxRichTextFormattingDialogFactory</A><BR>
+<A HREF="#wxrichtextformattingdialogfactorydtor">wxRichTextFormattingDialogFactory::~wxRichTextFormattingDialogFactory</A><BR>
+<A HREF="#wxrichtextformattingdialogfactorycreatebuttons">wxRichTextFormattingDialogFactory::CreateButtons</A><BR>
+<A HREF="#wxrichtextformattingdialogfactorycreatepage">wxRichTextFormattingDialogFactory::CreatePage</A><BR>
+<A HREF="#wxrichtextformattingdialogfactorycreatepages">wxRichTextFormattingDialogFactory::CreatePages</A><BR>
+<A HREF="#wxrichtextformattingdialogfactorygetpageid">wxRichTextFormattingDialogFactory::GetPageId</A><BR>
+<A HREF="#wxrichtextformattingdialogfactorygetpageidcount">wxRichTextFormattingDialogFactory::GetPageIdCount</A><BR>
+<A HREF="#wxrichtextformattingdialogfactorygetpageimage">wxRichTextFormattingDialogFactory::GetPageImage</A><BR>
+<A HREF="#wxrichtextformattingdialogfactorysetsheetstyle">wxRichTextFormattingDialogFactory::SetSheetStyle</A><BR>
+<A HREF="#wxrichtextformattingdialogfactoryshowhelp">wxRichTextFormattingDialogFactory::ShowHelp</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogfactorywxrichtextformattingdialogfactory"></A>
+<H3>wxRichTextFormattingDialogFactory::wxRichTextFormattingDialogFactory</H3>
+<P>
+<B></B> <B>wxRichTextFormattingDialogFactory</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogfactorydtor"></A>
+<H3>wxRichTextFormattingDialogFactory::~wxRichTextFormattingDialogFactory</H3>
+<P>
+<B></B> <B>~wxRichTextFormattingDialogFactory</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogfactorycreatebuttons"></A>
+<H3>wxRichTextFormattingDialogFactory::CreateButtons</H3>
+<P>
+<B>virtual bool</B> <B>CreateButtons</B>(<B><A HREF="wx_wxrichtextformattingdialog.html#wxrichtextformattingdialog">wxRichTextFormattingDialog</A>* </B></B><I>dialog</I>)<P>
+Creates the main dialog buttons.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogfactorycreatepage"></A>
+<H3>wxRichTextFormattingDialogFactory::CreatePage</H3>
+<P>
+<B>virtual <A HREF="wx_wxpanel.html#wxpanel">wxPanel</A>*</B> </B> <B>CreatePage</B>(<B>int </B><I>page</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B><A HREF="wx_wxrichtextformattingdialog.html#wxrichtextformattingdialog">wxRichTextFormattingDialog</A>* </B></B><I>dialog</I>)<P>
+Creates a page, given a page identifier.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogfactorycreatepages"></A>
+<H3>wxRichTextFormattingDialogFactory::CreatePages</H3>
+<P>
+<B>virtual bool</B> <B>CreatePages</B>(<B>long </B><I>pages</I>, <B><A HREF="wx_wxrichtextformattingdialog.html#wxrichtextformattingdialog">wxRichTextFormattingDialog</A>* </B></B><I>dialog</I>)<P>
+Creates all pages under the dialog's book control, also calling AddPage.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogfactorygetpageid"></A>
+<H3>wxRichTextFormattingDialogFactory::GetPageId</H3>
+<P>
+<B>virtual int</B> <B>GetPageId</B>(<B>int </B><I>i</I>) <B>const</B><P>
+Enumerate all available page identifiers.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogfactorygetpageidcount"></A>
+<H3>wxRichTextFormattingDialogFactory::GetPageIdCount</H3>
+<P>
+<B>virtual int</B> <B>GetPageIdCount</B>() <B>const</B><P>
+Gets the number of available page identifiers.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogfactorygetpageimage"></A>
+<H3>wxRichTextFormattingDialogFactory::GetPageImage</H3>
+<P>
+<B>virtual int</B> <B>GetPageImage</B>(<B>int </B><I>id</I>) <B>const</B><P>
+Gets the image index for the given page identifier.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogfactorysetsheetstyle"></A>
+<H3>wxRichTextFormattingDialogFactory::SetSheetStyle</H3>
+<P>
+<B>virtual bool</B> <B>SetSheetStyle</B>(<B><A HREF="wx_wxrichtextformattingdialog.html#wxrichtextformattingdialog">wxRichTextFormattingDialog</A>* </B></B><I>dialog</I>)<P>
+Set the property sheet style, called at the start of wxRichTextFormattingDialog::Create.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogfactoryshowhelp"></A>
+<H3>wxRichTextFormattingDialogFactory::ShowHelp</H3>
+<P>
+<B>virtual bool</B> <B>ShowHelp</B>(<B>int </B><I>page</I>, <B><A HREF="wx_wxrichtextformattingdialog.html#wxrichtextformattingdialog">wxRichTextFormattingDialog</A>* </B></B><I>dialog</I>)<P>
+Invokes help for the dialog.<P>
+
+</FONT></BODY></HTML>

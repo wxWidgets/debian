@@ -14,16 +14,12 @@ class TestPanel(wx.Panel):
 
         self.tree = gizmos.TreeListCtrl(self, -1, style =
                                         wx.TR_DEFAULT_STYLE
-                                        #wx.TR_TWIST_BUTTONS
+                                        #| wx.TR_HAS_BUTTONS
+                                        #| wx.TR_TWIST_BUTTONS
                                         #| wx.TR_ROW_LINES
+                                        #| wx.TR_COLUMN_LINES
                                         #| wx.TR_NO_LINES 
                                         | wx.TR_FULL_ROW_HIGHLIGHT
-
-                                        # By default the style will be adjusted on
-                                        # Mac to use twisty buttons and no lines.  If
-                                        # you would rather control this yourself then
-                                        # add this style.
-                                        #| wx.TR_DONT_ADJUST_MAC
                                    )
 
         isz = (16,16)
@@ -79,7 +75,12 @@ class TestPanel(wx.Panel):
         self.tree.Expand(self.root)
 
         self.tree.GetMainWindow().Bind(wx.EVT_RIGHT_UP, self.OnRightUp)
+        self.tree.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnActivate)
 
+
+    def OnActivate(self, evt):
+        self.log.write('OnActivate: %s' % self.tree.GetItemText(evt.GetItem()))
+        
 
     def OnRightUp(self, evt):
         pos = evt.GetPosition()

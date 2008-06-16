@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     20.11.01
-%% RCS-ID:      $Id: tglbtn.tex,v 1.8.2.1 2006/01/19 09:36:57 JS Exp $
+%% RCS-ID:      $Id: tglbtn.tex 39312 2006-05-24 09:42:25Z ABX $
 %% Copyright:   (c) 2001 Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -15,11 +15,8 @@ wxToggleButton is a button that stays pressed when clicked by the user. In
 other words, it is similar to \helpref{wxCheckBox}{wxcheckbox} in
 functionality but looks like a \helpref{wxButton}{wxbutton}.
 
-You can see wxToggleButton in action in the sixth page of the 
+You can see wxToggleButton in action in the sixth page of the
 \helpref{controls}{samplecontrols} sample.
-
-{\bf NB:} This class is not available under wxUniversal ports such
-as wxX11.
 
 \wxheading{Derived from}
 
@@ -42,7 +39,7 @@ See also \helpref{window styles overview}{windowstyles}.
 
 \twocolwidtha{7cm}
 \begin{twocollist}\itemsep=0pt
-\twocolitem{{\bf EVT\_TOGGLEBUTTON(id, func)}}{Handles a button click event.}
+\twocolitem{{\bf EVT\_TOGGLEBUTTON(id, func)}}{Handles a toggle button click event.}
 \end{twocollist}
 
 \wxheading{See also}
@@ -116,10 +113,9 @@ Returns {\tt true} if it is pressed, {\tt false} otherwise.
 
 \func{void}{SetValue}{\param{const bool}{ state}}
 
-Sets the toggle button to the given state. This does not cause a 
+Sets the toggle button to the given state. This does not cause a
 {\tt EVT\_TOGGLEBUTTON} event to be emitted.
 
 \wxheading{Parameters}
 
 \docparam{state}{If {\tt true}, the button is pressed.}
-

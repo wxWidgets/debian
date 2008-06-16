@@ -1,0 +1,350 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlCell</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmlcell"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhelpprovider.html#wxhelpprovider"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmlcolourcell.html#wxhtmlcolourcell"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlCell</H2>
+<P>
+Internal data structure. It represents fragments of parsed HTML
+page, the so-called <B>cell</B> - a word, picture, table, horizontal line and so on.
+It is used by <A HREF="wx_wxhtmlwindow.html#wxhtmlwindow">wxHtmlWindow</A> and 
+<A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparser">wxHtmlWinParser</A> to represent HTML page in memory.<P>
+You can divide cells into two groups : <I>visible</I> cells with non-zero width and
+height and <I>helper</I> cells (usually with zero width and height) that
+perform special actions such as color or font change.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/htmlcell.h&gt;<P>
+<B><FONT COLOR="#FF0000">See Also</FONT></B><P>
+<A HREF="wx_wxhtml.html#cells">Cells Overview</A>,
+<A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercell">wxHtmlContainerCell</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmlcellwxhtmlcell">wxHtmlCell::wxHtmlCell</A><BR>
+<A HREF="#wxhtmlcelladjustpagebreak">wxHtmlCell::AdjustPagebreak</A><BR>
+<A HREF="#wxhtmlcelldraw">wxHtmlCell::Draw</A><BR>
+<A HREF="#wxhtmlcelldrawinvisible">wxHtmlCell::DrawInvisible</A><BR>
+<A HREF="#wxhtmlcellfind">wxHtmlCell::Find</A><BR>
+<A HREF="#wxhtmlcellgetdescent">wxHtmlCell::GetDescent</A><BR>
+<A HREF="#wxhtmlcellgetfirstchild">wxHtmlCell::GetFirstChild</A><BR>
+<A HREF="#wxhtmlcellgetheight">wxHtmlCell::GetHeight</A><BR>
+<A HREF="#wxhtmlcellgetid">wxHtmlCell::GetId</A><BR>
+<A HREF="#wxhtmlcellgetlink">wxHtmlCell::GetLink</A><BR>
+<A HREF="#wxhtmlcellgetmousecursor">wxHtmlCell::GetMouseCursor</A><BR>
+<A HREF="#wxhtmlcellgetnext">wxHtmlCell::GetNext</A><BR>
+<A HREF="#wxhtmlcellgetparent">wxHtmlCell::GetParent</A><BR>
+<A HREF="#wxhtmlcellgetposx">wxHtmlCell::GetPosX</A><BR>
+<A HREF="#wxhtmlcellgetposy">wxHtmlCell::GetPosY</A><BR>
+<A HREF="#wxhtmlcellgetwidth">wxHtmlCell::GetWidth</A><BR>
+<A HREF="#wxhtmlcelllayout">wxHtmlCell::Layout</A><BR>
+<A HREF="#wxhtmlcellprocessmouseclick">wxHtmlCell::ProcessMouseClick</A><BR>
+<A HREF="#wxhtmlcellsetid">wxHtmlCell::SetId</A><BR>
+<A HREF="#wxhtmlcellsetlink">wxHtmlCell::SetLink</A><BR>
+<A HREF="#wxhtmlcellsetnext">wxHtmlCell::SetNext</A><BR>
+<A HREF="#wxhtmlcellsetparent">wxHtmlCell::SetParent</A><BR>
+<A HREF="#wxhtmlcellsetpos">wxHtmlCell::SetPos</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlcellwxhtmlcell"></A>
+<H3>wxHtmlCell::wxHtmlCell</H3>
+<P>
+<B></B> <B>wxHtmlCell</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxhtmlcelladjustpagebreak"></A>
+<H3>wxHtmlCell::AdjustPagebreak</H3>
+<P>
+<B>virtual bool</B> <B>AdjustPagebreak</B>(<B>int * </B><I>pagebreak</I>)<P>
+This method is used to adjust pagebreak position. The parameter is
+variable that contains y-coordinate of page break (= horizontal line that
+should not be crossed by words, images etc.). If this cell cannot be divided
+into two pieces (each one on another page) then it moves the pagebreak
+few pixels up.<P>
+Returns true if pagebreak was modified, false otherwise<P>
+Usage: 
+<PRE>
+while (container-&gt;AdjustPagebreak(&p)) {}
+</PRE>
+
+<HR>
+<A NAME="wxhtmlcelldraw"></A>
+<H3>wxHtmlCell::Draw</H3>
+<P>
+<B>virtual void</B> <B>Draw</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>int </B><I>x</I>, <B>int </B><I>y</I>, <B>int </B><I>view_y1</I>, <B>int </B><I>view_y2</I>)<P>
+Renders the cell.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>dc</I><UL><UL>
+Device context to which the cell is to be drawn</UL></UL>
+<P>
+<I>x,y</I><UL><UL>
+Coordinates of parent's upper left corner (origin). You must
+add this to m_PosX,m_PosY when passing coordinates to dc's methods
+Example : <TT>dc -&gt; DrawText("hello", x + m_PosX, y + m_PosY)</TT></UL></UL>
+<P>
+<I>view_y1</I><UL><UL>
+y-coord of the first line visible in window. This is
+used to optimize rendering speed</UL></UL>
+<P>
+<I>view_y2</I><UL><UL>
+y-coord of the last line visible in window. This is
+used to optimize rendering speed</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmlcelldrawinvisible"></A>
+<H3>wxHtmlCell::DrawInvisible</H3>
+<P>
+<B>virtual void</B> <B>DrawInvisible</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>int </B><I>x</I>, <B>int </B><I>y</I>)<P>
+This method is called instead of <A HREF="wx_wxhtmlcell.html#wxhtmlcelldraw">Draw</A> when the
+cell is certainly out of the screen (and thus invisible). This is not
+nonsense - some tags (like <A HREF="wx_wxhtmlcolourcell.html#wxhtmlcolourcell">wxHtmlColourCell</A>
+or font setter) must be drawn even if they are invisible!<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>dc</I><UL><UL>
+Device context to which the cell is to be drawn</UL></UL>
+<P>
+<I>x,y</I><UL><UL>
+Coordinates of parent's upper left corner. You must
+add this to m_PosX,m_PosY when passing coordinates to dc's methods
+Example : <TT>dc -&gt; DrawText("hello", x + m_PosX, y + m_PosY)</TT></UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmlcellfind"></A>
+<H3>wxHtmlCell::Find</H3>
+<P>
+<B>virtual const <A HREF="wx_wxhtmlcell.html#wxhtmlcell">wxHtmlCell</A>*</B> </B> <B>Find</B>(<B>int </B><I>condition</I>, <B>const void* </B><I>param</I>)<P>
+Returns pointer to itself if this cell matches condition (or if any of the cells
+following in the list matches), NULL otherwise.
+(In other words if you call top-level container's Find it will
+return pointer to the first cell that matches the condition)<P>
+It is recommended way how to obtain pointer to particular cell or
+to cell of some type (e.g. wxHtmlAnchorCell reacts on
+wxHTML_COND_ISANCHOR condition)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>condition</I><UL><UL>
+Unique integer identifier of condition</UL></UL>
+<P>
+<I>param</I><UL><UL>
+Optional parameters</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Defined conditions</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_COND_ISANCHOR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Finds particular anchor. 
+<I>param</I> is pointer to wxString with name of the anchor.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_COND_USER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+User-defined conditions start
+from this number.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="wxhtmlcellgetdescent"></A>
+<H3>wxHtmlCell::GetDescent</H3>
+<P>
+<B>int</B> <B>GetDescent</B>() <B>const</B><P>
+Returns descent value of the cell (m_Descent member). 
+See explanation:<P>
+<img src="descent.gif">
+<P>
+
+<HR>
+<A NAME="wxhtmlcellgetfirstchild"></A>
+<H3>wxHtmlCell::GetFirstChild</H3>
+<P>
+<B><A HREF="wx_wxhtmlcell.html#wxhtmlcell">wxHtmlCell</A>*</B> </B> <B>GetFirstChild</B>()<P>
+Returns pointer to the first cell in the list.
+You can then use child's <A HREF="wx_wxhtmlcell.html#wxhtmlcellgetnext">GetNext</A>
+method to obtain pointer to the next cell in list.<P>
+<B>Note:</B> This shouldn't be used by the end user. If you need some way of
+finding particular cell in the list, try <A HREF="wx_wxhtmlcell.html#wxhtmlcellfind">Find</A> method
+instead.<P>
+
+<HR>
+<A NAME="wxhtmlcellgetheight"></A>
+<H3>wxHtmlCell::GetHeight</H3>
+<P>
+<B>int</B> <B>GetHeight</B>() <B>const</B><P>
+Returns height of the cell (m_Height member).<P>
+
+<HR>
+<A NAME="wxhtmlcellgetid"></A>
+<H3>wxHtmlCell::GetId</H3>
+<P>
+<B>virtual <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetId</B>() <B>const</B><P>
+Returns unique cell identifier if there is any, empty string otherwise.<P>
+
+<HR>
+<A NAME="wxhtmlcellgetlink"></A>
+<H3>wxHtmlCell::GetLink</H3>
+<P>
+<B>virtual <A HREF="wx_wxhtmllinkinfo.html#wxhtmllinkinfo">wxHtmlLinkInfo</A>*</B> </B> <B>GetLink</B>(<B>int </B><I>x = 0</I>, <B>int </B><I>y = 0</I>) <B>const</B><P>
+Returns hypertext link if associated with this cell or NULL otherwise.
+See <A HREF="wx_wxhtmllinkinfo.html#wxhtmllinkinfo">wxHtmlLinkInfo</A>.
+(Note: this makes sense only for visible tags).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>x,y</I><UL><UL>
+Coordinates of position where the user pressed mouse button.
+These coordinates are used e.g. by COLORMAP. Values are relative to the
+upper left corner of THIS cell (i.e. from 0 to m_Width or m_Height)</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmlcellgetmousecursor"></A>
+<H3>wxHtmlCell::GetMouseCursor</H3>
+<P>
+<B>virtual <A HREF="wx_wxcursor.html#wxcursor">wxCursor</A></B> </B> <B>GetMouseCursor</B>(<B>wxHtmlWindowInterface* </B><I>window</I>)<P>
+Returns cursor to show when mouse pointer is over the cell.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>window</I><UL><UL>
+interface to the parent HTML window</UL></UL>
+<P>
+This function is new since wxWidgets version 2.7.0 (before <TT>GetCursor</TT> method served a similar purpose, which is now deprecated).<P>
+
+
+<HR>
+<A NAME="wxhtmlcellgetnext"></A>
+<H3>wxHtmlCell::GetNext</H3>
+<P>
+<B><A HREF="wx_wxhtmlcell.html#wxhtmlcell">wxHtmlCell</A>*</B> </B> <B>GetNext</B>() <B>const</B><P>
+Returns pointer to the next cell in list (see htmlcell.h if you're
+interested in details).<P>
+
+<HR>
+<A NAME="wxhtmlcellgetparent"></A>
+<H3>wxHtmlCell::GetParent</H3>
+<P>
+<B><A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercell">wxHtmlContainerCell</A>*</B> </B> <B>GetParent</B>() <B>const</B><P>
+Returns pointer to parent container.<P>
+
+<HR>
+<A NAME="wxhtmlcellgetposx"></A>
+<H3>wxHtmlCell::GetPosX</H3>
+<P>
+<B>int</B> <B>GetPosX</B>() <B>const</B><P>
+Returns X position within parent (the value is relative to parent's
+upper left corner). The returned value is meaningful only if
+parent's <A HREF="wx_wxhtmlcell.html#wxhtmlcelllayout">Layout</A> was called before!<P>
+
+<HR>
+<A NAME="wxhtmlcellgetposy"></A>
+<H3>wxHtmlCell::GetPosY</H3>
+<P>
+<B>int</B> <B>GetPosY</B>() <B>const</B><P>
+Returns Y position within parent (the value is relative to parent's
+upper left corner). The returned value is meaningful only if
+parent's <A HREF="wx_wxhtmlcell.html#wxhtmlcelllayout">Layout</A> was called before!<P>
+
+<HR>
+<A NAME="wxhtmlcellgetwidth"></A>
+<H3>wxHtmlCell::GetWidth</H3>
+<P>
+<B>int</B> <B>GetWidth</B>() <B>const</B><P>
+Returns width of the cell (m_Width member).<P>
+
+<HR>
+<A NAME="wxhtmlcelllayout"></A>
+<H3>wxHtmlCell::Layout</H3>
+<P>
+<B>virtual void</B> <B>Layout</B>(<B>int </B><I>w</I>)<P>
+This method performs two actions:<P>
+<OL>
+
+<LI> adjusts the cell's width according to the fact that maximal possible width is <I>w</I>.
+(this has sense when working with horizontal lines, tables etc.)
+<LI> prepares layout (=fill-in m_PosX, m_PosY (and sometimes m_Height) members)
+based on actual width <I>w</I>
+</OL>
+<P>
+It must be called before displaying cells structure because
+m_PosX and m_PosY are undefined (or invalid)
+before calling Layout.<P>
+
+<HR>
+<A NAME="wxhtmlcellprocessmouseclick"></A>
+<H3>wxHtmlCell::ProcessMouseClick</H3>
+<P>
+<B>virtual bool</B> <B>ProcessMouseClick</B>(<B>wxHtmlWindowInterface* </B><I>window</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos</I>, <B>const <A HREF="wx_wxmouseevent.html#wxmouseevent">wxMouseEvent</A>& </B></B><I>event</I>)<P>
+This function is simple event handler. Each time the user clicks mouse button
+over a cell within <A HREF="wx_wxhtmlwindow.html#wxhtmlwindow">wxHtmlWindow</A> this method of that
+cell is called. Default behavior is to call
+<A HREF="wx_wxhtmlwindow.html#wxhtmlwindowloadpage">wxHtmlWindow::LoadPage</A>.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+If you need more "advanced" event handling
+you should use wxHtmlBinderCell instead.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>window</I><UL><UL>
+interface to the parent HTML window</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+coordinates of mouse click (this is relative to cell's origin</UL></UL>
+<P>
+<I>event</I><UL><UL>
+mouse event that triggered the call</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if a link was clicked, <TT>false</TT> otherwise.<P>
+This function is new since wxWidgets version 2.7.0 (before <TT>OnMouseClick</TT> method served a similar purpose).<P>
+
+
+<HR>
+<A NAME="wxhtmlcellsetid"></A>
+<H3>wxHtmlCell::SetId</H3>
+<P>
+<B>void</B> <B>SetId</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>id</I>)<P>
+Sets unique cell identifier. Default value is no identifier, i.e. empty string.<P>
+
+<HR>
+<A NAME="wxhtmlcellsetlink"></A>
+<H3>wxHtmlCell::SetLink</H3>
+<P>
+<B>void</B> <B>SetLink</B>(<B>const <A HREF="wx_wxhtmllinkinfo.html#wxhtmllinkinfo">wxHtmlLinkInfo</A>& </B></B><I>link</I>)<P>
+Sets the hypertext link associated with this cell. (Default value
+is <A HREF="wx_wxhtmllinkinfo.html#wxhtmllinkinfo">wxHtmlLinkInfo</A>("", "") (no link))<P>
+
+<HR>
+<A NAME="wxhtmlcellsetnext"></A>
+<H3>wxHtmlCell::SetNext</H3>
+<P>
+<B>void</B> <B>SetNext</B>(<B><A HREF="wx_wxhtmlcell.html#wxhtmlcell">wxHtmlCell</A> </B></B><I>*cell</I>)<P>
+Sets the next cell in the list. This shouldn't be called by user - it is
+to be used only by <A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercellinsertcell">wxHtmlContainerCell::InsertCell</A>.<P>
+
+<HR>
+<A NAME="wxhtmlcellsetparent"></A>
+<H3>wxHtmlCell::SetParent</H3>
+<P>
+<B>void</B> <B>SetParent</B>(<B><A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercell">wxHtmlContainerCell</A> </B></B><I>*p</I>)<P>
+Sets parent container of this cell. This is called from
+<A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercellinsertcell">wxHtmlContainerCell::InsertCell</A>.<P>
+
+<HR>
+<A NAME="wxhtmlcellsetpos"></A>
+<H3>wxHtmlCell::SetPos</H3>
+<P>
+<B>void</B> <B>SetPos</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>)<P>
+Sets the cell's position within parent container.<P>
+
+</FONT></BODY></HTML>

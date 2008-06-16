@@ -1,0 +1,140 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCheckListBox</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxchecklistbox"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcheckbox.html#wxcheckbox"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxchoice.html#wxchoice"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCheckListBox</H2>
+<P>
+A checklistbox is like a listbox, but allows items to be checked or unchecked.<P>
+When using this class under Windows wxWidgets must be compiled with USE_OWNER_DRAWN set to 1.<P>
+Only the new functions for this class are documented; see also <A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A>.<P>
+Please note that wxCheckListBox uses client data in its implementation,
+and therefore this is not available to the application.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A><BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/checklst.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+See <A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CHECKLISTBOX(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_CHECKLISTBOX_TOGGLED event,
+when an item in the check list box is checked or unchecked.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A>, <A HREF="wx_wxchoice.html#wxchoice">wxChoice</A>, <A HREF="wx_wxcombobox.html#wxcombobox">wxComboBox</A>, <A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A>,
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxchecklistboxctor">wxCheckListBox::wxCheckListBox</A><BR>
+<A HREF="#wxchecklistboxdtor">wxCheckListBox::~wxCheckListBox</A><BR>
+<A HREF="#wxchecklistboxcheck">wxCheckListBox::Check</A><BR>
+<A HREF="#wxchecklistboxischecked">wxCheckListBox::IsChecked</A><BR>
+<P>
+
+<HR>
+<A NAME="wxchecklistboxctor"></A>
+<H3>wxCheckListBox::wxCheckListBox</H3>
+<P>
+<B></B> <B>wxCheckListBox</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxCheckListBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>int</B><I> n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>choices[] = NULL</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "listBox"</I>)<P>
+<B></B> <B>wxCheckListBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "listBox"</I>)<P>
+Constructor, creating and showing a list box.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then the window is sized
+appropriately.</UL></UL>
+<P>
+<I>n</I><UL><UL>
+Number of strings with which to initialise the control.</UL></UL>
+<P>
+<I>choices</I><UL><UL>
+An array of strings with which to initialise the control.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxchecklistbox.html#wxchecklistbox">wxCheckListBox</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxCheckListBox constructor in wxPython reduces the <TT>n</TT>
+and <TT>choices</TT> arguments are to a single argument, which is
+a list of strings.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there is just an array reference in place of <TT>n</TT>
+and <TT>choices</TT>.<P>
+
+<HR>
+<A NAME="wxchecklistboxdtor"></A>
+<H3>wxCheckListBox::~wxCheckListBox</H3>
+<P>
+<B>void</B> <B>~wxCheckListBox</B>()<P>
+Destructor, destroying the list box.<P>
+
+<HR>
+<A NAME="wxchecklistboxcheck"></A>
+<H3>wxCheckListBox::Check</H3>
+<P>
+<B>void</B> <B>Check</B>(<B>int </B><I>item</I>, <B>bool</B><I> check = true</I>)<P>
+Checks the given item. Note that calling this method doesn't result in
+wxEVT_COMMAND_CHECKLISTBOX_TOGGLE being emitted.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>item</I><UL><UL>
+Index of item to check.</UL></UL>
+<P>
+<I>check</I><UL><UL>
+true if the item is to be checked, false otherwise.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxchecklistboxischecked"></A>
+<H3>wxCheckListBox::IsChecked</H3>
+<P>
+<B>bool</B> <B>IsChecked</B>(<B>unsigned int</B><I> item</I>) <B>const</B><P>
+Returns true if the given item is checked, false otherwise.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>item</I><UL><UL>
+Index of item whose check status is to be returned.</UL></UL>
+
+
+</FONT></BODY></HTML>

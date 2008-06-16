@@ -1,0 +1,42 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDbInf</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdbinf"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdbidxdef.html#wxdbidxdef"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdbtable.html#wxdbtable"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDbInf</H2>
+<P>
+Contains information regarding the database connection (datasource name,
+number of tables, etc).  A pointer to a wxDbTableInf is included in this
+class so a program can create a wxDbTableInf array instance to maintain all
+information about all tables in the datasource to have all the datasource's
+information in one memory structure.<P>
+Primarily, this class is used internally by the wxWidgets ODBC classes.<P>
+<PRE>
+    wxChar        catalog[128+1];
+    wxChar        schema[128+1];  // typically means owner of table(s)
+    int           numTables;      // How many tables does this
+                                     datasource have
+    wxDbTableInf *pTableInf;      // Equals a new
+                                     wxDbTableInf[numTables];
+</PRE>
+The constructor for this class initializes all the values to zero, "", or NULL.<P>
+The destructor for this class takes care of deleting the pTableInf member if
+it is non-NULL.<P>
+See the <A HREF="wx_odbcoverview.html#odbcoverview">database classes overview</A> for
+an introduction to using the ODBC classes.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/db.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdbinfinitialize">wxDbInf::Initialize</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdbinfinitialize"></A>
+<H3>wxDbInf::Initialize</H3>
+<P>
+Simply initializes all member variables to a cleared state.  Called by
+the constructor automatically.<P>
+
+</FONT></BODY></HTML>

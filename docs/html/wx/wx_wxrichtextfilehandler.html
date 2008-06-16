@@ -1,0 +1,190 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextFileHandler</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextfilehandler"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextevent.html#wxrichtextevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextformattingdialog.html#wxrichtextformattingdialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextFileHandler</H2>
+<P>
+This is the base class for file handlers, for loading and/or saving content
+associated with a <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextbuffer.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextfilehandlerwxrichtextfilehandler">wxRichTextFileHandler::wxRichTextFileHandler</A><BR>
+<A HREF="#wxrichtextfilehandlercanhandle">wxRichTextFileHandler::CanHandle</A><BR>
+<A HREF="#wxrichtextfilehandlercanload">wxRichTextFileHandler::CanLoad</A><BR>
+<A HREF="#wxrichtextfilehandlercansave">wxRichTextFileHandler::CanSave</A><BR>
+<A HREF="#wxrichtextfilehandlerdoloadfile">wxRichTextFileHandler::DoLoadFile</A><BR>
+<A HREF="#wxrichtextfilehandlerdosavefile">wxRichTextFileHandler::DoSaveFile</A><BR>
+<A HREF="#wxrichtextfilehandlergetencoding">wxRichTextFileHandler::GetEncoding</A><BR>
+<A HREF="#wxrichtextfilehandlergetextension">wxRichTextFileHandler::GetExtension</A><BR>
+<A HREF="#wxrichtextfilehandlergetflags">wxRichTextFileHandler::GetFlags</A><BR>
+<A HREF="#wxrichtextfilehandlergetname">wxRichTextFileHandler::GetName</A><BR>
+<A HREF="#wxrichtextfilehandlergettype">wxRichTextFileHandler::GetType</A><BR>
+<A HREF="#wxrichtextfilehandlerisvisible">wxRichTextFileHandler::IsVisible</A><BR>
+<A HREF="#wxrichtextfilehandlerloadfile">wxRichTextFileHandler::LoadFile</A><BR>
+<A HREF="#wxrichtextfilehandlersavefile">wxRichTextFileHandler::SaveFile</A><BR>
+<A HREF="#wxrichtextfilehandlersetencoding">wxRichTextFileHandler::SetEncoding</A><BR>
+<A HREF="#wxrichtextfilehandlersetextension">wxRichTextFileHandler::SetExtension</A><BR>
+<A HREF="#wxrichtextfilehandlersetflags">wxRichTextFileHandler::SetFlags</A><BR>
+<A HREF="#wxrichtextfilehandlersetname">wxRichTextFileHandler::SetName</A><BR>
+<A HREF="#wxrichtextfilehandlersettype">wxRichTextFileHandler::SetType</A><BR>
+<A HREF="#wxrichtextfilehandlersetvisible">wxRichTextFileHandler::SetVisible</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlerwxrichtextfilehandler"></A>
+<H3>wxRichTextFileHandler::wxRichTextFileHandler</H3>
+<P>
+<B></B> <B>wxRichTextFileHandler</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxEmptyString</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext = wxEmptyString</I>, <B>int </B><I>type = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlercanhandle"></A>
+<H3>wxRichTextFileHandler::CanHandle</H3>
+<P>
+<B>bool</B> <B>CanHandle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>) <B>const</B><P>
+Override this function and return <TT>true</TT> if this handler can we handle <I>filename</I>. By default,
+this function checks the extension.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlercanload"></A>
+<H3>wxRichTextFileHandler::CanLoad</H3>
+<P>
+<B>bool</B> <B>CanLoad</B>() <B>const</B><P>
+Override and return <TT>true</TT> if this handler can load content.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlercansave"></A>
+<H3>wxRichTextFileHandler::CanSave</H3>
+<P>
+<B>bool</B> <B>CanSave</B>() <B>const</B><P>
+Override and return <TT>true</TT> if this handler can save content.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlerdoloadfile"></A>
+<H3>wxRichTextFileHandler::DoLoadFile</H3>
+<P>
+<B>bool</B> <B>DoLoadFile</B>(<B><A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>* </B></B><I>buffer</I>, <B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>)<P>
+Override to load content from <I>stream</I> into <I>buffer</I>.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlerdosavefile"></A>
+<H3>wxRichTextFileHandler::DoSaveFile</H3>
+<P>
+<B>bool</B> <B>DoSaveFile</B>(<B><A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>* </B></B><I>buffer</I>, <B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>)<P>
+Override to save content to <I>stream</I> from <I>buffer</I>.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlergetencoding"></A>
+<H3>wxRichTextFileHandler::GetEncoding</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetEncoding</B>() <B>const</B><P>
+Returns the encoding associated with the handler (if any).<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlergetextension"></A>
+<H3>wxRichTextFileHandler::GetExtension</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetExtension</B>() <B>const</B><P>
+Returns the extension associated with the handler.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlergetflags"></A>
+<H3>wxRichTextFileHandler::GetFlags</H3>
+<P>
+<B>int</B> <B>GetFlags</B>() <B>const</B><P>
+Returns flags that change the behaviour of loading or saving. See the documentation for each
+handler class to see what flags are relevant for each handler.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlergetname"></A>
+<H3>wxRichTextFileHandler::GetName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetName</B>() <B>const</B><P>
+Returns the name of the handler.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlergettype"></A>
+<H3>wxRichTextFileHandler::GetType</H3>
+<P>
+<B>int</B> <B>GetType</B>() <B>const</B><P>
+Returns the type of the handler.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlerisvisible"></A>
+<H3>wxRichTextFileHandler::IsVisible</H3>
+<P>
+<B>bool</B> <B>IsVisible</B>() <B>const</B><P>
+Returns <TT>true</TT> if this handler should be visible to the user.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlerloadfile"></A>
+<H3>wxRichTextFileHandler::LoadFile</H3>
+<P>
+<B>bool</B> <B>LoadFile</B>(<B><A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>* </B></B><I>buffer</I>, <B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>)<P>
+<B>bool</B> <B>LoadFile</B>(<B><A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>* </B></B><I>buffer</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Loads content from a stream or file. Not all handlers will implement file loading.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlersavefile"></A>
+<H3>wxRichTextFileHandler::SaveFile</H3>
+<P>
+<B>bool</B> <B>SaveFile</B>(<B><A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>* </B></B><I>buffer</I>, <B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>)<P>
+<B>bool</B> <B>SaveFile</B>(<B><A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>* </B></B><I>buffer</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Saves content to a stream or file. Not all handlers will implement file saving.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlersetencoding"></A>
+<H3>wxRichTextFileHandler::SetEncoding</H3>
+<P>
+<B>void</B> <B>SetEncoding</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>encoding</I>)<P>
+Sets the encoding to use when saving a file. If empty, a suitable encoding is chosen.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlersetextension"></A>
+<H3>wxRichTextFileHandler::SetExtension</H3>
+<P>
+<B>void</B> <B>SetExtension</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext</I>)<P>
+Sets the default extension to recognise.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlersetflags"></A>
+<H3>wxRichTextFileHandler::SetFlags</H3>
+<P>
+<B>void</B> <B>SetFlags</B>(<B>int </B><I>flags</I>)<P>
+Sets flags that change the behaviour of loading or saving. See the documentation for each
+handler class to see what flags are relevant for each handler.<P>
+You call this function directly if you are using a file handler explicitly (without
+going through the text control or buffer LoadFile/SaveFile API). Or, you can
+call the control or buffer's SetHandlerFlags function to set the flags that will
+be used for subsequent load and save operations.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlersetname"></A>
+<H3>wxRichTextFileHandler::SetName</H3>
+<P>
+<B>void</B> <B>SetName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the name of the handler.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlersettype"></A>
+<H3>wxRichTextFileHandler::SetType</H3>
+<P>
+<B>void</B> <B>SetType</B>(<B>int </B><I>type</I>)<P>
+Sets the handler type.<P>
+
+<HR>
+<A NAME="wxrichtextfilehandlersetvisible"></A>
+<H3>wxRichTextFileHandler::SetVisible</H3>
+<P>
+<B>void</B> <B>SetVisible</B>(<B>bool </B><I>visible</I>)<P>
+Sets whether the handler should be visible to the user (via the application's load and save
+dialogs).<P>
+
+</FONT></BODY></HTML>

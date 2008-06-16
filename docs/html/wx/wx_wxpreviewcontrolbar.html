@@ -1,0 +1,133 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPreviewControlBar</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxpreviewcontrolbar"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpreviewcanvas.html#wxpreviewcanvas"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpreviewframe.html#wxpreviewframe"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPreviewControlBar</H2>
+<P>
+This is the default implementation of the preview control bar, a panel
+with buttons and a zoom control. You can derive a new class from this and
+override some or all member functions to change the behaviour and appearance;
+or you can leave it as it is.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxpanel.html#wxpanel">wxPanel</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/print.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpreviewframe.html#wxpreviewframe">wxPreviewFrame</A>, <A HREF="wx_wxpreviewcanvas.html#wxpreviewcanvas">wxPreviewCanvas</A>,
+<A HREF="wx_wxprintpreview.html#wxprintpreview">wxPrintPreview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxpreviewcontrolbarctor">wxPreviewControlBar::wxPreviewControlbar</A><BR>
+<A HREF="#wxpreviewcontrolbardtor">wxPreviewControlBar::~wxPreviewControlBar</A><BR>
+<A HREF="#wxpreviewcontrolbarcreatebuttons">wxPreviewControlBar::CreateButtons</A><BR>
+<A HREF="#wxpreviewcontrolbargetprintpreview">wxPreviewControlBar::GetPrintPreview</A><BR>
+<A HREF="#wxpreviewcontrolbargetzoomcontrol">wxPreviewControlBar::GetZoomControl</A><BR>
+<A HREF="#wxpreviewcontrolbarsetzoomcontrol">wxPreviewControlBar::SetZoomControl</A><BR>
+<P>
+
+<HR>
+<A NAME="wxpreviewcontrolbarctor"></A>
+<H3>wxPreviewControlBar::wxPreviewControlbar</H3>
+<P>
+<B></B> <B>wxPreviewControlBar</B>(<B><A HREF="wx_wxprintpreview.html#wxprintpreview">wxPrintPreview</A>* </B></B><I>preview</I>, <B>long</B><I> buttons</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>,
+ <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+ <B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "panel"</I>)<P>
+Constructor.<P>
+The buttons parameter may be a combination of the following, using the bitwise 'or' operator.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxPREVIEW_PRINT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Create a print button.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxPREVIEW_NEXT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Create a next page button.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxPREVIEW_PREVIOUS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Create a previous page button.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxPREVIEW_ZOOM
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Create a zoom control.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxPREVIEW_DEFAULT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Equivalent to a combination of wxPREVIEW_PREVIOUS, wxPREVIEW_NEXT and
+wxPREVIEW_ZOOM.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="wxpreviewcontrolbardtor"></A>
+<H3>wxPreviewControlBar::~wxPreviewControlBar</H3>
+<P>
+<B></B> <B>~wxPreviewControlBar</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxpreviewcontrolbarcreatebuttons"></A>
+<H3>wxPreviewControlBar::CreateButtons</H3>
+<P>
+<B>void</B> <B>CreateButtons</B>()<P>
+Creates buttons, according to value of the button style flags.<P>
+
+<HR>
+<A NAME="wxpreviewcontrolbargetprintpreview"></A>
+<H3>wxPreviewControlBar::GetPrintPreview</H3>
+<P>
+<B><A HREF="wx_wxprintpreview.html#wxprintpreview">wxPrintPreview</A> *</B> </B> <B>GetPrintPreview</B>()<P>
+Gets the print preview object associated with the control bar.<P>
+
+<HR>
+<A NAME="wxpreviewcontrolbargetzoomcontrol"></A>
+<H3>wxPreviewControlBar::GetZoomControl</H3>
+<P>
+<B>int</B> <B>GetZoomControl</B>()<P>
+Gets the current zoom setting in percent.<P>
+
+<HR>
+<A NAME="wxpreviewcontrolbarsetzoomcontrol"></A>
+<H3>wxPreviewControlBar::SetZoomControl</H3>
+<P>
+<B>void</B> <B>SetZoomControl</B>(<B>int </B><I>percent</I>)<P>
+Sets the zoom control.<P>
+
+</FONT></BODY></HTML>

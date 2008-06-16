@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-July-1997
-// RCS-ID:      $Id: _functions.i,v 1.23.2.2 2006/01/05 04:40:21 RD Exp $
+// RCS-ID:      $Id: _functions.i 46360 2007-06-07 18:45:06Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -38,12 +38,31 @@ bool wxIsStockID(wxWindowID id);
 // given ID
 bool wxIsStockLabel(wxWindowID id, const wxString& label);
 
+enum wxStockLabelQueryFlag
+{
+    wxSTOCK_NOFLAGS = 0,
+
+    wxSTOCK_WITH_MNEMONIC = 1,
+    wxSTOCK_WITH_ACCELERATOR = 2
+};
+
 // Returns label that should be used for given stock UI element (e.g. "&OK"
 // for wxID_OK):
 wxString wxGetStockLabel(wxWindowID id,
-                         bool withCodes = true,
-                         wxString accelerator = wxPyEmptyString);
- 
+                         long flags = wxSTOCK_WITH_MNEMONIC);
+
+
+enum wxStockHelpStringClient
+{
+    wxSTOCK_MENU        // help string to use for menu items
+};
+
+// Returns an help string for the given stock UI element and for the given "context".
+wxString wxGetStockHelpString(wxWindowID id,
+                              wxStockHelpStringClient client = wxSTOCK_MENU);
+
+
+
 
 MustHaveApp(wxBell);
 void wxBell();
@@ -52,17 +71,27 @@ MustHaveApp(wxEndBusyCursor);
 void wxEndBusyCursor();
 
 long wxGetElapsedTime(bool resetTimer = true);
-
+%pythoncode { GetElapsedTime = wx._deprecated(GetElapsedTime) }
+    
 bool wxIsBusy();
 wxString wxNow();
 bool wxShell(const wxString& command = wxPyEmptyString);
 void wxStartTimer();
+
 
 DocDeclA(
     int, wxGetOsVersion(int *OUTPUT, int *OUTPUT),
     "GetOsVersion() -> (platform, major, minor)");
 
 wxString wxGetOsDescription();
+
+
+// Get platform endianness
+bool wxIsPlatformLittleEndian();
+
+// Get platform architecture
+bool wxIsPlatform64Bit();
+
 
 // TODO:
 // // Parses the wildCard, returning the number of filters.
@@ -72,11 +101,20 @@ wxString wxGetOsDescription();
 // // "All files (*)|*|Image Files (*.jpeg *.png)|*.jpg;*.png"
 // int wxParseCommonDialogsFilter(const wxString& wildCard, wxArrayString& descriptions, wxArrayString& filters);
 
+
+%typemap(out) wxMemorySize {
+    %#if wxUSE_LONGLONG
+         $result = PyLong_FromLongLong($1.GetValue());
+    %#else
+         $result = PyInt_FromLong($1);
+    %#endif
+}
+
 #if defined(__WXMSW__) || defined(__WXMAC__)
-long wxGetFreeMemory();
+wxMemorySize wxGetFreeMemory();
 #else
 %inline %{
-    long wxGetFreeMemory()
+    wxMemorySize wxGetFreeMemory()
         { wxPyRaiseNotImplemented(); return 0; }
 %}
 #endif
@@ -199,7 +237,6 @@ int wxMessageBox(const wxString& message,
                  wxWindow *parent = NULL,
                  int x = -1, int y = -1);
 
-// WXWIN_COMPATIBILITY_2_4
 MustHaveApp(wxGetNumberFromUser);
 long wxGetNumberFromUser(const wxString& message,
                          const wxString& prompt,
@@ -208,8 +245,6 @@ long wxGetNumberFromUser(const wxString& message,
                          long min = 0, long max = 100,
                          wxWindow *parent = NULL,
                          const wxPoint& pos = wxDefaultPosition);
-%pythoncode { GetNumberFromUser = wx._deprecated(GetNumberFromUser) }
-
 
 // GDI Functions
 
@@ -414,7 +449,7 @@ public:
 };
 
 
-MustHaveApp(wxThread);
+MustHaveApp(wxThread_IsMain);
 %inline %{
     bool wxThread_IsMain() {
 #ifdef WXP_WITH_THREAD
@@ -424,41 +459,6 @@ MustHaveApp(wxThread);
 #endif
     }
 %}
-
-//---------------------------------------------------------------------------
-
-// enum wxPowerType
-// {
-//     wxPOWER_SOCKET,
-//     wxPOWER_BATTERY,
-//     wxPOWER_UNKNOWN
-// };
-
-// DocDeclStr(
-//     wxPowerType , wxGetPowerType(),
-//     "Returns the type of power source as one of wx.POWER_SOCKET,
-// wx.POWER_BATTERY or wx.POWER_UNKNOWN.  wx.POWER_UNKNOWN is also the
-// default on platforms where this feature is not implemented.", "");
-
-
-// enum wxBatteryState
-// {
-//     wxBATTERY_NORMAL_STATE,    // system is fully usable
-//     wxBATTERY_LOW_STATE,       // start to worry
-//     wxBATTERY_CRITICAL_STATE,  // save quickly
-//     wxBATTERY_SHUTDOWN_STATE,  // too late
-//     wxBATTERY_UNKNOWN_STATE
-// };
-
-// DocDeclStr(
-//     wxBatteryState , wxGetBatteryState(),
-//     "Returns battery state as one of wx.BATTERY_NORMAL_STATE,
-// wx.BATTERY_LOW_STATE}, wx.BATTERY_CRITICAL_STATE,
-// wx.BATTERY_SHUTDOWN_STATE or wx.BATTERY_UNKNOWN_STATE.
-// wx.BATTERY_UNKNOWN_STATE is also the default on platforms where this
-// feature is not implemented.", "");
-
-
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

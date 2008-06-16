@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     16-Aug-2002
-// RCS-ID:      $Id: wizard.i,v 1.20.2.1 2006/01/16 23:47:28 RD Exp $
+// RCS-ID:      $Id: wizard.i 47076 2007-07-02 17:03:33Z RD $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -31,8 +31,6 @@ or pages."
 %import windows.i
 %pythoncode { wx = _core }
 %pythoncode { __docfilter__ = wx.__DocFilter(globals()) }
-
-%include _wizard_rename.i
 
 MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
 
@@ -72,9 +70,12 @@ public:
     // False otherwise and for EVT_WIZARD_PAGE_CHANGED return True if we came
     // from the previous page and False if we returned from the next one
     // (this function doesn't make sense for CANCEL events)
-    bool GetDirection() const { return m_direction; }
+    bool GetDirection() const;
 
-    wxWizardPage*   GetPage() const { return m_page; }
+    wxWizardPage*   GetPage() const;
+
+    %property(Direction, GetDirection, doc="See `GetDirection`");
+    %property(Page, GetPage, doc="See `GetPage`");
 };
 
 
@@ -103,7 +104,7 @@ public:
                     const wxBitmap& bitmap = wxNullBitmap,
                     const wxString& resource = wxPyEmptyString) {
             wxChar* res = NULL;
-            if (resource.Length())
+            if (resource.length())
                 res = (wxChar*)resource.c_str();
             return self->Create(parent, bitmap, res);
         }
@@ -120,6 +121,10 @@ public:
     // dynamically or to do something even more fancy. It's ok to return
     // wxNullBitmap from here - the default one will be used then.
     virtual wxBitmap GetBitmap() const;
+
+    %property(Bitmap, GetBitmap, doc="See `GetBitmap`");
+    %property(Next, GetNext, doc="See `GetNext`");
+    %property(Prev, GetPrev, doc="See `GetPrev`");
 };
 
 
@@ -205,7 +210,7 @@ MustHaveApp(wxPyWizardPage);
 class wxPyWizardPage : public wxWizardPage {
 public:
 
-    %pythonAppend wxPyWizardPage   "self._setCallbackInfo(self, PyWizardPage);self._setOORInfo(self)"
+    %pythonAppend wxPyWizardPage   "self._setOORInfo(self);" setCallbackInfo(PyWizardPage)
     %pythonAppend wxPyWizardPage() ""
     %typemap(out) wxPyWizardPage*;    // turn off this typemap
     
@@ -218,7 +223,7 @@ public:
                        const wxBitmap* bitmap = &wxNullBitmap,
                        const wxString* resource = &wxPyEmptyString) {
             wxChar* res = NULL;
-            if (resource->Length())
+            if (resource->length())
                 res = (wxChar*)resource->c_str();
             return new wxPyWizardPage(parent, *bitmap, res);
         }
@@ -234,7 +239,7 @@ public:
                     const wxBitmap& bitmap = wxNullBitmap,
                     const wxString& resource = wxPyEmptyString) {
             wxChar* res = NULL;
-            if (resource.Length())
+            if (resource.length())
                 res = (wxChar*)resource.c_str();
             return self->Create(parent, bitmap, res);
         }
@@ -242,36 +247,64 @@ public:
 
     void _setCallbackInfo(PyObject* self, PyObject* _class);
 
-    void base_DoMoveWindow(int x, int y, int width, int height);
-    void base_DoSetSize(int x, int y, int width, int height,
+    void DoMoveWindow(int x, int y, int width, int height);
+    void DoSetSize(int x, int y, int width, int height,
                         int sizeFlags = wxSIZE_AUTO);
-    void base_DoSetClientSize(int width, int height);
-    void base_DoSetVirtualSize( int x, int y );
+    void DoSetClientSize(int width, int height);
+    void DoSetVirtualSize( int x, int y );
 
     DocDeclA(
-        void, base_DoGetSize( int *OUTPUT, int *OUTPUT ) const,
-        "base_DoGetSize() -> (width, height)");
+        void, DoGetSize( int *OUTPUT, int *OUTPUT ) const,
+        "DoGetSize() -> (width, height)");
     DocDeclA(
-        void, base_DoGetClientSize( int *OUTPUT, int *OUTPUT ) const,
-        "base_DoGetClientSize() -> (width, height)");
+        void, DoGetClientSize( int *OUTPUT, int *OUTPUT ) const,
+        "DoGetClientSize() -> (width, height)");
     DocDeclA(
-        void, base_DoGetPosition( int *OUTPUT, int *OUTPUT ) const,
-        "base_DoGetPosition() -> (x,y)");
+        void, DoGetPosition( int *OUTPUT, int *OUTPUT ) const,
+        "DoGetPosition() -> (x,y)");
 
-    wxSize base_DoGetVirtualSize() const;
-    wxSize base_DoGetBestSize() const;
+    wxSize DoGetVirtualSize() const;
+    wxSize DoGetBestSize() const;
 
-    void base_InitDialog();
-    bool base_TransferDataToWindow();
-    bool base_TransferDataFromWindow();
-    bool base_Validate();
+    void InitDialog();
+    bool TransferDataToWindow();
+    bool TransferDataFromWindow();
+    bool Validate();
 
-    bool base_AcceptsFocus() const;
-    bool base_AcceptsFocusFromKeyboard() const;
-    wxSize base_GetMaxSize() const;
+    bool AcceptsFocus() const;
+    bool AcceptsFocusFromKeyboard() const;
+    wxSize GetMaxSize() const;
 
-    void base_AddChild(wxWindow* child);
-    void base_RemoveChild(wxWindow* child);
+    void AddChild(wxWindow* child);
+    void RemoveChild(wxWindow* child);
+
+    bool ShouldInheritColours() const;
+    wxVisualAttributes GetDefaultAttributes();
+
+    void OnInternalIdle();
+
+    %MAKE_BASE_FUNC(PyWizardPage, DoMoveWindow);
+    %MAKE_BASE_FUNC(PyWizardPage, DoSetSize);
+    %MAKE_BASE_FUNC(PyWizardPage, DoSetClientSize);
+    %MAKE_BASE_FUNC(PyWizardPage, DoSetVirtualSize);
+    %MAKE_BASE_FUNC(PyWizardPage, DoGetSize);
+    %MAKE_BASE_FUNC(PyWizardPage, DoGetClientSize);
+    %MAKE_BASE_FUNC(PyWizardPage, DoGetPosition);
+    %MAKE_BASE_FUNC(PyWizardPage, DoGetVirtualSize);
+    %MAKE_BASE_FUNC(PyWizardPage, DoGetBestSize);
+    %MAKE_BASE_FUNC(PyWizardPage, InitDialog);
+    %MAKE_BASE_FUNC(PyWizardPage, TransferDataToWindow);
+    %MAKE_BASE_FUNC(PyWizardPage, TransferDataFromWindow);
+    %MAKE_BASE_FUNC(PyWizardPage, Validate);
+    %MAKE_BASE_FUNC(PyWizardPage, AcceptsFocus);
+    %MAKE_BASE_FUNC(PyWizardPage, AcceptsFocusFromKeyboard);
+    %MAKE_BASE_FUNC(PyWizardPage, GetMaxSize);
+    %MAKE_BASE_FUNC(PyWizardPage, AddChild);
+    %MAKE_BASE_FUNC(PyWizardPage, RemoveChild);
+    %MAKE_BASE_FUNC(PyWizardPage, ShouldInheritColours);
+    %MAKE_BASE_FUNC(PyWizardPage, GetDefaultAttributes);
+    %MAKE_BASE_FUNC(PyWizardPage, OnInternalIdle);
+    
 };
 
 //----------------------------------------------------------------------
@@ -374,8 +407,11 @@ public:
     // page to GetPageAreaSizer and 5 if you don't.
     virtual void SetBorder(int border);
 
+    const wxBitmap& GetBitmap() const { return m_bitmap; }
+    void SetBitmap(const wxBitmap& bitmap);
+
     // is the wizard running?
-    bool IsRunning() const { return m_page != NULL; }
+    bool IsRunning() const;
 
     // show the prev/next page, but call TransferDataFromWindow on the current
     // page first and return False without changing the page if
@@ -384,6 +420,11 @@ public:
 
     bool HasNextPage(wxWizardPage* page);
     bool HasPrevPage(wxWizardPage* page);
+
+    %property(Bitmap, GetBitmap, SetBitmap);
+    %property(CurrentPage, GetCurrentPage, doc="See `GetCurrentPage`");
+    %property(PageAreaSizer, GetPageAreaSizer, doc="See `GetPageAreaSizer`");
+    %property(PageSize, GetPageSize, SetPageSize, doc="See `GetPageSize` and `SetPageSize`");
 };
 
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-Sept-1999
-// RCS-ID:      $Id: _oglshapes.i,v 1.9 2004/12/23 20:44:04 RD Exp $
+// RCS-ID:      $Id: _oglshapes.i 31128 2004-12-23 20:44:09Z RD $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////

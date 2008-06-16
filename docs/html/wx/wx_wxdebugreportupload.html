@@ -1,0 +1,48 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDebugReportUpload</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdebugreportupload"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdebugreportpreviewstd.html#wxdebugreportpreviewstd"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdelegaterenderernative.html#wxdelegaterenderernative"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDebugReportUpload</H2>
+<P>
+This class is used to upload a compressed file using HTTP POST request. As this
+class derives from wxDebugReportCompress, before upload the report is
+compressed in a single .ZIP file.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdebugreportcompress.html#wxdebugreportcompress">wxDebugReportCompress</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/debugrpt.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdebugreportuploadwxdebugreportupload">wxDebugReportUpload::wxDebugReportUpload</A><BR>
+<A HREF="#wxdebugreportuploadonserverreply">wxDebugReportUpload::OnServerReply</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdebugreportuploadwxdebugreportupload"></A>
+<H3>wxDebugReportUpload::wxDebugReportUpload</H3>
+<P>
+<B></B> <B>wxDebugReportUpload</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>url</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>input</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>action</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>curl = _T("curl")</I>)<P>
+This class will upload the compressed file created by its base class to an HTML
+multipart/form-data form at the specified address. The <I>url</I> is the upload
+page address, <I>input</I> is the name of the <TT>"type=file"</TT> control on
+the form used for the file name and <I>action</I> is the value of the form
+action field. The report is uploaded using <TT><I>curl</I></TT> program which
+should be available, the <I>curl</I> parameter may be used to specify the full
+path to it.<P>
+
+
+<HR>
+<A NAME="wxdebugreportuploadonserverreply"></A>
+<H3>wxDebugReportUpload::OnServerReply</H3>
+<P>
+<B>bool</B> <B>OnServerReply</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>WXUNUSED(reply)</I>)<P>
+This function may be overridden in a derived class to show the output from
+curl: this may be an HTML page or anything else that the server returned.
+Value returned by this function becomes the return value of 
+<A HREF="wx_wxdebugreport.html#wxdebugreportprocess">wxDebugReport::Process()</A>.<P>
+
+
+</FONT></BODY></HTML>

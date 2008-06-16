@@ -1,0 +1,93 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPowerEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxpowerevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpostscriptdc.html#wxpostscriptdc"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpreviewcanvas.html#wxpreviewcanvas"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPowerEvent</H2>
+<P>
+The power events are generated when the system power state changes, e.g. the
+system is suspended, hibernated, plugged into or unplugged from the wall socket
+and so on.<P>
+Notice that currently only suspend and resume events are generated and only
+under MS Windows platform. To avoid the need to change the code using this
+event later when these events are implemented on the other platforms please use
+the test <TT>ifdef wxHAS_POWER_EVENTS</TT> instead of directly testing for
+the platform in your code: this symbol will be defined for all platforms
+supporting the power events.<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process power events, use these macros to handle them in
+member functions that take a wxPowerEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_POWER_SUSPENDING(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+System is about to be suspended, this
+event can be vetoed to prevent suspend from taking place.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_POWER_SUSPENDED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+System is about to suspend: normally the
+application should quickly (i.e. without user intervention) close all the open
+files and network connections here, possibly remembering them to reopen them
+later when the system is resumed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_POWER_SUSPEND_CANCEL(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+System suspension was cancelled
+because some application vetoed it.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_POWER_RESUME(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+System resumed from suspend:
+normally the application should restore the state in which it had been before
+the suspension.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/power.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_miscellany.html#wxgetpowertype">wxGetPowerType</A>, <A HREF="wx_miscellany.html#wxgetbatterystate">wxGetBatteryState</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxpowereventveto">wxPowerEvent::Veto</A><BR>
+<P>
+
+<HR>
+<A NAME="wxpowereventveto"></A>
+<H3>wxPowerEvent::Veto</H3>
+<P>
+<B>void</B> <B>Veto</B>()<P>
+Call this to prevent suspend from taking place in 
+<TT>wxEVT_POWER_SUSPENDING</TT> handler (it is ignored for all the others).<P>
+
+
+</FONT></BODY></HTML>

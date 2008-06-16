@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xh_bmp.cpp
+// Name:        src/xrc/xh_bmp.cpp
 // Purpose:     XRC resource for wxBitmap and wxIcon
 // Author:      Vaclav Slavik
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_bmp.cpp,v 1.10 2005/02/10 17:25:11 ABX Exp $
+// RCS-ID:      $Id: xh_bmp.cpp 39710 2006-06-14 10:02:19Z ABX $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_bmp.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -22,17 +18,22 @@
 #if wxUSE_XRC
 
 #include "wx/xrc/xh_bmp.h"
-#include "wx/bitmap.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/bitmap.h"
+#endif
 
 IMPLEMENT_DYNAMIC_CLASS(wxBitmapXmlHandler, wxXmlResourceHandler)
 
 wxBitmapXmlHandler::wxBitmapXmlHandler()
-: wxXmlResourceHandler()
+                   :wxXmlResourceHandler()
 {
 }
 
 wxObject *wxBitmapXmlHandler::DoCreateResource()
 {
+    // NB: empty parameter name means "take directly from this node's next
+    //     instead of from subnode with given name"
     return new wxBitmap(GetBitmap(wxEmptyString));
 }
 
@@ -50,6 +51,8 @@ wxIconXmlHandler::wxIconXmlHandler()
 
 wxObject *wxIconXmlHandler::DoCreateResource()
 {
+    // NB: empty parameter name means "take directly from this node's next
+    //     instead of from subnode with given name"
     return new wxIcon(GetIcon(wxEmptyString));
 }
 

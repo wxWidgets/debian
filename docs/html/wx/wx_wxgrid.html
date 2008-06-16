@@ -1,0 +1,2447 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGrid</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgrid"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgraphicsrenderer.html#wxgraphicsrenderer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgridcellattr.html#wxgridcellattr"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGrid</H2>
+<P>
+wxGrid and its related classes are used for displaying and editing tabular
+data. They provide a rich set of features for display, editing, and
+interacting with a variety of data sources. For simple applications, and to
+help you get started, wxGrid is the only class you need to refer to
+directly. It will set up default instances of the other classes and manage
+them for you. For more complex applications you can derive your own
+classes for custom grid views, grid data tables, cell editors and
+renderers. The <A HREF="wx_gridoverview.html#gridoverview">wxGrid classes overview</A> has
+examples of simple and more complex applications, explains the
+relationship between the various grid classes and has a summary of the
+keyboard shortcuts and mouse functions provided by wxGrid.<P>
+wxGrid has been greatly expanded and redesigned for wxWidgets 2.2
+onwards. If you have been using the old wxGrid class you will probably
+want to have a look at the <A HREF="wx_gridoverview.html#gridoverview">wxGrid classes overview</A> to see
+how things have changed. The new grid classes are reasonably backward-compatible
+but there are some exceptions. There are also easier ways of doing many things compared to
+the previous implementation.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxscrolledwindow.html#wxscrolledwindow">wxScrolledWindow</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/grid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+There are presently no specific window styles for wxGrid.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+The event handler for the following functions takes a <A HREF="wx_wxgridevent.html#wxgridevent">wxGridEvent</A> parameter.
+The ..._CMD_... variants also take a window identifier.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CELL_LEFT_CLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a cell with the left mouse button. Processes a wxEVT_GRID_CELL_LEFT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CELL_RIGHT_CLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a cell with the right mouse button. Processes a wxEVT_GRID_CELL_RIGHT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CELL_LEFT_DCLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a cell with the left mouse button. Processes a wxEVT_GRID_CELL_LEFT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CELL_RIGHT_DCLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a cell with the right mouse button. Processes a wxEVT_GRID_CELL_RIGHT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_LABEL_LEFT_CLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a label with the left mouse button. Processes a wxEVT_GRID_LABEL_LEFT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_LABEL_RIGHT_CLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a label with the right mouse button. Processes a wxEVT_GRID_LABEL_RIGHT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_LABEL_LEFT_DCLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a label with the left mouse button. Processes a wxEVT_GRID_LABEL_LEFT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_LABEL_RIGHT_DCLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a label with the right mouse button. Processes a wxEVT_GRID_LABEL_RIGHT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CELL_CHANGE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user changed the data in a cell. Processes a wxEVT_GRID_CELL_CHANGE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_SELECT_CELL(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user moved to, and selected a cell. Processes a wxEVT_GRID_SELECT_CELL.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_EDITOR_HIDDEN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The editor for a cell was hidden. Processes a wxEVT_GRID_EDITOR_HIDDEN.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_EDITOR_SHOWN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The editor for a cell was shown. Processes a wxEVT_GRID_EDITOR_SHOWN.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_CELL_LEFT_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a cell with the left mouse button; variant taking a window identifier. Processes a wxEVT_GRID_CELL_LEFT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_CELL_RIGHT_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a cell with the right mouse button; variant taking a window identifier. Processes a wxEVT_GRID_CELL_RIGHT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_CELL_LEFT_DCLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a cell with the left mouse button; variant taking a window identifier. Processes a wxEVT_GRID_CELL_LEFT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_CELL_RIGHT_DCLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a cell with the right mouse button; variant taking a window identifier. Processes a wxEVT_GRID_CELL_RIGHT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_LABEL_LEFT_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a label with the left mouse button; variant taking a window identifier. Processes a wxEVT_GRID_LABEL_LEFT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_LABEL_RIGHT_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a label with the right mouse button; variant taking a window identifier. Processes a wxEVT_GRID_LABEL_RIGHT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_LABEL_LEFT_DCLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a label with the left mouse button; variant taking a window identifier. Processes a wxEVT_GRID_LABEL_LEFT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_LABEL_RIGHT_DCLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a label with the right mouse button; variant taking a window identifier. Processes a wxEVT_GRID_LABEL_RIGHT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_CELL_CHANGE(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user changed the data in a cell; variant taking a window identifier. Processes a wxEVT_GRID_CELL_CHANGE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_SELECT_CELL(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user moved to, and selected a cell; variant taking a window identifier. Processes a wxEVT_GRID_SELECT_CELL.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_EDITOR_HIDDEN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The editor for a cell was hidden; variant taking a window identifier. Processes a wxEVT_GRID_EDITOR_HIDDEN.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_EDITOR_SHOWN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The editor for a cell was shown; variant taking a window identifier. Processes a wxEVT_GRID_EDITOR_SHOWN.
+</FONT></TD></TR>
+
+
+</TABLE>
+The event handler for the following functions takes a
+ <A HREF="wx_wxgridsizeevent.html#wxgridsizeevent">wxGridSizeEvent</A> parameter.
+The ..._CMD_... variants also take a window identifier.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_COL_SIZE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user resized a column by dragging it. Processes a wxEVT_GRID_COL_SIZE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_ROW_SIZE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user resized a row by dragging it. Processes a wxEVT_GRID_ROW_SIZE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_COL_SIZE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user resized a column by dragging it; variant taking a window identifier. Processes a wxEVT_GRID_COL_SIZE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_ROW_SIZE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user resized a row by dragging it; variant taking a window identifier. Processes a wxEVT_GRID_ROW_SIZE.
+</FONT></TD></TR>
+
+
+</TABLE>
+The event handler for the following functions takes a
+ <A HREF="wx_wxgridrangeselectevent.html#wxgridrangeselectevent">wxGridRangeSelectEvent</A> parameter.
+The ..._CMD_... variant also takes a window identifier.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_RANGE_SELECT(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user selected a group of contiguous cells. Processes a wxEVT_GRID_RANGE_SELECT.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_RANGE_SELECT(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user selected a group of contiguous cells; variant taking a window identifier. Processes a wxEVT_GRID_RANGE_SELECT.
+</FONT></TD></TR>
+
+
+</TABLE>
+The event handler for the following functions takes a
+ <A HREF="wx_wxgrideditorcreatedevent.html#wxgrideditorcreatedevent">wxGridEditorCreatedEvent</A> parameter.
+The ..._CMD_... variant also takes a window identifier.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_EDITOR_CREATED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The editor for a cell was created. Processes a wxEVT_GRID_EDITOR_CREATED.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_EDITOR_CREATED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The editor for a cell was created; variant taking a window identifier. Processes a wxEVT_GRID_EDITOR_CREATED.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_gridoverview.html#gridoverview">wxGrid overview</A><P>
+<B><FONT COLOR="#FF0000">Function groups</FONT></B><P>
+<P>
+<A HREF="#wxgridconstructors">Constructors and initialization</A><BR>
+<A HREF="#wxgriddisplayformat">Display format</A><BR>
+<A HREF="#wxgridselectionfunctions">Selection functions</A><BR>
+<A HREF="#wxgridctor">wxGrid::wxGrid</A><BR>
+<A HREF="#wxgriddtor">wxGrid::~wxGrid</A><BR>
+<A HREF="#wxgridappendcols">wxGrid::AppendCols</A><BR>
+<A HREF="#wxgridappendrows">wxGrid::AppendRows</A><BR>
+<A HREF="#wxgridautosize">wxGrid::AutoSize</A><BR>
+<A HREF="#wxgridautosizecolumn">wxGrid::AutoSizeColumn</A><BR>
+<A HREF="#wxgridautosizecolumns">wxGrid::AutoSizeColumns</A><BR>
+<A HREF="#wxgridautosizerow">wxGrid::AutoSizeRow</A><BR>
+<A HREF="#wxgridautosizerows">wxGrid::AutoSizeRows</A><BR>
+<A HREF="#wxgridbeginbatch">wxGrid::BeginBatch</A><BR>
+<A HREF="#wxgridblocktodevicerect">wxGrid::BlockToDeviceRect</A><BR>
+<A HREF="#wxgridcandragcolmove">wxGrid::CanDragColMove</A><BR>
+<A HREF="#wxgridcandragcolsize">wxGrid::CanDragColSize</A><BR>
+<A HREF="#wxgridcandragrowsize">wxGrid::CanDragRowSize</A><BR>
+<A HREF="#wxgridcandraggridsize">wxGrid::CanDragGridSize</A><BR>
+<A HREF="#wxgridcanenablecellcontrol">wxGrid::CanEnableCellControl</A><BR>
+<A HREF="#wxgridcanhaveattributes">wxGrid::CanHaveAttributes</A><BR>
+<A HREF="#wxgridcelltorect">wxGrid::CellToRect</A><BR>
+<A HREF="#wxgridcleargrid">wxGrid::ClearGrid</A><BR>
+<A HREF="#wxgridclearselection">wxGrid::ClearSelection</A><BR>
+<A HREF="#wxgridcreategrid">wxGrid::CreateGrid</A><BR>
+<A HREF="#wxgriddeletecols">wxGrid::DeleteCols</A><BR>
+<A HREF="#wxgriddeleterows">wxGrid::DeleteRows</A><BR>
+<A HREF="#wxgriddisablecelleditcontrol">wxGrid::DisableCellEditControl</A><BR>
+<A HREF="#wxgriddisabledragcolmove">wxGrid::DisableDragColMove</A><BR>
+<A HREF="#wxgriddisabledragcolsize">wxGrid::DisableDragColSize</A><BR>
+<A HREF="#wxgriddisabledraggridsize">wxGrid::DisableDragGridSize</A><BR>
+<A HREF="#wxgriddisabledragrowsize">wxGrid::DisableDragRowSize</A><BR>
+<A HREF="#wxgridenablecelleditcontrol">wxGrid::EnableCellEditControl</A><BR>
+<A HREF="#wxgridenabledragcolsize">wxGrid::EnableDragColSize</A><BR>
+<A HREF="#wxgridenabledragcolmove">wxGrid::EnableDragColMove</A><BR>
+<A HREF="#wxgridenabledraggridsize">wxGrid::EnableDragGridSize</A><BR>
+<A HREF="#wxgridenabledragrowsize">wxGrid::EnableDragRowSize</A><BR>
+<A HREF="#wxgridenableediting">wxGrid::EnableEditing</A><BR>
+<A HREF="#wxgridenablegridlines">wxGrid::EnableGridLines</A><BR>
+<A HREF="#wxgridendbatch">wxGrid::EndBatch</A><BR>
+<A HREF="#wxgridfit">wxGrid::Fit</A><BR>
+<A HREF="#wxgridforcerefresh">wxGrid::ForceRefresh</A><BR>
+<A HREF="#wxgridgetbatchcount">wxGrid::GetBatchCount</A><BR>
+<A HREF="#wxgridgetcellalignment">wxGrid::GetCellAlignment</A><BR>
+<A HREF="#wxgridgetcellbackgroundcolour">wxGrid::GetCellBackgroundColour</A><BR>
+<A HREF="#wxgridgetcelleditor">wxGrid::GetCellEditor</A><BR>
+<A HREF="#wxgridgetcellfont">wxGrid::GetCellFont</A><BR>
+<A HREF="#wxgridgetcellrenderer">wxGrid::GetCellRenderer</A><BR>
+<A HREF="#wxgridgetcelltextcolour">wxGrid::GetCellTextColour</A><BR>
+<A HREF="#wxgridgetcellvalue">wxGrid::GetCellValue</A><BR>
+<A HREF="#wxgridgetcolat">wxGrid::GetColAt</A><BR>
+<A HREF="#wxgridgetcolleft">wxGrid::GetColLeft</A><BR>
+<A HREF="#wxgridgetcollabelalignment">wxGrid::GetColLabelAlignment</A><BR>
+<A HREF="#wxgridgetcollabelsize">wxGrid::GetColLabelSize</A><BR>
+<A HREF="#wxgridgetcollabelvalue">wxGrid::GetColLabelValue</A><BR>
+<A HREF="#wxgridgetcolminimalacceptablewidth">wxGrid::GetColMinimalAcceptableWidth</A><BR>
+<A HREF="#wxgridgetcolminimalwidth">wxGrid::GetColMinimalWidth</A><BR>
+<A HREF="#wxgridgetcolpos">wxGrid::GetColPos</A><BR>
+<A HREF="#wxgridgetcolright">wxGrid::GetColRight</A><BR>
+<A HREF="#wxgridgetcolsize">wxGrid::GetColSize</A><BR>
+<A HREF="#wxgridgetdefaultcellalignment">wxGrid::GetDefaultCellAlignment</A><BR>
+<A HREF="#wxgridgetdefaultcellbackgroundcolour">wxGrid::GetDefaultCellBackgroundColour</A><BR>
+<A HREF="#wxgridgetdefaultcellfont">wxGrid::GetDefaultCellFont</A><BR>
+<A HREF="#wxgridgetdefaultcelltextcolour">wxGrid::GetDefaultCellTextColour</A><BR>
+<A HREF="#wxgridgetdefaultcollabelsize">wxGrid::GetDefaultColLabelSize</A><BR>
+<A HREF="#wxgridgetdefaultcolsize">wxGrid::GetDefaultColSize</A><BR>
+<A HREF="#wxgridgetdefaulteditor">wxGrid::GetDefaultEditor</A><BR>
+<A HREF="#wxgridgetdefaulteditorforcell">wxGrid::GetDefaultEditorForCell</A><BR>
+<A HREF="#wxgridgetdefaulteditorfortype">wxGrid::GetDefaultEditorForType</A><BR>
+<A HREF="#wxgridgetdefaultrenderer">wxGrid::GetDefaultRenderer</A><BR>
+<A HREF="#wxgridgetdefaultrendererforcell">wxGrid::GetDefaultRendererForCell</A><BR>
+<A HREF="#wxgridgetdefaultrendererfortype">wxGrid::GetDefaultRendererForType</A><BR>
+<A HREF="#wxgridgetdefaultrowlabelsize">wxGrid::GetDefaultRowLabelSize</A><BR>
+<A HREF="#wxgridgetdefaultrowsize">wxGrid::GetDefaultRowSize</A><BR>
+<A HREF="#wxgridgetgridcursorcol">wxGrid::GetGridCursorCol</A><BR>
+<A HREF="#wxgridgetgridcursorrow">wxGrid::GetGridCursorRow</A><BR>
+<A HREF="#wxgridgetgridlinecolour">wxGrid::GetGridLineColour</A><BR>
+<A HREF="#wxgridgetdefaultgridlinepen">wxGrid::GetDefaultGridLinePen</A><BR>
+<A HREF="#wxgridgetrowgridlinepen">wxGrid::GetRowGridLinePen</A><BR>
+<A HREF="#wxgridgetcolgridlinepen">wxGrid::GetColGridLinePen</A><BR>
+<A HREF="#wxgridgridlinesenabled">wxGrid::GridLinesEnabled</A><BR>
+<A HREF="#wxgridgetlabelbackgroundcolour">wxGrid::GetLabelBackgroundColour</A><BR>
+<A HREF="#wxgridgetlabelfont">wxGrid::GetLabelFont</A><BR>
+<A HREF="#wxgridgetlabeltextcolour">wxGrid::GetLabelTextColour</A><BR>
+<A HREF="#wxgridgetnumbercols">wxGrid::GetNumberCols</A><BR>
+<A HREF="#wxgridgetnumberrows">wxGrid::GetNumberRows</A><BR>
+<A HREF="#wxgridgetorcreatecellattr">wxGrid::GetOrCreateCellAttr</A><BR>
+<A HREF="#wxgridgetrowminimalacceptableheight">wxGrid::GetRowMinimalAcceptableHeight</A><BR>
+<A HREF="#wxgridgetrowminimalheight">wxGrid::GetRowMinimalHeight</A><BR>
+<A HREF="#wxgridgetrowlabelalignment">wxGrid::GetRowLabelAlignment</A><BR>
+<A HREF="#wxgridgetrowlabelsize">wxGrid::GetRowLabelSize</A><BR>
+<A HREF="#wxgridgetrowlabelvalue">wxGrid::GetRowLabelValue</A><BR>
+<A HREF="#wxgridgetrowsize">wxGrid::GetRowSize</A><BR>
+<A HREF="#wxgridgetscrolllinex">wxGrid::GetScrollLineX</A><BR>
+<A HREF="#wxgridgetscrollliney">wxGrid::GetScrollLineY</A><BR>
+<A HREF="#wxgridgetselectionmode">wxGrid::GetSelectionMode</A><BR>
+<A HREF="#wxgridgetselectedcells">wxGrid::GetSelectedCells</A><BR>
+<A HREF="#wxgridgetselectedcols">wxGrid::GetSelectedCols</A><BR>
+<A HREF="#wxgridgetselectedrows">wxGrid::GetSelectedRows</A><BR>
+<A HREF="#wxgridgetselectionbackground">wxGrid::GetSelectionBackground</A><BR>
+<A HREF="#wxgridgetselectionblocktopleft">wxGrid::GetSelectionBlockTopLeft</A><BR>
+<A HREF="#wxgridgetselectionblockbottomright">wxGrid::GetSelectionBlockBottomRight</A><BR>
+<A HREF="#wxgridgetselectionforeground">wxGrid::GetSelectionForeground</A><BR>
+<A HREF="#wxgridgettable">wxGrid::GetTable</A><BR>
+<A HREF="#wxgridgetviewwidth">wxGrid::GetViewWidth</A><BR>
+<A HREF="#wxgridhidecelleditcontrol">wxGrid::HideCellEditControl</A><BR>
+<A HREF="#wxgridinitcolwidths">wxGrid::InitColWidths</A><BR>
+<A HREF="#wxgridinitrowheights">wxGrid::InitRowHeights</A><BR>
+<A HREF="#wxgridinsertcols">wxGrid::InsertCols</A><BR>
+<A HREF="#wxgridinsertrows">wxGrid::InsertRows</A><BR>
+<A HREF="#wxgridiscelleditcontrolenabled">wxGrid::IsCellEditControlEnabled</A><BR>
+<A HREF="#wxgridiscurrentcellreadonly">wxGrid::IsCurrentCellReadOnly</A><BR>
+<A HREF="#wxgridiseditable">wxGrid::IsEditable</A><BR>
+<A HREF="#wxgridisinselection">wxGrid::IsInSelection</A><BR>
+<A HREF="#wxgridisreadonly">wxGrid::IsReadOnly</A><BR>
+<A HREF="#wxgridisselection">wxGrid::IsSelection</A><BR>
+<A HREF="#wxgridisvisible">wxGrid::IsVisible</A><BR>
+<A HREF="#wxgridmakecellvisible">wxGrid::MakeCellVisible</A><BR>
+<A HREF="#wxgridmovecursordown">wxGrid::MoveCursorDown</A><BR>
+<A HREF="#wxgridmovecursorleft">wxGrid::MoveCursorLeft</A><BR>
+<A HREF="#wxgridmovecursorright">wxGrid::MoveCursorRight</A><BR>
+<A HREF="#wxgridmovecursorup">wxGrid::MoveCursorUp</A><BR>
+<A HREF="#wxgridmovecursordownblock">wxGrid::MoveCursorDownBlock</A><BR>
+<A HREF="#wxgridmovecursorleftblock">wxGrid::MoveCursorLeftBlock</A><BR>
+<A HREF="#wxgridmovecursorrightblock">wxGrid::MoveCursorRightBlock</A><BR>
+<A HREF="#wxgridmovecursorupblock">wxGrid::MoveCursorUpBlock</A><BR>
+<A HREF="#wxgridmovepagedown">wxGrid::MovePageDown</A><BR>
+<A HREF="#wxgridmovepageup">wxGrid::MovePageUp</A><BR>
+<A HREF="#wxgridregisterdatatype">wxGrid::RegisterDataType</A><BR>
+<A HREF="#wxgridsaveeditcontrolvalue">wxGrid::SaveEditControlValue</A><BR>
+<A HREF="#wxgridselectall">wxGrid::SelectAll</A><BR>
+<A HREF="#wxgridselectblock">wxGrid::SelectBlock</A><BR>
+<A HREF="#wxgridselectcol">wxGrid::SelectCol</A><BR>
+<A HREF="#wxgridselectiontodevicerect">wxGrid::SelectionToDeviceRect</A><BR>
+<A HREF="#wxgridselectrow">wxGrid::SelectRow</A><BR>
+<A HREF="#wxgridsetcellalignment">wxGrid::SetCellAlignment</A><BR>
+<A HREF="#wxgridsetcellbackgroundcolour">wxGrid::SetCellBackgroundColour</A><BR>
+<A HREF="#wxgridsetcelleditor">wxGrid::SetCellEditor</A><BR>
+<A HREF="#wxgridsetcellfont">wxGrid::SetCellFont</A><BR>
+<A HREF="#wxgridsetcellrenderer">wxGrid::SetCellRenderer</A><BR>
+<A HREF="#wxgridsetcelltextcolour">wxGrid::SetCellTextColour</A><BR>
+<A HREF="#wxgridsetcellvalue">wxGrid::SetCellValue</A><BR>
+<A HREF="#wxgridsetcolattr">wxGrid::SetColAttr</A><BR>
+<A HREF="#wxgridsetcolformatbool">wxGrid::SetColFormatBool</A><BR>
+<A HREF="#wxgridsetcolformatnumber">wxGrid::SetColFormatNumber</A><BR>
+<A HREF="#wxgridsetcolformatfloat">wxGrid::SetColFormatFloat</A><BR>
+<A HREF="#wxgridsetcolformatcustom">wxGrid::SetColFormatCustom</A><BR>
+<A HREF="#wxgridsetcollabelalignment">wxGrid::SetColLabelAlignment</A><BR>
+<A HREF="#wxgridsetcollabelsize">wxGrid::SetColLabelSize</A><BR>
+<A HREF="#wxgridsetcollabelvalue">wxGrid::SetColLabelValue</A><BR>
+<A HREF="#wxgridsetcolminimalwidth">wxGrid::SetColMinimalWidth</A><BR>
+<A HREF="#wxgridsetcolminimalacceptablewidth">wxGrid::SetColMinimalAcceptableWidth</A><BR>
+<A HREF="#wxgridsetcolpos">wxGrid::SetColPos</A><BR>
+<A HREF="#wxgridsetcolsize">wxGrid::SetColSize</A><BR>
+<A HREF="#wxgridsetdefaultcellalignment">wxGrid::SetDefaultCellAlignment</A><BR>
+<A HREF="#wxgridsetdefaultcellbackgroundcolour">wxGrid::SetDefaultCellBackgroundColour</A><BR>
+<A HREF="#wxgridsetdefaultcellfont">wxGrid::SetDefaultCellFont</A><BR>
+<A HREF="#wxgridsetdefaultcelltextcolour">wxGrid::SetDefaultCellTextColour</A><BR>
+<A HREF="#wxgridsetdefaulteditor">wxGrid::SetDefaultEditor</A><BR>
+<A HREF="#wxgridsetdefaultrenderer">wxGrid::SetDefaultRenderer</A><BR>
+<A HREF="#wxgridsetdefaultcolsize">wxGrid::SetDefaultColSize</A><BR>
+<A HREF="#wxgridsetdefaultrowsize">wxGrid::SetDefaultRowSize</A><BR>
+<A HREF="#wxgridsetgridcursor">wxGrid::SetGridCursor</A><BR>
+<A HREF="#wxgridsetgridlinecolour">wxGrid::SetGridLineColour</A><BR>
+<A HREF="#wxgridsetlabelbackgroundcolour">wxGrid::SetLabelBackgroundColour</A><BR>
+<A HREF="#wxgridsetlabelfont">wxGrid::SetLabelFont</A><BR>
+<A HREF="#wxgridsetlabeltextcolour">wxGrid::SetLabelTextColour</A><BR>
+<A HREF="#wxgridsetmargins">wxGrid::SetMargins</A><BR>
+<A HREF="#wxgridsetorcalccolumnsizes">wxGrid::SetOrCalcColumnSizes</A><BR>
+<A HREF="#wxgridsetorcalcrowsizes">wxGrid::SetOrCalcRowSizes</A><BR>
+<A HREF="#wxgridsetreadonly">wxGrid::SetReadOnly</A><BR>
+<A HREF="#wxgridsetrowattr">wxGrid::SetRowAttr</A><BR>
+<A HREF="#wxgridsetrowlabelalignment">wxGrid::SetRowLabelAlignment</A><BR>
+<A HREF="#wxgridsetrowlabelsize">wxGrid::SetRowLabelSize</A><BR>
+<A HREF="#wxgridsetrowlabelvalue">wxGrid::SetRowLabelValue</A><BR>
+<A HREF="#wxgridsetrowminimalheight">wxGrid::SetRowMinimalHeight</A><BR>
+<A HREF="#wxgridsetrowminimalacceptableheight">wxGrid::SetRowMinimalAcceptableHeight</A><BR>
+<A HREF="#wxgridsetrowsize">wxGrid::SetRowSize</A><BR>
+<A HREF="#wxgridsetscrolllinex">wxGrid::SetScrollLineX</A><BR>
+<A HREF="#wxgridsetscrollliney">wxGrid::SetScrollLineY</A><BR>
+<A HREF="#wxgridsetselectionbackground">wxGrid::SetSelectionBackground</A><BR>
+<A HREF="#wxgridsetselectionforeground">wxGrid::SetSelectionForeground</A><BR>
+<A HREF="#wxgridsetselectionmode">wxGrid::SetSelectionMode</A><BR>
+<A HREF="#wxgridsettable">wxGrid::SetTable</A><BR>
+<A HREF="#wxgridshowcelleditcontrol">wxGrid::ShowCellEditControl</A><BR>
+<A HREF="#wxgridxtocol">wxGrid::XToCol</A><BR>
+<A HREF="#wxgridxtoedgeofcol">wxGrid::XToEdgeOfCol</A><BR>
+<A HREF="#wxgridytoedgeofrow">wxGrid::YToEdgeOfRow</A><BR>
+<A HREF="#wxgridytorow">wxGrid::YToRow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgridconstructors"></A>
+<H3>Constructors and initialization</H3>
+<P>
+<A HREF="wx_wxgrid.html#wxgridctor">wxGrid</A><BR>
+
+<A HREF="wx_wxgrid.html#wxgriddtor">~wxGrid</A><BR>
+
+<A HREF="wx_wxgrid.html#wxgridcreategrid">CreateGrid</A><BR>
+
+<A HREF="wx_wxgrid.html#wxgridsettable">SetTable</A><P>
+<P>
+
+<HR>
+<A NAME="wxgriddisplayformat"></A>
+<H3>Display format</H3>
+<P>
+<P>
+
+<HR>
+<A NAME="wxgridselectionfunctions"></A>
+<H3>Selection functions</H3>
+<P>
+<A HREF="wx_wxgrid.html#wxgridclearselection">wxGrid::ClearSelection</A><BR>
+
+<A HREF="wx_wxgrid.html#wxgridisselection">wxGrid::IsSelection</A><BR>
+
+<A HREF="wx_wxgrid.html#wxgridselectall">wxGrid::SelectAll</A><BR>
+
+<A HREF="wx_wxgrid.html#wxgridselectblock">wxGrid::SelectBlock</A><BR>
+
+<A HREF="wx_wxgrid.html#wxgridselectcol">wxGrid::SelectCol</A><BR>
+
+<A HREF="wx_wxgrid.html#wxgridselectrow">wxGrid::SelectRow</A><P>
+<P>
+<P>
+
+<HR>
+<A NAME="wxgridctor"></A>
+<H3>wxGrid::wxGrid</H3>
+<P>
+<B></B> <B>wxGrid</B>()<P>
+Default constructor<P>
+<B></B> <B>wxGrid</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxWANTS_CHARS</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxPanelNameStr</I>)<P>
+Constructor to create a grid object. Call either <A HREF="wx_wxgrid.html#wxgridcreategrid">wxGrid::CreateGrid</A> or
+<A HREF="wx_wxgrid.html#wxgridsettable">wxGrid::SetTable</A> directly after this to initialize the grid before using
+it.<P>
+<P>
+
+<HR>
+<A NAME="wxgriddtor"></A>
+<H3>wxGrid::~wxGrid</H3>
+<P>
+<B></B> <B>~wxGrid</B>()<P>
+Destructor. This will also destroy the associated grid table unless you passed a table
+object to the grid and specified that the grid should not take ownership of the
+table (see <A HREF="wx_wxgrid.html#wxgridsettable">wxGrid::SetTable</A>).<P>
+<P>
+
+<HR>
+<A NAME="wxgridappendcols"></A>
+<H3>wxGrid::AppendCols</H3>
+<P>
+<B>bool</B> <B>AppendCols</B>(<B>int </B><I>numCols = 1</I>, <B>bool </B><I>updateLabels = true</I>)<P>
+Appends one or more new columns to the right of the grid and returns true if
+successful. The updateLabels argument is not used at present.<P>
+If you are using a derived grid table class you will need to override
+<A HREF="wx_wxgridtablebase.html#wxgridtablebaseappendcols">wxGridTableBase::AppendCols</A>. See
+<A HREF="wx_wxgrid.html#wxgridinsertcols">wxGrid::InsertCols</A> for further information.<P>
+<P>
+
+<HR>
+<A NAME="wxgridappendrows"></A>
+<H3>wxGrid::AppendRows</H3>
+<P>
+<B>bool</B> <B>AppendRows</B>(<B>int </B><I>numRows = 1</I>, <B>bool </B><I>updateLabels = true</I>)<P>
+Appends one or more new rows to the bottom of the grid and returns true if
+successful. The updateLabels argument is not used at present.<P>
+If you are using a derived grid table class you will need to override
+<A HREF="wx_wxgridtablebase.html#wxgridtablebaseappendrows">wxGridTableBase::AppendRows</A>. See
+<A HREF="wx_wxgrid.html#wxgridinsertrows">wxGrid::InsertRows</A> for further information.<P>
+<P>
+
+<HR>
+<A NAME="wxgridautosize"></A>
+<H3>wxGrid::AutoSize</H3>
+<P>
+<B>void</B> <B>AutoSize</B>()<P>
+Automatically sets the height and width of all rows and columns to fit their contents.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><BR>
+
+wxGrid sets up arrays to store individual row and column sizes when non-default sizes are used.
+The memory requirements for this could become prohibitive if your grid is very large.<P>
+<P>
+
+<HR>
+<A NAME="wxgridautosizecolumn"></A>
+<H3>wxGrid::AutoSizeColumn</H3>
+<P>
+<B>void</B> <B>AutoSizeColumn</B>(<B>int </B><I>col</I>, <B>bool </B><I>setAsMin = true</I>)<P>
+Automatically sizes the column to fit its contents. If setAsMin is true the calculated width will
+also be set as the minimal width for the column.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><BR>
+
+wxGrid sets up arrays to store individual row and column sizes when non-default sizes are used.
+The memory requirements for this could become prohibitive if your grid is very large.<P>
+<P>
+
+<HR>
+<A NAME="wxgridautosizecolumns"></A>
+<H3>wxGrid::AutoSizeColumns</H3>
+<P>
+<B>void</B> <B>AutoSizeColumns</B>(<B>bool </B><I>setAsMin = true</I>)<P>
+Automatically sizes all columns to fit their contents. If setAsMin is true the calculated widths will
+also be set as the minimal widths for the columns.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><BR>
+
+wxGrid sets up arrays to store individual row and column sizes when non-default sizes are used.
+The memory requirements for this could become prohibitive if your grid is very large.<P>
+<P>
+
+<HR>
+<A NAME="wxgridautosizerow"></A>
+<H3>wxGrid::AutoSizeRow</H3>
+<P>
+<B>void</B> <B>AutoSizeRow</B>(<B>int </B><I>row</I>, <B>bool </B><I>setAsMin = true</I>)<P>
+Automatically sizes the row to fit its contents. If setAsMin is true the calculated height will
+also be set as the minimal height for the row.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><BR>
+
+wxGrid sets up arrays to store individual row and column sizes when non-default sizes are used.
+The memory requirements for this could become prohibitive if your grid is very large.<P>
+<P>
+
+<HR>
+<A NAME="wxgridautosizerows"></A>
+<H3>wxGrid::AutoSizeRows</H3>
+<P>
+<B>void</B> <B>AutoSizeRows</B>(<B>bool </B><I>setAsMin = true</I>)<P>
+Automatically sizes all rows to fit their contents. If setAsMin is true the calculated heights will
+also be set as the minimal heights for the rows.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><BR>
+
+wxGrid sets up arrays to store individual row and column sizes when non-default sizes are used.
+The memory requirements for this could become prohibitive if your grid is very large.<P>
+<P>
+
+<HR>
+<A NAME="wxgridbeginbatch"></A>
+<H3>wxGrid::BeginBatch</H3>
+<P>
+<B>void</B> <B>BeginBatch</B>()<P>
+Increments the grid's batch count. When the count is greater than zero repainting of
+the grid is suppressed. Each call to BeginBatch must be matched by a later call to
+<A HREF="wx_wxgrid.html#wxgridendbatch">wxGrid::EndBatch</A>. Code that does a lot of grid
+modification can be enclosed between BeginBatch and EndBatch calls to avoid
+screen flicker. The final EndBatch will cause the grid to be repainted.<P>
+<P>
+
+<HR>
+<A NAME="wxgridblocktodevicerect"></A>
+<H3>wxGrid::BlockToDeviceRect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>BlockToDeviceRect</B>(<B>const wxGridCellCoords &amp; </B><I>topLeft</I>, <B>const wxGridCellCoords &amp; </B><I>bottomRight</I>)<P>
+This function returns the rectangle that encloses the block of cells
+limited by TopLeft and BottomRight cell in device coords and clipped
+to the client size of the grid window.<P>
+<P>
+
+<HR>
+<A NAME="wxgridcandragcolmove"></A>
+<H3>wxGrid::CanDragColMove</H3>
+<P>
+<B>bool</B> <B>CanDragColMove</B>()<P>
+Returns true if columns can be moved by dragging with the mouse. Columns can be moved
+by dragging on their labels.<P>
+<P>
+
+<HR>
+<A NAME="wxgridcandragcolsize"></A>
+<H3>wxGrid::CanDragColSize</H3>
+<P>
+<B>bool</B> <B>CanDragColSize</B>()<P>
+Returns true if columns can be resized by dragging with the mouse. Columns can be resized
+by dragging the edges of their labels. If grid line dragging is enabled they can also be
+resized by dragging the right edge of the column in the grid cell area
+(see <A HREF="wx_wxgrid.html#wxgridenabledraggridsize">wxGrid::EnableDragGridSize</A>).<P>
+<P>
+
+<HR>
+<A NAME="wxgridcandragrowsize"></A>
+<H3>wxGrid::CanDragRowSize</H3>
+<P>
+<B>bool</B> <B>CanDragRowSize</B>()<P>
+Returns true if rows can be resized by dragging with the mouse. Rows can be resized
+by dragging the edges of their labels. If grid line dragging is enabled they can also be
+resized by dragging the lower edge of the row in the grid cell area
+(see <A HREF="wx_wxgrid.html#wxgridenabledraggridsize">wxGrid::EnableDragGridSize</A>).<P>
+<P>
+
+<HR>
+<A NAME="wxgridcandraggridsize"></A>
+<H3>wxGrid::CanDragGridSize</H3>
+<P>
+<B>bool</B> <B>CanDragGridSize</B>()<P>
+Return true if the dragging of grid lines to resize rows and columns is enabled or false otherwise.<P>
+<P>
+
+<HR>
+<A NAME="wxgridcanenablecellcontrol"></A>
+<H3>wxGrid::CanEnableCellControl</H3>
+<P>
+<B>bool</B> <B>CanEnableCellControl</B>() <B>const</B><P>
+Returns true if the in-place edit control for the current grid cell can be used and
+false otherwise (e.g. if the current cell is read-only).<P>
+<P>
+
+<HR>
+<A NAME="wxgridcanhaveattributes"></A>
+<H3>wxGrid::CanHaveAttributes</H3>
+<P>
+<B>bool</B> <B>CanHaveAttributes</B>()<P>
+Do we have some place to store attributes in?<P>
+<P>
+
+<HR>
+<A NAME="wxgridcelltorect"></A>
+<H3>wxGrid::CellToRect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>CellToRect</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>CellToRect</B>(<B>const wxGridCellCoords&amp; </B><I>coords</I>)<P>
+Return the rectangle corresponding to the grid cell's size and position in logical
+coordinates.<P>
+<P>
+
+<HR>
+<A NAME="wxgridcleargrid"></A>
+<H3>wxGrid::ClearGrid</H3>
+<P>
+<B>void</B> <B>ClearGrid</B>()<P>
+Clears all data in the underlying grid table and repaints the grid. The table is not deleted by
+this function. If you are using a derived table class then you need to override
+<A HREF="wx_wxgridtablebase.html#wxgridtablebaseclear">wxGridTableBase::Clear</A> for this function to have any effect.<P>
+<P>
+
+<HR>
+<A NAME="wxgridclearselection"></A>
+<H3>wxGrid::ClearSelection</H3>
+<P>
+<B>void</B> <B>ClearSelection</B>()<P>
+Deselects all cells that are currently selected.<P>
+<P>
+
+<HR>
+<A NAME="wxgridcreategrid"></A>
+<H3>wxGrid::CreateGrid</H3>
+<P>
+<B>bool</B> <B>CreateGrid</B>(<B>int </B><I>numRows</I>, <B>int </B><I>numCols</I>, <B>wxGrid::wxGridSelectionModes </B><I>selmode = wxGrid::wxGridSelectCells</I>)<P>
+Creates a grid with the specified initial number of rows and columns.
+Call this directly after the grid constructor. When you use this
+function wxGrid will create and manage a simple table of string values
+for you. All of the grid data will be stored in memory.<P>
+For applications with more complex data types or relationships, or for
+dealing with very large datasets, you should derive your own grid table
+class and pass a table object to the grid with <A HREF="wx_wxgrid.html#wxgridsettable">wxGrid::SetTable</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgriddeletecols"></A>
+<H3>wxGrid::DeleteCols</H3>
+<P>
+<B>bool</B> <B>DeleteCols</B>(<B>int </B><I>pos = 0</I>, <B>int </B><I>numCols = 1</I>, <B>bool </B><I>updateLabels = true</I>)<P>
+Deletes one or more columns from a grid starting at the specified position and returns
+true if successful. The updateLabels argument is not used at present.<P>
+If you are using a derived grid table class you will need to override
+<A HREF="wx_wxgridtablebase.html#wxgridtablebasedeletecols">wxGridTableBase::DeleteCols</A>. See
+<A HREF="wx_wxgrid.html#wxgridinsertcols">wxGrid::InsertCols</A> for further information.<P>
+<P>
+
+<HR>
+<A NAME="wxgriddeleterows"></A>
+<H3>wxGrid::DeleteRows</H3>
+<P>
+<B>bool</B> <B>DeleteRows</B>(<B>int </B><I>pos = 0</I>, <B>int </B><I>numRows = 1</I>, <B>bool </B><I>updateLabels = true</I>)<P>
+Deletes one or more rows from a grid starting at the specified position and returns
+true if successful. The updateLabels argument is not used at present.<P>
+If you are using a derived grid table class you will need to override
+<A HREF="wx_wxgridtablebase.html#wxgridtablebasedeleterows">wxGridTableBase::DeleteRows</A>. See
+<A HREF="wx_wxgrid.html#wxgridinsertrows">wxGrid::InsertRows</A> for further information.<P>
+<P>
+
+<HR>
+<A NAME="wxgriddisablecelleditcontrol"></A>
+<H3>wxGrid::DisableCellEditControl</H3>
+<P>
+<B>void</B> <B>DisableCellEditControl</B>()<P>
+Disables in-place editing of grid cells.
+Equivalent to calling EnableCellEditControl(false).<P>
+<P>
+
+<HR>
+<A NAME="wxgriddisabledragcolmove"></A>
+<H3>wxGrid::DisableDragColMove</H3>
+<P>
+<B>void</B> <B>DisableDragColMove</B>()<P>
+Disables column moving by dragging with the mouse. Equivalent to passing false to
+<A HREF="wx_wxgrid.html#wxgridenabledragcolmove">wxGrid::EnableDragColMove</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgriddisabledragcolsize"></A>
+<H3>wxGrid::DisableDragColSize</H3>
+<P>
+<B>void</B> <B>DisableDragColSize</B>()<P>
+Disables column sizing by dragging with the mouse. Equivalent to passing false to
+<A HREF="wx_wxgrid.html#wxgridenabledragcolsize">wxGrid::EnableDragColSize</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgriddisabledraggridsize"></A>
+<H3>wxGrid::DisableDragGridSize</H3>
+<P>
+<B>void</B> <B>DisableDragGridSize</B>()<P>
+Disable mouse dragging of grid lines to resize rows and columns. Equivalent to passing
+false to <A HREF="wx_wxgrid.html#wxgridenabledraggridsize">wxGrid::EnableDragGridSize</A><P>
+<P>
+
+<HR>
+<A NAME="wxgriddisabledragrowsize"></A>
+<H3>wxGrid::DisableDragRowSize</H3>
+<P>
+<B>void</B> <B>DisableDragRowSize</B>()<P>
+Disables row sizing by dragging with the mouse. Equivalent to passing false to
+<A HREF="wx_wxgrid.html#wxgridenabledragrowsize">wxGrid::EnableDragRowSize</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridenablecelleditcontrol"></A>
+<H3>wxGrid::EnableCellEditControl</H3>
+<P>
+<B>void</B> <B>EnableCellEditControl</B>(<B>bool </B><I>enable = true</I>)<P>
+Enables or disables in-place editing of grid cell data. The grid will issue either a
+wxEVT_GRID_EDITOR_SHOWN or wxEVT_GRID_EDITOR_HIDDEN event.<P>
+<P>
+
+<HR>
+<A NAME="wxgridenabledragcolsize"></A>
+<H3>wxGrid::EnableDragColSize</H3>
+<P>
+<B>void</B> <B>EnableDragColSize</B>(<B>bool </B><I>enable = true</I>)<P>
+Enables or disables column sizing by dragging with the mouse.<P>
+<P>
+
+<HR>
+<A NAME="wxgridenabledragcolmove"></A>
+<H3>wxGrid::EnableDragColMove</H3>
+<P>
+<B>void</B> <B>EnableDragColMove</B>(<B>bool </B><I>enable = true</I>)<P>
+Enables or disables column moving by dragging with the mouse.<P>
+<P>
+
+<HR>
+<A NAME="wxgridenabledraggridsize"></A>
+<H3>wxGrid::EnableDragGridSize</H3>
+<P>
+<B>void</B> <B>EnableDragGridSize</B>(<B>bool </B><I>enable = true</I>)<P>
+Enables or disables row and column resizing by dragging gridlines with the mouse.<P>
+<P>
+
+<HR>
+<A NAME="wxgridenabledragrowsize"></A>
+<H3>wxGrid::EnableDragRowSize</H3>
+<P>
+<B>void</B> <B>EnableDragRowSize</B>(<B>bool </B><I>enable = true</I>)<P>
+Enables or disables row sizing by dragging with the mouse.<P>
+<P>
+
+<HR>
+<A NAME="wxgridenableediting"></A>
+<H3>wxGrid::EnableEditing</H3>
+<P>
+<B>void</B> <B>EnableEditing</B>(<B>bool </B><I>edit</I>)<P>
+If the edit argument is false this function sets the whole grid as read-only. If the
+argument is true the grid is set to the default state where cells may be editable. In the
+default state you can set single grid cells and whole rows and columns to be editable or
+read-only via
+<A HREF="wx_wxgridcellattr.html#wxgridcellattrsetreadonly">wxGridCellAttribute::SetReadOnly</A>. For single
+cells you can also use the shortcut function
+<A HREF="wx_wxgrid.html#wxgridsetreadonly">wxGrid::SetReadOnly</A>.<P>
+For more information about controlling grid cell attributes see the
+<A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A> cell attribute class and the
+<A HREF="wx_gridoverview.html#gridoverview">wxGrid classes overview</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridenablegridlines"></A>
+<H3>wxGrid::EnableGridLines</H3>
+<P>
+<B>void</B> <B>EnableGridLines</B>(<B>bool </B><I>enable = true</I>)<P>
+Turns the drawing of grid lines on or off.<P>
+<P>
+
+<HR>
+<A NAME="wxgridendbatch"></A>
+<H3>wxGrid::EndBatch</H3>
+<P>
+<B>void</B> <B>EndBatch</B>()<P>
+Decrements the grid's batch count. When the count is greater than zero repainting of
+the grid is suppressed. Each previous call to
+<A HREF="wx_wxgrid.html#wxgridbeginbatch">wxGrid::BeginBatch</A> must be matched by a later call to
+EndBatch. Code that does a lot of grid modification can be enclosed between
+BeginBatch and EndBatch calls to avoid screen flicker. The final EndBatch will
+cause the grid to be repainted.<P>
+<P>
+
+<HR>
+<A NAME="wxgridfit"></A>
+<H3>wxGrid::Fit</H3>
+<P>
+<B>void</B> <B>Fit</B>()<P>
+Overridden wxWindow method.<P>
+<P>
+
+<HR>
+<A NAME="wxgridforcerefresh"></A>
+<H3>wxGrid::ForceRefresh</H3>
+<P>
+<B>void</B> <B>ForceRefresh</B>()<P>
+Causes immediate repainting of the grid. Use this instead of the usual wxWindow::Refresh.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetbatchcount"></A>
+<H3>wxGrid::GetBatchCount</H3>
+<P>
+<B>int</B> <B>GetBatchCount</B>()<P>
+Returns the number of times that <A HREF="wx_wxgrid.html#wxgridbeginbatch">wxGrid::BeginBatch</A> has been called
+without (yet) matching calls to <A HREF="wx_wxgrid.html#wxgridendbatch">wxGrid::EndBatch</A>. While
+the grid's batch count is greater than zero the display will not be updated.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcellalignment"></A>
+<H3>wxGrid::GetCellAlignment</H3>
+<P>
+<B>void</B> <B>GetCellAlignment</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>int* </B><I>horiz</I>, <B>int* </B><I>vert</I>)<P>
+Sets the arguments to the horizontal and vertical text alignment values for the
+grid cell at the specified location.<P>
+Horizontal alignment will be one of wxALIGN_LEFT, wxALIGN_CENTRE or wxALIGN_RIGHT. <BR>
+
+Vertical alignment will be one of wxALIGN_TOP, wxALIGN_CENTRE or wxALIGN_BOTTOM.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> This method only takes the parameters <TT>row</TT> and <TT>col</TT> and
+returns a 2-element list <TT>( horiz, vert )</TT>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcellbackgroundcolour"></A>
+<H3>wxGrid::GetCellBackgroundColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetCellBackgroundColour</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+Returns the background colour of the cell at the specified location.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcelleditor"></A>
+<H3>wxGrid::GetCellEditor</H3>
+<P>
+<B><A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>*</B> </B> <B>GetCellEditor</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+Returns a pointer to the editor for the cell at the specified location.<P>
+See <A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A> and
+the <A HREF="wx_gridoverview.html#gridoverview">wxGrid overview</A> for more information about cell editors and renderers.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcellfont"></A>
+<H3>wxGrid::GetCellFont</H3>
+<P>
+<B><A HREF="wx_wxfont.html#wxfont">wxFont</A></B> </B> <B>GetCellFont</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+Returns the font for text in the grid cell at the specified location.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcellrenderer"></A>
+<H3>wxGrid::GetCellRenderer</H3>
+<P>
+<B><A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A>*</B> </B> <B>GetCellRenderer</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+Returns a pointer to the renderer for the grid cell at the specified location.<P>
+See <A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A> and
+the <A HREF="wx_gridoverview.html#gridoverview">wxGrid overview</A> for more information about cell editors and renderers.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcelltextcolour"></A>
+<H3>wxGrid::GetCellTextColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetCellTextColour</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+Returns the text colour for the grid cell at the specified location.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcellvalue"></A>
+<H3>wxGrid::GetCellValue</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetCellValue</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetCellValue</B>(<B>const wxGridCellCoords&amp;</B><I>coords</I>)<P>
+Returns the string contained in the cell at the specified location. For simple applications where a
+grid object automatically uses a default grid table of string values you use this function together
+with <A HREF="wx_wxgrid.html#wxgridsetcellvalue">wxGrid::SetCellValue</A> to access cell values.<P>
+For more complex applications where you have derived your own grid table class that contains
+various data types (e.g. numeric, boolean or user-defined custom types) then you only use this
+function for those cells that contain string values.<P>
+See <A HREF="wx_wxgridtablebase.html#wxgridtablebasecangetvalueas">wxGridTableBase::CanGetValueAs</A>
+and the <A HREF="wx_gridoverview.html#gridoverview">wxGrid overview</A> for more information.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcolat"></A>
+<H3>wxGrid::GetColAt</H3>
+<P>
+<B>int</B> <B>GetColAt</B>(<B>int </B><I>colPos</I>) <B>const</B><P>
+Returns the column ID of the specified column position.<P>
+
+
+<HR>
+<A NAME="wxgridgetcolleft"></A>
+<H3>wxGrid::GetColLeft</H3>
+<P>
+<B>int</B> <B>GetColLeft</B>(<B>int </B><I>col</I>) <B>const</B><P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcollabelalignment"></A>
+<H3>wxGrid::GetColLabelAlignment</H3>
+<P>
+<B>void</B> <B>GetColLabelAlignment</B>(<B>int* </B><I>horiz</I>, <B>int* </B><I>vert</I>)<P>
+Sets the arguments to the current column label alignment values.<P>
+Horizontal alignment will be one of wxALIGN_LEFT, wxALIGN_CENTRE or wxALIGN_RIGHT.<BR>
+
+Vertical alignment will be one of wxALIGN_TOP, wxALIGN_CENTRE or wxALIGN_BOTTOM.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> This method takes no parameters and
+returns a 2-element list <TT>( horiz, vert )</TT>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcollabelsize"></A>
+<H3>wxGrid::GetColLabelSize</H3>
+<P>
+<B>int</B> <B>GetColLabelSize</B>()<P>
+Returns the current height of the column labels.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcollabelvalue"></A>
+<H3>wxGrid::GetColLabelValue</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetColLabelValue</B>(<B>int </B><I>col</I>)<P>
+Returns the specified column label. The default grid table class provides column labels of
+the form A,B...Z,AA,AB...ZZ,AAA... If you are using a custom grid table you can override
+<A HREF="wx_wxgridtablebase.html#wxgridtablebasegetcollabelvalue">wxGridTableBase::GetColLabelValue</A> to provide
+your own labels.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcolminimalacceptablewidth"></A>
+<H3>wxGrid::GetColMinimalAcceptableWidth</H3>
+<P>
+<B>int</B> <B>GetColMinimalAcceptableWidth</B>()<P>
+This returns the value of the lowest column width that can be handled correctly. See
+member <A HREF="wx_wxgrid.html#wxgridsetcolminimalacceptablewidth">SetColMinimalAcceptableWidth</A> for details.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcolminimalwidth"></A>
+<H3>wxGrid::GetColMinimalWidth</H3>
+<P>
+<B>int</B> <B>GetColMinimalWidth</B>(<B>int </B><I>col</I>) <B>const</B><P>
+Get the minimal width of the given column/row.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcolpos"></A>
+<H3>wxGrid::GetColPos</H3>
+<P>
+<B>int</B> <B>GetColPos</B>(<B>int </B><I>colID</I>) <B>const</B><P>
+Returns the position of the specified column.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcolright"></A>
+<H3>wxGrid::GetColRight</H3>
+<P>
+<B>int</B> <B>GetColRight</B>(<B>int </B><I>col</I>) <B>const</B><P>
+<P>
+
+<HR>
+<A NAME="wxgridgetcolsize"></A>
+<H3>wxGrid::GetColSize</H3>
+<P>
+<B>int</B> <B>GetColSize</B>(<B>int </B><I>col</I>)<P>
+Returns the width of the specified column.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaultcellalignment"></A>
+<H3>wxGrid::GetDefaultCellAlignment</H3>
+<P>
+<B>void</B> <B>GetDefaultCellAlignment</B>(<B>int* </B><I>horiz</I>, <B>int* </B><I>vert</I>)<P>
+Sets the arguments to the current default horizontal and vertical text alignment
+values.<P>
+Horizontal alignment will be one of wxALIGN_LEFT, wxALIGN_CENTRE or wxALIGN_RIGHT. <BR>
+
+Vertical alignment will be one of wxALIGN_TOP, wxALIGN_CENTRE or wxALIGN_BOTTOM.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaultcellbackgroundcolour"></A>
+<H3>wxGrid::GetDefaultCellBackgroundColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetDefaultCellBackgroundColour</B>()<P>
+Returns the current default background colour for grid cells.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaultcellfont"></A>
+<H3>wxGrid::GetDefaultCellFont</H3>
+<P>
+<B><A HREF="wx_wxfont.html#wxfont">wxFont</A></B> </B> <B>GetDefaultCellFont</B>()<P>
+Returns the current default font for grid cell text.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaultcelltextcolour"></A>
+<H3>wxGrid::GetDefaultCellTextColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetDefaultCellTextColour</B>()<P>
+Returns the current default colour for grid cell text.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaultcollabelsize"></A>
+<H3>wxGrid::GetDefaultColLabelSize</H3>
+<P>
+<B>int</B> <B>GetDefaultColLabelSize</B>()<P>
+Returns the default height for column labels.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaultcolsize"></A>
+<H3>wxGrid::GetDefaultColSize</H3>
+<P>
+<B>int</B> <B>GetDefaultColSize</B>()<P>
+Returns the current default width for grid columns.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaulteditor"></A>
+<H3>wxGrid::GetDefaultEditor</H3>
+<P>
+<B><A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>*</B> </B> <B>GetDefaultEditor</B>() <B>const</B><P>
+Returns a pointer to the current default grid cell editor.<P>
+See <A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A> and
+the <A HREF="wx_gridoverview.html#gridoverview">wxGrid overview</A> for more information about cell editors and renderers.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaulteditorforcell"></A>
+<H3>wxGrid::GetDefaultEditorForCell</H3>
+<P>
+<B><A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>*</B> </B> <B>GetDefaultEditorForCell</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>) <B>const</B><P>
+<B><A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>*</B> </B> <B>GetDefaultEditorForCell</B>(<B>const wxGridCellCoords&amp; </B><I>c</I>) <B>const</B><P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaulteditorfortype"></A>
+<H3>wxGrid::GetDefaultEditorForType</H3>
+<P>
+<B><A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>*</B> </B> <B>GetDefaultEditorForType</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>typeName</I>) <B>const</B><P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaultrenderer"></A>
+<H3>wxGrid::GetDefaultRenderer</H3>
+<P>
+<B><A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A>*</B> </B> <B>GetDefaultRenderer</B>() <B>const</B><P>
+Returns a pointer to the current default grid cell renderer.<P>
+See <A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A> and
+the <A HREF="wx_gridoverview.html#gridoverview">wxGrid overview</A> for more information about cell editors and renderers.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaultrendererforcell"></A>
+<H3>wxGrid::GetDefaultRendererForCell</H3>
+<P>
+<B><A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A>*</B> </B> <B>GetDefaultRendererForCell</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>) <B>const</B><P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaultrendererfortype"></A>
+<H3>wxGrid::GetDefaultRendererForType</H3>
+<P>
+<B><A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A>*</B> </B> <B>GetDefaultRendererForType</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>typeName</I>) <B>const</B><P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaultrowlabelsize"></A>
+<H3>wxGrid::GetDefaultRowLabelSize</H3>
+<P>
+<B>int</B> <B>GetDefaultRowLabelSize</B>()<P>
+Returns the default width for the row labels.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetdefaultrowsize"></A>
+<H3>wxGrid::GetDefaultRowSize</H3>
+<P>
+<B>int</B> <B>GetDefaultRowSize</B>()<P>
+Returns the current default height for grid rows.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetgridcursorcol"></A>
+<H3>wxGrid::GetGridCursorCol</H3>
+<P>
+<B>int</B> <B>GetGridCursorCol</B>()<P>
+Returns the current grid cell column position.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetgridcursorrow"></A>
+<H3>wxGrid::GetGridCursorRow</H3>
+<P>
+<B>int</B> <B>GetGridCursorRow</B>()<P>
+Returns the current grid cell row position.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetgridlinecolour"></A>
+<H3>wxGrid::GetGridLineColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetGridLineColour</B>()<P>
+Returns the colour used for grid lines.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgrid.html#wxgridgetdefaultgridlinepen">GetDefaultGridLinePen()</A><P>
+
+
+<HR>
+<A NAME="wxgridgetdefaultgridlinepen"></A>
+<H3>wxGrid::GetDefaultGridLinePen</H3>
+<P>
+<B><A HREF="wx_wxpen.html#wxpen">wxPen</A></B> </B> <B>GetDefaultGridLinePen</B>()<P>
+Returns the pen used for grid lines. This virtual function may be overridden in
+derived classes in order to change the appearance of grid lines. Note that
+currently the pen width must be 1.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgrid.html#wxgridgetcolgridlinepen">GetColGridLinePen()</A>,<BR>
+
+<A HREF="wx_wxgrid.html#wxgridgetrowgridlinepen">GetRowGridLinePen()</A><P>
+<P>
+
+
+<HR>
+<A NAME="wxgridgetrowgridlinepen"></A>
+<H3>wxGrid::GetRowGridLinePen</H3>
+<P>
+<B><A HREF="wx_wxpen.html#wxpen">wxPen</A></B> </B> <B>GetRowGridLinePen</B>(<B>int </B><I>row</I>)<P>
+Returns the pen used for horizontal grid lines. This virtual function may be
+overridden in derived classes in order to change the appearance of individual
+grid line for the given row <I>row</I>.<P>
+Example: <BR>
+
+<BR>
+
+<PRE>
+   // in a grid displaying music notation, use a solid black pen between
+   // octaves (C0=row 127, C1=row 115 etc.)
+   wxPen MidiGrid::GetRowGridLinePen(int row)
+   {
+       if ( row%12 == 7 )
+          return wxPen(*wxBLACK, 1, wxSOLID);
+       else 
+          return GetDefaultGridLinePen();
+   }
+</PRE>
+<P>
+
+<HR>
+<A NAME="wxgridgetcolgridlinepen"></A>
+<H3>wxGrid::GetColGridLinePen</H3>
+<P>
+<B><A HREF="wx_wxpen.html#wxpen">wxPen</A></B> </B> <B>GetColGridLinePen</B>(<B>int </B><I>col</I>)<P>
+Returns the pen used for vertical grid lines. This virtual function may be
+overridden in derived classes in order to change the appearance of individual
+grid lines for the given column <I>col</I>.<P>
+See <A HREF="wx_wxgrid.html#wxgridgetrowgridlinepen">GetRowGridLinePen()</A> for an example.<P>
+<P>
+
+
+<HR>
+<A NAME="wxgridgridlinesenabled"></A>
+<H3>wxGrid::GridLinesEnabled</H3>
+<P>
+<B>bool</B> <B>GridLinesEnabled</B>()<P>
+Returns true if drawing of grid lines is turned on, false otherwise.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetlabelbackgroundcolour"></A>
+<H3>wxGrid::GetLabelBackgroundColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetLabelBackgroundColour</B>()<P>
+Returns the colour used for the background of row and column labels.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetlabelfont"></A>
+<H3>wxGrid::GetLabelFont</H3>
+<P>
+<B><A HREF="wx_wxfont.html#wxfont">wxFont</A></B> </B> <B>GetLabelFont</B>()<P>
+Returns the font used for row and column labels.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetlabeltextcolour"></A>
+<H3>wxGrid::GetLabelTextColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetLabelTextColour</B>()<P>
+Returns the colour used for row and column label text.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetnumbercols"></A>
+<H3>wxGrid::GetNumberCols</H3>
+<P>
+<B>int</B> <B>GetNumberCols</B>()<P>
+Returns the total number of grid columns (actually the number of columns in the underlying grid
+table).<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetnumberrows"></A>
+<H3>wxGrid::GetNumberRows</H3>
+<P>
+<B>int</B> <B>GetNumberRows</B>()<P>
+Returns the total number of grid rows (actually the number of rows in the underlying grid table).<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetorcreatecellattr"></A>
+<H3>wxGrid::GetOrCreateCellAttr</H3>
+<P>
+<B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>*</B> </B> <B>GetOrCreateCellAttr</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>) <B>const</B><P>
+<P>
+
+<HR>
+<A NAME="wxgridgetrowminimalacceptableheight"></A>
+<H3>wxGrid::GetRowMinimalAcceptableHeight</H3>
+<P>
+<B>int</B> <B>GetRowMinimalAcceptableHeight</B>()<P>
+This returns the value of the lowest row width that can be handled correctly. See
+member <A HREF="wx_wxgrid.html#wxgridsetrowminimalacceptableheight">SetRowMinimalAcceptableHeight</A> for details.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetrowminimalheight"></A>
+<H3>wxGrid::GetRowMinimalHeight</H3>
+<P>
+<B>int</B> <B>GetRowMinimalHeight</B>(<B>int </B><I>col</I>) <B>const</B><P>
+<P>
+
+<HR>
+<A NAME="wxgridgetrowlabelalignment"></A>
+<H3>wxGrid::GetRowLabelAlignment</H3>
+<P>
+<B>void</B> <B>GetRowLabelAlignment</B>(<B>int* </B><I>horiz</I>, <B>int* </B><I>vert</I>)<P>
+Sets the arguments to the current row label alignment values.<P>
+Horizontal alignment will be one of wxLEFT, wxCENTRE or wxRIGHT. <BR>
+
+Vertical alignment will be one of wxTOP, wxCENTRE or wxBOTTOM.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> This method takes no parameters and
+returns a 2-element list <TT>( horiz, vert )</TT>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetrowlabelsize"></A>
+<H3>wxGrid::GetRowLabelSize</H3>
+<P>
+<B>int</B> <B>GetRowLabelSize</B>()<P>
+Returns the current width of the row labels.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetrowlabelvalue"></A>
+<H3>wxGrid::GetRowLabelValue</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetRowLabelValue</B>(<B>int </B><I>row</I>)<P>
+Returns the specified row label. The default grid table class provides numeric row labels.
+If you are using a custom grid table you can override
+<A HREF="wx_wxgridtablebase.html#wxgridtablebasegetcollabelvalue">wxGridTableBase::GetRowLabelValue</A> to provide
+your own labels.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetrowsize"></A>
+<H3>wxGrid::GetRowSize</H3>
+<P>
+<B>int</B> <B>GetRowSize</B>(<B>int </B><I>row</I>)<P>
+Returns the height of the specified row.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetscrolllinex"></A>
+<H3>wxGrid::GetScrollLineX</H3>
+<P>
+<B>int</B> <B>GetScrollLineX</B>() <B>const</B><P>
+Returns the number of pixels per horizontal scroll increment. The default is 15.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgrid.html#wxgridgetscrollliney">wxGrid::GetScrollLineY</A>,
+<A HREF="wx_wxgrid.html#wxgridsetscrolllinex">wxGrid::SetScrollLineX</A>,
+<A HREF="wx_wxgrid.html#wxgridsetscrollliney">wxGrid::SetScrollLineY</A><P>
+<P>
+
+<HR>
+<A NAME="wxgridgetscrollliney"></A>
+<H3>wxGrid::GetScrollLineY</H3>
+<P>
+<B>int</B> <B>GetScrollLineY</B>() <B>const</B><P>
+Returns the number of pixels per vertical scroll increment. The default is 15.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgrid.html#wxgridgetscrolllinex">wxGrid::GetScrollLineX</A>,
+<A HREF="wx_wxgrid.html#wxgridsetscrolllinex">wxGrid::SetScrollLineX</A>,
+<A HREF="wx_wxgrid.html#wxgridsetscrollliney">wxGrid::SetScrollLineY</A><P>
+<P>
+
+<HR>
+<A NAME="wxgridgetselectionmode"></A>
+<H3>wxGrid::GetSelectionMode</H3>
+<P>
+<B>wxGrid::wxGridSelectionModes</B> <B>GetSelectionMode</B>() <B>const</B><P>
+Returns the current selection mode, see <A HREF="wx_wxgrid.html#wxgridsetselectionmode">wxGrid::SetSelectionMode</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetselectedcells"></A>
+<H3>wxGrid::GetSelectedCells</H3>
+<P>
+<B>wxGridCellCoordsArray</B> <B>GetSelectedCells</B>() <B>const</B><P>
+Returns an array of singly selected cells.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetselectedcols"></A>
+<H3>wxGrid::GetSelectedCols</H3>
+<P>
+<B>wxArrayInt</B> <B>GetSelectedCols</B>() <B>const</B><P>
+Returns an array of selected cols.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetselectedrows"></A>
+<H3>wxGrid::GetSelectedRows</H3>
+<P>
+<B>wxArrayInt</B> <B>GetSelectedRows</B>() <B>const</B><P>
+Returns an array of selected rows.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetselectionbackground"></A>
+<H3>wxGrid::GetSelectionBackground</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetSelectionBackground</B>() <B>const</B><P>
+Access or update the selection fore/back colours<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetselectionblocktopleft"></A>
+<H3>wxGrid::GetSelectionBlockTopLeft</H3>
+<P>
+<B>wxGridCellCoordsArray</B> <B>GetSelectionBlockTopLeft</B>() <B>const</B><P>
+Returns an array of the top left corners of blocks of selected cells,
+see <A HREF="wx_wxgrid.html#wxgridgetselectionblockbottomright">wxGrid::GetSelectionBlockBottomRight</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetselectionblockbottomright"></A>
+<H3>wxGrid::GetSelectionBlockBottomRight</H3>
+<P>
+<B>wxGridCellCoordsArray</B> <B>GetSelectionBlockBottomRight</B>() <B>const</B><P>
+Returns an array of the bottom right corners of blocks of selected cells,
+see <A HREF="wx_wxgrid.html#wxgridgetselectionblocktopleft">wxGrid::GetSelectionBlockTopLeft</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetselectionforeground"></A>
+<H3>wxGrid::GetSelectionForeground</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetSelectionForeground</B>() <B>const</B><P>
+<P>
+
+<HR>
+<A NAME="wxgridgettable"></A>
+<H3>wxGrid::GetTable</H3>
+<P>
+<B><A HREF="wx_wxgridtablebase.html#wxgridtablebase">wxGridTableBase</A> *</B> </B> <B>GetTable</B>() <B>const</B><P>
+Returns a base pointer to the current table object.<P>
+<P>
+
+<HR>
+<A NAME="wxgridgetviewwidth"></A>
+<H3>wxGrid::GetViewWidth</H3>
+<P>
+<B>int</B> <B>GetViewWidth</B>()<P>
+Returned number of whole cols visible.<P>
+<P>
+
+<HR>
+<A NAME="wxgridhidecelleditcontrol"></A>
+<H3>wxGrid::HideCellEditControl</H3>
+<P>
+<B>void</B> <B>HideCellEditControl</B>()<P>
+Hides the in-place cell edit control.<P>
+<P>
+
+<HR>
+<A NAME="wxgridinitcolwidths"></A>
+<H3>wxGrid::InitColWidths</H3>
+<P>
+<B>void</B> <B>InitColWidths</B>()<P>
+Init the m_colWidths/Rights arrays<P>
+<P>
+
+<HR>
+<A NAME="wxgridinitrowheights"></A>
+<H3>wxGrid::InitRowHeights</H3>
+<P>
+<B>void</B> <B>InitRowHeights</B>()<P>
+NB: <I>never</I> access m_row/col arrays directly because they are created
+on demand, <I>always</I> use accessor functions instead!<P>
+Init the m_rowHeights/Bottoms arrays with default values.<P>
+<P>
+
+<HR>
+<A NAME="wxgridinsertcols"></A>
+<H3>wxGrid::InsertCols</H3>
+<P>
+<B>bool</B> <B>InsertCols</B>(<B>int </B><I>pos = 0</I>, <B>int </B><I>numCols = 1</I>, <B>bool </B><I>updateLabels = true</I>)<P>
+Inserts one or more new columns into a grid with the first new column at the
+specified position and returns true if successful. The updateLabels argument is not
+used at present.<P>
+The sequence of actions begins with the grid object requesting the underlying grid
+table to insert new columns. If this is successful the table notifies the grid and the
+grid updates the display. For a default grid (one where you have called
+<A HREF="wx_wxgrid.html#wxgridcreategrid">wxGrid::CreateGrid</A>) this process is automatic. If you are
+using a custom grid table (specified with <A HREF="wx_wxgrid.html#wxgridsettable">wxGrid::SetTable</A>)
+then you must override
+<A HREF="wx_wxgridtablebase.html#wxgridtablebaseinsertcols">wxGridTableBase::InsertCols</A> in your derived
+table class.<P>
+<P>
+
+<HR>
+<A NAME="wxgridinsertrows"></A>
+<H3>wxGrid::InsertRows</H3>
+<P>
+<B>bool</B> <B>InsertRows</B>(<B>int </B><I>pos = 0</I>, <B>int </B><I>numRows = 1</I>, <B>bool </B><I>updateLabels = true</I>)<P>
+Inserts one or more new rows into a grid with the first new row at the specified
+position and returns true if successful. The updateLabels argument is not used at
+present.<P>
+The sequence of actions begins with the grid object requesting the underlying grid
+table to insert new rows. If this is successful the table notifies the grid and the
+grid updates the display. For a default grid (one where you have called
+<A HREF="wx_wxgrid.html#wxgridcreategrid">wxGrid::CreateGrid</A>) this process is automatic. If you are
+using a custom grid table (specified with <A HREF="wx_wxgrid.html#wxgridsettable">wxGrid::SetTable</A>)
+then you must override
+<A HREF="wx_wxgridtablebase.html#wxgridtablebaseinsertrows">wxGridTableBase::InsertRows</A> in your derived
+table class.<P>
+<P>
+
+<HR>
+<A NAME="wxgridiscelleditcontrolenabled"></A>
+<H3>wxGrid::IsCellEditControlEnabled</H3>
+<P>
+<B>bool</B> <B>IsCellEditControlEnabled</B>() <B>const</B><P>
+Returns true if the in-place edit control is currently enabled.<P>
+<P>
+
+<HR>
+<A NAME="wxgridiscurrentcellreadonly"></A>
+<H3>wxGrid::IsCurrentCellReadOnly</H3>
+<P>
+<B>bool</B> <B>IsCurrentCellReadOnly</B>() <B>const</B><P>
+Returns true if the current cell has been set to read-only
+(see <A HREF="wx_wxgrid.html#wxgridsetreadonly">wxGrid::SetReadOnly</A>).<P>
+<P>
+
+<HR>
+<A NAME="wxgridiseditable"></A>
+<H3>wxGrid::IsEditable</H3>
+<P>
+<B>bool</B> <B>IsEditable</B>()<P>
+Returns false if the whole grid has been set as read-only or true otherwise.
+See <A HREF="wx_wxgrid.html#wxgridenableediting">wxGrid::EnableEditing</A> for more information about
+controlling the editing status of grid cells.<P>
+<P>
+
+<HR>
+<A NAME="wxgridisinselection"></A>
+<H3>wxGrid::IsInSelection</H3>
+<P>
+<B>bool</B> <B>IsInSelection</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>) <B>const</B><P>
+<B>bool</B> <B>IsInSelection</B>(<B>const wxGridCellCoords&amp; </B><I>coords</I>) <B>const</B><P>
+Is this cell currently selected.<P>
+<P>
+
+<HR>
+<A NAME="wxgridisreadonly"></A>
+<H3>wxGrid::IsReadOnly</H3>
+<P>
+<B>bool</B> <B>IsReadOnly</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>) <B>const</B><P>
+Returns true if the cell at the specified location can't be edited.
+See also <A HREF="wx_wxgrid.html#wxgridisreadonly">wxGrid::IsReadOnly</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridisselection"></A>
+<H3>wxGrid::IsSelection</H3>
+<P>
+<B>bool</B> <B>IsSelection</B>()<P>
+Returns true if there are currently rows, columns or blocks of cells selected.<P>
+<P>
+
+<HR>
+<A NAME="wxgridisvisible"></A>
+<H3>wxGrid::IsVisible</H3>
+<P>
+<B>bool</B> <B>IsVisible</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>bool </B><I>wholeCellVisible = true</I>)<P>
+<B>bool</B> <B>IsVisible</B>(<B>const wxGridCellCoords&amp; </B><I>coords</I>, <B>bool </B><I>wholeCellVisible = true</I>)<P>
+Returns true if a cell is either wholly visible (the default) or at least partially
+visible in the grid window.<P>
+<P>
+
+<HR>
+<A NAME="wxgridmakecellvisible"></A>
+<H3>wxGrid::MakeCellVisible</H3>
+<P>
+<B>void</B> <B>MakeCellVisible</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+<B>void</B> <B>MakeCellVisible</B>(<B>const wxGridCellCoords&amp; </B><I>coords</I>)<P>
+Brings the specified cell into the visible grid cell area with minimal scrolling. Does
+nothing if the cell is already visible.<P>
+<P>
+
+<HR>
+<A NAME="wxgridmovecursordown"></A>
+<H3>wxGrid::MoveCursorDown</H3>
+<P>
+<B>bool</B> <B>MoveCursorDown</B>(<B>bool </B><I>expandSelection</I>)<P>
+Moves the grid cursor down by one row. If a block of cells was previously selected it
+will expand if the argument is true or be cleared if the argument is false.<P>
+<B><FONT COLOR="#FF0000">Keyboard</FONT></B><BR>
+
+This function is called for Down cursor key presses or Shift+Down to expand a selection.<P>
+<P>
+
+<HR>
+<A NAME="wxgridmovecursorleft"></A>
+<H3>wxGrid::MoveCursorLeft</H3>
+<P>
+<B>bool</B> <B>MoveCursorLeft</B>(<B>bool </B><I>expandSelection</I>)<P>
+Moves the grid cursor left by one column. If a block of cells was previously selected it
+will expand if the argument is true or be cleared if the argument is false.<P>
+<B><FONT COLOR="#FF0000">Keyboard</FONT></B><BR>
+
+This function is called for Left cursor key presses or Shift+Left to expand a selection.<P>
+<P>
+
+<HR>
+<A NAME="wxgridmovecursorright"></A>
+<H3>wxGrid::MoveCursorRight</H3>
+<P>
+<B>bool</B> <B>MoveCursorRight</B>(<B>bool </B><I>expandSelection</I>)<P>
+Moves the grid cursor right by one column. If a block of cells was previously selected it
+will expand if the argument is true or be cleared if the argument is false.<P>
+<B><FONT COLOR="#FF0000">Keyboard</FONT></B><BR>
+
+This function is called for Right cursor key presses or Shift+Right to expand a selection.<P>
+<P>
+
+<HR>
+<A NAME="wxgridmovecursorup"></A>
+<H3>wxGrid::MoveCursorUp</H3>
+<P>
+<B>bool</B> <B>MoveCursorUp</B>(<B>bool </B><I>expandSelection</I>)<P>
+Moves the grid cursor up by one row. If a block of cells was previously selected it
+will expand if the argument is true or be cleared if the argument is false.<P>
+<B><FONT COLOR="#FF0000">Keyboard</FONT></B><BR>
+
+This function is called for Up cursor key presses or Shift+Up to expand a selection.<P>
+<P>
+
+<HR>
+<A NAME="wxgridmovecursordownblock"></A>
+<H3>wxGrid::MoveCursorDownBlock</H3>
+<P>
+<B>bool</B> <B>MoveCursorDownBlock</B>(<B>bool </B><I>expandSelection</I>)<P>
+Moves the grid cursor down in the current column such that it skips to the beginning or
+end of a block of non-empty cells. If a block of cells was previously selected it
+will expand if the argument is true or be cleared if the argument is false.<P>
+<B><FONT COLOR="#FF0000">Keyboard</FONT></B><BR>
+
+This function is called for the Ctrl+Down key combination. Shift+Ctrl+Down expands a selection.<P>
+<P>
+
+<HR>
+<A NAME="wxgridmovecursorleftblock"></A>
+<H3>wxGrid::MoveCursorLeftBlock</H3>
+<P>
+<B>bool</B> <B>MoveCursorLeftBlock</B>(<B>bool </B><I>expandSelection</I>)<P>
+Moves the grid cursor left in the current row such that it skips to the beginning or
+end of a block of non-empty cells. If a block of cells was previously selected it
+will expand if the argument is true or be cleared if the argument is false.<P>
+<B><FONT COLOR="#FF0000">Keyboard</FONT></B><BR>
+
+This function is called for the Ctrl+Left key combination. Shift+Ctrl+left expands a selection.<P>
+<P>
+
+<HR>
+<A NAME="wxgridmovecursorrightblock"></A>
+<H3>wxGrid::MoveCursorRightBlock</H3>
+<P>
+<B>bool</B> <B>MoveCursorRightBlock</B>(<B>bool </B><I>expandSelection</I>)<P>
+Moves the grid cursor right in the current row such that it skips to the beginning or
+end of a block of non-empty cells. If a block of cells was previously selected it
+will expand if the argument is true or be cleared if the argument is false.<P>
+<B><FONT COLOR="#FF0000">Keyboard</FONT></B><BR>
+
+This function is called for the Ctrl+Right key combination. Shift+Ctrl+Right expands a selection.<P>
+<P>
+
+<HR>
+<A NAME="wxgridmovecursorupblock"></A>
+<H3>wxGrid::MoveCursorUpBlock</H3>
+<P>
+<B>bool</B> <B>MoveCursorUpBlock</B>(<B>bool </B><I>expandSelection</I>)<P>
+Moves the grid cursor up in the current column such that it skips to the beginning or
+end of a block of non-empty cells. If a block of cells was previously selected it
+will expand if the argument is true or be cleared if the argument is false.<P>
+<B><FONT COLOR="#FF0000">Keyboard</FONT></B><BR>
+
+This function is called for the Ctrl+Up key combination. Shift+Ctrl+Up expands a selection.<P>
+<P>
+
+<HR>
+<A NAME="wxgridmovepagedown"></A>
+<H3>wxGrid::MovePageDown</H3>
+<P>
+<B>bool</B> <B>MovePageDown</B>()<P>
+Moves the grid cursor down by some number of rows so that the previous bottom visible row
+becomes the top visible row.<P>
+<B><FONT COLOR="#FF0000">Keyboard</FONT></B><BR>
+
+This function is called for PgDn keypresses.<P>
+<P>
+
+<HR>
+<A NAME="wxgridmovepageup"></A>
+<H3>wxGrid::MovePageUp</H3>
+<P>
+<B>bool</B> <B>MovePageUp</B>()<P>
+Moves the grid cursor up by some number of rows so that the previous top visible row
+becomes the bottom visible row.<P>
+<B><FONT COLOR="#FF0000">Keyboard</FONT></B><BR>
+
+This function is called for PgUp keypresses.<P>
+<P>
+
+<HR>
+<A NAME="wxgridregisterdatatype"></A>
+<H3>wxGrid::RegisterDataType</H3>
+<P>
+<B>void</B> <B>RegisterDataType</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>typeName</I>, <B><A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A>* </B></B><I>renderer</I>, <B><A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>* </B></B><I>editor</I>)<P>
+Methods for a registry for mapping data types to Renderers/Editors<P>
+<P>
+
+<HR>
+<A NAME="wxgridsaveeditcontrolvalue"></A>
+<H3>wxGrid::SaveEditControlValue</H3>
+<P>
+<B>void</B> <B>SaveEditControlValue</B>()<P>
+Sets the value of the current grid cell to the current in-place edit control value.
+This is called automatically when the grid cursor moves from the current cell to a
+new cell. It is also a good idea to call this function when closing a grid since
+any edits to the final cell location will not be saved otherwise.<P>
+<P>
+
+<HR>
+<A NAME="wxgridselectall"></A>
+<H3>wxGrid::SelectAll</H3>
+<P>
+<B>void</B> <B>SelectAll</B>()<P>
+Selects all cells in the grid.<P>
+<P>
+
+<HR>
+<A NAME="wxgridselectblock"></A>
+<H3>wxGrid::SelectBlock</H3>
+<P>
+<B>void</B> <B>SelectBlock</B>(<B>int </B><I>topRow</I>, <B>int </B><I>leftCol</I>,
+<B>int </B><I>bottomRow</I>, <B>int </B><I>rightCol</I>, <B>bool </B><I>addToSelected = false</I>)<P>
+<B>void</B> <B>SelectBlock</B>(<B>const wxGridCellCoords&amp; </B><I>topLeft</I>,
+<B>const wxGridCellCoords&amp; </B><I>bottomRight</I>, <B>bool </B><I>addToSelected = false</I>)<P>
+Selects a rectangular block of cells. If addToSelected is false then any existing selection will be
+deselected; if true the column will be added to the existing selection.<P>
+<P>
+
+<HR>
+<A NAME="wxgridselectcol"></A>
+<H3>wxGrid::SelectCol</H3>
+<P>
+<B>void</B> <B>SelectCol</B>(<B>int </B><I>col</I>, <B>bool </B><I>addToSelected = false</I>)<P>
+Selects the specified column. If addToSelected is false then any existing selection will be
+deselected; if true the column will be added to the existing selection.<P>
+<P>
+
+<HR>
+<A NAME="wxgridselectiontodevicerect"></A>
+<H3>wxGrid::SelectionToDeviceRect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>SelectionToDeviceRect</B>()<P>
+This function returns the rectangle that encloses the selected cells
+in device coords and clipped to the client size of the grid window.<P>
+<P>
+
+<HR>
+<A NAME="wxgridselectrow"></A>
+<H3>wxGrid::SelectRow</H3>
+<P>
+<B>void</B> <B>SelectRow</B>(<B>int </B><I>row</I>, <B>bool </B><I>addToSelected = false</I>)<P>
+Selects the specified row. If addToSelected is false then any existing selection will be
+deselected; if true the row will be added to the existing selection.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcellalignment"></A>
+<H3>wxGrid::SetCellAlignment</H3>
+<P>
+<B>void</B> <B>SetCellAlignment</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>int </B><I>horiz</I>, <B>int </B><I>vert</I>)<P>
+<B>void</B> <B>SetCellAlignment</B>(<B>int </B><I>align</I>, <B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+Sets the horizontal and vertical alignment for grid cell text at the specified location.<P>
+Horizontal alignment should be one of wxALIGN_LEFT, wxALIGN_CENTRE or wxALIGN_RIGHT. <BR>
+
+Vertical alignment should be one of wxALIGN_TOP, wxALIGN_CENTRE or wxALIGN_BOTTOM.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcellbackgroundcolour"></A>
+<H3>wxGrid::SetCellBackgroundColour</H3>
+<P>
+<B>void</B> <B>SetCellBackgroundColour</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcelleditor"></A>
+<H3>wxGrid::SetCellEditor</H3>
+<P>
+<B>void</B> <B>SetCellEditor</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B><A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>* </B></B><I>editor</I>)<P>
+Sets the editor for the grid cell at the specified location.
+The grid will take ownership of the pointer.<P>
+See <A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A> and
+the <A HREF="wx_gridoverview.html#gridoverview">wxGrid overview</A> for more information about cell editors and renderers.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcellfont"></A>
+<H3>wxGrid::SetCellFont</H3>
+<P>
+<B>void</B> <B>SetCellFont</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>&</B></B><I> font</I>)<P>
+Sets the font for text in the grid cell at the specified location.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcellrenderer"></A>
+<H3>wxGrid::SetCellRenderer</H3>
+<P>
+<B>void</B> <B>SetCellRenderer</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B><A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A>* </B></B><I>renderer</I>)<P>
+Sets the renderer for the grid cell at the specified location.
+The grid will take ownership of the pointer.<P>
+See <A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A> and
+the <A HREF="wx_gridoverview.html#gridoverview">wxGrid overview</A> for more information about cell editors and renderers.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcelltextcolour"></A>
+<H3>wxGrid::SetCellTextColour</H3>
+<P>
+<B>void</B> <B>SetCellTextColour</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+<B>void</B> <B>SetCellTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>val</I>, <B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+<B>void</B> <B>SetCellTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+Sets the text colour for the grid cell at the specified location.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcellvalue"></A>
+<H3>wxGrid::SetCellValue</H3>
+<P>
+<B>void</B> <B>SetCellValue</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>s</I>)<P>
+<B>void</B> <B>SetCellValue</B>(<B>const wxGridCellCoords&amp; </B><I>coords</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>s</I>)<P>
+<B>void</B> <B>SetCellValue</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>val</I>, <B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+Sets the string value for the cell at the specified location. For simple applications where a
+grid object automatically uses a default grid table of string values you use this function together
+with <A HREF="wx_wxgrid.html#wxgridgetcellvalue">wxGrid::GetCellValue</A> to access cell values.<P>
+For more complex applications where you have derived your own grid table class that contains
+various data types (e.g. numeric, boolean or user-defined custom types) then you only use this
+function for those cells that contain string values.<P>
+The last form is for backward compatibility only.<P>
+See <A HREF="wx_wxgridtablebase.html#wxgridtablebasecangetvalueas">wxGridTableBase::CanSetValueAs</A>
+and the <A HREF="wx_gridoverview.html#gridoverview">wxGrid overview</A> for more information.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcolattr"></A>
+<H3>wxGrid::SetColAttr</H3>
+<P>
+<B>void</B> <B>SetColAttr</B>(<B>int </B><I>col</I>, <B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>* </B></B><I>attr</I>)<P>
+Sets the cell attributes for all cells in the specified column.<P>
+For more information about controlling grid cell attributes see the
+<A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A> cell attribute class and the
+<A HREF="wx_gridoverview.html#gridoverview">wxGrid classes overview</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcolformatbool"></A>
+<H3>wxGrid::SetColFormatBool</H3>
+<P>
+<B>void</B> <B>SetColFormatBool</B>(<B>int </B><I>col</I>)<P>
+Sets the specified column to display boolean values. wxGrid displays boolean values with a checkbox.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcolformatnumber"></A>
+<H3>wxGrid::SetColFormatNumber</H3>
+<P>
+<B>void</B> <B>SetColFormatNumber</B>(<B>int </B><I>col</I>)<P>
+Sets the specified column to display integer values.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcolformatfloat"></A>
+<H3>wxGrid::SetColFormatFloat</H3>
+<P>
+<B>void</B> <B>SetColFormatFloat</B>(<B>int </B><I>col</I>, <B>int </B><I>width = -1</I>, <B>int </B><I>precision = -1</I>)<P>
+Sets the specified column to display floating point values with the given width and precision.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcolformatcustom"></A>
+<H3>wxGrid::SetColFormatCustom</H3>
+<P>
+<B>void</B> <B>SetColFormatCustom</B>(<B>int </B><I>col</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>typeName</I>)<P>
+Sets the specified column to display data in a custom format.
+See the <A HREF="wx_gridoverview.html#gridoverview">wxGrid overview</A> for more information on working
+with custom data types.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcollabelalignment"></A>
+<H3>wxGrid::SetColLabelAlignment</H3>
+<P>
+<B>void</B> <B>SetColLabelAlignment</B>(<B>int </B><I>horiz</I>, <B>int </B><I>vert</I>)<P>
+Sets the horizontal and vertical alignment of column label text.<P>
+Horizontal alignment should be one of wxALIGN_LEFT, wxALIGN_CENTRE or wxALIGN_RIGHT.<P>
+Vertical alignment should be one of wxALIGN_TOP, wxALIGN_CENTRE or wxALIGN_BOTTOM.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcollabelsize"></A>
+<H3>wxGrid::SetColLabelSize</H3>
+<P>
+<B>void</B> <B>SetColLabelSize</B>(<B>int </B><I>height</I>)<P>
+Sets the height of the column labels.<P>
+If <I>height</I> equals to <TT>wxGRID_AUTOSIZE</TT> then height is calculated
+automatically so that no label is truncated. Note that this could be slow for a
+large table. This flag is new since wxWidgets version 2.8.8.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcollabelvalue"></A>
+<H3>wxGrid::SetColLabelValue</H3>
+<P>
+<B>void</B> <B>SetColLabelValue</B>(<B>int </B><I>col</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> value</I>)<P>
+Set the value for the given column label. If you are using a derived grid table you must
+override <A HREF="wx_wxgridtablebase.html#wxgridtablebasesetcollabelvalue">wxGridTableBase::SetColLabelValue</A>
+for this to have any effect.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcolminimalwidth"></A>
+<H3>wxGrid::SetColMinimalWidth</H3>
+<P>
+<B>void</B> <B>SetColMinimalWidth</B>(<B>int </B><I>col</I>, <B>int </B><I>width</I>)<P>
+Sets the minimal width for the specified column. This should normally be called when creating the grid
+because it will not resize a column that is already narrower than the minimal width.
+The width argument must be higher than the minimimal acceptable column width, see
+<A HREF="wx_wxgrid.html#wxgridgetcolminimalacceptablewidth">wxGrid::GetColMinimalAcceptableWidth</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcolminimalacceptablewidth"></A>
+<H3>wxGrid::SetColMinimalAcceptableWidth</H3>
+<P>
+<B>void</B> <B>SetColMinimalAcceptableWidth</B>(<B>int </B><I>width</I>)<P>
+This modifies the minimum column width that can be handled correctly. Specifying a low value here
+allows smaller grid cells to be dealt with correctly. Specifying a value here which is much smaller
+than the actual minimum size will incur a performance penalty in the functions which perform
+grid cell index lookup on the basis of screen coordinates.
+This should normally be called when creating the grid because it will not resize existing columns
+with sizes smaller than the value specified here.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcolpos"></A>
+<H3>wxGrid::SetColPos</H3>
+<P>
+<B>void</B> <B>SetColPos</B>(<B>int </B><I>colID</I>, <B>int </B><I>newPos</I>)<P>
+Sets the position of the specified column.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetcolsize"></A>
+<H3>wxGrid::SetColSize</H3>
+<P>
+<B>void</B> <B>SetColSize</B>(<B>int </B><I>col</I>, <B>int </B><I>width</I>)<P>
+Sets the width of the specified column.<P>
+This function does not refresh the grid. If you are calling it outside of a BeginBatch / EndBatch
+block you can use <A HREF="wx_wxgrid.html#wxgridforcerefresh">wxGrid::ForceRefresh</A> to see the changes.<P>
+Automatically sizes the column to fit its contents. If setAsMin is true the calculated width will
+also be set as the minimal width for the column.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><BR>
+
+wxGrid sets up arrays to store individual row and column sizes when non-default sizes are used.
+The memory requirements for this could become prohibitive if your grid is very large.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetdefaultcellalignment"></A>
+<H3>wxGrid::SetDefaultCellAlignment</H3>
+<P>
+<B>void</B> <B>SetDefaultCellAlignment</B>(<B>int </B><I>horiz</I>, <B>int </B><I>vert</I>)<P>
+Sets the default horizontal and vertical alignment for grid cell text.<P>
+Horizontal alignment should be one of wxALIGN_LEFT, wxALIGN_CENTRE or wxALIGN_RIGHT.<P>
+Vertical alignment should be one of wxALIGN_TOP, wxALIGN_CENTRE or wxALIGN_BOTTOM.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetdefaultcellbackgroundcolour"></A>
+<H3>wxGrid::SetDefaultCellBackgroundColour</H3>
+<P>
+<B>void</B> <B>SetDefaultCellBackgroundColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+Sets the default background colour for grid cells.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetdefaultcellfont"></A>
+<H3>wxGrid::SetDefaultCellFont</H3>
+<P>
+<B>void</B> <B>SetDefaultCellFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>&</B></B><I> font</I>)<P>
+Sets the default font to be used for grid cell text.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetdefaultcelltextcolour"></A>
+<H3>wxGrid::SetDefaultCellTextColour</H3>
+<P>
+<B>void</B> <B>SetDefaultCellTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+Sets the current default colour for grid cell text.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetdefaulteditor"></A>
+<H3>wxGrid::SetDefaultEditor</H3>
+<P>
+<B>void</B> <B>SetDefaultEditor</B>(<B><A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>* </B></B><I>editor</I>)<P>
+Sets the default editor for grid cells. The grid will take ownership of the pointer.<P>
+See <A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A> and
+the <A HREF="wx_gridoverview.html#gridoverview">wxGrid overview</A> for more information about cell editors and renderers.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetdefaultrenderer"></A>
+<H3>wxGrid::SetDefaultRenderer</H3>
+<P>
+<B>void</B> <B>SetDefaultRenderer</B>(<B><A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A>* </B></B><I>renderer</I>)<P>
+Sets the default renderer for grid cells. The grid will take ownership of the pointer.<P>
+See <A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A> and
+the <A HREF="wx_gridoverview.html#gridoverview">wxGrid overview</A> for more information about cell editors and renderers.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetdefaultcolsize"></A>
+<H3>wxGrid::SetDefaultColSize</H3>
+<P>
+<B>void</B> <B>SetDefaultColSize</B>(<B>int </B><I>width</I>, <B>bool </B><I>resizeExistingCols = false</I>)<P>
+Sets the default width for columns in the grid. This will only affect columns subsequently added to
+the grid unless resizeExistingCols is true.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetdefaultrowsize"></A>
+<H3>wxGrid::SetDefaultRowSize</H3>
+<P>
+<B>void</B> <B>SetDefaultRowSize</B>(<B>int </B><I>height</I>, <B>bool </B><I>resizeExistingRows = false</I>)<P>
+Sets the default height for rows in the grid. This will only affect rows subsequently added
+to the grid unless resizeExistingRows is true.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetgridcursor"></A>
+<H3>wxGrid::SetGridCursor</H3>
+<P>
+<B>void</B> <B>SetGridCursor</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+Set the grid cursor to the specified cell.
+This function calls <A HREF="wx_wxgrid.html#wxgridmakecellvisible">wxGrid::MakeCellVisible</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetgridlinecolour"></A>
+<H3>wxGrid::SetGridLineColour</H3>
+<P>
+<B>void</B> <B>SetGridLineColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I>colour</I>)<P>
+Sets the colour used to draw grid lines.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetlabelbackgroundcolour"></A>
+<H3>wxGrid::SetLabelBackgroundColour</H3>
+<P>
+<B>void</B> <B>SetLabelBackgroundColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+Sets the background colour for row and column labels.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetlabelfont"></A>
+<H3>wxGrid::SetLabelFont</H3>
+<P>
+<B>void</B> <B>SetLabelFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>&</B></B><I> font</I>)<P>
+Sets the font for row and column labels.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetlabeltextcolour"></A>
+<H3>wxGrid::SetLabelTextColour</H3>
+<P>
+<B>void</B> <B>SetLabelTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+Sets the colour for row and column label text.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetmargins"></A>
+<H3>wxGrid::SetMargins</H3>
+<P>
+<B>void</B> <B>SetMargins</B>(<B>int </B><I>extraWidth</I>, <B>int </B><I>extraHeight</I>)<P>
+A grid may occupy more space than needed for its rows/columns. This
+function allows to set how big this extra space is<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetorcalccolumnsizes"></A>
+<H3>wxGrid::SetOrCalcColumnSizes</H3>
+<P>
+<B>int</B> <B>SetOrCalcColumnSizes</B>(<B>bool </B><I>calcOnly</I>, <B>bool </B><I>setAsMin = true</I>)<P>
+Common part of AutoSizeColumn/Row() and GetBestSize()<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetorcalcrowsizes"></A>
+<H3>wxGrid::SetOrCalcRowSizes</H3>
+<P>
+<B>int</B> <B>SetOrCalcRowSizes</B>(<B>bool </B><I>calcOnly</I>, <B>bool </B><I>setAsMin = true</I>)<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetreadonly"></A>
+<H3>wxGrid::SetReadOnly</H3>
+<P>
+<B>void</B> <B>SetReadOnly</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>bool </B><I>isReadOnly = true</I>)<P>
+Makes the cell at the specified location read-only or editable.
+See also <A HREF="wx_wxgrid.html#wxgridisreadonly">wxGrid::IsReadOnly</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetrowattr"></A>
+<H3>wxGrid::SetRowAttr</H3>
+<P>
+<B>void</B> <B>SetRowAttr</B>(<B>int </B><I>row</I>, <B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>* </B></B><I>attr</I>)<P>
+Sets the cell attributes for all cells in the specified row.
+See the <A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A> class for more information
+about controlling cell attributes.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetrowlabelalignment"></A>
+<H3>wxGrid::SetRowLabelAlignment</H3>
+<P>
+<B>void</B> <B>SetRowLabelAlignment</B>(<B>int </B><I>horiz</I>, <B>int </B><I>vert</I>)<P>
+Sets the horizontal and vertical alignment of row label text.<P>
+Horizontal alignment should be one of wxALIGN_LEFT, wxALIGN_CENTRE or wxALIGN_RIGHT.<P>
+Vertical alignment should be one of wxALIGN_TOP, wxALIGN_CENTRE or wxALIGN_BOTTOM.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetrowlabelsize"></A>
+<H3>wxGrid::SetRowLabelSize</H3>
+<P>
+<B>void</B> <B>SetRowLabelSize</B>(<B>int </B><I>width</I>)<P>
+Sets the width of the row labels.<P>
+If <I>width</I> equals <TT>wxGRID_AUTOSIZE</TT> then width is calculated
+automatically so that no label is truncated. Note that this could be slow for a
+large table. This flag is new since wxWidgets version 2.8.8.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetrowlabelvalue"></A>
+<H3>wxGrid::SetRowLabelValue</H3>
+<P>
+<B>void</B> <B>SetRowLabelValue</B>(<B>int </B><I>row</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> value</I>)<P>
+Set the value for the given row label. If you are using a derived grid table you must
+override <A HREF="wx_wxgridtablebase.html#wxgridtablebasesetrowlabelvalue">wxGridTableBase::SetRowLabelValue</A>
+for this to have any effect.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetrowminimalheight"></A>
+<H3>wxGrid::SetRowMinimalHeight</H3>
+<P>
+<B>void</B> <B>SetRowMinimalHeight</B>(<B>int </B><I>row</I>, <B>int </B><I>height</I>)<P>
+Sets the minimal height for the specified row. This should normally be called when creating the grid
+because it will not resize a row that is already shorter than the minimal height.
+The height argument must be higher than the minimimal acceptable row height, see
+<A HREF="wx_wxgrid.html#wxgridgetrowminimalacceptableheight">wxGrid::GetRowMinimalAcceptableHeight</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetrowminimalacceptableheight"></A>
+<H3>wxGrid::SetRowMinimalAcceptableHeight</H3>
+<P>
+<B>void</B> <B>SetRowMinimalAcceptableHeight</B>(<B>int </B><I>height</I>)<P>
+This modifies the minimum row width that can be handled correctly. Specifying a low value here
+allows smaller grid cells to be dealt with correctly. Specifying a value here which is much smaller
+than the actual minimum size will incur a performance penalty in the functions which perform
+grid cell index lookup on the basis of screen coordinates.
+This should normally be called when creating the grid because it will not resize existing rows
+with sizes smaller than the value specified here.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetrowsize"></A>
+<H3>wxGrid::SetRowSize</H3>
+<P>
+<B>void</B> <B>SetRowSize</B>(<B>int </B><I>row</I>, <B>int </B><I>height</I>)<P>
+Sets the height of the specified row.<P>
+This function does not refresh the grid. If you are calling it outside of a BeginBatch / EndBatch
+block you can use <A HREF="wx_wxgrid.html#wxgridforcerefresh">wxGrid::ForceRefresh</A> to see the changes.<P>
+Automatically sizes the column to fit its contents. If setAsMin is true the calculated width will
+also be set as the minimal width for the column.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+wxGrid sets up arrays to store individual row and column sizes when non-default sizes are used.
+The memory requirements for this could become prohibitive if your grid is very large.<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetscrolllinex"></A>
+<H3>wxGrid::SetScrollLineX</H3>
+<P>
+<B>void</B> <B>SetScrollLineX</B>(<B>int </B><I>x</I>)<P>
+Sets the number of pixels per horizontal scroll increment. The default is 15.
+Sometimes wxGrid has trouble setting the scrollbars correctly due to rounding
+errors: setting this to 1 can help.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgrid.html#wxgridgetscrolllinex">wxGrid::GetScrollLineX</A>,
+<A HREF="wx_wxgrid.html#wxgridgetscrollliney">wxGrid::GetScrollLineY</A>,
+<A HREF="wx_wxgrid.html#wxgridsetscrollliney">wxGrid::SetScrollLineY</A><P>
+<P>
+
+<HR>
+<A NAME="wxgridsetscrollliney"></A>
+<H3>wxGrid::SetScrollLineY</H3>
+<P>
+<B>void</B> <B>SetScrollLineY</B>(<B>int </B><I>y</I>)<P>
+Sets the number of pixels per vertical scroll increment. The default is 15.
+Sometimes wxGrid has trouble setting the scrollbars correctly due to rounding
+errors: setting this to 1 can help.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgrid.html#wxgridgetscrolllinex">wxGrid::GetScrollLineX</A>,
+<A HREF="wx_wxgrid.html#wxgridgetscrollliney">wxGrid::GetScrollLineY</A>,
+<A HREF="wx_wxgrid.html#wxgridsetscrolllinex">wxGrid::SetScrollLineX</A><P>
+<P>
+
+<HR>
+<A NAME="wxgridsetselectionbackground"></A>
+<H3>wxGrid::SetSelectionBackground</H3>
+<P>
+<B>void</B> <B>SetSelectionBackground</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>c</I>)<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetselectionforeground"></A>
+<H3>wxGrid::SetSelectionForeground</H3>
+<P>
+<B>void</B> <B>SetSelectionForeground</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>c</I>)<P>
+<P>
+
+<HR>
+<A NAME="wxgridsetselectionmode"></A>
+<H3>wxGrid::SetSelectionMode</H3>
+<P>
+<B>void</B> <B>SetSelectionMode</B>(<B>wxGrid::wxGridSelectionModes</B><I> selmode</I>)<P>
+Set the selection behaviour of the grid.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>wxGrid::wxGridSelectCells</I><UL><UL>
+The default mode where individual cells are selected.</UL></UL>
+<P>
+<I>wxGrid::wxGridSelectRows</I><UL><UL>
+Selections will consist of whole rows.</UL></UL>
+<P>
+<I>wxGrid::wxGridSelectColumns</I><UL><UL>
+Selections will consist of whole columns.</UL></UL>
+<P>
+<P>
+
+<HR>
+<A NAME="wxgridsettable"></A>
+<H3>wxGrid::SetTable</H3>
+<P>
+<B>bool</B> <B>SetTable</B>(<B><A HREF="wx_wxgridtablebase.html#wxgridtablebase">wxGridTableBase</A>* </B></B><I>table</I>, <B>bool </B><I>takeOwnership = false</I>, <B>wxGrid::wxGridSelectionModes </B><I>selmode = wxGrid::wxGridSelectCells</I>)<P>
+Passes a pointer to a custom grid table to be used by the grid. This should be called
+after the grid constructor and before using the grid object. If takeOwnership is set to
+true then the table will be deleted by the wxGrid destructor.<P>
+Use this function instead of <A HREF="wx_wxgrid.html#wxgridcreategrid">wxGrid::CreateGrid</A> when your
+application involves complex or non-string data or data sets that are too large to fit
+wholly in memory.<P>
+<P>
+
+<HR>
+<A NAME="wxgridshowcelleditcontrol"></A>
+<H3>wxGrid::ShowCellEditControl</H3>
+<P>
+<B>void</B> <B>ShowCellEditControl</B>()<P>
+Displays the in-place cell edit control for the current cell.<P>
+<P>
+
+<HR>
+<A NAME="wxgridxtocol"></A>
+<H3>wxGrid::XToCol</H3>
+<P>
+<B>int</B> <B>XToCol</B>(<B>int </B><I>x</I>, <B>bool </B><I>clipToMinMax = false</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B>
+<I>x</I><UL><UL>
+The x position to evaluate.</UL></UL>
+
+<I>clipToMinMax</I><UL><UL>
+If true, rather than returning wxNOT_FOUND, it returns either the first or last column depending on whether x is too far to the left or right respectively.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B>
+The grid column that corresponds to the logical x coordinate. Returns
+<TT>wxNOT_FOUND</TT> if there is no column at the x position.<P>
+<P>
+
+<HR>
+<A NAME="wxgridxtoedgeofcol"></A>
+<H3>wxGrid::XToEdgeOfCol</H3>
+<P>
+<B>int</B> <B>XToEdgeOfCol</B>(<B>int </B><I>x</I>)<P>
+Returns the column whose right hand edge is close to the given logical x position.
+If no column edge is near to this position <TT>wxNOT_FOUND</TT> is returned.<P>
+<P>
+
+<HR>
+<A NAME="wxgridytoedgeofrow"></A>
+<H3>wxGrid::YToEdgeOfRow</H3>
+<P>
+<B>int</B> <B>YToEdgeOfRow</B>(<B>int </B><I>y</I>)<P>
+Returns the row whose bottom edge is close to the given logical y position.
+If no row edge is near to this position <TT>wxNOT_FOUND</TT> is returned.<P>
+<P>
+
+<HR>
+<A NAME="wxgridytorow"></A>
+<H3>wxGrid::YToRow</H3>
+<P>
+<B>int</B> <B>YToRow</B>(<B>int </B><I>y</I>)<P>
+Returns the grid row that corresponds to the logical y coordinate. Returns
+<TT>wxNOT_FOUND</TT> if there is no row at the y position.<P>
+
+</FONT></BODY></HTML>

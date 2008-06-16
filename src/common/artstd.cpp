@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        artstd.cpp
+// Name:        src/common/artstd.cpp
 // Purpose:     stock wxArtProvider instance with default wxWin art
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     18/03/2002
-// RCS-ID:      $Id: artstd.cpp,v 1.23.2.1 2006/01/21 16:46:33 JS Exp $
+// RCS-ID:      $Id: artstd.cpp 41398 2006-09-23 20:16:18Z VZ $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,13 +21,10 @@
 #endif
 
 #ifndef WX_PRECOMP
-    #if WXWIN_COMPATIBILITY_2_2
-        #include "wx/app.h"
-    #endif
+    #include "wx/image.h"
 #endif
 
 #include "wx/artprov.h"
-#include "wx/image.h"
 
 // ----------------------------------------------------------------------------
 // wxDefaultArtProvider
@@ -77,7 +74,7 @@ protected:
 
 /*static*/ void wxArtProvider::InitStdProvider()
 {
-    wxArtProvider::PushProvider(new wxDefaultArtProvider);
+    wxArtProvider::Push(new wxDefaultArtProvider);
 }
 
 #if !defined(__WXGTK20__) || defined(__WXUNIVERSAL__)

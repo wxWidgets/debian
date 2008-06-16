@@ -8,10 +8,11 @@ import __main__
 original = __main__.__dict__.keys()
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: PyShell.py,v 1.7.2.1 2005/12/27 20:43:51 RD Exp $"
-__revision__ = "$Revision: 1.7.2.1 $"[11:-2]
+__cvsid__ = "$Id: PyShell.py 41078 2006-09-09 00:38:53Z RD $"
+__revision__ = "$Revision: 41078 $"[11:-2]
 
 import wx
+import os
 
 class App(wx.App):
     """PyShell standalone application."""

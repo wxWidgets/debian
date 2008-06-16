@@ -1,0 +1,144 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDropSource</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdropsource"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdropfilesevent.html#wxdropfilesevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdroptarget.html#wxdroptarget"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDropSource</H2>
+<P>
+This class represents a source for a drag and drop operation.<P>
+See <A HREF="wx_wxdndoverview.html#wxdndoverview">Drag and drop overview</A> and <A HREF="wx_wxdataobjectoverview.html#wxdataobjectoverview">wxDataObject overview</A> 
+for more information.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dnd.h&gt;<P>
+<B><FONT COLOR="#FF0000">Types</FONT></B><P>
+wxDragResult is defined as follows:<P>
+<PRE>
+enum wxDragResult
+{
+    wxDragError,    // error prevented the d&d operation from completing
+    wxDragNone,     // drag target didn't accept the data
+    wxDragCopy,     // the data was successfully copied
+    wxDragMove,     // the data was successfully moved (MSW only)
+    wxDragLink,     // operation is a drag-link
+    wxDragCancel    // the operation was cancelled by user (not an error)
+};
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdroptarget.html#wxdroptarget">wxDropTarget</A>, 
+<A HREF="wx_wxtextdroptarget.html#wxtextdroptarget">wxTextDropTarget</A>, <A HREF="wx_wxfiledroptarget.html#wxfiledroptarget">wxFileDropTarget</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdropsourcewxdropsource">wxDropSource::wxDropSource</A><BR>
+<A HREF="#wxdropsourcedtor">wxDropSource::~wxDropSource</A><BR>
+<A HREF="#wxdropsourcesetdata">wxDropSource::SetData</A><BR>
+<A HREF="#wxdropsourcedodragdrop">wxDropSource::DoDragDrop</A><BR>
+<A HREF="#wxdropsourcegetdataobject">wxDropSource::GetDataObject</A><BR>
+<A HREF="#wxdropsourcegivefeedback">wxDropSource::GiveFeedback</A><BR>
+<A HREF="#wxdropsourcesetcursor">wxDropSource::SetCursor</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdropsourcewxdropsource"></A>
+<H3>wxDropSource::wxDropSource</H3>
+<P>
+<B></B> <B>wxDropSource</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> win = NULL</I>,<B>const wxIconOrCursor&amp; </B><I>iconCopy = wxNullIconOrCursor</I>, <B>const wxIconOrCursor&amp; </B><I>iconMove = wxNullIconOrCursor</I>, <B>const wxIconOrCursor&amp; </B><I>iconNone = wxNullIconOrCursor</I>)<P>
+<B></B> <B>wxDropSource</B>(<B><A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A>&</B></B><I> data</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> win = NULL</I>,<B>const wxIconOrCursor&amp; </B><I>iconCopy = wxNullIconOrCursor</I>, <B>const wxIconOrCursor&amp; </B><I>iconMove = wxNullIconOrCursor</I>, <B>const wxIconOrCursor&amp; </B><I>iconNone = wxNullIconOrCursor</I>)<P>
+The constructors for wxDataObject.<P>
+If you use the constructor without <I>data</I> parameter you must call 
+<A HREF="wx_wxdropsource.html#wxdropsourcesetdata">SetData</A> later.<P>
+Note that the exact type of <I>iconCopy</I> and subsequent parameters differs
+between wxMSW and wxGTK: these are cursors under Windows but icons for GTK.
+You should use the macro <A HREF="wx_gdifunctions.html#wxdropicon">wxDROP_ICON</A> in portable
+programs instead of directly using either of these types.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>win</I><UL><UL>
+The window which initiates the drag and drop operation.</UL></UL>
+<P>
+<I>iconCopy</I><UL><UL>
+The icon or cursor used for feedback for copy operation.</UL></UL>
+<P>
+<I>iconMove</I><UL><UL>
+The icon or cursor used for feedback for move operation.</UL></UL>
+<P>
+<I>iconNone</I><UL><UL>
+The icon or cursor used for feedback when operation can't be done.</UL></UL>
+<P>
+<I>win</I> is the window which initiates the drag and drop operation.<P>
+
+<HR>
+<A NAME="wxdropsourcedtor"></A>
+<H3>wxDropSource::~wxDropSource</H3>
+<P>
+<B>virtual </B> <B>~wxDropSource</B>()<P>
+
+<HR>
+<A NAME="wxdropsourcesetdata"></A>
+<H3>wxDropSource::SetData</H3>
+<P>
+<B>void</B> <B>SetData</B>(<B><A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A>&</B></B><I> data</I>)<P>
+Sets the data <A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> associated with the 
+drop source. This will not delete any previously associated data.<P>
+
+<HR>
+<A NAME="wxdropsourcedodragdrop"></A>
+<H3>wxDropSource::DoDragDrop</H3>
+<P>
+<B>virtual wxDragResult</B> <B>DoDragDrop</B>(<B>int </B><I>flags = <TT>wxDrag_CopyOnly</TT></I>)<P>
+Do it (call this in response to a mouse button press, for example). This starts
+the drag-and-drop operation which will terminate when the user releases the
+mouse.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>flags</I><UL><UL>
+If <TT>wxDrag_AllowMove</TT> is included in the flags, data may
+be moved and not only copied (default). If <TT>wxDrag_DefaultMove</TT> is
+specified (which includes the previous flag), this is even the default
+operation</UL></UL>
+.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns the operation requested by the user, may be <TT>wxDragCopy</TT>, <TT>
+wxDragMove</TT>, <TT>wxDragLink</TT>, <TT>wxDragCancel</TT> or <TT>wxDragNone</TT> if an error occurred.<P>
+
+<HR>
+<A NAME="wxdropsourcegetdataobject"></A>
+<H3>wxDropSource::GetDataObject</H3>
+<P>
+<B><A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> *</B> </B> <B>GetDataObject</B>()<P>
+Returns the wxDataObject object that has been assigned previously.<P>
+
+<HR>
+<A NAME="wxdropsourcegivefeedback"></A>
+<H3>wxDropSource::GiveFeedback</H3>
+<P>
+<B>virtual bool</B> <B>GiveFeedback</B>(<B>wxDragResult </B><I>effect</I>)<P>
+Overridable: you may give some custom UI feedback during the drag and drop operation
+in this function. It is called on each mouse move, so your implementation must not be too
+slow.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>effect</I><UL><UL>
+The effect to implement. One of <TT>wxDragCopy</TT>, <TT>wxDragMove</TT>, <TT>wxDragLink</TT> and <TT>wxDragNone</TT>. </UL></UL>
+<P>
+<I>scrolling</I><UL><UL>
+true if the window is scrolling. MSW only. </UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Return false if you want default feedback, or true if you implement your own
+feedback. The return values is ignored under GTK.<P>
+
+<HR>
+<A NAME="wxdropsourcesetcursor"></A>
+<H3>wxDropSource::SetCursor</H3>
+<P>
+<B>void</B> <B>SetCursor</B>(<B>wxDragResult </B><I>res</I>, <B>const <A HREF="wx_wxcursor.html#wxcursor">wxCursor</A>& </B></B><I>cursor</I>)<P>
+Set the icon to use for a certain drag result.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>res</I><UL><UL>
+The drag result to set the icon for. </UL></UL>
+<P>
+<I>cursor</I><UL><UL>
+The ion to show when this drag result occurs. </UL></UL>
+<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,91 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDatagramSocket</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdatagramsocket"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdataformat.html#wxdataformat"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdatainputstream.html#wxdatainputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDatagramSocket</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/socket.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdatagramsocketctor">wxDatagramSocket::wxDatagramSocket</A><BR>
+<A HREF="#wxdatagramsocketdtor">wxDatagramSocket::~wxDatagramSocket</A><BR>
+<A HREF="#wxdatagramsocketreceivefrom">wxDatagramSocket::ReceiveFrom</A><BR>
+<A HREF="#wxdatagramsocketsendto">wxDatagramSocket::SendTo</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdatagramsocketctor"></A>
+<H3>wxDatagramSocket::wxDatagramSocket</H3>
+<P>
+<B></B> <B>wxDatagramSocket</B>(<B>wxSocketFlags</B><I> flags = wxSOCKET_NONE</I>)<P>
+Constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>flags</I><UL><UL>
+Socket flags (See <A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A>)</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdatagramsocketdtor"></A>
+<H3>wxDatagramSocket::~wxDatagramSocket</H3>
+<P>
+<B></B> <B>~wxDatagramSocket</B>()<P>
+Destructor. Please see <A HREF="wx_wxsocketbase.html#wxsocketbasedestroy">wxSocketBase::Destroy</A>.<P>
+
+<HR>
+<A NAME="wxdatagramsocketreceivefrom"></A>
+<H3>wxDatagramSocket::ReceiveFrom</H3>
+<P>
+<B><A HREF="wx_wxdatagramsocket.html#wxdatagramsocket">wxDatagramSocket</A>&</B> </B> <B>ReceiveFrom</B>(<B><A HREF="wx_wxsockaddress.html#wxsockaddress">wxSockAddress</A>&</B></B><I> address</I>, <B>void *</B><I> buffer</I>, <B>wxUint32</B><I> nbytes</I>)<P>
+This function reads a buffer of <I>nbytes</I> bytes from the socket.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">LastCount</A> to verify the number of bytes actually read.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaseerror">Error</A> to determine if the operation succeeded.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>address</I><UL><UL>
+Any address - will be overwritten with the address of the peer that sent that data.</UL></UL>
+<P>
+<I>buffer</I><UL><UL>
+Buffer where to put read data.</UL></UL>
+<P>
+<I>nbytes</I><UL><UL>
+Number of bytes.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns a reference to the current object, and the address of the peer that sent the data on address param.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseerror">wxSocketBase::Error</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselasterror">wxSocketBase::LastError</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">wxSocketBase::LastCount</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A>,<P>
+
+<HR>
+<A NAME="wxdatagramsocketsendto"></A>
+<H3>wxDatagramSocket::SendTo</H3>
+<P>
+<B><A HREF="wx_wxdatagramsocket.html#wxdatagramsocket">wxDatagramSocket</A>&</B> </B> <B>SendTo</B>(<B>const <A HREF="wx_wxsockaddress.html#wxsockaddress">wxSockAddress</A>&</B></B><I> address</I>, <B>const void *</B><I> buffer</I>, <B>wxUint32</B><I> nbytes</I>)<P>
+This function writes a buffer of <I>nbytes</I> bytes to the socket.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">LastCount</A> to verify the number of bytes actually wrote.<P>
+Use <A HREF="wx_wxsocketbase.html#wxsocketbaseerror">Error</A> to determine if the operation succeeded.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>address</I><UL><UL>
+The address of the destination peer for this data.</UL></UL>
+<P>
+<I>buffer</I><UL><UL>
+Buffer where read data is.</UL></UL>
+<P>
+<I>nbytes</I><UL><UL>
+Number of bytes.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns a reference to the current object.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbaseerror">wxSocketBase::Error</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselasterror">wxSocketBase::LastError</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaselastcount">wxSocketBase::LastCount</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A><P>
+
+</FONT></BODY></HTML>

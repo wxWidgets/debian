@@ -1,0 +1,54 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPreviewCanvas</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxpreviewcanvas"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpowerevent.html#wxpowerevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpreviewcontrolbar.html#wxpreviewcontrolbar"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPreviewCanvas</H2>
+<P>
+A preview canvas is the default canvas used by the print preview
+system to display the preview.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxscrolledwindow.html#wxscrolledwindow">wxScrolledWindow</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxevthandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/print.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpreviewframe.html#wxpreviewframe">wxPreviewFrame</A>, <A HREF="wx_wxpreviewcontrolbar.html#wxpreviewcontrolbar">wxPreviewControlBar</A>,
+<A HREF="wx_wxprintpreview.html#wxprintpreview">wxPrintPreview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxpreviewcanvasctor">wxPreviewCanvas::wxPreviewCanvas</A><BR>
+<A HREF="#wxpreviewcanvasdtor">wxPreviewCanvas::~wxPreviewCanvas</A><BR>
+<A HREF="#wxpreviewcanvasonpaint">wxPreviewCanvas::OnPaint</A><BR>
+<P>
+
+<HR>
+<A NAME="wxpreviewcanvasctor"></A>
+<H3>wxPreviewCanvas::wxPreviewCanvas</H3>
+<P>
+<B></B> <B>wxPreviewCanvas</B>(<B><A HREF="wx_wxprintpreview.html#wxprintpreview">wxPrintPreview</A>* </B></B><I>preview</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>,
+ <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+ <B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "canvas"</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxpreviewcanvasdtor"></A>
+<H3>wxPreviewCanvas::~wxPreviewCanvas</H3>
+<P>
+<B></B> <B>~wxPreviewCanvas</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxpreviewcanvasonpaint"></A>
+<H3>wxPreviewCanvas::OnPaint</H3>
+<P>
+<B>void</B> <B>OnPaint</B>(<B><A HREF="wx_wxpaintevent.html#wxpaintevent">wxPaintEvent</A>& </B></B><I>event</I>)<P>
+Calls <A HREF="wx_wxprintpreview.html#wxprintpreviewpaintpage">wxPrintPreview::PaintPage</A> to refresh the canvas.<P>
+
+</FONT></BODY></HTML>

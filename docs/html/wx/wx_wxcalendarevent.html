@@ -1,0 +1,48 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCalendarEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcalendarevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcalendardateattr.html#wxcalendardateattr"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcaret.html#wxcaret"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCalendarEvent</H2>
+<P>
+The wxCalendarEvent class is used together with 
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrl">wxCalendarCtrl</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdateevent.html#wxdateevent">wxDateEvent</A><BR>
+
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><BR>
+
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/calctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrl">wxCalendarCtrl</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxcalendareventgetweekday">wxCalendarEvent::GetWeekDay</A><BR>
+<A HREF="#wxcalendareventsetweekday">wxCalendarEvent::SetWeekDay</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcalendareventgetweekday"></A>
+<H3>wxCalendarEvent::GetWeekDay</H3>
+<P>
+<B>wxDateTime::WeekDay</B> <B>GetWeekDay</B>() <B>const</B><P>
+Returns the week day on which the user clicked in 
+<TT>EVT_CALENDAR_WEEKDAY_CLICKED</TT> handler. It doesn't make sense to call
+this function in other handlers.<P>
+
+
+<HR>
+<A NAME="wxcalendareventsetweekday"></A>
+<H3>wxCalendarEvent::SetWeekDay</H3>
+<P>
+<B>void</B> <B>SetWeekDay</B>(<B>wxDateTime::WeekDay</B><I> day</I>)<P>
+Sets the week day carried by the event, normally only used by the library
+internally.<P>
+
+</FONT></BODY></HTML>

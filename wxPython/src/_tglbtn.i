@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _tglbtn.i,v 1.13 2004/12/23 20:43:49 RD Exp $
+// RCS-ID:      $Id: _tglbtn.i 41242 2006-09-15 21:31:02Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -83,6 +83,8 @@ public:
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
 };
 
 //---------------------------------------------------------------------------

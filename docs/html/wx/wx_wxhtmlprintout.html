@@ -1,0 +1,137 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlPrintout</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmlprintout"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmlparser.html#wxhtmlparser"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmltag.html#wxhtmltag"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlPrintout</H2>
+<P>
+This class serves as printout class for HTML documents.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxprintout.html#wxprintout">wxPrintout</A><P>
+
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/htmprint.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxhtmlprintoutwxhtmlprintout">wxHtmlPrintout::wxHtmlPrintout</A><BR>
+<A HREF="#wxhtmlprintoutaddfilter">wxHtmlPrintout::AddFilter</A><BR>
+<A HREF="#wxhtmlprintoutsetfonts">wxHtmlPrintout::SetFonts</A><BR>
+<A HREF="#wxhtmlprintoutsetfooter">wxHtmlPrintout::SetFooter</A><BR>
+<A HREF="#wxhtmlprintoutsetheader">wxHtmlPrintout::SetHeader</A><BR>
+<A HREF="#wxhtmlprintoutsethtmlfile">wxHtmlPrintout::SetHtmlFile</A><BR>
+<A HREF="#wxhtmlprintoutsethtmltext">wxHtmlPrintout::SetHtmlText</A><BR>
+<A HREF="#wxhtmlprintoutsetmargins">wxHtmlPrintout::SetMargins</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlprintoutwxhtmlprintout"></A>
+<H3>wxHtmlPrintout::wxHtmlPrintout</H3>
+<P>
+<B></B> <B>wxHtmlPrintout</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title = "Printout"</I>)<P>
+Constructor. <P>
+
+
+<HR>
+<A NAME="wxhtmlprintoutaddfilter"></A>
+<H3>wxHtmlPrintout::AddFilter</H3>
+<P>
+<B>static void</B> <B>AddFilter</B>(<B><A HREF="wx_wxhtmlfilter.html#wxhtmlfilter">wxHtmlFilter</A>* </B></B><I>filter</I>)<P>
+Adds a filter to the static list of filters for wxHtmlPrintout. See <A HREF="wx_wxhtmlfilter.html#wxhtmlfilter">wxHtmlFilter</A> for
+further information.<P>
+
+<HR>
+<A NAME="wxhtmlprintoutsetfonts"></A>
+<H3>wxHtmlPrintout::SetFonts</H3>
+<P>
+<B>void</B> <B>SetFonts</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>normal_face</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fixed_face</I>, <B>const int </B><I>*sizes = NULL</I>)<P>
+Sets fonts. See <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowsetfonts">wxHtmlWindow::SetFonts</A> for
+detailed description.<P>
+
+<HR>
+<A NAME="wxhtmlprintoutsetfooter"></A>
+<H3>wxHtmlPrintout::SetFooter</H3>
+<P>
+<B>void</B> <B>SetFooter</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>footer</I>, <B>int </B><I>pg = wxPAGE_ALL</I>)<P>
+Set page footer. The following macros can be used inside it:
+<UL>
+
+<LI> @DATE@ is replaced by the current date in default format
+<LI> @PAGENUM@ is replaced by page number
+<LI> @PAGESCNT@ is replaced by total number of pages
+<LI> @TIME@ is replaced by the current time in default format
+<LI> @TITLE@ is replaced with the title of the document
+</UL>
+<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>footer</I><UL><UL>
+HTML text to be used as footer.</UL></UL>
+<P>
+<I>pg</I><UL><UL>
+one of wxPAGE_ODD, wxPAGE_EVEN and wxPAGE_ALL constants.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxhtmlprintoutsetheader"></A>
+<H3>wxHtmlPrintout::SetHeader</H3>
+<P>
+<B>void</B> <B>SetHeader</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>header</I>, <B>int </B><I>pg = wxPAGE_ALL</I>)<P>
+Set page header. The following macros can be used inside it:
+<UL>
+
+<LI> @DATE@ is replaced by the current date in default format
+<LI> @PAGENUM@ is replaced by page number
+<LI> @PAGESCNT@ is replaced by total number of pages
+<LI> @TIME@ is replaced by the current time in default format
+<LI> @TITLE@ is replaced with the title of the document
+</UL>
+<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>header</I><UL><UL>
+HTML text to be used as header.</UL></UL>
+<P>
+<I>pg</I><UL><UL>
+one of wxPAGE_ODD, wxPAGE_EVEN and wxPAGE_ALL constants.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxhtmlprintoutsethtmlfile"></A>
+<H3>wxHtmlPrintout::SetHtmlFile</H3>
+<P>
+<B>void</B> <B>SetHtmlFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>htmlfile</I>)<P>
+Prepare the class for printing this HTML <B>file</B>. The file may be located on 
+any virtual file system or it may be normal file.<P>
+<P>
+
+<HR>
+<A NAME="wxhtmlprintoutsethtmltext"></A>
+<H3>wxHtmlPrintout::SetHtmlText</H3>
+<P>
+<B>void</B> <B>SetHtmlText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>html</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>basepath = wxEmptyString</I>, <B>bool </B><I>isdir = true</I>)<P>
+Prepare the class for printing this HTML text.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>html</I><UL><UL>
+HTML text. (NOT file!)</UL></UL>
+<P>
+<I>basepath</I><UL><UL>
+base directory (html string would be stored there if it was in
+file). It is used to determine path for loading images, for example.</UL></UL>
+<P>
+<I>isdir</I><UL><UL>
+false if basepath is filename, true if it is directory name
+(see <A HREF="wx_wxfilesystem.html#wxfilesystem">wxFileSystem</A> for detailed explanation)</UL></UL>
+<P>
+<P>
+
+<HR>
+<A NAME="wxhtmlprintoutsetmargins"></A>
+<H3>wxHtmlPrintout::SetMargins</H3>
+<P>
+<B>void</B> <B>SetMargins</B>(<B>float </B><I>top = 25.2</I>, <B>float </B><I>bottom = 25.2</I>, <B>float </B><I>left = 25.2</I>, <B>float </B><I>right = 25.2</I>, <B>float </B><I>spaces = 5</I>)<P>
+Sets margins in millimeters. Defaults to 1 inch for margins and 0.5cm for space
+between text and header and/or footer<P>
+
+</FONT></BODY></HTML>

@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////////
-// File:        stctest.cpp
+// File:        contrib/samples/stc/stctest.cpp
 // Purpose:     STC test application
 // Maintainer:  Otto Wyss
 // Created:     2003-09-01
-// RCS-ID:      $Id: stctest.cpp,v 1.18.2.1 2006/03/09 07:46:46 MR Exp $
+// RCS-ID:      $Id: stctest.cpp 39402 2006-05-28 23:32:12Z VZ $
 // Copyright:   (c) wxGuide
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 // headers
 //----------------------------------------------------------------------------
 
-// For compilers that support precompilation, includes <wx/wx.h>.
+// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
@@ -69,7 +69,8 @@
 
 #define NONAME _("<untitled>")
 
-class AppFrame;
+class AppBook;
+
 
 //----------------------------------------------------------------------------
 //! global application name
@@ -83,6 +84,8 @@ wxPageSetupData *g_pageSetupData = (wxPageSetupData*) NULL;
 
 #endif // wxUSE_PRINTING_ARCHITECTURE
 
+
+class AppFrame;
 
 //----------------------------------------------------------------------------
 //! application APP_VENDOR-APP_NAME.
@@ -109,6 +112,7 @@ DECLARE_APP (App);
 //! frame of the application APP_VENDOR-APP_NAME.
 class AppFrame: public wxFrame {
     friend class App;
+    friend class AppBook;
     friend class AppAbout;
 
 public:
@@ -348,7 +352,7 @@ void AppFrame::OnFileOpen (wxCommandEvent &WXUNUSED(event)) {
 #if wxUSE_FILEDLG
     wxString fname;
     wxFileDialog dlg (this, _T("Open file"), wxEmptyString, wxEmptyString, _T("Any file (*)|*"),
-                      wxOPEN | wxFILE_MUST_EXIST | wxCHANGE_DIR);
+                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
     if (dlg.ShowModal() != wxID_OK) return;
     fname = dlg.GetPath ();
     FileOpen (fname);
@@ -369,7 +373,7 @@ void AppFrame::OnFileSaveAs (wxCommandEvent &WXUNUSED(event)) {
     if (!m_edit) return;
 #if wxUSE_FILEDLG
     wxString filename = wxEmptyString;
-    wxFileDialog dlg (this, _T("Save file"), wxEmptyString, wxEmptyString, _T("Any file (*)|*"), wxSAVE|wxOVERWRITE_PROMPT);
+    wxFileDialog dlg (this, _T("Save file"), wxEmptyString, wxEmptyString, _T("Any file (*)|*"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() != wxID_OK) return;
     filename = dlg.GetPath();
     m_edit->SaveFile (filename);

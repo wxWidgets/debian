@@ -1,0 +1,50 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGridCellChoiceEditor</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgridcellchoiceeditor"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgridcellbooleditor.html#wxgridcellbooleditor"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgridcelleditor.html#wxgridcelleditor"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGridCellChoiceEditor</H2>
+<P>
+The editor for string data allowing to choose from a list of strings.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>,
+<A HREF="wx_wxgridcellfloateditor.html#wxgridcellfloateditor">wxGridCellFloatEditor</A>,
+<A HREF="wx_wxgridcellbooleditor.html#wxgridcellbooleditor">wxGridCellBoolEditor</A>,
+<A HREF="wx_wxgridcelltexteditor.html#wxgridcelltexteditor">wxGridCellTextEditor</A>,
+<A HREF="wx_wxgridcellnumbereditor.html#wxgridcellnumbereditor">wxGridCellNumberEditor</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxgridcellchoiceeditorconstr">wxGridCellChoiceEditor::wxGridCellChoiceEditor</A><BR>
+<A HREF="#wxgridcellchoiceeditorsetparameters">wxGridCellChoiceEditor::SetParameters</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgridcellchoiceeditorconstr"></A>
+<H3>wxGridCellChoiceEditor::wxGridCellChoiceEditor</H3>
+<P>
+<B></B> <B>wxGridCellChoiceEditor</B>(<B>size_t </B><I>count = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>choices[] = NULL</I>, <B>bool </B><I>allowOthers = false</I>)<P>
+<B></B> <B>wxGridCellChoiceEditor</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>, <B>bool </B><I>allowOthers = false</I>)<P>
+<I>count</I><UL><UL>
+Number of strings from which the user can choose.</UL></UL>
+
+<I>choices</I><UL><UL>
+An array of strings from which the user can choose.</UL></UL>
+
+<I>allowOthers</I><UL><UL>
+If allowOthers if true, the user can type a string not in choices array.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxgridcellchoiceeditorsetparameters"></A>
+<H3>wxGridCellChoiceEditor::SetParameters</H3>
+<P>
+<B>void</B> <B>SetParameters</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>params</I>)<P>
+Parameters string format is "item1[,item2[...,itemN]]"<P>
+
+</FONT></BODY></HTML>

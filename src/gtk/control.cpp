@@ -1,38 +1,40 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        control.cpp
-// Purpose:
+// Name:        src/gtk/control.cpp
+// Purpose:     wxControl implementation for wxGTK
 // Author:      Robert Roebling
-// Id:          $Id: control.cpp,v 1.43 2005/03/21 23:42:15 VZ Exp $
+// Id:          $Id: control.cpp 44707 2007-03-10 04:46:18Z PC $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "control.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
-
-#include "wx/defs.h"
 
 #if wxUSE_CONTROLS
 
 #include "wx/control.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/log.h"
+    #include "wx/settings.h"
+#endif
+
 #include "wx/fontutil.h"
-#include "wx/settings.h"
+#include "wx/gtk/private.h"
 
-#include <gtk/gtk.h>
+// ============================================================================
+// wxControl implementation
+// ============================================================================
 
-//-----------------------------------------------------------------------------
-// wxControl
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// wxControl creation
+// ----------------------------------------------------------------------------
 
 IMPLEMENT_DYNAMIC_CLASS(wxControl, wxWindow)
 
 wxControl::wxControl()
 {
-    m_needParent = TRUE;
+    m_needParent = true;
 }
 
 bool wxControl::Create( wxWindow *parent,
@@ -44,36 +46,13 @@ bool wxControl::Create( wxWindow *parent,
                       const wxString &name )
 {
     bool ret = wxWindow::Create(parent, id, pos, size, style, name);
-    
+
 #if wxUSE_VALIDATORS
     SetValidator(validator);
 #endif
 
     return ret;
 }
-
-void wxControl::SetLabel( const wxString &label )
-{
-    m_label.Empty();
-    for ( const wxChar *pc = label; *pc != wxT('\0'); pc++ )
-    {
-        if ( *pc == wxT('&') )
-        {
-            pc++; // skip it
-#if 0 // it would be unused anyhow for now - kbd interface not done yet
-            if ( *pc != wxT('&') ) m_chAccel = *pc;
-#endif
-        }
-        m_label << *pc;
-    }
-    InvalidateBestSize();    
-}
-
-wxString wxControl::GetLabel() const
-{
-    return m_label;
-}
-
 
 wxSize wxControl::DoGetBestSize() const
 {
@@ -91,7 +70,6 @@ wxSize wxControl::DoGetBestSize() const
     return best;
 }
 
-
 void wxControl::PostCreation(const wxSize& size)
 {
     wxWindow::PostCreation();
@@ -102,65 +80,177 @@ void wxControl::PostCreation(const wxSize& size)
     //     size. This call ensure that a style is available at the time
     //     GetBestSize is called.
     gtk_widget_ensure_style(m_widget);
-    
+
     ApplyWidgetStyle();
-    SetInitialBestSize(size);
+    SetInitialSize(size);
 }
 
+// ----------------------------------------------------------------------------
+// wxControl dealing with labels
+// ----------------------------------------------------------------------------
 
-#ifdef __WXGTK20__
-wxString wxControl::PrepareLabelMnemonics( const wxString &label ) const
+void wxControl::SetLabel( const wxString &label )
 {
-    //Format mnemonics properly for GTK2. This can be called from GTK1.x, but
-    //it's not very useful because mnemonics don't exist prior to GTK2.
-    wxString label2;
-    for (size_t i = 0; i < label.Len(); i++)
+    // keep the original string internally to be able to return it later (for
+    // consistency with the other ports)
+    m_label = label;
+
+    InvalidateBestSize();
+}
+
+wxString wxControl::GetLabel() const
+{
+    return m_label;
+}
+
+void wxControl::GTKSetLabelForLabel(GtkLabel *w, const wxString& label)
+{
+    // don't call the virtual function which might call this one back again
+    wxControl::SetLabel(label);
+
+    const wxString labelGTK = GTKConvertMnemonics(label);
+
+    gtk_label_set_text_with_mnemonic(w, wxGTK_CONV(labelGTK));
+}
+
+// ----------------------------------------------------------------------------
+// GtkFrame helpers
+//
+// GtkFrames do in fact support mnemonics in GTK2+ but not through
+// gtk_frame_set_label, rather you need to use a custom label widget
+// instead (idea gleaned from the native gtk font dialog code in GTK)
+// ----------------------------------------------------------------------------
+
+GtkWidget* wxControl::GTKCreateFrame(const wxString& label)
+{
+    const wxString labelGTK = GTKConvertMnemonics(label);
+    GtkWidget* labelwidget = gtk_label_new_with_mnemonic(wxGTK_CONV(labelGTK));
+    gtk_widget_show(labelwidget); // without this it won't show...
+
+    GtkWidget* framewidget = gtk_frame_new(NULL);
+    gtk_frame_set_label_widget(GTK_FRAME(framewidget), labelwidget);
+
+    return framewidget; //note that the label is already set so you'll
+                        //only need to call wxControl::SetLabel afterwards
+}
+
+void wxControl::GTKSetLabelForFrame(GtkFrame *w, const wxString& label)
+{
+    GtkLabel* labelwidget = GTK_LABEL(gtk_frame_get_label_widget(w));
+    GTKSetLabelForLabel(labelwidget, label);
+}
+
+void wxControl::GTKFrameApplyWidgetStyle(GtkFrame* w, GtkRcStyle* style)
+{
+    gtk_widget_modify_style(GTK_WIDGET(w), style);
+    gtk_widget_modify_style(gtk_frame_get_label_widget (w), style);
+}
+
+void wxControl::GTKFrameSetMnemonicWidget(GtkFrame* w, GtkWidget* widget)
+{
+    GtkLabel* labelwidget = GTK_LABEL(gtk_frame_get_label_widget(w));
+
+    gtk_label_set_mnemonic_widget(labelwidget, widget);
+}
+
+// ----------------------------------------------------------------------------
+// worker function implementing both GTKConvert/RemoveMnemonics()
+//
+// notice that under GTK+ 1 we only really need to support MNEMONICS_REMOVE as
+// it doesn't support mnemonics anyhow but this would make the code so ugly
+// that we do the same thing for GKT+ 1 and 2
+// ----------------------------------------------------------------------------
+
+enum MnemonicsFlag
+{
+    MNEMONICS_REMOVE,
+    MNEMONICS_CONVERT
+};
+
+static wxString GTKProcessMnemonics(const wxString& label, MnemonicsFlag flag)
+{
+    const size_t len = label.length();
+    wxString labelGTK;
+    labelGTK.reserve(len);
+    for ( size_t i = 0; i < len; i++ )
     {
-        if (label.GetChar(i) == wxT('&'))
+        wxChar ch = label[i];
+
+        switch ( ch )
         {
-            //Mnemonic escape sequence "&&" is a literal "&" in the output.
-            if (label.GetChar(i + 1) == wxT('&'))
-            {
-                label2 << wxT('&');
-                i++;
-            }
-            //Handle special case of "&_" (i.e. "_" is the mnemonic).
-            //FIXME - Is it possible to use "_" as a GTK mnemonic? Just use a
-            //dash for now.
-            else if (label.GetChar(i + 1) == wxT('_'))
-            {
-                label2 << wxT("_-");
-                i++;
-            }
-            //Replace WX mnemonic indicator "&" with GTK indicator "_".
-            else
-            {
-                label2 << wxT('_');
-            }
-        }
-        else if (label.GetChar(i) == wxT('_'))
-        {
-            //Escape any underlines in the string so GTK doesn't use them.
-            label2 << wxT("__");
-        }
-        else
-        {
-            label2 << label.GetChar(i);
+            case wxT('&'):
+                if ( i == len - 1 )
+                {
+                    // "&" at the end of string is an error
+                    wxLogDebug(wxT("Invalid label \"%s\"."), label.c_str());
+                    break;
+                }
+
+                ch = label[++i]; // skip '&' itself
+                switch ( ch )
+                {
+                    case wxT('&'):
+                        // special case: "&&" is not a mnemonic at all but just
+                        // an escaped "&"
+                        labelGTK += wxT('&');
+                        break;
+
+                    case wxT('_'):
+                        if ( flag == MNEMONICS_CONVERT )
+                        {
+                            // '_' can't be a GTK mnemonic apparently so
+                            // replace it with something similar
+                            labelGTK += wxT("_-");
+                            break;
+                        }
+                        //else: fall through
+
+                    default:
+                        if ( flag == MNEMONICS_CONVERT )
+                            labelGTK += wxT('_');
+                        labelGTK += ch;
+                }
+                break;
+
+            case wxT('_'):
+                if ( flag == MNEMONICS_CONVERT )
+                {
+                    // escape any existing underlines in the string so that
+                    // they don't become mnemonics accidentally
+                    labelGTK += wxT("__");
+                    break;
+                }
+                //else: fall through
+
+            default:
+                labelGTK += ch;
         }
     }
-    return label2;
-}
-#endif
 
+    return labelGTK;
+}
+
+/* static */
+wxString wxControl::GTKRemoveMnemonics(const wxString& label)
+{
+    return GTKProcessMnemonics(label, MNEMONICS_REMOVE);
+}
+
+/* static */
+wxString wxControl::GTKConvertMnemonics(const wxString& label)
+{
+    return GTKProcessMnemonics(label, MNEMONICS_CONVERT);
+}
+
+// ----------------------------------------------------------------------------
+// wxControl styles (a.k.a. attributes)
+// ----------------------------------------------------------------------------
 
 wxVisualAttributes wxControl::GetDefaultAttributes() const
 {
     return GetDefaultAttributesFromGTKWidget(m_widget,
                                              UseGTKStyleBase());
 }
-
-
-#define SHIFT (8*(sizeof(short int)-sizeof(char)))
 
 // static
 wxVisualAttributes
@@ -182,36 +272,29 @@ wxControl::GetDefaultAttributesFromGTKWidget(GtkWidget* widget,
 
     if (state == -1)
         state = GTK_STATE_NORMAL;
-        
+
     // get the style's colours
-    attr.colFg = wxColour(style->fg[state].red   >> SHIFT,
-                          style->fg[state].green >> SHIFT,
-                          style->fg[state].blue  >> SHIFT);
+    attr.colFg = wxColour(style->fg[state]);
     if (useBase)
-        attr.colBg = wxColour(style->base[state].red   >> SHIFT,
-                              style->base[state].green >> SHIFT,
-                              style->base[state].blue  >> SHIFT);
+        attr.colBg = wxColour(style->base[state]);
     else
-        attr.colBg = wxColour(style->bg[state].red   >> SHIFT,
-                              style->bg[state].green >> SHIFT,
-                              style->bg[state].blue  >> SHIFT);
+        attr.colBg = wxColour(style->bg[state]);
 
     // get the style's font
-#ifdef __WXGTK20__
     if ( !style->font_desc )
-        style = gtk_widget_get_default_style();  
+        style = gtk_widget_get_default_style();
     if ( style && style->font_desc )
-    {  
-        wxNativeFontInfo info;  
+    {
+        wxNativeFontInfo info;
         info.description = pango_font_description_copy(style->font_desc);
-        attr.font = wxFont(info);  
-    }  
-    else  
-    {  
+        attr.font = wxFont(info);
+    }
+    else
+    {
         GtkSettings *settings = gtk_settings_get_default();
         gchar *font_name = NULL;
         g_object_get ( settings,
-                       "gtk-font-name", 
+                       "gtk-font-name",
                        &font_name,
                        NULL);
         if (!font_name)
@@ -219,12 +302,8 @@ wxControl::GetDefaultAttributesFromGTKWidget(GtkWidget* widget,
         else
             attr.font = wxFont(wxString::FromAscii(font_name));
         g_free (font_name);
-    }  
-#else
-    // TODO: isn't there a way to get a standard gtk 1.2 font?
-    attr.font = wxFont( 12, wxSWISS, wxNORMAL, wxNORMAL );
-#endif
-    
+    }
+
     return attr;
 }
 
@@ -278,5 +357,24 @@ wxControl::GetDefaultAttributesFromGTKWidget(wxGtkWidgetNewFromAdj_t widget_new,
     return attr;
 }
 
-#endif // wxUSE_CONTROLS
+// ----------------------------------------------------------------------------
+// idle handling
+// ----------------------------------------------------------------------------
 
+void wxControl::OnInternalIdle()
+{
+    if ( GtkShowFromOnIdle() )
+        return;
+
+    if ( GTK_WIDGET_REALIZED(m_widget) )
+    {
+        GTKUpdateCursor();
+
+        GTKSetDelayedFocusIfNeeded();
+    }
+
+    if ( wxUpdateUIEvent::CanUpdate(this) )
+        UpdateWindowUI(wxUPDATE_UI_FROMIDLE);
+}
+
+#endif // wxUSE_CONTROLS

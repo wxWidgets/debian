@@ -1,0 +1,47 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxNotebookSizer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxnotebooksizer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxnotebookevent.html#wxnotebookevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxnotifyevent.html#wxnotifyevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxNotebookSizer</H2>
+<P>
+<B>This class is deprecated and should not be used in new code! It is no
+longer needed, <A HREF="wx_wxnotebook.html#wxnotebook">wxNotebook</A> control can be inserted
+into any sizer class and its minimal size will be determined correctly.
+See <A HREF="wx_sizeroverview.html#sizeroverview">wxSizer overview</A> for more information.</B><P>
+wxNotebookSizer is a specialized sizer to make sizers work in connection
+with using notebooks. This sizer is different from any other sizer as 
+you must not add any children to it - instead, it queries the notebook class itself.
+The only thing this sizer does is to determine the size of the biggest
+page of the notebook and report an adjusted minimal size to a more toplevel
+sizer.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxsizer.html#wxsizer">wxSizer</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/sizer.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>, <A HREF="wx_wxnotebook.html#wxnotebook">wxNotebook</A>, <A HREF="wx_sizeroverview.html#sizeroverview">Sizer overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxnotebooksizerwxnotebooksizer">wxNotebookSizer::wxNotebookSizer</A><BR>
+<A HREF="#wxnotebooksizergetnotebook">wxNotebookSizer::GetNotebook</A><BR>
+<P>
+
+<HR>
+<A NAME="wxnotebooksizerwxnotebooksizer"></A>
+<H3>wxNotebookSizer::wxNotebookSizer</H3>
+<P>
+<B></B> <B>wxNotebookSizer</B>(<B><A HREF="wx_wxnotebook.html#wxnotebook">wxNotebook</A>* </B></B><I>notebook</I>)<P>
+Constructor. It takes an associated notebook as its only parameter.<P>
+
+<HR>
+<A NAME="wxnotebooksizergetnotebook"></A>
+<H3>wxNotebookSizer::GetNotebook</H3>
+<P>
+<B><A HREF="wx_wxnotebook.html#wxnotebook">wxNotebook</A>*</B> </B> <B>GetNotebook</B>()<P>
+Returns the notebook associated with the sizer.<P>
+
+</FONT></BODY></HTML>

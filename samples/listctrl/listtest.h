@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: listtest.h,v 1.42.2.3 2006/03/12 20:53:19 JS Exp $
+// RCS-ID:      $Id: listtest.h 44131 2007-01-07 17:28:18Z KO $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -76,6 +76,8 @@ public:
     void OnContextMenu(wxContextMenuEvent& event);
 #endif
 
+    void OnRightClick(wxMouseEvent& event);
+
 private:
     void ShowContextMenu(const wxPoint& pos);
     wxLog *m_logOld;
@@ -85,7 +87,7 @@ private:
     void LogColEvent(const wxListEvent& event, const wxChar *eventName);
 
     virtual wxString OnGetItemText(long item, long column) const;
-    virtual int OnGetItemImage(long item) const;
+    virtual int OnGetItemColumnImage(long item, long column) const;
     virtual wxListItemAttr *OnGetItemAttr(long item) const;
 
     wxListItemAttr m_attr;
@@ -134,6 +136,7 @@ protected:
     void OnFreeze(wxCommandEvent& event);
     void OnThaw(wxCommandEvent& event);
     void OnToggleLines(wxCommandEvent& event);
+    void OnToggleMacUseGeneric(wxCommandEvent& event);
 
     void OnUpdateShowColInfo(wxUpdateUIEvent& event);
     void OnUpdateToggleMultiSel(wxUpdateUIEvent& event);
@@ -159,7 +162,9 @@ private:
     // and return false if it is
     bool CheckNonVirtual() const;
 
+
     wxLog *m_logOld;
+
     bool m_smallVirtual;
 
     DECLARE_NO_COPY_CLASS(MyFrame)
@@ -199,7 +204,7 @@ enum
     LIST_FREEZE,
     LIST_THAW,
     LIST_TOGGLE_LINES,
+    LIST_MAC_USE_GENERIC,
 
     LIST_CTRL                   = 1000
 };
-

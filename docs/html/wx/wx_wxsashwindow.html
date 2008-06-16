@@ -1,0 +1,284 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSashWindow</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsashwindow"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsashlayoutwindow.html#wxsashlayoutwindow"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxscopedarray.html#wxscopedarray"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSashWindow</H2>
+<P>
+wxSashWindow allows any of its edges to have a sash which can be dragged
+to resize the window. The actual content window will be created by the application
+as a child of wxSashWindow. The window (or an ancestor) will be notified of a drag
+via a <A HREF="wx_wxsashevent.html#wxsashevent">wxSashEvent</A> notification.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/sashwin.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+The following styles apply in addition to the normal wxWindow styles.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSW_3D</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draws a 3D effect sash and border.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSW_3DSASH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draws a 3D effect sash.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSW_3DBORDER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draws a 3D effect border.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSW_BORDER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draws a thin black border.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SASH_DRAGGED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_SASH_DRAGGED event,
+when the user has finished dragging a sash.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SASH_DRAGGED_RANGE(id1, id2, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_SASH_DRAGGED_RANGE event,
+when the user has finished dragging a sash. The event handler is called when windows with ids in the
+given range have their sashes dragged.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Data types</FONT></B><P>
+<FONT SIZE=2>
+<PRE>
+enum wxSashEdgePosition {
+    wxSASH_TOP = 0,
+    wxSASH_RIGHT,
+    wxSASH_BOTTOM,
+    wxSASH_LEFT,
+    wxSASH_NONE = 100
+};
+</PRE>
+</FONT><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsashevent.html#wxsashevent">wxSashEvent</A>, <A HREF="wx_wxsashlayoutwindow.html#wxsashlayoutwindow">wxSashLayoutWindow</A>, <A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsashwindowctor">wxSashWindow::wxSashWindow</A><BR>
+<A HREF="#wxsashwindowdtor">wxSashWindow::~wxSashWindow</A><BR>
+<A HREF="#wxsashwindowgetsashvisible">wxSashWindow::GetSashVisible</A><BR>
+<A HREF="#wxsashwindowgetmaximumsizex">wxSashWindow::GetMaximumSizeX</A><BR>
+<A HREF="#wxsashwindowgetmaximumsizey">wxSashWindow::GetMaximumSizeY</A><BR>
+<A HREF="#wxsashwindowgetminimumsizex">wxSashWindow::GetMinimumSizeX</A><BR>
+<A HREF="#wxsashwindowgetminimumsizey">wxSashWindow::GetMinimumSizeY</A><BR>
+<A HREF="#wxsashwindowhasborder">wxSashWindow::HasBorder</A><BR>
+<A HREF="#wxsashwindowsetmaximumsizex">wxSashWindow::SetMaximumSizeX</A><BR>
+<A HREF="#wxsashwindowsetmaximumsizey">wxSashWindow::SetMaximumSizeY</A><BR>
+<A HREF="#wxsashwindowsetminimumsizex">wxSashWindow::SetMinimumSizeX</A><BR>
+<A HREF="#wxsashwindowsetminimumsizey">wxSashWindow::SetMinimumSizeY</A><BR>
+<A HREF="#wxsashwindowsetsashvisible">wxSashWindow::SetSashVisible</A><BR>
+<A HREF="#wxsashwindowsetsashborder">wxSashWindow::SetSashBorder</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsashwindowctor"></A>
+<H3>wxSashWindow::wxSashWindow</H3>
+<P>
+<B></B> <B>wxSashWindow</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxSashWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID </B><I>id</I>,
+ <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+ <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+ <B>long </B><I>style = wxCLIP_CHILDREN |  wxSW_3D</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "sashWindow"</I>)<P>
+Constructs a sash window, which can be a child of a frame, dialog or any other non-control window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Pointer to a parent window.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. If -1, will automatically create an identifier.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position. wxDefaultPosition is (-1, -1) which indicates that wxSashWindows
+should generate a default position for the window. If using the wxSashWindow class directly, supply
+an actual position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. wxDefaultSize is (-1, -1) which indicates that wxSashWindows
+should generate a default size for the window.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. For window styles, please see <A HREF="wx_wxsashwindow.html#wxsashwindow">wxSashWindow</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxsashwindowdtor"></A>
+<H3>wxSashWindow::~wxSashWindow</H3>
+<P>
+<B></B> <B>~wxSashWindow</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxsashwindowgetsashvisible"></A>
+<H3>wxSashWindow::GetSashVisible</H3>
+<P>
+<B>bool</B> <B>GetSashVisible</B>(<B>wxSashEdgePosition </B><I>edge</I>) <B>const</B><P>
+Returns true if a sash is visible on the given edge, false otherwise.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>edge</I><UL><UL>
+Edge. One of wxSASH_TOP, wxSASH_RIGHT, wxSASH_BOTTOM, wxSASH_LEFT.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsashwindow.html#wxsashwindowsetsashvisible">wxSashWindow::SetSashVisible</A><P>
+
+<HR>
+<A NAME="wxsashwindowgetmaximumsizex"></A>
+<H3>wxSashWindow::GetMaximumSizeX</H3>
+<P>
+<B>int</B> <B>GetMaximumSizeX</B>() <B>const</B><P>
+Gets the maximum window size in the x direction.<P>
+
+<HR>
+<A NAME="wxsashwindowgetmaximumsizey"></A>
+<H3>wxSashWindow::GetMaximumSizeY</H3>
+<P>
+<B>int</B> <B>GetMaximumSizeY</B>() <B>const</B><P>
+Gets the maximum window size in the y direction.<P>
+
+<HR>
+<A NAME="wxsashwindowgetminimumsizex"></A>
+<H3>wxSashWindow::GetMinimumSizeX</H3>
+<P>
+<B>int</B> <B>GetMinimumSizeX</B>()<P>
+Gets the minimum window size in the x direction.<P>
+
+<HR>
+<A NAME="wxsashwindowgetminimumsizey"></A>
+<H3>wxSashWindow::GetMinimumSizeY</H3>
+<P>
+<B>int</B> <B>GetMinimumSizeY</B>() <B>const</B><P>
+Gets the minimum window size in the y direction.<P>
+
+<HR>
+<A NAME="wxsashwindowhasborder"></A>
+<H3>wxSashWindow::HasBorder</H3>
+<P>
+<B>bool</B> <B>HasBorder</B>(<B>wxSashEdgePosition </B><I>edge</I>) <B>const</B><P>
+Returns true if the sash has a border, false otherwise.
+This function is obsolete since the sash border property is unused.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>edge</I><UL><UL>
+Edge. One of wxSASH_TOP, wxSASH_RIGHT, wxSASH_BOTTOM, wxSASH_LEFT.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsashwindow.html#wxsashwindowsetsashborder">wxSashWindow::SetSashBorder</A><P>
+
+<HR>
+<A NAME="wxsashwindowsetmaximumsizex"></A>
+<H3>wxSashWindow::SetMaximumSizeX</H3>
+<P>
+<B>void</B> <B>SetMaximumSizeX</B>(<B>int</B><I> min</I>)<P>
+Sets the maximum window size in the x direction.<P>
+
+<HR>
+<A NAME="wxsashwindowsetmaximumsizey"></A>
+<H3>wxSashWindow::SetMaximumSizeY</H3>
+<P>
+<B>void</B> <B>SetMaximumSizeY</B>(<B>int</B><I> min</I>)<P>
+Sets the maximum window size in the y direction.<P>
+
+<HR>
+<A NAME="wxsashwindowsetminimumsizex"></A>
+<H3>wxSashWindow::SetMinimumSizeX</H3>
+<P>
+<B>void</B> <B>SetMinimumSizeX</B>(<B>int</B><I> min</I>)<P>
+Sets the minimum window size in the x direction.<P>
+
+<HR>
+<A NAME="wxsashwindowsetminimumsizey"></A>
+<H3>wxSashWindow::SetMinimumSizeY</H3>
+<P>
+<B>void</B> <B>SetMinimumSizeY</B>(<B>int</B><I> min</I>)<P>
+Sets the minimum window size in the y direction.<P>
+
+<HR>
+<A NAME="wxsashwindowsetsashvisible"></A>
+<H3>wxSashWindow::SetSashVisible</H3>
+<P>
+<B>void</B> <B>SetSashVisible</B>(<B>wxSashEdgePosition </B><I>edge</I>, <B>bool</B><I> visible</I>)<P>
+Call this function to make a sash visible or invisible on a particular edge.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>edge</I><UL><UL>
+Edge to change. One of wxSASH_TOP, wxSASH_RIGHT, wxSASH_BOTTOM, wxSASH_LEFT.</UL></UL>
+<P>
+<I>visible</I><UL><UL>
+true to make the sash visible, false to make it invisible.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsashwindow.html#wxsashwindowgetsashvisible">wxSashWindow::GetSashVisible</A><P>
+
+<HR>
+<A NAME="wxsashwindowsetsashborder"></A>
+<H3>wxSashWindow::SetSashBorder</H3>
+<P>
+<B>void</B> <B>SetSashBorder</B>(<B>wxSashEdgePosition </B><I>edge</I>, <B>bool</B><I> hasBorder</I>)<P>
+Call this function to give the sash a border, or remove the border.
+This function is obsolete since the sash border property is unused.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>edge</I><UL><UL>
+Edge to change. One of wxSASH_TOP, wxSASH_RIGHT, wxSASH_BOTTOM, wxSASH_LEFT.</UL></UL>
+<P>
+<I>hasBorder</I><UL><UL>
+true to give the sash a border visible, false to remove it.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsashwindow.html#wxsashwindowhasborder">wxSashWindow::HasBorder</A><P>
+
+</FONT></BODY></HTML>

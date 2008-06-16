@@ -1,0 +1,54 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFFileInputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxffileinputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxffile.html#wxffile"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxffileoutputstream.html#wxffileoutputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFFileInputStream</H2>
+<P>
+This class represents data read in from a file. There are actually
+two such groups of classes: this one is based on <A HREF="wx_wxffile.html#wxffile">wxFFile</A> 
+whereas <A HREF="wx_wxfileinputstream.html#wxfileinputstream">wxFileInputStream</A> is based in
+the <A HREF="wx_wxfile.html#wxfile">wxFile</A> class.<P>
+Note that <A HREF="wx_wxinputstream.html#wxinputstreamseeki">SeekI()</A> 
+can seek beyond the end of the stream (file) and will thus not return 
+<I>wxInvalidOffset</I> for that.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/wfstream.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbufferedinputstream.html#wxbufferedinputstream">wxBufferedInputStream</A>, <A HREF="wx_wxffileoutputstream.html#wxffileoutputstream">wxFFileOutputStream</A>, <A HREF="wx_wxfileoutputstream.html#wxfileoutputstream">wxFileOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxffileinputstreamctor">wxFFileInputStream::wxFFileInputStream</A><BR>
+<A HREF="#wxffileinputstreamdtor">wxFFileInputStream::~wxFFileInputStream</A><BR>
+<A HREF="#wxffileinputstreamisok">wxFFileInputStream::IsOk</A><BR>
+<P>
+
+<HR>
+<A NAME="wxffileinputstreamctor"></A>
+<H3>wxFFileInputStream::wxFFileInputStream</H3>
+<P>
+<B></B> <B>wxFFileInputStream</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> filename</I>, <B>const wxChar *</B><I> mode = "rb"</I>)<P>
+Opens the specified file using its <I>filename</I> name using the specified mode.<P>
+<B></B> <B>wxFFileInputStream</B>(<B><A HREF="wx_wxffile.html#wxffile">wxFFile</A>&</B></B><I> file</I>)<P>
+Initializes a file stream in read-only mode using the file I/O object <I>file</I>.<P>
+<B></B> <B>wxFFileInputStream</B>(<B>FILE *</B><I> fp</I>)<P>
+Initializes a file stream in read-only mode using the specified file pointer <I>fp</I>.<P>
+
+<HR>
+<A NAME="wxffileinputstreamdtor"></A>
+<H3>wxFFileInputStream::~wxFFileInputStream</H3>
+<P>
+<B></B> <B>~wxFFileInputStream</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxffileinputstreamisok"></A>
+<H3>wxFFileInputStream::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if the stream is initialized and ready.<P>
+
+</FONT></BODY></HTML>

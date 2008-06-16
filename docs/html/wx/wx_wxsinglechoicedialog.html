@@ -1,0 +1,155 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSingleChoiceDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsinglechoicedialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsearchctrl.html#wxsearchctrl"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsingleinstancechecker.html#wxsingleinstancechecker"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSingleChoiceDialog</H2>
+<P>
+This class represents a dialog that shows a list of strings, and allows the
+user to select one. Double-clicking on a list item is equivalent to
+single-clicking and then pressing OK.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/choicdlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_commondialogsoverview.html#wxsinglechoicedialogoverview">wxSingleChoiceDialog overview</A>,
+<A HREF="wx_wxmultichoicedialog.html#wxmultichoicedialog">wxMultiChoiceDialog</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsinglechoicedialogctor">wxSingleChoiceDialog::wxSingleChoiceDialog</A><BR>
+<A HREF="#wxsinglechoicedialoggetselection">wxSingleChoiceDialog::GetSelection</A><BR>
+<A HREF="#wxsinglechoicedialoggetselectionclientdata">wxSingleChoiceDialog::GetSelectionClientData</A><BR>
+<A HREF="#wxsinglechoicedialoggetstringselection">wxSingleChoiceDialog::GetStringSelection</A><BR>
+<A HREF="#wxsinglechoicedialogsetselection">wxSingleChoiceDialog::SetSelection</A><BR>
+<A HREF="#wxsinglechoicedialogshowmodal">wxSingleChoiceDialog::ShowModal</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsinglechoicedialogctor"></A>
+<H3>wxSingleChoiceDialog::wxSingleChoiceDialog</H3>
+<P>
+<B></B> <B>wxSingleChoiceDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>, <B>int </B><I>n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>choices</I>,
+<B>void**</B><I> clientData = NULL</I>, <B>long </B><I>style = wxCHOICEDLG_STYLE</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>)<P>
+<B></B> <B>wxSingleChoiceDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>, <B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>,
+<B>void**</B><I> clientData = NULL</I>, <B>long </B><I>style = wxCHOICEDLG_STYLE</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>)<P>
+Constructor, taking an array of wxString choices and optional client data.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window.</UL></UL>
+<P>
+<I>message</I><UL><UL>
+Message to show on the dialog.</UL></UL>
+<P>
+<I>caption</I><UL><UL>
+The dialog caption.</UL></UL>
+<P>
+<I>n</I><UL><UL>
+The number of choices.</UL></UL>
+<P>
+<I>choices</I><UL><UL>
+An array of strings, or a string list, containing the choices.</UL></UL>
+<P>
+<I>clientData</I><UL><UL>
+An array of client data to be associated with the items.
+See <A HREF="wx_wxsinglechoicedialog.html#wxsinglechoicedialoggetselectionclientdata">GetSelectionClientData</A>.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+A dialog style (bitlist) containing flags chosen from standard
+dialog styles and the following:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxOK</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Show an OK button.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCANCEL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Show a Cancel button.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCENTRE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Centre the message. Not Windows.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+The default value is equivalent to <B>wxDEFAULT_DIALOG_STYLE |  wxRESIZE_BORDER |  wxOK |  wxCANCEL |  wxCENTRE</B>.
+</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Dialog position. Not Windows.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Use <A HREF="wx_wxsinglechoicedialog.html#wxsinglechoicedialogshowmodal">wxSingleChoiceDialog::ShowModal</A> to show the dialog.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> For Python the two parameters <TT>n</TT> and <TT>choices</TT> are collapsed
+into a single parameter <TT>choices</TT> which is expected to be a Python
+list of strings.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there is just an array reference in place of <TT>n</TT>
+and <TT>choices</TT>, and the client data array, if present, must have the
+same length as the choices array.<P>
+
+<HR>
+<A NAME="wxsinglechoicedialoggetselection"></A>
+<H3>wxSingleChoiceDialog::GetSelection</H3>
+<P>
+<B>int</B> <B>GetSelection</B>() <B>const</B><P>
+Returns the index of selected item.<P>
+
+<HR>
+<A NAME="wxsinglechoicedialoggetselectionclientdata"></A>
+<H3>wxSingleChoiceDialog::GetSelectionClientData</H3>
+<P>
+<B>char*</B> <B>GetSelectionClientData</B>() <B>const</B><P>
+Returns the client data associated with the selection.<P>
+
+<HR>
+<A NAME="wxsinglechoicedialoggetstringselection"></A>
+<H3>wxSingleChoiceDialog::GetStringSelection</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetStringSelection</B>() <B>const</B><P>
+Returns the selected string.<P>
+
+<HR>
+<A NAME="wxsinglechoicedialogsetselection"></A>
+<H3>wxSingleChoiceDialog::SetSelection</H3>
+<P>
+<B>void</B> <B>SetSelection</B>(<B>int</B><I> selection</I>) <B>const</B><P>
+Sets the index of the initially selected item.<P>
+
+<HR>
+<A NAME="wxsinglechoicedialogshowmodal"></A>
+<H3>wxSingleChoiceDialog::ShowModal</H3>
+<P>
+<B>int</B> <B>ShowModal</B>()<P>
+Shows the dialog, returning either wxID_OK or wxID_CANCEL.<P>
+
+</FONT></BODY></HTML>

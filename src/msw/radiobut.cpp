@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        msw/radiobut.cpp
+// Name:        src/msw/radiobut.cpp
 // Purpose:     wxRadioButton
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: radiobut.cpp,v 1.58.2.1 2006/01/18 16:16:22 JS Exp $
+// RCS-ID:      $Id: radiobut.cpp 41144 2006-09-10 23:08:13Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "radiobut.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -30,8 +26,9 @@
 
 #if wxUSE_RADIOBTN
 
+#include "wx/radiobut.h"
+
 #ifndef WX_PRECOMP
-    #include "wx/radiobut.h"
     #include "wx/settings.h"
     #include "wx/dcscreen.h"
 #endif
@@ -168,7 +165,7 @@ void wxRadioButton::SetValue(bool value)
     // buttons in the same group: Windows doesn't do it automatically
     if ( m_isChecked )
     {
-        // If another radiobutton in the group currently has the focus, we have to 
+        // If another radiobutton in the group currently has the focus, we have to
         // set it to this radiobutton, else the old readiobutton will be reselected
         // automatically, if a parent window loses the focus and regains it.
         bool shouldSetFocus = false;
@@ -193,7 +190,7 @@ void wxRadioButton::SetValue(bool value)
                     // A wxRB_SINGLE button isn't part of this group
                     break;
                 }
-                
+
                 if (btn)
                 {
                     if (btn == pFocusWnd)
@@ -300,7 +297,7 @@ wxSize wxRadioButton::DoGetBestSize() const
     int wRadio, hRadio;
     if ( !str.empty() )
     {
-        GetTextExtent(wxStripMenuCodes(str), &wRadio, &hRadio);
+        GetTextExtent(GetLabelText(str), &wRadio, &hRadio);
         wRadio += s_radioSize + GetCharWidth();
 
         if ( hRadio < s_radioSize )
@@ -317,5 +314,14 @@ wxSize wxRadioButton::DoGetBestSize() const
     return best;
 }
 
-#endif // wxUSE_RADIOBTN
+WXDWORD wxRadioButton::MSWGetStyle(long style, WXDWORD *exstyle) const
+{
+    WXDWORD styleMSW = wxControl::MSWGetStyle(style, exstyle);
 
+    if ( style & wxRB_GROUP )
+        styleMSW |= WS_GROUP;
+
+    return styleMSW;
+}
+
+#endif // wxUSE_RADIOBTN

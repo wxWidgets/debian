@@ -1,0 +1,70 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFileConfig</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfileconfig"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfile.html#wxfile"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfiledataobject.html#wxfiledataobject"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFileConfig</H2>
+<P>
+wxFileConfig implements <A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A> interface for
+storing and retrieving configuration information using plain text files. The
+files have a simple format reminiscent of Windows INI files with lines of the
+form <TT>key = value</TT> defining the keys and lines of special form
+<TT>[group]</TT> indicating the start of each group.<P>
+This class is used by default for wxConfig on Unix platforms but may also be
+used explicitly if you want to use files and not the registry even under
+Windows.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/fileconf.h&gt;<P>
+
+<P>
+<A HREF="#wxfileconfigctor">wxFileConfig::wxFileConfig</A><BR>
+<A HREF="#wxfileconfigsave">wxFileConfig::Save</A><BR>
+<A HREF="#wxfileconfigsetumask">wxFileConfig::SetUmask</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfileconfigctor"></A>
+<H3>wxFileConfig::wxFileConfig</H3>
+<P>
+<B></B> <B>wxFileConfig</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>is</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>& </B></B><I>conv = wxConvUTF8</I>)<P>
+Read the config data from the specified stream instead of the associated file,
+as usual.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfileconfig.html#wxfileconfigsave">Save</A><P>
+
+
+<HR>
+<A NAME="wxfileconfigsave"></A>
+<H3>wxFileConfig::Save</H3>
+<P>
+<B>bool</B> <B>Save</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>os</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>& </B></B><I>conv = wxConvUTF8</I>)<P>
+Saves all config data to the given stream, returns <TT>true</TT> if data was saved
+successfully or <TT>false</TT> on error.<P>
+Note the interaction of this function with the internal "dirty flag'': the
+data is saved unconditionally, i.e. even if the object is not dirty. However
+after saving it successfully, the dirty flag is reset so no changes will be
+written back to the file this object is associated with until you change its
+contents again.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxconfigbase.html#wxconfigbaseflush">Flush</A><P>
+
+
+<HR>
+<A NAME="wxfileconfigsetumask"></A>
+<H3>wxFileConfig::SetUmask</H3>
+<P>
+<B>void</B> <B>SetUmask</B>(<B>int </B><I>mode</I>)<P>
+Allows to set the mode to be used for the config file creation. For example, to
+create a config file which is not readable by other users (useful if it stores
+some sensitive information, such as passwords), you could use 
+<TT>SetUmask(0077)</TT>.<P>
+This function doesn't do anything on non-Unix platforms.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_filefunctions.html#wxchangeumask">wxCHANGE_UMASK</A><P>
+<P>
+
+</FONT></BODY></HTML>

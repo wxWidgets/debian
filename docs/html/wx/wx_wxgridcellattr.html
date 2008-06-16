@@ -1,0 +1,237 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGridCellAttr</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgridcellattr"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgrid.html#wxgrid"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgridbagsizer.html#wxgridbagsizer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGridCellAttr</H2>
+<P>
+This class can be used to alter the cells' appearance in
+the grid by changing their colour/font/... from default. An object of this
+class may be returned by wxGridTable::GetAttr().<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/grid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgridcellattrwxgridcellattr">wxGridCellAttr::wxGridCellAttr</A><BR>
+<A HREF="#wxgridcellattrclone">wxGridCellAttr::Clone</A><BR>
+<A HREF="#wxgridcellattrincref">wxGridCellAttr::IncRef</A><BR>
+<A HREF="#wxgridcellattrdecref">wxGridCellAttr::DecRef</A><BR>
+<A HREF="#wxgridcellattrsettextcolour">wxGridCellAttr::SetTextColour</A><BR>
+<A HREF="#wxgridcellattrsetbackgroundcolour">wxGridCellAttr::SetBackgroundColour</A><BR>
+<A HREF="#wxgridcellattrsetfont">wxGridCellAttr::SetFont</A><BR>
+<A HREF="#wxgridcellattrsetalignment">wxGridCellAttr::SetAlignment</A><BR>
+<A HREF="#wxgridcellattrsetreadonly">wxGridCellAttr::SetReadOnly</A><BR>
+<A HREF="#wxgridcellattrsetrenderer">wxGridCellAttr::SetRenderer</A><BR>
+<A HREF="#wxgridcellattrseteditor">wxGridCellAttr::SetEditor</A><BR>
+<A HREF="#wxgridcellattrhastextcolour">wxGridCellAttr::HasTextColour</A><BR>
+<A HREF="#wxgridcellattrhasbackgroundcolour">wxGridCellAttr::HasBackgroundColour</A><BR>
+<A HREF="#wxgridcellattrhasfont">wxGridCellAttr::HasFont</A><BR>
+<A HREF="#wxgridcellattrhasalignment">wxGridCellAttr::HasAlignment</A><BR>
+<A HREF="#wxgridcellattrhasrenderer">wxGridCellAttr::HasRenderer</A><BR>
+<A HREF="#wxgridcellattrhaseditor">wxGridCellAttr::HasEditor</A><BR>
+<A HREF="#wxgridcellattrgettextcolour">wxGridCellAttr::GetTextColour</A><BR>
+<A HREF="#wxgridcellattrgetbackgroundcolour">wxGridCellAttr::GetBackgroundColour</A><BR>
+<A HREF="#wxgridcellattrgetfont">wxGridCellAttr::GetFont</A><BR>
+<A HREF="#wxgridcellattrgetalignment">wxGridCellAttr::GetAlignment</A><BR>
+<A HREF="#wxgridcellattrgetrenderer">wxGridCellAttr::GetRenderer</A><BR>
+<A HREF="#wxgridcellattrgeteditor">wxGridCellAttr::GetEditor</A><BR>
+<A HREF="#wxgridcellattrisreadonly">wxGridCellAttr::IsReadOnly</A><BR>
+<A HREF="#wxgridcellattrsetdefattr">wxGridCellAttr::SetDefAttr</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgridcellattrwxgridcellattr"></A>
+<H3>wxGridCellAttr::wxGridCellAttr</H3>
+<P>
+<B></B> <B>wxGridCellAttr</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxGridCellAttr</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colText</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colBack</I>, <B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>, <B>int </B><I>hAlign</I>, <B>int </B><I>vAlign</I>)<P>
+Constructor specifying some of the often used attributes.<P>
+
+
+<HR>
+<A NAME="wxgridcellattrclone"></A>
+<H3>wxGridCellAttr::Clone</H3>
+<P>
+<B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>*</B> </B> <B>Clone</B>() <B>const</B><P>
+Creates a new copy of this object.<P>
+
+
+<HR>
+<A NAME="wxgridcellattrincref"></A>
+<H3>wxGridCellAttr::IncRef</H3>
+<P>
+<B>void</B> <B>IncRef</B>()<P>
+This class is ref counted: it is created with ref count of 1, so
+calling DecRef() once will delete it. Calling IncRef() allows to lock
+it until the matching DecRef() is called<P>
+
+
+<HR>
+<A NAME="wxgridcellattrdecref"></A>
+<H3>wxGridCellAttr::DecRef</H3>
+<P>
+<B>void</B> <B>DecRef</B>()<P>
+
+<HR>
+<A NAME="wxgridcellattrsettextcolour"></A>
+<H3>wxGridCellAttr::SetTextColour</H3>
+<P>
+<B>void</B> <B>SetTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colText</I>)<P>
+Sets the text colour.<P>
+
+
+<HR>
+<A NAME="wxgridcellattrsetbackgroundcolour"></A>
+<H3>wxGridCellAttr::SetBackgroundColour</H3>
+<P>
+<B>void</B> <B>SetBackgroundColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colBack</I>)<P>
+Sets the background colour.<P>
+
+
+<HR>
+<A NAME="wxgridcellattrsetfont"></A>
+<H3>wxGridCellAttr::SetFont</H3>
+<P>
+<B>void</B> <B>SetFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the font.<P>
+
+
+<HR>
+<A NAME="wxgridcellattrsetalignment"></A>
+<H3>wxGridCellAttr::SetAlignment</H3>
+<P>
+<B>void</B> <B>SetAlignment</B>(<B>int </B><I>hAlign</I>, <B>int </B><I>vAlign</I>)<P>
+Sets the alignment. <I>hAlign</I> can be one of <TT>wxALIGN_LEFT</TT>, 
+<TT>wxALIGN_CENTRE</TT> or <TT>wxALIGN_RIGHT</TT> and <I>vAlign</I> can be one
+of <TT>wxALIGN_TOP</TT>, <TT>wxALIGN_CENTRE</TT> or <TT>wxALIGN_BOTTOM</TT>.<P>
+
+
+<HR>
+<A NAME="wxgridcellattrsetreadonly"></A>
+<H3>wxGridCellAttr::SetReadOnly</H3>
+<P>
+<B>void</B> <B>SetReadOnly</B>(<B>bool </B><I>isReadOnly = true</I>)<P>
+
+
+<HR>
+<A NAME="wxgridcellattrsetrenderer"></A>
+<H3>wxGridCellAttr::SetRenderer</H3>
+<P>
+<B>void</B> <B>SetRenderer</B>(<B><A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A>* </B></B><I>renderer</I>)<P>
+takes ownership of the pointer<P>
+
+
+<HR>
+<A NAME="wxgridcellattrseteditor"></A>
+<H3>wxGridCellAttr::SetEditor</H3>
+<P>
+<B>void</B> <B>SetEditor</B>(<B><A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>* </B></B><I>editor</I>)<P>
+
+
+<HR>
+<A NAME="wxgridcellattrhastextcolour"></A>
+<H3>wxGridCellAttr::HasTextColour</H3>
+<P>
+<B>bool</B> <B>HasTextColour</B>() <B>const</B><P>
+accessors<P>
+
+
+<HR>
+<A NAME="wxgridcellattrhasbackgroundcolour"></A>
+<H3>wxGridCellAttr::HasBackgroundColour</H3>
+<P>
+<B>bool</B> <B>HasBackgroundColour</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxgridcellattrhasfont"></A>
+<H3>wxGridCellAttr::HasFont</H3>
+<P>
+<B>bool</B> <B>HasFont</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxgridcellattrhasalignment"></A>
+<H3>wxGridCellAttr::HasAlignment</H3>
+<P>
+<B>bool</B> <B>HasAlignment</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxgridcellattrhasrenderer"></A>
+<H3>wxGridCellAttr::HasRenderer</H3>
+<P>
+<B>bool</B> <B>HasRenderer</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxgridcellattrhaseditor"></A>
+<H3>wxGridCellAttr::HasEditor</H3>
+<P>
+<B>bool</B> <B>HasEditor</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxgridcellattrgettextcolour"></A>
+<H3>wxGridCellAttr::GetTextColour</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetTextColour</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxgridcellattrgetbackgroundcolour"></A>
+<H3>wxGridCellAttr::GetBackgroundColour</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetBackgroundColour</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxgridcellattrgetfont"></A>
+<H3>wxGridCellAttr::GetFont</H3>
+<P>
+<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>&</B> </B> <B>GetFont</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxgridcellattrgetalignment"></A>
+<H3>wxGridCellAttr::GetAlignment</H3>
+<P>
+<B>void</B> <B>GetAlignment</B>(<B>int* </B><I>hAlign</I>, <B>int* </B><I>vAlign</I>) <B>const</B><P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> This method takes no parameters and
+returns a 2-element list <TT>( hAlign, vAlign )</TT>.<P>
+See <A HREF="wx_wxgridcellattr.html#wxgridcellattrsetalignment">SetAlignment</A> for the returned values.<P>
+
+
+<HR>
+<A NAME="wxgridcellattrgetrenderer"></A>
+<H3>wxGridCellAttr::GetRenderer</H3>
+<P>
+<B><A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A>*</B> </B> <B>GetRenderer</B>(<B><A HREF="wx_wxgrid.html#wxgrid">wxGrid</A>* </B></B><I>grid</I>, <B>int </B><I>row</I>, <B>int </B><I>col</I>) <B>const</B><P>
+
+
+<HR>
+<A NAME="wxgridcellattrgeteditor"></A>
+<H3>wxGridCellAttr::GetEditor</H3>
+<P>
+<B><A HREF="wx_wxgridcelleditor.html#wxgridcelleditor">wxGridCellEditor</A>*</B> </B> <B>GetEditor</B>(<B><A HREF="wx_wxgrid.html#wxgrid">wxGrid</A>* </B></B><I>grid</I>, <B>int </B><I>row</I>, <B>int </B><I>col</I>) <B>const</B><P>
+
+
+<HR>
+<A NAME="wxgridcellattrisreadonly"></A>
+<H3>wxGridCellAttr::IsReadOnly</H3>
+<P>
+<B>bool</B> <B>IsReadOnly</B>() <B>const</B><P>
+
+
+<HR>
+<A NAME="wxgridcellattrsetdefattr"></A>
+<H3>wxGridCellAttr::SetDefAttr</H3>
+<P>
+<B>void</B> <B>SetDefAttr</B>(<B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>* </B></B><I>defAttr</I>)<P>
+
+
+</FONT></BODY></HTML>

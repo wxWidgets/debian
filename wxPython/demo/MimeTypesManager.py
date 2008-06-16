@@ -6,7 +6,7 @@
 #              .wdr-derived demo
 #
 # Created:     12/31/03
-# RCS-ID:      $Id: MimeTypesManager.py,v 1.8.2.2 2006/01/07 20:54:09 KO Exp $
+# RCS-ID:      $Id: MimeTypesManager.py 36806 2006-01-09 21:09:57Z RD $
 # Copyright:   
 # Licence:     wxWindows license
 #----------------------------------------------------------------------

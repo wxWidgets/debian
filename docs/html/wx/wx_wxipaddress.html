@@ -1,0 +1,96 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxIPaddress</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxipaddress"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxinputstream.html#wxinputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxipv4address.html#wxipv4address"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxIPaddress</H2>
+<P>
+wxIPaddress is an abstract base class for all internet protocol address 
+objects. Currently, only <A HREF="wx_wxipv4address.html#wxipv4address">wxIPV4address</A> 
+is implemented. An experimental implementation for IPV6, wxIPV6address,
+is being developed.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxsockaddress.html#wxsockaddress">wxSockAddress</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/socket.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxipaddresshostname">wxIPaddress::Hostname</A><BR>
+<A HREF="#wxipaddressipaddress">wxIPaddress::IPAddress</A><BR>
+<A HREF="#wxipaddressservice">wxIPaddress::Service</A><BR>
+<A HREF="#wxIPaddressanyaddress">wxIPaddress::AnyAddress</A><BR>
+<A HREF="#wxIPaddresslocalhost">wxIPaddress::LocalHost</A><BR>
+<A HREF="#wxIPaddressislocalhost">wxIPaddress::IsLocalHost</A><BR>
+<P>
+
+<HR>
+<A NAME="wxipaddresshostname"></A>
+<H3>wxIPaddress::Hostname</H3>
+<P>
+<B>virtual bool</B> <B>Hostname</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> hostname</I>)<P>
+Set the address to <I>hostname</I>, which can be a host name
+or an IP-style address in a format dependent on implementation.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true on success, false if something goes wrong
+(invalid hostname or invalid IP address).<P>
+<B>virtual <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>Hostname</B>()<P>
+Returns the hostname which matches the IP address.<P>
+
+<HR>
+<A NAME="wxipaddressipaddress"></A>
+<H3>wxIPaddress::IPAddress</H3>
+<P>
+<B>virtual <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>IPAddress</B>()<P>
+Returns a wxString containing the IP address.<P>
+
+<HR>
+<A NAME="wxipaddressservice"></A>
+<H3>wxIPaddress::Service</H3>
+<P>
+<B>virtual bool</B> <B>Service</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> service</I>)<P>
+Set the port to that corresponding to the specified <I>service</I>.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true on success, false if something goes wrong
+(invalid service).<P>
+<B>virtual bool</B> <B>Service</B>(<B>unsigned short</B><I> service</I>)<P>
+Set the port to that corresponding to the specified <I>service</I>.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true on success, false if something goes wrong
+(invalid service).<P>
+<B>virtual unsigned short</B> <B>Service</B>()<P>
+Returns the current service.<P>
+
+<HR>
+<A NAME="wxIPaddressanyaddress"></A>
+<H3>wxIPaddress::AnyAddress</H3>
+<P>
+<B>virtual bool</B> <B>AnyAddress</B>()<P>
+Internally, this is the same as setting the IP address
+to <B>INADDR_ANY</B>.<P>
+On IPV4 implementations, 0.0.0.0<P>
+On IPV6 implementations, ::<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true on success, false if something went wrong.<P>
+
+<HR>
+<A NAME="wxIPaddresslocalhost"></A>
+<H3>wxIPaddress::LocalHost</H3>
+<P>
+<B>virtual bool</B> <B>LocalHost</B>()<P>
+Set address to localhost. <P>
+On IPV4 implementations, 127.0.0.1<P>
+On IPV6 implementations, ::1<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true on success, false if something went wrong.<P>
+
+<HR>
+<A NAME="wxIPaddressislocalhost"></A>
+<H3>wxIPaddress::IsLocalHost</H3>
+<P>
+<B>virtual bool</B> <B>IsLocalHost</B>()<P>
+Determines if current address is set to localhost. <P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true if address is localhost, false if internet address.<P>
+
+</FONT></BODY></HTML>

@@ -52,19 +52,22 @@ is being given to the application (call wxTreeEvent::SetToolTip). Windows only.}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
+
 \membersection{wxTreeEvent::wxTreeEvent}\label{wxtreeeventctor}
 
-\func{}{wxTreeEvent}{\param{WXTYPE }{commandType = 0}, \param{int }{id = 0}}
+\func{}{wxTreeEvent}{\param{wxEventType }{commandType}, \param{wxTreeCtrl *}{tree}, \param{const wxTreeItemId\&}{item = wxTreeItemId()}}
 
-Constructor.
+Constructor, used by wxWidgets itself only.
+
 
 \membersection{wxTreeEvent::GetKeyCode}\label{wxtreeeventgetkeycode}
 
 \constfunc{int}{GetKeyCode}{}
 
-Returns the key code if the event was is a key event. Use 
+Returns the key code if the event is a key event. Use 
 \helpref{GetKeyEvent}{wxtreeeventgetkeyevent} to get the values of the
 modifier keys for this event (i.e. Shift or Ctrl).
+
 
 \membersection{wxTreeEvent::GetItem}\label{wxtreeeventgetitem}
 
@@ -72,17 +75,20 @@ modifier keys for this event (i.e. Shift or Ctrl).
 
 Returns the item (valid for all events).
 
+
 \membersection{wxTreeEvent::GetKeyEvent}\label{wxtreeeventgetkeyevent}
 
 \constfunc{const wxKeyEvent\&}{GetKeyEvent}{}
 
 Returns the key event for {\tt EVT\_TREE\_KEY\_DOWN} events.
 
+
 \membersection{wxTreeEvent::GetLabel}\label{wxtreeeventgetlabel}
 
 \constfunc{const wxString\&}{GetLabel}{}
 
-Returns the label if the event was a begin or end edit label event.
+Returns the label if the event is a begin or end edit label event.
+
 
 \membersection{wxTreeEvent::GetOldItem}\label{wxtreeeventgetolditem}
 
@@ -90,18 +96,23 @@ Returns the label if the event was a begin or end edit label event.
 
 Returns the old item index (valid for EVT\_TREE\_ITEM\_CHANGING and CHANGED events)
 
-\membersection{wxTreeEvent::GetPoint()}\label{wxtreeeventgetpoint}
+
+\membersection{wxTreeEvent::GetPoint}\label{wxtreeeventgetpoint}
 
 \constfunc{wxPoint}{GetPoint}{}
 
-Returns the position of the mouse pointer if the event is a drag event.
+Returns the position of the mouse pointer if the event is a drag or menu-context event.
+In both cases the position is in client coordinates - i.e. relative to the wxTreeCtrl
+window (so that you can pass it directly to e.g. \helpref{wxWindow::PopupMenu}{wxwindowpopupmenu}).
 
-\membersection{wxTreeEvent::IsEditCancelled()}\label{wxtreeeventiseditcancelled}
+
+\membersection{wxTreeEvent::IsEditCancelled}\label{wxtreeeventiseditcancelled}
 
 \constfunc{bool}{IsEditCancelled}{}
 
 Returns true if the label edit was cancelled. This should be
 called from within an EVT\_TREE\_END\_LABEL\_EDIT handler.
+
 
 \membersection{wxTreeEvent::SetToolTip}\label{wxtreeeventsettooltip}
 

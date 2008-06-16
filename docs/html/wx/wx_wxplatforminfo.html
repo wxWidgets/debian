@@ -1,0 +1,443 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPlatformInfo</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxplatforminfo"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpickerbase.html#wxpickerbase"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpoint.html#wxpoint"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPlatformInfo</H2>
+<P>
+This class holds informations about the operating system and the toolkit that the application
+is running under and some basic architecture info of the machine where it's running.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/platinfo.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_networkfunctions.html#wxgetosversion">wxGetOSVersion</A>, <A HREF="wx_networkfunctions.html#wxisplatformlittleendian">wxIsPlatformLittleEndian</A>,
+<A HREF="wx_networkfunctions.html#wxisplatform64bit">wxIsPlatform64Bit</A>, <A HREF="wx_wxapptraits.html#wxapptraits">wxAppTraits</A><P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+The following are the operating systems which are recognized by wxWidgets
+and whose version can be detected at run-time. The values of the constants
+are chosen so that they can be combined as flags; this allows to check
+for operating system <I>families</I> like e.g. wxOS_MAC and wxOS_UNIX.<P>
+<PRE>
+enum wxOperatingSystemId
+{
+    wxOS_UNKNOWN = 0,                 // returned on error
+
+    wxOS_MAC_OS         = 1 &lt;&lt; 0,     // Apple Mac OS 8/9/X with Mac paths
+    wxOS_MAC_OSX_DARWIN = 1 &lt;&lt; 1,     // Apple Mac OS X with Unix paths
+    wxOS_MAC = wxOS_MAC_OS|wxOS_MAC_OSX_DARWIN,
+
+    wxOS_WINDOWS_9X     = 1 &lt;&lt; 2,     // Windows 9x family (95/98/ME)
+    wxOS_WINDOWS_NT     = 1 &lt;&lt; 3,     // Windows NT family (NT/2000/XP)
+    wxOS_WINDOWS_MICRO  = 1 &lt;&lt; 4,     // MicroWindows
+    wxOS_WINDOWS_CE     = 1 &lt;&lt; 5,     // Windows CE (Window Mobile)
+    wxOS_WINDOWS = wxOS_WINDOWS_9X      |
+                   wxOS_WINDOWS_NT      |
+                   wxOS_WINDOWS_MICRO   |
+                   wxOS_WINDOWS_CE,
+
+    wxOS_UNIX_LINUX     = 1 &lt;&lt; 6,       // Linux
+    wxOS_UNIX_FREEBSD   = 1 &lt;&lt; 7,       // FreeBSD
+    wxOS_UNIX_OPENBSD   = 1 &lt;&lt; 8,       // OpenBSD
+    wxOS_UNIX_NETBSD    = 1 &lt;&lt; 9,       // NetBSD
+    wxOS_UNIX_SOLARIS   = 1 &lt;&lt; 10,      // SunOS
+    wxOS_UNIX_AIX       = 1 &lt;&lt; 11,      // AIX
+    wxOS_UNIX_HPUX      = 1 &lt;&lt; 12,      // HP/UX
+    wxOS_UNIX = wxOS_UNIX_LINUX     |
+                wxOS_UNIX_FREEBSD   |
+                wxOS_UNIX_OPENBSD   |
+                wxOS_UNIX_NETBSD    |
+                wxOS_UNIX_SOLARIS   |
+                wxOS_UNIX_AIX       |
+                wxOS_UNIX_HPUX,
+
+    wxOS_DOS            = 1 &lt;&lt; 15,      // Microsoft DOS
+    wxOS_OS2            = 1 &lt;&lt; 16       // OS/2
+};
+</PRE>
+The list of wxWidgets ports. Some of them can be used with more than
+a single (native) toolkit; e.g. wxWinCE port sources can be used with
+smartphones, pocket PCs and handheld devices SDKs.<P>
+<PRE>
+enum wxPortId
+{
+    wxPORT_UNKNOWN  = 0,            // returned on error
+
+    wxPORT_BASE     = 1 &lt;&lt; 0,       // wxBase, no native toolkit used
+
+    wxPORT_MSW      = 1 &lt;&lt; 1,       // wxMSW, native toolkit is Windows API
+    wxPORT_MOTIF    = 1 &lt;&lt; 2,       // wxMotif, using [Open]Motif or Lesstif
+    wxPORT_GTK      = 1 &lt;&lt; 3,       // wxGTK, using GTK+ 1.x, 2.x, GPE or Maemo
+    wxPORT_MGL      = 1 &lt;&lt; 4,       // wxMGL, using wxUniversal
+    wxPORT_X11      = 1 &lt;&lt; 5,       // wxX11, using wxUniversal
+    wxPORT_OS2      = 1 &lt;&lt; 6,       // wxOS2, using OS/2 Presentation Manager
+    wxPORT_MAC      = 1 &lt;&lt; 7,       // wxMac, using Carbon or Classic Mac API
+    wxPORT_COCOA    = 1 &lt;&lt; 8,       // wxCocoa, using Cocoa NextStep/Mac API
+    wxPORT_WINCE    = 1 &lt;&lt; 9,       // wxWinCE, toolkit is WinCE SDK API
+    wxPORT_PALMOS   = 1 &lt;&lt; 10,      // wxPalmOS, toolkit is PalmOS API
+    wxPORT_DFB      = 1 &lt;&lt; 11       // wxDFB, using wxUniversal
+};
+</PRE>
+The architecture of the operating system (regardless of the build environment
+of wxWidgets library - see <A HREF="wx_networkfunctions.html#wxisplatform64bit">wxIsPlatform64bit</A> documentation
+for more info).<P>
+<PRE>
+enum wxArchitecture
+{
+    wxARCH_INVALID = -1,        // returned on error
+
+    wxARCH_32,                  // 32 bit
+    wxARCH_64,
+
+    wxARCH_MAX
+}
+</PRE>
+The endian-ness of the machine.<P>
+<PRE>
+enum wxEndianness
+{
+    wxENDIAN_INVALID = -1,      // returned on error
+
+    wxENDIAN_BIG,               // 4321
+    wxENDIAN_LITTLE,            // 1234
+    wxENDIAN_PDP,               // 3412
+
+    wxENDIAN_MAX
+}
+</PRE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxplatforminfowxplatforminfo">wxPlatformInfo::wxPlatformInfo</A><BR>
+<A HREF="#wxplatforminfocheckosversion">wxPlatformInfo::CheckOSVersion</A><BR>
+<A HREF="#wxplatforminfochecktoolkitversion">wxPlatformInfo::CheckToolkitVersion</A><BR>
+<A HREF="#wxplatforminfoget">wxPlatformInfo::Get</A><BR>
+<A HREF="#wxplatforminfogetarch">wxPlatformInfo::GetArch</A><BR>
+<A HREF="#wxplatforminfogetarchname">wxPlatformInfo::GetArchName</A><BR>
+<A HREF="#wxplatforminfogetarchitecture">wxPlatformInfo::GetArchitecture</A><BR>
+<A HREF="#wxplatforminfogetendianness">wxPlatformInfo::GetEndianness</A><BR>
+<A HREF="#wxplatforminfogetendiannessname">wxPlatformInfo::GetEndiannessName</A><BR>
+<A HREF="#wxplatforminfogetosmajorversion">wxPlatformInfo::GetOSMajorVersion</A><BR>
+<A HREF="#wxplatforminfogetosminorversion">wxPlatformInfo::GetOSMinorVersion</A><BR>
+<A HREF="#wxplatforminfogetoperatingsystemfamilyname">wxPlatformInfo::GetOperatingSystemFamilyName</A><BR>
+<A HREF="#wxplatforminfogetoperatingsystemid">wxPlatformInfo::GetOperatingSystemId</A><BR>
+<A HREF="#wxplatforminfogetoperatingsystemidname">wxPlatformInfo::GetOperatingSystemIdName</A><BR>
+<A HREF="#wxplatforminfogetportid">wxPlatformInfo::GetPortId</A><BR>
+<A HREF="#wxplatforminfogetportidname">wxPlatformInfo::GetPortIdName</A><BR>
+<A HREF="#wxplatforminfogetportidshortname">wxPlatformInfo::GetPortIdShortName</A><BR>
+<A HREF="#wxplatforminfogettoolkitmajorversion">wxPlatformInfo::GetToolkitMajorVersion</A><BR>
+<A HREF="#wxplatforminfogettoolkitminorversion">wxPlatformInfo::GetToolkitMinorVersion</A><BR>
+<A HREF="#wxplatforminfoisok">wxPlatformInfo::IsOk</A><BR>
+<A HREF="#wxplatforminfoisusinguniversalwidgets">wxPlatformInfo::IsUsingUniversalWidgets</A><BR>
+<A HREF="#wxplatforminfosetarchitecture">wxPlatformInfo::SetArchitecture</A><BR>
+<A HREF="#wxplatforminfosetendianness">wxPlatformInfo::SetEndianness</A><BR>
+<A HREF="#wxplatforminfosetosversion">wxPlatformInfo::SetOSVersion</A><BR>
+<A HREF="#wxplatforminfosetoperatingsystemid">wxPlatformInfo::SetOperatingSystemId</A><BR>
+<A HREF="#wxplatforminfosetportid">wxPlatformInfo::SetPortId</A><BR>
+<A HREF="#wxplatforminfosettoolkitversion">wxPlatformInfo::SetToolkitVersion</A><BR>
+<A HREF="#wxplatforminfooperatorunknown">wxPlatformInfo::operator!=</A><BR>
+<A HREF="#wxplatforminfooperatorequal">wxPlatformInfo::operator==</A><BR>
+<P>
+
+<HR>
+<A NAME="wxplatforminfowxplatforminfo"></A>
+<H3>wxPlatformInfo::wxPlatformInfo</H3>
+<P>
+<B></B> <B>wxPlatformInfo</B>()<P>
+Initializes the instance with the values corresponding to the currently running platform.
+This is a fast operation because it only requires to copy the values internally cached for the
+currently running platform (see also <A HREF="wx_wxplatforminfo.html#wxplatforminfoget">Get</A>).<P>
+<B></B> <B>wxPlatformInfo</B>(<B>wxPortId </B><I>pid = wxPORT_UNKNOWN</I>, <B>int </B><I>tkMajor = -1</I>, <B>int </B><I>tkMinor = -1</I>, <B>wxOperatingSystemId </B><I>id = wxOS_UNKNOWN</I>, <B>int </B><I>osMajor = -1</I>, <B>int </B><I>osMinor = -1</I>, <B>wxArchitecture </B><I>arch = wxARCH_INVALID</I>, <B>wxEndianness </B><I>endian = wxENDIAN_INVALID</I>)<P>
+Initializes the object using given values.<P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfocheckosversion"></A>
+<H3>wxPlatformInfo::CheckOSVersion</H3>
+<P>
+<B>bool</B> <B>CheckOSVersion</B>(<B>int </B><I>major</I>, <B>int </B><I>minor</I>) <B>const</B><P>
+Returns <TT>true</TT> if the OS version is at least <TT>major.minor</TT>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxplatforminfo.html#wxplatforminfogetosmajorversion">GetOSMajorVersion</A>,
+<A HREF="wx_wxplatforminfo.html#wxplatforminfogetosminorversion">GetOSMinorVersion</A>,
+<A HREF="wx_wxplatforminfo.html#wxplatforminfochecktoolkitversion">CheckToolkitVersion</A><P>
+
+
+<HR>
+<A NAME="wxplatforminfochecktoolkitversion"></A>
+<H3>wxPlatformInfo::CheckToolkitVersion</H3>
+<P>
+<B>bool</B> <B>CheckToolkitVersion</B>(<B>int </B><I>major</I>, <B>int </B><I>minor</I>) <B>const</B><P>
+Returns <TT>true</TT> if the toolkit version is at least <TT>major.minor</TT>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxplatforminfo.html#wxplatforminfogettoolkitmajorversion">GetToolkitMajorVersion</A>,
+<A HREF="wx_wxplatforminfo.html#wxplatforminfogettoolkitminorversion">GetToolkitMinorVersion</A>,
+<A HREF="wx_wxplatforminfo.html#wxplatforminfocheckosversion">CheckOSVersion</A><P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfoget"></A>
+<H3>wxPlatformInfo::Get</H3>
+<P>
+<B>static const <A HREF="wx_wxplatforminfo.html#wxplatforminfo">wxPlatformInfo</A>& </B> </B> <B>Get</B>()<P>
+Returns the global wxPlatformInfo object, initialized with the values for the currently running platform.<P>
+
+
+<HR>
+<A NAME="wxplatforminfogetarch"></A>
+<H3>wxPlatformInfo::GetArch</H3>
+<P>
+<B>static wxArchitecture</B> <B>GetArch</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>arch</I>)<P>
+Converts the given string to a wxArchitecture enum value or to
+wxARCH_INVALID if the given string is not a valid architecture string
+(i.e. does not contain nor <TT>32</TT> nor <TT>64</TT> strings).<P>
+
+
+<HR>
+<A NAME="wxplatforminfogetarchname"></A>
+<H3>wxPlatformInfo::GetArchName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetArchName</B>(<B>wxArchitecture </B><I>arch</I>)<P>
+Returns the name for the given wxArchitecture enumeration value.<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetArchName</B>() <B>const</B><P>
+Returns the name for the architecture of this wxPlatformInfo instance.<P>
+
+
+<HR>
+<A NAME="wxplatforminfogetarchitecture"></A>
+<H3>wxPlatformInfo::GetArchitecture</H3>
+<P>
+<B>wxArchitecture</B> <B>GetArchitecture</B>() <B>const</B><P>
+Returns the architecture ID of this wxPlatformInfo instance.<P>
+<P>
+
+
+<HR>
+<A NAME="wxplatforminfogetendianness"></A>
+<H3>wxPlatformInfo::GetEndianness</H3>
+<P>
+<B>static wxEndianness</B> <B>GetEndianness</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>end</I>)<P>
+Converts the given string to a wxEndianness enum value or to
+wxENDIAN_INVALID if the given string is not a valid endianness string
+(i.e. does not contain nor <TT>little</TT> nor <TT>big</TT> strings).<P>
+<B>wxEndianness</B> <B>GetEndianness</B>() <B>const</B><P>
+Returns the endianness ID of this wxPlatformInfo instance.<P>
+
+<HR>
+<A NAME="wxplatforminfogetendiannessname"></A>
+<H3>wxPlatformInfo::GetEndiannessName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetEndiannessName</B>(<B>wxEndianness </B><I>end</I>)<P>
+Returns name for the given wxEndianness enumeration value.<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetEndiannessName</B>() <B>const</B><P>
+Returns the name for the endianness of this wxPlatformInfo instance.<P>
+<P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfogetosmajorversion"></A>
+<H3>wxPlatformInfo::GetOSMajorVersion</H3>
+<P>
+<B>int</B> <B>GetOSMajorVersion</B>() <B>const</B><P>
+Returns the run-time major version of the OS associated with this wxPlatformInfo instance.
+See <A HREF="wx_networkfunctions.html#wxgetosversion">wxGetOsVersion</A> for more info.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxplatforminfo.html#wxplatforminfocheckosversion">CheckOSVersion</A><P>
+
+
+<HR>
+<A NAME="wxplatforminfogetosminorversion"></A>
+<H3>wxPlatformInfo::GetOSMinorVersion</H3>
+<P>
+<B>int</B> <B>GetOSMinorVersion</B>() <B>const</B><P>
+Returns the run-time minor version of the OS associated with this wxPlatformInfo instance.
+See <A HREF="wx_networkfunctions.html#wxgetosversion">wxGetOsVersion</A> for more info.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxplatforminfo.html#wxplatforminfocheckosversion">CheckOSVersion</A><P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfogetoperatingsystemfamilyname"></A>
+<H3>wxPlatformInfo::GetOperatingSystemFamilyName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetOperatingSystemFamilyName</B>(<B>wxOperatingSystemId </B><I>os</I>)<P>
+Returns the operating system family name for the given wxOperatingSystemId enumeration value:
+<TT>Unix</TT> for wxOS_UNIX, <TT>Macintosh</TT> for wxOS_MAC, <TT>Windows</TT> for wxOS_WINDOWS,
+<TT>DOS</TT> for wxOS_DOS, <TT>OS/2</TT> for wxOS_OS2.<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetOperatingSystemFamilyName</B>() <B>const</B><P>
+Returns the operating system family name of the OS associated with this wxPlatformInfo instance.<P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfogetoperatingsystemid"></A>
+<H3>wxPlatformInfo::GetOperatingSystemId</H3>
+<P>
+<B>static wxOperatingSystemId</B> <B>GetOperatingSystemId</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Converts the given string to a wxOperatingSystemId enum value or to
+wxOS_UNKNOWN if the given string is not a valid operating system name.<P>
+<B>wxOperatingSystemId</B> <B>GetOperatingSystemId</B>() <B>const</B><P>
+Returns the operating system ID of this wxPlatformInfo instance.<P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfogetoperatingsystemidname"></A>
+<H3>wxPlatformInfo::GetOperatingSystemIdName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetOperatingSystemIdName</B>(<B>wxOperatingSystemId </B><I>os</I>)<P>
+Returns the name for the given operating system ID value. This can be a long name
+(e.g. <TT>Microsoft Windows NT</TT>); use <A HREF="wx_wxplatforminfo.html#wxplatforminfogetoperatingsystemfamilyname">GetOperatingSystemFamilyName</A> to
+retrieve a short, generic name.<P>
+
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetOperatingSystemIdName</B>() <B>const</B><P>
+Returns the operating system name of the OS associated with this wxPlatformInfo instance.<P>
+<P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfogetportid"></A>
+<H3>wxPlatformInfo::GetPortId</H3>
+<P>
+<B>static wxPortId</B> <B>GetPortId</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>portname</I>)<P>
+Converts the given string to a wxWidgets port ID value or to wxPORT_UNKNOWN if
+the given string does not match any of the wxWidgets canonical name ports ("wxGTK", "wxMSW", etc)
+nor any of the short wxWidgets name ports ("gtk", "msw", etc).<P>
+<B>wxPortId</B> <B>GetPortId</B>() <B>const</B><P>
+Returns the wxWidgets port ID associated with this wxPlatformInfo instance.<P>
+
+<HR>
+<A NAME="wxplatforminfogetportidname"></A>
+<H3>wxPlatformInfo::GetPortIdName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPortIdName</B>(<B>wxPortId </B><I>port</I>, <B>bool </B><I>usingUniversal</I>)<P>
+Returns the name of the given wxWidgets port ID value. The <I>usingUniversal</I>
+argument specifies whether the port is in its native or wxUniversal variant.<P>
+The returned string always starts with the "wx" prefix and is a mixed-case
+string.<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPortIdName</B>() <B>const</B><P>
+Returns the name of the wxWidgets port ID associated with this wxPlatformInfo instance.<P>
+<P>
+
+
+<HR>
+<A NAME="wxplatforminfogetportidshortname"></A>
+<H3>wxPlatformInfo::GetPortIdShortName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPortIdShortName</B>(<B>wxPortId </B><I>port</I>, <B>bool </B><I>usingUniversal</I>)<P>
+Returns the short name of the given wxWidgets port ID value. The
+<I>usingUniversal</I> argument specifies whether the port is in its native or
+wxUniversal variant.<P>
+The returned string does not start with the "wx" prefix and is always lower
+case.<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPortIdShortName</B>() <B>const</B><P>
+Returns the short name of the wxWidgets port ID associated with this wxPlatformInfo instance.<P>
+<P>
+
+
+<HR>
+<A NAME="wxplatforminfogettoolkitmajorversion"></A>
+<H3>wxPlatformInfo::GetToolkitMajorVersion</H3>
+<P>
+<B>int</B> <B>GetToolkitMajorVersion</B>() <B>const</B><P>
+Returns the run-time major version of the toolkit associated with this wxPlatformInfo instance.
+Note that if <A HREF="wx_wxplatforminfo.html#wxplatforminfogetportid">GetPortId</A> returns wxPORT_BASE, then this value is zero (unless externally modified with <A HREF="wx_wxplatforminfo.html#wxplatforminfosettoolkitversion">SetToolkitVersion</A>); that is, no native toolkit is in use.<P>
+See <A HREF="wx_wxapptraits.html#wxapptraitsgettoolkitversion">wxAppTraits::GetToolkitVersion</A> for more info.<P>
+
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxplatforminfo.html#wxplatforminfochecktoolkitversion">CheckToolkitVersion</A><P>
+
+
+<HR>
+<A NAME="wxplatforminfogettoolkitminorversion"></A>
+<H3>wxPlatformInfo::GetToolkitMinorVersion</H3>
+<P>
+<B>int</B> <B>GetToolkitMinorVersion</B>() <B>const</B><P>
+Returns the run-time minor version of the toolkit associated with this wxPlatformInfo instance.
+Note that if <A HREF="wx_wxplatforminfo.html#wxplatforminfogetportid">GetPortId</A> returns wxPORT_BASE, then this value is zero (unless externally modified with <A HREF="wx_wxplatforminfo.html#wxplatforminfosettoolkitversion">SetToolkitVersion</A>); that is, no native toolkit is in use.<P>
+See <A HREF="wx_wxapptraits.html#wxapptraitsgettoolkitversion">wxAppTraits::GetToolkitVersion</A> for more info.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxplatforminfo.html#wxplatforminfochecktoolkitversion">CheckToolkitVersion</A><P>
+<P>
+
+
+<HR>
+<A NAME="wxplatforminfoisok"></A>
+<H3>wxPlatformInfo::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns <TT>true</TT> if this instance is fully initialized with valid values.<P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfoisusinguniversalwidgets"></A>
+<H3>wxPlatformInfo::IsUsingUniversalWidgets</H3>
+<P>
+<B>bool</B> <B>IsUsingUniversalWidgets</B>() <B>const</B><P>
+Returns <TT>true</TT> if this wxPlatformInfo describes wxUniversal build.<P>
+
+
+<HR>
+<A NAME="wxplatforminfosetarchitecture"></A>
+<H3>wxPlatformInfo::SetArchitecture</H3>
+<P>
+<B>void</B> <B>SetArchitecture</B>(<B>wxArchitecture </B><I>n</I>)<P>
+Sets the architecture enum value associated with this wxPlatformInfo instance.<P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfosetendianness"></A>
+<H3>wxPlatformInfo::SetEndianness</H3>
+<P>
+<B>void</B> <B>SetEndianness</B>(<B>wxEndianness </B><I>n</I>)<P>
+Sets the endianness enum value associated with this wxPlatformInfo instance.<P>
+
+
+<HR>
+<A NAME="wxplatforminfosetosversion"></A>
+<H3>wxPlatformInfo::SetOSVersion</H3>
+<P>
+<B>void</B> <B>SetOSVersion</B>(<B>int </B><I>major</I>, <B>int </B><I>minor</I>)<P>
+Sets the version of the operating system associated with this wxPlatformInfo instance.<P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfosetoperatingsystemid"></A>
+<H3>wxPlatformInfo::SetOperatingSystemId</H3>
+<P>
+<B>void</B> <B>SetOperatingSystemId</B>(<B>wxOperatingSystemId </B><I>n</I>)<P>
+Sets the operating system associated with this wxPlatformInfo instance.<P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfosetportid"></A>
+<H3>wxPlatformInfo::SetPortId</H3>
+<P>
+<B>void</B> <B>SetPortId</B>(<B>wxPortId </B><I>n</I>)<P>
+Sets the wxWidgets port ID associated with this wxPlatformInfo instance.<P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfosettoolkitversion"></A>
+<H3>wxPlatformInfo::SetToolkitVersion</H3>
+<P>
+<B>void</B> <B>SetToolkitVersion</B>(<B>int </B><I>major</I>, <B>int </B><I>minor</I>)<P>
+Sets the version of the toolkit associated with this wxPlatformInfo instance.<P>
+<P>
+
+<HR>
+<A NAME="wxplatforminfooperatorunknown"></A>
+<H3>wxPlatformInfo::operator!=</H3>
+<P>
+<B>bool</B> <B>operator!=</B>(<B>const <A HREF="wx_wxplatforminfo.html#wxplatforminfo">wxPlatformInfo</A>& </B></B><I>t</I>) <B>const</B><P>
+Inequality operator. Tests all class' internal variables.<P>
+
+
+<HR>
+<A NAME="wxplatforminfooperatorequal"></A>
+<H3>wxPlatformInfo::operator==</H3>
+<P>
+<B>bool</B> <B>operator==</B>(<B>const <A HREF="wx_wxplatforminfo.html#wxplatforminfo">wxPlatformInfo</A>& </B></B><I>t</I>) <B>const</B><P>
+Equality operator. Tests all class' internal variables.<P>
+
+</FONT></BODY></HTML>

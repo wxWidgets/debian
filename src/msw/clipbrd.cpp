@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        clipbrd.cpp
+// Name:        src/msw/clipbrd.cpp
 // Purpose:     Clipboard functionality
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: clipbrd.cpp,v 1.64.2.1 2006/03/09 13:59:31 VZ Exp $
+// RCS-ID:      $Id: clipbrd.cpp 43884 2006-12-09 19:49:40Z PC $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 // headers
 // ---------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "clipbrd.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -30,6 +26,8 @@
 
 #if wxUSE_CLIPBOARD
 
+#include "wx/clipbrd.h"
+
 #ifndef WX_PRECOMP
     #include "wx/object.h"
     #include "wx/event.h"
@@ -38,14 +36,14 @@
     #include "wx/bitmap.h"
     #include "wx/utils.h"
     #include "wx/intl.h"
+    #include "wx/log.h"
+    #include "wx/dataobj.h"
 #endif
 
 #if wxUSE_METAFILE
     #include "wx/metafile.h"
 #endif
 
-#include "wx/log.h"
-#include "wx/clipbrd.h"
 
 #include <string.h>
 
@@ -59,10 +57,6 @@
 // wxDataObject is tied to OLE/drag and drop implementation, therefore so are
 // the functions using wxDataObject in wxClipboard
 //#define wxUSE_DATAOBJ wxUSE_DRAG_AND_DROP
-
-#if wxUSE_DATAOBJ
-    #include "wx/dataobj.h"
-#endif
 
 #if wxUSE_OLE && !defined(__WXWINCE__)
     // use OLE clipboard
@@ -298,8 +292,8 @@ bool wxSetClipboardData(wxDataFormat dataFormat,
                 handle = SetClipboardData(dataFormat, hGlobalMemory);
                 break;
             }
-            // Only tested with non-Unicode, Visual C++ 6.0 so far
-#if defined(__VISUALC__) && !defined(UNICODE)
+            // Only tested with Visual C++ 6.0 so far
+#if defined(__VISUALC__)
         case wxDF_HTML:
             {
                 char* html = (char *)data;
@@ -336,19 +330,19 @@ bool wxSetClipboardData(wxDataFormat dataFormat,
                 // string when you overwrite it so you follow up with code to replace
                 // the 0 appended at the end with a '\r'...
                 char *ptr = strstr(buf, "StartHTML");
-                wsprintf(ptr+10, "%08u", strstr(buf, "<html>") - buf);
+                sprintf(ptr+10, "%08u", strstr(buf, "<html>") - buf);
                 *(ptr+10+8) = '\r';
 
                 ptr = strstr(buf, "EndHTML");
-                wsprintf(ptr+8, "%08u", strlen(buf));
+                sprintf(ptr+8, "%08u", strlen(buf));
                 *(ptr+8+8) = '\r';
 
                 ptr = strstr(buf, "StartFragment");
-                wsprintf(ptr+14, "%08u", strstr(buf, "<!--StartFrag") - buf);
+                sprintf(ptr+14, "%08u", strstr(buf, "<!--StartFrag") - buf);
                 *(ptr+14+8) = '\r';
 
                 ptr = strstr(buf, "EndFragment");
-                wsprintf(ptr+12, "%08u", strstr(buf, "<!--EndFrag") - buf);
+                sprintf(ptr+12, "%08u", strstr(buf, "<!--EndFrag") - buf);
                 *(ptr+12+8) = '\r';
 
                 // Now you have everything in place ready to put on the
@@ -529,22 +523,19 @@ bool wxGetClipboardFormatName(wxDataFormat dataFormat,
 
 IMPLEMENT_DYNAMIC_CLASS(wxClipboard, wxObject)
 
-// the last object which we put on the clipboard
-static IDataObject *gs_LastDataObject = NULL;
-
 wxClipboard::wxClipboard()
 {
 #if wxUSE_OLE_CLIPBOARD
     wxOleInitialize();
 #endif
 
-    m_clearOnExit = false;
+    m_lastDataObject = NULL;
     m_isOpened = false;
 }
 
 wxClipboard::~wxClipboard()
 {
-    if ( m_clearOnExit )
+    if ( m_lastDataObject )
     {
         Clear();
     }
@@ -557,17 +548,19 @@ wxClipboard::~wxClipboard()
 void wxClipboard::Clear()
 {
 #if wxUSE_OLE_CLIPBOARD
-    if ( gs_LastDataObject )
+    if (m_lastDataObject)
     {
-        if ( OleIsCurrentClipboard(gs_LastDataObject) == S_OK )
+        // don't touch data set by other applications
+        HRESULT hr = OleIsCurrentClipboard(m_lastDataObject);
+        if (S_OK == hr)
         {
-            HRESULT hr = OleSetClipboard(NULL);
+            hr = OleSetClipboard(NULL);
             if ( FAILED(hr) )
             {
                 wxLogApiError(wxT("OleSetClipboard(NULL)"), hr);
             }
         }
-        gs_LastDataObject = NULL;
+        m_lastDataObject = NULL;
     }
 #endif // wxUSE_OLE_CLIPBOARD
 }
@@ -575,18 +568,24 @@ void wxClipboard::Clear()
 bool wxClipboard::Flush()
 {
 #if wxUSE_OLE_CLIPBOARD
-    if ( gs_LastDataObject && OleIsCurrentClipboard(gs_LastDataObject) == S_OK )
+    if (m_lastDataObject)
     {
-        HRESULT hr = OleFlushClipboard();
-        if ( FAILED(hr) )
+        // don't touch data set by other applications
+        HRESULT hr = OleIsCurrentClipboard(m_lastDataObject);
+        m_lastDataObject = NULL;
+        if (S_OK == hr)
         {
-            wxLogApiError(wxT("OleFlushClipboard"), hr);
+            hr = OleFlushClipboard();
+            if ( FAILED(hr) )
+            {
+                wxLogApiError(wxT("OleFlushClipboard"), hr);
 
-            return false;
+                return false;
+            }
+            return true;
         }
     }
-    gs_LastDataObject = NULL;
-    return true;
+    return false;
 #else // !wxUSE_OLE_CLIPBOARD
     return false;
 #endif // wxUSE_OLE_CLIPBOARD/!wxUSE_OLE_CLIPBOARD
@@ -639,10 +638,11 @@ bool wxClipboard::AddData( wxDataObject *data )
         return false;
     }
 
-    // used to track whether the data in the clipboard is still this data
-    // otherwise don't call either OleSetClipboard(NULL) nor 
-    // OleFlushClipboard() as it will interfere with other applications
-    gs_LastDataObject = data->GetInterface();
+    // we have to call either OleSetClipboard(NULL) or OleFlushClipboard() when
+    // using OLE clipboard when the app terminates - by default, we call
+    // OleSetClipboard(NULL) which won't waste RAM, but the app can call
+    // wxClipboard::Flush() to change this
+    m_lastDataObject = data->GetInterface();
 
     // we have a problem here because we should delete wxDataObject, but we
     // can't do it because IDataObject which we just gave to the clipboard
@@ -650,12 +650,6 @@ bool wxClipboard::AddData( wxDataObject *data )
     // counted and so doesn't suffer from such problem, so we release it now
     // and tell it to delete wxDataObject when it is deleted itself.
     data->SetAutoDelete();
-
-    // we have to call either OleSetClipboard(NULL) or OleFlushClipboard() when
-    // using OLE clipboard when the app terminates - by default, we call
-    // OleSetClipboard(NULL) which won't waste RAM, but the app can call
-    // wxClipboard::Flush() to chaneg this
-    m_clearOnExit = true;
 
     return true;
 #elif wxUSE_DATAOBJ
@@ -935,4 +929,3 @@ bool wxClipboard::GetData( wxDataObject& data )
 }
 
 #endif // wxUSE_CLIPBOARD
-

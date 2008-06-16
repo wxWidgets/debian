@@ -1,0 +1,101 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTreeItemData</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtreeitemdata"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtreeevent.html#wxtreeevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxupdateuievent.html#wxupdateuievent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTreeItemData</H2>
+<P>
+wxTreeItemData is some (arbitrary) user class associated with some item. The
+main advantage of having this class is that wxTreeItemData objects are
+destroyed automatically by the tree and, as this class has virtual destructor,
+it means that the memory and any other resources associated with a tree item
+will be automatically freed when it is deleted. Note that we don't use wxObject
+as the base class for wxTreeItemData because the size of this class is
+critical: in many applications, each tree leaf will have wxTreeItemData
+associated with it and the number of leaves may be quite big.<P>
+Also please note that because the objects of this class are deleted by the tree
+using the operator <TT>delete</TT>, they must always be allocated on the heap
+using <TT>new</TT>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxclientdata.html#wxclientdata">wxClientData</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/treectrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtreectrl.html#wxtreectrl">wxTreeCtrl</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxtreeitemdatactor">wxTreeItemData::wxTreeItemData</A><BR>
+<A HREF="#wxtreeitemdatadtor">wxTreeItemData::~wxTreeItemData</A><BR>
+<A HREF="#wxtreeitemdatagetid">wxTreeItemData::GetId</A><BR>
+<A HREF="#wxtreeitemdatasetid">wxTreeItemData::SetId</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtreeitemdatactor"></A>
+<H3>wxTreeItemData::wxTreeItemData</H3>
+<P>
+<B></B> <B>wxTreeItemData</B>()<P>
+Default constructor.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxPython version of this constructor optionally
+accepts any Python object as a parameter.  This object is then
+associated with the tree item using the wxTreeItemData as a
+container.<P>
+In addition, the following methods are added in wxPython for accessing
+the object:<P>
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetData()</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a reference to the Python Object
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>SetData(obj)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Associates a new Python Object with the
+wxTreeItemData
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl the constructor accepts as parameter an optional scalar,
+ and stores it as client data. You may retrieve this data by calling
+ <B>GetData()</B>, and set it by calling <B>SetData( data ).</B>
+<P>
+
+<HR>
+<A NAME="wxtreeitemdatadtor"></A>
+<H3>wxTreeItemData::~wxTreeItemData</H3>
+<P>
+<B>void</B> <B>~wxTreeItemData</B>()<P>
+Virtual destructor.<P>
+
+<HR>
+<A NAME="wxtreeitemdatagetid"></A>
+<H3>wxTreeItemData::GetId</H3>
+<P>
+<B>const <A HREF="wx_wxtreeitemid.html#wxtreeitemid">wxTreeItemId</A>&</B> </B> <B>GetId</B>()<P>
+Returns the item associated with this node.<P>
+
+<HR>
+<A NAME="wxtreeitemdatasetid"></A>
+<H3>wxTreeItemData::SetId</H3>
+<P>
+<B>void</B> <B>SetId</B>(<B>const <A HREF="wx_wxtreeitemid.html#wxtreeitemid">wxTreeItemId</A>&</B></B><I> id</I>)<P>
+Sets the item associated with this node.<P>
+
+
+</FONT></BODY></HTML>

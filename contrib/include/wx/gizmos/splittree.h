@@ -6,17 +6,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     8/7/2000
-// RCS-ID:      $Id: splittree.h,v 1.12 2004/06/08 19:27:28 ABX Exp $
+// RCS-ID:      $Id: splittree.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_SPLITTREE_H_
 #define _WX_SPLITTREE_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "splittree.h"
-#endif
 
 #include "wx/gizmos/gizmos.h"
 

@@ -1,15 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        gtk/dcclient.cpp
+// Name:        src/gtk/dcclient.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dcclient.cpp,v 1.204 2005/08/17 21:40:44 MR Exp $
+// RCS-ID:      $Id: dcclient.cpp 45895 2007-05-08 20:10:47Z RD $
 // Copyright:   (c) 1998 Robert Roebling, Chris Breeze
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "dcclient.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -19,20 +15,23 @@
 #endif
 
 #include "wx/dcclient.h"
-#include "wx/dcmemory.h"
-#include "wx/image.h"
-#include "wx/module.h"
-#include "wx/log.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/window.h"
+    #include "wx/log.h"
+    #include "wx/dcmemory.h"
+    #include "wx/math.h" // for floating-point functions
+    #include "wx/image.h"
+    #include "wx/module.h"
+#endif
+
 #include "wx/fontutil.h"
+#include "wx/scrolwin.h"
 
 #include "wx/gtk/win_gtk.h"
+#include "wx/gtk/private.h"
 
-#include "wx/math.h" // for floating-point functions
-
-#include <gdk/gdk.h>
 #include <gdk/gdkx.h>
-#include <gdk/gdkprivate.h>
-#include <gtk/gtk.h>
 
 //-----------------------------------------------------------------------------
 // local defines
@@ -82,6 +81,7 @@ static inline double DegToRad(double deg) { return (deg * M_PI) / 180.0; }
 
 #include "gdk/gdkprivate.h"
 
+static
 void gdk_wx_draw_bitmap(GdkDrawable  *drawable,
                         GdkGC        *gc,
                         GdkDrawable  *src,
@@ -92,11 +92,10 @@ void gdk_wx_draw_bitmap(GdkDrawable  *drawable,
                         gint         width,
                         gint         height)
 {
-    g_return_if_fail (drawable != NULL);
-    g_return_if_fail (src != NULL);
-    g_return_if_fail (gc != NULL);
+    wxCHECK_RET( drawable, _T("NULL drawable in gdk_wx_draw_bitmap") );
+    wxCHECK_RET( src, _T("NULL src in gdk_wx_draw_bitmap") );
+    wxCHECK_RET( gc, _T("NULL gc in gdk_wx_draw_bitmap") );
 
-#ifdef __WXGTK20__
     gint src_width, src_height;
     gdk_drawable_get_size(src, &src_width, &src_height);
     if (width == -1) width = src_width;
@@ -110,33 +109,6 @@ void gdk_wx_draw_bitmap(GdkDrawable  *drawable,
                 width, height,
                 0, 0,
                 1 );
-#else
-    GdkWindowPrivate *drawable_private;
-    GdkWindowPrivate *src_private;
-    GdkGCPrivate *gc_private;
-
-    drawable_private = (GdkWindowPrivate*) drawable;
-    src_private = (GdkWindowPrivate*) src;
-    if (drawable_private->destroyed || src_private->destroyed)
-        return;
-
-    gint src_width = src_private->width;
-    gint src_height = src_private->height;
-
-    gc_private = (GdkGCPrivate*) gc;
-
-    if (width == -1) width = src_width;
-    if (height == -1) height = src_height;
-
-    XCopyPlane( drawable_private->xdisplay,
-                src_private->xwindow,
-                drawable_private->xwindow,
-                gc_private->xgc,
-                xsrc, ysrc,
-                width, height,
-                xdest, ydest,
-                1 );
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -203,7 +175,7 @@ static void wxCleanUpGCPool()
     for (int i = 0; i < wxGCPoolSize; i++)
     {
         if (wxGCPool[i].m_gc)
-            gdk_gc_unref( wxGCPool[i].m_gc );
+            g_object_unref (wxGCPool[i].m_gc);
     }
 
     free(wxGCPool);
@@ -292,16 +264,14 @@ wxWindowDC::wxWindowDC()
     m_isMemDC = false;
     m_isScreenDC = false;
     m_owner = (wxWindow *)NULL;
-#ifdef __WXGTK20__
     m_context = (PangoContext *)NULL;
     m_layout = (PangoLayout *)NULL;
     m_fontdesc = (PangoFontDescription *)NULL;
-#endif
 }
 
 wxWindowDC::wxWindowDC( wxWindow *window )
 {
-    wxASSERT_MSG( window, wxT("DC needs a window") );
+    wxCHECK_RET( window, wxT("DC needs a window") );
 
     m_penGC = (GdkGC *) NULL;
     m_brushGC = (GdkGC *) NULL;
@@ -326,11 +296,9 @@ wxWindowDC::wxWindowDC( wxWindow *window )
 
     wxASSERT_MSG( widget, wxT("DC needs a widget") );
 
-#ifdef __WXGTK20__
     m_context = window->GtkGetPangoDefaultContext();
     m_layout = pango_layout_new( m_context );
     m_fontdesc = pango_font_description_copy( widget->style->font_desc );
-#endif
 
     GtkPizza *pizza = GTK_PIZZA( widget );
     m_window = pizza->bin_window;
@@ -356,18 +324,25 @@ wxWindowDC::wxWindowDC( wxWindow *window )
        standard (as e.g. wxStatusBar) */
 
     m_owner = window;
+    
+    if (m_owner && m_owner->m_wxwindow && (m_owner->GetLayoutDirection() == wxLayout_RightToLeft))
+    {
+        // reverse sense
+        m_signX = -1;
+
+        // origin in the upper right corner
+        m_deviceOriginX = m_owner->GetClientSize().x;
+    }
 }
 
 wxWindowDC::~wxWindowDC()
 {
     Destroy();
 
-#ifdef __WXGTK20__
     if (m_layout)
-        g_object_unref( G_OBJECT( m_layout ) );
+        g_object_unref (m_layout);
     if (m_fontdesc)
         pango_font_description_free( m_fontdesc );
-#endif
 }
 
 void wxWindowDC::SetUpDC()
@@ -402,7 +377,11 @@ void wxWindowDC::SetUpDC()
     /* background colour */
     m_backgroundBrush = *wxWHITE_BRUSH;
     m_backgroundBrush.GetColour().CalcPixel( m_cmap );
-    GdkColor *bg_col = m_backgroundBrush.GetColour().GetColor();
+#ifdef __WXGTK24__
+    const GdkColor *bg_col = m_backgroundBrush.GetColour().GetColor();
+#else
+          GdkColor *bg_col = m_backgroundBrush.GetColour().GetColor();
+#endif
 
     /* m_textGC */
     m_textForegroundColour.CalcPixel( m_cmap );
@@ -412,6 +391,8 @@ void wxWindowDC::SetUpDC()
     gdk_gc_set_background( m_textGC, m_textBackgroundColour.GetColor() );
 
     gdk_gc_set_fill( m_textGC, GDK_SOLID );
+    
+    gdk_gc_set_colormap( m_textGC, m_cmap );
 
     /* m_penGC */
     m_pen.GetColour().CalcPixel( m_cmap );
@@ -542,10 +523,10 @@ void wxWindowDC::DoDrawArc( wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2,
         radius1 = 0.0;
         radius2 = 360.0;
     }
-    else
-    if (radius == 0.0)
+    else if ( wxIsNullDouble(radius) )
     {
-        radius1 = radius2 = 0.0;
+        radius1 =
+        radius2 = 0.0;
     }
     else
     {
@@ -603,8 +584,11 @@ void wxWindowDC::DoDrawArc( wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2,
         {
             gdk_draw_arc( m_window, m_penGC, FALSE, xxc-r, yyc-r, 2*r,2*r, alpha1, alpha2 );
 
-            gdk_draw_line( m_window, m_penGC, xx1, yy1, xxc, yyc );
-            gdk_draw_line( m_window, m_penGC, xxc, yyc, xx2, yy2 );
+            if ((m_brush.GetStyle() != wxTRANSPARENT) && (alpha2 - alpha1 != 360*64))
+            {
+                gdk_draw_line( m_window, m_penGC, xx1, yy1, xxc, yyc );
+                gdk_draw_line( m_window, m_penGC, xxc, yyc, xx2, yy2 );
+            }
         }
     }
 
@@ -691,28 +675,31 @@ void wxWindowDC::DoDrawLines( int n, wxPoint points[], wxCoord xoffset, wxCoord 
     if (m_pen.GetStyle() == wxTRANSPARENT) return;
     if (n <= 0) return;
 
-    GdkPoint *gpts = new GdkPoint[n];
-    if (! gpts)
-    {
-        wxFAIL_MSG( wxT("Cannot allocate PolyLine") );
-        return;
-    }
+    //Check, if scaling is necessary
+    const bool doScale =
+        xoffset != 0 || yoffset != 0 || XLOG2DEV(10) != 10 || YLOG2DEV(10) != 10;
+
+    // GdkPoint and wxPoint have the same memory layout, so we can cast one to the other
+    GdkPoint* gpts = reinterpret_cast<GdkPoint*>(points);
+
+    if (doScale)
+        gpts = new GdkPoint[n];
 
     for (int i = 0; i < n; i++)
     {
-        wxCoord x1 = XLOG2DEV(points[i].x + xoffset);
-        wxCoord y1 = YLOG2DEV(points[i].y + yoffset);
-
-        CalcBoundingBox( x1 + xoffset, y1 + yoffset );
-
-        gpts[i].x = x1;
-        gpts[i].y = y1;
+        if (doScale)
+        {
+            gpts[i].x = XLOG2DEV(points[i].x + xoffset);
+            gpts[i].y = YLOG2DEV(points[i].y + yoffset);
+        }
+        CalcBoundingBox(points[i].x + xoffset, points[i].y + yoffset);
     }
 
     if (m_window)
         gdk_draw_lines( m_window, m_penGC, gpts, n);
 
-    delete[] gpts;
+    if (doScale)
+        delete[] gpts;
 }
 
 void wxWindowDC::DoDrawPolygon( int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset, int WXUNUSED(fillStyle) )
@@ -721,14 +708,25 @@ void wxWindowDC::DoDrawPolygon( int n, wxPoint points[], wxCoord xoffset, wxCoor
 
     if (n <= 0) return;
 
-    GdkPoint *gdkpoints = new GdkPoint[n+1];
+    //Check, if scaling is necessary
+    const bool doScale =
+        xoffset != 0 || yoffset != 0 || XLOG2DEV(10) != 10 || YLOG2DEV(10) != 10;
+
+    // GdkPoint and wxPoint have the same memory layout, so we can cast one to the other
+    GdkPoint* gdkpoints = reinterpret_cast<GdkPoint*>(points);
+
+    if (doScale)
+        gdkpoints = new GdkPoint[n];
+
     int i;
     for (i = 0 ; i < n ; i++)
     {
-        gdkpoints[i].x = XLOG2DEV(points[i].x + xoffset);
-        gdkpoints[i].y = YLOG2DEV(points[i].y + yoffset);
-
-        CalcBoundingBox( points[i].x + xoffset, points[i].y + yoffset );
+        if (doScale)
+        {
+            gdkpoints[i].x = XLOG2DEV(points[i].x + xoffset);
+            gdkpoints[i].y = YLOG2DEV(points[i].y + yoffset);
+        }
+        CalcBoundingBox(points[i].x + xoffset, points[i].y + yoffset);
     }
 
     if (m_window)
@@ -786,7 +784,8 @@ void wxWindowDC::DoDrawPolygon( int n, wxPoint points[], wxCoord xoffset, wxCoor
         }
     }
 
-    delete[] gdkpoints;
+    if (doScale)
+        delete[] gdkpoints;
 }
 
 void wxWindowDC::DoDrawRectangle( wxCoord x, wxCoord y, wxCoord width, wxCoord height )
@@ -844,7 +843,36 @@ void wxWindowDC::DoDrawRectangle( wxCoord x, wxCoord y, wxCoord width, wxCoord h
         }
 
         if (m_pen.GetStyle() != wxTRANSPARENT)
-            gdk_draw_rectangle( m_window, m_penGC, FALSE, xx, yy, ww-1, hh-1 );
+        {
+#if 1
+            if ((m_pen.GetWidth() == 2) && (m_pen.GetCap() == wxCAP_ROUND) &&
+                (m_pen.GetJoin() == wxJOIN_ROUND) && (m_pen.GetStyle() == wxSOLID))
+            {
+                // Use 2 1-line rects instead
+                gdk_gc_set_line_attributes( m_penGC, 1, GDK_LINE_SOLID, GDK_CAP_ROUND, GDK_JOIN_ROUND );
+
+                if (m_signX == -1)
+                {
+                    // Different for RTL
+                    gdk_draw_rectangle( m_window, m_penGC, FALSE, xx+1, yy, ww-2, hh-2 );
+                    gdk_draw_rectangle( m_window, m_penGC, FALSE, xx, yy-1, ww, hh );
+                }
+                else
+                {
+                    gdk_draw_rectangle( m_window, m_penGC, FALSE, xx, yy, ww-2, hh-2 );
+                    gdk_draw_rectangle( m_window, m_penGC, FALSE, xx-1, yy-1, ww, hh );
+                }
+                
+                // reset
+                gdk_gc_set_line_attributes( m_penGC, 2, GDK_LINE_SOLID, GDK_CAP_ROUND, GDK_JOIN_ROUND );
+            }
+            else
+#endif
+            {
+                // Just use X11 for other cases
+                gdk_draw_rectangle( m_window, m_penGC, FALSE, xx, yy, ww-1, hh-1 );
+            }
+        }
     }
 
     CalcBoundingBox( x, y );
@@ -1047,7 +1075,7 @@ void wxWindowDC::DoDrawBitmap( const wxBitmap &bitmap,
 
     wxCHECK_RET( bitmap.Ok(), wxT("invalid bitmap") );
 
-    bool is_mono = (bitmap.GetBitmap() != NULL);
+    bool is_mono = bitmap.GetDepth() == 1;
 
     // scale/translate size and position
     int xx = XLOG2DEV(x);
@@ -1055,7 +1083,10 @@ void wxWindowDC::DoDrawBitmap( const wxBitmap &bitmap,
 
     int w = bitmap.GetWidth();
     int h = bitmap.GetHeight();
-
+    
+    if (m_owner && m_owner->GetLayoutDirection() == wxLayout_RightToLeft)
+        xx -= w;
+        
     CalcBoundingBox( x, y );
     CalcBoundingBox( x + w, y + h );
 
@@ -1088,11 +1119,14 @@ void wxWindowDC::DoDrawBitmap( const wxBitmap &bitmap,
 
     // apply mask if any
     GdkBitmap *mask = (GdkBitmap *) NULL;
-    if (use_bitmap.GetMask()) mask = use_bitmap.GetMask()->GetBitmap();
+    if (useMask && use_bitmap.GetMask())
+        mask = use_bitmap.GetMask()->GetBitmap();
+
+    GdkGC* use_gc = is_mono ? m_textGC : m_penGC;
 
     GdkBitmap *new_mask = (GdkBitmap*) NULL;
 
-    if (useMask && mask)
+    if (mask != NULL)
     {
         if (!m_currentClippingRegion.IsNull())
         {
@@ -1111,52 +1145,35 @@ void wxWindowDC::DoDrawBitmap( const wxBitmap &bitmap,
             gdk_gc_set_fill( gc, GDK_OPAQUE_STIPPLED );
             gdk_gc_set_stipple( gc, mask );
             gdk_draw_rectangle( new_mask, gc, TRUE, 0, 0, ww, hh );
-            gdk_gc_unref( gc );
+            mask = new_mask;
+            g_object_unref (gc);
         }
 
-        if (is_mono)
-        {
-            if (new_mask)
-                gdk_gc_set_clip_mask( m_textGC, new_mask );
-            else
-                gdk_gc_set_clip_mask( m_textGC, mask );
-            gdk_gc_set_clip_origin( m_textGC, xx, yy );
-        }
-        else
-        {
-            if (new_mask)
-                gdk_gc_set_clip_mask( m_penGC, new_mask );
-            else
-                gdk_gc_set_clip_mask( m_penGC, mask );
-            gdk_gc_set_clip_origin( m_penGC, xx, yy );
-        }
+        gdk_gc_set_clip_mask(use_gc, mask);
+        gdk_gc_set_clip_origin(use_gc, xx, yy);
     }
 
     // Draw XPixmap or XBitmap, depending on what the wxBitmap contains. For
     // drawing a mono-bitmap (XBitmap) we use the current text GC
     if (is_mono)
     {
-#ifdef __WXGTK20__
-        GdkPixmap *bitmap = gdk_pixmap_new( wxGetRootWindow()->window, ww, hh, -1 );
-        GdkGC *gc = gdk_gc_new( bitmap );
+        GdkPixmap *bitmap2 = gdk_pixmap_new( wxGetRootWindow()->window, ww, hh, -1 );
+        GdkGC *gc = gdk_gc_new( bitmap2 );
         gdk_gc_set_foreground( gc, m_textForegroundColour.GetColor() );
         gdk_gc_set_background( gc, m_textBackgroundColour.GetColor() );
-        gdk_wx_draw_bitmap( bitmap, gc, use_bitmap.GetBitmap(), 0, 0, 0, 0, -1, -1 );
+        gdk_wx_draw_bitmap( bitmap2, gc, use_bitmap.GetPixmap(), 0, 0, 0, 0, -1, -1 );
 
-        gdk_draw_drawable( m_window, m_textGC, bitmap, 0, 0, xx, yy, -1, -1 );
+        gdk_draw_drawable(m_window, use_gc, bitmap2, 0, 0, xx, yy, -1, -1);
 
-        gdk_bitmap_unref( bitmap );
-        gdk_gc_unref( gc );
-#else
-        gdk_wx_draw_bitmap( m_window, m_textGC, use_bitmap.GetBitmap(), 0, 0, xx, yy, -1, -1 );
-#endif
+        g_object_unref (bitmap2);
+        g_object_unref (gc);
     }
     else
     {
 #if GTK_CHECK_VERSION(2,2,0)
         if (!gtk_check_version(2,2,0) && use_bitmap.HasPixbuf())
         {
-            gdk_draw_pixbuf(m_window, m_penGC,
+            gdk_draw_pixbuf(m_window, use_gc,
                             use_bitmap.GetPixbuf(),
                             0, 0, xx, yy, -1, -1,
                             GDK_RGB_DITHER_NORMAL, xx, yy);
@@ -1164,33 +1181,22 @@ void wxWindowDC::DoDrawBitmap( const wxBitmap &bitmap,
         else
 #endif
         {
-            gdk_draw_pixmap(m_window, m_penGC,
-                            use_bitmap.GetPixmap(),
-                            0, 0, xx, yy, -1, -1);
+            gdk_draw_drawable(m_window, use_gc,
+                              use_bitmap.GetPixmap(),
+                              0, 0, xx, yy, -1, -1);
         }
     }
 
     // remove mask again if any
-    if (useMask && mask)
+    if (mask != NULL)
     {
-        if (is_mono)
-        {
-            gdk_gc_set_clip_mask( m_textGC, (GdkBitmap *) NULL );
-            gdk_gc_set_clip_origin( m_textGC, 0, 0 );
-            if (!m_currentClippingRegion.IsNull())
-                gdk_gc_set_clip_region( m_textGC, m_currentClippingRegion.GetRegion() );
-        }
-        else
-        {
-            gdk_gc_set_clip_mask( m_penGC, (GdkBitmap *) NULL );
-            gdk_gc_set_clip_origin( m_penGC, 0, 0 );
-            if (!m_currentClippingRegion.IsNull())
-                gdk_gc_set_clip_region( m_penGC, m_currentClippingRegion.GetRegion() );
-        }
+        gdk_gc_set_clip_mask(use_gc, NULL);
+        gdk_gc_set_clip_origin(use_gc, 0, 0);
+        if (!m_currentClippingRegion.IsNull())
+            gdk_gc_set_clip_region(use_gc, m_currentClippingRegion.GetRegion());
+        if (new_mask != NULL)
+            g_object_unref(new_mask);
     }
-
-    if (new_mask)
-        gdk_bitmap_unref( new_mask );
 }
 
 bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
@@ -1208,12 +1214,12 @@ bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
     if (!m_window) return false;
 
     // transform the source DC coords to the device ones
-    xsrc = source->XLOG2DEV(xsrc);
-    ysrc = source->YLOG2DEV(ysrc);
+    xsrc = source->LogicalToDeviceX(xsrc);
+    ysrc = source->LogicalToDeviceY(ysrc);
 
-    wxClientDC *srcDC = (wxClientDC*)source;
-    wxMemoryDC *memDC = (wxMemoryDC*)source;
-
+    wxMemoryDC *memDC = wxDynamicCast(source, wxMemoryDC);
+    wxBitmap selected = source->GetSelectedBitmap();
+    
     bool use_bitmap_method = false;
     bool is_mono = false;
 
@@ -1223,11 +1229,11 @@ bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
         ysrcMask = ysrc;
     }
 
-    if (srcDC->m_isMemDC)
+    if (memDC && !selected.Ok()) return false;
+    
+    if (selected.Ok())
     {
-        if (!memDC->m_selected.Ok()) return false;
-
-        is_mono = (memDC->m_selected.GetDepth() == 1);
+        is_mono = (selected.GetDepth() == 1);
 
         // we use the "XCopyArea" way to copy a memory dc into
         // a different window if the memory dc BOTH
@@ -1235,7 +1241,7 @@ bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
         // b) it is clipped
         // c) is not 1-bit
 
-        if (useMask && (memDC->m_selected.GetMask()))
+        if (useMask && (selected.GetMask()))
         {
             // we HAVE TO use the direct way for memory dcs
             // that have mask since the XCopyArea doesn't know
@@ -1250,18 +1256,14 @@ bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
             use_bitmap_method = true;
         }
         else if ((xsrc == 0) && (ysrc == 0) &&
-                 (width == memDC->m_selected.GetWidth()) &&
-                 (height == memDC->m_selected.GetHeight()))
+                 (width == selected.GetWidth()) &&
+                 (height == selected.GetHeight()))
         {
             // we SHOULD use the direct way if all of the bitmap
             // in the memory dc is copied in which case XCopyArea
             // wouldn't be able able to boost performace by reducing
             // the area to be scaled
             use_bitmap_method = true;
-        }
-        else
-        {
-            use_bitmap_method = false;
         }
     }
 
@@ -1290,8 +1292,8 @@ bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
     if (use_bitmap_method)
     {
         // scale/translate bitmap size
-        wxCoord bm_width = memDC->m_selected.GetWidth();
-        wxCoord bm_height = memDC->m_selected.GetHeight();
+        wxCoord bm_width = selected.GetWidth();
+        wxCoord bm_height = selected.GetHeight();
 
         // Get clip coords for the bitmap. If we don't
         // use wxBitmap::Rescale(), which can clip the
@@ -1312,32 +1314,31 @@ bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
         wxCoord bm_hh = YLOG2DEVREL( bm_height );
 
         // Scale bitmap if required
-        wxBitmap use_bitmap;
-        if ((memDC->m_selected.GetWidth()!= bm_ww) || ( memDC->m_selected.GetHeight()!= bm_hh))
+        wxBitmap use_bitmap = selected;
+        if ((selected.GetWidth()!= bm_ww) || ( selected.GetHeight()!= bm_hh))
         {
             // This indicates that the blitting code below will get
             // a clipped bitmap and therefore needs to move the origin
             // accordingly
             wxRegion tmp( xx,yy,ww,hh );
-            tmp.Intersect( m_currentClippingRegion );
+            if (!m_currentClippingRegion.IsNull())
+                tmp.Intersect( m_currentClippingRegion );
             tmp.GetBox(cx,cy,cw,ch);
 
             // Scale and clipped bitmap
-            use_bitmap = memDC->m_selected.Rescale(cx-xx,cy-yy,cw,ch,bm_ww,bm_hh);
-        }
-        else
-        {
-            // Don't scale bitmap
-            use_bitmap = memDC->m_selected;
+            use_bitmap = selected.Rescale(cx-xx,cy-yy,cw,ch,bm_ww,bm_hh);
         }
 
         // apply mask if any
         GdkBitmap *mask = (GdkBitmap *) NULL;
-        if (use_bitmap.GetMask()) mask = use_bitmap.GetMask()->GetBitmap();
+        if (useMask && use_bitmap.GetMask())
+            mask = use_bitmap.GetMask()->GetBitmap();
+
+        GdkGC* use_gc = is_mono ? m_textGC : m_penGC;
 
         GdkBitmap *new_mask = (GdkBitmap*) NULL;
 
-        if (useMask && mask)
+        if (mask != NULL)
         {
             if (!m_currentClippingRegion.IsNull())
             {
@@ -1358,35 +1359,15 @@ bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
                 gdk_gc_set_fill( gc, GDK_OPAQUE_STIPPLED );
                 gdk_gc_set_stipple( gc, mask );
                 gdk_draw_rectangle( new_mask, gc, TRUE, 0, 0, bm_ww, bm_hh );
-                gdk_gc_unref( gc );
+                mask = new_mask;
+                g_object_unref (gc);
             }
 
-            if (is_mono)
-            {
-                if (new_mask)
-                {
-                    gdk_gc_set_clip_mask( m_textGC, new_mask );
-                    gdk_gc_set_clip_origin( m_textGC, cx, cy );
-                }
-                else
-                {
-                    gdk_gc_set_clip_mask( m_textGC, mask );
-                    gdk_gc_set_clip_origin( m_textGC, cx-xsrcMask, cy-ysrcMask );
-                }
-            }
+            gdk_gc_set_clip_mask(use_gc, mask);
+            if (new_mask != NULL)
+                gdk_gc_set_clip_origin(use_gc, cx, cy);
             else
-            {
-                if (new_mask)
-                {
-                    gdk_gc_set_clip_mask( m_penGC, new_mask );
-                    gdk_gc_set_clip_origin( m_penGC, cx, cy );
-                }
-                else
-                {
-                    gdk_gc_set_clip_mask( m_penGC, mask );
-                    gdk_gc_set_clip_origin( m_penGC, cx-xsrcMask, cy-ysrcMask );
-                }
-            }
+                gdk_gc_set_clip_origin(use_gc, cx - xsrcMask, cy - ysrcMask);
         }
 
         // Draw XPixmap or XBitmap, depending on what the wxBitmap contains. For
@@ -1394,53 +1375,38 @@ bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
 
         if (is_mono)
         {
-#ifdef __WXGTK20__
             GdkPixmap *bitmap = gdk_pixmap_new( wxGetRootWindow()->window, bm_ww, bm_hh, -1 );
             GdkGC *gc = gdk_gc_new( bitmap );
             gdk_gc_set_foreground( gc, m_textForegroundColour.GetColor() );
             gdk_gc_set_background( gc, m_textBackgroundColour.GetColor() );
-            gdk_wx_draw_bitmap( bitmap, gc, use_bitmap.GetBitmap(), 0, 0, 0, 0, -1, -1 );
+            gdk_wx_draw_bitmap( bitmap, gc, use_bitmap.GetPixmap(), 0, 0, 0, 0, -1, -1 );
 
-            gdk_draw_drawable( m_window, m_textGC, bitmap, xsrc, ysrc, cx, cy, cw, ch );
+            gdk_draw_drawable(m_window, use_gc, bitmap, xsrc, ysrc, cx, cy, cw, ch);
 
-            gdk_bitmap_unref( bitmap );
-            gdk_gc_unref( gc );
-#else
-            // was: gdk_wx_draw_bitmap( m_window, m_textGC, use_bitmap.GetBitmap(), xsrc, ysrc, xx, yy, ww, hh );
-            gdk_wx_draw_bitmap( m_window, m_textGC, use_bitmap.GetBitmap(), xsrc, ysrc, cx, cy, cw, ch );
-#endif
+            g_object_unref (bitmap);
+            g_object_unref (gc);
         }
         else
         {
-            // was: gdk_draw_pixmap( m_window, m_penGC, use_bitmap.GetPixmap(), xsrc, ysrc, xx, yy, ww, hh );
-            gdk_draw_pixmap( m_window, m_penGC, use_bitmap.GetPixmap(), xsrc, ysrc, cx, cy, cw, ch );
+            // was: gdk_draw_drawable( m_window, m_penGC, use_bitmap.GetPixmap(), xsrc, ysrc, xx, yy, ww, hh );
+            gdk_draw_drawable(m_window, use_gc, use_bitmap.GetPixmap(), xsrc, ysrc, cx, cy, cw, ch);
         }
 
         // remove mask again if any
-        if (useMask && mask)
+        if (mask != NULL)
         {
-            if (is_mono)
-            {
-                gdk_gc_set_clip_mask( m_textGC, (GdkBitmap *) NULL );
-                gdk_gc_set_clip_origin( m_textGC, 0, 0 );
-                if (!m_currentClippingRegion.IsNull())
-                    gdk_gc_set_clip_region( m_textGC, m_currentClippingRegion.GetRegion() );
-            }
-            else
-            {
-                gdk_gc_set_clip_mask( m_penGC, (GdkBitmap *) NULL );
-                gdk_gc_set_clip_origin( m_penGC, 0, 0 );
-                if (!m_currentClippingRegion.IsNull())
-                    gdk_gc_set_clip_region( m_penGC, m_currentClippingRegion.GetRegion() );
-            }
+            gdk_gc_set_clip_mask(use_gc, NULL);
+            gdk_gc_set_clip_origin(use_gc, 0, 0);
+            if (!m_currentClippingRegion.IsNull())
+                gdk_gc_set_clip_region(use_gc, m_currentClippingRegion.GetRegion());
         }
 
         if (new_mask)
-            gdk_bitmap_unref( new_mask );
+            g_object_unref (new_mask);
     }
     else // use_bitmap_method
     {
-        if ((width != ww) || (height != hh))
+        if (selected.Ok() && ((width != ww) || (height != hh)))
         {
             // get clip coords
             wxRegion tmp( xx,yy,ww,hh );
@@ -1449,21 +1415,26 @@ bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
             tmp.GetBox(cx,cy,cw,ch);
 
             // rescale bitmap
-            wxBitmap bitmap = memDC->m_selected.Rescale( cx-xx, cy-yy, cw, ch, ww, hh );
+            wxBitmap bitmap = selected.Rescale( cx-xx, cy-yy, cw, ch, ww, hh );
 
             // draw scaled bitmap
-            // was: gdk_draw_pixmap( m_window, m_penGC, bitmap.GetPixmap(), 0, 0, xx, yy, -1, -1 );
-            gdk_draw_pixmap( m_window, m_penGC, bitmap.GetPixmap(), 0, 0, cx, cy, -1, -1 );
+            // was: gdk_draw_drawable( m_window, m_penGC, bitmap.GetPixmap(), 0, 0, xx, yy, -1, -1 );
+            gdk_draw_drawable( m_window, m_penGC, bitmap.GetPixmap(), 0, 0, cx, cy, -1, -1 );
         }
         else
         {
             // No scaling and not a memory dc with a mask either
 
+            GdkWindow* window = source->GetGDKWindow();
+            if ( !window )
+                return false;
+            
             // copy including child window contents
             gdk_gc_set_subwindow( m_penGC, GDK_INCLUDE_INFERIORS );
-            gdk_window_copy_area( m_window, m_penGC, xx, yy,
-                                  srcDC->GetWindow(),
-                                  xsrc, ysrc, width, height );
+            gdk_draw_drawable( m_window, m_penGC,
+                               window,
+                               xsrc, ysrc, xx, yy,
+                               width, height );
             gdk_gc_set_subwindow( m_penGC, GDK_CLIP_BY_CHILDREN );
         }
     }
@@ -1481,32 +1452,60 @@ void wxWindowDC::DoDrawText( const wxString &text, wxCoord x, wxCoord y )
 
     if (text.empty()) return;
 
-#ifndef __WXGTK20__
-    GdkFont *font = m_font.GetInternalFont( m_scaleY );
-
-    wxCHECK_RET( font, wxT("invalid font") );
-#endif
-
     x = XLOG2DEV(x);
     y = YLOG2DEV(y);
 
-#ifdef __WXGTK20__
     wxCHECK_RET( m_context, wxT("no Pango context") );
     wxCHECK_RET( m_layout, wxT("no Pango layout") );
     wxCHECK_RET( m_fontdesc, wxT("no Pango font description") );
 
+    gdk_pango_context_set_colormap( m_context, m_cmap );
+
     bool underlined = m_font.Ok() && m_font.GetUnderlined();
 
-#if wxUSE_UNICODE
-    const wxCharBuffer data = wxConvUTF8.cWC2MB( text );
-#else
-    const wxWCharBuffer wdata = wxConvLocal.cMB2WC( text );
-    if ( !wdata )
+    const wxCharBuffer data = wxGTK_CONV( text );
+    if ( !data )
         return;
-    const wxCharBuffer data = wxConvUTF8.cWC2MB( wdata );
-#endif
-    size_t datalen = strlen((const char*)data);
-    pango_layout_set_text( m_layout, (const char*) data, datalen);
+    size_t datalen = strlen(data);
+
+    // TODO: as soon as Pango provides a function to check at runtime its
+    //       version, we can use it to disable the underline hack for
+    //       Pango >= 1.16 as the "underline of leading/trailing spaces"
+    //       has been fixed there
+    bool needshack = underlined;
+    char *hackstring = NULL;
+
+    if (needshack)
+    {
+        // a PangoLayout which has leading/trailing spaces with underlined font
+        // is not correctly drawn by this pango version: Pango won't underline the spaces.
+        // This can be a problem; e.g. wxHTML rendering of underlined text relies on
+        // this behaviour. To workaround this problem, we use a special hack here
+        // suggested by pango maintainer Behdad Esfahbod: we prepend and append two
+        // empty space characters and give them a dummy colour attribute.
+        // This will force Pango to underline the leading/trailing spaces, too.
+
+        // need to realloc the string to prepend & append our special characters
+        hackstring = (char*)malloc((datalen+7)*sizeof(char));
+
+        // copy the leading U+200C ZERO WIDTH NON-JOINER encoded in UTF8 format
+        strcpy(hackstring, "\342\200\214");
+
+        // copy the user string
+        memcpy(&hackstring[3], data, datalen);
+
+        // copy the trailing U+200C ZERO WIDTH NON-JOINER encoded in UTF8 format
+        strcpy(&hackstring[datalen+3], "\342\200\214");
+
+        // the special characters that we added require 6 additional bytes:
+        datalen += 6;
+
+        pango_layout_set_text(m_layout, hackstring, datalen);
+    }
+    else
+    {
+        pango_layout_set_text(m_layout, data, datalen);
+    }
 
     if (underlined)
     {
@@ -1515,6 +1514,22 @@ void wxWindowDC::DoDrawText( const wxString &text, wxCoord x, wxCoord y )
         a->start_index = 0;
         a->end_index = datalen;
         pango_attr_list_insert(attrs, a);
+
+        if (needshack)
+        {
+            // dummy colour for the leading space
+            a = pango_attr_foreground_new (0x0057, 0x52A9, 0xD614);
+            a->start_index = 0;
+            a->end_index = 1;
+            pango_attr_list_insert(attrs, a);
+
+            // dummy colour for the trailing space
+            a = pango_attr_foreground_new (0x0057, 0x52A9, 0xD614);
+            a->start_index = datalen - 1;
+            a->end_index = datalen;
+            pango_attr_list_insert(attrs, a);
+        }
+
         pango_layout_set_attributes(m_layout, attrs);
         pango_attr_list_unref(attrs);
     }
@@ -1544,7 +1559,10 @@ void wxWindowDC::DoDrawText( const wxString &text, wxCoord x, wxCoord y )
          }
 
          // Draw layout.
-         gdk_draw_layout( m_window, m_textGC, x, y, m_layout );
+         if (m_owner && m_owner->GetLayoutDirection() == wxLayout_RightToLeft)
+             gdk_draw_layout( m_window, m_textGC, x-w, y, m_layout );
+         else
+             gdk_draw_layout( m_window, m_textGC, x, y, m_layout );
 
          // reset unscaled size
          pango_font_description_set_size( m_fontdesc, oldSize );
@@ -1561,8 +1579,12 @@ void wxWindowDC::DoDrawText( const wxString &text, wxCoord x, wxCoord y )
             gdk_draw_rectangle(m_window, m_textGC, TRUE, x, y, w, h);
             gdk_gc_set_foreground(m_textGC, m_textForegroundColour.GetColor());
         }
+        
         // Draw layout.
-        gdk_draw_layout( m_window, m_textGC, x, y, m_layout );
+        if (m_owner && m_owner->GetLayoutDirection() == wxLayout_RightToLeft)
+            gdk_draw_layout( m_window, m_textGC, x-w, y, m_layout );
+        else
+            gdk_draw_layout( m_window, m_textGC, x, y, m_layout );
     }
 
     if (underlined)
@@ -1574,33 +1596,13 @@ void wxWindowDC::DoDrawText( const wxString &text, wxCoord x, wxCoord y )
     wxCoord width = w;
     wxCoord height = h;
 
-#else // GTK+ 1.x
-    wxCoord width = gdk_string_width( font, text.mbc_str() );
-    wxCoord height = font->ascent + font->descent;
-
-    if ( m_backgroundMode == wxSOLID )
-    {
-        gdk_gc_set_foreground( m_textGC, m_textBackgroundColour.GetColor() );
-        gdk_draw_rectangle( m_window, m_textGC, TRUE, x, y, width, height );
-        gdk_gc_set_foreground( m_textGC, m_textForegroundColour.GetColor() );
-    }
-    gdk_draw_string( m_window, font, m_textGC, x, y + font->ascent, text.mbc_str() );
-
-    /* CMB 17/7/98: simple underline: ignores scaling and underlying
-       X font's XA_UNDERLINE_POSITION and XA_UNDERLINE_THICKNESS
-       properties (see wxXt implementation) */
-    if (m_font.GetUnderlined())
-    {
-        wxCoord ul_y = y + font->ascent;
-        if (font->descent > 0) ul_y++;
-        gdk_draw_line( m_window, m_textGC, x, ul_y, x + width, ul_y);
-    }
-#endif // GTK+ 2.0/1.x
-
     width = wxCoord(width / m_scaleX);
     height = wxCoord(height / m_scaleY);
     CalcBoundingBox (x + width, y + height);
     CalcBoundingBox (x, y);
+
+    if (hackstring)
+        free(hackstring);
 }
 
 
@@ -1610,32 +1612,23 @@ void wxWindowDC::DoDrawText( const wxString &text, wxCoord x, wxCoord y )
 
 void wxWindowDC::DoDrawRotatedText( const wxString &text, wxCoord x, wxCoord y, double angle )
 {
-    if (angle == 0.0)
+    if (!m_window || text.empty())
+        return;
+
+    wxCHECK_RET( Ok(), wxT("invalid window dc") );
+
+    if ( wxIsNullDouble(angle) )
     {
         DrawText(text, x, y);
         return;
     }
 
-    wxCHECK_RET( Ok(), wxT("invalid window dc") );
-
-    if (!m_window) return;
-
     wxCoord w;
     wxCoord h;
 
-#ifdef  __WXGTK20__
-    // implement later without GdkFont for GTK 2.0
+    // TODO: implement later without GdkFont for GTK 2.0
     GetTextExtent(text, &w, &h, NULL,NULL, &m_font);
 
-#else
-    GdkFont *font = m_font.GetInternalFont( m_scaleY );
-
-    wxCHECK_RET( font, wxT("invalid font") );
-
-    // the size of the text
-    w = gdk_string_width( font, text.mbc_str() );
-    h = font->ascent + font->descent;
-#endif
     // draw the string normally
     wxBitmap src(w, h);
     wxMemoryDC dc;
@@ -1734,28 +1727,24 @@ void wxWindowDC::DoGetTextExtent(const wxString &string,
         *externalLeading = 0;
 
     if (string.empty())
-    {
         return;
+
+    // ensure that theFont is always non-NULL
+    if ( !theFont || !theFont->Ok() )
+        theFont = wx_const_cast(wxFont *, &m_font);
+
+    // and use it if it's valid
+    if ( theFont->Ok() )
+    {
+        pango_layout_set_font_description
+        (
+            m_layout,
+            theFont->GetNativeFontInfo()->description
+        );
     }
 
-#ifdef __WXGTK20__
-    // Set new font description
-    if (theFont)
-        pango_layout_set_font_description( m_layout, theFont->GetNativeFontInfo()->description );
-
     // Set layout's text
-#if wxUSE_UNICODE
-    const wxCharBuffer data = wxConvUTF8.cWC2MB( string );
-    const char *dataUTF8 = (const char *)data;
-#else
-    const wxWCharBuffer wdata = wxConvLocal.cMB2WC( string );
-    if ( !wdata )
-        return;
-
-    const wxCharBuffer data = wxConvUTF8.cWC2MB( wdata );
-    const char *dataUTF8 = (const char *)data;
-#endif
-
+    const wxCharBuffer dataUTF8 = wxGTK_CONV_FONT(string, *theFont);
     if ( !dataUTF8 )
     {
         // hardly ideal, but what else can we do if conversion failed?
@@ -1782,54 +1771,71 @@ void wxWindowDC::DoGetTextExtent(const wxString &string,
     }
 
     // Reset old font description
-    if (theFont)
+    if (theFont->IsOk())
         pango_layout_set_font_description( m_layout, m_fontdesc );
-#else // GTK+ 1.x
-    wxFont fontToUse = m_font;
-    if (theFont)
-        fontToUse = *theFont;
-
-    GdkFont *font = fontToUse.GetInternalFont( m_scaleY );
-    if ( !font )
-        return;
-
-    if (width)
-        *width = wxCoord(gdk_string_width( font, string.mbc_str() ) / m_scaleX);
-    if (height)
-        *height = wxCoord((font->ascent + font->descent) / m_scaleY);
-    if (descent)
-        *descent = wxCoord(font->descent / m_scaleY);
-#endif // GTK+ 2/1
 }
+
+
+bool wxWindowDC::DoGetPartialTextExtents(const wxString& text,
+                                         wxArrayInt& widths) const
+{
+    const size_t len = text.length();
+    widths.Empty();
+    widths.Add(0, len);
+
+    if (text.empty())
+        return true;
+
+    // Set layout's text
+    const wxCharBuffer dataUTF8 = wxGTK_CONV_FONT(text, m_font);
+    if ( !dataUTF8 )
+    {
+        // hardly ideal, but what else can we do if conversion failed?
+        wxLogLastError(wxT("DoGetPartialTextExtents"));
+        return false;
+    }
+
+    pango_layout_set_text( m_layout, dataUTF8, strlen(dataUTF8) );
+    
+    // Calculate the position of each character based on the widths of
+    // the previous characters
+
+    // Code borrowed from Scintilla's PlatGTK
+    PangoLayoutIter *iter = pango_layout_get_iter(m_layout);
+    PangoRectangle pos;
+    pango_layout_iter_get_cluster_extents(iter, NULL, &pos);
+    size_t i = 0;
+    while (pango_layout_iter_next_cluster(iter))
+    {
+        pango_layout_iter_get_cluster_extents(iter, NULL, &pos);
+        int position = PANGO_PIXELS(pos.x);
+        widths[i++] = position;
+    }
+    while (i < len)
+        widths[i++] = PANGO_PIXELS(pos.x + pos.width);
+    pango_layout_iter_free(iter);
+
+    return true;
+}
+
 
 wxCoord wxWindowDC::GetCharWidth() const
 {
-#ifdef __WXGTK20__
     pango_layout_set_text( m_layout, "H", 1 );
     int w;
     pango_layout_get_pixel_size( m_layout, &w, NULL );
     return w;
-#else
-    GdkFont *font = m_font.GetInternalFont( m_scaleY );
-    wxCHECK_MSG( font, -1, wxT("invalid font") );
-
-    return wxCoord(gdk_string_width( font, "H" ) / m_scaleX);
-#endif
 }
 
 wxCoord wxWindowDC::GetCharHeight() const
 {
-#ifdef __WXGTK20__
-    pango_layout_set_text( m_layout, "H", 1 );
-    int h;
-    pango_layout_get_pixel_size( m_layout, NULL, &h );
-    return h;
-#else
-    GdkFont *font = m_font.GetInternalFont( m_scaleY );
-    wxCHECK_MSG( font, -1, wxT("invalid font") );
+    PangoFontMetrics *metrics = pango_context_get_metrics (m_context, m_fontdesc, pango_context_get_language(m_context));
+    wxCHECK_MSG( metrics, -1, _T("failed to get pango font metrics") );
 
-    return wxCoord((font->ascent + font->descent) / m_scaleY);
-#endif
+    wxCoord h = PANGO_PIXELS (pango_font_metrics_get_descent (metrics) +
+                pango_font_metrics_get_ascent (metrics));
+    pango_font_metrics_unref (metrics);
+    return h;
 }
 
 void wxWindowDC::Clear()
@@ -1874,7 +1880,6 @@ void wxWindowDC::SetFont( const wxFont &font )
 {
     m_font = font;
 
-#ifdef __WXGTK20__
     if (m_font.Ok())
     {
         if (m_fontdesc)
@@ -1887,14 +1892,6 @@ void wxWindowDC::SetFont( const wxFont &font )
         {
             PangoContext *oldContext = m_context;
 
-            // We might want to use the X11 context for faster
-            // rendering on screen.
-            // MR: Lets not want to do this, as this introduces libpangox dependancy.
-#if 0
-            if (m_font.GetNoAntiAliasing())
-                m_context = m_owner->GtkGetPangoX11Context();
-            else
-#endif
             m_context = m_owner->GtkGetPangoDefaultContext();
 
             // If we switch back/forth between different contexts
@@ -1903,7 +1900,7 @@ void wxWindowDC::SetFont( const wxFont &font )
             if (oldContext != m_context)
             {
                 if (m_layout)
-                    g_object_unref( G_OBJECT( m_layout ) );
+                    g_object_unref (m_layout);
 
                 m_layout = pango_layout_new( m_context );
             }
@@ -1911,7 +1908,6 @@ void wxWindowDC::SetFont( const wxFont &font )
 
         pango_layout_set_font_description( m_layout, m_fontdesc );
     }
-#endif
 }
 
 void wxWindowDC::SetPen( const wxPen &pen )
@@ -2083,7 +2079,7 @@ void wxWindowDC::SetBrush( const wxBrush &brush )
 
     if ((m_brush.GetStyle() == wxSTIPPLE) && (m_brush.GetStipple()->Ok()))
     {
-        if (m_brush.GetStipple()->GetPixmap())
+        if (m_brush.GetStipple()->GetDepth() != 1)
         {
             gdk_gc_set_fill( m_brushGC, GDK_TILED );
             gdk_gc_set_tile( m_brushGC, m_brush.GetStipple()->GetPixmap() );
@@ -2091,7 +2087,7 @@ void wxWindowDC::SetBrush( const wxBrush &brush )
         else
         {
             gdk_gc_set_fill( m_brushGC, GDK_STIPPLED );
-            gdk_gc_set_stipple( m_brushGC, m_brush.GetStipple()->GetBitmap() );
+            gdk_gc_set_stipple( m_brushGC, m_brush.GetStipple()->GetPixmap() );
         }
     }
 
@@ -2134,7 +2130,7 @@ void wxWindowDC::SetBackground( const wxBrush &brush )
 
     if ((m_backgroundBrush.GetStyle() == wxSTIPPLE) && (m_backgroundBrush.GetStipple()->Ok()))
     {
-        if (m_backgroundBrush.GetStipple()->GetPixmap())
+        if (m_backgroundBrush.GetStipple()->GetDepth() != 1)
         {
             gdk_gc_set_fill( m_bgGC, GDK_TILED );
             gdk_gc_set_tile( m_bgGC, m_backgroundBrush.GetStipple()->GetPixmap() );
@@ -2142,7 +2138,7 @@ void wxWindowDC::SetBackground( const wxBrush &brush )
         else
         {
             gdk_gc_set_fill( m_bgGC, GDK_STIPPLED );
-            gdk_gc_set_stipple( m_bgGC, m_backgroundBrush.GetStipple()->GetBitmap() );
+            gdk_gc_set_stipple( m_bgGC, m_backgroundBrush.GetStipple()->GetPixmap() );
         }
     }
 
@@ -2273,6 +2269,11 @@ void wxWindowDC::DoSetClippingRegion( wxCoord x, wxCoord y, wxCoord width, wxCoo
     rect.width = XLOG2DEVREL(width);
     rect.height = YLOG2DEVREL(height);
 
+    if (m_owner && m_owner->m_wxwindow && (m_owner->GetLayoutDirection() == wxLayout_RightToLeft))
+    {
+        rect.x -= rect.width;
+    }
+
     if (!m_currentClippingRegion.IsNull())
         m_currentClippingRegion.Intersect( rect );
     else
@@ -2368,20 +2369,36 @@ void wxWindowDC::Destroy()
     m_bgGC = (GdkGC*) NULL;
 }
 
+void wxWindowDC::SetDeviceOrigin( wxCoord x, wxCoord y )
+{
+    m_deviceOriginX = x;
+    m_deviceOriginY = y;
+    
+    ComputeScaleAndOrigin();
+}
+
+void wxWindowDC::SetAxisOrientation( bool xLeftRight, bool yBottomUp )
+{
+    m_signX = (xLeftRight ?  1 : -1);
+    m_signY = (yBottomUp  ? -1 :  1);
+    
+    if (m_owner && m_owner->m_wxwindow && (m_owner->GetLayoutDirection() == wxLayout_RightToLeft))
+        m_signX = -m_signX;        
+        
+    ComputeScaleAndOrigin();
+}
+
 void wxWindowDC::ComputeScaleAndOrigin()
 {
-    /* CMB: copy scale to see if it changes */
-    double origScaleX = m_scaleX;
-    double origScaleY = m_scaleY;
+    const wxRealPoint origScale(m_scaleX, m_scaleY);
 
     wxDC::ComputeScaleAndOrigin();
 
-    /* CMB: if scale has changed call SetPen to recalulate the line width */
-    if ((m_scaleX != origScaleX || m_scaleY != origScaleY) &&
-        (m_pen.Ok()))
+    // if scale has changed call SetPen to recalulate the line width
+    if ( wxRealPoint(m_scaleX, m_scaleY) != origScale && m_pen.Ok() )
     {
-        /* this is a bit artificial, but we need to force wxDC to think
-           the pen has changed */
+        // this is a bit artificial, but we need to force wxDC to think the pen
+        // has changed
         wxPen pen = m_pen;
         m_pen = wxNullPen;
         SetPen( pen );
@@ -2396,13 +2413,7 @@ wxSize wxWindowDC::GetPPI() const
 
 int wxWindowDC::GetDepth() const
 {
-#ifdef __WXGTK20__
     return gdk_drawable_get_depth(m_window);
-#else
-    wxFAIL_MSG(wxT("not implemented"));
-
-    return -1;
-#endif
 }
 
 
@@ -2435,11 +2446,14 @@ wxPaintDC::wxPaintDC( wxWindow *win )
          : wxClientDC( win )
 {
 #if USE_PAINT_REGION
+    if (!win)        // the base class already asserted...
+        return;
+    
     if (!win->m_clipPaintRegion)
         return;
 
     wxSize sz = win->GetSize();
-    m_paintClippingRegion = win->GetUpdateRegion();
+    m_paintClippingRegion = win->m_nativeUpdateRegion;
     wxLimitRegionToSize(m_paintClippingRegion, sz);
 
     GdkRegion *region = m_paintClippingRegion.GetRegion();
@@ -2468,7 +2482,8 @@ IMPLEMENT_DYNAMIC_CLASS(wxClientDC, wxWindowDC)
 wxClientDC::wxClientDC( wxWindow *win )
           : wxWindowDC( win )
 {
-    wxCHECK_RET( win, _T("NULL window in wxClientDC::wxClientDC") );
+    if (!win)        // the base class already asserted...
+        return;
 
 #ifdef __WXUNIVERSAL__
     wxPoint ptOrigin = win->GetClientAreaOrigin();

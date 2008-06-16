@@ -10,7 +10,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: stc.cpp.in,v 1.66.2.1 2006/03/12 06:03:51 RD Exp $
+// RCS-ID:      $Id: stc.cpp.in 44312 2007-01-25 22:59:04Z RD $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -179,7 +179,7 @@ bool wxStyledTextCtrl::Create(wxWindow *parent,
     SetCodePage(wxSTC_CP_UTF8);
 #endif
 
-    SetBestFittingSize(size);
+    SetInitialSize(size);
 
     // Reduces flicker on GTK+/X11
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
@@ -854,12 +854,7 @@ static void SetEventText(wxStyledTextEvent& evt, const char* text,
                          size_t length) {
     if(!text) return;
 
-    // The unicode conversion MUST have a null byte to terminate the
-    // string so move it into a buffer first and give it one.
-    wxMemoryBuffer buf(length+1);
-    buf.AppendData((void*)text, length);
-    buf.AppendByte(0);
-    evt.SetText(stc2wx(buf));
+    evt.SetText(stc2wx(text, length));
 }
 
 
@@ -937,10 +932,18 @@ void wxStyledTextCtrl::NotifyParent(SCNotification* _scn) {
         evt.SetEventType(wxEVT_STC_PAINTED);
         break;
 
+    case SCN_AUTOCSELECTION:
+        evt.SetEventType(wxEVT_STC_AUTOCOMP_SELECTION);
+        evt.SetListType(scn.listType);
+        SetEventText(evt, scn.text, strlen(scn.text));
+        evt.SetPosition(scn.lParam);
+        break;
+        
     case SCN_USERLISTSELECTION:
         evt.SetEventType(wxEVT_STC_USERLISTSELECTION);
         evt.SetListType(scn.listType);
         SetEventText(evt, scn.text, strlen(scn.text));
+        evt.SetPosition(scn.lParam);
         break;
 
     case SCN_URIDROPPED:
@@ -975,11 +978,7 @@ void wxStyledTextCtrl::NotifyParent(SCNotification* _scn) {
     case SCN_CALLTIPCLICK:
         evt.SetEventType(wxEVT_STC_CALLTIP_CLICK);
         break;
-
-    case SCN_AUTOCSELECTION:
-        evt.SetEventType(wxEVT_STC_AUTOCOMP_SELECTION);
-        break;
-        
+       
     default:
         return;
     }

@@ -1,0 +1,268 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxScrollEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxscrollevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxscrolledwindow.html#wxscrolledwindow"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxscrollwinevent.html#wxscrollwinevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxScrollEvent</H2>
+<P>
+A scroll event holds information about events sent from stand-alone
+<A HREF="wx_wxscrollbar.html#wxscrollbar">scrollbars</A> and <A HREF="wx_wxslider.html#wxslider">sliders</A>. Note that
+starting from wxWidgets 2.1, scrolled windows send the 
+<A HREF="wx_wxscrollwinevent.html#wxscrollwinevent">wxScrollWinEvent</A> which does not derive from
+wxCommandEvent, but from wxEvent directly - don't confuse these two kinds of
+events and use the event table macros mentioned below only for the
+scrollbar-like controls.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><BR>
+
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a scroll event, use these event handler macros to direct input to
+member functions that take a wxScrollEvent argument. You can use
+<TT>EVT_COMMAND_SCROLL...</TT> macros with window IDs for when intercepting
+scroll events from controls, or <TT>EVT_SCROLL...</TT> macros without window IDs
+for intercepting scroll events from the receiving window -- except for this,
+the macros behave exactly the same.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process all scroll events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_TOP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_TOP scroll-to-top events (minimum position).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_BOTTOM(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_BOTTOM scroll-to-bottom events (maximum position).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_LINEUP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_LINEUP line up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_LINEDOWN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_LINEDOWN line down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_PAGEUP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_PAGEUP page up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_PAGEDOWN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_PAGEDOWN page down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_THUMBTRACK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_THUMBTRACK thumbtrack events (frequent events
+sent as the user drags the thumbtrack).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_THUMBRELEASE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_THUMBRELEASE thumb release events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_CHANGED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_CHANGED end of scrolling events (MSW only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process all scroll events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_TOP(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_TOP scroll-to-top events (minimum position).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_BOTTOM(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_BOTTOM scroll-to-bottom events (maximum position).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_LINEUP(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_LINEUP line up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_LINEDOWN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_LINEDOWN line down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_PAGEUP(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_PAGEUP page up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_PAGEDOWN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_PAGEDOWN page down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_THUMBTRACK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_THUMBTRACK thumbtrack events (frequent events
+sent as the user drags the thumbtrack).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_THUMBRELEASE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_THUMBRELEASE thumb release events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_CHANGED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_CHANGED end of scrolling events (MSW only).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">The difference between <TT>EVT_SCROLL_THUMBRELEASE</TT> and <TT>EVT_SCROLL_CHANGED</TT></FONT></B><P>
+The <TT>EVT_SCROLL_THUMBRELEASE</TT> event is only emitted when actually dragging
+the thumb using the mouse and releasing it (This <TT>EVT_SCROLL_THUMBRELEASE</TT>
+event is also followed by an <TT>EVT_SCROLL_CHANGED</TT> event).<P>
+The <TT>EVT_SCROLL_CHANGED</TT> event also occurs when using the keyboard to
+change the thumb position, and when clicking next to the thumb (In all these
+cases the <TT>EVT_SCROLL_THUMBRELEASE</TT> event does not happen).<P>
+In short, the <TT>EVT_SCROLL_CHANGED</TT> event is triggered when scrolling/
+moving has finished independently of the way it had started. Please see the
+widgets sample ("Slider" page) to see the difference between <TT>
+EVT_SCROLL_THUMBRELEASE</TT> and <TT>EVT_SCROLL_CHANGED</TT> in action.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Note that unless specifying a scroll control identifier, you will need to test for scrollbar
+orientation with <A HREF="wx_wxscrollevent.html#wxscrolleventgetorientation">wxScrollEvent::GetOrientation</A>, since
+horizontal and vertical scroll events are processed using the same event handler.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxscrollbar.html#wxscrollbar">wxScrollBar</A>, <A HREF="wx_wxslider.html#wxslider">wxSlider</A>, <A HREF="wx_wxspinbutton.html#wxspinbutton">wxSpinButton</A>, <BR>
+
+<A HREF="wx_wxscrollwinevent.html#wxscrollwinevent">wxScrollWinEvent</A>, <A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxscrolleventctor">wxScrollEvent::wxScrollEvent</A><BR>
+<A HREF="#wxscrolleventgetorientation">wxScrollEvent::GetOrientation</A><BR>
+<A HREF="#wxscrolleventgetposition">wxScrollEvent::GetPosition</A><BR>
+<P>
+
+<HR>
+<A NAME="wxscrolleventctor"></A>
+<H3>wxScrollEvent::wxScrollEvent</H3>
+<P>
+<B></B> <B>wxScrollEvent</B>(<B>WXTYPE </B><I>commandType = 0</I>, <B>int </B><I>id = 0</I>, <B>int</B><I> pos = 0</I>,
+<B>int</B><I> orientation = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxscrolleventgetorientation"></A>
+<H3>wxScrollEvent::GetOrientation</H3>
+<P>
+<B>int</B> <B>GetOrientation</B>() <B>const</B><P>
+Returns wxHORIZONTAL or wxVERTICAL, depending on the orientation of the scrollbar.<P>
+
+<HR>
+<A NAME="wxscrolleventgetposition"></A>
+<H3>wxScrollEvent::GetPosition</H3>
+<P>
+<B>int</B> <B>GetPosition</B>() <B>const</B><P>
+Returns the position of the scrollbar.<P>
+
+</FONT></BODY></HTML>

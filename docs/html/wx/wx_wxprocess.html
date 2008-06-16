@@ -1,0 +1,293 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxProcess</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxprocess"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxprintpreview.html#wxprintpreview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxprocessevent.html#wxprocessevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxProcess</H2>
+<P>
+The objects of this class are used in conjunction with the
+<A HREF="wx_processfunctions.html#wxexecute">wxExecute</A> function. When a wxProcess object is passed to
+wxExecute(), its <A HREF="wx_wxprocess.html#wxprocessonterminate">OnTerminate()</A> virtual method
+is called when the process terminates. This allows the program to be
+(asynchronously) notified about the process termination and also retrieve its
+exit status which is unavailable from wxExecute() in the case of
+asynchronous execution.<P>
+Please note that if the process termination notification is processed by the
+parent, it is responsible for deleting the wxProcess object which sent it.
+However, if it is not processed, the object will delete itself and so the
+library users should only delete those objects whose notifications have been
+processed (and call <A HREF="wx_wxprocess.html#wxprocessdetach">Detach()</A> for others).<P>
+wxProcess also supports IO redirection of the child process. For this, you have
+to call its <A HREF="wx_wxprocess.html#wxprocessredirect">Redirect</A> method before passing it to
+<A HREF="wx_processfunctions.html#wxexecute">wxExecute</A>. If the child process was launched successfully,
+<A HREF="wx_wxprocess.html#wxprocessgetinputstream">GetInputStream</A>,
+<A HREF="wx_wxprocess.html#wxprocessgetoutputstream">GetOutputStream</A> and
+<A HREF="wx_wxprocess.html#wxprocessgeterrorstream">GetErrorStream</A> can then be used to retrieve
+the streams corresponding to the child process standard output, input and
+error output respectively.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this class has an additional <TT>Destroy</TT> method,
+for explicit destruction.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/process.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_processfunctions.html#wxexecute">wxExecute</A><BR>
+
+<A HREF="wx_samples.html#sampleexec">exec sample</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxprocessctor">wxProcess::wxProcess</A><BR>
+<A HREF="#wxprocessdtor">wxProcess::~wxProcess</A><BR>
+<A HREF="#wxprocesscloseoutput">wxProcess::CloseOutput</A><BR>
+<A HREF="#wxprocessdetach">wxProcess::Detach</A><BR>
+<A HREF="#wxprocessgeterrorstream">wxProcess::GetErrorStream</A><BR>
+<A HREF="#wxprocessgetinputstream">wxProcess::GetInputStream</A><BR>
+<A HREF="#wxprocessgetoutputstream">wxProcess::GetOutputStream</A><BR>
+<A HREF="#wxprocessiserroravailable">wxProcess::IsErrorAvailable</A><BR>
+<A HREF="#wxprocessisinputavailable">wxProcess::IsInputAvailable</A><BR>
+<A HREF="#wxprocessisinputopened">wxProcess::IsInputOpened</A><BR>
+<A HREF="#wxprocesskill">wxProcess::Kill</A><BR>
+<A HREF="#wxprocessexists">wxProcess::Exists</A><BR>
+<A HREF="#wxprocessonterminate">wxProcess::OnTerminate</A><BR>
+<A HREF="#wxprocessopen">wxProcess::Open</A><BR>
+<A HREF="#wxprocessgetpid">wxProcess::GetPid</A><BR>
+<A HREF="#wxprocessredirect">wxProcess::Redirect</A><BR>
+<P>
+
+<HR>
+<A NAME="wxprocessctor"></A>
+<H3>wxProcess::wxProcess</H3>
+<P>
+<B></B> <B>wxProcess</B>(<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A> *</B></B><I> parent = NULL</I>, <B>int</B><I> id = -1</I>)<P>
+<B></B> <B>wxProcess</B>(<B>int </B><I>flags</I>)<P>
+Constructs a process object. <I>id</I> is only used in the case you want to
+use wxWidgets events. It identifies this object, or another window that will
+receive the event.<P>
+If the <I>parent</I> parameter is different from NULL, it will receive
+a wxEVT_END_PROCESS notification event (you should insert EVT_END_PROCESS
+macro in the event table of the parent to handle it) with the given <I>id</I>.<P>
+The second constructor creates an object without any associated parent (and
+hence no id neither) but allows to specify the <I>flags</I> which can have the
+value of <TT>wxPROCESS_DEFAULT</TT> or <TT>wxPROCESS_REDIRECT</TT>. Specifying the
+former value has no particular effect while using the latter one is equivalent
+to calling <A HREF="wx_wxprocess.html#wxprocessredirect">Redirect</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The event handler parent.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+id of an event.</UL></UL>
+<P>
+<I>flags</I><UL><UL>
+either <TT>wxPROCESS_DEFAULT</TT> or <TT>wxPROCESS_REDIRECT</TT></UL></UL>
+<P>
+
+<HR>
+<A NAME="wxprocessdtor"></A>
+<H3>wxProcess::~wxProcess</H3>
+<P>
+<B></B> <B>~wxProcess</B>()<P>
+Destroys the wxProcess object.<P>
+
+<HR>
+<A NAME="wxprocesscloseoutput"></A>
+<H3>wxProcess::CloseOutput</H3>
+<P>
+<B>void</B> <B>CloseOutput</B>()<P>
+Closes the output stream (the one connected to the stdin of the child
+process). This function can be used to indicate to the child process that
+there is no more data to be read - usually, a filter program will only
+terminate when the input stream is closed.<P>
+
+<HR>
+<A NAME="wxprocessdetach"></A>
+<H3>wxProcess::Detach</H3>
+<P>
+<B>void</B> <B>Detach</B>()<P>
+Normally, a wxProcess object is deleted by its parent when it receives the
+notification about the process termination. However, it might happen that the
+parent object is destroyed before the external process is terminated (e.g. a
+window from which this external process was launched is closed by the user)
+and in this case it <B>should not delete</B> the wxProcess object, but
+<B>should call Detach()</B> instead. After the wxProcess object is detached
+from its parent, no notification events will be sent to the parent and the
+object will delete itself upon reception of the process termination
+notification.<P>
+
+<HR>
+<A NAME="wxprocessgeterrorstream"></A>
+<H3>wxProcess::GetErrorStream</H3>
+<P>
+<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>* </B> </B> <B>GetErrorStream</B>() <B>const</B><P>
+Returns an input stream which corresponds to the standard error output (stderr)
+of the child process.<P>
+
+<HR>
+<A NAME="wxprocessgetinputstream"></A>
+<H3>wxProcess::GetInputStream</H3>
+<P>
+<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>* </B> </B> <B>GetInputStream</B>() <B>const</B><P>
+It returns an input stream corresponding to the standard output stream of the
+subprocess. If it is NULL, you have not turned on the redirection.
+See <A HREF="wx_wxprocess.html#wxprocessredirect">wxProcess::Redirect</A>.<P>
+
+<HR>
+<A NAME="wxprocessgetoutputstream"></A>
+<H3>wxProcess::GetOutputStream</H3>
+<P>
+<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>* </B> </B> <B>GetOutputStream</B>() <B>const</B><P>
+It returns an output stream correspoding to the input stream of the subprocess.
+If it is NULL, you have not turned on the redirection.
+See <A HREF="wx_wxprocess.html#wxprocessredirect">wxProcess::Redirect</A>.<P>
+
+<HR>
+<A NAME="wxprocessiserroravailable"></A>
+<H3>wxProcess::IsErrorAvailable</H3>
+<P>
+<B>bool</B> <B>IsErrorAvailable</B>() <B>const</B><P>
+Returns <TT>true</TT> if there is data to be read on the child process standard
+error stream.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxprocess.html#wxprocessisinputavailable">IsInputAvailable</A><P>
+
+<HR>
+<A NAME="wxprocessisinputavailable"></A>
+<H3>wxProcess::IsInputAvailable</H3>
+<P>
+<B>bool</B> <B>IsInputAvailable</B>() <B>const</B><P>
+Returns <TT>true</TT> if there is data to be read on the child process standard
+output stream. This allows to write simple (and extremely inefficient)
+polling-based code waiting for a better mechanism in future wxWidgets versions.<P>
+See the <A HREF="wx_samples.html#sampleexec">exec sample</A> for an example of using this
+function.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxprocess.html#wxprocessisinputopened">IsInputOpened</A><P>
+
+<HR>
+<A NAME="wxprocessisinputopened"></A>
+<H3>wxProcess::IsInputOpened</H3>
+<P>
+<B>bool</B> <B>IsInputOpened</B>() <B>const</B><P>
+Returns <TT>true</TT> if the child process standard output stream is opened.<P>
+
+<HR>
+<A NAME="wxprocesskill"></A>
+<H3>wxProcess::Kill</H3>
+<P>
+<B>static wxKillError</B> <B>Kill</B>(<B>int</B><I> pid</I>, <B>wxSignal</B><I> signal = wxSIGNONE</I>, <B>int </B><I>flags = wxKILL_NOCHILDREN</I>)<P>
+Send the specified signal to the given process. Possible signal values are:<P>
+<PRE>
+enum wxSignal
+{
+    wxSIGNONE = 0,  // verify if the process exists under Unix
+    wxSIGHUP,
+    wxSIGINT,
+    wxSIGQUIT,
+    wxSIGILL,
+    wxSIGTRAP,
+    wxSIGABRT,
+    wxSIGEMT,
+    wxSIGFPE,
+    wxSIGKILL,      // forcefully kill, dangerous!
+    wxSIGBUS,
+    wxSIGSEGV,
+    wxSIGSYS,
+    wxSIGPIPE,
+    wxSIGALRM,
+    wxSIGTERM       // terminate the process gently
+};
+</PRE>
+<TT>wxSIGNONE</TT>, <TT>wxSIGKILL</TT> and <TT>wxSIGTERM</TT> have the same meaning
+under both Unix and Windows but all the other signals are equivalent to
+<TT>wxSIGTERM</TT> under Windows.<P>
+The <I>flags</I> parameter can be wxKILL_NOCHILDREN (the default),
+or wxKILL_CHILDREN, in which case the child processes of this
+process will be killed too. Note that under Unix, for wxKILL_CHILDREN
+to work you should have created the process passing wxEXEC_MAKE_GROUP_LEADER.<P>
+Returns the element of <TT>wxKillError</TT> enum:<P>
+<PRE>
+enum wxKillError
+{
+    wxKILL_OK,              // no error
+    wxKILL_BAD_SIGNAL,      // no such signal
+    wxKILL_ACCESS_DENIED,   // permission denied
+    wxKILL_NO_PROCESS,      // no such process
+    wxKILL_ERROR            // another, unspecified error
+};
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxprocess.html#wxprocessexists">wxProcess::Exists</A>,
+<A HREF="wx_processfunctions.html#wxkill">wxKill</A>,
+<A HREF="wx_samples.html#sampleexec">Exec sample</A><P>
+
+<HR>
+<A NAME="wxprocessexists"></A>
+<H3>wxProcess::Exists</H3>
+<P>
+<B>static bool</B> <B>Exists</B>(<B>int</B><I> pid</I>)<P>
+Returns <TT>true</TT> if the given process exists in the system.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxprocess.html#wxprocesskill">wxProcess::Kill</A>,
+<A HREF="wx_samples.html#sampleexec">Exec sample</A><P>
+
+<HR>
+<A NAME="wxprocessonterminate"></A>
+<H3>wxProcess::OnTerminate</H3>
+<P>
+<B>void</B> <B>OnTerminate</B>(<B>int</B><I> pid</I>, <B>int</B><I> status</I>)<P>
+It is called when the process with the pid <I>pid</I> finishes.
+It raises a wxWidgets event when it isn't overridden.<P>
+<I>pid</I><UL><UL>
+The pid of the process which has just terminated.</UL></UL>
+<P>
+<I>status</I><UL><UL>
+The exit code of the process.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxprocessopen"></A>
+<H3>wxProcess::Open</H3>
+<P>
+<B>static <A HREF="wx_wxprocess.html#wxprocess">wxProcess</A> *</B> </B> <B>Open</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>cmd</I>, <B>int </B><I>flags = wxEXEC_ASYNC</I>)<P>
+This static method replaces the standard <TT>popen()</TT> function: it launches
+the process specified by the <I>cmd</I> parameter and returns the wxProcess
+object which can be used to retrieve the streams connected to the standard
+input, output and error output of the child process.<P>
+If the process couldn't be launched, <TT>NULL</TT> is returned. Note that in any
+case the returned pointer should <B>not</B> be deleted, rather the process
+object will be destroyed automatically when the child process terminates. This
+does mean that the child process should be told to quit before the main program
+exits to avoid memory leaks.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>cmd</I><UL><UL>
+The command to execute, including optional arguments.</UL></UL>
+
+<I>flags</I><UL><UL>
+The flags to pass to <A HREF="wx_processfunctions.html#wxexecute">wxExecute</A>.
+  NOTE: wxEXEC_SYNC should not be used.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+A pointer to new wxProcess object or <TT>NULL</TT> on error.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_processfunctions.html#wxexecute">wxExecute</A><P>
+
+<HR>
+<A NAME="wxprocessgetpid"></A>
+<H3>wxProcess::GetPid</H3>
+<P>
+<B>long</B> <B>GetPid</B>() <B>const</B><P>
+Returns the process ID of the process launched by <A HREF="wx_wxprocess.html#wxprocessopen">Open</A>.<P>
+
+<HR>
+<A NAME="wxprocessredirect"></A>
+<H3>wxProcess::Redirect</H3>
+<P>
+<B>void</B> <B>Redirect</B>()<P>
+Turns on redirection. wxExecute will try to open a couple of pipes
+to catch the subprocess stdio. The caught input stream is returned by
+GetOutputStream() as a non-seekable stream. The caught output stream is returned
+by GetInputStream() as a non-seekable stream.<P>
+
+</FONT></BODY></HTML>

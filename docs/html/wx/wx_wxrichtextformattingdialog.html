@@ -1,0 +1,231 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextFormattingDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextformattingdialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextfilehandler.html#wxrichtextfilehandler"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextformattingdialogfactory.html#wxrichtextformattingdialogfactory"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextFormattingDialog</H2>
+<P>
+This dialog allows the user to edit a character and/or paragraph style.<P>
+In the constructor, specify the pages that will be created. Use GetStyle
+to retrieve the common style for a given range, and then use ApplyStyle
+to apply the user-selected formatting to a control. For example:<P>
+<PRE>
+    wxRichTextRange range;
+    if (m_richTextCtrl-&gt;HasSelection())
+        range = m_richTextCtrl-&gt;GetSelectionRange();
+    else
+        range = wxRichTextRange(0, m_richTextCtrl-&gt;GetLastPosition()+1);
+
+    int pages = wxRICHTEXT_FORMAT_FONT|wxRICHTEXT_FORMAT_INDENTS_SPACING|wxRICHTEXT_FORMAT_TABS|wxRICHTEXT_FORMAT_BULLETS;
+
+    wxRichTextFormattingDialog formatDlg(pages, this);
+    formatDlg.GetStyle(m_richTextCtrl, range);
+
+    if (formatDlg.ShowModal() == wxID_OK)
+    {
+        formatDlg.ApplyStyle(m_richTextCtrl, range);
+    }
+</PRE>
+ 
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxpropertysheetdialog.html#wxpropertysheetdialog">wxPropertySheetDialog</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextformatdlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+The following flags passed to the dialog constructor indicate the pages to
+be created:<P>
+<PRE>
+#define wxRICHTEXT_FORMAT_STYLE_EDITOR      0x0001
+#define wxRICHTEXT_FORMAT_FONT              0x0002
+#define wxRICHTEXT_FORMAT_TABS              0x0004
+#define wxRICHTEXT_FORMAT_BULLETS           0x0008
+#define wxRICHTEXT_FORMAT_INDENTS_SPACING   0x0010
+</PRE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxrichtextformattingdialogwxrichtextformattingdialog">wxRichTextFormattingDialog::wxRichTextFormattingDialog</A><BR>
+<A HREF="#wxrichtextformattingdialogdtor">wxRichTextFormattingDialog::~wxRichTextFormattingDialog</A><BR>
+<A HREF="#wxrichtextformattingdialogapplystyle">wxRichTextFormattingDialog::ApplyStyle</A><BR>
+<A HREF="#wxrichtextformattingdialogcreate">wxRichTextFormattingDialog::Create</A><BR>
+<A HREF="#wxrichtextformattingdialoggetattributes">wxRichTextFormattingDialog::GetAttributes</A><BR>
+<A HREF="#wxrichtextformattingdialoggetdialog">wxRichTextFormattingDialog::GetDialog</A><BR>
+<A HREF="#wxrichtextformattingdialoggetdialogattributes">wxRichTextFormattingDialog::GetDialogAttributes</A><BR>
+<A HREF="#wxrichtextformattingdialoggetdialogstyledefinition">wxRichTextFormattingDialog::GetDialogStyleDefinition</A><BR>
+<A HREF="#wxrichtextformattingdialoggetformattingdialogfactory">wxRichTextFormattingDialog::GetFormattingDialogFactory</A><BR>
+<A HREF="#wxrichtextformattingdialoggetimagelist">wxRichTextFormattingDialog::GetImageList</A><BR>
+<A HREF="#wxrichtextformattingdialoggetstyle">wxRichTextFormattingDialog::GetStyle</A><BR>
+<A HREF="#wxrichtextformattingdialoggetstyledefinition">wxRichTextFormattingDialog::GetStyleDefinition</A><BR>
+<A HREF="#wxrichtextformattingdialoggetstylesheet">wxRichTextFormattingDialog::GetStyleSheet</A><BR>
+<A HREF="#wxrichtextformattingdialogsetattributes">wxRichTextFormattingDialog::SetAttributes</A><BR>
+<A HREF="#wxrichtextformattingdialogsetformattingdialogfactory">wxRichTextFormattingDialog::SetFormattingDialogFactory</A><BR>
+<A HREF="#wxrichtextformattingdialogsetimagelist">wxRichTextFormattingDialog::SetImageList</A><BR>
+<A HREF="#wxrichtextformattingdialogsetstyle">wxRichTextFormattingDialog::SetStyle</A><BR>
+<A HREF="#wxrichtextformattingdialogsetstyledefinition">wxRichTextFormattingDialog::SetStyleDefinition</A><BR>
+<A HREF="#wxrichtextformattingdialogupdatedisplay">wxRichTextFormattingDialog::UpdateDisplay</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogwxrichtextformattingdialog"></A>
+<H3>wxRichTextFormattingDialog::wxRichTextFormattingDialog</H3>
+<P>
+<B></B> <B>wxRichTextFormattingDialog</B>(<B>long </B><I>flags</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title = _("Formatting")</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sz = wxDefaultSize</I>, <B>long </B><I>style = wxDEFAULT_DIALOG_STYLE</I>)<P>
+<B></B> <B>wxRichTextFormattingDialog</B>()<P>
+Constructors.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>flags</I><UL><UL>
+The pages to show.</UL></UL>
+<P>
+<I>parent</I><UL><UL>
+The dialog's parent.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The dialog's identifier.</UL></UL>
+<P>
+<I>title</I><UL><UL>
+The dialog's caption.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+The dialog's position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+The dialog's size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The dialog's window style.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxrichtextformattingdialogdtor"></A>
+<H3>wxRichTextFormattingDialog::~wxRichTextFormattingDialog</H3>
+<P>
+<B></B> <B>~wxRichTextFormattingDialog</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogapplystyle"></A>
+<H3>wxRichTextFormattingDialog::ApplyStyle</H3>
+<P>
+<B>bool</B> <B>ApplyStyle</B>(<B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl</I>, <B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B>int </B><I>flags = wxRICHTEXT_SETSTYLE_WITH_UNDO|wxRICHTEXT_SETSTYLE_OPTIMIZE</I>)<P>
+Apply attributes to the given range, only changing attributes that need to be changed.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogcreate"></A>
+<H3>wxRichTextFormattingDialog::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>long </B><I>flags</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sz = wxDefaultSize</I>, <B>long </B><I>style = wxDEFAULT_DIALOG_STYLE</I>)<P>
+Creation: see <A HREF="wx_wxrichtextformattingdialog.html#wxrichtextformattingdialog">the constructor</A> for details about the parameters.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialoggetattributes"></A>
+<H3>wxRichTextFormattingDialog::GetAttributes</H3>
+<P>
+<B>const <A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>&</B> </B> <B>GetAttributes</B>() <B>const</B><P>
+<B><A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>&</B> </B> <B>GetAttributes</B>()<P>
+Gets the attributes being edited.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialoggetdialog"></A>
+<H3>wxRichTextFormattingDialog::GetDialog</H3>
+<P>
+<B><A HREF="wx_wxrichtextformattingdialog.html#wxrichtextformattingdialog">wxRichTextFormattingDialog</A>*</B> </B> <B>GetDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win</I>)<P>
+Helper for pages to get the top-level dialog.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialoggetdialogattributes"></A>
+<H3>wxRichTextFormattingDialog::GetDialogAttributes</H3>
+<P>
+<B><A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>*</B> </B> <B>GetDialogAttributes</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win</I>)<P>
+Helper for pages to get the attributes.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialoggetdialogstyledefinition"></A>
+<H3>wxRichTextFormattingDialog::GetDialogStyleDefinition</H3>
+<P>
+<B><A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition">wxRichTextStyleDefinition</A>*</B> </B> <B>GetDialogStyleDefinition</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win</I>)<P>
+Helper for pages to get the style.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialoggetformattingdialogfactory"></A>
+<H3>wxRichTextFormattingDialog::GetFormattingDialogFactory</H3>
+<P>
+<B><A HREF="wx_wxrichtextformattingdialogfactory.html#wxrichtextformattingdialogfactory">wxRichTextFormattingDialogFactory</A>*</B> </B> <B>GetFormattingDialogFactory</B>()<P>
+Returns the object to be used to customize the dialog and provide pages.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialoggetimagelist"></A>
+<H3>wxRichTextFormattingDialog::GetImageList</H3>
+<P>
+<B><A HREF="wx_wximagelist.html#wximagelist">wxImageList</A>*</B> </B> <B>GetImageList</B>() <B>const</B><P>
+Returns the image list associated with the dialog, used for example if showing the dialog as a toolbook.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialoggetstyle"></A>
+<H3>wxRichTextFormattingDialog::GetStyle</H3>
+<P>
+<B>bool</B> <B>GetStyle</B>(<B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl</I>, <B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>)<P>
+Gets common attributes from the given range and calls SetAttributes. Attributes that do not have common values in the given range
+will be omitted from the style's flags.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialoggetstyledefinition"></A>
+<H3>wxRichTextFormattingDialog::GetStyleDefinition</H3>
+<P>
+<B><A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition">wxRichTextStyleDefinition</A>*</B> </B> <B>GetStyleDefinition</B>() <B>const</B><P>
+Gets the associated style definition, if any.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialoggetstylesheet"></A>
+<H3>wxRichTextFormattingDialog::GetStyleSheet</H3>
+<P>
+<B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>*</B> </B> <B>GetStyleSheet</B>() <B>const</B><P>
+Gets the associated style sheet, if any.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogsetattributes"></A>
+<H3>wxRichTextFormattingDialog::SetAttributes</H3>
+<P>
+<B>void</B> <B>SetAttributes</B>(<B>const <A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>& </B></B><I>attr</I>)<P>
+Sets the attributes to be edited.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogsetformattingdialogfactory"></A>
+<H3>wxRichTextFormattingDialog::SetFormattingDialogFactory</H3>
+<P>
+<B>void</B> <B>SetFormattingDialogFactory</B>(<B><A HREF="wx_wxrichtextformattingdialogfactory.html#wxrichtextformattingdialogfactory">wxRichTextFormattingDialogFactory</A>* </B></B><I>factory</I>)<P>
+Sets the formatting factory object to be used for customization and page creation.
+It deletes the existing factory object.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogsetimagelist"></A>
+<H3>wxRichTextFormattingDialog::SetImageList</H3>
+<P>
+<B>void</B> <B>SetImageList</B>(<B><A HREF="wx_wximagelist.html#wximagelist">wxImageList</A>* </B></B><I>imageList</I>)<P>
+Sets the image list associated with the dialog's property sheet.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogsetstyle"></A>
+<H3>wxRichTextFormattingDialog::SetStyle</H3>
+<P>
+<B>bool</B> <B>SetStyle</B>(<B>const <A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>& </B></B><I>style</I>, <B>bool </B><I>update = true</I>)<P>
+Sets the attributes and optionally updates the display, if <I>update</I> is <TT>true</TT>.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogsetstyledefinition"></A>
+<H3>wxRichTextFormattingDialog::SetStyleDefinition</H3>
+<P>
+<B>bool</B> <B>SetStyleDefinition</B>(<B>const <A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition">wxRichTextStyleDefinition</A>& </B></B><I>styleDef</I>, <B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>* </B></B><I>sheet</I>, <B>bool </B><I>update = true</I>)<P>
+Sets the style definition and optionally update the display, if <I>update</I> is <TT>true</TT>.<P>
+
+<HR>
+<A NAME="wxrichtextformattingdialogupdatedisplay"></A>
+<H3>wxRichTextFormattingDialog::UpdateDisplay</H3>
+<P>
+<B>bool</B> <B>UpdateDisplay</B>()<P>
+Updates the display.<P>
+<P>
+
+
+</FONT></BODY></HTML>

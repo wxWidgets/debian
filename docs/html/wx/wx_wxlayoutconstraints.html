@@ -1,0 +1,125 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxLayoutConstraints</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlayoutconstraints"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlayoutalgorithm.html#wxlayoutalgorithm"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlist.html#wxlist"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxLayoutConstraints</H2>
+<P>
+<B>Note:</B> constraints are now deprecated and you should use <A HREF="wx_sizeroverview.html#sizeroverview">sizers</A> instead.<P>
+Objects of this class can be associated with a window to define its
+layout constraints, with respect to siblings or its parent.<P>
+The class consists of the following eight constraints of class wxIndividualLayoutConstraint,
+some or all of which should be accessed directly to set the appropriate
+constraints.<P>
+<UL>
+
+<LI> <B>left:</B> represents the left hand edge of the window
+<LI> <B>right:</B> represents the right hand edge of the window
+<LI> <B>top:</B> represents the top edge of the window
+<LI> <B>bottom:</B> represents the bottom edge of the window
+<LI> <B>width:</B> represents the width of the window
+<LI> <B>height:</B> represents the height of the window
+<LI> <B>centreX:</B> represents the horizontal centre point of the window
+<LI> <B>centreY:</B> represents the vertical centre point of the window
+</UL>
+<P>
+Most constraints are initially set to have the relationship wxUnconstrained,
+which means that their values should be calculated by looking at known constraints.
+The exceptions are <I>width</I> and <I>height</I>, which are set to wxAsIs to
+ensure that if the user does not specify a constraint, the existing
+width and height will be used, to be compatible with panel items which often
+have take a default size. If the constraint is wxAsIs, the dimension will
+not be changed.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl the constraints are accessed as
+<PRE>
+  constraint = Wx::LayoutConstraints-&gt;new();
+  constraint-&gt;centreX-&gt;AsIs();
+  constraint-&gt;centreY-&gt;Unconstrained();
+</PRE>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/layout.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_constraintsoverview.html#constraintsoverview">Overview and examples</A>,
+<A HREF="wx_wxindividuallayoutconstraint.html#wxindividuallayoutconstraint">wxIndividualLayoutConstraint</A>, <A HREF="wx_wxwindow.html#wxwindowsetconstraints">wxWindow::SetConstraints</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxlayoutconstraintsctor">wxLayoutConstraints::wxLayoutConstraints</A><BR>
+<A HREF="#wxlayoutconstraintsbottom">wxLayoutConstraints::bottom</A><BR>
+<A HREF="#wxlayoutconstraintscentrex">wxLayoutConstraints::centreX</A><BR>
+<A HREF="#wxlayoutconstraintscentrey">wxLayoutConstraints::centreY</A><BR>
+<A HREF="#wxlayoutconstraintsheight">wxLayoutConstraints::height</A><BR>
+<A HREF="#wxlayoutconstraintsleft">wxLayoutConstraints::left</A><BR>
+<A HREF="#wxlayoutconstraintsright">wxLayoutConstraints::right</A><BR>
+<A HREF="#wxlayoutconstraintstop">wxLayoutConstraints::top</A><BR>
+<A HREF="#wxlayoutconstraintswidth">wxLayoutConstraints::width</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlayoutconstraintsctor"></A>
+<H3>wxLayoutConstraints::wxLayoutConstraints</H3>
+<P>
+<B></B> <B>wxLayoutConstraints</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxlayoutconstraintsbottom"></A>
+<H3>wxLayoutConstraints::bottom</H3>
+<P>
+wxIndividualLayoutConstraint bottom<P>
+Constraint for the bottom edge.<P>
+
+<HR>
+<A NAME="wxlayoutconstraintscentrex"></A>
+<H3>wxLayoutConstraints::centreX</H3>
+<P>
+wxIndividualLayoutConstraint centreX<P>
+Constraint for the horizontal centre point.<P>
+
+<HR>
+<A NAME="wxlayoutconstraintscentrey"></A>
+<H3>wxLayoutConstraints::centreY</H3>
+<P>
+wxIndividualLayoutConstraint centreY<P>
+Constraint for the vertical centre point.<P>
+
+<HR>
+<A NAME="wxlayoutconstraintsheight"></A>
+<H3>wxLayoutConstraints::height</H3>
+<P>
+wxIndividualLayoutConstraint height<P>
+Constraint for the height.<P>
+
+<HR>
+<A NAME="wxlayoutconstraintsleft"></A>
+<H3>wxLayoutConstraints::left</H3>
+<P>
+wxIndividualLayoutConstraint left<P>
+Constraint for the left-hand edge.<P>
+
+<HR>
+<A NAME="wxlayoutconstraintsright"></A>
+<H3>wxLayoutConstraints::right</H3>
+<P>
+wxIndividualLayoutConstraint right<P>
+Constraint for the right-hand edge.<P>
+
+<HR>
+<A NAME="wxlayoutconstraintstop"></A>
+<H3>wxLayoutConstraints::top</H3>
+<P>
+wxIndividualLayoutConstraint top<P>
+Constraint for the top edge.<P>
+
+<HR>
+<A NAME="wxlayoutconstraintswidth"></A>
+<H3>wxLayoutConstraints::width</H3>
+<P>
+wxIndividualLayoutConstraint width<P>
+Constraint for the width.<P>
+
+
+</FONT></BODY></HTML>

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     23-Nov-2004
-// RCS-ID:      $Id: media.i,v 1.9.2.3 2006/02/10 18:24:55 RD Exp $
+// RCS-ID:      $Id: media.i 41451 2006-09-26 00:26:35Z RD $
 // Copyright:   (c) 2004 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -30,8 +30,6 @@
 %import core.i
 %pythoncode { wx = _core }
 %pythoncode { __docfilter__ = wx.__DocFilter(globals()) }
-
-%include _media_rename.i
 
 //---------------------------------------------------------------------------
 
@@ -67,8 +65,10 @@ static wxString wxMEDIABACKEND_DIRECTSHOW(wxEmptyString);
 static wxString wxMEDIABACKEND_MCI       (wxEmptyString);
 static wxString wxMEDIABACKEND_QUICKTIME (wxEmptyString);
 static wxString wxMEDIABACKEND_GSTREAMER (wxEmptyString);
+static wxString wxMEDIABACKEND_REALPLAYER(wxEmptyString);
+static wxString wxMEDIABACKEND_WMP10     (wxEmptyString);
 
-    
+
 class wxMediaEvent : public wxNotifyEvent
 {
 public:
@@ -123,11 +123,18 @@ public:
     bool Load(const wxString& fileName) { return false; }
     bool LoadURI(const wxString& fileName) { return false; }
     bool LoadURIWithProxy(const wxString& fileName, const wxString& proxy) { return false; }
+
+    wxFileOffset GetDownloadProgress() { return 0; }
+    wxFileOffset GetDownloadTotal()    { return 0; }
+    
 };
 
 const wxEventType wxEVT_MEDIA_FINISHED = 0;
 const wxEventType wxEVT_MEDIA_STOP = 0;
 const wxEventType wxEVT_MEDIA_LOADED = 0;
+const wxEventType wxEVT_MEDIA_STATECHANGED = 0;
+const wxEventType wxEVT_MEDIA_PLAY = 0;
+const wxEventType wxEVT_MEDIA_PAUSE = 0;
 
 #endif
 %}
@@ -157,6 +164,8 @@ MAKE_CONST_WXSTRING(MEDIABACKEND_DIRECTSHOW);
 MAKE_CONST_WXSTRING(MEDIABACKEND_MCI       );
 MAKE_CONST_WXSTRING(MEDIABACKEND_QUICKTIME );
 MAKE_CONST_WXSTRING(MEDIABACKEND_GSTREAMER );
+MAKE_CONST_WXSTRING(MEDIABACKEND_REALPLAYER);
+MAKE_CONST_WXSTRING(MEDIABACKEND_WMP10);
 
 //---------------------------------------------------------------------------
 
@@ -227,6 +236,15 @@ public:
     bool LoadURI(const wxString& fileName);
     bool LoadURIWithProxy(const wxString& fileName, const wxString& proxy);
     %pythoncode { LoadFromURI = LoadURI }
+
+    wxFileOffset GetDownloadProgress(); // DirectShow only
+    wxFileOffset GetDownloadTotal();    // DirectShow only
+    
+    %property(DownloadProgress, GetDownloadProgress, doc="See `GetDownloadProgress`");
+    %property(DownloadTotal, GetDownloadTotal, doc="See `GetDownloadTotal`");
+    %property(PlaybackRate, GetPlaybackRate, SetPlaybackRate, doc="See `GetPlaybackRate` and `SetPlaybackRate`");
+    %property(State, GetState, doc="See `GetState`");
+    %property(Volume, GetVolume, SetVolume, doc="See `GetVolume` and `SetVolume`");
 };
 
 
@@ -234,11 +252,18 @@ public:
 %constant wxEventType wxEVT_MEDIA_FINISHED;
 %constant wxEventType wxEVT_MEDIA_STOP;
 %constant wxEventType wxEVT_MEDIA_LOADED;
+%constant wxEventType wxEVT_MEDIA_STATECHANGED;
+%constant wxEventType wxEVT_MEDIA_PLAY;
+%constant wxEventType wxEVT_MEDIA_PAUSE;
+
 
 %pythoncode {
-EVT_MEDIA_FINISHED = wx.PyEventBinder( wxEVT_MEDIA_FINISHED, 1)
-EVT_MEDIA_STOP     = wx.PyEventBinder( wxEVT_MEDIA_STOP, 1)
-EVT_MEDIA_LOADED   = wx.PyEventBinder( wxEVT_MEDIA_LOADED, 1)    
+EVT_MEDIA_FINISHED       = wx.PyEventBinder( wxEVT_MEDIA_FINISHED, 1)
+EVT_MEDIA_STOP           = wx.PyEventBinder( wxEVT_MEDIA_STOP, 1)
+EVT_MEDIA_LOADED         = wx.PyEventBinder( wxEVT_MEDIA_LOADED, 1)
+EVT_MEDIA_STATECHANGED   = wx.PyEventBinder( wxEVT_MEDIA_STATECHANGED, 1)
+EVT_MEDIA_PLAY           = wx.PyEventBinder( wxEVT_MEDIA_PLAY, 1)
+EVT_MEDIA_PAUSE          = wx.PyEventBinder( wxEVT_MEDIA_PAUSE, 1)
 }    
 
 //---------------------------------------------------------------------------

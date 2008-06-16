@@ -1,0 +1,204 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStringTokenizer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstringtokenizer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstringoutputstream.html#wxstringoutputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsymbolpickerdialog.html#wxsymbolpickerdialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStringTokenizer</H2>
+<P>
+wxStringTokenizer helps you to break a string up into a number of tokens. It
+replaces the standard C function <TT>strtok()</TT> and also extends it in a
+number of ways.<P>
+To use this class, you should create a wxStringTokenizer object, give it the
+string to tokenize and also the delimiters which separate tokens in the string
+(by default, white space characters will be used).<P>
+Then <A HREF="wx_wxstringtokenizer.html#wxstringtokenizergetnexttoken">GetNextToken</A> may be called
+repeatedly until it <A HREF="wx_wxstringtokenizer.html#wxstringtokenizerhasmoretokens">HasMoreTokens</A> 
+returns <TT>false</TT>.<P>
+For example:<P>
+<PRE>
+wxStringTokenizer tkz(wxT("first:second:third:fourth"), wxT(":"));
+while ( tkz.HasMoreTokens() )
+{
+    wxString token = tkz.GetNextToken();
+
+    // process token here
+}
+</PRE>
+By default, wxStringTokenizer will behave in the same way as <TT>strtok()</TT> if
+the delimiters string only contains white space characters but, unlike the
+standard function, it will return empty tokens if this is not the case. This
+is helpful for parsing strictly formatted data where the number of fields is
+fixed but some of them may be empty (i.e. <TT>TAB</TT> or comma delimited text
+files).<P>
+The behaviour is governed by the last 
+<A HREF="wx_wxstringtokenizer.html#wxstringtokenizerwxstringtokenizer">constructor</A>/<A HREF="wx_wxstringtokenizer.html#wxstringtokenizersetstring">SetString</A> 
+parameter <TT>mode</TT> which may be one of the following:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<TT>wxTOKEN_DEFAULT</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Default behaviour (as described above):
+same as <TT>wxTOKEN_STRTOK</TT> if the delimiter string contains only
+whitespaces, same as <TT>wxTOKEN_RET_EMPTY</TT> otherwise
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<TT>wxTOKEN_RET_EMPTY</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+In this mode, the empty tokens in the
+middle of the string will be returned, i.e. <TT>"a::b:"</TT> will be tokenized in
+three tokens 'a', '' and 'b'. Notice that all trailing delimiters are ignored
+in this mode, not just the last one, i.e. a string <TT>"a::b::"</TT> would
+still result in the same set of tokens.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<TT>wxTOKEN_RET_EMPTY_ALL</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+In this mode, empty trailing tokens
+(including the one after the last delimiter character) will be returned as
+well. The string <TT>"a::b:"</TT> will be tokenized in four tokens: the already
+mentioned ones and another empty one as the last one and a string 
+<TT>"a::b::"</TT> will have five tokens.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<TT>wxTOKEN_RET_DELIMS</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+In this mode, the delimiter character
+after the end of the current token (there may be none if this is the last
+token) is returned appended to the token. Otherwise, it is the same mode as 
+<TT>wxTOKEN_RET_EMPTY</TT>. Notice that there is no mode like this one but
+behaving like <TT>wxTOKEN_RET_EMPTY_ALL</TT> instead of 
+<TT>wxTOKEN_RET_EMPTY</TT>, use <TT>wxTOKEN_RET_EMPTY_ALL</TT> and 
+<A HREF="wx_wxstringtokenizer.html#wxstringtokenizergetlastdelimiter">GetLastDelimiter()</A> to emulate it.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<TT>wxTOKEN_STRTOK</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+In this mode the class behaves exactly like
+the standard <TT>strtok()</TT> function: the empty tokens are never returned.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_stringfunctions.html#wxstringtokenize">wxStringTokenize</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/tokenzr.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxstringtokenizerwxstringtokenizer">wxStringTokenizer::wxStringTokenizer</A><BR>
+<A HREF="#wxstringtokenizercounttokens">wxStringTokenizer::CountTokens</A><BR>
+<A HREF="#wxstringtokenizerhasmoretokens">wxStringTokenizer::HasMoreTokens</A><BR>
+<A HREF="#wxstringtokenizergetlastdelimiter">wxStringTokenizer::GetLastDelimiter</A><BR>
+<A HREF="#wxstringtokenizergetnexttoken">wxStringTokenizer::GetNextToken</A><BR>
+<A HREF="#wxstringtokenizergetposition">wxStringTokenizer::GetPosition</A><BR>
+<A HREF="#wxstringtokenizergetstring">wxStringTokenizer::GetString</A><BR>
+<A HREF="#wxstringtokenizersetstring">wxStringTokenizer::SetString</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstringtokenizerwxstringtokenizer"></A>
+<H3>wxStringTokenizer::wxStringTokenizer</H3>
+<P>
+<B></B> <B>wxStringTokenizer</B>()<P>
+Default constructor. You must call 
+<A HREF="wx_wxstringtokenizer.html#wxstringtokenizersetstring">SetString</A> before calling any other
+methods.<P>
+<B></B> <B>wxStringTokenizer</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>delims = " \t\r\n"</I>, <B>wxStringTokenizerMode </B><I>mode = wxTOKEN_DEFAULT</I>)<P>
+Constructor. Pass the string to tokenize, a string containing delimiters
+and the mode specifying how the string should be tokenized.<P>
+
+
+<HR>
+<A NAME="wxstringtokenizercounttokens"></A>
+<H3>wxStringTokenizer::CountTokens</H3>
+<P>
+<B>int</B> <B>CountTokens</B>() <B>const</B><P>
+Returns the number of tokens remaining in the input string. The number of
+tokens returned by this function is decremented each time 
+<A HREF="wx_wxstringtokenizer.html#wxstringtokenizergetnexttoken">GetNextToken</A> is called and when it
+reaches 0 <A HREF="wx_wxstringtokenizer.html#wxstringtokenizerhasmoretokens">HasMoreTokens</A> returns
+<TT>false</TT>.<P>
+
+
+<HR>
+<A NAME="wxstringtokenizerhasmoretokens"></A>
+<H3>wxStringTokenizer::HasMoreTokens</H3>
+<P>
+<B>bool</B> <B>HasMoreTokens</B>() <B>const</B><P>
+Returns <TT>true</TT> if the tokenizer has further tokens, <TT>false</TT> if none are left.<P>
+
+
+<HR>
+<A NAME="wxstringtokenizergetlastdelimiter"></A>
+<H3>wxStringTokenizer::GetLastDelimiter</H3>
+<P>
+<B>wxChar</B> <B>GetLastDelimiter</B>()<P>
+Returns the delimiter which ended scan for the last token returned by 
+<A HREF="wx_wxstringtokenizer.html#wxstringtokenizergetnexttoken">GetNextToken()</A> or <TT>NUL</TT> if
+there had been no calls to this function yet or if it returned the trailing
+empty token in <TT>wxTOKEN_RET_EMPTY_ALL</TT> mode.<P>
+This function is new since wxWidgets version 2.7.0<P>
+
+
+<HR>
+<A NAME="wxstringtokenizergetnexttoken"></A>
+<H3>wxStringTokenizer::GetNextToken</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetNextToken</B>() <B>const</B><P>
+Returns the next token or empty string if the end of string was reached.<P>
+
+
+<HR>
+<A NAME="wxstringtokenizergetposition"></A>
+<H3>wxStringTokenizer::GetPosition</H3>
+<P>
+<B>size_t</B> <B>GetPosition</B>() <B>const</B><P>
+Returns the current position (i.e. one index after the last returned
+token or 0 if GetNextToken() has never been called) in the original
+string.<P>
+
+
+<HR>
+<A NAME="wxstringtokenizergetstring"></A>
+<H3>wxStringTokenizer::GetString</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetString</B>() <B>const</B><P>
+Returns the part of the starting string without all token already extracted.<P>
+
+
+<HR>
+<A NAME="wxstringtokenizersetstring"></A>
+<H3>wxStringTokenizer::SetString</H3>
+<P>
+<B>void</B> <B>SetString</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>to_tokenize</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>delims = " \t\r\n"</I>, <B>wxStringTokenizerMode </B><I>mode = wxTOKEN_DEFAULT</I>)<P>
+Initializes the tokenizer.<P>
+Pass the string to tokenize, a string containing delimiters,
+and the mode specifying how the string should be tokenized.<P>
+
+</FONT></BODY></HTML>

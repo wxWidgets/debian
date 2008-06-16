@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: doc.cpp,v 1.19 2005/02/08 20:57:12 ABX Exp $
+// RCS-ID:      $Id: doc.cpp 44197 2007-01-11 13:54:29Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-// #pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -23,9 +19,14 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
-#include "wx/txtstrm.h"
 #ifdef __WXMAC__
 #include "wx/filename.h"
+#endif
+
+#if wxUSE_STD_IOSTREAM
+    #include "wx/ioswrap.h"
+#else
+    #include "wx/txtstrm.h"
 #endif
 
 #if !wxUSE_DOC_VIEW_ARCHITECTURE
@@ -123,7 +124,7 @@ wxInputStream& DrawingDocument::LoadObject(wxInputStream& stream)
 }
 #endif
 
-DoodleSegment::DoodleSegment(DoodleSegment& seg):wxObject()
+DoodleSegment::DoodleSegment(const DoodleSegment& seg):wxObject()
 {
     wxList::compatibility_iterator node = seg.lines.GetFirst();
     while (node)
@@ -171,7 +172,7 @@ wxOutputStream &DoodleSegment::SaveObject(wxOutputStream& stream)
     wxTextOutputStream text_stream( stream );
 
     wxInt32 n = lines.GetCount();
-    text_stream << n << _T('\n');
+    text_stream << n << _T("\n");
 
     wxList::compatibility_iterator node = lines.GetFirst();
     while (node)

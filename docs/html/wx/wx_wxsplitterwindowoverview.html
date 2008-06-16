@@ -1,0 +1,69 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSplitterWindow overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsplitterwindowoverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfontencodingoverview.html#wxfontencodingoverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtreectrloverview.html#wxtreectrloverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSplitterWindow overview</H2>
+<P>
+Classes: <A HREF="wx_wxsplitterwindow.html#wxsplitterwindow">wxSplitterWindow</A><P>
+The following screenshot shows the appearance of a splitter window with a horizontal split.<P>
+<CENTER></CENTER><img src="splitter.gif"><CENTER></CENTER><P>
+The style wxSP_3D has been used to show a 3D border and 3D sash.<P>
+<A HREF="#wxsplitterwindowexample">Example</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsplitterwindowexample"></A>
+<H3>Example</H3>
+<P>
+The following fragment shows how to create a splitter window, creating two
+subwindows and hiding one of them.<P>
+<FONT SIZE=2>
+<PRE>
+  splitter = new wxSplitterWindow(this, -1, wxPoint(0, 0), wxSize(400, 400), wxSP_3D);
+
+  leftWindow = new MyWindow(splitter);
+  leftWindow-&gt;SetScrollbars(20, 20, 50, 50);
+
+  rightWindow = new MyWindow(splitter);
+  rightWindow-&gt;SetScrollbars(20, 20, 50, 50);
+  rightWindow-&gt;Show(false);
+
+  splitter-&gt;Initialize(leftWindow);
+
+  // Set this to prevent unsplitting
+//    splitter-&gt;SetMinimumPaneSize(20);
+</PRE>
+</FONT><P>
+The next fragment shows how the splitter window can be manipulated after creation.<P>
+<FONT SIZE=2>
+<PRE>
+  void MyFrame::OnSplitVertical(wxCommandEvent& event)
+  {
+        if ( splitter-&gt;IsSplit() )
+            splitter-&gt;Unsplit();
+        leftWindow-&gt;Show(true);
+        rightWindow-&gt;Show(true);
+        splitter-&gt;SplitVertically( leftWindow, rightWindow );
+  }
+
+  void MyFrame::OnSplitHorizontal(wxCommandEvent& event)
+  {
+        if ( splitter-&gt;IsSplit() )
+            splitter-&gt;Unsplit();
+        leftWindow-&gt;Show(true);
+        rightWindow-&gt;Show(true);
+        splitter-&gt;SplitHorizontally( leftWindow, rightWindow );
+  }
+
+  void MyFrame::OnUnsplit(wxCommandEvent& event)
+  {
+        if ( splitter-&gt;IsSplit() )
+            splitter-&gt;Unsplit();
+  }
+</PRE>
+</FONT><P>
+
+</FONT></BODY></HTML>

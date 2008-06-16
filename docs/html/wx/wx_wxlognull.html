@@ -1,0 +1,69 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxLogNull</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlognull"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxloggui.html#wxloggui"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlogpassthrough.html#wxlogpassthrough"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxLogNull</H2>
+<P>
+This class allows to temporarily suspend logging. All calls to the log
+functions during the life time of an object of this class are just ignored.<P>
+In particular, it can be used to suppress the log messages given by wxWidgets
+itself but it should be noted that it is rarely the best way to cope with this
+problem as <B>all</B> log messages are suppressed, even if they indicate a
+completely different error than the one the programmer wanted to suppress.<P>
+For instance, the example of the overview:<P>
+<FONT SIZE=2>
+<PRE>
+  wxFile file;
+
+  // wxFile.Open() normally complains if file can't be opened, we don't want it
+  {
+    wxLogNull logNo;
+    if ( !file.Open("bar") )
+      ... process error ourselves ...
+  } // ~wxLogNull called, old log sink restored
+
+  wxLogMessage("..."); // ok
+</PRE>
+</FONT>would be better written as:<P>
+<FONT SIZE=2>
+<PRE>
+  wxFile file;
+
+  // don't try to open file if it doesn't exist, we are prepared to deal with
+  // this ourselves - but all other errors are not expected
+  if ( wxFile::Exists("bar") )
+  {
+      // gives an error message if the file couldn't be opened
+      file.Open("bar");
+  }
+  else
+  {
+      ...
+  }
+</PRE>
+</FONT><B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxlog.html#wxlog">wxLog</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/log.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxlognullctor">wxLogNull::wxLogNull</A><BR>
+<A HREF="#wxlognulldtor">wxLogNull::~wxLogNull</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlognullctor"></A>
+<H3>wxLogNull::wxLogNull</H3>
+<P>
+<B></B> <B>wxLogNull</B>()<P>
+Suspends logging.<P>
+
+<HR>
+<A NAME="wxlognulldtor"></A>
+<H3>wxLogNull::~wxLogNull</H3>
+<P>
+Resumes logging.<P>
+
+</FONT></BODY></HTML>

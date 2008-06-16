@@ -1,20 +1,16 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/pen.h
+// Name:        wx/msw/pen.h
 // Purpose:     wxPen class
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin: fixed operator=(), ==(), !=()
 // Created:     01/02/97
-// RCS-ID:      $Id: pen.h,v 1.24 2004/09/16 22:36:12 VZ Exp $
+// RCS-ID:      $Id: pen.h 45498 2007-04-16 13:03:05Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_PEN_H_
 #define _WX_PEN_H_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "pen.h"
-#endif
 
 #include "wx/gdiobj.h"
 #include "wx/bitmap.h"
@@ -40,7 +36,7 @@ public:
                m_join == data.m_join &&
                m_cap == data.m_cap &&
                m_colour == data.m_colour &&
-               (m_style != wxSTIPPLE || m_stipple == data.m_stipple) &&
+               (m_style != wxSTIPPLE || m_stipple.IsSameAs(data.m_stipple)) &&
                (m_style != wxUSER_DASH ||
                 (m_nbDash == data.m_nbDash &&
                     memcmp(m_dash, data.m_dash, m_nbDash*sizeof(wxDash)) == 0));
@@ -81,16 +77,7 @@ public:
     wxPen();
     wxPen(const wxColour& col, int width = 1, int style = wxSOLID);
     wxPen(const wxBitmap& stipple, int width);
-    wxPen(const wxPen& pen) : wxGDIObject(pen) { Ref(pen); }
     virtual ~wxPen();
-
-    wxPen& operator=(const wxPen& pen)
-    {
-        if ( this != &pen )
-            Ref(pen);
-
-        return *this;
-    }
 
     bool operator==(const wxPen& pen) const
     {
@@ -102,7 +89,8 @@ public:
 
     bool operator!=(const wxPen& pen) const { return !(*this == pen); }
 
-    virtual bool Ok() const { return (m_refData != NULL); }
+    virtual bool Ok() const { return IsOk(); }
+    virtual bool IsOk() const { return (m_refData != NULL); }
 
     // Override in order to recreate the pen
     void SetColour(const wxColour& col);
@@ -115,20 +103,20 @@ public:
     void SetJoin(int join);
     void SetCap(int cap);
 
-    wxColour& GetColour() const { return (M_PENDATA ? M_PENDATA->m_colour : wxNullColour); };
-    int GetWidth() const { return (M_PENDATA ? M_PENDATA->m_width : 0); };
-    int GetStyle() const { return (M_PENDATA ? M_PENDATA->m_style : 0); };
-    int GetJoin() const { return (M_PENDATA ? M_PENDATA->m_join : 0); };
-    int GetCap() const { return (M_PENDATA ? M_PENDATA->m_cap : 0); };
+    wxColour& GetColour() const { return (M_PENDATA ? M_PENDATA->m_colour : wxNullColour); }
+    int GetWidth() const { return (M_PENDATA ? M_PENDATA->m_width : 0); }
+    int GetStyle() const { return (M_PENDATA ? M_PENDATA->m_style : 0); }
+    int GetJoin() const { return (M_PENDATA ? M_PENDATA->m_join : 0); }
+    int GetCap() const { return (M_PENDATA ? M_PENDATA->m_cap : 0); }
     int GetDashes(wxDash **ptr) const
     {
         *ptr = (M_PENDATA ? (wxDash*)M_PENDATA->m_dash : (wxDash*) NULL);
         return (M_PENDATA ? M_PENDATA->m_nbDash : 0);
     }
-    wxDash* GetDash() const { return (M_PENDATA ? (wxDash*)M_PENDATA->m_dash : (wxDash*)NULL); };
-    inline int GetDashCount() const { return (M_PENDATA ? M_PENDATA->m_nbDash : 0); };
+    wxDash* GetDash() const { return (M_PENDATA ? (wxDash*)M_PENDATA->m_dash : (wxDash*)NULL); }
+    inline int GetDashCount() const { return (M_PENDATA ? M_PENDATA->m_nbDash : 0); }
 
-    inline wxBitmap *GetStipple() const { return (M_PENDATA ? (& M_PENDATA->m_stipple) : (wxBitmap*) NULL); };
+    inline wxBitmap *GetStipple() const { return (M_PENDATA ? (& M_PENDATA->m_stipple) : (wxBitmap*) NULL); }
 
     // Internal
     bool RealizeResource();
@@ -142,4 +130,3 @@ private:
 };
 
 #endif // _WX_PEN_H_
-

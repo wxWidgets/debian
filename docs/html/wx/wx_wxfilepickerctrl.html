@@ -1,0 +1,221 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFilePickerCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfilepickerctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfileoutputstream.html#wxfileoutputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfiledirpickerevent.html#wxfiledirpickerevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFilePickerCtrl</H2>
+<P>
+This control allows the user to select a file. The generic implementation is
+a button which brings up a <A HREF="wx_wxfiledialog.html#wxfiledialog">wxFileDialog</A> when clicked. Native implementation
+may differ but this is usually a (small) widget which give access to the file-chooser
+dialog.
+It is only available if <TT>wxUSE_FILEPICKERCTRL</TT> is set to 1 (the default).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxpickerbase.html#wxpickerbase">wxPickerBase</A><BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/filepicker.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFLP_DEFAULT_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The default style: includes
+wxFLP_OPEN | wxFLP_FILE_MUST_EXIST and, under wxMSW only,
+wxFLP_USE_TEXTCTRL.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFLP_USE_TEXTCTRL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a text control to the left of the
+picker button which is completely managed by the <A HREF="wx_wxfilepickerctrl.html#wxfilepickerctrl">wxFilePickerCtrl</A>
+and which can be used by the user to specify a path (see <A HREF="wx_wxfilepickerctrl.html#wxfilepickerctrlsetpath">SetPath</A>).
+The text control is automatically synchronized with button's value. Use functions defined in <A HREF="wx_wxpickerbase.html#wxpickerbase">wxPickerBase</A> to modify the text control.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFLP_OPEN</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a picker which allows the user to select a file to open.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFLP_SAVE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a picker which allows the user to select a file to save.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFLP_OVERWRITE_PROMPT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Can be combined with wxFLP_SAVE only: ask confirmation to the user before selecting a file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFLP_FILE_MUST_EXIST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Can be combined with wxFLP_OPEN only: the selected file must be an existing file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFLP_CHANGE_DIR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Change current working directory on each user file selection change.
+</FONT></TD></TR>
+<P>
+NB: the wxFD_MULTIPLE style of wxFileDialog is not supported!<P>
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To process a file picker event, use these event handler macros to direct input to member
+functions that take a <A HREF="wx_wxfiledirpickerevent.html#wxfiledirpickerevent">wxFileDirPickerEvent</A> argument.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_FILEPICKER_CHANGED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user changed the file
+selected in the control either using the button or using text control (see
+wxFLP_USE_TEXTCTRL; note that in this case the event is fired only if the
+user's input is valid, e.g. an existing file path if wxFLP_FILE_MUST_EXIST
+was given).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfiledialog.html#wxfiledialog">wxFileDialog</A>,<BR>
+
+<A HREF="wx_wxfiledirpickerevent.html#wxfiledirpickerevent">wxFileDirPickerEvent</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfilepickerctrlctor">wxFilePickerCtrl::wxFilePickerCtrl</A><BR>
+<A HREF="#wxfilepickerctrlcreate">wxFilePickerCtrl::Create</A><BR>
+<A HREF="#wxfilepickerctrlgetpath">wxFilePickerCtrl::GetPath</A><BR>
+<A HREF="#wxfilepickerctrlsetpath">wxFilePickerCtrl::SetPath</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfilepickerctrlctor"></A>
+<H3>wxFilePickerCtrl::wxFilePickerCtrl</H3>
+<P>
+<B></B> <B>wxFilePickerCtrl</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>,
+<B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path = wxEmptyString</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message = "Select a file"</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>wildcard = "*.*"</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxFLP_DEFAULT_STYLE</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "filepickerctrl"</I>)<P>
+Initializes the object and calls <A HREF="wx_wxfilepickerctrl.html#wxfilepickerctrlcreate">Create</A> with
+all the parameters.<P>
+
+
+<HR>
+<A NAME="wxfilepickerctrlcreate"></A>
+<H3>wxFilePickerCtrl::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>,
+<B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path = wxEmptyString</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message = "Select a file"</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>wildcard = "*.*"</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxFLP_DEFAULT_STYLE</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "filepickerctrl"</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window, must not be non-<TT>NULL</TT>.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The identifier for the control.</UL></UL>
+<P>
+<I>path</I><UL><UL>
+The initial file shown in the control. Must be a valid path to a file or the empty string.</UL></UL>
+<P>
+<I>message</I><UL><UL>
+The message shown to the user in the <A HREF="wx_wxfiledialog.html#wxfiledialog">wxFileDialog</A> shown by the control.</UL></UL>
+<P>
+<I>wildcard</I><UL><UL>
+A wildcard which defines user-selectable files (use the same syntax as for <A HREF="wx_wxfiledialog.html#wxfiledialog">wxFileDialog</A>'s wildcards).</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Initial position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Initial size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style, see <TT>wxFLP_*</TT> flags.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Validator which can be used for additional date checks.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Control name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if the control was successfully created or <TT>false</TT> if creation failed.<P>
+
+
+<HR>
+<A NAME="wxfilepickerctrlgetpath"></A>
+<H3>wxFilePickerCtrl::GetPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPath</B>() <B>const</B><P>
+Returns the absolute path of the currently selected file.<P>
+
+
+<HR>
+<A NAME="wxfilepickerctrlsetpath"></A>
+<H3>wxFilePickerCtrl::SetPath</H3>
+<P>
+<B>void</B> <B>SetPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>filename</I>)<P>
+Sets the absolute path of the currently selected file. This must be a valid file if
+the <TT>wxFLP_FILE_MUST_EXIST</TT> style was given.<P>
+<P>
+
+</FONT></BODY></HTML>

@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id: accel.h,v 1.11 2005/05/04 18:52:42 JS Exp $
+// RCS-ID:      $Id: accel.h 33948 2005-05-04 18:57:50Z JS $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

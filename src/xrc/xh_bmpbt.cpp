@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xh_bmpbt.cpp
+// Name:        src/xrc/xh_bmpbt.cpp
 // Purpose:     XRC resource for bitmap buttons
 // Author:      Brian Gavin
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_bmpbt.cpp,v 1.12 2005/01/07 21:33:12 VS Exp $
+// RCS-ID:      $Id: xh_bmpbt.cpp 44510 2007-02-16 08:16:37Z JS $
 // Copyright:   (c) 2000 Brian Gavin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_bmpbt.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -19,10 +15,13 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_XRC
+#if wxUSE_XRC && wxUSE_BMPBUTTON
 
 #include "wx/xrc/xh_bmpbt.h"
-#include "wx/bmpbuttn.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/bmpbuttn.h"
+#endif
 
 IMPLEMENT_DYNAMIC_CLASS(wxBitmapButtonXmlHandler, wxXmlResourceHandler)
 
@@ -53,12 +52,14 @@ wxObject *wxBitmapButtonXmlHandler::DoCreateResource()
         button->SetDefault();
     SetupWindow(button);
 
-    if (!GetParamValue(wxT("selected")).IsEmpty())
+    if (GetParamNode(wxT("selected")))
         button->SetBitmapSelected(GetBitmap(wxT("selected")));
-    if (!GetParamValue(wxT("focus")).IsEmpty())
+    if (GetParamNode(wxT("focus")))
         button->SetBitmapFocus(GetBitmap(wxT("focus")));
-    if (!GetParamValue(wxT("disabled")).IsEmpty())
+    if (GetParamNode(wxT("disabled")))
         button->SetBitmapDisabled(GetBitmap(wxT("disabled")));
+    if (GetParamNode(wxT("hover")))
+        button->SetBitmapHover(GetBitmap(wxT("hover")));
 
     return button;
 }
@@ -68,4 +69,4 @@ bool wxBitmapButtonXmlHandler::CanHandle(wxXmlNode *node)
     return IsOfClass(node, wxT("wxBitmapButton"));
 }
 
-#endif // wxUSE_XRC
+#endif // wxUSE_XRC && wxUSE_BMPBUTTON

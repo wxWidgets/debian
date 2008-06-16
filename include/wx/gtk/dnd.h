@@ -2,39 +2,15 @@
 // Name:        dnd.h
 // Purpose:     declaration of the wxDropTarget class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dnd.h,v 1.47 2005/08/02 22:57:54 MW Exp $
+// RCS-ID:      $Id: dnd.h 40923 2006-08-30 05:55:56Z PC $
 // Copyright:   (c) 1998 Vadim Zeitlin, Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef _WX_GTK_DND_H_
+#define _WX_GTK_DND_H_
 
-#ifndef __GTKDNDH__
-#define __GTKDNDH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
-
-#if wxUSE_DRAG_AND_DROP
-
-#include "wx/object.h"
-#include "wx/string.h"
-#include "wx/dataobj.h"
-#include "wx/cursor.h"
 #include "wx/icon.h"
-#include "wx/gdicmn.h"
-
-//-------------------------------------------------------------------------
-// classes
-//-------------------------------------------------------------------------
-
-class WXDLLIMPEXP_CORE wxWindow;
-
-class WXDLLIMPEXP_CORE wxDropTarget;
-class WXDLLIMPEXP_CORE wxTextDropTarget;
-class WXDLLIMPEXP_CORE wxFileDropTarget;
-
-class WXDLLIMPEXP_CORE wxDropSource;
 
 // ----------------------------------------------------------------------------
 // macros
@@ -129,7 +105,5 @@ private:
                   const wxIcon& none);
 };
 
-#endif // wxUSE_DRAG_AND_DROP
-
-#endif //__GTKDNDH__
+#endif // _WX_GTK_DND_H_
 

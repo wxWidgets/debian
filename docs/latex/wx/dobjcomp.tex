@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     02.11.99
-%% RCS-ID:      $Id: dobjcomp.tex,v 1.7 2005/02/22 15:09:49 ABX Exp $
+%% RCS-ID:      $Id: dobjcomp.tex 38736 2006-04-15 05:35:08Z RD $
 %% Copyright:   (c) Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,4 +62,13 @@ The default constructor.
 Adds the {\it dataObject} to the list of supported objects and it becomes the
 preferred object if {\it preferred} is true.
 
+
+\membersection{wxDataObjectComposite::GetReceivedFormat}\label{wxdataobjectcompositegetreceivedformat}
+
+\constfunc{wxDataFormat}{GetReceivedFormat}{}
+
+Report the format passed to the SetData method.  This should be the
+format of the data object within the composite that recieved data from
+the clipboard or the DnD operation.  You can use this method to find
+out what kind of data object was recieved.
 

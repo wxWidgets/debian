@@ -1,0 +1,34 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Makefiles</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="makefiles"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_multiplat.html#multiplat"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_configuration.html#configuration"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_windowsfiles.html#windowsfiles"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Makefiles</H2>
+<P>
+On Microsoft Windows, wxWidgets has a different set of makefiles for each
+compiler, because each compiler's 'make' tool is slightly different.
+Popular Windows compilers that we cater for, and the corresponding makefile
+extensions, include: Microsoft Visual C++ (.vc), Borland C++ (.bcc),
+OpenWatcom C++ (.wat) and MinGW/Cygwin (.gcc). Makefiles are provided
+for the wxWidgets library itself, samples, demos, and utilities.<P>
+On Linux, Mac and OS/2, you use the 'configure' command to
+generate the necessary makefiles. You should also use this method when
+building with MinGW/Cygwin on Windows.<P>
+We also provide project files for some compilers, such as
+Microsoft VC++. However, we recommend using makefiles
+to build the wxWidgets library itself, because makefiles
+can be more powerful and less manual intervention is required.<P>
+On Windows using a compiler other than MinGW/Cygwin, you would
+build the wxWidgets library from the build/msw directory
+which contains the relevant makefiles.<P>
+On Windows using MinGW/Cygwin, and on Unix, MacOS X and OS/2, you invoke
+'configure' (found in the top-level of the wxWidgets source hierarchy),
+from within a suitable empty directory for containing makefiles, object files and
+libraries.<P>
+For details on using makefiles, configure, and project files,
+please see docs/xxx/install.txt in your distribution, where
+xxx is the platform of interest, such as msw, gtk, x11, mac.<P>
+
+</FONT></BODY></HTML>

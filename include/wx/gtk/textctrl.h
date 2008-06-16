@@ -3,17 +3,15 @@
 // Purpose:
 // Author:      Robert Roebling
 // Created:     01/02/97
-// Id:          $Id: textctrl.h,v 1.56 2005/08/02 22:57:58 MW Exp $
+// Id:          $Id: textctrl.h 43870 2006-12-09 06:21:15Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __GTKTEXTCTRLH__
-#define __GTKTEXTCTRLH__
+#ifndef _WX_GTK_TEXTCTRL_H_
+#define _WX_GTK_TEXTCTRL_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "textctrl.h"
-#endif
+typedef struct _GtkTextMark GtkTextMark;
 
 //-----------------------------------------------------------------------------
 // wxTextCtrl
@@ -32,7 +30,7 @@ public:
                const wxValidator& validator = wxDefaultValidator,
                const wxString &name = wxTextCtrlNameStr);
 
-    ~wxTextCtrl();
+    virtual ~wxTextCtrl();
 
     bool Create(wxWindow *parent,
                 wxWindowID id,
@@ -47,7 +45,7 @@ public:
     // ----------------------------------
 
     virtual wxString GetValue() const;
-    virtual void SetValue(const wxString& value);
+    virtual bool IsEmpty() const;
 
     virtual int GetLineLength(long lineNo) const;
     virtual wxString GetLineText(long lineNo) const;
@@ -90,7 +88,6 @@ public:
 
     virtual void ShowPosition(long pos);
 
-#ifdef __WXGTK20__
     virtual wxTextCtrlHitTestResult HitTest(const wxPoint& pt, long *pos) const;
     virtual wxTextCtrlHitTestResult HitTest(const wxPoint& pt,
                                             wxTextCoord *col,
@@ -98,7 +95,6 @@ public:
     {
         return wxTextCtrlBase::HitTest(pt, col, row);
     }
-#endif // __WXGTK20__
 
     // Clipboard operations
     virtual void Copy();
@@ -121,6 +117,8 @@ public:
     virtual void SetSelection(long from, long to);
     virtual void SetEditable(bool editable);
 
+    // Overridden wxWindow methods
+    virtual void SetWindowStyleFlag( long style );
     virtual bool Enable( bool enable = true );
 
     // Implementation from now on
@@ -144,28 +142,13 @@ public:
     bool SetBackgroundColour(const wxColour& colour);
 
     GtkWidget* GetConnectWidget();
-    bool IsOwnGtkWindow( GdkWindow *window );
-    void DoApplyWidgetStyle(GtkRcStyle *style);
-    void CalculateScrollbar();
-    void OnInternalIdle();
 
-#ifdef __WXGTK20__
     void SetUpdateFont(bool WXUNUSED(update)) { }
-#else // !__WXGTK20__
-    void SetUpdateFont(bool update) { m_updateFont = update; }
-    void UpdateFontIfNeeded();
-#endif // __WXGTK20__/!__WXGTK20__
-
-    void SetModified() { m_modified = true; }
 
     // GTK+ textctrl is so dumb that you need to freeze/thaw it manually to
     // avoid horrible flicker/scrolling back and forth
     virtual void Freeze();
     virtual void Thaw();
-
-    // textctrl specific scrolling
-    virtual bool ScrollLines(int lines);
-    virtual bool ScrollPages(int pages);
 
     // implementation only from now on
 
@@ -175,67 +158,83 @@ public:
     virtual void OnParentEnable( bool enable ) ;
 
     // tell the control to ignore next text changed signal
-    void IgnoreNextTextUpdate();
+    void IgnoreNextTextUpdate(int n = 1) { m_countUpdatesToIgnore = n; }
 
     // should we ignore the changed signal? always resets the flag
     bool IgnoreTextUpdate();
 
+    // call this to indicate that the control is about to be changed
+    // programmatically and so m_modified flag shouldn't be set
+    void DontMarkDirtyOnNextChange() { m_dontMarkDirty = true; }
+
+    // should we mark the control as dirty? always resets the flag
+    bool MarkDirtyOnChange();
+
+    // always let GTK have mouse release events for multiline controls
+    virtual bool GTKProcessEvent(wxEvent& event) const;
+
+
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
 
+    // has the control been frozen by Freeze()?
+    bool IsFrozen() const { return m_freezeCount > 0; }
+
 protected:
     virtual wxSize DoGetBestSize() const;
+    virtual void DoApplyWidgetStyle(GtkRcStyle *style);
+    virtual GdkWindow *GTKGetWindow(wxArrayGdkWindows& windows) const;
 
     // common part of all ctors
     void Init();
-
-    // get the vertical adjustment, if any, NULL otherwise
-    GtkAdjustment *GetVAdj() const;
-
-    // scroll the control by the given number of pixels, return true if the
-    // scroll position changed
-    bool DoScroll(GtkAdjustment *adj, int diff);
 
     // Widgets that use the style->base colour for the BG colour should
     // override this and return true.
     virtual bool UseGTKStyleBase() const { return true; }
 
-#ifdef __WXGTK20__
-    // has the control been frozen by Freeze()?
-    bool IsFrozen() const { return m_frozenness > 0; }
-#endif
+    virtual void DoSetValue(const wxString &value, int flags = 0);
+
+    // wrappers hiding the differences between functions doing the same thing
+    // for GtkTextView and GtkEntry (all of them use current window style to
+    // set the given characteristic)
+    void GTKSetEditable();
+    void GTKSetVisibility();
+    void GTKSetWrapMode();
+    void GTKSetJustification();
 
 private:
     // change the font for everything in this control
     void ChangeFontGlobally();
 
+    // get the encoding which is used in this control: this looks at our font
+    // and default style but not the current style (i.e. the style for the
+    // current position); returns wxFONTENCODING_SYSTEM if we have no specific
+    // encoding
+    wxFontEncoding GetTextEncoding() const;
+
+
     GtkWidget  *m_text;
-    GtkWidget  *m_vScrollbar;
 
     bool        m_modified:1;
-    bool        m_vScrollbarVisible:1;
-#ifndef __WXGTK20__
-    bool        m_updateFont:1;
-#endif // !__WXGTK20__
-    bool        m_ignoreNextUpdate:1;
+    bool        m_dontMarkDirty:1;
 
-#ifdef __WXGTK20__
+    int         m_countUpdatesToIgnore;
+
     // Our text buffer. Convenient, and holds the buffer while using
-    // a dummy one when m_frozenness > 0
+    // a dummy one when frozen
     GtkTextBuffer *m_buffer;
 
     // number of calls to Freeze() minus number of calls to Thaw()
-    unsigned int m_frozenness;
+    unsigned m_freezeCount;
+    GtkTextMark* m_showPositionOnThaw;
 
     // For wxTE_AUTO_URL
     void OnUrlMouseEvent(wxMouseEvent&);
     GdkCursor *m_gdkHandCursor;
     GdkCursor *m_gdkXTermCursor;
-#endif
 
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxTextCtrl)
 };
 
-#endif // __GTKTEXTCTRLH__
-
+#endif // _WX_GTK_TEXTCTRL_H_

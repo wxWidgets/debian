@@ -1,0 +1,215 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMiniFrame</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxminiframe"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanager"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmirrordc.html#wxmirrordc"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMiniFrame</H2>
+<P>
+A miniframe is a frame with a small title bar. It is suitable for floating toolbars that must not
+take up too much screen area.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/minifram.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxICONIZE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Display the frame iconized (minimized) (Windows only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCAPTION</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Puts a caption on the frame.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMINIMIZE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Identical to <B>wxICONIZE</B>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMINIMIZE_BOX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a minimize box on the frame (Windows and Motif only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMAXIMIZE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays the frame maximized (Windows only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMAXIMIZE_BOX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a maximize box on the frame (Windows and Motif only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCLOSE_BOX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a close box on the frame.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSTAY_ON_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Stay on top of other windows (Windows only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSYSTEM_MENU</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a system menu (Windows and Motif only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTINY_CAPTION_HORIZ</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This style is obsolete and
+not used any longer.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTINY_CAPTION_VERT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This style is obsolete and not
+used any longer.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxRESIZE_BORDER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a resizeable border around the window.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This class has miniframe functionality under Windows and GTK, i.e. the presence
+of mini frame will not be noted in the task bar and focus behaviour is different.
+On other platforms, it behaves like a normal frame.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A>, <A HREF="wx_wxmdichildframe.html#wxmdichildframe">wxMDIChildFrame</A>,
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A>, <A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxminiframector">wxMiniFrame::wxMiniFrame</A><BR>
+<A HREF="#wxminiframedtor">wxMiniFrame::~wxMiniFrame</A><BR>
+<A HREF="#wxminiframecreate">wxMiniFrame::Create</A><BR>
+<P>
+
+<HR>
+<A NAME="wxminiframector"></A>
+<H3>wxMiniFrame::wxMiniFrame</H3>
+<P>
+<B></B> <B>wxMiniFrame</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxMiniFrame</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>, <B>long</B><I> style = wxCAPTION | wxRESIZE_BORDER</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "frame"</I>)<P>
+Constructor, creating the window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The window parent. This may be NULL. If it is non-NULL, the frame will
+always be displayed on top of the parent window on Windows.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The window identifier. It may take a value of -1 to indicate a default value.</UL></UL>
+<P>
+<I>title</I><UL><UL>
+The caption to be displayed on the frame's title bar.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+The window position. A value of (-1, -1) indicates a default position, chosen by
+either the windowing system or wxWidgets, depending on platform.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+The window size. A value of (-1, -1) indicates a default size, chosen by
+either the windowing system or wxWidgets, depending on platform.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style. See <A HREF="wx_wxminiframe.html#wxminiframe">wxMiniFrame</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+The name of the window. This parameter is used to associate a name with the item,
+allowing the application user to set Motif resource values for
+individual windows.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The frame behaves like a normal frame on non-Windows platforms.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxminiframe.html#wxminiframecreate">wxMiniFrame::Create</A><P>
+
+<HR>
+<A NAME="wxminiframedtor"></A>
+<H3>wxMiniFrame::~wxMiniFrame</H3>
+<P>
+<B>void</B> <B>~wxMiniFrame</B>()<P>
+Destructor. Destroys all child windows and menu bar if present.<P>
+
+<HR>
+<A NAME="wxminiframecreate"></A>
+<H3>wxMiniFrame::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>, <B>long</B><I> style = wxCAPTION | wxRESIZE_BORDER</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "frame"</I>)<P>
+Used in two-step frame construction. See <A HREF="wx_wxminiframe.html#wxminiframector">wxMiniFrame::wxMiniFrame</A>
+for further details.<P>
+<P>
+
+</FONT></BODY></HTML>

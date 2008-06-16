@@ -1,0 +1,142 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxScrollWinEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxscrollwinevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxscrollevent.html#wxscrollevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsemaphore.html#wxsemaphore"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxScrollWinEvent</H2>
+<P>
+A scroll event holds information about events sent from scrolling windows.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a scroll window event, use these event handler macros to direct input to member
+functions that take a wxScrollWinEvent argument. You can use the  EVT_SCROLLWIN... macros
+for intercepting scroll window events from the receiving window.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SCROLLWIN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process all scroll events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SCROLLWIN_TOP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLLWIN_TOP scroll-to-top events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SCROLLWIN_BOTTOM(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLLWIN_BOTTOM scroll-to-bottom events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SCROLLWIN_LINEUP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLLWIN_LINEUP line up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SCROLLWIN_LINEDOWN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLLWIN_LINEDOWN line down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SCROLLWIN_PAGEUP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLLWIN_PAGEUP page up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SCROLLWIN_PAGEDOWN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLLWIN_PAGEDOWN page down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SCROLLWIN_THUMBTRACK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLLWIN_THUMBTRACK thumbtrack events (frequent events
+sent as the user drags the thumbtrack).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SCROLLWIN_THUMBRELEASE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLLWIN_THUMBRELEASE thumb release events.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxscrollevent.html#wxscrollevent">wxScrollEvent</A>, <A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxscrollwineventctor">wxScrollWinEvent::wxScrollWinEvent</A><BR>
+<A HREF="#wxscrollwineventgetorientation">wxScrollWinEvent::GetOrientation</A><BR>
+<A HREF="#wxscrollwineventgetposition">wxScrollWinEvent::GetPosition</A><BR>
+<P>
+
+<HR>
+<A NAME="wxscrollwineventctor"></A>
+<H3>wxScrollWinEvent::wxScrollWinEvent</H3>
+<P>
+<B></B> <B>wxScrollWinEvent</B>(<B>WXTYPE </B><I>commandType = 0</I>, <B>int</B><I> pos = 0</I>,
+<B>int</B><I> orientation = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxscrollwineventgetorientation"></A>
+<H3>wxScrollWinEvent::GetOrientation</H3>
+<P>
+<B>int</B> <B>GetOrientation</B>() <B>const</B><P>
+Returns wxHORIZONTAL or wxVERTICAL, depending on the orientation of the scrollbar.<P>
+
+<HR>
+<A NAME="wxscrollwineventgetposition"></A>
+<H3>wxScrollWinEvent::GetPosition</H3>
+<P>
+<B>int</B> <B>GetPosition</B>() <B>const</B><P>
+Returns the position of the scrollbar for the thumb track and release events.
+Note that this field can't be used for the other events, you need to query
+the window itself for the current position in that case.<P>
+
+
+</FONT></BODY></HTML>

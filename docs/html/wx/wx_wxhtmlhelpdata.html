@@ -1,0 +1,90 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlHelpData</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmlhelpdata"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmlhelpdialog.html#wxhtmlhelpdialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlHelpData</H2>
+<P>
+This class is used by <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A> 
+and <A HREF="wx_wxhtmlhelpframe.html#wxhtmlhelpframe">wxHtmlHelpFrame</A> to access HTML help items.
+It is internal class and should not be used directly - except for the case 
+you're writing your own HTML help controller.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/helpdata.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmlhelpdatawxhtmlhelpdata">wxHtmlHelpData::wxHtmlHelpData</A><BR>
+<A HREF="#wxhtmlhelpdataaddbook">wxHtmlHelpData::AddBook</A><BR>
+<A HREF="#wxhtmlhelpdatafindpagebyid">wxHtmlHelpData::FindPageById</A><BR>
+<A HREF="#wxhtmlhelpdatafindpagebyname">wxHtmlHelpData::FindPageByName</A><BR>
+<A HREF="#wxhtmlhelpdatagetbookrecarray">wxHtmlHelpData::GetBookRecArray</A><BR>
+<A HREF="#wxhtmlhelpdatagetcontentsarray">wxHtmlHelpData::GetContentsArray</A><BR>
+<A HREF="#wxhtmlhelpdatagetindexarray">wxHtmlHelpData::GetIndexArray</A><BR>
+<A HREF="#wxhtmlhelpdatasettempdir">wxHtmlHelpData::SetTempDir</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlhelpdatawxhtmlhelpdata"></A>
+<H3>wxHtmlHelpData::wxHtmlHelpData</H3>
+<P>
+<B></B> <B>wxHtmlHelpData</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxhtmlhelpdataaddbook"></A>
+<H3>wxHtmlHelpData::AddBook</H3>
+<P>
+<B>bool</B> <B>AddBook</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>book_url</I>)<P>
+Adds new book. <I>book</I> is URL (not filename!) of HTML help project (hhp)
+or ZIP file that contains arbitrary number of .hhp projects (this zip
+file can have either .zip or .htb extension, htb stands for "html book").
+Returns success.<P>
+
+<HR>
+<A NAME="wxhtmlhelpdatafindpagebyid"></A>
+<H3>wxHtmlHelpData::FindPageById</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>FindPageById</B>(<B>int </B><I>id</I>)<P>
+Returns page's URL based on integer ID stored in project.<P>
+
+<HR>
+<A NAME="wxhtmlhelpdatafindpagebyname"></A>
+<H3>wxHtmlHelpData::FindPageByName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>FindPageByName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>page</I>)<P>
+Returns page's URL based on its (file)name.<P>
+
+<HR>
+<A NAME="wxhtmlhelpdatagetbookrecarray"></A>
+<H3>wxHtmlHelpData::GetBookRecArray</H3>
+<P>
+<B>const wxHtmlBookRecArray&amp;</B> <B>GetBookRecArray</B>()<P>
+Returns array with help books info.<P>
+
+<HR>
+<A NAME="wxhtmlhelpdatagetcontentsarray"></A>
+<H3>wxHtmlHelpData::GetContentsArray</H3>
+<P>
+<B>const wxHtmlHelpDataItems&amp;</B> <B>GetContentsArray</B>()<P>
+Returns reference to array with contents entries.<P>
+
+<HR>
+<A NAME="wxhtmlhelpdatagetindexarray"></A>
+<H3>wxHtmlHelpData::GetIndexArray</H3>
+<P>
+<B>const wxHtmlHelpDataItems&amp;</B> <B>GetIndexArray</B>()<P>
+Returns reference to array with index entries.<P>
+
+<HR>
+<A NAME="wxhtmlhelpdatasettempdir"></A>
+<H3>wxHtmlHelpData::SetTempDir</H3>
+<P>
+<B>void</B> <B>SetTempDir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>)<P>
+Sets temporary directory where binary cached versions of MS HTML Workshop
+files will be stored. (This is turned off by default and you can enable
+this feature by setting non-empty temp dir.)<P>
+
+</FONT></BODY></HTML>

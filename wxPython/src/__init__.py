@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      8-Aug-1998
-# RCS-ID:       $Id: __init__.py,v 1.11 2005/06/02 03:31:17 RD Exp $
+# RCS-ID:       $Id: __init__.py 43499 2006-11-18 21:23:43Z RD $
 # Copyright:    (c) 1998 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -23,16 +23,19 @@ __all__ = [
     'tools',
 
     # other modules
+    'animate',
+    'aui',
     'calendar',
+    'combo',
     'grid',
     'html',
     'media',
+    'richtext',
     'webkit',
     'wizard',
     'xrc',
 
     # contribs (need a better way to find these...)
-    'animate',
     'gizmos',
     'glcanvas',
     'stc',
@@ -50,8 +53,7 @@ if 'wxMSW' in PlatformInfo:
 import wx._core
 __docfilter__ = wx._core.__DocFilter(globals())
 
-__all__ += [name for name in dir(wx._core)
-            if not (name.startswith('__') and name.endswith('__'))]
+__all__ += [name for name in dir(wx._core) if not name.startswith('_')]
 
 
 

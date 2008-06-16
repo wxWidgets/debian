@@ -1,0 +1,189 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxJoystickEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxjoystickevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxjoystick.html#wxjoystick"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxkeyevent.html#wxkeyevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxJoystickEvent</H2>
+<P>
+This event class contains information about mouse events, particularly
+events received by windows.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a mouse event, use these event handler macros to direct input to member
+functions that take a wxJoystickEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_JOY_BUTTON_DOWN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_JOY_BUTTON_DOWN event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_JOY_BUTTON_UP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_JOY_BUTTON_UP event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_JOY_MOVE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_JOY_MOVE event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_JOY_ZMOVE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_JOY_ZMOVE event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_JOYSTICK_EVENTS(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Processes all joystick events.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxjoystick.html#wxjoystick">wxJoystick</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxjoystickeventctor">wxJoystickEvent::wxJoystickEvent</A><BR>
+<A HREF="#wxjoystickeventbuttondown">wxJoystickEvent::ButtonDown</A><BR>
+<A HREF="#wxjoystickeventbuttonisdown">wxJoystickEvent::ButtonIsDown</A><BR>
+<A HREF="#wxjoystickeventbuttonup">wxJoystickEvent::ButtonUp</A><BR>
+<A HREF="#wxjoystickeventgetbuttonchange">wxJoystickEvent::GetButtonChange</A><BR>
+<A HREF="#wxjoystickeventgetbuttonstate">wxJoystickEvent::GetButtonState</A><BR>
+<A HREF="#wxjoystickeventgetjoystick">wxJoystickEvent::GetJoystick</A><BR>
+<A HREF="#wxjoystickeventgetposition">wxJoystickEvent::GetPosition</A><BR>
+<A HREF="#wxjoystickeventgetzposition">wxJoystickEvent::GetZPosition</A><BR>
+<A HREF="#wxjoystickeventisbutton">wxJoystickEvent::IsButton</A><BR>
+<A HREF="#wxjoystickeventismove">wxJoystickEvent::IsMove</A><BR>
+<A HREF="#wxjoystickeventiszmove">wxJoystickEvent::IsZMove</A><BR>
+<P>
+
+<HR>
+<A NAME="wxjoystickeventctor"></A>
+<H3>wxJoystickEvent::wxJoystickEvent</H3>
+<P>
+<B></B> <B>wxJoystickEvent</B>(<B>WXTYPE</B><I> eventType = 0</I>, <B>int</B><I> state = 0</I>,
+ <B>int</B><I> joystick = wxJOYSTICK1</I>, <B>int </B><I>change = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxjoystickeventbuttondown"></A>
+<H3>wxJoystickEvent::ButtonDown</H3>
+<P>
+<B>bool</B> <B>ButtonDown</B>(<B>int</B><I> button = wxJOY_BUTTON_ANY</I>) <B>const</B><P>
+Returns true if the event was a down event from the specified button (or any button).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>button</I><UL><UL>
+Can be wxJOY_BUTTONn where n is 1, 2, 3 or 4; or wxJOY_BUTTON_ANY to
+indicate any button down event.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxjoystickeventbuttonisdown"></A>
+<H3>wxJoystickEvent::ButtonIsDown</H3>
+<P>
+<B>bool</B> <B>ButtonIsDown</B>(<B>int</B><I> button = wxJOY_BUTTON_ANY</I>) <B>const</B><P>
+Returns true if the specified button (or any button) was in a down state.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>button</I><UL><UL>
+Can be wxJOY_BUTTONn where n is 1, 2, 3 or 4; or wxJOY_BUTTON_ANY to
+indicate any button down event.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxjoystickeventbuttonup"></A>
+<H3>wxJoystickEvent::ButtonUp</H3>
+<P>
+<B>bool</B> <B>ButtonUp</B>(<B>int</B><I> button = wxJOY_BUTTON_ANY</I>) <B>const</B><P>
+Returns true if the event was an up event from the specified button (or any button).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>button</I><UL><UL>
+Can be wxJOY_BUTTONn where n is 1, 2, 3 or 4; or wxJOY_BUTTON_ANY to
+indicate any button down event.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxjoystickeventgetbuttonchange"></A>
+<H3>wxJoystickEvent::GetButtonChange</H3>
+<P>
+<B>int</B> <B>GetButtonChange</B>() <B>const</B><P>
+Returns the identifier of the button changing state. This is a wxJOY_BUTTONn identifier, where
+n is one of 1, 2, 3, 4.<P>
+
+<HR>
+<A NAME="wxjoystickeventgetbuttonstate"></A>
+<H3>wxJoystickEvent::GetButtonState</H3>
+<P>
+<B>int</B> <B>GetButtonState</B>() <B>const</B><P>
+Returns the down state of the buttons. This is a bitlist of wxJOY_BUTTONn identifiers, where
+n is one of 1, 2, 3, 4.<P>
+
+<HR>
+<A NAME="wxjoystickeventgetjoystick"></A>
+<H3>wxJoystickEvent::GetJoystick</H3>
+<P>
+<B>int</B> <B>GetJoystick</B>() <B>const</B><P>
+Returns the identifier of the joystick generating the event - one of wxJOYSTICK1 and wxJOYSTICK2.<P>
+
+<HR>
+<A NAME="wxjoystickeventgetposition"></A>
+<H3>wxJoystickEvent::GetPosition</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetPosition</B>() <B>const</B><P>
+Returns the x, y position of the joystick event.<P>
+
+<HR>
+<A NAME="wxjoystickeventgetzposition"></A>
+<H3>wxJoystickEvent::GetZPosition</H3>
+<P>
+<B>int</B> <B>GetZPosition</B>() <B>const</B><P>
+Returns the z position of the joystick event.<P>
+
+<HR>
+<A NAME="wxjoystickeventisbutton"></A>
+<H3>wxJoystickEvent::IsButton</H3>
+<P>
+<B>bool</B> <B>IsButton</B>() <B>const</B><P>
+Returns true if this was a button up or down event (<I>not</I> 'is any button down?').<P>
+
+<HR>
+<A NAME="wxjoystickeventismove"></A>
+<H3>wxJoystickEvent::IsMove</H3>
+<P>
+<B>bool</B> <B>IsMove</B>() <B>const</B><P>
+Returns true if this was an x, y move event.<P>
+
+<HR>
+<A NAME="wxjoystickeventiszmove"></A>
+<H3>wxJoystickEvent::IsZMove</H3>
+<P>
+<B>bool</B> <B>IsZMove</B>() <B>const</B><P>
+Returns true if this was a z move event.<P>
+
+</FONT></BODY></HTML>

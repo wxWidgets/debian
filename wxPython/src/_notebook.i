@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _notebook.i,v 1.28 2005/04/11 19:57:02 RD Exp $
+// RCS-ID:      $Id: _notebook.i 41774 2006-10-09 02:36:38Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,25 @@ MAKE_CONST_WXSTRING(NotebookNameStr);
 
 //---------------------------------------------------------------------------
 %newgroup
+
+
+enum {
+    wxBK_DEFAULT,
+    wxBK_TOP,
+    wxBK_BOTTOM,
+    wxBK_LEFT,
+    wxBK_RIGHT,
+    wxBK_ALIGN_MASK,
+    wxBK_BUTTONBAR,
+
+    // hittest flags
+    wxBK_HITTEST_NOWHERE = 1,   // not on tab
+    wxBK_HITTEST_ONICON  = 2,   // on icon
+    wxBK_HITTEST_ONLABEL = 4,   // on label
+    wxBK_HITTEST_ONITEM  = wxBK_HITTEST_ONICON | wxBK_HITTEST_ONLABEL,
+    wxBK_HITTEST_ONPAGE  = 8,   // not on tab control, but over the selected page
+};
+
 
 // TODO:  Virtualize this class so other book controls can be derived in Python
 
@@ -69,9 +88,9 @@ public:
     virtual void SetImageList(wxImageList *imageList);
 
     // as SetImageList() but we will delete the image list ourselves
-    %apply SWIGTYPE *DISOWN { wxImageList *imageList };
+    %disownarg( wxImageList *imageList );
     void AssignImageList(wxImageList *imageList);
-    %clear wxImageList *imageList;
+    %cleardisown( wxImageList *imageList );
 
     // get pointer (may be NULL) to the associated image list
     wxImageList* GetImageList() const;
@@ -87,6 +106,24 @@ public:
     // calculate the size of the control from the size of its page
     virtual wxSize CalcSizeFromPage(const wxSize& sizePage) const/* = 0*/;
 
+
+    // get/set size of area between book control area and page area
+    unsigned int GetInternalBorder() const;
+    void SetInternalBorder(unsigned int internalBorder);
+
+    // returns true if we have wxCHB_TOP or wxCHB_BOTTOM style
+    bool IsVertical() const;
+
+    // Sets/gets the margin around the controller
+    void SetControlMargin(int margin);
+    int GetControlMargin() const;
+
+    // set/get option to shrink to fit current page
+    void SetFitToCurrentPage(bool fit);
+    bool GetFitToCurrentPage() const;
+
+    // returns the sizer containing the control, if any
+    wxSizer* GetControlSizer() const;
 
 
     // remove one page from the control and delete it
@@ -117,12 +154,34 @@ public:
     // NB: this function will _not_ generate PAGE_CHANGING/ED events
     virtual int SetSelection(size_t n)/* = 0*/;
 
+    
+    // acts as SetSelection but does not generate events
+    virtual int ChangeSelection(size_t n)/* = 0*/;
 
     // cycle thru the pages
     void AdvanceSelection(bool forward = true);
 
+    DocDeclAStr(
+        virtual int, HitTest(const wxPoint& pt, long* OUTPUT) const,
+        "HitTest(Point pt) -> (tab, where)",
+        "Returns the page/tab which is hit, and flags indicating where using
+wx.NB_HITTEST flags.", "");
+
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    %property(ControlMargin, GetControlMargin, SetControlMargin, doc="See `GetControlMargin` and `SetControlMargin`");
+    %property(ControlSizer, GetControlSizer, doc="See `GetControlSizer`");
+    %property(CurrentPage, GetCurrentPage, doc="See `GetCurrentPage`");
+    %property(FitToCurrentPage, GetFitToCurrentPage, SetFitToCurrentPage, doc="See `GetFitToCurrentPage` and `SetFitToCurrentPage`");
+    %property(ImageList, GetImageList, SetImageList, doc="See `GetImageList` and `SetImageList`");
+    %property(InternalBorder, GetInternalBorder, SetInternalBorder, doc="See `GetInternalBorder` and `SetInternalBorder`");
+    %property(Page, GetPage, doc="See `GetPage`");
+    %property(PageCount, GetPageCount, doc="See `GetPageCount`");
+    %property(PageImage, GetPageImage, SetPageImage, doc="See `GetPageImage` and `SetPageImage`");
+    %property(PageText, GetPageText, SetPageText, doc="See `GetPageText` and `SetPageText`");
+    %property(Selection, GetSelection, SetSelection, doc="See `GetSelection` and `SetSelection`");
+
 };
 
 
@@ -139,6 +198,10 @@ public:
         // the page that was selected before the change (-1 if none)
     int GetOldSelection() const;
     void SetOldSelection(int nOldSel);
+
+    %property(OldSelection, GetOldSelection, SetOldSelection, doc="See `GetOldSelection` and `SetOldSelection`");
+    %property(Selection, GetSelection, SetSelection, doc="See `GetSelection` and `SetSelection`");
+
 };
 
 
@@ -156,12 +219,12 @@ enum {
     wxNB_MULTILINE,
     wxNB_NOPAGETHEME,
 
-    // hittest flags
-    wxNB_HITTEST_NOWHERE = 1,   // not on tab
-    wxNB_HITTEST_ONICON  = 2,   // on icon
-    wxNB_HITTEST_ONLABEL = 4,   // on label
-    wxNB_HITTEST_ONITEM  = wxNB_HITTEST_ONICON | wxNB_HITTEST_ONLABEL,
-
+    // for backwards compatibility only
+    wxNB_HITTEST_NOWHERE,
+    wxNB_HITTEST_ONICON,
+    wxNB_HITTEST_ONLABEL,
+    wxNB_HITTEST_ONITEM,
+    wxNB_HITTEST_ONPAGE,
 };
 
 
@@ -203,23 +266,25 @@ public:
     // set the size of the tabs for wxNB_FIXEDWIDTH controls
     virtual void SetTabSize(const wxSize& sz);
 
-    // hit test, returns which tab is hit and, optionally, where (icon, label)
-    // (not implemented on all platforms)
-    DocDeclAStr(
-        virtual int, HitTest(const wxPoint& pt, long* OUTPUT) const,
-        "HitTest(Point pt) -> (tab, where)",
-        "Returns the tab which is hit, and flags indicating where using
-wx.NB_HITTEST flags.", "");
-
     // implement some base class functions
     virtual wxSize CalcSizeFromPage(const wxSize& sizePage) const;
 
     // On platforms that support it, get the theme page background colour,
     // else invalid colour
     wxColour GetThemeBackgroundColour() const;
-    
+
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    // returns false if the change to nPage is vetoed by the program
+    bool SendPageChangingEvent(int nPage);
+
+    // sends the event about page change from old to new (or GetSelection() if
+    // new is -1)
+    void SendPageChangedEvent(int nPageOld, int nPageNew = -1);
+
+    %property(RowCount, GetRowCount, doc="See `GetRowCount`");
+    %property(ThemeBackgroundColour, GetThemeBackgroundColour, doc="See `GetThemeBackgroundColour`");
 };
 
 
@@ -321,10 +386,8 @@ public:
                 long style = 0,
                 const wxString& name = wxPyEmptyString);
 
-    // returns True if we have wxLB_TOP or wxLB_BOTTOM style
-    bool IsVertical() const;
-
     wxListView* GetListView();
+    %property(ListView, GetListView, doc="See `GetListView`");
 };
 
 
@@ -387,13 +450,13 @@ public:
                 const wxString& name = wxPyEmptyString);
 
 
-    // returns true if we have wxCHB_TOP or wxCHB_BOTTOM style
-    bool IsVertical() const;
-
     // returns the choice control
     wxChoice* GetChoiceCtrl() const;
 
     virtual bool DeleteAllPages();
+
+    %property(ChoiceCtrl, GetChoiceCtrl, doc="See `GetChoiceCtrl`");
+
 };
 
 
@@ -415,34 +478,173 @@ public:
 //---------------------------------------------------------------------------
 %newgroup;
 
-// WXWIN_COMPATIBILITY_2_4
+MustHaveApp(wxTreebook);
 
-class wxBookCtrlSizer: public wxSizer
+class wxTreebook : public wxBookCtrlBase
 {
 public:
-    %pythonAppend wxBookCtrlSizer "self._setOORInfo(self)"
+    %pythonAppend wxTreebook         "self._setOORInfo(self)"
+    %pythonAppend wxTreebook()       ""
 
-    wxBookCtrlSizer( wxBookCtrlBase *nb );
 
-    void RecalcSizes();
-    wxSize CalcMin();
-    wxBookCtrlBase *GetControl();
+    // This ctor creates the tree book control
+    wxTreebook(wxWindow *parent,
+               wxWindowID id,
+               const wxPoint& pos = wxDefaultPosition,
+               const wxSize& size = wxDefaultSize,
+               long style = wxBK_DEFAULT,
+               const wxString& name = wxPyEmptyString);
+
+    %RenameCtor(PreTreebook, wxTreebook());
+
+
+    // Really creates the control
+    bool Create(wxWindow *parent,
+                wxWindowID id,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
+                long style = wxBK_DEFAULT,
+                const wxString& name = wxPyEmptyString);
+
+
+    // Notice that page pointer may be NULL in which case the next non NULL
+    // page (usually the first child page of a node) is shown when this page is
+    // selected
+
+    // Inserts a new page just before the page indicated by page.
+    // The new page is placed on the same level as page.
+    virtual bool InsertPage(size_t pos,
+                            wxWindow *page,
+                            const wxString& text,
+                            bool select = false,
+                            int imageId = wxNOT_FOUND);
+
+    // Inserts a new sub-page to the end of children of the page at given pos.
+    virtual bool InsertSubPage(size_t pos,
+                               wxWindow *page,
+                               const wxString& text,
+                               bool select = false,
+                               int imageId = wxNOT_FOUND);
+
+    // Adds a new page at top level after all other pages.
+    virtual bool AddPage(wxWindow *page,
+                         const wxString& text,
+                         bool select = false,
+                         int imageId = wxNOT_FOUND);
+
+    // Adds a new child-page to the last top-level page inserted.
+    // Useful when constructing 1 level tree structure.
+    virtual bool AddSubPage(wxWindow *page,
+                            const wxString& text,
+                            bool select = false,
+                            int imageId = wxNOT_FOUND);
+
+    // Deletes the page and ALL its children. Could trigger page selection
+    // change in a case when selected page is removed. In that case its parent
+    // is selected (or the next page if no parent).
+    virtual bool DeletePage(size_t pos);
+
+
+    // Tree operations
+    // ---------------
+
+    // Gets the page node state -- node is expanded or collapsed
+    virtual bool IsNodeExpanded(size_t pos) const;
+
+    // Expands or collapses the page node. Returns the previous state.
+    // May generate page changing events (if selected page
+    // is under the collapsed branch, then parent is autoselected).
+    virtual bool ExpandNode(size_t pos, bool expand = true);
+
+    // shortcut for ExpandNode(pos, false)
+    bool CollapseNode(size_t pos);
+
+    // get the parent page or wxNOT_FOUND if this is a top level page
+    int GetPageParent(size_t pos) const;
+
+    // the tree control we use for showing the pages index tree
+    wxPyTreeCtrl* GetTreeCtrl() const;
+
+    %property(TreeCtrl, GetTreeCtrl, doc="See `GetTreeCtrl`");
 };
 
 
-class wxNotebookSizer: public wxSizer {
+class wxTreebookEvent : public wxBookCtrlBaseEvent
+{
 public:
-    %pythonAppend wxNotebookSizer "self._setOORInfo(self)"
-
-    wxNotebookSizer( wxNotebook *nb );
-
-    void RecalcSizes();
-    wxSize CalcMin();
-    wxNotebook *GetNotebook();
+    wxTreebookEvent(wxEventType commandType = wxEVT_NULL, int id = 0,
+                    int nSel = wxNOT_FOUND, int nOldSel = wxNOT_FOUND);
 };
 
-%pythoncode { NotebookSizer.__init__ = wx._deprecated(NotebookSizer.__init__, "NotebookSizer is no longer needed.") }
-%pythoncode { BookCtrlSizer.__init__ = wx._deprecated(BookCtrlSizer.__init__, "BookCtrlSizer is no longer needed.") }
+%constant wxEventType wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED;
+%constant wxEventType wxEVT_COMMAND_TREEBOOK_PAGE_CHANGING;
+%constant wxEventType wxEVT_COMMAND_TREEBOOK_NODE_COLLAPSED;
+%constant wxEventType wxEVT_COMMAND_TREEBOOK_NODE_EXPANDED;
 
+
+%pythoncode {
+    EVT_TREEBOOK_PAGE_CHANGED= wx.PyEventBinder( wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED, 1 )
+    EVT_TREEBOOK_PAGE_CHANGING= wx.PyEventBinder( wxEVT_COMMAND_TREEBOOK_PAGE_CHANGING, 1)
+    EVT_TREEBOOK_NODE_COLLAPSED= wx.PyEventBinder( wxEVT_COMMAND_TREEBOOK_NODE_COLLAPSED, 1 )
+    EVT_TREEBOOK_NODE_EXPANDED= wx.PyEventBinder( wxEVT_COMMAND_TREEBOOK_NODE_EXPANDED, 1 )
+}
+
+//---------------------------------------------------------------------------
+%newgroup;
+
+MustHaveApp(wxTreebook);
+
+class wxToolbook : public wxBookCtrlBase
+{
+public:
+    %pythonAppend wxToolbook         "self._setOORInfo(self)"
+    %pythonAppend wxToolbook()       ""
+
+
+    // This ctor creates the tree book control
+    wxToolbook(wxWindow *parent,
+               wxWindowID id,
+               const wxPoint& pos = wxDefaultPosition,
+               const wxSize& size = wxDefaultSize,
+               long style = wxBK_DEFAULT,
+               const wxString& name = wxPyEmptyString);
+
+    %RenameCtor(PreToolbook, wxToolbook());
+
+    // quasi ctor
+    bool Create(wxWindow *parent,
+                wxWindowID id,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
+                long style = 0,
+                const wxString& name = wxEmptyString);
+
+
+    wxToolBarBase* GetToolBar() const;
+
+    // Not part of the wxBookctrl API, but must be called in OnIdle or
+    // by application to realize the toolbar and select the initial page.
+    void Realize();
+
+    %property(ToolBar, GetToolBar, doc="See `GetToolBar`");
+};
+
+
+class wxToolbookEvent : public wxBookCtrlBaseEvent
+{
+public:
+    wxToolbookEvent(wxEventType commandType = wxEVT_NULL, int id = 0,
+                    int nSel = wxNOT_FOUND, int nOldSel = wxNOT_FOUND);
+};
+
+
+%constant wxEventType wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED;
+%constant wxEventType wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGING;
+
+
+%pythoncode {
+    EVT_TOOLBOOK_PAGE_CHANGED = wx.PyEventBinder( wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED, 1)
+    EVT_TOOLBOOK_PAGE_CHANGING = wx.PyEventBinder( wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGING, 1)
+}
 
 //---------------------------------------------------------------------------

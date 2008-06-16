@@ -1,0 +1,1766 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDateTime</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdatetime"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdatespan.html#wxdatespan"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdatetimeholidayauthority.html#wxdatetimeholidayauthority"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDateTime</H2>
+<P>
+wxDateTime class represents an absolute moment in the time.<P>
+<B><FONT COLOR="#FF0000">Types</FONT></B><P>
+The type <TT>wxDateTime_t</TT> is typedefed as <TT>unsigned short</TT> and is used
+to contain the number of years, hours, minutes, seconds and milliseconds.<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+Global constant <TT>wxDefaultDateTime</TT> and synonym for it <TT>wxInvalidDateTime</TT> are defined. This constant will be different from any valid
+wxDateTime object.<P>
+All the following constants are defined inside wxDateTime class (i.e., to refer to
+them you should prepend their names with <TT>wxDateTime::</TT>).<P>
+Time zone symbolic names:<P>
+<PRE>
+    enum TZ
+    {
+        // the time in the current time zone
+        Local,
+
+        // zones from GMT (= Greenwhich Mean Time): they're guaranteed to be
+        // consequent numbers, so writing something like `GMT0 + offset' is
+        // safe if abs(offset) &lt;= 12
+
+        // underscore stands for minus
+        GMT_12, GMT_11, GMT_10, GMT_9, GMT_8, GMT_7,
+        GMT_6, GMT_5, GMT_4, GMT_3, GMT_2, GMT_1,
+        GMT0,
+        GMT1, GMT2, GMT3, GMT4, GMT5, GMT6,
+        GMT7, GMT8, GMT9, GMT10, GMT11, GMT12, GMT13,
+        // Note that GMT12 and GMT_12 are not the same: there is a difference
+        // of exactly one day between them
+
+        // some symbolic names for TZ
+
+        // Europe
+        WET = GMT0,                         // Western Europe Time
+        WEST = GMT1,                        // Western Europe Summer Time
+        CET = GMT1,                         // Central Europe Time
+        CEST = GMT2,                        // Central Europe Summer Time
+        EET = GMT2,                         // Eastern Europe Time
+        EEST = GMT3,                        // Eastern Europe Summer Time
+        MSK = GMT3,                         // Moscow Time
+        MSD = GMT4,                         // Moscow Summer Time
+
+        // US and Canada
+        AST = GMT_4,                        // Atlantic Standard Time
+        ADT = GMT_3,                        // Atlantic Daylight Time
+        EST = GMT_5,                        // Eastern Standard Time
+        EDT = GMT_4,                        // Eastern Daylight Saving Time
+        CST = GMT_6,                        // Central Standard Time
+        CDT = GMT_5,                        // Central Daylight Saving Time
+        MST = GMT_7,                        // Mountain Standard Time
+        MDT = GMT_6,                        // Mountain Daylight Saving Time
+        PST = GMT_8,                        // Pacific Standard Time
+        PDT = GMT_7,                        // Pacific Daylight Saving Time
+        HST = GMT_10,                       // Hawaiian Standard Time
+        AKST = GMT_9,                       // Alaska Standard Time
+        AKDT = GMT_8,                       // Alaska Daylight Saving Time
+
+        // Australia
+
+        A_WST = GMT8,                       // Western Standard Time
+        A_CST = GMT13 + 1,                  // Central Standard Time (+9.5)
+        A_EST = GMT10,                      // Eastern Standard Time
+        A_ESST = GMT11,                     // Eastern Summer Time
+
+        // New Zealand
+        NZST = GMT12,                       // Standard Time
+        NZDT = GMT13,                       // Daylight Saving Time
+
+        // Universal Coordinated Time = the new and politically correct name
+        // for GMT
+        UTC = GMT0
+    };
+</PRE>
+Month names: Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec and
+Inv_Month for an invalid.month value are the values of <TT>wxDateTime::Month</TT>
+enum.<P>
+Likewise, Sun, Mon, Tue, Wed, Thu, Fri, Sat, and Inv_WeekDay are the values in
+<TT>wxDateTime::WeekDay</TT> enum.<P>
+Finally, Inv_Year is defined to be an invalid value for year parameter.<P>
+<A HREF="wx_wxdatetime.html#wxdatetimegetmonthname">GetMonthName()</A> and
+<A HREF="wx_wxdatetime.html#wxdatetimegetweekdayname">GetWeekDayName</A> functions use the following
+flags:<P>
+<PRE>
+    enum NameFlags
+    {
+        Name_Full = 0x01,       // return full name
+        Name_Abbr = 0x02        // return abbreviated name
+    };
+</PRE>
+Several functions accept an extra parameter specifying the calendar to use
+(although most of them only support now the Gregorian calendar). This
+parameters is one of the following values:<P>
+<PRE>
+    enum Calendar
+    {
+        Gregorian,  // calendar currently in use in Western countries
+        Julian      // calendar in use since -45 until the 1582 (or later)
+    };
+</PRE>
+Date calculations often depend on the country and wxDateTime allows to set the
+country whose conventions should be used using
+<A HREF="wx_wxdatetime.html#wxdatetimesetcountry">SetCountry</A>. It takes one of the following
+values as parameter:<P>
+<PRE>
+    enum Country
+    {
+        Country_Unknown, // no special information for this country
+        Country_Default, // set the default country with SetCountry() method
+                         // or use the default country with any other
+
+        Country_WesternEurope_Start,
+        Country_EEC = Country_WesternEurope_Start,
+        France,
+        Germany,
+        UK,
+        Country_WesternEurope_End = UK,
+
+        Russia,
+
+        USA
+    };
+</PRE>
+Different parts of the world use different conventions for the week start.
+In some countries, the week starts on Sunday, while in others -- on Monday.
+The ISO standard doesn't address this issue, so we support both conventions in
+the functions whose result depends on it (<A HREF="wx_wxdatetime.html#wxdatetimegetweekofyear">GetWeekOfYear</A> and
+<A HREF="wx_wxdatetime.html#wxdatetimegetweekofmonth">GetWeekOfMonth</A>).<P>
+The desired behvaiour may be specified by giving one of the following
+constants as argument to these functions:<P>
+<PRE>
+    enum WeekFlags
+    {
+        Default_First,   // Sunday_First for US, Monday_First for the rest
+        Monday_First,    // week starts with a Monday
+        Sunday_First     // week starts with a Sunday
+    };
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/datetime.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetimeoverview.html#wxdatetimeoverview">Date classes overview</A>,
+<A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>,
+<A HREF="wx_wxdatespan.html#wxdatespan">wxDateSpan</A>,
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrl">wxCalendarCtrl</A><P>
+<B><FONT COLOR="#FF0000">Function groups</FONT></B><P>
+
+<A HREF="#datetimestaticfunctions">Static functions</A><BR>
+<A HREF="#datetimeconstructors">Constructors, assignment operators and setters</A><BR>
+<A HREF="#datetimeaccessors">Accessors</A><BR>
+<A HREF="#datecomparison">Date comparison</A><BR>
+<A HREF="#datearithmetics">Date arithmetics</A><BR>
+<A HREF="#datetimeparsing">Parsing and formatting dates</A><BR>
+<A HREF="#datetimecalculations">Calendar calculations</A><BR>
+<A HREF="#astronomyhistoryfunctions">Astronomical/historical functions</A><BR>
+<A HREF="#datetimedstzone">Time zone and DST support</A><BR>
+<A HREF="#wxdatetimeconvertyeartobc">wxDateTime::ConvertYearToBC</A><BR>
+<A HREF="#wxdatetimegetampmstrings">wxDateTime::GetAmPmStrings</A><BR>
+<A HREF="#wxdatetimegetbegindst">wxDateTime::GetBeginDST</A><BR>
+<A HREF="#wxdatetimegetcountry">wxDateTime::GetCountry</A><BR>
+<A HREF="#wxdatetimegetcurrentyear">wxDateTime::GetCurrentYear</A><BR>
+<A HREF="#wxdatetimegetcurrentmonth">wxDateTime::GetCurrentMonth</A><BR>
+<A HREF="#wxdatetimegetcenturystatic">wxDateTime::GetCentury</A><BR>
+<A HREF="#wxdatetimegetenddst">wxDateTime::GetEndDST</A><BR>
+<A HREF="#wxdatetimegetmonthname">wxDateTime::GetMonthName</A><BR>
+<A HREF="#wxdatetimegetnumberofdays">wxDateTime::GetNumberOfDays</A><BR>
+<A HREF="#wxdatetimegettimenow">wxDateTime::GetTimeNow</A><BR>
+<A HREF="#wxdatetimegettmnow">wxDateTime::GetTmNow</A><BR>
+<A HREF="#topic0">wxDateTime::GetTmNow</A><BR>
+<A HREF="#wxdatetimegetweekdayname">wxDateTime::GetWeekDayName</A><BR>
+<A HREF="#wxdatetimeisleapyear">wxDateTime::IsLeapYear</A><BR>
+<A HREF="#wxdatetimeiswesteuropeancountry">wxDateTime::IsWestEuropeanCountry</A><BR>
+<A HREF="#wxdatetimeisdstapplicable">wxDateTime::IsDSTApplicable</A><BR>
+<A HREF="#wxdatetimenow">wxDateTime::Now</A><BR>
+<A HREF="#wxdatetimesetcountry">wxDateTime::SetCountry</A><BR>
+<A HREF="#wxdatetimetoday">wxDateTime::Today</A><BR>
+<A HREF="#wxdatetimeunow">wxDateTime::UNow</A><BR>
+<A HREF="#wxdatetimewxdatetimedef">wxDateTime::wxDateTime</A><BR>
+<A HREF="#wxdatetimewxdatetimetimet">wxDateTime::wxDateTime</A><BR>
+<A HREF="#wxdatetimewxdatetimetm">wxDateTime::wxDateTime</A><BR>
+<A HREF="#wxdatetimewxdatetimejdn">wxDateTime::wxDateTime</A><BR>
+<A HREF="#wxdatetimewxdatetimetime">wxDateTime::wxDateTime</A><BR>
+<A HREF="#wxdatetimewxdatetimedate">wxDateTime::wxDateTime</A><BR>
+<A HREF="#wxdatetimesettocurrent">wxDateTime::SetToCurrent</A><BR>
+<A HREF="#wxdatetimesettimet">wxDateTime::Set</A><BR>
+<A HREF="#wxdatetimesettm">wxDateTime::Set</A><BR>
+<A HREF="#wxdatetimesetjdn">wxDateTime::Set</A><BR>
+<A HREF="#wxdatetimesettime">wxDateTime::Set</A><BR>
+<A HREF="#wxdatetimesetdate">wxDateTime::Set</A><BR>
+<A HREF="#wxdatetimeresettime">wxDateTime::ResetTime</A><BR>
+<A HREF="#wxdatetimesetyear">wxDateTime::SetYear</A><BR>
+<A HREF="#wxdatetimesetmonth">wxDateTime::SetMonth</A><BR>
+<A HREF="#wxdatetimesetday">wxDateTime::SetDay</A><BR>
+<A HREF="#wxdatetimesethour">wxDateTime::SetHour</A><BR>
+<A HREF="#wxdatetimesetminute">wxDateTime::SetMinute</A><BR>
+<A HREF="#wxdatetimesetsecond">wxDateTime::SetSecond</A><BR>
+<A HREF="#wxdatetimesetmillisecond">wxDateTime::SetMillisecond</A><BR>
+<A HREF="#wxdatetimeoperatoreqtimet">wxDateTime::operator=</A><BR>
+<A HREF="#wxdatetimeoperatoreqtm">wxDateTime::operator=</A><BR>
+<A HREF="#wxdatetimeisvalid">wxDateTime::IsValid</A><BR>
+<A HREF="#wxdatetimegetdateonly">wxDateTime::GetDateOnly</A><BR>
+<A HREF="#wxdatetimegettm">wxDateTime::GetTm</A><BR>
+<A HREF="#wxdatetimegetticks">wxDateTime::GetTicks</A><BR>
+<A HREF="#wxdatetimegetcentury">wxDateTime::GetCentury</A><BR>
+<A HREF="#wxdatetimegetyear">wxDateTime::GetYear</A><BR>
+<A HREF="#wxdatetimegetmonth">wxDateTime::GetMonth</A><BR>
+<A HREF="#wxdatetimegetday">wxDateTime::GetDay</A><BR>
+<A HREF="#wxdatetimegetweekday">wxDateTime::GetWeekDay</A><BR>
+<A HREF="#wxdatetimegethour">wxDateTime::GetHour</A><BR>
+<A HREF="#wxdatetimegetminute">wxDateTime::GetMinute</A><BR>
+<A HREF="#wxdatetimegetsecond">wxDateTime::GetSecond</A><BR>
+<A HREF="#wxdatetimegetmillisecond">wxDateTime::GetMillisecond</A><BR>
+<A HREF="#wxdatetimegetdayofyear">wxDateTime::GetDayOfYear</A><BR>
+<A HREF="#wxdatetimegetweekofyear">wxDateTime::GetWeekOfYear</A><BR>
+<A HREF="#wxdatetimegetweekofmonth">wxDateTime::GetWeekOfMonth</A><BR>
+<A HREF="#wxdatetimeisworkday">wxDateTime::IsWorkDay</A><BR>
+<A HREF="#wxdatetimeisgregoriandate">wxDateTime::IsGregorianDate</A><BR>
+<A HREF="#wxdatetimesetfromdos">wxDateTime::SetFromDOS</A><BR>
+<A HREF="#wxdatetimegetasdos">wxDateTime::GetAsDOS</A><BR>
+<A HREF="#wxdatetimeisequalto">wxDateTime::IsEqualTo</A><BR>
+<A HREF="#wxdatetimeisearlierthan">wxDateTime::IsEarlierThan</A><BR>
+<A HREF="#wxdatetimeislaterthan">wxDateTime::IsLaterThan</A><BR>
+<A HREF="#wxdatetimeisstrictlybetween">wxDateTime::IsStrictlyBetween</A><BR>
+<A HREF="#wxdatetimeisbetween">wxDateTime::IsBetween</A><BR>
+<A HREF="#wxdatetimeissamedate">wxDateTime::IsSameDate</A><BR>
+<A HREF="#wxdatetimeissametime">wxDateTime::IsSameTime</A><BR>
+<A HREF="#wxdatetimeisequalupto">wxDateTime::IsEqualUpTo</A><BR>
+<A HREF="#wxdatetimeaddts">wxDateTime::Add</A><BR>
+<A HREF="#wxdatetimeaddds">wxDateTime::Add</A><BR>
+<A HREF="#wxdatetimesubtractts">wxDateTime::Subtract</A><BR>
+<A HREF="#wxdatetimesubtractds">wxDateTime::Subtract</A><BR>
+<A HREF="#wxdatetimesubtractdt">wxDateTime::Subtract</A><BR>
+<A HREF="#wxdatetimeparserfc822date">wxDateTime::ParseRfc822Date</A><BR>
+<A HREF="#wxdatetimeparseformat">wxDateTime::ParseFormat</A><BR>
+<A HREF="#wxdatetimeparsedatetime">wxDateTime::ParseDateTime</A><BR>
+<A HREF="#wxdatetimeparsedate">wxDateTime::ParseDate</A><BR>
+<A HREF="#wxdatetimeparsetime">wxDateTime::ParseTime</A><BR>
+<A HREF="#wxdatetimeformat">wxDateTime::Format</A><BR>
+<A HREF="#wxdatetimeformatdate">wxDateTime::FormatDate</A><BR>
+<A HREF="#wxdatetimeformattime">wxDateTime::FormatTime</A><BR>
+<A HREF="#wxdatetimeformatisodate">wxDateTime::FormatISODate</A><BR>
+<A HREF="#wxdatetimeformatisotime">wxDateTime::FormatISOTime</A><BR>
+<A HREF="#wxdatetimesettoweekdayinsameweek">wxDateTime::SetToWeekDayInSameWeek</A><BR>
+<A HREF="#wxdatetimegetweekdayinsameweek">wxDateTime::GetWeekDayInSameWeek</A><BR>
+<A HREF="#wxdatetimesettonextweekday">wxDateTime::SetToNextWeekDay</A><BR>
+<A HREF="#wxdatetimegetnextweekday">wxDateTime::GetNextWeekDay</A><BR>
+<A HREF="#wxdatetimesettoprevweekday">wxDateTime::SetToPrevWeekDay</A><BR>
+<A HREF="#wxdatetimegetprevweekday">wxDateTime::GetPrevWeekDay</A><BR>
+<A HREF="#wxdatetimesettoweekday">wxDateTime::SetToWeekDay</A><BR>
+<A HREF="#wxdatetimegetweekday2">wxDateTime::GetWeekDay</A><BR>
+<A HREF="#wxdatetimesettolastweekday">wxDateTime::SetToLastWeekDay</A><BR>
+<A HREF="#wxdatetimegetlastweekday">wxDateTime::GetLastWeekDay</A><BR>
+<A HREF="#wxdatetimesettoweekofyear">wxDateTime::SetToWeekOfYear</A><BR>
+<A HREF="#wxdatetimesettolastmonthday">wxDateTime::SetToLastMonthDay</A><BR>
+<A HREF="#wxdatetimegetlastmonthday">wxDateTime::GetLastMonthDay</A><BR>
+<A HREF="#wxdatetimesettoyearday">wxDateTime::SetToYearDay</A><BR>
+<A HREF="#wxdatetimegetyearday">wxDateTime::GetYearDay</A><BR>
+<A HREF="#wxdatetimegetjuliandaynumber">wxDateTime::GetJulianDayNumber</A><BR>
+<A HREF="#wxdatetimegetjdn">wxDateTime::GetJDN</A><BR>
+<A HREF="#wxdatetimegetmodifiedjuliandaynumber">wxDateTime::GetModifiedJulianDayNumber</A><BR>
+<A HREF="#wxdatetimegetmjd">wxDateTime::GetMJD</A><BR>
+<A HREF="#wxdatetimegetratadie">wxDateTime::GetRataDie</A><BR>
+<A HREF="#wxdatetimefromtimezone">wxDateTime::FromTimezone</A><BR>
+<A HREF="#wxdatetimetotimezone">wxDateTime::ToTimezone</A><BR>
+<A HREF="#wxdatetimemaketimezone">wxDateTime::MakeTimezone</A><BR>
+<A HREF="#wxdatetimemakefromtimezone">wxDateTime::MakeFromTimezone</A><BR>
+<A HREF="#wxdatetimetoutc">wxDateTime::ToUTC</A><BR>
+<A HREF="#wxdatetimemakeutc">wxDateTime::MakeUTC</A><BR>
+<A HREF="#wxdatetimeisdst">wxDateTime::IsDST</A><BR>
+<P>
+
+<HR>
+<A NAME="datetimestaticfunctions"></A>
+<H3>Static functions</H3>
+<P>
+For convenience, all static functions are collected here. These functions
+either set or return the static variables of wxDateSpan (the country), return
+the current moment, year, month or number of days in it, or do some general
+calendar-related actions.<P>
+Please note that although several function accept an extra <I>Calendar</I>
+parameter, it is currently ignored as only the Gregorian calendar is
+supported. Future versions will support other calendars.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> These methods are standalone functions named
+<TT>wxDateTime_&lt;StaticMethodName&gt;</TT> in wxPython.<P>
+<A HREF="wx_wxdatetime.html#wxdatetimesetcountry">SetCountry</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetcountry">GetCountry</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeiswesteuropeancountry">IsWestEuropeanCountry</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetcurrentyear">GetCurrentYear</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeconvertyeartobc">ConvertYearToBC</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetcurrentmonth">GetCurrentMonth</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeisleapyear">IsLeapYear</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetcenturystatic">GetCentury</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetnumberofdays">GetNumberOfDays</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetnumberofdays">GetNumberOfDays</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetmonthname">GetMonthName</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetweekdayname">GetWeekDayName</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetampmstrings">GetAmPmStrings</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeisdstapplicable">IsDSTApplicable</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetbegindst">GetBeginDST</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetenddst">GetEndDST</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimenow">Now</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeunow">UNow</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimetoday">Today</A><P>
+
+
+<HR>
+<A NAME="datetimeconstructors"></A>
+<H3>Constructors, assignment operators and setters</H3>
+<P>
+Constructors and various <TT>Set()</TT> methods are collected here. If you
+construct a date object from separate values for day, month and year, you
+should use <A HREF="wx_wxdatetime.html#wxdatetimeisvalid">IsValid</A> method to check that the
+values were correct as constructors can not return an error code.<P>
+<A HREF="wx_wxdatetime.html#wxdatetimewxdatetimedef">wxDateTime()</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimewxdatetimetimet">wxDateTime(time_t)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimewxdatetimetm">wxDateTime(struct tm)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimewxdatetimejdn">wxDateTime(double jdn)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimewxdatetimetime">wxDateTime(h, m, s, ms)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimewxdatetimedate">wxDateTime(day, mon, year, h, m, s, ms)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesettocurrent">SetToCurrent</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesettimet">Set(time_t)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesettm">Set(struct tm)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesetjdn">Set(double jdn)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesettime">Set(h, m, s, ms)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesetdate">Set(day, mon, year, h, m, s, ms)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesetfromdos">SetFromDOS(unsigned long ddt)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeresettime">ResetTime</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesetyear">SetYear</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesetmonth">SetMonth</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesetdate">SetDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesethour">SetHour</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesetminute">SetMinute</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesetsecond">SetSecond</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesetmillisecond">SetMillisecond</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeoperatoreqtimet">operator=(time_t)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeoperatoreqtm">operator=(struct tm)</A><P>
+
+
+<HR>
+<A NAME="datetimeaccessors"></A>
+<H3>Accessors</H3>
+<P>
+Here are the trivial accessors. Other functions, which might have to perform
+some more complicated calculations to find the answer are under the
+<A HREF="wx_wxdatetime.html#datetimecalculations">Calendar calculations</A> section.<P>
+<A HREF="wx_wxdatetime.html#wxdatetimeisvalid">IsValid</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetticks">GetTicks</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetcentury">GetCentury</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetyear">GetYear</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetmonth">GetMonth</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetday">GetDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetweekday">GetWeekDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegethour">GetHour</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetminute">GetMinute</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetsecond">GetSecond</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetmillisecond">GetMillisecond</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetdayofyear">GetDayOfYear</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetweekofyear">GetWeekOfYear</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetweekofmonth">GetWeekOfMonth</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetyearday">GetYearDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeisworkday">IsWorkDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeisgregoriandate">IsGregorianDate</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetasdos">GetAsDOS</A><P>
+
+
+<HR>
+<A NAME="datecomparison"></A>
+<H3>Date comparison</H3>
+<P>
+There are several function to allow date comparison. To supplement them, a few
+global operators &gt;, &lt; etc taking wxDateTime are defined.<P>
+<A HREF="wx_wxdatetime.html#wxdatetimeisequalto">IsEqualTo</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeisearlierthan">IsEarlierThan</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeislaterthan">IsLaterThan</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeisstrictlybetween">IsStrictlyBetween</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeisbetween">IsBetween</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeissamedate">IsSameDate</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeissametime">IsSameTime</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeisequalupto">IsEqualUpTo</A><P>
+
+
+<HR>
+<A NAME="datearithmetics"></A>
+<H3>Date arithmetics</H3>
+<P>
+These functions carry out <A HREF="wx_wxdatetimeoverview.html#tdatearithm">arithmetics</A> on the wxDateTime
+objects. As explained in the overview, either wxTimeSpan or wxDateSpan may be
+added to wxDateTime, hence all functions are overloaded to accept both
+arguments.<P>
+Also, both <TT>Add()</TT> and <TT>Subtract()</TT> have both const and non-const
+version. The first one returns a new object which represents the
+sum/difference of the original one with the argument while the second form
+modifies the object to which it is applied. The operators -= and += are
+defined to be equivalent to the second forms of these functions.<P>
+<A HREF="wx_wxdatetime.html#wxdatetimeaddts">Add(wxTimeSpan)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeaddds">Add(wxDateSpan)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesubtractts">Subtract(wxTimeSpan)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesubtractds">Subtract(wxDateSpan)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesubtractdt">Subtract(wxDateTime)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeaddts">oparator+=(wxTimeSpan)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeaddds">oparator+=(wxDateSpan)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesubtractts">oparator-=(wxTimeSpan)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesubtractds">oparator-=(wxDateSpan)</A><P>
+
+
+<HR>
+<A NAME="datetimeparsing"></A>
+<H3>Parsing and formatting dates</H3>
+<P>
+These functions convert wxDateTime objects to and from text. The
+conversions to text are mostly trivial: you can either do it using the default
+date and time representations for the current locale (
+<A HREF="wx_wxdatetime.html#wxdatetimeformatdate">FormatDate</A> and
+<A HREF="wx_wxdatetime.html#wxdatetimeformattime">FormatTime</A>), using the international standard
+representation defined by ISO 8601 (
+<A HREF="wx_wxdatetime.html#wxdatetimeformatisodate">FormatISODate</A> and
+<A HREF="wx_wxdatetime.html#wxdatetimeformatisotime">FormatISOTime</A>) or by specifying any format
+at all and using <A HREF="wx_wxdatetime.html#wxdatetimeformat">Format</A> directly.<P>
+The conversions from text are more interesting, as there are much more
+possibilities to care about. The simplest cases can be taken care of with
+<A HREF="wx_wxdatetime.html#wxdatetimeparseformat">ParseFormat</A> which can parse any date in the
+given (rigid) format. <A HREF="wx_wxdatetime.html#wxdatetimeparserfc822date">ParseRfc822Date</A> is
+another function for parsing dates in predefined format -- the one of RFC 822
+which (still...) defines the format of email messages on the Internet. This
+format can not be described with <TT>strptime(3)</TT>-like format strings used by
+<A HREF="wx_wxdatetime.html#wxdatetimeformat">Format</A>, hence the need for a separate function.<P>
+But the most interesting functions are
+<A HREF="wx_wxdatetime.html#wxdatetimeparsetime">ParseTime</A>,
+<A HREF="wx_wxdatetime.html#wxdatetimeparsedate">ParseDate</A> and
+<A HREF="wx_wxdatetime.html#wxdatetimeparsedatetime">ParseDateTime</A>. They try to parse the date
+ans time (or only one of them) in 'free' format, i.e. allow them to be
+specified in any of possible ways. These functions will usually be used to
+parse the (interactive) user input which is not bound to be in any predefined
+format. As an example, <A HREF="wx_wxdatetime.html#wxdatetimeparsedatetime">ParseDateTime</A> can
+parse the strings such as <TT>"tomorrow"</TT>, <TT>"March first"</TT> and even
+<TT>"next Sunday"</TT>.<P>
+<A HREF="wx_wxdatetime.html#wxdatetimeparserfc822date">ParseRfc822Date</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeparseformat">ParseFormat</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeparsedatetime">ParseDateTime</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeparsedate">ParseDate</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeparsetime">ParseTime</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeformat">Format</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeformatdate">FormatDate</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeformattime">FormatTime</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeformatisodate">FormatISODate</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeformatisotime">FormatISOTime</A><P>
+
+
+<HR>
+<A NAME="datetimecalculations"></A>
+<H3>Calendar calculations</H3>
+<P>
+The functions in this section perform the basic calendar calculations, mostly
+related to the week days. They allow to find the given week day in the
+week with given number (either in the month or in the year) and so on.<P>
+All (non-const) functions in this section don't modify the time part of the
+wxDateTime -- they only work with the date part of it.<P>
+<A HREF="wx_wxdatetime.html#wxdatetimesettoweekdayinsameweek">SetToWeekDayInSameWeek</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetweekdayinsameweek">GetWeekDayInSameWeek</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesettonextweekday">SetToNextWeekDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetnextweekday">GetNextWeekDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesettoprevweekday">SetToPrevWeekDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetprevweekday">GetPrevWeekDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesettoweekday">SetToWeekDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetweekday2">GetWeekDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesettolastweekday">SetToLastWeekDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetlastweekday">GetLastWeekDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesettoweekofyear">SetToWeekOfYear</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesettolastmonthday">SetToLastMonthDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetlastmonthday">GetLastMonthDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesettoyearday">SetToYearDay</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetyearday">GetYearDay</A><P>
+
+
+<HR>
+<A NAME="astronomyhistoryfunctions"></A>
+<H3>Astronomical/historical functions</H3>
+<P>
+Some degree of support for the date units used in astronomy and/or history is
+provided. You can construct a wxDateTime object from a
+<A HREF="wx_wxdatetime.html#wxdatetimesetjdn">JDN</A> and you may also get its JDN,
+<A HREF="wx_wxdatetime.html#wxdatetimegetmodifiedjuliandaynumber">MJD</A> or
+<A HREF="wx_wxdatetime.html#wxdatetimegetratadie">Rata Die number</A> from it.<P>
+<A HREF="wx_wxdatetime.html#wxdatetimewxdatetimejdn">wxDateTime(double jdn)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimesetjdn">Set(double jdn)</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetjuliandaynumber">GetJulianDayNumber</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetjdn">GetJDN</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetmodifiedjuliandaynumber">GetModifiedJulianDayNumber</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetmjd">GetMJD</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetratadie">GetRataDie</A><P>
+
+
+<HR>
+<A NAME="datetimedstzone"></A>
+<H3>Time zone and DST support</H3>
+<P>
+Please see the <A HREF="wx_wxdatetimeoverview.html#tdatetimezones">time zone overview</A> for more
+information about time zones. Normally, these functions should be rarely used.<P>
+<A HREF="wx_wxdatetime.html#wxdatetimefromtimezone">FromTimezone</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimetotimezone">ToTimezone</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimemaketimezone">MakeTimezone</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimemakefromtimezone">MakeFromTimezone</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimetoutc">ToUTC</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimemakeutc">MakeUTC</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetbegindst">GetBeginDST</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimegetenddst">GetEndDST</A><BR>
+
+<A HREF="wx_wxdatetime.html#wxdatetimeisdst">IsDST</A><P>
+<P>
+
+
+<HR>
+<A NAME="wxdatetimeconvertyeartobc"></A>
+<H3>wxDateTime::ConvertYearToBC</H3>
+<P>
+<B>static int</B> <B>ConvertYearToBC</B>(<B>int </B><I>year</I>)<P>
+Converts the year in absolute notation (i.e. a number which can be negative,
+positive or zero) to the year in BC/AD notation. For the positive years,
+nothing is done, but the year 0 is year 1 BC and so for other years there is a
+difference of 1.<P>
+This function should be used like this:<P>
+<PRE>
+    wxDateTime dt(...);
+    int y = dt.GetYear();
+    printf("The year is %d%s", wxDateTime::ConvertYearToBC(y), y &gt; 0 ? "AD" : "BC");
+</PRE>
+
+
+<HR>
+<A NAME="wxdatetimegetampmstrings"></A>
+<H3>wxDateTime::GetAmPmStrings</H3>
+<P>
+<B>static void</B> <B>GetAmPmStrings</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A> *</B></B><I>am</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A> *</B></B><I>pm</I>)<P>
+Returns the translations of the strings <TT>AM</TT> and <TT>PM</TT> used for time
+formatting for the current locale. Either of the pointers may be <TT>NULL</TT> if
+the corresponding value is not needed.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetbegindst"></A>
+<H3>wxDateTime::GetBeginDST</H3>
+<P>
+<B>static <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetBeginDST</B>(<B>int </B><I>year = Inv_Year</I>, <B>Country </B><I>country = Country_Default</I>)<P>
+Get the beginning of DST for the given country in the given year (current one
+by default). This function suffers from limitations described in
+<A HREF="wx_wxdatetimeoverview.html#tdatedst">DST overview</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimegetenddst">GetEndDST</A><P>
+
+
+<HR>
+<A NAME="wxdatetimegetcountry"></A>
+<H3>wxDateTime::GetCountry</H3>
+<P>
+<B>static Country</B> <B>GetCountry</B>()<P>
+Returns the current default country. The default country is used for DST
+calculations, for example.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimesetcountry">SetCountry</A><P>
+
+
+<HR>
+<A NAME="wxdatetimegetcurrentyear"></A>
+<H3>wxDateTime::GetCurrentYear</H3>
+<P>
+<B>static int</B> <B>GetCurrentYear</B>(<B>Calendar </B><I>cal = Gregorian</I>)<P>
+Get the current year in given calendar (only Gregorian is currently supported).<P>
+
+
+<HR>
+<A NAME="wxdatetimegetcurrentmonth"></A>
+<H3>wxDateTime::GetCurrentMonth</H3>
+<P>
+<B>static Month</B> <B>GetCurrentMonth</B>(<B>Calendar </B><I>cal = Gregorian</I>)<P>
+Get the current month in given calendar (only Gregorian is currently supported).<P>
+
+
+<HR>
+<A NAME="wxdatetimegetcenturystatic"></A>
+<H3>wxDateTime::GetCentury</H3>
+<P>
+<B>static int</B> <B>GetCentury</B>(<B>int </B><I>year</I>)<P>
+Get the current century, i.e. first two digits of the year, in given calendar
+(only Gregorian is currently supported).<P>
+
+
+<HR>
+<A NAME="wxdatetimegetenddst"></A>
+<H3>wxDateTime::GetEndDST</H3>
+<P>
+<B>static <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetEndDST</B>(<B>int </B><I>year = Inv_Year</I>, <B>Country </B><I>country = Country_Default</I>)<P>
+Returns the end of DST for the given country in the given year (current one by
+default).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimegetbegindst">GetBeginDST</A><P>
+
+
+<HR>
+<A NAME="wxdatetimegetmonthname"></A>
+<H3>wxDateTime::GetMonthName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetMonthName</B>(<B>Month </B><I>month</I>, <B>NameFlags </B><I>flags = Name_Full</I>)<P>
+Gets the full (default) or abbreviated (specify <TT>Name_Abbr</TT> name of the
+given month.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimegetweekdayname">GetWeekDayName</A><P>
+
+
+<HR>
+<A NAME="wxdatetimegetnumberofdays"></A>
+<H3>wxDateTime::GetNumberOfDays</H3>
+<P>
+<B>static wxDateTime_t</B> <B>GetNumberOfDays</B>(<B>int </B><I>year</I>, <B>Calendar </B><I>cal = Gregorian</I>)<P>
+<B>static wxDateTime_t</B> <B>GetNumberOfDays</B>(<B>Month </B><I>month</I>, <B>int </B><I>year = Inv_Year</I>, <B>Calendar </B><I>cal = Gregorian</I>)<P>
+Returns the number of days in the given year or in the given month of the
+year.<P>
+The only supported value for <I>cal</I> parameter is currently <TT>Gregorian</TT>.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> These two methods are named <TT>GetNumberOfDaysInYear</TT>
+and <TT>GetNumberOfDaysInMonth</TT> in wxPython.<P>
+
+
+<HR>
+<A NAME="wxdatetimegettimenow"></A>
+<H3>wxDateTime::GetTimeNow</H3>
+<P>
+<B>static time_t</B> <B>GetTimeNow</B>()<P>
+Returns the current time.<P>
+
+
+<HR>
+<A NAME="wxdatetimegettmnow"></A>
+<H3>wxDateTime::GetTmNow</H3>
+<P>
+<B>static struct tm *</B> <B>GetTmNow</B>(<B>struct tm *</B><I>tm</I>)<P>
+Returns the current time broken down, uses the buffer whose adress is
+passed to the function via <I>tm</I> to store the result.<P>
+
+<HR>
+<A NAME="topic0"></A>
+<H3>wxDateTime::GetTmNow</H3>
+<P>
+<B>static struct tm *</B> <B>GetTmNow</B>()<P>
+Returns the current time broken down. Note that this function returns a
+pointer to a static buffer that's reused by calls to this function and
+certain C library functions (e.g. localtime). If there is any chance your
+code might be used in a multi-threaded application, you really should use
+the flavour of function <A HREF="wx_wxdatetime.html#wxdatetimegettmnow">wxDateTime::GetTmNow</A>
+taking a parameter.<P>
+
+<HR>
+<A NAME="wxdatetimegetweekdayname"></A>
+<H3>wxDateTime::GetWeekDayName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetWeekDayName</B>(<B>WeekDay </B><I>weekday</I>, <B>NameFlags </B><I>flags = Name_Full</I>)<P>
+Gets the full (default) or abbreviated (specify <TT>Name_Abbr</TT> name of the
+given week day.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimegetmonthname">GetMonthName</A><P>
+
+
+<HR>
+<A NAME="wxdatetimeisleapyear"></A>
+<H3>wxDateTime::IsLeapYear</H3>
+<P>
+<B>static bool</B> <B>IsLeapYear</B>(<B>int </B><I>year = Inv_Year</I>, <B>Calendar </B><I>cal = Gregorian</I>)<P>
+Returns <TT>true</TT> if the <I>year</I> is a leap one in the specified calendar.<P>
+This functions supports Gregorian and Julian calendars.<P>
+
+
+<HR>
+<A NAME="wxdatetimeiswesteuropeancountry"></A>
+<H3>wxDateTime::IsWestEuropeanCountry</H3>
+<P>
+<B>static bool</B> <B>IsWestEuropeanCountry</B>(<B>Country </B><I>country = Country_Default</I>)<P>
+This function returns <TT>true</TT> if the specified (or default) country is one
+of Western European ones. It is used internally by wxDateTime to determine the
+DST convention and date and time formatting rules.<P>
+
+
+<HR>
+<A NAME="wxdatetimeisdstapplicable"></A>
+<H3>wxDateTime::IsDSTApplicable</H3>
+<P>
+<B>static bool</B> <B>IsDSTApplicable</B>(<B>int </B><I>year = Inv_Year</I>, <B>Country </B><I>country = Country_Default</I>)<P>
+Returns <TT>true</TT> if DST was used n the given year (the current one by
+default) in the given country.<P>
+
+
+<HR>
+<A NAME="wxdatetimenow"></A>
+<H3>wxDateTime::Now</H3>
+<P>
+<B>static <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>Now</B>()<P>
+Returns the object corresponding to the current time.<P>
+Example:<P>
+<PRE>
+    wxDateTime now = wxDateTime::Now();
+    printf("Current time in Paris:\t%s\n", now.Format("%c", wxDateTime::CET).c_str());
+</PRE>
+Note that this function is accurate up to second:
+<A HREF="wx_wxdatetime.html#wxdatetimeunow">wxDateTime::UNow</A> should be used for better precision
+(but it is less efficient and might not be available on all platforms).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimetoday">Today</A><P>
+
+
+<HR>
+<A NAME="wxdatetimesetcountry"></A>
+<H3>wxDateTime::SetCountry</H3>
+<P>
+<B>static void</B> <B>SetCountry</B>(<B>Country </B><I>country</I>)<P>
+Sets the country to use by default. This setting influences the DST
+calculations, date formatting and other things.<P>
+The possible values for <I>country</I> parameter are enumerated in
+<A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime constants section</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimegetcountry">GetCountry</A><P>
+
+
+<HR>
+<A NAME="wxdatetimetoday"></A>
+<H3>wxDateTime::Today</H3>
+<P>
+<B>static <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>Today</B>()<P>
+Returns the object corresponding to the midnight of the current day (i.e. the
+same as <A HREF="wx_wxdatetime.html#wxdatetimenow">Now()</A>, but the time part is set to 0).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimenow">Now</A><P>
+
+
+<HR>
+<A NAME="wxdatetimeunow"></A>
+<H3>wxDateTime::UNow</H3>
+<P>
+<B>static <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>UNow</B>()<P>
+Returns the object corresponding to the current time including the
+milliseconds if a function to get time with such precision is available on the
+current platform (supported under most Unices and Win32).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimenow">Now</A><P>
+
+
+<HR>
+<A NAME="wxdatetimewxdatetimedef"></A>
+<H3>wxDateTime::wxDateTime</H3>
+<P>
+<B></B> <B>wxDateTime</B>()<P>
+Default constructor. Use one of <TT>Set()</TT> functions to initialize the object
+later.<P>
+
+
+<HR>
+<A NAME="wxdatetimewxdatetimetimet"></A>
+<H3>wxDateTime::wxDateTime</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>wxDateTime</B>(<B>time_t </B><I>timet</I>)<P>
+Same as <A HREF="wx_wxdatetime.html#wxdatetimewxdatetimetimet">Set</A>.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This constructor is named <TT>wxDateTimeFromTimeT</TT> in wxPython.<P>
+
+
+<HR>
+<A NAME="wxdatetimewxdatetimetm"></A>
+<H3>wxDateTime::wxDateTime</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>wxDateTime</B>(<B>const struct tm&amp; </B><I>tm</I>)<P>
+Same as <A HREF="wx_wxdatetime.html#wxdatetimewxdatetimetm">Set</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> Unsupported.<P>
+
+
+<HR>
+<A NAME="wxdatetimewxdatetimejdn"></A>
+<H3>wxDateTime::wxDateTime</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>wxDateTime</B>(<B>double </B><I>jdn</I>)<P>
+Same as <A HREF="wx_wxdatetime.html#wxdatetimewxdatetimejdn">Set</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This constructor is named <TT>wxDateTimeFromJDN</TT> in wxPython.<P>
+
+
+<HR>
+<A NAME="wxdatetimewxdatetimetime"></A>
+<H3>wxDateTime::wxDateTime</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>wxDateTime</B>(<B>wxDateTime_t </B><I>hour</I>, <B>wxDateTime_t </B><I>minute = 0</I>, <B>wxDateTime_t </B><I>second = 0</I>, <B>wxDateTime_t </B><I>millisec = 0</I>)<P>
+Same as <A HREF="wx_wxdatetime.html#wxdatetimewxdatetimetime">Set</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This constructor is named <TT>wxDateTimeFromHMS</TT> in wxPython.<P>
+
+
+<HR>
+<A NAME="wxdatetimewxdatetimedate"></A>
+<H3>wxDateTime::wxDateTime</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>wxDateTime</B>(<B>wxDateTime_t </B><I>day</I>, <B>Month </B><I>month = Inv_Month</I>, <B>int</B><I> Inv_Year</I>,
+<B>wxDateTime_t </B><I>hour = 0</I>, <B>wxDateTime_t </B><I>minute = 0</I>, <B>wxDateTime_t </B><I>second = 0</I>, <B>wxDateTime_t </B><I>millisec = 0</I>)<P>
+Same as <A HREF="wx_wxdatetime.html#wxdatetimesetdate">Set</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This constructor is named <TT>wxDateTimeFromDMY</TT> in wxPython.<P>
+
+
+<HR>
+<A NAME="wxdatetimesettocurrent"></A>
+<H3>wxDateTime::SetToCurrent</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetToCurrent</B>()<P>
+Sets the date and time of to the current values. Same as assigning the result
+of <A HREF="wx_wxdatetime.html#wxdatetimenow">Now()</A> to this object.<P>
+
+
+<HR>
+<A NAME="wxdatetimesettimet"></A>
+<H3>wxDateTime::Set</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>Set</B>(<B>time_t </B><I>timet</I>)<P>
+Constructs the object from <I>timet</I> value holding the number of seconds
+since Jan 1, 1970.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method is named <TT>SetTimeT</TT> in wxPython.<P>
+
+
+<HR>
+<A NAME="wxdatetimesettm"></A>
+<H3>wxDateTime::Set</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>Set</B>(<B>const struct tm&amp; </B><I>tm</I>)<P>
+Sets the date and time from the broken down representation in the standard
+<TT>tm</TT> structure.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> Unsupported.<P>
+
+
+<HR>
+<A NAME="wxdatetimesetjdn"></A>
+<H3>wxDateTime::Set</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>Set</B>(<B>double </B><I>jdn</I>)<P>
+Sets the date from the so-called <I>Julian Day Number</I>.<P>
+By definition, the Julian Day Number, usually abbreviated as JDN, of a
+particular instant is the fractional number of days since 12 hours Universal
+Coordinated Time (Greenwich mean noon) on January 1 of the year -4712 in the
+Julian proleptic calendar.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method is named <TT>SetJDN</TT> in wxPython.<P>
+
+
+<HR>
+<A NAME="wxdatetimesettime"></A>
+<H3>wxDateTime::Set</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>Set</B>(<B>wxDateTime_t </B><I>hour</I>, <B>wxDateTime_t </B><I>minute = 0</I>, <B>wxDateTime_t </B><I>second = 0</I>, <B>wxDateTime_t </B><I>millisec = 0</I>)<P>
+Sets the date to be equal to <A HREF="wx_wxdatetime.html#wxdatetimetoday">Today</A> and the time
+from supplied parameters.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method is named <TT>SetHMS</TT> in wxPython.<P>
+
+
+<HR>
+<A NAME="wxdatetimesetdate"></A>
+<H3>wxDateTime::Set</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>Set</B>(<B>wxDateTime_t </B><I>day</I>, <B>Month </B><I>month = Inv_Month</I>, <B>int </B><I>year = Inv_Year</I>, <B>wxDateTime_t </B><I>hour = 0</I>, <B>wxDateTime_t </B><I>minute = 0</I>, <B>wxDateTime_t </B><I>second = 0</I>, <B>wxDateTime_t </B><I>millisec = 0</I>)<P>
+Sets the date and time from the parameters.<P>
+
+
+<HR>
+<A NAME="wxdatetimeresettime"></A>
+<H3>wxDateTime::ResetTime</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>ResetTime</B>()<P>
+Reset time to midnight (00:00:00) without changing the date.<P>
+
+
+<HR>
+<A NAME="wxdatetimesetyear"></A>
+<H3>wxDateTime::SetYear</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetYear</B>(<B>int </B><I>year</I>)<P>
+Sets the year without changing other date components.<P>
+
+
+<HR>
+<A NAME="wxdatetimesetmonth"></A>
+<H3>wxDateTime::SetMonth</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetMonth</B>(<B>Month </B><I>month</I>)<P>
+Sets the month without changing other date components.<P>
+
+
+<HR>
+<A NAME="wxdatetimesetday"></A>
+<H3>wxDateTime::SetDay</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetDay</B>(<B>wxDateTime_t </B><I>day</I>)<P>
+Sets the day without changing other date components.<P>
+
+
+<HR>
+<A NAME="wxdatetimesethour"></A>
+<H3>wxDateTime::SetHour</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetHour</B>(<B>wxDateTime_t </B><I>hour</I>)<P>
+Sets the hour without changing other date components.<P>
+
+
+<HR>
+<A NAME="wxdatetimesetminute"></A>
+<H3>wxDateTime::SetMinute</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetMinute</B>(<B>wxDateTime_t </B><I>minute</I>)<P>
+Sets the minute without changing other date components.<P>
+
+
+<HR>
+<A NAME="wxdatetimesetsecond"></A>
+<H3>wxDateTime::SetSecond</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetSecond</B>(<B>wxDateTime_t </B><I>second</I>)<P>
+Sets the second without changing other date components.<P>
+
+
+<HR>
+<A NAME="wxdatetimesetmillisecond"></A>
+<H3>wxDateTime::SetMillisecond</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetMillisecond</B>(<B>wxDateTime_t </B><I>millisecond</I>)<P>
+Sets the millisecond without changing other date components.<P>
+
+
+<HR>
+<A NAME="wxdatetimeoperatoreqtimet"></A>
+<H3>wxDateTime::operator=</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>operator</B>(<B>time_t </B><I>timet</I>)<P>
+Same as <A HREF="wx_wxdatetime.html#wxdatetimesettimet">Set</A>.<P>
+
+
+<HR>
+<A NAME="wxdatetimeoperatoreqtm"></A>
+<H3>wxDateTime::operator=</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>operator</B>(<B>const struct tm&amp; </B><I>tm</I>)<P>
+Same as <A HREF="wx_wxdatetime.html#wxdatetimesettm">Set</A>.<P>
+
+
+<HR>
+<A NAME="wxdatetimeisvalid"></A>
+<H3>wxDateTime::IsValid</H3>
+<P>
+<B>bool</B> <B>IsValid</B>() <B>const</B><P>
+Returns <TT>true</TT> if the object represents a valid time moment.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetdateonly"></A>
+<H3>wxDateTime::GetDateOnly</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetDateOnly</B>() <B>const</B><P>
+Returns the object having the same date component as this one but time of
+00:00:00.<P>
+This function is new since wxWidgets version 2.8.2<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimeresettime">ResetTime</A><P>
+
+
+<HR>
+<A NAME="wxdatetimegettm"></A>
+<H3>wxDateTime::GetTm</H3>
+<P>
+<B>Tm</B> <B>GetTm</B>(<B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns broken down representation of the date and time.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetticks"></A>
+<H3>wxDateTime::GetTicks</H3>
+<P>
+<B>time_t</B> <B>GetTicks</B>() <B>const</B><P>
+Returns the number of seconds since Jan 1, 1970. An assert failure will occur
+if the date is not in the range covered by <TT>time_t</TT> type.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetcentury"></A>
+<H3>wxDateTime::GetCentury</H3>
+<P>
+<B>int</B> <B>GetCentury</B>(<B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns the century of this date.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetyear"></A>
+<H3>wxDateTime::GetYear</H3>
+<P>
+<B>int</B> <B>GetYear</B>(<B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns the year in the given timezone (local one by default).<P>
+
+
+<HR>
+<A NAME="wxdatetimegetmonth"></A>
+<H3>wxDateTime::GetMonth</H3>
+<P>
+<B>Month</B> <B>GetMonth</B>(<B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns the month in the given timezone (local one by default).<P>
+
+
+<HR>
+<A NAME="wxdatetimegetday"></A>
+<H3>wxDateTime::GetDay</H3>
+<P>
+<B>wxDateTime_t</B> <B>GetDay</B>(<B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns the day in the given timezone (local one by default).<P>
+
+
+<HR>
+<A NAME="wxdatetimegetweekday"></A>
+<H3>wxDateTime::GetWeekDay</H3>
+<P>
+<B>WeekDay</B> <B>GetWeekDay</B>(<B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns the week day in the given timezone (local one by default).<P>
+
+
+<HR>
+<A NAME="wxdatetimegethour"></A>
+<H3>wxDateTime::GetHour</H3>
+<P>
+<B>wxDateTime_t</B> <B>GetHour</B>(<B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns the hour in the given timezone (local one by default).<P>
+
+
+<HR>
+<A NAME="wxdatetimegetminute"></A>
+<H3>wxDateTime::GetMinute</H3>
+<P>
+<B>wxDateTime_t</B> <B>GetMinute</B>(<B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns the minute in the given timezone (local one by default).<P>
+
+
+<HR>
+<A NAME="wxdatetimegetsecond"></A>
+<H3>wxDateTime::GetSecond</H3>
+<P>
+<B>wxDateTime_t</B> <B>GetSecond</B>(<B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns the seconds in the given timezone (local one by default).<P>
+
+
+<HR>
+<A NAME="wxdatetimegetmillisecond"></A>
+<H3>wxDateTime::GetMillisecond</H3>
+<P>
+<B>wxDateTime_t</B> <B>GetMillisecond</B>(<B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns the milliseconds in the given timezone (local one by default).<P>
+
+
+<HR>
+<A NAME="wxdatetimegetdayofyear"></A>
+<H3>wxDateTime::GetDayOfYear</H3>
+<P>
+<B>wxDateTime_t</B> <B>GetDayOfYear</B>(<B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns the day of the year (in 1...366 range) in the given timezone
+(local one by default).<P>
+
+
+<HR>
+<A NAME="wxdatetimegetweekofyear"></A>
+<H3>wxDateTime::GetWeekOfYear</H3>
+<P>
+<B>wxDateTime_t</B> <B>GetWeekOfYear</B>(<B>WeekFlags </B><I>flags = Monday_First</I>, <B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns the number of the week of the year this date is in. The first week of
+the year is, according to international standards, the one containing Jan 4 or,
+equivalently, the first week which has Thursday in this year. Both of these
+definitions are the same as saying that the first week of the year must contain
+more than half of its days in this year. Accordingly, the week number will
+always be in 1...53 range (52 for non-leap years).<P>
+The function depends on the <A HREF="wx_wxdatetime.html#wxdatetime">week start</A> convention
+specified by the <I>flags</I> argument but its results for
+<TT>Sunday_First</TT> are not well-defined as the ISO definition quoted above
+applies to the weeks starting on Monday only.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetweekofmonth"></A>
+<H3>wxDateTime::GetWeekOfMonth</H3>
+<P>
+<B>wxDateTime_t</B> <B>GetWeekOfMonth</B>(<B>WeekFlags </B><I>flags = Monday_First</I>, <B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+Returns the ordinal number of the week in the month (in 1...5  range).<P>
+As <A HREF="wx_wxdatetime.html#wxdatetimegetweekofyear">GetWeekOfYear</A>, this function supports
+both conventions for the week start. See the description of these
+<A HREF="wx_wxdatetime.html#wxdatetime">week start</A> conventions.<P>
+
+
+<HR>
+<A NAME="wxdatetimeisworkday"></A>
+<H3>wxDateTime::IsWorkDay</H3>
+<P>
+<B>bool</B> <B>IsWorkDay</B>(<B>Country </B><I>country = Country_Default</I>) <B>const</B><P>
+Returns <TT>true</TT> is this day is not a holiday in the given country.<P>
+
+
+<HR>
+<A NAME="wxdatetimeisgregoriandate"></A>
+<H3>wxDateTime::IsGregorianDate</H3>
+<P>
+<B>bool</B> <B>IsGregorianDate</B>(<B>GregorianAdoption </B><I>country = Gr_Standard</I>) <B>const</B><P>
+Returns <TT>true</TT> if the given date is later than the date of adoption of the
+Gregorian calendar in the given country (and hence the Gregorian calendar
+calculations make sense for it).<P>
+
+
+<HR>
+<A NAME="wxdatetimesetfromdos"></A>
+<H3>wxDateTime::SetFromDOS</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>Set</B>(<B>unsigned long </B><I>ddt</I>)<P>
+Sets the date from the date and time in
+<A HREF="http://developer.novell.com/ndk/doc/smscomp/index.html?page=/ndk/doc/smscomp/sms_docs/data/hc2vlu5i.html">DOS</A>
+format.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetasdos"></A>
+<H3>wxDateTime::GetAsDOS</H3>
+<P>
+<B>unsigned long</B> <B>GetAsDOS</B>() <B>const</B><P>
+Returns the date and time in
+<A HREF="http://developer.novell.com/ndk/doc/smscomp/index.html?page=/ndk/doc/smscomp/sms_docs/data/hc2vlu5i.html">DOS</A>
+format.<P>
+
+
+<HR>
+<A NAME="wxdatetimeisequalto"></A>
+<H3>wxDateTime::IsEqualTo</H3>
+<P>
+<B>bool</B> <B>IsEqualTo</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>datetime</I>) <B>const</B><P>
+Returns <TT>true</TT> if the two dates are strictly identical.<P>
+
+
+<HR>
+<A NAME="wxdatetimeisearlierthan"></A>
+<H3>wxDateTime::IsEarlierThan</H3>
+<P>
+<B>bool</B> <B>IsEarlierThan</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>datetime</I>) <B>const</B><P>
+Returns <TT>true</TT> if this date precedes the given one.<P>
+
+
+<HR>
+<A NAME="wxdatetimeislaterthan"></A>
+<H3>wxDateTime::IsLaterThan</H3>
+<P>
+<B>bool</B> <B>IsLaterThan</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>datetime</I>) <B>const</B><P>
+Returns <TT>true</TT> if this date is later than the given one.<P>
+
+
+<HR>
+<A NAME="wxdatetimeisstrictlybetween"></A>
+<H3>wxDateTime::IsStrictlyBetween</H3>
+<P>
+<B>bool</B> <B>IsStrictlyBetween</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>t1</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>t2</I>) <B>const</B><P>
+Returns <TT>true</TT> if this date lies strictly between the two others,<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimeisbetween">IsBetween</A><P>
+
+
+<HR>
+<A NAME="wxdatetimeisbetween"></A>
+<H3>wxDateTime::IsBetween</H3>
+<P>
+<B>bool</B> <B>IsBetween</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>t1</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>t2</I>) <B>const</B><P>
+Returns <TT>true</TT> if <A HREF="wx_wxdatetime.html#wxdatetimeisstrictlybetween">IsStrictlyBetween</A>
+is <TT>true</TT> or if the date is equal to one of the limit values.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimeisstrictlybetween">IsStrictlyBetween</A><P>
+
+
+<HR>
+<A NAME="wxdatetimeissamedate"></A>
+<H3>wxDateTime::IsSameDate</H3>
+<P>
+<B>bool</B> <B>IsSameDate</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt</I>) <B>const</B><P>
+Returns <TT>true</TT> if the date is the same without comparing the time parts.<P>
+
+
+<HR>
+<A NAME="wxdatetimeissametime"></A>
+<H3>wxDateTime::IsSameTime</H3>
+<P>
+<B>bool</B> <B>IsSameTime</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt</I>) <B>const</B><P>
+Returns <TT>true</TT> if the time is the same (although dates may differ).<P>
+
+
+<HR>
+<A NAME="wxdatetimeisequalupto"></A>
+<H3>wxDateTime::IsEqualUpTo</H3>
+<P>
+<B>bool</B> <B>IsEqualUpTo</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt</I>, <B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>ts</I>) <B>const</B><P>
+Returns <TT>true</TT> if the date is equal to another one up to the given time
+interval, i.e. if the absolute difference between the two dates is less than
+this interval.<P>
+
+
+<HR>
+<A NAME="wxdatetimeaddts"></A>
+<H3>wxDateTime::Add</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>Add</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>diff</I>) <B>const</B><P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>Add</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>diff</I>)<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>operator+=</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>diff</I>)<P>
+Adds the given time span to this object.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method is named <TT>AddTS</TT> in wxPython.<P>
+<P>
+
+<HR>
+<A NAME="wxdatetimeaddds"></A>
+<H3>wxDateTime::Add</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>Add</B>(<B>const <A HREF="wx_wxdatespan.html#wxdatespan">wxDateSpan</A>& </B></B><I>diff</I>) <B>const</B><P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>Add</B>(<B>const <A HREF="wx_wxdatespan.html#wxdatespan">wxDateSpan</A>& </B></B><I>diff</I>)<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>operator+=</B>(<B>const <A HREF="wx_wxdatespan.html#wxdatespan">wxDateSpan</A>& </B></B><I>diff</I>)<P>
+Adds the given date span to this object.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method is named <TT>AddDS</TT> in wxPython.<P>
+<P>
+
+<HR>
+<A NAME="wxdatetimesubtractts"></A>
+<H3>wxDateTime::Subtract</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>Subtract</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>diff</I>) <B>const</B><P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>Subtract</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>diff</I>)<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>operator-=</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>diff</I>)<P>
+Subtracts the given time span from this object.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method is named <TT>SubtractTS</TT> in wxPython.<P>
+<P>
+
+<HR>
+<A NAME="wxdatetimesubtractds"></A>
+<H3>wxDateTime::Subtract</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>Subtract</B>(<B>const <A HREF="wx_wxdatespan.html#wxdatespan">wxDateSpan</A>& </B></B><I>diff</I>) <B>const</B><P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>Subtract</B>(<B>const <A HREF="wx_wxdatespan.html#wxdatespan">wxDateSpan</A>& </B></B><I>diff</I>)<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>operator-=</B>(<B>const <A HREF="wx_wxdatespan.html#wxdatespan">wxDateSpan</A>& </B></B><I>diff</I>)<P>
+Subtracts the given date span from this object.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method is named <TT>SubtractDS</TT> in wxPython.<P>
+<P>
+
+<HR>
+<A NAME="wxdatetimesubtractdt"></A>
+<H3>wxDateTime::Subtract</H3>
+<P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A></B> </B> <B>Subtract</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt</I>) <B>const</B><P>
+Subtracts another date from this one and returns the difference between them
+as wxTimeSpan.<P>
+
+
+<HR>
+<A NAME="wxdatetimeparserfc822date"></A>
+<H3>wxDateTime::ParseRfc822Date</H3>
+<P>
+<B>const wxChar *</B> <B>ParseRfc822Date</B>(<B>const wxChar* </B><I>date</I>)<P>
+Parses the string <I>date</I> looking for a date formatted according to the RFC
+822 in it. The exact description of this format may, of course, be found in
+the RFC (section 5), but, briefly, this is the format used in the headers of
+Internet email messages and one of the most common strings expressing date in
+this format may be something like <TT>"Sat, 18 Dec 1999 00:48:30 +0100"</TT>.<P>
+Returns <TT>NULL</TT> if the conversion failed, otherwise return the pointer to
+the character immediately following the part of the string which could be
+parsed. If the entire string contains only the date in RFC 822 format,
+the returned pointer will be pointing to a <TT>NUL</TT> character.<P>
+This function is intentionally strict, it will return an error for any string
+which is not RFC 822 compliant. If you need to parse date formatted in more
+free ways, you should use <A HREF="wx_wxdatetime.html#wxdatetimeparsedatetime">ParseDateTime</A> or
+<A HREF="wx_wxdatetime.html#wxdatetimeparsedate">ParseDate</A> instead.<P>
+
+
+<HR>
+<A NAME="wxdatetimeparseformat"></A>
+<H3>wxDateTime::ParseFormat</H3>
+<P>
+<B>const wxChar *</B> <B>ParseFormat</B>(<B>const wxChar *</B><I>date</I>, <B>const wxChar *</B><I>format = wxDefaultDateTimeFormat</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dateDef = wxDefaultDateTime</I>)<P>
+This function parses the string <I>date</I> according to the given
+<I>format</I>. The system <TT>strptime(3)</TT> function is used whenever available,
+but even if it is not, this function is still implemented, although support
+for locale-dependent format specifiers such as <TT>"%c"</TT>, <TT>"%x"</TT> or <TT>"%X"</TT> may
+not be perfect and GNU extensions such as <TT>"%z"</TT> and <TT>"%Z"</TT> are
+not implemented. This function does handle the month and weekday
+names in the current locale on all platforms, however.<P>
+Please see the description of the ANSI C function <TT>strftime(3)</TT> for the syntax
+of the format string.<P>
+The <I>dateDef</I> parameter is used to fill in the fields which could not be
+determined from the format string. For example, if the format is <TT>"%d"</TT> (the
+ay of the month), the month and the year are taken from <I>dateDef</I>. If
+it is not specified, <A HREF="wx_wxdatetime.html#wxdatetimetoday">Today</A> is used as the
+default date.<P>
+Returns <TT>NULL</TT> if the conversion failed, otherwise return the pointer to
+the character which stopped the scan.<P>
+
+
+<HR>
+<A NAME="wxdatetimeparsedatetime"></A>
+<H3>wxDateTime::ParseDateTime</H3>
+<P>
+<B>const wxChar *</B> <B>ParseDateTime</B>(<B>const wxChar *</B><I>datetime</I>)<P>
+Parses the string <I>datetime</I> containing the date and time in free format.
+This function tries as hard as it can to interpret the given string as date
+and time. Unlike <A HREF="wx_wxdatetime.html#wxdatetimeparserfc822date">ParseRfc822Date</A>, it
+will accept anything that may be accepted and will only reject strings which
+can not be parsed in any way at all.<P>
+Returns <TT>NULL</TT> if the conversion failed, otherwise return the pointer to
+the character which stopped the scan.<P>
+
+
+<HR>
+<A NAME="wxdatetimeparsedate"></A>
+<H3>wxDateTime::ParseDate</H3>
+<P>
+<B>const wxChar *</B> <B>ParseDate</B>(<B>const wxChar *</B><I>date</I>)<P>
+This function is like <A HREF="wx_wxdatetime.html#wxdatetimeparsedatetime">ParseDateTime</A>, but it
+only allows the date to be specified. It is thus less flexible then
+<A HREF="wx_wxdatetime.html#wxdatetimeparsedatetime">ParseDateTime</A>, but also has less chances to
+misinterpret the user input.<P>
+Returns <TT>NULL</TT> if the conversion failed, otherwise return the pointer to
+the character which stopped the scan.<P>
+
+
+<HR>
+<A NAME="wxdatetimeparsetime"></A>
+<H3>wxDateTime::ParseTime</H3>
+<P>
+<B>const wxChar *</B> <B>ParseTime</B>(<B>const wxChar *</B><I>time</I>)<P>
+This functions is like <A HREF="wx_wxdatetime.html#wxdatetimeparsedatetime">ParseDateTime</A>, but
+only allows the time to be specified in the input string.<P>
+Returns <TT>NULL</TT> if the conversion failed, otherwise return the pointer to
+the character which stopped the scan.<P>
+
+
+<HR>
+<A NAME="wxdatetimeformat"></A>
+<H3>wxDateTime::Format</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B> </B> <B>Format</B>(<B>const wxChar *</B><I>format = wxDefaultDateTimeFormat</I>, <B>const TimeZone&amp; </B><I>tz = Local</I>) <B>const</B><P>
+This function does the same as the standard ANSI C <TT>strftime(3)</TT> function.
+Please see its description for the meaning of <I>format</I> parameter.<P>
+It also accepts a few wxWidgets-specific extensions: you can optionally specify
+the width of the field to follow using <TT>printf(3)</TT>-like syntax and the
+format specification <TT>%l</TT> can be used to get the number of milliseconds.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimeparseformat">ParseFormat</A><P>
+
+
+<HR>
+<A NAME="wxdatetimeformatdate"></A>
+<H3>wxDateTime::FormatDate</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B> </B> <B>FormatDate</B>() <B>const</B><P>
+Identical to calling <A HREF="wx_wxdatetime.html#wxdatetimeformat">Format()</A> with <TT>"%x"</TT>
+argument (which means 'preferred date representation for the current locale').<P>
+
+
+<HR>
+<A NAME="wxdatetimeformattime"></A>
+<H3>wxDateTime::FormatTime</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B> </B> <B>FormatTime</B>() <B>const</B><P>
+Identical to calling <A HREF="wx_wxdatetime.html#wxdatetimeformat">Format()</A> with <TT>"%X"</TT>
+argument (which means 'preferred time representation for the current locale').<P>
+
+
+<HR>
+<A NAME="wxdatetimeformatisodate"></A>
+<H3>wxDateTime::FormatISODate</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B> </B> <B>FormatISODate</B>() <B>const</B><P>
+This function returns the date representation in the ISO 8601 format
+(YYYY-MM-DD).<P>
+
+
+<HR>
+<A NAME="wxdatetimeformatisotime"></A>
+<H3>wxDateTime::FormatISOTime</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B> </B> <B>FormatISOTime</B>() <B>const</B><P>
+This function returns the time representation in the ISO 8601 format
+(HH:MM:SS).<P>
+
+
+<HR>
+<A NAME="wxdatetimesettoweekdayinsameweek"></A>
+<H3>wxDateTime::SetToWeekDayInSameWeek</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetToWeekDayInSameWeek</B>(<B>WeekDay </B><I>weekday</I>, <B>WeekFlags</B><I>flags = <TT>Monday_First</TT></I>)<P>
+Adjusts the date so that it will still lie in the same week as before, but its
+week day will be the given one.<P>
+Returns the reference to the modified object itself.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetweekdayinsameweek"></A>
+<H3>wxDateTime::GetWeekDayInSameWeek</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetWeekDayInSameWeek</B>(<B>WeekDay </B><I>weekday</I>, <B>WeekFlags</B><I>flags = <TT>Monday_First</TT></I>) <B>const</B><P>
+Returns the copy of this object to which
+<A HREF="wx_wxdatetime.html#wxdatetimesettoweekdayinsameweek">SetToWeekDayInSameWeek</A> was
+applied.<P>
+
+
+<HR>
+<A NAME="wxdatetimesettonextweekday"></A>
+<H3>wxDateTime::SetToNextWeekDay</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetToNextWeekDay</B>(<B>WeekDay </B><I>weekday</I>)<P>
+Sets the date so that it will be the first <I>weekday</I> following the current
+date.<P>
+Returns the reference to the modified object itself.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetnextweekday"></A>
+<H3>wxDateTime::GetNextWeekDay</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetNextWeekDay</B>(<B>WeekDay </B><I>weekday</I>) <B>const</B><P>
+Returns the copy of this object to which
+<A HREF="wx_wxdatetime.html#wxdatetimesettonextweekday">SetToNextWeekDay</A> was applied.<P>
+
+
+<HR>
+<A NAME="wxdatetimesettoprevweekday"></A>
+<H3>wxDateTime::SetToPrevWeekDay</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetToPrevWeekDay</B>(<B>WeekDay </B><I>weekday</I>)<P>
+Sets the date so that it will be the last <I>weekday</I> before the current
+date.<P>
+Returns the reference to the modified object itself.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetprevweekday"></A>
+<H3>wxDateTime::GetPrevWeekDay</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetPrevWeekDay</B>(<B>WeekDay </B><I>weekday</I>) <B>const</B><P>
+Returns the copy of this object to which
+<A HREF="wx_wxdatetime.html#wxdatetimesettoprevweekday">SetToPrevWeekDay</A> was applied.<P>
+
+
+<HR>
+<A NAME="wxdatetimesettoweekday"></A>
+<H3>wxDateTime::SetToWeekDay</H3>
+<P>
+<B>bool</B> <B>SetToWeekDay</B>(<B>WeekDay </B><I>weekday</I>, <B>int </B><I>n = 1</I>, <B>Month </B><I>month = Inv_Month</I>, <B>int </B><I>year = Inv_Year</I>)<P>
+Sets the date to the <I>n</I>-th <I>weekday</I> in the given month of the given
+year (the current month and year are used by default). The parameter <I>n</I>
+may be either positive (counting from the beginning of the month) or negative
+(counting from the end of it).<P>
+For example, <TT>SetToWeekDay(2, wxDateTime::Wed)</TT> will set the date to the
+second Wednesday in the current month and
+<TT>SetToWeekDay(-1, wxDateTime::Sun)</TT> -- to the last Sunday in it.<P>
+Returns <TT>true</TT> if the date was modified successfully, <TT>false</TT>
+otherwise meaning that the specified date doesn't exist.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetweekday2"></A>
+<H3>wxDateTime::GetWeekDay</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetWeekDay</B>(<B>WeekDay </B><I>weekday</I>, <B>int </B><I>n = 1</I>, <B>Month </B><I>month = Inv_Month</I>, <B>int </B><I>year = Inv_Year</I>) <B>const</B><P>
+Returns the copy of this object to which
+<A HREF="wx_wxdatetime.html#wxdatetimesettoweekday">SetToWeekDay</A> was applied.<P>
+
+
+<HR>
+<A NAME="wxdatetimesettolastweekday"></A>
+<H3>wxDateTime::SetToLastWeekDay</H3>
+<P>
+<B>bool</B> <B>SetToLastWeekDay</B>(<B>WeekDay </B><I>weekday</I>, <B>Month </B><I>month = Inv_Month</I>, <B>int </B><I>year = Inv_Year</I>)<P>
+The effect of calling this function is the same as of calling
+<TT>SetToWeekDay(-1, weekday, month, year)</TT>. The date will be set to the last
+<I>weekday</I> in the given month and year (the current ones by default).<P>
+Always returns <TT>true</TT>.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetlastweekday"></A>
+<H3>wxDateTime::GetLastWeekDay</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetLastWeekDay</B>(<B>WeekDay </B><I>weekday</I>, <B>Month </B><I>month = Inv_Month</I>, <B>int </B><I>year = Inv_Year</I>)<P>
+Returns the copy of this object to which
+<A HREF="wx_wxdatetime.html#wxdatetimesettolastweekday">SetToLastWeekDay</A> was applied.<P>
+
+
+<HR>
+<A NAME="wxdatetimesettoweekofyear"></A>
+<H3>wxDateTime::SetToWeekOfYear</H3>
+<P>
+<B>static <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>SetToWeekOfYear</B>(<B>int </B><I>year</I>, <B>wxDateTime_t </B><I>numWeek</I>, <B>WeekDay </B><I>weekday = Mon</I>)<P>
+Set the date to the given <I>weekday</I> in the week number <I>numWeek</I> of the
+given <I>year</I> . The number should be in range 1...53.<P>
+Note that the returned date may be in a different year than the one passed to
+this function because both the week 1 and week 52 or 53 (for leap years)
+contain days from different years. See
+<A HREF="wx_wxdatetime.html#wxdatetimegetweekofyear">GetWeekOfYear</A> for the explanation of how the
+year weeks are counted.<P>
+
+
+<HR>
+<A NAME="wxdatetimesettolastmonthday"></A>
+<H3>wxDateTime::SetToLastMonthDay</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetToLastMonthDay</B>(<B>Month </B><I>month = Inv_Month</I>, <B>int </B><I>year = Inv_Year</I>)<P>
+Sets the date to the last day in the specified month (the current one by
+default).<P>
+Returns the reference to the modified object itself.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetlastmonthday"></A>
+<H3>wxDateTime::GetLastMonthDay</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetLastMonthDay</B>(<B>Month </B><I>month = Inv_Month</I>, <B>int </B><I>year = Inv_Year</I>) <B>const</B><P>
+Returns the copy of this object to which
+<A HREF="wx_wxdatetime.html#wxdatetimesettolastmonthday">SetToLastMonthDay</A> was applied.<P>
+
+
+<HR>
+<A NAME="wxdatetimesettoyearday"></A>
+<H3>wxDateTime::SetToYearDay</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>SetToYearDay</B>(<B>wxDateTime_t </B><I>yday</I>)<P>
+Sets the date to the day number <I>yday</I> in the same year (i.e., unlike the
+other functions, this one does not use the current year). The day number
+should be in the range 1...366 for the leap years and 1...365 for
+the other ones.<P>
+Returns the reference to the modified object itself.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetyearday"></A>
+<H3>wxDateTime::GetYearDay</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetYearDay</B>(<B>wxDateTime_t </B><I>yday</I>) <B>const</B><P>
+Returns the copy of this object to which
+<A HREF="wx_wxdatetime.html#wxdatetimesettoyearday">SetToYearDay</A> was applied.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetjuliandaynumber"></A>
+<H3>wxDateTime::GetJulianDayNumber</H3>
+<P>
+<B>double</B> <B>GetJulianDayNumber</B>() <B>const</B><P>
+Returns the <A HREF="wx_wxdatetime.html#wxdatetimesetjdn">JDN</A> corresponding to this date. Beware
+of rounding errors!<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimegetmodifiedjuliandaynumber">GetModifiedJulianDayNumber</A><P>
+
+
+<HR>
+<A NAME="wxdatetimegetjdn"></A>
+<H3>wxDateTime::GetJDN</H3>
+<P>
+<B>double</B> <B>GetJDN</B>() <B>const</B><P>
+Synonym for <A HREF="wx_wxdatetime.html#wxdatetimegetjuliandaynumber">GetJulianDayNumber</A>.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetmodifiedjuliandaynumber"></A>
+<H3>wxDateTime::GetModifiedJulianDayNumber</H3>
+<P>
+<B>double</B> <B>GetModifiedJulianDayNumber</B>() <B>const</B><P>
+Returns the <I>Modified Julian Day Number</I> (MJD) which is, by definition,
+equal to JDN - 2400000.5. The MJDs are simpler to work with as the integral
+MJDs correspond to midnights of the dates in the Gregorian calendar and not th
+noons like JDN. The MJD 0 is Nov 17, 1858.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetmjd"></A>
+<H3>wxDateTime::GetMJD</H3>
+<P>
+<B>double</B> <B>GetMJD</B>() <B>const</B><P>
+Synonym for <A HREF="wx_wxdatetime.html#wxdatetimegetmodifiedjuliandaynumber">GetModifiedJulianDayNumber</A>.<P>
+
+
+<HR>
+<A NAME="wxdatetimegetratadie"></A>
+<H3>wxDateTime::GetRataDie</H3>
+<P>
+<B>double</B> <B>GetRataDie</B>() <B>const</B><P>
+Return the <I>Rata Die number</I> of this date.<P>
+By definition, the Rata Die number is a date specified as the number of days
+relative to a base date of December 31 of the year 0. Thus January 1 of the
+year 1 is Rata Die day 1.<P>
+
+
+<HR>
+<A NAME="wxdatetimefromtimezone"></A>
+<H3>wxDateTime::FromTimezone</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>FromTimezone</B>(<B>const TimeZone&amp; </B><I>tz</I>, <B>bool </B><I>noDST = false</I>) <B>const</B><P>
+Transform the date from the given time zone to the local one. If <I>noDST</I> is 
+<TT>true</TT>, no DST adjustments will be made.<P>
+Returns the date in the local time zone.<P>
+
+
+<HR>
+<A NAME="wxdatetimetotimezone"></A>
+<H3>wxDateTime::ToTimezone</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>ToTimezone</B>(<B>const TimeZone&amp; </B><I>tz</I>, <B>bool </B><I>noDST = false</I>) <B>const</B><P>
+Transform the date to the given time zone. If <I>noDST</I> is <TT>true</TT>, no
+DST adjustments will be made.<P>
+Returns the date in the new time zone.<P>
+
+
+<HR>
+<A NAME="wxdatetimemaketimezone"></A>
+<H3>wxDateTime::MakeTimezone</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>MakeTimezone</B>(<B>const TimeZone&amp; </B><I>tz</I>, <B>bool </B><I>noDST = false</I>)<P>
+Modifies the object in place to represent the date in another time zone. If
+<I>noDST</I> is <TT>true</TT>, no DST adjustments will be made.<P>
+
+
+<HR>
+<A NAME="wxdatetimemakefromtimezone"></A>
+<H3>wxDateTime::MakeFromTimezone</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>MakeFromTimezone</B>(<B>const TimeZone&amp; </B><I>tz</I>, <B>bool </B><I>noDST = false</I>)<P>
+Same as <A HREF="wx_wxdatetime.html#wxdatetimefromtimezone">FromTimezone</A> but modifies the object
+in place.<P>
+
+
+<HR>
+<A NAME="wxdatetimetoutc"></A>
+<H3>wxDateTime::ToUTC</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>ToUTC</B>(<B>bool </B><I>noDST = false</I>) <B>const</B><P>
+This is the same as calling <A HREF="wx_wxdatetime.html#wxdatetimetotimezone">ToTimezone</A> with
+the argument <TT>GMT0</TT>.<P>
+
+
+<HR>
+<A NAME="wxdatetimemakeutc"></A>
+<H3>wxDateTime::MakeUTC</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>&</B> </B> <B>MakeUTC</B>(<B>bool </B><I>noDST = false</I>)<P>
+This is the same as calling <A HREF="wx_wxdatetime.html#wxdatetimemaketimezone">MakeTimezone</A> with
+the argument <TT>GMT0</TT>.<P>
+
+
+<HR>
+<A NAME="wxdatetimeisdst"></A>
+<H3>wxDateTime::IsDST</H3>
+<P>
+<B>int</B> <B>IsDST</B>(<B>Country </B><I>country = Country_Default</I>) <B>const</B><P>
+Returns <TT>true</TT> if the DST is applied for this date in the given country.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetime.html#wxdatetimegetbegindst">GetBeginDST</A> and
+<A HREF="wx_wxdatetime.html#wxdatetimegetenddst">GetEndDST</A><P>
+
+</FONT></BODY></HTML>

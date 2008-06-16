@@ -1,0 +1,119 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataViewListModelNotifier</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataviewlistmodelnotifier"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdataviewevent.html#wxdataviewevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdataviewmodel.html#wxdataviewmodel"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataViewListModelNotifier</H2>
+<P>
+A wxDataViewListModelNotifier instance is owned by a
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A>
+and mostly mirrors its interface. See the documentation
+of that class for further information.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataview.h&gt;<P>
+
+<A HREF="#wxdataviewlistmodelnotifierwxdataviewlistmodelnotifier">wxDataViewListModelNotifier::wxDataViewListModelNotifier</A><BR>
+<A HREF="#wxdataviewlistmodelnotifierdtor">wxDataViewListModelNotifier::~wxDataViewListModelNotifier</A><BR>
+<A HREF="#wxdataviewlistmodelnotifiercleared">wxDataViewListModelNotifier::Cleared</A><BR>
+<A HREF="#wxdataviewlistmodelnotifiergetowner">wxDataViewListModelNotifier::GetOwner</A><BR>
+<A HREF="#wxdataviewlistmodelnotifierrowappended">wxDataViewListModelNotifier::RowAppended</A><BR>
+<A HREF="#wxdataviewlistmodelnotifierrowchanged">wxDataViewListModelNotifier::RowChanged</A><BR>
+<A HREF="#wxdataviewlistmodelnotifierrowdeleted">wxDataViewListModelNotifier::RowDeleted</A><BR>
+<A HREF="#wxdataviewlistmodelnotifierrowinserted">wxDataViewListModelNotifier::RowInserted</A><BR>
+<A HREF="#wxdataviewlistmodelnotifierrowprepended">wxDataViewListModelNotifier::RowPrepended</A><BR>
+<A HREF="#wxdataviewlistmodelnotifierrowsreordered">wxDataViewListModelNotifier::RowsReordered</A><BR>
+<A HREF="#wxdataviewlistmodelnotifiersetowner">wxDataViewListModelNotifier::SetOwner</A><BR>
+<A HREF="#wxdataviewlistmodelnotifiervaluechanged">wxDataViewListModelNotifier::ValueChanged</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelnotifierwxdataviewlistmodelnotifier"></A>
+<H3>wxDataViewListModelNotifier::wxDataViewListModelNotifier</H3>
+<P>
+<B></B> <B>wxDataViewListModelNotifier</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelnotifierdtor"></A>
+<H3>wxDataViewListModelNotifier::~wxDataViewListModelNotifier</H3>
+<P>
+<B></B> <B>~wxDataViewListModelNotifier</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelnotifiercleared"></A>
+<H3>wxDataViewListModelNotifier::Cleared</H3>
+<P>
+<B>bool</B> <B>Cleared</B>()<P>
+Called by owning list model.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelnotifiergetowner"></A>
+<H3>wxDataViewListModelNotifier::GetOwner</H3>
+<P>
+<B><A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A>*</B> </B> <B>GetOwner</B>()<P>
+Returns the owning <A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A>.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelnotifierrowappended"></A>
+<H3>wxDataViewListModelNotifier::RowAppended</H3>
+<P>
+<B>bool</B> <B>RowAppended</B>()<P>
+Called by owning list model.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelnotifierrowchanged"></A>
+<H3>wxDataViewListModelNotifier::RowChanged</H3>
+<P>
+<B>bool</B> <B>RowChanged</B>(<B>unsigned int </B><I>row</I>)<P>
+Called by owning list model.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelnotifierrowdeleted"></A>
+<H3>wxDataViewListModelNotifier::RowDeleted</H3>
+<P>
+<B>bool</B> <B>RowDeleted</B>(<B>unsigned int </B><I>row</I>)<P>
+Called by owning list model.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelnotifierrowinserted"></A>
+<H3>wxDataViewListModelNotifier::RowInserted</H3>
+<P>
+<B>bool</B> <B>RowInserted</B>(<B>unsigned int </B><I>before</I>)<P>
+Called by owning list model.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelnotifierrowprepended"></A>
+<H3>wxDataViewListModelNotifier::RowPrepended</H3>
+<P>
+<B>bool</B> <B>RowPrepended</B>()<P>
+Called by owning list model.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelnotifierrowsreordered"></A>
+<H3>wxDataViewListModelNotifier::RowsReordered</H3>
+<P>
+<B>bool</B> <B>RowsReordered</B>(<B>unsigned int* </B><I>new_order</I>)<P>
+Called by owning list model.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelnotifiersetowner"></A>
+<H3>wxDataViewListModelNotifier::SetOwner</H3>
+<P>
+<B>void</B> <B>SetOwner</B>(<B><A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A>* </B></B><I>owner</I>)<P>
+Set the owning <A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A>. This
+method is called by the <A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodeladdnotifier">wxDataViewListModel::AddNotifier</A>.<P>
+
+<HR>
+<A NAME="wxdataviewlistmodelnotifiervaluechanged"></A>
+<H3>wxDataViewListModelNotifier::ValueChanged</H3>
+<P>
+<B>bool</B> <B>ValueChanged</B>(<B>unsigned int </B><I>col</I>, <B>unsigned int </B><I>row</I>)<P>
+Called by owning list model.<P>
+
+
+</FONT></BODY></HTML>

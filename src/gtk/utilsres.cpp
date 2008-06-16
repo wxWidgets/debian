@@ -1,25 +1,27 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        utilres.cpp
+// Name:        src/gtk/utilsres.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: utilsres.cpp,v 1.28 2004/05/26 10:49:32 JS Exp $
+// Id:          $Id: utilsres.cpp 45836 2007-05-05 17:13:30Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma implementation "utils.h"
-//#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
+#if wxUSE_CONFIG
+
 #include "wx/utils.h"
-#include "wx/string.h"
-#include "wx/list.h"
-#include "wx/log.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/list.h"
+    #include "wx/string.h"
+    #include "wx/log.h"
+    #include "wx/app.h"
+#endif
+
 #include "wx/config.h"
-#include "wx/app.h"
 
 //-----------------------------------------------------------------------------
 // resource functions
@@ -28,12 +30,12 @@
 bool wxWriteResource(const wxString& section, const wxString& entry, const wxString& value, const wxString& file )
 {
     wxString filename( file );
-    if (filename.IsEmpty()) filename = wxT(".wxWindows");
-    
+    if (filename.empty()) filename = wxT(".wxWindows");
+
     wxFileConfig conf( wxTheApp->GetAppName(), wxTheApp->GetVendorName(), filename );
-    
+
     conf.SetPath( section );
-    
+
     return conf.Write( entry, value );
 }
 
@@ -64,7 +66,7 @@ bool wxWriteResource(const wxString& section, const wxString& entry, int value, 
 bool wxGetResource(const wxString& section, const wxString& entry, wxChar **value, const wxString& file )
 {
     wxString filename( file );
-    if (filename.IsEmpty()) filename = wxT(".wxWindows");
+    if (filename.empty()) filename = wxT(".wxWindows");
 
     wxFileConfig conf( wxTheApp->GetAppName(), wxTheApp->GetVendorName(), filename );
 
@@ -73,16 +75,16 @@ bool wxGetResource(const wxString& section, const wxString& entry, wxChar **valu
     wxString result;
     if (conf.Read( entry, &result ))
     {
-        if (!result.IsEmpty())
+        if (!result.empty())
         {
             wxChar *s = new wxChar[result.Len()+1];
             wxStrcpy( s, result.c_str() );
             *value = s;
-            return TRUE;
+            return true;
         }
     }
 
-    return FALSE;
+    return false;
 }
 
 bool wxGetResource(const wxString& section, const wxString& entry, float *value, const wxString& file )
@@ -93,9 +95,9 @@ bool wxGetResource(const wxString& section, const wxString& entry, float *value,
     {
         *value = (float)wxStrtod(s, NULL);
         delete[] s;
-        return TRUE;
+        return true;
     }
-    else return FALSE;
+    else return false;
 }
 
 bool wxGetResource(const wxString& section, const wxString& entry, long *value, const wxString& file )
@@ -106,9 +108,9 @@ bool wxGetResource(const wxString& section, const wxString& entry, long *value, 
     {
         *value = wxStrtol(s, NULL, 10);
         delete[] s;
-        return TRUE;
+        return true;
     }
-    else return FALSE;
+    else return false;
 }
 
 bool wxGetResource(const wxString& section, const wxString& entry, int *value, const wxString& file )
@@ -119,8 +121,9 @@ bool wxGetResource(const wxString& section, const wxString& entry, int *value, c
     {
         *value = (int)wxStrtol(s, NULL, 10);
         delete[] s;
-        return TRUE;
+        return true;
     }
-    else return FALSE;
+    else return false;
 }
 
+#endif // wxUSE_CONFIG

@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     07.03.00
-%% RCS-ID:      $Id: datetime.tex,v 1.29 2005/08/28 13:06:32 VZ Exp $
+%% RCS-ID:      $Id: datetime.tex 44242 2007-01-18 14:06:37Z VZ $
 %% Copyright:   (c) Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -43,7 +43,7 @@ Time zone symbolic names:
         GMT_6, GMT_5, GMT_4, GMT_3, GMT_2, GMT_1,
         GMT0,
         GMT1, GMT2, GMT3, GMT4, GMT5, GMT6,
-        GMT7, GMT8, GMT9, GMT10, GMT11, GMT12,
+        GMT7, GMT8, GMT9, GMT10, GMT11, GMT12, GMT13,
         // Note that GMT12 and GMT_12 are not the same: there is a difference
         // of exactly one day between them
 
@@ -77,9 +77,13 @@ Time zone symbolic names:
         // Australia
 
         A_WST = GMT8,                       // Western Standard Time
-        A_CST = GMT12 + 1,                  // Central Standard Time (+9.5)
+        A_CST = GMT13 + 1,                  // Central Standard Time (+9.5)
         A_EST = GMT10,                      // Eastern Standard Time
         A_ESST = GMT11,                     // Eastern Summer Time
+
+        // New Zealand
+        NZST = GMT12,                       // Standard Time
+        NZDT = GMT13,                       // Daylight Saving Time
 
         // Universal Coordinated Time = the new and politically correct name
         // for GMT
@@ -202,7 +206,7 @@ supported. Future versions will support other calendars.
 \helpref{ConvertYearToBC}{wxdatetimeconvertyeartobc}\\
 \helpref{GetCurrentMonth}{wxdatetimegetcurrentmonth}\\
 \helpref{IsLeapYear}{wxdatetimeisleapyear}\\
-\helpref{GetCentury}{wxdatetimegetcentury}\\
+\helpref{GetCentury}{wxdatetimegetcenturystatic}\\
 \helpref{GetNumberOfDays}{wxdatetimegetnumberofdays}\\
 \helpref{GetNumberOfDays}{wxdatetimegetnumberofdays}\\
 \helpref{GetMonthName}{wxdatetimegetmonthname}\\
@@ -258,6 +262,7 @@ some more complicated calculations to find the answer are under the
 
 \helpref{IsValid}{wxdatetimeisvalid}\\
 \helpref{GetTicks}{wxdatetimegetticks}\\
+\helpref{GetCentury}{wxdatetimegetcentury}\\
 \helpref{GetYear}{wxdatetimegetyear}\\
 \helpref{GetMonth}{wxdatetimegetmonth}\\
 \helpref{GetDay}{wxdatetimegetday}\\
@@ -491,9 +496,9 @@ Get the current year in given calendar (only Gregorian is currently supported).
 Get the current month in given calendar (only Gregorian is currently supported).
 
 
-\membersection{wxDateTime::GetCentury}\label{wxdatetimegetcentury}
+\membersection{wxDateTime::GetCentury}\label{wxdatetimegetcenturystatic}
 
-\func{static int}{GetCentury}{\param{int }{year = Inv\_Year}}
+\func{static int}{GetCentury}{\param{int }{year}}
 
 Get the current century, i.e. first two digits of the year, in given calendar
 (only Gregorian is currently supported).
@@ -547,10 +552,21 @@ Returns the current time.
 
 \membersection{wxDateTime::GetTmNow}\label{wxdatetimegettmnow}
 
+\func{static struct tm *}{GetTmNow}{\param{struct tm *}{tm}}
+
+Returns the current time broken down, uses the buffer whose adress is
+passed to the function via {\it tm} to store the result.
+
+\membersection{wxDateTime::GetTmNow}
+
 \func{static struct tm *}{GetTmNow}{\void}
 
-Returns the current time broken down.
-
+Returns the current time broken down. Note that this function returns a
+pointer to a static buffer that's reused by calls to this function and
+certain C library functions (e.g. localtime). If there is any chance your
+code might be used in a multi-threaded application, you really should use
+the flavour of function \helpref{wxDateTime::GetTmNow}{wxdatetimegettmnow}
+taking a parameter.
 
 \membersection{wxDateTime::GetWeekDayName}\label{wxdatetimegetweekdayname}
 
@@ -846,6 +862,20 @@ Same as \helpref{Set}{wxdatetimesettm}.
 Returns {\tt true} if the object represents a valid time moment.
 
 
+\membersection{wxDateTime::GetDateOnly}\label{wxdatetimegetdateonly}
+
+\constfunc{wxDateTime}{GetDateOnly}{\void}
+
+Returns the object having the same date component as this one but time of
+00:00:00.
+
+\newsince{2.8.2}
+
+\wxheading{See also}
+
+\helpref{ResetTime}{wxdatetimeresettime}
+
+
 \membersection{wxDateTime::GetTm}\label{wxdatetimegettm}
 
 \constfunc{Tm}{GetTm}{\param{const TimeZone\& }{tz = Local}}
@@ -859,6 +889,13 @@ Returns broken down representation of the date and time.
 
 Returns the number of seconds since Jan 1, 1970. An assert failure will occur
 if the date is not in the range covered by {\tt time\_t} type.
+
+
+\membersection{wxDateTime::GetCentury}\label{wxdatetimegetcentury}
+
+\constfunc{int}{GetCentury}{\param{const TimeZone\& }{tz = Local}}
+
+Returns the century of this date.
 
 
 \membersection{wxDateTime::GetYear}\label{wxdatetimegetyear}
@@ -934,7 +971,7 @@ the year is, according to international standards, the one containing Jan 4 or,
 equivalently, the first week which has Thursday in this year. Both of these
 definitions are the same as saying that the first week of the year must contain
 more than half of its days in this year. Accordingly, the week number will
-always be in $1\ldots53$ range ($52$ for non leap years).
+always be in $1\ldots53$ range ($52$ for non-leap years).
 
 The function depends on the \helpref{week start}{wxdatetime} convention
 specified by the {\it flags} argument but its results for
@@ -1183,8 +1220,7 @@ will accept anything that may be accepted and will only reject strings which
 can not be parsed in any way at all.
 
 Returns {\tt NULL} if the conversion failed, otherwise return the pointer to
-the character which stopped the scan.  This method is currently not
-implemented, so always returns NULL.
+the character which stopped the scan.
 
 
 \membersection{wxDateTime::ParseDate}\label{wxdatetimeparsedate}

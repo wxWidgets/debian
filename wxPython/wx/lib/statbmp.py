@@ -5,7 +5,7 @@
 # Author:      Robin Dunn
 #
 # Created:     12-May-2004
-# RCS-ID:      $Id: statbmp.py,v 1.4 2005/05/02 23:43:56 RD Exp $
+# RCS-ID:      $Id: statbmp.py 42816 2006-10-31 08:50:17Z RD $
 # Copyright:   (c) 2004 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -27,7 +27,7 @@ class GenStaticBitmap(wx.PyControl):
                              wx.DefaultValidator, name)
         self._bitmap = bitmap
         self.InheritAttributes()
-        self.SetBestFittingSize(size)
+        self.SetInitialSize(size)
 
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
         self.Bind(wx.EVT_PAINT,            self.OnPaint)
@@ -35,7 +35,7 @@ class GenStaticBitmap(wx.PyControl):
 
     def SetBitmap(self, bitmap):
         self._bitmap = bitmap
-        self.SetBestFittingSize( (bitmap.GetWidth(), bitmap.GetHeight()) )
+        self.SetInitialSize( (bitmap.GetWidth(), bitmap.GetHeight()) )
         self.Refresh()
 
 

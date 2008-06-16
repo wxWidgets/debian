@@ -23,8 +23,8 @@ keyMap = {
     wx.WXK_MENU : "WXK_MENU",
     wx.WXK_PAUSE : "WXK_PAUSE",
     wx.WXK_CAPITAL : "WXK_CAPITAL",
-    wx.WXK_PRIOR : "WXK_PRIOR",
-    wx.WXK_NEXT : "WXK_NEXT",
+    #wx.WXK_PRIOR : "WXK_PRIOR",
+    #wx.WXK_NEXT : "WXK_NEXT",
     wx.WXK_END : "WXK_END",
     wx.WXK_HOME : "WXK_HOME",
     wx.WXK_LEFT : "WXK_LEFT",
@@ -93,9 +93,9 @@ keyMap = {
     wx.WXK_NUMPAD_UP : "WXK_NUMPAD_UP",
     wx.WXK_NUMPAD_RIGHT : "WXK_NUMPAD_RIGHT",
     wx.WXK_NUMPAD_DOWN : "WXK_NUMPAD_DOWN",
-    wx.WXK_NUMPAD_PRIOR : "WXK_NUMPAD_PRIOR",
+    #wx.WXK_NUMPAD_PRIOR : "WXK_NUMPAD_PRIOR",
     wx.WXK_NUMPAD_PAGEUP : "WXK_NUMPAD_PAGEUP",
-    wx.WXK_NUMPAD_NEXT : "WXK_NUMPAD_NEXT",
+    #wx.WXK_NUMPAD_NEXT : "WXK_NUMPAD_NEXT",
     wx.WXK_NUMPAD_PAGEDOWN : "WXK_NUMPAD_PAGEDOWN",
     wx.WXK_NUMPAD_END : "WXK_NUMPAD_END",
     wx.WXK_NUMPAD_BEGIN : "WXK_NUMPAD_BEGIN",
@@ -108,6 +108,33 @@ keyMap = {
     wx.WXK_NUMPAD_SUBTRACT : "WXK_NUMPAD_SUBTRACT",
     wx.WXK_NUMPAD_DECIMAL : "WXK_NUMPAD_DECIMAL",
     wx.WXK_NUMPAD_DIVIDE : "WXK_NUMPAD_DIVIDE",
+
+    wx.WXK_WINDOWS_LEFT : "WXK_WINDOWS_LEFT",
+    wx.WXK_WINDOWS_RIGHT : "WXK_WINDOWS_RIGHT",
+    wx.WXK_WINDOWS_MENU : "WXK_WINDOWS_MENU",
+
+    wx.WXK_COMMAND : "WXK_COMMAND",
+
+    wx.WXK_SPECIAL1 : "WXK_SPECIAL1",
+    wx.WXK_SPECIAL2 : "WXK_SPECIAL2",
+    wx.WXK_SPECIAL3 : "WXK_SPECIAL3",
+    wx.WXK_SPECIAL4 : "WXK_SPECIAL4",
+    wx.WXK_SPECIAL5 : "WXK_SPECIAL5",
+    wx.WXK_SPECIAL6 : "WXK_SPECIAL6",
+    wx.WXK_SPECIAL7 : "WXK_SPECIAL7",
+    wx.WXK_SPECIAL8 : "WXK_SPECIAL8",
+    wx.WXK_SPECIAL9 : "WXK_SPECIAL9",
+    wx.WXK_SPECIAL10 : "WXK_SPECIAL10",
+    wx.WXK_SPECIAL11 : "WXK_SPECIAL11",
+    wx.WXK_SPECIAL12 : "WXK_SPECIAL12",
+    wx.WXK_SPECIAL13 : "WXK_SPECIAL13",
+    wx.WXK_SPECIAL14 : "WXK_SPECIAL14",
+    wx.WXK_SPECIAL15 : "WXK_SPECIAL15",
+    wx.WXK_SPECIAL16 : "WXK_SPECIAL16",
+    wx.WXK_SPECIAL17 : "WXK_SPECIAL17",
+    wx.WXK_SPECIAL18 : "WXK_SPECIAL18",
+    wx.WXK_SPECIAL19 : "WXK_SPECIAL19",
+    wx.WXK_SPECIAL2 : "WXK_SPECIAL2",
 }
 
 
@@ -201,7 +228,8 @@ class KeyLog(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
                    "Key Name", 
                    "Key Code",   
                    "Modifiers",
-                   "Unicode",    
+                   "Unicode",
+                   "UniChr",
                    "RawKeyCode",
                    "RawKeyFlags",
                    ]     
@@ -225,16 +253,9 @@ class KeyLog(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
     def LogKeyEvent(self, evType, evt):
         keycode = evt.GetKeyCode()
         keyname = keyMap.get(keycode, None)
+
         if keyname is None:
-            if "unicode" in wx.PlatformInfo:
-                keycode = evt.GetUnicodeKey()
-                if keycode <= 127:
-                    keycode = evt.GetKeyCode()
-                keyname = "\"" + unichr(evt.GetUnicodeKey()) + "\""
-                if keycode < 27:
-                    keyname = "Ctrl-%s" % chr(ord('A') + keycode-1)
-                
-            elif keycode < 256:
+            if keycode < 256:
                 if keycode == 0:
                     keyname = "NUL"
                 elif keycode < 27:
@@ -242,8 +263,12 @@ class KeyLog(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
                 else:
                     keyname = "\"%s\"" % chr(keycode)
             else:
-                keyname = "unknown (%s)" % keycode
+                keyname = "(%s)" % keycode
 
+        UniChr = ''
+        if "unicode" in wx.PlatformInfo:
+            UniChr = "\"" + unichr(evt.GetUnicodeKey()) + "\""
+            
         modifiers = ""
         for mod, ch in [(evt.ControlDown(), 'C'),
                         (evt.AltDown(),     'A'),
@@ -259,8 +284,9 @@ class KeyLog(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
         self.SetStringItem(id, 2, str(keycode))
         self.SetStringItem(id, 3, modifiers)
         self.SetStringItem(id, 4, str(evt.GetUnicodeKey()))
-        self.SetStringItem(id, 5, str(evt.GetRawKeyCode()))
-        self.SetStringItem(id, 6, str(evt.GetRawKeyFlags()))
+        self.SetStringItem(id, 5, UniChr)
+        self.SetStringItem(id, 6, str(evt.GetRawKeyCode()))
+        self.SetStringItem(id, 7, str(evt.GetRawKeyFlags()))
 
         #print ( id, evType, keyname, str(keycode), modifiers, str(evt.GetRawKeyCode()), str(evt.GetRawKeyFlags()))
 

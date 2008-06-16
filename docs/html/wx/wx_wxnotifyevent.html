@@ -1,0 +1,71 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxNotifyEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxnotifyevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxnotebooksizer.html#wxnotebooksizer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxobject.html#wxobject"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxNotifyEvent</H2>
+<P>
+This class is not used by the event handlers by itself, but is a base class
+for other event classes (such as <A HREF="wx_wxnotebookevent.html#wxnotebookevent">wxNotebookEvent</A>).<P>
+It (or an object of a derived class) is sent when the controls state is being
+changed and allows the program to <A HREF="wx_wxnotifyevent.html#wxnotifyeventveto">Veto()</A> this
+change if it wants to prevent it from happening.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><BR>
+
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxnotebookevent.html#wxnotebookevent">wxNotebookEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxnotifyeventconstr">wxNotifyEvent::wxNotifyEvent</A><BR>
+<A HREF="#wxnotifyeventallow">wxNotifyEvent::Allow</A><BR>
+<A HREF="#wxnotifyeventisallowed">wxNotifyEvent::IsAllowed</A><BR>
+<A HREF="#wxnotifyeventveto">wxNotifyEvent::Veto</A><BR>
+<P>
+
+<HR>
+<A NAME="wxnotifyeventconstr"></A>
+<H3>wxNotifyEvent::wxNotifyEvent</H3>
+<P>
+<B></B> <B>wxNotifyEvent</B>(<B>wxEventType</B><I> eventType = wxEVT_NULL</I>, <B>int</B><I> id = 0</I>)<P>
+Constructor (used internally by wxWidgets only).<P>
+
+<HR>
+<A NAME="wxnotifyeventallow"></A>
+<H3>wxNotifyEvent::Allow</H3>
+<P>
+<B>void</B> <B>Allow</B>()<P>
+This is the opposite of <A HREF="wx_wxnotifyevent.html#wxnotifyeventveto">Veto()</A>: it explicitly
+allows the event to be processed. For most events it is not necessary to call
+this method as the events are allowed anyhow but some are forbidden by default
+(this will be mentioned in the corresponding event description).<P>
+
+<HR>
+<A NAME="wxnotifyeventisallowed"></A>
+<H3>wxNotifyEvent::IsAllowed</H3>
+<P>
+<B>bool</B> <B>IsAllowed</B>() <B>const</B><P>
+Returns true if the change is allowed (<A HREF="wx_wxnotifyevent.html#wxnotifyeventveto">Veto()</A> 
+hasn't been called) or false otherwise (if it was).<P>
+
+<HR>
+<A NAME="wxnotifyeventveto"></A>
+<H3>wxNotifyEvent::Veto</H3>
+<P>
+<B>void</B> <B>Veto</B>()<P>
+Prevents the change announced by this event from happening.<P>
+It is in general a good idea to notify the user about the reasons for vetoing
+the change because otherwise the applications behaviour (which just refuses to
+do what the user wants) might be quite surprising.<P>
+
+</FONT></BODY></HTML>

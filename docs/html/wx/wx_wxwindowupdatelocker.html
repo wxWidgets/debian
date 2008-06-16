@@ -1,0 +1,58 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxWindowUpdateLocker</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxwindowupdatelocker"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxwindow.html#wxwindow"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxwindowcreateevent.html#wxwindowcreateevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxWindowUpdateLocker</H2>
+<P>
+This tiny class prevents redrawing of a <A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> during its
+lifetime by using <A HREF="wx_wxwindow.html#wxwindowfreeze">wxWindow::Freeze</A> and 
+<A HREF="wx_wxwindow.html#wxwindowthaw">Thaw</A> methods. It is typically used for creating
+automatic objects to temporarily suppress window updates before a batch of
+operations is performed:
+<FONT SIZE=2>
+<PRE>
+    void MyFrame::Foo()
+    {
+        m_text = new wxTextCtrl(this, ...);
+
+        wxWindowUpdateLocker noUpdates(m_text);
+        m_text-&gt;AppendText();
+        ... many other operations with m_text...
+        m_text-&gt;WriteText();
+    }
+</PRE>
+</FONT><P>
+Using this class is easier and safer than calling 
+<A HREF="wx_wxwindow.html#wxwindowfreeze">Freeze</A> and <A HREF="wx_wxwindow.html#wxwindowthaw">Thaw</A> because you
+don't risk to forget calling the latter.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/wupdlock.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxwindowupdatelockerctor">wxWindowUpdateLocker::wxWindowUpdateLocker</A><BR>
+<A HREF="#wxwindowupdatelockerdtor">wxWindowUpdateLocker::~wxWindowUpdateLocker</A><BR>
+<P>
+
+<HR>
+<A NAME="wxwindowupdatelockerctor"></A>
+<H3>wxWindowUpdateLocker::wxWindowUpdateLocker</H3>
+<P>
+<B></B> <B>wxWindowUpdateLocker</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>win</I>)<P>
+Creates an object preventing the updates of the specified <I>win</I>. The
+parameter must be non-<TT>NULL</TT> and the window must exist for longer than
+wxWindowUpdateLocker object itself.<P>
+
+
+<HR>
+<A NAME="wxwindowupdatelockerdtor"></A>
+<H3>wxWindowUpdateLocker::~wxWindowUpdateLocker</H3>
+<P>
+<B></B> <B>~wxWindowUpdateLocker</B>()<P>
+Destructor reenables updates for the window this object is associated with.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,22 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Configuration</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="configuration"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_multiplat.html#multiplat"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_libraries.html#libraries"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_makefiles.html#makefiles"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Configuration</H2>
+<P>
+When using project files and makefiles directly to build wxWidgets,
+options are configurable in the file
+<TT>"wx/XXX/setup.h"</TT> where XXX is the required platform (such as msw, motif, gtk, mac). Some 
+settings are a matter of taste, some help with platform-specific problems, and
+others can be set to minimize the size of the library. Please see the setup.h file
+and <TT>install.txt</TT> files for details on configuration.<P>
+When using the 'configure' script to configure wxWidgets (on Unix and other platforms where
+configure is available), the corresponding setup.h files are generated automatically
+along with suitable makefiles. When using the RPM packages
+for installing wxWidgets on Linux, a correct setup.h is shipped in the package and
+this must not be changed.<P>
+
+</FONT></BODY></HTML>

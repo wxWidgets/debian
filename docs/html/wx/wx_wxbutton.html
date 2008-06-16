@@ -1,0 +1,229 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxButton</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxbutton"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxbusyinfo.html#wxbusyinfo"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcalculatelayoutevent.html#wxcalculatelayoutevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxButton</H2>
+<P>
+A button is a control that contains a text string,
+and is one of the most common elements of a GUI. It may be placed on a
+<A HREF="wx_wxdialog.html#wxdialog">dialog box</A> or <A HREF="wx_wxpanel.html#wxpanel">panel</A>, or indeed
+almost any other window.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/button.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBU_LEFT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Left-justifies the label. Windows and GTK+ only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBU_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Aligns the label to the top of the button. Windows and GTK+ only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBU_RIGHT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Right-justifies the bitmap label. Windows and GTK+ only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBU_BOTTOM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Aligns the label to the bottom of the button. Windows and GTK+ only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBU_EXACTFIT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates the button as small as possible instead of making it of the standard size (which is the default behaviour ).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxNO_BORDER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a flat button. Windows and GTK+ only.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_BUTTON(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_BUTTON_CLICKED event,
+when the button is clicked.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbutton">wxBitmapButton</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxbuttonctor">wxButton::wxButton</A><BR>
+<A HREF="#wxbuttondtor">wxButton::~wxButton</A><BR>
+<A HREF="#wxbuttoncreate">wxButton::Create</A><BR>
+<A HREF="#wxbuttongetlabel">wxButton::GetLabel</A><BR>
+<A HREF="#wxbuttongetdefaultsize">wxButton::GetDefaultSize</A><BR>
+<A HREF="#wxbuttonsetdefault">wxButton::SetDefault</A><BR>
+<A HREF="#wxbuttonsetlabel">wxButton::SetLabel</A><BR>
+<P>
+
+<HR>
+<A NAME="wxbuttonctor"></A>
+<H3>wxButton::wxButton</H3>
+<P>
+<B></B> <B>wxButton</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxButton</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label = wxEmptyString</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "button"</I>)<P>
+Constructor, creating and showing a button.<P>
+The preferred way to create standard buttons is to use default value of
+<I>label</I>. If no label is supplied and <I>id</I> is one of standard IDs from
+<A HREF="wx_stockitems.html#stockitems">this list</A>, standard label will be used. In addition to
+that, the button will be decorated with stock icons under GTK+ 2.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Button identifier. A value of <TT>wxID_ANY</TT> indicates a default value.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+Text to be displayed on the button.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Button position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Button size. If the default size is specified then the button is sized
+appropriately for the text.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxbutton.html#wxbutton">wxButton</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbutton.html#wxbuttoncreate">wxButton::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+
+<HR>
+<A NAME="wxbuttondtor"></A>
+<H3>wxButton::~wxButton</H3>
+<P>
+<B></B> <B>~wxButton</B>()<P>
+Destructor, destroying the button.<P>
+
+<HR>
+<A NAME="wxbuttoncreate"></A>
+<H3>wxButton::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label = wxEmptyString</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "button"</I>)<P>
+Button creation function for two-step creation. For more details, see
+<A HREF="wx_wxbutton.html#wxbuttonctor">wxButton::wxButton</A>.<P>
+
+<HR>
+<A NAME="wxbuttongetlabel"></A>
+<H3>wxButton::GetLabel</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLabel</B>() <B>const</B><P>
+Returns the string label for the button.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The button's label.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbutton.html#wxbuttonsetlabel">wxButton::SetLabel</A><P>
+
+<HR>
+<A NAME="wxbuttongetdefaultsize"></A>
+<H3>wxButton::GetDefaultSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetDefaultSize</B>()<P>
+Returns the default size for the buttons. It is advised to make all the dialog
+buttons of the same size and this function allows to retrieve the (platform and
+current font dependent size) which should be the best suited for this.<P>
+
+<HR>
+<A NAME="wxbuttonsetdefault"></A>
+<H3>wxButton::SetDefault</H3>
+<P>
+<B>void</B> <B>SetDefault</B>()<P>
+This sets the button to be the default item for the panel or dialog
+box.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Under Windows, only dialog box buttons respond to this function.  As
+normal under Windows and Motif, pressing return causes the default button to
+be depressed when the return key is pressed. See also <A HREF="wx_wxwindow.html#wxwindowsetfocus">wxWindow::SetFocus</A>
+which sets the keyboard focus for windows and text panel items,
+and <A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindowsetdefaultitem">wxTopLevelWindow::SetDefaultItem</A>.<P>
+Note that under Motif, calling this function immediately after
+creation of a button and before the creation of other buttons
+will cause misalignment of the row of buttons, since default
+buttons are larger. To get around this, call <I>SetDefault</I>
+after you have created a row of buttons: wxWidgets will
+then set the size of all buttons currently on the panel to
+the same size.<P>
+
+<HR>
+<A NAME="wxbuttonsetlabel"></A>
+<H3>wxButton::SetLabel</H3>
+<P>
+<B>void</B> <B>SetLabel</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>)<P>
+Sets the string label for the button.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>label</I><UL><UL>
+The label to set.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbutton.html#wxbuttongetlabel">wxButton::GetLabel</A><P>
+
+</FONT></BODY></HTML>

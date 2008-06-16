@@ -1,0 +1,318 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFileDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfiledialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfiledataobject.html#wxfiledataobject"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfiledroptarget.html#wxfiledroptarget"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFileDialog</H2>
+<P>
+This class represents the file chooser dialog.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/filedlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFD_DEFAULT_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Equivalent to wxFD_OPEN.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFD_OPEN</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This is an open dialog; usually this means that the default button's label of the dialog is "Open". Cannot be combined with wxFD_SAVE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFD_SAVE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This is a save dialog; usually this means that the default button's label of the dialog is "Save". Cannot be combined with wxFD_OPEN.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFD_OVERWRITE_PROMPT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For save dialog only: prompt for a confirmation if a file will be overwritten.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFD_FILE_MUST_EXIST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For open dialog only: the user may only select files that actually exist.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFD_MULTIPLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For open dialog only: allows selecting multiple files.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFD_CHANGE_DIR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Change the current working directory to the directory where the file(s) chosen by the user are.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFD_PREVIEW</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Show the preview of the selected files (currently only supported by wxGTK using GTK+ 2.4 or later).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B>NB:</B> Previous versions of wxWidgets used <TT>wxFD_CHANGE_DIR</TT> by default
+under MS Windows which allowed the program to simply remember the last
+directory where user selected the files to open/save. This (desired)
+functionality must be implemented in the program itself now (manually remember
+the last path used and pass it to the dialog the next time it is called) or
+by using this flag.<P>
+
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_commondialogsoverview.html#wxfiledialogoverview">wxFileDialog overview</A>, <A HREF="wx_dialogfunctions.html#wxfileselector">wxFileSelector</A><P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Pops up a file selector box. In Windows and GTK2.4+, this is the common
+file selector dialog. In X, this is a file selector box with somewhat less
+functionality. The path and filename are distinct elements of a full file pathname.
+If path is "", the current directory will be used. If filename is "",
+no default filename will be supplied. The wildcard determines what files
+are displayed in the file selector, and file extension supplies a type
+extension for the required filename.<P>
+Both the X and Windows versions implement a wildcard filter. Typing a
+filename containing wildcards (*, ?) in the filename text item, and
+clicking on Ok, will result in only those files matching the pattern being
+displayed. The wildcard may be a specification for multiple
+types of file with a description for each, such as:<P>
+<PRE>
+ "BMP and GIF files (*.bmp;*.gif)|*.bmp;*.gif|PNG files (*.png)|*.png"
+</PRE>
+It must be noted that wildcard support in the native Motif file
+dialog is quite limited: only one alternative is supported,
+and it is displayed without the descriptive test; "BMP files (*.bmp)|*.bmp''
+is displayed as "*.bmp'', and both
+"BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif'' and
+"Image files|*.bmp;*.gif'' are errors.<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfiledialogctor">wxFileDialog::wxFileDialog</A><BR>
+<A HREF="#wxfiledialogdtor">wxFileDialog::~wxFileDialog</A><BR>
+<A HREF="#wxfiledialoggetdirectory">wxFileDialog::GetDirectory</A><BR>
+<A HREF="#wxfiledialoggetfilename">wxFileDialog::GetFilename</A><BR>
+<A HREF="#wxfiledialoggetfilenames">wxFileDialog::GetFilenames</A><BR>
+<A HREF="#wxfiledialoggetfilterindex">wxFileDialog::GetFilterIndex</A><BR>
+<A HREF="#wxfiledialoggetmessage">wxFileDialog::GetMessage</A><BR>
+<A HREF="#wxfiledialoggetpath">wxFileDialog::GetPath</A><BR>
+<A HREF="#wxfiledialoggetpaths">wxFileDialog::GetPaths</A><BR>
+<A HREF="#wxfiledialoggetwildcard">wxFileDialog::GetWildcard</A><BR>
+<A HREF="#wxfiledialogsetdirectory">wxFileDialog::SetDirectory</A><BR>
+<A HREF="#wxfiledialogsetfilename">wxFileDialog::SetFilename</A><BR>
+<A HREF="#wxfiledialogsetfilterindex">wxFileDialog::SetFilterIndex</A><BR>
+<A HREF="#wxfiledialogsetmessage">wxFileDialog::SetMessage</A><BR>
+<A HREF="#wxfiledialogsetpath">wxFileDialog::SetPath</A><BR>
+<A HREF="#wxfiledialogsetwildcard">wxFileDialog::SetWildcard</A><BR>
+<A HREF="#wxfiledialogshowmodal">wxFileDialog::ShowModal</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfiledialogctor"></A>
+<H3>wxFileDialog::wxFileDialog</H3>
+<P>
+<B></B> <B>wxFileDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message = "Choose a file"</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>defaultDir = ""</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>defaultFile = ""</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>wildcard = "*.*"</I>, <B>long </B><I>style = wxFD_DEFAULT_STYLE</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sz = wxDefaultSize</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "filedlg"</I>)<P>
+Constructor. Use <A HREF="wx_wxfiledialog.html#wxfiledialogshowmodal">wxFileDialog::ShowModal</A> to show the dialog.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window.</UL></UL>
+<P>
+<I>message</I><UL><UL>
+Message to show on the dialog.</UL></UL>
+<P>
+<I>defaultDir</I><UL><UL>
+The default directory, or the empty string.</UL></UL>
+<P>
+<I>defaultFile</I><UL><UL>
+The default filename, or the empty string.</UL></UL>
+<P>
+<I>wildcard</I><UL><UL>
+A wildcard, such as "*.*" or "BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif".<P>
+Note that the native Motif dialog has some limitations with respect to
+wildcards; see the Remarks section above.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+A dialog style. See wxFD_* styles for more info.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Dialog position. Not implemented.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Dialog size. Not implemented.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Dialog name. Not implemented.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxfiledialogdtor"></A>
+<H3>wxFileDialog::~wxFileDialog</H3>
+<P>
+<B></B> <B>~wxFileDialog</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxfiledialoggetdirectory"></A>
+<H3>wxFileDialog::GetDirectory</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetDirectory</B>() <B>const</B><P>
+Returns the default directory.<P>
+
+<HR>
+<A NAME="wxfiledialoggetfilename"></A>
+<H3>wxFileDialog::GetFilename</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFilename</B>() <B>const</B><P>
+Returns the default filename.<P>
+
+<HR>
+<A NAME="wxfiledialoggetfilenames"></A>
+<H3>wxFileDialog::GetFilenames</H3>
+<P>
+<B>void</B> <B>GetFilenames</B>(<B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>filenames</I>) <B>const</B><P>
+Fills the array <I>filenames</I> with the names of the files chosen. This
+function should only be used with the dialogs which have <TT>wxFD_MULTIPLE</TT> style,
+use <A HREF="wx_wxfiledialog.html#wxfiledialoggetfilename">GetFilename</A> for the others.<P>
+Note that under Windows, if the user selects shortcuts, the filenames
+include paths, since the application cannot determine the full path
+of each referenced file by appending the directory containing the shortcuts
+to the filename.<P>
+
+<HR>
+<A NAME="wxfiledialoggetfilterindex"></A>
+<H3>wxFileDialog::GetFilterIndex</H3>
+<P>
+<B>int</B> <B>GetFilterIndex</B>() <B>const</B><P>
+Returns the index into the list of filters supplied, optionally, in the wildcard parameter.
+Before the dialog is shown, this is the index which will be used when the dialog is first displayed.
+After the dialog is shown, this is the index selected by the user.<P>
+
+<HR>
+<A NAME="wxfiledialoggetmessage"></A>
+<H3>wxFileDialog::GetMessage</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetMessage</B>() <B>const</B><P>
+Returns the message that will be displayed on the dialog.<P>
+
+<HR>
+<A NAME="wxfiledialoggetpath"></A>
+<H3>wxFileDialog::GetPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPath</B>() <B>const</B><P>
+Returns the full path (directory and filename) of the selected file.<P>
+
+<HR>
+<A NAME="wxfiledialoggetpaths"></A>
+<H3>wxFileDialog::GetPaths</H3>
+<P>
+<B>void</B> <B>GetPaths</B>(<B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>paths</I>) <B>const</B><P>
+Fills the array <I>paths</I> with the full paths of the files chosen. This
+function should only be used with the dialogs which have <TT>wxFD_MULTIPLE</TT> style,
+use <A HREF="wx_wxfiledialog.html#wxfiledialoggetpath">GetPath</A> for the others.<P>
+
+<HR>
+<A NAME="wxfiledialoggetwildcard"></A>
+<H3>wxFileDialog::GetWildcard</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetWildcard</B>() <B>const</B><P>
+Returns the file dialog wildcard.<P>
+
+<HR>
+<A NAME="wxfiledialogsetdirectory"></A>
+<H3>wxFileDialog::SetDirectory</H3>
+<P>
+<B>void</B> <B>SetDirectory</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>directory</I>)<P>
+Sets the default directory.<P>
+
+<HR>
+<A NAME="wxfiledialogsetfilename"></A>
+<H3>wxFileDialog::SetFilename</H3>
+<P>
+<B>void</B> <B>SetFilename</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>setfilename</I>)<P>
+Sets the default filename.<P>
+
+<HR>
+<A NAME="wxfiledialogsetfilterindex"></A>
+<H3>wxFileDialog::SetFilterIndex</H3>
+<P>
+<B>void</B> <B>SetFilterIndex</B>(<B>int </B><I>filterIndex</I>)<P>
+Sets the default filter index, starting from zero.<P>
+
+<HR>
+<A NAME="wxfiledialogsetmessage"></A>
+<H3>wxFileDialog::SetMessage</H3>
+<P>
+<B>void</B> <B>SetMessage</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>)<P>
+Sets the message that will be displayed on the dialog.<P>
+
+<HR>
+<A NAME="wxfiledialogsetpath"></A>
+<H3>wxFileDialog::SetPath</H3>
+<P>
+<B>void</B> <B>SetPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>)<P>
+Sets the path (the combined directory and filename that will be returned when the dialog is dismissed).<P>
+
+<HR>
+<A NAME="wxfiledialogsetwildcard"></A>
+<H3>wxFileDialog::SetWildcard</H3>
+<P>
+<B>void</B> <B>SetWildcard</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>wildCard</I>)<P>
+Sets the wildcard, which can contain multiple file types, for example:<P>
+"BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif"<P>
+Note that the native Motif dialog has some limitations with respect to
+wildcards; see the Remarks section above.<P>
+
+<HR>
+<A NAME="wxfiledialogshowmodal"></A>
+<H3>wxFileDialog::ShowModal</H3>
+<P>
+<B>int</B> <B>ShowModal</B>()<P>
+Shows the dialog, returning wxID_OK if the user pressed OK, and wxID_CANCEL
+otherwise.<P>
+
+
+</FONT></BODY></HTML>

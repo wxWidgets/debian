@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.07.97
-// RCS-ID:      $Id: uuid.h,v 1.11 2004/08/16 12:45:40 ABX Exp $
+// RCS-ID:      $Id: uuid.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 //
@@ -14,9 +14,6 @@
 #ifndef   _WX_OLEUUID_H
 #define   _WX_OLEUUID_H
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "uuid.h"
-#endif
 #include "wx/wxchar.h"
 // ------------------------------------------------------------------
 // UUID (Universally Unique IDentifier) definition

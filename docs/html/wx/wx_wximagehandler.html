@@ -1,0 +1,205 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxImageHandler</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wximagehandler"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wximage.html#wximage"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wximagelist.html#wximagelist"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxImageHandler</H2>
+<P>
+This is the base class for implementing image file loading/saving, and image creation from data.
+It is used within wxImage and is not normally seen by the application.<P>
+If you wish to extend the capabilities of wxImage, derive a class from wxImageHandler
+and add the handler using <A HREF="wx_wximage.html#wximageaddhandler">wxImage::AddHandler</A> in your
+application initialisation.<P>
+<B><FONT COLOR="#FF0000">Note (Legal Issue)</FONT></B><P>
+This software is based in part on the work of the Independent JPEG Group.<P>
+(Applies when wxWidgets is linked with JPEG support. wxJPEGHandler uses libjpeg
+created by IJG.)<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/image.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximage">wxImage</A>,
+<A HREF="wx_appinifunctions.html#wxinitallimagehandlers">wxInitAllImageHandlers</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wximagehandlerctor">wxImageHandler::wxImageHandler</A><BR>
+<A HREF="#wximagehandlerdtor">wxImageHandler::~wxImageHandler</A><BR>
+<A HREF="#wximagehandlergetname">wxImageHandler::GetName</A><BR>
+<A HREF="#wximagehandlergetextension">wxImageHandler::GetExtension</A><BR>
+<A HREF="#wximagehandlergetimagecount">wxImageHandler::GetImageCount</A><BR>
+<A HREF="#wximagehandlergettype">wxImageHandler::GetType</A><BR>
+<A HREF="#wximagehandlergetmimetype">wxImageHandler::GetMimeType</A><BR>
+<A HREF="#wximagehandlerloadfile">wxImageHandler::LoadFile</A><BR>
+<A HREF="#wximagehandlersavefile">wxImageHandler::SaveFile</A><BR>
+<A HREF="#wximagehandlersetname">wxImageHandler::SetName</A><BR>
+<A HREF="#wximagehandlersetextension">wxImageHandler::SetExtension</A><BR>
+<A HREF="#wximagehandlersetmimetype">wxImageHandler::SetMimeType</A><BR>
+<A HREF="#wximagehandlersettype">wxImageHandler::SetType</A><BR>
+<P>
+
+<HR>
+<A NAME="wximagehandlerctor"></A>
+<H3>wxImageHandler::wxImageHandler</H3>
+<P>
+<B></B> <B>wxImageHandler</B>()<P>
+Default constructor. In your own default constructor, initialise the members
+m_name, m_extension and m_type.<P>
+
+
+<HR>
+<A NAME="wximagehandlerdtor"></A>
+<H3>wxImageHandler::~wxImageHandler</H3>
+<P>
+<B></B> <B>~wxImageHandler</B>()<P>
+Destroys the wxImageHandler object.<P>
+
+
+<HR>
+<A NAME="wximagehandlergetname"></A>
+<H3>wxImageHandler::GetName</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetName</B>() <B>const</B><P>
+Gets the name of this handler.<P>
+
+
+<HR>
+<A NAME="wximagehandlergetextension"></A>
+<H3>wxImageHandler::GetExtension</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetExtension</B>() <B>const</B><P>
+Gets the file extension associated with this handler.<P>
+
+
+<HR>
+<A NAME="wximagehandlergetimagecount"></A>
+<H3>wxImageHandler::GetImageCount</H3>
+<P>
+<B>int</B> <B>GetImageCount</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B></B><I> stream</I>)<P>
+If the image file contains more than one image and the image handler is capable
+of retrieving these individually, this function will return the number of
+available images.<P>
+<I>stream</I><UL><UL>
+Opened input stream for reading image data. Currently, the stream must support seeking.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Number of available images. For most image handlers, this is 1 (exceptions
+are TIFF and ICO formats).<P>
+
+
+<HR>
+<A NAME="wximagehandlergettype"></A>
+<H3>wxImageHandler::GetType</H3>
+<P>
+<B>long</B> <B>GetType</B>() <B>const</B><P>
+Gets the image type associated with this handler.<P>
+
+
+<HR>
+<A NAME="wximagehandlergetmimetype"></A>
+<H3>wxImageHandler::GetMimeType</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetMimeType</B>() <B>const</B><P>
+Gets the MIME type associated with this handler.<P>
+
+
+<HR>
+<A NAME="wximagehandlerloadfile"></A>
+<H3>wxImageHandler::LoadFile</H3>
+<P>
+<B>bool</B> <B>LoadFile</B>(<B><A HREF="wx_wximage.html#wximage">wxImage</A>* </B></B><I>image</I>, <B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B></B><I> stream</I>, <B>bool</B><I> verbose=true</I>, <B>int</B><I> index=0</I>)<P>
+Loads a image from a stream, putting the resulting data into <I>image</I>. If the image file contains
+more than one image and the image handler is capable of retrieving these individually, <I>index</I>
+indicates which image to read from the stream.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>image</I><UL><UL>
+The image object which is to be affected by this operation.</UL></UL>
+<P>
+<I>stream</I><UL><UL>
+Opened input stream for reading image data.</UL></UL>
+<P>
+<I>verbose</I><UL><UL>
+If set to true, errors reported by the image handler will produce wxLogMessages.</UL></UL>
+<P>
+<I>index</I><UL><UL>
+The index of the image in the file (starting from zero).</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the operation succeeded, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximageloadfile">wxImage::LoadFile</A>,
+<A HREF="wx_wximage.html#wximagesavefile">wxImage::SaveFile</A>,
+<A HREF="wx_wximagehandler.html#wximagehandlersavefile">wxImageHandler::SaveFile</A><P>
+
+
+<HR>
+<A NAME="wximagehandlersavefile"></A>
+<H3>wxImageHandler::SaveFile</H3>
+<P>
+<B>bool</B> <B>SaveFile</B>(<B><A HREF="wx_wximage.html#wximage">wxImage</A>* </B></B><I>image</I>, <B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>)<P>
+Saves a image in the output stream.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>image</I><UL><UL>
+The image object which is to be affected by this operation.</UL></UL>
+<P>
+<I>stream</I><UL><UL>
+Opened output stream for writing the data.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the operation succeeded, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximageloadfile">wxImage::LoadFile</A>,
+<A HREF="wx_wximage.html#wximagesavefile">wxImage::SaveFile</A>,
+<A HREF="wx_wximagehandler.html#wximagehandlerloadfile">wxImageHandler::LoadFile</A><P>
+
+
+<HR>
+<A NAME="wximagehandlersetname"></A>
+<H3>wxImageHandler::SetName</H3>
+<P>
+<B>void</B> <B>SetName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the handler name.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>name</I><UL><UL>
+Handler name.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wximagehandlersetextension"></A>
+<H3>wxImageHandler::SetExtension</H3>
+<P>
+<B>void</B> <B>SetExtension</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>extension</I>)<P>
+Sets the handler extension.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>extension</I><UL><UL>
+Handler extension.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wximagehandlersetmimetype"></A>
+<H3>wxImageHandler::SetMimeType</H3>
+<P>
+<B>void</B> <B>SetMimeType</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>mimetype</I>)<P>
+Sets the handler MIME type.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>mimename</I><UL><UL>
+Handler MIME type.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wximagehandlersettype"></A>
+<H3>wxImageHandler::SetType</H3>
+<P>
+<B>void</B> <B>SetType</B>(<B>long </B><I>type</I>)<P>
+Sets the handler type.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>name</I><UL><UL>
+Handler type.</UL></UL>
+
+
+</FONT></BODY></HTML>

@@ -1,0 +1,134 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextStyleListCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextstylelistctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextstylelistbox.html#wxrichtextstylelistbox"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextstyleorganiserdialog.html#wxrichtextstyleorganiserdialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextStyleListCtrl</H2>
+<P>
+This class incorporates a <A HREF="wx_wxrichtextstylelistbox.html#wxrichtextstylelistbox">wxRichTextStyleListBox</A> and
+a choice control that allows the user to select the category of style to view.
+It is demonstrated in the wxRichTextCtrl sample in <TT>samples/richtext</TT>.<P>
+To use wxRichTextStyleListCtrl, add the control to your window hierarchy and
+call <A HREF="wx_wxrichtextstylelistctrl.html#wxrichtextstylelistctrlsetstyletype">SetStyleType</A> with
+one of wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL, wxRichTextStyleListBox::wxRICHTEXT_STYLE_PARAGRAPH,
+wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER and wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST to set the current view.
+Associate the control with a style sheet and rich text control with SetStyleSheet and SetRichTextCtrl,
+so that when a style is double-clicked, it is applied to the selection.<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxRICHTEXTSTYLELIST_HIDE_TYPE_SELECTOR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This style hides the category selection control.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextstyles.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextstylelistctrlwxrichtextstylelistctrl">wxRichTextStyleListCtrl::wxRichTextStyleListCtrl</A><BR>
+<A HREF="#wxrichtextstylelistctrlcreate">wxRichTextStyleListCtrl::Create</A><BR>
+<A HREF="#wxrichtextstylelistctrlgetrichtextctrl">wxRichTextStyleListCtrl::GetRichTextCtrl</A><BR>
+<A HREF="#wxrichtextstylelistctrlgetstylechoice">wxRichTextStyleListCtrl::GetStyleChoice</A><BR>
+<A HREF="#wxrichtextstylelistctrlgetstylelistbox">wxRichTextStyleListCtrl::GetStyleListBox</A><BR>
+<A HREF="#wxrichtextstylelistctrlgetstylesheet">wxRichTextStyleListCtrl::GetStyleSheet</A><BR>
+<A HREF="#wxrichtextstylelistctrlgetstyletype">wxRichTextStyleListCtrl::GetStyleType</A><BR>
+<A HREF="#wxrichtextstylelistctrlsetrichtextctrl">wxRichTextStyleListCtrl::SetRichTextCtrl</A><BR>
+<A HREF="#wxrichtextstylelistctrlsetstylesheet">wxRichTextStyleListCtrl::SetStyleSheet</A><BR>
+<A HREF="#wxrichtextstylelistctrlsetstyletype">wxRichTextStyleListCtrl::SetStyleType</A><BR>
+<A HREF="#wxrichtextstylelistctrlupdatestyles">wxRichTextStyleListCtrl::UpdateStyles</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextstylelistctrlwxrichtextstylelistctrl"></A>
+<H3>wxRichTextStyleListCtrl::wxRichTextStyleListCtrl</H3>
+<P>
+<B></B> <B>wxRichTextStyleListCtrl</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = 0</I>)<P>
+<B></B> <B>wxRichTextStyleListCtrl</B>()<P>
+Constructors.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistctrlcreate"></A>
+<H3>wxRichTextStyleListCtrl::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = 0</I>)<P>
+Creates the windows.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistctrlgetrichtextctrl"></A>
+<H3>wxRichTextStyleListCtrl::GetRichTextCtrl</H3>
+<P>
+<B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>*</B> </B> <B>GetRichTextCtrl</B>() <B>const</B><P>
+Returns the associated rich text control, if any.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistctrlgetstylechoice"></A>
+<H3>wxRichTextStyleListCtrl::GetStyleChoice</H3>
+<P>
+<B><A HREF="wx_wxchoice.html#wxchoice">wxChoice</A>*</B> </B> <B>GetStyleChoice</B>() <B>const</B><P>
+Returns the wxChoice control used for selecting the style category.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistctrlgetstylelistbox"></A>
+<H3>wxRichTextStyleListCtrl::GetStyleListBox</H3>
+<P>
+<B><A HREF="wx_wxrichtextstylelistbox.html#wxrichtextstylelistbox">wxRichTextStyleListBox</A>*</B> </B> <B>GetStyleListBox</B>() <B>const</B><P>
+Returns the wxListBox control used to view the style list.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistctrlgetstylesheet"></A>
+<H3>wxRichTextStyleListCtrl::GetStyleSheet</H3>
+<P>
+<B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>*</B> </B> <B>GetStyleSheet</B>() <B>const</B><P>
+Returns the associated style sheet, if any.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistctrlgetstyletype"></A>
+<H3>wxRichTextStyleListCtrl::GetStyleType</H3>
+<P>
+<B>wxRichTextStyleListBox::wxRichTextStyleType</B> <B>GetStyleType</B>() <B>const</B><P>
+Returns the type of style to show in the list box.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistctrlsetrichtextctrl"></A>
+<H3>wxRichTextStyleListCtrl::SetRichTextCtrl</H3>
+<P>
+<B>void</B> <B>SetRichTextCtrl</B>(<B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl</I>)<P>
+Associates the control with a wxRichTextCtrl.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistctrlsetstylesheet"></A>
+<H3>wxRichTextStyleListCtrl::SetStyleSheet</H3>
+<P>
+<B>void</B> <B>SetStyleSheet</B>(<B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>* </B></B><I>styleSheet</I>)<P>
+Associates the control with a style sheet.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistctrlsetstyletype"></A>
+<H3>wxRichTextStyleListCtrl::SetStyleType</H3>
+<P>
+<B>void</B> <B>SetStyleType</B>(<B>wxRichTextStyleListBox::wxRichTextStyleType </B><I>styleType</I>)<P>
+Sets the style type to display. One of wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL, wxRichTextStyleListBox::wxRICHTEXT_STYLE_PARAGRAPH,
+wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER and wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST.<P>
+
+<HR>
+<A NAME="wxrichtextstylelistctrlupdatestyles"></A>
+<H3>wxRichTextStyleListCtrl::UpdateStyles</H3>
+<P>
+<B>void</B> <B>UpdateStyles</B>()<P>
+Updates the style list box. <P>
+
+</FONT></BODY></HTML>

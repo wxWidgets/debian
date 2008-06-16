@@ -1,0 +1,49 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxScopedTiedPtr</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxscopedtiedptr"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxscopedptr.html#wxscopedptr"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxscreendc.html#wxscreendc"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxScopedTiedPtr</H2>
+<P>
+This is a variation on the topic of <A HREF="wx_wxscopedptr.html#wxscopedptr">wxScopedPtr</A>. This
+class is also a smart pointer but in addition it "ties'' the pointer value to
+another variable. In other words, during the life time of this class the value
+of that variable is set to be the same as the value of the pointer itself and
+it is reset to its old value when the object is destroyed. This class is
+especially useful when converting the existing code (which may already store
+the pointers value in some variable) to the smart pointers.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<B><FONT COLOR="#FF0000">Derives from</FONT></B><P>
+<A HREF="wx_wxscopedptr.html#wxscopedptr">wxScopedPtr</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/ptr_scpd.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxscopedtiedptrctor">wxScopedTiedPtr::wxScopedTiedPtr</A><BR>
+<A HREF="#wxscopedtiedptrdtor">wxScopedTiedPtr::~wxScopedTiedPtr</A><BR>
+<P>
+
+<HR>
+<A NAME="wxscopedtiedptrctor"></A>
+<H3>wxScopedTiedPtr::wxScopedTiedPtr</H3>
+<P>
+<B></B> <B>wxScopedTiedPtr</B>(<B>T **</B><I>ppTie</I>, <B>T *</B><I>ptr</I>)<P>
+Constructor creates a smart pointer initialized with <I>ptr</I> and stores 
+<I>ptr</I> in the location specified by <I>ppTie</I> which must not be 
+<TT>NULL</TT>.<P>
+
+<HR>
+<A NAME="wxscopedtiedptrdtor"></A>
+<H3>wxScopedTiedPtr::~wxScopedTiedPtr</H3>
+<P>
+<B></B> <B>~wxScopedTiedPtr</B>()<P>
+Destructor frees the pointer help by this object and restores the value stored
+at the tied location (as specified in the <A HREF="wx_wxscopedtiedptr.html#wxscopedtiedptrctor">constructor</A>)
+to the old value.<P>
+Warning: this location may now contain an uninitialized value if it hadn't been
+initialized previously, in particular don't count on it magically being 
+<TT>NULL</TT>!<P>
+
+
+</FONT></BODY></HTML>

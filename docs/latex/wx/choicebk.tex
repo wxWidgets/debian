@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by: Wlodzimierz ABX Skiba from listbook.tex
 %% Created:     15.09.04
-%% RCS-ID:      $Id: choicebk.tex,v 1.3 2005/02/22 15:09:47 ABX Exp $
+%% RCS-ID:      $Id: choicebk.tex 38698 2006-04-13 14:22:32Z JS $
 %% Copyright:   (c) Vadim Zeitlin, Wlodzimierz Skiba
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -20,8 +20,13 @@ identical to wxNotebook (except for the features clearly related to tabs
 only), so please refer to that class documentation for now. You can also
 use the \helpref{notebook sample}{samplenotebook} to see wxChoicebook in action.
 
+wxChoicebook allows the use of wxBookCtrl::GetControlSizer, allowing a program
+to add other controls next to the choice control. This is particularly useful
+when screen space is restricted, as it often is when wxChoicebook is being employed.
+
 \wxheading{Derived from}
 
+wxBookCtrlBase\\
 \helpref{wxControl}{wxcontrol}\\
 \helpref{wxWindow}{wxwindow}\\
 \helpref{wxEvtHandler}{wxevthandler}\\

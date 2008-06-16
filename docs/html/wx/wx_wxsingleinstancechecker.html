@@ -1,0 +1,125 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSingleInstanceChecker</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsingleinstancechecker"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsinglechoicedialog.html#wxsinglechoicedialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsize.html#wxsize"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSingleInstanceChecker</H2>
+<P>
+wxSingleInstanceChecker class allows to check that only a single instance of a
+program is running. To do it, you should create an object of this class. As
+long as this object is alive, calls to 
+<A HREF="wx_wxsingleinstancechecker.html#wxsingleinstancecheckerisanotherrunning">IsAnotherRunning()</A> from
+other processes will return <TT>true</TT>.<P>
+As the object should have the life span as big as possible, it makes sense to
+create it either as a global or in <A HREF="wx_wxapp.html#wxapponinit">wxApp::OnInit</A>. For
+example:<P>
+<PRE>
+bool MyApp::OnInit()
+{
+    const wxString name = wxString::Format("MyApp-%s", wxGetUserId().c_str());
+    m_checker = new wxSingleInstanceChecker(name);
+    if ( m_checker-&gt;IsAnotherRunning() )
+    {
+        wxLogError(_("Another program instance is already running, aborting."));
+
+        return false;
+    }
+
+    ... more initializations ...
+
+    return true;
+}
+
+int MyApp::OnExit()
+{
+    delete m_checker;
+
+    return 0;
+}
+</PRE>
+Note using <A HREF="wx_networkfunctions.html#wxgetuserid">wxGetUserId()</A> to construct the name: this
+allows different user to run the application concurrently which is usually the
+intended goal. If you don't use the user name in the wxSingleInstanceChecker
+name, only one user would be able to run the application at a time.<P>
+This class is implemented for Win32 and Unix platforms (supporting <TT>fcntl()</TT>
+system call, but almost all of modern Unix systems do) only.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/snglinst.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsingleinstancecheckerctor">wxSingleInstanceChecker::wxSingleInstanceChecker</A><BR>
+<A HREF="#wxsingleinstancecheckerwxsingleinstancechecker">wxSingleInstanceChecker::wxSingleInstanceChecker</A><BR>
+<A HREF="#wxsingleinstancecheckercreate">wxSingleInstanceChecker::Create</A><BR>
+<A HREF="#wxsingleinstancecheckerisanotherrunning">wxSingleInstanceChecker::IsAnotherRunning</A><BR>
+<A HREF="#wxsingleinstancecheckerdtor">wxSingleInstanceChecker::~wxSingleInstanceChecker</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsingleinstancecheckerctor"></A>
+<H3>wxSingleInstanceChecker::wxSingleInstanceChecker</H3>
+<P>
+<B></B> <B>wxSingleInstanceChecker</B>()<P>
+Default ctor, use <A HREF="wx_wxsingleinstancechecker.html#wxsingleinstancecheckercreate">Create()</A> after it.<P>
+
+<HR>
+<A NAME="wxsingleinstancecheckerwxsingleinstancechecker"></A>
+<H3>wxSingleInstanceChecker::wxSingleInstanceChecker</H3>
+<P>
+<B></B> <B>wxSingleInstanceChecker</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path = wxEmptyString</I>)<P>
+Like <A HREF="wx_wxsingleinstancechecker.html#wxsingleinstancecheckercreate">Create()</A> but without
+error checking.<P>
+
+<HR>
+<A NAME="wxsingleinstancecheckercreate"></A>
+<H3>wxSingleInstanceChecker::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path = wxEmptyString</I>)<P>
+Initialize the object if it had been created using the default constructor.
+Note that you can't call Create() more than once, so calling it if the 
+<A HREF="wx_wxsingleinstancechecker.html#wxsingleinstancecheckerwxsingleinstancechecker">non default ctor</A> 
+had been used is an error.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>name</I><UL><UL>
+must be given and be as unique as possible. It is used as the
+mutex name under Win32 and the lock file name under Unix. 
+<A HREF="wx_wxapp.html#wxappgetappname">GetAppName()</A> and <A HREF="wx_networkfunctions.html#wxgetuserid">wxGetUserId()</A> 
+are commonly used to construct this parameter.</UL></UL>
+<P>
+<I>path</I><UL><UL>
+is optional and is ignored under Win32 and used as the directory to
+create the lock file in under Unix (default is 
+<A HREF="wx_networkfunctions.html#wxgethomedir">wxGetHomeDir()</A>)</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns <TT>false</TT> if initialization failed, it doesn't mean that another
+instance is running - use 
+<A HREF="wx_wxsingleinstancechecker.html#wxsingleinstancecheckerisanotherrunning">IsAnotherRunning()</A> to check
+for it.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+One of possible reasons while Create may fail on Unix is that the lock file
+used for checking already exists but was not created by the user.
+Therefore applications shouldn't treat failure of this function as fatal
+condition, because doing so would open them to the possibility of a Denial of
+Service attack. Instead, they should alert the user about the problem and
+offer to continue execution without checking if another instance is running.<P>
+
+<HR>
+<A NAME="wxsingleinstancecheckerisanotherrunning"></A>
+<H3>wxSingleInstanceChecker::IsAnotherRunning</H3>
+<P>
+<B>bool</B> <B>IsAnotherRunning</B>() <B>const</B><P>
+Returns <TT>true</TT> if another copy of this program is already running, <TT>
+false</TT> otherwise.<P>
+
+<HR>
+<A NAME="wxsingleinstancecheckerdtor"></A>
+<H3>wxSingleInstanceChecker::~wxSingleInstanceChecker</H3>
+<P>
+<B></B> <B>~wxSingleInstanceChecker</B>()<P>
+Destructor frees the associated resources.<P>
+Note that it is not virtual, this class is not meant to be used polymorphically<P>
+
+</FONT></BODY></HTML>

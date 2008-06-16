@@ -1,0 +1,86 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMask</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmask"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlonglong.html#wxlonglong"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmaximizeevent.html#wxmaximizeevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMask</H2>
+<P>
+This class encapsulates a monochrome mask bitmap, where the masked area is black and
+the unmasked area is white. When associated with a bitmap and drawn in a device context,
+the unmasked area of the bitmap will be drawn, and the masked area will not be drawn.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/bitmap.h&gt;<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+A mask may be associated with a <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>. It is used in <A HREF="wx_wxdc.html#wxdcblit">wxDC::Blit</A> when
+the source device context is a <A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A> with wxBitmap selected into it that
+contains a mask.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>, <A HREF="wx_wxdc.html#wxdcblit">wxDC::Blit</A>, <A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmaskctor">wxMask::wxMask</A><BR>
+<A HREF="#wxmaskdtor">wxMask::~wxMask</A><BR>
+<A HREF="#wxmaskcreate">wxMask::Create</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmaskctor"></A>
+<H3>wxMask::wxMask</H3>
+<P>
+<B></B> <B>wxMask</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxMask</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&amp; </B><I>bitmap</I>)<P>
+Constructs a mask from a monochrome bitmap.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This is the default constructor for wxMask in wxPython.<P>
+<B></B> <B>wxMask</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&amp; </B><I>bitmap</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&amp; </B><I>colour</I>)<P>
+Constructs a mask from a bitmap and a colour that indicates the background.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> wxPython has an alternate wxMask constructor matching this
+form called <TT>wxMaskColour</TT>.<P>
+<B></B> <B>wxMask</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B>int</B><I> index</I>)<P>
+Constructs a mask from a bitmap and a palette index that indicates the background. Not
+yet implemented for GTK.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bitmap</I><UL><UL>
+A valid bitmap.</UL></UL>
+<P>
+<I>colour</I><UL><UL>
+A colour specifying the transparency RGB values.</UL></UL>
+<P>
+<I>index</I><UL><UL>
+Index into a palette, specifying the transparency colour.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxmaskdtor"></A>
+<H3>wxMask::~wxMask</H3>
+<P>
+<B></B> <B>~wxMask</B>()<P>
+Destroys the wxMask object and the underlying bitmap data.<P>
+
+<HR>
+<A NAME="wxmaskcreate"></A>
+<H3>wxMask::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Constructs a mask from a monochrome bitmap.<P>
+<B>bool</B> <B>Create</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+Constructs a mask from a bitmap and a colour that indicates the background.<P>
+<B>bool</B> <B>Create</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B>int</B><I> index</I>)<P>
+Constructs a mask from a bitmap and a palette index that indicates the background. Not
+yet implemented for GTK.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bitmap</I><UL><UL>
+A valid bitmap.</UL></UL>
+<P>
+<I>colour</I><UL><UL>
+A colour specifying the transparency RGB values.</UL></UL>
+<P>
+<I>index</I><UL><UL>
+Index into a palette, specifying the transparency colour.</UL></UL>
+<P>
+
+
+</FONT></BODY></HTML>

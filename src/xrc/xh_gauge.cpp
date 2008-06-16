@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xh_gauge.cpp
+// Name:        src/xrc/xh_gauge.cpp
 // Purpose:     XRC resource for wxGauge
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_gauge.cpp,v 1.10 2005/01/07 21:33:13 VS Exp $
+// RCS-ID:      $Id: xh_gauge.cpp 39607 2006-06-06 22:02:01Z ABX $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_gauge.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -22,16 +18,21 @@
 #if wxUSE_XRC && wxUSE_GAUGE
 
 #include "wx/xrc/xh_gauge.h"
-#include "wx/gauge.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/gauge.h"
+#endif
 
 IMPLEMENT_DYNAMIC_CLASS(wxGaugeXmlHandler, wxXmlResourceHandler)
 
 wxGaugeXmlHandler::wxGaugeXmlHandler()
-: wxXmlResourceHandler()
+                  :wxXmlResourceHandler()
 {
     XRC_ADD_STYLE(wxGA_HORIZONTAL);
     XRC_ADD_STYLE(wxGA_VERTICAL);
+#if WXWIN_COMPATIBILITY_2_6
     XRC_ADD_STYLE(wxGA_PROGRESSBAR);
+#endif // WXWIN_COMPATIBILITY_2_6
     XRC_ADD_STYLE(wxGA_SMOOTH);   // windows only
     AddWindowStyles();
 }

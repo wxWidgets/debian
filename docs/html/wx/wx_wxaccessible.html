@@ -1,0 +1,467 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxAccessible</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxaccessible"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxacceleratortable.html#wxacceleratortable"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxactivateevent.html#wxactivateevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxAccessible</H2>
+<P>
+The wxAccessible class allows wxWidgets applications, and
+wxWidgets itself, to return extended information about user interface elements
+to client applications such as screen readers. This is the
+main way in which wxWidgets implements accessibility features.<P>
+At present, only Microsoft Active Accessibility is supported
+by this class.<P>
+To use this class, derive from wxAccessible, implement appropriate
+functions, and associate an object of the class with a
+window using <A HREF="wx_wxwindow.html#wxwindowsetaccessible">wxWindow::SetAccessible</A>.<P>
+All functions return an indication of success, failure, or not implemented
+using values of the wxAccStatus enum type.<P>
+If you return wxACC_NOT_IMPLEMENTED from any function, the system will try to
+implement the appropriate functionality. However this will not work with
+all functions.<P>
+Most functions work with an <I>object id</I>, which can be zero to refer to
+'this' UI element, or greater than zero to refer to the nth child element.
+This allows you to specify elements that don't have a corresponding wxWindow or
+wxAccessible; for example, the sash of a splitter window.<P>
+For details on the semantics of functions and types, please refer to the
+Microsoft Active Accessibility 1.2 documentation.<P>
+This class is compiled into wxWidgets only if the wxUSE_ACCESSIBILITY setup
+symbol is set to 1.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/access.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+Functions return a wxAccStatus error code, which
+may be one of the following:<P>
+<FONT SIZE=2>
+<PRE>
+typedef enum
+{
+    wxACC_FAIL,            // The function failed
+    wxACC_FALSE,           // The function returned false
+    wxACC_OK,              // The function completed successfully
+    wxACC_NOT_IMPLEMENTED, // The function is not implemented
+    wxACC_NOT_SUPPORTED    // The function is not supported
+} wxAccStatus
+</PRE>
+</FONT><P>
+Directions of navigation are represented by
+the following:<P>
+<FONT SIZE=2>
+<PRE>
+typedef enum
+{
+    wxNAVDIR_DOWN,
+    wxNAVDIR_FIRSTCHILD,
+    wxNAVDIR_LASTCHILD,
+    wxNAVDIR_LEFT,
+    wxNAVDIR_NEXT,
+    wxNAVDIR_PREVIOUS,
+    wxNAVDIR_RIGHT,
+    wxNAVDIR_UP
+} wxNavDir
+</PRE>
+</FONT><P>
+The role of a user interface element is represented
+by the following type:<P>
+<FONT SIZE=2>
+<PRE>
+typedef enum {  
+    wxROLE_NONE,
+    wxROLE_SYSTEM_ALERT,
+    wxROLE_SYSTEM_ANIMATION,
+    wxROLE_SYSTEM_APPLICATION,
+    wxROLE_SYSTEM_BORDER,
+    wxROLE_SYSTEM_BUTTONDROPDOWN,
+    wxROLE_SYSTEM_BUTTONDROPDOWNGRID,
+    wxROLE_SYSTEM_BUTTONMENU,
+    wxROLE_SYSTEM_CARET,
+    wxROLE_SYSTEM_CELL,
+    wxROLE_SYSTEM_CHARACTER,
+    wxROLE_SYSTEM_CHART,
+    wxROLE_SYSTEM_CHECKBUTTON,
+    wxROLE_SYSTEM_CLIENT,
+    wxROLE_SYSTEM_CLOCK,
+    wxROLE_SYSTEM_COLUMN,
+    wxROLE_SYSTEM_COLUMNHEADER,
+    wxROLE_SYSTEM_COMBOBOX,
+    wxROLE_SYSTEM_CURSOR,
+    wxROLE_SYSTEM_DIAGRAM,
+    wxROLE_SYSTEM_DIAL,
+    wxROLE_SYSTEM_DIALOG,
+    wxROLE_SYSTEM_DOCUMENT,
+    wxROLE_SYSTEM_DROPLIST,
+    wxROLE_SYSTEM_EQUATION,
+    wxROLE_SYSTEM_GRAPHIC,
+    wxROLE_SYSTEM_GRIP,
+    wxROLE_SYSTEM_GROUPING,
+    wxROLE_SYSTEM_HELPBALLOON,
+    wxROLE_SYSTEM_HOTKEYFIELD,
+    wxROLE_SYSTEM_INDICATOR,
+    wxROLE_SYSTEM_LINK,
+    wxROLE_SYSTEM_LIST,
+    wxROLE_SYSTEM_LISTITEM,
+    wxROLE_SYSTEM_MENUBAR,
+    wxROLE_SYSTEM_MENUITEM,
+    wxROLE_SYSTEM_MENUPOPUP,
+    wxROLE_SYSTEM_OUTLINE,
+    wxROLE_SYSTEM_OUTLINEITEM,
+    wxROLE_SYSTEM_PAGETAB,
+    wxROLE_SYSTEM_PAGETABLIST,
+    wxROLE_SYSTEM_PANE,
+    wxROLE_SYSTEM_PROGRESSBAR,
+    wxROLE_SYSTEM_PROPERTYPAGE,
+    wxROLE_SYSTEM_PUSHBUTTON,
+    wxROLE_SYSTEM_RADIOBUTTON,
+    wxROLE_SYSTEM_ROW,
+    wxROLE_SYSTEM_ROWHEADER,
+    wxROLE_SYSTEM_SCROLLBAR,
+    wxROLE_SYSTEM_SEPARATOR,
+    wxROLE_SYSTEM_SLIDER,
+    wxROLE_SYSTEM_SOUND,
+    wxROLE_SYSTEM_SPINBUTTON,
+    wxROLE_SYSTEM_STATICTEXT,
+    wxROLE_SYSTEM_STATUSBAR,
+    wxROLE_SYSTEM_TABLE,
+    wxROLE_SYSTEM_TEXT,
+    wxROLE_SYSTEM_TITLEBAR,
+    wxROLE_SYSTEM_TOOLBAR,
+    wxROLE_SYSTEM_TOOLTIP,
+    wxROLE_SYSTEM_WHITESPACE,
+    wxROLE_SYSTEM_WINDOW
+} wxAccRole
+</PRE>
+</FONT><P>
+Objects are represented by the following type:<P>
+<FONT SIZE=2>
+<PRE>
+typedef enum {
+    wxOBJID_WINDOW =    0x00000000,
+    wxOBJID_SYSMENU =   0xFFFFFFFF,
+    wxOBJID_TITLEBAR =  0xFFFFFFFE,
+    wxOBJID_MENU =      0xFFFFFFFD,
+    wxOBJID_CLIENT =    0xFFFFFFFC,
+    wxOBJID_VSCROLL =   0xFFFFFFFB,
+    wxOBJID_HSCROLL =   0xFFFFFFFA,
+    wxOBJID_SIZEGRIP =  0xFFFFFFF9,
+    wxOBJID_CARET =     0xFFFFFFF8,
+    wxOBJID_CURSOR =    0xFFFFFFF7,
+    wxOBJID_ALERT =     0xFFFFFFF6,
+    wxOBJID_SOUND =     0xFFFFFFF5
+} wxAccObject
+</PRE>
+</FONT><P>
+Selection actions are identified by
+this type:<P>
+<FONT SIZE=2>
+<PRE>
+typedef enum
+{
+    wxACC_SEL_NONE            = 0,
+    wxACC_SEL_TAKEFOCUS       = 1,
+    wxACC_SEL_TAKESELECTION   = 2,
+    wxACC_SEL_EXTENDSELECTION = 4,
+    wxACC_SEL_ADDSELECTION    = 8,
+    wxACC_SEL_REMOVESELECTION = 16
+} wxAccSelectionFlags
+</PRE>
+</FONT><P>
+States are represented by the following:<P>
+<FONT SIZE=2>
+<PRE>
+#define wxACC_STATE_SYSTEM_ALERT_HIGH       0x00000001
+#define wxACC_STATE_SYSTEM_ALERT_MEDIUM     0x00000002
+#define wxACC_STATE_SYSTEM_ALERT_LOW        0x00000004
+#define wxACC_STATE_SYSTEM_ANIMATED         0x00000008
+#define wxACC_STATE_SYSTEM_BUSY             0x00000010
+#define wxACC_STATE_SYSTEM_CHECKED          0x00000020
+#define wxACC_STATE_SYSTEM_COLLAPSED        0x00000040
+#define wxACC_STATE_SYSTEM_DEFAULT          0x00000080
+#define wxACC_STATE_SYSTEM_EXPANDED         0x00000100
+#define wxACC_STATE_SYSTEM_EXTSELECTABLE    0x00000200
+#define wxACC_STATE_SYSTEM_FLOATING         0x00000400
+#define wxACC_STATE_SYSTEM_FOCUSABLE        0x00000800
+#define wxACC_STATE_SYSTEM_FOCUSED          0x00001000
+#define wxACC_STATE_SYSTEM_HOTTRACKED       0x00002000
+#define wxACC_STATE_SYSTEM_INVISIBLE        0x00004000
+#define wxACC_STATE_SYSTEM_MARQUEED         0x00008000
+#define wxACC_STATE_SYSTEM_MIXED            0x00010000
+#define wxACC_STATE_SYSTEM_MULTISELECTABLE  0x00020000
+#define wxACC_STATE_SYSTEM_OFFSCREEN        0x00040000
+#define wxACC_STATE_SYSTEM_PRESSED          0x00080000
+#define wxACC_STATE_SYSTEM_PROTECTED        0x00100000
+#define wxACC_STATE_SYSTEM_READONLY         0x00200000
+#define wxACC_STATE_SYSTEM_SELECTABLE       0x00400000
+#define wxACC_STATE_SYSTEM_SELECTED         0x00800000
+#define wxACC_STATE_SYSTEM_SELFVOICING      0x01000000
+#define wxACC_STATE_SYSTEM_UNAVAILABLE      0x02000000
+</PRE>
+</FONT><P>
+Event identifiers that can be sent via <A HREF="wx_wxaccessible.html#wxaccessiblenotifyevent">wxAccessible::NotifyEvent</A> are
+as follows:<P>
+<FONT SIZE=2>
+<PRE>
+#define wxACC_EVENT_SYSTEM_SOUND              0x0001
+#define wxACC_EVENT_SYSTEM_ALERT              0x0002
+#define wxACC_EVENT_SYSTEM_FOREGROUND         0x0003
+#define wxACC_EVENT_SYSTEM_MENUSTART          0x0004
+#define wxACC_EVENT_SYSTEM_MENUEND            0x0005
+#define wxACC_EVENT_SYSTEM_MENUPOPUPSTART     0x0006
+#define wxACC_EVENT_SYSTEM_MENUPOPUPEND       0x0007
+#define wxACC_EVENT_SYSTEM_CAPTURESTART       0x0008
+#define wxACC_EVENT_SYSTEM_CAPTUREEND         0x0009
+#define wxACC_EVENT_SYSTEM_MOVESIZESTART      0x000A
+#define wxACC_EVENT_SYSTEM_MOVESIZEEND        0x000B
+#define wxACC_EVENT_SYSTEM_CONTEXTHELPSTART   0x000C
+#define wxACC_EVENT_SYSTEM_CONTEXTHELPEND     0x000D
+#define wxACC_EVENT_SYSTEM_DRAGDROPSTART      0x000E
+#define wxACC_EVENT_SYSTEM_DRAGDROPEND        0x000F
+#define wxACC_EVENT_SYSTEM_DIALOGSTART        0x0010
+#define wxACC_EVENT_SYSTEM_DIALOGEND          0x0011
+#define wxACC_EVENT_SYSTEM_SCROLLINGSTART     0x0012
+#define wxACC_EVENT_SYSTEM_SCROLLINGEND       0x0013
+#define wxACC_EVENT_SYSTEM_SWITCHSTART        0x0014
+#define wxACC_EVENT_SYSTEM_SWITCHEND          0x0015
+#define wxACC_EVENT_SYSTEM_MINIMIZESTART      0x0016
+#define wxACC_EVENT_SYSTEM_MINIMIZEEND        0x0017
+#define wxACC_EVENT_OBJECT_CREATE                 0x8000
+#define wxACC_EVENT_OBJECT_DESTROY                0x8001
+#define wxACC_EVENT_OBJECT_SHOW                   0x8002
+#define wxACC_EVENT_OBJECT_HIDE                   0x8003
+#define wxACC_EVENT_OBJECT_REORDER                0x8004
+#define wxACC_EVENT_OBJECT_FOCUS                  0x8005
+#define wxACC_EVENT_OBJECT_SELECTION              0x8006
+#define wxACC_EVENT_OBJECT_SELECTIONADD           0x8007
+#define wxACC_EVENT_OBJECT_SELECTIONREMOVE        0x8008
+#define wxACC_EVENT_OBJECT_SELECTIONWITHIN        0x8009
+#define wxACC_EVENT_OBJECT_STATECHANGE            0x800A
+#define wxACC_EVENT_OBJECT_LOCATIONCHANGE         0x800B
+#define wxACC_EVENT_OBJECT_NAMECHANGE             0x800C
+#define wxACC_EVENT_OBJECT_DESCRIPTIONCHANGE      0x800D
+#define wxACC_EVENT_OBJECT_VALUECHANGE            0x800E
+#define wxACC_EVENT_OBJECT_PARENTCHANGE           0x800F
+#define wxACC_EVENT_OBJECT_HELPCHANGE             0x8010
+#define wxACC_EVENT_OBJECT_DEFACTIONCHANGE        0x8011
+#define wxACC_EVENT_OBJECT_ACCELERATORCHANGE      0x8012
+</PRE>
+</FONT><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxaccessiblewxaccessible">wxAccessible::wxAccessible</A><BR>
+<A HREF="#wxaccessibledtor">wxAccessible::~wxAccessible</A><BR>
+<A HREF="#wxaccessibledodefaultaction">wxAccessible::DoDefaultAction</A><BR>
+<A HREF="#wxaccessiblegetchild">wxAccessible::GetChild</A><BR>
+<A HREF="#wxaccessiblegetchildcount">wxAccessible::GetChildCount</A><BR>
+<A HREF="#wxaccessiblegetdefaultaction">wxAccessible::GetDefaultAction</A><BR>
+<A HREF="#wxaccessiblegetdescription">wxAccessible::GetDescription</A><BR>
+<A HREF="#wxaccessiblegetfocus">wxAccessible::GetFocus</A><BR>
+<A HREF="#wxaccessiblegethelptext">wxAccessible::GetHelpText</A><BR>
+<A HREF="#wxaccessiblegetkeyboardshortcut">wxAccessible::GetKeyboardShortcut</A><BR>
+<A HREF="#wxaccessiblegetlocation">wxAccessible::GetLocation</A><BR>
+<A HREF="#wxaccessiblegetname">wxAccessible::GetName</A><BR>
+<A HREF="#wxaccessiblegetparent">wxAccessible::GetParent</A><BR>
+<A HREF="#wxaccessiblegetrole">wxAccessible::GetRole</A><BR>
+<A HREF="#wxaccessiblegetselections">wxAccessible::GetSelections</A><BR>
+<A HREF="#wxaccessiblegetstate">wxAccessible::GetState</A><BR>
+<A HREF="#wxaccessiblegetvalue">wxAccessible::GetValue</A><BR>
+<A HREF="#wxaccessiblegetwindow">wxAccessible::GetWindow</A><BR>
+<A HREF="#wxaccessiblehittest">wxAccessible::HitTest</A><BR>
+<A HREF="#wxaccessiblenavigate">wxAccessible::Navigate</A><BR>
+<A HREF="#wxaccessiblenotifyevent">wxAccessible::NotifyEvent</A><BR>
+<A HREF="#wxaccessibleselect">wxAccessible::Select</A><BR>
+<A HREF="#wxaccessiblesetwindow">wxAccessible::SetWindow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxaccessiblewxaccessible"></A>
+<H3>wxAccessible::wxAccessible</H3>
+<P>
+<B></B> <B>wxAccessible</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win = NULL</I>)<P>
+Constructor, taking an optional window. The object can be associated with
+a window later.<P>
+
+<HR>
+<A NAME="wxaccessibledtor"></A>
+<H3>wxAccessible::~wxAccessible</H3>
+<P>
+<B></B> <B>~wxAccessible</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxaccessibledodefaultaction"></A>
+<H3>wxAccessible::DoDefaultAction</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>DoDefaultAction</B>(<B>int </B><I>childId</I>)<P>
+Performs the default action for the object. <I>childId</I> is 0 (the action for this object)
+or greater than 0 (the action for a child). Return wxACC_NOT_SUPPORTED if there
+is no default action for this window (e.g. an edit control).<P>
+
+<HR>
+<A NAME="wxaccessiblegetchild"></A>
+<H3>wxAccessible::GetChild</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetChild</B>(<B>int </B><I>childId</I>, <B><A HREF="wx_wxaccessible.html#wxaccessible">wxAccessible</A>** </B></B><I>child</I>)<P>
+Gets the specified child (starting from 1). If <I>child</I> is NULL and the return value is wxACC_OK,
+this means that the child is a simple element and not an accessible object.<P>
+
+<HR>
+<A NAME="wxaccessiblegetchildcount"></A>
+<H3>wxAccessible::GetChildCount</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetChildCount</B>(<B>int* </B><I>childCount</I>)<P>
+Returns the number of children in <I>childCount</I>.<P>
+
+<HR>
+<A NAME="wxaccessiblegetdefaultaction"></A>
+<H3>wxAccessible::GetDefaultAction</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetDefaultAction</B>(<B>int </B><I>childId</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>actionName</I>)<P>
+Gets the default action for this object (0) or a child (greater than 0).
+Return wxACC_OK even if there is no action. <I>actionName</I> is the action, or the empty
+string if there is no action. The retrieved string describes the action that is performed on an object,
+not what the object does as a result. For example, a toolbar button that prints
+a document has a default action of "Press" rather than "Prints the current document."<P>
+
+<HR>
+<A NAME="wxaccessiblegetdescription"></A>
+<H3>wxAccessible::GetDescription</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetDescription</B>(<B>int </B><I>childId</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>description</I>)<P>
+Returns the description for this object or a child.<P>
+
+<HR>
+<A NAME="wxaccessiblegetfocus"></A>
+<H3>wxAccessible::GetFocus</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetFocus</B>(<B>int* </B><I>childId</I>, <B><A HREF="wx_wxaccessible.html#wxaccessible">wxAccessible</A>** </B></B><I>child</I>)<P>
+Gets the window with the keyboard focus. If childId is 0 and child is NULL, no object in
+this subhierarchy has the focus. If this object has the focus, child should be 'this'.<P>
+
+<HR>
+<A NAME="wxaccessiblegethelptext"></A>
+<H3>wxAccessible::GetHelpText</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetHelpText</B>(<B>int </B><I>childId</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>helpText</I>)<P>
+Returns help text for this object or a child, similar to tooltip text.<P>
+
+<HR>
+<A NAME="wxaccessiblegetkeyboardshortcut"></A>
+<H3>wxAccessible::GetKeyboardShortcut</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetKeyboardShortcut</B>(<B>int </B><I>childId</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>shortcut</I>)<P>
+Returns the keyboard shortcut for this object or child.
+Return e.g. ALT+K.<P>
+
+<HR>
+<A NAME="wxaccessiblegetlocation"></A>
+<H3>wxAccessible::GetLocation</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetLocation</B>(<B><A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>elementId</I>)<P>
+Returns the rectangle for this object (id is 0) or a child element (id is greater than 0).
+<I>rect</I> is in screen coordinates.<P>
+
+<HR>
+<A NAME="wxaccessiblegetname"></A>
+<H3>wxAccessible::GetName</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetName</B>(<B>int </B><I>childId</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>name</I>)<P>
+Gets the name of the specified object.<P>
+
+<HR>
+<A NAME="wxaccessiblegetparent"></A>
+<H3>wxAccessible::GetParent</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetParent</B>(<B><A HREF="wx_wxaccessible.html#wxaccessible">wxAccessible</A>** </B></B><I>parent</I>)<P>
+Returns the parent of this object, or NULL.<P>
+
+<HR>
+<A NAME="wxaccessiblegetrole"></A>
+<H3>wxAccessible::GetRole</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetRole</B>(<B>int </B><I>childId</I>, <B>wxAccRole* </B><I>role</I>)<P>
+Returns a role constant describing this object. See <A HREF="wx_wxaccessible.html#wxaccessible">wxAccessible</A> for a list
+of these roles.<P>
+
+<HR>
+<A NAME="wxaccessiblegetselections"></A>
+<H3>wxAccessible::GetSelections</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetSelections</B>(<B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>* </B></B><I>selections</I>)<P>
+Gets a variant representing the selected children
+of this object.<P>
+Acceptable values are:<P>
+<UL>
+
+<LI>  a null variant (IsNull() returns TRUE)
+<LI>  a list variant (GetType() == wxT("list"))
+<LI>  an integer representing the selected child element,
+or 0 if this object is selected (GetType() == wxT("long"))
+<LI> a "void*" pointer to a wxAccessible child object
+</UL>
+<P>
+
+<HR>
+<A NAME="wxaccessiblegetstate"></A>
+<H3>wxAccessible::GetState</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetState</B>(<B>int </B><I>childId</I>, <B>long* </B><I>state</I>)<P>
+Returns a state constant. See <A HREF="wx_wxaccessible.html#wxaccessible">wxAccessible</A> for a list
+of these states.<P>
+
+<HR>
+<A NAME="wxaccessiblegetvalue"></A>
+<H3>wxAccessible::GetValue</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>GetValue</B>(<B>int </B><I>childId</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>strValue</I>)<P>
+Returns a localized string representing the value for the object
+or child.<P>
+
+<HR>
+<A NAME="wxaccessiblegetwindow"></A>
+<H3>wxAccessible::GetWindow</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetWindow</B>()<P>
+Returns the window associated with this object.<P>
+
+<HR>
+<A NAME="wxaccessiblehittest"></A>
+<H3>wxAccessible::HitTest</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>HitTest</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>, <B>int* </B><I>childId</I>, <B><A HREF="wx_wxaccessible.html#wxaccessible">wxAccessible</A>** </B></B><I>childObject</I>)<P>
+Returns a status value and object id to indicate whether the given point was on this or
+a child object. Can return either a child object, or an integer
+representing the child element, starting from 1.<P>
+<I>pt</I> is in screen coordinates.<P>
+
+<HR>
+<A NAME="wxaccessiblenavigate"></A>
+<H3>wxAccessible::Navigate</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>Navigate</B>(<B>wxNavDir </B><I>navDir</I>, <B>int </B><I>fromId</I>, <B>int* </B><I>toId</I>, <B><A HREF="wx_wxaccessible.html#wxaccessible">wxAccessible</A>** </B></B><I>toObject</I>)<P>
+Navigates from <I>fromId</I> to <I>toId</I>/<I>toObject</I>.<P>
+
+<HR>
+<A NAME="wxaccessiblenotifyevent"></A>
+<H3>wxAccessible::NotifyEvent</H3>
+<P>
+<B>virtual static void</B> <B>NotifyEvent</B>(<B>int</B><I> eventType</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>, <B>wxAccObject </B><I>objectType</I>, <B>int </B><I>objectType</I>)<P>
+Allows the application to send an event when something changes in an accessible object.<P>
+
+<HR>
+<A NAME="wxaccessibleselect"></A>
+<H3>wxAccessible::Select</H3>
+<P>
+<B>virtual wxAccStatus</B> <B>Select</B>(<B>int </B><I>childId</I>, <B>wxAccSelectionFlags </B><I>selectFlags</I>)<P>
+Selects the object or child. See <A HREF="wx_wxaccessible.html#wxaccessible">wxAccessible</A> for a list
+of the selection actions.<P>
+
+<HR>
+<A NAME="wxaccessiblesetwindow"></A>
+<H3>wxAccessible::SetWindow</H3>
+<P>
+<B>void</B> <B>SetWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>)<P>
+Sets the window associated with this object.<P>
+
+</FONT></BODY></HTML>

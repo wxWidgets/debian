@@ -1,0 +1,88 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTextDataObject</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtextdataobject"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtextctrl.html#wxtextctrl"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtextdroptarget.html#wxtextdroptarget"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTextDataObject</H2>
+<P>
+wxTextDataObject is a specialization of wxDataObject for text data. It can be
+used without change to paste data into the <A HREF="wx_wxclipboard.html#wxclipboard">wxClipboard</A> 
+or a <A HREF="wx_wxdropsource.html#wxdropsource">wxDropSource</A>. A user may wish to derive a new
+class from this class for providing text on-demand in order to minimize memory
+consumption when offering data in several formats, such as plain text and RTF
+because by default the text is stored in a string in this class, but it might
+as well be generated when requested. For this, 
+<A HREF="wx_wxtextdataobject.html#wxtextdataobjectgettextlength">GetTextLength</A> and 
+<A HREF="wx_wxtextdataobject.html#wxtextdataobjectgettext">GetText</A> will have to be overridden.<P>
+Note that if you already have the text inside a string, you will not achieve
+any efficiency gain by overriding these functions because copying wxStrings is
+already a very efficient operation (data is not actually copied because
+wxStrings are reference counted).<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> If you wish to create a derived wxTextDataObject class in
+wxPython you should derive the class from wxPyTextDataObject
+in order to get Python-aware capabilities for the various virtual
+methods.<P>
+<B><FONT COLOR="#FF0000">Virtual functions to override</FONT></B><P>
+This class may be used as is, but all of the data transfer functions may be
+overridden to increase efficiency.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple">wxDataObjectSimple</A><BR>
+
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataobj.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdndoverview.html#wxdndoverview">Clipboard and drag and drop overview</A>, 
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A>, 
+<A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple">wxDataObjectSimple</A>, 
+<A HREF="wx_wxfiledataobject.html#wxfiledataobject">wxFileDataObject</A>, 
+<A HREF="wx_wxbitmapdataobject.html#wxbitmapdataobject">wxBitmapDataObject</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxtextdataobjectwxtextdataobject">wxTextDataObject::wxTextDataObject</A><BR>
+<A HREF="#wxtextdataobjectgettextlength">wxTextDataObject::GetTextLength</A><BR>
+<A HREF="#wxtextdataobjectgettext">wxTextDataObject::GetText</A><BR>
+<A HREF="#wxtextdataobjectsettext">wxTextDataObject::SetText</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtextdataobjectwxtextdataobject"></A>
+<H3>wxTextDataObject::wxTextDataObject</H3>
+<P>
+<B></B> <B>wxTextDataObject</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text = wxEmptyString</I>)<P>
+Constructor, may be used to initialise the text (otherwise 
+<A HREF="wx_wxtextdataobject.html#wxtextdataobjectsettext">SetText</A> should be used later).<P>
+
+<HR>
+<A NAME="wxtextdataobjectgettextlength"></A>
+<H3>wxTextDataObject::GetTextLength</H3>
+<P>
+<B>virtual size_t</B> <B>GetTextLength</B>() <B>const</B><P>
+Returns the data size. By default, returns the size of the text data
+set in the constructor or using <A HREF="wx_wxtextdataobject.html#wxtextdataobjectsettext">SetText</A>.
+This can be overridden to provide text size data on-demand. It is recommended
+to return the text length plus 1 for a trailing zero, but this is not
+strictly required.<P>
+
+<HR>
+<A NAME="wxtextdataobjectgettext"></A>
+<H3>wxTextDataObject::GetText</H3>
+<P>
+<B>virtual <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetText</B>() <B>const</B><P>
+Returns the text associated with the data object. You may wish to override
+this method when offering data on-demand, but this is not required by
+wxWidgets' internals. Use this method to get data in text form from
+the <A HREF="wx_wxclipboard.html#wxclipboard">wxClipboard</A>.<P>
+
+<HR>
+<A NAME="wxtextdataobjectsettext"></A>
+<H3>wxTextDataObject::SetText</H3>
+<P>
+<B>virtual void</B> <B>SetText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>strText</I>)<P>
+Sets the text associated with the data object. This method is called
+when the data object receives the data and, by default, copies the text into
+the member variable. If you want to process the text on the fly you may wish to
+override this function.<P>
+
+</FONT></BODY></HTML>

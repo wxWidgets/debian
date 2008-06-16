@@ -1,0 +1,48 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxArchiveNotifier</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxarchivenotifier"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxarchiveiterator.html#wxarchiveiterator"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxArchiveNotifier</H2>
+<P>
+If you need to know when a
+ <A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A> updates a
+ <A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A> object, you can create
+a notifier by deriving from this abstract base class, overriding
+ <A HREF="wx_wxarchivenotifier.html#wxarchivenotifieronentryupdated">OnEntryUpdated()</A>.  An instance
+of your notifier class can then be assigned to the wxArchiveEntry object
+using <A HREF="wx_wxarchiveentry.html#wxarchiveentrynotifier">wxArchiveEntry::SetNotifier()</A>.
+Your OnEntryUpdated() method will then be invoked whenever the input
+stream updates the entry.<P>
+Setting a notifier is not usually necessary. It is used to handle
+certain cases when modifying an archive in a pipeline (i.e. between
+non-seekable streams).
+See <A HREF="wx_wxarc.html#wxarcnoseek">Archives on non-seekable streams</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/archive.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarcnoseek">Archives on non-seekable streams</A><BR>
+
+<A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A><BR>
+
+<A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A><BR>
+
+<A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstream">wxArchiveOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxarchivenotifieronentryupdated">wxArchiveNotifier::OnEntryUpdated</A><BR>
+<P>
+
+<HR>
+<A NAME="wxarchivenotifieronentryupdated"></A>
+<H3>wxArchiveNotifier::OnEntryUpdated</H3>
+<P>
+<B>void</B> <B>OnEntryUpdated</B>(<B>class wxArchiveEntry&amp; </B><I>entry</I>)<P>
+This method must be overridden in your derived class.<P>
+
+
+</FONT></BODY></HTML>

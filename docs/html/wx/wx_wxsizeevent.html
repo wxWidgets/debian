@@ -1,0 +1,66 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSizeEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsizeevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsize.html#wxsize"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsizer.html#wxsizer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSizeEvent</H2>
+<P>
+A size event holds information about size change events.<P>
+The EVT_SIZE handler function will be called when the window has been resized.<P>
+You may wish to use this for frames to resize their child windows as appropriate.<P>
+Note that the size passed is of
+the whole window: call <A HREF="wx_wxwindow.html#wxwindowgetclientsize">wxWindow::GetClientSize</A> for the area which may be
+used by the application.<P>
+When a window is resized, usually only a small part of the window is damaged and you
+may only need to repaint that area. However, if your drawing depends on the size of the window,
+you may need to clear the DC explicitly and repaint the whole window. In which case, you
+may need to call <A HREF="wx_wxwindow.html#wxwindowrefresh">wxWindow::Refresh</A> to invalidate the entire window.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a size event, use this event handler macro to direct input to a member
+function that takes a wxSizeEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SIZE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_SIZE event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsize.html#wxsize">wxSize</A>,
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsizeeventctor">wxSizeEvent::wxSizeEvent</A><BR>
+<A HREF="#wxsizeeventgetsize">wxSizeEvent::GetSize</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsizeeventctor"></A>
+<H3>wxSizeEvent::wxSizeEvent</H3>
+<P>
+<B></B> <B>wxSizeEvent</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sz</I>, <B>int </B><I>id = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxsizeeventgetsize"></A>
+<H3>wxSizeEvent::GetSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetSize</B>() <B>const</B><P>
+Returns the entire size of the window generating the size change event.<P>
+
+</FONT></BODY></HTML>

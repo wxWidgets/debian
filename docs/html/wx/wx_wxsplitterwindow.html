@@ -1,0 +1,583 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSplitterWindow</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsplitterwindow"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsplitterevent.html#wxsplitterevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsplitterrenderparams.html#wxsplitterrenderparams"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSplitterWindow</H2>
+<P>
+<A HREF="wx_wxsplitterwindowoverview.html#wxsplitterwindowoverview">wxSplitterWindow overview</A><P>
+This class manages up to two subwindows. The current view can be
+split into two programmatically (perhaps from a menu command), and unsplit
+either programmatically or via the wxSplitterWindow user interface.<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSP_3D</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draws a 3D effect border and sash.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSP_3DSASH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draws a 3D effect sash.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSP_3DBORDER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Synonym for wxSP_BORDER.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSP_BORDER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draws a standard border.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSP_NOBORDER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+No border (default).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSP_NO_XP_THEME</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Under Windows XP, switches off the attempt to draw the
+splitter using Windows XP theming, so the borders and sash will take on the pre-XP look.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSP_PERMIT_UNSPLIT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Always allow to
+unsplit, even with the minimum pane size other than zero.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSP_LIVE_UPDATE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Don't draw XOR line but resize the child windows immediately.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/splitter.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To process input from a splitter control, use the following event handler
+macros to direct input to member functions that take a 
+<A HREF="wx_wxsplitterevent.html#wxsplitterevent">wxSplitterEvent</A> argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=397>
+<B>EVT_SPLITTER_SASH_POS_CHANGING(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The sash
+position is in the process of being changed. May be used to modify the
+position of the tracking bar to properly reflect the position that
+would be set if the drag were to be completed at this point. Processes
+a wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGING event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=397>
+<B>EVT_SPLITTER_SASH_POS_CHANGED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The sash
+position was changed. May be used to modify the sash position before
+it is set, or to prevent the change from taking place.
+Processes a wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=397>
+<B>EVT_SPLITTER_UNSPLIT(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The splitter has been just
+unsplit. Processes a wxEVT_COMMAND_SPLITTER_UNSPLIT event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=397>
+<B>EVT_SPLITTER_DCLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The sash was double
+clicked. The default behaviour is to unsplit the window when this happens
+(unless the minimum pane size has been set to a value greater than zero).
+Processes a wxEVT_COMMAND_SPLITTER_DOUBLECLICKED event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterevent.html#wxsplitterevent">wxSplitterEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsplitterwindowctor">wxSplitterWindow::wxSplitterWindow</A><BR>
+<A HREF="#wxsplitterwindowdtor">wxSplitterWindow::~wxSplitterWindow</A><BR>
+<A HREF="#wxsplitterwindowcreate">wxSplitterWindow::Create</A><BR>
+<A HREF="#wxsplitterwindowgetminimumpanesize">wxSplitterWindow::GetMinimumPaneSize</A><BR>
+<A HREF="#wxsplitterwindowgetsashgravity">wxSplitterWindow::GetSashGravity</A><BR>
+<A HREF="#wxsplitterwindowgetsashposition">wxSplitterWindow::GetSashPosition</A><BR>
+<A HREF="#wxsplitterwindowgetsplitmode">wxSplitterWindow::GetSplitMode</A><BR>
+<A HREF="#wxsplitterwindowgetwindow1">wxSplitterWindow::GetWindow1</A><BR>
+<A HREF="#wxsplitterwindowgetwindow2">wxSplitterWindow::GetWindow2</A><BR>
+<A HREF="#wxsplitterwindowinitialize">wxSplitterWindow::Initialize</A><BR>
+<A HREF="#wxsplitterwindowissplit">wxSplitterWindow::IsSplit</A><BR>
+<A HREF="#wxsplitterwindowondoubleclicksash">wxSplitterWindow::OnDoubleClickSash</A><BR>
+<A HREF="#wxsplitterwindowonunsplit">wxSplitterWindow::OnUnsplit</A><BR>
+<A HREF="#wxsplitterwindowonsashpositionchange">wxSplitterWindow::OnSashPositionChange</A><BR>
+<A HREF="#wxsplitterwindowreplacewindow">wxSplitterWindow::ReplaceWindow</A><BR>
+<A HREF="#wxsplitterwindowsetsashgravity">wxSplitterWindow::SetSashGravity</A><BR>
+<A HREF="#wxsplitterwindowsetsashposition">wxSplitterWindow::SetSashPosition</A><BR>
+<A HREF="#wxsplitterwindowsetsashsize">wxSplitterWindow::SetSashSize</A><BR>
+<A HREF="#wxsplitterwindowsetminimumpanesize">wxSplitterWindow::SetMinimumPaneSize</A><BR>
+<A HREF="#wxsplitterwindowsetsplitmode">wxSplitterWindow::SetSplitMode</A><BR>
+<A HREF="#wxsplitterwindowsplithorizontally">wxSplitterWindow::SplitHorizontally</A><BR>
+<A HREF="#wxsplitterwindowsplitvertically">wxSplitterWindow::SplitVertically</A><BR>
+<A HREF="#wxsplitterwindowunsplit">wxSplitterWindow::Unsplit</A><BR>
+<A HREF="#wxsplitterwindowupdatesize">wxSplitterWindow::UpdateSize</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsplitterwindowctor"></A>
+<H3>wxSplitterWindow::wxSplitterWindow</H3>
+<P>
+<B></B> <B>wxSplitterWindow</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxSplitterWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>point = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long </B><I>style=wxSP_3D</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name = "splitterWindow"</I>)<P>
+Constructor for creating the window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The parent of the splitter window.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The window identifier.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+The window position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+The window size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style. See <A HREF="wx_wxsplitterwindow.html#wxsplitterwindow">wxSplitterWindow</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+The window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+After using this constructor, you must create either one or two subwindows
+with the splitter window as parent, and then call one of <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowinitialize">wxSplitterWindow::Initialize</A>,
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplitvertically">wxSplitterWindow::SplitVertically</A> and <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplithorizontally">wxSplitterWindow::SplitHorizontally</A> in
+order to set the pane(s).<P>
+You can create two windows, with one hidden when not being shown; or you can
+create and delete the second pane on demand.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowinitialize">wxSplitterWindow::Initialize</A>, <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplitvertically">wxSplitterWindow::SplitVertically</A>,
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplithorizontally">wxSplitterWindow::SplitHorizontally</A>,
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowcreate">wxSplitterWindow::Create</A><P>
+
+<HR>
+<A NAME="wxsplitterwindowdtor"></A>
+<H3>wxSplitterWindow::~wxSplitterWindow</H3>
+<P>
+<B></B> <B>~wxSplitterWindow</B>()<P>
+Destroys the wxSplitterWindow and its children.<P>
+
+<HR>
+<A NAME="wxsplitterwindowcreate"></A>
+<H3>wxSplitterWindow::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>, 
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>point = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long </B><I>style=wxSP_3D</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name = "splitterWindow"</I>)<P>
+Creation function, for two-step construction. See <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowctor">wxSplitterWindow::wxSplitterWindow</A> for
+details.<P>
+
+<HR>
+<A NAME="wxsplitterwindowgetminimumpanesize"></A>
+<H3>wxSplitterWindow::GetMinimumPaneSize</H3>
+<P>
+<B>int</B> <B>GetMinimumPaneSize</B>() <B>const</B><P>
+Returns the current minimum pane size (defaults to zero).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsetminimumpanesize">wxSplitterWindow::SetMinimumPaneSize</A><P>
+
+<HR>
+<A NAME="wxsplitterwindowgetsashgravity"></A>
+<H3>wxSplitterWindow::GetSashGravity</H3>
+<P>
+<B>double</B> <B>GetSashGravity</B>()<P>
+Returns the current sash gravity.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsetsashgravity">wxSplitterWindow::SetSashGravity</A><P>
+
+<HR>
+<A NAME="wxsplitterwindowgetsashposition"></A>
+<H3>wxSplitterWindow::GetSashPosition</H3>
+<P>
+<B>int</B> <B>GetSashPosition</B>()<P>
+Returns the current sash position.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsetsashposition">wxSplitterWindow::SetSashPosition</A><P>
+
+<HR>
+<A NAME="wxsplitterwindowgetsplitmode"></A>
+<H3>wxSplitterWindow::GetSplitMode</H3>
+<P>
+<B>int</B> <B>GetSplitMode</B>() <B>const</B><P>
+Gets the split mode.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsetsplitmode">wxSplitterWindow::SetSplitMode</A>, <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplitvertically">wxSplitterWindow::SplitVertically</A>,
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplithorizontally">wxSplitterWindow::SplitHorizontally</A>.<P>
+
+<HR>
+<A NAME="wxsplitterwindowgetwindow1"></A>
+<H3>wxSplitterWindow::GetWindow1</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetWindow1</B>() <B>const</B><P>
+Returns the left/top or only pane.<P>
+
+<HR>
+<A NAME="wxsplitterwindowgetwindow2"></A>
+<H3>wxSplitterWindow::GetWindow2</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetWindow2</B>() <B>const</B><P>
+Returns the right/bottom pane.<P>
+
+<HR>
+<A NAME="wxsplitterwindowinitialize"></A>
+<H3>wxSplitterWindow::Initialize</H3>
+<P>
+<B>void</B> <B>Initialize</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>)<P>
+Initializes the splitter window to have one pane.  The child window is
+shown if it is currently hidden.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>window</I><UL><UL>
+The pane for the unsplit window.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This should be called if you wish to initially view only a single pane in the splitter window.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplitvertically">wxSplitterWindow::SplitVertically</A>,
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplithorizontally">wxSplitterWindow::SplitHorizontally</A><P>
+
+<HR>
+<A NAME="wxsplitterwindowissplit"></A>
+<H3>wxSplitterWindow::IsSplit</H3>
+<P>
+<B>bool</B> <B>IsSplit</B>() <B>const</B><P>
+Returns true if the window is split, false otherwise.<P>
+
+<HR>
+<A NAME="wxsplitterwindowondoubleclicksash"></A>
+<H3>wxSplitterWindow::OnDoubleClickSash</H3>
+<P>
+<B>virtual void</B> <B>OnDoubleClickSash</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>)<P>
+Application-overridable function called when the sash is double-clicked with
+the left mouse button.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>x</I><UL><UL>
+The x position of the mouse cursor.</UL></UL>
+<P>
+<I>y</I><UL><UL>
+The y position of the mouse cursor.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The default implementation of this function calls <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowunsplit">Unsplit</A> if
+the minimum pane size is zero.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowunsplit">wxSplitterWindow::Unsplit</A><P>
+
+<HR>
+<A NAME="wxsplitterwindowonunsplit"></A>
+<H3>wxSplitterWindow::OnUnsplit</H3>
+<P>
+<B>virtual void</B> <B>OnUnsplit</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>removed</I>)<P>
+Application-overridable function called when the window is unsplit, either
+programmatically or using the wxSplitterWindow user interface.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>removed</I><UL><UL>
+The window being removed.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The default implementation of this function simply hides <I>removed</I>. You
+may wish to delete the window.<P>
+
+<HR>
+<A NAME="wxsplitterwindowonsashpositionchange"></A>
+<H3>wxSplitterWindow::OnSashPositionChange</H3>
+<P>
+<B>virtual bool</B> <B>OnSashPositionChange</B>(<B>int </B><I>newSashPosition</I>)<P>
+Application-overridable function called when the sash position is changed by 
+user. It may return false to prevent the change or true to allow it.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>newSashPosition</I><UL><UL>
+The new sash position (always positive or zero)</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The default implementation of this function verifies that the sizes of both 
+panes of the splitter are greater than minimum pane size.<P>
+
+<HR>
+<A NAME="wxsplitterwindowreplacewindow"></A>
+<H3>wxSplitterWindow::ReplaceWindow</H3>
+<P>
+<B>bool</B> <B>ReplaceWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> * </B></B><I>winOld</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> * </B></B><I>winNew</I>)<P>
+This function replaces one of the windows managed by the wxSplitterWindow with
+another one. It is in general better to use it instead of calling Unsplit()
+and then resplitting the window back because it will provoke much less flicker
+(if any). It is valid to call this function whether the splitter has two
+windows or only one.<P>
+Both parameters should be non-NULL and <I>winOld</I> must specify one of the
+windows managed by the splitter. If the parameters are incorrect or the window
+couldn't be replaced, false is returned. Otherwise the function will return
+true, but please notice that it will not delete the replaced window and you
+may wish to do it yourself.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowgetminimumpanesize">wxSplitterWindow::GetMinimumPaneSize</A><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowunsplit">wxSplitterWindow::Unsplit</A><BR>
+
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplitvertically">wxSplitterWindow::SplitVertically</A><BR>
+
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplithorizontally">wxSplitterWindow::SplitHorizontally</A><P>
+
+<HR>
+<A NAME="wxsplitterwindowsetsashgravity"></A>
+<H3>wxSplitterWindow::SetSashGravity</H3>
+<P>
+<B>void</B> <B>SetSashGravity</B>(<B>double </B><I>gravity</I>)<P>
+Sets the sash gravity. <P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>gravity</I><UL><UL>
+The sash gravity. Value between 0.0 and 1.0.</UL></UL>
+<P>
+
+<B><FONT COLOR="#FF0000">Remarks</FONT></B>
+Gravity is real factor which controls position of sash while resizing wxSplitterWindow.
+Gravity tells wxSplitterWindow how much will left/top window grow while resizing.<P>
+Example values:
+<UL>
+
+<LI> 0.0  - only the bottom/right window is automatically resized
+<LI> 0.5  - both windows grow by equal size
+<LI> 1.0  - only left/top window grows
+</UL>
+<P>
+Gravity should be a real value between 0.0 and 1.0.<P>
+Default value of sash gravity is 0.0. That value is compatible with previous 
+(before gravity was introduced) behaviour of wxSplitterWindow.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowgetsashgravity">wxSplitterWindow::GetSashGravity</A><P>
+
+<HR>
+<A NAME="wxsplitterwindowsetsashposition"></A>
+<H3>wxSplitterWindow::SetSashPosition</H3>
+<P>
+<B>void</B> <B>SetSashPosition</B>(<B>int </B><I>position</I>, <B>const bool</B><I> redraw = true</I>)<P>
+Sets the sash position.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>position</I><UL><UL>
+The sash position in pixels.</UL></UL>
+<P>
+<I>redraw</I><UL><UL>
+If true, resizes the panes and redraws the sash and border.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Does not currently check for an out-of-range value.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowgetsashposition">wxSplitterWindow::GetSashPosition</A><P>
+
+<HR>
+<A NAME="wxsplitterwindowsetsashsize"></A>
+<H3>wxSplitterWindow::SetSashSize</H3>
+<P>
+<B>void</B> <B>SetSashSize</B>(<B>int </B><I>size</I>)<P>
+Sets the sash size. Normally, the sash size is determined according to the metrics
+of each platform, but the application can override this, for example to show
+a thin sash that the user is not expected to drag. If <I>size</I> is more -1,
+the custom sash size will be used.<P>
+
+<HR>
+<A NAME="wxsplitterwindowsetminimumpanesize"></A>
+<H3>wxSplitterWindow::SetMinimumPaneSize</H3>
+<P>
+<B>void</B> <B>SetMinimumPaneSize</B>(<B>int </B><I>paneSize</I>)<P>
+Sets the minimum pane size.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>paneSize</I><UL><UL>
+Minimum pane size in pixels.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The default minimum pane size is zero, which means that either pane can be reduced to zero by dragging
+the sash, thus removing one of the panes. To prevent this behaviour (and veto out-of-range sash dragging),
+set a minimum size, for example 20 pixels. If the wxSP_PERMIT_UNSPLIT style
+is used when a splitter window is created, the window may be unsplit even
+if minimum size is non-zero.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowgetminimumpanesize">wxSplitterWindow::GetMinimumPaneSize</A><P>
+
+<HR>
+<A NAME="wxsplitterwindowsetsplitmode"></A>
+<H3>wxSplitterWindow::SetSplitMode</H3>
+<P>
+<B>void</B> <B>SetSplitMode</B>(<B>int </B><I>mode</I>)<P>
+Sets the split mode.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>mode</I><UL><UL>
+Can be wxSPLIT_VERTICAL or wxSPLIT_HORIZONTAL.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Only sets the internal variable; does not update the display.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowgetsplitmode">wxSplitterWindow::GetSplitMode</A>, <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplitvertically">wxSplitterWindow::SplitVertically</A>,
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplithorizontally">wxSplitterWindow::SplitHorizontally</A>.<P>
+
+<HR>
+<A NAME="wxsplitterwindowsplithorizontally"></A>
+<H3>wxSplitterWindow::SplitHorizontally</H3>
+<P>
+<B>bool</B> <B>SplitHorizontally</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window1</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window2</I>,
+ <B>int</B><I> sashPosition = 0</I>)<P>
+Initializes the top and bottom panes of the splitter window.  The
+child windows are shown if they are currently hidden.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>window1</I><UL><UL>
+The top pane.</UL></UL>
+<P>
+<I>window2</I><UL><UL>
+The bottom pane.</UL></UL>
+<P>
+<I>sashPosition</I><UL><UL>
+The initial position of the sash. If this value is
+positive, it specifies the size of the upper pane. If it is negative, its
+absolute value gives the size of the lower pane. Finally, specify 0 (default)
+to choose the default position (half of the total window height).</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if successful, false otherwise (the window was already split).<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This should be called if you wish to initially view two panes. It can also be
+called at any subsequent time, but the application should check that the
+window is not currently split using <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowissplit">IsSplit</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplitvertically">wxSplitterWindow::SplitVertically</A>, <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowissplit">wxSplitterWindow::IsSplit</A>,
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowunsplit">wxSplitterWindow::Unsplit</A><P>
+
+<HR>
+<A NAME="wxsplitterwindowsplitvertically"></A>
+<H3>wxSplitterWindow::SplitVertically</H3>
+<P>
+<B>bool</B> <B>SplitVertically</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window1</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window2</I>,
+ <B>int</B><I> sashPosition = 0</I>)<P>
+Initializes the left and right panes of the splitter window.  The
+child windows are shown if they are currently hidden.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>window1</I><UL><UL>
+The left pane.</UL></UL>
+<P>
+<I>window2</I><UL><UL>
+The right pane.</UL></UL>
+<P>
+<I>sashPosition</I><UL><UL>
+The initial position of the sash. If this value is
+positive, it specifies the size of the left pane. If it is negative, it is
+absolute value gives the size of the right pane. Finally, specify 0 (default)
+to choose the default position (half of the total window width).</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if successful, false otherwise (the window was already split).<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This should be called if you wish to initially view two panes. It can also be called at any subsequent time,
+but the application should check that the window is not currently split using <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowissplit">IsSplit</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplithorizontally">wxSplitterWindow::SplitHorizontally</A>, <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowissplit">wxSplitterWindow::IsSplit</A>,
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowunsplit">wxSplitterWindow::Unsplit</A>.<P>
+
+<HR>
+<A NAME="wxsplitterwindowunsplit"></A>
+<H3>wxSplitterWindow::Unsplit</H3>
+<P>
+<B>bool</B> <B>Unsplit</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>toRemove = NULL</I>)<P>
+Unsplits the window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>toRemove</I><UL><UL>
+The pane to remove, or NULL to remove the right or bottom pane.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if successful, false otherwise (the window was not split).<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This call will not actually delete the pane being removed; it calls <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowonunsplit">OnUnsplit</A>
+which can be overridden for the desired behaviour. By default, the pane being removed is hidden.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplithorizontally">wxSplitterWindow::SplitHorizontally</A>, <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowsplitvertically">wxSplitterWindow::SplitVertically</A>,
+<A HREF="wx_wxsplitterwindow.html#wxsplitterwindowissplit">wxSplitterWindow::IsSplit</A>, <A HREF="wx_wxsplitterwindow.html#wxsplitterwindowonunsplit">wxSplitterWindow::OnUnsplit</A><P>
+
+<HR>
+<A NAME="wxsplitterwindowupdatesize"></A>
+<H3>wxSplitterWindow::UpdateSize</H3>
+<P>
+<B>void</B> <B>UpdateSize</B>()<P>
+Causes any pending sizing of the sash and child panes to take place
+immediately.<P>
+Such resizing normally takes place in idle time, in order
+to wait for layout to be completed. However, this can cause
+unacceptable flicker as the panes are resized after the window has been
+shown. To work around this, you can perform window layout (for
+example by sending a size event to the parent window), and then
+call this function, before showing the top-level window.<P>
+
+
+</FONT></BODY></HTML>

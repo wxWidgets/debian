@@ -1,0 +1,305 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStatusBar</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstatusbar"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstatictext.html#wxstatictext"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStatusBar</H2>
+<P>
+A status bar is a narrow window that can be placed along the bottom of a frame to give
+small amounts of status information. It can contain one or more fields, one or more of which can
+be variable length according to the size of the window.<P>
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/statusbr.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxST_SIZEGRIP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+On Windows 95, displays a gripper at right-hand side of
+the status bar.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+It is possible to create controls and other windows on the status bar. Position these windows
+from an <B>OnSize</B> event handler.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A>, <A HREF="wx_samples.html#samplestatbar">Status bar sample</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxstatusbarctor">wxStatusBar::wxStatusBar</A><BR>
+<A HREF="#wxstatusbardtor">wxStatusBar::~wxStatusBar</A><BR>
+<A HREF="#wxstatusbarcreate">wxStatusBar::Create</A><BR>
+<A HREF="#wxstatusbargetfieldrect">wxStatusBar::GetFieldRect</A><BR>
+<A HREF="#wxstatusbargetfieldscount">wxStatusBar::GetFieldsCount</A><BR>
+<A HREF="#wxstatusbargetstatustext">wxStatusBar::GetStatusText</A><BR>
+<A HREF="#wxstatusbarpopstatustext">wxStatusBar::PopStatusText</A><BR>
+<A HREF="#wxstatusbarpushstatustext">wxStatusBar::PushStatusText</A><BR>
+<A HREF="#wxstatusbarsetfieldscount">wxStatusBar::SetFieldsCount</A><BR>
+<A HREF="#wxstatusbarsetminheight">wxStatusBar::SetMinHeight</A><BR>
+<A HREF="#wxstatusbarsetstatustext">wxStatusBar::SetStatusText</A><BR>
+<A HREF="#wxstatusbarsetstatuswidths">wxStatusBar::SetStatusWidths</A><BR>
+<A HREF="#wxstatusbarsetstatusstyles">wxStatusBar::SetStatusStyles</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstatusbarctor"></A>
+<H3>wxStatusBar::wxStatusBar</H3>
+<P>
+<B></B> <B>wxStatusBar</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxStatusBar</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>,
+<B>long</B><I> style = wxST_SIZEGRIP</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "statusBar"</I>)<P>
+Constructor, creating the window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The window parent, usually a frame.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The window identifier. It may take a value of -1 to indicate a default value.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style. See <A HREF="wx_wxstatusbar.html#wxstatusbar">wxStatusBar</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+The name of the window. This parameter is used to associate a name with the item,
+allowing the application user to set Motif resource values for
+individual windows.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstatusbar.html#wxstatusbarcreate">wxStatusBar::Create</A><P>
+
+<HR>
+<A NAME="wxstatusbardtor"></A>
+<H3>wxStatusBar::~wxStatusBar</H3>
+<P>
+<B>void</B> <B>~wxStatusBar</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxstatusbarcreate"></A>
+<H3>wxStatusBar::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>,
+<B>long</B><I> style = wxST_SIZEGRIP</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "statusBar"</I>)<P>
+Creates the window, for two-step construction.<P>
+See <A HREF="wx_wxstatusbar.html#wxstatusbarctor">wxStatusBar::wxStatusBar</A> for details.<P>
+
+<HR>
+<A NAME="wxstatusbargetfieldrect"></A>
+<H3>wxStatusBar::GetFieldRect</H3>
+<P>
+<B>virtual bool</B> <B>GetFieldRect</B>(<B>int</B><I> i</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>) <B>const</B><P>
+Returns the size and position of a field's internal bounding rectangle.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>i</I><UL><UL>
+The field in question.</UL></UL>
+<P>
+<I>rect</I><UL><UL>
+The rectangle values are placed in this variable.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the field index is valid, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxrect.html#wxrect">wxRect</A><P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this function returns a <TT>Wx::Rect</TT> if the field
+  index is valid, <TT>undef</TT> otherwise.<P>
+
+<HR>
+<A NAME="wxstatusbargetfieldscount"></A>
+<H3>wxStatusBar::GetFieldsCount</H3>
+<P>
+<B>int</B> <B>GetFieldsCount</B>() <B>const</B><P>
+Returns the number of fields in the status bar.<P>
+
+<HR>
+<A NAME="wxstatusbargetstatustext"></A>
+<H3>wxStatusBar::GetStatusText</H3>
+<P>
+<B>virtual <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetStatusText</B>(<B>int</B><I> i = 0</I>) <B>const</B><P>
+Returns the string associated with a status bar field.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>i</I><UL><UL>
+The number of the status field to retrieve, starting from zero.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The status field string if the field is valid, otherwise the empty string.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstatusbar.html#wxstatusbarsetstatustext">wxStatusBar::SetStatusText</A><P>
+
+<HR>
+<A NAME="wxstatusbarpopstatustext"></A>
+<H3>wxStatusBar::PopStatusText</H3>
+<P>
+<B>void</B> <B>PopStatusText</B>(<B>int</B><I> field = 0</I>)<P>
+Sets the field text to the top of the stack, and pops the stack of saved
+strings.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstatusbar.html#wxstatusbarpushstatustext">wxStatusBar::PushStatusText</A><P>
+
+<HR>
+<A NAME="wxstatusbarpushstatustext"></A>
+<H3>wxStatusBar::PushStatusText</H3>
+<P>
+<B>void</B> <B>PushStatusText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> string</I>, <B>int</B><I> field = 0</I>)<P>
+Saves the current field text in a per field stack, and sets the field text
+to the string passed as argument.<P>
+
+<HR>
+<A NAME="wxstatusbarsetfieldscount"></A>
+<H3>wxStatusBar::SetFieldsCount</H3>
+<P>
+<B>virtual void</B> <B>SetFieldsCount</B>(<B>int</B><I> number = 1</I>, <B>int* </B><I>widths = NULL</I>)<P>
+Sets the number of fields, and optionally the field widths.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> Only the first parameter is accepted.  Use SetStatusWidths
+to set the widths of the fields.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this function accepts only the <TT>n</TT> parameter.
+Use SetStatusWidths to set the field widths.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>number</I><UL><UL>
+The number of fields.</UL></UL>
+<P>
+<I>widths</I><UL><UL>
+An array of <I>n</I> integers interpreted in the same way as
+in <A HREF="wx_wxstatusbar.html#wxstatusbarsetstatuswidths">SetStatusWidths</A></UL></UL>
+<P>
+
+<HR>
+<A NAME="wxstatusbarsetminheight"></A>
+<H3>wxStatusBar::SetMinHeight</H3>
+<P>
+<B>void</B> <B>SetMinHeight</B>(<B>int</B><I> height</I>)<P>
+Sets the minimal possible height for the status bar. The real height may be
+bigger than the height specified here depending on the size of the font used by
+the status bar.<P>
+
+<HR>
+<A NAME="wxstatusbarsetstatustext"></A>
+<H3>wxStatusBar::SetStatusText</H3>
+<P>
+<B>virtual void</B> <B>SetStatusText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>int</B><I> i = 0</I>)<P>
+Sets the text for one field.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>text</I><UL><UL>
+The text to be set. Use an empty string ("") to clear the field.</UL></UL>
+<P>
+<I>i</I><UL><UL>
+The field to set, starting from zero.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstatusbar.html#wxstatusbargetstatustext">wxStatusBar::GetStatusText</A>, <A HREF="wx_wxframe.html#wxframesetstatustext">wxFrame::SetStatusText</A><P>
+
+<HR>
+<A NAME="wxstatusbarsetstatuswidths"></A>
+<H3>wxStatusBar::SetStatusWidths</H3>
+<P>
+<B>virtual void</B> <B>SetStatusWidths</B>(<B>int</B><I> n</I>, <B>int *</B><I>widths</I>)<P>
+Sets the widths of the fields in the status line. There are two types of
+fields: fixed widths one and variable width fields. For the fixed width fields
+you should specify their (constant) width in pixels. For the variable width
+fields, specify a negative number which indicates how the field should expand:
+the space left for all variable width fields is divided between them according
+to the absolute value of this number. A variable width field with width of -2
+gets twice as much of it as a field with width -1 and so on.<P>
+For example, to create one fixed width field of width 100 in the right part of
+the status bar and two more fields which get 66% and 33% of the remaining
+space correspondingly, you should use an array containing -2, -1 and 100.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>n</I><UL><UL>
+The number of fields in the status bar. Must be equal to the
+number passed to <A HREF="wx_wxstatusbar.html#wxstatusbarsetfieldscount">SetFieldsCount</A> the last
+time it was called.</UL></UL>
+<P>
+<I>widths</I><UL><UL>
+Contains an array of <I>n</I> integers, each of which is
+either an absolute status field width in pixels if positive or indicates a
+variable width field if negative.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The widths of the variable fields are calculated from the total width of all fields,
+minus the sum of widths of the non-variable fields, divided by the number of
+variable fields.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstatusbar.html#wxstatusbarsetfieldscount">wxStatusBar::SetFieldsCount</A>, <A HREF="wx_wxframe.html#wxframesetstatuswidths">wxFrame::SetStatusWidths</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> Only a single parameter is required, a Python list of
+integers.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes as parameters the field widths.<P>
+
+<HR>
+<A NAME="wxstatusbarsetstatusstyles"></A>
+<H3>wxStatusBar::SetStatusStyles</H3>
+<P>
+<B>virtual void</B> <B>SetStatusStyles</B>(<B>int</B><I> n</I>, <B>int *</B><I>styles</I>)<P>
+Sets the styles of the fields in the status line which can make fields appear flat
+or raised instead of the standard sunken 3D border.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>n</I><UL><UL>
+The number of fields in the status bar. Must be equal to the
+number passed to <A HREF="wx_wxstatusbar.html#wxstatusbarsetfieldscount">SetFieldsCount</A> the last
+time it was called.</UL></UL>
+<P>
+<I>styles</I><UL><UL>
+Contains an array of <I>n</I> integers with the styles for each field. There 
+are three possible styles:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSB_NORMAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+(default) The field appears sunken with a standard 3D border.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSB_FLAT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+No border is painted around the field so that it appears flat.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSB_RAISED</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A raised 3D border is painted around the field.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+
+
+</FONT></BODY></HTML>

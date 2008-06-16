@@ -1,0 +1,157 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFontData</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfontdata"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfont.html#wxfont"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfontdialog.html#wxfontdialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFontData</H2>
+<P>
+<A HREF="wx_commondialogsoverview.html#wxfontdialogoverview">wxFontDialog overview</A><P>
+This class holds a variety of information related to font dialogs.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/cmndata.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_commondialogsoverview.html#wxfontdialogoverview">Overview</A>, <A HREF="wx_wxfont.html#wxfont">wxFont</A>, <A HREF="wx_wxfontdialog.html#wxfontdialog">wxFontDialog</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfontdatactor">wxFontData::wxFontData</A><BR>
+<A HREF="#wxfontdataenableeffects">wxFontData::EnableEffects</A><BR>
+<A HREF="#wxfontdatagetallowsymbols">wxFontData::GetAllowSymbols</A><BR>
+<A HREF="#wxfontdatagetcolour">wxFontData::GetColour</A><BR>
+<A HREF="#wxfontdatagetchosenfont">wxFontData::GetChosenFont</A><BR>
+<A HREF="#wxfontdatagetenableeffects">wxFontData::GetEnableEffects</A><BR>
+<A HREF="#wxfontdatagetinitialfont">wxFontData::GetInitialFont</A><BR>
+<A HREF="#wxfontdatagetshowhelp">wxFontData::GetShowHelp</A><BR>
+<A HREF="#wxfontdatasetallowsymbols">wxFontData::SetAllowSymbols</A><BR>
+<A HREF="#wxfontdatasetchosenfont">wxFontData::SetChosenFont</A><BR>
+<A HREF="#wxfontdatasetcolour">wxFontData::SetColour</A><BR>
+<A HREF="#wxfontdatasetinitialfont">wxFontData::SetInitialFont</A><BR>
+<A HREF="#wxfontdatasetrange">wxFontData::SetRange</A><BR>
+<A HREF="#wxfontdatasetshowhelp">wxFontData::SetShowHelp</A><BR>
+<A HREF="#wxfontdataassign">wxFontData::operator =</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfontdatactor"></A>
+<H3>wxFontData::wxFontData</H3>
+<P>
+<B></B> <B>wxFontData</B>()<P>
+Constructor. Initializes <I>fontColour</I> to black, <I>showHelp</I> to black,
+<I>allowSymbols</I> to true, <I>enableEffects</I> to true,
+<I>minSize</I> to 0 and <I>maxSize</I> to 0.<P>
+
+<HR>
+<A NAME="wxfontdataenableeffects"></A>
+<H3>wxFontData::EnableEffects</H3>
+<P>
+<B>void</B> <B>EnableEffects</B>(<B>bool</B><I> enable</I>)<P>
+Enables or disables 'effects' under MS Windows or generic only. This refers to the
+controls for manipulating colour, strikeout and underline properties.<P>
+The default value is true.<P>
+
+<HR>
+<A NAME="wxfontdatagetallowsymbols"></A>
+<H3>wxFontData::GetAllowSymbols</H3>
+<P>
+<B>bool</B> <B>GetAllowSymbols</B>()<P>
+Under MS Windows, returns a flag determining whether symbol fonts can be selected. Has no
+effect on other platforms.<P>
+The default value is true.<P>
+
+<HR>
+<A NAME="wxfontdatagetcolour"></A>
+<H3>wxFontData::GetColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetColour</B>()<P>
+Gets the colour associated with the font dialog.<P>
+The default value is black.<P>
+
+<HR>
+<A NAME="wxfontdatagetchosenfont"></A>
+<H3>wxFontData::GetChosenFont</H3>
+<P>
+<B><A HREF="wx_wxfont.html#wxfont">wxFont</A></B> </B> <B>GetChosenFont</B>()<P>
+Gets the font chosen by the user if the user pressed OK (wxFontDialog::ShowModal returned wxID_OK).<P>
+
+<HR>
+<A NAME="wxfontdatagetenableeffects"></A>
+<H3>wxFontData::GetEnableEffects</H3>
+<P>
+<B>bool</B> <B>GetEnableEffects</B>()<P>
+Determines whether 'effects' are enabled under Windows. This refers to the
+controls for manipulating colour, strikeout and underline properties.<P>
+The default value is true.<P>
+
+<HR>
+<A NAME="wxfontdatagetinitialfont"></A>
+<H3>wxFontData::GetInitialFont</H3>
+<P>
+<B><A HREF="wx_wxfont.html#wxfont">wxFont</A></B> </B> <B>GetInitialFont</B>()<P>
+Gets the font that will be initially used by the font dialog. This should have
+previously been set by the application.<P>
+
+<HR>
+<A NAME="wxfontdatagetshowhelp"></A>
+<H3>wxFontData::GetShowHelp</H3>
+<P>
+<B>bool</B> <B>GetShowHelp</B>()<P>
+Returns true if the Help button will be shown (Windows only).<P>
+The default value is false.<P>
+
+<HR>
+<A NAME="wxfontdatasetallowsymbols"></A>
+<H3>wxFontData::SetAllowSymbols</H3>
+<P>
+<B>void</B> <B>SetAllowSymbols</B>(<B>bool</B><I> allowSymbols</I>)<P>
+Under MS Windows, determines whether symbol fonts can be selected. Has no
+effect on other platforms.<P>
+The default value is true.<P>
+
+<HR>
+<A NAME="wxfontdatasetchosenfont"></A>
+<H3>wxFontData::SetChosenFont</H3>
+<P>
+<B>void</B> <B>SetChosenFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the font that will be returned to the user (for internal use only).<P>
+
+<HR>
+<A NAME="wxfontdatasetcolour"></A>
+<H3>wxFontData::SetColour</H3>
+<P>
+<B>void</B> <B>SetColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+Sets the colour that will be used for the font foreground colour.<P>
+The default colour is black.<P>
+
+<HR>
+<A NAME="wxfontdatasetinitialfont"></A>
+<H3>wxFontData::SetInitialFont</H3>
+<P>
+<B>void</B> <B>SetInitialFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>&</B></B><I>font</I>)<P>
+Sets the font that will be initially used by the font dialog.<P>
+
+<HR>
+<A NAME="wxfontdatasetrange"></A>
+<H3>wxFontData::SetRange</H3>
+<P>
+<B>void</B> <B>SetRange</B>(<B>int</B><I> min</I>, <B>int</B><I> max</I>)<P>
+Sets the valid range for the font point size (Windows only).<P>
+The default is 0, 0 (unrestricted range).<P>
+
+<HR>
+<A NAME="wxfontdatasetshowhelp"></A>
+<H3>wxFontData::SetShowHelp</H3>
+<P>
+<B>void</B> <B>SetShowHelp</B>(<B>bool</B><I> showHelp</I>)<P>
+Determines whether the Help button will be displayed in the font dialog (Windows only).<P>
+The default value is false.<P>
+
+<HR>
+<A NAME="wxfontdataassign"></A>
+<H3>wxFontData::operator =</H3>
+<P>
+<B>void</B> <B>operator =</B>(<B>const <A HREF="wx_wxfontdata.html#wxfontdata">wxFontData</A>&</B></B><I> data</I>)<P>
+Assignment operator for the font data.<P>
+
+</FONT></BODY></HTML>

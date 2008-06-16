@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     28.10.99
-// RCS-ID:      $Id: spinctlg.h,v 1.18 2004/06/17 16:22:27 ABX Exp $
+// RCS-ID:      $Id: spinctlg.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,10 +21,6 @@
 // ----------------------------------------------------------------------------
 
 #if wxUSE_SPINBTN
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "spinctlg.h"
-#endif
 
 class WXDLLEXPORT wxSpinButton;
 class WXDLLEXPORT wxTextCtrl;

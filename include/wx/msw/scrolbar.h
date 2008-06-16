@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolbar.h,v 1.19 2005/05/31 14:52:17 VZ Exp $
+// RCS-ID:      $Id: scrolbar.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,16 +12,12 @@
 #ifndef _WX_SCROLBAR_H_
 #define _WX_SCROLBAR_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "scrolbar.h"
-#endif
-
 // Scrollbar item
 class WXDLLEXPORT wxScrollBar: public wxScrollBarBase
 {
 public:
     wxScrollBar() { m_pageSize = 0; m_viewSize = 0; m_objectSize = 0; }
-    ~wxScrollBar();
+    virtual ~wxScrollBar();
 
     wxScrollBar(wxWindow *parent, wxWindowID id,
             const wxPoint& pos = wxDefaultPosition,
@@ -60,9 +56,10 @@ public:
     // override wxControl version to not use solid background here
     virtual WXHBRUSH MSWControlColor(WXHDC pDC, WXHWND hWnd);
 
+    virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
+
 protected:
     virtual wxSize DoGetBestSize() const;
-    virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
 
     int m_pageSize;
     int m_viewSize;

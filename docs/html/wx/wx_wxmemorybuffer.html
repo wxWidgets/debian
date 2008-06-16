@@ -1,0 +1,155 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMemoryBuffer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmemorybuffer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmediaevent.html#wxmediaevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmemorydc.html#wxmemorydc"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMemoryBuffer</H2>
+<P>
+A <B>wxMemoryBuffer</B> is a useful data structure for storing arbitrary sized blocks
+of memory. wxMemoryBuffer guarantees deletion of the memory block when the object
+is destroyed. <P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/buffer.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmemorybufferctor">wxMemoryBuffer::wxMemoryBuffer</A><BR>
+<A HREF="#wxmemorybuffergetdata">wxMemoryBuffer::GetData</A><BR>
+<A HREF="#wxmemorybuffergetbufsize">wxMemoryBuffer::GetBufSize</A><BR>
+<A HREF="#wxmemorybuffergetdatalen">wxMemoryBuffer::GetDataLen</A><BR>
+<A HREF="#wxmemorybuffersetbufsize">wxMemoryBuffer::SetBufSize</A><BR>
+<A HREF="#wxmemorybuffersetdatalen">wxMemoryBuffer::SetDataLen</A><BR>
+<A HREF="#wxmemorybuffergetwritebuf">wxMemoryBuffer::GetWriteBuf</A><BR>
+<A HREF="#wxmemorybufferungetwritebuf">wxMemoryBuffer::UngetWriteBuf</A><BR>
+<A HREF="#wxmemorybuffergetappendbuf">wxMemoryBuffer::GetAppendBuf</A><BR>
+<A HREF="#wxmemorybufferungetappendbuf">wxMemoryBuffer::UngetAppendBuf</A><BR>
+<A HREF="#wxmemorybufferappendbyte">wxMemoryBuffer::AppendByte</A><BR>
+<A HREF="#wxmemorybufferappenddata">wxMemoryBuffer::AppendData</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmemorybufferctor"></A>
+<H3>wxMemoryBuffer::wxMemoryBuffer</H3>
+<P>
+<B></B> <B>wxMemoryBuffer</B>(<B>const <A HREF="wx_wxmemorybuffer.html#wxmemorybuffer">wxMemoryBuffer</A>&</B></B><I> src</I>)<P>
+Copy constructor, refcounting is used for performance , but wxMemoryBuffer
+is not a copy-on-write structure so changes made to one buffer effect
+all copies made from it.<P>
+<B></B> <B>wxMemoryBuffer</B>(<B>size_t</B><I> size</I>)<P>
+Create a new buffer.<P>
+<I>size</I><UL><UL>
+size of new buffer.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxmemorybuffergetdata"></A>
+<H3>wxMemoryBuffer::GetData</H3>
+<P>
+<B>void* </B> <B>GetData</B>()<P>
+Return a pointer to the data in the buffer.<P>
+
+<HR>
+<A NAME="wxmemorybuffergetbufsize"></A>
+<H3>wxMemoryBuffer::GetBufSize</H3>
+<P>
+<B>size_t</B> <B>GetBufSize</B>()<P>
+Returns the size of the buffer.<P>
+
+<HR>
+<A NAME="wxmemorybuffergetdatalen"></A>
+<H3>wxMemoryBuffer::GetDataLen</H3>
+<P>
+<B>size_t</B> <B>GetDataLen</B>()<P>
+Returns the length of the valid data in the buffer.<P>
+
+<HR>
+<A NAME="wxmemorybuffersetbufsize"></A>
+<H3>wxMemoryBuffer::SetBufSize</H3>
+<P>
+<B>void</B> <B>SetBufSize</B>(<B>size_t</B><I> size</I>)<P>
+Ensures the buffer has at least <I>size</I> bytes available.<P>
+
+<HR>
+<A NAME="wxmemorybuffersetdatalen"></A>
+<H3>wxMemoryBuffer::SetDataLen</H3>
+<P>
+<B>void</B> <B>SetDataLen</B>(<B>size_t</B><I> size</I>)<P>
+Sets the length of the data stored in the buffer.  Mainly useful for truncating existing data.<P>
+<I>size</I><UL><UL>
+New length of the valid data in the buffer. This is
+distinct from the allocated size</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxmemorybuffergetwritebuf"></A>
+<H3>wxMemoryBuffer::GetWriteBuf</H3>
+<P>
+<B>void *</B> <B>GetWriteBuf</B>(<B>size_t</B><I> sizeNeeded</I>)<P>
+Ensure the buffer is big enough and return a pointer to the
+buffer which can be used to directly write into the buffer
+up to <I>sizeNeeded</I> bytes.<P>
+
+<HR>
+<A NAME="wxmemorybufferungetwritebuf"></A>
+<H3>wxMemoryBuffer::UngetWriteBuf</H3>
+<P>
+<B>void</B> <B>UngetWriteBuf</B>(<B>size_t</B><I> sizeUsed</I>)<P>
+Update the buffer after completing a direct write, which
+you must have used GetWriteBuf() to initialise.<P>
+<I>sizeUsed</I><UL><UL>
+The amount of data written in to buffer
+by the direct write</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxmemorybuffergetappendbuf"></A>
+<H3>wxMemoryBuffer::GetAppendBuf</H3>
+<P>
+<B>void *</B> <B>GetAppendBuf</B>(<B>size_t</B><I> sizeNeeded</I>)<P>
+Ensure that the buffer is big enough and return a pointer to the start
+of the empty space in the buffer. This pointer can be used to directly 
+write data into the buffer, this new data will be appended to
+the existing data.<P>
+<I>sizeNeeded</I><UL><UL>
+Amount of extra space required in the buffer for
+the append operation</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxmemorybufferungetappendbuf"></A>
+<H3>wxMemoryBuffer::UngetAppendBuf</H3>
+<P>
+<B>void</B> <B>UngetAppendBuf</B>(<B>size_t</B><I> sizeUsed</I>)<P>
+Update the length after completing a direct append, which
+you must have used GetAppendBuf() to initialise.<P>
+<I>sizeUsed</I><UL><UL>
+This is the amount of new data that has been 
+appended.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxmemorybufferappendbyte"></A>
+<H3>wxMemoryBuffer::AppendByte</H3>
+<P>
+<B>void</B> <B>AppendByte</B>(<B>char</B><I> data</I>)<P>
+Append a single byte to the buffer.<P>
+<I>data</I><UL><UL>
+New byte to append to the buffer.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxmemorybufferappenddata"></A>
+<H3>wxMemoryBuffer::AppendData</H3>
+<P>
+<B>void</B> <B>AppendData</B>(<B>void*</B><I> data</I>, <B>size_t</B><I> len</I>)<P>
+Single call to append a data block to the buffer.<P>
+<I>data</I><UL><UL>
+Pointer to block to append to the buffer.</UL></UL>
+
+<I>len</I><UL><UL>
+Length of data to append.</UL></UL>
+
+
+</FONT></BODY></HTML>

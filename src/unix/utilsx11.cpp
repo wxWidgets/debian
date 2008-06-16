@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon, Vaclav Slavik, Robert Roebling
 // Modified by:
 // Created:     25.03.02
-// RCS-ID:      $Id: utilsx11.cpp,v 1.27 2005/09/13 16:23:46 VZ Exp $
+// RCS-ID:      $Id: utilsx11.cpp 44895 2007-03-18 17:49:06Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,16 +15,22 @@
 #include "wx/wxprec.h"
 
 #include "wx/unix/utilsx11.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/log.h"
+    #include "wx/app.h"
+    #include "wx/icon.h"
+    #include "wx/image.h"
+#endif
+
 #include "wx/iconbndl.h"
-#include "wx/image.h"
-#include "wx/icon.h"
-#include "wx/log.h"
 
 #ifdef __VMS
 #pragma message disable nosimpint
 #endif
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+#include <X11/Xutil.h>
 #ifdef __VMS
 #pragma message enable nosimpint
 #endif
@@ -52,6 +58,10 @@ static Atom _NET_SUPPORTED = 0;
 #define wxMAKE_ATOM(name, display) \
     if (name == 0) name = XInternAtom((display), #name, False)
 
+
+// X11 Window is an int type, so use the macro to suppress warnings when
+// converting to it
+#define WindowCast(w) (Window)(wxPtrToUInt(w))
 
 // Is the window mapped?
 static bool IsMapped(Display *display, Window window)
@@ -159,7 +169,7 @@ void wxSetIconsX11( WXDisplay* display, WXWindow window,
         }
 
         XChangeProperty( (Display*)display,
-                         (Window)window,
+                         WindowCast(window),
                          _NET_WM_ICON,
                          XA_CARDINAL, 32,
                          PropModeReplace,
@@ -169,10 +179,10 @@ void wxSetIconsX11( WXDisplay* display, WXWindow window,
     else
     {
         XDeleteProperty( (Display*)display,
-                         (Window)window,
+                         WindowCast(window),
                          _NET_WM_ICON );
     }
-#endif
+#endif // !wxUSE_NANOX
 }
 
 
@@ -186,7 +196,7 @@ void wxSetIconsX11( WXDisplay* display, WXWindow window,
 //     fullscreen is to remove decorations, resize it to cover entire screen
 //     and set WIN_LAYER_ABOVE_DOCK.
 //
-//     This doesn't always work, though. Specifically, at least kwin from 
+//     This doesn't always work, though. Specifically, at least kwin from
 //     KDE 3 ignores the hint. The only way to make kwin accept our request
 //     is to emulate the way Qt does it. That is, unmap the window, set
 //     _NET_WM_WINDOW_TYPE to _KDE_NET_WM_WINDOW_TYPE_OVERRIDE (KDE extension),
@@ -198,13 +208,13 @@ void wxSetIconsX11( WXDisplay* display, WXWindow window,
 //     window state which provides cleanest and simplest possible way of
 //     making a window fullscreen. WM-spec is a de-facto standard adopted
 //     by GNOME and KDE folks, but _NET_WM_STATE_FULLSCREEN isn't yet widely
-//     supported. As of January 2003, only GNOME 2's default WM Metacity 
+//     supported. As of January 2003, only GNOME 2's default WM Metacity
 //     implements, KDE will support it from version 3.2. At toolkits level,
 //     GTK+ >= 2.1.2 uses it as the only method of making windows fullscreen
 //     (that's why wxGTK will *not* switch to using gtk_window_fullscreen
 //     unless it has better compatibility with older WMs).
 //
-//     
+//
 //     This is what wxWidgets does in wxSetFullScreenStateX11:
 //       1) if _NET_WM_STATE_FULLSCREEN is supported, use it
 //       2) otherwise try WM-specific hacks (KDE, IceWM)
@@ -220,7 +230,7 @@ static void wxWinHintsSetLayer(Display *display, Window rootWnd,
                                Window window, int layer)
 {
     wxX11ErrorsSuspender noerrors(display);
-    
+
     XEvent xev;
 
     wxMAKE_ATOM( _WIN_LAYER, display );
@@ -264,7 +274,7 @@ static bool wxQueryWMspecSupport(Display *display, Window rootWnd, Atom feature)
 {
     wxMAKE_ATOM(_NET_SUPPORTING_WM_CHECK, display);
     wxMAKE_ATOM(_NET_SUPPORTED, display);
-      
+
     // FIXME: We may want to cache these checks. Note that we can't simply
     //        remember the results in global variable because the WM may go
     //        away and be replaced by another one! One possible approach
@@ -279,21 +289,21 @@ static bool wxQueryWMspecSupport(Display *display, Window rootWnd, Atom feature)
     //        is replaced by another one). This is what GTK+ 2 does.
     //        Let's do it only if it is needed, it requires changes to
     //        the event loop.
-  
+
     Atom type;
     Window *wins;
     Atom *atoms;
     int format;
     unsigned long after;
     unsigned long nwins, natoms;
-    
+
     // Is the WM ICCCM supporting?
     XGetWindowProperty(display, rootWnd,
                        _NET_SUPPORTING_WM_CHECK, 0, LONG_MAX,
                        False, XA_WINDOW, &type, &format, &nwins,
                        &after, (unsigned char **)&wins);
     if ( type != XA_WINDOW || nwins <= 0 || wins[0] == None )
-       return FALSE;
+       return false;
     XFree(wins);
 
     // Query for supported features:
@@ -302,7 +312,7 @@ static bool wxQueryWMspecSupport(Display *display, Window rootWnd, Atom feature)
                        False, XA_ATOM, &type, &format, &natoms,
                        &after, (unsigned char **)&atoms);
     if ( type != XA_ATOM || atoms == NULL )
-        return FALSE;
+        return false;
 
     // Lookup the feature we want:
     for (unsigned i = 0; i < natoms; i++)
@@ -310,11 +320,11 @@ static bool wxQueryWMspecSupport(Display *display, Window rootWnd, Atom feature)
         if ( atoms[i] == feature )
         {
             XFree(atoms);
-            return TRUE;
+            return true;
         }
     }
     XFree(atoms);
-    return FALSE;
+    return false;
 }
 #endif
 
@@ -326,7 +336,7 @@ static void wxWMspecSetState(Display *display, Window rootWnd,
                              Window window, int operation, Atom state)
 {
     wxMAKE_ATOM(_NET_WM_STATE, display);
-  
+
     if ( IsMapped(display, window) )
     {
         XEvent xev;
@@ -341,7 +351,7 @@ static void wxWMspecSetState(Display *display, Window rootWnd,
         xev.xclient.data.l[0] = operation;
         xev.xclient.data.l[1] = state;
         xev.xclient.data.l[2] = None;
-  
+
         XSendEvent(display, rootWnd,
                    False,
                    SubstructureRedirectMask | SubstructureNotifyMask,
@@ -367,7 +377,7 @@ static void wxWMspecSetFullscreen(Display *display, Window rootWnd,
 static bool wxKwinRunning(Display *display, Window rootWnd)
 {
     wxMAKE_ATOM(KWIN_RUNNING, display);
-    
+
     long *data;
     Atom type;
     int format;
@@ -377,7 +387,7 @@ static bool wxKwinRunning(Display *display, Window rootWnd)
                            &type, &format, &nitems, &after,
                            (unsigned char**)&data) != Success)
     {
-        return FALSE;
+        return false;
     }
 
     bool retval = (type == KWIN_RUNNING &&
@@ -386,7 +396,7 @@ static bool wxKwinRunning(Display *display, Window rootWnd)
     return retval;
 }
 
-// KDE's kwin is Qt-centric so much than no normal method of fullscreen 
+// KDE's kwin is Qt-centric so much than no normal method of fullscreen
 // mode will work with it. We have to carefully emulate the Qt way.
 static void wxSetKDEFullscreen(Display *display, Window rootWnd,
                                Window w, bool fullscreen, wxRect *origRect)
@@ -414,7 +424,7 @@ static void wxSetKDEFullscreen(Display *display, Window rootWnd,
 
     // it is necessary to unmap the window, otherwise kwin will ignore us:
     XSync(display, False);
-    
+
     bool wasMapped = IsMapped(display, w);
     if (wasMapped)
     {
@@ -423,7 +433,7 @@ static void wxSetKDEFullscreen(Display *display, Window rootWnd,
     }
 
     XChangeProperty(display, w, _NET_WM_WINDOW_TYPE, XA_ATOM, 32,
-	                PropModeReplace, (unsigned char *) &data, lng);
+                    PropModeReplace, (unsigned char *) &data[0], lng);
     XSync(display, False);
 
     if (wasMapped)
@@ -431,8 +441,8 @@ static void wxSetKDEFullscreen(Display *display, Window rootWnd,
         XMapRaised(display, w);
         XSync(display, False);
     }
-    
-    wxWMspecSetState(display, rootWnd, w, 
+
+    wxWMspecSetState(display, rootWnd, w,
                      fullscreen ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE,
                      _NET_WM_STATE_STAYS_ON_TOP);
     XSync(display, False);
@@ -442,8 +452,8 @@ static void wxSetKDEFullscreen(Display *display, Window rootWnd,
         // NB: like many other WMs, kwin ignores the first request for a window
         //     position change after the window was mapped. This additional
         //     move+resize event will ensure that the window is restored in
-	//     exactly the same position as before it was made fullscreen
-	//     (because wxTopLevelWindow::ShowFullScreen will call SetSize, thus
+        //     exactly the same position as before it was made fullscreen
+        //     (because wxTopLevelWindow::ShowFullScreen will call SetSize, thus
         //     setting the position for the second time).
         XMoveResizeWindow(display, w,
                           origRect->x, origRect->y,
@@ -456,7 +466,7 @@ static void wxSetKDEFullscreen(Display *display, Window rootWnd,
 wxX11FullScreenMethod wxGetFullScreenMethodX11(WXDisplay* display,
                                                WXWindow rootWindow)
 {
-    Window root = (Window)rootWindow;
+    Window root = WindowCast(rootWindow);
     Display *disp = (Display*)display;
 
     // if WM supports _NET_WM_STATE_FULLSCREEN from wm-spec 1.2, use it:
@@ -467,7 +477,7 @@ wxX11FullScreenMethod wxGetFullScreenMethodX11(WXDisplay* display,
                    _T("detected _NET_WM_STATE_FULLSCREEN support"));
         return wxX11_FS_WMSPEC;
     }
-    
+
     // if the user is running KDE's kwin WM, use a legacy hack because
     // kwin doesn't understand any other method:
     if (wxKwinRunning(disp, root))
@@ -475,7 +485,7 @@ wxX11FullScreenMethod wxGetFullScreenMethodX11(WXDisplay* display,
         wxLogTrace(_T("fullscreen"), _T("detected kwin"));
         return wxX11_FS_KDE;
     }
-    
+
     // finally, fall back to ICCCM heuristic method:
     wxLogTrace(_T("fullscreen"), _T("unknown WM, using _WIN_LAYER"));
     return wxX11_FS_GENERIC;
@@ -490,8 +500,8 @@ void wxSetFullScreenStateX11(WXDisplay* display, WXWindow rootWindow,
     // NB: please see the comment under "Fullscreen mode:" title above
     //     for implications of changing this code.
 
-    Window wnd = (Window)window;
-    Window root = (Window)rootWindow;
+    Window wnd = WindowCast(window);
+    Window root = WindowCast(rootWindow);
     Display *disp = (Display*)display;
 
     if (method == wxX11_FS_AUTODETECT)
@@ -533,9 +543,11 @@ int wxCharCodeXToWX(KeySym keySym)
         case XK_Control_L:
         case XK_Control_R:
             id = WXK_CONTROL; break;
-        case XK_Meta_L:  
+        case XK_Meta_L:
         case XK_Meta_R:
             id = WXK_ALT; break;
+        case XK_Caps_Lock:
+            id = WXK_CAPITAL; break;
         case XK_BackSpace:
             id = WXK_BACK; break;
         case XK_Delete:
@@ -571,9 +583,9 @@ int wxCharCodeXToWX(KeySym keySym)
         case XK_Down:
             id = WXK_DOWN; break;
         case XK_Next:
-            id = WXK_NEXT; break;
+            id = WXK_PAGEDOWN; break;
         case XK_Prior:
-            id = WXK_PRIOR; break;
+            id = WXK_PAGEUP; break;
         case XK_Menu:
             id = WXK_MENU; break;
         case XK_Select:
@@ -590,23 +602,23 @@ int wxCharCodeXToWX(KeySym keySym)
             id = WXK_HELP; break;
 
         case XK_KP_Multiply:
-            id = WXK_MULTIPLY; break;
+            id = WXK_NUMPAD_MULTIPLY; break;
         case XK_KP_Add:
-            id = WXK_ADD; break;
+            id = WXK_NUMPAD_ADD; break;
         case XK_KP_Subtract:
-            id = WXK_SUBTRACT; break;
+            id = WXK_NUMPAD_SUBTRACT; break;
         case XK_KP_Divide:
-            id = WXK_DIVIDE; break;
+            id = WXK_NUMPAD_DIVIDE; break;
         case XK_KP_Decimal:
-            id = WXK_DECIMAL; break;
+            id = WXK_NUMPAD_DECIMAL; break;
         case XK_KP_Equal:
-            id = '='; break;
+            id = WXK_NUMPAD_EQUAL; break;
         case XK_KP_Space:
-            id = ' '; break;
+            id = WXK_NUMPAD_SPACE; break;
         case XK_KP_Tab:
-            id = WXK_TAB; break;
+            id = WXK_NUMPAD_TAB; break;
         case XK_KP_Enter:
-            id = WXK_RETURN; break;
+            id = WXK_NUMPAD_ENTER; break;
         case XK_KP_0:
             id = WXK_NUMPAD0; break;
         case XK_KP_1:
@@ -627,6 +639,24 @@ int wxCharCodeXToWX(KeySym keySym)
             id = WXK_NUMPAD8; break;
         case XK_KP_9:
             id = WXK_NUMPAD9; break;
+        case XK_KP_Insert:
+            id = WXK_NUMPAD_INSERT; break;
+        case XK_KP_End:
+            id = WXK_NUMPAD_END; break;
+        case XK_KP_Down:
+            id = WXK_NUMPAD_DOWN; break;
+        case XK_KP_Page_Down:
+            id = WXK_NUMPAD_PAGEDOWN; break;
+        case XK_KP_Left:
+            id = WXK_NUMPAD_LEFT; break;
+        case XK_KP_Right:
+            id = WXK_NUMPAD_RIGHT; break;
+        case XK_KP_Home:
+            id = WXK_NUMPAD_HOME; break;
+        case XK_KP_Up:
+            id = WXK_NUMPAD_UP; break;
+        case XK_KP_Page_Up:
+            id = WXK_NUMPAD_PAGEUP; break;
         case XK_F1:
             id = WXK_F1; break;
         case XK_F2:
@@ -695,13 +725,14 @@ KeySym wxCharCodeWXToX(int id)
         case WXK_RETURN:        keySym = XK_Return; break;
         case WXK_SHIFT:         keySym = XK_Shift_L; break;
         case WXK_CONTROL:       keySym = XK_Control_L; break;
-        case WXK_ALT:           keySym = XK_Meta_L; break;            
+        case WXK_ALT:           keySym = XK_Meta_L; break;
+        case WXK_CAPITAL:       keySym = XK_Caps_Lock; break;
         case WXK_MENU :         keySym = XK_Menu; break;
         case WXK_PAUSE:         keySym = XK_Pause; break;
         case WXK_ESCAPE:        keySym = XK_Escape; break;
         case WXK_SPACE:         keySym = ' '; break;
-        case WXK_PRIOR:         keySym = XK_Prior; break;
-        case WXK_NEXT :         keySym = XK_Next; break;
+        case WXK_PAGEUP:        keySym = XK_Prior; break;
+        case WXK_PAGEDOWN:      keySym = XK_Next; break;
         case WXK_END:           keySym = XK_End; break;
         case WXK_HOME :         keySym = XK_Home; break;
         case WXK_LEFT :         keySym = XK_Left; break;
@@ -714,21 +745,23 @@ KeySym wxCharCodeWXToX(int id)
         case WXK_INSERT:        keySym = XK_Insert; break;
         case WXK_DELETE:        keySym = XK_Delete; break;
         case WXK_HELP :         keySym = XK_Help; break;
-        case WXK_NUMPAD0:       keySym = XK_KP_0; break;
-        case WXK_NUMPAD1:       keySym = XK_KP_1; break;
-        case WXK_NUMPAD2:       keySym = XK_KP_2; break;
-        case WXK_NUMPAD3:       keySym = XK_KP_3; break;
-        case WXK_NUMPAD4:       keySym = XK_KP_4; break;
+        case WXK_NUMPAD0:       keySym = XK_KP_0; break; case WXK_NUMPAD_INSERT:     keySym = XK_KP_Insert; break;
+        case WXK_NUMPAD1:       keySym = XK_KP_1; break; case WXK_NUMPAD_END:           keySym = XK_KP_End; break;
+        case WXK_NUMPAD2:       keySym = XK_KP_2; break; case WXK_NUMPAD_DOWN:      keySym = XK_KP_Down; break;
+        case WXK_NUMPAD3:       keySym = XK_KP_3; break; case WXK_NUMPAD_PAGEDOWN:  keySym = XK_KP_Page_Down; break;
+        case WXK_NUMPAD4:       keySym = XK_KP_4; break; case WXK_NUMPAD_LEFT:         keySym = XK_KP_Left; break;
         case WXK_NUMPAD5:       keySym = XK_KP_5; break;
-        case WXK_NUMPAD6:       keySym = XK_KP_6; break;
-        case WXK_NUMPAD7:       keySym = XK_KP_7; break;
-        case WXK_NUMPAD8:       keySym = XK_KP_8; break;
-        case WXK_NUMPAD9:       keySym = XK_KP_9; break;
-        case WXK_MULTIPLY:      keySym = XK_KP_Multiply; break;
-        case WXK_ADD:           keySym = XK_KP_Add; break;
-        case WXK_SUBTRACT:      keySym = XK_KP_Subtract; break;
-        case WXK_DECIMAL:       keySym = XK_KP_Decimal; break;
-        case WXK_DIVIDE:        keySym = XK_KP_Divide; break;
+        case WXK_NUMPAD6:       keySym = XK_KP_6; break; case WXK_NUMPAD_RIGHT:       keySym = XK_KP_Right; break;
+        case WXK_NUMPAD7:       keySym = XK_KP_7; break; case WXK_NUMPAD_HOME:       keySym = XK_KP_Home; break;
+        case WXK_NUMPAD8:       keySym = XK_KP_8; break; case WXK_NUMPAD_UP:             keySym = XK_KP_Up; break;
+        case WXK_NUMPAD9:       keySym = XK_KP_9; break; case WXK_NUMPAD_PAGEUP:   keySym = XK_KP_Page_Up; break;
+        case WXK_NUMPAD_DECIMAL:    keySym = XK_KP_Decimal; break; case WXK_NUMPAD_DELETE:   keySym = XK_KP_Delete; break;
+        case WXK_NUMPAD_MULTIPLY:   keySym = XK_KP_Multiply; break;
+        case WXK_NUMPAD_ADD:             keySym = XK_KP_Add; break;
+        case WXK_NUMPAD_SUBTRACT: keySym = XK_KP_Subtract; break;
+        case WXK_NUMPAD_DIVIDE:        keySym = XK_KP_Divide; break;
+        case WXK_NUMPAD_ENTER:        keySym = XK_KP_Enter; break;
+        case WXK_NUMPAD_SEPARATOR:  keySym = XK_KP_Separator; break;
         case WXK_F1:            keySym = XK_F1; break;
         case WXK_F2:            keySym = XK_F2; break;
         case WXK_F3:            keySym = XK_F3; break;
@@ -766,50 +799,49 @@ KeySym wxCharCodeWXToX(int id)
 // check current state of a key
 // ----------------------------------------------------------------------------
 
-#include <wx/app.h>
-
 bool wxGetKeyState(wxKeyCode key)
 {
     wxASSERT_MSG(key != WXK_LBUTTON && key != WXK_RBUTTON && key !=
         WXK_MBUTTON, wxT("can't use wxGetKeyState() for mouse buttons"));
 
-#if defined(__WXX11__)
-    Display *pDisplay = (Display*) wxApp::GetDisplay();
-#elif defined(__WXGTK__)
-    Display *pDisplay = GDK_DISPLAY();
-#elif defined(__WXMOTIF__)
-    Display *pDisplay = (Display*) (wxTheApp ? wxTheApp->GetInitialDisplay() : NULL);
-#else
-#error  Add code to get the DISPLAY for this platform
-#endif
-    
+    Display *pDisplay = (Display*) wxGetDisplay();
+
     int iKey = wxCharCodeWXToX(key);
     int          iKeyMask = 0;
     Window       wDummy1, wDummy2;
     int          iDummy3, iDummy4, iDummy5, iDummy6;
     unsigned int iMask;
-    XModifierKeymap* map = XGetModifierMapping(pDisplay);
     KeyCode keyCode = XKeysymToKeycode(pDisplay,iKey);
     if (keyCode == NoSymbol)
         return false;
-    
-    for (int i = 0; i < 8; ++i)
+
+    if ( IsModifierKey(iKey) )  // If iKey is a modifier key, use a different method
     {
-        if ( map->modifiermap[map->max_keypermod * i] == keyCode)
+        XModifierKeymap *map = XGetModifierMapping(pDisplay);
+        wxCHECK_MSG( map, false, _T("failed to get X11 modifiers map") );
+
+        for (int i = 0; i < 8; ++i)
         {
-            iKeyMask = 1 << i;
+            if ( map->modifiermap[map->max_keypermod * i] == keyCode)
+            {
+                iKeyMask = 1 << i;
+            }
         }
+
+        XQueryPointer(pDisplay, DefaultRootWindow(pDisplay), &wDummy1, &wDummy2,
+                        &iDummy3, &iDummy4, &iDummy5, &iDummy6, &iMask );
+        XFreeModifiermap(map);
+        return (iMask & iKeyMask) != 0;
     }
-    
-    XQueryPointer(pDisplay, DefaultRootWindow(pDisplay), &wDummy1, &wDummy2,
-                  &iDummy3, &iDummy4, &iDummy5, &iDummy6, &iMask );
-    XFreeModifiermap(map);
-    return (iMask & iKeyMask) != 0;
+
+    // From the XLib manual:
+    // The XQueryKeymap() function returns a bit vector for the logical state of the keyboard,
+    // where each bit set to 1 indicates that the corresponding key is currently pressed down.
+    // The vector is represented as 32 bytes. Byte N (from 0) contains the bits for keys 8N to 8N + 7
+    // with the least-significant bit in the byte representing key 8N.
+    char key_vector[32];
+    XQueryKeymap(pDisplay, key_vector);
+    return key_vector[keyCode >> 3] & (1 << (keyCode & 7));
 }
 
-#endif
-
-
-
-
-
+#endif // __WXX11__ || __WXGTK__ || __WXMOTIF__

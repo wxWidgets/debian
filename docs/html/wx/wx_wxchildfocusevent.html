@@ -1,0 +1,68 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxChildFocusEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxchildfocusevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxconnection.html#wxconnection"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcontextmenuevent.html#wxcontextmenuevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxChildFocusEvent</H2>
+<P>
+A child focus event is sent to a (parent-)window when one of its child windows gains focus,
+so that the window could restore the focus back to its corresponding child
+if it loses it now and regains later.<P>
+Notice that child window is the direct child of the window receiving event.
+Use <A HREF="wx_wxwindow.html#wxwindowfindfocus">FindFocus</A> to retreive the window which is actually getting focus. <P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><BR>
+
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a child focus event, use this event handler macro to direct input to a member
+function that takes a wxChildFocusEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CHILD_FOCUS(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_CHILD_FOCUS event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxchildfocuseventctor">wxChildFocusEvent::wxChildFocusEvent</A><BR>
+<A HREF="#wxchildfocuseventgetwindow">wxChildFocusEvent::GetWindow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxchildfocuseventctor"></A>
+<H3>wxChildFocusEvent::wxChildFocusEvent</H3>
+<P>
+<B></B> <B>wxChildFocusEvent</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>win = NULL</I>)<P>
+Constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>win</I><UL><UL>
+The direct child which is (or which contains the window which is) receiving the focus.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxchildfocuseventgetwindow"></A>
+<H3>wxChildFocusEvent::GetWindow</H3>
+<P>
+Returns the direct child which receives the focus, or a (grand-)parent of the control receiving the focus.<P>
+To get the actually focused control use <A HREF="wx_wxwindow.html#wxwindowfindfocus">wxWindow::FindFocus</A>.<P>
+
+</FONT></BODY></HTML>

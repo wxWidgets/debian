@@ -1,0 +1,644 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSlider</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxslider"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsizeritem.html#wxsizeritem"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsockaddress.html#wxsockaddress"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSlider</H2>
+<P>
+A slider is a control with a handle which can be pulled
+back and forth to change the value.<P>
+On Windows, the track bar control is used.<P>
+Slider events are handled in the same way as a scrollbar.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/slider.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSL_HORIZONTAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays the slider horizontally (this is the default).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSL_VERTICAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays the slider vertically.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSL_AUTOTICKS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays tick marks.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSL_LABELS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays minimum, maximum and value labels.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSL_LEFT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays ticks on the left and forces the slider to be vertical.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSL_RIGHT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays ticks on the right and forces the slider to be vertical.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSL_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays ticks on the top.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSL_BOTTOM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays ticks on the bottom (this is the default).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSL_SELRANGE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Allows the user to select a range on the slider. Windows only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSL_INVERSE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Inverses the mininum and maximum endpoints on the slider. Not compatible with wxSL_SELRANGE.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a scroll event, use these event handler macros to direct input to
+member functions that take a wxScrollEvent argument. You can use
+<TT>EVT_COMMAND_SCROLL...</TT> macros with window IDs for when intercepting
+scroll events from controls, or <TT>EVT_SCROLL...</TT> macros without window IDs
+for intercepting scroll events from the receiving window -- except for this,
+the macros behave exactly the same.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process all scroll events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_TOP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_TOP scroll-to-top events (minimum position).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_BOTTOM(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_BOTTOM scroll-to-bottom events (maximum position).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_LINEUP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_LINEUP line up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_LINEDOWN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_LINEDOWN line down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_PAGEUP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_PAGEUP page up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_PAGEDOWN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_PAGEDOWN page down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_THUMBTRACK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_THUMBTRACK thumbtrack events (frequent events
+sent as the user drags the thumbtrack).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_THUMBRELEASE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_THUMBRELEASE thumb release events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SCROLL_CHANGED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_CHANGED end of scrolling events (MSW only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process all scroll events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_TOP(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_TOP scroll-to-top events (minimum position).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_BOTTOM(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_BOTTOM scroll-to-bottom events (maximum position).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_LINEUP(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_LINEUP line up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_LINEDOWN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_LINEDOWN line down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_PAGEUP(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_PAGEUP page up events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_PAGEDOWN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_PAGEDOWN page down events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_THUMBTRACK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_THUMBTRACK thumbtrack events (frequent events
+sent as the user drags the thumbtrack).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_THUMBRELEASE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_THUMBRELEASE thumb release events.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_COMMAND_SCROLL_CHANGED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process wxEVT_SCROLL_CHANGED end of scrolling events (MSW only).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">The difference between <TT>EVT_SCROLL_THUMBRELEASE</TT> and <TT>EVT_SCROLL_CHANGED</TT></FONT></B><P>
+The <TT>EVT_SCROLL_THUMBRELEASE</TT> event is only emitted when actually dragging
+the thumb using the mouse and releasing it (This <TT>EVT_SCROLL_THUMBRELEASE</TT>
+event is also followed by an <TT>EVT_SCROLL_CHANGED</TT> event).<P>
+The <TT>EVT_SCROLL_CHANGED</TT> event also occurs when using the keyboard to
+change the thumb position, and when clicking next to the thumb (In all these
+cases the <TT>EVT_SCROLL_THUMBRELEASE</TT> event does not happen).<P>
+In short, the <TT>EVT_SCROLL_CHANGED</TT> event is triggered when scrolling/
+moving has finished independently of the way it had started. Please see the
+widgets sample ("Slider" page) to see the difference between <TT>
+EVT_SCROLL_THUMBRELEASE</TT> and <TT>EVT_SCROLL_CHANGED</TT> in action.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A>, <A HREF="wx_wxscrollbar.html#wxscrollbar">wxScrollBar</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsliderctor">wxSlider::wxSlider</A><BR>
+<A HREF="#wxsliderdtor">wxSlider::~wxSlider</A><BR>
+<A HREF="#wxsliderclearsel">wxSlider::ClearSel</A><BR>
+<A HREF="#wxsliderclearticks">wxSlider::ClearTicks</A><BR>
+<A HREF="#wxslidercreate">wxSlider::Create</A><BR>
+<A HREF="#wxslidergetlinesize">wxSlider::GetLineSize</A><BR>
+<A HREF="#wxslidergetmax">wxSlider::GetMax</A><BR>
+<A HREF="#wxslidergetmin">wxSlider::GetMin</A><BR>
+<A HREF="#wxslidergetpagesize">wxSlider::GetPageSize</A><BR>
+<A HREF="#wxslidergetselend">wxSlider::GetSelEnd</A><BR>
+<A HREF="#wxslidergetselstart">wxSlider::GetSelStart</A><BR>
+<A HREF="#wxslidergetthumblength">wxSlider::GetThumbLength</A><BR>
+<A HREF="#wxslidergettickfreq">wxSlider::GetTickFreq</A><BR>
+<A HREF="#wxslidergetvalue">wxSlider::GetValue</A><BR>
+<A HREF="#wxslidersetlinesize">wxSlider::SetLineSize</A><BR>
+<A HREF="#wxslidersetpagesize">wxSlider::SetPageSize</A><BR>
+<A HREF="#wxslidersetrange">wxSlider::SetRange</A><BR>
+<A HREF="#wxslidersetselection">wxSlider::SetSelection</A><BR>
+<A HREF="#wxslidersetthumblength">wxSlider::SetThumbLength</A><BR>
+<A HREF="#wxslidersettick">wxSlider::SetTick</A><BR>
+<A HREF="#wxslidersettickfreq">wxSlider::SetTickFreq</A><BR>
+<A HREF="#wxslidersetvalue">wxSlider::SetValue</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsliderctor"></A>
+<H3>wxSlider::wxSlider</H3>
+<P>
+<B></B> <B>wxSlider</B>()<P>
+Default slider.<P>
+<B></B> <B>wxSlider</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>int </B><I>value </I>,
+<B>int</B><I> minValue</I>, <B>int</B><I> maxValue</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>point = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxSL_HORIZONTAL</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "slider"</I>)<P>
+Constructor, creating and showing a slider.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>value</I><UL><UL>
+Initial position for the slider.</UL></UL>
+<P>
+<I>minValue</I><UL><UL>
+Minimum slider position.</UL></UL>
+<P>
+<I>maxValue</I><UL><UL>
+Maximum slider position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then a default size is chosen.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxslider.html#wxslider">wxSlider</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidercreate">wxSlider::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+
+<HR>
+<A NAME="wxsliderdtor"></A>
+<H3>wxSlider::~wxSlider</H3>
+<P>
+<B>void</B> <B>~wxSlider</B>()<P>
+Destructor, destroying the slider.<P>
+
+<HR>
+<A NAME="wxsliderclearsel"></A>
+<H3>wxSlider::ClearSel</H3>
+<P>
+<B>void</B> <B>ClearSel</B>()<P>
+Clears the selection, for a slider with the <B>wxSL_SELRANGE</B> style.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Windows 95 only.<P>
+
+<HR>
+<A NAME="wxsliderclearticks"></A>
+<H3>wxSlider::ClearTicks</H3>
+<P>
+<B>void</B> <B>ClearTicks</B>()<P>
+Clears the ticks.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Windows 95 only.<P>
+
+<HR>
+<A NAME="wxslidercreate"></A>
+<H3>wxSlider::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>int </B><I>value </I>,
+<B>int</B><I> minValue</I>, <B>int</B><I> maxValue</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>point = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxSL_HORIZONTAL</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "slider"</I>)<P>
+Used for two-step slider construction. See <A HREF="wx_wxslider.html#wxsliderctor">wxSlider::wxSlider</A>
+for further details.<P>
+
+<HR>
+<A NAME="wxslidergetlinesize"></A>
+<H3>wxSlider::GetLineSize</H3>
+<P>
+<B>int</B> <B>GetLineSize</B>() <B>const</B><P>
+Returns the line size.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidersetlinesize">wxSlider::SetLineSize</A><P>
+
+<HR>
+<A NAME="wxslidergetmax"></A>
+<H3>wxSlider::GetMax</H3>
+<P>
+<B>int</B> <B>GetMax</B>() <B>const</B><P>
+Gets the maximum slider value.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidergetmin">wxSlider::GetMin</A>, <A HREF="wx_wxslider.html#wxslidersetrange">wxSlider::SetRange</A><P>
+
+<HR>
+<A NAME="wxslidergetmin"></A>
+<H3>wxSlider::GetMin</H3>
+<P>
+<B>int</B> <B>GetMin</B>() <B>const</B><P>
+Gets the minimum slider value.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidergetmin">wxSlider::GetMin</A>, <A HREF="wx_wxslider.html#wxslidersetrange">wxSlider::SetRange</A><P>
+
+<HR>
+<A NAME="wxslidergetpagesize"></A>
+<H3>wxSlider::GetPageSize</H3>
+<P>
+<B>int</B> <B>GetPageSize</B>() <B>const</B><P>
+Returns the page size.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidersetpagesize">wxSlider::SetPageSize</A><P>
+
+<HR>
+<A NAME="wxslidergetselend"></A>
+<H3>wxSlider::GetSelEnd</H3>
+<P>
+<B>int</B> <B>GetSelEnd</B>() <B>const</B><P>
+Returns the selection end point.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Windows 95 only.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidergetselstart">wxSlider::GetSelStart</A>, <A HREF="wx_wxslider.html#wxslidersetselection">wxSlider::SetSelection</A><P>
+
+<HR>
+<A NAME="wxslidergetselstart"></A>
+<H3>wxSlider::GetSelStart</H3>
+<P>
+<B>int</B> <B>GetSelStart</B>() <B>const</B><P>
+Returns the selection start point.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Windows 95 only.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidergetselend">wxSlider::GetSelEnd</A>, <A HREF="wx_wxslider.html#wxslidersetselection">wxSlider::SetSelection</A><P>
+
+<HR>
+<A NAME="wxslidergetthumblength"></A>
+<H3>wxSlider::GetThumbLength</H3>
+<P>
+<B>int</B> <B>GetThumbLength</B>() <B>const</B><P>
+Returns the thumb length.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Windows 95 only.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidersetthumblength">wxSlider::SetThumbLength</A><P>
+
+<HR>
+<A NAME="wxslidergettickfreq"></A>
+<H3>wxSlider::GetTickFreq</H3>
+<P>
+<B>int</B> <B>GetTickFreq</B>() <B>const</B><P>
+Returns the tick frequency.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Windows 95 only.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidersettickfreq">wxSlider::SetTickFreq</A><P>
+
+<HR>
+<A NAME="wxslidergetvalue"></A>
+<H3>wxSlider::GetValue</H3>
+<P>
+<B>int</B> <B>GetValue</B>() <B>const</B><P>
+Gets the current slider value.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidergetmin">wxSlider::GetMin</A>, <A HREF="wx_wxslider.html#wxslidergetmax">wxSlider::GetMax</A>,
+<A HREF="wx_wxslider.html#wxslidersetvalue">wxSlider::SetValue</A><P>
+
+<HR>
+<A NAME="wxslidersetlinesize"></A>
+<H3>wxSlider::SetLineSize</H3>
+<P>
+<B>void</B> <B>SetLineSize</B>(<B>int </B><I>lineSize</I>)<P>
+Sets the line size for the slider.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>lineSize</I><UL><UL>
+The number of steps the slider moves when the user moves it up or down a line.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidergetlinesize">wxSlider::GetLineSize</A><P>
+
+<HR>
+<A NAME="wxslidersetpagesize"></A>
+<H3>wxSlider::SetPageSize</H3>
+<P>
+<B>void</B> <B>SetPageSize</B>(<B>int </B><I>pageSize</I>)<P>
+Sets the page size for the slider.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pageSize</I><UL><UL>
+The number of steps the slider moves when the user pages up or down.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidergetpagesize">wxSlider::GetPageSize</A><P>
+
+<HR>
+<A NAME="wxslidersetrange"></A>
+<H3>wxSlider::SetRange</H3>
+<P>
+<B>void</B> <B>SetRange</B>(<B>int</B><I> minValue</I>, <B>int</B><I> maxValue</I>)<P>
+Sets the minimum and maximum slider values.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidergetmin">wxSlider::GetMin</A>, <A HREF="wx_wxslider.html#wxslidergetmax">wxSlider::GetMax</A><P>
+
+<HR>
+<A NAME="wxslidersetselection"></A>
+<H3>wxSlider::SetSelection</H3>
+<P>
+<B>void</B> <B>SetSelection</B>(<B>int </B><I>startPos</I>, <B>int </B><I>endPos</I>)<P>
+Sets the selection.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>startPos</I><UL><UL>
+The selection start position.</UL></UL>
+<P>
+<I>endPos</I><UL><UL>
+The selection end position.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Windows 95 only.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidergetselstart">wxSlider::GetSelStart</A>, <A HREF="wx_wxslider.html#wxslidergetselend">wxSlider::GetSelEnd</A><P>
+
+<HR>
+<A NAME="wxslidersetthumblength"></A>
+<H3>wxSlider::SetThumbLength</H3>
+<P>
+<B>void</B> <B>SetThumbLength</B>(<B>int </B><I>len</I>)<P>
+Sets the slider thumb length.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>len</I><UL><UL>
+The thumb length.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Windows 95 only.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidergetthumblength">wxSlider::GetThumbLength</A><P>
+
+<HR>
+<A NAME="wxslidersettick"></A>
+<H3>wxSlider::SetTick</H3>
+<P>
+<B>void</B> <B>SetTick</B>(<B>int</B><I> tickPos</I>)<P>
+Sets a tick position.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>tickPos</I><UL><UL>
+The tick position.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Windows 95 only.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidersettickfreq">wxSlider::SetTickFreq</A><P>
+
+<HR>
+<A NAME="wxslidersettickfreq"></A>
+<H3>wxSlider::SetTickFreq</H3>
+<P>
+<B>void</B> <B>SetTickFreq</B>(<B>int </B><I>n</I>, <B>int </B><I>pos</I>)<P>
+Sets the tick mark frequency and position.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>n</I><UL><UL>
+Frequency. For example, if the frequency is set to two, a tick mark is displayed for
+every other increment in the slider's range.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Position. Must be greater than zero. TODO: what is this for?</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Windows 95 only.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidergettickfreq">wxSlider::GetTickFreq</A><P>
+
+<HR>
+<A NAME="wxslidersetvalue"></A>
+<H3>wxSlider::SetValue</H3>
+<P>
+<B>void</B> <B>SetValue</B>(<B>int</B><I> value</I>)<P>
+Sets the slider position.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>value</I><UL><UL>
+The slider position.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxslider.html#wxslidergetvalue">wxSlider::GetValue</A><P>
+
+</FONT></BODY></HTML>

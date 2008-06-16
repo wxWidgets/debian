@@ -1,0 +1,162 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPrinter</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxprinter"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxprintdialogdata.html#wxprintdialogdata"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxprinterdc.html#wxprinterdc"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPrinter</H2>
+<P>
+This class represents the Windows or PostScript printer, and is the vehicle through
+which printing may be launched by an application. Printing can also
+be achieved through using of lower functions and classes, but
+this and associated classes provide a more convenient and general
+method of printing.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/print.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_printingoverview.html#printingoverview">Printing framework overview</A>, 
+<A HREF="wx_wxprinterdc.html#wxprinterdc">wxPrinterDC</A>, 
+<A HREF="wx_wxprintdialog.html#wxprintdialog">wxPrintDialog</A>, 
+<A HREF="wx_wxprintout.html#wxprintout">wxPrintout</A>, 
+<A HREF="wx_wxprintpreview.html#wxprintpreview">wxPrintPreview</A>.<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxprinterctor">wxPrinter::wxPrinter</A><BR>
+<A HREF="#wxprintercreateabortwindow">wxPrinter::CreateAbortWindow</A><BR>
+<A HREF="#wxprintergetabort">wxPrinter::GetAbort</A><BR>
+<A HREF="#wxprintergetlasterror">wxPrinter::GetLastError</A><BR>
+<A HREF="#wxprintergetprintdialogdata">wxPrinter::GetPrintDialogData</A><BR>
+<A HREF="#wxprinterprint">wxPrinter::Print</A><BR>
+<A HREF="#wxprinterprintdialog">wxPrinter::PrintDialog</A><BR>
+<A HREF="#wxprinterreporterror">wxPrinter::ReportError</A><BR>
+<A HREF="#wxprintersetup">wxPrinter::Setup</A><BR>
+<P>
+
+<HR>
+<A NAME="wxprinterctor"></A>
+<H3>wxPrinter::wxPrinter</H3>
+<P>
+<B></B> <B>wxPrinter</B>(<B><A HREF="wx_wxprintdialogdata.html#wxprintdialogdata">wxPrintDialogData</A>* </B></B><I>data = NULL</I>)<P>
+Constructor. Pass an optional pointer to a block of print
+dialog data, which will be copied to the printer object's local data.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxprintdialogdata.html#wxprintdialogdata">wxPrintDialogData</A>,
+<A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A><P>
+<P>
+
+<HR>
+<A NAME="wxprintercreateabortwindow"></A>
+<H3>wxPrinter::CreateAbortWindow</H3>
+<P>
+<B>void</B> <B>CreateAbortWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B><A HREF="wx_wxprintout.html#wxprintout">wxPrintout</A>* </B></B><I>printout</I>)<P>
+Creates the default printing abort window, with a cancel button.<P>
+
+
+<HR>
+<A NAME="wxprintergetabort"></A>
+<H3>wxPrinter::GetAbort</H3>
+<P>
+<B>bool</B> <B>GetAbort</B>()<P>
+Returns true if the user has aborted the print job.<P>
+
+
+<HR>
+<A NAME="wxprintergetlasterror"></A>
+<H3>wxPrinter::GetLastError</H3>
+<P>
+<B>static wxPrinterError</B> <B>GetLastError</B>()<P>
+Return last error. Valid after calling <A HREF="wx_wxprinter.html#wxprinterprint">Print</A>,
+<A HREF="wx_wxprinter.html#wxprinterprintdialog">PrintDialog</A> or 
+<A HREF="wx_wxprintpreview.html#wxprintpreviewprint">wxPrintPreview::Print</A>. These functions 
+set last error to <B>wxPRINTER_NO_ERROR</B> if no error happened.<P>
+Returned value is one of the following:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPRINTER_NO_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+No error happened.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPRINTER_CANCELLED</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user cancelled printing.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPRINTER_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+There was an error during printing.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<P>
+
+<HR>
+<A NAME="wxprintergetprintdialogdata"></A>
+<H3>wxPrinter::GetPrintDialogData</H3>
+<P>
+<B><A HREF="wx_wxprintdialogdata.html#wxprintdialogdata">wxPrintDialogData</A>&</B> </B> <B>GetPrintDialogData</B>()<P>
+Returns the <A HREF="wx_wxprintdata.html#wxprintdata">print data</A> associated with the printer object.<P>
+
+
+<HR>
+<A NAME="wxprinterprint"></A>
+<H3>wxPrinter::Print</H3>
+<P>
+<B>bool</B> <B>Print</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>, <B><A HREF="wx_wxprintout.html#wxprintout">wxPrintout</A> *</B></B><I>printout</I>, <B>bool </B><I>prompt=true</I>)<P>
+Starts the printing process. Provide a parent window, a user-defined wxPrintout object which controls
+the printing of a document, and whether the print dialog should be invoked first.<P>
+Print could return false if there was a problem initializing the printer device context
+(current printer not set, for example) or the user cancelled printing. Call
+<A HREF="wx_wxprinter.html#wxprintergetlasterror">wxPrinter::GetLastError</A> to get detailed
+information about the kind of the error.<P>
+
+
+<HR>
+<A NAME="wxprinterprintdialog"></A>
+<H3>wxPrinter::PrintDialog</H3>
+<P>
+<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>*</B> </B> <B>PrintDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>)<P>
+Invokes the print dialog. If successful (the user did not press Cancel
+and no error occurred), a suitable device context will be returned
+(otherwise NULL is returned -- call
+<A HREF="wx_wxprinter.html#wxprintergetlasterror">wxPrinter::GetLastError</A> to get detailed
+information about the kind of the error).<P>
+The application must delete this device context to avoid a memory leak.<P>
+
+
+<HR>
+<A NAME="wxprinterreporterror"></A>
+<H3>wxPrinter::ReportError</H3>
+<P>
+<B>void</B> <B>ReportError</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>, <B><A HREF="wx_wxprintout.html#wxprintout">wxPrintout</A> *</B></B><I>printout</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>)<P>
+Default error-reporting function.<P>
+
+
+<HR>
+<A NAME="wxprintersetup"></A>
+<H3>wxPrinter::Setup</H3>
+<P>
+<B>bool</B> <B>Setup</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>)<P>
+Invokes the print setup dialog. Note that the setup dialog is obsolete from
+Windows 95, though retained for backward compatibility.<P>
+
+</FONT></BODY></HTML>

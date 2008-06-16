@@ -6,7 +6,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _statctrls.i,v 1.11.2.1 2005/12/16 20:02:28 RD Exp $
+// RCS-ID:      $Id: _statctrls.i 43889 2006-12-10 01:48:28Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,7 @@
 MAKE_CONST_WXSTRING(StaticBitmapNameStr);
 MAKE_CONST_WXSTRING(StaticBoxNameStr);
 MAKE_CONST_WXSTRING(StaticTextNameStr);
+MAKE_CONST_WXSTRING(StaticLineNameStr);
 
 //---------------------------------------------------------------------------
 %newgroup
@@ -69,14 +70,14 @@ public:
                   const wxPoint &pos = wxDefaultPosition,
                   const wxSize &size = wxDefaultSize,
                   long style = wxLI_HORIZONTAL,
-                  const wxString& name = wxPyStaticTextNameStr);
+                  const wxString& name = wxPyStaticLineNameStr);
     %RenameCtor(PreStaticLine, wxStaticLine());
 
     bool Create( wxWindow *parent, wxWindowID id=-1,
                   const wxPoint &pos = wxDefaultPosition,
                   const wxSize &size = wxDefaultSize,
                   long style = wxLI_HORIZONTAL,
-                  const wxString& name = wxPyStaticTextNameStr);
+                  const wxString& name = wxPyStaticLineNameStr);
 
     // is the line vertical?
     bool IsVertical() const;

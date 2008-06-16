@@ -1,0 +1,67 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataViewSortedListModel</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataviewsortedlistmodel"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdataviewrenderer.html#wxdataviewrenderer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataViewSortedListModel</H2>
+<P>
+This class is used for sorting data. It does not contain any
+data itself. Rather, it provides a sorted interface for 
+another list model.<P>
+Currently, the sorting algorithm isn't thread safe. This needs
+to be fixed.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A><BR>
+
+<A HREF="wx_wxdataviewmodel.html#wxdataviewmodel">wxDataViewModel</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataview.h&gt;<P>
+<A HREF="#wxdataviewsortedlistmodelwxdataviewsortedlistmodel">wxDataViewSortedListModel::wxDataViewSortedListModel</A><BR>
+<A HREF="#wxdataviewsortedlistmodeldtor">wxDataViewSortedListModel::~wxDataViewSortedListModel</A><BR>
+<A HREF="#wxdataviewsortedlistmodelgetascending">wxDataViewSortedListModel::GetAscending</A><BR>
+<A HREF="#wxdataviewsortedlistmodelresort">wxDataViewSortedListModel::Resort</A><BR>
+<A HREF="#wxdataviewsortedlistmodelsetascending">wxDataViewSortedListModel::SetAscending</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataviewsortedlistmodelwxdataviewsortedlistmodel"></A>
+<H3>wxDataViewSortedListModel::wxDataViewSortedListModel</H3>
+<P>
+<B></B> <B>wxDataViewSortedListModel</B>(<B><A HREF="wx_wxdataviewlistmodel.html#wxdataviewlistmodel">wxDataViewListModel</A>* </B></B><I>child</I>)<P>
+Constructor. <I>child</I> is the child data model the data of
+which this model is supposed to present in a sorted way.<P>
+
+<HR>
+<A NAME="wxdataviewsortedlistmodeldtor"></A>
+<H3>wxDataViewSortedListModel::~wxDataViewSortedListModel</H3>
+<P>
+<B></B> <B>~wxDataViewSortedListModel</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdataviewsortedlistmodelgetascending"></A>
+<H3>wxDataViewSortedListModel::GetAscending</H3>
+<P>
+<B>bool</B> <B>GetAscending</B>()<P>
+Returns true if the data is sorted in ascending order.<P>
+
+<HR>
+<A NAME="wxdataviewsortedlistmodelresort"></A>
+<H3>wxDataViewSortedListModel::Resort</H3>
+<P>
+<B>void</B> <B>Resort</B>()<P>
+Tell the model to resort its data.<P>
+
+<HR>
+<A NAME="wxdataviewsortedlistmodelsetascending"></A>
+<H3>wxDataViewSortedListModel::SetAscending</H3>
+<P>
+<B>void</B> <B>SetAscending</B>(<B>bool </B><I>ascending</I>)<P>
+Set the sort order of the data.<P>
+
+
+</FONT></BODY></HTML>

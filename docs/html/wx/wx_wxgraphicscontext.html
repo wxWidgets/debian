@@ -1,0 +1,340 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGraphicsContext</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgraphicscontext"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgraphicsbrush.html#wxgraphicsbrush"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgraphicsfont.html#wxgraphicsfont"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGraphicsContext</H2>
+<P>
+A wxGraphicsContext instance is the object that is drawn upon. It is created by a renderer using the CreateContext calls.., this can be either directly using a renderer 
+instance, or indirectly using the static convenience CreateXXX functions of wxGraphicsContext that always delegate the task to the default renderer.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxgraphicsobject.html#wxgraphicsobject">wxGraphicsObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/graphics.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgraphicscontextcreate">wxGraphicsContext::Create</A><BR>
+<A HREF="#wxgraphicscontextcreatefromnative">wxGraphicsContext::CreateFromNative</A><BR>
+<A HREF="#wxgraphicscontextcreatefromnativewindow">wxGraphicsContext::CreateFromNativeWindow</A><BR>
+<A HREF="#wxgraphicscontextcreatepen">wxGraphicsContext::CreatePen</A><BR>
+<A HREF="#wxgraphicscontextcreatebrush">wxGraphicsContext::CreateBrush</A><BR>
+<A HREF="#wxgraphicscontextcreateradialgradientbrush">wxGraphicsContext::CreateRadialGradientBrush</A><BR>
+<A HREF="#wxgraphicscontextcreatelineargradientbrush">wxGraphicsContext::CreateLinearGradientBrush</A><BR>
+<A HREF="#wxgraphicscontextcreatefont">wxGraphicsContext::CreateFont</A><BR>
+<A HREF="#wxgraphicscontextcreatematrix">wxGraphicsContext::CreateMatrix</A><BR>
+<A HREF="#wxgraphicscontextcreatepath">wxGraphicsContext::CreatePath</A><BR>
+<A HREF="#wxgraphicscontextclip">wxGraphicsContext::Clip</A><BR>
+<A HREF="#wxgraphicscontextresetclip">wxGraphicsContext::ResetClip</A><BR>
+<A HREF="#wxgraphicscontextdrawbitmap">wxGraphicsContext::DrawBitmap</A><BR>
+<A HREF="#wxgraphicscontextdrawellipse">wxGraphicsContext::DrawEllipse</A><BR>
+<A HREF="#wxgraphicscontextdrawicon">wxGraphicsContext::DrawIcon</A><BR>
+<A HREF="#wxgraphicscontextdrawlines">wxGraphicsContext::DrawLines</A><BR>
+<A HREF="#wxgraphicscontextdrawpath">wxGraphicsContext::DrawPath</A><BR>
+<A HREF="#wxgraphicscontextdrawrectangle">wxGraphicsContext::DrawRectangle</A><BR>
+<A HREF="#wxgraphicscontextdrawroundedrectangle">wxGraphicsContext::DrawRoundedRectangle</A><BR>
+<A HREF="#wxgraphicscontextdrawtext">wxGraphicsContext::DrawText</A><BR>
+<A HREF="#wxgraphicscontextfillpath">wxGraphicsContext::FillPath</A><BR>
+<A HREF="#wxgraphicscontextstrokepath">wxGraphicsContext::StrokePath</A><BR>
+<A HREF="#wxgraphicscontextgetnativecontext">wxGraphicsContext::GetNativeContext</A><BR>
+<A HREF="#wxgraphicscontextgetpartialtextextents">wxGraphicsContext::GetPartialTextExtents</A><BR>
+<A HREF="#wxgraphicscontextgettextextent">wxGraphicsContext::GetTextExtent</A><BR>
+<A HREF="#wxgraphicscontextrotate">wxGraphicsContext::Rotate</A><BR>
+<A HREF="#wxgraphicscontextscale">wxGraphicsContext::Scale</A><BR>
+<A HREF="#wxgraphicscontexttranslate">wxGraphicsContext::Translate</A><BR>
+<A HREF="#wxgraphicscontextgettransform">wxGraphicsContext::GetTransform</A><BR>
+<A HREF="#wxgraphicscontextsettransform">wxGraphicsContext::SetTransform</A><BR>
+<A HREF="#wxgraphicscontextconcattransform">wxGraphicsContext::ConcatTransform</A><BR>
+<A HREF="#wxgraphicscontextsetbrush">wxGraphicsContext::SetBrush</A><BR>
+<A HREF="#wxgraphicscontextsetfont">wxGraphicsContext::SetFont</A><BR>
+<A HREF="#wxgraphicscontextsetpen">wxGraphicsContext::SetPen</A><BR>
+<A HREF="#wxgraphicscontextstrokeline">wxGraphicsContext::StrokeLine</A><BR>
+<A HREF="#wxgraphicscontextstrokelines">wxGraphicsContext::StrokeLines</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgraphicscontextcreate"></A>
+<H3>wxGraphicsContext::Create</H3>
+<P>
+<B><A HREF="wx_wxgraphicscontext.html#wxgraphicscontext">wxGraphicsContext</A>*</B> </B> <B>Create</B>(<B>const <A HREF="wx_wxwindowdc.html#wxwindowdc">wxWindowDC</A>& </B></B><I>dc</I>)<P>
+Creates a wxGraphicsContext from a wxWindowDC (eg a wxPaintDC).<P>
+<B><A HREF="wx_wxgraphicscontext.html#wxgraphicscontext">wxGraphicsContext</A>*</B> </B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>)<P>
+Creates a wxGraphicsContext from a wxWindow.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgraphicsrenderer.html#wxgraphicsrenderercreatecontext">wxGraphicsRenderer:: CreateContext</A><P>
+
+<HR>
+<A NAME="wxgraphicscontextcreatefromnative"></A>
+<H3>wxGraphicsContext::CreateFromNative</H3>
+<P>
+Creates a wxGraphicsContext from a native context. This native context must be eg a CGContextRef for Core Graphics, a Graphics pointer for GDIPlus or a 
+cairo_t pointer for cairo.<P>
+<B><A HREF="wx_wxgraphicscontext.html#wxgraphicscontext">wxGraphicsContext</A>*</B> </B> <B>CreateFromNative</B>(<B>void * </B><I>context</I>)<P>
+Creates a wxGraphicsContext from a native window. <P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgraphicsrenderer.html#wxgraphicsrenderercreatecontextfromnativecontext">wxGraphicsRenderer:: CreateContextFromNativeContext</A><P>
+
+<HR>
+<A NAME="wxgraphicscontextcreatefromnativewindow"></A>
+<H3>wxGraphicsContext::CreateFromNativeWindow</H3>
+<P>
+<B><A HREF="wx_wxgraphicscontext.html#wxgraphicscontext">wxGraphicsContext</A>*</B> </B> <B>CreateFromNativeWindow</B>(<B>void * </B><I>window</I>)<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgraphicsrenderer.html#wxgraphicsrenderercreatecontextfromnativewindow">wxGraphicsRenderer:: CreateContextFromNativeWindow</A><P>
+
+<HR>
+<A NAME="wxgraphicscontextcreatepen"></A>
+<H3>wxGraphicsContext::CreatePen</H3>
+<P>
+<B><A HREF="wx_wxgraphicspen.html#wxgraphicspen">wxGraphicsPen</A></B> </B> <B>CreatePen</B>(<B>const <A HREF="wx_wxpen.html#wxpen">wxPen</A>& </B></B><I>pen</I>) <B>const</B><P>
+Creates a native pen from a wxPen.<P>
+
+<HR>
+<A NAME="wxgraphicscontextcreatebrush"></A>
+<H3>wxGraphicsContext::CreateBrush</H3>
+<P>
+<B><A HREF="wx_wxgraphicsbrush.html#wxgraphicsbrush">wxGraphicsBrush</A></B> </B> <B>CreateBrush</B>(<B>const <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>& </B></B><I>brush</I>) <B>const</B><P>
+Creates a native brush from a wxBrush.<P>
+
+<HR>
+<A NAME="wxgraphicscontextcreateradialgradientbrush"></A>
+<H3>wxGraphicsContext::CreateRadialGradientBrush</H3>
+<P>
+<B><A HREF="wx_wxgraphicsbrush.html#wxgraphicsbrush">wxGraphicsBrush</A></B> </B> <B>CreateRadialGradientBrush</B>(<B>wxDouble </B><I>xo</I>, <B>wxDouble </B><I>yo</I>, <B>wxDouble </B><I>xc</I>, <B>wxDouble </B><I>yc</I>, 
+<B>wxDouble </B><I>radius</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>oColor</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>cColor</I>) <B>const</B><P>
+Creates a native brush, having a radial gradient originating at (xo,yc) with color oColour and ends on a circle around (xc,yc) with radius r and color cColour<P>
+
+<HR>
+<A NAME="wxgraphicscontextcreatelineargradientbrush"></A>
+<H3>wxGraphicsContext::CreateLinearGradientBrush</H3>
+<P>
+<B><A HREF="wx_wxgraphicsbrush.html#wxgraphicsbrush">wxGraphicsBrush</A></B> </B> <B>CreateLinearGradientBrush</B>(<B>wxDouble </B><I>x1</I>, <B>wxDouble </B><I>y1</I>, <B>wxDouble </B><I>x2</I>, <B>wxDouble </B><I>y2</I>, 
+<B>const </B><I>wxColour&amp;c1</I>, <B>const </B><I>wxColour&amp;c2</I>) <B>const</B><P>
+Creates a native brush, having a linear gradient, starting at (x1,y1) with color c1 to (x2,y2) with color c2<P>
+
+<HR>
+<A NAME="wxgraphicscontextcreatefont"></A>
+<H3>wxGraphicsContext::CreateFont</H3>
+<P>
+<B><A HREF="wx_wxgraphicsfont.html#wxgraphicsfont">wxGraphicsFont</A></B> </B> <B>CreateFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>col = *wxBLACK</I>) <B>const</B><P>
+Creates a native graphics font from a wxFont and a text colour.<P>
+
+<HR>
+<A NAME="wxgraphicscontextcreatematrix"></A>
+<H3>wxGraphicsContext::CreateMatrix</H3>
+<P>
+<B><A HREF="wx_wxgraphicsmatrix.html#wxgraphicsmatrix">wxGraphicsMatrix</A></B> </B> <B>CreateMatrix</B>(<B>wxDouble </B><I>a = 1.0</I>, <B>wxDouble </B><I>b = 0.0</I>, <B>wxDouble </B><I>c = 0.0</I>, <B>wxDouble </B><I>d = 1.0</I>, 
+<B>wxDouble </B><I>tx = 0.0</I>, <B>wxDouble </B><I>ty = 0.0</I>) <B>const</B><P>
+Creates a native affine transformation matrix from the passed in values. The defaults result in an identity matrix.<P>
+
+<HR>
+<A NAME="wxgraphicscontextcreatepath"></A>
+<H3>wxGraphicsContext::CreatePath</H3>
+<P>
+<B><A HREF="wx_wxgraphicspath.html#wxgraphicspath">wxGraphicsPath</A></B> </B> <B>CreatePath</B>() <B>const</B><P>
+Creates a native graphics path which is initially empty.<P>
+
+<HR>
+<A NAME="wxgraphicscontextclip"></A>
+<H3>wxGraphicsContext::Clip</H3>
+<P>
+<B>void</B> <B>Clip</B>(<B>const <A HREF="wx_wxregion.html#wxregion">wxRegion</A>& </B></B><I>region</I>)<P>
+Clips drawings to the region, combined to current clipping region<P>
+<B>void</B> <B>Clip</B>(<B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>wxDouble </B><I>w</I>, <B>wxDouble </B><I>h</I>)<P>
+Clips drawings to the rectangle.<P>
+
+<HR>
+<A NAME="wxgraphicscontextresetclip"></A>
+<H3>wxGraphicsContext::ResetClip</H3>
+<P>
+<B>void</B> <B>ResetClip</B>()<P>
+Resets the clipping to original shape.<P>
+
+<HR>
+<A NAME="wxgraphicscontextdrawbitmap"></A>
+<H3>wxGraphicsContext::DrawBitmap</H3>
+<P>
+<B>void</B> <B>DrawBitmap</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bmp</I>, <B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>wxDouble </B><I>w</I>, <B>wxDouble </B><I>h</I>)<P>
+Draws the bitmap. In case of a mono bitmap, this is treated as a mask and the current brushed is used for filling.<P>
+
+<HR>
+<A NAME="wxgraphicscontextdrawellipse"></A>
+<H3>wxGraphicsContext::DrawEllipse</H3>
+<P>
+<B>void</B> <B>DrawEllipse</B>(<B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>wxDouble </B><I>w</I>, <B>wxDouble </B><I>h</I>)<P>
+Draws an ellipse.<P>
+
+<HR>
+<A NAME="wxgraphicscontextdrawicon"></A>
+<H3>wxGraphicsContext::DrawIcon</H3>
+<P>
+<B>void</B> <B>DrawIcon</B>(<B>const <A HREF="wx_wxicon.html#wxicon">wxIcon</A>& </B></B><I>icon</I>, <B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>wxDouble </B><I>w</I>, <B>wxDouble </B><I>h</I>)<P>
+Draws the icon.<P>
+
+
+<HR>
+<A NAME="wxgraphicscontextdrawlines"></A>
+<H3>wxGraphicsContext::DrawLines</H3>
+<P>
+<B>void</B> <B>DrawLines</B>(<B>size_t </B><I>n</I>, <B>const wxPoint2DDouble* </B><I>points</I>, <B>int </B><I>fillStyle = wxODDEVEN_RULE</I>)<P>
+Draws a polygon.<P>
+
+
+<HR>
+<A NAME="wxgraphicscontextdrawpath"></A>
+<H3>wxGraphicsContext::DrawPath</H3>
+<P>
+<B>void</B> <B>DrawPath</B>(<B>const <A HREF="wx_wxgraphicspath.html#wxgraphicspath">wxGraphicsPath</A>& </B></B><I>path</I>, <B>int </B><I>fillStyle = wxODDEVEN_RULE</I>)<P>
+Draws the path by first filling and then stroking.<P>
+
+
+<HR>
+<A NAME="wxgraphicscontextdrawrectangle"></A>
+<H3>wxGraphicsContext::DrawRectangle</H3>
+<P>
+<B>void</B> <B>DrawRectangle</B>(<B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>wxDouble </B><I>w</I>, <B>wxDouble </B><I>h</I>)<P>
+Draws a rectangle.<P>
+
+
+<HR>
+<A NAME="wxgraphicscontextdrawroundedrectangle"></A>
+<H3>wxGraphicsContext::DrawRoundedRectangle</H3>
+<P>
+<B>void</B> <B>DrawRoundedRectangle</B>(<B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>wxDouble </B><I>w</I>, <B>wxDouble </B><I>h</I>, <B>wxDouble </B><I>radius</I>)<P>
+Draws a rounded rectangle.<P>
+
+<HR>
+<A NAME="wxgraphicscontextdrawtext"></A>
+<H3>wxGraphicsContext::DrawText</H3>
+<P>
+<B>void</B> <B>DrawText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>, <B>wxDouble </B><I>angle</I>)<P>
+<B>void</B> <B>DrawText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>wxDouble </B><I>x</I>, <B>wxDouble </B><I>y</I>)<P>
+Draws a text at the defined position, at the given angle.<P>
+
+<HR>
+<A NAME="wxgraphicscontextfillpath"></A>
+<H3>wxGraphicsContext::FillPath</H3>
+<P>
+<B>void</B> <B>FillPath</B>(<B>const <A HREF="wx_wxgraphicspath.html#wxgraphicspath">wxGraphicsPath</A>& </B></B><I>path</I>, <B>int </B><I>fillStyle = wxODDEVEN_RULE</I>)<P>
+Fills the path with the current brush.<P>
+
+<HR>
+<A NAME="wxgraphicscontextstrokepath"></A>
+<H3>wxGraphicsContext::StrokePath</H3>
+<P>
+<B>void</B> <B>StrokePath</B>(<B>const <A HREF="wx_wxgraphicspath.html#wxgraphicspath">wxGraphicsPath</A>& </B></B><I>path</I>)<P>
+Strokes along a path with the current pen.<P>
+
+
+<HR>
+<A NAME="wxgraphicscontextgetnativecontext"></A>
+<H3>wxGraphicsContext::GetNativeContext</H3>
+<P>
+<B>void *</B> <B>GetNativeContext</B>()<P>
+Returns the native context (CGContextRef for Core Graphics, Graphics pointer for GDIPlus and cairo_t pointer for cairo).<P>
+
+<HR>
+<A NAME="wxgraphicscontextgetpartialtextextents"></A>
+<H3>wxGraphicsContext::GetPartialTextExtents</H3>
+<P>
+<B>void</B> <B>GetPartialTextExtents</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>wxArrayDouble&amp; </B><I>widths</I>) <B>const</B><P>
+Fills the <I>widths</I> array with the widths from the beginning of 
+<I>text</I> to the corresponding character of <I>text</I>.  <P>
+
+<HR>
+<A NAME="wxgraphicscontextgettextextent"></A>
+<H3>wxGraphicsContext::GetTextExtent</H3>
+<P>
+<B>void</B> <B>GetTextExtent</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>wxDouble* </B><I>width</I>, <B>wxDouble* </B><I>height</I>, <B>wxDouble* </B><I>descent</I>, 
+<B>wxDouble* </B><I>externalLeading</I>) <B>const</B><P>
+Gets the dimensions of the string using the currently selected font.
+<I>string</I> is the text string to measure, <I>w</I> and <I>h</I> are
+the total width and height respectively, <I>descent</I> is the
+dimension from the baseline of the font to the bottom of the
+descender, and <I>externalLeading</I> is any extra vertical space added
+to the font by the font designer (usually is zero).<P>
+
+<HR>
+<A NAME="wxgraphicscontextrotate"></A>
+<H3>wxGraphicsContext::Rotate</H3>
+<P>
+<B>void</B> <B>Rotate</B>(<B>wxDouble </B><I>angle</I>)<P>
+Rotates the current transformation matrix (radians),<P>
+
+<HR>
+<A NAME="wxgraphicscontextscale"></A>
+<H3>wxGraphicsContext::Scale</H3>
+<P>
+<B>void</B> <B>Scale</B>(<B>wxDouble </B><I>xScale</I>, <B>wxDouble </B><I>yScale</I>)<P>
+Scales the current transformation matrix.<P>
+
+<HR>
+<A NAME="wxgraphicscontexttranslate"></A>
+<H3>wxGraphicsContext::Translate</H3>
+<P>
+<B>void</B> <B>Translate</B>(<B>wxDouble </B><I>dx</I>, <B>wxDouble </B><I>dy</I>)<P>
+Translates the current transformation matrix.<P>
+
+<HR>
+<A NAME="wxgraphicscontextgettransform"></A>
+<H3>wxGraphicsContext::GetTransform</H3>
+<P>
+<B><A HREF="wx_wxgraphicsmatrix.html#wxgraphicsmatrix">wxGraphicsMatrix</A></B> </B> <B>GetTransform</B>() <B>const</B><P>
+Gets the current transformation matrix of this context.<P>
+
+<HR>
+<A NAME="wxgraphicscontextsettransform"></A>
+<H3>wxGraphicsContext::SetTransform</H3>
+<P>
+<B>void</B> <B>SetTransform</B>(<B>const <A HREF="wx_wxgraphicsmatrix.html#wxgraphicsmatrix">wxGraphicsMatrix</A>& </B></B><I>matrix</I>)<P>
+Sets the current transformation matrix of this context<P>
+
+<HR>
+<A NAME="wxgraphicscontextconcattransform"></A>
+<H3>wxGraphicsContext::ConcatTransform</H3>
+<P>
+<B>void</B> <B>ConcatTransform</B>(<B>const <A HREF="wx_wxgraphicsmatrix.html#wxgraphicsmatrix">wxGraphicsMatrix</A>& </B></B><I>matrix</I>)<P>
+Concatenates the passed in transform with the current transform of this context<P>
+
+<HR>
+<A NAME="wxgraphicscontextsetbrush"></A>
+<H3>wxGraphicsContext::SetBrush</H3>
+<P>
+<B>void</B> <B>SetBrush</B>(<B>const <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>& </B></B><I>brush</I>)<P>
+<B>void</B> <B>SetBrush</B>(<B>const <A HREF="wx_wxgraphicsbrush.html#wxgraphicsbrush">wxGraphicsBrush</A>& </B></B><I>brush</I>)<P>
+Sets the brush for filling paths.<P>
+
+<HR>
+<A NAME="wxgraphicscontextsetfont"></A>
+<H3>wxGraphicsContext::SetFont</H3>
+<P>
+<B>void</B> <B>SetFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+
+<B>void</B> <B>SetFont</B>(<B>const <A HREF="wx_wxgraphicsfont.html#wxgraphicsfont">wxGraphicsFont</A>& </B></B><I>font</I>)<P>
+Sets the font for drawing text.<P>
+
+
+<HR>
+<A NAME="wxgraphicscontextsetpen"></A>
+<H3>wxGraphicsContext::SetPen</H3>
+<P>
+<B>void</B> <B>SetPen</B>(<B>const <A HREF="wx_wxgraphicspen.html#wxgraphicspen">wxGraphicsPen</A>& </B></B><I>pen</I>)<P>
+<B>void</B> <B>SetPen</B>(<B>const <A HREF="wx_wxpen.html#wxpen">wxPen</A>& </B></B><I>pen</I>)<P>
+Sets the pen used for stroking.<P>
+
+<HR>
+<A NAME="wxgraphicscontextstrokeline"></A>
+<H3>wxGraphicsContext::StrokeLine</H3>
+<P>
+<B>void</B> <B>StrokeLine</B>(<B>wxDouble </B><I>x1</I>, <B>wxDouble </B><I>y1</I>, <B>wxDouble </B><I>x2</I>, <B>wxDouble </B><I>y2</I>)<P>
+Strokes a single line.<P>
+
+<HR>
+<A NAME="wxgraphicscontextstrokelines"></A>
+<H3>wxGraphicsContext::StrokeLines</H3>
+<P>
+<B>void</B> <B>StrokeLines</B>(<B>size_t </B><I>n</I>, <B>const wxPoint2DDouble* </B><I>beginPoints</I>, <B>const wxPoint2DDouble* </B><I>endPoints</I>)<P>
+<B>void</B> <B>StrokeLines</B>(<B>size_t </B><I>n</I>, <B>const wxPoint2DDouble* </B><I>points</I>)<P>
+Stroke disconnected lines from begin to end points, fastest method available for this purpose.<P>
+
+</FONT></BODY></HTML>

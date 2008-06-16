@@ -7,17 +7,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: laywin.h,v 1.27.2.1 2006/01/05 23:16:29 MR Exp $
+// RCS-ID:      $Id: laywin.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_LAYWIN_H_G_
 #define _WX_LAYWIN_H_G_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "laywin.h"
-#endif
 
 #if wxUSE_SASH
     #include "wx/sashwin.h"
@@ -169,11 +165,11 @@ public:
         const wxSize& size = wxDefaultSize, long style = wxSW_3D|wxCLIP_CHILDREN, const wxString& name = wxT("layoutWindow"));
 
 // Accessors
-    inline wxLayoutAlignment GetAlignment() const { return m_alignment; };
-    inline wxLayoutOrientation GetOrientation() const { return m_orientation; };
+    inline wxLayoutAlignment GetAlignment() const { return m_alignment; }
+    inline wxLayoutOrientation GetOrientation() const { return m_orientation; }
 
-    inline void SetAlignment(wxLayoutAlignment align) { m_alignment = align; };
-    inline void SetOrientation(wxLayoutOrientation orient) { m_orientation = orient; };
+    inline void SetAlignment(wxLayoutAlignment align) { m_alignment = align; }
+    inline void SetOrientation(wxLayoutOrientation orient) { m_orientation = orient; }
 
     // Give the window default dimensions
     inline void SetDefaultSize(const wxSize& size) { m_defaultSize = size; }
@@ -200,8 +196,8 @@ private:
 
 #endif // wxUSE_SASH
 
-class WXDLLEXPORT wxMDIParentFrame;
-class WXDLLEXPORT wxFrame;
+class WXDLLIMPEXP_FWD_CORE wxMDIParentFrame;
+class WXDLLIMPEXP_FWD_CORE wxFrame;
 
 // This class implements the layout algorithm
 class WXDLLIMPEXP_ADV wxLayoutAlgorithm: public wxObject

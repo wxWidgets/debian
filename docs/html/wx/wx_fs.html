@@ -1,0 +1,125 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFileSystem</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="fs"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxconfigoverview.html#wxconfigoverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_eventhandlingoverview.html#eventhandlingoverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFileSystem</H2>
+<P>
+The wxHTML library uses a <B>virtual file systems</B> mechanism
+similar to the one used in Midnight Commander, Dos Navigator,
+FAR or almost any modern file manager. It allows the user to access
+data stored in archives as if they were ordinary files. On-the-fly
+generated files that exist only in memory are also supported.<P>
+<B><FONT COLOR="#FF0000">Classes</FONT></B><P>
+Three classes are used in order to provide virtual file systems mechanism:<P>
+<UL>
+
+<LI> The <A HREF="wx_wxfsfile.html#wxfsfile">wxFSFile</A> class provides information
+about opened file (name, input stream, mime type and anchor).
+<LI> The <A HREF="wx_wxfilesystem.html#wxfilesystem">wxFileSystem</A> class is the interface.
+Its main methods are ChangePathTo() and OpenFile(). This class
+is most often used by the end user.
+<LI> The <A HREF="wx_wxfilesystemhandler.html#wxfilesystemhandler">wxFileSystemHandler</A> is the core
+of virtual file systems mechanism. You can derive your own handler and pass it to
+the VFS mechanism. You can derive your own handler and pass it to
+wxFileSystem's AddHandler() method. In the new handler you only need to
+override the OpenFile() and CanOpen() methods.
+</UL>
+<P>
+<B><FONT COLOR="#FF0000">Locations</FONT></B><P>
+Locations (aka filenames aka addresses) are constructed from four parts:<P>
+<UL>
+
+<LI> <B>protocol</B> - handler can recognize if it is able to open a
+file by checking its protocol. Examples are "http", "file" or "ftp".
+<LI> <B>right location</B> - is the name of file within the protocol.
+In "http://www.wxwidgets.org/index.html" the right location is "//www.wxwidgets.org/index.html".
+<LI> <B>anchor</B> - an anchor is optional and is usually not present.
+In "index.htm#chapter2" the anchor is "chapter2".
+<LI> <B>left location</B> - this is usually an empty string. 
+It is used by 'local' protocols such as ZIP.
+See Combined Protocols paragraph for details.
+</UL>
+<P>
+<B><FONT COLOR="#FF0000">Combined Protocols</FONT></B><P>
+The left location precedes the protocol in the URL string. 
+It is not used by global protocols like HTTP but it becomes handy when nesting
+protocols - for example you may want to access files in a ZIP archive:<P>
+file:archives/cpp_doc.zip#zip:reference/fopen.htm#syntax<P>
+In this example, the protocol is "zip", right location is
+"reference/fopen.htm", anchor is "syntax" and left location
+is "file:archives/cpp_doc.zip". <P>
+There are <B>two</B> protocols used in this example: "zip" and "file".<P>
+<B><FONT COLOR="#FF0000">File Systems Included in wxHTML</FONT></B><P>
+The following virtual file system handlers are part of wxWidgets so far:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxArchiveFSHandler</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A handler for archives such as zip
+and tar. Include file is &lt;wx/fs_arc.h&gt;. URLs examples:
+"archive.zip#zip:filename", "archive.tar.gz#gzip:#tar:filename".
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFilterFSHandler</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A handler for compression schemes such
+as gzip. Header is &lt;wx/fs_filter.h&gt;. URLs are in the form, e.g.:
+"document.ps.gz#gzip:".
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxInternetFSHandler</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A handler for accessing documents
+via HTTP or FTP protocols. Include file is &lt;wx/fs_inet.h&gt;.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxMemoryFSHandler</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This handler allows you to access 
+data stored in memory (such as bitmaps) as if they were regular files.
+See <A HREF="wx_wxmemoryfshandler.html#wxmemoryfshandler">wxMemoryFSHandler documentation</A> for details.
+Include file is &lt;wx/fs_mem.h&gt;. URL is prefixed with memory:, e.g. 
+"memory:myfile.htm"
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+In addition, wxFileSystem itself can access local files.<P>
+
+<B><FONT COLOR="#FF0000">Initializing file system handlers</FONT></B><P>
+Use <A HREF="wx_wxfilesystem.html#wxfilesystemaddhandler">wxFileSystem::AddHandler</A> to initialize
+a handler, for example:<P>
+<PRE>
+#include &lt;wx/fs_mem.h&gt;
+
+...
+
+bool MyApp::OnInit()
+{
+    wxFileSystem::AddHandler(new wxMemoryFSHandler);
+...
+}
+</PRE>
+
+</FONT></BODY></HTML>

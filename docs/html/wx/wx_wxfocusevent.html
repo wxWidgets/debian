@@ -1,0 +1,74 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFocusEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfocusevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxflexgridsizer.html#wxflexgridsizer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfont.html#wxfont"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFocusEvent</H2>
+<P>
+A focus event is sent when a window's focus changes. The window losing focus
+receives a "kill focus'' event while the window gaining it gets a "set
+focus'' one.<P>
+Notice that the set focus event happens both when the user gives focus to the
+window (whether using the mouse or keyboard) and when it is done from the
+program itself using <A HREF="wx_wxwindow.html#wxwindowsetfocus">SetFocus</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a focus event, use these event handler macros to direct input to a member
+function that takes a wxFocusEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SET_FOCUS(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_SET_FOCUS event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_KILL_FOCUS(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_KILL_FOCUS event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxfocuseventctor">wxFocusEvent::wxFocusEvent</A><BR>
+<A HREF="#wxfocuseventgetwindow">wxFocusEvent::GetWindow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfocuseventctor"></A>
+<H3>wxFocusEvent::wxFocusEvent</H3>
+<P>
+<B></B> <B>wxFocusEvent</B>(<B>WXTYPE </B><I>eventType = 0</I>, <B>int </B><I>id = 0</I>)<P>
+Constructor.<P>
+
+
+<HR>
+<A NAME="wxfocuseventgetwindow"></A>
+<H3>wxFocusEvent::GetWindow</H3>
+<P>
+Returns the window associated with this event, that is the window which had the
+focus before for the <TT>wxEVT_SET_FOCUS</TT> event and the window which is
+going to receive focus for the <TT>wxEVT_KILL_FOCUS</TT> one.<P>
+Warning: the window pointer may be <TT>NULL</TT>!<P>
+
+</FONT></BODY></HTML>

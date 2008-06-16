@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-June-1997
-// RCS-ID:      $Id: _validator.i,v 1.6 2004/09/23 20:23:13 RD Exp $
+// RCS-ID:      $Id: _validator.i 43425 2006-11-14 22:03:54Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -63,6 +63,7 @@ public:
     static bool IsSilent();
     static void SetBellOnError(int doIt = true);
 
+    %property(Window, GetWindow, SetWindow, doc="See `GetWindow` and `SetWindow`");
 };
 
 
@@ -78,18 +79,16 @@ IMPLEMENT_DYNAMIC_CLASS(wxPyValidator, wxValidator);
 
 class wxPyValidator : public wxValidator {
 public:
-    %pythonAppend wxPyValidator "
-        self._setCallbackInfo(self, PyValidator, 1)
-        self._setOORInfo(self)"
+    %pythonAppend wxPyValidator "self._setOORInfo(self);"  setCallbackInfo(PyValidator)
+        
     wxPyValidator();
 
-    void _setCallbackInfo(PyObject* self, PyObject* _class, int incref=true);
+    void _setCallbackInfo(PyObject* self, PyObject* _class, int incref=1);
 };
 
 
 
 %immutable;
-// See also wxPy_ReinitStockObjects in helpers.cpp
 const wxValidator wxDefaultValidator;
 %mutable;
 

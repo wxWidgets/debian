@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _choice.i,v 1.16.2.2 2005/12/29 22:40:22 RD Exp $
+// RCS-ID:      $Id: _choice.i 40964 2006-09-02 19:46:44Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -86,6 +86,10 @@ function.", "");
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+
+    %property(CurrentSelection, GetCurrentSelection, doc="See `GetCurrentSelection`");
+    
 };
 
 //---------------------------------------------------------------------------

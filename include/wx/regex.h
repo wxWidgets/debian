@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder
 // Modified by: VZ at 13.07.01 (integrated to wxWin)
 // Created:     05.02.2000
-// RCS-ID:      $Id: regex.h,v 1.14.4.1 2005/11/27 03:03:48 MW Exp $
+// RCS-ID:      $Id: regex.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) 2000 Karsten Ballüder <ballueder@gmx.net>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,15 +12,11 @@
 #ifndef _WX_REGEX_H_
 #define _WX_REGEX_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "regex.h"
-#endif
-
 #include "wx/defs.h"
 
 #if wxUSE_REGEX
 
-class WXDLLIMPEXP_BASE wxString;
+class WXDLLIMPEXP_FWD_BASE wxString;
 
 // ----------------------------------------------------------------------------
 // constants
@@ -102,11 +98,9 @@ public:
     //
     // may only be called after successful call to Compile()
     bool Matches(const wxChar *text, int flags = 0) const;
-#if wxABI_VERSION >= 20603
     bool Matches(const wxChar *text, int flags, size_t len) const;
     bool Matches(const wxString& text, int flags = 0) const
         { return Matches(text.c_str(), flags, text.length()); }
-#endif
 
     // get the start index and the length of the match of the expression
     // (index 0) or a bracketed subexpression (index != 0)

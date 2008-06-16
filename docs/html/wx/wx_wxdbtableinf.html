@@ -1,0 +1,41 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDbTableInf</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdbtableinf"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdbtable.html#wxdbtable"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdbgridcolinfo.html#wxdbgridcolinfo"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDbTableInf</H2>
+<P>
+<PRE>
+    tableName[0]    = 0;
+    tableType[0]    = 0;
+    tableRemarks[0] = 0;
+    numCols         = 0;
+    pColInf         = NULL;
+</PRE>
+Currently only used by <A HREF="wx_wxdb.html#wxdbgetcatalog">wxDb::GetCatalog</A> internally
+and <A HREF="wx_wxdbinf.html#wxdbinf">wxDbInf</A> class, but may be used in future releases for
+user functions.  Contains information describing the table (Name, type, etc).
+A pointer to a wxDbColInf array instance is included so a program can create a
+<A HREF="wx_wxdbcolinf.html#wxdbcolinf">wxDbColInf</A> array instance (using
+<A HREF="wx_wxdb.html#wxdbgetcolumns">wxDb::GetColumns</A>)
+to maintain all information about the columns of a table in one memory
+structure.<P>
+Eventually, accessor functions will be added for this class<P>
+See the <A HREF="wx_odbcoverview.html#odbcoverview">database classes overview</A> for
+an introduction to using the ODBC classes.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/db.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdbtableinfinitialize">wxDbTableInf::Initialize</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdbtableinfinitialize"></A>
+<H3>wxDbTableInf::Initialize</H3>
+<P>
+Simply initializes all member variables to a cleared state.  Called by
+the constructor automatically.<P>
+
+</FONT></BODY></HTML>

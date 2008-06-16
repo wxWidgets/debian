@@ -1,0 +1,204 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxEncodingConverter</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxencodingconverter"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdynamiclibrarydetails.html#wxdynamiclibrarydetails"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxeraseevent.html#wxeraseevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxEncodingConverter</H2>
+<P>
+This class is capable of converting strings between two
+8-bit encodings/charsets. It can also convert from/to Unicode (but only
+if you compiled wxWidgets with wxUSE_WCHAR_T set to 1). Only a limited subset
+of encodings is supported by wxEncodingConverter:
+<TT>wxFONTENCODING_ISO8859_1..15</TT>, <TT>wxFONTENCODING_CP1250..1257</TT> and 
+<TT>wxFONTENCODING_KOI8</TT>.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+Please use <A HREF="wx_mbconvclasses.html#mbconvclasses">wxMBConv classes</A> instead
+if possible. <A HREF="wx_wxcsconv.html#wxcsconv">wxCSConv</A> has much better support for various
+encodings than wxEncodingConverter. wxEncodingConverter is useful only
+if you rely on <TT>wxCONVERT_SUBSTITUTE</TT> mode of operation (see 
+<A HREF="wx_wxencodingconverter.html#wxencodingconverterinit">Init</A>).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/encconv.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfontmapper.html#wxfontmapper">wxFontMapper</A>, 
+<A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>, 
+<A HREF="wx_nonenglishoverview.html#nonenglishoverview">Writing non-English applications</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxencodingconverterwxencodingconverter">wxEncodingConverter::wxEncodingConverter</A><BR>
+<A HREF="#wxencodingconverterinit">wxEncodingConverter::Init</A><BR>
+<A HREF="#wxencodingconvertercanconvert">wxEncodingConverter::CanConvert</A><BR>
+<A HREF="#wxencodingconverterconvert">wxEncodingConverter::Convert</A><BR>
+<A HREF="#wxencodingconvertergetplatformequivalents">wxEncodingConverter::GetPlatformEquivalents</A><BR>
+<A HREF="#wxencodingconvertergetallequivalents">wxEncodingConverter::GetAllEquivalents</A><BR>
+<P>
+
+<HR>
+<A NAME="wxencodingconverterwxencodingconverter"></A>
+<H3>wxEncodingConverter::wxEncodingConverter</H3>
+<P>
+<B></B> <B>wxEncodingConverter</B>()<P>
+Constructor.<P>
+
+
+<HR>
+<A NAME="wxencodingconverterinit"></A>
+<H3>wxEncodingConverter::Init</H3>
+<P>
+<B>bool</B> <B>Init</B>(<B>wxFontEncoding </B><I>input_enc</I>, <B>wxFontEncoding </B><I>output_enc</I>, <B>int </B><I>method = wxCONVERT_STRICT</I>)<P>
+Initialize conversion. Both output or input encoding may
+be wxFONTENCODING_UNICODE, but only if wxUSE_ENCODING is set to 1.
+All subsequent calls to <A HREF="wx_wxencodingconverter.html#wxencodingconverterconvert">Convert()</A> 
+will interpret its argument
+as a string in <I>input_enc</I> encoding and will output string in 
+<I>output_enc</I> encoding.
+You must call this method before calling Convert. You may call 
+it more than once in order to switch to another conversion.
+<I>Method</I> affects behaviour of Convert() in case input character
+cannot be converted because it does not exist in output encoding:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCONVERT_STRICT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+follow behaviour of GNU Recode -
+just copy unconvertible  characters to output and don't change them 
+(its integer value will stay the same)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCONVERT_SUBSTITUTE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+try some (lossy) substitutions 
+- e.g. replace unconvertible latin capitals with acute by ordinary
+capitals, replace en-dash or em-dash by '-' etc.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Both modes guarantee that output string will have same length
+as input string.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B> <P>
+false if given conversion is impossible, true otherwise
+(conversion may be impossible either if you try to convert
+to Unicode with non-Unicode build of wxWidgets or if input
+or output encoding is not supported.)<P>
+
+
+<HR>
+<A NAME="wxencodingconvertercanconvert"></A>
+<H3>wxEncodingConverter::CanConvert</H3>
+<P>
+<B>static bool</B> <B>CanConvert</B>(<B>wxFontEncoding </B><I>encIn</I>, <B>wxFontEncoding </B><I>encOut</I>)<P>
+Return true if (any text in) multibyte encoding <I>encIn</I> can be converted to
+another one (<I>encOut</I>) losslessly.<P>
+Do not call this method with <TT>wxFONTENCODING_UNICODE</TT> as either
+parameter, it doesn't make sense (always works in one sense and always depends
+on the text to convert in the other).<P>
+
+
+<HR>
+<A NAME="wxencodingconverterconvert"></A>
+<H3>wxEncodingConverter::Convert</H3>
+<P>
+<B>bool</B> <B>Convert</B>(<B>const char* </B><I>input</I>, <B>char* </B><I>output</I>) <B>const</B><P>
+<B>bool</B> <B>Convert</B>(<B>const wchar_t* </B><I>input</I>, <B>wchar_t* </B><I>output</I>) <B>const</B><P>
+<B>bool</B> <B>Convert</B>(<B>const char* </B><I>input</I>, <B>wchar_t* </B><I>output</I>) <B>const</B><P>
+<B>bool</B> <B>Convert</B>(<B>const wchar_t* </B><I>input</I>, <B>char* </B><I>output</I>) <B>const</B><P>
+Convert input string according to settings passed to
+<A HREF="wx_wxencodingconverter.html#wxencodingconverterinit">Init</A> and writes the result to <I>output</I>.<P>
+<B>bool</B> <B>Convert</B>(<B>char* </B><I>str</I>) <B>const</B><P>
+<B>bool</B> <B>Convert</B>(<B>wchar_t* </B><I>str</I>) <B>const</B><P>
+Convert input string according to settings passed to
+<A HREF="wx_wxencodingconverter.html#wxencodingconverterinit">Init</A> in-place, i.e. write the result to the
+same memory area.<P>
+All of the versions above return <TT>true</TT> if the conversion was lossless and
+<TT>false</TT> if at least one of the characters couldn't be converted and was replaced
+with <TT>'?'</TT> in the output. Note that if <TT>wxCONVERT_SUBSTITUTE</TT> was
+passed to <A HREF="wx_wxencodingconverter.html#wxencodingconverterinit">Init</A>, substitution is considered
+lossless operation.<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>Convert</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>input</I>) <B>const</B><P>
+Convert wxString and return new wxString object.<P>
+<B><FONT COLOR="#FF0000">Notes</FONT></B><P>
+You must call <A HREF="wx_wxencodingconverter.html#wxencodingconverterinit">Init</A> before using this method!<P>
+<TT>wchar_t</TT> versions of the method are not available if wxWidgets was compiled
+with <TT>wxUSE_WCHAR_T</TT> set to 0.<P>
+
+
+<HR>
+<A NAME="wxencodingconvertergetplatformequivalents"></A>
+<H3>wxEncodingConverter::GetPlatformEquivalents</H3>
+<P>
+<B>static wxFontEncodingArray</B> <B>GetPlatformEquivalents</B>(<B>wxFontEncoding </B><I>enc</I>, <B>int </B><I>platform = wxPLATFORM_CURRENT</I>)<P>
+Return equivalents for given font that are used
+under given platform. Supported platforms:<P>
+<UL>
+
+<LI> wxPLATFORM_UNIX
+<LI> wxPLATFORM_WINDOWS
+<LI> wxPLATFORM_OS2
+<LI> wxPLATFORM_MAC
+<LI> wxPLATFORM_CURRENT
+</UL>
+<P>
+wxPLATFORM_CURRENT means the platform this binary was compiled for.<P>
+Examples:<P>
+<PRE>
+current platform   enc          returned value
+----------------------------------------------
+unix            CP1250             {ISO8859_2}
+unix         ISO8859_2             {ISO8859_2}
+windows      ISO8859_2                {CP1250}
+unix            CP1252  {ISO8859_1,ISO8859_15}
+</PRE>
+Equivalence is defined in terms of convertibility:
+two encodings are equivalent if you can convert text between
+then without losing information (it may - and will - happen
+that you lose special chars like quotation marks or em-dashes
+but you shouldn't lose any diacritics and language-specific
+characters when converting between equivalent encodings).<P>
+Remember that this function does <B>NOT</B> check for presence of
+fonts in system. It only tells you what are most suitable
+encodings. (It usually returns only one encoding.)<P>
+<B><FONT COLOR="#FF0000">Notes</FONT></B><P>
+<UL>
+
+<LI> Note that argument <I>enc</I> itself may be present in the returned array,
+so that you can, as a side-effect, detect whether the
+encoding is native for this platform or not.
+<LI> <A HREF="wx_wxencodingconverter.html#wxencodingconverterconvert">Convert</A> is not limited to 
+converting between equivalent encodings, it can convert between two arbitrary
+encodings.
+<LI> If <I>enc</I> is present in the returned array, then it is <B>always</B> the first
+item of it.
+<LI> Please note that the returned array may contain no items at all.
+</UL>
+<P>
+
+
+<HR>
+<A NAME="wxencodingconvertergetallequivalents"></A>
+<H3>wxEncodingConverter::GetAllEquivalents</H3>
+<P>
+<B>static wxFontEncodingArray</B> <B>GetAllEquivalents</B>(<B>wxFontEncoding </B><I>enc</I>)<P>
+Similar to 
+<A HREF="wx_wxencodingconverter.html#wxencodingconvertergetplatformequivalents">GetPlatformEquivalents</A>, 
+but this one will return ALL 
+equivalent encodings, regardless of the platform, and including itself.<P>
+This platform's encodings are before others in the array. And again, if <I>enc</I> is in the array,
+it is the very first item in it.<P>
+
+</FONT></BODY></HTML>

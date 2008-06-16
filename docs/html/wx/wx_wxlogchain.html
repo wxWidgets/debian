@@ -1,0 +1,105 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxLogChain</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlogchain"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlog.html#wxlog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxloggui.html#wxloggui"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxLogChain</H2>
+<P>
+This simple class allows to chain log sinks, that is to install a new sink but
+keep passing log messages to the old one instead of replacing it completely as
+<A HREF="wx_wxlog.html#wxlogsetactivetarget">SetActiveTarget</A> does.<P>
+It is especially useful when you want to divert the logs somewhere (for
+example to a file or a log window) but also keep showing the error messages
+using the standard dialogs as <A HREF="wx_wxlogoverview.html#wxlogoverview">wxLogGui</A> does by default.<P>
+Example of usage:<P>
+<PRE>
+wxLogChain *logChain = new wxLogChain(new wxLogStderr);
+
+// all the log messages are sent to stderr and also processed as usually
+...
+
+// don't delete logChain directly as this would leave a dangling
+// pointer as active log target, use SetActiveTarget() instead
+delete wxLog::SetActiveTarget(...something else or NULL...);
+
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxlog.html#wxlog">wxLog</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/log.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxlogchainctor">wxLogChain::wxLogChain</A><BR>
+<A HREF="#wxlogchaindtor">wxLogChain::~wxLogChain</A><BR>
+<A HREF="#wxlogchaindetacholdlog">wxLogChain::DetachOldLog</A><BR>
+<A HREF="#wxlogchaingetoldlog">wxLogChain::GetOldLog</A><BR>
+<A HREF="#wxlogchainispassingmessages">wxLogChain::IsPassingMessages</A><BR>
+<A HREF="#wxlogchainpassmessages">wxLogChain::PassMessages</A><BR>
+<A HREF="#wxlogchainsetlog">wxLogChain::SetLog</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlogchainctor"></A>
+<H3>wxLogChain::wxLogChain</H3>
+<P>
+<B></B> <B>wxLogChain</B>(<B><A HREF="wx_wxlog.html#wxlog">wxLog</A> *</B></B><I>logger</I>)<P>
+Sets the specified <TT>logger</TT> (which may be <TT>NULL</TT>) as the default log
+target but the log messages are also passed to the previous log target if any.<P>
+
+<HR>
+<A NAME="wxlogchaindtor"></A>
+<H3>wxLogChain::~wxLogChain</H3>
+<P>
+<B></B> <B>~wxLogChain</B>()<P>
+Destroys the previous log target.<P>
+
+<HR>
+<A NAME="wxlogchaindetacholdlog"></A>
+<H3>wxLogChain::DetachOldLog</H3>
+<P>
+<B>void</B> <B>DetachOldLog</B>()<P>
+Detaches the old log target so it won't be destroyed when the wxLogChain object
+is destroyed.<P>
+
+<HR>
+<A NAME="wxlogchaingetoldlog"></A>
+<H3>wxLogChain::GetOldLog</H3>
+<P>
+<B><A HREF="wx_wxlog.html#wxlog">wxLog</A> *</B> </B> <B>GetOldLog</B>() <B>const</B><P>
+Returns the pointer to the previously active log target (which may be <TT>
+NULL</TT>).<P>
+
+<HR>
+<A NAME="wxlogchainispassingmessages"></A>
+<H3>wxLogChain::IsPassingMessages</H3>
+<P>
+<B>bool</B> <B>IsPassingMessages</B>() <B>const</B><P>
+Returns <TT>true</TT> if the messages are passed to the previously active log
+target (default) or <TT>false</TT> if <A HREF="wx_wxlogchain.html#wxlogchainpassmessages">PassMessages</A>
+had been called.<P>
+
+<HR>
+<A NAME="wxlogchainpassmessages"></A>
+<H3>wxLogChain::PassMessages</H3>
+<P>
+<B>void</B> <B>PassMessages</B>(<B>bool </B><I>passMessages</I>)<P>
+By default, the log messages are passed to the previously active log target.
+Calling this function with <TT>false</TT> parameter disables this behaviour
+(presumably temporarily, as you shouldn't use wxLogChain at all otherwise) and
+it can be reenabled by calling it again with <I>passMessages</I> set to <TT>
+true</TT>.<P>
+
+<HR>
+<A NAME="wxlogchainsetlog"></A>
+<H3>wxLogChain::SetLog</H3>
+<P>
+<B>void</B> <B>SetLog</B>(<B><A HREF="wx_wxlog.html#wxlog">wxLog</A> *</B></B><I>logger</I>)<P>
+Sets another log target to use (may be <TT>NULL</TT>). The log target specified
+in the <A HREF="wx_wxlogchain.html#wxlogchainctor">constructor</A> or in a previous call to
+this function is deleted.<P>
+This doesn't change the old log target value (the one the messages are
+forwarded to) which still remains the same as was active when wxLogChain
+object was created.<P>
+
+</FONT></BODY></HTML>

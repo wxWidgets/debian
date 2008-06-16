@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     28/6/2000
-// RCS-ID:      $Id: splash.h,v 1.11.2.1 2005/09/25 20:46:23 MW Exp $
+// RCS-ID:      $Id: splash.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_SPLASH_H_
 #define _WX_SPLASH_H_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "splash.h"
-#endif
 
 #include "wx/bitmap.h"
 #include "wx/timer.h"
@@ -47,7 +43,7 @@ public:
                    const wxPoint& pos = wxDefaultPosition,
                    const wxSize& size = wxDefaultSize,
                    long style = wxSIMPLE_BORDER|wxFRAME_NO_TASKBAR|wxSTAY_ON_TOP);
-    ~wxSplashScreen();
+    virtual ~wxSplashScreen();
 
     void OnCloseWindow(wxCloseEvent& event);
     void OnNotify(wxTimerEvent& event);

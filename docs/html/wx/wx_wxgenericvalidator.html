@@ -1,0 +1,90 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGenericValidator</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgenericvalidator"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgenericdirctrl.html#wxgenericdirctrl"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxglcanvas.html#wxglcanvas"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGenericValidator</H2>
+<P>
+wxGenericValidator performs data transfer (but not validation or filtering) for the following
+basic controls: wxButton, wxCheckBox, wxListBox, wxStaticText, wxRadioButton, wxRadioBox,
+wxChoice, wxComboBox, wxGauge, wxSlider, wxScrollBar, wxSpinButton, wxTextCtrl, wxCheckListBox.<P>
+It checks the type of the window and uses an appropriate type for that window. For example,
+wxButton and wxTextCtrl transfer data to and from a wxString variable; wxListBox uses a
+wxArrayInt; wxCheckBox uses a bool.<P>
+For more information, please see <A HREF="wx_validatoroverview.html#validatoroverview">Validator overview</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/valgen.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_validatoroverview.html#validatoroverview">Validator overview</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>,
+<A HREF="wx_wxtextvalidator.html#wxtextvalidator">wxTextValidator</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgenericvalidatorctor">wxGenericValidator::wxGenericValidator</A><BR>
+<A HREF="#wxgenericvalidatordtor">wxGenericValidator::~wxGenericValidator</A><BR>
+<A HREF="#wxgenericvalidatorclone">wxGenericValidator::Clone</A><BR>
+<A HREF="#wxgenericvalidatortransferfromwindow">wxGenericValidator::TransferFromWindow</A><BR>
+<A HREF="#wxgenericvalidatortransfertowindow">wxGenericValidator::TransferToWindow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgenericvalidatorctor"></A>
+<H3>wxGenericValidator::wxGenericValidator</H3>
+<P>
+<B></B> <B>wxGenericValidator</B>(<B>const <A HREF="wx_wxgenericvalidator.html#wxgenericvalidator">wxGenericValidator</A>&</B></B><I> validator</I>)<P>
+Copy constructor.<P>
+<B></B> <B>wxGenericValidator</B>(<B>bool*</B><I> valPtr</I>)<P>
+Constructor taking a bool pointer. This will be used for wxCheckBox and wxRadioButton.<P>
+<B></B> <B>wxGenericValidator</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>*</B></B><I> valPtr</I>)<P>
+Constructor taking a wxString pointer. This will be used for wxButton, wxComboBox, wxStaticText,
+wxTextCtrl.<P>
+<B></B> <B>wxGenericValidator</B>(<B>int*</B><I> valPtr</I>)<P>
+Constructor taking an integer pointer. This will be used for wxGauge, wxScrollBar, wxRadioBox, wxSpinButton,
+wxChoice.<P>
+<B></B> <B>wxGenericValidator</B>(<B>wxArrayInt*</B><I> valPtr</I>)<P>
+Constructor taking a wxArrayInt pointer. This will be used for wxListBox, wxCheckListBox.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>validator</I><UL><UL>
+Validator to copy.</UL></UL>
+<P>
+<I>valPtr</I><UL><UL>
+A pointer to a variable that contains the value. This variable
+should have a lifetime equal to or longer than the validator lifetime (which is usually
+determined by the lifetime of the window).</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxgenericvalidatordtor"></A>
+<H3>wxGenericValidator::~wxGenericValidator</H3>
+<P>
+<B></B> <B>~wxGenericValidator</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxgenericvalidatorclone"></A>
+<H3>wxGenericValidator::Clone</H3>
+<P>
+<B>virtual <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>*</B> </B> <B>Clone</B>() <B>const</B><P>
+Clones the generic validator using the copy constructor.<P>
+
+<HR>
+<A NAME="wxgenericvalidatortransferfromwindow"></A>
+<H3>wxGenericValidator::TransferFromWindow</H3>
+<P>
+<B>virtual bool</B> <B>TransferFromWindow</B>()<P>
+Transfers the value from the window to the appropriate data type.<P>
+
+<HR>
+<A NAME="wxgenericvalidatortransfertowindow"></A>
+<H3>wxGenericValidator::TransferToWindow</H3>
+<P>
+<B>virtual bool</B> <B>TransferToWindow</B>()<P>
+Transfers the value to the window.<P>
+
+</FONT></BODY></HTML>

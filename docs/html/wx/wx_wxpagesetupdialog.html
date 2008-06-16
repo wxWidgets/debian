@@ -1,0 +1,77 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPageSetupDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxpagesetupdialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxoutputstream.html#wxoutputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPageSetupDialog</H2>
+<P>
+This class represents the page setup common dialog. In MSW, the page setup
+dialog is standard from Windows 95 on, replacing the print setup dialog (which
+is retained in Windows and wxWidgets for backward compatibility). On Windows 95
+and NT 4.0 and above, the page setup dialog is native to the windowing system,
+otherwise it is emulated.<P>
+The page setup dialog contains controls for paper size (A4, A5 etc.),
+orientation (landscape or portrait), and controls for setting left, top, right
+and bottom margin sizes in millimetres.<P>
+On Macintosh, the native page setup dialog is used, which lets you select paper
+size and orientation but it does not let you change the page margins.<P>
+On other platforms, a generic dialog is used.<P>
+When the dialog has been closed, you need to query the
+<A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A> object associated with
+the dialog.<P>
+Note that the OK and Cancel buttons do not destroy the dialog; this must be done
+by the application.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/printdlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_printingoverview.html#printingoverview">Printing framework overview</A>, 
+<A HREF="wx_wxprintdialog.html#wxprintdialog">wxPrintDialog</A>, 
+<A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxpagesetupdialogctor">wxPageSetupDialog::wxPageSetupDialog</A><BR>
+<A HREF="#wxpagesetupdialogdtor">wxPageSetupDialog::~wxPageSetupDialog</A><BR>
+<A HREF="#wxpagesetupdialoggetpagesetupdata">wxPageSetupDialog::GetPageSetupData</A><BR>
+<A HREF="#wxpagesetupdialogshowmodal">wxPageSetupDialog::ShowModal</A><BR>
+<P>
+
+<HR>
+<A NAME="wxpagesetupdialogctor"></A>
+<H3>wxPageSetupDialog::wxPageSetupDialog</H3>
+<P>
+<B></B> <B>wxPageSetupDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B><A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A>* </B></B><I>data = NULL</I>)<P>
+Constructor. Pass a parent window, and optionally a pointer to a block of page setup
+data, which will be copied to the print dialog's internal data.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdtor"></A>
+<H3>wxPageSetupDialog::~wxPageSetupDialog</H3>
+<P>
+<B></B> <B>~wxPageSetupDialog</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxpagesetupdialoggetpagesetupdata"></A>
+<H3>wxPageSetupDialog::GetPageSetupData</H3>
+<P>
+<B><A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A>&</B> </B> <B>GetPageSetupData</B>()<P>
+Returns the <A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">page setup data</A> associated with the dialog.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogshowmodal"></A>
+<H3>wxPageSetupDialog::ShowModal</H3>
+<P>
+<B>int</B> <B>ShowModal</B>()<P>
+Shows the dialog, returning wxID_OK if the user pressed OK, and wxID_CANCEL
+otherwise.<P>
+
+</FONT></BODY></HTML>

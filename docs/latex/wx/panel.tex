@@ -41,7 +41,7 @@ By default, a panel has the same colouring as a dialog.
 
 Default constructor.
 
-\func{}{wxPanel}{\param{wxWindow* }{parent}, \param{wxWindowID }{id = $-1$},\rtfsp
+\func{}{wxPanel}{\param{wxWindow* }{parent}, \param{wxWindowID }{id = \texttt{wxID\_ANY}},\rtfsp
 \param{const wxPoint\& }{pos = wxDefaultPosition},\rtfsp
 \param{const wxSize\& }{size = wxDefaultSize},\rtfsp
 \param{long}{ style = wxTAB\_TRAVERSAL},\rtfsp
@@ -79,7 +79,7 @@ Destructor. Deletes any child windows before deleting the physical window.
 
 \membersection{wxPanel::Create}\label{wxpanelcreate}
 
-\func{bool}{Create}{\param{wxWindow* }{parent}, \param{wxWindowID }{id},\rtfsp
+\func{bool}{Create}{\param{wxWindow* }{parent}, \param{wxWindowID }{id = \texttt{wxID\_ANY}},\rtfsp
 \param{const wxPoint\& }{pos = wxDefaultPosition},\rtfsp
 \param{const wxSize\& }{size = wxDefaultSize},\rtfsp
 \param{long}{ style = wxTAB\_TRAVERSAL},\rtfsp
@@ -87,13 +87,6 @@ Destructor. Deletes any child windows before deleting the physical window.
 
 Used for two-step panel construction. See \helpref{wxPanel::wxPanel}{wxpanelctor}\rtfsp
 for details.
-
-\membersection{wxPanel::GetDefaultItem}\label{wxpanelgetdefaultitem}
-
-\constfunc{wxWindow*}{GetDefaultItem}{\void}
-
-Returns a pointer to the button which is the default for this window, or NULL.
-The default button is the one activated by pressing the Enter key.
 
 \membersection{wxPanel::InitDialog}\label{wxpanelinitdialog}
 
@@ -127,17 +120,6 @@ propagate the notification to child windows and controls.
 \wxheading{See also}
 
 \helpref{wxSysColourChangedEvent}{wxsyscolourchangedevent}
-
-
-\membersection{wxPanel::SetDefaultItem}\label{wxpanelsetdefaultitem}
-
-\func{void}{SetDefaultItem}{\param{wxButton }{*btn}}
-
-Changes the default button for the panel.
-
-\wxheading{See also}
-
-\helpref{GetDefaultItem}{wxpanelgetdefaultitem}
 
 
 \membersection{wxPanel::SetFocus}\label{wxpanelsetfocus}

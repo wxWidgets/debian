@@ -1,0 +1,847 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMenu</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmenu"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmemoutputstream.html#wxmemoutputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmenubar.html#wxmenubar"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMenu</H2>
+<P>
+A menu is a popup (or pull down) list of items, one of which may be
+selected before the menu goes away (clicking elsewhere dismisses the
+menu). Menus may be used to construct either menu bars or popup menus.<P>
+A menu item has an integer ID associated with it which can be used to
+identify the selection, or to change the menu item in some way. A menu item
+with a special identifier -1 is a separator item and doesn't have an
+associated command but just makes a separator line appear in the menu.<P>
+<B>NB:</B> Please note that <I>wxID_ABOUT</I> and <I>wxID_EXIT</I> are
+predefined by wxWidgets and have a special meaning since entries
+using these IDs will be taken out of the normal menus under MacOS X
+and will be inserted into the system menu (following the appropriate
+MacOS X interface guideline). On PalmOS <I>wxID_EXIT</I> is disabled according
+to Palm OS Companion guidelines.<P>
+Menu items may be either normal items, check items or radio items. Normal items
+don't have any special properties while the check items have a boolean flag
+associated to them and they show a checkmark in the menu when the flag is set.
+wxWidgets automatically toggles the flag value when the item is clicked and its
+value may be retrieved using either <A HREF="wx_wxmenu.html#wxmenuischecked">IsChecked</A> method
+of wxMenu or wxMenuBar itself or by using 
+<A HREF="wx_wxcommandevent.html#wxcommandeventischecked">wxEvent::IsChecked</A> when you get the menu
+notification for the item in question.<P>
+The radio items are similar to the check items except that all the other items
+in the same radio group are unchecked when a radio item is checked. The radio
+group is formed by a contiguous range of radio items, i.e. it starts at the
+first item of this kind and ends with the first item of a different kind (or
+the end of the menu). Notice that because the radio groups are defined in terms
+of the item positions inserting or removing the items in the menu containing
+the radio items risks to not work correctly. Finally note that radio items
+are not supported under Motif.<P>
+<B><FONT COLOR="#FF0000">Allocation strategy</FONT></B><P>
+All menus except the popup ones must be created on the heap. All menus
+attached to a menubar or to another menu will be deleted by their parent when
+it is deleted. As the frame menubar is deleted by the frame itself, it means
+that normally all menus used are deleted automatically.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/menu.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+If the menu is part of a menubar, then <A HREF="wx_wxmenubar.html#wxmenubar">wxMenuBar</A> event processing is used.<P>
+With a popup menu, there is a variety of ways to handle a menu selection event
+(wxEVT_COMMAND_MENU_SELECTED).<P>
+<OL>
+
+<LI> Derive a new class from wxMenu and define event table entries using the EVT_MENU macro.
+<LI> Set a new event handler for wxMenu, using an object whose class has EVT_MENU entries.
+<LI> Provide EVT_MENU handlers in the window which pops up the menu, or in an ancestor of
+this window.
+<LI> Define a callback of type wxFunction, which you pass to the wxMenu constructor.
+The callback takes a reference to the menu, and a reference to a
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A>. This method is deprecated and should
+not be used in the new code, it is provided for backwards compatibility only.
+</OL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenubar.html#wxmenubar">wxMenuBar</A>, <A HREF="wx_wxwindow.html#wxwindowpopupmenu">wxWindow::PopupMenu</A>,
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A>,
+<A HREF="wx_wxfilehistory.html#wxfilehistory">wxFileHistory (most recently used files menu)</A><P>
+<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxmenuctor">wxMenu::wxMenu</A><BR>
+<A HREF="#wxmenudtor">wxMenu::~wxMenu</A><BR>
+<A HREF="#wxmenuappend">wxMenu::Append</A><BR>
+<A HREF="#wxmenuappendcheckitem">wxMenu::AppendCheckItem</A><BR>
+<A HREF="#wxmenuappendradioitem">wxMenu::AppendRadioItem</A><BR>
+<A HREF="#wxmenuappendseparator">wxMenu::AppendSeparator</A><BR>
+<A HREF="#wxmenuappendsubmenu">wxMenu::AppendSubMenu</A><BR>
+<A HREF="#wxmenubreak">wxMenu::Break</A><BR>
+<A HREF="#wxmenucheck">wxMenu::Check</A><BR>
+<A HREF="#wxmenudelete">wxMenu::Delete</A><BR>
+<A HREF="#wxmenudestroy">wxMenu::Destroy</A><BR>
+<A HREF="#wxmenuenable">wxMenu::Enable</A><BR>
+<A HREF="#wxmenufinditem">wxMenu::FindItem</A><BR>
+<A HREF="#wxmenufinditembyposition">wxMenu::FindItemByPosition</A><BR>
+<A HREF="#wxmenugethelpstring">wxMenu::GetHelpString</A><BR>
+<A HREF="#wxmenugetlabel">wxMenu::GetLabel</A><BR>
+<A HREF="#wxmenugetlabeltext">wxMenu::GetLabelText</A><BR>
+<A HREF="#wxmenugetmenuitemcount">wxMenu::GetMenuItemCount</A><BR>
+<A HREF="#wxmenugetmenuitems">wxMenu::GetMenuItems</A><BR>
+<A HREF="#wxmenugettitle">wxMenu::GetTitle</A><BR>
+<A HREF="#wxmenuinsert">wxMenu::Insert</A><BR>
+<A HREF="#wxmenuinsertcheckitem">wxMenu::InsertCheckItem</A><BR>
+<A HREF="#wxmenuinsertradioitem">wxMenu::InsertRadioItem</A><BR>
+<A HREF="#wxmenuinsertseparator">wxMenu::InsertSeparator</A><BR>
+<A HREF="#wxmenuischecked">wxMenu::IsChecked</A><BR>
+<A HREF="#wxmenuisenabled">wxMenu::IsEnabled</A><BR>
+<A HREF="#wxmenuprepend">wxMenu::Prepend</A><BR>
+<A HREF="#wxmenuprependcheckitem">wxMenu::PrependCheckItem</A><BR>
+<A HREF="#wxmenuprependradioitem">wxMenu::PrependRadioItem</A><BR>
+<A HREF="#wxmenuprependseparator">wxMenu::PrependSeparator</A><BR>
+<A HREF="#wxmenuremove">wxMenu::Remove</A><BR>
+<A HREF="#wxmenusethelpstring">wxMenu::SetHelpString</A><BR>
+<A HREF="#wxmenusetlabel">wxMenu::SetLabel</A><BR>
+<A HREF="#wxmenusettitle">wxMenu::SetTitle</A><BR>
+<A HREF="#wxmenuupdateui">wxMenu::UpdateUI</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmenuctor"></A>
+<H3>wxMenu::wxMenu</H3>
+<P>
+<B></B> <B>wxMenu</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title = ""</I>, <B>long</B><I> style = 0</I>)<P>
+Constructs a wxMenu object.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>title</I><UL><UL>
+A title for the popup menu: the empty string denotes no title.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+If set to <TT>wxMENU_TEAROFF</TT>, the menu will be detachable (wxGTK only).</UL></UL>
+<P>
+<B></B> <B>wxMenu</B>(<B>long</B><I> style</I>)<P>
+Constructs a wxMenu object.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>style</I><UL><UL>
+If set to <TT>wxMENU_TEAROFF</TT>, the menu will be detachable (wxGTK only).</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxmenudtor"></A>
+<H3>wxMenu::~wxMenu</H3>
+<P>
+<B></B> <B>~wxMenu</B>()<P>
+Destructor, destroying the menu.<P>
+Note: under Motif, a popup menu must have a valid parent (the window
+it was last popped up on) when being destroyed. Therefore, make sure
+you delete or re-use the popup menu <I>before</I> destroying the
+parent window. Re-use in this context means popping up the menu on
+a different window from last time, which causes an implicit destruction
+and recreation of internal data structures.<P>
+
+
+<HR>
+<A NAME="wxmenuappend"></A>
+<H3>wxMenu::Append</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>Append</B>(<B>int</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item = ""</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString = ""</I>,
+<B>wxItemKind</B><I> kind = wxITEM_NORMAL</I>)<P>
+Adds a string item to the end of the menu.<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>Append</B>(<B>int</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A> *</B></B><I>subMenu</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString = ""</I>)<P>
+Adds a pull-right submenu to the end of the menu. Append the submenu to the parent
+menu <I>after</I> you have added your menu items, or accelerators may not be
+registered properly.<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>Append</B>(<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B></B><I> menuItem</I>)<P>
+Adds a menu item object. This is the most generic variant of Append() method
+because it may be used for both items (including separators) and submenus and
+because you can also specify various extra properties of a menu item this way,
+such as bitmaps and fonts.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu command identifier.</UL></UL>
+<P>
+<I>item</I><UL><UL>
+The string to appear on the menu item.</UL></UL>
+<P>
+<I>menu</I><UL><UL>
+Pull-right submenu.</UL></UL>
+<P>
+<I>kind</I><UL><UL>
+May be <TT>wxITEM_SEPARATOR</TT>, <TT>wxITEM_NORMAL</TT>, 
+<TT>wxITEM_CHECK</TT> or <TT>wxITEM_RADIO</TT></UL></UL>
+<P>
+<I>helpString</I><UL><UL>
+An optional help string associated with the item.
+By default, the handler for the wxEVT_MENU_HIGHLIGHT event displays
+this string in the status line.</UL></UL>
+<P>
+<I>menuItem</I><UL><UL>
+A menuitem object. It will be owned by the wxMenu object after this function
+is called, so do not delete it yourself.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This command can be used after the menu has been shown, as well as on initial
+creation of a menu or menubar.<P>
+The <I>item</I> string for the normal menu items (not submenus or separators)
+may include the accelerator which can be used to activate the menu item
+from keyboard. The accelerator string follows the item label and is separated
+from it by a <TT>TAB</TT> character (<TT>'\t'</TT>). Its general syntax is
+any combination of <TT>"CTRL"</TT>, <TT>"ALT"</TT> and <TT>"SHIFT"</TT> strings (case
+doesn't matter) separated by either <TT>'-'</TT> or <TT>'+'</TT> characters and
+followed by the accelerator itself. The accelerator may be any alphanumeric
+character, any function key (from <TT>F1</TT> to <TT>F12</TT>) or one of the special
+characters listed in the table below (again, case doesn't matter):<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<TT>DEL</TT> or <TT>DELETE</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Delete key
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>INS</TT> or <TT>INSERT</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Insert key
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>ENTER</TT> or <TT>RETURN</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Enter key
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>PGUP</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+PageUp key
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>PGDN</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+PageDown key
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>LEFT</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Left cursor arrow key
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>RIGHT</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Right cursor arrow key
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>UP</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Up cursor arrow key
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>DOWN</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Down cursor arrow key
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>HOME</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Home key
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>END</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+End key
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>SPACE</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Space
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>TAB</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Tab key
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<TT>ESC</TT> or <TT>ESCAPE</TT>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Escape key (Windows only)
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuappendseparator">wxMenu::AppendSeparator</A>,
+<A HREF="wx_wxmenu.html#wxmenuappendcheckitem">wxMenu::AppendCheckItem</A>,
+<A HREF="wx_wxmenu.html#wxmenuappendradioitem">wxMenu::AppendRadioItem</A>,
+<A HREF="wx_wxmenu.html#wxmenuappendsubmenu">wxMenu::AppendSubMenu</A>,
+<A HREF="wx_wxmenu.html#wxmenuinsert">wxMenu::Insert</A>,
+<A HREF="wx_wxmenu.html#wxmenusetlabel">wxMenu::SetLabel</A>, <A HREF="wx_wxmenu.html#wxmenugethelpstring">wxMenu::GetHelpString</A>,
+<A HREF="wx_wxmenu.html#wxmenusethelpstring">wxMenu::SetHelpString</A>, <A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>Append(id, string, helpStr="", checkable=false)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>AppendMenu(id, string, aMenu, helpStr="")</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>AppendItem(aMenuItem)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+
+
+<HR>
+<A NAME="wxmenuappendcheckitem"></A>
+<H3>wxMenu::AppendCheckItem</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>AppendCheckItem</B>(<B>int</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString = ""</I>)<P>
+Adds a checkable item to the end of the menu.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuappend">wxMenu::Append</A>,
+<A HREF="wx_wxmenu.html#wxmenuinsertcheckitem">wxMenu::InsertCheckItem</A><P>
+
+
+<HR>
+<A NAME="wxmenuappendradioitem"></A>
+<H3>wxMenu::AppendRadioItem</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>AppendRadioItem</B>(<B>int</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString = ""</I>)<P>
+Adds a radio item to the end of the menu. All consequent radio items form a
+group and when an item in the group is checked, all the others are
+automatically unchecked.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuappend">wxMenu::Append</A>,
+<A HREF="wx_wxmenu.html#wxmenuinsertradioitem">wxMenu::InsertRadioItem</A><P>
+
+
+<HR>
+<A NAME="wxmenuappendseparator"></A>
+<H3>wxMenu::AppendSeparator</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>AppendSeparator</B>()<P>
+Adds a separator to the end of the menu.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuappend">wxMenu::Append</A>,
+<A HREF="wx_wxmenu.html#wxmenuinsertseparator">wxMenu::InsertSeparator</A><P>
+
+
+<HR>
+<A NAME="wxmenuappendsubmenu"></A>
+<H3>wxMenu::AppendSubMenu</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A> *</B> </B> <B>AppendSubMenu</B>(<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A> *</B></B><I>submenu</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>help = wxEmptyString</I>)<P>
+Adds the given <I>submenu</I> to this menu. <I>text</I> is the text shown in the
+menu for it and <I>help</I> is the help string shown in the status bar when the
+submenu item is selected.<P>
+
+
+<HR>
+<A NAME="wxmenubreak"></A>
+<H3>wxMenu::Break</H3>
+<P>
+<B>void</B> <B>Break</B>()<P>
+Inserts a break in a menu, causing the next appended item to appear in a new column.<P>
+
+
+<HR>
+<A NAME="wxmenucheck"></A>
+<H3>wxMenu::Check</H3>
+<P>
+<B>void</B> <B>Check</B>(<B>int</B><I> id</I>, <B>const bool</B><I> check</I>)<P>
+Checks or unchecks the menu item.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<I>check</I><UL><UL>
+If true, the item will be checked, otherwise it will be unchecked.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuischecked">wxMenu::IsChecked</A><P>
+
+
+<HR>
+<A NAME="wxmenudelete"></A>
+<H3>wxMenu::Delete</H3>
+<P>
+<B>void</B> <B>Delete</B>(<B>int </B><I>id</I>)<P>
+<B>void</B> <B>Delete</B>(<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A> *</B></B><I>item</I>)<P>
+Deletes the menu item from the menu. If the item is a submenu, it will
+<B>not</B> be deleted. Use <A HREF="wx_wxmenu.html#wxmenudestroy">Destroy</A> if you want to
+delete a submenu.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+Id of the menu item to be deleted.</UL></UL>
+<P>
+<I>item</I><UL><UL>
+Menu item to be deleted.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenufinditem">wxMenu::FindItem</A>,
+<A HREF="wx_wxmenu.html#wxmenudestroy">wxMenu::Destroy</A>,
+<A HREF="wx_wxmenu.html#wxmenuremove">wxMenu::Remove</A><P>
+
+
+<HR>
+<A NAME="wxmenudestroy"></A>
+<H3>wxMenu::Destroy</H3>
+<P>
+<B>void</B> <B>Destroy</B>(<B>int </B><I>id</I>)<P>
+<B>void</B> <B>Destroy</B>(<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A> *</B></B><I>item</I>)<P>
+Deletes the menu item from the menu. If the item is a submenu, it will
+be deleted. Use <A HREF="wx_wxmenu.html#wxmenuremove">Remove</A> if you want to keep the submenu
+(for example, to reuse it later).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+Id of the menu item to be deleted.</UL></UL>
+<P>
+<I>item</I><UL><UL>
+Menu item to be deleted.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenufinditem">wxMenu::FindItem</A>,
+<A HREF="wx_wxmenu.html#wxmenudelete">wxMenu::Deletes</A>,
+<A HREF="wx_wxmenu.html#wxmenuremove">wxMenu::Remove</A><P>
+
+
+<HR>
+<A NAME="wxmenuenable"></A>
+<H3>wxMenu::Enable</H3>
+<P>
+<B>void</B> <B>Enable</B>(<B>int</B><I> id</I>, <B>const bool</B><I> enable</I>)<P>
+Enables or disables (greys out) a menu item.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<I>enable</I><UL><UL>
+true to enable the menu item, false to disable it.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuisenabled">wxMenu::IsEnabled</A><P>
+
+
+<HR>
+<A NAME="wxmenufinditem"></A>
+<H3>wxMenu::FindItem</H3>
+<P>
+<B>int</B> <B>FindItem</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>itemString</I>) <B>const</B><P>
+Finds the menu item id for a menu item string.<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A> *</B> </B> <B>FindItem</B>(<B>int</B><I> id</I>, <B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A> **</B></B><I>menu = NULL</I>) <B>const</B><P>
+Finds the menu item object associated with the given menu item identifier and,
+optionally, the (sub)menu it belongs to.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes just the <TT>id</TT> parameter;
+in scalar context it returns the associated <TT>Wx::MenuItem</TT>, in list
+context it returns a 2-element list <TT>( item, submenu )</TT><P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>itemString</I><UL><UL>
+Menu item string to find.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Menu item identifier.</UL></UL>
+<P>
+<I>menu</I><UL><UL>
+If the pointer is not NULL, it will be filled with the item's
+parent menu (if the item was found)</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+First form: menu item identifier, or <TT>wxNOT_FOUND</TT> if none is found.<P>
+Second form: returns the menu item object, or NULL if it is not found.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Any special menu codes are stripped out of source and target strings
+before matching.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The name of this method in wxPython is <TT>FindItemById</TT> 
+and it does not support the second parameter.<P>
+
+
+<HR>
+<A NAME="wxmenufinditembyposition"></A>
+<H3>wxMenu::FindItemByPosition</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>FindItemByPosition</B>(<B>size_t </B><I>position</I>) <B>const</B><P>
+Returns the wxMenuItem given a position in the menu.<P>
+
+
+<HR>
+<A NAME="wxmenugethelpstring"></A>
+<H3>wxMenu::GetHelpString</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetHelpString</B>(<B>int</B><I> id</I>) <B>const</B><P>
+Returns the help string associated with a menu item.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The help string, or the empty string if there is no help string or the
+item was not found.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenusethelpstring">wxMenu::SetHelpString</A>, <A HREF="wx_wxmenu.html#wxmenuappend">wxMenu::Append</A><P>
+
+
+<HR>
+<A NAME="wxmenugetlabel"></A>
+<H3>wxMenu::GetLabel</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLabel</B>(<B>int</B><I> id</I>) <B>const</B><P>
+Returns a menu item label, including any mnemonics and accelerators.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The item label, or the empty string if the item was not found.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenugetlabeltext">wxMenu::GetLabelText</A>, <A HREF="wx_wxmenu.html#wxmenusetlabel">wxMenu::SetLabel</A><P>
+
+
+<HR>
+<A NAME="wxmenugetlabeltext"></A>
+<H3>wxMenu::GetLabelText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLabelText</B>(<B>int</B><I> id</I>) <B>const</B><P>
+Returns a menu item label, without any of the original mnemonics and accelerators.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The item label, or the empty string if the item was not found.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenugetlabel">wxMenu::GetLabel</A>, <A HREF="wx_wxmenu.html#wxmenusetlabel">wxMenu::SetLabel</A><P>
+
+
+<HR>
+<A NAME="wxmenugetmenuitemcount"></A>
+<H3>wxMenu::GetMenuItemCount</H3>
+<P>
+<B>size_t</B> <B>GetMenuItemCount</B>() <B>const</B><P>
+Returns the number of items in the menu.<P>
+
+
+<HR>
+<A NAME="wxmenugetmenuitems"></A>
+<H3>wxMenu::GetMenuItems</H3>
+<P>
+<B>wxMenuItemList&amp;</B> <B>GetMenuItems</B>() <B>const</B><P>
+Returns the list of items in the menu. wxMenuItemList is a pseudo-template
+list class containing wxMenuItem pointers, see <A HREF="wx_wxlist.html#wxlist">wxList</A>.<P>
+
+
+<HR>
+<A NAME="wxmenugettitle"></A>
+<H3>wxMenu::GetTitle</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetTitle</B>() <B>const</B><P>
+Returns the title of the menu.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This is relevant only to popup menus, use 
+<A HREF="wx_wxmenubar.html#wxmenubargetmenulabel">wxMenuBar::GetMenuLabel</A> for the menus in the
+menubar.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenusettitle">wxMenu::SetTitle</A><P>
+
+
+<HR>
+<A NAME="wxmenuinsert"></A>
+<H3>wxMenu::Insert</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>Insert</B>(<B>size_t </B><I>pos</I>, <B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A> *</B></B><I>item</I>)<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>Insert</B>(<B>size_t </B><I>pos</I>, <B>int</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item = ""</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString = ""</I>,
+<B>wxItemKind</B><I> kind = wxITEM_NORMAL</I>)<P>
+Inserts the given <I>item</I> before the position <I>pos</I>. Inserting the item
+at position <A HREF="wx_wxmenu.html#wxmenugetmenuitemcount">GetMenuItemCount</A> is the same
+as appending it.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuappend">wxMenu::Append</A>,
+<A HREF="wx_wxmenu.html#wxmenuprepend">wxMenu::Prepend</A><P>
+
+
+<HR>
+<A NAME="wxmenuinsertcheckitem"></A>
+<H3>wxMenu::InsertCheckItem</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>InsertCheckItem</B>(<B>size_t </B><I>pos</I>, <B>int</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString = ""</I>)<P>
+Inserts a checkable item at the given position.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuinsert">wxMenu::Insert</A>,
+<A HREF="wx_wxmenu.html#wxmenuappendcheckitem">wxMenu::AppendCheckItem</A><P>
+
+
+<HR>
+<A NAME="wxmenuinsertradioitem"></A>
+<H3>wxMenu::InsertRadioItem</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>InsertRadioItem</B>(<B>size_t </B><I>pos</I>, <B>int</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString = ""</I>)<P>
+Inserts a radio item at the given position.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuinsert">wxMenu::Insert</A>,
+<A HREF="wx_wxmenu.html#wxmenuappendradioitem">wxMenu::AppendRadioItem</A><P>
+
+
+<HR>
+<A NAME="wxmenuinsertseparator"></A>
+<H3>wxMenu::InsertSeparator</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>InsertSeparator</B>(<B>size_t </B><I>pos</I>)<P>
+Inserts a separator at the given position.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuinsert">wxMenu::Insert</A>,
+<A HREF="wx_wxmenu.html#wxmenuappendseparator">wxMenu::AppendSeparator</A><P>
+
+
+<HR>
+<A NAME="wxmenuischecked"></A>
+<H3>wxMenu::IsChecked</H3>
+<P>
+<B>bool</B> <B>IsChecked</B>(<B>int</B><I> id</I>) <B>const</B><P>
+Determines whether a menu item is checked.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the menu item is checked, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenucheck">wxMenu::Check</A><P>
+
+
+<HR>
+<A NAME="wxmenuisenabled"></A>
+<H3>wxMenu::IsEnabled</H3>
+<P>
+<B>bool</B> <B>IsEnabled</B>(<B>int</B><I> id</I>) <B>const</B><P>
+Determines whether a menu item is enabled.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the menu item is enabled, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuenable">wxMenu::Enable</A><P>
+
+
+<HR>
+<A NAME="wxmenuprepend"></A>
+<H3>wxMenu::Prepend</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>Prepend</B>(<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A> *</B></B><I>item</I>)<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>Prepend</B>(<B>int</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item = ""</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString = ""</I>,
+<B>wxItemKind</B><I> kind = wxITEM_NORMAL</I>)<P>
+Inserts the given <I>item</I> at position 0, i.e. before all the other
+existing items.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuappend">wxMenu::Append</A>,
+<A HREF="wx_wxmenu.html#wxmenuinsert">wxMenu::Insert</A><P>
+
+
+<HR>
+<A NAME="wxmenuprependcheckitem"></A>
+<H3>wxMenu::PrependCheckItem</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>PrependCheckItem</B>(<B>int</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString = ""</I>)<P>
+Inserts a checkable item at position 0.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuprepend">wxMenu::Prepend</A>,
+<A HREF="wx_wxmenu.html#wxmenuappendcheckitem">wxMenu::AppendCheckItem</A><P>
+
+
+<HR>
+<A NAME="wxmenuprependradioitem"></A>
+<H3>wxMenu::PrependRadioItem</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>PrependRadioItem</B>(<B>int</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString = ""</I>)<P>
+Inserts a radio item at position 0.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuprepend">wxMenu::Prepend</A>,
+<A HREF="wx_wxmenu.html#wxmenuappendradioitem">wxMenu::AppendRadioItem</A><P>
+
+
+<HR>
+<A NAME="wxmenuprependseparator"></A>
+<H3>wxMenu::PrependSeparator</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>*</B> </B> <B>PrependSeparator</B>()<P>
+Inserts a separator at position 0.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuprepend">wxMenu::Prepend</A>,
+<A HREF="wx_wxmenu.html#wxmenuappendseparator">wxMenu::AppendSeparator</A><P>
+
+
+<HR>
+<A NAME="wxmenuremove"></A>
+<H3>wxMenu::Remove</H3>
+<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A> *</B> </B> <B>Remove</B>(<B>int </B><I>id</I>)<P>
+<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A> *</B> </B> <B>Remove</B>(<B><A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A> *</B></B><I>item</I>)<P>
+Removes the menu item from the menu but doesn't delete the associated C++
+object. This allows to reuse the same item later by adding it back to the menu
+(especially useful with submenus).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The identifier of the menu item to remove.</UL></UL>
+<P>
+<I>item</I><UL><UL>
+The menu item to remove.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The item which was detached from the menu.<P>
+
+
+<HR>
+<A NAME="wxmenusethelpstring"></A>
+<H3>wxMenu::SetHelpString</H3>
+<P>
+<B>void</B> <B>SetHelpString</B>(<B>int</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>helpString</I>)<P>
+Sets an item's help string.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<I>helpString</I><UL><UL>
+The help string to set.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenugethelpstring">wxMenu::GetHelpString</A><P>
+
+
+<HR>
+<A NAME="wxmenusetlabel"></A>
+<H3>wxMenu::SetLabel</H3>
+<P>
+<B>void</B> <B>SetLabel</B>(<B>int</B><I> id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>)<P>
+Sets the label of a menu item.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+The menu item identifier.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+The menu item label to set.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenuappend">wxMenu::Append</A>, <A HREF="wx_wxmenu.html#wxmenugetlabel">wxMenu::GetLabel</A><P>
+
+
+<HR>
+<A NAME="wxmenusettitle"></A>
+<H3>wxMenu::SetTitle</H3>
+<P>
+<B>void</B> <B>SetTitle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>)<P>
+Sets the title of the menu.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>title</I><UL><UL>
+The title to set.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This is relevant only to popup menus, use 
+<A HREF="wx_wxmenubar.html#wxmenubarsetlabeltop">wxMenuBar::SetLabelTop</A> for the menus in the
+menubar.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmenu.html#wxmenugettitle">wxMenu::GetTitle</A><P>
+
+
+<HR>
+<A NAME="wxmenuupdateui"></A>
+<H3>wxMenu::UpdateUI</H3>
+<P>
+<B>void</B> <B>UpdateUI</B>(<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>*</B></B><I> source = NULL</I>) <B>const</B><P>
+Sends events to <I>source</I> (or owning window if NULL) to update the
+menu UI. This is called just before the menu is popped up with <A HREF="wx_wxwindow.html#wxwindowpopupmenu">wxWindow::PopupMenu</A>, but
+the application may call it at other times if required.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxupdateuievent.html#wxupdateuievent">wxUpdateUIEvent</A><P>
+
+</FONT></BODY></HTML>

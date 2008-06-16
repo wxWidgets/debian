@@ -1,0 +1,78 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGBSpan</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgbspan"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgbsizeritem.html#wxgbsizeritem"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgdiobject.html#wxgdiobject"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGBSpan</H2>
+<P>
+This class is used to hold the row and column spanning attributes of
+items in a <A HREF="wx_wxgridbagsizer.html#wxgridbagsizer">wxGridBagSizer</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/gbsizer.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgbspanwxgbspan">wxGBSpan::wxGBSpan</A><BR>
+<A HREF="#wxgbspangetcolspan">wxGBSpan::GetColspan</A><BR>
+<A HREF="#wxgbspangetrowspan">wxGBSpan::GetRowspan</A><BR>
+<A HREF="#wxgbspansetcolspan">wxGBSpan::SetColspan</A><BR>
+<A HREF="#wxgbspansetrowspan">wxGBSpan::SetRowspan</A><BR>
+<A HREF="#wxgbspanoperatorunknown">wxGBSpan::operator!</A><BR>
+<A HREF="#wxgbspanoperatorequal">wxGBSpan::operator==</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgbspanwxgbspan"></A>
+<H3>wxGBSpan::wxGBSpan</H3>
+<P>
+<B></B> <B>wxGBSpan</B>()<P>
+<B></B> <B>wxGBSpan</B>(<B>int </B><I>rowspan</I>, <B>int </B><I>colspan</I>)<P>
+Construct a new wxGBSpan, optionally setting the rowspan and colspan.
+The default is (1,1).  (Meaning that the item occupies one cell in
+each direction.<P>
+
+<HR>
+<A NAME="wxgbspangetcolspan"></A>
+<H3>wxGBSpan::GetColspan</H3>
+<P>
+<B>int</B> <B>GetColspan</B>() <B>const</B><P>
+Get the current colspan value.<P>
+
+<HR>
+<A NAME="wxgbspangetrowspan"></A>
+<H3>wxGBSpan::GetRowspan</H3>
+<P>
+<B>int</B> <B>GetRowspan</B>() <B>const</B><P>
+Get the current rowspan value.<P>
+
+<HR>
+<A NAME="wxgbspansetcolspan"></A>
+<H3>wxGBSpan::SetColspan</H3>
+<P>
+<B>void</B> <B>SetColspan</B>(<B>int </B><I>colspan</I>)<P>
+Set a new colspan value.<P>
+
+<HR>
+<A NAME="wxgbspansetrowspan"></A>
+<H3>wxGBSpan::SetRowspan</H3>
+<P>
+<B>void</B> <B>SetRowspan</B>(<B>int </B><I>rowspan</I>)<P>
+Set a new rowspan value.<P>
+
+<HR>
+<A NAME="wxgbspanoperatorunknown"></A>
+<H3>wxGBSpan::operator!</H3>
+<P>
+<B>bool</B> <B>operator!</B>(<B>const <A HREF="wx_wxgbspan.html#wxgbspan">wxGBSpan</A>& </B></B><I>o</I>) <B>const</B><P>
+Is the wxGBSpan valid?  (An invalid wxGBSpan is (-1,-1). )<P>
+
+<HR>
+<A NAME="wxgbspanoperatorequal"></A>
+<H3>wxGBSpan::operator==</H3>
+<P>
+<B>bool operator</B> <B>operator==</B>(<B>const <A HREF="wx_wxgbspan.html#wxgbspan">wxGBSpan</A>& </B></B><I>o</I>) <B>const</B><P>
+Compare equality of two wxGBSpans.<P>
+
+</FONT></BODY></HTML>

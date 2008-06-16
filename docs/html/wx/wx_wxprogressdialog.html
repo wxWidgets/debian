@@ -1,0 +1,202 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxProgressDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxprogressdialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxprocessevent.html#wxprocessevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpropertysheetdialog.html#wxpropertysheetdialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxProgressDialog</H2>
+<P>
+This class represents a dialog that shows a short message and a
+progress bar. Optionally, it can display ABORT and SKIP buttons,
+the elapsed, remaining and estimated time for the end of the progress.<P>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/progdlg.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPD_APP_MODAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Make the progress dialog modal. If this flag is
+not given, it is only "locally" modal - that is the input to the parent
+window is disabled, but not to the other ones.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPD_AUTO_HIDE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Causes the progress dialog to disappear
+from screen as soon as the maximum value of the progress meter has been
+reached.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPD_SMOOTH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Causes smooth progress of the gauge control.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPD_CAN_ABORT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This flag tells the dialog that it should have a
+"Cancel" button which the user may press. If this happens, the next call to
+<A HREF="wx_wxprogressdialog.html#wxprogressdialogupdate">Update()</A> will return false.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPD_CAN_SKIP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This flag tells the dialog that it should have a
+"Skip" button which the user may press. If this happens, the next call to
+<A HREF="wx_wxprogressdialog.html#wxprogressdialogupdate">Update()</A> will return true in its skip parameter.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPD_ELAPSED_TIME</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This flag tells the dialog that it should show elapsed time (since creating the dialog).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPD_ESTIMATED_TIME</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This flag tells the dialog that it should show estimated time.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPD_REMAINING_TIME</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+This flag tells the dialog that it should show remaining time.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxprogressdialogctor">wxProgressDialog::wxProgressDialog</A><BR>
+<A HREF="#wxprogressdialogdtor">wxProgressDialog::~wxProgressDialog</A><BR>
+<A HREF="#wxprogressdialogresume">wxProgressDialog::Resume</A><BR>
+<A HREF="#wxprogressdialogupdate">wxProgressDialog::Update</A><BR>
+<A HREF="#wxprogressdialogpdatepulse">wxProgressDialog::Pulse</A><BR>
+<P>
+
+<HR>
+<A NAME="wxprogressdialogctor"></A>
+<H3>wxProgressDialog::wxProgressDialog</H3>
+<P>
+<B></B> <B>wxProgressDialog</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,
+<B>int </B><I>maximum = 100</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> * </B></B><I>parent = NULL</I>,
+<B>int </B><I>style = wxPD_AUTO_HIDE | wxPD_APP_MODAL</I>)<P>
+Constructor. Creates the dialog, displays it and disables user input
+for other windows, or, if wxPD_APP_MODAL flag is not given, for its parent
+window only.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>title</I><UL><UL>
+Dialog title to show in titlebar.</UL></UL>
+<P>
+<I>message</I><UL><UL>
+Message displayed above the progress bar.</UL></UL>
+<P>
+<I>maximum</I><UL><UL>
+Maximum value for the progress bar.</UL></UL>
+<P>
+<I>parent</I><UL><UL>
+Parent window.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The dialog style. See <A HREF="wx_wxprogressdialog.html#wxprogressdialog">wxProgressDialog</A>.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxprogressdialogdtor"></A>
+<H3>wxProgressDialog::~wxProgressDialog</H3>
+<P>
+<B></B> <B>~wxProgressDialog</B>()<P>
+Destructor. Deletes the dialog and enables all top level windows.<P>
+
+<HR>
+<A NAME="wxprogressdialogresume"></A>
+<H3>wxProgressDialog::Resume</H3>
+<P>
+<B>void</B> <B>Resume</B>()<P>
+Can be used to continue with the dialog, after the user had chosen
+ABORT.<P>
+
+<HR>
+<A NAME="wxprogressdialogupdate"></A>
+<H3>wxProgressDialog::Update</H3>
+<P>
+<B>virtual bool</B> <B>Update</B>(<B>int </B><I>value</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>newmsg = ""</I>,
+<B>bool *</B><I>skip = NULL</I>)<P>
+Updates the dialog, setting the progress bar to the new value and, if
+given changes the message above it. Returns <TT>true</TT> unless the Cancel button
+has been pressed.<P>
+If <TT>false</TT> is returned, the application can either immediately destroy the dialog
+or ask the user for the confirmation and if the abort is not confirmed the
+dialog may be resumed with <A HREF="wx_wxprogressdialog.html#wxprogressdialogresume">Resume</A> function.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>value</I><UL><UL>
+The new value of the progress meter. It should be less than or
+equal to the maximum value given to the constructor and the dialog is closed if
+it is equal to the maximum.</UL></UL>
+
+<I>newmsg</I><UL><UL>
+The new messages for the progress dialog text, if it is
+empty (which is the default) the message is not changed.</UL></UL>
+
+<I>skip</I><UL><UL>
+If "Skip" button was pressed since last
+<A HREF="wx_wxprogressdialog.html#wxprogressdialogupdate">Update</A> call, this is set to true.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxprogressdialogpdatepulse"></A>
+<H3>wxProgressDialog::Pulse</H3>
+<P>
+<B>virtual bool</B> <B>Pulse</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>newmsg = ""</I>,
+<B>bool *</B><I>skip = NULL</I>)<P>
+Just like <A HREF="wx_wxprogressdialog.html#wxprogressdialogupdate">Update</A> but makes
+the gauge control run in indeterminate mode (see <A HREF="wx_wxgauge.html#wxgauge">wxGauge</A> documentation),
+sets the remaining and the estimated time labels (if present) to <TT>Unknown</TT> and moves
+the progress bar a bit to indicate that some progress was done.<P>
+
+</FONT></BODY></HTML>

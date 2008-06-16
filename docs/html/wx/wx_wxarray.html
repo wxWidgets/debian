@@ -1,0 +1,716 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxArray</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxarray"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxarraystring.html#wxarraystring"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxArray</H2>
+<P>
+This section describes the so called <I>dynamic arrays</I>. This is a C
+array-like data structure i.e. the member access time is constant (and not
+linear according to the number of container elements as for linked lists). However, these
+arrays are dynamic in the sense that they will automatically allocate more
+memory if there is not enough of it for adding a new element. They also perform
+range checking on the index values but in debug mode only, so please be sure to
+compile your application in debug mode to use it (see <A HREF="wx_debuggingoverview.html#debuggingoverview">debugging overview</A> for
+details). So, unlike the arrays in some other
+languages, attempt to access an element beyond the arrays bound doesn't
+automatically expand the array but provokes an assertion failure instead in
+debug build and does nothing (except possibly crashing your program) in the
+release build.<P>
+The array classes were designed to be reasonably efficient, both in terms of
+run-time speed and memory consumption and the executable size. The speed of
+array item access is, of course, constant (independent of the number of elements)
+making them much more efficient than linked lists (<A HREF="wx_wxlist.html#wxlist">wxList</A>).
+Adding items to the arrays is also implemented in more or less constant time -
+but the price is preallocating the memory in advance. In the <A HREF="wx_wxarray.html#wxarraymemorymanagement">memory management</A> section
+you may find some useful hints about optimizing wxArray memory usage. As for executable size, all
+wxArray functions are inline, so they do not take <I>any space at all</I>.<P>
+wxWidgets has three different kinds of array. All of them derive from
+wxBaseArray class which works with untyped data and can not be used directly.
+The standard macros WX_DEFINE_ARRAY(), WX_DEFINE_SORTED_ARRAY() and
+WX_DEFINE_OBJARRAY() are used to define a new class deriving from it. The
+classes declared will be called in this documentation wxArray, wxSortedArray and
+wxObjArray but you should keep in mind that no classes with such names actually
+exist, each time you use one of WX_DEFINE_XXXARRAY macro you define a class
+with a new name. In fact, these names are "template" names and each usage of one
+of the macros mentioned above creates a template specialization for the given
+element type.<P>
+wxArray is suitable for storing integer types and pointers which it does not
+treat as objects in any way, i.e. the element pointed to by the pointer is not
+deleted when the element is removed from the array. It should be noted that
+all of wxArray's functions are inline, so it costs strictly nothing to define as
+many array types as you want (either in terms of the executable size or the
+speed) as long as at least one of them is defined and this is always the case
+because wxArrays are used by wxWidgets internally. This class has one serious
+limitation: it can only be used for storing integral types (bool, char, short,
+int, long and their unsigned variants) or pointers (of any kind). An attempt
+to use with objects of sizeof() greater than sizeof(long) will provoke a
+runtime assertion failure, however declaring a wxArray of floats will not (on
+the machines where sizeof(float) &lt;= sizeof(long)), yet it will <B>not</B> work,
+please use wxObjArray for storing floats and doubles (NB: a more efficient
+wxArrayDouble class is scheduled for the next release of wxWidgets).<P>
+wxSortedArray is a wxArray variant which should be used when searching in the
+array is a frequently used operation. It requires you to define an additional
+function for comparing two elements of the array element type and always stores
+its items in the sorted order (according to this function). Thus, it is
+ <A HREF="wx_wxarray.html#wxarrayindex">Index()</A> function execution time is O(log(N)) instead of
+O(N) for the usual arrays but the <A HREF="wx_wxarray.html#wxarrayadd">Add()</A> method is
+slower: it is O(log(N)) instead of constant time (neglecting time spent in
+memory allocation routine). However, in a usual situation elements are added to
+an array much less often than searched inside it, so wxSortedArray may lead to
+huge performance improvements compared to wxArray. Finally, it should be
+noticed that, as wxArray, wxSortedArray can be only used for storing integral
+types or pointers.<P>
+wxObjArray class treats its elements like "objects". It may delete them when
+they are removed from the array (invoking the correct destructor) and copies
+them using the objects copy constructor. In order to implement this behaviour
+the definition of the wxObjArray arrays is split in two parts: first, you should
+declare the new wxObjArray class using WX_DECLARE_OBJARRAY() macro and then
+you must include the file defining the implementation of template type:
+&lt;wx/arrimpl.cpp&gt; and define the array class with WX_DEFINE_OBJARRAY() macro
+from a point where the full (as opposed to 'forward') declaration of the array
+elements class is in scope. As it probably sounds very complicated here is an
+example:<P>
+<PRE>
+#include &lt;wx/dynarray.h&gt;
+
+// we must forward declare the array because it is used inside the class
+// declaration
+class MyDirectory;
+class MyFile;
+
+// this defines two new types: ArrayOfDirectories and ArrayOfFiles which can be
+// now used as shown below
+WX_DECLARE_OBJARRAY(MyDirectory, ArrayOfDirectories);
+WX_DECLARE_OBJARRAY(MyFile,      ArrayOfFiles);
+
+class MyDirectory
+{
+...
+    ArrayOfDirectories m_subdirectories; // all subdirectories
+    ArrayOfFiles       m_files;          // all files in this directory
+};
+
+...
+
+// now that we have MyDirectory declaration in scope we may finish the
+// definition of ArrayOfDirectories -- note that this expands into some C++
+// code and so should only be compiled once (i.e., don't put this in the
+// header, but into a source file or you will get linking errors)
+#include &lt;wx/arrimpl.cpp&gt; // this is a magic incantation which must be done!
+WX_DEFINE_OBJARRAY(ArrayOfDirectories);
+
+// that's all!
+</PRE>
+It is not as elegant as writing<P>
+<PRE>
+typedef std::vector&lt;MyDirectory&gt; ArrayOfDirectories;
+</PRE>
+but is not that complicated and allows the code to be compiled with any, however
+dumb, C++ compiler in the world.<P>
+Things are much simpler for wxArray and wxSortedArray however: it is enough
+just to write<P>
+<PRE>
+WX_DEFINE_ARRAY_INT(int, ArrayOfInts);
+WX_DEFINE_SORTED_ARRAY_INT(int, ArrayOfSortedInts);
+</PRE>
+i.e. there is only one <TT>DEFINE</TT> macro and no need for separate
+<TT>DECLARE</TT> one. For the arrays of the primitive types, the macros 
+<TT>WX_DEFINE_ARRAY_CHAR/SHORT/INT/SIZE_T/LONG/DOUBLE</TT> should be used
+depending on the sizeof of the values (notice that storing values of smaller
+type, e.g. shorts, in an array of larger one, e.g. <TT>ARRAY_INT</TT>, does
+<EM>not</EM> work on all architectures!).<P>
+
+<B><FONT COLOR="#FF0000">See also:</FONT></B><P>
+<A HREF="wx_wxcontaineroverview.html#wxcontaineroverview">Container classes overview</A>, <A HREF="wx_wxlist.html#wxlist">wxList</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dynarray.h&gt; for wxArray and wxSortedArray and additionally &lt;wx/arrimpl.cpp&gt;
+for wxObjArray.<P>
+<B><FONT COLOR="#FF0000">Function groups</FONT></B><P>
+<A HREF="#arraymacros">Macros for template array definition</A><BR>
+<A HREF="#arrayconstructorsdestructors">Constructors and destructors</A><BR>
+<A HREF="#wxarraymemorymanagement">Memory management</A><BR>
+<A HREF="#arrayelementsaccess">Number of elements and simple item access</A><BR>
+<A HREF="#arrayadding">Adding items</A><BR>
+<A HREF="#arrayremoving">Removing items</A><BR>
+<A HREF="#arraysearchingandsorting">Searching and sorting</A><BR>
+<A HREF="#wxdefinearray">WX_DEFINE_ARRAY</A><BR>
+<A HREF="#wxdefinesortedarray">WX_DEFINE_SORTED_ARRAY</A><BR>
+<A HREF="#wxdeclareobjarray">WX_DECLARE_OBJARRAY</A><BR>
+<A HREF="#wxdefineobjarray">WX_DEFINE_OBJARRAY</A><BR>
+<A HREF="#wxappendarray">WX_APPEND_ARRAY</A><BR>
+<A HREF="#wxprependarray">WX_PREPEND_ARRAY</A><BR>
+<A HREF="#wxcleararray">WX_CLEAR_ARRAY</A><BR>
+<A HREF="#wxarrayctordef">Default constructors</A><BR>
+<A HREF="#wxarrayctorcopy">wxArray copy constructor and assignment operator</A><BR>
+<A HREF="#wxarraydtor">wxArray::~wxArray</A><BR>
+<A HREF="#wxarrayadd">wxArray::Add</A><BR>
+<A HREF="#wxarrayalloc">wxArray::Alloc</A><BR>
+<A HREF="#wxarrayclear">wxArray::Clear</A><BR>
+<A HREF="#wxarraycount">wxArray::Count</A><BR>
+<A HREF="#wxobjarraydetach">wxObjArray::Detach</A><BR>
+<A HREF="#wxarrayempty">wxArray::Empty</A><BR>
+<A HREF="#wxarraygetcount">wxArray::GetCount</A><BR>
+<A HREF="#wxarrayindex">wxArray::Index</A><BR>
+<A HREF="#wxarrayinsert">wxArray::Insert</A><BR>
+<A HREF="#wxarrayisempty">wxArray::IsEmpty</A><BR>
+<A HREF="#wxarrayitem">wxArray::Item</A><BR>
+<A HREF="#wxarraylast">wxArray::Last</A><BR>
+<A HREF="#wxarrayremove">wxArray::Remove</A><BR>
+<A HREF="#wxarrayremoveat">wxArray::RemoveAt</A><BR>
+<A HREF="#wxarraysetcount">wxArray::SetCount</A><BR>
+<A HREF="#wxarrayshrink">wxArray::Shrink</A><BR>
+<A HREF="#wxarraysort">wxArray::Sort</A><BR>
+<P>
+
+<HR>
+<A NAME="arraymacros"></A>
+<H3>Macros for template array definition</H3>
+<P>
+To use an array you must first define the array class. This is done with the
+help of the macros in this section. The class of array elements must be (at
+least) forward declared for WX_DEFINE_ARRAY, WX_DEFINE_SORTED_ARRAY and
+WX_DECLARE_OBJARRAY macros and must be fully declared before you use
+WX_DEFINE_OBJARRAY macro.<P>
+<A HREF="wx_wxarray.html#wxdefinearray">WX_DEFINE_ARRAY</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefinearray">WX_DEFINE_EXPORTED_ARRAY</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefinearray">WX_DEFINE_USER_EXPORTED_ARRAY</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefinesortedarray">WX_DEFINE_SORTED_ARRAY</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefinesortedarray">WX_DEFINE_SORTED_EXPORTED_ARRAY</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefinesortedarray">WX_DEFINE_SORTED_USER_EXPORTED_ARRAY</A><BR>
+
+<A HREF="wx_wxarray.html#wxdeclareobjarray">WX_DECLARE_EXPORTED_OBJARRAY</A><BR>
+
+<A HREF="wx_wxarray.html#wxdeclareobjarray">WX_DECLARE_USER_EXPORTED_OBJARRAY</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefineobjarray">WX_DEFINE_OBJARRAY</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefineobjarray">WX_DEFINE_EXPORTED_OBJARRAY</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefineobjarray">WX_DEFINE_USER_EXPORTED_OBJARRAY</A><P>
+To slightly complicate the matters even further, the operator -&gt; defined by
+default for the array iterators by these macros only makes sense if the array
+element type is not a pointer itself and, although it still works, this
+provokes warnings from some compilers and to avoid them you should use the
+<TT>_PTR</TT> versions of the macros above. For example, to define an array of
+pointers to <TT>double</TT> you should use:<P>
+<PRE>
+WX_DEFINE_ARRAY_PTR(double *, MyArrayOfDoublePointers);
+</PRE>
+Note that the above macros are generally only useful for
+wxObject types.  There are separate macros for declaring an array of a simple type,
+such as an int.<P>
+The following simple types are supported:<BR>
+
+int<BR>
+
+long<BR>
+
+size_t<BR>
+
+double<P>
+To create an array of a simple type, simply append the type you want in CAPS to
+the array definition.<P>
+For example, for an integer array, you'd use one of the following variants:<P>
+<A HREF="wx_wxarray.html#wxdefinearray">WX_DEFINE_ARRAY_INT</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefinearray">WX_DEFINE_EXPORTED_ARRAY_INT</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefinearray">WX_DEFINE_USER_EXPORTED_ARRAY_INT</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefinesortedarray">WX_DEFINE_SORTED_ARRAY_INT</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefinesortedarray">WX_DEFINE_SORTED_EXPORTED_ARRAY_INT</A><BR>
+
+<A HREF="wx_wxarray.html#wxdefinesortedarray">WX_DEFINE_SORTED_USER_EXPORTED_ARRAY_INT</A><BR>
+<P>
+
+<HR>
+<A NAME="arrayconstructorsdestructors"></A>
+<H3>Constructors and destructors</H3>
+<P>
+Array classes are 100% C++ objects and as such they have the appropriate copy
+constructors and assignment operators. Copying wxArray just copies the elements
+but copying wxObjArray copies the arrays items. However, for memory-efficiency
+sake, neither of these classes has virtual destructor. It is not very important
+for wxArray which has trivial destructor anyhow, but it does mean that you
+should avoid deleting wxObjArray through a wxBaseArray pointer (as you would
+never use wxBaseArray anyhow it shouldn't be a problem) and that you should not
+derive your own classes from the array classes.<P>
+<A HREF="wx_wxarray.html#wxarrayctordef">wxArray default constructor</A><BR>
+
+<A HREF="wx_wxarray.html#wxarrayctorcopy">wxArray copy constructors and assignment operators</A><BR>
+
+<A HREF="wx_wxarray.html#wxarraydtor">~wxArray</A><P>
+
+<HR>
+<A NAME="wxarraymemorymanagement"></A>
+<H3>Memory management</H3>
+<P>
+Automatic array memory management is quite trivial: the array starts by
+preallocating some minimal amount of memory (defined by
+WX_ARRAY_DEFAULT_INITIAL_SIZE) and when further new items exhaust already
+allocated memory it reallocates it adding 50% of the currently allocated
+amount, but no more than some maximal number which is defined by
+ARRAY_MAXSIZE_INCREMENT constant. Of course, this may lead to some memory
+being wasted (ARRAY_MAXSIZE_INCREMENT in the worst case, i.e. 4Kb in the
+current implementation), so the <A HREF="wx_wxarray.html#wxarrayshrink">Shrink()</A> function is
+provided to deallocate the extra memory. The <A HREF="wx_wxarray.html#wxarrayalloc">Alloc()</A>
+function can also be quite useful if you know in advance how many items you are
+going to put in the array and will prevent the array code from reallocating the
+memory more times than needed.<P>
+<A HREF="wx_wxarray.html#wxarrayalloc">Alloc</A><BR>
+
+<A HREF="wx_wxarray.html#wxarrayshrink">Shrink</A><P>
+
+<HR>
+<A NAME="arrayelementsaccess"></A>
+<H3>Number of elements and simple item access</H3>
+<P>
+Functions in this section return the total number of array elements and allow to
+retrieve them - possibly using just the C array indexing [] operator which
+does exactly the same as <A HREF="wx_wxarray.html#wxarrayitem">Item()</A> method.<P>
+<A HREF="wx_wxarray.html#wxarraycount">Count</A><BR>
+
+<A HREF="wx_wxarray.html#wxarraygetcount">GetCount</A><BR>
+
+<A HREF="wx_wxarray.html#wxarrayisempty">IsEmpty</A><BR>
+
+<A HREF="wx_wxarray.html#wxarrayitem">Item</A><BR>
+
+<A HREF="wx_wxarray.html#wxarraylast">Last</A><P>
+
+<HR>
+<A NAME="arrayadding"></A>
+<H3>Adding items</H3>
+<P>
+<A HREF="wx_wxarray.html#wxarrayadd">Add</A><BR>
+
+<A HREF="wx_wxarray.html#wxarrayinsert">Insert</A><BR>
+
+<A HREF="wx_wxarray.html#wxarraysetcount">SetCount</A><BR>
+
+<A HREF="wx_wxarray.html#wxappendarray">WX_APPEND_ARRAY</A><BR>
+
+<A HREF="wx_wxarray.html#wxprependarray">WX_PREPEND_ARRAY</A><P>
+
+<HR>
+<A NAME="arrayremoving"></A>
+<H3>Removing items</H3>
+<P>
+<A HREF="wx_wxarray.html#wxcleararray">WX_CLEAR_ARRAY</A><BR>
+
+<A HREF="wx_wxarray.html#wxarrayempty">Empty</A><BR>
+
+<A HREF="wx_wxarray.html#wxarrayclear">Clear</A><BR>
+
+<A HREF="wx_wxarray.html#wxarrayremoveat">RemoveAt</A><BR>
+
+<A HREF="wx_wxarray.html#wxarrayremove">Remove</A><P>
+
+<HR>
+<A NAME="arraysearchingandsorting"></A>
+<H3>Searching and sorting</H3>
+<P>
+<A HREF="wx_wxarray.html#wxarrayindex">Index</A><BR>
+
+<A HREF="wx_wxarray.html#wxarraysort">Sort</A><P>
+<P>
+
+<HR>
+<A NAME="wxdefinearray"></A>
+<H3>WX_DEFINE_ARRAY</H3>
+<P>
+<B></B> <B>WX_DEFINE_ARRAY</B>(<B></B><I>T</I>, <B></B><I>name</I>)<P>
+<B></B> <B>WX_DEFINE_EXPORTED_ARRAY</B>(<B></B><I>T</I>, <B></B><I>name</I>)<P>
+<B></B> <B>WX_DEFINE_USER_EXPORTED_ARRAY</B>(<B></B><I>T</I>, <B></B><I>name</I>, <B></B><I>exportspec</I>)<P>
+This macro defines a new array class named <I>name</I> and containing the
+elements of type <I>T</I>. The second form is used when compiling wxWidgets as
+a DLL under Windows and array needs to be visible outside the DLL.  The third is
+needed for exporting an array from a user DLL.<P>
+Example:<P>
+<PRE>
+WX_DEFINE_ARRAY_INT(int, MyArrayInt);
+
+class MyClass;
+WX_DEFINE_ARRAY(MyClass *, ArrayOfMyClass);
+</PRE>
+Note that wxWidgets predefines the following standard array classes: wxArrayInt,
+wxArrayLong and wxArrayPtrVoid.<P>
+
+<HR>
+<A NAME="wxdefinesortedarray"></A>
+<H3>WX_DEFINE_SORTED_ARRAY</H3>
+<P>
+<B></B> <B>WX_DEFINE_SORTED_ARRAY</B>(<B></B><I>T</I>, <B></B><I>name</I>)<P>
+<B></B> <B>WX_DEFINE_SORTED_EXPORTED_ARRAY</B>(<B></B><I>T</I>, <B></B><I>name</I>)<P>
+<B></B> <B>WX_DEFINE_SORTED_USER_EXPORTED_ARRAY</B>(<B></B><I>T</I>, <B></B><I>name</I>)<P>
+This macro defines a new sorted array class named <I>name</I> and containing
+the elements of type <I>T</I>. The second form is used when compiling wxWidgets as
+a DLL under Windows and array needs to be visible outside the DLL.  The third is
+needed for exporting an array from a user DLL.<P>
+Example:<P>
+<PRE>
+WX_DEFINE_SORTED_ARRAY_INT(int, MySortedArrayInt);
+
+class MyClass;
+WX_DEFINE_SORTED_ARRAY(MyClass *, ArrayOfMyClass);
+</PRE>
+You will have to initialize the objects of this class by passing a comparison
+function to the array object constructor like this:<P>
+<PRE>
+int CompareInts(int n1, int n2)
+{
+    return n1 - n2;
+}
+
+wxSortedArrayInt sorted(CompareInts);
+
+int CompareMyClassObjects(MyClass *item1, MyClass *item2)
+{
+    // sort the items by their address...
+    return Stricmp(item1-&gt;GetAddress(), item2-&gt;GetAddress());
+}
+
+wxArrayOfMyClass another(CompareMyClassObjects);
+</PRE>
+
+<HR>
+<A NAME="wxdeclareobjarray"></A>
+<H3>WX_DECLARE_OBJARRAY</H3>
+<P>
+<B></B> <B>WX_DECLARE_OBJARRAY</B>(<B></B><I>T</I>, <B></B><I>name</I>)<P>
+<B></B> <B>WX_DECLARE_EXPORTED_OBJARRAY</B>(<B></B><I>T</I>, <B></B><I>name</I>)<P>
+<B></B> <B>WX_DECLARE_USER_EXPORTED_OBJARRAY</B>(<B></B><I>T</I>, <B></B><I>name</I>)<P>
+This macro declares a new object array class named <I>name</I> and containing
+the elements of type <I>T</I>. The second form is used when compiling wxWidgets as
+a DLL under Windows and array needs to be visible outside the DLL.  The third is
+needed for exporting an array from a user DLL.<P>
+Example:<P>
+<PRE>
+class MyClass;
+WX_DECLARE_OBJARRAY(MyClass, wxArrayOfMyClass); // note: not "MyClass *"!
+</PRE>
+You must use <A HREF="wx_wxarray.html#wxdefineobjarray">WX_DEFINE_OBJARRAY()</A> macro to define
+the array class - otherwise you would get link errors.<P>
+
+<HR>
+<A NAME="wxdefineobjarray"></A>
+<H3>WX_DEFINE_OBJARRAY</H3>
+<P>
+<B></B> <B>WX_DEFINE_OBJARRAY</B>(<B></B><I>name</I>)<P>
+<B></B> <B>WX_DEFINE_EXPORTED_OBJARRAY</B>(<B></B><I>name</I>)<P>
+<B></B> <B>WX_DEFINE_USER_EXPORTED_OBJARRAY</B>(<B></B><I>name</I>)<P>
+This macro defines the methods of the array class <I>name</I> not defined by the
+<A HREF="wx_wxarray.html#wxdeclareobjarray">WX_DECLARE_OBJARRAY()</A> macro. You must include the
+file &lt;wx/arrimpl.cpp&gt; before using this macro and you must have the full
+declaration of the class of array elements in scope! If you forget to do the
+first, the error will be caught by the compiler, but, unfortunately, many
+compilers will not give any warnings if you forget to do the second - but the
+objects of the class will not be copied correctly and their real destructor will
+not be called.  The latter two forms are merely aliases of the first to satisfy
+some people's sense of symmetry when using the exported declarations.<P>
+Example of usage:<P>
+<PRE>
+// first declare the class!
+class MyClass
+{
+public:
+   MyClass(const MyClass&);
+
+   ...
+
+   virtual ~MyClass();
+};
+
+#include &lt;wx/arrimpl.cpp&gt;
+WX_DEFINE_OBJARRAY(wxArrayOfMyClass);
+</PRE>
+
+<HR>
+<A NAME="wxappendarray"></A>
+<H3>WX_APPEND_ARRAY</H3>
+<P>
+<B>void</B> <B>WX_APPEND_ARRAY</B>(<B><A HREF="wx_wxarray.html#wxarray">wxArray</A>& </B></B><I>array</I>, <B><A HREF="wx_wxarray.html#wxarray">wxArray</A>& </B></B><I>other</I>)<P>
+This macro may be used to append all elements of the <I>other</I> array to the
+<I>array</I>. The two arrays must be of the same type.<P>
+
+<HR>
+<A NAME="wxprependarray"></A>
+<H3>WX_PREPEND_ARRAY</H3>
+<P>
+<B>void</B> <B>WX_PREPEND_ARRAY</B>(<B><A HREF="wx_wxarray.html#wxarray">wxArray</A>& </B></B><I>array</I>, <B><A HREF="wx_wxarray.html#wxarray">wxArray</A>& </B></B><I>other</I>)<P>
+This macro may be used to prepend all elements of the <I>other</I> array to the
+<I>array</I>. The two arrays must be of the same type.<P>
+
+<HR>
+<A NAME="wxcleararray"></A>
+<H3>WX_CLEAR_ARRAY</H3>
+<P>
+<B>void</B> <B>WX_CLEAR_ARRAY</B>(<B><A HREF="wx_wxarray.html#wxarray">wxArray</A>& </B></B><I>array</I>)<P>
+This macro may be used to delete all elements of the array before emptying it.
+It can not be used with wxObjArrays - but they will delete their elements anyhow
+when you call Empty().<P>
+
+<HR>
+<A NAME="wxarrayctordef"></A>
+<H3>Default constructors</H3>
+<P>
+<B></B> <B>wxArray</B>()<P>
+<B></B> <B>wxObjArray</B>()<P>
+Default constructor initializes an empty array object.<P>
+<B></B> <B>wxSortedArray</B>(<B>int (*)(T first, T second)</B><I>compareFunction</I>)<P>
+There is no default constructor for wxSortedArray classes - you must initialize it
+with a function to use for item comparison. It is a function which is passed
+two arguments of type <I>T</I> where <I>T</I> is the array element type and which
+should return a negative, zero or positive value according to whether the first
+element passed to it is less than, equal to or greater than the second one.<P>
+
+<HR>
+<A NAME="wxarrayctorcopy"></A>
+<H3>wxArray copy constructor and assignment operator</H3>
+<P>
+<B></B> <B>wxArray</B>(<B>const <A HREF="wx_wxarray.html#wxarray">wxArray</A>& </B></B><I>array</I>)<P>
+<B></B> <B>wxSortedArray</B>(<B>const wxSortedArray&amp; </B><I>array</I>)<P>
+<B></B> <B>wxObjArray</B>(<B>const wxObjArray&amp; </B><I>array</I>)<P>
+<B><A HREF="wx_wxarray.html#wxarray">wxArray</A>&</B> </B> <B>operator=</B>(<B>const <A HREF="wx_wxarray.html#wxarray">wxArray</A>& </B></B><I>array</I>)<P>
+<B>wxSortedArray&amp;</B> <B>operator=</B>(<B>const wxSortedArray&amp; </B><I>array</I>)<P>
+<B>wxObjArray&amp;</B> <B>operator=</B>(<B>const wxObjArray&amp; </B><I>array</I>)<P>
+The copy constructors and assignment operators perform a shallow array copy
+(i.e. they don't copy the objects pointed to even if the source array contains
+the items of pointer type) for wxArray and wxSortedArray and a deep copy (i.e.
+the array element are copied too) for wxObjArray.<P>
+
+<HR>
+<A NAME="wxarraydtor"></A>
+<H3>wxArray::~wxArray</H3>
+<P>
+<B></B> <B>~wxArray</B>()<P>
+<B></B> <B>~wxSortedArray</B>()<P>
+<B></B> <B>~wxObjArray</B>()<P>
+The wxObjArray destructor deletes all the items owned by the array. This is not
+done by wxArray and wxSortedArray versions - you may use
+<A HREF="wx_wxarray.html#wxcleararray">WX_CLEAR_ARRAY</A> macro for this.<P>
+
+<HR>
+<A NAME="wxarrayadd"></A>
+<H3>wxArray::Add</H3>
+<P>
+<B>void</B> <B>Add</B>(<B>T </B><I>item</I>, <B>size_t</B><I> copies = 1</I>)<P>
+<B>void</B> <B>Add</B>(<B>T *</B><I>item</I>)<P>
+<B>void</B> <B>Add</B>(<B>T &amp;</B><I>item</I>, <B>size_t</B><I> copies = 1</I>)<P>
+Appends the given number of <I>copies</I> of the <I>item</I> to the array
+consisting of the elements of type <I>T</I>.<P>
+The first version is used with wxArray and wxSortedArray. The second and the
+third are used with wxObjArray. There is an important difference between
+them: if you give a pointer to the array, it will take ownership of it, i.e.
+will delete it when the item is deleted from the array. If you give a reference
+to the array, however, the array will make a copy of the item and will not take
+ownership of the original item. Once again, it only makes sense for wxObjArrays
+because the other array types never take ownership of their elements. Also note
+that you cannot append more than one pointer as reusing it would lead to
+deleting it twice (or more) and hence to a crash.<P>
+You may also use <A HREF="wx_wxarray.html#wxappendarray">WX_APPEND_ARRAY</A> macro to append all
+elements of one array to another one but it is more efficient to use
+<I>copies</I> parameter and modify the elements in place later if you plan to
+append a lot of items.<P>
+
+<HR>
+<A NAME="wxarrayalloc"></A>
+<H3>wxArray::Alloc</H3>
+<P>
+<B>void</B> <B>Alloc</B>(<B>size_t </B><I>count</I>)<P>
+Preallocates memory for a given number of array elements. It is worth calling
+when the number of items which are going to be added to the array is known in
+advance because it will save unneeded memory reallocation. If the array already
+has enough memory for the given number of items, nothing happens. In any case,
+the existing contents of the array is not modified.<P>
+
+<HR>
+<A NAME="wxarrayclear"></A>
+<H3>wxArray::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>()<P>
+This function does the same as <A HREF="wx_wxarray.html#wxarrayempty">Empty()</A> and additionally
+frees the memory allocated to the array.<P>
+
+<HR>
+<A NAME="wxarraycount"></A>
+<H3>wxArray::Count</H3>
+<P>
+<B>size_t</B> <B>Count</B>() <B>const</B><P>
+Same as <A HREF="wx_wxarray.html#wxarraygetcount">GetCount()</A>. This function is deprecated -
+it exists only for compatibility.<P>
+
+<HR>
+<A NAME="wxobjarraydetach"></A>
+<H3>wxObjArray::Detach</H3>
+<P>
+<B>T *</B> <B>Detach</B>(<B>size_t </B><I>index</I>)<P>
+Removes the element from the array, but, unlike,
+<A HREF="wx_wxarray.html#wxarrayremove">Remove()</A> doesn't delete it. The function returns the
+pointer to the removed element.<P>
+
+<HR>
+<A NAME="wxarrayempty"></A>
+<H3>wxArray::Empty</H3>
+<P>
+<B>void</B> <B>Empty</B>()<P>
+Empties the array. For wxObjArray classes, this destroys all of the array
+elements. For wxArray and wxSortedArray this does nothing except marking the
+array of being empty - this function does not free the allocated memory, use
+<A HREF="wx_wxarray.html#wxarrayclear">Clear()</A> for this.<P>
+
+<HR>
+<A NAME="wxarraygetcount"></A>
+<H3>wxArray::GetCount</H3>
+<P>
+<B>size_t</B> <B>GetCount</B>() <B>const</B><P>
+Return the number of items in the array.<P>
+
+<HR>
+<A NAME="wxarrayindex"></A>
+<H3>wxArray::Index</H3>
+<P>
+<B>int</B> <B>Index</B>(<B>T&amp; </B><I>item</I>, <B>bool </B><I>searchFromEnd = false</I>) <B>const</B><P>
+<B>int</B> <B>Index</B>(<B>T&amp; </B><I>item</I>) <B>const</B><P>
+The first version of the function is for wxArray and wxObjArray, the second is
+for wxSortedArray only.<P>
+Searches the element in the array, starting from either beginning or the end
+depending on the value of <I>searchFromEnd</I> parameter. <TT>wxNOT_FOUND</TT> is
+returned if the element is not found, otherwise the index of the element is
+returned.<P>
+Linear search is used for the wxArray and wxObjArray classes but binary search
+in the sorted array is used for wxSortedArray (this is why searchFromEnd
+parameter doesn't make sense for it).<P>
+<B>NB:</B> even for wxObjArray classes, the operator==() of the elements in the
+array is <B>not</B> used by this function. It searches exactly the given
+element in the array and so will only succeed if this element had been
+previously added to the array, but fail even if another, identical, element is
+in the array.<P>
+
+<HR>
+<A NAME="wxarrayinsert"></A>
+<H3>wxArray::Insert</H3>
+<P>
+<B>void</B> <B>Insert</B>(<B>T </B><I>item</I>, <B>size_t </B><I>n</I>, <B>size_t </B><I>copies = 1</I>)<P>
+<B>void</B> <B>Insert</B>(<B>T *</B><I>item</I>, <B>size_t </B><I>n</I>)<P>
+<B>void</B> <B>Insert</B>(<B>T &amp;</B><I>item</I>, <B>size_t </B><I>n</I>, <B>size_t </B><I>copies = 1</I>)<P>
+Insert the given number of <I>copies</I> of the <I>item</I> into the array before
+the existing item <I>n</I> - thus, <I>Insert(something, 0u)</I> will insert an
+item in such way that it will become the first array element.<P>
+Please see <A HREF="wx_wxarray.html#wxarrayadd">Add()</A> for explanation of the differences
+between the overloaded versions of this function.<P>
+
+<HR>
+<A NAME="wxarrayisempty"></A>
+<H3>wxArray::IsEmpty</H3>
+<P>
+<B>bool</B> <B>IsEmpty</B>() <B>const</B><P>
+Returns true if the array is empty, false otherwise.<P>
+
+<HR>
+<A NAME="wxarrayitem"></A>
+<H3>wxArray::Item</H3>
+<P>
+<B>T&amp;</B> <B>Item</B>(<B>size_t </B><I>index</I>) <B>const</B><P>
+Returns the item at the given position in the array. If <I>index</I> is out of
+bounds, an assert failure is raised in the debug builds but nothing special is
+done in the release build.<P>
+The returned value is of type "reference to the array element type" for all of
+the array classes.<P>
+
+<HR>
+<A NAME="wxarraylast"></A>
+<H3>wxArray::Last</H3>
+<P>
+<B>T&amp;</B> <B>Last</B>() <B>const</B><P>
+Returns the last element in the array, i.e. is the same as Item(GetCount() - 1).
+An assert failure is raised in the debug mode if the array is empty.<P>
+The returned value is of type "reference to the array element type" for all of
+the array classes.<P>
+
+<HR>
+<A NAME="wxarrayremove"></A>
+<H3>wxArray::Remove</H3>
+<P>
+<B></B> <B>Remove</B>(<B>T </B><I>item</I>)<P>
+Removes an element from the array by value: the first item of the
+array equal to <I>item</I> is removed, an assert failure will result from an
+attempt to remove an item which doesn't exist in the array.<P>
+When an element is removed from wxObjArray it is deleted by the array - use
+<A HREF="wx_wxarray.html#wxobjarraydetach">Detach()</A> if you don't want this to happen. On the
+other hand, when an object is removed from a wxArray nothing happens - you
+should delete it manually if required:<P>
+<PRE>
+T *item = array[n];
+delete item;
+array.Remove(n)
+</PRE>
+See also <A HREF="wx_wxarray.html#wxcleararray">WX_CLEAR_ARRAY</A> macro which deletes all
+elements of a wxArray (supposed to contain pointers).<P>
+
+<HR>
+<A NAME="wxarrayremoveat"></A>
+<H3>wxArray::RemoveAt</H3>
+<P>
+<B></B> <B>RemoveAt</B>(<B>size_t </B><I>index</I>, <B>size_t </B><I>count = 1</I>)<P>
+Removes <I>count</I> elements starting at <I>index</I> from the array. When an
+element is removed from wxObjArray it is deleted by the array - use
+<A HREF="wx_wxarray.html#wxobjarraydetach">Detach()</A> if you don't want this to happen. On
+the other hand, when an object is removed from a wxArray nothing happens -
+you should delete it manually if required:<P>
+<PRE>
+T *item = array[n];
+delete item;
+array.RemoveAt(n)
+</PRE>
+See also <A HREF="wx_wxarray.html#wxcleararray">WX_CLEAR_ARRAY</A> macro which deletes all
+elements of a wxArray (supposed to contain pointers).<P>
+
+<HR>
+<A NAME="wxarraysetcount"></A>
+<H3>wxArray::SetCount</H3>
+<P>
+<B>void</B> <B>SetCount</B>(<B>size_t </B><I>count</I>, <B>T </B><I>defval = T(0)</I>)<P>
+This function ensures that the number of array elements is at least
+<I>count</I>. If the array has already <I>count</I> or more items, nothing is
+done. Otherwise, <TT>count - GetCount()</TT> elements are added and initialized to
+the value <I>defval</I>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarray.html#wxarraygetcount">GetCount</A><P>
+
+<HR>
+<A NAME="wxarrayshrink"></A>
+<H3>wxArray::Shrink</H3>
+<P>
+<B>void</B> <B>Shrink</B>()<P>
+Frees all memory unused by the array. If the program knows that no new items
+will be added to the array it may call Shrink() to reduce its memory usage.
+However, if a new item is added to the array, some extra memory will be
+allocated again.<P>
+
+<HR>
+<A NAME="wxarraysort"></A>
+<H3>wxArray::Sort</H3>
+<P>
+<B>void</B> <B>Sort</B>(<B>CMPFUNC&lt;T&gt; </B><I>compareFunction</I>)<P>
+The notation CMPFUNC&lt;T&gt; should be read as if we had the following declaration:<P>
+<PRE>
+template int CMPFUNC(T *first, T *second);
+</PRE>
+where <I>T</I> is the type of the array elements. I.e. it is a function returning
+<I>int</I> which is passed two arguments of type <I>T *</I>.<P>
+Sorts the array using the specified compare function: this function should
+return a negative, zero or positive value according to whether the first element
+passed to it is less than, equal to or greater than the second one.<P>
+wxSortedArray doesn't have this function because it is always sorted.<P>
+
+</FONT></BODY></HTML>

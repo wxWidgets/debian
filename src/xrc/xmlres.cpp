@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xmlres.cpp
+// Name:        src/xrc/xmlres.cpp
 // Purpose:     XRC resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlres.cpp,v 1.72.2.4 2006/03/04 18:55:38 VZ Exp $
+// RCS-ID:      $Id: xmlres.cpp 48620 2007-09-09 22:24:43Z VZ $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xmlres.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -21,32 +17,36 @@
 
 #if wxUSE_XRC
 
-#ifndef __WXWINCE__
-#include <locale.h>
+#include "wx/xrc/xmlres.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/intl.h"
+    #include "wx/log.h"
+    #include "wx/panel.h"
+    #include "wx/frame.h"
+    #include "wx/dialog.h"
+    #include "wx/settings.h"
+    #include "wx/bitmap.h"
+    #include "wx/image.h"
+    #include "wx/module.h"
 #endif
 
-#include "wx/dialog.h"
-#include "wx/panel.h"
-#include "wx/frame.h"
+#ifndef __WXWINCE__
+    #include <locale.h>
+#endif
+
 #include "wx/wfstream.h"
 #include "wx/filesys.h"
 #include "wx/filename.h"
-#include "wx/log.h"
-#include "wx/intl.h"
 #include "wx/tokenzr.h"
 #include "wx/fontenum.h"
-#include "wx/module.h"
-#include "wx/bitmap.h"
-#include "wx/image.h"
 #include "wx/fontmap.h"
 #include "wx/artprov.h"
-#include "wx/settings.h"
 
 #include "wx/xml/xml.h"
-#include "wx/xrc/xmlres.h"
 
 #include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY(wxXmlResourceDataRecords);
+WX_DEFINE_OBJARRAY(wxXmlResourceDataRecords)
 
 
 wxXmlResource *wxXmlResource::ms_instance = NULL;
@@ -65,22 +65,39 @@ wxXmlResource *wxXmlResource::ms_instance = NULL;
     return old;
 }
 
-wxXmlResource::wxXmlResource(int flags)
+wxXmlResource::wxXmlResource(int flags, const wxString& domain)
 {
     m_flags = flags;
     m_version = -1;
+    m_domain = NULL;
+    if (! domain.empty() )
+        SetDomain(domain);
 }
 
-wxXmlResource::wxXmlResource(const wxString& filemask, int flags)
+wxXmlResource::wxXmlResource(const wxString& filemask, int flags, const wxString& domain)
 {
     m_flags = flags;
     m_version = -1;
+    m_domain = NULL;
+    if (! domain.empty() )
+        SetDomain(domain);
     Load(filemask);
 }
 
 wxXmlResource::~wxXmlResource()
 {
+    if (m_domain)
+        free(m_domain);
     ClearHandlers();
+}
+
+void wxXmlResource::SetDomain(const wxChar* domain)
+{
+    if (m_domain)
+        free(m_domain);
+    m_domain = NULL;
+    if (domain && wxStrlen(domain))
+        m_domain = wxStrdup(domain);
 }
 
 
@@ -415,7 +432,11 @@ bool wxXmlResource::UpdateResources()
         {
 #           if wxUSE_FILESYSTEM
             file = fsys.OpenFile(m_data[i].File);
+#           if wxUSE_DATETIME
             modif = file && file->GetModificationTime() > m_data[i].Time;
+#           else // wxUSE_DATETIME
+            modif = true;
+#           endif // wxUSE_DATETIME
             if (!file)
             {
                 wxLogError(_("Cannot open file '%s'."), m_data[i].File.c_str());
@@ -423,9 +444,13 @@ bool wxXmlResource::UpdateResources()
             }
             wxDELETE(file);
             wxUnusedVar(file);
-#           else
+#           else // wxUSE_FILESYSTEM
+#           if wxUSE_DATETIME
             modif = wxDateTime(wxFileModificationTime(m_data[i].File)) > m_data[i].Time;
-#           endif
+#           else // wxUSE_DATETIME
+            modif = true;
+#           endif // wxUSE_DATETIME
+#           endif // wxUSE_FILESYSTEM
         }
 
         if (modif)
@@ -481,11 +506,13 @@ bool wxXmlResource::UpdateResources()
                 }
 
                 ProcessPlatformProperty(m_data[i].Doc->GetRoot());
+#if wxUSE_DATETIME
 #if wxUSE_FILESYSTEM
                 m_data[i].Time = file->GetModificationTime();
-#else
+#else // wxUSE_FILESYSTEM
                 m_data[i].Time = wxDateTime(wxFileModificationTime(m_data[i].File));
-#endif
+#endif // wxUSE_FILESYSTEM
+#endif // wxUSE_DATETIME
             }
 
 #           if wxUSE_FILESYSTEM
@@ -619,10 +646,21 @@ static void MergeNodes(wxXmlNode& dest, wxXmlNode& with)
         }
 
         if ( !dnode )
-            dest.AddChild(new wxXmlNode(*node));
+        {
+            static const wxChar *AT_END = wxT("end");
+            wxString insert_pos = node->GetPropVal(wxT("insert_at"), AT_END);
+            if ( insert_pos == AT_END )
+            {
+                dest.AddChild(new wxXmlNode(*node));
+            }
+            else if ( insert_pos == wxT("begin") )
+            {
+                dest.InsertChild(new wxXmlNode(*node), dest.GetChildren());
+            }
+        }
     }
 
-    if ( dest.GetType() == wxXML_TEXT_NODE && with.GetContent().Length() )
+    if ( dest.GetType() == wxXML_TEXT_NODE && with.GetContent().length() )
          dest.SetContent(with.GetContent());
 }
 
@@ -683,7 +721,7 @@ wxObject *wxXmlResource::CreateResFromNode(wxXmlNode *node, wxObject *parent,
 
 #include "wx/listimpl.cpp"
 WX_DECLARE_LIST(wxXmlSubclassFactory, wxXmlSubclassFactoriesList);
-WX_DEFINE_LIST(wxXmlSubclassFactoriesList);
+WX_DEFINE_LIST(wxXmlSubclassFactoriesList)
 
 wxXmlSubclassFactoriesList *wxXmlResource::ms_subclassFactories = NULL;
 
@@ -797,7 +835,6 @@ void wxXmlResourceHandler::AddWindowStyles()
     XRC_ADD_STYLE(wxALWAYS_SHOW_SB);
     XRC_ADD_STYLE(wxWS_EX_BLOCK_EVENTS);
     XRC_ADD_STYLE(wxWS_EX_VALIDATE_RECURSIVELY);
-    XRC_ADD_STYLE(wxALWAYS_SHOW_SB);
 }
 
 
@@ -896,7 +933,7 @@ wxString wxXmlResourceHandler::GetText(const wxString& param, bool translate)
         if (translate && parNode &&
             parNode->GetPropVal(wxT("translate"), wxEmptyString) != wxT("0"))
         {
-            return wxGetTranslation(str2);
+            return wxGetTranslation(str2, m_resource->GetDomain());
         }
         else
         {
@@ -931,21 +968,19 @@ long wxXmlResourceHandler::GetLong(const wxString& param, long defaultv)
 
 float wxXmlResourceHandler::GetFloat(const wxString& param, float defaultv)
 {
+    wxString str = GetParamValue(param);
+
+    // strings in XRC always use C locale but wxString::ToDouble() uses the
+    // current one, so transform the string to it supposing that the only
+    // difference between them is the decimal separator
+    str.Replace(wxT("."), wxLocale::GetInfo(wxLOCALE_DECIMAL_POINT,
+                                            wxLOCALE_CAT_NUMBER));
+
     double value;
-    wxString str1 = GetParamValue(param);
-
-#ifndef __WXWINCE__
-    const char *prevlocale = setlocale(LC_NUMERIC, "C");
-#endif
-
-    if (!str1.ToDouble(&value))
+    if (!str.ToDouble(&value))
         value = defaultv;
 
-#ifndef __WXWINCE__
-    setlocale(LC_NUMERIC, prevlocale);
-#endif
-
-    return value;
+    return wx_truncate_cast(float, value);
 }
 
 
@@ -1022,19 +1057,21 @@ static wxColour GetSystemColour(const wxString& name)
     return wxNullColour;
 }
 
-wxColour wxXmlResourceHandler::GetColour(const wxString& param)
+wxColour wxXmlResourceHandler::GetColour(const wxString& param, const wxColour& defaultv)
 {
     wxString v = GetParamValue(param);
 
-    // find colour using HTML syntax (#RRGGBB)
-    unsigned long tmp = 0;
+    if ( v.empty() )
+        return defaultv;
 
-    if (v.Length() != 7 || v[0u] != wxT('#') ||
-        wxSscanf(v.c_str(), wxT("#%lX"), &tmp) != 1)
+    wxColour clr;
+
+    // wxString -> wxColour conversion
+    if (!clr.Set(v))
     {
         // the colour doesn't use #RRGGBB format, check if it is symbolic
         // colour name:
-        wxColour clr = GetSystemColour(v);
+        clr = GetSystemColour(v);
         if (clr.Ok())
             return clr;
 
@@ -1043,9 +1080,7 @@ wxColour wxXmlResourceHandler::GetColour(const wxString& param)
         return wxNullColour;
     }
 
-    return wxColour((unsigned char) ((tmp & 0xFF0000) >> 16) ,
-                    (unsigned char) ((tmp & 0x00FF00) >> 8),
-                    (unsigned char) ((tmp & 0x0000FF)));
+    return clr;
 }
 
 
@@ -1079,7 +1114,7 @@ wxBitmap wxXmlResourceHandler::GetBitmap(const wxString& param,
     wxString name = GetParamValue(param);
     if (name.empty()) return wxNullBitmap;
 #if wxUSE_FILESYSTEM
-    wxFSFile *fsfile = GetCurFileSystem().OpenFile(name);
+    wxFSFile *fsfile = GetCurFileSystem().OpenFile(name, wxFS_READ | wxFS_SEEKABLE);
     if (fsfile == NULL)
     {
         wxLogError(_("XRC resource: Cannot create bitmap from '%s'."),
@@ -1089,22 +1124,51 @@ wxBitmap wxXmlResourceHandler::GetBitmap(const wxString& param,
     wxImage img(*(fsfile->GetStream()));
     delete fsfile;
 #else
-    wxImage img(GetParamValue(wxT("bitmap")));
+    wxImage img(name);
 #endif
 
     if (!img.Ok())
     {
         wxLogError(_("XRC resource: Cannot create bitmap from '%s'."),
-                   param.c_str());
+                   name.c_str());
         return wxNullBitmap;
     }
     if (!(size == wxDefaultSize)) img.Rescale(size.x, size.y);
-#if !defined(__WXMSW__) || wxUSE_WXDIB
     return wxBitmap(img);
-#else
-    return wxBitmap();
-#endif
 }
+
+#if wxUSE_ANIMATIONCTRL
+wxAnimation wxXmlResourceHandler::GetAnimation(const wxString& param)
+{
+    wxAnimation ani;
+
+    /* load the animation from file: */
+    wxString name = GetParamValue(param);
+    if (name.empty()) return wxNullAnimation;
+#if wxUSE_FILESYSTEM
+    wxFSFile *fsfile = GetCurFileSystem().OpenFile(name, wxFS_READ | wxFS_SEEKABLE);
+    if (fsfile == NULL)
+    {
+        wxLogError(_("XRC resource: Cannot create animation from '%s'."),
+                   name.c_str());
+        return wxNullAnimation;
+    }
+    ani.Load(*(fsfile->GetStream()));
+    delete fsfile;
+#else
+    ani.LoadFile(name);
+#endif
+
+    if (!ani.IsOk())
+    {
+        wxLogError(_("XRC resource: Cannot create animation from '%s'."),
+                   name.c_str());
+        return wxNullAnimation;
+    }
+
+    return ani;
+}
+#endif      // wxUSE_ANIMATIONCTRL
 
 
 
@@ -1133,6 +1197,14 @@ wxXmlNode *wxXmlResourceHandler::GetParamNode(const wxString& param)
     }
     return NULL;
 }
+
+
+
+bool wxXmlResourceHandler::IsOfClass(wxXmlNode *node, const wxString& classname)
+{
+    return node->GetPropVal(wxT("class"), wxEmptyString) == classname;
+}
+
 
 
 wxString wxXmlResourceHandler::GetNodeContent(wxXmlNode *node)
@@ -1171,7 +1243,7 @@ wxSize wxXmlResourceHandler::GetSize(const wxString& param,
     bool is_dlg;
     long sx, sy = 0;
 
-    is_dlg = s[s.Length()-1] == wxT('d');
+    is_dlg = s[s.length()-1] == wxT('d');
     if (is_dlg) s.RemoveLast();
 
     if (!s.BeforeFirst(wxT(',')).ToLong(&sx) ||
@@ -1220,7 +1292,7 @@ wxCoord wxXmlResourceHandler::GetDimension(const wxString& param,
     bool is_dlg;
     long sx;
 
-    is_dlg = s[s.Length()-1] == wxT('d');
+    is_dlg = s[s.length()-1] == wxT('d');
     if (is_dlg) s.RemoveLast();
 
     if (!s.ToLong(&sx))
@@ -1286,10 +1358,10 @@ wxFont wxXmlResourceHandler::GetFont(const wxString& param)
     // font attributes:
 
     // size
-    int isize = wxDEFAULT;
+    int isize = -1;
     bool hasSize = HasParam(wxT("size"));
     if (hasSize)
-        isize = GetLong(wxT("size"), wxDEFAULT);
+        isize = GetLong(wxT("size"), -1);
 
     // style
     int istyle = wxNORMAL;
@@ -1339,15 +1411,14 @@ wxFont wxXmlResourceHandler::GetFont(const wxString& param)
     if (hasFacename)
     {
         wxString faces = GetParamValue(wxT("face"));
-        wxFontEnumerator enu;
-        enu.EnumerateFacenames();
+        wxArrayString facenames(wxFontEnumerator::GetFacenames());
         wxStringTokenizer tk(faces, wxT(","));
         while (tk.HasMoreTokens())
         {
-            int index = enu.GetFacenames()->Index(tk.GetNextToken(), false);
+            int index = facenames.Index(tk.GetNextToken(), false);
             if (index != wxNOT_FOUND)
             {
-                facename = (*enu.GetFacenames())[index];
+                facename = facenames[index];
                 break;
             }
         }
@@ -1367,36 +1438,38 @@ wxFont wxXmlResourceHandler::GetFont(const wxString& param)
     }
 
     // is this font based on a system font?
-    wxFont sysfont = GetSystemFont(GetParamValue(wxT("sysfont")));
+    wxFont font = GetSystemFont(GetParamValue(wxT("sysfont")));
 
-    if (sysfont.Ok())
+    if (font.Ok())
     {
-        if (hasSize)
-            sysfont.SetPointSize(isize);
+        if (hasSize && isize != -1)
+            font.SetPointSize(isize);
         else if (HasParam(wxT("relativesize")))
-            sysfont.SetPointSize(int(sysfont.GetPointSize() *
+            font.SetPointSize(int(font.GetPointSize() *
                                      GetFloat(wxT("relativesize"))));
 
         if (hasStyle)
-            sysfont.SetStyle(istyle);
+            font.SetStyle(istyle);
         if (hasWeight)
-            sysfont.SetWeight(iweight);
+            font.SetWeight(iweight);
         if (hasUnderlined)
-            sysfont.SetUnderlined(underlined);
+            font.SetUnderlined(underlined);
         if (hasFamily)
-            sysfont.SetFamily(ifamily);
+            font.SetFamily(ifamily);
         if (hasFacename)
-            sysfont.SetFaceName(facename);
+            font.SetFaceName(facename);
         if (hasEncoding)
-            sysfont.SetDefaultEncoding(enc);
-
-        m_node = oldnode;
-        return sysfont;
+            font.SetDefaultEncoding(enc);
+    }
+    else // not based on system font
+    {
+        font = wxFont(isize == -1 ? wxNORMAL_FONT->GetPointSize() : isize,
+                      ifamily, istyle, iweight,
+                      underlined, facename, enc);
     }
 
     m_node = oldnode;
-    return wxFont(isize, ifamily, istyle, iweight,
-                  underlined, facename, enc);
+    return font;
 }
 
 
@@ -1483,7 +1556,7 @@ struct XRCID_record
 
 static XRCID_record *XRCID_Records[XRCID_TABLE_SIZE] = {NULL};
 
-static int XRCID_Lookup(const wxChar *str_id, int value_if_not_found = -2)
+static int XRCID_Lookup(const wxChar *str_id, int value_if_not_found = wxID_NONE)
 {
     int index = 0;
 
@@ -1507,7 +1580,7 @@ static int XRCID_Lookup(const wxChar *str_id, int value_if_not_found = -2)
     (*rec_var)->next = NULL;
 
     wxChar *end;
-    if (value_if_not_found != -2)
+    if (value_if_not_found != wxID_NONE)
         (*rec_var)->id = value_if_not_found;
     else
     {
@@ -1528,7 +1601,8 @@ static int XRCID_Lookup(const wxChar *str_id, int value_if_not_found = -2)
 
 static void AddStdXRCID_Records();
 
-/*static*/ int wxXmlResource::GetXRCID(const wxChar *str_id)
+/*static*/
+int wxXmlResource::GetXRCID(const wxChar *str_id, int value_if_not_found)
 {
     static bool s_stdIDsAdded = false;
 
@@ -1538,7 +1612,7 @@ static void AddStdXRCID_Records();
         AddStdXRCID_Records();
     }
 
-    return XRCID_Lookup(str_id);
+    return XRCID_Lookup(str_id, value_if_not_found);
 }
 
 
@@ -1581,6 +1655,7 @@ static void AddStdXRCID_Records()
     stdID(wxID_HELP);
     stdID(wxID_PRINT);
     stdID(wxID_PRINT_SETUP);
+    stdID(wxID_PAGE_SETUP);
     stdID(wxID_PREVIEW);
     stdID(wxID_ABOUT);
     stdID(wxID_HELP_CONTENTS);

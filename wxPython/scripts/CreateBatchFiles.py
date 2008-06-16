@@ -13,7 +13,9 @@
 import sys, os
 
 python = sys.executable
-pythonw = 'start ' + os.path.join(os.path.split(python)[0], 'pythonw.exe')
+# the syntax start "" "filepath" is necessary for file paths with spaces
+pythonw = 'start "" "' + os.path.join(os.path.split(python)[0], 'pythonw.exe"')
+python = '"%s"' % python
 scriptdir = os.getcwd()
 
 scripts = [ ("img2png",    0),
@@ -23,17 +25,18 @@ scripts = [ ("img2png",    0),
             ("xrced",      1),
             ("pyshell",    1),
             ("pycrust",    1),
-            ("pywrap",     0),
+            ("pywrap",     1),
             ("pyalamode",  1),
             ("pyalacarte", 1),
             ("helpviewer", 1),
             ("pywxrc",     0),
+            ("editra",     1),
             ]
 
 template = """\
 @echo off
 
-%s %s\\%s %%1 %%2 %%3 %%4 %%5 %%6 %%7 %%8 %%9
+%s "%s\\%s" %%1 %%2 %%3 %%4 %%5 %%6 %%7 %%8 %%9
 """
 
 def main():

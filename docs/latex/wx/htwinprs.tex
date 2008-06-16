@@ -32,10 +32,12 @@ The product of parsing is a wxHtmlCell (resp. wxHtmlContainer) object.
 
 \func{}{wxHtmlWinParser}{\void}
 
-\func{}{wxHtmlWinParser}{\param{wxHtmlWindow }{*wnd}}
+\func{}{wxHtmlWinParser}{\param{wxHtmlWindowInterface }{*wndIface}}
 
 Constructor. Don't use the default one, use constructor with
-{\it wnd} parameter ({\it wnd} is pointer to associated \helpref{wxHtmlWindow}{wxhtmlwindow})
+{\it wndIface} parameter ({\it wndIface} is a pointer to interface object for
+the associated \helpref{wxHtmlWindow}{wxhtmlwindow} or other HTML rendering
+window such as \helpref{wxHtmlListBox}{wxhtmllistbox}).
 
 \membersection{wxHtmlWinParser::AddModule}\label{wxhtmlwinparseraddmodule}
 
@@ -269,7 +271,7 @@ Sets underlined flag of actualfont. {\it x} is either true of false.
 
 \membersection{wxHtmlWinParser::SetFonts}\label{wxhtmlwinparsersetfonts}
 
-\func{void}{SetFonts}{\param{wxString }{normal\_face}, \param{wxString }{fixed\_face}, \param{const int }{*sizes = NULL}}
+\func{void}{SetFonts}{\param{const wxString\& }{normal\_face}, \param{const wxString\& }{fixed\_face}, \param{const int }{*sizes = NULL}}
 
 Sets fonts. See \helpref{wxHtmlWindow::SetFonts}{wxhtmlwindowsetfonts} for
 detailed description.

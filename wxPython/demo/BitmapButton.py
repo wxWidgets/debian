@@ -37,7 +37,7 @@ class TestPanel(wx.Panel):
         b.SetToolTipString("This is a bitmap button.")
         self.Bind(wx.EVT_BUTTON, self.OnClick, b)
 
-        b = wx.BitmapButton(self, 30, bmp, (20, 120),
+        b = wx.BitmapButton(self, -1, bmp, (20, 120),
                             style = wx.NO_BORDER)
         
         # hide a little surprise in the button...
@@ -45,7 +45,7 @@ class TestPanel(wx.Panel):
 
         b.SetToolTipString("This is a bitmap button with \nwx.NO_BORDER style.")
         self.Bind(wx.EVT_BUTTON, self.OnClick, b)
-
+        
 
     def OnClick(self, event):
         self.log.write("Click! (%d)\n" % event.GetId())

@@ -3,17 +3,13 @@
 // Purpose:     wxNotebook class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: notebook.h,v 1.57 2005/08/02 22:57:56 MW Exp $
+// RCS-ID:      $Id: notebook.h 43051 2006-11-04 18:29:28Z RR $
 // Copyright:   (c) Julian Smart and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKNOTEBOOKH__
 #define __GTKNOTEBOOKH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
 
 //-----------------------------------------------------------------------------
 // internal class
@@ -56,9 +52,12 @@ public:
     // set the currently selected page, return the index of the previously
     // selected one (or -1 on error)
     // NB: this function will _not_ generate wxEVT_NOTEBOOK_PAGE_xxx events
-  int SetSelection(size_t nPage);
+    int SetSelection(size_t nPage) { return DoSetSelection(nPage, SetSelection_SendEvent); }
     // get the currently selected page
   int GetSelection() const;
+
+  // changes selected page without sending events
+  int ChangeSelection(size_t nPage) { return DoSetSelection(nPage); }
 
     // set/get the title of a page
   bool SetPageText(size_t nPage, const wxString& strText);
@@ -83,7 +82,7 @@ public:
     // remove all pages
   bool DeleteAllPages();
 
-    // adds a new page to the notebook (it will be deleted ny the notebook,
+    // adds a new page to the notebook (it will be deleted by the notebook,
     // don't delete it yourself). If bSelect, this page becomes active.
     // the same as AddPage(), but adds it at the specified position
     bool InsertPage( size_t position,
@@ -108,12 +107,6 @@ public:
     bool DoPhase(int phase);
 #endif
 
-    // set all page's attributes
-    void DoApplyWidgetStyle(GtkRcStyle *style);
-
-    // report if window belongs to notebook
-    bool IsOwnGtkWindow( GdkWindow *window );
-
     // common part of all ctors
     void Init();
 
@@ -123,16 +116,20 @@ public:
     // the additional page data (the pages themselves are in m_pages array)
     wxGtkNotebookPagesList m_pagesData;
 
-    // for reasons explained in gtk/notebook.cpp we store the current
-    // selection internally instead of querying the notebook for it
-    int m_selection;
-
-    // flag set to true while we're inside "switch_page" callback
-    bool m_inSwitchPage;
+    // we need to store the old selection since there
+    // is no other way to know about it at the time
+    // of the change selection event
+    int m_oldSelection;
 
 protected:
+    // set all page's attributes
+    virtual void DoApplyWidgetStyle(GtkRcStyle *style);
+    virtual GdkWindow *GTKGetWindow(wxArrayGdkWindows& windows) const;
+
     // remove one page from the notebook but do not destroy it
     virtual wxNotebookPage *DoRemovePage(size_t nPage);
+
+    int DoSetSelection(size_t nPage, int flags = 0);
 
 private:
     // the padding set by SetPadding()

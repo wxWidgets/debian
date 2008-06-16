@@ -1,0 +1,117 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxColourData</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcolourdata"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcolour.html#wxcolour"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcolourdatabase.html#wxcolourdatabase"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxColourData</H2>
+<P>
+This class holds a variety of information related to colour dialogs.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/cmndata.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcolour.html#wxcolour">wxColour</A>, <A HREF="wx_wxcolourdialog.html#wxcolourdialog">wxColourDialog</A>, <A HREF="wx_commondialogsoverview.html#wxcolourdialogoverview">wxColourDialog overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxcolourdatactor">wxColourData::wxColourData</A><BR>
+<A HREF="#wxcolourdatadtor">wxColourData::~wxColourData</A><BR>
+<A HREF="#wxcolourdatagetchoosefull">wxColourData::GetChooseFull</A><BR>
+<A HREF="#wxcolourdatagetcolour">wxColourData::GetColour</A><BR>
+<A HREF="#wxcolourdatagetcustomcolour">wxColourData::GetCustomColour</A><BR>
+<A HREF="#wxcolourdatasetchoosefull">wxColourData::SetChooseFull</A><BR>
+<A HREF="#wxcolourdatasetcolour">wxColourData::SetColour</A><BR>
+<A HREF="#wxcolourdatasetcustomcolour">wxColourData::SetCustomColour</A><BR>
+<A HREF="#wxcolourdataassign">wxColourData::operator =</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcolourdatactor"></A>
+<H3>wxColourData::wxColourData</H3>
+<P>
+<B></B> <B>wxColourData</B>()<P>
+Constructor. Initializes the custom colours to <TT>wxNullColour</TT>,
+the <I>data colour</I> setting
+to black, and the <I>choose full</I> setting to true.<P>
+
+
+<HR>
+<A NAME="wxcolourdatadtor"></A>
+<H3>wxColourData::~wxColourData</H3>
+<P>
+<B></B> <B>~wxColourData</B>()<P>
+Destructor.<P>
+
+
+<HR>
+<A NAME="wxcolourdatagetchoosefull"></A>
+<H3>wxColourData::GetChooseFull</H3>
+<P>
+<B>bool</B> <B>GetChooseFull</B>() <B>const</B><P>
+Under Windows, determines whether the Windows colour dialog will display the full dialog
+with custom colour selection controls. Under PalmOS, determines whether colour dialog
+will display full rgb colour picker or only available palette indexer.
+Has no meaning under other platforms.<P>
+The default value is true.<P>
+
+
+<HR>
+<A NAME="wxcolourdatagetcolour"></A>
+<H3>wxColourData::GetColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetColour</B>() <B>const</B><P>
+Gets the current colour associated with the colour dialog.<P>
+The default colour is black.<P>
+
+
+<HR>
+<A NAME="wxcolourdatagetcustomcolour"></A>
+<H3>wxColourData::GetCustomColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetCustomColour</B>(<B>int</B><I> i</I>) <B>const</B><P>
+Gets the <I>i</I>th custom colour associated with the colour dialog. <I>i</I> should
+be an integer between 0 and 15.<P>
+The default custom colours are invalid colours.<P>
+
+
+<HR>
+<A NAME="wxcolourdatasetchoosefull"></A>
+<H3>wxColourData::SetChooseFull</H3>
+<P>
+<B>void</B> <B>SetChooseFull</B>(<B>const bool </B><I>flag</I>)<P>
+Under Windows, tells the Windows colour dialog to display the full dialog
+with custom colour selection controls. Under other platforms, has no effect.<P>
+The default value is true.<P>
+
+
+<HR>
+<A NAME="wxcolourdatasetcolour"></A>
+<H3>wxColourData::SetColour</H3>
+<P>
+<B>void</B> <B>SetColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+Sets the default colour for the colour dialog.<P>
+The default colour is black.<P>
+
+
+<HR>
+<A NAME="wxcolourdatasetcustomcolour"></A>
+<H3>wxColourData::SetCustomColour</H3>
+<P>
+<B>void</B> <B>SetCustomColour</B>(<B>int</B><I> i</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>)<P>
+Sets the <I>i</I>th custom colour for the colour dialog. <I>i</I> should
+be an integer between 0 and 15.<P>
+The default custom colours are invalid colours.<P>
+
+
+<HR>
+<A NAME="wxcolourdataassign"></A>
+<H3>wxColourData::operator =</H3>
+<P>
+<B>void</B> <B>operator =</B>(<B>const <A HREF="wx_wxcolourdata.html#wxcolourdata">wxColourData</A>&</B></B><I> data</I>)<P>
+Assignment operator for the colour data.<P>
+<P>
+
+
+</FONT></BODY></HTML>

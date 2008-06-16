@@ -1,0 +1,291 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxUpdateUIEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxupdateuievent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtreeitemdata.html#wxtreeitemdata"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxuri.html#wxuri"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxUpdateUIEvent</H2>
+<P>
+This class is used for pseudo-events which are called by wxWidgets
+to give an application the chance to update various user interface elements.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><BR>
+
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process an update event, use these event handler macros to direct input to member
+functions that take a wxUpdateUIEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_UPDATE_UI(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_UPDATE_UI event for the command with the given id.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_UPDATE_UI_RANGE(id1, id2, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_UPDATE_UI event for any command with id included in the given range.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Without update UI events, an application has to work hard to check/uncheck, enable/disable,
+show/hide, and set the text for elements such as menu items and toolbar buttons.
+The code for doing this has to be mixed up with the code that is invoked when
+an action is invoked for a menu item or button.<P>
+With update UI events, you define an event handler to look at the state of
+the application and change UI elements accordingly. wxWidgets will call your
+member functions in idle time, so you don't have to worry where to call this code.
+In addition to being a clearer and more declarative method, it also means you
+don't have to worry whether you're updating a toolbar or menubar identifier.
+The same handler can update a menu item and toolbar button, if the identifier is the same.<P>
+Instead of directly manipulating the menu or button, you call functions in the event
+object, such as <A HREF="wx_wxupdateuievent.html#wxupdateuieventcheck">wxUpdateUIEvent::Check</A>. wxWidgets
+will determine whether such a call has been made, and which UI element to update.<P>
+These events will work for popup menus as well as menubars. Just before a menu is popped
+up, <A HREF="wx_wxmenu.html#wxmenuupdateui">wxMenu::UpdateUI</A> is called to process any UI events for
+the window that owns the menu.<P>
+If you find that the overhead of UI update processing is affecting
+your application, you can do one or both of the following:<P>
+<OL>
+
+<LI> Call <A HREF="wx_wxupdateuievent.html#wxupdateuieventsetmode">wxUpdateUIEvent::SetMode</A> with
+a value of wxUPDATE_UI_PROCESS_SPECIFIED, and set the extra style
+wxWS_EX_PROCESS_UPDATE_EVENTS for every window that should receive update events.
+No other windows will receive update events.
+<LI> Call <A HREF="wx_wxupdateuievent.html#wxupdateuieventsetupdateinterval">wxUpdateUIEvent::SetUpdateInterval</A> with
+a millisecond value to set the delay between updates. You may need
+to call <A HREF="wx_wxwindow.html#wxwindowupdatewindowui">wxWindow::UpdateWindowUI</A> at critical
+points, for example when a dialog is about to be shown, in case the user
+sees a slight delay before windows are updated.
+</OL>
+<P>
+Note that although events are sent in idle time, defining a wxIdleEvent
+handler for a window does not affect this because the events are sent from <A HREF="wx_wxwindow.html#wxwindowoninternalidle">wxWindow::OnInternalIdle</A> 
+which is <B>always</B> called in idle time.<P>
+wxWidgets tries to optimize update events on some platforms. On Windows
+and GTK+, events for menubar items are only sent when the menu is about
+to be shown, and not in idle time.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxupdateuieventctor">wxUpdateUIEvent::wxUpdateUIEvent</A><BR>
+<A HREF="#wxupdateuieventcanupdate">wxUpdateUIEvent::CanUpdate</A><BR>
+<A HREF="#wxupdateuieventcheck">wxUpdateUIEvent::Check</A><BR>
+<A HREF="#wxupdateuieventenable">wxUpdateUIEvent::Enable</A><BR>
+<A HREF="#wxupdateuieventshow">wxUpdateUIEvent::Show</A><BR>
+<A HREF="#wxupdateuieventgetchecked">wxUpdateUIEvent::GetChecked</A><BR>
+<A HREF="#wxupdateuieventgetenabled">wxUpdateUIEvent::GetEnabled</A><BR>
+<A HREF="#wxupdateuieventgetshown">wxUpdateUIEvent::GetShown</A><BR>
+<A HREF="#wxupdateuieventgetsetchecked">wxUpdateUIEvent::GetSetChecked</A><BR>
+<A HREF="#wxupdateuieventgetsetenabled">wxUpdateUIEvent::GetSetEnabled</A><BR>
+<A HREF="#wxupdateuieventgetsetshown">wxUpdateUIEvent::GetSetShown</A><BR>
+<A HREF="#wxupdateuieventgetsettext">wxUpdateUIEvent::GetSetText</A><BR>
+<A HREF="#wxupdateuieventgettext">wxUpdateUIEvent::GetText</A><BR>
+<A HREF="#wxupdateuieventgetmode">wxUpdateUIEvent::GetMode</A><BR>
+<A HREF="#wxupdateuieventgetupdateinterval">wxUpdateUIEvent::GetUpdateInterval</A><BR>
+<A HREF="#wxupdateuieventresetupdatetime">wxUpdateUIEvent::ResetUpdateTime</A><BR>
+<A HREF="#wxupdateuieventsetmode">wxUpdateUIEvent::SetMode</A><BR>
+<A HREF="#wxupdateuieventsettext">wxUpdateUIEvent::SetText</A><BR>
+<A HREF="#wxupdateuieventsetupdateinterval">wxUpdateUIEvent::SetUpdateInterval</A><BR>
+<P>
+
+<HR>
+<A NAME="wxupdateuieventctor"></A>
+<H3>wxUpdateUIEvent::wxUpdateUIEvent</H3>
+<P>
+<B></B> <B>wxUpdateUIEvent</B>(<B>wxWindowID </B><I>commandId = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxupdateuieventcanupdate"></A>
+<H3>wxUpdateUIEvent::CanUpdate</H3>
+<P>
+<B>static bool</B> <B>CanUpdate</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> window</I>)<P>
+Returns <TT>true</TT> if it is appropriate to update (send UI update events to)
+this window.<P>
+This function looks at the mode used (see <A HREF="wx_wxupdateuievent.html#wxupdateuieventsetmode">wxUpdateUIEvent::SetMode</A>),
+the wxWS_EX_PROCESS_UPDATE_EVENTS flag in <I>window</I>,
+the time update events were last sent in idle time, and
+the update interval, to determine whether events should be sent to
+this window now. By default this will always return <TT>true</TT> because
+the update mode is initially wxUPDATE_UI_PROCESS_ALL and
+the interval is set to 0; so update events will be sent as
+often as possible. You can reduce the frequency that events
+are sent by changing the mode and/or setting an update interval.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxupdateuievent.html#wxupdateuieventresetupdatetime">wxUpdateUIEvent::ResetUpdateTime</A>, 
+<A HREF="wx_wxupdateuievent.html#wxupdateuieventsetupdateinterval">wxUpdateUIEvent::SetUpdateInterval</A>, 
+<A HREF="wx_wxupdateuievent.html#wxupdateuieventsetmode">wxUpdateUIEvent::SetMode</A><P>
+
+<HR>
+<A NAME="wxupdateuieventcheck"></A>
+<H3>wxUpdateUIEvent::Check</H3>
+<P>
+<B>void</B> <B>Check</B>(<B>bool</B><I> check</I>)<P>
+Check or uncheck the UI element.<P>
+
+<HR>
+<A NAME="wxupdateuieventenable"></A>
+<H3>wxUpdateUIEvent::Enable</H3>
+<P>
+<B>void</B> <B>Enable</B>(<B>bool</B><I> enable</I>)<P>
+Enable or disable the UI element.<P>
+
+<HR>
+<A NAME="wxupdateuieventshow"></A>
+<H3>wxUpdateUIEvent::Show</H3>
+<P>
+<B>void</B> <B>Show</B>(<B>bool</B><I> show</I>)<P>
+Show or hide the UI element.<P>
+
+<HR>
+<A NAME="wxupdateuieventgetchecked"></A>
+<H3>wxUpdateUIEvent::GetChecked</H3>
+<P>
+<B>bool</B> <B>GetChecked</B>() <B>const</B><P>
+Returns true if the UI element should be checked.<P>
+
+<HR>
+<A NAME="wxupdateuieventgetenabled"></A>
+<H3>wxUpdateUIEvent::GetEnabled</H3>
+<P>
+<B>bool</B> <B>GetEnabled</B>() <B>const</B><P>
+Returns true if the UI element should be enabled.<P>
+
+<HR>
+<A NAME="wxupdateuieventgetshown"></A>
+<H3>wxUpdateUIEvent::GetShown</H3>
+<P>
+<B>bool</B> <B>GetShown</B>() <B>const</B><P>
+Returns true if the UI element should be shown.<P>
+
+<HR>
+<A NAME="wxupdateuieventgetsetchecked"></A>
+<H3>wxUpdateUIEvent::GetSetChecked</H3>
+<P>
+<B>bool</B> <B>GetSetChecked</B>() <B>const</B><P>
+Returns true if the application has called <A HREF="wx_wxupdateuievent.html#wxupdateuieventcheck">wxUpdateUIEvent::Check</A>. For wxWidgets internal use only.<P>
+
+<HR>
+<A NAME="wxupdateuieventgetsetenabled"></A>
+<H3>wxUpdateUIEvent::GetSetEnabled</H3>
+<P>
+<B>bool</B> <B>GetSetEnabled</B>() <B>const</B><P>
+Returns true if the application has called <A HREF="wx_wxupdateuievent.html#wxupdateuieventenable">wxUpdateUIEvent::Enable</A>. For wxWidgets internal use only.<P>
+
+<HR>
+<A NAME="wxupdateuieventgetsetshown"></A>
+<H3>wxUpdateUIEvent::GetSetShown</H3>
+<P>
+<B>bool</B> <B>GetSetShown</B>() <B>const</B><P>
+Returns true if the application has called <A HREF="wx_wxupdateuievent.html#wxupdateuieventshow">wxUpdateUIEvent::Show</A>. For wxWidgets internal use only.<P>
+
+<HR>
+<A NAME="wxupdateuieventgetsettext"></A>
+<H3>wxUpdateUIEvent::GetSetText</H3>
+<P>
+<B>bool</B> <B>GetSetText</B>() <B>const</B><P>
+Returns true if the application has called <A HREF="wx_wxupdateuievent.html#wxupdateuieventsettext">wxUpdateUIEvent::SetText</A>. For wxWidgets internal use only.<P>
+
+<HR>
+<A NAME="wxupdateuieventgettext"></A>
+<H3>wxUpdateUIEvent::GetText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetText</B>() <B>const</B><P>
+Returns the text that should be set for the UI element.<P>
+
+<HR>
+<A NAME="wxupdateuieventgetmode"></A>
+<H3>wxUpdateUIEvent::GetMode</H3>
+<P>
+<B>static wxUpdateUIMode</B> <B>GetMode</B>()<P>
+Static function returning a value specifying how wxWidgets
+will send update events: to all windows, or only to those which specify that they
+will process the events.<P>
+See <A HREF="wx_wxupdateuievent.html#wxupdateuieventsetmode">wxUpdateUIEvent::SetMode</A>.<P>
+
+<HR>
+<A NAME="wxupdateuieventgetupdateinterval"></A>
+<H3>wxUpdateUIEvent::GetUpdateInterval</H3>
+<P>
+<B>static long</B> <B>GetUpdateInterval</B>()<P>
+Returns the current interval between updates in milliseconds.
+-1 disables updates, 0 updates as frequently as possible.<P>
+See <A HREF="wx_wxupdateuievent.html#wxupdateuieventsetupdateinterval">wxUpdateUIEvent::SetUpdateInterval</A>.<P>
+
+<HR>
+<A NAME="wxupdateuieventresetupdatetime"></A>
+<H3>wxUpdateUIEvent::ResetUpdateTime</H3>
+<P>
+<B>static void</B> <B>ResetUpdateTime</B>()<P>
+Used internally to reset the last-updated time to the
+current time. It is assumed that update events are
+normally sent in idle time, so this is called at the end of
+idle processing.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxupdateuievent.html#wxupdateuieventcanupdate">wxUpdateUIEvent::CanUpdate</A>, 
+<A HREF="wx_wxupdateuievent.html#wxupdateuieventsetupdateinterval">wxUpdateUIEvent::SetUpdateInterval</A>, 
+<A HREF="wx_wxupdateuievent.html#wxupdateuieventsetmode">wxUpdateUIEvent::SetMode</A><P>
+
+<HR>
+<A NAME="wxupdateuieventsetmode"></A>
+<H3>wxUpdateUIEvent::SetMode</H3>
+<P>
+<B>static void</B> <B>SetMode</B>(<B>wxUpdateUIMode </B><I>mode</I>)<P>
+Specify how wxWidgets will send update events: to
+all windows, or only to those which specify that they
+will process the events.<P>
+<I>mode</I> may be one of the following values.
+The default is wxUPDATE_UI_PROCESS_ALL.<P>
+<PRE>
+enum wxUpdateUIMode
+{
+        // Send UI update events to all windows
+    wxUPDATE_UI_PROCESS_ALL,
+
+        // Send UI update events to windows that have
+        // the wxWS_EX_PROCESS_UI_UPDATES flag specified
+    wxUPDATE_UI_PROCESS_SPECIFIED
+};
+</PRE>
+
+<HR>
+<A NAME="wxupdateuieventsettext"></A>
+<H3>wxUpdateUIEvent::SetText</H3>
+<P>
+<B>void</B> <B>SetText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> text</I>)<P>
+Sets the text for this UI element.<P>
+
+<HR>
+<A NAME="wxupdateuieventsetupdateinterval"></A>
+<H3>wxUpdateUIEvent::SetUpdateInterval</H3>
+<P>
+<B>static void</B> <B>SetUpdateInterval</B>(<B>long </B><I>updateInterval</I>)<P>
+Sets the interval between updates in milliseconds.
+Set to -1 to disable updates, or to 0 to update as frequently as possible.
+The default is 0.<P>
+Use this to reduce the overhead of UI update events if your application
+has a lot of windows. If you set the value to -1 or greater than 0,
+you may also need to call <A HREF="wx_wxwindow.html#wxwindowupdatewindowui">wxWindow::UpdateWindowUI</A> 
+at appropriate points in your application, such as when a dialog
+is about to be shown.<P>
+
+</FONT></BODY></HTML>

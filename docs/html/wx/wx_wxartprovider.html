@@ -1,0 +1,258 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxArtProvider</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxartprovider"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxarraystring.html#wxarraystring"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxauidockart.html#wxauidockart"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxArtProvider</H2>
+<P>
+wxArtProvider class is used to customize the look of wxWidgets application.
+When wxWidgets needs to display an icon or a bitmap (e.g. in the standard file
+dialog), it does not use a hard-coded resource but asks wxArtProvider for it
+instead. This way users can plug in their own wxArtProvider class and easily
+replace standard art with their own version. All
+that is needed is to derive a class from wxArtProvider, override its
+<A HREF="wx_wxartprovider.html#wxartprovidercreatebitmap">CreateBitmap</A> method and register the
+provider with
+<A HREF="wx_wxartprovider.html#wxartproviderpush">wxArtProvider::Push</A>:<P>
+<PRE>
+  class MyProvider : public wxArtProvider
+  {
+  protected:
+    wxBitmap CreateBitmap(const wxArtID& id, 
+                          const wxArtClient& client,
+                          const wxSize size)
+    { ... }
+  };
+  ...
+  wxArtProvider::Push(new MyProvider);
+</PRE>
+There's another way of taking advantage of this class: you can use it in your code and use
+platform native icons as provided by <A HREF="wx_wxartprovider.html#wxartprovidergetbitmap">wxArtProvider::GetBitmap</A> or 
+<A HREF="wx_wxartprovider.html#wxartprovidergeticon">wxArtProvider::GetIcon</A> (NB: this is not yet really
+possible as of wxWidgets 2.3.3, the set of wxArtProvider bitmaps is too
+small). <P>
+
+<A HREF="#artprovideridentifying">Identifying art resources</A><BR>
+<A HREF="#artproviderclients">Clients</A><BR>
+<A HREF="#wxartproviderdtor">wxArtProvider::~wxArtProvider</A><BR>
+<A HREF="#wxartprovidercreatebitmap">wxArtProvider::CreateBitmap</A><BR>
+<A HREF="#wxartproviderdelete">wxArtProvider::Delete</A><BR>
+<A HREF="#wxartprovidergetbitmap">wxArtProvider::GetBitmap</A><BR>
+<A HREF="#wxartprovidergeticon">wxArtProvider::GetIcon</A><BR>
+<A HREF="#wxartproviderinsert">wxArtProvider::Insert</A><BR>
+<A HREF="#wxartproviderctor">wxArtProvider::Pop</A><BR>
+<A HREF="#wxartproviderpush">wxArtProvider::Push</A><BR>
+<A HREF="#wxartproviderremove">wxArtProvider::Remove</A><BR>
+<P>
+
+<HR>
+<A NAME="artprovideridentifying"></A>
+<H3>Identifying art resources</H3>
+<P>
+Every bitmap is known to wxArtProvider under an unique ID that is used by when
+requesting a resource from it. The ID is represented by wxArtID type and can
+have one of these predefined values (you can see bitmaps represented by these
+constants in the <A HREF="wx_samples.html#sampleartprovider">artprov</A> sample):
+<UL>
+
+<LI> wxART_ADD_BOOKMARK     
+<LI> wxART_DEL_BOOKMARK     
+<LI> wxART_HELP_SIDE_PANEL  
+<LI> wxART_HELP_SETTINGS    
+<LI> wxART_HELP_BOOK        
+<LI> wxART_HELP_FOLDER      
+<LI> wxART_HELP_PAGE        
+<LI> wxART_GO_BACK          
+<LI> wxART_GO_FORWARD       
+<LI> wxART_GO_UP            
+<LI> wxART_GO_DOWN          
+<LI> wxART_GO_TO_PARENT     
+<LI> wxART_GO_HOME          
+<LI> wxART_FILE_OPEN        
+<LI> wxART_PRINT            
+<LI> wxART_HELP             
+<LI> wxART_TIP              
+<LI> wxART_REPORT_VIEW      
+<LI> wxART_LIST_VIEW        
+<LI> wxART_NEW_DIR          
+<LI> wxART_FOLDER           
+<LI> wxART_GO_DIR_UP        
+<LI> wxART_EXECUTABLE_FILE  
+<LI> wxART_NORMAL_FILE      
+<LI> wxART_TICK_MARK        
+<LI> wxART_CROSS_MARK       
+<LI> wxART_ERROR            
+<LI> wxART_QUESTION         
+<LI> wxART_WARNING          
+<LI> wxART_INFORMATION      
+<LI> wxART_MISSING_IMAGE      
+</UL>
+<P>
+Additionally, any string recognized by custom art providers registered using 
+<A HREF="wx_wxartprovider.html#wxartproviderpush">Push</A> may be used.<P>
+<B><FONT COLOR="#FF0000">GTK+ Note</FONT></B><P>
+When running under GTK+ 2, GTK+ stock item IDs (e.g. <TT>"gtk-cdrom"</TT>) may
+be used as well. Additionally, if wxGTK was compiled against GTK+ &gt;= 2.4, then
+it is also possible to load icons from current icon theme by specifying their
+name (without extension and directory components). Icon themes recognized
+by GTK+ follow the
+<A HREF="http://freedesktop.org/Standards/icon-theme-spec">freedesktop.org Icon Themes specification</A>. Note that themes are not guaranteed to contain all
+icons, so wxArtProvider may return <TT>wxNullBitmap</TT> or <TT>wxNullIcon</TT>.
+Default theme is typically installed in <TT>/usr/share/icons/hicolor</TT>.<P>
+
+
+<HR>
+<A NAME="artproviderclients"></A>
+<H3>Clients</H3>
+<P>
+Client is the entity that calls wxArtProvider's GetBitmap or GetIcon
+function. It is represented by wxClientID type and can have one of these 
+values:
+<UL>
+
+<LI> wxART_TOOLBAR
+<LI> wxART_MENU
+<LI> wxART_BUTTON
+<LI> wxART_FRAME_ICON
+<LI> wxART_CMN_DIALOG
+<LI> wxART_HELP_BROWSER
+<LI> wxART_MESSAGE_BOX
+<LI> wxART_OTHER (used for all requests that don't fit into any of the categories above)
+</UL>
+
+Client ID servers as a hint to wxArtProvider that is supposed to help it to
+choose the best looking bitmap. For example it is often desirable to use
+slightly different icons in menus and toolbars even though they represent the
+same action (e.g. <TT>wx_ART_FILE_OPEN</TT>). Remember that this is really
+only a hint for wxArtProvider -- it is common that
+<A HREF="wx_wxartprovider.html#wxartprovidergetbitmap">wxArtProvider::GetBitmap</A> 
+returns identical bitmap for different <I>client</I> values!<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+See the <A HREF="wx_samples.html#sampleartprovider">artprov</A> sample for an example of wxArtProvider usage.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/artprov.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+
+<HR>
+<A NAME="wxartproviderdtor"></A>
+<H3>wxArtProvider::~wxArtProvider</H3>
+<P>
+<B></B> <B>~wxArtProvider</B>()<P>
+The destructor automatically removes the provider from the provider stack used
+by <A HREF="wx_wxartprovider.html#wxartprovidergetbitmap">GetBitmap</A>.<P>
+
+
+<HR>
+<A NAME="wxartprovidercreatebitmap"></A>
+<H3>wxArtProvider::CreateBitmap</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A></B> </B> <B>CreateBitmap</B>(<B>const wxArtID&amp; </B><I>id</I>, <B>const wxArtClient&amp; </B><I>client</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+Derived art provider classes must override this method to create requested 
+art resource. Note that returned bitmaps are cached by wxArtProvider and it is therefore
+not necessary to optimize CreateBitmap for speed (e.g. you may create wxBitmap objects
+from XPMs here).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+wxArtID unique identifier of the bitmap.</UL></UL>
+<P>
+<I>client</I><UL><UL>
+wxArtClient identifier of the client (i.e. who is asking for the bitmap).
+This only servers as a hint.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Preferred size of the bitmap. The function may return a bitmap of different
+dimensions, it will be automatically rescaled to meet client's request.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+This is <B>not</B> part of wxArtProvider's public API, use
+<A HREF="wx_wxartprovider.html#wxartprovidergetbitmap">wxArtProvider::GetBitmap</A> or 
+<A HREF="wx_wxartprovider.html#wxartprovidergeticon">wxArtProvider::GetIcon</A>
+to query wxArtProvider for a resource.<P>
+
+
+<HR>
+<A NAME="wxartproviderdelete"></A>
+<H3>wxArtProvider::Delete</H3>
+<P>
+<B>static bool</B> <B>Delete</B>(<B><A HREF="wx_wxartprovider.html#wxartprovider">wxArtProvider</A>* </B></B><I>provider</I>)<P>
+Delete the given <I>provider</I>.<P>
+
+
+<HR>
+<A NAME="wxartprovidergetbitmap"></A>
+<H3>wxArtProvider::GetBitmap</H3>
+<P>
+<B>static <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A></B> </B> <B>GetBitmap</B>(<B>const wxArtID&amp; </B><I>id</I>, <B>const wxArtClient&amp; </B><I>client = wxART_OTHER</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>)<P>
+Query registered providers for bitmap with given ID.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+wxArtID unique identifier of the bitmap.</UL></UL>
+<P>
+<I>client</I><UL><UL>
+wxArtClient identifier of the client (i.e. who is asking for the bitmap).</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Size of the returned bitmap or <TT>wxDefaultSize</TT> if size doesn't matter.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The bitmap if one of registered providers recognizes the ID or wxNullBitmap otherwise.<P>
+
+
+<HR>
+<A NAME="wxartprovidergeticon"></A>
+<H3>wxArtProvider::GetIcon</H3>
+<P>
+<B>static <A HREF="wx_wxicon.html#wxicon">wxIcon</A></B> </B> <B>GetIcon</B>(<B>const wxArtID&amp; </B><I>id</I>, <B>const wxArtClient&amp; </B><I>client = wxART_OTHER</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>)<P>
+Same as <A HREF="wx_wxartprovider.html#wxartprovidergetbitmap">wxArtProvider::GetBitmap</A>, but
+return a wxIcon object (or wxNullIcon on failure).<P>
+<B>static <A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetSizeHint</B>(<B>const wxArtClient&amp; </B><I>client</I>, <B>bool </B><I>platform_default = false</I>)<P>
+Returns a suitable size hint for the given <I>wxArtClient</I>. If 
+<I>platform_default</I> is <TT>true</TT>, return a size based on the current platform, 
+otherwise return the size from the topmost wxArtProvider. <I>wxDefaultSize</I> may be 
+returned if the client doesn't have a specified size, like wxART_OTHER for example.<P>
+
+
+<HR>
+<A NAME="wxartproviderinsert"></A>
+<H3>wxArtProvider::Insert</H3>
+<P>
+<B>static void</B> <B>Insert</B>(<B><A HREF="wx_wxartprovider.html#wxartprovider">wxArtProvider</A>* </B></B><I>provider</I>)<P>
+Register new art provider and add it to the bottom of providers stack (i.e.
+it will be queried as the last one).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxartprovider.html#wxartproviderpush">Push</A><P>
+
+
+<HR>
+<A NAME="wxartproviderctor"></A>
+<H3>wxArtProvider::Pop</H3>
+<P>
+<B>static bool</B> <B>Pop</B>()<P>
+Remove latest added provider and delete it.<P>
+
+
+<HR>
+<A NAME="wxartproviderpush"></A>
+<H3>wxArtProvider::Push</H3>
+<P>
+<B>static void</B> <B>Push</B>(<B><A HREF="wx_wxartprovider.html#wxartprovider">wxArtProvider</A>* </B></B><I>provider</I>)<P>
+Register new art provider and add it to the top of providers stack (i.e. it
+will be queried as the first provider).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxartprovider.html#wxartproviderinsert">Insert</A><P>
+
+
+<HR>
+<A NAME="wxartproviderremove"></A>
+<H3>wxArtProvider::Remove</H3>
+<P>
+<B>static bool</B> <B>Remove</B>(<B><A HREF="wx_wxartprovider.html#wxartprovider">wxArtProvider</A>* </B></B><I>provider</I>)<P>
+Remove a provider from the stack if it is on it. The provider is <EM>not</EM> 
+deleted, unlike when using <A HREF="wx_wxartprovider.html#wxartproviderdelete">Delete()</A>.<P>
+
+</FONT></BODY></HTML>

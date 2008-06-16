@@ -1,0 +1,105 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDropFilesEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdropfilesevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdragimage.html#wxdragimage"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdropsource.html#wxdropsource"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDropFilesEvent</H2>
+<P>
+This class is used for drop files events, that is, when files have been dropped
+onto the window. This functionality is currently only available under Windows.
+The window must have previously been enabled for dropping by calling 
+<A HREF="wx_wxwindow.html#wxwindowdragacceptfiles">wxWindow::DragAcceptFiles</A>.<P>
+Important note: this is a separate implementation to the more general
+drag and drop implementation documented <A HREF="wx_wxdndoverview.html#wxdndoverview">here</A>. It uses the
+older, Windows message-based approach of dropping files.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a drop files event, use these event handler macros to direct input to a member
+function that takes a wxDropFilesEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_DROP_FILES(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_DROP_FILES event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdropfileseventctor">wxDropFilesEvent::wxDropFilesEvent</A><BR>
+<A HREF="#wxdropfileseventmfiles">wxDropFilesEvent::m_files</A><BR>
+<A HREF="#wxdropfileseventmnofiles">wxDropFilesEvent::m_noFiles</A><BR>
+<A HREF="#wxdropfileseventmpos">wxDropFilesEvent::m_pos</A><BR>
+<A HREF="#wxdropfileseventgetfiles">wxDropFilesEvent::GetFiles</A><BR>
+<A HREF="#wxdropfileseventgetnumberoffiles">wxDropFilesEvent::GetNumberOfFiles</A><BR>
+<A HREF="#wxdropfileseventgetposition">wxDropFilesEvent::GetPosition</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdropfileseventctor"></A>
+<H3>wxDropFilesEvent::wxDropFilesEvent</H3>
+<P>
+<B></B> <B>wxDropFilesEvent</B>(<B>WXTYPE </B><I>id = 0</I>, <B>int </B><I>noFiles = 0</I>,
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>files = NULL</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxdropfileseventmfiles"></A>
+<H3>wxDropFilesEvent::m_files</H3>
+<P>
+wxString* m_files<P>
+An array of filenames.<P>
+
+<HR>
+<A NAME="wxdropfileseventmnofiles"></A>
+<H3>wxDropFilesEvent::m_noFiles</H3>
+<P>
+int m_noFiles<P>
+The number of files dropped.<P>
+
+<HR>
+<A NAME="wxdropfileseventmpos"></A>
+<H3>wxDropFilesEvent::m_pos</H3>
+<P>
+wxPoint m_pos<P>
+The point at which the drop took place.<P>
+
+<HR>
+<A NAME="wxdropfileseventgetfiles"></A>
+<H3>wxDropFilesEvent::GetFiles</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A>*</B> </B> <B>GetFiles</B>() <B>const</B><P>
+Returns an array of filenames.<P>
+
+<HR>
+<A NAME="wxdropfileseventgetnumberoffiles"></A>
+<H3>wxDropFilesEvent::GetNumberOfFiles</H3>
+<P>
+<B>int</B> <B>GetNumberOfFiles</B>() <B>const</B><P>
+Returns the number of files dropped.<P>
+
+<HR>
+<A NAME="wxdropfileseventgetposition"></A>
+<H3>wxDropFilesEvent::GetPosition</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetPosition</B>() <B>const</B><P>
+Returns the position at which the files were dropped.<P>
+Returns an array of filenames.<P>
+
+
+</FONT></BODY></HTML>

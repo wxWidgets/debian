@@ -1,0 +1,31 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxLogStderr</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlogstderr"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlogpassthrough.html#wxlogpassthrough"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlogstream.html#wxlogstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxLogStderr</H2>
+<P>
+This class can be used to redirect the log messages to a C file stream (not to
+be confused with C++ streams). It is the default log target for the non-GUI
+wxWidgets applications which send all the output to <TT>stderr</TT>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxlog.html#wxlog">wxLog</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/log.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlogstream.html#wxlogstream">wxLogStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxlogstderrctor">wxLogStderr::wxLogStderr</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlogstderrctor"></A>
+<H3>wxLogStderr::wxLogStderr</H3>
+<P>
+<B></B> <B>wxLogStderr</B>(<B>FILE </B><I>*fp = NULL</I>)<P>
+Constructs a log target which sends all the log messages to the given
+<TT>FILE</TT>. If it is <TT>NULL</TT>, the messages are sent to <TT>stderr</TT>.<P>
+
+</FONT></BODY></HTML>

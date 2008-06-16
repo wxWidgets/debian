@@ -10,7 +10,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: stc.cpp,v 1.97.2.1 2006/03/12 06:03:51 RD Exp $
+// RCS-ID:      $Id: stc.cpp 44312 2007-01-25 22:59:04Z RD $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -179,7 +179,7 @@ bool wxStyledTextCtrl::Create(wxWindow *parent,
     SetCodePage(wxSTC_CP_UTF8);
 #endif
 
-    SetBestFittingSize(size);
+    SetInitialSize(size);
 
     // Reduces flicker on GTK+/X11
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
@@ -535,6 +535,11 @@ void wxStyledTextCtrl::MarkerAddSet(int line, int set) {
     SendMsg(2466, line, set);
 }
 
+// Set the alpha used for a marker that is drawn in the text area, not the margin.
+void wxStyledTextCtrl::MarkerSetAlpha(int markerNumber, int alpha) {
+    SendMsg(2476, markerNumber, alpha);
+}
+
 // Set a margin to be either numeric or symbolic.
 void wxStyledTextCtrl::SetMarginType(int margin, int marginType) {
     SendMsg(2240, margin, marginType);
@@ -643,6 +648,16 @@ void wxStyledTextCtrl::SetSelForeground(bool useSetting, const wxColour& fore) {
 // Set the background colour of the selection and whether to use this setting.
 void wxStyledTextCtrl::SetSelBackground(bool useSetting, const wxColour& back) {
     SendMsg(2068, useSetting, wxColourAsLong(back));
+}
+
+// Get the alpha of the selection.
+int wxStyledTextCtrl::GetSelAlpha() {
+    return SendMsg(2477, 0, 0);
+}
+
+// Set the alpha of the selection.
+void wxStyledTextCtrl::SetSelAlpha(int alpha) {
+    SendMsg(2478, alpha, 0);
 }
 
 // Set the foreground colour of the caret.
@@ -771,13 +786,13 @@ void wxStyledTextCtrl::SetCaretLineVisible(bool show) {
 }
 
 // Get the colour of the background of the line containing the caret.
-wxColour wxStyledTextCtrl::GetCaretLineBack() {
+wxColour wxStyledTextCtrl::GetCaretLineBackground() {
     long c = SendMsg(2097, 0, 0);
     return wxColourFromLong(c);
 }
 
 // Set the colour of the background of the line containing the caret.
-void wxStyledTextCtrl::SetCaretLineBack(const wxColour& back) {
+void wxStyledTextCtrl::SetCaretLineBackground(const wxColour& back) {
     SendMsg(2098, wxColourAsLong(back), 0);
 }
 
@@ -1443,6 +1458,11 @@ void wxStyledTextCtrl::CallTipSetForeground(const wxColour& fore) {
 // Set the foreground colour for the highlighted part of the call tip.
 void wxStyledTextCtrl::CallTipSetForegroundHighlight(const wxColour& fore) {
     SendMsg(2207, wxColourAsLong(fore), 0);
+}
+
+// Enable use of STYLE_CALLTIP and set call tip tab size in pixels.
+void wxStyledTextCtrl::CallTipUseStyle(int tabSize) {
+    SendMsg(2212, tabSize, 0);
 }
 
 // Find the display line of a document line taking hidden lines into account.
@@ -2481,6 +2501,16 @@ void wxStyledTextCtrl::SelectionDuplicate() {
     SendMsg(2469, 0, 0);
 }
 
+// Set background alpha of the caret line.
+void wxStyledTextCtrl::SetCaretLineBackAlpha(int alpha) {
+    SendMsg(2470, alpha, 0);
+}
+
+// Get the background alpha of the caret line.
+int wxStyledTextCtrl::GetCaretLineBackAlpha() {
+    return SendMsg(2471, 0, 0);
+}
+
 // Start notifying the container of all key presses and commands.
 void wxStyledTextCtrl::StartRecord() {
     SendMsg(3001, 0, 0);
@@ -3186,12 +3216,7 @@ static void SetEventText(wxStyledTextEvent& evt, const char* text,
                          size_t length) {
     if(!text) return;
 
-    // The unicode conversion MUST have a null byte to terminate the
-    // string so move it into a buffer first and give it one.
-    wxMemoryBuffer buf(length+1);
-    buf.AppendData((void*)text, length);
-    buf.AppendByte(0);
-    evt.SetText(stc2wx(buf));
+    evt.SetText(stc2wx(text, length));
 }
 
 
@@ -3269,10 +3294,18 @@ void wxStyledTextCtrl::NotifyParent(SCNotification* _scn) {
         evt.SetEventType(wxEVT_STC_PAINTED);
         break;
 
+    case SCN_AUTOCSELECTION:
+        evt.SetEventType(wxEVT_STC_AUTOCOMP_SELECTION);
+        evt.SetListType(scn.listType);
+        SetEventText(evt, scn.text, strlen(scn.text));
+        evt.SetPosition(scn.lParam);
+        break;
+        
     case SCN_USERLISTSELECTION:
         evt.SetEventType(wxEVT_STC_USERLISTSELECTION);
         evt.SetListType(scn.listType);
         SetEventText(evt, scn.text, strlen(scn.text));
+        evt.SetPosition(scn.lParam);
         break;
 
     case SCN_URIDROPPED:
@@ -3307,11 +3340,7 @@ void wxStyledTextCtrl::NotifyParent(SCNotification* _scn) {
     case SCN_CALLTIPCLICK:
         evt.SetEventType(wxEVT_STC_CALLTIP_CLICK);
         break;
-
-    case SCN_AUTOCSELECTION:
-        evt.SetEventType(wxEVT_STC_AUTOCOMP_SELECTION);
-        break;
-        
+       
     default:
         return;
     }

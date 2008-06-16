@@ -33,8 +33,8 @@ History:
                   PyCrust package instead.
 
 """
-__version__ ="$Revision: 1.5 $"
-# $RCSfile: shell.py,v $
+__version__ ="$Revision: 41077 $"
+# $RCSfile$
 
 import  code
 import  sys
@@ -109,7 +109,7 @@ class PyShellInput(wx.Panel):
     def OnChar(self, event):
         """called on CHARevent.  executes input on newline"""
         # print "On Char:", event.__dict__.keys()
-        if event.KeyCode() !=wx.WXK_RETURN:
+        if event.GetKeyCode() !=wx.WXK_RETURN:
             # not of our business
             event.Skip()
             return

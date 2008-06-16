@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     27/12/98
-// RCS-ID:      $Id: ifcontext.h,v 1.5 2005/05/31 19:03:56 ABX Exp $
+// RCS-ID:      $Id: ifcontext.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ public:
 public:
 
     spInterFileContext();
-    ~spInterFileContext();
+    virtual ~spInterFileContext();
 
     void AddFile( const wxString& fname, const wxString& content );
 

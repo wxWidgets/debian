@@ -1,0 +1,99 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStackWalker</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstackwalker"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstackframe.html#wxstackframe"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstandardpaths.html#wxstandardpaths"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStackWalker</H2>
+<P>
+wxStackWalker allows an application to enumerate, or walk, the stack frames (the function callstack).
+It is mostly useful in only two situations:
+inside <A HREF="wx_wxapp.html#wxapponfatalexception">wxApp::OnFatalException</A> function to
+programmatically get the location of the crash and, in debug builds, in
+<A HREF="wx_wxapp.html#wxapponassertfailure">wxApp::OnAssertFailure</A> to report the caller of the failed
+assert.<P>
+wxStackWalker works by repeatedly calling
+the <A HREF="wx_wxstackwalker.html#wxstackwalkeronstackframe">OnStackFrame</A> method for each frame in the
+stack, so to use it you must derive your own class from it and override this
+method.<P>
+This class will not return anything except raw stack frame addresses if the
+debug information is not available. Under Win32 this means that the PDB file
+matching the program being executed should be present. Note that if you use
+Microsoft Visual C++ compiler, you can create PDB files even for the programs
+built in release mode and it doesn't affect the program size (at least if you
+don't forget to add <TT>/opt:ref</TT> option which is suppressed by using
+<TT>/debug</TT> linker option by default but should be always enabled for
+release builds). Under Unix, you need to compile your program with debugging
+information (usually using <TT>-g</TT> compiler and linker options) to get the
+file and line numbers information, however function names should be available
+even without it. Of course, all this is only true if you build using a recent
+enough version of GNU libc which provides the <TT>backtrace()</TT> function
+needed to walk the stack.<P>
+<A HREF="wx_debuggingoverview.html#debuggingoverview">debugging overview</A> for how to make it available.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/stackwalk.h&gt;<P>
+Only available if <TT>wxUSE_STACKWALKER</TT> is 1, currently only
+implemented for Win32 and Unix versions using recent version of GNU libc.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstackframe.html#wxstackframe">wxStackFrame</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxstackwalkerwxstackwalker">wxStackWalker::wxStackWalker</A><BR>
+<A HREF="#wxstackwalkerdtor">wxStackWalker::~wxStackWalker</A><BR>
+<A HREF="#wxstackwalkeronstackframe">wxStackWalker::OnStackFrame</A><BR>
+<A HREF="#wxstackwalkerwalk">wxStackWalker::Walk</A><BR>
+<A HREF="#wxstackwalkerwalkfromexception">wxStackWalker::WalkFromException</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstackwalkerwxstackwalker"></A>
+<H3>wxStackWalker::wxStackWalker</H3>
+<P>
+<B></B> <B>wxStackWalker</B>()<P>
+Constructor does nothing, use <A HREF="wx_wxstackwalker.html#wxstackwalkerwalk">Walk()</A> to walk the
+stack.<P>
+
+
+<HR>
+<A NAME="wxstackwalkerdtor"></A>
+<H3>wxStackWalker::~wxStackWalker</H3>
+<P>
+<B></B> <B>~wxStackWalker</B>()<P>
+Destructor does nothing neither but should be virtual as this class is used as
+a base one.<P>
+
+
+<HR>
+<A NAME="wxstackwalkeronstackframe"></A>
+<H3>wxStackWalker::OnStackFrame</H3>
+<P>
+<B>void</B> <B>OnStackFrame</B>(<B>const <A HREF="wx_wxstackframe.html#wxstackframe">wxStackFrame</A>& </B></B><I>frame</I>)<P>
+This function must be overrided to process the given frame.<P>
+
+
+<HR>
+<A NAME="wxstackwalkerwalk"></A>
+<H3>wxStackWalker::Walk</H3>
+<P>
+<B>void</B> <B>Walk</B>(<B>size_t </B><I>skip = 1</I>, <B>size_t </B><I>maxDepth = 200</I>)<P>
+Enumerate stack frames from the current location, skipping the initial
+number of them (this can be useful when Walk() is called from some known
+location and you don't want to see the first few frames anyhow; also
+notice that Walk() frame itself is not included if skip &gt;= 1).<P>
+Up to <I>maxDepth</I> frames are walked from the innermost to the outermost one.<P>
+
+
+<HR>
+<A NAME="wxstackwalkerwalkfromexception"></A>
+<H3>wxStackWalker::WalkFromException</H3>
+<P>
+<B>void</B> <B>WalkFromException</B>()<P>
+Enumerate stack frames from the location of uncaught exception.
+This method can only be called from
+<A HREF="wx_wxapp.html#wxapponfatalexception">wxApp::OnFatalException()</A>.<P>
+
+</FONT></BODY></HTML>

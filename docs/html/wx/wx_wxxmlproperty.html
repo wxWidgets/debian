@@ -1,0 +1,90 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxXmlProperty</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxxmlproperty"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxxmlnode.html#wxxmlnode"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxxmlresource.html#wxxmlresource"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxXmlProperty</H2>
+<P>
+Represents a node property.<P>
+Example: in <TT>&lt;img src="hello.gif" id="3"/&gt;</TT>, <TT>"src"</TT> is property with value
+<TT>"hello.gif"</TT> and <TT>"id"</TT> is a property with value <TT>"3"</TT>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/xml/xml.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxxmldocument.html#wxxmldocument">wxXmlDocument</A>, <A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxxmlpropertywxxmlproperty">wxXmlProperty::wxXmlProperty</A><BR>
+<A HREF="#wxxmlpropertydtor">wxXmlProperty::~wxXmlProperty</A><BR>
+<A HREF="#wxxmlpropertygetname">wxXmlProperty::GetName</A><BR>
+<A HREF="#wxxmlpropertygetnext">wxXmlProperty::GetNext</A><BR>
+<A HREF="#wxxmlpropertygetvalue">wxXmlProperty::GetValue</A><BR>
+<A HREF="#wxxmlpropertysetname">wxXmlProperty::SetName</A><BR>
+<A HREF="#wxxmlpropertysetnext">wxXmlProperty::SetNext</A><BR>
+<A HREF="#wxxmlpropertysetvalue">wxXmlProperty::SetValue</A><BR>
+<P>
+
+<HR>
+<A NAME="wxxmlpropertywxxmlproperty"></A>
+<H3>wxXmlProperty::wxXmlProperty</H3>
+<P>
+<B></B> <B>wxXmlProperty</B>()<P>
+
+<B></B> <B>wxXmlProperty</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>, <B><A HREF="wx_wxxmlproperty.html#wxxmlproperty">wxXmlProperty</A>* </B></B><I>next = NULL</I>)<P>
+Creates the property with given <I>name</I> and <I>value</I>.
+If <I>next</I> is not NULL, then sets it as sibling of this property.<P>
+
+<HR>
+<A NAME="wxxmlpropertydtor"></A>
+<H3>wxXmlProperty::~wxXmlProperty</H3>
+<P>
+<B></B> <B>~wxXmlProperty</B>()<P>
+The virtual destructor.<P>
+
+<HR>
+<A NAME="wxxmlpropertygetname"></A>
+<H3>wxXmlProperty::GetName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetName</B>() <B>const</B><P>
+Returns the name of this property.<P>
+
+<HR>
+<A NAME="wxxmlpropertygetnext"></A>
+<H3>wxXmlProperty::GetNext</H3>
+<P>
+<B><A HREF="wx_wxxmlproperty.html#wxxmlproperty">wxXmlProperty</A>*</B> </B> <B>GetNext</B>() <B>const</B><P>
+Returns the sibling of this property or NULL if there are no siblings.<P>
+
+<HR>
+<A NAME="wxxmlpropertygetvalue"></A>
+<H3>wxXmlProperty::GetValue</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetValue</B>() <B>const</B><P>
+Returns the value of this property.<P>
+
+<HR>
+<A NAME="wxxmlpropertysetname"></A>
+<H3>wxXmlProperty::SetName</H3>
+<P>
+<B>void</B> <B>SetName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the name of this property.<P>
+
+<HR>
+<A NAME="wxxmlpropertysetnext"></A>
+<H3>wxXmlProperty::SetNext</H3>
+<P>
+<B>void</B> <B>SetNext</B>(<B><A HREF="wx_wxxmlproperty.html#wxxmlproperty">wxXmlProperty</A>* </B></B><I>next</I>)<P>
+Sets the sibling of this property.<P>
+
+<HR>
+<A NAME="wxxmlpropertysetvalue"></A>
+<H3>wxXmlProperty::SetValue</H3>
+<P>
+<B>void</B> <B>SetValue</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>)<P>
+Sets the value of this property.<P>
+
+</FONT></BODY></HTML>

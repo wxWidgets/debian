@@ -6,7 +6,7 @@
 # Author:       Pierre Hjälm (from C++ original by Julian Smart)
 #
 # Created:      2004-05-08
-# RCS-ID:       $Id: _lines.py,v 1.16.2.1 2006/02/03 07:00:33 RD Exp $
+# RCS-ID:       $Id: _lines.py 44515 2007-02-16 23:32:37Z RD $
 # Copyright:    (c) 2004 Pierre Hjälm - 1998 Julian Smart
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -218,16 +218,6 @@ class LineShape(Shape):
         self._lineControlPoints = []
         self._arcArrows = []
 
-    def __del__(self):
-        if self._lineControlPoints:
-            self._lineControlPoints = []
-        for i in range(3):
-            if self._labelObjects[i]:
-                self._labelObjects[i].Select(False)
-                self._labelObjects[i].RemoveFromCanvas(self._canvas)
-        self._labelObjects = []
-        self.ClearArrowsAtPosition(-1)
-
     def GetFrom(self):
         """Return the 'from' object."""
         return self._from
@@ -350,7 +340,7 @@ class LineShape(Shape):
                         y2 = first_point[1]
                         y1 = last_point[1]
                     self._lineControlPoints[i] = wx.RealPoint((x2 - x1) / 2.0 + x1, (y2 - y1) / 2.0 + y1)
-                    self._initialised = True
+            self._initialised = True
                     
     def FormatText(self, dc, s, i):
         """Format a text string according to the region size, adding
@@ -492,6 +482,11 @@ class LineShape(Shape):
             self._from.GetLines().remove(self)
         self._to = None
         self._from = None
+        for i in range(3):
+            if self._labelObjects[i]:
+                self._labelObjects[i].Select(False)
+                self._labelObjects[i].RemoveFromCanvas(self._canvas)
+        self.ClearArrowsAtPosition(-1)
 
     def SetEnds(self, x1, y1, x2, y2):
         """Set the end positions of the line."""

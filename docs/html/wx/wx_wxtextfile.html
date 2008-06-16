@@ -1,0 +1,346 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTextFile</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtextfile"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtextentrydialog.html#wxtextentrydialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtextinputstream.html#wxtextinputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTextFile</H2>
+<P>
+The wxTextFile is a simple class which allows to work with text files on line by
+line basis. It also understands the differences in line termination characters
+under different platforms and will not do anything bad to files with "non
+native" line termination sequences - in fact, it can be also used to modify the
+text files and change the line termination characters from one type (say DOS) to
+another (say Unix).<P>
+One word of warning: the class is not at all optimized for big files and thus
+it will load the file entirely into memory when opened. Of course, you should not
+work in this way with large files (as an estimation, anything over 1 Megabyte is
+surely too big for this class). On the other hand, it is not a serious
+limitation for small files like configuration files or program sources
+which are well handled by wxTextFile.<P>
+The typical things you may do with wxTextFile in order are:<P>
+<UL>
+
+<LI> Create and open it: this is done with either 
+<A HREF="wx_wxtextfile.html#wxtextfilecreate">Create</A> or <A HREF="wx_wxtextfile.html#wxtextfileopen">Open</A> 
+function which opens the file (name may be specified either as the argument to
+these functions or in the constructor), reads its contents in memory (in the
+case of <TT>Open()</TT>) and closes it.
+<LI> Work with the lines in the file: this may be done either with "direct
+access" functions like <A HREF="wx_wxtextfile.html#wxtextfilegetlinecount">GetLineCount</A> and 
+<A HREF="wx_wxtextfile.html#wxtextfilegetline">GetLine</A> (<I>operator[]</I> does exactly the same
+but looks more like array addressing) or with "sequential access" functions
+which include <A HREF="wx_wxtextfile.html#wxtextfilegetfirstline">GetFirstLine</A>/
+<A HREF="wx_wxtextfile.html#wxtextfilegetnextline">GetNextLine</A> and also 
+<A HREF="wx_wxtextfile.html#wxtextfilegetlastline">GetLastLine</A>/<A HREF="wx_wxtextfile.html#wxtextfilegetprevline">GetPrevLine</A>.
+For the sequential access functions the current line number is maintained: it is
+returned by <A HREF="wx_wxtextfile.html#wxtextfilegetcurrentline">GetCurrentLine</A> and may be
+changed with <A HREF="wx_wxtextfile.html#wxtextfilegotoline">GoToLine</A>.
+<LI> Add/remove lines to the file: <A HREF="wx_wxtextfile.html#wxtextfileaddline">AddLine</A> and 
+<A HREF="wx_wxtextfile.html#wxtextfileinsertline">InsertLine</A> add new lines while 
+<A HREF="wx_wxtextfile.html#wxtextfileremoveline">RemoveLine</A> deletes the existing ones.
+<A HREF="wx_wxtextfile.html#wxtextfileclear">Clear</A> resets the file to empty.
+<LI> Save your changes: notice that the changes you make to the file will <B>
+not</B> be saved automatically; calling <A HREF="wx_wxtextfile.html#wxtextfileclose">Close</A> or doing
+nothing discards them! To save the changes you must explicitly call 
+<A HREF="wx_wxtextfile.html#wxtextfilewrite">Write</A> - here, you may also change the line
+termination type if you wish.
+</UL>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/textfile.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+The following constants identify the line termination type:<P>
+<PRE>
+enum wxTextFileType
+{
+    wxTextFileType_None,  // incomplete (the last line of the file only)
+    wxTextFileType_Unix,  // line is terminated with 'LF' = 0xA = 10 = '\n'
+    wxTextFileType_Dos,   //                         'CR' 'LF'
+    wxTextFileType_Mac    //                         'CR' = 0xD = 13 = '\r'
+};
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfile.html#wxfile">wxFile</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxtextfilectordef">wxTextFile::wxTextFile</A><BR>
+<A HREF="#wxtextfilector">wxTextFile::wxTextFile</A><BR>
+<A HREF="#wxtextfiledtor">wxTextFile::~wxTextFile</A><BR>
+<A HREF="#wxtextfileaddline">wxTextFile::AddLine</A><BR>
+<A HREF="#wxtextfileclose">wxTextFile::Close</A><BR>
+<A HREF="#wxtextfilecreate">wxTextFile::Create</A><BR>
+<A HREF="#wxtextfileexists">wxTextFile::Exists</A><BR>
+<A HREF="#wxtextfileisopened">wxTextFile::IsOpened</A><BR>
+<A HREF="#wxtextfilegetlinecount">wxTextFile::GetLineCount</A><BR>
+<A HREF="#wxtextfilegetline">wxTextFile::GetLine</A><BR>
+<A HREF="#wxtextfileoperatorarray">wxTextFile::operator[]</A><BR>
+<A HREF="#wxtextfilegetcurrentline">wxTextFile::GetCurrentLine</A><BR>
+<A HREF="#wxtextfilegotoline">wxTextFile::GoToLine</A><BR>
+<A HREF="#wxtextfileeof">wxTextFile::Eof</A><BR>
+<A HREF="#wxtextfilegeteol">wxTextFile::GetEOL</A><BR>
+<A HREF="#wxtextfilegetfirstline">wxTextFile::GetFirstLine</A><BR>
+<A HREF="#wxtextfilegetnextline">wxTextFile::GetNextLine</A><BR>
+<A HREF="#wxtextfilegetprevline">wxTextFile::GetPrevLine</A><BR>
+<A HREF="#wxtextfilegetlastline">wxTextFile::GetLastLine</A><BR>
+<A HREF="#wxtextfilegetlinetype">wxTextFile::GetLineType</A><BR>
+<A HREF="#wxtextfileguesstype">wxTextFile::GuessType</A><BR>
+<A HREF="#wxtextfilegetname">wxTextFile::GetName</A><BR>
+<A HREF="#wxtextfileinsertline">wxTextFile::InsertLine</A><BR>
+<A HREF="#wxtextfileopen">wxTextFile::Open</A><BR>
+<A HREF="#wxtextfileremoveline">wxTextFile::RemoveLine</A><BR>
+<A HREF="#wxtextfileclear">wxTextFile::Clear</A><BR>
+<A HREF="#wxtextfilewrite">wxTextFile::Write</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtextfilectordef"></A>
+<H3>wxTextFile::wxTextFile</H3>
+<P>
+<B></B> <B>wxTextFile</B>() <B>const</B><P>
+Default constructor, use <A HREF="wx_wxtextfile.html#wxtextfilecreate">Create</A> or 
+<A HREF="wx_wxtextfile.html#wxtextfileopen">Open</A> with a file name parameter to initialize the object.<P>
+
+<HR>
+<A NAME="wxtextfilector"></A>
+<H3>wxTextFile::wxTextFile</H3>
+<P>
+<B></B> <B>wxTextFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>strFile</I>) <B>const</B><P>
+Constructor does not load the file into memory, use Open() to do it. <P>
+
+<HR>
+<A NAME="wxtextfiledtor"></A>
+<H3>wxTextFile::~wxTextFile</H3>
+<P>
+<B></B> <B>~wxTextFile</B>() <B>const</B><P>
+Destructor does nothing.<P>
+
+<HR>
+<A NAME="wxtextfileaddline"></A>
+<H3>wxTextFile::AddLine</H3>
+<P>
+<B>void</B> <B>AddLine</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>wxTextFileType </B><I>type = typeDefault</I>) <B>const</B><P>
+Adds a line to the end of file.<P>
+
+<HR>
+<A NAME="wxtextfileclose"></A>
+<H3>wxTextFile::Close</H3>
+<P>
+<B>bool</B> <B>Close</B>() <B>const</B><P>
+Closes the file and frees memory, <B>losing all changes</B>. Use <A HREF="wx_wxtextfile.html#wxtextfilewrite">Write()</A> 
+if you want to save them.<P>
+
+<HR>
+<A NAME="wxtextfilecreate"></A>
+<H3>wxTextFile::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>() <B>const</B><P>
+<B>bool</B> <B>Create</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>strFile</I>) <B>const</B><P>
+Creates the file with the given name or the name which was given in the
+<A HREF="wx_wxtextfile.html#wxtextfilector">constructor</A>. The array of file lines is initially
+empty.<P>
+It will fail if the file already exists, <A HREF="wx_wxtextfile.html#wxtextfileopen">Open</A> should
+be used in this case.<P>
+
+<HR>
+<A NAME="wxtextfileexists"></A>
+<H3>wxTextFile::Exists</H3>
+<P>
+<B>bool</B> <B>Exists</B>() <B>const</B><P>
+Return true if file exists - the name of the file should have been specified
+in the constructor before calling Exists().<P>
+
+<HR>
+<A NAME="wxtextfileisopened"></A>
+<H3>wxTextFile::IsOpened</H3>
+<P>
+<B>bool</B> <B>IsOpened</B>() <B>const</B><P>
+Returns true if the file is currently opened.<P>
+
+<HR>
+<A NAME="wxtextfilegetlinecount"></A>
+<H3>wxTextFile::GetLineCount</H3>
+<P>
+<B>size_t</B> <B>GetLineCount</B>() <B>const</B><P>
+Get the number of lines in the file.<P>
+
+<HR>
+<A NAME="wxtextfilegetline"></A>
+<H3>wxTextFile::GetLine</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetLine</B>(<B>size_t </B><I>n</I>) <B>const</B><P>
+Retrieves the line number <I>n</I> from the file. The returned line may be
+modified but you shouldn't add line terminator at the end - this will be done
+by wxTextFile.<P>
+
+<HR>
+<A NAME="wxtextfileoperatorarray"></A>
+<H3>wxTextFile::operator[]</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>operator[]</B>(<B>size_t </B><I>n</I>) <B>const</B><P>
+The same as <A HREF="wx_wxtextfile.html#wxtextfilegetline">GetLine</A>.<P>
+
+<HR>
+<A NAME="wxtextfilegetcurrentline"></A>
+<H3>wxTextFile::GetCurrentLine</H3>
+<P>
+<B>size_t</B> <B>GetCurrentLine</B>() <B>const</B><P>
+Returns the current line: it has meaning only when you're using
+GetFirstLine()/GetNextLine() functions, it doesn't get updated when
+you're using "direct access" functions like GetLine(). GetFirstLine() and
+GetLastLine() also change the value of the current line, as well as
+GoToLine().<P>
+
+<HR>
+<A NAME="wxtextfilegotoline"></A>
+<H3>wxTextFile::GoToLine</H3>
+<P>
+<B>void</B> <B>GoToLine</B>(<B>size_t </B><I>n</I>) <B>const</B><P>
+Changes the value returned by <A HREF="wx_wxtextfile.html#wxtextfilegetcurrentline">GetCurrentLine</A> 
+and used by <A HREF="wx_wxtextfile.html#wxtextfilegetfirstline">GetFirstLine()</A>/<A HREF="wx_wxtextfile.html#wxtextfilegetnextline">GetNextLine()</A>.<P>
+
+<HR>
+<A NAME="wxtextfileeof"></A>
+<H3>wxTextFile::Eof</H3>
+<P>
+<B>bool</B> <B>Eof</B>() <B>const</B><P>
+Returns true if the current line is the last one.<P>
+
+<HR>
+<A NAME="wxtextfilegeteol"></A>
+<H3>wxTextFile::GetEOL</H3>
+<P>
+<B>static const char*</B> <B>GetEOL</B>(<B>wxTextFileType </B><I>type = typeDefault</I>) <B>const</B><P>
+Get the line termination string corresponding to given constant. <I>typeDefault</I> is
+the value defined during the compilation and corresponds to the native format
+of the platform, i.e. it will be wxTextFileType_Dos under Windows,
+wxTextFileType_Unix under Unix (including Mac OS X when compiling with the
+Apple Developer Tools) and wxTextFileType_Mac under Mac OS (including
+Mac OS X when compiling with CodeWarrior).<P>
+
+<HR>
+<A NAME="wxtextfilegetfirstline"></A>
+<H3>wxTextFile::GetFirstLine</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetFirstLine</B>() <B>const</B><P>
+This method together with <A HREF="wx_wxtextfile.html#wxtextfilegetnextline">GetNextLine()</A> 
+allows more "iterator-like" traversal of the list of lines, i.e. you may
+write something like:<P>
+<PRE>
+wxTextFile file;
+...
+for ( str = file.GetFirstLine(); !file.Eof(); str = file.GetNextLine() )
+{
+    // do something with the current line in str
+}
+// do something with the last line in str
+</PRE>
+
+<HR>
+<A NAME="wxtextfilegetnextline"></A>
+<H3>wxTextFile::GetNextLine</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetNextLine</B>()<P>
+Gets the next line (see <A HREF="wx_wxtextfile.html#wxtextfilegetfirstline">GetFirstLine</A> for 
+the example).<P>
+
+<HR>
+<A NAME="wxtextfilegetprevline"></A>
+<H3>wxTextFile::GetPrevLine</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetPrevLine</B>()<P>
+Gets the previous line in the file.<P>
+
+<HR>
+<A NAME="wxtextfilegetlastline"></A>
+<H3>wxTextFile::GetLastLine</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetLastLine</B>()<P>
+Gets the last line of the file. Together with 
+<A HREF="wx_wxtextfile.html#wxtextfilegetprevline">GetPrevLine</A> it allows to enumerate the lines
+in the file from the end to the beginning like this:<P>
+<PRE>
+wxTextFile file;
+...
+for ( str = file.GetLastLine();
+      file.GetCurrentLine() &gt; 0;
+      str = file.GetPrevLine() )
+{
+    // do something with the current line in str
+}
+// do something with the first line in str
+</PRE>
+
+<HR>
+<A NAME="wxtextfilegetlinetype"></A>
+<H3>wxTextFile::GetLineType</H3>
+<P>
+<B>wxTextFileType</B> <B>GetLineType</B>(<B>size_t </B><I>n</I>) <B>const</B><P>
+Get the type of the line (see also <A HREF="wx_wxtextfile.html#wxtextfilegeteol">GetEOL</A>)<P>
+
+<HR>
+<A NAME="wxtextfileguesstype"></A>
+<H3>wxTextFile::GuessType</H3>
+<P>
+<B>wxTextFileType</B> <B>GuessType</B>() <B>const</B><P>
+Guess the type of file (which is supposed to be opened). If sufficiently
+many lines of the file are in DOS/Unix/Mac format, the corresponding value will
+be returned. If the detection mechanism fails wxTextFileType_None is returned.<P>
+
+<HR>
+<A NAME="wxtextfilegetname"></A>
+<H3>wxTextFile::GetName</H3>
+<P>
+<B>const char*</B> <B>GetName</B>() <B>const</B><P>
+Get the name of the file.<P>
+
+<HR>
+<A NAME="wxtextfileinsertline"></A>
+<H3>wxTextFile::InsertLine</H3>
+<P>
+<B>void</B> <B>InsertLine</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>size_t </B><I>n</I>, <B>wxTextFileType </B><I>type = typeDefault</I>) <B>const</B><P>
+Insert a line before the line number <I>n</I>.<P>
+
+<HR>
+<A NAME="wxtextfileopen"></A>
+<H3>wxTextFile::Open</H3>
+<P>
+<B>bool</B> <B>Open</B>(<B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B></B><I> conv = wxConvUTF8</I>) <B>const</B><P>
+<B>bool</B> <B>Open</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>strFile</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B></B><I> conv = wxConvUTF8</I>) <B>const</B><P>
+Open() opens the file with the given name or the name which was given in the
+<A HREF="wx_wxtextfile.html#wxtextfilector">constructor</A> and also loads file in memory on
+success. It will fail if the file does not exist, 
+<A HREF="wx_wxtextfile.html#wxtextfilecreate">Create</A> should be used in this case.<P>
+The <I>conv</I> argument is only meaningful in Unicode build of wxWidgets when
+it is used to convert the file to wide character representation.<P>
+
+<HR>
+<A NAME="wxtextfileremoveline"></A>
+<H3>wxTextFile::RemoveLine</H3>
+<P>
+<B>void</B> <B>RemoveLine</B>(<B>size_t </B><I>n</I>) <B>const</B><P>
+Delete line number <I>n</I> from the file.<P>
+
+<HR>
+<A NAME="wxtextfileclear"></A>
+<H3>wxTextFile::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>() <B>const</B><P>
+Delete all lines from the file, set current line number to 0.<P>
+
+<HR>
+<A NAME="wxtextfilewrite"></A>
+<H3>wxTextFile::Write</H3>
+<P>
+<B>bool</B> <B>Write</B>(<B>wxTextFileType </B><I>typeNew = wxTextFileType_None</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B></B><I> conv = wxConvUTF8</I>) <B>const</B><P>
+Change the file on disk. The <I>typeNew</I> parameter allows you to change the
+file format (default argument means "don't change type") and may be used to
+convert, for example, DOS files to Unix.<P>
+The <I>conv</I> argument is only meaningful in Unicode build of wxWidgets when
+it is used to convert all lines to multibyte representation before writing them
+them to physical file.<P>
+Returns true if operation succeeded, false if it failed.<P>
+
+</FONT></BODY></HTML>

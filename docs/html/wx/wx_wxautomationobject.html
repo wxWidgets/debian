@@ -1,0 +1,208 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxAutomationObject</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxautomationobject"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxauipaneinfo.html#wxauipaneinfo"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxbitmap.html#wxbitmap"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxAutomationObject</H2>
+<P>
+The <B>wxAutomationObject</B> class represents an OLE automation object containing a single data member,
+an IDispatch pointer. It contains a number of functions that make it easy to perform
+automation operations, and set and get properties. The class makes heavy use of the <A HREF="wx_wxvariant.html#wxvariant">wxVariant</A> class.<P>
+The usage of these classes is quite close to OLE automation usage in Visual Basic. The API is
+high-level, and the application can specify multiple properties in a single string. The following example
+gets the current Excel instance, and if it exists, makes the active cell bold.<P>
+<FONT SIZE=2>
+<PRE>
+  wxAutomationObject excelObject;
+  if (excelObject.GetInstance("Excel.Application"))
+      excelObject.PutProperty("ActiveCell.Font.Bold", true);
+</PRE>
+</FONT><P>
+Note that this class obviously works under Windows only.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/msw/ole/automtn.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxvariant.html#wxvariant">wxVariant</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxautomationobjectctor">wxAutomationObject::wxAutomationObject</A><BR>
+<A HREF="#wxautomationobjectdtor">wxAutomationObject::~wxAutomationObject</A><BR>
+<A HREF="#wxautomationobjectcallmethod">wxAutomationObject::CallMethod</A><BR>
+<A HREF="#wxautomationobjectcreateinstance">wxAutomationObject::CreateInstance</A><BR>
+<A HREF="#wxautomationobjectgetdispatchptr">wxAutomationObject::GetDispatchPtr</A><BR>
+<A HREF="#wxautomationobjectgetinstance">wxAutomationObject::GetInstance</A><BR>
+<A HREF="#wxautomationobjectgetobject">wxAutomationObject::GetObject</A><BR>
+<A HREF="#wxautomationobjectgetproperty">wxAutomationObject::GetProperty</A><BR>
+<A HREF="#wxautomationobjectinvoke">wxAutomationObject::Invoke</A><BR>
+<A HREF="#wxautomationobjectputproperty">wxAutomationObject::PutProperty</A><BR>
+<A HREF="#wxautomationobjectsetdispatchptr">wxAutomationObject::SetDispatchPtr</A><BR>
+<P>
+
+<HR>
+<A NAME="wxautomationobjectctor"></A>
+<H3>wxAutomationObject::wxAutomationObject</H3>
+<P>
+<B></B> <B>wxAutomationObject</B>(<B>WXIDISPATCH*</B><I> dispatchPtr = NULL</I>)<P>
+Constructor, taking an optional IDispatch pointer which will be released when the
+object is deleted.<P>
+
+<HR>
+<A NAME="wxautomationobjectdtor"></A>
+<H3>wxAutomationObject::~wxAutomationObject</H3>
+<P>
+<B></B> <B>~wxAutomationObject</B>()<P>
+Destructor. If the internal IDispatch pointer is non-null, it will be released.<P>
+
+<HR>
+<A NAME="wxautomationobjectcallmethod"></A>
+<H3>wxAutomationObject::CallMethod</H3>
+<P>
+<B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A></B> </B> <B>CallMethod</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> method</I>, <B>int</B><I> noArgs</I>,
+ <B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A> </B></B><I>args[]</I>) <B>const</B><P>
+<B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A></B> </B> <B>CallMethod</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> method</I>, <B>...</B><I></I>) <B>const</B><P>
+Calls an automation method for this object. The first form takes a method name, number of
+arguments, and an array of variants. The second form takes a method name and zero to six
+constant references to variants. Since the variant class has constructors for the basic
+data types, and C++ provides temporary objects automatically, both of the following lines
+are syntactically valid:<P>
+<FONT SIZE=2>
+<PRE>
+  wxVariant res = obj.CallMethod("Sum", wxVariant(1.2), wxVariant(3.4));
+  wxVariant res = obj.CallMethod("Sum", 1.2, 3.4);
+</PRE>
+</FONT><P>
+Note that <I>method</I> can contain dot-separated property names, to save the application
+needing to call GetProperty several times using several temporary objects. For example:<P>
+<FONT SIZE=2>
+<PRE>
+  object.CallMethod("ActiveCell.Font.ShowDialog", "My caption");
+</PRE>
+</FONT><P>
+
+<HR>
+<A NAME="wxautomationobjectcreateinstance"></A>
+<H3>wxAutomationObject::CreateInstance</H3>
+<P>
+<B>bool</B> <B>CreateInstance</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> classId</I>) <B>const</B><P>
+Creates a new object based on the class id, returning true if the object was successfully created,
+or false if not.<P>
+
+<HR>
+<A NAME="wxautomationobjectgetdispatchptr"></A>
+<H3>wxAutomationObject::GetDispatchPtr</H3>
+<P>
+<B>IDispatch*</B> <B>GetDispatchPtr</B>() <B>const</B><P>
+Gets the IDispatch pointer.<P>
+
+<HR>
+<A NAME="wxautomationobjectgetinstance"></A>
+<H3>wxAutomationObject::GetInstance</H3>
+<P>
+<B>bool</B> <B>GetInstance</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> classId</I>) <B>const</B><P>
+Retrieves the current object associated with a class id, and attaches the IDispatch pointer
+to this object. Returns true if a pointer was successfully retrieved, false otherwise.<P>
+Note that this cannot cope with two instances of a given OLE object being active simultaneously,
+such as two copies of Excel running. Which object is referenced cannot currently be specified.<P>
+
+<HR>
+<A NAME="wxautomationobjectgetobject"></A>
+<H3>wxAutomationObject::GetObject</H3>
+<P>
+<B>bool</B> <B>GetObject</B>(<B><A HREF="wx_wxautomationobject.html#wxautomationobject">wxAutomationObject</A>&</B></B><I>obj</I> <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> property</I>,
+ <B>int</B><I> noArgs = 0</I>, <B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A> </B></B><I>args[] = NULL</I>) <B>const</B><P>
+Retrieves a property from this object, assumed to be a dispatch pointer, and initialises <I>obj</I> with it.
+To avoid having to deal with IDispatch pointers directly, use this function in preference
+to <A HREF="wx_wxautomationobject.html#wxautomationobjectgetproperty">wxAutomationObject::GetProperty</A> when retrieving objects
+from other objects.<P>
+Note that an IDispatch pointer is stored as a void* pointer in wxVariant objects.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxautomationobject.html#wxautomationobjectgetproperty">wxAutomationObject::GetProperty</A><P>
+
+<HR>
+<A NAME="wxautomationobjectgetproperty"></A>
+<H3>wxAutomationObject::GetProperty</H3>
+<P>
+<B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A></B> </B> <B>GetProperty</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> property</I>, <B>int</B><I> noArgs</I>,
+ <B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A> </B></B><I>args[]</I>) <B>const</B><P>
+<B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A></B> </B> <B>GetProperty</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> property</I>, <B>...</B><I></I>) <B>const</B><P>
+Gets a property value from this object. The first form takes a property name, number of
+arguments, and an array of variants. The second form takes a property name and zero to six
+constant references to variants. Since the variant class has constructors for the basic
+data types, and C++ provides temporary objects automatically, both of the following lines
+are syntactically valid:<P>
+<FONT SIZE=2>
+<PRE>
+  wxVariant res = obj.GetProperty("Range", wxVariant("A1"));
+  wxVariant res = obj.GetProperty("Range", "A1");
+</PRE>
+</FONT><P>
+Note that <I>property</I> can contain dot-separated property names, to save the application
+needing to call GetProperty several times using several temporary objects.<P>
+
+<HR>
+<A NAME="wxautomationobjectinvoke"></A>
+<H3>wxAutomationObject::Invoke</H3>
+<P>
+<B>bool</B> <B>Invoke</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> member</I>, <B>int</B><I> action</I>,
+ <B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>& </B></B><I>retValue</I>, <B>int</B><I> noArgs</I>, <B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A></B></B><I> args[]</I>,
+ <B>const <A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>*</B></B><I> ptrArgs[] = 0</I>) <B>const</B><P>
+This function is a low-level implementation that allows access to the IDispatch Invoke function.
+It is not meant to be called directly by the application, but is used by other convenience functions.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>member</I><UL><UL>
+The member function or property name.</UL></UL>
+<P>
+<I>action</I><UL><UL>
+Bitlist: may contain DISPATCH_PROPERTYPUT, DISPATCH_PROPERTYPUTREF,
+DISPATCH_METHOD.</UL></UL>
+<P>
+<I>retValue</I><UL><UL>
+Return value (ignored if there is no return value)</UL></UL>
+.<P>
+<I>noArgs</I><UL><UL>
+Number of arguments in <I>args</I> or <I>ptrArgs</I>.</UL></UL>
+<P>
+<I>args</I><UL><UL>
+If non-null, contains an array of variants.</UL></UL>
+<P>
+<I>ptrArgs</I><UL><UL>
+If non-null, contains an array of constant pointers to variants.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the operation was successful, false otherwise.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Two types of argument array are provided, so that when possible pointers are used for efficiency.<P>
+
+<HR>
+<A NAME="wxautomationobjectputproperty"></A>
+<H3>wxAutomationObject::PutProperty</H3>
+<P>
+<B>bool</B> <B>PutProperty</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> property</I>, <B>int</B><I> noArgs</I>,
+ <B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A> </B></B><I>args[]</I>) <B>const</B><P>
+<B>bool</B> <B>PutProperty</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> property</I>, <B>...</B><I></I>)<P>
+Puts a property value into this object. The first form takes a property name, number of
+arguments, and an array of variants. The second form takes a property name and zero to six
+constant references to variants. Since the variant class has constructors for the basic
+data types, and C++ provides temporary objects automatically, both of the following lines
+are syntactically valid:<P>
+<FONT SIZE=2>
+<PRE>
+  obj.PutProperty("Value", wxVariant(23));
+  obj.PutProperty("Value", 23);
+</PRE>
+</FONT><P>
+Note that <I>property</I> can contain dot-separated property names, to save the application
+needing to call GetProperty several times using several temporary objects.<P>
+
+<HR>
+<A NAME="wxautomationobjectsetdispatchptr"></A>
+<H3>wxAutomationObject::SetDispatchPtr</H3>
+<P>
+<B>void</B> <B>SetDispatchPtr</B>(<B>WXIDISPATCH*</B><I> dispatchPtr</I>)<P>
+Sets the IDispatch pointer. This function does not check if there is already an IDispatch pointer.<P>
+You may need to cast from IDispatch* to WXIDISPATCH* when calling this function.<P>
+
+</FONT></BODY></HTML>

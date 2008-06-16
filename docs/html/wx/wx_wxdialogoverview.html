@@ -1,0 +1,35 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDialog overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdialogoverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_windowdeletionoverview.html#windowdeletionoverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_validatoroverview.html#validatoroverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDialog overview</H2>
+<P>
+Classes: <A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><P>
+A dialog box is similar to a panel, in that it is a window which can
+be used for placing controls, with the following exceptions:<P>
+<OL>
+
+<LI> A surrounding frame is implicitly created.
+<LI> Extra functionality is automatically given to the dialog box,
+  such as tabbing between items (currently Windows only).
+<LI> If the dialog box is <I>modal</I>, the calling program is blocked
+  until the dialog box is dismissed.
+</OL>
+<P>
+Under Windows 3, modal dialogs have to be emulated using
+modeless dialogs and a message loop. This is because Windows 3 expects
+the contents of a modal dialog to be loaded from a resource file or
+created on receipt of a dialog initialization message. This is too
+restrictive for wxWidgets, where any window may be created and displayed
+before its contents are created.<P>
+For a set of dialog convenience functions, including file selection, see
+<A HREF="wx_dialogfunctions.html#dialogfunctions">Dialog functions</A>.<P>
+See also <A HREF="wx_wxpanel.html#wxpanel">wxPanel</A> and <A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> for inherited
+member functions. Validation of data in controls is covered
+in <A HREF="wx_validatoroverview.html#validatoroverview">Validator overview</A>.<P>
+<P>
+
+</FONT></BODY></HTML>

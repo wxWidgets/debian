@@ -1,0 +1,42 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPaintDC</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxpaintdc"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpaintevent.html#wxpaintevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPaintDC</H2>
+<P>
+A wxPaintDC must be constructed if an application wishes to paint on the
+client area of a window from within an <B>OnPaint</B> event.
+This should normally be constructed as a temporary stack object; don't store
+a wxPaintDC object. If you have an OnPaint handler, you <I>must</I> create a wxPaintDC
+object within it even if you don't actually use it.<P>
+Using wxPaintDC within OnPaint is important because it automatically
+sets the clipping area to the damaged area of the window. Attempts to draw
+outside this area do not appear.<P>
+To draw on a window from outside <B>OnPaint</B>, construct a <A HREF="wx_wxclientdc.html#wxclientdc">wxClientDC</A> object.<P>
+To draw on the whole window including decorations, construct a <A HREF="wx_wxwindowdc.html#wxwindowdc">wxWindowDC</A> object
+(Windows only).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxwindowdc.html#wxwindowdc">wxWindowDC</A><BR>
+
+<A HREF="wx_wxdc.html#wxdc">wxDC</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dcclient.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdc">wxDC</A>, <A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A>, <A HREF="wx_wxpaintdc.html#wxpaintdc">wxPaintDC</A>,
+<A HREF="wx_wxwindowdc.html#wxwindowdc">wxWindowDC</A>, <A HREF="wx_wxscreendc.html#wxscreendc">wxScreenDC</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxpaintdcctor">wxPaintDC::wxPaintDC</A><BR>
+<P>
+
+<HR>
+<A NAME="wxpaintdcctor"></A>
+<H3>wxPaintDC::wxPaintDC</H3>
+<P>
+<B></B> <B>wxPaintDC</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> window</I>)<P>
+Constructor. Pass a pointer to the window on which you wish to paint.<P>
+<P>
+
+</FONT></BODY></HTML>

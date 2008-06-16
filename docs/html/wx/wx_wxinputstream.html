@@ -1,0 +1,154 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxInputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxinputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxinitdialogevent.html#wxinitdialogevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxipaddress.html#wxipaddress"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxInputStream</H2>
+<P>
+wxInputStream is an abstract base class which may not be used directly.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxstreambase.html#wxstreambase">wxStreamBase</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/stream.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxinputstreamctor">wxInputStream::wxInputStream</A><BR>
+<A HREF="#wxinputstreamdtor">wxInputStream::~wxInputStream</A><BR>
+<A HREF="#wxinputstreamcanread">wxInputStream::CanRead</A><BR>
+<A HREF="#wxinputstreamgetc">wxInputStream::GetC</A><BR>
+<A HREF="#wxinputstreameof">wxInputStream::Eof</A><BR>
+<A HREF="#wxinputstreamlastread">wxInputStream::LastRead</A><BR>
+<A HREF="#wxinputstreampeek">wxInputStream::Peek</A><BR>
+<A HREF="#wxinputstreamread">wxInputStream::Read</A><BR>
+<A HREF="#wxinputstreamseeki">wxInputStream::SeekI</A><BR>
+<A HREF="#wxinputstreamtelli">wxInputStream::TellI</A><BR>
+<A HREF="#wxinputstreamungetch">wxInputStream::Ungetch</A><BR>
+<P>
+
+<HR>
+<A NAME="wxinputstreamctor"></A>
+<H3>wxInputStream::wxInputStream</H3>
+<P>
+<B></B> <B>wxInputStream</B>()<P>
+Creates a dummy input stream.<P>
+
+<HR>
+<A NAME="wxinputstreamdtor"></A>
+<H3>wxInputStream::~wxInputStream</H3>
+<P>
+<B></B> <B>~wxInputStream</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxinputstreamcanread"></A>
+<H3>wxInputStream::CanRead</H3>
+<P>
+<B>bool</B> <B>CanRead</B>() <B>const</B><P>
+Returns true if some data is available in the stream right now, so that
+calling <A HREF="wx_wxinputstream.html#wxinputstreamread">Read()</A> wouldn't block.<P>
+
+<HR>
+<A NAME="wxinputstreamgetc"></A>
+<H3>wxInputStream::GetC</H3>
+<P>
+<B>char</B> <B>GetC</B>()<P>
+Returns the first character in the input queue and removes it, 
+blocking until it appears if necessary.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+If EOF, return value is undefined and LastRead() will return 0 and not 1.<P>
+
+<HR>
+<A NAME="wxinputstreameof"></A>
+<H3>wxInputStream::Eof</H3>
+<P>
+<B>bool</B> <B>Eof</B>() <B>const</B><P>
+Returns true after an attempt has been made to read past the end of the
+stream.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+In wxWidgets 2.6.x and below some streams returned Eof() when the last
+byte had been read rather than when an attempt had been made to read
+past the last byte. If you want to avoid depending on one behaviour or
+the other then call <A HREF="wx_wxinputstream.html#wxinputstreamlastread">LastRead()</A> to
+check the number of bytes actually read.<P>
+
+<HR>
+<A NAME="wxinputstreamlastread"></A>
+<H3>wxInputStream::LastRead</H3>
+<P>
+<B>size_t</B> <B>LastRead</B>() <B>const</B><P>
+Returns the last number of bytes read.<P>
+
+<HR>
+<A NAME="wxinputstreampeek"></A>
+<H3>wxInputStream::Peek</H3>
+<P>
+<B>char</B> <B>Peek</B>()<P>
+Returns the first character in the input queue without removing it.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+Blocks until something appears in the stream if necessary, if nothing
+ever does (i.e. EOF) LastRead() will return 0 (and the return value is
+undefined), otherwise LastRead() returns 1.<P>
+
+<HR>
+<A NAME="wxinputstreamread"></A>
+<H3>wxInputStream::Read</H3>
+<P>
+<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B> </B> <B>Read</B>(<B>void *</B><I>buffer</I>, <B>size_t</B><I> size</I>)<P>
+Reads the specified amount of bytes and stores the data in <I>buffer</I>.<P>
+<B><FONT COLOR="#FF0000">Warning</FONT></B><P>
+The buffer absolutely needs to have at least the specified size.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+This function returns a reference on the current object, so the user can test
+any states of the stream right away.<P>
+<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B> </B> <B>Read</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>&</B></B><I> stream_out</I>)<P>
+Reads data from the input queue and stores it in the specified output stream.
+The data is read until an error is raised by one of the two streams.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+This function returns a reference on the current object, so the user can test
+any states of the stream right away.<P>
+
+<HR>
+<A NAME="wxinputstreamseeki"></A>
+<H3>wxInputStream::SeekI</H3>
+<P>
+<B>off_t</B> <B>SeekI</B>(<B>off_t</B><I> pos</I>, <B>wxSeekMode</B><I> mode = wxFromStart</I>)<P>
+Changes the stream current position.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pos</I><UL><UL>
+Offset to seek to.</UL></UL>
+<P>
+<I>mode</I><UL><UL>
+One of <B>wxFromStart</B>, <B>wxFromEnd</B>, <B>wxFromCurrent</B>.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The new stream position or wxInvalidOffset on error.<P>
+
+<HR>
+<A NAME="wxinputstreamtelli"></A>
+<H3>wxInputStream::TellI</H3>
+<P>
+<B>off_t</B> <B>TellI</B>() <B>const</B><P>
+Returns the current stream position.<P>
+
+<HR>
+<A NAME="wxinputstreamungetch"></A>
+<H3>wxInputStream::Ungetch</H3>
+<P>
+<B>size_t</B> <B>Ungetch</B>(<B>const char*</B><I> buffer</I>, <B>size_t</B><I> size</I>)<P>
+This function is only useful in <I>read</I> mode. It is the manager of the "Write-Back"
+buffer. This buffer acts like a temporary buffer where data which has to be
+read during the next read IO call are put. This is useful when you get a big
+block of data which you didn't want to read: you can replace them at the top
+of the input queue by this way.<P>
+Be very careful about this call in connection with calling SeekI() on the same
+stream. Any call to SeekI() will invalidate any previous call to this method
+(otherwise you could SeekI() to one position, "unread" a few bytes there, SeekI()
+to another position and data would be either lost or corrupted).<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns the amount of bytes saved in the Write-Back buffer.<P>
+<B>bool</B> <B>Ungetch</B>(<B>char </B><I>c</I>)<P>
+This function acts like the previous one except that it takes only one
+character: it is sometimes shorter to use than the generic function.<P>
+
+</FONT></BODY></HTML>

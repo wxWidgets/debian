@@ -1,0 +1,195 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxArchiveEntry</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxarchiveentry"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxarchiveclassfactory.html#wxarchiveclassfactory"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxArchiveEntry</H2>
+<P>
+An abstract base class which serves as a common interface to
+archive entry classes such as <A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A>.
+These hold the meta-data (filename, timestamp, etc.), for entries
+in archive files such as zips and tars.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/archive.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarc">Archive formats such as zip</A><BR>
+
+<A HREF="wx_wxarc.html#wxarcgeneric">Generic archive programming</A><BR>
+
+<A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A><BR>
+
+<A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstream">wxArchiveOutputStream</A><BR>
+
+<A HREF="wx_wxarchivenotifier.html#wxarchivenotifier">wxArchiveNotifier</A><P>
+<B><FONT COLOR="#FF0000">Non-seekable streams</FONT></B><P>
+This information applies only when reading archives from non-seekable
+streams. When the stream is
+seekable <A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstreamgetnextentry">GetNextEntry()</A>
+returns a fully populated <A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A>.
+See '<A HREF="wx_wxarc.html#wxarcnoseek">Archives on non-seekable streams</A>' for
+more information.<P>
+For generic programming, when the worst case must be assumed, you can
+rely on all the fields of wxArchiveEntry being fully populated when
+GetNextEntry() returns, with the the following exceptions:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<A HREF="wx_wxarchiveentry.html#wxarchiveentrysize">GetSize()</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Guaranteed to be
+available after the entry has been read to <A HREF="wx_wxinputstream.html#wxinputstreameof">Eof()</A>,
+or <A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstreamcloseentry">CloseEntry()</A> has been called
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=119>
+<A HREF="wx_wxarchiveentry.html#wxarchiveentryisreadonly">IsReadOnly()</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Guaranteed to
+be available after the end of the archive has been reached, i.e. after
+GetNextEntry() returns NULL and Eof() is true
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxarchiveentryclone">wxArchiveEntry::Clone</A><BR>
+<A HREF="#wxarchiveentrydatetime">wxArchiveEntry::Get/SetDateTime</A><BR>
+<A HREF="#wxarchiveentrygetinternalformat">wxArchiveEntry::GetInternalFormat</A><BR>
+<A HREF="#wxarchiveentrygetinternalname">wxArchiveEntry::GetInternalName</A><BR>
+<A HREF="#wxarchiveentryname">wxArchiveEntry::Get/SetName</A><BR>
+<A HREF="#wxarchiveentrygetoffset">wxArchiveEntry::GetOffset</A><BR>
+<A HREF="#wxarchiveentrysize">wxArchiveEntry::Get/SetSize</A><BR>
+<A HREF="#wxarchiveentryisdir">wxArchiveEntry::IsDir/SetIsDir</A><BR>
+<A HREF="#wxarchiveentryisreadonly">wxArchiveEntry::IsReadOnly/SetIsReadOnly</A><BR>
+<A HREF="#wxarchiveentrynotifier">wxArchiveEntry::Set/UnsetNotifier</A><BR>
+<P>
+
+<HR>
+<A NAME="wxarchiveentryclone"></A>
+<H3>wxArchiveEntry::Clone</H3>
+<P>
+<B><A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A>*</B> </B> <B>Clone</B>() <B>const</B><P>
+Returns a copy of this entry object.<P>
+
+
+<HR>
+<A NAME="wxarchiveentrydatetime"></A>
+<H3>wxArchiveEntry::Get/SetDateTime</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetDateTime</B>() <B>const</B><P>
+<B>void</B> <B>SetDateTime</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt</I>)<P>
+The entry's timestamp.<P>
+
+
+<HR>
+<A NAME="wxarchiveentrygetinternalformat"></A>
+<H3>wxArchiveEntry::GetInternalFormat</H3>
+<P>
+<B>wxPathFormat</B> <B>GetInternalFormat</B>() <B>const</B><P>
+Returns the path format used internally within the archive to store
+filenames.<P>
+
+
+<HR>
+<A NAME="wxarchiveentrygetinternalname"></A>
+<H3>wxArchiveEntry::GetInternalName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetInternalName</B>() <B>const</B><P>
+Returns the entry's filename in the internal format used within the
+archive. The name can include directory components, i.e. it can be a
+full path.<P>
+The names of directory entries are returned without any trailing path
+separator. This gives a canonical name that can be used in comparisons.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarcbyname">Looking up an archive entry by name</A><P>
+
+
+<HR>
+<A NAME="wxarchiveentryname"></A>
+<H3>wxArchiveEntry::Get/SetName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetName</B>(<B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>) <B>const</B><P>
+<B>void</B> <B>SetName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+The entry's name, by default in the native format. The name can include
+directory components, i.e. it can be a full path.<P>
+If this is a directory entry, (i.e. if <A HREF="wx_wxarchiveentry.html#wxarchiveentryisdir">IsDir()</A>
+is true) then GetName() returns the name with a trailing path separator.<P>
+Similarly, setting a name with a trailing path separator sets IsDir().<P>
+
+
+<HR>
+<A NAME="wxarchiveentrygetoffset"></A>
+<H3>wxArchiveEntry::GetOffset</H3>
+<P>
+<B>off_t</B> <B>GetOffset</B>() <B>const</B><P>
+Returns a numeric value unique to the entry within the archive.<P>
+
+
+<HR>
+<A NAME="wxarchiveentrysize"></A>
+<H3>wxArchiveEntry::Get/SetSize</H3>
+<P>
+<B>off_t</B> <B>GetSize</B>() <B>const</B><P>
+<B>void</B> <B>SetSize</B>(<B>off_t </B><I>size</I>)<P>
+The size of the entry's data in bytes.<P>
+
+
+<HR>
+<A NAME="wxarchiveentryisdir"></A>
+<H3>wxArchiveEntry::IsDir/SetIsDir</H3>
+<P>
+<B>bool</B> <B>IsDir</B>() <B>const</B><P>
+<B>void</B> <B>SetIsDir</B>(<B>bool </B><I>isDir = true</I>)<P>
+True if this is a directory entry.<P>
+Directory entries are entries with no data, which are used to store
+the meta-data of directories. They also make it possible for completely
+empty directories to be stored.<P>
+The names of entries within an archive can be complete paths, and
+unarchivers typically create whatever directories are necessary as they
+restore files, even if the archive contains no explicit directory entries.<P>
+
+
+<HR>
+<A NAME="wxarchiveentryisreadonly"></A>
+<H3>wxArchiveEntry::IsReadOnly/SetIsReadOnly</H3>
+<P>
+<B>bool</B> <B>IsReadOnly</B>() <B>const</B><P>
+<B>void</B> <B>SetIsReadOnly</B>(<B>bool </B><I>isReadOnly = true</I>)<P>
+True if the entry is a read-only file.<P>
+
+
+<HR>
+<A NAME="wxarchiveentrynotifier"></A>
+<H3>wxArchiveEntry::Set/UnsetNotifier</H3>
+<P>
+<B>void</B> <B>SetNotifier</B>(<B><A HREF="wx_wxarchivenotifier.html#wxarchivenotifier">wxArchiveNotifier</A>& </B></B><I>notifier</I>)<P>
+<B>void</B> <B>UnsetNotifier</B>()<P>
+Sets the <A HREF="wx_wxarchivenotifier.html#wxarchivenotifier">notifier</A> for this entry.
+Whenever the <A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A> updates
+this entry, it will then invoke the associated
+notifier's <A HREF="wx_wxarchivenotifier.html#wxarchivenotifieronentryupdated">OnEntryUpdated</A>
+method.<P>
+Setting a notifier is not usually necessary. It is used to handle
+certain cases when modifying an archive in a pipeline (i.e. between
+non-seekable streams).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarcnoseek">Archives on non-seekable streams</A><BR>
+
+<A HREF="wx_wxarchivenotifier.html#wxarchivenotifier">wxArchiveNotifier</A><P>
+
+
+</FONT></BODY></HTML>

@@ -2,19 +2,13 @@
 // Name:        wx/gtk/toplevel.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: toplevel.h,v 1.19 2005/08/02 22:57:59 MW Exp $
+// Id:          $Id: toplevel.h 43846 2006-12-07 05:50:54Z PC $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-
-#ifndef __GTKTOPLEVELH__
-#define __GTKTOPLEVELH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "toplevel.h"
-#endif
-
+#ifndef _WX_GTK_TOPLEVEL_H_
+#define _WX_GTK_TOPLEVEL_H_
 
 //-----------------------------------------------------------------------------
 // wxTopLevelWindowGTK
@@ -49,24 +43,26 @@ public:
     virtual ~wxTopLevelWindowGTK();
 
     // implement base class pure virtuals
-    virtual void Maximize(bool maximize = TRUE);
+    virtual void Maximize(bool maximize = true);
     virtual bool IsMaximized() const;
-    virtual void Iconize(bool iconize = TRUE);
+    virtual void Iconize(bool iconize = true);
     virtual bool IsIconized() const;
     virtual void SetIcon(const wxIcon& icon);
     virtual void SetIcons(const wxIconBundle& icons);
     virtual void Restore();
+
+    virtual bool EnableCloseButton(bool enable = true);
 
     virtual bool ShowFullScreen(bool show, long style = wxFULLSCREEN_ALL);
     virtual bool IsFullScreen() const { return m_fsIsShowing; };
 
     virtual bool SetShape(const wxRegion& region);
 
-#if wxABI_VERSION >= 20602
     virtual void RequestUserAttention(int flags = wxUSER_ATTENTION_INFO);
-#endif
 
-    virtual bool Show(bool show = TRUE);
+    virtual void SetWindowStyleFlag( long style );
+
+    virtual bool Show(bool show = true);
 
     virtual void Raise();
 
@@ -74,6 +70,9 @@ public:
 
     virtual void SetTitle( const wxString &title );
     virtual wxString GetTitle() const { return m_title; }
+
+    virtual bool SetTransparent(wxByte alpha);
+    virtual bool CanSetTransparent();
 
     // Experimental, to allow help windows to be
     // viewable from within modal dialogs
@@ -84,18 +83,13 @@ public:
     // implementation from now on
     // --------------------------
 
-    // move the window to the specified location and resize it: this is called
-    // from both DoSetSize() and DoSetClientSize()
-    virtual void DoMoveWindow(int x, int y, int width, int height);
-
     // GTK callbacks
-    virtual void GtkOnSize( int x, int y, int width, int height );
+    virtual void GtkOnSize();
     virtual void OnInternalIdle();
 
     // do *not* call this to iconize the frame, this is a private function!
     void SetIconizeState(bool iconic);
 
-    wxString      m_title;
     int           m_miniEdge,
                   m_miniTitle;
     GtkWidget    *m_mainWidget;
@@ -110,17 +104,33 @@ public:
     long          m_gdkFunc,
                   m_gdkDecor;
 
+    // private gtk_timeout_add result for mimicing wxUSER_ATTENTION_INFO and
+    // wxUSER_ATTENTION_ERROR difference, -2 for no hint, -1 for ERROR hint, rest for GtkTimeout handle.
+    int m_urgency_hint;
+
+    // give hints to the Window Manager for how the size
+    // of the TLW can be changed by dragging
+    virtual void DoSetSizeHints( int minW, int minH,
+                                 int maxW = wxDefaultCoord, int maxH = wxDefaultCoord,
+                                 int incW = wxDefaultCoord, int incH = wxDefaultCoord );
+
 protected:
     // common part of all ctors
     void Init();
+
+    // move the window to the specified location and resize it: this is called
+    // from both DoSetSize() and DoSetClientSize()
+    virtual void DoMoveWindow(int x, int y, int width, int height);
 
     // override wxWindow methods to take into account tool/menu/statusbars
     virtual void DoSetSize(int x, int y,
                            int width, int height,
                            int sizeFlags = wxSIZE_AUTO);
-
+                                 
     virtual void DoSetClientSize(int width, int height);
     virtual void DoGetClientSize( int *width, int *height ) const;
+
+    wxString      m_title;
 
     // is the frame currently iconized?
     bool m_isIconized;
@@ -129,4 +139,4 @@ protected:
     bool m_grabbed;
 };
 
-#endif // __GTKTOPLEVELH__
+#endif // _WX_GTK_TOPLEVEL_H_

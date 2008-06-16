@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_fax3.c,v 1.9 2005/09/01 21:47:12 VZ Exp $ */
+/* $Header$ */
 
 /*
  * Copyright (c) 1990-1997 Sam Leffler

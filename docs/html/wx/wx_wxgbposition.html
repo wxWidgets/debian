@@ -1,0 +1,78 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGBPosition</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgbposition"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgauge.html#wxgauge"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgbsizeritem.html#wxgbsizeritem"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGBPosition</H2>
+<P>
+This class represents the position of an item in a virtual grid of
+rows and columns managed by a <A HREF="wx_wxgridbagsizer.html#wxgridbagsizer">wxGridBagSizer</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/gbsizer.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgbpositionwxgbposition">wxGBPosition::wxGBPosition</A><BR>
+<A HREF="#wxgbpositiongetcol">wxGBPosition::GetCol</A><BR>
+<A HREF="#wxgbpositiongetrow">wxGBPosition::GetRow</A><BR>
+<A HREF="#wxgbpositionsetcol">wxGBPosition::SetCol</A><BR>
+<A HREF="#wxgbpositionsetrow">wxGBPosition::SetRow</A><BR>
+<A HREF="#wxgbpositionoperatorunknown">wxGBPosition::operator!</A><BR>
+<A HREF="#wxgbpositionoperatorequal">wxGBPosition::operator==</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgbpositionwxgbposition"></A>
+<H3>wxGBPosition::wxGBPosition</H3>
+<P>
+<B></B> <B>wxGBPosition</B>()<P>
+<B></B> <B>wxGBPosition</B>(<B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+Construct a new wxGBPosition, optionally setting the row and column.
+The default is (0,0).<P>
+
+<HR>
+<A NAME="wxgbpositiongetcol"></A>
+<H3>wxGBPosition::GetCol</H3>
+<P>
+<B>int</B> <B>GetCol</B>() <B>const</B><P>
+Get the current column value.<P>
+
+<HR>
+<A NAME="wxgbpositiongetrow"></A>
+<H3>wxGBPosition::GetRow</H3>
+<P>
+<B>int</B> <B>GetRow</B>() <B>const</B><P>
+Get the current row value.<P>
+
+<HR>
+<A NAME="wxgbpositionsetcol"></A>
+<H3>wxGBPosition::SetCol</H3>
+<P>
+<B>void</B> <B>SetCol</B>(<B>int </B><I>col</I>)<P>
+Set a new column value.<P>
+
+<HR>
+<A NAME="wxgbpositionsetrow"></A>
+<H3>wxGBPosition::SetRow</H3>
+<P>
+<B>void</B> <B>SetRow</B>(<B>int </B><I>row</I>)<P>
+Set a new row value.<P>
+
+<HR>
+<A NAME="wxgbpositionoperatorunknown"></A>
+<H3>wxGBPosition::operator!</H3>
+<P>
+<B>bool</B> <B>operator!</B>(<B>const <A HREF="wx_wxgbposition.html#wxgbposition">wxGBPosition</A>& </B></B><I>p</I>) <B>const</B><P>
+Is the wxGBPosition valid?  (An invalid wxGBPosition is (-1,-1). )<P>
+
+<HR>
+<A NAME="wxgbpositionoperatorequal"></A>
+<H3>wxGBPosition::operator==</H3>
+<P>
+<B>bool operator</B> <B>operator==</B>(<B>const <A HREF="wx_wxgbposition.html#wxgbposition">wxGBPosition</A>& </B></B><I>p</I>) <B>const</B><P>
+Compare equality of two wxGBPositions.<P>
+
+
+</FONT></BODY></HTML>

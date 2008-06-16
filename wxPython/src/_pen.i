@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _pen.i,v 1.13 2005/03/09 22:28:40 RD Exp $
+// RCS-ID:      $Id: _pen.i 41774 2006-10-09 02:36:38Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,8 @@ public:
     int GetStyle();
     int GetWidth();
 
-    bool Ok();
+    bool IsOk();
+    %pythoncode { Ok = IsOk }
 
     void SetCap(int cap_style);
     void SetColour(wxColour& colour);
@@ -98,11 +99,13 @@ public:
     
 #ifndef __WXMAC__
     int GetDashCount() const;
+    %property(DashCount, GetDashCount, doc="See `GetDashCount`");
 #endif
     
 #ifdef __WXMSW__
     wxBitmap* GetStipple();
     void SetStipple(wxBitmap& stipple);
+    %property(Stipple, GetStipple, SetStipple, doc="See `GetStipple` and `SetStipple`");
 #endif
 
     
@@ -110,7 +113,14 @@ public:
         bool __eq__(const wxPen* other) { return other ? (*self == *other) : false; }
         bool __ne__(const wxPen* other) { return other ? (*self != *other) : true;  }
     }
-    %pythoncode { def __nonzero__(self): return self.Ok() }
+    %pythoncode { def __nonzero__(self): return self.IsOk() }
+
+    %property(Cap, GetCap, SetCap, doc="See `GetCap` and `SetCap`");
+    %property(Colour, GetColour, SetColour, doc="See `GetColour` and `SetColour`");
+    %property(Dashes, GetDashes, SetDashes, doc="See `GetDashes` and `SetDashes`");
+    %property(Join, GetJoin, SetJoin, doc="See `GetJoin` and `SetJoin`");
+    %property(Style, GetStyle, SetStyle, doc="See `GetStyle` and `SetStyle`");
+    %property(Width, GetWidth, SetWidth, doc="See `GetWidth` and `SetWidth`");
 };
 
 

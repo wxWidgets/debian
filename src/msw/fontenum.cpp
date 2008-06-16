@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        msw/fontenum.cpp
+// Name:        src/msw/fontenum.cpp
 // Purpose:     wxFontEnumerator class for Windows
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to add support for font encodings
 // Created:     04/01/98
-// RCS-ID:      $Id: fontenum.cpp,v 1.41.4.1 2006/03/09 23:53:00 ABX Exp $
+// RCS-ID:      $Id: fontenum.cpp 47549 2007-07-18 15:03:10Z VS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "fontenum.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -34,6 +30,7 @@
     #include "wx/gdicmn.h"
     #include "wx/font.h"
     #include "wx/encinfo.h"
+    #include "wx/dynarray.h"
 #endif
 
 #include "wx/msw/private.h"

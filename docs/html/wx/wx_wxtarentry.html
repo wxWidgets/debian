@@ -1,0 +1,231 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTarEntry</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtarentry"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtarclassfactory.html#wxtarclassfactory"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtarinputstream.html#wxtarinputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTarEntry</H2>
+<P>
+Holds the meta-data for an entry in a tar.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/tarstrm.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+Constants for <A HREF="wx_wxtarentry.html#wxtarentrytypeflag">Get/SetTypeFlag</A>:<P>
+<PRE>
+// TypeFlag values
+enum {
+    wxTAR_REGTYPE   = '0',      // regular file
+    wxTAR_LNKTYPE   = '1',      // hard link
+    wxTAR_SYMTYPE   = '2',      // symbolic link
+    wxTAR_CHRTYPE   = '3',      // character special
+    wxTAR_BLKTYPE   = '4',      // block special
+    wxTAR_DIRTYPE   = '5',      // directory
+    wxTAR_FIFOTYPE  = '6',      // named pipe
+    wxTAR_CONTTYPE  = '7'       // contiguous file
+};
+
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarc">Archive formats such as zip</A><BR>
+
+<A HREF="wx_wxtarinputstream.html#wxtarinputstream">wxTarInputStream</A><BR>
+
+<A HREF="wx_wxtaroutputstream.html#wxtaroutputstream">wxTarOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Field availability</FONT></B><P>
+The tar format stores all the meta-data for an entry ahead of its data,
+therefore <A HREF="wx_wxtarinputstream.html#wxtarinputstreamgetnextentry">GetNextEntry()</A> always returns
+a fully populated wxTarEntry object, both when reading from seekable and
+non-seekable streams.<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxtarentrywxtarentry">wxTarEntry::wxTarEntry</A><BR>
+<A HREF="#wxtarentryaccesstime">wxTarEntry::Get/SetAccessTime</A><BR>
+<A HREF="#wxtarentrycreatetime">wxTarEntry::Get/SetCreateTime</A><BR>
+<A HREF="#wxtarentrydev">wxTarEntry::Get/SetDevMajor and Get/SetDevMinor</A><BR>
+<A HREF="#wxtarentryuidgid">wxTarEntry::Get/SetGroupId and Get/SetUserId</A><BR>
+<A HREF="#wxtarentryunamegname">wxTarEntry::Get/SetGroupName and Get/SetUserName</A><BR>
+<A HREF="#wxtarentrygetinternalname">wxTarEntry::GetInternalName</A><BR>
+<A HREF="#wxtarentrylinkname">wxTarEntry::Get/SetLinkName</A><BR>
+<A HREF="#wxtarentrymode">wxTarEntry::Get/SetMode</A><BR>
+<A HREF="#wxtarentrysize">wxTarEntry::Get/SetSize</A><BR>
+<A HREF="#wxtarentrytypeflag">wxTarEntry::Get/SetTypeFlag</A><BR>
+<A HREF="#wxtarentryoperatorassign">wxTarEntry::operator=</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtarentrywxtarentry"></A>
+<H3>wxTarEntry::wxTarEntry</H3>
+<P>
+<B></B> <B>wxTarEntry</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxEmptyString</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt = wxDateTime::Now()</I>, <B>wxFileOffset </B><I>size = wxInvalidOffset</I>)<P>
+Constructor. The tar archive format stores the entry's size ahead of the
+entry's data. Therefore when creating an archive on a non-seekable stream it
+is necessary to supply the correct size when each entry is created.<P>
+<B></B> <B>wxTarEntry</B>(<B>const <A HREF="wx_wxtarentry.html#wxtarentry">wxTarEntry</A>& </B></B><I>entry</I>)<P>
+Copy constructor.<P>
+
+
+<HR>
+<A NAME="wxtarentryaccesstime"></A>
+<H3>wxTarEntry::Get/SetAccessTime</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetAccessTime</B>() <B>const</B><P>
+<B>void</B> <B>SetAccessTime</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt</I>)<P>
+The entry's access time stamp. See also
+ <A HREF="wx_wxarchiveentry.html#wxarchiveentrydatetime">wxArchiveEntry::Get/SetDateTime</A>.<P>
+
+
+<HR>
+<A NAME="wxtarentrycreatetime"></A>
+<H3>wxTarEntry::Get/SetCreateTime</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetCreateTime</B>() <B>const</B><P>
+<B>void</B> <B>SetCreateTime</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>& </B></B><I>dt</I>)<P>
+The entry's creation time stamp. See also
+ <A HREF="wx_wxarchiveentry.html#wxarchiveentrydatetime">wxArchiveEntry::Get/SetDateTime</A>.<P>
+
+
+<HR>
+<A NAME="wxtarentrydev"></A>
+<H3>wxTarEntry::Get/SetDevMajor and Get/SetDevMinor</H3>
+<P>
+<B>int</B> <B>GetDevMajor</B>() <B>const</B><P>
+<B>int</B> <B>GetDevMinor</B>() <B>const</B><P>
+<B>void</B> <B>SetDevMajor</B>(<B>int </B><I>dev</I>)<P>
+<B>void</B> <B>SetDevMinor</B>(<B>int </B><I>dev</I>)<P>
+OS specific IDs defining a device, these are only meaningful when
+ <A HREF="wx_wxtarentry.html#wxtarentrytypeflag">TypeFlag</A> is set to <I>wxTAR_CHRTYPE</I>
+ or <I>wxTAR_BLKTYPE</I>.<P>
+
+
+<HR>
+<A NAME="wxtarentryuidgid"></A>
+<H3>wxTarEntry::Get/SetGroupId and Get/SetUserId</H3>
+<P>
+<B>int</B> <B>GetGroupId</B>() <B>const</B><P>
+<B>int</B> <B>GetUserId</B>() <B>const</B><P>
+<B>void</B> <B>SetGroupId</B>(<B>int </B><I>id</I>)<P>
+<B>void</B> <B>SetUserId</B>(<B>int </B><I>id</I>)<P>
+The user ID and group ID that has <A HREF="wx_wxtarentry.html#wxtarentrymode">permissions</A> over
+this entry. These values aren't usually useful unless the file will only be
+restored to the same system it originated from. <A HREF="wx_wxtarentry.html#wxtarentryunamegname">Get/SetGroupName and
+Get/SetUserName</A> can be used instead.<P>
+
+
+<HR>
+<A NAME="wxtarentryunamegname"></A>
+<H3>wxTarEntry::Get/SetGroupName and Get/SetUserName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetGroupName</B>() <B>const</B><P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetUserName</B>() <B>const</B><P>
+<B>void</B> <B>SetGroupName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>group</I>)<P>
+<B>void</B> <B>SetUserName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>user</I>)<P>
+The names of the user and group that has <A HREF="wx_wxtarentry.html#wxtarentrymode">permissions</A>
+over this entry. These are not present in very old tars.<P>
+
+
+<HR>
+<A NAME="wxtarentrygetinternalname"></A>
+<H3>wxTarEntry::GetInternalName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetInternalName</B>() <B>const</B><P>
+Returns the entry's filename in the internal format used within the
+archive. The name can include directory components, i.e. it can be a
+full path.<P>
+The names of directory entries are returned without any trailing path
+separator. This gives a canonical name that can be used in comparisons.<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetInternalName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>, <B>bool* </B><I>pIsDir = NULL</I>)<P>
+A static member that translates a filename into the internal format used
+within the archive. If the third parameter is provided, the bool pointed
+to is set to indicate whether the name looks like a directory name
+(i.e. has a trailing path separator).<P>
+
+
+<HR>
+<A NAME="wxtarentrylinkname"></A>
+<H3>wxTarEntry::Get/SetLinkName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLinkName</B>() <B>const</B><P>
+<B>void</B> <B>SetLinkName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>link</I>)<P>
+The filename of a previous entry in the tar that this entry is a link to.
+Only meaningful when <A HREF="wx_wxtarentry.html#wxtarentrytypeflag">TypeFlag</A> is set
+to <I>wxTAR_LNKTYPE</I> or <I>wxTAR_SYMTYPE</I>.<P>
+
+
+<HR>
+<A NAME="wxtarentrymode"></A>
+<H3>wxTarEntry::Get/SetMode</H3>
+<P>
+<B>int</B> <B>GetMode</B>() <B>const</B><P>
+<B>void</B> <B>SetMode</B>(<B>int </B><I>mode</I>)<P>
+UNIX permission bits for this entry. Giving read, write and execute permissions
+to the file's <A HREF="wx_wxtarentry.html#wxtarentryunamegname">User and Group</A> and to others.
+Symbols are defined for them in &lt;wx/file.h&gt;.<P>
+<PRE>
+#define wxS_IRUSR 00400
+#define wxS_IWUSR 00200
+#define wxS_IXUSR 00100
+
+#define wxS_IRGRP 00040
+#define wxS_IWGRP 00020
+#define wxS_IXGRP 00010
+
+#define wxS_IROTH 00004
+#define wxS_IWOTH 00002
+#define wxS_IXOTH 00001
+
+</PRE>
+
+
+<HR>
+<A NAME="wxtarentrysize"></A>
+<H3>wxTarEntry::Get/SetSize</H3>
+<P>
+<B>void</B> <B>SetSize</B>(<B>wxFileOffset </B><I>size</I>)<P>
+<B>wxFileOffset</B> <B>GetSize</B>() <B>const</B><P>
+The size of the entry's data in bytes.<P>
+The tar archive format stores the entry's size ahead of the entry's data.
+Therefore when creating an archive on a non-seekable stream it is necessary to
+supply the correct size when each entry is created. For seekable streams this
+is not necessary as <A HREF="wx_wxtaroutputstream.html#wxtaroutputstream">wxTarOutputStream</A> will attempt
+to seek back and fix the entry's header when the entry is closed, though it is
+still more efficient if the size is given beforehand.<P>
+
+
+<HR>
+<A NAME="wxtarentrytypeflag"></A>
+<H3>wxTarEntry::Get/SetTypeFlag</H3>
+<P>
+<B>int</B> <B>GetTypeFlag</B>() <B>const</B><P>
+<B>void</B> <B>SetTypeFlag</B>(<B>int </B><I>type</I>)<P>
+Returns the type of the entry. It should be one of the following:<P>
+<PRE>
+// TypeFlag values
+enum {
+    wxTAR_REGTYPE   = '0',      // regular file
+    wxTAR_LNKTYPE   = '1',      // hard link
+    wxTAR_SYMTYPE   = '2',      // symbolic link
+    wxTAR_CHRTYPE   = '3',      // character special
+    wxTAR_BLKTYPE   = '4',      // block special
+    wxTAR_DIRTYPE   = '5',      // directory
+    wxTAR_FIFOTYPE  = '6',      // named pipe
+    wxTAR_CONTTYPE  = '7'       // contiguous file
+};
+
+</PRE>
+When creating archives use just these values. When reading archives
+any other values should be treated as <I>wxTAR_REGTYPE</I>.<P>
+
+
+<HR>
+<A NAME="wxtarentryoperatorassign"></A>
+<H3>wxTarEntry::operator=</H3>
+<P>
+<B><A HREF="wx_wxtarentry.html#wxtarentry">wxTarEntry</A>& operator</B> </B> <B>operator=</B>(<B>const <A HREF="wx_wxtarentry.html#wxtarentry">wxTarEntry</A>& </B></B><I>entry</I>)<P>
+Assignment operator.<P>
+
+
+</FONT></BODY></HTML>

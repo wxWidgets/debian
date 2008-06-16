@@ -1,0 +1,290 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHelpController</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhelpcontroller"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhashtable.html#wxhashtable"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhelpcontrollerhelpprovider.html#wxhelpcontrollerhelpprovider"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHelpController</H2>
+<P>
+This is a family of classes by which
+applications may invoke a help viewer to provide on-line help.<P>
+A help controller allows an application to display help, at the contents
+or at a particular topic, and shut the help program down on termination.
+This avoids proliferation of many instances of the help viewer whenever the
+user requests a different topic via the application's menus or buttons.<P>
+Typically, an application will create a help controller instance
+when it starts, and immediately call <B>Initialize</B>
+to associate a filename with it. The help viewer will only get run, however,
+just before the first call to display something.<P>
+Most help controller classes actually derive from wxHelpControllerBase and have
+names of the form wxXXXHelpController or wxHelpControllerXXX. An
+appropriate class is aliased to the name wxHelpController for each platform, as follows:<P>
+<UL>
+
+<LI> On desktop Windows, wxCHMHelpController is used (MS HTML Help).
+<LI> On Windows CE, wxWinceHelpController is used.
+<LI> On all other platforms, wxHtmlHelpController is used if wxHTML is
+compiled into wxWidgets; otherwise wxExtHelpController is used (for invoking an external
+browser).
+</UL>
+<P>
+The remaining help controller classes need to be named
+explicitly by an application that wishes to make use of them.<P>
+There are currently the following help controller classes defined:<P>
+<UL>
+
+<LI> wxWinHelpController, for controlling Windows Help.
+<LI> wxCHMHelpController, for controlling MS HTML Help. To use this, you need to set wxUSE_MS_HTML_HELP
+to 1 in setup.h and have htmlhelp.h header from Microsoft's HTML Help kit (you don't need
+VC++ specific htmlhelp.lib because wxWidgets loads necessary DLL at runtime and so it
+works with all compilers).
+<LI> wxBestHelpController, for controlling MS HTML Help or, if Microsoft's runtime is
+not available, <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A>. You need to provide
+<B>both</B> CHM and HTB versions of the help file. For 32bit Windows only.
+<LI> wxExtHelpController, for controlling external browsers under Unix.
+The default browser is Netscape Navigator. The 'help' sample shows its use.
+<LI> wxWinceHelpController, for controlling a simple <TT>.htm</TT> help controller for Windows CE applications.
+<LI> <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A>, a sophisticated help controller using <A HREF="wx_wxhtml.html#wxhtml">wxHTML</A>, in
+a similar style to the Microsoft HTML Help viewer and using some of the same files.
+Although it has an API compatible with other help controllers, it has more advanced features, so it is
+recommended that you use the specific API for this class instead. Note that if you
+use .zip or .htb formats for your books, you
+must add this line to your application initialization: <TT>wxFileSystem::AddHandler(new wxArchiveFSHandler);</TT>
+or nothing will be shown in your help window.
+</UL>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxHelpControllerBase<BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/help.h&gt; (wxWidgets chooses the appropriate help controller class)<BR>
+
+&lt;wx/helpbase.h&gt; (wxHelpControllerBase class)<BR>
+
+&lt;wx/helpwin.h&gt; (Windows Help controller)<BR>
+
+&lt;wx/msw/helpchm.h&gt; (MS HTML Help controller)<BR>
+
+&lt;wx/generic/helpext.h&gt; (external HTML browser controller)<BR>
+
+&lt;wx/html/helpctrl.h&gt; (wxHTML based help controller: wxHtmlHelpController)<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A>, <A HREF="wx_wxhtml.html#wxhtml">wxHTML</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhelpcontrollerctor">wxHelpController::wxHelpController</A><BR>
+<A HREF="#wxhelpcontrollerdtor">wxHelpController::~wxHelpController</A><BR>
+<A HREF="#wxhelpcontrollerinitialize">wxHelpController::Initialize</A><BR>
+<A HREF="#wxhelpcontrollerdisplayblock">wxHelpController::DisplayBlock</A><BR>
+<A HREF="#wxhelpcontrollerdisplaycontents">wxHelpController::DisplayContents</A><BR>
+<A HREF="#wxhelpcontrollerdisplaycontextpopup">wxHelpController::DisplayContextPopup</A><BR>
+<A HREF="#wxhelpcontrollerdisplaysection">wxHelpController::DisplaySection</A><BR>
+<A HREF="#wxhelpcontrollerdisplaytextpopup">wxHelpController::DisplayTextPopup</A><BR>
+<A HREF="#wxhelpcontrollergetframeparameters">wxHelpController::GetFrameParameters</A><BR>
+<A HREF="#wxhelpcontrollergetparentwindow">wxHelpController::GetParentWindow</A><BR>
+<A HREF="#wxhelpcontrollerkeywordsearch">wxHelpController::KeywordSearch</A><BR>
+<A HREF="#wxhelpcontrollerloadfile">wxHelpController::LoadFile</A><BR>
+<A HREF="#wxhelpcontrolleronquit">wxHelpController::OnQuit</A><BR>
+<A HREF="#wxhelpcontrollersetframeparameters">wxHelpController::SetFrameParameters</A><BR>
+<A HREF="#wxhelpcontrollersetparentwindow">wxHelpController::SetParentWindow</A><BR>
+<A HREF="#wxhelpcontrollersetviewer">wxHelpController::SetViewer</A><BR>
+<A HREF="#wxhelpcontrollerquit">wxHelpController::Quit</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhelpcontrollerctor"></A>
+<H3>wxHelpController::wxHelpController</H3>
+<P>
+<B></B> <B>wxHelpController</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parentWindow = NULL</I>)<P>
+Constructs a help instance object, but does not invoke the help viewer.<P>
+If you provide a window, it will be used by some help controller classes, such as
+wxCHMHelpController, wxWinHelpController and wxHtmlHelpController, as the
+parent for the help window instead of the value of <A HREF="wx_wxapp.html#wxappgettopwindow">wxApp::GetTopWindow</A>. You can also change the parent window later with 
+<A HREF="wx_wxhelpcontroller.html#wxhelpcontrollersetparentwindow">wxHelpController::SetParentWindow</A>.<P>
+
+<HR>
+<A NAME="wxhelpcontrollerdtor"></A>
+<H3>wxHelpController::~wxHelpController</H3>
+<P>
+<B></B> <B>~wxHelpController</B>()<P>
+Destroys the help instance, closing down the viewer if it is running.<P>
+
+<HR>
+<A NAME="wxhelpcontrollerinitialize"></A>
+<H3>wxHelpController::Initialize</H3>
+<P>
+<B>virtual bool</B> <B>Initialize</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>)<P>
+<B>virtual bool</B> <B>Initialize</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>, <B>int</B><I> server</I>)<P>
+Initializes the help instance with a help filename, and optionally a server socket
+number if using wxHelp (now obsolete). Does not invoke the help viewer.
+This must be called directly after the help instance object is created and before
+any attempts to communicate with the viewer.<P>
+You may omit the file extension and a suitable one will be chosen. For
+wxHtmlHelpController, the extensions zip, htb and hhp will be appended while searching for
+a suitable file. For WinHelp, the hlp extension is appended.<P>
+
+<HR>
+<A NAME="wxhelpcontrollerdisplayblock"></A>
+<H3>wxHelpController::DisplayBlock</H3>
+<P>
+<B>virtual bool</B> <B>DisplayBlock</B>(<B>long</B><I> blockNo</I>)<P>
+If the help viewer is not running, runs it and displays the file at the given block number.<P>
+<I>WinHelp:</I> Refers to the context number.<P>
+<I>MS HTML Help:</I> Refers to the context number.<P>
+<I>External HTML help:</I> the same as for <A HREF="wx_wxhelpcontroller.html#wxhelpcontrollerdisplaysection">wxHelpController::DisplaySection</A>.<P>
+<I>wxHtmlHelpController:</I> <I>sectionNo</I> is an identifier as specified in the <TT>.hhc</TT> file. See <A HREF="wx_wxhtml.html#helpformat">Help files format</A>.<P>
+This function is for backward compatibility only, and applications should use <A HREF="wx_wxhelpcontroller.html#wxhelpcontrollerdisplaysection">wxHelpController</A> instead.<P>
+
+<HR>
+<A NAME="wxhelpcontrollerdisplaycontents"></A>
+<H3>wxHelpController::DisplayContents</H3>
+<P>
+<B>virtual bool</B> <B>DisplayContents</B>()<P>
+If the help viewer is not running, runs it and displays the
+contents.<P>
+
+<HR>
+<A NAME="wxhelpcontrollerdisplaycontextpopup"></A>
+<H3>wxHelpController::DisplayContextPopup</H3>
+<P>
+<B>virtual bool</B> <B>DisplayContextPopup</B>(<B>int </B><I>contextId</I>)<P>
+Displays the section as a popup window using a context id.<P>
+Returns false if unsuccessful or not implemented.<P>
+
+<HR>
+<A NAME="wxhelpcontrollerdisplaysection"></A>
+<H3>wxHelpController::DisplaySection</H3>
+<P>
+<B>virtual bool</B> <B>DisplaySection</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> section</I>)<P>
+If the help viewer is not running, runs it and displays the given section.<P>
+The interpretation of <I>section</I> differs between help viewers. For most viewers,
+this call is equivalent to KeywordSearch. For MS HTML Help, wxHTML help and external HTML help,
+if <I>section</I> has a .htm
+or .html extension, that HTML file will be displayed; otherwise
+a keyword search is done.<P>
+<B>virtual bool</B> <B>DisplaySection</B>(<B>int</B><I> sectionNo</I>)<P>
+If the help viewer is not running, runs it and displays the given section.<P>
+<I>WinHelp, MS HTML Help</I> <I>sectionNo</I> is a context id.<P>
+<I>External HTML help:</I> wxExtHelpController implements <I>sectionNo</I> as an id in a map file, which is of the form:<P>
+<PRE>
+0  wx.html             ; Index
+1  wx34.html#classref  ; Class reference
+2  wx204.html          ; Function reference
+</PRE>
+<I>wxHtmlHelpController:</I> <I>sectionNo</I> is an identifier as specified in the <TT>.hhc</TT> file. See <A HREF="wx_wxhtml.html#helpformat">Help files format</A>.<P>
+See also the help sample for notes on how to specify section numbers for various help file formats.<P>
+
+<HR>
+<A NAME="wxhelpcontrollerdisplaytextpopup"></A>
+<H3>wxHelpController::DisplayTextPopup</H3>
+<P>
+<B>virtual bool</B> <B>DisplayTextPopup</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> text</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos</I>)<P>
+Displays the text in a popup window, if possible.<P>
+Returns false if unsuccessful or not implemented.<P>
+
+<HR>
+<A NAME="wxhelpcontrollergetframeparameters"></A>
+<H3>wxHelpController::GetFrameParameters</H3>
+<P>
+<B>virtual <A HREF="wx_wxframe.html#wxframe">wxFrame</A> *</B> </B> <B>GetFrameParameters</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A> * </B></B><I>size = NULL</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A> * </B></B><I>pos = NULL</I>,
+ <B>bool *</B><I>newFrameEachTime = NULL</I>)<P>
+wxHtmlHelpController returns the frame, size and position.<P>
+For all other help controllers, this function does nothing
+and just returns NULL.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>viewer</I><UL><UL>
+This defaults to "netscape" for wxExtHelpController.</UL></UL>
+<P>
+<I>flags</I><UL><UL>
+This defaults to wxHELP_NETSCAPE for wxExtHelpController, indicating
+that the viewer is a variant of Netscape Navigator.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhelpcontrollergetparentwindow"></A>
+<H3>wxHelpController::GetParentWindow</H3>
+<P>
+<B>virtual <A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetParentWindow</B>() <B>const</B><P>
+Returns the window to be used as the parent for the help window. This window is used
+by wxCHMHelpController, wxWinHelpController and wxHtmlHelpController.<P>
+
+<HR>
+<A NAME="wxhelpcontrollerkeywordsearch"></A>
+<H3>wxHelpController::KeywordSearch</H3>
+<P>
+<B>virtual bool</B> <B>KeywordSearch</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>keyWord</I>, <B>wxHelpSearchMode </B><I>mode = wxHELP_SEARCH_ALL</I>)<P>
+If the help viewer is not running, runs it, and searches for sections matching
+the given keyword. If one match is found, the file is displayed at this
+section. The optional parameter allows the search the index
+(wxHELP_SEARCH_INDEX) but this currently only supported by the
+wxHtmlHelpController.<P>
+<I>WinHelp, MS HTML Help:</I> If more than one match is found, 
+the first topic is displayed.<P>
+<I>External HTML help, simple wxHTML help:</I> If more than one match is found, 
+a choice of topics is displayed.<P>
+<I>wxHtmlHelpController:</I> see <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontrollerkeywordsearch">wxHtmlHelpController::KeywordSearch</A>.<P>
+
+<HR>
+<A NAME="wxhelpcontrollerloadfile"></A>
+<H3>wxHelpController::LoadFile</H3>
+<P>
+<B>virtual bool</B> <B>LoadFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file = ""</I>)<P>
+If the help viewer is not running, runs it and loads the given file.
+If the filename is not supplied or is
+empty, the file specified in <B>Initialize</B> is used. If the viewer is
+already displaying the specified file, it will not be reloaded. This
+member function may be used before each display call in case the user
+has opened another file.<P>
+wxHtmlHelpController ignores this call.<P>
+
+<HR>
+<A NAME="wxhelpcontrolleronquit"></A>
+<H3>wxHelpController::OnQuit</H3>
+<P>
+<B>virtual bool</B> <B>OnQuit</B>()<P>
+Overridable member called when this application's viewer is quit by the user.<P>
+This does not work for all help controllers.<P>
+
+<HR>
+<A NAME="wxhelpcontrollersetframeparameters"></A>
+<H3>wxHelpController::SetFrameParameters</H3>
+<P>
+<B>virtual void</B> <B>SetFrameParameters</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> & </B></B><I>title</I>,
+ <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A> & </B></B><I>size</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A> & </B></B><I>pos = wxDefaultPosition</I>,
+ <B>bool </B><I>newFrameEachTime = false</I>)<P>
+For wxHtmlHelpController, the title is set (again with %s indicating the
+page title) and also the size and position of the frame if the frame is already
+open. <I>newFrameEachTime</I> is ignored.<P>
+For all other help controllers this function has no effect.<P>
+
+<HR>
+<A NAME="wxhelpcontrollersetparentwindow"></A>
+<H3>wxHelpController::SetParentWindow</H3>
+<P>
+<B>virtual void</B> <B>SetParentWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parentWindow</I>)<P>
+Sets the window to be used as the parent for the help window. This is used
+by wxCHMHelpController, wxWinHelpController and wxHtmlHelpController.<P>
+
+<HR>
+<A NAME="wxhelpcontrollersetviewer"></A>
+<H3>wxHelpController::SetViewer</H3>
+<P>
+<B>virtual void</B> <B>SetViewer</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>viewer</I>, <B>long</B><I> flags</I>)<P>
+Sets detailed viewer information. So far this is only relevant to wxExtHelpController.<P>
+Some examples of usage:<P>
+<PRE>
+  m_help.SetViewer("kdehelp");
+  m_help.SetViewer("gnome-help-browser");
+  m_help.SetViewer("netscape", wxHELP_NETSCAPE);
+</PRE>
+
+<HR>
+<A NAME="wxhelpcontrollerquit"></A>
+<H3>wxHelpController::Quit</H3>
+<P>
+<B>virtual bool</B> <B>Quit</B>()<P>
+If the viewer is running, quits it by disconnecting.<P>
+For Windows Help, the viewer will only close if no other application is using it.<P>
+
+</FONT></BODY></HTML>

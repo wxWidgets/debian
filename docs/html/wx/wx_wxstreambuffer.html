@@ -1,0 +1,328 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStreamBuffer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstreambuffer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstreambase.html#wxstreambase"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstreamtotextredirector.html#wxstreamtotextredirector"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStreamBuffer</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/stream.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstreambase.html#wxstreambase">wxStreamBase</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxstreambufferctor">wxStreamBuffer::wxStreamBuffer</A><BR>
+<A HREF="#wxstreambufferdtor">wxStreamBuffer::~wxStreamBuffer</A><BR>
+<A HREF="#wxstreambufferread">wxStreamBuffer::Read</A><BR>
+<A HREF="#wxstreambufferwrite">wxStreamBuffer::Write</A><BR>
+<A HREF="#wxstreambuffergetchar">wxStreamBuffer::GetChar</A><BR>
+<A HREF="#wxstreambufferputchar">wxStreamBuffer::PutChar</A><BR>
+<A HREF="#wxstreambuffertell">wxStreamBuffer::Tell</A><BR>
+<A HREF="#wxstreambufferseek">wxStreamBuffer::Seek</A><BR>
+<A HREF="#wxstreambufferresetbuffer">wxStreamBuffer::ResetBuffer</A><BR>
+<A HREF="#wxstreambuffersetbufferio">wxStreamBuffer::SetBufferIO</A><BR>
+<A HREF="#wxstreambuffergetbufferstart">wxStreamBuffer::GetBufferStart</A><BR>
+<A HREF="#wxstreambuffergetbufferend">wxStreamBuffer::GetBufferEnd</A><BR>
+<A HREF="#wxstreambuffergetbufferpos">wxStreamBuffer::GetBufferPos</A><BR>
+<A HREF="#wxstreambuffergetintposition">wxStreamBuffer::GetIntPosition</A><BR>
+<A HREF="#wxstreambuffersetintposition">wxStreamBuffer::SetIntPosition</A><BR>
+<A HREF="#wxstreambuffergetlastaccess">wxStreamBuffer::GetLastAccess</A><BR>
+<A HREF="#wxstreambufferfixed">wxStreamBuffer::Fixed</A><BR>
+<A HREF="#wxstreambufferflushable">wxStreamBuffer::Flushable</A><BR>
+<A HREF="#wxstreambufferflushbuffer">wxStreamBuffer::FlushBuffer</A><BR>
+<A HREF="#wxstreambufferfillbuffer">wxStreamBuffer::FillBuffer</A><BR>
+<A HREF="#wxstreambuffergetdataleft">wxStreamBuffer::GetDataLeft</A><BR>
+<A HREF="#wxstreambufferstream">wxStreamBuffer::Stream</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstreambufferctor"></A>
+<H3>wxStreamBuffer::wxStreamBuffer</H3>
+<P>
+<B></B> <B>wxStreamBuffer</B>(<B><A HREF="wx_wxstreambase.html#wxstreambase">wxStreamBase</A>&</B></B><I> stream</I>, <B>BufMode</B><I> mode</I>)<P>
+Constructor, creates a new stream buffer using <I>stream</I> as a parent stream
+and <I>mode</I> as the IO mode. <I>mode</I> can be: wxStreamBuffer::read,
+wxStreamBuffer::write, wxStreamBuffer::read_write.<P>
+One stream can have many stream buffers but only one is used internally to
+pass IO call (e.g. wxInputStream::Read() -&gt; wxStreamBuffer::Read()), but you
+can call directly wxStreamBuffer::Read without any problems. Note that
+all errors and messages linked to the stream are stored in the stream, not
+the stream buffers:<P>
+<PRE>
+  streambuffer.Read(...);
+  streambuffer2.Read(...); /* This call erases previous error messages set by 
+                              ``streambuffer'' */
+</PRE>
+<B></B> <B>wxStreamBuffer</B>(<B>BufMode</B><I> mode</I>)<P>
+Constructor, creates a new empty stream buffer which won't flush any data
+to a stream. <I>mode</I> specifies the type of the buffer (read, write, read_write).
+This stream buffer has the advantage to be stream independent and to
+work only on memory buffers but it is still compatible with the rest of the
+wxStream classes. You can write, read to this special stream and it will
+grow (if it is allowed by the user) its internal buffer. Briefly, it has all
+functionality of a "normal'' stream.<P>
+<B><FONT COLOR="#FF0000">Warning</FONT></B><P>
+The "read_write" mode doesn't currently work for standalone stream buffers.<P>
+<B></B> <B>wxStreamBuffer</B>(<B>const <A HREF="wx_wxstreambuffer.html#wxstreambuffer">wxStreamBuffer</A>&</B></B><I>buffer</I>)<P>
+Constructor. It initializes the stream buffer with the data of the specified
+stream buffer. The new stream buffer has the same attributes, size, position
+and they share the same buffer. This will cause problems if the stream to
+which the stream buffer belong is destroyed and the newly cloned stream
+buffer continues to be used, trying to call functions in the (destroyed)
+stream. It is advised to use this feature only in very local area of the
+program.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstreambuffer.html#wxstreambuffersetbufferio">wxStreamBuffer:SetBufferIO</A><P>
+
+<HR>
+<A NAME="wxstreambufferdtor"></A>
+<H3>wxStreamBuffer::~wxStreamBuffer</H3>
+<P>
+<B></B> <B>wxStreamBuffer</B>(~wxStreamBuffer)<P>
+Destructor. It finalizes all IO calls and frees all internal buffers if
+necessary.<P>
+
+<HR>
+<A NAME="wxstreambufferread"></A>
+<H3>wxStreamBuffer::Read</H3>
+<P>
+<B>size_t</B> <B>Read</B>(<B>void *</B><I>buffer</I>, <B>size_t </B><I>size</I>)<P>
+Reads a block of the specified <I>size</I> and stores the data in <I>buffer</I>.
+This function tries to read from the buffer first and if more data has been
+requested, reads more data from the associated stream and updates the buffer
+accordingly until all requested data is read.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+It returns the size of the data read. If the returned size is different of the specified 
+<I>size</I>, an error has occurred and should be tested using 
+<A HREF="wx_wxstreambase.html#wxstreambasegetlasterror">GetLastError</A>.<P>
+<B>size_t</B> <B>Read</B>(<B><A HREF="wx_wxstreambuffer.html#wxstreambuffer">wxStreamBuffer</A> *</B></B><I>buffer</I>)<P>
+Copies data to <I>buffer</I>. The function returns when <I>buffer</I> is full or when there isn't
+any more data in the current buffer.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstreambuffer.html#wxstreambufferwrite">wxStreamBuffer::Write</A><P>
+
+<HR>
+<A NAME="wxstreambufferwrite"></A>
+<H3>wxStreamBuffer::Write</H3>
+<P>
+<B>size_t</B> <B>Write</B>(<B>const void *</B><I>buffer</I>, <B>size_t </B><I>size</I>)<P>
+Writes a block of the specified <I>size</I> using data of <I>buffer</I>. The data
+are cached in a buffer before being sent in one block to the stream.<P>
+<B>size_t</B> <B>Write</B>(<B><A HREF="wx_wxstreambuffer.html#wxstreambuffer">wxStreamBuffer</A> *</B></B><I>buffer</I>)<P>
+See <A HREF="wx_wxstreambuffer.html#wxstreambufferread">Read</A>.<P>
+
+<HR>
+<A NAME="wxstreambuffergetchar"></A>
+<H3>wxStreamBuffer::GetChar</H3>
+<P>
+<B>char</B> <B>GetChar</B>()<P>
+Gets a single char from the stream buffer. It acts like the Read call.<P>
+<B><FONT COLOR="#FF0000">Problem</FONT></B><P>
+You aren't directly notified if an error occurred during the IO call.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstreambuffer.html#wxstreambufferread">wxStreamBuffer::Read</A><P>
+
+<HR>
+<A NAME="wxstreambufferputchar"></A>
+<H3>wxStreamBuffer::PutChar</H3>
+<P>
+<B>void</B> <B>PutChar</B>(<B>char </B><I>c</I>)<P>
+Puts a single char to the stream buffer.<P>
+<B><FONT COLOR="#FF0000">Problem</FONT></B><P>
+You aren't directly notified if an error occurred during the IO call.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstreambuffer.html#wxstreambufferwrite">wxStreamBuffer::Read</A><P>
+
+<HR>
+<A NAME="wxstreambuffertell"></A>
+<H3>wxStreamBuffer::Tell</H3>
+<P>
+<B>off_t</B> <B>Tell</B>() <B>const</B><P>
+Gets the current position in the stream. This position is calculated from
+the <I>real</I> position in the stream and from the internal buffer position: so
+it gives you the position in the <I>real</I> stream counted from the start of
+the stream.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns the current position in the stream if possible, wxInvalidOffset in the
+other case.<P>
+
+<HR>
+<A NAME="wxstreambufferseek"></A>
+<H3>wxStreamBuffer::Seek</H3>
+<P>
+<B>off_t</B> <B>Seek</B>(<B>off_t </B><I>pos</I>, <B>wxSeekMode </B><I>mode</I>)<P>
+Changes the current position.<P>
+<I>mode</I> may be one of the following:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFromStart</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The position is counted from the start of the stream.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFromCurrent</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The position is counted from the current position of the stream.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxFromEnd</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The position is counted from the end of the stream.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Upon successful completion, it returns the new offset as measured in bytes from
+the beginning of the stream. Otherwise, it returns wxInvalidOffset.<P>
+
+<HR>
+<A NAME="wxstreambufferresetbuffer"></A>
+<H3>wxStreamBuffer::ResetBuffer</H3>
+<P>
+<B>void</B> <B>ResetBuffer</B>()<P>
+Resets to the initial state variables concerning the buffer.<P>
+
+<HR>
+<A NAME="wxstreambuffersetbufferio"></A>
+<H3>wxStreamBuffer::SetBufferIO</H3>
+<P>
+<B>void</B> <B>SetBufferIO</B>(<B>char*</B><I> buffer_start</I>, <B>char*</B><I> buffer_end</I>)<P>
+Specifies which pointers to use for stream buffering. You need to pass a pointer on the
+start of the buffer end and another on the end. The object will use this buffer
+to cache stream data. It may be used also as a source/destination buffer when
+you create an empty stream buffer (See <A HREF="wx_wxstreambuffer.html#wxstreambufferctor">wxStreamBuffer::wxStreamBuffer</A>).<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+When you use this function, you will have to destroy the IO buffers yourself
+after the stream buffer is destroyed or don't use it anymore.
+In the case you use it with an empty buffer, the stream buffer will not resize
+it when it is full.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstreambuffer.html#wxstreambufferctor">wxStreamBuffer constructor</A><BR>
+
+<A HREF="wx_wxstreambuffer.html#wxstreambufferfixed">wxStreamBuffer::Fixed</A><BR>
+
+<A HREF="wx_wxstreambuffer.html#wxstreambufferflushable">wxStreamBuffer::Flushable</A><P>
+<B>void</B> <B>SetBufferIO</B>(<B>size_t</B><I> bufsize</I>)<P>
+Destroys or invalidates the previous IO buffer and allocates a new one of the
+specified size.<P>
+<B><FONT COLOR="#FF0000">Warning</FONT></B><P>
+All previous pointers aren't valid anymore.<P>
+<B><FONT COLOR="#FF0000">Remark</FONT></B><P>
+The created IO buffer is growable by the object.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstreambuffer.html#wxstreambufferfixed">wxStreamBuffer::Fixed</A><BR>
+
+<A HREF="wx_wxstreambuffer.html#wxstreambufferflushable">wxStreamBuffer::Flushable</A><P>
+
+<HR>
+<A NAME="wxstreambuffergetbufferstart"></A>
+<H3>wxStreamBuffer::GetBufferStart</H3>
+<P>
+<B>void *</B> <B>GetBufferStart</B>() <B>const</B><P>
+Returns a pointer on the start of the stream buffer.<P>
+
+<HR>
+<A NAME="wxstreambuffergetbufferend"></A>
+<H3>wxStreamBuffer::GetBufferEnd</H3>
+<P>
+<B>void *</B> <B>GetBufferEnd</B>() <B>const</B><P>
+Returns a pointer on the end of the stream buffer.<P>
+
+<HR>
+<A NAME="wxstreambuffergetbufferpos"></A>
+<H3>wxStreamBuffer::GetBufferPos</H3>
+<P>
+<B>void *</B> <B>GetBufferPos</B>() <B>const</B><P>
+Returns a pointer on the current position of the stream buffer.<P>
+
+<HR>
+<A NAME="wxstreambuffergetintposition"></A>
+<H3>wxStreamBuffer::GetIntPosition</H3>
+<P>
+<B>off_t</B> <B>GetIntPosition</B>() <B>const</B><P>
+Returns the current position (counted in bytes) in the stream buffer.<P>
+
+<HR>
+<A NAME="wxstreambuffersetintposition"></A>
+<H3>wxStreamBuffer::SetIntPosition</H3>
+<P>
+<B>void</B> <B>SetIntPosition</B>(<B>size_t</B><I> pos</I>)<P>
+Sets the current position (in bytes) in the stream buffer.<P>
+<B><FONT COLOR="#FF0000">Warning</FONT></B><P>
+Since it is a very low-level function, there is no check on the position:
+specifying an invalid position can induce unexpected results.<P>
+
+<HR>
+<A NAME="wxstreambuffergetlastaccess"></A>
+<H3>wxStreamBuffer::GetLastAccess</H3>
+<P>
+<B>size_t</B> <B>GetLastAccess</B>() <B>const</B><P>
+Returns the amount of bytes read during the last IO call to the parent stream.<P>
+
+<HR>
+<A NAME="wxstreambufferfixed"></A>
+<H3>wxStreamBuffer::Fixed</H3>
+<P>
+<B>void</B> <B>Fixed</B>(<B>bool</B><I> fixed</I>)<P>
+Toggles the fixed flag. Usually this flag is toggled at the same time as 
+<I>flushable</I>. This flag allows (when it has the false value) or forbids
+(when it has the true value) the stream buffer to resize dynamically the IO buffer.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstreambuffer.html#wxstreambuffersetbufferio">wxStreamBuffer::SetBufferIO</A><P>
+
+<HR>
+<A NAME="wxstreambufferflushable"></A>
+<H3>wxStreamBuffer::Flushable</H3>
+<P>
+<B>void</B> <B>Flushable</B>(<B>bool</B><I> flushable</I>)<P>
+Toggles the flushable flag. If <I>flushable</I> is disabled, no data are sent
+to the parent stream.<P>
+
+<HR>
+<A NAME="wxstreambufferflushbuffer"></A>
+<H3>wxStreamBuffer::FlushBuffer</H3>
+<P>
+<B>bool</B> <B>FlushBuffer</B>()<P>
+Flushes the IO buffer.<P>
+
+<HR>
+<A NAME="wxstreambufferfillbuffer"></A>
+<H3>wxStreamBuffer::FillBuffer</H3>
+<P>
+<B>bool</B> <B>FillBuffer</B>()<P>
+Fill the IO buffer.<P>
+
+<HR>
+<A NAME="wxstreambuffergetdataleft"></A>
+<H3>wxStreamBuffer::GetDataLeft</H3>
+<P>
+<B>size_t</B> <B>GetDataLeft</B>()<P>
+Returns the amount of available data in the buffer.<P>
+
+<HR>
+<A NAME="wxstreambufferstream"></A>
+<H3>wxStreamBuffer::Stream</H3>
+<P>
+<B><A HREF="wx_wxstreambase.html#wxstreambase">wxStreamBase</A>*</B> </B> <B>Stream</B>()<P>
+Returns the parent stream of the stream buffer.<P>
+
+</FONT></BODY></HTML>

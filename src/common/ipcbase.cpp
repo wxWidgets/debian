@@ -1,27 +1,22 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        ipcbase.cpp
+// Name:        src/common/ipcbase.cpp
 // Purpose:     IPC base classes
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: ipcbase.cpp,v 1.13 2005/09/11 18:31:28 JS Exp $
+// RCS-ID:      $Id: ipcbase.cpp 38787 2006-04-18 07:24:35Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "ipcbase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/defs.h"
 #endif
 
 #include "wx/ipcbase.h"
@@ -51,7 +46,7 @@ wxConnectionBase::wxConnectionBase()
 {
 }
 
-wxConnectionBase::wxConnectionBase(wxConnectionBase& copy)
+wxConnectionBase::wxConnectionBase(const wxConnectionBase& copy)
     : wxObject(),
       m_connected(copy.m_connected),
       m_buffer(copy.m_buffer),
@@ -91,4 +86,3 @@ wxChar *wxConnectionBase::GetBufferAtLeast( size_t bytes )
       return NULL;
   }
 }
-

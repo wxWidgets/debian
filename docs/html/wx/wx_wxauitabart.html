@@ -1,0 +1,131 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxAuiTabArt</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxauitabart"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxauidockart.html#wxauidockart"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxauimanager.html#wxauimanager"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxAuiTabArt</H2>
+<P>
+Tab art class.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/aui/auibook.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxauitabartwxauitabart">wxAuiTabArt::wxAuiTabArt</A><BR>
+<A HREF="#wxauitabartclone">wxAuiTabArt::Clone</A><BR>
+<A HREF="#wxauitabartdrawbackground">wxAuiTabArt::DrawBackground</A><BR>
+<A HREF="#wxauitabartdrawbutton">wxAuiTabArt::DrawButton</A><BR>
+<A HREF="#wxauitabartdrawtab">wxAuiTabArt::DrawTab</A><BR>
+<A HREF="#wxauitabartgetbesttabctrlsize">wxAuiTabArt::GetBestTabCtrlSize</A><BR>
+<A HREF="#wxauitabartgetindentsize">wxAuiTabArt::GetIndentSize</A><BR>
+<A HREF="#wxauitabartgettabsize">wxAuiTabArt::GetTabSize</A><BR>
+<A HREF="#wxauitabartsetflags">wxAuiTabArt::SetFlags</A><BR>
+<A HREF="#wxauitabartsetmeasuringfont">wxAuiTabArt::SetMeasuringFont</A><BR>
+<A HREF="#wxauitabartsetnormalfont">wxAuiTabArt::SetNormalFont</A><BR>
+<A HREF="#wxauitabartsetselectedfont">wxAuiTabArt::SetSelectedFont</A><BR>
+<A HREF="#wxauitabartsetsizinginfo">wxAuiTabArt::SetSizingInfo</A><BR>
+<A HREF="#wxauitabartshowwindowlist">wxAuiTabArt::ShowWindowList</A><BR>
+<P>
+
+<HR>
+<A NAME="wxauitabartwxauitabart"></A>
+<H3>wxAuiTabArt::wxAuiTabArt</H3>
+<P>
+<B></B> <B>wxAuiTabArt</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxauitabartclone"></A>
+<H3>wxAuiTabArt::Clone</H3>
+<P>
+<B><A HREF="wx_wxauitabart.html#wxauitabart">wxAuiTabArt</A>*</B> </B> <B>Clone</B>()<P>
+Clones the art object.<P>
+
+<HR>
+<A NAME="wxauitabartdrawbackground"></A>
+<H3>wxAuiTabArt::DrawBackground</H3>
+<P>
+<B>void</B> <B>DrawBackground</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>wnd</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>)<P>
+Draws a background on the given area.<P>
+
+<HR>
+<A NAME="wxauitabartdrawbutton"></A>
+<H3>wxAuiTabArt::DrawButton</H3>
+<P>
+<B>void</B> <B>DrawButton</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>wnd</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>in_rect</I>, <B>int </B><I>bitmap_id</I>, <B>int </B><I>button_state</I>, <B>int </B><I>orientation</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap_override</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A>* </B></B><I>out_rect</I>)<P>
+Draws a button.<P>
+
+<HR>
+<A NAME="wxauitabartdrawtab"></A>
+<H3>wxAuiTabArt::DrawTab</H3>
+<P>
+<B>void</B> <B>DrawTab</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>wnd</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>in_rect</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B>bool </B><I>active</I>, <B>int </B><I>close_button_state</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A>* </B></B><I>out_tab_rect</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A>* </B></B><I>out_button_rect</I>, <B>int* </B><I>x_extent</I>)<P>
+Draws a tab.<P>
+
+<HR>
+<A NAME="wxauitabartgetbesttabctrlsize"></A>
+<H3>wxAuiTabArt::GetBestTabCtrlSize</H3>
+<P>
+<B>int</B> <B>GetBestTabCtrlSize</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>wnd</I>, <B>wxAuiNotebookPageArray&amp; </B><I>pages</I>)<P>
+Returns the tab control size.<P>
+
+<HR>
+<A NAME="wxauitabartgetindentsize"></A>
+<H3>wxAuiTabArt::GetIndentSize</H3>
+<P>
+<B>int</B> <B>GetIndentSize</B>()<P>
+Returns the indent size.<P>
+
+<HR>
+<A NAME="wxauitabartgettabsize"></A>
+<H3>wxAuiTabArt::GetTabSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetTabSize</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>wnd</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B>bool </B><I>active</I>, <B>int </B><I>close_button_state</I>, <B>int* </B><I>x_extent</I>)<P>
+Returns the tab size for the given caption, bitmap and state.<P>
+
+<HR>
+<A NAME="wxauitabartsetflags"></A>
+<H3>wxAuiTabArt::SetFlags</H3>
+<P>
+<B>void</B> <B>SetFlags</B>(<B>unsigned int </B><I>flags</I>)<P>
+Sets flags.<P>
+
+<HR>
+<A NAME="wxauitabartsetmeasuringfont"></A>
+<H3>wxAuiTabArt::SetMeasuringFont</H3>
+<P>
+<B>void</B> <B>SetMeasuringFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the font used for calculating measurements.<P>
+
+<HR>
+<A NAME="wxauitabartsetnormalfont"></A>
+<H3>wxAuiTabArt::SetNormalFont</H3>
+<P>
+<B>void</B> <B>SetNormalFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the normal font for drawing labels.<P>
+
+<HR>
+<A NAME="wxauitabartsetselectedfont"></A>
+<H3>wxAuiTabArt::SetSelectedFont</H3>
+<P>
+<B>void</B> <B>SetSelectedFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the font for drawing text for selected UI elements.<P>
+
+<HR>
+<A NAME="wxauitabartsetsizinginfo"></A>
+<H3>wxAuiTabArt::SetSizingInfo</H3>
+<P>
+<B>void</B> <B>SetSizingInfo</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>tab_ctrl_size</I>, <B>size_t </B><I>tab_count</I>)<P>
+Sets sizing information.<P>
+
+<HR>
+<A NAME="wxauitabartshowwindowlist"></A>
+<H3>wxAuiTabArt::ShowWindowList</H3>
+<P>
+<B>int</B> <B>ShowWindowList</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>wnd</I>, <B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>items</I>, <B>int </B><I>active_idx</I>)<P>
+Pops up a menu to show the list of windows managed by wxAui.<P>
+
+</FONT></BODY></HTML>

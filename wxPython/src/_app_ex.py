@@ -27,7 +27,7 @@ class PyOnDemandOutputWindow:
                                  style=wx.TE_MULTILINE|wx.TE_READONLY)
         self.text.AppendText(st)
         self.frame.Show(True)
-        EVT_CLOSE(self.frame, self.OnCloseWindow)
+        self.frame.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
         
 
     def OnCloseWindow(self, event):
@@ -69,7 +69,7 @@ class PyOnDemandOutputWindow:
 #----------------------------------------------------------------------
 
 _defRedirect = (wx.Platform == '__WXMSW__' or wx.Platform == '__WXMAC__')
-
+        
 class App(wx.PyApp):
     """
     The ``wx.App`` class represents the application and is used to:
@@ -127,22 +127,26 @@ class App(wx.PyApp):
             initialization to ensure that the system, toolkit and
             wxWidgets are fully initialized.
         """
+        
         wx.PyApp.__init__(self)
 
-        if wx.Platform == "__WXMAC__":
-            try:
-                import MacOS
-                if not MacOS.WMAvailable():
-                    print """\
-This program needs access to the screen. Please run with 'pythonw',
-not 'python', and only when you are logged in on the main display of
-your Mac."""
-                    _sys.exit(1)
-            except SystemExit:
-                raise
-            except:
-                pass
+        # make sure we can create a GUI
+        if not self.IsDisplayAvailable():
+            
+            if wx.Platform == "__WXMAC__":
+                msg = """This program needs access to the screen.
+Please run with 'pythonw', not 'python', and only when you are logged
+in on the main display of your Mac."""
+                
+            elif wx.Platform == "__WXGTK__":
+                msg ="Unable to access the X Display, is $DISPLAY set properly?"
 
+            else:
+                msg = "Unable to create GUI"
+                # TODO: more description is needed for wxMSW...
+
+            raise SystemExit(msg)
+        
         # This has to be done before OnInit
         self.SetUseBestVisual(useBestVisual)
 
@@ -168,18 +172,30 @@ your Mac."""
         # Use Python's install prefix as the default  
         wx.StandardPaths.Get().SetInstallPrefix(_sys.prefix)
 
+        # Until the new native control for wxMac is up to par, still use the generic one.
+        wx.SystemOptions.SetOptionInt("mac.listctrl.always_use_generic", 1)
+
         # This finishes the initialization of wxWindows and then calls
         # the OnInit that should be present in the derived class
         self._BootstrapApp()
 
+
+    def OnPreInit(self):
+        """
+        Things that must be done after _BootstrapApp has done its
+        thing, but would be nice if they were already done by the time
+        that OnInit is called.
+        """
+        wx.StockGDI._initStockObjects()
+        
 
     def __del__(self, destroy=wx.PyApp.__del__):
         self.RestoreStdio()  # Just in case the MainLoop was overridden
         destroy(self)
 
     def Destroy(self):
+        self.this.own(False)
         wx.PyApp.Destroy(self)
-        self.thisown = 0
 
     def SetTopWindow(self, frame):
         """Set the \"main\" top level window"""

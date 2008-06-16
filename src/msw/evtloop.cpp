@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.06.01
-// RCS-ID:      $Id: evtloop.cpp,v 1.32.2.1 2005/12/22 17:55:36 KO Exp $
+// RCS-ID:      $Id: evtloop.cpp 39912 2006-06-30 22:59:01Z VZ $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "evtloop.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -49,42 +45,13 @@
 
     #include "wx/listimpl.cpp"
 
-    WX_DEFINE_LIST(wxMsgList);
+    WX_DEFINE_LIST(wxMsgList)
 #endif // wxUSE_THREADS
-
-// ----------------------------------------------------------------------------
-// helper class
-// ----------------------------------------------------------------------------
-
-// this object sets the wxEventLoop given to the ctor as the currently active
-// one and unsets it in its dtor
-class wxEventLoopActivator
-{
-public:
-    wxEventLoopActivator(wxEventLoop **pActive,
-                         wxEventLoop *evtLoop)
-    {
-        m_pActive = pActive;
-        m_evtLoopOld = *pActive;
-        *pActive = evtLoop;
-    }
-
-    ~wxEventLoopActivator()
-    {
-        // restore the previously active event loop
-        *m_pActive = m_evtLoopOld;
-    }
-
-private:
-    wxEventLoop *m_evtLoopOld;
-    wxEventLoop **m_pActive;
-};
 
 // ============================================================================
 // wxEventLoop implementation
 // ============================================================================
 
-wxEventLoop *wxEventLoopBase::ms_activeLoop = NULL;
 wxWindowMSW *wxEventLoop::ms_winCritical = NULL;
 
 // ----------------------------------------------------------------------------
@@ -174,11 +141,10 @@ bool wxEventLoop::PreProcessMessage(WXMSG *msg)
     // popup the tooltip bubbles
     if ( msg->message == WM_MOUSEMOVE )
     {
-        wxToolTip *tt = wndThis->GetToolTip();
-        if ( tt )
-        {
-            tt->RelayEvent((WXMSG *)msg);
-        }
+        // we should do it if one of window children has an associated tooltip
+        // (and not just if the window has a tooltip itself)
+        if ( wndThis->HasToolTips() )
+            wxToolTip::RelayEvent((WXMSG *)msg);
     }
 #endif // wxUSE_TOOLTIPS
 
@@ -206,16 +172,14 @@ bool wxEventLoop::PreProcessMessage(WXMSG *msg)
     // now try the other hooks (kbd navigation is handled here)
     for ( wnd = wndThis; wnd; wnd = wnd->GetParent() )
     {
-        if (wnd != wndThis) // Skip the first since wndThis->MSWProcessMessage() was called above
-        {
-            if ( wnd->MSWProcessMessage((WXMSG *)msg) )
-                return true;
-        }
-        
-        // Stop at first top level window (as per comment above).
-        // If we don't do this, pressing ESC on a modal dialog shown as child of a modal
-        // dialog with wxID_CANCEL will cause the parent dialog to be closed, for example
-        if (wnd->IsTopLevel())
+        if ( wnd->MSWProcessMessage((WXMSG *)msg) )
+            return true;
+
+        // also stop at first top level window here, just as above because
+        // if we don't do this, pressing ESC on a modal dialog shown as child
+        // of a modal dialog with wxID_CANCEL will cause the parent dialog to
+        // be closed, for example
+        if ( wnd->IsTopLevel() )
             break;
     }
 
@@ -227,111 +191,19 @@ bool wxEventLoop::PreProcessMessage(WXMSG *msg)
 // wxEventLoop running and exiting
 // ----------------------------------------------------------------------------
 
-bool wxEventLoop::IsRunning() const
+// ----------------------------------------------------------------------------
+// wxEventLoopManual customization
+// ----------------------------------------------------------------------------
+
+void wxEventLoop::OnNextIteration()
 {
-    return ms_activeLoop == this;
+#if wxUSE_THREADS
+    wxMutexGuiLeaveOrEnter();
+#endif // wxUSE_THREADS
 }
 
-int wxEventLoop::Run()
+void wxEventLoop::WakeUp()
 {
-    // event loops are not recursive, you need to create another loop!
-    wxCHECK_MSG( !IsRunning(), -1, _T("can't reenter a message loop") );
-
-    // ProcessIdle() and Dispatch() below may throw so the code here should
-    // be exception-safe, hence we must use local objects for all actions we
-    // should undo
-    wxEventLoopActivator activate(&ms_activeLoop, this);
-
-    // we must ensure that OnExit() is called even if an exception is thrown
-    // from inside Dispatch() but we must call it from Exit() in normal
-    // situations because it is supposed to be called synchronously,
-    // wxModalEventLoop depends on this (so we can't just use ON_BLOCK_EXIT or
-    // something similar here)
-#if wxUSE_EXCEPTIONS
-    for ( ;; )
-    {
-        try
-        {
-#endif // wxUSE_EXCEPTIONS
-
-            // this is the event loop itself
-            for ( ;; )
-            {
-                #if wxUSE_THREADS
-                    wxMutexGuiLeaveOrEnter();
-                #endif // wxUSE_THREADS
-
-                // generate and process idle events for as long as we don't
-                // have anything else to do
-                while ( !Pending() && (wxTheApp && wxTheApp->ProcessIdle()) )
-                    ;
-
-                // if the "should exit" flag is set, the loop should terminate
-                // but not before processing any remaining messages so while
-                // Pending() returns true, do process them
-                if ( m_shouldExit )
-                {
-                    while ( Pending() )
-                        Dispatch();
-
-                    break;
-                }
-
-                // a message came or no more idle processing to do, sit in
-                // Dispatch() waiting for the next message
-                if ( !Dispatch() )
-                {
-                    // we got WM_QUIT
-                    break;
-                }
-            }
-
-#if wxUSE_EXCEPTIONS
-            // exit the outer loop as well
-            break;
-        }
-        catch ( ... )
-        {
-            try
-            {
-                if ( !wxTheApp || !wxTheApp->OnExceptionInMainLoop() )
-                {
-                    OnExit();
-                    break;
-                }
-                //else: continue running the event loop
-            }
-            catch ( ... )
-            {
-                // OnException() throwed, possibly rethrowing the same
-                // exception again: very good, but we still need OnExit() to
-                // be called
-                OnExit();
-                throw;
-            }
-        }
-    }
-#endif // wxUSE_EXCEPTIONS
-
-    return m_exitcode;
-}
-
-void wxEventLoop::Exit(int rc)
-{
-    wxCHECK_RET( IsRunning(), _T("can't call Exit() if not running") );
-
-    m_exitcode = rc;
-    m_shouldExit = true;
-
-    OnExit();
-
-    // all we have to do to exit from the loop is to (maybe) wake it up so that
-    // it can notice that Exit() had been called
-    //
-    // in particular, we do *not* use PostQuitMessage() here because we're not
-    // sure that WM_QUIT is going to be processed by the correct event loop: it
-    // is possible that another one is started before this one has a chance to
-    // process WM_QUIT
     ::PostMessage(NULL, WM_NULL, 0, 0);
 }
 

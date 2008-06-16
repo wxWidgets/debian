@@ -1,0 +1,189 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlHelpWindow</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmlhelpwindow"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmlhelpframe.html#wxhtmlhelpframe"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmlmodalhelp.html#wxhtmlmodalhelp"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlHelpWindow</H2>
+<P>
+This class is used by <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A> 
+to display help within a frame or dialog, but you can use it yourself to create an embedded HTML help window.<P>
+For example:<P>
+<PRE>
+    // m_embeddedHelpWindow is a wxHtmlHelpWindow
+    // m_embeddedHtmlHelp is a wxHtmlHelpController
+
+    // Create embedded HTML Help window
+    m_embeddedHelpWindow = new wxHtmlHelpWindow;
+    m_embeddedHtmlHelp.UseConfig(config, rootPath); // Set your own config object here
+    m_embeddedHtmlHelp.SetHelpWindow(m_embeddedHelpWindow);    
+    m_embeddedHelpWindow-&gt;Create(this,
+        wxID_ANY, wxDefaultPosition, GetClientSize(), wxTAB_TRAVERSAL|wxNO_BORDER, wxHF_DEFAULT_STYLE);        
+    m_embeddedHtmlHelp.AddBook(wxFileName(_T("doc.zip")));
+</PRE>
+You should pass the style wxHF_EMBEDDED to the style parameter of wxHtmlHelpController to allow
+the embedded window to be destroyed independently of the help controller.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/helpwnd.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmlhelpwindowwxhtmlhelpwindow">wxHtmlHelpWindow::wxHtmlHelpWindow</A><BR>
+<A HREF="#wxhtmlhelpwindowcreate">wxHtmlHelpWindow::Create</A><BR>
+<A HREF="#wxhtmlhelpwindowcreatecontents">wxHtmlHelpWindow::CreateContents</A><BR>
+<A HREF="#wxhtmlhelpwindowcreateindex">wxHtmlHelpWindow::CreateIndex</A><BR>
+<A HREF="#wxhtmlhelpwindowcreatesearch">wxHtmlHelpWindow::CreateSearch</A><BR>
+<A HREF="#wxhtmlhelpwindowdisplay">wxHtmlHelpWindow::Display</A><BR>
+<A HREF="#wxhtmlhelpwindowdisplaycontents">wxHtmlHelpWindow::DisplayContents</A><BR>
+<A HREF="#wxhtmlhelpwindowdisplayindex">wxHtmlHelpWindow::DisplayIndex</A><BR>
+<A HREF="#wxhtmlhelpwindowgetdata">wxHtmlHelpWindow::GetData</A><BR>
+<A HREF="#wxhtmlhelpwindowkeywordsearch">wxHtmlHelpWindow::KeywordSearch</A><BR>
+<A HREF="#wxhtmlhelpwindowreadcustomization">wxHtmlHelpWindow::ReadCustomization</A><BR>
+<A HREF="#wxhtmlhelpwindowrefreshlists">wxHtmlHelpWindow::RefreshLists</A><BR>
+<A HREF="#wxhtmlhelpwindowsettitleformat">wxHtmlHelpWindow::SetTitleFormat</A><BR>
+<A HREF="#wxhtmlhelpwindowuseconfig">wxHtmlHelpWindow::UseConfig</A><BR>
+<A HREF="#wxhtmlhelpwindowwritecustomization">wxHtmlHelpWindow::WriteCustomization</A><BR>
+<A HREF="#wxhtmlhelpwindowaddtoolbarbuttons">wxHtmlHelpWindow::AddToolbarButtons</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowwxhtmlhelpwindow"></A>
+<H3>wxHtmlHelpWindow::wxHtmlHelpWindow</H3>
+<P>
+<B></B> <B>wxHtmlHelpWindow</B>(<B><A HREF="wx_wxhtmlhelpdata.html#wxhtmlhelpdata">wxHtmlHelpData</A>* </B></B><I>data = NULL</I>)<P>
+<B></B> <B>wxHtmlHelpWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>int </B><I>wxWindowID</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> pos = wxDefaultSize</I>, <B>int </B><I>style = wxTAB_TRAVERSAL|wxTAB_wxNO_BORDER</I>, <B>int </B><I>helpStyle = wxHF_DEFAULT_STYLE</I>, <B><A HREF="wx_wxhtmlhelpdata.html#wxhtmlhelpdata">wxHtmlHelpData</A>* </B></B><I>data = NULL</I>)<P>
+Constructor.<P>
+Constructor. For the values of <I>helpStyle</I>, please see the documentation for <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A>.<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowcreate"></A>
+<H3>wxHtmlHelpWindow::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> pos = wxDefaultSize</I>, <B>int </B><I>style = wxTAB_TRAVERSAL|wxTAB_wxNO_BORDER</I>, <B>int </B><I>helpStyle = wxHF_DEFAULT_STYLE</I>, <B><A HREF="wx_wxhtmlhelpdata.html#wxhtmlhelpdata">wxHtmlHelpData</A>* </B></B><I>data = NULL</I>)<P>
+Creates the help window. See <A HREF="wx_wxhtmlhelpwindow.html#wxhtmlhelpwindowwxhtmlhelpwindow">the constructor</A>
+for a description of the parameters.<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowcreatecontents"></A>
+<H3>wxHtmlHelpWindow::CreateContents</H3>
+<P>
+<B>void</B> <B>CreateContents</B>()<P>
+Creates contents panel. (May take some time.)<P>
+Protected.<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowcreateindex"></A>
+<H3>wxHtmlHelpWindow::CreateIndex</H3>
+<P>
+<B>void</B> <B>CreateIndex</B>()<P>
+Creates index panel. (May take some time.)<P>
+Protected.<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowcreatesearch"></A>
+<H3>wxHtmlHelpWindow::CreateSearch</H3>
+<P>
+<B>void</B> <B>CreateSearch</B>()<P>
+Creates search panel.<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowdisplay"></A>
+<H3>wxHtmlHelpWindow::Display</H3>
+<P>
+<B>bool</B> <B>Display</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>x</I>)<P>
+<B>bool</B> <B>Display</B>(<B>const int </B><I>id</I>)<P>
+Displays page x. If not found it will give the user the choice of
+searching books.
+Looking for the page runs in these steps:<P>
+<OL>
+
+<LI> try to locate file named x (if x is for example "doc/howto.htm")
+<LI> try to open starting page of book x
+<LI> try to find x in contents (if x is for example "How To ...")
+<LI> try to find x in index (if x is for example "How To ...")
+</OL>
+<P>
+The second form takes numeric ID as the parameter.
+(uses extension to MS format, &lt;param name="ID" value=id&gt;)<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The second form of this method is named DisplayId in
+wxPython.<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowdisplaycontents"></A>
+<H3>wxHtmlHelpWindow::DisplayContents</H3>
+<P>
+<B>bool</B> <B>DisplayContents</B>()<P>
+Displays contents panel.<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowdisplayindex"></A>
+<H3>wxHtmlHelpWindow::DisplayIndex</H3>
+<P>
+<B>bool</B> <B>DisplayIndex</B>()<P>
+Displays index panel.<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowgetdata"></A>
+<H3>wxHtmlHelpWindow::GetData</H3>
+<P>
+<B><A HREF="wx_wxhtmlhelpdata.html#wxhtmlhelpdata">wxHtmlHelpData</A>*</B> </B> <B>GetData</B>()<P>
+Returns the wxHtmlHelpData object, which is usually a pointer to the controller's data.<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowkeywordsearch"></A>
+<H3>wxHtmlHelpWindow::KeywordSearch</H3>
+<P>
+<B>bool</B> <B>KeywordSearch</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>keyword</I>, <B>wxHelpSearchMode </B><I>mode = wxHELP_SEARCH_ALL</I>)<P>
+Search for given keyword. Optionally it searches through the index (mode =
+wxHELP_SEARCH_INDEX), default the content (mode = wxHELP_SEARCH_ALL).<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowreadcustomization"></A>
+<H3>wxHtmlHelpWindow::ReadCustomization</H3>
+<P>
+<B>void</B> <B>ReadCustomization</B>(<B><A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>* </B></B><I>cfg</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path = wxEmptyString</I>)<P>
+Reads the user's settings for this window (see <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontrollerreadcustomization">wxHtmlHelpController::ReadCustomization</A>)<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowrefreshlists"></A>
+<H3>wxHtmlHelpWindow::RefreshLists</H3>
+<P>
+<B>void</B> <B>RefreshLists</B>()<P>
+Refresh all panels. This is necessary if a new book was added.<P>
+Protected.<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowsettitleformat"></A>
+<H3>wxHtmlHelpWindow::SetTitleFormat</H3>
+<P>
+<B>void</B> <B>SetTitleFormat</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>format</I>)<P>
+Sets the frame's title format. <I>format</I> must contain exactly one "%s"
+(it will be replaced by the page title).<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowuseconfig"></A>
+<H3>wxHtmlHelpWindow::UseConfig</H3>
+<P>
+<B>void</B> <B>UseConfig</B>(<B><A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>* </B></B><I>config</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>rootpath = wxEmptyString</I>)<P>
+Associates a wxConfig object with the help window. It is recommended that you use <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontrolleruseconfig">wxHtmlHelpController::UseConfig</A> instead.<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowwritecustomization"></A>
+<H3>wxHtmlHelpWindow::WriteCustomization</H3>
+<P>
+<B>void</B> <B>WriteCustomization</B>(<B><A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>* </B></B><I>cfg</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path = wxEmptyString</I>)<P>
+Saves the user's settings for this window(see <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontrollerwritecustomization">wxHtmlHelpController::WriteCustomization</A>).<P>
+
+<HR>
+<A NAME="wxhtmlhelpwindowaddtoolbarbuttons"></A>
+<H3>wxHtmlHelpWindow::AddToolbarButtons</H3>
+<P>
+<B>virtual void</B> <B>AddToolbarButtons</B>(<B><A HREF="wx_wxtoolbar.html#wxtoolbar">wxToolBar</A> *</B></B><I>toolBar</I>, <B>int </B><I>style</I>) <P>
+You may override this virtual method to add more buttons to the help window's
+toolbar. <I>toolBar</I> is a pointer to the toolbar and <I>style</I> is the style
+flag as passed to the Create method.<P>
+wxToolBar::Realize is called immediately after returning from this function.<P>
+See <I>samples/html/helpview</I> for an example.<P>
+
+</FONT></BODY></HTML>

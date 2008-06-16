@@ -1,31 +1,17 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        brush.h
+// Name:        wx/gtk/brush.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: brush.h,v 1.20 2005/08/02 22:57:51 MW Exp $
+// Id:          $Id: brush.h 41751 2006-10-08 21:56:55Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _WX_GTK_BRUSH_H_
+#define _WX_GTK_BRUSH_H_
 
-#ifndef __GTKBRUSHH__
-#define __GTKBRUSHH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
-
-#include "wx/defs.h"
-#include "wx/object.h"
-#include "wx/string.h"
-#include "wx/gdiobj.h"
-#include "wx/bitmap.h"
-
-//-----------------------------------------------------------------------------
-// classes
-//-----------------------------------------------------------------------------
-
-class WXDLLIMPEXP_CORE wxBrush;
+class WXDLLIMPEXP_CORE wxBitmap;
+class WXDLLIMPEXP_CORE wxColour;
 
 //-----------------------------------------------------------------------------
 // wxBrush
@@ -38,14 +24,10 @@ public:
 
     wxBrush( const wxColour &colour, int style = wxSOLID );
     wxBrush( const wxBitmap &stippleBitmap );
-    ~wxBrush();
+    virtual ~wxBrush();
 
-    wxBrush( const wxBrush &brush )
-        : wxBrushBase()
-        { Ref(brush); }
-    wxBrush& operator = ( const wxBrush& brush ) { Ref(brush); return *this; }
-
-    bool Ok() const { return m_refData != NULL; }
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const { return m_refData != NULL; }
 
     bool operator == ( const wxBrush& brush ) const;
     bool operator != (const wxBrush& brush) const { return !(*this == brush); }
@@ -59,7 +41,7 @@ public:
     void SetStyle( int style );
     void SetStipple( const wxBitmap& stipple );
 
-private:
+protected:
     // ref counting code
     virtual wxObjectRefData *CreateRefData() const;
     virtual wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
@@ -67,4 +49,4 @@ private:
     DECLARE_DYNAMIC_CLASS(wxBrush)
 };
 
-#endif // __GTKBRUSHH__
+#endif // _WX_GTK_BRUSH_H_

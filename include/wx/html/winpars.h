@@ -2,18 +2,13 @@
 // Name:        winpars.h
 // Purpose:     wxHtmlWinParser class (parser to be used with wxHtmlWindow)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: winpars.h,v 1.29 2004/10/13 14:04:15 ABX Exp $
+// RCS-ID:      $Id: winpars.h 45498 2007-04-16 13:03:05Z VZ $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef _WX_WINPARS_H_
 #define _WX_WINPARS_H_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "winpars.h"
-#endif
 
 #include "wx/defs.h"
 #if wxUSE_HTML
@@ -25,9 +20,11 @@
 #include "wx/encconv.h"
 
 class WXDLLIMPEXP_HTML wxHtmlWindow;
+class WXDLLIMPEXP_HTML wxHtmlWindowInterface;
 class WXDLLIMPEXP_HTML wxHtmlWinParser;
 class WXDLLIMPEXP_HTML wxHtmlWinTagHandler;
 class WXDLLIMPEXP_HTML wxHtmlTagsModule;
+
 
 //--------------------------------------------------------------------------------
 // wxHtmlWinParser
@@ -42,8 +39,9 @@ class WXDLLIMPEXP_HTML wxHtmlWinParser : public wxHtmlParser
     friend class wxHtmlWindow;
 
 public:
-    wxHtmlWinParser(wxHtmlWindow *wnd = NULL);
-    ~wxHtmlWinParser();
+    wxHtmlWinParser(wxHtmlWindowInterface *wndIface = NULL);
+
+    virtual ~wxHtmlWinParser();
 
     virtual void InitParser(const wxString& source);
     virtual void DoneParser();
@@ -66,11 +64,15 @@ public:
     // for this DC. If you want actual values, call
     // GetDC()->GetChar...()
 
-    // returns associated wxWindow
-    wxHtmlWindow *GetWindow() {return m_Window;}
+    // returns interface to the rendering window
+    wxHtmlWindowInterface *GetWindowInterface() {return m_windowInterface;}
+#if WXWIN_COMPATIBILITY_2_6
+    // deprecated, use GetWindowInterface()->GetHTMLWindow() instead
+    wxDEPRECATED( wxHtmlWindow *GetWindow() );
+#endif
 
     // Sets fonts to be used when displaying HTML page. (if size null then default sizes used).
-    void SetFonts(wxString normal_face, wxString fixed_face, const int *sizes = NULL);
+    void SetFonts(const wxString& normal_face, const wxString& fixed_face, const int *sizes = NULL);
 
     // Sets font sizes to be relative to the given size or the system
     // default size; use either specified or default font
@@ -117,12 +119,21 @@ public:
 
     int GetAlign() const {return m_Align;}
     void SetAlign(int a) {m_Align = a;}
+
+    wxHtmlScriptMode GetScriptMode() const { return m_ScriptMode; }
+    void SetScriptMode(wxHtmlScriptMode mode) { m_ScriptMode = mode; }
+    long GetScriptBaseline() const { return m_ScriptBaseline; }
+    void SetScriptBaseline(long base) { m_ScriptBaseline = base; }
+
     const wxColour& GetLinkColor() const { return m_LinkColor; }
     void SetLinkColor(const wxColour& clr) { m_LinkColor = clr; }
     const wxColour& GetActualColor() const { return m_ActualColor; }
     void SetActualColor(const wxColour& clr) { m_ActualColor = clr ;}
     const wxHtmlLinkInfo& GetLink() const { return m_Link; }
     void SetLink(const wxHtmlLinkInfo& link);
+
+    // applies current parser state (link, sub/supscript, ...) to given cell
+    void ApplyStateToCell(wxHtmlCell *cell);
 
 #if !wxUSE_UNICODE
     void SetInputEncoding(wxFontEncoding enc);
@@ -138,11 +149,13 @@ protected:
     virtual void AddText(const wxChar* txt);
 
 private:
+    void DoAddText(wxChar *temp, int& templen, wxChar nbsp);
+
     bool m_tmpLastWasSpace;
     wxChar *m_tmpStrBuf;
     size_t  m_tmpStrBufSize;
         // temporary variables used by AddText
-    wxHtmlWindow *m_Window;
+    wxHtmlWindowInterface *m_windowInterface;
             // window we're parsing for
     double m_PixelScale;
     wxDC *m_DC;
@@ -167,6 +180,10 @@ private:
             // average height of normal-sized text
     int m_Align;
             // actual alignment
+    wxHtmlScriptMode m_ScriptMode;
+            // current script mode (sub/sup/normal)
+    long m_ScriptBaseline;
+            // current sub/supscript base
 
     wxFont* m_FontsTable[2][2][2][2][7];
     wxString m_FontsFacesTable[2][2][2][2][7];
@@ -213,7 +230,7 @@ class WXDLLIMPEXP_HTML wxHtmlWinTagHandler : public wxHtmlTagHandler
 public:
     wxHtmlWinTagHandler() : wxHtmlTagHandler() {}
 
-    virtual void SetParser(wxHtmlParser *parser) {wxHtmlTagHandler::SetParser(parser); m_WParser = (wxHtmlWinParser*) parser;};
+    virtual void SetParser(wxHtmlParser *parser) {wxHtmlTagHandler::SetParser(parser); m_WParser = (wxHtmlWinParser*) parser;}
 
 protected:
     wxHtmlWinParser *m_WParser; // same as m_Parser, but overcasted

@@ -1,0 +1,87 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTarInputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtarinputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtarentry.html#wxtarentry"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtaroutputstream.html#wxtaroutputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTarInputStream</H2>
+<P>
+Input stream for reading tar files.<P>
+<A HREF="wx_wxtarinputstream.html#wxtarinputstreamgetnextentry">GetNextEntry()</A> returns an
+ <A HREF="wx_wxtarentry.html#wxtarentry">wxTarEntry</A> object containing the meta-data
+for the next entry in the tar (and gives away ownership). Reading from
+the wxTarInputStream then returns the entry's data. Eof() becomes true
+after an attempt has been made to read past the end of the entry's data.
+When there are no more entries, GetNextEntry() returns NULL and sets Eof().<P>
+Tar entries are seekable if the parent stream is seekable. In practice this
+usually means they are only seekable if the tar is stored as a local file and
+is not compressed.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/tarstrm.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B>
+<PRE>
+typedef wxTarEntry entry_type
+</PRE>
+<A HREF="wx_wxarc.html#wxarc">Archive formats such as zip</A><BR>
+
+<A HREF="wx_wxtarentry.html#wxtarentry">wxTarEntry</A><BR>
+
+<A HREF="wx_wxtaroutputstream.html#wxtaroutputstream">wxTarOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxtarinputstreamwxtarinputstream">wxTarInputStream::wxTarInputStream</A><BR>
+<A HREF="#wxtarinputstreamcloseentry">wxTarInputStream::CloseEntry</A><BR>
+<A HREF="#wxtarinputstreamgetnextentry">wxTarInputStream::GetNextEntry</A><BR>
+<A HREF="#wxtarinputstreamopenentry">wxTarInputStream::OpenEntry</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtarinputstreamwxtarinputstream"></A>
+<H3>wxTarInputStream::wxTarInputStream</H3>
+<P>
+<B></B> <B>wxTarInputStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>& </B></B><I>conv = wxConvLocal</I>)<P>
+<B></B> <B>wxTarInputStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>* </B></B><I>stream</I>, <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>& </B></B><I>conv = wxConvLocal</I>)<P>
+Constructor. In a Unicode build the second parameter <I>conv</I> is
+used to translate fields from the standard tar header into Unicode. It has
+no effect on the stream's data. <I>conv</I> is only used for the standard
+tar headers, any pax extended headers are always UTF-8 encoded.<P>
+If the parent stream is passed as a pointer then the new filter stream
+takes ownership of it. If it is passed by reference then it does not.<P>
+
+
+<HR>
+<A NAME="wxtarinputstreamcloseentry"></A>
+<H3>wxTarInputStream::CloseEntry</H3>
+<P>
+<B>bool</B> <B>CloseEntry</B>()<P>
+Closes the current entry. On a non-seekable stream reads to the end of
+the current entry first.<P>
+
+
+<HR>
+<A NAME="wxtarinputstreamgetnextentry"></A>
+<H3>wxTarInputStream::GetNextEntry</H3>
+<P>
+<B><A HREF="wx_wxtarentry.html#wxtarentry">wxTarEntry</A>*</B> </B> <B>GetNextEntry</B>()<P>
+Closes the current entry if one is open, then reads the meta-data for
+the next entry and returns it in a <A HREF="wx_wxtarentry.html#wxtarentry">wxTarEntry</A>
+object, giving away ownership. The stream is then open and can be read.<P>
+
+
+<HR>
+<A NAME="wxtarinputstreamopenentry"></A>
+<H3>wxTarInputStream::OpenEntry</H3>
+<P>
+<B>bool</B> <B>OpenEntry</B>(<B><A HREF="wx_wxtarentry.html#wxtarentry">wxTarEntry</A>& </B></B><I>entry</I>)<P>
+Closes the current entry if one is open, then opens the entry specified
+by the <I>entry</I> object.<P>
+<I>entry</I> should be from the same tar file, and the tar should
+be on a seekable stream.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarcbyname">Looking up an archive entry by name</A><P>
+
+
+</FONT></BODY></HTML>

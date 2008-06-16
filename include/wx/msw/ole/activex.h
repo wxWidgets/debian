@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/activex.h
+// Name:        wx/msw/ole/activex.h
 // Purpose:     wxActiveXContainer class
 // Author:      Ryan Norton <wxprojects@comcast.net>
 // Modified by:
 // Created:     8/18/05
-// RCS-ID:      $Id: activex.h,v 1.1.2.1 2006/01/24 12:55:15 JS Exp $
+// RCS-ID:      $Id: activex.h 41793 2006-10-09 09:32:08Z ABX $
 // Copyright:   (c) Ryan Norton
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,32 +16,16 @@
 #ifndef _WX_MSW_OLE_ACTIVEXCONTAINER_H_
 #define _WX_MSW_OLE_ACTIVEXCONTAINER_H_
 
-//---------------------------------------------------------------------------
-//  COM includes
-//---------------------------------------------------------------------------
-#include "wx/msw/ole/oleutils.h" //wxBasicString, IID etc.
-#include "wx/msw/ole/uuid.h" //IID etc..
+#if wxUSE_ACTIVEX
 
 //---------------------------------------------------------------------------
-//  COM compatability definitions
+// wx includes
 //---------------------------------------------------------------------------
-#ifndef STDMETHODCALLTYPE
-#define STDMETHODCALLTYPE __stdcall
-#endif
-#ifndef STDMETHOD
-#define STDMETHOD(funcname)  virtual HRESULT STDMETHODCALLTYPE funcname
-#endif
-#ifndef PURE
-#define PURE = 0
-#endif
-#ifndef __RPC_FAR
-#define __RPC_FAR FAR
-#endif
 
-//---------------------------------------------------------------------------
-//  WX includes
-//---------------------------------------------------------------------------
+#include "wx/msw/ole/oleutils.h" // wxBasicString &c
+#include "wx/msw/ole/uuid.h"
 #include "wx/window.h"
+#include "wx/variant.h"
 
 //---------------------------------------------------------------------------
 // MSW COM includes
@@ -55,23 +39,27 @@
 
 #include <docobj.h>
 
+#ifndef STDMETHOD
+    #define STDMETHOD(funcname)  virtual HRESULT wxSTDCALL funcname
+#endif
+
 //
 //  These defines are from another ole header - but its not in the
 //  latest sdk.  Also the ifndef DISPID_READYSTATE is here because at
 //  least on my machine with the latest sdk olectl.h defines these 3
 //
 #ifndef DISPID_READYSTATE
-    #define DISPID_READYSTATE                               -525
-    #define DISPID_READYSTATECHANGE                         -609
-    #define DISPID_AMBIENT_TRANSFERPRIORITY                 -728
+    #define DISPID_READYSTATE                               (-525)
+    #define DISPID_READYSTATECHANGE                         (-609)
+    #define DISPID_AMBIENT_TRANSFERPRIORITY                 (-728)
 #endif
 
-#define DISPID_AMBIENT_OFFLINEIFNOTCONNECTED            -5501
-#define DISPID_AMBIENT_SILENT                           -5502
+#define DISPID_AMBIENT_OFFLINEIFNOTCONNECTED            (-5501)
+#define DISPID_AMBIENT_SILENT                           (-5502)
 
 #ifndef DISPID_AMBIENT_CODEPAGE
-#   define DISPID_AMBIENT_CODEPAGE                         -725
-#   define DISPID_AMBIENT_CHARSET                          -727
+    #define DISPID_AMBIENT_CODEPAGE                         (-725)
+    #define DISPID_AMBIENT_CHARSET                          (-727)
 #endif
 
 
@@ -139,7 +127,8 @@ class wxAutoOleInterface \
     inline operator I *() const {return m_interface;}\
     inline I* operator ->() {return m_interface;}\
     inline I** GetRef()    {return &m_interface;}\
-    inline bool Ok() const    {return m_interface != NULL;}\
+    inline bool Ok() const { return IsOk(); }\
+    inline bool IsOk() const    {return m_interface != NULL;}\
 };
 
 WX_DECLARE_AUTOOLE(wxAutoIDispatch, IDispatch)
@@ -150,10 +139,6 @@ WX_DECLARE_AUTOOLE(wxAutoIOleInPlaceObject, IOleInPlaceObject)
 WX_DECLARE_AUTOOLE(wxAutoIOleInPlaceActiveObject, IOleInPlaceActiveObject)
 WX_DECLARE_AUTOOLE(wxAutoIOleDocumentView, IOleDocumentView)
 WX_DECLARE_AUTOOLE(wxAutoIViewObject, IViewObject)
-WX_DECLARE_AUTOOLE(wxAutoIOleInPlaceSite, IOleInPlaceSite)
-WX_DECLARE_AUTOOLE(wxAutoIOleDocument, IOleDocument)
-WX_DECLARE_AUTOOLE(wxAutoIPersistStreamInit, IPersistStreamInit)
-WX_DECLARE_AUTOOLE(wxAutoIAdviseSink, IAdviseSink)
 
 class wxActiveXContainer : public wxWindow
 {
@@ -168,6 +153,7 @@ public:
 
 protected:
     friend class FrameSite;
+    friend class wxActiveXEvents;
 
     wxAutoIDispatch            m_Dispatch;
     wxAutoIOleClientSite      m_clientSite;
@@ -185,5 +171,51 @@ protected:
     void CreateActiveX(REFIID, IUnknown*);
 };
 
-#endif // _WX_MSW_OLE_ACTIVEXCONTAINER_H_
 
+// Events
+class wxActiveXEvent : public wxCommandEvent
+{
+private:
+    friend class wxActiveXEvents;
+    wxVariant m_params;
+    DISPID m_dispid;
+
+public:
+    virtual wxEvent *Clone() const
+    { return new wxActiveXEvent(*this); }
+
+    size_t ParamCount() const
+    {   return m_params.GetCount();  }
+
+    wxString ParamType(size_t idx) const
+    {
+        wxASSERT(idx < m_params.GetCount());
+        return m_params[idx].GetType();
+    }
+
+    wxString ParamName(size_t idx) const
+    {
+        wxASSERT(idx < m_params.GetCount());
+        return m_params[idx].GetName();
+    }
+
+    wxVariant& operator[] (size_t idx)
+    {
+        wxASSERT(idx < ParamCount());
+        return m_params[idx];
+    }
+
+    DISPID GetDispatchId() const
+    {   return m_dispid;    }
+};
+
+#define wxACTIVEX_ID    14001
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_MEDIA, wxEVT_ACTIVEX, wxACTIVEX_ID)
+typedef void (wxEvtHandler::*wxActiveXEventFunction)(wxActiveXEvent&);
+#define EVT_ACTIVEX(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_ACTIVEX, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxActiveXEventFunction) & fn, (wxObject *) NULL ),
+#define wxActiveXEventHandler(func) \
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxActiveXEventFunction, &func)
+
+#endif // wxUSE_ACTIVEX
+
+#endif // _WX_MSW_OLE_ACTIVEXCONTAINER_H_

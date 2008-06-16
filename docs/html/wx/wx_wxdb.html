@@ -1,0 +1,1554 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDb</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdb"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdatetimeworkdays.html#wxdatetimeworkdays"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdbcoldataptr.html#wxdbcoldataptr"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDb</H2>
+<P>
+A wxDb instance is a connection to an ODBC datasource which may
+be opened, closed, and re-opened an unlimited number of times.  A
+database connection allows function to be performed directly on the
+datasource, as well as allowing access to any tables/views defined in
+the datasource to which the user has sufficient privileges.<P>
+See the <A HREF="wx_odbcoverview.html#odbcoverview">database classes overview</A> for
+an introduction to using the ODBC classes.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/db.h&gt;<P>
+<B><FONT COLOR="#FF0000">Helper classes and data structures</FONT></B><P>
+The following classes and structs are defined in db.cpp/.h for use with the wxDb class.<P>
+<UL>
+
+<LI> <A HREF="wx_wxdbcolfor.html#wxdbcolfor">wxDbColFor</A>
+<LI> <A HREF="wx_wxdbcolinf.html#wxdbcolinf">wxDbColInf</A>
+<LI> <A HREF="wx_wxdbtableinf.html#wxdbtableinf">wxDbTableInf</A>
+<LI> <A HREF="wx_wxdbinf.html#wxdbinf">wxDbInf</A>
+</UL>
+<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+NOTE: In a future release, all ODBC class constants will be prefaced with 'wx'.<P>
+<PRE>
+    wxDB_PATH_MAX           Maximum path length allowed to be passed to
+                            the ODBC driver to indicate where the data
+                            file(s) are located.
+
+    DB_MAX_COLUMN_NAME_LEN  Maximum supported length for the name of a
+                            column
+
+    DB_MAX_ERROR_HISTORY    Maximum number of error messages retained in
+                            the queue before being overwritten by new
+                            errors.
+
+    DB_MAX_ERROR_MSG_LEN    Maximum supported length of an error message
+                            returned by the ODBC classes
+
+    DB_MAX_STATEMENT_LEN    Maximum supported length for a complete SQL
+                            statement to be passed to the ODBC driver
+
+    DB_MAX_TABLE_NAME_LEN   Maximum supported length for the name of a
+                            table
+
+    DB_MAX_WHERE_CLAUSE_LEN Maximum supported WHERE clause length that
+                            can be passed to the ODBC driver
+
+    DB_TYPE_NAME_LEN        Maximum length of the name of a column's
+                            data type
+</PRE>
+<A HREF="#wxdbenumeratedtypes">Enumerated types</A><BR>
+<A HREF="#wxdbfunctions">Associated non-class functions</A><BR>
+<A HREF="#wxdbctor">wxDb::wxDb</A><BR>
+<A HREF="#wxdbcatalog">wxDb::Catalog</A><BR>
+<A HREF="#wxdbclose">wxDb::Close</A><BR>
+<A HREF="#wxdbcommittrans">wxDb::CommitTrans</A><BR>
+<A HREF="#wxdbcreateviews">wxDb::CreateView</A><BR>
+<A HREF="#wxdbdbms">wxDb::Dbms</A><BR>
+<A HREF="#wxdbdispallerrors">wxDb::DispAllErrors</A><BR>
+<A HREF="#wxdbdispnexterror">wxDb::DispNextError</A><BR>
+<A HREF="#wxdbdropview">wxDb::DropView</A><BR>
+<A HREF="#wxdbescapesqlchars">wxDb::EscapeSqlChars</A><BR>
+<A HREF="#wxdbexecsql">wxDb::ExecSql</A><BR>
+<A HREF="#wxdbfwdonlycursors">wxDb::FwdOnlyCursors</A><BR>
+<A HREF="#wxdbgetcatalog">wxDb::GetCatalog</A><BR>
+<A HREF="#wxdbgetcolumncount">wxDb::GetColumnCount</A><BR>
+<A HREF="#wxdbgetcolumns">wxDb::GetColumns</A><BR>
+<A HREF="#wxdbgetdata">wxDb::GetData</A><BR>
+<A HREF="#wxdbgetdatabasename">wxDb::GetDatabaseName</A><BR>
+<A HREF="#wxdbgetdatasourcename">wxDb::GetDatasourceName</A><BR>
+<A HREF="#wxdbgethdbc">wxDb::GetHDBC</A><BR>
+<A HREF="#wxdbgethenv">wxDb::GetHENV</A><BR>
+<A HREF="#wxdbgethstmt">wxDb::GetHSTMT</A><BR>
+<A HREF="#wxdbgetkeyfields">wxDb::GetKeyFields</A><BR>
+<A HREF="#wxdbgetnext">wxDb::GetNext</A><BR>
+<A HREF="#wxdbgetnexterror">wxDb::GetNextError</A><BR>
+<A HREF="#wxdbgetpassword">wxDb::GetPassword</A><BR>
+<A HREF="#wxdbgettablecount">wxDb::GetTableCount</A><BR>
+<A HREF="#wxdbgetusername">wxDb::GetUsername</A><BR>
+<A HREF="#wxdbgrant">wxDb::Grant</A><BR>
+<A HREF="#wxdbisfwdonlycursors">wxDb::IsFwdOnlyCursors</A><BR>
+<A HREF="#wxdbisopen">wxDb::IsOpen</A><BR>
+<A HREF="#wxdblogerror">wxDb::LogError</A><BR>
+<A HREF="#wxdbmodifycolumn">wxDb::ModifyColumn</A><BR>
+<A HREF="#wxdbopen">wxDb::Open</A><BR>
+<A HREF="#wxdbrollbacktrans">wxDb::RollbackTrans</A><BR>
+<A HREF="#wxdbsetdebugerrormessages">wxDb::SetDebugErrorMessages</A><BR>
+<A HREF="#wxdbsetsqllogging">wxDb::SetSqlLogging</A><BR>
+<A HREF="#wxdbsqlcolumnname">wxDb::SQLColumnName</A><BR>
+<A HREF="#wxdbsqltablename">wxDb::SQLTableName</A><BR>
+<A HREF="#wxdbtableexists">wxDb::TableExists</A><BR>
+<A HREF="#wxdbtableprivileges">wxDb::TablePrivileges</A><BR>
+<A HREF="#wxdbtranslatesqlstate">wxDb::TranslateSqlState</A><BR>
+<A HREF="#wxdbwritesqllog">wxDb::WriteSqlLog</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdbenumeratedtypes"></A>
+<H3>Enumerated types</H3>
+<P>
+<B><FONT COLOR="#FF0000">Enumerated types</FONT></B><P>
+<I>enum <B>wxDbSqlLogState</B></I><UL><UL>
+sqlLogOFF, sqlLogON</UL></UL>
+<P>
+<I>enum <B>wxDBMS</B></I><P>
+These are the databases currently tested and working with the ODBC classes.  A call to <A HREF="wx_wxdb.html#wxdbdbms">wxDb::Dbms</A> will return one of these enumerated values listed below.<P>
+<UL>
+
+<LI> DB2
+<LI> DBase (IV, V)**
+<LI> Firebird
+<LI> INFORMIX
+<LI> Interbase
+<LI> MS SQL Server (v7 - minimal testing)
+<LI> MS Access (97, 2000, 2002, and 2003)
+<LI> MySQL (2.x and 3.5 - use the 2.5x drivers though)
+<LI> Oracle (v7, v8, v8i)
+<LI> Pervasive SQL
+<LI> PostgreSQL
+<LI> Sybase (ASA and ASE)
+<LI> XBase Sequiter
+<LI> VIRTUOSO
+</UL>
+<P>
+See the remarks in <A HREF="wx_wxdb.html#wxdbdbms">wxDb::Dbms</A> for exceptions/issues with each of these database engines.<P>
+<B><FONT COLOR="#FF0000">Public member variables</FONT></B><P>
+<I>SWORD <B>wxDb::cbErrorMsg</B></I><UL><UL>
+This member variable is populated as a result of calling <A HREF="wx_wxdb.html#wxdbgetnexterror">wxDb::GetNextError</A>.  Contains the count of bytes in the wxDb::errorMsg string.</UL></UL>
+<P>
+<I>int <B>wxDb::DB_STATUS</B></I><UL><UL>
+The last ODBC error/status that occurred on this data connection.  Possible codes are:</UL></UL>
+<P>
+<PRE>
+   DB_ERR_GENERAL_WARNING                     // SqlState = '01000'
+   DB_ERR_DISCONNECT_ERROR                    // SqlState = '01002'
+   DB_ERR_DATA_TRUNCATED                      // SqlState = '01004'
+   DB_ERR_PRIV_NOT_REVOKED                    // SqlState = '01006'
+   DB_ERR_INVALID_CONN_STR_ATTR               // SqlState = '01S00'
+   DB_ERR_ERROR_IN_ROW                        // SqlState = '01S01'
+   DB_ERR_OPTION_VALUE_CHANGED                // SqlState = '01S02'
+   DB_ERR_NO_ROWS_UPD_OR_DEL                  // SqlState = '01S03'
+   DB_ERR_MULTI_ROWS_UPD_OR_DEL               // SqlState = '01S04'
+   DB_ERR_WRONG_NO_OF_PARAMS                  // SqlState = '07001'
+   DB_ERR_DATA_TYPE_ATTR_VIOL                 // SqlState = '07006'
+   DB_ERR_UNABLE_TO_CONNECT                   // SqlState = '08001'
+   DB_ERR_CONNECTION_IN_USE                   // SqlState = '08002'
+   DB_ERR_CONNECTION_NOT_OPEN                 // SqlState = '08003'
+   DB_ERR_REJECTED_CONNECTION                 // SqlState = '08004'
+   DB_ERR_CONN_FAIL_IN_TRANS                  // SqlState = '08007'
+   DB_ERR_COMM_LINK_FAILURE                   // SqlState = '08S01'
+   DB_ERR_INSERT_VALUE_LIST_MISMATCH          // SqlState = '21S01'
+   DB_ERR_DERIVED_TABLE_MISMATCH              // SqlState = '21S02'
+   DB_ERR_STRING_RIGHT_TRUNC                  // SqlState = '22001'
+   DB_ERR_NUMERIC_VALUE_OUT_OF_RNG            // SqlState = '22003'
+   DB_ERR_ERROR_IN_ASSIGNMENT                 // SqlState = '22005'
+   DB_ERR_DATETIME_FLD_OVERFLOW               // SqlState = '22008'
+   DB_ERR_DIVIDE_BY_ZERO                      // SqlState = '22012'
+   DB_ERR_STR_DATA_LENGTH_MISMATCH            // SqlState = '22026'
+   DB_ERR_INTEGRITY_CONSTRAINT_VIOL           // SqlState = '23000'
+   DB_ERR_INVALID_CURSOR_STATE                // SqlState = '24000'
+   DB_ERR_INVALID_TRANS_STATE                 // SqlState = '25000'
+   DB_ERR_INVALID_AUTH_SPEC                   // SqlState = '28000'
+   DB_ERR_INVALID_CURSOR_NAME                 // SqlState = '34000'
+   DB_ERR_SYNTAX_ERROR_OR_ACCESS_VIOL         // SqlState = '37000'
+   DB_ERR_DUPLICATE_CURSOR_NAME               // SqlState = '3C000'
+   DB_ERR_SERIALIZATION_FAILURE               // SqlState = '40001'
+   DB_ERR_SYNTAX_ERROR_OR_ACCESS_VIOL2        // SqlState = '42000'
+   DB_ERR_OPERATION_ABORTED                   // SqlState = '70100'
+   DB_ERR_UNSUPPORTED_FUNCTION                // SqlState = 'IM001'
+   DB_ERR_NO_DATA_SOURCE                      // SqlState = 'IM002'
+   DB_ERR_DRIVER_LOAD_ERROR                   // SqlState = 'IM003'
+   DB_ERR_SQLALLOCENV_FAILED                  // SqlState = 'IM004'
+   DB_ERR_SQLALLOCCONNECT_FAILED              // SqlState = 'IM005'
+   DB_ERR_SQLSETCONNECTOPTION_FAILED          // SqlState = 'IM006'
+   DB_ERR_NO_DATA_SOURCE_DLG_PROHIB           // SqlState = 'IM007'
+   DB_ERR_DIALOG_FAILED                       // SqlState = 'IM008'
+   DB_ERR_UNABLE_TO_LOAD_TRANSLATION_DLL      // SqlState = 'IM009'
+   DB_ERR_DATA_SOURCE_NAME_TOO_LONG           // SqlState = 'IM010'
+   DB_ERR_DRIVER_NAME_TOO_LONG                // SqlState = 'IM011'
+   DB_ERR_DRIVER_KEYWORD_SYNTAX_ERROR         // SqlState = 'IM012'
+   DB_ERR_TRACE_FILE_ERROR                    // SqlState = 'IM013'
+   DB_ERR_TABLE_OR_VIEW_ALREADY_EXISTS        // SqlState = 'S0001'
+   DB_ERR_TABLE_NOT_FOUND                     // SqlState = 'S0002'
+   DB_ERR_INDEX_ALREADY_EXISTS                // SqlState = 'S0011'
+   DB_ERR_INDEX_NOT_FOUND                     // SqlState = 'S0012'
+   DB_ERR_COLUMN_ALREADY_EXISTS               // SqlState = 'S0021'
+   DB_ERR_COLUMN_NOT_FOUND                    // SqlState = 'S0022'
+   DB_ERR_NO_DEFAULT_FOR_COLUMN               // SqlState = 'S0023'
+   DB_ERR_GENERAL_ERROR                       // SqlState = 'S1000'
+   DB_ERR_MEMORY_ALLOCATION_FAILURE           // SqlState = 'S1001'
+   DB_ERR_INVALID_COLUMN_NUMBER               // SqlState = 'S1002'
+   DB_ERR_PROGRAM_TYPE_OUT_OF_RANGE           // SqlState = 'S1003'
+   DB_ERR_SQL_DATA_TYPE_OUT_OF_RANGE          // SqlState = 'S1004'
+   DB_ERR_OPERATION_CANCELLED                 // SqlState = 'S1008'
+   DB_ERR_INVALID_ARGUMENT_VALUE              // SqlState = 'S1009'
+   DB_ERR_FUNCTION_SEQUENCE_ERROR             // SqlState = 'S1010'
+   DB_ERR_OPERATION_INVALID_AT_THIS_TIME      // SqlState = 'S1011'
+   DB_ERR_INVALID_TRANS_OPERATION_CODE        // SqlState = 'S1012'
+   DB_ERR_NO_CURSOR_NAME_AVAIL                // SqlState = 'S1015'
+   DB_ERR_INVALID_STR_OR_BUF_LEN              // SqlState = 'S1090'
+   DB_ERR_DESCRIPTOR_TYPE_OUT_OF_RANGE        // SqlState = 'S1091'
+   DB_ERR_OPTION_TYPE_OUT_OF_RANGE            // SqlState = 'S1092'
+   DB_ERR_INVALID_PARAM_NO                    // SqlState = 'S1093'
+   DB_ERR_INVALID_SCALE_VALUE                 // SqlState = 'S1094'
+   DB_ERR_FUNCTION_TYPE_OUT_OF_RANGE          // SqlState = 'S1095'
+   DB_ERR_INF_TYPE_OUT_OF_RANGE               // SqlState = 'S1096'
+   DB_ERR_COLUMN_TYPE_OUT_OF_RANGE            // SqlState = 'S1097'
+   DB_ERR_SCOPE_TYPE_OUT_OF_RANGE             // SqlState = 'S1098'
+   DB_ERR_NULLABLE_TYPE_OUT_OF_RANGE          // SqlState = 'S1099'
+   DB_ERR_UNIQUENESS_OPTION_TYPE_OUT_OF_RANGE // SqlState = 'S1100'
+   DB_ERR_ACCURACY_OPTION_TYPE_OUT_OF_RANGE   // SqlState = 'S1101'
+   DB_ERR_DIRECTION_OPTION_OUT_OF_RANGE       // SqlState = 'S1103'
+   DB_ERR_INVALID_PRECISION_VALUE             // SqlState = 'S1104'
+   DB_ERR_INVALID_PARAM_TYPE                  // SqlState = 'S1105'
+   DB_ERR_FETCH_TYPE_OUT_OF_RANGE             // SqlState = 'S1106'
+   DB_ERR_ROW_VALUE_OUT_OF_RANGE              // SqlState = 'S1107'
+   DB_ERR_CONCURRENCY_OPTION_OUT_OF_RANGE     // SqlState = 'S1108'
+   DB_ERR_INVALID_CURSOR_POSITION             // SqlState = 'S1109'
+   DB_ERR_INVALID_DRIVER_COMPLETION           // SqlState = 'S1110'
+   DB_ERR_INVALID_BOOKMARK_VALUE              // SqlState = 'S1111'
+   DB_ERR_DRIVER_NOT_CAPABLE                  // SqlState = 'S1C00'
+   DB_ERR_TIMEOUT_EXPIRED                     // SqlState = 'S1T00'
+</PRE>
+<I>struct <B>wxDb::dbInf</B></I><UL><UL>
+This structure is internal to the
+wxDb class and contains details of the ODBC datasource that the current
+instance of the wxDb is connected to in its members.  When the datasource
+is opened, all of the information contained in the dbInf structure is
+queried from the datasource.  This information is used almost exclusively
+within the ODBC class library.  Where there may be a need for particular
+portions of this information outside of the class library, member
+functions (e.g.
+<A HREF="wx_wxdbtable.html#wxdbtableiscursorclosedoncommit">wxDbTable::IsCursorClosedOnCommit</A>)
+have been added for ease of use.</UL></UL>
+<P>
+<PRE>
+   wxChar dbmsName[40]        - Name of the dbms product
+   wxChar dbmsVer[64]         - Version # of the dbms product
+   wxChar driverName[40]      - Driver name
+   wxChar odbcVer[60]         - ODBC version of the driver
+   wxChar drvMgrOdbcVer[60]   - ODBC version of the driver manager
+   wxChar driverVer[60]       - Driver version
+   wxChar serverName[80]      - Server Name, typically a connect string
+   wxChar databaseName[128]   - Database filename
+   wxChar outerJoins[2]       - Does datasource support outer joins
+   wxChar procedureSupport[2] - Does datasource support stored
+                                procedures
+   UWORD  maxConnections      - Maximum # of connections datasource
+                                supports
+   UWORD  maxStmts            - Maximum # of HSTMTs per HDBC
+   UWORD  apiConfLvl          - ODBC API conformance level
+   UWORD  cliConfLvl          - Is datasource SAG compliant
+   UWORD  sqlConfLvl          - SQL conformance level
+   UWORD  cursorCommitBehavior   - How cursors are affected on db commit
+   UWORD  cursorRollbackBehavior - How cursors are affected on db
+                                   rollback
+   UWORD  supportNotNullClause   - Does datasource support NOT NULL
+                                   clause
+   wxChar supportIEF[2]       - Integrity Enhancement Facility (Ref.
+                                Integrity)
+   UDWORD txnIsolation        - Transaction isolation level supported by
+                                driver
+   UDWORD txnIsolationOptions - Transaction isolation level options
+                                available
+   UDWORD fetchDirections     - Fetch directions supported
+   UDWORD lockTypes           - Lock types supported in SQLSetPos
+   UDWORD posOperations       - Position operations supported in
+                                SQLSetPos
+   UDWORD posStmts            - Position statements supported
+   UDWORD scrollConcurrency   - Scrollable cursor concurrency options
+                                supported
+   UDWORD scrollOptions       - Scrollable cursor options supported
+   UDWORD staticSensitivity   - Can additions/deletions/updates be
+                                detected
+   UWORD  txnCapable          - Indicates if datasource supports
+                                transactions
+   UDWORD loginTimeout        - Number seconds to wait for a login
+                                request
+</PRE>
+<I>wxChar <B>wxDb::errorList</B>[DB_MAX_ERROR_HISTORY][DB_MAX_ERROR_MSG_LEN]</I><UL><UL>
+The last n ODBC errors that have occurred on this database connection.</UL></UL>
+<P>
+<I>wxChar <B>wxDb::errorMsg</B>[SQL_MAX_MESSAGE_LENGTH]</I><UL><UL>
+This member variable is populated as a result of calling <A HREF="wx_wxdb.html#wxdbgetnexterror">wxDb::GetNextError</A>.  It contains the ODBC error message text.</UL></UL>
+<P>
+<I>SDWORD <B>wxDb::nativeError</B></I><UL><UL>
+Set by wxDb::DispAllErrors,
+wxDb::GetNextError, and wxDb::DispNextError.  It contains the
+datasource-specific error code returned by the datasource to the ODBC driver.
+Used for reporting ODBC errors.</UL></UL>
+<P>
+<I>wxChar <B>wxDb::sqlState</B>[20]</I><UL><UL>
+Set by wxDb::TranslateSqlState().
+Indicates the error state after a failed ODBC operation.  Used for reporting
+ODBC errors.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Default cursor scrolling is defined by wxODBC_FWD_ONLY_CURSORS in setup.h
+when the wxWidgets library is built.  This behavior can be overridden when
+an instance of a wxDb is created (see <A HREF="wx_wxdb.html#wxdbctor">wxDb constructor</A>).
+Default setting of this value true, as not all databases/drivers support
+both types of cursors.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbcolfor.html#wxdbcolfor">wxDbColFor</A>, <A HREF="wx_wxdbcolinf.html#wxdbcolinf">wxDbColInf</A>,
+<A HREF="wx_wxdbtable.html#wxdbtable">wxDbTable</A>, <A HREF="wx_wxdbtableinf.html#wxdbtableinf">wxDbTableInf</A>,
+<A HREF="wx_wxdbinf.html#wxdbinf">wxDbInf</A><P>
+
+<HR>
+<A NAME="wxdbfunctions"></A>
+<H3>Associated non-class functions</H3>
+<P>
+The following functions are used in conjunction with the wxDb class.<P>
+<B>void</B> <B>wxDbCloseConnections</B>()<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Closes all cached connections that have been made through use of the
+<A HREF="wx_wxdb.html#wxdbfunctions">wxDbGetConnection</A> function.<P>
+NOTE: These connections are closed regardless of whether they are in use
+or not.  This function should only be called after the program has
+finished using the connections and all wxDbTable instances that use any of
+the connections have been closed.<P>
+This function performs a <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A>
+on the connection before closing it to commit any changes that are still
+pending, as well as to avoid any function sequence errors upon closing
+each connection.<P>
+
+<B>int </B> <B>wxDbConnectionsInUse</B>()<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Returns a count of how many database connections are currently free ( not
+being used) that have been cached through use of the <A HREF="wx_wxdb.html#wxdbfunctions">wxDbGetConnection</A>
+function.<P>
+
+<B>bool</B> <B>wxDbFreeConnection</B>(<B><A HREF="wx_wxdb.html#wxdb">wxDb</A> *</B></B><I>pDb</I>)<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Searches the list of cached database connections connection for one matching
+the passed in wxDb instance.  If found, that cached connection is freed.<P>
+Freeing a connection means that it is marked as available (free) in the
+cache of connections, so that a call to <A HREF="wx_wxdb.html#wxdbfunctions">wxDbGetConnection</A>
+is able to return a pointer to the wxDb instance for use.  Freeing a
+connection does NOT close the connection, it only makes the connection
+available again.<P>
+
+<B><A HREF="wx_wxdb.html#wxdb">wxDb</A> *</B> </B> <B>wxDbGetConnection</B>(<B><A HREF="wx_wxdbconnectinf.html#wxdbconnectinf">wxDbConnectInf</A> *</B></B><I>pDbConfig</I>,
+<B>bool </B><I>FwdOnlyCursors=(bool)wxODBC_FWD_ONLY_CURSORS</I>)<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function is used to request a "new" wxDb instance for use by the program.
+The wxDb instance returned is also opened (see <A HREF="wx_wxdb.html#wxdbopen">wxDb::Open</A>).<P>
+This function (along with wxDbFreeConnection() and wxDbCloseConnection())
+maintain a cache of wxDb instances for user/re-use by a program.  When a
+program needs a wxDb instance, it may call this function to obtain a wxDb
+instance.  If there is a wxDb instance in the cache that is currently unused
+that matches the connection requirements specified in <I>'pDbConfig'</I> then
+that cached connection is marked as no longer being free, and a pointer to
+the wxDb instance is returned.<P>
+If there are no connections available in the cache that meet the requirements
+given in <I>'pDbConfig'</I>, then a new wxDb instance is created to connect
+to the datasource specified in <I>'pDbConfig'</I> using the userID and password
+given in <I>'pDbConfig'</I>.<P>
+NOTE: The caching routine also uses the <A HREF="wx_wxdb.html#wxdbopen">wxDb::Open</A>
+connection datatype copying code.  If the call to wxDbGetConnection()
+requests a connection to a datasource, and there is not one available in the
+cache, a new connection is created.  But when the connection is opened,
+instead of polling the datasource over again for its datatypes, if a
+connection to the same datasource (using the same userID/password) has already
+been done previously, the new connection skips querying the datasource for
+its datatypes, and uses the same datatypes determined previously by the
+other connection(s) for that same datasource.  This cuts down greatly on
+network traffic, database load, and connection creation time.<P>
+When the program is done using a connection created through a call to
+wxDbGetConnection(), the program should call wxDbFreeConnection() to release
+the wxDb instance back to the cache.  DO NOT DELETE THE wxDb INSTANCE!
+Deleting the wxDb instance returned can cause a crash/memory corruption
+later in the program when the cache is cleaned up.<P>
+When exiting the program, call wxDbCloseConnections() to close all the
+cached connections created by calls to wxDbGetConnection().<P>
+
+<B>const wxChar *</B> <B>wxDbLogExtendedErrorMsg</B>(<B>const wxChar *</B><I>userText</I>, <B><A HREF="wx_wxdb.html#wxdb">wxDb</A> *</B></B><I>pDb</I>, <B>wxChar *</B><I>ErrFile</I>, <B>int </B><I>ErrLine</I>)<P>
+Writes a message to the wxLog window (stdout usually) when an internal
+error situation occurs.<P>
+<B>bool</B> <B>wxDbSqlLog</B>(<B>wxDbSqlLogState </B><I>state</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>filename = SQL_LOG_FILENAME</I>)<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function sets the sql log state for all open wxDb objects<P>
+<B>bool</B> <B>wxDbGetDataSource</B>(<B>HENV </B><I>henv</I>, <B>wxChar *</B><I>Dsn</I>, <B>SWORD </B><I>DsnMax</I>, <B>wxChar *</B><I>DsDesc</I>, <B>SWORD </B><I>DsDescMax</I>, <B>UWORD </B><I>direction = SQL_FETCH_NEXT</I>)<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This routine queries the ODBC driver manager for a list of available
+datasources.  Repeatedly call this function to obtain all the datasources
+available through the ODBC driver manager on the current workstation.<P>
+<PRE>
+    wxArrayString strArray;
+
+    while (wxDbGetDataSource(DbConnectInf.GetHenv(), Dsn, SQL_MAX_DSN_LENGTH+1, DsDesc, 255))
+        strArray.Add(Dsn);
+</PRE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<HR>
+<A NAME="wxdbctor"></A>
+<H3>wxDb::wxDb</H3>
+<P>
+<B></B> <B>wxDb</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxDb</B>(<B>const HENV &amp;</B><I>aHenv</I>, <B>bool </B><I>FwdOnlyCursors=(bool)wxODBC_FWD_ONLY_CURSORS</I>)<P>
+Constructor, used to create an ODBC connection to a datasource.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>aHenv</I><UL><UL>
+Environment handle used for this connection.  See
+<A HREF="wx_wxdbconnectinf.html#wxdbconnectinfallochenv">wxDConnectInf::AllocHenv</A></UL></UL>
+<P>
+<I>FwdOnlyCursors</I><UL><UL>
+Will cursors created for use with this datasource
+connection only allow forward scrolling cursors.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This is the constructor for the wxDb class.  The wxDb object must
+be created and opened before any database activity can occur.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+   wxDbConnectInf ConnectInf;
+   ....Set values for member variables of ConnectInf here
+
+   wxDb sampleDB(ConnectInf.GetHenv());
+   if (!sampleDB.Open(ConnectInf.GetDsn(), ConnectInf.GetUserID(),
+	                   ConnectInf.GetPassword()))
+   {
+      // Error opening datasource
+   }
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbfunctions">wxDbGetConnection</A><P>
+
+<HR>
+<A NAME="wxdbcatalog"></A>
+<H3>wxDb::Catalog</H3>
+<P>
+<B>bool</B> <B>Catalog</B>(<B>wxChar *</B><I> userID</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>fileName =
+SQL_CATALOG_FILENAME</I>)<P>
+Allows a data "dictionary" of the datasource to be created, dumping pertinent
+information about all data tables to which the user specified in userID has
+access.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>userID</I><UL><UL>
+Database user name to use in accessing the database.  All
+tables to which this user has rights will be evaluated in the catalog.</UL></UL>
+<P>
+<I>fileName</I><UL><UL>
+<I>OPTIONAL</I>.  Name of the text file to create and write
+the DB catalog to.  Default is SQL_CATALOG_FILENAME.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true if the catalog request was successful, or false if there was some
+reason that the catalog could not be generated.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+============== ============== ================ ========= =======
+TABLE NAME     COLUMN NAME    DATA TYPE        PRECISION  LENGTH
+============== ============== ================ ========= =======
+EMPLOYEE       RECID          (0008)NUMBER            15       8
+EMPLOYEE       USER_ID        (0012)VARCHAR2          13      13
+EMPLOYEE       FULL_NAME      (0012)VARCHAR2          26      26
+EMPLOYEE       PASSWORD       (0012)VARCHAR2          26      26
+EMPLOYEE       START_DATE     (0011)DATE              19      16
+</PRE>
+
+
+<HR>
+<A NAME="wxdbclose"></A>
+<H3>wxDb::Close</H3>
+<P>
+<B>void</B> <B>Close</B>()<P>
+Closes the database connection.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+At the end of your program, when you have finished all of your database work,
+you must close the ODBC connection to the datasource.  There are actually
+four steps involved in doing this as illustrated in the example.<P>
+Any wxDbTable instances which use this connection must be deleted before
+closing the database connection.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+   // Commit any open transactions on the datasource
+   sampleDB.CommitTrans();
+
+   // Delete any remaining wxDbTable objects allocated with new
+   delete parts;
+
+   // Close the wxDb connection when finished with it
+   sampleDB.Close();
+</PRE>
+
+
+<HR>
+<A NAME="wxdbcommittrans"></A>
+<H3>wxDb::CommitTrans</H3>
+<P>
+<B>bool</B> <B>CommitTrans</B>()<P>
+Permanently "commits" changes (insertions/deletions/updates) to the database.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true if the commit was successful, or false if the commit failed.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Transactions begin implicitly as soon as you make a change to the database
+with an insert/update/delete, or any other direct SQL command that performs
+one of these operations against the datasource.
+At any time thereafter, to save the changes to disk permanently, "commit"
+them by calling this function.<P>
+Calling this member function commits ALL open transactions on this ODBC
+connection.  For example, if three different wxDbTable instances used the
+same connection to the datasource, committing changes made on one of those
+wxDbTable instances commits any pending transactions on all three wxDbTable
+instances.<P>
+Until a call to wxDb::CommitTrans() is made, no other user or cursor is able
+to see any changes made to the row(s) that have been inserted/modified/deleted.<P>
+
+<B><FONT COLOR="#FF0000">Special Note : <I>Cursors</I> </FONT></B><P>
+<HR>
+It is important to understand that different database/ODBC driver
+combinations handle transactions differently.  One thing in particular that
+you must pay attention to is cursors, in regard to transactions.  Cursors are
+what allow you to scroll through records forward and backward and to
+manipulate records as you scroll through them.  When you issue a query, a
+cursor is created behind the scenes.  The cursor keeps track of the query and
+keeps track of the current record pointer.  After you commit or rollback a
+transaction, the cursor may be closed automatically.  This is database
+dependent, and with some databases this behavior can be controlled through
+management functions.  This means you would need to requery the datasource
+before you can perform any additional work using this cursor.  This is only
+necessary however if the datasource closes the cursor after a commit or
+rollback.  Use the
+<A HREF="wx_wxdbtable.html#wxdbtableiscursorclosedoncommit">wxDbTable::IsCursorClosedOnCommit</A>
+member function to determine the datasource's transaction behavior.  Note, in
+many situations it is very inefficient to assume the cursor is closed and
+always requery.  This could put a significant, unnecessary load on datasources
+that leave the cursors open after a transaction.<HR><P>
+<P>
+
+
+<HR>
+<A NAME="wxdbcreateviews"></A>
+<H3>wxDb::CreateView</H3>
+<P>
+<B>bool</B> <B>CreateView</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I> viewName</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I> colList</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pSqlStmt</I>)<P>
+Creates a SQL VIEW of one or more tables in a single datasource.  Note that
+this function will only work against databases which support views (currently
+only Oracle as of November 21 2000).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>viewName</I><UL><UL>
+The name of the view.  e.g. PARTS_V</UL></UL>
+<P>
+<I>colList</I><UL><UL>
+<I>OPTIONAL</I> Pass in a comma delimited list of column
+names if you wish to explicitly name each column in the result set.  If not
+desired, pass in an empty string and the column names from the associated
+table(s) will be used.</UL></UL>
+<P>
+<I>pSqlStmt</I><UL><UL>
+Pointer to the select statement portion of the CREATE
+VIEW statement.  Must be a complete, valid SQL SELECT statement.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+A 'view' is a logical table that derives columns from one or more other
+tables or views.  Once the view is created, it can be queried exactly like
+any other table in the database.<P>
+NOTE: Views are not available with all datasources.  Oracle is one example
+of a datasource which does support views.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+   // Incomplete code sample
+   db.CreateView("PARTS_SD1", "PN, PD, QTY",
+                 "SELECT PART_NUM, PART_DESC, QTY_ON_HAND * 1.1 FROM PARTS \
+                  WHERE STORAGE_DEVICE = 1");
+
+   // PARTS_SD1 can now be queried just as if it were a data table.
+   // e.g. SELECT PN, PD, QTY FROM PARTS_SD1
+</PRE>
+
+
+<HR>
+<A NAME="wxdbdbms"></A>
+<H3>wxDb::Dbms</H3>
+<P>
+<B>wxDBMS </B> <B>Dbms</B>()<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The return value will be of the enumerated type wxDBMS.  This enumerated
+type contains a list of all the currently tested and supported databases.<P>
+Additional databases may work with these classes, but the databases
+returned by this function have been tested and confirmed to work with
+these ODBC classes.<P>
+Possible values returned by this function can be viewed in the
+<A HREF="wx_wxdb.html#wxdbenumeratedtypes">Enumerated types</A> section of wxDb.<P>
+There are known issues with conformance to the ODBC standards with several
+datasources supported by the wxWidgets ODBC classes.  Please see the overview
+for specific details on which datasource have which issues.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The return value will indicate which of the supported datasources is
+currently connected to by this connection.  In the event that the
+datasource is not recognized, a value of 'dbmsUNIDENTIFIED' is returned.<P>
+
+
+<HR>
+<A NAME="wxdbdispallerrors"></A>
+<H3>wxDb::DispAllErrors</H3>
+<P>
+<B>bool</B> <B>DispAllErrors</B>(<B>HENV</B><I> aHenv</I>, <B>HDBC</B><I> aHdbc = SQL_NULL_HDBC</I>, <B>HSTMT</B><I> aHstmt = SQL_NULL_HSTMT</I>)<P>
+Used to log all database errors that occurred as a result of an executed
+database command.  This logging is automatic and also includes debug logging
+when compiled in debug mode via <A HREF="wx_logfunctions.html#wxlogdebug">wxLogDebug</A>.  If logging
+is turned on via <A HREF="wx_wxdb.html#wxdbsetsqllogging">wxDb::SetSqlLogging</A>, then an
+entry is also logged to the defined log file.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>aHenv</I><UL><UL>
+Handle to the ODBC environment.</UL></UL>
+<P>
+<I>aHdbc</I><UL><UL>
+Handle to the ODBC connection.  Pass this in if the ODBC
+function call that erred required a hdbc or hstmt argument.</UL></UL>
+<P>
+<I>aHstmt</I><UL><UL>
+Handle to the ODBC statement being executed against.  Pass
+this in if the ODBC function call that failed required a hstmt argument.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This member function will log all of the ODBC error messages for the last
+ODBC function call that was made.  This function is normally used internally
+within the ODBC class library, but can be used programmatically after calling
+ODBC functions directly (i.e. SQLFreeEnv()).<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The function always returns false, so a call to this function can be made
+in the return statement of a code block in the event of a failure to
+perform an action (see the example below).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbsetsqllogging">wxDb::SetSqlLogging</A>, wxDbSqlLog<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+   if (SQLExecDirect(hstmt, (UCHAR FAR *) pSqlStmt, SQL_NTS) != SQL_SUCCESS)
+      // Display all ODBC errors for this stmt
+      return(db.DispAllErrors(db.henv, db.hdbc, hstmt));
+</PRE>
+
+<HR>
+<A NAME="wxdbdispnexterror"></A>
+<H3>wxDb::DispNextError</H3>
+<P>
+<B>void</B> <B>DispNextError</B>()<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function is normally used internally within the ODBC class library.
+It could be used programmatically after calling ODBC functions directly.  This
+function works in conjunction with <A HREF="wx_wxdb.html#wxdbgetnexterror">wxDb::GetNextError</A> when errors (or
+sometimes informational messages)  returned from ODBC need to be analyzed
+rather than simply displaying them as an error.  GetNextError() retrieves
+the next ODBC error from the ODBC error queue.  The wxDb member variables
+"sqlState", "nativeError" and "errorMsg" could then be evaluated.  To
+display the error retrieved, DispNextError() could then be called.
+The combination of GetNextError() and DispNextError() can be used to
+iteratively step through the errors returned from ODBC evaluating each
+one in context and displaying the ones you choose.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+   // Drop the table before attempting to create it
+   sprintf(sqlStmt, "DROP TABLE %s", tableName);
+   // Execute the drop table statement
+   if (SQLExecDirect(hstmt,(UCHAR FAR *)sqlStmt,SQL_NTS) != SQL_SUCCESS)
+   {
+      // Check for sqlState = S0002, "Table or view not found".
+      // Ignore this error, bomb out on any other error.
+      pDb-&gt;GetNextError(henv, hdbc, hstmt);
+      if (wxStrcmp(pDb-&gt;sqlState, "S0002"))
+      {
+         pDb-&gt;DispNextError();   // Displayed error retrieved
+         pDb-&gt;DispAllErrors(henv, hdbc, hstmt); // Display all other errors, if any
+         pDb-&gt;RollbackTrans();   // Rollback the transaction
+         CloseCursor();          // Close the cursor
+         return(false);          // Return Failure
+      }
+   }
+</PRE>
+
+
+<HR>
+<A NAME="wxdbdropview"></A>
+<H3>wxDb::DropView</H3>
+<P>
+<B>bool</B> <B>DropView</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>viewName</I>)<P>
+Drops the data table view named in 'viewName'.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>viewName</I><UL><UL>
+Name of the view to be dropped.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+If the view does not exist, this function will return true.  Note that views are not supported with all datasources.<P>
+
+<HR>
+<A NAME="wxdbescapesqlchars"></A>
+<H3>wxDb::EscapeSqlChars</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>EscapeSqlChars</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>)<P>
+This function is used internally by wxWidgets while building SQL statements.
+It has been provided to help users who wish to explicity construct SQL
+statements to be sent to the server.  The function takes the value passed and
+returns it with any special characters escaped.  Which characters are
+considered special depends on what type of datasource the object is connected
+to.  For example, most database servers use a backslash as the escape
+character; if the value passed contains a backlash it will be replaced with a
+double backslash before it is passed to the server.  This function can be used
+to avoid passing statements with syntax errors to the server as well as prevent
+SQL injection attacks.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>value</I><UL><UL>
+The value to be escaped.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdbexecsql"></A>
+<H3>wxDb::ExecSql</H3>
+<P>
+<B>bool</B> <B>ExecSql</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pSqlStmt</I>)<P>
+<B>bool</B> <B>ExecSql</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pSqlStmt</I>, <B><A HREF="wx_wxdbcolinf.html#wxdbcolinf">wxDbColInf</A> **</B></B><I>columns</I>, <B>short &amp;</B><I>numcols</I>)<P>
+Allows a native SQL command to be executed directly against the datasource.  In addition to being able to run any standard SQL command, use of this function allows a user to (potentially) utilize features specific to the datasource they are connected to that may not be available through ODBC.  The ODBC driver will pass the specified command directly to the datasource.<P>
+To get column amount and column names or other information about returned columns, pass <I>'columns'</I> and <I>'numcols'</I> parameters to the function also.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pSqlStmt</I><UL><UL>
+Pointer to the SQL statement to be executed.</UL></UL>
+<P>
+<I>columns</I><UL><UL>
+On success, this function will set this pointer to point to array of <A HREF="wx_wxdbcolinf.html#wxdbcolinf">wxDbColInf</A> objects, holding information about columns returned by the query. You need to call delete[] for the pointer you pass here after you don't use it anymore to prevent memory leak.</UL></UL>
+<P>
+<I>numcols</I><UL><UL>
+Reference to variable where amount of objects in <I>'columns'</I>-parameter will be set.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This member extends the wxDb class and allows you to build and execute ANY VALID
+SQL statement against the datasource.  This allows you to extend the class
+library by being able to issue any SQL statement that the datasource is capable
+of processing.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbgetdata">wxDb::GetData</A>, <A HREF="wx_wxdb.html#wxdbgetnext">wxDb::GetNext</A><P>
+
+<HR>
+<A NAME="wxdbfwdonlycursors"></A>
+<H3>wxDb::FwdOnlyCursors</H3>
+<P>
+<B>bool</B> <B>IsFwdOnlyCursors</B>()<P>
+Older form (pre-2.3/2.4 of wxWidgets) of the
+<A HREF="wx_wxdb.html#wxdbisfwdonlycursors">wxDb::IsFwdOnlyCursors</A>.  This method is
+provided for backward compatibility only.  The method
+<A HREF="wx_wxdb.html#wxdbisfwdonlycursors">wxDb::IsFwdOnlyCursors</A> should be
+used in place of this method.<P>
+
+<B><A HREF="wx_wxdbinf.html#wxdbinf">wxDbInf</A> *</B> </B> <B>GetCatalog</B>(<B>const wxChar *</B><I>userID</I>)<P>
+
+<HR>
+<A NAME="wxdbgetcatalog"></A>
+<H3>wxDb::GetCatalog</H3>
+<P>
+<B><A HREF="wx_wxdbinf.html#wxdbinf">wxDbInf</A> *</B> </B> <B>GetCatalog</B>(<B>const wxChar *</B><I>userID</I>)<P>
+Returns a <A HREF="wx_wxdbinf.html#wxdbinf">wxDbInf</A> pointer that points to the catalog
+(datasource) name, schema, number of tables accessible to the current user,
+and a wxDbTableInf pointer to all data pertaining to all tables in the users
+catalog.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>userID</I><UL><UL>
+Owner/Schema of the table.  Specify a userID when the datasource you are connected to allows multiple unique tables with the same name to be owned by different users.  <I>userID</I> is evaluated as follows:</UL></UL>
+<P>
+<PRE>
+         userID == NULL  ... UserID is ignored (DEFAULT)
+         userID == ""    ... UserID set equal to 'this-&gt;uid'
+         userID != ""    ... UserID set equal to 'userID'
+</PRE>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The returned catalog will only contain catalog entries for tables to which the user specified in 'userID' has sufficient privileges.  If no user is specified (NULL passed in), a catalog pertaining to all tables in the datasource accessible to the connected user (permissions apply) via this connection will be returned.<P>
+
+<HR>
+<A NAME="wxdbgetcolumncount"></A>
+<H3>wxDb::GetColumnCount</H3>
+<P>
+<B>int </B> <B>GetColumnCount</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>tableName</I>, <B>const wxChar *</B><I>userID</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>tableName</I><UL><UL>
+The table name you wish to obtain column information about.</UL></UL>
+<P>
+<I>userID</I><UL><UL>
+Name of the user that owns the table(s) (also referred to as schema).
+Required for some datasources for situations where there may be multiple tables with the
+same name in the datasource, but owned by different users. <I>userID </I> is
+evaluated in the following manner:</UL></UL>
+<P>
+<PRE>
+         userID == NULL  ... UserID is ignored (DEFAULT)
+         userID == ""    ... UserID set equal to 'this-&gt;uid'
+         userID != ""    ... UserID set equal to 'userID'
+</PRE>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns a count of how many columns are in the specified table.  If an error
+occurs retrieving the number of columns, this function will return a -1.<P>
+
+<HR>
+<A NAME="wxdbgetcolumns"></A>
+<H3>wxDb::GetColumns</H3>
+<P>
+<B><A HREF="wx_wxdbcolinf.html#wxdbcolinf">wxDbColInf</A> *</B> </B> <B>GetColumns</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>tableName</I>, <B>UWORD *</B><I>numCols</I>, <B>const wxChar *</B><I>userID=NULL</I>)<P>
+<B><A HREF="wx_wxdbcolinf.html#wxdbcolinf">wxDbColInf</A> *</B> </B> <B>GetColumns</B>(<B>wxChar *</B><I>tableName[]</I>, <B>const wxChar *</B><I>userID</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>tableName</I><UL><UL>
+The table name you wish to obtain column information about.</UL></UL>
+
+<I>numCols</I><UL><UL>
+Pointer to a UWORD which will hold a count of the number of columns returned by this function</UL></UL>
+
+<I>tableName[]</I><UL><UL>
+An array of pointers to table names you wish to obtain column information about.  The last element of this array must be a NULL string.</UL></UL>
+
+<I>userID</I><UL><UL>
+Name of the user that owns the table(s) (also referred to as schema).  Required for some datasources for situations where there may be multiple tables with the same name in the datasource, but owned by different users. <I>userID</I> is evaluated in the following manner:</UL></UL>
+<P>
+<PRE>
+         userID == NULL  ... UserID is ignored (DEFAULT)
+         userID == ""    ... UserID set equal to 'this-&gt;uid'
+         userID != ""    ... UserID set equal to 'userID'
+</PRE>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+This function returns a pointer to an array of <A HREF="wx_wxdbcolinf.html#wxdbcolinf">wxDbColInf</A>
+structures, allowing you to obtain information regarding the columns of the
+named table(s).  If no columns were found, or an error occurred, this pointer
+will be NULL.<P>
+THE CALLING FUNCTION IS RESPONSIBLE FOR DELETING THE <I>wxDbColInf</I> MEMORY WHEN IT IS
+FINISHED WITH IT.<P>
+<HR>
+ALL column bindings associated with this wxDb instance are unbound
+by this function, including those used by any wxDbTable instances that use
+this wxDb instance.  This function should use its own wxDb instance
+to avoid undesired unbinding of columns.<HR><P>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbcolinf.html#wxdbcolinf">wxDbColInf</A><P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+   wxChar *tableList[] = {"PARTS", 0};
+   wxDbColInf *colInf = pDb-&gt;GetColumns(tableList);
+   if (colInf)
+   {
+      // Use the column inf
+      .......
+      // Destroy the memory
+      delete [] colInf;
+   }
+</PRE>
+
+<HR>
+<A NAME="wxdbgetdata"></A>
+<H3>wxDb::GetData</H3>
+<P>
+<B>bool</B> <B>GetData</B>(<B>UWORD</B><I> colNumber</I>, <B>SWORD</B><I> cType</I>,
+<B>PTR</B><I> pData</I>, <B>SDWORD</B><I> maxLen</I>, <B>SDWORD FAR *</B><I> cbReturned</I> )<P>
+Used to retrieve result set data without binding column values to memory
+variables (i.e. not using a wxDbTable instance to access table data).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>colNumber</I><UL><UL>
+Ordinal number of the desired column in the result set to be
+returned.</UL></UL>
+
+<I>cType</I><UL><UL>
+The C data type that is to be returned.  See a partial list
+in <A HREF="wx_wxdbtable.html#wxdbtablesetcoldefs">wxDbTable::SetColDefs</A></UL></UL>
+
+<I>pData</I><UL><UL>
+Memory buffer which will hold the data returned by the call
+to this function.</UL></UL>
+
+<I>maxLen</I><UL><UL>
+Maximum size of the buffer <I>'pData'</I> in characters.
+NOTE: Not UNICODE safe.  If this is a numeric field, a value of 0 may be
+passed for this parameter, as the API knows the size of the expected return
+value.</UL></UL>
+
+<I>cbReturned</I><UL><UL>
+Pointer to the buffer containing the length of the
+actual data returned.  If this value comes back as SQL_NULL_DATA, then the
+<A HREF="wx_wxdb.html#wxdbgetdata">wxDb::GetData</A> call has failed.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbgetnext">wxDb::GetNext</A>, <A HREF="wx_wxdb.html#wxdbexecsql">wxDb::ExecSql</A><P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    SDWORD cb;
+    ULONG reqQty;
+    wxString sqlStmt;
+    sqlStmt = "SELECT SUM(REQUIRED_QTY - PICKED_QTY) FROM ORDER_TABLE WHERE \
+                 PART_RECID = 1450 AND REQUIRED_QTY &gt; PICKED_QTY";
+
+    // Perform the query
+    if (!pDb-&gt;ExecSql(sqlStmt.c_str()))
+    {
+        // ERROR
+        return(0);
+    }
+
+    // Request the first row of the result set
+    if (!pDb-&gt;GetNext())
+    {
+        // ERROR
+        return(0);
+    }
+
+    // Read column #1 of the row returned by the call to ::GetNext()
+    // and return the value in 'reqQty'
+    if (!pDb-&gt;GetData(1, SQL_C_ULONG, &reqQty, 0, &cb))
+    {
+        // ERROR
+        return(0);
+    }
+
+    // Check for a NULL result
+    if (cb == SQL_NULL_DATA)
+        return(0);
+</PRE>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+When requesting multiple columns to be returned from the result set (for example, the SQL query
+requested 3 columns be returned), the calls to this function must request the columns in ordinal
+sequence (1,2,3 or 1,3 or 2,3).<P>
+
+<HR>
+<A NAME="wxdbgetdatabasename"></A>
+<H3>wxDb::GetDatabaseName</H3>
+<P>
+<B>const wxChar *</B> <B>GetDatabaseName</B>()<P>
+Returns the name of the database engine.<P>
+
+<HR>
+<A NAME="wxdbgetdatasourcename"></A>
+<H3>wxDb::GetDatasourceName</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B> </B> <B>GetDatasourceName</B>()<P>
+Returns the ODBC datasource name.<P>
+
+<HR>
+<A NAME="wxdbgethdbc"></A>
+<H3>wxDb::GetHDBC</H3>
+<P>
+<B>HDBC</B> <B>GetHDBC</B>()<P>
+Returns the ODBC handle to the database connection.<P>
+
+<HR>
+<A NAME="wxdbgethenv"></A>
+<H3>wxDb::GetHENV</H3>
+<P>
+<B>HENV</B> <B>GetHENV</B>()<P>
+Returns the ODBC environment handle.<P>
+
+<HR>
+<A NAME="wxdbgethstmt"></A>
+<H3>wxDb::GetHSTMT</H3>
+<P>
+<B>HSTMT</B> <B>GetHSTMT</B>()<P>
+Returns the ODBC statement handle associated with this database connection.<P>
+
+<HR>
+<A NAME="wxdbgetkeyfields"></A>
+<H3>wxDb::GetKeyFields</H3>
+<P>
+<B>int </B> <B>GetKeyFields</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>tableName</I>, <B><A HREF="wx_wxdbcolinf.html#wxdbcolinf">wxDbColInf</A> *</B></B><I>colInf</I>, <B>UWORD </B><I>numColumns</I>)<P>
+Used to determine which columns are members of primary or non-primary indexes on the specified table.  If a column is a member of a foreign key for some other table, that information is detected also.<P>
+This function is primarily for use by the <A HREF="wx_wxdb.html#wxdbgetcolumns">wxDb::GetColumns</A> function, but may be called if desired from the client application.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>tableName</I><UL><UL>
+Name of the table for which the columns will be evaluated as to their inclusion in any indexes.</UL></UL>
+
+<I>colInf</I><UL><UL>
+Data structure containing the column definitions (obtained with <A HREF="wx_wxdb.html#wxdbgetcolumns">wxDb::GetColumns</A>).  This function populates the PkCol, PkTableName, and FkTableName members of the colInf structure.</UL></UL>
+
+<I>numColumns</I><UL><UL>
+Number of columns defined in the instance of colInf.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Currently always returns true.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbcolinf.html#wxdbcolinf">wxDbColInf</A>, <A HREF="wx_wxdb.html#wxdbgetcolumns">wxDb::GetColumns</A><P>
+
+<HR>
+<A NAME="wxdbgetnext"></A>
+<H3>wxDb::GetNext</H3>
+<P>
+<B>bool</B> <B>GetNext</B>()<P>
+Called after executing a query, this function requests the next row
+in the result set after the current position of the cursor.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbexecsql">wxDb::ExecSql</A>, <A HREF="wx_wxdb.html#wxdbgetdata">wxDb::GetData</A><P>
+
+<HR>
+<A NAME="wxdbgetnexterror"></A>
+<H3>wxDb::GetNextError</H3>
+<P>
+<B>bool</B> <B>GetNextError</B>(<B>HENV</B><I> aHenv</I>,
+<B>HDBC</B><I> aHdbc = SQL_NULL_HDBC</I>, <B>HSTMT</B><I> aHstmt = SQL_NULL_HSTMT</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>aHenv</I><UL><UL>
+A handle to the ODBC environment.</UL></UL>
+
+<I>aHdbc</I><UL><UL>
+<I>OPTIONAL.</I>  A handle to the ODBC connection.  Pass this
+in if the ODBC function call that failed required a hdbc or hstmt argument.</UL></UL>
+
+<I>AHstmt</I><UL><UL>
+<I>OPTIONAL.</I>A handle to the ODBC statement being executed
+against.  Pass this in if the ODBC function call that failed requires a
+hstmt argument.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+   if (SQLExecDirect(hstmt, (UCHAR FAR *) pSqlStmt, SQL_NTS) != SQL_SUCCESS)
+   {
+      return(db.GetNextError(db.henv, db.hdbc, hstmt));
+   }
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbdispnexterror">wxDb::DispNextError</A>,
+<A HREF="wx_wxdb.html#wxdbdispallerrors">wxDb::DispAllErrors</A><P>
+
+
+<HR>
+<A NAME="wxdbgetpassword"></A>
+<H3>wxDb::GetPassword</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B> </B> <B>GetPassword</B>()<P>
+Returns the password used to establish this connection to the datasource.<P>
+
+
+<HR>
+<A NAME="wxdbgettablecount"></A>
+<H3>wxDb::GetTableCount</H3>
+<P>
+<B>int </B> <B>GetTableCount</B>()<P>
+Returns the number of wxDbTable() instances currently using this datasource
+connection.<P>
+
+
+<HR>
+<A NAME="wxdbgetusername"></A>
+<H3>wxDb::GetUsername</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B> </B> <B>GetUsername</B>()<P>
+Returns the user name (uid) used to establish this connection to the
+datasource.<P>
+
+
+<HR>
+<A NAME="wxdbgrant"></A>
+<H3>wxDb::Grant</H3>
+<P>
+<B>bool</B> <B>Grant</B>(<B>int </B><I>privileges</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>tableName</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>userList = "PUBLIC"</I>)<P>
+Use this member function to GRANT privileges to users for accessing tables in
+the datasource.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>privileges</I><UL><UL>
+Use this argument to select which privileges you want to
+grant.  Pass DB_GRANT_ALL to grant all privileges.  To grant individual
+privileges pass one or more of the following OR'd together:</UL></UL>
+<P>
+<PRE>
+         DB_GRANT_SELECT  = 1
+         DB_GRANT_INSERT  = 2
+         DB_GRANT_UPDATE  = 4
+         DB_GRANT_DELETE  = 8
+         DB_GRANT_ALL     = DB_GRANT_SELECT | DB_GRANT_INSERT |
+                            DB_GRANT_UPDATE | DB_GRANT_DELETE
+</PRE>
+<I>tableName</I><UL><UL>
+The name of the table you wish to grant privileges on.</UL></UL>
+
+<I>userList</I><UL><UL>
+<I>OPTIONAL.</I>  A comma delimited list of users to grant the privileges to.  If this argument is not passed in, the privileges will be given to the general PUBLIC.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Some databases require user names to be specified in all capital letters (i.e. Oracle).  This function does not automatically capitalize the user names passed in the comma-separated list.  This is the responsibility of the calling routine.<P>
+The currently logged in user must have sufficient grantor privileges for this
+function to be able to successfully grant the indicated privileges.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+   db.Grant(DB_GRANT_SELECT | DB_GRANT_INSERT, "PARTS", "mary, sue");
+</PRE>
+
+<HR>
+<A NAME="wxdbisfwdonlycursors"></A>
+<H3>wxDb::IsFwdOnlyCursors</H3>
+<P>
+<B>bool</B> <B>IsFwdOnlyCursors</B>()<P>
+This setting indicates whether this database connection was created
+as being capable of using only forward scrolling cursors.<P>
+This function does NOT indicate if the ODBC driver or datasource supports
+backward scrolling cursors.  There is no standard way of detecting if the
+driver or datasource can support backward scrolling cursors.<P>
+If a wxDb instance was created as being capable of only forward scrolling
+cursors, then even if the datasource and ODBC driver support backward
+scrolling cursors, tables using this database connection would only be able
+to use forward scrolling cursors.<P>
+The default setting of whether a wxDb connection to a database allows
+forward-only or also backward scrolling cursors is defined in setup.h by the
+value of wxODBC_FWD_ONLY_CURSORS.  This default setting can be overridden
+when the wxDb connection is initially created (see
+<A HREF="wx_wxdb.html#wxdbctor">wxDb constructor</A> and <A HREF="wx_wxdb.html#wxdbfunctions">wxDbGetConnection</A>).<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true if this datasource connection is defined as using only forward
+scrolling cursors, or false if the connection is defined as being allowed to
+use backward scrolling cursors and their associated functions (see note above).<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Added as of wxWidgets v2.4 release, this function is a renamed version of
+wxDb::FwdOnlyCursors() to match the normal wxWidgets naming conventions for
+class member functions.<P>
+This function is not available in versions prior to v2.4.  You should
+use <A HREF="wx_wxdb.html#wxdbfwdonlycursors">wxDb::FwdOnlyCursors</A> for wxWidgets
+versions prior to 2.4.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbctor">wxDb constructor</A>, <A HREF="wx_wxdb.html#wxdbfunctions">wxDbGetConnection</A><P>
+
+<HR>
+<A NAME="wxdbisopen"></A>
+<H3>wxDb::IsOpen</H3>
+<P>
+<B>bool</B> <B>IsOpen</B>()<P>
+Indicates whether the database connection to the datasource is currently
+opened.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function may indicate that the database connection is open, even if
+the call to <A HREF="wx_wxdb.html#wxdbopen">wxDb::Open</A> may have failed to fully
+initialize the connection correctly.  The connection to the database
+<I>is</I> open and can be used via the direct SQL commands, if this
+function returns true.  Other functions which depend on the
+<A HREF="wx_wxdb.html#wxdbopen">wxDb::Open</A> to have completed correctly may not function
+as expected.  The return result from <A HREF="wx_wxdb.html#wxdbopen">wxDb::Open</A> is the
+only way to know if complete initialization of this wxDb connection was
+successful or not.  See <A HREF="wx_wxdb.html#wxdbopen">wxDb::Open</A> for more details on
+partial failures to open a connection instance.<P>
+
+<HR>
+<A NAME="wxdblogerror"></A>
+<H3>wxDb::LogError</H3>
+<P>
+<B>void</B> <B>LogError</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>errMsg</I> <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>SQLState=""</I>)<P>
+<I>errMsg</I><UL><UL>
+Free-form text to display describing the error/text to be logged.</UL></UL>
+
+<I>SQLState</I><UL><UL>
+<I>OPTIONAL.</I>  Native SQL state error.  Default is 0.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Calling this function will enter a log message in the error list maintained
+for the database connection.  This log message is free form and can be
+anything the programmer wants to enter in the error list.<P>
+If SQL logging is turned on, the call to this function will also log the
+text into the SQL log file.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbwritesqllog">wxDb::WriteSqlLog</A><P>
+
+<HR>
+<A NAME="wxdbmodifycolumn"></A>
+<H3>wxDb::ModifyColumn</H3>
+<P>
+<B>void</B> <B>ModifyColumn</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>tableName</I> <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>ColumnName</I>
+<B>int </B><I>dataType</I> <B>ULONG </B><I>columnLength=0</I> <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>optionalParam=""</I>)<P>
+Used to change certain properties of a column such as the length, or whether a column
+allows NULLs or not.<P>
+<I>tableName</I><UL><UL>
+Name of the table that the column to be modified is in.</UL></UL>
+
+<I>columnName</I><UL><UL>
+Name of the column to be modified.  NOTE: Name of column cannot
+be changed with this function.</UL></UL>
+
+<I>dataType</I><UL><UL>
+Any one of DB_DATA_TYPE_VARCHAR, DB_DATA_TYPE_INTEGER,
+DB_DATA_TYPE_FLOAT, DB_DATA_TYPE_DATE.</UL></UL>
+
+<I>columnLength</I><UL><UL>
+New size of the column.  Valid only for DB_DATA_TYPE_VARCHAR
+dataType fields.  Default is 0.</UL></UL>
+
+<I>optionalParam</I><UL><UL>
+Default is "".</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Cannot be used to modify the precision of a numeric column, therefore 'columnLength'
+is ignored unless the dataType is DB_DATA_TYPE_VARCHAR.<P>
+Some datasources do not allow certain properties of a column to be changed if any rows
+currently have data stored in that column.  Those datasources that do allow columns
+to be changed with data in the rows many handle truncation and/or expansion in
+different ways.  Please refer to the reference material for the datasource being
+used for behavioral descriptions.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    ok = pDb-&gt;ModifyColumn("CONTACTS", "ADDRESS2",
+                            DB_, colDefs[j].SzDataObj,
+                            wxT("NOT NULL"));
+</PRE>
+
+
+<HR>
+<A NAME="wxdbopen"></A>
+<H3>wxDb::Open</H3>
+<P>
+<B>bool</B> <B>Open</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>Dsn</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>Uid</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>AuthStr</I>, <B>bool </B><I>failOnDataTypeUnsupported</I>)<P>
+<B>bool</B> <B>Open</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>inConnectStr</I>, 
+<B>bool </B><I>failOnDataTypeUnsupported</I>)<P>
+<B>bool</B> <B>Open</B>(<B><A HREF="wx_wxdbconnectinf.html#wxdbconnectinf">wxDbConnectInf</A> *</B></B><I>dbConnectInf</I>, 
+<B>bool </B><I>failOnDataTypeUnsupported</I>)<P>
+<B>bool</B> <B>Open</B>(<B><A HREF="wx_wxdb.html#wxdb">wxDb</A> *</B></B><I>copyDb</I>)<P>
+Opens a connection to the datasource, sets certain behaviors of the datasource
+to confirm to the accepted behaviors (e.g. cursor position maintained on
+commits), and queries the datasource for its representations of the basic
+datatypes to determine the form in which the data going to/from columns in
+the data tables are to be handled.<P>
+The second form of this function, which accepts a "wxDb *" as a parameter,
+can be used to avoid the overhead (execution time, database load, network
+traffic) which are needed to determine the data types and representations
+of data that are necessary for cross-datasource support by these classes.<P>
+Normally the first form of the wxDb::Open() function will open the connection
+and then send a series of queries to the datasource asking it for its
+representation of data types, and all the features it supports.  If one
+connection to the datasource has already been made previously, the information
+gathered when that connection was created can just be copied to any new
+connections to the same datasource by passing a pointer to the first
+connection in as a parameter to the wxDb::Open() function.  Note that this
+new connection created from the first connections information will use the
+same Dsn/Uid/AuthStr as the first connection used.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>Dsn</I><UL><UL>
+datasource name.  The name of the ODBC datasource as
+assigned when the datasource is initially set up through the ODBC data
+source manager.</UL></UL>
+
+<I>Uid</I><UL><UL>
+User ID.  The name (ID) of the user you wish to connect as
+to the datasource.  The user name (ID) determines what objects you
+have access to in the datasource and what datasource privileges you have.
+Privileges include being able to create new objects, update objects, delete
+objects and so on.  Users and privileges are normally administered by the
+database administrator.</UL></UL>
+
+<I>AuthStr</I><UL><UL>
+The password associated with the Uid.</UL></UL>
+
+<I>failOnDataTypeUnsupporte</I><UL><UL>
+As part of connecting to a database, the 
+wxDb::Open() function will query the database to find out the native types 
+that it supports.  With some databases, some data types may not be supported,
+or not sufficiently supported, for use with the wxODBC classes.  Normally
+a program should fail in this case, so as not to try to use a data type
+that is not supported.  This parameter allows the programmer to override the
+failure if they wish and continue on using the connection.</UL></UL>
+
+<I>dbConnectInf</I><UL><UL>
+Contains a DSN, Uid, Password, or a connection string 
+to be used in opening a new connection to the database.  If a connection
+string is present, then the connection string will be used.  If there is no 
+connection string present, then the DSN, Uid, and Password are used.</UL></UL>
+
+<I>inConnectStr</I><UL><UL>
+A valid ODBC connection string used to connect to a 
+database</UL></UL>
+
+<I>copyDb</I><UL><UL>
+Already completely configured and opened datasource 
+connection from which all Dsn, Uid, AuthStr, connection string, and data 
+typing information is to be copied from for use by this datasource 
+connection.  If 'copyDb' used a connection string to create its connection 
+originally, then the connection being made by this call to wxDb::Open() will 
+use that same connection string.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+After a wxDb instance is created, it must then be opened.  When opening a
+datasource, there must be three pieces of information passed.  The data
+source name, user name (ID) and the password for the user.  No database
+activity on the datasource can be performed until the connection is opened.
+This is normally done at program startup and the datasource remains
+open for the duration of the program/module run.<P>
+It is possible to have connections to multiple datasources open at the same
+time to support distributed database connections by having separate instances
+of wxDb objects that use either the same or different Dsn/Uid/AuthStr settings.<P>
+If this function returns a value of false, it does not necessarily mean that
+the connection to the datasource was not opened.  It may mean that some
+portion of the initialization of the connection failed (such as a datatype not
+being able to be determined how the datasource represents it).  To determine
+if the connection to the database failed, use the <A HREF="wx_wxdb.html#wxdbisopen">wxDb::IsOpen</A>
+function after receiving a false result back from this function to determine if
+the connection was opened or not.  If this function returns false, but <A HREF="wx_wxdb.html#wxdbisopen">wxDb::IsOpen</A>
+returns true, then direct SQL commands may be passed to the database
+connection and can be successfully executed, but use of the datatypes (such as
+by a wxDbTable instance) that are normally determined during open will not be
+possible.<P>
+<HR>
+The <I>Dsn</I>, <I>Uid</I>, and <I>AuthStr</I> string pointers that are passed in
+are copied.  NOT the strings themselves, only the pointers.  The calling routine
+must maintain the memory for these three strings for the life of the wxDb instance.<HR><P>
+<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+   wxDb sampleDB(DbConnectInf.GetHenv());
+   if (!sampleDB.Open("Oracle 7.1 HP/UX", "gtasker", "myPassword"))
+   {
+      if (sampleDb.IsOpen())
+      {
+        // Connection is open, but the initialization of
+        // datatypes and parameter settings failed
+      }
+      else
+      {
+        // Error opening datasource
+      }
+   }
+</PRE>
+
+<HR>
+<A NAME="wxdbrollbacktrans"></A>
+<H3>wxDb::RollbackTrans</H3>
+<P>
+<B>bool</B> <B>RollbackTrans</B>()<P>
+Function to "undo" changes made to the database.  After an insert/update/delete, the operation may be "undone" by issuing this command any time before a <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A> is called on the database connection.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Transactions begin implicitly as soon as you make a change to the database.  The
+transaction continues until either a commit or rollback is executed.  Calling
+wxDb::RollbackTrans() will result in ALL changes done using this database
+connection that have not already been committed to be "undone" back to the last
+commit/rollback that was successfully executed.<P>
+<HR>
+Calling this member function rolls back ALL open (uncommitted)
+transactions on this ODBC connection, including all wxDbTable instances that
+use this connection.<HR><P>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A> for a special note on cursors<P>
+
+<HR>
+<A NAME="wxdbsetdebugerrormessages"></A>
+<H3>wxDb::SetDebugErrorMessages</H3>
+<P>
+<B>void</B> <B>SetDebugErrorMessages</B>(<B>bool </B><I>state</I>)<P>
+<I>state</I><UL><UL>
+Either true (debug messages are logged) or false (debug
+messages are not logged).</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Turns on/off debug error messages from the ODBC class library.  When
+this function is passed true, errors are reported to the user/logged automatically
+in a text or pop-up dialog when an ODBC error occurs.  When passed false,
+errors are silently handled.<P>
+When compiled in release mode (FINAL=1), this setting has no affect.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbctor">wxDb constructor</A><P>
+
+<HR>
+<A NAME="wxdbsetsqllogging"></A>
+<H3>wxDb::SetSqlLogging</H3>
+<P>
+<B>bool</B> <B>SetSqlLogging</B>(<B>wxDbSqlLogState</B><I> state</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>filename = SQL_LOG_FILENAME</I>, <B>bool </B><I> append = false</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>state</I><UL><UL>
+Either sqlLogOFF or sqlLogON (see <A HREF="wx_wxdbcolfor.html#wxdbcolfor">enum wxDbSqlLogState</A>). Turns logging of SQL commands sent to the datasource OFF or ON.</UL></UL>
+
+<I>filename</I><UL><UL>
+<I>OPTIONAL</I>.  Name of the file to which the log text is to be written.  Default is SQL_LOG_FILENAME.</UL></UL>
+
+<I>append</I><UL><UL>
+<I>OPTIONAL</I>. Whether the file is appended to or overwritten.  Default is false.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+When called with <I>sqlLogON</I>, all commands sent to the datasource engine are logged to the file specified by <I>filename</I>.  Logging is done by embedded <A HREF="wx_wxdb.html#wxdbwritesqllog">wxDb::WriteSqlLog</A> calls in the database member functions, or may be manually logged by adding calls to <A HREF="wx_wxdb.html#wxdbwritesqllog">wxDb::WriteSqlLog</A> in your own source code.<P>
+When called with <I>sqlLogOFF</I>, the logging file is closed, and any calls to <A HREF="wx_wxdb.html#wxdbwritesqllog">wxDb::WriteSqlLog</A> are ignored.<P>
+
+<HR>
+<A NAME="wxdbsqlcolumnname"></A>
+<H3>wxDb::SQLColumnName</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>SQLColumnName</B>(<B>const wxChar *</B><I> colName</I>)<P>
+Returns the column name in a form ready for use in SQL statements.
+In most cases, the column name is returned verbatim.  But some databases
+(e.g. MS Access, SQL Server, MSDE) allow for spaces in column names, which
+must be specially quoted.  For example, if the datasource allows spaces
+in the column name, the returned string will have the correct enclosing
+marks around the name to allow it to be properly included in a SQL statement
+for the DBMS that is currently connected to with this connection.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>colName</I><UL><UL>
+Native name of the column in the table that is to be
+evaluated to determine if any special quoting marks needed to be added to it
+before including the column name in a SQL statement</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbsqltablename">wxDb::SQLTableName</A><P>
+
+<HR>
+<A NAME="wxdbsqltablename"></A>
+<H3>wxDb::SQLTableName</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>SQLTableName</B>(<B>const wxChar *</B><I> tableName</I>)<P>
+Returns the table name in a form ready for use in SQL statements.
+In most cases, the table name is returned verbatim.  But some databases
+(e.g. MS Access, SQL Server, MSDE) allow for spaces in table names, which
+must be specially quoted.  For example, if the datasource allows spaces
+in the table name, the returned string will have the correct enclosing
+marks around the name to allow it to be properly included in a SQL statement
+for the data source that is currently connected to with this connection.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>tableName</I><UL><UL>
+Native name of the table that is to be evaluated to
+determine if any special quoting marks needed to be added to it
+before including the table name in a SQL statement</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbsqlcolumnname">wxDb::SQLColumnName</A><P>
+
+<HR>
+<A NAME="wxdbtableexists"></A>
+<H3>wxDb::TableExists</H3>
+<P>
+<B>bool</B> <B>TableExists</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>tableName</I>, <B>const wxChar *</B><I>userID=NULL</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>path=""</I>)<P>
+Checks the ODBC datasource for the existence of a table.  If a <I>userID</I>
+is specified, then the table must be accessible by that user (user must have
+at least minimal privileges to the table).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>tableName</I><UL><UL>
+Name of the table to check for the existence of.</UL></UL>
+
+<I>userID</I><UL><UL>
+Owner of the table (also referred to as schema).  Specify a userID when the datasource you are connected
+to allows multiple unique tables with the same name to be owned by different users.  <I>userID</I>
+is evaluated as follows:</UL></UL>
+<P>
+<PRE>
+         userID == NULL  ... UserID is ignored (DEFAULT)
+         userID == ""    ... UserID set equal to 'this-&gt;uid'
+         userID != ""    ... UserID set equal to 'userID'
+</PRE>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+<I>tableName</I> may refer to a table, view, alias or synonym.<P>
+This function does not indicate whether or not the user has privileges to query or perform other functions on the table.  Use the <A HREF="wx_wxdb.html#wxdbtableprivileges">wxDb::TablePrivileges</A> to determine if the user has sufficient privileges or not.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbtableprivileges">wxDb::TablePrivileges</A><P>
+
+<HR>
+<A NAME="wxdbtableprivileges"></A>
+<H3>wxDb::TablePrivileges</H3>
+<P>
+<B>bool</B> <B>TablePrivileges</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>tableName</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>priv</I>,
+<B>const wxChar *</B><I>userID=NULL</I>, <B>const wxChar *</B><I>schema=NULL</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>path=""</I>)<P>
+Checks the ODBC datasource for the existence of a table.  If a <I>userID</I>
+is specified, then the table must be accessible by that user (user must have
+at least minimal privileges to the table).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>tableName</I><UL><UL>
+Name of the table on which to check privileges.
+<I>tableName</I> may refer to a table, view, alias or synonym.</UL></UL>
+
+<I>priv</I><UL><UL>
+The table privilege being evaluated. May be one of the
+following (or a datasource specific privilege):</UL></UL>
+<P>
+<PRE>
+    SELECT      : The connected user is permitted to retrieve data for
+                  one or more columns of the table.
+
+    INSERT      : The connected user is permitted to insert new rows
+                  containing data for one or more columns into the
+                  table.
+
+    UPDATE      : The connected user is permitted to update the data in
+                  one or more columns of the table.
+
+    DELETE      : The connected user is permitted to delete rows of
+                  data from the table.
+
+    REFERENCES  : Is the connected user permitted to refer to one or
+                  more columns of the table within a constraint (for
+                  example, a unique, referential, or table check
+                  constraint).
+</PRE>
+<I>userID</I><UL><UL>
+<I>OPTIONAL.</I>  User for which to determine if the privilege
+specified to be checked is granted or not.  Default is "".
+<I>userID</I> is evaluated as follows:</UL></UL>
+<P>
+<PRE>
+         userID == NULL  ... NOT ALLOWED!
+         userID == ""    ... UserID set equal to 'this-&gt;uid'
+         userID != ""    ... UserID set equal to 'userID'
+</PRE>
+<I>schema</I><UL><UL>
+<I>OPTIONAL.</I>  Owner of the table.  Specify a userID when the datasource
+you are connected to allows multiple unique tables with the same name to be
+owned by different users.  Specifying the table owner makes determination of the
+users privileges MUCH faster.  Default is NULL.  <I>userID</I> is
+evaluated as follows:</UL></UL>
+<P>
+<PRE>
+         schema == NULL  ... Any owner (DEFAULT)
+         schema == ""    ... Owned by 'this-&gt;uid'
+         schema != ""    ... Owned by userID specified in 'schema'
+</PRE>
+<I>path</I><UL><UL>
+<I>OPTIONAL.</I>  Path to the table.  Default is "".
+Currently unused.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The scope of privilege allowed to the connected user by a given table
+privilege is datasource dependent.<P>
+For example, the privilege UPDATE might allow the connected user to update
+all columns in a table on one datasource, but only those columns for
+which the grantor (the user that granted the connected user) has the UPDATE
+privilege on another datasource.<P>
+Looking up a user's privileges to a table can be time consuming depending on the
+datasource and ODBC driver.  This time can be minimized by passing a <I>schema</I>
+as a parameter.  With some datasources/drivers, the difference can be several
+seconds of time difference.<P>
+
+
+<HR>
+<A NAME="wxdbtranslatesqlstate"></A>
+<H3>wxDb::TranslateSqlState</H3>
+<P>
+<B>int </B> <B>TranslateSqlState</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>SQLState</I>)<P>
+Converts an ODBC sqlstate to an internal error code.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>SQLState</I><UL><UL>
+State to be converted.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns the internal class DB_ERR code.  See <A HREF="wx_wxdb.html#wxdb">wxDb::DB_STATUS</A> definition.<P>
+
+<HR>
+<A NAME="wxdbwritesqllog"></A>
+<H3>wxDb::WriteSqlLog</H3>
+<P>
+<B>bool</B> <B>WriteSqlLog</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>logMsg</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>logMsg</I><UL><UL>
+Free form string to be written to the log file.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Very useful debugging tool that may be turned on/off during run time (see
+(see <A HREF="wx_wxdb.html#wxdbsetsqllogging">wxDb::SetSqlLogging</A> for details on
+turning logging on/off).  The passed in string <I>logMsg</I> will be written to
+a log file if SQL logging is turned on.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+If SQL logging is off when a call to WriteSqlLog() is made, or there is a
+failure to write the log message to the log file, the function returns
+false without performing the requested log, otherwise true is returned.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbsetsqllogging">wxDb::SetSqlLogging</A><P>
+
+</FONT></BODY></HTML>

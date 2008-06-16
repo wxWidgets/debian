@@ -1,0 +1,45 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStringOutputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstringoutputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstringinputstream.html#wxstringinputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstringtokenizer.html#wxstringtokenizer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStringOutputStream</H2>
+<P>
+This class implements an output stream which writes data either to a
+user-provided or internally allocated string. Note that currently this stream
+does not support seeking but can tell its current position.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/sstream.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxstringoutputstreamctor">wxStringOutputStream::wxStringOutputStream</A><BR>
+<A HREF="#wxstringoutputstreamgetstring">wxStringOutputStream::GetString</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstringoutputstreamctor"></A>
+<H3>wxStringOutputStream::wxStringOutputStream</H3>
+<P>
+<B></B> <B>wxStringOutputStream</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B></B><I> *str = <TT>NULL</TT></I>)<P>
+If the provided pointer is non-<TT>NULL</TT>, data will be written to it.
+Otherwise, an internal string is used for the data written to this stream, use 
+<A HREF="wx_wxstringoutputstream.html#wxstringoutputstreamgetstring">GetString()</A> to get access to it.<P>
+If <I>str</I> is used, data written to the stream is appended to the current
+contents of it, i.e. the string is not cleared here. However if it is not
+empty, the positions returned by <A HREF="wx_wxoutputstream.html#wxoutputstreamtello">TellO</A> will be
+offset by the initial string length, i.e. initial stream position will be the
+initial length of the string and not 0.<P>
+
+
+<HR>
+<A NAME="wxstringoutputstreamgetstring"></A>
+<H3>wxStringOutputStream::GetString</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetString</B>() <B>const</B><P>
+Returns the string containing all the data written to the stream so far.<P>
+
+</FONT></BODY></HTML>

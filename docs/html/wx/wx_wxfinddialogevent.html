@@ -1,0 +1,119 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFindDialogEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfinddialogevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfilteroutputstream.html#wxfilteroutputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfindreplacedata.html#wxfindreplacedata"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFindDialogEvent</H2>
+<P>
+wxFindReplaceDialog events<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/fdrepdlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a command event from 
+<A HREF="wx_wxfindreplacedialog.html#wxfindreplacedialog">wxFindReplaceDialog</A>, use these event handler
+macros to direct input to member functions that take a wxFindDialogEvent
+argument. The <I>id</I> parameter is the identifier of the find dialog and you
+may usually specify -1 for it unless you plan to have several find dialogs
+sending events to the same owner window simultaneously.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_FIND(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Find button was pressed in the dialog.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_FIND_NEXT(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Find next button was pressed in the dialog.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_FIND_REPLACE(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Replace button was pressed in the dialog.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_FIND_REPLACE_ALL(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Replace all button was pressed in the dialog.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_FIND_CLOSE(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The dialog is being destroyed,
+any pointers to it cannot be used any longer.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfinddialogeventwxfinddialogevent">wxFindDialogEvent::wxFindDialogEvent</A><BR>
+<A HREF="#wxfinddialogeventgetflags">wxFindDialogEvent::GetFlags</A><BR>
+<A HREF="#wxfinddialogeventgetfindstring">wxFindDialogEvent::GetFindString</A><BR>
+<A HREF="#wxfinddialogeventgetreplacestring">wxFindDialogEvent::GetReplaceString</A><BR>
+<A HREF="#wxfinddialogeventgetdialog">wxFindDialogEvent::GetDialog</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfinddialogeventwxfinddialogevent"></A>
+<H3>wxFindDialogEvent::wxFindDialogEvent</H3>
+<P>
+<B></B> <B>wxFindDialogEvent</B>(<B>wxEventType </B><I>commandType = wxEVT_NULL</I>, <B>int </B><I>id = 0</I>)<P>
+Constuctor used by wxWidgets only.<P>
+
+<HR>
+<A NAME="wxfinddialogeventgetflags"></A>
+<H3>wxFindDialogEvent::GetFlags</H3>
+<P>
+<B>int</B> <B>GetFlags</B>() <B>const</B><P>
+Get the currently selected flags: this is the combination of <TT>wxFR_DOWN</TT>,
+<TT>wxFR_WHOLEWORD</TT> and <TT>wxFR_MATCHCASE</TT> flags.<P>
+
+<HR>
+<A NAME="wxfinddialogeventgetfindstring"></A>
+<H3>wxFindDialogEvent::GetFindString</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFindString</B>() <B>const</B><P>
+Return the string to find (never empty).<P>
+
+<HR>
+<A NAME="wxfinddialogeventgetreplacestring"></A>
+<H3>wxFindDialogEvent::GetReplaceString</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetReplaceString</B>() <B>const</B><P>
+Return the string to replace the search string with (only for replace and
+replace all events).<P>
+
+<HR>
+<A NAME="wxfinddialogeventgetdialog"></A>
+<H3>wxFindDialogEvent::GetDialog</H3>
+<P>
+<B><A HREF="wx_wxfindreplacedialog.html#wxfindreplacedialog">wxFindReplaceDialog</A>*</B> </B> <B>GetDialog</B>() <B>const</B><P>
+Return the pointer to the dialog which generated this event.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,1885 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDbTable</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdbtable"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdbinf.html#wxdbinf"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdbtableinf.html#wxdbtableinf"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDbTable</H2>
+<P>
+A wxDbTable instance provides re-usable access to rows of data in
+a table contained within the associated ODBC datasource<P>
+See the <A HREF="wx_odbcoverview.html#odbcoverview">database classes overview</A> for
+an introduction to using the ODBC classes.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dbtable.h&gt;<BR>
+
+&lt;wx/db.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B>
+<B><FONT COLOR="#FF0000">Helper classes and data structures</FONT></B><P>
+The following classes and structs are defined in dbtable.cpp/.h for use
+with the wxDbTable class.<P>
+<UL>
+
+<LI> <A HREF="wx_wxdbcoldef.html#wxdbcoldef">wxDbColDef</A>
+<LI> <A HREF="wx_wxdbcoldataptr.html#wxdbcoldataptr">wxDbColDataPtr</A>
+<LI> <A HREF="wx_wxdbidxdef.html#wxdbidxdef">wxDbIdxDef</A>
+</UL>
+<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+<PRE>
+    wxDB_DEFAULT_CURSOR  Primary cursor normally used for cursor based
+                         operations.
+
+    wxDB_QUERY_ONLY      Used to indicate whether a table that is opened
+                         is for query only, or if insert/update/deletes
+                         will be performed on the table.  Less overhead
+                         (cursors and memory) are allocated for query
+                         only tables, plus read access times are faster
+                         with some datasources.
+
+    wxDB_ROWID_LEN       [Oracle only] - Used when CanUpdateByRowID()
+                         is true.  Optimizes updates so they are faster
+                         by updating on the Oracle-specific ROWID column
+                         rather than some other index.
+
+
+    wxDB_DISABLE_VIEW    Use to indicate when a database view should not
+                         be if a table is normally set up to use a view.
+                         [Currently unsupported.]
+
+</PRE>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdbtableconstr">wxDbTable::wxDbTable</A><BR>
+<A HREF="#wxdbtabledestr">wxDbTable::wxDbTable</A><BR>
+<A HREF="#wxdbtablebuilddeletestmt">wxDbTable::BuildDeleteStmt</A><BR>
+<A HREF="#wxdbtablebuildselectstmt">wxDbTable::BuildSelectStmt</A><BR>
+<A HREF="#wxdbtablebuildupdatestmt">wxDbTable::BuildUpdateStmt</A><BR>
+<A HREF="#wxdbtablebuildwhereclause">wxDbTable::BuildWhereClause</A><BR>
+<A HREF="#wxdbtablecanselectforupdate">wxDbTable::CanSelectForUpdate</A><BR>
+<A HREF="#wxdbtablecanupdatebyrowid">wxDbTable::CanUpdateByROWID</A><BR>
+<A HREF="#wxdbtableclearmembervar">wxDbTable::ClearMemberVar</A><BR>
+<A HREF="#wxdbtableclearmembervars">wxDbTable::ClearMemberVars</A><BR>
+<A HREF="#wxdbtableclosecursor">wxDbTable::CloseCursor</A><BR>
+<A HREF="#wxdbtablecount">wxDbTable::Count</A><BR>
+<A HREF="#wxdbtablecreateindex">wxDbTable::CreateIndex</A><BR>
+<A HREF="#wxdbtablecreatetable">wxDbTable::CreateTable</A><BR>
+<A HREF="#wxdbtabledbstatus">wxDbTable::DB_STATUS</A><BR>
+<A HREF="#wxdbtabledelete">wxDbTable::Delete</A><BR>
+<A HREF="#wxdbtabledeletecursor">wxDbTable::DeleteCursor</A><BR>
+<A HREF="#wxdbtabledeletematching">wxDbTable::DeleteMatching</A><BR>
+<A HREF="#wxdbtabledeletewhere">wxDbTable::DeleteWhere</A><BR>
+<A HREF="#wxdbtabledropindex">wxDbTable::DropIndex</A><BR>
+<A HREF="#wxdbtabledroptable">wxDbTable::DropTable</A><BR>
+<A HREF="#wxdbtablefrom">wxDbTable::From</A><BR>
+<A HREF="#wxdbtablegetcoldefs">wxDbTable::GetColDefs</A><BR>
+<A HREF="#wxdbtablegetcursor">wxDbTable::GetCursor</A><BR>
+<A HREF="#wxdbtablegetdb">wxDbTable::GetDb</A><BR>
+<A HREF="#wxdbtablegetfirst">wxDbTable::GetFirst</A><BR>
+<A HREF="#wxdbtablegetfromclause">wxDbTable::GetFromClause</A><BR>
+<A HREF="#wxdbtablegetlast">wxDbTable::GetLast</A><BR>
+<A HREF="#wxdbtablegetnewcursor">wxDbTable::GetNewCursor</A><BR>
+<A HREF="#wxdbtablegetnext">wxDbTable::GetNext</A><BR>
+<A HREF="#wxdbtablegetnumberofcolumns">wxDbTable::GetNumberOfColumns</A><BR>
+<A HREF="#wxdbtablegetorderbyclause">wxDbTable::GetOrderByClause</A><BR>
+<A HREF="#wxdbtablegetprev">wxDbTable::GetPrev</A><BR>
+<A HREF="#wxdbtablegetquerytablename">wxDbTable::GetQueryTableName</A><BR>
+<A HREF="#wxdbtablegetrownum">wxDbTable::GetRowNum</A><BR>
+<A HREF="#wxdbtablegettablename">wxDbTable::GetTableName</A><BR>
+<A HREF="#wxdbtablegettablepath">wxDbTable::GetTablePath</A><BR>
+<A HREF="#wxdbtablegetwhereclause">wxDbTable::GetWhereClause</A><BR>
+<A HREF="#wxdbtableinsert">wxDbTable::Insert</A><BR>
+<A HREF="#wxdbtableiscolnull">wxDbTable::IsColNull</A><BR>
+<A HREF="#wxdbtableiscursorclosedoncommit">wxDbTable::IsCursorClosedOnCommit</A><BR>
+<A HREF="#wxdbtableisqueryonly">wxDbTable::IsQueryOnly</A><BR>
+<A HREF="#wxdbtableopen">wxDbTable::Open</A><BR>
+<A HREF="#wxdbtableorderby">wxDbTable::OrderBy</A><BR>
+<A HREF="#wxdbtablequery">wxDbTable::Query</A><BR>
+<A HREF="#wxdbtablequerybysqlstmt">wxDbTable::QueryBySqlStmt</A><BR>
+<A HREF="#wxdbtablequerymatching">wxDbTable::QueryMatching</A><BR>
+<A HREF="#wxdbtablequeryonkeyfields">wxDbTable::QueryOnKeyFields</A><BR>
+<A HREF="#wxdbtablerefresh">wxDbTable::Refresh</A><BR>
+<A HREF="#wxdbtablesetcoldefs">wxDbTable::SetColDefs</A><BR>
+<A HREF="#wxdbtablesetcursor">wxDbTable::SetCursor</A><BR>
+<A HREF="#wxdbtablesetfromclause">wxDbTable::SetFromClause</A><BR>
+<A HREF="#wxdbtablesetcolnull">wxDbTable::SetColNull</A><BR>
+<A HREF="#wxdbtablesetorderbyclause">wxDbTable::SetOrderByClause</A><BR>
+<A HREF="#wxdbtablesetquerytimeout">wxDbTable::SetQueryTimeout</A><BR>
+<A HREF="#wxdbtablesetwhereclause">wxDbTable::SetWhereClause</A><BR>
+<A HREF="#wxdbtableupdate">wxDbTable::Update</A><BR>
+<A HREF="#wxdbtableupdatewhere">wxDbTable::UpdateWhere</A><BR>
+<A HREF="#wxdbtablewhere">wxDbTable::Where</A><BR>
+<A HREF="#wxdbtableplusplus">wxDbTable::operator ++</A><BR>
+<A HREF="#wxdbtableminusminus">wxDbTable::operator --</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdbtableconstr"></A>
+<H3>wxDbTable::wxDbTable</H3>
+<P>
+<B></B> <B>wxDbTable</B>(<B><A HREF="wx_wxdb.html#wxdb">wxDb</A> *</B></B><I>pwxDb</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>tblName</I>,
+  <B>const UWORD </B><I>numColumns</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>qryTblName = ""</I>,
+  <B>bool </B><I>qryOnly = !wxDB_QUERY_ONLY</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>tblPath = ""</I>)<P>
+Default constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pwxDb</I><UL><UL>
+Pointer to the wxDb instance to be used by this wxDbTable
+instance.</UL></UL>
+
+<I>tblName</I><UL><UL>
+The name of the table in the RDBMS.</UL></UL>
+
+<I>numColumns</I><UL><UL>
+The number of columns in the table.  (Do NOT include the ROWID
+column in the count if using Oracle).</UL></UL>
+
+<I>qryTblName</I><UL><UL>
+<I>OPTIONAL</I>.  The name of the table or view to base
+your queries on.  This argument allows you to specify a table/view other than
+the base table for this object to base your queries on.  This allows you to
+query on a view for example, but all of the INSERT, UPDATE and DELETES will
+still be performed on the base table for this wxDbTable object.  Basing your
+queries on a view can provide a substantial performance increase in cases where
+your queries involve many tables with multiple joins.  Default is "".</UL></UL>
+
+<I>qryOnly</I><UL><UL>
+<I>OPTIONAL</I>.  Indicates whether the table will be
+accessible for query purposes only, or should the table create the necessary
+cursors to be able to insert, update, and delete data from the table.
+Default is !wxDB_QUERY_ONLY.</UL></UL>
+
+<I>tblPath</I><UL><UL>
+<I>OPTIONAL</I>.  Some datasources (such as dBase)
+require a path to where the table is stored on the system.  Default is "".</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdbtabledestr"></A>
+<H3>wxDbTable::wxDbTable</H3>
+<P>
+<B>virtual</B> <B>~wxDbTable</B>()<P>
+Virtual default destructor.<P>
+
+<HR>
+<A NAME="wxdbtablebuilddeletestmt"></A>
+<H3>wxDbTable::BuildDeleteStmt</H3>
+<P>
+<B>void</B> <B>BuildDeleteStmt</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pSqlStmt</I>,
+<B>int </B><I>typeOfDel</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pWhereClause=""</I>)<P>
+Constructs the full SQL statement that can be used to delete all rows matching
+the criteria in the pWhereClause.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pSqlStmt</I><UL><UL>
+Pointer to buffer for the SQL statement retrieved.  To be
+sure you have adequate space allocated for the SQL statement, allocate
+DB_MAX_STATEMENT_LEN bytes.</UL></UL>
+
+<I>typeOfDel</I><UL><UL>
+The type of delete statement being performed.  Can be one
+of three values: DB_DEL_KEYFIELDS, DB_DEL_WHERE or DB_DEL_MATCHING</UL></UL>
+
+<I>pWhereClause</I><UL><UL>
+<I>OPTIONAL</I>.  If the typeOfDel is DB_DEL_WHERE,
+then you must also pass in a SQL WHERE clause in this argument.  Default
+is "".</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This member function constructs a SQL DELETE statement.  This can be used for
+debugging purposes if you are having problems executing your SQL statement.<P>
+WHERE and FROM clauses specified using <A HREF="wx_wxdbtable.html#wxdbtablesetwhereclause">wxDbTable::SetWhereClause</A>
+and <A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A> are ignored by
+this function.<P>
+
+<HR>
+<A NAME="wxdbtablebuildselectstmt"></A>
+<H3>wxDbTable::BuildSelectStmt</H3>
+<P>
+<B>void</B> <B>BuildSelectStmt</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pSqlStmt</I>,
+<B>int </B><I>typeOfSelect</I>, <B>bool </B><I>distinct</I>)<P>
+Constructs the full SQL statement that can be used to select all rows matching
+the criteria in the pWhereClause.  This function is called internally in the
+wxDbTable class whenever the function <A HREF="wx_wxdbtable.html#wxdbtablequery">wxDbTable::Query</A>
+is called.<P>
+NOTE: Only the columns specified in <A HREF="wx_wxdbtable.html#wxdbtablesetcoldefs">wxDbTable::SetColDefs</A>
+statements are included in the list of columns returned by the SQL statement
+created by a call to this function.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pSqlStmt</I><UL><UL>
+Pointer to storage for the SQL statement retrieved.  To be
+sure you have adequate space allocated for the SQL statement, allocate
+DB_MAX_STATEMENT_LEN bytes.</UL></UL>
+
+<I>typeOfSelect</I><UL><UL>
+The type of select statement being performed.  Can be
+one of four values: DB_SELECT_KEYFIELDS, DB_SELECT_WHERE, DB_SELECT_MATCHING
+or DB_SELECT_STATEMENT.</UL></UL>
+
+<I>distinct</I><UL><UL>
+Whether to select distinct records only.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This member function constructs a SQL SELECT statement.  This can be used for
+debugging purposes if you are having problems executing your SQL statement.<P>
+WHERE and FROM clauses specified using
+<A HREF="wx_wxdbtable.html#wxdbtablesetwhereclause">wxDbTable::SetWhereClause</A>
+and <A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A> are ignored by
+this function.<P>
+
+<HR>
+<A NAME="wxdbtablebuildupdatestmt"></A>
+<H3>wxDbTable::BuildUpdateStmt</H3>
+<P>
+<B>void</B> <B>BuildUpdateStmt</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pSqlStmt</I>, <B>int </B><I>typeOfUpd</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pWhereClause=""</I>)<P>
+Constructs the full SQL statement that can be used to update all rows matching
+the criteria in the pWhereClause.<P>
+If typeOfUpdate is DB_UPD_KEYFIELDS, then the current values in the bound columns
+are used to determine which row(s) in the table are to be updated. The
+exception to this is when a datasource supports ROW IDs (Oracle).  The ROW ID
+column is used for efficiency purposes when available.<P>
+NOTE: Only the columns specified in <A HREF="wx_wxdbtable.html#wxdbtablesetcoldefs">wxDbTable::SetColDefs</A>
+statements are included in the list of columns updated by the SQL statement
+created by a call to this function.  Any column definitions that were defined
+as being non-updateable will be excluded from the SQL UPDATE statement created
+by this function.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pSqlStmt</I><UL><UL>
+Pointer to storage for the SQL statement retrieved.  To be
+sure you have adequate space allocated for the SQL statement, allocate
+DB_MAX_STATEMENT_LEN bytes.</UL></UL>
+
+<I>typeOfUpdate</I><UL><UL>
+The type of update statement being performed.  Can be one
+of two values: DB_UPD_KEYFIELDS or DB_UPD_WHERE.</UL></UL>
+
+<I>pWhereClause</I><UL><UL>
+<I>OPTIONAL</I>.  If the typeOfUpdate is DB_UPD_WHERE,
+then you must also pass in a SQL WHERE clause in this argument. Default is "".</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This member function allows you to see what the SQL UPDATE statement looks like
+that the ODBC class library builds.  This can be used for debugging purposes if
+you are having problems executing your SQL statement.<P>
+WHERE and FROM clauses specified using <A HREF="wx_wxdbtable.html#wxdbtablesetwhereclause">wxDbTable::SetWhereClause</A>
+and <A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A> are ignored by
+this function.<P>
+
+
+<HR>
+<A NAME="wxdbtablebuildwhereclause"></A>
+<H3>wxDbTable::BuildWhereClause</H3>
+
+ 
+<B>void</B> <B>BuildWhereClause</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pWhereClause</I>,
+<B>int </B><I>typeOfWhere</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>qualTableName=""</I>,
+<B>bool </B><I>useLikeComparison=false</I>)<P>
+Constructs the portion of a SQL statement which would follow the word 'WHERE'
+in a SQL statement to be passed to the datasource.  The returned string
+does NOT include the word 'WHERE'.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pWhereClause</I><UL><UL>
+Pointer to storage for the SQL statement retrieved.
+To be sure you have adequate space allocated for the SQL statement, allocate
+DB_MAX_STATEMENT_LEN bytes.</UL></UL>
+
+<I>typeOfWhere</I><UL><UL>
+The type of where clause to generate.  Can be one of
+two values:  DB_WHERE_KEYFIELDS or DB_WHERE_MATCHING.</UL></UL>
+
+<I>qualTableName</I><UL><UL>
+<I>OPTIONAL</I>.  Prepended to all base table
+column names.  For use when a FROM clause has been specified with the
+<A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A>,
+to clarify which table a column name reference belongs to.  Default is "".</UL></UL>
+
+<I>useLikeComparison</I><UL><UL>
+<I>OPTIONAL</I>.  Should the constructed WHERE
+clause utilize the LIKE comparison operator.  If false, then the '='
+operator is used.  Default is false.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This member function allows you to see what the SQL WHERE clause looks like
+that the ODBC class library builds.  This can be used for debugging purposes
+if you are having problems executing your own SQL statements.<P>
+If using 'typeOfWhere' set to DB_WHERE_MATCHING, any bound columns currently
+containing a NULL value are not included in the WHERE clause's list of
+columns to use in the comparison.<P>
+
+
+<HR>
+<A NAME="wxdbtablecanselectforupdate"></A>
+<H3>wxDbTable::CanSelectForUpdate</H3>
+<P>
+<B>bool</B> <B>CanSelectForUpdate</B>()<P>
+Use this function to determine if the datasource supports SELECT ... FOR UPDATE.
+When the keywords "FOR UPDATE" are included as part of your SQL SELECT statement,
+all records <I>retrieved</I> (not just queried, but actually retrieved using
+<A HREF="wx_wxdbtable.html#wxdbtablegetnext">wxDbTable::GetNext</A>, etc) from the result set are
+locked.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Not all datasources support the "FOR UPDATE" clause, so you must use this
+member function to determine if the datasource currently connected to supports
+this behavior or not before trying to select using "FOR UPDATE".<P>
+If the wxDbTable instance was created with the parameter wxDB_QUERY_ONLY, then
+this function will return false.  For all known databases which do not support
+the FOR UPDATE clause, this function will return false also.<P>
+
+<HR>
+<A NAME="wxdbtablecanupdatebyrowid"></A>
+<H3>wxDbTable::CanUpdateByROWID</H3>
+<P>
+<B>bool</B> <B>CanUpdateByROWID</B>()<P>
+CURRENTLY ONLY POSSIBLE IF USING ORACLE.<P>
+--- CURRENTLY DISABLED FOR *ALL* DATASOURCES --- NOV 1 2000 - gt<P>
+Every Oracle table has a hidden column named ROWID.  This is a pointer to the
+physical location of the record in the datasource and allows for very fast
+updates and deletes.  The key is to retrieve this ROWID during your query so
+it is available during an update or delete operation.<P>
+Use of the ROWID feature is always handled by the class library except in the
+case of <A HREF="wx_wxdbtable.html#wxdbtablequerybysqlstmt">wxDbTable::QueryBySqlStmt</A>.  Since
+you are passing in the SQL SELECT statement,
+it is up to you to include the ROWID column in your query.  If you do not,
+the application will still work, but may not be as optimized.  The ROWID is
+always the last column in the column list in your SQL SELECT statement.
+The ROWID is not a column in the normal sense and should not be considered
+part of the column definitions for the wxDbTable object.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The decision to include the ROWID in your SQL SELECT statement must be
+deferred until runtime since it depends on whether you are connected
+to an Oracle datasource or not.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    // Incomplete code sample
+    wxDbTable parts;
+    .....
+    if (parts.CanUpdateByROWID())
+    {
+        // Note that the ROWID column must always be the last column selected
+        sqlStmt = "SELECT PART_NUM, PART_DESC, ROWID" FROM PARTS";
+    }
+    else
+        sqlStmt = "SELECT PART_NUM, PART_DESC FROM PARTS";
+</PRE>
+
+
+<HR>
+<A NAME="wxdbtableclearmembervar"></A>
+<H3>wxDbTable::ClearMemberVar</H3>
+<P>
+<B>void</B> <B>ClearMemberVar</B>(<B>UWORD </B><I>colNumber</I>, <B>bool </B><I>setToNull=false</I>)<P>
+Same as <A HREF="wx_wxdbtable.html#wxdbtableclearmembervars">wxDbTable::ClearMemberVars</A> except
+that this function clears only the specified column of its values, and
+optionally sets the column to be a NULL column.<P>
+<I>colNumber</I><UL><UL>
+Column number that is to be cleared.  This number (between 0
+and (numColumns-1)) is the index of the column definition created using the
+<A HREF="wx_wxdbtable.html#wxdbtablesetcoldefs">wxDbTable::SetColDefs</A> function.</UL></UL>
+
+<I>setToNull</I><UL><UL>
+<I>OPTIONAL</I>.  Indicates whether the column should be
+flagged as being a NULL value stored in the bound memory variable.  If true,
+then any value stored in the bound member variable is cleared.  Default is
+false.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdbtableclearmembervars"></A>
+<H3>wxDbTable::ClearMemberVars</H3>
+<P>
+<B>void</B> <B>ClearMemberVars</B>(<B>bool </B><I>setToNull=false</I>)<P>
+Initializes all bound columns of the wxDbTable instance to zero.  In the case
+of a string, zero is copied to the first byte of the string.<P>
+<I>setToNull</I><UL><UL>
+<I>OPTIONAL</I>.  Indicates whether all columns should be
+flagged as having a NULL value stored in the bound memory variable.  If true,
+then any value stored in the bound member variable is cleared.  Default is
+false.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This is useful before calling functions such as
+<A HREF="wx_wxdbtable.html#wxdbtablequerymatching">wxDbTable::QueryMatching</A> or
+<A HREF="wx_wxdbtable.html#wxdbtabledeletematching">wxDbTable::DeleteMatching</A> since these
+functions build their WHERE clauses from non-zero columns.  To call either
+<A HREF="wx_wxdbtable.html#wxdbtablequerymatching">wxDbTable::QueryMatching</A> or
+<A HREF="wx_wxdbtable.html#wxdbtabledeletematching">wxDbTable::DeleteMatching</A> use this sequence:<P>
+<PRE>
+1)  ClearMemberVars()
+2)  Assign columns values you wish to match on
+3)  Call wxDbTable::QueryMatching() or wxDbTable::DeleteMatching()
+</PRE>
+
+<HR>
+<A NAME="wxdbtableclosecursor"></A>
+<H3>wxDbTable::CloseCursor</H3>
+<P>
+<B>bool</B> <B>CloseCursor</B>(<B>HSTMT</B><I>cursor</I>)<P>
+Closes the specified cursor associated with the wxDbTable object.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>cursor</I><UL><UL>
+The cursor to be closed.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Typically handled internally by the ODBC class library, but may be used by the
+programmer if desired.<P>
+<HR>
+DO NOT CLOSE THE wxDB_DEFAULT_CURSOR!<HR><P>
+<P>
+
+<HR>
+<A NAME="wxdbtablecount"></A>
+<H3>wxDbTable::Count</H3>
+<P>
+<B>ULONG </B> <B>Count</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>args="*"</I>)<P>
+Returns the number of records which would be in the result set using the
+current query parameters specified in the WHERE and FROM clauses.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>args</I><UL><UL>
+<I>OPTIONAL</I>.  This argument allows the use of the
+DISTINCT keyword against a column name to cause the returned count to
+only indicate the number of rows in the result set that have a unique
+value in the specified column.  An example is shown below.  Default is "*",
+meaning a count of the total number of rows matching is returned, regardless
+of uniqueness.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function can be called before or after an actual query to obtain the
+count of records in the result set.  Count() uses its own cursor, so result
+set cursor positioning is not affected by calls to Count().<P>
+WHERE and FROM clauses specified using
+<A HREF="wx_wxdbtable.html#wxdbtablesetwhereclause">wxDbTable::SetWhereClause</A>
+and <A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A> ARE used by
+this function.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    USERS TABLE
+
+    FIRST_NAME      LAST_NAME
+    -----------     ----------
+    John            Doe
+    Richard         Smith
+    Michael         Jones
+    John            Carpenter
+
+    // Incomplete code sample
+    wxDbTable users;
+    .....
+    users.SetWhereClause("");
+
+    // This Count() will return 4, as there are four users listed above
+    // that match the query parameters
+    totalNumberOfUsers = users.Count();
+
+    // This Count() will return 3, as there are only 3 unique first names
+    // in the table above - John, Richard, Michael.
+    totalNumberOfUniqueFirstNames = users.Count("DISTINCT FIRST_NAME");
+</PRE>
+
+<HR>
+<A NAME="wxdbtablecreateindex"></A>
+<H3>wxDbTable::CreateIndex</H3>
+<P>
+<B>bool</B> <B>CreateIndex</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>IndexName</I>, <B>bool </B><I>unique</I>,
+<B>UWORD </B><I>numIndexColumns</I>, <B><A HREF="wx_wxdbidxdef.html#wxdbidxdef">wxDbIdxDef</A> *</B></B><I>pIndexDefs</I>,
+<B>bool </B><I>attemptDrop=true</I>)<P>
+This member function allows you to create secondary (non-primary) indexes on
+your tables.  You first create your table, normally specifying a primary
+index, and then create any secondary indexes on the table.  Indexes in
+relational model are not required.  You do not need indexes to look up records
+in a table or to join two tables together.  In the relational model, indexes,
+if available, provide a quicker means to look up data in a table.  To enjoy
+the performance benefits of indexes, the indexes must be defined on the
+appropriate columns and your SQL code must be written in such a way as to
+take advantage of those indexes.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>IndexName</I><UL><UL>
+Name of the Index.  Name must be unique within the table
+space of the datasource.</UL></UL>
+
+<I>unique</I><UL><UL>
+Indicates if this index is unique.</UL></UL>
+
+<I>numIndexColumns</I><UL><UL>
+Number of columns in the index.</UL></UL>
+
+<I>pIndexDefs</I><UL><UL>
+A pointer to an array <A HREF="wx_wxdbidxdef.html#wxdbidxdef">wxDbIdxDef</A> structures. </UL></UL>
+
+<I>attemptDrop</I><UL><UL>
+<I>OPTIONAL</I>.  Indicates if the function should try
+to execute a <A HREF="wx_wxdbtable.html#wxdbtabledropindex">wxDbTable::DropIndex</A> on the index
+name provided before trying to create the index name.  Default is true.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The first parameter, index name, must be unique and should be given a
+meaningful name.  Common practice is to include the table name as a prefix
+in the index name (e.g. For table PARTS, you might want to call your index
+PARTS_Index1).  This will allow you to easily view all
+of the indexes defined for a given table grouped together alphabetically.<P>
+The second parameter indicates if the index is unique or not.  Uniqueness
+is enforced at the RDBMS level preventing rows which would have duplicate
+indexes from being inserted into the table when violating a unique index's
+uniqueness.<P>
+In the third parameter, specify how many columns are in your index.  This
+number must match the number of columns defined in the 'pIndexDefs' parameter.<P>
+The fourth parameter specifies which columns make up the index using the
+<A HREF="wx_wxdbidxdef.html#wxdbidxdef">wxDbIdxDef</A> structure.  For each column in the index, you must specify two
+things, the column name and the sort order (ascending / descending).  See
+the example below to see how to build and pass in the <A HREF="wx_wxdbidxdef.html#wxdbidxdef">wxDbIdxDef</A> structure.<P>
+The fifth parameter is provided to handle the differences in datasources as
+to whether they will automatically overwrite existing indexes with the same
+name or not.  Some datasources require that the existing index must be dropped
+first, so this is the default behavior.<P>
+Some datasources (MySQL, and possibly others) require columns which are to be
+part of an index to be defined as NOT NULL.  When this function is called, if
+a column is not defined to be NOT NULL, a call to this function will modify
+the column definition to change any columns included in the index to be
+NOT NULL.  In this situation, if a NULL value already exists in one of the
+columns that is being modified, creation of the index will fail.<P>
+PostGres is unable to handle index definitions which specify whether the index
+is ascending or descending, and defaults to the system default when the index
+is created.<P>
+It is not necessary to call <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A>
+after executing this function.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    // Create a secondary index on the PARTS table
+    wxDbIdxDef  IndexDef[2];  // 2 columns make up the index
+
+    wxStrcpy(IndexDef[0].ColName, "PART_DESC");  // Column 1
+    IndexDef[0].Ascending = true;
+
+    wxStrcpy(IndexDef[1].ColName, "SERIAL_NO");  // Column 2
+    IndexDef[1].Ascending = false;
+
+    // Create a name for the index based on the table's name
+    wxString indexName;
+    indexName.Printf("%s_Index1",parts-&gt;GetTableName());
+    parts-&gt;CreateIndex(indexName, true, 2, IndexDef);
+</PRE>
+
+<HR>
+<A NAME="wxdbtablecreatetable"></A>
+<H3>wxDbTable::CreateTable</H3>
+<P>
+<B>bool</B> <B>CreateTable</B>(<B>bool </B><I>attemptDrop=true</I>)<P>
+Creates a table based on the definitions previously defined for this
+wxDbTable instance.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>attemptDrop</I><UL><UL>
+<I>OPTIONAL</I>.  Indicates whether the driver should
+attempt to drop the table before trying to create it.  Some datasources will
+not allow creation of a table if the table already exists in the table space
+being used.  Default is true.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function creates the table and primary index (if any) in the table space
+associated with the connected datasource.  The owner of these objects will
+be the user id that was given when <A HREF="wx_wxdb.html#wxdbopen">wxDb::Open</A> was called.
+The objects will be created in the default schema/table space for that user.<P>
+In your derived wxDbTable object constructor, the columns and primary index
+of the table are described through the <A HREF="wx_wxdbcoldef.html#wxdbcoldef">wxDbColDef</A> structure.
+<A HREF="wx_wxdbtable.html#wxdbtablecreatetable">wxDbTable::CreateTable</A> uses this information
+to create the table and to add the primary index.  See
+<A HREF="wx_wxdbtable.html#wxdbtable">wxDbTable</A> ctor and wxDbColDef description for additional
+information on describing the columns of the table.<P>
+It is not necessary to call <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A>
+after executing this function.<P>
+
+<HR>
+<A NAME="wxdbtabledbstatus"></A>
+<H3>wxDbTable::DB_STATUS</H3>
+<P>
+<B>bool</B> <B>DB_STATUS</B>()<P>
+Accessor function that returns the wxDb private member variable DB_STATUS for
+the database connection used by this instance of wxDbTable.<P>
+
+<HR>
+<A NAME="wxdbtabledelete"></A>
+<H3>wxDbTable::Delete</H3>
+<P>
+<B>bool</B> <B>Delete</B>()<P>
+Deletes the row from the table indicated by the current cursor.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Use <A HREF="wx_wxdbtable.html#wxdbtablegetfirst">wxDbTable::GetFirst</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablegetlast">wxDbTable::GetLast</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablegetnext">wxDbTable::GetNext</A> or
+<A HREF="wx_wxdbtable.html#wxdbtablegetprev">wxDbTable::GetPrev</A> to position the cursor to
+a valid record.  Once positioned on a record, call this function to delete
+the row from the table.<P>
+A <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A> or
+<A HREF="wx_wxdb.html#wxdbrollbacktrans">wxDb::RollbackTrans</A> must be called after use of
+this function to commit or rollback the deletion.<P>
+NOTE: Most datasources have a limited size "rollback" segment.  This means
+that it is only possible to insert/update/delete a finite number of rows
+without performing a <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A> or
+<A HREF="wx_wxdb.html#wxdbrollbacktrans">wxDb::RollbackTrans</A>.  Size of the rollback
+segment varies from database to database, and is user configurable in
+most databases.  Therefore it is usually best to try to perform a commit
+or rollback at relatively small intervals when processing a larger number
+of actions that insert/update/delete rows in a table.<P>
+
+<HR>
+<A NAME="wxdbtabledeletecursor"></A>
+<H3>wxDbTable::DeleteCursor</H3>
+<P>
+<B>bool</B> <B>DeleteCursor</B>(<B>HSTMT *</B><I>hstmtDel</I>)<P>
+Allows a program to delete a cursor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>hstmtDel</I><UL><UL>
+Handle of the cursor to delete.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+For default cursors associated with the instance of wxDbTable, it is not
+necessary to specifically delete the cursors.  This is automatically done
+in the wxDbTable destructor.<P>
+NOTE: If the cursor could not be deleted for some reason, an error is logged
+indicating the reason.  Even if the cursor could not be deleted, the HSTMT
+that is passed in is deleted, and the pointer is set to NULL.<P>
+<HR>
+DO NOT DELETE THE wxDB_DEFAULT_CURSOR!<HR><P>
+<P>
+
+<HR>
+<A NAME="wxdbtabledeletematching"></A>
+<H3>wxDbTable::DeleteMatching</H3>
+<P>
+<B>bool</B> <B>DeleteMatching</B>()<P>
+This member function allows you to delete records from your wxDbTable object
+by specifying the data in the columns to match on.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+To delete all users with a first name of "JOHN", do the following:<P>
+<OL>
+
+<LI> Clear all "columns" using wxDbTable::ClearMemberVars().
+<LI> Set the FIRST_NAME column equal to "JOHN".
+<LI> Call wxDbTable::DeleteMatching().
+</OL>
+<P>
+The WHERE clause is built by the ODBC class library based on all non-NULL
+columns.  This allows deletion of records by matching on any column(s) in
+your wxDbTable instance, without having to write the SQL WHERE clause.<P>
+A <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A> or
+<A HREF="wx_wxdb.html#wxdbrollbacktrans">wxDb::RollbackTrans</A> must be called after use of
+this function to commit or rollback the deletion.<P>
+NOTE: Row(s) should be locked before deleting them to make sure they are
+not already in use.  This can be achieved by calling
+<A HREF="wx_wxdbtable.html#wxdbtablequerymatching">wxDbTable::QueryMatching</A>,
+and then retrieving the records, locking each as you go (assuming FOR UPDATE
+is allowed on the datasource).  After the row(s) have been successfully locked,
+call this function.<P>
+NOTE: Most datasources have a limited "rollback" segment.  This means
+that it is only possible to insert/update/delete a finite number of rows
+without performing a <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A> or
+<A HREF="wx_wxdb.html#wxdbrollbacktrans">wxDb::RollbackTrans</A>.  Size of the rollback
+segment varies from database to database, and is user configurable in
+most databases.  Therefore it is usually best to try to perform a commit
+or rollback at relatively small intervals when processing a larger number
+of actions that insert/update/delete rows in a table.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    // Incomplete code sample to delete all users with a first name
+    // of "JOHN"
+    users.ClearMemberVars();
+    wxStrcpy(users.FirstName,"JOHN");
+    users.DeleteMatching();
+</PRE>
+
+
+<HR>
+<A NAME="wxdbtabledeletewhere"></A>
+<H3>wxDbTable::DeleteWhere</H3>
+<P>
+<B>bool</B> <B>DeleteWhere</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pWhereClause</I>)<P>
+Deletes all rows from the table which match the criteria specified in the
+WHERE clause that is passed in.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pWhereClause</I><UL><UL>
+SQL WHERE clause.  This WHERE clause determines which
+records will be deleted from the table interfaced through the wxDbTable
+instance.  The WHERE clause passed in must be compliant with the SQL 92
+grammar.  Do not include the keyword 'WHERE'
+</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This is the most powerful form of the wxDbTable delete functions.  This
+function gives access to the full power of SQL.  This function can be used
+to delete records by passing a valid SQL WHERE clause.  Sophisticated
+deletions can be performed based on multiple criteria using the full
+functionality of the SQL language.<P>
+A <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A> must be called after use of
+this function to commit the deletions.<P>
+Note: This function is limited to deleting records from the table associated
+with this wxDbTable object only.  Deletions on joined tables is not possible.<P>
+NOTE: Most datasources have a limited size "rollback" segment.  This means
+that it is only possible to insert/update/delete a finite number of rows
+without performing a <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A> or
+<A HREF="wx_wxdb.html#wxdbrollbacktrans">wxDb::RollbackTrans</A>.  Size of the rollback
+segment varies from database to database, and is user configurable in
+most databases.  Therefore it is usually best to try to perform a commit
+or rollback at relatively small intervals when processing a larger number
+of actions that insert/update/delete rows in a table.<P>
+WHERE and FROM clauses specified using <A HREF="wx_wxdbtable.html#wxdbtablesetwhereclause">wxDbTable::SetWhereClause</A>
+and <A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A> are ignored by
+this function.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    // Delete parts 1 thru 10 from containers 'X', 'Y' and 'Z' that
+    // are magenta in color
+    parts.DeleteWhere("(PART_NUMBER BETWEEN 1 AND 10) AND \
+                        CONTAINER IN ('X', 'Y', 'Z') AND \
+                        UPPER(COLOR) = 'MAGENTA'");
+</PRE>
+
+
+<HR>
+<A NAME="wxdbtabledropindex"></A>
+<H3>wxDbTable::DropIndex</H3>
+<P>
+<B>bool</B> <B>DropIndex</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>IndexName</I>)<P>
+Allows an index on the associated table to be dropped (deleted) if the user
+login has sufficient privileges to do so.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>IndexName</I><UL><UL>
+Name of the index to be dropped.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+If the index specified in the 'IndexName' parameter does not exist, an error
+will be logged, and the function will return a result of false.<P>
+It is not necessary to call <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A>
+after executing this function.<P>
+
+<HR>
+<A NAME="wxdbtabledroptable"></A>
+<H3>wxDbTable::DropTable</H3>
+<P>
+<B>bool</B> <B>DropTable</B>()<P>
+Deletes the associated table if the user has sufficient privileges to do so.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function returns true if the table does not exist, but only for
+supported databases (see <A HREF="wx_wxdb.html#wxdbdbms">wxDb::Dbms</A>).  If a datasource
+is not specifically supported, and this function is called, the function
+will return false.<P>
+Most datasources/ODBC drivers will delete any indexes associated with the
+table automatically, and others may not.  Check the documentation for your
+database to determine the behavior.<P>
+It is not necessary to call <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A>
+after executing this function.<P>
+
+<HR>
+<A NAME="wxdbtablefrom"></A>
+<H3>wxDbTable::From</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B> </B> <B>From</B>()<P>
+<B>void</B> <B>From</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>From</I>)<P>
+Accessor function for the private class member wxDbTable::from.  Can be used
+as a synonym for <A HREF="wx_wxdbtable.html#wxdbtablegetfromclause">wxDbTable::GetFromClause</A>
+(the first form of this function) or
+<A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A> (the second form
+of this function).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>From</I><UL><UL>
+A comma separated list of table names that are to be inner
+joined with the base table's columns so that the joined table's columns
+may be returned in the result set or used as a portion of a comparison with
+the base table's columns.  NOTE that the base tables name must NOT be included
+in the FROM clause, as it is automatically included by the wxDbTable class
+in constructing query statements.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The first form of this function returns the current value of the wxDbTable
+member variable ::from.<P>
+The second form of the function has no return value, as it will always set
+the from clause successfully.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtablegetfromclause">wxDbTable::GetFromClause</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A><P>
+
+
+<HR>
+<A NAME="wxdbtablegetcoldefs"></A>
+<H3>wxDbTable::GetColDefs</H3>
+<P>
+<B><A HREF="wx_wxdbcoldef.html#wxdbcoldef">wxDbColDef</A> *</B> </B> <B>GetColDefs</B>()<P>
+Accessor function that returns a pointer to the array of column definitions
+that are bound to the columns that this wxDbTable instance is associated
+with.<P>
+To determine the number of elements pointed to by the returned
+<A HREF="wx_wxdbcoldef.html#wxdbcoldef">wxDbColDef</A> pointer, use the
+<A HREF="wx_wxdbtable.html#wxdbtablegetnumberofcolumns">wxDbTable::GetNumberOfColumns</A> function.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+These column definitions must not be manually redefined after they have been
+set.<P>
+
+<HR>
+<A NAME="wxdbtablegetcursor"></A>
+<H3>wxDbTable::GetCursor</H3>
+<P>
+<B>HSTMT</B> <B>GetCursor</B>()<P>
+Returns the HSTMT value of the current cursor for this wxDbTable object.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function is typically used just before changing to use a different cursor
+so that after the program is finished using the other cursor, the current
+cursor can be set back to being the cursor in use.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtablesetcursor">wxDbTable::SetCursor</A>, <A HREF="wx_wxdbtable.html#wxdbtablegetnewcursor">wxDbTable::GetNewCursor</A><P>
+
+<HR>
+<A NAME="wxdbtablegetdb"></A>
+<H3>wxDbTable::GetDb</H3>
+<P>
+<B><A HREF="wx_wxdb.html#wxdb">wxDb</A> *</B> </B> <B>GetDb</B>()<P>
+Accessor function for the private member variable pDb which is a pointer to
+the datasource connection that this wxDbTable instance uses.<P>
+
+<HR>
+<A NAME="wxdbtablegetfirst"></A>
+<H3>wxDbTable::GetFirst</H3>
+<P>
+<B>bool</B> <B>GetFirst</B>()<P>
+Retrieves the FIRST row in the record set as defined by the current query.
+Before retrieving records, a query must be performed using
+<A HREF="wx_wxdbtable.html#wxdbtablequery">wxDbTable::Query</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablequeryonkeyfields">wxDbTable::QueryOnKeyFields</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablequerymatching">wxDbTable::QueryMatching</A> or
+<A HREF="wx_wxdbtable.html#wxdbtablequerybysqlstmt">wxDbTable::QueryBySqlStmt</A>.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function can only be used if the datasource connection used by the
+wxDbTable instance was created with FwdOnlyCursors set to false.  If the
+connection does not allow backward scrolling cursors, this function will
+return false, and the data contained in the bound columns will be undefined.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbisfwdonlycursors">wxDb::IsFwdOnlyCursors</A><P>
+
+<HR>
+<A NAME="wxdbtablegetfromclause"></A>
+<H3>wxDbTable::GetFromClause</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B> </B> <B>GetFromClause</B>()<P>
+Accessor function that returns the current FROM setting assigned with the
+<A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtablefrom">wxDbTable::From</A><P>
+
+<HR>
+<A NAME="wxdbtablegetlast"></A>
+<H3>wxDbTable::GetLast</H3>
+<P>
+<B>bool</B> <B>GetLast</B>()<P>
+Retrieves the LAST row in the record set as defined by the current query.
+Before retrieving records, a query must be performed using
+<A HREF="wx_wxdbtable.html#wxdbtablequery">wxDbTable::Query</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablequeryonkeyfields">wxDbTable::QueryOnKeyFields</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablequerymatching">wxDbTable::QueryMatching</A> or
+<A HREF="wx_wxdbtable.html#wxdbtablequerybysqlstmt">wxDbTable::QueryBySqlStmt</A>.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function can only be used if the datasource connection used by the
+wxDbTable instance was created with FwdOnlyCursors set to false.  If the
+connection does not allow backward scrolling cursors, this function will
+return false, and the data contained in the bound columns will be undefined.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbisfwdonlycursors">wxDb::IsFwdOnlyCursors</A><P>
+
+<HR>
+<A NAME="wxdbtablegetnewcursor"></A>
+<H3>wxDbTable::GetNewCursor</H3>
+<P>
+<B>HSTMT *</B> <B>GetNewCursor</B>(<B>bool </B><I>setCursor=false</I>,
+<B>bool </B><I>bindColumns=true</I>)<P>
+This function will create a new cursor that can be used to access the table
+being referenced by this wxDbTable instance, or to execute direct SQL commands
+on without affecting the cursors that are already defined and possibly
+positioned.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>setCursor</I><UL><UL>
+<I>OPTIONAL</I>.  Should this new cursor be set to be the
+current cursor after successfully creating the new cursor.  Default is false.</UL></UL>
+
+<I>bindColumns</I><UL><UL>
+<I>OPTIONAL</I>.  Should this new cursor be bound to all
+the memory variables that the default cursor is bound to.  Default is true.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This new cursor must be closed using
+<A HREF="wx_wxdbtable.html#wxdbtabledeletecursor">wxDbTable::DeleteCursor</A>
+by the calling program before the wxDbTable instance is deleted, or both
+memory and resource leaks will occur.<P>
+
+<HR>
+<A NAME="wxdbtablegetnext"></A>
+<H3>wxDbTable::GetNext</H3>
+<P>
+<B>bool</B> <B>GetNext</B>()<P>
+Retrieves the NEXT row in the record set after the current cursor position
+as defined by the current query.  Before retrieving records, a query must be
+performed using <A HREF="wx_wxdbtable.html#wxdbtablequery">wxDbTable::Query</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablequeryonkeyfields">wxDbTable::QueryOnKeyFields</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablequerymatching">wxDbTable::QueryMatching</A> or
+<A HREF="wx_wxdbtable.html#wxdbtablequerybysqlstmt">wxDbTable::QueryBySqlStmt</A>.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+This function returns false when the current cursor has reached the end of
+the result set.  When false is returned, data in the bound columns is
+undefined.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function works with both forward and backward scrolling cursors.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B>
+<A HREF="wx_wxdbtable.html#wxdbtableplusplus">wxDbTable::++</A><P>
+
+<HR>
+<A NAME="wxdbtablegetnumberofcolumns"></A>
+<H3>wxDbTable::GetNumberOfColumns</H3>
+<P>
+<B>UWORD </B> <B>GetNumberOfColumns</B>()<P>
+Accessor function that returns the number of columns that are statically
+bound for access by the wxDbTable instance.<P>
+
+<HR>
+<A NAME="wxdbtablegetorderbyclause"></A>
+<H3>wxDbTable::GetOrderByClause</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B> </B> <B>GetOrderByClause</B>()<P>
+Accessor function that returns the current ORDER BY setting assigned with
+the <A HREF="wx_wxdbtable.html#wxdbtablesetorderbyclause">wxDbTable::SetOrderByClause</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtableorderby">wxDbTable::OrderBy</A><P>
+
+<HR>
+<A NAME="wxdbtablegetprev"></A>
+<H3>wxDbTable::GetPrev</H3>
+<P>
+<B>bool</B> <B>GetPrev</B>()<P>
+Retrieves the PREVIOUS row in the record set before the current cursor
+position as defined by the current query.  Before retrieving records, a
+query must be performed using <A HREF="wx_wxdbtable.html#wxdbtablequery">wxDbTable::Query</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablequeryonkeyfields">wxDbTable::QueryOnKeyFields</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablequerymatching">wxDbTable::QueryMatching</A> or
+<A HREF="wx_wxdbtable.html#wxdbtablequerybysqlstmt">wxDbTable::QueryBySqlStmt</A>.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+This function returns false when the current cursor has reached the beginning
+of the result set and there are now other rows prior to the cursors current
+position.  When false is returned, data in the bound columns is undefined.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function can only be used if the datasource connection used by the
+wxDbTable instance was created with FwdOnlyCursors set to false.  If the
+connection does not allow backward scrolling cursors, this function will
+return false, and the data contained in the bound columns will be undefined.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbisfwdonlycursors">wxDb::IsFwdOnlyCursors</A>,
+<A HREF="wx_wxdbtable.html#wxdbtableminusminus">wxDbTable::--</A><P>
+
+<HR>
+<A NAME="wxdbtablegetquerytablename"></A>
+<H3>wxDbTable::GetQueryTableName</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B> </B> <B>GetQueryTableName</B>()<P>
+Accessor function that returns the name of the table/view that was indicated
+as being the table/view to query against when this wxDbTable instance was
+created.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtableconstr">wxDbTable constructor</A><P>
+
+<HR>
+<A NAME="wxdbtablegetrownum"></A>
+<H3>wxDbTable::GetRowNum</H3>
+<P>
+<B>UWORD</B> <B>GetRowNum</B>()<P>
+Returns the ODBC row number for performing positioned updates and deletes.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function is not being used within the ODBC class library and may be a
+candidate for removal if no use is found for it.<P>
+Row number with some datasources/ODBC drivers is the position in the result set,
+while in others it may be a physical position in the database.  Check your
+database documentation to find out which behavior is supported.<P>
+
+<HR>
+<A NAME="wxdbtablegettablename"></A>
+<H3>wxDbTable::GetTableName</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B> </B> <B>GetTableName</B>()<P>
+Accessor function that returns the name of the table that was indicated
+as being the table that this wxDbTable instance was associated with.<P>
+
+<HR>
+<A NAME="wxdbtablegettablepath"></A>
+<H3>wxDbTable::GetTablePath</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B> </B> <B>GetTablePath</B>()<P>
+Accessor function that returns the path to the data table that was indicated
+during creation of this wxDbTable instance.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Currently only applicable to dBase and MS-Access datasources.<P>
+
+<HR>
+<A NAME="wxdbtablegetwhereclause"></A>
+<H3>wxDbTable::GetWhereClause</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B> </B> <B>GetWhereClause</B>()<P>
+Accessor function that returns the current WHERE setting assigned with the
+<A HREF="wx_wxdbtable.html#wxdbtablesetwhereclause">wxDbTable::SetWhereClause</A><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtablewhere">wxDbTable::Where</A><P>
+
+<HR>
+<A NAME="wxdbtableinsert"></A>
+<H3>wxDbTable::Insert</H3>
+<P>
+<B>int </B> <B>Insert</B>()<P>
+Inserts a new record into the table being referenced by this wxDbTable
+instance.  The values in the member variables of the wxDbTable instance are
+inserted into the columns of the new row in the database.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<PRE>
+    DB_SUCCESS              Record inserted successfully (value = 1)
+
+    DB_FAILURE              Insert failed (value = 0)
+
+    DB_ERR_INTEGRITY_CONSTRAINT_VIOL
+                            The insert failed due to an integrity
+                            constraint violation (duplicate non-unique
+                            index entry) is attempted.
+</PRE>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+A <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A> or
+<A HREF="wx_wxdb.html#wxdbrollbacktrans">wxDb::RollbackTrans</A> must be called after use of
+this function to commit or rollback the insertion.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    // Incomplete code snippet
+    wxStrcpy(parts-&gt;PartName, "10");
+    wxStrcpy(parts-&gt;PartDesc, "Part #10");
+    parts-&gt;Qty = 1000;
+    RETCODE retcode = parts-&gt;Insert();
+    switch(retcode)
+    {
+        case DB_SUCCESS:
+            parts-&gt;GetDb()-&gt;CommitTrans();
+            return(true);
+        case DB_ERR_INTEGRITY_CONSTRAINT_VIOL:
+            // Current data would result in a duplicate key
+            // on one or more indexes that do not allow duplicates
+            parts-&gt;GetDb()-&gt;RollbackTrans();
+            return(false);
+        default:
+            // Insert failed for some unexpected reason
+            parts-&gt;GetDb()-&gt;RollbackTrans();
+            return(false);
+    }
+</PRE>
+
+<HR>
+<A NAME="wxdbtableiscolnull"></A>
+<H3>wxDbTable::IsColNull</H3>
+<P>
+<B>bool </B> <B>IsColNull</B>(<B>UWORD </B><I>colNumber</I>) const<P>
+Used primarily in the ODBC class library to determine if a column value is
+set to "NULL".  Works for all data types supported by the ODBC class library.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>colNumber</I><UL><UL>
+The column number of the bound column as defined by the
+<A HREF="wx_wxdbtable.html#wxdbtablesetcoldefs">wxDbTable::SetColDefs</A>
+calls which defined the columns accessible to this wxDbTable instance.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+NULL column support is currently not fully implemented as of wxWidgets 2.4.<P>
+
+<HR>
+<A NAME="wxdbtableiscursorclosedoncommit"></A>
+<H3>wxDbTable::IsCursorClosedOnCommit</H3>
+<P>
+<B>bool </B> <B>IsCursorClosedOnCommit</B>()<P>
+Accessor function to return information collected during the opening of the
+datasource connection that is used by this wxDbTable instance.  The result
+returned by this function indicates whether an implicit closing of the cursor is
+done after a commit on the database connection.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true if the cursor associated with this wxDbTable object is closed
+after a commit or rollback operation.  Returns false otherwise.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+If more than one wxDbTable instance used the same database connection, all cursors
+which use the database connection are closed on the commit if this function
+indicates true.<P>
+
+<HR>
+<A NAME="wxdbtableisqueryonly"></A>
+<H3>wxDbTable::IsQueryOnly</H3>
+<P>
+<B>bool </B> <B>IsQueryOnly</B>()<P>
+Accessor function that returns a value indicating if this wxDbTable instance
+was created to allow only queries to be performed on the bound columns.  If
+this function returns true, then no actions may be performed using this
+wxDbTable instance that would modify (insert/delete/update) the table's data.<P>
+
+<HR>
+<A NAME="wxdbtableopen"></A>
+<H3>wxDbTable::Open</H3>
+<P>
+<B>bool </B> <B>Open</B>(<B>bool </B><I>checkPrivileges=false</I>, <B>bool </B><I>checkTableExists=true</I>)<P>
+Every wxDbTable instance must be opened before it can be used.  This function
+checks for the existence of the requested table, binds columns, creates required
+cursors, (insert/select and update if connection is not wxDB_QUERY_ONLY) and
+constructs the insert statement that is to be used for inserting data as a new
+row in the datasource.<P>
+NOTE: To retrieve data into an opened table, the of the table must be bound
+to the variables in the program via call(s) to 
+<A HREF="wx_wxdbtable.html#wxdbtablesetcoldefs">wxDbTable::SetColDefs</A> before calling Open().<P>
+See the <A HREF="wx_odbcoverview.html#odbcoverview">database classes overview</A> for
+an introduction to using the ODBC classes.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>checkPrivileges</I><UL><UL>
+Indicates whether the Open() function should check
+whether the current connected user has at least SELECT privileges to access the
+table to which they are trying to open.  Default is false.</UL></UL>
+<P>
+<I>checkTableExists</I><UL><UL>
+Indicates whether the Open() function should check
+whether the table exists in the database or not before opening it.  Default is true.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+If the function returns a false value due to the table not existing, a log
+entry is recorded for the datasource connection indicating the problem
+that was detected when checking for table existence.  Note that it is usually
+best for the calling routine to check for the existence of the table and for
+sufficient user privileges to access the table in the mode (wxDB_QUERY_ONLY or
+!wxDB_QUERY_ONLY) before trying to open the table for the best possible
+explanation as to why a table cannot be opened.<P>
+Checking the user's privileges on a table can be quite time consuming during
+the open phase.  With most applications, the programmer already knows that the
+user has sufficient privileges to access the table, so this check is normally
+not required.<P>
+For best performance, open the table, and then use the
+<A HREF="wx_wxdb.html#wxdbtableprivileges">wxDb::TablePrivileges</A> function
+to check the users privileges.  Passing a schema to the TablePrivileges()
+function can significantly speed up the privileges checks.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdb.html#wxdbtableexists">wxDb::TableExists</A>,
+<A HREF="wx_wxdb.html#wxdbtableprivileges">wxDb::TablePrivileges</A>
+<A HREF="wx_wxdbtable.html#wxdbtablesetcoldefs">wxDbTable::SetColDefs</A><P>
+
+<HR>
+<A NAME="wxdbtableorderby"></A>
+<H3>wxDbTable::OrderBy</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B> </B> <B>OrderBy</B>()<P>
+<B>void</B> <B>OrderBy</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>OrderBy</I>)<P>
+Accessor function for the private class member wxDbTable::orderBy.  Can be
+used as a synonym for
+<A HREF="wx_wxdbtable.html#wxdbtablegetorderbyclause">wxDbTable::GetOrderByClause</A>
+(the first form of this function) or
+<A HREF="wx_wxdbtable.html#wxdbtablesetorderbyclause">wxDbTable::SetOrderByClause</A>
+(the second form of this function).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>OrderBy</I><UL><UL>
+A comma separated list of column names that indicate the
+alphabetized/numeric sorting sequence that the result set is to be returned
+in.  If a FROM clause has also been specified, each column name specified in
+the ORDER BY clause should be prefaced with the table name to which the column
+belongs using DOT notation (TABLE_NAME.COLUMN_NAME).</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The first form of this function returns the current value of the wxDbTable
+member variable ::orderBy.<P>
+The second form of the function has no return value.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtablegetorderbyclause">wxDbTable::GetOrderByClause</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A><P>
+
+<HR>
+<A NAME="wxdbtablequery"></A>
+<H3>wxDbTable::Query</H3>
+<P>
+<B>virtual bool </B> <B>Query</B>(<B>bool </B><I>forUpdate=false</I>, <B>bool </B><I>distinct=false</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>forUpdate</I><UL><UL>
+<I>OPTIONAL</I>.  Gives you the option of locking records
+as they are retrieved.  If the RDBMS is not capable of the FOR UPDATE clause,
+this argument is ignored.  See
+<A HREF="wx_wxdbtable.html#wxdbtablecanselectforupdate">wxDbTable::CanSelectForUpdate</A> for
+additional information regarding this argument.  Default is false.</UL></UL>
+
+<I>distinct</I><UL><UL>
+<I>OPTIONAL</I>.  Allows selection of only distinct values
+from the query (SELECT DISTINCT ... FROM ...).  The notion of DISTINCT
+applies to all columns returned in the result set, not individual columns.
+Default is false.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function queries records from the datasource based on the three
+wxDbTable members: "where", "orderBy", and "from".  Use
+<A HREF="wx_wxdbtable.html#wxdbtablesetwhereclause">wxDbTable::SetWhereClause</A> to filter on
+records to be retrieved (e.g. All users with a first name of "JOHN").
+Use <A HREF="wx_wxdbtable.html#wxdbtablesetorderbyclause">wxDbTable::SetOrderByClause</A> to
+change the sequence in which records are returned in the result set from
+the datasource (e.g. Ordered by LAST_NAME).  Use
+<A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A> to allow inner
+joining of the base table (the one being associated with this instance of
+wxDbTable) with other tables which share a related field.<P>
+After each of these clauses are set/cleared, call wxDbTable::Query() to
+fetch the result set from the datasource.<P>
+This scheme has an advantage if you have to requery your record set
+frequently in that you only have to set your WHERE, ORDER BY, and FROM
+clauses once.  Then to refresh the record set, simply call wxDbTable::Query()
+as frequently as needed.<P>
+Note that repeated calls to wxDbTable::Query() may tax the database
+server and make your application sluggish if done too frequently or
+unnecessarily.<P>
+The base table name is automatically prepended to the base column names in
+the event that the FROM clause has been set (is non-null) using
+<A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A>.<P>
+The cursor for the result set is positioned <I>before</I> the first record in
+the result set after the query.  To retrieve the first record, call either
+<A HREF="wx_wxdbtable.html#wxdbtablegetfirst">wxDbTable::GetFirst</A> (only if backward scrolling
+cursors are available) or
+<A HREF="wx_wxdbtable.html#wxdbtablegetnext">wxDbTable::GetNext</A>.  Typically, no data from the
+result set is returned to the client driver until a request such as
+<A HREF="wx_wxdbtable.html#wxdbtablegetnext">wxDbTable::GetNext</A> is performed, so network
+traffic and database load are not overwhelmed transmitting data until the
+data is actually requested by the client.  This behavior is solely dependent
+on the ODBC driver though, so refer to the ODBC driver's reference material
+for information on its behaviors.<P>
+Values in the bound columns' memory variables are undefined after executing a
+call to this function and remain that way until a row in the result set is
+requested to be returned.<P>
+The wxDbTable::Query() function is defined as "virtual" so that it may be
+overridden for application specific purposes.<P>
+<HR>
+Be sure to set the wxDbTable's "where", "orderBy", and "from"
+member variables to "" if they are not to be used in the query.  Otherwise,
+the results returned may have unexpected results (or no results) due to
+improper or incorrect query parameters constructed from the uninitialized
+clauses.<HR><P>
+<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    // Incomplete code sample
+    parts-&gt;SetWhereClause("DESCRIPTION = 'FOOD'");
+    parts-&gt;SetOrderByClause("EXPIRATION_DATE");
+    parts-&gt;SetFromClause("");
+    // Query the records based on the where, orderBy and from clauses
+    // specified above
+    parts-&gt;Query();
+    // Display all records queried
+    while(parts-&gt;GetNext())
+        dispPart(parts);  // user defined function
+</PRE>
+
+<HR>
+<A NAME="wxdbtablequerybysqlstmt"></A>
+<H3>wxDbTable::QueryBySqlStmt</H3>
+<P>
+<B>bool</B> <B>QueryBySqlStmt</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pSqlStmt</I>)<P>
+Performs a query against the datasource by accepting and passing verbatim the
+SQL SELECT statement passed to the function.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pSqlStmt</I><UL><UL>
+Pointer to the SQL SELECT statement to be executed.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This is the most powerful form of the query functions available.  This member
+function allows a programmer to write their own custom SQL SELECT statement
+for requesting data from the datasource.  This gives the programmer access
+to the full power of SQL for performing operations such as scalar functions,
+aggregate functions, table joins, and sub-queries, as well as datasource
+specific function calls.<P>
+The requirements of the SELECT statement are the following:<P>
+<OL>
+
+<LI> Must return the correct number of columns.  In the derived
+wxDbTable constructor, it is specified how many columns are in
+the wxDbTable object. The SELECT statement must return exactly
+that many columns.
+<LI> The columns must be returned in the same sequence as specified
+when defining the bounds columns <A HREF="wx_wxdbtable.html#wxdbtablesetcoldefs">wxDbTable::SetColDefs</A>,
+and the columns returned must be of the proper data type.  For
+example, if column 3 is defined in the wxDbTable bound column
+definitions to be a float, the SELECT statement must return a
+float for column 3 (e.g. PRICE * 1.10 to increase the price by
+10<LI> The ROWID can be included in your SELECT statement as the <B>last</B>
+column selected, if the datasource supports it.  Use
+wxDbTable::CanUpdateByROWID() to determine if the ROWID can be
+selected from the datasource.  If it can, much better
+performance can be achieved on updates and deletes by including
+the ROWID in the SELECT statement.
+</OL>
+<P>
+Even though data can be selected from multiple tables (joins) in your select
+statement, only the base table associated with this wxDbTable object
+is automatically updated through the ODBC class library.  Data from multiple
+tables can be selected for display purposes however.  Include columns in
+the wxDbTable object and mark them as non-updateable (See
+<A HREF="wx_wxdbcoldef.html#wxdbcoldef">wxDbColDef</A> for details).  This way columns can be
+selected and displayed from other tables, but only the base table will be
+updated automatically when performed through the
+<A HREF="wx_wxdbtable.html#wxdbtableupdate">wxDbTable::Update</A> function after using this type of
+query.  To update tables other than the base table, use the
+<A HREF="wx_wxdbtable.html#wxdbtableupdate">wxDbTable::Update</A> function passing a SQL statement.<P>
+After this function has been called, the cursor is positioned before the
+first record in the record set.  To retrieve the first record, call
+either <A HREF="wx_wxdbtable.html#wxdbtablegetfirst">wxDbTable::GetFirst</A> or
+<A HREF="wx_wxdbtable.html#wxdbtablegetnext">wxDbTable::GetNext</A>.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    // Incomplete code samples
+	 wxString sqlStmt;
+    sqlStmt = "SELECT * FROM PARTS WHERE STORAGE_DEVICE = 'SD98' \
+               AND CONTAINER = 12";
+    // Query the records using the SQL SELECT statement above
+    parts-&gt;QueryBySqlStmt(sqlStmt);
+    // Display all records queried
+    while(parts-&gt;GetNext())
+        dispPart(&parts);
+
+    Example SQL statements
+    ----------------------
+
+    // Table Join returning 3 columns
+    SELECT PART_NUM, part_desc, sd_name
+        from parts, storage_devices
+        where parts.storage_device_id =
+              storage_devices.storage_device_id
+
+    // Aggregate function returning total number of
+    // parts in container 99
+    SELECT count(*) from PARTS where container = 99
+
+    // Order by clause; ROWID, scalar function
+    SELECT PART_NUM, substring(part_desc, 1, 10), qty_on_hand + 1, ROWID
+        from parts
+        where warehouse = 10
+        order by PART_NUM desc           // descending order
+
+    // Subquery
+    SELECT * from parts
+        where container in (select container
+        from storage_devices
+            where device_id = 12)
+</PRE>
+
+<HR>
+<A NAME="wxdbtablequerymatching"></A>
+<H3>wxDbTable::QueryMatching</H3>
+<P>
+<B>virtual bool </B> <B>QueryMatching</B>(<B>bool </B><I>forUpdate=false</I>,
+<B>bool </B><I>distinct=false</I>)<P>
+QueryMatching allows querying of records from the table associated with
+the wxDbTable object by matching "columns" to values.<P>
+For example: To query the datasource for the row with a PART_NUMBER column
+value of "32", clear all column variables of the wxDbTable object, set the
+PartNumber variable that is bound to the PART_NUMBER column in the wxDbTable
+object to "32", and then call wxDbTable::QueryMatching().<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>forUpdate</I><UL><UL>
+<I>OPTIONAL</I>.  Gives you the option of locking records
+as they are queried (SELECT ... FOR UPDATE).  If the RDBMS is not capable of
+the FOR UPDATE clause, this argument is ignored.  See
+<A HREF="wx_wxdbtable.html#wxdbtablecanselectforupdate">wxDbTable::CanSelectForUpdate</A> for
+additional information regarding this argument.  Default is false.</UL></UL>
+
+<I>distinct</I><UL><UL>
+<I>OPTIONAL</I>.  Allows selection of only distinct values
+from the query (SELECT DISTINCT ... FROM ...).  The notion of DISTINCT
+applies to all columns returned in the result set, not individual columns.
+Default is false.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The SQL WHERE clause is built by the ODBC class library based on all
+non-zero/non-NULL columns in your wxDbTable object.  Matches can be on one,
+many or all of the wxDbTable's columns.  The base table name is prepended
+to the column names in the event that the wxDbTable's FROM clause is non-null.<P>
+This function cannot be used to perform queries which will check for
+columns that are 0 or NULL, as the automatically constructed WHERE clause
+only will contain comparisons on column member variables that are
+non-zero/non-NULL.<P>
+The primary difference between this function and <A HREF="wx_wxdbtable.html#wxdbtablequeryonkeyfields">wxDbTable::QueryOnKeyFields</A>
+is that this function can query on any column(s) in the wxDbTable object.
+Note however that this may not always be very efficient.  Searching on
+non-indexed columns will always require a full table scan.<P>
+The cursor is positioned before the first record in the record set after
+the query is performed.  To retrieve the first record, the program must call
+either <A HREF="wx_wxdbtable.html#wxdbtablegetfirst">wxDbTable::GetFirst</A> or
+<A HREF="wx_wxdbtable.html#wxdbtablegetnext">wxDbTable::GetNext</A>.<P>
+WHERE and FROM clauses specified using <A HREF="wx_wxdbtable.html#wxdbtablesetwhereclause">wxDbTable::SetWhereClause</A>
+and <A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A> are ignored by
+this function.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    // Incomplete code sample
+    parts-&gt;ClearMemberVars();           // Set all columns to zero
+    wxStrcpy(parts-&gt;PartNumber,"32");   // Set columns to query on
+    parts-&gt;OnHold = true;
+    parts-&gt;QueryMatching();             // Query
+    // Display all records queried
+    while(parts-&gt;GetNext())
+        dispPart(parts);  // Some application defined function
+</PRE>
+
+<HR>
+<A NAME="wxdbtablequeryonkeyfields"></A>
+<H3>wxDbTable::QueryOnKeyFields</H3>
+<P>
+<B>bool </B> <B>QueryOnKeyFields</B>(<B>bool </B><I>forUpdate=false</I>,
+<B>bool </B><I>distinct=false</I>)<P>
+QueryOnKeyFields provides an easy mechanism to query records in the table
+associated with the wxDbTable object by the primary index column(s).  Simply
+assign the primary index column(s) values and then call this member function
+to retrieve the record.<P>
+Note that since primary indexes are always unique, this function implicitly
+always returns a single record from the database. The base table name is
+prepended to the column names in the event that the wxDbTable's FROM clause
+is non-null.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>forUpdate</I><UL><UL>
+<I>OPTIONAL</I>.  Gives you the option of locking records
+as they are queried (SELECT ... FOR UPDATE).  If the RDBMS is not capable of
+the FOR UPDATE clause, this argument is ignored.  See
+<A HREF="wx_wxdbtable.html#wxdbtablecanselectforupdate">wxDbTable::CanSelectForUpdate</A> for
+additional information regarding this argument.  Default is false.</UL></UL>
+
+<I>distinct</I><UL><UL>
+<I>OPTIONAL</I>.  Allows selection of only distinct values
+from the query (SELECT DISTINCT ... FROM ...).  The notion of DISTINCT
+applies to all columns returned in the result set, not individual columns.
+Default is false.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The cursor is positioned before the first record in the record set after
+the query is performed.  To retrieve the first record, the program must call
+either <A HREF="wx_wxdbtable.html#wxdbtablegetfirst">wxDbTable::GetFirst</A> or
+<A HREF="wx_wxdbtable.html#wxdbtablegetnext">wxDbTable::GetNext</A>.<P>
+WHERE and FROM clauses specified using <A HREF="wx_wxdbtable.html#wxdbtablesetwhereclause">wxDbTable::SetWhereClause</A>
+and <A HREF="wx_wxdbtable.html#wxdbtablesetfromclause">wxDbTable::SetFromClause</A> are ignored by
+this function.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    // Incomplete code sample
+    wxStrcpy(parts-&gt;PartNumber, "32");
+    parts-&gt;QueryOnKeyFields();
+    // Display all records queried
+    while(parts-&gt;GetNext())
+        dispPart(parts);  // Some application defined function
+</PRE>
+
+<HR>
+<A NAME="wxdbtablerefresh"></A>
+<H3>wxDbTable::Refresh</H3>
+<P>
+<B>bool</B> <B>Refresh</B>()<P>
+This function re-reads the bound columns into the memory variables, setting
+them to the current values stored on the disk.<P>
+The cursor position and result set are unaffected by calls to this function.
+(The one exception is in the case where the record to be refreshed has been
+deleted by some other user or transaction since it was originally retrieved
+as part of the result set.  For most datasources, the default behavior in
+this situation is to return the value that was originally queried for the
+result set, even though it has been deleted from the database.  But this is
+datasource dependent, and should be tested before relying on this behavior.)<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This routine is only guaranteed to work if the table has a unique primary
+index defined for it.  Otherwise, more than one record may be fetched and
+there is no guarantee that the correct record will be refreshed.  The
+table's columns are refreshed to reflect the current data in the database.<P>
+
+<HR>
+<A NAME="wxdbtablesetcoldefs"></A>
+<H3>wxDbTable::SetColDefs</H3>
+<P>
+<B>bool</B> <B>SetColDefs</B>(<B>UWORD </B><I>index</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>fieldName</I>,
+<B>int </B><I>dataType</I>, <B>void *</B><I>pData</I>, <B>SWORD </B><I>cType</I>,
+<B>int </B><I>size</I>, <B>bool </B><I>keyField = false</I>, <B>bool </B><I>updateable = true</I>,
+<B>bool </B><I>insertAllowed = true</I>, <B>bool </B><I>derivedColumn = false</I>)<P>
+<B><A HREF="wx_wxdbcoldataptr.html#wxdbcoldataptr">wxDbColDataPtr</A> *</B> </B> <B>SetColDefs</B>(<B><A HREF="wx_wxdbcolinf.html#wxdbcolinf">wxDbColInf</A> *</B></B><I>colInfs</I>, <B>UWORD </B><I>numCols</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>index</I><UL><UL>
+Column number (0 to n-1, where n is the number of columns
+specified as being defined for this wxDbTable instance when the
+wxDbTable constructor was called.</UL></UL>
+
+<I>fieldName</I><UL><UL>
+Column name from the associated data table.</UL></UL>
+
+<I>dataType</I><UL><UL>
+Logical data type.  Valid logical types include:</UL></UL>
+<P>
+<PRE>
+    DB_DATA_TYPE_VARCHAR        : strings
+    DB_DATA_TYPE_INTEGER        : non-floating point numbers
+    DB_DATA_TYPE_FLOAT          : floating point numbers
+    DB_DATA_TYPE_DATE           : dates
+    DB_DATA_TYPE_BLOB           : binary large objects
+    DB_DATA_TYPE_MEMO           : large strings
+</PRE>
+<I>pData</I><UL><UL>
+Pointer to the data object that will hold the column's
+value when a row of data is returned from the datasource.</UL></UL>
+
+<I>cType</I><UL><UL>
+SQL C Type.  This defines the data type that the SQL
+representation of the data is converted to to be stored in <I>pData</I>.
+Other valid types are available also, but these are the most common ones:</UL></UL>
+<P>
+<PRE>
+    SQL_C_CHAR      // string - deprecated: use SQL_C_WXCHAR
+    SQL_C_WXCHAR    // string - Used transparently in unicode or non-unicode builds
+    SQL_C_LONG
+    SQL_C_ULONG
+    SQL_C_SHORT
+    SQL_C_USHORT
+    SQL_C_FLOAT
+    SQL_C_DOUBLE
+    SQL_C_NUMERIC
+    SQL_C_TIMESTAMP
+
+    SQL_C_BOOLEAN   // defined in db.h
+    SQL_C_ENUM      // defined in db.h
+</PRE>
+<I>size</I><UL><UL>
+Maximum size in bytes of the <I>pData</I> object.</UL></UL>
+
+<I>keyField</I><UL><UL>
+<I>OPTIONAL</I>.  Indicates if this column is part of the
+primary index.  Default is false.</UL></UL>
+
+<I>updateable</I><UL><UL>
+<I>OPTIONAL</I>.  Are updates allowed on this column?
+Default is true.</UL></UL>
+
+<I>insertAllowed</I><UL><UL>
+<I>OPTIONAL</I>.  Inserts allowed on this column?
+Default is true.</UL></UL>
+
+<I>derivedColumn</I><UL><UL>
+<I>OPTIONAL</I>.  Is this a derived column (non-base
+table column for query only)?  Default is false.</UL></UL>
+<P>
+<I>colInfs</I><UL><UL>
+Pointer to an array of wxDbColInf instances which contains
+all the information necessary to create <I>numCols</I> column definitions.</UL></UL>
+
+<I>numCols</I><UL><UL>
+Number of elements of wxDbColInf type that are pointed
+to by <I>colInfs</I>, which are to have column definitions created from them.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+If <I>pData</I> is to hold a string of characters, be sure to include enough
+space for the NULL terminator in pData and in the byte count of <I>size</I>.<P>
+Using the first form of this function, if the column definition is not able 
+to be created, a value of false is returned.  If the specified index of the 
+column exceeds the number of columns defined in the wxDbTable instance, an
+assert is thrown and logged (in debug builds) and a false is returned.<P>
+A failure to create the column definition in the second form results in a 
+value of NULL being returned.<P>
+Both forms of this function provide a shortcut for defining the columns in
+your wxDbTable object.  Use this function in any derived wxDbTable
+constructor when describing the column/columns in the wxDbTable object.<P>
+The second form of this function is primarily used when the
+<A HREF="wx_wxdb.html#wxdbgetcolumns">wxDb::GetColumns</A> function was used to query the
+datasource for the column definitions, so that the column definitions are
+already stored in wxDbColInf form.  One example use of using
+<A HREF="wx_wxdb.html#wxdbgetcolumns">wxDb::GetColumns</A> then using this function is if
+a data table existed in one datasource, and the table's column definitions
+were to be copied over to another datasource or table.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    // Long way not using this function
+    wxStrcpy(colDefs[0].ColName, "PART_NUM");
+    colDefs[0].DbDataType   = DB_DATA_TYPE_VARCHAR;
+    colDefs[0].PtrDataObj   = PartNumber;
+    colDefs[0].SqlCtype     = SQL_C_WXCHAR;
+    colDefs[0].SzDataObj    = PART_NUMBER_LEN;
+    colDefs[0].KeyField     = true;
+    colDefs[0].Updateable   = false;
+    colDefs[0].InsertAllowed= true;
+    colDefs[0].DerivedCol   = false;
+
+    // Shortcut using this function
+    SetColDefs(0, "PART_NUM", DB_DATA_TYPE_VARCHAR, PartNumber,
+               SQL_C_WXCHAR, PART_NUMBER_LEN, true, false, true, false);
+</PRE>
+
+<HR>
+<A NAME="wxdbtablesetcursor"></A>
+<H3>wxDbTable::SetCursor</H3>
+<P>
+<B>void</B> <B>SetCursor</B>(<B>HSTMT *</B><I>hstmtActivate = (void **) wxDB_DEFAULT_CURSOR</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>hstmtActivate</I><UL><UL>
+<I>OPTIONAL</I>.  Pointer to the cursor that is to
+become the current cursor.  Passing no cursor handle will reset the cursor
+back to the wxDbTable's default (original) cursor that was created when the
+wxDbTable instance was first created.  Default is wxDB_DEFAULT_CURSOR.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+When swapping between cursors, the member variables of the wxDbTable object
+are automatically refreshed with the column values of the row that the
+current cursor is positioned at (if any).  If the cursor is not positioned,
+then the data in member variables is undefined.<P>
+The only way to return back to the cursor that was in use before this
+function was called is to programmatically determine the current cursor's HSTMT
+<B>BEFORE</B> calling this function using <A HREF="wx_wxdbtable.html#wxdbtablegetcursor">wxDbTable::GetCursor</A>
+and saving a pointer to that cursor.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtablegetnewcursor">wxDbTable::GetNewCursor</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablegetcursor">wxDbTable::GetCursor</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablesetcursor">wxDbTable::SetCursor</A><P>
+
+<HR>
+<A NAME="wxdbtablesetfromclause"></A>
+<H3>wxDbTable::SetFromClause</H3>
+<P>
+<B>void</B> <B>SetFromClause</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>From</I>)<P>
+Accessor function for setting the private class member wxDbTable::from
+that indicates what other tables should be inner joined with the wxDbTable's
+base table for access to the columns in those other tables.<P>
+Synonym to this function is one form of <A HREF="wx_wxdbtable.html#wxdbtablefrom">wxDbTable::From</A><P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>From</I><UL><UL>
+A comma separated list of table names that are to be inner
+joined with the base table's columns so that the joined table's columns
+may be returned in the result set or used as a portion of a comparison with
+the base table's columns.  NOTE that the base tables name must NOT be included
+in the FROM clause, as it is automatically included by the wxDbTable class
+in constructing query statements.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Used by the <A HREF="wx_wxdbtable.html#wxdbtablequery">wxDbTable::Query</A> and
+<A HREF="wx_wxdbtable.html#wxdbtablecount">wxDbTable::Count</A> member functions to allow inner
+joining of records from multiple tables.<P>
+Do <B>not</B> include the keyword "FROM" when setting the FROM clause.<P>
+If using the FROM clause when performing a query, be certain to include in
+the corresponding WHERE clause a comparison of a column from either the base
+table or one of the other joined tables to each other joined table to ensure
+the datasource knows on which column values the tables should be joined on.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    ...
+    // Base table is the "LOCATION" table, and it is being
+    // inner joined to the "PART" table via the field "PART_NUMBER"
+    // that can be related between the two tables.
+    location-&gt;SetWhereClause("LOCATION.PART_NUMBER = PART.PART_NUMBER")
+    location-&gt;SetFromClause("PART");
+    ...
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtablefrom">wxDbTable::From</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablegetfromclause">wxDbTable::GetFromClause</A><P>
+
+<HR>
+<A NAME="wxdbtablesetcolnull"></A>
+<H3>wxDbTable::SetColNull</H3>
+<P>
+<B>bool</B> <B>SetColNull</B>(<B>UWORD </B><I>colNumber</I>, <B>bool </B><I>set=true</I>)<P>
+<B>bool</B> <B>SetColNull</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>colName</I>,
+<B>bool </B><I>set=true</I>)<P>
+Both forms of this function allow a member variable representing a column
+in the table associated with this wxDbTable object to be set to NULL.<P>
+The first form allows the column to be set by the index into the column
+definitions used to create the wxDbTable instance, while the second allows
+the actual column name to be specified.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>colNumber</I><UL><UL>
+Index into the column definitions used when first defining
+this wxDbTable object.</UL></UL>
+
+<I>colName</I><UL><UL>
+Actual data table column name that is to be set to NULL.</UL></UL>
+
+<I>set</I><UL><UL>
+Whether the column is set to NULL or not.  Passing true sets
+the column to NULL, passing false sets the column to be non-NULL.  Default is
+true.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+No database updates are done by this function.  It only operates on the
+member variables in memory.  Use and insert or update function to store this
+value to disk.<P>
+
+<HR>
+<A NAME="wxdbtablesetorderbyclause"></A>
+<H3>wxDbTable::SetOrderByClause</H3>
+<P>
+<B>void</B> <B>SetOrderByClause</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>OrderBy</I>)<P>
+Accessor function for setting the private class member wxDbTable::orderBy
+which determines sequence/ordering of the rows returned in the result set
+of a query.<P>
+A synonym to this function is one form of the function <A HREF="wx_wxdbtable.html#wxdbtableorderby">wxDbTable::OrderBy</A><P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>OrderBy</I><UL><UL>
+A comma separated list of column names that indicate the
+alphabetized sorting sequence that the result set is to be returned in.  If
+a FROM clause has also been specified, each column name specified in the
+ORDER BY clause should be prefaced with the table name to which the column
+belongs using DOT notation (TABLE_NAME.COLUMN_NAME).</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Do <B>not</B> include the keywords "ORDER BY" when setting the ORDER BY clause.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    ...
+    parts-&gt;SetOrderByClause("PART_DESCRIP, QUANTITY");
+    ...
+
+    ...
+    location-&gt;SetOrderByClause("LOCATION.POSITION, PART.PART_NUMBER);
+    ...
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtableorderby">wxDbTable::OrderBy</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablegetorderbyclause">wxDbTable::GetOrderByClause</A><P>
+
+<HR>
+<A NAME="wxdbtablesetquerytimeout"></A>
+<H3>wxDbTable::SetQueryTimeout</H3>
+<P>
+<B>bool</B> <B>SetQueryTimeout</B>(<B>UDWORD </B><I>nSeconds</I>)<P>
+Allows a time period to be set as the timeout period for queries.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>nSeconds</I><UL><UL>
+The number of seconds to wait for the query to complete
+before timing out.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Neither Oracle or Access support this function as of yet.  Other databases
+should be evaluated for support before depending on this function working
+correctly.<P>
+
+<HR>
+<A NAME="wxdbtablesetwhereclause"></A>
+<H3>wxDbTable::SetWhereClause</H3>
+<P>
+<B>void</B> <B>SetWhereClause</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>Where</I>)<P>
+Accessor function for setting the private class member wxDbTable::where
+that determines which rows are returned in the result set by the datasource.<P>
+A synonym to this function is one form of the function <A HREF="wx_wxdbtable.html#wxdbtablewhere">wxDbTable::Where</A><P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>Where</I><UL><UL>
+SQL "where" clause.  This clause can contain any SQL language
+that is legal in standard where clauses.  If a FROM clause has also been
+specified, each column name specified in the ORDER BY clause should be
+prefaced with the table name to which the column belongs using DOT notation
+(TABLE_NAME.COLUMN_NAME).</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Do <B>not</B> include the keywords "WHERE" when setting the WHERE clause.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    ...
+    // Simple where clause
+    parts-&gt;SetWhereClause("PART_NUMBER = '32'");
+    ...
+    // Any comparison operators
+    parts-&gt;SetWhereClause("PART_DESCRIP LIKE 'HAMMER%'");
+    ...
+    // Multiple comparisons, including a function call
+    parts-&gt;Where("QTY &gt; 0 AND {fn UCASE(PART_DESCRIP)} LIKE '%DRILL%'");
+    ...
+    // Using parameters and multiple logical combinations
+    parts-&gt;Where("((QTY &gt; 10) OR (ON_ORDER &gt; 0)) AND ON_HOLD = 0");
+    ...
+    // This query uses an inner join (requiring a FROM clause also)
+    // that joins the PART and LOCATION table on he common field
+    // PART_NUMBER.
+    parts-&gt;Where("PART.ON_HOLD = 0 AND \
+                  PART.PART_NUMBER = LOCATION.PART_NUMBER AND \
+                  LOCATION.PART_NUMBER &gt; 0");
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtablewhere">wxDbTable::Where</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablegetwhereclause">wxDbTable::GetWhereClause</A><P>
+
+<HR>
+<A NAME="wxdbtableupdate"></A>
+<H3>wxDbTable::Update</H3>
+<P>
+<B>bool </B> <B>Update</B>()<P>
+<B>bool </B> <B>Update</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pSqlStmt</I>)<P>
+The first form of this function will update the row that the current cursor
+is currently positioned at with the values in the memory variables that
+are bound to the columns.  The actual SQL statement to perform the update
+is automatically created by the ODBC class, and then executed.<P>
+The second form of the function allows full access through SQL statements for
+updating records in the database.  Write any valid SQL UPDATE statement and
+submit it to this function for execution.  Sophisticated updates can be
+performed using the full power of the SQL dialect. The full SQL statement
+must have  the exact syntax required by the driver/datasource for performing
+the update.  This usually is in the form of:<P>
+<PRE>
+    UPDATE tablename SET col1=X, col2=Y, ... where ...
+</PRE>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pSqlStmt</I><UL><UL>
+Pointer to SQL UPDATE statement to be executed.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+A <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A> or
+<A HREF="wx_wxdb.html#wxdbrollbacktrans">wxDb::RollbackTrans</A> must be called after use of
+this function to commit or rollback the update.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+	 wxString sqlStmt;
+    sqlStmt = "update PART set QTY = 0 where PART_NUMBER = '32'";
+</PRE>
+
+<HR>
+<A NAME="wxdbtableupdatewhere"></A>
+<H3>wxDbTable::UpdateWhere</H3>
+<P>
+<B>bool</B> <B>UpdateWhere</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>pWhereClause</I>)<P>
+Performs updates to the base table of the wxDbTable object, updating only the
+rows which match the criteria specified in the <I>pWhereClause</I>.<P>
+All columns that are bound to member variables for this wxDbTable instance
+that were defined with the "updateable" parameter set to true will be updated
+with the information currently held in the memory variable.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pWhereClause</I><UL><UL>
+Pointer to a valid SQL WHERE clause.  Do not
+include the keyword 'WHERE'.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Care should be used when updating columns that are part of indexes with
+this function so as not to violate an unique key constraints.<P>
+A <A HREF="wx_wxdb.html#wxdbcommittrans">wxDb::CommitTrans</A> or
+<A HREF="wx_wxdb.html#wxdbrollbacktrans">wxDb::RollbackTrans</A> must be called after use of
+this function to commit or rollback the update(s).<P>
+
+<HR>
+<A NAME="wxdbtablewhere"></A>
+<H3>wxDbTable::Where</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B> </B> <B>Where</B>()<P>
+<B>void</B> <B>Where</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>Where</I>)<P>
+Accessor function for the private class member wxDbTable::where.  Can be used
+as a synonym for <A HREF="wx_wxdbtable.html#wxdbtablegetwhereclause">wxDbTable::GetWhereClause</A>
+(the first form of this function) to return the current where clause or
+<A HREF="wx_wxdbtable.html#wxdbtablesetwhereclause">wxDbTable::SetWhereClause</A> (the second form
+of this function) to set the where clause for this table instance.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>Where</I><UL><UL>
+A valid SQL WHERE clause.  Do not include the keyword 'WHERE'.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The first form of this function returns the current value of the wxDbTable
+member variable ::where.<P>
+The second form of the function has no return value, as it will always set
+the where clause successfully.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtablegetwhereclause">wxDbTable::GetWhereClause</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablesetwhereclause">wxDbTable::SetWhereClause</A><P>
+
+<HR>
+<A NAME="wxdbtableplusplus"></A>
+<H3>wxDbTable::operator ++</H3>
+<P>
+<B>bool</B> <B>operator ++</B>()<P>
+Synonym for <A HREF="wx_wxdbtable.html#wxdbtablegetnext">wxDbTable::GetNext</A><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtablegetnext">wxDbTable::GetNext</A><P>
+
+<HR>
+<A NAME="wxdbtableminusminus"></A>
+<H3>wxDbTable::operator --</H3>
+<P>
+<B>bool</B> <B>operator --</B>()<P>
+Synonym for <A HREF="wx_wxdbtable.html#wxdbtablegetprev">wxDbTable::GetPrev</A><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbtable.html#wxdbtablegetprev">wxDbTable::GetPrev</A><P>
+
+</FONT></BODY></HTML>

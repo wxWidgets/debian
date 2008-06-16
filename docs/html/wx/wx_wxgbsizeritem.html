@@ -1,0 +1,96 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGBSizerItem</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgbsizeritem"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgbposition.html#wxgbposition"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgbspan.html#wxgbspan"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGBSizerItem</H2>
+<P>
+The wxGBSizerItem class is used by the 
+<A HREF="wx_wxgridbagsizer.html#wxgridbagsizer">wxGridBagSizer</A> for tracking the items in the
+sizer. It adds grid position and spanning information to the normal 
+<A HREF="wx_wxsizeritem.html#wxsizeritem">wxSizerItem</A> by adding
+<A HREF="wx_wxgbposition.html#wxgbposition">wxGBPosition</A> and <A HREF="wx_wxgbspan.html#wxgbspan">wxGBSpan</A>
+attrbibutes. Most of the time you will not need to use a
+wxGBSizerItem directly in your code, but there are a couple of cases
+where it is handy.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxsizeritem.html#wxsizeritem">wxSizerItem</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/gbsizer.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgbsizeritemwxgbsizeritem">wxGBSizerItem::wxGBSizerItem</A><BR>
+<A HREF="#wxgbsizeritemgetendpos">wxGBSizerItem::GetEndPos</A><BR>
+<A HREF="#wxgbsizeritemgetpos">wxGBSizerItem::GetPos</A><BR>
+<A HREF="#wxgbsizeritemgetspan">wxGBSizerItem::GetSpan</A><BR>
+<A HREF="#wxgbsizeritemintersects">wxGBSizerItem::Intersects</A><BR>
+<A HREF="#wxgbsizeritemsetpos">wxGBSizerItem::SetPos</A><BR>
+<A HREF="#wxgbsizeritemsetspan">wxGBSizerItem::SetSpan</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgbsizeritemwxgbsizeritem"></A>
+<H3>wxGBSizerItem::wxGBSizerItem</H3>
+<P>
+<B></B> <B>wxGBSizerItem</B>(<B>int </B><I>width</I>, <B>int </B><I>height</I>, <B>const <A HREF="wx_wxgbposition.html#wxgbposition">wxGBPosition</A>& </B></B><I>pos</I>, <B>const <A HREF="wx_wxgbspan.html#wxgbspan">wxGBSpan</A>& </B></B><I>span</I>, <B>int </B><I>flag</I>, <B>int </B><I>border</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>userData</I>)<P>
+Construct a sizer item for tracking a spacer.<P>
+<B></B> <B>wxGBSizerItem</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>, <B>const <A HREF="wx_wxgbposition.html#wxgbposition">wxGBPosition</A>& </B></B><I>pos</I>, <B>const <A HREF="wx_wxgbspan.html#wxgbspan">wxGBSpan</A>& </B></B><I>span</I>, <B>int </B><I>flag</I>, <B>int </B><I>border</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>userData</I>)<P>
+Construct a sizer item for tracking a window.<P>
+<B></B> <B>wxGBSizerItem</B>(<B><A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>* </B></B><I>sizer</I>, <B>const <A HREF="wx_wxgbposition.html#wxgbposition">wxGBPosition</A>& </B></B><I>pos</I>, <B>const <A HREF="wx_wxgbspan.html#wxgbspan">wxGBSpan</A>& </B></B><I>span</I>, <B>int </B><I>flag</I>, <B>int </B><I>border</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>userData</I>)<P>
+Construct a sizer item for tracking a subsizer.<P>
+
+<HR>
+<A NAME="wxgbsizeritemgetendpos"></A>
+<H3>wxGBSizerItem::GetEndPos</H3>
+<P>
+<B>void</B> <B>GetEndPos</B>(<B>int&amp; </B><I>row</I>, <B>int&amp; </B><I>col</I>)<P>
+Get the row and column of the endpoint of this item<P>
+
+<HR>
+<A NAME="wxgbsizeritemgetpos"></A>
+<H3>wxGBSizerItem::GetPos</H3>
+<P>
+<B><A HREF="wx_wxgbposition.html#wxgbposition">wxGBPosition</A></B> </B> <B>GetPos</B>() <B>const</B><P>
+<B>void</B> <B>GetPos</B>(<B>int&amp; </B><I>row</I>, <B>int&amp; </B><I>col</I>) <B>const</B><P>
+Get the grid position of the item.<P>
+
+<HR>
+<A NAME="wxgbsizeritemgetspan"></A>
+<H3>wxGBSizerItem::GetSpan</H3>
+<P>
+<B><A HREF="wx_wxgbspan.html#wxgbspan">wxGBSpan</A></B> </B> <B>GetSpan</B>() <B>const</B><P>
+<B>void</B> <B>GetSpan</B>(<B>int&amp; </B><I>rowspan</I>, <B>int&amp; </B><I>colspan</I>) <B>const</B><P>
+Get the row and column spanning of the item.<P>
+
+<HR>
+<A NAME="wxgbsizeritemintersects"></A>
+<H3>wxGBSizerItem::Intersects</H3>
+<P>
+<B>bool</B> <B>Intersects</B>(<B>const <A HREF="wx_wxgbsizeritem.html#wxgbsizeritem">wxGBSizerItem</A>& </B></B><I>other</I>)<P>
+Returns true if this item and the other item instersect<P>
+<B>bool</B> <B>Intersects</B>(<B>const <A HREF="wx_wxgbposition.html#wxgbposition">wxGBPosition</A>& </B></B><I>pos</I>, <B>const <A HREF="wx_wxgbspan.html#wxgbspan">wxGBSpan</A>& </B></B><I>span</I>)<P>
+Returns true if the given pos/span would intersect with this item.<P>
+
+<HR>
+<A NAME="wxgbsizeritemsetpos"></A>
+<H3>wxGBSizerItem::SetPos</H3>
+<P>
+<B>bool</B> <B>SetPos</B>(<B>const <A HREF="wx_wxgbposition.html#wxgbposition">wxGBPosition</A>& </B></B><I>pos</I>)<P>
+If the item is already a member of a sizer then first ensure that
+there is no other item that would intersect with this one at the new
+position, then set the new position. Returns true if the change is
+successful and after the next Layout the item will be moved.<P>
+
+<HR>
+<A NAME="wxgbsizeritemsetspan"></A>
+<H3>wxGBSizerItem::SetSpan</H3>
+<P>
+<B>bool</B> <B>SetSpan</B>(<B>const <A HREF="wx_wxgbspan.html#wxgbspan">wxGBSpan</A>& </B></B><I>span</I>)<P>
+If the item is already a member of a sizer then first ensure that
+there is no other item that would intersect with this one with its new
+spanning size, then set the new spanning. Returns true if the change
+is successful and after the next Layout the item will be resized.<P>
+
+
+</FONT></BODY></HTML>

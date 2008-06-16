@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-July-1997
-// RCS-ID:      $Id: _settings.i,v 1.11 2005/03/24 16:47:40 RD Exp $
+// RCS-ID:      $Id: _settings.i 43137 2006-11-07 01:57:27Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -129,7 +129,8 @@ enum wxSystemMetric
 enum wxSystemFeature
 {
     wxSYS_CAN_DRAW_FRAME_DECORATIONS = 1,
-    wxSYS_CAN_ICONIZE_FRAME
+    wxSYS_CAN_ICONIZE_FRAME,
+    wxSYS_TABLET_PRESENT 
 };
 
 
@@ -201,7 +202,6 @@ public:
     static bool HasOption(const wxString& name) ;
     static bool IsFalse(const wxString& name);
 };
-
 
 
 //---------------------------------------------------------------------------

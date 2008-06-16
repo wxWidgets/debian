@@ -2,18 +2,13 @@
 // Name:        wx/gtk/stabox.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbox.h,v 1.16 2005/08/02 22:57:58 MW Exp $
+// Id:          $Id: statbox.h 39277 2006-05-23 02:04:01Z RD $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef __GTKSTATICBOXH__
 #define __GTKSTATICBOXH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
 
 //-----------------------------------------------------------------------------
 // wxStaticBox
@@ -47,7 +42,12 @@ public:
 
     virtual bool IsTransparentForMouse() const { return TRUE; }
 
+    virtual void GetBordersForSizer(int *borderTop, int *borderOther) const;
+
 protected:
+    virtual bool GTKWidgetNeedsMnemonic() const;
+    virtual void GTKWidgetDoSetMnemonic(GtkWidget* w);
+
     void DoApplyWidgetStyle(GtkRcStyle *style);
     
 private:

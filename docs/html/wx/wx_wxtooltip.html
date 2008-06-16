@@ -1,0 +1,75 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxToolTip</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtooltip"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtoolbook.html#wxtoolbook"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtoplevelwindow.html#wxtoplevelwindow"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxToolTip</H2>
+<P>
+This class holds information about a tooltip associated with a window
+(see <A HREF="wx_wxwindow.html#wxwindowsettooltip">wxWindow::SetToolTip</A>).<P>
+The two static methods, <A HREF="wx_wxtooltip.html#wxtooltipenable">wxToolTip::Enable</A> and
+<A HREF="wx_wxtooltip.html#wxtooltipsetdelay">wxToolTip::SetDelay</A> can be used to globally
+alter tooltips behaviour.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/tooltip.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxtooltipenable">wxToolTip::Enable</A><BR>
+<A HREF="#wxtooltipsetdelay">wxToolTip::SetDelay</A><BR>
+<A HREF="#wxtooltipwxtooltip">wxToolTip::wxToolTip</A><BR>
+<A HREF="#wxtooltipsettip">wxToolTip::SetTip</A><BR>
+<A HREF="#wxtooltipgettip">wxToolTip::GetTip</A><BR>
+<A HREF="#wxtooltipgetwindow">wxToolTip::GetWindow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtooltipenable"></A>
+<H3>wxToolTip::Enable</H3>
+<P>
+<B>static void</B> <B>Enable</B>(<B>bool </B><I>flag</I>)<P>
+Enable or disable tooltips globally.<P>
+May not be supported on all platforms (eg. wxCocoa).<P>
+
+
+<HR>
+<A NAME="wxtooltipsetdelay"></A>
+<H3>wxToolTip::SetDelay</H3>
+<P>
+<B>static void</B> <B>SetDelay</B>(<B>long </B><I>msecs</I>)<P>
+Set the delay after which the tooltip appears.<P>
+May not be supported on all platforms (eg. wxCocoa).<P>
+
+<HR>
+<A NAME="wxtooltipwxtooltip"></A>
+<H3>wxToolTip::wxToolTip</H3>
+<P>
+<B></B> <B>wxToolTip</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>tip</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxtooltipsettip"></A>
+<H3>wxToolTip::SetTip</H3>
+<P>
+<B>void</B> <B>SetTip</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>tip</I>)<P>
+Set the tooltip text.<P>
+
+
+<HR>
+<A NAME="wxtooltipgettip"></A>
+<H3>wxToolTip::GetTip</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetTip</B>() <B>const</B><P>
+Get the tooltip text.<P>
+
+<HR>
+<A NAME="wxtooltipgetwindow"></A>
+<H3>wxToolTip::GetWindow</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetWindow</B>() <B>const</B><P>
+Get the associated window.<P>
+
+</FONT></BODY></HTML>

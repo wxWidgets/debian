@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _process.i,v 1.8 2004/12/23 20:43:51 RD Exp $
+// RCS-ID:      $Id: _process.i 43425 2006-11-14 22:03:54Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 %newgroup
 
 %{
-%}    
+%}
 
 //---------------------------------------------------------------------------
 
@@ -99,12 +99,20 @@ public:
     static wxPyProcess *Open(const wxString& cmd, int flags = wxEXEC_ASYNC);
 
 
-    %pythonAppend wxPyProcess  "self._setCallbackInfo(self, Process)"
+    %pythonAppend wxPyProcess  setCallbackInfo(Process) "; self.this.own(False)"
     wxPyProcess(wxEvtHandler *parent = NULL, int id = -1);
+    ~wxPyProcess();
 
     void _setCallbackInfo(PyObject* self, PyObject* _class);
 
-    void base_OnTerminate(int pid, int status);
+
+    DocDeclStr(
+        long , GetPid() const,
+        "get the process ID of the process executed by Open()", "");
+
+
+    void OnTerminate(int pid, int status);
+    %MAKE_BASE_FUNC(Process, OnTerminate);
 
     // call Redirect before passing the object to wxExecute() to redirect the
     // launched process stdin/stdout, then use GetInputStream() and
@@ -112,7 +120,7 @@ public:
     void Redirect();
     bool IsRedirected();
 
-    
+
     // detach from the parent - should be called by the parent if it's deleted
     // before the process it started terminates
     void Detach();
@@ -129,6 +137,14 @@ public:
     // return True if any input is available on the child process stdout/err
     bool IsInputAvailable() const;
     bool IsErrorAvailable() const;
+
+    %property(ErrorStream, GetErrorStream, doc="See `GetErrorStream`");
+    %property(InputStream, GetInputStream, doc="See `GetInputStream`");
+    %property(OutputStream, GetOutputStream, doc="See `GetOutputStream`");
+
+    %property(InputOpened, IsInputOpened);
+    %property(InputAvailable, IsInputAvailable);
+    %property(ErrorAvailable, IsErrorAvailable);
 };
 
 //---------------------------------------------------------------------------
@@ -140,6 +156,9 @@ public:
     int GetPid();
     int GetExitCode();
     int m_pid, m_exitcode;
+
+    %property(ExitCode, GetExitCode, doc="See `GetExitCode`");
+    %property(Pid, GetPid, doc="See `GetPid`");
 };
 
 
@@ -170,7 +189,7 @@ enum
     // by default synchronous execution disables all program windows to avoid
     // that the user interacts with the program while the child process is
     // running, you can use this flag to prevent this from happening
-    wxEXEC_NODISABLE = 8   
+    wxEXEC_NODISABLE = 8
 };
 
 
@@ -183,11 +202,15 @@ long wxExecute(const wxString& command,
 
 
 %typemap(in,numinputs=0) wxKillError* rc ( wxKillError temp ) { $1 = &temp; }
-%typemap(argout) wxKillError* rc 
+%typemap(argout) wxKillError* rc
 {
     PyObject* o;
     o = PyInt_FromLong((long) (*$1));
+#if SWIG_VERSION < 0x010328
     $result = t_output_helper($result, o);
+#else
+    $result = SWIG_Python_AppendOutput($result, o);
+#endif
 }
 
 int wxKill(long pid, wxSignal sig = wxSIGTERM, wxKillError* rc, int flags = wxKILL_NOCHILDREN);

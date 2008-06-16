@@ -1,0 +1,66 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Byte order macros</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="byteordermacros"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_miscellany.html#miscellany"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_rttimacros.html#rttimacros"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Byte order macros</H2>
+<P>
+The endian-ness issues (that is the difference between big-endian and
+little-endian architectures) are important for the portable programs working
+with the external binary data (for example, data files or data coming from
+network) which is usually in some fixed, platform-independent format. The
+macros are helpful for transforming the data to the correct format.<P>
+
+<A HREF="#intswapalways">wxINTXX_SWAP_ALWAYS</A><BR>
+<A HREF="#intswaponbe">wxINTXX_SWAP_ON_BE</A><BR>
+<A HREF="#intswaponle">wxINTXX_SWAP_ON_LE</A><BR>
+<P>
+
+<HR>
+<A NAME="intswapalways"></A>
+<H3>wxINTXX_SWAP_ALWAYS</H3>
+<P>
+<B>wxInt32</B> <B>wxINT32_SWAP_ALWAYS</B>(<B>wxInt32 </B><I>value</I>)<P>
+<B>wxUint32</B> <B>wxUINT32_SWAP_ALWAYS</B>(<B>wxUint32 </B><I>value</I>)<P>
+<B>wxInt16</B> <B>wxINT16_SWAP_ALWAYS</B>(<B>wxInt16 </B><I>value</I>)<P>
+<B>wxUint16</B> <B>wxUINT16_SWAP_ALWAYS</B>(<B>wxUint16 </B><I>value</I>)<P>
+These macros will swap the bytes of the <I>value</I> variable from little
+endian to big endian or vice versa unconditionally, i.e. independently of the
+current platform.<P>
+
+
+<HR>
+<A NAME="intswaponbe"></A>
+<H3>wxINTXX_SWAP_ON_BE</H3>
+<P>
+<B>wxInt32</B> <B>wxINT32_SWAP_ON_BE</B>(<B>wxInt32 </B><I>value</I>)<P>
+<B>wxUint32</B> <B>wxUINT32_SWAP_ON_BE</B>(<B>wxUint32 </B><I>value</I>)<P>
+<B>wxInt16</B> <B>wxINT16_SWAP_ON_BE</B>(<B>wxInt16 </B><I>value</I>)<P>
+<B>wxUint16</B> <B>wxUINT16_SWAP_ON_BE</B>(<B>wxUint16 </B><I>value</I>)<P>
+This macro will swap the bytes of the <I>value</I> variable from little
+endian to big endian or vice versa if the program is compiled on a
+big-endian architecture (such as Sun work stations). If the program has
+been compiled on a little-endian architecture, the value will be unchanged.<P>
+Use these macros to read data from and write data to a file that stores
+data in little-endian (for example Intel i386) format.<P>
+
+
+<HR>
+<A NAME="intswaponle"></A>
+<H3>wxINTXX_SWAP_ON_LE</H3>
+<P>
+<B>wxInt32</B> <B>wxINT32_SWAP_ON_LE</B>(<B>wxInt32 </B><I>value</I>)<P>
+<B>wxUint32</B> <B>wxUINT32_SWAP_ON_LE</B>(<B>wxUint32 </B><I>value</I>)<P>
+<B>wxInt16</B> <B>wxINT16_SWAP_ON_LE</B>(<B>wxInt16 </B><I>value</I>)<P>
+<B>wxUint16</B> <B>wxUINT16_SWAP_ON_LE</B>(<B>wxUint16 </B><I>value</I>)<P>
+This macro will swap the bytes of the <I>value</I> variable from little
+endian to big endian or vice versa if the program is compiled on a
+little-endian architecture (such as Intel PCs). If the program has
+been compiled on a big-endian architecture, the value will be unchanged.<P>
+Use these macros to read data from and write data to a file that stores
+data in big-endian format.<P>
+<P>
+
+</FONT></BODY></HTML>

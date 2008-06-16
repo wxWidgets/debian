@@ -14,6 +14,10 @@
 #include "wx/imaglist.h"
 #include "wx/tokenzr.h"
 
+#ifdef wxHAVE_RAW_BITMAP
+#include "wx/rawbmp.h"
+#endif
+
 #include "Platform.h"
 #include "PlatWX.h"
 #include "wx/stc/stc.h"
@@ -47,14 +51,21 @@ wxColour wxColourFromCA(const ColourAllocated& ca) {
 Palette::Palette() {
     used = 0;
     allowRealization = false;
+    size = 100;
+    entries = new ColourPair[size];
 }
 
 Palette::~Palette() {
     Release();
+    delete [] entries;
+    entries = 0;
 }
 
 void Palette::Release() {
     used = 0;
+    delete [] entries;
+    size = 100;
+    entries = new ColourPair[size];
 }
 
 // This method either adds a colour to the list of wanted colours (want==true)
@@ -67,11 +78,20 @@ void Palette::WantFind(ColourPair &cp, bool want) {
                 return;
         }
 
-        if (used < numEntries) {
-            entries[used].desired = cp.desired;
-            entries[used].allocated.Set(cp.desired.AsLong());
-            used++;
+        if (used >= size) {
+            int sizeNew = size * 2;
+            ColourPair *entriesNew = new ColourPair[sizeNew];
+            for (int j=0; j<size; j++) {
+                entriesNew[j] = entries[j];
+            }
+            delete []entries;
+            entries = entriesNew;
+            size = sizeNew;
         }
+
+        entries[used].desired = cp.desired;
+        entries[used].allocated.Set(cp.desired.AsLong());
+        used++;
     } else {
         for (int i=0; i < used; i++) {
             if (entries[i].desired == cp.desired) {
@@ -162,6 +182,8 @@ public:
     virtual void FillRectangle(PRectangle rc, ColourAllocated back);
     virtual void FillRectangle(PRectangle rc, Surface &surfacePattern);
     virtual void RoundedRectangle(PRectangle rc, ColourAllocated fore, ColourAllocated back);
+    virtual void AlphaRectangle(PRectangle rc, int cornerSize, ColourAllocated fill, int alphaFill,
+                                ColourAllocated outline, int alphaOutline, int flags);
     virtual void Ellipse(PRectangle rc, ColourAllocated fore, ColourAllocated back);
     virtual void Copy(PRectangle rc, Point from, Surface &surfaceSource);
 
@@ -314,6 +336,87 @@ void SurfaceImpl::RoundedRectangle(PRectangle rc, ColourAllocated fore, ColourAl
     PenColour(fore);
     BrushColour(back);
     hdc->DrawRoundedRectangle(wxRectFromPRectangle(rc), 4);
+}
+
+#ifdef __WXMSW__
+#define wxPy_premultiply(p, a)   ((p) * (a) / 0xff)
+#else
+#define wxPy_premultiply(p, a)   (p)
+#endif
+
+void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
+                                 ColourAllocated fill, int alphaFill,
+                                 ColourAllocated outline, int alphaOutline,
+                                 int /*flags*/) {
+#ifdef wxHAVE_RAW_BITMAP
+
+    // TODO:  do something with cornerSize
+    wxUnusedVar(cornerSize);
+    
+    int x, y;
+    wxRect r = wxRectFromPRectangle(rc);
+    wxBitmap bmp(r.width, r.height, 32);
+    wxAlphaPixelData pixData(bmp);
+    pixData.UseAlpha();
+
+    // Set the fill pixels
+    ColourDesired cdf(fill.AsLong());
+    int red   = cdf.GetRed();
+    int green = cdf.GetGreen();
+    int blue  = cdf.GetBlue();
+
+    wxAlphaPixelData::Iterator p(pixData);
+    for (y=0; y<r.height; y++) {
+        p.MoveTo(pixData, 0, y);
+        for (x=0; x<r.width; x++) {
+            p.Red()   = wxPy_premultiply(red,   alphaFill);
+            p.Green() = wxPy_premultiply(green, alphaFill);
+            p.Blue()  = wxPy_premultiply(blue,  alphaFill);
+            p.Alpha() = alphaFill;
+            ++p; 
+        }
+    }
+
+    // Set the outline pixels
+    ColourDesired cdo(outline.AsLong());
+    red   = cdo.GetRed();
+    green = cdo.GetGreen();
+    blue  = cdo.GetBlue();
+    for (x=0; x<r.width; x++) {
+        p.MoveTo(pixData, x, 0);
+        p.Red()   = wxPy_premultiply(red,   alphaOutline);
+        p.Green() = wxPy_premultiply(green, alphaOutline);
+        p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
+        p.Alpha() = alphaOutline;        
+        p.MoveTo(pixData, x, r.height-1);
+        p.Red()   = wxPy_premultiply(red,   alphaOutline);
+        p.Green() = wxPy_premultiply(green, alphaOutline);
+        p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
+        p.Alpha() = alphaOutline;        
+    }
+
+    for (y=0; y<r.height; y++) {
+        p.MoveTo(pixData, 0, y);
+        p.Red()   = wxPy_premultiply(red,   alphaOutline);
+        p.Green() = wxPy_premultiply(green, alphaOutline);
+        p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
+        p.Alpha() = alphaOutline;        
+        p.MoveTo(pixData, r.width-1, y);
+        p.Red()   = wxPy_premultiply(red,   alphaOutline);
+        p.Green() = wxPy_premultiply(green, alphaOutline);
+        p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
+        p.Alpha() = alphaOutline;        
+    }
+    
+    // Draw the bitmap
+    hdc->DrawBitmap(bmp, r.x, r.y, true);
+
+#else
+    wxUnusedVar(cornerSize);
+    wxUnusedVar(alphaFill);
+    wxUnusedVar(alphaOutline);
+    RectangleDraw(rc, outline, fill);
+#endif
 }
 
 void SurfaceImpl::Ellipse(PRectangle rc, ColourAllocated fore, ColourAllocated back) {
@@ -543,13 +646,11 @@ void Window::Show(bool show) {
 
 void Window::InvalidateAll() {
     GETWIN(id)->Refresh(false);
-    wxWakeUpIdle();
 }
 
 void Window::InvalidateRectangle(PRectangle rc) {
     wxRect r = wxRectFromPRectangle(rc);
     GETWIN(id)->Refresh(false, &r);
-    wxWakeUpIdle();
 }
 
 void Window::SetFont(Font &font) {
@@ -690,9 +791,10 @@ public:
     wxSTCListBoxWin(wxWindow* parent, wxWindowID id, Point WXUNUSED(location)) :
         wxPopupWindow(parent, wxBORDER_NONE)
     {
+        
         SetBackgroundColour(*wxBLACK);  // for our simple border
 
-        lv = new wxSTCListBox(parent, id, wxDefaultPosition, wxDefaultSize,
+        lv = new wxSTCListBox(parent, id, wxPoint(-50,-50), wxDefaultSize,
                               wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxBORDER_NONE);
         lv->SetCursor(wxCursor(wxCURSOR_ARROW));
         lv->InsertColumn(0, wxEmptyString);
@@ -796,17 +898,27 @@ END_EVENT_TABLE()
 
 
 
-#else // wxUSE_POPUPWIN -----------------------------------
+#else // !wxUSE_POPUPWIN -----------------------------------
 
-// A normal window to place the wxSTCListBox upon.
-class wxSTCListBoxWin : public wxWindow {
+// A normal window to place the wxSTCListBox upon, but make it behave as much
+// like a wxPopupWindow as possible
+class wxSTCListBoxWin : public wxFrame {
 private:
     wxListView*         lv;
     CallBackAction      doubleClickAction;
     void*               doubleClickActionData;
 public:
     wxSTCListBoxWin(wxWindow* parent, wxWindowID id, Point location) :
-        wxWindow(parent, id, wxPoint(location.x, location.y), wxSize(0,0), wxSIMPLE_BORDER )
+        wxFrame(parent, id, wxEmptyString, wxPoint(location.x, location.y), wxSize(0,0),
+                wxFRAME_NO_TASKBAR
+                | wxFRAME_FLOAT_ON_PARENT
+#ifdef __WXMAC__
+                | wxPOPUP_WINDOW 
+                | wxNO_BORDER
+#else
+                | wxSIMPLE_BORDER
+#endif
+            )
     {
 
         lv = new wxSTCListBox(this, id, wxDefaultPosition, wxDefaultSize,
@@ -820,14 +932,15 @@ public:
         lv->SetFocus();
 
         Hide();
-    }
+    } 
 
 
     // On OSX and (possibly others) there can still be pending
     // messages/events for the list control when Scintilla wants to
     // close it, so do a pending delete of it instead of destroying
     // immediately.
-    bool Destroy() {
+    bool Destroy()
+    {
 #ifdef __WXMAC__
         // The bottom edge of this window is not getting properly
         // refreshed upon deletion, so help it out...
@@ -842,7 +955,8 @@ public:
     }
 
 
-    int IconWidth() {
+    int IconWidth()
+    {
         wxImageList* il = lv->GetImageList(wxIMAGE_LIST_SMALL);
         if (il != NULL) {
             int w, h;
@@ -853,18 +967,22 @@ public:
     }
 
 
-    void SetDoubleClickAction(CallBackAction action, void *data) {
+    void SetDoubleClickAction(CallBackAction action, void *data)
+    {
         doubleClickAction = action;
         doubleClickActionData = data;
     }
 
 
-    void OnFocus(wxFocusEvent& event) {
+    void OnFocus(wxFocusEvent& event)
+    {
+        ActivateParent();
         GetParent()->SetFocus();
         event.Skip();
     }
 
-    void OnSize(wxSizeEvent& event) {
+    void OnSize(wxSizeEvent& event)
+    {
         // resize the child
         wxSize sz = GetClientSize();
         lv->SetSize(sz);
@@ -875,15 +993,44 @@ public:
         event.Skip();
     }
 
+    void ActivateParent()
+    {
+        // Although we're a frame, we always want the parent to be active, so
+        // raise it whenever we get shown, focused, etc.
+        wxTopLevelWindow *frame = wxDynamicCast(
+            wxGetTopLevelParent(GetParent()), wxTopLevelWindow);
+        if (frame)
+            frame->Raise();
+    }
+        
+
+    virtual void DoSetSize(int x, int y,
+                           int width, int height,
+                           int sizeFlags = wxSIZE_AUTO)
+    {
+        // convert coords to screen coords since we're a top-level window
+        if (x != wxDefaultCoord) {
+            GetParent()->ClientToScreen(&x, NULL);
+        }
+        if (y != wxDefaultCoord) {
+            GetParent()->ClientToScreen(NULL, &y);
+        }
+        wxFrame::DoSetSize(x, y, width, height, sizeFlags);
+    }
+
+    virtual bool Show(bool show = true)
+    {
+        bool rv = wxFrame::Show(show);
+        if (rv && show)
+            ActivateParent();
 #ifdef __WXMAC__
-    virtual bool Show(bool show = true) {
-        bool rv = wxWindow::Show(show);
         GetParent()->Refresh(false);
+#endif
         return rv;
     }
-#endif
 
-    void OnActivate(wxListEvent& WXUNUSED(event)) {
+    void OnActivate(wxListEvent& WXUNUSED(event))
+    {
         doubleClickAction(doubleClickActionData);
     }
 
@@ -1092,7 +1239,7 @@ void ListBoxImpl::Select(int n) {
         n = 0;
         select = false;
     }
-    GETLB(id)->Focus(n);
+    GETLB(id)->EnsureVisible(n);
     GETLB(id)->Select(n, select);
 }
 
@@ -1229,9 +1376,6 @@ unsigned int Platform::DoubleClickTime() {
 bool Platform::MouseButtonBounce() {
     return false;
 }
-void Platform::DebugDisplay(const char *s) {
-    wxLogDebug(stc2wx(s));
-}
 
 bool Platform::IsKeyDown(int WXUNUSED(key)) {
     return false;  // I don't think we'll need this.
@@ -1272,7 +1416,15 @@ int Platform::Maximum(int a, int b) {
         return b;
 }
 
-#define TRACE
+//#define TRACE
+
+void Platform::DebugDisplay(const char *s) {
+#ifdef TRACE
+    wxLogDebug(stc2wx(s));
+#else
+    wxUnusedVar(s);
+#endif
+}
 
 void Platform::DebugPrintf(const char *format, ...) {
 #ifdef TRACE
@@ -1295,6 +1447,7 @@ bool Platform::ShowAssertionPopUps(bool assertionPopUps_) {
 }
 
 void Platform::Assert(const char *c, const char *file, int line) {
+#ifdef TRACE
     char buffer[2000];
     sprintf(buffer, "Assertion [%s] failed at %s %d", c, file, line);
     if (assertionPopUps) {
@@ -1302,18 +1455,16 @@ void Platform::Assert(const char *c, const char *file, int line) {
         wxMessageBox(stc2wx(buffer),
                      wxT("Assertion failure"),
                      wxICON_HAND | wxOK);
-//      if (idButton == IDRETRY) {
-//          ::DebugBreak();
-//      } else if (idButton == IDIGNORE) {
-//          // all OK
-//      } else {
-//          abort();
-//      }
     } else {
         strcat(buffer, "\r\n");
         Platform::DebugDisplay(buffer);
         abort();
     }
+#else
+    wxUnusedVar(c);
+    wxUnusedVar(file);
+    wxUnusedVar(line);
+#endif
 }
 
 
@@ -1342,11 +1493,20 @@ int Platform::DBCSCharMaxLength() {
 //----------------------------------------------------------------------
 
 ElapsedTime::ElapsedTime() {
-    wxStartTimer();
+    wxLongLong localTime = wxGetLocalTimeMillis();
+    littleBit = localTime.GetLo();
+    bigBit = localTime.GetHi();
 }
 
 double ElapsedTime::Duration(bool reset) {
-    double result = wxGetElapsedTime(reset);
+    wxLongLong prevTime(bigBit, littleBit);
+    wxLongLong localTime = wxGetLocalTimeMillis();
+    if(reset) {
+        littleBit = localTime.GetLo();
+        bigBit = localTime.GetHi();
+    }
+    wxLongLong duration = localTime - prevTime;
+    double result = duration.ToDouble();
     result /= 1000.0;
     return result;
 }

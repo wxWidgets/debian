@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: srcparser.cpp,v 1.16 2005/06/02 09:44:45 ABX Exp $
+// RCS-ID:      $Id: srcparser.cpp 40182 2006-07-18 16:23:52Z MW $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#  pragma implementation "srcparser.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -24,9 +20,6 @@
 #include "wx/wx.h"
 #endif
 
-#ifndef __DARWIN__
-#  include <malloc.h>
-#endif
 #include <stdio.h>
 
 #include "srcparser.h"

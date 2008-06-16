@@ -1,0 +1,539 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxBrush</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxbrush"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxboxsizer.html#wxboxsizer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxbrushlist.html#wxbrushlist"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxBrush</H2>
+<P>
+A brush is a drawing tool for filling in areas. It is used for painting
+the background of rectangles, ellipses, etc. It has a colour and a
+style.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxgdiobject.html#wxgdiobject">wxGDIObject</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/brush.h&gt;<P>
+<B><FONT COLOR="#FF0000">Predefined objects</FONT></B><P>
+Objects:<P>
+<B>wxNullBrush</B><P>
+Pointers:<P>
+<B>wxBLUE_BRUSH<BR>
+
+wxGREEN_BRUSH<BR>
+
+wxWHITE_BRUSH<BR>
+
+wxBLACK_BRUSH<BR>
+
+wxGREY_BRUSH<BR>
+
+wxMEDIUM_GREY_BRUSH<BR>
+
+wxLIGHT_GREY_BRUSH<BR>
+
+wxTRANSPARENT_BRUSH<BR>
+
+wxCYAN_BRUSH<BR>
+
+wxRED_BRUSH</B><P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+On a monochrome display, wxWidgets shows
+all brushes as white unless the colour is really black.<P>
+Do not initialize objects on the stack before the program commences,
+since other required structures may not have been set up yet. Instead,
+define global pointers to objects and create them in <A HREF="wx_wxapp.html#wxapponinit">wxApp::OnInit</A> or
+when required.<P>
+An application may wish to create brushes with different
+characteristics dynamically, and there is the consequent danger that a
+large number of duplicate brushes will be created. Therefore an
+application may wish to get a pointer to a brush by using the global
+list of brushes <B>wxTheBrushList</B>, and calling the member function
+<B>FindOrCreateBrush</B>.<P>
+This class uses <A HREF="wx_trefcount.html#trefcount">reference counting and copy-on-write</A>
+internally so that assignments between two instances of this class are very
+cheap. You can therefore use actual objects instead of pointers without
+efficiency problems. If an instance of this class is changed it will create
+its own data internally so that other instances, which previously shared the
+data using the reference counting, are not affected.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbrushlist.html#wxbrushlist">wxBrushList</A>, <A HREF="wx_wxdc.html#wxdc">wxDC</A>, <A HREF="wx_wxdc.html#wxdcsetbrush">wxDC::SetBrush</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxbrushctor">wxBrush::wxBrush</A><BR>
+<A HREF="#wxbrushdtor">wxBrush::~wxBrush</A><BR>
+<A HREF="#wxbrushgetcolour">wxBrush::GetColour</A><BR>
+<A HREF="#wxbrushgetstipple">wxBrush::GetStipple</A><BR>
+<A HREF="#wxbrushgetstyle">wxBrush::GetStyle</A><BR>
+<A HREF="#wxbrushishatch">wxBrush::IsHatch</A><BR>
+<A HREF="#wxbrushisok">wxBrush::IsOk</A><BR>
+<A HREF="#wxbrushsetcolour">wxBrush::SetColour</A><BR>
+<A HREF="#wxbrushsetstipple">wxBrush::SetStipple</A><BR>
+<A HREF="#wxbrushsetstyle">wxBrush::SetStyle</A><BR>
+<A HREF="#wxbrushassignment">wxBrush::operator =</A><BR>
+<A HREF="#wxbrushequals">wxBrush::operator ==</A><BR>
+<A HREF="#wxbrushnotequals">wxBrush::operator !=</A><BR>
+<P>
+
+<HR>
+<A NAME="wxbrushctor"></A>
+<H3>wxBrush::wxBrush</H3>
+<P>
+<B></B> <B>wxBrush</B>()<P>
+Default constructor. The brush will be uninitialised, and <A HREF="wx_wxbrush.html#wxbrushisok">wxBrush:IsOk</A> will
+return false.<P>
+<B></B> <B>wxBrush</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B></B><I> colour</I>, <B>int</B><I> style = <TT>wxSOLID</TT></I>)<P>
+Constructs a brush from a colour object and style.<P>
+<B></B> <B>wxBrush</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>colourName</I>, <B>int</B><I> style</I>)<P>
+Constructs a brush from a colour name and style.<P>
+<B></B> <B>wxBrush</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>stippleBitmap</I>)<P>
+Constructs a stippled brush using a bitmap.<P>
+<B></B> <B>wxBrush</B>(<B>const <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>&</B></B><I> brush</I>)<P>
+Copy constructor, uses <A HREF="wx_trefcount.html#trefcount">reference counting</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>colour</I><UL><UL>
+Colour object.</UL></UL>
+<P>
+<I>colourName</I><UL><UL>
+Colour name. The name will be looked up in the colour database.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+One of:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxTRANSPARENT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Transparent (no fill).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSOLID</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Solid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSTIPPLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Uses a bitmap as a stipple.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxBDIAGONAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Backward diagonal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCROSSDIAG_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Cross-diagonal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFDIAGONAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Forward diagonal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCROSS_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Cross hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHORIZONTAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Horizontal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxVERTICAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Vertical hatch.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+<P>
+<I>brush</I><UL><UL>
+Pointer or reference to a brush to copy.</UL></UL>
+<P>
+<I>stippleBitmap</I><UL><UL>
+A bitmap to use for stippling.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+If a stipple brush is created, the brush style will be set to wxSTIPPLE.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbrushlist.html#wxbrushlist">wxBrushList</A>, <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>, <A HREF="wx_wxcolourdatabase.html#wxcolourdatabase">wxColourDatabase</A><P>
+
+
+<HR>
+<A NAME="wxbrushdtor"></A>
+<H3>wxBrush::~wxBrush</H3>
+<P>
+<B></B> <B>~wxBrush</B>()<P>
+Destructor.
+See <A HREF="wx_trefcount.html#refcountdestruct">reference-counted object destruction</A> for more info.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Although all remaining brushes are deleted when the application exits,
+the application should try to clean up all brushes itself. This is because
+wxWidgets cannot know if a pointer to the brush object is stored in an
+application data structure, and there is a risk of double deletion.<P>
+
+
+<HR>
+<A NAME="wxbrushgetcolour"></A>
+<H3>wxBrush::GetColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetColour</B>() <B>const</B><P>
+Returns a reference to the brush colour.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbrush.html#wxbrushsetcolour">wxBrush::SetColour</A><P>
+
+
+<HR>
+<A NAME="wxbrushgetstipple"></A>
+<H3>wxBrush::GetStipple</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A> *</B> </B> <B>GetStipple</B>() <B>const</B><P>
+Gets a pointer to the stipple bitmap. If the brush does not have a wxSTIPPLE style,
+this bitmap may be non-NULL but uninitialised (<A HREF="wx_wxbitmap.html#wxbitmapisok">wxBitmap:IsOk</A> returns false).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbrush.html#wxbrushsetstipple">wxBrush::SetStipple</A><P>
+
+
+<HR>
+<A NAME="wxbrushgetstyle"></A>
+<H3>wxBrush::GetStyle</H3>
+<P>
+<B>int</B> <B>GetStyle</B>() <B>const</B><P>
+Returns the brush style, one of:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxTRANSPARENT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Transparent (no fill).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSOLID</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Solid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxBDIAGONAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Backward diagonal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCROSSDIAG_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Cross-diagonal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFDIAGONAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Forward diagonal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCROSS_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Cross hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHORIZONTAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Horizontal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxVERTICAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Vertical hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSTIPPLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Stippled using a bitmap.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSTIPPLE_MASK_OPAQUE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Stippled using a bitmap's mask.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbrush.html#wxbrushsetstyle">wxBrush::SetStyle</A>, <A HREF="wx_wxbrush.html#wxbrushsetcolour">wxBrush::SetColour</A>,
+<A HREF="wx_wxbrush.html#wxbrushsetstipple">wxBrush::SetStipple</A><P>
+
+
+<HR>
+<A NAME="wxbrushishatch"></A>
+<H3>wxBrush::IsHatch</H3>
+<P>
+<B>bool</B> <B>IsHatch</B>() <B>const</B><P>
+Returns true if the style of the brush is any of hatched fills.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbrush.html#wxbrushgetstyle">wxBrush::GetStyle</A><P>
+
+
+<HR>
+<A NAME="wxbrushisok"></A>
+<H3>wxBrush::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if the brush is initialised. It will return false if the default
+constructor has been used (for example, the brush is a member of a class, or
+NULL has been assigned to it).<P>
+
+
+<HR>
+<A NAME="wxbrushsetcolour"></A>
+<H3>wxBrush::SetColour</H3>
+<P>
+<B>void</B> <B>SetColour</B>(<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+Sets the brush colour using a reference to a colour object.<P>
+<B>void</B> <B>SetColour</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>colourName</I>)<P>
+Sets the brush colour using a colour name from the colour database.<P>
+<B>void</B> <B>SetColour</B>(<B>unsigned char</B><I> red</I>, <B>unsigned char</B><I> green</I>, <B>unsigned char</B><I> blue</I>)<P>
+Sets the brush colour using red, green and blue values.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbrush.html#wxbrushgetcolour">wxBrush::GetColour</A><P>
+
+
+<HR>
+<A NAME="wxbrushsetstipple"></A>
+<H3>wxBrush::SetStipple</H3>
+<P>
+<B>void</B> <B>SetStipple</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap</I>)<P>
+Sets the stipple bitmap.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bitmap</I><UL><UL>
+The bitmap to use for stippling.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The style will be set to wxSTIPPLE, unless the bitmap has a mask associated
+to it, in which case the style will be set to wxSTIPPLE_MASK_OPAQUE.<P>
+If the wxSTIPPLE variant is used, the bitmap will be used to fill out the
+area to be drawn. If the wxSTIPPLE_MASK_OPAQUE is used, the current
+text foreground and text background determine what colours are used for
+displaying and the bits in the mask (which is a mono-bitmap actually)
+determine where to draw what.<P>
+Note that under Windows 95, only 8x8 pixel large stipple bitmaps are
+supported, Windows 98 and NT as well as GTK support arbitrary bitmaps.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A><P>
+
+
+<HR>
+<A NAME="wxbrushsetstyle"></A>
+<H3>wxBrush::SetStyle</H3>
+<P>
+<B>void</B> <B>SetStyle</B>(<B>int</B><I> style</I>)<P>
+Sets the brush style.<P>
+<I>style</I><UL><UL>
+One of:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxTRANSPARENT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Transparent (no fill).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSOLID</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Solid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxBDIAGONAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Backward diagonal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCROSSDIAG_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Cross-diagonal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxFDIAGONAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Forward diagonal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCROSS_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Cross hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHORIZONTAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Horizontal hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxVERTICAL_HATCH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Vertical hatch.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSTIPPLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Stippled using a bitmap.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxSTIPPLE_MASK_OPAQUE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Stippled using a bitmap's mask.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbrush.html#wxbrushgetstyle">wxBrush::GetStyle</A><P>
+
+
+<HR>
+<A NAME="wxbrushassignment"></A>
+<H3>wxBrush::operator =</H3>
+<P>
+<B><A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>&</B> </B> <B>operator =</B>(<B>const <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>& </B></B><I>brush</I>)<P>
+Assignment operator, using <A HREF="wx_trefcount.html#trefcount">reference counting</A>.<P>
+
+
+<HR>
+<A NAME="wxbrushequals"></A>
+<H3>wxBrush::operator ==</H3>
+<P>
+<B>bool</B> <B>operator ==</B>(<B>const <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>& </B></B><I>brush</I>)<P>
+Equality operator.
+See <A HREF="wx_trefcount.html#refcountequality">reference-counted object comparison</A> for more info.<P>
+
+
+<HR>
+<A NAME="wxbrushnotequals"></A>
+<H3>wxBrush::operator !=</H3>
+<P>
+<B>bool</B> <B>operator !=</B>(<B>const <A HREF="wx_wxbrush.html#wxbrush">wxBrush</A>& </B></B><I>brush</I>)<P>
+Inequality operator.
+See <A HREF="wx_trefcount.html#refcountequality">reference-counted object comparison</A> for more info.<P>
+
+
+</FONT></BODY></HTML>

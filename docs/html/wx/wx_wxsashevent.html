@@ -1,0 +1,112 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSashEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsashevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextxmlhandler.html#wxrichtextxmlhandler"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsashlayoutwindow.html#wxsashlayoutwindow"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSashEvent</H2>
+<P>
+A sash event is sent when the sash of a <A HREF="wx_wxsashwindow.html#wxsashwindow">wxSashWindow</A> has been
+dragged by the user.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><BR>
+
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/sashwin.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process an activate event, use these event handler macros to direct input to a member
+function that takes a wxSashEvent argument.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SASH_DRAGGED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_SASH_DRAGGED event,
+when the user has finished dragging a sash.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SASH_DRAGGED_RANGE(id1, id2, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_SASH_DRAGGED_RANGE event,
+when the user has finished dragging a sash. The event handler is called when windows with ids in the
+given range have their sashes dragged.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<FONT SIZE=2>
+<PRE>
+enum wxSashDragStatus
+{
+    wxSASH_STATUS_OK,
+    wxSASH_STATUS_OUT_OF_RANGE
+};
+</PRE>
+</FONT><P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+When a sash belonging to a sash window is dragged by the user, and then released,
+this event is sent to the window, where it may be processed by an event table
+entry in a derived class, a plug-in event handler or an ancestor class.<P>
+Note that the wxSashWindow doesn't change the window's size itself. It relies on the application's
+event handler to do that. This is because the application may have to handle other consequences
+of the resize, or it may wish to veto it altogether. The event handler should
+look at the drag rectangle: see <A HREF="wx_wxsashevent.html#wxsasheventgetdragrect">wxSashEvent::GetDragRect</A> to see
+what the new size of the window would be if the resize were to be applied. It should
+also call <A HREF="wx_wxsashevent.html#wxsasheventgetdragstatus">wxSashEvent::GetDragStatus</A> to see whether the
+drag was OK or out of the current allowed range.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsashwindow.html#wxsashwindow">wxSashWindow</A>,
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsasheventctor">wxSashEvent::wxSashEvent</A><BR>
+<A HREF="#wxsasheventgetedge">wxSashEvent::GetEdge</A><BR>
+<A HREF="#wxsasheventgetdragrect">wxSashEvent::GetDragRect</A><BR>
+<A HREF="#wxsasheventgetdragstatus">wxSashEvent::GetDragStatus</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsasheventctor"></A>
+<H3>wxSashEvent::wxSashEvent</H3>
+<P>
+<B></B> <B>wxSashEvent</B>(<B>int </B><I>id = 0</I>, <B>wxSashEdgePosition</B><I> edge = wxSASH_NONE</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxsasheventgetedge"></A>
+<H3>wxSashEvent::GetEdge</H3>
+<P>
+<B>wxSashEdgePosition</B> <B>GetEdge</B>() <B>const</B><P>
+Returns the dragged edge. The return value is one of wxSASH_TOP, wxSASH_RIGHT, wxSASH_BOTTOM, wxSASH_LEFT.<P>
+
+<HR>
+<A NAME="wxsasheventgetdragrect"></A>
+<H3>wxSashEvent::GetDragRect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>GetDragRect</B>() <B>const</B><P>
+Returns the rectangle representing the new size the window would be if the resize was applied. It is
+up to the application to set the window size if required.<P>
+
+<HR>
+<A NAME="wxsasheventgetdragstatus"></A>
+<H3>wxSashEvent::GetDragStatus</H3>
+<P>
+<B>wxSashDragStatus</B> <B>GetDragStatus</B>() <B>const</B><P>
+Returns the status of the sash: one of wxSASH_STATUS_OK, wxSASH_STATUS_OUT_OF_RANGE.
+If the drag caused the notional bounding box of the window to flip over, for example, the drag will be out of rage.<P>
+
+
+</FONT></BODY></HTML>

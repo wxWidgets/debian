@@ -21,7 +21,7 @@ print __doc__
 # Author:      Robin Dunn
 #
 # Created:     16-Nov-1999
-# RCS-ID:      $Id: vtk.py,v 1.4 2003/11/12 21:29:05 RD Exp $
+# RCS-ID:      $Id: vtk.py 41077 2006-09-08 20:09:27Z RD $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -318,7 +318,7 @@ class wxVTKRenderWindow(wxVTKRenderWindowBase):
 
 
     def OnChar(self, event):
-        key = event.KeyCode()
+        key = event.GetKeyCode()
         if (key == ord('r')) or (key == ord('R')):
             self.Reset()
         elif (key == ord('w')) or (key == ord('W')):

@@ -4,7 +4,7 @@
 // Author:      George Policello
 // Modified by:
 // Created:     28 Jan 02
-// RCS-ID:      $Id: volume.h,v 1.14.4.1 2005/12/23 00:59:49 VZ Exp $
+// RCS-ID:      $Id: volume.h 39399 2006-05-28 23:08:31Z ABX $
 // Copyright:   (c) 2002 George Policello
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,13 +16,11 @@
 #ifndef _WX_FSVOLUME_H_
 #define _WX_FSVOLUME_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "fsvolume.h"
-#endif
-
 #include "wx/defs.h"
 
 #if wxUSE_FSVOLUME
+
+#include "wx/arrstr.h"
 
 // the volume flags
 enum
@@ -146,4 +144,3 @@ typedef wxFSVolumeBase wxFSVolume;
 #endif // wxUSE_FSVOLUME
 
 #endif // _WX_FSVOLUME_H_
-

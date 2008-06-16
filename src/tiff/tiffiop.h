@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tiffiop.h,v 1.7 2005/04/22 13:18:47 MW Exp $ */
+/* $Header$ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler

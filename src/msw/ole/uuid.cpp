@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        ole/uuid.cpp
+// Name:        src/msw/ole/uuid.cpp
 // Purpose:     implements Uuid class, see uuid.h for details
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.96
-// RCS-ID:      $Id: uuid.cpp,v 1.21 2004/08/16 12:45:46 ABX Exp $
+// RCS-ID:      $Id: uuid.cpp 41054 2006-09-07 19:01:45Z ABX $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -13,10 +13,6 @@
 // Declarations
 // ============================================================================
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "uuid.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -24,14 +20,12 @@
 #pragma hdrstop
 #endif
 
-#include  "wx/setup.h"
-
 #if wxUSE_OLE && ( wxUSE_DRAG_AND_DROP || (defined(__WXDEBUG__) && wxUSE_DATAOBJ) )
 
-// standard headers
-#if wxCHECK_W32API_VERSION( 1, 0 )
+#ifndef WX_PRECOMP
     #include "wx/msw/wrapwin.h"
 #endif
+
 #include  <rpc.h>                       // UUID related functions
 
 #include  "wx/msw/ole/uuid.h"

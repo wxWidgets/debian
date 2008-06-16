@@ -1,0 +1,312 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSizerItem</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsizeritem"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsizerflags.html#wxsizerflags"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxslider.html#wxslider"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSizerItem</H2>
+<P>
+The wxSizerItem class is used to track the position, size and other
+attributes of each item managed by a <A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>. It is not
+usually necessary to use this class because the sizer elements can also be
+identified by their positions or window or sizer pointers but sometimes it may
+be more convenient to use it directly.<P>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/sizer.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxsizeritemwxsizeritem">wxSizerItem::wxSizerItem</A><BR>
+<A HREF="#wxsizeritemdtor">wxSizerItem::~wxSizerItem</A><BR>
+<A HREF="#wxsizeritemcalcmin">wxSizerItem::CalcMin</A><BR>
+<A HREF="#wxsizeritemdeletewindows">wxSizerItem::DeleteWindows</A><BR>
+<A HREF="#wxsizeritemdetachsizer">wxSizerItem::DetachSizer</A><BR>
+<A HREF="#wxsizeritemgetborder">wxSizerItem::GetBorder</A><BR>
+<A HREF="#wxsizeritemgetflag">wxSizerItem::GetFlag</A><BR>
+<A HREF="#wxsizeritemgetminsize">wxSizerItem::GetMinSize</A><BR>
+<A HREF="#wxsizeritemgetposition">wxSizerItem::GetPosition</A><BR>
+<A HREF="#wxsizeritemgetproportion">wxSizerItem::GetProportion</A><BR>
+<A HREF="#wxsizeritemgetratio">wxSizerItem::GetRatio</A><BR>
+<A HREF="#wxsizeritemgetrect">wxSizerItem::GetRect</A><BR>
+<A HREF="#wxsizeritemgetsize">wxSizerItem::GetSize</A><BR>
+<A HREF="#wxsizeritemgetsizer">wxSizerItem::GetSizer</A><BR>
+<A HREF="#wxsizeritemgetspacer">wxSizerItem::GetSpacer</A><BR>
+<A HREF="#wxsizeritemgetuserdata">wxSizerItem::GetUserData</A><BR>
+<A HREF="#wxsizeritemgetwindow">wxSizerItem::GetWindow</A><BR>
+<A HREF="#wxsizeritemissizer">wxSizerItem::IsSizer</A><BR>
+<A HREF="#wxsizeritemisshown">wxSizerItem::IsShown</A><BR>
+<A HREF="#wxsizeritemisspacer">wxSizerItem::IsSpacer</A><BR>
+<A HREF="#wxsizeritemiswindow">wxSizerItem::IsWindow</A><BR>
+<A HREF="#wxsizeritemsetborder">wxSizerItem::SetBorder</A><BR>
+<A HREF="#wxsizeritemsetdimension">wxSizerItem::SetDimension</A><BR>
+<A HREF="#wxsizeritemsetflag">wxSizerItem::SetFlag</A><BR>
+<A HREF="#wxsizeritemsetinitsize">wxSizerItem::SetInitSize</A><BR>
+<A HREF="#wxsizeritemsetproportion">wxSizerItem::SetProportion</A><BR>
+<A HREF="#wxsizeritemsetratio">wxSizerItem::SetRatio</A><BR>
+<A HREF="#wxsizeritemsetsizer">wxSizerItem::SetSizer</A><BR>
+<A HREF="#wxsizeritemsetspacer">wxSizerItem::SetSpacer</A><BR>
+<A HREF="#wxsizeritemsetwindow">wxSizerItem::SetWindow</A><BR>
+<A HREF="#wxsizeritemshow">wxSizerItem::Show</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsizeritemwxsizeritem"></A>
+<H3>wxSizerItem::wxSizerItem</H3>
+<P>
+<B></B> <B>wxSizerItem</B>(<B>int </B><I>width</I>, <B>int </B><I>height</I>, <B>int </B><I>proportion</I>, <B>int </B><I>flag</I>, <B>int </B><I>border</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>userData</I>)<P>
+Construct a sizer item for tracking a spacer.<P>
+
+<B></B> <B>wxSizerItem</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>, <B>const <A HREF="wx_wxsizerflags.html#wxsizerflags">wxSizerFlags</A>& </B></B><I>flags</I>)<P>
+<B></B> <B>wxSizerItem</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>, <B>int </B><I>proportion</I>, <B>int </B><I>flag</I>, <B>int </B><I>border</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>userData</I>)<P>
+Construct a sizer item for tracking a window.<P>
+
+<B></B> <B>wxSizerItem</B>(<B><A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>* </B></B><I>window</I>, <B>const <A HREF="wx_wxsizerflags.html#wxsizerflags">wxSizerFlags</A>& </B></B><I>flags</I>)<P>
+<B></B> <B>wxSizerItem</B>(<B><A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>* </B></B><I>sizer</I>, <B>int </B><I>proportion</I>, <B>int </B><I>flag</I>, <B>int </B><I>border</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>userData</I>)<P>
+Construct a sizer item for tracking a subsizer.<P>
+<P>
+
+<HR>
+<A NAME="wxsizeritemdtor"></A>
+<H3>wxSizerItem::~wxSizerItem</H3>
+<P>
+<B></B> <B>~wxSizerItem</B>()<P>
+Deletes the user data and subsizer, if any.<P>
+
+
+<HR>
+<A NAME="wxsizeritemcalcmin"></A>
+<H3>wxSizerItem::CalcMin</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>CalcMin</B>()<P>
+Calculates the minimum desired size for the item, including any space
+needed by borders.<P>
+
+
+<HR>
+<A NAME="wxsizeritemdeletewindows"></A>
+<H3>wxSizerItem::DeleteWindows</H3>
+<P>
+<B>void</B> <B>DeleteWindows</B>()<P>
+Destroy the window or the windows in a subsizer, depending on the type
+of item.<P>
+
+
+<HR>
+<A NAME="wxsizeritemdetachsizer"></A>
+<H3>wxSizerItem::DetachSizer</H3>
+<P>
+<B>void</B> <B>DetachSizer</B>()<P>
+Enable deleting the SizerItem without destroying the contained sizer.<P>
+
+
+<HR>
+<A NAME="wxsizeritemgetborder"></A>
+<H3>wxSizerItem::GetBorder</H3>
+<P>
+<B>int</B> <B>GetBorder</B>() <B>const</B><P>
+Return the border attribute.<P>
+
+<HR>
+<A NAME="wxsizeritemgetflag"></A>
+<H3>wxSizerItem::GetFlag</H3>
+<P>
+<B>int</B> <B>GetFlag</B>() <B>const</B><P>
+Return the flags attribute.<P>
+
+
+<HR>
+<A NAME="wxsizeritemgetminsize"></A>
+<H3>wxSizerItem::GetMinSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetMinSize</B>() <B>const</B><P>
+Get the minimum size needed for the item.<P>
+
+<HR>
+<A NAME="wxsizeritemgetposition"></A>
+<H3>wxSizerItem::GetPosition</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetPosition</B>() <B>const</B><P>
+What is the current position of the item, as set in the last Layout.<P>
+
+<HR>
+<A NAME="wxsizeritemgetproportion"></A>
+<H3>wxSizerItem::GetProportion</H3>
+<P>
+<B>int</B> <B>GetProportion</B>() <B>const</B><P>
+Get the proportion item attribute.<P>
+
+<HR>
+<A NAME="wxsizeritemgetratio"></A>
+<H3>wxSizerItem::GetRatio</H3>
+<P>
+<B>float</B> <B>GetRatio</B>() <B>const</B><P>
+Get the ration item attribute.<P>
+
+<HR>
+<A NAME="wxsizeritemgetrect"></A>
+<H3>wxSizerItem::GetRect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>GetRect</B>()<P>
+Get the rectangle of the item on the parent window, excluding borders.<P>
+
+<HR>
+<A NAME="wxsizeritemgetsize"></A>
+<H3>wxSizerItem::GetSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetSize</B>() <B>const</B><P>
+Get the current size of the item, as set in the last Layout.<P>
+
+<HR>
+<A NAME="wxsizeritemgetsizer"></A>
+<H3>wxSizerItem::GetSizer</H3>
+<P>
+<B><A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>*</B> </B> <B>GetSizer</B>() <B>const</B><P>
+If this item is tracking a sizer, return it.  NULL otherwise.<P>
+
+
+<HR>
+<A NAME="wxsizeritemgetspacer"></A>
+<H3>wxSizerItem::GetSpacer</H3>
+<P>
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B> </B> <B>GetSpacer</B>() <B>const</B><P>
+If this item is tracking a spacer, return its size.<P>
+
+
+<HR>
+<A NAME="wxsizeritemgetuserdata"></A>
+<H3>wxSizerItem::GetUserData</H3>
+<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B> </B> <B>GetUserData</B>() <B>const</B><P>
+Get the userData item attribute.<P>
+
+
+<HR>
+<A NAME="wxsizeritemgetwindow"></A>
+<H3>wxSizerItem::GetWindow</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetWindow</B>() <B>const</B><P>
+If this item is tracking a window then return it.  NULL otherwise.<P>
+
+
+<HR>
+<A NAME="wxsizeritemissizer"></A>
+<H3>wxSizerItem::IsSizer</H3>
+<P>
+<B>bool</B> <B>IsSizer</B>() <B>const</B><P>
+Is this item a sizer?<P>
+
+
+<HR>
+<A NAME="wxsizeritemisshown"></A>
+<H3>wxSizerItem::IsShown</H3>
+<P>
+<B>bool</B> <B>IsShown</B>() <B>const</B><P>
+Returns <TT>true</TT> if this item is a window or a spacer and it is shown or if this
+item is a sizer and not all its elements are hidden. In other words, for sizer
+items, all of the child elements must be hidden for the sizer itself to be
+considered hidden.<P>
+
+
+<HR>
+<A NAME="wxsizeritemisspacer"></A>
+<H3>wxSizerItem::IsSpacer</H3>
+<P>
+<B>bool</B> <B>IsSpacer</B>() <B>const</B><P>
+Is this item a spacer?<P>
+
+
+<HR>
+<A NAME="wxsizeritemiswindow"></A>
+<H3>wxSizerItem::IsWindow</H3>
+<P>
+<B>bool</B> <B>IsWindow</B>() <B>const</B><P>
+Is this item a window?<P>
+
+
+<HR>
+<A NAME="wxsizeritemsetborder"></A>
+<H3>wxSizerItem::SetBorder</H3>
+<P>
+<B>void</B> <B>SetBorder</B>(<B>int </B><I>border</I>)<P>
+Set the border item attribute.<P>
+
+<HR>
+<A NAME="wxsizeritemsetdimension"></A>
+<H3>wxSizerItem::SetDimension</H3>
+<P>
+<B>void</B> <B>SetDimension</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+Set the position and size of the space allocated to the sizer, and
+adjust the position and size of the item to be within that space
+taking alignment and borders into account.<P>
+
+
+<HR>
+<A NAME="wxsizeritemsetflag"></A>
+<H3>wxSizerItem::SetFlag</H3>
+<P>
+<B>void</B> <B>SetFlag</B>(<B>int </B><I>flag</I>)<P>
+Set the flag  item attribute.<P>
+
+
+<HR>
+<A NAME="wxsizeritemsetinitsize"></A>
+<H3>wxSizerItem::SetInitSize</H3>
+<P>
+<B>void</B> <B>SetInitSize</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>)<P>
+
+
+<HR>
+<A NAME="wxsizeritemsetproportion"></A>
+<H3>wxSizerItem::SetProportion</H3>
+<P>
+<B>void</B> <B>SetProportion</B>(<B>int </B><I>proportion</I>)<P>
+Set the proportion item attribute.<P>
+
+<HR>
+<A NAME="wxsizeritemsetratio"></A>
+<H3>wxSizerItem::SetRatio</H3>
+<P>
+<B>void</B> <B>SetRatio</B>(<B>int </B><I>width</I>, <B>int </B><I>height</I>)<P>
+<B>void</B> <B>SetRatio</B>(<B><A HREF="wx_wxsize.html#wxsize">wxSize</A> </B></B><I>size</I>)<P>
+<B>void</B> <B>SetRatio</B>(<B>float </B><I>ratio</I>)<P>
+Set the ratio item attribute.<P>
+
+
+<HR>
+<A NAME="wxsizeritemsetsizer"></A>
+<H3>wxSizerItem::SetSizer</H3>
+<P>
+<B>void</B> <B>SetSizer</B>(<B><A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>* </B></B><I>sizer</I>)<P>
+Set the sizer tracked by this item.<P>
+
+
+<HR>
+<A NAME="wxsizeritemsetspacer"></A>
+<H3>wxSizerItem::SetSpacer</H3>
+<P>
+<B>void</B> <B>SetSpacer</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+Set the size of the spacer tracked by this item.<P>
+
+
+<HR>
+<A NAME="wxsizeritemsetwindow"></A>
+<H3>wxSizerItem::SetWindow</H3>
+<P>
+<B>void</B> <B>SetWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>)<P>
+Set the window to be tracked by thsi item.<P>
+
+
+<HR>
+<A NAME="wxsizeritemshow"></A>
+<H3>wxSizerItem::Show</H3>
+<P>
+<B>void</B> <B>Show</B>(<B>bool </B><I>show</I>)<P>
+Set the show item attribute, which sizers use to determine if the item
+is to be made part of the layout or not.  If the item is tracking a
+window then it is shown or hidden as needed.<P>
+
+</FONT></BODY></HTML>

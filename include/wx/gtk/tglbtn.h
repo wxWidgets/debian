@@ -5,7 +5,7 @@
 // Author:      John Norris, minor changes by Axel Schlueter
 // Modified by:
 // Created:     08.02.01
-// RCS-ID:      $Id: tglbtn.h,v 1.8 2005/08/02 22:57:58 MW Exp $
+// RCS-ID:      $Id: tglbtn.h 40815 2006-08-25 12:59:28Z VZ $
 // Copyright:   (c) 2000 Johnny C. Norris II
 // License:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ class WXDLLIMPEXP_CORE wxToggleBitmapButton;
 // global data
 //-----------------------------------------------------------------------------
 
-extern WXDLLIMPEXP_CORE const wxChar *wxCheckBoxNameStr;
+extern WXDLLIMPEXP_CORE const wxChar wxCheckBoxNameStr[];
 
 //-----------------------------------------------------------------------------
 // wxToggleBitmapButton
@@ -63,7 +63,8 @@ public:
     bool GetValue() const;
 
     // Set the label
-    void SetLabel(const wxBitmap& label);
+    virtual void SetLabel(const wxString& label) { wxControl::SetLabel(label); }
+    virtual void SetLabel(const wxBitmap& label);
     bool Enable(bool enable = TRUE);
 
     static wxVisualAttributes
@@ -74,11 +75,11 @@ public:
     wxBitmap  m_bitmap;
 
     void OnSetBitmap();
-    void DoApplyWidgetStyle(GtkRcStyle *style);
-    bool IsOwnGtkWindow(GdkWindow *window);
 
-    virtual void OnInternalIdle();
+protected:
     virtual wxSize DoGetBestSize() const;
+    virtual void DoApplyWidgetStyle(GtkRcStyle *style);
+    virtual GdkWindow *GTKGetWindow(wxArrayGdkWindows& windows) const;
 
 private:
     DECLARE_DYNAMIC_CLASS(wxToggleBitmapButton)
@@ -128,11 +129,10 @@ public:
     // implementation
     bool m_blockEvent;
 
-    void DoApplyWidgetStyle(GtkRcStyle *style);
-    bool IsOwnGtkWindow(GdkWindow *window);
-
-    virtual void OnInternalIdle();
+protected:
     virtual wxSize DoGetBestSize() const;
+    virtual void DoApplyWidgetStyle(GtkRcStyle *style);
+    virtual GdkWindow *GTKGetWindow(wxArrayGdkWindows& windows) const;
 
 private:
     DECLARE_DYNAMIC_CLASS(wxToggleButton)

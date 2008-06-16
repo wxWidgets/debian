@@ -1,0 +1,117 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxApp overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxappoverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_samples.html#samples"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_windowsizingoverview.html#windowsizingoverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxApp overview</H2>
+<P>
+Classes: <A HREF="wx_wxapp.html#wxapp">wxApp</A><P>
+A wxWidgets application does not have a <I>main</I> procedure; the equivalent is the
+<A HREF="wx_wxapp.html#wxapponinit">OnInit</A> member defined for a class derived from wxApp.
+<I>OnInit</I> will usually create a top window as a bare minimum.<P>
+Unlike in earlier versions of wxWidgets, OnInit does not return a frame. Instead it
+returns a boolean value which indicates whether processing should continue (true) or not (false).
+You call <A HREF="wx_wxapp.html#wxappsettopwindow">wxApp::SetTopWindow</A> to let wxWidgets know
+about the top window.<P>
+Note that the program's command line arguments, represented by <I>argc</I> 
+and <I>argv</I>, are available from within wxApp member functions.<P>
+An application closes by destroying all windows. Because all frames must
+be destroyed for the application to exit, it is advisable to use parent
+frames wherever possible when creating new frames, so that deleting the
+top level frame will automatically delete child frames. The alternative
+is to explicitly delete child frames in the top-level frame's <A HREF="wx_wxcloseevent.html#wxcloseevent">wxCloseEvent</A>
+handler.<P>
+In emergencies the <A HREF="wx_processfunctions.html#wxexit">wxExit</A> function can be called to kill the
+application however normally the application shuts down automatically, 
+<A HREF="wx_wxappoverview.html#wxappshutdownoverview">see below</A>.<P>
+An example of defining an application follows:<P>
+<PRE>
+class DerivedApp : public wxApp
+{
+public:
+  virtual bool OnInit();
+};
+
+IMPLEMENT_APP(DerivedApp)
+
+bool DerivedApp::OnInit()
+{
+  wxFrame *the_frame = new wxFrame(NULL, ID_MYFRAME, argv[0]);
+  ...
+  the_frame-&gt;Show(true);
+  SetTopWindow(the_frame);
+
+  return true;
+}
+</PRE>
+Note the use of IMPLEMENT_APP(appClass), which allows wxWidgets to dynamically create an instance of the application object
+at the appropriate point in wxWidgets initialization. Previous versions of wxWidgets used
+to rely on the creation of a global application object, but this is no longer recommended,
+because required global initialization may not have been performed at application object
+construction time.<P>
+You can also use DECLARE_APP(appClass) in a header file to declare the wxGetApp function which returns
+a reference to the application object. Otherwise you can only use the global 
+<TT>wxTheApp</TT> pointer which is of type <TT>wxApp *</TT>.<P>
+
+<A HREF="#wxappshutdownoverview">Application shutdown</A><BR>
+<P>
+
+<HR>
+<A NAME="wxappshutdownoverview"></A>
+<H3>Application shutdown</H3>
+<P>
+The application normally shuts down when the last of its top level windows is
+closed. This is normally the expected behaviour and means that it is enough to
+call <A HREF="wx_wxwindow.html#wxwindowclose">Close()</A> in response to the <TT>"Exit"</TT> menu
+command if your program has a single top level window. If this behaviour is not
+desirable <A HREF="wx_wxapp.html#wxappsetexitonframedelete">wxApp::SetExitOnFrameDelete</A> can
+be called to change it. Note that starting from wxWidgets 2.3.3 such logic
+doesn't apply for the windows shown before the program enters the main loop: in
+other words, you can safely show a dialog from 
+<A HREF="wx_wxapp.html#wxapponinit">wxApp::OnInit</A> and not be afraid that your application
+terminates when this dialog -- which is the last top level window for the
+moment -- is closed.<P>
+
+Another aspect of the application shutdown is <A HREF="wx_wxapp.html#wxapponexit">OnExit</A> 
+which is called when the application exits but <I>before</I> wxWidgets cleans up
+its internal structures. You should delete all wxWidgets object that you
+created by the time OnExit finishes. In particular, do <B>not</B> destroy them
+from application class' destructor!<P>
+For example, this code may crash:<P>
+<PRE>
+class MyApp : public wxApp
+{
+ public:
+    wxCHMHelpController m_helpCtrl;
+    ...
+};
+</PRE>
+The reason for that is that <TT>m_helpCtrl</TT> is a member object and is 
+thus destroyed from MyApp destructor. But MyApp object is deleted after 
+wxWidgets structures that wxCHMHelpController depends on were 
+uninitialized! The solution is to destroy HelpCtrl in <I>OnExit</I>:<P>
+<PRE>
+class MyApp : public wxApp
+{
+ public:
+    wxCHMHelpController *m_helpCtrl;
+    ...
+};
+
+bool MyApp::OnInit()
+{
+  ...
+  m_helpCtrl = new wxCHMHelpController;
+  ...
+}
+
+int MyApp::OnExit()
+{
+  delete m_helpCtrl;
+  return 0;
+}
+</PRE>
+
+</FONT></BODY></HTML>

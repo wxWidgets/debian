@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        common/dcbase.cpp
+// Name:        src/common/dcbase.cpp
 // Purpose:     generic methods of the wxDC Class
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05/25/99
-// RCS-ID:      $Id: dcbase.cpp,v 1.39.2.2 2006/03/15 08:50:46 JS Exp $
+// RCS-ID:      $Id: dcbase.cpp 48616 2007-09-09 19:36:50Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,10 +12,6 @@
 // ============================================================================
 // declarations
 // ============================================================================
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "dcbase.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers
@@ -29,12 +25,32 @@
 #endif
 
 #include "wx/dc.h"
+#include "wx/dcbuffer.h" // for IMPLEMENT_DYNAMIC_CLASS
+
+#ifndef WX_PRECOMP
+    #include "wx/math.h"
+#endif
 
 // bool wxDCBase::sm_cacheing = false;
+
+IMPLEMENT_ABSTRACT_CLASS(wxDCBase, wxObject)
 
 // ============================================================================
 // implementation
 // ============================================================================
+
+IMPLEMENT_DYNAMIC_CLASS(wxBufferedDC, wxMemoryDC)
+IMPLEMENT_ABSTRACT_CLASS(wxBufferedPaintDC, wxBufferedDC)
+
+#if WXWIN_COMPATIBILITY_2_6
+void wxDCBase::BeginDrawing()
+{
+}
+
+void wxDCBase::EndDrawing()
+{
+}
+#endif // WXWIN_COMPATIBILITY_2_6
 
 // ----------------------------------------------------------------------------
 // special symbols
@@ -48,8 +64,9 @@ void wxDCBase::DoDrawCheckMark(wxCoord x1, wxCoord y1,
     wxCoord x2 = x1 + width,
             y2 = y1 + height;
 
-    // this is to yield width of 3 for width == height == 10
-    SetPen(wxPen(GetTextForeground(), (width + height + 1) / 7, wxSOLID));
+    // the pen width is calibrated to give 3 for width == height == 10
+    wxDCPenChanger pen((wxDC&)*this,
+                        wxPen(GetTextForeground(), (width + height + 1)/7));
 
     // we're drawing a scaled version of wx/generic/tick.xpm here
     wxCoord x3 = x1 + (4*width) / 10,   // x of the tick bottom
@@ -314,7 +331,7 @@ void wxDCBase::DoDrawSpline( wxList *points )
     double           x1, y1, x2, y2;
 
     wxList::compatibility_iterator node = points->GetFirst();
-    if (node == wxList::compatibility_iterator())
+    if (!node)
         // empty list
         return;
 
@@ -405,15 +422,14 @@ bool wxDCBase::DoGetPartialTextExtents(const wxString& text, wxArrayInt& widths)
 {
     int totalWidth = 0;
 
-    size_t i, len = text.Length();
+    const size_t len = text.length();
     widths.Empty();
     widths.Add(0, len);
-    int w, h;
 
     // reset the cache if font or horizontal scale have changed
-    if (!s_fontWidthCache.m_widths ||
-        (s_fontWidthCache.m_scaleX != m_scaleX) ||
-        (s_fontWidthCache.m_font != GetFont()))
+    if ( !s_fontWidthCache.m_widths ||
+         !wxIsSameDouble(s_fontWidthCache.m_scaleX, m_scaleX) ||
+         (s_fontWidthCache.m_font != GetFont()) )
     {
         s_fontWidthCache.Reset();
         s_fontWidthCache.m_font = GetFont();
@@ -422,7 +438,8 @@ bool wxDCBase::DoGetPartialTextExtents(const wxString& text, wxArrayInt& widths)
 
     // Calculate the position of each character based on the widths of
     // the previous characters
-    for (i=0; i<len; i++)
+    int w, h;
+    for ( size_t i = 0; i < len; i++ )
     {
         const wxChar c = text[i];
         unsigned int c_int = (unsigned int)c;
@@ -454,7 +471,7 @@ void wxDCBase::GetMultiLineTextExtent(const wxString& text,
                                       wxCoord *x,
                                       wxCoord *y,
                                       wxCoord *h,
-                                      wxFont *font)
+                                      wxFont *font) const
 {
     wxCoord widthTextMax = 0, widthLine,
             heightTextTotal = 0, heightLineDefault = 0, heightLine = 0;
@@ -671,6 +688,162 @@ void wxDCBase::DrawLabel(const wxString& text,
 
     CalcBoundingBox(x0, y0);
     CalcBoundingBox(x0 + width0, y0 + height);
+}
+
+
+void wxDCBase::DoGradientFillLinear(const wxRect& rect,
+                                    const wxColour& initialColour,
+                                    const wxColour& destColour,
+                                    wxDirection nDirection)
+{
+    // save old pen
+    wxPen oldPen = m_pen;
+    wxBrush oldBrush = m_brush;
+
+    wxUint8 nR1 = initialColour.Red();
+    wxUint8 nG1 = initialColour.Green();
+    wxUint8 nB1 = initialColour.Blue();
+    wxUint8 nR2 = destColour.Red();
+    wxUint8 nG2 = destColour.Green();
+    wxUint8 nB2 = destColour.Blue();
+    wxUint8 nR, nG, nB;
+
+    if ( nDirection == wxEAST || nDirection == wxWEST )
+    {
+        wxInt32 x = rect.GetWidth();
+        wxInt32 w = x;              // width of area to shade
+        wxInt32 xDelta = w/256;     // height of one shade bend
+        if (xDelta < 1)
+            xDelta = 1;
+
+        while (x >= xDelta)
+        {
+            x -= xDelta;
+            if (nR1 > nR2)
+                nR = nR1 - (nR1-nR2)*(w-x)/w;
+            else
+                nR = nR1 + (nR2-nR1)*(w-x)/w;
+
+            if (nG1 > nG2)
+                nG = nG1 - (nG1-nG2)*(w-x)/w;
+            else
+                nG = nG1 + (nG2-nG1)*(w-x)/w;
+
+            if (nB1 > nB2)
+                nB = nB1 - (nB1-nB2)*(w-x)/w;
+            else
+                nB = nB1 + (nB2-nB1)*(w-x)/w;
+
+            wxColour colour(nR,nG,nB);
+            SetPen(wxPen(colour, 1, wxSOLID));
+            SetBrush(wxBrush(colour));
+            if(nDirection == wxEAST)
+                DrawRectangle(rect.GetRight()-x-xDelta+1, rect.GetTop(),
+                        xDelta, rect.GetHeight());
+            else //nDirection == wxWEST
+                DrawRectangle(rect.GetLeft()+x, rect.GetTop(),
+                        xDelta, rect.GetHeight());
+        }
+    }
+    else  // nDirection == wxNORTH || nDirection == wxSOUTH
+    {
+        wxInt32 y = rect.GetHeight();
+        wxInt32 w = y;              // height of area to shade
+        wxInt32 yDelta = w/255;     // height of one shade bend
+        if (yDelta < 1)
+            yDelta = 1;
+
+        while (y > 0)
+        {
+            y -= yDelta;
+            if (nR1 > nR2)
+                nR = nR1 - (nR1-nR2)*(w-y)/w;
+            else
+                nR = nR1 + (nR2-nR1)*(w-y)/w;
+
+            if (nG1 > nG2)
+                nG = nG1 - (nG1-nG2)*(w-y)/w;
+            else
+                nG = nG1 + (nG2-nG1)*(w-y)/w;
+
+            if (nB1 > nB2)
+                nB = nB1 - (nB1-nB2)*(w-y)/w;
+            else
+                nB = nB1 + (nB2-nB1)*(w-y)/w;
+
+            wxColour colour(nR,nG,nB);
+            SetPen(wxPen(colour, 1, wxSOLID));
+            SetBrush(wxBrush(colour));
+            if(nDirection == wxNORTH)
+                DrawRectangle(rect.GetLeft(), rect.GetTop()+y,
+                        rect.GetWidth(), yDelta);
+            else //nDirection == wxSOUTH
+                DrawRectangle(rect.GetLeft(), rect.GetBottom()-y-yDelta+1,
+                        rect.GetWidth(), yDelta);
+        }
+    }
+
+    SetPen(oldPen);
+    SetBrush(oldBrush);
+}
+
+void wxDCBase::DoGradientFillConcentric(const wxRect& rect,
+                                      const wxColour& initialColour,
+                                      const wxColour& destColour,
+                                      const wxPoint& circleCenter)
+{
+    //save the old pen color
+    wxColour oldPenColour = m_pen.GetColour();
+
+    wxUint8 nR1 = destColour.Red();
+    wxUint8 nG1 = destColour.Green();
+    wxUint8 nB1 = destColour.Blue();
+    wxUint8 nR2 = initialColour.Red();
+    wxUint8 nG2 = initialColour.Green();
+    wxUint8 nB2 = initialColour.Blue();
+    wxUint8 nR, nG, nB;
+
+
+    //Radius
+    wxInt32 cx = rect.GetWidth() / 2;
+    wxInt32 cy = rect.GetHeight() / 2;
+    wxInt32 nRadius;
+    if (cx < cy)
+        nRadius = cx;
+    else
+        nRadius = cy;
+
+    //Offset of circle
+    wxInt32 nCircleOffX = circleCenter.x - (rect.GetWidth() / 2);
+    wxInt32 nCircleOffY = circleCenter.y - (rect.GetHeight() / 2);
+
+    for ( wxInt32 x = 0; x < rect.GetWidth(); x++ )
+    {
+        for ( wxInt32 y = 0; y < rect.GetHeight(); y++ )
+        {
+            //get color difference
+            wxInt32 nGradient = ((nRadius -
+                                  (wxInt32)sqrt(
+                                    pow((double)(x - cx - nCircleOffX), 2) +
+                                    pow((double)(y - cy - nCircleOffY), 2)
+                                  )) * 100) / nRadius;
+
+            //normalize Gradient
+            if (nGradient < 0 )
+                nGradient = 0;
+
+            //get dest colors
+            nR = (wxUint8)(nR1 + ((nR2 - nR1) * nGradient / 100));
+            nG = (wxUint8)(nG1 + ((nG2 - nG1) * nGradient / 100));
+            nB = (wxUint8)(nB1 + ((nB2 - nB1) * nGradient / 100));
+
+            //set the pixel
+            m_pen.SetColour(wxColour(nR,nG,nB));
+            DrawPoint(wxPoint(x + rect.GetLeft(), y + rect.GetTop()));
+        }
+    }
+    //return old pen color
+    m_pen.SetColour(oldPenColour);
 }
 
 /*
@@ -958,7 +1131,7 @@ void wxDCBase::CalculateEllipticPoints( wxList* points,
     }
     else
     {
-        wxNode *node;
+        wxNode* node;
         // copy whole ellipse, wxPoints will be deleted outside
         for( node = pointsarray[0].GetFirst(); node; node = node->GetNext() )
         {
@@ -984,4 +1157,3 @@ void wxDCBase::CalculateEllipticPoints( wxList* points,
 } // CalculateEllipticPoints
 
 #endif
-

@@ -1,0 +1,1248 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFileName</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfilename"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfileinputstream.html#wxfileinputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfileoutputstream.html#wxfileoutputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFileName</H2>
+<P>
+wxFileName encapsulates a file name. This class serves two purposes: first, it
+provides the functions to split the file names into components and to recombine
+these components in the full file name which can then be passed to the OS file
+functions (and <A HREF="wx_filefunctions.html#filefunctions">wxWidgets functions</A> wrapping them).
+Second, it includes the functions for working with the files itself. Note that
+to change the file data you should use <A HREF="wx_wxfile.html#wxfile">wxFile</A> class instead.
+wxFileName provides functions for working with the file attributes.<P>
+When working with directory names (i.e. without filename and extension)
+make sure not to misuse the file name part of this class with the last
+directory. Instead initialize the wxFileName instance like this:<P>
+<PRE>
+wxFileName dirname( wxT("C:\mydir"), wxEmptyString );
+MyMethod( dirname.GetPath() );
+</PRE>
+The same can be done using the static method <A HREF="wx_wxfilename.html#wxfilenamedirname">wxFileName::DirName</A>:<P>
+<PRE>
+wxFileName dirname = wxFileName::DirName( wxT("C:\mydir") );
+MyMethod( dirname.GetPath() );
+</PRE>
+Accordingly, methods dealing with directories or directory names
+like <A HREF="wx_wxfilename.html#wxfilenameisdirreadable">IsDirReadable</A> use
+<A HREF="wx_wxfilename.html#wxfilenamegetpath">GetPath</A> whereas methods dealing 
+with file names like <A HREF="wx_wxfilename.html#wxfilenameisfilereadable">IsFileReadable</A>
+use <A HREF="wx_wxfilename.html#wxfilenamegetfullpath">GetFullPath</A>.<P>
+If it is not known wether a string contains a directory name or
+a complete file name (such as when interpreting user input) you need to use
+the static function <A HREF="wx_wxfilename.html#wxfilenamedirexists">wxFileName::DirExists</A>
+(or its identical variants <A HREF="wx_wxdir.html#wxdirexists">wxDir::Exists</A> and
+<A HREF="wx_filefunctions.html#functionwxdirexists">wxDirExists</A>) and construct the wxFileName
+instance accordingly. This will only work if the directory actually exists,
+of course:<P>
+<PRE>
+wxString user_input;
+// get input from user
+
+wxFileName fname;
+if (wxDirExists(user_input))
+    fname.AssignDir( user_input );
+else
+    fname.Assign( user_input );
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/filename.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+Many wxFileName methods accept the path format argument which is by
+<TT>wxPATH_NATIVE</TT> by default meaning to use the path format native for the
+current platform.<P>
+The path format affects the operation of wxFileName functions in several ways:
+first and foremost, it defines the path separator character to use, but it also
+affects other things such as whether the path has the drive part or not.<P>
+<PRE>
+enum wxPathFormat
+{
+    wxPATH_NATIVE = 0,      // the path format for the current platform
+    wxPATH_UNIX,
+    wxPATH_BEOS = wxPATH_UNIX,
+    wxPATH_MAC,
+    wxPATH_DOS,
+    wxPATH_WIN = wxPATH_DOS,
+    wxPATH_OS2 = wxPATH_DOS,
+    wxPATH_VMS,
+
+    wxPATH_MAX // Not a valid value for specifying path format
+}
+</PRE>
+<B><FONT COLOR="#FF0000">Function groups</FONT></B><P>
+
+<A HREF="#filenameformat">File name format</A><BR>
+<A HREF="#filenameconstruction">File name construction</A><BR>
+<A HREF="#filetests">File tests</A><BR>
+<A HREF="#filenamecomponents">File name components</A><BR>
+<A HREF="#filenameoperations">Operations</A><BR>
+<A HREF="#wxfilenamewxfilename">wxFileName::wxFileName</A><BR>
+<A HREF="#wxfilenameappenddir">wxFileName::AppendDir</A><BR>
+<A HREF="#wxfilenameassign">wxFileName::Assign</A><BR>
+<A HREF="#wxfilenameassigncwd">wxFileName::AssignCwd</A><BR>
+<A HREF="#wxfilenameassigndir">wxFileName::AssignDir</A><BR>
+<A HREF="#wxfilenameassignhomedir">wxFileName::AssignHomeDir</A><BR>
+<A HREF="#wxfilenameassigntempfilename">wxFileName::AssignTempFileName</A><BR>
+<A HREF="#wxfilenameclear">wxFileName::Clear</A><BR>
+<A HREF="#wxfilenameclearext">wxFileName::ClearExt</A><BR>
+<A HREF="#wxfilenamecreatetempfilename">wxFileName::CreateTempFileName</A><BR>
+<A HREF="#wxfilenamedirexists">wxFileName::DirExists</A><BR>
+<A HREF="#wxfilenamedirname">wxFileName::DirName</A><BR>
+<A HREF="#wxfilenamefileexists">wxFileName::FileExists</A><BR>
+<A HREF="#wxfilenamefilename">wxFileName::FileName</A><BR>
+<A HREF="#wxfilenamegetcwd">wxFileName::GetCwd</A><BR>
+<A HREF="#wxfilenamegetdircount">wxFileName::GetDirCount</A><BR>
+<A HREF="#wxfilenamegetdirs">wxFileName::GetDirs</A><BR>
+<A HREF="#wxfilenamegetext">wxFileName::GetExt</A><BR>
+<A HREF="#wxfilenamegetforbiddenchars">wxFileName::GetForbiddenChars</A><BR>
+<A HREF="#wxfilenamegetformat">wxFileName::GetFormat</A><BR>
+<A HREF="#wxfilenamegetfullname">wxFileName::GetFullName</A><BR>
+<A HREF="#wxfilenamegetfullpath">wxFileName::GetFullPath</A><BR>
+<A HREF="#wxfilenamegethomedir">wxFileName::GetHomeDir</A><BR>
+<A HREF="#wxfilenamegetlongpath">wxFileName::GetLongPath</A><BR>
+<A HREF="#wxfilenamegetmodificationtime">wxFileName::GetModificationTime</A><BR>
+<A HREF="#wxfilenamegetname">wxFileName::GetName</A><BR>
+<A HREF="#wxfilenamegetpath">wxFileName::GetPath</A><BR>
+<A HREF="#wxfilenamegetpathseparator">wxFileName::GetPathSeparator</A><BR>
+<A HREF="#wxfilenamegetpathseparators">wxFileName::GetPathSeparators</A><BR>
+<A HREF="#wxfilenamegetpathterminators">wxFileName::GetPathTerminators</A><BR>
+<A HREF="#wxfilenamegetpathwithsep">wxFileName::GetPathWithSep</A><BR>
+<A HREF="#wxfilenamegetshortpath">wxFileName::GetShortPath</A><BR>
+<A HREF="#wxfilenamegetsize">wxFileName::GetSize</A><BR>
+<A HREF="#wxfilenamegethumanreadablesize">wxFileName::GetHumanReadableSize</A><BR>
+<A HREF="#wxfilenamegettempdir">wxFileName::GetTempDir</A><BR>
+<A HREF="#wxfilenamegettimes">wxFileName::GetTimes</A><BR>
+<A HREF="#wxfilenamegetvolume">wxFileName::GetVolume</A><BR>
+<A HREF="#wxfilenamegetvolumeseparator">wxFileName::GetVolumeSeparator</A><BR>
+<A HREF="#wxfilenamehasext">wxFileName::HasExt</A><BR>
+<A HREF="#wxfilenamehasname">wxFileName::HasName</A><BR>
+<A HREF="#wxfilenamehasvolume">wxFileName::HasVolume</A><BR>
+<A HREF="#wxfilenameinsertdir">wxFileName::InsertDir</A><BR>
+<A HREF="#wxfilenameisabsolute">wxFileName::IsAbsolute</A><BR>
+<A HREF="#wxfilenameiscasesensitive">wxFileName::IsCaseSensitive</A><BR>
+<A HREF="#wxfilenameisdirreadable">wxFileName::IsDirReadable</A><BR>
+<A HREF="#wxfilenameisdirwritable">wxFileName::IsDirWritable</A><BR>
+<A HREF="#wxfilenameisfileexecutable">wxFileName::IsFileExecutable</A><BR>
+<A HREF="#wxfilenameisfilereadable">wxFileName::IsFileReadable</A><BR>
+<A HREF="#wxfilenameisfilewritable">wxFileName::IsFileWritable</A><BR>
+<A HREF="#wxfilenameisok">wxFileName::IsOk</A><BR>
+<A HREF="#wxfilenameispathseparator">wxFileName::IsPathSeparator</A><BR>
+<A HREF="#wxfilenameisrelative">wxFileName::IsRelative</A><BR>
+<A HREF="#wxfilenameisdir">wxFileName::IsDir</A><BR>
+<A HREF="#wxfilenamemacfinddefaulttypeandcreator">wxFileName::MacFindDefaultTypeAndCreator</A><BR>
+<A HREF="#wxfilenamemacregisterdefaulttypeandcreator">wxFileName::MacRegisterDefaultTypeAndCreator</A><BR>
+<A HREF="#wxfilenamemacsetdefaulttypeandcreator">wxFileName::MacSetDefaultTypeAndCreator</A><BR>
+<A HREF="#wxfilenamemakeabsolute">wxFileName::MakeAbsolute</A><BR>
+<A HREF="#wxfilenamemakerelativeto">wxFileName::MakeRelativeTo</A><BR>
+<A HREF="#wxfilenamemkdir">wxFileName::Mkdir</A><BR>
+<A HREF="#wxfilenamenormalize">wxFileName::Normalize</A><BR>
+<A HREF="#wxfilenameprependdir">wxFileName::PrependDir</A><BR>
+<A HREF="#wxfilenameremovedir">wxFileName::RemoveDir</A><BR>
+<A HREF="#wxfilenameremovelastdir">wxFileName::RemoveLastDir</A><BR>
+<A HREF="#wxfilenamermdir">wxFileName::Rmdir</A><BR>
+<A HREF="#wxfilenamesameas">wxFileName::SameAs</A><BR>
+<A HREF="#wxfilenamesetcwd">wxFileName::SetCwd</A><BR>
+<A HREF="#wxfilenamesetext">wxFileName::SetExt</A><BR>
+<A HREF="#wxfilenamesetemptyext">wxFileName::SetEmptyExt</A><BR>
+<A HREF="#wxfilenamesetfullname">wxFileName::SetFullName</A><BR>
+<A HREF="#wxfilenamesetname">wxFileName::SetName</A><BR>
+<A HREF="#wxfilenamesettimes">wxFileName::SetTimes</A><BR>
+<A HREF="#wxfilenamesetvolume">wxFileName::SetVolume</A><BR>
+<A HREF="#wxfilenamesplitpath">wxFileName::SplitPath</A><BR>
+<A HREF="#wxfilenamesplitvolume">wxFileName::SplitVolume</A><BR>
+<A HREF="#wxfilenametouch">wxFileName::Touch</A><BR>
+<A HREF="#wxfilenameoperatorassign">wxFileName::operator=</A><BR>
+<A HREF="#wxfilenameoperatorequal">wxFileName::operator==</A><BR>
+<A HREF="#wxfilenameoperatornotequal">wxFileName::operator!=</A><BR>
+<P>
+
+<HR>
+<A NAME="filenameformat"></A>
+<H3>File name format</H3>
+<P>
+wxFileName currently supports the file names in the Unix, DOS/Windows, Mac OS
+and VMS formats. Although these formats are quite different, wxFileName tries
+to treat them all in the same generic way. It supposes that all file names
+consist of the following parts: the volume (also known as drive under Windows
+or device under VMS), the path which is a sequence of directory names separated
+by the <A HREF="wx_wxfilename.html#wxfilenamegetpathseparators">path separators</A> and the full
+filename itself which, in turn, is composed from the base file name and the
+extension. All of the individual components of the file name may be empty and,
+for example, the volume name is always empty under Unix, but if they are all
+empty simultaneously, the filename object is considered to be in an invalid
+state and <A HREF="wx_wxfilename.html#wxfilenameisok">IsOk</A> returns <TT>false</TT> for it.<P>
+File names can be case-sensitive or not, the function
+<A HREF="wx_wxfilename.html#wxfilenameiscasesensitive">IsCaseSensitive</A> allows to determine this.<P>
+The rules for determining whether the file name is absolute or relative also
+depend on the file name format and the only portable way to answer this
+question is to use <A HREF="wx_wxfilename.html#wxfilenameisabsolute">IsAbsolute</A> or
+<A HREF="wx_wxfilename.html#wxfilenameisrelative">IsRelative</A> method. Note that on Windows, "X:"
+refers to the current working directory on drive X. Therefore, a wxFileName
+instance constructed from for example "X:dir/file.ext" treats the portion 
+beyond drive separator as being relative to that directory.<P>
+To ensure that the filename is absolute, you may use
+<A HREF="wx_wxfilename.html#wxfilenamemakeabsolute">MakeAbsolute</A>. There is also an inverse
+function <A HREF="wx_wxfilename.html#wxfilenamemakerelativeto">MakeRelativeTo</A> which undoes
+what <A HREF="wx_wxfilename.html#wxfilenamenormalize">Normalize(wxPATH_NORM_DOTS)</A> does.<P>
+Other functions returning information about the file format provided by this
+class are <A HREF="wx_wxfilename.html#wxfilenamegetvolumeseparator">GetVolumeSeparator</A>,
+<A HREF="wx_wxfilename.html#wxfilenameispathseparator">IsPathSeparator</A>.<P>
+
+
+<HR>
+<A NAME="filenameconstruction"></A>
+<H3>File name construction</H3>
+<P>
+You can initialize a wxFileName instance using one of the following functions:<P>
+<A HREF="wx_wxfilename.html#wxfilenamewxfilename">wxFileName constructors</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameassign">Assign</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameassigncwd">AssignCwd</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameassigndir">AssignDir</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameassignhomedir">AssignHomeDir</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameassigntempfilename">AssignHomeTempFileName</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamedirname">DirName</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamefilename">FileName</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameoperatorassign">operator =</A><P>
+
+
+<HR>
+<A NAME="filetests"></A>
+<H3>File tests</H3>
+<P>
+Before doing other tests, you should use <A HREF="wx_wxfilename.html#wxfilenameisok">IsOk</A> to
+verify that the filename is well defined. If it is,
+<A HREF="wx_wxfilename.html#wxfilenamefileexists">FileExists</A> can be used to test whether a file
+with such name exists and <A HREF="wx_wxfilename.html#wxfilenamedirexists">DirExists</A> can be used
+to test for directory existence.<P>
+File names should be compared using <A HREF="wx_wxfilename.html#wxfilenamesameas">SameAs</A> method
+or <A HREF="wx_wxfilename.html#wxfilenameoperatorequal">operator ==</A>.<P>
+For testing basic access modes, you can use:<P>
+<A HREF="wx_wxfilename.html#wxfilenameisdirwritable">IsDirWritable</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameisdirreadable">IsDirReadable</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameisfilewritable">IsFileWritable</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameisfilereadable">IsFileReadable</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameisfileexecutable">IsFileExecutable</A><P>
+
+
+<HR>
+<A NAME="filenamecomponents"></A>
+<H3>File name components</H3>
+<P>
+These functions allow to examine and modify the individual directories of the
+path:<P>
+<A HREF="wx_wxfilename.html#wxfilenameappenddir">AppendDir</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameinsertdir">InsertDir</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamegetdircount">GetDirCount</A>
+<A HREF="wx_wxfilename.html#wxfilenameprependdir">PrependDir</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameremovedir">RemoveDir</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameremovelastdir">RemoveLastDir</A><P>
+To change the components of the file name individually you can use the
+following functions:<P>
+<A HREF="wx_wxfilename.html#wxfilenamegetext">GetExt</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamegetname">GetName</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamegetvolume">GetVolume</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamehasext">HasExt</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamehasname">HasName</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamehasvolume">HasVolume</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamesetext">SetExt</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenameclearext">ClearExt</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamesetemptyext">SetEmptyExt</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamesetname">SetName</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamesetvolume">SetVolume</A><BR>
+<P>
+
+
+<HR>
+<A NAME="filenameoperations"></A>
+<H3>Operations</H3>
+<P>
+These methods allow to work with the file creation, access and modification
+times. Note that not all filesystems under all platforms implement these times
+in the same way. For example, the access time under Windows has a resolution of
+one day (so it is really the access date and not time). The access time may be
+updated when the file is executed or not depending on the platform.<P>
+<A HREF="wx_wxfilename.html#wxfilenamegetmodificationtime">GetModificationTime</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamegettimes">GetTimes</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamesettimes">SetTimes</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenametouch">Touch</A><P>
+Other file system operations functions are:<P>
+<A HREF="wx_wxfilename.html#wxfilenamemkdir">Mkdir</A><BR>
+
+<A HREF="wx_wxfilename.html#wxfilenamermdir">Rmdir</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+
+<HR>
+<A NAME="wxfilenamewxfilename"></A>
+<H3>wxFileName::wxFileName</H3>
+<P>
+<B></B> <B>wxFileName</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxFileName</B>(<B>const <A HREF="wx_wxfilename.html#wxfilename">wxFileName</A>& </B></B><I>filename</I>)<P>
+Copy constructor.<P>
+<B></B> <B>wxFileName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fullpath</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Constructor taking a full filename. If it terminates with a '/', a directory path
+is constructed (the name will be empty), otherwise a file name and
+extension are extracted from it.<P>
+<B></B> <B>wxFileName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Constructor from a directory name and a file name.<P>
+<B></B> <B>wxFileName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Constructor from a directory name, base file name and extension.<P>
+<B></B> <B>wxFileName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>volume</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Constructor from a volume name, a directory name, base file name and extension.<P>
+
+
+<HR>
+<A NAME="wxfilenameappenddir"></A>
+<H3>wxFileName::AppendDir</H3>
+<P>
+<B>void</B> <B>AppendDir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>)<P>
+Appends a directory component to the path. This component should contain a
+single directory name level, i.e. not contain any path or volume separators nor
+should it be empty, otherwise the function does nothing (and generates an
+assert failure in debug build).<P>
+
+
+<HR>
+<A NAME="wxfilenameassign"></A>
+<H3>wxFileName::Assign</H3>
+<P>
+<B>void</B> <B>Assign</B>(<B>const <A HREF="wx_wxfilename.html#wxfilename">wxFileName</A>& </B></B><I>filepath</I>)<P>
+<B>void</B> <B>Assign</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fullpath</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+<B>void</B> <B>Assign</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>volume</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext</I>, <B>bool </B><I>hasExt</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+<B>void</B> <B>Assign</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>volume</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+<B>void</B> <B>Assign</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+<B>void</B> <B>Assign</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Creates the file name from various combinations of data.<P>
+
+
+<HR>
+<A NAME="wxfilenameassigncwd"></A>
+<H3>wxFileName::AssignCwd</H3>
+<P>
+<B>static void</B> <B>AssignCwd</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>volume = wxEmptyString</I>)<P>
+Makes this object refer to the current working directory on the specified
+volume (or current volume if <I>volume</I> is empty).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamegetcwd">GetCwd</A><P>
+
+
+<HR>
+<A NAME="wxfilenameassigndir"></A>
+<H3>wxFileName::AssignDir</H3>
+<P>
+<B>void</B> <B>AssignDir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Sets this file name object to the given directory name. The name and extension
+will be empty.<P>
+
+
+<HR>
+<A NAME="wxfilenameassignhomedir"></A>
+<H3>wxFileName::AssignHomeDir</H3>
+<P>
+<B>void</B> <B>AssignHomeDir</B>()<P>
+Sets this file name object to the home directory.<P>
+
+
+<HR>
+<A NAME="wxfilenameassigntempfilename"></A>
+<H3>wxFileName::AssignTempFileName</H3>
+<P>
+<B>void</B> <B>AssignTempFileName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>prefix</I>, <B><A HREF="wx_wxfile.html#wxfile">wxFile</A> *</B></B><I>fileTemp = <TT>NULL</TT></I>)<P>
+The function calls <A HREF="wx_wxfilename.html#wxfilenamecreatetempfilename">CreateTempFileName</A> to
+create a temporary file and sets this object to the name of the file. If a
+temporary file couldn't be created, the object is put into the
+<A HREF="wx_wxfilename.html#wxfilenameisok">invalid</A> state.<P>
+
+
+<HR>
+<A NAME="wxfilenameclear"></A>
+<H3>wxFileName::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>()<P>
+Reset all components to default, uninitialized state.<P>
+
+
+<HR>
+<A NAME="wxfilenameclearext"></A>
+<H3>wxFileName::ClearExt</H3>
+<P>
+<B>void</B> <B>SetClearExt</B>()<P>
+Removes the extension from the file name resulting in a 
+file name with no trailing dot.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamesetext">SetExt</A>
+<A HREF="wx_wxfilename.html#wxfilenamesetemptyext">SetEmptyExt</A><P>
+
+<HR>
+<A NAME="wxfilenamecreatetempfilename"></A>
+<H3>wxFileName::CreateTempFileName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>CreateTempFileName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>prefix</I>, <B><A HREF="wx_wxfile.html#wxfile">wxFile</A> *</B></B><I>fileTemp = <TT>NULL</TT></I>)<P>
+Returns a temporary file name starting with the given <I>prefix</I>. If
+the <I>prefix</I> is an absolute path, the temporary file is created in this
+directory, otherwise it is created in the default system directory for the
+temporary files or in the current directory.<P>
+If the function succeeds, the temporary file is actually created. If
+<I>fileTemp</I> is not <TT>NULL</TT>, this file will be opened using the name of
+the temporary file. When possible, this is done in an atomic way ensuring that
+no race condition occurs between the temporary file name generation and opening
+it which could often lead to security compromise on the multiuser systems.
+If <I>fileTemp</I> is <TT>NULL</TT>, the file is only created, but not opened.<P>
+Under Unix, the temporary file will have read and write permissions for the
+owner only to minimize the security problems.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>prefix</I><UL><UL>
+Prefix to use for the temporary file name construction</UL></UL>
+<P>
+<I>fileTemp</I><UL><UL>
+The file to open or <TT>NULL</TT> to just get the name</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The full temporary file name or an empty string on error.<P>
+
+
+<HR>
+<A NAME="wxfilenamedirexists"></A>
+<H3>wxFileName::DirExists</H3>
+<P>
+<B>bool</B> <B>DirExists</B>() <B>const</B><P>
+<B>static bool</B> <B>DirExists</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>)<P>
+Returns <TT>true</TT> if the directory with this name exists.<P>
+
+
+<HR>
+<A NAME="wxfilenamedirname"></A>
+<H3>wxFileName::DirName</H3>
+<P>
+<B>static <A HREF="wx_wxfilename.html#wxfilename">wxFileName</A></B> </B> <B>DirName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Returns the object corresponding to the directory with the given name.
+The <I>dir</I> parameter may have trailing path separator or not.<P>
+<P>
+
+<HR>
+<A NAME="wxfilenamefileexists"></A>
+<H3>wxFileName::FileExists</H3>
+<P>
+<B>bool</B> <B>FileExists</B>() <B>const</B><P>
+<B>static bool</B> <B>FileExists</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>)<P>
+Returns <TT>true</TT> if the file with this name exists.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamedirexists">DirExists</A><P>
+<P>
+
+<HR>
+<A NAME="wxfilenamefilename"></A>
+<H3>wxFileName::FileName</H3>
+<P>
+<B>static <A HREF="wx_wxfilename.html#wxfilename">wxFileName</A></B> </B> <B>FileName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Returns the file name object corresponding to the given <I>file</I>. This
+function exists mainly for symmetry with <A HREF="wx_wxfilename.html#wxfilenamedirname">DirName</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxfilenamegetcwd"></A>
+<H3>wxFileName::GetCwd</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetCwd</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>volume = ""</I>)<P>
+Retrieves the value of the current working directory on the specified volume. If
+the volume is empty, the program's current working directory is returned for the
+current volume.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The string containing the current working directory or an empty string on
+error.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenameassigncwd">AssignCwd</A><P>
+
+
+<HR>
+<A NAME="wxfilenamegetdircount"></A>
+<H3>wxFileName::GetDirCount</H3>
+<P>
+<B>size_t</B> <B>GetDirCount</B>() <B>const</B><P>
+Returns the number of directories in the file name.<P>
+
+
+<HR>
+<A NAME="wxfilenamegetdirs"></A>
+<H3>wxFileName::GetDirs</H3>
+<P>
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B> </B> <B>GetDirs</B>() <B>const</B><P>
+Returns the directories in string array form.<P>
+
+
+<HR>
+<A NAME="wxfilenamegetext"></A>
+<H3>wxFileName::GetExt</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetExt</B>() <B>const</B><P>
+Returns the file name extension.<P>
+
+
+<HR>
+<A NAME="wxfilenamegetforbiddenchars"></A>
+<H3>wxFileName::GetForbiddenChars</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetForbiddenChars</B>(<B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Returns the characters that can't be used in filenames and directory names for the specified format.<P>
+
+
+<HR>
+<A NAME="wxfilenamegetformat"></A>
+<H3>wxFileName::GetFormat</H3>
+<P>
+<B>static wxPathFormat</B> <B>GetFormat</B>(<B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Returns the canonical path format for this platform.<P>
+
+
+<HR>
+<A NAME="wxfilenamegetfullname"></A>
+<H3>wxFileName::GetFullName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFullName</B>() <B>const</B><P>
+Returns the full name (including extension but excluding directories).<P>
+
+
+<HR>
+<A NAME="wxfilenamegetfullpath"></A>
+<H3>wxFileName::GetFullPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFullPath</B>(<B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>) <B>const</B><P>
+Returns the full path with name and extension.<P>
+
+
+<HR>
+<A NAME="wxfilenamegethomedir"></A>
+<H3>wxFileName::GetHomeDir</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetHomeDir</B>()<P>
+Returns the home directory.<P>
+
+
+<HR>
+<A NAME="wxfilenamegetlongpath"></A>
+<H3>wxFileName::GetLongPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLongPath</B>() <B>const</B><P>
+Return the long form of the path (returns identity on non-Windows platforms)<P>
+
+
+<HR>
+<A NAME="wxfilenamegetmodificationtime"></A>
+<H3>wxFileName::GetModificationTime</H3>
+<P>
+<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A></B> </B> <B>GetModificationTime</B>() <B>const</B><P>
+Returns the last time the file was last modified.<P>
+
+
+<HR>
+<A NAME="wxfilenamegetname"></A>
+<H3>wxFileName::GetName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetName</B>() <B>const</B><P>
+Returns the name part of the filename (without extension).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamegetfullname">GetFullName</A><P>
+<P>
+
+<HR>
+<A NAME="wxfilenamegetpath"></A>
+<H3>wxFileName::GetPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPath</B>(<B>int </B><I>flags = <TT>wxPATH_GET_VOLUME</TT></I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>) <B>const</B><P>
+Returns the path part of the filename (without the name or extension). The
+possible flags values are:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxPATH_GET_VOLUME</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Return the path with the volume (does
+nothing for the filename formats without volumes), otherwise the path without
+volume part is returned.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxPATH_GET_SEPARATOR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Return the path with the trailing
+separator, if this flag is not given there will be no separator at the end of
+the path.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="wxfilenamegetpathseparator"></A>
+<H3>wxFileName::GetPathSeparator</H3>
+<P>
+<B>static wxChar</B> <B>GetPathSeparator</B>(<B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Returns the usually used path separator for this format. For all formats but 
+<TT>wxPATH_DOS</TT> there is only one path separator anyhow, but for DOS there
+are two of them and the native one, i.e. the backslash is returned by this
+method.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamegetpathseparators">GetPathSeparators</A><P>
+
+
+<HR>
+<A NAME="wxfilenamegetpathseparators"></A>
+<H3>wxFileName::GetPathSeparators</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPathSeparators</B>(<B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Returns the string containing all the path separators for this format. For all
+formats but <TT>wxPATH_DOS</TT> this string contains only one character but for
+DOS and Windows both <TT>'/'</TT> and <TT>'<TT>\</TT>'</TT> may be used as
+separators.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamegetpathseparator">GetPathSeparator</A><P>
+
+
+<HR>
+<A NAME="wxfilenamegetpathterminators"></A>
+<H3>wxFileName::GetPathTerminators</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPathTerminators</B>(<B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Returns the string of characters which may terminate the path part. This is the
+same as <A HREF="wx_wxfilename.html#wxfilenamegetpathseparators">GetPathSeparators</A> except for VMS
+path format where ] is used at the end of the path part.<P>
+
+
+<HR>
+<A NAME="wxfilenamegetpathwithsep"></A>
+<H3>wxFileName::GetPathWithSep</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPathWithSep</B>(<B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>) <B>const</B><P>
+Returns the path with the trailing separator, useful for appending the name to
+the given path.<P>
+This is the same as calling <A HREF="wx_wxfilename.html#wxfilenamegetpath">GetPath</A>
+<TT>(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR, format)</TT>.<P>
+
+
+<HR>
+<A NAME="wxfilenamegetshortpath"></A>
+<H3>wxFileName::GetShortPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetShortPath</B>() <B>const</B><P>
+Return the short form of the path (returns identity on non-Windows platforms).<P>
+
+
+<HR>
+<A NAME="wxfilenamegetsize"></A>
+<H3>wxFileName::GetSize</H3>
+<P>
+<B>wxULongLong</B> <B>GetSize</B>() <B>const</B><P>
+<B>static wxULongLong</B> <B>GetSize</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Returns the size of this file (first form) or the size of the given file (second form).
+If the file does not exist or its size could not be read (because e.g. the file is locked
+by another process) the returned value is <TT>wxInvalidSize</TT>.<P>
+
+
+<HR>
+<A NAME="wxfilenamegethumanreadablesize"></A>
+<H3>wxFileName::GetHumanReadableSize</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetHumanReadableSize</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>failmsg = "Not available"</I>, <B>int </B><I>precision = 1</I>) <B>const</B><P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetHumanReadableSize</B>(<B>const wxULongLong&amp; </B><I>bytes</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>nullsize = "Not available"</I>, <B>int </B><I>precision = 1</I>)<P>
+Returns the size of this file (first form) or the given number of bytes (second form)
+in a human-readable form.<P>
+If the size could not be retrieved the <TT>failmsg</TT> string is returned (first form).
+If <TT>bytes</TT> is <TT>wxInvalidSize</TT> or zero, then <TT>nullsize</TT> is returned (second form).<P>
+In case of success, the returned string is a floating-point number with <TT>precision</TT> decimal digits
+followed by the size unit (B, kB, MB, GB, TB: respectively bytes, kilobytes, megabytes, gigabytes, terabytes).<P>
+
+
+<HR>
+<A NAME="wxfilenamegettempdir"></A>
+<H3>wxFileName::GetTempDir</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetTempDir</B>()<P>
+Returns the directory used for temporary files.<P>
+
+
+<HR>
+<A NAME="wxfilenamegettimes"></A>
+<H3>wxFileName::GetTimes</H3>
+<P>
+<B>bool</B> <B>GetTimes</B>(<B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>* </B></B><I>dtAccess</I>, <B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>* </B></B><I>dtMod</I>, <B><A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>* </B></B><I>dtCreate</I>) <B>const</B><P>
+Returns the last access, last modification and creation times. The last access
+time is updated whenever the file is read or written (or executed in the case
+of Windows), last modification time is only changed when the file is written
+to. Finally, the creation time is indeed the time when the file was created
+under Windows and the inode change time under Unix (as it is impossible to
+retrieve the real file creation time there anyhow) which can also be changed
+by many operations after the file creation.<P>
+If no filename or extension is specified in this instance of wxFileName
+(and therefore <A HREF="wx_wxfilename.html#wxfilenameisdir">IsDir</A> returns <TT>true</TT>) then
+this function will return the directory times of the path specified by
+<A HREF="wx_wxfilename.html#wxfilenamegetpath">GetPath</A>, otherwise the file times of the
+file specified by <A HREF="wx_wxfilename.html#wxfilenamegetfullpath">GetFullPath</A>.<P>
+Any of the pointers may be <TT>NULL</TT> if the corresponding time is not
+needed.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> on success, <TT>false</TT> if we failed to retrieve the times.<P>
+
+
+<HR>
+<A NAME="wxfilenamegetvolume"></A>
+<H3>wxFileName::GetVolume</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetVolume</B>() <B>const</B><P>
+Returns the string containing the volume for this file name, empty if it
+doesn't have one or if the file system doesn't support volumes at all (for
+example, Unix).<P>
+
+
+<HR>
+<A NAME="wxfilenamegetvolumeseparator"></A>
+<H3>wxFileName::GetVolumeSeparator</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetVolumeSeparator</B>(<B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Returns the string separating the volume from the path for this format.<P>
+
+
+<HR>
+<A NAME="wxfilenamehasext"></A>
+<H3>wxFileName::HasExt</H3>
+<P>
+<B>bool</B> <B>HasExt</B>() <B>const</B><P>
+Returns <TT>true</TT> if an extension is present.<P>
+
+
+<HR>
+<A NAME="wxfilenamehasname"></A>
+<H3>wxFileName::HasName</H3>
+<P>
+<B>bool</B> <B>HasName</B>() <B>const</B><P>
+Returns <TT>true</TT> if a name is present.<P>
+
+
+<HR>
+<A NAME="wxfilenamehasvolume"></A>
+<H3>wxFileName::HasVolume</H3>
+<P>
+<B>bool</B> <B>HasVolume</B>() <B>const</B><P>
+Returns <TT>true</TT> if a volume specifier is present.<P>
+
+
+<HR>
+<A NAME="wxfilenameinsertdir"></A>
+<H3>wxFileName::InsertDir</H3>
+<P>
+<B>void</B> <B>InsertDir</B>(<B>size_t </B><I>before</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>)<P>
+Inserts a directory component before the zero-based position in the directory
+list. Please see <A HREF="wx_wxfilename.html#wxfilenameappenddir">AppendDir</A> for important notes.<P>
+
+
+<HR>
+<A NAME="wxfilenameisabsolute"></A>
+<H3>wxFileName::IsAbsolute</H3>
+<P>
+<B>bool</B> <B>IsAbsolute</B>(<B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Returns <TT>true</TT> if this filename is absolute.<P>
+
+
+<HR>
+<A NAME="wxfilenameiscasesensitive"></A>
+<H3>wxFileName::IsCaseSensitive</H3>
+<P>
+<B>static bool</B> <B>IsCaseSensitive</B>(<B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Returns <TT>true</TT> if the file names of this type are case-sensitive.<P>
+
+
+<HR>
+<A NAME="wxfilenameisdirreadable"></A>
+<H3>wxFileName::IsDirReadable</H3>
+<P>
+<B>bool</B> <B>IsDirReadable</B>() <B>const</B><P>
+<B>static bool</B> <B>IsDirReadable</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>)<P>
+Returns <TT>true</TT> if the directory component of this instance (or given <I>dir</I>)
+is an existing directory and this process has read permissions on it.
+Read permissions on a directory mean that you can list the directory contents but it
+doesn't imply that you have read permissions on the files contained.<P>
+
+
+<HR>
+<A NAME="wxfilenameisdirwritable"></A>
+<H3>wxFileName::IsDirWritable</H3>
+<P>
+<B>bool</B> <B>IsDirWritable</B>() <B>const</B><P>
+<B>static bool</B> <B>IsDirWritable</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>)<P>
+Returns <TT>true</TT> if the directory component of this instance (or given <I>dir</I>)
+is an existing directory and this process has write permissions on it.
+Write permissions on a directory mean that you can create new files in the directory.<P>
+
+
+<HR>
+<A NAME="wxfilenameisfileexecutable"></A>
+<H3>wxFileName::IsFileExecutable</H3>
+<P>
+<B>bool</B> <B>IsFileExecutable</B>() <B>const</B><P>
+<B>static bool</B> <B>IsFileExecutable</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>)<P>
+Returns <TT>true</TT> if a file with this name exists and if this process has execute permissions on it.<P>
+
+
+<HR>
+<A NAME="wxfilenameisfilereadable"></A>
+<H3>wxFileName::IsFileReadable</H3>
+<P>
+<B>bool</B> <B>IsFileReadable</B>() <B>const</B><P>
+<B>static bool</B> <B>IsFileReadable</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>)<P>
+Returns <TT>true</TT> if a file with this name exists and if this process has read permissions on it.<P>
+
+
+<HR>
+<A NAME="wxfilenameisfilewritable"></A>
+<H3>wxFileName::IsFileWritable</H3>
+<P>
+<B>bool</B> <B>IsFileWritable</B>() <B>const</B><P>
+<B>static bool</B> <B>IsFileWritable</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>)<P>
+Returns <TT>true</TT> if a file with this name exists and if this process has write permissions on it.<P>
+
+
+<HR>
+<A NAME="wxfilenameisok"></A>
+<H3>wxFileName::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns <TT>true</TT> if the filename is valid, <TT>false</TT> if it is not
+initialized yet. The assignment functions and
+<A HREF="wx_wxfilename.html#wxfilenameclear">Clear</A> may reset the object to the uninitialized,
+invalid state (the former only do it on failure).<P>
+
+
+<HR>
+<A NAME="wxfilenameispathseparator"></A>
+<H3>wxFileName::IsPathSeparator</H3>
+<P>
+<B>static bool</B> <B>IsPathSeparator</B>(<B>wxChar </B><I>ch</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Returns <TT>true</TT> if the char is a path separator for this format.<P>
+
+
+<HR>
+<A NAME="wxfilenameisrelative"></A>
+<H3>wxFileName::IsRelative</H3>
+<P>
+<B>bool</B> <B>IsRelative</B>(<B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Returns <TT>true</TT> if this filename is not absolute.<P>
+
+
+<HR>
+<A NAME="wxfilenameisdir"></A>
+<H3>wxFileName::IsDir</H3>
+<P>
+<B>bool</B> <B>IsDir</B>() <B>const</B><P>
+Returns <TT>true</TT> if this object represents a directory, <TT>false</TT> otherwise
+(i.e. if it is a file). Note that this method doesn't test whether the
+directory or file really exists, you should use 
+<A HREF="wx_wxfilename.html#wxfilenamedirexists">DirExists</A> or 
+<A HREF="wx_wxfilename.html#wxfilenamefileexists">FileExists</A> for this.<P>
+
+<HR>
+<A NAME="wxfilenamemacfinddefaulttypeandcreator"></A>
+<H3>wxFileName::MacFindDefaultTypeAndCreator</H3>
+<P>
+<B>static bool</B> <B>MacFindDefaultTypeAndCreator</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext</I>, <B>wxUint32* </B><I>type</I>, <B>wxUint32* </B><I>creator</I>)<P>
+On Mac OS, gets the common type and creator for the given extension.<P>
+
+<HR>
+<A NAME="wxfilenamemacregisterdefaulttypeandcreator"></A>
+<H3>wxFileName::MacRegisterDefaultTypeAndCreator</H3>
+<P>
+<B>static void</B> <B>MacRegisterDefaultTypeAndCreator</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext</I>, <B>wxUint32 </B><I>type</I>, <B>wxUint32 </B><I>creator</I>)<P>
+On Mac OS, registers application defined extensions and their default type and creator.<P>
+
+<HR>
+<A NAME="wxfilenamemacsetdefaulttypeandcreator"></A>
+<H3>wxFileName::MacSetDefaultTypeAndCreator</H3>
+<P>
+<B>bool</B> <B>MacSetDefaultTypeAndCreator</B>()<P>
+On Mac OS, looks up the appropriate type and creator from the registration and then sets it.<P>
+
+<HR>
+<A NAME="wxfilenamemakeabsolute"></A>
+<H3>wxFileName::MakeAbsolute</H3>
+<P>
+<B>bool</B> <B>MakeAbsolute</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>cwd = wxEmptyString</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Make the file name absolute. This is a shortcut for
+<TT><A HREF="wx_wxfilename.html#wxfilenamenormalize">Normalize</A>(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_TILDE, cwd, format)</TT>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamemakerelativeto">MakeRelativeTo</A>,
+<A HREF="wx_wxfilename.html#wxfilenamenormalize">Normalize</A>,
+<A HREF="wx_wxfilename.html#wxfilenameisabsolute">IsAbsolute</A><P>
+
+
+<HR>
+<A NAME="wxfilenamemakerelativeto"></A>
+<H3>wxFileName::MakeRelativeTo</H3>
+<P>
+<B>bool</B> <B>MakeRelativeTo</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>pathBase = wxEmptyString</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+This function tries to put this file name in a form relative to <I>pathBase</I>.
+In other words, it returns the file name which should be used to access this
+file if the current directory were <I>pathBase</I>.<P>
+<I>pathBase</I><UL><UL>
+the directory to use as root, current directory is used by
+default</UL></UL>
+<P>
+<I>format</I><UL><UL>
+the file name format, native by default</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if the file name has been changed, <TT>false</TT> if we failed to do
+anything with it (currently this only happens if the file name is on a volume
+different from the volume specified by <I>pathBase</I>).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamenormalize">Normalize</A><P>
+
+
+<HR>
+<A NAME="wxfilenamemkdir"></A>
+<H3>wxFileName::Mkdir</H3>
+<P>
+<B>bool</B> <B>Mkdir</B>(<B>int </B><I>perm = 0777</I>, <B>int </B><I>flags = 0</I>)<P>
+<B>static bool</B> <B>Mkdir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>, <B>int </B><I>perm = 0777</I>, <B>int </B><I>flags = 0</I>)<P>
+<I>dir</I><UL><UL>
+the directory to create</UL></UL>
+<P>
+<I>parm</I><UL><UL>
+the permissions for the newly created directory</UL></UL>
+<P>
+<I>flags</I><UL><UL>
+if the flags contain <TT>wxPATH_MKDIR_FULL</TT> flag,
+try to create each directory in the path and also don't return an error
+if the target directory already exists.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns <TT>true</TT> if the directory was successfully created, <TT>false</TT>
+otherwise.<P>
+
+
+<HR>
+<A NAME="wxfilenamenormalize"></A>
+<H3>wxFileName::Normalize</H3>
+<P>
+<B>bool</B> <B>Normalize</B>(<B>int </B><I>flags = wxPATH_NORM_ALL</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>cwd = wxEmptyString</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Normalize the path. With the default flags value, the path will be
+made absolute, without any ".." and "." and all environment
+variables will be expanded in it.<P>
+<I>flags</I><UL><UL>
+The kind of normalization to do with the file name. It can be
+any or-combination of the following constants:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxPATH_NORM_ENV_VARS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+replace env vars with their values
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxPATH_NORM_DOTS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+squeeze all .. and . when possible; if there are too many .. and thus they cannot be all removed, <TT>false</TT> will be returned
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxPATH_NORM_CASE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+if filesystem is case insensitive, transform to lower case
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxPATH_NORM_ABSOLUTE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+make the path absolute prepending <I>cwd</I>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxPATH_NORM_LONG</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+make the path the long form
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxPATH_NORM_SHORTCUT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+resolve if it is a shortcut (Windows only)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxPATH_NORM_TILDE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+replace ~ and ~user (Unix only)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxPATH_NORM_ALL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+all of previous flags except <TT>wxPATH_NORM_CASE</TT>
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<I>cwd</I><UL><UL>
+If not empty, this directory will be used instead of current
+working directory in normalization (see wxPATH_NORM_ABSOLUTE).</UL></UL>
+<P>
+<I>format</I><UL><UL>
+The file name format to use when processing the paths, native by default.</UL></UL>
+<P>
+
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if normalization was successfully or <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxfilenameprependdir"></A>
+<H3>wxFileName::PrependDir</H3>
+<P>
+<B>void</B> <B>PrependDir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>)<P>
+Prepends a directory to the file path. Please see 
+<A HREF="wx_wxfilename.html#wxfilenameappenddir">AppendDir</A> for important notes.<P>
+<P>
+
+<HR>
+<A NAME="wxfilenameremovedir"></A>
+<H3>wxFileName::RemoveDir</H3>
+<P>
+<B>void</B> <B>RemoveDir</B>(<B>size_t </B><I>pos</I>)<P>
+Removes the specified directory component from the path.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamegetdircount">GetDirCount</A><P>
+
+
+<HR>
+<A NAME="wxfilenameremovelastdir"></A>
+<H3>wxFileName::RemoveLastDir</H3>
+<P>
+<B>void</B> <B>RemoveLastDir</B>()<P>
+Removes last directory component from the path.<P>
+
+
+<HR>
+<A NAME="wxfilenamermdir"></A>
+<H3>wxFileName::Rmdir</H3>
+<P>
+<B>bool</B> <B>Rmdir</B>()<P>
+<B>static bool</B> <B>Rmdir</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>)<P>
+Deletes the specified directory from the file system.<P>
+
+
+<HR>
+<A NAME="wxfilenamesameas"></A>
+<H3>wxFileName::SameAs</H3>
+<P>
+<B>bool</B> <B>SameAs</B>(<B>const <A HREF="wx_wxfilename.html#wxfilename">wxFileName</A>& </B></B><I>filepath</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>) <B>const</B><P>
+Compares the filename using the rules of this platform.<P>
+
+
+<HR>
+<A NAME="wxfilenamesetcwd"></A>
+<H3>wxFileName::SetCwd</H3>
+<P>
+<B>bool</B> <B>SetCwd</B>()<P>
+<B>static bool</B> <B>SetCwd</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>cwd</I>)<P>
+Changes the current working directory.<P>
+
+
+<HR>
+<A NAME="wxfilenamesetext"></A>
+<H3>wxFileName::SetExt</H3>
+<P>
+<B>void</B> <B>SetExt</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext</I>)<P>
+Sets the extension of the file name. Setting an empty string
+as the extension will remove the extension resulting in a file 
+name without a trailing dot, unlike a call to 
+<A HREF="wx_wxfilename.html#wxfilenamesetemptyext">SetEmptyExt</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamesetemptyext">SetEmptyExt</A>
+<A HREF="wx_wxfilename.html#wxfilenameclearext">ClearExt</A><P>
+
+<HR>
+<A NAME="wxfilenamesetemptyext"></A>
+<H3>wxFileName::SetEmptyExt</H3>
+<P>
+<B>void</B> <B>SetEmptyExt</B>()<P>
+Sets the extension of the file name to be an empty extension. 
+This is different from having no extension at all as the file 
+name will have a trailing dot after a call to this method.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamesetext">SetExt</A>
+<A HREF="wx_wxfilename.html#wxfilenameclearext">ClearExt</A><P>
+
+<HR>
+<A NAME="wxfilenamesetfullname"></A>
+<H3>wxFileName::SetFullName</H3>
+<P>
+<B>void</B> <B>SetFullName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fullname</I>)<P>
+The full name is the file name and extension (but without the path).<P>
+
+
+<HR>
+<A NAME="wxfilenamesetname"></A>
+<H3>wxFileName::SetName</H3>
+<P>
+<B>void</B> <B>SetName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the name part (without extension).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamesetfullname">SetFullName</A><P>
+
+
+<HR>
+<A NAME="wxfilenamesettimes"></A>
+<H3>wxFileName::SetTimes</H3>
+<P>
+<B>bool</B> <B>SetTimes</B>(<B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>* </B></B><I>dtAccess</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>* </B></B><I>dtMod</I>, <B>const <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>* </B></B><I>dtCreate</I>)<P>
+Sets the file creation and last access/modification times (any of the pointers may be NULL).<P>
+
+
+<HR>
+<A NAME="wxfilenamesetvolume"></A>
+<H3>wxFileName::SetVolume</H3>
+<P>
+<B>void</B> <B>SetVolume</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>volume</I>)<P>
+Sets the volume specifier.<P>
+
+
+<HR>
+<A NAME="wxfilenamesplitpath"></A>
+<H3>wxFileName::SplitPath</H3>
+<P>
+<B>static void</B> <B>SplitPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fullpath</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>volume</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>path</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>name</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>ext</I>, <B>bool </B><I>*hasExt = <TT>NULL</TT></I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+<B>static void</B> <B>SplitPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fullpath</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>volume</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>path</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>name</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>ext</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+<B>static void</B> <B>SplitPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fullpath</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>path</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>name</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>ext</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+This function splits a full file name into components: the volume (with the
+first version) path (including the volume in the second version), the base name
+and the extension. Any of the output parameters (<I>volume</I>, <I>path</I>, 
+<I>name</I> or <I>ext</I>) may be <TT>NULL</TT> if you are not interested in the
+value of a particular component. Also, <I>fullpath</I> may be empty on entry.<P>
+On return, <I>path</I> contains the file path (without the trailing separator), 
+<I>name</I> contains the file name and <I>ext</I> contains the file extension
+without leading dot. All three of them may be empty if the corresponding
+component is. The old contents of the strings pointed to by these parameters
+will be overwritten in any case (if the pointers are not <TT>NULL</TT>).<P>
+Note that for a filename "foo.'' the extension is present, as indicated by the
+trailing dot, but empty. If you need to cope with such cases, you should use 
+<I>hasExt</I> instead of relying on testing whether <I>ext</I> is empty or not.<P>
+
+
+<HR>
+<A NAME="wxfilenamesplitvolume"></A>
+<H3>wxFileName::SplitVolume</H3>
+<P>
+<B>static void</B> <B>SplitVolume</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fullpath</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>volume</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>* </B></B><I>path</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>)<P>
+Splits the given <I>fullpath</I> into the volume part (which may be empty) and
+the pure path part, not containing any volume.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilename.html#wxfilenamesplitpath">SplitPath</A><P>
+
+
+<HR>
+<A NAME="wxfilenametouch"></A>
+<H3>wxFileName::Touch</H3>
+<P>
+<B>bool</B> <B>Touch</B>()<P>
+Sets the access and modification times to the current moment.<P>
+
+
+<HR>
+<A NAME="wxfilenameoperatorassign"></A>
+<H3>wxFileName::operator=</H3>
+<P>
+<B><A HREF="wx_wxfilename.html#wxfilename">wxFileName</A>& operator</B> </B> <B>operator=</B>(<B>const <A HREF="wx_wxfilename.html#wxfilename">wxFileName</A>& </B></B><I>filename</I>)<P>
+<B><A HREF="wx_wxfilename.html#wxfilename">wxFileName</A>& operator</B> </B> <B>operator=</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Assigns the new value to this filename object.<P>
+
+
+<HR>
+<A NAME="wxfilenameoperatorequal"></A>
+<H3>wxFileName::operator==</H3>
+<P>
+<B>bool operator</B> <B>operator==</B>(<B>const <A HREF="wx_wxfilename.html#wxfilename">wxFileName</A>& </B></B><I>filename</I>) <B>const</B><P>
+<B>bool operator</B> <B>operator==</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>) <B>const</B><P>
+Returns <TT>true</TT> if the filenames are equal. The string <I>filenames</I> is
+interpreted as a path in the native filename format.<P>
+
+
+<HR>
+<A NAME="wxfilenameoperatornotequal"></A>
+<H3>wxFileName::operator!=</H3>
+<P>
+<B>bool operator</B> <B>operator!=</B>(<B>const <A HREF="wx_wxfilename.html#wxfilename">wxFileName</A>& </B></B><I>filename</I>) <B>const</B><P>
+<B>bool operator</B> <B>operator!=</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>) <B>const</B><P>
+Returns <TT>true</TT> if the filenames are different. The string <I>filenames</I>
+is interpreted as a path in the native filename format.<P>
+
+</FONT></BODY></HTML>

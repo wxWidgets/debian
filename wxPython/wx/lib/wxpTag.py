@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     13-Sept-1999
-# RCS-ID:      $Id: wxpTag.py,v 1.10 2005/01/13 21:15:08 RD Exp $
+# RCS-ID:      $Id: wxpTag.py 44433 2007-02-09 23:43:24Z RD $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -25,7 +25,7 @@ You don\'t need to use anything in this module directly, just
 importing it will create the tag handler and add it to any
 wxHtmlWinParsers created from that time forth.
 
-Tags of the following form are recognised:
+Tags of the following form are recognised::
 
     <WXP class="classname" [module="modulename"] [width="num"] [height="num"]>
         <PARAM name="parameterName" value="parameterValue>
@@ -46,7 +46,7 @@ The name-value pairs in all the nested PARAM tags are packaged up as
 strings into a python dictionary and passed to the __init__ method of
 the class as keyword arguments.  This means that they are all
 accessible from the __init__ method as regular parameters, or you use
-the special Python **kw syntax in your __init__ method to get the
+the special Python \*\*kw syntax in your __init__ method to get the
 dictionary directly.
 
 Some parameter values are special and if they are present then they will
@@ -71,7 +71,7 @@ be converted from strings to alternate datatypes.  They are:
                  object and if it fails then the original string value
                  will be used instead.
 
-An example:
+An example::
 
     <wxp module="wx" class="Button">
         <param name="label" value="Click here">
@@ -161,18 +161,15 @@ class wxpTagHandler(wx.html.HtmlWinTagHandler):
         self.ParseInner(tag)
 
         # create the object
-        parent = self.GetParser().GetWindow()
+        parent = self.GetParser().GetWindowInterface().GetHTMLWindow()
         if parent:
-            obj = apply(self.ctx.classObj,
-                        (parent,),
-                        self.ctx.kwargs)
+            obj = self.ctx.classObj(parent, **self.ctx.kwargs)
             obj.Show(True)
 
             # add it to the HtmlWindow
             self.GetParser().GetContainer().InsertCell(
                 wx.html.HtmlWidgetCell(obj, self.ctx.floatWidth))
             self.ctx = None
-
         return True
 
 

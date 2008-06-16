@@ -21,25 +21,23 @@ class MyHtmlWindow(html.HtmlWindow):
 
     def OnLinkClicked(self, linkinfo):
         self.log.WriteText('OnLinkClicked: %s\n' % linkinfo.GetHref())
-
-        # Virtuals in the base class have been renamed with base_ on the front.
-        self.base_OnLinkClicked(linkinfo)
-
+        super(MyHtmlWindow, self).OnLinkClicked(linkinfo)
 
     def OnSetTitle(self, title):
         self.log.WriteText('OnSetTitle: %s\n' % title)
-        self.base_OnSetTitle(title)
+        super(MyHtmlWindow, self).OnSetTitle(title)
 
     def OnCellMouseHover(self, cell, x, y):
         self.log.WriteText('OnCellMouseHover: %s, (%d %d)\n' % (cell, x, y))
-        self.base_OnCellMouseHover(cell, x, y)
+        super(MyHtmlWindow, self).OnCellMouseHover(cell, x, y)
 
     def OnCellClicked(self, cell, x, y, evt):
         self.log.WriteText('OnCellClicked: %s, (%d %d)\n' % (cell, x, y))
         if isinstance(cell, html.HtmlWordCell):
             sel = html.HtmlSelection()
             self.log.WriteText('     %s\n' % cell.ConvertToText(sel))
-        self.base_OnCellClicked(cell, x, y, evt)
+        super(MyHtmlWindow, self).OnCellClicked(cell, x, y, evt)
+
 
 
 # This filter doesn't really do anything but show how to use filters

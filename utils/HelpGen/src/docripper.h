@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: docripper.h,v 1.6 2005/06/02 09:44:44 ABX Exp $
+// RCS-ID:      $Id: docripper.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -139,7 +139,7 @@ protected:
 
 public:
     RipperDocGen();
-    ~RipperDocGen();
+    virtual ~RipperDocGen();
 
     // should be called onece to set user-code provided,
     // parser for specific source code language

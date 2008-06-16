@@ -1,0 +1,58 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDbColFor</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdbcolfor"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdbcoldef.html#wxdbcoldef"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdbcolinf.html#wxdbcolinf"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDbColFor</H2>
+<P>
+Beginning support for handling international formatting specifically on dates
+and floats.<P>
+<PRE>
+    wxString       s_Field;       // Formatted String for Output
+    wxString       s_Format[7];   // Formatted Objects - TIMESTAMP has
+                                     the biggest (7)
+    wxString       s_Amount[7];   // Formatted Objects - amount of
+                                     things that can be formatted
+    int            i_Amount[7];   // Formatted Objects -
+                                        TT MM YYYY HH MM SS m
+    int            i_Nation;      // 0 = timestamp
+                                     1 = EU
+                                     2 = UK
+                                     3 = International
+                                     4 = US
+    int            i_dbDataType;  // conversion of the 'sqlDataType'
+                                     to the generic data type used by
+                                     these classes
+    SWORD          i_sqlDataType;
+</PRE>
+The constructor for this class initializes all the values to zero or NULL.<P>
+The destructor does nothing at this time.<P>
+Only one function is provided with this class currently.<P>
+See the <A HREF="wx_odbcoverview.html#odbcoverview">database classes overview</A> for
+an introduction to using the ODBC classes.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/db.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdbcolforformat">wxDbColFor::Format</A><BR>
+<A HREF="#wxdbcolforinitialize">wxDbColFor::Initialize</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdbcolforformat"></A>
+<H3>wxDbColFor::Format</H3>
+<P>
+<B>int </B> <B>Format</B>(<B>int </B><I>Nation</I>, <B>int </B><I>dbDataType</I>,
+<B>SWORD </B><I>sqlDataType</I>, <B>short </B><I>columnSize</I>,
+<B>short </B><I>decimalDigits</I>)<P>
+Work in progress, and should be inter-related with wxLocale eventually.<P>
+
+<HR>
+<A NAME="wxdbcolforinitialize"></A>
+<H3>wxDbColFor::Initialize</H3>
+<P>
+Simply initializes all member variables to a cleared state.  Called by
+the constructor automatically.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,209 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxAnimationCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxanimationctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxanimation.html#wxanimation"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxapp.html#wxapp"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxAnimationCtrl</H2>
+<P>
+This is a static control which displays an animation.
+wxAnimationCtrl API is simple as possible and won't give you full control on the
+animation; if you need it then use <A HREF="wx_wxmediactrl.html#wxmediactrl">wxMediaCtrl</A>.<P>
+This control is useful to display a (small) animation while doing a long task
+(e.g. a "throbber").<P>
+It is only available if <TT>wxUSE_ANIMATIONCTRL</TT> is set to 1 (the default).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/animate.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAC_DEFAULT_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The default style: wxNO_BORDER.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxAC_NO_AUTORESIZE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+By default, the control will adjust
+its size to exactly fit to the size of the animation when <A HREF="wx_wxanimationctrl.html#wxanimationctrlsetanimation">SetAnimation</A>
+is called. If this style flag is given, the control will not change its size
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxanimation.html#wxanimation">wxAnimation</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxanimationctrlctor">wxAnimationCtrl::wxAnimationCtrl</A><BR>
+<A HREF="#wxanimationctrlcreate">wxAnimationCtrl::Create</A><BR>
+<A HREF="#wxanimationctrlgetanimation">wxAnimationCtrl::GetAnimation</A><BR>
+<A HREF="#wxanimationctrlgetinactivebitmap">wxAnimationCtrl::GetInactiveBitmap</A><BR>
+<A HREF="#wxanimationctrlisplaying">wxAnimationCtrl::IsPlaying</A><BR>
+<A HREF="#wxanimationctrlloadfile">wxAnimationCtrl::LoadFile</A><BR>
+<A HREF="#wxanimationctrlplay">wxAnimationCtrl::Play</A><BR>
+<A HREF="#wxanimationctrlsetanimation">wxAnimationCtrl::SetAnimation</A><BR>
+<A HREF="#wxanimationctrlsetinactivebitmap">wxAnimationCtrl::SetInactiveBitmap</A><BR>
+<A HREF="#wxanimationctrlstop">wxAnimationCtrl::Stop</A><BR>
+<P>
+
+<HR>
+<A NAME="wxanimationctrlctor"></A>
+<H3>wxAnimationCtrl::wxAnimationCtrl</H3>
+<P>
+<B></B> <B>wxAnimationCtrl</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>,
+<B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxanimation.html#wxanimation">wxAnimation</A>& </B></B><I>anim</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxAC_DEFAULT_STYLE</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "animationctrl"</I>)<P>
+Initializes the object and calls <A HREF="wx_wxanimationctrl.html#wxanimationctrlcreate">Create</A> with
+all the parameters.<P>
+
+
+<HR>
+<A NAME="wxanimationctrlcreate"></A>
+<H3>wxAnimationCtrl::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>,
+<B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxanimation.html#wxanimation">wxAnimation</A>& </B></B><I>anim</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxAC_DEFAULT_STYLE</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "animationctrl"</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window, must be non-<TT>NULL</TT>.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The identifier for the control.</UL></UL>
+<P>
+<I>anim</I><UL><UL>
+The initial animation shown in the control.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Initial position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Initial size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style, see <TT>wxAC_*</TT> flags.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Control name.</UL></UL>
+<P>
+After control creation you must explicitely call <A HREF="wx_wxanimationctrl.html#wxanimationctrlplay">Play</A>
+to start to play the animation. Until that function won't be called, the first frame
+of the animation is displayed.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if the control was successfully created or <TT>false</TT> if creation failed.<P>
+
+
+<HR>
+<A NAME="wxanimationctrlgetanimation"></A>
+<H3>wxAnimationCtrl::GetAnimation</H3>
+<P>
+<B><A HREF="wx_wxanimation.html#wxanimation">wxAnimation</A></B> </B> <B>GetAnimation</B>() <B>const</B><P>
+Returns the animation associated with this control.<P>
+
+
+<HR>
+<A NAME="wxanimationctrlgetinactivebitmap"></A>
+<H3>wxAnimationCtrl::GetInactiveBitmap</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A></B> </B> <B>GetInactiveBitmap</B>() <B>const</B><P>
+Returns the inactive bitmap shown in this control when the;
+see <A HREF="wx_wxanimationctrl.html#wxanimationctrlsetinactivebitmap">SetInactiveBitmap</A> for more info.<P>
+
+
+<HR>
+<A NAME="wxanimationctrlisplaying"></A>
+<H3>wxAnimationCtrl::IsPlaying</H3>
+<P>
+<B>bool</B> <B>IsPlaying</B>() <B>const</B><P>
+Returns <TT>true</TT> if the animation is being played.<P>
+
+
+<HR>
+<A NAME="wxanimationctrlloadfile"></A>
+<H3>wxAnimationCtrl::LoadFile</H3>
+<P>
+<B>bool</B> <B>LoadFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I> file</I>, <B>wxAnimationType </B><I> animType = wxANIMATION_TYPE_ANY</I>)<P>
+Loads the animation from the given file and calls <A HREF="wx_wxanimationctrl.html#wxanimationctrlsetanimation">SetAnimation</A>.
+See <A HREF="wx_wxanimation.html#wxanimationloadfile">wxAnimation::LoadFile</A> for more info.<P>
+
+
+<HR>
+<A NAME="wxanimationctrlplay"></A>
+<H3>wxAnimationCtrl::Play</H3>
+<P>
+<B>bool</B> <B>Play</B>()<P>
+Starts playing the animation.
+The animation is always played in loop mode (unless the last frame of the animation
+has an infinite delay time) and always start from the first frame
+(even if you <A HREF="wx_wxanimationctrl.html#wxanimationctrlstop">stopped</A> it while some other frame was
+displayed).<P>
+
+
+<HR>
+<A NAME="wxanimationctrlsetanimation"></A>
+<H3>wxAnimationCtrl::SetAnimation</H3>
+<P>
+<B>void</B> <B>SetAnimation</B>(<B>const <A HREF="wx_wxanimation.html#wxanimation">wxAnimation</A> &</B></B><I> anim</I>)<P>
+Sets the animation to play in this control.
+If the previous animation is being played, it's <A HREF="wx_wxanimationctrl.html#wxanimationctrlstop">Stopped</A>.<P>
+Until <A HREF="wx_wxanimationctrl.html#wxanimationctrlplay">Play</A> isn't called, a static image, the first
+frame of the given animation or the background colour will be shown
+(see <A HREF="wx_wxanimationctrl.html#wxanimationctrlsetinactivebitmap">SetInactiveBitmap</A> for more info).<P>
+
+
+<HR>
+<A NAME="wxanimationctrlsetinactivebitmap"></A>
+<H3>wxAnimationCtrl::SetInactiveBitmap</H3>
+<P>
+<B>void</B> <B>SetInactiveBitmap</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bmp</I>)<P>
+Sets the bitmap to show on the control when it's not playing an animation.
+If you set as inactive bitmap <TT>wxNullBitmap</TT> (which is the default), then the
+first frame of the animation is instead shown when the control is inactive; in this case,
+if there's no valid animation associated with the control (see <A HREF="wx_wxanimationctrl.html#wxanimationctrlsetanimation">SetAnimation</A>),
+then the background colour of the window is shown.<P>
+If the control is not playing the animation, the given bitmap will be immediately
+shown, otherwise it will be shown as soon as <A HREF="wx_wxanimationctrl.html#wxanimationctrlstop">Stop</A>
+is called.<P>
+Note that the inactive bitmap, if smaller than the control's size, will be centered in
+the control; if bigger, it will be stretched to fit it.<P>
+
+
+<HR>
+<A NAME="wxanimationctrlstop"></A>
+<H3>wxAnimationCtrl::Stop</H3>
+<P>
+<B>void</B> <B>Stop</B>()<P>
+Stops playing the animation.
+The control will show the first frame of the animation, a custom static image or
+the window's background colour as specified by the
+last <A HREF="wx_wxanimationctrl.html#wxanimationctrlsetinactivebitmap">SetInactiveBitmap</A> call.<P>
+
+</FONT></BODY></HTML>

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _scrolbar.i,v 1.10 2005/05/07 06:26:59 RD Exp $
+// RCS-ID:      $Id: _scrolbar.i 41166 2006-09-12 03:20:12Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -61,6 +61,11 @@ public:
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    %property(PageSize, GetPageSize, doc="See `GetPageSize`");
+    %property(Range, GetRange, doc="See `GetRange`");
+    %property(ThumbPosition, GetThumbPosition, SetThumbPosition, doc="See `GetThumbPosition` and `SetThumbPosition`");
+    %property(ThumbSize, GetThumbSize, doc="See `GetThumbSize`");
 };
 
 //---------------------------------------------------------------------------

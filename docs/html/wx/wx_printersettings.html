@@ -1,0 +1,164 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Printer settings</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="printersettings"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_gdifunctions.html#gdifunctions"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_clipsboard.html#clipsboard"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Printer settings</H2>
+<P>
+<B>NB:</B> These routines are obsolete and should no longer be used!<P>
+The following functions are used to control PostScript printing. Under
+Windows, PostScript output can only be sent to a file.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dcps.h&gt;<P>
+
+<A HREF="#wxgetprintercommand">::wxGetPrinterCommand</A><BR>
+<A HREF="#wxgetprinterfile">::wxGetPrinterFile</A><BR>
+<A HREF="#wxgetprintermode">::wxGetPrinterMode</A><BR>
+<A HREF="#wxgetprinteroptions">::wxGetPrinterOptions</A><BR>
+<A HREF="#wxgetprinterorientation">::wxGetPrinterOrientation</A><BR>
+<A HREF="#wxgetprinterpreviewcommand">::wxGetPrinterPreviewCommand</A><BR>
+<A HREF="#wxgetprinterscaling">::wxGetPrinterScaling</A><BR>
+<A HREF="#wxgetprintertranslation">::wxGetPrinterTranslation</A><BR>
+<A HREF="#wxsetprintercommand">::wxSetPrinterCommand</A><BR>
+<A HREF="#wxsetprinterfile">::wxSetPrinterFile</A><BR>
+<A HREF="#wxsetprintermode">::wxSetPrinterMode</A><BR>
+<A HREF="#wxsetprinteroptions">::wxSetPrinterOptions</A><BR>
+<A HREF="#wxsetprinterorientation">::wxSetPrinterOrientation</A><BR>
+<A HREF="#wxsetprinterpreviewcommand">::wxSetPrinterPreviewCommand</A><BR>
+<A HREF="#wxsetprinterscaling">::wxSetPrinterScaling</A><BR>
+<A HREF="#wxsetprintertranslation">::wxSetPrinterTranslation</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgetprintercommand"></A>
+<H3>::wxGetPrinterCommand</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetPrinterCommand</B>()<P>
+Gets the printer command used to print a file. The default is <TT>lpr</TT>.<P>
+
+
+<HR>
+<A NAME="wxgetprinterfile"></A>
+<H3>::wxGetPrinterFile</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetPrinterFile</B>()<P>
+Gets the PostScript output filename.<P>
+
+
+<HR>
+<A NAME="wxgetprintermode"></A>
+<H3>::wxGetPrinterMode</H3>
+<P>
+<B>int</B> <B>wxGetPrinterMode</B>()<P>
+Gets the printing mode controlling where output is sent (PS_PREVIEW, PS_FILE or PS_PRINTER).
+The default is PS_PREVIEW.<P>
+
+
+<HR>
+<A NAME="wxgetprinteroptions"></A>
+<H3>::wxGetPrinterOptions</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetPrinterOptions</B>()<P>
+Gets the additional options for the print command (e.g. specific printer). The default is nothing.<P>
+
+
+<HR>
+<A NAME="wxgetprinterorientation"></A>
+<H3>::wxGetPrinterOrientation</H3>
+<P>
+<B>int</B> <B>wxGetPrinterOrientation</B>()<P>
+Gets the orientation (PS_PORTRAIT or PS_LANDSCAPE). The default is PS_PORTRAIT.<P>
+
+
+<HR>
+<A NAME="wxgetprinterpreviewcommand"></A>
+<H3>::wxGetPrinterPreviewCommand</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetPrinterPreviewCommand</B>()<P>
+Gets the command used to view a PostScript file. The default depends on the platform.<P>
+
+
+<HR>
+<A NAME="wxgetprinterscaling"></A>
+<H3>::wxGetPrinterScaling</H3>
+<P>
+<B>void</B> <B>wxGetPrinterScaling</B>(<B>float *</B><I>x</I>, <B>float *</B><I>y</I>)<P>
+Gets the scaling factor for PostScript output. The default is 1.0, 1.0.<P>
+
+
+<HR>
+<A NAME="wxgetprintertranslation"></A>
+<H3>::wxGetPrinterTranslation</H3>
+<P>
+<B>void</B> <B>wxGetPrinterTranslation</B>(<B>float *</B><I>x</I>, <B>float *</B><I>y</I>)<P>
+Gets the translation (from the top left corner) for PostScript output. The default is 0.0, 0.0.<P>
+
+
+<HR>
+<A NAME="wxsetprintercommand"></A>
+<H3>::wxSetPrinterCommand</H3>
+<P>
+<B>void</B> <B>wxSetPrinterCommand</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>command</I>)<P>
+Sets the printer command used to print a file. The default is <TT>lpr</TT>.<P>
+
+
+<HR>
+<A NAME="wxsetprinterfile"></A>
+<H3>::wxSetPrinterFile</H3>
+<P>
+<B>void</B> <B>wxSetPrinterFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Sets the PostScript output filename.<P>
+
+
+<HR>
+<A NAME="wxsetprintermode"></A>
+<H3>::wxSetPrinterMode</H3>
+<P>
+<B>void</B> <B>wxSetPrinterMode</B>(<B>int </B><I>mode</I>)<P>
+Sets the printing mode controlling where output is sent (PS_PREVIEW, PS_FILE or PS_PRINTER).
+The default is PS_PREVIEW.<P>
+
+
+<HR>
+<A NAME="wxsetprinteroptions"></A>
+<H3>::wxSetPrinterOptions</H3>
+<P>
+<B>void</B> <B>wxSetPrinterOptions</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>options</I>)<P>
+Sets the additional options for the print command (e.g. specific printer). The default is nothing.<P>
+
+
+<HR>
+<A NAME="wxsetprinterorientation"></A>
+<H3>::wxSetPrinterOrientation</H3>
+<P>
+<B>void</B> <B>wxSetPrinterOrientation</B>(<B>int</B><I> orientation</I>)<P>
+Sets the orientation (PS_PORTRAIT or PS_LANDSCAPE). The default is PS_PORTRAIT.<P>
+
+
+<HR>
+<A NAME="wxsetprinterpreviewcommand"></A>
+<H3>::wxSetPrinterPreviewCommand</H3>
+<P>
+<B>void</B> <B>wxSetPrinterPreviewCommand</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>command</I>)<P>
+Sets the command used to view a PostScript file. The default depends on the platform.<P>
+
+
+<HR>
+<A NAME="wxsetprinterscaling"></A>
+<H3>::wxSetPrinterScaling</H3>
+<P>
+<B>void</B> <B>wxSetPrinterScaling</B>(<B>float </B><I>x</I>, <B>float </B><I>y</I>)<P>
+Sets the scaling factor for PostScript output. The default is 1.0, 1.0.<P>
+
+
+<HR>
+<A NAME="wxsetprintertranslation"></A>
+<H3>::wxSetPrinterTranslation</H3>
+<P>
+<B>void</B> <B>wxSetPrinterTranslation</B>(<B>float </B><I>x</I>, <B>float </B><I>y</I>)<P>
+Sets the translation (from the top left corner) for PostScript output. The default is 0.0, 0.0.<P>
+<P>
+
+</FONT></BODY></HTML>

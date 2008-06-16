@@ -14,11 +14,11 @@ colourList = [ "Aquamarine", "Black", "Blue", "Blue Violet", "Brown", "Cadet Blu
 class TestLB(wx.Listbook):
     def __init__(self, parent, id, log):
         wx.Listbook.__init__(self, parent, id, style=
-                            wx.LB_DEFAULT
-                            #wxLB_TOP
-                            #wxLB_BOTTOM
-                            #wxLB_LEFT
-                            #wxLB_RIGHT
+                            wx.BK_DEFAULT
+                            #wx.BK_TOP
+                            #wx.BK_BOTTOM
+                            #wx.BK_LEFT
+                            #wx.BK_RIGHT
                             )
         self.log = log
 
@@ -54,6 +54,7 @@ class TestLB(wx.Listbook):
         win = ColorPanel.ColoredPanel(p, color)
         p.win = win
         def OnCPSize(evt, win=win):
+            win.SetPosition((0,0))
             win.SetSize(evt.GetSize())
         p.Bind(wx.EVT_SIZE, OnCPSize)
         return p

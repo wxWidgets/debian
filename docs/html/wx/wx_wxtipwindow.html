@@ -1,0 +1,91 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTipWindow</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtipwindow"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtipprovider.html#wxtipprovider"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtogglebutton.html#wxtogglebutton"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTipWindow</H2>
+<P>
+Shows simple text in a popup tip window on creation. This is used by 
+<A HREF="wx_wxsimplehelpprovider.html#wxsimplehelpprovider">wxSimpleHelpProvider</A> to show popup help. The
+window automatically destroys itself when the user clicks on it or it loses the
+focus.<P>
+You may also use this class to emulate the tooltips when you need finer
+control over them than what the standard tooltips provide.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxPopupTransientWindow<BR>
+
+wxPopupWindow<BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/tipwin.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxtipwindowwxtipwindow">wxTipWindow::wxTipWindow</A><BR>
+<A HREF="#wxtipwindowsettipwindowptr">wxTipWindow::SetTipWindowPtr</A><BR>
+<A HREF="#wxtipwindowsetboundingrect">wxTipWindow::SetBoundingRect</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtipwindowwxtipwindow"></A>
+<H3>wxTipWindow::wxTipWindow</H3>
+<P>
+<B></B> <B>wxTipWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>wxCoord </B><I>maxLength = 100</I>, <B><A HREF="wx_wxtipwindow.html#wxtipwindow">wxTipWindow</A>** </B></B><I>windowPtr</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A> *</B></B><I>rectBounds = <TT>NULL</TT></I>)<P>
+Constructor. The tip is shown immediately after the window is constructed.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The parent window, must be non-<TT>NULL</TT></UL></UL>
+<P>
+<I>text</I><UL><UL>
+The text to show, may contain the new line characters</UL></UL>
+<P>
+<I>maxLength</I><UL><UL>
+The length of each line, in pixels. Set to a very large
+value to avoid wrapping lines</UL></UL>
+<P>
+<I>windowPtr</I><UL><UL>
+Simply passed to 
+<A HREF="wx_wxtipwindow.html#wxtipwindowsettipwindowptr">SetTipWindowPtr</A> below, please see its
+documentation for the description of this parameter</UL></UL>
+<P>
+<I>rectBounds</I><UL><UL>
+If non-<TT>NULL</TT>, passed to 
+<A HREF="wx_wxtipwindow.html#wxtipwindowsetboundingrect">SetBoundingRect</A> below, please see its
+documentation for the description of this parameter</UL></UL>
+<P>
+<P>
+
+<HR>
+<A NAME="wxtipwindowsettipwindowptr"></A>
+<H3>wxTipWindow::SetTipWindowPtr</H3>
+<P>
+<B>void</B> <B>SetTipWindowPtr</B>(<B><A HREF="wx_wxtipwindow.html#wxtipwindow">wxTipWindow</A>** </B></B><I>windowPtr</I>)<P>
+When the tip window closes itself (which may happen at any moment and
+unexpectedly to the caller) it may <TT>NULL</TT> out the pointer pointed to by 
+<I>it windowPtr</I>. This is helpful to avoid dereferencing the tip window which
+had been already closed and deleted.<P>
+<P>
+
+<HR>
+<A NAME="wxtipwindowsetboundingrect"></A>
+<H3>wxTipWindow::SetBoundingRect</H3>
+<P>
+<B>void</B> <B>SetBoundingRect</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rectBound</I>)<P>
+By default, the tip window disappears when the user clicks the mouse or presses
+a keyboard key or if it loses focus in any other way - for example because the
+user switched to another application window.<P>
+Additionally, if a non-empty <I>rectBound</I> is provided, the tip window will
+also automatically close if the mouse leaves this area. This is useful to
+dismiss the tip mouse when the mouse leaves the object it is associated with.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>rectBound</I><UL><UL>
+The bounding rectangle for the mouse in the screen coordinates</UL></UL>
+<P>
+
+</FONT></BODY></HTML>

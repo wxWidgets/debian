@@ -1,0 +1,252 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxBitmapComboBox</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxbitmapcombobox"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxbitmap.html#wxbitmap"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxbitmapbutton.html#wxbitmapbutton"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxBitmapComboBox</H2>
+<P>
+A combobox that displays bitmap in front of the list items.
+It currently only allows using bitmaps of one size, and resizes itself
+so that a bitmap can be shown next to the text field.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcombobox.html#wxcombobox">wxComboBox</A><BR>
+
+<A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitems">wxControlWithItems</A><BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+While wxBitmapComboBox contains the <A HREF="wx_wxcombobox.html#wxcombobox">wxComboBox</A>
+API, but it might not actually be derived from that class. In fact,
+if the platform does not have a native implementation, wxBitmapComboBox
+will inherit from <A HREF="wx_wxownerdrawncombobox.html#wxownerdrawncombobox">wxOwnerDrawnComboBox</A>.
+You can determine if the implementation is generic by checking whether
+wxGENERIC_BITMAPCOMBOBOX is defined.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/bmpcbox.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCB_READONLY</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a combobox without a text
+editor. On some platforms the control may appear very different when this
+style is used.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCB_SORT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sorts the entries in the list alphabetically.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxTE_PROCESS_ENTER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The control will generate
+the event wxEVT_COMMAND_TEXT_ENTER (otherwise pressing Enter key
+is either processed internally by the control or used for navigation between
+dialog controls). Windows only.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_COMBOBOX(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_COMBOBOX_SELECTED event,
+when an item on the list is selected.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_TEXT(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_TEXT_UPDATED event,
+when the combobox text changes.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_TEXT_ENTER(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_TEXT_ENTER event,
+when &lt;RETURN&gt; is pressed in the combobox.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcombobox.html#wxcombobox">wxComboBox</A>, <A HREF="wx_wxchoice.html#wxchoice">wxChoice</A>, <A HREF="wx_wxownerdrawncombobox.html#wxownerdrawncombobox">wxOwnerDrawnComboBox</A>,
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxbitmapcomboboxctor">wxBitmapComboBox::wxBitmapComboBox</A><BR>
+<A HREF="#wxbitmapcomboboxdtor">wxBitmapComboBox::~wxBitmapComboBox</A><BR>
+<A HREF="#wxbitmapcomboboxcreate">wxBitmapComboBox::Create</A><BR>
+<A HREF="#wxbitmapcomboboxappend">wxBitmapComboBox::Append</A><BR>
+<A HREF="#wxbitmapcomboboxgetbitmapsize">wxBitmapComboBox::GetBitmapSize</A><BR>
+<A HREF="#wxbitmapcomboboxgetitembitmap">wxBitmapComboBox::GetItemBitmap</A><BR>
+<A HREF="#wxbitmapcomboboxinsert">wxBitmapComboBox::Insert</A><BR>
+<A HREF="#wxbitmapcomboboxsetitembitmap">wxBitmapComboBox::SetItemBitmap</A><BR>
+<P>
+
+<HR>
+<A NAME="wxbitmapcomboboxctor"></A>
+<H3>wxBitmapComboBox::wxBitmapComboBox</H3>
+<P>
+<B></B> <B>wxBitmapComboBox</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxBitmapComboBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value = ""</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>int</B><I> n = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>choices[] = NULL</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "comboBox"</I>)<P>
+<B></B> <B>wxBitmapComboBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "comboBox"</I>)<P>
+Constructor, creating and showing a combobox.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>value</I><UL><UL>
+Initial selection string. An empty string indicates no selection.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then the window is sized
+appropriately.</UL></UL>
+<P>
+<I>n</I><UL><UL>
+Number of strings with which to initialise the control.</UL></UL>
+<P>
+<I>choices</I><UL><UL>
+An array of strings with which to initialise the control.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxbitmapcombobox.html#wxbitmapcombobox">wxBitmapComboBox</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmapcombobox.html#wxbitmapcomboboxcreate">wxBitmapComboBox::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+
+
+<HR>
+<A NAME="wxbitmapcomboboxdtor"></A>
+<H3>wxBitmapComboBox::~wxBitmapComboBox</H3>
+<P>
+<B></B> <B>~wxBitmapComboBox</B>()<P>
+Destructor, destroying the combobox.<P>
+
+
+<HR>
+<A NAME="wxbitmapcomboboxcreate"></A>
+<H3>wxBitmapComboBox::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value = ""</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>int</B><I> n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>choices[]</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "comboBox"</I>)<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "comboBox"</I>)<P>
+Creates the combobox for two-step construction. Derived classes
+should call or replace this function. See <A HREF="wx_wxbitmapcombobox.html#wxbitmapcomboboxctor">wxBitmapComboBox::wxBitmapComboBox</A>
+for further details.<P>
+
+
+<HR>
+<A NAME="wxbitmapcomboboxappend"></A>
+<H3>wxBitmapComboBox::Append</H3>
+<P>
+<B>int</B> <B>Append</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap = wxNullBitmap</I>)<P>
+Adds the item to the end of the combo box.<P>
+<B>int</B> <B>Append</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B>void *</B><I>clientData</I>)<P>
+<B>int</B> <B>Append</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B><A HREF="wx_wxclientdata.html#wxclientdata">wxClientData</A> *</B></B><I>clientData</I>)<P>
+Adds the item to the end of the combo box, associating the given, typed or
+untyped, client data pointer with the item.<P>
+
+
+<HR>
+<A NAME="wxbitmapcomboboxgetbitmapsize"></A>
+<H3>wxBitmapComboBox::GetBitmapSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetBitmapSize</B>() <B>const</B><P>
+Returns size of bitmaps used in the list.<P>
+
+
+<HR>
+<A NAME="wxbitmapcomboboxgetitembitmap"></A>
+<H3>wxBitmapComboBox::GetItemBitmap</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A></B> </B> <B>GetItemBitmap</B>(<B>unsigned int </B><I>n</I>) <B>const</B><P>
+Returns the bitmap of the item with the given index.<P>
+
+
+<HR>
+<A NAME="wxbitmapcomboboxinsert"></A>
+<H3>wxBitmapComboBox::Insert</H3>
+<P>
+<B>int</B> <B>Insert</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B>unsigned int </B><I>pos</I>)<P>
+Inserts the item into the list before pos.
+Not valid for <TT>wxCB_SORT</TT> style, use Append instead.<P>
+<B>int</B> <B>Insert</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B>unsigned int </B><I>pos</I>, <B>void *</B><I>clientData</I>)<P>
+<B>int</B> <B>Insert</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> item</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>, <B>unsigned int </B><I>pos</I>, <B><A HREF="wx_wxclientdata.html#wxclientdata">wxClientData</A> *</B></B><I>clientData</I>)<P>
+Inserts the item into the list before pos, associating the given, typed or
+untyped, client data pointer with the item.
+Not valid for <TT>wxCB_SORT</TT> style, use Append instead.<P>
+
+
+<HR>
+<A NAME="wxbitmapcomboboxsetitembitmap"></A>
+<H3>wxBitmapComboBox::SetItemBitmap</H3>
+<P>
+<B>void</B> <B>SetItemBitmap</B>(<B>unsigned int </B><I>n</I>, <B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Sets the bitmap for the given item.<P>
+
+</FONT></BODY></HTML>

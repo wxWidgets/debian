@@ -1,0 +1,66 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCriticalSectionLocker</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcriticalsectionlocker"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcriticalsection.html#wxcriticalsection"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcsconv.html#wxcsconv"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCriticalSectionLocker</H2>
+<P>
+This is a small helper class to be used with <A HREF="wx_wxcriticalsection.html#wxcriticalsection">wxCriticalSection</A> 
+objects. A wxCriticalSectionLocker enters the critical section in the
+constructor and leaves it in the destructor making it much more difficult to
+forget to leave a critical section (which, in general, will lead to serious
+and difficult to debug problems).<P>
+Example of using it:<P>
+<PRE>
+void Set Foo()
+{
+    // gs_critSect is some (global) critical section guarding access to the
+    // object "foo"
+    wxCriticalSectionLocker locker(gs_critSect);
+
+    if ( ... )
+    {
+        // do something
+        ...
+
+        return;
+    }
+
+    // do something else
+    ...
+
+    return;
+}
+</PRE>
+Without wxCriticalSectionLocker, you would need to remember to manually leave
+the critical section before each <TT>return</TT>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/thread.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcriticalsection.html#wxcriticalsection">wxCriticalSection</A>, 
+<A HREF="wx_wxmutexlocker.html#wxmutexlocker">wxMutexLocker</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxcriticalsectionlockerctor">wxCriticalSectionLocker::wxCriticalSectionLocker</A><BR>
+<A HREF="#wxcriticalsectionlockerdtor">wxCriticalSectionLocker::~wxCriticalSectionLocker</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcriticalsectionlockerctor"></A>
+<H3>wxCriticalSectionLocker::wxCriticalSectionLocker</H3>
+<P>
+<B></B> <B>wxCriticalSectionLocker</B>(<B><A HREF="wx_wxcriticalsection.html#wxcriticalsection">wxCriticalSection</A>& </B></B><I>criticalsection</I>)<P>
+Constructs a wxCriticalSectionLocker object associated with given
+<I>criticalsection</I> and enters it.<P>
+
+<HR>
+<A NAME="wxcriticalsectionlockerdtor"></A>
+<H3>wxCriticalSectionLocker::~wxCriticalSectionLocker</H3>
+<P>
+<B></B> <B>~wxCriticalSectionLocker</B>()<P>
+Destructor leaves the critical section.<P>
+
+</FONT></BODY></HTML>

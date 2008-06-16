@@ -1,0 +1,135 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxThreadHelper</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxthreadhelper"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxthread.html#wxthread"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtimer.html#wxtimer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxThreadHelper</H2>
+<P>
+The wxThreadHelper class is a mix-in class that manages a single background
+thread.  By deriving from wxThreadHelper, a class can implement the thread
+code in its own <A HREF="wx_wxthreadhelper.html#wxthreadhelperentry">wxThreadHelper::Entry</A> method
+and easily share data and synchronization objects between the main thread
+and the worker thread.  Doing this prevents the awkward passing of pointers
+that is needed when the original object in the main thread needs to
+synchronize with its worker thread in its own wxThread derived object.<P>
+For example, <A HREF="wx_wxframe.html#wxframe">wxFrame</A> may need to make some calculations
+in a background thread and then display the results of those calculations in
+the main window.<P>
+Ordinarily, a <A HREF="wx_wxthread.html#wxthread">wxThread</A> derived object would be created
+with the calculation code implemented in
+<A HREF="wx_wxthread.html#wxthreadentry">wxThread::Entry</A>.  To access the inputs to the
+calculation, the frame object would often to pass a pointer to itself to the
+thread object.  Similarly, the frame object would hold a pointer to the
+thread object.  Shared data and synchronization objects could be stored in
+either object though the object without the data would have to access the
+data through a pointer.<P>
+However, with wxThreadHelper, the frame object and the thread object are
+treated as the same object.  Shared data and synchronization variables are
+stored in the single object, eliminating a layer of indirection and the
+associated pointers.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/thread.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxthread.html#wxthread">wxThread</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxthreadhelperctor">wxThreadHelper::wxThreadHelper</A><BR>
+<A HREF="#wxthreadhelpermthread">wxThreadHelper::m_thread</A><BR>
+<A HREF="#wxthreadhelperdtor">wxThreadHelper::~wxThreadHelper</A><BR>
+<A HREF="#wxthreadhelpercreate">wxThreadHelper::Create</A><BR>
+<A HREF="#wxthreadhelperentry">wxThreadHelper::Entry</A><BR>
+<A HREF="#wxthreadhelpergetthread">wxThreadHelper::GetThread</A><BR>
+<P>
+
+<HR>
+<A NAME="wxthreadhelperctor"></A>
+<H3>wxThreadHelper::wxThreadHelper</H3>
+<P>
+<B></B> <B>wxThreadHelper</B>()<P>
+This constructor simply initializes a member variable.<P>
+
+<HR>
+<A NAME="wxthreadhelpermthread"></A>
+<H3>wxThreadHelper::m_thread</H3>
+<P>
+wxThread * m_thread<P>
+the actual <A HREF="wx_wxthread.html#wxthread">wxThread</A> object.<P>
+
+<HR>
+<A NAME="wxthreadhelperdtor"></A>
+<H3>wxThreadHelper::~wxThreadHelper</H3>
+<P>
+<B></B> <B>~wxThreadHelper</B>()<P>
+The destructor frees the resources associated with the thread.<P>
+
+<HR>
+<A NAME="wxthreadhelpercreate"></A>
+<H3>wxThreadHelper::Create</H3>
+<P>
+<B>wxThreadError</B> <B>Create</B>(<B>unsigned int </B><I>stackSize = 0</I>)<P>
+Creates a new thread. The thread object is created in the suspended state, and you
+should call <A HREF="wx_wxthread.html#wxthreadrun">GetThread()-&gt;Run()</A> to start running
+it.  You may optionally specify the stack size to be allocated to it (Ignored on
+platforms that don't support setting it explicitly, eg. Unix).<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+One of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxTHREAD_NO_ERROR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+There was no error.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxTHREAD_NO_RESOURCE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+There were insufficient resources to create a new thread.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxTHREAD_RUNNING</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The thread is already running.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="wxthreadhelperentry"></A>
+<H3>wxThreadHelper::Entry</H3>
+<P>
+<B>virtual ExitCode</B> <B>Entry</B>()<P>
+This is the entry point of the thread. This function is pure virtual and must
+be implemented by any derived class. The thread execution will start here.<P>
+The returned value is the thread exit code which is only useful for
+joinable threads and is the value returned by
+<A HREF="wx_wxthread.html#wxthreadwait">GetThread()-&gt;Wait()</A>.<P>
+This function is called by wxWidgets itself and should never be called
+directly.<P>
+
+<HR>
+<A NAME="wxthreadhelpergetthread"></A>
+<H3>wxThreadHelper::GetThread</H3>
+<P>
+<B><A HREF="wx_wxthread.html#wxthread">wxThread</A> *</B> </B> <B>GetThread</B>()<P>
+This is a public function that returns the <A HREF="wx_wxthread.html#wxthread">wxThread</A> object
+associated with the thread.<P>
+
+</FONT></BODY></HTML>

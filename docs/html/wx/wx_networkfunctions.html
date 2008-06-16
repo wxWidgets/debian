@@ -1,0 +1,209 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Network, user and OS functions</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="networkfunctions"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_filefunctions.html#filefunctions"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_stringfunctions.html#stringfunctions"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Network, user and OS functions</H2>
+<P>
+The functions in this section are used to retrieve information about the
+current computer and/or user characteristics.<P>
+
+<A HREF="#wxgetemailaddress">::wxGetEmailAddress</A><BR>
+<A HREF="#wxgetfreememory">::wxGetFreeMemory</A><BR>
+<A HREF="#wxgetfullhostname">::wxGetFullHostName</A><BR>
+<A HREF="#wxgethomedir">::wxGetHomeDir</A><BR>
+<A HREF="#wxgethostname">::wxGetHostName</A><BR>
+<A HREF="#wxgetosdescription">::wxGetOsDescription</A><BR>
+<A HREF="#wxgetosversion">::wxGetOsVersion</A><BR>
+<A HREF="#wxisplatformlittleendian">::wxIsPlatformLittleEndian</A><BR>
+<A HREF="#wxisplatform64bit">::wxIsPlatform64Bit</A><BR>
+<A HREF="#wxgetuserhome">::wxGetUserHome</A><BR>
+<A HREF="#wxgetuserid">::wxGetUserId</A><BR>
+<A HREF="#wxgetusername">::wxGetUserName</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgetemailaddress"></A>
+<H3>::wxGetEmailAddress</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetEmailAddress</B>()<P>
+<B>bool</B> <B>wxGetEmailAddress</B>(<B>char * </B><I>buf</I>, <B>int </B><I>sz</I>)<P>
+Copies the user's email address into the supplied buffer, by
+concatenating the values returned by <A HREF="wx_networkfunctions.html#wxgetfullhostname">wxGetFullHostName</A>
+and <A HREF="wx_networkfunctions.html#wxgetuserid">wxGetUserId</A>.<P>
+Returns true if successful, false otherwise.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetfreememory"></A>
+<H3>::wxGetFreeMemory</H3>
+<P>
+<B>wxMemorySize</B> <B>wxGetFreeMemory</B>()<P>
+Returns the amount of free memory in bytes under environments which
+support it, and -1 if not supported or failed to perform measurement.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetfullhostname"></A>
+<H3>::wxGetFullHostName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetFullHostName</B>()<P>
+Returns the FQDN (fully qualified domain host name) or an empty string on
+error.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_networkfunctions.html#wxgethostname">wxGetHostName</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgethomedir"></A>
+<H3>::wxGetHomeDir</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetHomeDir</B>()<P>
+Return the (current) user's home directory.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_networkfunctions.html#wxgetuserhome">wxGetUserHome</A><BR>
+
+<A HREF="wx_wxstandardpaths.html#wxstandardpaths">wxStandardPaths</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgethostname"></A>
+<H3>::wxGetHostName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetHostName</B>()<P>
+<B>bool</B> <B>wxGetHostName</B>(<B>char * </B><I>buf</I>, <B>int </B><I>sz</I>)<P>
+Copies the current host machine's name into the supplied buffer. Please note
+that the returned name is <I>not</I> fully qualified, i.e. it does not include
+the domain name.<P>
+Under Windows or NT, this function first looks in the environment
+variable SYSTEM_NAME; if this is not found, the entry <B>HostName</B>
+in the <B>wxWidgets</B> section of the WIN.INI file is tried.<P>
+The first variant of this function returns the hostname if successful or an
+empty string otherwise. The second (deprecated) function returns true
+if successful, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_networkfunctions.html#wxgetfullhostname">wxGetFullHostName</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetosdescription"></A>
+<H3>::wxGetOsDescription</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetOsDescription</B>()<P>
+Returns the string containing the description of the current platform in a
+user-readable form. For example, this function may return strings like
+<TT>Windows NT Version 4.0</TT> or <TT>Linux 2.2.2 i386</TT>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_networkfunctions.html#wxgetosversion">::wxGetOsVersion</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetosversion"></A>
+<H3>::wxGetOsVersion</H3>
+<P>
+<B>wxOperatingSystemId</B> <B>wxGetOsVersion</B>(<B>int *</B><I>major = NULL</I>, <B>int *</B><I>minor = NULL</I>)<P>
+Gets the version and the operating system ID for currently running OS.
+See <A HREF="wx_wxplatforminfo.html#wxplatforminfo">wxPlatformInfo</A> for more details about wxOperatingSystemId.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_networkfunctions.html#wxgetosdescription">::wxGetOsDescription</A>,
+<A HREF="wx_wxplatforminfo.html#wxplatforminfo">wxPlatformInfo</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxisplatformlittleendian"></A>
+<H3>::wxIsPlatformLittleEndian</H3>
+<P>
+<B>bool</B> <B>wxIsPlatformLittleEndian</B>()<P>
+Returns <TT>true</TT> if the current platform is little endian (instead of big endian).
+The check is performed at run-time.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_byteordermacros.html#byteordermacros">Byte order macros</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxisplatform64bit"></A>
+<H3>::wxIsPlatform64Bit</H3>
+<P>
+<B>bool</B> <B>wxIsPlatform64Bit</B>()<P>
+Returns <TT>true</TT> if the operating system the program is running under is 64 bit.
+The check is performed at run-time and may differ from the value available at
+compile-time (at compile-time you can just check if <TT>sizeof(void*)==8</TT>)
+since the program could be running in emulation mode or in a mixed 32/64 bit system
+(bi-architecture operating system).<P>
+Very important: this function is not 100% reliable on some systems given the fact
+that there isn't always a standard way to do a reliable check on the OS architecture.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetuserhome"></A>
+<H3>::wxGetUserHome</H3>
+<P>
+<B>const wxChar *</B> <B>wxGetUserHome</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>user = ""</I>)<P>
+Returns the home directory for the given user. If the username is empty
+(default value), this function behaves like
+<A HREF="wx_networkfunctions.html#wxgethomedir">wxGetHomeDir</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetuserid"></A>
+<H3>::wxGetUserId</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetUserId</B>()<P>
+<B>bool</B> <B>wxGetUserId</B>(<B>char * </B><I>buf</I>, <B>int </B><I>sz</I>)<P>
+This function returns the "user id" also known as "login name" under Unix i.e.
+something like "jsmith". It uniquely identifies the current user (on this system).<P>
+Under Windows or NT, this function first looks in the environment
+variables USER and LOGNAME; if neither of these is found, the entry <B>UserId</B>
+in the <B>wxWidgets</B> section of the WIN.INI file is tried.<P>
+The first variant of this function returns the login name if successful or an
+empty string otherwise. The second (deprecated) function returns true
+if successful, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_networkfunctions.html#wxgetusername">wxGetUserName</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetusername"></A>
+<H3>::wxGetUserName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetUserName</B>()<P>
+<B>bool</B> <B>wxGetUserName</B>(<B>char * </B><I>buf</I>, <B>int </B><I>sz</I>)<P>
+This function returns the full user name (something like "Mr. John Smith").<P>
+Under Windows or NT, this function looks for the entry <B>UserName</B>
+in the <B>wxWidgets</B> section of the WIN.INI file. If PenWindows
+is running, the entry <B>Current</B> in the section <B>User</B> of
+the PENWIN.INI file is used.<P>
+The first variant of this function returns the user name if successful or an
+empty string otherwise. The second (deprecated) function returns <TT>true</TT>
+if successful, <TT>false</TT> otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_networkfunctions.html#wxgetuserid">wxGetUserId</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+<P>
+
+</FONT></BODY></HTML>

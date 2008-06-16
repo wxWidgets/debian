@@ -1,0 +1,91 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMemoryDC</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmemorydc"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmemorybuffer.html#wxmemorybuffer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmemoryfshandler.html#wxmemoryfshandler"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMemoryDC</H2>
+<P>
+A memory device context provides a means to draw graphics onto a bitmap. When
+drawing in to a mono-bitmap, using <TT>wxWHITE</TT>, <TT>wxWHITE_PEN</TT> and
+<TT>wxWHITE_BRUSH</TT>
+will draw the background colour (i.e. 0) whereas all other colours will draw the
+foreground colour (i.e. 1).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdc">wxDC</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dcmemory.h&gt;<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+A bitmap must be selected into the new memory DC before it may be used
+for anything.  Typical usage is as follows:<P>
+<PRE>
+  // Create a memory DC
+  wxMemoryDC temp_dc;
+  temp_dc.SelectObject(test_bitmap);
+
+  // We can now draw into the memory DC...
+  // Copy from this DC to another DC.
+  old_dc.Blit(250, 50, BITMAP_WIDTH, BITMAP_HEIGHT, temp_dc, 0, 0);
+</PRE>
+Note that the memory DC <I>must</I> be deleted (or the bitmap selected out of it) before a bitmap
+can be reselected into another memory DC.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>, <A HREF="wx_wxdc.html#wxdc">wxDC</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmemorydcctor">wxMemoryDC::wxMemoryDC</A><BR>
+<A HREF="#wxmemorydcselectobject">wxMemoryDC::SelectObject</A><BR>
+<A HREF="#wxmemorydcselectobjectassource">wxMemoryDC::SelectObjectAsSource</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmemorydcctor"></A>
+<H3>wxMemoryDC::wxMemoryDC</H3>
+<P>
+<B></B> <B>wxMemoryDC</B>()<P>
+Constructs a new memory device context.<P>
+Use the <A HREF="wx_wxdc.html#wxdcisok">IsOk</A> member to test whether the constructor was successful
+in creating a usable device context.
+Don't forget to select a bitmap into the DC before drawing on it.<P>
+<B></B> <B>wxMemoryDC</B>(<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Constructs a new memory device context and calls <A HREF="wx_wxmemorydc.html#wxmemorydcselectobject">SelectObject</A>
+with the given bitmap.
+Use the <A HREF="wx_wxdc.html#wxdcisok">IsOk</A> member to test whether the constructor was successful
+in creating a usable device context.<P>
+
+
+<HR>
+<A NAME="wxmemorydcselectobject"></A>
+<H3>wxMemoryDC::SelectObject</H3>
+<P>
+<B>void</B> <B>SelectObject</B>(<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Works exactly like <A HREF="wx_wxmemorydc.html#wxmemorydcselectobjectassource">SelectObjectAsSource</A> but
+this is the function you should use when you select a bitmap because you want to modify
+it, e.g. drawing on this DC.<P>
+Be careful to use this function and not <A HREF="wx_wxmemorydc.html#wxmemorydcselectobjectassource">SelectObjectAsSource</A>
+when you want to modify the bitmap you are selecting otherwise you may incurr in some
+problems related to wxBitmap being a reference counted object
+(see <A HREF="wx_trefcount.html#trefcount">reference counting overview</A>).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdcdrawbitmap">wxDC::DrawBitmap</A><P>
+<P>
+
+<HR>
+<A NAME="wxmemorydcselectobjectassource"></A>
+<H3>wxMemoryDC::SelectObjectAsSource</H3>
+<P>
+<B>void</B> <B>SelectObjectAsSource</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>& </B></B><I>bitmap</I>)<P>
+Selects the given bitmap into the device context, to use as the memory
+bitmap. Selecting the bitmap into a memory DC allows you to draw into
+the DC (and therefore the bitmap) and also to use <A HREF="wx_wxdc.html#wxdcblit">wxDC::Blit</A> to copy
+the bitmap to a window. For this purpose, you may find <A HREF="wx_wxdc.html#wxdcdrawicon">wxDC::DrawIcon</A>
+easier to use instead.<P>
+If the argument is wxNullBitmap (or some other uninitialised wxBitmap) the current bitmap is
+selected out of the device context, and the original bitmap restored, allowing the current bitmap to
+be destroyed safely.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmemorydc.html#wxmemorydcselectobject">wxMemoryDC::SelectObject</A><P>
+
+</FONT></BODY></HTML>

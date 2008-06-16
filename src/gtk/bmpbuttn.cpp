@@ -1,20 +1,14 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        gtk/bmpbuttn.cpp
+// Name:        src/gtk/bmpbuttn.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: bmpbuttn.cpp,v 1.60.2.1 2006/03/18 12:22:09 MR Exp $
+// Id:          $Id: bmpbuttn.cpp 46616 2007-06-22 12:25:11Z RR $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "bmpbuttn.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
-
-#include "wx/defs.h"
 
 #if wxUSE_BMPBUTTON
 
@@ -27,13 +21,6 @@
 //-----------------------------------------------------------------------------
 
 class wxBitmapButton;
-
-//-----------------------------------------------------------------------------
-// idle system
-//-----------------------------------------------------------------------------
-
-extern void wxapp_install_idle_handler();
-extern bool g_isIdle;
 
 //-----------------------------------------------------------------------------
 // data
@@ -159,17 +146,18 @@ bool wxBitmapButton::Create( wxWindow *parent,
         OnSetBitmap();
     }
 
-    gtk_signal_connect_after( GTK_OBJECT(m_widget), "clicked",
-      GTK_SIGNAL_FUNC(gtk_bmpbutton_clicked_callback), (gpointer*)this );
+    g_signal_connect_after (m_widget, "clicked",
+                            G_CALLBACK (gtk_bmpbutton_clicked_callback),
+                            this);
 
-    gtk_signal_connect( GTK_OBJECT(m_widget), "enter",
-      GTK_SIGNAL_FUNC(gtk_bmpbutton_enter_callback), (gpointer*)this );
-    gtk_signal_connect( GTK_OBJECT(m_widget), "leave",
-      GTK_SIGNAL_FUNC(gtk_bmpbutton_leave_callback), (gpointer*)this );
-    gtk_signal_connect( GTK_OBJECT(m_widget), "pressed",
-      GTK_SIGNAL_FUNC(gtk_bmpbutton_press_callback), (gpointer*)this );
-    gtk_signal_connect( GTK_OBJECT(m_widget), "released",
-      GTK_SIGNAL_FUNC(gtk_bmpbutton_release_callback), (gpointer*)this );
+    g_signal_connect (m_widget, "enter",
+                      G_CALLBACK (gtk_bmpbutton_enter_callback), this);
+    g_signal_connect (m_widget, "leave",
+                      G_CALLBACK (gtk_bmpbutton_leave_callback), this);
+    g_signal_connect (m_widget, "pressed",
+                      G_CALLBACK (gtk_bmpbutton_press_callback), this);
+    g_signal_connect (m_widget, "released",
+                      G_CALLBACK (gtk_bmpbutton_release_callback), this);
 
     m_parent->DoAddChild( this );
 
@@ -193,16 +181,9 @@ void wxBitmapButton::SetLabel( const wxString &label )
     wxControl::SetLabel( label );
 }
 
-wxString wxBitmapButton::GetLabel() const
-{
-    wxCHECK_MSG( m_widget != NULL, wxEmptyString, wxT("invalid button") );
-
-    return wxControl::GetLabel();
-}
-
 void wxBitmapButton::DoApplyWidgetStyle(GtkRcStyle *style)
 {
-    if ( !BUTTON_CHILD(m_widget) )
+    if (!GTK_BIN(m_widget)->child)
         return;
 
     wxButton::DoApplyWidgetStyle(style);
@@ -227,37 +208,20 @@ void wxBitmapButton::OnSetBitmap()
     if (!the_one.Ok()) the_one = m_bmpNormal;
     if (!the_one.Ok()) return;
 
-    GdkBitmap *mask = (GdkBitmap *) NULL;
-    if (the_one.GetMask()) mask = the_one.GetMask()->GetBitmap();
-
-    GtkWidget *child = BUTTON_CHILD(m_widget);
+    GtkWidget *child = GTK_BIN(m_widget)->child;
     if (child == NULL)
     {
         // initial bitmap
-        GtkWidget *pixmap;
-#ifdef __WXGTK20__
-        if (the_one.HasPixbuf())
-            pixmap = gtk_image_new_from_pixbuf(the_one.GetPixbuf());
-        else
-            pixmap = gtk_image_new_from_pixmap(the_one.GetPixmap(), mask);
-#else
-        pixmap = gtk_pixmap_new(the_one.GetPixmap(), mask);
-#endif
+        GtkWidget *pixmap = 
+            gtk_image_new_from_pixbuf(the_one.GetPixbuf());
+
         gtk_widget_show(pixmap);
         gtk_container_add(GTK_CONTAINER(m_widget), pixmap);
     }
     else
     {   // subsequent bitmaps
-#ifdef __WXGTK20__
         GtkImage *pixmap = GTK_IMAGE(child);
-        if (the_one.HasPixbuf())
-            gtk_image_set_from_pixbuf(pixmap, the_one.GetPixbuf());
-        else
-            gtk_image_set_from_pixmap(pixmap, the_one.GetPixmap(), mask);
-#else
-        GtkPixmap *pixmap = GTK_PIXMAP(child);
-        gtk_pixmap_set(pixmap, the_one.GetPixmap(), mask);
-#endif
+        gtk_image_set_from_pixbuf(pixmap, the_one.GetPixbuf());
     }
 }
 

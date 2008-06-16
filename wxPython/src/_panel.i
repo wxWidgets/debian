@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        _window.i
+// Name:        _panel.i
 // Purpose:     SWIG interface for wxPanel and wxScrolledWindow
 //
 // Author:      Robin Dunn
 //
 // Created:     24-June-1997
-// RCS-ID:      $Id: _panel.i,v 1.15 2004/12/23 20:43:51 RD Exp $
+// RCS-ID:      $Id: _panel.i 46280 2007-06-02 23:42:18Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -122,6 +122,10 @@ public:
     int GetScrollPageSize(int orient) const;
     void SetScrollPageSize(int orient, int pageSize);
 
+//     // get the number of lines the window can scroll, 
+//     // returns 0 if no scrollbars are there.
+//     int GetScrollLines( int orient ) const;
+    
     // Set the x, y scrolling increments.
     void SetScrollRate( int xstep, int ystep );
 
@@ -197,6 +201,11 @@ public:
     
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+    
+    %property(ScaleX, GetScaleX, doc="See `GetScaleX`");
+    %property(ScaleY, GetScaleY, doc="See `GetScaleY`");
+    %property(TargetWindow, GetTargetWindow, SetTargetWindow, doc="See `GetTargetWindow` and `SetTargetWindow`");
+    %property(ViewStart, GetViewStart, doc="See `GetViewStart`");
 };
 
     

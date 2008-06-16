@@ -3,14 +3,10 @@
 // Purpose:     XRC resource for wxSpinButton
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_spin.cpp,v 1.11 2005/01/07 21:33:14 VS Exp $
+// RCS-ID:      $Id: xh_spin.cpp 41590 2006-10-03 14:53:40Z VZ $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_spin.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -19,7 +15,7 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_XRC
+#if wxUSE_XRC 
 
 #include "wx/xrc/xh_spin.h"
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _treectrl.i,v 1.26.2.1 2006/01/16 23:47:29 RD Exp $
+// RCS-ID:      $Id: _treectrl.i 44173 2007-01-08 23:10:39Z RD $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -46,10 +46,13 @@ enum {
     wxTR_DEFAULT_STYLE,
 
     wxTR_TWIST_BUTTONS,
-    wxTR_MAC_BUTTONS,
-    wxTR_AQUA_BUTTONS,
 };
 
+%pythoncode {
+    %# obsolete
+    TR_MAC_BUTTONS = 0
+    wxTR_AQUA_BUTTONS = 0
+}
 
 enum wxTreeItemIcon
 {
@@ -121,14 +124,19 @@ public:
 class wxPyTreeItemData {
 public:
     wxPyTreeItemData(PyObject* obj = NULL);
-
+    ~wxPyTreeItemData();
+    
     PyObject* GetData();
     void      SetData(PyObject* obj);
 
     const wxTreeItemId& GetId();
     void                SetId(const wxTreeItemId& id);
 
+    %pythonPrepend Destroy "args[0].this.own(False)"
     %extend { void Destroy() { delete self; } }
+
+    %property(Data, GetData, SetData, doc="See `GetData` and `SetData`");
+    %property(Id, GetId, SetId, doc="See `GetId` and `SetId`");
 };
 
 
@@ -144,7 +152,8 @@ public:
     wxTreeItemAttr(const wxColour& colText = wxNullColour,
                    const wxColour& colBack = wxNullColour,
                    const wxFont& font = wxNullFont);
-
+    ~wxTreeItemAttr();
+    
     // setters
     void SetTextColour(const wxColour& colText);
     void SetBackgroundColour(const wxColour& colBack);
@@ -159,6 +168,7 @@ public:
     wxColour GetBackgroundColour();
     wxFont GetFont();
 
+    %pythonAppend Destroy "args[0].thisown = 0"
     %extend { void Destroy() { delete self; } }
 };
 
@@ -212,9 +222,14 @@ EVT_TREE_ITEM_MIDDLE_CLICK = wx.PyEventBinder(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLI
 EVT_TREE_END_DRAG          = wx.PyEventBinder(wxEVT_COMMAND_TREE_END_DRAG         , 1)
 EVT_TREE_STATE_IMAGE_CLICK = wx.PyEventBinder(wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK, 1)
 EVT_TREE_ITEM_GETTOOLTIP   = wx.PyEventBinder(wxEVT_COMMAND_TREE_ITEM_GETTOOLTIP,   1)
-EVT_TREE_ITEM_MENU        = wx.PyEventBinder(wxEVT_COMMAND_TREE_ITEM_MENU,         1)
+EVT_TREE_ITEM_MENU         = wx.PyEventBinder(wxEVT_COMMAND_TREE_ITEM_MENU,         1)
 }
 
+
+%{
+    static wxTreeItemId wxNullTreeItemId;
+%}
+wxTreeItemId wxNullTreeItemId;
 
 
 // wxTreeEvent is a special class for all events associated with tree controls
@@ -223,7 +238,11 @@ EVT_TREE_ITEM_MENU        = wx.PyEventBinder(wxEVT_COMMAND_TREE_ITEM_MENU,      
 //     descriptions below
 class wxTreeEvent : public wxNotifyEvent {
 public:
+    %nokwargs wxTreeEvent;
     wxTreeEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
+    wxTreeEvent(wxEventType   commandType,
+                wxPyTreeCtrl* tree,
+                wxTreeItemId& item = wxNullTreeItemId);
 
         // get the item on which the operation was performed or the newly
         // selected item for wxEVT_COMMAND_TREE_SEL_CHANGED/ING events
@@ -256,6 +275,15 @@ public:
         // Set the tooltip for the item (for EVT_TREE_ITEM_GETTOOLTIP events)
     void SetToolTip(const wxString& toolTip);
     wxString GetToolTip();
+
+    %property(Item, GetItem, SetItem, doc="See `GetItem` and `SetItem`");
+    %property(KeyCode, GetKeyCode, doc="See `GetKeyCode`");
+    %property(KeyEvent, GetKeyEvent, SetKeyEvent, doc="See `GetKeyEvent` and `SetKeyEvent`");
+    %property(Label, GetLabel, SetLabel, doc="See `GetLabel` and `SetLabel`");
+    %property(OldItem, GetOldItem, SetOldItem, doc="See `GetOldItem` and `SetOldItem`");
+    %property(Point, GetPoint, SetPoint, doc="See `GetPoint` and `SetPoint`");
+    %property(ToolTip, GetToolTip, SetToolTip, doc="See `GetToolTip` and `SetToolTip`");
+    %property(EditCancelled, IsEditCancelled, SetEditCanceled, doc="See `IsEditCancelled` and `SetEditCanceled`");
 };
 
 //---------------------------------------------------------------------------
@@ -316,7 +344,7 @@ MustHaveApp(wxPyTreeCtrl);
 %rename(TreeCtrl) wxPyTreeCtrl;
 class wxPyTreeCtrl : public wxControl {
 public:
-    %pythonAppend wxPyTreeCtrl         "self._setOORInfo(self);self._setCallbackInfo(self, TreeCtrl)"
+    %pythonAppend wxPyTreeCtrl         "self._setOORInfo(self);" setCallbackInfo(TreeCtrl)
     %pythonAppend wxPyTreeCtrl()       ""
     %typemap(out) wxPyTreeCtrl*;    // turn off this typemap
    
@@ -342,7 +370,7 @@ public:
 
     
     // get the total number of items in the control
-    size_t GetCount() const;
+    unsigned int GetCount() const;
 
     // indent is the number of pixels the children are indented relative to
     // the parents position. SetIndent() also redraws the control
@@ -372,10 +400,10 @@ public:
     void SetImageList(wxImageList *imageList);
     void SetStateImageList(wxImageList *imageList);
 
-    %apply SWIGTYPE *DISOWN { wxImageList *imageList };
+    %disownarg( wxImageList *imageList );
     void AssignImageList(wxImageList *imageList);
     void AssignStateImageList(wxImageList *imageList);
-    %clear wxImageList *imageList;
+    %cleardisown( wxImageList *imageList );
     
 
     // retrieve items label
@@ -430,10 +458,12 @@ public:
 
     %extend {
         // associate a wxPyTreeItemData with the tree item
+        %disownarg( wxPyTreeItemData* data );
         void SetItemData(const wxTreeItemId& item, wxPyTreeItemData* data) {
             data->SetId(item); // set the id
             self->SetItemData(item, data);
         }
+        %cleardisown( wxPyTreeItemData* data );
 
         // associate a Python object with the tree item
         void SetItemPyData(const wxTreeItemId& item, PyObject* obj) {
@@ -486,6 +516,9 @@ public:
     // is item text in bold font?
     bool IsBold(const wxTreeItemId& item) const;
 
+    // is the control empty?
+    bool IsEmpty() const;
+    
 
     // if 'recursively' is False, only immediate children count, otherwise
     // the returned number is the number of all items in this branch
@@ -582,6 +615,7 @@ public:
     wxTreeItemId GetPrevVisible(const wxTreeItemId& item) const;
 
     
+    %disownarg( wxPyTreeItemData* data );
     
     // add the root node to the tree
     wxTreeItemId AddRoot(const wxString& text,
@@ -616,7 +650,8 @@ public:
                             wxPyTreeItemData *data = NULL);
 
 
-
+    %cleardisown( wxPyTreeItemData* data );
+    
     // delete this item and associated data if any
     void Delete(const wxTreeItemId& item);
 
@@ -632,9 +667,21 @@ public:
     // expand this item
     void Expand(const wxTreeItemId& item);
 
+    // expand the item and all its childs and thats childs
+    void ExpandAllChildren(const wxTreeItemId& item);
+
+    // expand all items
+    void ExpandAll();
+   
     // collapse the item without removing its children
     void Collapse(const wxTreeItemId& item);
 
+    // collapse the item and all its childs and thats childs
+    void CollapseAllChildren(const wxTreeItemId& item);
+
+    // collapse all items
+    void CollapseAll();
+    
     // collapse the item and remove all children
     void CollapseAndReset(const wxTreeItemId& item);
 
@@ -725,6 +772,21 @@ value is set to a bitmask of wxTREE_HITTEST_xxx constants.
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    void SetQuickBestSize(bool q);
+    bool GetQuickBestSize() const;
+
+    %property(Count, GetCount, doc="See `GetCount`");
+    %property(EditControl, GetEditControl, doc="See `GetEditControl`");
+    %property(FirstVisibleItem, GetFirstVisibleItem, doc="See `GetFirstVisibleItem`");
+    %property(ImageList, GetImageList, SetImageList, doc="See `GetImageList` and `SetImageList`");
+    %property(Indent, GetIndent, SetIndent, doc="See `GetIndent` and `SetIndent`");
+    %property(QuickBestSize, GetQuickBestSize, SetQuickBestSize, doc="See `GetQuickBestSize` and `SetQuickBestSize`");
+    %property(RootItem, GetRootItem, doc="See `GetRootItem`");
+    %property(Selection, GetSelection, doc="See `GetSelection`");
+    %property(Selections, GetSelections, doc="See `GetSelections`");
+    %property(Spacing, GetSpacing, SetSpacing, doc="See `GetSpacing` and `SetSpacing`");
+    %property(StateImageList, GetStateImageList, SetStateImageList, doc="See `GetStateImageList` and `SetStateImageList`");
 };
 
 

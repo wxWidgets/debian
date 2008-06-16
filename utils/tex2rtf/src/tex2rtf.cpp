@@ -5,14 +5,10 @@
 // Modified by: Wlodzimiez ABX Skiba 2003/2004 Unicode support
 //              Ron Lee
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2rtf.cpp,v 1.53.2.1 2006/01/23 15:09:03 ABX Exp $
+// RCS-ID:      $Id: tex2rtf.cpp 44180 2007-01-09 14:35:06Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -137,6 +133,7 @@ int BufSize = 500;
 
 bool Go(void);
 void ShowOptions(void);
+void ShowVersion(void);
 
 wxChar wxTex2RTFBuffer[1500];
 
@@ -186,21 +183,7 @@ bool MyApp::OnInit()
       }
   }
 
-#ifdef NO_GUI
-  if (InputFile.empty() || OutputFile.empty())
-  {
-      wxSTD cout << "Tex2RTF: input or output file is missing.\n";
-      ShowOptions();
-      exit(1);
-  }
-#endif
-
-  if (!InputFile.empty())
-  {
-      TexPathList.EnsureFileAccessible(InputFile);
-  }
-  if (InputFile.empty() || OutputFile.empty())
-      isInteractive = true;
+  TexPathList.Add(::wxGetCwd());
 
   int i;
   for (i = n; i < argc;)
@@ -295,6 +278,16 @@ bool MyApp::OnInit()
       i ++;
       checkSyntax = true;
     }
+    else if (wxStrcmp(argv[i], _T("-version")) == 0)
+    {
+      i ++;
+      ShowVersion();
+#ifdef NO_GUI
+      exit(1);
+#else
+      return false;
+#endif
+    }
     else
     {
       wxString buf;
@@ -308,6 +301,22 @@ bool MyApp::OnInit()
 #endif
     }
   }
+
+#ifdef NO_GUI
+  if (InputFile.empty() || OutputFile.empty())
+  {
+      wxSTD cout << "Tex2RTF: input or output file is missing.\n";
+      ShowOptions();
+      exit(1);
+  }
+#endif
+
+  if (!InputFile.empty())
+  {
+      TexPathList.EnsureFileAccessible(InputFile);
+  }
+  if (InputFile.empty() || OutputFile.empty())
+      isInteractive = true;
 
 #if defined(__WXMSW__) && !defined(NO_GUI)
   wxDDEInitialize();
@@ -450,13 +459,13 @@ bool MyApp::OnInit()
     if (!path.empty())
         ReadCustomMacros(path);
 
-    Go();
-    if (runTwice)
+    bool rc = Go();
+    if ( rc && runTwice )
     {
-        Go();
+        rc = Go();
     }
 #ifdef NO_GUI
-    return true;
+    return rc;
 #else
     OnExit(); // Do cleanup since OnExit won't be called now
     return false;
@@ -597,11 +606,17 @@ int MyApp::OnExit()
   return 0;
 }
 #endif
-void ShowOptions(void)
+
+void ShowVersion(void)
 {
     wxChar buf[100];
     wxSnprintf(buf, sizeof(buf), _T("Tex2RTF version %.2f"), versionNo);
     OnInform(buf);
+}
+
+void ShowOptions(void)
+{
+    ShowVersion();
     OnInform(_T("Usage: tex2rtf [input] [output] [switches]\n"));
     OnInform(_T("where valid switches are"));
 #ifndef NO_GUI
@@ -613,6 +628,7 @@ void ShowOptions(void)
     OnInform(_T("    -sync"));
     OnInform(_T("    -checkcurlybraces"));
     OnInform(_T("    -checksyntax"));
+    OnInform(_T("    -version"));
     OnInform(_T("    -macros <filename>"));
     OnInform(_T("    -winhelp"));
     OnInform(_T("    -rtf"));
@@ -959,7 +975,7 @@ bool Go(void)
     frame->SetTitle(buf);
   }
 
-  wxStartTimer();
+  wxLongLong localTime = wxGetLocalTimeMillis();
 #endif
 
   // Find extension-less filename
@@ -1061,8 +1077,8 @@ bool Go(void)
 
     wxString buf;
 #ifndef NO_GUI
-    long tim = wxGetElapsedTime();
-    buf.Printf(_T("Finished PASS #%d in %ld seconds.\n"), passNumber, (long)(tim/1000.0));
+    wxLongLong elapsed = wxGetLocalTimeMillis() - localTime;
+    buf.Printf(_T("Finished PASS #%d in %ld seconds.\n"), passNumber, (long)(elapsed.GetLo()/1000.0));
     OnInform((wxChar *)buf.c_str());
 
     if (errorCount)

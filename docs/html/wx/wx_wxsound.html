@@ -1,0 +1,153 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSound</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsound"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsocketserver.html#wxsocketserver"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxspinbutton.html#wxspinbutton"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSound</H2>
+<P>
+This class represents a short sound (loaded from Windows WAV file), that
+can be stored in memory and played. Currently this class is implemented
+on Windows and Unix (and uses either 
+<A HREF="http://www.opensound.com/oss.html">Open Sound System</A> or 
+<A HREF="http://www.libsdl.org/">Simple DirectMedia Layer</A>).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/sound.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxsoundctor">wxSound::wxSound</A><BR>
+<A HREF="#wxsounddtor">wxSound::~wxSound</A><BR>
+<A HREF="#wxsoundcreate">wxSound::Create</A><BR>
+<A HREF="#wxsoundisok">wxSound::IsOk</A><BR>
+<A HREF="#wxsoundisplaying">wxSound::IsPlaying</A><BR>
+<A HREF="#wxsoundplay">wxSound::Play</A><BR>
+<A HREF="#wxsoundstop">wxSound::Stop</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsoundctor"></A>
+<H3>wxSound::wxSound</H3>
+<P>
+<B></B> <B>wxSound</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxSound</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> fileName</I>, <B>bool</B><I> isResource = false</I>)<P>
+Constructs a wave object from a file or, under Windows, from a Windows
+resource. Call <A HREF="wx_wxsound.html#wxsoundisok">wxSound::IsOk</A> to determine whether this
+succeeded.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>fileName</I><UL><UL>
+The filename or Windows resource.</UL></UL>
+<P>
+<I>isResource</I><UL><UL>
+<TT>true</TT> if <I>fileName</I> is a resource, <TT>false</TT> if it is a filename.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxsounddtor"></A>
+<H3>wxSound::~wxSound</H3>
+<P>
+<B></B> <B>~wxSound</B>()<P>
+Destroys the wxSound object.<P>
+
+
+<HR>
+<A NAME="wxsoundcreate"></A>
+<H3>wxSound::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> fileName</I>, <B>bool</B><I> isResource = <TT>false</TT></I>)<P>
+Constructs a wave object from a file or resource.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>fileName</I><UL><UL>
+The filename or Windows resource.</UL></UL>
+<P>
+<I>isResource</I><UL><UL>
+<TT>true</TT> if <I>fileName</I> is a resource, <TT>false</TT> if it is a filename.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if the call was successful, <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxsoundisok"></A>
+<H3>wxSound::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns <TT>true</TT> if the object contains a successfully loaded file or resource, <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxsoundisplaying"></A>
+<H3>wxSound::IsPlaying</H3>
+<P>
+<B>static bool</B> <B>IsPlaying</B>() <B>const</B><P>
+Returns <TT>true</TT> if a sound is played at the moment.<P>
+This method is currently not implemented under Windows.<P>
+
+
+<HR>
+<A NAME="wxsoundplay"></A>
+<H3>wxSound::Play</H3>
+<P>
+<B>bool</B> <B>Play</B>(<B>unsigned </B><I> flags = wxSOUND_ASYNC</I>) <B>const</B><P>
+<B>static bool</B> <B>Play</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>unsigned</B><I> flags = wxSOUND_ASYNC</I>)<P>
+Plays the sound file. If another sound is playing, it will be interrupted.
+Returns <TT>true</TT> on success, <TT>false</TT> otherwise. Note that in general it is possible
+to delete the object which is being asynchronously played any time after
+calling this function and the sound would continue playing, however this
+currently doesn't work under Windows for sound objects loaded from memory data.<P>
+The possible values for <I>flags</I> are:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxSOUND_SYNC
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<TT>Play</TT> will block and wait until the sound is
+replayed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxSOUND_ASYNC
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sound is played asynchronously, 
+<TT>Play</TT> returns immediately
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxSOUND_ASYNC | wxSOUND_LOOP
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sound is played asynchronously
+and loops until another sound is played, 
+<A HREF="wx_wxsound.html#wxsoundstop">wxSound::Stop</A> is called or the program terminates.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The static form is shorthand for this code:<P>
+<PRE>
+wxSound(filename).Play(flags);
+</PRE>
+
+
+<HR>
+<A NAME="wxsoundstop"></A>
+<H3>wxSound::Stop</H3>
+<P>
+<B>static void</B> <B>Stop</B>()<P>
+If a sound is played, this function stops it.<P>
+
+</FONT></BODY></HTML>

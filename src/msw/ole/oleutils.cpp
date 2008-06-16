@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        ole/oleutils.cpp
+// Name:        src/msw/ole/oleutils.cpp
 // Purpose:     implementation of OLE helper functions
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.02.98
-// RCS-ID:      $Id: oleutils.cpp,v 1.24.2.2 2006/02/11 09:19:26 JS Exp $
+// RCS-ID:      $Id: oleutils.cpp 50027 2007-11-17 15:16:33Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -17,21 +17,18 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "oleutils.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #if defined(__BORLANDC__)
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
-#include  "wx/setup.h"
-#include  "wx/log.h"
-
 #if wxUSE_OLE
+
+#ifndef WX_PRECOMP
+    #include "wx/log.h"
+#endif
 
 #ifndef __CYGWIN10__
 
@@ -87,6 +84,11 @@ WXDLLEXPORT BSTR wxConvertStringToOle(const wxString& str)
 
 WXDLLEXPORT wxString wxConvertStringFromOle(BSTR bStr)
 {
+    // NULL BSTR is equivalent to an empty string (this is the convention used
+    // by VB and hence we must follow it)
+    if ( !bStr )
+        return wxString();
+
 #if wxUSE_UNICODE
     wxString str(bStr);
 #else
@@ -113,9 +115,9 @@ wxBasicString::wxBasicString(const char *sz)
 wxBasicString::wxBasicString(const wxString& str)
 {
 #if wxUSE_UNICODE
-    m_wzBuf = new OLECHAR[str.Length() + 1];
-    memcpy(m_wzBuf, str.c_str(), str.Length()*2);
-    m_wzBuf[str.Length()] = L'\0';
+    m_wzBuf = new OLECHAR[str.length() + 1];
+    memcpy(m_wzBuf, str.c_str(), str.length()*2);
+    m_wzBuf[str.length()] = L'\0';
 #else
     Init(str.c_str());
 #endif
@@ -310,4 +312,3 @@ void wxLogRelease(const char *szInterface, ULONG cRef)
 
 #endif
   // wxUSE_OLE
-

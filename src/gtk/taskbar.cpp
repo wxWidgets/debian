@@ -1,25 +1,24 @@
 /////////////////////////////////////////////////////////////////////////
-// File:        taskbar.cpp
+// File:        src/gtk/taskbar.cpp
 // Purpose:     wxTaskBarIcon (src/unix/taskbarx11.cpp) helper for GTK2
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2004/05/29
-// RCS-ID:      $Id: taskbar.cpp,v 1.7 2005/08/02 22:58:06 MW Exp $
+// RCS-ID:      $Id: taskbar.cpp 48556 2007-09-04 13:47:54Z RR $
 // Copyright:   (c) Vaclav Slavik, 2004
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "taskbarpriv.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #include "wx/gtk/taskbarpriv.h"
-#include "wx/log.h"
-#include "wx/frame.h"
-#include "wx/menu.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/log.h"
+    #include "wx/frame.h"
+    #include "wx/menu.h"
+#endif
 
 #include <gdk/gdkx.h>
 
@@ -37,17 +36,17 @@ wxTaskBarIconAreaBase::wxTaskBarIconAreaBase()
     {
         m_widget = GTK_WIDGET(egg_tray_icon_new("systray icon"));
         gtk_window_set_resizable(GTK_WINDOW(m_widget), false);
-        
+
         wxLogTrace(_T("systray"), _T("using freedesktop.org systray spec"));
     }
-    
+
     wxTopLevelWindow::Create(
             NULL, wxID_ANY, _T("systray icon"),
             wxDefaultPosition, wxDefaultSize,
             wxDEFAULT_FRAME_STYLE | wxFRAME_NO_TASKBAR | wxSIMPLE_BORDER |
             wxFRAME_SHAPED,
             wxEmptyString /*eggtray doesn't like setting wmclass*/);
-            
+
     m_invokingWindow = NULL;
 }
 
@@ -58,16 +57,17 @@ bool wxTaskBarIconAreaBase::IsProtocolSupported()
     {
         Display *display = GDK_DISPLAY();
         Screen *screen = DefaultScreenOfDisplay(display);
-    
-        wxString name;
-        name.Printf(_T("_NET_SYSTEM_TRAY_S%d"), XScreenNumberOfScreen(screen));
-        Atom atom = XInternAtom(display, name.ToAscii(), False);
-        
+
+        char name[32];
+        g_snprintf(name, sizeof(name), "_NET_SYSTEM_TRAY_S%d",
+            XScreenNumberOfScreen(screen));
+        Atom atom = XInternAtom(display, name, False);
+
         Window manager = XGetSelectionOwner(display, atom);
-        
+
         s_supported = (manager != None);
     }
-    
+
     return (bool)s_supported;
 }
 
@@ -102,10 +102,9 @@ bool wxTaskBarIconAreaBase::DoPopupMenu( wxMenu *menu, int x, int y )
 
     bool is_waiting = true;
 
-    gulong handler = gtk_signal_connect( GTK_OBJECT(menu->m_menu),
-                                         "hide",
-                                         GTK_SIGNAL_FUNC(gtk_pop_hide_callback),
-                                         (gpointer)&is_waiting );
+    gulong handler = g_signal_connect (menu->m_menu, "hide",
+                                       G_CALLBACK (gtk_pop_hide_callback),
+                                       &is_waiting);
 
     wxPoint pos;
     gpointer userdata;
@@ -138,7 +137,7 @@ bool wxTaskBarIconAreaBase::DoPopupMenu( wxMenu *menu, int x, int y )
         gtk_main_iteration();
     }
 
-    gtk_signal_disconnect(GTK_OBJECT(menu->m_menu), handler);
+    g_signal_handler_disconnect (menu->m_menu, handler);
 
     return true;
 }

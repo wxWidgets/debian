@@ -1,0 +1,146 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDllLoader</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdllloader"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdisplay.html#wxdisplay"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdocchildframe.html#wxdocchildframe"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDllLoader</H2>
+<P>
+<B>Deprecation note: </B> This class is deprecated since version 2.4 and is
+not compiled in by default in version 2.6 and will be removed in 2.8. Please
+use <A HREF="wx_wxdynamiclibrary.html#wxdynamiclibrary">wxDynamicLibrary</A> instead.<P>
+
+wxDllLoader is a class providing an interface similar to Unix's <TT>
+dlopen()</TT>. It is used by the wxLibrary framework and manages the actual
+loading of shared libraries and the resolving of symbols in them. There are no
+instances of this class, it simply serves as a namespace for its static member
+functions.<P>
+Please note that class <A HREF="wx_wxdynamiclibrary.html#wxdynamiclibrary">wxDynamicLibrary</A> provides 
+alternative, friendlier interface to wxDllLoader.<P>
+The terms <I>DLL</I> and <I>shared library/object</I> will both be used in the
+documentation to refer to the same thing: a <TT>.dll</TT> file under Windows or 
+<TT>.so</TT> or <TT>.sl</TT> one under Unix.<P>
+Example of using this class to dynamically load the <TT>strlen()</TT> function:<P>
+<PRE>
+#if defined(__WXMSW__)
+    static const wxChar *LIB_NAME = _T("kernel32");
+    static const wxChar *FUNC_NAME = _T("lstrlenA");
+#elif defined(__UNIX__)
+    static const wxChar *LIB_NAME = _T("/lib/libc-2.0.7.so");
+    static const wxChar *FUNC_NAME = _T("strlen");
+#endif
+
+    wxDllType dllHandle = wxDllLoader::LoadLibrary(LIB_NAME);
+    if ( !dllHandle )
+    {
+        ... error ...
+    }
+    else
+    {
+        typedef int (*strlenType)(char *);
+        strlenType pfnStrlen = (strlenType)wxDllLoader::GetSymbol(dllHandle, FUNC_NAME);
+        if ( !pfnStrlen )
+        {
+            ... error ...
+        }
+        else
+        {
+            if ( pfnStrlen("foo") != 3 )
+            {
+                ... error ...
+            }
+            else
+            {
+                ... ok! ...
+            }
+        }
+
+        wxDllLoader::UnloadLibrary(dllHandle);
+    }
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dynlib.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+This header defines a platform-dependent <TT>wxDllType</TT> typedef which stores
+a handle to a loaded DLLs on the given platform.<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdllloadergetdllext">wxDllLoader::GetDllExt</A><BR>
+<A HREF="#wxdllloadergetprogramhandle">wxDllLoader::GetProgramHandle</A><BR>
+<A HREF="#wxdllloadergetsymbol">wxDllLoader::GetSymbol</A><BR>
+<A HREF="#wxdllloaderloadlibrary">wxDllLoader::LoadLibrary</A><BR>
+<A HREF="#wxdllloaderunloadlibrary">wxDllLoader::UnloadLibrary</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdllloadergetdllext"></A>
+<H3>wxDllLoader::GetDllExt</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetDllExt</B>()<P>
+Returns the string containing the usual extension for shared libraries for the
+given systems (including the leading dot if not empty).<P>
+For example, this function will return <TT>".dll"</TT> under Windows or (usually) 
+<TT>".so"</TT> under Unix.<P>
+
+<HR>
+<A NAME="wxdllloadergetprogramhandle"></A>
+<H3>wxDllLoader::GetProgramHandle</H3>
+<P>
+<B>wxDllType</B> <B>GetProgramHandle</B>()<P>
+This function returns a valid handle for the main program itself. Notice that
+the <TT>NULL</TT> return value is valid for some systems (i.e. doesn't mean that
+the function failed).<P>
+<B>NB:</B> This function is Unix specific. It will always fail under Windows
+or OS/2.<P>
+
+<HR>
+<A NAME="wxdllloadergetsymbol"></A>
+<H3>wxDllLoader::GetSymbol</H3>
+<P>
+<B>void *</B> <B>GetSymbol</B>(<B>wxDllType </B><I>dllHandle</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+This function resolves a symbol in a loaded DLL, such as a variable or
+function name.<P>
+Returned value will be <TT>NULL</TT> if the symbol was not found in the DLL or if
+an error occurred.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>dllHandle</I><UL><UL>
+Valid handle previously returned by 
+<A HREF="wx_wxdllloader.html#wxdllloaderloadlibrary">LoadLibrary</A></UL></UL>
+<P>
+<I>name</I><UL><UL>
+Name of the symbol.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdllloaderloadlibrary"></A>
+<H3>wxDllLoader::LoadLibrary</H3>
+<P>
+<B>wxDllType</B> <B>LoadLibrary</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> & </B></B><I>libname</I>, <B>bool* </B><I>success = NULL</I>)<P>
+This function loads a shared library into memory, with <I>libname</I> being the
+name of the library: it may be either the full name including path and
+(platform-dependent) extension, just the basename (no path and no extension)
+or a basename with extension. In the last two cases, the library will be
+searched in all standard locations.<P>
+Returns a handle to the loaded DLL. Use <I>success</I> parameter to test if it
+is valid. If the handle is valid, the library must be unloaded later with 
+<A HREF="wx_wxdllloader.html#wxdllloaderunloadlibrary">UnloadLibrary</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>libname</I><UL><UL>
+Name of the shared object to load.</UL></UL>
+<P>
+<I>success</I><UL><UL>
+May point to a bool variable which will be set to true or
+false; may also be <TT>NULL</TT>.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdllloaderunloadlibrary"></A>
+<H3>wxDllLoader::UnloadLibrary</H3>
+<P>
+<B>void</B> <B>UnloadLibrary</B>(<B>wxDllType </B><I>dllhandle</I>)<P>
+This function unloads the shared library. The handle <I>dllhandle</I> must have
+been returned by <A HREF="wx_wxdllloader.html#wxdllloaderloadlibrary">LoadLibrary</A> previously.<P>
+
+</FONT></BODY></HTML>

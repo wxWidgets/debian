@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     4-June-2001
-// RCS-ID:      $Id: _xml.i,v 1.2 2004/12/23 20:43:49 RD Exp $
+// RCS-ID:      $Id: _xml.i 41451 2006-09-26 00:26:35Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -59,6 +59,10 @@ public:
     void SetName(const wxString& name);
     void SetValue(const wxString& value);
     void SetNext(wxXmlProperty *next);
+
+    %property(Name, GetName, SetName, doc="See `GetName` and `SetName`");
+    %property(Next, GetNext, SetNext, doc="See `GetNext` and `SetNext`");
+    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
 };
 
 
@@ -89,7 +93,7 @@ public:
                                   const wxString& content = wxPyEmptyString));
 
     void AddChild(wxXmlNode *child);
-    void InsertChild(wxXmlNode *child, wxXmlNode *before_node);
+    bool InsertChild(wxXmlNode *child, wxXmlNode *before_node);
     bool RemoveChild(wxXmlNode *child);
     void AddProperty(wxXmlProperty *prop);
     %Rename(AddPropertyName,  void,  AddProperty(const wxString& name, const wxString& value));
@@ -99,6 +103,16 @@ public:
     wxXmlNodeType GetType() const;
     wxString GetName() const;
     wxString GetContent() const;
+
+    bool IsWhitespaceOnly() const;
+    int GetDepth(wxXmlNode *grandparent = NULL) const;
+
+    // Gets node content from wxXML_ENTITY_NODE
+    // The problem is, <tag>content<tag> is represented as
+    // wxXML_ENTITY_NODE name="tag", content=""
+    //    |-- wxXML_TEXT_NODE or
+    //        wxXML_CDATA_SECTION_NODE name="" content="content"
+    wxString GetNodeContent() const;
 
     wxXmlNode *GetParent() const;
     wxXmlNode *GetNext() const;
@@ -118,6 +132,28 @@ public:
     void SetChildren(wxXmlNode *child);
 
     void SetProperties(wxXmlProperty *prop);
+
+    %property(Children, GetChildren, SetChildren, doc="See `GetChildren` and `SetChildren`");
+    %property(Content, GetContent, SetContent, doc="See `GetContent` and `SetContent`");
+    %property(Name, GetName, SetName, doc="See `GetName` and `SetName`");
+    %property(Next, GetNext, SetNext, doc="See `GetNext` and `SetNext`");
+    %property(Parent, GetParent, SetParent, doc="See `GetParent` and `SetParent`");
+    %property(Properties, GetProperties, SetProperties, doc="See `GetProperties` and `SetProperties`");
+    %property(Type, GetType, SetType, doc="See `GetType` and `SetType`");
+};
+
+
+
+// special indentation value for wxXmlDocument::Save
+enum {
+    wxXML_NO_INDENTATION
+};
+
+// flags for wxXmlDocument::Load
+enum wxXmlDocumentLoadFlag
+{
+    wxXMLDOC_NONE = 0,
+    wxXMLDOC_KEEP_WHITESPACE_NODES = 1
 };
 
 
@@ -138,13 +174,15 @@ public:
     // Parses .xml file and loads data. Returns True on success, False
     // otherwise.
     bool Load(const wxString& filename,
-              const wxString& encoding = wxPyUTF8String);
+              const wxString& encoding = wxPyUTF8String,
+              int flags = wxXMLDOC_NONE);
     %Rename(LoadFromStream, bool,  Load(wxInputStream& stream,
-                                   const wxString& encoding = wxPyUTF8String));
+                                        const wxString& encoding = wxPyUTF8String,
+                                        int flags = wxXMLDOC_NONE));
 
     // Saves document as .xml file.
-    bool Save(const wxString& filename) const;
-    %Rename(SaveToStream, bool,  Save(wxOutputStream& stream) const);
+    bool Save(const wxString& filename, int indentstep=1) const;
+    %Rename(SaveToStream, bool,  Save(wxOutputStream& stream, int indentstep=1) const);
 
     bool IsOk() const;
 
@@ -160,6 +198,7 @@ public:
     wxString GetFileEncoding() const;
 
     // Write-access methods:
+    wxXmlNode *DetachRoot();
     void SetRoot(wxXmlNode *node);
     void SetVersion(const wxString& version);
     void SetFileEncoding(const wxString& encoding);
@@ -183,6 +222,10 @@ public:
 //         %#endif
 //         }
 //     }
+
+    %property(FileEncoding, GetFileEncoding, SetFileEncoding, doc="See `GetFileEncoding` and `SetFileEncoding`");
+    %property(Root, GetRoot, SetRoot, doc="See `GetRoot` and `SetRoot`");
+    %property(Version, GetVersion, SetVersion, doc="See `GetVersion` and `SetVersion`");
 };
 
 //---------------------------------------------------------------------------

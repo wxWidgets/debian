@@ -1,0 +1,419 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxLog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlocale.html#wxlocale"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlogchain.html#wxlogchain"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxLog</H2>
+<P>
+wxLog class defines the interface for the <I>log targets</I> used by wxWidgets
+logging functions as explained in the <A HREF="wx_wxlogoverview.html#wxlogoverview">wxLog overview</A>.
+The only situations when you need to directly use this class is when you want
+to derive your own log target because the existing ones don't satisfy your
+needs. Another case is if you wish to customize the behaviour of the standard
+logging classes (all of which respect the wxLog settings): for example, set
+which trace messages are logged and which are not or change (or even remove
+completely) the timestamp on the messages.<P>
+Otherwise, it is completely hidden behind the <I>wxLogXXX()</I> functions and
+you may not even know about its existence.<P>
+See <A HREF="wx_wxlogoverview.html#wxlogoverview">log overview</A> for the descriptions of wxWidgets
+logging facilities.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/log.h&gt;<P>
+<B><FONT COLOR="#FF0000">Function groups</FONT></B><P>
+<A HREF="#topic1">Global functions</A><BR>
+<A HREF="#loggingfunctions">Logging functions</A><BR>
+<A HREF="#wxlogcustomization">Customization</A><BR>
+<A HREF="#wxlogaddtracemask">wxLog::AddTraceMask</A><BR>
+<A HREF="#wxlogcleartracemasks">wxLog::ClearTraceMasks</A><BR>
+<A HREF="#wxloggettracemasks">wxLog::GetTraceMasks</A><BR>
+<A HREF="#wxlogonlog">wxLog::OnLog</A><BR>
+<A HREF="#wxloggetactivetarget">wxLog::GetActiveTarget</A><BR>
+<A HREF="#wxlogsetactivetarget">wxLog::SetActiveTarget</A><BR>
+<A HREF="#wxlogsuspend">wxLog::Suspend</A><BR>
+<A HREF="#wxlogresume">wxLog::Resume</A><BR>
+<A HREF="#wxlogdolog">wxLog::DoLog</A><BR>
+<A HREF="#wxlogdologstring">wxLog::DoLogString</A><BR>
+<A HREF="#wxlogdontcreateondemand">wxLog::DontCreateOnDemand</A><BR>
+<A HREF="#wxlogflush">wxLog::Flush</A><BR>
+<A HREF="#wxlogflushactive">wxLog::FlushActive</A><BR>
+<A HREF="#wxlogsetverbose">wxLog::SetVerbose</A><BR>
+<A HREF="#wxloggetverbose">wxLog::GetVerbose</A><BR>
+<A HREF="#wxlogsetloglevel">wxLog::SetLogLevel</A><BR>
+<A HREF="#wxloggetloglevel">wxLog::GetLogLevel</A><BR>
+<A HREF="#wxlogsetrepetitioncounting">wxLog::SetRepetitionCounting</A><BR>
+<A HREF="#wxloggetrepetitioncounting">wxLog::GetRepetitionCounting</A><BR>
+<A HREF="#wxlogsettimestamp">wxLog::SetTimestamp</A><BR>
+<A HREF="#wxloggettimestamp">wxLog::GetTimestamp</A><BR>
+<A HREF="#wxlogsettracemask">wxLog::SetTraceMask</A><BR>
+<A HREF="#wxloggettracemask">wxLog::GetTraceMask</A><BR>
+<A HREF="#wxlogisallowedtracemask">wxLog::IsAllowedTraceMask</A><BR>
+<A HREF="#wxlogremovetracemask">wxLog::RemoveTraceMask</A><BR>
+<P>
+
+<HR>
+<A NAME="topic1"></A>
+<H3>Global functions</H3>
+<P>
+The functions in this section work with and manipulate the active log target.
+The <A HREF="wx_wxlog.html#wxlogonlog">OnLog()</A> is called by the <I>wxLogXXX()</I> functions
+and invokes the <A HREF="wx_wxlog.html#wxlogdolog">DoLog()</A> of the active log target if any.
+Get/Set methods are used to install/query the current active target and,
+finally, <A HREF="wx_wxlog.html#wxlogdontcreateondemand">DontCreateOnDemand()</A> disables the
+automatic creation of a standard log target if none actually exists. It is
+only useful when the application is terminating and shouldn't be used in other
+situations because it may easily lead to a loss of messages.<P>
+<A HREF="wx_wxlog.html#wxlogonlog">OnLog</A><BR>
+
+<A HREF="wx_wxlog.html#wxloggetactivetarget">GetActiveTarget</A><BR>
+
+<A HREF="wx_wxlog.html#wxlogsetactivetarget">SetActiveTarget</A><BR>
+
+<A HREF="wx_wxlog.html#wxlogdontcreateondemand">DontCreateOnDemand</A><BR>
+
+<A HREF="wx_wxlog.html#wxlogsuspend">Suspend</A><BR>
+
+<A HREF="wx_wxlog.html#wxlogresume">Resume</A><P>
+
+<HR>
+<A NAME="loggingfunctions"></A>
+<H3>Logging functions</H3>
+<P>
+There are two functions which must be implemented by any derived class to
+actually process the log messages: <A HREF="wx_wxlog.html#wxlogdolog">DoLog</A> and
+<A HREF="wx_wxlog.html#wxlogdologstring">DoLogString</A>. The second function receives a string
+which just has to be output in some way and the easiest way to write a new log
+target is to override just this function in the derived class. If more control
+over the output format is needed, then the first function must be overridden
+which allows to construct custom messages depending on the log level or even
+do completely different things depending on the message severity (for example,
+throw away all messages except warnings and errors, show warnings on the
+screen and forward the error messages to the user's (or programmer's) cell
+phone - maybe depending on whether the timestamp tells us if it is day or
+night in the current time zone).<P>
+There also functions to support message buffering. Why are they needed?
+Some of wxLog implementations, most notably the standard wxLogGui class,
+buffer the messages (for example, to avoid showing the user a zillion of modal
+message boxes one after another -- which would be really annoying).
+<A HREF="wx_wxlog.html#wxlogflush">Flush()</A> shows them all and clears the buffer contents.
+This function doesn't do anything if the buffer is already empty.<P>
+<A HREF="wx_wxlog.html#wxlogflush">Flush</A><BR>
+
+<A HREF="wx_wxlog.html#wxlogflushactive">FlushActive</A><P>
+
+<HR>
+<A NAME="wxlogcustomization"></A>
+<H3>Customization</H3>
+<P>
+The functions below allow some limited customization of wxLog behaviour
+without writing a new log target class (which, aside of being a matter of
+several minutes, allows you to do anything you want).<P>
+The verbose messages are the trace messages which are not disabled in the
+release mode and are generated by <A HREF="wx_logfunctions.html#wxlogverbose">wxLogVerbose</A>. They
+are not normally shown to the user because they present little interest, but
+may be activated, for example, in order to help the user find some program
+problem.<P>
+As for the (real) trace messages, their handling depends on the settings of
+the (application global) <I>trace mask</I>. There are two ways to specify it:
+either by using <A HREF="wx_wxlog.html#wxlogsettracemask">SetTraceMask</A> and
+<A HREF="wx_wxlog.html#wxloggettracemask">GetTraceMask</A> and using
+<A HREF="wx_logfunctions.html#wxlogtrace">wxLogTrace</A> which takes an integer mask or by using
+<A HREF="wx_wxlog.html#wxlogaddtracemask">AddTraceMask</A> for string trace masks.<P>
+The difference between bit-wise and string trace masks is that a message using
+integer trace mask will only be logged if all bits of the mask are set in the
+current mask while a message using string mask will be logged simply if the
+mask had been added before to the list of allowed ones.<P>
+For example,<P>
+<PRE>
+// wxTraceOleCalls is one of standard bit masks
+wxLogTrace(wxTraceRefCount | wxTraceOleCalls, "Active object ref count: %d", nRef);
+</PRE>
+will do something only if the current trace mask contains both
+<TT>wxTraceRefCount</TT> and <TT>wxTraceOle</TT>, but<P>
+<PRE>
+// wxTRACE_OleCalls is one of standard string masks
+wxLogTrace(wxTRACE_OleCalls, "IFoo::Bar() called");
+</PRE>
+will log the message if it was preceded by<P>
+<PRE>
+wxLog::AddTraceMask(wxTRACE_OleCalls);
+</PRE>
+Using string masks is simpler and allows to easily add custom ones, so this is
+the preferred way of working with trace messages. The integer trace mask is
+kept for compatibility and for additional (but very rarely needed) flexibility
+only.<P>
+The standard trace masks are given in <A HREF="wx_logfunctions.html#wxlogtrace">wxLogTrace</A>
+documentation.<P>
+Finally, the <I>wxLog::DoLog()</I> function automatically prepends a time stamp
+to all the messages. The format of the time stamp may be changed: it can be
+any string with % specifications fully described in the documentation of the
+standard <I>strftime()</I> function. For example, the default format is
+"[%d/%b/%y %H:%M:%S] " which gives something like "[17/Sep/98 22:10:16] "
+(without quotes) for the current date. Setting an empty string as the time
+format disables timestamping of the messages completely.<P>
+<B>NB:</B> Timestamping is disabled for Visual C++ users in debug builds by
+default because otherwise it would be impossible to directly go to the line
+from which the log message was generated by simply clicking in the debugger
+window on the corresponding error message. If you wish to enable it, please use
+<A HREF="wx_wxlog.html#wxlogsettimestamp">SetTimestamp</A> explicitly.<P>
+<A HREF="wx_wxlog.html#wxlogaddtracemask">AddTraceMask</A><BR>
+
+<A HREF="wx_wxlog.html#wxlogremovetracemask">RemoveTraceMask</A><BR>
+
+<A HREF="wx_wxlog.html#wxlogcleartracemasks">ClearTraceMasks</A><BR>
+
+<A HREF="wx_wxlog.html#wxloggettracemasks">GetTraceMasks</A><BR>
+
+<A HREF="wx_wxlog.html#wxlogisallowedtracemask">IsAllowedTraceMask</A><BR>
+
+<A HREF="wx_wxlog.html#wxlogsetverbose">SetVerbose</A><BR>
+
+<A HREF="wx_wxlog.html#wxloggetverbose">GetVerbose</A><BR>
+
+<A HREF="wx_wxlog.html#wxlogsettimestamp">SetTimestamp</A><BR>
+
+<A HREF="wx_wxlog.html#wxloggettimestamp">GetTimestamp</A><BR>
+
+<A HREF="wx_wxlog.html#wxlogsettracemask">SetTraceMask</A><BR>
+
+<A HREF="wx_wxlog.html#wxloggettracemask">GetTraceMask</A><BR>
+
+<A HREF="wx_wxlog.html#wxlogsetrepetitioncounting">SetRepetitionCounting</A><BR>
+
+<A HREF="wx_wxlog.html#wxloggetrepetitioncounting">GetRepetitionCounting</A><P>
+<P>
+
+<HR>
+<A NAME="wxlogaddtracemask"></A>
+<H3>wxLog::AddTraceMask</H3>
+<P>
+<B>static void</B> <B>AddTraceMask</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>mask</I>)<P>
+Add the <I>mask</I> to the list of allowed masks for
+<A HREF="wx_logfunctions.html#wxlogtrace">wxLogTrace</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlog.html#wxlogremovetracemask">RemoveTraceMask</A>
+<A HREF="wx_wxlog.html#wxloggettracemasks">GetTraceMasks</A><P>
+
+<HR>
+<A NAME="wxlogcleartracemasks"></A>
+<H3>wxLog::ClearTraceMasks</H3>
+<P>
+<B>static void</B> <B>ClearTraceMasks</B>()<P>
+Removes all trace masks previously set with
+<A HREF="wx_wxlog.html#wxlogaddtracemask">AddTraceMask</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlog.html#wxlogremovetracemask">RemoveTraceMask</A><P>
+
+<HR>
+<A NAME="wxloggettracemasks"></A>
+<H3>wxLog::GetTraceMasks</H3>
+<P>
+<B>static const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A> &</B> </B> <B>GetTraceMasks</B>()<P>
+Returns the currently allowed list of string trace masks.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlog.html#wxlogaddtracemask">AddTraceMask</A>.<P>
+
+<HR>
+<A NAME="wxlogonlog"></A>
+<H3>wxLog::OnLog</H3>
+<P>
+<B>static void</B> <B>OnLog</B>(<B>wxLogLevel </B><I> level</I>, <B>const char * </B><I> message</I>)<P>
+Forwards the message at specified level to the <I>DoLog()</I> function of the
+active log target if there is any, does nothing otherwise.<P>
+
+<HR>
+<A NAME="wxloggetactivetarget"></A>
+<H3>wxLog::GetActiveTarget</H3>
+<P>
+<B>static <A HREF="wx_wxlog.html#wxlog">wxLog</A> *</B> </B> <B>GetActiveTarget</B>()<P>
+Returns the pointer to the active log target (may be NULL).<P>
+
+<HR>
+<A NAME="wxlogsetactivetarget"></A>
+<H3>wxLog::SetActiveTarget</H3>
+<P>
+<B>static <A HREF="wx_wxlog.html#wxlog">wxLog</A> *</B> </B> <B>SetActiveTarget</B>(<B><A HREF="wx_wxlog.html#wxlog">wxLog</A> * </B></B><I> logtarget</I>)<P>
+Sets the specified log target as the active one. Returns the pointer to the
+previous active log target (may be NULL).  To suppress logging use a new
+instance of wxLogNull not NULL.  If the active log target is set to NULL a
+new default log target will be created when logging occurs.<P>
+
+<HR>
+<A NAME="wxlogsuspend"></A>
+<H3>wxLog::Suspend</H3>
+<P>
+<B>static void</B> <B>Suspend</B>()<P>
+Suspends the logging until <A HREF="wx_wxlog.html#wxlogresume">Resume</A> is called. Note that
+the latter must be called the same number of times as the former to undo it,
+i.e. if you call Suspend() twice you must call Resume() twice as well.<P>
+Note that suspending the logging means that the log sink won't be be flushed
+periodically, it doesn't have any effect if the current log target does the
+logging immediately without waiting for <A HREF="wx_wxlog.html#wxlogflush">Flush</A> to be
+called (the standard GUI log target only shows the log dialog when it is
+flushed, so Suspend() works as expected with it).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlog.html#wxlogresume">Resume</A>,<BR>
+
+<A HREF="wx_wxlogoverview.html#wxlogoverview">wxLogNull</A><P>
+
+<HR>
+<A NAME="wxlogresume"></A>
+<H3>wxLog::Resume</H3>
+<P>
+<B>static void</B> <B>Resume</B>()<P>
+Resumes logging previously suspended by a call to
+<A HREF="wx_wxlog.html#wxlogsuspend">Suspend</A>. All messages logged in the meanwhile will be
+flushed soon.<P>
+
+<HR>
+<A NAME="wxlogdolog"></A>
+<H3>wxLog::DoLog</H3>
+<P>
+<B>virtual void</B> <B>DoLog</B>(<B>wxLogLevel </B><I>level</I>, <B>const wxChar </B><I>*msg</I>, <B>time_t </B><I>timestamp</I>)<P>
+Called to process the message of the specified severity. <I>msg</I> is the text
+of the message as specified in the call of <I>wxLogXXX()</I> function which
+generated it and <I>timestamp</I> is the moment when the message was generated.<P>
+The base class version prepends the timestamp to the message, adds a prefix
+corresponding to the log level and then calls
+<A HREF="wx_wxlog.html#wxlogdologstring">DoLogString</A> with the resulting string.<P>
+
+<HR>
+<A NAME="wxlogdologstring"></A>
+<H3>wxLog::DoLogString</H3>
+<P>
+<B>virtual void</B> <B>DoLogString</B>(<B>const wxChar </B><I>*msg</I>, <B>time_t </B><I>timestamp</I>)<P>
+Called to log the specified string. The timestamp is already included into the
+string but still passed to this function.<P>
+A simple implementation may just send the string to <TT>stdout</TT> or, better,
+<TT>stderr</TT>.<P>
+
+<HR>
+<A NAME="wxlogdontcreateondemand"></A>
+<H3>wxLog::DontCreateOnDemand</H3>
+<P>
+<B>static void</B> <B>DontCreateOnDemand</B>()<P>
+Instructs wxLog to not create new log targets on the fly if there is none
+currently. (Almost) for internal use only: it is supposed to be called by the
+application shutdown code.<P>
+Note that this function also calls
+<A HREF="wx_wxlog.html#wxlogcleartracemasks">ClearTraceMasks</A>.<P>
+
+<HR>
+<A NAME="wxlogflush"></A>
+<H3>wxLog::Flush</H3>
+<P>
+<B>virtual void</B> <B>Flush</B>()<P>
+Shows all the messages currently in buffer and clears it. If the buffer
+is already empty, nothing happens.<P>
+
+<HR>
+<A NAME="wxlogflushactive"></A>
+<H3>wxLog::FlushActive</H3>
+<P>
+<B>static void</B> <B>FlushActive</B>()<P>
+Flushes the current log target if any, does nothing if there is none.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlog.html#wxlogflush">Flush</A><P>
+
+<HR>
+<A NAME="wxlogsetverbose"></A>
+<H3>wxLog::SetVerbose</H3>
+<P>
+<B>static void</B> <B>SetVerbose</B>(<B>bool </B><I> verbose = true</I>)<P>
+Activates or deactivates verbose mode in which the verbose messages are
+logged as the normal ones instead of being silently dropped.<P>
+
+<HR>
+<A NAME="wxloggetverbose"></A>
+<H3>wxLog::GetVerbose</H3>
+<P>
+<B>static bool</B> <B>GetVerbose</B>()<P>
+Returns whether the verbose mode is currently active.<P>
+
+<HR>
+<A NAME="wxlogsetloglevel"></A>
+<H3>wxLog::SetLogLevel</H3>
+<P>
+<B>static void</B> <B>SetLogLevel</B>(<B>wxLogLevel </B><I> logLevel</I>)<P>
+Specifies that log messages with level &gt; logLevel should be ignored
+and not sent to the active log target.<P>
+
+<HR>
+<A NAME="wxloggetloglevel"></A>
+<H3>wxLog::GetLogLevel</H3>
+<P>
+<B>static wxLogLevel</B> <B>GetLogLevel</B>()<P>
+Returns the current log level limit.<P>
+
+<HR>
+<A NAME="wxlogsetrepetitioncounting"></A>
+<H3>wxLog::SetRepetitionCounting</H3>
+<P>
+<B>static void</B> <B>SetRepetitionCounting</B>(<B>bool </B><I> repetCounting = true</I>)<P>
+Enables logging mode in which a log message is logged once, and in case exactly
+the same message successively repeats one or more times, only the number of 
+repetitions is logged.<P>
+
+<HR>
+<A NAME="wxloggetrepetitioncounting"></A>
+<H3>wxLog::GetRepetitionCounting</H3>
+<P>
+<B>static bool</B> <B>GetRepetitionCounting</B>()<P>
+Returns whether the repetition counting mode is enabled.<P>
+
+
+<HR>
+<A NAME="wxlogsettimestamp"></A>
+<H3>wxLog::SetTimestamp</H3>
+<P>
+<B>void</B> <B>SetTimestamp</B>(<B>const char * </B><I> format</I>)<P>
+Sets the timestamp format prepended by the default log targets to all
+messages. The string may contain any normal characters as well as %
+prefixed format specificators, see <I>strftime()</I> manual for details.
+Passing a NULL value (not empty string) to this function disables message timestamping.<P>
+
+<HR>
+<A NAME="wxloggettimestamp"></A>
+<H3>wxLog::GetTimestamp</H3>
+<P>
+<B>const char *</B> <B>GetTimestamp</B>() <B>const</B><P>
+Returns the current timestamp format string.<P>
+
+<HR>
+<A NAME="wxlogsettracemask"></A>
+<H3>wxLog::SetTraceMask</H3>
+<P>
+<B>static void</B> <B>SetTraceMask</B>(<B>wxTraceMask </B><I> mask</I>)<P>
+Sets the trace mask, see <A HREF="wx_wxlog.html#wxlogcustomization">Customization</A>
+section for details.<P>
+
+<HR>
+<A NAME="wxloggettracemask"></A>
+<H3>wxLog::GetTraceMask</H3>
+<P>
+Returns the current trace mask, see <A HREF="wx_wxlog.html#wxlogcustomization">Customization</A> section
+for details.<P>
+
+<HR>
+<A NAME="wxlogisallowedtracemask"></A>
+<H3>wxLog::IsAllowedTraceMask</H3>
+<P>
+<B>static bool</B> <B>IsAllowedTraceMask</B>(<B>const wxChar *</B><I>mask</I>)<P>
+Returns true if the <I>mask</I> is one of allowed masks for
+<A HREF="wx_logfunctions.html#wxlogtrace">wxLogTrace</A>.<P>
+See also: <A HREF="wx_wxlog.html#wxlogaddtracemask">AddTraceMask</A>,
+<A HREF="wx_wxlog.html#wxlogremovetracemask">RemoveTraceMask</A><P>
+
+<HR>
+<A NAME="wxlogremovetracemask"></A>
+<H3>wxLog::RemoveTraceMask</H3>
+<P>
+<B>static void</B> <B>RemoveTraceMask</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>mask</I>)<P>
+Remove the <I>mask</I> from the list of allowed masks for
+<A HREF="wx_logfunctions.html#wxlogtrace">wxLogTrace</A>.<P>
+See also: <A HREF="wx_wxlog.html#wxlogaddtracemask">AddTraceMask</A><P>
+
+</FONT></BODY></HTML>

@@ -1,3 +1,14 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Name:        keycode.tex
+%% Purpose:     wxKeyCode values enumerated
+%% Author:      wxWidgets Team
+%% Modified by:
+%% Created:
+%% RCS-ID:      $Id: keycode.tex 41151 2006-09-10 23:49:19Z VZ $
+%% Copyright:   (c) wxWidgets Team
+%% License:     wxWindows license
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Keycodes}\label{keycodes}
 
 \wxheading{Include files}
@@ -16,6 +27,9 @@ values are the ASCII character codes, plus the following:
     WXK_SPACE   = 32
     WXK_DELETE  = 127
 
+    // These are by design not compatible with unicode characters.
+    // If you want to get a unicode character from a key event use
+    // wxKeyEvent::GetUnicodeKey instead.
     WXK_START   = 300
     WXK_LBUTTON
     WXK_RBUTTON
@@ -23,12 +37,11 @@ values are the ASCII character codes, plus the following:
     WXK_MBUTTON
     WXK_CLEAR
     WXK_SHIFT
+    WXK_ALT
     WXK_CONTROL
     WXK_MENU
     WXK_PAUSE
     WXK_CAPITAL
-    WXK_PRIOR
-    WXK_NEXT
     WXK_END
     WXK_HOME
     WXK_LEFT
@@ -82,7 +95,7 @@ values are the ASCII character codes, plus the following:
     WXK_F23
     WXK_F24
     WXK_NUMLOCK
-    WXK_SCROLL 
+    WXK_SCROLL
     WXK_PAGEUP,
     WXK_PAGEDOWN,
 
@@ -98,9 +111,7 @@ values are the ASCII character codes, plus the following:
     WXK_NUMPAD_UP,
     WXK_NUMPAD_RIGHT,
     WXK_NUMPAD_DOWN,
-    WXK_NUMPAD_PRIOR,
     WXK_NUMPAD_PAGEUP,
-    WXK_NUMPAD_NEXT,
     WXK_NUMPAD_PAGEDOWN,
     WXK_NUMPAD_END,
     WXK_NUMPAD_BEGIN,
@@ -143,4 +154,3 @@ values are the ASCII character codes, plus the following:
     WXK_SPECIAL20
 \end{verbatim}
 }
-

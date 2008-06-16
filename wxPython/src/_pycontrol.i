@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _pycontrol.i,v 1.14 2005/06/09 21:51:21 RD Exp $
+// RCS-ID:      $Id: _pycontrol.i 49366 2007-10-23 19:28:38Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,6 @@ public:
                 const wxString& name = wxPyControlNameStr)
         : wxControl(parent, id, pos, size, style, validator, name) {}
 
-    void SetBestSize(const wxSize& size) { wxControl::SetBestSize(size); }
 
     bool DoEraseBackground(wxDC* dc) {
 #ifdef __WXMSW__
@@ -119,7 +118,7 @@ MustHaveApp(wxPyControl);
 class wxPyControl : public wxControl
 {
 public:
-    %pythonAppend wxPyControl         "self._setOORInfo(self); self._setCallbackInfo(self, PyControl)"
+    %pythonAppend wxPyControl         "self._setOORInfo(self);"  setCallbackInfo(PyControl)
     %pythonAppend wxPyControl()       ""
 
     wxPyControl(wxWindow* parent, const wxWindowID id=-1,
@@ -133,44 +132,66 @@ public:
     
     void _setCallbackInfo(PyObject* self, PyObject* _class);
 
-    void SetBestSize(const wxSize& size);
+    %pythoncode { SetBestSize = wx.Window.SetInitialSize }
     bool DoEraseBackground(wxDC* dc);
     
-    void base_DoMoveWindow(int x, int y, int width, int height);
-    void base_DoSetSize(int x, int y, int width, int height,
+    void DoMoveWindow(int x, int y, int width, int height);
+    void DoSetSize(int x, int y, int width, int height,
                         int sizeFlags = wxSIZE_AUTO);
-    void base_DoSetClientSize(int width, int height);
-    void base_DoSetVirtualSize( int x, int y );
+    void DoSetClientSize(int width, int height);
+    void DoSetVirtualSize( int x, int y );
 
     DocDeclA(
-        void, base_DoGetSize( int *OUTPUT, int *OUTPUT ) const,
-        "base_DoGetSize() -> (width, height)");
+        void, DoGetSize( int *OUTPUT, int *OUTPUT ) const,
+        "DoGetSize() -> (width, height)");
     DocDeclA(
-        void, base_DoGetClientSize( int *OUTPUT, int *OUTPUT ) const,
-        "base_DoGetClientSize() -> (width, height)");
+        void, DoGetClientSize( int *OUTPUT, int *OUTPUT ) const,
+        "DoGetClientSize() -> (width, height)");
     DocDeclA(
-        void, base_DoGetPosition( int *OUTPUT, int *OUTPUT ) const,
-        "base_DoGetPosition() -> (x,y)");
+        void, DoGetPosition( int *OUTPUT, int *OUTPUT ) const,
+        "DoGetPosition() -> (x,y)");
 
-    wxSize base_DoGetVirtualSize() const;
-    wxSize base_DoGetBestSize() const;
+    wxSize DoGetVirtualSize() const;
+    wxSize DoGetBestSize() const;
 
-    void base_InitDialog();
-    bool base_TransferDataToWindow();
-    bool base_TransferDataFromWindow();
-    bool base_Validate();
+    void InitDialog();
+    bool TransferDataToWindow();
+    bool TransferDataFromWindow();
+    bool Validate();
 
-    bool base_AcceptsFocus() const;
-    bool base_AcceptsFocusFromKeyboard() const;
-    wxSize base_GetMaxSize() const;
+    bool AcceptsFocus() const;
+    bool AcceptsFocusFromKeyboard() const;
+    wxSize GetMaxSize() const;
 
-    void base_AddChild(wxWindow* child);
-    void base_RemoveChild(wxWindow* child);
+    void AddChild(wxWindow* child);
+    void RemoveChild(wxWindow* child);
 
-    bool base_ShouldInheritColours() const;
-    wxVisualAttributes base_GetDefaultAttributes();
+    bool ShouldInheritColours() const;
+    wxVisualAttributes GetDefaultAttributes();
 
-    void base_OnInternalIdle();
+    void OnInternalIdle();
+
+    %MAKE_BASE_FUNC(PyControl, DoMoveWindow);
+    %MAKE_BASE_FUNC(PyControl, DoSetSize);
+    %MAKE_BASE_FUNC(PyControl, DoSetClientSize);
+    %MAKE_BASE_FUNC(PyControl, DoSetVirtualSize);
+    %MAKE_BASE_FUNC(PyControl, DoGetSize);
+    %MAKE_BASE_FUNC(PyControl, DoGetClientSize);
+    %MAKE_BASE_FUNC(PyControl, DoGetPosition);
+    %MAKE_BASE_FUNC(PyControl, DoGetVirtualSize);
+    %MAKE_BASE_FUNC(PyControl, DoGetBestSize);
+    %MAKE_BASE_FUNC(PyControl, InitDialog);
+    %MAKE_BASE_FUNC(PyControl, TransferDataToWindow);
+    %MAKE_BASE_FUNC(PyControl, TransferDataFromWindow);
+    %MAKE_BASE_FUNC(PyControl, Validate);
+    %MAKE_BASE_FUNC(PyControl, AcceptsFocus);
+    %MAKE_BASE_FUNC(PyControl, AcceptsFocusFromKeyboard);
+    %MAKE_BASE_FUNC(PyControl, GetMaxSize);
+    %MAKE_BASE_FUNC(PyControl, AddChild);
+    %MAKE_BASE_FUNC(PyControl, RemoveChild);
+    %MAKE_BASE_FUNC(PyControl, ShouldInheritColours);
+    %MAKE_BASE_FUNC(PyControl, GetDefaultAttributes);
+    %MAKE_BASE_FUNC(PyControl, OnInternalIdle);
 
 };
 

@@ -85,7 +85,7 @@ In that cases, GetSize returns $0$ so you should always test its return value.
 
 \membersection{wxStreamBase::IsOk}\label{wxstreambaseisok}
 
-\constfunc{bool}{IsOk}{\void}
+\constfunc{virtual bool}{IsOk}{\void}
 
 Returns true if no error occurred on the stream.
 
@@ -127,7 +127,7 @@ real position.
 
 \membersection{wxStreamBase::OnSysWrite}\label{wxstreambaseonsyswrite}
 
-\func{size\_t}{OnSysWrite}{\param{void *}{buffer}, \param{size\_t}{ bufsize}}
+\func{size\_t}{OnSysWrite}{\param{const void *}{buffer}, \param{size\_t}{ bufsize}}
 
 See \helpref{OnSysRead}{wxstreambaseonsysread}.
 

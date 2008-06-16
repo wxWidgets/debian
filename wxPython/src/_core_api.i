@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Sept-2003
-// RCS-ID:      $Id: _core_api.i,v 1.11.2.4 2006/01/16 23:47:32 RD Exp $
+// RCS-ID:      $Id: _core_api.i 46278 2007-06-02 23:37:34Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@
 // in the wrapper code.
 
 #include <wx/hashmap.h>
-    WX_DECLARE_STRING_HASH_MAP( swig_type_info*, wxPyTypeInfoHashMap );
+WX_DECLARE_STRING_HASH_MAP( swig_type_info*, wxPyTypeInfoHashMap );
 
 
 // Maintains a hashmap of className to swig_type_info pointers.  Given the
@@ -99,14 +99,18 @@ bool wxPyConvertSwigPtr(PyObject* obj, void **ptr,
     return SWIG_Python_ConvertPtr(obj, ptr, swigType, SWIG_POINTER_EXCEPTION) != -1;
 }
 
+%}
 
+
+#if SWIG_VERSION < 0x010328
+%{
 // Make a SWIGified pointer object suitable for a .this attribute
 PyObject* wxPyMakeSwigPtr(void* ptr, const wxChar* className) {
     
     PyObject* robj = NULL;
 
     swig_type_info* swigType = wxPyFindSwigType(className);
-    wxCHECK_MSG(swigType != NULL, NULL, wxT("Unknown type in wxPyConvertSwigPtr"));
+    wxCHECK_MSG(swigType != NULL, NULL, wxT("Unknown type in wxPyMakeSwigPtr"));
 
 #ifdef SWIG_COBJECT_TYPES
     robj = PySwigObject_FromVoidPtrAndDesc((void *) ptr, (char *)swigType->name);
@@ -117,18 +121,35 @@ PyObject* wxPyMakeSwigPtr(void* ptr, const wxChar* className) {
             PyString_FromString(result) : 0;
     }
 #endif
-
     return robj;
 }
+%}
+
+#else // SWIG_VERSION >= 1.3.28
+%{
+// Make a SWIGified pointer object suitable for a .this attribute
+PyObject* wxPyMakeSwigPtr(void* ptr, const wxChar* className) {
+    
+    PyObject* robj = NULL;
+
+    swig_type_info* swigType = wxPyFindSwigType(className);
+    wxCHECK_MSG(swigType != NULL, NULL, wxT("Unknown type in wxPyMakeSwigPtr"));
+
+    robj = PySwigObject_New(ptr, swigType, 0);
+    return robj;
+}
+%}
+#endif
 
 
+
+%{    
 // Python's PyInstance_Check does not return True for instances of new-style
 // classes.  This should get close enough for both new and old classes but I
 // should re-evaluate the need for doing instance checks...
 bool wxPyInstance_Check(PyObject* obj) {
     return PyObject_HasAttrString(obj, "__class__") != 0;
 }
-
 
 
 // This one checks if the object is an instance of a SWIG proxy class (it has
@@ -148,7 +169,6 @@ bool wxPySwigInstance_Check(PyObject* obj) {
     PyErr_Clear();
     return false;
 }
- 
 
 
 // Export a C API in a struct.  Other modules will be able to load this from
@@ -215,8 +235,14 @@ static wxPyCoreAPI API = {
     wxPyInstance_Check,
     wxPySwigInstance_Check,
 
-    wxPyCheckForApp
+    wxPyCheckForApp,
 
+    wxArrayDouble2PyList_helper,
+    wxPoint2D_LIST_helper,
+    wxRect2D_helper,
+
+    wxPyCBOutputStream_create,
+    wxPyCBOutputStream_copy,
 };
 
 #endif

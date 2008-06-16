@@ -1,0 +1,224 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Interprocess communication overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="ipcoverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_odbcoverview.html#odbcoverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtml.html#wxhtml"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Interprocess communication overview</H2>
+<P>
+Classes: <A HREF="wx_wxserver.html#wxserver">wxServer</A>,
+<A HREF="wx_wxddeconnection.html#wxddeconnection">wxConnection</A>,
+<A HREF="wx_wxclient.html#wxclient">wxClient</A>
+wxWidgets has a number of different classes to help with
+interprocess communication and network programming. This section
+only discusses one family of classes -- the DDE-like protocol --
+but here's a list of other useful classes:<P>
+<UL>
+
+<LI> <A HREF="wx_wxsocketevent.html#wxsocketevent">wxSocketEvent</A>,
+<A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>,
+<A HREF="wx_wxsocketclient.html#wxsocketclient">wxSocketClient</A>,
+<A HREF="wx_wxsocketserver.html#wxsocketserver">wxSocketServer</A>: classes for the low-level TCP/IP API.
+<LI> <A HREF="wx_wxprotocol.html#wxprotocol">wxProtocol</A>, <A HREF="wx_wxurl.html#wxurl">wxURL</A>, <A HREF="wx_wxftp.html#wxftp">wxFTP</A>, <A HREF="wx_wxhttp.html#wxhttp">wxHTTP</A>: classes
+for programming popular Internet protocols.
+</UL>
+<P>
+wxWidgets' DDE-like protocol is a high-level protocol based on
+Windows DDE. There are two implementations of this DDE-like
+protocol: one using real DDE running on Windows only, and another
+using TCP/IP (sockets) that runs on most platforms. Since the API
+and virtually all of the behaviour is the same apart from the
+names of the classes, you should find it easy to switch between
+the two implementations.<P>
+Notice that by including <TT>&lt;wx/ipc.h&gt;</TT> you may define
+convenient synonyms for the IPC classes: <TT>wxServer</TT> for either
+<TT>wxDDEServer</TT> or <TT>wxTCPServer</TT> depending on whether
+DDE-based or socket-based implementation is used and the same
+thing for <TT>wxClient</TT> and <TT>wxConnection</TT>.<P>
+By default, the DDE implementation is used under Windows. DDE works
+within one computer only. If you want to use IPC between
+different workstations you should define <TT>
+wxUSE_DDE_FOR_IPC</TT> as 0 before including this header -- this
+will force using TCP/IP implementation even under Windows.<P>
+The following description refers to wx... but remember that the
+equivalent wxTCP... and wxDDE... classes can be used in much the
+same way.<P>
+Three classes are central to the DDE-like API:<P>
+<OL>
+
+<LI> wxClient. This represents the client application, and is used
+only within a client program.
+<LI> wxServer. This represents the server application, and is used
+only within a server program.
+<LI> wxConnection. This represents the connection from the
+client to the server - both the client and the server use an
+instance of this class, one per connection. Most DDE transactions
+operate on this object.
+</OL>
+<P>
+Messages between applications are usually identified by three
+variables: connection object, topic name and item name.  A data
+string is a fourth element of some messages. To create a
+connection (a conversation in Windows parlance), the client
+application uses wxClient::MakeConnection to send a message to the
+server object, with a string service name to identify the server
+and a topic name to identify the topic for the duration of the
+connection. Under Unix, the service name may be either an integer
+port identifier in which case an Internet domain socket will be
+used for the communications or a valid file name (which shouldn't
+exist and will be deleted afterwards) in which case a Unix domain
+socket is created.<P>
+<B>SECURITY NOTE:</B> Using Internet domain sockets is extremely insecure for
+IPC as there is absolutely no access control for them, use Unix domain sockets
+whenever possible!<P>
+The server then responds and either vetoes the connection or
+allows it. If allowed, both the server and client objects create
+wxConnection objects which persist until the connection is
+closed. The connection object is then used for sending and
+receiving subsequent messages between client and server -
+overriding virtual functions in your class derived from
+wxConnection allows you to handle the DDE messages.<P>
+To create a working server, the programmer must:<P>
+<OL>
+
+<LI> Derive a class from wxConnection, providing handlers for various messages sent to the server
+side of a wxConnection (e.g. OnExecute, OnRequest, OnPoke). Only
+the handlers actually required by the application need to be
+overridden.
+<LI> Derive a class from wxServer, overriding OnAcceptConnection
+to accept or reject a connection on the basis of the topic
+argument. This member must create and return an instance of the
+derived connection class if the connection is accepted.
+<LI> Create an instance of your server object and call Create to
+activate it, giving it a service name.
+</OL>
+<P>
+To create a working client, the programmer must:<P>
+<OL>
+
+<LI> Derive a class from wxConnection, providing handlers for various
+messages sent to the client side of a wxConnection (e.g.
+OnAdvise). Only the handlers actually required by the application
+need to be overridden.
+<LI> Derive a class from wxClient, overriding OnMakeConnection to
+create and return an instance of the derived connection class.
+<LI> Create an instance of your client object.
+<LI> When appropriate, create a new connection using
+<A HREF="wx_wxclient.html#wxclientmakeconnection">wxClient::MakeConnection</A>,
+with arguments host name (processed in Unix only, use 'localhost'
+for local computer), service name, and topic name for this
+connection. The client object will call
+<A HREF="wx_wxddeclient.html#wxddeclientonmakeconnection">OnMakeConnection</A> to create
+a connection object of the derived class if the connection is
+successful.
+<LI> Use the wxConnection member functions to send messages to the server.
+</OL>
+<P>
+<A HREF="#datatransfer">Data transfer</A><BR>
+<A HREF="#ipcexamples">Examples</A><BR>
+<A HREF="#ddedetails">More DDE details</A><BR>
+<P>
+
+<HR>
+<A NAME="datatransfer"></A>
+<H3>Data transfer</H3>
+<P>
+These are the ways that data can be transferred from one
+application to another. These are methods of wxConnection.<P>
+<UL>
+
+<LI> <B>Execute:</B> the client calls the server with a data string representing
+a command to be executed. This succeeds or fails, depending on the
+server's willingness to answer. If the client wants to find the result
+of the Execute command other than success or failure, it has to explicitly
+call Request.
+<LI> <B>Request:</B> the client asks the server for a particular data string
+associated with a given item string. If the server is unwilling to
+reply, the return value is NULL. Otherwise, the return value is a string
+(actually a pointer to the connection buffer, so it should not be
+deallocated by the application).
+<LI> <B>Poke:</B> The client sends a data string associated with an item
+string directly to the server. This succeeds or fails.
+<LI> <B>Advise:</B> The client asks to be advised of any change in data
+associated with a particular item. If the server agrees, the server will
+send an OnAdvise message to the client along with the item and data.
+</UL>
+<P>
+The default data type is wxCF_TEXT (ASCII text), and the default data
+size is the length of the null-terminated string. Windows-specific data
+types could also be used on the PC.<P>
+
+<HR>
+<A NAME="ipcexamples"></A>
+<H3>Examples</H3>
+<P>
+See the sample programs <I>server</I> and <I>client</I> in the IPC
+samples directory.  Run the server, then the client. This demonstrates
+using the Execute, Request, and Poke commands from the client, together
+with an Advise loop: selecting an item in the server list box causes
+that item to be highlighted in the client list box.<P>
+
+<HR>
+<A NAME="ddedetails"></A>
+<H3>More DDE details</H3>
+<P>
+A wxClient object initiates the client part of a client-server
+DDE-like (Dynamic Data Exchange) conversation (available in both
+Windows and Unix).<P>
+To create a client which can communicate with a suitable server,
+you need to derive a class from wxConnection and another from
+wxClient. The custom wxConnection class will receive
+communications in a 'conversation' with a server.  and the custom
+wxServer is required so that a user-overridden
+<A HREF="wx_wxddeclient.html#wxddeclientonmakeconnection">wxClient::OnMakeConnection</A>
+member can return a wxConnection of the required class, when a
+connection is made.<P>
+For example:<P>
+<PRE>
+class MyConnection: public wxConnection {
+ public:
+  MyConnection(void)::wxConnection() {}
+  ~MyConnection(void) { }
+  bool OnAdvise(const wxString& topic, const wxString& item, char *data, int size, wxIPCFormat format)
+  { wxMessageBox(topic, data); }
+};
+
+class MyClient: public wxClient {
+ public:
+  MyClient(void) {}
+  wxConnectionBase *OnMakeConnection(void) { return new MyConnection; }
+};
+
+</PRE>
+Here, <B>MyConnection</B> will respond to
+<A HREF="wx_wxddeconnection.html#wxddeconnectiononadvise">OnAdvise</A> messages sent by the
+server by displaying a message box.<P>
+When the client application starts, it must create an instance of
+the derived wxClient. In the following, command line arguments
+are used to pass the host name (the name of the machine the
+server is running on) and the server name (identifying the server
+process). Calling
+<A HREF="wx_wxddeclient.html#wxddeclientmakeconnection">wxClient::MakeConnection</A>
+implicitly creates an instance of <B>MyConnection</B> if the
+request for a connection is accepted, and the client then
+requests an <I>Advise</I> loop from the server (an Advise loop is
+where the server calls the client when data has changed).<P>
+<PRE>
+  wxString server = "4242";
+  wxString hostName;
+  wxGetHostName(hostName);
+
+  // Create a new client
+  MyClient *client = new MyClient;
+  connection = (MyConnection *)client-&gt;MakeConnection(hostName, server, "IPC TEST");
+
+  if (!connection)
+  {
+    wxMessageBox("Failed to make connection to server", "Client Demo Error");
+    return NULL;
+  }
+  connection-&gt;StartAdvise("Item");
+</PRE>
+
+</FONT></BODY></HTML>

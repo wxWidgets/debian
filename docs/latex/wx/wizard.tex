@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by: Robert Vazan (sizers)
 %% Created:     02.04.00
-%% RCS-ID:      $Id: wizard.tex,v 1.17.2.1 2006/02/09 15:35:26 JS Exp $
+%% RCS-ID:      $Id: wizard.tex 47065 2007-07-02 08:00:17Z JS $
 %% Copyright:   (c) Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,6 +157,11 @@ This is useful if the decision about which pages to show is taken during
 run-time, as in this case, the wizard won't be able to get to all pages starting
 from a single one and you should call {\it Fit} separately for the others.
 
+\membersection{wxWizard::GetBitmap}\label{wxwizardgetbitmap}
+
+\constfunc{const wxBitmap\&}{GetBitmap}{\void}
+
+Returns the bitmap used for the wizard.
 
 \membersection{wxWizard::GetCurrentPage}\label{wxwizardgetcurrentpage}
 
@@ -241,6 +246,11 @@ Executes the wizard starting from the given page, returning {\tt true} if it was
 successfully finished or {\tt false} if user cancelled it. The {\it firstPage} 
 can not be {\tt NULL}.
 
+\membersection{wxWizard::SetBitmap}\label{wxwizardsetbitmap}
+
+\func{void}{SetBitmap}{\param{const wxBitmap\& }{bitmap}}
+
+Sets the bitmap used for the wizard.
 
 \membersection{wxWizard::SetPageSize}\label{wxwizardsetpagesize}
 

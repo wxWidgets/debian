@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-May-1998
-// RCS-ID:      $Id: _event.i,v 1.25.2.2 2006/03/10 18:35:16 RD Exp $
+// RCS-ID:      $Id: _event.i 44535 2007-02-20 02:27:07Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -99,8 +99,16 @@ wxEventType wxNewEventType();
 %constant wxEventType wxEVT_NAVIGATION_KEY;
 %constant wxEventType wxEVT_KEY_DOWN;
 %constant wxEventType wxEVT_KEY_UP;
+
+%{
+#if ! wxUSE_HOTKEY
+#define wxEVT_HOTKEY -9999
+#endif
+%}
+
 %constant wxEventType wxEVT_HOTKEY;
-    
+
+
 // Set cursor event
 %constant wxEventType wxEVT_SET_CURSOR;
 
@@ -134,7 +142,6 @@ wxEventType wxNewEventType();
 %constant wxEventType wxEVT_END_SESSION;
 %constant wxEventType wxEVT_QUERY_END_SESSION;
 %constant wxEventType wxEVT_ACTIVATE_APP;
-%constant wxEventType wxEVT_POWER;
 %constant wxEventType wxEVT_ACTIVATE;
 %constant wxEventType wxEVT_CREATE;
 %constant wxEventType wxEVT_DESTROY;
@@ -142,6 +149,7 @@ wxEventType wxNewEventType();
 %constant wxEventType wxEVT_ICONIZE;
 %constant wxEventType wxEVT_MAXIMIZE;
 %constant wxEventType wxEVT_MOUSE_CAPTURE_CHANGED;
+%constant wxEventType wxEVT_MOUSE_CAPTURE_LOST;
 %constant wxEventType wxEVT_PAINT;
 %constant wxEventType wxEVT_ERASE_BACKGROUND;
 %constant wxEventType wxEVT_NC_PAINT;
@@ -166,6 +174,10 @@ wxEventType wxNewEventType();
 %constant wxEventType wxEVT_SIZING;
 %constant wxEventType wxEVT_MOVING;
 %constant wxEventType wxEVT_HIBERNATE;
+
+%constant wxEventType wxEVT_COMMAND_TEXT_COPY;
+%constant wxEventType wxEVT_COMMAND_TEXT_CUT;
+%constant wxEventType wxEVT_COMMAND_TEXT_PASTE;
 
 
 // Generic command events
@@ -196,7 +208,7 @@ EVT_ERASE_BACKGROUND = wx.PyEventBinder( wxEVT_ERASE_BACKGROUND )
 EVT_CHAR = wx.PyEventBinder( wxEVT_CHAR )
 EVT_KEY_DOWN = wx.PyEventBinder( wxEVT_KEY_DOWN )
 EVT_KEY_UP = wx.PyEventBinder( wxEVT_KEY_UP )
-EVT_HOTKEY = wx.PyEventBinder( wxEVT_HOTKEY, 1) 
+EVT_HOTKEY = wx.PyEventBinder( wxEVT_HOTKEY, 1)
 EVT_CHAR_HOOK = wx.PyEventBinder( wxEVT_CHAR_HOOK )
 EVT_MENU_OPEN = wx.PyEventBinder( wxEVT_MENU_OPEN )
 EVT_MENU_CLOSE = wx.PyEventBinder( wxEVT_MENU_CLOSE )
@@ -207,7 +219,7 @@ EVT_KILL_FOCUS = wx.PyEventBinder( wxEVT_KILL_FOCUS )
 EVT_CHILD_FOCUS = wx.PyEventBinder( wxEVT_CHILD_FOCUS )
 EVT_ACTIVATE = wx.PyEventBinder( wxEVT_ACTIVATE )
 EVT_ACTIVATE_APP = wx.PyEventBinder( wxEVT_ACTIVATE_APP )
-EVT_HIBERNATE = wx.PyEventBinder( wxEVT_HIBERNATE )     
+EVT_HIBERNATE = wx.PyEventBinder( wxEVT_HIBERNATE )
 EVT_END_SESSION = wx.PyEventBinder( wxEVT_END_SESSION )
 EVT_QUERY_END_SESSION = wx.PyEventBinder( wxEVT_QUERY_END_SESSION )
 EVT_DROP_FILES = wx.PyEventBinder( wxEVT_DROP_FILES )
@@ -224,6 +236,7 @@ EVT_WINDOW_CREATE = wx.PyEventBinder( wxEVT_CREATE )
 EVT_WINDOW_DESTROY = wx.PyEventBinder( wxEVT_DESTROY )
 EVT_SET_CURSOR = wx.PyEventBinder( wxEVT_SET_CURSOR )
 EVT_MOUSE_CAPTURE_CHANGED = wx.PyEventBinder( wxEVT_MOUSE_CAPTURE_CHANGED )
+EVT_MOUSE_CAPTURE_LOST = wx.PyEventBinder( wxEVT_MOUSE_CAPTURE_LOST )         
 
 EVT_LEFT_DOWN = wx.PyEventBinder( wxEVT_LEFT_DOWN )
 EVT_LEFT_UP = wx.PyEventBinder( wxEVT_LEFT_UP )
@@ -256,11 +269,11 @@ EVT_MOUSE_EVENTS = wx.PyEventBinder([ wxEVT_LEFT_DOWN,
 
 
 %# Scrolling from wxWindow (sent to wxScrolledWindow)
-EVT_SCROLLWIN = wx.PyEventBinder([ wxEVT_SCROLLWIN_TOP, 
+EVT_SCROLLWIN = wx.PyEventBinder([ wxEVT_SCROLLWIN_TOP,
                                   wxEVT_SCROLLWIN_BOTTOM,
                                   wxEVT_SCROLLWIN_LINEUP,
                                   wxEVT_SCROLLWIN_LINEDOWN,
-                                  wxEVT_SCROLLWIN_PAGEUP, 
+                                  wxEVT_SCROLLWIN_PAGEUP,
                                   wxEVT_SCROLLWIN_PAGEDOWN,
                                   wxEVT_SCROLLWIN_THUMBTRACK,
                                   wxEVT_SCROLLWIN_THUMBRELEASE,
@@ -276,14 +289,14 @@ EVT_SCROLLWIN_THUMBTRACK = wx.PyEventBinder( wxEVT_SCROLLWIN_THUMBTRACK )
 EVT_SCROLLWIN_THUMBRELEASE = wx.PyEventBinder( wxEVT_SCROLLWIN_THUMBRELEASE )
 
 %# Scrolling from wx.Slider and wx.ScrollBar
-EVT_SCROLL = wx.PyEventBinder([ wxEVT_SCROLL_TOP, 
-                               wxEVT_SCROLL_BOTTOM, 
-                               wxEVT_SCROLL_LINEUP, 
-                               wxEVT_SCROLL_LINEDOWN, 
-                               wxEVT_SCROLL_PAGEUP, 
-                               wxEVT_SCROLL_PAGEDOWN, 
-                               wxEVT_SCROLL_THUMBTRACK, 
-                               wxEVT_SCROLL_THUMBRELEASE, 
+EVT_SCROLL = wx.PyEventBinder([ wxEVT_SCROLL_TOP,
+                               wxEVT_SCROLL_BOTTOM,
+                               wxEVT_SCROLL_LINEUP,
+                               wxEVT_SCROLL_LINEDOWN,
+                               wxEVT_SCROLL_PAGEUP,
+                               wxEVT_SCROLL_PAGEDOWN,
+                               wxEVT_SCROLL_THUMBTRACK,
+                               wxEVT_SCROLL_THUMBRELEASE,
                                wxEVT_SCROLL_CHANGED,
                                ])
 
@@ -297,15 +310,15 @@ EVT_SCROLL_THUMBTRACK = wx.PyEventBinder( wxEVT_SCROLL_THUMBTRACK )
 EVT_SCROLL_THUMBRELEASE = wx.PyEventBinder( wxEVT_SCROLL_THUMBRELEASE )
 EVT_SCROLL_CHANGED = wx.PyEventBinder( wxEVT_SCROLL_CHANGED )
 EVT_SCROLL_ENDSCROLL = EVT_SCROLL_CHANGED
-     
+
 %# Scrolling from wx.Slider and wx.ScrollBar, with an id
-EVT_COMMAND_SCROLL = wx.PyEventBinder([ wxEVT_SCROLL_TOP, 
-                                       wxEVT_SCROLL_BOTTOM, 
-                                       wxEVT_SCROLL_LINEUP, 
-                                       wxEVT_SCROLL_LINEDOWN, 
-                                       wxEVT_SCROLL_PAGEUP, 
-                                       wxEVT_SCROLL_PAGEDOWN, 
-                                       wxEVT_SCROLL_THUMBTRACK, 
+EVT_COMMAND_SCROLL = wx.PyEventBinder([ wxEVT_SCROLL_TOP,
+                                       wxEVT_SCROLL_BOTTOM,
+                                       wxEVT_SCROLL_LINEUP,
+                                       wxEVT_SCROLL_LINEDOWN,
+                                       wxEVT_SCROLL_PAGEUP,
+                                       wxEVT_SCROLL_PAGEDOWN,
+                                       wxEVT_SCROLL_THUMBTRACK,
                                        wxEVT_SCROLL_THUMBRELEASE,
                                        wxEVT_SCROLL_CHANGED,
                                        ], 1)
@@ -358,6 +371,9 @@ EVT_UPDATE_UI_RANGE = wx.PyEventBinder( wxEVT_UPDATE_UI, 2)
 
 EVT_CONTEXT_MENU = wx.PyEventBinder( wxEVT_CONTEXT_MENU )
 
+EVT_TEXT_CUT   =  wx.PyEventBinder( wxEVT_COMMAND_TEXT_CUT )
+EVT_TEXT_COPY  =  wx.PyEventBinder( wxEVT_COMMAND_TEXT_COPY )
+EVT_TEXT_PASTE =  wx.PyEventBinder( wxEVT_COMMAND_TEXT_PASTE )
 
 }
 
@@ -377,66 +393,65 @@ public:
     DocDeclStr(
         void , SetEventType(wxEventType typ),
         "Sets the specific type of the event.", "");
-    
+
     DocDeclStr(
         wxEventType , GetEventType() const,
         "Returns the identifier of the given event type, such as
 ``wxEVT_COMMAND_BUTTON_CLICKED``.", "");
-    
+
     DocDeclStr(
         wxObject *, GetEventObject() const,
         "Returns the object (usually a window) associated with the event, if
 any.", "");
-    
+
     DocDeclStr(
         void , SetEventObject(wxObject *obj),
         "Sets the originating object, or in other words, obj is normally the
 object that is sending the event.", "");
-    
+
     long GetTimestamp() const;
     void SetTimestamp(long ts = 0);
-    
+
     DocDeclStr(
         int  , GetId() const,
         "Returns the identifier associated with this event, such as a button
 command id.", "");
-    
+
     DocDeclStr(
         void , SetId(int Id),
         "Set's the ID for the event.  This is usually the ID of the window that
 is sending the event, but it can also be a command id from a menu
 item, etc.", "");
-    
+
 
 
     DocDeclStr(
         bool , IsCommandEvent() const,
         "Returns true if the event is or is derived from `wx.CommandEvent` else
 it returns false. Note: Exists only for optimization purposes.", "");
-    
+
 
     DocDeclStr(
         void , Skip(bool skip = true),
-        "Called by an event handler, it controls whether additional event
-handlers bound to this event will be called after the current event
-handler returns.  Skip(false) (the default setting) will prevent
-additional event handlers from being called and control will be
-returned to the sender of the event immediately after the current
-handler has finished.  Skip(True) will cause the event processing
-system to continue searching for a handler function for this event.
-", "");
-    
+        "This method can be used inside an event handler to control whether
+further event handlers bound to this event will be called after the
+current one returns. Without Skip() (or equivalently if Skip(False) is
+used), the event will not be processed any more. If Skip(True) is
+called, the event processing system continues searching for a further
+handler function for this event, even though it has been processed
+already in the current handler.", "");
+
     DocDeclStr(
         bool , GetSkipped() const,
         "Returns true if the event handler should be skipped, false otherwise.
 :see: `Skip`", "");
-    
+
 
     DocDeclStr(
         bool , ShouldPropagate() const,
         "Test if this event should be propagated to the parent window or not,
 i.e. if the propagation level is currently greater than 0.", "");
-    
+
 
     // Stop an event from propagating to its parent window, returns the old
     // propagation level value
@@ -445,7 +460,7 @@ i.e. if the propagation level is currently greater than 0.", "");
         "Stop the event from propagating to its parent window.  Returns the old
 propagation level value which may be later passed to
 `ResumePropagation` to allow propagating the event again.", "");
-    
+
 
     DocDeclStr(
         void , ResumePropagation(int propagationLevel),
@@ -453,12 +468,19 @@ propagation level value which may be later passed to
 example, you can use the value returned by an earlier call to
 `StopPropagation`.)
 ", "");
-    
+
 
     // this function is used to create a copy of the event polymorphically and
     // all derived classes must implement it because otherwise wxPostEvent()
     // for them wouldn't work (it needs to do a copy of the event)
     virtual wxEvent *Clone() /* =0*/;
+
+    %property(EventObject, GetEventObject, SetEventObject, doc="See `GetEventObject` and `SetEventObject`");
+    %property(EventType, GetEventType, SetEventType, doc="See `GetEventType` and `SetEventType`");
+    %property(Id, GetId, SetId, doc="See `GetId` and `SetId`");
+    %property(Skipped, GetSkipped, doc="See `GetSkipped`");
+    %property(Timestamp, GetTimestamp, SetTimestamp, doc="See `GetTimestamp` and `SetTimestamp`");
+    
 };
 
 
@@ -510,19 +532,19 @@ public:
 //     void SetClientObject(wxClientData* clientObject) { m_clientObject = clientObject; }
 //     void *GetClientObject() const { return m_clientObject; }
 
-    
+
     DocDeclStr(
         int , GetSelection() const,
         "Returns item index for a listbox or choice selection event (not valid
 for a deselection).", "");
-    
+
 
     void SetString(const wxString& s);
     DocDeclStr(
         wxString , GetString() const,
         "Returns item string for a listbox or choice selection event (not valid
 for a deselection).", "");
-    
+
 
     DocDeclStr(
         bool , IsChecked() const,
@@ -531,14 +553,14 @@ checkboxes, the method returns true for a selection event and false
 for a deselection one. For the menu events, this method indicates if
 the menu item just has become checked or unchecked (and thus only
 makes sense for checkable menu items).", "");
-    
+
     %pythoncode { Checked = IsChecked }
-    
+
     DocDeclStr(
         bool , IsSelection() const,
         "For a listbox or similar event, returns true if it is a selection,
 false if it is a deselection.", "");
-    
+
 
     void SetExtraLong(long extraLong);
     DocDeclStr(
@@ -549,15 +571,15 @@ whether the event was a selection (true) or a deselection (false). A
 listbox deselection only occurs for multiple-selection boxes, and in
 this case the index and string values are indeterminate and the
 listbox must be examined by the application.", "");
-    
+
 
     void SetInt(int i);
     DocDeclStr(
-        long , GetInt() const,
+        int , GetInt() const,
         "Returns the integer identifier corresponding to a listbox, choice or
 radiobox selection (only if the event was a selection, not a
 deselection), or a boolean value representing the value of a checkbox.", "");
-    
+
 
      %extend {
         DocStr(GetClientData,
@@ -584,9 +606,15 @@ deselection), or a boolean value representing the value of a checkbox.", "");
          GetClientObject = GetClientData
          SetClientObject = SetClientData
     }
-             
+
     virtual wxEvent *Clone() const;
 
+    %property(ClientData, GetClientData, SetClientData, doc="See `GetClientData` and `SetClientData`");
+    %property(ClientObject, GetClientObject, SetClientObject, doc="See `GetClientObject` and `SetClientObject`");
+    %property(ExtraLong, GetExtraLong, SetExtraLong, doc="See `GetExtraLong` and `SetExtraLong`");
+    %property(Int, GetInt, SetInt, doc="See `GetInt` and `SetInt`");
+    %property(Selection, GetSelection, doc="See `GetSelection`");
+    %property(String, GetString, SetString, doc="See `GetString` and `SetString`");
 };
 
 //---------------------------------------------------------------------------
@@ -610,7 +638,7 @@ public:
 It is in general a good idea to notify the user about the reasons for
 vetoing the change because otherwise the applications behaviour (which
 just refuses to do what the user wants) might be quite surprising.", "");
-    
+
 
     DocDeclStr(
         void , Allow(),
@@ -618,13 +646,13 @@ just refuses to do what the user wants) might be quite surprising.", "");
 processed. For most events it is not necessary to call this method as
 the events are allowed anyhow but some are forbidden by default (this
 will be mentioned in the corresponding event description).", "");
-    
+
 
     DocDeclStr(
         bool , IsAllowed(),
         "Returns true if the change is allowed (`Veto` hasn't been called) or
 false otherwise (if it was).", "");
-    
+
 };
 
 
@@ -634,7 +662,7 @@ false otherwise (if it was).", "");
 DocStr(wxScrollEvent,
 "A scroll event holds information about events sent from stand-alone
 scrollbars and sliders. Note that scrolled windows do not send
-instnaces of this event class, but send the `wx.ScrollWinEvent`
+instances of this event class, but send the `wx.ScrollWinEvent`
 instead.", "
 
 Events
@@ -649,8 +677,8 @@ Events
     EVT_SCROLL_PAGEDOWN         page down events
     EVT_SCROLL_THUMBTRACK       thumbtrack events (frequent events sent
                                 as the user drags the 'thumb')
-    EVT_SCROLL_THUMBRELEASE     thumb release events.
-    EVT_SCROLL_ENDSCROLL        End of scrolling
+    EVT_SCROLL_THUMBRELEASE     thumb release events
+    EVT_SCROLL_CHANGED          End of scrolling
     =======================     ==========================================
 
 Note
@@ -658,17 +686,17 @@ Note
     The EVT_SCROLL_THUMBRELEASE event is only emitted when actually
     dragging the thumb using the mouse and releasing it (This
     EVT_SCROLL_THUMBRELEASE event is also followed by an
-    EVT_SCROLL_ENDSCROLL event).
+    EVT_SCROLL_CHANGED event).
 
-    The EVT_SCROLL_ENDSCROLL event also occurs when using the keyboard
+    The EVT_SCROLL_CHANGED event also occurs when using the keyboard
     to change the thumb position, and when clicking next to the thumb
     (In all these cases the EVT_SCROLL_THUMBRELEASE event does not
     happen).
 
-    In short, the EVT_SCROLL_ENDSCROLL event is triggered when
+    In short, the EVT_SCROLL_CHANGED event is triggered when
     scrolling/ moving has finished. The only exception (unfortunately)
     is that changing the thumb position using the mousewheel does give
-    a EVT_SCROLL_THUMBRELEASE event but NOT an EVT_SCROLL_ENDSCROLL
+    a EVT_SCROLL_THUMBRELEASE event but NOT an EVT_SCROLL_CHANGED
     event.
 ");
 
@@ -684,13 +712,16 @@ public:
         int , GetOrientation() const,
         "Returns wx.HORIZONTAL or wx.VERTICAL, depending on the orientation of
 the scrollbar.", "");
-    
+
     DocDeclStr(
         int , GetPosition() const,
         "Returns the position of the scrollbar.", "");
-    
+
     void SetOrientation(int orient);
     void SetPosition(int pos);
+    
+    %property(Orientation, GetOrientation, SetOrientation, doc="See `GetOrientation` and `SetOrientation`");
+    %property(Position, GetPosition, SetPosition, doc="See `GetPosition` and `SetPosition`");
 };
 
 
@@ -713,8 +744,8 @@ Events
     EVT_SCROLLWIN_PAGEDOWN         page down events
     EVT_SCROLLWIN_THUMBTRACK       thumbtrack events (frequent events sent
                                    as the user drags the 'thumb')
-    EVT_SCROLLWIN_THUMBRELEASE     thumb release events.
-    EVT_SCROLLWIN_ENDSCROLL        End of scrolling
+    EVT_SCROLLWIN_THUMBRELEASE     thumb release events
+    EVT_SCROLLWIN_CHANGED          End of scrolling
     ==========================     ==========================================
 
 :see: `wx.ScrollEvent`
@@ -730,15 +761,18 @@ public:
         int , GetOrientation() const,
         "Returns wx.HORIZONTAL or wx.VERTICAL, depending on the orientation of
 the scrollbar.", "");
-    
+
     DocDeclStr(
         int , GetPosition() const,
         "Returns the position of the scrollbar for the thumb track and release
 events. Note that this field can't be used for the other events, you
 need to query the window itself for the current position in that case.", "");
-    
+
     void SetOrientation(int orient);
     void SetPosition(int pos);
+
+    %property(Orientation, GetOrientation, SetOrientation, doc="See `GetOrientation` and `SetOrientation`");
+    %property(Position, GetPosition, SetPosition, doc="See `GetPosition` and `SetPosition`");
 };
 
 //---------------------------------------------------------------------------
@@ -808,6 +842,9 @@ enum
 class  wxMouseEvent : public wxEvent
 {
 public:
+    // turn off this typemap
+    %typemap(out) wxMouseEvent*;    
+    
     DocCtorStr(
         wxMouseEvent(wxEventType mouseType = wxEVT_NULL),
 "Constructs a wx.MouseEvent.  Valid event types are:
@@ -826,12 +863,14 @@ public:
     * wxEVT_MOTION
     * wxEVT_MOUSEWHEEL ", "");
 
+    // Turn it back on again
+    %typemap(out) wxMouseEvent* { $result = wxPyMake_wxObject($1, $owner); }
 
     DocDeclStr(
         bool , IsButton() const,
         "Returns true if the event was a mouse button event (not necessarily a
 button down event - that may be tested using `ButtonDown`).", "");
-    
+
 
     DocDeclStr(
         bool , ButtonDown(int but = wxMOUSE_BTN_ANY) const,
@@ -839,7 +878,7 @@ button down event - that may be tested using `ButtonDown`).", "");
 mouse button down event. Otherwise the argument specifies which
 button-down event shold be checked for (see `Button` for the possible
 values).", "");
-    
+
 
     DocDeclStr(
         bool , ButtonDClick(int but = wxMOUSE_BTN_ANY) const,
@@ -847,14 +886,14 @@ values).", "");
 mouse double click event. Otherwise the argument specifies which
 double click event to check for (see `Button` for the possible
 values).", "");
-    
+
 
     DocDeclStr(
         bool , ButtonUp(int but = wxMOUSE_BTN_ANY) const,
         "If the argument is omitted, this returns true if the event was any
 mouse button up event. Otherwise the argument specifies which button
 up event to check for (see `Button` for the possible values).", "");
-    
+
 
     DocDeclStr(
         bool , Button(int button) const,
@@ -868,7 +907,7 @@ values of button are:
      wx.MOUSE_BTN_ANY          check if any button was pressed
      ====================      =====================================
 ", "");
-    
+
 
     // Was the given button in Down state?
     bool ButtonIsDown(int but) const;
@@ -881,25 +920,25 @@ leave event, for example). Otherwise wx.MOUSE_BTN_LEFT is returned for
 the left button down, up and double click events, wx.MOUSE_BTN_MIDDLE
 and wx.MOUSE_BTN_RIGHT for the same events for the middle and the
 right buttons respectively.", "");
-    
+
 
     DocDeclStr(
         bool , ControlDown() const,
         "Returns true if the control key was down at the time of the event.", "");
-    
+
     DocDeclStr(
         bool , MetaDown() const,
         "Returns true if the Meta key was down at the time of the event.", "");
-    
-    
+
+
     DocDeclStr(
         bool , AltDown() const,
         "Returns true if the Alt key was down at the time of the event.", "");
-    
+
     DocDeclStr(
         bool , ShiftDown() const,
         "Returns true if the Shift key was down at the time of the event.", "");
-    
+
 
     DocDeclStr(
         bool , CmdDown() const,
@@ -910,51 +949,51 @@ because Cmd key is used for the same thing under Mac as Ctrl
 elsewhere. The Ctrl key still exists, it's just not used for this
 purpose. So for non-Mac platforms this is the same as `ControlDown`
 and Macs this is the same as `MetaDown`.", "");
-    
+
 
     DocDeclStr(
         bool , LeftDown() const,
         "Returns true if the left mouse button state changed to down.", "");
-    
+
     DocDeclStr(
         bool , MiddleDown() const,
         "Returns true if the middle mouse button state changed to down.", "");
-    
+
     DocDeclStr(
         bool , RightDown() const,
         "Returns true if the right mouse button state changed to down.", "");
-    
 
-    
+
+
     DocDeclStr(
         bool , LeftUp() const,
         "Returns true if the left mouse button state changed to up.", "");
-    
+
     DocDeclStr(
         bool , MiddleUp() const,
         "Returns true if the middle mouse button state changed to up.", "");
-    
+
     DocDeclStr(
         bool , RightUp() const,
         "Returns true if the right mouse button state changed to up.", "");
-    
 
 
-    
+
+
     DocDeclStr(
         bool , LeftDClick() const,
         "Returns true if the event was a left button double click.", "");
-    
+
     DocDeclStr(
         bool , MiddleDClick() const,
         "Returns true if the event was a middle button double click.", "");
-    
+
     DocDeclStr(
         bool , RightDClick() const,
         "Returns true if the event was a right button double click.", "");
-    
 
-    
+
+
     DocDeclStr(
         bool , LeftIsDown(),
         "Returns true if the left mouse button is currently down, independent
@@ -967,41 +1006,41 @@ state of the mouse button before the event happened.
 This event is usually used in the mouse event handlers which process
 \"move mouse\" messages to determine whether the user is (still)
 dragging the mouse.", "");
-    
+
     DocDeclStr(
         bool , MiddleIsDown(),
         "Returns true if the middle mouse button is currently down, independent
 of the current event type.", "");
-    
+
     DocDeclStr(
         bool , RightIsDown(),
         "Returns true if the right mouse button is currently down, independent
 of the current event type.", "");
-    
 
-    
+
+
     DocDeclStr(
         bool , Dragging() const,
         "Returns true if this was a dragging event (motion while a button is
 depressed).", "");
-    
+
 
     DocDeclStr(
         bool , Moving() const,
         "Returns true if this was a motion event and no mouse buttons were
 pressed. If any mouse button is held pressed, then this method returns
 false and Dragging returns true.", "");
-    
+
 
     DocDeclStr(
         bool , Entering() const,
         "Returns true if the mouse was entering the window.", "");
-    
+
 
     DocDeclStr(
         bool , Leaving() const,
         "Returns true if the mouse was leaving the window.", "");
-    
+
 
 
     DocStr(GetPosition,   // sets the docstring for both
@@ -1013,22 +1052,22 @@ event happened.", "");
         void, GetPosition(long *OUTPUT, long *OUTPUT),
         "GetPositionTuple() -> (x,y)",
         GetPositionTuple);
-    
+
     DocDeclStr(
         wxPoint , GetLogicalPosition(const wxDC& dc) const,
         "Returns the logical mouse position in pixels (i.e. translated
 according to the translation set for the DC, which usually indicates
 that the window has been scrolled).", "");
-    
+
 
     DocDeclStr(
         wxCoord , GetX() const,
         "Returns X coordinate of the physical mouse event position.", "");
-    
+
     DocDeclStr(
         wxCoord , GetY() const,
         "Returns Y coordinate of the physical mouse event position.", "");
-    
+
 
     DocDeclStr(
         int , GetWheelRotation() const,
@@ -1039,26 +1078,26 @@ created in the future. Because of this you shouldn't assume that one
 event is equal to 1 line or whatever, but you should be able to either
 do partial line scrolling or wait until +/-WheelDelta rotation values
 have been accumulated before scrolling.", "");
-    
+
 
     DocDeclStr(
         int , GetWheelDelta() const,
         "Get wheel delta, normally 120. This is the threshold for action to be
 taken, and one such action (for example, scrolling one increment)
 should occur for each delta.", "");
-    
+
 
     DocDeclStr(
         int , GetLinesPerAction() const,
         "Returns the configured number of lines (or whatever) to be scrolled
 per wheel action. Defaults to three.", "");
-    
+
 
     DocDeclStr(
         bool , IsPageScroll() const,
         "Returns true if the system has been setup to do page scrolling with
 the mouse wheel instead of line scrolling.", "");
-    
+
 
 public:
     wxCoord m_x, m_y;
@@ -1075,6 +1114,15 @@ public:
     int           m_wheelRotation;
     int           m_wheelDelta;
     int           m_linesPerAction;
+
+    %property(Button, GetButton, doc="See `GetButton`");
+    %property(LinesPerAction, GetLinesPerAction, doc="See `GetLinesPerAction`");
+    %property(LogicalPosition, GetLogicalPosition, doc="See `GetLogicalPosition`");
+    %property(Position, GetPosition, doc="See `GetPosition`");
+    %property(WheelDelta, GetWheelDelta, doc="See `GetWheelDelta`");
+    %property(WheelRotation, GetWheelRotation, doc="See `GetWheelRotation`");
+    %property(X, GetX, doc="See `GetX`");
+    %property(Y, GetY, doc="See `GetY`");
 };
 
 //---------------------------------------------------------------------------
@@ -1099,24 +1147,27 @@ public:
     DocDeclStr(
         wxCoord , GetX() const,
         "Returns the X coordinate of the mouse in client coordinates.", "");
-    
+
     DocDeclStr(
         wxCoord , GetY() const,
         "Returns the Y coordinate of the mouse in client coordinates.", "");
-    
+
 
     DocDeclStr(
         void , SetCursor(const wxCursor& cursor),
         "Sets the cursor associated with this event.", "");
-    
+
     DocDeclStr(
         const wxCursor& , GetCursor() const,
         "Returns a reference to the cursor specified by this event.", "");
-    
+
     DocDeclStr(
         bool , HasCursor() const,
         "Returns true if the cursor specified by this event is a valid cursor.", "");
-    
+
+    %property(Cursor, GetCursor, SetCursor, doc="See `GetCursor` and `SetCursor`");
+    %property(X, GetX, doc="See `GetX`");
+    %property(Y, GetY, doc="See `GetY`");
 };
 
 //---------------------------------------------------------------------------
@@ -1197,35 +1248,35 @@ Events
 
 Keycode Table
 -------------
-    ===========  ==============  ========  ====================  ================= 
-    WXK_BACK     WXK_EXECUTE     WXK_F1    WXK_NUMPAD_SPACE      WXK_WINDOWS_LEFT    
-    WXK_TAB      WXK_SNAPSHOT    WXK_F2    WXK_NUMPAD_TAB        WXK_WINDOWS_RIGHT   
-    WXK_RETURN   WXK_INSERT      WXK_F3    WXK_NUMPAD_ENTER      WXK_WINDOWS_MENU    
-    WXK_ESCAPE   WXK_HELP        WXK_F4    WXK_NUMPAD_F1         WXK_SPECIAL1        
-    WXK_SPACE    WXK_NUMPAD0     WXK_F5    WXK_NUMPAD_F2         WXK_SPECIAL2        
-    WXK_DELETE   WXK_NUMPAD1     WXK_F6    WXK_NUMPAD_F3         WXK_SPECIAL3        
-    WXK_LBUTTON  WXK_NUMPAD2     WXK_F7    WXK_NUMPAD_F4         WXK_SPECIAL4        
-    WXK_RBUTTON  WXK_NUMPAD3     WXK_F8    WXK_NUMPAD_HOME       WXK_SPECIAL5        
-    WXK_CANCEL   WXK_NUMPAD4     WXK_F9    WXK_NUMPAD_LEFT       WXK_SPECIAL6        
-    WXK_MBUTTON  WXK_NUMPAD5     WXK_F10   WXK_NUMPAD_UP         WXK_SPECIAL7        
-    WXK_CLEAR    WXK_NUMPAD6     WXK_F11   WXK_NUMPAD_RIGHT      WXK_SPECIAL8        
-    WXK_SHIFT    WXK_NUMPAD7     WXK_F12   WXK_NUMPAD_DOWN       WXK_SPECIAL9        
-    WXK_ALT      WXK_NUMPAD8     WXK_F13   WXK_NUMPAD_PRIOR      WXK_SPECIAL10       
-    WXK_CONTROL  WXK_NUMPAD9     WXK_F14   WXK_NUMPAD_PAGEUP     WXK_SPECIAL11       
-    WXK_MENU     WXK_MULTIPLY    WXK_F15   WXK_NUMPAD_NEXT       WXK_SPECIAL12       
-    WXK_PAUSE    WXK_ADD         WXK_F16   WXK_NUMPAD_PAGEDOWN   WXK_SPECIAL13       
-    WXK_CAPITAL  WXK_SEPARATOR   WXK_F17   WXK_NUMPAD_END        WXK_SPECIAL14       
-    WXK_PRIOR    WXK_SUBTRACT    WXK_F18   WXK_NUMPAD_BEGIN      WXK_SPECIAL15       
-    WXK_NEXT     WXK_DECIMAL     WXK_F19   WXK_NUMPAD_INSERT     WXK_SPECIAL16       
-    WXK_END      WXK_DIVIDE      WXK_F20   WXK_NUMPAD_DELETE     WXK_SPECIAL17       
-    WXK_HOME     WXK_NUMLOCK     WXK_F21   WXK_NUMPAD_EQUAL      WXK_SPECIAL18       
-    WXK_LEFT     WXK_SCROLL      WXK_F22   WXK_NUMPAD_MULTIPLY   WXK_SPECIAL19       
-    WXK_UP       WXK_PAGEUP      WXK_F23   WXK_NUMPAD_ADD        WXK_SPECIAL20       
-    WXK_RIGHT    WXK_PAGEDOWN    WXK_F24   WXK_NUMPAD_SEPARATOR  
-    WXK_DOWN                               WXK_NUMPAD_SUBTRACT   
-    WXK_SELECT                             WXK_NUMPAD_DECIMAL    
-    WXK_PRINT                              WXK_NUMPAD_DIVIDE     
-    ===========  ==============  ========  ====================  ================= 
+    ===========  ==============  ========  ====================  =================
+    WXK_BACK     WXK_EXECUTE     WXK_F1    WXK_NUMPAD_SPACE      WXK_WINDOWS_LEFT
+    WXK_TAB      WXK_SNAPSHOT    WXK_F2    WXK_NUMPAD_TAB        WXK_WINDOWS_RIGHT
+    WXK_RETURN   WXK_INSERT      WXK_F3    WXK_NUMPAD_ENTER      WXK_WINDOWS_MENU
+    WXK_ESCAPE   WXK_HELP        WXK_F4    WXK_NUMPAD_F1         WXK_SPECIAL1
+    WXK_SPACE    WXK_NUMPAD0     WXK_F5    WXK_NUMPAD_F2         WXK_SPECIAL2
+    WXK_DELETE   WXK_NUMPAD1     WXK_F6    WXK_NUMPAD_F3         WXK_SPECIAL3
+    WXK_LBUTTON  WXK_NUMPAD2     WXK_F7    WXK_NUMPAD_F4         WXK_SPECIAL4
+    WXK_RBUTTON  WXK_NUMPAD3     WXK_F8    WXK_NUMPAD_HOME       WXK_SPECIAL5
+    WXK_CANCEL   WXK_NUMPAD4     WXK_F9    WXK_NUMPAD_LEFT       WXK_SPECIAL6
+    WXK_MBUTTON  WXK_NUMPAD5     WXK_F10   WXK_NUMPAD_UP         WXK_SPECIAL7
+    WXK_CLEAR    WXK_NUMPAD6     WXK_F11   WXK_NUMPAD_RIGHT      WXK_SPECIAL8
+    WXK_SHIFT    WXK_NUMPAD7     WXK_F12   WXK_NUMPAD_DOWN       WXK_SPECIAL9
+    WXK_ALT      WXK_NUMPAD8     WXK_F13   WXK_NUMPAD_PRIOR      WXK_SPECIAL10
+    WXK_CONTROL  WXK_NUMPAD9     WXK_F14   WXK_NUMPAD_PAGEUP     WXK_SPECIAL11
+    WXK_MENU     WXK_MULTIPLY    WXK_F15   WXK_NUMPAD_NEXT       WXK_SPECIAL12
+    WXK_PAUSE    WXK_ADD         WXK_F16   WXK_NUMPAD_PAGEDOWN   WXK_SPECIAL13
+    WXK_CAPITAL  WXK_SEPARATOR   WXK_F17   WXK_NUMPAD_END        WXK_SPECIAL14
+    WXK_PRIOR    WXK_SUBTRACT    WXK_F18   WXK_NUMPAD_BEGIN      WXK_SPECIAL15
+    WXK_NEXT     WXK_DECIMAL     WXK_F19   WXK_NUMPAD_INSERT     WXK_SPECIAL16
+    WXK_END      WXK_DIVIDE      WXK_F20   WXK_NUMPAD_DELETE     WXK_SPECIAL17
+    WXK_HOME     WXK_NUMLOCK     WXK_F21   WXK_NUMPAD_EQUAL      WXK_SPECIAL18
+    WXK_LEFT     WXK_SCROLL      WXK_F22   WXK_NUMPAD_MULTIPLY   WXK_SPECIAL19
+    WXK_UP       WXK_PAGEUP      WXK_F23   WXK_NUMPAD_ADD        WXK_SPECIAL20
+    WXK_RIGHT    WXK_PAGEDOWN    WXK_F24   WXK_NUMPAD_SEPARATOR
+    WXK_DOWN                               WXK_NUMPAD_SUBTRACT
+    WXK_SELECT                             WXK_NUMPAD_DECIMAL
+    WXK_PRINT                              WXK_NUMPAD_DIVIDE
+    ===========  ==============  ========  ====================  =================
 ");
 
 class wxKeyEvent : public wxEvent
@@ -1238,22 +1289,33 @@ public:
 
 
     DocDeclStr(
+        int, GetModifiers() const,
+        "Returns a bitmask of the current modifier settings.  Can be used to
+check if the key event has exactly the given modifiers without having
+to explicitly check that the other modifiers are not down.  For
+example::
+
+    if event.GetModifers() == wx.MOD_CONTROL:
+        DoSomething()
+", "");
+
+    DocDeclStr(
         bool , ControlDown() const,
         "Returns ``True`` if the Control key was down at the time of the event.", "");
-    
+
     DocDeclStr(
         bool , MetaDown() const,
         "Returns ``True`` if the Meta key was down at the time of the event.", "");
-    
+
     DocDeclStr(
         bool , AltDown() const,
         "Returns ``True`` if the Alt key was down at the time of the event.", "");
-    
+
     DocDeclStr(
         bool , ShiftDown() const,
         "Returns ``True`` if the Shift key was down at the time of the event.", "");
-    
-    
+
+
     DocDeclStr(
         bool , CmdDown() const,
         "\"Cmd\" is a pseudo key which is the same as Control for PC and Unix
@@ -1263,8 +1325,8 @@ because Cmd key is used for the same thing under Mac as Ctrl
 elsewhere. The Ctrl still exists, it's just not used for this
 purpose. So for non-Mac platforms this is the same as `ControlDown`
 and Macs this is the same as `MetaDown`.", "");
-   
-    
+
+
 
     DocDeclStr(
         bool , HasModifiers() const,
@@ -1274,7 +1336,7 @@ SHIFT nor META key states (the reason for ignoring the latter is that
 it is common for NUMLOCK key to be configured as META under X but the
 key presses even while NUMLOCK is on should be still processed
 normally).", "");
-    
+
 
     DocDeclStr(
         int , GetKeyCode() const,
@@ -1287,14 +1349,15 @@ Note that in Unicode build, the returned value is meaningful only if
 the user entered a character that can be represented in current
 locale's default charset. You can obtain the corresponding Unicode
 character using `GetUnicodeKey`.", "");
-    %pythoncode { KeyCode = GetKeyCode }
-
     
+//    %pythoncode { KeyCode = GetKeyCode }  this will be hidden by the property
+
+
     %extend {
         DocStr(
             GetUnicodeKey,
             "Returns the Unicode character corresponding to this key event.  This
-function is only meaningfule in a Unicode build of wxPython.", "");            
+function is only meaningfule in a Unicode build of wxPython.", "");
         int GetUnicodeKey() {
         %#if wxUSE_UNICODE
             return self->GetUnicodeKey();
@@ -1304,24 +1367,35 @@ function is only meaningfule in a Unicode build of wxPython.", "");
         }
     }
     %pythoncode { GetUniChar = GetUnicodeKey }
-    
-    
+
+    %extend {
+        DocStr(
+            SetUnicodeKey,
+            "Set the Unicode value of the key event, but only if this is a Unicode
+build of wxPython.", "");
+        void SetUnicodeKey(int uniChar) {
+            %#if wxUSE_UNICODE
+                self->m_uniChar = uniChar;
+            %#endif
+        }
+    }
+
     DocDeclStr(
         wxUint32 , GetRawKeyCode() const,
         "Returns the raw key code for this event. This is a platform-dependent
 scan code which should only be used in advanced
 applications. Currently the raw key codes are not supported by all
 ports.", "");
-    
+
 
     DocDeclStr(
         wxUint32 , GetRawKeyFlags() const,
         "Returns the low level key flags for this event. The flags are
 platform-dependent and should only be used in advanced applications.
 Currently the raw key flags are not supported by all ports.", "");
-    
 
-    
+
+
     DocStr(GetPosition,   // sets the docstring for both
            "Find the position of the event, if applicable.", "");
     wxPoint GetPosition();
@@ -1331,18 +1405,18 @@ Currently the raw key flags are not supported by all ports.", "");
         "GetPositionTuple() -> (x,y)",
         GetPositionTuple);
 
-    
+
     DocDeclStr(
         wxCoord , GetX() const,
         "Returns the X position (in client coordinates) of the event, if
 applicable.", "");
-    
+
 
     DocDeclStr(
         wxCoord , GetY() const,
         "Returns the Y position (in client coordinates) of the event, if
 applicable.", "");
-    
+
 
 public:
     wxCoord       m_x, m_y;
@@ -1357,6 +1431,15 @@ public:
 
     wxUint32      m_rawCode;
     wxUint32      m_rawFlags;
+
+    %property(KeyCode, GetKeyCode, doc="See `GetKeyCode`");
+    %property(Modifiers, GetModifiers, doc="See `GetModifiers`");
+    %property(Position, GetPosition, doc="See `GetPosition`");
+    %property(RawKeyCode, GetRawKeyCode, doc="See `GetRawKeyCode`");
+    %property(RawKeyFlags, GetRawKeyFlags, doc="See `GetRawKeyFlags`");
+    %property(UnicodeKey, GetUnicodeKey, SetUnicodeKey, doc="See `GetUnicodeKey` and `SetUnicodeKey`");
+    %property(X, GetX, doc="See `GetX`");
+    %property(Y, GetY, doc="See `GetY`");
 };
 
 //---------------------------------------------------------------------------
@@ -1392,19 +1475,21 @@ public:
         wxSize , GetSize() const,
         "Returns the entire size of the window generating the size change
 event.", "");
-    
+
     wxRect GetRect() const;
     void SetRect(wxRect rect);
-    
+
     %extend {
         void SetSize(wxSize size) {
             self->m_size = size;
         }
     }
 
-public:
     wxSize m_size;
     wxRect m_rect;
+    
+    %property(Rect, GetRect, SetRect, doc="See `GetRect` and `SetRect`");
+    %property(Size, GetSize, SetSize, doc="See `GetSize` and `SetSize`");
 };
 
 
@@ -1425,7 +1510,7 @@ public:
     DocDeclStr(
         wxPoint , GetPosition() const,
         "Returns the position of the window generating the move change event.", "");
-    
+
     wxRect GetRect() const;
     void SetRect(const wxRect& rect);
     void SetPosition(const wxPoint& pos);
@@ -1434,6 +1519,10 @@ public:
         m_pos =  property(GetPosition, SetPosition)
         m_rect = property(GetRect, SetRect)
     }
+
+    %property(Position, GetPosition, SetPosition, doc="See `GetPosition` and `SetPosition`");
+    %property(Rect, GetRect, SetRect, doc="See `GetRect` and `SetRect`");
+    
 };
 
 //---------------------------------------------------------------------------
@@ -1495,6 +1584,8 @@ public:
         "Returns the device context the event handler should draw upon.  If
 ``None`` is returned then create a temporary `wx.ClientDC` and use
 that instead.", "");
+
+    %property(DC, GetDC, doc="See `GetDC`"); 
 };
 
 
@@ -1525,17 +1616,24 @@ window which had the focus before for the EVT_SET_FOCUS event and the
 window which is going to receive focus for the wxEVT_KILL_FOCUS event.
 
 Warning: the window returned may be None!", "");
-    
+
     void SetWindow(wxWindow *win);
+
+    %property(Window, GetWindow, SetWindow, doc="See `GetWindow` and `SetWindow`");
 };
 
 //---------------------------------------------------------------------------
 %newgroup;
 
 DocStr(wxChildFocusEvent,
-"wx.ChildFocusEvent notifies the parent that a child has received the
-focus.  Unlike `wx.FocusEvent` it is propagated up the window
-heirarchy.", "");
+"A child focus event is sent to a (parent-)window when one of its child
+windows gains focus, so that the window could restore the focus back
+to its corresponding child if it loses it now and regains later.
+
+Notice that child window is the direct child of the window receiving
+the event, and so may not be the actual widget recieving focus if it
+is further down the containment heirarchy.  Use `wx.Window.FindFocus`
+to get the widget that is actually receiving focus.", "");
 
 
 class wxChildFocusEvent : public wxCommandEvent
@@ -1547,8 +1645,10 @@ public:
 
     DocDeclStr(
         wxWindow *, GetWindow() const,
-        "The window which has just received the focus.", "");
-    
+        "The window, or (grand)parent of the window which has just received the
+focus.", "");
+
+    %property(Window, GetWindow, doc="See `GetWindow`");
 };
 
 //---------------------------------------------------------------------------
@@ -1587,12 +1687,13 @@ public:
     DocCtorStr(
         wxActivateEvent(wxEventType type = wxEVT_NULL, bool active = true, int Id = 0),
         "Constructor", "");
-    
+
     DocDeclStr(
         bool , GetActive() const,
         "Returns true if the application or window is being activated, false
 otherwise.", "");
-    
+
+    %property(Active, GetActive, doc="See `GetActive`");
 };
 
 
@@ -1654,25 +1755,27 @@ public:
     DocCtorStr(
         wxMenuEvent(wxEventType type = wxEVT_NULL, int winid = 0, wxMenu* menu = NULL),
         "Constructor", "");
-    
+
     DocDeclStr(
         int , GetMenuId() const,
         "Returns the menu identifier associated with the event. This method
 should be only used with the HIGHLIGHT events.", "");
-    
+
 
     DocDeclStr(
         bool , IsPopup() const,
         "Returns ``True`` if the menu which is being opened or closed is a
 popup menu, ``False`` if it is a normal one.  This method should only
 be used with the OPEN and CLOSE events.", "");
-    
+
 
     DocDeclStr(
         wxMenu* , GetMenu() const,
         "Returns the menu which is being opened or closed. This method should
 only be used with the OPEN and CLOSE events.", "");
-    
+
+    %property(Menu, GetMenu, doc="See `GetMenu`");
+    %property(MenuId, GetMenuId, doc="See `GetMenuId`");
 };
 
 //---------------------------------------------------------------------------
@@ -1720,18 +1823,18 @@ public:
     DocCtorStr(
         wxCloseEvent(wxEventType type = wxEVT_NULL, int winid = 0),
         "Constructor.", "");
-    
+
     DocDeclStr(
         void , SetLoggingOff(bool logOff),
         "Sets the 'logging off' flag.", "");
-    
+
     DocDeclStr(
         bool , GetLoggingOff() const,
         "Returns ``True`` if the user is logging off or ``False`` if the
 system is shutting down. This method can only be called for end
 session and query end session events, it doesn't make sense for close
 window event.", "");
-    
+
 
     DocDeclStr(
         void , Veto(bool veto = true),
@@ -1739,20 +1842,21 @@ window event.", "");
 signal to the calling application that a window close did not happen.
 
 You can only veto a shutdown or close if `CanVeto` returns true.", "");
-    
+
     bool GetVeto() const;
-    
+
     DocDeclStr(
         void , SetCanVeto(bool canVeto),
         "Sets the 'can veto' flag.", "");
-        
+
     DocDeclStr(
         bool , CanVeto() const,
         "Returns true if you can veto a system shutdown or a window close
 event. Vetoing a window close event is not possible if the calling
 code wishes to force the application to exit, and so this function
 must be called to check this.", "");
-    
+
+    %property(LoggingOff, GetLoggingOff, SetLoggingOff, doc="See `GetLoggingOff` and `SetLoggingOff`");
 };
 
 
@@ -1766,10 +1870,11 @@ class wxShowEvent : public wxEvent
 {
 public:
     wxShowEvent(int winid = 0, bool show = false);
-    
+
     void SetShow(bool show);
     bool GetShow() const;
 
+    %property(Show, GetShow, SetShow, doc="See `GetShow` and `SetShow`");
 };
 
 
@@ -1784,12 +1889,12 @@ class wxIconizeEvent: public wxEvent
 {
 public:
     wxIconizeEvent(int id = 0, bool iconized = true);
-    
+
     DocDeclStr(
         bool , Iconized(),
         "Returns ``True`` if the frame has been iconized, ``False`` if it has
 been restored.", "");
-    
+
 };
 
 
@@ -1829,21 +1934,21 @@ public:
 
     // TODO:  wrap the ctor!
 
-    
+
     DocDeclStr(
         wxPoint , GetPosition(),
         "Returns the position at which the files were dropped.", "");
-    
+
     DocDeclStr(
         int , GetNumberOfFiles(),
         "Returns the number of files dropped.", "");
-    
+
 
     %extend {
         DocStr(
             GetFiles,
             "Returns a list of the filenames that were dropped.", "");
-        
+
         PyObject* GetFiles() {
             int         count = self->GetNumberOfFiles();
             wxString*   files = self->GetFiles();
@@ -1863,6 +1968,10 @@ public:
             return list;
         }
     }
+
+    %property(Files, GetFiles, doc="See `GetFiles`");
+    %property(NumberOfFiles, GetNumberOfFiles, doc="See `GetNumberOfFiles`");
+    %property(Position, GetPosition, doc="See `GetPosition`");
 };
 
 
@@ -1936,50 +2045,63 @@ public:
     DocCtorStr(
         wxUpdateUIEvent(wxWindowID commandId = 0),
         "Constructor", "");
-    
+
     DocDeclStr(
         bool , GetChecked() const,
         "Returns ``True`` if the UI element should be checked.", "");
-    
+
     DocDeclStr(
         bool , GetEnabled() const,
         "Returns ``True`` if the UI element should be enabled.", "");
-    
+
+    DocDeclStr(
+        bool , GetShown() const,
+        "Returns ``True`` if the UI element should be shown.", "");
+
     DocDeclStr(
         wxString , GetText() const,
         "Returns the text that should be set for the UI element.", "");
-    
+
     DocDeclStr(
         bool , GetSetText() const,
         "Returns ``True`` if the application has called `SetText`. For
 wxWidgets internal use only.", "");
-    
+
     DocDeclStr(
         bool , GetSetChecked() const,
         "Returns ``True`` if the application has called `Check`. For wxWidgets
 internal use only.", "");
-    
+
     DocDeclStr(
         bool , GetSetEnabled() const,
         "Returns ``True`` if the application has called `Enable`. For wxWidgets
 internal use only.", "");
-    
+
+    DocDeclStr(
+        bool , GetSetShown() const,
+        "Returns ``True`` if the application has called `Show`. For wxWidgets
+internal use only.", "");
 
 
     DocDeclStr(
         void , Check(bool check),
         "Check or uncheck the UI element.", "");
-    
+
     DocDeclStr(
         void , Enable(bool enable),
         "Enable or disable the UI element.", "");
-    
+
+    DocDeclStr(
+        void , Show(bool show),
+        "Show or hide the UI element.", "");
+
+
     DocDeclStr(
         void , SetText(const wxString& text),
         "Sets the text for this UI element.", "");
-    
 
-    
+
+
     DocDeclStr(
         static void , SetUpdateInterval(long updateInterval),
         "Sets the interval between updates in milliseconds. Set to -1 to
@@ -1991,13 +2113,13 @@ application has a lot of windows. If you set the value to -1 or
 greater than 0, you may also need to call `wx.Window.UpdateWindowUI`
 at appropriate points in your application, such as when a dialog is
 about to be shown.", "");
-    
+
 
     DocDeclStr(
         static long , GetUpdateInterval(),
         "Returns the current interval between updates in milliseconds. -1
 disables updates, 0 updates as frequently as possible.", "");
-    
+
 
     DocDeclStr(
         static bool , CanUpdate(wxWindow *win),
@@ -2014,14 +2136,14 @@ events will be sent as often as possible. You can reduce the frequency
 that events are sent by changing the mode and/or setting an update
 interval.
 ", "");
-    
+
 
     DocDeclStr(
         static void , ResetUpdateTime(),
         "Used internally to reset the last-updated time to the current time. It
 is assumed that update events are normally sent in idle time, so this
 is called at the end of idle processing.", "");
-    
+
 
     DocDeclStr(
         static void , SetMode(wxUpdateUIMode mode),
@@ -2038,14 +2160,18 @@ The mode may be one of the following values:
                                     style set.
     =============================   ==========================================
 ", "");
-    
+
 
     DocDeclStr(
         static wxUpdateUIMode , GetMode(),
         "Returns a value specifying how wxWidgets will send update events: to
 all windows, or only to those which specify that they will process the
 events.", "");
-    
+
+    %property(Checked, GetChecked, Check, doc="See `GetChecked`");
+    %property(Enabled, GetEnabled, Enable, doc="See `GetEnabled`");
+    %property(Shown, GetShown, Show, doc="See `GetShown`");
+    %property(Text, GetText, SetText, doc="See `GetText` and `SetText`");
 };
 
 //---------------------------------------------------------------------------
@@ -2094,7 +2220,32 @@ public:
         wxWindow* , GetCapturedWindow() const,
         "Returns the window that gained the capture, or ``None`` if it was a
 non-wxWidgets window.", "");
-    
+
+    %property(CapturedWindow, GetCapturedWindow, doc="See `GetCapturedWindow`");
+};
+
+//---------------------------------------------------------------------------
+%newgroup;
+
+DocStr(wxMouseCaptureLostEvent,
+"A mouse capture lost event is sent to a window that obtained mouse
+capture, which was subsequently loss due to \"external\" event, for
+example when a dialog box is shown or if another application captures
+the mouse.
+
+If this happens, this event is sent to all windows that are on the
+capture stack (i.e. a window that called `wx.Window.CaptureMouse`, but
+didn't call `wx.Window.ReleaseMouse` yet). The event is *not* sent
+if the capture changes because of a call to CaptureMouse or
+ReleaseMouse.
+
+This event is currently emitted under Windows only.
+", "");
+
+class wxMouseCaptureLostEvent : public wxEvent
+{
+public:
+    wxMouseCaptureLostEvent(wxWindowID winid = 0);
 };
 
 //---------------------------------------------------------------------------
@@ -2132,6 +2283,7 @@ public:
     void SetChangedWindow(wxWindow* win);
     wxWindow* GetChangedWindow();
 
+    %property(ChangedWindow, GetChangedWindow, SetChangedWindow, doc="See `GetChangedWindow` and `SetChangedWindow`");
 };
 
 //---------------------------------------------------------------------------
@@ -2153,8 +2305,10 @@ public:
     DocDeclStr(
         void , SetPaletteRealized(bool realized),
         "App should set this if it changes the palette.", "");
-    
+
     bool GetPaletteRealized() const;
+
+    %property(PaletteRealized, GetPaletteRealized, SetPaletteRealized, doc="See `GetPaletteRealized` and `SetPaletteRealized`");    
 };
 
 //---------------------------------------------------------------------------
@@ -2177,38 +2331,38 @@ public:
     DocCtorStr(
         wxNavigationKeyEvent(),
         "", "");
-    
+
     DocDeclStr(
         bool , GetDirection() const,
         "Returns ``True`` if the direction is forward, ``False`` otherwise.", "");
-    
+
     DocDeclStr(
         void , SetDirection(bool forward),
         "Specify the direction that the navigation should take.  Usually the
 difference between using Tab and Shift-Tab.", "");
-    
+
 
     DocDeclStr(
         bool , IsWindowChange() const,
         "Returns ``True`` if window change is allowed.", "");
-    
+
     DocDeclStr(
         void , SetWindowChange(bool ischange),
         "Specify if the navigation should be able to change parent windows.
 For example, changing notebook pages, etc. This is usually implemented
 by using Control-Tab.", "");
-    
+
 
     DocDeclStr(
         bool , IsFromTab() const,
         "Returns ``True`` if the navigation event is originated from the Tab
 key.", "");
-    
+
     DocDeclStr(
         void , SetFromTab(bool bIs),
         "Set to true under MSW if the event was generated using the tab key.
 This is required for proper navogation over radio buttons.", "");
-    
+
 
     DocDeclStr(
         void , SetFlags(long flags),
@@ -2219,17 +2373,17 @@ This is required for proper navogation over radio buttons.", "");
     * wx.NavigationKeyEvent.WinChange
     * wx.NavigationKeyEvent.FromTab
 ", "");
-    
-    
+
+
     DocDeclStr(
         wxWindow* , GetCurrentFocus() const,
         "Returns the child window which currenty has the focus.  May be
 ``None``.", "");
-    
+
     DocDeclStr(
         void , SetCurrentFocus(wxWindow *win),
         "Set the window that has the focus.", "");
-    
+
 
     enum {
         IsBackward,
@@ -2237,6 +2391,10 @@ This is required for proper navogation over radio buttons.", "");
         WinChange,
         FromTab
     };
+
+    %property(CurrentFocus, GetCurrentFocus, SetCurrentFocus, doc="See `GetCurrentFocus` and `SetCurrentFocus`");
+    %property(Direction, GetDirection, SetDirection, doc="See `GetDirection` and `SetDirection`");
+    
 };
 
 //---------------------------------------------------------------------------
@@ -2251,11 +2409,12 @@ class wxWindowCreateEvent : public wxCommandEvent
 {
 public:
     wxWindowCreateEvent(wxWindow *win = NULL);
-    
+
     DocDeclStr(
         wxWindow *, GetWindow() const,
         "Returns the window that this event refers to.", "");
-    
+
+    %property(Window, GetWindow, doc="See `GetWindow`");
 };
 
 
@@ -2273,10 +2432,12 @@ class wxWindowDestroyEvent : public wxCommandEvent
 {
 public:
     wxWindowDestroyEvent(wxWindow *win = NULL);
-    
+
     DocDeclStr(
         wxWindow *, GetWindow() const,
-        "Returns the window that this event refers to.", "");    
+        "Returns the window that this event refers to.", "");
+
+    %property(Window, GetWindow, doc="See `GetWindow`");
 };
 
 
@@ -2303,11 +2464,12 @@ public:
         "Returns the position (in screen coordinants) at which the menu should
 be shown.", "");
 
-    
+
     DocDeclStr(
         void , SetPosition(const wxPoint& pos),
         "Sets the position at which the menu should be shown.", "");
-    
+
+    %property(Position, GetPosition, SetPosition, doc="See `GetPosition` and `SetPosition`");
 };
 
 //---------------------------------------------------------------------------
@@ -2341,8 +2503,8 @@ public:
     DocCtorStr(
         wxIdleEvent(),
         "Constructor", "");
-    
-    
+
+
     DocDeclStr(
         void , RequestMore(bool needMore = true),
         "Tells wxWidgets that more processing is required. This function can be
@@ -2352,12 +2514,12 @@ application windows. If no window calls this function during its
 EVT_IDLE handler, then the application will remain in a passive event
 loop until a new event is posted to the application by the windowing
 system.", "");
-    
+
     DocDeclStr(
         bool , MoreRequested() const,
         "Returns ``True`` if the OnIdle function processing this event
 requested more processing time.", "");
-    
+
 
     DocDeclStr(
         static void , SetMode(wxIdleMode mode),
@@ -2374,14 +2536,14 @@ The mode can be one of the following values:
                                 flag set.
     =========================   ========================================
 ", "");
-    
+
 
     DocDeclStr(
         static wxIdleMode , GetMode(),
         "Static method returning a value specifying how wxWidgets will send
 idle events: to all windows, or only to those which specify that they
 will process the events.", "");
-    
+
 
     DocDeclStr(
         static bool , CanSend(wxWindow* win),
@@ -2394,8 +2556,27 @@ events should be sent to this window now. By default this will always
 return ``True`` because the update mode is initially
 wx.IDLE_PROCESS_ALL. You can change the mode to only send idle events
 to windows with the wx.WS_EX_PROCESS_IDLE extra window style set.", "");
-    
+
 };
+
+//---------------------------------------------------------------------------
+%newgroup;
+
+
+DocStr(wxClipboardTextEvent,
+"A Clipboard Text event is sent when a window intercepts a text
+copy/cut/paste message, i.e. the user has cut/copied/pasted data
+from/into a text control via ctrl-C/X/V, ctrl/shift-del/insert, a
+popup menu command, etc.  NOTE : under windows these events are *NOT*
+generated automatically for a Rich Edit text control.", "");
+
+class wxClipboardTextEvent : public wxCommandEvent
+{
+public:
+    wxClipboardTextEvent(wxEventType type = wxEVT_NULL,
+                         wxWindowID winid = 0);
+};
+
 
 //---------------------------------------------------------------------------
 %newgroup;
@@ -2420,7 +2601,7 @@ public:
     DocCtorStr(
         wxPyEvent(int winid=0, wxEventType eventType = wxEVT_NULL ),
         "", "");
-    
+
     ~wxPyEvent();
 
 
@@ -2448,7 +2629,7 @@ public:
     DocCtorStr(
         wxPyCommandEvent(wxEventType eventType = wxEVT_NULL, int id=0),
         "", "");
-    
+
     ~wxPyCommandEvent();
 
     %Rename(_SetSelf, void , SetSelf(PyObject* self));
@@ -2476,12 +2657,13 @@ public:
     DocDeclStr(
         const wxDateTime& , GetDate() const,
         "Returns the date.", "");
-    
+
     DocDeclStr(
         void , SetDate(const wxDateTime &date),
         "Sets the date carried by the event, normally only used by the library
 internally.", "");
-    
+
+    %property(Date, GetDate, SetDate, doc="See `GetDate` and `SetDate`");
 
 };
 
@@ -2493,4 +2675,5 @@ internally.", "");
 }
 
 
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

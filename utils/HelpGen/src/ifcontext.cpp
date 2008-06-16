@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     27/12/98
-// RCS-ID:      $Id: ifcontext.cpp,v 1.8 2005/05/31 19:03:55 ABX Exp $
+// RCS-ID:      $Id: ifcontext.cpp 40162 2006-07-17 13:17:57Z MW $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#  pragma implementation "ifcontext.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -24,9 +20,6 @@
 #include "wx/wx.h"
 #endif
 
-#ifndef __DARWIN__
-#  include <malloc.h>
-#endif
 #include <stdio.h>
 
 #include "ifcontext.h"

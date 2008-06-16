@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _dc.i,v 1.31 2005/04/08 14:34:24 MW Exp $
+// RCS-ID:      $Id: _dc.i 43551 2006-11-21 03:32:49Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -59,22 +59,15 @@ public:
     ~wxDC();
 
 
-    DocDeclStr(
-        virtual void , BeginDrawing(),
-        "Allows for optimization of drawing code on platforms that need it.  On
-other platforms this is just an empty function and is harmless.  To
-take advantage of this postential optimization simply enclose each
-group of calls to the drawing primitives within calls to
-`BeginDrawing` and `EndDrawing`.", "");
-    
-    DocDeclStr(
-        virtual void , EndDrawing(),
-        "Ends the group of drawing primitives started with `BeginDrawing`, and
-invokes whatever optimization is available for this DC type on the
-current platform.", "");
+    %pythoncode {
+        %# These have been deprecated in wxWidgets.  Since they never
+        %# really did anything to begin with, just make them be NOPs.
+        def BeginDrawing(self):  pass
+        def EndDrawing(self):  pass
+    }
     
 
-
+    
 // TODO    virtual void DrawObject(wxDrawObject* drawobject);
 
 
@@ -97,6 +90,35 @@ exactly. However the function will still return true.", "");
     bool FloodFill(wxCoord x, wxCoord y, const wxColour& col, int style = wxFLOOD_SURFACE);
     %Rename(FloodFillPoint, bool, FloodFill(const wxPoint& pt, const wxColour& col, int style = wxFLOOD_SURFACE));
 
+    // fill the area specified by rect with a radial gradient, starting from
+    // initialColour in the centre of the cercle and fading to destColour.
+
+    DocDeclStr(
+        void , GradientFillConcentric(const wxRect& rect,
+                                      const wxColour& initialColour, 
+                                      const wxColour& destColour,
+                                      const wxPoint& circleCenter),
+        "Fill the area specified by rect with a radial gradient, starting from
+initialColour in the center of the circle and fading to destColour on
+the outside of the circle.  The circleCenter argument is the relative
+coordinants of the center of the circle in the specified rect.
+
+Note: Currently this function is very slow, don't use it for real-time
+drawing.", "");
+    
+
+    DocDeclStr(
+        void , GradientFillLinear(const wxRect& rect,
+                                  const wxColour& initialColour, 
+                                  const wxColour& destColour,
+                                  wxDirection nDirection = wxEAST),
+        "Fill the area specified by rect with a linear gradient, starting from
+initialColour and eventually fading to destColour. The nDirection
+parameter specifies the direction of the colour change, default is to
+use initialColour on the left part of the rectangle and destColour on
+the right side.", "");
+    
+   
     
     DocStr(
         GetPixel,
@@ -330,6 +352,12 @@ position.", "
     :param srcPtMask:   Source position on the mask. 
 ",
         BlitPointSize);
+
+
+    DocDeclStr(
+        wxBitmap , GetAsBitmap(const wxRect *subrect = NULL) const,
+        "", "");
+    
     
 
     DocStr(
@@ -563,8 +591,8 @@ current or specified font. Only works for single line strings.", "",
         void, GetMultiLineTextExtent(const wxString& text,
                                      wxCoord *OUTPUT, wxCoord *OUTPUT, wxCoord *OUTPUT,
                                      wxFont *font = NULL),
-        "GetMultiLineTextExtent(wxString string, Font font=None) ->\n   (width, height, descent, externalLeading)",
-        "Get the width, height, decent and leading of the text using the
+        "GetMultiLineTextExtent(wxString string, Font font=None) ->\n   (width, height, lineHeight)",
+        "Get the width, height, and line height of the text using the
 current or specified font. Works for single as well as multi-line
 strings.", "");
 
@@ -681,12 +709,13 @@ converting a height, for example.", "");
 
     DocDeclStr(
         virtual wxSize , GetPPI() const,
-        "Resolution in Pixels per inch", "");
+        "Resolution in pixels per inch", "");
     
 
     DocDeclStr(
-        virtual bool , Ok() const,
+        virtual bool , IsOk() const,
         "Returns true if the DC is ok to use.", "");
+    %pythoncode { Ok = IsOk }
     
 
 
@@ -949,8 +978,26 @@ box doesn't contain anything.", "");
         // See below for implementation
     }
     
-    %pythoncode { def __nonzero__(self): return self.Ok() };
+    %pythoncode { def __nonzero__(self): return self.IsOk() };
 
+
+    // RTL related functions
+    // ---------------------
+
+    DocDeclStr(
+        virtual wxLayoutDirection , GetLayoutDirection() const,
+        "Get the layout direction (LTR or RTL)_ for this dc.  On platforms
+where RTL layout is supported, the return value will either be
+``wx.Layout_LeftToRight`` or ``wx.Layout_RightToLeft``.
+``wx.Layout_Default`` is returned if layout direction is not
+supported.", "");
+    
+    DocDeclStr(
+        virtual void , SetLayoutDirection(wxLayoutDirection dir),
+        "Change the layout direction for this dc.", "");
+    
+
+    
 
 #ifdef __WXMSW__
     long GetHDC();
@@ -1149,6 +1196,37 @@ box doesn't contain anything.", "");
         return  self._DrawTextList(textList, coords, foregrounds, backgrounds)
     }
 
+    %property(Background, GetBackground, SetBackground, doc="See `GetBackground` and `SetBackground`");
+    %property(BackgroundMode, GetBackgroundMode, SetBackgroundMode, doc="See `GetBackgroundMode` and `SetBackgroundMode`");
+    %property(BoundingBox, GetBoundingBox, doc="See `GetBoundingBox`");
+    %property(Brush, GetBrush, SetBrush, doc="See `GetBrush` and `SetBrush`");
+    %property(CharHeight, GetCharHeight, doc="See `GetCharHeight`");
+    %property(CharWidth, GetCharWidth, doc="See `GetCharWidth`");
+    %property(ClippingBox, GetClippingBox, doc="See `GetClippingBox`");
+    %property(ClippingRect, GetClippingRect, SetClippingRect, doc="See `GetClippingRect` and `SetClippingRect`");
+    %property(Depth, GetDepth, doc="See `GetDepth`");
+    %property(DeviceOrigin, GetDeviceOrigin, SetDeviceOrigin, doc="See `GetDeviceOrigin` and `SetDeviceOrigin`");
+    %property(Font, GetFont, SetFont, doc="See `GetFont` and `SetFont`");
+    %property(FullTextExtent, GetFullTextExtent, doc="See `GetFullTextExtent`");
+    %property(LogicalFunction, GetLogicalFunction, SetLogicalFunction, doc="See `GetLogicalFunction` and `SetLogicalFunction`");
+    %property(LogicalOrigin, GetLogicalOrigin, SetLogicalOrigin, doc="See `GetLogicalOrigin` and `SetLogicalOrigin`");
+    %property(LogicalScale, GetLogicalScale, SetLogicalScale, doc="See `GetLogicalScale` and `SetLogicalScale`");
+    %property(MapMode, GetMapMode, SetMapMode, doc="See `GetMapMode` and `SetMapMode`");
+    %property(MultiLineTextExtent, GetMultiLineTextExtent, doc="See `GetMultiLineTextExtent`");
+    %property(Optimization, GetOptimization, SetOptimization, doc="See `GetOptimization` and `SetOptimization`");
+    %property(PPI, GetPPI, doc="See `GetPPI`");
+    %property(PartialTextExtents, GetPartialTextExtents, doc="See `GetPartialTextExtents`");
+    %property(Pen, GetPen, SetPen, doc="See `GetPen` and `SetPen`");
+    %property(Pixel, GetPixel, doc="See `GetPixel`");
+    %property(PixelPoint, GetPixelPoint, doc="See `GetPixelPoint`");
+    %property(Size, GetSize, doc="See `GetSize`");
+    %property(SizeMM, GetSizeMM, doc="See `GetSizeMM`");
+    %property(TextBackground, GetTextBackground, SetTextBackground, doc="See `GetTextBackground` and `SetTextBackground`");
+    %property(TextExtent, GetTextExtent, doc="See `GetTextExtent`");
+    %property(TextForeground, GetTextForeground, SetTextForeground, doc="See `GetTextForeground` and `SetTextForeground`");
+    %property(UserScale, GetUserScale, SetUserScale, doc="See `GetUserScale` and `SetUserScale`");
+
+    %property(LayoutDirection, GetLayoutDirection, SetLayoutDirection);
 };
 
 
@@ -1166,180 +1244,59 @@ static void wxDC_GetBoundingBox(wxDC* dc, int* x1, int* y1, int* x2, int* y2) {
 //---------------------------------------------------------------------------
 %newgroup
 
-MustHaveApp(wxMemoryDC);
+DocStr(wxDCTextColourChanger,
+"wx.DCTextColourChanger can be used to temporarily change the DC text
+colour and restore it automatically when the object goes out of scope", "");
 
-DocStr(wxMemoryDC,
-"A memory device context provides a means to draw graphics onto a
-bitmap. A bitmap must be selected into the new memory DC before it may
-be used for anything. Typical usage is as follows::
-
-    dc = wx.MemoryDC()
-    dc.SelectObject(bitmap)
-    # draw on the dc usign any of the Draw methods
-    dc.SelectObject(wx.NullBitmap)
-    # the bitmap now contains wahtever was drawn upon it
-
-Note that the memory DC *must* be deleted (or the bitmap selected out
-of it) before a bitmap can be reselected into another memory DC.
-", "");
-
-class wxMemoryDC : public wxDC {
-public:
-    DocCtorStr(
-        wxMemoryDC(),
-        "Constructs a new memory device context.
-
-Use the Ok member to test whether the constructor was successful in
-creating a usable device context. Don't forget to select a bitmap into
-the DC before drawing on it.", "
-
-:see: `MemoryDCFromDC`");
-
-    DocCtorStrName(
-        wxMemoryDC(wxDC* oldDC),
-        "Creates a DC that is compatible with the oldDC.", "",
-        MemoryDCFromDC);
-
-    
-    DocDeclStr(
-        void , SelectObject(const wxBitmap& bitmap),
-        "Selects the bitmap into the device context, to use as the memory
-bitmap. Selecting the bitmap into a memory DC allows you to draw into
-the DC, and therefore the bitmap, and also to use Blit to copy the
-bitmap to a window.
-
-If the argument is wx.NullBitmap (or some other uninitialised
-`wx.Bitmap`) the current bitmap is selected out of the device context,
-and the original bitmap restored, allowing the current bitmap to be
-destroyed safely.", "");
-    
-};
-
-//---------------------------------------------------------------------------
-%newgroup
-
-
-%{
-#include <wx/dcbuffer.h>
-%}
-
-enum {
-    wxBUFFER_VIRTUAL_AREA,
-    wxBUFFER_CLIENT_AREA
-};
-
-MustHaveApp(wxBufferedDC);
-
-DocStr(wxBufferedDC,
-"This simple class provides a simple way to avoid flicker: when drawing
-on it, everything is in fact first drawn on an in-memory buffer (a
-`wx.Bitmap`) and then copied to the screen only once, when this object
-is destroyed.
-
-It can be used in the same way as any other device
-context. wx.BufferedDC itself typically replaces `wx.ClientDC`, if you
-want to use it in your EVT_PAINT handler, you should look at
-`wx.BufferedPaintDC`.
-", "");
-
-class wxBufferedDC : public wxMemoryDC
+class wxDCTextColourChanger
 {
 public:
-    %pythonAppend wxBufferedDC
-        "self.__dc = args[0] # save a ref so the other dc will not be deleted before self";
-    
-    %nokwargs wxBufferedDC;
-
-    DocStr(
-        wxBufferedDC,
-        "Constructs a buffered DC.", "
-
-    :param dc: The underlying DC: everything drawn to this object will
-        be flushed to this DC when this object is destroyed. You may
-        pass ``None`` in order to just initialize the buffer, and not
-        flush it.
-
-    :param buffer: If a `wx.Size` object is passed as the 2nd arg then
-        it is the size of the bitmap that will be created internally
-        and used for an implicit buffer. If the 2nd arg is a
-        `wx.Bitmap` then it is the explicit buffer that will be
-        used. Using an explicit buffer is the most efficient solution
-        as the bitmap doesn't have to be recreated each time but it
-        also requires more memory as the bitmap is never freed. The
-        bitmap should have appropriate size, anything drawn outside of
-        its bounds is clipped.  If wx.NullBitmap is used then a new
-        buffer will be allocated that is the same size as the dc.
-
-    :param style: The style parameter indicates whether the supplied buffer is
-        intended to cover the entire virtual size of a `wx.ScrolledWindow` or
-        if it only covers the client area.  Acceptable values are
-        ``wx.BUFFER_VIRTUAL_AREA`` and ``wx.BUFFER_CLIENT_AREA``.
-
-");
-    wxBufferedDC( wxDC* dc,
-                  const wxBitmap& buffer=wxNullBitmap,
-                  int style = wxBUFFER_CLIENT_AREA );
-    wxBufferedDC( wxDC* dc,
-                  const wxSize& area,
-                  int style = wxBUFFER_CLIENT_AREA );
-
-    DocCtorStr(
-        ~wxBufferedDC(),
-        "Copies everything drawn on the DC so far to the underlying DC
-associated with this object, if any.", "");
-    
-   
-    DocDeclStr(
-        void , UnMask(),
-        "Blits the buffer to the dc, and detaches the dc from the buffer (so it
-can be effectively used once only).  This is usually only called in
-the destructor.", "");
-    
+    wxDCTextColourChanger(wxDC& dc, const wxColour& col);
+    ~wxDCTextColourChanger();
 };
 
 
+DocStr(wxDCPenChanger,
+"wx.DCPenChanger can be used to temporarily change the DC pen and
+restore it automatically when the object goes out of scope", "");
 
-
-MustHaveApp(wxBufferedPaintDC);
-
-DocStr(wxBufferedPaintDC,
-"This is a subclass of `wx.BufferedDC` which can be used inside of an
-EVT_PAINT event handler. Just create an object of this class instead
-of `wx.PaintDC` and that's all you have to do to (mostly) avoid
-flicker. The only thing to watch out for is that if you are using this
-class together with `wx.ScrolledWindow`, you probably do **not** want
-to call `wx.Window.PrepareDC` on it as it already does this internally
-for the real underlying `wx.PaintDC`.
-
-If your window is already fully buffered in a `wx.Bitmap` then your
-EVT_PAINT handler can be as simple as just creating a
-``wx.BufferedPaintDC`` as it will `Blit` the buffer to the window
-automatically when it is destroyed.  For example::
-
-    def OnPaint(self, event):
-        dc = wx.BufferedPaintDC(self, self.buffer)
-
-
-
-
-", "");
-
-class wxBufferedPaintDC : public wxBufferedDC
+class  wxDCPenChanger
 {
 public:
-
-    DocCtorStr(
-        wxBufferedPaintDC( wxWindow *window,
-                           const wxBitmap &buffer = wxNullBitmap,
-                           int style = wxBUFFER_CLIENT_AREA),
-        "Create a buffered paint DC.  As with `wx.BufferedDC`, you may either
-provide the bitmap to be used for buffering or let this object create
-one internally (in the latter case, the size of the client part of the
-window is automatically used).
-
-", "");
-
+    wxDCPenChanger(wxDC& dc, const wxPen& pen);
+    ~wxDCPenChanger();
 };
+
+
+
+DocStr(wxDCBrushChanger,
+"wx.DCBrushChanger can be used to temporarily change the DC brush and
+restore it automatically when the object goes out of scope", "");
+
+class wxDCBrushChanger
+{
+public:
+    wxDCBrushChanger(wxDC& dc, const wxBrush& brush);
+    ~wxDCBrushChanger();
+};
+
+
+DocStr(wxDCClipper,
+"wx.wxDCClipper sets the DC's clipping region when it is constructed,
+and then automatically destroys the clipping region when the clipper
+goes out of scope.", "");
+
+class wxDCClipper
+{
+public:
+    %nokwargs wxDCClipper;
+    wxDCClipper(wxDC& dc, const wxRegion& r);
+    wxDCClipper(wxDC& dc, const wxRect& r);
+    wxDCClipper(wxDC& dc, wxCoord x, wxCoord y, wxCoord w, wxCoord h);
+    ~wxDCClipper();
+};
+
+
 
 
 //---------------------------------------------------------------------------
@@ -1393,6 +1350,23 @@ to some applications.", "");
 //---------------------------------------------------------------------------
 %newgroup
 
+MustHaveApp(wxWindowDC);
+
+DocStr(wxWindowDC,
+       "A wx.WindowDC must be constructed if an application wishes to paint on
+the whole area of a window (client and decorations). This should
+normally be constructed as a temporary stack object; don't store a
+wx.WindowDC object.","");
+class wxWindowDC : public wxDC {
+public:
+    DocCtorStr(
+        wxWindowDC(wxWindow* win),
+        "Constructor. Pass the window on which you wish to paint.","");
+};
+
+//---------------------------------------------------------------------------
+%newgroup
+
 MustHaveApp(wxClientDC);
 
 DocStr(wxClientDC,
@@ -1407,7 +1381,7 @@ To draw on a window from within an EVT_PAINT handler, construct a
 To draw on the whole window including decorations, construct a
 `wx.WindowDC` object (Windows only).
 ", "");
-class wxClientDC : public wxDC {
+class wxClientDC : public wxWindowDC {
 public:
     DocCtorStr(
         wxClientDC(wxWindow* win),
@@ -1434,29 +1408,271 @@ window. Attempts to draw outside this area do not appear.
 To draw on a window from outside EVT_PAINT handlers, construct a
 `wx.ClientDC` object.
 ","");
-class wxPaintDC : public wxDC {
+class wxPaintDC : public wxClientDC {
 public:
     DocCtorStr(
         wxPaintDC(wxWindow* win),
         "Constructor. Pass the window on which you wish to paint.", "");
 };
 
+
+
 //---------------------------------------------------------------------------
 %newgroup
 
-MustHaveApp(wxWindowDC);
+MustHaveApp(wxMemoryDC);
 
-DocStr(wxWindowDC,
-       "A wx.WindowDC must be constructed if an application wishes to paint on
-the whole area of a window (client and decorations). This should
-normally be constructed as a temporary stack object; don't store a
-wx.WindowDC object.","");
-class wxWindowDC : public wxDC {
+DocStr(wxMemoryDC,
+"A memory device context provides a means to draw graphics onto a
+bitmap. A bitmap must be selected into the new memory DC before it may
+be used for anything. Typical usage is as follows::
+
+    dc = wx.MemoryDC()
+    dc.SelectObject(bitmap)
+    # draw on the dc using any of the Draw methods
+    dc.SelectObject(wx.NullBitmap)
+    # the bitmap now contains wahtever was drawn upon it
+
+Note that the memory DC *must* be deleted (or the bitmap selected out
+of it) before a bitmap can be reselected into another memory DC.
+", "");
+
+class wxMemoryDC : public wxWindowDC {
 public:
     DocCtorStr(
-        wxWindowDC(wxWindow* win),
-        "Constructor. Pass the window on which you wish to paint.","");
+        wxMemoryDC(wxBitmap& bitmap = wxNullBitmap),
+        "Constructs a new memory device context.
+
+Use the Ok member to test whether the constructor was successful in
+creating a usable device context. If a bitmap is not given to this
+constructor then don't forget to select a bitmap into the DC before
+drawing on it.", "
+
+:see: `MemoryDCFromDC`");
+
+    DocCtorStrName(
+        wxMemoryDC(wxDC* oldDC),
+        "Creates a DC that is compatible with the oldDC.", "",
+        MemoryDCFromDC);
+
+    
+    DocDeclStr(
+        void , SelectObject(wxBitmap& bitmap),
+        "Selects the bitmap into the device context, to use as the memory
+bitmap. Selecting the bitmap into a memory DC allows you to draw into
+the DC, and therefore the bitmap, and also to use Blit to copy the
+bitmap to a window.
+
+If the argument is wx.NullBitmap (or some other uninitialised
+`wx.Bitmap`) the current bitmap is selected out of the device context,
+and the original bitmap restored, allowing the current bitmap to be
+destroyed safely.", "");
+
+    
+    DocDeclStr(
+        void , SelectObjectAsSource(const wxBitmap& bmp),
+        "", "");
+    
+    
 };
+
+
+//---------------------------------------------------------------------------
+%newgroup
+
+
+%{
+#include <wx/dcbuffer.h>
+%}
+
+enum {
+    wxBUFFER_VIRTUAL_AREA,
+    wxBUFFER_CLIENT_AREA
+};
+
+MustHaveApp(wxBufferedDC);
+
+DocStr(wxBufferedDC,
+"This simple class provides a simple way to avoid flicker: when drawing
+on it, everything is in fact first drawn on an in-memory buffer (a
+`wx.Bitmap`) and then copied to the screen only once, when this object
+is destroyed.  You can either provide a buffer bitmap yourself, and
+reuse it the next time something needs painted, or you can let the
+buffered DC create and provide a buffer bitmap itself.
+
+Buffered DCs can be used in the same way as any other device context.
+wx.BufferedDC itself typically replaces `wx.ClientDC`, if you want to
+use it in your EVT_PAINT handler, you should look at
+`wx.BufferedPaintDC`.  You can also use a wx.BufferedDC without
+providing a target DC.  In this case the operations done on the dc
+will only be written to the buffer bitmap and *not* to any window, so
+you will want to have provided the buffer bitmap and then reuse it
+when it needs painted to the window.
+
+Please note that GTK+ 2.0 and OS X provide double buffering themselves
+natively.  You may want to use `wx.Window.IsDoubleBuffered` to
+determine whether you need to use buffering or not, or use
+`wx.AutoBufferedPaintDC` to avoid needless double buffering on systems
+that already do it automatically.
+
+
+", "");
+
+class wxBufferedDC : public wxMemoryDC
+{
+public:
+
+    DocStr(
+        wxBufferedDC,
+        "Constructs a buffered DC.", "
+
+    :param dc: The underlying DC: everything drawn to this object will
+        be flushed to this DC when this object is destroyed. You may
+        pass ``None`` in order to just initialize the buffer, and not
+        flush it.
+
+    :param buffer: If a `wx.Size` object is passed as the 2nd arg then
+        it is the size of the bitmap that will be created internally
+        and used for an implicit buffer. If the 2nd arg is a
+        `wx.Bitmap` then it is the explicit buffer that will be
+        used. Using an explicit buffer is the most efficient solution
+        as the bitmap doesn't have to be recreated each time but it
+        also requires more memory as the bitmap is never freed. The
+        bitmap should have appropriate size, anything drawn outside of
+        its bounds is clipped.  If wx.NullBitmap is used then a new
+        buffer will be allocated that is the same size as the dc.
+
+    :param style: The style parameter indicates whether the supplied buffer is
+        intended to cover the entire virtual size of a `wx.ScrolledWindow` or
+        if it only covers the client area.  Acceptable values are
+        ``wx.BUFFER_VIRTUAL_AREA`` and ``wx.BUFFER_CLIENT_AREA``.
+");
+
+    %nokwargs wxBufferedDC;
+    %pythonAppend wxBufferedDC
+"# save a ref so the other dc will not be deleted before self
+        self.__dc = args[0] 
+        # also save a ref to the bitmap
+        if len(args) > 1: self.__bmp = args[1]
+";
+    
+    wxBufferedDC( wxDC* dc,
+                  wxBitmap& buffer=wxNullBitmap,
+                  int style = wxBUFFER_CLIENT_AREA );
+    wxBufferedDC( wxDC* dc,
+                  const wxSize& area,
+                  int style = wxBUFFER_CLIENT_AREA );
+//     wxBufferedDC(wxWindow* win,
+//                  wxDC *dc,
+//                  const wxSize &area,
+//                  int style = wxBUFFER_CLIENT_AREA);
+
+
+    DocCtorStr(
+        ~wxBufferedDC(),
+        "Copies everything drawn on the DC so far to the underlying DC
+associated with this object, if any.", "");
+    
+   
+    DocDeclStr(
+        void , UnMask(),
+        "Blits the buffer to the dc, and detaches the dc from the buffer (so it
+can be effectively used once only).  This is usually only called in
+the destructor.", "");
+
+    // Set and get the style
+    void SetStyle(int style);
+    int GetStyle() const;    
+};
+
+
+
+
+MustHaveApp(wxBufferedPaintDC);
+
+DocStr(wxBufferedPaintDC,
+"This is a subclass of `wx.BufferedDC` which can be used inside of an
+EVT_PAINT event handler. Just create an object of this class instead
+of `wx.PaintDC` and that's all you have to do to (mostly) avoid
+flicker. The only thing to watch out for is that if you are using this
+class together with `wx.ScrolledWindow`, you probably do **not** want
+to call `wx.Window.PrepareDC` on it as it already does this internally
+for the real underlying `wx.PaintDC`.
+
+If your window is already fully buffered in a `wx.Bitmap` then your
+EVT_PAINT handler can be as simple as just creating a
+``wx.BufferedPaintDC`` as it will `Blit` the buffer to the window
+automatically when it is destroyed.  For example::
+
+    def OnPaint(self, event):
+        dc = wx.BufferedPaintDC(self, self.buffer)
+
+
+", "");
+
+class wxBufferedPaintDC : public wxBufferedDC
+{
+public:
+
+    %pythonAppend wxBufferedPaintDC  "if len(args) > 1: self.__bmp = args[1]";
+
+    DocCtorStr(
+        wxBufferedPaintDC( wxWindow *window,
+                           wxBitmap &buffer = wxNullBitmap,
+                           int style = wxBUFFER_CLIENT_AREA),
+        "Create a buffered paint DC.  As with `wx.BufferedDC`, you may either
+provide the bitmap to be used for buffering or let this object create
+one internally (in the latter case, the size of the client part of the
+window is automatically used).", "");
+
+};
+
+//---------------------------------------------------------------------------
+%newgroup
+
+// Epydoc doesn't like this for some strange reason...
+// %pythoncode {
+//     if 'wxMac' in wx.PlatformInfo or 'gtk2' in wx.PlatformInfo:
+//         _AutoBufferedPaintDCBase = PaintDC
+//     else:
+//         _AutoBufferedPaintDCBase = BufferedPaintDC
+            
+//     class AutoBufferedPaintDC(_AutoBufferedPaintDCBase):
+//         """
+//         If the current platform double buffers by default then this DC is the
+//         same as a plain `wx.PaintDC`, otherwise it is a `wx.BufferedPaintDC`.
+
+//         :see: `wx.AutoBufferedPaintDCFactory`
+//         """
+//         def __init__(self, window):
+//             _AutoBufferedPaintDCBase.__init__(self, window)
+// }
+
+
+DocStr(wxAutoBufferedPaintDC,
+"If the current platform double buffers by default then this DC is the
+same as a plain `wx.PaintDC`, otherwise it is a `wx.BufferedPaintDC`.
+
+:see: `wx.AutoBufferedPaintDCFactory`
+", "");
+
+class wxAutoBufferedPaintDC: public wxDC
+{
+public:
+    wxAutoBufferedPaintDC(wxWindow* win);
+};
+
+
+%newobject wxAutoBufferedPaintDCFactory;
+DocDeclStr(
+    wxDC* , wxAutoBufferedPaintDCFactory(wxWindow* window),
+    "Checks if the window is natively double buffered and will return a
+`wx.PaintDC` if it is, a `wx.BufferedPaintDC` otherwise.  The advantage of
+this function over `wx.AutoBufferedPaintDC` is that this function will check
+if the the specified window has double-buffering enabled rather than just
+going by platform defaults.", "");
+
+
 
 //---------------------------------------------------------------------------
 %newgroup
@@ -1510,6 +1726,8 @@ output. Default is 720ppi.", "");
     DocDeclStr(
         static int , GetResolution(),
         "Return resolution used in PostScript output.", "");
+
+    %property(PrintData, GetPrintData, SetPrintData, doc="See `GetPrintData` and `SetPrintData`");
 };
 
 //---------------------------------------------------------------------------
@@ -1531,7 +1749,8 @@ public:
     wxMetaFile(const wxString& filename = wxPyEmptyString);
     ~wxMetaFile();
 
-    bool Ok();
+    bool IsOk();
+    %pythoncode { Ok = IsOk }
     bool SetClipboard(int width = 0, int height = 0);
 
     wxSize GetSize();
@@ -1542,7 +1761,7 @@ public:
     const wxString& GetFileName() const;
 #endif
     
-    %pythoncode { def __nonzero__(self): return self.Ok() }
+    %pythoncode { def __nonzero__(self): return self.IsOk() }
 };
 
 // bool wxMakeMetaFilePlaceable(const wxString& filename,

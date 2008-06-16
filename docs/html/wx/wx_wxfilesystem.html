@@ -1,0 +1,199 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFileSystem</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfilesystem"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfilestream.html#wxfilestream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfilesystemhandler.html#wxfilesystemhandler"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFileSystem</H2>
+<P>
+This class provides an interface for opening files on different
+file systems. It can handle absolute and/or local filenames.
+It uses a system of <A HREF="wx_wxfilesystemhandler.html#wxfilesystemhandler">handlers</A> to
+provide access to user-defined virtual file systems.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/filesys.h&gt;<P>
+<B><FONT COLOR="#FF0000">See Also</FONT></B><P>
+<A HREF="wx_wxfilesystemhandler.html#wxfilesystemhandler">wxFileSystemHandler</A>, 
+<A HREF="wx_wxfsfile.html#wxfsfile">wxFSFile</A>, 
+<A HREF="wx_fs.html#fs">Overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxfilesystemwxfilesystem">wxFileSystem::wxFileSystem</A><BR>
+<A HREF="#wxfilesystemaddhandler">wxFileSystem::AddHandler</A><BR>
+<A HREF="#wxfilesystemhashandlerforpath">wxFileSystem::HasHandlerForPath</A><BR>
+<A HREF="#wxfilesystemchangepathto">wxFileSystem::ChangePathTo</A><BR>
+<A HREF="#wxfilesystemgetpath">wxFileSystem::GetPath</A><BR>
+<A HREF="#wxfilesystemfilenametourl">wxFileSystem::FileNameToURL</A><BR>
+<A HREF="#wxfilesystemfindfileinpath">wxFileSystem::FindFileInPath</A><BR>
+<A HREF="#wxfilesystemfindfirst">wxFileSystem::FindFirst</A><BR>
+<A HREF="#wxfilesystemfindnext">wxFileSystem::FindNext</A><BR>
+<A HREF="#wxfilesystemopenfile">wxFileSystem::OpenFile</A><BR>
+<A HREF="#wxfilesystemurltofilename">wxFileSystem::URLToFileName</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfilesystemwxfilesystem"></A>
+<H3>wxFileSystem::wxFileSystem</H3>
+<P>
+<B></B> <B>wxFileSystem</B>()<P>
+Constructor. <P>
+
+
+<HR>
+<A NAME="wxfilesystemaddhandler"></A>
+<H3>wxFileSystem::AddHandler</H3>
+<P>
+<B>static void</B> <B>AddHandler</B>(<B><A HREF="wx_wxfilesystemhandler.html#wxfilesystemhandler">wxFileSystemHandler</A> </B></B><I>*handler</I>)<P>
+This static function adds new handler into the list of 
+<A HREF="wx_wxfilesystemhandler.html#wxfilesystemhandler">handlers</A> which provide access to virtual FS.
+Note that if two handlers for the same protocol are added, the last one added
+takes precedence.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+You can call:<P>
+<PRE>
+wxFileSystem::AddHandler(new My_FS_Handler);
+</PRE>
+This is because (a) AddHandler is a static method, and (b) the handlers
+are deleted in wxFileSystem's destructor so that you don't have to
+care about it.<P>
+
+
+<HR>
+<A NAME="wxfilesystemhashandlerforpath"></A>
+<H3>wxFileSystem::HasHandlerForPath</H3>
+<P>
+<B>static bool</B> <B>HasHandlerForPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I> location</I>)<P>
+This static function returns <TT>true</TT> if there is a registered handler which can open the given
+location.<P>
+
+
+<HR>
+<A NAME="wxfilesystemchangepathto"></A>
+<H3>wxFileSystem::ChangePathTo</H3>
+<P>
+<B>void</B> <B>ChangePathTo</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>location</I>, <B>bool </B><I>is_dir = false</I>)<P>
+Sets the current location. <I>location</I> parameter passed to 
+<A HREF="wx_wxfilesystem.html#wxfilesystemopenfile">OpenFile</A> is relative to this path.<P>
+<B>Caution! </B> Unless <I>is_dir</I> is true the <I>location</I> parameter
+is not the directory name but the name of the file in this directory. All these
+commands change the path to "dir/subdir/":<P>
+<PRE>
+  ChangePathTo("dir/subdir/xh.htm");
+  ChangePathTo("dir/subdir", true);
+  ChangePathTo("dir/subdir/", true);
+</PRE>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>location</I><UL><UL>
+the new location. Its meaning depends on the value of <I>is_dir</I></UL></UL>
+<P>
+<I>is_dir</I><UL><UL>
+if true <I>location</I> is new directory. If false (default) 
+<I>location</I> is <B>file in</B> the new directory.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+  f = fs -&gt; OpenFile("hello.htm"); // opens file 'hello.htm'
+  fs -&gt; ChangePathTo("subdir/folder", true);
+  f = fs -&gt; OpenFile("hello.htm"); // opens file 'subdir/folder/hello.htm' !!
+</PRE>
+
+
+<HR>
+<A NAME="wxfilesystemgetpath"></A>
+<H3>wxFileSystem::GetPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPath</B>()<P>
+Returns actual path (set by <A HREF="wx_wxfilesystem.html#wxfilesystemchangepathto">ChangePathTo</A>).<P>
+
+
+<HR>
+<A NAME="wxfilesystemfilenametourl"></A>
+<H3>wxFileSystem::FileNameToURL</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>FileNameToURL</B>(<B><A HREF="wx_wxfilename.html#wxfilename">wxFileName</A> </B></B><I>filename</I>)<P>
+Converts filename into URL.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilesystem.html#wxfilesystemurltofilename">wxFileSystem::URLToFileName</A>,
+<A HREF="wx_wxfilename.html#wxfilename">wxFileName</A><P>
+
+
+<HR>
+<A NAME="wxfilesystemfindfileinpath"></A>
+<H3>wxFileSystem::FindFileInPath</H3>
+<P>
+<B>bool</B> <B>FindFileInPath</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>*str</I>, <B>const wxChar </B><I>*path</I>, <B>const wxChar </B><I>*file</I>)<P>
+Looks for the file with the given name <I>file</I> in a colon or semi-colon
+(depending on the current platform) separated list of directories in
+<I>path</I>. If the file is found in any directory, returns <TT>true</TT> and the full
+path of the file in <I>str</I>, otherwise returns <TT>false</TT> and doesn't modify 
+<I>str</I>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>str</I><UL><UL>
+Receives the full path of the file, must not be <TT>NULL</TT></UL></UL>
+<P>
+<I>path</I><UL><UL>
+<TT>wxPATH_SEP</TT>-separated list of directories</UL></UL>
+<P>
+<I>file</I><UL><UL>
+the name of the file to look for</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxfilesystemfindfirst"></A>
+<H3>wxFileSystem::FindFirst</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>FindFirst</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>wildcard</I>, <B>int </B><I>flags = 0</I>)<P>
+Works like <A HREF="wx_filefunctions.html#wxfindfirstfile">wxFindFirstFile</A>. Returns name of the first
+filename (within filesystem's current path) that matches <I>wildcard</I>. <I>flags</I> may be one of
+wxFILE (only files), wxDIR (only directories) or 0 (both).<P>
+
+
+<HR>
+<A NAME="wxfilesystemfindnext"></A>
+<H3>wxFileSystem::FindNext</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>FindNext</B>()<P>
+Returns the next filename that matches parameters passed to <A HREF="wx_wxfilesystem.html#wxfilesystemfindfirst">FindFirst</A>.<P>
+
+
+<HR>
+<A NAME="wxfilesystemopenfile"></A>
+<H3>wxFileSystem::OpenFile</H3>
+<P>
+<B><A HREF="wx_wxfsfile.html#wxfsfile">wxFSFile</A>*</B> </B> <B>OpenFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>location</I>, <B>int </B><I>flags = wxFS_READ</I>)<P>
+Opens the file and returns a pointer to a <A HREF="wx_wxfsfile.html#wxfsfile">wxFSFile</A> object
+or NULL if failed. It first tries to open the file in relative scope
+(based on value passed to ChangePathTo() method) and then as an
+absolute path.  Note that the user is responsible for deleting the returned
+wxFSFile.  <P>
+<I>flags</I> can be one or more of the following bit values ored together:<P>
+<PRE>
+// Open Bit Flags
+enum {
+    wxFS_READ = 1,      // Open for reading
+    wxFS_SEEKABLE = 4   // Returned stream will be seekable
+};
+</PRE>
+A stream opened with just the default <I>wxFS_READ</I> flag may
+or may not be seekable depending on the underlying source.
+Passing <I>wxFS_READ | wxFS_SEEKABLE</I> for <I>flags</I> will
+back a stream that is not natively seekable with memory or a file
+and return a stream that is always seekable.<P>
+
+
+<HR>
+<A NAME="wxfilesystemurltofilename"></A>
+<H3>wxFileSystem::URLToFileName</H3>
+<P>
+<B>static <A HREF="wx_wxfilename.html#wxfilename">wxFileName</A></B> </B> <B>URLToFileName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>url</I>)<P>
+Converts URL into a well-formed filename. The URL must use the <TT>file</TT> 
+protocol.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilesystem.html#wxfilesystemfilenametourl">wxFileSystem::FileNameToURL</A>, 
+<A HREF="wx_wxfilename.html#wxfilename">wxFileName</A><P>
+
+</FONT></BODY></HTML>

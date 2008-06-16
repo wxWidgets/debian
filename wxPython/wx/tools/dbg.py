@@ -1,6 +1,6 @@
 #----------------------------------------------------------------------------
 # Name:         dbg.py
-# RCS-ID:       $Id: dbg.py,v 1.6 2004/10/11 22:12:56 RD Exp $
+# RCS-ID:       $Id: dbg.py 39667 2006-06-11 00:13:05Z RD $
 # Author:       Will Sadkin
 # Email:        wsadkin@nameconnector.com
 # Created:      07/11/2002
@@ -75,7 +75,8 @@ stream
     changing it will result in no action being taken.
 
 You can also call the log function implicitly on the Logger
-instance, ie. you can type:
+instance, ie. you can type::
+
     from wxPython.tools.dbg import Logger
     dbg = Logger()
     dbg('something to print')

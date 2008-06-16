@@ -1,0 +1,55 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTreeItemId</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtreeitemid"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtreectrl.html#wxtreectrl"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtreeevent.html#wxtreeevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTreeItemId</H2>
+<P>
+An opaque reference to a tree item.<P>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/treebase.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtreectrl.html#wxtreectrl">wxTreeCtrl</A>, <A HREF="wx_wxtreeitemdata.html#wxtreeitemdata">wxTreeItemData</A>,<BR>
+
+<A HREF="wx_wxtreectrloverview.html#wxtreectrloverview">wxTreeCtrl overview</A><P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxtreeitemidconstr">wxTreeItemId::wxTreeItemId</A><BR>
+<A HREF="#wxtreeitemidisok">wxTreeItemId::IsOk</A><BR>
+<A HREF="#wxtreeitemidoperators">Operators</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtreeitemidconstr"></A>
+<H3>wxTreeItemId::wxTreeItemId</H3>
+<P>
+<B></B> <B>wxTreeItemId</B>()<P>
+Default constructor. wxTreemItemIds are not meant to be constructed explicitly by
+the user; they are returned by the <A HREF="wx_wxtreectrl.html#wxtreectrl">wxTreeCtrl</A> functions instead.<P>
+
+
+<HR>
+<A NAME="wxtreeitemidisok"></A>
+<H3>wxTreeItemId::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns <TT>true</TT> if this instance is referencing a valid tree item.<P>
+
+
+<HR>
+<A NAME="wxtreeitemidoperators"></A>
+<H3>Operators</H3>
+<P>
+<B>void</B> <B>operator !</B>() <B>const</B><P>
+Synonim for <A HREF="wx_wxtreeitemid.html#wxtreeitemidisok">IsOk</A><P>
+
+<B>bool</B> <B>operator ==</B>(<B>const <A HREF="wx_wxtreeitemid.html#wxtreeitemid">wxTreeItemId</A>& </B></B><I>item</I>) <B>const</B><P>
+<B>bool</B> <B>operator !=</B>(<B>const <A HREF="wx_wxtreeitemid.html#wxtreeitemid">wxTreeItemId</A>& </B></B><I>item</I>) <B>const</B><P>
+Operators for comparison between <A HREF="wx_wxtreeitemid.html#wxtreeitemid">wxTreeItemId</A> objects.<P>
+
+</FONT></BODY></HTML>

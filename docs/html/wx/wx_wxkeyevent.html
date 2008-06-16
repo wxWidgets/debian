@@ -1,0 +1,361 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxKeyEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxkeyevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxjoystickevent.html#wxjoystickevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlayoutalgorithm.html#wxlayoutalgorithm"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxKeyEvent</H2>
+<P>
+This event class contains information about keypress (character) events.<P>
+Notice that there are three different kinds of keyboard events in wxWidgets:
+key down and up events and char events. The difference between the first two
+is clear - the first corresponds to a key press and the second to a key
+release - otherwise they are identical. Just note that if the key is
+maintained in a pressed state you will typically get a lot of (automatically
+generated) down events but only one up so it is wrong to assume that there is
+one up event corresponding to each down one.<P>
+Both key events provide untranslated key codes while the char event carries
+the translated one. The untranslated code for alphanumeric keys is always
+an upper case value. For the other keys it is one of <TT>WXK_XXX</TT> values
+from the <A HREF="wx_keycodes.html#keycodes">keycodes table</A>. The translated key is, in
+general, the character the user expects to appear as the result of the key
+combination when typing the text into a text entry zone, for example.<P>
+A few examples to clarify this (all assume that CAPS LOCK is unpressed
+and the standard US keyboard): when the <TT>'A'</TT> key is pressed, the key down
+event key code is equal to <TT>ASCII A</TT> == 65. But the char event key code
+is <TT>ASCII a</TT> == 97. On the other hand, if you press both SHIFT and
+<TT>'A'</TT> keys simultaneously , the key code in key down event will still be
+just <TT>'A'</TT> while the char event key code parameter will now be <TT>'A'</TT>
+as well.<P>
+Although in this simple case it is clear that the correct key code could be
+found in the key down event handler by checking the value returned by
+<A HREF="wx_wxkeyevent.html#wxkeyeventshiftdown">ShiftDown()</A>, in general you should use
+<TT>EVT_CHAR</TT> for this as for non-alphanumeric keys the translation is
+keyboard-layout dependent and can only be done properly by the system itself.<P>
+Another kind of translation is done when the control key is pressed: for
+example, for CTRL-A key press the key down event still carries the
+same key code <TT>'a'</TT> as usual but the char event will have key code of
+1, the ASCII value of this key combination.<P>
+You may discover how the other keys on your system behave interactively by
+running the <A HREF="wx_samples.html#sampletext">text</A> wxWidgets sample and pressing some keys
+in any of the text controls shown in it.<P>
+<B>Note:</B> If a key down (<TT>EVT_KEY_DOWN</TT>) event is caught and
+the event handler does not call <TT>event.Skip()</TT> then the corresponding
+char event (<TT>EVT_CHAR</TT>) will not happen.  This is by design and
+enables the programs that handle both types of events to be a bit
+simpler.<P>
+<B>Note for Windows programmers:</B> The key and char events in wxWidgets are
+similar to but slightly different from Windows <TT>WM_KEYDOWN</TT> and
+<TT>WM_CHAR</TT> events. In particular, Alt-x combination will generate a char
+event in wxWidgets (unless it is used as an accelerator).<P>
+<B>Tip:</B> be sure to call <TT>event.Skip()</TT> for events that you don't process in
+key event function, otherwise menu shortcuts may cease to work under Windows.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a key event, use these event handler macros to direct input to member
+functions that take a wxKeyEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_KEY_DOWN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_KEY_DOWN event (any key has been pressed).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_KEY_UP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_KEY_UP event (any key has been released).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CHAR(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_CHAR event.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxkeyeventmaltdown">wxKeyEvent::m_altDown</A><BR>
+<A HREF="#wxkeyeventmcontroldown">wxKeyEvent::m_controlDown</A><BR>
+<A HREF="#wxkeyeventmkeycode">wxKeyEvent::m_keyCode</A><BR>
+<A HREF="#wxkeyeventmmetadown">wxKeyEvent::m_metaDown</A><BR>
+<A HREF="#wxkeyeventmshiftdown">wxKeyEvent::m_shiftDown</A><BR>
+<A HREF="#wxkeyeventmx">wxKeyEvent::m_x</A><BR>
+<A HREF="#wxkeyeventmy">wxKeyEvent::m_y</A><BR>
+<A HREF="#wxkeyeventctor">wxKeyEvent::wxKeyEvent</A><BR>
+<A HREF="#wxkeyeventaltdown">wxKeyEvent::AltDown</A><BR>
+<A HREF="#wxkeyeventcmddown">wxKeyEvent::CmdDown</A><BR>
+<A HREF="#wxkeyeventcontroldown">wxKeyEvent::ControlDown</A><BR>
+<A HREF="#wxkeyeventgetkeycode">wxKeyEvent::GetKeyCode</A><BR>
+<A HREF="#wxkeyeventgetmodifiers">wxKeyEvent::GetModifiers</A><BR>
+<A HREF="#wxkeyeventgetposition">wxKeyEvent::GetPosition</A><BR>
+<A HREF="#wxkeyeventgetrawkeycode">wxKeyEvent::GetRawKeyCode</A><BR>
+<A HREF="#wxkeyeventgetrawkeyflags">wxKeyEvent::GetRawKeyFlags</A><BR>
+<A HREF="#wxkeyeventgetunicodekey">wxKeyEvent::GetUnicodeKey</A><BR>
+<A HREF="#wxkeyeventgetx">wxKeyEvent::GetX</A><BR>
+<A HREF="#wxkeyeventgety">wxKeyEvent::GetY</A><BR>
+<A HREF="#wxkeyeventhasmodifiers">wxKeyEvent::HasModifiers</A><BR>
+<A HREF="#wxkeyeventmetadown">wxKeyEvent::MetaDown</A><BR>
+<A HREF="#wxkeyeventshiftdown">wxKeyEvent::ShiftDown</A><BR>
+<P>
+
+<HR>
+<A NAME="wxkeyeventmaltdown"></A>
+<H3>wxKeyEvent::m_altDown</H3>
+<P>
+bool m_altDown<P>
+<B>Deprecated: </B> Please use <A HREF="wx_wxkeyevent.html#wxkeyeventgetmodifiers">GetModifiers</A>
+instead!<P>
+true if the Alt key is pressed down.<P>
+
+
+<HR>
+<A NAME="wxkeyeventmcontroldown"></A>
+<H3>wxKeyEvent::m_controlDown</H3>
+<P>
+bool m_controlDown<P>
+<B>Deprecated: </B> Please use <A HREF="wx_wxkeyevent.html#wxkeyeventgetmodifiers">GetModifiers</A>
+instead!<P>
+true if control is pressed down.<P>
+
+
+<HR>
+<A NAME="wxkeyeventmkeycode"></A>
+<H3>wxKeyEvent::m_keyCode</H3>
+<P>
+long m_keyCode<P>
+<B>Deprecated: </B> Please use <A HREF="wx_wxkeyevent.html#wxkeyeventgetkeycode">GetKeyCode</A>
+instead!<P>
+Virtual keycode. See <A HREF="wx_keycodes.html#keycodes">Keycodes</A> for a list of identifiers.<P>
+
+
+<HR>
+<A NAME="wxkeyeventmmetadown"></A>
+<H3>wxKeyEvent::m_metaDown</H3>
+<P>
+bool m_metaDown<P>
+<B>Deprecated: </B> Please use <A HREF="wx_wxkeyevent.html#wxkeyeventgetmodifiers">GetModifiers</A>
+instead!<P>
+true if the Meta key is pressed down.<P>
+
+
+<HR>
+<A NAME="wxkeyeventmshiftdown"></A>
+<H3>wxKeyEvent::m_shiftDown</H3>
+<P>
+bool m_shiftDown<P>
+<B>Deprecated: </B> Please use <A HREF="wx_wxkeyevent.html#wxkeyeventgetmodifiers">GetModifiers</A>
+instead!<P>
+true if shift is pressed down.<P>
+
+
+<HR>
+<A NAME="wxkeyeventmx"></A>
+<H3>wxKeyEvent::m_x</H3>
+<P>
+int m_x<P>
+<B>Deprecated: </B> Please use <A HREF="wx_wxkeyevent.html#wxkeyeventgetx">GetX</A> instead!<P>
+X position of the event.<P>
+
+
+<HR>
+<A NAME="wxkeyeventmy"></A>
+<H3>wxKeyEvent::m_y</H3>
+<P>
+int m_y<P>
+<B>Deprecated: </B> Please use <A HREF="wx_wxkeyevent.html#wxkeyeventgety">GetY</A> instead!<P>
+Y position of the event.<P>
+
+
+<HR>
+<A NAME="wxkeyeventctor"></A>
+<H3>wxKeyEvent::wxKeyEvent</H3>
+<P>
+<B></B> <B>wxKeyEvent</B>(<B>WXTYPE</B><I> keyEventType</I>)<P>
+Constructor. Currently, the only valid event types are wxEVT_CHAR and wxEVT_CHAR_HOOK.<P>
+
+
+<HR>
+<A NAME="wxkeyeventaltdown"></A>
+<H3>wxKeyEvent::AltDown</H3>
+<P>
+<B>bool</B> <B>AltDown</B>() <B>const</B><P>
+Returns true if the Alt key was down at the time of the key event.<P>
+Notice that <A HREF="wx_wxkeyevent.html#wxkeyeventgetmodifiers">GetModifiers</A> is easier to use
+correctly than this function so you should consider using it in new code.<P>
+
+
+<HR>
+<A NAME="wxkeyeventcmddown"></A>
+<H3>wxKeyEvent::CmdDown</H3>
+<P>
+<B>bool</B> <B>CmdDown</B>() <B>const</B><P>
+CMD is a pseudo key which is the same as Control for PC and Unix
+platforms but the special APPLE (a.k.a as COMMAND) key under
+Macs: it makes often sense to use it instead of, say, ControlDown() because Cmd
+key is used for the same thing under Mac as Ctrl elsewhere (but Ctrl still
+exists, just not used for this purpose under Mac). So for non-Mac platforms
+this is the same as <A HREF="wx_wxkeyevent.html#wxkeyeventcontroldown">ControlDown()</A> and under
+Mac this is the same as <A HREF="wx_wxkeyevent.html#wxkeyeventmetadown">MetaDown()</A>.<P>
+
+
+<HR>
+<A NAME="wxkeyeventcontroldown"></A>
+<H3>wxKeyEvent::ControlDown</H3>
+<P>
+<B>bool</B> <B>ControlDown</B>() <B>const</B><P>
+Returns true if the control key was down at the time of the key event.<P>
+Notice that <A HREF="wx_wxkeyevent.html#wxkeyeventgetmodifiers">GetModifiers</A> is easier to use
+correctly than this function so you should consider using it in new code.<P>
+
+
+<HR>
+<A NAME="wxkeyeventgetkeycode"></A>
+<H3>wxKeyEvent::GetKeyCode</H3>
+<P>
+<B>int</B> <B>GetKeyCode</B>() <B>const</B><P>
+Returns the virtual key code. ASCII events return normal ASCII values,
+while non-ASCII events return values such as <B>WXK_LEFT</B> for the
+left cursor key. See <A HREF="wx_keycodes.html#keycodes">Keycodes</A> for a full list of
+the virtual key codes.<P>
+Note that in Unicode build, the returned value is meaningful only if the
+user entered a character that can be represented in current locale's default
+charset. You can obtain the corresponding Unicode character using
+<A HREF="wx_wxkeyevent.html#wxkeyeventgetunicodekey">GetUnicodeKey</A>.<P>
+
+
+<HR>
+<A NAME="wxkeyeventgetmodifiers"></A>
+<H3>wxKeyEvent::GetModifiers</H3>
+<P>
+<B>int</B> <B>GetModifiers</B>() <B>const</B><P>
+Return the bitmask of modifier keys which were pressed when this event
+happened. See <A HREF="wx_keymodifiers.html#keymodifiers">key modifier constants</A> for the full list
+of modifiers.<P>
+Notice that this function is easier to use correctly than, for example, 
+<A HREF="wx_wxkeyevent.html#wxkeyeventcontroldown">ControlDown</A> because when using the latter you
+also have to remember to test that none of the other modifiers is pressed:<P>
+<PRE>
+    if ( ControlDown() && !AltDown() && !ShiftDown() && !MetaDown() )
+        ... handle Ctrl-XXX ...
+</PRE>
+and forgetting to do it can result in serious program bugs (e.g. program not
+working with European keyboard layout where ALTGR key which is seen by
+the program as combination of CTRL and ALT is used). On the
+other hand, you can simply write<P>
+<PRE>
+    if ( GetModifiers() == wxMOD_CONTROL )
+        ... handle Ctrl-XXX ...
+</PRE>
+with this function.<P>
+
+
+<HR>
+<A NAME="wxkeyeventgetposition"></A>
+<H3>wxKeyEvent::GetPosition</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetPosition</B>() <B>const</B><P>
+<B>void</B> <B>GetPosition</B>(<B>long *</B><I>x</I>, <B>long *</B><I>y</I>) <B>const</B><P>
+Obtains the position (in client coordinates) at which the key was pressed.<P>
+
+
+<HR>
+<A NAME="wxkeyeventgetrawkeycode"></A>
+<H3>wxKeyEvent::GetRawKeyCode</H3>
+<P>
+<B>wxUint32</B> <B>GetRawKeyCode</B>() <B>const</B><P>
+Returns the raw key code for this event. This is a platform-dependent scan code
+which should only be used in advanced applications.<P>
+<B>NB:</B> Currently the raw key codes are not supported by all ports, use
+<TT>#ifdef wxHAS_RAW_KEY_CODES</TT> to determine if this feature is available.<P>
+
+
+<HR>
+<A NAME="wxkeyeventgetrawkeyflags"></A>
+<H3>wxKeyEvent::GetRawKeyFlags</H3>
+<P>
+<B>wxUint32</B> <B>GetRawKeyFlags</B>() <B>const</B><P>
+Returns the low level key flags for this event. The flags are
+platform-dependent and should only be used in advanced applications.<P>
+<B>NB:</B> Currently the raw key flags are not supported by all ports, use
+<TT>#ifdef wxHAS_RAW_KEY_CODES</TT> to determine if this feature is available.<P>
+
+
+<HR>
+<A NAME="wxkeyeventgetunicodekey"></A>
+<H3>wxKeyEvent::GetUnicodeKey</H3>
+<P>
+<B>wxChar</B> <B>GetUnicodeKey</B>() <B>const</B><P>
+Returns the Unicode character corresponding to this key event.<P>
+This function is only available in Unicode build, i.e. when
+<TT>wxUSE_UNICODE</TT> is 1.<P>
+
+
+<HR>
+<A NAME="wxkeyeventgetx"></A>
+<H3>wxKeyEvent::GetX</H3>
+<P>
+<B>long</B> <B>GetX</B>() <B>const</B><P>
+Returns the X position (in client coordinates) of the event.<P>
+
+
+<HR>
+<A NAME="wxkeyeventgety"></A>
+<H3>wxKeyEvent::GetY</H3>
+<P>
+<B>long</B> <B>GetY</B>() <B>const</B><P>
+Returns the Y (in client coordinates) position of the event.<P>
+
+
+<HR>
+<A NAME="wxkeyeventhasmodifiers"></A>
+<H3>wxKeyEvent::HasModifiers</H3>
+<P>
+<B>bool</B> <B>HasModifiers</B>() <B>const</B><P>
+Returns true if either CTRL or ALT keys was down
+at the time of the key event. Note that this function does not take into
+account neither SHIFT nor META key states (the reason for ignoring
+the latter is that it is common for NUMLOCK key to be configured as
+META under X but the key presses even while NUMLOCK is on should
+be still processed normally).<P>
+
+
+<HR>
+<A NAME="wxkeyeventmetadown"></A>
+<H3>wxKeyEvent::MetaDown</H3>
+<P>
+<B>bool</B> <B>MetaDown</B>() <B>const</B><P>
+Returns true if the Meta key was down at the time of the key event.<P>
+Notice that <A HREF="wx_wxkeyevent.html#wxkeyeventgetmodifiers">GetModifiers</A> is easier to use
+correctly than this function so you should consider using it in new code.<P>
+
+
+<HR>
+<A NAME="wxkeyeventshiftdown"></A>
+<H3>wxKeyEvent::ShiftDown</H3>
+<P>
+<B>bool</B> <B>ShiftDown</B>() <B>const</B><P>
+Returns true if the shift key was down at the time of the key event.<P>
+Notice that <A HREF="wx_wxkeyevent.html#wxkeyeventgetmodifiers">GetModifiers</A> is easier to use
+correctly than this function so you should consider using it in new code.<P>
+
+</FONT></BODY></HTML>

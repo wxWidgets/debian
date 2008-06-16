@@ -1,0 +1,55 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSysColourChangedEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsyscolourchangedevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsymbolpickerdialog.html#wxsymbolpickerdialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsystemoptions.html#wxsystemoptions"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSysColourChangedEvent</H2>
+<P>
+This class is used for system colour change events, which are generated
+when the user changes the colour settings using the control panel.
+This is only appropriate under Windows.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a system colour changed event, use this event handler macro to direct input to a member
+function that takes a wxSysColourChanged argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_SYS_COLOUR_CHANGED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_SYS_COLOUR_CHANGED event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The default event handler for this event propagates the event to child windows, since
+Windows only sends the events to top-level windows. If
+intercepting this event for a top-level window, remember to call the base class handler,
+or to pass the event on to the window's children explicitly.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsyscolourchangedeventctor">wxSysColourChangedEvent::wxSysColourChangedEvent</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsyscolourchangedeventctor"></A>
+<H3>wxSysColourChangedEvent::wxSysColourChangedEvent</H3>
+<P>
+<B></B> <B>wxSysColourChangedEvent</B>()<P>
+Constructor.<P>
+
+</FONT></BODY></HTML>

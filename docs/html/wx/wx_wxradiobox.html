@@ -1,0 +1,583 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRadioBox</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxradiobox"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxquerylayoutinfoevent.html#wxquerylayoutinfoevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxradiobutton.html#wxradiobutton"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRadioBox</H2>
+<P>
+A radio box item is used to select one of number of mutually exclusive
+choices.  It is displayed as a vertical column or horizontal row of
+labelled buttons.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitems">wxControlWithItems</A><BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/radiobox.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxRA_SPECIFY_ROWS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The major dimension parameter refers to the
+maximum number of rows.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxRA_SPECIFY_COLS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The major dimension parameter refers to the
+maximum number of columns.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxRA_USE_CHECKBOX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Use of the checkbox controls instead of radio
+buttons (currently supported only on PalmOS)
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_RADIOBOX(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_RADIOBOX_SELECTED event,
+when a radiobutton is clicked.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A>, <A HREF="wx_wxradiobutton.html#wxradiobutton">wxRadioButton</A>,
+<A HREF="wx_wxcheckbox.html#wxcheckbox">wxCheckBox</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxradioboxctor">wxRadioBox::wxRadioBox</A><BR>
+<A HREF="#wxradioboxdtor">wxRadioBox::~wxRadioBox</A><BR>
+<A HREF="#wxradioboxcreate">wxRadioBox::Create</A><BR>
+<A HREF="#wxradioboxenable">wxRadioBox::Enable</A><BR>
+<A HREF="#wxradioboxfindstring">wxRadioBox::FindString</A><BR>
+<A HREF="#wxradioboxgetcolumncount">wxRadioBox::GetColumnCount</A><BR>
+<A HREF="#wxradioboxgetitemhelptext">wxRadioBox::GetItemHelpText</A><BR>
+<A HREF="#wxradioboxgetitemtooltip">wxRadioBox::GetItemToolTip</A><BR>
+<A HREF="#wxradioboxgetitemfrompoint">wxRadioBox::GetItemFromPoint</A><BR>
+<A HREF="#wxradioboxgetlabel">wxRadioBox::GetLabel</A><BR>
+<A HREF="#wxradioboxgetrowcount">wxRadioBox::GetRowCount</A><BR>
+<A HREF="#wxradioboxgetselection">wxRadioBox::GetSelection</A><BR>
+<A HREF="#wxradioboxgetstringselection">wxRadioBox::GetStringSelection</A><BR>
+<A HREF="#wxradioboxgetstring">wxRadioBox::GetString</A><BR>
+<A HREF="#wxradioboxisitemenabled">wxRadioBox::IsItemEnabled</A><BR>
+<A HREF="#wxradioboxisitemshown">wxRadioBox::IsItemShown</A><BR>
+<A HREF="#wxradioboxsetitemhelptext">wxRadioBox::SetItemHelpText</A><BR>
+<A HREF="#wxradioboxsetlabel">wxRadioBox::SetLabel</A><BR>
+<A HREF="#wxradioboxsetselection">wxRadioBox::SetSelection</A><BR>
+<A HREF="#wxradioboxsetstringselection">wxRadioBox::SetStringSelection</A><BR>
+<A HREF="#wxradioboxsetitemtooltip">wxRadioBox::SetItemToolTip</A><BR>
+<A HREF="#wxradioboxshow">wxRadioBox::Show</A><BR>
+<P>
+
+<HR>
+<A NAME="wxradioboxctor"></A>
+<H3>wxRadioBox::wxRadioBox</H3>
+<P>
+<B></B> <B>wxRadioBox</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxRadioBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>point = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>int</B><I> n = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B></B><I> choices[] = NULL</I>,
+<B>int</B><I> majorDimension = 0</I>, <B>long</B><I> style = wxRA_SPECIFY_COLS</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "radioBox"</I>)<P>
+<B></B> <B>wxRadioBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>point</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B></B><I> choices</I>,
+<B>int</B><I> majorDimension = 0</I>, <B>long</B><I> style = wxRA_SPECIFY_COLS</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "radioBox"</I>)<P>
+Constructor, creating and showing a radiobox.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+Label for the static box surrounding the radio buttons.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position. If the position (-1, -1) is specified then a default position is chosen.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then a default size is chosen.</UL></UL>
+<P>
+<I>n</I><UL><UL>
+Number of choices with which to initialize the radiobox.</UL></UL>
+<P>
+<I>choices</I><UL><UL>
+An array of choices with which to initialize the radiobox.</UL></UL>
+<P>
+<I>majorDimension</I><UL><UL>
+Specifies the maximum number of rows (if style contains wxRA_SPECIFY_ROWS) or columns (if style contains wxRA_SPECIFY_COLS) for a two-dimensional
+radiobox.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxradiobox.html#wxradiobox">wxRadioBox</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxradiobox.html#wxradioboxcreate">wxRadioBox::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxRadioBox constructor in wxPython reduces the <TT>n</TT>
+and <TT>choices</TT> arguments are to a single argument, which is
+a list of strings.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there is just an array reference in place of <TT>n</TT>
+and <TT>choices</TT>.<P>
+
+
+<HR>
+<A NAME="wxradioboxdtor"></A>
+<H3>wxRadioBox::~wxRadioBox</H3>
+<P>
+<B></B> <B>~wxRadioBox</B>()<P>
+Destructor, destroying the radiobox item.<P>
+
+
+<HR>
+<A NAME="wxradioboxcreate"></A>
+<H3>wxRadioBox::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>point = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>int</B><I> n = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B></B><I> choices[] = NULL</I>,
+<B>int</B><I> majorDimension = 0</I>, <B>long</B><I> style = wxRA_SPECIFY_COLS</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "radioBox"</I>)<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>point</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B></B><I> choices</I>,
+<B>int</B><I> majorDimension = 0</I>, <B>long</B><I> style = wxRA_SPECIFY_COLS</I>,
+<B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "radioBox"</I>)<P>
+Creates the radiobox for two-step construction. See <A HREF="wx_wxradiobox.html#wxradioboxctor">wxRadioBox::wxRadioBox</A>
+for further details.<P>
+
+
+<HR>
+<A NAME="wxradioboxenable"></A>
+<H3>wxRadioBox::Enable</H3>
+<P>
+<B>virtual bool</B> <B>Enable</B>(<B>bool</B><I> enable = <TT>true</TT></I>)<P>
+Enables or disables the entire radiobox.<P>
+<B>virtual bool</B> <B>Enable</B>(<B>unsigned int</B><I> n</I>, <B>bool</B><I> enable = <TT>true</TT></I>)<P>
+Enables or disables an individual button in the radiobox.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>enable</I><UL><UL>
+true to enable, false to disable.</UL></UL>
+<P>
+<I>n</I><UL><UL>
+The zero-based button to enable or disable.</UL></UL>
+<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>Enable(flag)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Enables or disables the entire radiobox.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>EnableItem(n, flag)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Enables or disables an
+individual button in the radiobox.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindowenable">wxWindow::Enable</A><P>
+<P>
+
+<HR>
+<A NAME="wxradioboxfindstring"></A>
+<H3>wxRadioBox::FindString</H3>
+<P>
+<B>int</B> <B>FindString</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>string</I>) <B>const</B><P>
+Finds a button matching the given string, returning the position if found, or
+-1 if not found.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>string</I><UL><UL>
+The string to find.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxradioboxgetcolumncount"></A>
+<H3>wxRadioBox::GetColumnCount</H3>
+<P>
+<B>unsigned int</B> <B>GetColumnCount</B>() <B>const</B><P>
+Returns the number of columns in the radiobox.<P>
+
+
+<HR>
+<A NAME="wxradioboxgetitemhelptext"></A>
+<H3>wxRadioBox::GetItemHelpText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetItemHelpText</B>(<B>unsigned int</B><I> item</I>) <B>const</B><P>
+Returns the helptext associated with the specified <I>item</I> if any or <TT>wxEmptyString</TT>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>item</I><UL><UL>
+The zero-based item index.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxradiobox.html#wxradioboxsetitemhelptext">SetItemHelpText</A><P>
+
+
+<HR>
+<A NAME="wxradioboxgetitemtooltip"></A>
+<H3>wxRadioBox::GetItemToolTip</H3>
+<P>
+<B><A HREF="wx_wxtooltip.html#wxtooltip">wxToolTip</A> *</B> </B> <B>GetItemToolTip</B>(<B>unsigned int</B><I> item</I>) <B>const</B><P>
+Returns the tooltip associated with the specified <I>item</I> if any or <TT>NULL</TT>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxradiobox.html#wxradioboxsetitemtooltip">SetItemToolTip</A>,<BR>
+
+<A HREF="wx_wxwindow.html#wxwindowgettooltip">wxWindow::GetToolTip</A><P>
+
+
+<HR>
+<A NAME="wxradioboxgetitemfrompoint"></A>
+<H3>wxRadioBox::GetItemFromPoint</H3>
+<P>
+<B>int</B> <B>GetItemFromPoint</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B></B><I> pt</I>) <B>const</B><P>
+Returns a radio box item under the point, a zero-based item index, or <TT>wxNOT_FOUND</TT> if no item is under the point.<P>
+<I>pt</I><UL><UL>
+Point in client coordinates.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxradioboxgetlabel"></A>
+<H3>wxRadioBox::GetLabel</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLabel</B>() <B>const</B><P>
+Returns the radiobox label.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>n</I><UL><UL>
+The zero-based button index.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxradiobox.html#wxradioboxsetlabel">wxRadioBox::SetLabel</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetLabel()</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns the radiobox label.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetItemLabel(n)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns the label for the given button.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+
+
+<HR>
+<A NAME="wxradioboxgetrowcount"></A>
+<H3>wxRadioBox::GetRowCount</H3>
+<P>
+<B>unsigned int</B> <B>GetRowCount</B>() <B>const</B><P>
+Returns the number of rows in the radiobox.<P>
+
+
+<HR>
+<A NAME="wxradioboxgetselection"></A>
+<H3>wxRadioBox::GetSelection</H3>
+<P>
+<B>int</B> <B>GetSelection</B>() <B>const</B><P>
+Returns the zero-based position of the selected button.<P>
+
+
+<HR>
+<A NAME="wxradioboxgetstringselection"></A>
+<H3>wxRadioBox::GetStringSelection</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetStringSelection</B>() <B>const</B><P>
+Returns the selected string.<P>
+
+
+<HR>
+<A NAME="wxradioboxgetstring"></A>
+<H3>wxRadioBox::GetString</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetString</B>(<B>unsigned int</B><I> n</I>) <B>const</B><P>
+Returns the label for the button at the given position.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>n</I><UL><UL>
+The zero-based button position.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxradioboxisitemenabled"></A>
+<H3>wxRadioBox::IsItemEnabled</H3>
+<P>
+<B>bool</B> <B>IsItemEnabled</B>(<B>unsigned int</B><I> n</I>) <B>const</B><P>
+Returns <TT>true</TT> if the item is enabled or <TT>false</TT> if it was disabled using
+<A HREF="wx_wxradiobox.html#wxradioboxenable">Enable(n, false)</A>.<P>
+<B>Platform note:</B> Currently only implemented in wxMSW, wxGTK and wxUniversal
+and always returns <TT>true</TT> in the other ports.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>n</I><UL><UL>
+The zero-based button position.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxradioboxisitemshown"></A>
+<H3>wxRadioBox::IsItemShown</H3>
+<P>
+<B>bool</B> <B>IsItemShown</B>(<B>unsigned int</B><I> n</I>) <B>const</B><P>
+Returns <TT>true</TT> if the item is currently shown or <TT>false</TT> if it was hidden using
+<A HREF="wx_wxradiobox.html#wxradioboxshow">Show(n, false)</A>.<P>
+Note that this function returns <TT>true</TT> for an item which hadn't been hidden even
+if the entire radiobox is not currently shown.<P>
+<B>Platform note:</B> Currently only implemented in wxMSW, wxGTK and wxUniversal
+and always returns <TT>true</TT> in the other ports.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>n</I><UL><UL>
+The zero-based button position.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxradioboxsetitemhelptext"></A>
+<H3>wxRadioBox::SetItemHelpText</H3>
+<P>
+<B>void</B> <B>SetItemHelpText</B>(<B>unsigned int</B><I> item</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> helptext</I>)<P>
+Sets the helptext for an item. Empty string erases any existing helptext.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>item</I><UL><UL>
+The zero-based item index.</UL></UL>
+<P>
+<I>helptext</I><UL><UL>
+The help text to set for the item.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxradiobox.html#wxradioboxgetitemhelptext">GetItemHelpText</A><P>
+
+
+<HR>
+<A NAME="wxradioboxsetlabel"></A>
+<H3>wxRadioBox::SetLabel</H3>
+<P>
+<B>void</B> <B>SetLabel</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> label</I>)<P>
+Sets the radiobox label.<P>
+
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>label</I><UL><UL>
+The label to set.</UL></UL>
+<P>
+<I>n</I><UL><UL>
+The zero-based button index.</UL></UL>
+<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>SetLabel(string)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sets the radiobox label.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>SetItemLabel(n, string)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sets a label for a radio button.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+
+
+<HR>
+<A NAME="wxradioboxsetselection"></A>
+<H3>wxRadioBox::SetSelection</H3>
+<P>
+<B>void</B> <B>SetSelection</B>(<B>int</B><I> n</I>)<P>
+Sets a button by passing the desired string position. This does not cause
+a wxEVT_COMMAND_RADIOBOX_SELECTED event to get emitted.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>n</I><UL><UL>
+The zero-based button position.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxradioboxsetstringselection"></A>
+<H3>wxRadioBox::SetStringSelection</H3>
+<P>
+<B>void</B> <B>SetStringSelection</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>string</I>)<P>
+Sets the selection to a button by passing the desired string. This does not cause
+a wxEVT_COMMAND_RADIOBOX_SELECTED event to get emitted.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>string</I><UL><UL>
+The label of the button to select.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxradioboxsetitemtooltip"></A>
+<H3>wxRadioBox::SetItemToolTip</H3>
+<P>
+<B>void</B> <B>SetItemToolTip</B>(<B>unsigned int</B><I> item</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>)<P>
+Sets the tooltip text for the specified item in the radio group.<P>
+<B>Platform note:</B> Currently only implemented in wxMSW and wxGTK2 and does
+nothing in the other ports.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>item</I><UL><UL>
+Index of the item the tooltip will be shown for.</UL></UL>
+<P>
+<I>text</I><UL><UL>
+Tooltip text for the item, the tooltip is removed if empty.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxradiobox.html#wxradioboxgetitemtooltip">GetItemToolTip</A>,<BR>
+
+<A HREF="wx_wxwindow.html#wxwindowsettooltip">wxWindow::SetToolTip</A><P>
+
+
+<HR>
+<A NAME="wxradioboxshow"></A>
+<H3>wxRadioBox::Show</H3>
+<P>
+<B>virtual bool</B> <B>Show</B>(<B>const bool</B><I> show = <TT>true</TT></I>)<P>
+Shows or hides the entire radiobox.<P>
+<B>virtual bool</B> <B>Show</B>(<B>unsigned int</B><I> item</I>, <B>const bool</B><I> show = <TT>true</TT></I>)<P>
+Shows or hides individual buttons.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>show</I><UL><UL>
+true to show, false to hide.</UL></UL>
+<P>
+<I>item</I><UL><UL>
+The zero-based position of the button to show or hide.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if the box or item has been shown or hidden or <TT>false</TT> if nothing was
+done because it already was in the requested state.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindowshow">wxWindow::Show</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>Show(flag)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Shows or hides the entire radiobox.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>ShowItem(n, flag)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Shows or hides individual buttons.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+
+
+</FONT></BODY></HTML>

@@ -1,0 +1,93 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxClient</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxclient"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxclassinfo.html#wxclassinfo"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxclientdc.html#wxclientdc"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxClient</H2>
+<P>
+A wxClient object represents the client part of a client-server
+DDE-like (Dynamic Data Exchange) conversation. The actual
+DDE-based implementation using wxDDEClient is available on Windows
+only, but a platform-independent, socket-based version of this
+API is available using wxTCPClient, which has the same API.<P>
+To create a client which can communicate with a suitable server,
+you need to derive a class from wxConnection and another from
+wxClient. The custom wxConnection class will intercept
+communications in a 'conversation' with a server, and the custom
+wxClient is required so that a user-overridden
+<A HREF="wx_wxclient.html#wxclientonmakeconnection">wxClient::OnMakeConnection</A> 
+member can return a wxConnection of the required class, when a
+connection is made. Look at the IPC sample and the 
+<A HREF="wx_ipcoverview.html#ipcoverview">Interprocess communications overview</A> for
+an example of how to do this.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxClientBase<BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/ipc.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxserver.html#wxserver">wxServer</A>, 
+<A HREF="wx_wxconnection.html#wxconnection">wxConnection</A>, <A HREF="wx_ipcoverview.html#ipcoverview">Interprocess communications overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxclientctor">wxClient::wxClient</A><BR>
+<A HREF="#wxclientmakeconnection">wxClient::MakeConnection</A><BR>
+<A HREF="#wxclientonmakeconnection">wxClient::OnMakeConnection</A><BR>
+<A HREF="#wxclientvalidhost">wxClient::ValidHost</A><BR>
+<P>
+
+<HR>
+<A NAME="wxclientctor"></A>
+<H3>wxClient::wxClient</H3>
+<P>
+<B></B> <B>wxClient</B>()<P>
+Constructs a client object.<P>
+
+<HR>
+<A NAME="wxclientmakeconnection"></A>
+<H3>wxClient::MakeConnection</H3>
+<P>
+<B>wxConnectionBase *</B> <B>MakeConnection</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>host</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>service</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>)<P>
+Tries to make a connection with a server by host (machine name
+under UNIX - use 'localhost' for same machine; ignored when using
+native DDE in Windows), service name and topic string. If the
+server allows a connection, a wxConnection object will be
+returned. The type of wxConnection returned can be altered by
+overriding the 
+<A HREF="wx_wxclient.html#wxclientonmakeconnection">wxClient::OnMakeConnection</A> 
+member to return your own derived connection object.<P>
+Under Unix, the service name may be either an integer port
+identifier in which case an Internet domain socket will be used
+for the communications, or a valid file name (which shouldn't
+exist and will be deleted afterwards) in which case a Unix domain
+socket is created.<P>
+<B>SECURITY NOTE:</B> Using Internet domain sockets if extremely
+insecure for IPC as there is absolutely no access control for
+them, use Unix domain sockets whenever possible!<P>
+
+<HR>
+<A NAME="wxclientonmakeconnection"></A>
+<H3>wxClient::OnMakeConnection</H3>
+<P>
+<B>wxConnectionBase *</B> <B>OnMakeConnection</B>()<P>
+Called by <A HREF="wx_wxclient.html#wxclientmakeconnection">wxClient::MakeConnection</A>, by
+default this simply returns a new wxConnection object. Override
+this method to return a wxConnection descendant customised for the
+application.<P>
+The advantage of deriving your own connection class is that it
+will enable you to intercept messages initiated by the server,
+such as <A HREF="wx_wxconnection.html#wxconnectiononadvise">wxConnection::OnAdvise</A>. You
+may also want to store application-specific data in instances of
+the new class.<P>
+
+<HR>
+<A NAME="wxclientvalidhost"></A>
+<H3>wxClient::ValidHost</H3>
+<P>
+<B>bool</B> <B>ValidHost</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>host</I>)<P>
+Returns true if this is a valid host name, false otherwise. This always
+returns true under MS Windows.<P>
+
+</FONT></BODY></HTML>

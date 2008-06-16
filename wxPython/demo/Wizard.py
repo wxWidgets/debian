@@ -47,11 +47,13 @@ class SkipNextPage(wiz.PyWizardPage):
 
     def GetNext(self):
         """If the checkbox is set then return the next page's next page"""
-        next = self.next
         if self.cb.GetValue():
-            next = next.GetNext()
-        return next
-
+            self.next.GetNext().SetPrev(self)
+            return self.next.GetNext()
+        else:
+            self.next.GetNext().SetPrev(self.next)
+            return self.next
+        
     def GetPrev(self):
         return self.prev
 
@@ -136,6 +138,7 @@ class TestPanel(wx.Panel):
             wx.MessageBox("Cancelling on the first page has been prevented.", "Sorry")
             evt.Veto()
 
+
     def OnWizFinished(self, evt):
         self.log.write("OnWizFinished\n")
         
@@ -162,6 +165,7 @@ wxWizardPageSimple class can easily be used for the pages."""))
         wiz.WizardPageSimple_Chain(page2, page3)
         wiz.WizardPageSimple_Chain(page3, page4)
 
+        wizard.GetPageAreaSizer().Add(page1)
         if wizard.RunWizard(page1):
             wx.MessageBox("Wizard completed successfully", "That's all folks!")
         else:
@@ -175,7 +179,7 @@ wxWizardPageSimple class can easily be used for the pages."""))
         #wizard.SetExtraStyle(wx.WIZARD_EX_HELPBUTTON)
         #wizard.Create(self, self.ID_wiz, "Simple Wizard",
         #              images.getWizTest1Bitmap())
-        wizard = wiz.Wizard(self, -1, "Simple Wizard", images.getWizTest1Bitmap())
+        wizard = wiz.Wizard(self, -1, "Dynamic Wizard", images.getWizTest1Bitmap())
 
         page1 = TitledPage(wizard, "Page 1")
         page2 = SkipNextPage(wizard, "Page 2")
@@ -202,6 +206,7 @@ of the pages and also which bitmap is shown.
         page5.SetPrev(page4)
 
 
+        wizard.GetPageAreaSizer().Add(page1)
         if wizard.RunWizard(page1):
             wx.MessageBox("Wizard completed successfully", "That's all folks!")
         else:

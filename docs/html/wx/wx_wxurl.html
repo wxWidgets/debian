@@ -1,0 +1,211 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxURL</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxurl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxuri.html#wxuri"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxurldataobject.html#wxurldataobject"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxURL</H2>
+<P>
+wxURL is a specialization of <A HREF="wx_wxuri.html#wxuri">wxURI</A> for parsing URLs.
+Please look at <A HREF="wx_wxuri.html#wxuri">wxURI</A> documentation for more info about the functions
+you can use to retrieve the various parts of the URL (scheme, server, port, etc).<P>
+Supports standard assignment operators, copy constructors,
+and comparison operators.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxuri.html#wxuri">wxURI</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/url.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>, <A HREF="wx_wxprotocol.html#wxprotocol">wxProtocol</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxurlctor">wxURL::wxURL</A><BR>
+<A HREF="#wxurldtor">wxURL::~wxURL</A><BR>
+<A HREF="#wxurlgetprotocol">wxURL::GetProtocol</A><BR>
+<A HREF="#wxurlgeterror">wxURL::GetError</A><BR>
+<A HREF="#wxurlgetinputstream">wxURL::GetInputStream</A><BR>
+<A HREF="#wxurlgetisok">wxURL::IsOk</A><BR>
+<A HREF="#wxurlsetdefaultproxy">wxURL::SetDefaultProxy</A><BR>
+<A HREF="#wxurlsetproxy">wxURL::SetProxy</A><BR>
+<A HREF="#wxurlseturl">wxURL::SetURL</A><BR>
+<P>
+
+<HR>
+<A NAME="wxurlctor"></A>
+<H3>wxURL::wxURL</H3>
+<P>
+<B></B> <B>wxURL</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> url = wxEmptyString</I>)<P>
+Constructs a URL object from the string.  The URL must be valid according
+to RFC 1738.  In particular, file URLs must be of the format
+<TT>file://hostname/path/to/file</TT> otherwise <A HREF="wx_wxurl.html#wxurlgeterror">GetError</A>
+will return a value different from <TT>wxURL_NOERR</TT>.<P>
+It is valid to leave out the hostname but slashes must remain in place - 
+i.e. a file URL without a hostname must contain three consecutive slashes 
+(e.g. <TT>file:///somepath/myfile</TT>).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>url</I><UL><UL>
+Url string to parse.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxurldtor"></A>
+<H3>wxURL::~wxURL</H3>
+<P>
+<B></B> <B>~wxURL</B>()<P>
+Destroys the URL object.<P>
+
+<HR>
+<A NAME="wxurlgetprotocol"></A>
+<H3>wxURL::GetProtocol</H3>
+<P>
+<B><A HREF="wx_wxprotocol.html#wxprotocol">wxProtocol</A>&</B> </B> <B>GetProtocol</B>()<P>
+Returns a reference to the protocol which will be used to get the URL.<P>
+
+<HR>
+<A NAME="wxurlgeterror"></A>
+<H3>wxURL::GetError</H3>
+<P>
+<B>wxURLError</B> <B>GetError</B>() <B>const</B><P>
+Returns the last error. This error refers to the URL parsing or to the protocol.
+It can be one of these errors:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxURL_NOERR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+No error.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxURL_SNTXERR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Syntax error in the URL string.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxURL_NOPROTO</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Found no protocol which can get this URL.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxURL_NOHOST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+An host name is required for this protocol.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxURL_NOPATH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A path is required for this protocol.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxURL_CONNERR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Connection error.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxURL_PROTOERR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+An error occurred during negotiation.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+<HR>
+<A NAME="wxurlgetinputstream"></A>
+<H3>wxURL::GetInputStream</H3>
+<P>
+<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A> *</B> </B> <B>GetInputStream</B>()<P>
+Creates a new input stream on the specified URL. You can use all but seek
+functionality of wxStream. Seek isn't available on all streams. For example,
+HTTP or FTP streams don't deal with it.<P>
+Note that this method is somewhat deprecated, all future wxWidgets applications
+should really use <A HREF="wx_wxfilesystem.html#wxfilesystem">wxFileSystem</A> instead.<P>
+Example:<P>
+<PRE>
+  wxURL url("http://a.host/a.dir/a.file");
+  if (url.GetError() == wxURL_NOERR)
+  {
+      wxInputStream *in_stream;
+
+      in_stream = url.GetInputStream();
+      // Then, you can use all IO calls of in_stream (See wxStream)
+  }
+</PRE>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns the initialized stream. You will have to delete it yourself.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A><P>
+
+
+<HR>
+<A NAME="wxurlgetisok"></A>
+<H3>wxURL::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns <TT>true</TT> if this object is correctly initialized, i.e. if 
+<A HREF="wx_wxurl.html#wxurlgeterror">GetError</A> returns <TT>wxURL_NOERR</TT>.<P>
+
+
+<HR>
+<A NAME="wxurlsetdefaultproxy"></A>
+<H3>wxURL::SetDefaultProxy</H3>
+<P>
+<B>static void</B> <B>SetDefaultProxy</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> url_proxy</I>)<P>
+Sets the default proxy server to use to get the URL. The string specifies
+the proxy like this: &lt;hostname&gt;:&lt;port number&gt;.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>url_proxy</I><UL><UL>
+Specifies the proxy to use</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxurl.html#wxurlsetproxy">wxURL::SetProxy</A><P>
+
+<HR>
+<A NAME="wxurlsetproxy"></A>
+<H3>wxURL::SetProxy</H3>
+<P>
+<B>void</B> <B>SetProxy</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> url_proxy</I>)<P>
+Sets the proxy to use for this URL.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxurl.html#wxurlsetdefaultproxy">wxURL::SetDefaultProxy</A><P>
+
+
+<HR>
+<A NAME="wxurlseturl"></A>
+<H3>wxURL::SetURL</H3>
+<P>
+<B>wxURLError</B> <B>SetURL</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> url</I>)<P>
+Initializes this object with the given URL and returns <TT>wxURL_NOERR</TT>
+if it's valid (see <A HREF="wx_wxurl.html#wxurlgeterror">GetError</A> for more info).<P>
+
+</FONT></BODY></HTML>

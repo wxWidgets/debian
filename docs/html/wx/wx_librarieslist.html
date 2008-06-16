@@ -1,0 +1,106 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Libraries list</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="librarieslist"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_contents.html"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_debugstrategies.html#debugstrategies"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_classref.html#classref"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Libraries list</H2>
+
+Starting from version 2.5.0 wxWidgets can be built either as a single large
+library (this is called the <I>monolithic build</I>) or as several smaller
+libraries (<I>multilib build</I>). Multilib build is the default.<P>
+wxWidgets library is divided into libraries briefly described below. This
+diagram show dependencies between them:<P>
+<CENTER>
+<img src="libs.gif">
+</CENTER><P>
+<FONT SIZE=4><B>wxAui</B></FONT><P>
+This contains the Advanced User Interface docking library.<P>
+<FONT SIZE=4><B>wxBase</B></FONT><P>
+Every wxWidgets application must link against this library. It contains
+mandatory classes that any wxWidgets code depends on (e.g.
+ <A HREF="wx_wxstring.html#wxstring">wxString</A>) and portability classes that abstract
+differences between platforms. wxBase can be used to develop console mode
+applications, it does not require any GUI libraries or running X Window System
+on Unix.<P>
+<FONT SIZE=4><B>wxNet</B></FONT><P>
+Classes for network access:<P>
+<UL>
+
+<LI> wxSocket classes (<A HREF="wx_wxsocketclient.html#wxsocketclient">wxSocketClient</A>,
+ <A HREF="wx_wxsocketserver.html#wxsocketserver">wxSocketServer</A> and related classes) 
+<LI> <A HREF="wx_wxsocketoutputstream.html#wxsocketoutputstream">wxSocketOutputStream</A> and
+ <A HREF="wx_wxsocketinputstream.html#wxsocketinputstream">wxSocketInputStream</A> 
+<LI> sockets-based IPC classes (<A HREF="wx_wxddeserver.html#wxddeserver">wxTCPServer</A>,
+ <A HREF="wx_wxddeclient.html#wxddeclient">wxTCPClient</A> and
+ <A HREF="wx_wxddeconnection.html#wxddeconnection">wxTCPConnection</A>) 
+<LI> <A HREF="wx_wxurl.html#wxurl">wxURL</A> 
+<LI> wxInternetFSHandler (a <A HREF="wx_fs.html#fs">wxFileSystem handler</A>) 
+Requires wxBase.
+</UL>
+<P>
+<FONT SIZE=4><B>wxRichText</B></FONT><P>
+This contains generic rich text control functionality.<P>
+<FONT SIZE=4><B>wxXML</B></FONT><P>
+This library contains simple classes for parsing XML documents. Note that
+their API <EM>will</EM> change in the future and backward
+compatibility will not be preserved. Use of this library in your applications
+is not recommended, it is only meant for use by XML resources system. Future
+versions of wxWidgets will contain new XML handling classes with DOM-like API.
+Requires wxBase.<P>
+<FONT SIZE=4><B>wxCore</B></FONT><P>
+Basic GUI classes such as GDI classes or controls are in this library. All
+wxWidgets GUI applications must link against this library, only console mode
+applications don't.<P>
+<FONT SIZE=4><B>wxAdvanced</B></FONT><P>
+Advanced or rarely used GUI classes:<P>
+<UL>
+
+<LI> wxBufferedDC 
+<LI> <A HREF="wx_wxcalendarctrl.html#wxcalendarctrl">wxCalendarCtrl</A> 
+<LI> <A HREF="wx_gridoverview.html#gridoverview">wxGrid classes</A> 
+<LI> <A HREF="wx_wxjoystick.html#wxjoystick">wxJoystick</A> 
+<LI> <A HREF="wx_wxlayoutalgorithm.html#wxlayoutalgorithm">wxLayoutAlgorithm</A> 
+<LI> <A HREF="wx_wxsplashscreen.html#wxsplashscreen">wxSplashScreen</A> 
+<LI> <A HREF="wx_wxtaskbaricon.html#wxtaskbaricon">wxTaskBarIcon</A> 
+<LI> <A HREF="wx_wxsound.html#wxsound">wxSound</A> 
+<LI> <A HREF="wx_wxwizard.html#wxwizard">wxWizard</A> 
+<LI> <A HREF="wx_wxsashlayoutwindow.html#wxsashlayoutwindow">wxSashLayoutWindow</A> 
+<LI> <A HREF="wx_wxsashwindow.html#wxsashwindow">wxSashWindow</A> 
+</UL>
+<P>
+Requires wxCore and wxBase.<P>
+<FONT SIZE=4><B>wxMedia</B></FONT><P>
+Miscellaneous classes related to multimedia. Currently this library only
+contains <A HREF="wx_wxmediactrl.html#wxmediactrl">wxMediaCtrl</A> but more classes will be added in
+the future.<P>
+Requires wxCore and wxBase.<P>
+<FONT SIZE=4><B>wxGL</B></FONT><P>
+This library contains <A HREF="wx_wxglcanvas.html#wxglcanvas">wxGLCanvas</A> class for integrating
+OpenGL library with wxWidgets. Unlike all others, this library is <EM>not</EM>
+ part of the monolithic library, it is always built as separate library.
+Requires wxCore and wxBase.<P>
+<FONT SIZE=4><B>wxHTML</B></FONT><P>
+Simple HTML renderer and other <A HREF="wx_wxhtml.html#wxhtml">HTML rendering classes</A> are
+contained in this library, as well as
+ <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A>,
+ <A HREF="wx_wxhelpcontroller.html#wxhelpcontroller">wxBestHelpController</A> and
+ <A HREF="wx_wxhtmllistbox.html#wxhtmllistbox">wxHtmlListBox</A>. Requires wxCore and wxBase.<P>
+<FONT SIZE=4><B>wxODBC</B></FONT><P>
+<A HREF="wx_odbcoverview.html#odbcoverview">Database classes</A>. Requires wxBase.<P>
+<FONT SIZE=4><B>wxQA</B></FONT><P>
+This is the library containing extra classes for quality assurance. Currently
+it only contains <A HREF="wx_wxdebugreport.html#wxdebugreport">wxDebugReport</A> and related classes,
+but more will be added to it in the future.<P>
+Requires wxCore, wxBase and wxXML.<P>
+<FONT SIZE=4><B>wxDbGrid</B></FONT><P>
+<A HREF="wx_wxdbgridtablebase.html#wxdbgridtablebase">wxDbGridTableBase</A> class which combines 
+ <A HREF="wx_wxgrid.html#wxgrid">wxGrid</A> and <A HREF="wx_wxdbtable.html#wxdbtable">wxDbTable</A>. 
+Requires wxODBC and wxAdvanced.<P>
+<FONT SIZE=4><B>wxXRC</B></FONT><P>
+This library contains <A HREF="wx_wxxmlresource.html#wxxmlresource">wxXmlResource</A> class that
+provides access to XML resource files in XRC format.
+Requires wxXML, wxCore, wxAdvanced and wxHTML.<P>
+
+</FONT></BODY></HTML>

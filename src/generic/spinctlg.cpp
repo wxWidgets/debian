@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.01.01
-// RCS-ID:      $Id: spinctlg.cpp,v 1.30 2005/09/12 20:06:31 MBN Exp $
+// RCS-ID:      $Id: spinctlg.cpp 42816 2006-10-31 08:50:17Z RD $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "spinctlg.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -187,7 +183,7 @@ bool wxSpinCtrl::Create(wxWindow *parent,
 
     m_btn->SetRange(min, max);
     m_btn->SetValue(initial);
-    SetBestSize(size);
+    SetInitialSize(size);
     Move(pos);
 
     // have to disable this window to avoid interfering it with message

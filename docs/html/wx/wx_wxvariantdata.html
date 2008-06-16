@@ -1,0 +1,116 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxVariantData</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxvariantdata"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxvariant.html#wxvariant"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxview.html#wxview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxVariantData</H2>
+<P>
+The <B>wxVariantData</B> class is used to implement a new type for <A HREF="wx_wxvariant.html#wxvariant">wxVariant</A>. 
+Derive from wxVariantData, and override the pure virtual functions.<P>
+wxVariantData is <A HREF="wx_trefcount.html#refcount">reference counted</A>, but you don't normally have to care about this, 
+as wxVariant manages the count automatically. However, in case your application needs to take
+ownership of wxVariantData, be aware that the object is created with reference count of 1,
+and passing it to wxVariant will not increase this. In other words, <A HREF="wx_wxvariantdata.html#wxvariantdataincref">IncRef</A>
+needs to be called only if you both take ownership of wxVariantData and pass it to a wxVariant.
+Also note that the destructor is protected, so you can never explicitly delete a wxVariantData
+instance. Instead, <A HREF="wx_wxvariantdata.html#wxvariantdatadecref">DecRef</A> will delete the object automatically
+when the reference count reaches zero.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/variant.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxvariant.html#wxvariant">wxVariant</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxvariantdatactor">wxVariantData::wxVariantData</A><BR>
+<A HREF="#wxvariantdatadecref">wxVariantData::DecRef</A><BR>
+<A HREF="#wxvariantdataeq">wxVariantData::Eq</A><BR>
+<A HREF="#wxvariantdatagettype">wxVariantData::GetType</A><BR>
+<A HREF="#wxvariantdatagetvalueclassinfo">wxVariantData::GetValueClassInfo</A><BR>
+<A HREF="#wxvariantdataincref">wxVariantData::IncRef</A><BR>
+<A HREF="#wxvariantdataread">wxVariantData::Read</A><BR>
+<A HREF="#wxvariantdatawrite">wxVariantData::Write</A><BR>
+<A HREF="#wxgetvariantcast">wxGetVariantCast</A><BR>
+<P>
+
+<HR>
+<A NAME="wxvariantdatactor"></A>
+<H3>wxVariantData::wxVariantData</H3>
+<P>
+<B></B> <B>wxVariantData</B>()<P>
+Default constructor.<P>
+
+<HR>
+<A NAME="wxvariantdatadecref"></A>
+<H3>wxVariantData::DecRef</H3>
+<P>
+<B>void</B> <B>DecRef</B>()<P>
+Decreases reference count. If the count reaches zero, the object is
+automatically deleted.<P>
+Note that destructor of wxVariantData is protected, so delete
+cannot be used as normal. Instead, <A HREF="wx_wxvariantdata.html#wxvariantdatadecref">DecRef</A> should be called.<P>
+<P>
+
+<HR>
+<A NAME="wxvariantdataeq"></A>
+<H3>wxVariantData::Eq</H3>
+<P>
+<B>bool</B> <B>Eq</B>(<B><A HREF="wx_wxvariantdata.html#wxvariantdata">wxVariantData</A>&</B></B><I> data</I>) <B>const</B><P>
+Returns true if this object is equal to <I>data</I>.<P>
+
+<HR>
+<A NAME="wxvariantdatagettype"></A>
+<H3>wxVariantData::GetType</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetType</B>() <B>const</B><P>
+Returns the string type of the data.<P>
+
+<HR>
+<A NAME="wxvariantdatagetvalueclassinfo"></A>
+<H3>wxVariantData::GetValueClassInfo</H3>
+<P>
+<B><A HREF="wx_wxclassinfo.html#wxclassinfo">wxClassInfo</A>*</B> </B> <B>GetValueClassInfo</B>() <B>const</B><P>
+If the data is a wxObject returns a pointer to the objects wxClassInfo structure, if
+the data isn't a wxObject the method returns NULL.<P>
+
+<HR>
+<A NAME="wxvariantdataincref"></A>
+<H3>wxVariantData::IncRef</H3>
+<P>
+<B>void</B> <B>IncRef</B>()<P>
+Increases reference count. Note that initially wxVariantData has reference count of 1.<P>
+
+<HR>
+<A NAME="wxvariantdataread"></A>
+<H3>wxVariantData::Read</H3>
+<P>
+<B>bool</B> <B>Read</B>(<B>ostream&amp;</B><I> stream</I>)<P>
+<B>bool</B> <B>Read</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> string</I>)<P>
+Reads the data from <I>stream</I> or <I>string</I>.<P>
+
+<HR>
+<A NAME="wxvariantdatawrite"></A>
+<H3>wxVariantData::Write</H3>
+<P>
+<B>bool</B> <B>Write</B>(<B>ostream&amp;</B><I> stream</I>) <B>const</B><P>
+<B>bool</B> <B>Write</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> string</I>) <B>const</B><P>
+Writes the data to <I>stream</I> or <I>string</I>.<P>
+
+
+<HR>
+<A NAME="wxgetvariantcast"></A>
+<H3>wxGetVariantCast</H3>
+<P>
+<B>classname *</B> <B>wxGetVariantCast</B>(wxVariant&amp;, classname)<P>
+This macro returns the data stored in <I>variant</I> cast to the type <I>classname *</I> if
+the data is of this type (the check is done during the run-time) or
+<TT>NULL</TT> otherwise.<P>
+
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_runtimeclassoverview.html#runtimeclassoverview">RTTI overview</A><BR>
+
+<A HREF="wx_rttimacros.html#wxdynamiccast">wxDynamicCast</A><P>
+
+</FONT></BODY></HTML>

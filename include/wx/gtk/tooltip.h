@@ -2,17 +2,13 @@
 // Name:        tooltip.h
 // Purpose:     wxToolTip class
 // Author:      Robert Roebling
-// Id:          $Id: tooltip.h,v 1.11 2005/08/02 22:57:59 MW Exp $
+// Id:          $Id: tooltip.h 39041 2006-05-04 23:34:10Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKTOOLTIPH__
 #define __GTKTOOLTIPH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface
-#endif
 
 #include "wx/defs.h"
 #include "wx/string.h"
@@ -32,11 +28,11 @@ class WXDLLIMPEXP_CORE wxWindow;
 class WXDLLIMPEXP_CORE wxToolTip : public wxObject
 {
 public:
+    wxToolTip( const wxString &tip );
+
     // globally change the tooltip parameters
     static void Enable( bool flag );
     static void SetDelay( long msecs );
-
-    wxToolTip( const wxString &tip );
 
     // get/set the tooltip text
     void SetTip( const wxString &tip );
@@ -45,8 +41,16 @@ public:
     wxWindow *GetWindow() const { return m_window; }
     bool IsOk() const { return m_window != NULL; }
 
-    // implementation
+
+    // wxGTK-only from now on
+
+    // this forwards back to wxWindow::ApplyToolTip()
     void Apply( wxWindow *win );
+
+    // this just sets the given tooltip for the specified widget
+    //
+    // tip must be already UTF-8 encoded
+    static void Apply(GtkWidget *w, const wxCharBuffer& tip);
 
 private:
     wxString     m_text;

@@ -1,0 +1,68 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxProcessEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxprocessevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxprocess.html#wxprocess"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxprogressdialog.html#wxprogressdialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxProcessEvent</H2>
+<P>
+A process event is sent when a process is terminated.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/process.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process a wxProcessEvent, use these event handler macros to direct input to a member
+function that takes a wxProcessEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_END_PROCESS(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_END_PROCESS event.
+<I>id</I> is the identifier of the process object (the id passed to the wxProcess constructor)
+or a window to receive the event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxprocess.html#wxprocess">wxProcess</A>,
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxprocesseventctor">wxProcessEvent::wxProcessEvent</A><BR>
+<A HREF="#wxprocesseventgetpid">wxProcessEvent::GetPid</A><BR>
+<A HREF="#wxprocesseventgetexitcode">wxProcessEvent::GetExitCode</A><BR>
+<P>
+
+<HR>
+<A NAME="wxprocesseventctor"></A>
+<H3>wxProcessEvent::wxProcessEvent</H3>
+<P>
+<B></B> <B>wxProcessEvent</B>(<B>int </B><I>id = 0</I>, <B>int </B><I>pid = 0</I>, <B>int </B><I>exitcode = 0</I>)<P>
+Constructor. Takes a wxProcessObject or window id, a process id and an
+exit status.<P>
+
+<HR>
+<A NAME="wxprocesseventgetpid"></A>
+<H3>wxProcessEvent::GetPid</H3>
+<P>
+<B>int</B> <B>GetPid</B>() <B>const</B><P>
+Returns the process id.<P>
+
+<HR>
+<A NAME="wxprocesseventgetexitcode"></A>
+<H3>wxProcessEvent::GetExitCode</H3>
+<P>
+<B>int</B> <B>GetExitCode</B>()<P>
+Returns the exist status.<P>
+
+</FONT></BODY></HTML>

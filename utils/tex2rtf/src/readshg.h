@@ -8,7 +8,7 @@
 // Author:      Petr Smilauer
 // Modified by:
 // Created:     01/01/99
-// RCS-ID:      $Id: readshg.h,v 1.2 2004/01/08 11:54:29 JS Exp $
+// RCS-ID:      $Id: readshg.h 25095 2004-01-08 11:54:30Z JS $
 // Copyright:   (c) Petr Smilauer
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

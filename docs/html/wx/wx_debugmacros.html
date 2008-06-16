@@ -1,0 +1,235 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Debugging macros and functions</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="debugmacros"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_timefunctions.html#timefunctions"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_environfunctions.html#environfunctions"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Debugging macros and functions</H2>
+<P>
+Useful macros and functions for error checking and defensive programming.
+wxWidgets defines three families of the assert-like macros:
+the wxASSERT and wxFAIL macros only do anything if __WXDEBUG__ is defined
+(in other words, in the debug build) but disappear completely in the release
+build. On the other hand, the wxCHECK macros stay event in release builds but a
+check failure doesn't generate any user-visible effects then. Finally, the
+compile time assertions don't happen during the run-time but result in the
+compilation error messages if the condition they check fail.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/debug.h&gt;<P>
+
+<A HREF="#wxonassert">::wxOnAssert</A><BR>
+<A HREF="#wxassert">wxASSERT</A><BR>
+<A HREF="#wxassertminbitsize">wxASSERT_MIN_BITSIZE</A><BR>
+<A HREF="#wxassertmsg">wxASSERT_MSG</A><BR>
+<A HREF="#wxcompiletimeassert">wxCOMPILE_TIME_ASSERT</A><BR>
+<A HREF="#wxcompiletimeassert2">wxCOMPILE_TIME_ASSERT2</A><BR>
+<A HREF="#wxfail">wxFAIL</A><BR>
+<A HREF="#wxfailmsg">wxFAIL_MSG</A><BR>
+<A HREF="#wxcheck">wxCHECK</A><BR>
+<A HREF="#wxcheckmsg">wxCHECK_MSG</A><BR>
+<A HREF="#wxcheckret">wxCHECK_RET</A><BR>
+<A HREF="#wxcheck2">wxCHECK2</A><BR>
+<A HREF="#wxcheck2msg">wxCHECK2_MSG</A><BR>
+<A HREF="#wxtrap">::wxTrap</A><BR>
+<A HREF="#wxisdebuggerrunning">::wxIsDebuggerRunning</A><BR>
+<P>
+
+<HR>
+<A NAME="wxonassert"></A>
+<H3>::wxOnAssert</H3>
+<P>
+<B>void</B> <B>wxOnAssert</B>(<B>const char *</B><I>fileName</I>, <B>int</B><I> lineNumber</I>, <B>const char *</B><I>func</I>, <B>const char *</B><I>cond</I>, <B>const char *</B><I>msg = NULL</I>)<P>
+This function is called whenever one of debugging macros fails (i.e. condition
+is false in an assertion). It is only defined in the debug mode, in release
+builds the <A HREF="wx_debugmacros.html#wxcheck">wxCHECK</A> failures don't result in anything.<P>
+To override the default behaviour in the debug builds which is to show the user
+a dialog asking whether he wants to abort the program, continue or continue
+ignoring any subsequent assert failures, you may override
+<A HREF="wx_wxapp.html#wxapponassertfailure">wxApp::OnAssertFailure</A> which is called by this function if
+the global application object exists.<P>
+
+
+<HR>
+<A NAME="wxassert"></A>
+<H3>wxASSERT</H3>
+<P>
+<B></B> <B>wxASSERT</B>(<B></B><I>condition</I>)<P>
+Assert macro. An error message will be generated if the condition is false in
+debug mode, but nothing will be done in the release build.<P>
+Please note that the condition in wxASSERT() should have no side effects
+because it will not be executed in release mode at all.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_debugmacros.html#wxassertmsg">wxASSERT_MSG</A>,<BR>
+
+<A HREF="wx_debugmacros.html#wxcompiletimeassert">wxCOMPILE_TIME_ASSERT</A><P>
+
+
+<HR>
+<A NAME="wxassertminbitsize"></A>
+<H3>wxASSERT_MIN_BITSIZE</H3>
+<P>
+<B></B> <B>wxASSERT_MIN_BITSIZE</B>(<B></B><I>type</I>, <B></B><I>size</I>)<P>
+This macro results in a
+<A HREF="wx_debugmacros.html#wxcompiletimeassert">compile time assertion failure</A> if the size
+of the given type <I>type</I> is less than <I>size</I> bits.<P>
+You may use it like this, for example:<P>
+<PRE>
+    // we rely on the int being able to hold values up to 2^32
+    wxASSERT_MIN_BITSIZE(int, 32);
+
+    // can't work with the platforms using UTF-8 for wchar_t
+    wxASSERT_MIN_BITSIZE(wchar_t, 16);
+</PRE>
+
+
+<HR>
+<A NAME="wxassertmsg"></A>
+<H3>wxASSERT_MSG</H3>
+<P>
+<B></B> <B>wxASSERT_MSG</B>(<B></B><I>condition</I>, <B></B><I>msg</I>)<P>
+Assert macro with message. An error message will be generated if the condition is false.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_debugmacros.html#wxassert">wxASSERT</A>,<BR>
+
+<A HREF="wx_debugmacros.html#wxcompiletimeassert">wxCOMPILE_TIME_ASSERT</A><P>
+
+
+<HR>
+<A NAME="wxcompiletimeassert"></A>
+<H3>wxCOMPILE_TIME_ASSERT</H3>
+<P>
+<B></B> <B>wxCOMPILE_TIME_ASSERT</B>(<B></B><I>condition</I>, <B></B><I>msg</I>)<P>
+Using <TT>wxCOMPILE_TIME_ASSERT</TT> results in a compilation error if the
+specified <I>condition</I> is false. The compiler error message should include
+the <I>msg</I> identifier - please note that it must be a valid C++ identifier
+and not a string unlike in the other cases.<P>
+This macro is mostly useful for testing the expressions involving the
+<TT>sizeof</TT> operator as they can't be tested by the preprocessor but it is
+sometimes desirable to test them at the compile time.<P>
+Note that this macro internally declares a struct whose name it tries to make
+unique by using the <TT>__LINE__</TT> in it but it may still not work if you
+use it on the same line in two different source files. In this case you may
+either change the line in which either of them appears on or use the
+<A HREF="wx_debugmacros.html#wxcompiletimeassert2">wxCOMPILE_TIME_ASSERT2</A> macro.<P>
+Also note that Microsoft Visual C++ has a bug which results in compiler errors
+if you use this macro with 'Program Database For Edit And Continue'
+(<TT>/ZI</TT>) option, so you shouldn't use it ('Program Database'
+(<TT>/Zi</TT>) is ok though) for the code making use of this macro.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_debugmacros.html#wxassertmsg">wxASSERT_MSG</A>,<BR>
+
+<A HREF="wx_debugmacros.html#wxassertminbitsize">wxASSERT_MIN_BITSIZE</A><P>
+
+
+<HR>
+<A NAME="wxcompiletimeassert2"></A>
+<H3>wxCOMPILE_TIME_ASSERT2</H3>
+<P>
+<B></B> <B>wxCOMPILE_TIME_ASSERT</B>(<B></B><I>condition</I>, <B></B><I>msg</I>, <B></B><I>name</I>)<P>
+This macro is identical to <A HREF="wx_debugmacros.html#wxcompiletimeassert2">wxCOMPILE_TIME_ASSERT2</A>
+except that it allows you to specify a unique <I>name</I> for the struct
+internally defined by this macro to avoid getting the compilation errors
+described <A HREF="wx_debugmacros.html#wxcompiletimeassert">above</A>.<P>
+
+
+<HR>
+<A NAME="wxfail"></A>
+<H3>wxFAIL</H3>
+<P>
+<B></B> <B>wxFAIL</B>()<P>
+Will always generate an assert error if this code is reached (in debug mode).<P>
+See also: <A HREF="wx_debugmacros.html#wxfailmsg">wxFAIL_MSG</A><P>
+
+
+<HR>
+<A NAME="wxfailmsg"></A>
+<H3>wxFAIL_MSG</H3>
+<P>
+<B></B> <B>wxFAIL_MSG</B>(<B></B><I>msg</I>)<P>
+Will always generate an assert error with specified message if this code is reached (in debug mode).<P>
+This macro is useful for marking unreachable" code areas, for example
+it may be used in the "default:" branch of a switch statement if all possible
+cases are processed above.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_debugmacros.html#wxfail">wxFAIL</A><P>
+
+
+<HR>
+<A NAME="wxcheck"></A>
+<H3>wxCHECK</H3>
+<P>
+<B></B> <B>wxCHECK</B>(<B></B><I>condition</I>, <B></B><I>retValue</I>)<P>
+Checks that the condition is true, returns with the given return value if not (FAILs in debug mode).
+This check is done even in release mode.<P>
+
+
+<HR>
+<A NAME="wxcheckmsg"></A>
+<H3>wxCHECK_MSG</H3>
+<P>
+<B></B> <B>wxCHECK_MSG</B>(<B></B><I>condition</I>, <B></B><I>retValue</I>, <B></B><I>msg</I>)<P>
+Checks that the condition is true, returns with the given return value if not (FAILs in debug mode).
+This check is done even in release mode.<P>
+This macro may be only used in non-void functions, see also
+<A HREF="wx_debugmacros.html#wxcheckret">wxCHECK_RET</A>.<P>
+
+
+<HR>
+<A NAME="wxcheckret"></A>
+<H3>wxCHECK_RET</H3>
+<P>
+<B></B> <B>wxCHECK_RET</B>(<B></B><I>condition</I>, <B></B><I>msg</I>)<P>
+Checks that the condition is true, and returns if not (FAILs with given error
+message in debug mode). This check is done even in release mode.<P>
+This macro should be used in void functions instead of
+<A HREF="wx_debugmacros.html#wxcheckmsg">wxCHECK_MSG</A>.<P>
+
+
+<HR>
+<A NAME="wxcheck2"></A>
+<H3>wxCHECK2</H3>
+<P>
+<B></B> <B>wxCHECK2</B>(<B></B><I>condition</I>, <B></B><I>operation</I>)<P>
+Checks that the condition is true and <A HREF="wx_debugmacros.html#wxfail">wxFAIL</A> and execute
+<I>operation</I> if it is not. This is a generalisation of
+<A HREF="wx_debugmacros.html#wxcheck">wxCHECK</A> and may be used when something else than just
+returning from the function must be done when the <I>condition</I> is false.<P>
+This check is done even in release mode.<P>
+
+
+<HR>
+<A NAME="wxcheck2msg"></A>
+<H3>wxCHECK2_MSG</H3>
+<P>
+<B></B> <B>wxCHECK2</B>(<B></B><I>condition</I>, <B></B><I>operation</I>, <B></B><I>msg</I>)<P>
+This is the same as <A HREF="wx_debugmacros.html#wxcheck2">wxCHECK2</A>, but
+<A HREF="wx_debugmacros.html#wxfailmsg">wxFAIL_MSG</A> with the specified <I>msg</I> is called
+instead of wxFAIL() if the <I>condition</I> is false.<P>
+
+
+<HR>
+<A NAME="wxtrap"></A>
+<H3>::wxTrap</H3>
+<P>
+<B>void</B> <B>wxTrap</B>()<P>
+In debug mode (when <TT>__WXDEBUG__</TT> is defined) this function generates a
+debugger exception meaning that the control is passed to the debugger if one is
+attached to the process. Otherwise the program just terminates abnormally.<P>
+In release mode this function does nothing.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/debug.h&gt;<P>
+<P>
+
+<HR>
+<A NAME="wxisdebuggerrunning"></A>
+<H3>::wxIsDebuggerRunning</H3>
+<P>
+<B>bool</B> <B>wxIsDebuggerRunning</B>()<P>
+Returns <TT>true</TT> if the program is running under debugger, <TT>false</TT> otherwise.<P>
+Please note that this function is currently only implemented for Win32 and Mac
+builds using CodeWarrior and always returns <TT>false</TT> elsewhere.<P>
+<P>
+
+
+</FONT></BODY></HTML>

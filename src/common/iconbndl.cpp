@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        iconbndl.cpp
+// Name:        src/common/iconbndl.cpp
 // Purpose:     wxIconBundle
 // Author:      Mattia Barbon
 // Created:     23.03.2002
-// RCS-ID:      $Id: iconbndl.cpp,v 1.11.4.1 2006/01/21 16:46:33 JS Exp $
+// RCS-ID:      $Id: iconbndl.cpp 40654 2006-08-17 16:08:13Z VS $
 // Copyright:   (c) Mattia barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "iconbndl.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -19,19 +15,17 @@
     #pragma hdrstop
 #endif
 
+#include "wx/iconbndl.h"
+
 #ifndef WX_PRECOMP
     #include "wx/settings.h"
     #include "wx/icon.h"
     #include "wx/log.h"
     #include "wx/intl.h"
     #include "wx/bitmap.h"
-#endif
-
-#if wxUSE_IMAGE && !defined(_WX_IMAGE_H_)
     #include "wx/image.h"
 #endif
 
-#include "wx/iconbndl.h"
 #include "wx/arrimpl.cpp"
 
 WX_DEFINE_OBJARRAY(wxIconArray)
@@ -84,16 +78,29 @@ void wxIconBundle::AddIcon( const wxString& WXUNUSED(file), long WXUNUSED(type) 
 
 const wxIcon& wxIconBundle::GetIcon( const wxSize& size ) const
 {
-    size_t i, max = m_icons.GetCount();
-    wxCoord sysX = wxSystemSettings::GetMetric( wxSYS_ICON_X ),
-            sysY = wxSystemSettings::GetMetric( wxSYS_ICON_Y );
-
-    wxIcon *sysIcon = 0;
     // temp. variable needed to fix Borland C++ 5.5.1 problem
     // with passing a return value through two functions
     wxIcon *tmp;
 
-    for( i = 0; i < max; i++ )
+    size_t max = m_icons.GetCount();
+
+    // if we have one or no icon, we can return now without doing more work:
+    if ( max <= 1 )
+    {
+        if ( max == 1 ) // fix for broken BCC
+            tmp = &m_icons[0];
+        else // max == 0
+            tmp = &wxNullIcon;
+        return *tmp;
+    }
+
+    // there are more icons, find the best match:
+    wxCoord sysX = wxSystemSettings::GetMetric( wxSYS_ICON_X ),
+            sysY = wxSystemSettings::GetMetric( wxSYS_ICON_Y );
+
+    wxIcon *sysIcon = 0;
+
+    for( size_t i = 0; i < max; i++ )
     {
         if( !m_icons[i].Ok() )
             continue;
@@ -111,11 +118,8 @@ const wxIcon& wxIconBundle::GetIcon( const wxSize& size ) const
 
     // return the system-sized icon if we've got one
     if( sysIcon ) return *sysIcon;
-    // return the first icon, if we have one
-    if( max > 0 ) // fix for broken BCC
-        tmp = &m_icons[0];
-    else
-        tmp = &wxNullIcon;
+    // we certainly have at least one icon thanks to the <=1 check above
+    tmp = &m_icons[0];
     return *tmp;
 }
 

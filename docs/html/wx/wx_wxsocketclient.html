@@ -1,0 +1,123 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSocketClient</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsocketclient"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsocketbase.html#wxsocketbase"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsocketevent.html#wxsocketevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSocketClient</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/socket.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsocketclientctor">wxSocketClient::wxSocketClient</A><BR>
+<A HREF="#wxsocketclientdtor">wxSocketClient::~wxSocketClient</A><BR>
+<A HREF="#wxsocketclientconnect">wxSocketClient::Connect</A><BR>
+<A HREF="#wxsocketclientwaitonconnect">wxSocketClient::WaitOnConnect</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsocketclientctor"></A>
+<H3>wxSocketClient::wxSocketClient</H3>
+<P>
+<B></B> <B>wxSocketClient</B>(<B>wxSocketFlags</B><I> flags = wxSOCKET_NONE</I>)<P>
+Constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>flags</I><UL><UL>
+Socket flags (See <A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A>)</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxsocketclientdtor"></A>
+<H3>wxSocketClient::~wxSocketClient</H3>
+<P>
+<B></B> <B>~wxSocketClient</B>()<P>
+Destructor. Please see <A HREF="wx_wxsocketbase.html#wxsocketbasedestroy">wxSocketBase::Destroy</A>.<P>
+
+<HR>
+<A NAME="wxsocketclientconnect"></A>
+<H3>wxSocketClient::Connect</H3>
+<P>
+<B>bool</B> <B>Connect</B>(<B><A HREF="wx_wxsockaddress.html#wxsockaddress">wxSockAddress</A>&</B></B><I> address</I>, <B>bool</B><I> wait = true</I>)<P>
+<B>bool</B> <B>Connect</B>(<B><A HREF="wx_wxsockaddress.html#wxsockaddress">wxSockAddress</A>&</B></B><I> address</I>, <B><A HREF="wx_wxsockaddress.html#wxsockaddress">wxSockAddress</A>&</B></B><I> local</I>,
+<B>bool</B><I> wait = true</I>)<P>
+Connects to a server using the specified address.<P>
+If <I>wait</I> is true, Connect will wait until the connection
+completes. <B>Warning:</B> This will block the GUI.<P>
+If <I>wait</I> is false, Connect will try to establish the connection and
+return immediately, without blocking the GUI. When used this way, even if
+Connect returns false, the connection request can be completed later.
+To detect this, use <A HREF="wx_wxsocketclient.html#wxsocketclientwaitonconnect">WaitOnConnect</A>,
+or catch <B>wxSOCKET_CONNECTION</B> events (for successful establishment)
+and <B>wxSOCKET_LOST</B> events (for connection failure).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>address</I><UL><UL>
+Address of the server.</UL></UL>
+<P>
+<I>local</I><UL><UL>
+Bind to the specified local address and port before connecting.
+The local address and port can also be set using <A HREF="wx_wxsocketbase.html#wxsocketbasesetlocal">SetLocal</A>,
+and then using the 2-parameter Connect method.</UL></UL>
+<P>
+<I>wait</I><UL><UL>
+If true, waits for the connection to complete.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true if the connection is established and no error occurs.<P>
+If <I>wait</I> was true, and Connect returns false, an error occurred
+and the connection failed.<P>
+If <I>wait</I> was false, and Connect returns false, you should still
+be prepared to handle the completion of this connection request, either
+with <A HREF="wx_wxsocketclient.html#wxsocketclientwaitonconnect">WaitOnConnect</A> or by
+watching <B>wxSOCKET_CONNECTION</B> and <B>wxSOCKET_LOST</B> events.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketclient.html#wxsocketclientwaitonconnect">wxSocketClient::WaitOnConnect</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetnotify">wxSocketBase::SetNotify</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasenotify">wxSocketBase::Notify</A><P>
+
+<HR>
+<A NAME="wxsocketclientwaitonconnect"></A>
+<H3>wxSocketClient::WaitOnConnect</H3>
+<P>
+<B>bool</B> <B>WaitOnConnect</B>(<B>long</B><I> seconds = -1</I>, <B>long</B><I> milliseconds = 0</I>)<P>
+Wait until a connection request completes, or until the specified timeout
+elapses. Use this function after issuing a call
+to <A HREF="wx_wxsocketclient.html#wxsocketclientconnect">Connect</A> with <I>wait</I> set to false.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>seconds</I><UL><UL>
+Number of seconds to wait.
+If -1, it will wait for the default timeout,
+as set with <A HREF="wx_wxsocketbase.html#wxsocketbasesettimeout">SetTimeout</A>.</UL></UL>
+<P>
+<I>millisecond</I><UL><UL>
+Number of milliseconds to wait.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+WaitOnConnect returns true if the connection request completes. This
+does not necessarily mean that the connection was successfully established;
+it might also happen that the connection was refused by the peer. Use 
+<A HREF="wx_wxsocketbase.html#wxsocketbaseisconnected">IsConnected</A> to distinguish between
+these two situations.<P>
+If the timeout elapses, WaitOnConnect returns false.<P>
+These semantics allow code like this:<P>
+<PRE>
+// Issue the connection request
+client-&gt;Connect(addr, false);
+
+// Wait until the request completes or until we decide to give up
+bool waitmore = true; 
+while ( !client-&gt;WaitOnConnect(seconds, millis) && waitmore )
+{
+    // possibly give some feedback to the user,
+    // and update waitmore as needed.
+}
+bool success = client-&gt;IsConnected();
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketclient.html#wxsocketclientconnect">wxSocketClient::Connect</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaseinterruptwait">wxSocketBase::InterruptWait</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbaseisconnected">wxSocketBase::IsConnected</A><P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,293 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextStyleOrganiserDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextstyleorganiserdialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextstylelistctrl.html#wxrichtextstylelistctrl"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextStyleOrganiserDialog</H2>
+<P>
+This class shows a style sheet and allows the user to edit, add and remove styles.
+It can also be used as a style browser, for example if the application is not
+using a permanent <A HREF="wx_wxrichtextstylecomboctrl.html#wxrichtextstylecomboctrl">wxRichTextStyleComboCtrl</A> or <A HREF="wx_wxrichtextstylelistctrl.html#wxrichtextstylelistctrl">wxRichTextStyleListCtrl</A> to
+present styles.
+ 
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextstyledlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextstyleorganiserdialogwxrichtextstyleorganiserdialog">wxRichTextStyleOrganiserDialog::wxRichTextStyleOrganiserDialog</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialogapplystyle">wxRichTextStyleOrganiserDialog::ApplyStyle</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialogcreate">wxRichTextStyleOrganiserDialog::Create</A><BR>
+<A HREF="#topic2">wxRichTextStyleOrganiserDialog::wxRichTextStyleOrganiserDialog</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialoggetflags">wxRichTextStyleOrganiserDialog::GetFlags</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialoggetrestartnumbering">wxRichTextStyleOrganiserDialog::GetRestartNumbering</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialoggetrichtextctrl">wxRichTextStyleOrganiserDialog::GetRichTextCtrl</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialoggetselectedstyle">wxRichTextStyleOrganiserDialog::GetSelectedStyle</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialoggetselectedstyledefinition">wxRichTextStyleOrganiserDialog::GetSelectedStyleDefinition</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialoggetstylesheet">wxRichTextStyleOrganiserDialog::GetStyleSheet</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialogsetflags">wxRichTextStyleOrganiserDialog::SetFlags</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialogsetrestartnumbering">wxRichTextStyleOrganiserDialog::SetRestartNumbering</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialogsetrichtextctrl">wxRichTextStyleOrganiserDialog::SetRichTextCtrl</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialogsetshowtooltips">wxRichTextStyleOrganiserDialog::SetShowToolTips</A><BR>
+<A HREF="#wxrichtextstyleorganiserdialogsetstylesheet">wxRichTextStyleOrganiserDialog::SetStyleSheet</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialogwxrichtextstyleorganiserdialog"></A>
+<H3>wxRichTextStyleOrganiserDialog::wxRichTextStyleOrganiserDialog</H3>
+<P>
+<B></B> <B>wxRichTextStyleOrganiserDialog</B>(<B>int </B><I>flags</I>, <B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>* </B></B><I>sheet</I>, <B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption = _("Style Organiser")</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</I>)<P>
+<B></B> <B>wxRichTextStyleOrganiserDialog</B>()<P>
+Constructors.<P>
+To create a dialog, pass a bitlist of <I>flags</I> (see below), a style sheet, a text control to apply a selected style to (or NULL), followed by the usual window parameters.<P>
+To specify the operations available to the user, pass a combination of these values to <I>flags</I>:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_DELETE_STYLES</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Provides a button for deleting styles.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_CREATE_STYLES</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Provides buttons for creating styles.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_APPLY_STYLES</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Provides a button for applying the currently selected style to the selection.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_EDIT_STYLES</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Provides a button for editing styles.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_RENAME_STYLES</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Provides a button for renaming styles.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_OK_CANCEL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Provides OK and Cancel buttons.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_RENUMBER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Provides a checkbox for specifying that the selection should be renumbered.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The following flags determine what will be displayed in the style list:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_SHOW_CHARACTER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays character styles only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_SHOW_PARAGRAPH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays paragraph styles only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_SHOW_LIST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays list styles only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_SHOW_ALL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays all styles.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The following symbols define commonly-used combinations of flags:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_ORGANISE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Enable all style editing operations so the dialog behaves as a style organiser.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_BROWSE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Show a list of all styles and their previews, but only allow application of a style or
+cancellation of the dialog. This makes the dialog behave as a style browser.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxRICHTEXT_ORGANISER_BROWSE_NUMBERING</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Enables only list style browsing, plus a control to specify renumbering. This
+allows the dialog to be used for applying list styles to the selection.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialogapplystyle"></A>
+<H3>wxRichTextStyleOrganiserDialog::ApplyStyle</H3>
+<P>
+<B>bool</B> <B>ApplyStyle</B>(<B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl = NULL</I>)<P>
+Applies the selected style to selection in the given control or the control passed to the constructor.<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialogcreate"></A>
+<H3>wxRichTextStyleOrganiserDialog::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>int </B><I>flags</I>, <B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>* </B></B><I>sheet</I>, <B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = wxID_ANY</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption = _("Style Organiser")</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</I>)<P>
+Creates the dialog. See 
+<HR>
+<A NAME="topic2"></A>
+<H3>wxRichTextStyleOrganiserDialog::wxRichTextStyleOrganiserDialog</H3>
+wxrichtextstyleorganiserdialogwxrichtextstyleorganiserdialog for details.<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialoggetflags"></A>
+<H3>wxRichTextStyleOrganiserDialog::GetFlags</H3>
+<P>
+<B>int</B> <B>GetFlags</B>() <B>const</B><P>
+Returns the flags used to control the interface presented to the user.<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialoggetrestartnumbering"></A>
+<H3>wxRichTextStyleOrganiserDialog::GetRestartNumbering</H3>
+<P>
+<B>bool</B> <B>GetRestartNumbering</B>() <B>const</B><P>
+Returns <TT>true</TT> if the user has opted to restart numbering.<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialoggetrichtextctrl"></A>
+<H3>wxRichTextStyleOrganiserDialog::GetRichTextCtrl</H3>
+<P>
+<B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>*</B> </B> <B>GetRichTextCtrl</B>() <B>const</B><P>
+Returns the associated rich text control (if any).<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialoggetselectedstyle"></A>
+<H3>wxRichTextStyleOrganiserDialog::GetSelectedStyle</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetSelectedStyle</B>() <B>const</B><P>
+Returns selected style name.<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialoggetselectedstyledefinition"></A>
+<H3>wxRichTextStyleOrganiserDialog::GetSelectedStyleDefinition</H3>
+<P>
+<B><A HREF="wx_wxrichtextstyledefinition.html#wxrichtextstyledefinition">wxRichTextStyleDefinition</A>*</B> </B> <B>GetSelectedStyleDefinition</B>() <B>const</B><P>
+Returns selected style definition.<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialoggetstylesheet"></A>
+<H3>wxRichTextStyleOrganiserDialog::GetStyleSheet</H3>
+<P>
+<B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>*</B> </B> <B>GetStyleSheet</B>() <B>const</B><P>
+Returns the associated style sheet.<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialogsetflags"></A>
+<H3>wxRichTextStyleOrganiserDialog::SetFlags</H3>
+<P>
+<B>void</B> <B>SetFlags</B>(<B>int </B><I>flags</I>)<P>
+Sets the flags used to control the interface presented to the user.<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialogsetrestartnumbering"></A>
+<H3>wxRichTextStyleOrganiserDialog::SetRestartNumbering</H3>
+<P>
+<B>void</B> <B>SetRestartNumbering</B>(<B>bool </B><I>restartNumbering</I>)<P>
+Checks or unchecks the restart numbering checkbox.<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialogsetrichtextctrl"></A>
+<H3>wxRichTextStyleOrganiserDialog::SetRichTextCtrl</H3>
+<P>
+<B>void</B> <B>SetRichTextCtrl</B>(<B><A HREF="wx_wxrichtextctrl.html#wxrichtextctrl">wxRichTextCtrl</A>* </B></B><I>ctrl</I>)<P>
+Sets the control to be associated with the dialog, for the purposes of applying a style to the selection.<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialogsetshowtooltips"></A>
+<H3>wxRichTextStyleOrganiserDialog::SetShowToolTips</H3>
+<P>
+<B>void</B> <B>SetShowToolTips</B>(<B>bool </B><I>show</I>)<P>
+Determines whether tooltips will be shown.<P>
+
+<HR>
+<A NAME="wxrichtextstyleorganiserdialogsetstylesheet"></A>
+<H3>wxRichTextStyleOrganiserDialog::SetStyleSheet</H3>
+<P>
+<B>void</B> <B>SetStyleSheet</B>(<B><A HREF="wx_wxrichtextstylesheet.html#wxrichtextstylesheet">wxRichTextStyleSheet</A>* </B></B><I>sheet</I>)<P>
+Sets the associated style sheet.<P>
+
+</FONT></BODY></HTML>

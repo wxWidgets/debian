@@ -1,0 +1,683 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Miscellaneous functions</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="miscellany"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_clipsboard.html#clipsboard"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_byteordermacros.html#byteordermacros"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Miscellaneous functions</H2>
+<P>
+
+<A HREF="#wxconcat">wxCONCAT</A><BR>
+<A HREF="#wxdynlibfunction">wxDYNLIB_FUNCTION</A><BR>
+<A HREF="#wxexplicit">wxEXPLICIT</A><BR>
+<A HREF="#wxgetkeystate">::wxGetKeyState</A><BR>
+<A HREF="#wxll">wxLL</A><BR>
+<A HREF="#wxlonglongfmtspec">wxLongLongFmtSpec</A><BR>
+<A HREF="#wxnewid">::wxNewId</A><BR>
+<A HREF="#wxonblockexit">wxON_BLOCK_EXIT</A><BR>
+<A HREF="#wxonblockexitobj">wxON_BLOCK_EXIT_OBJ</A><BR>
+<A HREF="#wxregisterid">::wxRegisterId</A><BR>
+<A HREF="#wxddecleanup">::wxDDECleanUp</A><BR>
+<A HREF="#wxddeinitialize">::wxDDEInitialize</A><BR>
+<A HREF="#wxenabletoplevelwindows">::wxEnableTopLevelWindows</A><BR>
+<A HREF="#wxfindmenuitemid">::wxFindMenuItemId</A><BR>
+<A HREF="#wxfindwindowbylabel">::wxFindWindowByLabel</A><BR>
+<A HREF="#wxfindwindowbyname">::wxFindWindowByName</A><BR>
+<A HREF="#wxfindwindowatpoint">::wxFindWindowAtPoint</A><BR>
+<A HREF="#wxfindwindowatpointer">::wxFindWindowAtPointer</A><BR>
+<A HREF="#wxgetactivewindow">::wxGetActiveWindow</A><BR>
+<A HREF="#wxgetbatterystate">::wxGetBatteryState</A><BR>
+<A HREF="#wxgetdisplayname">::wxGetDisplayName</A><BR>
+<A HREF="#wxgetpowertype">::wxGetPowerType</A><BR>
+<A HREF="#wxgetmouseposition">::wxGetMousePosition</A><BR>
+<A HREF="#wxgetmousestate">::wxGetMouseState</A><BR>
+<A HREF="#wxgetresource">::wxGetResource</A><BR>
+<A HREF="#wxgetstocklabel">::wxGetStockLabel</A><BR>
+<A HREF="#wxgettoplevelparent">::wxGetTopLevelParent</A><BR>
+<A HREF="#wxlaunchdefaultbrowser">::wxLaunchDefaultBrowser</A><BR>
+<A HREF="#wxloaduserresource">::wxLoadUserResource</A><BR>
+<A HREF="#wxpostdelete">::wxPostDelete</A><BR>
+<A HREF="#wxpostevent">::wxPostEvent</A><BR>
+<A HREF="#wxsetdisplayname">::wxSetDisplayName</A><BR>
+<A HREF="#wxstripmenucodes">::wxStripMenuCodes</A><BR>
+<A HREF="#wxstringize">wxSTRINGIZE</A><BR>
+<A HREF="#wxstringizet">wxSTRINGIZE_T</A><BR>
+<A HREF="#wxsuppressgccprivatedtorwarning">wxSUPPRESS_GCC_PRIVATE_DTOR_WARNING</A><BR>
+<A HREF="#wxull">wxULL</A><BR>
+<A HREF="#wxvacopy">wxVaCopy</A><BR>
+<A HREF="#wxwriteresource">::wxWriteResource</A><BR>
+<A HREF="#wxfunction">__WXFUNCTION__</A><BR>
+<P>
+
+<HR>
+<A NAME="wxconcat"></A>
+<H3>wxCONCAT</H3>
+<P>
+<B></B> <B>wxCONCAT</B>(<B></B><I>x</I>, <B></B><I>y</I>)<P>
+This macro returns the concatenation of two tokens <I>x</I> and <I>y</I>.<P>
+
+
+<HR>
+<A NAME="wxdynlibfunction"></A>
+<H3>wxDYNLIB_FUNCTION</H3>
+<P>
+<B></B> <B>wxDYNLIB_FUNCTION</B>(<B></B><I>type</I>, <B></B><I>name</I>, <B></B><I>dynlib</I>)<P>
+When loading a function from a DLL you always have to cast the returned
+<TT>void *</TT> pointer to the correct type and, even more annoyingly, you have to
+repeat this type twice if you want to declare and define a function pointer all
+in one line<P>
+This macro makes this slightly less painful by allowing you to specify the
+type only once, as the first parameter, and creating a variable of this type
+named after the function but with <TT>pfn</TT> prefix and initialized with the
+function <I>name</I> from the <A HREF="wx_wxdynamiclibrary.html#wxdynamiclibrary">wxDynamicLibrary</A>
+<I>dynlib</I>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>type</I><UL><UL>
+the type of the function</UL></UL>
+<P>
+<I>name</I><UL><UL>
+the name of the function to load, not a string (without quotes,
+it is quoted automatically by the macro)</UL></UL>
+<P>
+<I>dynlib</I><UL><UL>
+the library to load the function from</UL></UL>
+<P>
+<P>
+
+<HR>
+<A NAME="wxexplicit"></A>
+<H3>wxEXPLICIT</H3>
+<P>
+<TT>wxEXPLICIT</TT> is a macro which expands to the C++ <TT>explicit</TT> keyword if
+the compiler supports it or nothing otherwise. Thus, it can be used even in the
+code which might have to be compiled with an old compiler without support for
+this language feature but still take advantage of it when it is available.<P>
+<P>
+
+<HR>
+<A NAME="wxgetkeystate"></A>
+<H3>::wxGetKeyState</H3>
+<P>
+<B>bool</B> <B>wxGetKeyState</B>(<B>wxKeyCode </B><I>key</I>)<P>
+For normal keys, returns <TT>true</TT> if the specified key is currently down.<P>
+For togglable keys (Caps Lock, Num Lock and Scroll Lock), returns
+<TT>true</TT> if the key is toggled such that its LED indicator is lit. There is
+currently no way to test whether togglable keys are up or down.<P>
+Even though there are virtual key codes defined for mouse buttons, they
+cannot be used with this function currently.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxll"></A>
+<H3>wxLL</H3>
+<P>
+<B>wxLongLong_t</B> <B>wxLL</B>(<B></B><I>number</I>)<P>
+This macro is defined for the platforms with a native 64 bit integer type and
+allows to define 64 bit compile time constants:<P>
+<PRE>
+    #ifdef wxLongLong_t
+        wxLongLong_t ll = wxLL(0x1234567890abcdef);
+    #endif
+</PRE>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/longlong.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_miscellany.html#wxull">wxULL</A>, <A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A><P>
+
+
+<HR>
+<A NAME="wxlonglongfmtspec"></A>
+<H3>wxLongLongFmtSpec</H3>
+<P>
+This macro is defined to contain the <TT>printf()</TT> format specifier using
+which 64 bit integer numbers (i.e. those of type <TT>wxLongLong_t</TT>) can be
+printed. Example of using it:<P>
+<PRE>
+    #ifdef wxLongLong_t
+        wxLongLong_t ll = wxLL(0x1234567890abcdef);
+        printf("Long long = %" wxLongLongFmtSpec "x\n", ll);
+    #endif
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_miscellany.html#wxll">wxLL</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/longlong.h&gt;<P>
+
+
+<HR>
+<A NAME="wxnewid"></A>
+<H3>::wxNewId</H3>
+<P>
+<B>long</B> <B>wxNewId</B>()<P>
+Generates an integer identifier unique to this run of the program.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxonblockexit"></A>
+<H3>wxON_BLOCK_EXIT</H3>
+<P>
+<B></B> <B>wxON_BLOCK_EXIT0</B>(<B></B><I>func</I>)
+<B></B> <B>wxON_BLOCK_EXIT1</B>(<B></B><I>func</I>, <B></B><I>p1</I>)
+<B></B> <B>wxON_BLOCK_EXIT2</B>(<B></B><I>func</I>, <B></B><I>p1</I>, <B></B><I>p2</I>)<P>
+This family of macros allows to ensure that the global function <I>func</I>
+with 0, 1, 2 or more parameters (up to some implementaton-defined limit) is
+executed on scope exit, whether due to a normal function return or because an
+exception has been thrown. A typical example of its usage:
+<PRE>
+    void *buf = malloc(size);
+    wxON_BLOCK_EXIT1(free, buf);
+</PRE>
+Please see the original article by Andrei Alexandrescu and Petru Marginean
+published in December 2000 issue of <EM>C/C++ Users Journal</EM> for more
+details.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/scopeguard.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_miscellany.html#wxonblockexitobj">wxON_BLOCK_EXIT_OBJ</A><P>
+
+
+<HR>
+<A NAME="wxonblockexitobj"></A>
+<H3>wxON_BLOCK_EXIT_OBJ</H3>
+<P>
+<B></B> <B>wxON_BLOCK_EXIT_OBJ0</B>(<B></B><I>obj</I>, <B></B><I>method</I>)
+<B></B> <B>wxON_BLOCK_EXIT_OBJ1</B>(<B></B><I>obj</I>, <B></B><I>method</I>, <B></B><I>p1</I>)
+<B></B> <B>wxON_BLOCK_EXIT_OBJ2</B>(<B></B><I>obj</I>, <B></B><I>method</I>, <B></B><I>p1</I>, <B></B><I>p2</I>)<P>
+This family of macros is similar to <A HREF="wx_miscellany.html#wxonblockexit">wxON_BLOCK_EXIT</A>
+but calls a method of the given object instead of a free function.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/scopeguard.h&gt;<P>
+
+
+<HR>
+<A NAME="wxregisterid"></A>
+<H3>::wxRegisterId</H3>
+<P>
+<B>void</B> <B>wxRegisterId</B>(<B>long</B><I> id</I>)<P>
+Ensures that ids subsequently generated by <B>NewId</B> do not clash with
+the given <B>id</B>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxddecleanup"></A>
+<H3>::wxDDECleanUp</H3>
+<P>
+<B>void</B> <B>wxDDECleanUp</B>()<P>
+Called when wxWidgets exits, to clean up the DDE system. This no longer needs to be
+called by the application.<P>
+See also <A HREF="wx_miscellany.html#wxddeinitialize">wxDDEInitialize</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dde.h&gt;<P>
+
+
+<HR>
+<A NAME="wxddeinitialize"></A>
+<H3>::wxDDEInitialize</H3>
+<P>
+<B>void</B> <B>wxDDEInitialize</B>()<P>
+Initializes the DDE system. May be called multiple times without harm.<P>
+This no longer needs to be called by the application: it will be called
+by wxWidgets if necessary.<P>
+See also <A HREF="wx_wxddeserver.html#wxddeserver">wxDDEServer</A>, <A HREF="wx_wxddeclient.html#wxddeclient">wxDDEClient</A>, <A HREF="wx_wxddeconnection.html#wxddeconnection">wxDDEConnection</A>,
+<A HREF="wx_miscellany.html#wxddecleanup">wxDDECleanUp</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dde.h&gt;<P>
+
+
+<HR>
+<A NAME="wxenabletoplevelwindows"></A>
+<H3>::wxEnableTopLevelWindows</H3>
+<P>
+<B>void</B> <B>wxEnableTopLevelWindows</B>(<B>bool</B><I> enable = true</I>)<P>
+This function enables or disables all top level windows. It is used by
+<A HREF="wx_appinifunctions.html#wxsafeyield">::wxSafeYield</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxfindmenuitemid"></A>
+<H3>::wxFindMenuItemId</H3>
+<P>
+<B>int</B> <B>wxFindMenuItemId</B>(<B><A HREF="wx_wxframe.html#wxframe">wxFrame</A> *</B></B><I>frame</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>menuString</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>itemString</I>)<P>
+Find a menu item identifier associated with the given frame's menu bar.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxfindwindowbylabel"></A>
+<H3>::wxFindWindowByLabel</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B> </B> <B>wxFindWindowByLabel</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent=NULL</I>)<P>
+<B>NB:</B> This function is obsolete, please use
+<A HREF="wx_wxwindow.html#wxwindowfindwindowbylabel">wxWindow::FindWindowByLabel</A> instead.<P>
+Find a window by its label. Depending on the type of window, the label may be a window title
+or panel item label. If <I>parent</I> is NULL, the search will start from all top-level
+frames and dialog boxes; if non-NULL, the search will be limited to the given window hierarchy.
+The search is recursive in both cases.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxfindwindowbyname"></A>
+<H3>::wxFindWindowByName</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B> </B> <B>wxFindWindowByName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent=NULL</I>)<P>
+<B>NB:</B> This function is obsolete, please use
+<A HREF="wx_wxwindow.html#wxwindowfindwindowbyname">wxWindow::FindWindowByName</A> instead.<P>
+Find a window by its name (as given in a window constructor or <B>Create</B> function call).
+If <I>parent</I> is NULL, the search will start from all top-level
+frames and dialog boxes; if non-NULL, the search will be limited to the given window hierarchy.
+The search is recursive in both cases.<P>
+If no such named window is found, <B>wxFindWindowByLabel</B> is called.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxfindwindowatpoint"></A>
+<H3>::wxFindWindowAtPoint</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B> </B> <B>wxFindWindowAtPoint</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>)<P>
+Find the deepest window at the given mouse position in screen coordinates,
+returning the window if found, or NULL if not.<P>
+
+
+<HR>
+<A NAME="wxfindwindowatpointer"></A>
+<H3>::wxFindWindowAtPointer</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B> </B> <B>wxFindWindowAtPointer</B>(<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>)<P>
+Find the deepest window at the mouse pointer position, returning the window
+and current pointer position in screen coordinates.<P>
+
+
+<HR>
+<A NAME="wxgetactivewindow"></A>
+<H3>::wxGetActiveWindow</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B> </B> <B>wxGetActiveWindow</B>()<P>
+Gets the currently active window (implemented for MSW and GTK only currently,
+always returns <TT>NULL</TT> in the other ports).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/window.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetbatterystate"></A>
+<H3>::wxGetBatteryState</H3>
+<P>
+<B>wxBatteryState</B> <B>wxGetBatteryState</B>()<P>
+Returns battery state as one of <TT>wxBATTERY_NORMAL_STATE</TT>,
+<TT>wxBATTERY_LOW_STATE</TT>, <TT>wxBATTERY_CRITICAL_STATE</TT>,
+<TT>wxBATTERY_SHUTDOWN_STATE</TT> or <TT>wxBATTERY_UNKNOWN_STATE</TT>.
+<TT>wxBATTERY_UNKNOWN_STATE</TT> is also the default on platforms where
+this feature is not implemented (currently everywhere but MS Windows).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetdisplayname"></A>
+<H3>::wxGetDisplayName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetDisplayName</B>()<P>
+Under X only, returns the current display name. See also <A HREF="wx_miscellany.html#wxsetdisplayname">wxSetDisplayName</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetpowertype"></A>
+<H3>::wxGetPowerType</H3>
+<P>
+<B>wxPowerType</B> <B>wxGetPowerType</B>()<P>
+Returns the type of power source as one of <TT>wxPOWER_SOCKET</TT>,
+<TT>wxPOWER_BATTERY</TT> or <TT>wxPOWER_UNKNOWN</TT>.
+<TT>wxPOWER_UNKNOWN</TT> is also the default on platforms where this
+feature is not implemented (currently everywhere but MS Windows).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetmouseposition"></A>
+<H3>::wxGetMousePosition</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>wxGetMousePosition</B>()<P>
+Returns the mouse position in screen coordinates.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetmousestate"></A>
+<H3>::wxGetMouseState</H3>
+<P>
+<B>wxMouseState</B> <B>wxGetMouseState</B>()<P>
+Returns the current state of the mouse.  Returns a wxMouseState
+instance that contains the current position of the mouse pointer in
+screen coordinants, as well as boolean values indicating the up/down
+status of the mouse buttons and the modifier keys.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+wxMouseState has the following interface:<P>
+<PRE>
+class wxMouseState
+{
+public:
+    wxMouseState();
+
+    wxCoord     GetX();
+    wxCoord     GetY();
+
+    bool        LeftDown();
+    bool        MiddleDown();
+    bool        RightDown();
+
+    bool        ControlDown();
+    bool        ShiftDown();
+    bool        AltDown();
+    bool        MetaDown();
+    bool        CmdDown();
+
+    void        SetX(wxCoord x);
+    void        SetY(wxCoord y);
+
+    void        SetLeftDown(bool down);
+    void        SetMiddleDown(bool down);
+    void        SetRightDown(bool down);
+
+    void        SetControlDown(bool down);
+    void        SetShiftDown(bool down);
+    void        SetAltDown(bool down);
+    void        SetMetaDown(bool down);
+};
+</PRE>
+
+
+<HR>
+<A NAME="wxgetresource"></A>
+<H3>::wxGetResource</H3>
+<P>
+<B>bool</B> <B>wxGetResource</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>section</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>entry</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& *</B></B><I>value</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file = NULL</I>)<P>
+<B>bool</B> <B>wxGetResource</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>section</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>entry</I>,
+ <B>float *</B><I>value</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file = NULL</I>)<P>
+<B>bool</B> <B>wxGetResource</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>section</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>entry</I>,
+ <B>long *</B><I>value</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file = NULL</I>)<P>
+<B>bool</B> <B>wxGetResource</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>section</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>entry</I>,
+ <B>int *</B><I>value</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file = NULL</I>)<P>
+Gets a resource value from the resource database (for example, WIN.INI, or
+.Xdefaults). If <I>file</I> is NULL, WIN.INI or .Xdefaults is used,
+otherwise the specified file is used.<P>
+Under X, if an application class (wxApp::GetClassName) has been defined,
+it is appended to the string /usr/lib/X11/app-defaults/ to try to find
+an applications default file when merging all resource databases.<P>
+The reason for passing the result in an argument is that it
+can be convenient to define a default value, which gets overridden
+if the value exists in the resource file. It saves a separate
+test for that resource's existence, and it also allows
+the overloading of the function for different types.<P>
+See also <A HREF="wx_miscellany.html#wxwriteresource">wxWriteResource</A>, <A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetstocklabel"></A>
+<H3>::wxGetStockLabel</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetStockLabel</B>(<B>wxWindowID </B><I>id</I>, <B>bool </B><I>withCodes = true</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>accelerator = wxEmptyString</I>)<P>
+Returns label that should be used for given <I>id</I> element.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>id</I><UL><UL>
+given id of the <A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A>, <A HREF="wx_wxbutton.html#wxbutton">wxButton</A>, <A HREF="wx_wxtoolbar.html#wxtoolbar">wxToolBar</A> tool, etc.</UL></UL>
+<P>
+<I>withCodes</I><UL><UL>
+if false then strip accelerator code from the label;
+usefull for getting labels without accelerator char code like for toolbar tooltip or
+under platforms without traditional keyboard like smartphones</UL></UL>
+<P>
+<I>accelerator</I><UL><UL>
+optional accelerator string automatically added to label; useful
+for building labels for <A HREF="wx_wxmenuitem.html#wxmenuitem">wxMenuItem</A></UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/stockitem.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgettoplevelparent"></A>
+<H3>::wxGetTopLevelParent</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B> </B> <B>wxGetTopLevelParent</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> </B></B><I>*win</I>)<P>
+Returns the first top level parent of the given window, or in other words, the
+frame or dialog containing it, or <TT>NULL</TT>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/window.h&gt;<P>
+
+
+<HR>
+<A NAME="wxlaunchdefaultbrowser"></A>
+<H3>::wxLaunchDefaultBrowser</H3>
+<P>
+<B>bool</B> <B>wxLaunchDefaultBrowser</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>url</I>, <B>int </B><I>flags = 0</I>)<P>
+Open the <I>url</I> in user's default browser. If <I>flags</I> parameter contains
+<TT>wxBROWSER_NEW_WINDOW</TT> flag, a new window is opened for the URL
+(currently this is only supported under Windows).<P>
+Returns <TT>true</TT> if the application was successfully launched.<P>
+Note that for some configurations of the running user, the application which
+is launched to open the given URL may be URL-dependent (e.g. a browser may be used for
+local URLs while another one may be used for remote URLs).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxloaduserresource"></A>
+<H3>::wxLoadUserResource</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxLoadUserResource</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>resourceName</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>resourceType="TEXT"</I>)<P>
+Loads a user-defined Windows resource as a string. If the resource is found, the function creates
+a new character array and copies the data into it. A pointer to this data is returned. If unsuccessful, NULL is returned.<P>
+The resource must be defined in the <TT>.rc</TT> file using the following syntax:<P>
+<PRE>
+myResource TEXT file.ext
+</PRE>
+where <TT>file.ext</TT> is a file that the resource compiler can find.<P>
+This function is available under Windows only.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxpostdelete"></A>
+<H3>::wxPostDelete</H3>
+<P>
+<B>void</B> <B>wxPostDelete</B>(<B><A HREF="wx_wxobject.html#wxobject">wxObject</A> *</B></B><I>object</I>)<P>
+Tells the system to delete the specified object when
+all other events have been processed. In some environments, it is
+necessary to use this instead of deleting a frame directly with the
+delete operator, because some GUIs will still send events to a deleted window.<P>
+Now obsolete: use <A HREF="wx_wxwindow.html#wxwindowclose">wxWindow::Close</A> instead.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxpostevent"></A>
+<H3>::wxPostEvent</H3>
+<P>
+<B>void</B> <B>wxPostEvent</B>(<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A> *</B></B><I>dest</I>, <B><A HREF="wx_wxevent.html#wxevent">wxEvent</A>& </B></B><I>event</I>)<P>
+In a GUI application, this function posts <I>event</I> to the specified <I>dest</I>
+object using <A HREF="wx_wxevthandler.html#wxevthandleraddpendingevent">wxEvtHandler::AddPendingEvent</A>.
+Otherwise, it dispatches <I>event</I> immediately using
+<A HREF="wx_wxevthandler.html#wxevthandlerprocessevent">wxEvtHandler::ProcessEvent</A>.
+See the respective documentation for details (and caveats).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/app.h&gt;<P>
+
+
+<HR>
+<A NAME="wxsetdisplayname"></A>
+<H3>::wxSetDisplayName</H3>
+<P>
+<B>void</B> <B>wxSetDisplayName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>displayName</I>)<P>
+Under X only, sets the current display name. This is the X host and display name such
+as "colonsay:0.0", and the function indicates which display should be used for creating
+windows from this point on. Setting the display within an application allows multiple
+displays to be used.<P>
+See also <A HREF="wx_miscellany.html#wxgetdisplayname">wxGetDisplayName</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxstripmenucodes"></A>
+<H3>::wxStripMenuCodes</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxStripMenuCodes</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>int </B><I>flags = wxStrip_All</I>)<P>
+Strips any menu codes from <I>str</I> and returns the result.<P>
+By default, the functions strips both the mnemonics character (<TT>'&amp;'</TT>)
+which is used to indicate a keyboard shortkey, and the accelerators, which are
+used only in the menu items and are separated from the main text by the
+<TT>\t</TT> (TAB) character. By using <I>flags</I> of
+<TT>wxStrip_Mnemonics</TT> or <TT>wxStrip_Accel</TT> to strip only the former
+or the latter part, respectively.<P>
+Notice that in most cases
+<A HREF="wx_wxmenuitem.html#wxmenuitemgetlabelfromtext">wxMenuItem::GetLabelFromText</A> or
+<A HREF="wx_wxcontrol.html#wxcontrolgetlabeltext">wxControl::GetLabelText</A> can be used instead.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxstringize"></A>
+<H3>wxSTRINGIZE</H3>
+<P>
+<B></B> <B>wxSTRINGIZE</B>(<B></B><I>x</I>)<P>
+Returns the string representation of the given symbol which can be either a
+literal or a macro (hence the advantage of using this macro instead of the
+standard preprocessor <TT>#</TT> operator which doesn't work with macros).<P>
+Notice that this macro always produces a <TT>char</TT> string, use 
+<A HREF="wx_miscellany.html#wxstringizet">wxSTRINGIZE_T</A> to build a wide string Unicode build.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_miscellany.html#wxconcat">wxCONCAT</A><P>
+
+
+<HR>
+<A NAME="wxstringizet"></A>
+<H3>wxSTRINGIZE_T</H3>
+<P>
+<B></B> <B>wxSTRINGIZE_T</B>(<B></B><I>x</I>)<P>
+Returns the string representation of the given symbol as either an ASCII or
+Unicode string, depending on the current build. This is the Unicode-friendly
+equivalent of <A HREF="wx_miscellany.html#wxstringize">wxSTRINGIZE</A>.<P>
+
+
+<HR>
+<A NAME="wxsuppressgccprivatedtorwarning"></A>
+<H3>wxSUPPRESS_GCC_PRIVATE_DTOR_WARNING</H3>
+<P>
+<B></B> <B>wxSUPPRESS_GCC_PRIVATE_DTOR_WARNING</B>(<B></B><I>name</I>)<P>
+GNU C++ compiler gives a warning for any class whose destructor is private
+unless it has a friend. This warning may sometimes be useful but it doesn't
+make sense for reference counted class which always delete themselves (hence
+destructor should be private) but don't necessarily have any friends, so this
+macro is provided to disable the warning in such case. The <I>name</I> parameter
+should be the name of the class but is only used to construct a unique friend
+class name internally. Example of using the macro:<P>
+<PRE>
+    class RefCounted
+    {
+    public:
+        RefCounted() { m_nRef = 1; }
+        void IncRef() { m_nRef++ ; }
+        void DecRef() { if ( !--m_nRef ) delete this; }
+
+    private:
+        ~RefCounted() { }
+
+        wxSUPPRESS_GCC_PRIVATE_DTOR(RefCounted)
+    };
+</PRE>
+Notice that there should be no semicolon after this macro.<P>
+
+
+<HR>
+<A NAME="wxull"></A>
+<H3>wxULL</H3>
+<P>
+<B>wxLongLong_t</B> <B>wxULL</B>(<B></B><I>number</I>)<P>
+This macro is defined for the platforms with a native 64 bit integer type and
+allows to define unsigned 64 bit compile time constants:<P>
+<PRE>
+    #ifdef wxLongLong_t
+        unsigned wxLongLong_t ll = wxULL(0x1234567890abcdef);
+    #endif
+</PRE>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/longlong.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_miscellany.html#wxll">wxLL</A>, <A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A><P>
+
+
+<HR>
+<A NAME="wxvacopy"></A>
+<H3>wxVaCopy</H3>
+<P>
+<B>void</B> <B>wxVaCopy</B>(<B>va_list </B><I>argptrDst</I>, <B>va_list</B><I> argptrSrc</I>)<P>
+This macro is the same as the standard C99 <TT>va_copy</TT> for the compilers
+which support it or its replacement for those that don't. It must be used to
+preserve the value of a <TT>va_list</TT> object if you need to use it after
+passing it to another function because it can be modified by the latter.<P>
+As with <TT>va_start</TT>, each call to <TT>wxVaCopy</TT> must have a matching
+<TT>va_end</TT>.<P>
+
+
+<HR>
+<A NAME="wxwriteresource"></A>
+<H3>::wxWriteResource</H3>
+<P>
+<B>bool</B> <B>wxWriteResource</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>section</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>entry</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file = NULL</I>)<P>
+<B>bool</B> <B>wxWriteResource</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>section</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>entry</I>,
+ <B>float </B><I>value</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file = NULL</I>)<P>
+<B>bool</B> <B>wxWriteResource</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>section</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>entry</I>,
+ <B>long </B><I>value</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file = NULL</I>)<P>
+<B>bool</B> <B>wxWriteResource</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>section</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>entry</I>,
+ <B>int </B><I>value</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file = NULL</I>)<P>
+Writes a resource value into the resource database (for example, WIN.INI, or
+.Xdefaults). If <I>file</I> is NULL, WIN.INI or .Xdefaults is used,
+otherwise the specified file is used.<P>
+Under X, the resource databases are cached until the internal function
+<B>wxFlushResources</B> is called automatically on exit, when
+all updated resource databases are written to their files.<P>
+Note that it is considered bad manners to write to the .Xdefaults
+file under Unix, although the WIN.INI file is fair game under Windows.<P>
+See also <A HREF="wx_miscellany.html#wxgetresource">wxGetResource</A>, <A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxfunction"></A>
+<H3>__WXFUNCTION__</H3>
+<P>
+<B></B> <B>__WXFUNCTION__</B>()<P>
+This macro expands to the name of the current function if the compiler supports
+any of <TT>__FUNCTION__</TT>, <TT>__func__</TT> or equivalent variables
+or macros or to <TT>NULL</TT> if none of them is available.<P>
+<P>
+
+</FONT></BODY></HTML>

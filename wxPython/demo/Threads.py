@@ -116,21 +116,8 @@ class GraphWindow(wx.Window):
 
 
     def OnPaint(self, evt):
-        width, height = size =self.GetSize()
-        bmp = wx.EmptyBitmap(width, height)
-
-        dc = wx.MemoryDC()
-        dc.SelectObject(bmp)
-
-        
-        self.Draw(dc, size)
-
-        wdc = wx.PaintDC(self)
-        wdc.BeginDrawing()
-        wdc.Blit(0,0, size[0], size[1], dc, 0,0)
-        wdc.EndDrawing()
-
-        dc.SelectObject(wx.NullBitmap)
+        dc = wx.BufferedPaintDC(self)
+        self.Draw(dc, self.GetSize())
 
 
     def OnEraseBackground(self, evt):
@@ -224,9 +211,13 @@ class TestPanel(wx.Panel):
 
 
     def OnButton(self, evt):
-        win = TestFrame(self, self.log)
-        win.Show(True)
+        self.win = TestFrame(self, self.log)
+        self.win.Show(True)
 
+
+    def ShutdownDemo(self):
+        if hasattr(self, 'win') and self.win:
+            self.win.Close()
 
 #---------------------------------------------------------------------------
 

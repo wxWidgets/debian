@@ -1,19 +1,15 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        fontdlgg.h
+// Name:        wx/gtk/fontdlgg.h
 // Purpose:     wxFontDialog
 // Author:      Robert Roebling
 // Created:
-// RCS-ID:      $Id: fontdlg.h,v 1.8 2005/08/02 22:57:55 MW Exp $
+// RCS-ID:      $Id: fontdlg.h 38448 2006-03-30 14:04:17Z ABX $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTK_FONTDLGH__
 #define __GTK_FONTDLGH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "fontdlg.h"
-#endif
 
 //-----------------------------------------------------------------------------
 // wxFontDialog
@@ -33,9 +29,10 @@ public:
     // implementation only
     void SetChosenFont(const char *name);
 
+#if WXWIN_COMPATIBILITY_2_6
     // deprecated interface, don't use
-    wxFontDialog(wxWindow *parent, const wxFontData *data)
-        : wxFontDialogBase(parent, data) { Create(parent, data); }
+    wxDEPRECATED( wxFontDialog(wxWindow *parent, const wxFontData *data) );
+#endif // WXWIN_COMPATIBILITY_2_6
 
 protected:
     // create the GTK dialog
@@ -44,5 +41,11 @@ protected:
 private:
     DECLARE_DYNAMIC_CLASS(wxFontDialog)
 };
+
+#if WXWIN_COMPATIBILITY_2_6
+    // deprecated interface, don't use
+inline wxFontDialog::wxFontDialog(wxWindow *parent, const wxFontData *data)
+        : wxFontDialogBase(parent) { InitFontData(data); Create(parent); }
+#endif // WXWIN_COMPATIBILITY_2_6
 
 #endif

@@ -5,7 +5,7 @@
 // Modified by: VZ (23.11.00) to fix realloc()ing new[]ed memory,
 //                            general code review
 // Created:     11/07/98
-// RCS-ID:      $Id: stream.cpp,v 1.96.2.2 2006/03/09 18:15:53 VZ Exp $
+// RCS-ID:      $Id: stream.cpp 44485 2007-02-12 19:11:12Z VZ $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,28 +18,24 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "stream.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-  #pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-  #include "wx/defs.h"
+    #pragma hdrstop
 #endif
 
 #if wxUSE_STREAMS
 
-#include <ctype.h>
 #include "wx/stream.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/log.h"
+#endif
+
+#include <ctype.h>
 #include "wx/datstrm.h"
 #include "wx/textfile.h"
-#include "wx/log.h"
 
 // ----------------------------------------------------------------------------
 // constants
@@ -375,6 +371,11 @@ char wxStreamBuffer::GetChar()
 
 size_t wxStreamBuffer::Read(void *buffer, size_t size)
 {
+    wxASSERT_MSG( buffer, _T("Warning: Null pointer is about to be used") );
+
+    /* Clear buffer first */
+    memset(buffer, 0x00, size);
+
     // lasterror is reset before all new IO calls
     if ( m_stream )
         m_stream->Reset();
@@ -451,6 +452,8 @@ size_t wxStreamBuffer::Read(wxStreamBuffer *dbuf)
 
 size_t wxStreamBuffer::Write(const void *buffer, size_t size)
 {
+    wxASSERT_MSG( buffer, _T("Warning: Null pointer is about to be send") );
+
     if (m_stream)
     {
         // lasterror is reset before all new IO calls
@@ -583,7 +586,7 @@ wxFileOffset wxStreamBuffer::Seek(wxFileOffset pos, wxSeekMode mode)
         }
         if (diff < 0 || diff > last_access)
             return wxInvalidOffset;
-        size_t int_diff = (size_t)diff;
+        size_t int_diff = wx_truncate_cast(size_t, diff);
         wxCHECK_MSG( (wxFileOffset)int_diff == diff, wxInvalidOffset, wxT("huge file not supported") );
         SetIntPosition(int_diff);
         return diff;
@@ -610,7 +613,7 @@ wxFileOffset wxStreamBuffer::Seek(wxFileOffset pos, wxSeekMode mode)
             }
             else
             {
-                size_t int_diff = (size_t)diff;
+                size_t int_diff = wx_truncate_cast(size_t, diff);
                 wxCHECK_MSG( (wxFileOffset)int_diff == diff, wxInvalidOffset, wxT("huge file not supported") );
                 SetIntPosition(int_diff);
                 return pos;
@@ -667,7 +670,13 @@ wxStreamBase::~wxStreamBase()
 size_t wxStreamBase::GetSize() const
 {
     wxFileOffset length = GetLength();
-    return length == wxInvalidOffset ? 0 : (size_t)length;
+    if ( length == (wxFileOffset)wxInvalidOffset )
+        return 0;
+
+    const size_t len = wx_truncate_cast(size_t, length);
+    wxASSERT_MSG( len == length + size_t(0), _T("large files not supported") );
+
+    return len;
 }
 
 wxFileOffset wxStreamBase::OnSysSeek(wxFileOffset WXUNUSED(seek), wxSeekMode WXUNUSED(mode))
@@ -679,20 +688,6 @@ wxFileOffset wxStreamBase::OnSysTell() const
 {
     return wxInvalidOffset;
 }
-
-#if WXWIN_COMPATIBILITY_2_2
-
-wxStreamError wxStreamBase::LastError() const
-{
-    return m_lasterror;
-}
-
-size_t wxStreamBase::StreamSize() const
-{
-    return GetSize();
-}
-
-#endif // WXWIN_COMPATIBILITY_2_2
 
 // ----------------------------------------------------------------------------
 // wxInputStream
@@ -753,6 +748,11 @@ char *wxInputStream::AllocSpaceWBack(size_t needed_size)
 
 size_t wxInputStream::GetWBack(void *buf, size_t size)
 {
+    wxASSERT_MSG( buf, _T("Warning: Null pointer is about to be used") );
+
+    /* Clear buffer first */
+    memset(buf, 0x00, size);
+
     if (!m_wback)
         return 0;
 
@@ -784,6 +784,8 @@ size_t wxInputStream::GetWBack(void *buf, size_t size)
 
 size_t wxInputStream::Ungetch(const void *buf, size_t bufsize)
 {
+    wxASSERT_MSG( buf, _T("Warning: Null pointer is about to be used in Ungetch()") );
+
     if ( m_lasterror != wxSTREAM_NO_ERROR && m_lasterror != wxSTREAM_EOF )
     {
         // can't operate on this stream until the error is cleared
@@ -807,15 +809,17 @@ bool wxInputStream::Ungetch(char c)
     return Ungetch(&c, sizeof(c)) != 0;
 }
 
-char wxInputStream::GetC()
+int wxInputStream::GetC()
 {
-    char c;
+    unsigned char c;
     Read(&c, sizeof(c));
-    return c;
+    return LastRead() ? c : wxEOF;
 }
 
 wxInputStream& wxInputStream::Read(void *buf, size_t size)
 {
+    wxASSERT_MSG( buf, _T("Warning: Null pointer is about to be read") );
+
     char *p = (char *)buf;
     m_lastcount = 0;
 
@@ -865,6 +869,7 @@ char wxInputStream::Peek()
 
 wxInputStream& wxInputStream::Read(wxOutputStream& stream_out)
 {
+    size_t lastcount = 0;
     char buf[BUF_TEMP_SIZE];
 
     for ( ;; )
@@ -875,7 +880,11 @@ wxInputStream& wxInputStream::Read(wxOutputStream& stream_out)
 
         if ( stream_out.Write(buf, bytes_read).LastWrite() != bytes_read )
             break;
+
+        lastcount += bytes_read;
     }
+
+    m_lastcount = lastcount;
 
     return *this;
 }
@@ -1001,7 +1010,7 @@ size_t wxCountingOutputStream::OnSysWrite(const void *WXUNUSED(buffer),
 
 wxFileOffset wxCountingOutputStream::OnSysSeek(wxFileOffset pos, wxSeekMode mode)
 {
-    ssize_t new_pos = (ssize_t)pos;
+    ssize_t new_pos = wx_truncate_cast(ssize_t, pos);
 
     switch ( mode )
     {
@@ -1042,17 +1051,27 @@ wxFileOffset wxCountingOutputStream::OnSysTell() const
 // ----------------------------------------------------------------------------
 
 wxFilterInputStream::wxFilterInputStream()
+ :  m_parent_i_stream(NULL),
+    m_owns(false)
 {
-    m_parent_i_stream = NULL;
 }
 
 wxFilterInputStream::wxFilterInputStream(wxInputStream& stream)
+ :  m_parent_i_stream(&stream),
+    m_owns(false)
 {
-    m_parent_i_stream = &stream;
+}
+
+wxFilterInputStream::wxFilterInputStream(wxInputStream *stream)
+ :  m_parent_i_stream(stream),
+    m_owns(true)
+{
 }
 
 wxFilterInputStream::~wxFilterInputStream()
 {
+    if (m_owns)
+        delete m_parent_i_stream;
 }
 
 // ----------------------------------------------------------------------------
@@ -1060,17 +1079,98 @@ wxFilterInputStream::~wxFilterInputStream()
 // ----------------------------------------------------------------------------
 
 wxFilterOutputStream::wxFilterOutputStream()
+ :  m_parent_o_stream(NULL),
+    m_owns(false)
 {
-    m_parent_o_stream = NULL;
 }
 
 wxFilterOutputStream::wxFilterOutputStream(wxOutputStream& stream)
+ :  m_parent_o_stream(&stream),
+    m_owns(false)
 {
-    m_parent_o_stream = &stream;
+}
+
+wxFilterOutputStream::wxFilterOutputStream(wxOutputStream *stream)
+ :  m_parent_o_stream(stream),
+    m_owns(true)
+{
+}
+
+bool wxFilterOutputStream::Close()
+{
+    if (m_parent_o_stream && m_owns)
+        return m_parent_o_stream->Close();
+    else
+        return true;
 }
 
 wxFilterOutputStream::~wxFilterOutputStream()
 {
+    if (m_owns)
+        delete m_parent_o_stream;
+}
+
+// ----------------------------------------------------------------------------
+// wxFilterClassFactoryBase
+// ----------------------------------------------------------------------------
+
+IMPLEMENT_ABSTRACT_CLASS(wxFilterClassFactoryBase, wxObject)
+
+wxString wxFilterClassFactoryBase::PopExtension(const wxString& location) const
+{
+    return location.substr(0, FindExtension(location));
+}
+
+wxString::size_type wxFilterClassFactoryBase::FindExtension(
+        const wxChar *location) const
+{
+    size_t len = wxStrlen(location);
+
+    for (const wxChar *const *p = GetProtocols(wxSTREAM_FILEEXT); *p; p++)
+    {
+        size_t l = wxStrlen(*p);
+
+        if (l <= len && wxStrcmp(*p, location + len - l) == 0)
+            return len - l;
+    }
+
+    return wxString::npos;
+}
+
+bool wxFilterClassFactoryBase::CanHandle(const wxChar *protocol,
+                                         wxStreamProtocolType type) const
+{
+    if (type == wxSTREAM_FILEEXT)
+        return FindExtension(protocol) != wxString::npos;
+    else
+        for (const wxChar *const *p = GetProtocols(type); *p; p++)
+            if (wxStrcmp(*p, protocol) == 0)
+                return true;
+
+    return false;
+}
+
+// ----------------------------------------------------------------------------
+// wxFilterClassFactory
+// ----------------------------------------------------------------------------
+
+IMPLEMENT_ABSTRACT_CLASS(wxFilterClassFactory, wxFilterClassFactoryBase)
+
+wxFilterClassFactory *wxFilterClassFactory::sm_first = NULL;
+
+void wxFilterClassFactory::Remove()
+{
+    if (m_next != this)
+    {
+        wxFilterClassFactory **pp = &sm_first;
+
+        while (*pp != this)
+            pp = &(*pp)->m_next;
+
+        *pp = m_next;
+
+        m_next = this;
+    }
 }
 
 // ----------------------------------------------------------------------------

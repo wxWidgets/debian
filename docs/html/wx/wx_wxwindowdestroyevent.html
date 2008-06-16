@@ -1,0 +1,44 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxWindowDestroyEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxwindowdestroyevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxwindowdc.html#wxwindowdc"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxwindowdisabler.html#wxwindowdisabler"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxWindowDestroyEvent</H2>
+<P>
+This event is sent from the wxWindow destructor wxWindow::~wxWindow() when a
+window is destroyed.<P>
+When a class derived from wxWindow is destroyed its destructor will have
+already run by the time this event is sent. Therefore this event will not
+usually be received at all.<P>
+To receive this event <A HREF="wx_wxevthandler.html#wxevthandlerconnect">wxEvtHandler::Connect</A>
+must be used (using an event table macro will not work). Since it is
+received after the destructor has run, an object should not handle its
+own wxWindowDestroyEvent, but it can be used to get notification of the
+destruction of another window.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxCommandEvent</A><BR>
+
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+It is not possible to receive this event using an event table macro.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A>,
+<A HREF="wx_wxwindowcreateevent.html#wxwindowcreateevent">wxWindowCreateEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxwindowdestroyeventctor">wxWindowDestroyEvent::wxWindowDestroyEvent</A><BR>
+<P>
+
+<HR>
+<A NAME="wxwindowdestroyeventctor"></A>
+<H3>wxWindowDestroyEvent::wxWindowDestroyEvent</H3>
+<P>
+<B></B> <B>wxWindowDestroyEvent</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>win = NULL</I>)<P>
+Constructor.<P>
+
+</FONT></BODY></HTML>

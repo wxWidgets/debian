@@ -1,0 +1,62 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlFilter</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmlfilter"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmleasyprinting.html#wxhtmleasyprinting"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlFilter</H2>
+<P>
+This class is the parent class of input filters for <A HREF="wx_wxhtmlwindow.html#wxhtmlwindow">wxHtmlWindow</A>.
+It allows you to read and display files of different file formats.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/htmlfilt.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">See Also</FONT></B><P>
+<A HREF="wx_wxhtml.html#filters">Overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmlfilterwxhtmlfilter">wxHtmlFilter::wxHtmlFilter</A><BR>
+<A HREF="#wxhtmlfiltercanread">wxHtmlFilter::CanRead</A><BR>
+<A HREF="#wxhtmlfilterreadfile">wxHtmlFilter::ReadFile</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlfilterwxhtmlfilter"></A>
+<H3>wxHtmlFilter::wxHtmlFilter</H3>
+<P>
+<B></B> <B>wxHtmlFilter</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxhtmlfiltercanread"></A>
+<H3>wxHtmlFilter::CanRead</H3>
+<P>
+<B>bool</B> <B>CanRead</B>(<B>const <A HREF="wx_wxfsfile.html#wxfsfile">wxFSFile</A>& </B></B><I>file</I>)<P>
+Returns true if this filter is capable of reading file <I>file</I>.<P>
+Example:<P>
+<PRE>
+bool MyFilter::CanRead(const wxFSFile& file)
+{
+    return (file.GetMimeType() == "application/x-ugh");
+}
+</PRE>
+
+<HR>
+<A NAME="wxhtmlfilterreadfile"></A>
+<H3>wxHtmlFilter::ReadFile</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>ReadFile</B>(<B>const <A HREF="wx_wxfsfile.html#wxfsfile">wxFSFile</A>& </B></B><I>file</I>)<P>
+Reads the file and returns string with HTML document.<P>
+Example:<P>
+<PRE>
+wxString MyImgFilter::ReadFile(const wxFSFile& file)
+{
+    return "&lt;html&gt;&lt;body&gt;&lt;img src=\"" +
+           file.GetLocation() +
+	   "\"&gt;&lt;/body&gt;&lt;/html&gt;";
+}
+</PRE>
+
+</FONT></BODY></HTML>

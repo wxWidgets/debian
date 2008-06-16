@@ -1,5 +1,6 @@
 
 import wx
+import sys
 
 try:
     from wx import glcanvas
@@ -219,7 +220,7 @@ class ConeCanvas(MyCanvasBase):
         glLight(GL_LIGHT0, GL_DIFFUSE, [1.0, 1.0, 1.0, 1.0])
         glLight(GL_LIGHT0, GL_SPECULAR, [1.0, 1.0, 1.0, 1.0])
         glLight(GL_LIGHT0, GL_POSITION, [1.0, 1.0, 1.0, 0.0])
-        glLightModel(GL_LIGHT_MODEL_AMBIENT, [0.2, 0.2, 0.2, 1.0])
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, [0.2, 0.2, 0.2, 1.0])
         glEnable(GL_LIGHTING)
         glEnable(GL_LIGHT0)
         glDepthFunc(GL_LESS)
@@ -229,7 +230,8 @@ class ConeCanvas(MyCanvasBase):
         glMatrixMode(GL_MODELVIEW)
         # position viewer
         glTranslatef(0.0, 0.0, -2.0);
-
+        #
+        glutInit(sys.argv)
 
 
     def OnDraw(self):

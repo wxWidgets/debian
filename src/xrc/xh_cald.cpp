@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xh_cald.cpp
+// Name:        src/xrc/xh_cald.cpp
 // Purpose:     XRC resource for wxCalendarCtrl
 // Author:      Brian Gavin
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_cald.cpp,v 1.12 2005/01/07 21:33:12 VS Exp $
+// RCS-ID:      $Id: xh_cald.cpp 38939 2006-04-27 12:47:14Z ABX $
 // Copyright:   (c) 2000 Brian Gavin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_cald.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -22,7 +18,11 @@
 #if wxUSE_XRC && wxUSE_CALENDARCTRL
 
 #include "wx/xrc/xh_cald.h"
-#include "wx/event.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/event.h"
+#endif //WX_PRECOMP
+
 #include "wx/calctrl.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxCalendarCtrlXmlHandler, wxXmlResourceHandler)

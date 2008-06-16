@@ -2,18 +2,13 @@
 // Name:        filedlg.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: filedlg.h,v 1.28 2005/08/02 22:57:55 MW Exp $
+// Id:          $Id: filedlg.h 39402 2006-05-28 23:32:12Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef __GTKFILEDLGH__
 #define __GTKFILEDLGH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "filedlggtk.h"
-#endif
 
 #include "wx/generic/filedlgg.h"
 
@@ -31,10 +26,12 @@ public:
                  const wxString& defaultDir = wxEmptyString,
                  const wxString& defaultFile = wxEmptyString,
                  const wxString& wildCard = wxFileSelectorDefaultWildcardStr,
-                 long style = 0,
-                 const wxPoint& pos = wxDefaultPosition);
+                 long style = wxFD_DEFAULT_STYLE,
+                 const wxPoint& pos = wxDefaultPosition,
+                 const wxSize& sz = wxDefaultSize,
+                 const wxString& name = wxFileDialogNameStr);
 
-    virtual ~wxFileDialog();
+    virtual ~wxFileDialog() {}
 
     virtual wxString GetPath() const;
     virtual void GetPaths(wxArrayString& paths) const;
@@ -53,9 +50,9 @@ public:
     virtual int ShowModal();
     virtual bool Show( bool show = true );
 
-//private:
-    bool m_destroyed_by_delete;
 
+
+protected:
     // override this from wxTLW since the native
     // form doesn't have any m_wxwindow
     virtual void DoSetSize(int x, int y,

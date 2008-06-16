@@ -1,0 +1,315 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHashMap</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhashmap"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgridsizer.html#wxgridsizer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhashset.html#wxhashset"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHashMap</H2>
+<P>
+This is a simple, type-safe, and reasonably efficient hash map class,
+whose interface is a subset of the interface of STL containers. In
+particular, the interface is modeled after std::map, and the various,
+non-standard, std::hash_map.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+    class MyClass { /* ... */ };
+
+    // declare a hash map with string keys and int values
+    WX_DECLARE_STRING_HASH_MAP( int, MyHash5 );
+    // same, with int keys and MyClass* values
+    WX_DECLARE_HASH_MAP( int, MyClass*, wxIntegerHash, wxIntegerEqual, MyHash1 );
+    // same, with wxString keys and int values
+    WX_DECLARE_STRING_HASH_MAP( int, MyHash3 );
+    // same, with wxString keys and values
+    WX_DECLARE_STRING_HASH_MAP( wxString, MyHash2 );
+
+    MyHash1 h1;
+    MyHash2 h2;
+
+    // store and retrieve values
+    h1[1] = new MyClass( 1 );
+    h1[10000000] = NULL;
+    h1[50000] = new MyClass( 2 );
+    h2["Bill"] = "ABC";
+    wxString tmp = h2["Bill"];
+    // since element with key "Joe" is not present, this will return
+    // the default value, which is an empty string in the case of wxString
+    MyClass tmp2 = h2["Joe"];
+
+    // iterate over all the elements in the class
+    MyHash2::iterator it;
+    for( it = h2.begin(); it != h2.end(); ++it )
+    {
+        wxString key = it-&gt;first, value = it-&gt;second;
+        // do something useful with key and value
+    }
+</PRE>
+<B><FONT COLOR="#FF0000">Declaring new hash table types</FONT></B><P>
+<PRE>
+    WX_DECLARE_STRING_HASH_MAP( VALUE_T,     // type of the values
+                                CLASSNAME ); // name of the class
+</PRE>
+Declares a hash map class named CLASSNAME, with <TT>wxString</TT> keys
+and VALUE_T values.<P>
+<PRE>
+    WX_DECLARE_VOIDPTR_HASH_MAP( VALUE_T,     // type of the values
+                                 CLASSNAME ); // name of the class
+</PRE>
+Declares a hash map class named CLASSNAME, with <TT>void*</TT> keys
+and VALUE_T values.<P>
+<PRE>
+    WX_DECLARE_HASH_MAP( KEY_T,      // type of the keys
+                         VALUE_T,    // type of the values
+                         HASH_T,     // hasher
+                         KEY_EQ_T,   // key equality predicate
+                         CLASSNAME); // name of the class
+</PRE>
+The HASH_T and KEY_EQ_T are the types
+used for the hashing function and key comparison. wxWidgets provides
+three predefined hashing functions: <TT>wxIntegerHash</TT>
+for integer types ( <TT>int</TT>, <TT>long</TT>, <TT>short</TT>,
+and their unsigned counterparts ), <TT>wxStringHash</TT> for strings
+( <TT>wxString</TT>, <TT>wxChar*</TT>, <TT>char*</TT> ), and
+<TT>wxPointerHash</TT> for any kind of pointer.
+Similarly three equality predicates:
+<TT>wxIntegerEqual</TT>, <TT>wxStringEqual</TT>, <TT>wxPointerEqual</TT> are provided.<P>
+Using this you could declare a hash map mapping <TT>int</TT> values
+to <TT>wxString</TT> like this:<P>
+<PRE>
+    WX_DECLARE_HASH_MAP( int,
+                         wxString,
+                         wxIntegerHash,
+                         wxIntegerEqual,
+                         MyHash );
+
+    // using an user-defined class for keys
+    class MyKey { /* ... */ };
+
+    // hashing function
+    class MyKeyHash
+    {
+    public:
+        MyKeyHash() { }
+
+        unsigned long operator()( const MyKey& k ) const
+            { /* compute the hash */ }
+
+        MyKeyHash& operator=(const MyKeyHash&) { return *this; }
+    };
+
+    // comparison operator
+    class MyKeyEqual
+    {
+    public:
+        MyKeyEqual() { }
+        bool operator()( const MyKey& a, const MyKey& b ) const
+            { /* compare for equality */ }
+
+        MyKeyEqual& operator=(const MyKeyEqual&) { return *this; }
+    };
+
+    WX_DECLARE_HASH_MAP( MyKey,      // type of the keys
+                         SOME_TYPE,  // any type you like
+                         MyKeyHash,  // hasher
+                         MyKeyEqual, // key equality predicate
+                         CLASSNAME); // name of the class
+</PRE>
+<B><FONT COLOR="#FF0000">Types</FONT></B><P>
+In the documentation below you should replace wxHashMap with the name
+you used in the class declaration.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxHashMap::key_type
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Type of the hash keys
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHashMap::mapped_type
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Type of the values stored in the hash map
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHashMap::value_type
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Equivalent to
+<TT>struct { key_type first; mapped_type second };</TT> 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHashMap::iterator
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Used to enumerate all the elements in a hash
+map; it is similar to a <TT>value_type*</TT>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHashMap::const_iterator
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Used to enumerate all the elements
+in a constant hash map; it is similar to a <TT>const value_type*</TT>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHashMap::size_type
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Used for sizes
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHashMap::Insert_Result
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The return value for
+<A HREF="wx_wxhashmap.html#wxhashmapinsert">insert()</A>
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Iterators</FONT></B><P>
+An iterator is similar to a pointer, and so you can use the usual pointer
+operations: <TT>++it</TT> ( and <TT>it++</TT> ) to move to the next element,
+<TT>*it</TT> to access the element pointed to, <TT>it-&gt;first</TT>
+( <TT>it-&gt;second</TT> ) to access the key ( value )
+of the element pointed to. Hash maps provide forward only iterators, this
+means that you can't use <TT>--it</TT>, <TT>it + 3</TT>, <TT>it1 - it2</TT>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/hashmap.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhashmapctor">wxHashMap::wxHashMap</A><BR>
+<A HREF="#wxhashmapbegin">wxHashMap::begin</A><BR>
+<A HREF="#wxhashmapclear">wxHashMap::clear</A><BR>
+<A HREF="#wxhashmapcount">wxHashMap::count</A><BR>
+<A HREF="#wxhashmapempty">wxHashMap::empty</A><BR>
+<A HREF="#wxhashmapend">wxHashMap::end</A><BR>
+<A HREF="#wxhashmaperase">wxHashMap::erase</A><BR>
+<A HREF="#wxhashmapfind">wxHashMap::find</A><BR>
+<A HREF="#wxhashmapinsert">wxHashMap::insert</A><BR>
+<A HREF="#wxhashmapbracket">wxHashMap::operator[]</A><BR>
+<A HREF="#wxhashmapsize">wxHashMap::size</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhashmapctor"></A>
+<H3>wxHashMap::wxHashMap</H3>
+<P>
+<B></B> <B>wxHashMap</B>(<B>size_type</B><I> size = 10</I>)<P>
+The size parameter is just a hint, the table will resize automatically
+to preserve performance.<P>
+<B></B> <B>wxHashMap</B>(<B>const <A HREF="wx_wxhashmap.html#wxhashmap">wxHashMap</A>&</B></B><I> map</I>)<P>
+Copy constructor.<P>
+
+<HR>
+<A NAME="wxhashmapbegin"></A>
+<H3>wxHashMap::begin</H3>
+<P>
+<B>const_iterator</B> <B>begin</B>() <B>const</B><P>
+<B>iterator</B> <B>begin</B>()<P>
+Returns an iterator pointing at the first element of the hash map.
+Please remember that hash maps do not guarantee ordering.<P>
+
+<HR>
+<A NAME="wxhashmapclear"></A>
+<H3>wxHashMap::clear</H3>
+<P>
+<B>void</B> <B>clear</B>()<P>
+Removes all elements from the hash map.<P>
+
+<HR>
+<A NAME="wxhashmapcount"></A>
+<H3>wxHashMap::count</H3>
+<P>
+<B>size_type</B> <B>count</B>(<B>const key_type&amp;</B><I> key</I>) <B>const</B><P>
+Counts the number of elements with the given key present in the map.
+This function returns only 0 or 1.<P>
+
+<HR>
+<A NAME="wxhashmapempty"></A>
+<H3>wxHashMap::empty</H3>
+<P>
+<B>bool</B> <B>empty</B>() <B>const</B><P>
+Returns true if the hash map does not contain any elements, false otherwise.<P>
+
+<HR>
+<A NAME="wxhashmapend"></A>
+<H3>wxHashMap::end</H3>
+<P>
+<B>const_iterator</B> <B>end</B>() <B>const</B><P>
+<B>iterator</B> <B>end</B>()<P>
+Returns an iterator pointing at the one-after-the-last element of the hash map.
+Please remember that hash maps do not guarantee ordering.<P>
+
+<HR>
+<A NAME="wxhashmaperase"></A>
+<H3>wxHashMap::erase</H3>
+<P>
+<B>size_type</B> <B>erase</B>(<B>const key_type&amp;</B><I> key</I>)<P>
+Erases the element with the given key, and returns the number of elements
+erased (either 0 or 1).<P>
+<B>void</B> <B>erase</B>(<B>iterator</B><I> it</I>)<P>
+<B>void</B> <B>erase</B>(<B>const_iterator</B><I> it</I>)<P>
+Erases the element pointed to by the iterator. After the deletion
+the iterator is no longer valid and must not be used.<P>
+
+<HR>
+<A NAME="wxhashmapfind"></A>
+<H3>wxHashMap::find</H3>
+<P>
+<B>iterator</B> <B>find</B>(<B>const key_type&amp;</B><I> key</I>)<P>
+<B>const_iterator</B> <B>find</B>(<B>const key_type&amp;</B><I> key</I>) <B>const</B><P>
+If an element with the given key is present, the functions returns
+an iterator pointing at that element, otherwise an invalid iterator
+is returned (i.e. hashmap.find( non_existent_key ) == hashmap.end()).<P>
+
+<HR>
+<A NAME="wxhashmapinsert"></A>
+<H3>wxHashMap::insert</H3>
+<P>
+<B>Insert_Result</B> <B>insert</B>(<B>const value_type&amp;</B><I> v</I>)<P>
+Inserts the given value in the hash map. The return value is
+equivalent to a <TT>std::pair&lt;wxHashMap::iterator, bool&gt;</TT>;
+the iterator points to the inserted element, the boolean value
+is <TT>true</TT> if <TT>v</TT> was actually inserted.<P>
+
+<HR>
+<A NAME="wxhashmapbracket"></A>
+<H3>wxHashMap::operator[]</H3>
+<P>
+<B>mapped_type&amp;</B> <B>operator[]</B>(<B>const key_type&amp;</B><I> key</I>)<P>
+Use the key as an array subscript. The only difference is that if the
+given key is not present in the hash map, an element with the
+default <TT>value_type()</TT> is inserted in the table.<P>
+
+<HR>
+<A NAME="wxhashmapsize"></A>
+<H3>wxHashMap::size</H3>
+<P>
+<B>size_type</B> <B>size</B>() <B>const</B><P>
+Returns the number of elements in the map.<P>
+
+</FONT></BODY></HTML>

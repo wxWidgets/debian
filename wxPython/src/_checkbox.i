@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _checkbox.i,v 1.11 2004/06/02 20:52:59 RD Exp $
+// RCS-ID:      $Id: _checkbox.i 40964 2006-09-02 19:46:44Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -154,6 +154,10 @@ state.", "");
     
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    %property(ThreeStateValue, Get3StateValue, Set3StateValue, doc="See `Get3StateValue` and `Set3StateValue`");
+    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
+    
 };
 
 //---------------------------------------------------------------------------

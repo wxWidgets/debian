@@ -1,0 +1,823 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxWidgets samples</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="samples"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_helloworld.html#helloworld"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxappoverview.html#wxappoverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxWidgets samples</H2>
+<P>
+Probably the best way to learn wxWidgets is by reading the source of some 50+
+samples provided with it. Many aspects of wxWidgets programming can be learnt
+from them, but sometimes it is not simple to just choose the right sample to
+look at. This overview aims at describing what each sample does/demonstrates to
+make it easier to find the relevant one if a simple grep through all sources
+didn't help. They also provide some notes about using the samples and what
+features of wxWidgets are they supposed to test.<P>
+There are currently more than 50 different samples as part of wxWidgets and
+this list is not complete. You should start your tour of wxWidgets with the
+<A HREF="wx_samples.html#sampleminimal">minimal sample</A> which is the wxWidgets version of
+"Hello, world!". It shows the basic structure of wxWidgets program and is the
+most commented sample of all - looking at its source code is recommended.<P>
+The next most useful samples are probably <A HREF="wx_samples.html#samplewidgets">widgets</A>
+and <A HREF="wx_samples.html#samplecontrols">controls</A> which show many of wxWidgets native and
+generic controls, such as buttons, listboxes, checkboxes, comboboxes etc.<P>
+Other, more complicated controls, have their own samples. In this category you
+may find the following samples showing the corresponding controls:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_samples.html#samplecalendar">wxCalendarCtrl</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Calendar a.k.a. date picker control
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_samples.html#samplelistctrl">wxListCtrl</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+List view control
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_samples.html#sampletreectrl">wxTreeCtrl</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Tree view control
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_samples.html#samplegrid">wxGrid</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Grid control
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Finally, it might be helpful to do a search in the entire sample directory if
+you can't find the sample showing the control you are interested in by
+name. Most classes contained in wxWidgets occur in at least one of the samples.<P>
+
+<A HREF="#sampleminimal">Minimal sample</A><BR>
+<A HREF="#sampleanimate">Animate sample</A><BR>
+<A HREF="#sampleartprovider">Art provider sample</A><BR>
+<A HREF="#samplecalendar">Calendar sample</A><BR>
+<A HREF="#samplechecklist">Checklist sample</A><BR>
+<A HREF="#sampleconfig">Config sample</A><BR>
+<A HREF="#samplecontrols">Controls sample</A><BR>
+<A HREF="#sampledb">Database sample</A><BR>
+<A HREF="#sampledebugrpt">DebugRpt sample</A><BR>
+<A HREF="#sampledialogs">Dialogs sample</A><BR>
+<A HREF="#sampledialup">Dialup sample</A><BR>
+<A HREF="#samplednd">DnD sample</A><BR>
+<A HREF="#sampledynamic">Dynamic sample</A><BR>
+<A HREF="#sampleevent">Event sample</A><BR>
+<A HREF="#sampleexcept">Except(ions) sample</A><BR>
+<A HREF="#sampleexec">Exec sample</A><BR>
+<A HREF="#samplefont">Font sample</A><BR>
+<A HREF="#samplegrid">Grid sample</A><BR>
+<A HREF="#samplehtml">HTML samples</A><BR>
+<A HREF="#sampleimage">Image sample</A><BR>
+<A HREF="#sampleinternat">Internat(ionalization) sample</A><BR>
+<A HREF="#samplelayout">Layout sample</A><BR>
+<A HREF="#samplelistctrl">Listctrl sample</A><BR>
+<A HREF="#samplemediaplayer">Mediaplayer sample</A><BR>
+<A HREF="#samplenotebook">Notebook sample</A><BR>
+<A HREF="#samplerender">Render sample</A><BR>
+<A HREF="#samplerotate">Rotate sample</A><BR>
+<A HREF="#samplescrollsub">Scroll subwindow sample</A><BR>
+<A HREF="#samplesockets">Sockets sample</A><BR>
+<A HREF="#samplesound">Sound sample</A><BR>
+<A HREF="#samplestatbar">Statbar sample</A><BR>
+<A HREF="#sampletext">Text sample</A><BR>
+<A HREF="#samplethread">Thread sample</A><BR>
+<A HREF="#sampletoolbar">Toolbar sample</A><BR>
+<A HREF="#sampletreectrl">Treectrl sample</A><BR>
+<A HREF="#samplewidgets">Widgets sample</A><BR>
+<A HREF="#samplewizard">Wizard sample</A><BR>
+<P>
+
+<HR>
+<A NAME="sampleminimal"></A>
+<H3>Minimal sample</H3>
+<P>
+The minimal sample is what most people will know under the term Hello World,
+i.e. a minimal program that doesn't demonstrate anything apart from what is
+needed to write a program that will display a "hello" dialog. This is usually
+a good starting point for learning how to use wxWidgets.<P>
+
+
+<HR>
+<A NAME="sampleanimate"></A>
+<H3>Animate sample</H3>
+<P>
+The <TT>animate</TT> sample shows how you can use <A HREF="wx_wxanimationctrl.html#wxanimationctrl">wxAnimationCtrl</A>
+control and shows concept of a platform-dependent animation encapsulated
+in <A HREF="wx_wxanimation.html#wxanimation">wxAnimation</A>.<P>
+
+
+<HR>
+<A NAME="sampleartprovider"></A>
+<H3>Art provider sample</H3>
+<P>
+The <TT>artprov</TT> sample shows how you can customize the look of standard
+wxWidgets dialogs by replacing default bitmaps/icons with your own versions.
+It also shows how you can use wxArtProvider to
+get stock bitmaps for use in your application.<P>
+
+
+<HR>
+<A NAME="samplecalendar"></A>
+<H3>Calendar sample</H3>
+<P>
+This font shows the <A HREF="wx_wxcalendarctrl.html#wxcalendarctrl">calendar control</A> in action. It
+shows how to configure the control (see the different options in the calendar
+menu) and also how to process the notifications from it.<P>
+
+
+<HR>
+<A NAME="samplechecklist"></A>
+<H3>Checklist sample</H3>
+<P>
+This sample demonstrates use of the <A HREF="wx_wxchecklistbox.html#wxchecklistbox">wxCheckListBox</A>
+class intercepting check, select and double click events. It also tests
+use of various methods modifying the control, such as by deleting items
+from it or inserting new ones (these functions are actually implemented in
+the parent class <A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A> so the sample tests that class
+as well). The layout of the dialog is created using a <A HREF="wx_wxboxsizer.html#wxboxsizer">wxBoxSizer</A>
+demonstrating a simple dynamic layout.<P>
+
+
+<HR>
+<A NAME="sampleconfig"></A>
+<H3>Config sample</H3>
+<P>
+This sample demonstrates the <A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfig</A> classes in a platform
+independent way, i.e. it uses text based files to store a given configuration under
+Unix and uses the Registry under Windows.<P>
+See <A HREF="wx_wxconfigoverview.html#wxconfigoverview">wxConfig overview</A> for the descriptions of all
+features of this class.<P>
+
+
+<HR>
+<A NAME="samplecontrols"></A>
+<H3>Controls sample</H3>
+<P>
+The controls sample is the main test program for most simple controls used in
+wxWidgets. The sample tests their basic functionality, events, placement,
+modification in terms of colour and font as well as the possibility to change
+the controls programmatically, such as adding an item to a list box etc. Apart
+from that, the sample uses a <A HREF="wx_wxnotebook.html#wxnotebook">wxNotebook</A> and tests most
+features of this special control (using bitmap in the tabs, using
+<A HREF="wx_wxsizer.html#wxsizer">wxSizers</A> and <A HREF="wx_wxlayoutconstraints.html#wxlayoutconstraints">constraints</A> within
+notebook pages, advancing pages programmatically and vetoing a page change
+by intercepting the <A HREF="wx_wxnotebookevent.html#wxnotebookevent">wxNotebookEvent</A>.<P>
+The various controls tested are listed here:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxbutton.html#wxbutton">wxButton</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Push button control, displaying text
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxbitmapbutton.html#wxbitmapbutton">wxBitmapButton</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Push button control, displaying a bitmap
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxcheckbox.html#wxcheckbox">wxCheckBox</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Checkbox control
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxchoice.html#wxchoice">wxChoice</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Choice control (a combobox without the editable area)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxcombobox.html#wxcombobox">wxComboBox</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A choice with an editable area
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxgauge.html#wxgauge">wxGauge</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A control to represent a varying quantity, such as time remaining
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxstaticbox.html#wxstaticbox">wxStaticBox</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A static, or group box for visually grouping related controls
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A list of strings for single or multiple selection
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxSpinCtrl
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A spin ctrl with a text field and a 'up-down' control
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxspinbutton.html#wxspinbutton">wxSpinButton</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A spin or 'up-down' control
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxstatictext.html#wxstatictext">wxStaticText</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+One or more lines of non-editable text
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxstaticbitmap.html#wxstaticbitmap">wxStaticBitmap</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A control to display a bitmap
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxradiobox.html#wxradiobox">wxRadioBox</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A group of radio buttons
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxradiobutton.html#wxradiobutton">wxRadioButton</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A round button to be used with others in a mutually exclusive way
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<A HREF="wx_wxslider.html#wxslider">wxSlider</A>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A slider that can be dragged by the user
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="sampledb"></A>
+<H3>Database sample</H3>
+<P>
+The database sample is a small test program showing how to use the ODBC
+classes written by Remstar Intl.  Obviously, this sample requires a
+database with ODBC support to be correctly installed on your system.<P>
+
+
+<HR>
+<A NAME="sampledebugrpt"></A>
+<H3>DebugRpt sample</H3>
+<P>
+This sample shows how to use <A HREF="wx_wxdebugreport.html#wxdebugreport">wxDebugReport</A> class to
+generate a debug report in case of a program crash or otherwise. On start up,
+it proposes to either crash itself (by dereferencing a NULL pointer) or
+generate debug report without doing it. Next it initializes the debug report
+with standard information adding a custom file to it (just a timestamp) and
+allows to view the information gathered using
+<A HREF="wx_wxdebugreportpreview.html#wxdebugreportpreview">wxDebugReportPreview</A>.<P>
+For the report processing part of the sample to work you should make available
+a Web server accepting form uploads, otherwise
+<A HREF="wx_wxdebugreportupload.html#wxdebugreportupload">wxDebugReportUpload</A> will report an error.<P>
+
+
+<HR>
+<A NAME="sampledialogs"></A>
+<H3>Dialogs sample</H3>
+<P>
+This sample shows how to use the common dialogs available from wxWidgets. These
+dialogs are described in detail in the <A HREF="wx_commondialogsoverview.html#commondialogsoverview">Common dialogs overview</A>.<P>
+
+
+<HR>
+<A NAME="sampledialup"></A>
+<H3>Dialup sample</H3>
+<P>
+This sample shows the <A HREF="wx_wxdialupmanager.html#wxdialupmanager">wxDialUpManager</A>
+class. In the status bar, it displays the information gathered through its
+interface: in particular, the current connection status (online or offline) and
+whether the connection is permanent (in which case a string 'LAN' appears in
+the third status bar field - but note that you may be on a LAN not
+connected to the Internet, in which case you will not see this) or not.<P>
+Using the menu entries, you may also dial or hang up the line if you have a
+modem attached and (this only makes sense for Windows) list the available
+connections.<P>
+
+
+<HR>
+<A NAME="samplednd"></A>
+<H3>DnD sample</H3>
+<P>
+This sample shows both clipboard and drag and drop in action. It is quite non
+trivial and may be safely used as a basis for implementing the clipboard and
+drag and drop operations in a real-life program.<P>
+When you run the sample, its screen is split in several parts. On the top,
+there are two listboxes which show the standard derivations of
+<A HREF="wx_wxdroptarget.html#wxdroptarget">wxDropTarget</A>:
+<A HREF="wx_wxtextdroptarget.html#wxtextdroptarget">wxTextDropTarget</A> and
+<A HREF="wx_wxfiledroptarget.html#wxfiledroptarget">wxFileDropTarget</A>.<P>
+The middle of the sample window is taken by the log window which shows what is
+going on (of course, this only works in debug builds) and may be helpful to see
+the sequence of steps of data transfer.<P>
+Finally, the last part is used for dragging text from it to either one of the
+listboxes (only one will accept it) or another application. The last
+functionality available from the main frame is to paste a bitmap from the
+clipboard (or, in the case of the Windows version, also a metafile) - it will be
+shown in a new frame.<P>
+So far, everything we mentioned was implemented with minimal amount of code
+using standard wxWidgets classes. The more advanced features are demonstrated
+if you create a shape frame from the main frame menu. A shape is a geometric
+object which has a position, size and color. It models some
+application-specific data in this sample. A shape object supports its own
+private <A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A> which means that you may cut and
+paste it or drag and drop (between one and the same or different shapes) from
+one sample instance to another (or the same). However, chances are that no
+other program supports this format and so shapes can also be rendered as
+bitmaps which allows them to be pasted/dropped in many other applications
+(and, under Windows, also as metafiles which are supported by most of Windows
+programs as well - try Write/Wordpad, for example).<P>
+Take a look at DnDShapeDataObject class to see how you may use
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> to achieve this.<P>
+
+
+<HR>
+<A NAME="sampledynamic"></A>
+<H3>Dynamic sample</H3>
+<P>
+This sample is a very small sample that demonstrates use of the
+<A HREF="wx_wxevthandler.html#wxevthandlerconnect">wxEvtHandler::Connect</A> method. This method
+should be used whenever it is not known at compile time which control
+will receive which event or which controls are actually going to be in
+a dialog or frame. This is most typically the case for any scripting
+language that would work as a wrapper for wxWidgets or programs where
+forms or similar datagrams can be created by the users.<P>
+See also the <A HREF="wx_samples.html#sampleevent">event sample</A><P>
+
+
+<HR>
+<A NAME="sampleevent"></A>
+<H3>Event sample</H3>
+<P>
+The event sample demonstrates various features of the wxWidgets events. It
+shows using dynamic events and connecting/disconnecting the event handlers
+during run time and also using
+<A HREF="wx_wxwindow.html#wxwindowpusheventhandler">PushEventHandler()</A> and
+<A HREF="wx_wxwindow.html#wxwindowpopeventhandler">PopEventHandler()</A>.<P>
+It replaces the old dynamic sample.<P>
+
+
+<HR>
+<A NAME="sampleexcept"></A>
+<H3>Except(ions) sample</H3>
+<P>
+This very simple sample shows how to use C++ exceptions in wxWidgets programs,
+i.e. where to catch the exception which may be thrown by the program code. It
+doesn't do anything very exciting by itself, you need to study its code to
+understand what goes on.<P>
+You need to build the library with <TT>wxUSE_EXCEPTIONS</TT> being set to 1
+and compile your code with C++ exceptions support to be able to build this
+sample.<P>
+
+
+<HR>
+<A NAME="sampleexec"></A>
+<H3>Exec sample</H3>
+<P>
+The exec sample demonstrates the <A HREF="wx_processfunctions.html#wxexecute">wxExecute</A> and
+<A HREF="wx_processfunctions.html#wxshell">wxShell</A> functions. Both of them are used to execute the
+external programs and the sample shows how to do this synchronously (waiting
+until the program terminates) or asynchronously (notification will come later).<P>
+It also shows how to capture the output of the child process in both
+synchronous and asynchronous cases and how to kill the processes with
+<A HREF="wx_wxprocess.html#wxprocesskill">wxProcess::Kill</A> and test for their existence with
+<A HREF="wx_wxprocess.html#wxprocessexists">wxProcess::Exists</A>.<P>
+
+
+<HR>
+<A NAME="samplefont"></A>
+<H3>Font sample</H3>
+<P>
+The font sample demonstrates <A HREF="wx_wxfont.html#wxfont">wxFont</A>,
+<A HREF="wx_wxfontenumerator.html#wxfontenumerator">wxFontEnumerator</A> and
+<A HREF="wx_wxfontmapper.html#wxfontmapper">wxFontMapper</A> classes. It allows you to see the fonts
+available (to wxWidgets) on the computer and shows all characters of the
+chosen font as well.<P>
+
+
+<HR>
+<A NAME="samplegrid"></A>
+<H3>Grid sample</H3>
+<P>
+TODO.<P>
+
+
+<HR>
+<A NAME="samplehtml"></A>
+<H3>HTML samples</H3>
+<P>
+Eight HTML samples (you can find them in directory <TT>samples/html</TT>)
+cover all features of the HTML sub-library.<P>
+<B>Test</B> demonstrates how to create <A HREF="wx_wxhtmlwindow.html#wxhtmlwindow">wxHtmlWindow</A>
+and also shows most supported HTML tags.<P>
+<B>Widget</B> shows how you can embed ordinary controls or windows within an
+HTML page. It also nicely explains how to write new tag handlers and extend
+the library to work with unsupported tags.<P>
+<B>About</B> may give you an idea how to write good-looking About boxes.<P>
+<B>Zip</B> demonstrates use of virtual file systems in wxHTML. The zip archives
+handler (ships with wxWidgets) allows you to access HTML pages stored
+in a compressed archive as if they were ordinary files.<P>
+<B>Virtual</B> is yet another virtual file systems demo. This one generates pages at run-time.
+You may find it useful if you need to display some reports in your application.<P>
+<B>Printing</B> explains use of <A HREF="wx_wxhtmleasyprinting.html#wxhtmleasyprinting">wxHtmlEasyPrinting</A>
+class which serves as as-simple-as-possible interface for printing HTML
+documents without much work. In fact, only few function calls are sufficient.<P>
+<B>Help</B> and <B>Helpview</B> are variations on displaying HTML help
+(compatible with MS HTML Help Workshop). <I>Help</I> shows how to embed
+<A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A> in your application
+while <I>Helpview</I> is a simple tool that only pops up the help window and
+displays help books given at command line.<P>
+
+
+<HR>
+<A NAME="sampleimage"></A>
+<H3>Image sample</H3>
+<P>
+The image sample demonstrates use of the <A HREF="wx_wximage.html#wximage">wxImage</A> class
+and shows how to download images in a variety of formats, currently PNG, GIF,
+TIFF, JPEG, BMP, PNM and PCX. The top of the sample shows two rectangles, one
+of which is drawn directly in the window, the other one is drawn into a
+<A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>, converted to a wxImage, saved as a PNG image
+and then reloaded from the PNG file again so that conversions between wxImage
+and wxBitmap as well as loading and saving PNG files are tested.<P>
+At the bottom of the main frame there is a test for using a monochrome bitmap by
+drawing into a <A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A>. The bitmap is then drawn
+specifying the foreground and background colours with
+<A HREF="wx_wxdc.html#wxdcsettextforeground">wxDC::SetTextForeground</A> and
+<A HREF="wx_wxdc.html#wxdcsettextbackground">wxDC::SetTextBackground</A> (on the left). The
+bitmap is then converted to a wxImage and the foreground colour (black) is
+replaced with red using <A HREF="wx_wximage.html#wximagereplace">wxImage::Replace</A>.<P>
+
+
+<HR>
+<A NAME="sampleinternat"></A>
+<H3>Internat(ionalization) sample</H3>
+<P>
+The not very clearly named internat sample demonstrates the wxWidgets
+internationalization (i18n for short from now on) features. To be more
+precise, it only shows localization support, i.e. support for translating the
+program messages into another language while true i18n would also involve
+changing the other aspects of the programs behaviour.<P>
+More information about this sample can be found in the <TT>readme.txt</TT> file in
+its directory. Please see also <A HREF="wx_internationalization.html#internationalization">i18n overview</A>.<P>
+
+
+<HR>
+<A NAME="samplelayout"></A>
+<H3>Layout sample</H3>
+<P>
+The layout sample demonstrates the two different layout systems offered
+by wxWidgets. When starting the program, you will see a frame with some
+controls and some graphics. The controls will change their size whenever
+you resize the entire frame and the exact behaviour of the size changes
+is determined using the <A HREF="wx_wxlayoutconstraints.html#wxlayoutconstraints">wxLayoutConstraints</A>
+class. See also the <A HREF="wx_constraintsoverview.html#constraintsoverview">overview</A> and the
+<A HREF="wx_wxindividuallayoutconstraint.html#wxindividuallayoutconstraint">wxIndividualLayoutConstraint</A>
+class for further information.<P>
+The menu in this sample offers two more tests, one showing how to use
+a <A HREF="wx_wxboxsizer.html#wxboxsizer">wxBoxSizer</A> in a simple dialog and the other one
+showing how to use sizers in connection with a <A HREF="wx_wxnotebook.html#wxnotebook">wxNotebook</A>
+class. See also <A HREF="wx_wxsizer.html#wxsizer">wxSizer</A>.<P>
+
+
+<HR>
+<A NAME="samplelistctrl"></A>
+<H3>Listctrl sample</H3>
+<P>
+This sample shows the <A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A> control. Different modes
+supported by the control (list, icons, small icons, report) may be chosen from
+the menu.<P>
+The sample also provides some timings for adding/deleting/sorting a lot of
+(several thousands) items into the control.<P>
+
+
+<HR>
+<A NAME="samplemediaplayer"></A>
+<H3>Mediaplayer sample</H3>
+<P>
+This sample demonstrates how to use all the features of
+<A HREF="wx_wxmediactrl.html#wxmediactrl">wxMediaCtrl</A> and play various types of sound, video,
+and other files.<P>
+
+It replaces the old dynamic sample.<P>
+
+<HR>
+<A NAME="samplenotebook"></A>
+<H3>Notebook sample</H3>
+<P>
+This samples shows <A HREF="wx_wxbookctrloverview.html#wxbookctrloverview">wxBookCtrl</A> family of controls.
+Although initially it was written to demonstrate <A HREF="wx_wxnotebook.html#wxnotebook">wxNotebook</A>
+only, it can now be also used to see <A HREF="wx_wxlistbook.html#wxlistbook">wxListbook</A>,
+<A HREF="wx_wxchoicebook.html#wxchoicebook">wxChoicebook</A> and <A HREF="wx_wxtreebook.html#wxtreebook">wxTreebook</A> in action.
+Test each of the controls, their orientation, images and pages using commands through menu.<P>
+<P>
+
+<HR>
+<A NAME="samplerender"></A>
+<H3>Render sample</H3>
+<P>
+This sample shows how to replace the default wxWidgets
+<A HREF="wx_wxrenderernative.html#wxrenderernative">renderer</A> and also how to write a shared library
+(DLL) implementing a renderer and load and unload it during the run-time.<P>
+<P>
+
+<HR>
+<A NAME="samplerotate"></A>
+<H3>Rotate sample</H3>
+<P>
+This is a simple example which demonstrates how to rotate an image with
+the <A HREF="wx_wximage.html#wximagerotate">wxImage::Rotate</A> method. The rotation can
+be done without interpolation (left mouse button) which will be faster,
+or with interpolation (right mouse button) which is slower but gives
+better results.<P>
+
+
+<HR>
+<A NAME="samplescrollsub"></A>
+<H3>Scroll subwindow sample</H3>
+<P>
+This sample demonstrates use of the <A HREF="wx_wxscrolledwindow.html#wxscrolledwindow">wxScrolledWindow</A>
+class including placing subwindows into it and drawing simple graphics. It uses the
+<A HREF="wx_wxscrolledwindow.html#wxscrolledwindowsettargetwindow">SetTargetWindow</A> method and thus the effect
+of scrolling does not show in the scrolled window itself, but in one of its subwindows.<P>
+Additionally, this samples demonstrates how to optimize drawing operations in wxWidgets,
+in particular using the <A HREF="wx_wxwindow.html#wxwindowisexposed">wxWindow::IsExposed</A> method with
+the aim to prevent unnecessary drawing in the window and thus reducing or removing
+flicker on screen.<P>
+
+
+<HR>
+<A NAME="samplesockets"></A>
+<H3>Sockets sample</H3>
+<P>
+The sockets sample demonstrates how to use the communication facilities
+provided by <A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocket</A>. There are two different
+applications in this sample: a server, which is implemented using a
+<A HREF="wx_wxsocketserver.html#wxsocketserver">wxSocketServer</A> object, and a client, which
+is implemented as a <A HREF="wx_wxsocketclient.html#wxsocketclient">wxSocketClient</A>.<P>
+The server binds to the local address, using TCP port number 3000,
+sets up an event handler to be notified of incoming connection requests
+(<B>wxSOCKET_CONNECTION</B> events), and sits there, waiting for clients
+(<I>listening</I>, in socket parlance). For each accepted connection,
+a new <A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A> object is created. These
+socket objects are independent from the server that created them, so
+they set up their own event handler, and then request to be notified
+of <B>wxSOCKET_INPUT</B> (incoming data) or <B>wxSOCKET_LOST</B>
+(connection closed at the remote end) events. In the sample, the event
+handler is the same for all connections; to find out which socket the
+event is addressed to, the <A HREF="wx_wxsocketevent.html#wxsocketeventgetsocket">GetSocket</A> function
+is used.<P>
+Although it might take some time to get used to the event-oriented
+system upon which wxSocket is built, the benefits are many. See, for
+example, that the server application, while being single-threaded
+(and of course without using fork() or ugly select() loops) can handle
+an arbitrary number of connections.<P>
+The client starts up unconnected, so you can use the Connect... option
+to specify the address of the server you are going to connect to (the
+TCP port number is hard-coded as 3000). Once connected, a number of
+tests are possible. Currently, three tests are implemented. They show
+how to use the basic IO calls in <A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>,
+such as <A HREF="wx_wxsocketbase.html#wxsocketbaseread">Read</A>, <A HREF="wx_wxsocketbase.html#wxsocketbasewrite">Write</A>,
+<A HREF="wx_wxsocketbase.html#wxsocketbasereadmsg">ReadMsg</A> and <A HREF="wx_wxsocketbase.html#wxsocketbasewritemsg">WriteMsg</A>,
+and how to set up the correct IO flags depending on what you are going to
+do. See the comments in the code for more information. Note that because
+both clients and connection objects in the server set up an event handler
+to catch <B>wxSOCKET_LOST</B> events, each one is immediately notified
+if the other end closes the connection.<P>
+There is also a URL test which shows how to use
+the <A HREF="wx_wxurl.html#wxurl">wxURL</A> class to fetch data from a given URL.<P>
+The sockets sample is work in progress. Some things to do:<P>
+<UL>
+
+<LI> More tests for basic socket functionality.
+<LI> More tests for protocol classes (wxProtocol and its descendants).
+<LI> Tests for the recently added (and still in alpha stage) datagram sockets.
+<LI> New samples which actually do something useful (suggestions accepted).
+</UL>
+<P>
+
+
+<HR>
+<A NAME="samplesound"></A>
+<H3>Sound sample</H3>
+<P>
+The <TT>sound</TT> sample shows how to use <A HREF="wx_wxsound.html#wxsound">wxSound</A> for simple
+audio output (e.g. notifications).<P>
+
+
+<HR>
+<A NAME="samplestatbar"></A>
+<H3>Statbar sample</H3>
+<P>
+This sample shows how to create and use wxStatusBar. Although most of the
+samples have a statusbar, they usually only create a default one and only
+do it once.<P>
+Here you can see how to recreate the statusbar (with possibly different number
+of fields) and how to use it to show icons/bitmaps and/or put arbitrary
+controls into it.<P>
+
+
+<HR>
+<A NAME="sampletext"></A>
+<H3>Text sample</H3>
+<P>
+This sample demonstrates four features: firstly the use and many variants of
+the <A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A> class (single line, multi line, read only,
+password, ignoring TAB, ignoring ENTER).<P>
+Secondly it shows how to intercept a <A HREF="wx_wxkeyevent.html#wxkeyevent">wxKeyEvent</A> in both
+the raw form using the <TT>EVT_KEY_UP</TT> and <TT>EVT_KEY_DOWN</TT> macros and the
+higher level from using the <TT>EVT_CHAR</TT> macro. All characters will be logged
+in a log window at the bottom of the main window. By pressing some of the function
+keys, you can test some actions in the text ctrl as well as get statistics on the
+text ctrls, which is useful for testing if these statistics actually are correct.<P>
+Thirdly, on platforms which support it, the sample will offer to copy text to the
+<A HREF="wx_wxclipboard.html#wxclipboard">wxClipboard</A> and to paste text from it. The GTK version will
+use the so called PRIMARY SELECTION, which is the pseudo clipboard under X and
+best known from pasting text to the XTerm program.<P>
+Last not least: some of the text controls have tooltips and the sample also shows
+how tooltips can be centrally disabled and their latency controlled.<P>
+
+
+<HR>
+<A NAME="samplethread"></A>
+<H3>Thread sample</H3>
+<P>
+This sample demonstrates use of threads in connection with GUI programs.
+There are two fundamentally different ways to use threads in GUI programs and
+either way has to take care of the fact that the GUI library itself usually
+is not multi-threading safe, i.e. that it might crash if two threads try to
+access the GUI class simultaneously. One way to prevent that is have a normal
+GUI program in the main thread and some worker threads which work in the
+background. In order to make communication between the main thread and the
+worker threads possible, wxWidgets offers the <A HREF="wx_miscellany.html#wxpostevent">wxPostEvent</A>
+function and this sample makes use of this function.<P>
+The other way to use a so called Mutex (such as those offered in the <A HREF="wx_wxmutex.html#wxmutex">wxMutex</A>
+class) that prevent threads from accessing the GUI classes as long as any other
+thread accesses them. For this, wxWidgets has the <A HREF="wx_threadfunctions.html#wxmutexguienter">wxMutexGuiEnter</A>
+and <A HREF="wx_threadfunctions.html#wxmutexguileave">wxMutexGuiLeave</A> functions, both of which are
+used and tested in the sample as well.<P>
+See also <A HREF="wx_wxthreadoverview.html#wxthreadoverview">Multithreading overview</A> and <A HREF="wx_wxthread.html#wxthread">wxThread</A>.<P>
+
+
+<HR>
+<A NAME="sampletoolbar"></A>
+<H3>Toolbar sample</H3>
+<P>
+The toolbar sample shows the <A HREF="wx_wxtoolbar.html#wxtoolbar">wxToolBar</A> class in action.<P>
+The following things are demonstrated:<P>
+<UL>
+
+<LI> Creating the toolbar using <A HREF="wx_wxtoolbar.html#wxtoolbaraddtool">wxToolBar::AddTool</A>
+and <A HREF="wx_wxtoolbar.html#wxtoolbaraddcontrol">wxToolBar::AddControl</A>: see
+MyApp::InitToolbar in the sample.
+<LI> Using <TT>EVT_UPDATE_UI</TT> handler for automatically enabling/disabling
+toolbar buttons without having to explicitly call EnableTool. This is done
+in MyFrame::OnUpdateCopyAndCut.
+<LI> Using <A HREF="wx_wxtoolbar.html#wxtoolbardeletetool">wxToolBar::DeleteTool</A> and
+<A HREF="wx_wxtoolbar.html#wxtoolbarinserttool">wxToolBar::InsertTool</A> to dynamically update the
+toolbar.
+</UL>
+<P>
+Some buttons in the main toolbar are check buttons, i.e. they stay checked when
+pressed. On the platforms which support it, the sample also adds a combobox
+to the toolbar showing how you can use arbitrary controls and not only buttons
+in it.<P>
+If you toggle another toolbar in the sample (using <TT>Ctrl-A</TT>) you will also
+see the radio toolbar buttons in action: the first three buttons form a radio
+group, i.e. checking any of them automatically unchecks the previously
+checked one.<P>
+
+
+<HR>
+<A NAME="sampletreectrl"></A>
+<H3>Treectrl sample</H3>
+<P>
+This sample demonstrates using the <A HREF="wx_wxtreectrl.html#wxtreectrl">wxTreeCtrl</A> class. Here
+you may see how to process various notification messages sent by this control
+and also when they occur (by looking at the messages in the text control in
+the bottom part of the frame).<P>
+Adding, inserting and deleting items and branches from the tree as well as
+sorting (in default alphabetical order as well as in custom one) is
+demonstrated here as well - try the corresponding menu entries.<P>
+
+
+<HR>
+<A NAME="samplewidgets"></A>
+<H3>Widgets sample</H3>
+<P>
+The widgets sample is the main presentation program for most simple and advanced
+native controls and complex generic widgets provided by wxWidgets.
+The sample tests their basic functionality, events, placement, modification
+in terms of colour and font as well as the possibility to change
+the controls programmatically, such as adding an item to a list box etc.
+All widgets are categorized for easy browsing.<P>
+
+<HR>
+<A NAME="samplewizard"></A>
+<H3>Wizard sample</H3>
+<P>
+This sample shows the so-called wizard dialog (implemented using
+<A HREF="wx_wxwizard.html#wxwizard">wxWizard</A> and related classes). It shows almost all
+features supported:<P>
+<UL>
+
+<LI> Using bitmaps with the wizard and changing them depending on the page
+shown (notice that wxValidationPage in the sample has a different image from
+the other ones)
+<LI> Using <A HREF="wx_wxwindow.html#wxwindowtransferdatafromwindow">TransferDataFromWindow</A>
+to verify that the data entered is correct before passing to the next page
+(done in wxValidationPage which forces the user to check a checkbox before
+continuing).
+<LI> Using more elaborated techniques to allow returning to the previous
+page, but not continuing to the next one or vice versa (in wxRadioboxPage)
+<LI> This (wxRadioboxPage) page also shows how the page may process the <TT>
+Cancel</TT> button itself instead of relying on the wizard parent to do it.
+<LI> Normally, the order of the pages in the wizard is known at compile-time,
+but sometimes it depends on the user choices: wxCheckboxPage shows how to
+dynamically decide which page to display next (see also
+<A HREF="wx_wxwizardpage.html#wxwizardpage">wxWizardPage</A>)
+</UL>
+<P>
+
+</FONT></BODY></HTML>

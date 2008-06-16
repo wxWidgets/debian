@@ -707,6 +707,25 @@ Drops the data table view named in 'viewName'.
 
 If the view does not exist, this function will return true.  Note that views are not supported with all datasources.
 
+\membersection{wxDb::EscapeSqlChars}\label{wxdbescapesqlchars}
+
+\func{wxString}{EscapeSqlChars}{\param{const wxString\& }{value}}
+
+This function is used internally by wxWidgets while building SQL statements.
+It has been provided to help users who wish to explicity construct SQL
+statements to be sent to the server.  The function takes the value passed and
+returns it with any special characters escaped.  Which characters are
+considered special depends on what type of datasource the object is connected
+to.  For example, most database servers use a backslash as the escape
+character; if the value passed contains a backlash it will be replaced with a
+double backslash before it is passed to the server.  This function can be used
+to avoid passing statements with syntax errors to the server as well as prevent
+SQL injection attacks.
+
+\wxheading{Parameters}
+
+\docparam{value}{The value to be escaped.}
+
 \membersection{wxDb::ExecSql}\label{wxdbexecsql}
 
 \func{bool}{ExecSql}{\param{const wxString \&}{pSqlStmt}}
@@ -1364,7 +1383,7 @@ When called with {\it sqlLogOFF}, the logging file is closed, and any calls to \
 
 \membersection{wxDb::SQLColumnName}\label{wxdbsqlcolumnname}
 
-\func{const wxString}{SQLColumnName}{\param{const char *}{ colName}}
+\func{const wxString}{SQLColumnName}{\param{const wxChar *}{ colName}}
 
 Returns the column name in a form ready for use in SQL statements.
 In most cases, the column name is returned verbatim.  But some databases
@@ -1386,7 +1405,7 @@ before including the column name in a SQL statement}
 
 \membersection{wxDb::SQLTableName}\label{wxdbsqltablename}
 
-\func{const wxString}{SQLTableName}{\param{const char *}{ tableName}}
+\func{const wxString}{SQLTableName}{\param{const wxChar *}{ tableName}}
 
 Returns the table name in a form ready for use in SQL statements.
 In most cases, the table name is returned verbatim.  But some databases
@@ -2457,7 +2476,7 @@ this function.
 \param{UWORD }{numIndexColumns}, \param{wxDbIdxDef *}{pIndexDefs},
 \param{bool }{attemptDrop=true}}
 
-This member function allows you to create secondary (non primary) indexes on
+This member function allows you to create secondary (non-primary) indexes on
 your tables.  You first create your table, normally specifying a primary
 index, and then create any secondary indexes on the table.  Indexes in
 relational model are not required.  You do not need indexes to look up records
@@ -2782,7 +2801,7 @@ of this function).
 
 \wxheading{Parameters}
 
-\docparam{From}{A comma separated list of table names that are to be outer
+\docparam{From}{A comma separated list of table names that are to be inner
 joined with the base table's columns so that the joined table's columns
 may be returned in the result set or used as a portion of a comparison with
 the base table's columns.  NOTE that the base tables name must NOT be included
@@ -3257,7 +3276,7 @@ records to be retrieved (e.g. All users with a first name of "JOHN").
 Use \helpref{wxDbTable::SetOrderByClause}{wxdbtablesetorderbyclause} to
 change the sequence in which records are returned in the result set from
 the datasource (e.g. Ordered by LAST\_NAME).  Use
-\helpref{wxDbTable::SetFromClause}{wxdbtablesetfromclause} to allow outer
+\helpref{wxDbTable::SetFromClause}{wxdbtablesetfromclause} to allow inner
 joining of the base table (the one being associated with this instance of
 wxDbTable) with other tables which share a related field.
 
@@ -3572,6 +3591,8 @@ wxDbTable constructor was called.}
     DB_DATA_TYPE_INTEGER        : non-floating point numbers
     DB_DATA_TYPE_FLOAT          : floating point numbers
     DB_DATA_TYPE_DATE           : dates
+    DB_DATA_TYPE_BLOB           : binary large objects
+    DB_DATA_TYPE_MEMO           : large strings
 \end{verbatim}
 
 \docparam{pData}{Pointer to the data object that will hold the column's
@@ -3689,14 +3710,14 @@ and saving a pointer to that cursor.
 \func{void}{SetFromClause}{\param{const wxString \&}{From}}
 
 Accessor function for setting the private class member wxDbTable::from
-that indicates what other tables should be outer joined with the wxDbTable's
+that indicates what other tables should be inner joined with the wxDbTable's
 base table for access to the columns in those other tables.
 
 Synonym to this function is one form of \helpref{wxDbTable::From}{wxdbtablefrom}
 
 \wxheading{Parameters}
 
-\docparam{From}{A comma separated list of table names that are to be outer
+\docparam{From}{A comma separated list of table names that are to be inner
 joined with the base table's columns so that the joined table's columns
 may be returned in the result set or used as a portion of a comparison with
 the base table's columns.  NOTE that the base tables name must NOT be included
@@ -3706,7 +3727,7 @@ in constructing query statements.}
 \wxheading{Remarks}
 
 Used by the \helpref{wxDbTable::Query}{wxdbtablequery} and
-\helpref{wxDbTable::Count}{wxdbtablecount} member functions to allow outer
+\helpref{wxDbTable::Count}{wxdbtablecount} member functions to allow inner
 joining of records from multiple tables.
 
 Do {\bf not} include the keyword "FROM" when setting the FROM clause.
@@ -3721,7 +3742,7 @@ the datasource knows on which column values the tables should be joined on.
 \begin{verbatim}
     ...
     // Base table is the "LOCATION" table, and it is being
-    // outer joined to the "PART" table via the field "PART_NUMBER"
+    // inner joined to the "PART" table via the field "PART_NUMBER"
     // that can be related between the two tables.
     location->SetWhereClause("LOCATION.PART_NUMBER = PART.PART_NUMBER")
     location->SetFromClause("PART");
@@ -3855,7 +3876,7 @@ Do {\bf not} include the keywords "WHERE" when setting the WHERE clause.
     // Using parameters and multiple logical combinations
     parts->Where("((QTY > 10) OR (ON_ORDER > 0)) AND ON_HOLD = 0");
     ...
-    // This query uses an outer join (requiring a FROM clause also)
+    // This query uses an inner join (requiring a FROM clause also)
     // that joins the PART and LOCATION table on he common field
     // PART_NUMBER.
     parts->Where("PART.ON_HOLD = 0 AND \

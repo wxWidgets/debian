@@ -1,0 +1,455 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxComboBox</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcombobox"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcolourpickerevent.html#wxcolourpickerevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcomboctrl.html#wxcomboctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxComboBox</H2>
+<P>
+A combobox is like a combination of an edit control and a listbox. It can be
+displayed as static list with editable or read-only text field; or a drop-down list with
+text field; or a drop-down list without a text field.<P>
+A combobox permits a single selection only. Combobox items are numbered from zero.<P>
+If you need a customized combobox, have a look at <A HREF="wx_wxcomboctrl.html#wxcomboctrl">wxComboCtrl</A>,
+<A HREF="wx_wxownerdrawncombobox.html#wxownerdrawncombobox">wxOwnerDrawnComboBox</A>, <A HREF="wx_wxcombopopup.html#wxcombopopup">wxComboPopup</A>
+and the ready-to-use <A HREF="wx_wxbitmapcombobox.html#wxbitmapcombobox">wxBitmapComboBox</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitems">wxControlWithItems</A><BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/combobox.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCB_SIMPLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a combobox with a permanently displayed list. Windows only. 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCB_DROPDOWN</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a combobox with a drop-down list.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCB_READONLY</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Same as wxCB_DROPDOWN but only the
+strings specified as the combobox choices can be selected, it is impossible to
+select (even from a program) a string which is not in the choices list.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxCB_SORT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sorts the entries in the list alphabetically.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxTE_PROCESS_ENTER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The control will generate
+the event wxEVT_COMMAND_TEXT_ENTER (otherwise pressing Enter key
+is either processed internally by the control or used for navigation between
+dialog controls). Windows only.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_COMBOBOX(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_COMBOBOX_SELECTED event,
+when an item on the list is selected. Note that calling
+<A HREF="wx_wxcombobox.html#wxcomboboxgetvalue">GetValue</A> returns the new value of selection.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_TEXT(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_TEXT_UPDATED event,
+when the combobox text changes.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_TEXT_ENTER(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_TEXT_ENTER event,
+when &lt;RETURN&gt; is pressed in the combobox.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A>, <A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A>, <A HREF="wx_wxchoice.html#wxchoice">wxChoice</A>,
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxcomboboxctor">wxComboBox::wxComboBox</A><BR>
+<A HREF="#wxcomboboxdtor">wxComboBox::~wxComboBox</A><BR>
+<A HREF="#wxcomboboxcreate">wxComboBox::Create</A><BR>
+<A HREF="#wxcomboboxcancopy">wxComboBox::CanCopy</A><BR>
+<A HREF="#wxcomboboxcancut">wxComboBox::CanCut</A><BR>
+<A HREF="#wxcomboboxcanpaste">wxComboBox::CanPaste</A><BR>
+<A HREF="#wxcomboboxcanredo">wxComboBox::CanRedo</A><BR>
+<A HREF="#wxcomboboxcanundo">wxComboBox::CanUndo</A><BR>
+<A HREF="#wxcomboboxcopy">wxComboBox::Copy</A><BR>
+<A HREF="#wxcomboboxcut">wxComboBox::Cut</A><BR>
+<A HREF="#wxcomboboxgetcurrentselection">wxComboBox::GetCurrentSelection</A><BR>
+<A HREF="#wxcomboboxgetinsertionpoint">wxComboBox::GetInsertionPoint</A><BR>
+<A HREF="#wxcomboboxgetlastposition">wxComboBox::GetLastPosition</A><BR>
+<A HREF="#wxcomboboxgetselection">wxComboBox::GetSelection</A><BR>
+<A HREF="#wxcomboboxgetvalue">wxComboBox::GetValue</A><BR>
+<A HREF="#wxcomboboxpaste">wxComboBox::Paste</A><BR>
+<A HREF="#wxcomboboxredo">wxComboBox::Redo</A><BR>
+<A HREF="#wxcomboboxreplace">wxComboBox::Replace</A><BR>
+<A HREF="#wxcomboboxremove">wxComboBox::Remove</A><BR>
+<A HREF="#wxcomboboxsetinsertionpoint">wxComboBox::SetInsertionPoint</A><BR>
+<A HREF="#wxcomboboxsetinsertionpointend">wxComboBox::SetInsertionPointEnd</A><BR>
+<A HREF="#wxcomboboxsetselection">wxComboBox::SetSelection</A><BR>
+<A HREF="#wxcomboboxsetvalue">wxComboBox::SetValue</A><BR>
+<A HREF="#wxcomboboxundo">wxComboBox::Undo</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcomboboxctor"></A>
+<H3>wxComboBox::wxComboBox</H3>
+<P>
+<B></B> <B>wxComboBox</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxComboBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value = ""</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>int</B><I> n = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>choices[] = NULL</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "comboBox"</I>)<P>
+<B></B> <B>wxComboBox</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "comboBox"</I>)<P>
+Constructor, creating and showing a combobox.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>value</I><UL><UL>
+Initial selection string. An empty string indicates no selection.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then the window is sized
+appropriately.</UL></UL>
+<P>
+<I>n</I><UL><UL>
+Number of strings with which to initialise the control.</UL></UL>
+<P>
+<I>choices</I><UL><UL>
+An array of strings with which to initialise the control.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxcombobox.html#wxcombobox">wxComboBox</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcombobox.html#wxcomboboxcreate">wxComboBox::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxComboBox constructor in wxPython reduces the <TT>n</TT>
+and <TT>choices</TT> arguments are to a single argument, which is
+a list of strings.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there is just an array reference in place of <TT>n</TT>
+and <TT>choices</TT>.<P>
+
+
+<HR>
+<A NAME="wxcomboboxdtor"></A>
+<H3>wxComboBox::~wxComboBox</H3>
+<P>
+<B></B> <B>~wxComboBox</B>()<P>
+Destructor, destroying the combobox.<P>
+
+
+<HR>
+<A NAME="wxcomboboxcreate"></A>
+<H3>wxComboBox::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value = ""</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>int</B><I> n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>choices[]</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "comboBox"</I>)<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "comboBox"</I>)<P>
+Creates the combobox for two-step construction. Derived classes
+should call or replace this function. See <A HREF="wx_wxcombobox.html#wxcomboboxctor">wxComboBox::wxComboBox</A>
+for further details.<P>
+
+
+<HR>
+<A NAME="wxcomboboxcancopy"></A>
+<H3>wxComboBox::CanCopy</H3>
+<P>
+<B>bool</B> <B>CanCopy</B>() <B>const</B><P>
+Returns true if the combobox is editable and there is a text selection to copy to the clipboard.
+Only available on Windows.<P>
+
+
+<HR>
+<A NAME="wxcomboboxcancut"></A>
+<H3>wxComboBox::CanCut</H3>
+<P>
+<B>bool</B> <B>CanCut</B>() <B>const</B><P>
+Returns true if the combobox is editable and there is a text selection to copy to the clipboard.
+Only available on Windows.<P>
+
+
+<HR>
+<A NAME="wxcomboboxcanpaste"></A>
+<H3>wxComboBox::CanPaste</H3>
+<P>
+<B>bool</B> <B>CanPaste</B>() <B>const</B><P>
+Returns true if the combobox is editable and there is text on the clipboard that can be pasted into the
+text field. Only available on Windows.<P>
+
+
+<HR>
+<A NAME="wxcomboboxcanredo"></A>
+<H3>wxComboBox::CanRedo</H3>
+<P>
+<B>bool</B> <B>CanRedo</B>() <B>const</B><P>
+Returns true if the combobox is editable and the last undo can be redone.
+Only available on Windows.<P>
+
+
+<HR>
+<A NAME="wxcomboboxcanundo"></A>
+<H3>wxComboBox::CanUndo</H3>
+<P>
+<B>bool</B> <B>CanUndo</B>() <B>const</B><P>
+Returns true if the combobox is editable and the last edit can be undone.
+Only available on Windows.<P>
+
+
+<HR>
+<A NAME="wxcomboboxcopy"></A>
+<H3>wxComboBox::Copy</H3>
+<P>
+<B>void</B> <B>Copy</B>()<P>
+Copies the selected text to the clipboard.<P>
+
+
+<HR>
+<A NAME="wxcomboboxcut"></A>
+<H3>wxComboBox::Cut</H3>
+<P>
+<B>void</B> <B>Cut</B>()<P>
+Copies the selected text to the clipboard and removes the selection.<P>
+
+
+<HR>
+<A NAME="wxcomboboxgetcurrentselection"></A>
+<H3>wxComboBox::GetCurrentSelection</H3>
+<P>
+<B>int</B> <B>GetCurrentSelection</B>() <B>const</B><P>
+This function does the same things as 
+<A HREF="wx_wxchoice.html#wxchoicegetcurrentselection">wxChoice::GetCurrentSelection</A> and
+returns the item currently selected in the dropdown list if it's open or the
+same thing as <A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitemsgetselection">GetSelection</A> otherwise.<P>
+
+
+<HR>
+<A NAME="wxcomboboxgetinsertionpoint"></A>
+<H3>wxComboBox::GetInsertionPoint</H3>
+<P>
+<B>long</B> <B>GetInsertionPoint</B>() <B>const</B><P>
+Returns the insertion point for the combobox's text field.<P>
+<B>Note:</B> Under wxMSW, this function always returns 0 if the combobox
+doesn't have the focus.<P>
+
+
+<HR>
+<A NAME="wxcomboboxgetlastposition"></A>
+<H3>wxComboBox::GetLastPosition</H3>
+<P>
+<B>virtual wxTextPos</B> <B>GetLastPosition</B>() <B>const</B><P>
+Returns the last position in the combobox text field.<P>
+
+
+<HR>
+<A NAME="wxcomboboxgetselection"></A>
+<H3>wxComboBox::GetSelection</H3>
+<P>
+<B>void</B> <B>GetSelection</B>(<B>long *</B><I>from</I>, <B>long *</B><I>to</I>) <B>const</B><P>
+This is the same as <A HREF="wx_wxtextctrl.html#wxtextctrlgetselection">wxTextCtrl::GetSelection</A> 
+for the text control which is part of the combobox. Notice that this is a
+different method from <A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitemsgetselection">wxControlWithItems::GetSelection</A>.<P>
+Currently this method is only implemented in wxMSW and wxGTK.<P>
+
+
+<HR>
+<A NAME="wxcomboboxgetvalue"></A>
+<H3>wxComboBox::GetValue</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetValue</B>() <B>const</B><P>
+Returns the current value in the combobox text field.<P>
+
+
+<HR>
+<A NAME="wxcomboboxpaste"></A>
+<H3>wxComboBox::Paste</H3>
+<P>
+<B>void</B> <B>Paste</B>()<P>
+Pastes text from the clipboard to the text field.<P>
+
+
+<HR>
+<A NAME="wxcomboboxredo"></A>
+<H3>wxComboBox::Redo</H3>
+<P>
+<B>void</B> <B>Redo</B>()<P>
+Redoes the last undo in the text field. Windows only.<P>
+
+
+<HR>
+<A NAME="wxcomboboxreplace"></A>
+<H3>wxComboBox::Replace</H3>
+<P>
+<B>void</B> <B>Replace</B>(<B>long</B><I> from</I>, <B>long</B><I> to</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>)<P>
+Replaces the text between two positions with the given text, in the combobox text field.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>from</I><UL><UL>
+The first position.</UL></UL>
+<P>
+<I>to</I><UL><UL>
+The second position.</UL></UL>
+<P>
+<I>text</I><UL><UL>
+The text to insert.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxcomboboxremove"></A>
+<H3>wxComboBox::Remove</H3>
+<P>
+<B>void</B> <B>Remove</B>(<B>long</B><I> from</I>, <B>long</B><I> to</I>)<P>
+Removes the text between the two positions in the combobox text field.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>from</I><UL><UL>
+The first position.</UL></UL>
+<P>
+<I>to</I><UL><UL>
+The last position.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxcomboboxsetinsertionpoint"></A>
+<H3>wxComboBox::SetInsertionPoint</H3>
+<P>
+<B>void</B> <B>SetInsertionPoint</B>(<B>long</B><I> pos</I>)<P>
+Sets the insertion point in the combobox text field.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>pos</I><UL><UL>
+The new insertion point.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxcomboboxsetinsertionpointend"></A>
+<H3>wxComboBox::SetInsertionPointEnd</H3>
+<P>
+<B>void</B> <B>SetInsertionPointEnd</B>()<P>
+Sets the insertion point at the end of the combobox text field.<P>
+
+
+<HR>
+<A NAME="wxcomboboxsetselection"></A>
+<H3>wxComboBox::SetSelection</H3>
+<P>
+<B>void</B> <B>SetSelection</B>(<B>long</B><I> from</I>, <B>long</B><I> to</I>)<P>
+Selects the text between the two positions, in the combobox text field.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>from</I><UL><UL>
+The first position.</UL></UL>
+<P>
+<I>to</I><UL><UL>
+The second position.</UL></UL>
+<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> This method is called <TT>SetMark</TT> in wxPython, <TT>SetSelection</TT>
+name is kept for
+<A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitemssetselection">wxControlWithItems::SetSelection</A>.<P>
+
+
+<HR>
+<A NAME="wxcomboboxsetvalue"></A>
+<H3>wxComboBox::SetValue</H3>
+<P>
+<B>void</B> <B>SetValue</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>)<P>
+Sets the text for the combobox text field.<P>
+<B>NB:</B> For a combobox with <TT>wxCB_READONLY</TT> style the string must be in
+the combobox choices list, otherwise the call to SetValue() is ignored.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>text</I><UL><UL>
+The text to set.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxcomboboxundo"></A>
+<H3>wxComboBox::Undo</H3>
+<P>
+<B>void</B> <B>Undo</B>()<P>
+Undoes the last edit in the text field. Windows only.<P>
+
+</FONT></BODY></HTML>

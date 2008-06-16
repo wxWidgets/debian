@@ -1,0 +1,254 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSearchCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsearchctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsimplehelpprovider.html#wxsimplehelpprovider"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsinglechoicedialog.html#wxsinglechoicedialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSearchCtrl</H2>
+<P>
+A search control is a composite control with a search button, a text 
+control, and a cancel button.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A><BR>
+
+streambuf<BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/srchctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTE_PROCESS_ENTER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The control will generate
+the event wxEVT_COMMAND_TEXT_ENTER (otherwise pressing Enter key
+is either processed internally by the control or used for navigation between
+dialog controls).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTE_PROCESS_TAB</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The control will receive
+wxEVT_CHAR events for TAB pressed - normally, TAB is used for passing to the
+next control in a dialog instead. For the control created with this style,
+you can still use Ctrl-Enter to pass to the next control from the keyboard.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTE_NOHIDESEL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+By default, the Windows text control
+doesn't show the selection when it doesn't have focus - use this style to force
+it to always show it. It doesn't do anything under other platforms.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTE_LEFT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The text in the control will be left-justified (default).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTE_CENTRE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The text in the control will be centered (currently wxMSW and wxGTK2 only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTE_RIGHT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The text in the control will be right-justified (currently wxMSW and wxGTK2 only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTE_CAPITALIZE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+On PocketPC and Smartphone, causes the first letter to be capitalized.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A> and <A HREF="wx_wxsearchctrl.html#wxsearchctrlctor">wxSearchCtrl::wxSearchCtrl</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To process input from a search control, use these event handler macros to direct input to member
+functions that take a <A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A> argument. To retrieve actual search
+queries, use EVT_TEXT and EVT_TEXT_ENTER events, just as you would with <A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A>.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SEARCHCTRL_SEARCH_BTN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Respond to a wxEVT_SEARCHCTRL_SEARCH_BTN event,
+generated when the search button is clicked. Note that this does not initiate a search.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=358>
+<B>EVT_SEARCHCTRL_CANCEL_BTN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Respond to a wxEVT_SEARCHCTRL_CANCEL_BTN event,
+generated when the cancel button is clicked.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxsearchctrlctor">wxSearchCtrl::wxSearchCtrl</A><BR>
+<A HREF="#wxsearchctrldtor">wxSearchCtrl::~wxSearchCtrl</A><BR>
+<A HREF="#wxsearchctrlsetmenu">wxSearchCtrl::SetMenu</A><BR>
+<A HREF="#wxsearchctrlgetmenu">wxSearchCtrl::GetMenu</A><BR>
+<A HREF="#wxsearchctrlshowsearchbutton">wxSearchCtrl::ShowSearchButton</A><BR>
+<A HREF="#wxsearchctrlissearchbuttonvisible">wxSearchCtrl::IsSearchButtonVisible</A><BR>
+<A HREF="#wxsearchctrlshowcancelbutton">wxSearchCtrl::ShowCancelButton</A><BR>
+<A HREF="#wxsearchctrliscancelbuttonvisible">wxSearchCtrl::IsCancelButtonVisible</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsearchctrlctor"></A>
+<H3>wxSearchCtrl::wxSearchCtrl</H3>
+<P>
+<B></B> <B>wxSearchCtrl</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxSearchCtrl</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value = ""</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxSearchCtrlNameStr</I>)<P>
+Constructor, creating and showing a text control.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Should not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Control identifier. A value of -1 denotes a default value.</UL></UL>
+<P>
+<I>value</I><UL><UL>
+Default text value.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Text control position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Text control size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxsearchctrl.html#wxsearchctrl">wxSearchCtrl</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxtextctrl.html#wxtextctrlcreate">wxTextCtrl::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+
+
+<HR>
+<A NAME="wxsearchctrldtor"></A>
+<H3>wxSearchCtrl::~wxSearchCtrl</H3>
+<P>
+<B></B> <B>~wxSearchCtrl</B>()<P>
+Destructor, destroying the search control.<P>
+
+
+<HR>
+<A NAME="wxsearchctrlsetmenu"></A>
+<H3>wxSearchCtrl::SetMenu</H3>
+<P>
+<B>virtual void</B> <B>SetMenu</B>(<B><A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>* </B></B><I> menu</I>)<P>
+Sets the search control's menu object.  If there is already a menu associated with
+the search control it is deleted.<P>
+
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>menu</I><UL><UL>
+Menu to attach to the search control.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxsearchctrlgetmenu"></A>
+<H3>wxSearchCtrl::GetMenu</H3>
+<P>
+<B>virtual <A HREF="wx_wxmenu.html#wxmenu">wxMenu</A>*</B> </B> <B>GetMenu</B>()<P>
+Returns a pointer to the search control's menu object or NULL if there is no 
+menu attached.<P>
+
+
+<HR>
+<A NAME="wxsearchctrlshowsearchbutton"></A>
+<H3>wxSearchCtrl::ShowSearchButton</H3>
+<P>
+<B>virtual void</B> <B>ShowSearchButton</B>(<B>bool </B><I> show</I>)<P>
+Sets the search button visibility value on the search control.  
+If there is a menu attached, the search button will be visible regardless of the search
+button visibility value. <P>
+This has no effect in Mac OS X v10.3<P>
+
+
+<HR>
+<A NAME="wxsearchctrlissearchbuttonvisible"></A>
+<H3>wxSearchCtrl::IsSearchButtonVisible</H3>
+<P>
+<B>virtual bool</B> <B>IsSearchButtonVisible</B>()<P>
+Returns the search button visibility value.  
+If there is a menu attached, the search button will be visible regardless of the search
+button visibility value. <P>
+This always returns false in Mac OS X v10.3<P>
+
+
+<HR>
+<A NAME="wxsearchctrlshowcancelbutton"></A>
+<H3>wxSearchCtrl::ShowCancelButton</H3>
+<P>
+<B>virtual void</B> <B>ShowCancelButton</B>(<B>bool </B><I> show</I>)<P>
+Shows or hides the cancel button.<P>
+
+
+<HR>
+<A NAME="wxsearchctrliscancelbuttonvisible"></A>
+<H3>wxSearchCtrl::IsCancelButtonVisible</H3>
+<P>
+<B>virtual bool</B> <B>IsCancelButtonVisible</B>()<P>
+Indicates whether the cancel button is visible.<P>
+
+</FONT></BODY></HTML>

@@ -6,7 +6,7 @@
 // Author:      Robin Dunn
 //
 // Created:     14-Aug-2003
-// RCS-ID:      $Id: _vscroll.i,v 1.15.2.2 2006/03/16 02:30:24 RD Exp $
+// RCS-ID:      $Id: _vscroll.i 43425 2006-11-14 22:03:54Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -95,6 +95,11 @@ public:
     wxCoord GetLinesHeight(size_t lineMin, size_t lineMax) const
     { return wxVScrolledWindow::GetLinesHeight(lineMin, lineMax); }
 
+    // update the thumb size shown by the scrollbar
+    void UpdateScrollbar() { wxVScrolledWindow::UpdateScrollbar(); }
+
+    // remove the scrollbar completely because we don't need it
+    void RemoveScrollbar() { wxVScrolledWindow::RemoveScrollbar(); }
 
     PYPRIVATE;
 };
@@ -131,7 +136,7 @@ MustHaveApp(wxPyVScrolledWindow);
 class wxPyVScrolledWindow : public wxPanel
 {
 public:
-    %pythonAppend wxPyVScrolledWindow         "self._setOORInfo(self); self._setCallbackInfo(self, VScrolledWindow)"
+    %pythonAppend wxPyVScrolledWindow         "self._setOORInfo(self);" setCallbackInfo(VScrolledWindow)
     %pythonAppend wxPyVScrolledWindow()       ""
     
 
@@ -208,7 +213,22 @@ public:
     // is kept for backwards compatibility
     size_t GetLastVisibleLine() const;
 
+    // find the index of the line we need to show at the top of the window such
+    // that the last (fully or partially) visible line is the given one
+    size_t FindFirstFromBottom(size_t lineLast, bool fullyVisible = false);
+
+    // get the total height of the lines between lineMin (inclusive) and
+    // lineMax (exclusive)
+    wxCoord GetLinesHeight(size_t lineMin, size_t lineMax) const;
+
+    %property(FirstVisibleLine, GetFirstVisibleLine, doc="See `GetFirstVisibleLine`");
+    %property(LastVisibleLine, GetLastVisibleLine, doc="See `GetLastVisibleLine`");
+    %property(LineCount, GetLineCount, SetLineCount, doc="See `GetLineCount` and `SetLineCount`");
+    %property(VisibleBegin, GetVisibleBegin, doc="See `GetVisibleBegin`");
+    %property(VisibleEnd, GetVisibleEnd, doc="See `GetVisibleEnd`");
 };
+
+
 
 //---------------------------------------------------------------------------
 // wxVListBox
@@ -302,7 +322,7 @@ MustHaveApp(wxPyVListBox);
 class wxPyVListBox : public wxPyVScrolledWindow
 {
 public:
-    %pythonAppend wxPyVListBox         "self._setOORInfo(self);self._setCallbackInfo(self, VListBox)"
+    %pythonAppend wxPyVListBox         "self._setOORInfo(self);" setCallbackInfo(VListBox)
     %pythonAppend wxPyVListBox()       ""
     
 
@@ -449,8 +469,15 @@ public:
     // change the background colour of the selected cells
     void SetSelectionBackground(const wxColour& col);
 
-    void base_OnDrawSeparator(wxDC& dc, wxRect& rect, size_t n) const;
-    void base_OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) const;
+    virtual void OnDrawSeparator(wxDC& dc, wxRect& rect, size_t n) const;
+    virtual void OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) const;
+
+    %property(FirstSelected, GetFirstSelected, doc="See `GetFirstSelected`");
+    %property(ItemCount, GetItemCount, SetItemCount, doc="See `GetItemCount` and `SetItemCount`");
+    %property(Margins, GetMargins, SetMargins, doc="See `GetMargins` and `SetMargins`");
+    %property(SelectedCount, GetSelectedCount, doc="See `GetSelectedCount`");
+    %property(Selection, GetSelection, SetSelection, doc="See `GetSelection` and `SetSelection`");
+    %property(SelectionBackground, GetSelectionBackground, SetSelectionBackground, doc="See `GetSelectionBackground` and `SetSelectionBackground`");
 };
 
 
@@ -505,6 +532,11 @@ public:
 //     // globally using SetSelectionBackground()
 //     virtual wxColour GetSelectedTextBgColour(const wxColour& colBg) const;
 
+    
+    // This method may be overriden to handle clicking on a link in
+    // the listbox. By default, clicking links is ignored.
+    virtual void OnLinkClicked(size_t n,
+                               const wxHtmlLinkInfo& link);        
 
     PYPRIVATE;
 };
@@ -517,6 +549,21 @@ IMP_PYCALLBACK_STRING_SIZET     (wxPyHtmlListBox, wxHtmlListBox, OnGetItemMarkup
 IMP_PYCALLBACK__DCRECTSIZET2_const   (wxPyHtmlListBox, wxHtmlListBox, OnDrawSeparator);
 IMP_PYCALLBACK__DCRECTSIZET_const    (wxPyHtmlListBox, wxHtmlListBox, OnDrawBackground);
 
+
+void wxPyHtmlListBox::OnLinkClicked(size_t n,
+                                    const wxHtmlLinkInfo& link) {
+    bool found;
+    wxPyBlock_t blocked = wxPyBeginBlockThreads();
+    if ((found = wxPyCBH_findCallback(m_myInst, "OnLinkClicked"))) {
+        PyObject* obj = wxPyConstructObject((void*)&link, wxT("wxHtmlLinkInfo"), 0);
+        wxPyCBH_callCallback(m_myInst, Py_BuildValue("(iO)", n, obj));
+        Py_DECREF(obj);
+    }
+    wxPyEndBlockThreads(blocked);
+    if (! found)
+        wxPyHtmlListBox::OnLinkClicked(n, link);
+}
+ 
 %}
 
 
@@ -530,7 +577,7 @@ MustHaveApp(wxPyHtmlListBox);
 class wxPyHtmlListBox : public wxPyVListBox
 {
 public:
-    %pythonAppend wxPyHtmlListBox         "self._setOORInfo(self);self._setCallbackInfo(self, HtmlListBox)"
+    %pythonAppend wxPyHtmlListBox         "self._setOORInfo(self);" setCallbackInfo(HtmlListBox)
     %pythonAppend wxPyHtmlListBox()       ""
     
 
@@ -560,9 +607,55 @@ public:
     // retrieve the file system used by the wxHtmlWinParser: if you use
     // relative paths in your HTML, you should use its ChangePathTo() method
     wxFileSystem& GetFileSystem();
+
+    void OnLinkClicked(size_t n, const wxHtmlLinkInfo& link);        
+
+    %property(FileSystem, GetFileSystem, doc="See `GetFileSystem`");
 };
 
 
+
+//---------------------------------------------------------------------------
+
+%{
+    const wxArrayString wxPyEmptyStringArray;
+%}
+MAKE_CONST_WXSTRING(SimpleHtmlListBoxNameStr);
+
+
+enum {
+    wxHLB_DEFAULT_STYLE,
+    wxHLB_MULTIPLE
+};
+
+MustHaveApp(wxSimpleHtmlListBox);
+
+class wxSimpleHtmlListBox : public wxPyHtmlListBox,
+                            public wxItemContainer
+{
+public:
+    %pythonAppend wxSimpleHtmlListBox         "self._setOORInfo(self)";
+    %pythonAppend wxSimpleHtmlListBox()       "";
+        
+    wxSimpleHtmlListBox(wxWindow *parent,
+                        wxWindowID id = -1,
+                        const wxPoint& pos = wxDefaultPosition,
+                        const wxSize& size = wxDefaultSize,
+                        const wxArrayString& choices = wxPyEmptyStringArray,
+                        long style = wxHLB_DEFAULT_STYLE,
+                        const wxValidator& validator = wxDefaultValidator,
+                        const wxString& name = wxPySimpleHtmlListBoxNameStr);
+    %RenameCtor(PreSimpleHtmlListBox, wxSimpleHtmlListBox());
+
+    bool Create(wxWindow *parent,
+                wxWindowID id = -1,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size= wxDefaultSize,
+                const wxArrayString& choices = wxPyEmptyStringArray,
+                long style = wxHLB_DEFAULT_STYLE,
+                const wxValidator& validator = wxDefaultValidator,
+                const wxString& name = wxPySimpleHtmlListBoxNameStr);
+};
 
 //---------------------------------------------------------------------------
 

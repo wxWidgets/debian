@@ -1,0 +1,1009 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxConfigBase</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxconfigbase"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcondition.html#wxcondition"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxconnection.html#wxconnection"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxConfigBase</H2>
+<P>
+wxConfigBase class defines the basic interface of all config classes. It can
+not be used by itself (it is an abstract base class) and you will always use one
+of its derivations: <A HREF="wx_wxfileconfig.html#wxfileconfig">wxFileConfig</A>,
+wxRegConfig or any other.<P>
+However, usually you don't even need to know the precise nature of the class
+you're working with but you would just use the wxConfigBase methods. This
+allows you to write the same code regardless of whether you're working with
+the registry under Win32 or text-based config files under Unix (or even
+Windows 3.1 .INI files if you're really unlucky). To make writing the portable
+code even easier, wxWidgets provides a typedef wxConfig
+which is mapped onto the native wxConfigBase implementation on the given
+platform: i.e. wxRegConfig under Win32 and
+wxFileConfig otherwise.<P>
+See <A HREF="wx_wxconfigoverview.html#wxconfigoverview">config overview</A> for the descriptions of all
+features of this class.<P>
+It is highly recommended to use static functions <I>Get()</I> and/or <I>Set()</I>, 
+so please have a <A HREF="wx_wxconfigbase.html#wxconfigstaticfunctions">look at them.</A><P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/config.h&gt; (to let wxWidgets choose a wxConfig class for your platform)<BR>
+
+&lt;wx/confbase.h&gt; (base config class)<BR>
+
+&lt;wx/fileconf.h&gt; (wxFileConfig class)<BR>
+
+&lt;wx/msw/regconf.h&gt; (wxRegConfig class)<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+Here is how you would typically use this class:<P>
+<PRE>
+  // using wxConfig instead of writing wxFileConfig or wxRegConfig enhances
+  // portability of the code
+  wxConfig *config = new wxConfig("MyAppName");
+
+  wxString str;
+  if ( config-&gt;Read("LastPrompt", &str) ) {
+    // last prompt was found in the config file/registry and its value is now
+    // in str
+    ...
+  }
+  else {
+    // no last prompt...
+  }
+
+  // another example: using default values and the full path instead of just
+  // key name: if the key is not found , the value 17 is returned
+  long value = config-&gt;Read("/LastRun/CalculatedValues/MaxValue", 17);
+  ...
+  ...
+  ...
+  // at the end of the program we would save everything back
+  config-&gt;Write("LastPrompt", str);
+  config-&gt;Write("/LastRun/CalculatedValues/MaxValue", value);
+
+  // the changes will be written back automatically
+  delete config;
+</PRE>
+This basic example, of course, doesn't show all wxConfig features, such as
+enumerating, testing for existence and deleting the entries and groups of
+entries in the config file, its abilities to automatically store the default
+values or expand the environment variables on the fly. However, the main idea
+is that using this class is easy and that it should normally do what you
+expect it to.<P>
+NB: in the documentation of this class, the words "config file" also mean
+"registry hive" for wxRegConfig and, generally speaking, might mean any
+physical storage where a wxConfigBase-derived class stores its data.<P>
+<B><FONT COLOR="#FF0000">Function groups</FONT></B><P>
+
+<A HREF="#wxconfigstaticfunctions">Static functions</A><BR>
+<A HREF="#congigconstructordestructor">Constructor and destructor</A><BR>
+<A HREF="#configpathmanagement">Path management</A><BR>
+<A HREF="#configenumeration">Enumeration</A><BR>
+<A HREF="#configtestsofexistence">Tests of existence</A><BR>
+<A HREF="#configmiscellaneous">Miscellaneous functions</A><BR>
+<A HREF="#configkeyaccess">Key access</A><BR>
+<A HREF="#configrenaming">Rename entries/groups</A><BR>
+<A HREF="#configdeleting">Delete entries/groups</A><BR>
+<A HREF="#configoptions">Options</A><BR>
+<A HREF="#wxconfigbasector">wxConfigBase::wxConfigBase</A><BR>
+<A HREF="#wxconfigbasedtor">wxConfigBase::~wxConfigBase</A><BR>
+<A HREF="#wxconfigbasecreate">wxConfigBase::Create</A><BR>
+<A HREF="#wxconfigbasedontcreateondemand">wxConfigBase::DontCreateOnDemand</A><BR>
+<A HREF="#wxconfigbasedeleteall">wxConfigBase::DeleteAll</A><BR>
+<A HREF="#wxconfigbasedeleteentry">wxConfigBase::DeleteEntry</A><BR>
+<A HREF="#wxconfigbasedeletegroup">wxConfigBase::DeleteGroup</A><BR>
+<A HREF="#wxconfigbaseexists">wxConfigBase::Exists</A><BR>
+<A HREF="#wxconfigbaseflush">wxConfigBase::Flush</A><BR>
+<A HREF="#wxconfigbaseget">wxConfigBase::Get</A><BR>
+<A HREF="#wxconfigbasegetappname">wxConfigBase::GetAppName</A><BR>
+<A HREF="#wxconfigbasegetentrytype">wxConfigBase::GetEntryType</A><BR>
+<A HREF="#wxconfigbasegetfirstgroup">wxConfigBase::GetFirstGroup</A><BR>
+<A HREF="#wxconfigbasegetfirstentry">wxConfigBase::GetFirstEntry</A><BR>
+<A HREF="#wxconfigbasegetnextgroup">wxConfigBase::GetNextGroup</A><BR>
+<A HREF="#wxconfigbasegetnextentry">wxConfigBase::GetNextEntry</A><BR>
+<A HREF="#wxconfigbasegetnumberofentries">wxConfigBase::GetNumberOfEntries</A><BR>
+<A HREF="#wxconfigbasegetnumberofgroups">wxConfigBase::GetNumberOfGroups</A><BR>
+<A HREF="#wxconfigbasegetpath">wxConfigBase::GetPath</A><BR>
+<A HREF="#wxconfigbasegetvendorname">wxConfigBase::GetVendorName</A><BR>
+<A HREF="#wxconfigbasehasentry">wxConfigBase::HasEntry</A><BR>
+<A HREF="#wxconfigbasehasgroup">wxConfigBase::HasGroup</A><BR>
+<A HREF="#wxconfigbaseisexpandingenvvars">wxConfigBase::IsExpandingEnvVars</A><BR>
+<A HREF="#wxconfigbaseisrecordingdefaults">wxConfigBase::IsRecordingDefaults</A><BR>
+<A HREF="#wxconfigbaseread">wxConfigBase::Read</A><BR>
+<A HREF="#wxconfigbaserenameentry">wxConfigBase::RenameEntry</A><BR>
+<A HREF="#wxconfigbaserenamegroup">wxConfigBase::RenameGroup</A><BR>
+<A HREF="#wxconfigbaseset">wxConfigBase::Set</A><BR>
+<A HREF="#wxconfigbasesetexpandenvvars">wxConfigBase::SetExpandEnvVars</A><BR>
+<A HREF="#wxconfigbasesetpath">wxConfigBase::SetPath</A><BR>
+<A HREF="#wxconfigbasesetrecorddefaults">wxConfigBase::SetRecordDefaults</A><BR>
+<A HREF="#wxconfigbasewrite">wxConfigBase::Write</A><BR>
+<P>
+
+<HR>
+<A NAME="wxconfigstaticfunctions"></A>
+<H3>Static functions</H3>
+<P>
+These functions deal with the "default" config object. Although its usage is
+not at all mandatory it may be convenient to use a global config object
+instead of creating and deleting the local config objects each time you need
+one (especially because creating a wxFileConfig object might be a time
+consuming operation). In this case, you may create this global config object
+in the very start of the program and <I>Set()</I> it as the default. Then, from
+anywhere in your program, you may access it using the <I>Get()</I> function.
+This global wxConfig object will be deleted by wxWidgets automatically if it
+exists. Note that this implies that if you do delete this object yourself
+(usually in <A HREF="wx_wxapp.html#wxapponexit">wxApp::OnExit</A>) you must use <I>Set(NULL)</I>
+to prevent wxWidgets from deleting it the second time.<P>
+As it happens, you may even further simplify the procedure described above:
+you may forget about calling <I>Set()</I>. When <I>Get()</I> is called and there
+is no current object, it will create one using <I>Create()</I> function. To
+disable this behaviour <I>DontCreateOnDemand()</I> is provided.<P>
+<B>Note:</B> You should use either <I>Set()</I> or <I>Get()</I> because wxWidgets
+library itself would take advantage of it and could save various information
+in it. For example <A HREF="wx_wxfontmapper.html#wxfontmapper">wxFontMapper</A> or Unix version
+of <A HREF="wx_wxfiledialog.html#wxfiledialog">wxFileDialog</A> have the ability to use wxConfig class.<P>
+<A HREF="wx_wxconfigbase.html#wxconfigbaseset">Set</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbaseget">Get</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasecreate">Create</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasedontcreateondemand">DontCreateOnDemand</A><P>
+
+
+<HR>
+<A NAME="congigconstructordestructor"></A>
+<H3>Constructor and destructor</H3>
+<P>
+<A HREF="wx_wxconfigbase.html#wxconfigbasector">wxConfigBase</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasedtor">~wxConfigBase</A><P>
+
+
+<HR>
+<A NAME="configpathmanagement"></A>
+<H3>Path management</H3>
+<P>
+As explained in <A HREF="wx_wxconfigoverview.html#wxconfigoverview">config overview</A>, the config classes
+support a file system-like hierarchy of keys (files) and groups (directories).
+As in the file system case, to specify a key in the config class you must use
+a path to it. Config classes also support the notion of the current group,
+which makes it possible to use the relative paths. To clarify all this, here
+is an example (it is only for the sake of demonstration, it doesn't do anything
+sensible!):<P>
+<PRE>
+  wxConfig *config = new wxConfig("FooBarApp");
+
+  // right now the current path is '/'
+  conf-&gt;Write("RootEntry", 1);
+
+  // go to some other place: if the group(s) don't exist, they will be created
+  conf-&gt;SetPath("/Group/Subgroup");
+
+  // create an entry in subgroup
+  conf-&gt;Write("SubgroupEntry", 3);
+
+  // '..' is understood
+  conf-&gt;Write("../GroupEntry", 2);
+  conf-&gt;SetPath("..");
+
+  wxASSERT( conf-&gt;Read("Subgroup/SubgroupEntry", 0l) == 3 );
+
+  // use absolute path: it is allowed, too
+  wxASSERT( conf-&gt;Read("/RootEntry", 0l) == 1 );
+</PRE>
+<I>Warning</I>: it is probably a good idea to always restore the path to its
+old value on function exit:<P>
+<PRE>
+  void foo(wxConfigBase *config)
+  {
+    wxString strOldPath = config-&gt;GetPath();
+
+    config-&gt;SetPath("/Foo/Data");
+    ...
+
+    config-&gt;SetPath(strOldPath);
+  }
+</PRE>
+because otherwise the assert in the following example will surely fail
+(we suppose here that <I>foo()</I> function is the same as above except that it
+doesn't save and restore the path):<P>
+<PRE>
+  void bar(wxConfigBase *config)
+  {
+    config-&gt;Write("Test", 17);
+
+    foo(config);
+
+    // we're reading "/Foo/Data/Test" here! -1 will probably be returned...
+    wxASSERT( config-&gt;Read("Test", -1) == 17 );
+  }
+</PRE>
+Finally, the path separator in wxConfigBase and derived classes is always '/',
+regardless of the platform (i.e. it is <B>not</B> '\\' under Windows).<P>
+<A HREF="wx_wxconfigbase.html#wxconfigbasesetpath">SetPath</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasegetpath">GetPath</A><P>
+
+
+<HR>
+<A NAME="configenumeration"></A>
+<H3>Enumeration</H3>
+<P>
+The functions in this section allow to enumerate all entries and groups in the
+config file. All functions here return <TT>false</TT> when there are no more items.<P>
+You must pass the same index to GetNext and GetFirst (don't modify it).
+Please note that it is <B>not</B> the index of the current item (you will have
+some great surprises with wxRegConfig if you assume this) and you shouldn't
+even look at it: it is just a "cookie" which stores the state of the
+enumeration. It can't be stored inside the class because it would prevent you
+from running several enumerations simultaneously, that's why you must pass it
+explicitly.<P>
+Having said all this, enumerating the config entries/groups is very simple:<P>
+<PRE>
+  wxConfigBase *config = ...;
+  wxArrayString aNames;
+
+  // enumeration variables
+  wxString str;
+  long dummy;
+
+  // first enum all entries
+  bool bCont = config-&gt;GetFirstEntry(str, dummy);
+  while ( bCont ) {
+    aNames.Add(str);
+
+    bCont = GetConfig()-&gt;GetNextEntry(str, dummy);
+  }
+
+  ... we have all entry names in aNames...
+
+  // now all groups...
+  bCont = GetConfig()-&gt;GetFirstGroup(str, dummy);
+  while ( bCont ) {
+    aNames.Add(str);
+
+    bCont = GetConfig()-&gt;GetNextGroup(str, dummy);
+  }
+
+  ... we have all group (and entry) names in aNames...
+
+</PRE>
+There are also functions to get the number of entries/subgroups without
+actually enumerating them, but you will probably never need them.<P>
+<A HREF="wx_wxconfigbase.html#wxconfigbasegetfirstgroup">GetFirstGroup</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasegetnextgroup">GetNextGroup</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasegetfirstentry">GetFirstEntry</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasegetnextentry">GetNextEntry</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasegetnumberofentries">GetNumberOfEntries</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasegetnumberofgroups">GetNumberOfGroups</A><P>
+
+
+<HR>
+<A NAME="configtestsofexistence"></A>
+<H3>Tests of existence</H3>
+<P>
+<A HREF="wx_wxconfigbase.html#wxconfigbasehasgroup">HasGroup</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasehasentry">HasEntry</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbaseexists">Exists</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasegetentrytype">GetEntryType</A><P>
+
+
+<HR>
+<A NAME="configmiscellaneous"></A>
+<H3>Miscellaneous functions</H3>
+<P>
+<A HREF="wx_wxconfigbase.html#wxconfigbasegetappname">GetAppName</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasegetvendorname">GetVendorName</A><BR>
+
+<A HREF="wx_wxfileconfig.html#wxfileconfigsetumask">SetUmask</A><P>
+
+
+<HR>
+<A NAME="configkeyaccess"></A>
+<H3>Key access</H3>
+<P>
+These function are the core of wxConfigBase class: they allow you to read and
+write config file data. All <I>Read</I> function take a default value which
+will be returned if the specified key is not found in the config file.<P>
+Currently, only two types of data are supported: string and long (but it might
+change in the near future). To work with other types: for <I>int</I> or <I>
+bool</I> you can work with function taking/returning <I>long</I> and just use the
+casts. Better yet, just use <I>long</I> for all variables which you're going to
+save in the config file: chances are that <TT>sizeof(bool) == sizeof(int) == sizeof(long)</TT> anyhow on your system. For <I>float</I>, <I>double</I> and, in
+general, any other type you'd have to translate them to/from string
+representation and use string functions.<P>
+Try not to read long values into string variables and vice versa: although it
+just might work with wxFileConfig, you will get a system error with
+wxRegConfig because in the Windows registry the different types of entries are
+indeed used.<P>
+Final remark: the <I>szKey</I> parameter for all these functions can contain an
+arbitrary path (either relative or absolute), not just the key name.<P>
+<A HREF="wx_wxconfigbase.html#wxconfigbaseread">Read</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasewrite">Write</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbaseflush">Flush</A><P>
+
+
+<HR>
+<A NAME="configrenaming"></A>
+<H3>Rename entries/groups</H3>
+<P>
+The functions in this section allow to rename entries or subgroups of the
+current group. They will return <TT>false</TT> on error. typically because either the
+entry/group with the original name doesn't exist, because the entry/group with
+the new name already exists or because the function is not supported in this
+wxConfig implementation.<P>
+<A HREF="wx_wxconfigbase.html#wxconfigbaserenameentry">RenameEntry</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbaserenamegroup">RenameGroup</A><P>
+
+
+<HR>
+<A NAME="configdeleting"></A>
+<H3>Delete entries/groups</H3>
+<P>
+The functions in this section delete entries and/or groups of entries from the
+config file. <I>DeleteAll()</I> is especially useful if you want to erase all
+traces of your program presence: for example, when you uninstall it.<P>
+<A HREF="wx_wxconfigbase.html#wxconfigbasedeleteentry">DeleteEntry</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasedeletegroup">DeleteGroup</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasedeleteall">DeleteAll</A><P>
+
+
+<HR>
+<A NAME="configoptions"></A>
+<H3>Options</H3>
+<P>
+Some aspects of wxConfigBase behaviour can be changed during run-time. The
+first of them is the expansion of environment variables in the string values
+read from the config file: for example, if you have the following in your
+config file:<P>
+<PRE>
+  # config file for my program
+  UserData = $HOME/data
+
+  # the following syntax is valud only under Windows
+  UserData = %windir%\\data.dat
+</PRE>
+the call to <TT>config-&gt;Read("UserData")</TT> will return something like
+<TT>"/home/zeitlin/data"</TT> if you're lucky enough to run a Linux system ;-)<P>
+Although this feature is very useful, it may be annoying if you read a value
+which containts '$' or '%' symbols (% is used for environment variables
+expansion under Windows) which are not used for environment variable
+expansion. In this situation you may call SetExpandEnvVars(false) just before
+reading this value and SetExpandEnvVars(true) just after. Another solution
+would be to prefix the offending symbols with a backslash.<P>
+The following functions control this option:<P>
+<A HREF="wx_wxconfigbase.html#wxconfigbaseisexpandingenvvars">IsExpandingEnvVars</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasesetexpandenvvars">SetExpandEnvVars</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbasesetrecorddefaults">SetRecordDefaults</A><BR>
+
+<A HREF="wx_wxconfigbase.html#wxconfigbaseisrecordingdefaults">IsRecordingDefaults</A><P>
+<P>
+
+
+<HR>
+<A NAME="wxconfigbasector"></A>
+<H3>wxConfigBase::wxConfigBase</H3>
+<P>
+<B></B> <B>wxConfigBase</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>appName = wxEmptyString</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>vendorName = wxEmptyString</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>localFilename = wxEmptyString</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>globalFilename = wxEmptyString</I>,
+ <B>long</B><I> style = 0</I>,
+ <B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B></B><I> conv = wxConvUTF8</I>)<P>
+This is the default and only constructor of the wxConfigBase class, and
+derived classes.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>appName</I><UL><UL>
+The application name. If this is empty, the class will
+normally use <A HREF="wx_wxapp.html#wxappgetappname">wxApp::GetAppName</A> to set it. The
+application name is used in the registry key on Windows, and can be used to
+deduce the local filename parameter if that is missing.</UL></UL>
+<P>
+<I>vendorName</I><UL><UL>
+The vendor name. If this is empty, it is assumed that
+no vendor name is wanted, if this is optional for the current config class.
+The vendor name is appended to the application name for wxRegConfig.</UL></UL>
+<P>
+<I>localFilename</I><UL><UL>
+Some config classes require a local filename. If this
+is not present, but required, the application name will be used instead.</UL></UL>
+<P>
+<I>globalFilename</I><UL><UL>
+Some config classes require a global filename. If
+this is not present, but required, the application name will be used instead.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Can be one of wxCONFIG_USE_LOCAL_FILE and
+wxCONFIG_USE_GLOBAL_FILE. The style interpretation depends on the config
+class and is ignored by some implementations. For wxFileConfig, these styles
+determine whether a local or global config file is created or used: if
+wxCONFIG_USE_GLOBAL_FILE is used, then settings are read from the global
+config file and if wxCONFIG_USE_LOCAL_FILE is used, settings are read from
+and written to local config file (if they are both set, global file is read
+first, then local file, overwriting global settings). If the
+flag is present but the parameter is empty, the parameter will be set to a
+default. If the parameter is present but the style flag not, the relevant flag
+will be added to the style. For wxRegConfig, thie GLOBAL flag refers to HKLM
+key while LOCAL one is for the usual HKCU one.<P>
+For wxFileConfig you can also add wxCONFIG_USE_RELATIVE_PATH by logically
+or'ing it to either of the _FILE options to tell wxFileConfig to use relative
+instead of absolute paths.<P>
+On non-VMS Unix systems, the default local configuration file is <TT>~/.appname</TT>.
+However, this path may be also used as user data directory
+(see <A HREF="wx_wxstandardpaths.html#wxstandardpathsgetuserdatadir">wxStandardPaths::GetUserDataDir</A>) if
+the application has several data files. In this case wxCONFIG_USE_SUBDIR
+flag, which changes the default local configuration file to <TT>~/.appname/appname</TT>
+should be used. Notice that this flag is ignored on non-Unix system, including
+VMS, or if a non-default <I>localFilename</I> is provided. This function is new since wxWidgets version 2.8.2<P>
+For wxFileConfig, you can also add wxCONFIG_USE_NO_ESCAPE_CHARACTERS which
+will turn off character escaping for the values of entries stored in the config
+file: for example a <I>foo</I> key with some backslash characters will be stored
+as <TT>foo=C:\mydir</TT> instead of the usual storage of <TT>
+foo=C:\\mydir</TT>.<P>
+The wxCONFIG_USE_NO_ESCAPE_CHARACTERS style can be helpful if your config 
+file must be read or written to by a non-wxWidgets program (which might not 
+understand the escape characters). Note, however, that if 
+wxCONFIG_USE_NO_ESCAPE_CHARACTERS style is used, it is is now 
+your application's responsibility to ensure that there is no newline or 
+other illegal characters in a value, before writing that value to the file.</UL></UL>
+<P>
+<I>conv</I><UL><UL>
+This parameter is only used by wxFileConfig when compiled
+in Unicode mode. It specifies the encoding in which the configuration file
+is written.</UL></UL>
+<P>
+
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+By default, environment variable expansion is on and recording defaults is
+off.<P>
+
+
+<HR>
+<A NAME="wxconfigbasedtor"></A>
+<H3>wxConfigBase::~wxConfigBase</H3>
+<P>
+<B></B> <B>~wxConfigBase</B>()<P>
+Empty but ensures that dtor of all derived classes is virtual.<P>
+
+
+<HR>
+<A NAME="wxconfigbasecreate"></A>
+<H3>wxConfigBase::Create</H3>
+<P>
+<B>static <A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A> *</B> </B> <B>Create</B>()<P>
+Create a new config object: this function will create the "best"
+implementation of wxConfig available for the current platform, see comments
+near the definition of wxCONFIG_WIN32_NATIVE for details. It returns the
+created object and also sets it as the current one.<P>
+
+
+<HR>
+<A NAME="wxconfigbasedontcreateondemand"></A>
+<H3>wxConfigBase::DontCreateOnDemand</H3>
+<P>
+<B>void</B> <B>DontCreateOnDemand</B>()<P>
+Calling this function will prevent <I>Get()</I> from automatically creating a
+new config object if the current one is NULL. It might be useful to call it
+near the program end to prevent "accidental" creation of a new config object.<P>
+
+
+<HR>
+<A NAME="wxconfigbasedeleteall"></A>
+<H3>wxConfigBase::DeleteAll</H3>
+<P>
+<B>bool</B> <B>DeleteAll</B>()<P>
+Delete the whole underlying object (disk file, registry key, ...). Primarly
+for use by uninstallation routine.<P>
+
+
+<HR>
+<A NAME="wxconfigbasedeleteentry"></A>
+<H3>wxConfigBase::DeleteEntry</H3>
+<P>
+<B>bool</B> <B>DeleteEntry</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>, <B>bool</B><I> bDeleteGroupIfEmpty = true</I>)<P>
+Deletes the specified entry and the group it belongs to if it was the last key
+in it and the second parameter is true.<P>
+
+
+<HR>
+<A NAME="wxconfigbasedeletegroup"></A>
+<H3>wxConfigBase::DeleteGroup</H3>
+<P>
+<B>bool</B> <B>DeleteGroup</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>)<P>
+Delete the group (with all subgroups). If the current path is under the group
+being deleted it is changed to its deepest still existing component. E.g. if
+the current path is <TT>/A/B/C/D</TT> and the group <TT>C</TT> is deleted the
+path becomes <TT>/A/B</TT>.<P>
+
+
+<HR>
+<A NAME="wxconfigbaseexists"></A>
+<H3>wxConfigBase::Exists</H3>
+<P>
+<B>bool</B> <B>Exists</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>strName</I>) <B>const</B><P>
+returns <TT>true</TT> if either a group or an entry with a given name exists<P>
+
+
+<HR>
+<A NAME="wxconfigbaseflush"></A>
+<H3>wxConfigBase::Flush</H3>
+<P>
+<B>bool</B> <B>Flush</B>(<B>bool </B><I>bCurrentOnly = false</I>)<P>
+permanently writes all changes (otherwise, they're only written from object's
+destructor)<P>
+
+
+<HR>
+<A NAME="wxconfigbaseget"></A>
+<H3>wxConfigBase::Get</H3>
+<P>
+<B>static <A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A> *</B> </B> <B>Get</B>(<B>bool </B><I>CreateOnDemand = true</I>)<P>
+Get the current config object. If there is no current object and
+<I>CreateOnDemand</I> is true, creates one
+(using <I>Create</I>) unless DontCreateOnDemand was called previously.<P>
+
+
+<HR>
+<A NAME="wxconfigbasegetappname"></A>
+<H3>wxConfigBase::GetAppName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetAppName</B>() <B>const</B><P>
+Returns the application name.<P>
+
+
+<HR>
+<A NAME="wxconfigbasegetentrytype"></A>
+<H3>wxConfigBase::GetEntryType</H3>
+<P>
+<B>enum wxConfigBase::EntryType</B> <B>GetEntryType</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>) <B>const</B><P>
+Returns the type of the given entry or <I>Unknown</I> if the entry doesn't
+exist. This function should be used to decide which version of Read() should
+be used because some of wxConfig implementations will complain about type
+mismatch otherwise: e.g., an attempt to read a string value from an integer
+key with wxRegConfig will fail.<P>
+The result is an element of enum EntryType:<P>
+<PRE>
+  enum EntryType
+  {
+    Type_Unknown,
+    Type_String,
+    Type_Boolean,
+    Type_Integer,
+    Type_Float
+  };
+</PRE>
+
+
+<HR>
+<A NAME="wxconfigbasegetfirstgroup"></A>
+<H3>wxConfigBase::GetFirstGroup</H3>
+<P>
+<B>bool</B> <B>GetFirstGroup</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>long&amp;</B><I> index</I>) <B>const</B><P>
+Gets the first group.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxPython version of this method returns a 3-tuple
+consisting of the continue flag, the value string, and the index for
+the next call.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes no arguments and returns a 3-element
+list <TT>( continue, str, index )</TT>.<P>
+
+
+<HR>
+<A NAME="wxconfigbasegetfirstentry"></A>
+<H3>wxConfigBase::GetFirstEntry</H3>
+<P>
+<B>bool</B> <B>GetFirstEntry</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>long&amp;</B><I> index</I>) <B>const</B><P>
+Gets the first entry.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxPython version of this method returns a 3-tuple
+consisting of the continue flag, the value string, and the index for
+the next call.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes no arguments and returns a 3-element
+list <TT>( continue, str, index )</TT>.<P>
+
+
+<HR>
+<A NAME="wxconfigbasegetnextgroup"></A>
+<H3>wxConfigBase::GetNextGroup</H3>
+<P>
+<B>bool</B> <B>GetNextGroup</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>long&amp;</B><I> index</I>) <B>const</B><P>
+Gets the next group.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxPython version of this method returns a 3-tuple
+consisting of the continue flag, the value string, and the index for
+the next call.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method only takes the <TT>index</TT> parameter
+and returns a 3-element list <TT>( continue, str, index )</TT>.<P>
+
+
+<HR>
+<A NAME="wxconfigbasegetnextentry"></A>
+<H3>wxConfigBase::GetNextEntry</H3>
+<P>
+<B>bool</B> <B>GetNextEntry</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>long&amp;</B><I> index</I>) <B>const</B><P>
+Gets the next entry.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxPython version of this method returns a 3-tuple
+consisting of the continue flag, the value string, and the index for
+the next call.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method only takes the <TT>index</TT> parameter
+and returns a 3-element list <TT>( continue, str, index )</TT>.<P>
+
+
+<HR>
+<A NAME="wxconfigbasegetnumberofentries"></A>
+<H3>wxConfigBase::GetNumberOfEntries</H3>
+<P>
+<B>uint </B> <B>GetNumberOfEntries</B>(<B>bool </B><I>bRecursive = false</I>) <B>const</B><P>
+
+
+<HR>
+<A NAME="wxconfigbasegetnumberofgroups"></A>
+<H3>wxConfigBase::GetNumberOfGroups</H3>
+<P>
+<B>uint</B> <B>GetNumberOfGroups</B>(<B>bool </B><I>bRecursive = false</I>) <B>const</B><P>
+Get number of entries/subgroups in the current group, with or without its
+subgroups.<P>
+
+
+<HR>
+<A NAME="wxconfigbasegetpath"></A>
+<H3>wxConfigBase::GetPath</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetPath</B>() <B>const</B><P>
+Retrieve the current path (always as absolute path).<P>
+
+
+<HR>
+<A NAME="wxconfigbasegetvendorname"></A>
+<H3>wxConfigBase::GetVendorName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetVendorName</B>() <B>const</B><P>
+Returns the vendor name.<P>
+
+
+<HR>
+<A NAME="wxconfigbasehasentry"></A>
+<H3>wxConfigBase::HasEntry</H3>
+<P>
+<B>bool</B> <B>HasEntry</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>strName</I>) <B>const</B><P>
+returns <TT>true</TT> if the entry by this name exists<P>
+
+
+<HR>
+<A NAME="wxconfigbasehasgroup"></A>
+<H3>wxConfigBase::HasGroup</H3>
+<P>
+<B>bool</B> <B>HasGroup</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>strName</I>) <B>const</B><P>
+returns <TT>true</TT> if the group by this name exists<P>
+
+
+<HR>
+<A NAME="wxconfigbaseisexpandingenvvars"></A>
+<H3>wxConfigBase::IsExpandingEnvVars</H3>
+<P>
+<B>bool</B> <B>IsExpandingEnvVars</B>() <B>const</B><P>
+Returns <TT>true</TT> if we are expanding environment variables in key values.<P>
+
+
+<HR>
+<A NAME="wxconfigbaseisrecordingdefaults"></A>
+<H3>wxConfigBase::IsRecordingDefaults</H3>
+<P>
+<B>bool</B> <B>IsRecordingDefaults</B>() <B>const</B><P>
+Returns <TT>true</TT> if we are writing defaults back to the config file.<P>
+
+
+<HR>
+<A NAME="wxconfigbaseread"></A>
+<H3>wxConfigBase::Read</H3>
+<P>
+<B>bool</B> <B>Read</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>key</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>*</B></B><I> str</I>) <B>const</B><P>
+Read a string from the key, returning <TT>true</TT> if the value was read. If the key
+was not found, <I>str</I> is not changed.<P>
+<B>bool</B> <B>Read</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>key</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A>*</B></B><I> str</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>defaultVal</I>) <B>const</B><P>
+Read a string from the key. The default value is returned if the key was not
+found.<P>
+Returns <TT>true</TT> if value was really read, <TT>false</TT> if the default was used.<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>Read</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>key</I>, <B>const
+<A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>defaultVal</I>) <B>const</B><P>
+Another version of <I>Read()</I>, returning the string value directly.<P>
+<B>bool</B> <B>Read</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>, <B>long*</B><I> l</I>) <B>const</B><P>
+Reads a long value, returning <TT>true</TT> if the value was found. If the value was
+not found, <I>l</I> is not changed.<P>
+<B>bool</B> <B>Read</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>, <B>long*</B><I> l</I>,
+<B>long</B><I> defaultVal</I>) <B>const</B><P>
+Reads a long value, returning <TT>true</TT> if the value was found. If the value was
+not found, <I>defaultVal</I> is used instead.<P>
+<B>long </B> <B>Read</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>key</I>, <B>long</B><I> defaultVal</I>) <B>const</B><P>
+Reads a long value from the key and returns it. <I>defaultVal</I> is returned
+if the key is not found.<P>
+NB: writing<P>
+<FONT SIZE=2>
+<PRE>
+    conf-&gt;Read("key", 0);
+</PRE>
+</FONT><P>
+won't work because the call is ambiguous: compiler can not choose between two
+<I>Read</I> functions. Instead, write:<P>
+<FONT SIZE=2>
+<PRE>
+    conf-&gt;Read("key", 0l);
+</PRE>
+</FONT><P>
+<B>bool</B> <B>Read</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>, <B>double*</B><I> d</I>) <B>const</B><P>
+Reads a double value, returning <TT>true</TT> if the value was found. If the value was
+not found, <I>d</I> is not changed.<P>
+<B>bool</B> <B>Read</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>, <B>double*</B><I> d</I>,
+ <B>double</B><I> defaultVal</I>) <B>const</B><P>
+Reads a double value, returning <TT>true</TT> if the value was found. If the value was
+not found, <I>defaultVal</I> is used instead.<P>
+<B>bool</B> <B>Read</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>, <B>bool*</B><I> b</I>) <B>const</B><P>
+Reads a bool value, returning <TT>true</TT> if the value was found. If the value was
+not found, <I>b</I> is not changed.<P>
+<B>bool</B> <B>Read</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>, <B>bool*</B><I> d</I>,
+<B>bool</B><I> defaultVal</I>) <B>const</B><P>
+Reads a bool value, returning <TT>true</TT> if the value was found. If the value was
+not found, <I>defaultVal</I> is used instead.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>Read(key, default="")</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a string.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>ReadInt(key, default=0)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns an int.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>ReadFloat(key, default=0.0)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a floating point number.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In place of a single overloaded method, wxPerl uses:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>Read(key, default="")</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a string
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>ReadInt(key, default=0)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns an integer
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>ReadFloat(key, default=0.0)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a floating point number
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>ReadBool(key, default=0)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a boolean
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxconfigbaserenameentry"></A>
+<H3>wxConfigBase::RenameEntry</H3>
+<P>
+<B>bool</B> <B>RenameEntry</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> oldName</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> newName</I>)<P>
+Renames an entry in the current group. The entries names (both the old and
+the new one) shouldn't contain backslashes, i.e. only simple names and not
+arbitrary paths are accepted by this function.<P>
+Returns <TT>false</TT> if <I>oldName</I> doesn't exist or if <I>newName</I> already
+exists.<P>
+
+
+<HR>
+<A NAME="wxconfigbaserenamegroup"></A>
+<H3>wxConfigBase::RenameGroup</H3>
+<P>
+<B>bool</B> <B>RenameGroup</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> oldName</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> newName</I>)<P>
+Renames a subgroup of the current group. The subgroup names (both the old and
+the new one) shouldn't contain backslashes, i.e. only simple names and not
+arbitrary paths are accepted by this function.<P>
+Returns <TT>false</TT> if <I>oldName</I> doesn't exist or if <I>newName</I> already
+exists.<P>
+
+
+<HR>
+<A NAME="wxconfigbaseset"></A>
+<H3>wxConfigBase::Set</H3>
+<P>
+<B>static <A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A> *</B> </B> <B>Set</B>(<B><A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A> *</B></B><I>pConfig</I>)<P>
+Sets the config object as the current one, returns the pointer to the previous
+current object (both the parameter and returned value may be NULL)<P>
+
+
+<HR>
+<A NAME="wxconfigbasesetexpandenvvars"></A>
+<H3>wxConfigBase::SetExpandEnvVars</H3>
+<P>
+<B>void</B> <B>SetExpandEnvVars </B>(<B>bool </B><I>bDoIt = true</I>)<P>
+Determine whether we wish to expand environment variables in key values.<P>
+
+
+<HR>
+<A NAME="wxconfigbasesetpath"></A>
+<H3>wxConfigBase::SetPath</H3>
+<P>
+<B>void</B> <B>SetPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>strPath</I>)<P>
+Set current path: if the first character is '/', it is the absolute path,
+otherwise it is a relative path. '..' is supported. If strPath doesn't
+exist it is created.<P>
+
+
+<HR>
+<A NAME="wxconfigbasesetrecorddefaults"></A>
+<H3>wxConfigBase::SetRecordDefaults</H3>
+<P>
+<B>void</B> <B>SetRecordDefaults</B>(<B>bool </B><I>bDoIt = true</I>)<P>
+Sets whether defaults are recorded to the config file whenever an attempt to
+read the value which is not present in it is done.<P>
+If on (default is off) all default values for the settings used by the program
+are written back to the config file. This allows the user to see what config
+options may be changed and is probably useful only for wxFileConfig.<P>
+
+
+<HR>
+<A NAME="wxconfigbasewrite"></A>
+<H3>wxConfigBase::Write</H3>
+<P>
+<B>bool</B> <B>Write</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>
+value</I>)<P>
+<B>bool</B> <B>Write</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>, <B>long</B><I> value</I>)<P>
+<B>bool</B> <B>Write</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>, <B>double</B><I> value</I>)<P>
+<B>bool</B> <B>Write</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> key</I>, <B>bool</B><I> value</I>)<P>
+These functions write the specified value to the config file and return <TT>true</TT> on success.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>Write(key, value)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Writes a string.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>WriteInt(key, value)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Writes an int.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>WriteFloat(key, value)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Writes a floating point number.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In place of a single overloaded method, wxPerl uses:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>Write(key, value)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Writes a string
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>WriteInt(key, value)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Writes an integer
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>WriteFloat(key, value)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Writes a floating point number
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>WriteBool(key, value)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Writes a boolean
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+
+</FONT></BODY></HTML>

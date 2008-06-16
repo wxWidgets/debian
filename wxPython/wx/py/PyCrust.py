@@ -8,8 +8,8 @@ import __main__
 original = __main__.__dict__.keys()
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: PyCrust.py,v 1.7.2.1 2005/12/27 20:43:51 RD Exp $"
-__revision__ = "$Revision: 1.7.2.1 $"[11:-2]
+__cvsid__ = "$Id: PyCrust.py 36607 2005-12-30 23:02:03Z RD $"
+__revision__ = "$Revision: 36607 $"[11:-2]
 
 import wx
 

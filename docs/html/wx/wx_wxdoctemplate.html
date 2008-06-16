@@ -1,0 +1,345 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDocTemplate</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdoctemplate"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdocparentframe.html#wxdocparentframe"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdocument.html#wxdocument"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDocTemplate</H2>
+<P>
+The wxDocTemplate class is used to model the relationship between a
+document class and a view class.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/docview.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_docviewoverview.html#wxdoctemplateoverview">wxDocTemplate overview</A>, <A HREF="wx_wxdocument.html#wxdocument">wxDocument</A>, <A HREF="wx_wxview.html#wxview">wxView</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdoctemplatemdefaultext">wxDocTemplate::m_defaultExt</A><BR>
+<A HREF="#wxdoctemplatemdescription">wxDocTemplate::m_description</A><BR>
+<A HREF="#wxdoctemplatemdirectory">wxDocTemplate::m_directory</A><BR>
+<A HREF="#wxdoctemplatemdocclassinfo">wxDocTemplate::m_docClassInfo</A><BR>
+<A HREF="#wxdoctemplatemdoctypename">wxDocTemplate::m_docTypeName</A><BR>
+<A HREF="#wxdoctemplatedocumentmanager">wxDocTemplate::m_documentManager</A><BR>
+<A HREF="#wxdoctemplatemfilefilter">wxDocTemplate::m_fileFilter</A><BR>
+<A HREF="#wxdoctemplatemflags">wxDocTemplate::m_flags</A><BR>
+<A HREF="#wxdoctemplatemviewclassinfo">wxDocTemplate::m_viewClassInfo</A><BR>
+<A HREF="#wxdoctemplatemviewtypename">wxDocTemplate::m_viewTypeName</A><BR>
+<A HREF="#wxdoctemplatector">wxDocTemplate::wxDocTemplate</A><BR>
+<A HREF="#wxdoctemplatedtor">wxDocTemplate::~wxDocTemplate</A><BR>
+<A HREF="#wxdoctemplatecreatedocument">wxDocTemplate::CreateDocument</A><BR>
+<A HREF="#wxdoctemplatecreateview">wxDocTemplate::CreateView</A><BR>
+<A HREF="#wxdoctemplategetdefaultextension">wxDocTemplate::GetDefaultExtension</A><BR>
+<A HREF="#wxdoctemplategetdescription">wxDocTemplate::GetDescription</A><BR>
+<A HREF="#wxdoctemplategetdirectory">wxDocTemplate::GetDirectory</A><BR>
+<A HREF="#wxdoctemplategetdocumentmanager">wxDocTemplate::GetDocumentManager</A><BR>
+<A HREF="#wxdoctemplategetdocumentname">wxDocTemplate::GetDocumentName</A><BR>
+<A HREF="#wxdoctemplategetfilefilter">wxDocTemplate::GetFileFilter</A><BR>
+<A HREF="#wxdoctemplategetflags">wxDocTemplate::GetFlags</A><BR>
+<A HREF="#wxdoctemplategetviewname">wxDocTemplate::GetViewName</A><BR>
+<A HREF="#wxdoctemplateinitdocument">wxDocTemplate::InitDocument</A><BR>
+<A HREF="#wxdoctemplateisvisible">wxDocTemplate::IsVisible</A><BR>
+<A HREF="#wxdoctemplatesetdefaultextension">wxDocTemplate::SetDefaultExtension</A><BR>
+<A HREF="#wxdoctemplatesetdescription">wxDocTemplate::SetDescription</A><BR>
+<A HREF="#wxdoctemplatesetdirectory">wxDocTemplate::SetDirectory</A><BR>
+<A HREF="#wxdoctemplatesetdocumentmanager">wxDocTemplate::SetDocumentManager</A><BR>
+<A HREF="#wxdoctemplatesetfilefilter">wxDocTemplate::SetFileFilter</A><BR>
+<A HREF="#wxdoctemplatesetflags">wxDocTemplate::SetFlags</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdoctemplatemdefaultext"></A>
+<H3>wxDocTemplate::m_defaultExt</H3>
+<P>
+wxString m_defaultExt<P>
+The default extension for files of this type.<P>
+
+<HR>
+<A NAME="wxdoctemplatemdescription"></A>
+<H3>wxDocTemplate::m_description</H3>
+<P>
+wxString m_description<P>
+A short description of this template.<P>
+
+<HR>
+<A NAME="wxdoctemplatemdirectory"></A>
+<H3>wxDocTemplate::m_directory</H3>
+<P>
+wxString m_directory<P>
+The default directory for files of this type.<P>
+
+<HR>
+<A NAME="wxdoctemplatemdocclassinfo"></A>
+<H3>wxDocTemplate::m_docClassInfo</H3>
+<P>
+wxClassInfo*  m_docClassInfo<P>
+Run-time class information that allows document instances to be constructed dynamically.<P>
+
+<HR>
+<A NAME="wxdoctemplatemdoctypename"></A>
+<H3>wxDocTemplate::m_docTypeName</H3>
+<P>
+wxString m_docTypeName<P>
+The named type of the document associated with this template.<P>
+
+<HR>
+<A NAME="wxdoctemplatedocumentmanager"></A>
+<H3>wxDocTemplate::m_documentManager</H3>
+<P>
+wxDocTemplate* m_documentManager<P>
+A pointer to the document manager for which this template was created.<P>
+
+<HR>
+<A NAME="wxdoctemplatemfilefilter"></A>
+<H3>wxDocTemplate::m_fileFilter</H3>
+<P>
+wxString m_fileFilter<P>
+The file filter (such as <TT>*.txt</TT>) to be used in file selector dialogs.<P>
+
+<HR>
+<A NAME="wxdoctemplatemflags"></A>
+<H3>wxDocTemplate::m_flags</H3>
+<P>
+long m_flags<P>
+The flags passed to the constructor.<P>
+
+<HR>
+<A NAME="wxdoctemplatemviewclassinfo"></A>
+<H3>wxDocTemplate::m_viewClassInfo</H3>
+<P>
+wxClassInfo* m_viewClassInfo<P>
+Run-time class information that allows view instances to be constructed dynamically.<P>
+
+<HR>
+<A NAME="wxdoctemplatemviewtypename"></A>
+<H3>wxDocTemplate::m_viewTypeName</H3>
+<P>
+wxString m_viewTypeName<P>
+The named type of the view associated with this template.<P>
+
+<HR>
+<A NAME="wxdoctemplatector"></A>
+<H3>wxDocTemplate::wxDocTemplate</H3>
+<P>
+<B></B> <B>wxDocTemplate</B>(<B><A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A>* </B></B><I>manager</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>descr</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filter</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>docTypeName</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>viewTypeName</I>, <B><A HREF="wx_wxclassinfo.html#wxclassinfo">wxClassInfo</A>* </B></B><I>docClassInfo = NULL</I>,
+ <B><A HREF="wx_wxclassinfo.html#wxclassinfo">wxClassInfo</A>* </B></B><I>viewClassInfo = NULL</I>, <B>long</B><I> flags = wxDEFAULT_TEMPLATE_FLAGS</I>)<P>
+Constructor. Create instances dynamically near the start of your application after creating
+a wxDocManager instance, and before doing any document or view operations.<P>
+<I>manager</I> is the document manager object which manages this template.<P>
+<I>descr</I> is a short description of what the template is for. This string will be displayed in the
+file filter list of Windows file selectors.<P>
+<I>filter</I> is an appropriate file filter such as <TT>*.txt</TT>.<P>
+<I>dir</I> is the default directory to use for file selectors.<P>
+<I>ext</I> is the default file extension (such as txt).<P>
+<I>docTypeName</I> is a name that should be unique for a given type of document, used for
+gathering a list of views relevant to a particular document.<P>
+<I>viewTypeName</I> is a name that should be unique for a given view.<P>
+<I>docClassInfo</I> is a pointer to the run-time document class information as returned
+by the CLASSINFO macro, e.g. CLASSINFO(MyDocumentClass). If this is not supplied,
+you will need to derive a new wxDocTemplate class and override the CreateDocument
+member to return a new document instance on demand.<P>
+<I>viewClassInfo</I> is a pointer to the run-time view class information as returned
+by the CLASSINFO macro, e.g. CLASSINFO(MyViewClass). If this is not supplied,
+you will need to derive a new wxDocTemplate class and override the CreateView
+member to return a new view instance on demand.<P>
+<I>flags</I> is a bit list of the following:<P>
+<UL>
+
+<LI> wxTEMPLATE_VISIBLE The template may be displayed to the user in dialogs.
+<LI> wxTEMPLATE_INVISIBLE The template may not be displayed to the user in dialogs.
+<LI> wxDEFAULT_TEMPLATE_FLAGS Defined as wxTEMPLATE_VISIBLE.
+</UL>
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl <TT>docClassInfo</TT> and <TT>viewClassInfo</TT> can be
+either <TT>Wx::ClassInfo</TT> objects or strings which contain the name
+of the perl packages which are to be used as <TT>Wx::Document</TT> and
+<TT>Wx::View</TT> classes (they must have a constructor named <TT>
+new</TT>):<P>
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>Wx::DocTemplate-&gt;new( docmgr, descr, filter, dir,
+ext, docTypeName, viewTypeName, docClassInfo, viewClassInfo, flags
+)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+ will construct document and view objects from the class information
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>Wx::DocTemplate-&gt;new( docmgr, descr, filter, dir,
+ext, docTypeName, viewTypeName, docClassName, viewClassName, flags
+)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+ will construct document and view objects from perl packages
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>Wx::DocTemplate-&gt;new( docmgr, descr, filter, dir,
+ext, docTypeName, viewTypeName )</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+<TT>Wx::DocTemplate::CreateDocument()</TT> and
+<TT>Wx::DocTemplate::CreateView()</TT> must be overridden
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdoctemplatedtor"></A>
+<H3>wxDocTemplate::~wxDocTemplate</H3>
+<P>
+<B>void</B> <B>~wxDocTemplate</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdoctemplatecreatedocument"></A>
+<H3>wxDocTemplate::CreateDocument</H3>
+<P>
+<B><A HREF="wx_wxdocument.html#wxdocument">wxDocument</A> *</B> </B> <B>CreateDocument</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>, <B>long</B><I> flags = 0</I>)<P>
+Creates a new instance of the associated document class. If you have not supplied
+a wxClassInfo parameter to the template constructor, you will need to override this
+function to return an appropriate document instance.<P>
+This function calls wxDocTemplate::InitDocument which in turns
+calls wxDocument::OnCreate.<P>
+
+<HR>
+<A NAME="wxdoctemplatecreateview"></A>
+<H3>wxDocTemplate::CreateView</H3>
+<P>
+<B><A HREF="wx_wxview.html#wxview">wxView</A> *</B> </B> <B>CreateView</B>(<B><A HREF="wx_wxdocument.html#wxdocument">wxDocument</A> *</B></B><I>doc</I>, <B>long</B><I> flags = 0</I>)<P>
+Creates a new instance of the associated view class. If you have not supplied
+a wxClassInfo parameter to the template constructor, you will need to override this
+function to return an appropriate view instance.<P>
+
+<HR>
+<A NAME="wxdoctemplategetdefaultextension"></A>
+<H3>wxDocTemplate::GetDefaultExtension</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetDefaultExtension</B>()<P>
+Returns the default file extension for the document data, as passed to the document template constructor.<P>
+
+<HR>
+<A NAME="wxdoctemplategetdescription"></A>
+<H3>wxDocTemplate::GetDescription</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetDescription</B>()<P>
+Returns the text description of this template, as passed to the document template constructor.<P>
+
+<HR>
+<A NAME="wxdoctemplategetdirectory"></A>
+<H3>wxDocTemplate::GetDirectory</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetDirectory</B>()<P>
+Returns the default directory, as passed to the document template constructor.<P>
+
+<HR>
+<A NAME="wxdoctemplategetdocumentmanager"></A>
+<H3>wxDocTemplate::GetDocumentManager</H3>
+<P>
+<B><A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A> *</B> </B> <B>GetDocumentManager</B>()<P>
+Returns a pointer to the document manager instance for which this template was created.<P>
+
+<HR>
+<A NAME="wxdoctemplategetdocumentname"></A>
+<H3>wxDocTemplate::GetDocumentName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetDocumentName</B>()<P>
+Returns the document type name, as passed to the document template constructor.<P>
+
+<HR>
+<A NAME="wxdoctemplategetfilefilter"></A>
+<H3>wxDocTemplate::GetFileFilter</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFileFilter</B>()<P>
+Returns the file filter, as passed to the document template constructor.<P>
+
+<HR>
+<A NAME="wxdoctemplategetflags"></A>
+<H3>wxDocTemplate::GetFlags</H3>
+<P>
+<B>long</B> <B>GetFlags</B>()<P>
+Returns the flags, as passed to the document template constructor.<P>
+
+<HR>
+<A NAME="wxdoctemplategetviewname"></A>
+<H3>wxDocTemplate::GetViewName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetViewName</B>()<P>
+Returns the view type name, as passed to the document template constructor.<P>
+
+<HR>
+<A NAME="wxdoctemplateinitdocument"></A>
+<H3>wxDocTemplate::InitDocument</H3>
+<P>
+<B>bool</B> <B>InitDocument</B>(<B><A HREF="wx_wxdocument.html#wxdocument">wxDocument</A>* </B></B><I>doc</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>, <B>long</B><I> flags = 0</I>)<P>
+Initialises the document, calling wxDocument::OnCreate. This is called from
+wxDocTemplate::CreateDocument.<P>
+
+<HR>
+<A NAME="wxdoctemplateisvisible"></A>
+<H3>wxDocTemplate::IsVisible</H3>
+<P>
+<B>bool</B> <B>IsVisible</B>()<P>
+Returns true if the document template can be shown in user dialogs, false otherwise.<P>
+
+<HR>
+<A NAME="wxdoctemplatesetdefaultextension"></A>
+<H3>wxDocTemplate::SetDefaultExtension</H3>
+<P>
+<B>void</B> <B>SetDefaultExtension</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>ext</I>)<P>
+Sets the default file extension.<P>
+
+<HR>
+<A NAME="wxdoctemplatesetdescription"></A>
+<H3>wxDocTemplate::SetDescription</H3>
+<P>
+<B>void</B> <B>SetDescription</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>descr</I>)<P>
+Sets the template description.<P>
+
+<HR>
+<A NAME="wxdoctemplatesetdirectory"></A>
+<H3>wxDocTemplate::SetDirectory</H3>
+<P>
+<B>void</B> <B>SetDirectory</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir</I>)<P>
+Sets the default directory.<P>
+
+<HR>
+<A NAME="wxdoctemplatesetdocumentmanager"></A>
+<H3>wxDocTemplate::SetDocumentManager</H3>
+<P>
+<B>void</B> <B>SetDocumentManager</B>(<B><A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A> *</B></B><I>manager</I>)<P>
+Sets the pointer to the document manager instance for which this template was created.
+Should not be called by the application.<P>
+
+<HR>
+<A NAME="wxdoctemplatesetfilefilter"></A>
+<H3>wxDocTemplate::SetFileFilter</H3>
+<P>
+<B>void</B> <B>SetFileFilter</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filter</I>)<P>
+Sets the file filter.<P>
+
+<HR>
+<A NAME="wxdoctemplatesetflags"></A>
+<H3>wxDocTemplate::SetFlags</H3>
+<P>
+<B>void</B> <B>SetFlags</B>(<B>long </B><I>flags</I>)<P>
+Sets the internal document template flags (see the constructor description for more details).<P>
+
+</FONT></BODY></HTML>

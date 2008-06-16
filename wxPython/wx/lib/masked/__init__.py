@@ -5,10 +5,16 @@
 # Author:      Will Sadkin, Jeff Childers
 #
 # Created:     6-Mar-2004
-# RCS-ID:      $Id: __init__.py,v 1.2 2004/07/22 18:38:34 RD Exp $
+# RCS-ID:      $Id: __init__.py 43827 2006-12-05 18:57:31Z RD $
 # Copyright:   (c) 2004
 # License:     wxWidgets license
 #----------------------------------------------------------------------
+__author__  = "Will Sadkin <wsadkin |at| parlancecorp.com>"
+__date__    = "02 Dec 2006, 19:00 GMT-05:00"
+__version__ = "1.11"
+__doc__     = """\
+package providing "masked edit" controls, allowing characters within a data entry control to remain fixed, and providing fine-grain control over allowed user input.
+"""
 
 # import relevant external symbols into package namespace:
 from maskededit import *

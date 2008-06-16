@@ -4,17 +4,13 @@
 // Author:      Vaclav Slavik, Julian Smart
 // Modified by:
 // Created:     2002-07-09
-// RCS-ID:      $Id: helpview.h,v 1.10 2005/05/30 09:24:08 ABX Exp $
+// RCS-ID:      $Id: helpview.h 44610 2007-03-05 10:46:54Z JS $
 // Copyright:   (c) 2002 Vaclav Slavik, Julian Smart and others
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_HELPVIEW_H_
 #define _WX_HELPVIEW_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "help.cpp"
-#endif
 
 #define hvVERSION 1.04
 
@@ -54,14 +50,19 @@ public:
     wxList& GetConnections() { return m_connections; }
 #endif
 
+    /// Respond to idle event
+    void OnIdle(wxIdleEvent& event);
+
 private:
     wxHtmlHelpController*   m_helpController;
+    bool                    m_exitIfNoMainWindow;
 
 #if wxUSE_IPC
     wxList                  m_connections;
     hvServer*               m_server;
 #endif
 
+DECLARE_EVENT_TABLE()
 };
 
 #if wxUSE_IPC
@@ -69,7 +70,7 @@ class hvConnection : public wxConnection
 {
 public:
     hvConnection();
-    ~hvConnection();
+    virtual ~hvConnection();
 
     bool OnExecute(const wxString& topic, wxChar*data, int size, wxIPCFormat format);
     wxChar *OnRequest(const wxString& topic, const wxString& item, int *size, wxIPCFormat format);

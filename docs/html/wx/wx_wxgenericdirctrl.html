@@ -1,0 +1,292 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGenericDirCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgenericdirctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgdiobject.html#wxgdiobject"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgenericvalidator.html#wxgenericvalidator"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGenericDirCtrl</H2>
+<P>
+This control can  be used to place a directory listing (with optional files) on an arbitrary window.<P>
+The control contains a <A HREF="wx_wxtreectrl.html#wxtreectrl">wxTreeCtrl</A> window representing the directory
+hierarchy, and optionally, a <A HREF="wx_wxchoice.html#wxchoice">wxChoice</A> window containing a list of filters.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dirctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+wxDIRCTRL_DIR_ONLY
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Only show directories, and not files.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+wxDIRCTRL_3D_INTERNAL
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Use 3D borders for internal controls.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+wxDIRCTRL_SELECT_FIRST
+</FONT></TD>
+
+<TD VALIGN=TOP>
+When setting the default path, select the first file in the directory.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+wxDIRCTRL_SHOW_FILTERS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Show the drop-down filter list.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+wxDIRCTRL_EDIT_LABELS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Allow the folder and file labels to be editable.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">Generic window styles</A>.<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgenericdirctrlwxgenericdirctrl">wxGenericDirCtrl::wxGenericDirCtrl</A><BR>
+<A HREF="#wxgenericdirctrldtor">wxGenericDirCtrl::~wxGenericDirCtrl</A><BR>
+<A HREF="#wxgenericdirctrlcreate">wxGenericDirCtrl::Create</A><BR>
+<A HREF="#wxgenericdirctrlinit">wxGenericDirCtrl::Init</A><BR>
+<A HREF="#wxgenericdirctrlcollapsetree">wxGenericDirCtrl::CollapseTree</A><BR>
+<A HREF="#wxgenericdirctrlexpandpath">wxGenericDirCtrl::ExpandPath</A><BR>
+<A HREF="#wxgenericdirctrlcollapsepath">wxGenericDirCtrl::CollapsePath</A><BR>
+<A HREF="#wxgenericdirctrlgetdefaultpath">wxGenericDirCtrl::GetDefaultPath</A><BR>
+<A HREF="#wxgenericdirctrlgetpath">wxGenericDirCtrl::GetPath</A><BR>
+<A HREF="#wxgenericdirctrlgetfilepath">wxGenericDirCtrl::GetFilePath</A><BR>
+<A HREF="#wxgenericdirctrlgetfilter">wxGenericDirCtrl::GetFilter</A><BR>
+<A HREF="#wxgenericdirctrlgetfilterindex">wxGenericDirCtrl::GetFilterIndex</A><BR>
+<A HREF="#wxgenericdirctrlgetfilterlistctrl">wxGenericDirCtrl::GetFilterListCtrl</A><BR>
+<A HREF="#wxgenericdirctrlgetrootid">wxGenericDirCtrl::GetRootId</A><BR>
+<A HREF="#wxgenericdirctrlgettreectrl">wxGenericDirCtrl::GetTreeCtrl</A><BR>
+<A HREF="#wxgenericdirctrlrecreatetree">wxGenericDirCtrl::ReCreateTree</A><BR>
+<A HREF="#wxgenericdirctrlsetdefaultpath">wxGenericDirCtrl::SetDefaultPath</A><BR>
+<A HREF="#wxgenericdirctrlsetfilter">wxGenericDirCtrl::SetFilter</A><BR>
+<A HREF="#wxgenericdirctrlsetfilterindex">wxGenericDirCtrl::SetFilterIndex</A><BR>
+<A HREF="#wxgenericdirctrlsetpath">wxGenericDirCtrl::SetPath</A><BR>
+<A HREF="#wxgenericdirctrlShowHidden">wxGenericDirCtrl::ShowHidden</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgenericdirctrlwxgenericdirctrl"></A>
+<H3>wxGenericDirCtrl::wxGenericDirCtrl</H3>
+<P>
+<B></B> <B>wxGenericDirCtrl</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxGenericDirCtrl</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const wxWindowID </B><I>id = -1</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir = wxDirDialogDefaultFolderStr</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+ <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxDIRCTRL_3D_INTERNAL|wxSUNKEN_BORDER</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filter = wxEmptyString</I>,
+ <B>int </B><I>defaultFilter = 0</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxTreeCtrlNameStr</I>)<P>
+Main constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier.</UL></UL>
+<P>
+<I>dir</I><UL><UL>
+Initial folder.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. Please see <A HREF="wx_wxgenericdirctrl.html#wxgenericdirctrl">wxGenericDirCtrl</A> for a list of possible styles.</UL></UL>
+<P>
+<I>filter</I><UL><UL>
+A filter string, using the same syntax as that for <A HREF="wx_wxfiledialog.html#wxfiledialog">wxFileDialog</A>. This may be empty if filters
+are not being used.<P>
+Example: "All files (*.*)|*.*|JPEG files (*.jpg)|*.jpg"</UL></UL>
+<P>
+<I>defaultFilter</I><UL><UL>
+The zero-indexed default filter setting.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+The window name.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxgenericdirctrldtor"></A>
+<H3>wxGenericDirCtrl::~wxGenericDirCtrl</H3>
+<P>
+<B></B> <B>~wxGenericDirCtrl</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlcreate"></A>
+<H3>wxGenericDirCtrl::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const wxWindowID </B><I>id = -1</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>dir = wxDirDialogDefaultFolderStr</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>, <B>long </B><I>style = wxDIRCTRL_3D_INTERNAL|wxSUNKEN_BORDER</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filter = wxEmptyString</I>, <B>int </B><I>defaultFilter = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxTreeCtrlNameStr</I>)<P>
+Create function for two-step construction. See <A HREF="wx_wxgenericdirctrl.html#wxgenericdirctrlwxgenericdirctrl">wxGenericDirCtrl::wxGenericDirCtrl</A> for details.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlinit"></A>
+<H3>wxGenericDirCtrl::Init</H3>
+<P>
+<B>void</B> <B>Init</B>()<P>
+Initializes variables.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlcollapsetree"></A>
+<H3>wxGenericDirCtrl::CollapseTree</H3>
+<P>
+<B>void</B> <B>CollapseTree</B>()<P>
+Collapses the entire tree.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlexpandpath"></A>
+<H3>wxGenericDirCtrl::ExpandPath</H3>
+<P>
+<B>bool</B> <B>ExpandPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>)<P>
+Tries to expand as much of the given path as possible, so that the filename or directory is visible in the tree control.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlcollapsepath"></A>
+<H3>wxGenericDirCtrl::CollapsePath</H3>
+<P>
+<B>bool</B> <B>CollapsePath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>)<P>
+Collapse the given path.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlgetdefaultpath"></A>
+<H3>wxGenericDirCtrl::GetDefaultPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetDefaultPath</B>() <B>const</B><P>
+Gets the default path.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlgetpath"></A>
+<H3>wxGenericDirCtrl::GetPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPath</B>() <B>const</B><P>
+Gets the currently-selected directory or filename.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlgetfilepath"></A>
+<H3>wxGenericDirCtrl::GetFilePath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFilePath</B>() <B>const</B><P>
+Gets selected filename path only (else empty string).<P>
+This function doesn't count a directory as a selection.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlgetfilter"></A>
+<H3>wxGenericDirCtrl::GetFilter</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFilter</B>() <B>const</B><P>
+Returns the filter string.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlgetfilterindex"></A>
+<H3>wxGenericDirCtrl::GetFilterIndex</H3>
+<P>
+<B>int</B> <B>GetFilterIndex</B>() <B>const</B><P>
+Returns the current filter index (zero-based).<P>
+
+<HR>
+<A NAME="wxgenericdirctrlgetfilterlistctrl"></A>
+<H3>wxGenericDirCtrl::GetFilterListCtrl</H3>
+<P>
+<B>wxDirFilterListCtrl*</B> <B>GetFilterListCtrl</B>() <B>const</B><P>
+Returns a pointer to the filter list control (if present).<P>
+
+<HR>
+<A NAME="wxgenericdirctrlgetrootid"></A>
+<H3>wxGenericDirCtrl::GetRootId</H3>
+<P>
+<B><A HREF="wx_wxtreeitemid.html#wxtreeitemid">wxTreeItemId</A></B> </B> <B>GetRootId</B>()<P>
+Returns the root id for the tree control.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlgettreectrl"></A>
+<H3>wxGenericDirCtrl::GetTreeCtrl</H3>
+<P>
+<B><A HREF="wx_wxtreectrl.html#wxtreectrl">wxTreeCtrl</A>*</B> </B> <B>GetTreeCtrl</B>() <B>const</B><P>
+Returns a pointer to the tree control.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlrecreatetree"></A>
+<H3>wxGenericDirCtrl::ReCreateTree</H3>
+<P>
+<B>void</B> <B>ReCreateTree</B>()<P>
+Collapse and expand the tree, thus re-creating it from scratch.
+May be used to update the displayed directory content.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlsetdefaultpath"></A>
+<H3>wxGenericDirCtrl::SetDefaultPath</H3>
+<P>
+<B>void</B> <B>SetDefaultPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>)<P>
+Sets the default path.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlsetfilter"></A>
+<H3>wxGenericDirCtrl::SetFilter</H3>
+<P>
+<B>void</B> <B>SetFilter</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filter</I>)<P>
+Sets the filter string.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlsetfilterindex"></A>
+<H3>wxGenericDirCtrl::SetFilterIndex</H3>
+<P>
+<B>void</B> <B>SetFilterIndex</B>(<B>int </B><I>n</I>)<P>
+Sets the current filter index (zero-based).<P>
+
+<HR>
+<A NAME="wxgenericdirctrlsetpath"></A>
+<H3>wxGenericDirCtrl::SetPath</H3>
+<P>
+<B>void</B> <B>SetPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>)<P>
+Sets the current path.<P>
+
+<HR>
+<A NAME="wxgenericdirctrlShowHidden"></A>
+<H3>wxGenericDirCtrl::ShowHidden</H3>
+<P>
+<B>void</B> <B>ShowHidden</B>(<B>bool </B><I>show</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>show</I><UL><UL>
+If true, hidden folders and files will be displayed by the
+control. If false, they will not be displayed.</UL></UL>
+<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,197 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCalendarDateAttr</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcalendardateattr"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcalendarctrl.html#wxcalendarctrl"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcalendarevent.html#wxcalendarevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCalendarDateAttr</H2>
+<P>
+wxCalendarDateAttr is a custom attributes for a calendar date. The objects of
+this class are used with <A HREF="wx_wxcalendarctrl.html#wxcalendarctrl">wxCalendarCtrl</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+Here are the possible kinds of borders which may be used to decorate a date:<P>
+<PRE>
+enum wxCalendarDateBorder
+{
+    wxCAL_BORDER_NONE,          // no border (default)
+    wxCAL_BORDER_SQUARE,        // a rectangular border
+    wxCAL_BORDER_ROUND          // a round border
+}
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxcalendarctrl.html#wxcalendarctrl">wxCalendarCtrl</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/calctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxcalendardateattrwxcalendardateattr">wxCalendarDateAttr::wxCalendarDateAttr</A><BR>
+<A HREF="#wxcalendardateattrsettextcolour">wxCalendarDateAttr::SetTextColour</A><BR>
+<A HREF="#wxcalendardateattrsetbackgroundcolour">wxCalendarDateAttr::SetBackgroundColour</A><BR>
+<A HREF="#wxcalendardateattrsetbordercolour">wxCalendarDateAttr::SetBorderColour</A><BR>
+<A HREF="#wxcalendardateattrsetfont">wxCalendarDateAttr::SetFont</A><BR>
+<A HREF="#wxcalendardateattrsetborder">wxCalendarDateAttr::SetBorder</A><BR>
+<A HREF="#wxcalendardateattrsetholiday">wxCalendarDateAttr::SetHoliday</A><BR>
+<A HREF="#wxcalendardateattrhastextcolour">wxCalendarDateAttr::HasTextColour</A><BR>
+<A HREF="#wxcalendardateattrhasbackgroundcolour">wxCalendarDateAttr::HasBackgroundColour</A><BR>
+<A HREF="#wxcalendardateattrhasbordercolour">wxCalendarDateAttr::HasBorderColour</A><BR>
+<A HREF="#wxcalendardateattrhasfont">wxCalendarDateAttr::HasFont</A><BR>
+<A HREF="#wxcalendardateattrhasborder">wxCalendarDateAttr::HasBorder</A><BR>
+<A HREF="#wxcalendardateattrisholiday">wxCalendarDateAttr::IsHoliday</A><BR>
+<A HREF="#wxcalendardateattrgettextcolour">wxCalendarDateAttr::GetTextColour</A><BR>
+<A HREF="#wxcalendardateattrgetbackgroundcolour">wxCalendarDateAttr::GetBackgroundColour</A><BR>
+<A HREF="#wxcalendardateattrgetbordercolour">wxCalendarDateAttr::GetBorderColour</A><BR>
+<A HREF="#wxcalendardateattrgetfont">wxCalendarDateAttr::GetFont</A><BR>
+<A HREF="#wxcalendardateattrgetborder">wxCalendarDateAttr::GetBorder</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcalendardateattrwxcalendardateattr"></A>
+<H3>wxCalendarDateAttr::wxCalendarDateAttr</H3>
+<P>
+<B></B> <B>wxCalendarDateAttr</B>()<P>
+<B></B> <B>wxCalendarDateAttr</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colText</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colBack = wxNullColour</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colBorder = wxNullColour</I>, <B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font = wxNullFont</I>, <B>wxCalendarDateBorder </B><I>border = wxCAL_BORDER_NONE</I>)<P>
+<B></B> <B>wxCalendarDateAttr</B>(<B>wxCalendarDateBorder </B><I>border</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colBorder = wxNullColour</I>)<P>
+The constructors.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrsettextcolour"></A>
+<H3>wxCalendarDateAttr::SetTextColour</H3>
+<P>
+<B>void</B> <B>SetTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colText</I>)<P>
+Sets the text (foreground) colour to use.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrsetbackgroundcolour"></A>
+<H3>wxCalendarDateAttr::SetBackgroundColour</H3>
+<P>
+<B>void</B> <B>SetBackgroundColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colBack</I>)<P>
+Sets the text background colour to use.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrsetbordercolour"></A>
+<H3>wxCalendarDateAttr::SetBorderColour</H3>
+<P>
+<B>void</B> <B>SetBorderColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>col</I>)<P>
+Sets the border colour to use.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrsetfont"></A>
+<H3>wxCalendarDateAttr::SetFont</H3>
+<P>
+<B>void</B> <B>SetFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the font to use.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrsetborder"></A>
+<H3>wxCalendarDateAttr::SetBorder</H3>
+<P>
+<B>void</B> <B>SetBorder</B>(<B>wxCalendarDateBorder </B><I>border</I>)<P>
+Sets the <A HREF="wx_wxcalendardateattr.html#wxcalendardateattr">border kind</A><P>
+
+
+<HR>
+<A NAME="wxcalendardateattrsetholiday"></A>
+<H3>wxCalendarDateAttr::SetHoliday</H3>
+<P>
+<B>void</B> <B>SetHoliday</B>(<B>bool </B><I>holiday</I>)<P>
+Display the date with this attribute as a holiday.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrhastextcolour"></A>
+<H3>wxCalendarDateAttr::HasTextColour</H3>
+<P>
+<B>bool</B> <B>HasTextColour</B>() <B>const</B><P>
+Returns <TT>true</TT> if this item has a non-default text foreground colour.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrhasbackgroundcolour"></A>
+<H3>wxCalendarDateAttr::HasBackgroundColour</H3>
+<P>
+<B>bool</B> <B>HasBackgroundColour</B>() <B>const</B><P>
+Returns <TT>true</TT> if this attribute specifies a non-default text background colour.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrhasbordercolour"></A>
+<H3>wxCalendarDateAttr::HasBorderColour</H3>
+<P>
+<B>bool</B> <B>HasBorderColour</B>() <B>const</B><P>
+Returns <TT>true</TT> if this attribute specifies a non-default border colour.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrhasfont"></A>
+<H3>wxCalendarDateAttr::HasFont</H3>
+<P>
+<B>bool</B> <B>HasFont</B>() <B>const</B><P>
+Returns <TT>true</TT> if this attribute specifies a non-default font.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrhasborder"></A>
+<H3>wxCalendarDateAttr::HasBorder</H3>
+<P>
+<B>bool</B> <B>HasBorder</B>() <B>const</B><P>
+Returns <TT>true</TT> if this attribute specifies a non-default (i.e. any) border.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrisholiday"></A>
+<H3>wxCalendarDateAttr::IsHoliday</H3>
+<P>
+<B>bool</B> <B>IsHoliday</B>() <B>const</B><P>
+Returns <TT>true</TT> if this attribute specifies that this item should be
+displayed as a holiday.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrgettextcolour"></A>
+<H3>wxCalendarDateAttr::GetTextColour</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetTextColour</B>() <B>const</B><P>
+Returns the text colour to use for the item with this attribute.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrgetbackgroundcolour"></A>
+<H3>wxCalendarDateAttr::GetBackgroundColour</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetBackgroundColour</B>() <B>const</B><P>
+Returns the background colour to use for the item with this attribute.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrgetbordercolour"></A>
+<H3>wxCalendarDateAttr::GetBorderColour</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetBorderColour</B>() <B>const</B><P>
+Returns the border colour to use for the item with this attribute.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrgetfont"></A>
+<H3>wxCalendarDateAttr::GetFont</H3>
+<P>
+<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>&</B> </B> <B>GetFont</B>() <B>const</B><P>
+Returns the font to use for the item with this attribute.<P>
+
+
+<HR>
+<A NAME="wxcalendardateattrgetborder"></A>
+<H3>wxCalendarDateAttr::GetBorder</H3>
+<P>
+<B>wxCalendarDateBorder</B> <B>GetBorder</B>() <B>const</B><P>
+Returns the <A HREF="wx_wxcalendardateattr.html#wxcalendardateattr">border</A> to use for the item with this attribute.<P>
+
+
+</FONT></BODY></HTML>

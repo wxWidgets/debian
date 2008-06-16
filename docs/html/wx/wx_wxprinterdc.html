@@ -1,0 +1,63 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPrinterDC</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxprinterdc"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxprinter.html#wxprinter"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxprintout.html#wxprintout"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPrinterDC</H2>
+<P>
+A printer device context is specific to MSW and Mac, and allows access to any
+printer with a Windows or Macintosh driver. See <A HREF="wx_wxdc.html#wxdc">wxDC</A> for further
+information on device contexts, and <A HREF="wx_wxdc.html#wxdcgetsize">wxDC::GetSize</A> for
+advice on achieving the correct scaling for the page.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdc">wxDC</A><BR>
+
+<A HREF="wx_wxdc.html#wxdc">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dcprint.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_printingoverview.html#printingoverview">Printing framework overview</A>, 
+<A HREF="wx_wxdc.html#wxdc">wxDC</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxprinterdcctor">wxPrinterDC::wxPrinterDC</A><BR>
+<A HREF="#wxprinterdcgetpaperrect">wxPrinterDC::GetPaperRect</A><BR>
+<P>
+
+<HR>
+<A NAME="wxprinterdcctor"></A>
+<H3>wxPrinterDC::wxPrinterDC</H3>
+<P>
+<B></B> <B>wxPrinterDC</B>(<B>const <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>& </B></B><I>printData</I>)<P>
+Constructor. Pass a <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A> object with information
+necessary for setting up a suitable printer device context. This
+is the recommended way to construct a wxPrinterDC.  Make sure you 
+specify a reference to a <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A> object,
+not a pointer - you may not even get a warning if you pass a pointer
+instead.<P>
+<B></B> <B>wxPrinterDC</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>driver</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>device</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>output</I>,
+ <B>const bool </B><I>interactive = true</I>, <B>int </B><I>orientation = wxPORTRAIT</I>)<P>
+Constructor. With empty strings for the first three arguments, the default printer dialog is
+displayed. <I>device</I> indicates the type of printer and <I>output</I>
+is an optional file for printing to. The <I>driver</I> parameter is
+currently unused.  Use the <I>Ok</I> member to test whether the
+constructor was successful in creating a usable device context.<P>
+This constructor is deprecated and retained only for backward compatibility.<P>
+
+<HR>
+<A NAME="wxprinterdcgetpaperrect"></A>
+<H3>wxPrinterDC::GetPaperRect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>wxPrinterDC::GetPaperRect</B>()<P>
+Return the rectangle in device coordinates that corresponds to the full paper
+area, including the nonprinting regions of the paper. The point (0,0) in device
+coordinates is the top left corner of the page rectangle, which is the printable
+area on MSW and Mac. The coordinates of the top left corner of the paper
+rectangle will therefore have small negative values, while the bottom right
+coordinates will be somewhat larger than the values returned by
+<A HREF="wx_wxdc.html#wxdcgetsize">wxDC::GetSize</A>.<P>
+
+
+</FONT></BODY></HTML>

@@ -1,26 +1,19 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        sound.cpp
+// Name:        src/unix/sound.cpp
 // Purpose:     wxSound
 // Author:      Marcel Rasche, Vaclav Slavik
 // Modified by:
 // Created:     25/10/98
-// RCS-ID:      $Id: sound.cpp,v 1.12.2.1 2006/03/07 23:21:08 VZ Exp $
+// RCS-ID:      $Id: sound.cpp 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Julian Smart, Open Source Applications Foundation
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "sound.h"
-#pragma implementation "soundbase.h"
-#endif
-
 // for compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
-#include "wx/setup.h"
-
 #if defined(__BORLANDC__)
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #if wxUSE_SOUND
@@ -38,11 +31,11 @@
     #include "wx/event.h"
     #include "wx/intl.h"
     #include "wx/log.h"
+    #include "wx/module.h"
 #endif
 
 #include "wx/thread.h"
 #include "wx/file.h"
-#include "wx/module.h"
 #include "wx/sound.h"
 #include "wx/dynlib.h"
 
@@ -303,7 +296,7 @@ class wxSoundSyncOnlyAdaptor : public wxSoundBackend
 public:
     wxSoundSyncOnlyAdaptor(wxSoundBackend *backend)
         : m_backend(backend), m_playing(false) {}
-    ~wxSoundSyncOnlyAdaptor()
+    virtual ~wxSoundSyncOnlyAdaptor()
     {
         delete m_backend;
     }
@@ -452,7 +445,8 @@ wxSound::~wxSound()
     Free();
 }
 
-bool wxSound::Create(const wxString& fileName, bool isResource)
+bool wxSound::Create(const wxString& fileName,
+                     bool WXUNUSED_UNLESS_DEBUG(isResource))
 {
     wxASSERT_MSG( !isResource,
              _T("Loading sound from resources is only supported on Windows") );
@@ -632,12 +626,30 @@ typedef struct
 
 bool wxSound::LoadWAV(const wxUint8 *data, size_t length, bool copyData)
 {
-    WAVEFORMAT waveformat;
-    wxUint32 ul;
-
-    if (length < 32 + sizeof(WAVEFORMAT))
+    // the simplest wave file header consists of 44 bytes:
+    //
+    //      0   "RIFF"
+    //      4   file size - 8
+    //      8   "WAVE"
+    //
+    //      12  "fmt "
+    //      16  chunk size                  |
+    //      20  format tag                  |
+    //      22  number of channels          |
+    //      24  sample rate                 | WAVEFORMAT
+    //      28  average bytes per second    |
+    //      32  bytes per frame             |
+    //      34  bits per sample             |
+    //
+    //      36  "data"
+    //      40  number of data bytes
+    //      44  (wave signal) data
+    //
+    // so check that we have at least as much
+    if ( length < 44 )
         return false;
 
+    WAVEFORMAT waveformat;
     memcpy(&waveformat, &data[FMT_INDEX + 4], sizeof(WAVEFORMAT));
     waveformat.uiSize = wxUINT32_SWAP_ON_BE(waveformat.uiSize);
     waveformat.uiFormatTag = wxUINT16_SWAP_ON_BE(waveformat.uiFormatTag);
@@ -647,6 +659,14 @@ bool wxSound::LoadWAV(const wxUint8 *data, size_t length, bool copyData)
     waveformat.uiBlockAlign = wxUINT16_SWAP_ON_BE(waveformat.uiBlockAlign);
     waveformat.uiBitsPerSample = wxUINT16_SWAP_ON_BE(waveformat.uiBitsPerSample);
 
+    // get the sound data size
+    wxUint32 ul;
+    memcpy(&ul, &data[FMT_INDEX + waveformat.uiSize + 12], 4);
+    ul = wxUINT32_SWAP_ON_BE(ul);
+
+    if ( length < ul + FMT_INDEX + waveformat.uiSize + 16 )
+        return false;
+
     if (memcmp(data, "RIFF", 4) != 0)
         return false;
     if (memcmp(&data[WAVE_INDEX], "WAVE", 4) != 0)
@@ -654,12 +674,6 @@ bool wxSound::LoadWAV(const wxUint8 *data, size_t length, bool copyData)
     if (memcmp(&data[FMT_INDEX], "fmt ", 4) != 0)
         return false;
     if (memcmp(&data[FMT_INDEX + waveformat.uiSize + 8], "data", 4) != 0)
-        return false;
-    memcpy(&ul,&data[FMT_INDEX + waveformat.uiSize + 12], 4);
-    ul = wxUINT32_SWAP_ON_BE(ul);
-
-    //WAS: if (ul + FMT_INDEX + waveformat.uiSize + 16 != length)
-    if (ul + FMT_INDEX + waveformat.uiSize + 16 > length)
         return false;
 
     if (waveformat.uiFormatTag != WAVE_FORMAT_PCM)

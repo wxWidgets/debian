@@ -3,20 +3,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<meta name="generator" content="Docutils 0.3.7: http://docutils.sourceforge.net/" />
-<title>Installing wxPython 2.6 from Source</title>
+<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
+<title>Installing wxPython 2.8 from Source</title>
 <link rel="stylesheet" href="default.css" type="text/css" />
 </head>
 <body>
-<div class="document" id="installing-wxpython-2-6-from-source">
-<h1 class="title">Installing wxPython 2.6 from Source</h1>
+<div class="document" id="installing-wxpython-2-8-from-source">
+<h1 class="title">Installing wxPython 2.8 from Source</h1>
 <p>This document will describe the few differences and additions to the
 content in the <a class="reference" href="BUILD.html">BUILD</a> document for installing wxPython built from
 source.  Please follow the intstructions both in this file and in
 <a class="reference" href="BUILD.html">BUILD</a> to perform this task.  Where there is overlap the items
 described here will take precedence for doing installations.</p>
-<div class="section" id="installing-on-unix-like-systems-not-os-x">
-<h1><a name="installing-on-unix-like-systems-not-os-x">Installing on Unix-like Systems (not OS X)</a></h1>
+<div class="section">
+<h1><a id="installing-on-unix-like-systems-not-os-x" name="installing-on-unix-like-systems-not-os-x">Installing on Unix-like Systems (not OS X)</a></h1>
 <ol class="arabic">
 <li><p class="first">When building wxWidgets you need to decide if you want it to be a
 private copy only accessed by wxPython, or if you would like it to
@@ -49,7 +49,7 @@ find the wxWidgets shared libraries.  You can hard code the library
 path into the binaries by using the rpath option when configuring
 wxWidgets.  For example:</p>
 <pre class="literal-block">
---enable-rpath=/opt/wx/2.6/lib \
+--enable-rpath=/opt/wx/2.8/lib \
 </pre>
 <p>SOLARIS NOTE: The --enable-rpath option may cause problems when
 using wxGTK on Solaris when compiling wxPython as described below.
@@ -69,7 +69,7 @@ into the same bin dir used by Python by using this command, plus
 whatever WXPORT, UNICODE, etc. settings you used for the initial
 build step:</p>
 <pre class="literal-block">
-python2.3 setup.py install 
+python2.5 setup.py install
 </pre>
 <p>If you would like to install to some place besides the prefix where
 Python is installed, (such as to your home directory) then you can
@@ -81,8 +81,8 @@ contained in the PYTHONPATH environment variable.</p>
 </li>
 </ol>
 </div>
-<div class="section" id="installing-on-os-x">
-<h1><a name="installing-on-os-x">Installing on OS X</a></h1>
+<div class="section">
+<h1><a id="installing-on-os-x" name="installing-on-os-x">Installing on OS X</a></h1>
 <p>Installing wxPython on OS X is nearly the same as the Unix
 instructions above, except for a few small, but important details:</p>
 <ol class="arabic simple">
@@ -112,8 +112,8 @@ app to run wxPython apps, otherwise the app will not be able to
 fully use the GUI display.</li>
 </ol>
 </div>
-<div class="section" id="installing-on-windows">
-<h1><a name="installing-on-windows">Installing on Windows</a></h1>
+<div class="section">
+<h1><a id="installing-on-windows" name="installing-on-windows">Installing on Windows</a></h1>
 <ol class="arabic">
 <li><p class="first">Build wxWidgets and wxPython as described in BUILD.txt.  If you
 would rather have a version without the code that turns runtime
@@ -131,7 +131,7 @@ python setup.py install
 found at runtime by the extension modules without requiring that
 they be installed on the PATH:</p>
 <pre class="literal-block">
-copy %WXWIN%\lib\vc_dll\wx*h_*.dll c:\Python23\Lib\site-packages\wx
+copy %WXWIN%\\lib\\vc_dll\\wx*h_*.dll c:\\Python25\\Lib\\site-packages\\wx
 </pre>
 </li>
 </ol>

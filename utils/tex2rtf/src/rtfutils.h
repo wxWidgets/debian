@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: rtfutils.h,v 1.2 2004/01/08 11:54:29 JS Exp $
+// RCS-ID:      $Id: rtfutils.h 25095 2004-01-08 11:54:30Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

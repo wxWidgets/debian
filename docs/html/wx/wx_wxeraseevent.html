@@ -1,0 +1,66 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxEraseEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxeraseevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxencodingconverter.html#wxencodingconverter"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxevent.html#wxevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxEraseEvent</H2>
+<P>
+An erase event is sent when a window's background needs to be repainted.<P>
+On some platforms, such as GTK+, this event is simulated (simply generated just before the
+paint event) and may cause flicker. It is therefore recommended that
+you set the text background colour explicitly in order to prevent flicker.
+The default background colour under GTK+ is grey.<P>
+To intercept this event, use the EVT_ERASE_BACKGROUND macro in an event table definition.<P>
+You must call wxEraseEvent::GetDC and use the returned device context if it is non-NULL.
+If it is NULL, create your own temporary wxClientDC object. <P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process an erase event, use this event handler macro to direct input to a member
+function that takes a wxEraseEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_ERASE_BACKGROUND(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_ERASE_BACKGROUND event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Use the device context returned by <A HREF="wx_wxeraseevent.html#wxeraseeventgetdc">GetDC</A> to draw on,
+don't create a wxPaintDC in the event handler.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxeraseeventctor">wxEraseEvent::wxEraseEvent</A><BR>
+<A HREF="#wxeraseeventgetdc">wxEraseEvent::GetDC</A><BR>
+<P>
+
+<HR>
+<A NAME="wxeraseeventctor"></A>
+<H3>wxEraseEvent::wxEraseEvent</H3>
+<P>
+<B></B> <B>wxEraseEvent</B>(<B>int </B><I>id = 0</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>* </B></B><I>dc = NULL</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxeraseeventgetdc"></A>
+<H3>wxEraseEvent::GetDC</H3>
+<P>
+<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>*</B> </B> <B>GetDC</B>() <B>const</B><P>
+Returns the device context associated with the erase event to draw on.<P>
+
+</FONT></BODY></HTML>

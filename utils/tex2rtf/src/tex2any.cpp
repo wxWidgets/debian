@@ -5,14 +5,10 @@
 // Modified by: Wlodzimierz ABX Skiba 2003/2004 Unicode support
 //              Ron Lee
 // Created:     01/01/99
-// RCS-ID:      $Id: tex2any.cpp,v 1.38.2.2 2006/01/23 15:09:03 ABX Exp $
+// RCS-ID:      $Id: tex2any.cpp 39975 2006-07-04 16:08:16Z AVV $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -318,8 +314,8 @@ TexMacroDef *MatchMacro(wxChar *buffer, int *pos, wxChar **env, bool *parseToBra
         int j = i;
         while ((isalpha(buffer[j]) || buffer[j] == '*') && ((j - i) < 39))
         {
-            macroBuf[j-i] = buffer[j];
-            j ++;
+              macroBuf[j-i] = buffer[j];
+              j ++;
         }
         macroBuf[j-i] = 0;
         def = (TexMacroDef *)MacroDefs.Get(macroBuf);
@@ -374,7 +370,7 @@ TexMacroDef *MatchMacro(wxChar *buffer, int *pos, wxChar **env, bool *parseToBra
         if ((def->no_args > 0) && ((buffer[i] == 32) || (buffer[i] == '=') || (isdigit(buffer[i]))))
         {
             if ((buffer[i] == 32) || (buffer[i] == '='))
-                i ++;
+            i ++;
 
             *parseToBrace = false;
         }
@@ -1261,57 +1257,57 @@ int ParseArg(TexChunk *thisArg, wxList& children, wxChar *buffer, int pos, wxCha
         }
         else
         {
-            wxChar *env = NULL;
-            bool tmpParseToBrace = true;
-            TexMacroDef *def = MatchMacro(buffer, &pos, &env, &tmpParseToBrace);
-            if (def)
+          wxChar *env = NULL;
+          bool tmpParseToBrace = true;
+          TexMacroDef *def = MatchMacro(buffer, &pos, &env, &tmpParseToBrace);
+          if (def)
+          {
+          CustomMacro *customMacro = FindCustomMacro(def->name);
+
+          TexChunk *chunk = new TexChunk(CHUNK_TYPE_MACRO, def);
+
+          chunk->no_args = def->no_args;
+//          chunk->name = copystring(def->name);
+          chunk->macroId = def->macroId;
+
+          if  (!customMacro)
+            children.Append((wxObject *)chunk);
+
+          // Eliminate newline after a \begin{} or a \\ if possible
+          if ((env || wxStrcmp(def->name, _T("\\")) == 0) && (buffer[pos] == 13))
+          {
+              pos ++;
+              if (buffer[pos] == 10)
+                pos ++;
+          }
+
+          pos = ParseMacroBody(def->name,
+                               chunk, chunk->no_args,
+                               buffer,
+                               pos,
+                               env,
+                               tmpParseToBrace,
+                               customMacroArgs);
+
+          // If custom macro, parse the body substituting the above found args.
+          if (customMacro)
+          {
+            if (customMacro->macroBody)
             {
-                CustomMacro *customMacro = FindCustomMacro(def->name);
-
-                TexChunk *chunk = new TexChunk(CHUNK_TYPE_MACRO, def);
-
-                chunk->no_args = def->no_args;
-//                chunk->name = copystring(def->name);
-                chunk->macroId = def->macroId;
-
-                if  (!customMacro)
-                    children.Append((wxObject *)chunk);
-
-                // Eliminate newline after a \begin{} or a \\ if possible
-                if ((env || wxStrcmp(def->name, _T("\\")) == 0) && (buffer[pos] == 13))
-                {
-                    pos ++;
-                    if (buffer[pos] == 10)
-                        pos ++;
-                }
-
-                pos = ParseMacroBody(def->name,
-                                     chunk, chunk->no_args,
-                                     buffer,
-                                     pos,
-                                     env,
-                                     tmpParseToBrace,
-                                     customMacroArgs);
-
-                // If custom macro, parse the body substituting the above found args.
-                if (customMacro)
-                {
-                    if (customMacro->macroBody)
-                    {
-                        wxChar macroBuf[300];
-//                        wxStrcpy(macroBuf, _T("{"));
-                        wxStrcpy(macroBuf, customMacro->macroBody);
-                        wxStrcat(macroBuf, _T("}"));
-                        ParseArg(thisArg, children, macroBuf, 0, NULL, true, chunk);
-                    }
-
-//                    delete chunk; // Might delete children
-                }
+              wxChar macroBuf[300];
+//              wxStrcpy(macroBuf, _T("{"));
+              wxStrcpy(macroBuf, customMacro->macroBody);
+              wxStrcat(macroBuf, _T("}"));
+              ParseArg(thisArg, children, macroBuf, 0, NULL, true, chunk);
             }
-            else
-            {
-                MacroError(buffer+pos);
-            }
+
+//            delete chunk; // Might delete children
+          }
+        }
+        else
+        {
+          MacroError(buffer+pos);
+        }
         }
         break;
       }
@@ -1959,24 +1955,24 @@ void TraverseFromChunk(TexChunk *chunk, wxNode *thisNode, bool childrenOnly)
 
 void TraverseDocument(void)
 {
-    TraverseFromChunk(TopLevel, NULL);
+  TraverseFromChunk(TopLevel, NULL);
 }
 
 void SetCurrentOutput(FILE *fd)
 {
-    CurrentOutput1 = fd;
-    CurrentOutput2 = NULL;
+  CurrentOutput1 = fd;
+  CurrentOutput2 = NULL;
 }
 
 void SetCurrentOutputs(FILE *fd1, FILE *fd2)
 {
-    CurrentOutput1 = fd1;
-    CurrentOutput2 = fd2;
+  CurrentOutput1 = fd1;
+  CurrentOutput2 = fd2;
 }
 
 void AddMacroDef(int the_id, const wxChar *name, int n, bool ignore, bool forbid)
 {
-    MacroDefs.Put(name, new TexMacroDef(the_id, name, n, ignore, forbid));
+  MacroDefs.Put(name, new TexMacroDef(the_id, name, n, ignore, forbid));
 }
 
 void TexInitialize(int bufSize)

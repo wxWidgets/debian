@@ -1,0 +1,285 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>String functions</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="stringfunctions"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_networkfunctions.html#networkfunctions"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_dialogfunctions.html#dialogfunctions"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>String functions</H2>
+<P>
+
+<A HREF="#copystring">::copystring</A><BR>
+<A HREF="#wxgettranslation">::wxGetTranslation</A><BR>
+<A HREF="#wxisempty">::wxIsEmpty</A><BR>
+<A HREF="#wxstrcmp">::wxStrcmp</A><BR>
+<A HREF="#wxstricmp">::wxStricmp</A><BR>
+<A HREF="#wxstringeq">::wxStringEq</A><BR>
+<A HREF="#wxstringmatch">::wxStringMatch</A><BR>
+<A HREF="#wxstringtokenize">::wxStringTokenize</A><BR>
+<A HREF="#wxstrlen">::wxStrlen</A><BR>
+<A HREF="#wxsnprintf">::wxSnprintf</A><BR>
+<A HREF="#wxt">wxT</A><BR>
+<A HREF="#wxtranslate">wxTRANSLATE</A><BR>
+<A HREF="#wxvsnprintf">::wxVsnprintf</A><BR>
+<A HREF="#underscore">_</A><BR>
+<A HREF="#wxplural">wxPLURAL</A><BR>
+<A HREF="#underscoret">_T</A><BR>
+<P>
+
+<HR>
+<A NAME="copystring"></A>
+<H3>::copystring</H3>
+<P>
+<B>char *</B> <B>copystring</B>(<B>const char *</B><I>s</I>)<P>
+Makes a copy of the string <I>s</I> using the C++ new operator, so it can be
+deleted with the <I>delete</I> operator.<P>
+This function is deprecated, use <A HREF="wx_wxstring.html#wxstring">wxString</A> class instead.<P>
+
+
+<HR>
+<A NAME="wxgettranslation"></A>
+<H3>::wxGetTranslation</H3>
+<P>
+<B>const wxChar *</B> <B>wxGetTranslation</B>(<B>const wxChar* </B><I>str</I>,
+  <B>const wxChar* </B><I>domain = NULL</I>)<P>
+<B>const wxChar *</B> <B>wxGetTranslation</B>(<B>const wxChar* </B><I>str</I>, <B>const wxChar* </B><I>strPlural</I>, <B>size_t </B><I>n</I>,
+  <B>const wxChar* </B><I>domain = NULL</I>)<P>
+This function returns the translation of string <I>str</I> in the current
+<A HREF="wx_wxlocale.html#wxlocale">locale</A>. If the string is not found in any of the loaded
+message catalogs (see <A HREF="wx_internationalization.html#internationalization">internationalization overview</A>), the
+original string is returned. In debug build, an error message is logged -- this
+should help to find the strings which were not yet translated.  If
+<I>domain</I> is specified then only that domain/catalog is searched
+for a matching string.  As this function
+is used very often, an alternative (and also common in Unix world) syntax is
+provided: the <A HREF="wx_stringfunctions.html#underscore">_()</A> macro is defined to do the same thing
+as wxGetTranslation.<P>
+The second form is used when retrieving translation of string that has
+different singular and plural form in English or different plural forms in some
+other language. It takes two extra arguments: as above, <I>str</I>
+parameter must contain the singular form of the string to be converted and
+is used as the key for the search in the catalog. The <I>strPlural</I> parameter
+is the plural form (in English). The parameter <I>n</I> is used to determine the
+plural form.  If no message catalog is found <I>str</I> is returned if 'n == 1',
+otherwise <I>strPlural</I>.<P>
+See <A HREF="http://www.gnu.org/manual/gettext/html_chapter/gettext_10.html#SEC150">GNU gettext manual</A>
+for additional information on plural forms handling. For a shorter alternative
+see the <A HREF="wx_stringfunctions.html#wxplural">wxPLURAL()</A> macro.<P>
+Both versions call <A HREF="wx_wxlocale.html#wxlocalegetstring">wxLocale::GetString</A>.<P>
+Note that this function is not suitable for literal strings in Unicode
+builds, since the literal strings must be enclosed into
+<A HREF="wx_stringfunctions.html#underscoret">_T()</A> or <A HREF="wx_stringfunctions.html#wxt">wxT</A> macro which makes them
+unrecognised by <TT>xgettext</TT>, and so they are not extracted to the message
+catalog. Instead, use the <A HREF="wx_stringfunctions.html#underscore">_()</A> and
+<A HREF="wx_stringfunctions.html#wxplural">wxPLURAL</A> macro for all literal strings.<P>
+
+
+<HR>
+<A NAME="wxisempty"></A>
+<H3>::wxIsEmpty</H3>
+<P>
+<B>bool</B> <B>wxIsEmpty</B>(<B>const char *</B><I> p</I>)<P>
+Returns <TT>true</TT> if the pointer is either <TT>NULL</TT> or points to an empty
+string, <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxstrcmp"></A>
+<H3>::wxStrcmp</H3>
+<P>
+<B>int</B> <B>wxStrcmp</B>(<B>const char *</B><I>p1</I>, <B>const char *</B><I>p2</I>)<P>
+Returns a negative value, 0, or positive value if <I>p1</I> is less than, equal
+to or greater than <I>p2</I>. The comparison is case-sensitive.<P>
+This function complements the standard C function <I>stricmp()</I> which performs
+case-insensitive comparison.<P>
+
+
+<HR>
+<A NAME="wxstricmp"></A>
+<H3>::wxStricmp</H3>
+<P>
+<B>int</B> <B>wxStricmp</B>(<B>const char *</B><I>p1</I>, <B>const char *</B><I>p2</I>)<P>
+Returns a negative value, 0, or positive value if <I>p1</I> is less than, equal
+to or greater than <I>p2</I>. The comparison is case-insensitive.<P>
+This function complements the standard C function <I>strcmp()</I> which performs
+case-sensitive comparison.<P>
+
+
+<HR>
+<A NAME="wxstringeq"></A>
+<H3>::wxStringEq</H3>
+<P>
+<B>bool</B> <B>wxStringEq</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>s1</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>s2</I>)<P>
+<B>NB:</B> This function is obsolete, use <A HREF="wx_wxstring.html#wxstring">wxString</A> instead.<P>
+A macro defined as:<P>
+<PRE>
+#define wxStringEq(s1, s2) (s1 && s2 && (strcmp(s1, s2) == 0))
+</PRE>
+
+
+<HR>
+<A NAME="wxstringmatch"></A>
+<H3>::wxStringMatch</H3>
+<P>
+<B>bool</B> <B>wxStringMatch</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>s1</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>s2</I>,<BR>
+
+  <B>bool</B><I> subString = true</I>, <B>bool</B><I> exact = false</I>)<P>
+<B>NB:</B> This function is obsolete, use <A HREF="wx_wxstring.html#wxstringfind">wxString::Find</A> instead.<P>
+Returns <TT>true</TT> if the substring <I>s1</I> is found within <I>s2</I>,
+ignoring case if <I>exact</I> is false. If <I>subString</I> is <TT>false</TT>,
+no substring matching is done.<P>
+
+
+<HR>
+<A NAME="wxstringtokenize"></A>
+<H3>::wxStringTokenize</H3>
+<P>
+<B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A></B> </B> <B>wxStringTokenize</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>,<BR>
+
+  <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>delims = wxDEFAULT_DELIMITERS</I>,<BR>
+
+  <B>wxStringTokenizerMode </B><I>mode = wxTOKEN_DEFAULT</I>)<P>
+This is a convenience function wrapping
+<A HREF="wx_wxstringtokenizer.html#wxstringtokenizer">wxStringTokenizer</A> which simply returns all tokens
+found in the given <I>str</I> in an array.<P>
+Please see
+<A HREF="wx_wxstringtokenizer.html#wxstringtokenizerwxstringtokenizer">wxStringTokenizer::wxStringTokenizer</A>
+for the description of the other parameters.<P>
+
+
+<HR>
+<A NAME="wxstrlen"></A>
+<H3>::wxStrlen</H3>
+<P>
+<B>size_t</B> <B>wxStrlen</B>(<B>const char *</B><I> p</I>)<P>
+This is a safe version of standard function <I>strlen()</I>: it does exactly the
+same thing (i.e. returns the length of the string) except that it returns 0 if
+<I>p</I> is the <TT>NULL</TT> pointer.<P>
+
+
+<HR>
+<A NAME="wxsnprintf"></A>
+<H3>::wxSnprintf</H3>
+<P>
+<B>int</B> <B>wxSnprintf</B>(<B>wxChar *</B><I>buf</I>, <B>size_t </B><I>len</I>, <B>const wxChar *</B><I>format</I>, <B></B><I>...</I>)<P>
+This function replaces the dangerous standard function <TT>sprintf()</TT> and is
+like <TT>snprintf()</TT> available on some platforms. The only difference with
+sprintf() is that an additional argument - buffer size - is taken and the
+buffer is never overflowed.<P>
+Returns the number of characters copied to the buffer or -1 if there is not
+enough space.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_stringfunctions.html#wxvsnprintf">wxVsnprintf</A>, <A HREF="wx_wxstring.html#wxstringprintf">wxString::Printf</A><P>
+
+
+<HR>
+<A NAME="wxt"></A>
+<H3>wxT</H3>
+<P>
+<B>wxChar</B> <B>wxT</B>(<B>char </B><I>ch</I>)<P>
+<B>const wxChar *</B> <B>wxT</B>(<B>const char *</B><I>s</I>)<P>
+wxT() is a macro which can be used with character and string literals (in other
+words, <TT>'x'</TT> or <TT>"foo"</TT>) to automatically convert them to Unicode in
+Unicode build configuration. Please see the
+<A HREF="wx_unicode.html#unicode">Unicode overview</A> for more information.<P>
+This macro is simply returns the value passed to it without changes in ASCII
+build. In fact, its definition is:
+<PRE>
+#ifdef UNICODE
+#define wxT(x) L ## x
+#else // !Unicode
+#define wxT(x) x
+#endif
+</PRE>
+
+
+<HR>
+<A NAME="wxtranslate"></A>
+<H3>wxTRANSLATE</H3>
+<P>
+<B>const wxChar *</B> <B>wxTRANSLATE</B>(<B>const char *</B><I>s</I>)<P>
+This macro doesn't do anything in the program code -- it simply expands to the
+value of its argument (except in Unicode build where it is equivalent to
+<A HREF="wx_stringfunctions.html#wxt">wxT</A> which makes it unnecessary to use both wxTRANSLATE and wxT
+with the same string which would be really unreadable).<P>
+However it does have a purpose and it is to mark the literal strings for the
+extraction into the message catalog created by <TT>xgettext</TT> program. Usually
+this is achieved using <A HREF="wx_stringfunctions.html#underscore">_()</A> but that macro not only marks
+the string for extraction but also expands into a
+<A HREF="wx_stringfunctions.html#wxgettranslation">wxGetTranslation</A> function call which means that it
+cannot be used in some situations, notably for static array
+initialization.<P>
+Here is an example which should make it more clear: suppose that you have a
+static array of strings containing the weekday names and which have to be
+translated (note that it is a bad example, really, as
+<A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A> already can be used to get the localized week
+day names already). If you write<P>
+<PRE>
+static const wxChar * const weekdays[] = { _("Mon"), ..., _("Sun") };
+...
+// use weekdays[n] as usual
+</PRE>
+the code wouldn't compile because the function calls are forbidden in the array
+initializer. So instead you should do<P>
+<PRE>
+static const wxChar * const weekdays[] = { wxTRANSLATE("Mon"), ..., wxTRANSLATE("Sun") };
+...
+// use wxGetTranslation(weekdays[n])
+</PRE>
+here.<P>
+Note that although the code <B>would</B> compile if you simply omit
+wxTRANSLATE() in the above, it wouldn't work as expected because there would be
+no translations for the weekday names in the program message catalog and
+wxGetTranslation wouldn't find them.<P>
+
+<HR>
+<A NAME="wxvsnprintf"></A>
+<H3>::wxVsnprintf</H3>
+<P>
+<B>int</B> <B>wxVsnprintf</B>(<B>wxChar *</B><I>buf</I>, <B>size_t </B><I>len</I>, <B>const wxChar *</B><I>format</I>, <B>va_list </B><I>argPtr</I>)<P>
+The same as <A HREF="wx_stringfunctions.html#wxsnprintf">wxSnprintf</A> but takes a <TT>va_list </TT>
+argument instead of arbitrary number of parameters.<P>
+Note that if <TT>wxUSE_PRINTF_POS_PARAMS</TT> is set to 1, then this function supports
+positional arguments (see <A HREF="wx_wxstring.html#wxstringprintf">wxString::Printf</A> for more information).
+However other functions of the same family (wxPrintf, wxSprintf, wxFprintf, wxVfprintf,
+wxVfprintf, wxVprintf, wxVsprintf) currently do not to support positional parameters
+even when <TT>wxUSE_PRINTF_POS_PARAMS</TT> is 1.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_stringfunctions.html#wxsnprintf">wxSnprintf</A>, <A HREF="wx_wxstring.html#wxstringprintfv">wxString::PrintfV</A><P>
+<P>
+
+<HR>
+<A NAME="underscore"></A>
+<H3>_</H3>
+<P>
+<B>const wxChar *</B> <B>_</B>(<B>const char *</B><I>s</I>)<P>
+This macro expands into a call to <A HREF="wx_stringfunctions.html#wxgettranslation">wxGetTranslation</A>
+function, so it marks the message for the extraction by <TT>xgettext</TT> just as
+<A HREF="wx_stringfunctions.html#wxtranslate">wxTRANSLATE</A> does, but also returns the translation of
+the string for the current locale during execution.<P>
+Don't confuse this macro with <A HREF="wx_stringfunctions.html#underscoret">_T()</A>!<P>
+
+
+<HR>
+<A NAME="wxplural"></A>
+<H3>wxPLURAL</H3>
+<P>
+<B>const wxChar *</B> <B>wxPLURAL</B>(<B>const char *</B><I>sing</I>, <B>const char *</B><I>plur</I>, <B>size_t</B><I>n</I>)<P>
+This macro is identical to <A HREF="wx_stringfunctions.html#underscore">_()</A> but for the plural variant
+of <A HREF="wx_stringfunctions.html#wxgettranslation">wxGetTranslation</A>.<P>
+
+
+<HR>
+<A NAME="underscoret"></A>
+<H3>_T</H3>
+<P>
+<B>wxChar</B> <B>_T</B>(<B>char </B><I>ch</I>)<P>
+<B>const wxChar *</B> <B>_T</B>(<B>const wxChar </B><I>ch</I>)<P>
+This macro is exactly the same as <A HREF="wx_stringfunctions.html#wxt">wxT</A> and is defined in
+wxWidgets simply because it may be more intuitive for Windows programmers as
+the standard Win32 headers also define it (as well as yet another name for the
+same macro which is <TT>_TEXT()</TT>).<P>
+Don't confuse this macro with <A HREF="wx_stringfunctions.html#underscore">_()</A>!<P>
+<P>
+
+</FONT></BODY></HTML>

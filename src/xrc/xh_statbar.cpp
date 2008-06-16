@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xh_statbar.cpp
+// Name:        src/xrc/xh_statbar.cpp
 // Purpose:     XRC resource for wxStatusBar
 // Author:      Brian Ravnsgaard Riis
 // Created:     2004/01/21
-// RCS-ID:      $Id: xh_statbar.cpp,v 1.11 2005/01/07 21:33:14 VS Exp $
+// RCS-ID:      $Id: xh_statbar.cpp 48617 2007-09-09 21:32:44Z VZ $
 // Copyright:   (c) 2004 Brian Ravnsgaard Riis
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_statbar.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -21,17 +17,19 @@
 
 #if wxUSE_XRC && wxUSE_STATUSBAR
 
-#include "wx/frame.h"
-#include "wx/string.h"
-#include "wx/log.h"
-
 #include "wx/xrc/xh_statbar.h"
-#include "wx/statusbr.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/string.h"
+    #include "wx/log.h"
+    #include "wx/frame.h"
+    #include "wx/statusbr.h"
+#endif
 
 IMPLEMENT_DYNAMIC_CLASS(wxStatusBarXmlHandler, wxXmlResourceHandler)
 
-wxStatusBarXmlHandler::wxStatusBarXmlHandler() :
-        wxXmlResourceHandler()
+wxStatusBarXmlHandler::wxStatusBarXmlHandler()
+                      :wxXmlResourceHandler()
 {
     XRC_ADD_STYLE(wxST_SIZEGRIP);
     AddWindowStyles();
@@ -66,7 +64,7 @@ wxObject *wxStatusBarXmlHandler::DoCreateResource()
     else
         statbar->SetFieldsCount(fields);
 
-    if (!styles.IsEmpty())
+    if (!styles.empty())
     {
         int *style = new int[fields];
         for (int i = 0; i < fields; ++i)
@@ -80,15 +78,17 @@ wxObject *wxStatusBarXmlHandler::DoCreateResource()
                 style[i] = wxSB_FLAT;
             else if (first == wxT("wxSB_RAISED"))
                 style[i] = wxSB_RAISED;
-
-            if (!first.IsEmpty())
+            else if (!first.empty())
                 wxLogError(wxT("Error in resource, unknown statusbar field style: ") + first);
+
             if(styles.Find(wxT(',')))
                 styles.Remove(0, styles.Find(wxT(',')) + 1);
         }
         statbar->SetStatusStyles(fields, style);
         delete [] style;
     }
+
+    CreateChildren(statbar);
 
     if (m_parentAsWindow)
     {
@@ -106,4 +106,3 @@ bool wxStatusBarXmlHandler::CanHandle(wxXmlNode *node)
 }
 
 #endif // wxUSE_XRC && wxUSE_STATUSBAR
-

@@ -1,0 +1,190 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxBitmapHandler</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxbitmaphandler"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxbitmapdataobject.html#wxbitmapdataobject"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxboxsizer.html#wxboxsizer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxBitmapHandler</H2>
+<P>
+<A HREF="wx_wxbitmapoverview.html#wxbitmapoverview">Overview</A><P>
+This is the base class for implementing bitmap file loading/saving, and bitmap creation from data.
+It is used within wxBitmap and is not normally seen by the application.<P>
+If you wish to extend the capabilities of wxBitmap, derive a class from wxBitmapHandler
+and add the handler using <A HREF="wx_wxbitmap.html#wxbitmapaddhandler">wxBitmap::AddHandler</A> in your
+application initialisation.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/bitmap.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>, <A HREF="wx_wxicon.html#wxicon">wxIcon</A>, <A HREF="wx_wxcursor.html#wxcursor">wxCursor</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxbitmaphandlerctor">wxBitmapHandler::wxBitmapHandler</A><BR>
+<A HREF="#wxbitmaphandlerdtor">wxBitmapHandler::~wxBitmapHandler</A><BR>
+<A HREF="#wxbitmaphandlercreate">wxBitmapHandler::Create</A><BR>
+<A HREF="#wxbitmaphandlergetname">wxBitmapHandler::GetName</A><BR>
+<A HREF="#wxbitmaphandlergetextension">wxBitmapHandler::GetExtension</A><BR>
+<A HREF="#wxbitmaphandlergettype">wxBitmapHandler::GetType</A><BR>
+<A HREF="#wxbitmaphandlerloadfile">wxBitmapHandler::LoadFile</A><BR>
+<A HREF="#wxbitmaphandlersavefile">wxBitmapHandler::SaveFile</A><BR>
+<A HREF="#wxbitmaphandlersetname">wxBitmapHandler::SetName</A><BR>
+<A HREF="#wxbitmaphandlersetextension">wxBitmapHandler::SetExtension</A><BR>
+<A HREF="#wxbitmaphandlersettype">wxBitmapHandler::SetType</A><BR>
+<P>
+
+<HR>
+<A NAME="wxbitmaphandlerctor"></A>
+<H3>wxBitmapHandler::wxBitmapHandler</H3>
+<P>
+<B></B> <B>wxBitmapHandler</B>()<P>
+Default constructor. In your own default constructor, initialise the members
+m_name, m_extension and m_type.<P>
+
+<HR>
+<A NAME="wxbitmaphandlerdtor"></A>
+<H3>wxBitmapHandler::~wxBitmapHandler</H3>
+<P>
+<B></B> <B>~wxBitmapHandler</B>()<P>
+Destroys the wxBitmapHandler object.<P>
+
+<HR>
+<A NAME="wxbitmaphandlercreate"></A>
+<H3>wxBitmapHandler::Create</H3>
+<P>
+<B>virtual bool</B> <B>Create</B>(<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>* </B></B><I>bitmap</I>, <B>const void*</B><I> data</I>, <B>int</B><I> type</I>, <B>int</B><I> width</I>, <B>int</B><I> height</I>, <B>int</B><I> depth = -1</I>)<P>
+Creates a bitmap from the given data, which can be of arbitrary type. The wxBitmap object <I>bitmap</I> is
+manipulated by this function.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bitmap</I><UL><UL>
+The wxBitmap object.</UL></UL>
+<P>
+<I>width</I><UL><UL>
+The width of the bitmap in pixels.</UL></UL>
+<P>
+<I>height</I><UL><UL>
+The height of the bitmap in pixels.</UL></UL>
+<P>
+<I>depth</I><UL><UL>
+The depth of the bitmap in pixels. If this is -1, the screen depth is used.</UL></UL>
+<P>
+<I>data</I><UL><UL>
+Data whose type depends on the value of <I>type</I>.</UL></UL>
+<P>
+<I>type</I><UL><UL>
+A bitmap type identifier - see <A HREF="wx_wxbitmap.html#wxbitmapctor">wxBitmapHandler::wxBitmapHandler</A> for a list
+of possible values.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the call succeeded, false otherwise (the default).<P>
+
+<HR>
+<A NAME="wxbitmaphandlergetname"></A>
+<H3>wxBitmapHandler::GetName</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B> GetName</B>() <B>const</B><P>
+Gets the name of this handler.<P>
+
+<HR>
+<A NAME="wxbitmaphandlergetextension"></A>
+<H3>wxBitmapHandler::GetExtension</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B> GetExtension</B>() <B>const</B><P>
+Gets the file extension associated with this handler.<P>
+
+<HR>
+<A NAME="wxbitmaphandlergettype"></A>
+<H3>wxBitmapHandler::GetType</H3>
+<P>
+<B>long</B> <B>GetType</B>() <B>const</B><P>
+Gets the bitmap type associated with this handler.<P>
+
+<HR>
+<A NAME="wxbitmaphandlerloadfile"></A>
+<H3>wxBitmapHandler::LoadFile</H3>
+<P>
+<B>bool</B> <B>LoadFile</B>(<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>* </B></B><I>bitmap</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name</I>, <B>long</B><I> type</I>)<P>
+Loads a bitmap from a file or resource, putting the resulting data into <I>bitmap</I>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bitmap</I><UL><UL>
+The bitmap object which is to be affected by this operation.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Either a filename or a Windows resource name.
+The meaning of <I>name</I> is determined by the <I>type</I> parameter.</UL></UL>
+<P>
+<I>type</I><UL><UL>
+See <A HREF="wx_wxbitmap.html#wxbitmapctor">wxBitmap::wxBitmap</A> for values this can take.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the operation succeeded, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmap.html#wxbitmaploadfile">wxBitmap::LoadFile</A><BR>
+
+<A HREF="wx_wxbitmap.html#wxbitmapsavefile">wxBitmap::SaveFile</A><BR>
+
+<A HREF="wx_wxbitmaphandler.html#wxbitmaphandlersavefile">wxBitmapHandler::SaveFile</A><P>
+
+<HR>
+<A NAME="wxbitmaphandlersavefile"></A>
+<H3>wxBitmapHandler::SaveFile</H3>
+<P>
+<B>bool</B> <B>SaveFile</B>(<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>* </B></B><I>bitmap</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>int</B><I> type</I>, <B><A HREF="wx_wxpalette.html#wxpalette">wxPalette</A>* </B></B><I>palette = NULL</I>)<P>
+Saves a bitmap in the named file.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>bitmap</I><UL><UL>
+The bitmap object which is to be affected by this operation.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+A filename. The meaning of <I>name</I> is determined by the <I>type</I> parameter.</UL></UL>
+<P>
+<I>type</I><UL><UL>
+See <A HREF="wx_wxbitmap.html#wxbitmapctor">wxBitmap::wxBitmap</A> for values this can take.</UL></UL>
+<P>
+<I>palette</I><UL><UL>
+An optional palette used for saving the bitmap.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the operation succeeded, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmap.html#wxbitmaploadfile">wxBitmap::LoadFile</A><BR>
+
+<A HREF="wx_wxbitmap.html#wxbitmapsavefile">wxBitmap::SaveFile</A><BR>
+
+<A HREF="wx_wxbitmaphandler.html#wxbitmaphandlerloadfile">wxBitmapHandler::LoadFile</A><P>
+
+<HR>
+<A NAME="wxbitmaphandlersetname"></A>
+<H3>wxBitmapHandler::SetName</H3>
+<P>
+<B>void</B> <B>SetName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the handler name.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>name</I><UL><UL>
+Handler name.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxbitmaphandlersetextension"></A>
+<H3>wxBitmapHandler::SetExtension</H3>
+<P>
+<B>void</B> <B>SetExtension</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>extension</I>)<P>
+Sets the handler extension.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>extension</I><UL><UL>
+Handler extension.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxbitmaphandlersettype"></A>
+<H3>wxBitmapHandler::SetType</H3>
+<P>
+<B>void</B> <B>SetType</B>(<B>long </B><I>type</I>)<P>
+Sets the handler type.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>name</I><UL><UL>
+Handler type.</UL></UL>
+<P>
+<P>
+
+</FONT></BODY></HTML>

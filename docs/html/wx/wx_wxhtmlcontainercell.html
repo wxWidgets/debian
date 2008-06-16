@@ -1,0 +1,419 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlContainerCell</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmlcontainercell"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmlcolourcell.html#wxhtmlcolourcell"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmldcrenderer.html#wxhtmldcrenderer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlContainerCell</H2>
+<P>
+The wxHtmlContainerCell class is an implementation of a cell that may
+contain more cells in it. It is heavily used in the wxHTML layout algorithm.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxhtmlcell.html#wxhtmlcell">wxHtmlCell</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/htmlcell.h&gt;<P>
+<B><FONT COLOR="#FF0000">See Also</FONT></B><P>
+<A HREF="wx_wxhtml.html#cells">Cells Overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmlcontainercellwxhtmlcontainercell">wxHtmlContainerCell::wxHtmlContainerCell</A><BR>
+<A HREF="#wxhtmlcontainercellgetalignhor">wxHtmlContainerCell::GetAlignHor</A><BR>
+<A HREF="#wxhtmlcontainercellgetalignver">wxHtmlContainerCell::GetAlignVer</A><BR>
+<A HREF="#wxhtmlcontainercellgetbackgroundcolour">wxHtmlContainerCell::GetBackgroundColour</A><BR>
+<A HREF="#wxhtmlcontainercellgetindent">wxHtmlContainerCell::GetIndent</A><BR>
+<A HREF="#wxhtmlcontainercellgetindentunits">wxHtmlContainerCell::GetIndentUnits</A><BR>
+<A HREF="#wxhtmlcontainercellinsertcell">wxHtmlContainerCell::InsertCell</A><BR>
+<A HREF="#wxhtmlcontainercellsetalign">wxHtmlContainerCell::SetAlign</A><BR>
+<A HREF="#wxhtmlcontainercellsetalignhor">wxHtmlContainerCell::SetAlignHor</A><BR>
+<A HREF="#wxhtmlcontainercellsetalignver">wxHtmlContainerCell::SetAlignVer</A><BR>
+<A HREF="#wxhtmlcontainercellsetbackgroundcolour">wxHtmlContainerCell::SetBackgroundColour</A><BR>
+<A HREF="#wxhtmlcontainercellsetborder">wxHtmlContainerCell::SetBorder</A><BR>
+<A HREF="#wxhtmlcontainercellsetindent">wxHtmlContainerCell::SetIndent</A><BR>
+<A HREF="#wxhtmlcontainercellsetminheight">wxHtmlContainerCell::SetMinHeight</A><BR>
+<A HREF="#wxhtmlcontainercellsetwidthfloat">wxHtmlContainerCell::SetWidthFloat</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellwxhtmlcontainercell"></A>
+<H3>wxHtmlContainerCell::wxHtmlContainerCell</H3>
+<P>
+<B></B> <B>wxHtmlContainerCell</B>(<B><A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercell">wxHtmlContainerCell</A> </B></B><I>*parent</I>)<P>
+Constructor. <I>parent</I> is pointer to parent container or NULL.<P>
+
+
+<HR>
+<A NAME="wxhtmlcontainercellgetalignhor"></A>
+<H3>wxHtmlContainerCell::GetAlignHor</H3>
+<P>
+<B>int</B> <B>GetAlignHor</B>() <B>const</B><P>
+Returns container's horizontal alignment.<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellgetalignver"></A>
+<H3>wxHtmlContainerCell::GetAlignVer</H3>
+<P>
+<B>int</B> <B>GetAlignVer</B>() <B>const</B><P>
+Returns container's vertical alignment.<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellgetbackgroundcolour"></A>
+<H3>wxHtmlContainerCell::GetBackgroundColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetBackgroundColour</B>()<P>
+Returns the background colour of the container or <TT>wxNullColour</TT> if no background
+colour is set.<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellgetindent"></A>
+<H3>wxHtmlContainerCell::GetIndent</H3>
+<P>
+<B>int</B> <B>GetIndent</B>(<B>int </B><I>ind</I>) <B>const</B><P>
+Returns the indentation. <I>ind</I> is one of the <B>wxHTML_INDENT_*</B> constants.<P>
+<B>Note:</B> You must call <A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercellgetindentunits">GetIndentUnits</A> 
+with same <I>ind</I> parameter in order to correctly interpret the returned integer value.
+It is NOT always in pixels!<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellgetindentunits"></A>
+<H3>wxHtmlContainerCell::GetIndentUnits</H3>
+<P>
+<B>int</B> <B>GetIndentUnits</B>(<B>int </B><I>ind</I>) <B>const</B><P>
+Returns the units of indentation for <I>ind</I> where <I>ind</I> is one
+of the <B>wxHTML_INDENT_*</B> constants.<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellinsertcell"></A>
+<H3>wxHtmlContainerCell::InsertCell</H3>
+<P>
+<B>void</B> <B>InsertCell</B>(<B><A HREF="wx_wxhtmlcell.html#wxhtmlcell">wxHtmlCell</A> </B></B><I>*cell</I>)<P>
+Inserts new cell into the container.<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellsetalign"></A>
+<H3>wxHtmlContainerCell::SetAlign</H3>
+<P>
+<B>void</B> <B>SetAlign</B>(<B>const <A HREF="wx_wxhtmltag.html#wxhtmltag">wxHtmlTag</A>& </B></B><I>tag</I>)<P>
+Sets the container's alignment (both horizontal and vertical) according to
+the values stored in <I>tag</I>. (Tags <TT>ALIGN</TT> parameter is extracted.) In fact
+it is only a front-end to <A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercellsetalignhor">SetAlignHor</A> 
+and <A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercellsetalignver">SetAlignVer</A>.<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellsetalignhor"></A>
+<H3>wxHtmlContainerCell::SetAlignHor</H3>
+<P>
+<B>void</B> <B>SetAlignHor</B>(<B>int </B><I>al</I>)<P>
+Sets the container's <I>horizontal alignment</I>. During <A HREF="wx_wxhtmlcell.html#wxhtmlcelllayout">Layout</A> 
+each line is aligned according to <I>al</I> value.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>al</I><UL><UL>
+new horizontal alignment. May be one of these values:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_ALIGN_LEFT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+lines are left-aligned (default)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_ALIGN_JUSTIFY</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+lines are justified
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_ALIGN_CENTER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+lines are centered
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_ALIGN_RIGHT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+lines are right-aligned
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellsetalignver"></A>
+<H3>wxHtmlContainerCell::SetAlignVer</H3>
+<P>
+<B>void</B> <B>SetAlignVer</B>(<B>int </B><I>al</I>)<P>
+Sets the container's <I>vertical alignment</I>. This is per-line alignment!<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>al</I><UL><UL>
+new vertical alignment. May be one of these values:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_ALIGN_BOTTOM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+cells are over the line (default)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_ALIGN_CENTER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+cells are centered on line
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_ALIGN_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+cells are under the line
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<img src="alignv.gif">
+</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellsetbackgroundcolour"></A>
+<H3>wxHtmlContainerCell::SetBackgroundColour</H3>
+<P>
+<B>void</B> <B>SetBackgroundColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>clr</I>)<P>
+Sets the background colour for this container.<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellsetborder"></A>
+<H3>wxHtmlContainerCell::SetBorder</H3>
+<P>
+<B>void</B> <B>SetBorder</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>clr1</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>clr2</I>)<P>
+Sets the border (frame) colours. A border is a rectangle around the container.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>clr1</I><UL><UL>
+Colour of top and left lines</UL></UL>
+<P>
+<I>clr2</I><UL><UL>
+Colour of bottom and right lines</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellsetindent"></A>
+<H3>wxHtmlContainerCell::SetIndent</H3>
+<P>
+<B>void</B> <B>SetIndent</B>(<B>int </B><I>i</I>, <B>int </B><I>what</I>, <B>int </B><I>units = wxHTML_UNITS_PIXELS</I>)<P>
+Sets the indentation (free space between borders of container and subcells).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>i</I><UL><UL>
+Indentation value.</UL></UL>
+<P>
+<I>what</I><UL><UL>
+Determines which of the four borders we're setting. It is OR
+combination of following constants:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_INDENT_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+top border
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_INDENT_BOTTOM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+bottom
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_INDENT_LEFT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+left
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_INDENT_RIGHT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+right
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_INDENT_HORIZONTAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+left and right
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_INDENT_VERTICAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+top and bottom
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_INDENT_ALL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+all 4 borders
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<img src="indent.gif">
+</UL></UL>
+<P>
+<I>units</I><UL><UL>
+Units of <I>i</I>. This parameter affects interpretation of <I></I> value.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_UNITS_PIXELS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<I>i</I> is number of pixels
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_UNITS_PERCENT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<I>i</I> is interpreted as percents of width
+of parent container
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellsetminheight"></A>
+<H3>wxHtmlContainerCell::SetMinHeight</H3>
+<P>
+<B>void</B> <B>SetMinHeight</B>(<B>int </B><I>h</I>, <B>int </B><I>align = wxHTML_ALIGN_TOP</I>)<P>
+Sets minimal height of the container.<P>
+When container's <A HREF="wx_wxhtmlcell.html#wxhtmlcelllayout">Layout</A> is called, m_Height
+is set depending on layout of subcells to the height of area covered
+by layed-out subcells. Calling this method guarantees you that the height
+of container is never smaller than <I>h</I> - even if the subcells cover
+much smaller area.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>h</I><UL><UL>
+The minimal height.</UL></UL>
+<P>
+<I>align</I><UL><UL>
+If height of the container is lower than the minimum height, empty space must be inserted
+somewhere in order to ensure minimal height. This parameter is one of <B>wxHTML_ALIGN_TOP,
+wxHTML_ALIGN_BOTTOM, wxHTML_ALIGN_CENTER</B>. It refers to the <I>contents</I>, not to the
+empty place.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxhtmlcontainercellsetwidthfloat"></A>
+<H3>wxHtmlContainerCell::SetWidthFloat</H3>
+<P>
+<B>void</B> <B>SetWidthFloat</B>(<B>int </B><I>w</I>, <B>int </B><I>units</I>)<P>
+<B>void</B> <B>SetWidthFloat</B>(<B>const <A HREF="wx_wxhtmltag.html#wxhtmltag">wxHtmlTag</A>& </B></B><I>tag</I>, <B>double </B><I>pixel_scale = 1.0</I>)<P>
+Sets floating width adjustment.<P>
+The normal behaviour of container is that its width is the same as the width of
+parent container (and thus you can have only one sub-container per line).
+You can change this by setting FWA.<P>
+<I>pixel_scale</I> is number of real pixels that equals to 1 HTML pixel.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>w</I><UL><UL>
+Width of the container. If the value is negative it means
+complement to full width of parent container (e.g.
+<TT>SetWidthFloat(-50, wxHTML_UNITS_PIXELS)</TT> sets the width
+of container to parent's width minus 50 pixels. This is useful when
+creating tables - you can call SetWidthFloat(50) and SetWidthFloat(-50))</UL></UL>
+<P>
+<I>units</I><UL><UL>
+Units of <I>w</I> This parameter affects the interpretation of <I></I> value.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_UNITS_PIXELS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<I>w</I> is number of pixels
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_UNITS_PERCENT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<I>w</I> is interpreted as percents of width
+of parent container
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+<I>tag</I><UL><UL>
+In the second version of method, <I>w</I> and <I>units</I>
+info is extracted from tag's <TT>WIDTH</TT> parameter.</UL></UL>
+<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The second form of this method is named
+SetWidthFloatFromTag in wxPython.<P>
+<P>
+<P>
+<P>
+
+
+</FONT></BODY></HTML>

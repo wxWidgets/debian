@@ -1,0 +1,147 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDirDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdirdialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdir.html#wxdir"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdirpickerctrl.html#wxdirpickerctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDirDialog</H2>
+<P>
+This class represents the directory chooser dialog.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dirdlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxDD_DEFAULT_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Equivalent to a combination of wxDEFAULT_DIALOG_STYLE and wxRESIZE_BORDER (the last one is not used under wxWinCE).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxDD_DIR_MUST_EXIST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The dialog will allow the user to choose only an existing folder. When this style is not given, a "Create new directory" button is added to the dialog (on Windows) or some other way is provided to the user to type the name of a new folder.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxDD_CHANGE_DIR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Change the current working directory to the directory chosen by the user.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B>NB:</B> on Windows the new directory button is only available with recent versions of the common dialogs.<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">Generic window styles</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_commondialogsoverview.html#wxdirdialogoverview">wxDirDialog overview</A>, <A HREF="wx_wxfiledialog.html#wxfiledialog">wxFileDialog</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdirdialogctor">wxDirDialog::wxDirDialog</A><BR>
+<A HREF="#wxdirdialogdtor">wxDirDialog::~wxDirDialog</A><BR>
+<A HREF="#wxdirdialoggetpath">wxDirDialog::GetPath</A><BR>
+<A HREF="#wxdirdialoggetmessage">wxDirDialog::GetMessage</A><BR>
+<A HREF="#wxdirdialogsetmessage">wxDirDialog::SetMessage</A><BR>
+<A HREF="#wxdirdialogsetpath">wxDirDialog::SetPath</A><BR>
+<A HREF="#wxdirdialogshowmodal">wxDirDialog::ShowModal</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdirdialogctor"></A>
+<H3>wxDirDialog::wxDirDialog</H3>
+<P>
+<B></B> <B>wxDirDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message = "Choose a directory"</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>defaultPath = ""</I>, <B>long </B><I>style = wxDD_DEFAULT_STYLE</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "wxDirCtrl"</I>)<P>
+Constructor. Use <A HREF="wx_wxdirdialog.html#wxdirdialogshowmodal">wxDirDialog::ShowModal</A> to show
+the dialog.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window.</UL></UL>
+<P>
+<I>message</I><UL><UL>
+Message to show on the dialog.</UL></UL>
+<P>
+<I>defaultPath</I><UL><UL>
+The default path, or the empty string.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The dialog style. See <A HREF="wx_wxdirdialog.html#wxdirdialog">wxDirDialog</A></UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Dialog position. Ignored under Windows.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Dialog size. Ignored under Windows.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+The dialog name, not used.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxdirdialogdtor"></A>
+<H3>wxDirDialog::~wxDirDialog</H3>
+<P>
+<B></B> <B>~wxDirDialog</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdirdialoggetpath"></A>
+<H3>wxDirDialog::GetPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPath</B>() <B>const</B><P>
+Returns the default or user-selected path.<P>
+
+<HR>
+<A NAME="wxdirdialoggetmessage"></A>
+<H3>wxDirDialog::GetMessage</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetMessage</B>() <B>const</B><P>
+Returns the message that will be displayed on the dialog.<P>
+
+<HR>
+<A NAME="wxdirdialogsetmessage"></A>
+<H3>wxDirDialog::SetMessage</H3>
+<P>
+<B>void</B> <B>SetMessage</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>)<P>
+Sets the message that will be displayed on the dialog.<P>
+
+<HR>
+<A NAME="wxdirdialogsetpath"></A>
+<H3>wxDirDialog::SetPath</H3>
+<P>
+<B>void</B> <B>SetPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>)<P>
+Sets the default path.<P>
+
+<HR>
+<A NAME="wxdirdialogshowmodal"></A>
+<H3>wxDirDialog::ShowModal</H3>
+<P>
+<B>int</B> <B>ShowModal</B>()<P>
+Shows the dialog, returning wxID_OK if the user pressed OK, and wxID_CANCEL
+otherwise.<P>
+
+
+</FONT></BODY></HTML>

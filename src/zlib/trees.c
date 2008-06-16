@@ -29,7 +29,7 @@
  *          Addison-Wesley, 1983. ISBN 0-201-06672-6.
  */
 
-/* @(#) $Id: trees.c,v 1.9 2005/09/10 21:15:16 MW Exp $ */
+/* @(#) $Id: trees.c 35458 2005-09-10 21:15:17Z MW $ */
 
 /* #define GEN_TREES_H */
 

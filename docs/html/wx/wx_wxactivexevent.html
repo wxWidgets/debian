@@ -1,0 +1,87 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxActiveXEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxactivexevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxactivexcontainer.html#wxactivexcontainer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxanimation.html#wxanimation"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxActiveXEvent</H2>
+<P>
+An event class for handling activex events passed from
+<A HREF="wx_wxactivexcontainer.html#wxactivexcontainer">wxActiveXContainer</A>. ActiveX events are basically
+a function call with the parameters passed through an array of wxVariants along
+with a return value that is a wxVariant itself. What type the parameters or
+return value are depends on the context (i.e. what the .idl specifies).<P>
+Note that unlike the third party wxActiveX function names are not supported.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/msw/ole/activex.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_ACTIVEX(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+Sent when the activex control hosted by <A HREF="wx_wxactivexcontainer.html#wxactivexcontainer">wxActiveXContainer</A>
+recieves an activex event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxactivexeventparamcount">wxActiveXEvent::ParamCount</A><BR>
+<A HREF="#wxactivexeventparamtype">wxActiveXEvent::ParamType</A><BR>
+<A HREF="#wxactivexeventparamname">wxActiveXEvent::ParamName</A><BR>
+<A HREF="#wxactivexeventoparray">wxActiveXEvent::operator[]</A><BR>
+<A HREF="#wxactivexeventgetdispatchid">wxActiveXEvent::GetDispatchId</A><BR>
+<P>
+
+<HR>
+<A NAME="wxactivexeventparamcount"></A>
+<H3>wxActiveXEvent::ParamCount</H3>
+<P>
+<B>size_t</B> <B>ParamCount</B>() <B>const</B><P>
+Obtains the number of parameters passed through the activex event.<P>
+
+
+<HR>
+<A NAME="wxactivexeventparamtype"></A>
+<H3>wxActiveXEvent::ParamType</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>ParamType</B>(<B>size_t </B><I>idx</I>) <B>const</B><P>
+Obtains the param type of the param number idx specifies as a string.<P>
+
+
+<HR>
+<A NAME="wxactivexeventparamname"></A>
+<H3>wxActiveXEvent::ParamName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>ParamName</B>(<B>size_t </B><I>idx</I>) <B>const</B><P>
+Obtains the param name of the param number idx specifies as a string.<P>
+
+
+<HR>
+<A NAME="wxactivexeventoparray"></A>
+<H3>wxActiveXEvent::operator[]</H3>
+<P>
+<B><A HREF="wx_wxvariant.html#wxvariant">wxVariant</A></B> </B> <B>operator[]</B>(<B>size_t </B><I>idx</I>)<P>
+Obtains the actual parameter value specified by idx.<P>
+
+
+<HR>
+<A NAME="wxactivexeventgetdispatchid"></A>
+<H3>wxActiveXEvent::GetDispatchId</H3>
+<P>
+<B>DISPID</B> <B>GetDispatchId</B>(<B>int </B><I>idx</I>) <B>const</B><P>
+Returns the dispatch id of this activex event. This is the numeric value from
+the .idl file specified by the id().<P>
+
+</FONT></BODY></HTML>

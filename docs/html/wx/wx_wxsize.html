@@ -1,0 +1,214 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSize</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsize"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsingleinstancechecker.html#wxsingleinstancechecker"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsizeevent.html#wxsizeevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSize</H2>
+<P>
+A <B>wxSize</B> is a useful data structure for graphics operations.
+It simply contains integer <I>width</I> and <I>height</I> members.<P>
+wxSize is used throughout wxWidgets as well as wxPoint which, although almost
+equivalent to wxSize, has a different meaning: wxPoint represents a position
+while wxSize - the size.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> wxPython defines aliases for the <TT>x</TT> and <TT>y</TT> members
+named <TT>width</TT> and <TT>height</TT> since it makes much more sense for
+sizes.
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/gdicmn.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>, <A HREF="wx_wxrealpoint.html#wxrealpoint">wxRealPoint</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxsizector">wxSize::wxSize</A><BR>
+<A HREF="#wxsizedecby">wxSize::DecBy</A><BR>
+<A HREF="#wxsizedecto">wxSize::DecTo</A><BR>
+<A HREF="#wxsizeisfullyspecified">wxSize::IsFullySpecified</A><BR>
+<A HREF="#wxsizegetwidth">wxSize::GetWidth</A><BR>
+<A HREF="#wxsizegetheight">wxSize::GetHeight</A><BR>
+<A HREF="#wxsizeincby">wxSize::IncBy</A><BR>
+<A HREF="#wxsizeincto">wxSize::IncTo</A><BR>
+<A HREF="#wxsizescale">wxSize::Scale</A><BR>
+<A HREF="#wxsizeset">wxSize::Set</A><BR>
+<A HREF="#wxsizesetdefaults">wxSize::SetDefaults</A><BR>
+<A HREF="#wxsizesetheight">wxSize::SetHeight</A><BR>
+<A HREF="#wxsizesetwidth">wxSize::SetWidth</A><BR>
+<A HREF="#wxsizeoperators">Operators</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsizector"></A>
+<H3>wxSize::wxSize</H3>
+<P>
+<B></B> <B>wxSize</B>()<P>
+<B></B> <B>wxSize</B>(<B>int</B><I> width</I>, <B>int</B><I> height</I>)<P>
+Creates a size object.<P>
+<P>
+
+<HR>
+<A NAME="wxsizedecby"></A>
+<H3>wxSize::DecBy</H3>
+<P>
+<B>void</B> <B>DecBy</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+<B>void</B> <B>DecBy</B>(<B>int </B><I>dx</I>, <B>int </B><I>dy</I>)<P>
+<B>void</B> <B>DecBy</B>(<B>int </B><I>d</I>)<P>
+Decreases the size in x- and y- directions<P>
+<OL>
+
+    <LI> By <I>size.x</I> and <I>size.y</I> for the first overload
+    <LI> By <I>dx</I> and <I>dy</I> for the second one
+    <LI> By <I>d</I> and <I>d</I> for the third one
+</OL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsize.html#wxsizeincby">IncBy</A><P>
+
+
+<HR>
+<A NAME="wxsizedecto"></A>
+<H3>wxSize::DecTo</H3>
+<P>
+<B>void</B> <B>DecTo</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+Decrements this object so that both of its dimensions are not greater than the
+corresponding dimensions of the <I>size</I>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsize.html#wxsizeincto">IncTo</A><P>
+
+
+<HR>
+<A NAME="wxsizeisfullyspecified"></A>
+<H3>wxSize::IsFullySpecified</H3>
+<P>
+<B>bool</B> <B>IsFullySpecified</B>() <B>const</B><P>
+Returns <TT>true</TT> if neither of the size object components is equal to -1, which
+is used as default for the size values in wxWidgets (hence the predefined
+<TT>wxDefaultSize</TT> has both of its components equal to -1).<P>
+This method is typically used before calling
+<A HREF="wx_wxsize.html#wxsizesetdefaults">SetDefaults</A>.<P>
+
+
+<HR>
+<A NAME="wxsizegetwidth"></A>
+<H3>wxSize::GetWidth</H3>
+<P>
+<B>int</B> <B>GetWidth</B>() <B>const</B><P>
+Gets the width member.<P>
+
+
+<HR>
+<A NAME="wxsizegetheight"></A>
+<H3>wxSize::GetHeight</H3>
+<P>
+<B>int</B> <B>GetHeight</B>() <B>const</B><P>
+Gets the height member.<P>
+
+
+<HR>
+<A NAME="wxsizeincby"></A>
+<H3>wxSize::IncBy</H3>
+<P>
+<B>void</B> <B>IncBy</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+<B>void</B> <B>IncBy</B>(<B>int </B><I>dx</I>, <B>int </B><I>dy</I>)<P>
+<B>void</B> <B>IncBy</B>(<B>int </B><I>d</I>)<P>
+Increases the size in x- and y- directions<P>
+<OL>
+
+    <LI> By <I>size.x</I> and <I>size.y</I> for the first overload
+    <LI> By <I>dx</I> and <I>dy</I> for the second one
+    <LI> By <I>d</I> and <I>d</I> for the third one
+</OL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsize.html#wxsizedecby">DecBy</A><P>
+
+
+<HR>
+<A NAME="wxsizeincto"></A>
+<H3>wxSize::IncTo</H3>
+<P>
+<B>void</B> <B>IncTo</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+Increments this object so that both of its dimensions are not less than the
+corresponding dimensions of the <I>size</I>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsize.html#wxsizedecto">DecTo</A><P>
+<P>
+
+<HR>
+<A NAME="wxsizescale"></A>
+<H3>wxSize::Scale</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B> </B> <B>Scale</B>(<B>float</B><I> xscale</I>, <B>float</B><I> yscale</I>)<P>
+Scales the dimensions of this object by the given factors.
+If you want to scale both dimensions by the same factor you can also use
+the <A HREF="wx_wxsize.html#wxsizeoperators">operator *=</A><P>
+Returns a reference to this object (so that you can concatenate other operations in the same line).<P>
+
+
+<HR>
+<A NAME="wxsizeset"></A>
+<H3>wxSize::Set</H3>
+<P>
+<B>void</B> <B>Set</B>(<B>int</B><I> width</I>, <B>int</B><I> height</I>)<P>
+Sets the width and height members.<P>
+
+
+<HR>
+<A NAME="wxsizesetdefaults"></A>
+<H3>wxSize::SetDefaults</H3>
+<P>
+<B>void</B> <B>SetDefaults</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sizeDefault</I>)<P>
+Combine this size object with another one replacing the default (i.e. equal
+to -1) components of this object with those of the other. It is typically
+used like this:
+<PRE>
+    if ( !size.IsFullySpecified() )
+    {
+        size.SetDefaults(GetDefaultSize());
+    }
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsize.html#wxsizeisfullyspecified">IsFullySpecified</A><P>
+
+
+<HR>
+<A NAME="wxsizesetheight"></A>
+<H3>wxSize::SetHeight</H3>
+<P>
+<B>void</B> <B>SetHeight</B>(<B>int</B><I> height</I>)<P>
+Sets the height.<P>
+
+
+<HR>
+<A NAME="wxsizesetwidth"></A>
+<H3>wxSize::SetWidth</H3>
+<P>
+<B>void</B> <B>SetWidth</B>(<B>int</B><I> width</I>)<P>
+Sets the width.<P>
+
+
+<HR>
+<A NAME="wxsizeoperators"></A>
+<H3>Operators</H3>
+<P>
+<B>void</B> <B>operator =</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sz</I>)<P>
+Assignment operator.<P>
+
+<B>bool</B> <B>operator ==</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sz</I>) <B>const</B><P>
+<B>bool</B> <B>operator !=</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sz</I>) <B>const</B><P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>operator +</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sz</I>)<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>operator -</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sz</I>)<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B> </B> <B>operator +=</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sz</I>)<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B> </B> <B>operator -=</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>sz</I>)<P>
+Operators for comparison, sum and subtraction between <A HREF="wx_wxsize.html#wxsize">wxSize</A> objects.<P>
+
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>operator /</B>(<B>int </B><I>factor</I>)<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>operator *</B>(<B>int </B><I>factor</I>)<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B> </B> <B>operator /=</B>(<B>int </B><I>factor</I>)<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B> </B> <B>operator *=</B>(<B>int </B><I>factor</I>)<P>
+Operators for division and multiplication between a <A HREF="wx_wxsize.html#wxsize">wxSize</A> object and an integer.<P>
+
+</FONT></BODY></HTML>

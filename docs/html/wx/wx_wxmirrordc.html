@@ -1,0 +1,35 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMirrorDC</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmirrordc"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxminiframe.html#wxminiframe"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmodule.html#wxmodule"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMirrorDC</H2>
+<P>
+wxMirrorDC is a simple wrapper class which is always associated with a real 
+<A HREF="wx_wxdc.html#wxdc">wxDC</A> object and either forwards all of its operations to it
+without changes (no mirroring takes place) or exchanges <I>x</I> and <I>y</I> 
+coordinates which makes it possible to reuse the same code to draw a figure and
+its mirror -- i.e. reflection related to the diagonal line x == y.<P>
+wxMirrorDC has been added in wxWidgets version 2.5.0.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdc">wxDC</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dcmirror.h&gt;<P>
+
+<P>
+<A HREF="#wxmirrordcwxmirrordc">wxMirrorDC::wxMirrorDC</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmirrordcwxmirrordc"></A>
+<H3>wxMirrorDC::wxMirrorDC</H3>
+<P>
+<B></B> <B>wxMirrorDC</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>bool </B><I>mirror</I>)<P>
+Creates a (maybe) mirrored DC associated with the real <I>dc</I>. Everything
+drawn on wxMirrorDC will appear (and maybe mirrored) on <I>dc</I>.<P>
+<I>mirror</I> specifies if we do mirror (if it is <TT>true</TT>) or not (if it is 
+<TT>false</TT>).<P>
+
+</FONT></BODY></HTML>

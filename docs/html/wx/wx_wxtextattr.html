@@ -1,0 +1,325 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTextAttr</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtextattr"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtempfileoutputstream.html#wxtempfileoutputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtextattrex.html#wxtextattrex"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTextAttr</H2>
+<P>
+wxTextAttr represents the character and paragraph attributes, or style, for a range of text in a
+<A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A>.<P>
+When setting up a wxTextAttr object, pass a bitlist mask to SetFlags to indicate
+which style elements should be changed. As a convenience, when you call a
+setter such as SetFont, the relevant bit will be set.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/textctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">Typedefs</FONT></B><P>
+<TT>wxTextPos</TT> is the type containing the index of a position in a text
+control. <TT>wxTextCoord</TT> contains the index of a column or a row in the
+control.<P>
+Note that although both of these types should probably have been unsigned, due
+to backwards compatibility reasons, are defined as <TT>long</TT> currently.
+Their use (instead of plain <TT>long</TT>) is still encouraged as it makes the
+code more readable.<P>
+<B><FONT COLOR="#FF0000">Constants</FONT></B><P>
+The following values can be passed to SetAlignment to determine
+paragraph alignment.<P>
+<FONT SIZE=2>
+<PRE>
+enum wxTextAttrAlignment
+{
+    wxTEXT_ALIGNMENT_DEFAULT,
+    wxTEXT_ALIGNMENT_LEFT,
+    wxTEXT_ALIGNMENT_CENTRE,
+    wxTEXT_ALIGNMENT_CENTER = wxTEXT_ALIGNMENT_CENTRE,
+    wxTEXT_ALIGNMENT_RIGHT,
+    wxTEXT_ALIGNMENT_JUSTIFIED
+};
+</PRE>
+</FONT><P>
+These values are passed in a bitlist to SetFlags to determine
+what attributes will be considered when setting the attributes
+for a text control.<P>
+<FONT SIZE=2>
+<PRE>
+#define wxTEXT_ATTR_TEXT_COLOUR             0x0001
+#define wxTEXT_ATTR_BACKGROUND_COLOUR       0x0002
+#define wxTEXT_ATTR_FONT_FACE               0x0004
+#define wxTEXT_ATTR_FONT_SIZE               0x0008
+#define wxTEXT_ATTR_FONT_WEIGHT             0x0010
+#define wxTEXT_ATTR_FONT_ITALIC             0x0020
+#define wxTEXT_ATTR_FONT_UNDERLINE          0x0040
+#define wxTEXT_ATTR_FONT \
+  wxTEXT_ATTR_FONT_FACE | wxTEXT_ATTR_FONT_SIZE | wxTEXT_ATTR_FONT_WEIGHT \
+| wxTEXT_ATTR_FONT_ITALIC | wxTEXT_ATTR_FONT_UNDERLINE
+#define wxTEXT_ATTR_ALIGNMENT               0x0080
+#define wxTEXT_ATTR_LEFT_INDENT             0x0100
+#define wxTEXT_ATTR_RIGHT_INDENT            0x0200
+#define wxTEXT_ATTR_TABS                    0x0400
+</PRE>
+</FONT><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxtextattrctor">wxTextAttr::wxTextAttr</A><BR>
+<A HREF="#wxtextattrgetalignment">wxTextAttr::GetAlignment</A><BR>
+<A HREF="#wxtextattrgetbackgroundcolour">wxTextAttr::GetBackgroundColour</A><BR>
+<A HREF="#wxtextattrgetfont">wxTextAttr::GetFont</A><BR>
+<A HREF="#wxtextattrgetleftindent">wxTextAttr::GetLeftIndent</A><BR>
+<A HREF="#wxtextattrgetleftsubindent">wxTextAttr::GetLeftSubIndent</A><BR>
+<A HREF="#wxtextattrgetrightindent">wxTextAttr::GetRightIndent</A><BR>
+<A HREF="#wxtextattrgettabs">wxTextAttr::GetTabs</A><BR>
+<A HREF="#wxtextattrgettextcolour">wxTextAttr::GetTextColour</A><BR>
+<A HREF="#wxtextattrhasalignment">wxTextAttr::HasAlignment</A><BR>
+<A HREF="#wxtextattrhasbackgroundcolour">wxTextAttr::HasBackgroundColour</A><BR>
+<A HREF="#wxtextattrhasfont">wxTextAttr::HasFont</A><BR>
+<A HREF="#wxtextattrhasleftindent">wxTextAttr::HasLeftIndent</A><BR>
+<A HREF="#wxtextattrhasrightindent">wxTextAttr::HasRightIndent</A><BR>
+<A HREF="#wxtextattrhastabs">wxTextAttr::HasTabs</A><BR>
+<A HREF="#wxtextattrhastextcolour">wxTextAttr::HasTextColour</A><BR>
+<A HREF="#wxtextattrgetflags">wxTextAttr::GetFlags</A><BR>
+<A HREF="#wxtextattrisdefault">wxTextAttr::IsDefault</A><BR>
+<A HREF="#wxtextattrmerge">wxTextAttr::Merge</A><BR>
+<A HREF="#wxtextattrsetalignment">wxTextAttr::SetAlignment</A><BR>
+<A HREF="#wxtextattrsetbackgroundcolour">wxTextAttr::SetBackgroundColour</A><BR>
+<A HREF="#wxtextattrsetflags">wxTextAttr::SetFlags</A><BR>
+<A HREF="#wxtextattrsetfont">wxTextAttr::SetFont</A><BR>
+<A HREF="#wxtextattrsetleftindent">wxTextAttr::SetLeftIndent</A><BR>
+<A HREF="#wxtextattrsetrightindent">wxTextAttr::SetRightIndent</A><BR>
+<A HREF="#wxtextattrsettabs">wxTextAttr::SetTabs</A><BR>
+<A HREF="#wxtextattrsettextcolour">wxTextAttr::SetTextColour</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtextattrctor"></A>
+<H3>wxTextAttr::wxTextAttr</H3>
+<P>
+<B></B> <B>wxTextAttr</B>()<P>
+<B></B> <B>wxTextAttr</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colText</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colBack = wxNullColour</I>,
+ <B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font = wxNullFont</I>, <B>wxTextAttrAlignment </B><I>alignment = wxTEXT_ALIGNMENT_DEFAULT</I>)<P>
+The constructors initialize one or more of the text foreground colour, background
+colour, font, and alignment. The values not initialized in the constructor can be set
+later, otherwise <A HREF="wx_wxtextctrl.html#wxtextctrlsetstyle">wxTextCtrl::SetStyle</A> will use
+the default values for them.<P>
+
+
+<HR>
+<A NAME="wxtextattrgetalignment"></A>
+<H3>wxTextAttr::GetAlignment</H3>
+<P>
+<B>wxTextAttrAlignment</B> <B>GetAlignment</B>() <B>const</B><P>
+Returns the paragraph alignment.<P>
+
+
+<HR>
+<A NAME="wxtextattrgetbackgroundcolour"></A>
+<H3>wxTextAttr::GetBackgroundColour</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetBackgroundColour</B>() <B>const</B><P>
+Return the background colour specified by this attribute.<P>
+
+
+<HR>
+<A NAME="wxtextattrgetfont"></A>
+<H3>wxTextAttr::GetFont</H3>
+<P>
+<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>&</B> </B> <B>GetFont</B>() <B>const</B><P>
+Return the text font specified by this attribute.<P>
+
+
+<HR>
+<A NAME="wxtextattrgetleftindent"></A>
+<H3>wxTextAttr::GetLeftIndent</H3>
+<P>
+<B>int</B> <B>GetLeftIndent</B>() <B>const</B><P>
+Returns the left indent in tenths of a millimetre.<P>
+
+
+<HR>
+<A NAME="wxtextattrgetleftsubindent"></A>
+<H3>wxTextAttr::GetLeftSubIndent</H3>
+<P>
+<B>int</B> <B>GetLeftSubIndent</B>() <B>const</B><P>
+Returns the left sub indent for all lines but the first line in a paragraph in
+tenths of a millimetre.<P>
+
+
+<HR>
+<A NAME="wxtextattrgetrightindent"></A>
+<H3>wxTextAttr::GetRightIndent</H3>
+<P>
+<B>int</B> <B>GetRightIndent</B>() <B>const</B><P>
+Returns the right indent in tenths of a millimetre.<P>
+
+
+<HR>
+<A NAME="wxtextattrgettabs"></A>
+<H3>wxTextAttr::GetTabs</H3>
+<P>
+<B>const wxArrayInt&amp;</B> <B>GetTabs</B>() <B>const</B><P>
+Returns the array of integers representing the tab stops. Each
+array element specifies the tab stop in tenths of a millimetre.<P>
+
+
+<HR>
+<A NAME="wxtextattrgettextcolour"></A>
+<H3>wxTextAttr::GetTextColour</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetTextColour</B>() <B>const</B><P>
+Return the text colour specified by this attribute.<P>
+
+
+<HR>
+<A NAME="wxtextattrhasalignment"></A>
+<H3>wxTextAttr::HasAlignment</H3>
+<P>
+<B>bool</B> <B>HasAlignment</B>() <B>const</B><P>
+Returns <TT>true</TT> if this style specifies the text alignment.<P>
+
+
+<HR>
+<A NAME="wxtextattrhasbackgroundcolour"></A>
+<H3>wxTextAttr::HasBackgroundColour</H3>
+<P>
+<B>bool</B> <B>HasBackgroundColour</B>() <B>const</B><P>
+Returns <TT>true</TT> if this style specifies the background colour to use.<P>
+
+
+<HR>
+<A NAME="wxtextattrhasfont"></A>
+<H3>wxTextAttr::HasFont</H3>
+<P>
+<B>bool</B> <B>HasFont</B>() <B>const</B><P>
+Returns <TT>true</TT> if this style specifies the font to use.<P>
+
+
+<HR>
+<A NAME="wxtextattrhasleftindent"></A>
+<H3>wxTextAttr::HasLeftIndent</H3>
+<P>
+<B>bool</B> <B>HasLeftIndent</B>() <B>const</B><P>
+Returns <TT>true</TT> if this style specifies the left indent.<P>
+
+
+<HR>
+<A NAME="wxtextattrhasrightindent"></A>
+<H3>wxTextAttr::HasRightIndent</H3>
+<P>
+<B>bool</B> <B>HasRightIndent</B>() <B>const</B><P>
+Returns <TT>true</TT> if this style specifies the right indent.<P>
+
+
+<HR>
+<A NAME="wxtextattrhastabs"></A>
+<H3>wxTextAttr::HasTabs</H3>
+<P>
+<B>bool</B> <B>HasTabs</B>() <B>const</B><P>
+Returns <TT>true</TT> if this style specifies any tabstobs.<P>
+
+
+<HR>
+<A NAME="wxtextattrhastextcolour"></A>
+<H3>wxTextAttr::HasTextColour</H3>
+<P>
+<B>bool</B> <B>HasTextColour</B>() <B>const</B><P>
+Returns <TT>true</TT> if this style specifies the foreground colour to use.<P>
+
+
+<HR>
+<A NAME="wxtextattrgetflags"></A>
+<H3>wxTextAttr::GetFlags</H3>
+<P>
+<B>long</B> <B>GetFlags</B>()<P>
+Returns a bitlist indicating which attributes will be set.<P>
+
+
+<HR>
+<A NAME="wxtextattrisdefault"></A>
+<H3>wxTextAttr::IsDefault</H3>
+<P>
+<B>bool</B> <B>IsDefault</B>() <B>const</B><P>
+Returns <TT>true</TT> if this style specifies any non-default attributes.<P>
+
+
+<HR>
+<A NAME="wxtextattrmerge"></A>
+<H3>wxTextAttr::Merge</H3>
+<P>
+<B>void</B> <B>Merge</B>(<B>const <A HREF="wx_wxtextattr.html#wxtextattr">wxTextAttr</A>&</B></B><I> overlay</I>)<P>
+Copies all defined/valid properties from <I>overlay</I> to current object.<P>
+<B>static <A HREF="wx_wxtextattr.html#wxtextattr">wxTextAttr</A></B> </B> <B>Merge</B>(<B>const <A HREF="wx_wxtextattr.html#wxtextattr">wxTextAttr</A>&</B></B><I> base</I>, <B>const <A HREF="wx_wxtextattr.html#wxtextattr">wxTextAttr</A>&</B></B><I> overlay</I>)<P>
+Creates a new <TT>wxTextAttr</TT> which is a merge of <I>base</I> and 
+<I>overlay</I>. Properties defined in <I>overlay</I> take precedence over those
+in <I>base</I>. Properties undefined/invalid in both are undefined in the
+result.<P>
+
+
+<HR>
+<A NAME="wxtextattrsetalignment"></A>
+<H3>wxTextAttr::SetAlignment</H3>
+<P>
+<B>void</B> <B>SetAlignment</B>(<B>wxTextAttrAlignment</B><I> alignment</I>)<P>
+Sets the paragraph alignment.<P>
+
+
+<HR>
+<A NAME="wxtextattrsetbackgroundcolour"></A>
+<H3>wxTextAttr::SetBackgroundColour</H3>
+<P>
+<B>void</B> <B>SetBackgroundColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+Sets the background colour.<P>
+
+
+<HR>
+<A NAME="wxtextattrsetflags"></A>
+<H3>wxTextAttr::SetFlags</H3>
+<P>
+<B>void</B> <B>SetFlags</B>(<B>long</B><I> flags</I>)<P>
+Pass a bitlist indicating which attributes will be set.<P>
+
+
+<HR>
+<A NAME="wxtextattrsetfont"></A>
+<H3>wxTextAttr::SetFont</H3>
+<P>
+<B>void</B> <B>SetFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>&</B></B><I> font</I>)<P>
+Sets the text font.<P>
+
+
+<HR>
+<A NAME="wxtextattrsetleftindent"></A>
+<H3>wxTextAttr::SetLeftIndent</H3>
+<P>
+<B>void</B> <B>SetLeftIndent</B>(<B>int </B><I>indent</I>, <B>int </B><I>subIndent = 0</I>)<P>
+Sets the left indent in tenths of a millimetre.
+subIndent sets the indent for all lines but the first line in a paragraph
+relative to the first line.<P>
+
+
+<HR>
+<A NAME="wxtextattrsetrightindent"></A>
+<H3>wxTextAttr::SetRightIndent</H3>
+<P>
+<B>void</B> <B>SetRightIndent</B>(<B>int </B><I>indent</I>)<P>
+Sets the right indent in tenths of a millimetre.<P>
+
+
+<HR>
+<A NAME="wxtextattrsettabs"></A>
+<H3>wxTextAttr::SetTabs</H3>
+<P>
+<B>void</B> <B>SetTabs</B>(<B>const wxArrayInt&amp;</B><I> tabs</I>)<P>
+Sets the array of integers representing the tab stops. Each
+array element specifies the tab stop in tenths of a millimetre.<P>
+
+
+<HR>
+<A NAME="wxtextattrsettextcolour"></A>
+<H3>wxTextAttr::SetTextColour</H3>
+<P>
+<B>void</B> <B>SetTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+Sets the text colour.<P>
+
+</FONT></BODY></HTML>

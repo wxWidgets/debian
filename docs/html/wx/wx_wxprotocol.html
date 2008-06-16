@@ -1,0 +1,189 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxProtocol</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxprotocol"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpropertysheetdialog.html#wxpropertysheetdialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxquantize.html#wxquantize"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxProtocol</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxsocketclient.html#wxsocketclient">wxSocketClient</A>
+<A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/protocol/protocol.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>, <A HREF="wx_wxurl.html#wxurl">wxURL</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxprotocolreconnect">wxProtocol::Reconnect</A><BR>
+<A HREF="#wxprotocolgetinput">wxProtocol::GetInputStream</A><BR>
+<A HREF="#wxprotocolabort">wxProtocol::Abort</A><BR>
+<A HREF="#wxprotocolgeterror">wxProtocol::GetError</A><BR>
+<A HREF="#wxprotocolgetcontenttype">wxProtocol::GetContentType</A><BR>
+<A HREF="#wxprotocolsetuser">wxProtocol::SetUser</A><BR>
+<A HREF="#wxprotocolsetpassword">wxProtocol::SetPassword</A><BR>
+<P>
+
+<HR>
+<A NAME="wxprotocolreconnect"></A>
+<H3>wxProtocol::Reconnect</H3>
+<P>
+<B>bool</B> <B>Reconnect</B>()<P>
+Tries to reestablish a previous opened connection (close and renegotiate connection).<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true, if the connection is established, else false.<P>
+
+<HR>
+<A NAME="wxprotocolgetinput"></A>
+<H3>wxProtocol::GetInputStream</H3>
+<P>
+<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A> *</B> </B> <B>GetInputStream</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> path</I>)<P>
+Creates a new input stream on the specified path. You can use all but seek
+functionality of wxStream. Seek isn't available on all streams. For example,
+HTTP or FTP streams don't deal with it. Other functions like StreamSize and
+Tell aren't available for the moment for this sort of stream.
+You will be notified when the EOF is reached by an error.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns the initialized stream. You will have to delete it yourself once you
+don't use it anymore. The destructor closes the network connection.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A><P>
+
+<HR>
+<A NAME="wxprotocolabort"></A>
+<H3>wxProtocol::Abort</H3>
+<P>
+<B>bool</B> <B>Abort</B>()<P>
+Abort the current stream.<P>
+<B><FONT COLOR="#FF0000">Warning</FONT></B><P>
+It is advised to destroy the input stream instead of aborting the stream this way.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true, if successful, else false.<P>
+
+<HR>
+<A NAME="wxprotocolgeterror"></A>
+<H3>wxProtocol::GetError</H3>
+<P>
+<B>wxProtocolError</B> <B>GetError</B>()<P>
+Returns the last occurred error.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPROTO_NOERR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+No error.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPROTO_NETERR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A generic network error occurred.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPROTO_PROTERR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+An error occurred during negotiation.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPROTO_CONNERR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The client failed to connect the server.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPROTO_INVVAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Invalid value.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPROTO_NOHNDLR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPROTO_NOFILE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The remote file doesn't exist.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPROTO_ABRT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Last action aborted.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPROTO_RCNCT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+An error occurred during reconnection.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxPROTO_STREAM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Someone tried to send a command during a transfer.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="wxprotocolgetcontenttype"></A>
+<H3>wxProtocol::GetContentType</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetContentType</B>()<P>
+Returns the type of the content of the last opened stream. It is a mime-type.<P>
+
+<HR>
+<A NAME="wxprotocolsetuser"></A>
+<H3>wxProtocol::SetUser</H3>
+<P>
+<B>void </B> <B>SetUser</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> user</I>)<P>
+Sets the authentication user. It is mainly useful when FTP is used.<P>
+
+<HR>
+<A NAME="wxprotocolsetpassword"></A>
+<H3>wxProtocol::SetPassword</H3>
+<P>
+<B>void</B> <B>SetPassword</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> user</I>)<P>
+Sets the authentication password. It is mainly useful when FTP is used.<P>
+
+</FONT></BODY></HTML>

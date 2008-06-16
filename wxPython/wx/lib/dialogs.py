@@ -6,7 +6,7 @@
 # Author:      Various
 #
 # Created:     3-January-2002
-# RCS-ID:      $Id: dialogs.py,v 1.15 2005/03/31 21:18:36 RD Exp $
+# RCS-ID:      $Id: dialogs.py 44619 2007-03-05 19:18:51Z RD $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -34,8 +34,8 @@ class ScrolledMessageDialog(wx.Dialog):
         if x == -1 and y == -1:
             self.CenterOnScreen(wx.BOTH)
 
-        text = wx.TextCtrl(self, -1, msg, 
-                           style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.text = text = wx.TextCtrl(self, -1, msg, 
+                                       style=wx.TE_MULTILINE | wx.TE_READONLY)
 
         ok = wx.Button(self, wx.ID_OK, "OK")
         ok.SetDefault()
@@ -296,7 +296,7 @@ def openFileDialog(parent=None, title='Open', directory='', filename='',
 
 def saveFileDialog(parent=None, title='Save', directory='', filename='',
                    wildcard='All Files (*.*)|*.*',
-                   style=wx.SAVE | wx.HIDE_READONLY | wx.OVERWRITE_PROMPT):
+                   style=wx.SAVE | wx.OVERWRITE_PROMPT):
     return fileDialog(parent, title, directory, filename, wildcard, style)
 
 

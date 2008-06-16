@@ -1,0 +1,304 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDbConnectInf</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdbconnectinf"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdbcolinf.html#wxdbcolinf"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdbidxdef.html#wxdbidxdef"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDbConnectInf</H2>
+<P>
+This class is used for holding the data necessary for connecting to the ODBC
+datasource.  That information includes: SQL environment handle, datasource
+name, user ID, password and default directory path (used with dBase).  Other
+optional fields held in this class are and file type, both for future
+functions planned to be added for creating/manipulating datasource definitions.<P>
+<A HREF="#wxdbconnectinfctor">wxDbConnectInf::wxDbConnectInf</A><BR>
+<A HREF="#wxdbconnectinfdestr">wxDbConnectInf::~wxDbConnectInf</A><BR>
+<A HREF="#wxdbconnectinfallochenv">wxDbConnectInf::AllocHenv</A><BR>
+<A HREF="#wxdbconnectinffreehenv">wxDbConnectInf::FreeHenv</A><BR>
+<A HREF="#wxdbconnectinfinitialize">wxDbConnectInf::Initialize</A><BR>
+<A HREF="#wxdbconnectinfgetauthstr">wxDbConnectInf::GetAuthStr</A><BR>
+<A HREF="#wxdbconnectinfgetdefaultdir">wxDbConnectInf::GetDefaultDir</A><BR>
+<A HREF="#wxdbconnectinfgetdescription">wxDbConnectInf::GetDescription</A><BR>
+<A HREF="#wxdbconnectinfgetdsn">wxDbConnectInf::GetDsn</A><BR>
+<A HREF="#wxdbconnectinfgetfiletype">wxDbConnectInf::GetFileType</A><BR>
+<A HREF="#wxdbconnectinfgethenv">wxDbConnectInf::GetHenv</A><BR>
+<A HREF="#wxdbconnectinfgetpassword">wxDbConnectInf::GetPassword</A><BR>
+<A HREF="#wxdbconnectinfgetuid">wxDbConnectInf::GetUid</A><BR>
+<A HREF="#wxdbconnectinfgetuserid">wxDbConnectInf::GetUserID</A><BR>
+<A HREF="#wxdbconnectinfsetauthstr">wxDbConnectInf::SetAuthStr</A><BR>
+<A HREF="#wxdbconnectinfsetdefaultdir">wxDbConnectInf::SetDefaultDir</A><BR>
+<A HREF="#wxdbconnectinfsetdescription">wxDbConnectInf::SetDescription</A><BR>
+<A HREF="#wxdbconnectinfsetdsn">wxDbConnectInf::SetDsn</A><BR>
+<A HREF="#wxdbconnectinfsetfiletype">wxDbConnectInf::SetFileType</A><BR>
+<A HREF="#wxdbconnectinfsethenv">wxDbConnectInf::SetHenv</A><BR>
+<A HREF="#wxdbconnectinfsetpassword">wxDbConnectInf::SetPassword</A><BR>
+<A HREF="#wxdbconnectinfsetuid">wxDbConnectInf::SetUid</A><BR>
+<A HREF="#wxdbconnectinfsetuserid">wxDbConnectInf::SetUserID</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdbconnectinfctor"></A>
+<H3>wxDbConnectInf::wxDbConnectInf</H3>
+<P>
+<B></B> <B>wxDbConnectInf</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxDbConnectInf</B>(<B>HENV </B><I>henv</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>dsn</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>userID=""</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>password</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>defaultDir=""</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>description=""</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> &</B></B><I>fileType=""</I>)<P>
+Constructor which allows initial settings of all the classes member variables.<P>
+See the special note below on the henv parameter for forcing this constructor
+to create a SQL environment handle automatically, rather than needing to pass
+one in to the function.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>henv</I><UL><UL>
+Environment handle used for this connection.  See
+<A HREF="wx_wxdbconnectinf.html#wxdbconnectinfallochenv">wxDConnectInf::AllocHenv</A> for how to create
+an SQL environment handle.  NOTE: Passing in a NULL for this parameter will
+inform the constructor that it should create its own SQL environment handle.
+If NULL is passed for this parameter, the constructor will call
+<A HREF="wx_wxdbconnectinf.html#wxdbconnectinfallochenv">wxDConnectInf::AllocHenv</A> internally.  A
+flag is set internally also to indicate that the HENV was created by the
+constructor so that when the default class destructor is called, the
+destructor will call <A HREF="wx_wxdbconnectinf.html#wxdbconnectinffreehenv">wxDConnectInf::FreeHenv</A>
+to free the environment handle automatically.</UL></UL>
+
+<I>dsn</I><UL><UL>
+Name of the datasource to be used in creating wxDb instances
+for creating connection(s) to a datasource.</UL></UL>
+
+<I>userID</I><UL><UL>
+<I>OPTIONAL</I> Many datasources allow (or even require)
+use of a username to determine privileges that connecting user is allowed
+to have when accessing the datasource or the data tables.  Default is "".</UL></UL>
+
+<I>password</I><UL><UL>
+<I>OPTIONAL</I> Password to be associated with the user
+ID specified in 'userID'.  Default is "".</UL></UL>
+
+<I>defaultDir</I><UL><UL>
+<I>OPTIONAL</I> Used for datasources which require the
+path to where the data file is stored to be specified.  dBase is one example
+of the type of datasource which requires this information.  Default is "".</UL></UL>
+
+<I>description</I><UL><UL>
+<I>OPTIONAL</I> <B>FUTURE USE</B> Default is "".</UL></UL>
+
+<I>fileType</I><UL><UL>
+<I>OPTIONAL</I> <B>FUTURE USE</B> Default is "".</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+It is strongly recommended that programs use the longer form of the
+constructor and allow the constructor to create the SQL environment handle
+automatically, and manage the destruction of the handle.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+<PRE>
+   wxDbConnectInf *DbConnectInf;
+
+	DbConnectInf = new wxDbConnectInf(0,"MY_DSN", "MY_USER", "MY_PASSWORD");
+
+	....the rest of the program
+
+	delete DbConnectInf;
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdbconnectinf.html#wxdbconnectinfallochenv">wxDConnectInf::AllocHenv</A>,
+<A HREF="wx_wxdbconnectinf.html#wxdbconnectinffreehenv">wxDConnectInf::FreeHenv</A><P>
+
+<HR>
+<A NAME="wxdbconnectinfdestr"></A>
+<H3>wxDbConnectInf::~wxDbConnectInf</H3>
+<P>
+<B></B> <B>~wxDbConnectInf</B>()<P>
+Handles the default destruction of the instance of the class.  If the long form
+of the <A HREF="wx_wxdbconnectinf.html#wxdbconnectinf">wxDConnectInf</A> was used, then this destructor
+also takes care of calling
+<A HREF="wx_wxdbconnectinf.html#wxdbconnectinffreehenv">wxDConnectInf::FreeHenv</A> to free the
+SQL environment handle.<P>
+
+<HR>
+<A NAME="wxdbconnectinfallochenv"></A>
+<H3>wxDbConnectInf::AllocHenv</H3>
+<P>
+<B>bool </B> <B>AllocHenv</B>()<P>
+Allocates a SQL environment handle that will be used to interface with
+an ODBC datasource.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function can be automatically called by the long from of the
+<A HREF="wx_wxdbconnectinf.html#wxdbconnectinf">wxDbConnectInf</A> constructor.<P>
+
+<HR>
+<A NAME="wxdbconnectinffreehenv"></A>
+<H3>wxDbConnectInf::FreeHenv</H3>
+<P>
+<B>void</B> <B>FreeHenv</B>()<P>
+Frees the SQL environment handle being managed by the instance of this class.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+If the SQL environment handle was created using the long form of the
+<A HREF="wx_wxdbconnectinf.html#wxdbconnectinf">wxDbConnectInf</A> constructor, then the flag indicating
+that the HENV should be destroyed when the classes destructor is called
+is reset to be false, so that any future handles created using the
+<A HREF="wx_wxdbconnectinf.html#wxdbconnectinfallochenv">wxDbConnectInf::AllocHenv</A> function
+must be manually released with a call to this function.<P>
+
+<HR>
+<A NAME="wxdbconnectinfinitialize"></A>
+<H3>wxDbConnectInf::Initialize</H3>
+<P>
+Simply initializes all member variables to a cleared state.  Called by
+the constructor automatically.<P>
+
+<HR>
+<A NAME="wxdbconnectinfgetauthstr"></A>
+<H3>wxDbConnectInf::GetAuthStr</H3>
+<P>
+<B>const wxChar *</B> <B>GetAuthStr</B>()<P>
+Accessor function to return the password assigned for this class
+instance that will be used with the user ID.<P>
+Synonymous with <A HREF="wx_wxdbconnectinf.html#wxdbconnectinfgetpassword">wxDbConnectInf::GetPassword</A><P>
+
+<HR>
+<A NAME="wxdbconnectinfgetdefaultdir"></A>
+<H3>wxDbConnectInf::GetDefaultDir</H3>
+<P>
+<B>const wxChar *</B> <B>GetDefaultDir</B>()<P>
+Accessor function to return the default directory in which the datasource's data
+table is stored.  This directory is only used for file based datasources like
+dBase.  MS-Access does not require this to be set, as the path is set in the
+ODBC Administrator for MS-Access.<P>
+
+<HR>
+<A NAME="wxdbconnectinfgetdescription"></A>
+<H3>wxDbConnectInf::GetDescription</H3>
+<P>
+<B>const wxChar *</B> <B>GetDescription</B>()<P>
+Accessor function to return the description assigned for this class
+instance.<P>
+NOTE: Description is a FUTURE USE item and is unused currently.<P>
+
+<HR>
+<A NAME="wxdbconnectinfgetdsn"></A>
+<H3>wxDbConnectInf::GetDsn</H3>
+<P>
+<B>const wxChar *</B> <B>GetDsn</B>()<P>
+Accessor function to return the datasource name assigned for this class
+instance.<P>
+
+<HR>
+<A NAME="wxdbconnectinfgetfiletype"></A>
+<H3>wxDbConnectInf::GetFileType</H3>
+<P>
+<B>const wxChar *</B> <B>GetFileType</B>()<P>
+Accessor function to return the filetype of the ODBC datasource assigned for
+this class instance.<P>
+NOTE: FileType is a FUTURE USE item and is unused currently.<P>
+
+<HR>
+<A NAME="wxdbconnectinfgethenv"></A>
+<H3>wxDbConnectInf::GetHenv</H3>
+<P>
+<B>const HENV</B> <B>GetHenv</B>()<P>
+Accessor function to return the SQL environment handle being managed
+by this class instance.<P>
+
+<HR>
+<A NAME="wxdbconnectinfgetpassword"></A>
+<H3>wxDbConnectInf::GetPassword</H3>
+<P>
+<B>const wxChar *</B> <B>GetPassword</B>()<P>
+Accessor function to return the password assigned for this class
+instance that will be used with the user ID.<P>
+Synonymous with <A HREF="wx_wxdbconnectinf.html#wxdbconnectinfgetauthstr">wxDbConnectInf::GetAuthStr</A><P>
+
+<HR>
+<A NAME="wxdbconnectinfgetuid"></A>
+<H3>wxDbConnectInf::GetUid</H3>
+<P>
+<B>const wxChar *</B> <B>GetUid</B>()<P>
+Accessor function to return the user ID assigned for this class
+instance.<P>
+
+<HR>
+<A NAME="wxdbconnectinfgetuserid"></A>
+<H3>wxDbConnectInf::GetUserID</H3>
+<P>
+<B>const wxChar *</B> <B>GetUserID</B>()<P>
+Accessor function to return the user ID assigned for this class
+instance.<P>
+
+<HR>
+<A NAME="wxdbconnectinfsetauthstr"></A>
+<H3>wxDbConnectInf::SetAuthStr</H3>
+<P>
+<B></B> <B>SetAuthStr</B>(const wxString &amp;authstr)<P>
+Accessor function to assign the password for this class
+instance that will be used with the user ID.<P>
+Synonymous with <A HREF="wx_wxdbconnectinf.html#wxdbconnectinfsetpassword">wxDbConnectInf::SetPassword</A><P>
+
+<HR>
+<A NAME="wxdbconnectinfsetdefaultdir"></A>
+<H3>wxDbConnectInf::SetDefaultDir</H3>
+<P>
+<B></B> <B>SetDefaultDir</B>(const wxString &amp;defDir)<P>
+Accessor function to assign the default directory in which the datasource's data
+table is stored.  This directory is only used for file based datasources like
+dBase.  MS-Access does not require this to be set, as the path is set in the
+ODBC Administrator for MS-Access.<P>
+
+<HR>
+<A NAME="wxdbconnectinfsetdescription"></A>
+<H3>wxDbConnectInf::SetDescription</H3>
+<P>
+<B></B> <B>SetDescription</B>(const wxString &amp;desc)<P>
+Accessor function to assign the description assigned for this class
+instance.<P>
+NOTE: Description is a FUTURE USE item and is unused currently.<P>
+
+<HR>
+<A NAME="wxdbconnectinfsetdsn"></A>
+<H3>wxDbConnectInf::SetDsn</H3>
+<P>
+<B></B> <B>SetDsn</B>(const wxString &amp;dsn)<P>
+Accessor function to assign the datasource name for this class instance.<P>
+
+<HR>
+<A NAME="wxdbconnectinfsetfiletype"></A>
+<H3>wxDbConnectInf::SetFileType</H3>
+<P>
+<B></B> <B>SetFileType</B>(const wxString &amp;)<P>
+Accessor function to return the filetype of the ODBC datasource assigned for
+this class instance.<P>
+NOTE: FileType is a FUTURE USE item and is unused currently.<P>
+
+<HR>
+<A NAME="wxdbconnectinfsethenv"></A>
+<H3>wxDbConnectInf::SetHenv</H3>
+<P>
+<B>void</B> <B>SetHenv</B>(<B>const HENV </B><I>henv</I>)<P>
+Accessor function to set the SQL environment handle for this class instance.<P>
+
+<HR>
+<A NAME="wxdbconnectinfsetpassword"></A>
+<H3>wxDbConnectInf::SetPassword</H3>
+<P>
+<B></B> <B>SetPassword</B>(const wxString &amp;password)<P>
+Accessor function to assign the password for this class
+instance that will be used with the user ID.<P>
+Synonymous with <A HREF="wx_wxdbconnectinf.html#wxdbconnectinfsetauthstr">wxDbConnectInf::SetAuthStr</A><P>
+
+<HR>
+<A NAME="wxdbconnectinfsetuid"></A>
+<H3>wxDbConnectInf::SetUid</H3>
+<P>
+<B></B> <B>SetUid</B>(const wxString &amp;uid)<P>
+Accessor function to set the user ID for this class instance.<P>
+
+<HR>
+<A NAME="wxdbconnectinfsetuserid"></A>
+<H3>wxDbConnectInf::SetUserID</H3>
+<P>
+<B></B> <B>SetUserID</B>(const wxString &amp;userID)<P>
+Accessor function to assign the user ID for this class instance.<P>
+
+</FONT></BODY></HTML>

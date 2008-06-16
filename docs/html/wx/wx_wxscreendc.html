@@ -1,0 +1,66 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxScreenDC</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxscreendc"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxscopedtiedptr.html#wxscopedtiedptr"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxscrollbar.html#wxscrollbar"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxScreenDC</H2>
+<P>
+A wxScreenDC can be used to paint on the screen.
+This should normally be constructed as a temporary stack object; don't store
+a wxScreenDC object.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdc">wxDC</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dcscreen.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdc">wxDC</A>, <A HREF="wx_wxmemorydc.html#wxmemorydc">wxMemoryDC</A>, <A HREF="wx_wxpaintdc.html#wxpaintdc">wxPaintDC</A>,
+<A HREF="wx_wxclientdc.html#wxclientdc">wxClientDC</A>, <A HREF="wx_wxwindowdc.html#wxwindowdc">wxWindowDC</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxscreendcctor">wxScreenDC::wxScreenDC</A><BR>
+<A HREF="#wxscreendcstartdrawingontop">wxScreenDC::StartDrawingOnTop</A><BR>
+<A HREF="#wxscreendcenddrawingontop">wxScreenDC::EndDrawingOnTop</A><BR>
+<P>
+
+<HR>
+<A NAME="wxscreendcctor"></A>
+<H3>wxScreenDC::wxScreenDC</H3>
+<P>
+<B></B> <B>wxScreenDC</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxscreendcstartdrawingontop"></A>
+<H3>wxScreenDC::StartDrawingOnTop</H3>
+<P>
+<B>bool</B> <B>StartDrawingOnTop</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> window</I>)<P>
+<B>bool</B> <B>StartDrawingOnTop</B>(<B><A HREF="wx_wxrect.html#wxrect">wxRect</A>*</B></B><I> rect = NULL</I>)<P>
+Use this in conjunction with <A HREF="wx_wxscreendc.html#wxscreendcenddrawingontop">EndDrawingOnTop</A> to
+ensure that drawing to the screen occurs on top of existing windows. Without this,
+some window systems (such as X) only allow drawing to take place underneath
+other windows.<P>
+By using the first form of this function, an application is specifying that
+the area that will be drawn on coincides with the given window.<P>
+By using the second form, an application can specify an area of the screen
+which is to be drawn on. If NULL is passed, the whole screen is available.<P>
+It is recommended that an area of the screen is specified because with large regions,
+flickering effects are noticeable when destroying the temporary transparent window used
+to implement this feature.<P>
+You might use this pair of functions when implementing a drag feature, for example
+as in the <A HREF="wx_wxsplitterwindow.html#wxsplitterwindow">wxSplitterWindow</A> implementation.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This function is probably obsolete since the X implementations
+allow drawing directly on the screen now. However, the fact that this
+function allows the screen to be refreshed afterwards, may be useful to
+some applications.<P>
+
+<HR>
+<A NAME="wxscreendcenddrawingontop"></A>
+<H3>wxScreenDC::EndDrawingOnTop</H3>
+<P>
+<B>bool</B> <B>EndDrawingOnTop</B>()<P>
+Use this in conjunction with <A HREF="wx_wxscreendc.html#wxscreendcstartdrawingontop">StartDrawingOnTop</A>.<P>
+This function destroys the temporary window created to implement on-top drawing (X only).<P>
+
+</FONT></BODY></HTML>

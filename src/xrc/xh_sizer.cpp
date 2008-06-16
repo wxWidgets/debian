@@ -1,16 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        xh_sizer.cpp
+// Name:        src/xrc/xh_sizer.cpp
 // Purpose:     XRC resource for wxBoxSizer
 // Author:      Vaclav Slavik
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_sizer.cpp,v 1.24 2005/03/27 21:27:53 VS Exp $
+// RCS-ID:      $Id: xh_sizer.cpp 44246 2007-01-18 18:27:58Z VS $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_sizer.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -22,12 +18,19 @@
 #if wxUSE_XRC
 
 #include "wx/xrc/xh_sizer.h"
-#include "wx/sizer.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/log.h"
+    #include "wx/panel.h"
+    #include "wx/statbox.h"
+    #include "wx/sizer.h"
+    #include "wx/frame.h"
+    #include "wx/dialog.h"
+    #include "wx/button.h"
+#endif
+
 #include "wx/gbsizer.h"
-#include "wx/log.h"
-#include "wx/statbox.h"
 #include "wx/notebook.h"
-#include "wx/panel.h"
 #include "wx/tokenzr.h"
 
 
@@ -38,10 +41,10 @@
 IMPLEMENT_DYNAMIC_CLASS(wxSizerXmlHandler, wxXmlResourceHandler)
 
 wxSizerXmlHandler::wxSizerXmlHandler()
-    : wxXmlResourceHandler(),
-      m_isInside(false),
-      m_isGBS(false),
-      m_parentSizer(NULL)
+                  :wxXmlResourceHandler(),
+                   m_isInside(false),
+                   m_isGBS(false),
+                   m_parentSizer(NULL)
 {
     XRC_ADD_STYLE(wxHORIZONTAL);
     XRC_ADD_STYLE(wxVERTICAL);
@@ -182,18 +185,16 @@ wxObject* wxSizerXmlHandler::Handle_sizer()
 
     wxCHECK_MSG(m_parentSizer != NULL ||
                 (parentNode && parentNode->GetType() == wxXML_ELEMENT_NODE &&
-                 m_parentAsWindow != NULL &&
-                 (m_parentAsWindow->IsKindOf(CLASSINFO(wxPanel)) ||
-                  m_parentAsWindow->IsKindOf(CLASSINFO(wxFrame)) ||
-                  m_parentAsWindow->IsKindOf(CLASSINFO(wxDialog)))
-                    ), NULL,
-                wxT("Incorrect use of sizer: parent is not 'wxDialog', 'wxFrame' or 'wxPanel'."));
+                 m_parentAsWindow), NULL,
+                wxT("Sizer must have a window parent node"));
 
     if (m_class == wxT("wxBoxSizer"))
         sizer = Handle_wxBoxSizer();
 
+#if wxUSE_STATBOX
     else if (m_class == wxT("wxStaticBoxSizer"))
         sizer = Handle_wxStaticBoxSizer();
+#endif
 
     else if (m_class == wxT("wxGridSizer"))
         sizer = Handle_wxGridSizer();
@@ -204,6 +205,11 @@ wxObject* wxSizerXmlHandler::Handle_sizer()
     else if (m_class == wxT("wxGridBagSizer"))
         sizer = Handle_wxGridBagSizer();
 
+    if ( !sizer )
+    {
+        wxLogError(_T("Failed to create size of class \"%s\""), m_class.c_str());
+        return NULL;
+    }
 
     wxSize minsize = GetSize(wxT("minsize"));
     if (!(minsize == wxDefaultSize))
@@ -234,7 +240,7 @@ wxObject* wxSizerXmlHandler::Handle_sizer()
             sizer->Fit(m_parentAsWindow);
         m_node = nd;
 
-        if (m_parentAsWindow->GetWindowStyle() & (wxRESIZE_BOX | wxRESIZE_BORDER))
+        if (m_parentAsWindow->GetWindowStyle() & (wxMAXIMIZE_BOX | wxRESIZE_BORDER))
             sizer->SetSizeHints(m_parentAsWindow);
     }
 
@@ -247,6 +253,7 @@ wxSizer*  wxSizerXmlHandler::Handle_wxBoxSizer()
     return new wxBoxSizer(GetStyle(wxT("orient"), wxHORIZONTAL));
 }
 
+#if wxUSE_STATBOX
 wxSizer*  wxSizerXmlHandler::Handle_wxStaticBoxSizer()
 {
     return new wxStaticBoxSizer(
@@ -258,6 +265,7 @@ wxSizer*  wxSizerXmlHandler::Handle_wxStaticBoxSizer()
                             GetName()),
             GetStyle(wxT("orient"), wxHORIZONTAL));
 }
+#endif // wxUSE_STATBOX
 
 wxSizer*  wxSizerXmlHandler::Handle_wxGridSizer()
 {
@@ -369,6 +377,7 @@ void wxSizerXmlHandler::AddSizerItem(wxSizerItem* sitem)
 //-----------------------------------------------------------------------------
 // wxStdDialogButtonSizerXmlHandler
 //-----------------------------------------------------------------------------
+#if wxUSE_BUTTON
 
 IMPLEMENT_DYNAMIC_CLASS(wxStdDialogButtonSizerXmlHandler, wxXmlResourceHandler)
 
@@ -430,5 +439,6 @@ bool wxStdDialogButtonSizerXmlHandler::CanHandle(wxXmlNode *node)
     return (!m_isInside && IsOfClass(node, wxT("wxStdDialogButtonSizer"))) ||
            (m_isInside && IsOfClass(node, wxT("button")));
 }
+#endif // wxUSE_BUTTON
 
 #endif // wxUSE_XRC

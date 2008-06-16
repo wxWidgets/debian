@@ -1,0 +1,87 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMetafile</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmetafile"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmessagedialog.html#wxmessagedialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmetafiledc.html#wxmetafiledc"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMetafile</H2>
+<P>
+A <B>wxMetafile</B> represents the MS Windows metafile object, so metafile
+operations have no effect in X. In wxWidgets, only sufficient functionality
+has been provided for copying a graphic to the clipboard; this may be extended
+in a future version. Presently, the only way of creating a metafile
+is to use a wxMetafileDC.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/metafile.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmetafiledc.html#wxmetafiledc">wxMetafileDC</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmetafilector">wxMetafile::wxMetafile</A><BR>
+<A HREF="#wxmetafiledtor">wxMetafile::~wxMetafile</A><BR>
+<A HREF="#wxmetafileisok">wxMetafile::IsOk</A><BR>
+<A HREF="#wxmetafileplay">wxMetafile::Play</A><BR>
+<A HREF="#wxmetafilesetclipboard">wxMetafile::SetClipboard</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmetafilector"></A>
+<H3>wxMetafile::wxMetafile</H3>
+<P>
+<B></B> <B>wxMetafile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename = ""</I>)<P>
+Constructor. If a filename is given, the Windows disk metafile is
+read in. Check whether this was performed successfully by
+using the <A HREF="wx_wxmetafile.html#wxmetafileisok">wxMetafile:IsOk</A> member.<P>
+
+<HR>
+<A NAME="wxmetafiledtor"></A>
+<H3>wxMetafile::~wxMetafile</H3>
+<P>
+<B></B> <B>~wxMetafile</B>()<P>
+Destructor.
+See <A HREF="wx_trefcount.html#refcountdestruct">reference-counted object destruction</A> for more info.<P>
+
+<HR>
+<A NAME="wxmetafileisok"></A>
+<H3>wxMetafile::IsOk</H3>
+<P>
+<B>bool</B> <B>Ok</B>()<P>
+Returns true if the metafile is valid.<P>
+
+<HR>
+<A NAME="wxmetafileplay"></A>
+<H3>wxMetafile::Play</H3>
+<P>
+<B>bool</B> <B>Play</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A> *</B></B><I>dc</I>)<P>
+Plays the metafile into the given device context, returning
+true if successful.<P>
+
+<HR>
+<A NAME="wxmetafilesetclipboard"></A>
+<H3>wxMetafile::SetClipboard</H3>
+<P>
+<B>bool</B> <B>SetClipboard</B>(<B>int</B><I> width = 0</I>, <B>int</B><I> height = 0</I>)<P>
+Passes the metafile data to the clipboard. The metafile can no longer be
+used for anything, but the wxMetafile object must still be destroyed by
+the application.<P>
+Below is a example of metafile, metafile device context and clipboard use
+from the <TT>hello.cpp</TT> example. Note the way the metafile dimensions
+are passed to the clipboard, making use of the device context's ability
+to keep track of the maximum extent of drawing commands.<P>
+<PRE>
+  wxMetafileDC dc;
+  if (dc.Ok())
+  {
+    Draw(dc, false);
+    wxMetafile *mf = dc.Close();
+    if (mf)
+    {
+      bool success = mf-&gt;SetClipboard((int)(dc.MaxX() + 10), (int)(dc.MaxY() + 10));
+      delete mf;
+    }
+  }
+</PRE>
+
+</FONT></BODY></HTML>

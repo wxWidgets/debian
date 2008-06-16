@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _icon.i,v 1.7 2004/12/23 20:43:52 RD Exp $
+// RCS-ID:      $Id: _icon.i 41774 2006-10-09 02:36:38Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,8 @@ public:
         void SetHandle(long handle) { self->SetHandle((WXHANDLE)handle); }
     }
 #endif
-    bool Ok();
+    bool IsOk();
+    %pythoncode { Ok = IsOk }
     int GetWidth();
     int GetHeight();
     int GetDepth();
@@ -77,7 +78,12 @@ public:
 #endif
     void CopyFromBitmap(const wxBitmap& bmp);
 
-    %pythoncode { def __nonzero__(self): return self.Ok() }
+    %pythoncode { def __nonzero__(self): return self.IsOk() }
+    
+    %property(Depth, GetDepth, SetDepth, doc="See `GetDepth` and `SetDepth`");
+    %property(Height, GetHeight, SetHeight, doc="See `GetHeight` and `SetHeight`");
+    %property(Width, GetWidth, SetWidth, doc="See `GetWidth` and `SetWidth`");
+
 };
 
 //---------------------------------------------------------------------------
@@ -101,7 +107,7 @@ public:
 
     // returns True if this object is valid/initialized
     bool IsOk() const;
-    %pythoncode { def __nonzero__(self): return self.Ok() }
+    %pythoncode { def __nonzero__(self): return self.IsOk() }
 
     // set/get the icon file name
     void SetFileName(const wxString& filename);
@@ -124,6 +130,10 @@ public:
 #endif
         }
     }
+
+    %property(FileName, GetFileName, SetFileName, doc="See `GetFileName` and `SetFileName`");
+    %property(Index, GetIndex, SetIndex, doc="See `GetIndex` and `SetIndex`");
+    
 };
 
 
@@ -159,6 +169,8 @@ public:
     // returns the icon with size wxSYS_ICON_[XY]; if no such icon exists,
     // returns the first icon in the bundle
     const wxIcon& GetIcon( const wxSize& size ) const;
+
+    %property(Icon, GetIcon, doc="See `GetIcon`");
 };
 
 //---------------------------------------------------------------------------

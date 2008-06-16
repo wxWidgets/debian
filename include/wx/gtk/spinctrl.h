@@ -3,23 +3,13 @@
 // Purpose:     wxSpinCtrl class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: spinctrl.h,v 1.15 2005/08/02 22:57:57 MW Exp $
+// RCS-ID:      $Id: spinctrl.h 40923 2006-08-30 05:55:56Z PC $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __GTKSPINCTRLH__
-#define __GTKSPINCTRLH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
-
-#include "wx/defs.h"
-
-#if wxUSE_SPINCTRL
-
-#include "wx/control.h"
+#ifndef _WX_GTK_SPINCTRL_H_
+#define _WX_GTK_SPINCTRL_H_
 
 //-----------------------------------------------------------------------------
 // wxSpinCtrl
@@ -28,7 +18,7 @@
 class WXDLLIMPEXP_CORE wxSpinCtrl : public wxControl
 {
 public:
-    wxSpinCtrl() {}
+    wxSpinCtrl();
     wxSpinCtrl(wxWindow *parent,
                wxWindowID id = -1,
                const wxString& value = wxEmptyString,
@@ -65,15 +55,14 @@ public:
     // implementation
     void OnChar( wxKeyEvent &event );
     
-    bool IsOwnGtkWindow( GdkWindow *window );
     void GtkDisableEvents();
     void GtkEnableEvents();
 
-    GtkAdjustment  *m_adjust;
-    float           m_oldPos;
+    int m_pos;
 
 protected:
     virtual wxSize DoGetBestSize() const;
+    virtual GdkWindow *GTKGetWindow(wxArrayGdkWindows& windows) const;
 
     // Widgets that use the style->base colour for the BG colour should
     // override this and return true.
@@ -84,8 +73,4 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-#endif
-    // wxUSE_SPINCTRL
-
-#endif
-    // __GTKSPINCTRLH__
+#endif // _WX_GTK_SPINCTRL_H_

@@ -1,0 +1,119 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFindReplaceData</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfindreplacedata"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfinddialogevent.html#wxfinddialogevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfindreplacedialog.html#wxfindreplacedialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFindReplaceData</H2>
+<P>
+wxFindReplaceData holds the data for 
+<A HREF="wx_wxfindreplacedialog.html#wxfindreplacedialog">wxFindReplaceDialog</A>. It is used to initialize
+the dialog with the default values and will keep the last values from the
+dialog when it is closed. It is also updated each time a 
+<A HREF="wx_wxfinddialogevent.html#wxfinddialogevent">wxFindDialogEvent</A> is generated so instead of
+using the wxFindDialogEvent methods you can also directly query this object.<P>
+Note that all <TT>SetXXX()</TT> methods may only be called before showing the
+dialog and calling them has no effect later.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+<PRE>
+#include &lt;wx/fdrepdlg.h&gt;
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+Flags used by 
+<A HREF="wx_wxfindreplacedata.html#wxfindreplacedatagetflags">wxFindReplaceData::GetFlags()</A> and
+<A HREF="wx_wxfinddialogevent.html#wxfinddialogeventgetflags">wxFindDialogEvent::GetFlags()</A>:<P>
+<PRE>
+enum wxFindReplaceFlags
+{
+    // downward search/replace selected (otherwise - upwards)
+    wxFR_DOWN       = 1,
+
+    // whole word search/replace selected
+    wxFR_WHOLEWORD  = 2,
+
+    // case sensitive search/replace selected (otherwise - case insensitive)
+    wxFR_MATCHCASE  = 4
+}
+</PRE>
+These flags can be specified in 
+<A HREF="wx_wxfindreplacedialog.html#wxfindreplacedialogctor">wxFindReplaceDialog ctor</A> or 
+<A HREF="wx_wxfindreplacedialog.html#wxfindreplacedialogcreate">Create()</A>:<P>
+<PRE>
+enum wxFindReplaceDialogStyles
+{
+    // replace dialog (otherwise find dialog)
+    wxFR_REPLACEDIALOG = 1,
+
+    // don't allow changing the search direction
+    wxFR_NOUPDOWN      = 2,
+
+    // don't allow case sensitive searching
+    wxFR_NOMATCHCASE   = 4,
+
+    // don't allow whole word searching
+    wxFR_NOWHOLEWORD   = 8
+}
+</PRE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfindreplacedatactor">wxFindReplaceData::wxFindReplaceData</A><BR>
+<A HREF="#wxfindreplacedatagetfindstring">wxFindReplaceData::GetFindString</A><BR>
+<A HREF="#wxfindreplacedatagetreplacestring">wxFindReplaceData::GetReplaceString</A><BR>
+<A HREF="#wxfindreplacedatagetflags">wxFindReplaceData::GetFlags</A><BR>
+<A HREF="#wxfindreplacedatasetflags">wxFindReplaceData::SetFlags</A><BR>
+<A HREF="#wxfindreplacedatasetfindstring">wxFindReplaceData::SetFindString</A><BR>
+<A HREF="#wxfindreplacedatasetreplacestring">wxFindReplaceData::SetReplaceString</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfindreplacedatactor"></A>
+<H3>wxFindReplaceData::wxFindReplaceData</H3>
+<P>
+<B></B> <B>wxFindReplaceData</B>(<B>wxUint32 </B><I>flags = 0</I>)<P>
+Constuctor initializes the flags to default value (0).<P>
+
+<HR>
+<A NAME="wxfindreplacedatagetfindstring"></A>
+<H3>wxFindReplaceData::GetFindString</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetFindString</B>()<P>
+Get the string to find.<P>
+
+<HR>
+<A NAME="wxfindreplacedatagetreplacestring"></A>
+<H3>wxFindReplaceData::GetReplaceString</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetReplaceString</B>()<P>
+Get the replacement string.<P>
+
+<HR>
+<A NAME="wxfindreplacedatagetflags"></A>
+<H3>wxFindReplaceData::GetFlags</H3>
+<P>
+<B>int</B> <B>GetFlags</B>() <B>const</B><P>
+Get the combination of <TT>wxFindReplaceFlags</TT> values.<P>
+
+<HR>
+<A NAME="wxfindreplacedatasetflags"></A>
+<H3>wxFindReplaceData::SetFlags</H3>
+<P>
+<B>void</B> <B>SetFlags</B>(<B>wxUint32 </B><I>flags</I>)<P>
+Set the flags to use to initialize the controls of the dialog.<P>
+
+<HR>
+<A NAME="wxfindreplacedatasetfindstring"></A>
+<H3>wxFindReplaceData::SetFindString</H3>
+<P>
+<B>void</B> <B>SetFindString</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>)<P>
+Set the string to find (used as initial value by the dialog).<P>
+
+<HR>
+<A NAME="wxfindreplacedatasetreplacestring"></A>
+<H3>wxFindReplaceData::SetReplaceString</H3>
+<P>
+<B>void</B> <B>SetReplaceString</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>)<P>
+Set the replacement string (used as initial value by the dialog).<P>
+
+</FONT></BODY></HTML>

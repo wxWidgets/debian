@@ -4,34 +4,29 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tabctrl.cpp,v 1.38.2.1 2005/12/01 11:05:31 ABX Exp $
+// RCS-ID:      $Id: tabctrl.cpp 41054 2006-09-07 19:01:45Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "tabctrl.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
+
+#if wxUSE_TAB_DIALOG
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/msw/wrapcctl.h" // include <commctrl.h> "properly"
+    #include "wx/wx.h"
+    #include "wx/app.h"
 #endif
-
-#if defined(__WIN95__)
 
 #include "wx/msw/private.h"
 
-#include <commctrl.h>
-
 #include "wx/tabctrl.h"
-#include "wx/app.h"
 #include "wx/msw/imaglist.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxTabCtrl, wxControl)
@@ -434,4 +429,4 @@ void wxMapBitmap(HBITMAP hBitmap, int width, int height)
 }
 #endif
 
-#endif // __WIN95__
+#endif // wxUSE_TAB_DIALOG

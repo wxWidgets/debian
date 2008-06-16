@@ -1,0 +1,32 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Strategies for portability</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="portability"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_strategies.html#strategies"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_reducingerrors.html#reducingerrors"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_debugstrategies.html#debugstrategies"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Strategies for portability</H2>
+<P>
+<A HREF="#userelativepositioning">Use relative positioning or constraints</A><BR>
+<A HREF="#useresources">Use wxWidgets resource files</A><BR>
+<P>
+
+<HR>
+<A NAME="userelativepositioning"></A>
+<H3>Use relative positioning or constraints</H3>
+<P>
+Don't use absolute panel item positioning if you can avoid it. Different GUIs have
+very differently sized panel items. Consider using the constraint system, although this
+can be complex to program.<P>
+Alternatively, you could use alternative .wrc (wxWidgets resource files) on different
+platforms, with slightly different dimensions in each. Or space your panel items out
+to avoid problems.<P>
+
+<HR>
+<A NAME="useresources"></A>
+<H3>Use wxWidgets resource files</H3>
+<P>
+Use .xrc (wxWidgets resource files) where possible, because they can be easily changed
+independently of source code.<P>
+
+</FONT></BODY></HTML>

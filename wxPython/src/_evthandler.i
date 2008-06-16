@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Aug-2003
-// RCS-ID:      $Id: _evthandler.i,v 1.9 2004/12/20 22:49:41 RD Exp $
+// RCS-ID:      $Id: _evthandler.i 43595 2006-11-22 01:57:47Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -22,6 +22,7 @@ public:
     // turn off this typemap
     %typemap(out) wxEvtHandler*;    
 
+    %pythonAppend wxEvtHandler         "self._setOORInfo(self)"
     wxEvtHandler();
 
     // Turn it back on again
@@ -72,6 +73,7 @@ public:
         }
     }
 
+    %pythonAppend _setOORInfo   "args[0].this.own(False)";
     %extend {
         void _setOORInfo(PyObject* _self, bool incref=true) {
             if (_self && _self != Py_None) {
@@ -127,6 +129,9 @@ public:
             return event.Unbind(self, id, id2)              
     }
 
+    %property(EvtHandlerEnabled, GetEvtHandlerEnabled, SetEvtHandlerEnabled, doc="See `GetEvtHandlerEnabled` and `SetEvtHandlerEnabled`");
+    %property(NextHandler, GetNextHandler, SetNextHandler, doc="See `GetNextHandler` and `SetNextHandler`");
+    %property(PreviousHandler, GetPreviousHandler, SetPreviousHandler, doc="See `GetPreviousHandler` and `SetPreviousHandler`");
     
 };
 

@@ -7,7 +7,7 @@
 # Author:      Robin Dunn
 #
 # Created:     8-July-2002
-# RCS-ID:      $Id: stattext.py,v 1.11 2005/05/13 01:39:09 RD Exp $
+# RCS-ID:      $Id: stattext.py 49762 2007-11-09 17:50:59Z AG $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -36,7 +36,7 @@ class GenStaticText(wx.PyControl):
 
         wx.PyControl.SetLabel(self, label) # don't check wx.ST_NO_AUTORESIZE yet
         self.InheritAttributes()
-        self.SetBestFittingSize(size)
+        self.SetInitialSize(size)
 
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         if BUFFERED:
@@ -56,7 +56,7 @@ class GenStaticText(wx.PyControl):
         style = self.GetWindowStyleFlag()
         self.InvalidateBestSize()
         if not style & wx.ST_NO_AUTORESIZE:
-            self.SetBestFittingSize(self.GetBestSize())
+            self.SetSize(self.GetBestSize())
         self.Refresh()
 
 
@@ -69,7 +69,7 @@ class GenStaticText(wx.PyControl):
         style = self.GetWindowStyleFlag()
         self.InvalidateBestSize()
         if not style & wx.ST_NO_AUTORESIZE:
-            self.SetBestFittingSize(self.GetBestSize())
+            self.SetSize(self.GetBestSize())
         self.Refresh()
 
 
@@ -98,6 +98,20 @@ class GenStaticText(wx.PyControl):
         return best
 
 
+    def Enable(self, enable=True):
+        """Overridden Enable() method to properly refresh the widget. """
+
+        wx.PyControl.Enable(self, enable)
+        self.Refresh()
+
+
+    def Disable(self):
+        """Overridden Disable() method to properly refresh the widget. """
+
+        wx.PyControl.Disable(self)
+        self.Refresh()
+
+           
     def AcceptsFocus(self):
         """Overridden base class virtual."""
         return False
@@ -137,7 +151,11 @@ class GenStaticText(wx.PyControl):
             dc.SetBackground(backBrush)
             dc.Clear()
 
-        dc.SetTextForeground(self.GetForegroundColour())
+        if self.IsEnabled():
+            dc.SetTextForeground(self.GetForegroundColour())
+        else:
+            dc.SetTextForeground(wx.SystemSettings.GetColour(wx.SYS_COLOUR_GRAYTEXT))
+            
         dc.SetFont(self.GetFont())
         label = self.GetLabel()
         style = self.GetWindowStyleFlag()

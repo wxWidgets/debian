@@ -4,14 +4,10 @@
 // Author:      Eric Dowty
 // Modified by:
 // Created:     2002-11-18
-// RCS-ID:      $Id: remhelp.h,v 1.3 2004/06/04 17:58:50 ABX Exp $
+// RCS-ID:      $Id: remhelp.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface remhelp.h
-#endif
 
 #ifndef _WX_REMHELP_H_
 #define _WX_REMHELP_H_
@@ -26,7 +22,7 @@ class rhhcConnection : public wxConnection
 {
 public:
     rhhcConnection(bool *isconn_a);
-    ~rhhcConnection();
+    virtual ~rhhcConnection();
 
     bool OnAdvise(const wxString& topic, const wxString& item, char *data, int size, wxIPCFormat format);
     bool OnDisconnect();
@@ -48,7 +44,7 @@ class wxRemoteHtmlHelpController : public wxHelpControllerBase
     DECLARE_CLASS(wxRemoteHtmlHelpController)
 public:
     wxRemoteHtmlHelpController(int style = wxHF_DEFAULT_STYLE);
-    ~wxRemoteHtmlHelpController();
+    virtual ~wxRemoteHtmlHelpController();
     void OnQuit(void);
 
     void SetService(wxString& a_service);

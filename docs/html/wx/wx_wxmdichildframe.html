@@ -1,0 +1,243 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMDIChildFrame</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmdichildframe"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmbconvutf32.html#wxmbconvutf32"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindow"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMDIChildFrame</H2>
+<P>
+An MDI child frame is a frame that can only exist on a <A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindow">wxMDIClientWindow</A>,
+which is itself a child of <A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/mdi.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxCAPTION</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Puts a caption on the frame.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxDEFAULT_FRAME_STYLE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Defined as <B>wxMINIMIZE_BOX |  wxMAXIMIZE_BOX |  wxTHICK_FRAME |  wxSYSTEM_MENU |  wxCAPTION</B>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxICONIZE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Display the frame iconized (minimized) (Windows only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMAXIMIZE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays the frame maximized (Windows only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMAXIMIZE_BOX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a maximize box on the frame (Windows and Motif only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMINIMIZE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Identical to <B>wxICONIZE</B>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxMINIMIZE_BOX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a minimize box on the frame (Windows and Motif only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxRESIZE_BORDER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a resizeable border around the window (Motif only;
+for Windows, it is implicit in wxTHICK_FRAME).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSTAY_ON_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Stay on top of other windows (Windows only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxSYSTEM_MENU</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a system menu (Windows and Motif only).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxTHICK_FRAME</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a thick frame around the window (Windows and Motif only).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Although internally an MDI child frame is a child of the MDI client window, in wxWidgets
+you create it as a child of <A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A>. You can usually
+forget that the client window exists.<P>
+MDI child frames are clipped to the area of the MDI client window, and may be iconized
+on the client window.<P>
+You can associate a menubar with a child frame as usual, although an MDI child doesn't display
+its menubar under its own title bar. The MDI parent frame's menubar will be changed to
+reflect the currently active child frame. If there are currently no children, the parent
+frame's own menubar will be displayed.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindow">wxMDIClientWindow</A>, <A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A>,
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmdichildframector">wxMDIChildFrame::wxMDIChildFrame</A><BR>
+<A HREF="#wxmdichildframedtor">wxMDIChildFrame::~wxMDIChildFrame</A><BR>
+<A HREF="#wxmdichildframeactivate">wxMDIChildFrame::Activate</A><BR>
+<A HREF="#wxmdichildframecreate">wxMDIChildFrame::Create</A><BR>
+<A HREF="#wxmdichildframemaximize">wxMDIChildFrame::Maximize</A><BR>
+<A HREF="#wxmdichildframerestore">wxMDIChildFrame::Restore</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmdichildframector"></A>
+<H3>wxMDIChildFrame::wxMDIChildFrame</H3>
+<P>
+<B></B> <B>wxMDIChildFrame</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxMDIChildFrame</B>(<B><A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>, <B>long</B><I> style = wxDEFAULT_FRAME_STYLE</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "frame"</I>)<P>
+Constructor, creating the window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The window parent. This should not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+The window identifier. It may take a value of -1 to indicate a default value.</UL></UL>
+<P>
+<I>title</I><UL><UL>
+The caption to be displayed on the frame's title bar.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+The window position. A value of (-1, -1) indicates a default position, chosen by
+either the windowing system or wxWidgets, depending on platform.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+The window size. A value of (-1, -1) indicates a default size, chosen by
+either the windowing system or wxWidgets, depending on platform.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style. See <A HREF="wx_wxmdichildframe.html#wxmdichildframe">wxMDIChildFrame</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+The name of the window. This parameter is used to associate a name with the item,
+allowing the application user to set Motif resource values for
+individual windows.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+None.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdichildframe.html#wxmdichildframecreate">wxMDIChildFrame::Create</A><P>
+
+<HR>
+<A NAME="wxmdichildframedtor"></A>
+<H3>wxMDIChildFrame::~wxMDIChildFrame</H3>
+<P>
+<B></B> <B>~wxMDIChildFrame</B>()<P>
+Destructor. Destroys all child windows and menu bar if present.<P>
+
+<HR>
+<A NAME="wxmdichildframeactivate"></A>
+<H3>wxMDIChildFrame::Activate</H3>
+<P>
+<B>void</B> <B>Activate</B>()<P>
+Activates this MDI child frame.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdichildframe.html#wxmdichildframemaximize">wxMDIChildFrame::Maximize</A>,
+<A HREF="wx_wxmdichildframe.html#wxmdichildframerestore">wxMDIChildFrame::Restore</A><P>
+
+<HR>
+<A NAME="wxmdichildframecreate"></A>
+<H3>wxMDIChildFrame::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>, <B>long</B><I> style = wxDEFAULT_FRAME_STYLE</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "frame"</I>)<P>
+Used in two-step frame construction. See <A HREF="wx_wxmdichildframe.html#wxmdichildframector">wxMDIChildFrame::wxMDIChildFrame</A>
+for further details.<P>
+
+<HR>
+<A NAME="wxmdichildframemaximize"></A>
+<H3>wxMDIChildFrame::Maximize</H3>
+<P>
+<B>void</B> <B>Maximize</B>(<B>bool</B><I>maximize</I>)<P>
+Maximizes this MDI child frame.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdichildframe.html#wxmdichildframeactivate">wxMDIChildFrame::Activate</A>,
+<A HREF="wx_wxmdichildframe.html#wxmdichildframerestore">wxMDIChildFrame::Restore</A><P>
+
+<HR>
+<A NAME="wxmdichildframerestore"></A>
+<H3>wxMDIChildFrame::Restore</H3>
+<P>
+<B>void</B> <B>Restore</B>()<P>
+Restores this MDI child frame (unmaximizes).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdichildframe.html#wxmdichildframeactivate">wxMDIChildFrame::Activate</A>,
+<A HREF="wx_wxmdichildframe.html#wxmdichildframemaximize">wxMDIChildFrame::Maximize</A><P>
+
+</FONT></BODY></HTML>

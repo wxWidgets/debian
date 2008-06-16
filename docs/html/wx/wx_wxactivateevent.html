@@ -1,0 +1,87 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxActivateEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxactivateevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxaccessible.html#wxaccessible"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxactivexcontainer.html#wxactivexcontainer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxActivateEvent</H2>
+<P>
+An activate event is sent when a window or application is being activated
+or deactivated.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/event.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To process an activate event, use these event handler macros to direct input to a member
+function that takes a wxActivateEvent argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_ACTIVATE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_ACTIVATE event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_ACTIVATE_APP(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_ACTIVATE_APP event.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_HIBERNATE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a hibernate event, supplying the member function.
+This event applies to wxApp only, and only on Windows SmartPhone and PocketPC. It is generated when the
+system is low on memory; the application should free up as much memory as possible, and restore
+full working state when it receives a wxEVT_ACTIVATE or wxEVT_ACTIVATE_APP event.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+A top-level window (a dialog or frame) receives an activate event when it is
+being activated or deactivated. This is indicated visually by the title
+bar changing colour, and a subwindow gaining the keyboard focus.<P>
+An application is activated or deactivated when one of its frames becomes activated,
+or a frame becomes inactivated resulting in all application frames being inactive.<P>
+Please note that usually you should call <A HREF="wx_wxevent.html#wxeventskip">event.Skip()</A> in
+your handlers for these events as not doing so can result in strange effects.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A>,
+<A HREF="wx_wxapp.html#wxappisactive">wxApp::IsActive</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxactivateeventctor">wxActivateEvent::wxActivateEvent</A><BR>
+<A HREF="#wxactivateeventgetactive">wxActivateEvent::GetActive</A><BR>
+<P>
+
+<HR>
+<A NAME="wxactivateeventctor"></A>
+<H3>wxActivateEvent::wxActivateEvent</H3>
+<P>
+<B></B> <B>wxActivateEvent</B>(<B>WXTYPE </B><I>eventType = 0</I>, <B>bool</B><I> active = true</I>, <B>int </B><I>id = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxactivateeventgetactive"></A>
+<H3>wxActivateEvent::GetActive</H3>
+<P>
+<B>bool</B> <B>GetActive</B>() <B>const</B><P>
+Returns true if the application or window is being activated, false otherwise.<P>
+
+</FONT></BODY></HTML>

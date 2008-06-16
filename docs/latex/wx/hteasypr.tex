@@ -38,6 +38,26 @@ Constructor.
 
 \docparam{parentWindow}{pointer to the window that will own the preview frame and setup dialogs. May be NULL.}
 
+\membersection{wxHtmlEasyPrinting::GetParentWindow}\label{wxhtmleasyprintinggetparentwindow}
+
+\constfunc{wxWindow*}{GetParentWindow}{\void}
+
+Gets the parent window for dialogs.
+
+\membersection{wxHtmlEasyPrinting::GetPrintData}\label{wxhtmleasyprintinggetprintdata}
+
+\func{wxPrintData*}{GetPrintData}{\void}
+
+Returns pointer to \helpref{wxPrintData}{wxprintdata} instance used by this class. You can
+set its parameters (via SetXXXX methods).
+
+\membersection{wxHtmlEasyPrinting::GetPageSetupData}\label{wxhtmleasyprintinggetpagesetupdata}
+
+\func{wxPageSetupDialogData*}{GetPageSetupData}{\void}
+
+Returns a pointer to \helpref{wxPageSetupDialogData}{wxpagesetupdialogdata} instance used by 
+this class. You can set its parameters (via SetXXXX methods).
+
 \membersection{wxHtmlEasyPrinting::PreviewFile}\label{wxhtmleasyprintingpreviewfile}
 
 \func{bool}{PreviewFile}{\param{const wxString\& }{htmlfile}}
@@ -101,7 +121,7 @@ Display page setup dialog and allows the user to modify settings.
 
 \membersection{wxHtmlEasyPrinting::SetFonts}\label{wxhtmleasyprintingsetfonts}
 
-\func{void}{SetFonts}{\param{wxString }{normal\_face}, \param{wxString }{fixed\_face}, \param{const int }{*sizes = NULL}}
+\func{void}{SetFonts}{\param{const wxString\& }{normal\_face}, \param{const wxString\& }{fixed\_face}, \param{const int }{*sizes = NULL}}
 
 Sets fonts. See \helpref{wxHtmlWindow::SetFonts}{wxhtmlwindowsetfonts} for
 detailed description.
@@ -110,17 +130,12 @@ detailed description.
 
 \func{void}{SetHeader}{\param{const wxString\& }{header}, \param{int }{pg = wxPAGE\_ALL}}
 
-Set page header.
+Set page header. The following macros can be used inside it:
+\input htprintmacros.inc
 
 \wxheading{Parameters}
 
-\docparam{header}{HTML text to be used as header. You can use macros in it:
-
-\begin{itemize}\itemsep=0pt
-\item @PAGENUM@ is replaced by page number
-\item @PAGESCNT@ is replaced by total number of pages
-\end{itemize}
-}
+\docparam{header}{HTML text to be used as header.}
 
 \docparam{pg}{one of wxPAGE\_ODD, wxPAGE\_EVEN and wxPAGE\_ALL constants.}
 
@@ -128,31 +143,18 @@ Set page header.
 
 \func{void}{SetFooter}{\param{const wxString\& }{footer}, \param{int }{pg = wxPAGE\_ALL}}
 
-Set page footer.
+Set page footer. The following macros can be used inside it:
+\input htprintmacros.inc
 
 \wxheading{Parameters}
 
-\docparam{footer}{HTML text to be used as footer. You can use macros in it:
-
-\begin{itemize}\itemsep=0pt
-\item @PAGENUM@ is replaced by page number
-\item @PAGESCNT@ is replaced by total number of pages
-\end{itemize}
-}
+\docparam{footer}{HTML text to be used as footer.}
 
 \docparam{pg}{one of wxPAGE\_ODD, wxPAGE\_EVEN and wxPAGE\_ALL constants.}
 
-\membersection{wxHtmlEasyPrinting::GetPrintData}\label{wxhtmleasyprintinggetprintdata}
+\membersection{wxHtmlEasyPrinting::SetParentWindow}\label{wxhtmleasyprintingsetparentwindow}
 
-\func{wxPrintData*}{GetPrintData}{\void}
+\func{void}{SetParentWindow}{\param{wxWindow*}{ window}}
 
-Returns pointer to \helpref{wxPrintData}{wxprintdata} instance used by this class. You can
-set its parameters (via SetXXXX methods).
-
-\membersection{wxHtmlEasyPrinting::GetPageSetupData}\label{wxhtmleasyprintinggetpagesetupdata}
-
-\func{wxPageSetupDialogData*}{GetPageSetupData}{\void}
-
-Returns a pointer to \helpref{wxPageSetupDialogData}{wxpagesetupdialogdata} instance used by 
-this class. You can set its parameters (via SetXXXX methods).
+Sets the parent window for dialogs.
 

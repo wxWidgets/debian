@@ -1,0 +1,75 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMDIClientWindow</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmdiclientwindow"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmdichildframe.html#wxmdichildframe"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmdiparentframe.html#wxmdiparentframe"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMDIClientWindow</H2>
+<P>
+An MDI client window is a child of <A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A>, and manages zero or
+more <A HREF="wx_wxmdichildframe.html#wxmdichildframe">wxMDIChildFrame</A> objects.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/mdi.h&gt;<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The client window is the area where MDI child windows exist. It doesn't have to cover the whole
+parent frame; other windows such as toolbars and a help window might coexist with it.
+There can be scrollbars on a client window, which are controlled by the parent window style.<P>
+The <B>wxMDIClientWindow</B> class is usually adequate without further derivation, and it is created
+automatically when the MDI parent frame is created. If the application needs to derive a new class,
+the function <A HREF="wx_wxmdiparentframe.html#wxmdiparentframeoncreateclient">wxMDIParentFrame::OnCreateClient</A> must be
+overridden in order to give an opportunity to use a different class of client window.<P>
+Under Windows 95, the client window will automatically have a sunken border style when
+the active child is not maximized, and no border style when a child is maximized.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdichildframe.html#wxmdichildframe">wxMDIChildFrame</A>, <A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A>,
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmdiclientwindowctor">wxMDIClientWindow::wxMDIClientWindow</A><BR>
+<A HREF="#wxmdiclientwindowdtor">wxMDIClientWindow::~wxMDIClientWindow</A><BR>
+<A HREF="#wxmdiclientwindowcreateclient">wxMDIClientWindow::CreateClient</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmdiclientwindowctor"></A>
+<H3>wxMDIClientWindow::wxMDIClientWindow</H3>
+<P>
+<B></B> <B>wxMDIClientWindow</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxMDIClientWindow</B>(<B><A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A>* </B></B><I>parent</I>, <B>long</B><I> style = 0</I>)<P>
+Constructor, creating the window.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The window parent.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style. Currently unused.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+The second style of constructor is called within <A HREF="wx_wxmdiparentframe.html#wxmdiparentframeoncreateclient">wxMDIParentFrame::OnCreateClient</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframector">wxMDIParentFrame::wxMDIParentFrame</A>,
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframeoncreateclient">wxMDIParentFrame::OnCreateClient</A><P>
+
+<HR>
+<A NAME="wxmdiclientwindowdtor"></A>
+<H3>wxMDIClientWindow::~wxMDIClientWindow</H3>
+<P>
+<B></B> <B>~wxMDIClientWindow</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxmdiclientwindowcreateclient"></A>
+<H3>wxMDIClientWindow::CreateClient</H3>
+<P>
+<B>bool</B> <B>CreateClient</B>(<B><A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A>* </B></B><I>parent</I>, <B>long</B><I> style = 0</I>)<P>
+Used in two-step frame construction. See <A HREF="wx_wxmdiclientwindow.html#wxmdiclientwindowctor">wxMDIClientWindow::wxMDIClientWindow</A>
+for further details.<P>
+
+</FONT></BODY></HTML>

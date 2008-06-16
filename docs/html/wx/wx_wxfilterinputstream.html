@@ -1,0 +1,40 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFilterInputStream</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfilterinputstream"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfilterclassfactory.html#wxfilterclassfactory"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfilteroutputstream.html#wxfilteroutputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFilterInputStream</H2>
+<P>
+A filter stream has the capability of a normal stream but it can be placed on top
+of another stream. So, for example, it can uncompress or decrypt the data which are read
+from another stream and pass it to the requester.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A><BR>
+
+<A HREF="wx_wxstreambase.html#wxstreambase">wxStreamBase</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/stream.h&gt;<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+The interface of this class is the same as that of wxInputStream. Only a constructor
+differs and it is documented below.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilterclassfactory.html#wxfilterclassfactory">wxFilterClassFactory</A><BR>
+
+<A HREF="wx_wxfilteroutputstream.html#wxfilteroutputstream">wxFilterOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfilterinputstreamctor">wxFilterInputStream::wxFilterInputStream</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfilterinputstreamctor"></A>
+<H3>wxFilterInputStream::wxFilterInputStream</H3>
+<P>
+<B></B> <B>wxFilterInputStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B></B><I> stream</I>)<P>
+<B></B> <B>wxFilterInputStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>*</B></B><I> stream</I>)<P>
+Initializes a "filter" stream.<P>
+If the parent stream is passed as a pointer then the new filter stream
+takes ownership of it. If it is passed by reference then it does not.<P>
+
+</FONT></BODY></HTML>

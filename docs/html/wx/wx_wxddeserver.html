@@ -1,0 +1,58 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDDEServer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxddeserver"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxddeconnection.html#wxddeconnection"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdebugcontext.html#wxdebugcontext"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDDEServer</H2>
+<P>
+A wxDDEServer object represents the server part of a client-server DDE
+(Dynamic Data Exchange) conversation.<P>
+This DDE-based implementation is
+available on Windows only, but a platform-independent, socket-based version
+of this API is available using <A HREF="wx_wxtcpserver.html#wxtcpserver">wxTCPServer</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxServerBase<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dde.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxddeclient.html#wxddeclient">wxDDEClient</A>, <A HREF="wx_wxddeconnection.html#wxddeconnection">wxDDEConnection</A>, <A HREF="wx_ipcoverview.html#ipcoverview">IPC overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxddeserverctor">wxDDEServer::wxDDEServer</A><BR>
+<A HREF="#wxddeservercreate">wxDDEServer::Create</A><BR>
+<A HREF="#wxddeserveronacceptconnection">wxDDEServer::OnAcceptConnection</A><BR>
+<P>
+
+<HR>
+<A NAME="wxddeserverctor"></A>
+<H3>wxDDEServer::wxDDEServer</H3>
+<P>
+<B></B> <B>wxDDEServer</B>()<P>
+Constructs a server object.<P>
+
+<HR>
+<A NAME="wxddeservercreate"></A>
+<H3>wxDDEServer::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>service</I>)<P>
+Registers the server using the given service name. Under UNIX, the
+string must contain an integer id which is used as an Internet port
+number. false is returned if the call failed (for example, the port
+number is already in use).<P>
+
+<HR>
+<A NAME="wxddeserveronacceptconnection"></A>
+<H3>wxDDEServer::OnAcceptConnection</H3>
+<P>
+<B>virtual wxConnectionBase *</B> <B>OnAcceptConnection</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>topic</I>)<P>
+When a client calls <B>MakeConnection</B>, the server receives the
+message and this member is called. The application should derive a
+member to intercept this message and return a connection object of
+either the standard wxDDEConnection type, or of a user-derived type. If the
+topic is "STDIO'', the application may wish to refuse the connection.
+Under UNIX, when a server is created the OnAcceptConnection message is
+always sent for standard input and output, but in the context of DDE
+messages it doesn't make a lot of sense.<P>
+
+</FONT></BODY></HTML>

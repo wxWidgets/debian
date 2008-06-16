@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: table.h,v 1.3 2004/06/04 17:58:55 ABX Exp $
+// RCS-ID:      $Id: table.h 27631 2004-06-04 17:58:56Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

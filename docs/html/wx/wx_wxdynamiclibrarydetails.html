@@ -1,0 +1,75 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDynamicLibraryDetails</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdynamiclibrarydetails"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdynamiclibrary.html#wxdynamiclibrary"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxencodingconverter.html#wxencodingconverter"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDynamicLibraryDetails</H2>
+<P>
+This class is used for the objects returned by 
+<A HREF="wx_wxdynamiclibrary.html#wxdynamiclibrarylistloaded">wxDynamicLibrary::ListLoaded</A> method and
+contains the information about a single module loaded into the address space of
+the current process. A module in this context may be either a dynamic library
+or the main program itself.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dynlib.h&gt;<P>
+(only available if <TT>wxUSE_DYNLIB_CLASS</TT> is set to 1)<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdynamiclibrarygetname">wxDynamicLibraryDetails::GetName</A><BR>
+<A HREF="#wxdynamiclibrarygetpath">wxDynamicLibraryDetails::GetPath</A><BR>
+<A HREF="#wxdynamiclibrarygetaddress">wxDynamicLibraryDetails::GetAddress</A><BR>
+<A HREF="#wxdynamiclibrarygetversion">wxDynamicLibraryDetails::GetVersion</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdynamiclibrarygetname"></A>
+<H3>wxDynamicLibraryDetails::GetName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetName</B>() <B>const</B><P>
+Returns the base name of this module, e.g. <TT>kernel32.dll</TT> or 
+<TT>libc-2.3.2.so</TT>.<P>
+
+
+<HR>
+<A NAME="wxdynamiclibrarygetpath"></A>
+<H3>wxDynamicLibraryDetails::GetPath</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPath</B>() <B>const</B><P>
+Returns the full path of this module if available, e.g. 
+<TT>c:\windows\system32\kernel32.dll</TT> or 
+<TT>/lib/libc-2.3.2.so</TT>.<P>
+
+
+<HR>
+<A NAME="wxdynamiclibrarygetaddress"></A>
+<H3>wxDynamicLibraryDetails::GetAddress</H3>
+<P>
+<B>bool</B> <B>GetAddress</B>(<B>void **</B><I>addr</I>, <B>size_t </B><I>*len</I>) <B>const</B><P>
+Retrieves the load address and the size of this module.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>addr</I><UL><UL>
+the pointer to the location to return load address in, may be
+<TT>NULL</TT></UL></UL>
+<P>
+<I>len</I><UL><UL>
+pointer to the location to return the size of this module in
+memory in, may be <TT>NULL</TT></UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if the load address and module size were retrieved, <TT>false</TT> if this
+information is not available.<P>
+
+
+<HR>
+<A NAME="wxdynamiclibrarygetversion"></A>
+<H3>wxDynamicLibraryDetails::GetVersion</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetVersion</B>() <B>const</B><P>
+Returns the version of this module, e.g. <TT>5.2.3790.0</TT> or 
+<TT>2.3.2</TT>. The returned string is empty if the version information is not
+available.<P>
+
+</FONT></BODY></HTML>

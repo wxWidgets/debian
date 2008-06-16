@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: doc.h,v 1.9 2004/10/06 20:31:59 ABX Exp $
+// RCS-ID:      $Id: doc.h 35665 2005-09-24 21:43:15Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
 #ifndef __DOCSAMPLEH__
 #define __DOCSAMPLEH__
@@ -36,7 +32,7 @@ public:
     wxList lines;
 
     DoodleSegment(void){};
-    DoodleSegment(DoodleSegment& seg);
+    DoodleSegment(const DoodleSegment& seg);
     ~DoodleSegment(void);
 
     void Draw(wxDC *dc);

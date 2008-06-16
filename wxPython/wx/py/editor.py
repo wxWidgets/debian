@@ -1,8 +1,8 @@
 """PyAlaCarte and PyAlaMode editors."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: editor.py,v 1.7.2.1 2005/12/27 20:43:50 RD Exp $"
-__revision__ = "$Revision: 1.7.2.1 $"[11:-2]
+__cvsid__ = "$Id: editor.py 41077 2006-09-08 20:09:27Z RD $"
+__revision__ = "$Revision: 41077 $"[11:-2]
 
 import wx
 
@@ -643,7 +643,7 @@ class Editor:
         Only receives an event if OnKeyDown calls event.Skip() for the
         corresponding event."""
 
-        key = event.KeyCode()
+        key = event.GetKeyCode()
         if key in self.autoCompleteKeys:
             # Usually the dot (period) key activates auto completion.
             if self.window.AutoCompActive(): 
@@ -671,7 +671,7 @@ class Editor:
     def OnKeyDown(self, event):
         """Key down event handler."""
 
-        key = event.KeyCode()
+        key = event.GetKeyCode()
         # If the auto-complete window is up let it do its thing.
         if self.window.AutoCompActive():
             event.Skip()
@@ -805,7 +805,7 @@ def openMultiple(parent=None, title='Open', directory='', filename='',
 
 def saveSingle(parent=None, title='Save', directory='', filename='',
                wildcard='All Files (*.*)|*.*',
-               style=wx.SAVE | wx.HIDE_READONLY | wx.OVERWRITE_PROMPT):
+               style=wx.SAVE | wx.OVERWRITE_PROMPT):
     """File dialog wrapper function."""
     dialog = wx.FileDialog(parent, title, directory, filename,
                            wildcard, style)

@@ -88,8 +88,10 @@ one (especially because creating a wxFileConfig object might be a time
 consuming operation). In this case, you may create this global config object
 in the very start of the program and {\it Set()} it as the default. Then, from
 anywhere in your program, you may access it using the {\it Get()} function.
-Note that you must delete this object (usually in \helpref{wxApp::OnExit}{wxapponexit}) 
-in order to avoid memory leaks, wxWidgets won't do it automatically.
+This global wxConfig object will be deleted by wxWidgets automatically if it
+exists. Note that this implies that if you do delete this object yourself
+(usually in \helpref{wxApp::OnExit}{wxapponexit}) you must use {\it Set(NULL)}
+to prevent wxWidgets from deleting it the second time.
 
 As it happens, you may even further simplify the procedure described above:
 you may forget about calling {\it Set()}. When {\it Get()} is called and there
@@ -375,18 +377,34 @@ this is not present, but required, the application name will be used instead.}
 
 \docparam{style}{Can be one of wxCONFIG\_USE\_LOCAL\_FILE and
 wxCONFIG\_USE\_GLOBAL\_FILE. The style interpretation depends on the config
-class and is ignored by some. For wxFileConfig, these styles determine whether
-a local or global config file is created or used. If the flag is present but
-the parameter is empty, the parameter will be set to a default. If the
-parameter is present but the style flag not, the relevant flag will be added
-to the style. For wxFileConfig you can also add wxCONFIG\_USE\_RELATIVE\_PATH 
-by logically or'ing it to either of the \_FILE options to tell wxFileConfig to 
-use relative instead of absolute paths.  For wxFileConfig, you can also 
-add wxCONFIG\_USE\_NO\_ESCAPE\_CHARACTERS which will turn off character 
-escaping for the values of entries stored in the config file: for example 
-a {\it foo} key with some backslash characters will be stored as {\tt foo=C:$\backslash$mydir} instead
-of the usual storage of {\tt foo=C:$\backslash\backslash$mydir}.
-For wxRegConfig, this flag refers to HKLM, and provides read-only access.
+class and is ignored by some implementations. For wxFileConfig, these styles
+determine whether a local or global config file is created or used: if
+wxCONFIG\_USE\_GLOBAL\_FILE is used, then settings are read from the global
+config file and if wxCONFIG\_USE\_LOCAL\_FILE is used, settings are read from
+and written to local config file (if they are both set, global file is read
+first, then local file, overwriting global settings). If the
+flag is present but the parameter is empty, the parameter will be set to a
+default. If the parameter is present but the style flag not, the relevant flag
+will be added to the style. For wxRegConfig, thie GLOBAL flag refers to HKLM
+key while LOCAL one is for the usual HKCU one.
+
+For wxFileConfig you can also add wxCONFIG\_USE\_RELATIVE\_PATH by logically
+or'ing it to either of the \_FILE options to tell wxFileConfig to use relative
+instead of absolute paths.
+
+On non-VMS Unix systems, the default local configuration file is \tt{~/.appname}.
+However, this path may be also used as user data directory
+(see \helpref{wxStandardPaths::GetUserDataDir}{wxstandardpathsgetuserdatadir}) if
+the application has several data files. In this case wxCONFIG\_USE\_SUBDIR
+flag, which changes the default local configuration file to \tt{~/.appname/appname}
+should be used. Notice that this flag is ignored on non-Unix system, including
+VMS, or if a non-default \textit{localFilename} is provided. \newsince{2.8.2}
+
+For wxFileConfig, you can also add wxCONFIG\_USE\_NO\_ESCAPE\_CHARACTERS which
+will turn off character escaping for the values of entries stored in the config
+file: for example a {\it foo} key with some backslash characters will be stored
+as {\tt foo=C:$\backslash$mydir} instead of the usual storage of {\tt
+foo=C:$\backslash\backslash$mydir}.
 
 The wxCONFIG\_USE\_NO\_ESCAPE\_CHARACTERS style can be helpful if your config 
 file must be read or written to by a non-wxWidgets program (which might not 
@@ -452,7 +470,10 @@ in it and the second parameter is true.
 
 \func{bool}{DeleteGroup}{\param{const wxString\& }{ key}}
 
-Delete the group (with all subgroups)
+Delete the group (with all subgroups). If the current path is under the group
+being deleted it is changed to its deepest still existing component. E.g. if
+the current path is \texttt{/A/B/C/D} and the group \texttt{C} is deleted the
+path becomes \texttt{/A/B}.
 
 
 \membersection{wxConfigBase::Exists}\label{wxconfigbaseexists}

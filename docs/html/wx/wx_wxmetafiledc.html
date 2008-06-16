@@ -1,0 +1,62 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMetafileDC</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmetafiledc"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmetafile.html#wxmetafile"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanager"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMetafileDC</H2>
+<P>
+This is a type of device context that allows a metafile object to be
+created (Windows only), and has most of the characteristics of a normal
+<B>wxDC</B>. The <A HREF="wx_wxmetafiledc.html#wxmetafiledcclose">wxMetafileDC::Close</A> member must be called after drawing into the
+device context, to return a metafile. The only purpose for this at
+present is to allow the metafile to be copied to the clipboard (see <A HREF="wx_wxmetafile.html#wxmetafile">wxMetafile</A>).<P>
+Adding metafile capability to an application should be easy if you
+already write to a wxDC; simply pass the wxMetafileDC to your drawing
+function instead. You may wish to conditionally compile this code so it
+is not compiled under X (although no harm will result if you leave it
+in).<P>
+Note that a metafile saved to disk is in standard Windows metafile format,
+and cannot be imported into most applications. To make it importable,
+call the function <A HREF="wx_gdifunctions.html#wxmakemetafileplaceable">::wxMakeMetafilePlaceable</A> after
+closing your disk-based metafile device context.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdc">wxDC</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/metafile.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmetafile.html#wxmetafile">wxMetafile</A>, <A HREF="wx_wxdc.html#wxdc">wxDC</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxmetafiledcctor">wxMetafileDC::wxMetafileDC</A><BR>
+<A HREF="#wxmetafiledcdtor">wxMetafileDC::~wxMetafileDC</A><BR>
+<A HREF="#wxmetafiledcclose">wxMetafileDC::Close</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmetafiledcctor"></A>
+<H3>wxMetafileDC::wxMetafileDC</H3>
+<P>
+<B></B> <B>wxMetafileDC</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename = ""</I>)<P>
+Constructor. If no filename is passed, the metafile is created
+in memory.<P>
+
+<HR>
+<A NAME="wxmetafiledcdtor"></A>
+<H3>wxMetafileDC::~wxMetafileDC</H3>
+<P>
+<B></B> <B>~wxMetafileDC</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxmetafiledcclose"></A>
+<H3>wxMetafileDC::Close</H3>
+<P>
+<B><A HREF="wx_wxmetafile.html#wxmetafile">wxMetafile</A> *</B> </B> <B>Close</B>()<P>
+This must be called after the device context is finished with. A
+metafile is returned, and ownership of it passes to the calling
+application (so it should be destroyed explicitly).<P>
+
+</FONT></BODY></HTML>

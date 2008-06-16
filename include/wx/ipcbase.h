@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     4/1/98
-// RCS-ID:      $Id: ipcbase.h,v 1.25 2004/10/13 14:03:57 ABX Exp $
+// RCS-ID:      $Id: ipcbase.h 45498 2007-04-16 13:03:05Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_IPCBASEH__
 #define _WX_IPCBASEH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "ipcbase.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/object.h"
@@ -52,8 +48,8 @@ class WXDLLIMPEXP_BASE wxConnectionBase: public wxObject
 public:
   wxConnectionBase(wxChar *buffer, int size); // use external buffer
   wxConnectionBase(); // use internal, adaptive buffer
-  wxConnectionBase(wxConnectionBase& copy);
-  ~wxConnectionBase(void);
+  wxConnectionBase(const wxConnectionBase& copy);
+  virtual ~wxConnectionBase(void);
 
   void SetConnected( bool c ) { m_connected = c; }
   bool GetConnected() { return m_connected; }
@@ -77,28 +73,28 @@ public:
                                wxChar *WXUNUSED(data),
                                int WXUNUSED(size),
                                wxIPCFormat WXUNUSED(format) )
-                             { return false; };
+                             { return false; }
 
   virtual wxChar *OnRequest    ( const wxString& WXUNUSED(topic),
                                const wxString& WXUNUSED(item),
                                int *WXUNUSED(size),
                                wxIPCFormat WXUNUSED(format) )
-                             { return (wxChar *) NULL; };
+                             { return (wxChar *) NULL; }
 
   virtual bool OnPoke        ( const wxString& WXUNUSED(topic),
                                const wxString& WXUNUSED(item),
                                wxChar *WXUNUSED(data),
                                int WXUNUSED(size),
                                wxIPCFormat WXUNUSED(format) )
-                             { return false; };
+                             { return false; }
 
   virtual bool OnStartAdvise ( const wxString& WXUNUSED(topic),
                                const wxString& WXUNUSED(item) )
-                             { return false; };
+                             { return false; }
 
   virtual bool OnStopAdvise  ( const wxString& WXUNUSED(topic),
                                const wxString& WXUNUSED(item) )
-                             { return false; };
+                             { return false; }
 
   // Callbacks to CLIENT - override at will
   virtual bool OnAdvise      ( const wxString& WXUNUSED(topic),
@@ -106,7 +102,7 @@ public:
                                wxChar *WXUNUSED(data),
                                int WXUNUSED(size),
                                wxIPCFormat WXUNUSED(format) )
-                             { return false; };
+                             { return false; }
 
   // Callbacks to BOTH - override at will
   // Default behaviour is to delete connection and return true

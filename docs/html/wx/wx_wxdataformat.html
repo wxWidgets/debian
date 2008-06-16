@@ -1,0 +1,177 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDataFormat</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdataformat"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcustomdataobject.html#wxcustomdataobject"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdatagramsocket.html#wxdatagramsocket"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDataFormat</H2>
+<P>
+A wxDataFormat is an encapsulation of a platform-specific format handle which
+is used by the system for the clipboard and drag and drop operations. The
+applications are usually only interested in, for example, pasting data from the
+clipboard only if the data is in a format the program understands and a data
+format is something which uniquely identifies this format.<P>
+On the system level, a data format is usually just a number (<TT>CLIPFORMAT</TT>
+under Windows or <TT>Atom</TT> under X11, for example) and the standard formats
+are, indeed, just numbers which can be implicitly converted to wxDataFormat.
+The standard formats are:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxDF_INVALID
+</FONT></TD>
+
+<TD VALIGN=TOP>
+An invalid format - used as default argument for
+functions taking a wxDataFormat argument sometimes
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxDF_TEXT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Text format (wxString)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxDF_BITMAP
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A bitmap (wxBitmap)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxDF_METAFILE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A metafile (wxMetafile, Windows only)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxDF_FILENAME
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A list of filenames
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxDF_HTML
+</FONT></TD>
+
+<TD VALIGN=TOP>
+An HTML string. This is only valid when passed to wxSetClipboardData
+when compiled with Visual C++ in non-Unicode mode
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+As mentioned above, these standard formats may be passed to any function taking
+wxDataFormat argument because wxDataFormat has an implicit conversion from
+them (or, to be precise from the type <TT>wxDataFormat::NativeFormat</TT> which is
+the type used by the underlying platform for data formats).<P>
+Aside the standard formats, the application may also use custom formats which
+are identified by their names (strings) and not numeric identifiers. Although
+internally custom format must be created (or <I>registered</I>) first, you
+shouldn't care about it because it is done automatically the first time the
+wxDataFormat object corresponding to a given format name is created. The only
+implication of this is that you should avoid having global wxDataFormat objects
+with non-default constructor because their constructors are executed before the
+program has time to perform all necessary initialisations and so an attempt to
+do clipboard format registration at this time will usually lead to a crash!<P>
+<B><FONT COLOR="#FF0000">Virtual functions to override</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdndoverview.html#wxdndoverview">Clipboard and drag and drop overview</A>, 
+<A HREF="wx_samples.html#samplednd">DnD sample</A>, 
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataobj.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdataformatwxdataformatdef">wxDataFormat::wxDataFormat</A><BR>
+<A HREF="#wxdataformatwxdataformat">wxDataFormat::wxDataFormat</A><BR>
+<A HREF="#wxdataformatoperatoreq">wxDataFormat::operator ==</A><BR>
+<A HREF="#wxdataformatoperatorneq">wxDataFormat::operator !=</A><BR>
+<A HREF="#wxdataformatgetid">wxDataFormat::GetId</A><BR>
+<A HREF="#wxdataformatgettype">wxDataFormat::GetType</A><BR>
+<A HREF="#wxdataformatsetid">wxDataFormat::SetId</A><BR>
+<A HREF="#wxdataformatsettype">wxDataFormat::SetType</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdataformatwxdataformatdef"></A>
+<H3>wxDataFormat::wxDataFormat</H3>
+<P>
+<B></B> <B>wxDataFormat</B>(<B>NativeFormat</B><I> format = wxDF_INVALID</I>)<P>
+Constructs a data format object for one of the standard data formats or an
+empty data object (use <A HREF="wx_wxdataformat.html#wxdataformatsettype">SetType</A> or 
+<A HREF="wx_wxdataformat.html#wxdataformatsetid">SetId</A> later in this case)<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this function is named <TT>newNative</TT>.<P>
+
+<HR>
+<A NAME="wxdataformatwxdataformat"></A>
+<H3>wxDataFormat::wxDataFormat</H3>
+<P>
+<B></B> <B>wxDataFormat</B>(<B>const wxChar </B><I>*format</I>)<P>
+Constructs a data format object for a custom format identified by its name 
+<I>format</I>.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this function is named <TT>newUser</TT>.<P>
+
+<HR>
+<A NAME="wxdataformatoperatoreq"></A>
+<H3>wxDataFormat::operator ==</H3>
+<P>
+<B>bool</B> <B>operator ==</B>(<B>const <A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A>&</B></B><I> format</I>) <B>const</B><P>
+Returns true if the formats are equal.<P>
+
+<HR>
+<A NAME="wxdataformatoperatorneq"></A>
+<H3>wxDataFormat::operator !=</H3>
+<P>
+<B>bool</B> <B>operator !=</B>(<B>const <A HREF="wx_wxdataformat.html#wxdataformat">wxDataFormat</A>&</B></B><I> format</I>) <B>const</B><P>
+Returns true if the formats are different.<P>
+
+<HR>
+<A NAME="wxdataformatgetid"></A>
+<H3>wxDataFormat::GetId</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetId</B>() <B>const</B><P>
+Returns the name of a custom format (this function will fail for a standard
+format).<P>
+
+<HR>
+<A NAME="wxdataformatgettype"></A>
+<H3>wxDataFormat::GetType</H3>
+<P>
+<B>NativeFormat</B> <B>GetType</B>() <B>const</B><P>
+Returns the platform-specific number identifying the format.<P>
+
+<HR>
+<A NAME="wxdataformatsetid"></A>
+<H3>wxDataFormat::SetId</H3>
+<P>
+<B>void</B> <B>SetId</B>(<B>const wxChar </B><I>*format</I>)<P>
+Sets the format to be the custom format identified by the given name.<P>
+
+<HR>
+<A NAME="wxdataformatsettype"></A>
+<H3>wxDataFormat::SetType</H3>
+<P>
+<B>void</B> <B>SetType</B>(<B>NativeFormat</B><I> format</I>)<P>
+Sets the format to the given value, which should be one of wxDF_XXX constants.<P>
+
+</FONT></BODY></HTML>

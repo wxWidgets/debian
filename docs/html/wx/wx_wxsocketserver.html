@@ -1,0 +1,117 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxSocketServer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxsocketserver"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsocketoutputstream.html#wxsocketoutputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxsound.html#wxsound"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxSocketServer</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/socket.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxsocketserverctor">wxSocketServer::wxSocketServer</A><BR>
+<A HREF="#wxsocketserverdtor">wxSocketServer::~wxSocketServer</A><BR>
+<A HREF="#wxsocketserveraccept">wxSocketServer::Accept</A><BR>
+<A HREF="#wxsocketserveracceptwith">wxSocketServer::AcceptWith</A><BR>
+<A HREF="#wxsocketserverwaitforaccept">wxSocketServer::WaitForAccept</A><BR>
+<P>
+
+<HR>
+<A NAME="wxsocketserverctor"></A>
+<H3>wxSocketServer::wxSocketServer</H3>
+<P>
+<B></B> <B>wxSocketServer</B>(<B>const <A HREF="wx_wxsockaddress.html#wxsockaddress">wxSockAddress</A>&</B></B><I> address</I>, <B>wxSocketFlags</B><I> flags = wxSOCKET_NONE</I>)<P>
+Constructs a new server and tries to bind to the specified <I>address</I>.
+Before trying to accept new connections, test whether it succeeded with 
+<A HREF="wx_wxsocketbase.html#wxsocketbaseisok">wxSocketBase:IsOk</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>address</I><UL><UL>
+Specifies the local address for the server (e.g. port number).</UL></UL>
+<P>
+<I>flags</I><UL><UL>
+Socket flags (See <A HREF="wx_wxsocketbase.html#wxsocketbasesetflags">wxSocketBase::SetFlags</A>)</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxsocketserverdtor"></A>
+<H3>wxSocketServer::~wxSocketServer</H3>
+<P>
+<B></B> <B>~wxSocketServer</B>()<P>
+Destructor (it doesn't close the accepted connections).<P>
+
+<HR>
+<A NAME="wxsocketserveraccept"></A>
+<H3>wxSocketServer::Accept</H3>
+<P>
+<B><A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A> *</B> </B> <B>Accept</B>(<B>bool</B><I> wait = true</I>)<P>
+Accepts an incoming connection request, and creates a new 
+<A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A> object which represents
+the server-side of the connection.<P>
+If <I>wait</I> is true and there are no pending connections to be
+accepted, it will wait for the next incoming connection to
+arrive. <B>Warning:</B> This will block the GUI.<P>
+If <I>wait</I> is false, it will try to accept a pending connection
+if there is one, but it will always return immediately without blocking
+the GUI. If you want to use Accept in this way, you can either check for
+incoming connections with <A HREF="wx_wxsocketserver.html#wxsocketserverwaitforaccept">WaitForAccept</A> 
+or catch <B>wxSOCKET_CONNECTION</B> events, then call Accept once you know
+that there is an incoming connection waiting to be accepted.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns an opened socket connection, or NULL if an error occurred or
+if the <I>wait</I> parameter was false and there were no pending
+connections.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketserver.html#wxsocketserverwaitforaccept">wxSocketServer::WaitForAccept</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetnotify">wxSocketBase::SetNotify</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasenotify">wxSocketBase::Notify</A>, 
+<A HREF="wx_wxsocketserver.html#wxsocketserveracceptwith">wxSocketServer::AcceptWith</A><P>
+
+<HR>
+<A NAME="wxsocketserveracceptwith"></A>
+<H3>wxSocketServer::AcceptWith</H3>
+<P>
+<B>bool</B> <B>AcceptWith</B>(<B><A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>&</B></B><I> socket</I>, <B>bool</B><I> wait = true</I>)<P>
+Accept an incoming connection using the specified socket object.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>socket</I><UL><UL>
+Socket to be initialized</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true on success, or false if an error occurred or if the
+<I>wait</I> parameter was false and there were no pending
+connections.<P>
+<A HREF="wx_wxsocketserver.html#wxsocketserverwaitforaccept">wxSocketServer::WaitForAccept</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasesetnotify">wxSocketBase::SetNotify</A>, 
+<A HREF="wx_wxsocketbase.html#wxsocketbasenotify">wxSocketBase::Notify</A>, 
+<A HREF="wx_wxsocketserver.html#wxsocketserveraccept">wxSocketServer::Accept</A><P>
+
+<HR>
+<A NAME="wxsocketserverwaitforaccept"></A>
+<H3>wxSocketServer::WaitForAccept</H3>
+<P>
+<B>bool</B> <B>WaitForAccept</B>(<B>long</B><I> seconds = -1</I>, <B>long</B><I> millisecond = 0</I>)<P>
+This function waits for an incoming connection. Use it if you want to call 
+<A HREF="wx_wxsocketserver.html#wxsocketserveraccept">Accept</A> or <A HREF="wx_wxsocketserver.html#wxsocketserveracceptwith">AcceptWith</A> 
+with <I>wait</I> set to false, to detect when an incoming connection is waiting
+to be accepted.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>seconds</I><UL><UL>
+Number of seconds to wait.
+If -1, it will wait for the default timeout,
+as set with <A HREF="wx_wxsocketbase.html#wxsocketbasesettimeout">SetTimeout</A>.</UL></UL>
+<P>
+<I>millisecond</I><UL><UL>
+Number of milliseconds to wait.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true if an incoming connection arrived, false if the timeout elapsed.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketserver.html#wxsocketserveraccept">wxSocketServer::Accept</A>, 
+<A HREF="wx_wxsocketserver.html#wxsocketserveracceptwith">wxSocketServer::AcceptWith</A>,
+<A HREF="wx_wxsocketbase.html#wxsocketbaseinterruptwait">wxSocketBase::InterruptWait</A><P>
+
+
+</FONT></BODY></HTML>

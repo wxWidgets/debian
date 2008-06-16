@@ -1,0 +1,1941 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxImage</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wximage"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxidleevent.html#wxidleevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wximagehandler.html#wximagehandler"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxImage</H2>
+<P>
+This class encapsulates a platform-independent image. An image can be created
+from data, or using <A HREF="wx_wxbitmap.html#wxbitmapconverttoimage">wxBitmap::ConvertToImage</A>. An image
+can be loaded from a file in a variety of formats, and is extensible to new formats
+via image format handlers. Functions are available to set and get image bits, so
+it can be used for basic image manipulation.<P>
+A wxImage cannot (currently) be drawn directly to a <A HREF="wx_wxdc.html#wxdc">wxDC</A>. Instead,
+a platform-specific <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A> object must be created from it using
+the <A HREF="wx_wxbitmap.html#wxbitmapctor">wxBitmap::wxBitmap(wxImage,int depth)</A> constructor.
+This bitmap can then
+be drawn in a device context, using <A HREF="wx_wxdc.html#wxdcdrawbitmap">wxDC::DrawBitmap</A>.<P>
+One colour value of the image may be used as a mask colour which will lead to the automatic
+creation of a <A HREF="wx_wxmask.html#wxmask">wxMask</A> object associated to the bitmap object.<P>
+<B><FONT COLOR="#FF0000">Alpha channel support</FONT></B><P>
+Starting from wxWidgets 2.5.0 wxImage supports alpha channel data, that is in
+addition to a byte for the red, green and blue colour components for each pixel
+it also stores a byte representing the pixel opacity. An alpha value of 0
+corresponds to a transparent pixel (null opacity) while a value of 255
+means that the pixel is 100% opaque.<P>
+Unlike RGB data, not all images have an alpha channel and before using
+<A HREF="wx_wximage.html#wximagegetalpha">GetAlpha</A> you should check if this image contains
+an alpha channel with <A HREF="wx_wximage.html#wximagehasalpha">HasAlpha</A>. Note that currently only
+images loaded from PNG files with transparency information will have an alpha
+channel but alpha support will be added to the other formats as well (as well
+as support for saving images with alpha channel which also isn't implemented).<P>
+<B><FONT COLOR="#FF0000">Available image handlers</FONT></B><P>
+The following image handlers are available. <B>wxBMPHandler</B> is always
+installed by default. To use other image formats, install the appropriate
+handler with <A HREF="wx_wximage.html#wximageaddhandler">wxImage::AddHandler</A> or call 
+<A HREF="wx_appinifunctions.html#wxinitallimagehandlers">wxInitAllImageHandlers</A>.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBMPHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For loading and saving, always installed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxPNGHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For loading (including alpha support) and saving.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxJPEGHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For loading and saving.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxGIFHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Only for loading, due to legal issues.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxPCXHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For loading and saving (see below).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxPNMHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For loading and saving (see below).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxTIFFHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For loading and saving.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxTGAHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For loading only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxIFFHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For loading only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxXPMHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For loading and saving.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxICOHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For loading and saving.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxCURHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For loading and saving.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxANIHandler
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For loading only.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+When saving in PCX format, <B>wxPCXHandler</B> will count the number of
+different colours in the image; if there are 256 or less colours, it will
+save as 8 bit, else it will save as 24 bit.<P>
+Loading PNMs only works for ASCII or raw RGB images. When saving in
+PNM format, <B>wxPNMHandler</B> will always save as raw RGB.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/image.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>,
+<A HREF="wx_appinifunctions.html#wxinitallimagehandlers">wxInitAllImageHandlers</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wximagector">wxImage::wxImage</A><BR>
+<A HREF="#wximagedtor">wxImage::~wxImage</A><BR>
+<A HREF="#wximageaddhandler">wxImage::AddHandler</A><BR>
+<A HREF="#wximageblur">wxImage::Blur</A><BR>
+<A HREF="#wximagehorzblur">wxImage::BlurHorizontal</A><BR>
+<A HREF="#wximagevertblur">wxImage::BlurVertical</A><BR>
+<A HREF="#wximagecleanuphandlers">wxImage::CleanUpHandlers</A><BR>
+<A HREF="#wximagecomputehistogram">wxImage::ComputeHistogram</A><BR>
+<A HREF="#wximageconvertalphatomask">wxImage::ConvertAlphaToMask</A><BR>
+<A HREF="#wximageconverttobitmap">wxImage::ConvertToBitmap</A><BR>
+<A HREF="#wximageconverttogreyscale">wxImage::ConvertToGreyscale</A><BR>
+<A HREF="#wxbitmapconverttomono">wxImage::ConvertToMono</A><BR>
+<A HREF="#wximagecopy">wxImage::Copy</A><BR>
+<A HREF="#wximagecreate">wxImage::Create</A><BR>
+<A HREF="#wximagedestroy">wxImage::Destroy</A><BR>
+<A HREF="#wximagefindfirstunusedcolour">wxImage::FindFirstUnusedColour</A><BR>
+<A HREF="#wximagefindhandler">wxImage::FindHandler</A><BR>
+<A HREF="#wximagegetimageextwildcard">wxImage::GetImageExtWildcard</A><BR>
+<A HREF="#wximagegetalpha">wxImage::GetAlpha</A><BR>
+<A HREF="#wximagegetblue">wxImage::GetBlue</A><BR>
+<A HREF="#wximagegetdata">wxImage::GetData</A><BR>
+<A HREF="#wximagegetgreen">wxImage::GetGreen</A><BR>
+<A HREF="#wximagegetimagecount">wxImage::GetImageCount</A><BR>
+<A HREF="#wximagegethandlers">wxImage::GetHandlers</A><BR>
+<A HREF="#wximagegetheight">wxImage::GetHeight</A><BR>
+<A HREF="#wximagegetmaskblue">wxImage::GetMaskBlue</A><BR>
+<A HREF="#wximagegetmaskgreen">wxImage::GetMaskGreen</A><BR>
+<A HREF="#wximagegetmaskred">wxImage::GetMaskRed</A><BR>
+<A HREF="#wximagegetgetorsetmaskcolour">wxImage::GetOrFindMaskColour</A><BR>
+<A HREF="#wximagegetpalette">wxImage::GetPalette</A><BR>
+<A HREF="#wximagegetred">wxImage::GetRed</A><BR>
+<A HREF="#wximagegetsubimage">wxImage::GetSubImage</A><BR>
+<A HREF="#wximagegetwidth">wxImage::GetWidth</A><BR>
+<A HREF="#hsvvaluehsvvalue">HSVValue::HSVValue</A><BR>
+<A HREF="#wximagehsvtorgb">wxImage::HSVtoRGB</A><BR>
+<A HREF="#wximagehasalpha">wxImage::HasAlpha</A><BR>
+<A HREF="#wximagehasmask">wxImage::HasMask</A><BR>
+<A HREF="#wximagegetoption">wxImage::GetOption</A><BR>
+<A HREF="#wximagegetoptionint">wxImage::GetOptionInt</A><BR>
+<A HREF="#wximagehasoption">wxImage::HasOption</A><BR>
+<A HREF="#wximageinitalpha">wxImage::InitAlpha</A><BR>
+<A HREF="#wximageinitstandardhandlers">wxImage::InitStandardHandlers</A><BR>
+<A HREF="#wximageinserthandler">wxImage::InsertHandler</A><BR>
+<A HREF="#wximageistransparent">wxImage::IsTransparent</A><BR>
+<A HREF="#wximageloadfile">wxImage::LoadFile</A><BR>
+<A HREF="#wximageisok">wxImage::IsOk</A><BR>
+<A HREF="#rgbvaluergbvalue">RGBValue::RGBValue</A><BR>
+<A HREF="#wximagergbtohsv">wxImage::RGBtoHSV</A><BR>
+<A HREF="#wximageremovehandler">wxImage::RemoveHandler</A><BR>
+<A HREF="#wximagemirror">wxImage::Mirror</A><BR>
+<A HREF="#wximagereplace">wxImage::Replace</A><BR>
+<A HREF="#wximagerescale">wxImage::Rescale</A><BR>
+<A HREF="#wximageresize">wxImage::Resize</A><BR>
+<A HREF="#wximagerotate">wxImage::Rotate</A><BR>
+<A HREF="#wximagerotatehue">wxImage::RotateHue</A><BR>
+<A HREF="#wximagerotate90">wxImage::Rotate90</A><BR>
+<A HREF="#wximagesavefile">wxImage::SaveFile</A><BR>
+<A HREF="#wximagescale">wxImage::Scale</A><BR>
+<A HREF="#wximagesize">wxImage::Size</A><BR>
+<A HREF="#wximagesetalpha">wxImage::SetAlpha</A><BR>
+<A HREF="#wximagesetdata">wxImage::SetData</A><BR>
+<A HREF="#wximagesetmask">wxImage::SetMask</A><BR>
+<A HREF="#wximagesetmaskcolour">wxImage::SetMaskColour</A><BR>
+<A HREF="#wximagesetmaskfromimage">wxImage::SetMaskFromImage</A><BR>
+<A HREF="#wximagesetoption">wxImage::SetOption</A><BR>
+<A HREF="#wximagesetpalette">wxImage::SetPalette</A><BR>
+<A HREF="#wximagesetrgb">wxImage::SetRGB</A><BR>
+<A HREF="#wximagesetrgbrect">wxImage::SetRGB</A><BR>
+<A HREF="#wximageassign">wxImage::operator =</A><BR>
+<P>
+
+<HR>
+<A NAME="wximagector"></A>
+<H3>wxImage::wxImage</H3>
+<P>
+<B></B> <B>wxImage</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxImage</B>(<B>const <A HREF="wx_wximage.html#wximage">wxImage</A>& </B></B><I>image</I>)<P>
+Copy constructor, uses <A HREF="wx_trefcount.html#trefcount">reference counting</A>.<P>
+<B></B> <B>wxImage</B>(<B>const <A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A>&</B></B><I> bitmap</I>)<P>
+(Deprecated form, use <A HREF="wx_wxbitmap.html#wxbitmapconverttoimage">wxBitmap::ConvertToImage</A>
+instead.) Constructs an image from a platform-dependent bitmap. This preserves
+mask information so that bitmaps and images can be converted back
+and forth without loss in that respect.<P>
+<B></B> <B>wxImage</B>(<B>int</B><I> width</I>, <B>int</B><I> height</I>, <B>bool</B><I> clear=true</I>)<P>
+Creates an image with the given width and height.  If <I>clear</I> is true, the new image will be initialized to black.
+Otherwise, the image data will be uninitialized.<P>
+<B></B> <B>wxImage</B>(<B>int</B><I> width</I>, <B>int</B><I> height</I>, <B>unsigned char*</B><I> data</I>, <B>bool</B><I> static_data = <TT>false</TT></I>)<P>
+Creates an image from given data with the given width and height. If
+<I>static_data</I> is true, then wxImage will not delete the actual
+image data in its destructor, otherwise it will free it by calling
+<I>free()</I>.<P>
+<B></B> <B>wxImage</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>long</B><I> type = wxBITMAP_TYPE_ANY</I>, <B>int</B><I> index = -1</I>)<P>
+<B></B> <B>wxImage</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> mimetype</I>, <B>int</B><I> index = -1</I>)<P>
+Loads an image from a file.<P>
+<B></B> <B>wxImage</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>, <B>long</B><I> type = wxBITMAP_TYPE_ANY</I>, <B>int</B><I> index = -1</I>)<P>
+<B></B> <B>wxImage</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> mimetype</I>, <B>int</B><I> index = -1</I>)<P>
+Loads an image from an input stream.<P>
+<B></B> <B>wxImage</B>(<B>const char* const* </B><I>xpmData</I>)<P>
+Creates an image from XPM data.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>width</I><UL><UL>
+Specifies the width of the image.</UL></UL>
+<P>
+<I>height</I><UL><UL>
+Specifies the height of the image.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Name of the file from which to load the image.</UL></UL>
+<P>
+<I>stream</I><UL><UL>
+Opened input stream from which to load the image. Currently, the stream must support seeking.</UL></UL>
+<P>
+<I>type</I><UL><UL>
+May be one of the following:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_BMP
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_GIF
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a GIF bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_JPEG
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a JPEG bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_PNG
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a PNG bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_PCX
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a PCX bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_PNM
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a PNM bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_TIF
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a TIFF bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_TGA
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a TGA bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_XPM
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a XPM bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_ICO
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows icon file (ICO).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_CUR
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows cursor file (CUR).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_ANI
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows animated cursor file (ANI).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_ANY
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Will try to autodetect the format.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+<P>
+<I>mimetype</I><UL><UL>
+MIME type string (for example 'image/jpeg')</UL></UL>
+<P>
+<I>index</I><UL><UL>
+Index of the image to load in the case that the image file contains multiple images.
+This is only used by GIF, ICO and TIFF handlers. The default value (-1) means
+"choose the default image" and is interpreted as the first image (index=0) by
+the GIF and TIFF handler and as the largest and most colourful one by the ICO handler.</UL></UL>
+<P>
+<I>xpmData</I><UL><UL>
+A pointer to XPM image data.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Depending on how wxWidgets has been configured, not all formats may be available.<P>
+Note: any handler other than BMP must be previously
+initialized with <A HREF="wx_wximage.html#wximageaddhandler">wxImage::AddHandler</A> or
+<A HREF="wx_appinifunctions.html#wxinitallimagehandlers">wxInitAllImageHandlers</A>.<P>
+Note: you can use <A HREF="wx_wximage.html#wximagegetoptionint">GetOptionInt</A> to get the
+hotspot for loaded cursor file:
+<PRE>
+    int hotspot_x = image.GetOptionInt(wxIMAGE_OPTION_CUR_HOTSPOT_X);
+    int hotspot_y = image.GetOptionInt(wxIMAGE_OPTION_CUR_HOTSPOT_Y);
+
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximageloadfile">wxImage::LoadFile</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> Constructors supported by wxPython are:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxImage(name, flag)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Loads an image from a file
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxNullImage()</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Create a null image (has no size or
+image data)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxEmptyImage(width, height)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates an empty image
+of the given size
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxImageFromMime(name, mimetype</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates an image from
+the given file of the given mimetype
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxImageFromBitmap(bitmap)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates an image from a
+platform-dependent bitmap
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> Constructors supported by wxPerl are:<P>
+
+<UL>
+
+<LI>Wx::Image-&gt;new( bitmap )
+<LI>Wx::Image-&gt;new( icon )
+<LI>Wx::Image-&gt;new( width, height )
+<LI>Wx::Image-&gt;new( width, height, data )
+<LI>Wx::Image-&gt;new( file, type, index )
+<LI>Wx::Image-&gt;new( file, mimetype, index )
+<LI>Wx::Image-&gt;new( stream, type, index )
+<LI>Wx::Image-&gt;new( stream, mimetype, index )
+</UL>
+
+<P>
+
+
+<HR>
+<A NAME="wximagedtor"></A>
+<H3>wxImage::~wxImage</H3>
+<P>
+<B></B> <B>~wxImage</B>()<P>
+Destructor.
+See <A HREF="wx_trefcount.html#refcountdestruct">reference-counted object destruction</A> for more info.<P>
+
+
+<HR>
+<A NAME="wximageaddhandler"></A>
+<H3>wxImage::AddHandler</H3>
+<P>
+<B>static void</B> <B>AddHandler</B>(<B><A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A>*</B></B><I> handler</I>)<P>
+Adds a handler to the end of the static list of format handlers.<P>
+<I>handler</I><UL><UL>
+A new image format handler object. There is usually only one instance
+of a given handler class in an application session.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A><P>
+<B>bool</B> <B>CanRead</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> filename</I>)<P>
+returns true if the current image handlers can read this file<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In wxPython this static method is named <TT>wxImage_AddHandler</TT>.<P>
+
+
+<HR>
+<A NAME="wximageblur"></A>
+<H3>wxImage::Blur</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>Blur</B>(<B>int</B><I> blurRadius</I>)<P>
+Blurs the image in both horizontal and vertical directions by the specified pixel
+<I>blurRadius</I>. This should not be used when using a single mask colour
+for transparency.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximagehorzblur">BlurHorizontal</A>
+<A HREF="wx_wximage.html#wximagevertblur">BlurVertical</A><P>
+
+
+<HR>
+<A NAME="wximagehorzblur"></A>
+<H3>wxImage::BlurHorizontal</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>BlurHorizontal</B>(<B>int</B><I> blurRadius</I>)<P>
+Blurs the image in the horizontal direction only. This should not be used
+when using a single mask colour for transparency.
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximageblur">Blur</A>
+<A HREF="wx_wximage.html#wximagevertblur">BlurVertical</A><P>
+
+
+<HR>
+<A NAME="wximagevertblur"></A>
+<H3>wxImage::BlurVertical</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>BlurVertical</B>(<B>int</B><I> blurRadius</I>)<P>
+Blurs the image in the vertical direction only. This should not be used
+when using a single mask colour for transparency.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximageblur">Blur</A>
+<A HREF="wx_wximage.html#wximagehorzblur">BlurHorizontal</A><P>
+
+
+<HR>
+<A NAME="wximagecleanuphandlers"></A>
+<H3>wxImage::CleanUpHandlers</H3>
+<P>
+<B>static void</B> <B>CleanUpHandlers</B>()<P>
+Deletes all image handlers.<P>
+This function is called by wxWidgets on exit.<P>
+
+
+<HR>
+<A NAME="wximagecomputehistogram"></A>
+<H3>wxImage::ComputeHistogram</H3>
+<P>
+<B>unsigned long</B> <B>ComputeHistogram</B>(<B>wxImageHistogram&amp; </B><I>histogram</I>) <B>const</B><P>
+Computes the histogram of the image. <I>histogram</I> is a reference to
+wxImageHistogram object. wxImageHistogram is a specialization of
+<A HREF="wx_wxhashmap.html#wxhashmap">wxHashMap</A> "template" and is defined as follows:<P>
+<PRE>
+class WXDLLEXPORT wxImageHistogramEntry
+{
+public:
+    wxImageHistogramEntry() : index(0), value(0) {}
+    unsigned long index;
+    unsigned long value;
+};
+
+WX_DECLARE_EXPORTED_HASH_MAP(unsigned long, wxImageHistogramEntry,
+                             wxIntegerHash, wxIntegerEqual,
+                             wxImageHistogram);
+</PRE>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns number of colours in the histogram.<P>
+
+
+<HR>
+<A NAME="wximageconvertalphatomask"></A>
+<H3>wxImage::ConvertAlphaToMask</H3>
+<P>
+<B>bool</B> <B>ConvertAlphaToMask</B>(<B>unsigned char</B><I> threshold = 128</I>)<P>
+If the image has alpha channel, this method converts it to mask. All pixels
+with alpha value less than <I>threshold</I> are replaced with mask colour
+and the alpha channel is removed. Mask colour is chosen automatically using
+<A HREF="wx_wximage.html#wximagefindfirstunusedcolour">FindFirstUnusedColour</A>.<P>
+If the image image doesn't have alpha channel,
+ConvertAlphaToMask does nothing.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>false</TT> if FindFirstUnusedColour returns <TT>false</TT>, <TT>true</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wximageconverttobitmap"></A>
+<H3>wxImage::ConvertToBitmap</H3>
+<P>
+<B><A HREF="wx_wxbitmap.html#wxbitmap">wxBitmap</A></B> </B> <B>ConvertToBitmap</B>() <B>const</B><P>
+Deprecated, use equivalent <A HREF="wx_wxbitmap.html#wxbitmapctor">wxBitmap constructor</A>
+(which takes wxImage and depth as its arguments) instead.<P>
+
+
+<HR>
+<A NAME="wximageconverttogreyscale"></A>
+<H3>wxImage::ConvertToGreyscale</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>ConvertToGreyscale</B>(<B>double</B><I> lr = 0.299</I>, <B>double</B><I> lg = 0.587</I>, <B>double</B><I> lb = 0.114</I>) <B>const</B><P>
+Returns a greyscale version of the image. The returned image uses the luminance
+component of the original to calculate the greyscale. Defaults to using
+ITU-T BT.601 when converting to YUV, where every pixel equals
+(R * <I>lr</I>) + (G * <I>lg</I>) + (B * <I>lb</I>).<P>
+
+
+<HR>
+<A NAME="wxbitmapconverttomono"></A>
+<H3>wxImage::ConvertToMono</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>ConvertToMono</B>(<B>unsigned char</B><I> r</I>, <B>unsigned char</B><I> g</I>, <B>unsigned char</B><I> b</I>) <B>const</B><P>
+Returns monochromatic version of the image. The returned image has white
+colour where the original has <I>(r,g,b)</I> colour and black colour
+everywhere else.<P>
+
+
+<HR>
+<A NAME="wximagecopy"></A>
+<H3>wxImage::Copy</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>Copy</B>() <B>const</B><P>
+Returns an identical copy of the image.<P>
+
+
+<HR>
+<A NAME="wximagecreate"></A>
+<H3>wxImage::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B>int</B><I> width</I>, <B>int</B><I> height</I>, <B>bool</B><I> clear=true</I>)<P>
+Creates a fresh image.  If <I>clear</I> is true, the new image will be initialized to black.
+Otherwise, the image data will be uninitialized.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>width</I><UL><UL>
+The width of the image in pixels.</UL></UL>
+<P>
+<I>height</I><UL><UL>
+The height of the image in pixels.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the call succeeded, false otherwise.<P>
+
+
+<HR>
+<A NAME="wximagedestroy"></A>
+<H3>wxImage::Destroy</H3>
+<P>
+<B>void</B> <B>Destroy</B>()<P>
+Destroys the image data.<P>
+
+
+<HR>
+<A NAME="wximagefindfirstunusedcolour"></A>
+<H3>wxImage::FindFirstUnusedColour</H3>
+<P>
+<B>bool</B> <B>FindFirstUnusedColour</B>(<B>unsigned char *</B><I> r</I>, <B>unsigned char *</B><I> g</I>, <B>unsigned char *</B><I> b</I>, <B>unsigned char</B><I> startR = 1</I>, <B>unsigned char</B><I> startG = 0</I>, <B>unsigned char</B><I> startB = 0</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>r,g,b</I><UL><UL>
+Pointers to variables to save the colour.</UL></UL>
+<P>
+<I>startR,startG,startB</I><UL><UL>
+Initial values of the colour. Returned colour
+will have RGB values equal to or greater than these.</UL></UL>
+<P>
+Finds the first colour that is never used in the image. The search begins at
+given initial colour and continues by increasing R, G and B components (in this
+order) by 1 until an unused colour is found or the colour space exhausted.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns false if there is no unused colour left, true on success.<P>
+<B><FONT COLOR="#FF0000">Notes</FONT></B><P>
+Note that this method involves computing the histogram, which is
+computationally intensive operation.<P>
+
+
+<HR>
+<A NAME="wximagefindhandler"></A>
+<H3>wxImage::FindHandler</H3>
+<P>
+<B>static <A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A>*</B> </B> <B>FindHandler</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Finds the handler with the given name.<P>
+<B>static <A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A>*</B> </B> <B>FindHandler</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>extension</I>, <B>long</B><I> imageType</I>)<P>
+Finds the handler associated with the given extension and type.<P>
+<B>static <A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A>*</B> </B> <B>FindHandler</B>(<B>long </B><I>imageType</I>)<P>
+Finds the handler associated with the given image type.<P>
+<B>static <A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A>*</B> </B> <B>FindHandlerMime</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>mimetype</I>)<P>
+Finds the handler associated with the given MIME type.<P>
+<I>name</I><UL><UL>
+The handler name.</UL></UL>
+<P>
+<I>extension</I><UL><UL>
+The file extension, such as "bmp".</UL></UL>
+<P>
+<I>imageType</I><UL><UL>
+The image type, such as wxBITMAP_TYPE_BMP.</UL></UL>
+<P>
+<I>mimetype</I><UL><UL>
+MIME type.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+A pointer to the handler if found, NULL otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A><P>
+
+
+<HR>
+<A NAME="wximagegetimageextwildcard"></A>
+<H3>wxImage::GetImageExtWildcard</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetImageExtWildcard</B>()<P>
+Iterates all registered wxImageHandler objects, and returns a string containing file extension masks
+suitable for passing to file open/save dialog boxes.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The format of the returned string is "(*.ext1;*.ext2)|*.ext1;*.ext2".<P>
+It is usually a good idea to prepend a description before passing the result to the dialog.<P>
+Example:<P>
+<PRE>
+    wxFileDialog FileDlg( this, "Choose Image", ::wxGetCwd(), "", _("Image Files ") + wxImage::GetImageExtWildcard(), wxFD_OPEN );
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A><P>
+
+
+<HR>
+<A NAME="wximagegetalpha"></A>
+<H3>wxImage::GetAlpha</H3>
+<P>
+<B>unsigned char</B> <B>GetAlpha</B>(<B>int</B><I> x</I>, <B>int</B><I> y</I>) <B>const</B><P>
+Returns the alpha value for the given pixel. This function may only be called
+for the images with alpha channel, use <A HREF="wx_wximage.html#wximagehasalpha">HasAlpha</A> to
+check for this.<P>
+The returned value is the <I>opacity</I> of the image, i.e. the value of 0
+corresponds to the transparent pixels while the value of 255 -- to the opaque
+ones.<P>
+<B>unsigned char *</B> <B>GetAlpha</B>() <B>const</B><P>
+Returns pointer to the array storing the alpha values for this image. This
+pointer is <TT>NULL</TT> for the images without the alpha channel. If the image
+does have it, this pointer may be used to directly manipulate the alpha values
+which are stored as the <A HREF="wx_wximage.html#wximagegetdata">RGB</A> ones.<P>
+
+
+<HR>
+<A NAME="wximagegetblue"></A>
+<H3>wxImage::GetBlue</H3>
+<P>
+<B>unsigned char</B> <B>GetBlue</B>(<B>int</B><I> x</I>, <B>int</B><I> y</I>) <B>const</B><P>
+Returns the blue intensity at the given coordinate.<P>
+
+
+<HR>
+<A NAME="wximagegetdata"></A>
+<H3>wxImage::GetData</H3>
+<P>
+<B>unsigned char*</B> <B>GetData</B>() <B>const</B><P>
+Returns the image data as an array. This is most often used when doing
+direct image manipulation. The return value points to an array of
+characters in RGBRGBRGB... format in the top-to-bottom, left-to-right
+order, that is the first RGB triplet corresponds to the pixel first pixel of
+the first row, the second one --- to the second pixel of the first row and so
+on until the end of the first row, with second row following after it and so
+on.<P>
+You should not delete the returned pointer nor pass it to
+<A HREF="wx_wximage.html#wximagesetdata">wxImage::SetData</A>.<P>
+
+
+<HR>
+<A NAME="wximagegetgreen"></A>
+<H3>wxImage::GetGreen</H3>
+<P>
+<B>unsigned char</B> <B>GetGreen</B>(<B>int</B><I> x</I>, <B>int</B><I> y</I>) <B>const</B><P>
+Returns the green intensity at the given coordinate.<P>
+
+
+<HR>
+<A NAME="wximagegetimagecount"></A>
+<H3>wxImage::GetImageCount</H3>
+<P>
+<B>static int</B> <B>GetImageCount</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> filename</I>, <B>long</B><I> type = wxBITMAP_TYPE_ANY</I>)<P>
+<B>static int</B> <B>GetImageCount</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B></B><I> stream</I>, <B>long</B><I> type = wxBITMAP_TYPE_ANY</I>)<P>
+If the image file contains more than one image and the image handler is capable
+of retrieving these individually, this function will return the number of
+available images.<P>
+<I>name</I><UL><UL>
+Name of the file to query.</UL></UL>
+<P>
+<I>stream</I><UL><UL>
+Opened input stream with image data. Currently, the stream must support seeking.</UL></UL>
+<P>
+<I>type</I><UL><UL>
+May be one of the following:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_BMP
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_GIF
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a GIF bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_JPEG
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a JPEG bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_PNG
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a PNG bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_PCX
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a PCX bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_PNM
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a PNM bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_TIF
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a TIFF bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_XPM
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a XPM bitmap file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_ICO
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows icon file (ICO).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_CUR
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows cursor file (CUR).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_ANI
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows animated cursor file (ANI).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_ANY
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Will try to autodetect the format.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Number of available images. For most image handlers, this is 1 (exceptions
+are TIFF and ICO formats).<P>
+
+
+<HR>
+<A NAME="wximagegethandlers"></A>
+<H3>wxImage::GetHandlers</H3>
+<P>
+<B>static <A HREF="wx_wxlist.html#wxlist">wxList</A>&</B> </B> <B>GetHandlers</B>()<P>
+Returns the static list of image format handlers.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A><P>
+
+
+<HR>
+<A NAME="wximagegetheight"></A>
+<H3>wxImage::GetHeight</H3>
+<P>
+<B>int</B> <B>GetHeight</B>() <B>const</B><P>
+Gets the height of the image in pixels.<P>
+
+
+<HR>
+<A NAME="wximagegetmaskblue"></A>
+<H3>wxImage::GetMaskBlue</H3>
+<P>
+<B>unsigned char</B> <B>GetMaskBlue</B>() <B>const</B><P>
+Gets the blue value of the mask colour.<P>
+
+
+<HR>
+<A NAME="wximagegetmaskgreen"></A>
+<H3>wxImage::GetMaskGreen</H3>
+<P>
+<B>unsigned char</B> <B>GetMaskGreen</B>() <B>const</B><P>
+Gets the green value of the mask colour.<P>
+
+
+<HR>
+<A NAME="wximagegetmaskred"></A>
+<H3>wxImage::GetMaskRed</H3>
+<P>
+<B>unsigned char</B> <B>GetMaskRed</B>() <B>const</B><P>
+Gets the red value of the mask colour.<P>
+
+
+<HR>
+<A NAME="wximagegetgetorsetmaskcolour"></A>
+<H3>wxImage::GetOrFindMaskColour</H3>
+<P>
+<B>bool</B> <B>GetOrFindMaskColour</B>(<B>unsigned char</B><I> *r</I>, <B>unsigned char</B><I> *g</I>, <B>unsigned char</B><I> *b</I>) <B>const</B><P>
+Get the current mask colour or find a suitable unused colour that could be
+used as a mask colour. Returns <TT>true</TT> if the image currently has a mask.<P>
+
+
+<HR>
+<A NAME="wximagegetpalette"></A>
+<H3>wxImage::GetPalette</H3>
+<P>
+<B>const <A HREF="wx_wxpalette.html#wxpalette">wxPalette</A>&</B> </B> <B>GetPalette</B>() <B>const</B><P>
+Returns the palette associated with the image. Currently the palette is only
+used when converting to wxBitmap under Windows. Some of the wxImage handlers
+have been modified to set the palette if one exists in the image file (usually
+256 or less colour images in GIF or PNG format).<P>
+
+
+<HR>
+<A NAME="wximagegetred"></A>
+<H3>wxImage::GetRed</H3>
+<P>
+<B>unsigned char</B> <B>GetRed</B>(<B>int</B><I> x</I>, <B>int</B><I> y</I>) <B>const</B><P>
+Returns the red intensity at the given coordinate.<P>
+
+
+<HR>
+<A NAME="wximagegetsubimage"></A>
+<H3>wxImage::GetSubImage</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>GetSubImage</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B></B><I> rect</I>) <B>const</B><P>
+Returns a sub image of the current one as long as the rect belongs entirely to
+the image.<P>
+
+
+<HR>
+<A NAME="wximagegetwidth"></A>
+<H3>wxImage::GetWidth</H3>
+<P>
+<B>int</B> <B>GetWidth</B>() <B>const</B><P>
+Gets the width of the image in pixels.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximagegetheight">wxImage::GetHeight</A><P>
+
+
+<HR>
+<A NAME="hsvvaluehsvvalue"></A>
+<H3>HSVValue::HSVValue</H3>
+<P>
+<B></B> <B>HSVValue</B>(<B>double </B><I>h = 0.0</I>, <B>double </B><I>s = 0.0</I>, <B>double </B><I>v = 0.0</I>)<P>
+Constructor for HSVValue, an object that contains values for hue, saturation and value which
+represent the value of a color. It is used by <A HREF="wx_wximage.html#wximagehsvtorgb">wxImage::HSVtoRGB</A>
+and <A HREF="wx_wximage.html#wximagergbtohsv">wxImage::RGBtoHSV</A>, which
+converts between HSV color space and RGB color space.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> use wxImage_HSVValue in wxPython<P>
+<P>
+
+<HR>
+<A NAME="wximagehsvtorgb"></A>
+<H3>wxImage::HSVtoRGB</H3>
+<P>
+<B>wxImage::RGBValue</B> <B>HSVtoRGB</B>(<B>const HSVValue &amp; </B><I>hsv</I>)<P>
+Converts a color in HSV color space to RGB color space.<P>
+
+
+<HR>
+<A NAME="wximagehasalpha"></A>
+<H3>wxImage::HasAlpha</H3>
+<P>
+<B>bool</B> <B>HasAlpha</B>() <B>const</B><P>
+Returns true if this image has alpha channel, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximagegetalpha">GetAlpha</A>, <A HREF="wx_wximage.html#wximagesetalpha">SetAlpha</A><P>
+
+
+<HR>
+<A NAME="wximagehasmask"></A>
+<H3>wxImage::HasMask</H3>
+<P>
+<B>bool</B> <B>HasMask</B>() <B>const</B><P>
+Returns true if there is a mask active, false otherwise.<P>
+
+
+<HR>
+<A NAME="wximagegetoption"></A>
+<H3>wxImage::GetOption</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetOption</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name</I>) <B>const</B><P>
+Gets a user-defined option. The function is case-insensitive to <I>name</I>.<P>
+For example, when saving as a JPEG file, the option <B>quality</B> is
+used, which is a number between 0 and 100 (0 is terrible, 100 is very good).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximagesetoption">wxImage::SetOption</A>,
+<A HREF="wx_wximage.html#wximagegetoptionint">wxImage::GetOptionInt</A>,
+<A HREF="wx_wximage.html#wximagehasoption">wxImage::HasOption</A><P>
+
+
+<HR>
+<A NAME="wximagegetoptionint"></A>
+<H3>wxImage::GetOptionInt</H3>
+<P>
+<B>int</B> <B>GetOptionInt</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name</I>) <B>const</B><P>
+Gets a user-defined option as an integer. The function is case-insensitive to <I>name</I>.<P>
+If the given option is not present, the function returns 0. Use
+<A HREF="wx_wximage.html#wximagehasoption">wxImage::HasOption</A> is 0 is a possibly valid value
+for the option.<P>
+Options for wxPNGHandler
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxIMAGE_OPTION_PNG_FORMAT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Format for saving a PNG file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxIMAGE_OPTION_PNG_BITDEPTH
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Bit depth for every channel (R/G/B/A).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Supported values for wxIMAGE_OPTION_PNG_FORMAT:
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxPNG_TYPE_COLOUR
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Stores RGB image.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxPNG_TYPE_GREY
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Stores grey image, converts from RGB.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxPNG_TYPE_GREY_RED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Stores grey image, uses red value as grey.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximagesetoption">wxImage::SetOption</A>,
+<A HREF="wx_wximage.html#wximagegetoption">wxImage::GetOption</A><P>
+
+
+<HR>
+<A NAME="wximagehasoption"></A>
+<H3>wxImage::HasOption</H3>
+<P>
+<B>bool</B> <B>HasOption</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name</I>) <B>const</B><P>
+Returns true if the given option is present. The function is case-insensitive to <I>name</I>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximagesetoption">wxImage::SetOption</A>,
+<A HREF="wx_wximage.html#wximagegetoption">wxImage::GetOption</A>,
+<A HREF="wx_wximage.html#wximagegetoptionint">wxImage::GetOptionInt</A><P>
+
+
+<HR>
+<A NAME="wximageinitalpha"></A>
+<H3>wxImage::InitAlpha</H3>
+<P>
+<B>void</B> <B>InitAlpha</B>()<P>
+Initializes the image alpha channel data. It is an error to call it
+if the image already has alpha data. If it doesn't, alpha data will be
+by default initialized to all pixels being fully opaque. But if the image has a
+a mask colour, all mask pixels will be completely transparent.<P>
+
+
+<HR>
+<A NAME="wximageinitstandardhandlers"></A>
+<H3>wxImage::InitStandardHandlers</H3>
+<P>
+<B>static void</B> <B>InitStandardHandlers</B>()<P>
+Internal use only. Adds standard image format handlers. It only install BMP
+for the time being, which is used by wxBitmap.<P>
+This function is called by wxWidgets on startup, and shouldn't be called by
+the user.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A>,
+<A HREF="wx_appinifunctions.html#wxinitallimagehandlers">wxInitAllImageHandlers</A><P>
+
+
+<HR>
+<A NAME="wximageinserthandler"></A>
+<H3>wxImage::InsertHandler</H3>
+<P>
+<B>static void</B> <B>InsertHandler</B>(<B><A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A>*</B></B><I> handler</I>)<P>
+Adds a handler at the start of the static list of format handlers.<P>
+<I>handler</I><UL><UL>
+A new image format handler object. There is usually only one instance
+of a given handler class in an application session.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A><P>
+
+
+<HR>
+<A NAME="wximageistransparent"></A>
+<H3>wxImage::IsTransparent</H3>
+<P>
+<B>bool</B> <B>IsTransparent</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>, <B>unsigned char</B><I> threshold = 128</I>) <B>const</B><P>
+Returns <TT>true</TT> if the given pixel is transparent, i.e. either has the mask
+colour if this image has a mask or if this image has alpha channel and alpha
+value of this pixel is strictly less than <I>threshold</I>.<P>
+
+
+<HR>
+<A NAME="wximageloadfile"></A>
+<H3>wxImage::LoadFile</H3>
+<P>
+<B>bool</B> <B>LoadFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name</I>, <B>long</B><I> type = wxBITMAP_TYPE_ANY</I>, <B>int</B><I> index = -1</I>)<P>
+<B>bool</B> <B>LoadFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> mimetype</I>, <B>int</B><I> index = -1</I>)<P>
+Loads an image from a file. If no handler type is provided, the library will
+try to autodetect the format.<P>
+<B>bool</B> <B>LoadFile</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B></B><I> stream</I>, <B>long</B><I> type</I>, <B>int</B><I> index = -1</I>)<P>
+<B>bool</B> <B>LoadFile</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B></B><I> stream</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> mimetype</I>, <B>int</B><I> index = -1</I>)<P>
+Loads an image from an input stream.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>name</I><UL><UL>
+Name of the file from which to load the image.</UL></UL>
+<P>
+<I>stream</I><UL><UL>
+Opened input stream from which to load the image. Currently, the stream must support seeking.</UL></UL>
+<P>
+<I>type</I><UL><UL>
+One of the following values:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_BMP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_GIF</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a GIF image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_JPEG</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a JPEG image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_PCX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a PCX image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_PNG</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a PNG image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_PNM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a PNM image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_TIF</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a TIFF image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_XPM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a XPM image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_ICO</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows icon file (ICO).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_CUR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows cursor file (CUR).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxBITMAP_TYPE_ANI
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load a Windows animated cursor file (ANI).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_ANY</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Will try to autodetect the format.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+<P>
+<I>mimetype</I><UL><UL>
+MIME type string (for example 'image/jpeg')</UL></UL>
+<P>
+<I>index</I><UL><UL>
+Index of the image to load in the case that the image file contains multiple images.
+This is only used by GIF, ICO and TIFF handlers. The default value (-1) means
+"choose the default image" and is interpreted as the first image (index=0) by
+the GIF and TIFF handler and as the largest and most colourful one by the ICO handler.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Depending on how wxWidgets has been configured, not all formats may be available.<P>
+Note: you can use <A HREF="wx_wximage.html#wximagegetoptionint">GetOptionInt</A> to get the
+hotspot for loaded cursor file:
+<PRE>
+    int hotspot_x = image.GetOptionInt(wxIMAGE_OPTION_CUR_HOTSPOT_X);
+    int hotspot_y = image.GetOptionInt(wxIMAGE_OPTION_CUR_HOTSPOT_Y);
+
+</PRE>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the operation succeeded, false otherwise. If the optional index parameter is out of range,
+false is returned and a call to wxLogError() takes place.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximagesavefile">wxImage::SaveFile</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>LoadFile(filename, type)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Loads an image of the given
+type from a file
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>LoadMimeFile(filename, mimetype)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Loads an image of the given
+mimetype from a file
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> Methods supported by wxPerl are:<P>
+
+<UL>
+
+<LI>bitmap-&gt;LoadFile( name, type )
+<LI>bitmap-&gt;LoadFile( name, mimetype )
+</UL>
+
+<P>
+<P>
+
+<HR>
+<A NAME="wximageisok"></A>
+<H3>wxImage::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if image data is present.<P>
+
+
+<HR>
+<A NAME="rgbvaluergbvalue"></A>
+<H3>RGBValue::RGBValue</H3>
+<P>
+<B></B> <B>RGBValue</B>(<B>unsigned char </B><I>r = 0</I>, <B>unsigned char </B><I>g = 0</I>, <B>unsigned char </B><I>b = 0</I>)<P>
+Constructor for RGBValue, an object that contains values for red, green and blue which
+represent the value of a color. It is used by <A HREF="wx_wximage.html#wximagehsvtorgb">wxImage::HSVtoRGB</A>
+and <A HREF="wx_wximage.html#wximagergbtohsv">wxImage::RGBtoHSV</A>, which
+converts between HSV color space and RGB color space.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> use wxImage_RGBValue in wxPython<P>
+
+
+<HR>
+<A NAME="wximagergbtohsv"></A>
+<H3>wxImage::RGBtoHSV</H3>
+<P>
+<B>wxImage::HSVValue</B> <B>RGBtoHSV</B>(<B>const RGBValue&amp; </B><I>rgb</I>)<P>
+Converts a color in RGB color space to HSV color space.<P>
+
+
+<HR>
+<A NAME="wximageremovehandler"></A>
+<H3>wxImage::RemoveHandler</H3>
+<P>
+<B>static bool</B> <B>RemoveHandler</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Finds the handler with the given name, and removes it. The handler
+is not deleted.<P>
+<I>name</I><UL><UL>
+The handler name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the handler was found and removed, false otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximagehandler.html#wximagehandler">wxImageHandler</A><P>
+
+
+<HR>
+<A NAME="wximagemirror"></A>
+<H3>wxImage::Mirror</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>Mirror</B>(<B>bool</B><I> horizontally = true</I>) <B>const</B><P>
+Returns a mirrored copy of the image. The parameter <I>horizontally</I>
+indicates the orientation.<P>
+
+
+<HR>
+<A NAME="wximagereplace"></A>
+<H3>wxImage::Replace</H3>
+<P>
+<B>void</B> <B>Replace</B>(<B>unsigned char</B><I> r1</I>, <B>unsigned char</B><I> g1</I>, <B>unsigned char</B><I> b1</I>,
+<B>unsigned char</B><I> r2</I>, <B>unsigned char</B><I> g2</I>, <B>unsigned char</B><I> b2</I>)<P>
+Replaces the colour specified by <I>r1,g1,b1</I> by the colour <I>r2,g2,b2</I>.<P>
+
+
+<HR>
+<A NAME="wximagerescale"></A>
+<H3>wxImage::Rescale</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A> &</B> </B> <B>Rescale</B>(<B>int</B><I> width</I>, <B>int</B><I> height</I>, <B>int</B><I> quality = wxIMAGE_QUALITY_NORMAL</I>)<P>
+Changes the size of the image in-place by scaling it: after a call to this function,
+the image will have the given width and height.<P>
+For a description of the <I>quality</I> parameter, see the <A HREF="wx_wximage.html#wximagescale">Scale</A> function.<P>
+Returns the (modified) image itself.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximagescale">Scale</A><P>
+
+
+<HR>
+<A NAME="wximageresize"></A>
+<H3>wxImage::Resize</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A> &</B> </B> <B>Resize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B></B><I> pos</I>, <B>int</B><I> red = -1</I>, <B>int</B><I> green = -1</I>, <B>int</B><I> blue = -1</I>)<P>
+Changes the size of the image in-place without scaling it by adding either a border
+with the given colour or cropping as necessary. The image is pasted into a new
+image with the given <I>size</I> and background colour at the position <I>pos</I>
+relative to the upper left of the new image. If <I>red = green = blue = -1</I>
+then use either the  current mask colour if set or find, use, and set a
+suitable mask colour for any newly exposed areas.<P>
+Returns the (modified) image itself.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximagesize">Size</A><P>
+
+
+<HR>
+<A NAME="wximagerotate"></A>
+<H3>wxImage::Rotate</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>Rotate</B>(<B>double</B><I> angle</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>rotationCentre</I>,
+ <B>bool</B><I> interpolating = true</I>, <B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>*</B></B><I> offsetAfterRotation = NULL</I>)<P>
+Rotates the image about the given point, by <I>angle</I> radians. Passing true
+to <I>interpolating</I> results in better image quality, but is slower. If the
+image has a mask, then the mask colour is used for the uncovered pixels in the
+rotated image background. Else, black (rgb 0, 0, 0) will be used.<P>
+Returns the rotated image, leaving this image intact.<P>
+
+
+<HR>
+<A NAME="wximagerotatehue"></A>
+<H3>wxImage::RotateHue</H3>
+<P>
+<B>void</B> <B>RotateHue</B>(<B>double</B><I> angle</I>)<P>
+Rotates the hue of each pixel in the image by <I>angle</I>, which is a double in
+the range of -1.0 to +1.0, where -1.0 corresponds to -360 degrees and +1.0 corresponds
+to +360 degrees.<P>
+
+
+<HR>
+<A NAME="wximagerotate90"></A>
+<H3>wxImage::Rotate90</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>Rotate90</B>(<B>bool</B><I> clockwise = true</I>) <B>const</B><P>
+Returns a copy of the image rotated 90 degrees in the direction
+indicated by <I>clockwise</I>.<P>
+
+
+<HR>
+<A NAME="wximagesavefile"></A>
+<H3>wxImage::SaveFile</H3>
+<P>
+<B>bool</B> <B>SaveFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>int</B><I> type</I>) <B>const</B><P>
+<B>bool</B> <B>SaveFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> mimetype</I>) <B>const</B><P>
+Saves an image in the named file.<P>
+<B>bool</B> <B>SaveFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>) <B>const</B><P>
+Saves an image in the named file. File type is determined from the extension of the
+file name. Note that this function may fail if the extension is not recognized! You
+can use one of the forms above to save images to files with non-standard extensions.<P>
+<B>bool</B> <B>SaveFile</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>, <B>int</B><I> type</I>) <B>const</B><P>
+<B>bool</B> <B>SaveFile</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> mimetype</I>) <B>const</B><P>
+Saves an image in the given stream.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>name</I><UL><UL>
+Name of the file to save the image to.</UL></UL>
+<P>
+<I>stream</I><UL><UL>
+Opened output stream to save the image to.</UL></UL>
+<P>
+<I>type</I><UL><UL>
+Currently these types can be used:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_BMP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Save a BMP image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_JPEG</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Save a JPEG image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_PNG</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Save a PNG image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_PCX</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Save a PCX image file (tries to save as 8-bit if possible, falls back to 24-bit otherwise).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_PNM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Save a PNM image file (as raw RGB always).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_TIFF</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Save a TIFF image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_XPM</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Save a XPM image file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_ICO</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Save a Windows icon file (ICO) (the size may be up to 255 wide by 127 high. A single image is saved in 8 colors at the size supplied).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxBITMAP_TYPE_CUR</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Save a Windows cursor file (CUR).
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+<P>
+<I>mimetype</I><UL><UL>
+MIME type.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+true if the operation succeeded, false otherwise.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Depending on how wxWidgets has been configured, not all formats may be available.<P>
+Note: you can use <A HREF="wx_wximage.html#wximagegetoptionint">GetOptionInt</A> to set the
+hotspot before saving an image into a cursor file (default hotspot is in
+the centre of the image):
+<PRE>
+    image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, hotspotX);
+    image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, hotspotY);
+
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximageloadfile">wxImage::LoadFile</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>SaveFile(filename, type)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Saves the image using the given
+type to the named file
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>SaveMimeFile(filename, mimetype)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Saves the image using the given
+mimetype to the named file
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> Methods supported by wxPerl are:<P>
+
+<UL>
+
+<LI>bitmap-&gt;SaveFile( name, type )
+<LI>bitmap-&gt;SaveFile( name, mimetype )
+</UL>
+
+<P>
+
+
+<HR>
+<A NAME="wximagescale"></A>
+<H3>wxImage::Scale</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>Scale</B>(<B>int</B><I> width</I>, <B>int</B><I> height</I>, <B>int</B><I> quality = wxIMAGE_QUALITY_NORMAL</I>) <B>const</B><P>
+Returns a scaled version of the image. This is also useful for
+scaling bitmaps in general as the only other way to scale bitmaps
+is to blit a wxMemoryDC into another wxMemoryDC.<P>
+<I>quality</I><UL><UL>
+Determines what method to use for resampling the image.  Can be one of the following:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxIMAGE_QUALITY_NORMAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Uses the normal default scaling method of pixel replication
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxIMAGE_QUALITY_HIGH</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Uses bicubic and box averaging resampling methods for upsampling and downsampling respectively
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+<P>
+It should be noted that although using wxIMAGE_QUALITY_HIGH produces much nicer
+looking results it is a slower method.  Downsampling will use the box averaging method
+which seems to operate very fast.  If you are upsampling larger images using
+this method you will most likely notice that it is a bit slower and in extreme cases
+it will be quite substantially slower as the bicubic algorithm has to process a lot of
+data.<P>
+It should also be noted that the high quality scaling may not work as expected
+when using a single mask colour for transparency, as the scaling will blur the
+image and will therefore remove the mask partially. Using the alpha channel
+will work.<P>
+Example:<P>
+<PRE>
+    // get the bitmap from somewhere
+    wxBitmap bmp = ...;
+
+    // rescale it to have size of 32*32
+    if ( bmp.GetWidth() != 32 || bmp.GetHeight() != 32 )
+    {
+        wxImage image = bmp.ConvertToImage();
+        bmp = wxBitmap(image.Scale(32, 32));
+
+        // another possibility:
+        image.Rescale(32, 32);
+        bmp = image;
+    }
+
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximagerescale">Rescale</A><P>
+
+
+<HR>
+<A NAME="wximagesize"></A>
+<H3>wxImage::Size</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>Size</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B></B><I> pos</I>, <B>int</B><I> red = -1</I>, <B>int</B><I> green = -1</I>, <B>int</B><I> blue = -1</I>) <B>const</B><P>
+Returns a resized version of this image without scaling it by adding either a border
+with the given colour or cropping as necessary. The image is pasted into a new
+image with the given <I>size</I> and background colour at the position <I>pos</I>
+relative to the upper left of the new image. If <I>red = green = blue = -1</I>
+then use either the current mask colour if set or find, use, and set a
+suitable mask colour for any newly exposed areas.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximageresize">Resize</A><P>
+
+
+<HR>
+<A NAME="wximagesetalpha"></A>
+<H3>wxImage::SetAlpha</H3>
+<P>
+<B>void</B> <B>SetAlpha</B>(<B>unsigned char *</B><I>alpha = <TT>NULL</TT></I>,<B>bool</B><I> static_data = <TT>false</TT></I>)<P>
+This function is similar to <A HREF="wx_wximage.html#wximagesetdata">SetData</A> and has similar
+restrictions. The pointer passed to it may however be <TT>NULL</TT> in which case
+the function will allocate the alpha array internally -- this is useful to add
+alpha channel data to an image which doesn't have any. If the pointer is not
+<TT>NULL</TT>, it must have one byte for each image pixel and be allocated with
+<TT>malloc()</TT>. wxImage takes ownership of the pointer and will free it unless
+<I>static_data</I> parameter is set to <TT>true</TT> -- in this case the caller should
+do it.<P>
+<B>void</B> <B>SetAlpha</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>, <B>unsigned char </B><I>alpha</I>)<P>
+Sets the alpha value for the given pixel. This function should only be called
+if the image has alpha channel data, use <A HREF="wx_wximage.html#wximagehasalpha">HasAlpha</A> to
+check for this.<P>
+
+
+<HR>
+<A NAME="wximagesetdata"></A>
+<H3>wxImage::SetData</H3>
+<P>
+<B>void</B> <B>SetData</B>(<B>unsigned char*</B><I>data</I>)<P>
+Sets the image data without performing checks. The data given must have
+the size (width*height*3) or results will be unexpected. Don't use this
+method if you aren't sure you know what you are doing.<P>
+The data must have been allocated with <TT>malloc()</TT>, <FONT SIZE=4><B>NOT</B></FONT> with
+<TT>operator new</TT>.<P>
+After this call the pointer to the data is owned by the wxImage object,
+that will be responsible for deleting it.
+Do not pass to this function a pointer obtained through
+<A HREF="wx_wximage.html#wximagegetdata">wxImage::GetData</A>.<P>
+
+
+<HR>
+<A NAME="wximagesetmask"></A>
+<H3>wxImage::SetMask</H3>
+<P>
+<B>void</B> <B>SetMask</B>(<B>bool</B><I> hasMask = true</I>)<P>
+Specifies whether there is a mask or not. The area of the mask is determined by the current mask colour.<P>
+
+
+<HR>
+<A NAME="wximagesetmaskcolour"></A>
+<H3>wxImage::SetMaskColour</H3>
+<P>
+<B>void</B> <B>SetMaskColour</B>(<B>unsigned char </B><I>red</I>, <B>unsigned char </B><I>green</I>, <B>unsigned char </B><I>blue</I>)<P>
+Sets the mask colour for this image (and tells the image to use the mask).<P>
+
+
+<HR>
+<A NAME="wximagesetmaskfromimage"></A>
+<H3>wxImage::SetMaskFromImage</H3>
+<P>
+<B>bool</B> <B>SetMaskFromImage</B>(<B>const <A HREF="wx_wximage.html#wximage">wxImage</A>&</B></B><I> mask</I>, <B>unsigned char</B><I> mr</I>, <B>unsigned char</B><I> mg</I>, <B>unsigned char</B><I> mb</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>mask</I><UL><UL>
+The mask image to extract mask shape from. Must have same dimensions as the image.</UL></UL>
+<P>
+<I>mr,mg,mb</I><UL><UL>
+RGB value of pixels in <I>mask</I> that will be used to create the mask.</UL></UL>
+<P>
+Sets image's mask so that the pixels that have RGB value of <I>mr,mg,mb</I>
+in <I>mask</I> will be masked in the image. This is done by first finding an
+unused colour in the image, setting this colour as the mask colour and then
+using this colour to draw all pixels in the image who corresponding pixel
+in <I>mask</I> has given RGB value.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns false if <I>mask</I> does not have same dimensions as the image or if
+there is no unused colour left. Returns true if the mask was successfully
+applied.<P>
+<B><FONT COLOR="#FF0000">Notes</FONT></B><P>
+Note that this method involves computing the histogram, which is
+computationally intensive operation.<P>
+
+
+<HR>
+<A NAME="wximagesetoption"></A>
+<H3>wxImage::SetOption</H3>
+<P>
+<B>void</B> <B>SetOption</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> value</I>)<P>
+<B>void</B> <B>SetOption</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name</I>, <B>int</B><I> value</I>)<P>
+Sets a user-defined option. The function is case-insensitive to <I>name</I>.<P>
+For example, when saving as a JPEG file, the option <B>quality</B> is
+used, which is a number between 0 and 100 (0 is terrible, 100 is very good).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wximage.html#wximagegetoption">wxImage::GetOption</A>,
+<A HREF="wx_wximage.html#wximagegetoptionint">wxImage::GetOptionInt</A>,
+<A HREF="wx_wximage.html#wximagehasoption">wxImage::HasOption</A><P>
+
+
+<HR>
+<A NAME="wximagesetpalette"></A>
+<H3>wxImage::SetPalette</H3>
+<P>
+<B>void</B> <B>SetPalette</B>(<B>const <A HREF="wx_wxpalette.html#wxpalette">wxPalette</A>&</B></B><I> palette</I>)<P>
+Associates a palette with the image. The palette may be used when converting
+wxImage to wxBitmap (MSW only at present) or in file save operations (none as yet).<P>
+
+
+<HR>
+<A NAME="wximagesetrgb"></A>
+<H3>wxImage::SetRGB</H3>
+<P>
+<B>void</B> <B>SetRGB</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>, <B>unsigned char </B><I>red</I>, <B>unsigned char </B><I>green</I>, <B>unsigned char </B><I>blue</I>)<P>
+Sets the pixel at the given coordinate. This routine performs bounds-checks
+for the coordinate so it can be considered a safe way to manipulate the
+data, but in some cases this might be too slow so that the data will have to
+be set directly. In that case you will have to get access to the image data
+using the <A HREF="wx_wximage.html#wximagegetdata">GetData</A> method.<P>
+
+
+<HR>
+<A NAME="wximagesetrgbrect"></A>
+<H3>wxImage::SetRGB</H3>
+<P>
+<B>void</B> <B>SetRGB</B>(<B><A HREF="wx_wxrect.html#wxrect">wxRect</A> & </B></B><I>rect</I>, <B>unsigned char </B><I>red</I>, <B>unsigned char </B><I>green</I>, <B>unsigned char </B><I>blue</I>)<P>
+Sets the colour of the pixels within the given rectangle. This routine performs
+bounds-checks for the coordinate so it can be considered a safe way to manipulate the
+data.<P>
+
+
+<HR>
+<A NAME="wximageassign"></A>
+<H3>wxImage::operator =</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A>& </B> </B> <B>operator =</B>(<B>const <A HREF="wx_wximage.html#wximage">wxImage</A>& </B></B><I>image</I>)<P>
+Assignment operator, using <A HREF="wx_trefcount.html#trefcount">reference counting</A>.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>image</I><UL><UL>
+Image to assign.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns 'this' object.<P>
+<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,147 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxListView</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlistview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlistitemattr.html#wxlistitemattr"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlocale.html#wxlocale"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxListView</H2>
+<P>
+This class currently simply presents a simpler to use interface for the 
+<A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A> -- it can be thought of as a <I>fa&ccedil;ade</I>
+for that complicated class. Using it is preferable to using 
+<A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A> directly whenever possible because in the
+future some ports might implement wxListView but not the full set of wxListCtrl
+features.<P>
+Other than different interface, this class is identical to wxListCtrl. In
+particular, it uses the same events, same window styles and so on.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A><BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/listctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxlistviewclearcolumnimage">wxListView::ClearColumnImage</A><BR>
+<A HREF="#wxlistviewfocus">wxListView::Focus</A><BR>
+<A HREF="#wxlistviewgetfirstselected">wxListView::GetFirstSelected</A><BR>
+<A HREF="#wxlistviewgetfocuseditem">wxListView::GetFocusedItem</A><BR>
+<A HREF="#wxlistviewgetnextselected">wxListView::GetNextSelected</A><BR>
+<A HREF="#wxlistviewisselected">wxListView::IsSelected</A><BR>
+<A HREF="#wxlistviewselect">wxListView::Select</A><BR>
+<A HREF="#wxlistviewsetcolumnimage">wxListView::SetColumnImage</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlistviewclearcolumnimage"></A>
+<H3>wxListView::ClearColumnImage</H3>
+<P>
+<B>void</B> <B>ClearColumnImage</B>(<B>int </B><I>col</I>)<P>
+Resets the column image -- after calling this function, no image will be shown.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>col</I><UL><UL>
+the column to clear image for</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistview.html#wxlistviewsetcolumnimage">SetColumnImage</A><P>
+
+
+<HR>
+<A NAME="wxlistviewfocus"></A>
+<H3>wxListView::Focus</H3>
+<P>
+<B>void</B> <B>Focus</B>(<B>long </B><I>index</I>)<P>
+Sets focus to the item with the given <I>index</I>.<P>
+
+
+<HR>
+<A NAME="wxlistviewgetfirstselected"></A>
+<H3>wxListView::GetFirstSelected</H3>
+<P>
+<B>long</B> <B>GetFirstSelected</B>() <B>const</B><P>
+Returns the first selected item in a (presumably) multiple selection control.
+Together with <A HREF="wx_wxlistview.html#wxlistviewgetnextselected">GetNextSelected</A> it can be
+used to iterate over all selected items in the control.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The first selected item, if any, -1 otherwise.<P>
+
+
+<HR>
+<A NAME="wxlistviewgetfocuseditem"></A>
+<H3>wxListView::GetFocusedItem</H3>
+<P>
+<B>long</B> <B>GetFocusedItem</B>() <B>const</B><P>
+Returns the currently focused item or -1 if none.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistview.html#wxlistviewisselected">IsSelected</A>,<BR>
+
+<A HREF="wx_wxlistview.html#wxlistviewfocus">Focus</A><P>
+
+
+<HR>
+<A NAME="wxlistviewgetnextselected"></A>
+<H3>wxListView::GetNextSelected</H3>
+<P>
+<B>long</B> <B>GetNextSelected</B>(<B>long </B><I>item</I>) <B>const</B><P>
+Used together with <A HREF="wx_wxlistview.html#wxlistviewgetfirstselected">GetFirstSelected</A> to
+iterate over all selected items in the control.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns the next selected item or -1 if there are no more of them.<P>
+
+
+<HR>
+<A NAME="wxlistviewisselected"></A>
+<H3>wxListView::IsSelected</H3>
+<P>
+<B>bool</B> <B>IsSelected</B>(<B>long </B><I>index</I>) <B>const</B><P>
+Returns <TT>true</TT> if the item with the given <I>index</I> is selected, 
+<TT>false</TT> otherwise.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistview.html#wxlistviewgetfirstselected">GetFirstSelected</A>,<BR>
+
+<A HREF="wx_wxlistview.html#wxlistviewgetnextselected">GetNextSelected</A><P>
+
+
+<HR>
+<A NAME="wxlistviewselect"></A>
+<H3>wxListView::Select</H3>
+<P>
+<B>void</B> <B>Select</B>(long n, <B>bool </B><I>on = true</I>)<P>
+Selects or unselects the given item.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>n</I><UL><UL>
+the item to select or unselect</UL></UL>
+<P>
+<I>on</I><UL><UL>
+if <TT>true</TT> (default), selects the item, otherwise unselects it</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistctrl.html#wxlistctrlsetitemstate">SetItemState</A><P>
+
+
+<HR>
+<A NAME="wxlistviewsetcolumnimage"></A>
+<H3>wxListView::SetColumnImage</H3>
+<P>
+<B>void</B> <B>SetColumnImage</B>(<B>int </B><I>col</I>, <B>int </B><I>image</I>)<P>
+Sets the column image for the specified column. To use the column images, the
+control must have a valid image list with at least one image.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>col</I><UL><UL>
+the column to set image for</UL></UL>
+<P>
+<I>image</I><UL><UL>
+the index of the column image in the controls image list</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistview.html#wxlistviewclearcolumnimage">ClearColumnImage</A>,<BR>
+
+<A HREF="wx_wxlistctrl.html#wxlistctrlsetimagelist">SetImageList</A><P>
+
+</FONT></BODY></HTML>

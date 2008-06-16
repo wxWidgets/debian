@@ -1,0 +1,145 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxArchiveIterator</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxarchiveiterator"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxarchivenotifier.html#wxarchivenotifier"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxArchiveIterator</H2>
+<P>
+An input iterator template class that can be used to transfer an archive's
+catalogue to a container. It is only available if wxUSE_STL is set to 1
+in setup.h, and the uses for it outlined below require a compiler which
+supports member templates.<P>
+<PRE>
+template &lt;class Arc, class T = typename Arc::entry_type*&gt;
+class wxArchiveIterator
+{
+    // this constructor creates an 'end of sequence' object
+    wxArchiveIterator();
+
+    // template parameter 'Arc' should be the type of an archive input stream
+    wxArchiveIterator(Arc& arc) {
+
+    /* ... */
+};
+
+</PRE>
+The first template parameter should be the type of archive input stream
+(e.g. <A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A>) and the
+second can either be a pointer to an entry
+(e.g. <A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A>*), or a string/pointer pair
+(e.g. std::pair&lt;wxString, wxArchiveEntry*&gt;).<P>
+The <TT>&lt;wx/archive.h&gt;</TT> header defines the following typedefs:<P>
+<PRE>
+    typedef wxArchiveIterator&lt;wxArchiveInputStream&gt; wxArchiveIter;
+
+    typedef wxArchiveIterator&lt;wxArchiveInputStream,
+             std::pair&lt;wxString, wxArchiveEntry*&gt; &gt; wxArchivePairIter;
+
+</PRE>
+The header for any implementation of this interface should define similar
+typedefs for its types, for example in <TT>&lt;wx/zipstrm.h&gt;</TT> there is:<P>
+<PRE>
+    typedef wxArchiveIterator&lt;wxZipInputStream&gt; wxZipIter;
+
+    typedef wxArchiveIterator&lt;wxZipInputStream,
+             std::pair&lt;wxString, wxZipEntry*&gt; &gt; wxZipPairIter;
+
+</PRE>
+Transferring the catalogue of an archive <I>arc</I> to a vector <I>cat</I>,
+can then be done something like this:<P>
+<PRE>
+    std::vector&lt;wxArchiveEntry*&gt; cat((wxArchiveIter)arc, wxArchiveIter());
+
+</PRE>
+When the iterator is dereferenced, it gives away ownership of an entry
+object. So in the above example, when you have finished with <I>cat</I>
+you must delete the pointers it contains.<P>
+If you have smart pointers with normal copy semantics (i.e. not auto_ptr
+or <A HREF="wx_wxscopedptr.html#wxscopedptr">wxScopedPtr</A>), then you can create an iterator
+which uses them instead.  For example, with a smart pointer class for
+zip entries <I>ZipEntryPtr</I>:<P>
+<PRE>
+    typedef std::vector&lt;ZipEntryPtr&gt; ZipCatalog;
+    typedef wxArchiveIterator&lt;wxZipInputStream, ZipEntryPtr&gt; ZipIter;
+    ZipCatalog cat((ZipIter)zip, ZipIter());
+
+</PRE>
+Iterators that return std::pair objects can be used to
+populate a std::multimap, to allow entries to be looked
+up by name. The string is initialised using the wxArchiveEntry object's
+ <A HREF="wx_wxarchiveentry.html#wxarchiveentrygetinternalname">GetInternalName()</A> function.<P>
+<PRE>
+    typedef std::multimap&lt;wxString, wxZipEntry*&gt; ZipCatalog;
+    ZipCatalog cat((wxZipPairIter)zip, wxZipPairIter());
+
+</PRE>
+ 
+Note that this iterator also gives away ownership of an entry 
+object each time it is dereferenced. So in the above example, when
+you have finished with <I>cat</I> you must delete the pointers it contains.<P>
+Or if you have them, a pair containing a smart pointer can be used
+(again <I>ZipEntryPtr</I>), no worries about ownership:<P>
+<PRE>
+    typedef std::multimap&lt;wxString, ZipEntryPtr&gt; ZipCatalog;
+    typedef wxArchiveIterator&lt;wxZipInputStream,
+                std::pair&lt;wxString, ZipEntryPtr&gt; &gt; ZipPairIter;
+    ZipCatalog cat((ZipPairIter)zip, ZipPairIter());
+
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/archive.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A><BR>
+
+<A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A><BR>
+
+<A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstream">wxArchiveOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B>
+<PRE>
+typedef std::input_iterator_tag iterator_category
+typedef T value_type
+typedef ptrdiff_t difference_type
+typedef T* pointer
+typedef T& reference
+</PRE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxarchiveiteratorwxarchiveiterator">wxArchiveIterator::wxArchiveIterator</A><BR>
+<A HREF="#wxarchiveiteratoroperatorstar">wxArchiveIterator::operator*</A><BR>
+<A HREF="#wxarchiveiteratoroperatorincrement">wxArchiveIterator::operator++</A><BR>
+<P>
+
+<HR>
+<A NAME="wxarchiveiteratorwxarchiveiterator"></A>
+<H3>wxArchiveIterator::wxArchiveIterator</H3>
+<P>
+<B></B> <B>wxArchiveIterator</B>()<P>
+Construct an 'end of sequence' instance.<P>
+<B></B> <B>wxArchiveIterator</B>(<B>Arc&amp; </B><I>arc</I>)<P>
+Construct iterator that returns all the entries in the archive input
+stream <I>arc</I>.<P>
+
+
+<HR>
+<A NAME="wxarchiveiteratoroperatorstar"></A>
+<H3>wxArchiveIterator::operator*</H3>
+<P>
+<B>const T&amp;</B> <B>operator*</B>() <B>const</B><P>
+Returns an entry object from the archive input stream, giving away
+ownership.<P>
+
+
+<HR>
+<A NAME="wxarchiveiteratoroperatorincrement"></A>
+<H3>wxArchiveIterator::operator++</H3>
+<P>
+<B><A HREF="wx_wxarchiveiterator.html#wxarchiveiterator">wxArchiveIterator</A>&</B> </B> <B>operator++</B>()<P>
+<B><A HREF="wx_wxarchiveiterator.html#wxarchiveiterator">wxArchiveIterator</A>&</B> </B> <B>operator++</B>(<B>int</B><I></I>)<P>
+Position the input iterator at the next entry in the archive input stream.<P>
+
+
+</FONT></BODY></HTML>

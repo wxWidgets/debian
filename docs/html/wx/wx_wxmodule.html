@@ -1,0 +1,113 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxModule</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmodule"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmirrordc.html#wxmirrordc"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmousecapturechangedevent.html#wxmousecapturechangedevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxModule</H2>
+<P>
+The module system is a very simple mechanism to allow applications (and parts
+of wxWidgets itself) to define initialization and cleanup functions that are
+automatically called on wxWidgets startup and exit.<P>
+To define a new kind of module, derive a class from wxModule, override the
+<A HREF="wx_wxmodule.html#wxmoduleoninit">OnInit</A> and <A HREF="wx_wxmodule.html#wxmoduleonexit">OnExit</A> 
+functions, and add the DECLARE_DYNAMIC_CLASS and IMPLEMENT_DYNAMIC_CLASS to
+header and implementation files (which can be the same file). On
+initialization, wxWidgets will find all classes derived from wxModule, create
+an instance of each, and call each OnInit function. On exit, wxWidgets will
+call the OnExit function for each module instance.<P>
+Note that your module class does not have to be in a header file.<P>
+For example:<P>
+<PRE>
+  // A module to allow DDE initialization/cleanup
+  // without calling these functions from app.cpp or from
+  // the user's application.
+  class wxDDEModule: public wxModule
+  {
+  public:
+      wxDDEModule() { }
+      virtual bool OnInit() { wxDDEInitialize(); return true; };
+      virtual void OnExit() { wxDDECleanUp(); };
+
+  private:
+      DECLARE_DYNAMIC_CLASS(wxDDEModule)
+  };
+
+  IMPLEMENT_DYNAMIC_CLASS(wxDDEModule, wxModule)
+
+
+  // Another module which uses DDE in its OnInit()
+  class MyModule: public wxModule
+  {
+  public:
+      wxDDEModule() { AddDependency(CLASSINFO(wxDDEModule)); }
+      virtual bool OnInit() { ... code using DDE ... }
+      virtual void OnExit() { ... }
+
+  private:
+      DECLARE_DYNAMIC_CLASS(wxDDEModule)
+  };
+</PRE>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/module.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxmodulector">wxModule::wxModule</A><BR>
+<A HREF="#wxmoduledtor">wxModule::~wxModule</A><BR>
+<A HREF="#wxmoduleadddependency">wxModule::AddDependency</A><BR>
+<A HREF="#wxmoduleonexit">wxModule::OnExit</A><BR>
+<A HREF="#wxmoduleoninit">wxModule::OnInit</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmodulector"></A>
+<H3>wxModule::wxModule</H3>
+<P>
+<B></B> <B>wxModule</B>()<P>
+Constructs a wxModule object.<P>
+
+
+<HR>
+<A NAME="wxmoduledtor"></A>
+<H3>wxModule::~wxModule</H3>
+<P>
+<B></B> <B>~wxModule</B>()<P>
+Destructor.<P>
+
+
+<HR>
+<A NAME="wxmoduleadddependency"></A>
+<H3>wxModule::AddDependency</H3>
+<P>
+<B>void</B> <B>AddDependency</B>(<B><A HREF="wx_wxclassinfo.html#wxclassinfo">wxClassInfo</A> * </B></B><I>dep</I>)<P>
+Call this function from the constructor of the derived class. <I>dep</I> must be
+the <A HREF="wx_rttimacros.html#classinfo">CLASSINFO</A> of a wxModule-derived class and the
+corresponding module will be loaded <EM>before</EM> and unloaded <EM>after</EM>
+this module.<P>
+Note that circular dependencies are detected and result in a fatal error.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>dep</I><UL><UL>
+The class information object for the dependent module.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxmoduleonexit"></A>
+<H3>wxModule::OnExit</H3>
+<P>
+<B>virtual void</B> <B>OnExit</B>()<P>
+Provide this function with appropriate cleanup for your module.<P>
+
+
+<HR>
+<A NAME="wxmoduleoninit"></A>
+<H3>wxModule::OnInit</H3>
+<P>
+<B>virtual bool</B> <B>OnInit</B>()<P>
+Provide this function with appropriate initialization for your module. If the function
+returns false, wxWidgets will exit immediately.<P>
+
+</FONT></BODY></HTML>

@@ -5,7 +5,7 @@
 # Author:       Robin Dunn & Gary Dumer
 #
 # Created:
-# RCS-ID:       $Id: ListCtrl.py,v 1.8.2.1 2006/01/05 22:14:20 RD Exp $
+# RCS-ID:       $Id: ListCtrl.py 43385 2006-11-12 23:41:06Z RD $
 # Copyright:    (c) 1998 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -90,7 +90,17 @@ class TestListCtrlPanel(wx.Panel, listmix.ColumnSorterMixin):
 
         self.log = log
         tID = wx.NewId()
-
+        
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        
+        if wx.Platform == "__WXMAC__" and \
+               hasattr(wx.GetApp().GetTopWindow(), "LoadDemo"):
+            self.useNative = wx.CheckBox(self, -1, "Use native listctrl")
+            self.useNative.SetValue( 
+                not wx.SystemOptions.GetOptionInt("mac.listctrl.always_use_generic") )
+            self.Bind(wx.EVT_CHECKBOX, self.OnUseNative, self.useNative)
+            sizer.Add(self.useNative, 0, wx.ALL | wx.ALIGN_RIGHT, 4)
+            
         self.il = wx.ImageList(16, 16)
 
         self.idx1 = self.il.Add(images.getSmilesBitmap())
@@ -110,6 +120,7 @@ class TestListCtrlPanel(wx.Panel, listmix.ColumnSorterMixin):
                                  )
         
         self.list.SetImageList(self.il, wx.IMAGE_LIST_SMALL)
+        sizer.Add(self.list, 1, wx.EXPAND)
 
         self.PopulateList()
 
@@ -119,7 +130,8 @@ class TestListCtrlPanel(wx.Panel, listmix.ColumnSorterMixin):
         listmix.ColumnSorterMixin.__init__(self, 3)
         #self.SortListItems(0, True)
 
-        self.Bind(wx.EVT_SIZE, self.OnSize)
+        self.SetSizer(sizer)
+        self.SetAutoLayout(True)
 
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected, self.list)
         self.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.OnItemDeselected, self.list)
@@ -141,6 +153,10 @@ class TestListCtrlPanel(wx.Panel, listmix.ColumnSorterMixin):
         # for wxGTK
         self.list.Bind(wx.EVT_RIGHT_UP, self.OnRightClick)
 
+
+    def OnUseNative(self, event):
+        wx.SystemOptions.SetOptionInt("mac.listctrl.always_use_generic", not event.IsChecked())
+        wx.GetApp().GetTopWindow().LoadDemo("ListCtrl")
 
     def PopulateList(self):
         if 0:
@@ -205,7 +221,7 @@ class TestListCtrlPanel(wx.Panel, listmix.ColumnSorterMixin):
         self.log.WriteText("x, y = %s\n" % str((x, y)))
         item, flags = self.list.HitTest((x, y))
 
-        if flags & wx.LIST_HITTEST_ONITEM:
+        if item != wx.NOT_FOUND and flags & wx.LIST_HITTEST_ONITEM:
             self.list.Select(item)
 
         event.Skip()
@@ -344,12 +360,6 @@ class TestListCtrlPanel(wx.Panel, listmix.ColumnSorterMixin):
 
     def OnPopupSix(self, event):
         self.list.EditLabel(self.currentItem)
-
-
-    def OnSize(self, event):
-        w,h = self.GetClientSizeTuple()
-        self.list.SetDimensions(0, 0, w, h)
-
 
 
 #---------------------------------------------------------------------------

@@ -1,0 +1,57 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxMBConvFile</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxmbconvfile"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxmbconv.html#wxmbconv"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxmbconvutf7.html#wxmbconvutf7"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxMBConvFile</H2>
+<P>
+This class used to define the class instance 
+<B>wxConvFileName</B>, but nowadays <B>wxConvFileName</B> is
+either of type wxConvLibc (on most platforms) or wxConvUTF8
+(on MacOS X). <B>wxConvFileName</B> converts filenames between 
+filesystem multibyte encoding and Unicode. <B>wxConvFileName</B> 
+can also be set to a something else at run-time which is used 
+e.g. by wxGTK to use a class which checks the environment 
+variable <B>G_FILESYSTEM_ENCODING</B> indicating that filenames 
+should not be interpreted as UTF8 and also for converting 
+invalid UTF8 characters (e.g. if there is a filename in iso8859_1)
+to strings with octal values. <P>
+Since some platforms (such as Win32) use Unicode in the filenames,
+and others (such as Unix) use multibyte encodings, this class should only
+be used directly if wxMBFILES is defined to 1. A convenience macro,
+wxFNCONV, is defined to wxConvFileName-&gt;cWX2MB in this case. You could
+use it like this:<P>
+<PRE>
+wxChar *name = wxT("rawfile.doc");
+FILE *fil = fopen(wxFNCONV(name), "r");
+</PRE>
+(although it would be better to use wxFopen(name, wxT("r")) in this case.)<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/strconv.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_mbconvclasses.html#mbconvclasses">wxMBConv classes overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxmbconvfilemb2wc">wxMBConvFile::MB2WC</A><BR>
+<A HREF="#wxmbconvfilewc2mb">wxMBConvFile::WC2MB</A><BR>
+<P>
+
+<HR>
+<A NAME="wxmbconvfilemb2wc"></A>
+<H3>wxMBConvFile::MB2WC</H3>
+<P>
+<B>size_t</B> <B>MB2WC</B>(<B>wchar_t* </B><I>buf</I>, <B>const char* </B><I>psz</I>, <B>size_t </B><I>n</I>) <B>const</B><P>
+Converts from multibyte filename encoding to Unicode. Returns the size of the destination buffer.<P>
+
+<HR>
+<A NAME="wxmbconvfilewc2mb"></A>
+<H3>wxMBConvFile::WC2MB</H3>
+<P>
+<B>size_t</B> <B>WC2MB</B>(<B>char* </B><I>buf</I>, <B>const wchar_t* </B><I>psz</I>, <B>size_t </B><I>n</I>) <B>const</B><P>
+Converts from Unicode to multibyte filename encoding. Returns the size of the destination buffer.<P>
+
+</FONT></BODY></HTML>

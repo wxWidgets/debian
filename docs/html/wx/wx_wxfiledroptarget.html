@@ -1,0 +1,59 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFileDropTarget</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfiledroptarget"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfiledialog.html#wxfiledialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfilehistory.html#wxfilehistory"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFileDropTarget</H2>
+<P>
+This is a <A HREF="wx_wxdroptarget.html#wxdroptarget">drop target</A> which accepts files (dragged
+from File Manager or Explorer).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdroptarget.html#wxdroptarget">wxDropTarget</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dnd.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdndoverview.html#wxdndoverview">Drag and drop overview</A>, <A HREF="wx_wxdropsource.html#wxdropsource">wxDropSource</A>, 
+<A HREF="wx_wxdroptarget.html#wxdroptarget">wxDropTarget</A>, <A HREF="wx_wxtextdroptarget.html#wxtextdroptarget">wxTextDropTarget</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfiledroptargetwxfiledroptarget">wxFileDropTarget::wxFileDropTarget</A><BR>
+<A HREF="#wxfiledroptargetondrop">wxFileDropTarget::OnDrop</A><BR>
+<A HREF="#wxfiledroptargetondropfiles">wxFileDropTarget::OnDropFiles</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfiledroptargetwxfiledroptarget"></A>
+<H3>wxFileDropTarget::wxFileDropTarget</H3>
+<P>
+<B></B> <B>wxFileDropTarget</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxfiledroptargetondrop"></A>
+<H3>wxFileDropTarget::OnDrop</H3>
+<P>
+<B>virtual bool</B> <B>OnDrop</B>(<B>long </B><I>x</I>, <B>long </B><I>y</I>, <B>const void </B><I>*data</I>, <B>size_t </B><I>size</I>)<P>
+See <A HREF="wx_wxdroptarget.html#wxdroptargetondrop">wxDropTarget::OnDrop</A>. This function is implemented
+appropriately for files, and calls <A HREF="wx_wxfiledroptarget.html#wxfiledroptargetondropfiles">wxFileDropTarget::OnDropFiles</A>.<P>
+
+<HR>
+<A NAME="wxfiledroptargetondropfiles"></A>
+<H3>wxFileDropTarget::OnDropFiles</H3>
+<P>
+<B>virtual bool</B> <B>OnDropFiles</B>(<B>wxCoord </B><I>x</I>, <B>wxCoord </B><I>y</I>, <B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>filenames</I>)<P>
+Override this function to receive dropped files.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>x</I><UL><UL>
+The x coordinate of the mouse.</UL></UL>
+<P>
+<I>y</I><UL><UL>
+The y coordinate of the mouse.</UL></UL>
+<P>
+<I>filenames</I><UL><UL>
+An array of filenames.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Return true to accept the data, false to veto the operation.<P>
+
+</FONT></BODY></HTML>

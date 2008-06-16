@@ -26,6 +26,14 @@ if wx.Platform == '__WXMSW__':
               'size' : 10,
               'size2': 8,
              }
+elif wx.Platform == '__WXMAC__':
+    faces = { 'times': 'Times New Roman',
+              'mono' : 'Monaco',
+              'helv' : 'Arial',
+              'other': 'Comic Sans MS',
+              'size' : 12,
+              'size2': 10,
+             }
 else:
     faces = { 'times': 'Times',
               'mono' : 'Courier',
@@ -177,7 +185,7 @@ class PythonSTC(stc.StyledTextCtrl):
     def OnKeyPressed(self, event):
         if self.CallTipActive():
             self.CallTipCancel()
-        key = event.KeyCode()
+        key = event.GetKeyCode()
 
         if key == 32 and event.ControlDown():
             pos = self.GetCurrentPos()

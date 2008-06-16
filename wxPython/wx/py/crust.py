@@ -1,8 +1,8 @@
 """Crust combines the shell and filling into one control."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: crust.py,v 1.9.2.4 2006/02/24 01:21:26 RD Exp $"
-__revision__ = "$Revision: 1.9.2.4 $"[11:-2]
+__cvsid__ = "$Id: crust.py 44235 2007-01-17 23:05:14Z RD $"
+__revision__ = "$Revision: 44235 $"[11:-2]
 
 import wx
 
@@ -35,6 +35,14 @@ class Crust(wx.SplitterWindow):
                  *args, **kwds):
         """Create Crust instance."""
         wx.SplitterWindow.__init__(self, parent, id, pos, size, style, name)
+
+        # Turn off the tab-traversal style that is automatically
+        # turned on by wx.SplitterWindow.  We do this because on
+        # Windows the event for Ctrl-Enter is stolen and used as a
+        # navigation key, but the Shell window uses it to insert lines.
+        style = self.GetWindowStyle()
+        self.SetWindowStyle(style & ~wx.TAB_TRAVERSAL)
+        
         self.shell = Shell(parent=self, introText=intro,
                            locals=locals, InterpClass=InterpClass,
                            startupScript=startupScript,
@@ -67,19 +75,50 @@ class Crust(wx.SplitterWindow):
         
         self.dispatcherlisting = DispatcherListing(parent=self.notebook)
         self.notebook.AddPage(page=self.dispatcherlisting, text='Dispatcher')
+
         
-        self.SplitHorizontally(self.shell, self.notebook, -self.sashoffset)
+        # Initialize in an unsplit mode, and check later after loading
+        # settings if we should split or not.
+        self.shell.Hide()
+        self.notebook.Hide()
+        self.Initialize(self.shell)
+        self._shouldsplit = True
+        wx.CallAfter(self._CheckShouldSplit)
         self.SetMinimumPaneSize(100)
 
         self.Bind(wx.EVT_SIZE, self.SplitterOnSize)
         self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.OnChanged)
+        self.Bind(wx.EVT_SPLITTER_DCLICK, self.OnSashDClick)
 
-    
+    def _CheckShouldSplit(self):
+        if self._shouldsplit:
+            self.SplitHorizontally(self.shell, self.notebook, -self.sashoffset)
+            self.lastsashpos = self.GetSashPosition()
+        else:
+            self.lastsashpos = -1
+        self.issplit = self.IsSplit()       
+
+    def ToggleTools(self):
+        """Toggle the display of the filling and other tools"""
+        if self.issplit:
+            self.Unsplit()
+        else:
+            self.SplitHorizontally(self.shell, self.notebook, -self.sashoffset)
+            self.lastsashpos = self.GetSashPosition()
+        self.issplit = self.IsSplit()
+
+    def ToolsShown(self):
+        return self.issplit
+
     def OnChanged(self, event):
         """update sash offset from the bottom of the window"""
         self.sashoffset = self.GetSize().height - event.GetSashPosition()
+        self.lastsashpos = event.GetSashPosition()
         event.Skip()
-        
+
+    def OnSashDClick(self, event):
+        self.Unsplit()
+        self.issplit = False
 
     # Make the splitter expand the top window when resized
     def SplitterOnSize(self, event):
@@ -102,13 +141,17 @@ class Crust(wx.SplitterWindow):
         zoom = config.ReadInt('View/Zoom/Display', -99)
         if zoom != -99:
             self.display.SetZoom(zoom)
-
+        self.issplit = config.ReadInt('Sash/IsSplit', True)
+        if not self.issplit:
+            self._shouldsplit = False
 
     def SaveSettings(self, config):
         self.shell.SaveSettings(config)
         self.filling.SaveSettings(config)
 
-        config.WriteInt('Sash/CrustPos', self.GetSashPosition())
+        if self.lastsashpos != -1:
+            config.WriteInt('Sash/CrustPos', self.lastsashpos)
+        config.WriteInt('Sash/IsSplit', self.issplit)
         config.WriteInt('View/Zoom/Display', self.display.GetZoom())
         
 
@@ -298,6 +341,13 @@ class CrustFrame(frame.Frame, frame.ShellFrameMixin):
         dialog.ShowModal()
         dialog.Destroy()
 
+
+    def ToggleTools(self):
+        """Toggle the display of the filling and other tools"""
+        return self.crust.ToggleTools()
+
+    def ToolsShown(self):
+        return self.crust.ToolsShown()
 
     def OnHelp(self, event):
         """Show a help dialog."""

@@ -1,0 +1,442 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxURI</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxuri"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxupdateuievent.html#wxupdateuievent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxurl.html#wxurl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxURI</H2>
+<P>
+wxURI is used to extract information from
+a URI (Uniform Resource Identifier).<P>
+For information about URIs, see 
+<A HREF="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</A>.<P>
+In short, a URL <EM>is</EM> a URI.  In other
+words, URL is a subset of a URI - all 
+acceptable URLs are also acceptable URIs.<P>
+wxURI automatically escapes invalid characters in a string,
+so there is no chance of wxURI "failing" on construction/creation.<P>
+wxURI supports copy construction and standard assignment
+operators.  wxURI can also be inherited from to provide
+furthur functionality.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/uri.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxurl.html#wxurl">wxURL</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#obtainingwxuricomponents">Obtaining individual components</A><BR>
+<A HREF="#deviationsfromrfc">Deviations from the RFC</A><BR>
+<A HREF="#wxuriwxuri">wxURI::wxURI</A><BR>
+<A HREF="#wxuribuilduri">wxURI::BuildURI</A><BR>
+<A HREF="#wxuribuildunescapeduri">wxURI::BuildUnescapedURI</A><BR>
+<A HREF="#wxuricreate">wxURI::Create</A><BR>
+<A HREF="#wxurigetfragment">wxURI::GetFragment</A><BR>
+<A HREF="#wxurigethosttype">wxURI::GetHostType</A><BR>
+<A HREF="#wxurigetpassword">wxURI::GetPassword</A><BR>
+<A HREF="#wxurigetpath">wxURI::GetPath</A><BR>
+<A HREF="#wxurigetport">wxURI::GetPort</A><BR>
+<A HREF="#wxurigetquery">wxURI::GetQuery</A><BR>
+<A HREF="#wxurigetscheme">wxURI::GetScheme</A><BR>
+<A HREF="#wxurigetserver">wxURI::GetServer</A><BR>
+<A HREF="#wxurigetuser">wxURI::GetUser</A><BR>
+<A HREF="#wxurigetuserinfo">wxURI::GetUserInfo</A><BR>
+<A HREF="#wxurihasfragment">wxURI::HasFragment</A><BR>
+<A HREF="#wxurihaspath">wxURI::HasPath</A><BR>
+<A HREF="#wxurihasport">wxURI::HasPort</A><BR>
+<A HREF="#wxurihasquery">wxURI::HasQuery</A><BR>
+<A HREF="#wxurihasscheme">wxURI::HasScheme</A><BR>
+<A HREF="#wxurihasserver">wxURI::HasServer</A><BR>
+<A HREF="#wxurihasuserinfo">wxURI::HasUser</A><BR>
+<A HREF="#wxuriisreference">wxURI::IsReference</A><BR>
+<A HREF="#wxurioperatorcompare">wxURI::operator ==</A><BR>
+<A HREF="#wxuriresolve">wxURI::Resolve</A><BR>
+<A HREF="#wxuriunescape">wxURI::Unescape</A><BR>
+<P>
+
+<HR>
+<A NAME="obtainingwxuricomponents"></A>
+<H3>Obtaining individual components</H3>
+<P>
+To obtain individual components you can use 
+one of the following methods<P>
+<A HREF="wx_wxuri.html#wxurigetscheme">GetScheme</A><BR>
+
+<A HREF="wx_wxuri.html#wxurigetuserinfo">GetUserInfo</A><BR>
+
+<A HREF="wx_wxuri.html#wxurigetserver">GetServer</A><BR>
+
+<A HREF="wx_wxuri.html#wxurigetport">GetPort</A><BR>
+
+<A HREF="wx_wxuri.html#wxurigetpath">GetPath</A><BR>
+
+<A HREF="wx_wxuri.html#wxurigetquery">GetQuery</A><BR>
+
+<A HREF="wx_wxuri.html#wxurigetfragment">GetFragment</A><P>
+However, you should check HasXXX before
+calling a get method, which determines whether or not the component referred
+to by the method is defined according to RFC 2396.<P>
+Consider an undefined component equivalent to a 
+NULL C string.<BR>
+
+<BR>
+ 
+<A HREF="wx_wxuri.html#wxurihasscheme">HasScheme</A><BR>
+
+<A HREF="wx_wxuri.html#wxurihasuserinfo">HasUserInfo</A><BR>
+
+<A HREF="wx_wxuri.html#wxurihasserver">HasServer</A><BR>
+
+<A HREF="wx_wxuri.html#wxurihasserver">HasPort</A><BR>
+
+<A HREF="wx_wxuri.html#wxurihaspath">HasPath</A><BR>
+
+<A HREF="wx_wxuri.html#wxurihasquery">HasQuery</A><BR>
+
+<A HREF="wx_wxuri.html#wxurihasfragment">HasFragment</A><P>
+Example:
+<PRE>
+//protocol will hold the http protocol (i.e. "http")
+wxString protocol;
+wxURI myuri(wxT("http://mysite.com"));
+if(myuri.HasScheme())
+   protocol = myuri.GetScheme();
+</PRE>
+
+<HR>
+<A NAME="deviationsfromrfc"></A>
+<H3>Deviations from the RFC</H3>
+<P>
+Note that on URIs with a "file" scheme wxURI does not
+parse the userinfo, server, or port portion.  This is to keep 
+compatability with wxFileSystem, the old wxURL, and older url specifications.<P>
+
+<HR>
+<A NAME="wxuriwxuri"></A>
+<H3>wxURI::wxURI</H3>
+<P>
+<B></B> <B>wxURI</B>()<P>
+Creates an empty URI.<P>
+<B></B> <B>wxURI</B>(<B>const wxChar* </B><I>uri</I>)<P>
+Constructor for quick creation.<P>
+<I>uri</I><UL><UL>
+string to initialize with</UL></UL>
+<P>
+<B></B> <B>wxURI</B>(<B>const <A HREF="wx_wxuri.html#wxuri">wxURI</A>& </B></B><I>uri</I>)<P>
+Copies this URI from another URI.<P>
+<I>uri</I><UL><UL>
+URI (Uniform Resource Identifier) to initialize with</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxuribuilduri"></A>
+<H3>wxURI::BuildURI</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>BuildURI</B>() <B>const</B><P>
+Builds the URI from its individual components and adds proper separators.<P>
+If the URI is not a reference or is not resolved, 
+the URI that is returned from Get is the same one 
+passed to Create.<P>
+
+
+<HR>
+<A NAME="wxuribuildunescapeduri"></A>
+<H3>wxURI::BuildUnescapedURI</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>BuildUnescapedURI</B>() <B>const</B><P>
+Builds the URI from its individual components, adds proper separators, and
+returns escape sequences to normal characters.<P>
+Note that it is preferred to call this over Unescape(BuildURI()) since
+<A HREF="wx_wxuri.html#wxuribuildunescapeduri">BuildUnescapedURI</A> performs some optimizations over the plain method.<P>
+
+
+<HR>
+<A NAME="wxuricreate"></A>
+<H3>wxURI::Create</H3>
+<P>
+<B>const wxChar*</B> <B>Create</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B></B><I>uri</I>)<P>
+Creates this URI from the string <I>uri</I>.<P>
+Returns the position at which parsing stopped (there 
+is no such thing as an "invalid" wxURI).<P>
+<I>uri</I><UL><UL>
+string to initialize from</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxurigetfragment"></A>
+<H3>wxURI::GetFragment</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFragment</B>() <B>const</B><P>
+Obtains the fragment of this URI.<P>
+The fragment of a URI is the last value of the URI,
+and is the value after a '' character after the path 
+of the URI.<P>
+<TT>http://mysite.com/mypath#&lt;fragment&gt;</TT><P>
+
+<HR>
+<A NAME="wxurigethosttype"></A>
+<H3>wxURI::GetHostType</H3>
+<P>
+<B>const HostType&amp;</B> <B>GetHostType</B>() <B>const</B><P>
+Obtains the host type of this URI, which is of type
+wxURI::HostType:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxURI_REGNAME</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Server is a host name, or the Server component itself is undefined.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxURI_IPV4ADDRESS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Server is a IP version 4 address (XXX.XXX.XXX.XXX)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxURI_IPV6ADDRESS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Server is a IP version 6 address ((XXX:)XXX::(XXX)XXX:XXX
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxURI_IPVFUTURE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Server is an IP address, but not versions 4 or 6
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="wxurigetpassword"></A>
+<H3>wxURI::GetPassword</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPassword</B>() <B>const</B><P>
+Returns the password part of the userinfo component of
+this URI.  Note that this is explicitly depreciated by
+RFC 1396 and should generally be avoided if possible.<P>
+<TT>http://&lt;user&gt;:&lt;password&gt;@mysite.com/mypath</TT><P>
+
+
+<HR>
+<A NAME="wxurigetpath"></A>
+<H3>wxURI::GetPath</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPath</B>() <B>const</B><P>
+Returns the (normalized) path of the URI.<P>
+The path component of a URI comes
+directly after the scheme component
+if followed by zero or one slashes ('/'),
+or after the server/port component.<P>
+Absolute paths include the leading '/'
+character.<P>
+<TT>http://mysite.com&lt;path&gt;</TT><P>
+
+<HR>
+<A NAME="wxurigetport"></A>
+<H3>wxURI::GetPort</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetPort</B>() <B>const</B><P>
+Returns a string representation of the URI's port.<P>
+The Port of a URI is a value after the server, and 
+must come after a colon (:).<P>
+<TT>http://mysite.com:&lt;port&gt;</TT><P>
+Note that you can easily get the numeric value of the port
+by using wxAtoi or wxString::Format.<P>
+
+<HR>
+<A NAME="wxurigetquery"></A>
+<H3>wxURI::GetQuery</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetQuery</B>() <B>const</B><P>
+Returns the Query component of the URI.<P>
+The query component is what is commonly passed to a 
+cgi application, and must come after the path component,
+and after a '?' character.<P>
+<TT>http://mysite.com/mypath?&lt;query&gt;</TT><P>
+
+
+<HR>
+<A NAME="wxurigetscheme"></A>
+<H3>wxURI::GetScheme</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetScheme</B>() <B>const</B><P>
+Returns the Scheme component of the URI.<P>
+The first part of the uri.<P>
+<TT>&lt;scheme&gt;://mysite.com</TT><P>
+
+
+<HR>
+<A NAME="wxurigetserver"></A>
+<H3>wxURI::GetServer</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetServer</B>() <B>const</B><P>
+Returns the Server component of the URI.<P>
+The server of the uri can be a server name or 
+a type of ip address.  See
+<A HREF="wx_wxuri.html#wxurigethosttype">GetHostType</A> for the
+possible values for the host type of the 
+server component.<P>
+<TT>http://&lt;server&gt;/mypath</TT><P>
+
+
+<HR>
+<A NAME="wxurigetuser"></A>
+<H3>wxURI::GetUser</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetUser</B>() <B>const</B><P>
+Returns the username part of the userinfo component of
+this URI.  Note that this is explicitly depreciated by
+RFC 1396 and should generally be avoided if possible.<P>
+<TT>http://&lt;user&gt;:&lt;password&gt;@mysite.com/mypath</TT><P>
+
+
+<HR>
+<A NAME="wxurigetuserinfo"></A>
+<H3>wxURI::GetUserInfo</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetUserInfo</B>() <B>const</B><P>
+Returns the UserInfo component of the URI.<P>
+The component of a URI before the server component
+that is postfixed by a '@' character.<P>
+<TT>http://&lt;userinfo&gt;@mysite.com/mypath</TT><P>
+
+
+<HR>
+<A NAME="wxurihasfragment"></A>
+<H3>wxURI::HasFragment</H3>
+<P>
+<B>bool</B> <B>HasFragment</B>() <B>const</B><P>
+Returns <TT>true</TT> if the Fragment component of the URI exists.<P>
+
+
+<HR>
+<A NAME="wxurihaspath"></A>
+<H3>wxURI::HasPath</H3>
+<P>
+<B>bool</B> <B>HasPath</B>() <B>const</B><P>
+Returns <TT>true</TT> if the Path component of the URI exists.<P>
+
+
+<HR>
+<A NAME="wxurihasport"></A>
+<H3>wxURI::HasPort</H3>
+<P>
+<B>bool</B> <B>HasPort</B>() <B>const</B><P>
+Returns <TT>true</TT> if the Port component of the URI exists.<P>
+
+
+<HR>
+<A NAME="wxurihasquery"></A>
+<H3>wxURI::HasQuery</H3>
+<P>
+<B>bool</B> <B>HasQuery</B>() <B>const</B><P>
+Returns <TT>true</TT> if the Query component of the URI exists.<P>
+
+
+<HR>
+<A NAME="wxurihasscheme"></A>
+<H3>wxURI::HasScheme</H3>
+<P>
+<B>bool</B> <B>HasScheme</B>() <B>const</B><P>
+Returns <TT>true</TT> if the Scheme component of the URI exists.<P>
+
+
+<HR>
+<A NAME="wxurihasserver"></A>
+<H3>wxURI::HasServer</H3>
+<P>
+<B>bool</B> <B>HasServer</B>() <B>const</B><P>
+Returns <TT>true</TT> if the Server component of the URI exists.<P>
+
+
+<HR>
+<A NAME="wxurihasuserinfo"></A>
+<H3>wxURI::HasUser</H3>
+<P>
+<B>bool</B> <B>HasUser</B>() <B>const</B><P>
+Returns <TT>true</TT> if the User component of the URI exists.<P>
+
+
+<HR>
+<A NAME="wxuriisreference"></A>
+<H3>wxURI::IsReference</H3>
+<P>
+<B>bool</B> <B>IsReference</B>() <B>const</B><P>
+Returns <TT>true</TT> if a valid [absolute] URI, otherwise this URI
+is a URI reference and not a full URI, and IsReference
+returns <TT>false</TT>.<P>
+
+
+<HR>
+<A NAME="wxurioperatorcompare"></A>
+<H3>wxURI::operator ==</H3>
+<P>
+<B>void</B> <B>operator ==</B>(<B>const <A HREF="wx_wxuri.html#wxuri">wxURI</A>& </B></B><I>uricomp</I>)<P>
+Compares this URI to another URI, and returns <TT>true</TT> if 
+this URI equals <I>uricomp</I>, otherwise it returns <TT>false</TT>.<P>
+<I>uricomp</I><UL><UL>
+URI to compare to</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxuriresolve"></A>
+<H3>wxURI::Resolve</H3>
+<P>
+<B>void</B> <B>Resolve</B>(<B>const <A HREF="wx_wxuri.html#wxuri">wxURI</A>& </B></B><I>base</I>, <B>int </B><I>flags = <TT>wxURI_STRICT</TT></I>)<P>
+Inherits this URI from a base URI - components that do not
+exist in this URI are copied from the base, and if this URI's
+path is not an absolute path (prefixed by a '/'), then this URI's
+path is merged with the base's path.<P>
+For instance, resolving "../mydir" from "http://mysite.com/john/doe" 
+results in the scheme (http) and server (mysite.com) being copied into 
+this URI, since they do not exist.  In addition, since the path
+of this URI is not absolute (does not begin with '/'), the path
+of the base's is merged with this URI's path, resulting in the URI
+"http://mysite.com/john/mydir".<P>
+<I>base</I><UL><UL>
+Base URI to inherit from.  Must be a full URI and not a reference</UL></UL>
+
+<I>flags</I><UL><UL>
+Currently either <TT>wxURI_STRICT</TT> or 0, in non-strict
+mode some compatibility layers are enabled to allow loopholes from RFCs prior
+to 2396</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxuriunescape"></A>
+<H3>wxURI::Unescape</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>Unescape</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>uri</I>)<P>
+Translates all escape sequences (normal characters and returns the result.<P>
+This is the preferred over deprecated wxURL::ConvertFromURI.<P>
+If you want to unescape an entire wxURI, use <A HREF="wx_wxuri.html#wxuribuildunescapeduri">BuildUnescapedURI</A> instead,
+as it performs some optimizations over this method.<P>
+<I>uri</I><UL><UL>
+string with escaped characters to convert</UL></UL>
+<P>
+
+
+</FONT></BODY></HTML>

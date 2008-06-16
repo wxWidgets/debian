@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      6-March-2000
-# RCS-ID:       $Id: run.py,v 1.29.2.1 2006/01/26 00:33:39 RD Exp $
+# RCS-ID:       $Id: run.py 44696 2007-03-08 19:24:13Z RD $
 # Copyright:    (c) 2000 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -17,11 +17,12 @@ directory within its own frame window.  Just specify the module name
 on the command line.
 """
 
-import wx                  # This module uses the new wx namespace
+import wx
+import wx.lib.mixins.inspection
 import sys, os
 
 # stuff for debugging
-print "wx.VERSION_STRING = %s (%s)" % (wx.VERSION_STRING, wx.USE_UNICODE and 'unicode' or 'ansi')
+print "wx.version:", wx.version()
 print "pid:", os.getpid()
 ##raw_input("Press Enter...")
 
@@ -39,7 +40,7 @@ class Log:
     write = WriteText
 
 
-class RunDemoApp(wx.App):
+class RunDemoApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
     def __init__(self, name, module, useShell):
         self.name = name
         self.demoModule = module
@@ -51,14 +52,15 @@ class RunDemoApp(wx.App):
         wx.Log_SetActiveTarget(wx.LogStderr())
 
         self.SetAssertMode(assertMode)
+        self.Init()  # InspectionMixin
 
         frame = wx.Frame(None, -1, "RunDemo: " + self.name, pos=(50,50), size=(200,100),
-                        style=wx.DEFAULT_FRAME_STYLE)
+                        style=wx.DEFAULT_FRAME_STYLE, name="run a sample")
         frame.CreateStatusBar()
 
         menuBar = wx.MenuBar()
         menu = wx.Menu()
-        item = menu.Append(-1, "E&xit\tAlt-X", "Exit demo")
+        item = menu.Append(-1, "E&xit\tCtrl-Q", "Exit demo")
         self.Bind(wx.EVT_MENU, self.OnExitApp, item)
         menuBar.Append(menu, "&File")
 

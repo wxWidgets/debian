@@ -1,0 +1,515 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTimeSpan</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtimespan"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtimerevent.html#wxtimerevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtipprovider.html#wxtipprovider"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTimeSpan</H2>
+<P>
+wxTimeSpan class represents a time interval.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/datetime.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdatetimeoverview.html#wxdatetimeoverview">Date classes overview</A>,
+<A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A><P>
+<B><FONT COLOR="#FF0000">Function groups</FONT></B><P>
+
+<A HREF="#timespanstaticfunctions">Static functions</A><BR>
+<A HREF="#timespanconstructors">Constructors</A><BR>
+<A HREF="#timespanaccessors">Accessors</A><BR>
+<A HREF="#timespanoperations">Operations</A><BR>
+<A HREF="#timespantests">Tests</A><BR>
+<A HREF="#timespanformatting">Formatting time spans</A><BR>
+<A HREF="#wxtimespanabs">wxTimeSpan::Abs</A><BR>
+<A HREF="#wxtimespanadd">wxTimeSpan::Add</A><BR>
+<A HREF="#wxtimespandays">wxTimeSpan::Days</A><BR>
+<A HREF="#wxtimespanday">wxTimeSpan::Day</A><BR>
+<A HREF="#wxtimespanformat">wxTimeSpan::Format</A><BR>
+<A HREF="#wxtimespangetdays">wxTimeSpan::GetDays</A><BR>
+<A HREF="#wxtimespangethours">wxTimeSpan::GetHours</A><BR>
+<A HREF="#wxtimespangetmilliseconds">wxTimeSpan::GetMilliseconds</A><BR>
+<A HREF="#wxtimespangetminutes">wxTimeSpan::GetMinutes</A><BR>
+<A HREF="#wxtimespangetseconds">wxTimeSpan::GetSeconds</A><BR>
+<A HREF="#wxtimespangetvalue">wxTimeSpan::GetValue</A><BR>
+<A HREF="#wxtimespangetweeks">wxTimeSpan::GetWeeks</A><BR>
+<A HREF="#wxtimespanhours">wxTimeSpan::Hours</A><BR>
+<A HREF="#wxtimespanhour">wxTimeSpan::Hour</A><BR>
+<A HREF="#wxtimespanisequalto">wxTimeSpan::IsEqualTo</A><BR>
+<A HREF="#wxtimespanislongerthan">wxTimeSpan::IsLongerThan</A><BR>
+<A HREF="#wxtimespanisnegative">wxTimeSpan::IsNegative</A><BR>
+<A HREF="#wxtimespanisnull">wxTimeSpan::IsNull</A><BR>
+<A HREF="#wxtimespanispositive">wxTimeSpan::IsPositive</A><BR>
+<A HREF="#wxtimespanisshorterthan">wxTimeSpan::IsShorterThan</A><BR>
+<A HREF="#wxtimespanminutes">wxTimeSpan::Minutes</A><BR>
+<A HREF="#wxtimespanminute">wxTimeSpan::Minute</A><BR>
+<A HREF="#wxtimespanmultiply">wxTimeSpan::Multiply</A><BR>
+<A HREF="#wxtimespannegate">wxTimeSpan::Negate</A><BR>
+<A HREF="#wxtimespanneg">wxTimeSpan::Neg</A><BR>
+<A HREF="#wxtimespanmilliseconds">wxTimeSpan::Milliseconds</A><BR>
+<A HREF="#wxtimespanmillisecond">wxTimeSpan::Millisecond</A><BR>
+<A HREF="#wxtimespanseconds">wxTimeSpan::Seconds</A><BR>
+<A HREF="#wxtimespansecond">wxTimeSpan::Second</A><BR>
+<A HREF="#wxtimespansubtract">wxTimeSpan::Subtract</A><BR>
+<A HREF="#wxtimespanweeks">wxTimeSpan::Weeks</A><BR>
+<A HREF="#wxtimespanweek">wxTimeSpan::Week</A><BR>
+<A HREF="#wxtimespanctor">wxTimeSpan::wxTimeSpan</A><BR>
+<P>
+
+<HR>
+<A NAME="timespanstaticfunctions"></A>
+<H3>Static functions</H3>
+<P>
+<A HREF="wx_wxtimespan.html#wxtimespanmilliseconds">Milliseconds</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanmillisecond">Millisecond</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanseconds">Seconds</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespansecond">Second</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanminutes">Minutes</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanminute">Minute</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanhours">Hours</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanhour">Hour</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespandays">Days</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanday">Day</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanweeks">Weeks</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanweek">Week</A><P>
+
+
+<HR>
+<A NAME="timespanconstructors"></A>
+<H3>Constructors</H3>
+<P>
+<A HREF="wx_wxtimespan.html#wxtimespanctor">wxTimeSpan</A><P>
+
+
+<HR>
+<A NAME="timespanaccessors"></A>
+<H3>Accessors</H3>
+<P>
+<A HREF="wx_wxtimespan.html#wxtimespangetseconds">GetSeconds</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespangetminutes">GetMinutes</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespangethours">GetHours</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespangetdays">GetDays</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespangetweeks">GetWeeks</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespangetvalue">GetValue</A><P>
+
+
+<HR>
+<A NAME="timespanoperations"></A>
+<H3>Operations</H3>
+<P>
+<A HREF="wx_wxtimespan.html#wxtimespanadd">Add</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespansubtract">Subtract</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanmultiply">Multiply</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespannegate">Negate</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanneg">Neg</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanabs">Abs</A><P>
+
+
+<HR>
+<A NAME="timespantests"></A>
+<H3>Tests</H3>
+<P>
+<A HREF="wx_wxtimespan.html#wxtimespanisnull">IsNull</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanispositive">IsPositive</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanisnegative">IsNegative</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanisequalto">IsEqualTo</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanislongerthan">IsLongerThan</A><BR>
+
+<A HREF="wx_wxtimespan.html#wxtimespanisshorterthan">IsShorterThan</A><P>
+
+
+<HR>
+<A NAME="timespanformatting"></A>
+<H3>Formatting time spans</H3>
+<P>
+<A HREF="wx_wxtimespan.html#wxtimespanformat">Format</A><P>
+<P>
+
+
+<HR>
+<A NAME="wxtimespanabs"></A>
+<H3>wxTimeSpan::Abs</H3>
+<P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A></B> </B> <B>Abs</B>() <B>const</B><P>
+Returns the absolute value of the timespan: does not modify the
+object.<P>
+
+
+<HR>
+<A NAME="wxtimespanadd"></A>
+<H3>wxTimeSpan::Add</H3>
+<P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A></B> </B> <B>Add</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>diff</I>) <B>const</B><P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>&</B> </B> <B>Add</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>diff</I>)<P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>&</B> </B> <B>operator+=</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>&</B></B><I>diff</I>)<P>
+Returns the sum of two timespans.<P>
+
+
+<HR>
+<A NAME="wxtimespandays"></A>
+<H3>wxTimeSpan::Days</H3>
+<P>
+<B>static <A HREF="wx_wxtimespan.html#wxtimespan">wxTimespan</A></B> </B> <B>Days</B>(<B>long </B><I>days</I>)<P>
+Returns the timespan for the given number of days.<P>
+
+
+<HR>
+<A NAME="wxtimespanday"></A>
+<H3>wxTimeSpan::Day</H3>
+<P>
+<B>static <A HREF="wx_wxtimespan.html#wxtimespan">wxTimespan</A></B> </B> <B>Day</B>()<P>
+Returns the timespan for one day.<P>
+
+
+<HR>
+<A NAME="wxtimespanformat"></A>
+<H3>wxTimeSpan::Format</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>Format</B>(<B>const wxChar * </B><I>format = wxDefaultTimeSpanFormat</I>)<P>
+Returns the string containing the formatted representation of the time span.
+The following format specifiers are allowed after %:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+H
+</FONT></TD>
+
+<TD VALIGN=TOP>
+number of <B>H</B>ours
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+M
+</FONT></TD>
+
+<TD VALIGN=TOP>
+number of <B>M</B>inutes
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+S
+</FONT></TD>
+
+<TD VALIGN=TOP>
+number of <B>S</B>econds
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+l
+</FONT></TD>
+
+<TD VALIGN=TOP>
+number of mi<B>l</B>liseconds
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+D
+</FONT></TD>
+
+<TD VALIGN=TOP>
+number of <B>D</B>ays
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+E
+</FONT></TD>
+
+<TD VALIGN=TOP>
+number of w<B>E</B>eks
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+%
+</FONT></TD>
+
+<TD VALIGN=TOP>
+the percent character
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Note that, for example, the number of hours in the description above is not
+well defined: it can be either the total number of hours (for example, for a
+time span of 50 hours this would be 50) or just the hour part of the time
+span, which would be 2 in this case as 50 hours is equal to 2 days and
+2 hours.<P>
+wxTimeSpan resolves this ambiguity in the following way: if there had been,
+indeed, the <TT>%D</TT> format specified preceding the <TT>%H</TT>, then it is
+interpreted as 2. Otherwise, it is 50.<P>
+The same applies to all other format specifiers: if they follow a specifier of
+larger unit, only the rest part is taken, otherwise the full value is used.<P>
+
+
+<HR>
+<A NAME="wxtimespangetdays"></A>
+<H3>wxTimeSpan::GetDays</H3>
+<P>
+<B>int</B> <B>GetDays</B>() <B>const</B><P>
+Returns the difference in number of days.<P>
+
+
+<HR>
+<A NAME="wxtimespangethours"></A>
+<H3>wxTimeSpan::GetHours</H3>
+<P>
+<B>int</B> <B>GetHours</B>() <B>const</B><P>
+Returns the difference in number of hours.<P>
+
+
+<HR>
+<A NAME="wxtimespangetmilliseconds"></A>
+<H3>wxTimeSpan::GetMilliseconds</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A></B> </B> <B>GetMilliseconds</B>() <B>const</B><P>
+Returns the difference in number of milliseconds.<P>
+
+
+<HR>
+<A NAME="wxtimespangetminutes"></A>
+<H3>wxTimeSpan::GetMinutes</H3>
+<P>
+<B>int</B> <B>GetMinutes</B>() <B>const</B><P>
+Returns the difference in number of minutes.<P>
+
+
+<HR>
+<A NAME="wxtimespangetseconds"></A>
+<H3>wxTimeSpan::GetSeconds</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A></B> </B> <B>GetSeconds</B>() <B>const</B><P>
+Returns the difference in number of seconds.<P>
+
+
+<HR>
+<A NAME="wxtimespangetvalue"></A>
+<H3>wxTimeSpan::GetValue</H3>
+<P>
+<B><A HREF="wx_wxlonglong.html#wxlonglong">wxLongLong</A></B> </B> <B>GetValue</B>() <B>const</B><P>
+Returns the internal representation of timespan.<P>
+
+
+<HR>
+<A NAME="wxtimespangetweeks"></A>
+<H3>wxTimeSpan::GetWeeks</H3>
+<P>
+<B>int</B> <B>GetWeeks</B>() <B>const</B><P>
+Returns the difference in number of weeks.<P>
+
+
+<HR>
+<A NAME="wxtimespanhours"></A>
+<H3>wxTimeSpan::Hours</H3>
+<P>
+<B>static <A HREF="wx_wxtimespan.html#wxtimespan">wxTimespan</A></B> </B> <B>Hours</B>(<B>long </B><I>hours</I>)<P>
+Returns the timespan for the given number of hours.<P>
+
+
+<HR>
+<A NAME="wxtimespanhour"></A>
+<H3>wxTimeSpan::Hour</H3>
+<P>
+<B>static <A HREF="wx_wxtimespan.html#wxtimespan">wxTimespan</A></B> </B> <B>Hour</B>()<P>
+Returns the timespan for one hour.<P>
+
+
+<HR>
+<A NAME="wxtimespanisequalto"></A>
+<H3>wxTimeSpan::IsEqualTo</H3>
+<P>
+<B>bool</B> <B>IsEqualTo</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>ts</I>) <B>const</B><P>
+Returns <TT>true</TT> if two timespans are equal.<P>
+
+
+<HR>
+<A NAME="wxtimespanislongerthan"></A>
+<H3>wxTimeSpan::IsLongerThan</H3>
+<P>
+<B>bool</B> <B>IsLongerThan</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>ts</I>) <B>const</B><P>
+Compares two timespans: works with the absolute values, i.e. -2
+hours is longer than 1 hour. Also, it will return <TT>false</TT> if
+the timespans are equal in absolute value.<P>
+
+
+<HR>
+<A NAME="wxtimespanisnegative"></A>
+<H3>wxTimeSpan::IsNegative</H3>
+<P>
+<B>bool</B> <B>IsNegative</B>() <B>const</B><P>
+Returns <TT>true</TT> if the timespan is negative.<P>
+
+
+<HR>
+<A NAME="wxtimespanisnull"></A>
+<H3>wxTimeSpan::IsNull</H3>
+<P>
+<B>bool</B> <B>IsNull</B>() <B>const</B><P>
+Returns <TT>true</TT> if the timespan is empty.<P>
+
+
+<HR>
+<A NAME="wxtimespanispositive"></A>
+<H3>wxTimeSpan::IsPositive</H3>
+<P>
+<B>bool</B> <B>IsPositive</B>() <B>const</B><P>
+Returns <TT>true</TT> if the timespan is positive.<P>
+
+
+<HR>
+<A NAME="wxtimespanisshorterthan"></A>
+<H3>wxTimeSpan::IsShorterThan</H3>
+<P>
+<B>bool</B> <B>IsShorterThan</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>ts</I>) <B>const</B><P>
+Compares two timespans: works with the absolute values, i.e. 1
+hour is shorter than -2 hours. Also, it will return <TT>false</TT> if
+the timespans are equal in absolute value.<P>
+
+
+<HR>
+<A NAME="wxtimespanminutes"></A>
+<H3>wxTimeSpan::Minutes</H3>
+<P>
+<B>static <A HREF="wx_wxtimespan.html#wxtimespan">wxTimespan</A></B> </B> <B>Minutes</B>(<B>long </B><I>min</I>)<P>
+Returns the timespan for the given number of minutes.<P>
+
+
+<HR>
+<A NAME="wxtimespanminute"></A>
+<H3>wxTimeSpan::Minute</H3>
+<P>
+<B>static <A HREF="wx_wxtimespan.html#wxtimespan">wxTimespan</A></B> </B> <B>Minute</B>()<P>
+Returns the timespan for one minute.<P>
+
+
+<HR>
+<A NAME="wxtimespanmultiply"></A>
+<H3>wxTimeSpan::Multiply</H3>
+<P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A></B> </B> <B>Multiply</B>(<B>int </B><I>n</I>) <B>const</B><P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>&</B> </B> <B>Multiply</B>(<B>int </B><I>n</I>)<P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>&</B> </B> <B>operator*=</B>(<B>int </B><I>n</I>)<P>
+Multiplies timespan by a scalar.<P>
+
+
+<HR>
+<A NAME="wxtimespannegate"></A>
+<H3>wxTimeSpan::Negate</H3>
+<P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A></B> </B> <B>Negate</B>() <B>const</B><P>
+Returns timespan with inverted sign.<P>
+
+
+<HR>
+<A NAME="wxtimespanneg"></A>
+<H3>wxTimeSpan::Neg</H3>
+<P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>&</B> </B> <B>Neg</B>()<P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>&</B> </B> <B>operator-</B>()<P>
+Negate the value of the timespan.<P>
+
+
+<HR>
+<A NAME="wxtimespanmilliseconds"></A>
+<H3>wxTimeSpan::Milliseconds</H3>
+<P>
+<B>static <A HREF="wx_wxtimespan.html#wxtimespan">wxTimespan</A></B> </B> <B>Milliseconds</B>(<B>long </B><I>ms</I>)<P>
+Returns the timespan for the given number of milliseconds.<P>
+
+
+<HR>
+<A NAME="wxtimespanmillisecond"></A>
+<H3>wxTimeSpan::Millisecond</H3>
+<P>
+<B>static <A HREF="wx_wxtimespan.html#wxtimespan">wxTimespan</A></B> </B> <B>Millisecond</B>()<P>
+Returns the timespan for one millisecond.<P>
+
+
+<HR>
+<A NAME="wxtimespanseconds"></A>
+<H3>wxTimeSpan::Seconds</H3>
+<P>
+<B>static <A HREF="wx_wxtimespan.html#wxtimespan">wxTimespan</A></B> </B> <B>Seconds</B>(<B>long </B><I>sec</I>)<P>
+Returns the timespan for the given number of seconds.<P>
+
+
+<HR>
+<A NAME="wxtimespansecond"></A>
+<H3>wxTimeSpan::Second</H3>
+<P>
+<B>static <A HREF="wx_wxtimespan.html#wxtimespan">wxTimespan</A></B> </B> <B>Second</B>()<P>
+Returns the timespan for one second.<P>
+
+
+<HR>
+<A NAME="wxtimespansubtract"></A>
+<H3>wxTimeSpan::Subtract</H3>
+<P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A></B> </B> <B>Subtract</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>&</B></B><I>diff</I>) <B>const</B><P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>&</B> </B> <B>Subtract</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>& </B></B><I>diff</I>)<P>
+<B><A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>&</B> </B> <B>operator-=</B>(<B>const <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>&</B></B><I>diff</I>)<P>
+Returns the difference of two timespans.<P>
+
+
+<HR>
+<A NAME="wxtimespanweeks"></A>
+<H3>wxTimeSpan::Weeks</H3>
+<P>
+<B>static <A HREF="wx_wxtimespan.html#wxtimespan">wxTimespan</A></B> </B> <B>Weeks</B>(<B>long </B><I>weeks</I>)<P>
+Returns the timespan for the given number of weeks.<P>
+
+
+<HR>
+<A NAME="wxtimespanweek"></A>
+<H3>wxTimeSpan::Week</H3>
+<P>
+<B>static <A HREF="wx_wxtimespan.html#wxtimespan">wxTimespan</A></B> </B> <B>Week</B>()<P>
+Returns the timespan for one week.<P>
+
+
+<HR>
+<A NAME="wxtimespanctor"></A>
+<H3>wxTimeSpan::wxTimeSpan</H3>
+<P>
+<B></B> <B>wxTimeSpan</B>()<P>
+Default constructor, constructs a zero timespan.<P>
+<B></B> <B>wxTimeSpan</B>(<B>long </B><I>hours</I>, <B>long </B><I>min</I>, <B>long </B><I>sec</I>, <B>long </B><I>msec</I>)<P>
+Constructs timespan from separate values for each component, with the date
+set to 0. Hours are not restricted to 0..24 range, neither are
+minutes, seconds or milliseconds.<P>
+
+</FONT></BODY></HTML>

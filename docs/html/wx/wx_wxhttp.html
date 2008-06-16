@@ -1,0 +1,73 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHTTP</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhttp"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmlwintaghandler.html#wxhtmlwintaghandler"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhyperlinkctrl.html#wxhyperlinkctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHTTP</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxprotocol.html#wxprotocol">wxProtocol</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/protocol/http.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsocketbase.html#wxsocketbase">wxSocketBase</A>, <A HREF="wx_wxurl.html#wxurl">wxURL</A><P>
+<A HREF="#wxhttpgetresponse">wxHTTP::GetResponse</A><BR>
+<A HREF="#wxhttpgetinputstream">wxHTTP::GetInputStream</A><BR>
+<A HREF="#wxhttpsetheader">wxHTTP::SetHeader</A><BR>
+<A HREF="#wxhttpgetheader">wxHTTP::GetHeader</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhttpgetresponse"></A>
+<H3>wxHTTP::GetResponse</H3>
+<P>
+<B>int</B> <B>GetResponse</B>() <B>const</B><P>
+Returns the HTTP response code returned by the server. Please refer to
+<A HREF="http://www.faqs.org/rfcs/rfc2616.html">RFC 2616</A> for the list of responses.<P>
+
+
+<HR>
+<A NAME="wxhttpgetinputstream"></A>
+<H3>wxHTTP::GetInputStream</H3>
+<P>
+<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A> *</B> </B> <B>GetInputStream</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> path</I>)<P>
+Creates a new input stream on the specified path. Notice that this stream is
+unseekable, i.e. SeekI() and TellI() methods shouldn't be used.<P>
+Note that you can still know the size of the file you are getting using 
+<A HREF="wx_wxstreambase.html#wxstreambasegetsize">wxStreamBase::GetSize()</A>. However there is a
+limitation: in HTTP protocol, the size is not always specified so sometimes
+<TT>(size_t)-1</TT> can returned ot indicate that the size is unknown. In such
+case, you may want to use <A HREF="wx_wxinputstream.html#wxinputstreamlastread">wxInputStream::LastRead()</A> 
+method in a loop to get the total size.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns the initialized stream. You must delete it yourself once you
+don't use it anymore and this must be done before the wxHTTP object itself is
+destroyed. The destructor closes the network connection. The next time you will
+try to get a file the network connection will have to be reestablished, but you
+don't have to take care of this since wxHTTP reestablishes it automatically.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A><P>
+
+<HR>
+<A NAME="wxhttpsetheader"></A>
+<H3>wxHTTP::SetHeader</H3>
+<P>
+<B>void</B> <B>SetHeader</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> header</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> h_data</I>)<P>
+It sets data of a field to be sent during the next request to the HTTP server. The field
+name is specified by <I>header</I> and the content by <I>h_data</I>.
+This is a low level function and it assumes that you know what you are doing.<P>
+
+<HR>
+<A NAME="wxhttpgetheader"></A>
+<H3>wxHTTP::GetHeader</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetHeader</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> header</I>)<P>
+Returns the data attached with a field whose name is specified by <I>header</I>.
+If the field doesn't exist, it will return an empty string and not a NULL string.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+The header is not case-sensitive, i.e. "CONTENT-TYPE" and "content-type" 
+represent the same header.<P>
+
+</FONT></BODY></HTML>

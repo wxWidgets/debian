@@ -1,0 +1,84 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxIPV4address</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxipv4address"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxipaddress.html#wxipaddress"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxjoystick.html#wxjoystick"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxIPV4address</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxipaddress.html#wxipaddress">wxIPaddress</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/socket.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxipv4addresshostname">wxIPV4address::Hostname</A><BR>
+<A HREF="#wxipv4addressipaddress">wxIPV4address::IPAddress</A><BR>
+<A HREF="#wxipv4addressservice">wxIPV4address::Service</A><BR>
+<A HREF="#wxipv4addressanyaddress">wxIPV4address::AnyAddress</A><BR>
+<A HREF="#wxipv4addresslocalhost">wxIPV4address::LocalHost</A><BR>
+<P>
+
+<HR>
+<A NAME="wxipv4addresshostname"></A>
+<H3>wxIPV4address::Hostname</H3>
+<P>
+<B>bool</B> <B>Hostname</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> hostname</I>)<P>
+Set the address to <I>hostname</I>, which can be a host name
+or an IP-style address in dot notation (a.b.c.d)<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true on success, false if something goes wrong
+(invalid hostname or invalid IP address).<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>Hostname</B>()<P>
+Returns the hostname which matches the IP address.<P>
+
+<HR>
+<A NAME="wxipv4addressipaddress"></A>
+<H3>wxIPV4address::IPAddress</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>IPAddress</B>()<P>
+Returns a wxString containing the IP address in dot quad (127.0.0.1) format.<P>
+
+<HR>
+<A NAME="wxipv4addressservice"></A>
+<H3>wxIPV4address::Service</H3>
+<P>
+<B>bool</B> <B>Service</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> service</I>)<P>
+Set the port to that corresponding to the specified <I>service</I>.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true on success, false if something goes wrong
+(invalid service).<P>
+<B>bool</B> <B>Service</B>(<B>unsigned short</B><I> service</I>)<P>
+Set the port to that corresponding to the specified <I>service</I>.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true on success, false if something goes wrong
+(invalid service).<P>
+<B>unsigned short</B> <B>Service</B>()<P>
+Returns the current service.<P>
+
+<HR>
+<A NAME="wxipv4addressanyaddress"></A>
+<H3>wxIPV4address::AnyAddress</H3>
+<P>
+<B>bool</B> <B>AnyAddress</B>()<P>
+Set address to any of the addresses of the current machine. Whenever
+possible, use this function instead of <A HREF="wx_wxipv4address.html#wxipv4addresslocalhost">wxIPV4address::LocalHost</A>,
+as this correctly handles multi-homed hosts and avoids other small
+problems. Internally, this is the same as setting the IP address
+to <B>INADDR_ANY</B>.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true on success, false if something went wrong.<P>
+
+<HR>
+<A NAME="wxipv4addresslocalhost"></A>
+<H3>wxIPV4address::LocalHost</H3>
+<P>
+<B>bool</B> <B>LocalHost</B>()<P>
+Set address to localhost (127.0.0.1). Whenever possible, use the 
+<A HREF="wx_wxipv4address.html#wxipv4addressanyaddress">wxIPV4address::AnyAddress</A>,
+function instead of this one, as this will correctly handle multi-homed
+hosts and avoid other small problems.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+Returns true on success, false if something went wrong.<P>
+
+</FONT></BODY></HTML>

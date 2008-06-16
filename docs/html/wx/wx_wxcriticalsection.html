@@ -1,0 +1,67 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCriticalSection</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcriticalsection"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcountingoutputstream.html#wxcountingoutputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcriticalsectionlocker.html#wxcriticalsectionlocker"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCriticalSection</H2>
+<P>
+A critical section object is used for exactly the same purpose as 
+<A HREF="wx_wxmutex.html#wxmutex">mutexes</A>. The only difference is that under Windows platform
+critical sections are only visible inside one process, while mutexes may be
+shared between processes, so using critical sections is slightly more
+efficient. The terminology is also slightly different: mutex may be locked (or
+acquired) and unlocked (or released) while critical section is entered and left
+by the program.<P>
+Finally, you should try to use 
+<A HREF="wx_wxcriticalsectionlocker.html#wxcriticalsectionlocker">wxCriticalSectionLocker</A> class whenever
+possible instead of directly using wxCriticalSection for the same reasons 
+<A HREF="wx_wxmutexlocker.html#wxmutexlocker">wxMutexLocker</A> is preferrable to 
+<A HREF="wx_wxmutex.html#wxmutex">wxMutex</A> - please see wxMutex for an example.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/thread.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxthread.html#wxthread">wxThread</A>, <A HREF="wx_wxcondition.html#wxcondition">wxCondition</A>, 
+<A HREF="wx_wxcriticalsectionlocker.html#wxcriticalsectionlocker">wxCriticalSectionLocker</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxcriticalsectionctor">wxCriticalSection::wxCriticalSection</A><BR>
+<A HREF="#wxcriticalsectiondtor">wxCriticalSection::~wxCriticalSection</A><BR>
+<A HREF="#wxcriticalsectionenter">wxCriticalSection::Enter</A><BR>
+<A HREF="#wxcriticalsectionleave">wxCriticalSection::Leave</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcriticalsectionctor"></A>
+<H3>wxCriticalSection::wxCriticalSection</H3>
+<P>
+<B></B> <B>wxCriticalSection</B>()<P>
+Default constructor initializes critical section object.<P>
+
+<HR>
+<A NAME="wxcriticalsectiondtor"></A>
+<H3>wxCriticalSection::~wxCriticalSection</H3>
+<P>
+<B></B> <B>~wxCriticalSection</B>()<P>
+Destructor frees the resources.<P>
+
+<HR>
+<A NAME="wxcriticalsectionenter"></A>
+<H3>wxCriticalSection::Enter</H3>
+<P>
+<B>void </B> <B>Enter</B>()<P>
+Enter the critical section (same as locking a mutex). There is no error return
+for this function. After entering the critical section protecting some global
+data the thread running in critical section may safely use/modify it.<P>
+
+<HR>
+<A NAME="wxcriticalsectionleave"></A>
+<H3>wxCriticalSection::Leave</H3>
+<P>
+<B>void </B> <B>Leave</B>()<P>
+Leave the critical section allowing other threads use the global data protected
+by it. There is no error return for this function.<P>
+
+</FONT></BODY></HTML>

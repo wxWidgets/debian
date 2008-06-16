@@ -1,0 +1,88 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPreviewFrame</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxpreviewframe"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpreviewcontrolbar.html#wxpreviewcontrolbar"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxprintdata.html#wxprintdata"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPreviewFrame</H2>
+<P>
+This class provides the default method of managing the print preview interface.
+Member functions may be overridden to replace functionality, or the
+class may be used without derivation.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/print.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpreviewcanvas.html#wxpreviewcanvas">wxPreviewCanvas</A>, <A HREF="wx_wxpreviewcontrolbar.html#wxpreviewcontrolbar">wxPreviewControlBar</A>,
+<A HREF="wx_wxprintpreview.html#wxprintpreview">wxPrintPreview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxpreviewframector">wxPreviewFrame::wxPreviewFrame</A><BR>
+<A HREF="#wxpreviewframedtor">wxPreviewFrame::~wxPreviewFrame</A><BR>
+<A HREF="#wxpreviewframecreatecontrolbar">wxPreviewFrame::CreateControlBar</A><BR>
+<A HREF="#wxpreviewframecreatecanvas">wxPreviewFrame::CreateCanvas</A><BR>
+<A HREF="#wxpreviewframeinitialize">wxPreviewFrame::Initialize</A><BR>
+<A HREF="#wxpreviewframeonclosewindow">wxPreviewFrame::OnCloseWindow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxpreviewframector"></A>
+<H3>wxPreviewFrame::wxPreviewFrame</H3>
+<P>
+<B></B> <B>wxPreviewFrame</B>(<B><A HREF="wx_wxprintpreview.html#wxprintpreview">wxPrintPreview</A>* </B></B><I>preview</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>,
+ <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& size </B></B><I>size = wxDefaultSize</I>,
+ <B>long</B><I> style = wxDEFAULT_FRAME_STYLE</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "frame"</I>)<P>
+Constructor. Pass a print preview object plus other normal frame arguments.
+The print preview object will be destroyed by the frame when it closes.<P>
+
+<HR>
+<A NAME="wxpreviewframedtor"></A>
+<H3>wxPreviewFrame::~wxPreviewFrame</H3>
+<P>
+<B></B> <B>~wxPreviewFrame</B>()<P>
+Destructor. <P>
+
+<HR>
+<A NAME="wxpreviewframecreatecontrolbar"></A>
+<H3>wxPreviewFrame::CreateControlBar</H3>
+<P>
+<B>void</B> <B>CreateControlBar</B>()<P>
+Creates a wxPreviewControlBar. Override this function to allow
+a user-defined preview control bar object to be created.<P>
+
+<HR>
+<A NAME="wxpreviewframecreatecanvas"></A>
+<H3>wxPreviewFrame::CreateCanvas</H3>
+<P>
+<B>void</B> <B>CreateCanvas</B>()<P>
+Creates a wxPreviewCanvas. Override this function to allow
+a user-defined preview canvas object to be created.<P>
+
+<HR>
+<A NAME="wxpreviewframeinitialize"></A>
+<H3>wxPreviewFrame::Initialize</H3>
+<P>
+<B>void</B> <B>Initialize</B>()<P>
+Creates the preview canvas and control bar, and calls
+wxWindow::MakeModal(true) to disable other top-level windows
+in the application.<P>
+This function should be called by the application prior to
+showing the frame.<P>
+
+<HR>
+<A NAME="wxpreviewframeonclosewindow"></A>
+<H3>wxPreviewFrame::OnCloseWindow</H3>
+<P>
+<B>void</B> <B>OnCloseWindow</B>(<B><A HREF="wx_wxcloseevent.html#wxcloseevent">wxCloseEvent</A>&</B></B><I> event</I>)<P>
+Enables the other frames in the application, and deletes the print preview
+object, implicitly deleting any printout objects associated with the print
+preview object.<P>
+
+</FONT></BODY></HTML>

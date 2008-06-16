@@ -1,0 +1,1013 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Preprocessor symbols defined by wxWidgets</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="cppconst"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_constants.html#constants"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_constants.html#constants"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_stdevtid.html#stdevtid"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Preprocessor symbols defined by wxWidgets</H2>
+<P>
+These are preprocessor symbols used in the wxWidgets source, grouped
+by category (and sorted by alphabetical order inside each category). All of
+these macros except for the <TT>wxUSE_XXX</TT> variety is defined if the
+corresponding condition is true and undefined if it isn't, so they should be
+always tested using <TT>ifdef</TT> and not <TT>if</TT>.<P>
+<A HREF="#guisystemconst">GUI system</A><BR>
+<A HREF="#osconst">Operating systems</A><BR>
+<A HREF="#cpuconst">Hardware architectures (CPU)</A><BR>
+<A HREF="#hardwareconst">Hardware type</A><BR>
+<A HREF="#compilerconst">Compilers</A><BR>
+<A HREF="#featuretests">Feature tests</A><BR>
+<A HREF="#miscellaneousconst">Miscellaneous</A><BR>
+<P>
+
+<HR>
+<A NAME="guisystemconst"></A>
+<H3>GUI system</H3>
+<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+__WINDOWS__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+any Windows, yom may also use __WXMSW__
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WIN16__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Win16 API (not supported since wxWidgets 2.6)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WIN32__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Win32 API
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXBASE__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Only wxBase, no GUI features (same as <TT>wxUSE_GUI</TT> == 0)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXCOCOA__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+OS X using Cocoa API
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXWINCE__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Windows CE
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXGTK__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+GTK+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXGTK12__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+GTK+ 1.2 or higher
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXGTK20__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+GTK+ 2.0 or higher
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXMOTIF__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Motif
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXMOTIF20__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Motif 2.0 or higher
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXMAC__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Mac OS all targets
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXMAC_CLASSIC__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+MacOS for Classic
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXMAC_CARBON__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+MacOS for Carbon CFM (running under Classic or OSX) or true OS X Mach-O Builds
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXMAC_OSX__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+MacOS X Carbon Mach-O Builds
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXMGL__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+SciTech Soft MGL (__WXUNIVERSAL__ will be also
+defined)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXMSW__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Any Windows
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXOSX__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Any Mac OS X port (either Carbon or Cocoa)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXPALMOS__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+PalmOS
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXPM__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+OS/2 native Presentation Manager
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXSTUBS__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Stubbed version ('template' wxWin implementation)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXXT__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Xt; mutually exclusive with WX_MOTIF, not
+implemented in wxWidgets 2.x
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXX11__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+wxX11 (__WXUNIVERSAL__ will be also defined)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXWINE__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+WINE (i.e. WIN32 on Unix)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXUNIVERSAL__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+wxUniversal port, always defined in addition
+to one of the symbols above so this should be tested first.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__X__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+any X11-based GUI toolkit except GTK+
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+There are two wxWidgets ports to Mac OS. One of them, wxMac, exists in two versions: Classic and
+Carbon. The Classic version is the only one to work on Mac OS version 8. The
+Carbon version may be built either as CFM or Mach-O (binary format, like ELF)
+and the former may run under OS 9 while the latter only runs under OS X.
+Finally, there is a new Cocoa port which can only be used under OS X. To
+summarize:<P>
+<UL>
+
+<LI> If you want to test for all Mac platforms, classic and OS X, you
+should test both <TT>__WXMAC__</TT> and <TT>__WXCOCOA__</TT>.
+<LI> If you want to test for any GUI Mac port under OS X, use
+<TT>__WXOSX__</TT>.
+<LI> If you want to test for any port under Mac OS X, including, for
+example, wxGTK and also wxBase, use <TT>__DARWIN__</TT> (see below).
+</UL>
+<P>
+The convention is to use the <TT>__WX</TT> prefix for these
+symbols, although this has not always been followed.<P>
+
+<HR>
+<A NAME="osconst"></A>
+<H3>Operating systems</H3>
+<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+__APPLE__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+any Mac OS version
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__AIX__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+AIX
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__BSD__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Any *BSD system
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__CYGWIN__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Cygwin: Unix on Win32
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__DARWIN__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Mac OS X using the BSD Unix C library (as opposed to using the Metrowerks MSL C/C++ library)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__DATA_GENERAL__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+DG-UX
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__DOS_GENERAL__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+DOS (used with wxMGL only)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__FREEBSD__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+FreeBSD
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__HPUX__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+HP-UX (Unix)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__GNU__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+GNU Hurd
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__LINUX__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Linux
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__MACH__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Mach-O Architecture (Mac OS X only builds)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__OSF__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+OSF/1
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__PALMOS__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+PalmOS
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__SGI__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+IRIX
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__SOLARIS__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Solaris
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__SUN__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Any Sun
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__SUNOS__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sun OS
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__SVR4__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+SystemV R4
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__SYSV__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+SystemV generic
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__ULTRIX__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Ultrix
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__UNIX__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+any Unix
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__UNIX_LIKE__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Unix, BeOS or VMS
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__VMS__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+VMS
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WINDOWS__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+any Windows
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WINE__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Wine
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="cpuconst"></A>
+<H3>Hardware architectures (CPU)</H3>
+<P>
+Note that not all of these symbols are always defined, it depends on the
+compiler used.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+__ALPHA__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+DEC Alpha architecture
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__INTEL__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Intel i386 or compatible
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__IA64__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Intel 64 bit architecture
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__POWERPC__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Motorola Power PC
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="hardwareconst"></A>
+<H3>Hardware type</H3>
+<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+__SMARTPHONE__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Generic mobile devices with phone buttons and a small display
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__PDA__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Personal digital assistant, usually with touch screen
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__HANDHELD__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Small but powerful computer, usually with a keyboard
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__POCKETPC__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Microsoft-powered PocketPC devices with touch-screen
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WINCE_STANDARDSDK__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Microsoft-powered Windows CE devices, for generic Windows CE applications
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WINCE_NET__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Microsoft-powered Windows CE .NET devices (_WIN32_WCE is 400 or greater)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+WIN32_PLATFORM_WFSP
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Microsoft-powered smartphone
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="compilerconst"></A>
+<H3>Compilers</H3>
+<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+__BORLANDC__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Borland C++. The value of the macro corresponds
+to the compiler version: 500 is 5.0.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__DJGPP__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+DJGPP
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__DIGITALMARS__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Digital Mars
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__GNUG__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Gnu C++ on any platform, see also
+<A HREF="wx_versionfunctions.html#wxcheckgccversion">wxCHECK_GCC_VERSION</A>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__GNUWIN32__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Gnu-Win32 compiler, see also
+<A HREF="wx_versionfunctions.html#wxcheckw32apiversion">wxCHECK_W32API_VERSION</A>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__MINGW32__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+MinGW
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__MWERKS__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+CodeWarrior MetroWerks compiler
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__SUNCC__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sun CC
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__SYMANTECC__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Symantec C++
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__VISAGECPP__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+IBM Visual Age (OS/2)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__VISUALC__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Microsoft Visual C++. The value of this macro
+corresponds to the compiler version: 1020 for 4.2 (the first supported
+version), 1100 for 5.0, 1200 for 6.0 and so on
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__XLC__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+AIX compiler
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WATCOMC__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Watcom C++. The value of this macro corresponds to
+the compiler version, 1100 is 11.0 and 1200 is OpenWatcom.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+_WIN32_WCE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Windows CE version
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="featuretests"></A>
+<H3>Feature tests</H3>
+<P>
+Some library features may not be always available even if they were selected by
+the user. To make it possible to check if this is the case, the library
+predefines the symbols in the form <TT>wxHAS_FEATURE</TT>. Unlike 
+<TT>wxUSE_FEATURE</TT> symbols which are defined by the library user (directly
+in <TT>setup.h</TT> or by running configure script) and which must be always
+defined as either 0 or 1, the <TT>wxHAS</TT> symbols are only defined if
+the corresponding feature is available and not defined at all otherwise.<P>
+Currently the following symbols exist:
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxHAS_LARGE_FILES
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Defined if <A HREF="wx_wxfile.html#wxfile">wxFile</A> supports
+files more than 4GB in size.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHAS_LARGE_FFILES
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Defined if <A HREF="wx_wxffile.html#wxffile">wxFFile</A>
+supports files more than 4GB in size.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHAS_POWER_EVENTS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Defined if 
+<A HREF="wx_wxpowerevent.html#wxpowerevent">wxPowerEvent</A> are ever generated on the current platform.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHAS_RADIO_MENU_ITEMS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Defined if the current port supports 
+<A HREF="wx_wxmenu.html#wxmenuappendradioitem">radio menu items</A>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHAS_RAW_KEY_CODES
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Defined if 
+<A HREF="wx_wxkeyevent.html#wxkeyeventgetrawkeycode">raw key codes</A> are supported.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHAS_REGEX_ADVANCED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Defined if advanced syntax is available in 
+<A HREF="wx_wxregex.html#wxregex">wxRegEx</A>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxHAS_TASK_BAR_ICON
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Defined if 
+<A HREF="wx_wxtaskbaricon.html#wxtaskbaricon">wxTaskBarIcon</A> is available on the current platform.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="miscellaneousconst"></A>
+<H3>Miscellaneous</H3>
+<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+__WXWINDOWS__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+always defined in wxWidgets applications, see
+also <A HREF="wx_versionfunctions.html#wxcheckversion">wxCHECK_VERSION</A>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+__WXDEBUG__
+</FONT></TD>
+
+<TD VALIGN=TOP>
+defined in debug mode, undefined in release mode
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxUSE_XXX
+</FONT></TD>
+
+<TD VALIGN=TOP>
+if defined as 1, feature XXX is active
+(the symbols of this form are always defined, use #if and not #ifdef to test
+ for them)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+WX_PRECOMP
+</FONT></TD>
+
+<TD VALIGN=TOP>
+is defined if precompiled headers (PCH) are in use. In
+this case, <TT>wx/wxprec.h</TT> includes <TT>wx/wx.h</TT> which, in turn,
+includes a number of wxWidgets headers thus making it unnecessary to include
+them explicitly. However if this is not defined, you do need to include them
+and so the usual idiom which allows to support both cases is to first include
+<TT>wx/wxprec.h</TT> and then, inside <TT>ifndef WX_PRECOMP</TT>, individual
+headers you need.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+_UNICODE and UNICODE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+both are defined if wxUSE_UNICODE is set to 1
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxUSE_GUI
+</FONT></TD>
+
+<TD VALIGN=TOP>
+this particular feature test macro is defined to 1
+when compiling or using the library with the GUI features activated, if it is
+defined as 0, only wxBase is available.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxUSE_BASE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+only used by wxWidgets internally (defined as 1 when
+building wxBase code, either as a standalone library or as part of the
+monolithic wxWidgets library, defined as 0 when building GUI library only)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxNO_RTTI
+</FONT></TD>
+
+<TD VALIGN=TOP>
+is defined if the compiler RTTI support has been switched off
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxNO_EXCEPTIONS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+is defined if the compiler support for C++
+exceptions has been switched off
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxNO_THREADS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+if this macro is defined, the compilation options
+don't include compiler flags needed for multithreaded code generation. This
+implies that wxUSE_THREADS is 0 and also that other (non-wx-based) threading
+packages cannot be used neither.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+
+</FONT></BODY></HTML>

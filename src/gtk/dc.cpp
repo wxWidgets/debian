@@ -2,23 +2,15 @@
 // Name:        dc.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dc.cpp,v 1.36 2004/12/21 16:25:19 ABX Exp $
+// RCS-ID:      $Id: dc.cpp 40682 2006-08-19 21:30:06Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "dc.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #include "wx/dc.h"
-
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
 
 //-----------------------------------------------------------------------------
 // wxDC
@@ -154,48 +146,3 @@ void wxDC::SetAxisOrientation( bool xLeftRight, bool yBottomUp )
     m_signY = (yBottomUp  ? -1 :  1);
     ComputeScaleAndOrigin();
 }
-
-// ---------------------------------------------------------------------------
-// coordinates transformations
-// ---------------------------------------------------------------------------
-
-wxCoord wxDCBase::DeviceToLogicalX(wxCoord x) const
-{
-    return ((wxDC *)this)->XDEV2LOG(x);
-}
-
-wxCoord wxDCBase::DeviceToLogicalY(wxCoord y) const
-{
-    return ((wxDC *)this)->YDEV2LOG(y);
-}
-
-wxCoord wxDCBase::DeviceToLogicalXRel(wxCoord x) const
-{
-    return ((wxDC *)this)->XDEV2LOGREL(x);
-}
-
-wxCoord wxDCBase::DeviceToLogicalYRel(wxCoord y) const
-{
-    return ((wxDC *)this)->YDEV2LOGREL(y);
-}
-
-wxCoord wxDCBase::LogicalToDeviceX(wxCoord x) const
-{
-    return ((wxDC *)this)->XLOG2DEV(x);
-}
-
-wxCoord wxDCBase::LogicalToDeviceY(wxCoord y) const
-{
-    return ((wxDC *)this)->YLOG2DEV(y);
-}
-
-wxCoord wxDCBase::LogicalToDeviceXRel(wxCoord x) const
-{
-    return ((wxDC *)this)->XLOG2DEVREL(x);
-}
-
-wxCoord wxDCBase::LogicalToDeviceYRel(wxCoord y) const
-{
-    return ((wxDC *)this)->YLOG2DEVREL(y);
-}
-

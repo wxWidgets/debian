@@ -1,0 +1,365 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlWinParser</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmlwinparser"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxhtmlcellevent.html#wxhtmlcellevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmlwintaghandler.html#wxhtmlwintaghandler"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlWinParser</H2>
+<P>
+This class is derived from <A HREF="wx_wxhtmlparser.html#wxhtmlparser">wxHtmlParser</A> and
+its main goal is to parse HTML input so that it can be displayed in
+<A HREF="wx_wxhtmlwindow.html#wxhtmlwindow">wxHtmlWindow</A>. It uses a special 
+<A HREF="wx_wxhtmlwintaghandler.html#wxhtmlwintaghandler">wxHtmlWinTagHandler</A>.<P>
+<B><FONT COLOR="#FF0000">Notes</FONT></B><P>
+The product of parsing is a wxHtmlCell (resp. wxHtmlContainer) object.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxhtmlparser.html#wxhtmlparser">wxHtmlParser</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/winpars.h&gt;<P>
+<B><FONT COLOR="#FF0000">See Also</FONT></B><P>
+<A HREF="wx_wxhtml.html#handlers">Handlers overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmlwinparserwxhtmlwinparser">wxHtmlWinParser::wxHtmlWinParser</A><BR>
+<A HREF="#wxhtmlwinparseraddmodule">wxHtmlWinParser::AddModule</A><BR>
+<A HREF="#wxhtmlwinparserclosecontainer">wxHtmlWinParser::CloseContainer</A><BR>
+<A HREF="#wxhtmlwinparsercreatecurrentfont">wxHtmlWinParser::CreateCurrentFont</A><BR>
+<A HREF="#wxhtmlwinparsergetactualcolor">wxHtmlWinParser::GetActualColor</A><BR>
+<A HREF="#wxhtmlwinparsergetalign">wxHtmlWinParser::GetAlign</A><BR>
+<A HREF="#wxhtmlwinparsergetcharheight">wxHtmlWinParser::GetCharHeight</A><BR>
+<A HREF="#wxhtmlwinparsergetcharwidth">wxHtmlWinParser::GetCharWidth</A><BR>
+<A HREF="#wxhtmlwinparsergetcontainer">wxHtmlWinParser::GetContainer</A><BR>
+<A HREF="#wxhtmlwinparsergetdc">wxHtmlWinParser::GetDC</A><BR>
+<A HREF="#wxhtmlwinparsergetencodingconverter">wxHtmlWinParser::GetEncodingConverter</A><BR>
+<A HREF="#wxhtmlwinparsergetfontbold">wxHtmlWinParser::GetFontBold</A><BR>
+<A HREF="#wxhtmlwinparsergetfontface">wxHtmlWinParser::GetFontFace</A><BR>
+<A HREF="#wxhtmlwinparsergetfontfixed">wxHtmlWinParser::GetFontFixed</A><BR>
+<A HREF="#wxhtmlwinparsergetfontitalic">wxHtmlWinParser::GetFontItalic</A><BR>
+<A HREF="#wxhtmlwinparsergetfontsize">wxHtmlWinParser::GetFontSize</A><BR>
+<A HREF="#wxhtmlwinparsergetfontunderlined">wxHtmlWinParser::GetFontUnderlined</A><BR>
+<A HREF="#wxhtmlwinparsergetinputencoding">wxHtmlWinParser::GetInputEncoding</A><BR>
+<A HREF="#wxhtmlwinparsergetlink">wxHtmlWinParser::GetLink</A><BR>
+<A HREF="#wxhtmlwinparsergetlinkcolor">wxHtmlWinParser::GetLinkColor</A><BR>
+<A HREF="#wxhtmlwinparsergetoutputencoding">wxHtmlWinParser::GetOutputEncoding</A><BR>
+<A HREF="#wxhtmlwinparsergetwindow">wxHtmlWinParser::GetWindow</A><BR>
+<A HREF="#wxhtmlwinparseropencontainer">wxHtmlWinParser::OpenContainer</A><BR>
+<A HREF="#wxhtmlwinparsersetactualcolor">wxHtmlWinParser::SetActualColor</A><BR>
+<A HREF="#wxhtmlwinparsersetalign">wxHtmlWinParser::SetAlign</A><BR>
+<A HREF="#wxhtmlwinparsersetcontainer">wxHtmlWinParser::SetContainer</A><BR>
+<A HREF="#wxhtmlwinparsersetdc">wxHtmlWinParser::SetDC</A><BR>
+<A HREF="#wxhtmlwinparsersetfontbold">wxHtmlWinParser::SetFontBold</A><BR>
+<A HREF="#wxhtmlwinparsersetfontface">wxHtmlWinParser::SetFontFace</A><BR>
+<A HREF="#wxhtmlwinparsersetfontfixed">wxHtmlWinParser::SetFontFixed</A><BR>
+<A HREF="#wxhtmlwinparsersetfontitalic">wxHtmlWinParser::SetFontItalic</A><BR>
+<A HREF="#wxhtmlwinparsersetfontsize">wxHtmlWinParser::SetFontSize</A><BR>
+<A HREF="#wxhtmlwinparsersetfontunderlined">wxHtmlWinParser::SetFontUnderlined</A><BR>
+<A HREF="#wxhtmlwinparsersetfonts">wxHtmlWinParser::SetFonts</A><BR>
+<A HREF="#wxhtmlwinparsersetinputencoding">wxHtmlWinParser::SetInputEncoding</A><BR>
+<A HREF="#wxhtmlwinparsersetlink">wxHtmlWinParser::SetLink</A><BR>
+<A HREF="#wxhtmlwinparsersetlinkcolor">wxHtmlWinParser::SetLinkColor</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlwinparserwxhtmlwinparser"></A>
+<H3>wxHtmlWinParser::wxHtmlWinParser</H3>
+<P>
+<B></B> <B>wxHtmlWinParser</B>()<P>
+<B></B> <B>wxHtmlWinParser</B>(<B>wxHtmlWindowInterface </B><I>*wndIface</I>)<P>
+Constructor. Don't use the default one, use constructor with
+<I>wndIface</I> parameter (<I>wndIface</I> is a pointer to interface object for
+the associated <A HREF="wx_wxhtmlwindow.html#wxhtmlwindow">wxHtmlWindow</A> or other HTML rendering
+window such as <A HREF="wx_wxhtmllistbox.html#wxhtmllistbox">wxHtmlListBox</A>).<P>
+
+<HR>
+<A NAME="wxhtmlwinparseraddmodule"></A>
+<H3>wxHtmlWinParser::AddModule</H3>
+<P>
+<B>static void</B> <B>AddModule</B>(<B><A HREF="wx_wxhtmltagsmodule.html#wxhtmltagsmodule">wxHtmlTagsModule</A> </B></B><I>*module</I>)<P>
+Adds <A HREF="wx_wxhtml.html#handlers">module</A> to the list of wxHtmlWinParser tag handler.<P>
+
+<HR>
+<A NAME="wxhtmlwinparserclosecontainer"></A>
+<H3>wxHtmlWinParser::CloseContainer</H3>
+<P>
+<B><A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercell">wxHtmlContainerCell</A>*</B> </B> <B>CloseContainer</B>()<P>
+Closes the container, sets actual container to the parent one
+and returns pointer to it (see <A HREF="wx_wxhtml.html#cells">Overview</A>).<P>
+
+<HR>
+<A NAME="wxhtmlwinparsercreatecurrentfont"></A>
+<H3>wxHtmlWinParser::CreateCurrentFont</H3>
+<P>
+<B>virtual <A HREF="wx_wxfont.html#wxfont">wxFont</A>*</B> </B> <B>CreateCurrentFont</B>()<P>
+Creates font based on current setting (see 
+<A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparsersetfontsize">SetFontSize</A>, 
+<A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparsersetfontbold">SetFontBold</A>, 
+<A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparsersetfontitalic">SetFontItalic</A>, 
+<A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparsersetfontfixed">SetFontFixed</A>, 
+<A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparsersetfontunderlined">SetFontUnderlined</A>)
+and returns pointer to it.
+If the font was already created only a pointer is returned.<P>
+
+
+<HR>
+<A NAME="wxhtmlwinparsergetactualcolor"></A>
+<H3>wxHtmlWinParser::GetActualColor</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetActualColor</B>() <B>const</B><P>
+Returns actual text colour.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetalign"></A>
+<H3>wxHtmlWinParser::GetAlign</H3>
+<P>
+<B>int</B> <B>GetAlign</B>() <B>const</B><P>
+Returns default horizontal alignment.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetcharheight"></A>
+<H3>wxHtmlWinParser::GetCharHeight</H3>
+<P>
+<B>int</B> <B>GetCharHeight</B>() <B>const</B><P>
+Returns (average) char height in standard font. It is used as DC-independent metrics.<P>
+<B>Note:</B> This function doesn't return the <I>actual</I> height. If you want to
+know the height of the current font, call <TT>GetDC -&gt; GetCharHeight()</TT>.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetcharwidth"></A>
+<H3>wxHtmlWinParser::GetCharWidth</H3>
+<P>
+<B>int</B> <B>GetCharWidth</B>() <B>const</B><P>
+Returns average char width in standard font. It is used as DC-independent metrics.<P>
+<B>Note:</B> This function doesn't return the <I>actual</I> width. If you want to
+know the height of the current font, call <TT>GetDC -&gt; GetCharWidth()</TT><P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetcontainer"></A>
+<H3>wxHtmlWinParser::GetContainer</H3>
+<P>
+<B><A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercell">wxHtmlContainerCell</A>*</B> </B> <B>GetContainer</B>() <B>const</B><P>
+Returns pointer to the currently opened container (see <A HREF="wx_wxhtml.html#cells">Overview</A>).
+Common use:<P>
+<PRE>
+m_WParser -&gt; GetContainer() -&gt; InsertCell(new ...);
+</PRE>
+
+<HR>
+<A NAME="wxhtmlwinparsergetdc"></A>
+<H3>wxHtmlWinParser::GetDC</H3>
+<P>
+<B><A HREF="wx_wxdc.html#wxdc">wxDC</A>*</B> </B> <B>GetDC</B>()<P>
+Returns pointer to the DC used during parsing.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetencodingconverter"></A>
+<H3>wxHtmlWinParser::GetEncodingConverter</H3>
+<P>
+<B><A HREF="wx_wxencodingconverter.html#wxencodingconverter">wxEncodingConverter</A> *</B> </B> <B>GetEncodingConverter</B>() <B>const</B><P>
+Returns <A HREF="wx_wxencodingconverter.html#wxencodingconverter">wxEncodingConverter</A> class used
+to do conversion between <A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparsergetinputencoding">input encoding</A> 
+and <A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparsergetoutputencoding">output encoding</A>.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetfontbold"></A>
+<H3>wxHtmlWinParser::GetFontBold</H3>
+<P>
+<B>int</B> <B>GetFontBold</B>() <B>const</B><P>
+Returns true if actual font is bold, false otherwise.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetfontface"></A>
+<H3>wxHtmlWinParser::GetFontFace</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFontFace</B>() <B>const</B><P>
+Returns actual font face name.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetfontfixed"></A>
+<H3>wxHtmlWinParser::GetFontFixed</H3>
+<P>
+<B>int</B> <B>GetFontFixed</B>() <B>const</B><P>
+Returns true if actual font is fixed face, false otherwise.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetfontitalic"></A>
+<H3>wxHtmlWinParser::GetFontItalic</H3>
+<P>
+<B>int</B> <B>GetFontItalic</B>() <B>const</B><P>
+Returns true if actual font is italic, false otherwise.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetfontsize"></A>
+<H3>wxHtmlWinParser::GetFontSize</H3>
+<P>
+<B>int</B> <B>GetFontSize</B>() <B>const</B><P>
+Returns actual font size (HTML size varies from -2 to +4)<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetfontunderlined"></A>
+<H3>wxHtmlWinParser::GetFontUnderlined</H3>
+<P>
+<B>int</B> <B>GetFontUnderlined</B>() <B>const</B><P>
+Returns true if actual font is underlined, false otherwise.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetinputencoding"></A>
+<H3>wxHtmlWinParser::GetInputEncoding</H3>
+<P>
+<B>wxFontEncoding</B> <B>GetInputEncoding</B>() <B>const</B><P>
+Returns input encoding.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetlink"></A>
+<H3>wxHtmlWinParser::GetLink</H3>
+<P>
+<B>const <A HREF="wx_wxhtmllinkinfo.html#wxhtmllinkinfo">wxHtmlLinkInfo</A>&</B> </B> <B>GetLink</B>() <B>const</B><P>
+Returns actual hypertext link. (This value has a non-empty 
+<A HREF="wx_wxhtmllinkinfo.html#wxhtmllinkinfogethref">Href</A> string
+if the parser is between <TT>&lt;A&gt;</TT> and <TT>&lt;/A&gt;</TT> tags,
+wxEmptyString otherwise.)<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetlinkcolor"></A>
+<H3>wxHtmlWinParser::GetLinkColor</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetLinkColor</B>() <B>const</B><P>
+Returns the colour of hypertext link text.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetoutputencoding"></A>
+<H3>wxHtmlWinParser::GetOutputEncoding</H3>
+<P>
+<B>wxFontEncoding</B> <B>GetOutputEncoding</B>() <B>const</B><P>
+Returns output encoding, i.e. closest match to document's input encoding
+that is supported by operating system.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsergetwindow"></A>
+<H3>wxHtmlWinParser::GetWindow</H3>
+<P>
+<B><A HREF="wx_wxhtmlwindow.html#wxhtmlwindow">wxHtmlWindow</A>*</B> </B> <B>GetWindow</B>()<P>
+Returns associated window (wxHtmlWindow). This may be NULL! (You should always
+test if it is non-NULL. For example <TT>TITLE</TT> handler sets window
+title only if some window is associated, otherwise it does nothing)<P>
+
+<HR>
+<A NAME="wxhtmlwinparseropencontainer"></A>
+<H3>wxHtmlWinParser::OpenContainer</H3>
+<P>
+<B><A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercell">wxHtmlContainerCell</A>*</B> </B> <B>OpenContainer</B>()<P>
+Opens new container and returns pointer to it (see <A HREF="wx_wxhtml.html#cells">Overview</A>).<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetactualcolor"></A>
+<H3>wxHtmlWinParser::SetActualColor</H3>
+<P>
+<B>void</B> <B>SetActualColor</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>clr</I>)<P>
+Sets actual text colour. Note: this DOESN'T change the colour!
+You must create <A HREF="wx_wxhtmlcolourcell.html#wxhtmlcolourcell">wxHtmlColourCell</A> yourself.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetalign"></A>
+<H3>wxHtmlWinParser::SetAlign</H3>
+<P>
+<B>void</B> <B>SetAlign</B>(<B>int </B><I>a</I>)<P>
+Sets default horizontal alignment (see 
+<A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercellsetalignhor">wxHtmlContainerCell::SetAlignHor</A>.)
+Alignment of newly opened container is set to this value.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetcontainer"></A>
+<H3>wxHtmlWinParser::SetContainer</H3>
+<P>
+<B><A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercell">wxHtmlContainerCell</A>*</B> </B> <B>SetContainer</B>(<B><A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercell">wxHtmlContainerCell</A> *</B></B><I>c</I>)<P>
+Allows you to directly set opened container. This is not recommended - you should use OpenContainer
+wherever possible.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetdc"></A>
+<H3>wxHtmlWinParser::SetDC</H3>
+<P>
+<B>virtual void</B> <B>SetDC</B>(<B><A HREF="wx_wxdc.html#wxdc">wxDC</A> </B></B><I>*dc</I>, <B>double </B><I>pixel_scale = 1.0</I>)<P>
+Sets the DC. This must be called before <A HREF="wx_wxhtmlparser.html#wxhtmlparserparse">Parse</A>!
+<I>pixel_scale</I>  can be used when rendering to high-resolution 
+DCs (e.g. printer) to adjust size of pixel metrics. (Many dimensions in 
+HTML are given in pixels -- e.g. image sizes. 300x300 image would be only one
+inch wide on typical printer. With pixel_scale = 3.0 it would be 3 inches.)<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetfontbold"></A>
+<H3>wxHtmlWinParser::SetFontBold</H3>
+<P>
+<B>void</B> <B>SetFontBold</B>(<B>int </B><I>x</I>)<P>
+Sets bold flag of actualfont. <I>x</I> is either true of false.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetfontface"></A>
+<H3>wxHtmlWinParser::SetFontFace</H3>
+<P>
+<B>void</B> <B>SetFontFace</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>face</I>)<P>
+Sets current font face to <I>face</I>. This affects either fixed size
+font or proportional, depending on context (whether the parser is 
+inside <TT>&lt;TT&gt;</TT> tag or not).<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetfontfixed"></A>
+<H3>wxHtmlWinParser::SetFontFixed</H3>
+<P>
+<B>void</B> <B>SetFontFixed</B>(<B>int </B><I>x</I>)<P>
+Sets fixed face flag of actualfont. <I>x</I> is either true of false.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetfontitalic"></A>
+<H3>wxHtmlWinParser::SetFontItalic</H3>
+<P>
+<B>void</B> <B>SetFontItalic</B>(<B>int </B><I>x</I>)<P>
+Sets italic flag of actualfont. <I>x</I> is either true of false.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetfontsize"></A>
+<H3>wxHtmlWinParser::SetFontSize</H3>
+<P>
+<B>void</B> <B>SetFontSize</B>(<B>int </B><I>s</I>)<P>
+Sets actual font size (HTML size varies from 1 to 7)<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetfontunderlined"></A>
+<H3>wxHtmlWinParser::SetFontUnderlined</H3>
+<P>
+<B>void</B> <B>SetFontUnderlined</B>(<B>int </B><I>x</I>)<P>
+Sets underlined flag of actualfont. <I>x</I> is either true of false.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetfonts"></A>
+<H3>wxHtmlWinParser::SetFonts</H3>
+<P>
+<B>void</B> <B>SetFonts</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>normal_face</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fixed_face</I>, <B>const int </B><I>*sizes = NULL</I>)<P>
+Sets fonts. See <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowsetfonts">wxHtmlWindow::SetFonts</A> for
+detailed description.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetinputencoding"></A>
+<H3>wxHtmlWinParser::SetInputEncoding</H3>
+<P>
+<B>void</B> <B>SetInputEncoding</B>(<B>wxFontEncoding </B><I>enc</I>)<P>
+Sets input encoding. The parser uses this information to build conversion
+tables from document's encoding to some encoding supported by operating
+system.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetlink"></A>
+<H3>wxHtmlWinParser::SetLink</H3>
+<P>
+<B>void</B> <B>SetLink</B>(<B>const <A HREF="wx_wxhtmllinkinfo.html#wxhtmllinkinfo">wxHtmlLinkInfo</A>& </B></B><I>link</I>)<P>
+Sets actual hypertext link. Empty link is represented
+by <A HREF="wx_wxhtmllinkinfo.html#wxhtmllinkinfo">wxHtmlLinkInfo</A> with <I>Href</I> equal
+to wxEmptyString.<P>
+
+<HR>
+<A NAME="wxhtmlwinparsersetlinkcolor"></A>
+<H3>wxHtmlWinParser::SetLinkColor</H3>
+<P>
+<B>void</B> <B>SetLinkColor</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>clr</I>)<P>
+Sets colour of hypertext link.<P>
+
+</FONT></BODY></HTML>

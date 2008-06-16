@@ -1,0 +1,292 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Date and time classes overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdatetimeoverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_bufferclasses.html#bufferclasses"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_unicode.html#unicode"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Date and time classes overview</H2>
+<P>
+Classes: <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A>, <A HREF="wx_wxdatespan.html#wxdatespan">wxDateSpan</A>, <A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>, <A HREF="wx_wxcalendarctrl.html#wxcalendarctrl">wxCalendarCtrl</A><P>
+<A HREF="#introductiontowxdatetime">Introduction</A><BR>
+<A HREF="#alldatetimeclasses">All date/time classes at a glance</A><BR>
+<A HREF="#wxdatetimecharacteristics">wxDateTime characteristics</A><BR>
+<A HREF="#dateandtimespansdifference">Difference between wxDateSpan and wxTimeSpan</A><BR>
+<A HREF="#tdatearithm">Date arithmetics</A><BR>
+<A HREF="#tdatetimezones">Time zone considerations</A><BR>
+<A HREF="#tdatedst">Daylight saving time (DST)</A><BR>
+<A HREF="#tdateholidays">wxDateTime and Holidays</A><BR>
+<A HREF="#tdatecompatibility">Compatibility</A><BR>
+<P>
+
+<HR>
+<A NAME="introductiontowxdatetime"></A>
+<H3>Introduction</H3>
+<P>
+wxWidgets provides a set of powerful classes to work with dates and times. Some
+of the supported features of <A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A> class are:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+Wide range
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The range of supported dates goes from about 4714 B.C. to
+some 480 million years in the future.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+Precision
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Not using floating point calculations anywhere ensures that
+the date calculations don't suffer from rounding errors.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+Many features
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Not only all usual calculations with dates are supported,
+but also more exotic week and year day calculations, work day testing, standard
+astronomical functions, conversion to and from strings in either strict or free
+format.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+Efficiency
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Objects of wxDateTime are small (8 bytes) and working with
+them is fast
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+<HR>
+<A NAME="alldatetimeclasses"></A>
+<H3>All date/time classes at a glance</H3>
+<P>
+There are 3 main classes declared in <TT>&lt;wx/datetime.h&gt;</TT>: except 
+<A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A> itself which represents an absolute
+moment in time, there are also two classes - 
+<A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A> and <A HREF="wx_wxdatespan.html#wxdatespan">wxDateSpan</A> - which
+represent the intervals of time.<P>
+There are also helper classes which are used together with wxDateTime: 
+<A HREF="wx_wxdatetimeholidayauthority.html#wxdatetimeholidayauthority">wxDateTimeHolidayAuthority</A> which is used
+to determine whether a given date is a holiday or not and 
+<A HREF="wx_wxdatetimeworkdays.html#wxdatetimeworkdays">wxDateTimeWorkDays</A> which is a derivation of this
+class for which (only) Saturdays and Sundays are the holidays. See more about
+these classes in the discussion of the <A HREF="wx_wxdatetimeoverview.html#tdateholidays">holidays</A>.<P>
+Finally, in other parts of this manual you may find mentions of wxDate and
+wxTime classes. <A HREF="wx_wxdatetimeoverview.html#tdatecompatibility">These classes</A> are obsolete and
+superseded by wxDateTime.<P>
+
+<HR>
+<A NAME="wxdatetimecharacteristics"></A>
+<H3>wxDateTime characteristics</H3>
+<P>
+<A HREF="wx_wxdatetime.html#wxdatetime">wxDateTime</A> stores the time as a signed number of
+milliseconds since the Epoch which is fixed, by convention, to Jan 1, 1970 -
+however this is not visible to the class users (in particular, dates prior to
+the Epoch are handled just as well (or as bad) as the dates after it). But it
+does mean that the best resolution which can be achieved with this class is 1
+millisecond.<P>
+The size of wxDateTime object is 8 bytes because it is represented as a 64 bit
+integer. The resulting range of supported dates is thus approximatively 580
+million years, but due to the current limitations in the Gregorian calendar
+support, only dates from Nov 24, 4714BC are supported (this is subject to
+change if there is sufficient interest in doing it).<P>
+Finally, the internal representation is time zone independent (always in GMT)
+and the time zones only come into play when a date is broken into
+year/month/day components. See more about <A HREF="wx_wxdatetimeoverview.html#tdatetimezones">timezones</A> 
+below.<P>
+Currently, the only supported calendar is Gregorian one (which is used even
+for the dates prior to the historic introduction of this calendar which was
+first done on Oct 15, 1582 but is, generally speaking, country, and even
+region, dependent). Future versions will probably have Julian calendar support
+as well and support for other calendars (Maya, Hebrew, Chinese...) is not
+ruled out.<P>
+
+<HR>
+<A NAME="dateandtimespansdifference"></A>
+<H3>Difference between wxDateSpan and wxTimeSpan</H3>
+<P>
+While there is only one logical way to represent an absolute moment in the
+time (and hence only one wxDateTime class), there are at least two methods to
+describe a time interval.<P>
+First, there is the direct and self-explaining way implemented by 
+<A HREF="wx_wxtimespan.html#wxtimespan">wxTimeSpan</A>: it is just a difference in milliseconds
+between two moments in time. Adding or subtracting such an interval to
+wxDateTime is always well-defined and is a fast operation.<P>
+But in the daily life other, calendar-dependent time interval specifications are
+used. For example, 'one month later' is commonly used. However, it is clear
+that this is not the same as wxTimeSpan of 60*60*24*31 seconds because 'one
+month later' Feb 15 is Mar 15 and not Mar 17 or Mar 16 (depending on whether
+the year is leap or not).<P>
+This is why there is another class for representing such intervals called 
+<A HREF="wx_wxdatespan.html#wxdatespan">wxDateSpan</A>. It handles these sort of operations in the
+most natural way possible, but note that manipulating with intervals of
+this kind is not always well-defined. Consider, for example, Jan 31 + '1
+month': this will give Feb 28 (or 29), i.e. the last day of February and not
+the non-existent Feb 31. Of course, this is what is usually wanted, but you
+still might be surprised to notice that now subtracting back the same
+interval from Feb 28 will result in Jan 28 and <B>not</B> Jan 31 we started
+with!<P>
+So, unless you plan to implement some kind of natural language parsing in the
+program, you should probably use wxTimeSpan instead of wxDateSpan (which is
+also more efficient). However, wxDateSpan may be very useful in situations
+when you do need to understand what 'in a month' means (of course, it is
+just <TT>wxDateTime::Now() + wxDateSpan::Month()</TT>).<P>
+
+<HR>
+<A NAME="tdatearithm"></A>
+<H3>Date arithmetics</H3>
+<P>
+Many different operations may be performed with the dates, however not all of
+them make sense. For example, multiplying a date by a number is an invalid
+operation, even though multiplying either of the time span classes by a number
+is perfectly valid.<P>
+Here is what can be done:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>Addition</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+a wxTimeSpan or wxDateSpan can be added to wxDateTime
+resulting in a new wxDateTime object and also 2 objects of the same span class
+can be added together giving another object of the same class.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>Subtraction</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+the same types of operations as above are
+allowed and, additionally, a difference between two wxDateTime objects can be
+taken and this will yield wxTimeSpan.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>Multiplication</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+a wxTimeSpan or wxDateSpan object can be
+multiplied by an integer number resulting in an object of the same type.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>Unary minus</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+a wxTimeSpan or wxDateSpan object may finally be
+negated giving an interval of the same magnitude but of opposite time
+direction.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+For all these operations there are corresponding global (overloaded) operators
+and also member functions which are synonyms for them: Add(), Subtract() and
+Multiply(). Unary minus as well as composite assignment operations (like +=)
+are only implemented as members and Neg() is the synonym for unary minus.<P>
+
+<HR>
+<A NAME="tdatetimezones"></A>
+<H3>Time zone considerations</H3>
+<P>
+Although the time is always stored internally in GMT, you will usually work in
+the local time zone. Because of this, all wxDateTime constructors and setters
+which take the broken down date assume that these values are for the local
+time zone. Thus, <TT>wxDateTime(1, wxDateTime::Jan, 1970)</TT> will not
+correspond to the wxDateTime Epoch unless you happen to live in the UK.<P>
+All methods returning the date components (year, month, day, hour, minute,
+second...) will also return the correct values for the local time zone by
+default, so, generally, doing the natural things will lead to natural and
+correct results.<P>
+If you only want to do this, you may safely skip the rest of this section.
+However, if you want to work with different time zones, you should read it to
+the end.<P>
+In this (rare) case, you are still limited to the local time zone when
+constructing wxDateTime objects, i.e. there is no way to construct a
+wxDateTime corresponding to the given date in, say, Pacific Standard Time.
+To do it, you will need to call <A HREF="wx_wxdatetime.html#wxdatetimetotimezone">ToTimezone</A> or 
+<A HREF="wx_wxdatetime.html#wxdatetimemaketimezone">MakeTimezone</A> methods to adjust the date for
+the target time zone. There are also special versions of these functions 
+<A HREF="wx_wxdatetime.html#wxdatetimetoutc">ToUTC</A> and <A HREF="wx_wxdatetime.html#wxdatetimemakeutc">MakeUTC</A> for
+the most common case - when the date should be constructed in UTC.<P>
+You also can just retrieve the value for some time zone without converting the
+object to it first. For this you may pass TimeZone argument to any of the
+methods which are affected by the time zone (all methods getting date
+components and the date formatting ones, for example). In particular, the
+Format() family of methods accepts a TimeZone parameter and this allows to
+simply print time in any time zone.<P>
+To see how to do it, the last issue to address is how to construct a TimeZone
+object which must be passed to all these methods. First of all, you may construct
+it manually by specifying the time zone offset in seconds from GMT, but
+usually you will just use one of the <A HREF="wx_wxdatetime.html#wxdatetime">symbolic time zone names</A> and
+let the conversion constructor do the job.
+I.e. you would just write<P>
+<PRE>
+wxDateTime dt(...whatever...);
+printf("The time is %s in local time zone", dt.FormatTime().c_str());
+printf("The time is %s in GMT", dt.FormatTime(wxDateTime::GMT).c_str());
+</PRE>
+
+<HR>
+<A NAME="tdatedst"></A>
+<H3>Daylight saving time (DST)</H3>
+<P>
+DST (a.k.a. 'summer time') handling is always a delicate task which is better
+left to the operating system which is supposed to be configured by the
+administrator to behave correctly. Unfortunately, when doing calculations with
+date outside of the range supported by the standard library, we are forced to
+deal with these issues ourselves.<P>
+Several functions are provided to calculate the beginning and end of DST in
+the given year and to determine whether it is in effect at the given moment or
+not, but they should not be considered as absolutely correct because, first of
+all, they only work more or less correctly for only a handful of countries
+(any information about other ones appreciated!) and even for them the rules
+may perfectly well change in the future.<P>
+The time zone handling <A HREF="wx_wxdatetimeoverview.html#tdatetimezones">methods</A> use these functions
+too, so they are subject to the same limitations.<P>
+
+<HR>
+<A NAME="tdateholidays"></A>
+<H3>wxDateTime and Holidays</H3>
+<P>
+TODO.<P>
+
+<HR>
+<A NAME="tdatecompatibility"></A>
+<H3>Compatibility</H3>
+<P>
+The old classes for date/time manipulations ported from wxWidgets version 1.xx
+are still included but are reimplemented in terms of wxDateTime. However, using
+them is strongly discouraged because they have a few quirks/bugs and were not
+'Y2K' compatible.<P>
+
+</FONT></BODY></HTML>

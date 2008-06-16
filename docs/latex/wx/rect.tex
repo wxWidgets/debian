@@ -68,9 +68,39 @@ Width member.
 Height member.
 
 
+\membersection{wxRect::CentreIn}\label{wxrectcentrein}
+
+\constfunc{wxRect}{CentreIn}{\param{const wxRect\& }{r}, \param{int }{dir = wxBOTH}}
+
+\constfunc{wxRect}{CenterIn}{\param{const wxRect\& }{r}, \param{int }{dir = wxBOTH}}
+
+Returns the rectangle having the same size as this one but centered relatively
+to the given rectangle \arg{r}. By default, rectangle is centred in both
+directions but if \arg{dir} includes only \texttt{wxVERTICAL} or only 
+\texttt{wxHORIZONTAL} flag, then it is only centered in this direction while
+the other component of its position remains unchanged.
+
+
+\membersection{wxRect::Contains}\label{wxrectcontains}
+
+\constfunc{bool}{Contains}{\param{int }{x}, \param{int }{y}}
+
+\constfunc{bool}{Contains}{\param{const wxPoint\& }{pt}}
+
+Returns {\tt true} if the given point is inside the rectangle (or on its
+boundary) and {\tt false} otherwise.
+
+\constfunc{bool}{Contains}{\param{const wxRect\& }{rect}}
+
+Returns \true if the given rectangle is completely inside this rectangle
+(or touches its boundary) and \false otherwise.
+
+
 \membersection{wxRect::Deflate}\label{wxrectdeflate}
 
 \func{void}{Deflate}{\param{wxCoord }{dx}, \param{wxCoord }{dy}}
+
+\func{void}{Deflate}{\param{const wxSize\& }{diff}}
 
 \func{void}{Deflate}{\param{wxCoord }{diff}}
 
@@ -119,14 +149,29 @@ Gets the position.
 
 \constfunc{wxPoint}{GetTopLeft}{\void}
 
-Gets the topleft position of the rectangle. (Same as GetPosition).
+Gets the position of the top left corner of the rectangle, same as 
+\helpref{GetPosition}{wxrectgetposition}.
+
+
+\membersection{wxRect::GetTopRight}\label{wxrectgettopright}
+
+\constfunc{wxPoint}{GetTopRight}{\void}
+
+Gets the position of the top right corner.
+
+
+\membersection{wxRect::GetBottomLeft}\label{wxrectgetbottomleft}
+
+\constfunc{wxPoint}{GetBottomLeft}{\void}
+
+Gets the position of the bottom left corner.
 
 
 \membersection{wxRect::GetBottomRight}\label{wxrectgetbottomright}
 
 \constfunc{wxPoint}{GetBottomRight}{\void}
 
-Gets the bottom right position. Returns the bottom right point inside the rectangle.
+Gets the position of the bottom right corner.
 
 
 \membersection{wxRect::GetRight}\label{wxrectgetright}
@@ -179,6 +224,8 @@ Gets the y member.
 
 \func{void}{Inflate}{\param{wxCoord }{dx}, \param{wxCoord }{dy}}
 
+\func{void}{Inflate}{\param{const wxSize\& }{diff}}
+
 \func{void}{Inflate}{\param{wxCoord }{diff}}
 
 \constfunc{wxRect}{Inflate}{\param{wxCoord }{dx}, \param{wxCoord }{dy}}
@@ -221,21 +268,11 @@ means:
 \helpref{Deflate}{wxrectdeflate}
 
 
-\membersection{wxRect::Inside}\label{wxrectinside}
-
-\constfunc{bool}{Inside}{\param{int }{x}, \param{int }{y}}
-
-\constfunc{bool}{Inside}{\param{const wxPoint\& }{pt}}
-
-Returns {\tt true} if the given point is inside the rectangle (or on its
-boundary) and {\tt false} otherwise.
-
-
 \membersection{wxRect::Intersects}\label{wxrectintersects}
 
 \constfunc{bool}{Intersects}{\param{const wxRect\& }{rect}}
 
-Returns {\tt true} if this rectangle has a non empty intersection with the
+Returns {\tt true} if this rectangle has a non-empty intersection with the
 rectangle {\it rect} and {\tt false} otherwise.
 
 

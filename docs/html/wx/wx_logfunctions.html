@@ -1,0 +1,343 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Log functions</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="logfunctions"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_rttimacros.html#rttimacros"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_timefunctions.html#timefunctions"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Log functions</H2>
+<P>
+These functions provide a variety of logging functions: see <A HREF="wx_wxlogoverview.html#wxlogoverview">Log classes overview</A> for
+further information. The functions use (implicitly) the currently active log
+target, so their descriptions here may not apply if the log target is not the
+standard one (installed by wxWidgets in the beginning of the program).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/log.h&gt;<P>
+
+<A HREF="#wxdebugmsg">::wxDebugMsg</A><BR>
+<A HREF="#wxerror">::wxError</A><BR>
+<A HREF="#wxfatalerror">::wxFatalError</A><BR>
+<A HREF="#wxlogerror">::wxLogError</A><BR>
+<A HREF="#wxlogfatalerror">::wxLogFatalError</A><BR>
+<A HREF="#wxlogwarning">::wxLogWarning</A><BR>
+<A HREF="#wxlogmessage">::wxLogMessage</A><BR>
+<A HREF="#wxlogverbose">::wxLogVerbose</A><BR>
+<A HREF="#wxlogstatus">::wxLogStatus</A><BR>
+<A HREF="#wxlogsyserror">::wxLogSysError</A><BR>
+<A HREF="#wxlogdebug">::wxLogDebug</A><BR>
+<A HREF="#wxlogtrace">::wxLogTrace</A><BR>
+<A HREF="#wxsafeshowmessage">::wxSafeShowMessage</A><BR>
+<A HREF="#wxsyserrorcode">::wxSysErrorCode</A><BR>
+<A HREF="#wxsyserrormsg">::wxSysErrorMsg</A><BR>
+<A HREF="#trace">WXTRACE</A><BR>
+<A HREF="#tracelevel">WXTRACELEVEL</A><BR>
+<A HREF="#wxtrace">::wxTrace</A><BR>
+<A HREF="#wxtracelevel">::wxTraceLevel</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdebugmsg"></A>
+<H3>::wxDebugMsg</H3>
+<P>
+<B>void</B> <B>wxDebugMsg</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fmt</I>, <B>...</B><I></I>)<P>
+<B>NB:</B> This function is now obsolete, replaced by <A HREF="wx_logfunctions.html#logfunctions">Log
+functions</A> and <A HREF="wx_logfunctions.html#wxlogdebug">wxLogDebug</A> in particular.<P>
+Display a debugging message; under Windows, this will appear on the
+debugger command window, and under Unix, it will be written to standard
+error.<P>
+The syntax is identical to <B>printf</B>: pass a format string and a
+variable list of arguments.<P>
+<B>Tip:</B> under Windows, if your application crashes before the
+message appears in the debugging window, put a wxYield call after
+each wxDebugMsg call. wxDebugMsg seems to be broken under WIN32s
+(at least for Watcom C++): preformat your messages and use OutputDebugString
+instead.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxerror"></A>
+<H3>::wxError</H3>
+<P>
+<B>void</B> <B>wxError</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>msg</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title = "wxWidgets Internal Error"</I>)<P>
+<B>NB:</B> This function is now obsolete, please use <A HREF="wx_logfunctions.html#wxlogerror">wxLogError</A>
+instead.<P>
+Displays <I>msg</I> and continues. This writes to standard error under
+Unix, and pops up a message box under Windows. Used for internal
+wxWidgets errors. See also <A HREF="wx_logfunctions.html#wxfatalerror">wxFatalError</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxfatalerror"></A>
+<H3>::wxFatalError</H3>
+<P>
+<B>void</B> <B>wxFatalError</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>msg</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title = "wxWidgets Fatal Error"</I>)<P>
+<B>NB:</B> This function is now obsolete, please use
+<A HREF="wx_logfunctions.html#wxlogfatalerror">wxLogFatalError</A> instead.<P>
+Displays <I>msg</I> and exits. This writes to standard error under Unix,
+and pops up a message box under Windows. Used for fatal internal
+wxWidgets errors. See also <A HREF="wx_logfunctions.html#wxerror">wxError</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxlogerror"></A>
+<H3>::wxLogError</H3>
+<P>
+<B>void</B> <B>wxLogError</B>(<B>const char *</B><I>formatString</I>, <B>...</B><I></I>)<P>
+<B>void</B> <B>wxVLogError</B>(<B>const char *</B><I>formatString</I>, <B>va_list </B><I>argPtr</I>)<P>
+The functions to use for error messages, i.e. the messages that must be shown
+to the user. The default processing is to pop up a message box to inform the
+user about it.<P>
+
+
+<HR>
+<A NAME="wxlogfatalerror"></A>
+<H3>::wxLogFatalError</H3>
+<P>
+<B>void</B> <B>wxLogFatalError</B>(<B>const char *</B><I>formatString</I>, <B>...</B><I></I>)<P>
+<B>void</B> <B>wxVLogFatalError</B>(<B>const char *</B><I>formatString</I>, <B>va_list </B><I>argPtr</I>)<P>
+Like <A HREF="wx_logfunctions.html#wxlogerror">wxLogError</A>, but also
+terminates the program with the exit code 3. Using <I>abort()</I> standard
+function also terminates the program with this exit code.<P>
+
+
+<HR>
+<A NAME="wxlogwarning"></A>
+<H3>::wxLogWarning</H3>
+<P>
+<B>void</B> <B>wxLogWarning</B>(<B>const char *</B><I>formatString</I>, <B>...</B><I></I>)<P>
+<B>void</B> <B>wxVLogWarning</B>(<B>const char *</B><I>formatString</I>, <B>va_list </B><I>argPtr</I>)<P>
+For warnings - they are also normally shown to the user, but don't interrupt
+the program work.<P>
+
+
+<HR>
+<A NAME="wxlogmessage"></A>
+<H3>::wxLogMessage</H3>
+<P>
+<B>void</B> <B>wxLogMessage</B>(<B>const char *</B><I>formatString</I>, <B>...</B><I></I>)<P>
+<B>void</B> <B>wxVLogMessage</B>(<B>const char *</B><I>formatString</I>, <B>va_list </B><I>argPtr</I>)<P>
+For all normal, informational messages. They also appear in a message box by
+default (but it can be changed).<P>
+
+<HR>
+<A NAME="wxlogverbose"></A>
+<H3>::wxLogVerbose</H3>
+<P>
+<B>void</B> <B>wxLogVerbose</B>(<B>const char *</B><I>formatString</I>, <B>...</B><I></I>)<P>
+<B>void</B> <B>wxVLogVerbose</B>(<B>const char *</B><I>formatString</I>, <B>va_list </B><I>argPtr</I>)<P>
+For verbose output. Normally, it is suppressed, but
+might be activated if the user wishes to know more details about the program
+progress (another, but possibly confusing name for the same function is <B>wxLogInfo</B>).<P>
+
+
+<HR>
+<A NAME="wxlogstatus"></A>
+<H3>::wxLogStatus</H3>
+<P>
+<B>void</B> <B>wxLogStatus</B>(<B><A HREF="wx_wxframe.html#wxframe">wxFrame</A> *</B></B><I>frame</I>, <B>const char *</B><I>formatString</I>, <B>...</B><I></I>)<P>
+<B>void</B> <B>wxVLogStatus</B>(<B><A HREF="wx_wxframe.html#wxframe">wxFrame</A> *</B></B><I>frame</I>, <B>const char *</B><I>formatString</I>, <B>va_list </B><I>argPtr</I>)<P>
+<B>void</B> <B>wxLogStatus</B>(<B>const char *</B><I>formatString</I>, <B>...</B><I></I>)<P>
+<B>void</B> <B>wxVLogStatus</B>(<B>const char *</B><I>formatString</I>, <B>va_list </B><I>argPtr</I>)<P>
+Messages logged by these functions will appear in the statusbar of the <I>
+frame</I> or of the top level application window by default (i.e. when using
+the second version of the functions).<P>
+If the target frame doesn't have a statusbar, the message will be lost.<P>
+
+
+<HR>
+<A NAME="wxlogsyserror"></A>
+<H3>::wxLogSysError</H3>
+<P>
+<B>void</B> <B>wxLogSysError</B>(<B>const char *</B><I>formatString</I>, <B>...</B><I></I>)<P>
+<B>void</B> <B>wxVLogSysError</B>(<B>const char *</B><I>formatString</I>, <B>va_list </B><I>argPtr</I>)<P>
+Mostly used by wxWidgets itself, but might be handy for logging errors after
+system call (API function) failure. It logs the specified message text as well
+as the last system error code (<I>errno</I> or <I>::GetLastError()</I> depending
+on the platform) and the corresponding error message. The second form
+of this function takes the error code explicitly as the first argument.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_logfunctions.html#wxsyserrorcode">wxSysErrorCode</A>,
+<A HREF="wx_logfunctions.html#wxsyserrormsg">wxSysErrorMsg</A><P>
+
+
+<HR>
+<A NAME="wxlogdebug"></A>
+<H3>::wxLogDebug</H3>
+<P>
+<B>void</B> <B>wxLogDebug</B>(<B>const char *</B><I>formatString</I>, <B>...</B><I></I>)<P>
+<B>void</B> <B>wxVLogDebug</B>(<B>const char *</B><I>formatString</I>, <B>va_list </B><I>argPtr</I>)<P>
+The right functions for debug output. They only do something in debug
+mode (when the preprocessor symbol __WXDEBUG__ is defined) and expand to
+nothing in release mode (otherwise).<P>
+
+
+<HR>
+<A NAME="wxlogtrace"></A>
+<H3>::wxLogTrace</H3>
+<P>
+<B>void</B> <B>wxLogTrace</B>(<B>const char *</B><I>formatString</I>, <B>...</B><I></I>)<P>
+<B>void</B> <B>wxVLogTrace</B>(<B>const char *</B><I>formatString</I>, <B>va_list </B><I>argPtr</I>)<P>
+<B>void</B> <B>wxLogTrace</B>(<B>const char *</B><I>mask</I>, <B>const char *</B><I>formatString</I>, <B>...</B><I></I>)<P>
+<B>void</B> <B>wxVLogTrace</B>(<B>const char *</B><I>mask</I>, <B>const char *</B><I>formatString</I>, <B>va_list </B><I>argPtr</I>)<P>
+<B>void</B> <B>wxLogTrace</B>(<B>wxTraceMask</B><I> mask</I>, <B>const char *</B><I>formatString</I>, <B>...</B><I></I>)<P>
+<B>void</B> <B>wxVLogTrace</B>(<B>wxTraceMask</B><I> mask</I>, <B>const char *</B><I>formatString</I>, <B>va_list </B><I>argPtr</I>)<P>
+As <B>wxLogDebug</B>, trace functions only do something in debug build and
+expand to nothing in the release one. The reason for making
+it a separate function from it is that usually there are a lot of trace
+messages, so it might make sense to separate them from other debug messages.<P>
+The trace messages also usually can be separated into different categories and
+the second and third versions of this function only log the message if the
+<I>mask</I> which it has is currently enabled in <A HREF="wx_wxlog.html#wxlog">wxLog</A>. This
+allows to selectively trace only some operations and not others by changing
+the value of the trace mask (possible during the run-time).<P>
+For the second function (taking a string mask), the message is logged only if
+the mask has been previously enabled by the call to
+<A HREF="wx_wxlog.html#wxlogaddtracemask">AddTraceMask</A> or by setting
+<A HREF="wx_envvars.html#envvars"><TT>WXTRACE</TT> environment variable</A>.
+The predefined string trace masks
+used by wxWidgets are:<P>
+<UL>
+
+<LI> wxTRACE_MemAlloc: trace memory allocation (new/delete)
+<LI> wxTRACE_Messages: trace window messages/X callbacks
+<LI> wxTRACE_ResAlloc: trace GDI resource allocation
+<LI> wxTRACE_RefCount: trace various ref counting operations
+<LI> wxTRACE_OleCalls: trace OLE method calls (Win32 only)
+</UL>
+<P>
+<B>Caveats:</B> since both the mask and the format string are strings,
+this might lead to function signature confusion in some cases:
+if you intend to call the format string only version of wxLogTrace,
+then add a %s format string parameter and then supply a second string parameter for that %s, the string mask version of wxLogTrace will erroneously get called instead, since you are supplying two string parameters to the function.
+In this case you'll unfortunately have to avoid having two leading
+string parameters, e.g. by adding a bogus integer (with its %d format string).<P>
+The third version of the function only logs the message if all the bits
+corresponding to the <I>mask</I> are set in the wxLog trace mask which can be
+set by <A HREF="wx_wxlog.html#wxlogsettracemask">SetTraceMask</A>. This version is less
+flexible than the previous one because it doesn't allow defining the user
+trace masks easily - this is why it is deprecated in favour of using string
+trace masks.<P>
+<UL>
+
+<LI> wxTraceMemAlloc: trace memory allocation (new/delete)
+<LI> wxTraceMessages: trace window messages/X callbacks
+<LI> wxTraceResAlloc: trace GDI resource allocation
+<LI> wxTraceRefCount: trace various ref counting operations
+<LI> wxTraceOleCalls: trace OLE method calls (Win32 only)
+</UL>
+<P>
+
+
+<HR>
+<A NAME="wxsafeshowmessage"></A>
+<H3>::wxSafeShowMessage</H3>
+<P>
+<B>void</B> <B>wxSafeShowMessage</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>)<P>
+This function shows a message to the user in a safe way and should be safe to
+call even before the application has been initialized or if it is currently in
+some other strange state (for example, about to crash). Under Windows this
+function shows a message box using a native dialog instead of
+<A HREF="wx_dialogfunctions.html#wxmessagebox">wxMessageBox</A> (which might be unsafe to call), elsewhere
+it simply prints the message to the standard output using the title as prefix.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>title</I><UL><UL>
+The title of the message box shown to the user or the prefix
+of the message string</UL></UL>
+<P>
+<I>text</I><UL><UL>
+The text to show to the user</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_logfunctions.html#wxlogfatalerror">wxLogFatalError</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/log.h&gt;<P>
+
+
+<HR>
+<A NAME="wxsyserrorcode"></A>
+<H3>::wxSysErrorCode</H3>
+<P>
+<B>unsigned long</B> <B>wxSysErrorCode</B>()<P>
+Returns the error code from the last system call. This function uses
+<TT>errno</TT> on Unix platforms and <TT>GetLastError</TT> under Win32.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_logfunctions.html#wxsyserrormsg">wxSysErrorMsg</A>,
+<A HREF="wx_logfunctions.html#wxlogsyserror">wxLogSysError</A><P>
+
+
+<HR>
+<A NAME="wxsyserrormsg"></A>
+<H3>::wxSysErrorMsg</H3>
+<P>
+<B>const wxChar *</B> <B>wxSysErrorMsg</B>(<B>unsigned long </B><I>errCode = 0</I>)<P>
+Returns the error message corresponding to the given system error code. If
+<I>errCode</I> is 0 (default), the last error code (as returned by
+<A HREF="wx_logfunctions.html#wxsyserrorcode">wxSysErrorCode</A>) is used.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_logfunctions.html#wxsyserrorcode">wxSysErrorCode</A>,
+<A HREF="wx_logfunctions.html#wxlogsyserror">wxLogSysError</A><P>
+
+
+<HR>
+<A NAME="trace"></A>
+<H3>WXTRACE</H3>
+<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/object.h&gt;<P>
+<B></B> <B>WXTRACE</B>(formatString, ...)<P>
+<B>NB:</B> This macro is now obsolete, replaced by <A HREF="wx_logfunctions.html#logfunctions">Log functions</A>.<P>
+Calls wxTrace with printf-style variable argument syntax. Output
+is directed to the current output stream (see <A HREF="wx_debuggingoverview.html#wxdebugcontextoverview">wxDebugContext</A>).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/memory.h&gt;<P>
+
+
+<HR>
+<A NAME="tracelevel"></A>
+<H3>WXTRACELEVEL</H3>
+<P>
+<B></B> <B>WXTRACELEVEL</B>(level, formatString, ...)<P>
+<B>NB:</B> This function is now obsolete, replaced by <A HREF="wx_logfunctions.html#logfunctions">Log functions</A>.<P>
+Calls wxTraceLevel with printf-style variable argument syntax. Output
+is directed to the current output stream (see <A HREF="wx_debuggingoverview.html#wxdebugcontextoverview">wxDebugContext</A>).
+The first argument should be the level at which this information is appropriate.
+It will only be output if the level returned by wxDebugContext::GetLevel is equal to or greater than
+this value.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/memory.h&gt;<P>
+
+
+<HR>
+<A NAME="wxtrace"></A>
+<H3>::wxTrace</H3>
+<P>
+<B>void</B> <B>wxTrace</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fmt</I>, <B>...</B><I></I>)<P>
+<B>NB:</B> This function is now obsolete, replaced by <A HREF="wx_logfunctions.html#logfunctions">Log functions</A>.<P>
+Takes printf-style variable argument syntax. Output
+is directed to the current output stream (see <A HREF="wx_debuggingoverview.html#wxdebugcontextoverview">wxDebugContext</A>).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/memory.h&gt;<P>
+
+
+<HR>
+<A NAME="wxtracelevel"></A>
+<H3>::wxTraceLevel</H3>
+<P>
+<B>void</B> <B>wxTraceLevel</B>(<B>int</B><I> level</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>fmt</I>, <B>...</B><I></I>)<P>
+<B>NB:</B> This function is now obsolete, replaced by <A HREF="wx_logfunctions.html#logfunctions">Log functions</A>.<P>
+Takes printf-style variable argument syntax. Output
+is directed to the current output stream (see <A HREF="wx_debuggingoverview.html#wxdebugcontextoverview">wxDebugContext</A>).
+The first argument should be the level at which this information is appropriate.
+It will only be output if the level returned by wxDebugContext::GetLevel is equal to or greater than
+this value.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/memory.h&gt;<P>
+<P>
+
+</FONT></BODY></HTML>

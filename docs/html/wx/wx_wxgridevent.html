@@ -1,0 +1,327 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGridEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgridevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgrideditorcreatedevent.html#wxgrideditorcreatedevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgridrangeselectevent.html#wxgridrangeselectevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGridEvent</H2>
+<P>
+This event class contains information about various grid events.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxnotifyevent.html#wxnotifyevent">wxNotifyEvent</A><BR>
+
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><BR>
+
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/grid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+The event handler for the following functions takes a <A HREF="wx_wxgridevent.html#wxgridevent">wxGridEvent</A> parameter.
+The ..._CMD_... variants also take a window identifier.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CELL_LEFT_CLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a cell with the left mouse button. Processes a wxEVT_GRID_CELL_LEFT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CELL_RIGHT_CLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a cell with the right mouse button. Processes a wxEVT_GRID_CELL_RIGHT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CELL_LEFT_DCLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a cell with the left mouse button. Processes a wxEVT_GRID_CELL_LEFT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CELL_RIGHT_DCLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a cell with the right mouse button. Processes a wxEVT_GRID_CELL_RIGHT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_LABEL_LEFT_CLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a label with the left mouse button. Processes a wxEVT_GRID_LABEL_LEFT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_LABEL_RIGHT_CLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a label with the right mouse button. Processes a wxEVT_GRID_LABEL_RIGHT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_LABEL_LEFT_DCLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a label with the left mouse button. Processes a wxEVT_GRID_LABEL_LEFT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_LABEL_RIGHT_DCLICK(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a label with the right mouse button. Processes a wxEVT_GRID_LABEL_RIGHT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CELL_CHANGE(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user changed the data in a cell. Processes a wxEVT_GRID_CELL_CHANGE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_SELECT_CELL(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user moved to, and selected a cell. Processes a wxEVT_GRID_SELECT_CELL.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_EDITOR_HIDDEN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The editor for a cell was hidden. Processes a wxEVT_GRID_EDITOR_HIDDEN.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_EDITOR_SHOWN(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The editor for a cell was shown. Processes a wxEVT_GRID_EDITOR_SHOWN.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_CELL_LEFT_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a cell with the left mouse button; variant taking a window identifier. Processes a wxEVT_GRID_CELL_LEFT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_CELL_RIGHT_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a cell with the right mouse button; variant taking a window identifier. Processes a wxEVT_GRID_CELL_RIGHT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_CELL_LEFT_DCLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a cell with the left mouse button; variant taking a window identifier. Processes a wxEVT_GRID_CELL_LEFT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_CELL_RIGHT_DCLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a cell with the right mouse button; variant taking a window identifier. Processes a wxEVT_GRID_CELL_RIGHT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_LABEL_LEFT_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a label with the left mouse button; variant taking a window identifier. Processes a wxEVT_GRID_LABEL_LEFT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_LABEL_RIGHT_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user clicked a label with the right mouse button; variant taking a window identifier. Processes a wxEVT_GRID_LABEL_RIGHT_CLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_LABEL_LEFT_DCLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a label with the left mouse button; variant taking a window identifier. Processes a wxEVT_GRID_LABEL_LEFT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_LABEL_RIGHT_DCLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user double-clicked a label with the right mouse button; variant taking a window identifier. Processes a wxEVT_GRID_LABEL_RIGHT_DCLICK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_CELL_CHANGE(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user changed the data in a cell; variant taking a window identifier. Processes a wxEVT_GRID_CELL_CHANGE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_SELECT_CELL(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user moved to, and selected a cell; variant taking a window identifier. Processes a wxEVT_GRID_SELECT_CELL.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_EDITOR_HIDDEN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The editor for a cell was hidden; variant taking a window identifier. Processes a wxEVT_GRID_EDITOR_HIDDEN.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_GRID_CMD_EDITOR_SHOWN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The editor for a cell was shown; variant taking a window identifier. Processes a wxEVT_GRID_EDITOR_SHOWN.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgrideventconstr">wxGridEvent::wxGridEvent</A><BR>
+<A HREF="#wxgrideventaltdown">wxGridEvent::AltDown</A><BR>
+<A HREF="#wxgrideventcontroldown">wxGridEvent::ControlDown</A><BR>
+<A HREF="#wxgrideventgetcol">wxGridEvent::GetCol</A><BR>
+<A HREF="#wxgrideventgetposition">wxGridEvent::GetPosition</A><BR>
+<A HREF="#wxgrideventgetrow">wxGridEvent::GetRow</A><BR>
+<A HREF="#wxgrideventmetadown">wxGridEvent::MetaDown</A><BR>
+<A HREF="#wxgrideventselecting">wxGridEvent::Selecting</A><BR>
+<A HREF="#wxgrideventshiftdown">wxGridEvent::ShiftDown</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgrideventconstr"></A>
+<H3>wxGridEvent::wxGridEvent</H3>
+<P>
+<B></B> <B>wxGridEvent</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxGridEvent</B>(<B>int </B><I>id</I>, <B>wxEventType </B><I>type</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>* </B></B><I>obj</I>,
+ <B>int </B><I>row = -1</I>, <B>int </B><I>col = -1</I>, <B>int </B><I>x = -1</I>, <B>int </B><I>y = -1</I>,
+ <B>bool </B><I>sel = true</I>, <B>bool </B><I>control = false</I>, <B>bool </B><I>shift = false</I>,
+ <B>bool </B><I>alt = false</I>, <B>bool </B><I>meta = false</I>)<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+
+<HR>
+<A NAME="wxgrideventaltdown"></A>
+<H3>wxGridEvent::AltDown</H3>
+<P>
+<B>bool</B> <B>AltDown</B>()<P>
+Returns true if the Alt key was down at the time of the event.<P>
+
+<HR>
+<A NAME="wxgrideventcontroldown"></A>
+<H3>wxGridEvent::ControlDown</H3>
+<P>
+<B>bool</B> <B>ControlDown</B>()<P>
+Returns true if the Control key was down at the time of the event.<P>
+
+<HR>
+<A NAME="wxgrideventgetcol"></A>
+<H3>wxGridEvent::GetCol</H3>
+<P>
+<B>int</B> <B>GetCol</B>()<P>
+Column at which the event occurred.<P>
+
+<HR>
+<A NAME="wxgrideventgetposition"></A>
+<H3>wxGridEvent::GetPosition</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetPosition</B>()<P>
+Position in pixels at which the event occurred.<P>
+
+<HR>
+<A NAME="wxgrideventgetrow"></A>
+<H3>wxGridEvent::GetRow</H3>
+<P>
+<B>int</B> <B>GetRow</B>()<P>
+Row at which the event occurred.<P>
+
+<HR>
+<A NAME="wxgrideventmetadown"></A>
+<H3>wxGridEvent::MetaDown</H3>
+<P>
+<B>bool</B> <B>MetaDown</B>()<P>
+Returns true if the Meta key was down at the time of the event.<P>
+
+<HR>
+<A NAME="wxgrideventselecting"></A>
+<H3>wxGridEvent::Selecting</H3>
+<P>
+<B>bool</B> <B>Selecting</B>()<P>
+Returns true if the user deselected a cell, false if the user
+deselected a cell.<P>
+
+<HR>
+<A NAME="wxgrideventshiftdown"></A>
+<H3>wxGridEvent::ShiftDown</H3>
+<P>
+<B>bool</B> <B>ShiftDown</B>()<P>
+Returns true if the Shift key was down at the time of the event.<P>
+
+</FONT></BODY></HTML>

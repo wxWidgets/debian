@@ -1,42 +1,16 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        gtk/mdi.h
+// Name:        wx/gtk/mdi.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: mdi.h,v 1.41 2005/08/02 22:57:56 MW Exp $
+// Id:          $Id: mdi.h 42403 2006-10-25 17:51:28Z RR $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _WX_GTK_MDI_H_
+#define _WX_GTK_MDI_H_
 
-#ifndef __MDIH__
-#define __MDIH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
-
-#include "wx/defs.h"
-#include "wx/object.h"
-#include "wx/list.h"
-#include "wx/control.h"
-#include "wx/panel.h"
 #include "wx/frame.h"
-#include "wx/toolbar.h"
-
-//-----------------------------------------------------------------------------
-// classes
-//-----------------------------------------------------------------------------
-
-class WXDLLIMPEXP_CORE wxMDIParentFrame;
-class WXDLLIMPEXP_CORE wxMDIClientWindow;
-class WXDLLIMPEXP_CORE wxMDIChildFrame;
-
-//-----------------------------------------------------------------------------
-// global data
-//-----------------------------------------------------------------------------
-
-extern WXDLLIMPEXP_CORE const wxChar* wxFrameNameStr;
-extern WXDLLIMPEXP_CORE const wxChar* wxStatusLineNameStr;
 
 //-----------------------------------------------------------------------------
 // wxMDIParentFrame
@@ -59,7 +33,7 @@ public:
         (void)Create(parent, id, title, pos, size, style, name);
     }
 
-    ~wxMDIParentFrame();
+    virtual ~wxMDIParentFrame();
     bool Create( wxWindow *parent,
                  wxWindowID id,
                  const wxString& title,
@@ -84,13 +58,11 @@ public:
     wxMDIClientWindow  *m_clientWindow;
     bool                m_justInserted;
 
-    virtual void GtkOnSize( int x, int y, int width, int height );
+    virtual void GtkOnSize();
     virtual void OnInternalIdle();
 
 protected:
     void Init();
-
-    virtual void DoGetClientSize(int *width, int *height) const;
 
 private:
     friend class wxMDIChildFrame;
@@ -145,11 +117,11 @@ public:
 
     // no size hints
     virtual void DoSetSizeHints( int WXUNUSED(minW),
-                               int WXUNUSED(minH),
-                               int WXUNUSED(maxW) = -1,
-                               int WXUNUSED(maxH) = -1,
-                               int WXUNUSED(incW) = -1,
-                               int WXUNUSED(incH) = -1) {}
+                                 int WXUNUSED(minH),
+                                 int WXUNUSED(maxW) = wxDefaultCoord,
+                                 int WXUNUSED(maxH) = wxDefaultCoord,
+                                 int WXUNUSED(incW) = wxDefaultCoord,
+                                 int WXUNUSED(incH) = wxDefaultCoord) {}
 
 #if wxUSE_TOOLBAR
     // no toolbar
@@ -167,8 +139,7 @@ public:
         { wxTopLevelWindowBase::SetIcons(icons); }
 
     // no title
-    void SetTitle( const wxString &title );
-    wxString GetTitle() const { return m_title; }
+    virtual void SetTitle( const wxString &title );
 
     // no maximize etc
     virtual void Maximize( bool WXUNUSED(maximize) = true ) { }
@@ -178,6 +149,8 @@ public:
     virtual void Restore() {}
 
     virtual bool IsTopLevel() const { return false; }
+
+    virtual bool Destroy();
 
     void OnActivate( wxActivateEvent& event );
     void OnMenuHighlight( wxMenuEvent& event );
@@ -210,12 +183,11 @@ class WXDLLIMPEXP_CORE wxMDIClientWindow: public wxWindow
 public:
     wxMDIClientWindow();
     wxMDIClientWindow( wxMDIParentFrame *parent, long style = 0 );
-    ~wxMDIClientWindow();
+    virtual ~wxMDIClientWindow();
     virtual bool CreateClient( wxMDIParentFrame *parent, long style = wxVSCROLL | wxHSCROLL );
 
 private:
     DECLARE_DYNAMIC_CLASS(wxMDIClientWindow)
 };
 
-#endif // __MDIH__
-
+#endif // _WX_GTK_MDI_H_

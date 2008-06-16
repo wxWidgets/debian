@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     some time ago
-%% RCS-ID:      $Id: log.tex,v 1.32 2005/02/22 15:09:51 ABX Exp $
+%% RCS-ID:      $Id: log.tex 46579 2007-06-21 12:34:32Z JS $
 %% Copyright:   (c) 1997-2001 Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,7 +36,7 @@ No base class
 
 \latexignore{\rtfignore{\wxheading{Function groups}}}
 
-\membersection{Static functions}\label{staticlogfunctions}
+\membersection{Global functions}
 
 The functions in this section work with and manipulate the active log target.
 The \helpref{OnLog()}{wxlogonlog} is called by the {\it wxLogXXX()} functions
@@ -155,7 +155,9 @@ window on the corresponding error message. If you wish to enable it, please use
 \helpref{SetTimestamp}{wxlogsettimestamp}\\
 \helpref{GetTimestamp}{wxloggettimestamp}\\
 \helpref{SetTraceMask}{wxlogsettracemask}\\
-\helpref{GetTraceMask}{wxloggettracemask}
+\helpref{GetTraceMask}{wxloggettracemask}\\
+\helpref{SetRepetitionCounting}{wxlogsetrepetitioncounting}\\
+\helpref{GetRepetitionCounting}{wxloggetrepetitioncounting}
 
 %%%%% MEMBERS HERE %%%%%
 \helponly{\insertatlevel{2}{
@@ -215,7 +217,7 @@ Returns the pointer to the active log target (may be NULL).
 \func{static wxLog *}{SetActiveTarget}{\param{wxLog * }{ logtarget}}
 
 Sets the specified log target as the active one. Returns the pointer to the
-previous active log target (may be NULL).  To supress logging use a new
+previous active log target (may be NULL).  To suppress logging use a new
 instance of wxLogNull not NULL.  If the active log target is set to NULL a
 new default log target will be created when logging occurs.
 
@@ -322,6 +324,21 @@ and not sent to the active log target.
 
 Returns the current log level limit.
 
+\membersection{wxLog::SetRepetitionCounting}\label{wxlogsetrepetitioncounting}
+
+\func{static void}{SetRepetitionCounting}{\param{bool }{ repetCounting = true}}
+
+Enables logging mode in which a log message is logged once, and in case exactly
+the same message successively repeats one or more times, only the number of 
+repetitions is logged.
+
+\membersection{wxLog::GetRepetitionCounting}\label{wxloggetrepetitioncounting}
+
+\func{static bool}{GetRepetitionCounting}{\void}
+
+Returns whether the repetition counting mode is enabled.
+
+
 \membersection{wxLog::SetTimestamp}\label{wxlogsettimestamp}
 
 \func{void}{SetTimestamp}{\param{const char * }{ format}}
@@ -416,6 +433,13 @@ target but the log messages are also passed to the previous log target if any.
 \func{}{\destruct{wxLogChain}}{\void}
 
 Destroys the previous log target.
+
+\membersection{wxLogChain::DetachOldLog}\label{wxlogchaindetacholdlog}
+
+\func{void}{DetachOldLog}{\void}
+
+Detaches the old log target so it won't be destroyed when the wxLogChain object
+is destroyed.
 
 \membersection{wxLogChain::GetOldLog}\label{wxlogchaingetoldlog}
 
@@ -652,7 +676,7 @@ caller previously.
 
 \wxheading{See also}
 
-\helpref{wxLogTextCtrl}{wxlogtextctrl},\\
+\helpref{wxTextCtrl}{wxtextctrl},\\
 \helpref{wxStreamToTextRedirector}{wxstreamtotextredirector}
 
 \latexignore{\rtfignore{\wxheading{Members}}}

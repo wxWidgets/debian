@@ -1,0 +1,89 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTextEntryDialog</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtextentrydialog"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxtextdroptarget.html#wxtextdroptarget"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtextfile.html#wxtextfile"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTextEntryDialog</H2>
+<P>
+This class represents a dialog that requests a one-line text string from the user.
+It is implemented as a generic wxWidgets dialog.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/textdlg.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_commondialogsoverview.html#wxtextentrydialogoverview">wxTextEntryDialog overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxtextentrydialogctor">wxTextEntryDialog::wxTextEntryDialog</A><BR>
+<A HREF="#wxtextentrydialogdtor">wxTextEntryDialog::~wxTextEntryDialog</A><BR>
+<A HREF="#wxtextentrydialoggetvalue">wxTextEntryDialog::GetValue</A><BR>
+<A HREF="#wxtextentrydialogsetvalue">wxTextEntryDialog::SetValue</A><BR>
+<A HREF="#wxtextentrydialogshowmodal">wxTextEntryDialog::ShowModal</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtextentrydialogctor"></A>
+<H3>wxTextEntryDialog::wxTextEntryDialog</H3>
+<P>
+<B></B> <B>wxTextEntryDialog</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption = "Please enter text"</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>defaultValue = ""</I>, <B>long </B><I>style = wxOK |  wxCANCEL |  wxCENTRE</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>)<P>
+Constructor. Use <A HREF="wx_wxtextentrydialog.html#wxtextentrydialogshowmodal">wxTextEntryDialog::ShowModal</A> to show the dialog.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window.</UL></UL>
+<P>
+<I>message</I><UL><UL>
+Message to show on the dialog.</UL></UL>
+<P>
+<I>defaultValue</I><UL><UL>
+The default value, which may be the empty string.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+A dialog style, specifying the buttons (wxOK, wxCANCEL)
+and an optional wxCENTRE style. Additionally, wxTextCtrl styles (such as
+<B>wxTE_PASSWORD</B>) may be specified here.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Dialog position.</UL></UL>
+<P>
+
+<HR>
+<A NAME="wxtextentrydialogdtor"></A>
+<H3>wxTextEntryDialog::~wxTextEntryDialog</H3>
+<P>
+<B></B> <B>~wxTextEntryDialog</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxtextentrydialoggetvalue"></A>
+<H3>wxTextEntryDialog::GetValue</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetValue</B>() <B>const</B><P>
+Returns the text that the user has entered if the user has pressed OK, or the original value
+if the user has pressed Cancel.<P>
+
+<HR>
+<A NAME="wxtextentrydialogsetvalue"></A>
+<H3>wxTextEntryDialog::SetValue</H3>
+<P>
+<B>void</B> <B>SetValue</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>value</I>)<P>
+Sets the default text value.<P>
+
+<HR>
+<A NAME="wxtextentrydialogshowmodal"></A>
+<H3>wxTextEntryDialog::ShowModal</H3>
+<P>
+<B>int</B> <B>ShowModal</B>()<P>
+Shows the dialog, returning wxID_OK if the user pressed OK, and wxID_CANCEL
+otherwise.<P>
+
+
+</FONT></BODY></HTML>

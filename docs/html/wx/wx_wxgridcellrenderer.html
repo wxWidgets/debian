@@ -1,0 +1,55 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxGridCellRenderer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxgridcellrenderer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxgridcellnumberrenderer.html#wxgridcellnumberrenderer"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxgridcellstringrenderer.html#wxgridcellstringrenderer"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxGridCellRenderer</H2>
+<P>
+This class is responsible for actually drawing the cell
+in the grid. You may pass it to the wxGridCellAttr (below) to change the
+format of one given cell or to wxGrid::SetDefaultRenderer() to change the
+view of all cells. This is an abstract class, and you will normally use one of the
+predefined derived classes or derive your own class from it.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxGridCellWorker<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxgridcellstringrenderer.html#wxgridcellstringrenderer">wxGridCellStringRenderer</A>,
+<A HREF="wx_wxgridcellnumberrenderer.html#wxgridcellnumberrenderer">wxGridCellNumberRenderer</A>,
+<A HREF="wx_wxgridcellfloatrenderer.html#wxgridcellfloatrenderer">wxGridCellFloatRenderer</A>,
+<A HREF="wx_wxgridcellboolrenderer.html#wxgridcellboolrenderer">wxGridCellBoolRenderer</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/grid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxgridcellrendererdraw">wxGridCellRenderer::Draw</A><BR>
+<A HREF="#wxgridcellrenderergetbestsize">wxGridCellRenderer::GetBestSize</A><BR>
+<A HREF="#wxgridcellrendererclone">wxGridCellRenderer::Clone</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgridcellrendererdraw"></A>
+<H3>wxGridCellRenderer::Draw</H3>
+<P>
+<B>void</B> <B>Draw</B>(<B><A HREF="wx_wxgrid.html#wxgrid">wxGrid</A>& </B></B><I>grid</I>, <B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>& </B></B><I>attr</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>row</I>, <B>int </B><I>col</I>, <B>bool </B><I>isSelected</I>)<P>
+Draw the given cell on the provided DC inside the given rectangle
+using the style specified by the attribute and the default or selected
+state corresponding to the isSelected value.<P>
+This pure virtual function has a default implementation which will
+prepare the DC using the given attribute: it will draw the rectangle
+with the background colour from attr and set the text colour and font.<P>
+
+<HR>
+<A NAME="wxgridcellrenderergetbestsize"></A>
+<H3>wxGridCellRenderer::GetBestSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetBestSize</B>(<B><A HREF="wx_wxgrid.html#wxgrid">wxGrid</A>& </B></B><I>grid</I>, <B><A HREF="wx_wxgridcellattr.html#wxgridcellattr">wxGridCellAttr</A>& </B></B><I>attr</I>, <B><A HREF="wx_wxdc.html#wxdc">wxDC</A>& </B></B><I>dc</I>, <B>int </B><I>row</I>, <B>int </B><I>col</I>)<P>
+Get the preferred size of the cell for its contents.<P>
+
+<HR>
+<A NAME="wxgridcellrendererclone"></A>
+<H3>wxGridCellRenderer::Clone</H3>
+<P>
+<B><A HREF="wx_wxgridcellrenderer.html#wxgridcellrenderer">wxGridCellRenderer</A>*</B> </B> <B>Clone</B>() <B>const</B><P>
+
+</FONT></BODY></HTML>

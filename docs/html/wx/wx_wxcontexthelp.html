@@ -1,0 +1,78 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxContextHelp</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcontexthelp"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxcontextmenuevent.html#wxcontextmenuevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcontexthelpbutton.html#wxcontexthelpbutton"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxContextHelp</H2>
+<P>
+This class changes the cursor to a query and puts the application into a 'context-sensitive help mode'.
+When the user left-clicks on a window within the specified window, a wxEVT_HELP event is
+sent to that control, and the application may respond to it by popping up some help.<P>
+For example:<P>
+<PRE>
+  wxContextHelp contextHelp(myWindow);
+</PRE>
+There are a couple of ways to invoke this behaviour implicitly:<P>
+<UL>
+
+<LI> Use the wxDIALOG_EX_CONTEXTHELP style for a dialog (Windows only). This will put a question mark
+in the titlebar, and Windows will put the application into context-sensitive help mode automatically,
+with further programming.
+<LI> Create a <A HREF="wx_wxcontexthelpbutton.html#wxcontexthelpbutton">wxContextHelpButton</A>, whose predefined behaviour is to create a context help object.
+Normally you will write your application so that this button is only added to a dialog for non-Windows platforms
+(use wxDIALOG_EX_CONTEXTHELP on Windows).
+</UL>
+<P>
+Note that on Mac OS X, the cursor does not change when in context-sensitive
+help mode.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/cshelp.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxhelpevent.html#wxhelpevent">wxHelpEvent</A>, 
+<A HREF="wx_wxhelpcontroller.html#wxhelpcontroller">wxHelpController</A>, 
+<A HREF="wx_wxcontexthelpbutton.html#wxcontexthelpbutton">wxContextHelpButton</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxcontexthelpctor">wxContextHelp::wxContextHelp</A><BR>
+<A HREF="#wxcontexthelpdtor">wxContextHelp::~wxContextHelp</A><BR>
+<A HREF="#wxcontexthelpbegincontexthelp">wxContextHelp::BeginContextHelp</A><BR>
+<A HREF="#wxcontexthelpendcontexthelp">wxContextHelp::EndContextHelp</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcontexthelpctor"></A>
+<H3>wxContextHelp::wxContextHelp</H3>
+<P>
+<B></B> <B>wxContextHelp</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> window = NULL</I>, <B>bool</B><I> doNow = true</I>)<P>
+Constructs a context help object, calling <A HREF="wx_wxcontexthelp.html#wxcontexthelpbegincontexthelp">BeginContextHelp</A> if
+<I>doNow</I> is true (the default).<P>
+If <I>window</I> is NULL, the top window is used.<P>
+
+<HR>
+<A NAME="wxcontexthelpdtor"></A>
+<H3>wxContextHelp::~wxContextHelp</H3>
+<P>
+<B></B> <B>~wxContextHelp</B>()<P>
+Destroys the context help object.<P>
+
+<HR>
+<A NAME="wxcontexthelpbegincontexthelp"></A>
+<H3>wxContextHelp::BeginContextHelp</H3>
+<P>
+<B>bool</B> <B>BeginContextHelp</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> window = NULL</I>)<P>
+Puts the application into context-sensitive help mode. <I>window</I> is the window
+which will be used to catch events; if NULL, the top window will be used.<P>
+Returns true if the application was successfully put into context-sensitive help mode.
+This function only returns when the event loop has finished.<P>
+
+<HR>
+<A NAME="wxcontexthelpendcontexthelp"></A>
+<H3>wxContextHelp::EndContextHelp</H3>
+<P>
+<B>bool</B> <B>EndContextHelp</B>()<P>
+Ends context-sensitive help mode. Not normally called by the application.<P>
+
+</FONT></BODY></HTML>

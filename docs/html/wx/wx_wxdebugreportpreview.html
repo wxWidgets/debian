@@ -1,0 +1,57 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDebugReportPreview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdebugreportpreview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdebugreportcompress.html#wxdebugreportcompress"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdebugreportpreviewstd.html#wxdebugreportpreviewstd"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDebugReportPreview</H2>
+<P>
+This class presents the debug report to the user and allows him to veto report
+entirely or remove some parts of it. Although not mandatory, using this class
+is strongly recommended as data included in the debug report might contain
+sensitive private information and the user should be notified about it as well
+as having a possibility to examine the data which had been gathered to check
+whether this is effectively the case and discard the debug report if it is.<P>
+wxDebugReportPreview is an abstract base class, currently the only concrete
+class deriving from it is 
+<A HREF="wx_wxdebugreportpreviewstd.html#wxdebugreportpreviewstd">wxDebugReportPreviewStd</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/debugrpt.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxdebugreportpreviewwxdebugreportpreview">wxDebugReportPreview::wxDebugReportPreview</A><BR>
+<A HREF="#wxdebugreportpreviewdtor">wxDebugReportPreview::~wxDebugReportPreview</A><BR>
+<A HREF="#wxdebugreportpreviewshow">wxDebugReportPreview::Show</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdebugreportpreviewwxdebugreportpreview"></A>
+<H3>wxDebugReportPreview::wxDebugReportPreview</H3>
+<P>
+<B></B> <B>wxDebugReportPreview</B>()<P>
+Trivial default constructor.<P>
+
+
+<HR>
+<A NAME="wxdebugreportpreviewdtor"></A>
+<H3>wxDebugReportPreview::~wxDebugReportPreview</H3>
+<P>
+<B></B> <B>~wxDebugReportPreview</B>()<P>
+dtor is trivial as well but should be virtual for a base class<P>
+
+
+<HR>
+<A NAME="wxdebugreportpreviewshow"></A>
+<H3>wxDebugReportPreview::Show</H3>
+<P>
+<B>bool</B> <B>Show</B>(<B><A HREF="wx_wxdebugreport.html#wxdebugreport">wxDebugReport</A>& </B></B><I>dbgrpt</I>) <B>const</B><P>
+Present the report to the user and allow him to modify it by removing some or
+all of the files and, potentially, adding some notes. Return <TT>true</TT> if the
+report should be processed or <TT>false</TT> if the user chose to cancel report
+generation or removed all files from it.<P>
+
+</FONT></BODY></HTML>

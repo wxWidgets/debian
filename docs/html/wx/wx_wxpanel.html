@@ -1,0 +1,156 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPanel</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxpanel"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpalette.html#wxpalette"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpasswordentrydialog.html#wxpasswordentrydialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPanel</H2>
+<P>
+A panel is a window on which controls are placed. It is usually placed within a frame.
+It contains minimal extra functionality over and above its parent class wxWindow; its main
+purpose is to be similar in appearance and functionality to a dialog, but with the flexibility of
+having any window as a parent.<P>
+<I>Note:</I> if not all characters are being intercepted by your OnKeyDown or OnChar handler,
+it may be because you are using the wxTAB_TRAVERSAL style, which grabs some keypresses for use
+by child controls.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/panel.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+There are no specific styles for this window.<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+By default, a panel has the same colouring as a dialog.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialog.html#wxdialog">wxDialog</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxpanelctor">wxPanel::wxPanel</A><BR>
+<A HREF="#wxpaneldtor">wxPanel::~wxPanel</A><BR>
+<A HREF="#wxpanelcreate">wxPanel::Create</A><BR>
+<A HREF="#wxpanelinitdialog">wxPanel::InitDialog</A><BR>
+<A HREF="#wxpanelonsyscolourchanged">wxPanel::OnSysColourChanged</A><BR>
+<A HREF="#wxpanelsetfocus">wxPanel::SetFocus</A><BR>
+<A HREF="#wxpanelsetfocusignoringchildren">wxPanel::SetFocusIgnoringChildren</A><BR>
+<P>
+
+<HR>
+<A NAME="wxpanelctor"></A>
+<H3>wxPanel::wxPanel</H3>
+<P>
+<B></B> <B>wxPanel</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxPanel</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = <TT>wxID_ANY</TT></I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxTAB_TRAVERSAL</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "panel"</I>)<P>
+Constructor.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The parent window.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+An identifier for the panel. A value of -1 is taken to mean a default.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+The panel position. A value of (-1, -1) indicates a default position, chosen by
+either the windowing system or wxWidgets, depending on platform.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+The panel size. A value of (-1, -1) indicates a default size, chosen by
+either the windowing system or wxWidgets, depending on platform.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+The window style. See <A HREF="wx_wxpanel.html#wxpanel">wxPanel</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Used to associate a name with the window,
+allowing the application user to set Motif resource values for
+individual dialog boxes.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxpanel.html#wxpanelcreate">wxPanel::Create</A><P>
+
+<HR>
+<A NAME="wxpaneldtor"></A>
+<H3>wxPanel::~wxPanel</H3>
+<P>
+<B></B> <B>~wxPanel</B>()<P>
+Destructor. Deletes any child windows before deleting the physical window.<P>
+
+<HR>
+<A NAME="wxpanelcreate"></A>
+<H3>wxPanel::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID </B><I>id = <TT>wxID_ANY</TT></I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,
+<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = wxTAB_TRAVERSAL</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "panel"</I>)<P>
+Used for two-step panel construction. See <A HREF="wx_wxpanel.html#wxpanelctor">wxPanel::wxPanel</A>
+for details.<P>
+
+<HR>
+<A NAME="wxpanelinitdialog"></A>
+<H3>wxPanel::InitDialog</H3>
+<P>
+<B>void</B> <B>InitDialog</B>()<P>
+Sends a <A HREF="wx_wxinitdialogevent.html#wxinitdialogevent">wxInitDialogEvent</A>, which
+in turn transfers data to the dialog via validators.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxinitdialogevent.html#wxinitdialogevent">wxInitDialogEvent</A><P>
+
+<HR>
+<A NAME="wxpanelonsyscolourchanged"></A>
+<H3>wxPanel::OnSysColourChanged</H3>
+<P>
+<B>void</B> <B>OnSysColourChanged</B>(<B><A HREF="wx_wxsyscolourchangedevent.html#wxsyscolourchangedevent">wxSysColourChangedEvent</A>& </B></B><I>event</I>)<P>
+The default handler for wxEVT_SYS_COLOUR_CHANGED.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>event</I><UL><UL>
+The colour change event.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+Changes the panel's colour to conform to the current settings (Windows only).
+Add an event table entry for your panel class if you wish the behaviour
+to be different (such as keeping a user-defined
+background colour). If you do override this function, call wxEvent::Skip to
+propagate the notification to child windows and controls.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsyscolourchangedevent.html#wxsyscolourchangedevent">wxSysColourChangedEvent</A><P>
+
+
+<HR>
+<A NAME="wxpanelsetfocus"></A>
+<H3>wxPanel::SetFocus</H3>
+<P>
+<B>virtual void</B> <B>SetFocus</B>()<P>
+Overrides <A HREF="wx_wxwindow.html#wxwindowsetfocus">wxWindow::SetFocus</A>. This method
+uses the (undocumented) mix-in class wxControlContainer which manages
+the focus and TAB logic for controls which usually have child controls.
+In practice, if you call this method and the control has at least
+one child window, the focus will be given to the child window.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfocusevent.html#wxfocusevent">wxFocusEvent</A>
+<A HREF="wx_wxwindow.html#wxwindowsetfocus">wxWindow::SetFocus</A><P>
+
+
+<HR>
+<A NAME="wxpanelsetfocusignoringchildren"></A>
+<H3>wxPanel::SetFocusIgnoringChildren</H3>
+<P>
+<B>virtual void</B> <B>SetFocusIgnoringChildren</B>()<P>
+In contrast to <A HREF="wx_wxpanel.html#wxpanelsetfocus">wxPanel::SetFocus</A> (see above)
+this will set the focus to the panel even of there are child windows
+in the panel. This is only rarely needed.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfocusevent.html#wxfocusevent">wxFocusEvent</A>
+<A HREF="wx_wxpanel.html#wxpanelsetfocus">wxPanel::SetFocus</A><P>
+
+</FONT></BODY></HTML>

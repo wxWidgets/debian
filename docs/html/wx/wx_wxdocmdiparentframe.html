@@ -1,0 +1,85 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDocMDIParentFrame</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdocmdiparentframe"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdocmdichildframe.html#wxdocmdichildframe"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdocparentframe.html#wxdocparentframe"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDocMDIParentFrame</H2>
+<P>
+The wxDocMDIParentFrame class provides a default top-level frame for
+applications using the document/view framework. This class can only be used for MDI parent frames.<P>
+It cooperates with the <A HREF="wx_wxview.html#wxview">wxView</A>, <A HREF="wx_wxdocument.html#wxdocument">wxDocument</A>,
+<A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A> and <A HREF="wx_wxdoctemplate.html#wxdoctemplate">wxDocTemplates</A> classes.<P>
+See the example application in <TT>samples/docview</TT>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A><BR>
+
+<A HREF="wx_wxframe.html#wxframe">wxFrame</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/docmdi.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_docviewoverview.html#docviewoverview">Document/view overview</A>, <A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdocmdiparentframector">wxDocMDIParentFrame::wxDocMDIParentFrame</A><BR>
+<A HREF="#wxdocmdiparentframedtor">wxDocMDIParentFrame::~wxDocMDIParentFrame</A><BR>
+<A HREF="#wxdocmdiparentframecreate">wxDocMDIParentFrame::Create</A><BR>
+<A HREF="#wxdocmdiparentframeonclosewindow">wxDocMDIParentFrame::OnCloseWindow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdocmdiparentframector"></A>
+<H3>wxDocMDIParentFrame::wxDocMDIParentFrame</H3>
+<P>
+<B></B> <B>wxDocMDIParentFrame</B>()<P>
+<B></B> <B>wxDocMDIParentFrame</B>(<B><A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A>*</B></B><I> manager</I>, <B><A HREF="wx_wxframe.html#wxframe">wxFrame</A> *</B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>,
+ <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+ <B>long</B><I> style = wxDEFAULT_FRAME_STYLE</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "frame"</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxdocmdiparentframedtor"></A>
+<H3>wxDocMDIParentFrame::~wxDocMDIParentFrame</H3>
+<P>
+<B></B> <B>~wxDocMDIParentFrame</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdocmdiparentframecreate"></A>
+<H3>wxDocMDIParentFrame::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A>*</B></B><I> manager</I>, <B><A HREF="wx_wxframe.html#wxframe">wxFrame</A> *</B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>,
+ <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+ <B>long</B><I> style = wxDEFAULT_FRAME_STYLE</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "frame"</I>)<P>
+Creates the window.<P>
+
+<HR>
+<A NAME="wxdocmdiparentframeonclosewindow"></A>
+<H3>wxDocMDIParentFrame::OnCloseWindow</H3>
+<P>
+<B>void</B> <B>OnCloseWindow</B>(<B><A HREF="wx_wxcloseevent.html#wxcloseevent">wxCloseEvent</A>&</B></B><I> event</I>)<P>
+Deletes all views and documents. If no user input cancelled the
+operation, the frame will be destroyed and the application will exit.<P>
+Since understanding how document/view clean-up takes place can be difficult,
+the implementation of this function is shown below.<P>
+<PRE>
+void wxDocParentFrame::OnCloseWindow(wxCloseEvent& event)
+{
+  if (m_docManager-&gt;Clear(!event.CanVeto()))
+  {
+    this-&gt;Destroy();
+  }
+  else
+    event.Veto();
+}
+</PRE>
+
+</FONT></BODY></HTML>

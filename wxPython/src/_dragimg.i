@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _dragimg.i,v 1.6 2004/12/23 20:43:53 RD Exp $
+// RCS-ID:      $Id: _dragimg.i 40964 2006-09-02 19:46:44Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -95,6 +95,8 @@ public:
 
     // Erase and redraw simultaneously if possible
     virtual bool RedrawImage(const wxPoint& oldPos, const wxPoint& newPos, bool eraseOld, bool drawNew);
+
+    %property(ImageRect, GetImageRect, doc="See `GetImageRect`");
 };
 
 

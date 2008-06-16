@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        gtk/evtloop.cpp
+// Name:        src/gtk/evtloop.cpp
 // Purpose:     implements wxEventLoop for GTK+
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.07.01
-// RCS-ID:      $Id: evtloop.cpp,v 1.11 2004/11/12 21:44:26 VS Exp $
+// RCS-ID:      $Id: evtloop.cpp 43879 2006-12-09 17:46:20Z PC $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "evtloop.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -29,7 +25,10 @@
 #endif
 
 #include "wx/evtloop.h"
-#include "wx/app.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/app.h"
+#endif // WX_PRECOMP
 
 #include <gtk/gtk.h>
 
@@ -60,8 +59,6 @@ private:
 // wxEventLoop running and exiting
 // ----------------------------------------------------------------------------
 
-wxEventLoop *wxEventLoopBase::ms_activeLoop = NULL;
-
 wxEventLoop::~wxEventLoop()
 {
     wxASSERT_MSG( !m_impl, _T("should have been deleted in Run()") );
@@ -72,18 +69,17 @@ int wxEventLoop::Run()
     // event loops are not recursive, you need to create another loop!
     wxCHECK_MSG( !IsRunning(), -1, _T("can't reenter a message loop") );
 
-    wxEventLoop *oldLoop = ms_activeLoop;
-    ms_activeLoop = this;
+    wxEventLoopActivator activate(this);
 
     m_impl = new wxEventLoopImpl;
 
     gtk_main();
 
+    OnExit();
+
     int exitcode = m_impl->GetExitCode();
     delete m_impl;
     m_impl = NULL;
-
-    ms_activeLoop = oldLoop;
 
     return exitcode;
 }
@@ -107,7 +103,7 @@ bool wxEventLoop::Pending() const
     {
         // We need to remove idle callbacks or gtk_events_pending will
         // never return false.
-        wxTheApp->RemoveIdleTag();
+        wxTheApp->SuspendIdleCallback();
     }
 
     return gtk_events_pending();
@@ -115,10 +111,9 @@ bool wxEventLoop::Pending() const
 
 bool wxEventLoop::Dispatch()
 {
-    wxCHECK_MSG( IsRunning(), FALSE, _T("can't call Dispatch() if not running") );
+    wxCHECK_MSG( IsRunning(), false, _T("can't call Dispatch() if not running") );
 
     gtk_main_iteration();
 
-    return TRUE;
+    return true;
 }
-

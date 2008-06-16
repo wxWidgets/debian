@@ -12,10 +12,6 @@
 #ifndef _WX_GENERIC_FDREPDLG_H_
 #define _WX_GENERIC_FDREPDLG_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "genericfdrepdlg.h"
-#endif
-
 class WXDLLEXPORT wxCheckBox;
 class WXDLLEXPORT wxRadioBox;
 class WXDLLEXPORT wxTextCtrl;

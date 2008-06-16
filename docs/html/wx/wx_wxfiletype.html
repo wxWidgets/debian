@@ -1,0 +1,272 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFileType</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfiletype"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfilesystemhandler.html#wxfilesystemhandler"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfilterclassfactory.html#wxfilterclassfactory"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFileType</H2>
+<P>
+This class holds information about a given <I>file type</I>. File type is the same as
+MIME type under Unix, but under Windows it corresponds more to an extension than
+to MIME type (in fact, several extensions may correspond to a file type). This
+object may be created in several different ways: the program might know the file
+extension and wish to find out the corresponding MIME type or, conversely, it
+might want to find the right extension for the file to which it writes the
+contents of given MIME type. Depending on how it was created some fields may be
+unknown so the return value of all the accessors <B>must</B> be checked: <TT>false</TT>
+will be returned if the corresponding information couldn't be found.<P>
+The objects of this class are never created by the application code but are
+returned by <A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagergetfiletypefrommimetype">wxMimeTypesManager::GetFileTypeFromMimeType</A> and 
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagergetfiletypefromextension">wxMimeTypesManager::GetFileTypeFromExtension</A> methods.
+But it is your responsibility to delete the returned pointer when you're done
+with it!<P>
+A brief reminder about what the MIME types are (see the RFC 1341 for more
+information): basically, it is just a pair category/type (for example,
+"text/plain") where the category is a basic indication of what a file is.
+Examples of categories are "application", "image", "text", "binary", and
+type is a precise definition of the document format: "plain" in the example
+above means just ASCII text without any formatting, while "text/html" is the
+HTML document source.<P>
+A MIME type may have one or more associated extensions: "text/plain" will
+typically correspond to the extension ".txt", but may as well be associated with
+".ini" or ".conf".<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+None<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/mimetype.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanager">wxMimeTypesManager</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfiletypemessageparameters">MessageParameters class</A><BR>
+<A HREF="#wxfiletypewxfiletype">wxFileType::wxFileType</A><BR>
+<A HREF="#wxfiletypedtor">wxFileType::~wxFileType</A><BR>
+<A HREF="#wxfiletypegetmimetype">wxFileType::GetMimeType</A><BR>
+<A HREF="#wxfiletypegetmimetypes">wxFileType::GetMimeTypes</A><BR>
+<A HREF="#wxfiletypegetextensions">wxFileType::GetExtensions</A><BR>
+<A HREF="#wxfiletypegeticon">wxFileType::GetIcon</A><BR>
+<A HREF="#wxfiletypegetdescription">wxFileType::GetDescription</A><BR>
+<A HREF="#wxfiletypegetopencommand">wxFileType::GetOpenCommand</A><BR>
+<A HREF="#wxfiletypegetprintcommand">wxFileType::GetPrintCommand</A><BR>
+<A HREF="#wxfiletypeexpandcommand">wxFileType::ExpandCommand</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfiletypemessageparameters"></A>
+<H3>MessageParameters class</H3>
+<P>
+One of the most common usages of MIME is to encode an e-mail message. The MIME
+type of the encoded message is an example of a <I>message parameter</I>. These
+parameters are found in the message headers ("Content-XXX"). At the very least,
+they must specify the MIME type and the version of MIME used, but almost always
+they provide additional information about the message such as the original file
+name or the charset (for the text documents).<P>
+These parameters may be useful to the program used to open, edit, view or print
+the message, so, for example, an e-mail client program will have to pass them to
+this program. Because wxFileType itself can not know about these parameters,
+it uses MessageParameters class to query them. The default implementation only
+requires the caller to provide the file name (always used by the program to be
+called - it must know which file to open) and the MIME type and supposes that
+there are no other parameters. If you wish to supply additional parameters, you
+must derive your own class from MessageParameters and override GetParamValue()
+function, for example:<P>
+<PRE>
+// provide the message parameters for the MIME type manager
+class MailMessageParameters : public wxFileType::MessageParameters
+{
+public:
+   MailMessageParameters(const wxString& filename,
+                         const wxString& mimetype)
+      : wxFileType::MessageParameters(filename, mimetype)
+   {
+   }
+
+   virtual wxString GetParamValue(const wxString& name) const
+   {
+       // parameter names are not case-sensitive
+       if ( name.CmpNoCase("charset") == 0 )
+           return "US-ASCII";
+       else
+           return wxFileType::MessageParameters::GetParamValue(name);
+   }
+};
+</PRE>
+Now you only need to create an object of this class and pass it to, for example,
+<A HREF="wx_wxfiletype.html#wxfiletypegetopencommand">GetOpenCommand</A> like this:<P>
+<PRE>
+wxString command;
+if ( filetype-&gt;GetOpenCommand(&command,
+                              MailMessageParameters("foo.txt", "text/plain")) )
+{
+    // the full command for opening the text documents is in 'command'
+    // (it might be "notepad foo.txt" under Windows or "cat foo.txt" under Unix)
+}
+else
+{
+    // we don't know how to handle such files...
+}
+</PRE>
+<B>Windows:</B> As only the file name is used by the program associated with the
+given extension anyhow (but no other message parameters), there is no need to
+ever derive from MessageParameters class for a Windows-only program.<P>
+
+<HR>
+<A NAME="wxfiletypewxfiletype"></A>
+<H3>wxFileType::wxFileType</H3>
+<P>
+<B></B> <B>wxFileType</B>()<P>
+The default constructor is private because you should never create objects of
+this type: they are only returned by <A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanager">wxMimeTypesManager</A> methods.<P>
+
+<HR>
+<A NAME="wxfiletypedtor"></A>
+<H3>wxFileType::~wxFileType</H3>
+<P>
+<B></B> <B>~wxFileType</B>()<P>
+The destructor of this class is not virtual, so it should not be derived from.<P>
+
+<HR>
+<A NAME="wxfiletypegetmimetype"></A>
+<H3>wxFileType::GetMimeType</H3>
+<P>
+<B>bool</B> <B>GetMimeType</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>*</B></B><I> mimeType</I>)<P>
+If the function returns <TT>true</TT>, the string pointed to by <I>mimeType</I> is filled
+with full MIME type specification for this file type: for example, "text/plain".<P>
+
+<HR>
+<A NAME="wxfiletypegetmimetypes"></A>
+<H3>wxFileType::GetMimeTypes</H3>
+<P>
+<B>bool</B> <B>GetMimeType</B>(<B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B></B><I> mimeTypes</I>)<P>
+Same as <A HREF="wx_wxfiletype.html#wxfiletypegetmimetype">GetMimeType</A> but returns array of MIME
+types. This array will contain only one item in most cases but sometimes,
+notably under Unix with KDE, may contain more MIME types. This happens when
+one file extension is mapped to different MIME types by KDE, mailcap and
+mime.types.<P>
+
+<HR>
+<A NAME="wxfiletypegetextensions"></A>
+<H3>wxFileType::GetExtensions</H3>
+<P>
+<B>bool</B> <B>GetExtensions</B>(<B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B></B><I> extensions</I>)<P>
+If the function returns <TT>true</TT>, the array <I>extensions</I> is filled
+with all extensions associated with this file type: for example, it may
+contain the following two elements for the MIME type "text/html" (notice the
+absence of the leading dot): "html" and "htm".<P>
+<B>Windows:</B> This function is currently not implemented: there is no
+(efficient) way to retrieve associated extensions from the given MIME type on
+this platform, so it will only return <TT>true</TT> if the wxFileType object was created
+by <A HREF="wx_wxmimetypesmanager.html#wxmimetypesmanagergetfiletypefromextension">GetFileTypeFromExtension</A> 
+function in the first place.<P>
+
+<HR>
+<A NAME="wxfiletypegeticon"></A>
+<H3>wxFileType::GetIcon</H3>
+<P>
+<B>bool</B> <B>GetIcon</B>(<B><A HREF="wx_wxiconlocation.html#wxiconlocation">wxIconLocation</A> *</B></B><I> iconLoc</I>)<P>
+If the function returns <TT>true</TT>, the <TT>iconLoc</TT> is filled with the
+location of the icon for this MIME type. A <A HREF="wx_wxicon.html#wxicon">wxIcon</A> may be
+created from <I>iconLoc</I> later.<P>
+<B>Windows:</B> The function returns the icon shown by Explorer for the files of
+the specified type.<P>
+<B>Mac:</B> This function is not implemented and always returns <TT>false</TT>.<P>
+<B>Unix:</B> MIME manager gathers information about icons from GNOME
+and KDE settings and thus GetIcon's success depends on availability
+of these desktop environments.<P>
+
+<HR>
+<A NAME="wxfiletypegetdescription"></A>
+<H3>wxFileType::GetDescription</H3>
+<P>
+<B>bool</B> <B>GetDescription</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>*</B></B><I> desc</I>)<P>
+If the function returns <TT>true</TT>, the string pointed to by <I>desc</I> is filled
+with a brief description for this file type: for example, "text document" for
+the "text/plain" MIME type.<P>
+
+<HR>
+<A NAME="wxfiletypegetopencommand"></A>
+<H3>wxFileType::GetOpenCommand</H3>
+<P>
+<B>bool</B> <B>GetOpenCommand</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>*</B></B><I> command</I>, <B>MessageParameters&amp;</B><I> params</I>)<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetOpenCommand</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> filename</I>)<P>
+With the first version of this method, if the <TT>true</TT> is returned, the
+string pointed to by <I>command</I> is filled with the command which must be
+executed (see <A HREF="wx_processfunctions.html#wxexecute">wxExecute</A>) in order to open the file of the
+given type. In this case, the name of the file as well as any other parameters
+is retrieved from <A HREF="wx_wxfiletype.html#wxfiletypemessageparameters">MessageParameters</A> 
+class.<P>
+In the second case, only the filename is specified and the command to be used
+to open this kind of file is returned directly. An empty string is returned to
+indicate that an error occurred (typically meaning that there is no standard way
+to open this kind of files).<P>
+
+<HR>
+<A NAME="wxfiletypegetprintcommand"></A>
+<H3>wxFileType::GetPrintCommand</H3>
+<P>
+<B>bool</B> <B>GetPrintCommand</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>*</B></B><I> command</I>,<B>MessageParameters&amp;</B><I> params</I>)<P>
+If the function returns <TT>true</TT>, the string pointed to by <I>command</I> is filled
+with the command which must be executed (see <A HREF="wx_processfunctions.html#wxexecute">wxExecute</A>) in
+order to print the file of the given type. The name of the file is
+retrieved from <A HREF="wx_wxfiletype.html#wxfiletypemessageparameters">MessageParameters</A> class.<P>
+
+<HR>
+<A NAME="wxfiletypeexpandcommand"></A>
+<H3>wxFileType::ExpandCommand</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>ExpandCommand</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> command</I>, <B>MessageParameters&amp;</B><I> params</I>)<P>
+This function is primarily intended for GetOpenCommand and GetPrintCommand
+usage but may be also used by the application directly if, for example, you want
+to use some non-default command to open the file.<P>
+The function replaces all occurrences of<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+format specification
+</FONT></TD>
+
+<TD VALIGN=TOP>
+with
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+%s
+</FONT></TD>
+
+<TD VALIGN=TOP>
+the full file name
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+%t
+</FONT></TD>
+
+<TD VALIGN=TOP>
+the MIME type
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+%{param}
+</FONT></TD>
+
+<TD VALIGN=TOP>
+the value of the parameter <I>param</I>
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+using the MessageParameters object you pass to it.<P>
+If there is no '%s' in the command string (and the string is not empty), it is
+assumed that the command reads the data on stdin and so the effect is the same
+as "&lt; %s" were appended to the string.<P>
+Unlike all other functions of this class, there is no error return for this
+function.<P>
+
+</FONT></BODY></HTML>

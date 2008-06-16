@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _listctrl.i,v 1.22.2.7 2006/03/10 21:37:10 RD Exp $
+// RCS-ID:      $Id: _listctrl.i 49160 2007-10-15 20:02:03Z RD $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -84,6 +84,9 @@ enum {
     wxLIST_HITTEST_TOLEFT,
     wxLIST_HITTEST_TORIGHT,
     wxLIST_HITTEST_ONITEM,
+
+// GetSubItemRect constants
+    wxLIST_GETSUBITEMRECT_WHOLEITEM,
 };
 
 
@@ -153,7 +156,7 @@ public:
     wxListItemAttr(const wxColour& colText = wxNullColour,
                    const wxColour& colBack = wxNullColour,
                    const wxFont& font = wxNullFont);
-
+    ~wxListItemAttr();
 
     // setters
     void SetTextColour(const wxColour& colText);
@@ -169,7 +172,14 @@ public:
     wxColour GetBackgroundColour();
     wxFont GetFont();
 
+    void AssignFrom(const wxListItemAttr& source);
+
+    %pythonPrepend Destroy "args[0].this.own(False)"
     %extend { void Destroy() { delete self; } }
+
+    %property(BackgroundColour, GetBackgroundColour, SetBackgroundColour, doc="See `GetBackgroundColour` and `SetBackgroundColour`");
+    %property(Font, GetFont, SetFont, doc="See `GetFont` and `SetFont`");
+    %property(TextColour, GetTextColour, SetTextColour, doc="See `GetTextColour` and `SetTextColour`");
 };
 
 
@@ -182,8 +192,14 @@ public:
 // wxListItem: the item or column info, used to exchange data with wxListCtrl
 class wxListItem : public wxObject {
 public:
+    // turn off this typemap
+    %typemap(out) wxListItem*;
+
     wxListItem();
     ~wxListItem();
+
+    // Turn it back on again
+    %typemap(out) wxListItem* { $result = wxPyMake_wxObject($1, $owner); }
 
     // resetting
     void Clear();
@@ -239,6 +255,19 @@ public:
     int             m_format;   // left, right, centre
     int             m_width;    // width of column
 
+    %property(Align, GetAlign, SetAlign, doc="See `GetAlign` and `SetAlign`");
+    %property(Attributes, GetAttributes, doc="See `GetAttributes`");
+    %property(BackgroundColour, GetBackgroundColour, SetBackgroundColour, doc="See `GetBackgroundColour` and `SetBackgroundColour`");
+    %property(Column, GetColumn, SetColumn, doc="See `GetColumn` and `SetColumn`");
+    %property(Data, GetData, SetData, doc="See `GetData` and `SetData`");
+    %property(Font, GetFont, SetFont, doc="See `GetFont` and `SetFont`");
+    %property(Id, GetId, SetId, doc="See `GetId` and `SetId`");
+    %property(Image, GetImage, SetImage, doc="See `GetImage` and `SetImage`");
+    %property(Mask, GetMask, SetMask, doc="See `GetMask` and `SetMask`");
+    %property(State, GetState, SetState, doc="See `GetState` and `SetState`");
+    %property(Text, GetText, SetText, doc="See `GetText` and `SetText`");
+    %property(TextColour, GetTextColour, SetTextColour, doc="See `GetTextColour` and `SetTextColour`");
+    %property(Width, GetWidth, SetWidth, doc="See `GetWidth` and `SetWidth`");
 };
 
 
@@ -279,6 +308,20 @@ public:
     // was label editing canceled? (for wxEVT_COMMAND_LIST_END_LABEL_EDIT only)
     bool IsEditCancelled() const;
     void SetEditCanceled(bool editCancelled);
+
+    %property(CacheFrom, GetCacheFrom, doc="See `GetCacheFrom`");
+    %property(CacheTo, GetCacheTo, doc="See `GetCacheTo`");
+    %property(Column, GetColumn, doc="See `GetColumn`");
+    %property(Data, GetData, doc="See `GetData`");
+    %property(Image, GetImage, doc="See `GetImage`");
+    %property(Index, GetIndex, doc="See `GetIndex`");
+    %property(Item, GetItem, doc="See `GetItem`");
+    %property(KeyCode, GetKeyCode, doc="See `GetKeyCode`");
+    %property(Label, GetLabel, doc="See `GetLabel`");
+    %property(Mask, GetMask, doc="See `GetMask`");
+    %property(Point, GetPoint, doc="See `GetPoint`");
+    %property(Text, GetText, doc="See `GetText`");
+
 };
 
 /* List control event types */
@@ -304,9 +347,10 @@ public:
 %constant wxEventType wxEVT_COMMAND_LIST_ITEM_FOCUSED;
 
 // WXWIN_COMPATIBILITY_2_4
+#if 0
 %constant wxEventType wxEVT_COMMAND_LIST_GET_INFO;
 %constant wxEventType wxEVT_COMMAND_LIST_SET_INFO;
-
+#endif
 
 %pythoncode {
 
@@ -316,8 +360,10 @@ EVT_LIST_BEGIN_LABEL_EDIT  = wx.PyEventBinder(wxEVT_COMMAND_LIST_BEGIN_LABEL_EDI
 EVT_LIST_END_LABEL_EDIT    = wx.PyEventBinder(wxEVT_COMMAND_LIST_END_LABEL_EDIT   , 1)
 EVT_LIST_DELETE_ITEM       = wx.PyEventBinder(wxEVT_COMMAND_LIST_DELETE_ITEM      , 1)
 EVT_LIST_DELETE_ALL_ITEMS  = wx.PyEventBinder(wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS , 1)
-EVT_LIST_GET_INFO          = wx.PyEventBinder(wxEVT_COMMAND_LIST_GET_INFO         , 1)
-EVT_LIST_SET_INFO          = wx.PyEventBinder(wxEVT_COMMAND_LIST_SET_INFO         , 1)
+#WXWIN_COMPATIBILITY_2_4
+#EVT_LIST_GET_INFO          = wx.PyEventBinder(wxEVT_COMMAND_LIST_GET_INFO         , 1)
+#EVT_LIST_SET_INFO          = wx.PyEventBinder(wxEVT_COMMAND_LIST_SET_INFO         , 1)
+#END WXWIN_COMPATIBILITY_2_4
 EVT_LIST_ITEM_SELECTED     = wx.PyEventBinder(wxEVT_COMMAND_LIST_ITEM_SELECTED    , 1)
 EVT_LIST_ITEM_DESELECTED   = wx.PyEventBinder(wxEVT_COMMAND_LIST_ITEM_DESELECTED  , 1)
 EVT_LIST_KEY_DOWN          = wx.PyEventBinder(wxEVT_COMMAND_LIST_KEY_DOWN         , 1)
@@ -333,8 +379,9 @@ EVT_LIST_COL_DRAGGING      = wx.PyEventBinder(wxEVT_COMMAND_LIST_COL_DRAGGING   
 EVT_LIST_COL_END_DRAG      = wx.PyEventBinder(wxEVT_COMMAND_LIST_COL_END_DRAG     , 1)
 EVT_LIST_ITEM_FOCUSED      = wx.PyEventBinder(wxEVT_COMMAND_LIST_ITEM_FOCUSED     , 1)
 
-EVT_LIST_GET_INFO = wx._deprecated(EVT_LIST_GET_INFO)
-EVT_LIST_SET_INFO = wx._deprecated(EVT_LIST_SET_INFO)
+#WXWIN_COMPATIBILITY_2_4
+#EVT_LIST_GET_INFO = wx._deprecated(EVT_LIST_GET_INFO)
+#EVT_LIST_SET_INFO = wx._deprecated(EVT_LIST_SET_INFO)
 }
 
 //---------------------------------------------------------------------------
@@ -389,11 +436,8 @@ public:
 
     // use the virtual version to avoid a confusing assert in the base class
     DEC_PYCALLBACK_INT_LONG_virtual(OnGetItemImage);
-
-#ifdef wxHAVE_OnGetItemColumnImage
     DEC_PYCALLBACK_INT_LONGLONG(OnGetItemColumnImage);
-#endif
-    
+
     PYPRIVATE;
 };
 
@@ -402,23 +446,25 @@ IMPLEMENT_ABSTRACT_CLASS(wxPyListCtrl, wxListCtrl);
 IMP_PYCALLBACK_STRING_LONGLONG(wxPyListCtrl, wxListCtrl, OnGetItemText);
 IMP_PYCALLBACK_LISTATTR_LONG(wxPyListCtrl, wxListCtrl, OnGetItemAttr);
 IMP_PYCALLBACK_INT_LONG_virtual(wxPyListCtrl, wxListCtrl, OnGetItemImage);
+IMP_PYCALLBACK_INT_LONGLONG(wxPyListCtrl, wxListCtrl, OnGetItemColumnImage);
 
-#ifdef wxHAVE_OnGetItemColumnImage
-IMP_PYCALLBACK_INT_LONGLONG(wxPyListCtrl, wxListCtrl, OnGetItemColumnImage); 
-#endif
 %}
 
 
 
-
+// NOTE: The following option is set in _settings.i
+//     # Until the new native control for wxMac is up to par, still use the generic one.
+//     SystemOptions.SetOptionInt("mac.listctrl.always_use_generic", 1)
 
 MustHaveApp(wxPyListCtrl);
 
 %rename(ListCtrl) wxPyListCtrl;
 class wxPyListCtrl : public wxControl {
 public:
+    // turn off this typemap
+    %typemap(out) wxPyListCtrl*;
 
-    %pythonAppend wxPyListCtrl         "self._setOORInfo(self);self._setCallbackInfo(self, ListCtrl)"
+    %pythonAppend wxPyListCtrl         "self._setOORInfo(self);" setCallbackInfo(ListCtrl)
     %pythonAppend wxPyListCtrl()       ""
 
     wxPyListCtrl(wxWindow* parent, wxWindowID id = -1,
@@ -428,6 +474,9 @@ public:
                  const wxValidator& validator = wxDefaultValidator,
                  const wxString& name = wxPyListCtrlNameStr);
     %RenameCtor(PreListCtrl, wxPyListCtrl());
+
+    // Turn it back on again
+    %typemap(out) wxPyListCtrl* { $result = wxPyMake_wxObject($1, $owner); }
 
     bool Create(wxWindow* parent, wxWindowID id = -1,
                  const wxPoint& pos = wxDefaultPosition,
@@ -481,10 +530,8 @@ public:
     // return the total area occupied by all the items (icon/small icon only)
     wxRect GetViewRect() const;
 
-#ifdef __WXMSW__
     // Gets the edit control for editing labels.
     wxTextCtrl* GetEditControl() const;
-#endif
 
     // Gets information about the item
     %pythonAppend GetItem "if val is not None: val.thisown = 1";  // %newobject doesn't work with OOR typemap
@@ -544,6 +591,13 @@ public:
             self->GetItemRect(item, rect, code);
             return rect;
         }
+
+// MSW only so far...
+//         wxRect GetSubItemRect(long item, long subItem, int code = wxLIST_RECT_BOUNDS) {
+//             wxRect rect;
+//             self->GetSubItemRect(item, subItem, rect, code);
+//             return rect;
+//         }
     }
 
 
@@ -594,11 +648,9 @@ public:
     // Sets the image list
     void SetImageList(wxImageList *imageList, int which);
 
-    // is there a way to tell SWIG to disown this???
-
-    %apply SWIGTYPE *DISOWN { wxImageList *imageList };
+    %disownarg( wxImageList *imageList );
     void AssignImageList(wxImageList *imageList, int which);
-    %clear wxImageList *imageList;
+    %cleardisown( wxImageList *imageList );
 
     // are we in report mode?
     bool InReportView() const;
@@ -659,6 +711,15 @@ public:
         "HitTest(Point point) -> (item, where)",
         "Determines which item (if any) is at the specified point, giving
 details in the second return value (see wx.LIST_HITTEST flags.)", "");
+
+    DocDeclAStrName(
+        long, HitTest(const wxPoint& point, int& OUTPUT, long* OUTPUT),
+        "HitTestSubItem(Point point) -> (item, where, subItem)",
+        "Determines which item (if any) is at the specified point, giving details in
+the second return value (see wx.LIST_HITTEST flags) and also the subItem, if
+any.", "",
+        HitTestSubItem);
+
 
     // Inserts an item, returning the index of the new item if successful,
     // -1 otherwise.
@@ -785,7 +846,7 @@ details in the second return value (see wx.LIST_HITTEST flags.)", "");
 
     %extend {
         wxWindow* GetMainWindow() {
-        #ifdef __WXMSW__
+        #if defined(__WXMSW__) || defined(__WXMAC__)
             return self;
         #else
             return (wxWindow*)self->m_mainWin;
@@ -795,6 +856,17 @@ details in the second return value (see wx.LIST_HITTEST flags.)", "");
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    %property(ColumnCount, GetColumnCount, doc="See `GetColumnCount`");
+    %property(CountPerPage, GetCountPerPage, doc="See `GetCountPerPage`");
+    %property(EditControl, GetEditControl, doc="See `GetEditControl`");
+    %property(FocusedItem, GetFocusedItem, doc="See `GetFocusedItem`");
+    %property(ItemCount, GetItemCount, SetItemCount, doc="See `GetItemCount` and `SetItemCount`");
+    %property(MainWindow, GetMainWindow, doc="See `GetMainWindow`");
+    %property(SelectedItemCount, GetSelectedItemCount, doc="See `GetSelectedItemCount`");
+    %property(TextColour, GetTextColour, SetTextColour, doc="See `GetTextColour` and `SetTextColour`");
+    %property(TopItem, GetTopItem, doc="See `GetTopItem`");
+    %property(ViewRect, GetViewRect, doc="See `GetViewRect`");
 };
 
 
@@ -847,6 +919,8 @@ public:
 
     void SetColumnImage(int col, int image);
     void ClearColumnImage(int col);
+
+    %property(FocusedItem, GetFocusedItem, doc="See `GetFocusedItem`");
 };
 
 

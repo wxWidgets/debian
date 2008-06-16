@@ -1,0 +1,438 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDocument</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdocument"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdoctemplate.html#wxdoctemplate"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdragimage.html#wxdragimage"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDocument</H2>
+<P>
+The document class can be used to model an application's file-based
+data. It is part of the document/view framework supported by wxWidgets,
+and cooperates with the <A HREF="wx_wxview.html#wxview">wxView</A>, <A HREF="wx_wxdoctemplate.html#wxdoctemplate">wxDocTemplate</A>
+and <A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A> classes.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/docview.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_docviewoverview.html#wxdocumentoverview">wxDocument overview</A>, <A HREF="wx_wxview.html#wxview">wxView</A>,
+<A HREF="wx_wxdoctemplate.html#wxdoctemplate">wxDocTemplate</A>, <A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdocumentmcommandprocessor">wxDocument::m_commandProcessor</A><BR>
+<A HREF="#wxdocumentmdocumentfile">wxDocument::m_documentFile</A><BR>
+<A HREF="#wxdocumentmdocumentmodified">wxDocument::m_documentModified</A><BR>
+<A HREF="#wxdocumentmdocumenttemplate">wxDocument::m_documentTemplate</A><BR>
+<A HREF="#wxdocumentmdocumenttitle">wxDocument::m_documentTitle</A><BR>
+<A HREF="#documenttypename">wxDocument::m_documentTypeName</A><BR>
+<A HREF="#wxdocumentmdocumentviews">wxDocument::m_documentViews</A><BR>
+<A HREF="#wxdocumentctor">wxDocument::wxDocument</A><BR>
+<A HREF="#wxdocumentdtor">wxDocument::~wxDocument</A><BR>
+<A HREF="#wxdocumentaddview">wxDocument::AddView</A><BR>
+<A HREF="#wxdocumentclose">wxDocument::Close</A><BR>
+<A HREF="#wxdocumentdeleteviews">wxDocument::DeleteAllViews</A><BR>
+<A HREF="#wxdocumentgetcommandprocessor">wxDocument::GetCommandProcessor</A><BR>
+<A HREF="#wxdocumentgetdocumenttemplate">wxDocument::GetDocumentTemplate</A><BR>
+<A HREF="#wxdocumentgetdocumentmanager">wxDocument::GetDocumentManager</A><BR>
+<A HREF="#wxdocumentgetdocumentname">wxDocument::GetDocumentName</A><BR>
+<A HREF="#wxdocumentgetdocumentwindow">wxDocument::GetDocumentWindow</A><BR>
+<A HREF="#wxdocumentgetfilename">wxDocument::GetFilename</A><BR>
+<A HREF="#wxdocumentgetfirstview">wxDocument::GetFirstView</A><BR>
+<A HREF="#wxdocumentgetprintablename">wxDocument::GetPrintableName</A><BR>
+<A HREF="#wxdocumentgettitle">wxDocument::GetTitle</A><BR>
+<A HREF="#wxdocumentgetviews">wxDocument::GetViews</A><BR>
+<A HREF="#wxdocumentismodified">wxDocument::IsModified</A><BR>
+<A HREF="#wxdocumentloadobject">wxDocument::LoadObject</A><BR>
+<A HREF="#wxdocumentmodify">wxDocument::Modify</A><BR>
+<A HREF="#wxdocumentonchangedviewlist">wxDocument::OnChangedViewList</A><BR>
+<A HREF="#wxdocumentonclosedocument">wxDocument::OnCloseDocument</A><BR>
+<A HREF="#wxdocumentoncreate">wxDocument::OnCreate</A><BR>
+<A HREF="#wxdocumentoncreatecommandprocessor">wxDocument::OnCreateCommandProcessor</A><BR>
+<A HREF="#wxdocumentonnewdocument">wxDocument::OnNewDocument</A><BR>
+<A HREF="#wxdocumentonopendocument">wxDocument::OnOpenDocument</A><BR>
+<A HREF="#wxdocumentonsavedocument">wxDocument::OnSaveDocument</A><BR>
+<A HREF="#wxdocumentonsavemodified">wxDocument::OnSaveModified</A><BR>
+<A HREF="#wxdocumentremoveview">wxDocument::RemoveView</A><BR>
+<A HREF="#wxdocumentsave">wxDocument::Save</A><BR>
+<A HREF="#wxdocumentsaveas">wxDocument::SaveAs</A><BR>
+<A HREF="#wxdocumentsaveobject">wxDocument::SaveObject</A><BR>
+<A HREF="#wxdocumentsetcommandprocessor">wxDocument::SetCommandProcessor</A><BR>
+<A HREF="#wxdocumentsetdocumentname">wxDocument::SetDocumentName</A><BR>
+<A HREF="#wxdocumentsetdocumenttemplate">wxDocument::SetDocumentTemplate</A><BR>
+<A HREF="#wxdocumentsetfilename">wxDocument::SetFilename</A><BR>
+<A HREF="#wxdocumentsettitle">wxDocument::SetTitle</A><BR>
+<A HREF="#wxdocumentupdateallviews">wxDocument::UpdateAllViews</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdocumentmcommandprocessor"></A>
+<H3>wxDocument::m_commandProcessor</H3>
+<P>
+wxCommandProcessor* m_commandProcessor<P>
+A pointer to the command processor associated with this document.<P>
+
+<HR>
+<A NAME="wxdocumentmdocumentfile"></A>
+<H3>wxDocument::m_documentFile</H3>
+<P>
+wxString m_documentFile<P>
+Filename associated with this document ("" if none).<P>
+
+<HR>
+<A NAME="wxdocumentmdocumentmodified"></A>
+<H3>wxDocument::m_documentModified</H3>
+<P>
+bool m_documentModified<P>
+true if the document has been modified, false otherwise.<P>
+
+<HR>
+<A NAME="wxdocumentmdocumenttemplate"></A>
+<H3>wxDocument::m_documentTemplate</H3>
+<P>
+wxDocTemplate * m_documentTemplate<P>
+A pointer to the template from which this document was created.<P>
+
+<HR>
+<A NAME="wxdocumentmdocumenttitle"></A>
+<H3>wxDocument::m_documentTitle</H3>
+<P>
+wxString m_documentTitle<P>
+Document title. The document title is used for an associated
+frame (if any), and is usually constructed by the framework from
+the filename.<P>
+
+<HR>
+<A NAME="documenttypename"></A>
+<H3>wxDocument::m_documentTypeName</H3>
+<P>
+wxString m_documentTypeName<P>
+The document type name given to the wxDocTemplate constructor, copied to this
+variable when the document is created. If several document templates are
+created that use the same document type, this variable is used in wxDocManager::CreateView
+to collate a list of alternative view types that can be used on this kind of
+document. Do not change the value of this variable.<P>
+
+<HR>
+<A NAME="wxdocumentmdocumentviews"></A>
+<H3>wxDocument::m_documentViews</H3>
+<P>
+wxList m_documentViews<P>
+List of wxView instances associated with this document.<P>
+
+<HR>
+<A NAME="wxdocumentctor"></A>
+<H3>wxDocument::wxDocument</H3>
+<P>
+<B></B> <B>wxDocument</B>()<P>
+Constructor. Define your own default constructor to initialize application-specific
+data.<P>
+
+<HR>
+<A NAME="wxdocumentdtor"></A>
+<H3>wxDocument::~wxDocument</H3>
+<P>
+<B></B> <B>~wxDocument</B>()<P>
+Destructor. Removes itself from the document manager.<P>
+
+<HR>
+<A NAME="wxdocumentaddview"></A>
+<H3>wxDocument::AddView</H3>
+<P>
+<B>virtual bool</B> <B>AddView</B>(<B><A HREF="wx_wxview.html#wxview">wxView</A> *</B></B><I>view</I>)<P>
+If the view is not already in the list of views, adds the view and calls OnChangedViewList.<P>
+
+<HR>
+<A NAME="wxdocumentclose"></A>
+<H3>wxDocument::Close</H3>
+<P>
+<B>virtual bool</B> <B>Close</B>()<P>
+Closes the document, by calling OnSaveModified and then (if this returned true) OnCloseDocument.
+This does not normally delete the document object: use DeleteAllViews to do this implicitly.<P>
+
+<HR>
+<A NAME="wxdocumentdeleteviews"></A>
+<H3>wxDocument::DeleteAllViews</H3>
+<P>
+<B>virtual bool</B> <B>DeleteAllViews</B>()<P>
+Calls wxView::Close and deletes each view. Deleting the final view will implicitly
+delete the document itself, because the wxView destructor calls RemoveView. This
+in turns calls wxDocument::OnChangedViewList, whose default implemention is to
+save and delete the document if no views exist.<P>
+
+<HR>
+<A NAME="wxdocumentgetcommandprocessor"></A>
+<H3>wxDocument::GetCommandProcessor</H3>
+<P>
+<B><A HREF="wx_wxcommandprocessor.html#wxcommandprocessor">wxCommandProcessor</A>*</B> </B> <B>GetCommandProcessor</B>() <B>const</B><P>
+Returns a pointer to the command processor associated with this document.<P>
+See <A HREF="wx_wxcommandprocessor.html#wxcommandprocessor">wxCommandProcessor</A>.<P>
+
+<HR>
+<A NAME="wxdocumentgetdocumenttemplate"></A>
+<H3>wxDocument::GetDocumentTemplate</H3>
+<P>
+<B><A HREF="wx_wxdoctemplate.html#wxdoctemplate">wxDocTemplate</A>*</B> </B> <B>GetDocumentTemplate</B>() <B>const</B><P>
+Gets a pointer to the template that created the document.<P>
+
+<HR>
+<A NAME="wxdocumentgetdocumentmanager"></A>
+<H3>wxDocument::GetDocumentManager</H3>
+<P>
+<B><A HREF="wx_wxdocmanager.html#wxdocmanager">wxDocManager</A>*</B> </B> <B>GetDocumentManager</B>() <B>const</B><P>
+Gets a pointer to the associated document manager.<P>
+
+<HR>
+<A NAME="wxdocumentgetdocumentname"></A>
+<H3>wxDocument::GetDocumentName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetDocumentName</B>() <B>const</B><P>
+Gets the document type name for this document. See the comment for <A HREF="wx_wxdocument.html#documenttypename">documentTypeName</A>.<P>
+
+<HR>
+<A NAME="wxdocumentgetdocumentwindow"></A>
+<H3>wxDocument::GetDocumentWindow</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetDocumentWindow</B>() <B>const</B><P>
+Intended to return a suitable window for using as a parent for document-related
+dialog boxes. By default, uses the frame associated with the first view.<P>
+
+<HR>
+<A NAME="wxdocumentgetfilename"></A>
+<H3>wxDocument::GetFilename</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFilename</B>() <B>const</B><P>
+Gets the filename associated with this document, or "" if none is
+associated.<P>
+
+<HR>
+<A NAME="wxdocumentgetfirstview"></A>
+<H3>wxDocument::GetFirstView</H3>
+<P>
+<B><A HREF="wx_wxview.html#wxview">wxView</A> *</B> </B> <B>GetFirstView</B>() <B>const</B><P>
+A convenience function to get the first view for a document, because
+in many cases a document will only have a single view.<P>
+See also: <A HREF="wx_wxdocument.html#wxdocumentgetviews">GetViews</A><P>
+
+<HR>
+<A NAME="wxdocumentgetprintablename"></A>
+<H3>wxDocument::GetPrintableName</H3>
+<P>
+<B>virtual void</B> <B>GetPrintableName</B>(<B><A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>) <B>const</B><P>
+Copies a suitable document name into the supplied <I>name</I> buffer. The default
+function uses the title, or if there is no title, uses the filename; or if no
+filename, the string <B>unnamed</B>. <P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this function must return the modified name rather
+than just modifying the argument.<P>
+
+<HR>
+<A NAME="wxdocumentgettitle"></A>
+<H3>wxDocument::GetTitle</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetTitle</B>() <B>const</B><P>
+Gets the title for this document. The document title is used for an associated
+frame (if any), and is usually constructed by the framework from
+the filename.<P>
+
+<HR>
+<A NAME="wxdocumentgetviews"></A>
+<H3>wxDocument::GetViews</H3>
+<P>
+<B><A HREF="wx_wxlist.html#wxlist">wxList</A> &</B> </B> <B>GetViews</B>() <B>const</B><P>
+Returns the list whose elements are the views on the document.<P>
+See also: <A HREF="wx_wxdocument.html#wxdocumentgetfirstview">GetFirstView</A><P>
+
+<HR>
+<A NAME="wxdocumentismodified"></A>
+<H3>wxDocument::IsModified</H3>
+<P>
+<B>virtual bool</B> <B>IsModified</B>() <B>const</B><P>
+Returns true if the document has been modified since the last save, false otherwise.
+You may need to override this if your document view maintains its own
+record of being modified (for example if using wxTextWindow to view and edit the document).<P>
+See also <A HREF="wx_wxdocument.html#wxdocumentmodify">Modify</A>.<P>
+
+<HR>
+<A NAME="wxdocumentloadobject"></A>
+<H3>wxDocument::LoadObject</H3>
+<P>
+<B>virtual istream&amp;</B> <B>LoadObject</B>(<B>istream&amp; </B><I>stream</I>)<P>
+<B>virtual <A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B> </B> <B>LoadObject</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>)<P>
+Override this function and call it from your own LoadObject before
+streaming your own data. LoadObject is called by the framework
+automatically when the document contents need to be loaded.<P>
+Note that only one of these forms exists, depending on how wxWidgets
+was configured.<P>
+
+<HR>
+<A NAME="wxdocumentmodify"></A>
+<H3>wxDocument::Modify</H3>
+<P>
+<B>virtual void</B> <B>Modify</B>(<B>bool</B><I> modify</I>)<P>
+Call with true to mark the document as modified since the last save, false otherwise.
+You may need to override this if your document view maintains its own
+record of being modified (for example if using wxTextWindow to view and edit the document).<P>
+See also <A HREF="wx_wxdocument.html#wxdocumentismodified">IsModified</A>.<P>
+
+<HR>
+<A NAME="wxdocumentonchangedviewlist"></A>
+<H3>wxDocument::OnChangedViewList</H3>
+<P>
+<B>virtual void</B> <B>OnChangedViewList</B>()<P>
+Called when a view is added to or deleted from this document. The default
+implementation saves and deletes the document if no views exist (the last
+one has just been removed).<P>
+
+<HR>
+<A NAME="wxdocumentonclosedocument"></A>
+<H3>wxDocument::OnCloseDocument</H3>
+<P>
+<B>virtual bool</B> <B>OnCloseDocument</B>()<P>
+The default implementation calls DeleteContents (an empty implementation)
+sets the modified flag to false. Override this to
+supply additional behaviour when the document is closed with Close.<P>
+
+<HR>
+<A NAME="wxdocumentoncreate"></A>
+<H3>wxDocument::OnCreate</H3>
+<P>
+<B>virtual bool</B> <B>OnCreate</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>path</I>, <B>long</B><I> flags</I>)<P>
+Called just after the document object is created to give it a chance
+to initialize itself. The default implementation uses the
+template associated with the document to create an initial view.
+If this function returns false, the document is deleted.<P>
+
+<HR>
+<A NAME="wxdocumentoncreatecommandprocessor"></A>
+<H3>wxDocument::OnCreateCommandProcessor</H3>
+<P>
+<B>virtual <A HREF="wx_wxcommandprocessor.html#wxcommandprocessor">wxCommandProcessor</A>*</B> </B> <B>OnCreateCommandProcessor</B>()<P>
+Override this function if you want a different (or no) command processor
+to be created when the document is created. By default, it returns
+an instance of wxCommandProcessor.<P>
+See <A HREF="wx_wxcommandprocessor.html#wxcommandprocessor">wxCommandProcessor</A>.<P>
+
+<HR>
+<A NAME="wxdocumentonnewdocument"></A>
+<H3>wxDocument::OnNewDocument</H3>
+<P>
+<B>virtual bool</B> <B>OnNewDocument</B>()<P>
+The default implementation calls OnSaveModified and DeleteContents, makes a default title for the
+document, and notifies the views that the filename (in fact, the title) has changed.<P>
+
+<HR>
+<A NAME="wxdocumentonopendocument"></A>
+<H3>wxDocument::OnOpenDocument</H3>
+<P>
+<B>virtual bool</B> <B>OnOpenDocument</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Constructs an input file stream for the given filename (which must not be empty),
+and calls LoadObject. If LoadObject returns true, the document is set to
+unmodified; otherwise, an error message box is displayed. The document's
+views are notified that the filename has changed, to give windows an opportunity
+to update their titles. All of the document's views are then updated.<P>
+
+<HR>
+<A NAME="wxdocumentonsavedocument"></A>
+<H3>wxDocument::OnSaveDocument</H3>
+<P>
+<B>virtual bool</B> <B>OnSaveDocument</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>)<P>
+Constructs an output file stream for the given filename (which must not be empty),
+and calls SaveObject. If SaveObject returns true, the document is set to
+unmodified; otherwise, an error message box is displayed.<P>
+
+<HR>
+<A NAME="wxdocumentonsavemodified"></A>
+<H3>wxDocument::OnSaveModified</H3>
+<P>
+<B>virtual bool</B> <B>OnSaveModified</B>()<P>
+If the document has been modified, prompts the user to ask if the changes should
+be changed. If the user replies Yes, the Save function is called. If No, the
+document is marked as unmodified and the function succeeds. If Cancel, the
+function fails.<P>
+
+<HR>
+<A NAME="wxdocumentremoveview"></A>
+<H3>wxDocument::RemoveView</H3>
+<P>
+<B>virtual bool</B> <B>RemoveView</B>(<B><A HREF="wx_wxview.html#wxview">wxView</A>* </B></B><I>view</I>)<P>
+Removes the view from the document's list of views, and calls OnChangedViewList.<P>
+
+<HR>
+<A NAME="wxdocumentsave"></A>
+<H3>wxDocument::Save</H3>
+<P>
+<B>virtual bool</B> <B>Save</B>()<P>
+Saves the document by calling OnSaveDocument if there is an associated filename,
+or SaveAs if there is no filename.<P>
+
+<HR>
+<A NAME="wxdocumentsaveas"></A>
+<H3>wxDocument::SaveAs</H3>
+<P>
+<B>virtual bool</B> <B>SaveAs</B>()<P>
+Prompts the user for a file to save to, and then calls OnSaveDocument.<P>
+
+<HR>
+<A NAME="wxdocumentsaveobject"></A>
+<H3>wxDocument::SaveObject</H3>
+<P>
+<B>virtual ostream&amp;</B> <B>SaveObject</B>(<B>ostream&amp; </B><I>stream</I>)<P>
+<B>virtual <A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>&</B> </B> <B>SaveObject</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>)<P>
+Override this function and call it from your own SaveObject before
+streaming your own data. SaveObject is called by the framework
+automatically when the document contents need to be saved.<P>
+Note that only one of these forms exists, depending on how wxWidgets
+was configured.<P>
+
+<HR>
+<A NAME="wxdocumentsetcommandprocessor"></A>
+<H3>wxDocument::SetCommandProcessor</H3>
+<P>
+<B>virtual void</B> <B>SetCommandProcessor</B>(<B><A HREF="wx_wxcommandprocessor.html#wxcommandprocessor">wxCommandProcessor</A> *</B></B><I>processor</I>)<P>
+Sets the command processor to be used for this document. The document will then be responsible
+for its deletion. Normally you should not call this; override OnCreateCommandProcessor
+instead.<P>
+See <A HREF="wx_wxcommandprocessor.html#wxcommandprocessor">wxCommandProcessor</A>.<P>
+
+<HR>
+<A NAME="wxdocumentsetdocumentname"></A>
+<H3>wxDocument::SetDocumentName</H3>
+<P>
+<B>void</B> <B>SetDocumentName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>)<P>
+Sets the document type name for this document. See the comment for <A HREF="wx_wxdocument.html#documenttypename">documentTypeName</A>.<P>
+
+<HR>
+<A NAME="wxdocumentsetdocumenttemplate"></A>
+<H3>wxDocument::SetDocumentTemplate</H3>
+<P>
+<B>void</B> <B>SetDocumentTemplate</B>(<B><A HREF="wx_wxdoctemplate.html#wxdoctemplate">wxDocTemplate</A>* </B></B><I>templ</I>)<P>
+Sets the pointer to the template that created the document. Should only be called by the
+framework.<P>
+
+<HR>
+<A NAME="wxdocumentsetfilename"></A>
+<H3>wxDocument::SetFilename</H3>
+<P>
+<B>void</B> <B>SetFilename</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>, <B>bool</B><I> notifyViews = false</I>)<P>
+Sets the filename for this document. Usually called by the framework.<P>
+If <I>notifyViews</I> is true, wxView::OnChangeFilename is called for all views.<P>
+
+<HR>
+<A NAME="wxdocumentsettitle"></A>
+<H3>wxDocument::SetTitle</H3>
+<P>
+<B>void</B> <B>SetTitle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>)<P>
+Sets the title for this document. The document title is used for an associated
+frame (if any), and is usually constructed by the framework from
+the filename.<P>
+
+<HR>
+<A NAME="wxdocumentupdateallviews"></A>
+<H3>wxDocument::UpdateAllViews</H3>
+<P>
+<B>void</B> <B>UpdateAllViews</B>(<B><A HREF="wx_wxview.html#wxview">wxView</A>* </B></B><I>sender = NULL</I>, <B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B></B><I> hint = NULL</I>)<P>
+Updates all views. If <I>sender</I> is non-NULL, does not update this view.<P>
+<I>hint</I> represents optional information to allow a view to optimize its update.<P>
+
+</FONT></BODY></HTML>

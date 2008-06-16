@@ -1,0 +1,46 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxZipNotifier</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxzipnotifier"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxzipinputstream.html#wxzipinputstream"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxzipoutputstream.html#wxzipoutputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxZipNotifier</H2>
+<P>
+If you need to know when a <A HREF="wx_wxzipinputstream.html#wxzipinputstream">wxZipInputStream</A>
+updates a <A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A>,
+you can create a notifier by deriving from this abstract base class,
+overriding <A HREF="wx_wxzipnotifier.html#wxzipnotifieronentryupdated">OnEntryUpdated()</A>.
+An instance of your notifier class can then be assigned to wxZipEntry
+objects, using <A HREF="wx_wxzipentry.html#wxzipentrynotifier">wxZipEntry::SetNotifier()</A>.<P>
+Setting a notifier is not usually necessary. It is used to handle
+certain cases when modifying an zip in a pipeline (i.e. between
+non-seekable streams).
+See '<A HREF="wx_wxarc.html#wxarcnoseek">Archives on non-seekable streams</A>'.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/zipstrm.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarcnoseek">Archives on non-seekable streams</A><BR>
+
+<A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A><BR>
+
+<A HREF="wx_wxzipinputstream.html#wxzipinputstream">wxZipInputStream</A><BR>
+
+<A HREF="wx_wxzipoutputstream.html#wxzipoutputstream">wxZipOutputStream</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxzipnotifieronentryupdated">wxZipNotifier::OnEntryUpdated</A><BR>
+<P>
+
+<HR>
+<A NAME="wxzipnotifieronentryupdated"></A>
+<H3>wxZipNotifier::OnEntryUpdated</H3>
+<P>
+<B>void</B> <B>OnEntryUpdated</B>(<B><A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A>& </B></B><I>entry</I>)<P>
+Override this to receive notifications when
+an <A HREF="wx_wxzipentry.html#wxzipentry">wxZipEntry</A> object changes.<P>
+
+
+</FONT></BODY></HTML>

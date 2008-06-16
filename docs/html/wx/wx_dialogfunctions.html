@@ -1,0 +1,662 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Dialog functions</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="dialogfunctions"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_stringfunctions.html#stringfunctions"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_mathfunctions.html#mathfunctions"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Dialog functions</H2>
+<P>
+Below are a number of convenience functions for getting input from the
+user or displaying messages. Note that in these functions the last three
+parameters are optional. However, it is recommended to pass a parent frame
+parameter, or (in MS Windows or Motif) the wrong window frame may be brought to
+the front when the dialog box is popped up.<P>
+
+<A HREF="#wxaboutbox">::wxAboutBox</A><BR>
+<A HREF="#wxbeginbusycursor">::wxBeginBusyCursor</A><BR>
+<A HREF="#wxbell">::wxBell</A><BR>
+<A HREF="#wxcreatefiletipprovider">::wxCreateFileTipProvider</A><BR>
+<A HREF="#wxdirselector">::wxDirSelector</A><BR>
+<A HREF="#wxfileselector">::wxFileSelector</A><BR>
+<A HREF="#wxendbusycursor">::wxEndBusyCursor</A><BR>
+<A HREF="#wxgenericaboutbox">::wxGenericAboutBox</A><BR>
+<A HREF="#wxgetcolourfromuser">::wxGetColourFromUser</A><BR>
+<A HREF="#wxgetfontfromuser">::wxGetFontFromUser</A><BR>
+<A HREF="#wxgetmultiplechoices">::wxGetMultipleChoices</A><BR>
+<A HREF="#wxgetnumberfromuser">::wxGetNumberFromUser</A><BR>
+<A HREF="#wxgetpasswordfromuser">::wxGetPasswordFromUser</A><BR>
+<A HREF="#wxgettextfromuser">::wxGetTextFromUser</A><BR>
+<A HREF="#wxgetmultiplechoice">::wxGetMultipleChoice</A><BR>
+<A HREF="#wxgetsinglechoice">::wxGetSingleChoice</A><BR>
+<A HREF="#wxgetsinglechoiceindex">::wxGetSingleChoiceIndex</A><BR>
+<A HREF="#wxgetsinglechoicedata">::wxGetSingleChoiceData</A><BR>
+<A HREF="#wxisbusy">::wxIsBusy</A><BR>
+<A HREF="#wxmessagebox">::wxMessageBox</A><BR>
+<A HREF="#wxshowtip">::wxShowTip</A><BR>
+<P>
+
+<HR>
+<A NAME="wxaboutbox"></A>
+<H3>::wxAboutBox</H3>
+<P>
+<B>void</B> <B>wxAboutBox</B>(<B>const <A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfo">wxAboutDialogInfo</A>& </B></B><I>info</I>)<P>
+This function shows the standard about dialog containing the information
+specified in <I>info</I>. If the current platform has a native about dialog
+which is capable of showing all the fields in <I>info</I>, the native dialog is
+used, otherwise the function falls back to the generic wxWidgets version of the
+dialog, i.e. does the same thing as <A HREF="wx_dialogfunctions.html#wxgenericaboutbox">wxGenericAboutBox()</A>.<P>
+Here is an example of how this function may be used:
+<PRE>
+void MyFrame::ShowSimpleAboutDialog(wxCommandEvent& WXUNUSED(event))
+{
+    wxAboutDialogInfo info;
+    info.SetName(_("My Program"));
+    info.SetVersion(_("1.2.3 Beta"));
+    info.SetDescription(_("This program does something great."));
+    info.SetCopyright(_T("(C) 2007 Me &lt;my@email.addre.ss&gt;"));
+
+    wxAboutBox(info);
+}
+</PRE>
+Please see the <A HREF="wx_samples.html#sampledialogs">dialogs sample</A> for more examples of
+using this function and <A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfo">wxAboutDialogInfo</A> for the
+description of the information which can be shown in the about dialog.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/aboutdlg.h&gt;<P>
+
+
+<HR>
+<A NAME="wxbeginbusycursor"></A>
+<H3>::wxBeginBusyCursor</H3>
+<P>
+<B>void</B> <B>wxBeginBusyCursor</B>(<B><A HREF="wx_wxcursor.html#wxcursor">wxCursor</A> *</B></B><I>cursor = wxHOURGLASS_CURSOR</I>)<P>
+Changes the cursor to the given cursor for all windows in the application.
+Use <A HREF="wx_dialogfunctions.html#wxendbusycursor">wxEndBusyCursor</A> to revert the cursor back
+to its previous state. These two calls can be nested, and a counter
+ensures that only the outer calls take effect.<P>
+See also <A HREF="wx_dialogfunctions.html#wxisbusy">wxIsBusy</A>, <A HREF="wx_wxbusycursor.html#wxbusycursor">wxBusyCursor</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxbell"></A>
+<H3>::wxBell</H3>
+<P>
+<B>void</B> <B>wxBell</B>()<P>
+Ring the system bell.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxcreatefiletipprovider"></A>
+<H3>::wxCreateFileTipProvider</H3>
+<P>
+<B><A HREF="wx_wxtipprovider.html#wxtipprovider">wxTipProvider</A> *</B> </B> <B>wxCreateFileTipProvider</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>filename</I>,
+ <B>size_t </B><I>currentTip</I>)<P>
+This function creates a <A HREF="wx_wxtipprovider.html#wxtipprovider">wxTipProvider</A> which may be
+used with <A HREF="wx_dialogfunctions.html#wxshowtip">wxShowTip</A>.<P>
+<I>filename</I><UL><UL>
+The name of the file containing the tips, one per line</UL></UL>
+
+<I>currentTip</I><UL><UL>
+The index of the first tip to show - normally this index
+is remembered between the 2 program runs.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_tipsoverview.html#tipsoverview">Tips overview</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/tipdlg.h&gt;<P>
+
+
+<HR>
+<A NAME="wxdirselector"></A>
+<H3>::wxDirSelector</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxDirSelector</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message = wxDirSelectorPromptStr</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>default_path = ""</I>,<BR>
+
+ <B>long </B><I>style = 0</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>,<BR>
+
+ <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>)<P>
+Pops up a directory selector dialog. The arguments have the same meaning as
+those of wxDirDialog::wxDirDialog(). The message is displayed at the top,
+and the default_path, if specified, is set as the initial selection.<P>
+The application must check for an empty return value (if the user pressed
+Cancel). For example:<P>
+<PRE>
+const wxString& dir = wxDirSelector("Choose a folder");
+if ( !dir.empty() )
+{
+  ...
+}
+</PRE>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dirdlg.h&gt;<P>
+
+
+<HR>
+<A NAME="wxfileselector"></A>
+<H3>::wxFileSelector</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxFileSelector</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>default_path = ""</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>default_filename = ""</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>default_extension = ""</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>wildcard = "*.*"</I>, <B>int </B><I>flags = 0</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>,<BR>
+
+ <B>int</B><I> x = -1</I>, <B>int</B><I> y = -1</I>)<P>
+Pops up a file selector box. In Windows, this is the common file selector
+dialog. In X, this is a file selector box with the same functionality.
+The path and filename are distinct elements of a full file pathname.
+If path is empty, the current directory will be used. If filename is empty,
+no default filename will be supplied. The wildcard determines what files
+are displayed in the file selector, and file extension supplies a type
+extension for the required filename. Flags may be a combination of wxFD_OPEN,
+wxFD_SAVE, wxFD_OVERWRITE_PROMPT or wxFD_FILE_MUST_EXIST. Note that wxFD_MULTIPLE
+can only be used with <A HREF="wx_wxfiledialog.html#wxfiledialog">wxFileDialog</A> and not here as this
+function only returns a single file name.<P>
+Both the Unix and Windows versions implement a wildcard filter. Typing a
+filename containing wildcards (*, ?) in the filename text item, and
+clicking on Ok, will result in only those files matching the pattern being
+displayed.<P>
+The wildcard may be a specification for multiple types of file
+with a description for each, such as:<P>
+<PRE>
+ "BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif"
+</PRE>
+The application must check for an empty return value (the user pressed
+Cancel). For example:<P>
+<PRE>
+wxString filename = wxFileSelector("Choose a file to open");
+if ( !filename.empty() )
+{
+    // work with the file
+    ...
+}
+//else: cancelled by user
+</PRE>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/filedlg.h&gt;<P>
+
+
+<HR>
+<A NAME="wxendbusycursor"></A>
+<H3>::wxEndBusyCursor</H3>
+<P>
+<B>void</B> <B>wxEndBusyCursor</B>()<P>
+Changes the cursor back to the original cursor, for all windows in the application.
+Use with <A HREF="wx_dialogfunctions.html#wxbeginbusycursor">wxBeginBusyCursor</A>.<P>
+See also <A HREF="wx_dialogfunctions.html#wxisbusy">wxIsBusy</A>, <A HREF="wx_wxbusycursor.html#wxbusycursor">wxBusyCursor</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgenericaboutbox"></A>
+<H3>::wxGenericAboutBox</H3>
+<P>
+<B>void</B> <B>wxGenericAboutBox</B>(<B>const <A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfo">wxAboutDialogInfo</A>& </B></B><I>info</I>)<P>
+This function does the same thing as <A HREF="wx_dialogfunctions.html#wxaboutbox">wxAboutBox</A> except
+that it always uses the generic wxWidgets version of the dialog instead of the
+native one. This is mainly useful if you need to customize the dialog by e.g.
+adding custom controls to it (customizing the native dialog is not currently
+supported).<P>
+See the <A HREF="wx_samples.html#sampledialogs">dialogs sample</A> for an example of about dialog
+customization.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxaboutdialoginfo.html#wxaboutdialoginfo">wxAboutDialogInfo</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/aboutdlg.h&gt;<BR>
+
+&lt;wx/generic/aboutdlgg.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetcolourfromuser"></A>
+<H3>::wxGetColourFromUser</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>wxGetColourFromUser</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colInit</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption = wxEmptyString</I>)<P>
+Shows the colour selection dialog and returns the colour selected by user or
+invalid colour (use <A HREF="wx_wxcolour.html#wxcolourisok">wxColour:IsOk</A> to test whether a colour
+is valid) if the dialog was cancelled.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The parent window for the colour selection dialog</UL></UL>
+<P>
+<I>colInit</I><UL><UL>
+If given, this will be the colour initially selected in the dialog.</UL></UL>
+<P>
+<I>caption</I><UL><UL>
+If given, this will be used for the dialog caption.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/colordlg.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetfontfromuser"></A>
+<H3>::wxGetFontFromUser</H3>
+<P>
+<B><A HREF="wx_wxfont.html#wxfont">wxFont</A></B> </B> <B>wxGetFontFromUser</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>, <B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>fontInit</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption = wxEmptyString</I>)<P>
+Shows the font selection dialog and returns the font selected by user or
+invalid font (use <A HREF="wx_wxfont.html#wxfontisok">wxFont:IsOk</A> to test whether a font
+is valid) if the dialog was cancelled.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+The parent window for the font selection dialog</UL></UL>
+<P>
+<I>fontInit</I><UL><UL>
+If given, this will be the font initially selected in the dialog.</UL></UL>
+<P>
+<I>caption</I><UL><UL>
+If given, this will be used for the dialog caption.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/fontdlg.h&gt;<P>
+<P>
+
+<HR>
+<A NAME="wxgetmultiplechoices"></A>
+<H3>::wxGetMultipleChoices</H3>
+<P>
+<B>size_t</B> <B>wxGetMultipleChoices</B>(<BR>
+
+ <B>wxArrayInt&amp; </B><I>selections</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>,<BR>
+
+ <B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>aChoices</I>,<BR>
+
+ <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>,<BR>
+
+ <B>int</B><I> x = -1</I>, <B>int</B><I> y = -1</I>,<BR>
+
+ <B>bool</B><I> centre = true</I>,<BR>
+
+ <B>int </B><I>width=150</I>, <B>int </B><I>height=200</I>)<P>
+<B>size_t</B> <B>wxGetMultipleChoices</B>(<BR>
+
+ <B>wxArrayInt&amp; </B><I>selections</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>,<BR>
+
+ <B>int</B><I> n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>choices[]</I>,<BR>
+
+ <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>,<BR>
+
+ <B>int</B><I> x = -1</I>, <B>int</B><I> y = -1</I>,<BR>
+
+ <B>bool</B><I> centre = true</I>,<BR>
+
+ <B>int </B><I>width=150</I>, <B>int </B><I>height=200</I>)<P>
+Pops up a dialog box containing a message, OK/Cancel buttons and a
+multiple-selection listbox. The user may choose an arbitrary (including 0)
+number of items in the listbox whose indices will be returned in
+<I>selection</I> array. The initial contents of this array will be used to
+select the items when the dialog is shown.<P>
+You may pass the list of strings to choose from either using <I>choices</I>
+which is an array of <I>n</I> strings for the listbox or by using a single
+<I>aChoices</I> parameter of type <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>.<P>
+If <I>centre</I> is true, the message text (which may include new line
+characters) is centred; if false, the message is left-justified.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/choicdlg.h&gt;<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there is just an array reference in place of <TT>n</TT>
+and <TT>choices</TT>, and no <TT>selections</TT> parameter; the function
+returns an array containing the user selections.<P>
+
+
+<HR>
+<A NAME="wxgetnumberfromuser"></A>
+<H3>::wxGetNumberFromUser</H3>
+<P>
+<B>long</B> <B>wxGetNumberFromUser</B>(
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>prompt</I>,
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>,
+ <B>long </B><I>value</I>,
+ <B>long </B><I>min = 0</I>,
+ <B>long </B><I>max = 100</I>,
+ <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>,
+ <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>)<P>
+Shows a dialog asking the user for numeric input. The dialogs title is set to
+<I>caption</I>, it contains a (possibly) multiline <I>message</I> above the
+single line <I>prompt</I> and the zone for entering the number.<P>
+The number entered must be in the range <I>min</I>..<I>max</I> (both of which
+should be positive) and <I>value</I> is the initial value of it. If the user
+enters an invalid value or cancels the dialog, the function will return -1.<P>
+Dialog is centered on its <I>parent</I> unless an explicit position is given in
+<I>pos</I>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/numdlg.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetpasswordfromuser"></A>
+<H3>::wxGetPasswordFromUser</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetPasswordFromUser</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption = "Input text"</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>default_value = ""</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>,<BR>
+
+ <B>int</B><I> x = wxDefaultCoord</I>, <B>int</B><I> y = wxDefaultCoord</I>, <B>bool</B><I> centre = true</I>)<P>
+Similar to <A HREF="wx_dialogfunctions.html#wxgettextfromuser">wxGetTextFromUser</A> but the text entered
+in the dialog is not shown on screen but replaced with stars. This is intended
+to be used for entering passwords as the function name implies.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/textdlg.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgettextfromuser"></A>
+<H3>::wxGetTextFromUser</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetTextFromUser</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption = "Input text"</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>default_value = ""</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>,<BR>
+
+ <B>int</B><I> x = wxDefaultCoord</I>, <B>int</B><I> y = wxDefaultCoord</I>, <B>bool</B><I> centre = true</I>)<P>
+Pop up a dialog box with title set to <I>caption</I>, <I>message</I>, and a
+<I>default_value</I>.  The user may type in text and press OK to return this text,
+or press Cancel to return the empty string.<P>
+If <I>centre</I> is true, the message text (which may include new line characters)
+is centred; if false, the message is left-justified.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/textdlg.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetmultiplechoice"></A>
+<H3>::wxGetMultipleChoice</H3>
+<P>
+<B>int</B> <B>wxGetMultipleChoice</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>, <B>int</B><I> n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>choices[]</I>,<BR>
+
+ <B>int </B><I>nsel</I>, <B>int *</B><I>selection</I>,
+ <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>, <B>int</B><I> x = -1</I>, <B>int</B><I> y = -1</I>,<BR>
+
+ <B>bool</B><I> centre = true</I>, <B>int </B><I>width=150</I>, <B>int </B><I>height=200</I>)<P>
+Pops up a dialog box containing a message, OK/Cancel buttons and a multiple-selection
+listbox. The user may choose one or more item(s) and press OK or Cancel.<P>
+The number of initially selected choices, and array of the selected indices,
+are passed in; this array will contain the user selections on exit, with
+the function returning the number of selections. <I>selection</I> must be
+as big as the number of choices, in case all are selected.<P>
+If Cancel is pressed, -1 is returned.<P>
+<I>choices</I> is an array of <I>n</I> strings for the listbox.<P>
+If <I>centre</I> is true, the message text (which may include new line characters)
+is centred; if false, the message is left-justified.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/choicdlg.h&gt;<P>
+
+
+<HR>
+<A NAME="wxgetsinglechoice"></A>
+<H3>::wxGetSingleChoice</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetSingleChoice</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>,<BR>
+
+ <B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>aChoices</I>,<BR>
+
+ <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>,<BR>
+
+ <B>int</B><I> x = -1</I>, <B>int</B><I> y = -1</I>,<BR>
+
+ <B>bool</B><I> centre = true</I>,<BR>
+
+ <B>int </B><I>width=150</I>, <B>int </B><I>height=200</I>)<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetSingleChoice</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>,<BR>
+
+ <B>int</B><I> n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>choices[]</I>,<BR>
+
+ <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>,<BR>
+
+ <B>int</B><I> x = -1</I>, <B>int</B><I> y = -1</I>,<BR>
+
+ <B>bool</B><I> centre = true</I>,<BR>
+
+ <B>int </B><I>width=150</I>, <B>int </B><I>height=200</I>)<P>
+Pops up a dialog box containing a message, OK/Cancel buttons and a
+single-selection listbox. The user may choose an item and press OK to return a
+string or Cancel to return the empty string. Use
+<A HREF="wx_dialogfunctions.html#wxgetsinglechoiceindex">wxGetSingleChoiceIndex</A> if empty string is a
+valid choice and if you want to be able to detect pressing Cancel reliably.<P>
+You may pass the list of strings to choose from either using <I>choices</I>
+which is an array of <I>n</I> strings for the listbox or by using a single
+<I>aChoices</I> parameter of type <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>.<P>
+If <I>centre</I> is true, the message text (which may include new line
+characters) is centred; if false, the message is left-justified.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/choicdlg.h&gt;<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there is just an array reference in place of <TT>n</TT>
+and <TT>choices</TT>.<P>
+
+
+<HR>
+<A NAME="wxgetsinglechoiceindex"></A>
+<H3>::wxGetSingleChoiceIndex</H3>
+<P>
+<B>int</B> <B>wxGetSingleChoiceIndex</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>,<BR>
+
+ <B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>aChoices</I>,<BR>
+
+ <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>, <B>int</B><I> x = -1</I>, <B>int</B><I> y = -1</I>,<BR>
+
+ <B>bool</B><I> centre = true</I>, <B>int </B><I>width=150</I>, <B>int </B><I>height=200</I>)<P>
+<B>int</B> <B>wxGetSingleChoiceIndex</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>,<BR>
+
+ <B>int</B><I> n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>choices[]</I>,<BR>
+
+ <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>, <B>int</B><I> x = -1</I>, <B>int</B><I> y = -1</I>,<BR>
+
+ <B>bool</B><I> centre = true</I>, <B>int </B><I>width=150</I>, <B>int </B><I>height=200</I>)<P>
+As <B>wxGetSingleChoice</B> but returns the index representing the selected
+string. If the user pressed cancel, -1 is returned.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/choicdlg.h&gt;<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there is just an array reference in place of <TT>n</TT>
+and <TT>choices</TT>.<P>
+
+
+<HR>
+<A NAME="wxgetsinglechoicedata"></A>
+<H3>::wxGetSingleChoiceData</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetSingleChoiceData</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>,<BR>
+
+ <B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>aChoices</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>client_data[]</I>,<BR>
+
+ <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>,<BR>
+
+ <B>int</B><I> x = -1</I>, <B>int</B><I> y = -1</I>,<BR>
+
+ <B>bool</B><I> centre = true</I>, <B>int </B><I>width=150</I>, <B>int </B><I>height=200</I>)<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>wxGetSingleChoiceData</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption</I>,<BR>
+
+ <B>int</B><I> n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>choices[]</I>,<BR>
+
+ <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>client_data[]</I>,<BR>
+
+ <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>,<BR>
+
+ <B>int</B><I> x = -1</I>, <B>int</B><I> y = -1</I>,<BR>
+
+ <B>bool</B><I> centre = true</I>, <B>int </B><I>width=150</I>, <B>int </B><I>height=200</I>)<P>
+As <B>wxGetSingleChoice</B> but takes an array of client data pointers
+corresponding to the strings, and returns one of these pointers or NULL if
+Cancel was pressed. The <I>client_data</I> array must have the same number of
+elements as <I>choices</I> or <I>aChoices</I>!<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/choicdlg.h&gt;<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there is just an array reference in place of <TT>n</TT>
+and <TT>choices</TT>, and the client data array must have the
+same length as the choices array.<P>
+
+
+<HR>
+<A NAME="wxisbusy"></A>
+<H3>::wxIsBusy</H3>
+<P>
+<B>bool</B> <B>wxIsBusy</B>()<P>
+Returns true if between two <A HREF="wx_dialogfunctions.html#wxbeginbusycursor">wxBeginBusyCursor</A> and
+<A HREF="wx_dialogfunctions.html#wxendbusycursor">wxEndBusyCursor</A> calls.<P>
+See also <A HREF="wx_wxbusycursor.html#wxbusycursor">wxBusyCursor</A>.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+
+<HR>
+<A NAME="wxmessagebox"></A>
+<H3>::wxMessageBox</H3>
+<P>
+<B>int</B> <B>wxMessageBox</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>message</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>caption = "Message"</I>, <B>int</B><I> style = wxOK</I>,<BR>
+
+ <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent = NULL</I>, <B>int</B><I> x = -1</I>, <B>int</B><I> y = -1</I>)<P>
+General purpose message dialog.  <I>style</I> may be a bit list of the
+following identifiers:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxYES_NO
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Puts Yes and No buttons on the message box. May be combined with
+wxCANCEL.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxCANCEL
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Puts a Cancel button on the message box. May only be combined with
+wxYES_NO or wxOK.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxOK
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Puts an Ok button on the message box. May be combined with wxCANCEL.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxICON_EXCLAMATION
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays an exclamation mark symbol.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxICON_HAND
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays an error symbol.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxICON_ERROR
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays an error symbol - the same as wxICON_HAND.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxICON_QUESTION
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays a question mark symbol.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxICON_INFORMATION
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Displays an information symbol.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The return value is one of: wxYES, wxNO, wxCANCEL, wxOK.<P>
+For example:<P>
+<PRE>
+  ...
+  int answer = wxMessageBox("Quit program?", "Confirm",
+                            wxYES_NO | wxCANCEL, main_frame);
+  if (answer == wxYES)
+    main_frame-&gt;Close();
+  ...
+</PRE>
+<I>message</I> may contain newline characters, in which case the
+message will be split into separate lines, to cater for large messages.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/msgdlg.h&gt;<P>
+
+
+<HR>
+<A NAME="wxshowtip"></A>
+<H3>::wxShowTip</H3>
+<P>
+<B>bool</B> <B>wxShowTip</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>,
+ <B><A HREF="wx_wxtipprovider.html#wxtipprovider">wxTipProvider</A> *</B></B><I>tipProvider</I>,
+ <B>bool </B><I>showAtStartup = true</I>)<P>
+This function shows a "startup tip" to the user. The return value is the
+state of the 'Show tips at startup' checkbox.<P>
+<I>parent</I><UL><UL>
+The parent window for the modal dialog</UL></UL>
+<P>
+<I>tipProvider</I><UL><UL>
+An object which is used to get the text of the tips.
+It may be created with the <A HREF="wx_dialogfunctions.html#wxcreatefiletipprovider">wxCreateFileTipProvider</A> function.</UL></UL>
+<P>
+<I>showAtStartup</I><UL><UL>
+Should be true if startup tips are shown, false
+otherwise. This is used as the initial value for "Show tips at startup"
+checkbox which is shown in the tips dialog.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_tipsoverview.html#tipsoverview">Tips overview</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/tipdlg.h&gt;<P>
+<P>
+
+
+</FONT></BODY></HTML>

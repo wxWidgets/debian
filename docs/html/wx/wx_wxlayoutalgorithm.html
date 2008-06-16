@@ -1,0 +1,164 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxLayoutAlgorithm</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlayoutalgorithm"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxkeyevent.html#wxkeyevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlayoutconstraints.html#wxlayoutconstraints"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxLayoutAlgorithm</H2>
+<P>
+wxLayoutAlgorithm implements layout of subwindows in MDI or SDI frames.
+It sends a wxCalculateLayoutEvent event
+to children of the frame, asking them for information about
+their size. For MDI parent frames, the algorithm allocates
+the remaining space to the MDI client window (which contains the MDI child frames).
+For SDI (normal) frames, a 'main' window is specified as taking up the
+remaining space.<P>
+Because the event system is used, this technique can be applied to any windows,
+which are not necessarily 'aware' of the layout classes (no virtual functions
+in wxWindow refer to wxLayoutAlgorithm or its events). However, you
+may wish to use <A HREF="wx_wxsashlayoutwindow.html#wxsashlayoutwindow">wxSashLayoutWindow</A> for your subwindows
+since this class provides handlers for the required events, and accessors
+to specify the desired size of the window. The sash behaviour in the base class
+can be used, optionally, to make the windows user-resizable.<P>
+wxLayoutAlgorithm is typically used in IDE (integrated development environment) applications,
+where there are several resizable windows in addition to the MDI client window, or
+other primary editing window. Resizable windows might include toolbars, a project
+window, and a window for displaying error and warning messages.<P>
+When a window receives an OnCalculateLayout event, it should call SetRect in
+the given event object, to be the old supplied rectangle minus whatever space the
+window takes up. It should also set its own size accordingly.
+wxSashLayoutWindow::OnCalculateLayout generates an OnQueryLayoutInfo event
+which it sends to itself to determine the orientation, alignment and size of the window,
+which it gets from internal member variables set by the application.<P>
+The algorithm works by starting off with a rectangle equal to the whole frame client area.
+It iterates through the frame children, generating OnCalculateLayout events which subtract
+the window size and return the remaining rectangle for the next window to process. It
+is assumed (by wxSashLayoutWindow::OnCalculateLayout) that a window stretches the full dimension
+of the frame client, according to the orientation it specifies. For example, a horizontal window
+will stretch the full width of the remaining portion of the frame client area.
+In the other orientation, the window will be fixed to whatever size was specified by
+OnQueryLayoutInfo. An alignment setting will make the window 'stick' to the left, top, right or
+bottom of the remaining client area. This scheme implies that order of window creation is important.
+Say you wish to have an extra toolbar at the top of the frame, a project window to the left of
+the MDI client window, and an output window above the status bar. You should therefore create
+the windows in this order: toolbar, output window, project window. This ensures that the toolbar and
+output window take up space at the top and bottom, and then the remaining height in-between is used for
+the project window.<P>
+wxLayoutAlgorithm is quite independent of the way in which
+OnCalculateLayout chooses to interpret a window's size and alignment. Therefore you
+could implement a different window class with a new OnCalculateLayout event handler,
+that has a more sophisticated way of laying out the windows. It might allow
+specification of whether stretching occurs in the specified orientation, for example,
+rather than always assuming stretching. (This could, and probably should, be added to the existing
+implementation).<P>
+<I>Note:</I> wxLayoutAlgorithm has nothing to do with wxLayoutConstraints. It is an alternative
+way of specifying layouts for which the normal constraint system is unsuitable.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/laywin.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+The algorithm object does not respond to events, but itself generates the
+following events in order to calculate window sizes.<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_QUERY_LAYOUT_INFO(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_QUERY_LAYOUT_INFO event,
+to get size, orientation and alignment from a window. See <A HREF="wx_wxquerylayoutinfoevent.html#wxquerylayoutinfoevent">wxQueryLayoutInfoEvent</A>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CALCULATE_LAYOUT(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_CALCULATE_LAYOUT event,
+which asks the window to take a 'bite' out of a rectangle provided by the algorithm.
+See <A HREF="wx_wxcalculatelayoutevent.html#wxcalculatelayoutevent">wxCalculateLayoutEvent</A>.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">Data types</FONT></B><P>
+<FONT SIZE=2>
+<PRE>
+enum wxLayoutOrientation {
+    wxLAYOUT_HORIZONTAL,
+    wxLAYOUT_VERTICAL
+};
+
+enum wxLayoutAlignment {
+    wxLAYOUT_NONE,
+    wxLAYOUT_TOP,
+    wxLAYOUT_LEFT,
+    wxLAYOUT_RIGHT,
+    wxLAYOUT_BOTTOM,
+};
+</PRE>
+</FONT><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsashevent.html#wxsashevent">wxSashEvent</A>, <A HREF="wx_wxsashlayoutwindow.html#wxsashlayoutwindow">wxSashLayoutWindow</A>, <A HREF="wx_eventhandlingoverview.html#eventhandlingoverview">Event handling overview</A><P>
+<A HREF="wx_wxcalculatelayoutevent.html#wxcalculatelayoutevent">wxCalculateLayoutEvent</A>,
+<A HREF="wx_wxquerylayoutinfoevent.html#wxquerylayoutinfoevent">wxQueryLayoutInfoEvent</A>,
+<A HREF="wx_wxsashlayoutwindow.html#wxsashlayoutwindow">wxSashLayoutWindow</A>,
+<A HREF="wx_wxsashwindow.html#wxsashwindow">wxSashWindow</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxlayoutalgorithmctor">wxLayoutAlgorithm::wxLayoutAlgorithm</A><BR>
+<A HREF="#wxlayoutalgorithmdtor">wxLayoutAlgorithm::~wxLayoutAlgorithm</A><BR>
+<A HREF="#wxlayoutalgorithmlayoutframe">wxLayoutAlgorithm::LayoutFrame</A><BR>
+<A HREF="#wxlayoutalgorithmlayoutmdiframe">wxLayoutAlgorithm::LayoutMDIFrame</A><BR>
+<A HREF="#wxlayoutalgorithmlayoutwindow">wxLayoutAlgorithm::LayoutWindow</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlayoutalgorithmctor"></A>
+<H3>wxLayoutAlgorithm::wxLayoutAlgorithm</H3>
+<P>
+<B></B> <B>wxLayoutAlgorithm</B>()<P>
+Default constructor.<P>
+
+<HR>
+<A NAME="wxlayoutalgorithmdtor"></A>
+<H3>wxLayoutAlgorithm::~wxLayoutAlgorithm</H3>
+<P>
+<B></B> <B>~wxLayoutAlgorithm</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxlayoutalgorithmlayoutframe"></A>
+<H3>wxLayoutAlgorithm::LayoutFrame</H3>
+<P>
+<B>bool</B> <B>LayoutFrame</B>(<B><A HREF="wx_wxframe.html#wxframe">wxFrame</A>* </B></B><I>frame</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> mainWindow = NULL</I>) <B>const</B><P>
+Lays out the children of a normal frame. <I>mainWindow</I> is set to occupy the remaining space.<P>
+This function simply calls <A HREF="wx_wxlayoutalgorithm.html#wxlayoutalgorithmlayoutwindow">wxLayoutAlgorithm::LayoutWindow</A>.<P>
+
+<HR>
+<A NAME="wxlayoutalgorithmlayoutmdiframe"></A>
+<H3>wxLayoutAlgorithm::LayoutMDIFrame</H3>
+<P>
+<B>bool</B> <B>LayoutMDIFrame</B>(<B><A HREF="wx_wxmdiparentframe.html#wxmdiparentframe">wxMDIParentFrame</A>* </B></B><I>frame</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A>*</B></B><I> rect = NULL</I>) <B>const</B><P>
+Lays out the children of an MDI parent frame. If <I>rect</I> is non-NULL, the
+given rectangle will be used as a starting point instead of the frame's client area.<P>
+The MDI client window is set to occupy the remaining space.<P>
+
+<HR>
+<A NAME="wxlayoutalgorithmlayoutwindow"></A>
+<H3>wxLayoutAlgorithm::LayoutWindow</H3>
+<P>
+<B>bool</B> <B>LayoutWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> mainWindow = NULL</I>) <B>const</B><P>
+Lays out the children of a normal frame or other window.<P>
+<I>mainWindow</I> is set to occupy the remaining space. If this is not specified, then
+the last window that responds to a calculate layout event in query mode will get the remaining space
+(that is, a non-query OnCalculateLayout event will not be sent to this window and the window will be set
+to the remaining size).<P>
+
+</FONT></BODY></HTML>

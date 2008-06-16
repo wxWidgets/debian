@@ -1,0 +1,158 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxTimer</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxtimer"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxthreadhelper.html#wxthreadhelper"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxtimerevent.html#wxtimerevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxTimer</H2>
+<P>
+The wxTimer class allows you to execute code at specified intervals. Its
+precision is platform-dependent, but in general will not be better than 1ms nor
+worse than 1s.<P>
+There are three different ways to use this class:<P>
+<OL>
+
+<LI> You may derive a new class from wxTimer and override the 
+<A HREF="wx_wxtimer.html#wxtimernotify">Notify</A> member to perform the required action.
+<LI> Or you may redirect the notifications to any 
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A> derived object by using the non-default
+constructor or <A HREF="wx_wxtimer.html#wxtimersetowner">SetOwner</A>. Then use the <TT>EVT_TIMER</TT> 
+macro to connect it to the event handler which will receive 
+<A HREF="wx_wxtimerevent.html#wxtimerevent">wxTimerEvent</A> notifications.
+<LI> Or you may use a derived class and the <TT>EVT_TIMER</TT> 
+macro to connect it to an event handler defined in the derived class.
+If the default constructor is used, the timer object will be its
+own owner object, since it is derived from wxEvtHandler.
+</OL>
+<P>
+In any case, you must start the timer with <A HREF="wx_wxtimer.html#wxtimerstart">Start</A> 
+after constructing it before it actually starts sending notifications. It can
+be stopped later with <A HREF="wx_wxtimer.html#wxtimerstop">Stop</A>.<P>
+<B>Note:</B> A timer can only be used from the main thread.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/timer.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_timefunctions.html#wxstarttimer">::wxStartTimer</A>, <A HREF="wx_timefunctions.html#wxgetelapsedtime">::wxGetElapsedTime</A>, <A HREF="wx_wxstopwatch.html#wxstopwatch">wxStopWatch</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxtimerwxtimer">wxTimer::wxTimer</A><BR>
+<A HREF="#wxtimerdtor">wxTimer::~wxTimer</A><BR>
+<A HREF="#wxtimergetinterval">wxTimer::GetInterval</A><BR>
+<A HREF="#wxtimerisoneshot">wxTimer::IsOneShot</A><BR>
+<A HREF="#wxtimerisrunning">wxTimer::IsRunning</A><BR>
+<A HREF="#wxtimernotify">wxTimer::Notify</A><BR>
+<A HREF="#wxtimersetowner">wxTimer::SetOwner</A><BR>
+<A HREF="#wxtimerstart">wxTimer::Start</A><BR>
+<A HREF="#wxtimerstop">wxTimer::Stop</A><BR>
+<P>
+
+<HR>
+<A NAME="wxtimerwxtimer"></A>
+<H3>wxTimer::wxTimer</H3>
+<P>
+<B></B> <B>wxTimer</B>()<P>
+Default constructor. If you use it to construct the object and don't call 
+<A HREF="wx_wxtimer.html#wxtimersetowner">SetOwner</A> later, you must override 
+<A HREF="wx_wxtimer.html#wxtimernotify">Notify</A> method to process the notifications.<P>
+<B></B> <B>wxTimer</B>(<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A> *</B></B><I>owner</I>, <B>int </B><I>id = -1</I>)<P>
+Creates a timer and associates it with <I>owner</I>. Please see 
+<A HREF="wx_wxtimer.html#wxtimersetowner">SetOwner</A> for the description of parameters.<P>
+
+<HR>
+<A NAME="wxtimerdtor"></A>
+<H3>wxTimer::~wxTimer</H3>
+<P>
+<B></B> <B>~wxTimer</B>()<P>
+Destructor. Stops the timer if it is running.<P>
+
+<HR>
+<A NAME="wxtimergetinterval"></A>
+<H3>wxTimer::GetInterval</H3>
+<P>
+<B>int</B> <B>GetInterval</B>() <B>const</B><P>
+Returns the current interval for the timer (in milliseconds).<P>
+
+<HR>
+<A NAME="wxtimerisoneshot"></A>
+<H3>wxTimer::IsOneShot</H3>
+<P>
+<B>bool</B> <B>IsOneShot</B>() <B>const</B><P>
+Returns <TT>true</TT> if the timer is one shot, i.e. if it will stop after firing the
+first notification automatically.<P>
+
+<HR>
+<A NAME="wxtimerisrunning"></A>
+<H3>wxTimer::IsRunning</H3>
+<P>
+<B>bool</B> <B>IsRunning</B>() <B>const</B><P>
+Returns <TT>true</TT> if the timer is running, <TT>false</TT> if it is stopped.<P>
+
+<HR>
+<A NAME="wxtimernotify"></A>
+<H3>wxTimer::Notify</H3>
+<P>
+<B>void</B> <B>Notify</B>()<P>
+This member should be overridden by the user if the default constructor was
+used and <A HREF="wx_wxtimer.html#wxtimersetowner">SetOwner</A> wasn't called.<P>
+Perform whatever action which is to be taken periodically here.<P>
+
+<HR>
+<A NAME="wxtimersetowner"></A>
+<H3>wxTimer::SetOwner</H3>
+<P>
+<B>void</B> <B>SetOwner</B>(<B><A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A> *</B></B><I>owner</I>, <B>int </B><I>id = -1</I>)<P>
+Associates the timer with the given <I>owner</I> object. When the timer is
+running, the owner will receive <A HREF="wx_wxtimerevent.html#wxtimerevent">timer events</A> with
+id equal to <I>id</I> specified here.<P>
+
+<HR>
+<A NAME="wxtimerstart"></A>
+<H3>wxTimer::Start</H3>
+<P>
+<B>bool</B> <B>Start</B>(<B>int </B><I>milliseconds = -1</I>, <B>bool </B><I>oneShot = <TT>false</TT></I>)<P>
+(Re)starts the timer. If <I>milliseconds</I> parameter is -1 (value by default),
+the previous value is used. Returns <TT>false</TT> if the timer could not be started,
+<TT>true</TT> otherwise (in MS Windows timers are a limited resource).<P>
+If <I>oneShot</I> is <TT>false</TT> (the default), the <A HREF="wx_wxtimer.html#wxtimernotify">Notify</A> 
+function will be called repeatedly until the timer is stopped. If <TT>true</TT>,
+it will be called only once and the timer will stop automatically. To make your
+code more readable you may also use the following symbolic constants:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxTIMER_CONTINUOUS
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Start a normal, continuously running, timer
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxTIMER_ONE_SHOT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Start a one shot timer
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+If the timer was already running, it will be stopped by this method before
+restarting it.<P>
+
+<HR>
+<A NAME="wxtimerstop"></A>
+<H3>wxTimer::Stop</H3>
+<P>
+<B>void</B> <B>Stop</B>()<P>
+Stops the timer.<P>
+
+</FONT></BODY></HTML>

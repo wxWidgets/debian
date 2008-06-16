@@ -1,0 +1,61 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFileDataObject</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfiledataobject"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfileconfig.html#wxfileconfig"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfiledialog.html#wxfiledialog"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFileDataObject</H2>
+<P>
+wxFileDataObject is a specialization of <A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A> 
+for file names. The program works with it just as if it were a list of absolute file
+names, but internally it uses the same format as
+Explorer and other compatible programs under Windows or GNOME/KDE filemanager
+under Unix which makes it possible to receive files from them using this
+class.<P>
+<B>Warning:</B> Under all non-Windows platforms this class is currently
+"input-only", i.e. you can receive the files from another application, but
+copying (or dragging) file(s) from a wxWidgets application is not currently
+supported. PS: GTK2 should work as well.<P>
+<B><FONT COLOR="#FF0000">Virtual functions to override</FONT></B><P>
+None.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple">wxDataObjectSimple</A><BR>
+
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dataobj.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A>, 
+<A HREF="wx_wxdataobjectsimple.html#wxdataobjectsimple">wxDataObjectSimple</A>, 
+<A HREF="wx_wxtextdataobject.html#wxtextdataobject">wxTextDataObject</A>, 
+<A HREF="wx_wxbitmapdataobject.html#wxbitmapdataobject">wxBitmapDataObject</A>, 
+<A HREF="wx_wxdataobject.html#wxdataobject">wxDataObject</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxfiledataobjectwxfiledataobject">wxFileDataObject</A><BR>
+<A HREF="#wxfiledataobjectaddfile">wxFileDataObject::AddFile</A><BR>
+<A HREF="#wxfiledataobjectgetfilenames">wxFileDataObject::GetFilenames</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfiledataobjectwxfiledataobject"></A>
+<H3>wxFileDataObject</H3>
+<P>
+<B></B> <B>wxFileDataObject</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxfiledataobjectaddfile"></A>
+<H3>wxFileDataObject::AddFile</H3>
+<P>
+<B>virtual void</B> <B>AddFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>file</I>)<P>
+<B>MSW only:</B> adds a file to the file list represented by this data object.<P>
+
+<HR>
+<A NAME="wxfiledataobjectgetfilenames"></A>
+<H3>wxFileDataObject::GetFilenames</H3>
+<P>
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B> </B> <B>GetFilenames</B>() <B>const</B><P>
+Returns the <A HREF="wx_wxarraystring.html#wxarraystring">array</A> of file names.<P>
+
+</FONT></BODY></HTML>

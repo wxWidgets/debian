@@ -1,0 +1,61 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPostScriptDC</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxpostscriptdc"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpoint.html#wxpoint"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpowerevent.html#wxpowerevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPostScriptDC</H2>
+<P>
+This defines the wxWidgets Encapsulated PostScript device context,
+which can write PostScript files on any platform. See <A HREF="wx_wxdc.html#wxdc">wxDC</A> for
+descriptions of the member functions.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxdc.html#wxdc">wxDC</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dcps.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxpostscriptdcctor">wxPostScriptDC::wxPostScriptDC</A><BR>
+<A HREF="#wxpostscriptdcsetresolution">wxPostScriptDC::SetResolution</A><BR>
+<A HREF="#wxpostscriptdcgetresolution">wxPostScriptDC::GetResolution</A><BR>
+<P>
+
+<HR>
+<A NAME="wxpostscriptdcctor"></A>
+<H3>wxPostScriptDC::wxPostScriptDC</H3>
+<P>
+<B></B> <B>wxPostScriptDC</B>(<B>const <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>&</B></B><I> printData</I>)<P>
+Constructs a PostScript printer device context from a <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A> object.<P>
+<B></B> <B>wxPostScriptDC</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>output</I>, <B>bool </B><I>interactive = true</I>,<BR>
+
+  <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>)<P>
+Constructor. <I>output</I> is an optional file for printing to, and if
+<I>interactive</I> is true a dialog box will be displayed for adjusting
+various parameters. <I>parent</I> is the parent of the printer dialog box.<P>
+Use the <I>Ok</I> member to test whether the constructor was successful
+in creating a usable device context.<P>
+See <A HREF="wx_printersettings.html#printersettings">Printer settings</A> for functions to set and
+get PostScript printing settings.<P>
+This constructor and the global printer settings are now deprecated;
+use the wxPrintData constructor instead.<P>
+
+
+<HR>
+<A NAME="wxpostscriptdcsetresolution"></A>
+<H3>wxPostScriptDC::SetResolution</H3>
+<P>
+<B>static void</B> <B>SetResolution</B>(<B>int</B><I> ppi</I>)<P>
+Set resolution (in pixels per inch) that will be used in PostScript
+output. Default is 720ppi.<P>
+
+<HR>
+<A NAME="wxpostscriptdcgetresolution"></A>
+<H3>wxPostScriptDC::GetResolution</H3>
+<P>
+<B>static int</B> <B>GetResolution</B>()<P>
+Return resolution used in PostScript output. See 
+<A HREF="wx_wxpostscriptdc.html#wxpostscriptdcsetresolution">SetResolution</A>.<P>
+
+</FONT></BODY></HTML>

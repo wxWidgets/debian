@@ -71,6 +71,15 @@
 #   behaviour.
 # o If no date has been clicked clicked, OnOk set the result to calend's date,
 #   important if keyboard only navigation is used.
+#
+# 12/10/2006 - Walter Barnes walter_barnes05@yahoo.com
+# o Fixed CalDraw to properly render months that start on a Sunday.
+#
+# 21/10/2006 - Walter Barnes walter_barnes05@yahoo.com
+# o Fixed a bug in Calendar: Shift and Control key status was only recorded for
+#   left-down events.
+# o Added handlers for wxEVT_MIDDLE_DOWN and wxEVT_MIDDLE_DCLICK to generate
+#   EVT_CALENDAR for these mouse events.
 
 
 import wx
@@ -289,6 +298,9 @@ class CalDraw:
         else:
             start_pos = dow
 
+        if start_pos > 6:
+            start_pos = 0
+
         self.st_pos = start_pos
 
         self.cal_days = []
@@ -311,6 +323,9 @@ class CalDraw:
             self.SetColor(COLOR_WEEKEND_BACKGROUND, MakeColor(backgrd))
 
         date = 6 - int(self.dow)     # start day of first saturday
+        if date == 0:                #...unless we start on Sunday
+            self.cal_sel[1] = (self.GetColor(COLOR_WEEKEND_FONT), self.GetColor(COLOR_WEEKEND_BACKGROUND))
+            date = 7
 
         while date <= self.dim:
             self.cal_sel[date] = (self.GetColor(COLOR_WEEKEND_FONT), self.GetColor(COLOR_WEEKEND_BACKGROUND))  # Saturday
@@ -698,6 +713,8 @@ class Calendar( wx.PyControl ):
         self.Bind(wx.EVT_LEFT_DCLICK, self.OnLeftDEvent)
         self.Bind(wx.EVT_RIGHT_DOWN, self.OnRightEvent)
         self.Bind(wx.EVT_RIGHT_DCLICK, self.OnRightDEvent)
+        self.Bind(wx.EVT_MIDDLE_DOWN, self.OnMiddleEvent)
+        self.Bind(wx.EVT_MIDDLE_DCLICK, self.OnMiddleDEvent)
         self.Bind(wx.EVT_SET_FOCUS, self.OnSetFocus)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
@@ -734,7 +751,10 @@ class Calendar( wx.PyControl ):
     # determine the calendar rectangle click area and draw a selection
 
     def ProcessClick(self, event):
+        self.SetFocus()
         self.x, self.y = event.GetX(), event.GetY()
+        self.shiftkey = event.ShiftDown()
+        self.ctrlkey = event.ControlDown()
         key = self.GetDayHit(self.x, self.y)
         self.SelectDay(key)
 
@@ -742,8 +762,6 @@ class Calendar( wx.PyControl ):
 
     def OnLeftEvent(self, event):
         self.click = 'LEFT'
-        self.shiftkey = event.ShiftDown()
-        self.ctrlkey = event.ControlDown()
         self.ProcessClick(event)
 
     def OnLeftDEvent(self, event):
@@ -756,6 +774,14 @@ class Calendar( wx.PyControl ):
 
     def OnRightDEvent(self, event):
         self.click = 'DRIGHT'
+        self.ProcessClick(event)
+
+    def OnMiddleEvent(self, event):
+        self.click = 'MIDDLE'
+        self.ProcessClick(event)
+
+    def OnMiddleDEvent(self, event):
+        self.click = 'DMIDDLE'
         self.ProcessClick(event)
 
     def OnSetFocus(self, event):
@@ -771,7 +797,7 @@ class Calendar( wx.PyControl ):
             event.Skip()
             return
         
-        key_code = event.KeyCode()
+        key_code = event.GetKeyCode()
         
         if key_code == wx.WXK_TAB:
             forward = not event.ShiftDown()

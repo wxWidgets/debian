@@ -1,0 +1,256 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFontMapper</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfontmapper"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfontlist.html#wxfontlist"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfontpickerctrl.html#wxfontpickerctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFontMapper</H2>
+<P>
+wxFontMapper manages user-definable correspondence between logical font
+names and the fonts present on the machine.<P>
+The default implementations of all functions will ask the user if they are
+not capable of finding the answer themselves and store the answer in a
+config file (configurable via SetConfigXXX functions). This behaviour may
+be disabled by giving the value of false to "interactive" parameter.<P>
+However, the functions will always consult the config file to allow the
+user-defined values override the default logic and there is no way to
+disable this - which shouldn't be ever needed because if "interactive" was
+never true, the config file is never created anyhow.<P>
+In case everything else fails (i.e. there is no record in config file
+and "interactive" is false or user denied to choose any replacement), 
+the class queries <A HREF="wx_wxencodingconverter.html#wxencodingconverter">wxEncodingConverter</A> 
+for "equivalent" encodings (e.g. iso8859-2 and cp1250) and tries them.<P>
+<B><FONT COLOR="#FF0000">Using wxFontMapper in conjunction with wxMBConv classes</FONT></B><P>
+If you need to display text in encoding which is not available at
+host system (see <A HREF="wx_wxfontmapper.html#wxfontmapperisencodingavailable">IsEncodingAvailable</A>),
+you may use these two classes to find font in some similar encoding
+(see <A HREF="wx_wxfontmapper.html#wxfontmappergetaltforencoding">GetAltForEncoding</A>)
+and convert the text to this encoding 
+(<A HREF="wx_mbconvclasses.html#mbconvclasses">wxMBConv classes</A>).<P>
+Following code snippet demonstrates it:<P>
+<PRE>
+if (!wxFontMapper::Get()-&gt;IsEncodingAvailable(enc, facename))
+{
+   wxFontEncoding alternative;
+   if (wxFontMapper::Get()-&gt;GetAltForEncoding(enc, &alternative,
+                                              facename, false))
+   {
+       wxCSConv convFrom(wxFontMapper::Get()-&gt;GetEncodingName(enc));
+       wxCSConv convTo(wxFontMapper::Get()-&gt;GetEncodingName(alternative));
+       text = wxString(text.mb_str(convFrom), convTo);
+   }
+   else
+       ...failure (or we may try iso8859-1/7bit ASCII)...
+}
+...display text...
+</PRE>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/fontmap.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxencodingconverter.html#wxencodingconverter">wxEncodingConverter</A>, 
+<A HREF="wx_nonenglishoverview.html#nonenglishoverview">Writing non-English applications</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxfontmapperwxfontmapper">wxFontMapper::wxFontMapper</A><BR>
+<A HREF="#wxfontmapperdtor">wxFontMapper::~wxFontMapper</A><BR>
+<A HREF="#wxfontmappercharsettoencoding">wxFontMapper::CharsetToEncoding</A><BR>
+<A HREF="#wxfontmapperget">wxFontMapper::Get</A><BR>
+<A HREF="#wxfontmappergetallencodingnames">wxFontMapper::GetAllEncodingNames</A><BR>
+<A HREF="#wxfontmappergetaltforencoding">wxFontMapper::GetAltForEncoding</A><BR>
+<A HREF="#wxfontmappergetencoding">wxFontMapper::GetEncoding</A><BR>
+<A HREF="#wxfontmappergetencodingdescription">wxFontMapper::GetEncodingDescription</A><BR>
+<A HREF="#wxfontmappergetencodingfromname">wxFontMapper::GetEncodingFromName</A><BR>
+<A HREF="#wxfontmappergetencodingname">wxFontMapper::GetEncodingName</A><BR>
+<A HREF="#wxfontmappergetsupportedencodingscount">wxFontMapper::GetSupportedEncodingsCount</A><BR>
+<A HREF="#wxfontmapperisencodingavailable">wxFontMapper::IsEncodingAvailable</A><BR>
+<A HREF="#wxfontmappersetdialogparent">wxFontMapper::SetDialogParent</A><BR>
+<A HREF="#wxfontmappersetdialogtitle">wxFontMapper::SetDialogTitle</A><BR>
+<A HREF="#wxfontmapperset">wxFontMapper::Set</A><BR>
+<A HREF="#wxfontmappersetconfig">wxFontMapper::SetConfig</A><BR>
+<A HREF="#wxfontmappersetconfigpath">wxFontMapper::SetConfigPath</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfontmapperwxfontmapper"></A>
+<H3>wxFontMapper::wxFontMapper</H3>
+<P>
+<B></B> <B>wxFontMapper</B>()<P>
+Default ctor.<P>
+<B><FONT COLOR="#FF0000">Note</FONT></B><P>
+The preferred way of creating a wxFontMapper instance is to call 
+<A HREF="wx_wxfontmapper.html#wxfontmapperget">wxFontMapper::Get</A>.<P>
+
+
+<HR>
+<A NAME="wxfontmapperdtor"></A>
+<H3>wxFontMapper::~wxFontMapper</H3>
+<P>
+<B></B> <B>~wxFontMapper</B>()<P>
+Virtual dtor for a base class.<P>
+
+
+<HR>
+<A NAME="wxfontmappercharsettoencoding"></A>
+<H3>wxFontMapper::CharsetToEncoding</H3>
+<P>
+<B>wxFontEncoding</B> <B>CharsetToEncoding</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>charset</I>, <B>bool </B><I>interactive = true</I>)<P>
+Returns the encoding for the given charset (in the form of RFC 2046) or
+<TT>wxFONTENCODING_SYSTEM</TT> if couldn't decode it.<P>
+Be careful when using this function with <I>interactive</I> set to <TT>true</TT>
+(default value) as the function then may show a dialog box to the user which
+may lead to unexpected reentrancies and may also take a significantly longer
+time than a simple function call. For these reasons, it is almost always a bad
+idea to call this function from the event handlers for repeatedly generated
+events such as <TT>EVT_PAINT</TT>.<P>
+
+
+<HR>
+<A NAME="wxfontmapperget"></A>
+<H3>wxFontMapper::Get</H3>
+<P>
+<B>static <A HREF="wx_wxfontmapper.html#wxfontmapper">wxFontMapper</A> *</B> </B> <B>Get</B>()<P>
+Get the current font mapper object. If there is no current object, creates
+one.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfontmapper.html#wxfontmapperset">wxFontMapper::Set</A><P>
+
+
+<HR>
+<A NAME="wxfontmappergetallencodingnames"></A>
+<H3>wxFontMapper::GetAllEncodingNames</H3>
+<P>
+<B>static const wxChar**</B> <B>GetAllEncodingNames</B>(<B>wxFontEncoding </B><I>encoding</I>)<P>
+Returns the array of all possible names for the given encoding. The array is
+<TT>NULL</TT>-terminated. IF it isn't empty, the first name in it is the canonical
+encoding name, i.e. the same string as returned by 
+<A HREF="wx_wxfontmapper.html#wxfontmappergetencodingname">GetEncodingName()</A>.<P>
+
+
+<HR>
+<A NAME="wxfontmappergetaltforencoding"></A>
+<H3>wxFontMapper::GetAltForEncoding</H3>
+<P>
+<B>bool</B> <B>GetAltForEncoding</B>(<B>wxFontEncoding </B><I>encoding</I>, <B>wxNativeEncodingInfo* </B><I>info</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>facename = wxEmptyString</I>, <B>bool </B><I>interactive = true</I>)<P>
+<B>bool</B> <B>GetAltForEncoding</B>(<B>wxFontEncoding </B><I>encoding</I>, <B>wxFontEncoding* </B><I>alt_encoding</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>facename = wxEmptyString</I>, <B>bool </B><I>interactive = true</I>)<P>
+Find an alternative for the given encoding (which is supposed to not be
+available on this system). If successful, return true and fill info
+structure with the parameters required to create the font, otherwise
+return false.<P>
+The first form is for wxWidgets' internal use while the second one
+is better suitable for general use -- it returns wxFontEncoding which
+can consequently be passed to wxFont constructor.<P>
+
+
+<HR>
+<A NAME="wxfontmappergetencoding"></A>
+<H3>wxFontMapper::GetEncoding</H3>
+<P>
+<B>static wxFontEncoding</B> <B>GetEncoding</B>(<B>size_t </B><I>n</I>)<P>
+Returns the <I>n</I>-th supported encoding. Together with 
+<A HREF="wx_wxfontmapper.html#wxfontmappergetsupportedencodingscount">GetSupportedEncodingsCount()</A> 
+this method may be used to get all supported encodings.<P>
+
+
+<HR>
+<A NAME="wxfontmappergetencodingdescription"></A>
+<H3>wxFontMapper::GetEncodingDescription</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetEncodingDescription</B>(<B>wxFontEncoding </B><I>encoding</I>)<P>
+Return user-readable string describing the given encoding.<P>
+
+
+<HR>
+<A NAME="wxfontmappergetencodingfromname"></A>
+<H3>wxFontMapper::GetEncodingFromName</H3>
+<P>
+<B>static wxFontEncoding</B> <B>GetEncodingFromName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>encoding</I>)<P>
+Return the encoding corresponding to the given internal name. This function is
+the inverse of <A HREF="wx_wxfontmapper.html#wxfontmappergetencodingname">GetEncodingName</A> and is
+intentionally less general than 
+<A HREF="wx_wxfontmapper.html#wxfontmappercharsettoencoding">CharsetToEncoding</A>, i.e. it doesn't
+try to make any guesses nor ever asks the user. It is meant just as a way of
+restoring objects previously serialized using 
+<A HREF="wx_wxfontmapper.html#wxfontmappergetencodingname">GetEncodingName</A>.<P>
+
+
+<HR>
+<A NAME="wxfontmappergetencodingname"></A>
+<H3>wxFontMapper::GetEncodingName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetEncodingName</B>(<B>wxFontEncoding </B><I>encoding</I>)<P>
+Return internal string identifier for the encoding (see also 
+<A HREF="wx_wxfontmapper.html#wxfontmappergetencodingdescription">GetEncodingDescription()</A>)<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfontmapper.html#wxfontmappergetencodingfromname">GetEncodingFromName</A><P>
+
+
+<HR>
+<A NAME="wxfontmappergetsupportedencodingscount"></A>
+<H3>wxFontMapper::GetSupportedEncodingsCount</H3>
+<P>
+<B>static size_t</B> <B>GetSupportedEncodingsCount</B>()<P>
+Returns the number of the font encodings supported by this class. Together with 
+<A HREF="wx_wxfontmapper.html#wxfontmappergetencoding">GetEncoding</A> this method may be used to get
+all supported encodings.<P>
+
+
+<HR>
+<A NAME="wxfontmapperisencodingavailable"></A>
+<H3>wxFontMapper::IsEncodingAvailable</H3>
+<P>
+<B>bool</B> <B>IsEncodingAvailable</B>(<B>wxFontEncoding </B><I>encoding</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>facename = wxEmptyString</I>)<P>
+Check whether given encoding is available in given face or not.
+If no facename is given, find <I>any</I> font in this encoding.<P>
+
+
+<HR>
+<A NAME="wxfontmappersetdialogparent"></A>
+<H3>wxFontMapper::SetDialogParent</H3>
+<P>
+<B>void</B> <B>SetDialogParent</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>)<P>
+The parent window for modal dialogs.<P>
+
+
+<HR>
+<A NAME="wxfontmappersetdialogtitle"></A>
+<H3>wxFontMapper::SetDialogTitle</H3>
+<P>
+<B>void</B> <B>SetDialogTitle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>)<P>
+The title for the dialogs (note that default is quite reasonable).<P>
+
+
+<HR>
+<A NAME="wxfontmapperset"></A>
+<H3>wxFontMapper::Set</H3>
+<P>
+<B>static <A HREF="wx_wxfontmapper.html#wxfontmapper">wxFontMapper</A> *</B> </B> <B>Set</B>(<B><A HREF="wx_wxfontmapper.html#wxfontmapper">wxFontMapper</A> *</B></B><I>mapper</I>)<P>
+Set the current font mapper object and return previous one (may be NULL).
+This method is only useful if you want to plug-in an alternative font mapper
+into wxWidgets.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfontmapper.html#wxfontmapperget">wxFontMapper::Get</A><P>
+
+
+<HR>
+<A NAME="wxfontmappersetconfig"></A>
+<H3>wxFontMapper::SetConfig</H3>
+<P>
+<B>void</B> <B>SetConfig</B>(<B><A HREF="wx_wxconfigbase.html#wxconfigbase">wxConfigBase</A>* </B></B><I>config</I>)<P>
+Set the config object to use (may be NULL to use default).<P>
+By default, the global one (from wxConfigBase::Get() will be used) 
+and the default root path for the config settings is the string returned by
+GetDefaultConfigPath().<P>
+
+
+<HR>
+<A NAME="wxfontmappersetconfigpath"></A>
+<H3>wxFontMapper::SetConfigPath</H3>
+<P>
+<B>void</B> <B>SetConfigPath</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>prefix</I>)<P>
+Set the root config path to use (should be an absolute path).<P>
+
+</FONT></BODY></HTML>

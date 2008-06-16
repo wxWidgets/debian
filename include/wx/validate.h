@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: validate.h,v 1.20 2005/01/21 18:48:22 ABX Exp $
+// RCS-ID:      $Id: validate.h 45498 2007-04-16 13:03:05Z VZ $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_VALIDATE_H_
 #define _WX_VALIDATE_H_
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "validate.h"
-#endif
 
 #include "wx/defs.h"
 
@@ -54,13 +50,13 @@ public:
 
     // Called when the value in the window must be validated.
     // This function can pop up an error message.
-    virtual bool Validate(wxWindow *WXUNUSED(parent)) { return false; };
+    virtual bool Validate(wxWindow *WXUNUSED(parent)) { return false; }
 
     // Called to transfer data to the window
     virtual bool TransferToWindow() { return false; }
 
     // Called to transfer data from the window
-    virtual bool TransferFromWindow() { return false; };
+    virtual bool TransferFromWindow() { return false; }
 
     // accessors
     wxWindow *GetWindow() const { return (wxWindow *)m_validatorWindow; }

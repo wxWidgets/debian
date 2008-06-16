@@ -1,0 +1,160 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxStaticText</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstatictext"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxstaticline.html#wxstaticline"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxstatusbar.html#wxstatusbar"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxStaticText</H2>
+<P>
+A static text control displays one or more lines of read-only text.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/stattext.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxALIGN_LEFT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Align the text to the left
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxALIGN_RIGHT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Align the text to the right
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxALIGN_CENTRE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Center the text (horizontally)
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxST_NO_AUTORESIZE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+By default, the control will
+adjust its size to exactly fit to the size of the text when 
+<A HREF="wx_wxstatictext.html#wxstatictextsetlabel">SetLabel</A> is called. If this style flag is
+given, the control will not change its size (this style is especially useful
+with controls which also have wxALIGN_RIGHT or CENTER style because otherwise
+they won't make sense any longer after a call to SetLabel)
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstaticbitmap.html#wxstaticbitmap">wxStaticBitmap</A>, <A HREF="wx_wxstaticbox.html#wxstaticbox">wxStaticBox</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxstatictextconstr">wxStaticText::wxStaticText</A><BR>
+<A HREF="#wxstatictextcreate">wxStaticText::Create</A><BR>
+<A HREF="#wxstatictextgetlabel">wxStaticText::GetLabel</A><BR>
+<A HREF="#wxstatictextsetlabel">wxStaticText::SetLabel</A><BR>
+<A HREF="#wxstatictextwrpa">wxStaticText::Wrap</A><BR>
+<P>
+
+<HR>
+<A NAME="wxstatictextconstr"></A>
+<H3>wxStaticText::wxStaticText</H3>
+<P>
+<B></B> <B>wxStaticText</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxStaticText</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "staticText"</I>)<P>
+Constructor, creating and showing a text control.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Should not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Control identifier. A value of -1 denotes a default value.</UL></UL>
+<P>
+<I>label</I><UL><UL>
+Text label.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxstatictext.html#wxstatictext">wxStaticText</A>.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxstatictext.html#wxstatictextcreate">wxStaticText::Create</A><P>
+
+
+<HR>
+<A NAME="wxstatictextcreate"></A>
+<H3>wxStaticText::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size = wxDefaultSize</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "staticText"</I>)<P>
+Creation function, for two-step construction. For details see <A HREF="wx_wxstatictext.html#wxstatictextconstr">wxStaticText::wxStaticText</A>.<P>
+
+
+<HR>
+<A NAME="wxstatictextgetlabel"></A>
+<H3>wxStaticText::GetLabel</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetLabel</B>() <B>const</B><P>
+Returns the contents of the control.<P>
+
+
+<HR>
+<A NAME="wxstatictextsetlabel"></A>
+<H3>wxStaticText::SetLabel</H3>
+<P>
+<B>virtual void</B> <B>SetLabel</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I> label</I>)<P>
+Sets the static text label and updates the controls size to exactly fit the
+label unless the control has wxST_NO_AUTORESIZE flag.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>label</I><UL><UL>
+The new label to set. It may contain newline characters.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxstatictextwrpa"></A>
+<H3>wxStaticText::Wrap</H3>
+<P>
+<B>void</B> <B>Wrap</B>(<B>int </B><I>width</I>)<P>
+This functions wraps the controls label so that each of its lines becomes at
+most <I>width</I> pixels wide if possible (the lines are broken at words
+boundaries so it might not be the case if words are too long). If <I>width</I>
+is negative, no wrapping is done.<P>
+This function is new since wxWidgets version 2.6.2<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,298 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxPageSetupDialogData</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxpagesetupdialogdata"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxpagesetupdialog.html#wxpagesetupdialog"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxpaintdc.html#wxpaintdc"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxPageSetupDialogData</H2>
+<P>
+This class holds a variety of information related to <A HREF="wx_wxpagesetupdialog.html#wxpagesetupdialog">wxPageSetupDialog</A>.<P>
+It contains a <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A> member which is used to hold basic printer configuration data (as opposed to the
+user-interface configuration settings stored by wxPageSetupDialogData).<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/cmndata.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_printingoverview.html#printingoverview">Printing framework overview</A>, 
+<A HREF="wx_wxpagesetupdialog.html#wxpagesetupdialog">wxPageSetupDialog</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxpagesetupdialogdatactor">wxPageSetupDialogData::wxPageSetupDialogData</A><BR>
+<A HREF="#wxpagesetupdialogdatadtor">wxPageSetupDialogData::~wxPageSetupDialogData</A><BR>
+<A HREF="#wxpagesetupdialogdataenablehelp">wxPageSetupDialogData::EnableHelp</A><BR>
+<A HREF="#wxpagesetupdialogdataenablemargins">wxPageSetupDialogData::EnableMargins</A><BR>
+<A HREF="#wxpagesetupdialogdataenableorientation">wxPageSetupDialogData::EnableOrientation</A><BR>
+<A HREF="#wxpagesetupdialogdataenablepaper">wxPageSetupDialogData::EnablePaper</A><BR>
+<A HREF="#wxpagesetupdialogdataenableprinter">wxPageSetupDialogData::EnablePrinter</A><BR>
+<A HREF="#wxpagesetupdialogdatagetdefaultminmargins">wxPageSetupDialogData::GetDefaultMinMargins</A><BR>
+<A HREF="#wxpagesetupdialogdatagetenablemargins">wxPageSetupDialogData::GetEnableMargins</A><BR>
+<A HREF="#wxpagesetupdialogdatagetenableorientation">wxPageSetupDialogData::GetEnableOrientation</A><BR>
+<A HREF="#wxpagesetupdialogdatagetenablepaper">wxPageSetupDialogData::GetEnablePaper</A><BR>
+<A HREF="#wxpagesetupdialogdatagetenableprinter">wxPageSetupDialogData::GetEnablePrinter</A><BR>
+<A HREF="#wxpagesetupdialogdatagetenablehelp">wxPageSetupDialogData::GetEnableHelp</A><BR>
+<A HREF="#wxpagesetupdialogdatagetdefaultinfo">wxPageSetupDialogData::GetDefaultInfo</A><BR>
+<A HREF="#wxpagesetupdialogdatagetmargintopleft">wxPageSetupDialogData::GetMarginTopLeft</A><BR>
+<A HREF="#wxpagesetupdialogdatagetmarginbottomright">wxPageSetupDialogData::GetMarginBottomRight</A><BR>
+<A HREF="#wxpagesetupdialogdatagetminmargintopleft">wxPageSetupDialogData::GetMinMarginTopLeft</A><BR>
+<A HREF="#wxpagesetupdialogdatagetminmarginbottomright">wxPageSetupDialogData::GetMinMarginBottomRight</A><BR>
+<A HREF="#wxpagesetupdialogdatagetpaperid">wxPageSetupDialogData::GetPaperId</A><BR>
+<A HREF="#wxpagesetupdialogdatagetpapersize">wxPageSetupDialogData::GetPaperSize</A><BR>
+<A HREF="#wxpagesetupdialogdatagetprintdata">wxPageSetupDialogData::GetPrintData</A><BR>
+<A HREF="#wxpagesetupdialogdataisok">wxPageSetupDialogData::IsOk</A><BR>
+<A HREF="#wxpagesetupdialogdatasetdefaultinfo">wxPageSetupDialogData::SetDefaultInfo</A><BR>
+<A HREF="#wxpagesetupdialogdatasetdefaultminmargins">wxPageSetupDialogData::SetDefaultMinMargins</A><BR>
+<A HREF="#wxpagesetupdialogdatasetmargintopleft">wxPageSetupDialogData::SetMarginTopLeft</A><BR>
+<A HREF="#wxpagesetupdialogdatasetmarginbottomright">wxPageSetupDialogData::SetMarginBottomRight</A><BR>
+<A HREF="#wxpagesetupdialogdatasetminmargintopleft">wxPageSetupDialogData::SetMinMarginTopLeft</A><BR>
+<A HREF="#wxpagesetupdialogdatasetminmarginbottomright">wxPageSetupDialogData::SetMinMarginBottomRight</A><BR>
+<A HREF="#wxpagesetupdialogdatasetpaperid">wxPageSetupDialogData::SetPaperId</A><BR>
+<A HREF="#wxpagesetupdialogdatasetpapersize">wxPageSetupDialogData::SetPaperSize</A><BR>
+<A HREF="#wxpagesetupdialogdatasetprintdata">wxPageSetupDialogData::SetPrintData</A><BR>
+<A HREF="#wxpagesetupdialogdataassign">wxPageSetupDialogData::operator =</A><BR>
+<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatactor"></A>
+<H3>wxPageSetupDialogData::wxPageSetupDialogData</H3>
+<P>
+<B></B> <B>wxPageSetupDialogData</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxPageSetupDialogData</B>(<B><A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A>&</B></B><I> data</I>)<P>
+Copy constructor.<P>
+<B></B> <B>wxPageSetupDialogData</B>(<B><A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>&</B></B><I> printData</I>)<P>
+Construct an object from a print data object.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatadtor"></A>
+<H3>wxPageSetupDialogData::~wxPageSetupDialogData</H3>
+<P>
+<B></B> <B>~wxPageSetupDialogData</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdataenablehelp"></A>
+<H3>wxPageSetupDialogData::EnableHelp</H3>
+<P>
+<B>void</B> <B>EnableHelp</B>(<B>bool </B><I>flag</I>)<P>
+Enables or disables the 'Help' button (Windows only).<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdataenablemargins"></A>
+<H3>wxPageSetupDialogData::EnableMargins</H3>
+<P>
+<B>void</B> <B>EnableMargins</B>(<B>bool </B><I>flag</I>)<P>
+Enables or disables the margin controls (Windows only).<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdataenableorientation"></A>
+<H3>wxPageSetupDialogData::EnableOrientation</H3>
+<P>
+<B>void</B> <B>EnableOrientation</B>(<B>bool </B><I>flag</I>)<P>
+Enables or disables the orientation control (Windows only).<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdataenablepaper"></A>
+<H3>wxPageSetupDialogData::EnablePaper</H3>
+<P>
+<B>void</B> <B>EnablePaper</B>(<B>bool </B><I>flag</I>)<P>
+Enables or disables the paper size control (Windows only).<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdataenableprinter"></A>
+<H3>wxPageSetupDialogData::EnablePrinter</H3>
+<P>
+<B>void</B> <B>EnablePrinter</B>(<B>bool </B><I>flag</I>)<P>
+Enables or disables the <B>Printer</B> button, which invokes a printer setup dialog.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetdefaultminmargins"></A>
+<H3>wxPageSetupDialogData::GetDefaultMinMargins</H3>
+<P>
+<B>bool</B> <B>GetDefaultMinMargins</B>() <B>const</B><P>
+Returns true if the page setup dialog will take its minimum margin values from the currently
+selected printer properties. Windows only.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetenablemargins"></A>
+<H3>wxPageSetupDialogData::GetEnableMargins</H3>
+<P>
+<B>bool</B> <B>GetEnableMargins</B>() <B>const</B><P>
+Returns true if the margin controls are enabled (Windows only).<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetenableorientation"></A>
+<H3>wxPageSetupDialogData::GetEnableOrientation</H3>
+<P>
+<B>bool</B> <B>GetEnableOrientation</B>() <B>const</B><P>
+Returns true if the orientation control is enabled (Windows only).<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetenablepaper"></A>
+<H3>wxPageSetupDialogData::GetEnablePaper</H3>
+<P>
+<B>bool</B> <B>GetEnablePaper</B>() <B>const</B><P>
+Returns true if the paper size control is enabled (Windows only).<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetenableprinter"></A>
+<H3>wxPageSetupDialogData::GetEnablePrinter</H3>
+<P>
+<B>bool</B> <B>GetEnablePrinter</B>() <B>const</B><P>
+Returns true if the printer setup button is enabled.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetenablehelp"></A>
+<H3>wxPageSetupDialogData::GetEnableHelp</H3>
+<P>
+<B>bool</B> <B>GetEnableHelp</B>() <B>const</B><P>
+Returns true if the printer setup button is enabled.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetdefaultinfo"></A>
+<H3>wxPageSetupDialogData::GetDefaultInfo</H3>
+<P>
+<B>bool</B> <B>GetDefaultInfo</B>() <B>const</B><P>
+Returns true if the dialog will simply return default printer information (such as orientation)
+instead of showing a dialog. Windows only.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetmargintopleft"></A>
+<H3>wxPageSetupDialogData::GetMarginTopLeft</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetMarginTopLeft</B>() <B>const</B><P>
+Returns the left (x) and top (y) margins in millimetres.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetmarginbottomright"></A>
+<H3>wxPageSetupDialogData::GetMarginBottomRight</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetMarginBottomRight</B>() <B>const</B><P>
+Returns the right (x) and bottom (y) margins in millimetres.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetminmargintopleft"></A>
+<H3>wxPageSetupDialogData::GetMinMarginTopLeft</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetMinMarginTopLeft</B>() <B>const</B><P>
+Returns the left (x) and top (y) minimum margins the user can enter (Windows only). Units
+are in millimetres<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetminmarginbottomright"></A>
+<H3>wxPageSetupDialogData::GetMinMarginBottomRight</H3>
+<P>
+<B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetMinMarginBottomRight</B>() <B>const</B><P>
+Returns the right (x) and bottom (y) minimum margins the user can enter (Windows only). Units
+are in millimetres<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetpaperid"></A>
+<H3>wxPageSetupDialogData::GetPaperId</H3>
+<P>
+<B>wxPaperSize</B> <B>GetPaperId</B>() <B>const</B><P>
+Returns the paper id (stored in the internal wxPrintData object).<P>
+For further information, see <A HREF="wx_wxprintdata.html#wxprintdatasetpaperid">wxPrintData::SetPaperId</A>.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetpapersize"></A>
+<H3>wxPageSetupDialogData::GetPaperSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetPaperSize</B>() <B>const</B><P>
+Returns the paper size in millimetres.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatagetprintdata"></A>
+<H3>wxPageSetupDialogData::GetPrintData</H3>
+<P>
+<B><A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>&</B> </B> <B>GetPrintData</B>()<P>
+Returns a reference to the <A HREF="wx_wxprintdata.html#wxprintdata">print data</A> associated with this object.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdataisok"></A>
+<H3>wxPageSetupDialogData::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns true if the print data associated with the dialog data is valid.
+This can return false on Windows if the current printer is not set, for example.
+On all other platforms, it returns true.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatasetdefaultinfo"></A>
+<H3>wxPageSetupDialogData::SetDefaultInfo</H3>
+<P>
+<B>void</B> <B>SetDefaultInfo</B>(<B>bool</B><I> flag</I>)<P>
+Pass true if the dialog will simply return default printer information (such as orientation)
+instead of showing a dialog. Windows only.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatasetdefaultminmargins"></A>
+<H3>wxPageSetupDialogData::SetDefaultMinMargins</H3>
+<P>
+<B>void</B> <B>SetDefaultMinMargins</B>(<B>bool</B><I> flag</I>)<P>
+Pass true if the page setup dialog will take its minimum margin values from the currently
+selected printer properties. Windows only. Units are in millimetres<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatasetmargintopleft"></A>
+<H3>wxPageSetupDialogData::SetMarginTopLeft</H3>
+<P>
+<B>void</B> <B>SetMarginTopLeft</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>)<P>
+Sets the left (x) and top (y) margins in millimetres.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatasetmarginbottomright"></A>
+<H3>wxPageSetupDialogData::SetMarginBottomRight</H3>
+<P>
+<B>void</B> <B>SetMarginBottomRight</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>)<P>
+Sets the right (x) and bottom (y) margins in millimetres.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatasetminmargintopleft"></A>
+<H3>wxPageSetupDialogData::SetMinMarginTopLeft</H3>
+<P>
+<B>void</B> <B>SetMinMarginTopLeft</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>)<P>
+Sets the left (x) and top (y) minimum margins the user can enter (Windows only). Units are
+in millimetres.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatasetminmarginbottomright"></A>
+<H3>wxPageSetupDialogData::SetMinMarginBottomRight</H3>
+<P>
+<B>void</B> <B>SetMinMarginBottomRight</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>)<P>
+Sets the right (x) and bottom (y) minimum margins the user can enter (Windows only). Units are
+in millimetres.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatasetpaperid"></A>
+<H3>wxPageSetupDialogData::SetPaperId</H3>
+<P>
+<B>void</B> <B>SetPaperId</B>(<B>wxPaperSize&amp; </B><I>id</I>)<P>
+Sets the paper size id. For further information, see <A HREF="wx_wxprintdata.html#wxprintdatasetpaperid">wxPrintData::SetPaperId</A>.<P>
+Calling this function overrides the explicit paper dimensions passed in <A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdatasetpapersize">wxPageSetupDialogData::SetPaperSize</A>.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatasetpapersize"></A>
+<H3>wxPageSetupDialogData::SetPaperSize</H3>
+<P>
+<B>void</B> <B>SetPaperSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+Sets the paper size in millimetres. If a corresponding paper id is found, it will be set in the
+internal wxPrintData object, otherwise the paper size overrides the paper id.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdatasetprintdata"></A>
+<H3>wxPageSetupDialogData::SetPrintData</H3>
+<P>
+<B>void</B> <B>SetPrintData</B>(<B>const <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>&</B></B><I> printData</I>)<P>
+Sets the <A HREF="wx_wxprintdata.html#wxprintdata">print data</A> associated with this object.<P>
+
+<HR>
+<A NAME="wxpagesetupdialogdataassign"></A>
+<H3>wxPageSetupDialogData::operator =</H3>
+<P>
+<B>void</B> <B>operator =</B>(<B>const <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>&</B></B><I> data</I>)<P>
+Assigns print data to this object.<P>
+<B>void</B> <B>operator =</B>(<B>const <A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A>&</B></B><I> data</I>)<P>
+Assigns page setup data to this object.<P>
+
+</FONT></BODY></HTML>

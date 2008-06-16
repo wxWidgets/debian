@@ -1,0 +1,60 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRendererVersion</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrendererversion"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrenderernative.html#wxrenderernative"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextattr.html#wxrichtextattr"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRendererVersion</H2>
+<P>
+This simple struct represents the <A HREF="wx_wxrenderernative.html#wxrenderernative">wxRendererNative</A> 
+interface version and is only used as the return value of 
+<A HREF="wx_wxrenderernative.html#wxrenderernativegetversion">wxRendererNative::GetVersion</A>.<P>
+The version has two components: the version itself and the age. If the main
+program and the renderer have different versions they are never compatible with
+each other because the version is only changed when an existing virtual
+function is modified or removed. The age, on the other hand, is incremented
+each time a new virtual method is added and so, at least for the compilers
+using a common C++ object model, the calling program is compatible with any
+renderer which has the age greater or equal to its age. This verification is
+done by <A HREF="wx_wxrendererversion.html#wxrenderernativeiscompatible">IsCompatible</A> method.<P>
+
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/renderer.h&gt;<P>
+
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrenderernativeiscompatible">wxRendererVersion::IsCompatible</A><BR>
+<A HREF="#wxrendererversionversion">wxRendererVersion::version</A><BR>
+<A HREF="#wxrendererversionage">wxRendererVersion::age</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrenderernativeiscompatible"></A>
+<H3>wxRendererVersion::IsCompatible</H3>
+<P>
+<B>static bool</B> <B>IsCompatible</B>(<B>const <A HREF="wx_wxrendererversion.html#wxrendererversion">wxRendererVersion</A>& </B></B><I>ver</I>)<P>
+Checks if the main program is compatible with the renderer having the version 
+<I>ver</I>, returns <TT>true</TT> if it is and <TT>false</TT> otherwise.<P>
+This method is used by 
+<A HREF="wx_wxrenderernative.html#wxrenderernativeload">wxRendererNative::Load</A> to determine whether a
+renderer can be used.<P>
+
+
+<HR>
+<A NAME="wxrendererversionversion"></A>
+<H3>wxRendererVersion::version</H3>
+<P>
+const int version<P>
+The version component.<P>
+
+
+<HR>
+<A NAME="wxrendererversionage"></A>
+<H3>wxRendererVersion::age</H3>
+<P>
+const int age<P>
+The age component.<P>
+
+</FONT></BODY></HTML>

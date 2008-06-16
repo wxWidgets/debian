@@ -1,0 +1,87 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDbGridColInfo</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdbgridcolinfo"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdbtableinf.html#wxdbtableinf"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdbgridtablebase.html#wxdbgridtablebase"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDbGridColInfo</H2>
+<P>
+This class is used  to define columns to be shown, names of the columns,
+order and type of data, when using <A HREF="wx_wxdbgridtablebase.html#wxdbgridtablebase">wxdbGridTableBase</A> to display
+a Table or query in a <A HREF="wx_wxgrid.html#wxgrid">wxGrid</A><P>
+See the database grid example in <A HREF="wx_wxdbgridtablebase.html#wxdbgridtablebase">wxDbGridTableBase</A> for
+an introduction to using the wxDbGrid classes.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dbgrid.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdbgridcolinfoctor">wxDbGridColInfo::wxDbGridColInfo</A><BR>
+<A HREF="#wxdbgridcolinfodtor">wxDbGridColInfo::~wxDbGridColInfo</A><BR>
+<A HREF="#wxdbgridcolinfoaddcolinfo">wxDbGridColInfo::AddColInfo</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdbgridcolinfoctor"></A>
+<H3>wxDbGridColInfo::wxDbGridColInfo</H3>
+<P>
+<B></B> <B>wxDbGridColInfo</B>(<B>int </B><I>colNumber</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>type</I>,
+  <B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>title</I>, <B><A HREF="wx_wxdbgridcolinfo.html#wxdbgridcolinfo">wxDbGridColInfo</A> *</B></B><I>next</I>)<P>
+Default constructor. See the database grid example in <A HREF="wx_wxdbgridtablebase.html#wxdbgridtablebase">wxDbGridTableBase</A> to
+see two different ways for adding columns.<P>
+
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>colNumber</I><UL><UL>
+Column number in the <A HREF="wx_wxdbtable.html#wxdbtable">wxDbTable</A> instance to be used (first column is 0).</UL></UL>
+
+<I>type</I><UL><UL>
+Column type ,wxString specifying the grid name for the datatype in this column, or
+ use wxGRID_VALUE_DBAUTO to determine the type automatically from the <A HREF="wx_wxdbcoldef.html#wxdbcoldef">wxDbColDef</A> definition</UL></UL>
+
+<I>title</I><UL><UL>
+The column label to be used in the grid display</UL></UL>
+
+<I>next</I><UL><UL>
+A pointer to the next wxDbGridColInfo structure if using one-step
+construction, NULL  terminates the list. Use Null also if using two step construction.</UL></UL>
+
+See the database grid example in <A HREF="wx_wxdbgridtablebase.html#wxdbgridtablebase">wxDbGridTableBase</A> to
+see two different ways for adding columns.<P>
+
+<HR>
+<A NAME="wxdbgridcolinfodtor"></A>
+<H3>wxDbGridColInfo::~wxDbGridColInfo</H3>
+<P>
+<B></B> <B>~wxDbGridColInfo</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdbgridcolinfoaddcolinfo"></A>
+<H3>wxDbGridColInfo::AddColInfo</H3>
+<P>
+<B>void</B> <B>AddColInfo</B>(<B>int </B><I>colNumber</I>,
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>type</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>title</I>)<P>
+Use this member function for adding columns. See the database
+grid example in <A HREF="wx_wxdbgridtablebase.html#wxdbgridtablebase">wxDbGridTableBase</A> to
+see two different ways for adding columns.<P>
+It is important to note that this class is merely a specifier to the <A HREF="wx_wxdbgridtablebase.html#wxdbgridtablebase">wxDbGridTableBase</A> 
+constructor. Changes made to this datatype after the <A HREF="wx_wxdbgridtablebase.html#wxdbgridtablebase">wxDbGridTableBase</A> is called will
+not have any effect.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B>
+<I>colNumber</I><UL><UL>
+Column number in the <A HREF="wx_wxdbtable.html#wxdbtable">wxDbTable</A> instance to be used (first column is 0).</UL></UL>
+
+<I>type</I><UL><UL>
+Column type ,wxString specifying the grid name for the datatype in this column, or
+ use wxGRID_VALUE_DBAUTO to determine the type automatically from the <A HREF="wx_wxdbcoldef.html#wxdbcoldef">wxDbColDef</A> definition</UL></UL>
+
+<I>title</I><UL><UL>
+The column label to be used in the grid display</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+As wxDbTable must be defined with to have columns which match those  to by a wxDbGridColInfo
+info structure as this is the structure which informs the grid of how you want to display your 
+<A HREF="wx_wxdbtable.html#wxdbtable">wxDbTable</A>. If no datatype conversion or the referenced column number does not exist the
+the behavior is undefined.<P>
+See the example at <A HREF="wx_wxdbgridcolinfo.html#wxdbgridcolinfoctor">wxDbGridColInfo::wxDbGridColInfo</A>.<P>
+
+</FONT></BODY></HTML>

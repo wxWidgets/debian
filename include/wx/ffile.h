@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.07.99
-// RCS-ID:      $Id: ffile.h,v 1.23.2.1 2005/09/25 20:46:17 MW Exp $
+// RCS-ID:      $Id: ffile.h 38570 2006-04-05 14:37:47Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,16 +12,13 @@
 #ifndef   _WX_FFILE_H_
 #define   _WX_FFILE_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "ffile.h"
-#endif
-
 #include "wx/defs.h"        // for wxUSE_FFILE
 
 #if wxUSE_FFILE
 
 #include  "wx/string.h"
 #include  "wx/filefn.h"
+#include  "wx/convauto.h"
 
 #include <stdio.h>
 
@@ -58,14 +55,14 @@ public:
 
   // read/write (unbuffered)
     // read all data from the file into a string (useful for text files)
-  bool ReadAll(wxString *str, wxMBConv& conv = wxConvUTF8);
+  bool ReadAll(wxString *str, const wxMBConv& conv = wxConvAuto());
     // returns number of bytes read - use Eof() and Error() to see if an error
     // occurred or not
   size_t Read(void *pBuf, size_t nCount);
     // returns the number of bytes written
   size_t Write(const void *pBuf, size_t nCount);
     // returns true on success
-  bool Write(const wxString& s, wxMBConv& conv = wxConvUTF8)
+  bool Write(const wxString& s, const wxMBConv& conv = wxConvAuto())
   {
       const wxWX2MBbuf buf = s.mb_str(conv);
       size_t size = strlen(buf);

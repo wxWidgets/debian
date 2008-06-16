@@ -1,0 +1,59 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDbColDef</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdbcoldef"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdbcoldataptr.html#wxdbcoldataptr"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdbcolfor.html#wxdbcolfor"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDbColDef</H2>
+<P>
+This class is used to hold information about the columns bound to an
+instance of a wxDbTable object.<P>
+Each instance of this class describes one column in the wxDbTable
+object.  When calling the <A HREF="wx_wxdb.html#wxdbctor">wxDb constructor</A>, a
+parameter passed in indicates the number of columns that will be defined for
+the wxDbTable object.  The constructor uses this information to allocate
+adequate memory for all of the column descriptions in your wxDbTable object.
+Private member wxDbTable::colDefs is a pointer to this chunk of memory
+maintained by the wxDbTable class (and can be retrieved using the
+<A HREF="wx_wxdbtable.html#wxdbtablegetcoldefs">wxDbTable::GetColDefs</A> function).
+To access the nth column definition of your wxDbTable object, just reference
+wxDbColDefs element [n - 1].<P>
+Typically, <A HREF="wx_wxdbtable.html#wxdbtablesetcoldefs">wxDbTable::SetColDefs</A> is used to
+populate an array of these data structures for the wxDbTable instance.<P>
+Currently there are no accessor functions for this class, so all members are
+public.<P>
+<PRE>
+    wxChar  ColName[DB_MAX_COLUMN_NAME_LEN+1];  // Column Name
+    int     DbDataType;    - Logical Data Type;
+                             e.g. DB_DATA_TYPE_INTEGER
+    SWORD   SqlCtype;      - C data type; e.g. SQL_C_LONG
+    void   *PtrDataObj;    - Address of the data object
+    int     SzDataObj;     - Size, in bytes, of the data object
+    bool    KeyField;      - Is column part of the PRIMARY KEY for the
+                             table? -- Date fields should NOT be
+                             KeyFields
+    bool    Updateable;    - Column is updateable?
+    bool    InsertAllowed; - Column included in INSERT statements?
+    bool    DerivedCol;    - Column is a derived value?
+    SDWORD  CbValue;       - !!!Internal use only!!!
+    bool    Null;          - NOT FULLY IMPLEMENTED
+                             Allows NULL values in Inserts and Updates
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_odbcoverview.html#odbcoverview">database classes overview</A>,
+<A HREF="wx_wxdbtable.html#wxdbtablegetcoldefs">wxDbTable::GetColDefs</A>, <A HREF="wx_wxdb.html#wxdbctor">wxDb constructor</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/db.h&gt;<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdbcoldefinitialize">wxDbColDef::Initialize</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdbcoldefinitialize"></A>
+<H3>wxDbColDef::Initialize</H3>
+<P>
+Simply initializes all member variables to a cleared state.  Called by
+the constructor automatically.<P>
+
+</FONT></BODY></HTML>

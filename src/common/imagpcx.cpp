@@ -1,40 +1,34 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        imagpcx.cpp
+// Name:        src/common/imagpcx.cpp
 // Purpose:     wxImage PCX handler
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Version:     1.1
-// CVS-ID:      $Id: imagpcx.cpp,v 1.40 2005/03/17 23:19:06 VZ Exp $
+// CVS-ID:      $Id: imagpcx.cpp 40943 2006-08-31 19:31:43Z ABX $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "imagpcx.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-#  include "wx/defs.h"
-#  include "wx/palette.h"
+    #pragma hdrstop
 #endif
 
 #if wxUSE_IMAGE && wxUSE_PCX
 
+#ifndef WX_PRECOMP
+    #include "wx/object.h"
+    #include "wx/list.h"
+    #include "wx/log.h"
+    #include "wx/intl.h"
+    #include "wx/palette.h"
+    #include "wx/hash.h"
+    #include "wx/module.h"
+#endif
+
 #include "wx/imagpcx.h"
 #include "wx/wfstream.h"
-#include "wx/module.h"
-#include "wx/log.h"
-#include "wx/intl.h"
-
-#include "wx/hash.h"
-#include "wx/list.h"
-#include "wx/object.h"
 
 //-----------------------------------------------------------------------------
 // wxPCXHandler
@@ -504,4 +498,3 @@ bool wxPCXHandler::DoCanRead( wxInputStream& stream )
 #endif // wxUSE_STREAMS
 
 #endif // wxUSE_IMAGE && wxUSE_PCX
-

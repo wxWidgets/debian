@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tiffcomp.h,v 1.15 2005/07/21 17:30:41 ABX Exp $ */
+/* $Header$ */
 
 /*
  * Copyright (c) 1990-1997 Sam Leffler

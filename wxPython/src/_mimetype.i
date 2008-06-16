@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _mimetype.i,v 1.8 2005/05/31 09:29:15 JS Exp $
+// RCS-ID:      $Id: _mimetype.i 41028 2006-09-06 04:20:39Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -81,11 +81,21 @@ public:
 
     // get the array of all extensions
     const wxArrayString& GetExtensions() const;
-    int GetExtensionsCount() const;
+    size_t GetExtensionsCount() const;
 
     // get the icon info
     const wxString& GetIconFile() const;
     int GetIconIndex() const;
+    
+    %property(Description, GetDescription, doc="See `GetDescription`");
+    %property(Extensions, GetExtensions, doc="See `GetExtensions`");
+    %property(ExtensionsCount, GetExtensionsCount, doc="See `GetExtensionsCount`");
+    %property(IconFile, GetIconFile, doc="See `GetIconFile`");
+    %property(IconIndex, GetIconIndex, doc="See `GetIconIndex`");
+    %property(MimeType, GetMimeType, doc="See `GetMimeType`");
+    %property(OpenCommand, GetOpenCommand, doc="See `GetOpenCommand`");
+    %property(PrintCommand, GetPrintCommand, doc="See `GetPrintCommand`");
+    %property(ShortDesc, GetShortDesc, SetShortDesc, doc="See `GetShortDesc` and `SetShortDesc`");
 };
 
 
@@ -289,13 +299,21 @@ public:
         }
     }
 
+    %property(AllCommands, GetAllCommands, doc="See `GetAllCommands`");
+    %property(Description, GetDescription, doc="See `GetDescription`");
+    %property(Extensions, GetExtensions, doc="See `GetExtensions`");
+    %property(Icon, GetIcon, doc="See `GetIcon`");
+    %property(IconInfo, GetIconInfo, doc="See `GetIconInfo`");
+    %property(MimeType, GetMimeType, doc="See `GetMimeType`");
+    %property(MimeTypes, GetMimeTypes, doc="See `GetMimeTypes`");
+    %property(OpenCommand, GetOpenCommand, doc="See `GetOpenCommand`");
+    %property(PrintCommand, GetPrintCommand, doc="See `GetPrintCommand`");
 };
 
 
 
 //---------------------------------------------------------------------------
 
-// See also wxPy_ReinitStockObjects in helpers.cpp
 wxMimeTypesManager* const wxTheMimeTypesManager;
 
 

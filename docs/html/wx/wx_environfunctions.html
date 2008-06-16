@@ -1,0 +1,65 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>Environment access functions</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="environfunctions"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_functions.html#functions"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_debugmacros.html#debugmacros"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_constants.html#constants"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>Environment access functions</H2>
+<P>
+The functions in this section allow to access (get) or change value of
+environment variables in a portable way. They are currently implemented under
+Win32 and POSIX-like systems (Unix).<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/utils.h&gt;<P>
+
+<A HREF="#wxgetenvmacro">wxGetenv</A><BR>
+<A HREF="#wxgetenv">wxGetEnv</A><BR>
+<A HREF="#wxsetenv">wxSetEnv</A><BR>
+<A HREF="#wxunsetenv">wxUnsetEnv</A><BR>
+<P>
+
+<HR>
+<A NAME="wxgetenvmacro"></A>
+<H3>wxGetenv</H3>
+<P>
+<B>wxChar *</B> <B>wxGetEnv</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> var</I>)<P>
+This is a macro defined as <TT>getenv()</TT> or its wide char version in Unicode
+mode.<P>
+Note that under Win32 it may not return correct value for the variables set
+with <A HREF="wx_environfunctions.html#wxsetenv">wxSetEnv</A>, use <A HREF="wx_environfunctions.html#wxgetenv">wxGetEnv</A> function
+instead.<P>
+
+
+<HR>
+<A NAME="wxgetenv"></A>
+<H3>wxGetEnv</H3>
+<P>
+<B>bool</B> <B>wxGetEnv</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> var</I>, <B><A HREF="wx_wxstring.html#wxstring">wxString</A> *</B></B><I>value</I>)<P>
+Returns the current value of the environment variable <I>var</I> in <I>value</I>.
+<I>value</I> may be <TT>NULL</TT> if you just want to know if the variable exists
+and are not interested in its value.<P>
+Returns <TT>true</TT> if the variable exists, <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxsetenv"></A>
+<H3>wxSetEnv</H3>
+<P>
+<B>bool</B> <B>wxSetEnv</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> var</I>, <B>const wxChar *</B><I>value</I>)<P>
+Sets the value of the environment variable <I>var</I> (adding it if necessary)
+to <I>value</I>.<P>
+Returns <TT>true</TT> on success.<P>
+
+
+<HR>
+<A NAME="wxunsetenv"></A>
+<H3>wxUnsetEnv</H3>
+<P>
+<B>bool</B> <B>wxUnsetEnv</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> var</I>)<P>
+Removes the variable <I>var</I> from the environment.
+<A HREF="wx_environfunctions.html#wxgetenv">wxGetEnv</A> will return <TT>NULL</TT> after the call to this
+function.<P>
+Returns <TT>true</TT> on success.
+
+</FONT></BODY></HTML>

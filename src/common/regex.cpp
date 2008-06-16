@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder and Vadim Zeitlin
 // Modified by:
 // Created:     13.07.01
-// RCS-ID:      $Id: regex.cpp,v 1.35.2.2 2005/11/27 18:12:37 MW Exp $
+// RCS-ID:      $Id: regex.cpp 36271 2005-11-27 18:12:37Z MW $
 // Copyright:   (c) 2000 Karsten Ballüder <ballueder@gmx.net>
 //                  2001 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
@@ -17,10 +17,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "regex.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -94,7 +90,7 @@ public:
     // we just use casts here because the fields of regmatch_t struct may be 64
     // bit but we're limited to size_t in our public API and are not going to
     // change it because operating on strings longer than 4GB using it is
-    // absolutely impractical anyhow, but still check at least in debug
+    // absolutely impractical anyhow
     size_t Start(size_t n) const
     {
         return wx_truncate_cast(size_t, m_matches[n].rm_so);
@@ -172,7 +168,7 @@ public:
 
 private:
     // return the string containing the error message for the given err code
-    wxString GetErrorMsg(int errorcode, bool badconv = false) const;
+    wxString GetErrorMsg(int errorcode, bool badconv) const;
 
     // init the members
     void Init()

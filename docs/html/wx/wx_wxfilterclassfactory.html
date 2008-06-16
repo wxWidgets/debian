@@ -1,0 +1,182 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxFilterClassFactory</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxfilterclassfactory"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxfiletype.html#wxfiletype"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxfilterinputstream.html#wxfilterinputstream"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxFilterClassFactory</H2>
+<P>
+Allows the creation of filter streams to handle compression formats such
+as gzip and bzip2.<P>
+For example, given a filename you can search for a factory that will
+handle it and create a stream to decompress it:<P>
+<PRE>
+    factory = wxFilterClassFactory::Find(filename, wxSTREAM_FILEEXT);
+    if (factory)
+        stream = factory-&gt;NewStream(new wxFFileInputStream(filename));
+</PRE>
+<A HREF="wx_wxfilterclassfactory.html#wxfilterclassfactoryfind">Find()</A> can also search
+for a factory by MIME type, HTTP encoding or by wxFileSystem protocol.
+The available factories can be enumerated
+using <A HREF="wx_wxfilterclassfactory.html#wxfilterclassfactorygetfirst">GetFirst() and GetNext()</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/stream.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<PRE>
+enum wxStreamProtocolType
+{
+    wxSTREAM_PROTOCOL,  // wxFileSystem protocol (should be only one)
+    wxSTREAM_MIMETYPE,  // MIME types the stream handles
+    wxSTREAM_ENCODING,  // The HTTP Content-Encodings the stream handles
+    wxSTREAM_FILEEXT    // File extensions the stream handles
+};
+
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxfilterinputstream.html#wxfilterinputstream">wxFilterInputStream</A><BR>
+
+<A HREF="wx_wxfilteroutputstream.html#wxfilteroutputstream">wxFilterOutputStream</A><BR>
+
+<A HREF="wx_wxarchiveclassfactory.html#wxarchiveclassfactory">wxArchiveClassFactory</A><BR>
+
+<A HREF="wx_wxarc.html#wxarc">Archive formats such as zip</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxfilterclassfactorycanhandle">wxFilterClassFactory::CanHandle</A><BR>
+<A HREF="#wxfilterclassfactoryfind">wxFilterClassFactory::Find</A><BR>
+<A HREF="#wxfilterclassfactorygetfirst">wxFilterClassFactory::GetFirst/GetNext</A><BR>
+<A HREF="#wxfilterclassfactorygetprotocol">wxFilterClassFactory::GetProtocol</A><BR>
+<A HREF="#wxfilterclassfactorygetprotocols">wxFilterClassFactory::GetProtocols</A><BR>
+<A HREF="#wxfilterclassfactorynewstream">wxFilterClassFactory::NewStream</A><BR>
+<A HREF="#wxfilterclassfactorypopextension">wxFilterClassFactory::PopExtension</A><BR>
+<A HREF="#wxfilterclassfactorypushfront">wxFilterClassFactory::PushFront</A><BR>
+<A HREF="#wxfilterclassfactoryremove">wxFilterClassFactory::Remove</A><BR>
+<P>
+
+<HR>
+<A NAME="wxfilterclassfactorycanhandle"></A>
+<H3>wxFilterClassFactory::CanHandle</H3>
+<P>
+<B>bool</B> <B>CanHandle</B>(<B>const wxChar* </B><I>protocol</I>, <B>wxStreamProtocolType </B><I>type = wxSTREAM_PROTOCOL</I>) <B>const</B><P>
+Returns true if this factory can handle the given protocol, MIME type, HTTP
+encoding or file extension.<P>
+When using wxSTREAM_FILEEXT for the second parameter, the first parameter
+can be a complete filename rather than just an extension.<P>
+
+
+<HR>
+<A NAME="wxfilterclassfactoryfind"></A>
+<H3>wxFilterClassFactory::Find</H3>
+<P>
+<B>static const <A HREF="wx_wxfilterclassfactory.html#wxfilterclassfactory">wxFilterClassFactory</A>*</B> </B> <B>Find</B>(<B>const wxChar* </B><I>protocol</I>, <B>wxStreamProtocolType </B><I>type = wxSTREAM_PROTOCOL</I>)<P>
+A static member that finds a factory that can handle a given protocol, MIME
+type, HTTP encoding or file extension.  Returns a pointer to the class
+factory if found, or NULL otherwise. It does not give away ownership of the
+factory.<P>
+When using wxSTREAM_FILEEXT for the second parameter, the first parameter
+can be a complete filename rather than just an extension.<P>
+
+
+<HR>
+<A NAME="wxfilterclassfactorygetfirst"></A>
+<H3>wxFilterClassFactory::GetFirst/GetNext</H3>
+<P>
+<B>static const <A HREF="wx_wxfilterclassfactory.html#wxfilterclassfactory">wxFilterClassFactory</A>*</B> </B> <B>GetFirst</B>()<P>
+<B>const <A HREF="wx_wxfilterclassfactory.html#wxfilterclassfactory">wxFilterClassFactory</A>*</B> </B> <B>GetNext</B>() <B>const</B><P>
+GetFirst and GetNext can be used to enumerate the available factories.<P>
+For example, to list them:<P>
+<PRE>
+    wxString list;
+    const wxFilterClassFactory *factory = wxFilterClassFactory::GetFirst();
+
+    while (factory) {
+        list &lt;&lt; factory-&gt;GetProtocol() &lt;&lt; _T("\n");
+        factory = factory-&gt;GetNext();
+    }
+
+</PRE>
+GetFirst()/GetNext() return a pointer to a factory or NULL if no more
+are available. They do not give away ownership of the factory.<P>
+
+
+<HR>
+<A NAME="wxfilterclassfactorygetprotocol"></A>
+<H3>wxFilterClassFactory::GetProtocol</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetProtocol</B>() <B>const</B><P>
+Returns the wxFileSystem protocol supported by this factory. Equivalent
+to wxString(*GetProtcols()).<P>
+
+
+<HR>
+<A NAME="wxfilterclassfactorygetprotocols"></A>
+<H3>wxFilterClassFactory::GetProtocols</H3>
+<P>
+<B>const wxChar * const*</B> <B>GetProtocols</B>(<B>wxStreamProtocolType </B><I>type = wxSTREAM_PROTOCOL</I>) <B>const</B><P>
+Returns the protocols, MIME types, HTTP encodings or file extensions
+supported by this factory, as an array of null terminated strings. It does
+not give away ownership of the array or strings.<P>
+For example, to list the file extensions a factory supports:<P>
+<PRE>
+    wxString list;
+    const wxChar *const *p;
+
+    for (p = factory-&gt;GetProtocols(wxSTREAM_FILEEXT); *p; p++)
+        list &lt;&lt; *p &lt;&lt; _T("\n");
+
+</PRE>
+
+
+<HR>
+<A NAME="wxfilterclassfactorynewstream"></A>
+<H3>wxFilterClassFactory::NewStream</H3>
+<P>
+<B><A HREF="wx_wxfilterinputstream.html#wxfilterinputstream">wxFilterInputStream</A>*</B> </B> <B>NewStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>) <B>const</B><P>
+<B><A HREF="wx_wxfilteroutputstream.html#wxfilteroutputstream">wxFilterOutputStream</A>*</B> </B> <B>NewStream</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>) <B>const</B><P>
+<B><A HREF="wx_wxfilterinputstream.html#wxfilterinputstream">wxFilterInputStream</A>*</B> </B> <B>NewStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>* </B></B><I>stream</I>) <B>const</B><P>
+<B><A HREF="wx_wxfilteroutputstream.html#wxfilteroutputstream">wxFilterOutputStream</A>*</B> </B> <B>NewStream</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>* </B></B><I>stream</I>) <B>const</B><P>
+Create a new input or output stream to decompress or compress a given stream.<P>
+If the parent stream is passed as a pointer then the new filter stream
+takes ownership of it. If it is passed by reference then it does not.<P>
+
+
+<HR>
+<A NAME="wxfilterclassfactorypopextension"></A>
+<H3>wxFilterClassFactory::PopExtension</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>PopExtension</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>location</I>) <B>const</B><P>
+Remove the file extension of <I>location</I> if it is one of the file
+extensions handled by this factory.<P>
+
+
+<HR>
+<A NAME="wxfilterclassfactorypushfront"></A>
+<H3>wxFilterClassFactory::PushFront</H3>
+<P>
+<B>void</B> <B>PushFront</B>()<P>
+Adds this class factory to the list returned
+by <A HREF="wx_wxfilterclassfactory.html#wxfilterclassfactorygetfirst">GetFirst()/GetNext()</A>.<P>
+It is not necessary to do this to use the filter streams. It is usually
+used when implementing streams, typically the implementation will 
+add a static instance of its factory class.<P>
+It can also be used to change the order of a factory already in the list,
+bringing it to the front. This isn't a thread safe operation
+so can't be done when other threads are running that will be using the list.<P>
+The list does not take ownership of the factory.<P>
+
+
+<HR>
+<A NAME="wxfilterclassfactoryremove"></A>
+<H3>wxFilterClassFactory::Remove</H3>
+<P>
+<B>void</B> <B>Remove</B>()<P>
+Removes this class factory from the list returned
+by <A HREF="wx_wxfilterclassfactory.html#wxfilterclassfactorygetfirst">GetFirst()/GetNext()</A>.<P>
+Removing from the list isn't a thread safe operation
+so can't be done when other threads are running that will be using the list.<P>
+The list does not own the factories, so removing a factory does not delete it.<P>
+
+</FONT></BODY></HTML>

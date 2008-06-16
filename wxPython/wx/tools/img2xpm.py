@@ -4,7 +4,7 @@
 #
 # Author:      Robin Dunn
 #
-# RCS-ID:      $Id: img2xpm.py,v 1.6 2004/04/27 19:26:29 RD Exp $
+# RCS-ID:      $Id: img2xpm.py 39136 2006-05-10 23:22:27Z RD $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -36,14 +36,14 @@ Options:
 """
 
 import  sys
-
 import  wx
-
 import  img2img
 
+app = None
 def main():
     # some bitmap related things need to have a wxApp initialized...
     if wx.GetApp() is None:
+        global app
         app = wx.PySimpleApp()
     img2img.main(sys.argv[1:], wx.BITMAP_TYPE_XPM, ".xpm", __doc__)
 

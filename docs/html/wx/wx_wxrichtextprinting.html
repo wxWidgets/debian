@@ -1,0 +1,224 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextPrinting</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextprinting"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextparagraphstyledefinition.html#wxrichtextparagraphstyledefinition"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextprintout.html#wxrichtextprintout"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextPrinting</H2>
+<P>
+This class provides a simple interface for performing <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A> printing
+and previewing. It uses <A HREF="wx_wxrichtextprintout.html#wxrichtextprintout">wxRichTextPrintout</A> for layout and rendering.
+ 
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtext/richtextprint.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextprintingwxrichtextprinting">wxRichTextPrinting::wxRichTextPrinting</A><BR>
+<A HREF="#wxrichtextprintinggetfootertext">wxRichTextPrinting::GetFooterText</A><BR>
+<A HREF="#wxrichtextprintinggetheaderfooterdata">wxRichTextPrinting::GetHeaderFooterData</A><BR>
+<A HREF="#wxrichtextprintinggetheadertext">wxRichTextPrinting::GetHeaderText</A><BR>
+<A HREF="#wxrichtextprintinggetpagesetupdata">wxRichTextPrinting::GetPageSetupData</A><BR>
+<A HREF="#wxrichtextprintinggetparentwindow">wxRichTextPrinting::GetParentWindow</A><BR>
+<A HREF="#wxrichtextprintinggetpreviewrect">wxRichTextPrinting::GetPreviewRect</A><BR>
+<A HREF="#wxrichtextprintinggetprintdata">wxRichTextPrinting::GetPrintData</A><BR>
+<A HREF="#wxrichtextprintinggettitle">wxRichTextPrinting::GetTitle</A><BR>
+<A HREF="#wxrichtextprintingpagesetup">wxRichTextPrinting::PageSetup</A><BR>
+<A HREF="#wxrichtextprintingpreviewbuffer">wxRichTextPrinting::PreviewBuffer</A><BR>
+<A HREF="#wxrichtextprintingpreviewfile">wxRichTextPrinting::PreviewFile</A><BR>
+<A HREF="#wxrichtextprintingprintbuffer">wxRichTextPrinting::PrintBuffer</A><BR>
+<A HREF="#wxrichtextprintingprintfile">wxRichTextPrinting::PrintFile</A><BR>
+<A HREF="#wxrichtextprintingsetfootertext">wxRichTextPrinting::SetFooterText</A><BR>
+<A HREF="#wxrichtextprintingsetheaderfooterdata">wxRichTextPrinting::SetHeaderFooterData</A><BR>
+<A HREF="#wxrichtextprintingsetheaderfooterfont">wxRichTextPrinting::SetHeaderFooterFont</A><BR>
+<A HREF="#wxrichtextprintingsetheaderfootertextcolour">wxRichTextPrinting::SetHeaderFooterTextColour</A><BR>
+<A HREF="#wxrichtextprintingsetheadertext">wxRichTextPrinting::SetHeaderText</A><BR>
+<A HREF="#wxrichtextprintingsetpagesetupdata">wxRichTextPrinting::SetPageSetupData</A><BR>
+<A HREF="#wxrichtextprintingsetparentwindow">wxRichTextPrinting::SetParentWindow</A><BR>
+<A HREF="#wxrichtextprintingsetpreviewrect">wxRichTextPrinting::SetPreviewRect</A><BR>
+<A HREF="#wxrichtextprintingsetprintdata">wxRichTextPrinting::SetPrintData</A><BR>
+<A HREF="#wxrichtextprintingsetshowonfirstpage">wxRichTextPrinting::SetShowOnFirstPage</A><BR>
+<A HREF="#wxrichtextprintingsettitle">wxRichTextPrinting::SetTitle</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextprintingwxrichtextprinting"></A>
+<H3>wxRichTextPrinting::wxRichTextPrinting</H3>
+<P>
+<B></B> <B>wxRichTextPrinting</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxT("Printing")</I>, <B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parentWindow = NULL</I>)<P>
+Constructor. Optionally pass a title to be used in the preview frame and printing wait dialog, and
+also a parent window for these windows.<P>
+
+<HR>
+<A NAME="wxrichtextprintinggetfootertext"></A>
+<H3>wxRichTextPrinting::GetFooterText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFooterText</B>(<B>wxRichTextOddEvenPage </B><I>page = wxRICHTEXT_PAGE_EVEN</I>, <B>wxRichTextPageLocation </B><I>location = wxRICHTEXT_PAGE_CENTRE</I>) <B>const</B><P>
+A convenience function to get the footer text. See <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A> for details.<P>
+
+<HR>
+<A NAME="wxrichtextprintinggetheaderfooterdata"></A>
+<H3>wxRichTextPrinting::GetHeaderFooterData</H3>
+<P>
+<B>const <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A>&</B> </B> <B>GetHeaderFooterData</B>() <B>const</B><P>
+Returns the internal <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A> object.<P>
+
+<HR>
+<A NAME="wxrichtextprintinggetheadertext"></A>
+<H3>wxRichTextPrinting::GetHeaderText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetHeaderText</B>(<B>wxRichTextOddEvenPage </B><I>page = wxRICHTEXT_PAGE_EVEN</I>, <B>wxRichTextPageLocation </B><I>location = wxRICHTEXT_PAGE_CENTRE</I>) <B>const</B><P>
+A convenience function to get the header text. See <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A> for details.<P>
+
+<HR>
+<A NAME="wxrichtextprintinggetpagesetupdata"></A>
+<H3>wxRichTextPrinting::GetPageSetupData</H3>
+<P>
+<B><A HREF="wx_wxpagesetupdialogdata.html#wxpagesetupdialogdata">wxPageSetupDialogData</A>*</B> </B> <B>GetPageSetupData</B>()<P>
+Returns a pointer to the internal page setup data.<P>
+
+<HR>
+<A NAME="wxrichtextprintinggetparentwindow"></A>
+<H3>wxRichTextPrinting::GetParentWindow</H3>
+<P>
+<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B> </B> <B>GetParentWindow</B>() <B>const</B><P>
+Returns the parent window to be used for the preview window and printing wait dialog.<P>
+
+<HR>
+<A NAME="wxrichtextprintinggetpreviewrect"></A>
+<H3>wxRichTextPrinting::GetPreviewRect</H3>
+<P>
+<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B> </B> <B>GetPreviewRect</B>() <B>const</B><P>
+Returns the dimensions to be used for the preview window.<P>
+
+<HR>
+<A NAME="wxrichtextprintinggetprintdata"></A>
+<H3>wxRichTextPrinting::GetPrintData</H3>
+<P>
+<B><A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>*</B> </B> <B>GetPrintData</B>()<P>
+Returns a pointer to the internal print data.<P>
+
+<HR>
+<A NAME="wxrichtextprintinggettitle"></A>
+<H3>wxRichTextPrinting::GetTitle</H3>
+<P>
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>GetTitle</B>() <B>const</B><P>
+Returns the title of the preview window or printing wait caption.<P>
+
+<HR>
+<A NAME="wxrichtextprintingpagesetup"></A>
+<H3>wxRichTextPrinting::PageSetup</H3>
+<P>
+<B>void</B> <B>PageSetup</B>()<P>
+Shows the page setup dialog.<P>
+
+<HR>
+<A NAME="wxrichtextprintingpreviewbuffer"></A>
+<H3>wxRichTextPrinting::PreviewBuffer</H3>
+<P>
+<B>bool</B> <B>PreviewBuffer</B>(<B>const <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>& </B></B><I>buffer</I>)<P>
+Shows a preview window for the given buffer. The function takes its own copy of <I>buffer</I>.<P>
+
+<HR>
+<A NAME="wxrichtextprintingpreviewfile"></A>
+<H3>wxRichTextPrinting::PreviewFile</H3>
+<P>
+<B>bool</B> <B>PreviewFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>richTextFile</I>)<P>
+Shows a preview window for the given file. <I>richTextFile</I> can be a text file or XML file, or other file
+depending on the available file handlers.<P>
+
+<HR>
+<A NAME="wxrichtextprintingprintbuffer"></A>
+<H3>wxRichTextPrinting::PrintBuffer</H3>
+<P>
+<B>bool</B> <B>PrintBuffer</B>(<B>const <A HREF="wx_wxrichtextbuffer.html#wxrichtextbuffer">wxRichTextBuffer</A>& </B></B><I>buffer</I>)<P>
+Prints the given buffer. The function takes its own copy of <I>buffer</I>.<P>
+
+<HR>
+<A NAME="wxrichtextprintingprintfile"></A>
+<H3>wxRichTextPrinting::PrintFile</H3>
+<P>
+<B>bool</B> <B>PrintFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>richTextFile</I>)<P>
+Prints the given file. <I>richTextFile</I> can be a text file or XML file, or other file
+depending on the available file handlers.<P>
+
+<HR>
+<A NAME="wxrichtextprintingsetfootertext"></A>
+<H3>wxRichTextPrinting::SetFooterText</H3>
+<P>
+<B>void</B> <B>SetFooterText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>wxRichTextOddEvenPage </B><I>page = wxRICHTEXT_PAGE_ALL</I>, <B>wxRichTextPageLocation </B><I>location = wxRICHTEXT_PAGE_CENTRE</I>)<P>
+A convenience function to set the footer text. See <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A> for details.<P>
+
+<HR>
+<A NAME="wxrichtextprintingsetheaderfooterdata"></A>
+<H3>wxRichTextPrinting::SetHeaderFooterData</H3>
+<P>
+<B>void</B> <B>SetHeaderFooterData</B>(<B>const <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A>& </B></B><I>data</I>)<P>
+Sets the internal <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A> object.<P>
+
+<HR>
+<A NAME="wxrichtextprintingsetheaderfooterfont"></A>
+<H3>wxRichTextPrinting::SetHeaderFooterFont</H3>
+<P>
+<B>void</B> <B>SetHeaderFooterFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A> font.<P>
+
+<HR>
+<A NAME="wxrichtextprintingsetheaderfootertextcolour"></A>
+<H3>wxRichTextPrinting::SetHeaderFooterTextColour</H3>
+<P>
+<B>void</B> <B>SetHeaderFooterTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>colour</I>)<P>
+Sets the <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A> text colour.<P>
+
+<HR>
+<A NAME="wxrichtextprintingsetheadertext"></A>
+<H3>wxRichTextPrinting::SetHeaderText</H3>
+<P>
+<B>void</B> <B>SetHeaderText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>wxRichTextOddEvenPage </B><I>page = wxRICHTEXT_PAGE_ALL</I>, <B>wxRichTextPageLocation </B><I>location = wxRICHTEXT_PAGE_CENTRE</I>)<P>
+A convenience function to set the header text. See <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A> for details.<P>
+
+<HR>
+<A NAME="wxrichtextprintingsetpagesetupdata"></A>
+<H3>wxRichTextPrinting::SetPageSetupData</H3>
+<P>
+<B>void</B> <B>SetPageSetupData</B>(<B>const wxPageSetupData&amp; </B><I>pageSetupData</I>)<P>
+Sets the page setup data.<P>
+
+<HR>
+<A NAME="wxrichtextprintingsetparentwindow"></A>
+<H3>wxRichTextPrinting::SetParentWindow</H3>
+<P>
+<B>void</B> <B>SetParentWindow</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>parent</I>)<P>
+Sets the parent window to be used for the preview window and printing wait dialog.<P>
+
+<HR>
+<A NAME="wxrichtextprintingsetpreviewrect"></A>
+<H3>wxRichTextPrinting::SetPreviewRect</H3>
+<P>
+<B>void</B> <B>SetPreviewRect</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>)<P>
+Sets the dimensions to be used for the preview window.<P>
+
+<HR>
+<A NAME="wxrichtextprintingsetprintdata"></A>
+<H3>wxRichTextPrinting::SetPrintData</H3>
+<P>
+<B>void</B> <B>SetPrintData</B>(<B>const <A HREF="wx_wxprintdata.html#wxprintdata">wxPrintData</A>& </B></B><I>printData</I>)<P>
+Sets the print data.<P>
+
+<HR>
+<A NAME="wxrichtextprintingsetshowonfirstpage"></A>
+<H3>wxRichTextPrinting::SetShowOnFirstPage</H3>
+<P>
+<B>void</B> <B>SetShowOnFirstPage</B>(<B>bool </B><I>show</I>)<P>
+Pass <TT>true</TT> to show the header and footer on the first page.<P>
+
+<HR>
+<A NAME="wxrichtextprintingsettitle"></A>
+<H3>wxRichTextPrinting::SetTitle</H3>
+<P>
+<B>void</B> <B>SetTitle</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>title</I>)<P>
+Pass the title of the preview window or printing wait caption.<P>
+
+</FONT></BODY></HTML>

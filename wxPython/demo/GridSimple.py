@@ -3,6 +3,10 @@ import  wx
 import  wx.grid             as  gridlib
 #import  wx.lib.mixins.grid  as  mixins
 
+#print wx.version()
+#import os; print "pid:", os.getpid(); raw_input("Press Enter...")
+
+
 #---------------------------------------------------------------------------
 
 class SimpleGrid(gridlib.Grid): ##, mixins.GridAutoEditMixin):
@@ -72,7 +76,11 @@ class SimpleGrid(gridlib.Grid): ##, mixins.GridAutoEditMixin):
         self.SetCellEditor(0, 4, editor)
         self.SetCellValue(0, 4, "Limited text")
 
+        renderer = gridlib.GridCellAutoWrapStringRenderer()
+        self.SetCellRenderer(15,0, renderer)
+        self.SetCellValue(15,0, "The text in this cell will be rendered with word-wrapping")
 
+        
         # test all the events
         self.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
@@ -230,7 +238,7 @@ class SimpleGrid(gridlib.Grid): ##, mixins.GridAutoEditMixin):
 class TestFrame(wx.Frame):
     def __init__(self, parent, log):
         wx.Frame.__init__(self, parent, -1, "Simple Grid Demo", size=(640,480))
-        grid = SimpleGrid(self, log)
+        self.grid = SimpleGrid(self, log)
 
 
 
@@ -238,9 +246,13 @@ class TestFrame(wx.Frame):
 
 if __name__ == '__main__':
     import sys
-    app = wx.PySimpleApp()
+    from wx.lib.mixins.inspection import InspectableApp
+    app = InspectableApp(False)
     frame = TestFrame(None, sys.stdout)
     frame.Show(True)
+    #import wx.py
+    #shell = wx.py.shell.ShellFrame(frame, locals={'wx':wx, 'frame':frame})
+    #shell.Show()
     app.MainLoop()
 
 

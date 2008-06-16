@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _effects.i,v 1.2 2003/11/12 21:32:31 RD Exp $
+// RCS-ID:      $Id: _effects.i 41028 2006-09-06 04:20:39Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -50,6 +50,12 @@ public:
     // Tile a bitmap
     bool TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap);
 
+    %property(DarkShadow, GetDarkShadow, SetDarkShadow, doc="See `GetDarkShadow` and `SetDarkShadow`");
+    %property(FaceColour, GetFaceColour, SetFaceColour, doc="See `GetFaceColour` and `SetFaceColour`");
+    %property(HighlightColour, GetHighlightColour, SetHighlightColour, doc="See `GetHighlightColour` and `SetHighlightColour`");
+    %property(LightShadow, GetLightShadow, SetLightShadow, doc="See `GetLightShadow` and `SetLightShadow`");
+    %property(MediumShadow, GetMediumShadow, SetMediumShadow, doc="See `GetMediumShadow` and `SetMediumShadow`");
+    
 };
 
 

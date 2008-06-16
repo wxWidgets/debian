@@ -2,40 +2,27 @@
 // Name:        dcmemory.h
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dcmemory.h,v 1.17 2005/08/02 22:57:54 MW Exp $
+// RCS-ID:      $Id: dcmemory.h 43843 2006-12-07 05:44:44Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _WX_GTK_DCMEMORY_H_
+#define _WX_GTK_DCMEMORY_H_
 
-#ifndef __GTKDCMEMORYH__
-#define __GTKDCMEMORYH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface
-#endif
-
-#include "wx/defs.h"
 #include "wx/dcclient.h"
-
-//-----------------------------------------------------------------------------
-// classes
-//-----------------------------------------------------------------------------
-
-class WXDLLIMPEXP_CORE wxMemoryDC;
 
 //-----------------------------------------------------------------------------
 // wxMemoryDC
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxMemoryDC : public wxWindowDC
+class WXDLLIMPEXP_CORE wxMemoryDC : public wxWindowDC, public wxMemoryDCBase
 {
 public:
-    wxMemoryDC();
+    wxMemoryDC() : wxWindowDC() { Init(); }
+    wxMemoryDC(wxBitmap& bitmap) : wxWindowDC() { Init(); SelectObject(bitmap); }
     wxMemoryDC( wxDC *dc ); // Create compatible DC
-    ~wxMemoryDC();
-    virtual void SelectObject( const wxBitmap& bitmap );
-    void DoGetSize( int *width, int *height ) const;
+    virtual ~wxMemoryDC();
 
     // these get reimplemented for mono-bitmaps to behave
     // more like their Win32 couterparts. They now interpret
@@ -48,12 +35,19 @@ public:
     virtual void SetTextBackground( const wxColour &col );
 
     // implementation
+    virtual wxBitmap GetSelectedBitmap() const { return m_selected; }        
     wxBitmap  m_selected;
 
+protected:
+    void DoGetSize( int *width, int *height ) const;
+    virtual void DoSelect(const wxBitmap& bitmap);
+    virtual wxBitmap DoGetAsBitmap(const wxRect *subrect) const 
+    { return subrect == NULL ? GetSelectedBitmap() : GetSelectedBitmap().GetSubBitmap(*subrect); }
+
 private:
+    void Init();
+
     DECLARE_DYNAMIC_CLASS(wxMemoryDC)
 };
 
-#endif
-    // __GTKDCMEMORYH__
-
+#endif // _WX_GTK_DCMEMORY_H_

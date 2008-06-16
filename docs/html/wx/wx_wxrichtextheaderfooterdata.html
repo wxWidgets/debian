@@ -1,0 +1,214 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxRichTextHeaderFooterData</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxrichtextheaderfooterdata"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextformattingdialogfactory.html#wxrichtextformattingdialogfactory"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtexthtmlhandler.html#wxrichtexthtmlhandler"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxRichTextHeaderFooterData</H2>
+<P>
+
+This class represents header and footer data to be passed to the <A HREF="wx_wxrichtextprinting.html#wxrichtextprinting">wxRichTextPrinting</A> and
+<A HREF="wx_wxrichtextprintout.html#wxrichtextprintout">wxRichTextPrintout</A> classes.<P>
+Headers and footers can be specified independently for odd, even or both page sides. Different text can be specified
+for left, centre and right locations on the page, and the font and text colour can also
+be specified. You can specify the following keywords in header and footer text, which will
+be substituted for the actual values during printing and preview.<P>
+<UL>
+
+<LI> @DATE@: the current date.
+<LI> @PAGESCNT@: the total number of pages.
+<LI> @PAGENUM@: the current page number.
+<LI> @TIME@: the current time.
+<LI> @TITLE@: the title of the document, as passed to the wxRichTextPrinting or wxRichTextLayout constructor.
+</UL>
+
+ 
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/richtex/richtextprint.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+These are the header and footer page identifiers, passed to functions such as SetFooterText to specify
+the odd or even page for the text:<P>
+<PRE>
+enum wxRichTextOddEvenPage {
+    wxRICHTEXT_PAGE_ODD,
+    wxRICHTEXT_PAGE_EVEN,
+    wxRICHTEXT_PAGE_ALL,
+}
+</PRE>
+These are the location identifiers for passing to functions such as SetFooterText, to specify
+whether the text is on the left, centre or right of the page:<P>
+<PRE>
+enum wxRichTextPageLocation {
+    wxRICHTEXT_PAGE_LEFT,
+    wxRICHTEXT_PAGE_CENTRE,
+    wxRICHTEXT_PAGE_RIGHT
+}
+</PRE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxrichtextheaderfooterdatawxrichtextheaderfooterdata">wxRichTextHeaderFooterData::wxRichTextHeaderFooterData</A><BR>
+<A HREF="#wxrichtextheaderfooterdataclear">wxRichTextHeaderFooterData::Clear</A><BR>
+<A HREF="#wxrichtextheaderfooterdatacopy">wxRichTextHeaderFooterData::Copy</A><BR>
+<A HREF="#wxrichtextheaderfooterdatagetfont">wxRichTextHeaderFooterData::GetFont</A><BR>
+<A HREF="#wxrichtextheaderfooterdatagetfootermargin">wxRichTextHeaderFooterData::GetFooterMargin</A><BR>
+<A HREF="#wxrichtextheaderfooterdatagetfootertext">wxRichTextHeaderFooterData::GetFooterText</A><BR>
+<A HREF="#wxrichtextheaderfooterdatagetheadermargin">wxRichTextHeaderFooterData::GetHeaderMargin</A><BR>
+<A HREF="#wxrichtextheaderfooterdatagetheadertext">wxRichTextHeaderFooterData::GetHeaderText</A><BR>
+<A HREF="#wxrichtextheaderfooterdatagetshowonfirstpage">wxRichTextHeaderFooterData::GetShowOnFirstPage</A><BR>
+<A HREF="#wxrichtextheaderfooterdatagettext">wxRichTextHeaderFooterData::GetText</A><BR>
+<A HREF="#wxrichtextheaderfooterdatagettextcolour">wxRichTextHeaderFooterData::GetTextColour</A><BR>
+<A HREF="#wxrichtextheaderfooterdatainit">wxRichTextHeaderFooterData::Init</A><BR>
+<A HREF="#wxrichtextheaderfooterdatasetfont">wxRichTextHeaderFooterData::SetFont</A><BR>
+<A HREF="#wxrichtextheaderfooterdatasetfootertext">wxRichTextHeaderFooterData::SetFooterText</A><BR>
+<A HREF="#wxrichtextheaderfooterdatasetheadertext">wxRichTextHeaderFooterData::SetHeaderText</A><BR>
+<A HREF="#wxrichtextheaderfooterdatasetmargins">wxRichTextHeaderFooterData::SetMargins</A><BR>
+<A HREF="#wxrichtextheaderfooterdatasetshowonfirstpage">wxRichTextHeaderFooterData::SetShowOnFirstPage</A><BR>
+<A HREF="#wxrichtextheaderfooterdatasettext">wxRichTextHeaderFooterData::SetText</A><BR>
+<A HREF="#wxrichtextheaderfooterdatasettextcolour">wxRichTextHeaderFooterData::SetTextColour</A><BR>
+<A HREF="#wxrichtextheaderfooterdataoperatorassign">wxRichTextHeaderFooterData::operator=</A><BR>
+<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatawxrichtextheaderfooterdata"></A>
+<H3>wxRichTextHeaderFooterData::wxRichTextHeaderFooterData</H3>
+<P>
+<B></B> <B>wxRichTextHeaderFooterData</B>()<P>
+<B></B> <B>wxRichTextHeaderFooterData</B>(<B>const <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A>& </B></B><I>data</I>)<P>
+Constructors.<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdataclear"></A>
+<H3>wxRichTextHeaderFooterData::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>()<P>
+Clears all text.<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatacopy"></A>
+<H3>wxRichTextHeaderFooterData::Copy</H3>
+<P>
+<B>void</B> <B>Copy</B>(<B>const <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A>& </B></B><I>data</I>)<P>
+Copies the data.<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatagetfont"></A>
+<H3>wxRichTextHeaderFooterData::GetFont</H3>
+<P>
+<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>&</B> </B> <B>GetFont</B>() <B>const</B><P>
+Returns the font specified for printing the header and footer.<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatagetfootermargin"></A>
+<H3>wxRichTextHeaderFooterData::GetFooterMargin</H3>
+<P>
+<B>int</B> <B>GetFooterMargin</B>() <B>const</B><P>
+Returns the margin between the text and the footer.<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatagetfootertext"></A>
+<H3>wxRichTextHeaderFooterData::GetFooterText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetFooterText</B>(<B>wxRichTextOddEvenPage </B><I>page = wxRICHTEXT_PAGE_EVEN</I>, <B>wxRichTextPageLocation </B><I>location = wxRICHTEXT_PAGE_CENTRE</I>) <B>const</B><P>
+Returns the footer text on odd or even pages, and at a given position on the page (left, centre or right).<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatagetheadermargin"></A>
+<H3>wxRichTextHeaderFooterData::GetHeaderMargin</H3>
+<P>
+<B>int</B> <B>GetHeaderMargin</B>() <B>const</B><P>
+Returns the margin between the text and the header.<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatagetheadertext"></A>
+<H3>wxRichTextHeaderFooterData::GetHeaderText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetHeaderText</B>(<B>wxRichTextOddEvenPage </B><I>page = wxRICHTEXT_PAGE_EVEN</I>, <B>wxRichTextPageLocation </B><I>location = wxRICHTEXT_PAGE_CENTRE</I>) <B>const</B><P>
+Returns the header text on odd or even pages, and at a given position on the page (left, centre or right).<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatagetshowonfirstpage"></A>
+<H3>wxRichTextHeaderFooterData::GetShowOnFirstPage</H3>
+<P>
+<B>bool</B> <B>GetShowOnFirstPage</B>() <B>const</B><P>
+Returns <TT>true</TT> if the header and footer will be shown on the first page.<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatagettext"></A>
+<H3>wxRichTextHeaderFooterData::GetText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetText</B>(<B>int </B><I>headerFooter</I>, <B>wxRichTextOddEvenPage </B><I>page</I>, <B>wxRichTextPageLocation </B><I>location</I>) <B>const</B><P>
+Helper function for getting the header or footer text, odd or even pages, and at a given position on the page (left, centre or right).<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatagettextcolour"></A>
+<H3>wxRichTextHeaderFooterData::GetTextColour</H3>
+<P>
+<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>&</B> </B> <B>GetTextColour</B>() <B>const</B><P>
+Returns the text colour for drawing the header and footer.<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatainit"></A>
+<H3>wxRichTextHeaderFooterData::Init</H3>
+<P>
+<B>void</B> <B>Init</B>()<P>
+Initialises the object.<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatasetfont"></A>
+<H3>wxRichTextHeaderFooterData::SetFont</H3>
+<P>
+<B>void</B> <B>SetFont</B>(<B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the font for drawing the header and footer.<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatasetfootertext"></A>
+<H3>wxRichTextHeaderFooterData::SetFooterText</H3>
+<P>
+<B>void</B> <B>SetFooterText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>wxRichTextOddEvenPage </B><I>page = wxRICHTEXT_PAGE_ALL</I>, <B>wxRichTextPageLocation </B><I>location = wxRICHTEXT_PAGE_CENTRE</I>)<P>
+Sets the footer text on odd or even pages, and at a given position on the page (left, centre or right).<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatasetheadertext"></A>
+<H3>wxRichTextHeaderFooterData::SetHeaderText</H3>
+<P>
+<B>void</B> <B>SetHeaderText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>wxRichTextOddEvenPage </B><I>page = wxRICHTEXT_PAGE_ALL</I>, <B>wxRichTextPageLocation </B><I>location = wxRICHTEXT_PAGE_CENTRE</I>)<P>
+Sets the header text on odd or even pages, and at a given position on the page (left, centre or right).<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatasetmargins"></A>
+<H3>wxRichTextHeaderFooterData::SetMargins</H3>
+<P>
+<B>void</B> <B>SetMargins</B>(<B>int </B><I>headerMargin</I>, <B>int </B><I>footerMargin</I>)<P>
+Sets the margins between text and header or footer, in tenths of a millimeter.<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatasetshowonfirstpage"></A>
+<H3>wxRichTextHeaderFooterData::SetShowOnFirstPage</H3>
+<P>
+<B>void</B> <B>SetShowOnFirstPage</B>(<B>bool </B><I>showOnFirstPage</I>)<P>
+Pass <TT>true</TT> to show the header or footer on first page (the default).<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatasettext"></A>
+<H3>wxRichTextHeaderFooterData::SetText</H3>
+<P>
+<B>void</B> <B>SetText</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>, <B>int </B><I>headerFooter</I>, <B>wxRichTextOddEvenPage </B><I>page</I>, <B>wxRichTextPageLocation </B><I>location</I>)<P>
+Helper function for setting the header or footer text, odd or even pages, and at a given position on the page (left, centre or right).<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdatasettextcolour"></A>
+<H3>wxRichTextHeaderFooterData::SetTextColour</H3>
+<P>
+<B>void</B> <B>SetTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>col</I>)<P>
+Sets the text colour for drawing the header and footer.<P>
+
+<HR>
+<A NAME="wxrichtextheaderfooterdataoperatorassign"></A>
+<H3>wxRichTextHeaderFooterData::operator=</H3>
+<P>
+<B>void operator</B> <B>operator=</B>(<B>const <A HREF="wx_wxrichtextheaderfooterdata.html#wxrichtextheaderfooterdata">wxRichTextHeaderFooterData</A>& </B></B><I>data</I>)<P>
+Assignment operator.<P>
+
+</FONT></BODY></HTML>

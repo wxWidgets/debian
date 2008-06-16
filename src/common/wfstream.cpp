@@ -1,30 +1,30 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        fstream.cpp
+// Name:        src/common/fstream.cpp
 // Purpose:     "File stream" classes
 // Author:      Julian Smart
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: wfstream.cpp,v 1.41 2005/08/13 20:53:13 MW Exp $
+// RCS-ID:      $Id: wfstream.cpp 44013 2006-12-19 13:49:26Z SC $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "wfstream.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-  #pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #if wxUSE_STREAMS
 
-#include <stdio.h>
-#include "wx/stream.h"
 #include "wx/wfstream.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/stream.h"
+#endif
+
+#include <stdio.h>
 
 #if wxUSE_FILE
 
@@ -107,6 +107,11 @@ wxFileOffset wxFileInputStream::OnSysTell() const
     return m_file->Tell();
 }
 
+bool wxFileInputStream::IsOk() const 
+{ 
+    return (wxStreamBase::IsOk() && m_file->IsOpened()); 
+}
+
 // ----------------------------------------------------------------------------
 // wxFileOutputStream
 // ----------------------------------------------------------------------------
@@ -176,6 +181,11 @@ void wxFileOutputStream::Sync()
 wxFileOffset wxFileOutputStream::GetLength() const
 {
     return m_file->Length();
+}
+
+bool wxFileOutputStream::IsOk() const 
+{ 
+    return (wxStreamBase::IsOk() && m_file->IsOpened()); 
 }
 
 // ----------------------------------------------------------------------------
@@ -290,6 +300,11 @@ wxFileOffset wxFFileInputStream::OnSysTell() const
     return m_file->Tell();
 }
 
+bool wxFFileInputStream::IsOk() const 
+{ 
+    return (wxStreamBase::IsOk() && m_file->IsOpened()); 
+}
+
 // ----------------------------------------------------------------------------
 // wxFFileOutputStream
 // ----------------------------------------------------------------------------
@@ -371,6 +386,11 @@ wxFileOffset wxFFileOutputStream::GetLength() const
     return m_file->Length();
 }
 
+bool wxFFileOutputStream::IsOk() const 
+{ 
+    return (wxStreamBase::IsOk() && m_file->IsOpened()); 
+}
+
 // ----------------------------------------------------------------------------
 // wxFFileStream
 // ----------------------------------------------------------------------------
@@ -384,4 +404,3 @@ wxFFileStream::wxFFileStream(const wxString& fileName)
 #endif //wxUSE_FFILE
 
 #endif // wxUSE_STREAMS
-

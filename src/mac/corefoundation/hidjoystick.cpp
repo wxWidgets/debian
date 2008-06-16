@@ -1,17 +1,13 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        joystick.cpp
+// Name:        src/mac/corefoundation/joystick.cpp
 // Purpose:     wxJoystick class
 // Author:      Ryan Norton
 // Modified by:
 // Created:     2/13/2005
-// RCS-ID:      $Id: hidjoystick.cpp,v 1.4.2.2 2006/01/19 10:16:32 JS Exp $
+// RCS-ID:      $Id: hidjoystick.cpp 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Ryan Norton
-// Licence:       wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "joystick.h"
-#endif
 
 //===========================================================================
 //  DECLARATIONS
@@ -34,11 +30,15 @@
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
-#include "wx/event.h"       //joystick wxEvents
-#include "wx/log.h"         //logging...
+
+#ifndef WX_PRECOMP
+    #include "wx/log.h"
+    #include "wx/event.h"   //joystick wxEvents
+    #include "wx/window.h"  //for wxWindow to "capture" joystick
+#endif
+
 #include "wx/joystick.h"    //...
 #include "wx/thread.h"      //wxThread for polling thread/ wxCriticalSection
-#include "wx/window.h"      //for wxWindow to "capture" joystick
 
 //private headers
 #include "wx/mac/corefoundation/hid.h" //private mac hid stuff
@@ -56,7 +56,7 @@
 #define wxJS_MAX_AXES       10 /*max number of axes*/
 #define wxJS_MAX_BUTTONS    40 /*max number of buttons*/
 
-enum 
+enum
 {
     //These are positions within the cookie array
     //in wxHIDJoystick that the cookies that store the axis' are
@@ -75,14 +75,14 @@ class wxHIDJoystick : public wxHIDDevice
 {
 public:
     wxHIDJoystick();
-    ~wxHIDJoystick();
-    
-	bool Create(int nWhich);
-	virtual void BuildCookies(wxCFArray& Array);
-	void MakeCookies(wxCFArray& Array);
+    virtual ~wxHIDJoystick();
+
+    bool Create(int nWhich);
+    virtual void BuildCookies(CFArrayRef Array);
+    void MakeCookies(CFArrayRef Array);
     IOHIDElementCookie* GetCookies();
     IOHIDQueueInterface** GetQueue();
-    
+
     int  m_nXMax, m_nYMax, m_nZMax, m_nRudderMax, m_nUMax, m_nVMax,
          m_nXMin, m_nYMin, m_nZMin, m_nRudderMin, m_nUMin, m_nVMin;
 
@@ -98,7 +98,7 @@ public:
     wxJoystickThread(wxHIDJoystick* hid, int joystick);
     void* Entry();
     static void HIDCallback(void* target, IOReturn res, void* context, void* sender);
-    
+
 private:
     wxHIDJoystick*       m_hid;
     int       m_joystick;
@@ -123,9 +123,9 @@ private:
 void wxGetIntFromCFDictionary(CFTypeRef cfDict, CFStringRef key, int* pOut)
 {
         CFNumberGetValue(
-          (CFNumberRef) CFDictionaryGetValue((CFDictionaryRef) cfDict, 
-                                              key), 
-		                kCFNumberIntType, pOut);
+          (CFNumberRef) CFDictionaryGetValue((CFDictionaryRef) cfDict,
+                                              key),
+                        kCFNumberIntType, pOut);
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -149,7 +149,7 @@ wxJoystick::wxJoystick(int joystick)
 {
     m_hid = new wxHIDJoystick();
 
-    if (m_hid->Create(m_joystick))
+    if (m_hid->Create(m_joystick+1)) //wxHIDDevice is 1-based while this is 0
     {
         m_thread = new wxJoystickThread(m_hid, m_joystick);
         m_thread->Create();
@@ -165,7 +165,7 @@ wxJoystick::wxJoystick(int joystick)
 //---------------------------------------------------------------------------
 // wxJoystick Destructor
 //
-// Releases the capture of the thread, deletes it, and deletes 
+// Releases the capture of the thread, deletes it, and deletes
 // the native implementation.
 //---------------------------------------------------------------------------
 wxJoystick::~wxJoystick()
@@ -173,7 +173,7 @@ wxJoystick::~wxJoystick()
     ReleaseCapture();
     if (m_thread)
         m_thread->Delete();  // It's detached so it will delete itself
-        
+
     if (m_hid)
         delete m_hid;
 }
@@ -182,7 +182,7 @@ wxJoystick::~wxJoystick()
 // wxJoystick::Get[XXX]Position
 //
 // Returns the value of an axis that was polled from the thread. In the
-// case of GetPosition returns the X and Y values in a wxPoint 
+// case of GetPosition returns the X and Y values in a wxPoint
 //---------------------------------------------------------------------------
 wxPoint wxJoystick::GetPosition() const
 {
@@ -197,7 +197,7 @@ int wxJoystick::GetZPosition() const
     return 0;
 }
 int wxJoystick::GetRudderPosition() const
-{	
+{
     if (m_thread)
         return m_thread->m_axe[wxJS_AXIS_RUDDER];
     return 0;
@@ -235,27 +235,35 @@ int wxJoystick::GetButtonState() const
 // if the native implementation doesn't exist (in constructor)
 //---------------------------------------------------------------------------
 bool wxJoystick::IsOk() const
-{	
-    return m_hid != NULL;	
+{
+    return m_hid != NULL;
 }
-    
+
 //---------------------------------------------------------------------------
 // wxJoystick::Get[XXX](Id/Name)
 //
 // Simple accessors to the native HID implementation
 //---------------------------------------------------------------------------
 int wxJoystick::GetManufacturerId() const
-{	return m_hid->m_nManufacturerId;				}
+{
+    return m_hid->m_nManufacturerId;
+}
+
 int wxJoystick::GetProductId() const
-{	return m_hid->m_nProductId;				}
+{
+    return m_hid->m_nProductId;
+}
+
 wxString wxJoystick::GetProductName() const
-{	return m_hid->m_szProductName;				}
+{
+    return m_hid->m_szProductName;
+}
 
 //---------------------------------------------------------------------------
 // wxJoystick::GetNumberButtons
 // wxJoystick::GetNumberAxes
 //
-// Queries the joystick for an active number of buttons/axes. 
+// Queries the joystick for an active number of buttons/axes.
 //
 // In the native HID implementation, the cookies:
 // 0-40     are the buttons of the joystick
@@ -266,25 +274,25 @@ wxString wxJoystick::GetProductName() const
 int wxJoystick::GetNumberButtons() const
 {
     int nCount = 0;
-    
+
     for(int nIndex = 0; nIndex < 40; ++nIndex)
     {
         if(m_hid->HasElement(nIndex))
             ++nCount;
     }
-    
+
     return nCount;
 }
 int wxJoystick::GetNumberAxes() const
 {
     int nCount = 0;
-    
+
     for(int nIndex = 40; nIndex < 50; ++nIndex)
     {
         if(m_hid->HasElement(nIndex))
             ++nCount;
     }
-    
+
     return nCount;
 }
 
@@ -295,11 +303,11 @@ int wxJoystick::GetNumberAxes() const
 // is all devices with the kHIDUsage_GD_Joystick or kHIDUsage_GD_GamePad
 // identifiers.
 //---------------------------------------------------------------------------
-int wxJoystick::GetNumberJoysticks() const
-{    
-    return 
+int wxJoystick::GetNumberJoysticks()
+{
+    return
         wxHIDDevice::GetCount(kHIDPage_GenericDesktop, kHIDUsage_GD_Joystick) +
-        wxHIDDevice::GetCount(kHIDPage_GenericDesktop, kHIDUsage_GD_GamePad);   
+        wxHIDDevice::GetCount(kHIDPage_GenericDesktop, kHIDUsage_GD_GamePad);
 }
 
 //---------------------------------------------------------------------------
@@ -343,30 +351,64 @@ bool wxJoystick::ReleaseCapture()
 // axis doesn't exist.
 //---------------------------------------------------------------------------
 int wxJoystick::GetXMin() const
-{	return m_hid->m_nXMin;	}
+{
+    return m_hid->m_nXMin;
+}
+
 int wxJoystick::GetYMin() const
-{	return m_hid->m_nYMin;	}
+{
+    return m_hid->m_nYMin;
+}
+
 int wxJoystick::GetZMin() const
-{	return m_hid->m_nZMin;	}
+{
+    return m_hid->m_nZMin;
+}
+
 int wxJoystick::GetRudderMin() const
-{	return m_hid->m_nRudderMin;	}
+{
+    return m_hid->m_nRudderMin;
+}
+
 int wxJoystick::GetUMin() const
-{	return m_hid->m_nUMin;	}
+{
+    return m_hid->m_nUMin;
+}
+
 int wxJoystick::GetVMin() const
-{	return m_hid->m_nVMin;	}
+{
+    return m_hid->m_nVMin;
+}
 
 int wxJoystick::GetXMax() const
-{	return m_hid->m_nXMax;	}
+{
+    return m_hid->m_nXMax;
+}
+
 int wxJoystick::GetYMax() const
-{	return m_hid->m_nYMax;	}
+{
+    return m_hid->m_nYMax;
+}
+
 int wxJoystick::GetZMax() const
-{	return m_hid->m_nZMax;	}
+{
+    return m_hid->m_nZMax;
+}
+
 int wxJoystick::GetRudderMax() const
-{	return m_hid->m_nRudderMax;	}
+{
+    return m_hid->m_nRudderMax;
+}
+
 int wxJoystick::GetUMax() const
-{	return m_hid->m_nUMax;	}
+{
+    return m_hid->m_nUMax;
+}
+
 int wxJoystick::GetVMax() const
-{	return m_hid->m_nVMax;	}
+{
+    return m_hid->m_nVMax;
+}
 
 //---------------------------------------------------------------------------
 // wxJoystick::Get[XXX]
@@ -375,13 +417,24 @@ int wxJoystick::GetVMax() const
 // what the linux port has.
 //---------------------------------------------------------------------------
 int wxJoystick::GetMaxButtons() const
-{	return wxJS_MAX_BUTTONS; 	}
+{
+    return wxJS_MAX_BUTTONS;
+}
+
 int wxJoystick::GetMaxAxes() const
-{	return wxJS_MAX_AXES; 	}
+{
+    return wxJS_MAX_AXES;
+}
+
 int wxJoystick::GetPollingMin() const
-{	return 10;	}
+{
+    return 10;
+}
+
 int wxJoystick::GetPollingMax() const
-{	return 1000;	}
+{
+    return 1000;
+}
 
 //---------------------------------------------------------------------------
 // wxJoystick::Has[XXX]
@@ -390,31 +443,61 @@ int wxJoystick::GetPollingMax() const
 // when enumerating the cookies of the joystick device
 //---------------------------------------------------------------------------
 bool wxJoystick::HasZ() const
-{	return m_hid->HasElement(wxJS_AXIS_Z);	}
+{
+    return m_hid->HasElement(wxJS_AXIS_Z);
+}
+
 bool wxJoystick::HasRudder() const
-{	return m_hid->HasElement(wxJS_AXIS_RUDDER);	}
+{
+    return m_hid->HasElement(wxJS_AXIS_RUDDER);
+}
+
 bool wxJoystick::HasU() const
-{	return m_hid->HasElement(wxJS_AXIS_U);	}
+{
+    return m_hid->HasElement(wxJS_AXIS_U);
+}
+
 bool wxJoystick::HasV() const
-{	return m_hid->HasElement(wxJS_AXIS_V);	}
+{
+    return m_hid->HasElement(wxJS_AXIS_V);
+}
 
 //---------------------------------------------------------------------------
 // UNSUPPORTED
 //---------------------------------------------------------------------------
 int wxJoystick::GetPOVPosition() const
-{	return -1;				}
+{
+    return -1;
+}
+
 int wxJoystick::GetPOVCTSPosition() const
-{	return -1;				}
+{
+    return -1;
+}
+
 int wxJoystick::GetMovementThreshold() const
-{	return 0;				}
+{
+    return 0;
+}
+
 void wxJoystick::SetMovementThreshold(int threshold)
-{							}
+{
+}
+
 bool wxJoystick::HasPOV() const
-{	return false;	}
+{
+    return false;
+}
+
 bool wxJoystick::HasPOV4Dir() const
-{	return false;	}
+{
+    return false;
+}
+
 bool wxJoystick::HasPOVCTS() const
-{	return false;	}
+{
+    return false;
+}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
@@ -424,7 +507,7 @@ bool wxJoystick::HasPOVCTS() const
 
 //---------------------------------------------------------------------------
 // wxHIDJoystick ctor
-// 
+//
 // Initializes the min/max members
 //---------------------------------------------------------------------------
 wxHIDJoystick::wxHIDJoystick() :
@@ -451,16 +534,20 @@ wxHIDJoystick::~wxHIDJoystick()
 bool wxHIDJoystick::Create(int nWhich)
 {
     int nJoysticks = GetCount(kHIDPage_GenericDesktop, kHIDUsage_GD_Joystick);
-    
+
     if (nWhich <= nJoysticks)
-        return wxHIDDevice::Create(kHIDPage_GenericDesktop, kHIDUsage_GD_Joystick);
+        return wxHIDDevice::Create(kHIDPage_GenericDesktop,
+                                   kHIDUsage_GD_Joystick,
+                                   nWhich);
     else
         nWhich -= nJoysticks;
-    
+
     int nGamePads = GetCount(kHIDPage_GenericDesktop, kHIDUsage_GD_GamePad);
-    
+
     if (nWhich <= nGamePads)
-        return wxHIDDevice::Create(kHIDPage_GenericDesktop, kHIDUsage_GD_GamePad);
+        return wxHIDDevice::Create(kHIDPage_GenericDesktop,
+                                   kHIDUsage_GD_GamePad,
+                                   nWhich);
     else
     return false;
 }
@@ -472,81 +559,96 @@ bool wxHIDJoystick::Create(int nWhich)
 // Sets up the cookies for the HID device (called from Create) - as
 // mentioned 0-40 are the buttons and 40-50 are the axes.
 //
-// MakeCookies is just a recursive function for each array within 
+// MakeCookies is just a recursive function for each array within
 // BuildCookies.
 //---------------------------------------------------------------------------
-void wxHIDJoystick::BuildCookies(wxCFArray& Array)
+void wxHIDJoystick::BuildCookies(CFArrayRef Array)
 {
-	Array = CFDictionaryGetValue((CFDictionaryRef)Array[0], CFSTR(kIOHIDElementKey));
-	InitCookies(50, true);
-
-    memset(m_pCookies, 0, sizeof(*m_pCookies) * 50);
+    InitCookies(50, true);
 
     //
     // I wasted two hours of my life on this line :(
     // accidently removed it during some source cleaning...
     //
     MakeCookies(Array);
-    
-    //paranoid debugging stuff    
+
+    //paranoid debugging stuff
 #if 0
     for(int i = 0; i < 50; ++i)
         wxPrintf(wxT("\nVAL #%i:[%i]"), i, m_pCookies[i]);
 #endif
 }//end buildcookies
 
-void wxHIDJoystick::MakeCookies(wxCFArray& Array)
+void wxHIDJoystick::MakeCookies(CFArrayRef Array)
 {
-	int i, nUsage, nPage;
+    int i, nUsage, nPage;
 
-	for (i = 0; i < Array.Count(); ++i)
+    for (i = 0; i < CFArrayGetCount(Array); ++i)
     {
-        const void* ref = CFDictionaryGetValue((CFDictionaryRef)Array[i], CFSTR(kIOHIDElementKey));
+        const void* ref = CFDictionaryGetValue(
+                (CFDictionaryRef)CFArrayGetValueAtIndex(Array, i),
+                CFSTR(kIOHIDElementKey)
+                                              );
 
         if (ref != NULL)
         {
-            wxCFArray newarray(ref);
-            MakeCookies(newarray);
+            MakeCookies((CFArrayRef) ref);
     }
         else
         {
             CFNumberGetValue(
-			(CFNumberRef) CFDictionaryGetValue((CFDictionaryRef) Array[i], CFSTR(kIOHIDElementUsageKey)), 
-				kCFNumberIntType, &nUsage);
-			
+                (CFNumberRef)
+                    CFDictionaryGetValue(
+                        (CFDictionaryRef) CFArrayGetValueAtIndex(Array, i),
+                        CFSTR(kIOHIDElementUsageKey)
+                                        ),
+                kCFNumberIntType,
+                &nUsage    );
+
             CFNumberGetValue(
-			(CFNumberRef) CFDictionaryGetValue((CFDictionaryRef) Array[i], CFSTR(kIOHIDElementUsagePageKey)), 
-				kCFNumberIntType, &nPage);
+                (CFNumberRef)
+                    CFDictionaryGetValue(
+                        (CFDictionaryRef) CFArrayGetValueAtIndex(Array, i),
+                        CFSTR(kIOHIDElementUsagePageKey)
+                                        ),
+                kCFNumberIntType,
+                &nPage     );
 
 #if 0
             wxLogSysError(wxT("[%i][%i]"), nUsage, nPage);
 #endif
             if (nPage == kHIDPage_Button && nUsage <= 40)
-                AddCookieInQueue(Array[i], nUsage-1 );
+                AddCookieInQueue(CFArrayGetValueAtIndex(Array, i), nUsage-1 );
             else if (nPage == kHIDPage_GenericDesktop)
             {
                 //axis...
                 switch(nUsage)
                 {
                     case kHIDUsage_GD_X:
-                        AddCookieInQueue(Array[i], wxJS_AXIS_X);
-                        wxGetIntFromCFDictionary(Array[i], CFSTR(kIOHIDElementMaxKey),
+                        AddCookieInQueue(CFArrayGetValueAtIndex(Array, i), wxJS_AXIS_X);
+                        wxGetIntFromCFDictionary(CFArrayGetValueAtIndex(Array, i),
+                                                 CFSTR(kIOHIDElementMaxKey),
                                                  &m_nXMax);
-                        wxGetIntFromCFDictionary(Array[i], CFSTR(kIOHIDElementMinKey),
+                        wxGetIntFromCFDictionary(CFArrayGetValueAtIndex(Array, i),
+                                                 CFSTR(kIOHIDElementMinKey),
                                                  &m_nXMin);
-                        break;                    
+                        break;
                     case kHIDUsage_GD_Y:
-                        AddCookieInQueue(Array[i], wxJS_AXIS_Y);
-                        wxGetIntFromCFDictionary(Array[i], CFSTR(kIOHIDElementMaxKey),
+                        AddCookieInQueue(CFArrayGetValueAtIndex(Array, i), wxJS_AXIS_Y);
+                        wxGetIntFromCFDictionary(CFArrayGetValueAtIndex(Array, i),
+                                                 CFSTR(kIOHIDElementMaxKey),
                                                  &m_nYMax);
-                        wxGetIntFromCFDictionary(Array[i], CFSTR(kIOHIDElementMinKey),
+                        wxGetIntFromCFDictionary(CFArrayGetValueAtIndex(Array, i),
+                                                 CFSTR(kIOHIDElementMinKey),
                                                  &m_nYMin);
                         break;
                     case kHIDUsage_GD_Z:
-                        AddCookieInQueue(Array[i], wxJS_AXIS_Z);
-                        wxGetIntFromCFDictionary(Array[i], CFSTR(kIOHIDElementMaxKey),
+                        AddCookieInQueue(CFArrayGetValueAtIndex(Array, i), wxJS_AXIS_Z);
+                        wxGetIntFromCFDictionary(CFArrayGetValueAtIndex(Array, i),
+                                                 CFSTR(kIOHIDElementMaxKey),
                                                  &m_nZMax);
-                        wxGetIntFromCFDictionary(Array[i], CFSTR(kIOHIDElementMinKey),
+                        wxGetIntFromCFDictionary(CFArrayGetValueAtIndex(Array, i),
+                                                 CFSTR(kIOHIDElementMinKey),
                                                  &m_nZMin);
                         break;
                     default:
@@ -556,14 +658,16 @@ void wxHIDJoystick::MakeCookies(wxCFArray& Array)
             else if (nPage == kHIDPage_Simulation && nUsage == kHIDUsage_Sim_Rudder)
             {
                 //rudder...
-                AddCookieInQueue(Array[i], wxJS_AXIS_RUDDER );
-                wxGetIntFromCFDictionary(Array[i], CFSTR(kIOHIDElementMaxKey),
+                AddCookieInQueue(CFArrayGetValueAtIndex(Array, i), wxJS_AXIS_RUDDER );
+                wxGetIntFromCFDictionary(CFArrayGetValueAtIndex(Array, i),
+                                         CFSTR(kIOHIDElementMaxKey),
                                          &m_nRudderMax);
-                wxGetIntFromCFDictionary(Array[i], CFSTR(kIOHIDElementMinKey),
+                wxGetIntFromCFDictionary(CFArrayGetValueAtIndex(Array, i),
+                                         CFSTR(kIOHIDElementMinKey),
                                          &m_nRudderMin);
             }
         }
-	}
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -572,9 +676,9 @@ void wxHIDJoystick::MakeCookies(wxCFArray& Array)
 // Simple accessors so that the HID callback and the thread procedure
 // can access members from wxHIDDevice (our parent here).
 //---------------------------------------------------------------------------
-IOHIDElementCookie* wxHIDJoystick::GetCookies() 
+IOHIDElementCookie* wxHIDJoystick::GetCookies()
 {   return m_pCookies;  }
-IOHIDQueueInterface** wxHIDJoystick::GetQueue() 
+IOHIDQueueInterface** wxHIDJoystick::GetQueue()
 {   return m_ppQueue;   }
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -620,16 +724,16 @@ void* wxJoystickThread::Entry()
         wxLogSysError(wxT("Couldn't create async event source"));
         return NULL;
     }
-    
+
     wxASSERT(pRLSource != NULL);
 
     //attach runloop source to main run loop in thread
     CFRunLoopRef pRL = CFRunLoopGetCurrent();
     CFRunLoopAddSource(pRL, pRLSource, kCFRunLoopDefaultMode);
     wxASSERT( CFRunLoopContainsSource(pRL, pRLSource, kCFRunLoopDefaultMode) );
-          
 
-    if( (*m_hid->GetQueue())->setEventCallout(m_hid->GetQueue(), 
+
+    if( (*m_hid->GetQueue())->setEventCallout(m_hid->GetQueue(),
           wxJoystickThread::HIDCallback, this, this) != kIOReturnSuccess )
     {
         wxLogSysError(wxT("Could not set event callout for queue"));
@@ -643,7 +747,7 @@ void* wxJoystickThread::Entry()
     }
 
     double dTime;
-    
+
     while(true)
     {
         if (TestDestroy())
@@ -657,16 +761,16 @@ void* wxJoystickThread::Entry()
         //true just "handles and returns" - false forces it to stay the time
         //amount
 #if 1
-        CFRunLoopRunInMode(kCFRunLoopDefaultMode, dTime, true);          
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, dTime, true);
 #else
         IOReturn ret = NULL;
         HIDCallback(this, ret, this, this);
         Sleep(3000);
 #endif
     }
-    
+
     wxASSERT( CFRunLoopContainsSource(pRL, pRLSource, kCFRunLoopDefaultMode) );
-    
+
     CFRunLoopRemoveSource(pRL, pRLSource, kCFRunLoopDefaultMode);
     CFRelease(pRLSource);
 
@@ -681,7 +785,7 @@ void* wxJoystickThread::Entry()
 // This is where the REAL dirty work gets done.
 //
 // 1) Loops through each event the queue has recieved
-// 2) First, checks if the thread that is running the loop for 
+// 2) First, checks if the thread that is running the loop for
 //    the polling has ended - if so it breaks out
 // 3) Next, it checks if there was an error getting this event from
 //    the HID queue, if there was, it logs an error and returns
@@ -691,7 +795,7 @@ void* wxJoystickThread::Entry()
 // 5) Sends the event to the polling window (if any)
 // 6) Gets the next event and goes back to (1)
 //---------------------------------------------------------------------------
-/*static*/ void wxJoystickThread::HIDCallback(void* target, IOReturn res, 
+/*static*/ void wxJoystickThread::HIDCallback(void* target, IOReturn res,
                                               void* context, void* sender)
 {
     IOHIDEventStruct hidevent;
@@ -699,13 +803,13 @@ void* wxJoystickThread::Entry()
     IOReturn ret;
     wxJoystickThread* pThis = (wxJoystickThread*) context;
     wxHIDJoystick* m_hid = pThis->m_hid;
-    
+
     //Get the "first" event from the queue
     //bogustime tells it we don't care at what time to start
     //where it gets the next from
-    ret = (*m_hid->GetQueue())->getNextEvent(m_hid->GetQueue(), 
+    ret = (*m_hid->GetQueue())->getNextEvent(m_hid->GetQueue(),
                     &hidevent, bogustime, 0);
-    
+
     while (ret != kIOReturnUnderrun)
     {
         if (pThis->TestDestroy())
@@ -715,10 +819,10 @@ void* wxJoystickThread::Entry()
         {
             wxLogSysError(wxString::Format(wxT("wxJoystick Error:[%i]"), ret));
             return;
-        }	
-            
+        }
+
         wxJoystickEvent wxevent;
-        
+
         //Find the cookie that changed
         int nIndex = 0;
         IOHIDElementCookie* pCookies = m_hid->GetCookies();
@@ -726,20 +830,20 @@ void* wxJoystickThread::Entry()
         {
             if(hidevent.elementCookie == pCookies[nIndex])
                 break;
-                
+
             ++nIndex;
-        } 
-        
+        }
+
         //debugging stuff
 #if 0
-        if(nIndex == 50) 
+        if(nIndex == 50)
         {
             wxLogSysError(wxString::Format(wxT("wxJoystick Out Of Bounds Error")));
             break;
-        }	
+        }
 #endif
 
-        //is the cookie a button?    
+        //is the cookie a button?
         if (nIndex < 40)
         {
             if (hidevent.value)
@@ -773,14 +877,14 @@ void* wxJoystickThread::Entry()
             pThis->m_axe[2] = hidevent.value;
         }
         else
-            wxevent.SetEventType(wxEVT_JOY_MOVE);            
+            wxevent.SetEventType(wxEVT_JOY_MOVE);
 
         Nanoseconds timestamp = AbsoluteToNanoseconds(hidevent.timestamp);
-        
+
         wxULongLong llTime(timestamp.hi, timestamp.lo);
-        
+
         llTime /= 1000000;
-        
+
         wxevent.SetTimestamp(llTime.GetValue());
         wxevent.SetJoystick(pThis->m_joystick);
         wxevent.SetButtonState(pThis->m_buttons);
@@ -789,12 +893,11 @@ void* wxJoystickThread::Entry()
         wxevent.SetEventObject(pThis->m_catchwin);
 
         if (pThis->m_catchwin)
-            pThis->m_catchwin->AddPendingEvent(wxevent);            
+            pThis->m_catchwin->AddPendingEvent(wxevent);
 
-        ret = (*m_hid->GetQueue())->getNextEvent(m_hid->GetQueue(), 
+        ret = (*m_hid->GetQueue())->getNextEvent(m_hid->GetQueue(),
                     &hidevent, bogustime, 0);
     }
 }
 
 #endif // wxUSE_JOYSTICK && defined(__DARWIN__)
-

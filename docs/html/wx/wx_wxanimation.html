@@ -1,0 +1,217 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxAnimation</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxanimation"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxactivexevent.html#wxactivexevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxanimationctrl.html#wxanimationctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxAnimation</H2>
+<P>
+This class encapsulates the concept of a platform-dependent animation.
+An animation is a sequence of frames of the same size.
+Sound is not supported by wxAnimation.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxgdiobject.html#wxgdiobject">wxGDIObject</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/animate.h&gt;<P>
+<B><FONT COLOR="#FF0000">Predefined objects</FONT></B><P>
+Objects:<P>
+<B>wxNullAnimation</B><P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxanimationctrl.html#wxanimationctrl">wxAnimationCtrl</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxanimationctor">wxAnimation::wxAnimation</A><BR>
+<A HREF="#wxanimationdtor">wxAnimation::~wxAnimation</A><BR>
+<A HREF="#wxanimationgetdelay">wxAnimation::GetDelay</A><BR>
+<A HREF="#wxanimationgetframecount">wxAnimation::GetFrameCount</A><BR>
+<A HREF="#wxanimationgetframe">wxAnimation::GetFrame</A><BR>
+<A HREF="#wxanimationgetsize">wxAnimation::GetSize</A><BR>
+<A HREF="#wxanimationisok">wxAnimation::IsOk</A><BR>
+<A HREF="#wxanimationload">wxAnimation::Load</A><BR>
+<A HREF="#wxanimationloadfile">wxAnimation::LoadFile</A><BR>
+<A HREF="#wxanimationassignment">wxAnimation::operator =</A><BR>
+<P>
+
+<HR>
+<A NAME="wxanimationctor"></A>
+<H3>wxAnimation::wxAnimation</H3>
+<P>
+<B></B> <B>wxAnimation</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxAnimation</B>(<B>const <A HREF="wx_wxanimation.html#wxanimation">wxAnimation</A>& </B></B><I>anim</I>)<P>
+Copy constructor, uses <A HREF="wx_trefcount.html#trefcount">reference counting</A>.<P>
+<B></B> <B>wxAnimation</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>wxAnimationType</B><I> type = wxANIMATION_TYPE_ANY</I>)<P>
+Loads an animation from a file.<P>
+<I>name</I><UL><UL>
+The name of the file to load.</UL></UL>
+<P>
+<I>type</I><UL><UL>
+See <A HREF="wx_wxanimation.html#wxanimationloadfile">LoadFile</A> for more info.</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxanimationdtor"></A>
+<H3>wxAnimation::~wxAnimation</H3>
+<P>
+<B></B> <B>~wxAnimation</B>()<P>
+Destructor.
+See <A HREF="wx_trefcount.html#refcountdestruct">reference-counted object destruction</A> for more info.<P>
+
+
+<HR>
+<A NAME="wxanimationgetdelay"></A>
+<H3>wxAnimation::GetDelay</H3>
+<P>
+<B>int</B> <B>GetDelay</B>(<B>unsigned int </B><I>i</I>) <B>const</B><P>
+Returns the delay for the i-th frame in milliseconds.
+If <TT>-1</TT> is returned the frame is to be displayed forever.<P>
+
+
+<HR>
+<A NAME="wxanimationgetframecount"></A>
+<H3>wxAnimation::GetFrameCount</H3>
+<P>
+<B>unsigned int</B> <B>GetFrameCount</B>() <B>const</B><P>
+Returns the number of frames for this animation.<P>
+
+
+<HR>
+<A NAME="wxanimationgetframe"></A>
+<H3>wxAnimation::GetFrame</H3>
+<P>
+<B><A HREF="wx_wximage.html#wximage">wxImage</A></B> </B> <B>GetFrame</B>(<B>unsigned int </B><I>i</I>) <B>const</B><P>
+Returns the i-th frame as a <A HREF="wx_wximage.html#wximage">wxImage</A>.<P>
+
+
+<HR>
+<A NAME="wxanimationgetsize"></A>
+<H3>wxAnimation::GetSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetSize</B>() <B>const</B><P>
+Returns the size of the animation.<P>
+
+
+<HR>
+<A NAME="wxanimationisok"></A>
+<H3>wxAnimation::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns <TT>true</TT> if animation data is present.<P>
+
+
+<HR>
+<A NAME="wxanimationload"></A>
+<H3>wxAnimation::Load</H3>
+<P>
+<B>bool</B> <B>Load</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>&</B></B><I> stream</I>, <B>wxAnimationType</B><I> type = wxANIMATION_TYPE_ANY</I>)<P>
+Loads an animation from the given stream.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>stream</I><UL><UL>
+The stream to use to load the animation.</UL></UL>
+<P>
+<I>type</I><UL><UL>
+One of the following values:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxANIMATION_TYPE_GIF
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load an animated GIF file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxANIMATION_TYPE_ANI
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load an ANI file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxANIMATION_TYPE_ANY
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Try to autodetect the filetype.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if the operation succeeded, <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxanimationloadfile"></A>
+<H3>wxAnimation::LoadFile</H3>
+<P>
+<B>bool</B> <B>LoadFile</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name</I>, <B>wxAnimationType</B><I> type = wxANIMATION_TYPE_ANY</I>)<P>
+Loads an animation from a file.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>name</I><UL><UL>
+A filename.</UL></UL>
+<P>
+<I>type</I><UL><UL>
+One of the following values:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxANIMATION_TYPE_GIF
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load an animated GIF file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxANIMATION_TYPE_ANI
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Load an ANI file.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxANIMATION_TYPE_ANY
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Try to autodetect the filetype.
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+<TT>true</TT> if the operation succeeded, <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxanimationassignment"></A>
+<H3>wxAnimation::operator =</H3>
+<P>
+<B><A HREF="wx_wxanimation.html#wxanimation">wxAnimation</A>&</B> </B> <B>operator =</B>(<B>const <A HREF="wx_wxanimation.html#wxanimation">wxAnimation</A>& </B></B><I>brush</I>)<P>
+Assignment operator, using <A HREF="wx_trefcount.html#trefcount">reference counting</A>.<P>
+
+</FONT></BODY></HTML>

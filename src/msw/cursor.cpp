@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cursor.cpp,v 1.64.2.1 2006/01/21 16:46:44 JS Exp $
+// RCS-ID:      $Id: cursor.cpp 46594 2007-06-21 18:14:29Z VZ $
 // Copyright:   (c) 1997-2003 Julian Smart and Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "cursor.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -28,21 +24,21 @@
     #pragma hdrstop
 #endif
 
+#include "wx/cursor.h"
+
 #ifndef WX_PRECOMP
+    #include "wx/msw/missing.h" // IDC_HAND
     #include "wx/utils.h"
     #include "wx/app.h"
     #include "wx/bitmap.h"
     #include "wx/icon.h"
-    #include "wx/cursor.h"
     #include "wx/settings.h"
     #include "wx/intl.h"
+    #include "wx/image.h"
+    #include "wx/module.h"
 #endif
 
-#include "wx/module.h"
-#include "wx/image.h"
-
 #include "wx/msw/private.h"
-#include "wx/msw/missing.h" // IDC_HAND
 
 // define functions missing in MicroWin
 #ifdef __WXMICROWIN__
@@ -210,13 +206,8 @@ wxCursor::wxCursor(const wxImage& image)
         imageSized = image.Scale(w, h);
     }
 
-#if wxUSE_WXDIB
     HCURSOR hcursor = wxBitmapToHCURSOR( wxBitmap(imageSized),
                                          hotSpotX, hotSpotY );
-#else
-    HCURSOR hcursor = 0;
-#endif                                         
-
     if ( !hcursor )
     {
         wxLogWarning(_("Failed to create cursor."));
@@ -225,7 +216,7 @@ wxCursor::wxCursor(const wxImage& image)
 
     m_refData = new wxCursorRefData(hcursor, true /* delete it later */);
 }
-#endif
+#endif // wxUSE_IMAGE
 
 wxCursor::wxCursor(const char WXUNUSED(bits)[],
                    int WXUNUSED(width),
@@ -317,7 +308,7 @@ wxCursor::wxCursor(int idCursor)
         { false, _T("WXCURSOR_RIGHT_ARROW")  }, // wxCURSOR_RIGHT_ARROW
         { false, _T("WXCURSOR_BULLSEYE")     }, // wxCURSOR_BULLSEYE
         {  true, IDC_ARROW                   }, // WXCURSOR_CHAR
-        
+
         // Displays as an I-beam on XP, so use a cursor file
 //        {  true, IDC_CROSS                   }, // WXCURSOR_CROSS
         {  false, _T("WXCURSOR_CROSS")       }, // WXCURSOR_CROSS
@@ -325,7 +316,7 @@ wxCursor::wxCursor(int idCursor)
         // See special handling below for wxCURSOR_HAND
 //        { false, _T("WXCURSOR_HAND")         }, // wxCURSOR_HAND
         {  true, IDC_HAND                    }, // wxCURSOR_HAND
-        
+
         {  true, IDC_IBEAM                   }, // WXCURSOR_IBEAM
         {  true, IDC_ARROW                   }, // WXCURSOR_LEFT_BUTTON
         { false, _T("WXCURSOR_MAGNIFIER")    }, // wxCURSOR_MAGNIFIER
@@ -369,7 +360,7 @@ wxCursor::wxCursor(int idCursor)
         hcursor = ::LoadCursor(wxGetInstance(), _T("WXCURSOR_HAND"));
         deleteLater = true;
     }
-    
+
     if ( !hcursor )
     {
         wxLogLastError(_T("LoadCursor"));
@@ -389,16 +380,6 @@ wxCursor::~wxCursor()
 // ----------------------------------------------------------------------------
 // other wxCursor functions
 // ----------------------------------------------------------------------------
-
-bool wxCursor::operator==(const wxCursor& cursor) const
-{
-    if ( !m_refData )
-        return !cursor.m_refData;
-
-    return cursor.m_refData &&
-                ((wxCursorRefData *)m_refData)->m_hCursor ==
-                ((wxCursorRefData *)cursor.m_refData)->m_hCursor;
-}
 
 wxGDIImageRefData *wxCursor::CreateData() const
 {
@@ -424,5 +405,3 @@ void wxSetCursor(const wxCursor& cursor)
             *gs_globalCursor = cursor;
     }
 }
-
-

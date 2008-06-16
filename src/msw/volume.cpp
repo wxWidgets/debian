@@ -4,7 +4,7 @@
 // Author:      George Policello
 // Modified by:
 // Created:     28 Jan 02
-// RCS-ID:      $Id: volume.cpp,v 1.28.2.1 2006/01/21 16:46:47 JS Exp $
+// RCS-ID:      $Id: volume.cpp 41903 2006-10-10 17:37:02Z PC $
 // Copyright:   (c) 2002 George Policello
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "fsvolume.h"
-#endif
-
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
@@ -29,19 +25,19 @@
 
 #if wxUSE_FSVOLUME
 
+#include "wx/volume.h"
+
 #ifndef WX_PRECOMP
     #if wxUSE_GUI
         #include "wx/icon.h"
     #endif
     #include "wx/intl.h"
+    #include "wx/hashmap.h"
 #endif // WX_PRECOMP
 
 #include "wx/dir.h"
-#include "wx/hashmap.h"
 #include "wx/dynlib.h"
 #include "wx/arrimpl.cpp"
-
-#include "wx/volume.h"
 
 #include <shellapi.h>
 #include <shlobj.h>
@@ -149,7 +145,7 @@ static unsigned GetBasicFlags(const wxChar* filename)
     }
 
     //-----------------------------------------------------------------------
-    // The following will most likely will not modify anything not set above,
+    // The following most likely will not modify anything not set above,
     // and will not work at all for network shares or empty CD ROM drives.
     // But it is a good check if the Win API ever gets better about reporting
     // this information.
@@ -266,7 +262,7 @@ static void BuildListFromNN(wxArrayString& list, NETRESOURCE* pResSrc,
                 {
                     wxString filename(pRes->lpRemoteName);
 
-                    if (filename.Len())
+                    if (!filename.empty())
                     {
                         if (filename.Last() != '\\')
                             filename.Append('\\');

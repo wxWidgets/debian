@@ -1,0 +1,210 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxArchiveClassFactory</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxarchiveclassfactory"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxapptraits.html#wxapptraits"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxarchiveentry.html#wxarchiveentry"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxArchiveClassFactory</H2>
+<P>
+Allows the creation of streams to handle archive formats such
+as zip and tar.<P>
+For example, given a filename you can search for a factory that will
+handle it and create a stream to read it:<P>
+<PRE>
+    factory = wxArchiveClassFactory::Find(filename, wxSTREAM_FILEEXT);
+    if (factory)
+        stream = factory-&gt;NewStream(new wxFFileInputStream(filename));
+
+</PRE>
+<A HREF="wx_wxarchiveclassfactory.html#wxarchiveclassfactoryfind">Find()</A> can also search
+for a factory by MIME type or wxFileSystem protocol.
+The available factories can be enumerated
+using <A HREF="wx_wxarchiveclassfactory.html#wxarchiveclassfactorygetfirst">GetFirst() and GetNext()</A>.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/archive.h&gt;<P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<PRE>
+enum wxStreamProtocolType
+{
+    wxSTREAM_PROTOCOL,  // wxFileSystem protocol (should be only one)
+    wxSTREAM_MIMETYPE,  // MIME types the stream handles
+    wxSTREAM_ENCODING,  // Not used for archives
+    wxSTREAM_FILEEXT    // File extensions the stream handles
+};
+
+</PRE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarc.html#wxarc">Archive formats such as zip</A><BR>
+
+<A HREF="wx_wxarc.html#wxarcgeneric">Generic archive programming</A><BR>
+
+<A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A><BR>
+
+<A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A><BR>
+
+<A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstream">wxArchiveOutputStream</A><BR>
+
+<A HREF="wx_wxfilterclassfactory.html#wxfilterclassfactory">wxFilterClassFactory</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxarchiveclassfactoryconv">wxArchiveClassFactory::Get/SetConv</A><BR>
+<A HREF="#wxarchiveclassfactorycanhandle">wxArchiveClassFactory::CanHandle</A><BR>
+<A HREF="#wxarchiveclassfactoryfind">wxArchiveClassFactory::Find</A><BR>
+<A HREF="#wxarchiveclassfactorygetfirst">wxArchiveClassFactory::GetFirst/GetNext</A><BR>
+<A HREF="#wxarchiveclassfactorygetinternalname">wxArchiveClassFactory::GetInternalName</A><BR>
+<A HREF="#wxarchiveclassfactorygetprotocol">wxArchiveClassFactory::GetProtocol</A><BR>
+<A HREF="#wxarchiveclassfactorygetprotocols">wxArchiveClassFactory::GetProtocols</A><BR>
+<A HREF="#wxarchiveclassfactorynewentry">wxArchiveClassFactory::NewEntry</A><BR>
+<A HREF="#wxarchiveclassfactorynewstream">wxArchiveClassFactory::NewStream</A><BR>
+<A HREF="#wxarchiveclassfactorypushfront">wxArchiveClassFactory::PushFront</A><BR>
+<A HREF="#wxarchiveclassfactoryremove">wxArchiveClassFactory::Remove</A><BR>
+<P>
+
+<HR>
+<A NAME="wxarchiveclassfactoryconv"></A>
+<H3>wxArchiveClassFactory::Get/SetConv</H3>
+<P>
+<B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>&</B> </B> <B>GetConv</B>() <B>const</B><P>
+<B>void</B> <B>SetConv</B>(<B><A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A>& </B></B><I>conv</I>)<P>
+The <A HREF="wx_wxmbconv.html#wxmbconv">wxMBConv</A> object that the created streams
+will use when translating meta-data. The initial default, set by the
+constructor, is wxConvLocal.<P>
+
+
+<HR>
+<A NAME="wxarchiveclassfactorycanhandle"></A>
+<H3>wxArchiveClassFactory::CanHandle</H3>
+<P>
+<B>bool</B> <B>CanHandle</B>(<B>const wxChar* </B><I>protocol</I>, <B>wxStreamProtocolType </B><I>type = wxSTREAM_PROTOCOL</I>) <B>const</B><P>
+Returns true if this factory can handle the given protocol, MIME type
+or file extension.<P>
+When using wxSTREAM_FILEEXT for the second parameter, the first parameter
+can be a complete filename rather than just an extension.<P>
+
+
+<HR>
+<A NAME="wxarchiveclassfactoryfind"></A>
+<H3>wxArchiveClassFactory::Find</H3>
+<P>
+<B>static const <A HREF="wx_wxarchiveclassfactory.html#wxarchiveclassfactory">wxArchiveClassFactory</A>*</B> </B> <B>Find</B>(<B>const wxChar* </B><I>protocol</I>, <B>wxStreamProtocolType </B><I>type = wxSTREAM_PROTOCOL</I>)<P>
+A static member that finds a factory that can handle a given protocol, MIME
+type or file extension.  Returns a pointer to the class factory if found, or
+NULL otherwise. It does not give away ownership of the factory.<P>
+When using wxSTREAM_FILEEXT for the second parameter, the first parameter
+can be a complete filename rather than just an extension.<P>
+
+
+<HR>
+<A NAME="wxarchiveclassfactorygetfirst"></A>
+<H3>wxArchiveClassFactory::GetFirst/GetNext</H3>
+<P>
+<B>static const <A HREF="wx_wxarchiveclassfactory.html#wxarchiveclassfactory">wxArchiveClassFactory</A>*</B> </B> <B>GetFirst</B>()<P>
+<B>const <A HREF="wx_wxarchiveclassfactory.html#wxarchiveclassfactory">wxArchiveClassFactory</A>*</B> </B> <B>GetNext</B>() <B>const</B><P>
+GetFirst and GetNext can be used to enumerate the available factories.<P>
+For example, to list them:<P>
+<PRE>
+    wxString list;
+    const wxArchiveClassFactory *factory = wxArchiveClassFactory::GetFirst();
+
+    while (factory) {
+        list &lt;&lt; factory-&gt;GetProtocol() &lt;&lt; _T("\n");
+        factory = factory-&gt;GetNext();
+    }
+
+</PRE>
+GetFirst()/GetNext() return a pointer to a factory or NULL if no more
+are available. They do not give away ownership of the factory.<P>
+
+
+<HR>
+<A NAME="wxarchiveclassfactorygetinternalname"></A>
+<H3>wxArchiveClassFactory::GetInternalName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetInternalName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>wxPathFormat </B><I>format = wxPATH_NATIVE</I>) <B>const</B><P>
+Calls the static GetInternalName() function for the archive entry type,
+for example
+ <A HREF="wx_wxzipentry.html#wxzipentrygetinternalname">wxZipEntry::GetInternalName()</A>.<P>
+
+
+<HR>
+<A NAME="wxarchiveclassfactorygetprotocol"></A>
+<H3>wxArchiveClassFactory::GetProtocol</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetProtocol</B>() <B>const</B><P>
+Returns the wxFileSystem protocol supported by this factory. Equivalent
+to wxString(*GetProtcols()).<P>
+
+
+<HR>
+<A NAME="wxarchiveclassfactorygetprotocols"></A>
+<H3>wxArchiveClassFactory::GetProtocols</H3>
+<P>
+<B>const wxChar * const*</B> <B>GetProtocols</B>(<B>wxStreamProtocolType </B><I>type = wxSTREAM_PROTOCOL</I>) <B>const</B><P>
+Returns the protocols, MIME types or file extensions supported by this
+factory, as an array of null terminated strings. It does not give away
+ownership of the array or strings.<P>
+For example, to list the file extensions a factory supports:<P>
+<PRE>
+    wxString list;
+    const wxChar *const *p;
+
+    for (p = factory-&gt;GetProtocols(wxSTREAM_FILEEXT); *p; p++)
+        list &lt;&lt; *p &lt;&lt; _T("\n");
+
+</PRE>
+
+
+<HR>
+<A NAME="wxarchiveclassfactorynewentry"></A>
+<H3>wxArchiveClassFactory::NewEntry</H3>
+<P>
+<B><A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A>*</B> </B> <B>NewEntry</B>() <B>const</B><P>
+Create a new <A HREF="wx_wxarchiveentry.html#wxarchiveentry">wxArchiveEntry</A> object of the
+appropriate type.<P>
+
+
+<HR>
+<A NAME="wxarchiveclassfactorynewstream"></A>
+<H3>wxArchiveClassFactory::NewStream</H3>
+<P>
+<B><A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A>*</B> </B> <B>NewStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>& </B></B><I>stream</I>) <B>const</B><P>
+<B><A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstream">wxArchiveOutputStream</A>*</B> </B> <B>NewStream</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>& </B></B><I>stream</I>) <B>const</B><P>
+<B><A HREF="wx_wxarchiveinputstream.html#wxarchiveinputstream">wxArchiveInputStream</A>*</B> </B> <B>NewStream</B>(<B><A HREF="wx_wxinputstream.html#wxinputstream">wxInputStream</A>* </B></B><I>stream</I>) <B>const</B><P>
+<B><A HREF="wx_wxarchiveoutputstream.html#wxarchiveoutputstream">wxArchiveOutputStream</A>*</B> </B> <B>NewStream</B>(<B><A HREF="wx_wxoutputstream.html#wxoutputstream">wxOutputStream</A>* </B></B><I>stream</I>) <B>const</B><P>
+Create a new input or output stream to read or write an archive.<P>
+If the parent stream is passed as a pointer then the new archive stream
+takes ownership of it. If it is passed by reference then it does not.<P>
+
+
+<HR>
+<A NAME="wxarchiveclassfactorypushfront"></A>
+<H3>wxArchiveClassFactory::PushFront</H3>
+<P>
+<B>void</B> <B>PushFront</B>()<P>
+Adds this class factory to the list returned
+by <A HREF="wx_wxarchiveclassfactory.html#wxarchiveclassfactorygetfirst">GetFirst()/GetNext()</A>.<P>
+It is not necessary to do this to use the archive streams. It is usually
+used when implementing streams, typically the implementation will 
+add a static instance of its factory class.<P>
+It can also be used to change the order of a factory already in the list,
+bringing it to the front. This isn't a thread safe operation
+so can't be done when other threads are running that will be using the list.<P>
+The list does not take ownership of the factory.<P>
+
+
+<HR>
+<A NAME="wxarchiveclassfactoryremove"></A>
+<H3>wxArchiveClassFactory::Remove</H3>
+<P>
+<B>void</B> <B>Remove</B>()<P>
+Removes this class factory from the list returned
+by <A HREF="wx_wxarchiveclassfactory.html#wxarchiveclassfactorygetfirst">GetFirst()/GetNext()</A>.<P>
+Removing from the list isn't a thread safe operation
+so can't be done when other threads are running that will be using the list.<P>
+The list does not own the factories, so removing a factory does not delete it.<P>
+
+
+</FONT></BODY></HTML>

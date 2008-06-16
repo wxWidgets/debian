@@ -1,0 +1,311 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxArrayString</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxarraystring"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxarray.html#wxarray"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxartprovider.html#wxartprovider"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxArrayString</H2>
+<P>
+wxArrayString is an efficient container for storing 
+<A HREF="wx_wxstring.html#wxstring">wxString</A> objects. It has the same features as all 
+<A HREF="wx_wxarray.html#wxarray">wxArray</A> classes, i.e. it dynamically expands when new items
+are added to it (so it is as easy to use as a linked list), but the access
+time to the elements is constant, instead of being linear in number of
+elements as in the case of linked lists. It is also very size efficient and
+doesn't take more space than a C array <I>wxString[]</I> type (wxArrayString
+uses its knowledge of internals of wxString class to achieve this).<P>
+This class is used in the same way as other dynamic <A HREF="wx_wxarray.html#wxarray">arrays</A>,
+except that no <I>WX_DEFINE_ARRAY</I> declaration is needed for it. When a
+string is added or inserted in the array, a copy of the string is created, so
+the original string may be safely deleted (e.g. if it was a <I>wxChar *</I> 
+pointer the memory it was using can be freed immediately after this). In
+general, there is no need to worry about string memory deallocation when using
+this class - it will always free the memory it uses itself.<P>
+The references returned by <A HREF="wx_wxarraystring.html#wxarraystringitem">Item</A>, 
+<A HREF="wx_wxarraystring.html#wxarraystringlast">Last</A> or 
+<A HREF="wx_wxarraystring.html#wxarraystringoperatorindex">operator[]</A> are not constant, so the
+array elements may be modified in place like this<P>
+<PRE>
+    array.Last().MakeUpper();
+</PRE>
+There is also a variant of wxArrayString called wxSortedArrayString which has
+exactly the same methods as wxArrayString, but which always keeps the string
+in it in (alphabetical) order. wxSortedArrayString uses binary search in its 
+<A HREF="wx_wxarraystring.html#wxarraystringindex">Index</A> function (instead of linear search for
+wxArrayString::Index) which makes it much more efficient if you add strings to
+the array rarely (because, of course, you have to pay for Index() efficiency
+by having Add() be slower) but search for them often. Several methods should
+not be used with sorted array (basically, all which break the order of items)
+which is mentioned in their description.<P>
+Final word: none of the methods of wxArrayString is virtual including its
+destructor, so this class should not be used as a base class.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+Although this is not true strictly speaking, this class may be considered as a
+specialization of <A HREF="wx_wxarray.html#wxarray">wxArray</A> class for the wxString member
+data: it is not implemented like this, but it does have all of the wxArray
+functions.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/arrstr.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxarray.html#wxarray">wxArray</A>, <A HREF="wx_wxstring.html#wxstring">wxString</A>, <A HREF="wx_wxstringoverview.html#wxstringoverview">wxString overview</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxarraystringctor">wxArrayString::wxArrayString</A><BR>
+<A HREF="#wxarraystringdtor">wxArrayString::~wxArrayString</A><BR>
+<A HREF="#wxarraystringoperatorassign">wxArrayString::operator=</A><BR>
+<A HREF="#wxarraystringoperatorequal">wxArrayString::operator==</A><BR>
+<A HREF="#wxarraystringoperatornotequal">wxArrayString::operator!=</A><BR>
+<A HREF="#wxarraystringoperatorindex">wxArrayString::operator[]</A><BR>
+<A HREF="#wxarraystringadd">wxArrayString::Add</A><BR>
+<A HREF="#wxarraystringalloc">wxArrayString::Alloc</A><BR>
+<A HREF="#wxarraystringclear">wxArrayString::Clear</A><BR>
+<A HREF="#wxarraystringcount">wxArrayString::Count</A><BR>
+<A HREF="#wxarraystringempty">wxArrayString::Empty</A><BR>
+<A HREF="#wxarraystringgetcount">wxArrayString::GetCount</A><BR>
+<A HREF="#wxarraystringindex">wxArrayString::Index</A><BR>
+<A HREF="#wxarraystringinsert">wxArrayString::Insert</A><BR>
+<A HREF="#wxarraystringisempty">wxArrayString::IsEmpty</A><BR>
+<A HREF="#wxarraystringitem">wxArrayString::Item</A><BR>
+<A HREF="#wxarraystringlast">wxArrayString::Last</A><BR>
+<A HREF="#wxarraystringremove">wxArrayString::Remove</A><BR>
+<A HREF="#wxarraystringremoveat">wxArrayString::RemoveAt</A><BR>
+<A HREF="#wxarraystringshrink">wxArrayString::Shrink</A><BR>
+<A HREF="#wxarraystringsort">wxArrayString::Sort</A><BR>
+<P>
+
+<HR>
+<A NAME="wxarraystringctor"></A>
+<H3>wxArrayString::wxArrayString</H3>
+<P>
+<B></B> <B>wxArrayString</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxArrayString</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B></B><I> array</I>)<P>
+Copy constructor. Note that when an array is assigned to a sorted array, its contents is
+automatically sorted during construction.<P>
+<B></B> <B>wxArrayString</B>(<B>size_t</B><I> sz</I>, <B>const wxChar**</B><I> arr</I>)<P>
+Constructor from a C string array. Pass a size <I>sz</I> and array <I>arr</I>.<P>
+<B></B> <B>wxArrayString</B>(<B>size_t</B><I> sz</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>*</B></B><I> arr</I>)<P>
+Constructor from a wxString array. Pass a size <I>sz</I> and array <I>arr</I>.<P>
+
+<HR>
+<A NAME="wxarraystringdtor"></A>
+<H3>wxArrayString::~wxArrayString</H3>
+<P>
+<B></B> <B>~wxArrayString</B>()<P>
+Destructor frees memory occupied by the array strings. For the performance
+reasons it is not virtual, so this class should not be derived from.<P>
+
+<HR>
+<A NAME="wxarraystringoperatorassign"></A>
+<H3>wxArrayString::operator=</H3>
+<P>
+<B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A> &</B> </B> <B>operator =</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B></B><I> array</I>)<P>
+Assignment operator.<P>
+
+<HR>
+<A NAME="wxarraystringoperatorequal"></A>
+<H3>wxArrayString::operator==</H3>
+<P>
+<B>bool</B> <B>operator ==</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B></B><I> array</I>) <B>const</B><P>
+Compares 2 arrays respecting the case. Returns true only if the arrays have
+the same number of elements and the same strings in the same order.<P>
+
+<HR>
+<A NAME="wxarraystringoperatornotequal"></A>
+<H3>wxArrayString::operator!=</H3>
+<P>
+<B>bool</B> <B>operator !=</B>(<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>&</B></B><I> array</I>) <B>const</B><P>
+Compares 2 arrays respecting the case. Returns true if the arrays have
+different number of elements or if the elements don't match pairwise.<P>
+
+<HR>
+<A NAME="wxarraystringoperatorindex"></A>
+<H3>wxArrayString::operator[]</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>operator[]</B>(<B>size_t </B><I>nIndex</I>)<P>
+Return the array element at position <I>nIndex</I>. An assert failure will
+result from an attempt to access an element beyond the end of array in debug
+mode, but no check is done in release mode.<P>
+This is the operator version of <A HREF="wx_wxarraystring.html#wxarraystringitem">Item</A> method.<P>
+
+<HR>
+<A NAME="wxarraystringadd"></A>
+<H3>wxArrayString::Add</H3>
+<P>
+<B>size_t</B> <B>Add</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>size_t</B><I> copies = 1</I>)<P>
+Appends the given number of <I>copies</I> of the new item <I>str</I> to the
+array and returns the index of the first new item in the array.<P>
+<B>Warning:</B> For sorted arrays, the index of the inserted item will not be,
+in general, equal to <A HREF="wx_wxarraystring.html#wxarraystringgetcount">GetCount()</A> - 1 because
+the item is inserted at the correct position to keep the array sorted and not
+appended.<P>
+See also: <A HREF="wx_wxarraystring.html#wxarraystringinsert">Insert</A><P>
+
+<HR>
+<A NAME="wxarraystringalloc"></A>
+<H3>wxArrayString::Alloc</H3>
+<P>
+<B>void</B> <B>Alloc</B>(<B>size_t </B><I>nCount</I>)<P>
+Preallocates enough memory to store <I>nCount</I> items. This function may be
+used to improve array class performance before adding a known number of items
+consecutively.<P>
+See also: <A HREF="wx_wxarray.html#wxarraymemorymanagement">Dynamic array memory management</A><P>
+
+<HR>
+<A NAME="wxarraystringclear"></A>
+<H3>wxArrayString::Clear</H3>
+<P>
+<B>void</B> <B>Clear</B>()<P>
+Clears the array contents and frees memory.<P>
+See also: <A HREF="wx_wxarraystring.html#wxarraystringempty">Empty</A><P>
+
+<HR>
+<A NAME="wxarraystringcount"></A>
+<H3>wxArrayString::Count</H3>
+<P>
+<B>size_t</B> <B>Count</B>() <B>const</B><P>
+Returns the number of items in the array. This function is deprecated and is
+for backwards compatibility only, please use 
+<A HREF="wx_wxarraystring.html#wxarraystringgetcount">GetCount</A> instead.<P>
+
+<HR>
+<A NAME="wxarraystringempty"></A>
+<H3>wxArrayString::Empty</H3>
+<P>
+<B>void</B> <B>Empty</B>()<P>
+Empties the array: after a call to this function 
+<A HREF="wx_wxarraystring.html#wxarraystringgetcount">GetCount</A> will return 0. However, this
+function does not free the memory used by the array and so should be used when
+the array is going to be reused for storing other strings. Otherwise, you
+should use <A HREF="wx_wxarraystring.html#wxarraystringclear">Clear</A> to empty the array and free
+memory.<P>
+
+<HR>
+<A NAME="wxarraystringgetcount"></A>
+<H3>wxArrayString::GetCount</H3>
+<P>
+<B>size_t</B> <B>GetCount</B>() <B>const</B><P>
+Returns the number of items in the array.<P>
+
+<HR>
+<A NAME="wxarraystringindex"></A>
+<H3>wxArrayString::Index</H3>
+<P>
+<B>int</B> <B>Index</B>(<B>const wxChar *</B><I> sz</I>, <B>bool</B><I> bCase = true</I>, <B>bool</B><I> bFromEnd = false</I>)<P>
+Search the element in the array, starting from the beginning if
+<I>bFromEnd</I> is false or from end otherwise. If <I>bCase</I>, comparison is
+case sensitive (default), otherwise the case is ignored.<P>
+This function uses linear search for wxArrayString and binary search for
+wxSortedArrayString, but it ignores the <I>bCase</I> and <I>bFromEnd</I> 
+parameters in the latter case.<P>
+Returns index of the first item matched or <TT>wxNOT_FOUND</TT> if there is no match.<P>
+
+<HR>
+<A NAME="wxarraystringinsert"></A>
+<H3>wxArrayString::Insert</H3>
+<P>
+<B>void</B> <B>Insert</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>size_t</B><I> nIndex</I>, <B>size_t </B><I>copies = 1</I>)<P>
+Insert the given number of <I>copies</I> of the new element in the array before the position <I>nIndex</I>. Thus, for
+example, to insert the string in the beginning of the array you would write<P>
+<PRE>
+Insert("foo", 0);
+</PRE>
+If <I>nIndex</I> is equal to <I>GetCount()</I> this function behaves as 
+<A HREF="wx_wxarraystring.html#wxarraystringadd">Add</A>.<P>
+<B>Warning:</B> this function should not be used with sorted arrays because it
+could break the order of items and, for example, subsequent calls to 
+<A HREF="wx_wxarraystring.html#wxarraystringindex">Index()</A> would then not work!<P>
+
+<HR>
+<A NAME="wxarraystringisempty"></A>
+<H3>wxArrayString::IsEmpty</H3>
+<P>
+<B>bool</B> <B>IsEmpty</B>()<P>
+Returns true if the array is empty, false otherwise. This function returns the
+same result as <I>GetCount() == 0</I> but is probably easier to read.<P>
+
+<HR>
+<A NAME="wxarraystringitem"></A>
+<H3>wxArrayString::Item</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A>&</B> </B> <B>Item</B>(<B>size_t </B><I>nIndex</I>) <B>const</B><P>
+Return the array element at position <I>nIndex</I>. An assert failure will
+result from an attempt to access an element beyond the end of array in debug
+mode, but no check is done in release mode.<P>
+See also <A HREF="wx_wxarraystring.html#wxarraystringoperatorindex">operator[]</A> for the operator
+version.<P>
+
+<HR>
+<A NAME="wxarraystringlast"></A>
+<H3>wxArrayString::Last</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>Last</B>()<P>
+Returns the last element of the array. Attempt to access the last element of
+an empty array will result in assert failure in debug build, however no checks
+are done in release mode.<P>
+
+<HR>
+<A NAME="wxarraystringremove"></A>
+<H3>wxArrayString::Remove</H3>
+<P>
+<B>void</B> <B>Remove</B>(<B>const wxChar *</B><I> sz</I>)<P>
+Removes the first item matching this value. An assert failure is provoked by
+an attempt to remove an element which does not exist in debug build.<P>
+See also: <A HREF="wx_wxarraystring.html#wxarraystringindex">Index</A><P>
+
+<HR>
+<A NAME="wxarraystringremoveat"></A>
+<H3>wxArrayString::RemoveAt</H3>
+<P>
+<B>void</B> <B>RemoveAt</B>(<B>size_t </B><I>nIndex</I>, <B>size_t </B><I>count = 1</I>)<P>
+Removes <I>count</I> items starting at position <I>nIndex</I> from the array.<P>
+
+<HR>
+<A NAME="wxarraystringshrink"></A>
+<H3>wxArrayString::Shrink</H3>
+<P>
+<B>void</B> <B>Shrink</B>()<P>
+Releases the extra memory allocated by the array. This function is useful to
+minimize the array memory consumption.<P>
+See also: <A HREF="wx_wxarraystring.html#wxarraystringalloc">Alloc</A>, <A HREF="wx_wxarray.html#wxarraymemorymanagement">Dynamic array memory management</A><P>
+
+<HR>
+<A NAME="wxarraystringsort"></A>
+<H3>wxArrayString::Sort</H3>
+<P>
+<B>void</B> <B>Sort</B>(<B>bool</B><I> reverseOrder = false</I>)<P>
+Sorts the array in alphabetical order or in reverse alphabetical order if 
+<I>reverseOrder</I> is true. The sort is case-sensitive.<P>
+<B>Warning:</B> this function should not be used with sorted array because it
+could break the order of items and, for example, subsequent calls to 
+<A HREF="wx_wxarraystring.html#wxarraystringindex">Index()</A> would then not work!<P>
+<B>void</B> <B>Sort</B>(<B>CompareFunction </B><I>compareFunction</I>)<P>
+Sorts the array using the specified <I>compareFunction</I> for item comparison.
+<I>CompareFunction</I> is defined as a function taking two <I>const
+wxString&amp;</I> parameters and returning an <I>int</I> value less than, equal to or
+greater than 0 if the first string is less than, equal to or greater than the
+second one.<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+The following example sorts strings by their length.<P>
+<PRE>
+static int CompareStringLen(const wxString& first, const wxString& second)
+{
+    return first.length() - second.length();
+}
+
+...
+
+wxArrayString array;
+
+array.Add("one");
+array.Add("two");
+array.Add("three");
+array.Add("four");
+
+array.Sort(CompareStringLen);
+</PRE>
+<B>Warning:</B> this function should not be used with sorted array because it
+could break the order of items and, for example, subsequent calls to 
+<A HREF="wx_wxarraystring.html#wxarraystringindex">Index()</A> would then not work!<P>
+
+</FONT></BODY></HTML>

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _radio.i,v 1.15 2005/05/27 00:53:05 RD Exp $
+// RCS-ID:      $Id: _radio.i 41166 2006-09-12 03:20:12Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ public:
     virtual bool SetStringSelection(const wxString& s);
 
     // string access
-    virtual int GetCount() const;
+    virtual size_t GetCount() const;
     virtual int FindString(const wxString& s) const;
     
     virtual wxString GetString(int n) const;
@@ -68,28 +68,43 @@ public:
     %pythoncode { SetItemLabel = SetString };
 
     // change the individual radio button state
-    %Rename(EnableItem,  virtual void, Enable(int n, bool enable = true));
-    %Rename(ShowItem,  virtual void, Show(int n, bool show = true));
+    %Rename(EnableItem,  virtual void, Enable(unsigned int n, bool enable = true));
+    %Rename(ShowItem,  virtual void, Show(unsigned int n, bool show = true));
+    virtual bool IsItemEnabled(unsigned int n) const;
+    virtual bool IsItemShown(unsigned int n) const;
 
-#ifndef __WXGTK__
     // layout parameters
-    virtual int GetColumnCount() const;
-    virtual int GetRowCount() const;
+    virtual unsigned int GetColumnCount() const;
+    virtual unsigned int GetRowCount() const;
 
     // return the item above/below/to the left/right of the given one
     int GetNextItem(int item, wxDirection dir, long style) const;
-#else
-    %extend {
-        int GetColumnCount() const { return -1; }
-        int GetRowCount() const { return -1; }
-        int GetNextItem(int item, wxDirection dir, long style) const { return -1; }
-    }
-#endif
+
+    // set the tooltip text for a radio item, empty string unsets any tooltip
+    void SetItemToolTip(unsigned int item, const wxString& text);
+
+    // get the individual items tooltip; returns NULL if none
+    wxToolTip *GetItemToolTip(unsigned int item) const;
+
+    // set helptext for a particular item, pass an empty string to erase it
+    void SetItemHelpText(unsigned int n, const wxString& helpText);
+
+    // retrieve helptext for a particular item, empty string means no help text
+    wxString GetItemHelpText(unsigned int n) const;
+
+// Hmmm...  This is protected on wxMSW.    
+//    virtual int GetItemFromPoint(const wxPoint& pt) const;
 
 //    bool IsValid(int n) const;  ** not public
         
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    %property(ColumnCount, GetColumnCount, doc="See `GetColumnCount`");
+    %property(Count, GetCount, doc="See `GetCount`");
+    %property(RowCount, GetRowCount, doc="See `GetRowCount`");
+    %property(Selection, GetSelection, SetSelection, doc="See `GetSelection` and `SetSelection`");
+    %property(StringSelection, GetStringSelection, SetStringSelection, doc="See `GetStringSelection` and `SetStringSelection`");    
 };
     
 
@@ -126,6 +141,8 @@ public:
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
 };
 
 //---------------------------------------------------------------------------

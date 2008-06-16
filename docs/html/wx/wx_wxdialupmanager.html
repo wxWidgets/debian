@@ -1,0 +1,233 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDialUpManager</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdialupmanager"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdialupevent.html#wxdialupevent"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdir.html#wxdir"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDialUpManager</H2>
+<P>
+This class encapsulates functions dealing with verifying the connection status
+of the workstation (connected to the Internet via a direct connection,
+connected through a modem or not connected at all) and to establish this
+connection if possible/required (i.e. in the case of the modem).<P>
+The program may also wish to be notified about the change in the connection
+status (for example, to perform some action when the user connects to the
+network the next time or, on the contrary, to stop receiving data from the net
+when the user hangs up the modem). For this, you need to use one of the event
+macros described below.<P>
+This class is different from other wxWidgets classes in that there is at most
+one instance of this class in the program accessed via 
+<A HREF="wx_wxdialupmanager.html#wxdialupmanagercreate">wxDialUpManager::Create()</A> and you can't
+create the objects of this class directly.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dialup.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+To be notified about the change in the network connection status, use these
+event handler macros to direct input to member functions that take a 
+<A HREF="wx_wxdialupevent.html#wxdialupevent">wxDialUpEvent</A> argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_DIALUP_CONNECTED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A connection with the network was established.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_DIALUP_DISCONNECTED(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The connection with the network was lost.
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_samples.html#sampledialup">dialup sample</A><BR>
+
+<A HREF="wx_wxdialupevent.html#wxdialupevent">wxDialUpEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdialupmanagercreate">wxDialUpManager::Create</A><BR>
+<A HREF="#wxdialupmanagerisok">wxDialUpManager::IsOk</A><BR>
+<A HREF="#wxdialupmanagerdtor">wxDialUpManager::~wxDialUpManager</A><BR>
+<A HREF="#wxdialupmanagergetispnames">wxDialUpManager::GetISPNames</A><BR>
+<A HREF="#wxdialupmanagerdial">wxDialUpManager::Dial</A><BR>
+<A HREF="#wxdialupmanagerisdialing">wxDialUpManager::IsDialing</A><BR>
+<A HREF="#wxdialupmanagercanceldialing">wxDialUpManager::CancelDialing</A><BR>
+<A HREF="#wxdialupmanagerhangup">wxDialUpManager::HangUp</A><BR>
+<A HREF="#wxdialupmanagerisalwaysonline">wxDialUpManager::IsAlwaysOnline</A><BR>
+<A HREF="#wxdialupmanagerisonline">wxDialUpManager::IsOnline</A><BR>
+<A HREF="#wxdialupmanagersetonlinestatus">wxDialUpManager::SetOnlineStatus</A><BR>
+<A HREF="#wxdialupmanagerenableautocheckonlinestatus">wxDialUpManager::EnableAutoCheckOnlineStatus</A><BR>
+<A HREF="#wxdialupmanagerdisableautocheckonlinestatus">wxDialUpManager::DisableAutoCheckOnlineStatus</A><BR>
+<A HREF="#wxdialupmanagersetwellknownhost">wxDialUpManager::SetWellKnownHost</A><BR>
+<A HREF="#wxdialupmanagersetconnectcommand">wxDialUpManager::SetConnectCommand</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdialupmanagercreate"></A>
+<H3>wxDialUpManager::Create</H3>
+<P>
+<B><A HREF="wx_wxdialupmanager.html#wxdialupmanager">wxDialUpManager</A>*</B> </B> <B>Create</B>()<P>
+This function should create and return the object of the platform-specific
+class derived from wxDialUpManager. You should delete the pointer when you are
+done with it.<P>
+
+<HR>
+<A NAME="wxdialupmanagerisok"></A>
+<H3>wxDialUpManager::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+Returns <TT>true</TT> if the dialup manager was initialized correctly. If this
+function returns <TT>false</TT>, no other functions will work neither, so it is a
+good idea to call this function and check its result before calling any other
+wxDialUpManager methods<P>
+
+<HR>
+<A NAME="wxdialupmanagerdtor"></A>
+<H3>wxDialUpManager::~wxDialUpManager</H3>
+<P>
+<B></B> <B>~wxDialUpManager</B>()<P>
+Destructor.<P>
+
+<HR>
+<A NAME="wxdialupmanagergetispnames"></A>
+<H3>wxDialUpManager::GetISPNames</H3>
+<P>
+<B>size_t</B> <B>GetISPNames</B>(<B><A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>names</I>) <B>const</B><P>
+This function is only implemented under Windows.<P>
+Fills the array with the names of all possible values for the first
+parameter to <A HREF="wx_wxdialupmanager.html#wxdialupmanagerdial">Dial()</A> on this machine and returns
+their number (may be 0).<P>
+
+<HR>
+<A NAME="wxdialupmanagerdial"></A>
+<H3>wxDialUpManager::Dial</H3>
+<P>
+<B>bool</B> <B>Dial</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>nameOfISP = wxEmptyString</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>username = wxEmptyString</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>password = wxEmptyString</I>, <B>bool </B><I>async = true</I>)<P>
+Dial the given ISP, use <I>username</I> and <I>password</I> to authenticate.<P>
+The parameters are only used under Windows currently, for Unix you should use 
+<A HREF="wx_wxdialupmanager.html#wxdialupmanagersetconnectcommand">SetConnectCommand</A> to customize this
+functions behaviour.<P>
+If no <I>nameOfISP</I> is given, the function will select the default one
+(proposing the user to choose among all connections defined on this machine)
+and if no username and/or password are given, the function will try to do
+without them, but will ask the user if really needed.<P>
+If <I>async</I> parameter is <TT>false</TT>, the function waits until the end of dialing
+and returns <TT>true</TT> upon successful completion.<P>
+If <I>async</I> is <TT>true</TT>, the function only initiates the connection and
+returns immediately - the result is reported via events (an event is sent
+anyhow, but if dialing failed it will be a DISCONNECTED one).<P>
+
+<HR>
+<A NAME="wxdialupmanagerisdialing"></A>
+<H3>wxDialUpManager::IsDialing</H3>
+<P>
+<B>bool</B> <B>IsDialing</B>() <B>const</B><P>
+Returns true if (async) dialing is in progress.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialupmanager.html#wxdialupmanagerdial">Dial</A><P>
+
+<HR>
+<A NAME="wxdialupmanagercanceldialing"></A>
+<H3>wxDialUpManager::CancelDialing</H3>
+<P>
+<B>bool</B> <B>CancelDialing</B>()<P>
+Cancel dialing the number initiated with <A HREF="wx_wxdialupmanager.html#wxdialupmanagerdial">Dial</A> 
+with async parameter equal to <TT>true</TT>.<P>
+Note that this won't result in DISCONNECTED event being sent.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialupmanager.html#wxdialupmanagerisdialing">IsDialing</A><P>
+
+<HR>
+<A NAME="wxdialupmanagerhangup"></A>
+<H3>wxDialUpManager::HangUp</H3>
+<P>
+<B>bool</B> <B>HangUp</B>()<P>
+Hang up the currently active dial up connection.<P>
+
+<HR>
+<A NAME="wxdialupmanagerisalwaysonline"></A>
+<H3>wxDialUpManager::IsAlwaysOnline</H3>
+<P>
+<B>bool</B> <B>IsAlwaysOnline</B>() <B>const</B><P>
+Returns <TT>true</TT> if the computer has a permanent network connection (i.e. is
+on a LAN) and so there is no need to use Dial() function to go online.<P>
+<B>NB:</B> this functions tries to guess the result and it is not always
+guaranteed to be correct, so it is better to ask user for
+confirmation or give him a possibility to override it.<P>
+
+<HR>
+<A NAME="wxdialupmanagerisonline"></A>
+<H3>wxDialUpManager::IsOnline</H3>
+<P>
+<B>bool</B> <B>IsOnline</B>() <B>const</B><P>
+Returns <TT>true</TT> if the computer is connected to the network: under Windows,
+this just means that a RAS connection exists, under Unix we check that
+the "well-known host" (as specified by 
+<A HREF="wx_wxdialupmanager.html#wxdialupmanagersetwellknownhost">SetWellKnownHost</A>) is reachable.<P>
+
+<HR>
+<A NAME="wxdialupmanagersetonlinestatus"></A>
+<H3>wxDialUpManager::SetOnlineStatus</H3>
+<P>
+<B>void</B> <B>SetOnlineStatus</B>(<B>bool </B><I>isOnline = true</I>)<P>
+Sometimes the built-in logic for determining the online status may fail,
+so, in general, the user should be allowed to override it. This function
+allows to forcefully set the online status - whatever our internal
+algorithm may think about it.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialupmanager.html#wxdialupmanagerisonline">IsOnline</A><P>
+
+<HR>
+<A NAME="wxdialupmanagerenableautocheckonlinestatus"></A>
+<H3>wxDialUpManager::EnableAutoCheckOnlineStatus</H3>
+<P>
+<B>bool</B> <B>EnableAutoCheckOnlineStatus</B>(<B>size_t </B><I>nSeconds = 60</I>)<P>
+Enable automatic checks for the connection status and sending of 
+<TT>wxEVT_DIALUP_CONNECTED/wxEVT_DIALUP_DISCONNECTED</TT> events. The interval
+parameter is only for Unix where we do the check manually and specifies how
+often should we repeat the check (each minute by default). Under Windows, the
+notification about the change of connection status is sent by the system and so
+we don't do any polling and this parameter is ignored.<P>
+Returns <TT>false</TT> if couldn't set up automatic check for online status.<P>
+
+<HR>
+<A NAME="wxdialupmanagerdisableautocheckonlinestatus"></A>
+<H3>wxDialUpManager::DisableAutoCheckOnlineStatus</H3>
+<P>
+<B>void</B> <B>DisableAutoCheckOnlineStatus</B>()<P>
+Disable automatic check for connection status change - notice that the
+<TT>wxEVT_DIALUP_XXX</TT> events won't be sent any more neither.<P>
+
+<HR>
+<A NAME="wxdialupmanagersetwellknownhost"></A>
+<H3>wxDialUpManager::SetWellKnownHost</H3>
+<P>
+<B>void</B> <B>SetWellKnownHost</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>hostname</I>, <B>int </B><I>portno = 80</I>)<P>
+This method is for Unix only.<P>
+Under Unix, the value of well-known host is used to check whether we're
+connected to the internet. It is unused under Windows, but this function
+is always safe to call. The default value is <TT>www.yahoo.com:80</TT>.<P>
+
+<HR>
+<A NAME="wxdialupmanagersetconnectcommand"></A>
+<H3>wxDialUpManager::SetConnectCommand</H3>
+<P>
+<B>void</B> <B>SetConnectCommand</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>commandDial = wxT("/usr/bin/pon")</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>commandHangup = wxT("/usr/bin/poff")</I>)<P>
+This method is for Unix only.<P>
+Sets the commands to start up the network and to hang up again.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdialupmanager.html#wxdialupmanagerdial">Dial</A><P>
+
+</FONT></BODY></HTML>

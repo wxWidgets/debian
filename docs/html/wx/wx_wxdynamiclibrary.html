@@ -1,0 +1,268 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxDynamicLibrary</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxdynamiclibrary"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxdroptarget.html#wxdroptarget"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxdynamiclibrarydetails.html#wxdynamiclibrarydetails"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxDynamicLibrary</H2>
+<P>
+wxDynamicLibrary is a class representing dynamically loadable library
+(Windows DLL, shared library under Unix etc.). Just create an object of
+this class to load a library and don't worry about unloading it -- it will be
+done in the objects destructor automatically.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class.<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/dynlib.h&gt;<P>
+(only available if <TT>wxUSE_DYNLIB_CLASS</TT> is set to 1)<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxdynamiclibrarywxdynamiclibrary">wxDynamicLibrary::wxDynamicLibrary</A><BR>
+<A HREF="#wxdynamiclibrarycanonicalizename">wxDynamicLibrary::CanonicalizeName</A><BR>
+<A HREF="#wxdynamiclibrarycanonicalizepluginname">wxDynamicLibrary::CanonicalizePluginName</A><BR>
+<A HREF="#wxdynamiclibrarydetach">wxDynamicLibrary::Detach</A><BR>
+<A HREF="#wxdynamiclibrarygetsymbol">wxDynamicLibrary::GetSymbol</A><BR>
+<A HREF="#wxdynamiclibrarygetsymbolaorw">wxDynamicLibrary::GetSymbolAorW</A><BR>
+<A HREF="#wxdynamiclibrarygetprogramhandle">wxDynamicLibrary::GetProgramHandle</A><BR>
+<A HREF="#wxdynamiclibraryhassymbol">wxDynamicLibrary::HasSymbol</A><BR>
+<A HREF="#wxdynamiclibraryisloaded">wxDynamicLibrary::IsLoaded</A><BR>
+<A HREF="#wxdynamiclibrarylistloaded">wxDynamicLibrary::ListLoaded</A><BR>
+<A HREF="#wxdynamiclibraryload">wxDynamicLibrary::Load</A><BR>
+<A HREF="#wxdynamiclibraryunload">wxDynamicLibrary::Unload</A><BR>
+<P>
+
+<HR>
+<A NAME="wxdynamiclibrarywxdynamiclibrary"></A>
+<H3>wxDynamicLibrary::wxDynamicLibrary</H3>
+<P>
+<B></B> <B>wxDynamicLibrary</B>()<P>
+<B></B> <B>wxDynamicLibrary</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>int </B><I>flags = wxDL_DEFAULT</I>)<P>
+Constructor. Second form calls <A HREF="wx_wxdynamiclibrary.html#wxdynamiclibraryload">Load</A>.<P>
+
+
+<HR>
+<A NAME="wxdynamiclibrarycanonicalizename"></A>
+<H3>wxDynamicLibrary::CanonicalizeName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>CanonicalizeName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>wxDynamicLibraryCategory</B><I> cat = wxDL_LIBRARY</I>)<P>
+Returns the platform-specific full name for the library called <I>name</I>. E.g.
+it adds a <TT>".dll"</TT> extension under Windows and <TT>"lib"</TT> prefix and 
+<TT>".so"</TT>, <TT>".sl"</TT> or maybe <TT>".dylib"</TT> extension under Unix.<P>
+The possible values for <I>cat</I> are:<P>
+
+<TABLE>
+
+    
+<TR><TD VALIGN=TOP>
+wxDL_LIBRARY
+</FONT></TD>
+
+<TD VALIGN=TOP>
+normal library
+</FONT></TD></TR>
+
+    
+<TR><TD VALIGN=TOP>
+wxDL_MODULE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+a loadable module or plugin
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxdynamiclibrary.html#wxdynamiclibrarycanonicalizepluginname">CanonicalizePluginName</A><P>
+<P>
+
+<HR>
+<A NAME="wxdynamiclibrarycanonicalizepluginname"></A>
+<H3>wxDynamicLibrary::CanonicalizePluginName</H3>
+<P>
+<B>static <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>CanonicalizePluginName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>wxPluginCategory</B><I> cat = wxDL_PLUGIN_GUI</I>)<P>
+This function does the same thing as 
+<A HREF="wx_wxdynamiclibrary.html#wxdynamiclibrarycanonicalizename">CanonicalizeName</A> but for wxWidgets
+plugins. The only difference is that compiler and version information are added
+to the name to ensure that the plugin which is going to be loaded will be
+compatible with the main program.<P>
+The possible values for <I>cat</I> are:<P>
+
+<TABLE>
+
+    
+<TR><TD VALIGN=TOP>
+wxDL_PLUGIN_GUI
+</FONT></TD>
+
+<TD VALIGN=TOP>
+plugin which uses GUI classes (default)
+</FONT></TD></TR>
+
+    
+<TR><TD VALIGN=TOP>
+wxDL_PLUGIN_BASE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+plugin which only uses wxBase
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="wxdynamiclibrarydetach"></A>
+<H3>wxDynamicLibrary::Detach</H3>
+<P>
+<B>wxDllType</B> <B>Detach</B>()<P>
+Detaches this object from its library handle, i.e. the object will not unload
+the library any longer in its destructor but it is now the callers
+responsibility to do this using <A HREF="wx_wxdynamiclibrary.html#wxdynamiclibraryunload">Unload</A>.<P>
+
+
+<HR>
+<A NAME="wxdynamiclibrarygetsymbol"></A>
+<H3>wxDynamicLibrary::GetSymbol</H3>
+<P>
+<B>void *</B> <B>GetSymbol</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>) <B>const</B><P>
+Returns pointer to symbol <I>name</I> in the library or NULL if the library
+contains no such symbol.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_miscellany.html#wxdynlibfunction">wxDYNLIB_FUNCTION</A><P>
+
+
+<HR>
+<A NAME="wxdynamiclibrarygetsymbolaorw"></A>
+<H3>wxDynamicLibrary::GetSymbolAorW</H3>
+<P>
+<B>void *</B> <B>GetSymbolAorW</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>) <B>const</B><P>
+This function is available only under Windows as it is only useful when
+dynamically loading symbols from standard Windows DLLs. Such functions have
+either <TT>'A'</TT> (in ANSI build) or <TT>'W'</TT> (in Unicode, or wide
+character build) suffix if they take string parameters. Using this function you
+can use just the base name of the function and the correct suffix is appende
+automatically depending on the current build. Otherwise, this method is
+identical to <A HREF="wx_wxdynamiclibrary.html#wxdynamiclibrarygetsymbol">GetSymbol</A>.<P>
+
+
+<HR>
+<A NAME="wxdynamiclibrarygetprogramhandle"></A>
+<H3>wxDynamicLibrary::GetProgramHandle</H3>
+<P>
+<B>static wxDllType</B> <B>GetProgramHandle</B>()<P>
+Return a valid handle for the main program itself or <TT>NULL</TT> if symbols
+from the main program can't be loaded on this platform.<P>
+
+
+<HR>
+<A NAME="wxdynamiclibraryhassymbol"></A>
+<H3>wxDynamicLibrary::HasSymbol</H3>
+<P>
+<B>bool</B> <B>HasSymbol</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>) <B>const</B><P>
+Returns <TT>true</TT> if the symbol with the given <I>name</I> is present in the dynamic
+library, <TT>false</TT> otherwise. Unlike <A HREF="wx_wxdynamiclibrary.html#wxdynamiclibrarygetsymbol">GetSymbol</A>,
+this function doesn't log an error message if the symbol is not found.<P>
+This function is new since wxWidgets version 2.5.4<P>
+
+
+<HR>
+<A NAME="wxdynamiclibraryisloaded"></A>
+<H3>wxDynamicLibrary::IsLoaded</H3>
+<P>
+<B>bool</B> <B>IsLoaded</B>() <B>const</B><P>
+Returns <TT>true</TT> if the library was successfully loaded, <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxdynamiclibrarylistloaded"></A>
+<H3>wxDynamicLibrary::ListLoaded</H3>
+<P>
+<B>static wxDynamicLibraryDetailsArray</B> <B>ListLoaded</B>()<P>
+This static method returns an <A HREF="wx_wxarray.html#wxarray">array</A> containing the details
+of all modules loaded into the address space of the current project, the array
+elements are object of <TT>wxDynamicLibraryDetails</TT> class. The array will
+be empty if an error occurred.<P>
+This method is currently implemented only under Win32 and Linux and is useful
+mostly for diagnostics purposes.<P>
+
+
+<HR>
+<A NAME="wxdynamiclibraryload"></A>
+<H3>wxDynamicLibrary::Load</H3>
+<P>
+<B>bool</B> <B>Load</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name</I>, <B>int </B><I>flags = wxDL_DEFAULT</I>)<P>
+Loads DLL with the given <I>name</I> into memory. The <I>flags</I> argument can
+be a combination of the following bits:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+wxDL_LAZY
+</FONT></TD>
+
+<TD VALIGN=TOP>
+equivalent of RTLD_LAZY under Unix, ignored elsewhere
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxDL_NOW
+</FONT></TD>
+
+<TD VALIGN=TOP>
+equivalent of RTLD_NOW under Unix, ignored elsewhere
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxDL_GLOBAL
+</FONT></TD>
+
+<TD VALIGN=TOP>
+equivalent of RTLD_GLOBAL under Unix, ignored elsewhere
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxDL_VERBATIM
+</FONT></TD>
+
+<TD VALIGN=TOP>
+don't try to append the appropriate extension to
+the library name (this is done by default).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+wxDL_DEFAULT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+default flags, same as wxDL_NOW currently
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+Returns <TT>true</TT> if the library was successfully loaded, <TT>false</TT> otherwise.<P>
+
+
+<HR>
+<A NAME="wxdynamiclibraryunload"></A>
+<H3>wxDynamicLibrary::Unload</H3>
+<P>
+<B>void</B> <B>Unload</B>()<P>
+<B>static void</B> <B>Unload</B>(<B>wxDllType </B><I>handle</I>)<P>
+Unloads the library from memory. wxDynamicLibrary object automatically calls
+this method from its destructor if it had been successfully loaded.<P>
+The second version is only used if you need to keep the library in memory
+during a longer period of time than the scope of the wxDynamicLibrary object.
+In this case you may call <A HREF="wx_wxdynamiclibrary.html#wxdynamiclibrarydetach">Detach</A> and store
+the handle somewhere and call this static method later to unload it.<P>
+
+</FONT></BODY></HTML>

@@ -1,0 +1,178 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxChoice</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxchoice"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxchecklistbox.html#wxchecklistbox"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxchoicebook.html#wxchoicebook"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxChoice</H2>
+<P>
+A choice item is used to select one of a list of strings. Unlike a
+listbox, only the selection is visible until the user pulls down the
+menu of choices.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitems">wxControlWithItems</A><BR>
+
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/choice.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+There are no special styles for wxChoice.<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CHOICE(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_COMMAND_CHOICE_SELECTED event,
+when an item on the list is selected.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A>, <A HREF="wx_wxcombobox.html#wxcombobox">wxComboBox</A>,
+<A HREF="wx_wxcommandevent.html#wxcommandevent">wxCommandEvent</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxchoicector">wxChoice::wxChoice</A><BR>
+<A HREF="#wxchoicedtor">wxChoice::~wxChoice</A><BR>
+<A HREF="#wxchoicecreate">wxChoice::Create</A><BR>
+<A HREF="#wxchoicegetcolumns">wxChoice::GetColumns</A><BR>
+<A HREF="#wxchoicegetcurrentselection">wxChoice::GetCurrentSelection</A><BR>
+<A HREF="#wxchoicesetcolumns">wxChoice::SetColumns</A><BR>
+<P>
+
+<HR>
+<A NAME="wxchoicector"></A>
+<H3>wxChoice::wxChoice</H3>
+<P>
+<B></B> <B>wxChoice</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxChoice</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>int</B><I> n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>choices[]</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "choice"</I>)<P>
+<B></B> <B>wxChoice</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "choice"</I>)<P>
+Constructor, creating and showing a choice.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then the choice is sized
+appropriately.</UL></UL>
+<P>
+<I>n</I><UL><UL>
+Number of strings with which to initialise the choice control.</UL></UL>
+<P>
+<I>choices</I><UL><UL>
+An array of strings with which to initialise the choice control.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxchoice.html#wxchoice">wxChoice</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxchoice.html#wxchoicecreate">wxChoice::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxChoice constructor in wxPython reduces the <TT>n</TT>
+and <TT>choices</TT> arguments are to a single argument, which is
+a list of strings.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there is just an array reference in place of <TT>n</TT>
+and <TT>choices</TT>.<P>
+
+
+<HR>
+<A NAME="wxchoicedtor"></A>
+<H3>wxChoice::~wxChoice</H3>
+<P>
+<B></B> <B>~wxChoice</B>()<P>
+Destructor, destroying the choice item.<P>
+
+
+<HR>
+<A NAME="wxchoicecreate"></A>
+<H3>wxChoice::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>int</B><I> n</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A> </B></B><I>choices[]</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "choice"</I>)<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A> *</B></B><I>parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>,
+<B>const <A HREF="wx_wxarraystring.html#wxarraystring">wxArrayString</A>& </B></B><I>choices</I>,
+<B>long</B><I> style = 0</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>,
+<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = "choice"</I>)<P>
+Creates the choice for two-step construction. See <A HREF="wx_wxchoice.html#wxchoicector">wxChoice::wxChoice</A>.<P>
+
+
+<HR>
+<A NAME="wxchoicegetcolumns"></A>
+<H3>wxChoice::GetColumns</H3>
+<P>
+<B>int</B> <B>GetColumns</B>() <B>const</B><P>
+Gets the number of columns in this choice item.<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This is implemented for Motif only and always returns 1 for the other
+platforms.<P>
+
+
+<HR>
+<A NAME="wxchoicegetcurrentselection"></A>
+<H3>wxChoice::GetCurrentSelection</H3>
+<P>
+<B>int</B> <B>GetCurrentSelection</B>() <B>const</B><P>
+Unlike <A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitemsgetselection">GetSelection</A> which only
+returns the accepted selection value, i.e. the selection in the control once
+the user closes the dropdown list, this function returns the current selection.
+That is, while the dropdown list is shown, it returns the currently selected
+item in it. When it is not shown, its result is the same as for the other
+function.<P>
+This function is new since wxWidgets version 2.6.2 (before this version
+<A HREF="wx_wxcontrolwithitems.html#wxcontrolwithitemsgetselection">GetSelection</A> itself behaved like
+this).<P>
+
+
+<HR>
+<A NAME="wxchoicesetcolumns"></A>
+<H3>wxChoice::SetColumns</H3>
+<P>
+<B>void</B> <B>SetColumns</B>(<B>int</B><I> n = 1</I>)<P>
+Sets the number of columns in this choice item.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>n</I><UL><UL>
+Number of columns.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
+This is implemented for Motif only and doesn't do anything under other
+platforms.<P>
+
+</FONT></BODY></HTML>

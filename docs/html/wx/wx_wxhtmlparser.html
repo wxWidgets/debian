@@ -1,0 +1,304 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHtmlParser</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtmlparser"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxsimplehtmllistbox.html#wxsimplehtmllistbox"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxhtmlprintout.html#wxhtmlprintout"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHtmlParser</H2>
+<P>
+Classes derived from this handle the <B>generic</B> parsing of HTML documents: it scans
+the document and divide it into blocks of tags (where one block
+consists of beginning and ending tag and of text between these
+two tags).<P>
+It is independent from wxHtmlWindow and can be used as stand-alone parser
+(Julian Smart's idea of speech-only HTML viewer or wget-like utility -
+see InetGet sample for example).<P>
+It uses system of tag handlers to parse the HTML document. Tag handlers
+are not statically shared by all instances but are created for each
+wxHtmlParser instance. The reason is that the handler may contain
+document-specific temporary data used during parsing (e.g. complicated
+structures like tables).<P>
+Typically the user calls only the <A HREF="wx_wxhtmlparser.html#wxhtmlparserparse">Parse</A> method.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxObject<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/html/htmlpars.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxhtml.html#cells">Cells Overview</A>,
+<A HREF="wx_wxhtml.html#handlers">Tag Handlers Overview</A>,
+<A HREF="wx_wxhtmltag.html#wxhtmltag">wxHtmlTag</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxhtmlparserwxhtmlparser">wxHtmlParser::wxHtmlParser</A><BR>
+<A HREF="#wxhtmlparseraddtag">wxHtmlParser::AddTag</A><BR>
+<A HREF="#wxhtmlparseraddtaghandler">wxHtmlParser::AddTagHandler</A><BR>
+<A HREF="#wxhtmlparseraddword">wxHtmlParser::AddText</A><BR>
+<A HREF="#wxhtmlparserdoparsing">wxHtmlParser::DoParsing</A><BR>
+<A HREF="#wxhtmlparserdoneparser">wxHtmlParser::DoneParser</A><BR>
+<A HREF="#wxhtmlparsergetfs">wxHtmlParser::GetFS</A><BR>
+<A HREF="#wxhtmlparsergetproduct">wxHtmlParser::GetProduct</A><BR>
+<A HREF="#wxhtmlparsergetsource">wxHtmlParser::GetSource</A><BR>
+<A HREF="#wxhtmlparserinitparser">wxHtmlParser::InitParser</A><BR>
+<A HREF="#wxhtmlparseropenurl">wxHtmlParser::OpenURL</A><BR>
+<A HREF="#wxhtmlparserparse">wxHtmlParser::Parse</A><BR>
+<A HREF="#wxhtmlparserpushtaghandler">wxHtmlParser::PushTagHandler</A><BR>
+<A HREF="#wxhtmlparserpoptaghandler">wxHtmlParser::PopTagHandler</A><BR>
+<A HREF="#wxhtmlparsersetfs">wxHtmlParser::SetFS</A><BR>
+<A HREF="#wxhtmlparserstopparsing">wxHtmlParser::StopParsing</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlparserwxhtmlparser"></A>
+<H3>wxHtmlParser::wxHtmlParser</H3>
+<P>
+<B></B> <B>wxHtmlParser</B>()<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxhtmlparseraddtag"></A>
+<H3>wxHtmlParser::AddTag</H3>
+<P>
+<B>void</B> <B>AddTag</B>(<B>const <A HREF="wx_wxhtmltag.html#wxhtmltag">wxHtmlTag</A>& </B></B><I>tag</I>)<P>
+This may (and may not) be overwritten in derived class.<P>
+This method is called each time new tag is about to be added. 
+<I>tag</I> contains information about the tag. (See <A HREF="wx_wxhtmltag.html#wxhtmltag">wxHtmlTag</A>
+for details.)<P>
+Default (wxHtmlParser) behaviour is this:
+First it finds a handler capable of handling this tag and then it calls
+handler's HandleTag method.<P>
+
+<HR>
+<A NAME="wxhtmlparseraddtaghandler"></A>
+<H3>wxHtmlParser::AddTagHandler</H3>
+<P>
+<B>virtual void</B> <B>AddTagHandler</B>(<B><A HREF="wx_wxhtmltaghandler.html#wxhtmltaghandler">wxHtmlTagHandler</A> </B></B><I>*handler</I>)<P>
+Adds handler to the internal list (&amp; hash table) of handlers. This
+method should not be called directly by user but rather by derived class'
+constructor.<P>
+This adds the handler to this <B>instance</B> of wxHtmlParser, not to
+all objects of this class! (Static front-end to AddTagHandler is provided
+by wxHtmlWinParser).<P>
+All handlers are deleted on object deletion.<P>
+
+<HR>
+<A NAME="wxhtmlparseraddword"></A>
+<H3>wxHtmlParser::AddText</H3>
+<P>
+<B>virtual void</B> <B>AddWord</B>(<B>const char* </B><I>txt</I>)<P>
+Must be overwritten in derived class.<P>
+This method is called by <A HREF="wx_wxhtmlparser.html#wxhtmlparserdoparsing">DoParsing</A>
+each time a part of text is parsed. <I>txt</I> is NOT only one word, it is
+substring of input. It is not formatted or preprocessed (so white spaces are
+unmodified).<P>
+
+<HR>
+<A NAME="wxhtmlparserdoparsing"></A>
+<H3>wxHtmlParser::DoParsing</H3>
+<P>
+<B>void</B> <B>DoParsing</B>(<B>int </B><I>begin_pos</I>, <B>int </B><I>end_pos</I>)<P>
+<B>void</B> <B>DoParsing</B>()<P>
+Parses the m_Source from begin_pos to end_pos-1.
+(in noparams version it parses whole m_Source)<P>
+
+<HR>
+<A NAME="wxhtmlparserdoneparser"></A>
+<H3>wxHtmlParser::DoneParser</H3>
+<P>
+<B>virtual void</B> <B>DoneParser</B>()<P>
+This must be called after DoParsing().<P>
+
+<HR>
+<A NAME="wxhtmlparsergetfs"></A>
+<H3>wxHtmlParser::GetFS</H3>
+<P>
+<B><A HREF="wx_wxfilesystem.html#wxfilesystem">wxFileSystem</A>*</B> </B> <B>GetFS</B>() <B>const</B><P>
+Returns pointer to the file system. Because each tag handler has
+reference to it is parent parser it can easily request the file by
+calling<P>
+<PRE>
+wxFSFile *f = m_Parser -&gt; GetFS() -&gt; OpenFile("image.jpg");
+</PRE>
+
+<HR>
+<A NAME="wxhtmlparsergetproduct"></A>
+<H3>wxHtmlParser::GetProduct</H3>
+<P>
+<B>virtual <A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B> </B> <B>GetProduct</B>()<P>
+Returns product of parsing. Returned value is result of parsing
+of the document. The type of this result depends on internal
+representation in derived parser (but it must be derived from wxObject!).<P>
+See wxHtmlWinParser for details.<P>
+
+<HR>
+<A NAME="wxhtmlparsergetsource"></A>
+<H3>wxHtmlParser::GetSource</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A>*</B> </B> <B>GetSource</B>()<P>
+Returns pointer to the source being parsed.<P>
+
+
+<HR>
+<A NAME="wxhtmlparserinitparser"></A>
+<H3>wxHtmlParser::InitParser</H3>
+<P>
+<B>virtual void</B> <B>InitParser</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>source</I>)<P>
+Setups the parser for parsing the <I>source</I> string. (Should be overridden
+in derived class)<P>
+
+<HR>
+<A NAME="wxhtmlparseropenurl"></A>
+<H3>wxHtmlParser::OpenURL</H3>
+<P>
+<B>virtual <A HREF="wx_wxfsfile.html#wxfsfile">wxFSFile</A>*</B> </B> <B>OpenURL</B>(<B>wxHtmlURLType </B><I>type</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>url</I>)<P>
+Opens given URL and returns <TT>wxFSFile</TT> object that can be used to read data
+from it. This method may return NULL in one of two cases: either the URL doesn't
+point to any valid resource or the URL is blocked by overridden implementation
+of <I>OpenURL</I> in derived class.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>type</I><UL><UL>
+Indicates type of the resource. Is one of:<P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_URL_PAGE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Opening a HTML page.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_URL_IMAGE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Opening an image.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>wxHTML_URL_OTHER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Opening a resource that doesn't fall into
+any other category.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+<P>
+<I>url</I><UL><UL>
+URL being opened.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Notes</FONT></B><P>
+Always use this method in tag handlers instead of <TT>GetFS()-&gt;OpenFile()</TT> 
+because it can block the URL and is thus more secure.<P>
+Default behaviour is to call <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowonopeningurl">wxHtmlWindow::OnOpeningURL</A>
+of the associated wxHtmlWindow object (which may decide to block the URL or
+redirect it to another one),if there's any, and always open the URL if the 
+parser is not used with wxHtmlWindow.<P>
+Returned <TT>wxFSFile</TT> object is not guaranteed to point to <I>url</I>, it might
+have been redirected!<P>
+
+<HR>
+<A NAME="wxhtmlparserparse"></A>
+<H3>wxHtmlParser::Parse</H3>
+<P>
+<B><A HREF="wx_wxobject.html#wxobject">wxObject</A>*</B> </B> <B>Parse</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>source</I>)<P>
+Proceeds parsing of the document. This is end-user method. You can simply
+call it when you need to obtain parsed output (which is parser-specific)<P>
+The method does these things:<P>
+<OL>
+
+<LI> calls <A HREF="wx_wxhtmlparser.html#wxhtmlparserinitparser">InitParser(source)</A>
+<LI> calls <A HREF="wx_wxhtmlparser.html#wxhtmlparserdoparsing">DoParsing</A>
+<LI> calls <A HREF="wx_wxhtmlparser.html#wxhtmlparsergetproduct">GetProduct</A>
+<LI> calls <A HREF="wx_wxhtmlparser.html#wxhtmlparserdoneparser">DoneParser</A>
+<LI> returns value returned by GetProduct
+</OL>
+<P>
+You shouldn't use InitParser, DoParsing, GetProduct or DoneParser directly.<P>
+
+<HR>
+<A NAME="wxhtmlparserpushtaghandler"></A>
+<H3>wxHtmlParser::PushTagHandler</H3>
+<P>
+<B>void</B> <B>PushTagHandler</B>(<B><A HREF="wx_wxhtmltaghandler.html#wxhtmltaghandler">wxHtmlTagHandler</A>* </B></B><I>handler</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>tags</I>)<P>
+Forces the handler to handle additional tags 
+(not returned by <A HREF="wx_wxhtmltaghandler.html#wxhtmltaghandlergetsupportedtags">GetSupportedTags</A>). 
+The handler should already be added to this parser.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>handler</I><UL><UL>
+the handler</UL></UL>
+
+<I>tags</I><UL><UL>
+List of tags (in same format as GetSupportedTags's return value). The parser
+will redirect these tags to <I>handler</I> (until call to <A HREF="wx_wxhtmlparser.html#wxhtmlparserpoptaghandler">PopTagHandler</A>). </UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+Imagine you want to parse following pseudo-html structure:<P>
+<PRE>
+&lt;myitems&gt;
+    &lt;param name="one" value="1"&gt;
+    &lt;param name="two" value="2"&gt;
+&lt;/myitems&gt;
+
+&lt;execute&gt;
+    &lt;param program="text.exe"&gt;
+&lt;/execute&gt;
+</PRE>
+It is obvious that you cannot use only one tag handler for &lt;param&gt; tag.
+Instead you must use context-sensitive handlers for &lt;param&gt; inside &lt;myitems&gt;
+and &lt;param&gt; inside &lt;execute&gt;.        <P>
+This is the preferred solution:<P>
+<PRE>
+TAG_HANDLER_BEGIN(MYITEM, "MYITEMS")
+    TAG_HANDLER_PROC(tag)
+    {
+        // ...something...
+
+        m_Parser -&gt; PushTagHandler(this, "PARAM");
+        ParseInner(tag);
+        m_Parser -&gt; PopTagHandler();
+
+        // ...something...
+     }
+TAG_HANDLER_END(MYITEM)
+</PRE>
+
+
+<HR>
+<A NAME="wxhtmlparserpoptaghandler"></A>
+<H3>wxHtmlParser::PopTagHandler</H3>
+<P>
+<B>void</B> <B>PopTagHandler</B>()<P>
+Restores parser's state before last call to 
+<A HREF="wx_wxhtmlparser.html#wxhtmlparserpushtaghandler">PushTagHandler</A>.<P>
+
+
+<HR>
+<A NAME="wxhtmlparsersetfs"></A>
+<H3>wxHtmlParser::SetFS</H3>
+<P>
+<B>void</B> <B>SetFS</B>(<B><A HREF="wx_wxfilesystem.html#wxfilesystem">wxFileSystem</A> </B></B><I>*fs</I>)<P>
+Sets the virtual file system that will be used to request additional
+files. (For example <TT>&lt;IMG&gt;</TT> tag handler requests wxFSFile with the
+image data.)<P>
+
+<HR>
+<A NAME="wxhtmlparserstopparsing"></A>
+<H3>wxHtmlParser::StopParsing</H3>
+<P>
+<B>void</B> <B>StopParsing</B>()<P>
+Call this function to interrupt parsing from a tag handler. No more tags
+will be parsed afterward. This function may only be called from
+<A HREF="wx_wxhtmlparser.html#wxhtmlparserparse">wxHtmlParser::Parse</A> or any function called
+by it (i.e. from tag handlers).<P>
+
+
+</FONT></BODY></HTML>

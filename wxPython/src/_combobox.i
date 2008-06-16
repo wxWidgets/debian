@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _combobox.i,v 1.20.2.2 2005/12/29 22:40:22 RD Exp $
+// RCS-ID:      $Id: _combobox.i 44314 2007-01-25 23:05:55Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ public:
                    long style = 0,
                    const wxValidator& validator = wxDefaultValidator,
                    const wxString& name = wxPyComboBoxNameStr),
-        "__init__(Window parent, int id, String value=EmptyString,
+        "__init__(Window parent, int id=-1, String value=EmptyString,
     Point pos=DefaultPosition, Size size=DefaultSize,
     List choices=EmptyList, long style=0, Validator validator=DefaultValidator,
     String name=ComboBoxNameStr) -> ComboBox",
@@ -102,7 +102,7 @@ public:
                      long style = 0,
                      const wxValidator& validator = wxDefaultValidator,
                      const wxString& name = wxPyChoiceNameStr),
-        "Create(Window parent, int id, String value=EmptyString,
+        "Create(Window parent, int id=-1, String value=EmptyString,
     Point pos=DefaultPosition, Size size=DefaultSize,
     List choices=EmptyList, long style=0, Validator validator=DefaultValidator,
     String name=ChoiceNameStr) -> bool",
@@ -164,7 +164,13 @@ combobox text field.", "");
         "Gets the positions of the begining and ending of the selection mark in
 the combobox text field.", "",
         GetMark);
+#else
+    %pythoncode {
+        def GetMark(self):
+            return (0,0)
+    }
 #endif
+    
 
     DocDeclStr(
         int , GetCurrentSelection() const,
@@ -246,6 +252,13 @@ redone.  Only available on Windows.", "");
     
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    %property(CurrentSelection, GetCurrentSelection, doc="See `GetCurrentSelection`");
+    %property(InsertionPoint, GetInsertionPoint, SetInsertionPoint, doc="See `GetInsertionPoint` and `SetInsertionPoint`");
+    %property(LastPosition, GetLastPosition, doc="See `GetLastPosition`");
+    %property(Mark, GetMark, SetMark, doc="See `GetMark` and `SetMark`");
+    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
+
 };
 
 //---------------------------------------------------------------------------

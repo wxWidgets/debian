@@ -1,0 +1,45 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxAUI overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxauioverview"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxrichtextctrloverview.html#wxrichtextctrloverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_envvars.html#envvars"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxAUI overview</H2>
+<P>
+Class: <A HREF="wx_wxauimanager.html#wxauimanager">wxAuiManager</A>, <A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A><P>
+wxAUI stands for Advanced User Interface and the wxAUI framework
+aims to give its user a cutting edge interface for use with the
+wxWidgets based applications. The original wxAUI sources have
+kindly been made available under the wxWindows licence
+by Kirix Corp. and they have since then been integrated into
+wxWidgets CVS and further improved.<P>
+wxAUI attempts to encapsulate the following aspects of the user interface:<P>
+<B>Frame Management:</B>
+Frame management provides the means to open, move and hide common
+controls that are needed to interact with the document, and allow these
+configurations to be saved into different perspectives and loaded at a
+later time.<P>
+<B>Toolbars:</B>
+Toolbars are a specialized subset of the frame management system and
+should behave similarly to other docked components. However, they also
+require additional functionality, such as "spring-loaded" rebar support,
+"chevron" buttons and end-user customizability.<P>
+<B>Modeless Controls:</B>
+Modeless controls expose a tool palette or set of options that float
+above the application content while allowing it to be accessed. Usually
+accessed by the toolbar, these controls disappear when an option is
+selected, but may also be "torn off" the toolbar into a floating frame
+of their own.<P>
+<B>Look and Feel:</B>
+Look and feel encompasses the way controls are drawn, both when shown
+statically as well as when they are being moved. This aspect of user
+interface design incorporates "special effects" such as transparent
+window dragging as well as frame animation.<P>
+wxAUI adheres to the following principles:<P>
+Use native floating frames to obtain a native look and feel for all
+platforms. Use existing wxWidgets code where possible, such as sizer
+implementation for frame management. Use classes included in wxCore
+and wxBase only. Use standard wxWidgets coding conventions. <P>
+
+</FONT></BODY></HTML>

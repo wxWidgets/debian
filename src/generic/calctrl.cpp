@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.cpp,v 1.70.2.3 2006/01/18 10:38:54 JS Exp $
+// RCS-ID:      $Id: calctrl.cpp 43778 2006-12-03 21:30:23Z VZ $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "calctrl.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -63,6 +59,8 @@ BEGIN_EVENT_TABLE(wxCalendarCtrl, wxControl)
 
     EVT_LEFT_DOWN(wxCalendarCtrl::OnClick)
     EVT_LEFT_DCLICK(wxCalendarCtrl::OnDClick)
+
+    EVT_SYS_COLOUR_CHANGED(wxCalendarCtrl::OnSysColourChanged)
 END_EVENT_TABLE()
 
 #if wxUSE_EXTENDED_RTTI
@@ -179,8 +177,15 @@ void wxCalendarCtrl::Init()
         m_attrs[n] = NULL;
     }
 
+    InitColours();
+}
+
+void wxCalendarCtrl::InitColours()
+{
     m_colHighlightFg = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT);
     m_colHighlightBg = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
+    m_colBackground = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
+    m_colSorrounding = wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT);
 
     m_colHolidayFg = *wxRED;
     // don't set m_colHolidayBg - by default, same as our bg colour
@@ -230,12 +235,12 @@ bool wxCalendarCtrl::Create(wxWindow *parent,
     // we need to set the position as well because the main control position
     // is not the same as the one specified in pos if we have the controls
     // above it
-    SetBestSize(size);
+    SetInitialSize(size);
     SetPosition(pos);
 
     // Since we don't paint the whole background make sure that the platform
     // will use the right one.
-    SetBackgroundColour(*wxWHITE);
+    SetBackgroundColour(m_colBackground);
 
     SetHolidayAttrs();
 
@@ -248,6 +253,25 @@ wxCalendarCtrl::~wxCalendarCtrl()
     {
         delete m_attrs[n];
     }
+
+    if ( !HasFlag(wxCAL_SEQUENTIAL_MONTH_SELECTION) )
+    {
+        delete m_comboMonth;
+        delete m_staticMonth;
+        delete m_spinYear;
+        delete m_staticYear;
+    }
+}
+
+void wxCalendarCtrl::SetWindowStyleFlag(long style)
+{
+    // changing this style doesn't work because the controls are not
+    // created/shown/hidden accordingly
+    wxASSERT_MSG( (style & wxCAL_SEQUENTIAL_MONTH_SELECTION) ==
+                    (m_windowStyle & wxCAL_SEQUENTIAL_MONTH_SELECTION),
+                  _T("wxCAL_SEQUENTIAL_MONTH_SELECTION can't be changed after creation") );
+
+    wxControl::SetWindowStyleFlag(style);
 }
 
 // ----------------------------------------------------------------------------
@@ -389,6 +413,7 @@ void wxCalendarCtrl::ShowCurrentControls()
         m_spinYear->Hide();
         m_staticYear->Show();
     }
+    //else: these controls are not even created, don't show/hide them
 }
 
 wxControl *wxCalendarCtrl::GetMonthControl() const
@@ -783,21 +808,32 @@ void wxCalendarCtrl::DoMoveWindow(int x, int y, int width, int height)
 {
     int yDiff;
 
-    if ( !HasFlag(wxCAL_SEQUENTIAL_MONTH_SELECTION) )
+    if ( !HasFlag(wxCAL_SEQUENTIAL_MONTH_SELECTION) && m_staticMonth )
     {
-        wxSize sizeCombo = m_comboMonth->GetSize();
+        wxSize sizeCombo = m_comboMonth->GetEffectiveMinSize();
         wxSize sizeStatic = m_staticMonth->GetSize();
         wxSize sizeSpin = m_spinYear->GetSize();
-        int dy = (sizeCombo.y - sizeStatic.y) / 2;
+
+        // wxMSW sometimes reports the wrong combo height,
+        // so on this platform we'll use the spin control
+        // height instead.
+#ifdef __WXMSW__
+        int maxHeight = sizeSpin.y;
+        int requiredSpinHeight = -1;
+#else
+        int maxHeight = sizeCombo.y;
+        int requiredSpinHeight = sizeCombo.y;
+#endif
+        int dy = (maxHeight - sizeStatic.y) / 2;
         m_comboMonth->Move(x, y);
-        m_staticMonth->SetSize(x, y + dy, sizeCombo.x, sizeStatic.y);
+        m_staticMonth->SetSize(x, y + dy, sizeCombo.x, -1, sizeStatic.y);
 
         int xDiff = sizeCombo.x + HORZ_MARGIN;
 
-        m_spinYear->SetSize(x + xDiff, y, width - xDiff, sizeCombo.y);
+        m_spinYear->SetSize(x + xDiff, y, width - xDiff, requiredSpinHeight);
         m_staticYear->SetSize(x + xDiff, y + dy, width - xDiff, sizeStatic.y);
 
-        yDiff = wxMax(sizeSpin.y, sizeCombo.y) + VERT_MARGIN;
+        yDiff = wxMax(sizeSpin.y, maxHeight) + VERT_MARGIN;
     }
     else // no controls on the top
     {
@@ -810,8 +846,8 @@ void wxCalendarCtrl::DoMoveWindow(int x, int y, int width, int height)
 void wxCalendarCtrl::DoGetPosition(int *x, int *y) const
 {
     wxControl::DoGetPosition(x, y);
-
-    if ( !(GetWindowStyle() & wxCAL_SEQUENTIAL_MONTH_SELECTION) )
+#ifndef __WXPM__
+    if ( !HasFlag(wxCAL_SEQUENTIAL_MONTH_SELECTION) && GetMonthControl() )
     {
         // our real top corner is not in this position
         if ( y )
@@ -819,13 +855,14 @@ void wxCalendarCtrl::DoGetPosition(int *x, int *y) const
             *y -= GetMonthControl()->GetSize().y + VERT_MARGIN;
         }
     }
+#endif
 }
 
 void wxCalendarCtrl::DoGetSize(int *width, int *height) const
 {
     wxControl::DoGetSize(width, height);
-
-    if ( !(GetWindowStyle() & wxCAL_SEQUENTIAL_MONTH_SELECTION) )
+#ifndef __WXPM__
+    if ( !HasFlag(wxCAL_SEQUENTIAL_MONTH_SELECTION) )
     {
         // our real height is bigger
         if ( height && GetMonthControl())
@@ -833,6 +870,7 @@ void wxCalendarCtrl::DoGetSize(int *width, int *height) const
             *height += GetMonthControl()->GetSize().y + VERT_MARGIN;
         }
     }
+#endif
 }
 
 void wxCalendarCtrl::RecalcGeometry()
@@ -852,7 +890,7 @@ void wxCalendarCtrl::RecalcGeometry()
         {
             // 1.5 times the width gives nice margins even if the weekday
             // names are short
-	     m_widthCol = width+width/2;
+            m_widthCol = width+width/2;
         }
     }
     wxDateTime::WeekDay wd;
@@ -870,7 +908,7 @@ void wxCalendarCtrl::RecalcGeometry()
     m_widthCol += 2;
     m_heightRow += 2;
 
-    m_rowOffset = (GetWindowStyle() & wxCAL_SEQUENTIAL_MONTH_SELECTION) ? m_heightRow : 0; // conditional in relation to style
+    m_rowOffset = HasFlag(wxCAL_SEQUENTIAL_MONTH_SELECTION) ? m_heightRow : 0; // conditional in relation to style
 }
 
 // ----------------------------------------------------------------------------
@@ -1019,7 +1057,7 @@ void wxCalendarCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
 
         for ( int wd = 0; wd < 7; wd++ )
         {
-            dc.SetTextBackground(*wxWHITE);
+            dc.SetTextBackground(m_colBackground);
             if ( IsDateShown(date) )
             {
                 // don't use wxDate::Format() which prepends 0s
@@ -1038,7 +1076,7 @@ void wxCalendarCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
                 {
                     // surrounding week or out-of-range
                     // draw "disabled"
-                    dc.SetTextForeground(*wxLIGHT_GREY);
+                    dc.SetTextForeground(m_colSorrounding);
                     changedColours = true;
                 }
                 else
@@ -1206,7 +1244,7 @@ void wxCalendarCtrl::RefreshDate(const wxDateTime& date)
     Refresh(true, &rect);
 }
 
-void wxCalendarCtrl::HighlightRange(wxPaintDC* pDC, const wxDateTime& fromdate, const wxDateTime& todate, wxPen* pPen, wxBrush* pBrush)
+void wxCalendarCtrl::HighlightRange(wxPaintDC* pDC, const wxDateTime& fromdate, const wxDateTime& todate, const wxPen* pPen, const wxBrush* pBrush)
 {
     // Highlights the given range using pen and brush
     // Does nothing if todate < fromdate
@@ -1446,21 +1484,17 @@ wxCalendarHitTestResult wxCalendarCtrl::HitTest(const wxPoint& pos,
                                                 wxDateTime::WeekDay *wd)
 {
     RecalcGeometry();
-    // use the correct x-pos 
-    wxCoord x0 = wxMax((GetSize().x - m_widthCol*7) /2, 0);
-    wxPoint pos_corr = pos;
-    pos_corr.x -= x0;
 
-    wxCoord y = pos_corr.y;
+    // the position where the calendar really begins
+    wxCoord x0 = wxMax((GetSize().x - m_widthCol*7)/2, 0);
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-    if ( (GetWindowStyle() & wxCAL_SEQUENTIAL_MONTH_SELECTION) )
+    if ( HasFlag(wxCAL_SEQUENTIAL_MONTH_SELECTION) )
     {
         // Header: month
 
         // we need to find out if the hit is on left arrow, on month or on right arrow
         // left arrow?
-        if ( wxRegion(m_leftArrowRect).Contains(pos_corr) == wxInRegion )
+        if ( m_leftArrowRect.Contains(pos) )
         {
             if ( date )
             {
@@ -1477,7 +1511,7 @@ wxCalendarHitTestResult wxCalendarCtrl::HitTest(const wxPoint& pos,
             return wxCAL_HITTEST_DECMONTH;
         }
 
-        if ( wxRegion(m_rightArrowRect).Contains(pos_corr) == wxInRegion )
+        if ( m_rightArrowRect.Contains(pos) )
         {
             if ( date )
             {
@@ -1496,14 +1530,11 @@ wxCalendarHitTestResult wxCalendarCtrl::HitTest(const wxPoint& pos,
 
     }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Header: Days
-
-    int wday = pos_corr.x / m_widthCol;
-//    if ( y < m_heightRow )
-    if ( y < (m_heightRow + m_rowOffset) )
+    // header: week days
+    int wday = (pos.x - x0) / m_widthCol;
+    if ( pos.y < (m_heightRow + m_rowOffset) )
     {
-        if ( y > m_rowOffset )
+        if ( pos.y > m_rowOffset )
         {
             if ( wd )
             {
@@ -1523,8 +1554,7 @@ wxCalendarHitTestResult wxCalendarCtrl::HitTest(const wxPoint& pos,
         }
     }
 
-//    int week = (y - m_heightRow) / m_heightRow;
-    int week = (y - (m_heightRow + m_rowOffset)) / m_heightRow;
+    int week = (pos.y - (m_heightRow + m_rowOffset)) / m_heightRow;
     if ( week >= 6 || wday >= 7 )
     {
         return wxCAL_HITTEST_NOWHERE;
@@ -1609,6 +1639,20 @@ void wxCalendarCtrl::OnYearTextChange(wxCommandEvent& event)
     OnYearChange(event);
 }
 
+// Responds to colour changes, and passes event on to children.
+void wxCalendarCtrl::OnSysColourChanged(wxSysColourChangedEvent& event)
+{
+    // reinit colours
+    InitColours();
+
+    // Propagate the event to the children
+    wxControl::OnSysColourChanged(event);
+
+    // Redraw control area
+    SetBackgroundColour(m_colBackground);
+    Refresh();
+}
+
 // ----------------------------------------------------------------------------
 // keyboard interface
 // ----------------------------------------------------------------------------
@@ -1636,13 +1680,13 @@ void wxCalendarCtrl::OnChar(wxKeyEvent& event)
             }
             break;
 
-        case WXK_PRIOR:
+        case WXK_PAGEUP:
             target = m_date - wxDateSpan::Month();
             ChangeMonth(&target);
             SetDateAndNotify(target); // always
             break;
 
-        case WXK_NEXT:
+        case WXK_PAGEDOWN:
             target = m_date + wxDateSpan::Month();
             ChangeMonth(&target);
             SetDateAndNotify(target); // always

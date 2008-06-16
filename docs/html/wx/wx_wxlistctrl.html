@@ -1,0 +1,1997 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxListCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxlistctrl"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxlistbox.html#wxlistbox"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxlistevent.html#wxlistevent"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxListCtrl</H2>
+<P>
+A list control presents lists in a number of formats: list view, report view,
+icon view and small icon view. In any case, elements are numbered from zero.
+For all these modes, the items are stored in the control and must be added to
+it using <A HREF="wx_wxlistctrl.html#wxlistctrlinsertitem">InsertItem</A> method.<P>
+A special case of report view quite different from the other modes of the list
+control is a virtual control in which the items data (including text, images
+and attributes) is managed by the main program and is requested by the control
+itself only when needed which allows to have controls with millions of items
+without consuming much memory. To use virtual list control you must use
+<A HREF="wx_wxlistctrl.html#wxlistctrlsetitemcount">SetItemCount</A> first and overload at least
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemtext">OnGetItemText</A> (and optionally
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemimage">OnGetItemImage</A> or <A HREF="wx_wxlistctrl.html#wxlistctrlongetitemcolumnimage">OnGetItemColumnImage</A> and
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemattr">OnGetItemAttr</A>) to return the information
+about the items when the control requests it. Virtual list control can be used
+as a normal one except that no operations which can take time proportional to
+the number of items in the control happen -- this is required to allow having a
+practically infinite number of items. For example, in a multiple selection
+virtual list control, the selections won't be sent when many items are selected
+at once because this could mean iterating over all the items.<P>
+Using many of wxListCtrl features is shown in the
+<A HREF="wx_samples.html#samplelistctrl">corresponding sample</A>.<P>
+To intercept events from a list control, use the event table macros described
+in <A HREF="wx_wxlistevent.html#wxlistevent">wxListEvent</A>.<P>
+<B>Mac Note:</B> Starting with 2.8, wxListCtrl uses a native implementation for 
+report mode, and uses a generic implementation for other modes. You can use the
+generic implementation for report mode as well by setting the
+mac.listctrl.always_use_generic <A HREF="wx_wxsystemoptions.html#wxsystemoptions">wxSystemOption</A> to
+1.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxcontrol.html#wxcontrol">wxControl</A><BR>
+
+<A HREF="wx_wxwindow.html#wxwindow">wxWindow</A><BR>
+
+<A HREF="wx_wxevthandler.html#wxevthandler">wxEvtHandler</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/listctrl.h&gt;<P>
+<B><FONT COLOR="#FF0000">Window styles</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_LIST</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Multicolumn list view, with optional small icons.
+Columns are computed automatically, i.e. you don't set columns as in wxLC_REPORT. In other words,
+the list wraps, unlike a wxListBox.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_REPORT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Single or multicolumn report view, with optional header.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_VIRTUAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The application provides items text on demand. May only be used with wxLC_REPORT.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_ICON</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Large icon view, with optional labels.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_SMALL_ICON</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Small icon view, with optional labels.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_ALIGN_TOP</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Icons align to the top. Win32 default, Win32 only. 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_ALIGN_LEFT</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Icons align to the left. 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_AUTOARRANGE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Icons arrange themselves. Win32 only. 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_EDIT_LABELS</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Labels are editable: the application will be notified when editing starts.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_NO_HEADER</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+No header in report mode. 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_SINGLE_SEL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Single selection (default is multiple).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_SORT_ASCENDING</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sort in ascending order (must still supply a comparison callback in SortItems.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_SORT_DESCENDING</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sort in descending order (must still supply a comparison callback in SortItems.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_HRULES</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draws light horizontal rules between rows in report mode.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>wxLC_VRULES</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Draws light vertical rules between columns in report mode.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+See also <A HREF="wx_windowstyles.html#windowstyles">window styles overview</A>.<P>
+<B><FONT COLOR="#FF0000">Event handling</FONT></B><P>
+To process input from a list control, use these event handler macros to direct input to member
+functions that take a <A HREF="wx_wxlistevent.html#wxlistevent">wxListEvent</A> argument.<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_BEGIN_DRAG(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Begin dragging with the left mouse button.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_BEGIN_RDRAG(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Begin dragging with the right mouse button.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_BEGIN_LABEL_EDIT(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Begin editing a label. This can be prevented by calling <A HREF="wx_wxnotifyevent.html#wxnotifyeventveto">Veto()</A>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_END_LABEL_EDIT(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Finish editing a label. This can be prevented by calling <A HREF="wx_wxnotifyevent.html#wxnotifyeventveto">Veto()</A>.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_DELETE_ITEM(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Delete an item.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_DELETE_ALL_ITEMS(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Delete all items.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_ITEM_SELECTED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item has been selected.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_ITEM_DESELECTED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item has been deselected.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_ITEM_ACTIVATED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item has been activated (ENTER or double click).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_ITEM_FOCUSED(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The currently focused item has changed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_ITEM_MIDDLE_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The middle mouse button has been clicked on an item.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_ITEM_RIGHT_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The right mouse button has been clicked on an item.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_KEY_DOWN(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A key has been pressed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_INSERT_ITEM(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+An item has been inserted.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_COL_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A column (<B>m_col</B>) has been left-clicked.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_COL_RIGHT_CLICK(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A column (<B>m_col</B>) has been right-clicked.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_COL_BEGIN_DRAG(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user started resizing a column - can be vetoed.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_COL_DRAGGING(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The divider between columns is being dragged.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_COL_END_DRAG(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A column has been resized by the user.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_LIST_CACHE_HINT(id, func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Prepare cache for a virtual list control
+</FONT></TD></TR>
+
+
+</TABLE>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistctrloverview.html#wxlistctrloverview">wxListCtrl overview</A>, <A HREF="wx_wxlistview.html#wxlistview">wxListView</A>, <A HREF="wx_wxlistbox.html#wxlistbox">wxListBox</A>,
+<A HREF="wx_wxtreectrl.html#wxtreectrl">wxTreeCtrl</A>, <A HREF="wx_wximagelist.html#wximagelist">wxImageList</A>, <A HREF="wx_wxlistevent.html#wxlistevent">wxListEvent</A>,
+<A HREF="wx_wxlistitem.html#wxlistitem">wxListItem</A><P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxlistctrlctor">wxListCtrl::wxListCtrl</A><BR>
+<A HREF="#wxlistctrldtor">wxListCtrl::~wxListCtrl</A><BR>
+<A HREF="#wxlistctrlarrange">wxListCtrl::Arrange</A><BR>
+<A HREF="#wxlistctrlassignimagelist">wxListCtrl::AssignImageList</A><BR>
+<A HREF="#wxlistctrlclearall">wxListCtrl::ClearAll</A><BR>
+<A HREF="#wxlistctrlcreate">wxListCtrl::Create</A><BR>
+<A HREF="#wxlistctrldeleteallitems">wxListCtrl::DeleteAllItems</A><BR>
+<A HREF="#wxlistctrldeletecolumn">wxListCtrl::DeleteColumn</A><BR>
+<A HREF="#wxlistctrldeleteitem">wxListCtrl::DeleteItem</A><BR>
+<A HREF="#wxlistctrledit">wxListCtrl::EditLabel</A><BR>
+<A HREF="#wxlistctrlensurevisible">wxListCtrl::EnsureVisible</A><BR>
+<A HREF="#wxlistctrlfinditem">wxListCtrl::FindItem</A><BR>
+<A HREF="#wxlistctrlgetcolumn">wxListCtrl::GetColumn</A><BR>
+<A HREF="#wxlistctrlgetcolumncount">wxListCtrl::GetColumnCount</A><BR>
+<A HREF="#wxlistctrlgetcolumnwidth">wxListCtrl::GetColumnWidth</A><BR>
+<A HREF="#wxlistctrlgetcountperpage">wxListCtrl::GetCountPerPage</A><BR>
+<A HREF="#wxlistctrlgeteditcontrol">wxListCtrl::GetEditControl</A><BR>
+<A HREF="#wxlistctrlgetimagelist">wxListCtrl::GetImageList</A><BR>
+<A HREF="#wxlistctrlgetitem">wxListCtrl::GetItem</A><BR>
+<A HREF="#wxlistctrlgetitembackgroundcolour">wxListCtrl::GetItemBackgroundColour</A><BR>
+<A HREF="#wxlistctrlgetitemcount">wxListCtrl::GetItemCount</A><BR>
+<A HREF="#wxlistctrlgetitemdata">wxListCtrl::GetItemData</A><BR>
+<A HREF="#wxlistctrlgetitemfont">wxListCtrl::GetItemFont</A><BR>
+<A HREF="#wxlistctrlgetitemposition">wxListCtrl::GetItemPosition</A><BR>
+<A HREF="#wxlistctrlgetitemrect">wxListCtrl::GetItemRect</A><BR>
+<A HREF="#wxlistctrlgetsubitemrect">wxListCtrl::GetSubItemRect</A><BR>
+<A HREF="#wxlistctrlgetitemspacing">wxListCtrl::GetItemSpacing</A><BR>
+<A HREF="#wxlistctrlgetitemstate">wxListCtrl::GetItemState</A><BR>
+<A HREF="#wxlistctrlgetitemtext">wxListCtrl::GetItemText</A><BR>
+<A HREF="#wxlistctrlgetitemtextcolour">wxListCtrl::GetItemTextColour</A><BR>
+<A HREF="#wxlistctrlgetnextitem">wxListCtrl::GetNextItem</A><BR>
+<A HREF="#wxlistctrlgetselecteditemcount">wxListCtrl::GetSelectedItemCount</A><BR>
+<A HREF="#wxlistctrlgettextcolour">wxListCtrl::GetTextColour</A><BR>
+<A HREF="#wxlistctrlgettopitem">wxListCtrl::GetTopItem</A><BR>
+<A HREF="#wxlistctrlgetviewrect">wxListCtrl::GetViewRect</A><BR>
+<A HREF="#wxlistctrlhittest">wxListCtrl::HitTest</A><BR>
+<A HREF="#wxlistctrlinsertcolumn">wxListCtrl::InsertColumn</A><BR>
+<A HREF="#wxlistctrlinsertitem">wxListCtrl::InsertItem</A><BR>
+<A HREF="#wxlistctrlongetitemattr">wxListCtrl::OnGetItemAttr</A><BR>
+<A HREF="#wxlistctrlongetitemimage">wxListCtrl::OnGetItemImage</A><BR>
+<A HREF="#wxlistctrlongetitemcolumnimage">wxListCtrl::OnGetItemColumnImage</A><BR>
+<A HREF="#wxlistctrlongetitemtext">wxListCtrl::OnGetItemText</A><BR>
+<A HREF="#wxlistctrlrefreshitem">wxListCtrl::RefreshItem</A><BR>
+<A HREF="#wxlistctrlrefreshitems">wxListCtrl::RefreshItems</A><BR>
+<A HREF="#wxlistctrlscrolllist">wxListCtrl::ScrollList</A><BR>
+<A HREF="#wxlistctrlsetbackgroundcolour">wxListCtrl::SetBackgroundColour</A><BR>
+<A HREF="#wxlistctrlsetcolumn">wxListCtrl::SetColumn</A><BR>
+<A HREF="#wxlistctrlsetcolumnwidth">wxListCtrl::SetColumnWidth</A><BR>
+<A HREF="#wxlistctrlsetimagelist">wxListCtrl::SetImageList</A><BR>
+<A HREF="#wxlistctrlsetitem">wxListCtrl::SetItem</A><BR>
+<A HREF="#wxlistctrlsetitembackgroundcolour">wxListCtrl::SetItemBackgroundColour</A><BR>
+<A HREF="#wxlistctrlsetitemcount">wxListCtrl::SetItemCount</A><BR>
+<A HREF="#wxlistctrlsetitemdata">wxListCtrl::SetItemData</A><BR>
+<A HREF="#wxlistctrlsetitemfont">wxListCtrl::SetItemFont</A><BR>
+<A HREF="#wxlistctrlsetitemimage">wxListCtrl::SetItemImage</A><BR>
+<A HREF="#wxlistctrlsetitemcolumnimage">wxListCtrl::SetItemColumnImage</A><BR>
+<A HREF="#wxlistctrlsetitemposition">wxListCtrl::SetItemPosition</A><BR>
+<A HREF="#wxlistctrlsetitemptrdata">wxListCtrl::SetItemPtrData</A><BR>
+<A HREF="#wxlistctrlsetitemstate">wxListCtrl::SetItemState</A><BR>
+<A HREF="#wxlistctrlsetitemtext">wxListCtrl::SetItemText</A><BR>
+<A HREF="#wxlistctrlsetitemtextcolour">wxListCtrl::SetItemTextColour</A><BR>
+<A HREF="#wxlistctrlsetsinglestyle">wxListCtrl::SetSingleStyle</A><BR>
+<A HREF="#wxlistctrlsettextcolour">wxListCtrl::SetTextColour</A><BR>
+<A HREF="#wxlistctrlsetwindowstyleflag">wxListCtrl::SetWindowStyleFlag</A><BR>
+<A HREF="#wxlistctrlsortitems">wxListCtrl::SortItems</A><BR>
+<P>
+
+<HR>
+<A NAME="wxlistctrlctor"></A>
+<H3>wxListCtrl::wxListCtrl</H3>
+<P>
+<B></B> <B>wxListCtrl</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxListCtrl</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>long</B><I> style = wxLC_ICON</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxListCtrlNameStr</I>)<P>
+Constructor, creating and showing a list control.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>parent</I><UL><UL>
+Parent window. Must not be NULL.</UL></UL>
+<P>
+<I>id</I><UL><UL>
+Window identifier. A value of -1 indicates a default value.</UL></UL>
+<P>
+<I>pos</I><UL><UL>
+Window position.</UL></UL>
+<P>
+<I>size</I><UL><UL>
+Window size. If the default size (-1, -1) is specified then the window is sized
+appropriately.</UL></UL>
+<P>
+<I>style</I><UL><UL>
+Window style. See <A HREF="wx_wxlistctrl.html#wxlistctrl">wxListCtrl</A>.</UL></UL>
+<P>
+<I>validator</I><UL><UL>
+Window validator.</UL></UL>
+<P>
+<I>name</I><UL><UL>
+Window name.</UL></UL>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistctrl.html#wxlistctrlcreate">wxListCtrl::Create</A>, <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A><P>
+
+
+<HR>
+<A NAME="wxlistctrldtor"></A>
+<H3>wxListCtrl::~wxListCtrl</H3>
+<P>
+<B>void</B> <B>~wxListCtrl</B>()<P>
+Destructor, destroying the list control.<P>
+
+
+<HR>
+<A NAME="wxlistctrlarrange"></A>
+<H3>wxListCtrl::Arrange</H3>
+<P>
+<B>bool</B> <B>Arrange</B>(<B>int </B><I>flag = wxLIST_ALIGN_DEFAULT</I>)<P>
+Arranges the items in icon or small icon view. This only has effect on Win32. <I>flag</I> is one of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_ALIGN_DEFAULT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Default alignment.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_ALIGN_LEFT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Align to the left side of the control.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_ALIGN_TOP
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Align to the top side of the control.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_ALIGN_SNAP_TO_GRID
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Snap to grid.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="wxlistctrlassignimagelist"></A>
+<H3>wxListCtrl::AssignImageList</H3>
+<P>
+<B>void</B> <B>AssignImageList</B>(<B><A HREF="wx_wximagelist.html#wximagelist">wxImageList</A>*</B></B><I> imageList</I>, <B>int </B><I>which</I>)<P>
+Sets the image list associated with the control and
+takes ownership of it (i.e. the control will, unlike when using
+SetImageList, delete the list when destroyed). <I>which</I> is one of
+wxIMAGE_LIST_NORMAL, wxIMAGE_LIST_SMALL, wxIMAGE_LIST_STATE (the last is unimplemented).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistctrl.html#wxlistctrlsetimagelist">wxListCtrl::SetImageList</A><P>
+
+
+<HR>
+<A NAME="wxlistctrlclearall"></A>
+<H3>wxListCtrl::ClearAll</H3>
+<P>
+<B>void</B> <B>ClearAll</B>()<P>
+Deletes all items and all columns.<P>
+
+
+<HR>
+<A NAME="wxlistctrlcreate"></A>
+<H3>wxListCtrl::Create</H3>
+<P>
+<B>bool</B> <B>Create</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>*</B></B><I> parent</I>, <B>wxWindowID</B><I> id</I>,
+<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>&</B></B><I> pos = wxDefaultPosition</I>, <B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size = wxDefaultSize</I>,
+<B>long</B><I> style = wxLC_ICON</I>, <B>const <A HREF="wx_wxvalidator.html#wxvalidator">wxValidator</A>& </B></B><I>validator = wxDefaultValidator</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>name = wxListCtrlNameStr</I>)<P>
+Creates the list control. See <A HREF="wx_wxlistctrl.html#wxlistctrlctor">wxListCtrl::wxListCtrl</A> for further details.<P>
+
+
+<HR>
+<A NAME="wxlistctrldeleteallitems"></A>
+<H3>wxListCtrl::DeleteAllItems</H3>
+<P>
+<B>bool</B> <B>DeleteAllItems</B>()<P>
+Deletes all items in the list control.<P>
+<B>NB:</B> This function does <I>not</I> send the
+<TT>wxEVT_COMMAND_LIST_DELETE_ITEM</TT> event because deleting many items
+from the control would be too slow then (unlike <A HREF="wx_wxlistctrl.html#wxlistctrldeleteitem">DeleteItem</A>).<P>
+
+
+<HR>
+<A NAME="wxlistctrldeletecolumn"></A>
+<H3>wxListCtrl::DeleteColumn</H3>
+<P>
+<B>bool</B> <B>DeleteColumn</B>(<B>int </B><I>col</I>)<P>
+Deletes a column.<P>
+
+
+<HR>
+<A NAME="wxlistctrldeleteitem"></A>
+<H3>wxListCtrl::DeleteItem</H3>
+<P>
+<B>bool</B> <B>DeleteItem</B>(<B>long </B><I>item</I>)<P>
+Deletes the specified item. This function sends the
+<TT>wxEVT_COMMAND_LIST_DELETE_ITEM</TT> event for the item being deleted.<P>
+See also: <A HREF="wx_wxlistctrl.html#wxlistctrldeleteallitems">DeleteAllItems</A><P>
+
+
+<HR>
+<A NAME="wxlistctrledit"></A>
+<H3>wxListCtrl::EditLabel</H3>
+<P>
+<B>void</B> <B>EditLabel</B>(<B>long </B><I>item</I>)<P>
+Starts editing the label of the given item. This function generates a
+EVT_LIST_BEGIN_LABEL_EDIT event which can be vetoed so that no
+text control will appear for in-place editing.<P>
+If the user changed the label (i.e. s/he does not press ESC or leave
+the text control without changes, a EVT_LIST_END_LABEL_EDIT event
+will be sent which can be vetoed as well.<P>
+
+
+<HR>
+<A NAME="wxlistctrlensurevisible"></A>
+<H3>wxListCtrl::EnsureVisible</H3>
+<P>
+<B>bool</B> <B>EnsureVisible</B>(<B>long </B><I>item</I>)<P>
+Ensures this item is visible.<P>
+
+
+<HR>
+<A NAME="wxlistctrlfinditem"></A>
+<H3>wxListCtrl::FindItem</H3>
+<P>
+<B>long</B> <B>FindItem</B>(<B>long </B><I>start</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>str</I>, <B>const bool </B><I>partial = false</I>)<P>
+Find an item whose label matches this string, starting from <I>start</I> or
+the beginning if <I>start</I> is -1. The string comparison is case
+insensitive. If <I>partial</I> is true then this method will look for
+items which begin with <I>str</I>.<P>
+<B>long</B> <B>FindItem</B>(<B>long </B><I>start</I>, <B>long </B><I>data</I>)<P>
+Find an item whose data matches this data, starting from <I>start</I> or
+the beginning if 'start' is -1.<P>
+<B>long</B> <B>FindItem</B>(<B>long </B><I>start</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pt</I>, <B>int </B><I>direction</I>)<P>
+Find an item nearest this position in the specified direction, starting from
+<I>start</I> or the beginning if <I>start</I> is -1.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>FindItem(start, str, partial=false)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>FindItemData(start, data)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>FindItemAtPos(start, point, direction)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there are three methods instead of a single overloaded
+method:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>FindItem( start, str, partial = false ) </B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>FindItemData( start, data ) </B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>FindItemAtPos( start, point, direction )</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetcolumn"></A>
+<H3>wxListCtrl::GetColumn</H3>
+<P>
+<B>bool</B> <B>GetColumn</B>(<B>int </B><I>col</I>, <B><A HREF="wx_wxlistitem.html#wxlistitem">wxListItem</A>& </B></B><I>item</I>) <B>const</B><P>
+Gets information about this column. See <A HREF="wx_wxlistctrl.html#wxlistctrlsetitem">wxListCtrl::SetItem</A> for more
+information.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes only the <B>col</B> parameter and
+  returns a Wx::ListItem ( or undef ).<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetcolumncount"></A>
+<H3>wxListCtrl::GetColumnCount</H3>
+<P>
+<B>int</B> <B>GetColumnCount</B>() <B>const</B><P>
+Returns the number of columns.<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetcolumnwidth"></A>
+<H3>wxListCtrl::GetColumnWidth</H3>
+<P>
+<B>int</B> <B>GetColumnWidth</B>(<B>int </B><I>col</I>) <B>const</B><P>
+Gets the column width (report view only).<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetcountperpage"></A>
+<H3>wxListCtrl::GetCountPerPage</H3>
+<P>
+<B>int</B> <B>GetCountPerPage</B>() <B>const</B><P>
+Gets the number of items that can fit vertically in the
+visible area of the list control (list or report view)
+or the total number of items in the list control (icon
+or small icon view).<P>
+
+
+<HR>
+<A NAME="wxlistctrlgeteditcontrol"></A>
+<H3>wxListCtrl::GetEditControl</H3>
+<P>
+<B><A HREF="wx_wxtextctrl.html#wxtextctrl">wxTextCtrl</A> *</B> </B> <B>GetEditControl</B>() <B>const</B><P>
+Returns the edit control being currently used to edit a label. Returns <TT>NULL</TT>
+if no label is being edited.<P>
+<B>NB:</B> It is currently only implemented for wxMSW and the generic version,
+not for the native Mac OS X version.<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetimagelist"></A>
+<H3>wxListCtrl::GetImageList</H3>
+<P>
+<B><A HREF="wx_wximagelist.html#wximagelist">wxImageList</A>*</B> </B> <B>GetImageList</B>(<B>int </B><I>which</I>) <B>const</B><P>
+Returns the specified image list. <I>which</I> may be one of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxIMAGE_LIST_NORMAL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The normal (large icon) image list.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxIMAGE_LIST_SMALL</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The small icon image list.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+<B>wxIMAGE_LIST_STATE</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The user-defined state image list (unimplemented).
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetitem"></A>
+<H3>wxListCtrl::GetItem</H3>
+<P>
+<B>bool</B> <B>GetItem</B>(<B><A HREF="wx_wxlistitem.html#wxlistitem">wxListItem</A>& </B></B><I>info</I>) <B>const</B><P>
+Gets information about the item. See <A HREF="wx_wxlistctrl.html#wxlistctrlsetitem">wxListCtrl::SetItem</A> for more
+information.<P>
+You must call <I>info.SetId()</I> to the ID of item you're interested in
+before calling this method.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxPython version of this method takes an integer parameter
+for the item ID, an optional integer for the column number, and
+returns the wxListItem object.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes as parameter the <B>ID</B> of the item
+and ( optionally ) the column, and returns a Wx::ListItem object.<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetitembackgroundcolour"></A>
+<H3>wxListCtrl::GetItemBackgroundColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetItemBackgroundColour</B>(<B>long </B><I>item</I>) <B>const</B><P>
+Returns the colour for this item. If the item has no specific colour, returns
+an invalid colour (and not the default background control of the control
+itself).<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistctrl.html#wxlistctrlgetitemtextcolour">GetItemTextColour</A><P>
+
+
+<HR>
+<A NAME="wxlistctrlgetitemcount"></A>
+<H3>wxListCtrl::GetItemCount</H3>
+<P>
+<B>int</B> <B>GetItemCount</B>() <B>const</B><P>
+Returns the number of items in the list control.<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetitemdata"></A>
+<H3>wxListCtrl::GetItemData</H3>
+<P>
+<B>long</B> <B>GetItemData</B>(<B>long </B><I>item</I>) <B>const</B><P>
+Gets the application-defined data associated with this item.<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetitemfont"></A>
+<H3>wxListCtrl::GetItemFont</H3>
+<P>
+<B><A HREF="wx_wxfont.html#wxfont">wxFont</A></B> </B> <B>GetItemFont</B>(<B>long </B><I>item</I>) <B>const</B><P>
+Returns the item's font.<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetitemposition"></A>
+<H3>wxListCtrl::GetItemPosition</H3>
+<P>
+<B>bool</B> <B>GetItemPosition</B>(<B>long </B><I>item</I>, <B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos</I>) <B>const</B><P>
+Returns the position of the item, in icon or small icon view.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxPython version of this method accepts only the item
+ID and returns the wxPoint.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes only the <B>item</B> parameter and
+returns a Wx::Point ( or undef ).<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetitemrect"></A>
+<H3>wxListCtrl::GetItemRect</H3>
+<P>
+<B>bool</B> <B>GetItemRect</B>(<B>long </B><I>item</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>code = wxLIST_RECT_BOUNDS</I>) <B>const</B><P>
+Returns the rectangle representing the item's size and position, in physical
+coordinates.<P>
+<I>code</I> is one of wxLIST_RECT_BOUNDS, wxLIST_RECT_ICON, wxLIST_RECT_LABEL.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> The wxPython version of this method accepts only the item
+ID and code and returns the wxRect.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes only the <B>item</B> parameter and
+returns a Wx::Rect ( or undef ).<P>
+<P>
+
+<HR>
+<A NAME="wxlistctrlgetsubitemrect"></A>
+<H3>wxListCtrl::GetSubItemRect</H3>
+<P>
+<B>bool</B> <B>GetSubItemRect</B>(<B>long </B><I>item</I>, <B>long </B><I>subItem</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>, <B>int </B><I>code = wxLIST_RECT_BOUNDS</I>) <B>const</B><P>
+Returns the rectangle representing the size and position, in physical
+coordinates, of the given subitem, i.e. the part of the row <I>item</I> in the
+column <I>subItem</I>.<P>
+This method is only meaningfull when the wxListCtrl is in the report mode. If
+<I>subItem</I> parameter is equal to the special value 
+<TT>wxLIST_GETSUBITEMRECT_WHOLEITEM</TT> the return value is the same as
+for <A HREF="wx_wxlistctrl.html#wxlistctrlgetitemrect">GetItemRect</A>.<P>
+<I>code</I> can be one of <TT>wxLIST_RECT_BOUNDS</TT>, 
+<TT>wxLIST_RECT_ICON</TT> or <TT>wxLIST_RECT_LABEL</TT>.<P>
+This function is new since wxWidgets version 2.7.0<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetitemspacing"></A>
+<H3>wxListCtrl::GetItemSpacing</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>GetItemSpacing</B>() <B>const</B><P>
+Retrieves the spacing between icons in pixels: horizontal spacing is returned
+as <TT>x</TT> component of the <A HREF="wx_wxsize.html#wxsize">wxSize</A> object and the vertical
+spacing as its <TT>y</TT> component.<P>
+<P>
+
+<HR>
+<A NAME="wxlistctrlgetitemstate"></A>
+<H3>wxListCtrl::GetItemState</H3>
+<P>
+<B>int</B> <B>GetItemState</B>(<B>long </B><I>item</I>, <B>long </B><I>stateMask</I>) <B>const</B><P>
+Gets the item state. For a list of state flags, see <A HREF="wx_wxlistctrl.html#wxlistctrlsetitem">wxListCtrl::SetItem</A>.<P>
+The <B>stateMask</B> indicates which state flags are of interest.<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetitemtext"></A>
+<H3>wxListCtrl::GetItemText</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>GetItemText</B>(<B>long </B><I>item</I>) <B>const</B><P>
+Gets the item text for this item.<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetitemtextcolour"></A>
+<H3>wxListCtrl::GetItemTextColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetItemTextColour</B>(<B>long </B><I>item</I>) <B>const</B><P>
+Returns the colour for this item. If the item has no specific colour, returns
+an invalid colour (and not the default foreground control of the control itself
+as this wouldn't allow distinguishing between items having the same colour as
+the current control foreground and items with default colour which, hence, have
+always the same colour as the control).<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetnextitem"></A>
+<H3>wxListCtrl::GetNextItem</H3>
+<P>
+<B>long</B> <B>GetNextItem</B>(<B>long </B><I>item</I>, <B>int </B><I>geometry = wxLIST_NEXT_ALL</I>, <B>int </B><I>state = wxLIST_STATE_DONTCARE</I>) <B>const</B><P>
+Searches for an item with the given geometry or state, starting from
+<I>item</I> but excluding the <I>item</I> itself. If <I>item</I> is -1,
+the first item that matches the specified flags will be returned.<P>
+Returns the first item with given state following <I>item</I> or -1 if
+no such item found.<P>
+This function may be used to find all selected items in the control like this:<P>
+<PRE>
+    long item = -1;
+    for ( ;; )
+    {
+        item = listctrl-&gt;GetNextItem(item,
+                                     wxLIST_NEXT_ALL,
+                                     wxLIST_STATE_SELECTED);
+        if ( item == -1 )
+            break;
+
+        // this item is selected - do whatever is needed with it
+        wxLogMessage("Item %ld is selected.", item);
+    }
+</PRE>
+<I>geometry</I> can be one of:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_NEXT_ABOVE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Searches for an item above the specified item.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_NEXT_ALL
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Searches for subsequent item by index.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_NEXT_BELOW
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Searches for an item below the specified item.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_NEXT_LEFT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Searches for an item to the left of the specified item.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_NEXT_RIGHT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Searches for an item to the right of the specified item.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B>NB:</B> this parameter is only supported by wxMSW currently and ignored on
+other platforms.<P>
+<I>state</I> can be a bitlist of the following:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_DONTCARE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Don't care what the state is.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_DROPHILITED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item indicates it is a drop target.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_FOCUSED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item has the focus.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_SELECTED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item is selected.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_CUT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item is selected as part of a cut and paste operation.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
+
+<HR>
+<A NAME="wxlistctrlgetselecteditemcount"></A>
+<H3>wxListCtrl::GetSelectedItemCount</H3>
+<P>
+<B>int</B> <B>GetSelectedItemCount</B>() <B>const</B><P>
+Returns the number of selected items in the list control.<P>
+
+
+<HR>
+<A NAME="wxlistctrlgettextcolour"></A>
+<H3>wxListCtrl::GetTextColour</H3>
+<P>
+<B><A HREF="wx_wxcolour.html#wxcolour">wxColour</A></B> </B> <B>GetTextColour</B>() <B>const</B><P>
+Gets the text colour of the list control.<P>
+
+
+<HR>
+<A NAME="wxlistctrlgettopitem"></A>
+<H3>wxListCtrl::GetTopItem</H3>
+<P>
+<B>long</B> <B>GetTopItem</B>() <B>const</B><P>
+Gets the index of the topmost visible item when in
+list or report view.<P>
+<P>
+
+<HR>
+<A NAME="wxlistctrlgetviewrect"></A>
+<H3>wxListCtrl::GetViewRect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>GetViewRect</B>() <B>const</B><P>
+Returns the rectangle taken by all items in the control. In other words, if the
+controls client size were equal to the size of this rectangle, no scrollbars
+would be needed and no free space would be left.<P>
+Note that this function only works in the icon and small icon views, not in
+list or report views (this is a limitation of the native Win32 control).<P>
+<P>
+
+<HR>
+<A NAME="wxlistctrlhittest"></A>
+<H3>wxListCtrl::HitTest</H3>
+<P>
+<B>long</B> <B>HitTest</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>point</I>, <B>int&amp; </B><I>flags</I>, <B>long *</B><I>ptrSubItem</I>) <B>const</B><P>
+Determines which item (if any) is at the specified point,
+giving details in <I>flags</I>. Returns index of the item or <TT>wxNOT_FOUND</TT>
+if no item is at the specified point.
+<I>flags</I> will be a combination of the following flags:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_HITTEST_ABOVE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Above the client area.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_HITTEST_BELOW
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Below the client area.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_HITTEST_NOWHERE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+In the client area but below the last item.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_HITTEST_ONITEMICON
+</FONT></TD>
+
+<TD VALIGN=TOP>
+On the bitmap associated with an item.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_HITTEST_ONITEMLABEL
+</FONT></TD>
+
+<TD VALIGN=TOP>
+On the label (string) associated with an item.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_HITTEST_ONITEMRIGHT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+In the area to the right of an item.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_HITTEST_ONITEMSTATEICON
+</FONT></TD>
+
+<TD VALIGN=TOP>
+On the state icon for a tree view item that is in a user-defined state.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_HITTEST_TOLEFT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+To the right of the client area.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_HITTEST_TORIGHT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+To the left of the client area.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_HITTEST_ONITEM
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Combination of wxLIST_HITTEST_ONITEMICON, wxLIST_HITTEST_ONITEMLABEL,
+wxLIST_HITTEST_ONITEMSTATEICON.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+If <I>ptrSubItem</I> is not <TT>NULL</TT> and the wxListCtrl is in the report
+mode the subitem (or column) number will also be provided. 
+This feature is only available in version 2.7.0 or higher and is currently only
+implemented under wxMSW and requires at least comctl32.dll of verion 4.70 on
+the host system or the value stored in <I>ptrSubItem</I> will be always -1. To
+compile this feature into wxWidgets library you need to have access to
+commctrl.h of version 4.70 that is provided by Microsoft.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> A tuple of values is returned in the wxPython version of
+this method. The first value is the item id and the second is the
+flags value mentioned above.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method only takes the <B>point</B> parameter
+  and returns a 2-element list <TT>( item, flags )</TT>.<P>
+
+
+<HR>
+<A NAME="wxlistctrlinsertcolumn"></A>
+<H3>wxListCtrl::InsertColumn</H3>
+<P>
+<B>long</B> <B>InsertColumn</B>(<B>long </B><I>col</I>, <B><A HREF="wx_wxlistitem.html#wxlistitem">wxListItem</A>& </B></B><I>info</I>)<P>
+<B>long</B> <B>InsertColumn</B>(<B>long </B><I>col</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>heading</I>, <B>int </B><I>format = wxLIST_FORMAT_LEFT</I>,
+<B>int </B><I>width = -1</I>)<P>
+For report view mode (only), inserts a column. For more details, see <A HREF="wx_wxlistctrl.html#wxlistctrlsetitem">wxListCtrl::SetItem</A>.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>InsertColumn(col, heading, format=wxLIST_FORMAT_LEFT,
+width=-1)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a column using a header string only.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>InsertColumnItem(col, item)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Creates a column using a
+wxListItem.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+
+
+<HR>
+<A NAME="wxlistctrlinsertitem"></A>
+<H3>wxListCtrl::InsertItem</H3>
+<P>
+<B>long</B> <B>InsertItem</B>(<B><A HREF="wx_wxlistitem.html#wxlistitem">wxListItem</A>& </B></B><I>info</I>)<P>
+Inserts an item, returning the index of the new item if successful,
+-1 otherwise.<P>
+<B>long</B> <B>InsertItem</B>(<B>long </B><I>index</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>)<P>
+Inserts a string item.<P>
+<B>long</B> <B>InsertItem</B>(<B>long </B><I>index</I>, <B>int </B><I>imageIndex</I>)<P>
+Inserts an image item.<P>
+<B>long</B> <B>InsertItem</B>(<B>long </B><I>index</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>int </B><I>imageIndex</I>)<P>
+Insert an image/string item.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>info</I><UL><UL>
+wxListItem object</UL></UL>
+<P>
+<I>index</I><UL><UL>
+Index of the new item, supplied by the application</UL></UL>
+<P>
+<I>label</I><UL><UL>
+String label</UL></UL>
+<P>
+<I>imageIndex</I><UL><UL>
+index into the image list associated with this control and view style</UL></UL>
+<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>InsertItem(item)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Inserts an item using a wxListItem.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>InsertStringItem(index, label)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Inserts a string item.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>InsertImageItem(index, imageIndex)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Inserts an image item.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>InsertImageStringItem(index, label, imageIndex)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Insert an image/string item.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl there are four methods instead of a single overloaded
+method:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>InsertItem( item )</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Inserts a Wx::ListItem
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>InsertStringItem( index, label )</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Inserts a string item
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>InsertImageItem( index, imageIndex )</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Inserts an image item
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>InsertImageStringItem( index, label, imageIndex )</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Inserts
+ an item with a string and an image
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
+
+
+<HR>
+<A NAME="wxlistctrlongetitemattr"></A>
+<H3>wxListCtrl::OnGetItemAttr</H3>
+<P>
+<B>virtual <A HREF="wx_wxlistitemattr.html#wxlistitemattr">wxListItemAttr</A> *</B> </B> <B>OnGetItemAttr</B>(<B>long </B><I>item</I>) <B>const</B><P>
+This function may be overloaded in the derived class for a control with
+<TT>wxLC_VIRTUAL</TT> style. It should return the attribute for the
+for the specified <TT>item</TT> or <TT>NULL</TT> to use the default appearance
+parameters.<P>
+wxListCtrl will not delete the pointer or keep a reference of it. You can 
+return the same wxListItemAttr pointer for every OnGetItemAttr call.<P>
+The base class version always returns <TT>NULL</TT>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemimage">OnGetItemImage</A>,<BR>
+
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemcolumnimage">OnGetItemColumnImage</A>,<BR>
+
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemtext">OnGetItemText</A><P>
+
+
+<HR>
+<A NAME="wxlistctrlongetitemimage"></A>
+<H3>wxListCtrl::OnGetItemImage</H3>
+<P>
+<B>virtual int</B> <B>OnGetItemImage</B>(<B>long </B><I>item</I>) <B>const</B><P>
+This function must be overloaded in the derived class for a control with
+<TT>wxLC_VIRTUAL</TT> style having an <A HREF="wx_wxlistctrl.html#wxlistctrlsetimagelist">image list</A>
+(if the control doesn't have an image list, it is not necessary to overload
+ it). It should return the index of the items image in the controls image list
+or -1 for no image.
+In a control with <TT>wxLC_REPORT</TT> style, OnGetItemImage only gets called for
+the first column of each line.<P>
+The base class version always returns -1.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemtext">OnGetItemText</A>,<BR>
+
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemcolumnimage">OnGetItemColumnImage</A>,<BR>
+
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemattr">OnGetItemAttr</A><P>
+
+<HR>
+<A NAME="wxlistctrlongetitemcolumnimage"></A>
+<H3>wxListCtrl::OnGetItemColumnImage</H3>
+<P>
+<B>virtual int</B> <B>OnGetItemColumnImage</B>(<B>long </B><I>item</I>, <B>long </B><I>column</I>) <B>const</B><P>
+Overload this function in the derived class for a control with
+<TT>wxLC_VIRTUAL</TT> and <TT>wxLC_REPORT</TT> styles in order to specify the image
+index for the given line and column.<P>
+The base class version always calls OnGetItemImage for the first column, else
+it returns -1.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemtext">OnGetItemText</A>,<BR>
+
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemimage">OnGetItemImage</A>,<BR>
+
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemattr">OnGetItemAttr</A><P>
+
+<HR>
+<A NAME="wxlistctrlongetitemtext"></A>
+<H3>wxListCtrl::OnGetItemText</H3>
+<P>
+<B>virtual <A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>OnGetItemText</B>(<B>long </B><I>item</I>, <B>long </B><I>column</I>) <B>const</B><P>
+This function <B>must</B> be overloaded in the derived class for a control with
+<TT>wxLC_VIRTUAL</TT> style. It should return the string containing the text of
+the given <I>column</I> for the specified <TT>item</TT>.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistctrl.html#wxlistctrlsetitemcount">SetItemCount</A>,<BR>
+
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemimage">OnGetItemImage</A>,<BR>
+
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemcolumnimage">OnGetItemColumnImage</A>,<BR>
+
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemattr">OnGetItemAttr</A><P>
+
+
+<HR>
+<A NAME="wxlistctrlrefreshitem"></A>
+<H3>wxListCtrl::RefreshItem</H3>
+<P>
+<B>void</B> <B>RefreshItem</B>(<B>long </B><I>item</I>)<P>
+Redraws the given <I>item</I>. This is only useful for the virtual list controls
+as without calling this function the displayed value of the item doesn't change
+even when the underlying data does change.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistctrl.html#wxlistctrlrefreshitems">RefreshItems</A><P>
+<P>
+
+<HR>
+<A NAME="wxlistctrlrefreshitems"></A>
+<H3>wxListCtrl::RefreshItems</H3>
+<P>
+<B>void</B> <B>RefreshItems</B>(<B>long </B><I>itemFrom</I>, <B>long </B><I>itemTo</I>)<P>
+Redraws the items between <I>itemFrom</I> and <I>itemTo</I>. The starting item
+must be less than or equal to the ending one.<P>
+Just as <A HREF="wx_wxlistctrl.html#wxlistctrlrefreshitem">RefreshItem</A> this is only useful for
+virtual list controls.<P>
+<P>
+
+<HR>
+<A NAME="wxlistctrlscrolllist"></A>
+<H3>wxListCtrl::ScrollList</H3>
+<P>
+<B>bool</B> <B>ScrollList</B>(<B>int </B><I>dx</I>, <B>int </B><I>dy</I>)<P>
+Scrolls the list control. If in icon, small icon or report view mode,
+<I>dx</I> specifies the number of pixels to scroll. If in list view mode,
+<I>dx</I> specifies the number of columns to scroll. <I>dy</I> always specifies
+the number of pixels to scroll vertically.<P>
+<B>NB:</B> This method is currently only implemented in the Windows version.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetbackgroundcolour"></A>
+<H3>wxListCtrl::SetBackgroundColour</H3>
+<P>
+<B>void</B> <B>SetBackgroundColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>col</I>)<P>
+Sets the background colour (GetBackgroundColour already implicit in
+wxWindow class).<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetcolumn"></A>
+<H3>wxListCtrl::SetColumn</H3>
+<P>
+<B>bool</B> <B>SetColumn</B>(<B>int </B><I>col</I>, <B><A HREF="wx_wxlistitem.html#wxlistitem">wxListItem</A>& </B></B><I>item</I>)<P>
+Sets information about this column. See <A HREF="wx_wxlistctrl.html#wxlistctrlsetitem">wxListCtrl::SetItem</A> for more
+information.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetcolumnwidth"></A>
+<H3>wxListCtrl::SetColumnWidth</H3>
+<P>
+<B>bool</B> <B>SetColumnWidth</B>(<B>int </B><I>col</I>, <B>int </B><I>width</I>)<P>
+Sets the column width.<P>
+<I>width</I> can be a width in pixels or wxLIST_AUTOSIZE (-1) or wxLIST_AUTOSIZE_USEHEADER (-2).
+wxLIST_AUTOSIZE will resize the column to the length of its longest item. wxLIST_AUTOSIZE_USEHEADER
+will resize the column to the length of the header (Win32) or 80 pixels (other platforms).<P>
+In small or normal icon view, <I>col</I> must be -1, and the column width is set for all columns.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetimagelist"></A>
+<H3>wxListCtrl::SetImageList</H3>
+<P>
+<B>void</B> <B>SetImageList</B>(<B><A HREF="wx_wximagelist.html#wximagelist">wxImageList</A>*</B></B><I> imageList</I>, <B>int </B><I>which</I>)<P>
+Sets the image list associated with the control. <I>which</I> is one of
+wxIMAGE_LIST_NORMAL, wxIMAGE_LIST_SMALL, wxIMAGE_LIST_STATE (the last is unimplemented).<P>
+This method does not take ownership of the image list, you have to
+delete it yourself.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxlistctrl.html#wxlistctrlassignimagelist">wxListCtrl::AssignImageList</A><P>
+<P>
+
+<HR>
+<A NAME="wxlistctrlsetitem"></A>
+<H3>wxListCtrl::SetItem</H3>
+<P>
+<B>bool</B> <B>SetItem</B>(<B><A HREF="wx_wxlistitem.html#wxlistitem">wxListItem</A>& </B></B><I>info</I>)<P>
+<B>long</B> <B>SetItem</B>(<B>long </B><I>index</I>, <B>int </B><I>col</I>, <B>const </B><I>wxString&amp; label</I>, <B>int </B><I>imageId = -1</I>)<P>
+Sets information about the item.<P>
+wxListItem is a class with the following members:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+long m_mask
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Indicates which fields are valid. See the list of valid mask flags below.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+long m_itemId
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The zero-based item position.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+int m_col
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Zero-based column, if in report mode.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+long m_state
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The state of the item. See the list of valid state flags below.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+long m_stateMask
+</FONT></TD>
+
+<TD VALIGN=TOP>
+A mask indicating which state flags are valid. See the list of valid state flags below.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxString m_text
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The label/header text.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+int m_image
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The zero-based index into an image list.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+long m_data
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Application-defined data.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+int m_format
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For columns only: the format. Can be wxLIST_FORMAT_LEFT, wxLIST_FORMAT_RIGHT or
+wxLIST_FORMAT_CENTRE.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+int m_width
+</FONT></TD>
+
+<TD VALIGN=TOP>
+For columns only: the column width.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The <B>m_mask</B> member contains a bitlist specifying which of the other fields are valid. The flags are:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_MASK_STATE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The <B>m_state</B> field is valid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_MASK_TEXT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The <B>m_text</B> field is valid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_MASK_IMAGE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The <B>m_image</B> field is valid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_MASK_DATA
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The <B>m_data</B> field is valid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_MASK_WIDTH
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The <B>m_width</B> field is valid.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_MASK_FORMAT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The <B>m_format</B> field is valid.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The <B>m_stateMask</B> and <B>m_state</B> members take flags from the following:<P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_DONTCARE
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Don't care what the state is. Win32 only. 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_DROPHILITED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item is highlighted to receive a drop event. Win32 only. 
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_FOCUSED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item has the focus.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_SELECTED
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item is selected.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
+wxLIST_STATE_CUT
+</FONT></TD>
+
+<TD VALIGN=TOP>
+The item is in the cut state. Win32 only. 
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+The wxListItem object can also contain item-specific colour and font
+information: for this you need to call one of SetTextColour(),
+SetBackgroundColour() or SetFont() functions on it passing it the colour/font
+to use. If the colour/font is not specified, the default list control
+colour/font is used.<P>
+<B>long</B> <B>SetItem</B>(<B>long </B><I>index</I>, <B>int </B><I>col</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>label</I>, <B>int </B><I>imageId = -1</I>)<P>
+Sets a string field at a particular column.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> In place of a single overloaded method name, wxPython
+implements the following methods:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>SetItem(item)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sets information about the given wxListItem.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>SetStringItem(index, col, label, imageId)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Sets a
+string or image at a given location.
+</FONT></TD></TR>
+
+
+</TABLE>
+</UL></UL>
+
+<P>
+
+<HR>
+<A NAME="wxlistctrlsetitembackgroundcolour"></A>
+<H3>wxListCtrl::SetItemBackgroundColour</H3>
+<P>
+<B>void</B> <B>SetItemBackgroundColour</B>(<B>long </B><I>item</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>col</I>)<P>
+Sets the background colour for this item. This function only works in report view.<P>
+The colour can be retrieved using
+<A HREF="wx_wxlistctrl.html#wxlistctrlgetitembackgroundcolour">GetItemBackgroundColour</A>.<P>
+<P>
+
+<HR>
+<A NAME="wxlistctrlsetitemcount"></A>
+<H3>wxListCtrl::SetItemCount</H3>
+<P>
+<B>void</B> <B>SetItemCount</B>(<B>long </B><I>count</I>)<P>
+This method can only be used with virtual list controls. It is used to indicate
+to the control the number of items it contains. After calling it, the main
+program should be ready to handle calls to various item callbacks (such as
+<A HREF="wx_wxlistctrl.html#wxlistctrlongetitemtext">OnGetItemText</A>) for all items in the range
+from 0 to <I>count</I>.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetitemdata"></A>
+<H3>wxListCtrl::SetItemData</H3>
+<P>
+<B>bool</B> <B>SetItemData</B>(<B>long </B><I>item</I>, <B>long </B><I>data</I>)<P>
+Associates application-defined data with this item.<P>
+Notice that this function cannot be used to associate pointers with the control
+items, use <A HREF="wx_wxlistctrl.html#wxlistctrlsetitemptrdata">SetItemPtrData</A> instead.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetitemfont"></A>
+<H3>wxListCtrl::SetItemFont</H3>
+<P>
+<B>void</B> <B>SetItemFont</B>(<B>long </B><I>item</I>, <B>const <A HREF="wx_wxfont.html#wxfont">wxFont</A>& </B></B><I>font</I>)<P>
+Sets the item's font.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetitemimage"></A>
+<H3>wxListCtrl::SetItemImage</H3>
+<P>
+<B>bool</B> <B>SetItemImage</B>(<B>long </B><I>item</I>, <B>int </B><I>image</I>)<P>
+Sets the image associated with the item. The image is an index into the
+image list associated with the list control. In report view, this only sets
+the image for the first column.<P>
+<B>bool</B> <B>SetItemImage</B>(<B>long </B><I>item</I>, <B>int </B><I>image</I>, <B>int </B><I>selImage</I>)<P>
+Sets the unselected and selected images associated with the item. The images are indices into the
+image list associated with the list control. This form is deprecated: <I>selImage</I> is not
+used.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetitemcolumnimage"></A>
+<H3>wxListCtrl::SetItemColumnImage</H3>
+<P>
+<B>bool</B> <B>SetItemImage</B>(<B>long </B><I>item</I>, <B>long </B><I>column</I><B>int </B><I>image</I>)<P>
+Sets the image associated with the item. In report view, you can specify the column.
+The image is an index into the image list associated with the list control.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetitemposition"></A>
+<H3>wxListCtrl::SetItemPosition</H3>
+<P>
+<B>bool</B> <B>SetItemPosition</B>(<B>long </B><I>item</I>, <B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos</I>)<P>
+Sets the position of the item, in icon or small icon view. Windows only.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetitemptrdata"></A>
+<H3>wxListCtrl::SetItemPtrData</H3>
+<P>
+<B>bool</B> <B>SetItemPtrData</B>(<B>long </B><I>item</I>, <B>wxUIntPtr </B><I>data</I>)<P>
+Associates application-defined data with this item. The <I>data</I> parameter may
+be either an integer or a pointer cast to the <TT>wxUIntPtr</TT> type which is
+guaranteed to be large enough to be able to contain all integer types and
+pointers.<P>
+This function is new since wxWidgets version 2.8.4<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetitemstate"></A>
+<H3>wxListCtrl::SetItemState</H3>
+<P>
+<B>bool</B> <B>SetItemState</B>(<B>long </B><I>item</I>, <B>long </B><I>state</I>, <B>long </B><I>stateMask</I>)<P>
+Sets the item state. For a list of state flags, see <A HREF="wx_wxlistctrl.html#wxlistctrlsetitem">wxListCtrl::SetItem</A>.<P>
+The <B>stateMask</B> indicates which state flags are valid.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetitemtext"></A>
+<H3>wxListCtrl::SetItemText</H3>
+<P>
+<B>void</B> <B>SetItemText</B>(<B>long </B><I>item</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>text</I>)<P>
+Sets the item text for this item.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetitemtextcolour"></A>
+<H3>wxListCtrl::SetItemTextColour</H3>
+<P>
+<B>void</B> <B>SetItemTextColour</B>(<B>long </B><I>item</I>, <B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>col</I>)<P>
+Sets the colour for this item. This function only works in report view.<P>
+The colour can be retrieved using
+<A HREF="wx_wxlistctrl.html#wxlistctrlgetitemtextcolour">GetItemTextColour</A>.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetsinglestyle"></A>
+<H3>wxListCtrl::SetSingleStyle</H3>
+<P>
+<B>void</B> <B>SetSingleStyle</B>(<B>long </B><I>style</I>, <B>const bool </B><I>add = true</I>)<P>
+Adds or removes a single window style.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsettextcolour"></A>
+<H3>wxListCtrl::SetTextColour</H3>
+<P>
+<B>void</B> <B>SetTextColour</B>(<B>const <A HREF="wx_wxcolour.html#wxcolour">wxColour</A>& </B></B><I>col</I>)<P>
+Sets the text colour of the list control.<P>
+
+
+<HR>
+<A NAME="wxlistctrlsetwindowstyleflag"></A>
+<H3>wxListCtrl::SetWindowStyleFlag</H3>
+<P>
+<B>void</B> <B>SetWindowStyleFlag</B>(<B>long </B><I>style</I>)<P>
+Sets the whole window style, deleting all items.<P>
+
+<HR>
+<A NAME="wxlistctrlsortitems"></A>
+<H3>wxListCtrl::SortItems</H3>
+<P>
+<B>bool</B> <B>SortItems</B>(<B>wxListCtrlCompare </B><I>fnSortCallBack</I>, <B>long </B><I>data</I>)<P>
+Call this function to sort the items in the list control. Sorting is done
+using the specified <I>fnSortCallBack</I> function. This function must have the
+following prototype:<P>
+<PRE>
+int wxCALLBACK wxListCompareFunction(long item1, long item2, long sortData)
+</PRE>
+It is called each time when the two items must be compared and should return 0
+if the items are equal, negative value if the first item is less than the
+second one and positive value if the first one is greater than the second one
+(the same convention as used by <TT>qsort(3)</TT>).<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>item1</I><UL><UL>
+client data associated with the first item (<B>NOT</B> the index).</UL></UL>
+<P>
+<I>item2</I><UL><UL>
+client data associated with the second item (<B>NOT</B> the index).</UL></UL>
+<P>
+<I>data</I><UL><UL>
+the value passed to SortItems() itself.</UL></UL>
+<P>
+Notice that the control may only be sorted on client data associated with the
+items, so you <B>must</B> use <A HREF="wx_wxlistctrl.html#wxlistctrlsetitemdata">SetItemData</A> if
+you want to be able to sort the items in the control.<P>
+Please see the <A HREF="wx_samples.html#samplelistctrl">listctrl sample</A> for an example of
+using this function.<P>
+<B><FONT COLOR="#0000C8">wxPython note:</FONT></B> wxPython uses the sortData parameter to pass the Python
+function to call, so it is not available for programmer use.  Call
+SortItems with a reference to a callable object that expects two
+parameters.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl the comparison function must take just two parameters;
+however, you may use a closure to achieve an effect similar to the
+SortItems third parameter.<P>
+
+</FONT></BODY></HTML>

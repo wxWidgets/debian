@@ -1,0 +1,86 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxCalculateLayoutEvent</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxcalculatelayoutevent"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxbutton.html#wxbutton"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxcalendarctrl.html#wxcalendarctrl"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxCalculateLayoutEvent</H2>
+<P>
+This event is sent by <A HREF="wx_wxlayoutalgorithm.html#wxlayoutalgorithm">wxLayoutAlgorithm</A> to
+calculate the amount of the remaining client area that the window should
+occupy.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+<A HREF="wx_wxevent.html#wxevent">wxEvent</A><BR>
+
+<A HREF="wx_wxobject.html#wxobject">wxObject</A><P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/laywin.h&gt;<P>
+<B><FONT COLOR="#FF0000">Event table macros</FONT></B><P>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>EVT_CALCULATE_LAYOUT(func)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Process a wxEVT_CALCULATE_LAYOUT event,
+which asks the window to take a 'bite' out of a rectangle provided by the algorithm.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxquerylayoutinfoevent.html#wxquerylayoutinfoevent">wxQueryLayoutInfoEvent</A>,
+<A HREF="wx_wxsashlayoutwindow.html#wxsashlayoutwindow">wxSashLayoutWindow</A>,
+<A HREF="wx_wxlayoutalgorithm.html#wxlayoutalgorithm">wxLayoutAlgorithm</A>.<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+<A HREF="#wxcalculatelayouteventctor">wxCalculateLayoutEvent::wxCalculateLayoutEvent</A><BR>
+<A HREF="#wxcalculatelayouteventgetflags">wxCalculateLayoutEvent::GetFlags</A><BR>
+<A HREF="#wxcalculatelayouteventgetrect">wxCalculateLayoutEvent::GetRect</A><BR>
+<A HREF="#wxcalculatelayouteventsetflags">wxCalculateLayoutEvent::SetFlags</A><BR>
+<A HREF="#wxcalculatelayouteventsetrect">wxCalculateLayoutEvent::SetRect</A><BR>
+<P>
+
+<HR>
+<A NAME="wxcalculatelayouteventctor"></A>
+<H3>wxCalculateLayoutEvent::wxCalculateLayoutEvent</H3>
+<P>
+<B></B> <B>wxCalculateLayoutEvent</B>(<B>wxWindowID </B><I>id = 0</I>)<P>
+Constructor.<P>
+
+<HR>
+<A NAME="wxcalculatelayouteventgetflags"></A>
+<H3>wxCalculateLayoutEvent::GetFlags</H3>
+<P>
+<B>int</B> <B>GetFlags</B>() <B>const</B><P>
+Returns the flags associated with this event. Not currently used.<P>
+
+<HR>
+<A NAME="wxcalculatelayouteventgetrect"></A>
+<H3>wxCalculateLayoutEvent::GetRect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>GetRect</B>() <B>const</B><P>
+Before the event handler is entered, returns the remaining parent client area that the window
+could occupy. When the event handler returns, this should contain the remaining parent client rectangle,
+after the event handler has subtracted the area that its window occupies.<P>
+
+<HR>
+<A NAME="wxcalculatelayouteventsetflags"></A>
+<H3>wxCalculateLayoutEvent::SetFlags</H3>
+<P>
+<B>void</B> <B>SetFlags</B>(<B>int </B><I>flags</I>)<P>
+Sets the flags associated with this event. Not currently used.<P>
+
+<HR>
+<A NAME="wxcalculatelayouteventsetrect"></A>
+<H3>wxCalculateLayoutEvent::SetRect</H3>
+<P>
+<B>void</B> <B>SetRect</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>)<P>
+Call this to specify the new remaining parent client area, after the space occupied by the
+window has been subtracted.<P>
+
+</FONT></BODY></HTML>

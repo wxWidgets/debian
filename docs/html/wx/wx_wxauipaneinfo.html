@@ -1,0 +1,612 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxAuiPaneInfo</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxauipaneinfo"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_classref.html#classref"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_wxauinotebook.html#wxauinotebook"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxautomationobject.html#wxautomationobject"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxAuiPaneInfo</H2>
+<P>
+wxAuiPaneInfo is part of the wxAUI class framework.
+See also <A HREF="wx_wxauioverview.html#wxauioverview">wxAUI overview</A>.<P>
+wxAuiPaneInfo specifies all the parameters for a pane.
+These parameters specify where the pane is on the
+screen, whether it is docked or floating, or hidden.
+In addition, these parameters specify the pane's
+docked position, floating position, preferred size,
+minimum size, caption text among many other parameters.<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+No base class<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/aui/aui.h&gt;<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxauimanager.html#wxauimanager">wxAuiManager</A>, 
+<A HREF="wx_wxauidockart.html#wxauidockart">wxAuiDockArt</A><P>
+<B><FONT COLOR="#FF0000">Data structures</FONT></B><P>
+<PRE>
+enum wxAuiPaneInsertLevel
+{
+    wxAUI_INSERT_PANE = 0,
+    wxAUI_INSERT_ROW = 1,
+    wxAUI_INSERT_DOCK = 2
+}
+</PRE>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<A HREF="#wxauipaneinfowxauipaneinfo">wxAuiPaneInfo::wxAuiPaneInfo</A><BR>
+<A HREF="#wxauipaneinfodtor">wxAuiPaneInfo::~wxAuiPaneInfo</A><BR>
+<A HREF="#wxauipaneinfobestsize">wxAuiPaneInfo::BestSize</A><BR>
+<A HREF="#wxauipaneinfobottom">wxAuiPaneInfo::Bottom</A><BR>
+<A HREF="#wxauipaneinfobottomdockable">wxAuiPaneInfo::BottomDockable</A><BR>
+<A HREF="#wxauipaneinfocaption">wxAuiPaneInfo::Caption</A><BR>
+<A HREF="#wxauipaneinfocaptionvisible">wxAuiPaneInfo::CaptionVisible</A><BR>
+<A HREF="#wxauipaneinfocentre">wxAuiPaneInfo::Centre</A><BR>
+<A HREF="#wxauipaneinfocentrepane">wxAuiPaneInfo::CentrePane</A><BR>
+<A HREF="#wxauipaneinfoclosebutton">wxAuiPaneInfo::CloseButton</A><BR>
+<A HREF="#wxauipaneinfodefaultpane">wxAuiPaneInfo::DefaultPane</A><BR>
+<A HREF="#wxauipaneinfodestroyonclose">wxAuiPaneInfo::DestroyOnClose</A><BR>
+<A HREF="#wxauipaneinfodirection">wxAuiPaneInfo::Direction</A><BR>
+<A HREF="#wxauipaneinfodock">wxAuiPaneInfo::Dock</A><BR>
+<A HREF="#wxauipaneinfodockfixed">wxAuiPaneInfo::DockFixed</A><BR>
+<A HREF="#wxauipaneinfodockable">wxAuiPaneInfo::Dockable</A><BR>
+<A HREF="#wxauipaneinfofixed">wxAuiPaneInfo::Fixed</A><BR>
+<A HREF="#wxauipaneinfofloat">wxAuiPaneInfo::Float</A><BR>
+<A HREF="#wxauipaneinfofloatable">wxAuiPaneInfo::Floatable</A><BR>
+<A HREF="#wxauipaneinfofloatingposition">wxAuiPaneInfo::FloatingPosition</A><BR>
+<A HREF="#wxauipaneinfofloatingsize">wxAuiPaneInfo::FloatingSize</A><BR>
+<A HREF="#wxauipaneinfogripper">wxAuiPaneInfo::Gripper</A><BR>
+<A HREF="#wxauipaneinfogrippertop">wxAuiPaneInfo::GripperTop</A><BR>
+<A HREF="#wxauipaneinfohasborder">wxAuiPaneInfo::HasBorder</A><BR>
+<A HREF="#wxauipaneinfohascaption">wxAuiPaneInfo::HasCaption</A><BR>
+<A HREF="#wxauipaneinfohasclosebutton">wxAuiPaneInfo::HasCloseButton</A><BR>
+<A HREF="#wxauipaneinfohasflag">wxAuiPaneInfo::HasFlag</A><BR>
+<A HREF="#wxauipaneinfohasgripper">wxAuiPaneInfo::HasGripper</A><BR>
+<A HREF="#wxauipaneinfohasgrippertop">wxAuiPaneInfo::HasGripperTop</A><BR>
+<A HREF="#wxauipaneinfohasmaximizebutton">wxAuiPaneInfo::HasMaximizeButton</A><BR>
+<A HREF="#wxauipaneinfohasminimizebutton">wxAuiPaneInfo::HasMinimizeButton</A><BR>
+<A HREF="#wxauipaneinfohaspinbutton">wxAuiPaneInfo::HasPinButton</A><BR>
+<A HREF="#wxauipaneinfohide">wxAuiPaneInfo::Hide</A><BR>
+<A HREF="#wxauipaneinfoisbottomdockable">wxAuiPaneInfo::IsBottomDockable</A><BR>
+<A HREF="#wxauipaneinfoisdocked">wxAuiPaneInfo::IsDocked</A><BR>
+<A HREF="#wxauipaneinfoisfixed">wxAuiPaneInfo::IsFixed</A><BR>
+<A HREF="#wxauipaneinfoisfloatable">wxAuiPaneInfo::IsFloatable</A><BR>
+<A HREF="#wxauipaneinfoisfloating">wxAuiPaneInfo::IsFloating</A><BR>
+<A HREF="#wxauipaneinfoisleftdockable">wxAuiPaneInfo::IsLeftDockable</A><BR>
+<A HREF="#wxauipaneinfoismovable">wxAuiPaneInfo::IsMovable</A><BR>
+<A HREF="#wxauipaneinfoisok">wxAuiPaneInfo::IsOk</A><BR>
+<A HREF="#wxauipaneinfoisresizable">wxAuiPaneInfo::IsResizable</A><BR>
+<A HREF="#wxauipaneinfoisrightdockable">wxAuiPaneInfo::IsRightDockable</A><BR>
+<A HREF="#wxauipaneinfoisshown">wxAuiPaneInfo::IsShown</A><BR>
+<A HREF="#wxauipaneinfoistoolbar">wxAuiPaneInfo::IsToolbar</A><BR>
+<A HREF="#wxauipaneinfoistopdockable">wxAuiPaneInfo::IsTopDockable</A><BR>
+<A HREF="#wxauipaneinfolayer">wxAuiPaneInfo::Layer</A><BR>
+<A HREF="#wxauipaneinfoleft">wxAuiPaneInfo::Left</A><BR>
+<A HREF="#wxauipaneinfoleftdockable">wxAuiPaneInfo::LeftDockable</A><BR>
+<A HREF="#wxauipaneinfomaxsize">wxAuiPaneInfo::MaxSize</A><BR>
+<A HREF="#wxauipaneinfomaximizebutton">wxAuiPaneInfo::MaximizeButton</A><BR>
+<A HREF="#wxauipaneinfominsize">wxAuiPaneInfo::MinSize</A><BR>
+<A HREF="#wxauipaneinfominimizebutton">wxAuiPaneInfo::MinimizeButton</A><BR>
+<A HREF="#wxauipaneinfomovable">wxAuiPaneInfo::Movable</A><BR>
+<A HREF="#wxauipaneinfoname">wxAuiPaneInfo::Name</A><BR>
+<A HREF="#wxauipaneinfopaneborder">wxAuiPaneInfo::PaneBorder</A><BR>
+<A HREF="#wxauipaneinfopinbutton">wxAuiPaneInfo::PinButton</A><BR>
+<A HREF="#wxauipaneinfoposition">wxAuiPaneInfo::Position</A><BR>
+<A HREF="#wxauipaneinforesizable">wxAuiPaneInfo::Resizable</A><BR>
+<A HREF="#wxauipaneinforight">wxAuiPaneInfo::Right</A><BR>
+<A HREF="#wxauipaneinforightdockable">wxAuiPaneInfo::RightDockable</A><BR>
+<A HREF="#wxauipaneinforow">wxAuiPaneInfo::Row</A><BR>
+<A HREF="#wxauipaneinfosafeset">wxAuiPaneInfo::SafeSet</A><BR>
+<A HREF="#wxauipaneinfosetflag">wxAuiPaneInfo::SetFlag</A><BR>
+<A HREF="#wxauipaneinfoshow">wxAuiPaneInfo::Show</A><BR>
+<A HREF="#wxauipaneinfotoolbarpane">wxAuiPaneInfo::ToolbarPane</A><BR>
+<A HREF="#wxauipaneinfotop">wxAuiPaneInfo::Top</A><BR>
+<A HREF="#wxauipaneinfotopdockable">wxAuiPaneInfo::TopDockable</A><BR>
+<A HREF="#wxauipaneinfowindow">wxAuiPaneInfo::Window</A><BR>
+<A HREF="#wxauipaneinfooperatorassign">wxAuiPaneInfo::operator=</A><BR>
+<P>
+
+<HR>
+<A NAME="wxauipaneinfowxauipaneinfo"></A>
+<H3>wxAuiPaneInfo::wxAuiPaneInfo</H3>
+<P>
+<B></B> <B>wxAuiPaneInfo</B>()<P>
+Default constructor.<P>
+<B></B> <B>wxAuiPaneInfo</B>(<B>const <A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>& </B></B><I>c</I>)<P>
+Copy constructor.<P>
+
+<HR>
+<A NAME="wxauipaneinfodtor"></A>
+<H3>wxAuiPaneInfo::~wxAuiPaneInfo</H3>
+<P>
+<B></B> <B>~wxAuiPaneInfo</B>()<P>
+
+
+<HR>
+<A NAME="wxauipaneinfobestsize"></A>
+<H3>wxAuiPaneInfo::BestSize</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>BestSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>BestSize</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>)<P>
+BestSize() sets the ideal size for the pane. The docking manager will attempt to use this size as much as possible when docking or floating the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfobottom"></A>
+<H3>wxAuiPaneInfo::Bottom</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Bottom</B>()<P>
+Bottom() sets the pane dock position to the bottom side of the frame. This is
+the same thing as calling Direction(wxAUI_DOCK_BOTTOM).<P>
+
+<HR>
+<A NAME="wxauipaneinfobottomdockable"></A>
+<H3>wxAuiPaneInfo::BottomDockable</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>BottomDockable</B>(<B>bool </B><I>b = true</I>)<P>
+BottomDockable() indicates whether a pane can be docked at the bottom of the frame.<P>
+
+<HR>
+<A NAME="wxauipaneinfocaption"></A>
+<H3>wxAuiPaneInfo::Caption</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Caption</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>c</I>)<P>
+Caption() sets the caption of the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfocaptionvisible"></A>
+<H3>wxAuiPaneInfo::CaptionVisible</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>CaptionVisible</B>(<B>bool </B><I>visible = true</I>)<P>
+CaptionVisible indicates that a pane caption should be visible. If false, no pane caption is drawn.<P>
+
+<HR>
+<A NAME="wxauipaneinfocentre"></A>
+<H3>wxAuiPaneInfo::Centre</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Centre</B>()<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Center</B>()<P>
+Center() sets the pane dock position to the left side of the frame.
+The centre pane is the space in the middle after all border panes (left, top, right, bottom) are subtracted from the layout.<P>
+This is the same thing as calling Direction(wxAUI_DOCK_CENTRE). <P>
+
+<HR>
+<A NAME="wxauipaneinfocentrepane"></A>
+<H3>wxAuiPaneInfo::CentrePane</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>CentrePane</B>()<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>CenterPane</B>()<P>
+CentrePane() specifies that the pane should adopt the default center pane settings. Centre panes usually do not have caption bars. This function provides an easy way of preparing a pane to be displayed in the center dock position.<P>
+
+<HR>
+<A NAME="wxauipaneinfoclosebutton"></A>
+<H3>wxAuiPaneInfo::CloseButton</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>CloseButton</B>(<B>bool </B><I>visible = true</I>)<P>
+CloseButton() indicates that a close button should be drawn for the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfodefaultpane"></A>
+<H3>wxAuiPaneInfo::DefaultPane</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>DefaultPane</B>()<P>
+DefaultPane() specifies that the pane should adopt the default pane settings.<P>
+
+<HR>
+<A NAME="wxauipaneinfodestroyonclose"></A>
+<H3>wxAuiPaneInfo::DestroyOnClose</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>DestroyOnClose</B>(<B>bool </B><I>b = true</I>)<P>
+DestroyOnClose() indicates whether a pane should be detroyed when it is closed. Normally a pane is simply hidden when the close button is clicked. Setting DestroyOnClose to true will cause the window to be destroyed when the user clicks the pane's close button.<P>
+
+<HR>
+<A NAME="wxauipaneinfodirection"></A>
+<H3>wxAuiPaneInfo::Direction</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Direction</B>(<B>int </B><I>direction</I>)<P>
+Direction() determines the direction of the docked pane. It is functionally the same as calling Left(), Right(), Top() or Bottom(), except that docking direction may be specified programmatically via the parameter.<P>
+
+<HR>
+<A NAME="wxauipaneinfodock"></A>
+<H3>wxAuiPaneInfo::Dock</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Dock</B>()<P>
+Dock() indicates that a pane should be docked.  It is the opposite of Float().<P>
+
+<HR>
+<A NAME="wxauipaneinfodockfixed"></A>
+<H3>wxAuiPaneInfo::DockFixed</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>DockFixed</B>(<B>bool </B><I>b = true</I>)<P>
+DockFixed() causes the containing dock to have no resize sash.  This is useful for creating panes that span the entire width or height of a dock, but should not be resizable in the other direction.<P>
+
+<HR>
+<A NAME="wxauipaneinfodockable"></A>
+<H3>wxAuiPaneInfo::Dockable</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Dockable</B>(<B>bool </B><I>b = true</I>)<P>
+Dockable() specifies whether a frame can be docked or not. It is the same as specifying TopDockable(b).BottomDockable(b).LeftDockable(b).RightDockable(b).<P>
+
+<HR>
+<A NAME="wxauipaneinfofixed"></A>
+<H3>wxAuiPaneInfo::Fixed</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Fixed</B>()<P>
+Fixed() forces a pane to be fixed size so that it cannot be resized. After calling Fixed(), IsFixed() will return true.<P>
+
+<HR>
+<A NAME="wxauipaneinfofloat"></A>
+<H3>wxAuiPaneInfo::Float</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Float</B>()<P>
+Float() indicates that a pane should be floated.  It is the opposite of Dock().<P>
+
+<HR>
+<A NAME="wxauipaneinfofloatable"></A>
+<H3>wxAuiPaneInfo::Floatable</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Floatable</B>(<B>bool </B><I>b = true</I>)<P>
+Floatable() sets whether the user will be able to undock a pane and turn it into a floating window.<P>
+
+<HR>
+<A NAME="wxauipaneinfofloatingposition"></A>
+<H3>wxAuiPaneInfo::FloatingPosition</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>FloatingPosition</B>(<B>const <A HREF="wx_wxpoint.html#wxpoint">wxPoint</A>& </B></B><I>pos</I>)<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>FloatingPosition</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>)<P>
+FloatingPosition() sets the position of the floating pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfofloatingsize"></A>
+<H3>wxAuiPaneInfo::FloatingSize</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>FloatingSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>FloatingSize</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>)<P>
+FloatingSize() sets the size of the floating pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfogripper"></A>
+<H3>wxAuiPaneInfo::Gripper</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Gripper</B>(<B>bool </B><I>visible = true</I>)<P>
+Gripper() indicates that a gripper should be drawn for the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfogrippertop"></A>
+<H3>wxAuiPaneInfo::GripperTop</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>GripperTop</B>(<B>bool </B><I>attop = true</I>)<P>
+GripperTop() indicates that a gripper should be drawn at the top of the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfohasborder"></A>
+<H3>wxAuiPaneInfo::HasBorder</H3>
+<P>
+<B>bool</B> <B>HasBorder</B>() <B>const</B><P>
+HasBorder() returns true if the pane displays a border.<P>
+
+<HR>
+<A NAME="wxauipaneinfohascaption"></A>
+<H3>wxAuiPaneInfo::HasCaption</H3>
+<P>
+<B>bool</B> <B>HasCaption</B>() <B>const</B><P>
+HasCaption() returns true if the pane displays a caption.<P>
+
+<HR>
+<A NAME="wxauipaneinfohasclosebutton"></A>
+<H3>wxAuiPaneInfo::HasCloseButton</H3>
+<P>
+<B>bool</B> <B>HasCloseButton</B>() <B>const</B><P>
+HasCloseButton() returns true if the pane displays a button to close the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfohasflag"></A>
+<H3>wxAuiPaneInfo::HasFlag</H3>
+<P>
+<B>bool</B> <B>HasFlag</B>(<B>unsigned int </B><I>flag</I>) <B>const</B><P>
+HasFlag() returns true if the the property specified by flag is active for the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfohasgripper"></A>
+<H3>wxAuiPaneInfo::HasGripper</H3>
+<P>
+<B>bool</B> <B>HasGripper</B>() <B>const</B><P>
+HasGripper() returns true if the pane displays a gripper.<P>
+
+<HR>
+<A NAME="wxauipaneinfohasgrippertop"></A>
+<H3>wxAuiPaneInfo::HasGripperTop</H3>
+<P>
+<B>bool</B> <B>HasGripperTop</B>() <B>const</B><P>
+HasGripper() returns true if the pane displays a gripper at the top.<P>
+
+<HR>
+<A NAME="wxauipaneinfohasmaximizebutton"></A>
+<H3>wxAuiPaneInfo::HasMaximizeButton</H3>
+<P>
+<B>bool</B> <B>HasMaximizeButton</B>() <B>const</B><P>
+HasMaximizeButton() returns true if the pane displays a button to maximize the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfohasminimizebutton"></A>
+<H3>wxAuiPaneInfo::HasMinimizeButton</H3>
+<P>
+<B>bool</B> <B>HasMinimizeButton</B>() <B>const</B><P>
+HasMinimizeButton() returns true if the pane displays a button to minimize the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfohaspinbutton"></A>
+<H3>wxAuiPaneInfo::HasPinButton</H3>
+<P>
+<B>bool</B> <B>HasPinButton</B>() <B>const</B><P>
+HasPinButton() returns true if the pane displays a button to float the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfohide"></A>
+<H3>wxAuiPaneInfo::Hide</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Hide</B>()<P>
+Hide() indicates that a pane should be hidden.<P>
+
+<HR>
+<A NAME="wxauipaneinfoisbottomdockable"></A>
+<H3>wxAuiPaneInfo::IsBottomDockable</H3>
+<P>
+<B>bool</B> <B>IsBottomDockable</B>() <B>const</B><P>
+IsBottomDockable() returns true if the pane can be docked at the bottom of the managed frame.<P>
+
+<HR>
+<A NAME="wxauipaneinfoisdocked"></A>
+<H3>wxAuiPaneInfo::IsDocked</H3>
+<P>
+<B>bool</B> <B>IsDocked</B>() <B>const</B><P>
+IsDocked() returns true if the pane is docked.<P>
+
+<HR>
+<A NAME="wxauipaneinfoisfixed"></A>
+<H3>wxAuiPaneInfo::IsFixed</H3>
+<P>
+<B>bool</B> <B>IsFixed</B>() <B>const</B><P>
+IsFixed() returns true if the pane cannot be resized.<P>
+
+<HR>
+<A NAME="wxauipaneinfoisfloatable"></A>
+<H3>wxAuiPaneInfo::IsFloatable</H3>
+<P>
+<B>bool</B> <B>IsFloatable</B>() <B>const</B><P>
+IsFloatable() returns true if the pane can be undocked and displayed as a floating window.<P>
+
+<HR>
+<A NAME="wxauipaneinfoisfloating"></A>
+<H3>wxAuiPaneInfo::IsFloating</H3>
+<P>
+<B>bool</B> <B>IsFloating</B>() <B>const</B><P>
+IsFloating() returns true if the pane is floating.<P>
+
+<HR>
+<A NAME="wxauipaneinfoisleftdockable"></A>
+<H3>wxAuiPaneInfo::IsLeftDockable</H3>
+<P>
+<B>bool</B> <B>IsLeftDockable</B>() <B>const</B><P>
+IsLeftDockable() returns true if the pane can be docked on the left of the managed frame.<P>
+
+<HR>
+<A NAME="wxauipaneinfoismovable"></A>
+<H3>wxAuiPaneInfo::IsMovable</H3>
+<P>
+<B>bool</B> <B>IsMovable</B>() <B>const</B><P>
+IsMoveable() returns true if the docked frame can be undocked or moved to another dock position.<P>
+
+<HR>
+<A NAME="wxauipaneinfoisok"></A>
+<H3>wxAuiPaneInfo::IsOk</H3>
+<P>
+<B>bool</B> <B>IsOk</B>() <B>const</B><P>
+IsOk() returns true if the wxAuiPaneInfo structure is valid. A pane structure is valid if it has an associated window.<P>
+
+<HR>
+<A NAME="wxauipaneinfoisresizable"></A>
+<H3>wxAuiPaneInfo::IsResizable</H3>
+<P>
+<B>bool</B> <B>IsResizable</B>() <B>const</B><P>
+IsResizable() returns true if the pane can be resized.<P>
+
+<HR>
+<A NAME="wxauipaneinfoisrightdockable"></A>
+<H3>wxAuiPaneInfo::IsRightDockable</H3>
+<P>
+<B>bool</B> <B>IsRightDockable</B>() <B>const</B><P>
+IsRightDockable() returns true if the pane can be docked on the right of the managed frame.<P>
+
+<HR>
+<A NAME="wxauipaneinfoisshown"></A>
+<H3>wxAuiPaneInfo::IsShown</H3>
+<P>
+<B>bool</B> <B>IsShown</B>() <B>const</B><P>
+IsShown() returns true if the pane is currently shown.<P>
+
+<HR>
+<A NAME="wxauipaneinfoistoolbar"></A>
+<H3>wxAuiPaneInfo::IsToolbar</H3>
+<P>
+<B>bool</B> <B>IsToolbar</B>() <B>const</B><P>
+IsToolbar() returns true if the pane contains a toolbar.<P>
+
+<HR>
+<A NAME="wxauipaneinfoistopdockable"></A>
+<H3>wxAuiPaneInfo::IsTopDockable</H3>
+<P>
+<B>bool</B> <B>IsTopDockable</B>() <B>const</B><P>
+IsTopDockable() returns true if the pane can be docked at the top of the managed frame.<P>
+
+<HR>
+<A NAME="wxauipaneinfolayer"></A>
+<H3>wxAuiPaneInfo::Layer</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Layer</B>(<B>int </B><I>layer</I>)<P>
+Layer() determines the layer of the docked pane. The dock layer is similar to an onion, the inner-most layer being layer 0. Each shell moving in the outward direction has a higher layer number. This allows for more complex docking layout formation.<P>
+
+<HR>
+<A NAME="wxauipaneinfoleft"></A>
+<H3>wxAuiPaneInfo::Left</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Left</B>()<P>
+Left() sets the pane dock position to the left side of the frame. This is the
+same thing as calling Direction(wxAUI_DOCK_LEFT).<P>
+
+<HR>
+<A NAME="wxauipaneinfoleftdockable"></A>
+<H3>wxAuiPaneInfo::LeftDockable</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>LeftDockable</B>(<B>bool </B><I>b = true</I>)<P>
+LeftDockable() indicates whether a pane can be docked on the left of the frame.<P>
+
+<HR>
+<A NAME="wxauipaneinfomaxsize"></A>
+<H3>wxAuiPaneInfo::MaxSize</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>MaxSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>MaxSize</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>)<P>
+MaxSize() sets the maximum size of the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfomaximizebutton"></A>
+<H3>wxAuiPaneInfo::MaximizeButton</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>MaximizeButton</B>(<B>bool </B><I>visible = true</I>)<P>
+MaximizeButton() indicates that a maximize button should be drawn for the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfominsize"></A>
+<H3>wxAuiPaneInfo::MinSize</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>MinSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>& </B></B><I>size</I>)<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>MinSize</B>(<B>int </B><I>x</I>, <B>int </B><I>y</I>)<P>
+MinSize() sets the minimum size of the pane. Please note that this is only partially supported as of this writing.<P>
+
+<HR>
+<A NAME="wxauipaneinfominimizebutton"></A>
+<H3>wxAuiPaneInfo::MinimizeButton</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>MinimizeButton</B>(<B>bool </B><I>visible = true</I>)<P>
+MinimizeButton() indicates that a minimize button should be drawn for the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfomovable"></A>
+<H3>wxAuiPaneInfo::Movable</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Movable</B>(<B>bool </B><I>b = true</I>)<P>
+Movable indicates whether a frame can be moved.<P>
+
+<HR>
+<A NAME="wxauipaneinfoname"></A>
+<H3>wxAuiPaneInfo::Name</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Name</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>n</I>)<P>
+Name() sets the name of the pane so it can be referenced in lookup functions. If a name is not specified by the user, a random name is assigned to the pane when it is added to the manager.<P>
+
+<HR>
+<A NAME="wxauipaneinfopaneborder"></A>
+<H3>wxAuiPaneInfo::PaneBorder</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>PaneBorder</B>(<B>bool </B><I>visible = true</I>)<P>
+PaneBorder indicates that a border should be drawn for the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfopinbutton"></A>
+<H3>wxAuiPaneInfo::PinButton</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>PinButton</B>(<B>bool </B><I>visible = true</I>)<P>
+PinButton() indicates that a pin button should be drawn for the pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfoposition"></A>
+<H3>wxAuiPaneInfo::Position</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Position</B>(<B>int </B><I>pos</I>)<P>
+Position() determines the position of the docked pane.<P>
+
+<HR>
+<A NAME="wxauipaneinforesizable"></A>
+<H3>wxAuiPaneInfo::Resizable</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Resizable</B>(<B>bool </B><I>resizable = true</I>)<P>
+Resizable() allows a pane to be resized if the parameter is true, and forces it to be a fixed size if the parameter is false. This is simply an antonym for Fixed().<P>
+
+<HR>
+<A NAME="wxauipaneinforight"></A>
+<H3>wxAuiPaneInfo::Right</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Right</B>()<P>
+Right() sets the pane dock position to the right side of the frame.<P>
+
+<HR>
+<A NAME="wxauipaneinforightdockable"></A>
+<H3>wxAuiPaneInfo::RightDockable</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>RightDockable</B>(<B>bool </B><I>b = true</I>)<P>
+RightDockable() indicates whether a pane can be docked on the right of the frame.<P>
+
+<HR>
+<A NAME="wxauipaneinforow"></A>
+<H3>wxAuiPaneInfo::Row</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Row</B>(<B>int </B><I>row</I>)<P>
+Row() determines the row of the docked pane.<P>
+
+<HR>
+<A NAME="wxauipaneinfosafeset"></A>
+<H3>wxAuiPaneInfo::SafeSet</H3>
+<P>
+<B>void</B> <B>SafeSet</B>(<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A> </B></B><I>source</I>)<P>
+Write the safe parts of a newly loaded PaneInfo structure "source" into "this"
+used on loading perspectives etc.<P>
+
+<HR>
+<A NAME="wxauipaneinfosetflag"></A>
+<H3>wxAuiPaneInfo::SetFlag</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>SetFlag</B>(<B>unsigned int </B><I>flag</I>, <B>bool </B><I>option_state</I>)<P>
+SetFlag() turns the property given by flag on or off with the option_state parameter.<P>
+
+<HR>
+<A NAME="wxauipaneinfoshow"></A>
+<H3>wxAuiPaneInfo::Show</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Show</B>(<B>bool </B><I>show = true</I>)<P>
+Show() indicates that a pane should be shown.<P>
+
+<HR>
+<A NAME="wxauipaneinfotoolbarpane"></A>
+<H3>wxAuiPaneInfo::ToolbarPane</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>ToolbarPane</B>()<P>
+ToolbarPane() specifies that the pane should adopt the default toolbar pane settings.<P>
+
+<HR>
+<A NAME="wxauipaneinfotop"></A>
+<H3>wxAuiPaneInfo::Top</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Top</B>()<P>
+Top() sets the pane dock position to the top of the frame.<P>
+
+<HR>
+<A NAME="wxauipaneinfotopdockable"></A>
+<H3>wxAuiPaneInfo::TopDockable</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>TopDockable</B>(<B>bool </B><I>b = true</I>)<P>
+TopDockable() indicates whether a pane can be docked at the top of the frame.<P>
+
+<HR>
+<A NAME="wxauipaneinfowindow"></A>
+<H3>wxAuiPaneInfo::Window</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>&</B> </B> <B>Window</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>w</I>)<P>
+Window() assigns the window pointer that the wxAuiPaneInfo should use. This normally does not need to be specified, as the window pointer is automatically assigned to the wxAuiPaneInfo structure as soon as it is added to the manager.<P>
+
+<HR>
+<A NAME="wxauipaneinfooperatorassign"></A>
+<H3>wxAuiPaneInfo::operator=</H3>
+<P>
+<B><A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>& operator</B> </B> <B>operator=</B>(<B>const <A HREF="wx_wxauipaneinfo.html#wxauipaneinfo">wxAuiPaneInfo</A>& </B></B><I>c</I>)<P>
+Makes a copy of the wxAuiPaneInfo object.<P>
+
+</FONT></BODY></HTML>

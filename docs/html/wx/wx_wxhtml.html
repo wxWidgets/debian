@@ -1,0 +1,502 @@
+<HTML>
+<head><link rel=stylesheet type="text/css" href="wx.css"><title>wxHTML overview</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxhtml"></A><CENTER>
+<A HREF="wx_contents.html"><img align=center src="contents.gif" BORDER=0 ALT="Contents"></A> <A HREF="wx_overviews.html#overviews"><img align=center src="up.gif" BORDER=0 ALT="Up"></A> <A HREF="wx_ipcoverview.html#ipcoverview"><img align=center src="back.gif" BORDER=0 ALT="Previous"></A> <A HREF="wx_wxrichtextctrloverview.html#wxrichtextctrloverview"><img align=center src="forward.gif" BORDER=0 ALT="Next"></A> </CENTER><HR>
+
+<H2>wxHTML overview</H2>
+<P>
+This topic was written by Vaclav Slavik, the author of the wxHTML library.<P>
+The wxHTML library provides classes for parsing and displaying HTML.<P>
+It is not intended to be a high-end HTML browser. If you are looking for
+something like that try <A HREF="http://www.mozilla.org">http://www.mozilla.org</A>.<P>
+wxHTML can be used as a generic rich text viewer - for example to display 
+a nice About Box (like those of GNOME apps) or to display the result of
+database searching. There is a <A HREF="wx_wxfilesystem.html#wxfilesystem">wxFileSystem</A> 
+class which allows you to use your own virtual file systems.<P>
+wxHtmlWindow supports tag handlers. This means that you can easily
+extend wxHtml library with new, unsupported tags. Not only that,
+you can even use your own application-specific tags!
+See <TT>src/html/m_*.cpp</TT> files for details.<P>
+There is a generic wxHtmlParser class,
+independent of wxHtmlWindow.<P>
+<A HREF="#wxhtmlquickstart">wxHTML quick start</A><BR>
+<A HREF="#printing">HTML Printing</A><BR>
+<A HREF="#helpformat">Help Files Format</A><BR>
+<A HREF="#filters">Input Filters</A><BR>
+<A HREF="#cells">Cells and Containers</A><BR>
+<A HREF="#handlers">Tag Handlers</A><BR>
+<A HREF="#htmltagssupported">Tags supported by wxHTML</A><BR>
+<P>
+
+<HR>
+<A NAME="wxhtmlquickstart"></A>
+<H3>wxHTML quick start</H3>
+<P>
+<B><FONT COLOR="#FF0000">Displaying HTML</FONT></B><P>
+First of all, you must include &lt;wx/wxhtml.h&gt;.<P>
+Class <A HREF="wx_wxhtmlwindow.html#wxhtmlwindow">wxHtmlWindow</A> (derived from wxScrolledWindow)
+is used to display HTML documents.
+It has two important methods: <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowloadpage">LoadPage</A> 
+and <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowsetpage">SetPage</A>.
+LoadPage loads and displays HTML file while SetPage displays directly the
+passed <B>string</B>. See the example:<P>
+<PRE>
+    mywin -&gt; LoadPage("test.htm");
+    mywin -&gt; SetPage("&lt;html&gt;&lt;body&gt;"
+                     "&lt;h1&gt;Error&lt;/h1&gt;"
+		     "Some error occurred :-H)"
+		     "&lt;/body&gt;&lt;/hmtl&gt;");
+</PRE>
+I think the difference is quite clear.<P>
+<B><FONT COLOR="#FF0000">Displaying Help</FONT></B><P>
+See <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A>.<P>
+<B><FONT COLOR="#FF0000">Setting up wxHtmlWindow</FONT></B><P>
+Because wxHtmlWindow is derived from wxScrolledWindow and not from
+wxFrame, it doesn't have visible frame. But the user usually wants to see
+the title of HTML page displayed somewhere and the frame's titlebar is 
+the ideal place for it.<P>
+wxHtmlWindow provides 2 methods in order to handle this: 
+<A HREF="wx_wxhtmlwindow.html#wxhtmlwindowsetrelatedframe">SetRelatedFrame</A> and 
+<A HREF="wx_wxhtmlwindow.html#wxhtmlwindowsetrelatedstatusbar">SetRelatedStatusBar</A>. 
+See the example:<P>
+<PRE>
+    html = new wxHtmlWindow(this);
+    html -&gt; SetRelatedFrame(this, "HTML : %%s");
+    html -&gt; SetRelatedStatusBar(0);
+</PRE>
+The first command associates the HTML object with its parent frame
+(this points to wxFrame object there) and sets the format of the title.
+Page title "Hello, world!" will be displayed as "HTML : Hello, world!"
+in this example.<P>
+The second command sets which frame's status bar should be used to display
+browser's messages (such as "Loading..." or "Done" or hypertext links).<P>
+<B><FONT COLOR="#FF0000">Customizing wxHtmlWindow</FONT></B><P>
+You can customize wxHtmlWindow by setting font size, font face and
+borders (space between border of window and displayed HTML). Related functions:<P>
+<UL>
+
+<LI> <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowsetfonts">SetFonts</A>
+<LI> <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowsetborders">SetBorders</A>
+<LI> <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowreadcustomization">ReadCustomization</A>
+<LI> <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowwritecustomization">WriteCustomization</A>
+</UL>
+<P>
+The last two functions are used to store user customization info wxConfig stuff
+(for example in the registry under Windows, or in a dotfile under Unix).<P>
+
+<HR>
+<A NAME="printing"></A>
+<H3>HTML Printing</H3>
+<P>
+The wxHTML library provides printing facilities with several levels of complexity. <P>
+The easiest way to print an HTML document is to use 
+<A HREF="wx_wxhtmleasyprinting.html#wxhtmleasyprinting">wxHtmlEasyPrinting class</A>. It lets you print HTML documents with only one
+command and you don't have to worry about deriving from the wxPrintout class at all. It is only a simple wrapper around the 
+<A HREF="wx_wxhtmlprintout.html#wxhtmlprintout">wxHtmlPrintout</A>, normal wxWidgets printout class.<P>
+And finally there is the low level class <A HREF="wx_wxhtmldcrenderer.html#wxhtmldcrenderer">wxHtmlDCRenderer</A> which you can use to
+render HTML into a rectangular area on any DC. It supports rendering into multiple rectangles with the same
+width. (The most common use of this is placing one rectangle on each page or printing into two columns.)<P>
+
+<HR>
+<A NAME="helpformat"></A>
+<H3>Help Files Format</H3>
+<P>
+wxHTML library uses a reduced version of MS HTML Workshop format.
+Tex2RTF can produce these files when generating HTML, if you set <B>htmlWorkshopFiles</B> to <B>true</B> in
+your tex2rtf.ini file.<P>
+(See <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontroller">wxHtmlHelpController</A> for help controller description.)<P>
+A <B>book</B> consists of three files: header file, contents file and index file.
+You can make a regular zip archive of these files, plus the HTML and any image files,
+for wxHTML (or helpview) to read; and the .zip file can optionally be renamed to .htb.<P>
+<B><FONT COLOR="#FF0000">Header file (.hhp)</FONT></B><P>
+Header file must contain these lines (and may contain additional lines which are ignored) :<P>
+<PRE>
+Contents file=&lt;filename.hhc&gt;
+Index file=&lt;filename.hhk&gt;
+Title=&lt;title of your book&gt;
+Default topic=&lt;default page to be displayed.htm&gt;
+</PRE>
+All filenames (including the Default topic) are relative to the 
+location of .hhp file.<P>
+<B>Localization note:</B> In addition, .hhp file may contain line<P>
+<PRE>
+Charset=&lt;rfc_charset&gt;
+</PRE>
+which specifies what charset (e.g. "iso8859_1") was used in contents
+and index files. Please note that this line is incompatible with
+MS HTML Help Workshop and it would either silently remove it or complain
+with some error. See also 
+<A HREF="wx_nonenglishoverview.html#nonenglishoverview">Writing non-English applications</A>.<P>
+<B><FONT COLOR="#FF0000">Contents file (.hhc)</FONT></B><P>
+Contents file has HTML syntax and it can be parsed by regular HTML parser. It contains exactly one list
+(<TT>&lt;ul&gt;</TT>....<TT>&lt;/ul&gt;</TT> statement):<P>
+<PRE>
+&lt;ul&gt;
+
+  &lt;li&gt; &lt;object type="text/sitemap"&gt;
+           &lt;param name="Name" value="@topic name@"&gt;
+           &lt;param name="ID" value=@numeric_id@&gt;
+           &lt;param name="Local" value="@filename.htm@"&gt;
+       &lt;/object&gt;
+  &lt;li&gt; &lt;object type="text/sitemap"&gt;
+           &lt;param name="Name" value="@topic name@"&gt;
+           &lt;param name="ID" value=@numeric_id@&gt;
+           &lt;param name="Local" value="@filename.htm@"&gt;
+       &lt;/object&gt;
+  ...    
+
+&lt;/ul&gt;
+</PRE>
+You can modify value attributes of param tags. <I>topic name</I> is name of chapter/topic as is displayed in
+contents, <I>filename.htm</I> is HTML page name (relative to .hhp file) and <I>numeric_id</I> is optional 
+- it is used only when you use <A HREF="wx_wxhtmlhelpcontroller.html#wxhtmlhelpcontrollerdisplay">wxHtmlHelpController::Display(int)</A><P>
+Items in the list may be nested - one <TT>&lt;li&gt;</TT> statement may contain a <TT>&lt;ul&gt;</TT> sub-statement:<P>
+<PRE>
+&lt;ul&gt;
+
+  &lt;li&gt; &lt;object type="text/sitemap"&gt;
+           &lt;param name="Name" value="Top node"&gt;
+           &lt;param name="Local" value="top.htm"&gt;
+       &lt;/object&gt;
+       &lt;ul&gt;
+         &lt;li&gt; &lt;object type="text/sitemap"&gt;
+              &lt;param name="Name" value="subnode in topnode"&gt;
+              &lt;param name="Local" value="subnode1.htm"&gt;
+              &lt;/object&gt;
+      ...
+       &lt;/ul&gt;
+       
+  &lt;li&gt; &lt;object type="text/sitemap"&gt;
+           &lt;param name="Name" value="Another Top"&gt;
+           &lt;param name="Local" value="top2.htm"&gt;
+       &lt;/object&gt;
+  ...    
+
+&lt;/ul&gt;
+</PRE>
+<B><FONT COLOR="#FF0000">Index file (.hhk)</FONT></B><P>
+Index files have same format as contents file except that ID params are ignored and sublists are <B>not</B> 
+allowed.<P>
+
+<HR>
+<A NAME="filters"></A>
+<H3>Input Filters</H3>
+<P>
+The wxHTML library provides a mechanism for reading and displaying
+files of many different file formats. <P>
+<A HREF="wx_wxhtmlwindow.html#wxhtmlwindowloadpage">wxHtmlWindow::LoadPage</A> can load not
+only HTML files but any known file. To make a file type known to wxHtmlWindow
+you must create a <A HREF="wx_wxhtmlfilter.html#wxhtmlfilter">wxHtmlFilter</A> filter and
+register it using <A HREF="wx_wxhtmlwindow.html#wxhtmlwindowaddfilter">wxHtmlWindow::AddFilter</A>.<P>
+
+<HR>
+<A NAME="cells"></A>
+<H3>Cells and Containers</H3>
+<P>
+This article describes mechanism used by 
+<A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparser">wxHtmlWinParser</A> and 
+<A HREF="wx_wxhtmlwindow.html#wxhtmlwindow">wxHtmlWindow</A> to parse and display HTML documents.<P>
+<B><FONT COLOR="#FF0000">Cells</FONT></B><P>
+You can divide any text (or HTML) into small fragments. Let's call these
+fragments <B>cells</B>. Cell is for example one word, horizontal line, image
+or any other part of document. Each cell has width and height (except special
+"magic" cells with zero dimensions - e.g. colour changers or font changers).<P>
+See <A HREF="wx_wxhtmlcell.html#wxhtmlcell">wxHtmlCell</A>.<P>
+<B><FONT COLOR="#FF0000">Containers</FONT></B><P>
+Container is kind of cell that may contain sub-cells. Its size depends
+on number and sizes of its sub-cells (and also depends on width of window). <P>
+See <A HREF="wx_wxhtmlcontainercell.html#wxhtmlcontainercell">wxHtmlContainerCell</A>, 
+<A HREF="wx_wxhtmlcell.html#wxhtmlcelllayout">wxHtmlCell::Layout</A>.<P>
+<B><FONT COLOR="#FF0000">Using Containers in Tag Handler</FONT></B><P>
+<A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparser">wxHtmlWinParser</A> provides a user-friendly way
+of managing containers. It is based on the idea of opening and closing containers.<P>
+Use <A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparseropencontainer">OpenContainer</A> to open new
+a container <I>within an already opened container</I>. This new container is a 
+<I>sub-container</I> of the old one. (If you want to create a new container with
+the same depth level you can call <TT>CloseContainer(); OpenContainer();</TT>.)<P>
+Use <A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparserclosecontainer">CloseContainer</A> to close the 
+container. This doesn't create a new container with same depth level but
+it returns "control" to the parent container.<P>
+It is clear there must be same number of calls to 
+OpenContainer as to CloseContainer...<P>
+<B><FONT COLOR="#FF0000">Example</FONT></B><P>
+This code creates a new paragraph (container at same depth level)
+with "Hello, world!":<P>
+<PRE>
+m_WParser -&gt; CloseContainer();
+c = m_WParser -&gt; OpenContainer();
+
+m_WParser -&gt; AddWord("Hello, ");
+m_WParser -&gt; AddWord("world!");
+
+m_WParser -&gt; CloseContainer();
+m_WParser -&gt; OpenContainer();
+</PRE>
+You can see that there was opened container before running the code. We closed
+it, created our own container, then closed our container and opened
+new container. The result was that we had <I>same depth level</I> after
+executing. This is general rule that should be followed by tag handlers:
+leave depth level of containers unmodified (in other words, number of
+OpenContainer and CloseContainer calls should be same within <A HREF="wx_wxhtmltaghandler.html#wxhtmltaghandlerhandletag">HandleTag</A>'s body).<P>
+
+<HR>
+<A NAME="handlers"></A>
+<H3>Tag Handlers</H3>
+<P>
+The wxHTML library provides architecture of pluggable <I>tag handlers</I>.
+Tag handler is class that understands particular HTML tag (or tags) and is
+able to interpret it.<P>
+<A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparser">wxHtmlWinParser</A> has static table of <B>modules</B>.
+Each module contains one or more tag handlers. Each time a new wxHtmlWinParser
+object is constructed all modules are scanned and handlers are added
+to wxHtmlParser's list of available handlers (note: wxHtmlParser's list
+is non-static).<P>
+<B><FONT COLOR="#FF0000">How it works</FONT></B><P>
+Common tag handler's <A HREF="wx_wxhtmltaghandler.html#wxhtmltaghandlerhandletag">HandleTag</A> method
+works in four steps:<P>
+<OL>
+
+<LI> Save state of parent parser into local variables
+<LI> Change parser state according to tag's params
+<LI> Parse text between the tag and paired ending tag (if present)
+<LI> Restore original parser state
+</OL>
+<P>
+See <A HREF="wx_wxhtmlwinparser.html#wxhtmlwinparser">wxHtmlWinParser</A> for methods for modifying
+parser's state. In general you can do things like opening/closing containers,
+changing colors, fonts etc.<P>
+<B><FONT COLOR="#FF0000">Providing own tag handlers</FONT></B><P>
+You should create new .cpp file and place following lines into it: <P>
+<PRE>
+#include &lt;mod_templ.h&gt;
+#include &lt;forcelink.h&gt;
+FORCE_LINK_ME(yourmodulefilenamewithoutcpp)
+</PRE>
+Then you must define handlers and one module.<P>
+<B><FONT COLOR="#FF0000">Tag handlers</FONT></B><P>
+The handler is derived from <A HREF="wx_wxhtmlwintaghandler.html#wxhtmlwintaghandler">wxHtmlWinTagHandler</A>
+(or directly from <A HREF="wx_wxhtmltaghandler.html#wxhtmltaghandler">wxHtmlTagHandler</A>)<P>
+You can use set of macros to define the handler (see src/html/m_*.cpp files
+for details). Handler definition must start with <B>TAG_HANDLER_BEGIN</B> macro
+and end with <B>TAG_HANDLER_END</B> macro. I strongly recommend to have a look
+at <I>include/wxhtml/mod_templ.h</I> file. Otherwise you won't understand
+the structure of macros. See macros reference:<P>
+<B>TAG_HANDLER_BEGIN</B>(<I>name</I>, <I>tags</I>)<P>
+Starts handler definition. <I>name</I> is handler identifier (in fact
+part of class name), <I>tags</I> is string containing list of tags
+supported by this handler (in uppercase). This macro derives new class from
+wxHtmlWinTagHandler and implements it is 
+<A HREF="wx_wxhtmltaghandler.html#wxhtmltaghandlergetsupportedtags">GetSupportedTags</A> method.<P>
+Example: TAG_HANDLER_BEGIN(FONTS, "B,I,U,T")<P>
+<B>TAG_HANDLER_VARS</B><P>
+This macro starts block of variables definitions. (Variables are identical
+to class attributes.) Example:<P>
+<PRE>
+TAG_HANDLER_BEGIN(VARS_ONLY, "CRAZYTAG")
+    TAG_HANDLER_VARS
+        int my_int_var;
+	wxString something_else;
+TAG_HANDLER_END(VARS_ONLY)
+</PRE>
+This macro is used only in rare cases.<P>
+<B>TAG_HANDLER_CONSTR</B>(<I>name</I>)<P>
+This macro supplies object constructor. <I>name</I> is same name as the one
+from TAG_HANDLER_BEGIN macro. Body of constructor follow after
+this macro (you must use  and  ). Example:<P>
+<PRE>
+TAG_HANDLER_BEGIN(VARS2, "CRAZYTAG")
+    TAG_HANDLER_VARS
+        int my_int_var;
+    TAG_HANDLER_CONSTR(vars2)
+        { // !!!!!!
+	    my_int_var = 666;
+	} // !!!!!!
+TAG_HANDLER_END(VARS2)
+</PRE>
+Never used in wxHTML :-)<P>
+<B>TAG_HANDLER_PROC</B>(<I>varib</I>)<P>
+This is very important macro. It defines <A HREF="wx_wxhtmltaghandler.html#wxhtmltaghandlerhandletag">HandleTag</A>
+method. <I>varib</I> is name of parameter passed to the method, usually
+<I>tag</I>. Body of method follows after this macro.
+Note than you must use  and  ! Example:<P>
+<PRE>
+TAG_HANDLER_BEGIN(TITLE, "TITLE")
+    TAG_HANDLER_PROC(tag)
+        {
+	    printf("TITLE found...\n");
+	}
+TAG_HANDLER_END(TITLE)
+</PRE>
+<B>TAG_HANDLER_END</B>(<I>name</I>)<P>
+Ends definition of tag handler <I>name</I>. <P>
+<B><FONT COLOR="#FF0000">Tags Modules</FONT></B><P>
+You can use set of 3 macros TAGS_MODULE_BEGIN, TAGS_MODULE_ADD and 
+TAGS_MODULE_END to inherit new module from
+<A HREF="wx_wxhtmltagsmodule.html#wxhtmltagsmodule">wxHtmlTagsModule</A> and to create instance of it.
+See macros reference:<P>
+<B>TAGS_MODULE_BEGIN</B>(<I>modname</I>)<P>
+Begins module definition. <I>modname</I> is part of class name and must
+be unique.<P>
+<B>TAGS_MODULE_ADD</B>(<I>name</I>)<P>
+Adds the handler to this module. <I>name</I> is the identifier from
+TAG_HANDLER_BEGIN.<P>
+<B>TAGS_MODULE_END</B>(<I>modname</I>)<P>
+Ends the definition of module.<P>
+<B>Example:</B><P>
+<PRE>
+TAGS_MODULE_BEGIN(Examples)
+    TAGS_MODULE_ADD(VARS_ONLY)
+    TAGS_MODULE_ADD(VARS2)
+    TAGS_MODULE_ADD(TITLE)
+TAGS_MODULE_END(Examples)
+</PRE>
+
+<HR>
+<A NAME="htmltagssupported"></A>
+<H3>Tags supported by wxHTML</H3>
+<P>
+wxHTML is not full implementation of HTML standard. Instead, it supports most common tags so that it 
+is possible to display <I>simple</I> HTML documents with it. (For example it works fine with pages created
+in Netscape Composer or generated by tex2rtf).<P>
+Following tables list all tags known to wxHTML, together with supported parameters.
+A tag has general form of <TT>&lt;tagname param_1 param_2 ... param_n&gt;</TT> where param_i is
+either <TT>paramname="paramvalue"</TT> or <TT>paramname=paramvalue</TT> - these two are equivalent. Unless stated 
+otherwise, wxHTML is case-insensitive.<P>
+<B><FONT COLOR="#FF0000">Table of common parameter values</FONT></B><P>
+We will use these substitutions in tags descriptions:<P>
+<PRE>
+[alignment]     CENTER
+                LEFT
+                RIGHT
+                JUSTIFY
+
+[v_alignment]   TOP
+                BOTTOM
+                CENTER
+                
+[color]         HTML 4.0-compliant colour specification
+
+[fontsize]      -2
+                -1
+                +0
+                +1
+                +2
+                +3
+                +4
+                 1
+                 2
+                 3
+                 4
+                 5
+                 6
+                 7
+
+[pixels]        integer value that represents dimension in pixels
+
+[percent]       i% 
+                where i is integer
+
+[url]           an URL 
+
+[string]        text string
+
+[coords]        c(1),c(2),c(3),...,c(n)
+                where c(i) is integer
+
+</PRE>
+
+<B><FONT COLOR="#FF0000">List of supported tags</FONT></B><P>
+<PRE>
+A               NAME=[string]
+                HREF=[url]
+                TARGET=[target window spec]
+ADDRESS
+AREA            SHAPE=POLY
+                SHAPE=CIRCLE
+                SHAPE=RECT
+                COORDS=[coords]
+                HREF=[url]
+B
+BIG
+BLOCKQUOTE
+BODY            TEXT=[color]
+                LINK=[color]
+                BGCOLOR=[color]
+BR              ALIGN=[alignment]
+CENTER
+CITE
+CODE
+DD
+DIV             ALIGN=[alignment]
+DL
+DT
+EM
+FONT            COLOR=[color]
+                SIZE=[fontsize]
+                FACE=[comma-separated list of facenames]
+HR              ALIGN=[alignment]
+                SIZE=[pixels]
+                WIDTH=[percent|pixels]
+                NOSHADE
+H1
+H2
+H3
+H4
+H5
+H6
+I
+IMG             SRC=[url]
+                WIDTH=[pixels]
+                HEIGHT=[pixels]
+                ALIGN=TEXTTOP
+                ALIGN=CENTER
+                ALIGN=ABSCENTER
+                ALIGN=BOTTOM
+                USEMAP=[url]
+KBD
+LI
+MAP             NAME=[string]
+META            HTTP-EQUIV="Content-Type"
+                CONTENT=[string]
+OL
+P               ALIGN=[alignment]
+PRE
+SAMP
+SMALL
+STRIKE
+STRONG
+SUB
+SUP
+TABLE           ALIGN=[alignment]
+                WIDTH=[percent|pixels]
+                BORDER=[pixels]
+                VALIGN=[v_alignment]
+                BGCOLOR=[color]
+                CELLSPACING=[pixels]
+                CELLPADDING=[pixels]
+TD              ALIGN=[alignment]
+                VALIGN=[v_alignment]
+                BGCOLOR=[color]
+                WIDTH=[percent|pixels]
+                COLSPAN=[pixels]
+                ROWSPAN=[pixels]
+                NOWRAP
+TH              ALIGN=[alignment]
+                VALIGN=[v_alignment]
+                BGCOLOR=[color]
+                WIDTH=[percent|pixels]
+                COLSPAN=[pixels]
+                ROWSPAN=[pixels]
+TITLE
+TR              ALIGN=[alignment]
+                VALIGN=[v_alignment]
+                BGCOLOR=[color]
+TT
+U
+UL
+
+</PRE>
+
+</FONT></BODY></HTML>
