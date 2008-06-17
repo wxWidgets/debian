@@ -10,6 +10,8 @@ Build-Depends: debhelper (>= 5.0.37.1), flex, bison, gettext, libgtk2.0-dev,
 Maintainer: Adeodato Simó <dato@net.com.org.es>
 XS-Python-Version: all
 Standards-Version: 3.7.3
+Vcs-Git: git://git.debian.org/git/freewx/wx.git
+Vcs-Browser: http://git.debian.org/?p=freewx/wx.git
 
 Package: libwxbase=SOV=U
 Architecture: any
