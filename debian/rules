@@ -597,9 +597,8 @@ build-msw-dbg-stamp: configure-msw-dbg-stamp
 
 
 clean-py:
-	cd wxPython && rm -rf licence build* docs/xml-raw wx/*.py
-	rm -f wxPython/wx/build/build_options.py
-	rm -f wxPython/wx/build/config.py wxPython/src/wx.pth
+	cd wxPython && \
+	    rm -rf build*/ wx/*.py build_options.py src/wx.pth wx/build/build_options.py
 
 	# What to do about src/__version__.py ???
 
@@ -613,8 +612,6 @@ clean: debian/control clean-py unpatch
 	dh_testroot
 
 	rm -rf config_deb.cache config_deb_cross.cache *-stamp $(objdirs)
-	rm -f docs/lgpl.txt
-	rm -f $(objdir_i18n)/*.mo
 
 	dh_clean
 	rm -f debian/$(package_wxbase_lib).*
@@ -634,7 +631,6 @@ clean: debian/control clean-py unpatch
 	rm -f debian/lintian-override
 	rm -f debian/unpack_examples.sh
 	find -name '*.py[co]' | xargs -r rm -f
-	find -name '*.mo' | xargs -r rm -f
 	rm -rf include/wx-$(release)
 
 install_arch: build_arch $(install_all_arch)
