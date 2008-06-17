@@ -1,1 +1,4 @@
-/debian/control
+objs_*
+*-stamp
+*.cache
+include/wx-2.8
