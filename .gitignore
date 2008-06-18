@@ -1,4 +1,10 @@
 objs_*
 *-stamp
 *.cache
+
+docs/examples
+docs/wx-manual.html
+
 include/wx-2.8
+wxPython/build*/
+wxPython/wx/*.py
