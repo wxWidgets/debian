@@ -112,7 +112,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
 Package: python-wxgtk=V=U
 Architecture: any
 Section: python
-Depends: python-wxversion (>= 2.8.6.1-0.1), ${python:Depends}, ${shlibs:Depends}
+Depends: python-wxversion (>= 2.6.3.2.2-2), ${python:Depends}, ${shlibs:Depends}
 Suggests: wx=V-doc, wx=V-examples, python-xml
 Conflicts: libwxgtk2.6-0-python, wxpython2.6-0
 Replaces: libwxgtk2.6-0-python, wxpython2.6-0

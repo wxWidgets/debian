@@ -3,6 +3,9 @@ wxwidgets2.8 (2.8.7.1-1) UNRELEASED; urgency=low
   * Upload to unstable.
   * Set myself as the maintainer.
   * Add Vcs-{Git,Browser} fields.
+  * Do not take over wxwidgets2.6 packages wx-common, python-wxversion,
+    python-wxtools, and python-wxaddons. Because of this, lower
+    python-wxgtk2.8's dependency on python-wxversion to 2.6 instead of 2.8.
 
  -- Adeodato Simó <dato@net.com.org.es>  Tue, 17 Jun 2008 19:14:07 +0200
 

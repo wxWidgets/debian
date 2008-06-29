@@ -46,7 +46,7 @@ PYVERS := $(shell pyversions -vr)
 # all if this is to be the default (or only) wx source package for the
 # target release.
 
-#DEBIAN_WX_DEFAULT_VERSION = 2.8
+DEBIAN_WX_DEFAULT_VERSION = 2.6
 
 
 # This will extract a flavour out of the name of the source directory
