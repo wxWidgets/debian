@@ -92,8 +92,8 @@ endif
 
 # Base value for alternative priorities.
 alt_prio  := $(subst .,,$(release))
-# overwrite; for feisty, we do not want to change the default.
-alt_prio  := 28
+# overwrite; for lenny, we do not want to change the default.
+alt_prio  := 25
 
 pytoolkit := gtk2
 pydir     := usr/lib/$(python_ver)/site-packages
