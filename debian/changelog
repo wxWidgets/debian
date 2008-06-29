@@ -1,4 +1,4 @@
-wxwidgets2.8 (2.8.7.1-1) UNRELEASED; urgency=low
+wxwidgets2.8 (2.8.7.1-1) unstable; urgency=low
 
   * Upload to unstable.
   * Set myself as the maintainer.
@@ -9,7 +9,7 @@ wxwidgets2.8 (2.8.7.1-1) UNRELEASED; urgency=low
   * Also lower the alternative priority from 28 to 25, so that 2.6 is the
     default for Lenny.
 
- -- Adeodato Simó <dato@net.com.org.es>  Tue, 17 Jun 2008 19:14:07 +0200
+ -- Adeodato Simó <dato@net.com.org.es>  Sun, 29 Jun 2008 18:19:48 +0200
 
 wxwidgets2.8 (2.8.7.1-0.1) experimental; urgency=low
 
