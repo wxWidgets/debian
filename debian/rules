@@ -710,7 +710,6 @@ install-gtk-dbg: build-gtk-debug-stamp build-gtk-debug-contrib-stamp
 
 install-gtk-py-lib: DH_OPTIONS=-p$(package_gtk_py_lib)
 install-gtk-py-lib: install-gtk-py-lib-pre $(PYVERS:%=install-gtk-pylib%)
-	DH_PYCENTRAL=nomove dh_pycentral
 	/bin/echo -n "$(wxsubdir)" > debian/$(package_gtk_py_lib)/usr/lib/wx/python/wx$(release).pth
 install-gtk-py-lib-pre:
 	dh_testdir
@@ -746,7 +745,6 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
 
 	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) \
 		$(foreach pv,$(PYVERS),usr/lib/python$(pv)/site-packages/wxversion.py)
-	DH_PYCENTRAL=nomove dh_pycentral
 	for v in $(PYVERS); do \
 	  ln -sf ../../wx/python/wx.pth debian/$(package_gtk_py_ver)/usr/lib/python$$v/site-packages/wx.pth; \
 	done
@@ -798,8 +796,6 @@ endif
 	cp debian/xrced.desktop                 debian/$(package_gtk_py_tools)/usr/share/applications
 
 	rm -r debian/$(package_gtk_py_lib)/usr/bin
-
-	DH_PYCENTRAL=nomove dh_pycentral
 
 install-gtk-py-addons: DH_OPTIONS=-p$(package_gtk_py_addons)
 install-gtk-py-addons: install-gtk-py-tools
@@ -977,6 +973,7 @@ binary-common:
 	dh_installexamples
 	dh_installmenu
 	dh_link
+	DH_PYCENTRAL=nomove dh_pycentral
 
 	@# Don't strip debug libs at all, and strip cross libs elsewhere
 	@# with the cross host tools until dh_strip gets smarter.
