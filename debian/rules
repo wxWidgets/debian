@@ -49,17 +49,14 @@ PYVERS := $(shell pyversions -vr)
 DEBIAN_WX_DEFAULT_VERSION = 2.6
 
 
-# This will extract a flavour out of the name of the source directory
-# and flavour the packages and binaries with it.  'Official' builds
-# should use a source dir of the form wxwidgets$RELEASE-$VERSION.
-# Flavoured builds may use wxwidgets$RELEASE-$FLAVOUR-$VERSION, where
-# any descriptive alphanumeric name will do for FLAVOUR.  This will
-# allow a custom build to be installed alongside the mainline ones
-# without conflict.  You will also need to make a corresponding
-# changelog entry for your flavour source package using:
-# wxwidget$RELEASE-$FLAVOUR ($VERSION) to satify dpkg-source and
-# to correctly set the release below.
-DEBIAN_WXFLAVOUR := $(shell pwd | sed -e 's@.*/wxwidgets[0-9.]\+-\?\(.*\)-[0-9.]\+-\?.*@\1@')
+# This will extract a flavour out of the changelog and flavour the
+# packages and binaries with it.  'Official' builds should use a
+# changelog entry with a source package of the form wxwidgets$RELEASE.
+# Flavoured builds may use wxwidgets$RELEASE-$FLAVOUR, where any
+# descriptive alphanumeric name will do for FLAVOUR.  This will allow
+# a custom build to be installed alongside the mainline ones without
+# conflict.
+DEBIAN_WXFLAVOUR := $(shell dpkg-parsechangelog | sed -ne '/^Source: /s@.*wxwidgets[0-9.]\+-\?\(.*\)@\1@p')
 
 
 wx_major_version_number := $(shell sed -n 's/^wx_major_version_number=//p' configure.in)
