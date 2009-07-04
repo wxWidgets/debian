@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, toolbar
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      19.03.2003
-# RCS-ID:       $Id: tools.py 49701 2007-11-07 01:01:29Z RD $
+# RCS-ID:       $Id: tools.py 51051 2008-01-06 21:43:13Z RD $
 
 from globals import *
 from component import Manager, DEFAULT_POS
@@ -37,7 +37,7 @@ class ToolPanel(wx.PyPanel):
             thumbSize = g.conf.toolThumbSize
             il = wx.ImageList(thumbSize, thumbSize, True)
             # Default Id 0
-            il.Add(images.getToolPanel_DefaultImage().Scale(thumbSize, thumbSize).ConvertToBitmap())
+            il.Add(images.ToolPanel_Default.GetImage().Scale(thumbSize, thumbSize).ConvertToBitmap())
             self.il = il
             self.tp.AssignImageList(il)
         elif g.conf.toolPanelType == 'FPB':

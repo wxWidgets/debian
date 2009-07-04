@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxScrolledWindow
 // Author:      Vaclav Slavik
 // Created:     2002/10/18
-// RCS-ID:      $Id: xh_scwin.cpp 39613 2006-06-07 11:44:19Z ABX $
+// RCS-ID:      $Id: xh_scwin.cpp 50473 2007-12-04 19:06:09Z VS $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -54,6 +54,12 @@ wxObject *wxScrolledWindowXmlHandler::DoCreateResource()
 
     SetupWindow(control);
     CreateChildren(control);
+
+    if ( HasParam(wxT("scrollrate")) )
+    {
+        wxSize rate = GetSize(wxT("scrollrate"));
+        control->SetScrollRate(rate.x, rate.y);
+    }
 
     return control;
 }

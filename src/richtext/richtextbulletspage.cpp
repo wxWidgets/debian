@@ -4,16 +4,17 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/4/2006 10:32:31 AM
-// RCS-ID:      $Id: richtextbulletspage.cpp 49946 2007-11-14 14:22:56Z JS $
+// RCS-ID:      $Id: richtextbulletspage.cpp 54423 2008-06-29 17:04:04Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #if wxUSE_RICHTEXT
 
+#include "wx/spinctrl.h"
 #include "wx/richtext/richtextbulletspage.h"
-
 #include "wx/richtext/richtextsymboldlg.h"
+#include "wx/utils.h"
 
 /*!
  * wxRichTextBulletsPage type definition
@@ -212,24 +213,24 @@ void wxRichTextBulletsPage::CreateControls()
     wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxVERTICAL);
     itemBoxSizer4->Add(itemBoxSizer18, 0, wxGROW, 5);
 
-    wxStaticText* itemStaticText19 = new wxStaticText( itemPanel1, ID_RICHTEXTBULLETSPAGE_SYMBOLSTATIC, _("&Symbol:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer18->Add(itemStaticText19, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
+    wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxHORIZONTAL);
+    itemBoxSizer18->Add(itemBoxSizer19, 0, wxGROW, 5);
 
-    wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer18->Add(itemBoxSizer20, 0, wxGROW, 5);
+    wxStaticText* itemStaticText20 = new wxStaticText( itemPanel1, ID_RICHTEXTBULLETSPAGE_SYMBOLSTATIC, _("&Symbol:"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer19->Add(itemStaticText20, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     wxArrayString m_symbolCtrlStrings;
     m_symbolCtrl = new wxComboBox( itemPanel1, ID_RICHTEXTBULLETSPAGE_SYMBOLCTRL, _T(""), wxDefaultPosition, wxSize(60, -1), m_symbolCtrlStrings, wxCB_DROPDOWN );
     m_symbolCtrl->SetHelpText(_("The bullet character."));
     if (wxRichTextBulletsPage::ShowToolTips())
         m_symbolCtrl->SetToolTip(_("The bullet character."));
-    itemBoxSizer20->Add(m_symbolCtrl, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxFIXED_MINSIZE, 5);
+    itemBoxSizer19->Add(m_symbolCtrl, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxFIXED_MINSIZE, 5);
 
     wxButton* itemButton22 = new wxButton( itemPanel1, ID_RICHTEXTBULLETSPAGE_CHOOSE_SYMBOL, _("Ch&oose..."), wxDefaultPosition, wxDefaultSize, 0 );
     itemButton22->SetHelpText(_("Click to browse for a symbol."));
     if (wxRichTextBulletsPage::ShowToolTips())
         itemButton22->SetToolTip(_("Click to browse for a symbol."));
-    itemBoxSizer20->Add(itemButton22, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer19->Add(itemButton22, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     itemBoxSizer18->Add(5, 5, 0, wxALIGN_CENTER_HORIZONTAL, 5);
 
@@ -276,6 +277,9 @@ void wxRichTextBulletsPage::CreateControls()
 
 ////@end wxRichTextBulletsPage content construction
 
+    if (wxGetDisplaySize().y < 600)
+        m_previewCtrl->SetMinSize(wxSize(350, 50));
+
     m_styleListBox->Append(_("(None)"));
     m_styleListBox->Append(_("Arabic"));
     m_styleListBox->Append(_("Upper case letters"));
@@ -286,13 +290,13 @@ void wxRichTextBulletsPage::CreateControls()
     m_styleListBox->Append(_("Symbol"));
     m_styleListBox->Append(_("Bitmap"));
     m_styleListBox->Append(_("Standard"));
-    
+
     m_symbolCtrl->Append(_("*"));
     m_symbolCtrl->Append(_("-"));
     m_symbolCtrl->Append(_(">"));
     m_symbolCtrl->Append(_("+"));
     m_symbolCtrl->Append(_("~"));
-    
+
     wxArrayString standardBulletNames;
     if (wxRichTextBuffer::GetRenderer())
         wxRichTextBuffer::GetRenderer()->EnumerateStandardBulletNames(standardBulletNames);
@@ -353,12 +357,12 @@ bool wxRichTextBulletsPage::TransferDataFromWindow()
             bulletStyle |= wxTEXT_ATTR_BULLET_STYLE_RIGHT_PARENTHESIS;
         if (m_periodCtrl->GetValue())
             bulletStyle |= wxTEXT_ATTR_BULLET_STYLE_PERIOD;
-            
+
         if (m_bulletAlignmentCtrl->GetSelection() == 1)
             bulletStyle |= wxTEXT_ATTR_BULLET_STYLE_ALIGN_CENTRE;
         else if (m_bulletAlignmentCtrl->GetSelection() == 2)
             bulletStyle |= wxTEXT_ATTR_BULLET_STYLE_ALIGN_RIGHT;
-        // Left is implied            
+        // Left is implied
 
         attr->SetBulletStyle(bulletStyle);
     }
@@ -373,7 +377,7 @@ bool wxRichTextBulletsPage::TransferDataFromWindow()
         attr->SetBulletText(m_symbolCtrl->GetValue());
         attr->SetBulletFont(m_symbolFontCtrl->GetValue());
     }
-    
+
     return true;
 }
 
@@ -477,12 +481,12 @@ bool wxRichTextBulletsPage::TransferDataToWindow()
 void wxRichTextBulletsPage::UpdatePreview()
 {
     static const wxChar* s_para1 = wxT("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. \
-Nullam ante sapien, vestibulum nonummy, pulvinar sed, luctus ut, lacus.");
+Nullam ante sapien, vestibulum nonummy, pulvinar sed, luctus ut, lacus.\n");
 
-    static const wxChar* s_para2 = wxT("\nDuis pharetra consequat dui. Cum sociis natoque penatibus \
-et magnis dis parturient montes, nascetur ridiculus mus. Nullam vitae justo id mauris lobortis interdum.");
+    static const wxChar* s_para2 = wxT("Duis pharetra consequat dui. Cum sociis natoque penatibus \
+et magnis dis parturient montes, nascetur ridiculus mus. Nullam vitae justo id mauris lobortis interdum.\n");
 
-    static const wxChar* s_para3 = wxT("\nInteger convallis dolor at augue \
+    static const wxChar* s_para3 = wxT("Integer convallis dolor at augue \
 iaculis malesuada. Donec bibendum ipsum ut ante porta fringilla.\n");
 
     TransferDataFromWindow();
@@ -514,7 +518,7 @@ iaculis malesuada. Donec bibendum ipsum ut ante porta fringilla.\n");
     m_previewCtrl->BeginStyle(normalParaAttr);
     m_previewCtrl->WriteText(s_para3);
     m_previewCtrl->EndStyle();
-    
+
     m_previewCtrl->NumberList(wxRichTextRange(0, m_previewCtrl->GetLastPosition()+1));
 
     m_previewCtrl->Thaw();

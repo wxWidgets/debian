@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: utils.cpp 50130 2007-11-21 13:05:15Z SC $
+// RCS-ID:      $Id: utils.cpp 60485 2009-05-02 18:55:12Z KO $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -467,6 +467,8 @@ void wxBeginBusyCursor(const wxCursor *cursor)
     {
         gMacStoredActiveCursor = gMacCurrentCursor;
         cursor->MacInstall();
+
+        wxSetCursor(*cursor);
     }
     //else: nothing to do, already set
 }
@@ -481,6 +483,8 @@ void wxEndBusyCursor()
     {
         gMacStoredActiveCursor.MacInstall();
         gMacStoredActiveCursor = wxNullCursor;
+
+        wxSetCursor(wxNullCursor);
     }
 }
 
@@ -637,13 +641,26 @@ wxWindow* wxFindWindowAtPoint(const wxPoint& pt)
 
 #if wxUSE_BASE
 
+#ifdef __DARWIN__
+#include <sys/utsname.h>
+#endif
+
 wxString wxGetOsDescription()
 {
+#ifdef __DARWIN__
+    struct utsname name;
+    uname(&name);
+	return wxString::Format(_T("Mac OS X (%s %s %s)"),
+			wxString::FromAscii(name.sysname).c_str(),
+			wxString::FromAscii(name.release).c_str(),
+			wxString::FromAscii(name.machine).c_str());
+#else
 #ifdef WXWIN_OS_DESCRIPTION
     // use configure generated description if available
     return wxString(wxT("MacOS (")) + wxT(WXWIN_OS_DESCRIPTION) + wxString(wxT(")"));
 #else
     return wxT("MacOS"); //TODO:define further
+#endif
 #endif
 }
 
@@ -1892,9 +1909,20 @@ unsigned int wxMacDataItemBrowserControl::GetLineFromItem(const wxMacDataItem* i
 
 wxMacDataItem*  wxMacDataItemBrowserControl::GetItemFromLine(unsigned int n) const
 {
-    DataBrowserItemID id;
+    DataBrowserItemID id = 0;
     OSStatus err =  GetItemID( (DataBrowserTableViewRowIndex) n , &id);
-    wxASSERT( err == noErr);
+    if ( err )
+    {
+        unsigned int count = MacGetCount();
+        if ( n >= count )
+        {
+            wxASSERT_MSG( n < count, wxString::Format(wxT("wxMacDataItemBrowserControl::GetItemFromLine: line index %d (zero based) out of bounds [0,%d]"), n, count-1 ) );
+        }
+        else
+        {
+            wxASSERT_MSG( err == noErr, wxString::Format(wxT("wxMacDataItemBrowserControl::GetItemFromLine GetItemId returned %d"), err ));
+        }
+    }
     return (wxMacDataItem*) id;
 }
 
@@ -2021,6 +2049,7 @@ void wxMacDataItemBrowserControl::RemoveItems(wxMacDataItem *container, wxArrayM
 
 void wxMacDataItemBrowserControl::RemoveAllItems(wxMacDataItem *container)
 {
+    SetScrollPosition(0, 0);
     OSStatus err = wxMacDataBrowserControl::RemoveItems( (DataBrowserItemID)container, 0 , NULL , kDataBrowserItemNoProperty );
     verify_noerr( err );
 }

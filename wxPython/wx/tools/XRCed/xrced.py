@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, main module
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      20.08.2001
-# RCS-ID:       $Id: xrced.py 50332 2007-11-29 22:21:15Z ROL $
+# RCS-ID:       $Id: xrced.py 53700 2008-05-22 15:59:07Z ROL $
 
 """
 
@@ -174,6 +174,7 @@ Please upgrade wxWidgets to %d.%d.%d or higher.''' % MinWxVersion)
         conf.toolIconScale = conf.ReadInt('Prefs/toolIconScale', 100)
         conf.expandOnOpen = conf.ReadBool('Prefs/expandOnOpen', True)
         conf.fitTestWin = conf.ReadBool('Prefs/fitTestWin', True)
+        conf.useSubclassing = conf.ReadBool('Prefs/useSubclassing', False)
         # Toolbar configuration
         conf.TB_file = conf.ReadBool('Prefs/TB_file', True)
         conf.TB_undo = conf.ReadBool('Prefs/TB_undo', True)
@@ -232,6 +233,7 @@ Please upgrade wxWidgets to %d.%d.%d or higher.''' % MinWxVersion)
         conf.WriteInt('Prefs/TB_undo', conf.TB_undo)
         conf.WriteInt('Prefs/TB_copy', conf.TB_copy)
         conf.WriteInt('Prefs/TB_move', conf.TB_move)
+        conf.WriteInt('Prefs/useSubclassing', conf.useSubclassing)
 #        conf.Write('Prefs/allowExec', conf.allowExec)
         v = conf.defaultsContainer
         if v: conf.Write('Prefs/Defaults/Container', DictToString(v))

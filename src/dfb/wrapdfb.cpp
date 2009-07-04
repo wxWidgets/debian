@@ -3,7 +3,7 @@
 // Purpose:     wx wrappers for DirectFB interfaces
 // Author:      Vaclav Slavik
 // Created:     2006-09-04
-// RCS-ID:      $Id: wrapdfb.cpp 43489 2006-11-18 13:17:35Z VS $
+// RCS-ID:      $Id: wrapdfb.cpp 54748 2008-07-21 17:01:35Z VZ $
 // Copyright:   (c) 2006 REA Elektronik GmbH
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,8 @@
     #pragma hdrstop
 #endif
 
+#include "wx/intl.h"
+#include "wx/log.h"
 #include "wx/dfb/wrapdfb.h"
 
 //-----------------------------------------------------------------------------

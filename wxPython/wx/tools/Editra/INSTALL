@@ -2,7 +2,7 @@ Editra Installation Instructions for installing from source
 
 Base Dependancies:
 python 2.4 or higher (http://www.python.org)
-wxPython 2.8 or higher (http://www.wxpython.org) (Unicode build suggested)
+wxPython 2.8.3 or higher (http://www.wxpython.org) (Unicode build suggested)
 setuptools 0.6 or higher (http://peak.telecommunity.com/DevCenter/setuptools)
 
 #--------------------------------------------------------------------------#

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: wx.bkl 44186 2007-01-10 14:03:23Z VS $ -->
+<!-- $Id: wx.bkl 53750 2008-05-26 09:21:56Z VS $ -->
 
 
 <!-- Master bakefile for wxWidgets -->
@@ -221,7 +221,7 @@
             <depends-on-file>$(SRCDIR)/include/wx/msw/genrcdefs.h</depends-on-file>
 
             <command>
-                $(DOLLAR)(CPP) "$(SRCDIR)\include\wx\msw\genrcdefs.h" > "$(SETUPHDIR)\wx\msw\rcdefs.h"
+                $(DOLLAR)(CPP) "$(nativePaths(SRCDIR))\include\wx\msw\genrcdefs.h" > "$(SETUPHDIR)\wx\msw\rcdefs.h"
             </command>
 
         </action>

@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: frame.cpp 42208 2006-10-21 16:39:42Z VZ $
+// RCS-ID:      $Id: frame.cpp 57952 2009-01-09 17:30:45Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -105,7 +105,9 @@ bool wxFrame::Enable(bool enable)
     if ( !wxWindow::Enable(enable) )
         return false;
 
-    if ( m_frameMenuBar && m_frameMenuBar == wxMenuBar::MacGetInstalledMenuBar() )
+    // we should always enable/disable the menubar, even if we are not current, otherwise
+    // we might miss some state change later (happened eg in the docview sample after PrintPreview)
+    if ( m_frameMenuBar /* && m_frameMenuBar == wxMenuBar::MacGetInstalledMenuBar() */ )
     {
         int iMaxMenu = m_frameMenuBar->GetMenuCount();
         for ( int i = 0 ; i < iMaxMenu ; ++ i )

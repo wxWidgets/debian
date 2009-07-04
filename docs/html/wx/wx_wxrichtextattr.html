@@ -236,7 +236,7 @@ Constructors.<P>
 <A NAME="wxrichtextattrapply"></A>
 <H3>wxRichTextAttr::Apply</H3>
 <P>
-<B>bool</B> <B>Combine</B>(<B>const wxRichTextAttrEx&amp; </B><I>style</I>, <B>const wxRichTextAttrEx* </B><I>compareWith = NULL</I>)<P>
+<B>bool</B> <B>Apply</B>(<B>const <A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A>& </B></B><I>style</I>, <B>const <A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A>* </B></B><I>compareWith = NULL</I>)<P>
 Applies the attributes in <I>style</I> to the original object, but not those attributes from <I>style</I> that are the same as those in <I>compareWith</I> (if passed).<P>
 See also <A HREF="wx_wxrichtextattr.html#wxrichtextattrcombine">wxRichTextAttr::Combine</A> for a function that does almost the same but returns a new object instead of modifying the original object.<P>
 
@@ -244,7 +244,7 @@ See also <A HREF="wx_wxrichtextattr.html#wxrichtextattrcombine">wxRichTextAttr::
 <A NAME="wxrichtextattrcombine"></A>
 <H3>wxRichTextAttr::Combine</H3>
 <P>
-<B><A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A></B> </B> <B>Combine</B>(<B>const wxRichTextAttrEx&amp; </B><I>style</I>, <B>const wxRichTextAttrEx* </B><I>compareWith = NULL</I>) <B>const</B><P>
+<B><A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A></B> </B> <B>Combine</B>(<B>const <A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A>& </B></B><I>style</I>, <B>const <A HREF="wx_wxrichtextattr.html#wxrichtextattr">wxRichTextAttr</A>* </B></B><I>compareWith = NULL</I>) <B>const</B><P>
 Combines 'this' with <I>style</I>, but not applying attributes from <I>style</I> that are the same as those in <I>compareWith</I> (if passed).
 A wxRichTextAttr object is returned and the original object is not changed.<P>
 See also <A HREF="wx_wxrichtextattr.html#wxrichtextattrapply">wxRichTextAttr::Apply</A> for a function that does almost the same but modifies the original object instead of returning a new one.<P>
@@ -410,7 +410,7 @@ Returns the name of the list style.<P>
 <A NAME="wxrichtextattrgetoutlinelevel"></A>
 <H3>wxRichTextAttr::GetOutlineLevel</H3>
 <P>
-<B>bool</B> <B>GetOutlineLevel</B>() <B>const</B><P>
+<B>int</B> <B>GetOutlineLevel</B>() <B>const</B><P>
 Returns the outline level.<P>
 
 <HR>

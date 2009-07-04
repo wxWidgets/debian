@@ -3,7 +3,7 @@
 // Author:      Robert Roebling
 // Purpose:     Implement GNOME VFS support
 // Created:     03/17/06
-// RCS-ID:      $Id: gvfs.cpp 44226 2007-01-15 01:26:05Z PC $
+// RCS-ID:      $Id: gvfs.cpp 56711 2008-11-08 18:03:17Z BP $
 // Copyright:   Robert Roebling
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,15 @@ wxGnomeVFSLibrary::wxGnomeVFSLibrary()
 wxGnomeVFSLibrary::~wxGnomeVFSLibrary()
 {
     if (m_gnome_vfs_lib)
+    {
+        // we crash on exit later (i.e. after main() finishes) if we unload
+        // this library, apparently it inserts some hooks in other libraries to
+        // which we link implicitly (GTK+ itself?) which are not uninstalled
+        // when it's unloaded resulting in this crash, so just leave it in
+        // memory -- it's a lesser evil
+        m_gnome_vfs_lib->Detach();
         delete m_gnome_vfs_lib;
+    }
 }
 
 bool wxGnomeVFSLibrary::IsOk()

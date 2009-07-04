@@ -2,7 +2,7 @@
 import  wx
 import  wx.lib.throbber as  throb
 
-import throbImages # this was created using a modified version of img2py
+import throbImages 
 
 from wx.lib.throbber import __doc__ as docString
 
@@ -29,7 +29,7 @@ class TestPanel(wx.Panel):
                               'text':     "With a label and an overlayed image." },
             }
 
-        images = [throbImages.catalog[i].getBitmap()
+        images = [throbImages.catalog[i].GetBitmap()
                   for i in throbImages.index
                   if i not in ['eclouds', 'logo']]
 
@@ -56,13 +56,13 @@ class TestPanel(wx.Panel):
         self.throbbers['overlay']['throbber'] = \
             throb.Throbber(
                 self, -1, images, frameDelay = 0.1, 
-                overlay = throbImages.catalog['logo'].getBitmap()
+                overlay = throbImages.catalog['logo'].GetBitmap()
                 )
 
         self.throbbers['overlay+text']['throbber'] = \
             throb.Throbber(
                 self, -1, images, frameDelay = 0.1, 
-                overlay = throbImages.catalog['logo'].getBitmap(), label = "Python!"
+                overlay = throbImages.catalog['logo'].GetBitmap(), label = "Python!"
                 )
 
         self.throbbers['overlay+text']['throbber'].SetFont(wx.Font(

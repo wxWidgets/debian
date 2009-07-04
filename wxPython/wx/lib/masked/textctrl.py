@@ -5,7 +5,7 @@
 # Created:      02/11/2003
 # Copyright:    (c) 2003 by Jeff Childers, Will Sadkin, 2003
 # Portions:     (c) 2002 by Will Sadkin, 2002-2003
-# RCS-ID:       $Id: textctrl.py 45968 2007-05-11 19:48:22Z RD $
+# RCS-ID:       $Id: textctrl.py 53519 2008-05-09 23:31:42Z RD $
 # License:      wxWidgets license
 #----------------------------------------------------------------------------
 #
@@ -70,10 +70,11 @@ class BaseMaskedTextCtrl( wx.TextCtrl, MaskedEditMixin ):
                   setupEventHandling = True,        ## setup event handling by default
                   **kwargs):
 
-        wx.TextCtrl.__init__(self, parent, id, value='',
-                            pos=pos, size = size,
-                            style=style, validator=validator,
-                            name=name)
+        if not hasattr(self, 'this'):
+            wx.TextCtrl.__init__(self, parent, id, value='',
+                                 pos=pos, size = size,
+                                 style=style, validator=validator,
+                                 name=name)
 
         self._PostInit(setupEventHandling = setupEventHandling,
                       name=name, value=value,**kwargs )

@@ -3,7 +3,7 @@
 // Purpose:     wxWindowDC, wxClientDC and wxPaintDC
 // Author:      Vaclav Slavik
 // Created:     2006-08-10
-// RCS-ID:      $Id: dcclient.cpp 42783 2006-10-30 22:42:34Z VZ $
+// RCS-ID:      $Id: dcclient.cpp 54748 2008-07-21 17:01:35Z VZ $
 // Copyright:   (c) 2006 REA Elektronik GmbH
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,6 +26,7 @@
 #include "wx/dcclient.h"
 
 #ifndef WX_PRECOMP
+    #include "wx/toplevel.h"
     #include "wx/window.h"
 #endif
 

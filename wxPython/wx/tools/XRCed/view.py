@@ -2,7 +2,7 @@
 # Purpose:      View classes
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      07.06.2007
-# RCS-ID:       $Id: view.py 50333 2007-11-29 23:01:37Z ROL $
+# RCS-ID:       $Id: view.py 53700 2008-05-22 15:59:07Z ROL $
 
 import os
 from XMLTree import XMLTree
@@ -12,11 +12,9 @@ from TestWin import TestWindow
 from tools import *
 import images
 if wx.Platform == '__WXMAC__':
-    import images_32x32
     # Substitute higher-res icons for Mac
-    for k,v in images_32x32.__dict__.items():
-        if k[:3] == 'get':
-            images.__dict__[k] = v
+    import images_32x32
+    images.__dict__.update(images_32x32.__dict__)
 import wx.aui
 import wx.html
 
@@ -78,7 +76,7 @@ class Frame(wx.Frame):
         bar = self.CreateStatusBar(2)
         bar.SetStatusWidths([-1, 40])
         if wx.Platform != '__WXMAC__':
-            self.icns = wx.IconBundleFromIcon(images.getIconIcon())
+            self.icns = wx.IconBundleFromIcon(images.Icon.GetIcon())
             self.SetIcons(self.icns)
 
         self.InitMenuBar()
@@ -96,13 +94,11 @@ class Frame(wx.Frame):
 
         # Create toolbar
         self.tb = tb = wx.ToolBar(self, -1, style=wx.TB_FLAT | wx.TB_NODIVIDER)
-        # Use tango icons and slightly wider bitmap size on Mac
+        # Use bigger icon size on Mac
         if wx.Platform == '__WXMAC__':
             tb.SetToolBitmapSize((32,32))
-#        if wx.Platform == '__WXMSW__':
-#            tb.SetToolBitmapSize((26,26))
-#        elif wx.Platform == '__WXGTK__':
-#            tb.SetToolBitmapSize((24,24))
+        elif wx.Platform == '__WXMSW__':
+            tb.SetToolBitmapSize((22,22))
 
         self.InitToolBar(g.useAUI or g.conf.embedPanel) # add tools
 
@@ -153,13 +149,11 @@ class Frame(wx.Frame):
                 mf.SetIcons(self.icns)
             mf.tb = mf.CreateToolBar(wx.TB_HORIZONTAL | wx.NO_BORDER | wx.TB_FLAT)
 
-            # Use tango icons and slightly wider bitmap size on Mac
+            # Use bigger icon size on Mac
             if wx.Platform == '__WXMAC__':
                 mf.tb.SetToolBitmapSize((32,32))
-#            if wx.Platform == '__WXMSW__':
-#                mf.tb.SetToolBitmapSize((26,26))
-#            elif wx.Platform == '__WXGTK__':
-#                mf.tb.SetToolBitmapSize((24,24))
+            elif wx.Platform == '__WXMSW__':
+                mf.tb.SetToolBitmapSize((22,22))
             self.InitMiniFrameToolBar(mf.tb)
 
             mfSizer = wx.BoxSizer()
@@ -220,7 +214,7 @@ class Frame(wx.Frame):
         menu.Append(wx.ID_CUT, 'Cut\tCtrl-X', 'Cut to the clipboard')
         menu.Append(wx.ID_COPY, '&Copy\tCtrl-C', 'Copy to the clipboard')
         menu.Append(ID.PASTE, '&Paste\tCtrl-V', 'Paste from the clipboard')
-        menu.Append(ID.PASTE_SIBLING, '&Paste sibling\tAlt-Ctrl-V', 
+        menu.Append(ID.PASTE_SIBLING, '&Paste Sibling\tAlt-Ctrl-V', 
                     'Paste clipboard as a sibling')
         menu.Append(wx.ID_DELETE, '&Delete\tCtrl-D', 'Delete object')
         menu.AppendSeparator()
@@ -229,6 +223,8 @@ class Frame(wx.Frame):
         menu.Append(ID.COLLAPSE_ALL, '&Collapse All', 'Collapse tree')
         menu.AppendSeparator()
         menu.Append(wx.ID_FIND, '&Find\tCtrl-F', 'Find a named control')
+        self.ID_FINDAGAIN = wx.NewId()
+        menu.Append(self.ID_FINDAGAIN, 'Find A&gain\tCtrl-G', 'Repeat last search')
         self.ART_LOCATE = 'ART_LOCATE'
         self.ID_LOCATE = wx.NewId()
         menu.Append(self.ID_LOCATE, '&Locate\tCtrl-L', 'Locate control in test window and select it')
@@ -427,6 +423,7 @@ class Frame(wx.Frame):
             conf.TB_undo = dlg.check_TB_undo.GetValue()
             conf.TB_copy = dlg.check_TB_copy.GetValue()
             conf.TB_move = dlg.check_TB_move.GetValue()
+            conf.useSubclassing = dlg.check_useSubclassing.GetValue()
             wx.LogMessage('Restart may be needed for some settings to take effect.')
         dlg.Destroy()
 
@@ -530,6 +527,9 @@ class PrefsDialog(wx.Dialog): #(wx.PropertySheetDialog): !!! not wrapper yed - w
         self.check_TB_move = xrc.XRCCTRL(self, 'check_TB_move')
         self.check_TB_move.SetValue(conf.TB_move)
 
+        self.check_useSubclassing = xrc.XRCCTRL(self, 'check_useSubclassing')
+        self.check_useSubclassing.SetValue(conf.useSubclassing)
+
     def OnCheck(self, evt):
         self.checkControls[evt.GetId()][0].Enable(evt.IsChecked())
         evt.Skip()
@@ -541,35 +541,31 @@ class ToolArtProvider(wx.ArtProvider):
     def __init__(self):
         wx.ArtProvider.__init__(self)
         self.images = {
-            'ART_LOCATE': images.getLocateImage(),
-            'ART_TEST': images.getTestImage(),
-            'ART_REFRESH': images.getRefreshImage(),
-            'ART_AUTO_REFRESH': images.getAutoRefreshImage(),
-            'ART_MOVEUP': images.getMoveUpImage(),
-            'ART_MOVEDOWN': images.getMoveDownImage(),
-            'ART_MOVELEFT': images.getMoveLeftImage(),
-            'ART_MOVERIGHT': images.getMoveRightImage(),
-            'ART_REMOVE': images.getRemoveImage()
+            'ART_LOCATE': images.Locate.GetImage(),
+            'ART_TEST': images.Test.GetImage(),
+            'ART_REFRESH': images.Refresh.GetImage(),
+            'ART_AUTO_REFRESH': images.AutoRefresh.GetImage(),
+            'ART_MOVEUP': images.MoveUp.GetImage(),
+            'ART_MOVEDOWN': images.MoveDown.GetImage(),
+            'ART_MOVELEFT': images.MoveLeft.GetImage(),
+            'ART_MOVERIGHT': images.MoveRight.GetImage(),
+            'ART_REMOVE': images.Remove.GetImage()
             }
         if wx.Platform in ['__WXMAC__', '__WXMSW__']:
             self.images.update({
-                    wx.ART_NORMAL_FILE: images.getNewImage(),
-                    wx.ART_FILE_OPEN: images.getOpenImage(),
-                    wx.ART_FILE_SAVE: images.getSaveImage(),
-                    wx.ART_UNDO: images.getUndoImage(),
-                    wx.ART_REDO: images.getRedoImage(),
-                    wx.ART_CUT: images.getCutImage(),
-                    wx.ART_COPY: images.getCopyImage(),
-                    wx.ART_PASTE: images.getPasteImage()
+                    wx.ART_NORMAL_FILE: images.New.GetImage(),
+                    wx.ART_FILE_OPEN: images.Open.GetImage(),
+                    wx.ART_FILE_SAVE: images.Save.GetImage(),
+                    wx.ART_UNDO: images.Undo.GetImage(),
+                    wx.ART_REDO: images.Redo.GetImage(),
+                    wx.ART_CUT: images.Cut.GetImage(),
+                    wx.ART_COPY: images.Copy.GetImage(),
+                    wx.ART_PASTE: images.Paste.GetImage()
                     })
 
     def CreateBitmap(self, id, client, size):
         bmp = wx.NullBitmap
         if id in self.images:
-            img = self.images[id]
-            # Alpha not implemented completely there
-#            if wx.Platform in ['__WXMAC__', '__WXMSW__']:
-#                img.ConvertAlphaToMask()
-            bmp = wx.BitmapFromImage(img)
+            bmp = wx.BitmapFromImage(self.images[id])
         return bmp
 

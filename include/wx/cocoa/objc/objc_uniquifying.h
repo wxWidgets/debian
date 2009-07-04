@@ -7,7 +7,7 @@
 // Author:      David Elliott <dfe@cox.net>
 // Modified by:
 // Created:     2007/05/15
-// RCS-ID:      $Id: objc_uniquifying.h 48069 2007-08-14 20:56:47Z DE $
+// RCS-ID:      $Id: objc_uniquifying.h 51891 2008-02-18 20:36:16Z DE $
 // Copyright:   (c) 2007 Software 2000 Ltd.
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -83,6 +83,32 @@ struct UniquifiedName
     }
 };
 
+/*! @function   HidePointerFromGC
+    @abstract   Returns an l-value whose location the compiler cannot know.
+    @discussion
+    The compiler-generated Objective-C class structures are located in the static data area.
+    They are by design Objective-C objects in their own right which makes the compiler issue
+    write barriers as if they were located in the GC-managed heap as most Objective-C objects.
+
+    By accepting and returning a reference to any pointer type we can set any i-var of an
+    Objective-C object that is a pointer to another Objective-C object without the compiler
+    generating an objc_assign_ivar write barrier.  It will instad generate an
+    objc_assign_strongCast write barrier which is the appropriate write-barrier when assigning
+    pointers to Objective-C objects located in unknown memory.
+
+    For instance:
+    Class *someClass = ...;
+    HidePointerFromGC(someClass->isa) = ...;
+ */
+template <typename ObjcType>
+inline ObjcType * & HidePointerFromGC(ObjcType * &p) __attribute__((always_inline));
+
+template <typename ObjcType>
+inline ObjcType * & HidePointerFromGC(ObjcType * &p)
+{
+    return p;
+}
+
 template <typename ObjcType>
 class wxObjcClassInitializer
 {
@@ -131,9 +157,9 @@ private:
 
         // In any object hierarchy a metaclass's metaclass is always the root class's metaclass
         // Therefore, our superclass's metaclass's metaclass should already be the root class's metaclass
-        theClassData.isa->isa = theClassData.super_class->isa->isa;
+        HidePointerFromGC(theClassData.isa->isa) = theClassData.super_class->isa->isa;
         // A metaclass's superclass is always the superclass's metaclass.
-        theClassData.isa->super_class = theClassData.super_class->isa;
+        HidePointerFromGC(theClassData.isa->super_class) = theClassData.super_class->isa;
         // Fix up the compiler generated metaclass struct to use the new name
         theClassData.isa->name = sm_theUniquifiedClassName;
 
@@ -270,6 +296,16 @@ inline objc_class * wxObjcCompilerInformation<ObjcClass>::GetCompiledClass() \
         return objc_getClass(#ObjcSuperClass); \
     }
 
+// The WX_IMPLEMENT_OBJC_GET_UNIQUIFIED_SUPERCLASS macro implements the template
+// specialization to get the superclass when the superclass is another uniquified
+// Objective-C class.
+#define WX_IMPLEMENT_OBJC_GET_UNIQUIFIED_SUPERCLASS(ObjcClass,ObjcSuperClass) \
+    template <> \
+    inline objc_class* wxObjcCompilerInformation<ObjcClass>::GetSuperclass() \
+    { \
+        return wx_GetObjcClass_ ## ObjcSuperClass(); \
+    }
+
 // The WX_IMPLEMENT_OBJC_CLASS_NAME macro implements the template specialization
 // of the sm_theClassName constant.  As soon as this specialization is in place
 // sizeof(sm_theClassName) will return the number of bytes at compile time.
@@ -277,16 +313,30 @@ inline objc_class * wxObjcCompilerInformation<ObjcClass>::GetCompiledClass() \
     template <> \
     const char wxObjcCompilerInformation<ObjcClass>::sm_theClassName[] = #ObjcClass;
 
-// The WX_IMPLEMENT_GET_OBJC_CLASS macro combines all of these together and adds
-// a global wx_GetObjcClass_ObjcClass() function.
-#define WX_IMPLEMENT_GET_OBJC_CLASS(ObjcClass,ObjcSuperClass) \
-    WX_IMPLEMENT_OBJC_GET_COMPILED_CLASS(ObjcClass) \
-    WX_IMPLEMENT_OBJC_GET_SUPERCLASS(ObjcClass,ObjcSuperClass) \
-    WX_IMPLEMENT_OBJC_CLASS_NAME(ObjcClass) \
+// The WX_IMPLEMENT_OBJC_GET_OBJC_CLASS macro is the final one that actually provides
+// the wx_GetObjcClass_XXX function that will be called in lieu of asking the Objective-C
+// runtime for the class.  All the others are really machinery to make this happen.
+#define WX_IMPLEMENT_OBJC_GET_OBJC_CLASS(ObjcClass) \
     objc_class* wx_GetObjcClass_ ## ObjcClass() \
     { \
         return wxObjcClassInitializer<ObjcClass>::Get(); \
     }
+
+// The WX_IMPLEMENT_GET_OBJC_CLASS macro combines all of these together
+// for the case when the superclass is a non-uniquified class.
+#define WX_IMPLEMENT_GET_OBJC_CLASS(ObjcClass,ObjcSuperClass) \
+    WX_IMPLEMENT_OBJC_GET_COMPILED_CLASS(ObjcClass) \
+    WX_IMPLEMENT_OBJC_GET_SUPERCLASS(ObjcClass,ObjcSuperClass) \
+    WX_IMPLEMENT_OBJC_CLASS_NAME(ObjcClass) \
+    WX_IMPLEMENT_OBJC_GET_OBJC_CLASS(ObjcClass)
+
+// The WX_IMPLEMENT_GET_OBJC_CLASS_WITH_UNIQUIFIED_SUPERCLASS macro combines all
+// of these together for the case when the superclass is another uniquified class.
+#define WX_IMPLEMENT_GET_OBJC_CLASS_WITH_UNIQUIFIED_SUPERCLASS(ObjcClass,ObjcSuperClass) \
+    WX_IMPLEMENT_OBJC_GET_COMPILED_CLASS(ObjcClass) \
+    WX_IMPLEMENT_OBJC_GET_UNIQUIFIED_SUPERCLASS(ObjcClass,ObjcSuperClass) \
+    WX_IMPLEMENT_OBJC_CLASS_NAME(ObjcClass) \
+    WX_IMPLEMENT_OBJC_GET_OBJC_CLASS(ObjcClass)
 
 // The WX_GET_OBJC_CLASS macro is intended to wrap the class name when the class
 // is used as a message receiver (e.g. for calling class methods).  When
@@ -300,6 +350,8 @@ inline objc_class * wxObjcCompilerInformation<ObjcClass>::GetCompiledClass() \
 #define WX_DECLARE_GET_OBJC_CLASS(ObjcClass,ObjcSuperClass)
 // Define WX_IMPLEMENT_GET_OBJC_CLASS as nothing
 #define WX_IMPLEMENT_GET_OBJC_CLASS(ObjcClass,ObjcSuperClass)
+// Define WX_IMPLEMENT_GET_OBJC_CLASS_WITH_UNIQUIFIED_SUPERCLASS as nothing
+#define WX_IMPLEMENT_GET_OBJC_CLASS_WITH_UNIQUIFIED_SUPERCLASS(ObjcClass,ObjcSuperClass)
 
 // Define WX_GET_OBJC_CLASS macro to output the class name and let the compiler do the normal thing
 // The WX_GET_OBJC_CLASS macro is intended to wrap the class name when the class

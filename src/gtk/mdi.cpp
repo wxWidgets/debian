@@ -2,7 +2,7 @@
 // Name:        src/gtk/mdi.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: mdi.cpp 42403 2006-10-25 17:51:28Z RR $
+// Id:          $Id: mdi.cpp 51758 2008-02-13 16:57:44Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -328,6 +328,10 @@ wxMDIChildFrame::~wxMDIChildFrame()
 {
     if (m_menuBar)
         delete m_menuBar;
+
+    // wxMDIClientWindow does not get redrawn properly after last child is removed
+    if (m_parent && m_parent->GetChildren().size() <= 1)
+        gtk_widget_queue_draw(m_parent->m_widget);
 }
 
 bool wxMDIChildFrame::Create( wxMDIParentFrame *parent,

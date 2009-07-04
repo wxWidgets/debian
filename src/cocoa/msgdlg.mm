@@ -3,7 +3,7 @@
 // Purpose:     wxMessageDialog for wxCocoa
 // Author:      Gareth Simpson
 // Created:     2007-10-09
-// RCS-ID:      $Id: msgdlg.mm 49770 2007-11-09 19:10:04Z DE $
+// RCS-ID:      $Id: msgdlg.mm 51798 2008-02-14 21:31:18Z DE $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -47,7 +47,7 @@ wxCocoaMessageDialog::wxCocoaMessageDialog(wxWindow *parent,
                         const wxString& message,
                         const wxString& caption,
                         long style,
-                        const wxPoint& pos) : wxDialog(parent,message,caption,style)
+                        const wxPoint& pos) : wxDialog(parent,wxID_ANY,caption, pos, wxDefaultSize, style)
 {
 
     m_caption = caption;
@@ -70,6 +70,7 @@ wxCocoaMessageDialog::wxCocoaMessageDialog(wxWindow *parent,
     m_ok  = _("OK");
     m_cancel = _("Cancel");
 
+    SetMessageDialogStyle(style);
 }
 
 wxCocoaMessageDialog::~wxCocoaMessageDialog()

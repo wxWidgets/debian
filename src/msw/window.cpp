@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ on 13.05.99: no more Default(), MSWOnXXX() reorganisation
 // Created:     04/01/98
-// RCS-ID:      $Id: window.cpp 49475 2007-10-26 22:35:54Z RD $
+// RCS-ID:      $Id: window.cpp 60057 2009-04-07 15:00:09Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -275,6 +275,22 @@ bool GetCursorPosWinCE(POINT* pt)
     return true;
 }
 #endif
+
+static wxBorder TranslateBorder(wxBorder border)
+{
+    if ( border == wxBORDER_THEME )
+    {
+#if defined(__POCKETPC__) || defined(__SMARTPHONE__)
+        return wxBORDER_SIMPLE;
+#elif wxUSE_UXTHEME
+        if (wxUxThemeEngine::GetIfActive())
+            return wxBORDER_THEME;
+#endif
+        return wxBORDER_SUNKEN;
+    }
+
+    return border;
+}
 
 // ---------------------------------------------------------------------------
 // event tables
@@ -795,7 +811,11 @@ bool wxWindowMSW::SetFont(const wxFont& font)
     HWND hWnd = GetHwnd();
     if ( hWnd != 0 )
     {
-        WXHANDLE hFont = m_font.GetResourceHandle();
+        // note the use of GetFont() instead of m_font: our own font could have
+        // just been reset and in this case we need to change the font used by
+        // the native window to the default for this class, i.e. exactly what
+        // GetFont() returns
+        WXHANDLE hFont = GetFont().GetResourceHandle();
 
         wxASSERT_MSG( hFont, wxT("should have valid font") );
 
@@ -1365,7 +1385,7 @@ WXDWORD wxWindowMSW::MSWGetStyle(long flags, WXDWORD *exstyle) const
     if ( flags & wxHSCROLL )
         style |= WS_HSCROLL;
 
-    const wxBorder border = GetBorder(flags);
+    const wxBorder border = TranslateBorder(GetBorder(flags));
 
     // WS_BORDER is only required for wxBORDER_SIMPLE
     if ( border == wxBORDER_SIMPLE )
@@ -1429,13 +1449,7 @@ WXDWORD wxWindowMSW::MSWGetStyle(long flags, WXDWORD *exstyle) const
 // 2.9 and above.
 wxBorder wxWindowMSW::GetThemedBorderStyle() const
 {
-#if defined(__POCKETPC__) || defined(__SMARTPHONE__)
-    return wxBORDER_SIMPLE;
-#elif wxUSE_UXTHEME
-    if (wxUxThemeEngine::GetIfActive())
-        return wxBORDER_THEME;
-#endif
-    return wxBORDER_SUNKEN;
+    return TranslateBorder(wxBORDER_THEME);
 }
 
 // Setup background and foreground colours correctly
@@ -1479,7 +1493,7 @@ void wxWindowMSW::OnInternalIdle()
     }
 #endif // !HAVE_TRACKMOUSEEVENT
 
-    if (wxUpdateUIEvent::CanUpdate(this) && IsShown())
+    if (wxUpdateUIEvent::CanUpdate(this) && IsShownOnScreen())
         UpdateWindowUI(wxUPDATE_UI_FROMIDLE);
 }
 
@@ -1562,14 +1576,19 @@ void wxWindowMSW::Thaw()
                     if ( child->IsTopLevel() )
                         continue;
                     else
-                        child->Thaw();
+                    {
+                        // in case the child was added while the TLW was
+                        // frozen, it won't be frozen now so avoid the Thaw.
+                        if ( child->IsFrozen() )
+                            child->Thaw();
+                    }
                 }
             }
             else // This is not a TLW, so just thaw it.
             {
                 SendSetRedraw(GetHwnd(), true);
             }
-            
+
             // we need to refresh everything or otherwise the invalidated area
             // is not going to be repainted
             Refresh();
@@ -1929,6 +1948,11 @@ void wxWindowMSW::DoMoveWindow(int x, int y, int width, int height)
 #if USE_DEFERRED_SIZING
         m_pendingPosition = wxPoint(x, y);
         m_pendingSize = wxSize(width, height);
+    }
+    else // window was moved immediately, without deferring it
+    {
+        m_pendingPosition = wxDefaultPosition;
+        m_pendingSize = wxDefaultSize;
 #endif // USE_DEFERRED_SIZING
     }
 }
@@ -3306,7 +3330,7 @@ WXLRESULT wxWindowMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
         case WM_NCCALCSIZE:
             {
                 wxUxThemeEngine* theme = wxUxThemeEngine::GetIfActive();
-                if (theme && GetBorder() == wxBORDER_THEME)
+                if (theme && TranslateBorder(GetBorder()) == wxBORDER_THEME)
                 {
                     // first ask the widget to calculate the border size
                     rc.result = MSWDefWindowProc(message, wParam, lParam);
@@ -3324,9 +3348,9 @@ WXLRESULT wxWindowMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
                     {
                         rect = *((RECT*)lParam);
                     }
-                    wxUxThemeHandle hTheme(this, L"EDIT");
+                    wxUxThemeHandle hTheme((const wxWindow*) this, L"EDIT");
                     RECT rcClient = { 0, 0, 0, 0 };
-                    wxClientDC dc(this);
+                    wxClientDC dc((wxWindow*) this);
 
                     if (theme->GetThemeBackgroundContentRect(
                             hTheme, GetHdcOf(dc), EP_EDITTEXT, ETS_NORMAL,
@@ -3346,14 +3370,14 @@ WXLRESULT wxWindowMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
         case WM_NCPAINT:
             {
                 wxUxThemeEngine* theme = wxUxThemeEngine::GetIfActive();
-                if (theme && GetBorder() == wxBORDER_THEME)
+                if (theme && TranslateBorder(GetBorder()) == wxBORDER_THEME)
                 {
                     // first ask the widget to paint its non-client area, such as scrollbars, etc.
                     rc.result = MSWDefWindowProc(message, wParam, lParam);
                     processed = true;
 
-                    wxUxThemeHandle hTheme(this, L"EDIT");
-                    wxWindowDC dc(this);
+                    wxUxThemeHandle hTheme((const wxWindow*) this, L"EDIT");
+                    wxWindowDC dc((wxWindow*) this);
 
                     // Clip the DC so that you only draw on the non-client area
                     RECT rcBorder;
@@ -3791,7 +3815,7 @@ bool wxWindowMSW::HandleEndSession(bool endSession, long logOff)
     wxCloseEvent event(wxEVT_END_SESSION, wxID_ANY);
     event.SetEventObject(wxTheApp);
     event.SetCanVeto(false);
-    event.SetLoggingOff( (logOff == (long)ENDSESSION_LOGOFF) );
+    event.SetLoggingOff((logOff & ENDSESSION_LOGOFF) != 0);
 
     return wxTheApp->ProcessEvent(event);
 #else
@@ -3993,7 +4017,6 @@ bool wxWindowMSW::HandleDropFiles(WXWPARAM wParam)
         ::DragQueryFile(hFilesInfo, wIndex,
                         wxStringBuffer(files[wIndex], len), len);
     }
-    DragFinish (hFilesInfo);
 
     wxDropFilesEvent event(wxEVT_DROP_FILES, gwFilesDropped, files);
     event.SetEventObject(this);
@@ -4002,6 +4025,8 @@ bool wxWindowMSW::HandleDropFiles(WXWPARAM wParam)
     DragQueryPoint(hFilesInfo, (LPPOINT) &dropPoint);
     event.m_pos.x = dropPoint.x;
     event.m_pos.y = dropPoint.y;
+
+    DragFinish(hFilesInfo);
 
     return GetEventHandler()->ProcessEvent(event);
 #endif
@@ -4161,15 +4186,30 @@ bool wxWindowMSW::HandlePower(WXWPARAM WXUNUSED_IN_WINCE(wParam),
 
 bool wxWindowMSW::IsDoubleBuffered() const
 {
-    for ( const wxWindowMSW *wnd = this;
-          wnd && !wnd->IsTopLevel(); wnd =
-          wnd->GetParent() )
-    {
-        if ( ::GetWindowLong(GetHwndOf(wnd), GWL_EXSTYLE) & WS_EX_COMPOSITED )
+    const wxWindowMSW *wnd = this;
+    do {
+        long style = ::GetWindowLong(GetHwndOf(wnd), GWL_EXSTYLE);
+        if ( (style & WS_EX_COMPOSITED) != 0 )
             return true;
-    }
+        wnd = wnd->GetParent();
+    } while ( wnd && !wnd->IsTopLevel() );
 
     return false;
+}
+
+void wxWindowMSW::SetDoubleBuffered(bool on)
+{
+    // Get the current extended style bits
+    long exstyle = ::GetWindowLong(GetHwnd(), GWL_EXSTYLE);
+
+    // Twiddle the bit as needed
+    if ( on )
+        exstyle |= WS_EX_COMPOSITED;
+    else
+        exstyle &= ~WS_EX_COMPOSITED;
+
+    // put it back
+    ::SetWindowLong(GetHwnd(), GWL_EXSTYLE, exstyle);
 }
 
 // ---------------------------------------------------------------------------
@@ -5140,9 +5180,9 @@ bool wxWindowMSW::HandleMouseMove(int x, int y, WXUINT flags)
             static bool s_initDone = false;
             if ( !s_initDone )
             {
-                wxLogNull noLog;
-
-                wxDynamicLibrary dllComCtl32(_T("comctl32.dll"), wxDL_VERBATIM);
+                // see comment in wxApp::GetComCtl32Version() explaining the
+                // use of wxLoadedDLL
+                wxLoadedDLL dllComCtl32(_T("comctl32.dll"));
                 if ( dllComCtl32.IsLoaded() )
                 {
                     s_pfn_TrackMouseEvent = (_TrackMouseEvent_t)
@@ -5150,10 +5190,6 @@ bool wxWindowMSW::HandleMouseMove(int x, int y, WXUINT flags)
                 }
 
                 s_initDone = true;
-
-                // notice that it's ok to unload comctl32.dll here as it won't
-                // be really unloaded, being still in use because we link to it
-                // statically too
             }
 
             if ( s_pfn_TrackMouseEvent )
@@ -5931,10 +5967,20 @@ WXWORD wxCharCodeWXToMSW(int wxk, bool *isVirtual)
             break;
 
         default:
-            if ( isVirtual )
-                *isVirtual = false;
-            vk = (WXWORD)wxk;
-            break;
+#ifndef __WXWINCE__
+            // check to see if its one of the OEM key codes.
+            BYTE vks = LOBYTE(VkKeyScan(wxk));
+            if ( vks != 0xff )
+            {
+                vk = vks;
+            }
+            else
+#endif
+            {
+                if ( isVirtual )
+                    *isVirtual = false;
+                vk = (WXWORD)wxk;
+            }
     }
 
     return vk;
@@ -6085,28 +6131,8 @@ extern wxWindow *wxGetWindowFromHWND(WXHWND hWnd)
 // Windows keyboard hook. Allows interception of e.g. F1, ESCAPE
 // in active frames and dialogs, regardless of where the focus is.
 static HHOOK wxTheKeyboardHook = 0;
-static FARPROC wxTheKeyboardHookProc = 0;
-int APIENTRY _EXPORT
-wxKeyboardHook(int nCode, WORD wParam, DWORD lParam);
 
-void wxSetKeyboardHook(bool doIt)
-{
-    if ( doIt )
-    {
-        wxTheKeyboardHookProc = MakeProcInstance((FARPROC) wxKeyboardHook, wxGetInstance());
-        wxTheKeyboardHook = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC) wxTheKeyboardHookProc, wxGetInstance(),
-
-            GetCurrentThreadId()
-        //      (DWORD)GetCurrentProcess()); // This is another possibility. Which is right?
-            );
-    }
-    else
-    {
-        UnhookWindowsHookEx(wxTheKeyboardHook);
-    }
-}
-
-int APIENTRY _EXPORT
+int APIENTRY
 wxKeyboardHook(int nCode, WORD wParam, DWORD lParam)
 {
     DWORD hiWord = HIWORD(lParam);
@@ -6148,6 +6174,29 @@ wxKeyboardHook(int nCode, WORD wParam, DWORD lParam)
     }
 
     return (int)CallNextHookEx(wxTheKeyboardHook, nCode, wParam, lParam);
+}
+
+void wxSetKeyboardHook(bool doIt)
+{
+    if ( doIt )
+    {
+        wxTheKeyboardHook = ::SetWindowsHookEx
+                              (
+                                WH_KEYBOARD,
+                                (HOOKPROC)wxKeyboardHook,
+                                NULL,   // must be NULL for process hook
+                                ::GetCurrentThreadId()
+                              );
+        if ( !wxTheKeyboardHook )
+        {
+            wxLogLastError(_T("SetWindowsHookEx(wxKeyboardHook)"));
+        }
+    }
+    else // uninstall
+    {
+        if ( wxTheKeyboardHook )
+            ::UnhookWindowsHookEx(wxTheKeyboardHook);
+    }
 }
 
 #endif // !__WXMICROWIN__
@@ -6269,6 +6318,21 @@ const wxChar *wxGetMessageName(int message)
         case 0x011F: return wxT("WM_MENUSELECT");
         case 0x0120: return wxT("WM_MENUCHAR");
         case 0x0121: return wxT("WM_ENTERIDLE");
+
+        case 0x0127: return wxT("WM_CHANGEUISTATE");
+        case 0x0128: return wxT("WM_UPDATEUISTATE");
+        case 0x0129: return wxT("WM_QUERYUISTATE");
+
+        case 0x0132: return wxT("WM_CTLCOLORMSGBOX");
+        case 0x0133: return wxT("WM_CTLCOLOREDIT");
+        case 0x0134: return wxT("WM_CTLCOLORLISTBOX");
+        case 0x0135: return wxT("WM_CTLCOLORBTN");
+        case 0x0136: return wxT("WM_CTLCOLORDLG");
+        case 0x0137: return wxT("WM_CTLCOLORSCROLLBAR");
+        case 0x0138: return wxT("WM_CTLCOLORSTATIC");
+
+        case 0x01E1: return wxT("MN_GETHMENU");
+
         case 0x0200: return wxT("WM_MOUSEMOVE");
         case 0x0201: return wxT("WM_LBUTTONDOWN");
         case 0x0202: return wxT("WM_LBUTTONUP");

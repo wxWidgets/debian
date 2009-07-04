@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2006-10-02
-// RCS-ID:      $Id: richtextfontpage.cpp 49946 2007-11-14 14:22:56Z JS $
+// RCS-ID:      $Id: richtextfontpage.cpp 56993 2008-11-28 12:47:00Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,6 +41,10 @@ BEGIN_EVENT_TABLE( wxRichTextFontPage, wxPanel )
     EVT_CHECKBOX( ID_RICHTEXTFONTPAGE_STRIKETHROUGHCTRL, wxRichTextFontPage::OnStrikethroughctrlClick )
 
     EVT_CHECKBOX( ID_RICHTEXTFONTPAGE_CAPSCTRL, wxRichTextFontPage::OnCapsctrlClick )
+
+    EVT_CHECKBOX( ID_RICHTEXTFONTPAGE_SUPERSCRIPT, wxRichTextFontPage::OnRichtextfontpageSuperscriptClick )
+
+    EVT_CHECKBOX( ID_RICHTEXTFONTPAGE_SUBSCRIPT, wxRichTextFontPage::OnRichtextfontpageSubscriptClick )
 
 ////@end wxRichTextFontPage event table entries
 
@@ -81,6 +85,8 @@ void wxRichTextFontPage::Init()
     m_colourCtrl = NULL;
     m_strikethroughCtrl = NULL;
     m_capitalsCtrl = NULL;
+    m_superscriptCtrl = NULL;
+    m_subscriptCtrl = NULL;
     m_previewCtrl = NULL;
 ////@end wxRichTextFontPage member initialisation
 }
@@ -230,6 +236,20 @@ void wxRichTextFontPage::CreateControls()
         m_capitalsCtrl->SetToolTip(_("Check to show the text in capitals."));
     itemBoxSizer26->Add(m_capitalsCtrl, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
+    m_superscriptCtrl = new wxCheckBox( itemPanel1, ID_RICHTEXTFONTPAGE_SUPERSCRIPT, _("Supe&rscript"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE );
+    m_superscriptCtrl->SetValue(false);
+    m_superscriptCtrl->SetHelpText(_("Check to show the text in superscript."));
+    if (wxRichTextFontPage::ShowToolTips())
+        m_superscriptCtrl->SetToolTip(_("Check to show the text in superscript."));
+    itemBoxSizer26->Add(m_superscriptCtrl, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_subscriptCtrl = new wxCheckBox( itemPanel1, ID_RICHTEXTFONTPAGE_SUBSCRIPT, _("Subscrip&t"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE );
+    m_subscriptCtrl->SetValue(false);
+    m_subscriptCtrl->SetHelpText(_("Check to show the text in subscript."));
+    if (wxRichTextFontPage::ShowToolTips())
+        m_subscriptCtrl->SetToolTip(_("Check to show the text in subscript."));
+    itemBoxSizer26->Add(m_subscriptCtrl, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
     itemBoxSizer3->Add(5, 5, 0, wxALIGN_CENTER_HORIZONTAL, 5);
 
     m_previewCtrl = new wxRichTextFontPreviewCtrl( itemPanel1, ID_RICHTEXTFONTPAGE_PREVIEWCTRL, wxDefaultPosition, wxSize(100, 60), 0 );
@@ -352,7 +372,7 @@ bool wxRichTextFontPage::TransferDataFromWindow()
     }
     else
         attr->SetFlags(attr->GetFlags() & (~ wxTEXT_ATTR_TEXT_COLOUR));
-        
+
     if (m_strikethroughCtrl->Get3StateValue() != wxCHK_UNDETERMINED)
     {
         attr->SetTextEffectFlags(attr->GetTextEffectFlags() | wxTEXT_ATTR_EFFECT_STRIKETHROUGH);
@@ -366,11 +386,30 @@ bool wxRichTextFontPage::TransferDataFromWindow()
     if (m_capitalsCtrl->Get3StateValue() != wxCHK_UNDETERMINED)
     {
         attr->SetTextEffectFlags(attr->GetTextEffectFlags() | wxTEXT_ATTR_EFFECT_CAPITALS);
-    
+
         if (m_capitalsCtrl->Get3StateValue() == wxCHK_CHECKED)
             attr->SetTextEffects(attr->GetTextEffects() | wxTEXT_ATTR_EFFECT_CAPITALS);
         else
             attr->SetTextEffects(attr->GetTextEffects() & ~wxTEXT_ATTR_EFFECT_CAPITALS);
+    }
+
+    if (m_superscriptCtrl->Get3StateValue() == wxCHK_CHECKED)
+    {
+        attr->SetTextEffectFlags(attr->GetTextEffectFlags() | wxTEXT_ATTR_EFFECT_SUPERSCRIPT);
+        attr->SetTextEffects(attr->GetTextEffects() | wxTEXT_ATTR_EFFECT_SUPERSCRIPT);
+        attr->SetTextEffects(attr->GetTextEffects() & ~wxTEXT_ATTR_EFFECT_SUBSCRIPT);
+    }
+    else if (m_subscriptCtrl->Get3StateValue() == wxCHK_CHECKED)
+    {
+        attr->SetTextEffectFlags(attr->GetTextEffectFlags() | wxTEXT_ATTR_EFFECT_SUBSCRIPT);
+        attr->SetTextEffects(attr->GetTextEffects() | wxTEXT_ATTR_EFFECT_SUBSCRIPT);
+        attr->SetTextEffects(attr->GetTextEffects() & ~wxTEXT_ATTR_EFFECT_SUPERSCRIPT);
+    }
+    else
+    {
+        // If they are undetermined, we don't want to include these flags in the text effects - the objects
+        // should retain their original style.
+        attr->SetTextEffectFlags(attr->GetTextEffectFlags() & ~(wxTEXT_ATTR_EFFECT_SUBSCRIPT|wxTEXT_ATTR_EFFECT_SUPERSCRIPT) );
     }
 
     return true;
@@ -445,7 +484,7 @@ bool wxRichTextFontPage::TransferDataToWindow()
 
     if (attr->HasTextColour())
     {
-        m_colourCtrl->SetBackgroundColour(attr->GetTextColour());
+        m_colourCtrl->SetColour(attr->GetTextColour());
         m_colourPresent = true;
     }
 
@@ -470,11 +509,37 @@ bool wxRichTextFontPage::TransferDataToWindow()
         }
         else
             m_capitalsCtrl->Set3StateValue(wxCHK_UNDETERMINED);
+
+        if ( attr->GetTextEffectFlags() & (wxTEXT_ATTR_EFFECT_SUPERSCRIPT | wxTEXT_ATTR_EFFECT_SUBSCRIPT) )
+        {
+            if (attr->GetTextEffects() & wxTEXT_ATTR_EFFECT_SUPERSCRIPT)
+            {
+                m_superscriptCtrl->Set3StateValue(wxCHK_CHECKED);
+                m_subscriptCtrl->Set3StateValue(wxCHK_UNCHECKED);
+            }
+            else if (attr->GetTextEffects() & wxTEXT_ATTR_EFFECT_SUBSCRIPT)
+            {
+                m_superscriptCtrl->Set3StateValue(wxCHK_UNCHECKED);
+                m_subscriptCtrl->Set3StateValue(wxCHK_CHECKED);
+            }
+            else
+            {
+                m_superscriptCtrl->Set3StateValue(wxCHK_UNCHECKED);
+                m_subscriptCtrl->Set3StateValue(wxCHK_UNCHECKED);
+            }
+        }
+        else
+        {
+            m_superscriptCtrl->Set3StateValue(wxCHK_UNDETERMINED);
+            m_subscriptCtrl->Set3StateValue(wxCHK_UNDETERMINED);
+        }
     }
     else
     {
         m_strikethroughCtrl->Set3StateValue(wxCHK_UNDETERMINED);
         m_capitalsCtrl->Set3StateValue(wxCHK_UNDETERMINED);
+        m_superscriptCtrl->Set3StateValue(wxCHK_UNDETERMINED);
+        m_subscriptCtrl->Set3StateValue(wxCHK_UNDETERMINED);
     }
 
     UpdatePreview();
@@ -543,7 +608,7 @@ void wxRichTextFontPage::UpdatePreview()
 
         font.SetUnderlined(underlined);
     }
-    
+
     int textEffects = 0;
 
     if (m_strikethroughCtrl->Get3StateValue() == wxCHK_CHECKED)
@@ -555,6 +620,11 @@ void wxRichTextFontPage::UpdatePreview()
     {
         textEffects |= wxTEXT_ATTR_EFFECT_CAPITALS;
     }
+
+    if ( m_superscriptCtrl->Get3StateValue() == wxCHK_CHECKED )
+        textEffects |= wxTEXT_ATTR_EFFECT_SUPERSCRIPT;
+    else if ( m_subscriptCtrl->Get3StateValue() == wxCHK_CHECKED )
+        textEffects |= wxTEXT_ATTR_EFFECT_SUBSCRIPT;
 
     m_previewCtrl->SetFont(font);
     m_previewCtrl->SetTextEffects(textEffects);
@@ -730,4 +800,26 @@ void wxRichTextFontPage::OnCapsctrlClick( wxCommandEvent& WXUNUSED(event) )
     UpdatePreview();
 }
 
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_RICHTEXTFONTPAGE_SUPERSCRIPT
+ */
 
+void wxRichTextFontPage::OnRichtextfontpageSuperscriptClick( wxCommandEvent& WXUNUSED(event) )
+{
+    if ( m_superscriptCtrl->Get3StateValue() == wxCHK_CHECKED)
+        m_subscriptCtrl->Set3StateValue( wxCHK_UNCHECKED );
+
+    UpdatePreview();
+}
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_RICHTEXTFONTPAGE_SUBSCRIPT
+ */
+
+void wxRichTextFontPage::OnRichtextfontpageSubscriptClick( wxCommandEvent& WXUNUSED(event) )
+{
+    if ( m_subscriptCtrl->Get3StateValue() == wxCHK_CHECKED)
+        m_superscriptCtrl->Set3StateValue( wxCHK_UNCHECKED );
+
+    UpdatePreview();
+}

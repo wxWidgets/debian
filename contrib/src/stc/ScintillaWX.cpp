@@ -9,7 +9,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: ScintillaWX.cpp 44266 2007-01-20 03:26:34Z RD $
+// RCS-ID:      $Id: ScintillaWX.cpp 57851 2009-01-06 09:39:13Z SC $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ void  wxSTCDropTarget::OnLeave() {
 #define param2 -1 // wxWindow's 2nd param is ID
 #endif
 
-#include <wx/dcbuffer.h>
+#include "wx/dcbuffer.h"
 
 class wxSTCCallTip : public wxSTCCallTipBase {
 public:
@@ -537,6 +537,8 @@ void ScintillaWX::Paste() {
 
 void ScintillaWX::CopyToClipboard(const SelectionText& st) {
 #if wxUSE_CLIPBOARD
+    if ( !st.len )
+        return;
     if (wxTheClipboard->Open()) {
         wxTheClipboard->UsePrimarySelection(false);
         wxString text = wxTextBuffer::Translate(stc2wx(st.s, st.len-1));
@@ -680,11 +682,15 @@ bool ScintillaWX::DestroySystemCaret() {
 //----------------------------------------------------------------------
 
 
-long ScintillaWX::DefWndProc(unsigned int /*iMessage*/, unsigned long /*wParam*/, long /*lParam*/) {
+sptr_t ScintillaWX::DefWndProc(unsigned int /*iMessage*/,
+                               uptr_t /*wParam*/,
+                               sptr_t /*lParam*/) {
     return 0;
 }
 
-long ScintillaWX::WndProc(unsigned int iMessage, unsigned long wParam, long lParam) {
+sptr_t ScintillaWX::WndProc(unsigned int iMessage,
+                            uptr_t wParam,
+                            sptr_t lParam) {
       switch (iMessage) {
       case SCI_CALLTIPSHOW: {
           // NOTE: This is copied here from scintilla/src/ScintillaBase.cxx

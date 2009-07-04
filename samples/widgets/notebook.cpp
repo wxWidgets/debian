@@ -4,7 +4,7 @@
 // Purpose:     Part of the widgets sample showing book controls
 // Author:      Vadim Zeitlin, Wlodzimierz ABX Skiba
 // Created:     06.04.01
-// Id:          $Id: notebook.cpp 43755 2006-12-03 13:43:44Z VZ $
+// Id:          $Id: notebook.cpp 51519 2008-02-03 13:48:11Z VZ $
 // Copyright:   (c) 2001 Vadim Zeitlin, 2006 Wlodzimierz Skiba
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ enum Orient
 class BookWidgetsPage : public WidgetsPage
 {
 public:
-    BookWidgetsPage(WidgetsBookCtrl *book, wxImageList *imaglist, char* icon[]);
+    BookWidgetsPage(WidgetsBookCtrl *book, wxImageList *imaglist, const char* icon[]);
     virtual ~BookWidgetsPage();
 
     virtual wxControl *GetWidget() const { return m_book; }
@@ -192,7 +192,7 @@ END_EVENT_TABLE()
 // implementation
 // ============================================================================
 
-BookWidgetsPage::BookWidgetsPage(WidgetsBookCtrl *book, wxImageList *imaglist, char* icon[])
+BookWidgetsPage::BookWidgetsPage(WidgetsBookCtrl *book, wxImageList *imaglist, const char* icon[])
                 :WidgetsPage(book, imaglist, icon)
 {
     // init everything

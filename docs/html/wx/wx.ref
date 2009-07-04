@@ -2414,6 +2414,7 @@ conversionandwxstring wx_mbconvclasses.html subsection ??
 wxcalendarctrlgetheadercolourfg wx_wxcalendarctrl.html subsection ??
 wxdcgetpixel wx_wxdc.html subsection ??
 wxdialogdtor wx_wxdialog.html subsection ??
+wxdocmanagermakenewdocumentname wx_wxdocmanager.html subsection ??
 wxlocaledtor wx_wxlocale.html subsection ??
 wxmenuitemisseparator wx_wxmenuitem.html subsection ??
 wxprintoutmapscreensizetopaper wx_wxprintout.html subsection ??
@@ -3170,6 +3171,7 @@ wxautomationobjectdtor wx_wxautomationobject.html subsection ??
 wxdataviewtextrenderer wx_wxdataviewtextrenderer.html section ??
 wxhtmllinkinfogetevent wx_wxhtmllinkinfo.html subsection ??
 wxmimetypesmanagerdtor wx_wxmimetypesmanager.html subsection ??
+wxsizercomputefittingclientsize wx_wxsizer.html subsection ??
 wxslidersetthumblength wx_wxslider.html subsection ??
 wxwizardgetcurrentpage wx_wxwizard.html subsection ??
 wxxmlresourcegetdomain wx_wxxmlresource.html subsection ??
@@ -3435,6 +3437,7 @@ wxhtmlwindowsetborders wx_wxhtmlwindow.html subsection ??
 wxhtmlwinparsersetlink wx_wxhtmlwinparser.html subsection ??
 wxmenubarctor wx_wxmenubar.html subsection ??
 wxmouseeventleftisdown wx_wxmouseevent.html subsection ??
+wxsizercomputefittingwindowsize wx_wxsizer.html subsection ??
 wxstringalloc wx_wxstring.html subsection ??
 wxonblockexit wx_miscellany.html subsection ??
 wxcsconvclass wx_mbconvclasses.html subsection ??
@@ -4591,7 +4594,6 @@ wxgenericdirctrlgetfilterlistctrl wx_wxgenericdirctrl.html subsection ??
 wxrichtextbufferbeginsymbolbullet wx_wxrichtextbuffer.html subsection ??
 wxrichtextxmlhandlergetparamvalue wx_wxrichtextxmlhandler.html subsection ??
 wxsizerisshown wx_wxsizer.html subsection ??
-wxsockaddresssockaddrlen wx_wxsockaddress.html subsection ??
 wxtextattrctor wx_wxtextattr.html subsection ??
 wxtreectrlgetitembackgroundcolour wx_wxtreectrl.html subsection ??
 wxuri wx_wxuri.html section ??
@@ -5215,6 +5217,7 @@ wxfontgetweight wx_wxfont.html subsection ??
 wxfontmapperwxfontmapper wx_wxfontmapper.html subsection ??
 wxmenubarinsert wx_wxmenubar.html subsection ??
 wxprintdatactor wx_wxprintdata.html subsection ??
+wxrectintersect wx_wxrect.html subsection ??
 wxstreamtotextredirector wx_wxstreamtotextredirector.html section ??
 wxtoplevelwindowmaximize wx_wxtoplevelwindow.html subsection ??
 wxvalidatordtor wx_wxvalidator.html subsection ??
@@ -5609,6 +5612,7 @@ wxcolourdatagetchoosefull wx_wxcolourdata.html subsection ??
 wxgenericdirctrlgetrootid wx_wxgenericdirctrl.html subsection ??
 wxrichtextprintingsetpagesetupdata wx_wxrichtextprinting.html subsection ??
 wxstreambufferflushbuffer wx_wxstreambuffer.html subsection ??
+wxxmlnodeinsertchildafter wx_wxxmlnode.html subsection ??
 wxapptraitscreaterenderer wx_wxapptraits.html subsection ??
 wxartprovidercreatebitmap wx_wxartprovider.html subsection ??
 wxcheckboxcreate wx_wxcheckbox.html subsection ??
@@ -6920,6 +6924,7 @@ wxgridsetdefaultcellbackgroundcolour wx_wxgrid.html subsection ??
 wxhtmlparsergetfs wx_wxhtmlparser.html subsection ??
 wxmenuitemgetfont wx_wxmenuitem.html subsection ??
 wxrichtextstylelistboxgetstylesheet wx_wxrichtextstylelistbox.html subsection ??
+wxsizerflagsreservespaceevenifhidden wx_wxsizerflags.html subsection ??
 wxwizardsetborder wx_wxwizard.html subsection ??
 unicodeoutsidewxw wx_unicode.html subsection ??
 htmltagssupported wx_wxhtml.html subsection ??
@@ -7017,6 +7022,8 @@ wximagehandlergetimagecount wx_wximagehandler.html subsection ??
 wxlayoutalgorithm wx_wxlayoutalgorithm.html section ??
 wxmenuitemsetmenu wx_wxmenuitem.html subsection ??
 wxsplitterwindowupdatesize wx_wxsplitterwindow.html subsection ??
+wxwindowclienttowindowsize wx_wxwindow.html subsection ??
+wxwindowwindowtoclientsize wx_wxwindow.html subsection ??
 wxcontexthelpctor wx_wxcontexthelp.html subsection ??
 wxdbctor wx_wxdb.html subsection ??
 wxhtmlwinparsersetfontsize wx_wxhtmlwinparser.html subsection ??

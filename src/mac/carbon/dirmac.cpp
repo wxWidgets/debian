@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     08.12.99
-// RCS-ID:      $Id: dirmac.cpp 42011 2006-10-14 16:02:39Z SC $
+// RCS-ID:      $Id: dirmac.cpp 56405 2008-10-17 19:13:33Z SC $
 // Copyright:   (c) 1999 Stefan Csomor <csomor@advanced.ch>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -115,6 +115,8 @@ bool wxDirData::Read(wxString *filename)
         err = wxMacPathToFSRef( m_dirname , &dirRef ) ;
         if ( err == noErr )
         {
+            Boolean isFolder, wasAliased;
+            FSResolveAliasFile( &dirRef, TRUE, &isFolder, &wasAliased );
             err = FSOpenIterator(&dirRef, kFSIterateFlat, &m_iterator);
         }
         if ( err )
@@ -125,6 +127,7 @@ bool wxDirData::Read(wxString *filename)
     }
 
     wxString name ;
+    wxString lowerfilespec = m_filespec.Lower();
 
     while( noErr == err )
     {
@@ -146,6 +149,7 @@ bool wxDirData::Read(wxString *filename)
             break ;
 
         name = wxMacHFSUniStrToString( &uniname ) ;
+        wxString lowername = name.Lower();
 
         if ( ( name == wxT(".") || name == wxT("..") ) && !(m_flags & wxDIR_DOTDOT) )
             continue;
@@ -153,6 +157,13 @@ bool wxDirData::Read(wxString *filename)
         if ( ( name[0U] == '.' ) && !(m_flags & wxDIR_HIDDEN ) )
             continue ;
 
+        Boolean isFolder, wasAliased;
+        FSResolveAliasFile( &fileRef, TRUE, &isFolder, &wasAliased );
+        if ( wasAliased )
+        {
+            FSGetCatalogInfo( &fileRef, kFSCatInfoNodeFlags | kFSCatInfoFinderInfo, &catalogInfo, NULL, NULL, NULL );
+        }
+    
         if ( (((FileInfo*)&catalogInfo.finderInfo)->finderFlags & kIsInvisible ) && !(m_flags & wxDIR_HIDDEN ) )
             continue ;
 
@@ -167,7 +178,7 @@ bool wxDirData::Read(wxString *filename)
         if ( m_filespec.empty() || m_filespec == wxT("*.*") || m_filespec == wxT("*") )
         {
         }
-        else if ( !wxMatchWild(m_filespec, name , false) )
+        else if ( !wxMatchWild(lowerfilespec, lowername , false) )
         {
             continue ;
         }

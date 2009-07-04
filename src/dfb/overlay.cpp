@@ -3,7 +3,7 @@
 // Purpose:     wxOverlay implementation for wxDFB
 // Author:      Vaclav Slavik
 // Created:     2006-10-20
-// RCS-ID:      $Id: overlay.cpp 43192 2006-11-08 12:17:56Z VS $
+// RCS-ID:      $Id: overlay.cpp 54748 2008-07-21 17:01:35Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,6 +23,8 @@
     #pragma hdrstop
 #endif
 
+#include "wx/dcclient.h"
+#include "wx/window.h"
 #include "wx/private/overlay.h"
 #include "wx/dfb/private.h"
 

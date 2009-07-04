@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxWizard
 // Author:      Vaclav Slavik
 // Created:     2003/03/01
-// RCS-ID:      $Id: xh_wizrd.cpp 38920 2006-04-26 08:21:31Z ABX $
+// RCS-ID:      $Id: xh_wizrd.cpp 55976 2008-09-30 11:51:28Z VS $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -49,6 +49,7 @@ wxObject *wxWizardXmlHandler::DoCreateResource()
                     GetText(wxT("title")),
                     GetBitmap(),
                     GetPosition());
+        SetupWindow(wiz);
 
         wxWizard *old = m_wizard;
         m_wizard = wiz;

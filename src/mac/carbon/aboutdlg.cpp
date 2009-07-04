@@ -3,7 +3,7 @@
 // Purpose:     native wxAboutBox() implementation for wxMac
 // Author:      Vadim Zeitlin
 // Created:     2006-10-08
-// RCS-ID:      $Id: aboutdlg.cpp 41695 2006-10-08 12:07:03Z VZ $
+// RCS-ID:      $Id: aboutdlg.cpp 52457 2008-03-12 21:28:03Z VS $
 // Copyright:   (c) 2006 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,10 @@ void wxAboutBox(const wxAboutDialogInfo& info)
         opts.Set(kHIAboutBoxNameKey, info.GetName());
 
         if ( info.HasVersion() )
-            opts.Set(kHIAboutBoxVersionKey, info.GetVersion());
+        {
+            opts.Set(kHIAboutBoxVersionKey,
+                     wxString::Format(_("Version %s"), info.GetVersion().c_str()));
+        }
 
         if ( info.HasCopyright() )
             opts.Set(kHIAboutBoxCopyrightKey, info.GetCopyright());

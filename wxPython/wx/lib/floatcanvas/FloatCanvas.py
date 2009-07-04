@@ -1,6 +1,9 @@
+#!/usr/bin/env python
 
 from __future__ import division
-
+import sys
+mac = sys.platform.startswith("darwin")
+ 
 try:
     import numpy as N
 except ImportError:
@@ -10,6 +13,7 @@ from time import clock
 import wx
 
 from Utilities import BBox
+import GUIMode
 
 
 ## A global variable to hold the Pixels per inch that wxWindows thinks is in use
@@ -22,7 +26,7 @@ global FontScale
 class FloatCanvasError(Exception):
     pass
 
-## Create all the mouse events
+## Create all the mouse events -- this is for binding to Objects
 EVT_FC_ENTER_WINDOW = wx.NewEventType()
 EVT_FC_LEAVE_WINDOW = wx.NewEventType()
 EVT_FC_LEFT_DOWN = wx.NewEventType()
@@ -41,7 +45,7 @@ EVT_FC_MOUSEWHEEL = wx.NewEventType()
 EVT_FC_ENTER_OBJECT = wx.NewEventType()
 EVT_FC_LEAVE_OBJECT = wx.NewEventType()
 
-##Create all mouse event binding objects
+##Create all mouse event binding objects -- for binding to the Canvas
 EVT_LEFT_DOWN = wx.PyEventBinder(EVT_FC_LEFT_DOWN)
 EVT_LEFT_UP = wx.PyEventBinder(EVT_FC_LEFT_UP)
 EVT_LEFT_DCLICK = wx.PyEventBinder(EVT_FC_LEFT_DCLICK)
@@ -55,6 +59,7 @@ EVT_MOTION = wx.PyEventBinder(EVT_FC_MOTION)
 EVT_ENTER_WINDOW = wx.PyEventBinder(EVT_FC_ENTER_WINDOW)
 EVT_LEAVE_WINDOW = wx.PyEventBinder(EVT_FC_LEAVE_WINDOW)
 EVT_MOUSEWHEEL = wx.PyEventBinder(EVT_FC_MOUSEWHEEL)
+
 
 class _MouseEvent(wx.PyCommandEvent):
 
@@ -88,43 +93,59 @@ class _MouseEvent(wx.PyCommandEvent):
     def __getattr__(self, name):
         return getattr(self._NativeEvent, name)
 
+## fixme: This should probably be re-factored into a class
+_testBitmap = None
+_testDC = None
 def _cycleidxs(indexcount, maxvalue, step):
 
-    """!
-    Utility function used by _colorGenerator
-
     """
-    
+    Utility function used by _colorGenerator
+    """
+    def colormatch(color):
+        """Return True if the color comes back from the bitmap identically."""
+        if len(color) < 3:
+            return True
+        global _testBitmap, _testDC
+        B = _testBitmap
+        if not mac:
+            dc = _testDC
+        if not B:
+            B = _testBitmap = wx.EmptyBitmap(1, 1)
+            if not mac:
+                dc = _testDC = wx.MemoryDC()
+        if mac:
+            dc = wx.MemoryDC()
+        dc.SelectObject(B)
+        dc.SetBackground(wx.BLACK_BRUSH)
+        dc.Clear()
+        dc.SetPen(wx.Pen(wx.Color(*color), 4))
+        dc.DrawPoint(0,0)
+        if mac:
+            del dc
+            pdata = wx.AlphaPixelData(B)
+            pacc = pdata.GetPixels()
+            pacc.MoveTo(pdata, 0, 0)
+            outcolor = pacc.Get()[:3]
+        else:
+            outcolor = dc.GetPixel(0,0)
+        return outcolor == color
+ 
     if indexcount == 0:
         yield ()
     else:
         for idx in xrange(0, maxvalue, step):
             for tail in _cycleidxs(indexcount - 1, maxvalue, step):
-                yield (idx, ) + tail
-
+                color = (idx, ) + tail
+                if not colormatch(color):
+                    continue
+                yield color
 def _colorGenerator():
 
-    """!
-
+    """
     Generates a series of unique colors used to do hit-tests with the Hit
     Test bitmap
     """
-
-    depth = wx.GetDisplayDepth()
-##    ##there have been problems with 16 bbp displays, to I'm disabling this for now.
-##    if depth == 16:
-##        print "Warning: There have been problems with hit-testing on 16bbp displays"
-##        step = 8
-    if depth >= 24:
-        step = 1
-    else:
-        msg= ["ColorGenerator does not work with depth = %s" % depth]
-        msg.append("It is required for hit testing -- binding events to mouse")
-        msg.append("actions on objects on the Canvas.")
-        msg.append("Please set your display to 24bit")
-        msg.append("Alternatively, the code could be adapted to 16 bit if that's required")
-        raise FloatCanvasError(msg)
-    return _cycleidxs(indexcount=3, maxvalue=256, step=step)
+    return _cycleidxs(indexcount=3, maxvalue=256, step=1)
 
 class DrawObject:
     """!
@@ -232,6 +253,7 @@ class DrawObject:
 #        return BBox.fromPoints(Points)
 
     def Bind(self, Event, CallBackFun):
+        ##fixme: Way too much Canvas Manipulation here!
         self.CallBackFuncs[Event] = CallBackFun
         self.HitAble = True
         self._Canvas.UseHitTest = True
@@ -253,23 +275,24 @@ class DrawObject:
 
     def UnBindAll(self):
         ## fixme: this only removes one from each list, there could be more.
+        ## + patch by Tim Ansel
         if self._Canvas.HitDict:
-            for List in self._Canvas.HitDict.itervalues():
+            for Event in self._Canvas.HitDict.itervalues():
                 try:
-                   List.remove(self)
-                except ValueError:
+                    del Event[self.HitColor]
+                except KeyError:
                     pass
         self.HitAble = False
 
 
-    def SetBrush(self,FillColor,FillStyle):
+    def SetBrush(self, FillColor, FillStyle):
         if FillColor is None or FillStyle is None:
             self.Brush = wx.TRANSPARENT_BRUSH
             ##fixme: should I really re-set the style?
             self.FillStyle = "Transparent"
         else:
             self.Brush = self.BrushList.setdefault( (FillColor,FillStyle),  wx.Brush(FillColor,self.FillStyleList[FillStyle] ) )
-
+            #print "Setting Brush, BrushList length:", len(self.BrushList)
     def SetPen(self,LineColor,LineStyle,LineWidth):
         if (LineColor is None) or (LineStyle is None):
             self.Pen = wx.TRANSPARENT_PEN
@@ -357,7 +380,7 @@ class Group(DrawObject):
             for obj in self.ObjectList[1:]:
                 BB.Merge(obj.BoundingBox)
         else:
-            BB = None
+            BB = BBox.NullBBox()
         self.BoundingBox = BB
 
     def SetColor(self, Color):
@@ -378,6 +401,37 @@ class Group(DrawObject):
     def SetFillStyle(self, FillStyle):
         for o in self.ObjectList:
             o.SetFillStyle(FillStyle)
+    def Move(self, Delta):
+        for obj in self.ObjectList:
+            obj.Move(Delta)
+
+    def Bind(self, Event, CallBackFun):
+        ## slight variation on DrawObject Bind Method:
+        ## fixme: There is a lot of repeated code from the DrawObject method, but
+        ## it all needs a l ot of cleaning up anyway.
+        self.CallBackFuncs[Event] = CallBackFun
+        self.HitAble = True
+        self._Canvas.UseHitTest = True
+        if self.InForeground and self._Canvas._ForegroundHTBitmap is None:
+            self._Canvas.MakeNewForegroundHTBitmap()
+        elif self._Canvas._HTBitmap is None:
+            self._Canvas.MakeNewHTBitmap()
+        if not self.HitColor:
+            if not self._Canvas.HitColorGenerator:
+                self._Canvas.HitColorGenerator = _colorGenerator()
+                self._Canvas.HitColorGenerator.next() # first call to prevent the background color from being used.
+            # Set all contained objects to the same Hit color:
+            self.HitColor = self._Canvas.HitColorGenerator.next()
+        for obj in self.ObjectList:
+            obj.SetHitPen(self.HitColor, self.HitLineWidth)
+            obj.SetHitBrush(self.HitColor)
+            obj.HitAble = True
+        # put the object in the hit dict, indexed by it's color
+        if not self._Canvas.HitDict:
+            self._Canvas.MakeHitDict()
+        self._Canvas.HitDict[Event][self.HitColor] = (self) # put the object in the hit dict, indexed by it's color 
+
+
     def _Draw(self, dc , WorldToPixel, ScaleWorldToPixel = None, HTdc=None):
         for obj in self.ObjectList:
             obj._Draw(dc, WorldToPixel, ScaleWorldToPixel, HTdc)
@@ -400,7 +454,7 @@ class ColorOnlyMixin:
 class LineOnlyMixin:
     """
 
-    Mixin class for objects that have just one color, rather than a fill
+    Mixin class for objects that have just a line, rather than a fill
     color and line color
 
     """
@@ -444,10 +498,8 @@ class LineAndFillMixin(LineOnlyMixin):
 
 class XYObjectMixin:
     """
-
     This is a mixin class that provides some methods suitable for use
     with objects that have a single (x,y) coordinate pair.
-
     """
 
     def Move(self, Delta ):
@@ -467,7 +519,6 @@ class XYObjectMixin:
 
     def CalcBoundingBox(self):
         ## This may get overwritten in some subclasses
-        self.BoundingBox = N.array( (self.XY, self.XY), N.float )
         self.BoundingBox = BBox.asBBox((self.XY, self.XY))
 
     def SetPoint(self, xy):
@@ -1015,6 +1066,10 @@ class RectEllipse(XYObjectMixin, LineAndFillMixin, DrawObject):
 
         self.HitLineWidth = max(LineWidth,self.MinHitLineWidth)
 
+        # these define the behaviour when zooming makes the objects really small.
+        self.MinSize = 1
+        self.DisappearWhenSmall = True
+
         self.SetPen(LineColor,LineStyle,LineWidth)
         self.SetBrush(FillColor,FillStyle)
 
@@ -1024,7 +1079,6 @@ class RectEllipse(XYObjectMixin, LineAndFillMixin, DrawObject):
         self.WH = N.array( WH, N.float)
         self.WH.shape = (2,)
         self.CalcBoundingBox()
-
 
     def CalcBoundingBox(self):
         # you need this in case Width or Height are negative
@@ -1041,10 +1095,11 @@ class Rectangle(RectEllipse):
                                     WorldToPixel,
                                     ScaleWorldToPixel,
                                     HTdc)
-        dc.DrawRectanglePointSize(XY, WH)
-        if HTdc and self.HitAble:
-            HTdc.DrawRectanglePointSize(XY, WH)
-
+        WH[N.abs(WH) < self.MinSize] = self.MinSize
+        if not( self.DisappearWhenSmall and N.abs(WH).min() <=  self.MinSize) : # don't try to draw it too tiny
+            dc.DrawRectanglePointSize(XY, WH)
+            if HTdc and self.HitAble:
+                HTdc.DrawRectanglePointSize(XY, WH)
 
 
 class Ellipse(RectEllipse):
@@ -1054,26 +1109,62 @@ class Ellipse(RectEllipse):
                                     WorldToPixel,
                                     ScaleWorldToPixel,
                                     HTdc)
-        dc.DrawEllipsePointSize(XY, WH)
-        if HTdc and self.HitAble:
-            HTdc.DrawEllipsePointSize(XY, WH)
+        WH[N.abs(WH) < self.MinSize] = self.MinSize
+        if not( self.DisappearWhenSmall and N.abs(WH).min() <=  self.MinSize) : # don't try to draw it too tiny
+            dc.DrawEllipsePointSize(XY, WH)
+            if HTdc and self.HitAble:
+                HTdc.DrawEllipsePointSize(XY, WH)
 
-class Circle(Ellipse):
-    ## fixme: this should probably be use the DC.DrawCircle!
-    def __init__(self, XY, Diameter, **kwargs):
-        self.Center = N.array(XY, N.float)
-        Diameter = float(Diameter)
-        RectEllipse.__init__(self ,
-                             self.Center - Diameter/2.0,
-                             (Diameter, Diameter),
-                             **kwargs)
+class Circle(XYObjectMixin, LineAndFillMixin, DrawObject):
+    def __init__(self, XY, Diameter, 
+                 LineColor = "Black",
+                 LineStyle = "Solid",
+                 LineWidth    = 1,
+                 FillColor    = None,
+                 FillStyle    = "Solid",
+                 InForeground = False):
+        DrawObject.__init__(self, InForeground)
+
+        self.XY = N.array(XY, N.float)
+        self.WH = N.array((Diameter/2, Diameter/2), N.float) # just to keep it compatible with others
+        self.CalcBoundingBox()
+
+        self.LineColor = LineColor
+        self.LineStyle = LineStyle
+        self.LineWidth = LineWidth
+        self.FillColor = FillColor
+        self.FillStyle = FillStyle
+
+        self.HitLineWidth = max(LineWidth,self.MinHitLineWidth)
+
+        # these define the behaviour when zooming makes the objects really small.
+        self.MinSize = 1
+        self.DisappearWhenSmall = True
+
+        self.SetPen(LineColor,LineStyle,LineWidth)
+        self.SetBrush(FillColor,FillStyle)
 
     def SetDiameter(self, Diameter):
-        Diameter = float(Diameter)
-        XY = self.Center - (Diameter/2.0)
-        self.SetShape(XY,
-                      (Diameter, Diameter)
-                      )
+        self.WH = N.array((Diameter/2, Diameter/2), N.float) # just to keep it compatible with others
+
+    def CalcBoundingBox(self):
+        # you need this in case Width or Height are negative
+        self.BoundingBox = BBox.fromPoints( (self.XY+self.WH, self.XY-self.WH) )
+        if self._Canvas:
+            self._Canvas.BoundingBoxDirty = True
+
+    def _Draw(self, dc , WorldToPixel, ScaleWorldToPixel, HTdc=None):
+        ( XY, WH ) = self.SetUpDraw(dc,
+                                    WorldToPixel,
+                                    ScaleWorldToPixel,
+                                    HTdc)
+        
+        WH[N.abs(WH) < self.MinSize] = self.MinSize
+        if not( self.DisappearWhenSmall and N.abs(WH).min() <=  self.MinSize) : # don't try to draw it too tiny
+            dc.DrawCirclePoint(XY, WH[0])
+            if HTdc and self.HitAble:
+                HTdc.DrawCirclePoint(XY, WH[0])
+
 
 class TextObjectMixin(XYObjectMixin):
     """
@@ -1251,6 +1342,8 @@ class Text(TextObjectMixin, DrawObject, ):
             HTdc.DrawRectanglePointSize(XY, (self.TextWidth, self.TextHeight) )
 
 class ScaledText(TextObjectMixin, DrawObject, ):
+    ##fixme: this can be depricated and jsut use ScaledTextBox with different defaults.
+    
     """
     This class creates a text object that is scaled when zoomed.  It is
     placed at the coordinates, x,y. the "Position" argument is a two
@@ -1353,7 +1446,8 @@ class ScaledText(TextObjectMixin, DrawObject, ):
         # Windows and OS-X seem to be better behaved in this regard.
         # They may not draw it, but they don't crash either!
         self.MaxFontSize = 1000
-
+        self.MinFontSize = 1 # this can be changed to set a minimum size
+        self.DisappearWhenSmall = True
         self.ShiftFun = self.ShiftFunDict[Position]
 
         self.CalcBoundingBox()
@@ -1387,25 +1481,30 @@ class ScaledText(TextObjectMixin, DrawObject, ):
         ## If so, limit it. Would it be better just to not draw it?
         ## note that this limit is dependent on how much memory you have, etc.
         Size = min(Size, self.MaxFontSize)
-        self.SetFont(Size, self.Family, self.Style, self.Weight, self.Underlined, self.FaceName)
-        dc.SetFont(self.Font)
-        dc.SetTextForeground(self.Color)
-        if self.BackgroundColor:
-            dc.SetBackgroundMode(wx.SOLID)
-            dc.SetTextBackground(self.BackgroundColor)
-        else:
-            dc.SetBackgroundMode(wx.TRANSPARENT)
-        (w,h) = dc.GetTextExtent(self.String)
-        # compute the shift, and adjust the coordinates, if neccesary
-        # This had to be put in here, because it changes with Zoom, as
-        # fonts don't scale exactly.
-        xy = self.ShiftFun(X, Y, w, h)
+        Size = max(Size, self.MinFontSize) # smallest size you want - default to 0
 
-        dc.DrawTextPoint(self.String, xy)
-        if HTdc and self.HitAble:
-            HTdc.SetPen(self.HitPen)
-            HTdc.SetBrush(self.HitBrush)
-            HTdc.DrawRectanglePointSize(xy, (w, h) )
+        # Draw the Text
+        if not( self.DisappearWhenSmall and Size <=  self.MinFontSize) : # don't try to draw a zero sized font!
+            self.SetFont(Size, self.Family, self.Style, self.Weight, self.Underlined, self.FaceName)
+            dc.SetFont(self.Font)
+            dc.SetTextForeground(self.Color)
+            if self.BackgroundColor:
+                dc.SetBackgroundMode(wx.SOLID)
+                dc.SetTextBackground(self.BackgroundColor)
+            else:
+                dc.SetBackgroundMode(wx.TRANSPARENT)
+            (w,h) = dc.GetTextExtent(self.String)
+            # compute the shift, and adjust the coordinates, if neccesary
+            # This had to be put in here, because it changes with Zoom, as
+            # fonts don't scale exactly.
+            xy = self.ShiftFun(X, Y, w, h)
+
+            dc.DrawTextPoint(self.String, xy)
+
+            if HTdc and self.HitAble:
+                HTdc.SetPen(self.HitPen)
+                HTdc.SetBrush(self.HitBrush)
+                HTdc.DrawRectanglePointSize(xy, (w, h) )
 
 class ScaledTextBox(TextObjectMixin, DrawObject):
     """
@@ -1538,6 +1637,9 @@ class ScaledTextBox(TextObjectMixin, DrawObject):
         # They may not draw it, but they don't crash either!
 
         self.MaxFontSize = 1000
+        self.MinFontSize = 1 # this can be changed to set a larger minimum size
+        self.DisappearWhenSmall = True
+
         self.ShiftFun = self.ShiftFunDict[Position]
 
         self.String = String
@@ -1689,11 +1791,8 @@ class ScaledTextBox(TextObjectMixin, DrawObject):
         ## If so, limit it. Would it be better just to not draw it?
         ## note that this limit is dependent on how much memory you have, etc.
         Size = min(Size, self.MaxFontSize)
-
-        self.SetFont(Size, self.Family, self.Style, self.Weight, self.Underlined, self.FaceName)
-        dc.SetFont(self.Font)
-        dc.SetTextForeground(self.Color)
-        dc.SetBackgroundMode(wx.TRANSPARENT)
+        
+        Size = max(Size, self.MinFontSize) # smallest size you want - default to 1
 
         # Draw The Box
         if (self.LineStyle and self.LineColor) or self.BackgroundColor:
@@ -1702,7 +1801,12 @@ class ScaledTextBox(TextObjectMixin, DrawObject):
             dc.DrawRectanglePointSize(xy , wh)
 
         # Draw the Text
-        dc.DrawTextList(self.Words, Points)
+        if not( self.DisappearWhenSmall and Size <=  self.MinFontSize) : # don't try to draw a zero sized font!
+            self.SetFont(Size, self.Family, self.Style, self.Weight, self.Underlined, self.FaceName)
+            dc.SetFont(self.Font)
+            dc.SetTextForeground(self.Color)
+            dc.SetBackgroundMode(wx.TRANSPARENT)
+            dc.DrawTextList(self.Words, Points)
 
         # Draw the hit box.
         if HTdc and self.HitAble:
@@ -1853,9 +1957,9 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
         ##fixme: should this have a y = -1 to shift to y-up?
         self.BmpScale = self.bmpWH / self.WH
 
-        print "bmpWH:", self.bmpWH
-        print "Width, Height:", self.WH
-        print "self.BmpScale", self.BmpScale
+        #print "bmpWH:", self.bmpWH
+        #print "Width, Height:", self.WH
+        #print "self.BmpScale", self.BmpScale
         self.ShiftFun = self.ShiftFunDict[Position]
         self.CalcBoundingBox()
         self.ScaledBitmap = None # cache of the last existing scaled bitmap
@@ -1890,12 +1994,12 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
         if (self.ScaledBitmap is None) or (self.ScaledBitmap[0] != (0, 0, self.bmpWidth, self.bmpHeight, W, H) ):
         #if True: #fixme: (self.ScaledBitmap is None) or (H <> self.ScaledHeight) :
             self.ScaledHeight = H
-            print "Scaling to:", W, H
+            #print "Scaling to:", W, H
             Img = self.Image.Scale(W, H)
             bmp = wx.BitmapFromImage(Img)
             self.ScaledBitmap = ((0, 0, self.bmpWidth, self.bmpHeight , W, H), bmp)# this defines the cached bitmap
         else:
-            print "Using Cached bitmap"
+            #print "Using Cached bitmap"
             bmp = self.ScaledBitmap[1]
         XY = self.ShiftFun(XY[0], XY[1], W, H)
         dc.DrawBitmapPoint(bmp, XY, True)
@@ -1957,13 +2061,14 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
         Hs = int(scale * Hb + 0.5)
         if (self.ScaledBitmap is None) or (self.ScaledBitmap[0] != (Xb, Yb, Wb, Hb, Ws, Ws) ):
             Img = self.Image.GetSubImage(wx.Rect(Xb, Yb, Wb, Hb))
-            Img.Rescale(Ws, Hs)
+            print "rescaling with High quality"
+            Img.Rescale(Ws, Hs, quality=wx.IMAGE_QUALITY_HIGH)
             bmp = wx.BitmapFromImage(Img)
             self.ScaledBitmap = ((Xb, Yb, Wb, Hb, Ws, Ws), bmp)# this defines the cached bitmap
             #XY = self.ShiftFun(XY[0], XY[1], W, H)
             #fixme: get the shiftfun working!
         else:
-            print "Using cached bitmap"
+            #print "Using cached bitmap"
             ##fixme: The cached bitmap could be used if the one needed is the same scale, but
             ##       a subset of the cached one.
             bmp = self.ScaledBitmap[1]
@@ -1978,15 +2083,16 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
         BBworld = BBox.asBBox(self._Canvas.ViewPortBB)
         ## first see if entire bitmap is displayed:
         if  BBworld.Inside(self.BoundingBox):
-            print "Drawing entire bitmap with old code"
+            #print "Drawing entire bitmap with old code"
             self._DrawEntireBitmap(dc , WorldToPixel, ScaleWorldToPixel, HTdc)
             return None
         elif BBworld.Overlaps(self.BoundingBox):
             #BBbitmap = BBox.fromPoints(self.WorldToBitmap(BBworld))
-            print "Drawing a sub-bitmap"
+            #print "Drawing a sub-bitmap"
             self._DrawSubBitmap(dc , WorldToPixel, ScaleWorldToPixel, HTdc)
         else:
-            print "Not Drawing -- no part of image is showing"
+            #print "Not Drawing -- no part of image is showing"
+            pass
 
 class DotGrid:
     """
@@ -2066,6 +2172,104 @@ class DotGrid:
                     for xy in Points:
                         dc.DrawCircle(xy[0],xy[1], radius)
 
+class Arc(XYObjectMixin, LineAndFillMixin, DrawObject):
+    def __init__(self,
+                 StartXY,
+                 EndXY,
+                 CenterXY,
+                 LineColor = "Black",
+                 LineStyle = "Solid",
+                 LineWidth    = 1,
+                 FillColor    = None,
+                 FillStyle    = "Solid",
+                 InForeground = False):               
+        """
+        Draws an arc of a circle, centered on point CenterXY, from
+        the first point (StartXY) to the second (EndXY).
+
+        The arc is drawn in an anticlockwise direction from the start point to
+        the end point.
+        
+        Parameters:
+                 StartXY : start point
+                 EndXY : end point
+                 CenterXY: center point
+                 LineColor = "Black",
+                 LineStyle = "Solid",
+                 LineWidth    = 1,
+                 FillColor    = None,
+                 FillStyle    = "Solid",
+                 InForeground = False):               
+        
+        """
+
+        DrawObject.__init__(self, InForeground)
+       
+        # There is probably a more elegant way to do this next section
+        # The bounding box just gets set to the WH of a circle, with center at CenterXY
+        # This is suitable for a pie chart as it will be a circle anyway
+        radius = N.sqrt( (StartXY[0]-CenterXY[0])**2 + (StartXY[1]-CenterXY[1])**2 )
+        minX = CenterXY[0]-radius
+        minY = CenterXY[1]-radius
+        maxX = CenterXY[0]+radius
+        maxY = CenterXY[1]+radius      
+        XY = [minX,minY]
+        WH = [maxX-minX,maxY-minY]
+
+        self.XY = N.asarray( XY, N.float).reshape((2,))
+        self.WH = N.asarray( WH, N.float).reshape((2,))
+
+        self.StartXY = N.asarray(StartXY, N.float).reshape((2,))
+        self.CenterXY = N.asarray(CenterXY, N.float).reshape((2,))
+        self.EndXY = N.asarray(EndXY, N.float).reshape((2,))
+
+        #self.BoundingBox = array((self.XY, (self.XY + self.WH)), Float)
+        self.CalcBoundingBox()
+       
+        #Finish the setup; allocate color,style etc. 
+        self.LineColor = LineColor
+        self.LineStyle = LineStyle
+        self.LineWidth = LineWidth
+        self.FillColor = FillColor
+        self.FillStyle = FillStyle
+
+        self.HitLineWidth = max(LineWidth,self.MinHitLineWidth)
+
+        self.SetPen(LineColor, LineStyle, LineWidth)
+        self.SetBrush(FillColor, FillStyle)                  #Why isn't this working ???
+
+    def Move(self, Delta ):
+        """
+
+        Move(Delta): moves the object by delta, where delta is a
+        (dx,dy) pair. Ideally a Numpy array of shape (2,)
+
+        """
+
+        Delta = N.asarray(Delta, N.float)
+        self.XY += Delta
+        self.StartXY += Delta
+        self.CenterXY += Delta
+        self.EndXY += Delta
+        self.BoundingBox += Delta
+
+        if self._Canvas:
+            self._Canvas.BoundingBoxDirty = True
+           
+    def _Draw(self, dc , WorldToPixel, ScaleWorldToPixel, HTdc=None):
+        self.SetUpDraw(dc , WorldToPixel, ScaleWorldToPixel, HTdc)
+        StartXY = WorldToPixel(self.StartXY)
+        EndXY = WorldToPixel(self.EndXY)
+        CenterXY = WorldToPixel(self.CenterXY)
+       
+        dc.DrawArcPoint(StartXY, EndXY, CenterXY)
+        if HTdc and self.HitAble:
+            HTdc.DrawArcPoint(StartXY, EndXY, CenterXY)
+
+    def CalcBoundingBox(self):
+        self.BoundingBox = BBox.asBBox( N.array((self.XY, (self.XY + self.WH) ), N.float) )
+        if self._Canvas:
+            self._Canvas.BoundingBoxDirty = True
 
 
 #---------------------------------------------------------------------------
@@ -2176,19 +2380,24 @@ class FloatCanvas(wx.Panel):
         wx.EVT_RIGHT_DCLICK(self, self.RightDoubleCLickEvent)
         wx.EVT_MOTION(self, self.MotionEvent)
         wx.EVT_MOUSEWHEEL(self, self.WheelEvent)
+        wx.EVT_KEY_DOWN(self, self.KeyDownEvent)
+        wx.EVT_KEY_UP(self, self.KeyUpEvent)
+
 
         ## CHB: I'm leaving these out for now.
         #wx.EVT_ENTER_WINDOW(self, self. )
         #wx.EVT_LEAVE_WINDOW(self, self. )
 
         self.SetProjectionFun(ProjectionFun)
-        self.GUIMode = None
+        
+        self.GUIMode = None # making sure the arrribute exists
+        self.SetMode(GUIMode.GUIMouse()) # make the default Mouse Mode.
 
         # timer to give a delay when re-sizing so that buffers aren't re-built too many times.
         self.SizeTimer = wx.PyTimer(self.OnSizeTimer)
 
-        self.InitializePanel()
-        self.MakeNewBuffers()
+#        self.InitializePanel()
+#        self.MakeNewBuffers()
 
 #        self.CreateCursors()
 
@@ -2220,8 +2429,9 @@ class FloatCanvas(wx.Panel):
 
         self._DrawList = []
         self._ForeDrawList = []
-        self._ForegroundBuffer = None
-        self.BoundingBox = None
+        self.InitializePanel()
+        self.MakeNewBuffers()
+        self.BoundingBox = BBox.NullBBox()
         self.BoundingBoxDirty = False
         self.MinScale = None
         self.MaxScale = None
@@ -2240,7 +2450,7 @@ class FloatCanvas(wx.Panel):
 
         self._BackgroundDirty = True
 
-    def SetProjectionFun(self,ProjectionFun):
+    def SetProjectionFun(self, ProjectionFun):
         if ProjectionFun == 'FlatEarth':
             self.ProjectionFun = self.FlatEarthProjection
         elif callable(ProjectionFun):
@@ -2265,8 +2475,10 @@ class FloatCanvas(wx.Panel):
             Set the GUImode to any of the availble mode.
             '''
             # Set mode
+            if self.GUIMode is not None:
+                self.GUIMode.UnSet() # this lets the old mode clean up.
+            Mode.Canvas = self # make sure the mode is linked to this canvas
             self.GUIMode = Mode
-            #self.GUIMode.SetCursor()
             self.SetCursor(self.GUIMode.Cursor)
 
     def MakeHitDict(self):
@@ -2316,7 +2528,12 @@ class FloatCanvas(wx.Panel):
                 dc.SelectObject(self._HTBitmap)
             hitcolor = dc.GetPixelPoint( xy )
             return hitcolor.Get()
-
+    def UnBindAll(self):
+        """
+        Removes all bindings to Objects
+        """
+        self.HitDict = None
+    
     def HitTest(self, event, HitEvent):
         if self.HitDict:
             # check if there are any objects in the dict for this event
@@ -2441,15 +2658,26 @@ class FloatCanvas(wx.Panel):
         if self.GUIMode:
             self.GUIMode.OnRightUp(event)
         event.Skip()
+        
+    def KeyDownEvent(self, event):
+        if self.GUIMode:
+            self.GUIMode.OnKeyDown(event)
+        event.Skip()
+
+    def KeyUpEvent(self, event):
+        if self.GUIMode:
+            self.GUIMode.OnKeyUp(event)
+        event.Skip()
 
     def MakeNewBuffers(self):
+        ##fixme: this looks like tortured logic!
         self._BackgroundDirty = True
         # Make new offscreen bitmap:
         self._Buffer = wx.EmptyBitmap(*self.PanelSize)
         if self._ForeDrawList:
             self._ForegroundBuffer = wx.EmptyBitmap(*self.PanelSize)
             if self.UseHitTest:
-                self.MakeNewHTBitmap()
+                self.MakeNewForegroundHTBitmap()
             else:
                 self._ForegroundHTBitmap = None
         else:
@@ -2468,9 +2696,7 @@ class FloatCanvas(wx.Panel):
         
         """
         self._HTBitmap = wx.EmptyBitmap(self.PanelSize[0],
-
                                         self.PanelSize[1],
-
                                         depth=self.HitTestBitmapDepth)
 
     def MakeNewForegroundHTBitmap(self):
@@ -2482,9 +2708,7 @@ class FloatCanvas(wx.Panel):
         
         """
         self._ForegroundHTBitmap = wx.EmptyBitmap(self.PanelSize[0],
-
                                                   self.PanelSize[1],
-
                                                   depth=self.HitTestBitmapDepth)
 
     def OnSize(self, event=None):
@@ -2496,16 +2720,10 @@ class FloatCanvas(wx.Panel):
         self.Draw()
 
     def InitializePanel(self):
-        self.PanelSize = self.GetClientSizeTuple()
-        if self.PanelSize == (0,0):
-            ## OS-X sometimes gives a Size event when the panel is size (0,0)
-            self.PanelSize = (2,2)
-        self.PanelSize  = N.array(self.PanelSize,  N.int32)
+        PanelSize  = N.array(self.GetClientSizeTuple(),  N.int32)
+        self.PanelSize  = N.maximum(PanelSize, (2,2)) ## OS-X sometimes gives a Size event when the panel is size (0,0)
         self.HalfPanelSize = self.PanelSize / 2 # lrk: added for speed in WorldToPixel
-        if self.PanelSize[0] == 0 or self.PanelSize[1] == 0:
-            self.AspectRatio = 1.0
-        else:
-            self.AspectRatio = float(self.PanelSize[0]) / self.PanelSize[1]
+        self.AspectRatio = float(self.PanelSize[0]) / self.PanelSize[1]
 
     def OnPaint(self, event):
         dc = wx.PaintDC(self)
@@ -2513,7 +2731,13 @@ class FloatCanvas(wx.Panel):
             dc.DrawBitmap(self._ForegroundBuffer,0,0)
         else:
             dc.DrawBitmap(self._Buffer,0,0)
-
+        ## this was so that rubber band boxes and the like could get drawn here
+        ##  but it looks like a wx.ClientDC is a better bet still.
+        #try:
+        #    self.GUIMode.DrawOnTop(dc)
+        #except AttributeError:
+        #    pass
+    
     def Draw(self, Force=False):
         """
 
@@ -2552,7 +2776,6 @@ class FloatCanvas(wx.Panel):
                                      )
         self.ViewPortBB = N.array( ( N.minimum.reduce(ViewPortWorld),
                               N.maximum.reduce(ViewPortWorld) ) )
-        #self.ViewPortWorld = ViewPortWorld
 
         dc = wx.MemoryDC()
         dc.SelectObject(self._Buffer)
@@ -2603,34 +2826,29 @@ class FloatCanvas(wx.Panel):
         if self.GUIMode is not None:
             self.GUIMode.UpdateScreen()
 
-        if self.Debug: print "Drawing took %f seconds of CPU time"%(clock()-start)
-
+        if self.Debug:
+            print "Drawing took %f seconds of CPU time"%(clock()-start)
+            if self._HTBitmap is not None:
+                self._HTBitmap.SaveFile('junk.png', wx.BITMAP_TYPE_PNG)
+        
         ## Clear the font cache. If you don't do this, the X font server
         ## starts to take up Massive amounts of memory This is mostly a
         ## problem with very large fonts, that you get with scaled text
         ## when zoomed in.
         DrawObject.FontList = {}
 
-    def _ShouldRedraw(DrawList, ViewPortBB): # lrk: adapted code from BBCheck
+    def _ShouldRedraw(DrawList, ViewPortBB): 
         # lrk: Returns the objects that should be redrawn
-
         ## fixme: should this check be moved into the object?
-        ##        also: a BB object would make this cleaner too
         BB2 = ViewPortBB
         redrawlist = []
         for Object in DrawList:
-            BB1 = Object.BoundingBox
-            ## note: this could use the Utilities.BBCheck function
-            ##       butthis saves a function call
-            if (BB1[1,0] > BB2[0,0] and BB1[0,0] < BB2[1,0] and
-                 BB1[1,1] > BB2[0,1] and BB1[0,1] < BB2[1,1]):
+            if Object.BoundingBox.Overlaps(BB2):
                 redrawlist.append(Object)
-        #return redrawlist
-        ##fixme: disabled this!!!!
         return redrawlist
     _ShouldRedraw = staticmethod(_ShouldRedraw)
 
-    def MoveImage(self,shift,CoordType):
+    def MoveImage(self, shift, CoordType, ReDraw=True):
         """
         move the image in the window.
 
@@ -2662,7 +2880,8 @@ class FloatCanvas(wx.Panel):
         self.MapProjectionVector = self.ProjectionFun(self.ViewPortCenter)
         self.TransformVector = N.array((self.Scale,-self.Scale),N.float) * self.MapProjectionVector
         self._BackgroundDirty = True
-        self.Draw()
+        if ReDraw:
+            self.Draw()
 
     def Zoom(self, factor, center = None, centerCoords="world"):
 
@@ -2695,14 +2914,13 @@ class FloatCanvas(wx.Panel):
         box of all the objects on the canvas, if none is given.
 
         """
-        
         if NewBB is not None:
             BoundingBox = NewBB
         else:
             if self.BoundingBoxDirty:
                 self._ResetBoundingBox()
             BoundingBox = self.BoundingBox
-        if BoundingBox is not None:
+        if (BoundingBox is not None) and (not BoundingBox.IsNull()):
             self.ViewPortCenter = N.array(((BoundingBox[0,0]+BoundingBox[1,0])/2,
                                          (BoundingBox[0,1]+BoundingBox[1,1])/2 ),N.float_)
             self.MapProjectionVector = self.ProjectionFun(self.ViewPortCenter)
@@ -2779,15 +2997,22 @@ class FloatCanvas(wx.Panel):
         self.HitDict = None
 
     def _ResetBoundingBox(self):
+        SetToNull=False
         if self._DrawList or self._ForeDrawList:
             bblist = []
-            for (i, obj) in enumerate(self._DrawList):
-                bblist.append(obj.BoundingBox)
-            for (j, obj) in enumerate(self._ForeDrawList):
-                bblist.append(obj.BoundingBox)
-            self.BoundingBox = BBox.fromBBArray(bblist)
+            for obj in self._DrawList + self._ForeDrawList:
+                if not obj.BoundingBox.IsNull():
+                    bblist.append(obj.BoundingBox)
+            if bblist: # if there are only NullBBoxes in DrawLists
+                self.BoundingBox = BBox.fromBBArray(bblist)
+            else:
+                SetToNull = True
+            if self.BoundingBox.Width == 0 or self.BoundingBox.Height == 0:
+                SetToNull=True
         else:
-            self.BoundingBox = None
+            SetToNull=True
+        if SetToNull:
+            self.BoundingBox = BBox.NullBBox()
             self.ViewPortCenter= N.array( (0,0), N.float)
             self.TransformVector = N.array( (1,-1), N.float)
             self.MapProjectionVector = N.array( (1,1), N.float)
@@ -2836,7 +3061,6 @@ class FloatCanvas(wx.Panel):
         Lengths should be a NX2 array of (x,y) coordinates, or
         a 2-tuple, or sequence of 2-tuples.
         """
-
         return  (N.asarray(Lengths,N.float) / self.TransformVector)
 
     def AddObject(self, obj):
@@ -2849,7 +3073,7 @@ class FloatCanvas(wx.Panel):
             self._DrawList.append(obj)
             self._BackgroundDirty = True
         self.BoundingBoxDirty = True
-        return True
+        return obj
 
     def AddObjects(self, Objects):
         for Object in Objects:
@@ -2895,7 +3119,7 @@ class FloatCanvas(wx.Panel):
 
 
 def _makeFloatCanvasAddMethods(): ## lrk's code for doing this in module __init__
-    classnames = ["Circle", "Ellipse", "Rectangle", "ScaledText", "Polygon",
+    classnames = ["Circle", "Ellipse", "Arc", "Rectangle", "ScaledText", "Polygon",
                   "Line", "Text", "PointSet","Point", "Arrow", "ArrowLine", "ScaledTextBox",
                   "SquarePoint","Bitmap", "ScaledBitmap", "Spline", "Group"]
     for classname in classnames:

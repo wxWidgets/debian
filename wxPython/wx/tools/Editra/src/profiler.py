@@ -2,40 +2,36 @@
 # Name: profiler.py                                                           #
 # Purpose: Editra's user profile services                                     #
 # Author: Cody Precord <cprecord@editra.org>                                  #
-# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#--------------------------------------------------------------------------#
-# FILE: profiler.py                                                        #
-# LANGUAGE: Python                                                         #
-#                                                                          #
-# @summary:                                                                #
-# This module provides the profile object and support functions for        #
-# loading and saving user preferences between sessions. The preferences are#
-# saved on disk as a cPickle, because of this no objects that cannot be    #
-# resolved in the namespace of this module prior to starting the mainloop  #
-# must not be put in the Profile as it will cause errors on load. Ths means#
-# that only builtin python types should be used and that a translation from#
-# that type to the required type should happen during run time.            #
-#                                                                          #
-# METHODS:                                                                 #
-# UpdateProfileLoader: Updates loader after changes to profile	           #
-#--------------------------------------------------------------------------#
+This module provides the profile object and support functions for loading and
+saving user preferences between sessions. The preferences are saved on disk as
+a cPickle, because of this no objects that cannot be resolved in the namespace
+of this module prior to starting the mainloop must not be put in the Profile as
+it will cause errors on load. Ths means that only builtin python types should
+be used and that a translation from that type to the required type should
+happen during run time.
+
+@summary: Editra's user profile management
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: profiler.py 50014 2007-11-17 01:29:17Z CJP $"
-__revision__ = "$Revision: 50014 $"
+__svnid__ = "$Id: profiler.py 60484 2009-05-02 18:53:43Z CJP $"
+__revision__ = "$Revision: 60484 $"
 
 #--------------------------------------------------------------------------#
-# Dependancies
+# Imports
 import os
 import sys
 import cPickle
 import wx
-from ed_glob import CONFIG, PROG_NAME, VERSION
+
+# Editra Imports
+from ed_glob import CONFIG, PROG_NAME, VERSION, PRINT_BLACK_WHITE, EOL_MODE_LF
 import util
 import dev_tool
 
@@ -43,49 +39,72 @@ _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 # Globals
 _DEFAULTS = {
-           'ALPHA'      : 255,              # Transparency level
+           'ALPHA'      : 255,              # Transparency level (0-255)
            'AALIASING'  : False,            # Use Anti-Aliasing if availble
            'APPSPLASH'  : True,             # Show splash at startup
+           'AUTOBACKUP' : False,            # Automatically backup files
            'AUTO_COMP'  : True,             # Use Auto-comp if available
+           'AUTO_COMP_EX' : False,          # Use extended autocompletion
            'AUTO_INDENT': True,             # Use Auto Indent
+           'AUTO_TRIM_WS' : False,          # Trim whitespace on save
+           'AUTO_RELOAD' : False,           # Automatically reload files?
            'BRACKETHL'  : True,             # Use bracket highlighting
+           'BSUNINDENT' : True,             # Backspace Unindents
            'CHECKMOD'   : True,             # Auto check file for file mod
+           'CHECKUPDATE': True,             # Check for updates on start
            'CODE_FOLD'  : True,             # Use code folding
+           'DEFAULT_LEX': 'Plain Text',     # Default lexer for new documents
            'DEFAULT'    : False,            # No longer used I believe
-           'DEFAULT_VIEW' : 'Automatic',      # Default Perspective
+           'DEFAULT_VIEW' : 'Automatic',    # Default Perspective
            'EDGE'       : 80,               # Edge guide column
-           'EOL'        : 'Unix (\\n)',     # EOL mode
+           'ENCODING'   : None,             # Prefered text encoding
+           'EOL_MODE'   : EOL_MODE_LF,      # EOL mode 1 == LF, 2 == CRLF
            'FHIST'      : list(),           # List of history files
            'FHIST_LVL'  : 9,                # Filehistory length (9 is max)
            'FFILTER'    : 0,                # Last file filter used
            'GUIDES'     : False,            # Use Indentation guides
+           'HLCARETLINE': False,            # Highlight Caret Line
            'ICONS'      : 'Tango',          # Icon Theme
            'ICON_SZ'    : (24, 24),         # Toolbar Icon Size
+           'INDENTWIDTH': 4,                # Default indent width
+           'ISBINARY'   : False,            # Is this instance a binary
+           'KEY_PROFILE': None,             # Keybinding profile
            'LANG'       : 'Default',        # UI language
+           'LASTCHECK'  : 0,                # Last time update check was done
+           'MAXIMIZED'  : False,            # Was window maximized on exit
            'MODE'       : 'CODE',           # Overall editor mode
            'MYPROFILE'  : 'default.ppb',    # Path to profile file
            'OPEN_NW'    : False,            # Open files in new windows
-           'PRINT_MODE' : 'BLACK/WHITE',    # Printer rendering mode
+           'PRINT_MODE' : PRINT_BLACK_WHITE,# Printer rendering mode
+           'PROXY_SETTINGS' : dict(),       # Proxy Server Settings
            'REPORTER'   : True,             # Error Reporter is Active
            'SAVE_POS'   : True,             # Remember Carat positions
            'SAVE_SESSION' : False,          # Load previous session on startup
+           'SEARCH_LOC' : list(),           # Recent Search Locations
+           'SEARCH_FILTER' : '',            # Last used search filter
+           'SESSION_KEY' : '',              # Ipc Session Server Key
            'SET_WPOS'   : True,             # Remember window position
            'SET_WSIZE'  : True,             # Remember mainwindow size on exit
            'SHOW_EDGE'  : True,             # Show Edge Guide
            'SHOW_EOL'   : False,            # Show EOL markers
            'SHOW_LN'    : True,             # Show Line Numbers
            'SHOW_WS'    : False,            # Show whitespace markers
+           'STATBAR'    : True,             # Show Status Bar
            'SYNTAX'     : True,             # Use Syntax Highlighting
            'SYNTHEME'   : 'Default',        # Syntax Highlight color scheme
+           'TABICONS'   : True,             # Show Tab Icons
            'TABWIDTH'   : 8,                # Tab width
            'THEME'      : 'DEFAULT',        # For future use
            'TOOLBAR'    : True,             # Show Toolbar
-           'USETABS'    : True,             # Use tabs instead of spaces
-           'VI_EMU'     : False,            # Use Vi emulation mode 
+           'USETABS'    : False,            # Use tabs instead of spaces
+           'USE_PROXY'  : False,            # Use Proxy server settings?
+           'VI_EMU'     : False,            # Use Vi emulation mode
+           'WARN_EOL'   : True,             # Warn about mixed eol characters
            'WRAP'       : False,            # Use Wordwrap
            'WSIZE'      : (700, 450)        # Mainwindow size
-          #FONT1 created at runtime by ed_styles as primary font           
+          #FONT1 created at runtime by ed_styles as primary font
           #FONT2 created at runtime by ed_styles as secondary font
+          #FONT3 Standard Font by UI, added to profile when customized
 }
 
 #--------------------------------------------------------------------------#
@@ -100,7 +119,7 @@ class Profile(dict):
     """
     _instance = None
     _created = False
-    
+
     def __init__(self):
         """Initialize the profile"""
         if not self._created:
@@ -119,31 +138,29 @@ class Profile(dict):
 
     #---- End Private Members ----#
 
-    #---- Protected Members ----#
-
     #---- Begin Public Members ----#
     def DeleteItem(self, item):
         """Removes an entry from the profile
-        
+
         @param item: items name
         @type item: string
 
         """
-        if self.has_key(item):
+        if item in self:
             del self[item]
         else:
             pass
 
     def Get(self, index, fmt=None, default=None):
         """Gets the specified item from the data set
-        
+
         @param index: index of item to get
         @keyword fmt: format the item should be in
         @keyword default: Default value to return if index is
                           not in profile.
 
         """
-        if self.has_key(index):
+        if index in self:
             val = self.__getitem__(index)
         else:
             return default
@@ -164,7 +181,7 @@ class Profile(dict):
                 fhandle = open(path, 'rb')
                 val = cPickle.load(fhandle)
                 fhandle.close()
-            except (IOError, SystemError, OSError, 
+            except (IOError, SystemError, OSError,
                     cPickle.UnpicklingError, EOFError), msg:
                 dev_tool.DEBUGP("[profile][err] %s" % str(msg))
             else:
@@ -212,13 +229,16 @@ class Profile(dict):
 
         """
         try:
+            # Only write if given an absolute path
+            if not os.path.isabs(path):
+                return False
             self.Set('MYPROFILE', path)
             fhandle = open(path, 'wb')
             cPickle.dump(self.copy(), fhandle, cPickle.HIGHEST_PROTOCOL)
             fhandle.close()
             UpdateProfileLoader()
         except (IOError, cPickle.PickleError), msg:
-            dev_tool.DEBUGP("[profile][err] %s" % str(msg))
+            dev_tool.DEBUGP(u"[profile][err] %s" % msg)
             return False
         else:
             return True
@@ -235,12 +255,17 @@ class Profile(dict):
         """
         if update is None:
             for key, val in _DEFAULTS.iteritems():
-                if not self.has_key(key):
-                    self.Set(key, val)            
+                if key not in self:
+                    self.Set(key, val)
         else:
             self.update(update)
 
     #---- End Public Members ----#
+
+#-----------------------------------------------------------------------------#
+# Singleton reference instance
+
+TheProfile = Profile()
 
 #-----------------------------------------------------------------------------#
 # Profile convenience functions
@@ -249,7 +274,7 @@ def Profile_Del(item):
     @param item: items key name
 
     """
-    Profile().DeleteItem(item)
+    TheProfile.DeleteItem(item)
 
 def Profile_Get(index, fmt=None, default=None):
     """Convenience for Profile().Get()
@@ -258,7 +283,7 @@ def Profile_Get(index, fmt=None, default=None):
     @keyword default: default value to return if not found
 
     """
-    return Profile().Get(index, fmt, default)
+    return TheProfile.Get(index, fmt, default)
 
 def Profile_Set(index, val, fmt=None):
     """Convenience for Profile().Set()
@@ -267,7 +292,7 @@ def Profile_Set(index, val, fmt=None):
     @keyword fmt: format to convert object from
 
     """
-    return Profile().Set(index, val, fmt)
+    return TheProfile.Set(index, val, fmt)
 
 def _FromObject(val, fmt):
     """Convert the given value to a to a profile compatible value
@@ -287,7 +312,7 @@ def _ToObject(index, val, fmt):
     @param val: value to convert
     @param fmt: Format to convert to
     @type fmt: string
-    @todo: exception handling, 
+    @todo: exception handling,
 
     """
     if not isinstance(fmt, basestring):
@@ -324,7 +349,7 @@ def _ToObject(index, val, fmt):
 #---- Begin Function Definitions ----#
 def AddFileHistoryToProfile(file_history):
     """Manages work of adding a file from the profile in order
-    to allow the top files from the history to be available 
+    to allow the top files from the history to be available
     the next time the user opens the program.
     @param file_history: add saved files to history list
 
@@ -336,15 +361,16 @@ def AddFileHistoryToProfile(file_history):
 
 def CalcVersionValue(ver_str="0.0.0"):
     """Calculates a version value from the provided dot-formated string
-    @keyword ver_str: Version string to calculate value of
 
     1) SPECIFICATION: Version value calculation AA.BBB.CCC
          - major values: < 1     (i.e 0.0.85 = 0.850)
          - minor values: 1 - 999 (i.e 0.1.85 = 1.850)
          - micro values: >= 1000 (i.e 1.1.85 = 1001.850)
 
+    @keyword ver_str: Version string to calculate value of
+
     """
-    ver_str = ''.join([char for char in ver_str 
+    ver_str = ''.join([char for char in ver_str
                        if char.isdigit() or char == '.'])
     ver_lvl = ver_str.split(u".")
     if len(ver_lvl) < 3:
@@ -364,10 +390,12 @@ def GetLoader():
            should be.
 
     """
-    user_home = wx.GetHomeDir() + util.GetPathChar()
-    rel_prof_path = ("." + PROG_NAME + util.GetPathChar() + 
-                     "profiles" + util.GetPathChar() + ".loader2")
-    loader = user_home + rel_prof_path
+    cbase = CONFIG['CONFIG_BASE']
+    if cbase is None:
+        cbase = wx.StandardPaths_Get().GetUserDataDir()
+
+    loader = os.path.join(cbase, u"profiles", u".loader2")
+
     return loader
 
 def GetProfileStr():
@@ -405,7 +433,7 @@ def ProfileVersionStr():
 
     """
     loader = GetLoader()
-    reader = util.GetFileReader(loader)
+    reader = util.GetFileReader(loader, sys.getfilesystemencoding())
     if reader == -1:
         return "0.0.0"
 
@@ -428,6 +456,7 @@ def ProfileVersionStr():
 
 def UpdateProfileLoader():
     """Updates Loader File
+    @precondition: MYPROFILE has been set
     @postcondition: on disk profile loader is updated
     @return: 0 if no error, non zero for error condition
 
@@ -437,10 +466,14 @@ def UpdateProfileLoader():
         return 1
 
     prof_name = Profile_Get('MYPROFILE')
-    if not prof_name:
+    if not prof_name or not os.path.isabs(prof_name):
         prof_name = CONFIG['PROFILE_DIR'] + 'default.ppb'
 
-    prof_name = prof_name.encode(sys.getfilesystemencoding())
+    if not os.path.exists(prof_name):
+        prof_name = os.path.join(CONFIG['CONFIG_DIR'],
+                                 os.path.basename(prof_name))
+        Profile_Set('MYPROFILE', prof_name)
+
     writer.write(prof_name)
     writer.write(u"\nVERSION\t" + VERSION)
     writer.close()

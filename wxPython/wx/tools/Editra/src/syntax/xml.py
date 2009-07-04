@@ -3,24 +3,20 @@
 # Purpose: Define XML syntax for highlighting and other features              #
 # Author: Cody Precord <cprecord@editra.org>                                  #
 # Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#-----------------------------------------------------------------------------#
-# FILE: xml.py                                                                #
-# AUTHOR: Cody Precord                                                        #
-#                                                                             #
-# SUMMARY:                                                                    #
-# Lexer configuration module for XML Files.                                   #
-#                                                                             #
-# @todo: Almost Everything                                                    #
-#-----------------------------------------------------------------------------#
+FILE: xml.py
+AUTHOR: Cody Precord
+@summary: Lexer configuration module for XML Files.
+@todo: Almost Everything
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: xml.py 49250 2007-10-20 02:40:49Z CJP $"
-__revision__ = "$Revision: 49250 $"
+__svnid__ = "$Id: xml.py 59543 2009-03-15 00:28:39Z CJP $"
+__revision__ = "$Revision: 59543 $"
 
 #-----------------------------------------------------------------------------#
 # Dependencies
@@ -51,7 +47,7 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [(5, XML_KEYWORDS), (6, SGML_KEYWORDS)]
+    return [(5, XML_KEYWORDS + u" " + SGML_KEYWORDS)]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications

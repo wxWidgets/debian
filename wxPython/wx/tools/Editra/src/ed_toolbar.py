@@ -2,32 +2,27 @@
 # Name: ed_toolbar.py                                                         #
 # Purpose: Editra's Toolbar                                                   #
 # Author: Cody Precord <cprecord@editra.org>                                  #
-# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#--------------------------------------------------------------------------#
-# FILE: ed_toolbar.py                                                      #
-# AUTHOR: Cody Precord                                                     #
-# LANGUAGE: Python                                                         #
-#                                                                          #
-# SUMMARY:                                                                 #
-#   This module creates Editra's toolbar. This toolbar is very simple and  #
-# only adds automatic icon theming to whats already available in the       #
-# base toolbar class.                                                      #
-#                                                                          #
-#--------------------------------------------------------------------------#
+This module creates Editra's toolbar. This toolbar is very simple and only adds
+automatic icon theming to whats already available in the base toolbar class.
+
+@summary: Editra's ToolBar class
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ed_toolbar.py 49962 2007-11-15 08:06:24Z CJP $"
-__revision__ = "$Revision: 49962 $"
+__svnid__ = "$Id: ed_toolbar.py 60516 2009-05-04 18:38:14Z CJP $"
+__revision__ = "$Revision: 60516 $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
 import wx
 import ed_glob
+import ed_msg
 from profiler import Profile_Get
 
 _ = wx.GetTranslation
@@ -59,7 +54,13 @@ class EdToolBar(wx.ToolBar):
         self.SetToolBitmapSize(Profile_Get('ICON_SZ', 'size_tuple'))
         self._PopulateTools()
 
+        # Message Handlers
+        ed_msg.Subscribe(self.OnThemeChange, ed_msg.EDMSG_THEME_CHANGED)
+
         self.Realize()
+
+    def __del__(self):
+        ed_msg.Unsubscribe(self.OnThemeChange)
 
     #---- End Init ----#
 
@@ -73,21 +74,21 @@ class EdToolBar(wx.ToolBar):
         self.AddSimpleTool(ed_glob.ID_NEW, _("New"), _("Start a New File"))
         self.AddSimpleTool(ed_glob.ID_OPEN, _("Open"), _("Open"))
         self.AddSimpleTool(ed_glob.ID_SAVE, _("Save"), _("Save Current File"))
-        self.AddSimpleTool(ed_glob.ID_PRINT, _("Print"), 
+        self.AddSimpleTool(ed_glob.ID_PRINT, _("Print"),
                            _("Print Current File"))
         self.AddSeparator()
         self.AddSimpleTool(ed_glob.ID_UNDO, _("Undo"), _("Undo Last Action"))
         self.AddSimpleTool(ed_glob.ID_REDO, _("Redo"), _("Redo Last Undo"))
         self.AddSeparator()
-        self.AddSimpleTool(ed_glob.ID_CUT, _("Cut"), 
+        self.AddSimpleTool(ed_glob.ID_CUT, _("Cut"),
                            _("Cut Selected Text from File"))
-        self.AddSimpleTool(ed_glob.ID_COPY, _("Copy"), 
+        self.AddSimpleTool(ed_glob.ID_COPY, _("Copy"),
                            _("Copy Selected Text to Clipboard"))
-        self.AddSimpleTool(ed_glob.ID_PASTE, _("Paste"), 
+        self.AddSimpleTool(ed_glob.ID_PASTE, _("Paste"),
                            _("Paste Text from Clipboard to File"))
         self.AddSeparator()
         self.AddSimpleTool(ed_glob.ID_FIND, _("Find"), _("Find Text"))
-        self.AddSimpleTool(ed_glob.ID_FIND_REPLACE, _("Find/Replace"), 
+        self.AddSimpleTool(ed_glob.ID_FIND_REPLACE, _("Find/Replace"),
                            _("Find and Replace Text"))
         self.AddSeparator()
 
@@ -98,9 +99,13 @@ class EdToolBar(wx.ToolBar):
         @param tool_id: Id of tool to add
         @param lbl: tool lable
         @param helpstr: tool help string
-        
+
         """
-        tool_bmp = wx.ArtProvider.GetBitmap(str(tool_id), wx.ART_TOOLBAR)
+        if self.GetToolBitmapSize() == (16, 16):
+            client = wx.ART_MENU
+        else:
+            client = wx.ART_TOOLBAR
+        tool_bmp = wx.ArtProvider.GetBitmap(str(tool_id), client)
         wx.ToolBar.AddSimpleTool(self, tool_id, tool_bmp, _(lbl), _(helpstr))
 
     def GetToolTheme(self):
@@ -110,14 +115,33 @@ class EdToolBar(wx.ToolBar):
         """
         return self._theme
 
+    def OnThemeChange(self, msg):
+        """Update the icons when the icon theme has changed
+        @param msg: Message object
+
+        """
+        self.ReInit()
+
     def ReInit(self):
         """Re-Initializes the tools in the toolbar
         @postcondition: all tool icons are changed to match current theme
 
         """
         self._theme = Profile_Get('ICONS')
+        csize = self.GetToolBitmapSize()
         self.SetToolBitmapSize(Profile_Get('ICON_SZ', 'size_tuple'))
+        if self.GetToolBitmapSize() == (16, 16):
+            client = wx.ART_MENU
+        else:
+            client = wx.ART_TOOLBAR
+
         for tool_id in TOOL_ID:
-            bmp = wx.ArtProvider.GetBitmap(str(tool_id), wx.ART_TOOLBAR)
+            bmp = wx.ArtProvider.GetBitmap(str(tool_id), client)
             self.SetToolNormalBitmap(tool_id, bmp)
-                                     
+
+        # HACK: to make toolbar resize properly when icon size changes
+        if csize != self.GetToolBitmapSize():
+            self.GetParent().Freeze()
+            self.Hide()
+            self.Show()
+            self.GetParent().Thaw()

@@ -4,7 +4,7 @@
 // Purpose:     Part of the widgets sample showing wxBitmapComboBox
 // Author:      Jaakko Salli
 // Created:     Sep-01-2006
-// Id:          $Id: bmpcombobox.cpp 43755 2006-12-03 13:43:44Z VZ $
+// Id:          $Id: bmpcombobox.cpp 58156 2009-01-16 19:12:20Z VZ $
 // Copyright:   (c) 2006 Jaakko Salli
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -399,7 +399,8 @@ void BitmapComboBoxWidgetsPage::CreateCombo()
         for ( unsigned int n = 0; n < count; n++ )
         {
             items.Add(m_combobox->GetString(n));
-            bitmaps.Add(new wxBitmap(m_combobox->GetItemBitmap(n)));
+            wxBitmap bmp = m_combobox->GetItemBitmap(n);
+            bitmaps.Add(new wxBitmap(bmp));
         }
 
         m_sizerCombo->Detach( m_combobox );
@@ -836,33 +837,23 @@ wxBitmap BitmapComboBoxWidgetsPage::QueryBitmap(wxString* pStr)
 
 wxBitmap BitmapComboBoxWidgetsPage::CreateBitmap(const wxColour& colour)
 {
-    int ch = m_combobox->GetBitmapSize().y;
-    int h0 = ch - 5;
-
-    long w = ch;
-    long h = ch;
-
-    if ( w <= 0 )
-        w = h0 - 1;
-    if ( h <= 0 )
-        h = h0;
-    if ( h > ch )
-        h = ch;
+    const int w = 10,
+              h = 10;
 
     wxMemoryDC dc;
-    wxBitmap bmp(w,h);
+    wxBitmap bmp(w, h);
     dc.SelectObject(bmp);
 
     // Draw transparent background
-    wxColour magic(255,0,255);
+    wxColour magic(255, 0, 255);
     wxBrush magicBrush(magic);
     dc.SetBrush(magicBrush);
     dc.SetPen(*wxTRANSPARENT_PEN);
-    dc.DrawRectangle(0,0,bmp.GetWidth(),bmp.GetHeight());
+    dc.DrawRectangle(0, 0, w, h);
 
     // Draw image content
     dc.SetBrush(wxBrush(colour));
-    dc.DrawCircle(h/2,h/2+1,(h/2));
+    dc.DrawCircle(h/2, h/2+1, h/2);
 
     dc.SelectObject(wxNullBitmap);
 

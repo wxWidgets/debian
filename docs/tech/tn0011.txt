@@ -8,10 +8,11 @@
    version number all of these files must be edited:
 
        {wx}/configure.in
+       {wx}/configure {and set subrelease to zero in these two files}
        {wx}/*.spec
        {wx}/include/wx/version.h
        {wx}/include/msvc/wx/setup.h  {major release only}
-       {wx}/docs/latex/wx/manual.tex
+       {wx}/docs/latex/wx/manual.tex  {and change the date}
        {wx}/docs/msw/install.txt {major release only}
        {wx}/docs/changes.txt    
        {wx}/docs/readme.txt       
@@ -19,7 +20,7 @@
        {wx}/build/bakefiles/version.bkl {C:R:A}
        {wx}/build/script/win_docs.bat {windows doc and setup file}
        {wx}/distrib/scripts/build-environ.cfg {cvs tar and zip files}
-       {wx}/mac/carbon/config_xcode.h
+       {wx}/include/wx/mac/carbon/config_xcode.h {out of date in 2.8.10}
 
    The script misc/scripts/inc_release can be used for incrementing
    the release field of the version, i.e. changing 2.8.x to 2.8.x+1.
@@ -33,7 +34,7 @@
 
 === EOF ===
 
-Version: $Id: tn0011.txt 48817 2007-09-19 23:22:33Z RD $
+Version: $Id: tn0011.txt 58872 2009-02-13 09:18:23Z CE $
 
 $Log$
 Revision 1.10.2.3  2007/03/15 14:55:02  CE

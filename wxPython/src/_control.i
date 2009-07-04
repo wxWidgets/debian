@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _control.i 43500 2006-11-18 21:25:33Z RD $
+// RCS-ID:      $Id: _control.i 55610 2008-09-14 19:15:46Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -271,8 +271,7 @@ slightly more natural for controls which support multiple selection.", "");
         def SetItems(self, items):
             """Clear and set the strings in the control from a list"""
             self.Clear()
-            for i in items:
-                self.Append(i)        
+            self.AppendItems(items)
     }
     
     %property(Count, GetCount, doc="See `GetCount`");

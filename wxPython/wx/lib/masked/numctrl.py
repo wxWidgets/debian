@@ -3,7 +3,7 @@
 # Author:       Will Sadkin
 # Created:      09/06/2003
 # Copyright:   (c) 2003-2007 by Will Sadkin
-# RCS-ID:      $Id: numctrl.py 45743 2007-05-02 01:00:30Z RD $
+# RCS-ID:      $Id: numctrl.py 58488 2009-01-29 03:33:10Z RD $
 # License:     wxWidgets license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -1276,6 +1276,21 @@ class NumCtrl(BaseMaskedTextCtrl, NumCtrlAccessorsMixin):
 ##        dbg('NumCtrl::SetValue(%s)' % value, indent=1)
         BaseMaskedTextCtrl.SetValue( self, self._toGUI(value) )
 ##        dbg(indent=0)
+
+    def ChangeValue(self, value):
+        """
+        Sets the value of the control to the value specified.
+        The resulting actual value of the control may be altered to
+        conform with the bounds set on the control if limited,
+        or colored if not limited but the value is out-of-bounds.
+        A ValueError exception will be raised if an invalid value
+        is specified.
+        """
+##        dbg('NumCtrl::ChangeValue(%s)' % value, indent=1)
+        BaseMaskedTextCtrl.ChangeValue( self, self._toGUI(value) )
+##        dbg(indent=0)
+
+
 
 
     def SetIntegerWidth(self, value):

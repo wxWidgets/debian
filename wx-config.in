@@ -5,7 +5,7 @@
 # Author:      Ron <ron@debian.org>
 # Modified by:
 # Created:     8/9/2004
-# RCS-ID:      $Id: wx-config.in 44048 2006-12-24 01:20:33Z VZ $
+# RCS-ID:      $Id: wx-config.in 51762 2008-02-13 18:42:04Z SN $
 # Copyright:   (c) 2004 Ron <ron@debian.org>
 #              Essentially a fresh start this time around, but for maximum
 #              compatibility basic code was taken from, and heavy reference
@@ -775,7 +775,8 @@ if not user_mask_fits "$this_config" ; then
                 decho "--> $prefix/bin/$_last_chance $_legacy_args"
             fi
 
-            export WXCONFIG_DELEGATED=yes
+            WXCONFIG_DELEGATED=yes
+            export WXCONFIG_DELEGATED
             $prefix/bin/$_last_chance $_legacy_args
             exit
 
@@ -814,7 +815,8 @@ if not user_mask_fits "$this_config" ; then
                 decho "--> $wxconfdir/$best_delegate $*"
             fi
 
-            export WXCONFIG_DELEGATED=yes
+            WXCONFIG_DELEGATED=yes
+            export WXCONFIG_DELEGATED
             $wxconfdir/$best_delegate $*
             exit
         fi
@@ -836,7 +838,8 @@ if not user_mask_fits "$this_config" ; then
         decho "--> $wxconfdir/`find_eligible_delegates $configmask` $*"
     fi
 
-    export WXCONFIG_DELEGATED=yes
+    WXCONFIG_DELEGATED=yes
+    export WXCONFIG_DELEGATED
     $wxconfdir/`find_eligible_delegates $configmask` $*
     exit
 fi

@@ -5,7 +5,7 @@
 # Author:      Robin Dunn
 #
 # Created:     15-May-2001
-# RCS-ID:      $Id: listctrl.py 49526 2007-10-29 20:40:35Z RD $
+# RCS-ID:      $Id: listctrl.py 57752 2009-01-02 04:41:03Z RD $
 # Copyright:   (c) 2001 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------------
@@ -26,6 +26,9 @@
 #
 # 15-Oct-2004 - Robin Dunn
 # o wxTextEditMixin: Added Shift-TAB support
+#
+# 2008-11-19 - raf <raf@raf.org>
+# o ColumnSorterMixin: Added GetSortState()
 #
 
 import  locale
@@ -129,6 +132,18 @@ class ColumnSorterMixin:
         clicked column header).
         """
         pass
+
+
+    def GetSortState(self):
+        """
+        Return a tuple containing the index of the column that was last sorted
+        and the sort direction of that column.
+        Usage:
+        col, ascending = self.GetSortState()
+        # Make changes to list items... then resort
+        self.SortListItems(col, ascending)
+        """
+        return (self._col, self._colSortFlag[self._col])
 
 
     def __ColumnSorter(self, key1, key2):
@@ -269,6 +284,8 @@ class ListCtrlAutoWidthMixin:
             resizeCol = self.GetColumnCount()
         else:
             resizeCol = self._resizeCol
+
+        resizeCol = max(1, resizeCol)
 
         if self._resizeColMinWidth == None:
             self._resizeColMinWidth = self.GetColumnWidth(resizeCol - 1)
@@ -650,7 +667,7 @@ class TextEditMixin:
 FILENAME: CheckListCtrlMixin.py
 AUTHOR:   Bruce Who (bruce.who.hk at gmail.com)
 DATE:     2006-02-09
-$Revision: 49526 $
+$Revision: 57752 $
 DESCRIPTION:
     This script provide a mixin for ListCtrl which add a checkbox in the first
     column of each row. It is inspired by limodou's CheckList.py(which can be
@@ -690,14 +707,20 @@ class CheckListCtrlMixin:
 
     You should not set a imagelist for the ListCtrl once this mixin is used.
     """
-    def __init__(self, check_image=None, uncheck_image=None):
-        self.__imagelist_ = wx.ImageList(16, 16)
+    def __init__(self, check_image=None, uncheck_image=None, imgsz=(16,16)):
+        if check_image is not None:
+            imgsz = check_image.GetSize()
+        elif uncheck_image is not None:
+            imgsz = check_image.GetSize()
 
-        if not check_image:
-            check_image = self.__CreateBitmap(wx.CONTROL_CHECKED)
+        self.__imagelist_ = wx.ImageList(*imgsz)
 
-        if not uncheck_image:
-            uncheck_image = self.__CreateBitmap()
+        # Create default checkbox images if none were specified
+        if check_image is None:
+            check_image = self.__CreateBitmap(wx.CONTROL_CHECKED, imgsz)
+
+        if uncheck_image is None:
+            uncheck_image = self.__CreateBitmap(0, imgsz)
 
         self.uncheck_image = self.__imagelist_.Add(uncheck_image)
         self.check_image = self.__imagelist_.Add(check_image)
@@ -709,15 +732,16 @@ class CheckListCtrlMixin:
         # override the default methods of ListCtrl/ListView
         self.InsertStringItem = self.__InsertStringItem_
 
-    def __CreateBitmap(self, flag=0):
+    def __CreateBitmap(self, flag=0, size=(16, 16)):
         """Create a bitmap of the platforms native checkbox. The flag
         is used to determine the checkboxes state (see wx.CONTROL_*)
 
         """
-        bmp = wx.EmptyBitmap(16, 16)
+        bmp = wx.EmptyBitmap(*size)
         dc = wx.MemoryDC(bmp)
         dc.Clear()
-        wx.RendererNative.Get().DrawCheckBox(self, dc, (0, 0, 16, 16), flag)
+        wx.RendererNative.Get().DrawCheckBox(self, dc,
+                                             (0, 0, size[0], size[1]), flag)
         dc.SelectObject(wx.NullBitmap)
         return bmp
 
@@ -775,5 +799,77 @@ class CheckListCtrlMixin:
     def ToggleItem(self, index):
         self.CheckItem(index, not self.IsChecked(index))
 
+
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+
+# Mode Flags
+HIGHLIGHT_ODD = 1   # Highlight the Odd rows
+HIGHLIGHT_EVEN = 2  # Highlight the Even rows
+
+class ListRowHighlighter:
+    """Editra Control Library: ListRowHighlighter
+    Mixin class that handles automatic background highlighting of alternate
+    rows in the a ListCtrl. The background of the rows are highlighted
+    automatically as items are added or inserted in the control based on the
+    mixins Mode and set Color. By default the Even rows will be highlighted with
+    the systems highlight color.
+
+    """
+    def __init__(self, color=None, mode=HIGHLIGHT_EVEN):
+        """Initialize the highlighter mixin
+        @keyword color: Set a custom highlight color (default uses system color)
+        @keyword mode: HIGHLIGHT_EVEN (default) or HIGHLIGHT_ODD
+
+        """
+        # Attributes
+        self._color = color
+        self._defaultb = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
+        self._mode = mode
+
+        # Event Handlers
+        self.Bind(wx.EVT_LIST_INSERT_ITEM, lambda evt: self.RefreshRows())
+        self.Bind(wx.EVT_LIST_DELETE_ITEM, lambda evt: self.RefreshRows())
+
+    def RefreshRows(self):
+        """Re-color all the rows"""
+        for row in xrange(self.GetItemCount()):
+            if self._defaultb is None:
+                self._defaultb = self.GetItemBackgroundColour(row)
+
+            if self._mode & HIGHLIGHT_EVEN:
+                dohlight = not row % 2
+            else:
+                dohlight = row % 2
+
+            if dohlight:
+                if self._color is None:
+                    if wx.Platform in ['__WXGTK__', '__WXMSW__']:
+                        color = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DLIGHT)
+                    else:
+                        color = wx.Colour(237, 243, 254)
+                else:
+                    color = self._color
+            else:
+                color = self._defaultb
+
+            self.SetItemBackgroundColour(row, color)
+
+    def SetHighlightColor(self, color):
+        """Set the color used to highlight the rows. Call L{RefreshRows} after
+        this if you wish to update all the rows highlight colors.
+        @param color: wx.Color or None to set default
+
+        """
+        self._color = color
+
+    def SetHighlightMode(self, mode):
+        """Set the highlighting mode to either HIGHLIGHT_EVEN or to
+        HIGHLIGHT_ODD. Call L{RefreshRows} afterwards to update the list
+        state.
+        @param mode: HIGHLIGHT_* mode value
+
+        """
+        self._mode = mode
 
 #----------------------------------------------------------------------------

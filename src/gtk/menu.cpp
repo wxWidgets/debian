@@ -2,7 +2,7 @@
 // Name:        src/gtk/menu.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: menu.cpp 48053 2007-08-13 17:07:01Z JS $
+// Id:          $Id: menu.cpp 56616 2008-10-31 05:25:59Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -773,12 +773,15 @@ wxMenuItem::~wxMenuItem()
 /* static */
 wxString wxMenuItemBase::GetLabelFromText(const wxString& text)
 {
+#if 0
     // The argument to this function will now always be in wxWidgets standard label
     // format, not GTK+ format, so we do what the other ports do.
+    // Actually, m_text is in GTK+ format this function is used on it
+    // we need to retain the original code below.
 
     return wxStripMenuCodes(text);
 
-#if 0
+#else
     wxString label;
 
     for ( const wxChar *pc = text.c_str(); *pc; pc++ )
@@ -905,10 +908,12 @@ void wxMenuItem::SetText( const wxString& str )
     {
         // if the accelerator was taken from a stock ID, just get it back from GTK+ stock
         if (wxGetStockGtkAccelerator(stockid, &accel_mods, &accel_key))
-            gtk_widget_remove_accelerator( GTK_WIDGET(m_menuItem),
-                                           m_parentMenu->m_accel,
-                                           accel_key,
-                                           accel_mods );
+            gtk_widget_add_accelerator( GTK_WIDGET(m_menuItem),
+                                        "activate",
+                                        m_parentMenu->m_accel,
+                                        accel_key,
+                                        accel_mods,
+                                        GTK_ACCEL_VISIBLE);
     }
 }
 
@@ -1035,6 +1040,18 @@ wxString wxMenuItem::GetItemLabel() const
 // wxMenu
 //-----------------------------------------------------------------------------
 
+#if GTK_CHECK_VERSION(2,4,0)
+// "can_activate_accel" from menu item
+extern "C" {
+static gboolean can_activate_accel(GtkWidget*, guint, wxMenu* menu)
+{
+    menu->UpdateUI();
+    // always allow our "activate" handler to be called
+    return true;
+}
+}
+#endif
+
 IMPLEMENT_DYNAMIC_CLASS(wxMenu,wxEvtHandler)
 
 void wxMenu::Init()
@@ -1043,7 +1060,8 @@ void wxMenu::Init()
     m_menu = gtk_menu_new();
     // NB: keep reference to the menu so that it is not destroyed behind
     //     our back by GTK+ e.g. when it is removed from menubar:
-    gtk_widget_ref(m_menu);
+    g_object_ref(m_menu);
+    gtk_object_sink(GTK_OBJECT(m_menu));
 
     m_owner = (GtkWidget*) NULL;
 
@@ -1069,12 +1087,10 @@ void wxMenu::Init()
 
 wxMenu::~wxMenu()
 {
-   WX_CLEAR_LIST(wxMenuItemList, m_items);
-
    if ( GTK_IS_WIDGET( m_menu ))
    {
        // see wxMenu::Init
-       gtk_widget_unref( m_menu );
+       g_object_unref(m_menu);
        g_object_unref( m_accel );
        // if the menu is inserted in another menu at this time, there was
        // one more reference to it:
@@ -1141,18 +1157,9 @@ bool wxMenu::GtkAppend(wxMenuItem *mitem, int pos)
             wxASSERT_MSG( mitem->GetKind() == wxITEM_NORMAL,
                             _T("only normal menu items can have bitmaps") );
 
-            if ( bitmap.HasPixbuf() )
-            {
-                image = gtk_image_new_from_pixbuf(bitmap.GetPixbuf());
-            }
-            else
-            {
-                GdkPixmap *gdk_pixmap = bitmap.GetPixmap();
-                GdkBitmap *gdk_bitmap = bitmap.GetMask() ?
-                                            bitmap.GetMask()->GetBitmap() :
-                                            (GdkBitmap*) NULL;
-                image = gtk_image_new_from_pixmap( gdk_pixmap, gdk_bitmap );
-            }
+            // always use pixbuf, because pixmap mask does not
+            // work with disabled images in some themes
+            image = gtk_image_new_from_pixbuf(bitmap.GetPixbuf());
         }
 
         if ( image )
@@ -1270,6 +1277,13 @@ bool wxMenu::GtkAppend(wxMenuItem *mitem, int pos)
         }
         else
         {
+#if GTK_CHECK_VERSION(2,4,0)
+            if (gtk_check_version(2,4,0) == NULL)
+            {
+                g_signal_connect(menuItem, "can_activate_accel",
+                    G_CALLBACK(can_activate_accel), this);
+            }
+#endif
             g_signal_connect (menuItem, "activate",
                               G_CALLBACK (gtk_menu_clicked_callback),
                               this);
@@ -1312,9 +1326,10 @@ wxMenuItem *wxMenu::DoRemove(wxMenuItem *item)
     if ( !wxMenuBase::DoRemove(item) )
         return (wxMenuItem *)NULL;
 
-    // TODO: this code doesn't delete the item factory item and this seems
-    //       impossible as of GTK 1.2.6.
-    gtk_widget_destroy( item->GetMenuItem() );
+    GtkWidget* mitem = item->GetMenuItem();
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(mitem), NULL);
+    gtk_widget_destroy(mitem);
+    item->SetMenuItem(NULL);
 
     return item;
 }

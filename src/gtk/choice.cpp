@@ -2,7 +2,7 @@
 // Name:        src/gtk/choice.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: choice.cpp 48797 2007-09-19 13:48:25Z RR $
+// Id:          $Id: choice.cpp 54967 2008-08-04 15:33:13Z JS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -588,7 +588,7 @@ wxSize wxChoice::DoGetBestSize() const
     }
 
     // but not less than the minimal width
-    if ( ret.x < 80 )
+    if ( GetCount() == 0 && ret.x < 80 )
         ret.x = 80;
 
     // If this request_size is called with no entries then

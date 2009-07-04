@@ -4,32 +4,31 @@
 #          features.                                                          #
 # Author: Cody Precord <cprecord@editra.org>                                  #
 # Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#-----------------------------------------------------------------------------#
-# FILE: editra_ss.py                                                          #
-# AUTHOR: Cody Precord                                                        #
-#                                                                             #
-# @summary: Lexer configuration file for Editra Syntax Highlighter Style      #
-#           Sheets.                                                           #
-#                                                                             #
-#-----------------------------------------------------------------------------#
+FILE: editra_ss.py                                                          
+AUTHOR: Cody Precord                                                        
+@summary: Lexer configuration file for Editra Syntax Highlighter Style Sheets.
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: editra_ss.py 49250 2007-10-20 02:40:49Z CJP $"
-__revision__ = "$Revision: 49250 $"
+__svnid__ = "$Id: editra_ss.py 55178 2008-08-22 15:39:56Z CJP $"
+__revision__ = "$Revision: 55178 $"
 
 #-----------------------------------------------------------------------------#
+# Local Imports
 import synglob
+from css import AutoIndenter
+
 #-----------------------------------------------------------------------------#
 
 #---- Keyword Specifications ----#
 
 # Editra Style Sheet Keywords
-ESS_KEYWORDS = (0, "fore back face size eol bold italic")
+ESS_KEYWORDS = (0, "fore back face size eol bold italic modifiers")
 
 #---- Syntax Style Specs ----#
 SYNTAX_ITEMS = [ ('STC_CSS_DEFAULT', 'default_style'),
@@ -90,7 +89,7 @@ def CommentPattern(lang_id=0):
 
     """
     if lang_id == synglob.ID_LANG_ESS:
-        return list()
+        return [u'/*', '*/']
     else:
         return list()
 #---- End Required Functions ----#

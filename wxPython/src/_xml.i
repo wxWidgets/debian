@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     4-June-2001
-// RCS-ID:      $Id: _xml.i 41451 2006-09-26 00:26:35Z RD $
+// RCS-ID:      $Id: _xml.i 60608 2009-05-12 20:38:58Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -94,6 +94,7 @@ public:
 
     void AddChild(wxXmlNode *child);
     bool InsertChild(wxXmlNode *child, wxXmlNode *before_node);
+    bool InsertChildAfter(wxXmlNode *child, wxXmlNode *precedingNode);
     bool RemoveChild(wxXmlNode *child);
     void AddProperty(wxXmlProperty *prop);
     %Rename(AddPropertyName,  void,  AddProperty(const wxString& name, const wxString& value));
@@ -133,6 +134,13 @@ public:
 
     void SetProperties(wxXmlProperty *prop);
 
+    wxString GetAttribute(const wxString& attrName,
+                          const wxString& defaultVal) const;
+    //bool GetAttribute(const wxString& attrName, wxString *value) const;
+    void AddAttribute(const wxString& attrName, const wxString& value);
+    wxXmlProperty* GetAttributes() const;
+
+    
     %property(Children, GetChildren, SetChildren, doc="See `GetChildren` and `SetChildren`");
     %property(Content, GetContent, SetContent, doc="See `GetContent` and `SetContent`");
     %property(Name, GetName, SetName, doc="See `GetName` and `SetName`");

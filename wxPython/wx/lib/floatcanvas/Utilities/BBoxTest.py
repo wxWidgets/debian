@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 
 """
 Test code for the BBox Object
@@ -261,6 +263,82 @@ class testInside(unittest.TestCase):
         C = BBox( ( (17.1, 8),(17.95, 32) ) )
         self.failIf(B.Inside(C) )
 
+class testPointInside(unittest.TestCase):
+    def testPointIn(self):
+        B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
+        P = (3.0, 4.0)
+        self.failUnless(B.PointInside(P))
+
+    def testUpperLeft(self):
+        B = BBox( ( (5, 10),(15, 25) ) )
+        P = (4, 30)
+        self.failIf(B.PointInside(P))
+    
+    def testUpperRight(self):
+        B = BBox( ( (5, 10),(15, 25) ) )
+        P = (16, 30)
+        self.failIf(B.PointInside(P))
+    
+    def testLowerRight(self):
+        B = BBox( ( (5, 10),(15, 25) ) )
+        P = (16, 4)
+        self.failIf(B.PointInside(P))
+    
+    def testLowerLeft(self):
+        B = BBox( ( (5, 10),(15, 25) ) )
+        P = (-10, 5)
+        self.failIf(B.PointInside(P))
+        
+    def testBelow(self):
+        B = BBox( ( (5, 10),(15, 25) ) )
+        P = (10, 5)
+        self.failIf(B.PointInside(P))
+        
+    def testAbove(self):
+        B = BBox( ( (5, 10),(15, 25) ) )
+        P  = ( 10, 25.001)
+        self.failIf(B.PointInside(P))
+        
+    def testLeft(self):
+        B = BBox( ( (5, 10),(15, 25) ) )
+        P = (4, 12)
+        self.failIf(B.PointInside(P))
+        
+    def testRight(self):
+        B = BBox( ( (5, 10),(15, 25) ) )
+        P = (17.1, 12.3)
+        self.failIf(B.PointInside(P))
+
+    def testPointOnTopLine(self):
+        B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
+        P = (3.0, 10.0)
+        self.failUnless(B.PointInside(P))
+
+    def testPointLeftTopLine(self):
+        B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
+        P = (-3.0, 10.0)
+        self.failIf(B.PointInside(P))
+
+    def testPointOnBottomLine(self):
+        B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
+        P = (3.0, 5.0)
+        self.failUnless(B.PointInside(P))
+
+    def testPointOnLeft(self):
+        B = BBox( ( (-10.0, -10.0), (-1.0, -1.0) ) )
+        P = (-10, -5.0)
+        self.failUnless(B.PointInside(P))
+
+    def testPointOnRight(self):
+        B = BBox( ( (-10.0, -10.0), (-1.0, -1.0) ) )
+        P = (-1, -5.0)
+        self.failUnless(B.PointInside(P))
+
+    def testPointOnBottomRight(self):
+        B = BBox( ( (-10.0, -10.0), (-1.0, -1.0) ) )
+        P = (-1, -10.0)
+        self.failUnless(B.PointInside(P))
+
 class testFromPoints(unittest.TestCase):
 
     def testCreate(self):
@@ -335,6 +413,38 @@ class testMerge(unittest.TestCase):
         A.Merge(self.D)
         self.failUnless(A[0] == self.D[0] and A[1] == self.A[1])
 
+class testWidthHeight(unittest.TestCase):
+    B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
+    def testWidth(self):
+        self.failUnless(self.B.Width == 4.0)
+
+    def testWidth(self):
+        self.failUnless(self.B.Height == 8.0)
+
+    def attemptSetWidth(self):
+        self.B.Width = 6
+
+    def attemptSetHeight(self):
+        self.B.Height = 6
+
+    def testSetW(self):
+        self.failUnlessRaises(AttributeError, self.attemptSetWidth)
+        
+    def testSetH(self):
+        self.failUnlessRaises(AttributeError, self.attemptSetHeight)
+        
+class testCenter(unittest.TestCase):
+    B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
+    def testCenter(self):
+        self.failUnless( (self.B.Center == (3.0, 6.0)).all() )
+
+    def attemptSetCenter(self):
+        self.B.Center = (6, 5)
+
+    def testSetCenter(self):
+        self.failUnlessRaises(AttributeError, self.attemptSetCenter)
+        
+
 class testBBarray(unittest.TestCase):
     BBarray = N.array( ( ((-23.5, 456), (56, 532.0)),
                          ((-20.3, 460), (54, 465  )),
@@ -342,13 +452,99 @@ class testBBarray(unittest.TestCase):
                          ((-26.5,  12), (56, 532.0)),
                        ),
                        dtype=N.float)
-    print BBarray
     BB = asBBox( ((-26.5,  12.), ( 58. , 540.)) )
 
     def testJoin(self):
         BB = fromBBArray(self.BBarray)
         self.failUnless(BB == self.BB, "Wrong BB was created. It was:\n%s \nit should have been:\n%s"%(BB, self.BB))
 
+class testNullBBox(unittest.TestCase):
+    B1 = NullBBox()
+    B2 = NullBBox()
+    B3 = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
+
+    def testValues(self):
+        self.failUnless( N.alltrue(N.isnan(self.B1)) )
+    
+    def testIsNull(self):
+        self.failUnless( self.B1.IsNull )
+
+    def testEquals(self):
+        self.failUnless( (self.B1 == self.B2) == True )
+    
+    def testNotEquals(self):
+        self.failUnless ( (self.B1 == self.B3) == False,
+                          "NotEquals failed for\n%s,\n %s:%s"%(self.B1, self.B3, (self.B1 == self.B3)) )    
+
+    def testNotEquals2(self):
+        self.failUnless ( (self.B3 == self.B1) == False,
+                          "NotEquals failed for\n%s,\n %s:%s"%(self.B3, self.B1, (self.B3 == self.B1))  )    
+        
+    def testMerge(self):
+        C = self.B1.copy()
+        C.Merge(self.B3)
+        self.failUnless( C == self.B3,
+                         "merge failed, got: %s"%C )
+        
+    def testOverlaps(self):
+        self.failUnless( self.B1.Overlaps(self.B3) == False)
+
+    def testOverlaps2(self):
+        self.failUnless( self.B3.Overlaps(self.B1) == False)
+
+
+class testInfBBox(unittest.TestCase):
+    B1 = InfBBox()
+    B2 = InfBBox()
+    B3 = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
+    NB = NullBBox()
+
+    def testValues(self):
+        self.failUnless( N.alltrue(N.isinf(self.B1)) )
+    
+#    def testIsNull(self):
+#        self.failUnless( self.B1.IsNull )
+
+    def testEquals(self):
+        self.failUnless( (self.B1 == self.B2) == True )
+    
+    def testNotEquals(self):
+        print (self.B1 == self.B3) == False
+        self.failUnless ( (self.B1 == self.B3) == False,
+                          "NotEquals failed for\n%s,\n %s:%s"%(self.B1, self.B3, (self.B1 == self.B3)) )    
+
+    def testNotEquals2(self):
+        self.failUnless ( (self.B3 == self.B1) == False,
+                          "NotEquals failed for\n%s,\n %s:%s"%(self.B3, self.B1, (self.B3 == self.B1))  )    
+        
+    def testMerge(self):
+        C = self.B1.copy()
+        C.Merge(self.B3)
+        self.failUnless( C == self.B2,
+                         "merge failed, got: %s"%C )
+
+    def testMerge2(self):
+        C = self.B3.copy()
+        C.Merge(self.B1)
+        self.failUnless( C == self.B1,
+                         "merge failed, got: %s"%C )
+
+    def testOverlaps(self):
+        self.failUnless( self.B1.Overlaps(self.B2) == True)
+
+    def testOverlaps2(self):
+        self.failUnless( self.B3.Overlaps(self.B1) == True)
+        
+    def testOverlaps3(self):
+        self.failUnless( self.B1.Overlaps(self.B3) == True)
+
+    def testOverlaps4(self):
+        self.failUnless( self.B1.Overlaps(self.NB) == True)
+
+    def testOverlaps5(self):
+        self.failUnless( self.NB.Overlaps(self.B1) == True)
+    
+    
 
 if __name__ == "__main__":
     unittest.main()

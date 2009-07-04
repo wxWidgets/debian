@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by: Stefan Csomor
 // Created:     1998-01-01
-// RCS-ID:      $Id: setup0.h 43908 2006-12-11 06:19:27Z RD $
+// RCS-ID:      $Id: setup0.h 51451 2008-01-29 23:11:55Z VZ $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1043,7 +1043,7 @@
 // ----------------------------------------------------------------------------
 
 // wxSingleInstanceChecker class allows to verify at startup if another program
-// instance is running (it is only available under Win32)
+// instance is running.
 //
 // Default is 1
 //

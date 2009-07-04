@@ -4,7 +4,7 @@
 // Author:      Julian Smart and Guillermo Rodriguez Garcia
 // Modified by: Francesco Montorsi
 // Created:     13/8/99
-// RCS-ID:      $Id: animate.h 43898 2006-12-10 14:18:37Z VZ $
+// RCS-ID:      $Id: animate.h 58350 2009-01-24 10:00:38Z FM $
 // Copyright:   (c) Julian Smart and Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,10 @@ typedef struct _GdkPixbufAnimationIter GdkPixbufAnimationIter;
 class WXDLLIMPEXP_ADV wxAnimation : public wxAnimationBase
 {
 public:
+#if wxABI_VERSION >= 20810
+    wxAnimation(const wxString &name, wxAnimationType type = wxANIMATION_TYPE_ANY)
+        : m_pixbuf(NULL) { LoadFile(name, type); }
+#endif
     wxAnimation(GdkPixbufAnimation *p = NULL);
     wxAnimation(const wxAnimation&);
     ~wxAnimation() { UnRef(); }
@@ -44,7 +48,7 @@ public:
 
     // we can retrieve the delay for a frame only after building
     // a GdkPixbufAnimationIter...
-    virtual int GetDelay(unsigned int frame) const { return 0; }
+    virtual int GetDelay(unsigned int WXUNUSED(frame)) const { return 0; }
 
     virtual wxSize GetSize() const;
 

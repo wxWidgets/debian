@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:
-// RCS-ID:      $Id: dcgraph.cpp 49369 2007-10-23 21:30:28Z RD $
+// RCS-ID:      $Id: dcgraph.cpp 60190 2009-04-16 00:57:35Z KO $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -79,7 +79,15 @@ void wxGCDC::SetGraphicsContext( wxGraphicsContext* ctx )
 wxGCDC::wxGCDC(const wxWindowDC& dc)
 {
     Init();
-    SetGraphicsContext( wxGraphicsContext::Create(dc) );
+    wxGraphicsContext* context;
+#if wxUSE_CAIRO
+    wxGraphicsRenderer* renderer = wxGraphicsRenderer::GetCairoRenderer();
+    context = renderer->CreateContext(dc);
+#else
+    context = wxGraphicsContext::Create(dc);
+#endif
+
+    SetGraphicsContext( context );
 }
 
 #ifdef __WXMSW__
@@ -143,7 +151,7 @@ void wxGCDC::DoDrawIcon( const wxIcon &icon, wxCoord x, wxCoord y )
 
 bool wxGCDC::StartDoc( const wxString& WXUNUSED(message) ) 
 {
-    return false;
+    return true;
 }
 
 void wxGCDC::EndDoc() 
@@ -539,14 +547,12 @@ void wxGCDC::DoDrawEllipticArc( wxCoord x, wxCoord y, wxCoord w, wxCoord h,
     {
         wxGraphicsPath path = m_graphicContext->CreatePath();
         path.MoveToPoint( 0, 0 );
-        path.AddLineToPoint( h / 2.0 * cos(DegToRad(sa)) , h / 2.0 * sin(DegToRad(-sa)) );
-        path.AddLineToPoint( h / 2.0 * cos(DegToRad(ea)) , h / 2.0 * sin(DegToRad(-ea)) );
+        path.AddArc( 0, 0, h/2.0 , DegToRad(-sa) , DegToRad(-ea), sa > ea );
         path.AddLineToPoint( 0, 0 );
         m_graphicContext->FillPath( path );
 
         path = m_graphicContext->CreatePath();
         path.AddArc( 0, 0, h/2.0 , DegToRad(-sa) , DegToRad(-ea), sa > ea );
-        m_graphicContext->FillPath( path );
         m_graphicContext->StrokePath( path );
     }
     else

@@ -3,7 +3,7 @@
 ###############################################################################
 # Name:      is_text.sh
 # Purpose:   returns 0 if the file in cvs tree is text, 1 if binary
-# Version:   $Id: is_text.sh 47922 2007-08-07 11:52:39Z CE $
+# Version:   $Id: is_text.sh 59049 2009-02-20 10:23:46Z CE $
 # Author:    VZ
 # Created:   2006-07-19
 # Copyright: (c) Vadim Zeitlin 2006 <vadim@wxwindows.org>
@@ -25,6 +25,14 @@ if [ `basename $1` = "config.guess" ] ; then
     exit 1
 fi
 
+# ignore makefile.wat etc
+if [ `basename $1` = "makefile.wat" ] ; then
+    exit 1
+fi
+if [ `basename $1` = "config.wat" ] ; then
+    exit 1
+fi
+	
 if  svn proplist $1 | grep -q "eol-style"  ; then
     exit 0
 fi    

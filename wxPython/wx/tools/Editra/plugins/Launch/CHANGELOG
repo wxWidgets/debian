@@ -1,0 +1,121 @@
+# encoding: utf-8
+#
+# Editra Launch Plugin
+# Author: Cody Precord
+# License: wxWindows License
+#
+
+#-----------------------------------------------------------------------------#
+Version 1.2
+
++Make sure config is initialized for new installs when accessing config dialog
+from Plugin Manager.
+
+#-----------------------------------------------------------------------------#
+Version 1.1
+Date: 03/28/2009
+
++Add support for links in pylint output (patch from Erik Tollerud)
++Api compatibility changes.
+
+#-----------------------------------------------------------------------------#
+Version 1.0
+Date: 01/29/2009
+
++Add support for OCaml (patch from quode)
++Improved Haskell support (patch from quode)
++Add support for LaTex files.
++Right click on configure executables list will show an option to browse for
+the executable.
++Add error link support to VBScript (patch from Gaël)
++Add support for Dos Batch scripts (patch from Gaël)
+
+#-----------------------------------------------------------------------------#
+Version 0.9
+Date: 01/02/2009
+
++Add support for R
++Fix file type not being checked when window is first shown
+
+#-----------------------------------------------------------------------------#
+Version 0.8
+Date: 12/11/2008
+
++Add run last executed program function and shortcut.
++Automatically save the buffer to be excuted if it is modified.
++Fix file list not being populated on first opening.
++Fix incorrect tooltip on exe choice control.
+
+#-----------------------------------------------------------------------------#
+
+Version 0.7
+Date: 11/24/2008
+
++Add support for VBScript
++Number of general UI improvements
+
+#-----------------------------------------------------------------------------#
+
+Version 0.6
+Date: 10/27/2008
+
++Add support for D
++Fix bug with not unsubscribing to some messages on delete causing dead object
+errors.
+
+#-----------------------------------------------------------------------------#
+
+Version 0.5
+Date: 09/30/2008
+
++Add support for (HTML, Inno Setup Scripts, newLisp)
++Fix highlighting error in config dialog
++Fix not updating availability after a save as or lexer change
+
+#-----------------------------------------------------------------------------#
+
+Version 0.4
+Date: 07/11/2008
+
++Files of same type are now selectable without changing the buffer
++Fix some layout issues on Windows
+
+#-----------------------------------------------------------------------------#
+
+Version: 0.3
+Date: 06/08/2008
+
++Add shortcut for running Launch (defaults to F5)
++Option to automatically clear buffer between runs
++Output text colors are configurable
++Fix error hotspot highlighting from perl ouput
+
+#-----------------------------------------------------------------------------#
+
+Version: 0.2
+Date: 03/14/2008
+
++ Use aliases for command names
++ Use Primary Font from Profile settings for output
++ Fix improper updating from events taking place in other windows
++ Support for Ada, PHP, Haskell, haXe, PostScript
+
+#-----------------------------------------------------------------------------#
+
+Version: 0.1
+Date: 02/02/2008
+
+  - Initial Release
+    - Support for launching the following file types
+      + Bash Shell
+      + Boo
+      + C-Shell
+      + Ferite
+      + Korn Shell
+      + Lua
+      + NSIS
+      + Perl
+      + Pike
+      + Python
+      + Ruby
+      + Tcl/Tk

@@ -167,6 +167,7 @@ and the above code will therefore work on all platforms.<P>
 <A HREF="#wxnotebookaddpage">wxNotebook::AddPage</A><BR>
 <A HREF="#wxnotebookadvanceselection">wxNotebook::AdvanceSelection</A><BR>
 <A HREF="#wxnotebookassignimagelist">wxNotebook::AssignImageList</A><BR>
+<A HREF="#wxnotebookchangeselection">wxNotebook::ChangeSelection</A><BR>
 <A HREF="#wxnotebookcreate">wxNotebook::Create</A><BR>
 <A HREF="#wxnotebookdeleteallpages">wxNotebook::DeleteAllPages</A><BR>
 <A HREF="#wxnotebookdeletepage">wxNotebook::DeletePage</A><BR>
@@ -189,7 +190,6 @@ and the above code will therefore work on all platforms.<P>
 <A HREF="#wxnotebooksetpageimage">wxNotebook::SetPageImage</A><BR>
 <A HREF="#wxnotebooksetpagetext">wxNotebook::SetPageText</A><BR>
 <A HREF="#wxnotebooksetselection">wxNotebook::SetSelection</A><BR>
-<A HREF="#wxnotebookchangeselection">wxNotebook::ChangeSelection</A><BR>
 <P>
 
 <HR>
@@ -282,6 +282,17 @@ the list.<P>
 <A HREF="wx_wximagelist.html#wximagelist">wxImageList</A>,
 <A HREF="wx_wxnotebook.html#wxnotebooksetimagelist">SetImageList</A><P>
 
+
+<HR>
+<A NAME="wxnotebookchangeselection"></A>
+<H3>wxNotebook::ChangeSelection</H3>
+<P>
+<B>int</B> <B>ChangeSelection</B>(<B>size_t</B><I> page</I>)<P>
+Changes the selection for the given page, returning the previous selection.<P>
+The call to this function <EM>does not</EM> generate the page changing events.
+This is the only difference with <A HREF="wx_wxnotebook.html#wxnotebooksetselection">SetSelection</A>.
+See <A HREF="wx_eventhandlingoverview.html#progevent">this topic</A> for more info.<P>
+<P>
 
 <HR>
 <A NAME="wxnotebookcreate"></A>
@@ -570,17 +581,6 @@ The call to this function generates the page changing events.<P>
 This function is deprecated and should not be used in new code. Please use the
 <A HREF="wx_wxnotebook.html#wxnotebookchangeselection">ChangeSelection</A> function instead.<P>
 <B><FONT COLOR="#FF0000">See also</FONT></B><P>
-<A HREF="wx_wxnotebook.html#wxnotebookgetselection">wxNotebook::GetSelection</A><P>
-
-
-<HR>
-<A NAME="wxnotebookchangeselection"></A>
-<H3>wxNotebook::ChangeSelection</H3>
-<P>
-<B>int</B> <B>ChangeSelection</B>(<B>size_t</B><I> page</I>)<P>
-Changes the selection for the given page, returning the previous selection.<P>
-The call to this function <EM>does not</EM> generate the page changing events.
-This is the only difference with <A HREF="wx_wxnotebook.html#wxnotebooksetselection">SetSelection</A>.
-See <A HREF="wx_eventhandlingoverview.html#progevent">this topic</A> for more info.<P>
+<A HREF="wx_wxnotebook.html#wxnotebookgetselection">wxNotebook::GetSelection</A>
 
 </FONT></BODY></HTML>

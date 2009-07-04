@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2004/04/08
-// RCS-ID:      $Id: notebook.mm 48107 2007-08-15 16:12:45Z DE $
+// RCS-ID:      $Id: notebook.mm 51650 2008-02-11 07:29:43Z DE $
 // Copyright:   (c) 2004 David Elliott
 // Licence:   	wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
@@ -134,7 +134,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxNotebookEvent, wxNotifyEvent)
 // ========================================================================
 // wxNotebook
 // ========================================================================
-IMPLEMENT_DYNAMIC_CLASS(wxNotebook, wxControl)
+IMPLEMENT_DYNAMIC_CLASS(wxNotebook, wxBookCtrlBase)
 BEGIN_EVENT_TABLE(wxNotebook, wxNotebookBase)
 END_EVENT_TABLE()
 WX_IMPLEMENT_COCOA_OWNER(wxNotebook,NSTabView,NSView,NSView)
@@ -315,9 +315,10 @@ int wxNotebook::GetSelection() const
 void wxNotebook::CocoaDelegate_tabView_didSelectTabViewItem(WX_NSTabViewItem tabViewItem)
 {
     // FIXME: oldSel probably == newSel
-    wxNotebookEvent event(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING, GetId(),
+    wxNotebookEvent event(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, GetId(),
         [GetNSTabView() indexOfTabViewItem:tabViewItem], GetSelection());
     event.SetEventObject(this);
+    GetEventHandler()->ProcessEvent(event);
 }
 
 bool wxNotebook::CocoaDelegate_tabView_shouldSelectTabViewItem(WX_NSTabViewItem tabViewItem)

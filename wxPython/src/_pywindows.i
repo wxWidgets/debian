@@ -7,7 +7,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _pywindows.i 45946 2007-05-10 23:17:59Z RD $
+// RCS-ID:      $Id: _pywindows.i 57810 2009-01-03 02:44:59Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,6 @@
 //      DoReleaseMouse
 //      DoScreenToClient
 //      DoSetToolTip
-//      Enable
 //      Fit
 //      GetCharHeight
 //      GetCharWidth
@@ -81,7 +80,8 @@ public:
     DEC_PYCALLBACK_VOID_INTPINTP_const(DoGetSize);
     DEC_PYCALLBACK_VOID_INTPINTP_const(DoGetClientSize);
     DEC_PYCALLBACK_VOID_INTPINTP_const(DoGetPosition);
-
+    DEC_PYCALLBACK_POINT_const(GetClientAreaOrigin);
+    
     DEC_PYCALLBACK_SIZE_const(DoGetVirtualSize);
     DEC_PYCALLBACK_SIZE_const(DoGetBestSize);
 
@@ -94,6 +94,8 @@ public:
     DEC_PYCALLBACK_BOOL_const(AcceptsFocusFromKeyboard);
     DEC_PYCALLBACK_SIZE_const(GetMaxSize);
 
+    DEC_PYCALLBACK_BOOL_(Enable);
+
     DEC_PYCALLBACK_VOID_WXWINBASE(AddChild);
     DEC_PYCALLBACK_VOID_WXWINBASE(RemoveChild);
 
@@ -103,7 +105,7 @@ public:
     DEC_PYCALLBACK_BOOL_(HasTransparentBackground);
 
     DEC_PYCALLBACK_VOID_(OnInternalIdle);
-    
+
     PYPRIVATE;
 };
 
@@ -117,6 +119,7 @@ IMP_PYCALLBACK_VOID_INTINT(wxPyWindow, wxWindow, DoSetVirtualSize);
 IMP_PYCALLBACK_VOID_INTPINTP_const(wxPyWindow, wxWindow, DoGetSize);
 IMP_PYCALLBACK_VOID_INTPINTP_const(wxPyWindow, wxWindow, DoGetClientSize);
 IMP_PYCALLBACK_VOID_INTPINTP_const(wxPyWindow, wxWindow, DoGetPosition);
+IMP_PYCALLBACK_POINT_const(wxPyWindow, wxWindow, GetClientAreaOrigin);
 
 IMP_PYCALLBACK_SIZE_const(wxPyWindow, wxWindow, DoGetVirtualSize);
 IMP_PYCALLBACK_SIZE_const(wxPyWindow, wxWindow, DoGetBestSize);
@@ -130,6 +133,8 @@ IMP_PYCALLBACK_BOOL_const(wxPyWindow, wxWindow, AcceptsFocus);
 IMP_PYCALLBACK_BOOL_const(wxPyWindow, wxWindow, AcceptsFocusFromKeyboard);
 IMP_PYCALLBACK_SIZE_const(wxPyWindow, wxWindow, GetMaxSize);
 
+IMP_PYCALLBACK_BOOL_(wxPyWindow, wxWindow, Enable);
+
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyWindow, wxWindow, AddChild);
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyWindow, wxWindow, RemoveChild);
 
@@ -139,6 +144,7 @@ IMP_PYCALLBACK_VIZATTR_(wxPyWindow, wxWindow, GetDefaultAttributes);
 IMP_PYCALLBACK_BOOL_(wxPyWindow, wxWindow, HasTransparentBackground);
 
 IMP_PYCALLBACK_VOID_(wxPyWindow, wxWindow, OnInternalIdle);
+
 %}
 
 // And now the one for SWIG to see
@@ -190,6 +196,8 @@ public:
     bool AcceptsFocusFromKeyboard() const;
     wxSize GetMaxSize() const;
 
+    bool Enable(bool enable = true);
+
     void AddChild(wxWindow* child);
     void RemoveChild(wxWindow* child);
 
@@ -214,6 +222,7 @@ public:
     %MAKE_BASE_FUNC(PyWindow, AcceptsFocus);
     %MAKE_BASE_FUNC(PyWindow, AcceptsFocusFromKeyboard);
     %MAKE_BASE_FUNC(PyWindow, GetMaxSize);
+    %MAKE_BASE_FUNC(PyWindow, Enable);
     %MAKE_BASE_FUNC(PyWindow, AddChild);
     %MAKE_BASE_FUNC(PyWindow, RemoveChild);
     %MAKE_BASE_FUNC(PyWindow, ShouldInheritColours);
@@ -263,6 +272,7 @@ public:
     DEC_PYCALLBACK_VOID_INTPINTP_const(DoGetSize);
     DEC_PYCALLBACK_VOID_INTPINTP_const(DoGetClientSize);
     DEC_PYCALLBACK_VOID_INTPINTP_const(DoGetPosition);
+    DEC_PYCALLBACK_POINT_const(GetClientAreaOrigin);
 
     DEC_PYCALLBACK_SIZE_const(DoGetVirtualSize);
     DEC_PYCALLBACK_SIZE_const(DoGetBestSize);
@@ -276,6 +286,8 @@ public:
     DEC_PYCALLBACK_BOOL_const(AcceptsFocusFromKeyboard);
     DEC_PYCALLBACK_SIZE_const(GetMaxSize);
 
+    DEC_PYCALLBACK_BOOL_(Enable);
+
     DEC_PYCALLBACK_VOID_WXWINBASE(AddChild);
     DEC_PYCALLBACK_VOID_WXWINBASE(RemoveChild);
 
@@ -285,6 +297,7 @@ public:
     DEC_PYCALLBACK_BOOL_(HasTransparentBackground);
 
     DEC_PYCALLBACK_VOID_(OnInternalIdle);
+
 
     PYPRIVATE;
 };
@@ -299,6 +312,7 @@ IMP_PYCALLBACK_VOID_INTINT(wxPyPanel, wxPanel, DoSetVirtualSize);
 IMP_PYCALLBACK_VOID_INTPINTP_const(wxPyPanel, wxPanel, DoGetSize);
 IMP_PYCALLBACK_VOID_INTPINTP_const(wxPyPanel, wxPanel, DoGetClientSize);
 IMP_PYCALLBACK_VOID_INTPINTP_const(wxPyPanel, wxPanel, DoGetPosition);
+IMP_PYCALLBACK_POINT_const(wxPyPanel, wxPanel, GetClientAreaOrigin);
 
 IMP_PYCALLBACK_SIZE_const(wxPyPanel, wxPanel, DoGetVirtualSize);
 IMP_PYCALLBACK_SIZE_const(wxPyPanel, wxPanel, DoGetBestSize);
@@ -312,6 +326,8 @@ IMP_PYCALLBACK_BOOL_const(wxPyPanel, wxPanel, AcceptsFocus);
 IMP_PYCALLBACK_BOOL_const(wxPyPanel, wxPanel, AcceptsFocusFromKeyboard);
 IMP_PYCALLBACK_SIZE_const(wxPyPanel, wxPanel, GetMaxSize);
 
+IMP_PYCALLBACK_BOOL_(wxPyPanel, wxPanel, Enable);
+
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyPanel, wxPanel, AddChild);
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyPanel, wxPanel, RemoveChild);
 
@@ -321,6 +337,7 @@ IMP_PYCALLBACK_VIZATTR_(wxPyPanel, wxPanel, GetDefaultAttributes);
 IMP_PYCALLBACK_BOOL_(wxPyPanel, wxPanel, HasTransparentBackground);
 
 IMP_PYCALLBACK_VOID_(wxPyPanel, wxPanel, OnInternalIdle);
+
 %}
 
 // And now the one for SWIG to see
@@ -372,6 +389,8 @@ public:
     bool AcceptsFocusFromKeyboard() const;
     wxSize GetMaxSize() const;
 
+    bool Enable(bool enable = true);
+
     void AddChild(wxWindow* child);
     void RemoveChild(wxWindow* child);
 
@@ -396,6 +415,7 @@ public:
     %MAKE_BASE_FUNC(PyPanel, AcceptsFocus);
     %MAKE_BASE_FUNC(PyPanel, AcceptsFocusFromKeyboard);
     %MAKE_BASE_FUNC(PyPanel, GetMaxSize);
+    %MAKE_BASE_FUNC(PyPanel, Enable);
     %MAKE_BASE_FUNC(PyPanel, AddChild);
     %MAKE_BASE_FUNC(PyPanel, RemoveChild);
     %MAKE_BASE_FUNC(PyPanel, ShouldInheritColours);
@@ -437,6 +457,7 @@ public:
     DEC_PYCALLBACK_VOID_INTPINTP_const(DoGetSize);
     DEC_PYCALLBACK_VOID_INTPINTP_const(DoGetClientSize);
     DEC_PYCALLBACK_VOID_INTPINTP_const(DoGetPosition);
+    DEC_PYCALLBACK_POINT_const(GetClientAreaOrigin);
 
     DEC_PYCALLBACK_SIZE_const(DoGetVirtualSize);
     DEC_PYCALLBACK_SIZE_const(DoGetBestSize);
@@ -449,6 +470,8 @@ public:
     DEC_PYCALLBACK_BOOL_const(AcceptsFocus);
     DEC_PYCALLBACK_BOOL_const(AcceptsFocusFromKeyboard);
     DEC_PYCALLBACK_SIZE_const(GetMaxSize);
+
+    DEC_PYCALLBACK_BOOL_(Enable);
 
     DEC_PYCALLBACK_VOID_WXWINBASE(AddChild);
     DEC_PYCALLBACK_VOID_WXWINBASE(RemoveChild);
@@ -473,6 +496,7 @@ IMP_PYCALLBACK_VOID_INTINT(wxPyScrolledWindow, wxScrolledWindow, DoSetVirtualSiz
 IMP_PYCALLBACK_VOID_INTPINTP_const(wxPyScrolledWindow, wxScrolledWindow, DoGetSize);
 IMP_PYCALLBACK_VOID_INTPINTP_const(wxPyScrolledWindow, wxScrolledWindow, DoGetClientSize);
 IMP_PYCALLBACK_VOID_INTPINTP_const(wxPyScrolledWindow, wxScrolledWindow, DoGetPosition);
+IMP_PYCALLBACK_POINT_const(wxPyScrolledWindow, wxScrolledWindow, GetClientAreaOrigin);
 
 IMP_PYCALLBACK_SIZE_const(wxPyScrolledWindow, wxScrolledWindow, DoGetVirtualSize);
 IMP_PYCALLBACK_SIZE_const(wxPyScrolledWindow, wxScrolledWindow, DoGetBestSize);
@@ -486,6 +510,8 @@ IMP_PYCALLBACK_BOOL_const(wxPyScrolledWindow, wxScrolledWindow, AcceptsFocus);
 IMP_PYCALLBACK_BOOL_const(wxPyScrolledWindow, wxScrolledWindow, AcceptsFocusFromKeyboard);
 IMP_PYCALLBACK_SIZE_const(wxPyScrolledWindow, wxScrolledWindow, GetMaxSize);
 
+IMP_PYCALLBACK_BOOL_(wxPyScrolledWindow, wxScrolledWindow, Enable);
+
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyScrolledWindow, wxScrolledWindow, AddChild);
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyScrolledWindow, wxScrolledWindow, RemoveChild);
 
@@ -495,6 +521,7 @@ IMP_PYCALLBACK_VIZATTR_(wxPyScrolledWindow, wxScrolledWindow, GetDefaultAttribut
 IMP_PYCALLBACK_BOOL_(wxPyScrolledWindow, wxScrolledWindow, HasTransparentBackground);
 
 IMP_PYCALLBACK_VOID_(wxPyScrolledWindow, wxScrolledWindow, OnInternalIdle);
+
 %}
 
 // And now the one for SWIG to see
@@ -546,6 +573,8 @@ public:
     bool AcceptsFocusFromKeyboard() const;
     wxSize GetMaxSize() const;
 
+    bool Enable(bool enable = true);
+
     void AddChild(wxWindow* child);
     void RemoveChild(wxWindow* child);
 
@@ -570,6 +599,7 @@ public:
     %MAKE_BASE_FUNC(PyScrolledWindow, AcceptsFocus);
     %MAKE_BASE_FUNC(PyScrolledWindow, AcceptsFocusFromKeyboard);
     %MAKE_BASE_FUNC(PyScrolledWindow, GetMaxSize);
+    %MAKE_BASE_FUNC(PyScrolledWindow, Enable);
     %MAKE_BASE_FUNC(PyScrolledWindow, AddChild);
     %MAKE_BASE_FUNC(PyScrolledWindow, RemoveChild);
     %MAKE_BASE_FUNC(PyScrolledWindow, ShouldInheritColours);

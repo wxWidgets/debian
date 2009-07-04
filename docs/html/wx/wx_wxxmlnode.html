@@ -64,6 +64,7 @@ enum wxXmlNodeType
 <A HREF="#wxxmlnodegettype">wxXmlNode::GetType</A><BR>
 <A HREF="#wxxmlnodehasprop">wxXmlNode::HasProp</A><BR>
 <A HREF="#wxxmlnodeinsertchild">wxXmlNode::InsertChild</A><BR>
+<A HREF="#wxxmlnodeinsertchildafter">wxXmlNode::InsertChildAfter</A><BR>
 <A HREF="#wxxmlnodecontainsiswhitespaceonly">wxXmlNode::IsWhitespaceOnly</A><BR>
 <A HREF="#wxxmlnoderemovechild">wxXmlNode::RemoveChild</A><BR>
 <A HREF="#wxxmlnodesetchildren">wxXmlNode::SetChildren</A><BR>
@@ -252,11 +253,31 @@ Returns <TT>true</TT> if this node has a property named <I>propName</I>.<P>
 <A NAME="wxxmlnodeinsertchild"></A>
 <H3>wxXmlNode::InsertChild</H3>
 <P>
-<B>bool</B> <B>InsertChild</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>child</I>, <B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>before_node</I>)<P>
-Inserts the <I>child</I> node after <I>before_node</I> in the children list.
-If <I>before_node</I> is <TT>NULL</TT>, then <I>child</I> is prepended to the list of children and
-becomes the first child of this node.
-Returns <TT>true</TT> if <I>before_node</I> has been found and the <I>child</I> node has been inserted.<P>
+<B>bool</B> <B>InsertChild</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>child</I>, <B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>followingNode</I>)<P>
+Inserts the <I>child</I> node immediately before <I>followingNode</I> in the
+children list.  If <I>followingNode</I> is <TT>NULL</TT>, then <I>child</I> is prepended
+to the list of children and becomes the first child of this node.  Returns
+<TT>true</TT> if <I>followingNode</I> has been found and the <I>child</I> node has been
+inserted.<P>
+
+<HR>
+<A NAME="wxxmlnodeinsertchildafter"></A>
+<H3>wxXmlNode::InsertChildAfter</H3>
+<P>
+<B>bool</B> <B>InsertChildAfter</B>(<B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>child</I>, <B><A HREF="wx_wxxmlnode.html#wxxmlnode">wxXmlNode</A>* </B></B><I>precedingNode</I>)<P>
+Inserts the <I>child</I> node immediately after <I>precedingNode</I> in the
+children list. Returns <TT>true</TT> if <I>precedingNode</I> has been found and the
+<I>child</I> node has been inserted.<P>
+<B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
+<I>child</I><UL><UL>
+Node to insert.</UL></UL>
+
+<I>precedingNode</I><UL><UL>
+The node to insert <I>child</I> after.
+    As a special case, this can be <TT>NULL</TT> if this node has no children yet --
+    in that case, <I>child</I> will become this node's only child node.</UL></UL>
+<P>
+This function is new since wxWidgets version 2.8.8<P>
 
 <HR>
 <A NAME="wxxmlnodecontainsiswhitespaceonly"></A>

@@ -39,6 +39,7 @@ None<P>
 <A HREF="#wxrectgetx">wxRect::GetX</A><BR>
 <A HREF="#wxrectgety">wxRect::GetY</A><BR>
 <A HREF="#wxrectinflate">wxRect::Inflate</A><BR>
+<A HREF="#wxrectintersect">wxRect::Intersect</A><BR>
 <A HREF="#wxrectintersects">wxRect::Intersects</A><BR>
 <A HREF="#wxrectisempty">wxRect::IsEmpty</A><BR>
 <A HREF="#wxrectoffset">wxRect::Offset</A><BR>
@@ -297,6 +298,17 @@ means:
 <P>
 <B><FONT COLOR="#FF0000">See also</FONT></B><P>
 <A HREF="wx_wxrect.html#wxrectdeflate">Deflate</A><P>
+
+
+<HR>
+<A NAME="wxrectintersect"></A>
+<H3>wxRect::Intersect</H3>
+<P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A></B> </B> <B>Intersect</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>) <B>const</B><P>
+<B><A HREF="wx_wxrect.html#wxrect">wxRect</A>&</B> </B> <B>Intersect</B>(<B>const <A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>)<P>
+Modifies the rectangle to contain the overlapping box of this rectangle and the
+one passed in as parameter. The const version returns the new rectangle, the
+other one modifies this rectangle in place.<P>
 
 
 <HR>

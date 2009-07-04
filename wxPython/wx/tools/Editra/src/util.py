@@ -2,44 +2,40 @@
 # Name: util.py                                                               #
 # Purpose: Misc utility functions used through out Editra                     #
 # Author: Cody Precord <cprecord@editra.org>                                  #
-# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#--------------------------------------------------------------------------#
-# FILE: util.py                                                            #
-# LANGUAGE: Python                                                         #
-#                                                                          #
-# SUMMARY:                                                                 #
-# This file contains various helper functions and utilities that the       #
-# program uses. Basically a random library of misfit functions.	           #
-#                                                                          #
-# METHODS:                                                                 #
-# - FileDropTarget: Is a class that handles drag and drop events for the   #
-#                   the interface.                                         #
-# - GetPathChar: Returns the character used in building paths '\\' for     #
-#                windows and '/' for linux and mac.                        #
-# - GetFileName: Returns the name of the file from a given string          #
-# - GetExtension: Returns the extension of a file.                         #
-#--------------------------------------------------------------------------#
+This file contains various helper functions and utilities that the program uses.
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: util.py 50305 2007-11-28 08:15:04Z CJP $"
-__revision__ = "$Revision: 50305 $"
+__svnid__ = "$Id: util.py 60536 2009-05-07 02:31:37Z CJP $"
+__revision__ = "$Revision: 60536 $"
 
 #--------------------------------------------------------------------------#
-# Dependancies
+# Imports
 import os
 import sys
-import codecs
+import types
 import mimetypes
+import encodings
+import codecs
+import urllib2
 import wx
-import ed_event
+
+# Editra Libraries
 import ed_glob
-from syntax.syntax import GetFileExtensions
+import ed_event
+import ed_crypt
 import dev_tool
+import syntax.syntax as syntax
+import syntax.synglob as synglob
+import eclib # TODO: Temporary till refs to HexToRGB and AdjustColor are
+             #       no longer used anywhere
+import ebmlib
 
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
@@ -57,7 +53,7 @@ class DropTargetFT(wx.PyDropTarget):
         """
         wx.PyDropTarget.__init__(self)
         self.window = window
-        self._data = dict(data=None, fdata=None, tdata=None, 
+        self._data = dict(data=None, fdata=None, tdata=None,
                           tcallb=textcallback, fcallb=filecallback)
         self._tmp = None
         self._lastp = None
@@ -81,7 +77,7 @@ class DropTargetFT(wx.PyDropTarget):
                 longest = ext
 
         cords = [ (0, x * longest[1]) for x in xrange(len(txt)) ]
-        mdc = wx.MemoryDC(wx.EmptyBitmap(longest[0] + 5, 
+        mdc = wx.MemoryDC(wx.EmptyBitmap(longest[0] + 5,
                                          longest[1] * len(txt), 32))
         mdc.SetBackgroundMode(wx.TRANSPARENT)
         mdc.SetTextForeground(stc.GetDefaultForeColour())
@@ -106,16 +102,20 @@ class DropTargetFT(wx.PyDropTarget):
         @return: result of drop object entering window
 
         """
-        try:
-            if self.GetData():
-                files = self._data['fdata'].GetFilenames()
-                text = self._data['tdata'].GetText()
-            else:
-                return drag_result
-        except wx.PyAssertionError:
-            return wx.DragError
+        # GetData seems to happen automatically on msw, calling it again
+        # causes this to fail the first time.
+        if wx.Platform in ['__WXGTK__', '__WXMSW__']:
+            return wx.DragCopy
+
+        if wx.Platform == '__WXMAC__':
+            try:
+                self.GetData()
+            except wx.PyAssertionError:
+                return wx.DragError
 
         self._lastp = (x_cord, y_cord)
+        files = self._data['fdata'].GetFilenames()
+        text = self._data['tdata'].GetText()
         if len(files):
             self.window.SetCursor(wx.StockCursor(wx.CURSOR_COPY_ARROW))
         else:
@@ -141,21 +141,26 @@ class DropTargetFT(wx.PyDropTarget):
                is not moved.
 
         """
+        stc = self.window
         if self._tmp is None:
-            return drag_result
+            if hasattr(stc, 'DoDragOver'):
+                val = stc.DoDragOver(x_cord, y_cord, drag_result)
+                self.ScrollBuffer(stc, x_cord, y_cord)
+            drag_result = wx.DragCopy
         else:
-            stc = self.window
-            point = wx.Point(x_cord, y_cord)
-            self._tmp.BeginDrag(point - self._lastp, stc)
-            self._tmp.Hide()
-            stc.GotoPos(stc.PositionFromPoint(point))
-            stc.Refresh()
-            stc.Update()
-            self._tmp.Move(point)
-            self._tmp.Show()
-            self._tmp.RedrawImage(self._lastp, point, True, True)
-            self._lastp = point
-            return drag_result
+            if hasattr(stc, 'DoDragOver'):
+                point = wx.Point(x_cord, y_cord)
+                self._tmp.BeginDrag(point - self._lastp, stc)
+                self._tmp.Hide()
+                stc.DoDragOver(x_cord, y_cord, drag_result)
+                self._tmp.Move(point)
+                self._tmp.Show()
+                self._tmp.RedrawImage(self._lastp, point, True, True)
+                self._lastp = point
+                self.ScrollBuffer(stc, x_cord, y_cord)
+            drag_result = wx.DragCopy
+
+        return drag_result
 
     def OnData(self, x_cord, y_cord, drag_result):
         """Gets and processes the dropped data
@@ -163,13 +168,16 @@ class DropTargetFT(wx.PyDropTarget):
 
         """
         self.window.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
+        if self.window.HasCapture():
+            self.window.ReleaseMouse()
+
         try:
             data = self.GetData()
         except wx.PyAssertionError:
             wx.PostEvent(self.window.GetTopLevelParent(), \
                         ed_event.StatusEvent(ed_event.edEVT_STATUS, -1,
-                                             _("Unable to open dropped file or "
-                                               "text")))
+                                             _("Unable to accept dropped file "
+                                               "or text")))
             data = False
             drag_result = wx.DragCancel
 
@@ -178,15 +186,11 @@ class DropTargetFT(wx.PyDropTarget):
             text = self._data['tdata'].GetText()
             if len(files) > 0 and self._data['fcallb'] is not None:
                 self._data['fcallb'](files)
-            elif(len(text) > 0):
-                if SetClipboardText(text):
-                    win = self.window
-                    pos = win.PositionFromPointClose(x_cord, y_cord)
-                    if pos != wx.stc.STC_INVALID_POSITION:
-                        win.SetSelection(pos, pos)
-                        win.Paste()
-                    else:
-                        drag_result = wx.DragCancel
+            elif len(text) > 0:
+                if self._data['tcallb'] is not None:
+                    self._data['tcallb'](text)
+                else:
+                    self.window.DoDropText(x_cord, y_cord, text)
         self.InitObjects()
         return drag_result
 
@@ -196,154 +200,137 @@ class DropTargetFT(wx.PyDropTarget):
 
         """
         self.window.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
+        if self.window.HasCapture():
+            self.window.ReleaseMouse()
+
         if self._tmp is not None:
-            self._tmp.EndDrag()
+            try:
+                self._tmp.EndDrag()
+            except wx.PyAssertionError, msg:
+                Log("[droptargetft][err] %s" % str(msg))
+
+    @staticmethod
+    def ScrollBuffer(stc, x_cord, y_cord):
+        """Scroll the buffer as the dragged text is moved towards the
+        ends.
+        @param stc: StyledTextCtrl
+        @param x_cord: int (x position)
+        @param y_cord: int (y position)
+        @note: currenly does not work on wxMac
+
+        """
+        cline = stc.PositionFromPoint(wx.Point(x_cord, y_cord))
+        if cline != wx.stc.STC_INVALID_POSITION:
+            cline = stc.LineFromPosition(cline)
+            fline = stc.GetFirstVisibleLine()
+            lline = stc.GetLastVisibleLine()
+            if (cline - fline) < 2:
+                stc.ScrollLines(-1)
+            elif lline - cline < 2:
+                stc.ScrollLines(1)
+            else:
+                pass
 
 #---- End FileDropTarget ----#
 
 #---- Misc Common Function Library ----#
-def SetClipboardText(txt):
-    """Copies text to the clipboard
-    @param txt: text to put in clipboard
+# Used for holding the primary selection on mac/msw
+FAKE_CLIPBOARD = None
+
+def GetClipboardText(primary=False):
+    """Get the primary selection from the clipboard if there is one
+    @return: str or None
 
     """
+    if primary and wx.Platform == '__WXGTK__':
+        wx.TheClipboard.UsePrimarySelection(True)
+    elif primary:
+        # Fake the primary selection on mac/msw
+        global FAKE_CLIPBOARD
+        return FAKE_CLIPBOARD
+    else:
+        pass
+
+    text_obj = wx.TextDataObject()
+    rtxt = None
+    if wx.TheClipboard.Open():
+        if wx.TheClipboard.GetData(text_obj):
+            rtxt = text_obj.GetText()
+        wx.TheClipboard.Close()
+
+    if primary and wx.Platform == '__WXGTK__':
+        wx.TheClipboard.UsePrimarySelection(False)
+    return rtxt
+
+def SetClipboardText(txt, primary=False):
+    """Copies text to the clipboard
+    @param txt: text to put in clipboard
+    @keyword primary: Set txt as primary selection (x11)
+
+    """
+    # Check if using primary selection
+    if primary and wx.Platform == '__WXGTK__':
+        wx.TheClipboard.UsePrimarySelection(True)
+    elif primary:
+        # Fake the primary selection on mac/msw
+        global FAKE_CLIPBOARD
+        FAKE_CLIPBOARD = txt
+        return True
+    else:
+        pass
+
     data_o = wx.TextDataObject()
     data_o.SetText(txt)
     if wx.TheClipboard.Open():
         wx.TheClipboard.SetData(data_o)
         wx.TheClipboard.Close()
-        return 1
-    return 0
-
-# File Helper Functions
-BOM = { 'utf-8' : codecs.BOM_UTF8,
-        'utf-16-be' : codecs.BOM_UTF16_BE,
-        'utf-16-le' : codecs.BOM_UTF16_LE,
-        'utf-7' : '+\v8-',
-        'latin-1' : '',
-        'ascii' : '' }
-
-# When no BOM is present this determines decode test order
-ENC = [ 'utf-8', 'utf-7', 'latin-1', 'utf-16-be', 'utf-16-le', 'ascii']
-  #      'utf-32-be', 'utf-32-le', 
-
-def DecodeString(str2decode):
-    """Decode a given string if possible and return that string
-    @param str2decode: the string to decode
-
-    """
-    decoded = str2decode
-    for enc in ENC:
-        try:
-            decoded = str2decode.decode(enc)
-        except (UnicodeDecodeError, UnicodeWarning):
-            continue
-        else:
-            break
-
-    return decoded
-
-def GetDecodedText(fname):
-    """Gets the text from a file and decodes the text using
-    a compatible decoder. Returns a tuple of the text and the
-    encoding it was decoded from.
-    @param fname: name of file to open and get text from
-    @return: tuple of (text, encoding string)
-    @note: must allow exceptions to be raised (side effect)
-
-    """
-    f_handle = file(fname, 'rb')
-    txt = f_handle.read()
-    f_handle.close()
-
-    # First try looking for a bom byte
-    tenc = ENC
-    for enc, bom in BOM.iteritems():
-        if txt.startswith(bom) and enc not in ['ascii', 'latin-1']:
-            if enc in tenc:
-                tenc.remove(enc)
-            tenc.insert(0, enc)
-            break
-
-    decoded = None
-    for enc in tenc:
-        try:
-            decoded = txt.decode(enc)
-        except (UnicodeDecodeError, UnicodeWarning):
-            continue
-        else:
-            break
-
-    if 'enc' not in locals():
-        enc = u''
-
-    if decoded:
-        dev_tool.DEBUGP("[txtdecoder] Decoded text as %s" % enc)
-        return decoded, enc
+        if primary and wx.Platform == '__WXGTK__':
+            wx.TheClipboard.UsePrimarySelection(False)
+        return True
     else:
-        dev_tool.DEBUGP("[txtdecoder][err] Decode Failed")
-        return txt, enc
+        return False
 
 def FilterFiles(file_list):
     """Filters a list of paths and returns a list of paths
-    that are valid, not directories, and not seemingly not binary.
+    that can probably be opened in the editor.
     @param file_list: list of files/folders to filter for good files in
-    @todo: find a better way to check for files that can be opened
 
     """
     good = list()
+    checker = ebmlib.FileTypeChecker()
     for path in file_list:
-        if not os.path.exists(path) or os.path.isdir(path):
-            continue
-        else:
-            # Check for binary files
-            # 1. Keep all files types we know about and all that have a mime
-            #    type of text.
-            mime = mimetypes.guess_type(path)
-            if GetExtension(path) in GetFileExtensions() or \
-               (mime[0] and u'text' in mime[0]):
-                good.append(path)
-            # 2. Throw out common filetypes we cant open...HACK
-            elif GetExtension(path).lower() in ['gz', 'tar', 'bz2', 'zip',
-                                                'rar', 'ace', 'png', 'jpg', 
-                                                'gif', 'jpeg', 'exe', 'pyc',
-                                                'pyo', 'psd']:
-                continue
-            # 3. Try to judge if we can open the file or not by sampling
-            #    some of the data, if 10% of the data is bad, drop the file.
-            else:
-                try:
-                    fhandle = file(path, "rb")
-                    tmp = fhandle.read(1500)
-                    fhandle.close()
-                except IOError:
-                    continue
-                bad = 0
-                for bit in xrange(len(tmp)):
-                    val = ord(tmp[bit])
-                    if (val < 8) or (val > 13 and val < 32) or (val > 255):
-                        bad = bad + 1
-                if not len(tmp) or (float(bad)/float(len(tmp))) < 0.1:
-                    good.append(path)
+        if not checker.IsBinary(path):
+            good.append(path)
     return good
 
-def GetFileModTime(file_name):
-    """Returns the time that the given file was last modified on
-    @param file_name: path of file to get mtime of
+def GetFileType(fname):
+    """Get what the type of the file is as Editra sees it
+    in a formatted string.
+    @param fname: file path
+    @return: string (formatted/translated filetype)
 
     """
-    try:
-        mod_time = os.path.getmtime(file_name)
-    except EnvironmentError:
-        mod_time = 0
-    return mod_time
+    if os.path.isdir(fname):
+        return _("Folder")
+
+    eguess = syntax.GetTypeFromExt(fname.split('.')[-1])
+    if eguess == synglob.LANG_TXT and fname.split('.')[-1] == 'txt':
+        return _("Text Document")
+    elif eguess == synglob.LANG_TXT:
+        mtype = mimetypes.guess_type(fname)[0]
+        if mtype is not None:
+            return mtype
+        else:
+            return _("Unknown")
+    else:
+        return _("%s Source File") % eguess
 
 def GetFileReader(file_name, enc='utf-8'):
     """Returns a file stream reader object for reading the
     supplied file name. It returns a file reader using the encoding
     (enc) which defaults to utf-8. If lookup of the reader fails on
     the host system it will return an ascii reader.
-    If there is an error in creating the file reader the function 
+    If there is an error in creating the file reader the function
     will return a negative number.
     @param file_name: name of file to get a reader for
     @keyword enc: encoding to use for reading the file
@@ -355,9 +342,10 @@ def GetFileReader(file_name, enc='utf-8'):
     except (IOError, OSError):
         dev_tool.DEBUGP("[file_reader] Failed to open file %s" % file_name)
         return -1
+
     try:
-        reader = codecs.lookup(enc)[2](file_h)
-    except (LookupError, IndexError):
+        reader = codecs.getreader(enc)(file_h)
+    except (LookupError, IndexError, ValueError):
         dev_tool.DEBUGP('[file_reader] Failed to get %s Reader' % enc)
         reader = file_h
     return reader
@@ -365,145 +353,102 @@ def GetFileReader(file_name, enc='utf-8'):
 def GetFileWriter(file_name, enc='utf-8'):
     """Returns a file stream writer object for reading the
     supplied file name. It returns a file writer in the supplied
-    encoding if the host system supports it other wise it will return 
+    encoding if the host system supports it other wise it will return
     an ascii reader. The default will try and return a utf-8 reader.
-    If there is an error in creating the file reader the function 
+    If there is an error in creating the file reader the function
     will return a negative number.
     @param file_name: path of file to get writer for
     @keyword enc: encoding to write text to file with
 
     """
     try:
-        file_h = file(file_name, "wb")
+        file_h = open(file_name, "wb")
     except IOError:
-        dev_tool.DEBUGP("[file_writer] Failed to open file %s" % file_name)
+        dev_tool.DEBUGP("[file_writer][err] Failed to open file %s" % file_name)
         return -1
     try:
-        writer = codecs.lookup(enc)[3](file_h)
-    except (LookupError, IndexError):
-        dev_tool.DEBUGP('[file_writer] Failed to get %s Writer' % enc)
+        writer = codecs.getwriter(enc)(file_h)
+    except (LookupError, IndexError, ValueError):
+        dev_tool.DEBUGP('[file_writer][err] Failed to get %s Writer' % enc)
         writer = file_h
     return writer
 
-def GetPathChar():
-    """Returns the path character for the OS running the program
-    @return: character used as file path separator
-    """
-    if wx.Platform == '__WXMSW__':
-        return u"\\"
-    else:
-        return u"/"
-
-def GetUniqueName(path, name):
-    """Make a file name that will be unique in case a file of the
-    same name already exists at that path.
-    @param path: Root path to download folder
-    @param name: desired file name base
+def GetFileManagerCmd():
+    """Get the file manager open command for the current os. Under linux
+    it will check for xdg-open, nautilus, konqueror, and Thunar, it will then
+    return which one it finds first or 'nautilus' it finds nothing.
     @return: string
 
     """
-    tmpname = os.path.join(path, name)
-    if os.path.exists(tmpname):
-        ext = name.split('.')[-1]
-        fbase = name[:-1 * len(ext) - 1]
-        inc = len([x for x in os.listdir(path) if x.startswith(fbase)])
-        tmpname = os.path.join(path, "%s-%d.%s" % (fbase, inc, ext))
-        while os.path.exists(tmpname):
-            inc = inc + 1
-            tmpname = os.path.join(path, "%s-%d.%s" % (fbase, inc, ext))
-
-    return tmpname
-
-def GetPathName(path):
-    """Gets the path minus filename
-    @param path: full path to get base of
-
-    """
-    pieces = os.path.split(path)
-    return pieces[0]
-
-def GetFileName(path):
-    """Gets last atom on end of string as filename
-    @param path: full path to get filename from
-
-    """
-    pieces = os.path.split(path)
-    filename = pieces[-1]
-    return filename
-
-def GetExtension(file_str):
-    """Gets last atom at end of string as extension if 
-    no extension whole string is returned
-    @param file_str: path or file name to get extension from
-
-    """
-    pieces = file_str.split('.')
-    extension = pieces[-1]
-    return extension
-
-def ResolvAbsPath(rel_path):
-    """Takes a relative path and converts it to an
-    absolute path.
-    @param rel_path: path to construct absolute path for
-
-    """
-    path_char = GetPathChar()
-    cwd = os.getcwd()
-    pieces = rel_path.split(path_char)
-    cut = 0
-
-    for token in pieces:
-        if token == "..":
-            cut += 1
-
-        if cut > 0:
-            rpath = path_char.join(pieces[cut:])
-            cut *= -1
-            cwd = cwd.split(path_char)
-            apath = path_char.join(cwd[0:cut])
+    if wx.Platform == '__WXMAC__':
+        return 'open'
+    elif wx.Platform == '__WXMSW__':
+        return 'explorer'
+    else:
+        # Check for common linux filemanagers returning first one found
+        #          Gnome/ubuntu KDE/kubuntu  xubuntu
+        for cmd in ('xdg-open', 'nautilus', 'konqueror', 'Thunar'):
+            result = os.system("which %s > /dev/null" % cmd)
+            if result == 0:
+                return cmd
         else:
-            rpath = rel_path
-            apath = cwd
-
-    return apath + path_char + rpath
+            return 'nautilus'
 
 def HasConfigDir(loc=u""):
-    """ Checks if the user has a config directory and returns True 
+    """ Checks if the user has a config directory and returns True
     if the config directory exists or False if it does not.
     @return: whether config dir in question exists on an expected path
 
     """
-    pchar = GetPathChar()
-    if os.path.exists(u"%s%s.%s%s%s" % (wx.GetHomeDir(), pchar,
-                                        ed_glob.PROG_NAME, pchar, loc)):
-        return True
-    else:
-        return False
+    cbase = ed_glob.CONFIG['CONFIG_BASE']
+    if cbase is None:
+        cbase = wx.StandardPaths_Get().GetUserDataDir() + os.sep
+
+    to_check = os.path.join(cbase, loc)
+    return os.path.exists(to_check)
 
 def MakeConfigDir(name):
-    """Makes a user config direcotry
+    """Makes a user config directory
     @param name: name of config directory to make in user config dir
 
     """
-    config_dir = wx.GetHomeDir() + GetPathChar() + u"." + ed_glob.PROG_NAME
+    cbase = ed_glob.CONFIG['CONFIG_BASE']
+    if cbase is None:
+        cbase = wx.StandardPaths_Get().GetUserDataDir()
+
     try:
-        os.mkdir(config_dir + GetPathChar() + name)
+        os.mkdir(cbase + os.sep + name)
     except (OSError, IOError):
         pass
 
+def RepairConfigState(path):
+    """Repair the state of profile path, updating and creating it
+    it does not exist.
+    @param path: path of profile
+
+    """
+    if os.path.isabs(path) and os.path.exists(path):
+        return path
+    else:
+        # Need to fix some stuff up
+        CreateConfigDir()
+        import profiler
+        return profiler.Profile_Get("MYPROFILE")
+
 def CreateConfigDir():
-    """ Creates the user config directory its default sub 
+    """ Creates the user config directory its default sub
     directories and any of the default config files.
     @postcondition: all default configuration files/folders are created
 
     """
     #---- Resolve Paths ----#
-    pchar = GetPathChar()
-    prof_dir = ed_glob.CONFIG['PROFILE_DIR']
-    config_dir = u"%s%s.%s" % (wx.GetHomeDir(), pchar, ed_glob.PROG_NAME)
-    profile_dir = u"%s%sprofiles" % (config_dir, pchar)
-    dest_file = u"%s%sdefault.ppb" % (profile_dir, pchar)
-    ext_cfg = ["cache", "styles", "plugins"]
+    config_dir = ed_glob.CONFIG['CONFIG_BASE']
+    if config_dir is None:
+        config_dir = wx.StandardPaths_Get().GetUserDataDir() + os.sep
+
+    profile_dir = os.path.join(config_dir, u"profiles")
+    dest_file = os.path.join(profile_dir, u"default.ppb")
+    ext_cfg = [u"cache", u"styles", u"plugins"]
 
     #---- Create Directories ----#
     if not os.path.exists(config_dir):
@@ -517,15 +462,16 @@ def CreateConfigDir():
             MakeConfigDir(cfg)
 
     import profiler
-    profiler.Profile().LoadDefaults()
+    profiler.TheProfile.LoadDefaults()
     profiler.Profile_Set("MYPROFILE", dest_file)
+    profiler.TheProfile.Write(dest_file)
     profiler.UpdateProfileLoader()
 
 def ResolvConfigDir(config_dir, sys_only=False):
     """Checks for a user config directory and if it is not
-    found it then resolves the absolute path of the executables 
-    directory from the relative execution path. This is then used 
-    to find the location of the specified directory as it relates 
+    found it then resolves the absolute path of the executables
+    directory from the relative execution path. This is then used
+    to find the location of the specified directory as it relates
     to the executable directory, and returns that path as a
     string.
     @param config_dir: name of config directory to resolve
@@ -534,68 +480,83 @@ def ResolvConfigDir(config_dir, sys_only=False):
            the code has proven itself.
 
     """
-    path_char = GetPathChar()
+    stdpath = wx.StandardPaths_Get()
+
+    # Try to get a User config directory
     if not sys_only:
-        # Try to look for a user dir
-        user_config = u"%s%s.%s%s%s" % (wx.GetHomeDir(), path_char,
-                                        ed_glob.PROG_NAME, path_char, 
-                                        config_dir)
+        user_config = ed_glob.CONFIG['CONFIG_BASE']
+        if user_config is None:
+            user_config = stdpath.GetUserDataDir() + os.sep
+
+        user_config = os.path.join(user_config, config_dir)
+
         if os.path.exists(user_config):
-            return user_config + path_char
+            return user_config + os.sep
 
     # The following lines are used only when Editra is being run as a
     # source package. If the found path does not exist then Editra is
     # running as as a built package.
-    path = __file__
-    path = path_char.join(path.split(path_char)[:-2])
-    path =  path + path_char + config_dir + path_char
-    if os.path.exists(path):
-        return path
+    if not hasattr(sys, 'frozen'):
+        path = __file__
+        path = os.sep.join(path.split(os.sep)[:-2])
+        path =  path + os.sep + config_dir + os.sep
+        if os.path.exists(path):
+            if not isinstance(path, types.UnicodeType):
+                path = unicode(path, sys.getfilesystemencoding())
+            return path
 
     # If we get here we need to do some platform dependant lookup
     # to find everything.
     path = sys.argv[0]
+    if not isinstance(path, types.UnicodeType):
+        path = unicode(path, sys.getfilesystemencoding())
 
     # If it is a link get the real path
     if os.path.islink(path):
         path = os.path.realpath(path)
 
     # Tokenize path
-    pieces = path.split(path_char)
+    pieces = path.split(os.sep)
 
     if os.sys.platform == 'win32':
         # On Windows the exe is in same dir as config directories
-        pro_path = path_char.join(pieces[:-1])
+        pro_path = os.sep.join(pieces[:-1])
 
         if os.path.isabs(pro_path):
             pass
         elif pro_path == "":
             pro_path = os.getcwd()
-            pieces = pro_path.split(path_char)
-            pro_path = path_char.join(pieces[:-1])
+            pieces = pro_path.split(os.sep)
+            pro_path = os.sep.join(pieces[:-1])
         else:
-            pro_path = ResolvAbsPath(pro_path)
-    else:
-        pro_path = path_char.join(pieces[:-2])
-
-        if pro_path.startswith(path_char):
-            pass
-        elif pro_path == "":
-            pro_path = os.getcwd()
-            pieces = pro_path.split(path_char)
-            if pieces[-1] not in [ed_glob.PROG_NAME.lower(), ed_glob.PROG_NAME]:
-                pro_path = path_char.join(pieces[:-1])
-        else:
-            pro_path = ResolvAbsPath(pro_path)
-
-    if os.sys.platform == "darwin":
+            pro_path = os.path.abspath(pro_path)
+    elif os.sys.platform == "darwin":
         # On OS X the config directories are in the applet under Resources
-        pro_path = u"%s%sResources%s%s%s" % (pro_path, path_char, path_char,
-                                             config_dir, path_char)
+        pro_path = stdpath.GetResourcesDir()
+        pro_path = os.path.join(pro_path, config_dir)
     else:
-        pro_path = pro_path + path_char + config_dir + path_char
+        pro_path = os.sep.join(pieces[:-2])
 
-    return os.path.normpath(pro_path) + path_char
+        if pro_path.startswith(os.sep):
+            pass
+        elif pro_path == u"":
+            pro_path = os.getcwd()
+            pieces = pro_path.split(os.sep)
+            if pieces[-1] not in [ed_glob.PROG_NAME.lower(), ed_glob.PROG_NAME]:
+                pro_path = os.sep.join(pieces[:-1])
+        else:
+            pro_path = os.path.abspath(pro_path)
+
+    if os.sys.platform != "darwin":
+        pro_path = pro_path + os.sep + config_dir + os.sep
+
+    path = os.path.normpath(pro_path) + os.sep
+
+    # Make sure path is unicode
+    if not isinstance(path, types.UnicodeType):
+        path = unicode(path, sys.getdefaultencoding())
+
+    return path
 
 def GetResources(resource):
     """Returns a list of resource directories from a given toplevel config dir
@@ -611,7 +572,8 @@ def GetResources(resource):
     else:
         return -1
 
-def GetResourceFiles(resource, trim=True, get_all=False):
+def GetResourceFiles(resource, trim=True, get_all=False,
+                     suffix=None, title=True):
     """Gets a list of resource files from a directory and trims the
     file extentions from the names if trim is set to True (default).
     If the get_all parameter is set to True the function will return
@@ -619,10 +581,11 @@ def GetResourceFiles(resource, trim=True, get_all=False):
     files and combining them, the default behavior returns the user
     level files if they exist or the system level files if the
     user ones do not exist.
-    @param resource: name of config directory
+    @param resource: name of config directory to look in (i.e cache)
     @keyword trim: trim file extensions or not
     @keyword get_all: get a set of both system/user files or just user level
-    
+    @keyword suffix: Get files that have the specified suffix or all (default)
+    @keyword title: Titlize the results
 
     """
     rec_dir = ResolvConfigDir(resource)
@@ -639,12 +602,36 @@ def GetResourceFiles(resource, trim=True, get_all=False):
         for rec in recs:
             if os.path.isfile(rec_dir + rec) or \
               (get_all and os.path.isfile(rec_dir2 + rec)):
-                # Trim the last part of an exetion if one exists
+
+                # If a suffix was specified only keep files that match
+                if suffix is not None:
+                    if not rec.endswith(suffix):
+                        continue
+
+                # Trim the last part of an extension if one exists
                 if trim:
-                    rec = ".".join(rec.split(u".")[:-1])
-                rec_list.append(rec.title())
+                    rec = ".".join(rec.split(u".")[:-1]).strip()
+
+                # Make the resource name a title if requested
+                if title and len(rec):
+                    rec = rec[0].upper() + rec[1:]
+
+                if len(rec):
+                    rec_list.append(rec)
         rec_list.sort()
+        
         return list(set(rec_list))
+
+def GetAllEncodings():
+    """Get all encodings found on the system
+    @return: list of strings
+
+    """
+    elist = encodings.aliases.aliases.values()
+    elist = list(set(elist))
+    elist.sort()
+    elist = [ enc for enc in elist if not enc.endswith('codec') ]
+    return elist
 
 def Log(msg):
     """Push the message to the apps log
@@ -653,45 +640,33 @@ def Log(msg):
     """
     wx.GetApp().GetLog()(msg)
 
-#---- GUI helper functions ----#
-def AdjustColour(color, percent, alpha=wx.ALPHA_OPAQUE):
-    """ Brighten/Darken input colour by percent and adjust alpha
-    channel if needed. Returns the modified color.
-    @param color: color object to adjust
-    @type color: wx.Color
-    @param percent: percent to adjust +(brighten) or -(darken)
-    @type percent: int
-    @keyword alpha: amount to adjust alpha channel
+def GetProxyOpener(proxy_set):
+    """Get a urlopener for use with a proxy
+    @param proxy_set: proxy settings to use
 
-    """ 
-    end_color = wx.WHITE
-    rdif = end_color.Red() - color.Red()
-    gdif = end_color.Green() - color.Green()
-    bdif = end_color.Blue() - color.Blue()
-    high = 100
-
-    # We take the percent way of the color from color -. white
-    red = color.Red() + ((percent * rdif) / high)
-    green = color.Green() + ((percent * gdif) / high)
-    blue = color.Blue() + ((percent * bdif) / high)
-    return wx.Colour(max(red, 0), max(green, 0), max(blue, 0), alpha)
-
-def HexToRGB(hex_str):
-    """Returns a list of red/green/blue values from a
-    hex string.
-    @param hex_str: hex string to convert to rgb
-    
     """
-    hexval = hex_str
-    if hexval[0] == u"#":
-        hexval = hexval[1:]
-    ldiff = 6 - len(hexval)
-    hexval += ldiff * u"0"
-    # Convert hex values to integer
-    red = int(hexval[0:2], 16)
-    green = int(hexval[2:4], 16)
-    blue = int(hexval[4:], 16)
-    return [red, green, blue]
+    Log("[util][info] Making proxy opener with %s" % str(proxy_set))
+    proxy_info = dict(proxy_set)
+    auth_str = "%(uname)s:%(passwd)s@%(url)s"
+    url = proxy_info['url']
+    if url.startswith('http://'):
+        auth_str = "http://" + auth_str
+        proxy_info['url'] = url.replace('http://', '')
+    else:
+        pass
+
+    if len(proxy_info.get('port', '')):
+        auth_str = auth_str + ":%(port)s"
+
+    proxy_info['passwd'] = ed_crypt.Decrypt(proxy_info['passwd'],
+                                            proxy_info['pid'])
+    Log("[util][info] Formatted proxy request: %s" % \
+        (auth_str.replace('%(passwd)s', '****') % proxy_info))
+    proxy = urllib2.ProxyHandler({"http" : auth_str % proxy_info})
+    opener = urllib2.build_opener(proxy, urllib2.HTTPHandler)
+    return opener
+
+#---- GUI helper functions ----#
 
 def SetWindowIcon(window):
     """Sets the given windows icon to be the programs
@@ -738,7 +713,7 @@ class IntValidator(wx.PyValidator):
         @param win: window to validate
 
         """
-        val = win.GetValue()      
+        val = win.GetValue()
         return val.isdigit()
 
     def OnChar(self, event):

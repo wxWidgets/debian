@@ -29,6 +29,9 @@ conventions and under Mac you should create your application bundle according
 to the Apple guidelines. Again, this class doesn't help you to do it.<P>
 This class is MT-safe: its methods may be called concurrently from different
 threads without additional locking.<P>
+Note that you don't allocate an instance of class wxStandardPaths, but retrieve the 
+global standard paths object using <TT>wxStandardPaths::Get</TT> on which you call the 
+desired methods.<P>
 <B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
 No base class<P>
 <B><FONT COLOR="#FF0000">Include files</FONT></B><P>

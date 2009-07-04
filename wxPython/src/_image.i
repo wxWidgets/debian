@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: _image.i 49758 2007-11-09 17:45:04Z RD $
+// RCS-ID:      $Id: _image.i 52459 2008-03-12 22:11:48Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -460,6 +460,11 @@ used when using a single mask colour for transparency.", "");
     DocDeclStr(
         wxImage , ShrinkBy( int xFactor , int yFactor ) const ,
         "Return a version of the image scaled smaller by the given factors.", "");
+
+
+    // Accomodate the in-place edits of the next two methods so chaining of
+    // method calls will work.
+    %typemap(out) wxImage& { $result = $self; Py_INCREF($result); }
     
     DocDeclStr(
         wxImage& , Rescale(int width, int height, int quality = wxIMAGE_QUALITY_NORMAL),
@@ -486,6 +491,8 @@ newly exposed areas.
 Returns the (modified) image itself.", "
 
 :see: `Size`");
+
+    %typemap(out) wxImage&;    // turn off this typemap
     
     
     DocDeclStr(
@@ -1005,7 +1012,19 @@ option is not present, the function returns 0.", "
     %extend {
         static PyObject* GetHandlers() {
             wxList& list = wxImage::GetHandlers();
-            return wxPy_ConvertList(&list);
+            wxList::compatibility_iterator node = list.GetFirst();
+
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
+            PyObject* pyList = PyList_New(0);
+            while (node) {
+                wxObject* wxObj = node->GetData();
+                PyObject* pyObj = wxPyMake_wxObject(wxObj,false);
+                PyList_Append(pyList, pyObj);
+                Py_DECREF(pyObj);  // the Append also does an INCREF, that's one more than we need.
+                node = node->GetNext();
+            }
+            wxPyEndBlockThreads(blocked);
+            return pyList;
         }
     }
     

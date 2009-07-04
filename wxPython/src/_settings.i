@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-July-1997
-// RCS-ID:      $Id: _settings.i 43137 2006-11-07 01:57:27Z RD $
+// RCS-ID:      $Id: _settings.i 57743 2009-01-02 04:29:30Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,8 @@ enum wxSystemColour
     wxSYS_COLOUR_GRADIENTINACTIVECAPTION,
     wxSYS_COLOUR_MENUHILIGHT,
     wxSYS_COLOUR_MENUBAR,
-
+    wxSYS_COLOUR_LISTBOXTEXT,
+    
     wxSYS_COLOUR_MAX
 };
 

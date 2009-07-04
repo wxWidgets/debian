@@ -2,7 +2,7 @@
 // Name:        src/html/m_layout.cpp
 // Purpose:     wxHtml module for basic paragraphs/layout handling
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_layout.cpp 45122 2007-03-29 18:14:35Z VZ $
+// RCS-ID:      $Id: m_layout.cpp 55881 2008-09-25 17:19:30Z VS $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -108,7 +108,12 @@ bool wxHtmlPageBreakCell::AdjustPagebreak(int* pagebreak, wxArrayInt& known_page
     // m_PosY is only the vertical offset from the parent. The pagebreak
     // required here is the total page offset, so m_PosY must be added
     // to the parent's offset and height.
-    int total_height = m_PosY + GetParent()->GetPosY() + GetParent()->GetHeight();
+    int total_height = m_PosY;
+    for ( wxHtmlCell *parent = GetParent(); parent; parent = parent->GetParent() )
+    {
+        total_height += parent->GetPosY();
+    }
+
 
     // Search the array of pagebreaks to see whether we've already set
     // a pagebreak here. The standard bsearch() function is appropriate

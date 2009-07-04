@@ -4,7 +4,7 @@
 // Author:      David Elliott <dfe@cox.net>
 // Modified by: Stefan Csomor
 // Created:     2007/05/10
-// RCS-ID:      $Id: cfref.h 47403 2007-07-12 21:46:46Z DE $
+// RCS-ID:      $Id: cfref.h 51576 2008-02-06 20:10:07Z DE $
 // Copyright:   (c) 2007 David Elliott <dfe@cox.net>, Stefan Csomor
 // Licence:     wxWindows licence
 // Notes:       See http://developer.apple.com/documentation/CoreFoundation/Conceptual/CFMemoryMgmt/index.html
@@ -16,6 +16,11 @@
 
 #ifndef _WX_MAC_COREFOUNDATION_CFREF_H__
 #define _WX_MAC_COREFOUNDATION_CFREF_H__
+
+// Include unistd to ensure that NULL is defined
+#include <unistd.h>
+// Include AvailabilityMacros for DEPRECATED_ATTRIBUTE
+#include <AvailabilityMacros.h>
 
 // #include <CoreFoundation/CFBase.h>
 /* Don't include CFBase.h such that this header can be included from public

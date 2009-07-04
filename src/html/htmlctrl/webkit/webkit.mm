@@ -4,7 +4,7 @@
 // Author:      Jethro Grassie / Kevin Ollivier
 // Modified by:
 // Created:     2004-4-16
-// RCS-ID:      $Id: webkit.mm 43831 2006-12-06 04:37:32Z KO $
+// RCS-ID:      $Id: webkit.mm 56767 2008-11-14 23:02:15Z KO $
 // Copyright:   (c) Jethro Grassie / Kevin Ollivier
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -309,6 +309,20 @@ wxWebKitBeforeLoadEvent::wxWebKitBeforeLoadEvent( wxWindow* win )
     SetId(win->GetId());
 }
 
+
+IMPLEMENT_DYNAMIC_CLASS( wxWebKitNewWindowEvent, wxCommandEvent )
+
+DEFINE_EVENT_TYPE( wxEVT_WEBKIT_NEW_WINDOW )
+
+wxWebKitNewWindowEvent::wxWebKitNewWindowEvent( wxWindow* win )
+{
+    SetEventType( wxEVT_WEBKIT_NEW_WINDOW);
+    SetEventObject( win );
+    SetId(win->GetId());
+}
+
+
+
 //---------------------------------------------------------
 // helper functions for NSString<->wxString conversion
 //---------------------------------------------------------
@@ -454,7 +468,16 @@ bool wxWebKitCtrl::Create(wxWindow *parent,
 
 wxWebKitCtrl::~wxWebKitCtrl()
 {
-
+    MyFrameLoadMonitor* myFrameLoadMonitor = [m_webView frameLoadDelegate];
+    MyPolicyDelegate* myPolicyDelegate = [m_webView policyDelegate];
+    [m_webView setFrameLoadDelegate: nil];
+    [m_webView setPolicyDelegate: nil];
+    
+    if (myFrameLoadMonitor)
+        [myFrameLoadMonitor release];
+        
+    if (myPolicyDelegate)
+        [myPolicyDelegate release];
 }
 
 // ----------------------------------------------------------------------------
@@ -845,12 +868,25 @@ void wxWebKitCtrl::MacVisibilityChanged(){
     if (webKitWindow && webKitWindow->GetEventHandler())
         webKitWindow->GetEventHandler()->ProcessEvent(thisEvent);
 
-	if (thisEvent.IsCancelled())
+    if (thisEvent.IsCancelled())
         [listener ignore];
     else
         [listener use];
 }
 
+- (void)webView:(WebView *)sender decidePolicyForNewWindowAction:(NSDictionary *)actionInformation request:(NSURLRequest *)request newFrameName:(NSString *)frameName decisionListener:(id < WebPolicyDecisionListener >)listener
+{
+    wxWebKitNewWindowEvent thisEvent(webKitWindow);
+
+    NSString *url = [[request URL] absoluteString];
+    thisEvent.SetURL( wxStringWithNSString( url ) );
+    thisEvent.SetTargetName( wxStringWithNSString( frameName ) );
+    
+    if (webKitWindow && webKitWindow->GetEventHandler())
+        webKitWindow->GetEventHandler()->ProcessEvent(thisEvent);
+
+    [listener use];
+}
 @end
 
 #endif //wxUSE_WEBKIT

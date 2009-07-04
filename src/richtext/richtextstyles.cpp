@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2005-09-30
-// RCS-ID:      $Id: richtextstyles.cpp 49952 2007-11-14 14:53:36Z JS $
+// RCS-ID:      $Id: richtextstyles.cpp 59958 2009-03-31 08:04:56Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -614,18 +614,76 @@ wxString wxRichTextStyleListBox::CreateHTML(wxRichTextStyleDefinition* def) cons
         str << wxT("<td nowrap>");
 
 #ifdef __WXMSW__
-    int size = 3;
+    int size = 2;
 #else
-    int size = 4;
+    int size = 3;
 #endif
 
-    int stdFontSize = 12;
+	// Guess a standard font size
+    int stdFontSize = 0;
+
+    // First see if we have a default/normal style to base the size on
+    wxString normalTranslated(_("normal"));
+    wxString defaultTranslated(_("default"));
+    size_t i;
+    for (i = 0; i < m_styleNames.GetCount(); i++)
+    {
+		wxString name = m_styleNames[i].Lower();
+		if (name.Find(wxT("normal")) != wxNOT_FOUND || name.Find(normalTranslated) != wxNOT_FOUND ||
+		    name.Find(wxT("default")) != wxNOT_FOUND || name.Find(defaultTranslated) != wxNOT_FOUND)
+		{
+    		wxRichTextStyleDefinition* d = GetStyleSheet()->FindStyle(m_styleNames[i]);
+    		if (d)
+    		{
+    			wxRichTextAttr attr2(d->GetStyleMergedWithBase(GetStyleSheet()));
+    			if (attr2.HasFontSize())
+    			{
+					stdFontSize = attr2.GetFontSize();
+					break;
+				}
+			}
+		}
+	}
+
+    if (stdFontSize == 0)
+    {
+        // Look at sizes up to 20 points, and see which is the most common
+        wxArrayInt sizes;
+        size_t maxSize = 20;
+        for (i = 0; i <= maxSize; i++)
+            sizes.Add(0);
+        for (i = 0; i < m_styleNames.GetCount(); i++)
+        {
+            wxRichTextStyleDefinition* d = GetStyleSheet()->FindStyle(m_styleNames[i]);
+            if (d)
+            {
+                wxRichTextAttr attr2(d->GetStyleMergedWithBase(GetStyleSheet()));
+                if (attr2.HasFontSize())
+                {
+                    if (attr2.GetFontSize() <= (int) maxSize)
+                        sizes[attr2.GetFontSize()] ++;
+                }
+            }
+        }
+        int mostCommonSize = 0;
+        for (i = 0; i <= maxSize; i++)
+        {
+            if (sizes[i] > mostCommonSize)
+                mostCommonSize = i;
+		}
+        if (mostCommonSize > 0)
+            stdFontSize = mostCommonSize;
+    }
+
+    if (stdFontSize == 0)
+    	stdFontSize = 12;
+
     int thisFontSize = ((attr.GetFlags() & wxTEXT_ATTR_FONT_SIZE) != 0) ? attr.GetFontSize() : stdFontSize;
 
     if (thisFontSize < stdFontSize)
-        size ++;
-    else if (thisFontSize > stdFontSize)
         size --;
+    else if (thisFontSize > stdFontSize)
+        size ++;
 
     str += wxT("<font");
 
@@ -714,17 +772,14 @@ wxString wxRichTextStyleListBox::GetStyleToShowInIdleTime(wxRichTextCtrl* ctrl, 
 {
     int adjustedCaretPos = ctrl->GetAdjustedCaretPosition(ctrl->GetCaretPosition());
 
-    wxRichTextParagraph* para = ctrl->GetBuffer().GetParagraphAtPosition(adjustedCaretPos);
-    wxRichTextObject* obj = ctrl->GetBuffer().GetLeafObjectAtPosition(adjustedCaretPos);
-
     wxString styleName;
+
+    wxTextAttrEx attr;
+    ctrl->GetStyle(adjustedCaretPos, attr);
 
     // Take into account current default style just chosen by user
     if (ctrl->IsDefaultStyleShowing())
     {
-        wxTextAttrEx attr;
-
-        ctrl->GetStyle(adjustedCaretPos, attr);
         wxRichTextApplyStyle(attr, ctrl->GetDefaultStyleEx());
 
         if ((styleType == wxRICHTEXT_STYLE_ALL || styleType == wxRICHTEXT_STYLE_CHARACTER) &&
@@ -737,20 +792,20 @@ wxString wxRichTextStyleListBox::GetStyleToShowInIdleTime(wxRichTextCtrl* ctrl, 
                           !attr.GetListStyleName().IsEmpty())
             styleName = attr.GetListStyleName();
     }
-    else if (obj && (styleType == wxRICHTEXT_STYLE_ALL || styleType == wxRICHTEXT_STYLE_CHARACTER) &&
-             !obj->GetAttributes().GetCharacterStyleName().IsEmpty())
+    else if ((styleType == wxRICHTEXT_STYLE_ALL || styleType == wxRICHTEXT_STYLE_CHARACTER) &&
+             !attr.GetCharacterStyleName().IsEmpty())
     {
-        styleName = obj->GetAttributes().GetCharacterStyleName();
+        styleName = attr.GetCharacterStyleName();
     }
-    else if (para && (styleType == wxRICHTEXT_STYLE_ALL || styleType == wxRICHTEXT_STYLE_PARAGRAPH) &&
-             !para->GetAttributes().GetParagraphStyleName().IsEmpty())
+    else if ((styleType == wxRICHTEXT_STYLE_ALL || styleType == wxRICHTEXT_STYLE_PARAGRAPH) &&
+             !attr.GetParagraphStyleName().IsEmpty())
     {
-        styleName = para->GetAttributes().GetParagraphStyleName();
+        styleName = attr.GetParagraphStyleName();
     }
-    else if (para && (styleType == wxRICHTEXT_STYLE_ALL || styleType == wxRICHTEXT_STYLE_LIST) &&
-             !para->GetAttributes().GetListStyleName().IsEmpty())
+    else if ((styleType == wxRICHTEXT_STYLE_ALL || styleType == wxRICHTEXT_STYLE_LIST) &&
+             !attr.GetListStyleName().IsEmpty())
     {
-        styleName = para->GetAttributes().GetListStyleName();
+        styleName = attr.GetListStyleName();
     }
 
     return styleName;
@@ -759,7 +814,7 @@ wxString wxRichTextStyleListBox::GetStyleToShowInIdleTime(wxRichTextCtrl* ctrl, 
 /// Auto-select from style under caret in idle time
 void wxRichTextStyleListBox::OnIdle(wxIdleEvent& event)
 {
-    if (CanAutoSetSelection() && GetRichTextCtrl() && wxWindow::FindFocus() != this)
+    if (CanAutoSetSelection() && GetRichTextCtrl() && IsShownOnScreen() && wxWindow::FindFocus() != this)
     {
         wxString styleName = GetStyleToShowInIdleTime(GetRichTextCtrl(), GetStyleType());
 
@@ -1105,7 +1160,7 @@ bool wxRichTextStyleComboCtrl::Create(wxWindow* parent, wxWindowID id, const wxP
 
 void wxRichTextStyleComboCtrl::OnIdle(wxIdleEvent& event)
 {
-    if (GetRichTextCtrl() && !IsPopupShown() && m_stylePopup && wxWindow::FindFocus() != this)
+    if (GetRichTextCtrl() && !IsPopupShown() && m_stylePopup && IsShownOnScreen() && wxWindow::FindFocus() != this)
     {
         wxString styleName = wxRichTextStyleListBox::GetStyleToShowInIdleTime(GetRichTextCtrl(), m_stylePopup->GetStyleType());
 

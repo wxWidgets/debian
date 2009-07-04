@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/5/2006 3:11:58 PM
-// RCS-ID:      $Id: richtextsymboldlg.cpp 49960 2007-11-15 08:03:59Z JS $
+// RCS-ID:      $Id: richtextsymboldlg.cpp 53392 2008-04-28 10:15:49Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -381,6 +381,10 @@ void wxSymbolPickerDialog::Init()
 
 void wxSymbolPickerDialog::CreateControls()
 {
+#ifdef __WXMAC__
+    SetWindowVariant(wxWINDOW_VARIANT_SMALL);
+#endif
+
 ////@begin wxSymbolPickerDialog content construction
     wxSymbolPickerDialog* itemDialog1 = this;
 

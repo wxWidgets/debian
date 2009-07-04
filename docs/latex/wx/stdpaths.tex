@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     2004-10-17
-%% RCS-ID:      $Id: stdpaths.tex 44012 2006-12-19 12:41:41Z MR $
+%% RCS-ID:      $Id: stdpaths.tex 54786 2008-07-26 09:13:27Z SC $
 %% Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -38,6 +38,10 @@ to the Apple guidelines. Again, this class doesn't help you to do it.
 
 This class is MT-safe: its methods may be called concurrently from different
 threads without additional locking.
+
+Note that you don't allocate an instance of class wxStandardPaths, but retrieve the 
+global standard paths object using \texttt{wxStandardPaths::Get} on which you call the 
+desired methods.
 
 \wxheading{Derived from}
 

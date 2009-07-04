@@ -3,7 +3,7 @@
 // Purpose:     XML resource compiler
 // Author:      Vaclav Slavik, Eduardo Marques <edrdo@netcabo.pt>
 // Created:     2000/03/05
-// RCS-ID:      $Id: wxrc.cpp 49563 2007-10-31 20:46:21Z VZ $
+// RCS-ID:      $Id: wxrc.cpp 58722 2009-02-07 19:36:28Z VS $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -113,11 +113,15 @@ public:
     bool IsRealClass(const wxString& name)
     {
         if (name == _T("tool") ||
+            name == _T("data") ||
             name == _T("unknown") ||
             name == _T("notebookpage") ||
             name == _T("separator") ||
             name == _T("sizeritem") ||
-            name == _T("wxMenuItem"))
+            name == _T("wxMenu") ||
+            name == _T("wxMenuBar") ||
+            name == _T("wxMenuItem") ||
+            name.EndsWith(_T("Sizer")) )
         {
             return false;
         }

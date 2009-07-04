@@ -6,7 +6,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: private.h 49297 2007-10-21 18:04:40Z SC $
+// RCS-ID:      $Id: private.h 54029 2008-06-08 15:53:15Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1229,7 +1229,7 @@ private:
 
 #ifdef __WXMAC_OSX__
 
-CGColorSpaceRef wxMacGetGenericRGBColorSpace(void);
+extern "C" CGColorSpaceRef wxMacGetGenericRGBColorSpace(void);
 void wxMacMemoryBufferReleaseProc(void *info, const void *data, size_t size);
 
 #endif

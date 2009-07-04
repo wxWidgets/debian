@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Sept-2003
-// RCS-ID:      $Id: _gdicmn.i 50095 2007-11-20 03:49:13Z RD $
+// RCS-ID:      $Id: _gdicmn.i 56562 2008-10-29 00:25:58Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -783,8 +783,8 @@ usually, but not necessarily, the larger one.", "");
 %apply wxRect& { wxRect* };
 
 
-
-MustHaveApp(wxIntersectRect);
+// this uses the thread wrappers so we have to undo it in the code below
+MustHaveApp(wxIntersectRect);  
 
 DocAStr(wxIntersectRect,
        "IntersectRect(Rect r1, Rect r2) -> Rect",
@@ -800,10 +800,10 @@ DocAStr(wxIntersectRect,
         dest = reg1.GetBox();
 
         if (dest != wxRect(0,0,0,0)) {
-            //wxPyBlock_t blocked = wxPyBeginBlockThreads();
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
             wxRect* newRect = new wxRect(dest);
             obj = wxPyConstructObject((void*)newRect, wxT("wxRect"), true);
-            //wxPyEndBlockThreads(blocked);
+            wxPyEndBlockThreads(blocked);
             return obj;
         }
         Py_INCREF(Py_None);
@@ -863,11 +863,41 @@ public:
         wxPoint2D, operator-(),
         "the reflection of this point", "");
 
+
+    %nokwargs operator*=;
+    %nokwargs operator/=;
+    %typemap(out) wxPoint2D& { $result = $self; Py_INCREF($result); }
     wxPoint2D& operator+=(const wxPoint2D& pt);
     wxPoint2D& operator-=(const wxPoint2D& pt);
-
     wxPoint2D& operator*=(const wxPoint2D& pt);
-    wxPoint2D& operator/=(const wxPoint2D& pt);
+    wxPoint2D& operator/=(const wxPoint2DDouble& pt);
+    %typemap(out) wxPoint2D& ;
+
+    %nokwargs __add__;
+    %nokwargs __sub__;
+    %nokwargs __mul__;
+    %nokwargs __div__;
+    %extend {
+        wxPoint2D __add__(const wxPoint2D& pt) {
+            return (*self) + pt;
+        }
+        wxPoint2D __sub__(const wxPoint2D& pt) {
+            return (*self) - pt;
+        }
+        wxPoint2D __mul__(const wxPoint2D& pt) {
+            return (*self) * pt;
+        }
+        wxPoint2D __mul__(double n) {
+            return (*self) * n;
+        }
+        wxPoint2D __div__(const wxPoint2D& pt) {
+            return (*self) / pt;
+        }
+        wxPoint2D __div__(double n) {
+            return (*self) / n;
+        }
+    }
+
 
     %extend {
         //KeepGIL(__eq__);

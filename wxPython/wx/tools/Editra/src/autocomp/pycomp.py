@@ -3,49 +3,59 @@
 # Purpose: Provides python autocompletion lists and calltips for the editor   #
 # Author: Cody Precord <cprecord@editra.org>                                  #
 # Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#--------------------------------------------------------------------------#
-# FILE: pycomp.py                                                          #
-# AUTHOR: Cody Precord                                                     #
-# LANGUAGE: Python                                                         #
-# SUMMARY:                                                                 #
-#    Provides completion and calltip support for python documents. To      #
-# provide the completion lists and calltips a mix of parsing and           #
-# introspection is used to deduct the requested information.               #
-#                                                                          #
-#--------------------------------------------------------------------------#
+Provides completion and calltip support for python documents. To provide the
+completion lists and calltips a mix of parsing and introspection is used to
+deduct the requested information.
+
+@summary: Python autocompletion support
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id: pycomp.py 49905 2007-11-13 13:54:31Z CJP $"
-__revision__ = "$Revision: 49905 $"
+__cvsid__ = "$Id: pycomp.py 60432 2009-04-29 18:15:57Z CJP $"
+__revision__ = "$Revision: 60432 $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
-import sys, tokenize, cStringIO, types
-from token import NAME, DEDENT, STRING #, NEWLINE
+import os
+import sys
+import tokenize
+import types
+from token import NAME, DEDENT, STRING
+
 import wx
 from wx.py import introspect
 
+# It would be nice to use cStringIO here for the better performance but it
+# doesn't work as uniformly across platfrom as the plain StringIO module. On
+# Linux and python2.4 under all platforms the cStringIO module makes tokens out
+# of each character instead of each actual token which causes the parse to fail.
+from StringIO import StringIO
+
+# Local imports
+import completer
+
 #--------------------------------------------------------------------------#
 
-class Completer(object):
+class Completer(completer.BaseCompleter):
     """Code completer provider"""
     def __init__(self, stc_buffer):
         """Initiliazes the completer
         @param stc_buffer: buffer that contains code
 
         """
-        object.__init__(self)
-        self._log = wx.GetApp().GetLog()
-        self._buffer = stc_buffer
-        self._autocomp_keys = [ord('.')]
-        self._autocomp_stop = ' .,;:([)]}\'"\\<>%^&+-=*/|`'
-        self._calltip_keys = [ord('(')]
-        self._case_sensitive = False
+        completer.BaseCompleter.__init__(self, stc_buffer)
+
+        # Setup
+        self.SetAutoCompKeys([ord('.'), ])
+        self.SetAutoCompStops(' \'"\\`):')
+        self.SetAutoCompFillups('.,;([]}<>%^&+-=*/|')
+        self.SetCallTipKeys([ord('('), ])
+        self.SetCallTipCancel([ord(')'), wx.WXK_RETURN])
 
         # Needed for introspect to run
         try:
@@ -63,34 +73,54 @@ class Completer(object):
         @return: list or string
 
         """
+        if command is None or (len(command) and command[0].isdigit()):
+            return list()
+
         try:
             cmpl = PyCompleter()
+
+            # Put the files directory on the path so eval has a better
+            # chance of getting the proper completions
+            fname = self._buffer.GetFileName()
+            if fname:
+                sys.path.insert(0, os.path.dirname(fname))
+
             cmpl.evalsource(self._buffer.GetText(),
                             self._buffer.GetCurrentLine())
+
+            if fname:
+                sys.path.pop(0)
+
             if calltip:
                 return cmpl.get_completions(command + '(', '', calltip)
             else:
                 # Get Autocompletion List
                 complst = cmpl.get_completions(command)
-                sigs = [ sig['word'].rstrip('(.') for sig in complst ]
+                sigs = list()
+                for sig in complst:
+                    word = sig['word'].rstrip(u'(.')
+                    if sig['type'] == "function":
+                        word += u'?%d' % completer.IMG_FUNCTION
+                    elif sig['type'] == "method":
+                        word += u'?%d' % completer.IMG_METHOD
+                    elif sig['type'] == "class":
+                        word += u'?%d' % completer.IMG_CLASS
+                    elif sig['type'] == "attribute":
+                        word += u'?%d' % completer.IMG_ATTRIBUTE
+                    elif sig['type'] == "property":
+                        word += u'?%d' % completer.IMG_PROPERTY
+
+                    sigs.append(word)
+
+#                sigs = [ sig['word'].rstrip('(.') for sig in complst ]
                 sigs.sort(lambda x, y: cmp(x.upper(), y.upper()))
                 return sigs
 
         except Exception, msg:
-            self._log("[pycomp][err] %s" % str(msg))
+            self._log("[pycomp][err] _GetCompletionInfo: %s, %s" % \
+                      (sys.exc_info()[0], sys.exc_info()[1]))
             return ''
-
-    def GetAutoCompKeys(self):
-        """Returns the list of key codes for activating the
-        autocompletion.
-        @return: list of autocomp activation keys
-
-        """
-        if hasattr(self, "_autocomp_keys"):
-            return self._autocomp_keys
-        else:
-            return list()
-
+        
     def GetAutoCompList(self, command):
         """Returns the list of possible completions for a 
         command string. If namespace is not specified the lookup
@@ -101,55 +131,20 @@ class Completer(object):
         """
         return self._GetCompletionInfo(command)
 
-    def GetAutoCompStops(self):
-        """Returns a string of characters that should cancel
-        the autocompletion lookup.
-        @return: string of keys that will cancel autocomp/calltip actions
-
-        """
-        return getattr(self, '_autocomp_stop', u'')
-
     def GetCallTip(self, command):
         """Returns the formated calltip string for the command.
         If the namespace command is unset the locals namespace is used.
         @param command: command to get calltip for
-        @keyword namespace: namespace to do lookup in
 
         """
         return self._GetCompletionInfo(command, calltip=True)
-
-    def GetCallTipKeys(self):
-        """Returns the list of keys to activate a calltip on
-        @return: list of keys that can activate a calltip
-
-        """
-        return getattr(self, '_calltip_keys', list())
-
-    def GetCaseSensitive(self):
-        """Returns whether the autocomp commands are case sensitive
-        or not.
-        @return: whether lookup is case sensitive or not
-
-        """
-        return getattr(self, '_case_sensitive', False)
-
-    def SetCaseSensitive(self, value):
-        """Sets whether the completer should be case sensitive
-        or not, and returns True if the value was set.
-        @param value: toggle case sensitivity
-
-        """
-        if isinstance(value, bool):
-            self._case_sensitive = value
-            return True
-        else:
-            return False
 
 #-----------------------------------------------------------------------------#
 # This code below is a modified and adapted version of the pythoncomplete 
 # Omni completion script for vim. The original vimscript can be found at the 
 # following address: http://www.vim.org/scripts/script.php?script_id=1542
-dbg = wx.GetApp().GetLog()
+def dbg(msg):
+    wx.GetApp().GetLog()(msg)
 
 class PyCompleter(object):
     """Python code completion provider"""
@@ -169,13 +164,13 @@ class PyCompleter(object):
         try: 
             exec src in self.compldict
         except Exception, msg:
-            dbg("[pycomp][exec err]: src exec: %s" % msg)
+            dbg("[pycomp][err] src exec: %s" % msg)
 
         for loc in scope.locals:
             try: 
                 exec loc in self.compldict
             except Exception, msg:
-                dbg("[pycomp][local err]: local exec %s [%s]" % (msg, loc))
+                dbg("[pycomp][err] local exec %s [%s]" % (msg, loc))
 
     def get_arguments(self, func_obj):
         """Get the arguments of a given function obj
@@ -279,6 +274,7 @@ class PyCompleter(object):
 
             dbg("[pycomp] completing: stmt:%s" % stmt)
             completions = []
+            isdict = isinstance(compdict, dict)
             for meth in compdict:
                 if meth == "_PyCmplNoType":
                     continue #this is internal
@@ -290,32 +286,55 @@ class PyCompleter(object):
                             # NOTE: when result is none compdict is a list
                             inst = meth #compdict[meth]
                         else:
-                            inst = getattr(result, meth)
+                            inst = getattr(result, meth, None)
 
-                        doc = getattr(inst, '__doc__', None)
-                        if doc is None:
-                            doc = max(getattr(result, '__doc__', ' '), ' ')
+                        # TODO: necessary check to handle some odd swig related
+                        #       errors. Find out why type 'swigvarlink' causes
+                        #       the exception Unknown C global variable.
+                        if len(dir(inst)):
+                            doc = getattr(inst, '__doc__', None)
+                            if doc is None:
+                                doc = max(getattr(result, '__doc__', ' '), ' ')
+                        else:
+                            doc = ' '
 
-                        comp = {'word' : meth[len(match):],
+                        if isdict:
+                            typestr = str(compdict[inst])
+                        else:
+                            typestr = str(inst)
+
+                        comp = {'word' : meth,
                                 'abbr' : meth,
-                                'info' : _cleanstr(str(doc))}
+                                'info' : _cleanstr(str(doc)),
+                                'type' : typestr}
 
-                        typestr = str(inst)
                         if "function" in typestr:
                             comp['word'] += '('
                             comp['abbr'] += '(' + _cleanstr(self.get_arguments(inst))
-                        elif "method" in typestr:
+                            comp['type'] = "function"
+                        elif "method" in typestr or "slot wrapper" in typestr:
                             comp['word'] += '('
                             comp['abbr'] += '(' + _cleanstr(self.get_arguments(inst))
+                            comp['type'] = "method"
                         elif "module" in typestr:
                             comp['word'] += '.'
+                            comp['type'] = "module"
                         elif "class" in typestr:
                             comp['word'] += '('
                             comp['abbr'] += '('
+                            comp['type'] = "class"
+                        elif "attribute" in typestr or \
+                             (not typestr.startswith('__') and \
+                              not typestr.startswith('<')):
+                            comp['type'] = "attribute"
+                        elif "property" in typestr: 
+                            comp['type'] = "property"
+#                        else:
+#                            print typestr, meth
+
                         completions.append(comp)
                 except Exception, msg:
-                    dbg("[pycomp][err] inner completion: %s [stmt='%s']:" % \
-                        (msg, stmt))
+                    dbg("[pycomp][err] inner completion: %s [stmt='%s']:" % (msg, stmt))
 
             return completions
         except Exception, msg:
@@ -354,14 +373,17 @@ class Scope(object):
         @param docstr: Docstring to format and set
 
         """
-        dstr = docstr.replace('\n',' ')
-        dstr = dstr.replace('\t',' ')
-        while dstr.find('  ') > -1: 
-            dstr = dstr.replace('  ',' ')
-        while dstr[0] in '"\'\t ':
-            dstr = dstr[1:]
-        while dstr[-1] in '"\'\t ':
-            dstr = dstr[:-1]
+        dstr = docstr.replace('\n', ' ')
+        dstr = dstr.replace('\t', ' ')
+        dstr = dstr.replace('  ', ' ')
+
+        if len(dstr):
+            while len(dstr) and dstr[0] in '"\' ':
+                dstr = dstr[1:]
+
+            while len(dstr) and dstr[-1] in '"\' ':
+                dstr = dstr[:-1]
+
         self.docstr = dstr
 
     def local(self, loc):
@@ -397,12 +419,13 @@ class Scope(object):
         @return: string
 
         """
-        # we need to start with this, to fix up broken completions
-        # hopefully this name is unique enough...
         cstr = '"""' + self.docstr + '"""\n'
         for loc in self.locals:
-            if loc.startswith('import'):
+            if loc.startswith('import') or loc.startswith('from'):
                 cstr += loc + '\n'
+
+        # we need to start with this, to fix up broken completions
+        # hopefully this name is unique enough...
         cstr += 'class _PyCmplNoType:\n    def __getattr__(self,name):\n        return None\n'
 
         for sub in self.subscopes:
@@ -670,7 +693,7 @@ class PyParser:
                    'open' : 'file', 'file' : 'file',
                    # List
                    '[' : '[]', 'list' : '[]',
-                   'dir' : '[]', 'zip' : '[]', 'map' : '[]',
+                   'dir' : '["",""]', 'zip' : '[]', 'map' : '[]',
                    'sorted' : '[]', 'range' : '[]',
                    # NoneType
                    'None' : '_PyCmplNoType()',
@@ -688,33 +711,45 @@ class PyParser:
                    '(' : '()', 'tuple' : '()', 'coerce' : '()'
                  }
 
-        if tokentype == tokenize.STRING or tokentype == tokenize.NUMBER:
-            token = tokentype
+        if tokentype == tokenize.NUMBER or tokentype == tokenize.STRING:
+            return token #token = tokentype
 
-        if tokens.has_key(token):
+        if token in tokens:
             return tokens[token]
         else:
             # NOTE: This part of the parse is where the problem is happening
             assign += token
             level = 0
+#            tstack = list()
             while True:
                 tokentype, token = self.next()[:-1]
+#                tstack.append((assign, token, level))
                 if token in ('(', '{', '['):
-                    level += 1
+                    level = level + 1
                 elif token in (']', '}', ')'):
-                    level -= 1
-                    if level == 0:
+                    level = level - 1
+                    if level == 0 or level == -1:
                         break
                 elif level == 0:
+                    # end of line
                     if token in (';', '\n'):
                         break
-                    assign += token
+                    elif token == ',':
+                        assign = ''
+                    else:
+                        assign += token
 
         # Check syntax to filter out bad tokens
         # NOTE: temporary till parser is improved more
         try:
             compile(assign, '_pycomp', 'eval')
         except:
+#            print ""
+#            for t in tstack:
+#                print t
+#            print assign
+#            print ""
+#            print ""
             dbg("[pycomp][err] parseassignment bad token: %s" % assign)
             return None
         else:
@@ -779,7 +814,7 @@ class PyParser:
 
         """
         self.curline = curline
-        buf = cStringIO.StringIO(text)
+        buf = StringIO(text)
         self.gen = tokenize.generate_tokens(buf.readline)
         self.currentscope = self.scope
 
@@ -825,6 +860,7 @@ class PyParser:
                             loc += " as %s" % alias
                         self.scope.local(loc)
                     freshscope = False
+
                 elif tokentype == STRING:
                     if freshscope:
                         self.scope.doc(token)
@@ -834,7 +870,10 @@ class PyParser:
                         stmt = self._parseassignment()
                         dbg("[pycomp] parseassignment: %s = %s" % (name, stmt))
                         if stmt != None:
-                            self.scope.local("%s = %s" % (name, stmt))
+                            # XXX Safety Check don't allow assigments to 
+                            # item attributes unless the attribute is self
+                            if u'.' not in name or name.startswith(u'self'):
+                                self.scope.local("%s = %s" % (name, stmt))
                     freshscope = False
         except StopIteration: #thrown on EOF
             pass

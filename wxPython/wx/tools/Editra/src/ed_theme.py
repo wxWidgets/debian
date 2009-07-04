@@ -3,37 +3,34 @@
 # Purpose: Icon theme management for Editra                                   #
 # Author: Cody Precord <cprecord@editra.org>                                  #
 # Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#--------------------------------------------------------------------------#
-# FILE: ed_theme.py                                                        #
-# AUTHOR: Cody Precord                                                     #
-# LANGUAGE: Python                                                         #
-# SUMMARY:                                                                 #
-#   Provide an interface for creating icon themes for Editra. This will    #
-#  allow for themes to be created, installed, and managed as plugins,      #
-#  which means that they can be installed as single file instead of        #
-#  dozens of individual image files.                                       #
-#                                                                          #
-#--------------------------------------------------------------------------#
+Provide an interface for creating icon themes for Editra. This will allow for
+themes to be created, installed, and managed as plugins, which means that they
+can be installed as single file instead of dozens of individual image files.
+
+@summary: Editra's theme interface and implementation
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ed_theme.py 50235 2007-11-25 05:55:40Z CJP $"
-__revision__ = "$Revision: 50235 $"
+__svnid__ = "$Id: ed_theme.py 60376 2009-04-26 04:35:42Z CJP $"
+__revision__ = "$Revision: 60376 $"
 
 #--------------------------------------------------------------------------#
-# Dependancies
+# Imports
 import os
 import wx
+
+# Local Imports
 import ed_glob
 import util
 import plugin
 from profiler import Profile_Get, Profile_Set
 import syntax.synglob as synglob
-from syntax.syntax import SyntaxIds
+from syntax.syntax import SYNTAX_IDS
 
 #--------------------------------------------------------------------------#
 
@@ -53,7 +50,7 @@ class ThemeI(plugin.Interface):
     def GetName(self):
         """Return the name of this theme. This is used to identify the
         theme when the provider looks for resources based on user preferences
-        
+
         @return: name string
 
         """
@@ -80,6 +77,18 @@ class ThemeI(plugin.Interface):
         object return a wx.NullBitmap.
 
         @return: 16x16 pixel bitmap
+
+        """
+        return wx.NullBitmap
+
+    def GetOtherBitmap(self, bmp_id):
+        """Get the bitmap from the 'other' icon resources. Valid id's are
+        identified by a mapping in the ART dictionary.
+        
+        If this theme does not have a resource to provide for this
+        object return a wx.NullBitmap.
+
+        @return: wx.Bitmap
 
         """
         return wx.NullBitmap
@@ -122,6 +131,28 @@ class BitmapProvider(plugin.Plugin):
 
         return None
 
+    def _GetTango(self, bmp_id, client):
+        """Try to get the icon from the default tango theme"""
+        theme = None
+        bmp = wx.NullBitmap
+        for prov in self.observers:
+            if prov.GetName() == TangoTheme.name:
+                theme = prov
+                break
+        else:
+            return bmp
+
+        if client == wx.ART_TOOLBAR:
+            bmp = theme.GetToolbarBitmap(bmp_id)
+        elif client == wx.ART_MENU:
+            bmp = theme.GetMenuBitmap(bmp_id)
+        elif client == wx.ART_OTHER:
+            bmp = theme.GetOtherBitmap(bmp_id)
+        else:
+            pass
+
+        return bmp
+
     def GetThemes(self):
         """Gets a list of the installed and activated themes
         @return: list of strings
@@ -135,7 +166,7 @@ class BitmapProvider(plugin.Plugin):
         found.
 
         @param bmp_id: id of bitmap to lookup
-        @param client: wxART_MENU, ART_MIME, wxART_TOOLBAR
+        @param client: wxART_MENU, wxART_TOOLBAR
         @see: L{ed_glob}
 
         """
@@ -143,17 +174,31 @@ class BitmapProvider(plugin.Plugin):
         if prov is not None:
             if client == wx.ART_MENU:
                 bmp = prov.GetMenuBitmap(bmp_id)
+            elif client == wx.ART_OTHER:
+                # Backwards compatibility for older interface
+                if hasattr(prov, 'GetOtherBitmap'):
+                    bmp = prov.GetOtherBitmap(bmp_id)
+                else:
+                    bmp = wx.NullBitmap
             else:
                 bmp = prov.GetToolbarBitmap(bmp_id)
 
             if bmp.IsOk():
                 return bmp
+
+        # Try to fallback to tango theme when icon lookup fails
+        bmp = self._GetTango(bmp_id, client)
+        if bmp.IsOk():
+            return bmp
+
         return wx.NullBitmap
 
 #-----------------------------------------------------------------------------#
 # Default theme data maps
 ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_ADD_BM : u'bmark_add.png',
+        ed_glob.ID_ADVANCED : u'advanced.png',
+        ed_glob.ID_BACKWARD : u'backward.png',
         ed_glob.ID_BIN_FILE : u'bin_file.png',
         ed_glob.ID_CDROM  : u'cdrom.png',
         ed_glob.ID_CONTACT : u'mail.png',
@@ -168,14 +213,16 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_FILE   : u'file.png',
         ed_glob.ID_FIND   : u'find.png',
         ed_glob.ID_FIND_REPLACE : u'findr.png',
+        ed_glob.ID_FIND_RESULTS : u'find.png',
         ed_glob.ID_FLOPPY : u'floppy.png',
         ed_glob.ID_FOLDER : u'folder.png',
         ed_glob.ID_FONT   : u'font.png',
+        ed_glob.ID_FORWARD : u'forward.png',
         ed_glob.ID_HARDDISK : u'harddisk.png',
         ed_glob.ID_HOMEPAGE : u'web.png',
         ed_glob.ID_HTML_GEN : u'html_gen.png',
         ed_glob.ID_INDENT : u'indent.png',
-        ed_glob.ID_KWHELPER : u'kw_help.png',
+        ed_glob.ID_LOGGER : u'log.png',
         ed_glob.ID_NEW    : u'new.png',
         ed_glob.ID_NEW_WINDOW: u'newwin.png',
         ed_glob.ID_NEXT_MARK : u'bmark_next.png',
@@ -187,11 +234,15 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_PREF    : u'pref.png',
         ed_glob.ID_PRINT   : u'print.png',
         ed_glob.ID_PRINT_PRE : u'printpre.png',
+        ed_glob.ID_PYSHELL : u'pyshell.png',
         ed_glob.ID_REDO    : u'redo.png',
+        ed_glob.ID_REFRESH : u'refresh.png',
         ed_glob.ID_RTF_GEN : u'rtf_gen.png',
         ed_glob.ID_SAVE    : u'save.png',
         ed_glob.ID_SAVEALL : u'saveall.png',
         ed_glob.ID_SAVEAS  : u'saveas.png',
+        ed_glob.ID_SELECTALL : u'selectall.png',
+        ed_glob.ID_STOP    : u'stop.png',
         ed_glob.ID_STYLE_EDIT : u'style_edit.png',
         ed_glob.ID_TEX_GEN : u'tex_gen.png',
         ed_glob.ID_THEME  : u'theme.png',
@@ -202,12 +253,23 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_WEB    : u'web.png',
         ed_glob.ID_ZOOM_IN : u'zoomi.png',
         ed_glob.ID_ZOOM_OUT : u'zoomo.png',
-        ed_glob.ID_ZOOM_NORMAL : u'zoomd.png'
+        ed_glob.ID_ZOOM_NORMAL : u'zoomd.png',
+        ed_glob.ID_READONLY : u'readonly.png',
+
+        # code elements
+        ed_glob.ID_CLASS_TYPE : u'class.png',
+        ed_glob.ID_FUNCT_TYPE : u'function.png',
+        ed_glob.ID_ELEM_TYPE : u'element.png',
+        ed_glob.ID_VARIABLE_TYPE : u'variable.png',
+        ed_glob.ID_ATTR_TYPE : u'attribute.png',
+        ed_glob.ID_PROPERTY_TYPE : u'property.png',
+        ed_glob.ID_METHOD_TYPE : u'method.png'
 }
 
 # File Type Art
 MIME_ART = { synglob.ID_LANG_ADA : u'ada.png',
              synglob.ID_LANG_BASH : u'shell.png',
+             synglob.ID_LANG_BOO : u'boo.png',
              synglob.ID_LANG_BOURNE : u'shell.png',
              synglob.ID_LANG_C : u'c.png',
              synglob.ID_LANG_CPP : u'cpp.png',
@@ -222,6 +284,7 @@ MIME_ART = { synglob.ID_LANG_ADA : u'ada.png',
              synglob.ID_LANG_PASCAL : u'pascal.png',
              synglob.ID_LANG_PERL : u'perl.png',
              synglob.ID_LANG_PHP : u'php.png',
+             synglob.ID_LANG_PS : u'postscript.png',
              synglob.ID_LANG_PYTHON : u'python.png',
              synglob.ID_LANG_RUBY : u'ruby.png',
              synglob.ID_LANG_TCL : u'tcl.png',
@@ -236,6 +299,8 @@ class TangoTheme(plugin.Plugin):
     """Represents the Tango Icon theme for Editra"""
     plugin.Implements(ThemeI)
 
+    name = u'Tango'
+
     def __GetArtPath(self, client, mime=False):
         """Gets the path of the resource directory to get
         the bitmaps from.
@@ -245,20 +310,24 @@ class TangoTheme(plugin.Plugin):
         @rtype: string
 
         """
-        clients = {wx.ART_MENU : u"menu", wx.ART_TOOLBAR : u"toolbar"}
+        clients = { wx.ART_MENU : u"menu",
+                    wx.ART_TOOLBAR : u"toolbar",
+                    wx.ART_OTHER : u"other" }
+
+        # Get the path
         if ed_glob.CONFIG['THEME_DIR'] == u'':
-            theme = util.ResolvConfigDir(os.path.join("pixmaps", "theme"))
+            theme = util.ResolvConfigDir(os.path.join(u"pixmaps", u"theme"))
             ed_glob.CONFIG['THEME_DIR'] = theme
 
         if mime:
-            path = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
-                   Profile_Get('ICONS') + util.GetPathChar() + \
-                   u'mime' + util.GetPathChar()
+            path = os.path.join(ed_glob.CONFIG['THEME_DIR'],
+                                Profile_Get('ICONS'), u'mime')
         else:
-            path = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
-                   Profile_Get('ICONS') + util.GetPathChar() + \
-                   clients.get(client, u"menu") + util.GetPathChar()
+            path = os.path.join(ed_glob.CONFIG['THEME_DIR'],
+                                self.GetName(),
+                                clients.get(client, u"menu"))
 
+        path += os.sep
         if os.path.exists(path):
             return path
         else:
@@ -269,14 +338,14 @@ class TangoTheme(plugin.Plugin):
         @return: string
 
         """
-        return u'Tango'
+        return TangoTheme.name
 
     def GetMenuBitmap(self, bmp_id):
         """Get a menu bitmap
         @param bmp_id: Id of bitmap to look for
 
         """
-        if ART.has_key(bmp_id):
+        if bmp_id in ART:
             path = self.__GetArtPath(wx.ART_MENU, mime=False)
             if path is not None:
                 path = path + ART[bmp_id]
@@ -294,8 +363,8 @@ class TangoTheme(plugin.Plugin):
 
         """
         path = self.__GetArtPath(wx.ART_MENU, mime=True)
-        if path is not None and bmp_id in SyntaxIds():
-            if MIME_ART.has_key(bmp_id):
+        if path is not None and bmp_id in SYNTAX_IDS:
+            if bmp_id in MIME_ART:
                 req = path + MIME_ART[bmp_id]
                 if os.path.exists(req):
                     return wx.Bitmap(req, wx.BITMAP_TYPE_PNG)
@@ -307,16 +376,36 @@ class TangoTheme(plugin.Plugin):
 
         return wx.NullBitmap
 
+    def GetOtherBitmap(self, bmp_id):
+        """Get a other catagory bitmap.
+        @param bmp_id: Id of art resource
+
+        """
+        if bmp_id in ART:
+            path = self.__GetArtPath(wx.ART_OTHER, mime=False)
+            if path is not None:
+                path = path + ART[bmp_id]
+                if os.path.exists(path):
+                    return wx.Bitmap(path, wx.BITMAP_TYPE_PNG)
+
+        return wx.NullBitmap
+
     def GetToolbarBitmap(self, bmp_id):
         """Get a toolbar bitmap
         @param bmp_id: Id of bitmap to look for
         @return: wx.NullBitmap or a 32x32 bitmap
 
         """
-        if ART.has_key(bmp_id):
+        if bmp_id in ART:
+#            size = Profile_Get('ICON_SZ', default=(24, 24))
             path = self.__GetArtPath(wx.ART_TOOLBAR, mime=False)
             if path is not None:
+#                tpath = os.path.join(path, '24', ART[bmp_id])
+#                if size[0] == 24 and os.path.exists(tpath):
+#                    path = tpath
+#                else:
                 path = path + ART[bmp_id]
+
                 if os.path.exists(path):
                     return wx.Bitmap(path, wx.BITMAP_TYPE_PNG)
 

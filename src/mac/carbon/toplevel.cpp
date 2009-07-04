@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     24.09.01
-// RCS-ID:      $Id: toplevel.cpp 49632 2007-11-04 21:49:53Z SC $
+// RCS-ID:      $Id: toplevel.cpp 57830 2009-01-04 13:57:18Z SC $
 // Copyright:   (c) 2001-2004 Stefan Csomor
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -447,7 +447,22 @@ ControlRef wxMacFindControlUnderMouse( wxTopLevelWindowMac* toplevelWindow , con
 {
 #if TARGET_API_MAC_OSX
     if ( UMAGetSystemVersion() >= 0x1030 )
-        return FindControlUnderMouse( location , window , outPart ) ;
+    {
+        HIPoint pt = CGPointMake(location.h, location.v);
+        HIViewRef contentView = NULL ;
+        HIViewFindByID( HIViewGetRoot( window ), kHIViewWindowContentID, &contentView );
+        HIViewConvertPoint( &pt, contentView, NULL );
+        HIViewRef control = NULL;
+        if ( HIViewGetSubviewHit( HIViewGetRoot( window ), &pt, true, &control ) == noErr )
+        {
+            if ( control != NULL )
+            {
+                if ( HIViewConvertPoint( &pt, NULL, control ) == noErr )
+                    HIViewGetPartHit(control, &pt, outPart);
+            }
+        }
+        return control ;
+    }
 #endif
 
     ControlRef rootControl = NULL ;
@@ -495,7 +510,7 @@ pascal OSStatus wxMacTopLevelMouseEventHandler( EventHandlerCallRef handler , Ev
         {
             currentMouseWindow = wxApp::s_captureWindow ;
         }
-        else if ( (IsWindowActive(window) && windowPart == inContent) )
+        else if ( IsWindowActive(window) && (windowPart == inContent||windowPart == inStructure) )
         {
             ControlPartCode part ;
             control = wxMacFindControlUnderMouse( toplevelWindow , windowMouseLocation , window , &part ) ;
@@ -522,7 +537,7 @@ pascal OSStatus wxMacTopLevelMouseEventHandler( EventHandlerCallRef handler , Ev
                 }
 #endif
             }
-
+            
             // disabled windows must not get any input messages
             if ( currentMouseWindow && !currentMouseWindow->MacIsReallyEnabled() )
                 currentMouseWindow = NULL;
@@ -597,8 +612,14 @@ pascal OSStatus wxMacTopLevelMouseEventHandler( EventHandlerCallRef handler , Ev
 
         if ( currentMouseWindow->GetEventHandler()->ProcessEvent(wxevent) )
         {
+            /*
+            // this code is dangerous in case the delete in the mouse down occured further up in the chain, trying alternative
+            
             if ((currentMouseWindowParent != NULL) &&
                 (currentMouseWindowParent->GetChildren().Find(currentMouseWindow) == NULL))
+            */
+            // deleted in the meantime
+            if ( g_MacLastWindow == NULL )
                 currentMouseWindow = NULL;
 
             result = noErr;
@@ -614,17 +635,12 @@ pascal OSStatus wxMacTopLevelMouseEventHandler( EventHandlerCallRef handler , Ev
                     currentMouseWindow->SetFocus();
             }
 
-            ControlPartCode dummyPart ;
+
+#ifndef __WXMAC_OSX__
             // if built-in find control is finding the wrong control (ie static box instead of overlaid
             // button, we cannot let the standard handler do its job, but must handle manually
-
-            if ( ( cEvent.GetKind() == kEventMouseDown )
-#ifdef __WXMAC_OSX__
-                &&
-                (FindControlUnderMouse(windowMouseLocation , window , &dummyPart) !=
-                wxMacFindControlUnderMouse( toplevelWindow , windowMouseLocation , window , &dummyPart ) )
-#endif
-                )
+            // this only can happen < 10.3
+            if ( cEvent.GetKind() == kEventMouseDown )
             {
                 if ( currentMouseWindow->MacIsReallyEnabled() )
                 {
@@ -645,6 +661,7 @@ pascal OSStatus wxMacTopLevelMouseEventHandler( EventHandlerCallRef handler , Ev
 
                 result = noErr ;
             }
+#endif
         }
 
         if ( cEvent.GetKind() == kEventMouseUp && wxApp::s_captureWindow )
@@ -658,11 +675,16 @@ pascal OSStatus wxMacTopLevelMouseEventHandler( EventHandlerCallRef handler , Ev
         wxWindow* cursorTarget = currentMouseWindow ;
         wxPoint cursorPoint( wxevent.m_x , wxevent.m_y ) ;
 
-        while ( cursorTarget && !cursorTarget->MacSetupCursor( cursorPoint ) )
+        extern wxCursor gGlobalCursor;
+
+        if (!gGlobalCursor.IsOk())
         {
-            cursorTarget = cursorTarget->GetParent() ;
-            if ( cursorTarget )
-                cursorPoint += cursorTarget->GetPosition();
+            while ( cursorTarget && !cursorTarget->MacSetupCursor( cursorPoint ) )
+            {
+                cursorTarget = cursorTarget->GetParent() ;
+                if ( cursorTarget )
+                    cursorPoint += cursorTarget->GetPosition();
+            }
         }
 
     }
@@ -959,6 +981,16 @@ bool wxTopLevelWindowMac::Create(wxWindow *parent,
     return true;
 }
 
+bool wxTopLevelWindowMac::Destroy()
+{
+    // NB: this will get called during destruction if we don't do it now,
+    // and may fire a kill focus event on a control being destroyed
+    if (m_macWindow)
+        ClearKeyboardFocus( (WindowRef)m_macWindow );
+        
+    return wxTopLevelWindowBase::Destroy();
+}
+
 wxTopLevelWindowMac::~wxTopLevelWindowMac()
 {
     if ( m_macWindow )
@@ -1145,9 +1177,16 @@ void  wxTopLevelWindowMac::DoMacCreateRealWindow(
         }
         else
         {
-            wclass = kPlainWindowClass;
-			activationScopeSet = true;
-			activationScope = kWindowActivationScopeNone;
+            if ( HasFlag( wxNO_BORDER ) )
+            {
+                wclass = kSimpleWindowClass ;
+            }
+            else
+            {
+                wclass = kPlainWindowClass ;
+            }
+            activationScopeSet = true;
+            activationScope = kWindowActivationScopeNone;
         }
     }
     else if ( HasFlag( wxPOPUP_WINDOW ) )
@@ -1270,7 +1309,7 @@ void  wxTopLevelWindowMac::DoMacCreateRealWindow(
     SetWindowBounds(  (WindowRef) m_macWindow , kWindowStructureRgn , &theBoundsRect ) ;
 
     wxAssociateWinWithMacWindow( (WindowRef) m_macWindow , this ) ;
-    UMASetWTitle( (WindowRef) m_macWindow , title , m_font.GetEncoding() ) ;
+    UMASetWTitle( (WindowRef) m_macWindow , title , GetFont().GetEncoding() ) ;
     m_peer = new wxMacControl(this , true /*isRootControl*/) ;
 
     // There is a bug in 10.2.X for ::GetRootControl returning the window view instead of
@@ -1369,8 +1408,13 @@ void wxTopLevelWindowMac::MacActivate( long timestamp , bool inIsActivating )
 
 void wxTopLevelWindowMac::SetTitle(const wxString& title)
 {
+    SetLabel( title ) ;
+}
+
+void wxTopLevelWindowMac::SetLabel(const wxString& title)
+{
     wxWindow::SetLabel( title ) ;
-    UMASetWTitle( (WindowRef)m_macWindow , title , m_font.GetEncoding() ) ;
+    UMASetWTitle( (WindowRef)m_macWindow , title , GetFont().GetEncoding() ) ;
 }
 
 wxString wxTopLevelWindowMac::GetTitle() const
@@ -1474,7 +1518,7 @@ bool wxTopLevelWindowMac::ShowFullScreen(bool show, long style)
         if ( data->m_wasResizable )
             MacChangeWindowAttributes( kWindowNoAttributes , kWindowResizableAttribute ) ;
     }
-    else
+    else if ( m_macFullScreenData != NULL )
     {
         ShowMenuBar() ;
         FullScreenData *data = (FullScreenData *) m_macFullScreenData ;

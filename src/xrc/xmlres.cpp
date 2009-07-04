@@ -3,7 +3,7 @@
 // Purpose:     XRC resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlres.cpp 48620 2007-09-09 22:24:43Z VZ $
+// RCS-ID:      $Id: xmlres.cpp 59633 2009-03-19 23:43:55Z VZ $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -942,7 +942,7 @@ wxString wxXmlResourceHandler::GetText(const wxString& param, bool translate)
 #else
             // The string is internally stored as UTF-8, we have to convert
             // it into system's default encoding so that it can be displayed:
-            return wxString(str2.mb_str(wxConvUTF8), wxConvLocal);
+            return wxString(str2.wc_str(wxConvUTF8), wxConvLocal);
 #endif
         }
     }
@@ -970,11 +970,13 @@ float wxXmlResourceHandler::GetFloat(const wxString& param, float defaultv)
 {
     wxString str = GetParamValue(param);
 
+#if wxUSE_INTL
     // strings in XRC always use C locale but wxString::ToDouble() uses the
     // current one, so transform the string to it supposing that the only
     // difference between them is the decimal separator
     str.Replace(wxT("."), wxLocale::GetInfo(wxLOCALE_DECIMAL_POINT,
                                             wxLOCALE_CAT_NUMBER));
+#endif // wxUSE_INTL
 
     double value;
     if (!str.ToDouble(&value))
@@ -1664,6 +1666,7 @@ static void AddStdXRCID_Records()
     stdID(wxID_HELP_CONTEXT);
     stdID(wxID_CLOSE_ALL);
     stdID(wxID_PREFERENCES);
+    stdID(wxID_EDIT);
     stdID(wxID_CUT);
     stdID(wxID_COPY);
     stdID(wxID_PASTE);

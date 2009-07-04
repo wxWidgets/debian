@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: _filesys.i 46591 2007-06-21 15:26:35Z RD $
+// RCS-ID:      $Id: _filesys.i 60428 2009-04-28 19:28:04Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -232,19 +232,8 @@ public:
     }
 
     void __wxMemoryFSHandler_AddFile_Data(const wxString& filename,
-                                          PyObject* data) {
-        if (! PyString_Check(data)) {
-            wxPyBLOCK_THREADS(PyErr_SetString(PyExc_TypeError,
-                                              "Expected string object"));
-            return;
-        }
-
-        wxPyBlock_t blocked = wxPyBeginBlockThreads();
-        void*  ptr = (void*)PyString_AsString(data);
-        size_t size = PyString_Size(data);
-        wxPyEndBlockThreads(blocked);
-
-        wxMemoryFSHandler::AddFile(filename, ptr, size);
+                                          buffer data, int DATASIZE) {
+        wxMemoryFSHandler::AddFile(filename, (void*)data, DATASIZE);
     }    
 %}
 
@@ -263,10 +252,11 @@ def MemoryFSHandler_AddFile(filename, dataItem, imgType=-1):
         __wxMemoryFSHandler_AddFile_wxImage(filename, dataItem, imgType)
     elif isinstance(dataItem, wx.Bitmap):
         __wxMemoryFSHandler_AddFile_wxBitmap(filename, dataItem, imgType)
-    elif type(dataItem) == str:
-        __wxMemoryFSHandler_AddFile_Data(filename, dataItem)
     else:
-        raise TypeError, 'wx.Image, wx.Bitmap or string expected'
+        try:
+            __wxMemoryFSHandler_AddFile_Data(filename, dataItem)
+        except TypeError:
+            raise TypeError, 'wx.Image, wx.Bitmap or buffer object expected'
 }
 
 
@@ -282,21 +272,12 @@ public:
 
     %extend {
         static void AddFileWithMimeType(const wxString& filename,
-                                        PyObject* data,
+                                        buffer data, int DATASIZE,
                                         const wxString& mimetype)
         {
-            if (! PyString_Check(data)) {
-                wxPyBLOCK_THREADS(PyErr_SetString(PyExc_TypeError,
-                                                  "Expected string object"));
-                return;
-            }
-
-            wxPyBlock_t blocked = wxPyBeginBlockThreads();
-            void*  ptr = (void*)PyString_AsString(data);
-            size_t size = PyString_Size(data);
-            wxPyEndBlockThreads(blocked);
-
-            wxMemoryFSHandler::AddFileWithMimeType(filename, ptr, size, mimetype);
+            wxMemoryFSHandler::AddFileWithMimeType(filename,
+                                                   (void*)data, DATASIZE,
+                                                   mimetype);
         }
     }
     

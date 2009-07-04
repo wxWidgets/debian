@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: radiobox.cpp 47125 2007-07-04 21:24:41Z VZ $
+// RCS-ID:      $Id: radiobox.cpp 54927 2008-08-02 15:59:13Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -148,6 +148,11 @@ bool wxRadioBox::Create(wxWindow *parent,
     // common initialization
     if ( !wxStaticBox::Create(parent, id, title, pos, size, style, name) )
         return false;
+
+    // the code elsewhere in this file supposes that either wxRA_SPECIFY_COLS
+    // or wxRA_SPECIFY_ROWS is set, ensure that this is indeed the case
+    if ( !(style & (wxRA_SPECIFY_ROWS | wxRA_SPECIFY_COLS)) )
+        style |= wxRA_SPECIFY_COLS;
 
 #if wxUSE_VALIDATORS
     SetValidator(val);
@@ -442,6 +447,25 @@ void wxRadioBox::DoSetItemToolTip(unsigned int item, wxToolTip *tooltip)
 }
 
 #endif // wxUSE_TOOLTIPS
+
+bool wxRadioBox::Reparent(wxWindowBase *newParent)
+{
+    if ( !wxStaticBox::Reparent(newParent) )
+    {
+        return false;
+    }
+
+    HWND hwndParent = GetHwndOf(GetParent());
+    for ( size_t item = 0; item < m_radioButtons->GetCount(); item++ )
+    {
+        ::SetParent((*m_radioButtons)[item], hwndParent);
+    }
+#ifdef __WXWINCE__
+    // put static box under the buttons in the Z-order
+    SetWindowPos(GetHwnd(), HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+#endif
+    return true;
+}
 
 WX_FORWARD_STD_METHODS_TO_SUBWINDOWS(wxRadioBox, wxStaticBox, m_radioButtons)
 

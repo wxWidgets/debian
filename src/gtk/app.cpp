@@ -2,7 +2,7 @@
 // Name:        src/gtk/app.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: app.cpp 45893 2007-05-08 20:05:16Z VZ $
+// Id:          $Id: app.cpp 52465 2008-03-13 04:37:03Z PC $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -174,59 +174,63 @@ static gint wxapp_idle_callback( gpointer WXUNUSED(data) )
     if (!wxTheApp)
         return false;
 
-    bool moreIdles = false;
-
-#ifdef __WXDEBUG__
-    // don't generate the idle events while the assert modal dialog is shown,
-    // this matches the behavior of wxMSW
-    if (!wxTheApp->IsInAssert())
-#endif // __WXDEBUG__
+    guint idleID_save;
     {
-        guint idleID_save;
-        {
-            // Allow another idle source to be added while this one is busy.
-            // Needed if an idle event handler runs a new event loop,
-            // for example by showing a dialog.
-#if wxUSE_THREADS
-            wxMutexLocker lock(gs_idleTagsMutex);
-#endif
-            idleID_save = wxTheApp->m_idleTag;
-            wxTheApp->m_idleTag = 0;
-            g_isIdle = true;
-            wxAddEmissionHook();
-        }
-
-        // When getting called from GDK's time-out handler
-        // we are no longer within GDK's grab on the GUI
-        // thread so we must lock it here ourselves.
-        gdk_threads_enter();
-
-        // Send idle event to all who request them as long as
-        // no events have popped up in the event queue.
-        do {
-            moreIdles = wxTheApp->ProcessIdle();
-        } while (moreIdles && gtk_events_pending() == 0);
-
-        // Release lock again
-        gdk_threads_leave();
-        
-        {
-            // If another idle source was added, remove it
-#if wxUSE_THREADS
-            wxMutexLocker lock(gs_idleTagsMutex);
-#endif
-            if (wxTheApp->m_idleTag != 0)
-                g_source_remove(wxTheApp->m_idleTag);
-            wxTheApp->m_idleTag = idleID_save;
-            g_isIdle = false;
-        }
-    }
-
-    if (!moreIdles)
-    {
+        // Allow another idle source to be added while this one is busy.
+        // Needed if an idle event handler runs a new event loop,
+        // for example by showing a dialog.
 #if wxUSE_THREADS
         wxMutexLocker lock(gs_idleTagsMutex);
 #endif
+        idleID_save = wxTheApp->m_idleTag;
+        wxTheApp->m_idleTag = 0;
+        g_isIdle = true;
+        wxAddEmissionHook();
+    }
+#ifdef __WXDEBUG__
+    // don't generate the idle events while the assert modal dialog is shown,
+    // this matches the behavior of wxMSW
+    if (wxTheApp->IsInAssert())
+        return false;
+#endif // __WXDEBUG__
+
+    // When getting called from GDK's time-out handler
+    // we are no longer within GDK's grab on the GUI
+    // thread so we must lock it here ourselves.
+    gdk_threads_enter();
+
+    // Send idle event to all who request them as long as
+    // no events have popped up in the event queue.
+    bool moreIdles;
+    do {
+        moreIdles = wxTheApp->ProcessIdle();
+    } while (moreIdles && gtk_events_pending() == 0);
+
+    // Release lock again
+    gdk_threads_leave();
+    
+#if wxUSE_THREADS
+    wxMutexLocker lock(gs_idleTagsMutex);
+#endif
+    // If another idle source was added, remove it
+    if (wxTheApp->m_idleTag != 0)
+        g_source_remove(wxTheApp->m_idleTag);
+    wxTheApp->m_idleTag = idleID_save;
+    g_isIdle = false;
+
+#if wxUSE_THREADS
+    if (wxPendingEventsLocker)
+        wxPendingEventsLocker->Enter();
+#endif
+    // Pending events can be added asynchronously,
+    // need to keep idle source if any have appeared
+    moreIdles = moreIdles || (wxPendingEvents && !wxPendingEvents->IsEmpty());
+#if wxUSE_THREADS
+    if (wxPendingEventsLocker)
+        wxPendingEventsLocker->Leave();
+#endif
+    if (!moreIdles)
+    {
         // Indicate that we are now in idle mode and event handlers
         // will have to reinstall the idle handler again.
         g_isIdle = true;

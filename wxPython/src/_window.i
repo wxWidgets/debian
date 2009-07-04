@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-June-1997
-// RCS-ID:      $Id: _window.i 50261 2007-11-26 19:50:13Z RD $
+// RCS-ID:      $Id: _window.i 57744 2009-01-02 04:29:57Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -433,7 +433,7 @@ equal to -1.
     ========================  ======================================
     wx.SIZE_AUTO              A -1 indicates that a class-specific
                               default should be used.
-    wx.SIZE_USE_EXISTING      Axisting dimensions should be used if
+    wx.SIZE_USE_EXISTING      Existing dimensions should be used if
                               -1 values are supplied.
     wxSIZE_ALLOW_MINUS_ONE    Allow dimensions of -1 and less to be
                               interpreted as real dimensions, not
@@ -564,12 +564,16 @@ the borders, scrollbars, other decorations...)", "");
         "Get the client area position and size as a `wx.Rect` object.", "");
     
 
+    // client<->window size conversion
+    wxSize ClientToWindowSize(const wxSize& size) const;
+    wxSize WindowToClientSize(const wxSize& size) const;
+
     
     DocStr(GetBestSize,
            "This function returns the best acceptable minimal size for the
 window, if applicable. For example, for a static text control, it will
 be the minimal size such that the control label is not truncated. For
-windows containing subwindows (suzh aswx.Panel), the size returned by
+windows containing subwindows (such as wx.Panel), the size returned by
 this function will be the same as the size the window would have had
 after calling Fit.", "");
     wxSize GetBestSize() const;
@@ -611,7 +615,7 @@ the results.
     DocDeclStr(
         void , Center( int direction = wxBOTH ),
         "Centers the window.  The parameter specifies the direction for
-cetering, and may be wx.HORIZONTAL, wx.VERTICAL or wx.BOTH. It may
+centering, and may be wx.HORIZONTAL, wx.VERTICAL or wx.BOTH. It may
 also include wx.CENTER_ON_SCREEN flag if you want to center the window
 on the entire screen and not on its parent window.  If it is a
 top-level window and has no parent then it will always be centered
@@ -1028,17 +1032,6 @@ deletion functions so should not be required by the application
 programmer.", "");
 
 
-    DocStr(SetDoubleBuffered,
-           "Currently wxGTK2 only.", "");
-#ifdef __WXGTK__
-    void SetDoubleBuffered(bool on);
-#else
-    %extend {
-        void SetDoubleBuffered(bool on) {}
-    }
-#endif
-
-
     // looking for windows
     // -------------------
 
@@ -1053,6 +1046,14 @@ programmer.", "");
         FindWindowByName);
     
 
+    %extend {
+        DocDeclStr(
+            wxWindow*, FindWindowByLabel( const wxString& label ),
+            "Find a child of this window by label", "")
+            {
+                return wxWindow::FindWindowByLabel(label, self);
+            }
+    }
 
     // event handler stuff
     // -------------------
@@ -1362,6 +1363,17 @@ scroll position.", "");
 system, i.e. if any drawing done on the window is really done on a
 temporary backing surface and transferred to the screen all at once
 later.", "");
+
+    DocStr(SetDoubleBuffered,
+           "Put the native window into double buffered or composited mode.", "");
+    %extend {
+        void SetDoubleBuffered(bool on)
+        {
+        %#if defined(__WXGTK20__) || defined(__WXMSW__)
+            self->SetDoubleBuffered(on);
+        %#endif
+        }
+    }
     
 
     DocDeclStr(
@@ -1921,15 +1933,8 @@ a drop target, it is deleted.", "");
     
 
     DocStr(DragAcceptFiles,
-        "Enables or disables eligibility for drop file events, EVT_DROP_FILES.
-Only functional on Windows.", "");
-#ifdef __WXMSW__  
+        "Enables or disables eligibility for drop file events, EVT_DROP_FILES.", "");
     void DragAcceptFiles(bool accept);
-#else
-    %extend {
-        void DragAcceptFiles(bool accept) {}
-    }
-#endif
 #endif
     
 
@@ -2267,6 +2272,7 @@ wxWindow* wxFindWindowByLabel( const wxString& label,
 
 
 
+
 %{
 #ifdef __WXMSW__
 #include <wx/msw/private.h>  // to get wxGetWindowId
@@ -2275,17 +2281,19 @@ wxWindow* wxFindWindowByLabel( const wxString& label,
 
 MustHaveApp(wxWindow_FromHWND);
 
+// Note this is similar to another function in _axbase.i, keep them in sync.
+
 %inline %{
     wxWindow* wxWindow_FromHWND(wxWindow* parent, unsigned long _hWnd) {
 #ifdef __WXMSW__
         WXHWND hWnd = (WXHWND)_hWnd;
-        long id = wxGetWindowId(hWnd);
+        //long id = wxGetWindowId(hWnd);
         wxWindow* win = new wxWindow;
         if (parent)
             parent->AddChild(win);
         win->SetEventHandler(win);
         win->SetHWND(hWnd);
-        win->SetId(id);
+        //win->SetId(id);
         win->SubclassWin(hWnd);
         win->AdoptAttributesFromHWND();
         win->SetupColours();
@@ -2308,6 +2316,5 @@ dialogs, etc.)", "");
     }
 %}
 
-//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 

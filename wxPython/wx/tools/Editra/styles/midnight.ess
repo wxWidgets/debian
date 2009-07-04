@@ -1,3 +1,9 @@
+/* Editra Style Sheet
+ * Name: Midnight
+ * Author: Cody Precord <cprecord@editra.org>
+ * License: wxWindows License
+ */
+
 default_style {
 		fore: #FFFFFF;
 		back: #000000;
@@ -7,7 +13,15 @@ default_style {
 
 array_style {
 		fore: #EE8B02 bold;
-		face: %(secondary)s;
+}
+
+brace_good {
+        fore: #FFFFFF;
+        back: #0000FF bold;
+}
+
+brace_bad {
+        back: #FF0000 bold;
 }
 
 btick_style {
@@ -17,6 +31,10 @@ btick_style {
 calltip { 
         fore: #FFE200;
         back: #09026A;
+}
+
+caret_line {
+        back: #262626;
 }
 
 char_style {
@@ -49,16 +67,14 @@ decor_style {
 
 directive_style {
 		fore: #0000FF bold;
-		face: %(secondary)s;
 }
 
 dockey_style {
-		fore: #0000FF;
+		fore: #00A6FF;
 }
 
 error_style {
 		fore: #DD0101;
-		face: %(secondary)s;
 }
 
 funct_style {
@@ -67,7 +83,6 @@ funct_style {
 
 global_style {
 		fore: #007F7F bold;
-		face: %(secondary)s;
 }
 
 guide_style {
@@ -76,12 +91,10 @@ guide_style {
 
 here_style {
 		fore: #CA61CA bold;
-		face: %(secondary)s;
 }
 
 ideol_style {
 		fore: #E0C0E0;
-		face: %(secondary)s;
 }
 
 keyword_style {
@@ -131,12 +144,10 @@ regex_style {
 
 scalar_style {
 		fore: #AB37F2 bold;
-		face: %(secondary)s;
 }
 
 scalar2_style {
 		fore: #AB37F2;
-		face: %(secondary)s;
 }
 
 select_style {
@@ -150,7 +161,6 @@ string_style {
 stringeol_style {
 		fore: #000000 bold;
 		back: #EEC0EE;
-		face: %(secondary)s;
 		size: %(size)d eol;
 }
 

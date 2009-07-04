@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: graphics.cpp 49306 2007-10-21 18:16:07Z SC $
+// RCS-ID:      $Id: graphics.cpp 56826 2008-11-17 21:39:29Z KO $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,6 +23,7 @@
     #include "wx/image.h"
 #endif
 
+#include "wx/strconv.h"
 #include "wx/mac/uma.h"
 
 #ifdef __MSL__
@@ -728,11 +729,20 @@ public:
     ~wxMacCoreGraphicsFontData();
 
     virtual ATSUStyle GetATSUStyle() { return m_macATSUIStyle; }
+#if !wxUSE_UNICODE
+    const wxMBConv& GetConverter() const { return m_conv; }
+#endif
 private :
     ATSUStyle m_macATSUIStyle;
+#if !wxUSE_UNICODE
+    wxCSConv m_conv;
+#endif
 };
 
 wxMacCoreGraphicsFontData::wxMacCoreGraphicsFontData(wxGraphicsRenderer* renderer, const wxFont &font, const wxColour& col) : wxGraphicsObjectRefData( renderer )
+#if !wxUSE_UNICODE
+    , m_conv( font.GetEncoding() == wxFONTENCODING_DEFAULT ? wxFONTENCODING_SYSTEM : font.GetEncoding() )
+#endif
 {
     m_macATSUIStyle = NULL;
 
@@ -776,6 +786,27 @@ wxMacCoreGraphicsFontData::~wxMacCoreGraphicsFontData()
         ::ATSUDisposeStyle((ATSUStyle)m_macATSUIStyle);
         m_macATSUIStyle = NULL;
     }
+}
+
+class wxMacCoreGraphicsBitmapData : public wxGraphicsObjectRefData
+{
+public:
+    wxMacCoreGraphicsBitmapData( wxGraphicsRenderer* renderer, const wxBitmap& bmp );
+    ~wxMacCoreGraphicsBitmapData();
+
+    virtual CGImageRef GetBitmap() { return m_bitmap; }
+private :
+    CGImageRef m_bitmap;
+};
+
+wxMacCoreGraphicsBitmapData::wxMacCoreGraphicsBitmapData( wxGraphicsRenderer* renderer, const wxBitmap& bmp ) : wxGraphicsObjectRefData( renderer )
+{
+    m_bitmap = (CGImageRef)( bmp.CGImageCreate() );
+}
+
+wxMacCoreGraphicsBitmapData::~wxMacCoreGraphicsBitmapData()
+{
+    CGImageRelease( m_bitmap );
 }
 
 //
@@ -1271,6 +1302,7 @@ public:
     //
     // image support
     //
+    void DrawGraphicsBitmapInternal( const wxGraphicsBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h );
 
     virtual void DrawBitmap( const wxBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h );
 
@@ -1335,9 +1367,6 @@ void wxMacCoreGraphicsContext::Init()
     m_cgContext = NULL;
     m_releaseContext = false;
     m_windowRef = NULL;
-
-    HIRect r = CGRectMake(0,0,0,0);
-    m_clipRgn.Set(HIShapeCreateWithRect(&r));
 }
 
 wxMacCoreGraphicsContext::wxMacCoreGraphicsContext( wxGraphicsRenderer* renderer, CGContextRef cgcontext ) : wxGraphicsContext(renderer)
@@ -1398,15 +1427,24 @@ void wxMacCoreGraphicsContext::EnsureIsValid()
         CGContextConcatCTM( m_cgContext, m_windowTransform );
 		CGContextSaveGState( m_cgContext );
 		m_releaseContext = true;
-		if ( !HIShapeIsEmpty(m_clipRgn) )
+		if ( (HIShapeRef) m_clipRgn != NULL )
 		{
             // the clip region is in device coordinates, so we convert this again to user coordinates
             wxMacCFRefHolder<HIMutableShapeRef> hishape ;
             hishape.Set( HIShapeCreateMutableCopy( m_clipRgn ) );
             CGPoint transformedOrigin = CGPointApplyAffineTransform( CGPointZero,m_windowTransform);
             HIShapeOffset( hishape, -transformedOrigin.x, -transformedOrigin.y );
-			HIShapeReplacePathInCGContext( hishape, m_cgContext );
-			CGContextClip( m_cgContext );
+            // if the shape is empty, HIShapeReplacePathInCGContext doesn't work
+            if ( HIShapeIsEmpty(hishape))
+            {
+                CGRect empty = CGRectMake( 0,0,0,0 );
+                CGContextClipToRect( m_cgContext, empty );
+            }
+            else
+            {
+                HIShapeReplacePathInCGContext( hishape, m_cgContext );
+                CGContextClip( m_cgContext );
+            }
 		}
 		CGContextSaveGState( m_cgContext );
 	}
@@ -1454,10 +1492,19 @@ void wxMacCoreGraphicsContext::Clip( const wxRegion &region )
 {
     if( m_cgContext )
     {
-        HIShapeRef shape = HIShapeCreateWithQDRgn( (RgnHandle) region.GetWXHRGN() );
-        HIShapeReplacePathInCGContext( shape, m_cgContext );
-        CGContextClip( m_cgContext );
-        CFRelease( shape );
+        wxMacCFRefHolder<HIShapeRef> shape;
+        shape = HIShapeCreateWithQDRgn( (RgnHandle) region.GetWXHRGN() );
+        // if the shape is empty, HIShapeReplacePathInCGContext doesn't work
+        if ( HIShapeIsEmpty(shape))
+        {
+            CGRect empty = CGRectMake( 0,0,0,0 );
+            CGContextClipToRect( m_cgContext, empty );
+        }
+        else
+        {
+            HIShapeReplacePathInCGContext( shape, m_cgContext );
+            CGContextClip( m_cgContext );
+        }
     }
     else
     {
@@ -1507,8 +1554,7 @@ void wxMacCoreGraphicsContext::ResetClip()
     }
     else
     {
-        HIRect r = CGRectMake(0,0,0,0);
-        m_clipRgn.Set(HIShapeCreateWithRect(&r));
+        m_clipRgn.Release();
     }
 }
 
@@ -1664,40 +1710,44 @@ void wxMacCoreGraphicsContext::Rotate( wxDouble angle )
         m_windowTransform = CGAffineTransformRotate(m_windowTransform,angle);
 }
 
+void wxGraphicsContext::DrawGraphicsBitmap( const wxGraphicsBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h )
+{
+    static_cast<wxMacCoreGraphicsContext*>(this)->DrawGraphicsBitmapInternal(bmp, x, y, w, h);
+}
+
 void wxMacCoreGraphicsContext::DrawBitmap( const wxBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h )
+{
+    wxGraphicsBitmap bitmap = GetRenderer()->CreateBitmap(bmp);
+    DrawGraphicsBitmapInternal(bitmap, x, y, w, h);
+}
+
+void wxMacCoreGraphicsContext::DrawGraphicsBitmapInternal( const wxGraphicsBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h )
 {
     EnsureIsValid();
 
-    CGImageRef image = (CGImageRef)( bmp.CGImageCreate() );
+    CGImageRef image = static_cast<wxMacCoreGraphicsBitmapData*>(bmp.GetRefData())->GetBitmap();
     HIRect r = CGRectMake( x , y , w , h );
-    if ( bmp.GetDepth() == 1 )
+
+    // set the brush, which is used when the bitmap's depth == 1 
+    if (  !m_brush.IsNull() )
     {
-        // is is a mask, the '1' in the mask tell where to draw the current brush
-        if (  !m_brush.IsNull() )
+        if ( ((wxMacCoreGraphicsBrushData*)m_brush.GetRefData())->IsShading() )
         {
-            if ( ((wxMacCoreGraphicsBrushData*)m_brush.GetRefData())->IsShading() )
-            {
-                // TODO clip to mask
-            /*
-                CGContextSaveGState( m_cgContext );
-                CGContextAddPath( m_cgContext , (CGPathRef) path.GetNativePath() );
-                CGContextClip( m_cgContext );
-                CGContextDrawShading( m_cgContext, ((wxMacCoreGraphicsBrushData*)m_brush.GetRefData())->GetShading() );
-                CGContextRestoreGState( m_cgContext);
-            */
-            }
-            else
-            {
-                ((wxMacCoreGraphicsBrushData*)m_brush.GetRefData())->Apply(this);
-                HIViewDrawCGImage( m_cgContext , &r , image );
-            }
+            // TODO clip to mask
+        /*
+            CGContextSaveGState( m_cgContext );
+            CGContextAddPath( m_cgContext , (CGPathRef) path.GetNativePath() );
+            CGContextClip( m_cgContext );
+            CGContextDrawShading( m_cgContext, ((wxMacCoreGraphicsBrushData*)m_brush.GetRefData())->GetShading() );
+            CGContextRestoreGState( m_cgContext);
+        */
+        }
+        else
+        {
+            ((wxMacCoreGraphicsBrushData*)m_brush.GetRefData())->Apply(this);
         }
     }
-    else
-    {
-        HIViewDrawCGImage( m_cgContext , &r , image );
-    }
-    CGImageRelease( image );
+    HIViewDrawCGImage( m_cgContext , &r , image );
 }
 
 void wxMacCoreGraphicsContext::DrawIcon( const wxIcon &icon, wxDouble x, wxDouble y, wxDouble w, wxDouble h )
@@ -1734,8 +1784,7 @@ void wxMacCoreGraphicsContext::DrawText( const wxString &str, wxDouble x, wxDoub
 
 void wxMacCoreGraphicsContext::DrawText( const wxString &str, wxDouble x, wxDouble y, wxDouble angle )
 {
-    if ( m_font.IsNull() )
-        return;
+    wxCHECK_RET( !m_font.IsNull(), wxT("wxMacCoreGraphicsContext::DrawText - no valid font set") );
 
     EnsureIsValid();
 
@@ -1751,7 +1800,7 @@ void wxMacCoreGraphicsContext::DrawText( const wxString &str, wxDouble x, wxDoub
     ubuf = (UniChar*) malloc( unicharlen + 2 );
     converter.WC2MB( (char*) ubuf , str.wc_str(), unicharlen + 2 );
 #else
-    const wxWCharBuffer wchar = str.wc_str( wxConvLocal );
+    const wxWCharBuffer wchar = str.wc_str( ((wxMacCoreGraphicsFontData*)m_font.GetRefData())->GetConverter() );
     size_t unicharlen = converter.WC2MB( NULL , wchar.data() , 0 );
     ubuf = (UniChar*) malloc( unicharlen + 2 );
     converter.WC2MB( (char*) ubuf , wchar.data() , unicharlen + 2 );
@@ -1761,7 +1810,7 @@ void wxMacCoreGraphicsContext::DrawText( const wxString &str, wxDouble x, wxDoub
 #if wxUSE_UNICODE
     ubuf = (UniChar*) str.wc_str();
 #else
-    wxWCharBuffer wchar = str.wc_str( wxConvLocal );
+    wxWCharBuffer wchar = str.wc_str( ((wxMacCoreGraphicsFontData*)m_font.GetRefData())->GetConverter() );
     chars = wxWcslen( wchar.data() );
     ubuf = (UniChar*) wchar.data();
 #endif
@@ -1849,7 +1898,7 @@ void wxMacCoreGraphicsContext::DrawText( const wxString &str, wxDouble x, wxDoub
 void wxMacCoreGraphicsContext::GetTextExtent( const wxString &str, wxDouble *width, wxDouble *height,
                             wxDouble *descent, wxDouble *externalLeading ) const
 {
-    wxCHECK_RET( !m_font.IsNull(), wxT("wxDC(cg)::DoGetTextExtent - no valid font set") );
+    wxCHECK_RET( !m_font.IsNull(), wxT("wxMacCoreGraphicsContext::GetTextExtent - no valid font set") );
 
     if ( width )
         *width = 0;
@@ -1876,7 +1925,7 @@ void wxMacCoreGraphicsContext::GetTextExtent( const wxString &str, wxDouble *wid
     ubuf = (UniChar*) malloc( unicharlen + 2 );
     converter.WC2MB( (char*) ubuf , str.wc_str(), unicharlen + 2 );
 #else
-    const wxWCharBuffer wchar = str.wc_str( wxConvLocal );
+    const wxWCharBuffer wchar = str.wc_str( ((wxMacCoreGraphicsFontData*)m_font.GetRefData())->GetConverter() );
     size_t unicharlen = converter.WC2MB( NULL , wchar.data() , 0 );
     ubuf = (UniChar*) malloc( unicharlen + 2 );
     converter.WC2MB( (char*) ubuf , wchar.data() , unicharlen + 2 );
@@ -1886,7 +1935,7 @@ void wxMacCoreGraphicsContext::GetTextExtent( const wxString &str, wxDouble *wid
 #if wxUSE_UNICODE
     ubuf = (UniChar*) str.wc_str();
 #else
-    wxWCharBuffer wchar = str.wc_str( wxConvLocal );
+    wxWCharBuffer wchar = str.wc_str( ((wxMacCoreGraphicsFontData*)m_font.GetRefData())->GetConverter() );
     chars = wxWcslen( wchar.data() );
     ubuf = (UniChar*) wchar.data();
 #endif
@@ -1897,6 +1946,9 @@ void wxMacCoreGraphicsContext::GetTextExtent( const wxString &str, wxDouble *wid
         &chars , &style , &atsuLayout );
 
     wxASSERT_MSG( status == noErr , wxT("couldn't create the layout of the text") );
+
+    status = ::ATSUSetTransientFontMatching( atsuLayout , true );
+    wxASSERT_MSG( status == noErr , wxT("couldn't setup transient font matching") );
 
     ATSUTextMeasurement textBefore, textAfter;
     ATSUTextMeasurement textAscent, textDescent;
@@ -1924,12 +1976,15 @@ void wxMacCoreGraphicsContext::GetPartialTextExtents(const wxString& text, wxArr
     widths.Empty();
     widths.Add(0, text.length());
 
+    wxCHECK_RET( !m_font.IsNull(), wxT("wxMacCoreGraphicsContext::GetPartialTextExtents - no valid font set") );
+
     if (text.empty())
         return;
 
     ATSUTextLayout atsuLayout;
     UniCharCount chars = text.length();
     UniChar* ubuf = NULL;
+    OSStatus status = noErr;
 
 #if SIZEOF_WCHAR_T == 4
     wxMBConvUTF16 converter;
@@ -1938,7 +1993,7 @@ void wxMacCoreGraphicsContext::GetPartialTextExtents(const wxString& text, wxArr
     ubuf = (UniChar*) malloc( unicharlen + 2 );
     converter.WC2MB( (char*) ubuf , text.wc_str(), unicharlen + 2 );
 #else
-    const wxWCharBuffer wchar = text.wc_str( wxConvLocal );
+    const wxWCharBuffer wchar = text.wc_str( ((wxMacCoreGraphicsFontData*)m_font.GetRefData())->GetConverter() );
     size_t unicharlen = converter.WC2MB( NULL , wchar.data() , 0 );
     ubuf = (UniChar*) malloc( unicharlen + 2 );
     converter.WC2MB( (char*) ubuf , wchar.data() , unicharlen + 2 );
@@ -1948,16 +2003,22 @@ void wxMacCoreGraphicsContext::GetPartialTextExtents(const wxString& text, wxArr
 #if wxUSE_UNICODE
     ubuf = (UniChar*) text.wc_str();
 #else
-    wxWCharBuffer wchar = text.wc_str( wxConvLocal );
+    wxWCharBuffer wchar = text.wc_str( ((wxMacCoreGraphicsFontData*)m_font.GetRefData())->GetConverter() );
     chars = wxWcslen( wchar.data() );
     ubuf = (UniChar*) wchar.data();
 #endif
 #endif
 
     ATSUStyle style = (((wxMacCoreGraphicsFontData*)m_font.GetRefData())->GetATSUStyle());
-    ::ATSUCreateTextLayoutWithTextPtr( (UniCharArrayPtr) ubuf , 0 , chars , chars , 1 ,
+    status = ::ATSUCreateTextLayoutWithTextPtr( (UniCharArrayPtr) ubuf , 0 , chars , chars , 1 ,
         &chars , &style , &atsuLayout );
+    wxASSERT_MSG( status == noErr , wxT("couldn't create the layout of the text") );
 
+    status = ::ATSUSetTransientFontMatching( atsuLayout , true );
+    wxASSERT_MSG( status == noErr , wxT("couldn't setup transient font matching") );
+
+// new implementation from JS, keep old one just in case
+#if 0
     for ( int pos = 0; pos < (int)chars; pos ++ )
     {
         unsigned long actualNumberOfBounds = 0;
@@ -1973,6 +2034,31 @@ void wxMacCoreGraphicsContext::GetPartialTextExtents(const wxString& text, wxArr
         widths[pos] = FixedToInt( glyphBounds.upperRight.x - glyphBounds.upperLeft.x );
         //unsigned char uch = s[i];
     }
+#else
+    ATSLayoutRecord *layoutRecords = NULL;
+    ItemCount glyphCount = 0;
+    
+    // Get the glyph extents
+    OSStatus err = ::ATSUDirectGetLayoutDataArrayPtrFromTextLayout(atsuLayout,
+                                                                   0,
+                                                                   kATSUDirectDataLayoutRecordATSLayoutRecordCurrent,
+                                                                   (void **)
+                                                                   &layoutRecords,
+                                                                   &glyphCount);
+    wxASSERT(glyphCount == (text.length()+1));
+    
+    if ( err == noErr && glyphCount == (text.length()+1))
+    {
+        for ( int pos = 1; pos < (int)glyphCount ; pos ++ )
+        {
+            widths[pos-1] = FixedToInt( layoutRecords[pos].realPos );
+        }
+    }
+    
+    ::ATSUDirectReleaseLayoutDataArrayPtr(NULL,
+                                          kATSUDirectDataLayoutRecordATSLayoutRecordCurrent,
+                                          (void **) &layoutRecords);
+#endif
 
     ::ATSUDisposeTextLayout(atsuLayout);
 #if SIZEOF_WCHAR_T == 4
@@ -2071,6 +2157,8 @@ public :
 
    // sets the font
     virtual wxGraphicsFont CreateFont( const wxFont &font , const wxColour &col = *wxBLACK ) ;
+    
+    wxGraphicsBitmap CreateBitmap( const wxBitmap &bitmap ) ;
 
 private :
     DECLARE_DYNAMIC_CLASS_NO_COPY(wxMacCoreGraphicsRenderer)
@@ -2204,6 +2292,18 @@ wxGraphicsFont wxMacCoreGraphicsRenderer::CreateFont( const wxFont &font , const
     }
     else
         return wxNullGraphicsFont;
+}
+
+wxGraphicsBitmap wxGraphicsRenderer::CreateBitmap( const wxBitmap& bmp )
+{
+    if ( bmp.Ok() )
+    {
+        wxGraphicsBitmap p;
+        p.SetRefData(new wxMacCoreGraphicsBitmapData( this , bmp ));
+        return p;
+    }
+    else
+        return wxNullGraphicsBitmap;
 }
 
 

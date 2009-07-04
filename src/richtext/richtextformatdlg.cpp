@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2006-10-01
-// RCS-ID:      $Id: richtextformatdlg.cpp 49946 2007-11-14 14:22:56Z JS $
+// RCS-ID:      $Id: richtextformatdlg.cpp 53392 2008-04-28 10:15:49Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -101,6 +101,10 @@ bool wxRichTextFormattingDialog::Create(long flags, wxWindow* parent, const wxSt
     int resizeBorder = wxRESIZE_BORDER;
 
     GetFormattingDialogFactory()->SetSheetStyle(this);
+
+#ifdef __WXMAC__
+    SetWindowVariant(wxWINDOW_VARIANT_SMALL);
+#endif
 
     wxPropertySheetDialog::Create(parent, id, title, pos, sz,
         style | (int)wxPlatform::IfNot(wxOS_WINDOWS_CE, resizeBorder)
@@ -401,6 +405,12 @@ void wxRichTextFontPreviewCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
     wxSize size = GetSize();
     wxFont font = GetFont();
 
+    if ((GetTextEffects() & wxTEXT_ATTR_EFFECT_SUPERSCRIPT) || (GetTextEffects() & wxTEXT_ATTR_EFFECT_SUBSCRIPT))
+    {
+        double size = static_cast<double>(font.GetPointSize()) / wxSCRIPT_MUL_FACTOR;
+        font.SetPointSize( static_cast<int>(size) );
+    }
+
     if ( font.Ok() )
     {
         dc.SetFont(font);
@@ -414,6 +424,11 @@ void wxRichTextFontPreviewCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
         dc.GetTextExtent( text, &w, &h);
         int cx = wxMax(2, (size.x/2) - (w/2));
         int cy = wxMax(2, (size.y/2) - (h/2));
+
+        if ( GetTextEffects() & wxTEXT_ATTR_EFFECT_SUPERSCRIPT )
+            cy -= h/2;
+        if ( GetTextEffects() & wxTEXT_ATTR_EFFECT_SUBSCRIPT )
+            cy += h/2;
 
         dc.SetTextForeground(GetForegroundColour());
         dc.SetClippingRegion(2, 2, size.x-4, size.y-4);

@@ -1,5 +1,5 @@
 #
-# $Id: version-script.in 50111 2007-11-20 16:12:12Z VZ $
+# $Id: version-script.in 60190 2009-04-16 00:57:35Z KO $
 #
 # Notes:
 #
@@ -23,11 +23,63 @@
 # released with the generic branch version due to the final wildcard below,
 # and once released its version cannot be changed.
 
+# public symbols added in 2.8.10 (please keep in alphabetical order):
+@WX_VERSION_TAG@.11 {
+        *wxDC*SetDeviceClippingRegion*;
+        *wxGraphicsContext*GetCairoRenderer*;
+        *wxShowEvent*IsShown*;
+        *wxIconizeEvent*IsIconized*;
+        *wxXmlNode*Attribute*;
+};
+
+# public symbols added in 2.8.10 (please keep in alphabetical order):
+@WX_VERSION_TAG@.10 {
+        *wxAboutDialog*GetCopyrightToDisplay*;
+        *wxArtProvider*PushBack*;
+        *wxAuiManager*DoEndResizeAction*;
+        *wxCArrayString*Release*;
+        *wxDCBase*GetFontPointSizeAdjustment*;
+        *wxGraphicsBitmap*;
+        *wxGraphicsContext*CreateBitmap*;
+        *wxGraphicsContext*DrawGraphicsBitmap*;
+        *wxGraphicsRenderer*CreateBitmap*;
+        *wxWindowBase*DragAcceptFiles*;
+};
+
+# public symbols added in 2.8.9 (please keep in alphabetical order):
+@WX_VERSION_TAG@.9 {
+        *wxAuiTabCtrl*OnCaptureLost*;
+        *wxAuiToolBar*;
+        *wxWindow*UnsetToolTip*;
+};
 
 # public symbols added in 2.8.8 (please keep in alphabetical order):
 @WX_VERSION_TAG@.8 {
     global:
+        *TimeZone*Make*;
+        *wxApp*MacHideApp*;
+        *wxBitmapButton*OnFocusChange*;
+        *wxDocManager*MakeNewDocumentName*;
+        *wxEventLoopGuarantor*;
+        *wxGridBagSizer*AdjustForOverflow*;
+        *wxRemotelyScrolledTreeCtrl*DoCalcScrolledPosition*;
+        *wxRemotelyScrolledTreeCtrl*SetScrollbar*;
+        *wxRenderer_Draw*;
+        *wxRichTextAction*CalculateRefreshOptimizations*;
+        *wxRichTextCtrl*GetTextCursor*;
+        *wxRichTextCtrl*GetURLCursor*;
+        *wxRichTextCtrl*SetTextCursor*;
+        *wxRichTextCtrl*SetURLCursor*;
+        *wxScrollHelper*HandleOnChildFocus*;
+        *wxSizer*ComputeFittingClientSize*;
+        *wxSizer*ComputeFittingWindowSize*;
+        *wxSizerFlags*ReserveSpaceEvenIfHidden*;
+        *wxSizerItem*ShouldAccountFor*;
+        *wxWebKitNewWindowEvent*;
+        *wxWindowBase*ClientToWindowSize*;
         *wxWindowBase*Get*Sibling*;
+        *wxWindowBase*WindowToClientSize*;
+        *wxXmlNode*InsertChildAfter*;
 };
 
 # public symbols added in 2.8.7 (please keep in alphabetical order):

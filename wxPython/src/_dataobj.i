@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     31-October-1999
-// RCS-ID:      $Id: _dataobj.i 44282 2007-01-21 07:07:07Z RD $
+// RCS-ID:      $Id: _dataobj.i 58929 2009-02-16 01:10:21Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -513,7 +513,7 @@ public:
 
 DocStr(wxDataObjectComposite,
 "wx.DataObjectComposite is the simplest `wx.DataObject` derivation
-which may be sued to support multiple formats. It contains several
+which may be used to support multiple formats. It contains several
 'wx.DataObjectSimple` objects and supports any format supported by at
 least one of them. Only one of these data objects is *preferred* (the
 first one if not explicitly changed by using the second parameter of
@@ -852,16 +852,6 @@ public:
 #include <wx/metafile.h>
 %}
 
-class wxMetafileDataObject : public wxDataObjectSimple
-{
-public:
-    wxMetafileDataObject();
-
-    void SetMetafile(const wxMetafile& metafile);
-    wxMetafile GetMetafile() const;
-};
-
-
 #else
 %{
 class wxMetafileDataObject : public wxDataObjectSimple
@@ -878,6 +868,20 @@ public:
 };
 
 #endif
+
+
+class wxMetaFile;
+
+class wxMetafileDataObject : public wxDataObjectSimple
+{
+public:
+    wxMetafileDataObject();
+
+    void SetMetafile(const wxMetaFile& metafile);
+    wxMetaFile GetMetafile() const;
+};
+
+
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

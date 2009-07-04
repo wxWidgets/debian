@@ -7,7 +7,7 @@
 // Author:      Robin Dunn
 //
 // Created:     11-Oct-2003
-// RCS-ID:      $Id: pyclasses.h 43595 2006-11-22 01:57:47Z RD $
+// RCS-ID:      $Id: pyclasses.h 57773 2009-01-02 05:25:50Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -179,13 +179,18 @@ class wxPyControl;
 class wxPyPrintout;
 class wxGenericDragImage;
 class wxPyTaskBarIcon;
-
+class wxPyEvtHandler;
+class wxPyPickerBase;
 
 #ifdef __WXMAC__
 class wxPopupWindow;
 class wxTaskBarIconEvent;
 class wxTaskBarIcon;
 class wxToggleButton;
+#endif
+
+#ifdef __WXMSW__
+class wxPyAxBaseWindow;
 #endif
 
 //---------------------------------------------------------------------------

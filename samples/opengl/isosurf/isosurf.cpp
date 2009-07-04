@@ -4,7 +4,7 @@
 // Author:      Brian Paul (original gltk version), Wolfram Gloger
 // Modified by: Julian Smart
 // Created:     04/01/98
-// RCS-ID:      $Id: isosurf.cpp 43118 2006-11-06 12:59:38Z VZ $
+// RCS-ID:      $Id: isosurf.cpp 54693 2008-07-18 13:56:25Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,9 @@
 
 #include "isosurf.h"
 
+#if !defined(__WXMSW__) && !defined(__WXPM__)
 #include "../../sample.xpm"
+#endif
 
 // The following part is taken largely unchanged from the original C Version
 
@@ -253,7 +255,7 @@ bool MyApp::OnInit()
         wxDefaultPosition, wxDefaultSize);
 
     // Give it an icon
-    frame->SetIcon(wxIcon(_T("mondrian")));
+    frame->SetIcon(wxICON(sample));
 
     // Make a menubar
     wxMenu *fileMenu = new wxMenu;
@@ -312,7 +314,6 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     : wxFrame(frame, wxID_ANY, title, pos, size, style)
 {
     m_canvas = NULL;
-    SetIcon(wxIcon(sample_xpm));
 }
 
 MyFrame::~MyFrame()

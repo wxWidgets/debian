@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor, Dan "Bud" Keith (composite combobox)
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: combobox.cpp 45653 2007-04-26 02:17:18Z VZ $
+// RCS-ID:      $Id: combobox.cpp 58883 2009-02-13 16:06:13Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -151,6 +151,17 @@ protected:
         if (! m_cb->GetEventHandler()->ProcessEvent(event))
             event.Skip();
     }
+    
+    void OnFocus( wxFocusEvent& event )
+    {
+        // in case the textcontrol gets the focus we propagate
+        // it to the parent's handlers.
+        wxFocusEvent evt2(event.GetEventType(),m_cb->GetId());
+        evt2.SetEventObject(m_cb);
+        m_cb->GetEventHandler()->ProcessEvent(evt2);
+
+        event.Skip();
+    }
 
 private:
     wxComboBox *m_cb;
@@ -162,6 +173,8 @@ BEGIN_EVENT_TABLE(wxComboBoxText, wxTextCtrl)
     EVT_KEY_DOWN(wxComboBoxText::OnKeyDown)
     EVT_CHAR(wxComboBoxText::OnChar)
     EVT_KEY_UP(wxComboBoxText::OnKeyUp)
+    EVT_SET_FOCUS(wxComboBoxText::OnFocus)
+    EVT_KILL_FOCUS(wxComboBoxText::OnFocus)
     EVT_TEXT(wxID_ANY, wxComboBoxText::OnText)
 END_EVENT_TABLE()
 
@@ -370,7 +383,6 @@ bool wxComboBox::Create(wxWindow *parent,
         return false;
     }
 
-    m_choice = new wxComboBoxChoice(this, style );
     wxSize csize = size;
     if ( style & wxCB_READONLY )
     {
@@ -385,6 +397,7 @@ bool wxComboBox::Create(wxWindow *parent,
             csize.y += 2 * TEXTFOCUSBORDER ;
         }
     }
+    m_choice = new wxComboBoxChoice(this, style );
 
     DoSetSize(pos.x, pos.y, csize.x, csize.y);
 
@@ -508,6 +521,12 @@ void wxComboBox::SetSelection(long from, long to)
 {
     if ( m_text )
         m_text->SetSelection(from,to);
+}
+
+void wxComboBox::GetSelection(long *from, long* to) const
+{
+    if ( m_text )
+        m_text->GetSelection(from,to);
 }
 
 int wxComboBox::DoAppend(const wxString& item)

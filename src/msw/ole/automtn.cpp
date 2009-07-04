@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     11/6/98
-// RCS-ID:      $Id: automtn.cpp 44961 2007-03-19 20:00:59Z VZ $
+// RCS-ID:      $Id: automtn.cpp 55899 2008-09-26 15:18:16Z VZ $
 // Copyright:   (c) 1998, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -538,8 +538,13 @@ bool wxAutomationObject::CreateInstance(const wxString& classId) const
         return false;
     }
 
-    // start a new copy of Excel, grab the IDispatch interface
-    if (FAILED(CoCreateInstance(clsId, NULL, CLSCTX_LOCAL_SERVER, IID_IDispatch, (void**)&m_dispatchPtr)))
+    // get the server IDispatch interface
+    //
+    // NB: using CLSCTX_INPROC_HANDLER results in failure when getting
+    //     Automation interface for Microsoft Office applications so don't use
+    //     CLSCTX_ALL which includes it
+    if (FAILED(CoCreateInstance(clsId, NULL, CLSCTX_SERVER, IID_IDispatch,
+                                (void**)&m_dispatchPtr)))
     {
         wxLogWarning(wxT("Cannot start an instance of this class."));
         return false;
@@ -728,7 +733,8 @@ WXDLLEXPORT bool wxConvertOleToVariant(const VARIANTARG& oleVariant, wxVariant& 
             variant = oleVariant.dblVal;
             break;
         }
-    case VT_ARRAY:
+    case VT_VARIANT:
+    // case VT_ARRAY: // This is masked out by VT_TYPEMASK
         {
             variant.ClearList();
 
@@ -861,6 +867,7 @@ static void ReleaseVariant(VARIANTARG *pvarg)
             case VT_R8:
             case VT_ERROR:        // to avoid erroring on an error return from Excel
             case VT_EMPTY:
+            case VT_DATE:
                 // no work for these types
                 break;
 

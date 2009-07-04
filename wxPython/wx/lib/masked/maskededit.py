@@ -5,7 +5,7 @@
 # Created:      02/11/2003
 # Copyright:    (c) 2003 by Jeff Childers, Will Sadkin, 2003
 # Portions:     (c) 2002 by Will Sadkin, 2002-2007
-# RCS-ID:       $Id: maskededit.py 45743 2007-05-02 01:00:30Z RD $
+# RCS-ID:       $Id: maskededit.py 60305 2009-04-24 05:32:14Z RD $
 # License:      wxWidgets license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -2772,7 +2772,7 @@ class MaskedEditMixin:
 ##                    dbg('old value: "%s"' % value)
 ##                    dbg('new value: "%s"' % newvalue)
                     try:
-                        self._SetValue(newvalue)
+                        self._ChangeValue(newvalue)
                     except Exception, e:
 ##                        dbg('exception raised:', e, 'resetting to initial value')
                         self._SetInitialValue()
@@ -2789,7 +2789,7 @@ class MaskedEditMixin:
 ##                    dbg('old value: "%s"' % value)
 ##                    dbg('new value: "%s"' % newvalue)
                     try:
-                        self._SetValue(newvalue)
+                        self._ChangeValue(newvalue)
                     except Exception, e:
 ##                        dbg('exception raised:', e, 'resetting to initial value')
                         self._SetInitialValue()
@@ -2798,7 +2798,7 @@ class MaskedEditMixin:
 ##                    dbg('old value: "%s"' % value)
 ##                    dbg('new value: "%s"' % newvalue)
                     try:
-                        self._SetValue(newvalue)
+                        self._ChangeValue(newvalue)
                     except e:
 ##                        dbg('exception raised:', e, 'resetting to initial value')
                         self._SetInitialValue()
@@ -2843,7 +2843,10 @@ class MaskedEditMixin:
             # don't apply external validation rules in this case, as template may
             # not coincide with "legal" value...
             try:
-                self._SetValue(self._curValue)  # note the use of "raw" ._SetValue()...
+                if isinstance(self, wx.TextCtrl):
+                    self._ChangeValue(self._curValue)  # note the use of "raw" ._ChangeValue()...
+                else:
+                    self._SetValue(self._curValue)  # note the use of "raw" ._SetValue()...
             except Exception, e:
 ##                dbg('exception thrown:', e, indent=0)
                 raise
@@ -2852,7 +2855,10 @@ class MaskedEditMixin:
 ####            dbg('value = "%s", length:' % value, len(value))
             self._prevValue = self._curValue = value
             try:
-                self.SetValue(value)            # use public (validating) .SetValue()
+                if isinstance(self, wx.TextCtrl):
+                    self.ChangeValue(value)            # use public (validating) .SetValue()
+                else:
+                    self.SetValue(value)
             except Exception, e:
 ##                dbg('exception thrown:', e, indent=0)
                 raise
@@ -2888,10 +2894,14 @@ class MaskedEditMixin:
             self._font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
         else:
             font = self.GetFont()   # get size, weight, etc from current font
+            points = font.GetPointSize()
+            if 'wxMac' in wx.PlatformInfo \
+               and self.GetWindowVariant() == wx.WINDOW_VARIANT_MINI:
+                points -= 1
 
             # Set to teletype font (guaranteed to be mappable to all wxWindows
             # platforms:
-            self._font = wx.Font( font.GetPointSize(), wx.TELETYPE, font.GetStyle(),
+            self._font = wx.Font( points, wx.TELETYPE, font.GetStyle(),
                                  font.GetWeight(), font.GetUnderlined())
 ####            dbg('font string: "%s"' % font.GetNativeFontInfo().ToString())
 
@@ -3207,6 +3217,13 @@ class MaskedEditMixin:
         self._SetInsertionPoint(0)
         self.Refresh()
 
+    def ClearValueAlt(self):
+        """ Blanks the current control value by replacing it with the default value.
+        Using ChangeValue, so not to fire a change event"""
+##        dbg("MaskedEditMixin::ClearValueAlt - value reset to default value (template)")
+        self._ChangeValue( self._template )
+        self._SetInsertionPoint(0)
+        self.Refresh()
 
     def _baseCtrlEventHandler(self, event):
         """
@@ -4277,7 +4294,7 @@ class MaskedEditMixin:
         if field._forceupper and key in range(97,123):
             key = ord( chr(key).upper())
 
-        if field._forcelower and key in range(97,123):
+        if field._forcelower and key in range(65,90):
             key = ord( chr(key).lower())
 
         return key

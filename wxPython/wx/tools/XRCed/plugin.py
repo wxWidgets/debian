@@ -2,7 +2,7 @@
 # Purpose:      Pluggable component support
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      31.05.2007
-# RCS-ID:       $Id: plugin.py 49380 2007-10-23 22:28:21Z ROL $
+# RCS-ID:       $Id: plugin.py 51262 2008-01-17 17:07:19Z ROL $
 
 '''
 Functions for loading plugins.
@@ -86,10 +86,18 @@ def create_component(node):
             a,kl = a[:i],a[i+1:]
             specials[a] = getattr(component, kl)
         attributes.append(a)
+    attParamsIn = comp.getAttribute(node, 'params')
+    # Process attr:param_class pairs
+    params = {}
+    for a in attParamsIn:
+        i = a.find(':')
+        if i != -1:
+            a,kl = a[:i],a[i+1:]
+            params[a] = getattr(component.params, kl)
     groups = comp.getAttribute(node, 'groups')
     styles = comp.getAttribute(node, 'styles')
     events = comp.getAttribute(node, 'events')
-    c = compClass(name, groups, attributes, specials=specials, events=events)
+    c = compClass(name, groups, attributes, specials=specials, params=params, events=events)
     c.hasName = bool(comp.getAttribute(node, 'has-name'))
     c.addStyles(*styles)
     Manager.register(c)

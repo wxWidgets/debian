@@ -71,7 +71,7 @@ CVS archive;
 <LI> convert WIN32 RC files to XRC with the tool in <TT>contrib/utils/convertrc</TT>.
 </UL>
 <P>
-A complete list of third-party tools that write to XRC can be found at <A HREF="http://www.wxwidgets.org/lnk_tool.htm">www.wxwidgets.org/lnk_tool.htm</A>.<P>
+A complete list of third-party tools that write to XRC can be found at <A HREF="http://www.wxwidgets.org/wiki/index.php/Tools">www.wxwidgets.org/wiki/index.php/Tools</A>.<P>
 It is highly recommended that you use a resource editing tool, since it's fiddly writing
 XRC files by hand.<P>
 You can use <A HREF="wx_wxxmlresource.html#wxxmlresourceload">wxXmlResource::Load</A> in a number of ways.
@@ -499,16 +499,16 @@ Example:<P>
 #include "resource.h"
 
 class TestWnd : public TestWnd_Base {
-	public:
-		TestWnd(){
-			// A, B already initialised at this point
-			A-&gt;SetValue("Updated in TestWnd::TestWnd");
-			B-&gt;SetValue("Nice :)");
-		}
-		void OnBPressed(wxEvent& event){
-			Close();
-		}
-		DECLARE_EVENT_TABLE();
+        public:
+                TestWnd(){
+                        // A, B already initialised at this point
+                        A-&gt;SetValue("Updated in TestWnd::TestWnd");
+                        B-&gt;SetValue("Nice :)");
+                }
+                void OnBPressed(wxEvent& event){
+                        Close();
+                }
+                DECLARE_EVENT_TABLE();
 };
 
 BEGIN_EVENT_TABLE(TestWnd,TestWnd_Base)

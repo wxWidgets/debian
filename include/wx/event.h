@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: event.h 49563 2007-10-31 20:46:21Z VZ $
+// RCS-ID:      $Id: event.h 59768 2009-03-23 12:35:12Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@ class WXDLLIMPEXP_FWD_BASE wxList;
     class WXDLLIMPEXP_FWD_CORE wxWindowBase;
 #endif // wxUSE_GUI
 
-class WXDLLIMPEXP_BASE wxEvtHandler;
+class WXDLLIMPEXP_FWD_BASE wxEvtHandler;
 
 // ----------------------------------------------------------------------------
 // Event types
@@ -414,7 +414,7 @@ protected:
 
 private:
     // it needs to access our m_propagationLevel
-    friend class WXDLLIMPEXP_BASE wxPropagateOnce;
+    friend class WXDLLIMPEXP_FWD_BASE wxPropagateOnce;
 
     DECLARE_ABSTRACT_CLASS(wxEvent)
 };
@@ -1442,6 +1442,9 @@ public:
 
     void SetShow(bool show) { m_show = show; }
     bool GetShow() const { return m_show; }
+#if wxABI_VERSION >= 20811
+    bool IsShown() const { return GetShow(); }
+#endif
 
     virtual wxEvent *Clone() const { return new wxShowEvent(*this); }
 
@@ -1468,7 +1471,9 @@ public:
 
     // return true if the frame was iconized, false if restored
     bool Iconized() const { return m_iconized; }
-
+#if wxABI_VERSION >= 20811
+    bool IsIconized() const { return Iconized(); }
+#endif
     virtual wxEvent *Clone() const { return new wxIconizeEvent(*this); }
 
 protected:

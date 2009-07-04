@@ -84,7 +84,7 @@ class XmlResource(_core.Object):
         return _xrc.XmlResource_Load(*args, **kwargs)
 
     def LoadFromString(*args, **kwargs):
-        """LoadFromString(self, String data) -> bool"""
+        """LoadFromString(self, buffer data) -> bool"""
         return _xrc.XmlResource_LoadFromString(*args, **kwargs)
 
     def Unload(*args, **kwargs):
@@ -345,6 +345,10 @@ class XmlNode(object):
         """InsertChild(self, XmlNode child, XmlNode before_node) -> bool"""
         return _xrc.XmlNode_InsertChild(*args, **kwargs)
 
+    def InsertChildAfter(*args, **kwargs):
+        """InsertChildAfter(self, XmlNode child, XmlNode precedingNode) -> bool"""
+        return _xrc.XmlNode_InsertChildAfter(*args, **kwargs)
+
     def RemoveChild(*args, **kwargs):
         """RemoveChild(self, XmlNode child) -> bool"""
         return _xrc.XmlNode_RemoveChild(*args, **kwargs)
@@ -436,6 +440,18 @@ class XmlNode(object):
     def SetProperties(*args, **kwargs):
         """SetProperties(self, XmlProperty prop)"""
         return _xrc.XmlNode_SetProperties(*args, **kwargs)
+
+    def GetAttribute(*args, **kwargs):
+        """GetAttribute(self, String attrName, String defaultVal) -> String"""
+        return _xrc.XmlNode_GetAttribute(*args, **kwargs)
+
+    def AddAttribute(*args, **kwargs):
+        """AddAttribute(self, String attrName, String value)"""
+        return _xrc.XmlNode_AddAttribute(*args, **kwargs)
+
+    def GetAttributes(*args, **kwargs):
+        """GetAttributes(self) -> XmlProperty"""
+        return _xrc.XmlNode_GetAttributes(*args, **kwargs)
 
     Children = property(GetChildren,SetChildren,doc="See `GetChildren` and `SetChildren`") 
     Content = property(GetContent,SetContent,doc="See `GetContent` and `SetContent`") 

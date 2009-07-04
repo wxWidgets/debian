@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     04/04/2003
-// RCS-ID:      $Id: taskbarx11.cpp 48556 2007-09-04 13:47:54Z RR $
+// RCS-ID:      $Id: taskbarx11.cpp 53582 2008-05-12 23:54:34Z RD $
 // Copyright:   (c) Vaclav Slavik, 2003
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
@@ -263,7 +263,11 @@ wxTaskBarIcon::wxTaskBarIcon() : m_iconWnd(NULL)
 wxTaskBarIcon::~wxTaskBarIcon()
 {
     if (m_iconWnd)
+    {
+        m_iconWnd->Disconnect(wxEVT_DESTROY, (wxObjectEventFunction)NULL,
+                              (wxObject*)NULL, this);
         RemoveIcon();
+    }
 }
 
 bool wxTaskBarIcon::IsOk() const
@@ -276,6 +280,14 @@ bool wxTaskBarIcon::IsIconInstalled() const
     return m_iconWnd != NULL;
 }
 
+// Destroy event from wxTaskBarIconArea
+void wxTaskBarIcon::OnDestroy(wxWindowDestroyEvent&)
+{
+    // prevent crash if wxTaskBarIconArea is destroyed by something else,
+    // for example if panel/kicker is killed
+    m_iconWnd = NULL;
+}
+
 bool wxTaskBarIcon::SetIcon(const wxIcon& icon, const wxString& tooltip)
 {
     wxBitmap bmp;
@@ -286,6 +298,9 @@ bool wxTaskBarIcon::SetIcon(const wxIcon& icon, const wxString& tooltip)
         m_iconWnd = new wxTaskBarIconArea(this, bmp);
         if (m_iconWnd->IsOk())
         {
+            m_iconWnd->Connect(wxEVT_DESTROY,
+                wxWindowDestroyEventHandler(wxTaskBarIcon::OnDestroy),
+                NULL, this);
             m_iconWnd->Show();
         }
         else

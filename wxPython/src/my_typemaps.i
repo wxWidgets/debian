@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/3/97
-// RCS-ID:      $Id: my_typemaps.i 46283 2007-06-02 23:46:09Z RD $
+// RCS-ID:      $Id: my_typemaps.i 58365 2009-01-24 22:17:32Z RD $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -97,6 +97,19 @@ MAKE_INT_ARRAY_TYPEMAPS(styles, styles_field)
 %typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER) wxString& {
     $1 = PyString_Check($input) || PyUnicode_Check($input);
 }
+
+
+
+%typemap(in) wxChar {
+    wxString s = Py2wxString($input);
+    $1 = s[0];
+}
+
+%typemap(out) wxChar {
+    wxString s($1);
+    $result = wx2PyString(s);
+}
+
 
 //---------------------------------------------------------------------------
 // wxMemoryBuffer  (needed for wxSTC)

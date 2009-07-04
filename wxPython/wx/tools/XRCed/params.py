@@ -2,7 +2,7 @@
 # Purpose:      Classes for parameter introduction
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      22.08.2001
-# RCS-ID:       $Id: params.py 50252 2007-11-26 10:50:45Z ROL $
+# RCS-ID:       $Id: params.py 54812 2008-07-29 13:39:00Z ROL $
 
 '''
 Visual C{Param*} classes for populating C{AtrtibutePanel} with attribute editing
@@ -82,7 +82,9 @@ class PPanel(wx.Panel):
         Presenter.setApplied(False)
         evt.Skip()
     def OnKillFocus(self, evt):
-        if g.conf.autoRefresh and g.conf.autoRefreshPolicy == AUTO_REFRESH_POLICY_FOCUS:
+        # Refresh test window if auto refresh policy on focus
+        if Listener.testWin.IsShown() and g.conf.autoRefresh and \
+                g.conf.autoRefreshPolicy == AUTO_REFRESH_POLICY_FOCUS:
             wx.CallAfter(Presenter.refreshTestWin)
         evt.Skip()
 
@@ -123,7 +125,8 @@ class ParamFlag(ParamBinaryOr):
               'wxALIGN_CENTRE', 'wxALIGN_LEFT', 'wxALIGN_RIGHT',
               'wxALIGN_TOP', 'wxALIGN_BOTTOM', 
               'wxALIGN_CENTRE_VERTICAL', 'wxALIGN_CENTRE_HORIZONTAL', 
-              'wxADJUST_MINSIZE', 'wxFIXED_MINSIZE'
+              'wxADJUST_MINSIZE', 'wxFIXED_MINSIZE',
+              'wxRESERVE_SPACE_EVEN_IF_HIDDEN',
               ]
     equal = {'wxALIGN_CENTER': 'wxALIGN_CENTRE',
              'wxALIGN_CENTER_VERTICAL': 'wxALIGN_CENTRE_VERTICAL',
@@ -194,11 +197,6 @@ fontFamiliesXml2wx = ReverseMap(fontFamiliesWx2Xml)
 fontStylesXml2wx = ReverseMap(fontStylesWx2Xml)
 fontWeightsXml2wx = ReverseMap(fontWeightsWx2Xml)
 
-# My font picker
-class FontPickerCtrl(wx.Button):
-    def __init__(self, parent, id=-1, font=wx.NullFont, size=wx.DefaultSize, style=0):
-        wx.Button.__init__(self, parent, id)
-
 class ParamFont(PPanel):
     '''Font attribute editing.'''
     def __init__(self, parent, name):
@@ -249,12 +247,13 @@ class ParamFont(PPanel):
             except KeyError:    error = True; wx.LogError('Invalid weight specification')
         else:
             weight = wx.NORMAL
-        try: underlined = bool(d.get('underlined', 0))
+        try: underlined = bool(int(d.get('underlined', '0')))
         except ValueError: error = True; wx.LogError('Invalid underlined flag specification')
         face = d.get('face','')
         enc = wx.FONTENCODING_DEFAULT
         mapper = wx.FontMapper()
-        if 'encoding' in d: enc = mapper.CharsetToEncoding(d['encoding'])
+        if 'encoding' in d and d['encoding'] != 'default': 
+            enc = mapper.CharsetToEncoding(d['encoding'])
         if error: wx.LogError('Invalid font specification')
         if enc == wx.FONTENCODING_DEFAULT: enc = wx.FONTENCODING_SYSTEM
         font = wx.Font(size, family, style, weight, underlined, face, enc)
@@ -397,8 +396,8 @@ class ParamText(PPanel):
     proportion = 0
     def __init__(self, parent, name, style=0, **kargs):
         PPanel.__init__(self, parent, name)
-        textWidth = kargs.get('textWidth', self.textWidth)
-        option = kargs.get('proportion', self.proportion)
+        textWidth = kargs.pop('textWidth', self.textWidth)
+        option = kargs.pop('proportion', self.proportion)
         if textWidth == -1: option = 1
         # We use sizer even here to have the same size of text control
         sizer = wx.BoxSizer()
@@ -711,7 +710,8 @@ class CheckBox(PPanel):
         Presenter.setApplied(False)
         if Presenter.panelIsDirty():
             Presenter.registerUndoEdit()
-        if g.conf.autoRefresh and g.conf.autoRefreshPolicy == AUTO_REFRESH_POLICY_FOCUS:
+        if Listener.testWin.IsShown() and g.conf.autoRefresh and \
+                g.conf.autoRefreshPolicy == AUTO_REFRESH_POLICY_FOCUS:
             Listener.testWin.isDirty = True
             wx.CallAfter(Presenter.refreshTestWin)
         evt.Skip()
@@ -896,17 +896,19 @@ paramDict = {
     'tooltip': ParamLongText, 
     # other
     'bitmap': ParamBitmap, 'icon': ParamBitmap,
-    'comment': ParamComment
+    'comment': ParamComment,
+    'wrap': ParamInt,
     }
 '''Default classes for standard attributes.'''
 
 class StylePanel(wx.Panel):
     '''Style panel.'''
-    def __init__(self, parent, styles, genericStyles=[]):
+    def __init__(self, parent, styles, genericStyles=[], tag='style'):
         wx.Panel.__init__(self, parent, -1)
         self.SetFont(g.smallerFont())
         self.node = None
         self.controls = []
+        self.tag = tag
         topSizer = wx.BoxSizer(wx.HORIZONTAL)
         if genericStyles:
             # Generic styles
@@ -942,7 +944,7 @@ class StylePanel(wx.Panel):
         checked = []
         for s,check in self.controls:
             if check.IsChecked(): checked.append(s)
-        return [('style', '|'.join(checked))]
+        return [(self.tag, '|'.join(checked))]
 
     def SetValues(self, values):
         styles = values[0][1].split('|')
@@ -951,9 +953,11 @@ class StylePanel(wx.Panel):
 
     def OnCheck(self, evt):
         Presenter.setApplied(False)
-        if g.conf.autoRefresh and g.conf.autoRefreshPolicy == AUTO_REFRESH_POLICY_FOCUS:
+        if Listener.testWin.IsShown() and g.conf.autoRefresh and \
+                g.conf.autoRefreshPolicy == AUTO_REFRESH_POLICY_FOCUS:
             Listener.testWin.isDirty = True
             wx.CallAfter(Presenter.refreshTestWin)
+        evt.Skip()
 
 #############################################################################
 

@@ -2,7 +2,7 @@
 // Name:        src/gtk/control.cpp
 // Purpose:     wxControl implementation for wxGTK
 // Author:      Robert Roebling
-// Id:          $Id: control.cpp 44707 2007-03-10 04:46:18Z PC $
+// Id:          $Id: control.cpp 58191 2009-01-18 12:21:04Z JS $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,9 @@
 #endif
 
 #include "wx/fontutil.h"
+#include "wx/utils.h"
 #include "wx/gtk/private.h"
+#include "wx/sysopt.h"
 
 // ============================================================================
 // wxControl implementation
@@ -373,8 +375,31 @@ void wxControl::OnInternalIdle()
         GTKSetDelayedFocusIfNeeded();
     }
 
-    if ( wxUpdateUIEvent::CanUpdate(this) )
+    if ( wxUpdateUIEvent::CanUpdate(this) && IsShownOnScreen() )
         UpdateWindowUI(wxUPDATE_UI_FROMIDLE);
+}
+
+// Fix sensitivity due to bug in GTK+ < 2.14
+void wxGtkFixSensitivity(wxWindow* ctrl)
+{
+#ifdef __WXGTK24__
+    // Work around a GTK+ bug whereby button is insensitive after being
+    // enabled
+    if (gtk_check_version(2,14,0)
+#if wxUSE_SYSTEM_OPTIONS
+        && (wxSystemOptions::GetOptionInt(wxT("gtk.control.disable-sensitivity-fix")) != 1)
+#endif
+        )
+    {
+        wxPoint pt = wxGetMousePosition();
+        wxRect rect(ctrl->ClientToScreen(wxPoint(0, 0)), ctrl->GetSize());
+        if (rect.Contains(pt))
+        {
+            ctrl->Hide();
+            ctrl->Show();
+        }
+    }
+#endif
 }
 
 #endif // wxUSE_CONTROLS

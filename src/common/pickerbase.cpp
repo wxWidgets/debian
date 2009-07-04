@@ -4,7 +4,7 @@
 // Author:      Francesco Montorsi
 // Modified by:
 // Created:     15/04/2006
-// RCS-ID:      $Id: pickerbase.cpp 44218 2007-01-14 16:18:36Z VZ $
+// RCS-ID:      $Id: pickerbase.cpp 58463 2009-01-27 17:39:50Z BP $
 // Copyright:   (c) Francesco Montorsi
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -96,14 +96,14 @@ bool wxPickerBase::CreateBase(wxWindow *parent,
         // set the initial contents of the textctrl
         m_text->SetValue(text);
 
-        m_text->Connect(wxEVT_COMMAND_TEXT_UPDATED,
+        m_text->Connect(m_text->GetId(), wxEVT_COMMAND_TEXT_UPDATED,
                 wxCommandEventHandler(wxPickerBase::OnTextCtrlUpdate),
                 NULL, this);
-        m_text->Connect(wxEVT_KILL_FOCUS,
+        m_text->Connect(m_text->GetId(), wxEVT_KILL_FOCUS,
                 wxFocusEventHandler(wxPickerBase::OnTextCtrlKillFocus),
                 NULL, this);
 
-        m_text->Connect(wxEVT_DESTROY,
+        m_text->Connect(m_text->GetId(), wxEVT_DESTROY,
                 wxWindowDestroyEventHandler(wxPickerBase::OnTextCtrlDelete),
                 NULL, this);
 
@@ -144,12 +144,12 @@ void wxPickerBase::DoSetToolTip(wxToolTip *tip)
 // wxPickerBase - event handlers
 // ----------------------------------------------------------------------------
 
-void wxPickerBase::OnTextCtrlKillFocus(wxFocusEvent &)
+void wxPickerBase::OnTextCtrlKillFocus(wxFocusEvent& event)
 {
-    wxASSERT(m_text);
+    event.Skip();
 
     // don't leave the textctrl empty
-    if (m_text->GetValue().empty())
+    if (m_text && m_text->GetValue().empty())
         UpdateTextCtrlFromPicker();
 }
 

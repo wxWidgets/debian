@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: event.cpp 48332 2007-08-22 14:46:50Z DE $
+// RCS-ID:      $Id: event.cpp 56712 2008-11-08 22:41:10Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -34,12 +34,20 @@
     #include "wx/module.h"
 
     #if wxUSE_GUI
+        #include "wx/window.h"
         #include "wx/control.h"
         #include "wx/dc.h"
         #include "wx/textctrl.h"
         #include "wx/validate.h"
     #endif // wxUSE_GUI
 #endif
+
+#if wxUSE_BASE
+    #include "wx/ptr_scpd.h"
+
+    wxDECLARE_SCOPED_PTR(wxEvent, wxEventPtr)
+    wxDEFINE_SCOPED_PTR(wxEvent, wxEventPtr)
+#endif // wxUSE_BASE
 
 // ----------------------------------------------------------------------------
 // wxWin macros
@@ -1032,7 +1040,7 @@ wxEvtHandler::wxEvtHandler()
     m_eventsLocker = new wxCriticalSection;
 #  endif
 #endif
-    
+
     // no client data (yet)
     m_clientData = NULL;
     m_clientDataType = wxClientData_None;
@@ -1134,8 +1142,6 @@ void wxEvtHandler::AddPendingEvent(wxEvent& event)
 
     m_pendingEvents->Append(eventCopy);
 
-    wxLEAVE_CRIT_SECT( Lock() );
-
     // 2) Add this event handler to list of event handlers that
     //    have pending events.
 
@@ -1146,6 +1152,8 @@ void wxEvtHandler::AddPendingEvent(wxEvent& event)
     wxPendingEvents->Append(this);
 
     wxLEAVE_CRIT_SECT(*wxPendingEventsLocker);
+
+    wxLEAVE_CRIT_SECT( Lock() );
 
     // 3) Inform the system that new pending events are somewhere,
     //    and that these should be processed in idle time.
@@ -1158,7 +1166,7 @@ void wxEvtHandler::ProcessPendingEvents()
     // pending events
     wxCHECK_RET( m_pendingEvents,
                  wxT("Please call wxApp::ProcessPendingEvents() instead") );
-    
+
     wxENTER_CRIT_SECT( Lock() );
 
     // we leave the loop once we have processed all events that were present at
@@ -1170,9 +1178,9 @@ void wxEvtHandler::ProcessPendingEvents()
           node;
           node = m_pendingEvents->GetFirst() )
     {
-        wxEvent *event = (wxEvent *)node->GetData();
+        wxEventPtr event(wx_static_cast(wxEvent *, node->GetData()));
 
-        // It's importan we remove event from list before processing it.
+        // It's important we remove event from list before processing it.
         // Else a nested event loop, for example from a modal dialog, might
         // process the same event again.
 
@@ -1181,8 +1189,6 @@ void wxEvtHandler::ProcessPendingEvents()
         wxLEAVE_CRIT_SECT( Lock() );
 
         ProcessEvent(*event);
-
-        delete event;
 
         wxENTER_CRIT_SECT( Lock() );
 

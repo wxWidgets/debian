@@ -923,6 +923,7 @@ wxsizeradd|wx_wxsizer.html|wxALL
 wxsizeradd|wx_wxsizer.html|wxEXPAND
 wxsizeradd|wx_wxsizer.html|wxSHAPED
 wxsizeradd|wx_wxsizer.html|wxFIXED_MINSIZE
+wxsizeradd|wx_wxsizer.html|wxRESERVE_SPACE_EVEN_IF_HIDDEN
 wxsizeradd|wx_wxsizer.html|wxALIGN_CENTER wxALIGN_CENTRE
 wxsizeradd|wx_wxsizer.html|wxALIGN_LEFT
 wxsizeradd|wx_wxsizer.html|wxALIGN_RIGHT
@@ -3215,6 +3216,7 @@ wxcalendarctrlgetheadercolourfg|wx_wxcalendarctrl.html|wxCalendarCtrl::GetHeader
 wxcalendarctrlgetheadercolourfg|wx_wxcalendarctrl.html|GetHeaderColourFg
 wxdcgetpixel|wx_wxdc.html|wxDC::GetPixel
 wxdialogdtor|wx_wxdialog.html|wxDialog::~wxDialog
+wxdocmanagermakenewdocumentname|wx_wxdocmanager.html|wxDocManager::MakeNewDocumentName
 wxlocaledtor|wx_wxlocale.html|wxLocale::~wxLocale
 wxmenuitemisseparator|wx_wxmenuitem.html|wxMenuItem::IsSeparator
 wxmenuitemisseparator|wx_wxmenuitem.html|IsSeparator
@@ -4230,6 +4232,7 @@ wxautomationobjectdtor|wx_wxautomationobject.html|wxAutomationObject::~wxAutomat
 wxdataviewtextrenderer|wx_wxdataviewtextrenderer.html|wxDataViewTextRenderer
 wxhtmllinkinfogetevent|wx_wxhtmllinkinfo.html|wxHtmlLinkInfo::GetEvent
 wxmimetypesmanagerdtor|wx_wxmimetypesmanager.html|wxMimeTypesManager::~wxMimeTypesManager
+wxsizercomputefittingclientsize|wx_wxsizer.html|wxSizer::ComputeFittingClientSize
 wxslidersetthumblength|wx_wxslider.html|wxSlider::SetThumbLength
 wxwizardgetcurrentpage|wx_wxwizard.html|wxWizard::GetCurrentPage
 wxwizardgetcurrentpage|wx_wxwizard.html|GetCurrentPage
@@ -4572,6 +4575,7 @@ wxhtmlwinparsersetlink|wx_wxhtmlwinparser.html|wxHtmlWinParser::SetLink
 wxmenubarctor|wx_wxmenubar.html|wxMenuBar::wxMenuBar
 wxmouseeventleftisdown|wx_wxmouseevent.html|wxMouseEvent::LeftIsDown
 wxmouseeventleftisdown|wx_wxmouseevent.html|LeftIsDown
+wxsizercomputefittingwindowsize|wx_wxsizer.html|wxSizer::ComputeFittingWindowSize
 wxstringalloc|wx_wxstring.html|wxString::Alloc
 wxonblockexit|wx_miscellany.html|wxON_BLOCK_EXIT
 wxcsconvclass|wx_mbconvclasses.html|wxCSConv
@@ -4720,7 +4724,7 @@ wxdisplaydtor|wx_wxdisplay.html|wxDisplay::~wxDisplay
 wxhyperlinkeventseturl|wx_wxhyperlinkevent.html|wxHyperlinkEvent::SetURL
 wxipv4addressanyaddress|wx_wxipv4address.html|wxIPV4address::AnyAddress
 wxmultichoicedialoggetselections|wx_wxmultichoicedialog.html|wxMultiChoiceDialog::GetSelections
-wxmultichoicedialoggetselections|wx_wxmultichoicedialog.html|GetSelection
+wxmultichoicedialoggetselections|wx_wxmultichoicedialog.html|GetSelections
 wxpensetwidth|wx_wxpen.html|wxPen::SetWidth
 wxsizeritemsetinitsize|wx_wxsizeritem.html|wxSizerItem::SetInitSize
 wxsplitterwindowsetsashposition|wx_wxsplitterwindow.html|wxSplitterWindow::SetSashPosition
@@ -5858,6 +5862,9 @@ wxpennotequals|wx_wxpen.html|wxPen::operator !=
 wxtimespanhour|wx_wxtimespan.html|wxTimeSpan::Hour
 wxcmdlineparserwxcmdlineparserdef|wx_wxcmdlineparser.html|wxCmdLineParser::wxCmdLineParser
 wxrichtextctrl|wx_wxrichtextctrl.html|wxRichTextCtrl
+wxrichtextctrl|wx_wxrichtextctrl.html|wxRE_READONLY
+wxrichtextctrl|wx_wxrichtextctrl.html|wxRE_CENTRE_CARET
+wxrichtextctrl|wx_wxrichtextctrl.html|wxRE_CENTER_CARET
 wxsocketserver|wx_wxsocketserver.html|wxSocketServer
 wxstringformat|wx_wxstring.html|wxString::Format
 wxtextvalidatorsetstyle|wx_wxtextvalidator.html|wxTextValidator::SetStyle
@@ -6078,7 +6085,6 @@ wxrichtextbufferbeginsymbolbullet|wx_wxrichtextbuffer.html|wxRichTextBuffer::Beg
 wxrichtextxmlhandlergetparamvalue|wx_wxrichtextxmlhandler.html|wxRichTextXMLHandler::GetParamValue
 wxsizerisshown|wx_wxsizer.html|wxSizer::IsShown
 wxsizerisshown|wx_wxsizer.html|IsShown
-wxsockaddresssockaddrlen|wx_wxsockaddress.html|wxSockAddress::SockAddrLen
 wxtextattrctor|wx_wxtextattr.html|wxTextAttr::wxTextAttr
 wxtreectrlgetitembackgroundcolour|wx_wxtreectrl.html|wxTreeCtrl::GetItemBackgroundColour
 wxtreectrlgetitembackgroundcolour|wx_wxtreectrl.html|GetItemBackgroundColour
@@ -6896,6 +6902,8 @@ wxfontgetweight|wx_wxfont.html|GetWeight
 wxfontmapperwxfontmapper|wx_wxfontmapper.html|wxFontMapper::wxFontMapper
 wxmenubarinsert|wx_wxmenubar.html|wxMenuBar::Insert
 wxprintdatactor|wx_wxprintdata.html|wxPrintData::wxPrintData
+wxrectintersect|wx_wxrect.html|wxRect::Intersect
+wxrectintersect|wx_wxrect.html|Intersect
 wxstreamtotextredirector|wx_wxstreamtotextredirector.html|wxStreamToTextRedirector
 wxtoplevelwindowmaximize|wx_wxtoplevelwindow.html|wxTopLevelWindow::Maximize
 wxvalidatordtor|wx_wxvalidator.html|wxValidator::~wxValidator
@@ -7374,6 +7382,7 @@ wxcolourdatagetchoosefull|wx_wxcolourdata.html|GetChooseFull
 wxgenericdirctrlgetrootid|wx_wxgenericdirctrl.html|wxGenericDirCtrl::GetRootId
 wxrichtextprintingsetpagesetupdata|wx_wxrichtextprinting.html|wxRichTextPrinting::SetPageSetupData
 wxstreambufferflushbuffer|wx_wxstreambuffer.html|wxStreamBuffer::FlushBuffer
+wxxmlnodeinsertchildafter|wx_wxxmlnode.html|wxXmlNode::InsertChildAfter
 wxapptraitscreaterenderer|wx_wxapptraits.html|wxAppTraits::CreateRenderer
 wxartprovidercreatebitmap|wx_wxartprovider.html|wxArtProvider::CreateBitmap
 wxcheckboxcreate|wx_wxcheckbox.html|wxCheckBox::Create
@@ -9144,6 +9153,7 @@ wxmenuitemgetfont|wx_wxmenuitem.html|wxMenuItem::GetFont
 wxmenuitemgetfont|wx_wxmenuitem.html|GetFont
 wxrichtextstylelistboxgetstylesheet|wx_wxrichtextstylelistbox.html|wxRichTextStyleListBox::GetStyleSheet
 wxrichtextstylelistboxgetstylesheet|wx_wxrichtextstylelistbox.html|GetStyleSheet
+wxsizerflagsreservespaceevenifhidden|wx_wxsizerflags.html|wxSizerFlags::ReserveSpaceEvenIfHidden
 wxwizardsetborder|wx_wxwizard.html|wxWizard::SetBorder
 unicodeoutsidewxw|wx_unicode.html|Unicode and the outside world
 htmltagssupported|wx_wxhtml.html|Tags supported by wxHTML
@@ -9267,6 +9277,8 @@ wximagehandlergetimagecount|wx_wximagehandler.html|wxImageHandler::GetImageCount
 wxlayoutalgorithm|wx_wxlayoutalgorithm.html|wxLayoutAlgorithm
 wxmenuitemsetmenu|wx_wxmenuitem.html|wxMenuItem::SetMenu
 wxsplitterwindowupdatesize|wx_wxsplitterwindow.html|wxSplitterWindow::UpdateSize
+wxwindowclienttowindowsize|wx_wxwindow.html|wxWindow::ClientToWindowSize
+wxwindowwindowtoclientsize|wx_wxwindow.html|wxWindow::WindowToClientSize
 wxcontexthelpctor|wx_wxcontexthelp.html|wxContextHelp::wxContextHelp
 wxdbctor|wx_wxdb.html|wxDb::wxDb
 wxhtmlwinparsersetfontsize|wx_wxhtmlwinparser.html|wxHtmlWinParser::SetFontSize

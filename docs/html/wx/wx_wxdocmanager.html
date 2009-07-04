@@ -55,6 +55,7 @@ and <A HREF="wx_wxdoctemplate.html#wxdoctemplate">wxDocTemplate</A> classes.<P>
 <A HREF="#wxdocmanagergettemplates">wxDocManager::GetTemplates</A><BR>
 <A HREF="#wxdocmanagerinitialize">wxDocManager::Initialize</A><BR>
 <A HREF="#wxdocmanagermakedefaultname">wxDocManager::MakeDefaultName</A><BR>
+<A HREF="#wxdocmanagermakenewdocumentname">wxDocManager::MakeNewDocumentName</A><BR>
 <A HREF="#wxdocmanageroncreatefilehistory">wxDocManager::OnCreateFileHistory</A><BR>
 <A HREF="#wxdocmanageronfileclose">wxDocManager::OnFileClose</A><BR>
 <A HREF="#wxdocmanageronfilecloseall">wxDocManager::OnFileCloseAll</A><BR>
@@ -386,11 +387,27 @@ construct wxDocManager with no arguments.<P>
 <H3>wxDocManager::MakeDefaultName</H3>
 <P>
 <B>bool</B> <B>MakeDefaultName</B>(<B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>& </B></B><I>buf</I>)<P>
-Copies a suitable default name into <I>buf</I>. This is implemented by
-appending an integer counter to the string <B>unnamed</B> and incrementing
-the counter.<P>
+This method is preserved for backwards compatibility in wxWidgets 2.8 but is
+renamed to <A HREF="wx_wxdocmanager.html#wxdocmanagermakenewdocumentname">MakeNewDocumentName</A> in
+wxWidgets 3.0, please see its description for the details.<P>
+This function simply copies the value returned by MakeNewDocumentName() into
+the provided <I>buf</I> and returns <TT>true</TT>.<P>
 <B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this function must return the modified name rather
 than just modifying the argument.<P>
+
+
+<HR>
+<A NAME="wxdocmanagermakenewdocumentname"></A>
+<H3>wxDocManager::MakeNewDocumentName</H3>
+<P>
+<B><A HREF="wx_wxstring.html#wxstring">wxString</A></B> </B> <B>MakeNewDocumentName</B>()<P>
+Returns the name to be used for a new document. The default implementation
+appends an integer counter to the string <B>unnamed</B> and increments the
+counter. To customize this behaviour, you need to override the virtual 
+<A HREF="wx_wxdocmanager.html#wxdocmanagermakedefaultname">MakeNewDocumentName</A> method but if you
+only need to call this method, an not to override it, please use this method
+which is forward-compatible with wxWidgets 3.0.<P>
+This function is new since wxWidgets version 2.8.8<P>
 
 
 <HR>

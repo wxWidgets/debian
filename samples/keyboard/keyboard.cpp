@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.04.02
-// RCS-ID:      $Id: keyboard.cpp 38333 2006-03-24 08:28:08Z ABX $
+// RCS-ID:      $Id: keyboard.cpp 53395 2008-04-28 11:09:33Z VS $
 // Copyright:   (c) 2002 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -464,12 +464,24 @@ void TextWindow::LogEvent(const wxChar *name, wxKeyEvent& event)
             if ( keycode < 256 )
             {
                 if ( keycode == 0 )
-                    key.Printf(_T("NUL"));
+                {
+#if wxUSE_UNICODE
+                    const wxChar u = event.GetUnicodeKey();
+                    if ( u )
+                        key.Printf(_T("Unicode char '%c' (U+%04x)"), u, u);
+                    else
+#endif
+                        key.Printf(_T("NUL"));
+                }
                 else if ( keycode < 27 )
+                {
                     key.Printf(_T("Ctrl-%c"),
                                 (unsigned char)(_T('A') + keycode - 1));
+                }
                 else
+                {
                     key.Printf(_T("'%c'"), (unsigned char)keycode);
+                }
             }
             else
             {

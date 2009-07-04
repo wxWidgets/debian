@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: combobox.h 42727 2006-10-30 16:04:27Z VZ $
+// RCS-ID:      $Id: combobox.h 58883 2009-02-13 16:06:13Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -103,6 +103,7 @@ class WXDLLEXPORT wxComboBox : public wxControl, public wxComboBoxBase
     virtual void Copy();
     virtual void Cut();
     virtual void Paste();
+    
     virtual void SetInsertionPoint(long pos);
     virtual void SetInsertionPointEnd();
     virtual long GetInsertionPoint() const;
@@ -112,6 +113,10 @@ class WXDLLEXPORT wxComboBox : public wxControl, public wxComboBoxBase
     virtual void SetSelection(long from, long to);
     virtual void SetEditable(bool editable);
     virtual bool IsEditable() const;
+
+#if wxABI_VERSION >= 20810
+    void GetSelection( long* from, long* to ) const;
+#endif
 
     virtual unsigned int GetCount() const;
 

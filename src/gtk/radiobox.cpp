@@ -2,7 +2,7 @@
 // Name:        src/gtk/radiobox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobox.cpp 49343 2007-10-23 07:27:12Z PC $
+// Id:          $Id: radiobox.cpp 58188 2009-01-17 20:38:43Z JS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -473,6 +473,8 @@ void wxRadioBox::SetString(unsigned int item, const wxString& label)
 
 bool wxRadioBox::Enable( bool enable )
 {
+    bool isEnabled = IsEnabled();
+
     if ( !wxControl::Enable( enable ) )
         return false;
 
@@ -486,6 +488,9 @@ bool wxRadioBox::Enable( bool enable )
         gtk_widget_set_sensitive( GTK_WIDGET(label), enable );
         node = node->GetNext();
     }
+
+    if (!isEnabled && enable)
+        wxGtkFixSensitivity(this);
 
     return true;
 }

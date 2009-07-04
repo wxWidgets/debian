@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Aug-2003
-// RCS-ID:      $Id: _evthandler.i 43595 2006-11-22 01:57:47Z RD $
+// RCS-ID:      $Id: _evthandler.i 58418 2009-01-26 02:35:38Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -66,10 +66,44 @@ public:
         }
 
         bool Disconnect(int id, int lastId = -1,
-                        wxEventType eventType = wxEVT_NULL) {
-            return self->Disconnect(id, lastId, eventType,
-                                   (wxObjectEventFunction)
-                                    &wxPyCallback::EventThunker);
+                        wxEventType eventType = wxEVT_NULL,
+                        PyObject* func = NULL ) {
+            if (func && func != Py_None) {
+                // Find the current matching binder that has this function
+                // pointer and dissconnect that one.  Unfortuneatly since we
+                // wrapped the PyObject function pointer in another object we
+                // have to do the searching ourselves...
+                wxList::compatibility_iterator node = self->GetDynamicEventTable()->GetFirst();
+                while (node)
+                {
+                    wxDynamicEventTableEntry *entry = (wxDynamicEventTableEntry*)node->GetData();
+                    if ((entry->m_id == id) &&
+                        ((entry->m_lastId == lastId) || (lastId == wxID_ANY)) &&
+                        ((entry->m_eventType == eventType) || (eventType == wxEVT_NULL)) &&
+                        ((entry->m_fn == (wxObjectEventFunction)&wxPyCallback::EventThunker)) &&
+                        (entry->m_callbackUserData != NULL))
+                    {
+                        wxPyCallback *cb = (wxPyCallback*)entry->m_callbackUserData;
+                        wxPyBlock_t blocked = wxPyBeginBlockThreads();
+                        int result = PyObject_Compare(cb->m_func, func);
+                        wxPyEndBlockThreads(blocked); 
+                        if (result == 0) {
+                            delete cb;
+                            self->GetDynamicEventTable()->Erase(node);
+                            delete entry;
+                            return true;
+                        }                        
+                    }
+                    node = node->GetNext();
+                }
+                return false;
+
+            }
+            else {
+                return self->Disconnect(id, lastId, eventType,
+                                        (wxObjectEventFunction)
+                                        &wxPyCallback::EventThunker);
+            }
         }
     }
 
@@ -119,20 +153,78 @@ public:
                 id  = source.GetId()
             event.Bind(self, id, id2, handler)              
 
-        def Unbind(self, event, source=None, id=wx.ID_ANY, id2=wx.ID_ANY):
+        def Unbind(self, event, source=None, id=wx.ID_ANY, id2=wx.ID_ANY, handler=None):
             """
-            Disconencts the event handler binding for event from self.
+            Disconnects the event handler binding for event from self.
             Returns True if successful.
             """
             if source is not None:
                 id  = source.GetId()
-            return event.Unbind(self, id, id2)              
+            return event.Unbind(self, id, id2, handler)              
     }
 
     %property(EvtHandlerEnabled, GetEvtHandlerEnabled, SetEvtHandlerEnabled, doc="See `GetEvtHandlerEnabled` and `SetEvtHandlerEnabled`");
     %property(NextHandler, GetNextHandler, SetNextHandler, doc="See `GetNextHandler` and `SetNextHandler`");
     %property(PreviousHandler, GetPreviousHandler, SetPreviousHandler, doc="See `GetPreviousHandler` and `SetPreviousHandler`");
     
+};
+
+//---------------------------------------------------------------------------
+// A class derived from wxEvtHandler that allows the ProcessEvent method to be
+// overridden in Python.
+
+%{ // The Python-aware C++ class
+class wxPyEvtHandler : public wxEvtHandler
+{
+    DECLARE_DYNAMIC_CLASS(wxPyEvtHandler)
+public:
+    wxPyEvtHandler() : wxEvtHandler() {}
+
+    virtual bool ProcessEvent(wxEvent& event)
+    {
+        bool found;
+        bool rval;
+        wxString className = event.GetClassInfo()->GetClassName();
+
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
+        if ((found = wxPyCBH_findCallback(m_myInst, "ProcessEvent"))) {
+            PyObject* arg = wxPyConstructObject((void*)&event, className);
+            rval = wxPyCBH_callCallback(m_myInst, Py_BuildValue("(O)",arg));
+            Py_DECREF(arg);
+        }
+        wxPyEndBlockThreads(blocked);        
+        if (! found)
+            rval = wxEvtHandler::ProcessEvent(event);
+        return rval;
+    }
+    
+    PYPRIVATE;
+};
+
+IMPLEMENT_DYNAMIC_CLASS(wxPyEvtHandler, wxEvtHandler)
+%}
+
+
+
+// Let SWIG see this class too
+DocStr(wxPyEvtHandler,
+"The wx.PyEvtHandler class can be used to intercept calls to the
+`ProcessEvent` method.  Simply derive a new class from this one,
+override ProcessEvent, and then push an instance of the class onto the
+event handler chain for a window using `wx.Window.PushEventHandler`.", "");
+class wxPyEvtHandler : public wxEvtHandler
+{
+public:
+    %pythonAppend wxPyEvtHandler   "self._setOORInfo(self);" setCallbackInfo(PyEvtHandler)
+    wxPyEvtHandler();
+
+    void _setCallbackInfo(PyObject* self, PyObject* _class);    
+    
+    DocDeclStr(
+        virtual bool , ProcessEvent(wxEvent& event),
+        "Override this method to intercept the events being sent to the window.
+The default implementation searches the event tables and calls event
+handler functions if matching event bindings are found.", "");
 };
 
 //---------------------------------------------------------------------------

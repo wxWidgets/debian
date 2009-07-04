@@ -13,10 +13,6 @@ logicList = [
     ('wx.INVERT', wx.INVERT),
     ('wx.NAND', wx.NAND),
 
-    # this one causes an assert on wxGTK, and doesn't seem to
-    # do much on MSW anyway, so I'll just take it out....
-    #('wxNOR', wxNOR),
-
     ('wx.NO_OP', wx.NO_OP),
     ('wx.OR', wx.OR),
     ('wx.OR_INVERT', wx.OR_INVERT),
@@ -30,6 +26,8 @@ if 'mac-cg' in wx.PlatformInfo:
     # that's all, folks!
     logicList = [
         ('wx.COPY', wx.COPY),
+        ('wx.INVERT', wx.INVERT),
+        ('wx.XOR', wx.XOR),
     ]    
 
 import images
@@ -40,13 +38,13 @@ class TestMaskWindow(wx.ScrolledWindow):
         self.SetBackgroundColour(wx.Colour(0,128,0))
 
         # A reference bitmap that we won't mask
-        self.bmp_nomask  = images.getTestStar2Bitmap()
+        self.bmp_nomask  = images.TestStar2.GetBitmap()
 
         # One that we will
-        self.bmp_withmask  = images.getTestStar2Bitmap()
+        self.bmp_withmask  = images.TestStar2.GetBitmap()
 
         # this mask comes from a monochrome bitmap
-        self.bmp_themask = images.getTestMaskBitmap()
+        self.bmp_themask = images.TestMask.GetBitmap()
         mask = wx.Mask(self.bmp_themask)
 
         # set the mask on our bitmap
@@ -54,7 +52,7 @@ class TestMaskWindow(wx.ScrolledWindow):
 
         # Now we'll create a mask in a bit of an easier way, by picking a
         # colour in the image that is to be the transparent colour.
-        self.bmp_withcolourmask  = images.getTestStar2Bitmap()
+        self.bmp_withcolourmask  = images.TestStar2.GetBitmap()
         mask = wx.Mask(self.bmp_withcolourmask, wx.WHITE)
         self.bmp_withcolourmask.SetMask(mask)
 

@@ -8,7 +8,7 @@
  *              Guillermo Rodriguez Garcia <guille@iies.es>
  * Purpose:     GSocket main Unix and OS/2 file
  * Licence:     The wxWindows licence
- * CVSID:       $Id: gsocket.cpp 49205 2007-10-17 21:52:02Z DE $
+ * CVSID:       $Id: gsocket.cpp 58386 2009-01-25 12:45:29Z VZ $
  * -------------------------------------------------------------------------
  */
 
@@ -1175,11 +1175,16 @@ int GSocket::Read(char *buffer, int size)
     else
       ret = Recv_Dgram(buffer, size);
 
-    /* If recv returned zero, then the connection has been gracefully closed.
-     * Otherwise, recv has returned an error (-1), in which case we have lost the
-     * socket only if errno does _not_ indicate that there may be more data to read.
+    /*
+     * If recv returned zero for a TCP socket (if m_stream == NULL, it's an UDP
+     * socket and empty datagrams are possible), then the connection has been
+     * gracefully closed.
+     *
+     * Otherwise, recv has returned an error (-1), in which case we have lost
+     * the socket only if errno does _not_ indicate that there may be more data
+     * to read.
      */
-    if (ret == 0)
+    if ((ret == 0) && m_stream)
     {
       /* Make sure wxSOCKET_LOST event gets sent and shut down the socket */
       m_detected = GSOCK_LOST_FLAG;
@@ -1760,9 +1765,17 @@ void GSocket::Detected_Read()
     }
     else if (num == 0)
     {
-      /* graceful shutdown */
-      CALL_CALLBACK(this, GSOCK_LOST);
-      Shutdown();
+      if (m_stream)
+      {
+        /* graceful shutdown */
+        CALL_CALLBACK(this, GSOCK_LOST);
+        Shutdown();
+      }
+      else
+      {
+        /* Empty datagram received */
+        CALL_CALLBACK(this, GSOCK_INPUT);
+      }
     }
     else
     {
@@ -2055,6 +2068,7 @@ GSocketError GAddress_INET_SetHostName(GAddress *address, const char *hostname)
     struct hostent h;
 #if defined(HAVE_FUNC_GETHOSTBYNAME_R_3)
     struct hostent_data buffer;
+    memset(&buffer, 0, sizeof(buffer));
 #else
     char buffer[1024];
 #endif
@@ -2112,6 +2126,7 @@ GSocketError GAddress_INET_SetPortName(GAddress *address, const char *port,
 
 #if defined(HAVE_FUNC_GETSERVBYNAME_R_4)
     struct servent_data buffer;
+    memset(&buffer, 0, sizeof(buffer));
 #else
   char buffer[1024];
 #endif
@@ -2170,6 +2185,7 @@ GSocketError GAddress_INET_GetHostName(GAddress *address, char *hostname, size_t
   struct hostent temphost;
 #if defined(HAVE_FUNC_GETHOSTBYNAME_R_3)
   struct hostent_data buffer;
+  memset(&buffer, 0, sizeof(buffer));
 #else
   char buffer[1024];
 #endif

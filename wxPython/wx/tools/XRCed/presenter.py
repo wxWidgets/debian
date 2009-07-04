@@ -2,7 +2,7 @@
 # Purpose:      Presenter part
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      07.06.2007
-# RCS-ID:       $Id: presenter.py 50188 2007-11-23 17:36:50Z ROL $
+# RCS-ID:       $Id: presenter.py 54812 2008-07-29 13:39:00Z ROL $
 
 import os,tempfile,shutil
 from xml.parsers import expat
@@ -20,7 +20,6 @@ class _Presenter:
         self.path = ''
         # Global modified state
         self.setModified(False) # sets applied
-        self.undoSaved = True   # set to false when some pending undo data
         view.frame.Clear()
         view.tree.Clear()
         view.tree.SetPyData(view.tree.root, Model.mainNode)
@@ -67,10 +66,10 @@ class _Presenter:
         try:
             tmpFile,tmpName = tempfile.mkstemp(prefix='xrced-')
             os.close(tmpFile)
-            TRACE('Saving temporaty file: %s', tmpName)
+            TRACE('Saving temporary file: %s', tmpName)
             self.saveXML(tmpName)
-            TRACE('moving to main: %s', path)
-            shutil.move(tmpName, path)
+            TRACE('copying to the main file: %s', path)
+            shutil.copy(tmpName, path)
             self.path = path
             self.setModified(False)
         except:
@@ -81,6 +80,7 @@ class _Presenter:
     def setModified(self, state=True, setDirty=True):
         '''Set global modified state.'''
         TRACE('setModified %s %s', state, setDirty)
+#        import pdb;pdb.set_trace()
         self.modified = state
         # Set applied flag
         if not state: self.applied = True
@@ -105,12 +105,14 @@ class _Presenter:
             self.setModified(setDirty=False)  # toggle global state
 
     def createUndoEdit(self, item=None, page=None):
+        TRACE('createUndoEdit')
         # Create initial undo object
         if item is None: item = self.item
         if page is None: page = view.panel.nb.GetSelection()
         view.panel.undo = undo.UndoEdit(item, page)
 
     def registerUndoEdit(self):
+        TRACE('registerUndoEdit')
         g.undoMan.RegisterUndo(view.panel.undo)
         view.panel.undo = None
 
@@ -131,8 +133,6 @@ class _Presenter:
             TRACE('setData: root node')
             self.container = None
             self.comp = Manager.rootComponent
-#            self.panels = []
-#            view.panel.Clear()
             self.panels = view.panel.SetData(self.container, self.comp, Model.mainNode)
         else:
             node = view.tree.GetPyData(item)
@@ -272,7 +272,7 @@ class _Presenter:
         # Update panel
         view.tree.SelectItem(item)
         self.setModified()
-        return item
+        return oldNode
 
     def subclass(self, item, subclass):
         node = view.tree.GetPyData(item)
@@ -345,7 +345,6 @@ class _Presenter:
             view.tree.SetItemImage(item, self.comp.getTreeImageId(node))
             view.tree.SetItemText(item, self.comp.getTreeText(node))
         self.setApplied()
-        self.undoSaved = False
         # Set dirty flag
         if view.testWin.IsShown():
             view.testWin.isDirty = True
@@ -358,8 +357,18 @@ class _Presenter:
         view.tree.UnselectAll()
         self.setData(view.tree.root)
 
+    def flushSubtree(self, item=None, node=None):
+        # Remember test item index
+        TRACE('flushSubtree')
+        if view.testWin.item is not None:
+            itemIndex = view.tree.ItemFullIndex(view.testWin.item)
+        view.tree.FlushSubtree(item, node)
+        if view.testWin.item is not None:
+            view.testWin.item = view.tree.ItemAtFullIndex(itemIndex)
+
     def delete(self, item):
-        '''Delete selected object(s).'''
+        '''Delete selected object(s). Return removed XML node.'''
+        TRACE('delete')
         parentItem = view.tree.GetItemParent(item)
         parentNode = view.tree.GetPyData(parentItem)
         node = view.tree.GetPyData(item)
@@ -368,10 +377,10 @@ class _Presenter:
         # If deleting the top-level object, remove view
         if view.testWin.IsShown() and view.testWin.item == item:
             view.testWin.Destroy()
-        self.applied = True     # prevent updating nonexisting item
         self.setApplied()
         self.unselect()
         self.setModified()
+        return node
 
     def deleteMany(self, items):
         '''Delete selected object(s).'''
@@ -383,14 +392,13 @@ class _Presenter:
             node = self.container.removeChild(parentNode, node)
             node.unlink()       # delete completely
             view.tree.Delete(item)
-        self.applied = True     # prevent updating unexisting item
         self.setApplied()
         self.unselect()
         self.setModified()
 
     def cut(self):
         self.copy()
-        self.delete(view.tree.GetSelection())
+        return self.delete(view.tree.GetSelection())
 
     def copy(self):
         # Update values from panel first
@@ -469,6 +477,7 @@ class _Presenter:
         for n in filter(is_object, node.childNodes):
             view.tree.AddNode(item, comp.getTreeNode(n))
         self.setModified()
+        return item
 
     def moveUp(self):
         parentItem = view.tree.GetItemParent(self.item)
@@ -481,7 +490,7 @@ class _Presenter:
         parent.removeChild(node)
         parent.insertBefore(node, prevNode)
         index = view.tree.ItemFullIndex(self.item)
-        view.tree.FlushSubtree(parentItem, parent)
+        self.flushSubtree(parentItem, parent)
         index[-1] -= 1
         self.item = view.tree.ItemAtFullIndex(index)
         self.setModified()
@@ -501,7 +510,7 @@ class _Presenter:
         parent.removeChild(node)
         parent.insertBefore(node, nextNode)
         index = view.tree.ItemFullIndex(self.item)
-        view.tree.FlushSubtree(parentItem, parent)
+        self.flushSubtree(parentItem, parent)
         index[-1] += 1
         self.item = view.tree.ItemAtFullIndex(index)
         self.setModified()
@@ -530,7 +539,7 @@ class _Presenter:
         else:
             grandParentComp.appendChild(grandParent, node)
         index = view.tree.ItemFullIndex(self.item)
-        view.tree.FlushSubtree(grandParentItem, grandParent)
+        self.flushSubtree(grandParentItem, grandParent)
         index.pop()
         index[-1] += 1
         self.item = view.tree.ItemAtFullIndex(index)
@@ -552,7 +561,7 @@ class _Presenter:
         newParentComp.appendChild(newParent, node)
         index = view.tree.ItemFullIndex(self.item)
         n = view.tree.GetChildrenCount(view.tree.GetPrevSibling(self.item))
-        view.tree.FlushSubtree(parentItem, parent)
+        self.flushSubtree(parentItem, parent)
         index[-1] -= 1
         index.append(n)
         self.item = view.tree.ItemAtFullIndex(index)
@@ -579,10 +588,12 @@ class _Presenter:
         elem.setAttribute('name', STD_NAME)
         Model.setTestElem(elem)
         Model.saveTestMemoryFile()
-        xmlFlags = xrc.XRC_NO_SUBCLASSING
+        xmlFlags = 0
+        if not g.conf.useSubclassing:
+            xmlFlags |= xrc.XRC_NO_SUBCLASSING
         # Use translations if encoding is not specified
         if not Model.dom.encoding:
-            xmlFlags != xrc.XRC_USE_LOCALE
+            xmlFlags |= xrc.XRC_USE_LOCALE
         res = xrc.EmptyXmlResource(xmlFlags)
         xrc.XmlResource.Set(res)        # set as global
         # Init other handlers
@@ -594,13 +605,16 @@ class _Presenter:
         try:
             try:
                 frame, object = comp.makeTestWin(res, name)
-                if not object: return None
+                if not object:  # skip the rest
+                    raise EOFError
                 # Reset previous tree item and locate tool
                 if testWin.item:
                     view.tree.SetItemBold(testWin.item, False)
                 testWin.SetView(frame, object, item)
                 testWin.Show()
                 view.tree.SetItemBold(item, True)
+            except EOFError:
+                pass
             except NotImplementedError:
                 wx.LogError('Test window not implemented for %s' % node.getAttribute('class'))
             except:
@@ -612,7 +626,6 @@ class _Presenter:
             res.Unload(TEST_FILE)
             xrc.XmlResource.Set(None)
             wx.MemoryFSHandler.RemoveFile(TEST_FILE)
-        return object
 
     def closeTestWin(self):
         TRACE('closeTestWin')
@@ -625,14 +638,14 @@ class _Presenter:
 
     def refreshTestWin(self):
         '''Refresh test window after some change.'''
+        TRACE('refreshTestWin')
         if not view.testWin.IsDirty(): return
         if not self.applied:
             self.update(self.item)
-        TRACE('refreshTestWin')
         # Dumb refresh
         self.createTestWin(view.testWin.item)
         self.highlight(self.item)
-        if view.frame.miniFrame:
+        if view.frame.miniFrame and view.frame.miniFrame.IsShown():
             view.frame.miniFrame.Raise()
         else:
             view.frame.Raise()
@@ -657,12 +670,10 @@ class _Presenter:
 
     def generatePython(self, dataFile, pypath, embed, genGettext):
         try:
-            try:
-                import pywxrc               # !!! only for testing new pywxrc
-            except ImportError:
-                import wx.tools.pywxrc as pywxrc
+            from wx.tools import pywxrc
             rescomp = pywxrc.XmlResourceCompiler()
-            rescomp.MakePythonModule([dataFile], pypath, embed, genGettext)
+            rescomp.MakePythonModule([dataFile], pypath, embed, genGettext, 
+                                     assignVariables=False)
         except:
             logger.exception('error generating python code')
             wx.LogError('Error generating python code : %s' % pypath)

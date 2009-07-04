@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: notebook.cpp 41738 2006-10-08 17:37:23Z VZ $
+// RCS-ID:      $Id: notebook.cpp 50855 2007-12-20 10:51:33Z JS $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ WX_DEFINE_LIST( wxNotebookPageInfoList )
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED)
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING)
 
-BEGIN_EVENT_TABLE(wxNotebook, wxControl)
+BEGIN_EVENT_TABLE(wxNotebook, wxBookCtrlBase)
     EVT_NOTEBOOK_PAGE_CHANGED(wxID_ANY, wxNotebook::OnSelChange)
 
     EVT_SIZE(wxNotebook::OnSize)
@@ -87,7 +87,7 @@ wxBEGIN_FLAGS( wxNotebookStyle )
 
 wxEND_FLAGS( wxNotebookStyle )
 
-IMPLEMENT_DYNAMIC_CLASS_XTI(wxNotebook, wxControl,"wx/notebook.h")
+IMPLEMENT_DYNAMIC_CLASS_XTI(wxNotebook, wxBookCtrlBase,"wx/notebook.h")
 IMPLEMENT_DYNAMIC_CLASS_XTI(wxNotebookPageInfo, wxObject , "wx/notebook.h" )
 
 wxCOLLECTION_TYPE_INFO( wxNotebookPageInfo * , wxNotebookPageInfoList ) ;
@@ -124,7 +124,7 @@ wxEND_HANDLERS_TABLE()
 wxCONSTRUCTOR_4( wxNotebookPageInfo , wxNotebookPage* , Page , wxString , Text , bool , Selected , int , ImageId )
 
 #else
-IMPLEMENT_DYNAMIC_CLASS(wxNotebook, wxControl)
+IMPLEMENT_DYNAMIC_CLASS(wxNotebook, wxBookCtrlBase)
 IMPLEMENT_DYNAMIC_CLASS(wxNotebookPageInfo, wxObject )
 #endif
 IMPLEMENT_DYNAMIC_CLASS(wxNotebookEvent, wxNotifyEvent)

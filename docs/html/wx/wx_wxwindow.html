@@ -291,6 +291,7 @@ even if the mode set by <A HREF="wx_wxupdateuievent.html#wxupdateuieventsetmode"
 <A HREF="#wxwindowcentreonscreen">wxWindow::CentreOnScreen</A><BR>
 <A HREF="#wxwindowclearbackground">wxWindow::ClearBackground</A><BR>
 <A HREF="#wxwindowclienttoscreen">wxWindow::ClientToScreen</A><BR>
+<A HREF="#wxwindowclienttowindowsize">wxWindow::ClientToWindowSize</A><BR>
 <A HREF="#wxwindowclose">wxWindow::Close</A><BR>
 <A HREF="#wxwindowconvertdialogtopixels">wxWindow::ConvertDialogToPixels</A><BR>
 <A HREF="#wxwindowconvertpixelstodialog">wxWindow::ConvertPixelsToDialog</A><BR>
@@ -459,6 +460,7 @@ even if the mode set by <A HREF="wx_wxupdateuievent.html#wxupdateuieventsetmode"
 <A HREF="#wxwindowupdatewindowui">wxWindow::UpdateWindowUI</A><BR>
 <A HREF="#wxwindowvalidate">wxWindow::Validate</A><BR>
 <A HREF="#wxwindowwarppointer">wxWindow::WarpPointer</A><BR>
+<A HREF="#wxwindowwindowtoclientsize">wxWindow::WindowToClientSize</A><BR>
 <P>
 
 <HR>
@@ -701,6 +703,22 @@ Returns a 2-tuple, (x, y)
 </UL></UL>
 
 <P>
+
+<HR>
+<A NAME="wxwindowclienttowindowsize"></A>
+<H3>wxWindow::ClientToWindowSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>ClientToWindowSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>)<P>
+Converts client area size <I>size</I> to corresponding window size. In other
+words, the returned value is what would <A HREF="wx_wxwindow.html#wxwindowgetsize">GetSize</A>
+return if this window had client area of given size.
+Components with wxDefaultCoord value are left unchanged.<P>
+Note that the conversion is not always exact, it assumes that non-client area
+doesn't change and so doesn't take into account things like menu bar
+(un)wrapping or (dis)appearance of the scrollbars.<P>
+This function is new since wxWidgets version 2.8.8<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindowwindowtoclientsize">wxWindow::WindowToClientSize</A><P>
 
 
 <HR>
@@ -950,7 +968,9 @@ If <TT>true</TT>, the window is eligible for drop file events. If <TT>false</TT>
 will not accept drop file events.</UL></UL>
 <P>
 <B><FONT COLOR="#FF0000">Remarks</FONT></B><P>
-Windows only.<P>
+Windows only until version 2.8.9, available on all platforms since 2.8.10.
+Cannot be used together with <A HREF="wx_wxwindow.html#wxwindowsetdroptarget">SetDropTarget</A> on
+non-Windows platforms.<P>
 
 
 <HR>
@@ -2396,7 +2416,7 @@ default value is <TT>false</TT>.</UL></UL>
 Pops up the given menu at the specified coordinates, relative to this
 window, and returns control when the user has dismissed the menu. If a
 menu item is selected, the corresponding menu event is generated and will be
-processed as usually. If the coordinates are not specified, current mouse
+processed as usually. If the coordinates are not specified, the current mouse
 cursor position is used.<P>
 <B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
 <I>menu</I><UL><UL>
@@ -3827,5 +3847,21 @@ The new x position for the cursor.</UL></UL>
 <I>y</I><UL><UL>
 The new y position for the cursor.</UL></UL>
 <P>
+
+<HR>
+<A NAME="wxwindowwindowtoclientsize"></A>
+<H3>wxWindow::WindowToClientSize</H3>
+<P>
+<B>virtual <A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>WindowToClientSize</B>(<B>const <A HREF="wx_wxsize.html#wxsize">wxSize</A>&</B></B><I> size</I>)<P>
+Converts window size <I>size</I> to corresponding client area size. In other
+words, the returned value is what would
+<A HREF="wx_wxwindow.html#wxwindowgetclientsize">GetClientSize</A> return if this window had
+given window size. Components with wxDefaultCoord value are left unchanged. <P>
+Note that the conversion is not always exact, it assumes that non-client area
+doesn't change and so doesn't take into account things like menu bar
+(un)wrapping or (dis)appearance of the scrollbars.<P>
+This function is new since wxWidgets version 2.8.8<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxwindow.html#wxwindowclienttowindowsize">wxWindow::ClientToWindowSize</A>
 
 </FONT></BODY></HTML>

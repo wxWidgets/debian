@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: window.h 49296 2007-10-21 18:03:35Z SC $
+// RCS-ID:      $Id: window.h 57850 2009-01-06 09:38:39Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -74,6 +74,7 @@ public:
     virtual bool SetFont( const wxFont &font );
     virtual bool SetBackgroundColour( const wxColour &colour );
     virtual bool SetForegroundColour( const wxColour &colour );
+    virtual wxVisualAttributes GetDefaultAttributes() const;
 
     virtual int GetCharHeight() const;
     virtual int GetCharWidth() const;

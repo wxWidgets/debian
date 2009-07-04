@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.2000
-// RCS-ID:      $Id: filename.cpp 44813 2007-03-15 00:21:59Z VZ $
+// RCS-ID:      $Id: filename.cpp 60030 2009-04-05 12:54:37Z VZ $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -158,7 +158,7 @@ public:
         Write
     };
 
-    wxFileHandle(const wxString& filename, OpenMode mode)
+    wxFileHandle(const wxString& filename, OpenMode mode, int flags = 0)
     {
         m_hFile = ::CreateFile
                     (
@@ -169,7 +169,7 @@ public:
                      FILE_SHARE_WRITE,              // (allow everything)
                      NULL,                          // no secutity attr
                      OPEN_EXISTING,                 // creation disposition
-                     0,                             // no flags
+                     flags,                         // flags
                      NULL                           // no template file
                     );
 
@@ -1261,11 +1261,6 @@ bool wxFileName::Normalize(int flags,
             }
         }
 
-        if ( (flags & wxPATH_NORM_CASE) && !IsCaseSensitive(format) )
-        {
-            dir.MakeLower();
-        }
-
         m_dirs.Add(dir);
     }
 
@@ -1275,25 +1270,11 @@ bool wxFileName::Normalize(int flags,
         wxString filename;
         if (GetShortcutTarget(GetFullPath(format), filename))
         {
-            // Repeat this since we may now have a new path
-            if ( (flags & wxPATH_NORM_CASE) && !IsCaseSensitive(format) )
-            {
-                filename.MakeLower();
-            }
             m_relative = false;
             Assign(filename);
         }
     }
 #endif
-
-    if ( (flags & wxPATH_NORM_CASE) && !IsCaseSensitive(format) )
-    {
-        // VZ: expand env vars here too?
-
-        m_volume.MakeLower();
-        m_name.MakeLower();
-        m_ext.MakeLower();
-    }
 
 #if defined(__WIN32__)
     if ( (flags & wxPATH_NORM_LONG) && (format == wxPATH_DOS) )
@@ -1301,6 +1282,22 @@ bool wxFileName::Normalize(int flags,
         Assign(GetLongPath());
     }
 #endif // Win32
+
+    // Change case  (this should be kept at the end of the function, to ensure
+    // that the path doesn't change any more after we normalize its case)
+    if ( (flags & wxPATH_NORM_CASE) && !IsCaseSensitive(format) )
+    {
+        m_volume.MakeLower();
+        m_name.MakeLower();
+        m_ext.MakeLower();
+
+        // directory entries must be made lower case as well
+        count = m_dirs.GetCount();
+        for ( size_t i = 0; i < count; i++ )
+        {
+            m_dirs[i].MakeLower();
+        }
+    }
 
     return true;
 }
@@ -1825,7 +1822,7 @@ wxString wxFileName::GetLongPath() const
 
 #if defined(__WIN32__) && !defined(__WXWINCE__) && !defined(__WXMICROWIN__)
 
-#if wxUSE_DYNAMIC_LOADER
+#if wxUSE_DYNLIB_CLASS
     typedef DWORD (WINAPI *GET_LONG_PATH_NAME)(const wxChar *, wxChar *, DWORD);
 
     // this is MT-safe as in the worst case we're going to resolve the function
@@ -1876,7 +1873,7 @@ wxString wxFileName::GetLongPath() const
             }
         }
     }
-#endif // wxUSE_DYNAMIC_LOADER
+#endif // wxUSE_DYNLIB_CLASS
 
     // The OS didn't support GetLongPathName, or some other error.
     // We need to call FindFirstFile on each component in turn.
@@ -2142,6 +2139,14 @@ void wxFileName::SplitPath(const wxString& fullpath,
     }
 }
 
+/* static */
+wxString wxFileName::StripExtension(const wxString& fullpath)
+{
+    wxFileName fn(fullpath);
+    fn.SetExt(_T(""));
+    return fn.GetFullPath();
+}
+
 // ----------------------------------------------------------------------------
 // time functions
 // ----------------------------------------------------------------------------
@@ -2153,32 +2158,43 @@ bool wxFileName::SetTimes(const wxDateTime *dtAccess,
                           const wxDateTime *dtCreate)
 {
 #if defined(__WIN32__)
+    FILETIME ftAccess, ftCreate, ftWrite;
+
+    if ( dtCreate )
+        ConvertWxToFileTime(&ftCreate, *dtCreate);
+    if ( dtAccess )
+        ConvertWxToFileTime(&ftAccess, *dtAccess);
+    if ( dtMod )
+        ConvertWxToFileTime(&ftWrite, *dtMod);
+
+    wxString path;
+    int flags;
     if ( IsDir() )
     {
-        // VZ: please let me know how to do this if you can
-        wxFAIL_MSG( _T("SetTimes() not implemented for the directories") );
+        if ( wxGetOsVersion() == wxOS_WINDOWS_9X )
+        {
+            wxLogError(_("Setting directory access times is not supported under this OS version"));
+            return false;
+        }
+
+        path = GetPath();
+        flags = FILE_FLAG_BACKUP_SEMANTICS;
     }
     else // file
     {
-        wxFileHandle fh(GetFullPath(), wxFileHandle::Write);
-        if ( fh.IsOk() )
+        path = GetFullPath();
+        flags = 0;
+    }
+
+    wxFileHandle fh(path, wxFileHandle::Write, flags);
+    if ( fh.IsOk() )
+    {
+        if ( ::SetFileTime(fh,
+                           dtCreate ? &ftCreate : NULL,
+                           dtAccess ? &ftAccess : NULL,
+                           dtMod ? &ftWrite : NULL) )
         {
-            FILETIME ftAccess, ftCreate, ftWrite;
-
-            if ( dtCreate )
-                ConvertWxToFileTime(&ftCreate, *dtCreate);
-            if ( dtAccess )
-                ConvertWxToFileTime(&ftAccess, *dtAccess);
-            if ( dtMod )
-                ConvertWxToFileTime(&ftWrite, *dtMod);
-
-            if ( ::SetFileTime(fh,
-                               dtCreate ? &ftCreate : NULL,
-                               dtAccess ? &ftAccess : NULL,
-                               dtMod ? &ftWrite : NULL) )
-            {
-                return true;
-            }
+            return true;
         }
     }
 #elif defined(__UNIX_LIKE__) || (defined(__DOS__) && defined(__WATCOMC__))
@@ -2230,6 +2246,15 @@ bool wxFileName::Touch()
 #endif // platforms
 }
 
+#ifdef wxNEED_WX_UNISTD_H
+
+static int wxStat( const char *file_name, wxStructStat *buf )
+{
+    return stat( file_name , buf );
+}
+
+#endif
+
 bool wxFileName::GetTimes(wxDateTime *dtAccess,
                           wxDateTime *dtMod,
                           wxDateTime *dtCreate) const
@@ -2241,7 +2266,7 @@ bool wxFileName::GetTimes(wxDateTime *dtAccess,
     // not 9x
     bool ok;
     FILETIME ftAccess, ftCreate, ftWrite;
-    if ( IsDir() ) 
+    if ( IsDir() )
     {
         // implemented in msw/dir.cpp
         extern bool wxGetDirectoryTimes(const wxString& dirname,
@@ -2282,7 +2307,7 @@ bool wxFileName::GetTimes(wxDateTime *dtAccess,
 #elif defined(__UNIX_LIKE__) || defined(__WXMAC__) || defined(__OS2__) || (defined(__DOS__) && defined(__WATCOMC__))
     // no need to test for IsDir() here
     wxStructStat stBuf;
-    if ( wxStat( GetFullPath().c_str(), &stBuf) == 0 )
+    if ( wxStat( GetFullPath().fn_str(), &stBuf) == 0 )
     {
         if ( dtAccess )
             dtAccess->Set(stBuf.st_atime);

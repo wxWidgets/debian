@@ -4,7 +4,7 @@
 //              GtkFixed. It makes use of the gravity window property and
 //              therefore does not work with GTK 1.0.
 // Author:      Robert Roebling
-// Id:          $Id: win_gtk.c 49433 2007-10-25 16:12:45Z PC $
+// Id:          $Id: win_gtk.c 57904 2009-01-08 12:30:10Z RR $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////// */
@@ -682,21 +682,42 @@ gtk_pizza_allocate_child (GtkPizza      *pizza,
     gtk_widget_size_allocate (child->widget, &allocation);
 }
 
+typedef struct {
+    GdkWindow* window;
+    int dx, dy;
+} AdjustData;
+
+// Adjust allocations for all widgets using the GdkWindow which was just scrolled
+static void scroll_adjust(GtkWidget* widget, void* data)
+{
+    const AdjustData* p = data;
+    widget->allocation.x += p->dx;
+    widget->allocation.y += p->dy;
+    
+    if (widget->window == p->window)
+    {
+        // GtkFrame requires a queue_resize, otherwise parts of
+        // the frame newly exposed by the scroll are not drawn.
+        // To be safe, do it for all widgets.
+        gtk_widget_queue_resize(widget);
+        if (GTK_IS_CONTAINER(widget))
+            gtk_container_forall(GTK_CONTAINER(widget), scroll_adjust, data);
+    }
+}
+
 void
 gtk_pizza_scroll (GtkPizza *pizza, gint dx, gint dy)
 {
-    GList *tmp_list;
-    
     pizza->m_xoffset += dx;
     pizza->m_yoffset += dy;
 
     if (pizza->bin_window)
-        gdk_window_scroll( pizza->bin_window, -dx, -dy );
-
-    for (tmp_list = pizza->children; tmp_list; tmp_list = tmp_list->next)
     {
-        GtkPizzaChild *child = tmp_list->data;
-        gtk_widget_queue_resize(child->widget);
+        AdjustData data = { pizza->bin_window, -dx, -dy };
+        gdk_window_scroll( pizza->bin_window, -dx, -dy );
+        // Adjust child allocations. Doing a queue_resize on the children is not
+        // enough, sometimes they redraw in the wrong place during fast scrolling.
+        gtk_container_forall(GTK_CONTAINER(pizza), scroll_adjust, &data);
     }
 }
 

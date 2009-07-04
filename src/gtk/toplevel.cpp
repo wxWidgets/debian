@@ -2,7 +2,7 @@
 // Name:        src/gtk/toplevel.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: toplevel.cpp 49971 2007-11-15 16:27:43Z MR $
+// Id:          $Id: toplevel.cpp 56986 2008-11-27 23:00:04Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -354,6 +354,13 @@ gtk_frame_map_callback( GtkWidget * WXUNUSED(widget),
                         wxTopLevelWindow *win )
 {
     win->SetIconizeState(false);
+    // it is possible for m_isShown to be false here, see bug #9909
+    if (win->wxWindowBase::Show(true))
+    {
+        wxShowEvent eventShow(win->GetId(), true);
+        eventShow.SetEventObject(win);
+        win->GetEventHandler()->ProcessEvent(eventShow);
+    }
     return false;
 }
 }
@@ -1244,6 +1251,12 @@ void wxTopLevelWindowGTK::SetIcons( const wxIconBundle &icons )
     wxASSERT_MSG( (m_widget != NULL), wxT("invalid frame") );
 
     wxTopLevelWindowBase::SetIcons( icons );
+
+    // Setting icons before window is realized can cause a GTK assertion if
+    // another TLW is realized before this one, and it has this one as it's
+    // transient parent. The life demo exibits this problem.
+    if (!GTK_WIDGET_REALIZED(m_widget))
+        return;
 
     GList *list = NULL;
     size_t max = icons.m_icons.GetCount();

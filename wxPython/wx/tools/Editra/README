@@ -14,7 +14,7 @@ It has been tested on the following systems, but it should run on any system
 that supports python and wxpython.
 
 Linux:
-Tested on Gentoo, Suse, and Unbuntu
+Tested on Gentoo, Suse, and Ubuntu
 Recieves testing when ever my vm doesn't eat my install
 
 Macintosh OS X:
@@ -29,7 +29,7 @@ libraries installed.
 
 Required for all systems:
 Python 2.4 and higher ( http://python.org )
-wxPython 2.8 ( http://wxpython.org )
+wxPython 2.8 ( http://wxpython.org ) (Unicode version suggested)
 setuptools 0.6 or higher (http://peak.telecommunity.com/DevCenter/setuptools)
 #----------------------------------------------------------------------------#
 

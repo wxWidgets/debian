@@ -11,13 +11,13 @@ import _bitmaps as bitmaps
 TRACE('*** creating control components')
 
 # Set panel images
-component.Manager.panelImages['Controls'] = images.getToolPanel_ControlsImage()
+component.Manager.panelImages['Controls'] = images.ToolPanel_Controls.GetImage()
 
 ### wxStaticText
 
 c = component.Component('wxStaticText', ['control','tool'],
-              ['pos', 'size', 'label'], defaults={'label': 'LABEL'},
-              image=images.getTreeStaticTextImage())
+              ['pos', 'size', 'label', 'wrap'], defaults={'label': 'LABEL'},
+              image=images.TreeStaticText.GetImage())
 c.addStyles('wxALIGN_LEFT', 'wxALIGN_RIGHT', 'wxALIGN_CENTRE', 'wxST_NO_AUTORESIZE')
 component.Manager.register(c)
 component.Manager.setMenu(c, 'control', 'label', 'wxStaticText', 10)
@@ -26,7 +26,7 @@ component.Manager.setTool(c, 'Controls', pos=(0,0))
 ### wxStaticLine
 
 c = component.Component('wxStaticLine', ['control','tool'],
-              ['pos', 'size'], image=images.getTreeStaticLineImage())
+              ['pos', 'size'], image=images.TreeStaticLine.GetImage())
 c.addStyles('wxLI_HORIZONTAL', 'wxLI_VERTICAL')
 component.Manager.register(c)
 component.Manager.setMenu(c, 'control', 'line', 'wxStaticLine', 20)
@@ -36,7 +36,7 @@ component.Manager.setTool(c, 'Controls', pos=(0,3))
 
 c = component.Component('wxStaticBitmap', ['control','tool'],
               ['pos', 'size', 'bitmap'],
-              image=images.getTreeStaticBitmapImage())
+              image=images.TreeStaticBitmap.GetImage())
 c.setSpecial('bitmap', attribute.BitmapAttribute)
 component.Manager.register(c)
 component.Manager.setMenu(c, 'control', 'bitmap', 'wxStaticLine', 30)
@@ -46,7 +46,7 @@ component.Manager.setTool(c, 'Controls', pos=(1,0))
 
 c = component.Component('wxTextCtrl', ['control','tool'],
               ['pos', 'size', 'value'],
-              image=images.getTreeTextCtrlImage())
+              image=images.TreeTextCtrl.GetImage())
 c.addStyles('wxTE_NO_VSCROLL',
             'wxTE_AUTO_SCROLL',
             'wxTE_PROCESS_ENTER',
@@ -64,6 +64,7 @@ c.addStyles('wxTE_NO_VSCROLL',
             'wxTE_RIGHT',
             'wxTE_DONTWRAP',
             'wxTE_LINEWRAP',
+            'wxTE_CHARWRAP',
             'wxTE_WORDWRAP')
 c.setParamClass('value', params.ParamMultilineText)
 c.addEvents('EVT_TEXT', 'EVT_TEXT_ENTER', 'EVT_TEXT_URL', 'EVT_TEXT_MAXLEN')
@@ -75,7 +76,7 @@ component.Manager.setTool(c, 'Controls', pos=(0,2))
 
 c = component.Component('wxChoice', ['control','tool'],
               ['pos', 'size', 'content', 'selection'],
-              image=images.getTreeChoiceImage())
+              image=images.TreeChoice.GetImage())
 c.addStyles('wxCB_SORT')
 c.setSpecial('content', attribute.ContentAttribute)
 c.addEvents('EVT_CHOICE')
@@ -89,7 +90,7 @@ c = component.Component('wxSlider', ['control','tool'],
               ['pos', 'size', 'value', 'min', 'max', 
                'tickfreq', 'pagesize', 'linesize', 'thumb', 'tick',
                'selmin', 'selmax'],
-              image=images.getTreeSliderImage())
+              image=images.TreeSlider.GetImage())
 c.addStyles('wxSL_HORIZONTAL', 'wxSL_VERTICAL', 'wxSL_AUTOTICKS', 'wxSL_LABELS',
             'wxSL_LEFT', 'wxSL_RIGHT', 'wxSL_TOP', 'wxSL_BOTTOM',
             'wxSL_BOTH', 'wxSL_SELRANGE', 'wxSL_INVERSE')
@@ -117,7 +118,7 @@ component.Manager.setTool(c, 'Controls', pos=(2,3))
 
 c = component.Component('wxGauge', ['control','tool'],
               ['pos', 'size', 'range', 'value', 'shadow', 'bezel'],
-              image=images.getTreeGaugeImage())
+              image=images.TreeGauge.GetImage())
 c.addStyles('wxGA_HORIZONTAL', 'wxGA_VERTICAL', 'wxGA_PROGRESSBAR', 'wxGA_SMOOTH')
 c.setParamClass('range', params.ParamIntNN)
 c.setParamClass('value', params.ParamIntNN)
@@ -131,7 +132,7 @@ component.Manager.setTool(c, 'Controls', pos=(1,3))
 
 c = component.Component('wxSpinCtrl', ['control','tool'],
               ['pos', 'size', 'value', 'min', 'max'],
-              image=images.getTreeSpinCtrlImage())
+              image=images.TreeSpinCtrl.GetImage())
 c.addStyles('wxSP_HORIZONTAL', 'wxSP_VERTICAL', 'wxSP_ARROW_KEYS', 'wxSP_WRAP')
 c.setParamClass('value', params.ParamInt)
 c.addEvents('EVT_SPINCTRL')
@@ -143,7 +144,7 @@ component.Manager.setTool(c, 'Controls', pos=(1,2))
 
 c = component.Component('wxScrollBar', ['control'],
               ['pos', 'size', 'value', 'thumbsize', 'range', 'pagesize'],
-              image=images.getTreeScrollBarImage())
+              image=images.TreeScrollBar.GetImage())
 c.addStyles('wxSB_HORIZONTAL', 'wxSB_VERTICAL')
 c.setParamClass('range', params.ParamIntNN)
 c.setParamClass('value', params.ParamIntNN)
@@ -164,7 +165,7 @@ component.Manager.setTool(c, 'Controls', pos=(3,3))
 ### wxListCtrl
 
 c = component.Component('wxListCtrl', ['control','tool'], ['pos', 'size'],
-                        image=images.getTreeListCtrlImage())
+                        image=images.TreeListCtrl.GetImage())
 c.addStyles('wxLC_LIST', 'wxLC_REPORT', 'wxLC_ICON', 'wxLC_SMALL_ICON',
             'wxLC_ALIGN_TOP', 'wxLC_ALIGN_LEFT', 'wxLC_AUTOARRANGE',
             'wxLC_USER_TEXT', 'wxLC_EDIT_LABELS', 'wxLC_NO_HEADER',
@@ -197,7 +198,7 @@ component.Manager.setTool(c, 'Panels', pos=(0,1))
 ### wxTreeCtrl
 
 c = component.Component('wxTreeCtrl', ['control','tool'], ['pos', 'size'],
-                        image=images.getTreeTreeCtrlImage())
+                        image=images.TreeTreeCtrl.GetImage())
 c.addStyles('wxTR_EDIT_LABELS',
             'wxTR_NO_BUTTONS',
             'wxTR_HAS_BUTTONS',
@@ -332,7 +333,7 @@ component.Manager.setTool(c, 'Controls', pos=(3,0))
 
 c = component.Component('wxButton', ['control', 'tool', 'stdbtn'],
                         ['pos', 'size', 'label', 'default'],
-                        image=images.getTreeButtonImage())
+                        image=images.TreeButton.GetImage())
 c.addStyles('wxBU_LEFT', 'wxBU_TOP', 'wxBU_RIGHT', 'wxBU_BOTTOM', 'wxBU_EXACTFIT',
             'wxNO_BORDER')
 c.setParamClass('default', params.ParamBool)
@@ -344,10 +345,21 @@ component.Manager.setTool(c, 'Controls', pos=(0,1))
 ### wxBitmapButton
 
 c = component.Component('wxBitmapButton', ['control', 'tool'],
-              ['pos', 'size', 'bitmap', 'selected', 'focus', 'disabled', 'default'],
-              image=images.getTreeBitmapButtonImage())
-c.addStyles('wxBU_AUTODRAW', 'wxBU_LEFT', 'wxBU_RIGHT', 'wxBU_TOP', 'wxBU_BOTTOM')
+              ['pos', 'size', 'default', 
+               'bitmap', 'selected', 'focus', 'disabled', 'hover'],
+              image=images.TreeBitmapButton.GetImage())
+c.addStyles('wxBU_AUTODRAW', 'wxBU_LEFT', 'wxBU_RIGHT', 'wxBU_TOP', 'wxBU_BOTTOM',
+            'wxBU_EXACTFIT')
+c.setParamClass('default', params.ParamBool)
 c.setSpecial('bitmap',  attribute.BitmapAttribute)
+c.setSpecial('selected',  attribute.BitmapAttribute)
+c.setParamClass('selected', params.ParamBitmap)
+c.setSpecial('focus',  attribute.BitmapAttribute)
+c.setParamClass('focus', params.ParamBitmap)
+c.setSpecial('disabled',  attribute.BitmapAttribute)
+c.setParamClass('disabled', params.ParamBitmap)
+c.setSpecial('hover',  attribute.BitmapAttribute)
+c.setParamClass('hover', params.ParamBitmap)
 c.addEvents('EVT_BUTTON')
 component.Manager.register(c)
 component.Manager.setMenu(c, 'button', 'bitmap button', 'wxBitmapButton', 20)
@@ -355,9 +367,11 @@ component.Manager.setTool(c, 'Controls', pos=(1,1))
 
 ### wxRadioButton
 
-c = component.Component('wxRadioButton', ['control', 'tool'], ['pos', 'size', 'label', 'value'],
-                        image=images.getTreeRadioButtonImage())
+c = component.Component('wxRadioButton', ['control', 'tool'], 
+                        ['pos', 'size', 'label', 'value'],
+                        image=images.TreeRadioButton.GetImage())
 c.addStyles('wxRB_GROUP', 'wxRB_SINGLE')
+c.setParamClass('value', params.ParamBool)
 c.addEvents('EVT_RADIOBUTTON')
 component.Manager.register(c)
 component.Manager.setMenu(c, 'button', 'radio button', 'wxRadioButton', 30)
@@ -367,7 +381,7 @@ component.Manager.setTool(c, 'Controls', pos=(3,1))
 
 c = component.Component('wxSpinButton', ['control', 'tool'],
               ['pos', 'size', 'value', 'min', 'max'],
-              image=images.getTreeSpinButtonImage())
+              image=images.TreeSpinButton.GetImage())
 c.addStyles('wxSP_HORIZONTAL', 'wxSP_VERTICAL', 'wxSP_ARROW_KEYS', 'wxSP_WRAP')
 c.addEvents('EVT_SPIN', 'EVT_SPIN_UP', 'EVT_SPIN_DOWN')
 component.Manager.register(c)
@@ -378,7 +392,7 @@ component.Manager.setTool(c, 'Controls', pos=(2,0))
 
 c = component.Component('wxToggleButton', ['control', 'tool'],
               ['pos', 'size', 'label', 'checked'],
-              image=images.getTreeToggleButtonImage())
+              image=images.TreeToggleButton.GetImage())
 c.addEvents('EVT_TOGGLEBUTTON')
 component.Manager.register(c)
 component.Manager.setMenu(c, 'button', 'toggle button', 'wxToggleButton', 50)
@@ -391,7 +405,7 @@ component.Manager.setTool(c, 'Controls', pos=(2,1))
 
 c = component.Component('wxCheckBox', ['control','tool'],
                         ['pos', 'size', 'label', 'checked'],
-                        image=images.getTreeCheckBoxImage())
+                        image=images.TreeCheckBox.GetImage())
 c.addEvents('EVT_CHECKBOX')
 component.Manager.register(c)
 component.Manager.setMenu(c, 'box', 'check box', 'wxCheckBox', 10)
@@ -401,7 +415,9 @@ component.Manager.setTool(c, 'Controls', pos=(4,1))
 
 c = component.Component('wxComboBox', ['control','tool'],
               ['pos', 'size', 'content', 'selection', 'value'],
-              image=images.getTreeComboBoxImage())
+              image=images.TreeComboBox.GetImage())
+c.addStyles('wxCB_SINGLE', 'wxCB_DROPDOWN', 'wxCB_READONLY',
+            'wxCB_SORT', 'wxTE_PROCESS_ENTER')
 c.setSpecial('content',  attribute.ContentAttribute)
 c.addEvents('EVT_COMBOBOX', 'EVT_TEXT', 'EVT_TEXT_ENTER')
 component.Manager.register(c)
@@ -425,7 +441,9 @@ component.Manager.setMenu(c, 'box', 'radio box', 'wxRadioBox', 30)
 
 c = component.Component('wxListBox', ['control','tool'],
                         ['pos', 'size', 'content', 'selection'],
-                        image=images.getTreeListBoxImage())
+                        image=images.TreeListBox.GetImage())
+c.addStyles('wxLB_SINGLE', 'wxLB_MULTIPLE', 'wxLB_EXTENDED', 'wxLB_HSCROLL',
+            'wxLB_ALWAYS_SB', 'wxLB_NEEDED_SB', 'wxLB_SORT')
 c.setSpecial('content',  attribute.ContentAttribute)
 c.addEvents('EVT_LISTBOX', 'EVT_LISTBOX_DCLICK')
 component.Manager.register(c)
@@ -436,6 +454,8 @@ component.Manager.setTool(c, 'Panels', pos=(0,0))
 
 c = component.Component('wxCheckListBox', ['control','tool'],
               ['pos', 'size', 'content', 'selection'])
+c.addStyles('wxLB_SINGLE', 'wxLB_MULTIPLE', 'wxLB_EXTENDED', 'wxLB_HSCROLL',
+            'wxLB_ALWAYS_SB', 'wxLB_NEEDED_SB', 'wxLB_SORT')
 c.setSpecial('content',  attribute.CheckContentAttribute)
 c.setParamClass('content', params.ParamContentCheckList)
 c.addEvents('EVT_CHECKLISTBOX')
@@ -447,7 +467,7 @@ component.Manager.setMenu(c, 'box', 'check list box', 'wxCheckListBox', 50)
 
 c = component.Component('wxStaticBox', ['control','tool'],
               ['pos', 'size', 'label'],
-              image=images.getTreeStaticBoxImage())
+              image=images.TreeStaticBox.GetImage())
 component.Manager.register(c)
 component.Manager.setMenu(c, 'box', 'static box', 'wxStaticBox', 60)
 component.Manager.setTool(c, 'Panels', pos=(2,0))
@@ -456,7 +476,7 @@ component.Manager.setTool(c, 'Panels', pos=(2,0))
 
 c = component.Component('unknown', ['control'], ['pos', 'size'])
 component.Manager.register(c)
-component.Manager.setMenu(c, 'control', 'unknown', 'unknown control', 1000)
+component.Manager.setMenu(c, 'control', 'unknown', 'unknown control')
 
 ### wxXXX
 

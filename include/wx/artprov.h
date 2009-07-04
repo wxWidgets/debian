@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     18/03/2002
-// RCS-ID:      $Id: artprov.h 42713 2006-10-30 11:56:12Z ABX $
+// RCS-ID:      $Id: artprov.h 57701 2008-12-31 23:40:06Z VS $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,8 +16,8 @@
 #include "wx/bitmap.h"
 #include "wx/icon.h"
 
-class WXDLLEXPORT wxArtProvidersList;
-class WXDLLEXPORT wxArtProviderCache;
+class WXDLLIMPEXP_FWD_CORE wxArtProvidersList;
+class WXDLLIMPEXP_FWD_CORE wxArtProviderCache;
 class wxArtProviderModule;
 
 // ----------------------------------------------------------------------------
@@ -122,6 +122,10 @@ public:
 
     // Add new provider to the bottom of providers stack (i.e. the provider
     // will be queried as the last one).
+#if wxABI_VERSION >= 20810
+    static void PushBack(wxArtProvider *provider);
+#endif
+    // same as PushBack()
     static void Insert(wxArtProvider *provider);
 
     // Remove latest added provider and delete it.

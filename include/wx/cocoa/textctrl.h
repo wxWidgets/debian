@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/03/16
-// RCS-ID:      $Id: textctrl.h 48008 2007-08-10 18:44:58Z DE $
+// RCS-ID:      $Id: textctrl.h 50334 2007-11-30 05:08:21Z DE $
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -51,6 +51,11 @@ public:
 protected:
     virtual void Cocoa_didChangeText(void);
     virtual void CocoaTarget_action(void);
+public: // We can't make an Objective-C class or method a friend
+    // These are the new (non-virtual for ABI compatibility) messages:
+    void CocoaNotification_controlTextDidChange(WX_NSNotification notification);
+    void CocoaNotification_controlTextDidEndEditing(WX_NSNotification notification);
+    void CocoaNotification_controlTextDidBeginEditing(WX_NSNotification notification);
 // ------------------------------------------------------------------------
 // Implementation
 // ------------------------------------------------------------------------

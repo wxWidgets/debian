@@ -2,7 +2,7 @@
 // Name:        gtk/timer.cpp
 // Purpose:     wxTimer implementation
 // Author:      Robert Roebling
-// Id:          $Id: timer.cpp 37283 2006-02-03 22:22:27Z MR $
+// Id:          $Id: timer.cpp 57170 2008-12-07 18:23:28Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,8 +13,9 @@
 #if wxUSE_TIMER
 
 #include "wx/timer.h"
+#include "wx/app.h"
 
-#include "gtk/gtk.h"
+#include <gtk/gtk.h>
 
 // ----------------------------------------------------------------------------
 // wxTimer
@@ -44,6 +45,10 @@ static gint timeout_callback( gpointer data )
 
     // Release lock again.
     gdk_threads_leave();
+
+    wxApp* app = wxTheApp;
+    if (app)
+        app->WakeUpIdle();
 
     if (timer->IsOneShot())
         return FALSE;

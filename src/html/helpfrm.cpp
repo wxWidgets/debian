@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpfrm.cpp 42320 2006-10-24 01:16:18Z RD $
+// RCS-ID:      $Id: helpfrm.cpp 56234 2008-10-11 20:18:19Z VS $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -90,6 +90,7 @@ bool wxHtmlHelpFrame::Create(wxWindow* parent, wxWindowID id,
                              wxConfigBase *config, const wxString& rootpath)
 {
     m_HtmlHelpWin = new wxHtmlHelpWindow(m_Data);
+    m_HtmlHelpWin->SetController(m_helpController);
     if ( config)
         m_HtmlHelpWin->UseConfig(config, rootpath);
     
@@ -105,7 +106,7 @@ bool wxHtmlHelpFrame::Create(wxWindow* parent, wxWindowID id,
 
     GetPosition(& (m_HtmlHelpWin->GetCfgData().x), & (m_HtmlHelpWin->GetCfgData()).y);
 
-    SetIcon(wxArtProvider::GetIcon(wxART_HELP, wxART_HELP_BROWSER));
+    SetIcon(wxArtProvider::GetIcon(wxART_HELP, wxART_FRAME_ICON));
 
     // On the Mac, each modeless frame must have a menubar.
     // TODO: add more menu items, and perhaps add a style to show

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-June-1997
-// RCS-ID:      $Id: _menu.i 48312 2007-08-21 19:55:21Z RD $
+// RCS-ID:      $Id: _menu.i 53375 2008-04-27 03:59:28Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -347,10 +347,12 @@ public:
 #ifdef __WXMAC__
     static void SetAutoWindowMenu( bool enable );
     static bool GetAutoWindowMenu();
+    static void MacSetCommonMenuBar(wxMenuBar* menubar);
 #else
     %extend {
         static void SetAutoWindowMenu( bool enable ) {}
         static bool GetAutoWindowMenu() { return false; }
+        static void MacSetCommonMenuBar(wxMenuBar* menubar) {}
     }
 #endif
 

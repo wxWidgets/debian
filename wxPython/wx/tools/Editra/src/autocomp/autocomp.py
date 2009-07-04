@@ -3,33 +3,34 @@
 # Purpose: Provides the front end interface for autocompletion services for   #
 #          the editor.                                                        #
 # Author: Cody Precord <cprecord@editra.org>                                  #
-# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#--------------------------------------------------------------------------#
-# FILE: autocomp.py                                                        #
-# AUTHOR: Cody Precord                                                     #
-# LANGUAGE: Python                                                         #
-# SUMMARY:                                                                 #
-#    Provides an interface/service for getting autocompletion/calltip data #
-# into an stc control. This is a data provider only it does not do provide #
-# any UI functionality or calls. The user called object from this library  #
-# is intended to be the AutoCompService. This service provides the generic #
-# interface into the various language specific autocomplete services, and  #
-# makes the calls to the other support objects/functions in this library.  #
-#                                                                          #
-#--------------------------------------------------------------------------#
+Provides an interface/service for getting autocompletion/calltip data
+into an stc control. This is a data provider only it does not do provide
+any UI functionality or calls. The user called object from this library
+is intended to be the AutoCompService. This service provides the generic
+interface into the various language specific autocomplete services, and
+makes the calls to the other support objects/functions in this library.
+
+@summary: Autocompletion support interface implementation
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id: autocomp.py 49812 2007-11-10 13:38:33Z CJP $"
-__revision__ = "$Revision: 49812 $"
+__cvsid__ = "$Id: autocomp.py 60377 2009-04-26 04:47:41Z CJP $"
+__revision__ = "$Revision: 60377 $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
 import wx.stc as stc
+
+# Local imports
+from completer import *
+import simplecomp
+
 #--------------------------------------------------------------------------#
 
 class AutoCompService(object):
@@ -39,84 +40,69 @@ class AutoCompService(object):
     are loaded from external modules on request.
 
     """
-    def __init__(self, parent):
-        """Initializes the autocompletion service
-        @param parent: parent of this service object
-
-        """
+    def __init__(self):
+        """Initializes the autocompletion service"""
         object.__init__(self)
-        self._buffer = parent
-        self._completer = None
 
-    def GetAutoCompKeys(self):
-        """Returns the list of key codes for activating the
-        autocompletion.
-        @return: list of characters used for activating autocomp
+    @staticmethod
+    def GetCompleter(buff, extended=False):
+        """Get the appropriate completer object for the given buffer.
+        @todo: implement dynamic loading mechanism for each comp class
 
         """
-        if self._completer != None:
-            return self._completer.GetAutoCompKeys()
-        else:
-            return list()
-
-    def GetAutoCompList(self, command):
-        """Retrieves the sorted autocomplete list for a command
-        @param command: command string to do lookup on
-
-        """
-        if self._completer != None:
-            return self._completer.GetAutoCompList(command)
-        else:
-            return list()
- 
-    def GetAutoCompStops(self):
-        """Returns a string of characters that should cancel
-        the autocompletion lookup.
-        @return: string of characters that will hide the autocomp/calltip
-
-        """
-        if self._completer != None:
-            return self._completer.GetAutoCompStops()
-        else:
-            return u''
-
-    def GetCallTip(self, command):
-        """Returns the calltip string for a command
-        @param command: command to get callip for
-
-        """
-        if self._completer != None:
-            return self._completer.GetCallTip(command)
-        else:
-            return u''
-
-    def GetCallTipKeys(self):
-        """Returns the list of keys to activate a calltip on
-        @return: list of calltip activation keys
-
-        """
-        if self._completer != None:
-            return self._completer.GetCallTipKeys()
-        else:
-            return list()
-
-    def GetIgnoreCase(self):
-        """Are commands case sensitive or not
-        @return: whether case is ignored or not by lookup
-
-        """
-        if self._completer != None:
-            return not self._completer.GetCaseSensitive()
-        else:
-            return True
-
-    def LoadCompProvider(self, lex_value):
-        """Loads a specified completion provider by stc_lex value
-        @param lex_value: lexer id to get autocomp service for
-
-        """
+        lex_value = buff.GetLexer()
         if lex_value == stc.STC_LEX_PYTHON:
             import pycomp
-            self._completer = pycomp.Completer(self._buffer)
+            compl = pycomp.Completer
+        elif lex_value in (stc.STC_LEX_HTML, stc.STC_LEX_XML):
+            import htmlcomp
+            compl = htmlcomp.Completer
+        elif lex_value == stc.STC_LEX_CSS:
+            import csscomp
+            compl = csscomp.Completer
         else:
-            pass
+            return simplecomp.Completer(buff)
+
+        if extended:
+            compl = CompleterFactory(compl, buff)
+        else:
+            compl = compl(buff)
+
+        return compl
+
+#--------------------------------------------------------------------------#
+
+class MetaCompleter(type):
+    """Meta class for creating custom completer classes at runtime"""
+    def __call__(mcs, base, buff):
+        """Modify the base class with our new methods at time of
+        instantiation.
+
+        """
+        obj = type.__call__(mcs, base, buff)
+ 
+        # Set/override attributes on the new completer object.
+        setattr(obj, 'BaseGetAutoCompList', obj.GetAutoCompList)
+        setattr(obj, 'GetAutoCompList', lambda cmd: GetAutoCompList(obj, cmd))
+        setattr(obj, 'scomp', simplecomp.Completer(buff))
+
+        # Return the new augmented completer
+        return obj
+
+def GetAutoCompList(self, command):
+    """Apply SimpleCompleter results to base results from the
+    'smart' completer.
+
+    """
+    data = self.BaseGetAutoCompList(command)
+    exdata = self.scomp.GetAutoCompList(command)
+    data.extend(exdata)
+    return data
+
+class CompleterFactory(object):
+    """Factory for creating composite completer objects"""
+    __metaclass__ = MetaCompleter
+    def __new__(cls, base, buff):
+        """Return an instance of the passed in class type"""
+        self = base(buff)
+        return self

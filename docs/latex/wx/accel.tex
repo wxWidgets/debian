@@ -71,8 +71,7 @@ which modifier key is held down.}
 \section{\class{wxAcceleratorTable}}\label{wxacceleratortable}
 
 An accelerator table allows the application to specify a table of keyboard shortcuts for
-menus or other commands. On Windows, menu or button commands are supported; on GTK,
-only menu commands are supported.
+menu or button commands.
 
 The object {\bf wxNullAcceleratorTable} is defined to be a table with no data, and is the
 initial accelerator table for a window.
@@ -123,7 +122,7 @@ accept CTRL-Enter as meaning `OK' (but not in GTK+ at present).
 
 Default constructor.
 
-\func{}{wxAcceleratorTable}{\param{const wxAcceleratorTable\& }{bitmap}}
+\func{}{wxAcceleratorTable}{\param{const wxAcceleratorTable\& }{table}}
 
 Copy constructor, uses \helpref{reference counting}{trefcount}.
 

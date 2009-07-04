@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxBitmapComboBox
 // Author:      Jaakko Salli
 // Created:     Sep-10-2006
-// RCS-ID:      $Id: xh_bmpcbox.cpp 42046 2006-10-16 09:30:01Z ABX $
+// RCS-ID:      $Id: xh_bmpcbox.cpp 55963 2008-09-29 19:52:58Z VS $
 // Copyright:   (c) 2006 Jaakko Salli
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,8 @@ wxObject *wxBitmapComboBoxXmlHandler::DoCreateResource()
     {
         wxCHECK_MSG(m_combobox, NULL, wxT("Incorrect syntax of XRC resource: ownerdrawnitem not within a bitmapcombobox!"));
 
-        m_combobox->Append(GetText(wxT("text")), GetBitmap(wxT("bitmap"), wxART_MISSING_IMAGE));
+        m_combobox->Append(GetText(wxT("text")),
+                           GetBitmap(wxT("bitmap")));
 
         return m_combobox;
     }

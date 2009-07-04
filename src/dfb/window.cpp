@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 //              (based on GTK, MSW, MGL implementations)
 // Created:     2006-80-10
-// RCS-ID:      $Id: window.cpp 48765 2007-09-18 14:15:27Z JS $
+// RCS-ID:      $Id: window.cpp 54750 2008-07-21 17:05:14Z VZ $
 // Copyright:   (c) 2006 REA Elektronik GmbH
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,7 @@
 
 #ifndef WX_PRECOMP
     #include "wx/dcclient.h"
+    #include "wx/toplevel.h"
 #endif
 
 #include "wx/caret.h"
@@ -796,7 +797,10 @@ void wxWindowDFB::PaintOverlays(const wxRect& rect)
     for ( wxDfbOverlaysList::const_iterator i = m_overlays->begin();
           i != m_overlays->end(); ++i )
     {
-        wxOverlayImpl *overlay = *i;
+        // the cast is necessary in STL build because of bug in const_iterator
+        // operator*() return value
+        const wxOverlayImpl * const
+            overlay = wx_static_cast(const wxOverlayImpl *, *i);
 
         wxRect orectOrig(overlay->GetRect());
         wxRect orect(orectOrig);

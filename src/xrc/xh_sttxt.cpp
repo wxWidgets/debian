@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxStaticText
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_sttxt.cpp 39479 2006-05-30 17:39:22Z ABX $
+// RCS-ID:      $Id: xh_sttxt.cpp 52398 2008-03-09 03:27:15Z RD $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -47,6 +47,10 @@ wxObject *wxStaticTextXmlHandler::DoCreateResource()
                  GetName());
 
     SetupWindow(text);
+
+    long wrap = GetLong(wxT("wrap"), -1);
+    if (wrap != -1)
+        text->Wrap(wrap);
 
     return text;
 }

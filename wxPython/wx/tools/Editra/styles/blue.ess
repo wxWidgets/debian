@@ -1,3 +1,9 @@
+/* Editra Style Sheet
+ * Name: Blue
+ * Author: Cody Precord <cprecord@editra.org>
+ * License: wxWindows License
+ */
+ 
 default_style {
 		fore:#FFEEDD;
 		back:#000A87;
@@ -26,6 +32,10 @@ btick_style {
 calltip {
 		fore:#4D4D4D;
 		back:#009FFF;
+}
+
+caret_line {
+        back: #000FD6;
 }
 
 char_style {
@@ -65,7 +75,7 @@ error_style {
 		back:#FF0000;
 }
 
-folder_style {
+foldmargin_style {
 		fore:#FFEEDD;
 }
 

@@ -2,7 +2,7 @@
 // Name:        src/gtk/window.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: window.cpp 49988 2007-11-16 09:03:27Z CE $
+// Id:          $Id: window.cpp 56390 2008-10-17 04:19:04Z PC $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -58,6 +58,29 @@
 #include "wx/gtk/win_gtk.h"
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
+
+#if !GTK_CHECK_VERSION(2,10,0)
+    // GTK+ can reliably detect Meta key state only since 2.10 when
+    // GDK_META_MASK was introduced -- there wasn't any way to detect it
+    // in older versions. wxGTK used GDK_MOD2_MASK for this purpose, but
+    // GDK_MOD2_MASK is documented as:
+    //
+    //     the fifth modifier key (it depends on the modifier mapping of the X
+    //     server which key is interpreted as this modifier)
+    //
+    // In other words, it isn't guaranteed to map to Meta. This is a real
+    // problem: it is common to map NumLock to it (in fact, it's an exception
+    // if the X server _doesn't_ use it for NumLock).  So the old code caused
+    // wxKeyEvent::MetaDown() to always return true as long as NumLock was on
+    // on many systems, which broke all applications using
+    // wxKeyEvent::GetModifiers() to check modifiers state (see e.g.  here:
+    // http://tinyurl.com/56lsk2).
+    //
+    // Because of this, it's better to not detect Meta key state at all than
+    // to detect it incorrectly. Hence the following #define, which causes
+    // m_metaDown to be always set to false.
+    #define GDK_META_MASK 0
+#endif
 
 //-----------------------------------------------------------------------------
 // documentation on internals
@@ -203,6 +226,7 @@ static wxWindowGTK  *g_captureWindow = (wxWindowGTK*) NULL;
 static bool g_captureWindowHasMouse = false;
 
 wxWindowGTK  *g_focusWindow = (wxWindowGTK*) NULL;
+wxWindowGTK  *g_focusWindowPending = (wxWindowGTK*) NULL;
 
 // the last window which had the focus - this is normally never NULL (except
 // if we never had focus at all) as even when g_focusWindow is NULL it still
@@ -269,7 +293,7 @@ gdk_window_warp_pointer (GdkWindow      *window,
 // Note: can't be static, needed by textctrl.cpp.
 wxWindow *wxFindFocusedChild(wxWindowGTK *win)
 {
-    wxWindow *winFocus = wxWindowGTK::FindFocus();
+    wxWindowGTK* winFocus = g_focusWindow;
     if ( !winFocus )
         return (wxWindow *)NULL;
 
@@ -837,7 +861,7 @@ static void wxFillOtherKeyEventFields(wxKeyEvent& event,
     event.m_shiftDown = (gdk_event->state & GDK_SHIFT_MASK) != 0;
     event.m_controlDown = (gdk_event->state & GDK_CONTROL_MASK) != 0;
     event.m_altDown = (gdk_event->state & GDK_MOD1_MASK) != 0;
-    event.m_metaDown = (gdk_event->state & GDK_MOD2_MASK) != 0;
+    event.m_metaDown = (gdk_event->state & GDK_META_MASK) != 0;
     event.m_scanCode = gdk_event->keyval;
     event.m_rawCode = (wxUint32) gdk_event->keyval;
     event.m_rawFlags = 0;
@@ -1025,7 +1049,7 @@ gtk_window_key_press_callback( GtkWidget *widget,
     // widgets has both IM context and input focus, the event should be filtered
     // by gtk_im_context_filter_keypress().
     // Then, we should, according to GTK+ 2.0 API doc, return whatever it returns.
-    if ((!ret) && (win->m_imData != NULL) && ( wxWindow::FindFocus() == win ))
+    if ((!ret) && (win->m_imData != NULL) && ( g_focusWindow == win ))
     {
         // We should let GTK+ IM filter key event first. According to GTK+ 2.0 API
         // docs, if IM filter returns true, no further processing should be done.
@@ -1051,8 +1075,18 @@ gtk_window_key_press_callback( GtkWidget *widget,
             int command = ancestor->GetAcceleratorTable()->GetCommand( event );
             if (command != -1)
             {
-                wxCommandEvent command_event( wxEVT_COMMAND_MENU_SELECTED, command );
-                ret = ancestor->GetEventHandler()->ProcessEvent( command_event );
+                wxCommandEvent menu_event( wxEVT_COMMAND_MENU_SELECTED, command );
+                ret = ancestor->GetEventHandler()->ProcessEvent( menu_event );
+
+                if ( !ret )
+                {
+                    // if the accelerator wasn't handled as menu event, try
+                    // it as button click (for compatibility with other
+                    // platforms):
+                    wxCommandEvent button_event( wxEVT_COMMAND_BUTTON_CLICKED, command );
+                    ret = ancestor->GetEventHandler()->ProcessEvent( button_event );
+                }
+
                 break;
             }
             if (ancestor->IsTopLevel())
@@ -1270,7 +1304,7 @@ template<typename T> void InitMouseEvent(wxWindowGTK *win,
     event.m_shiftDown = (gdk_event->state & GDK_SHIFT_MASK);
     event.m_controlDown = (gdk_event->state & GDK_CONTROL_MASK);
     event.m_altDown = (gdk_event->state & GDK_MOD1_MASK);
-    event.m_metaDown = (gdk_event->state & GDK_MOD2_MASK);
+    event.m_metaDown = (gdk_event->state & GDK_META_MASK);
     event.m_leftDown = (gdk_event->state & GDK_BUTTON1_MASK);
     event.m_middleDown = (gdk_event->state & GDK_BUTTON2_MASK);
     event.m_rightDown = (gdk_event->state & GDK_BUTTON3_MASK);
@@ -1779,7 +1813,7 @@ window_scroll_event(GtkWidget*, GdkEventScroll* gdk_event, wxWindow* win)
     event.m_shiftDown = (gdk_event->state & GDK_SHIFT_MASK);
     event.m_controlDown = (gdk_event->state & GDK_CONTROL_MASK);
     event.m_altDown = (gdk_event->state & GDK_MOD1_MASK);
-    event.m_metaDown = (gdk_event->state & GDK_MOD2_MASK);
+    event.m_metaDown = (gdk_event->state & GDK_META_MASK);
     event.m_leftDown = (gdk_event->state & GDK_BUTTON1_MASK);
     event.m_middleDown = (gdk_event->state & GDK_BUTTON2_MASK);
     event.m_rightDown = (gdk_event->state & GDK_BUTTON3_MASK);
@@ -1832,6 +1866,7 @@ gtk_window_focus_in_callback( GtkWidget *widget,
 
     g_focusWindowLast =
     g_focusWindow = win;
+    g_focusWindowPending = NULL;
 
     wxLogTrace(TRACE_FOCUS,
                _T("%s: focus in"), win->GetName().c_str());
@@ -1991,7 +2026,7 @@ gtk_window_leave_callback( GtkWidget *widget,
     event.m_shiftDown = (state & GDK_SHIFT_MASK) != 0;
     event.m_controlDown = (state & GDK_CONTROL_MASK) != 0;
     event.m_altDown = (state & GDK_MOD1_MASK) != 0;
-    event.m_metaDown = (state & GDK_MOD2_MASK) != 0;
+    event.m_metaDown = (state & GDK_META_MASK) != 0;
     event.m_leftDown = (state & GDK_BUTTON1_MASK) != 0;
     event.m_middleDown = (state & GDK_BUTTON2_MASK) != 0;
     event.m_rightDown = (state & GDK_BUTTON3_MASK) != 0;
@@ -2218,7 +2253,7 @@ public:
 wxWindow *wxWindowBase::DoFindFocus()
 {
     // the cast is necessary when we compile in wxUniversal mode
-    return (wxWindow *)g_focusWindow;
+    return (wxWindow *)(g_focusWindowPending ? g_focusWindowPending : g_focusWindow);
 }
 
 //-----------------------------------------------------------------------------
@@ -2277,7 +2312,7 @@ wxMouseState wxGetMouseState()
     ms.SetControlDown(mask & GDK_CONTROL_MASK);
     ms.SetShiftDown(mask & GDK_SHIFT_MASK);
     ms.SetAltDown(mask & GDK_MOD1_MASK);
-    ms.SetMetaDown(mask & GDK_MOD2_MASK);
+    ms.SetMetaDown(mask & GDK_META_MASK);
 
     return ms;
 }
@@ -2460,6 +2495,8 @@ wxWindowGTK::~wxWindowGTK()
 
     if (g_focusWindow == this)
         g_focusWindow = NULL;
+    if (g_focusWindowPending == this)
+        g_focusWindowPending = NULL;
 
     if ( g_delayedFocus == this )
         g_delayedFocus = NULL;
@@ -2871,7 +2908,7 @@ void wxWindowGTK::OnInternalIdle()
         }
     }
 
-    if (wxUpdateUIEvent::CanUpdate(this) && IsShown())
+    if (wxUpdateUIEvent::CanUpdate(this) && IsShownOnScreen())
         UpdateWindowUI(wxUPDATE_UI_FROMIDLE);
 }
 
@@ -3253,6 +3290,20 @@ void wxWindowGTK::SetFocus()
         // don't do anything if we already have focus
         return;
     }
+
+    // Setting "physical" focus is not immediate in GTK+ and while
+    // gtk_widget_is_focus ("determines if the widget is the focus widget
+    // within its toplevel", i.e. returns true for one widget per TLW, not
+    // globally) returns true immediately after grabbing focus,
+    // GTK_WIDGET_HAS_FOCUS (which returns true only for the one widget that
+    // has focus at the moment) takes affect only after the window is shown
+    // (if it was hidden at the moment of the call) or at the next event loop
+    // iteration.
+    //
+    // Because we want to FindFocus() call immediately following
+    // foo->SetFocus() to return foo, we have to keep track of "pending" focus
+    // ourselves.
+    g_focusWindowPending = this;
 
     if (m_wxwindow)
     {

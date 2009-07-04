@@ -8,52 +8,39 @@
 ###############################################################################
 
 """
-#-----------------------------------------------------------------------------#
-# FILE: syntax.py                                                             #
-# AUTHOR: Cody Precord                                                        #
-#                                                                             #
-# SUMMARY:                                                                    #
-# Toolkit for managing the importing of syntax modules and providing the data #
-# to the requesting text control.                                             #
-#                                                                             #
-# DETAIL:                                                                     #
-# Since in Python Modules are only loaded once and maintain a single instance #
-# across a single program. This module is used as a storage place for         #
-# checking what syntax has already been loaded to facilitate a speedup of     #
-# setting lexer values.                                                       #
-#                                                                             #
-# The use of this system also keeps the program from preloading all syntax    #
-# data for all supported languages. The use of Python modules for the config  #
-# files was made because Python is dynamic so why not use that feature to     #
-# dynamically load configuration data. Since they are Python modules they can #
-# also supply some basic functions for this module to use in loading different#
-# dialects of a particular language.                                          #
-#                                                                             #
-# One of the driving reasons to move to this system was that the user of the  #
-# editor is unlikely to be editting source files for all supported languages  #
-# at one time, so there is no need to preload all data for all languages when #
-# the editor starts up. Also in the long run this will be a much easier to    #
-# maintain and enhance component of the editor than having all this data      #
-# crammed into the text control class. The separation of data from control    #
-# will also allow for user customization and modification to highlighting     #
-# styles.                                                                     #
-#                                                                             #
-# METHODS:                                                                    #
-# - IsModLoaded: Check if specified syntax module has been loaded.            #
-# - SyntaxData: Returns the required syntax/lexer related data for setting up #
-#               and configuring the lexer for a particular language.          #
-#-----------------------------------------------------------------------------#
+FILE: syntax.py
+AUTHOR: Cody Precord
+
+SUMMARY:
+
+Toolkit for managing the importing of syntax modules and providing the data
+to the requesting text control. It is meant to be the main access point to the
+resources and api provided by this package.
+
+DETAIL:
+
+The main item of this module is the L{SyntaxMgr} it is a singleton object that
+manages the dynamic importing of syntax data and configurations for all of the
+editors supported languages. It allows only the needed data to be loaded into
+memory when requested. The loading is only done once per session and all
+subsequent requests share the same object.
+
+In addition to the L{SyntaxMgr} there are also a number of other utility and
+convienience functions in this module for accessing data from other related
+objects such as the Extension Register.
+
+@summary: Main api access point for the syntax package.
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: syntax.py 49969 2007-11-15 13:27:21Z CJP $"
-__revision__ = "$Revision: 49969 $"
+__svnid__ = "$Id: syntax.py 57226 2008-12-10 03:13:03Z CJP $"
+__revision__ = "$Revision: 57226 $"
 
 #-----------------------------------------------------------------------------#
 # Dependencies
 import wx
 import os
-import sys
 import synglob
 
 #-----------------------------------------------------------------------------#
@@ -71,10 +58,13 @@ SYNSPEC    = 2    # Highligter specs
 PROPERTIES = 3    # Extra Properties
 LANGUAGE   = 4    # Language ID
 COMMENT    = 5    # Gets the comment characters pattern
+CLEXER     = 6    # Container Lexer Styler Method
+INDENTER   = 7    # Auto-indenter method
 
 _ = wx.GetTranslation
 #-----------------------------------------------------------------------------#
 
+# Needed by other modules that use this api
 from synextreg import ExtensionRegister, GetFileExtensions
 
 #-----------------------------------------------------------------------------#
@@ -83,7 +73,6 @@ class SyntaxMgr(object):
     """Class Object for managing loaded syntax data. The manager
     is only created once as a singleton and shared amongst all
     editor windows
-    @status: initial implimentation
 
     """
     instance = None
@@ -95,9 +84,9 @@ class SyntaxMgr(object):
         @keyword config: path of config file to load file extension config from
 
         """
-        if self.first:
+        if SyntaxMgr.first:
             object.__init__(self)
-            self.first = False
+            SyntaxMgr.first = False
             self._extreg = ExtensionRegister()
             self._config = config
             if self._config:
@@ -106,14 +95,14 @@ class SyntaxMgr(object):
                 self._extreg.LoadDefault()
             self._loaded = dict()
 
-    def __new__(cls, *args, **kargs):
+    def __new__(cls, config=None):
         """Ensure only a single instance is shared amongst
         all objects.
         @return: class instance
 
         """
-        if not cls.instance:
-            cls.instance = object.__new__(cls, *args, **kargs)
+        if cls.instance is None:
+            cls.instance = object.__new__(cls)
         return cls.instance
 
     def _ExtToMod(self, ext):
@@ -144,7 +133,7 @@ class SyntaxMgr(object):
         @param modname: name of module to lookup
 
         """
-        if modname in sys.modules or modname in self._loaded:
+        if modname in self._loaded:
             return True
         else:
             return False
@@ -161,7 +150,7 @@ class SyntaxMgr(object):
             try:
                 self._loaded[modname] = __import__(modname, globals(), 
                                                    locals(), [''])
-            except ImportError:
+            except ImportError, msg:
                 return False
         return True
 
@@ -174,16 +163,19 @@ class SyntaxMgr(object):
         if not self._config or not os.path.exists(self._config):
             return False
         path = os.path.join(self._config, self._extreg.config)
-        file_h = file(path, "wb")
-        file_h.write(str(self._extreg))
-        file_h.close()
+        try:
+            file_h = open(path, "wb")
+            file_h.write(str(self._extreg))
+            file_h.close()
+        except IOError:
+            return False
         return True
 
     def SyntaxData(self, ext):
-        """Fetches the language data based on a file extention string.
-        The file extension is used to look up the default lexer actions from the
-        EXT_REG dictionary.
-        @see L{synglob}
+        """Fetches the language data based on a file extention string. The file
+        extension is used to look up the default lexer actions from the EXT_REG
+        dictionary.
+        @see: L{synglob}
         @param ext: a string representing the file extension
         @return: Returns a Dictionary of Lexer Config Data
 
@@ -209,8 +201,13 @@ class SyntaxMgr(object):
         syn_data[PROPERTIES] = mod.Properties(lex_cfg[LANG_ID])
         syn_data[LANGUAGE] = lex_cfg[LANG_ID]
         syn_data[COMMENT] = mod.CommentPattern(lex_cfg[LANG_ID])
-        return syn_data
+        if syn_data[LEXER] == wx.stc.STC_LEX_CONTAINER:
+            syn_data[CLEXER] = mod.StyleText
+        else:
+            syn_data[CLEXER] = None
+        syn_data[INDENTER] = getattr(mod, 'AutoIndenter', None)
 
+        return syn_data
 
 #-----------------------------------------------------------------------------#
 
@@ -225,7 +222,7 @@ def GenLexerMenu():
     for key in synglob.LANG_MAP:
         f_types[key] = synglob.LANG_MAP[key][LANG_ID]
     f_order = list(f_types)
-    f_order.sort()
+    f_order.sort(NoCaseCmp)
 
     for lang in f_order:
         lex_menu.Append(f_types[lang], lang, 
@@ -242,6 +239,9 @@ def GenFileFilters():
     f_dict = dict()
     for key, val in extreg.iteritems():
         val.sort()
+        if key.lower() == 'makefile':
+            continue
+
         f_dict[key] = u";*." + u";*.".join(val)
 
     # Build the final list of properly formated strings
@@ -249,8 +249,8 @@ def GenFileFilters():
     for key in f_dict:
         tmp = u" (%s)|%s|" % (f_dict[key][1:], f_dict[key][1:])
         filters.append(key + tmp)
-    filters.sort()
-    filters.insert(0, u"All Files (*.*)|*.*|")
+    filters.sort(NoCaseCmp)
+    filters.insert(0, u"All Files (*)|*|")
     filters[-1] = filters[-1][:-1] # IMPORTANT trim last '|' from item in list
     return filters
 
@@ -266,6 +266,7 @@ def GetLexerList():
     f_order.sort()
     return f_order
 
+#---- Syntax id set ----#
 def SyntaxIds():
     """Gets a list of all Syntax Ids and returns it
     @return: list of all syntax language ids
@@ -284,6 +285,10 @@ def SyntaxIds():
 
     return ret_ids
 
+SYNTAX_IDS = SyntaxIds()
+
+#---- End Syntax ids ----#
+
 def GetExtFromId(ext_id):
     """Takes a language ID and fetches an appropriate file extension string
     @param ext_id: language id to get extension for
@@ -292,5 +297,52 @@ def GetExtFromId(ext_id):
 
     """
     extreg = ExtensionRegister()
-    ftype = synglob.ID_MAP.get(ext_id, synglob.ID_MAP[synglob.ID_LANG_TXT])
+    ftype = synglob.GetDescriptionFromId(ext_id)
     return extreg[ftype][0]
+
+def GetFtypeDisplayName(lang_id):
+    """Get the file type display string for the given lang_id
+    @param lang_id: ID_LANG_*
+    @todo: make file types translatable
+
+    """
+    for item in dir(synglob):
+        if item.startswith("ID_LANG"):
+            if getattr(synglob, item) == lang_id:
+                return getattr(synglob, item[3:], u"Plain Text")
+    else:
+        return u"Plain Text"
+
+
+def GetIdFromExt(ext):
+    """Get the language id from the given file extension
+    @param ext: file extension (no dot)
+    @return: language identifier id from extension register
+
+    """
+    ftype = ExtensionRegister().FileTypeFromExt(ext)
+    for val in dir(synglob):
+        if val.startswith('LANG_') and getattr(synglob, val) == ftype:
+            return getattr(synglob, 'ID_' + val, synglob.ID_LANG_TXT)
+
+    return synglob.ID_LANG_TXT
+
+def GetTypeFromExt(ext):
+    """Get the filetype description string from the given extension.
+    The return value defaults to synglob.LANG_TXT if nothing is found.
+    @param ext: file extension string (no dot)
+    @return: String
+
+    """
+    return ExtensionRegister().FileTypeFromExt(ext)
+
+#-----------------------------------------------------------------------------#
+# Utility
+def NoCaseCmp(x, y):
+    """Case insensitive sort method"""
+    if x.lower() < y.lower():
+        return -1
+    elif x.lower() > y.lower():
+        return 1
+    else:
+        return 0

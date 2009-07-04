@@ -4,7 +4,7 @@
  *  Author:      Julian Smart and others
  *  Modified by: Ryan Norton (Converted to C)
  *  Created:     01/02/97
- *  RCS-ID:      $Id: defs.h 49612 2007-11-03 23:50:04Z VZ $
+ *  RCS-ID:      $Id: defs.h 60027 2009-04-05 12:16:58Z VZ $
  *  Copyright:   (c) Julian Smart
  *  Licence:     wxWindows licence
  */
@@ -1018,6 +1018,9 @@ inline void *wxUIntToPtr(wxUIntPtr p)
     #else
         #error "error defining ssize_t, size_t is not 4 or 8 bytes"
     #endif
+
+    /* prevent ssize_t redefinitions in other libraries */
+    #define HAVE_SSIZE_T
 #endif
 
 
@@ -1273,6 +1276,9 @@ enum wxStretch
     wxEXPAND                  = wxGROW,
     wxSHAPED                  = 0x4000,
     wxFIXED_MINSIZE           = 0x8000,
+#if wxABI_VERSION >= 20808
+    wxRESERVE_SPACE_EVEN_IF_HIDDEN = 0x0002,
+#endif
     wxTILE                    = 0xc000,
 
     /* for compatibility only, default now, don't use explicitly any more */
@@ -2311,6 +2317,17 @@ enum wxUpdateUI
     wxUPDATE_UI_NONE          = 0x0000,
     wxUPDATE_UI_RECURSE       = 0x0001,
     wxUPDATE_UI_FROMIDLE      = 0x0002 /*  Invoked from On(Internal)Idle */
+};
+
+/*  ---------------------------------------------------------------------------- */
+/*  Notification Event flags - used for dock icon bouncing, etc. */
+/*  ---------------------------------------------------------------------------- */
+
+enum wxNotificationOptions
+{
+    wxNOTIFY_NONE           = 0x0000,
+    wxNOTIFY_ONCE           = 0x0001,
+    wxNOTIFY_REPEAT         = 0x0002
 };
 
 /*  ---------------------------------------------------------------------------- */

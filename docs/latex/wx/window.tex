@@ -4,7 +4,7 @@
 %% Author:      wxWidgets Team
 %% Modified by:
 %% Created:
-%% RCS-ID:      $Id: window.tex 50111 2007-11-20 16:12:12Z VZ $
+%% RCS-ID:      $Id: window.tex 56758 2008-11-13 22:32:21Z VS $
 %% Copyright:   (c) wxWidgets Team
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -343,6 +343,25 @@ implements the following methods:\par
 \end{twocollist}}
 }
 
+\membersection{wxWindow::ClientToWindowSize}\label{wxwindowclienttowindowsize}
+
+\func{wxSize}{ClientToWindowSize}{\param{const wxSize\&}{ size}}
+
+Converts client area size \arg{size} to corresponding window size. In other
+words, the returned value is what would \helpref{GetSize}{wxwindowgetsize}
+return if this window had client area of given size.
+Components with $wxDefaultCoord$ value are left unchanged.
+
+Note that the conversion is not always exact, it assumes that non-client area
+doesn't change and so doesn't take into account things like menu bar
+(un)wrapping or (dis)appearance of the scrollbars.
+
+\newsince{2.8.8}
+
+\wxheading{See also}
+
+\helpref{wxWindow::WindowToClientSize}{wxwindowwindowtoclientsize}
+
 
 \membersection{wxWindow::Close}\label{wxwindowclose}
 
@@ -548,7 +567,9 @@ will not accept drop file events.}
 
 \wxheading{Remarks}
 
-Windows only.
+Windows only until version 2.8.9, available on all platforms since 2.8.10.
+Cannot be used together with \helpref{SetDropTarget}{wxwindowsetdroptarget} on
+non-Windows platforms.
 
 
 \membersection{wxWindow::Enable}\label{wxwindowenable}
@@ -2288,7 +2309,7 @@ default value is {\tt false}.}
 Pops up the given menu at the specified coordinates, relative to this
 window, and returns control when the user has dismissed the menu. If a
 menu item is selected, the corresponding menu event is generated and will be
-processed as usually. If the coordinates are not specified, current mouse
+processed as usually. If the coordinates are not specified, the current mouse
 cursor position is used.
 
 \wxheading{Parameters}
@@ -3731,3 +3752,21 @@ Interface Guidelines forbid moving the mouse cursor programmatically.
 
 \docparam{y}{The new y position for the cursor.}
 
+\membersection{wxWindow::WindowToClientSize}\label{wxwindowwindowtoclientsize}
+
+\func{virtual wxSize}{WindowToClientSize}{\param{const wxSize\&}{ size}}
+
+Converts window size \arg{size} to corresponding client area size. In other
+words, the returned value is what would
+\helpref{GetClientSize}{wxwindowgetclientsize} return if this window had
+given window size. Components with $wxDefaultCoord$ value are left unchanged. 
+
+Note that the conversion is not always exact, it assumes that non-client area
+doesn't change and so doesn't take into account things like menu bar
+(un)wrapping or (dis)appearance of the scrollbars.
+
+\newsince{2.8.8}
+
+\wxheading{See also}
+
+\helpref{wxWindow::ClientToWindowSize}{wxwindowclienttowindowsize}

@@ -4,7 +4,7 @@
 // Author:      David Norris <danorris@gmail.com>
 // Modified by: Ryan Norton, Francesco Montorsi
 // Created:     04/02/2005
-// RCS-ID:      $Id: xh_hyperlink.cpp 44383 2007-02-06 18:14:08Z RD $
+// RCS-ID:      $Id: xh_hyperlink.cpp 54563 2008-07-09 14:02:19Z VZ $
 // Copyright:   (c) 2005 David Norris
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ wxHyperlinkCtrlXmlHandler::wxHyperlinkCtrlXmlHandler()
     XRC_ADD_STYLE(wxHL_ALIGN_RIGHT);
     XRC_ADD_STYLE(wxHL_ALIGN_CENTRE);
     XRC_ADD_STYLE(wxHL_DEFAULT_STYLE);
-    
+
     AddWindowStyles();
 }
 
@@ -64,11 +64,18 @@ wxObject *wxHyperlinkCtrlXmlHandler::DoCreateResource()
 {
     XRC_MAKE_INSTANCE(control, wxHyperlinkCtrl)
 
+    control->Create
+             (
+                m_parentAsWindow,
+                GetID(),
+                GetText(wxT("label")),
+                GetParamValue(wxT("url")),
+                GetPosition(), GetSize(),
+                GetStyle(wxT("style"), wxHL_DEFAULT_STYLE),
+                GetName()
+             );
+
     SetupWindow(control);
-    control->Create(m_parentAsWindow, GetID(),
-        GetParamValue(wxT("label")), GetParamValue(wxT("url")),
-        GetPosition(), GetSize(),
-        GetStyle(wxT("style"), wxHL_DEFAULT_STYLE));
 
     return control;
 }

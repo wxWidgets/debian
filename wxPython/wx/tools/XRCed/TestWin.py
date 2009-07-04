@@ -90,7 +90,7 @@ class TestWindow:
             g.lastActiveFrame.Raise()   
         
     def IsShown(self):
-        return bool(self.object) and self.object.IsShown()
+        return self.object is not None and self.object.IsShown()
 
     def IsDirty(self):
         '''If test window must be refreshed.'''
@@ -186,13 +186,14 @@ class TestWindow:
             item = items.pop()
             index = tree.ItemIndex(item)
             obj = comp.getChildObject(tree.GetPyData(parentItem), parent, index)
+            if isinstance(parent, wx.Notebook) and index != parent.GetSelection():
+                parent.SetSelection(index)
             node = tree.GetPyData(item)
             comp = Manager.getNodeComp(node)
             rects = comp.getRect(obj)
             if not rects: return None
             r = rects[0]
             if isinstance(parent, wx.Sizer) and parentRect:
-                #rect.append(parentRect)
                 sizerItem = parent.GetChildren()[index]
                 flag = sizerItem.GetFlag()
                 border = sizerItem.GetBorder()
@@ -207,10 +208,10 @@ class TestWindow:
                         rects.append(wx.Rect(r.GetLeft() - border, y, border, 0))
                     if flag & wx.RIGHT:
                         rects.append(wx.Rect(r.GetRight() + 1, y, border, 0))
-            if isinstance(obj, wx.Window) and items:
-                offset += r.GetTopLeft()
             if isinstance(obj, wx.Notebook) and items:
                 offset += obj.GetClientRect().GetTopLeft()
+            elif isinstance(obj, wx.Window) and items:
+                offset += r.GetTopLeft()
         [r.Offset(offset) for r in rects]
         return rects
 

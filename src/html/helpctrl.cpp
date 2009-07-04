@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpctrl.cpp 42320 2006-10-24 01:16:18Z RD $
+// RCS-ID:      $Id: helpctrl.cpp 52470 2008-03-13 23:29:27Z VS $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -87,12 +87,13 @@ void wxHtmlHelpController::OnCloseFrame(wxCloseEvent& evt)
 {
     if (m_Config)
         WriteCustomization(m_Config, m_ConfigRoot);
-    
+
     evt.Skip();
 
     OnQuit();
 
-    m_helpWindow->SetController(NULL);
+    if ( m_helpWindow )
+        m_helpWindow->SetController(NULL);
     m_helpWindow = NULL;
     m_helpDialog = NULL;
     m_helpFrame = NULL;

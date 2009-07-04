@@ -16,7 +16,7 @@
 #
 #
 # Created:     15-Dec-1999
-# RCS-ID:      $Id: editor.py 43556 2006-11-21 03:44:35Z RD $
+# RCS-ID:      $Id: editor.py 51004 2008-01-03 08:17:39Z RD $
 # Copyright:   (c) 1999 by Dirk Holtwick, 1999
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -257,7 +257,7 @@ class Editor(wx.ScrolledWindow):
 ##------------------ eofMarker stuff
 
     def LoadImages(self):
-        self.eofMarker = images.GetBitmap(images.EofImageData)
+        self.eofMarker = images.EofImage.GetBitmap()
 
     def DrawEofMarker(self,dc):
         x = 0

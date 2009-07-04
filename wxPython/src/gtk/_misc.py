@@ -101,6 +101,7 @@ SYS_COLOUR_GRADIENTACTIVECAPTION = _misc_.SYS_COLOUR_GRADIENTACTIVECAPTION
 SYS_COLOUR_GRADIENTINACTIVECAPTION = _misc_.SYS_COLOUR_GRADIENTINACTIVECAPTION
 SYS_COLOUR_MENUHILIGHT = _misc_.SYS_COLOUR_MENUHILIGHT
 SYS_COLOUR_MENUBAR = _misc_.SYS_COLOUR_MENUBAR
+SYS_COLOUR_LISTBOXTEXT = _misc_.SYS_COLOUR_LISTBOXTEXT
 SYS_COLOUR_MAX = _misc_.SYS_COLOUR_MAX
 SYS_MOUSE_BUTTONS = _misc_.SYS_MOUSE_BUTTONS
 SYS_BORDER_X = _misc_.SYS_BORDER_X
@@ -2400,6 +2401,8 @@ class FileTypeInfo(object):
     def __init__(self, *args, **kwargs): 
         """__init__(self, String mimeType, String openCmd, String printCmd, String desc) -> FileTypeInfo"""
         _misc_.FileTypeInfo_swiginit(self,_misc_.new_FileTypeInfo(*args, **kwargs))
+    __swig_destroy__ = _misc_.delete_FileTypeInfo
+    __del__ = lambda self : None;
     def IsValid(*args, **kwargs):
         """IsValid(self) -> bool"""
         return _misc_.FileTypeInfo_IsValid(*args, **kwargs)
@@ -4920,7 +4923,7 @@ _misc_.PyDataObjectSimple_swigregister(PyDataObjectSimple)
 class DataObjectComposite(DataObject):
     """
     wx.DataObjectComposite is the simplest `wx.DataObject` derivation
-    which may be sued to support multiple formats. It contains several
+    which may be used to support multiple formats. It contains several
     'wx.DataObjectSimple` objects and supports any format supported by at
     least one of them. Only one of these data objects is *preferred* (the
     first one if not explicitly changed by using the second parameter of
@@ -4939,7 +4942,7 @@ class DataObjectComposite(DataObject):
         __init__(self) -> DataObjectComposite
 
         wx.DataObjectComposite is the simplest `wx.DataObject` derivation
-        which may be sued to support multiple formats. It contains several
+        which may be used to support multiple formats. It contains several
         'wx.DataObjectSimple` objects and supports any format supported by at
         least one of them. Only one of these data objects is *preferred* (the
         first one if not explicitly changed by using the second parameter of

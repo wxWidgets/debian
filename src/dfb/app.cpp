@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 //              based on MGL implementation
 // Created:     2006-08-16
-// RCS-ID:      $Id: app.cpp 43999 2006-12-18 17:24:06Z VS $
+// RCS-ID:      $Id: app.cpp 54754 2008-07-21 17:14:32Z VZ $
 // Copyright:   (c) 2006 REA Elektronik GmbH
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -135,17 +135,22 @@ bool wxApp::Yield(bool onlyIfNeeded)
 
     s_inYield = true;
 
+#if wxUSE_LOG
     wxLog::Suspend();
+#endif // wxUSE_LOG
 
-    if ( wxEventLoop::GetActive() )
-        wxEventLoop::GetActive()->Yield();
+    // A guarentee that there will be an active event loop:
+    wxEventLoopGuarantor dummyLoopIfNeeded;
+    wxEventLoop::GetActive()->Yield();
 
     // it's necessary to call ProcessIdle() to update the frames sizes which
     // might have been changed (it also will update other things set from
     // OnUpdateUI() which is a nice (and desired) side effect)
     while ( ProcessIdle() ) {}
 
+#if wxUSE_LOG
     wxLog::Resume();
+#endif // wxUSE_LOG
 
     s_inYield = false;
 

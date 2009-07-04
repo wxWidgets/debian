@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Agron Selimaj
 // Created:     04/01/98
-// RCS-ID:      $Id: listctrl.cpp 46383 2007-06-09 10:58:38Z VZ $
+// RCS-ID:      $Id: listctrl.cpp 57021 2008-11-29 13:43:32Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -279,7 +279,7 @@ wxEND_HANDLERS_TABLE()
 wxCONSTRUCTOR_5( wxListCtrl , wxWindow* , Parent , wxWindowID , Id , wxPoint , Position , wxSize , Size , long , WindowStyle )
 
 /*
- TODO : Expose more information of a list's layout etc. via appropriate objects (à la NotebookPageInfo)
+ TODO : Expose more information of a list's layout etc. via appropriate objects (a la NotebookPageInfo)
 */
 #else
 IMPLEMENT_DYNAMIC_CLASS(wxListCtrl, wxControl)
@@ -338,15 +338,21 @@ bool wxListCtrl::Create(wxWindow *parent,
     // GetTextColour will always return black
     SetTextColour(GetDefaultAttributes().colFg);
 
+    if ( InReportView() )
+        MSWSetExListStyles();
+
+    return true;
+}
+
+void wxListCtrl::MSWSetExListStyles()
+{
     // for comctl32.dll v 4.70+ we want to have some non default extended
     // styles because it's prettier (and also because wxGTK does it like this)
-    if ( InReportView() && wxApp::GetComCtl32Version() >= 470 )
+    if ( wxApp::GetComCtl32Version() >= 470 )
     {
         ::SendMessage(GetHwnd(), LVM_SETEXTENDEDLISTVIEWSTYLE,
                       0, LVS_EX_LABELTIP | LVS_EX_FULLROWSELECT | LVS_EX_SUBITEMIMAGES);
     }
-
-    return true;
 }
 
 WXDWORD wxListCtrl::MSWGetStyle(long style, WXDWORD *exstyle) const
@@ -445,6 +451,11 @@ void wxListCtrl::UpdateStyle()
         if ( dwStyleOld != dwStyleNew )
         {
             ::SetWindowLong(GetHwnd(), GWL_STYLE, dwStyleNew);
+
+            // if we switched to the report view, set the extended styles for
+            // it too
+            if ( !(dwStyleOld & LVS_REPORT) && (dwStyleNew & LVS_REPORT) )
+                MSWSetExListStyles();
         }
     }
 }
@@ -464,10 +475,8 @@ void wxListCtrl::FreeAllInternalData()
     }
 }
 
-wxListCtrl::~wxListCtrl()
+void wxListCtrl::DeleteEditControl()
 {
-    FreeAllInternalData();
-
     if ( m_textCtrl )
     {
         m_textCtrl->UnsubclassWin();
@@ -475,6 +484,13 @@ wxListCtrl::~wxListCtrl()
         delete m_textCtrl;
         m_textCtrl = NULL;
     }
+}
+
+wxListCtrl::~wxListCtrl()
+{
+    FreeAllInternalData();
+
+    DeleteEditControl();
 
     if (m_ownsImageListNormal)
         delete m_imageListNormal;
@@ -517,7 +533,7 @@ void wxListCtrl::SetWindowStyleFlag(long flag)
 {
     if ( flag != m_windowStyle )
     {
-        m_windowStyle = flag;
+        wxControl::SetWindowStyleFlag(flag);
 
         UpdateStyle();
 
@@ -675,6 +691,25 @@ int wxListCtrl::GetCountPerPage() const
 // Gets the edit control for editing labels.
 wxTextCtrl* wxListCtrl::GetEditControl() const
 {
+    // first check corresponds to the case when the label editing was started
+    // by user and hence m_textCtrl wasn't created by EditLabel() at all, while
+    // the second case corresponds to us being called from inside EditLabel()
+    // (e.g. from a user wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT handler): in this
+    // case EditLabel() did create the control but it didn't have an HWND to
+    // initialize it with yet
+    if ( !m_textCtrl || !m_textCtrl->GetHWND() )
+    {
+        HWND hwndEdit = ListView_GetEditControl(GetHwnd());
+        if ( hwndEdit )
+        {
+            wxListCtrl * const self = wx_const_cast(wxListCtrl *, this);
+
+            if ( !m_textCtrl )
+                self->m_textCtrl = new wxTextCtrl;
+            self->InitEditControl((WXHWND)hwndEdit);
+        }
+    }
+
     return m_textCtrl;
 }
 
@@ -1358,29 +1393,8 @@ void wxListCtrl::ClearAll()
         DeleteAllColumns();
 }
 
-wxTextCtrl* wxListCtrl::EditLabel(long item, wxClassInfo* textControlClass)
+void wxListCtrl::InitEditControl(WXHWND hWnd)
 {
-    wxASSERT( (textControlClass->IsKindOf(CLASSINFO(wxTextCtrl))) );
-
-    // ListView_EditLabel requires that the list has focus.
-    SetFocus();
-
-    WXHWND hWnd = (WXHWND) ListView_EditLabel(GetHwnd(), item);
-    if ( !hWnd )
-    {
-        // failed to start editing
-        return NULL;
-    }
-
-    // [re]create the text control wrapping the HWND we got
-    if ( m_textCtrl )
-    {
-        m_textCtrl->UnsubclassWin();
-        m_textCtrl->SetHWND(0);
-        delete m_textCtrl;
-    }
-
-    m_textCtrl = (wxTextCtrl *)textControlClass->CreateObject();
     m_textCtrl->SetHWND(hWnd);
     m_textCtrl->SubclassWin(hWnd);
     m_textCtrl->SetParent(this);
@@ -1390,6 +1404,38 @@ wxTextCtrl* wxListCtrl::EditLabel(long item, wxClassInfo* textControlClass)
     // this line and then pressing TAB while editing an item in  listctrl
     // inside a panel)
     m_textCtrl->SetWindowStyle(m_textCtrl->GetWindowStyle() | wxTE_PROCESS_TAB);
+}
+
+wxTextCtrl* wxListCtrl::EditLabel(long item, wxClassInfo* textControlClass)
+{
+    wxCHECK_MSG( textControlClass->IsKindOf(CLASSINFO(wxTextCtrl)), NULL,
+                  wxT("control used for label editing must be a wxTextCtrl") );
+
+    // ListView_EditLabel requires that the list has focus.
+    SetFocus();
+
+    // create m_textCtrl here before calling ListView_EditLabel() because it
+    // generates wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT event from inside it and
+    // the user handler for it can call GetEditControl() resulting in an on
+    // demand creation of a stock wxTextCtrl instead of the control of a
+    // (possibly) custom wxClassInfo
+    DeleteEditControl();
+    m_textCtrl = (wxTextCtrl *)textControlClass->CreateObject();
+
+    WXHWND hWnd = (WXHWND) ListView_EditLabel(GetHwnd(), item);
+    if ( !hWnd )
+    {
+        // failed to start editing
+        delete m_textCtrl;
+        m_textCtrl = NULL;
+
+        return NULL;
+    }
+
+    // if GetEditControl() hasn't been called, we need to initialize the edit
+    // control ourselves
+    if ( !m_textCtrl->GetHWND() )
+        InitEditControl(hWnd);
 
     return m_textCtrl;
 }
@@ -1745,7 +1791,7 @@ bool wxListCtrl::MSWShouldPreProcessMessage(WXMSG* msg)
             // We need VK_RETURN to generate wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             // but only if none of the modifiers is down.  We'll let normal
             // accelerators handle those.
-            if ( !wxIsCtrlDown() && !wxIsCtrlDown() &&
+            if ( !wxIsCtrlDown() && !wxIsShiftDown() &&
                  !((HIWORD(msg->lParam) & KF_ALTDOWN) == KF_ALTDOWN))
             return false;
         }
@@ -1851,28 +1897,40 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                     // where did the click occur?
                     POINT ptClick;
 #if defined(__WXWINCE__) && !defined(__HANDHELDPC__) && _WIN32_WCE < 400
-                  if(nmhdr->code == GN_CONTEXTMENU) {
-                      ptClick = ((NMRGINFO*)nmhdr)->ptAction;
-                  } else
+                    if ( nmhdr->code == GN_CONTEXTMENU )
+                    {
+                        ptClick = ((NMRGINFO*)nmhdr)->ptAction;
+                    }
+                    else
 #endif //__WXWINCE__
                     if ( !::GetCursorPos(&ptClick) )
                     {
                         wxLogLastError(_T("GetCursorPos"));
                     }
 
-                    if ( !::ScreenToClient(GetHwnd(), &ptClick) )
+                    // we need to use listctrl coordinates for the event point
+                    // but for comparison with Header_GetItemRect() result
+                    // below we need to use header window coordinates
+                    POINT ptClickList = ptClick;
+                    if ( ::ScreenToClient(GetHwnd(), &ptClickList) )
+                    {
+                        event.m_pointDrag.x = ptClickList.x;
+                        event.m_pointDrag.y = ptClickList.y;
+                    }
+                    else
+                    {
+                        wxLogLastError(_T("ScreenToClient(listctrl)"));
+                    }
+
+                    if ( !::ScreenToClient(hwndHdr, &ptClick) )
                     {
                         wxLogLastError(_T("ScreenToClient(listctrl header)"));
                     }
 
-                    event.m_pointDrag.x = ptClick.x;
-                    event.m_pointDrag.y = ptClick.y;
-
-                    int colCount = Header_GetItemCount(hwndHdr);
-
-                    RECT rect;
+                    const int colCount = Header_GetItemCount(hwndHdr);
                     for ( int col = 0; col < colCount; col++ )
                     {
+                        RECT rect;
                         if ( Header_GetItemRect(hwndHdr, col, &rect) )
                         {
                             if ( ::PtInRect(&rect, ptClick) )
@@ -2117,11 +2175,12 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                                              wxLIST_STATE_SELECTED);
 
                     // <Enter> or <Space> activate the selected item if any (but
-                    // not with Shift and/or Ctrl as then they have a predefined
-                    // meaning for the list view)
+                    // not with modified keys pressed as they have a predefined
+                    // meaning for the list view then)
                     if ( lItem != -1 &&
                          (wVKey == VK_RETURN || wVKey == VK_SPACE) &&
-                         !(wxIsShiftDown() || wxIsCtrlDown()) )
+                         !(wxIsShiftDown() || wxIsCtrlDown() ||
+                             (GetKeyState(VK_MENU) < 0)) )
                     {
                         eventType = wxEVT_COMMAND_LIST_ITEM_ACTIVATED;
                     }
@@ -2314,7 +2373,8 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                     if ( lvi.mask & LVIF_TEXT )
                     {
                         wxString text = OnGetItemText(item, lvi.iSubItem);
-                        wxStrncpy(lvi.pszText, text, lvi.cchTextMax);
+                        wxStrncpy(lvi.pszText, text, lvi.cchTextMax - 1);
+                        lvi.pszText[lvi.cchTextMax - 1] = _T('\0');
                     }
 
                     // see comment at the end of wxListCtrl::GetColumn()
@@ -2408,6 +2468,12 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
 // see comment at the end of wxListCtrl::GetColumn()
 #ifdef NM_CUSTOMDRAW // _WIN32_IE >= 0x0300
 
+#if defined(__VISUALC__) && __VISUALC__ >= 1400 && __VISUALC__ < 1500
+// Turn off optimizations for this function to avoid an ICE in the MSVC8
+// 64-bit compiler, observed with the compiler included with the PDSK-2003.
+// If there is a better way to test for this please do.
+#pragma optimize( "", off )
+#endif
 static RECT GetCustomDrawnItemRect(const NMCUSTOMDRAW& nmcd)
 {
     RECT rc;
@@ -2422,6 +2488,12 @@ static RECT GetCustomDrawnItemRect(const NMCUSTOMDRAW& nmcd)
 
     return rc;
 }
+
+#if defined(__VISUALC__) && __VISUALC__ >= 1400 && __VISUALC__ < 1500
+// Reset optimizations to their former setting
+#pragma optimize( "", on )
+#endif
+
 
 static
 bool HandleSubItemPrepaint(LPNMLVCUSTOMDRAW pLVCD, HFONT hfont, int colCount)

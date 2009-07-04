@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/04/05
-// RCS-ID:      $Id: artbrows.h 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: artbrows.h 51246 2008-01-16 12:56:37Z VZ $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,9 +15,9 @@
 #include "wx/dialog.h"
 #include "wx/artprov.h"
 
-class WXDLLEXPORT wxListCtrl;
-class WXDLLEXPORT wxListEvent;
-class WXDLLEXPORT wxStaticBitmap;
+class WXDLLIMPEXP_FWD_CORE wxListCtrl;
+class WXDLLIMPEXP_FWD_CORE wxListEvent;
+class WXDLLIMPEXP_FWD_CORE wxStaticBitmap;
 
 class wxArtBrowserDialog : public wxDialog
 {

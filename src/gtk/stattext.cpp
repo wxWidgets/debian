@@ -2,7 +2,7 @@
 // Name:        stattext.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: stattext.cpp 45132 2007-03-30 12:16:10Z VZ $
+// Id:          $Id: stattext.cpp 52973 2008-04-02 09:36:53Z VS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -124,7 +124,10 @@ void wxStaticText::SetLabel( const wxString &label )
 
     // adjust the label size to the new label unless disabled
     if ( !HasFlag(wxST_NO_AUTORESIZE) )
+    {
+        InvalidateBestSize();
         SetSize( GetBestSize() );
+    }
 }
 
 bool wxStaticText::SetFont( const wxFont &font )

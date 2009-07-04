@@ -6,7 +6,7 @@ Compiled file=wx.chm
 Default Window=wxHelp
 Default topic=wx_contents.html
 Index file=wx.hhk
-Title=wxWidgets 2.8.7: A portable C++ and Python GUI toolkit
+Title=wxWidgets 2.8.10: A portable C++ and Python GUI toolkit
 
 [WINDOWS]
 wxHelp=,"wx.hhc","wx.hhk","wx_contents.html",,,,,,0x2420,,0x380e,,,,,0,,,

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     27-Aug-1998
-// RCS-ID:      $Id: _toplvl.i 48168 2007-08-18 21:58:42Z KO $
+// RCS-ID:      $Id: _toplvl.i 53936 2008-06-02 19:33:42Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -175,6 +175,15 @@ public:
     }
 #endif
 
+    %extend {
+        long MacGetTopLevelWindowRef() {
+        #ifdef __WXMAC__
+            return (long)(self->MacGetTopLevelWindowRef());
+        #else
+            return 0;
+        #endif
+        }
+    }
 
     DocDeclStr(
         void , CenterOnScreen(int dir = wxBOTH),
@@ -474,12 +483,20 @@ public:
 //---------------------------------------------------------------------------
 %newgroup
 
+%{
+#define wxSPLASH_CENTER_ON_PARENT wxSPLASH_CENTRE_ON_PARENT
+#define wxSPLASH_CENTER_ON_SCREEN wxSPLASH_CENTRE_ON_SCREEN
+#define wxSPLASH_NO_CENTER wxSPLASH_NO_CENTRE
+%}
 
 enum
 {
     wxSPLASH_CENTRE_ON_PARENT,
     wxSPLASH_CENTRE_ON_SCREEN,
     wxSPLASH_NO_CENTRE,
+    wxSPLASH_CENTER_ON_PARENT,
+    wxSPLASH_CENTER_ON_SCREEN,
+    wxSPLASH_NO_CENTER,
     wxSPLASH_TIMEOUT,
     wxSPLASH_NO_TIMEOUT,
 };

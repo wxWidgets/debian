@@ -1,8 +1,8 @@
 """Base frame with menu."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: frame.py 44319 2007-01-26 07:17:30Z RD $"
-__revision__ = "$Revision: 44319 $"[11:-2]
+__cvsid__ = "$Id: frame.py 54257 2008-06-16 05:17:15Z RD $"
+__revision__ = "$Revision: 54257 $"[11:-2]
 
 import wx
 import os
@@ -736,7 +736,13 @@ class ShellFrameMixin:
             try:
                 name = os.path.join(self.dataDir, 'history')
                 f = file(name, 'w')
-                hist = '\x00\n'.join(self.shell.history)
+                hist = []
+                enc = wx.GetDefaultPyEncoding()
+                for h in self.shell.history:
+                    if isinstance(h, unicode):
+                        h = h.encode(enc)
+                    hist.append(h)
+                hist = '\x00\n'.join(hist)
                 f.write(hist)
                 f.close()
             except:

@@ -156,8 +156,11 @@ class SimpleGrid(gridlib.Grid): ##, mixins.GridAutoEditMixin):
 
     def OnRangeSelect(self, evt):
         if evt.Selecting():
-            self.log.write("OnRangeSelect: top-left %s, bottom-right %s\n" %
-                           (evt.GetTopLeftCoords(), evt.GetBottomRightCoords()))
+            msg = 'Selected'
+        else:
+            msg = 'Deselected'
+        self.log.write("OnRangeSelect: %s  top-left %s, bottom-right %s\n" %
+                           (msg, evt.GetTopLeftCoords(), evt.GetBottomRightCoords()))
         evt.Skip()
 
 
@@ -184,8 +187,12 @@ class SimpleGrid(gridlib.Grid): ##, mixins.GridAutoEditMixin):
 
 
     def OnSelectCell(self, evt):
-        self.log.write("OnSelectCell: (%d,%d) %s\n" %
-                       (evt.GetRow(), evt.GetCol(), evt.GetPosition()))
+        if evt.Selecting():
+            msg = 'Selected'
+        else:
+            msg = 'Deselected'
+        self.log.write("OnSelectCell: %s (%d,%d) %s\n" %
+                       (msg, evt.GetRow(), evt.GetCol(), evt.GetPosition()))
 
         # Another way to stay in a cell that has a bad value...
         row = self.GetGridCursorRow()
@@ -250,9 +257,8 @@ if __name__ == '__main__':
     app = InspectableApp(False)
     frame = TestFrame(None, sys.stdout)
     frame.Show(True)
-    #import wx.py
-    #shell = wx.py.shell.ShellFrame(frame, locals={'wx':wx, 'frame':frame})
-    #shell.Show()
+    #import wx.lib.inspection
+    #wx.lib.inspection.InspectionTool().Show()
     app.MainLoop()
 
 

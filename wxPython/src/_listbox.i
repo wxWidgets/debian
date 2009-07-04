@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _listbox.i 41057 2006-09-08 01:08:36Z RD $
+// RCS-ID:      $Id: _listbox.i 55024 2008-08-08 04:54:54Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -214,7 +214,54 @@ public:
     }
 #endif
 
-    %property(ItemHeight, GetItemHeight, doc="See `GetItemHeight`");
+    %pythoncode {
+        def GetChecked(self):
+            """
+            GetChecked(self)
+    
+            Return a tuple of integers corresponding to the checked items in
+            the control, based on `IsChecked`.
+            """
+            return tuple([i for i in range(self.Count) if self.IsChecked(i)])
+    
+        def GetCheckedStrings(self):
+            """
+            GetCheckedStrings(self)
+     
+            Return a tuple of strings corresponding to the checked
+            items of the control, based on `GetChecked`.
+            """
+            return tuple([self.GetString(i) for i in self.GetChecked()])
+    
+        def SetChecked(self, indexes):
+            """
+            SetChecked(self, indexes)
+
+            Sets the checked state of items if the index of the item is 
+            found in the indexes sequence.
+            """
+            for i in indexes:
+                assert 0 <= i < self.Count, "Index (%s) out of range" % i
+            for i in range(self.Count):
+                self.Check(i, i in indexes)
+
+        def SetCheckedStrings(self, strings):
+            """
+            SetCheckedStrings(self, indexes)
+
+            Sets the checked state of items if the item's string is found
+            in the strings sequence.
+            """
+            for s in strings:
+                assert s in self.GetStrings(), "String ('%s') not found" % s
+            for i in range(self.Count):
+                self.Check(i, self.GetString(i) in strings)
+
+        Checked = property(GetChecked,SetChecked)
+        CheckedStrings = property(GetCheckedStrings,SetCheckedStrings)
+    }
+    
+    %property(ItemHeight, GetItemHeight);
 };
 
 //---------------------------------------------------------------------------

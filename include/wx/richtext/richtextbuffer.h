@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2005-09-30
-// RCS-ID:      $Id: richtextbuffer.h 44399 2007-02-07 12:24:17Z JS $
+// RCS-ID:      $Id: richtextbuffer.h 58841 2009-02-12 10:16:07Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -70,6 +70,18 @@
 #include "wx/dataobj.h"
 #endif
 
+// Setting wxRICHTEXT_USE_OWN_CARET to 1 implements a non-flashing
+// cursor reliably without using wxClientDC in case there
+// are platform-specific problems with the generic caret.
+#if defined(wxMAC_USE_CORE_GRAPHICS) && wxMAC_USE_CORE_GRAPHICS
+#define wxRICHTEXT_USE_OWN_CARET 1
+#else
+#define wxRICHTEXT_USE_OWN_CARET 0
+#endif
+
+// Switch off for binary compatibility, on for faster drawing
+#define wxRICHTEXT_USE_OPTIMIZED_LINE_DRAWING 0
+
 /*!
  * Special characters
  */
@@ -91,19 +103,19 @@ extern WXDLLIMPEXP_RICHTEXT const wxChar wxRichTextLineBreakChar;
  * Forward declarations
  */
 
-class WXDLLIMPEXP_RICHTEXT wxRichTextCtrl;
-class WXDLLIMPEXP_RICHTEXT wxRichTextObject;
-class WXDLLIMPEXP_RICHTEXT wxRichTextCacheObject;
-class WXDLLIMPEXP_RICHTEXT wxRichTextObjectList;
-class WXDLLIMPEXP_RICHTEXT wxRichTextLine;
-class WXDLLIMPEXP_RICHTEXT wxRichTextParagraph;
-class WXDLLIMPEXP_RICHTEXT wxRichTextFileHandler;
-class WXDLLIMPEXP_RICHTEXT wxRichTextStyleSheet;
-class WXDLLIMPEXP_RICHTEXT wxTextAttrEx;
-class WXDLLIMPEXP_RICHTEXT wxRichTextListStyleDefinition;
-class WXDLLIMPEXP_RICHTEXT wxRichTextEvent;
-class WXDLLIMPEXP_RICHTEXT wxRichTextRenderer;
-class WXDLLIMPEXP_RICHTEXT wxRichTextBuffer;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextCtrl;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextObject;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextCacheObject;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextObjectList;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextLine;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextParagraph;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextFileHandler;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextStyleSheet;
+class WXDLLIMPEXP_FWD_RICHTEXT wxTextAttrEx;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextListStyleDefinition;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextEvent;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextRenderer;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextBuffer;
 
 /*!
  * Flags determining the available space, passed to Layout
@@ -148,6 +160,8 @@ class WXDLLIMPEXP_RICHTEXT wxRichTextBuffer;
 
 #define wxRICHTEXT_FORMATTED        0x01
 #define wxRICHTEXT_UNFORMATTED      0x02
+#define wxRICHTEXT_CACHE_SIZE       0x04
+#define wxRICHTEXT_HEIGHT_ONLY      0x08
 
 /*!
  * Flags for SetStyle/SetListStyle
@@ -192,6 +206,7 @@ class WXDLLIMPEXP_RICHTEXT wxRichTextBuffer;
 
 #define wxRICHTEXT_INSERT_NONE                              0x00
 #define wxRICHTEXT_INSERT_WITH_PREVIOUS_PARAGRAPH_STYLE     0x01
+#define wxRICHTEXT_INSERT_INTERACTIVE                       0x02
 
 /*!
  * Extra formatting flags not in wxTextAttr
@@ -211,6 +226,11 @@ class WXDLLIMPEXP_RICHTEXT wxRichTextBuffer;
 #define wxTEXT_ATTR_PAGE_BREAK              0x00400000
 #define wxTEXT_ATTR_EFFECTS                 0x00800000
 #define wxTEXT_ATTR_OUTLINE_LEVEL           0x01000000
+
+// A special flag telling the buffer to keep the first paragraph style
+// as-is, when deleting a paragraph marker. In future we might pass a
+// flag to InsertFragment and DeleteRange to indicate the appropriate mode.
+#define wxTEXT_ATTR_KEEP_FIRST_PARA_STYLE   0x10000000
 
 /*!
  * Styles for wxTextAttrEx::SetBulletStyle
@@ -272,6 +292,12 @@ class WXDLLIMPEXP_RICHTEXT wxRichTextBuffer;
 #define wxTEXT_ATTR_ALL (wxTEXT_ATTR_CHARACTER|wxTEXT_ATTR_PARAGRAPH)
 
 /*!
+ * Default superscript/subscript font multiplication factor
+ */
+
+#define wxSCRIPT_MUL_FACTOR             1.5
+
+/*!
  * wxRichTextRange class declaration
  * This stores beginning and end positions for a range of data.
  */
@@ -288,7 +314,7 @@ public:
 
     void operator =(const wxRichTextRange& range) { m_start = range.m_start; m_end = range.m_end; }
     bool operator ==(const wxRichTextRange& range) const { return (m_start == range.m_start && m_end == range.m_end); }
-    bool operator !=(const wxRichTextRange& range) const { return (m_start != range.m_start && m_end != range.m_end); }
+    bool operator !=(const wxRichTextRange& range) const { return (m_start != range.m_start || m_end != range.m_end); }
     wxRichTextRange operator -(const wxRichTextRange& range) const { return wxRichTextRange(m_start - range.m_start, m_end - range.m_end); }
     wxRichTextRange operator +(const wxRichTextRange& range) const { return wxRichTextRange(m_start + range.m_start, m_end + range.m_end); }
 
@@ -567,7 +593,7 @@ public:
     // accessors
     bool HasTextColour() const { return m_colText.Ok() && HasFlag(wxTEXT_ATTR_TEXT_COLOUR) ; }
     bool HasBackgroundColour() const { return m_colBack.Ok() && HasFlag(wxTEXT_ATTR_BACKGROUND_COLOUR) ; }
-    bool HasAlignment() const { return (m_textAlignment != wxTEXT_ALIGNMENT_DEFAULT) || ((m_flags & wxTEXT_ATTR_ALIGNMENT) != 0) ; }
+    bool HasAlignment() const { return (m_textAlignment != wxTEXT_ALIGNMENT_DEFAULT) && ((m_flags & wxTEXT_ATTR_ALIGNMENT) != 0) ; }
     bool HasTabs() const { return (m_flags & wxTEXT_ATTR_TABS) != 0 ; }
     bool HasLeftIndent() const { return (m_flags & wxTEXT_ATTR_LEFT_INDENT) != 0 ; }
     bool HasRightIndent() const { return (m_flags & wxTEXT_ATTR_RIGHT_INDENT) != 0 ; }
@@ -1045,7 +1071,7 @@ public:
     virtual int GetParagraphLength(long paragraphNumber) const;
 
     /// Get the number of paragraphs
-    virtual int GetParagraphCount() const { return GetChildCount(); }
+    virtual int GetParagraphCount() const { return wx_static_cast(int, GetChildCount()); }
 
     /// Get the number of visible lines
     virtual int GetLineCount() const;
@@ -1230,6 +1256,11 @@ public:
     void SetDescent(int descent) { m_descent = descent; }
     int GetDescent() const { return m_descent; }
 
+#if wxRICHTEXT_USE_OPTIMIZED_LINE_DRAWING
+    wxArrayInt& GetObjectSizes() { return m_objectSizes; }
+    const wxArrayInt& GetObjectSizes() const { return m_objectSizes; }
+#endif
+
 // Operations
 
     /// Initialisation
@@ -1256,6 +1287,11 @@ protected:
 
     // The parent object
     wxRichTextParagraph* m_parent;
+
+    // Sizes of the objects within a line so we don't have to get text extents
+#if wxRICHTEXT_USE_OPTIMIZED_LINE_DRAWING
+    wxArrayInt          m_objectSizes;
+#endif
 };
 
 WX_DECLARE_LIST_WITH_DECL( wxRichTextLine, wxRichTextLineList , class WXDLLIMPEXP_RICHTEXT );
@@ -1460,8 +1496,8 @@ protected:
  * wxRichTextImageBlock stores information about an image, in binary in-memory form
  */
 
-class WXDLLIMPEXP_BASE wxDataInputStream;
-class WXDLLIMPEXP_BASE wxDataOutputStream;
+class WXDLLIMPEXP_FWD_BASE wxDataInputStream;
+class WXDLLIMPEXP_FWD_BASE wxDataOutputStream;
 
 class WXDLLIMPEXP_RICHTEXT wxRichTextImageBlock: public wxObject
 {
@@ -1608,8 +1644,8 @@ protected:
  * This is a kind of box, used to represent the whole buffer
  */
 
-class WXDLLIMPEXP_RICHTEXT wxRichTextCommand;
-class WXDLLIMPEXP_RICHTEXT wxRichTextAction;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextCommand;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextAction;
 
 class WXDLLIMPEXP_RICHTEXT wxRichTextBuffer: public wxRichTextParagraphLayoutBox
 {
@@ -1998,7 +2034,7 @@ enum wxRichTextCommandId
  *
  */
 
-class WXDLLIMPEXP_RICHTEXT wxRichTextAction;
+class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextAction;
 class WXDLLIMPEXP_RICHTEXT wxRichTextCommand: public wxCommand
 {
 public:
@@ -2046,6 +2082,11 @@ public:
 
     /// Replace the buffer paragraphs with the given fragment.
     void ApplyParagraphs(const wxRichTextParagraphLayoutBox& fragment);
+
+#if wxABI_VERSION >= 20808
+    // Create arrays to be used in refresh optimization
+    void CalculateRefreshOptimizations(wxArrayInt& optimizationLineCharPositions, wxArrayInt& optimizationLineYPositions);
+#endif
 
     /// Get the fragments
     wxRichTextParagraphLayoutBox& GetNewParagraphs() { return m_newParagraphs; }
@@ -2110,6 +2151,10 @@ protected:
 // Don't write header and footer (or BODY), so we can include the fragment
 // in a larger document
 #define wxRICHTEXT_HANDLER_NO_HEADER_FOOTER         0x0080
+
+// Convert the more common face names to names that will work on the current platform
+// in a larger document
+#define wxRICHTEXT_HANDLER_CONVERT_FACENAMES        0x0100
 
 /*!
  * wxRichTextFileHandler

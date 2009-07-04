@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 A Bounding Box object and assorted utilities , subclassed from a numpy array
 
@@ -60,6 +62,8 @@ class BBox(N.ndarray):
         If they are just touching, returns True
         """
 
+        if N.isinf(self).all() or N.isinf(BB).all():
+            return True
         if ( (self[1,0] >= BB[0,0]) and (self[0,0] <= BB[1,0]) and
              (self[1,1] >= BB[0,1]) and (self[0,1] <= BB[1,1]) ):
             return True
@@ -83,17 +87,59 @@ class BBox(N.ndarray):
         else:
             return False
     
+    def PointInside(self, Point):
+        """
+        Inside(BB):
+
+        Tests if the given Point is entirely inside this one.
+
+        Returns True if it is entirely inside, or touching the
+        border.
+
+        Returns False otherwise
+        
+        Point is any length-2 sequence (tuple, list, array) or two numbers
+        """
+        if Point[0] >= self[0,0] and \
+               Point[0] <= self[1,0] and \
+               Point[1] <= self[1,1] and \
+               Point[1] >= self[0,1]:
+            return True
+        else:
+            return False
+    
     def Merge(self, BB):
         """
         Joins this bounding box with the one passed in, maybe making this one bigger
 
         """ 
-
-        if BB[0,0] < self[0,0]: self[0,0] = BB[0,0]
-        if BB[0,1] < self[0,1]: self[0,1] = BB[0,1]
-        if BB[1,0] > self[1,0]: self[1,0] = BB[1,0]
-        if BB[1,1] > self[1,1]: self[1,1] = BB[1,1]
+        if self.IsNull():
+            self[:] = BB
+        elif N.isnan(BB).all(): ## BB may be a regular array, so I can't use IsNull
+            pass
+        else:
+            if BB[0,0] < self[0,0]: self[0,0] = BB[0,0]
+            if BB[0,1] < self[0,1]: self[0,1] = BB[0,1]
+            if BB[1,0] > self[1,0]: self[1,0] = BB[1,0]
+            if BB[1,1] > self[1,1]: self[1,1] = BB[1,1]
+        
+        return None
     
+    def IsNull(self):
+        return N.isnan(self).all()
+
+    def _getWidth(self):
+        return self[1,0] - self[0,0]
+
+    def _getHeight(self):
+        return self[1,1] - self[0,1]
+        
+    Width = property(_getWidth)
+    Height = property(_getHeight)
+    
+    def _getCenter(self):
+        return self.sum(0) / 2.0
+    Center = property(_getCenter)
     ### This could be used for a make BB from a bunch of BBs
 
     #~ def _getboundingbox(bboxarray): # lrk: added this
@@ -113,9 +159,12 @@ class BBox(N.ndarray):
         A == B if and only if all the entries are the same
 
         """
-        return N.all(self.Array__eq__(BB))
+        if self.IsNull() and N.isnan(BB).all(): ## BB may be a regular array, so I can't use IsNull
+            return True
+        else:
+            return self.Array__eq__(BB).all()
         
-
+   
 def asBBox(data):
     """
     returns a BBox object.
@@ -165,6 +214,29 @@ def fromBBArray(BBarray):
    return asBBox(arr)
    #return asBBox( (upperleft, lowerright) ) * 2
    
-   
+def NullBBox():
+    """
+    Returns a BBox object with all NaN entries.
+    
+    This represents a Null BB box;
+    
+    BB merged with it will return BB.
+    
+    Nothing is inside it.
+
+    """
+
+    arr = N.array(((N.nan, N.nan),(N.nan, N.nan)), N.float)
+    return N.ndarray.__new__(BBox, shape=arr.shape, dtype=arr.dtype, buffer=arr)
+
+def InfBBox():
+    """
+    Returns a BBox object with all -inf and inf entries
+
+    """
+
+    arr = N.array(((-N.inf, -N.inf),(N.inf, N.inf)), N.float)
+    return N.ndarray.__new__(BBox, shape=arr.shape, dtype=arr.dtype, buffer=arr)
+
    
    

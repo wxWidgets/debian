@@ -8,7 +8,7 @@
 // Author:      Robin Dunn
 //
 // Created:     14-Dec-2000
-// RCS-ID:      $Id: wxPython.h 46278 2007-06-02 23:37:34Z RD $
+// RCS-ID:      $Id: wxPython.h 51090 2008-01-08 04:36:23Z RD $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,6 @@ inline wxPyCoreAPI* wxPyGetCoreAPIPtr()
 #define wxPyEndBlockThreads(a)                  (wxPyGetCoreAPIPtr()->p_wxPyEndBlockThreads(a))
 
 #define wxPyConstructObject(a,b,c)              (wxPyGetCoreAPIPtr()->p_wxPyConstructObject(a,b,c))
-#define wxPy_ConvertList(a)                     (wxPyGetCoreAPIPtr()->p_wxPy_ConvertList(a))
                                          
 #define wxString_in_helper(a)                   (wxPyGetCoreAPIPtr()->p_wxString_in_helper(a))
 #define Py2wxString(a)                          (wxPyGetCoreAPIPtr()->p_Py2wxString(a))

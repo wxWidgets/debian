@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _log.i 46662 2007-06-23 05:30:56Z RD $
+// RCS-ID:      $Id: _log.i 60301 2009-04-24 05:26:59Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -209,7 +209,10 @@ public:
 class wxLogChain : public wxLog
 {
 public:
+    %disownarg( wxLog* pLogger );
     wxLogChain(wxLog *logger);
+    %cleardisown( wxLog* pLogger );
+
     void SetLog(wxLog *logger);
     void PassMessages(bool bDoPass);
     bool IsPassingMessages();

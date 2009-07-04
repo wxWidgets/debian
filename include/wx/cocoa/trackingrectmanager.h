@@ -5,7 +5,7 @@
 // Author:      David Elliott <dfe@cox.net>
 // Modified by:
 // Created:     2007/05/02
-// RCS-ID:      $Id: trackingrectmanager.h 48170 2007-08-19 03:37:08Z DE $
+// RCS-ID:      $Id: trackingrectmanager.h 51595 2008-02-08 09:12:04Z DE $
 // Copyright:   (c) 2007 Software 2000 Ltd.
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ public:
 protected:
     wxWindow *m_window;
     bool m_isTrackingRectActive;
-    int m_trackingRectTag;
+    NSInteger m_trackingRectTag;
     NSRect m_trackingRectInWindowCoordinates;
 private:
     wxCocoaTrackingRectManager();

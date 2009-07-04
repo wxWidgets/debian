@@ -3,7 +3,7 @@
 // Purpose:     wxXmlDocument - XML parser & data holder class
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xml.h 49563 2007-10-31 20:46:21Z VZ $
+// RCS-ID:      $Id: xml.h 59768 2009-03-23 12:35:12Z VZ $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -115,7 +115,10 @@ public:
     wxXmlNode(wxXmlNodeType type, const wxString& name,
               const wxString& content = wxEmptyString);
     virtual void AddChild(wxXmlNode *child);
-    virtual bool InsertChild(wxXmlNode *child, wxXmlNode *before_node);
+    virtual bool InsertChild(wxXmlNode *child, wxXmlNode *followingNode);
+#if wxABI_VERSION >= 20808
+    bool InsertChildAfter(wxXmlNode *child, wxXmlNode *precedingNode);
+#endif
     virtual bool RemoveChild(wxXmlNode *child);
     virtual void AddProperty(const wxString& name, const wxString& value);
     virtual bool DeleteProperty(const wxString& name);
@@ -155,6 +158,26 @@ public:
 
     void SetProperties(wxXmlProperty *prop) { m_properties = prop; }
     virtual void AddProperty(wxXmlProperty *prop);
+
+#if wxABI_VERSION >= 20811
+    wxString GetAttribute(const wxString& attrName,
+                         const wxString& defaultVal) const
+    {
+        return GetPropVal(attrName, defaultVal);
+    }
+    bool GetAttribute(const wxString& attrName, wxString *value) const
+    {
+        return GetPropVal(attrName, value);
+    }
+    void AddAttribute(const wxString& attrName, const wxString& value)
+    {
+        AddProperty(attrName, value);
+    }
+    wxXmlProperty* GetAttributes() const
+    { 
+        return GetProperties();
+    }
+#endif // wx >= 2.8.11
 
 private:
     wxXmlNodeType m_type;

@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Modified:    VZ at 05.10.00: use AllocExclusive(), comparison fixed
-// Id:          $Id: region.cpp 41429 2006-09-25 11:47:23Z VZ $
+// Id:          $Id: region.cpp 51183 2008-01-12 20:28:56Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -187,7 +187,9 @@ bool wxRegion::DoUnionWithRect(const wxRect& r)
         rect.width = r.width;
         rect.height = r.height;
 
-        gdk_region_union_with_rect( M_REGIONDATA->m_region, &rect );
+        GdkRegion *reg = gdk_region_union_with_rect( M_REGIONDATA->m_region, &rect );
+        gdk_region_destroy( M_REGIONDATA->m_region );
+        M_REGIONDATA->m_region = reg;
     }
 
     return TRUE;

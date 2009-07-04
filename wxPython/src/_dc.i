@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _dc.i 43551 2006-11-21 03:32:49Z RD $
+// RCS-ID:      $Id: _dc.i 60608 2009-05-12 20:38:58Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -379,7 +379,7 @@ screen is damaged.", "
     %Rename(SetClippingRegionAsRegion, void, SetClippingRegion(const wxRegion& region));
     %Rename(SetClippingRect, void, SetClippingRegion(const wxRect& rect));
 
-
+    void SetDeviceClippingRegion(const wxRegion& region);
     
     DocDeclAStr(
         void , DrawLines(int points, wxPoint* points_array,
@@ -1003,8 +1003,46 @@ supported.", "");
     long GetHDC();
 #endif
 
+#ifdef __WXMAC__
+    %extend {
+        void* GetCGContext() {
+            void* cgctx = NULL;
+#if 1
+            wxGraphicsContext* gc = self->GetGraphicsContext();
+            if (gc) {
+                cgctx = gc->GetNativeContext();
+            }
+#else
+            wxMemoryDC* mdc = wxDynamicCast(self, wxMemoryDC);
+            wxWindowDC* wdc = wxDynamicCast(self, wxWindowDC);
+            if (mdc) {
+                wxGraphicsContext* gc = self->GetGraphicsContext();
+                if (gc)
+                    cgctx = gc->GetNativeContext();
+            }
+            else if (wdc) {
+                wxWindow* win = wdc->GetWindow();
+                if (win)
+                    cgctx = win->MacGetCGContextRef();
+            }
+#endif
+            return cgctx;
+        }
+    }
+#endif
 
-    %extend { // See drawlist.cpp for impplementaion of these...
+#ifdef __WXGTK__
+    %extend {
+        void* GetGdkDrawable() {
+            // TODO: Is this always non-null?  if not then we can check
+            // GetSelectedBitmap and get the GdkPixmap from it, as that is a
+            // drawable too.
+            return self->GetGDKWindow();
+        }
+    }    
+#endif
+
+    %extend { // See drawlist.cpp for implementaion of these...
         PyObject* _DrawPointList(PyObject* pyCoords, PyObject* pyPens, PyObject* pyBrushes)
         {
             return wxPyDrawXXXList(*self, wxPyDrawXXXPoint, pyCoords, pyPens, pyBrushes);
@@ -1663,16 +1701,26 @@ public:
 };
 
 
-%newobject wxAutoBufferedPaintDCFactory;
-DocDeclStr(
-    wxDC* , wxAutoBufferedPaintDCFactory(wxWindow* window),
+%newobject _wxPyAutoBufferedPaintDCFactory;
+%rename(AutoBufferedPaintDCFactory) _wxPyAutoBufferedPaintDCFactory;
+DocStr(_wxPyAutoBufferedPaintDCFactory,
     "Checks if the window is natively double buffered and will return a
 `wx.PaintDC` if it is, a `wx.BufferedPaintDC` otherwise.  The advantage of
 this function over `wx.AutoBufferedPaintDC` is that this function will check
 if the the specified window has double-buffering enabled rather than just
 going by platform defaults.", "");
-
-
+%inline %{
+    wxDC* _wxPyAutoBufferedPaintDCFactory(wxWindow* window)
+    {
+        if (window)
+            return wxAutoBufferedPaintDCFactory(window);
+        else {
+            wxPyErr_SetString(PyExc_ValueError, "Valid window required.");
+            return NULL;
+        }
+    }
+%}
+                
 
 //---------------------------------------------------------------------------
 %newgroup
@@ -1749,6 +1797,8 @@ public:
     wxMetaFile(const wxString& filename = wxPyEmptyString);
     ~wxMetaFile();
 
+    bool Play(wxDC *dc);
+
     bool IsOk();
     %pythoncode { Ok = IsOk }
     bool SetClipboard(int width = 0, int height = 0);
@@ -1773,6 +1823,8 @@ public:
     wxMetaFileDC(const wxString& filename = wxPyEmptyString,
                  int width = 0, int height = 0,
                  const wxString& description = wxPyEmptyString);
+
+    %newobject Close;
     wxMetaFile* Close();
 };
 
@@ -1798,6 +1850,7 @@ public:
 class wxMetaFile : public wxObject {
 public:
     wxMetaFile(const wxString& filename = wxPyEmptyString);
+    ~wxMetaFile();
 };
 
 class wxMetaFileDC : public wxDC {
@@ -1837,6 +1890,37 @@ public:
     wxPrinterDC(const wxPrintData& printData);
 };
 #endif
+
+
+
+#ifdef __WXGTK__
+%{
+#if wxUSE_LIBGNOMEPRINT
+    #include <wx/gtk/gnome/gprint.h>
+#else
+    class wxGnomePrintDC: public wxClientDC
+    {
+    public:
+        wxGnomePrintDC( const wxPrintData& ) { wxPyRaiseNotImplemented(); } 
+
+        static void SetResolution(int) {  wxPyRaiseNotImplemented(); } 
+        static int GetResolution() {  wxPyRaiseNotImplemented();  return -1; }
+    };
+#endif
+%}
+
+class wxGnomePrintDC: public wxDC
+{
+public:
+    wxGnomePrintDC( const wxPrintData& data );
+
+    static void SetResolution(int ppi);
+    static int GetResolution();
+};
+#endif
+
+
+
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

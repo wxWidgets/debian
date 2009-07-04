@@ -5,7 +5,7 @@
 // Modified by: Vadim Zeitlin on 31.08.00: wxScrollHelper allows to implement.
 //              Ron Lee on 10.4.02:  virtual size / auto scrollbars et al.
 // Created:     01/02/97
-// RCS-ID:      $Id: scrlwing.cpp 47783 2007-07-28 16:55:01Z RD $
+// RCS-ID:      $Id: scrlwing.cpp 60600 2009-05-12 10:33:49Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __VMS
-#define XtDisplay XTDISPLAY
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -39,6 +35,7 @@
         #include "wx/timer.h"
     #endif
     #include "wx/sizer.h"
+    #include "wx/settings.h"
 #endif
 
 #ifdef __WXMAC__
@@ -242,6 +239,12 @@ bool wxScrollHelperEvtHandler::ProcessEvent(wxEvent& event)
     if ( evType == wxEVT_PAINT )
     {
         m_scrollHelper->HandleOnPaint((wxPaintEvent &)event);
+        return true;
+    }
+
+    if ( evType == wxEVT_CHILD_FOCUS )
+    {
+        m_scrollHelper->HandleOnChildFocus((wxChildFocusEvent &)event);
         return true;
     }
 
@@ -1058,14 +1061,12 @@ wxScrollHelper::ScrollGetWindowSizeForVirtualSize(const wxSize& size) const
     GetScrollPixelsPerUnit(&ppuX, &ppuY);
 
     wxSize minSize = m_win->GetMinSize();
-    if ( !minSize.IsFullySpecified() )
-        minSize = m_win->GetSize();
 
     wxSize best(size);
     if (ppuX > 0)
-        best.x = minSize.x;
+        best.x = minSize.x + wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
     if (ppuY > 0)
-        best.y = minSize.y;
+        best.y = minSize.y + wxSystemSettings::GetMetric(wxSYS_HSCROLL_Y);
 
     return best;
 }
@@ -1338,6 +1339,147 @@ void wxScrollHelper::HandleOnMouseWheel(wxMouseEvent& event)
 }
 
 #endif // wxUSE_MOUSEWHEEL
+
+void wxScrollHelper::HandleOnChildFocus(wxChildFocusEvent& event)
+{
+    // this event should be processed by all windows in parenthood chain,
+    // e.g. so that nested wxScrolledWindows work correctly
+    event.Skip();
+
+    // find the immediate child under which the window receiving focus is:
+    wxWindow *win = event.GetWindow();
+
+    if ( win == m_targetWindow )
+        return; // nothing to do
+
+#ifdef __WXMAC__
+    if (wxDynamicCast(win, wxScrollBar))
+        return;
+#endif
+
+    // Fixing ticket: http://trac.wxwidgets.org/ticket/9563
+    // When a child inside a wxControlContainer receives a focus, the
+    // wxControlContainer generates an artificial wxChildFocusEvent for
+    // itself, telling its parent that 'it' received the focus. The effect is
+    // that this->HandleOnChildFocus is called twice, first with the
+    // artificial wxChildFocusEvent and then with the original event.  We need
+    // to ignore the artificial event here or otherwise HandleOnChildFocus
+    // would first scroll the target window to make the entire
+    // wxControlContainer visible and immediately afterwards scroll the target
+    // window again to make the child widget visible. This leads to ugly
+    // flickering when using nested wxPanels/wxScrolledWindows.
+    //
+    // Ignore this event if 'win' is derived from wxControlContainer AND its
+    // parent is the m_targetWindow AND 'win' is not actually reciving the
+    // focus (win != FindFocus).  TODO: This affects all wxControlContainer
+    // objects, but wxControlContainer is not part of the wxWidgets RTTI and
+    // so wxDynamicCast(win, wxControlContainer) does not compile.  Find a way
+    // to determine if 'win' derives from wxControlContainer. Until then,
+    // testing if 'win' derives from wxPanel will probably get >90% of all
+    // cases.
+
+    wxWindow *actual_focus=wxWindow::FindFocus();
+    if (win != actual_focus &&
+        wxDynamicCast(win, wxPanel) != 0 &&
+        win->GetParent() == m_targetWindow)
+        // if win is a wxPanel and receives the focus, it should not be
+        // scrolled into view
+        return; 
+
+    const wxRect viewRect(m_targetWindow->GetClientRect());
+
+    // For composite controls such as wxComboCtrl we should try to fit the
+    // entire control inside the visible area of the target window, not just
+    // the focused child of the control. Otherwise we'd make only the textctrl
+    // part of a wxComboCtrl visible and the button would still be outside the
+    // scrolled area.  But do so only if the parent fits *entirely* inside the
+    // scrolled window. In other situations, such as nested wxPanel or
+    // wxScrolledWindows, the parent might be way to big to fit inside the
+    // scrolled window. If that is the case, then make only the focused window
+    // visible
+    if ( win->GetParent() != m_targetWindow)
+    {
+        wxWindow *parent=win->GetParent();
+        wxSize parent_size=parent->GetSize();
+        if (parent_size.GetWidth() <= viewRect.GetWidth() &&
+            parent_size.GetHeight() <= viewRect.GetHeight())
+            // make the immediate parent visible instead of the focused control
+            win=parent; 
+    }
+
+    // make win position relative to the m_targetWindow viewing area instead of
+    // its parent
+    const wxRect
+        winRect(m_targetWindow->ScreenToClient(win->GetScreenPosition()),
+                win->GetSize());
+
+    // check if it's fully visible
+    if ( viewRect.Contains(winRect) )
+    {
+        // it is, nothing to do
+        return;
+    }
+
+    // check if we can make it fully visible: this is only possible if it's not
+    // larger than our view area
+    if ( winRect.GetWidth() > viewRect.GetWidth() ||
+            winRect.GetHeight() > viewRect.GetHeight() )
+    {
+        // we can't make it fit so avoid scrolling it at all, this is only
+        // going to be confusing and not helpful
+        return;
+    }
+
+
+    // do make the window fit inside the view area by scrolling to it
+    int stepx, stepy;
+    GetScrollPixelsPerUnit(&stepx, &stepy);
+
+    int startx, starty;
+    GetViewStart(&startx, &starty);
+
+    // first in vertical direction:
+    if ( stepy > 0 )
+    {
+        int diff = 0;
+
+        if ( winRect.GetTop() < 0 )
+        {
+            diff = winRect.GetTop();
+        }
+        else if ( winRect.GetBottom() > viewRect.GetHeight() )
+        {
+            diff = winRect.GetBottom() - viewRect.GetHeight() + 1;
+            // round up to next scroll step if we can't get exact position,
+            // so that the window is fully visible:
+            diff += stepy - 1;
+        }
+
+        starty = (starty * stepy + diff) / stepy;
+    }
+
+    // then horizontal:
+    if ( stepx > 0 )
+    {
+        int diff = 0;
+
+        if ( winRect.GetLeft() < 0 )
+        {
+            diff = winRect.GetLeft();
+        }
+        else if ( winRect.GetRight() > viewRect.GetWidth() )
+        {
+            diff = winRect.GetRight() - viewRect.GetWidth() + 1;
+            // round up to next scroll step if we can't get exact position,
+            // so that the window is fully visible:
+            diff += stepx - 1;
+        }
+
+        startx = (startx * stepx + diff) / stepx;
+    }
+
+    Scroll(startx, starty);
+}
 
 // ----------------------------------------------------------------------------
 // wxScrolledWindow implementation

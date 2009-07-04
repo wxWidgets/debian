@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-May-1998
-// RCS-ID:      $Id: _event.i 44535 2007-02-20 02:27:07Z RD $
+// RCS-ID:      $Id: _event.i 60608 2009-05-12 20:38:58Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1873,7 +1873,8 @@ public:
 
     void SetShow(bool show);
     bool GetShow() const;
-
+    bool IsShown() const;
+    
     %property(Show, GetShow, SetShow, doc="See `GetShow` and `SetShow`");
 };
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2005-09-30
-// RCS-ID:      $Id: richtextxml.cpp 49076 2007-10-07 14:12:33Z JS $
+// RCS-ID:      $Id: richtextxml.cpp 53990 2008-06-06 15:21:35Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -173,7 +173,7 @@ bool wxRichTextXMLHandler::ImportXML(wxRichTextBuffer* buffer, wxXmlNode* node)
             else if (childName == wxT("image"))
             {
                 int imageType = wxBITMAP_TYPE_PNG;
-                wxString value = node->GetPropVal(wxT("imagetype"), wxEmptyString);
+                wxString value = child->GetPropVal(wxT("imagetype"), wxEmptyString);
                 if (!value.empty())
                     imageType = wxAtoi(value);
 
@@ -200,6 +200,7 @@ bool wxRichTextXMLHandler::ImportXML(wxRichTextBuffer* buffer, wxXmlNode* node)
                 if (!data.empty())
                 {
                     wxRichTextImage* imageObj = new wxRichTextImage(para);
+                    GetStyle(imageObj->GetAttributes(), child, false);
                     para->AppendChild(imageObj);
 
                     wxStringInputStream strStream(data);
@@ -490,6 +491,59 @@ static void OutputStringEnt(wxOutputStream& stream, const wxString& str,
     OutputString(stream, str.Mid(last, i - last), convMem, convFile);
 }
 
+static wxString AttributeToXML(const wxString& str)
+{
+    wxString str1;
+    size_t i, last, len;
+    wxChar c;
+
+    len = str.Len();
+    last = 0;
+    for (i = 0; i < len; i++)
+    {
+        c = str.GetChar(i);
+
+        // Original code excluded "&amp;" but we _do_ want to convert
+        // the ampersand beginning &amp; because otherwise when read in,
+        // the original "&amp;" becomes "&".
+
+        if (c == wxT('<') || c == wxT('>') || c == wxT('"') ||
+            (c == wxT('&') /* && (str.Mid(i+1, 4) != wxT("amp;")) */ ))
+        {
+            str1 += str.Mid(last, i - last);
+            switch (c)
+            {
+            case wxT('<'):
+                str1 += wxT("&lt;");
+                break;
+            case wxT('>'):
+                str1 += wxT("&gt;");
+                break;
+            case wxT('&'):
+                str1 += wxT("&amp;");
+                break;
+            case wxT('"'):
+                str1 += wxT("&quot;");
+                break;
+            default: break;
+            }
+            last = i + 1;
+        }
+        else if (wxUChar(c) > 127)
+        {
+            str1 += str.Mid(last, i - last);
+
+            wxString s(wxT("&#"));
+            s << (int) c;
+            s << wxT(";");
+            str1 += s;
+            last = i + 1;
+        }
+    }
+    str1 += str.Mid(last, i - last);
+    return str1;
+}
+
 inline static void OutputIndentation(wxOutputStream& stream, int indent)
 {
     wxString str = wxT("\n");
@@ -651,10 +705,19 @@ bool wxRichTextXMLHandler::ExportXML(wxOutputStream& stream, wxMBConv* convMem, 
         int last = 0;
         const wxString& text = textObj.GetText();
         int len = (int) text.Length();
-        for (i = 0; i < len; i++)
+
+        if (len == 0)
+        {
+            i = 0;
+            OutputIndentation(stream, indent);
+            OutputString(stream, wxT("<") + objectName, convMem, convFile);
+            OutputString(stream, style + wxT(">"), convMem, convFile);
+            OutputString(stream, wxT("</text>"), convMem, convFile);
+        }
+        else for (i = 0; i < len; i++)
         {
             int c = (int) text[i];
-            if (c < 32 && c != 9 && c != 10 && c != 13)
+            if ((c < 32 || c == 34) && c != 9 && c != 10 && c != 13)
             {
                 if (i > 0)
                 {
@@ -719,6 +782,8 @@ bool wxRichTextXMLHandler::ExportXML(wxOutputStream& stream, wxMBConv* convMem, 
     {
         wxRichTextImage& imageObj = (wxRichTextImage&) obj;
 
+        wxString style = CreateStyle(obj.GetAttributes(), false);
+
         if (imageObj.GetImage().Ok() && !imageObj.GetImageBlock().Ok())
             imageObj.MakeBlock();
 
@@ -727,11 +792,11 @@ bool wxRichTextXMLHandler::ExportXML(wxOutputStream& stream, wxMBConv* convMem, 
         if (!imageObj.GetImageBlock().Ok())
         {
             // No data
-            OutputString(stream, wxT(">"), convMem, convFile);
+            OutputString(stream, style + wxT(">"), convMem, convFile);
         }
         else
         {
-            OutputString(stream, wxString::Format(wxT(" imagetype=\"%d\">"), (int) imageObj.GetImageBlock().GetImageType()));
+            OutputString(stream, wxString::Format(wxT(" imagetype=\"%d\"") + style + wxT(">"), (int) imageObj.GetImageBlock().GetImageType()));
         }
 
         OutputIndentation(stream, indent+1);
@@ -929,7 +994,7 @@ wxString wxRichTextXMLHandler::CreateStyle(const wxTextAttrEx& attr, bool isPara
         str << wxT(" characterstyle=\"") << wxString(attr.GetCharacterStyleName()) << wxT("\"");
 
     if (attr.HasURL())
-        str << wxT(" url=\"") << attr.GetURL() << wxT("\"");
+        str << wxT(" url=\"") << AttributeToXML(attr.GetURL()) << wxT("\"");
 
     if (isPara)
     {
@@ -1007,6 +1072,54 @@ wxString wxRichTextXMLHandler::CreateStyle(const wxTextAttrEx& attr, bool isPara
     return str;
 }
 
+/// Replace face name with current name for platform.
+/// TODO: introduce a virtual function or settable table to
+/// do this comprehensively.
+bool wxRichTextFixFaceName(wxString& facename)
+{
+    if (facename.IsEmpty())
+        return false;
+
+#ifdef __WXMSW__
+    if (facename == wxT("Times"))
+    {
+        facename = wxT("Times New Roman");
+        return true;
+    }
+    else if (facename == wxT("Helvetica"))
+    {
+        facename = wxT("Arial");
+        return true;
+    }
+    else if (facename == wxT("Courier"))
+    {
+        facename = wxT("Courier New");
+        return true;
+    }
+    else
+        return false;
+#else
+    if (facename == wxT("Times New Roman"))
+    {
+        facename = wxT("Times");
+        return true;
+    }
+    else if (facename == wxT("Arial"))
+    {
+        facename = wxT("Helvetica");
+        return true;
+    }
+    else if (facename == wxT("Courier New"))
+    {
+        facename = wxT("Courier");
+        return true;
+    }
+    else
+        return false;
+#endif
+}
+
+
 /// Get style parameters
 bool wxRichTextXMLHandler::GetStyle(wxTextAttrEx& attr, wxXmlNode* node, bool isPara)
 {
@@ -1021,7 +1134,12 @@ bool wxRichTextXMLHandler::GetStyle(wxTextAttrEx& attr, wxXmlNode* node, bool is
 
     fontFacename = node->GetPropVal(wxT("fontface"), wxEmptyString);
     if (!fontFacename.IsEmpty())
+    {
         fontFlags |= wxTEXT_ATTR_FONT_FACE;
+
+        if (GetFlags() & wxRICHTEXT_HANDLER_CONVERT_FACENAMES)
+            wxRichTextFixFaceName(fontFacename);
+    }
 
     wxString value;
     //value = node->GetPropVal(wxT("fontfamily"), wxEmptyString);
@@ -1073,7 +1191,7 @@ bool wxRichTextXMLHandler::GetStyle(wxTextAttrEx& attr, wxXmlNode* node, bool is
             attr.SetTextColour(value);
     }
 
-    value = node->GetPropVal(wxT("backgroundcolor"), wxEmptyString);
+    value = node->GetPropVal(wxT("bgcolor"), wxEmptyString);
     if (!value.empty())
     {
         if (value[0] == wxT('#'))

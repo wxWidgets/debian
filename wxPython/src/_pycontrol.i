@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _pycontrol.i 49366 2007-10-23 19:28:38Z RD $
+// RCS-ID:      $Id: _pycontrol.i 57810 2009-01-03 02:44:59Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -53,6 +53,7 @@ public:
     DEC_PYCALLBACK_VOID_INTPINTP_const(DoGetSize);
     DEC_PYCALLBACK_VOID_INTPINTP_const(DoGetClientSize);
     DEC_PYCALLBACK_VOID_INTPINTP_const(DoGetPosition);
+    DEC_PYCALLBACK_POINT_const(GetClientAreaOrigin);
 
     DEC_PYCALLBACK_SIZE_const(DoGetVirtualSize);
     DEC_PYCALLBACK_SIZE_const(DoGetBestSize);
@@ -65,6 +66,8 @@ public:
     DEC_PYCALLBACK_BOOL_const(AcceptsFocus);
     DEC_PYCALLBACK_BOOL_const(AcceptsFocusFromKeyboard);
     DEC_PYCALLBACK_SIZE_const(GetMaxSize);
+
+    DEC_PYCALLBACK_BOOL_(Enable);
 
     DEC_PYCALLBACK_VOID_WXWINBASE(AddChild);
     DEC_PYCALLBACK_VOID_WXWINBASE(RemoveChild);
@@ -89,6 +92,7 @@ IMP_PYCALLBACK_VOID_INTINT(wxPyControl, wxControl, DoSetVirtualSize);
 IMP_PYCALLBACK_VOID_INTPINTP_const(wxPyControl, wxControl, DoGetSize);
 IMP_PYCALLBACK_VOID_INTPINTP_const(wxPyControl, wxControl, DoGetClientSize);
 IMP_PYCALLBACK_VOID_INTPINTP_const(wxPyControl, wxControl, DoGetPosition);
+IMP_PYCALLBACK_POINT_const(wxPyControl, wxControl, GetClientAreaOrigin);
 
 IMP_PYCALLBACK_SIZE_const(wxPyControl, wxControl, DoGetVirtualSize);
 IMP_PYCALLBACK_SIZE_const(wxPyControl, wxControl, DoGetBestSize);
@@ -102,6 +106,8 @@ IMP_PYCALLBACK_BOOL_const(wxPyControl, wxControl, AcceptsFocus);
 IMP_PYCALLBACK_BOOL_const(wxPyControl, wxControl, AcceptsFocusFromKeyboard);
 IMP_PYCALLBACK_SIZE_const(wxPyControl, wxControl, GetMaxSize);
 
+IMP_PYCALLBACK_BOOL_(wxPyControl, wxControl, Enable);
+
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyControl, wxControl, AddChild);
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyControl, wxControl, RemoveChild);
 
@@ -111,6 +117,7 @@ IMP_PYCALLBACK_VIZATTR_(wxPyControl, wxControl, GetDefaultAttributes);
 IMP_PYCALLBACK_BOOL_(wxPyControl, wxControl, HasTransparentBackground);
 
 IMP_PYCALLBACK_VOID_(wxPyControl, wxControl, OnInternalIdle);
+
 %}
 
 // And now the one for SWIG to see
@@ -163,6 +170,8 @@ public:
     bool AcceptsFocusFromKeyboard() const;
     wxSize GetMaxSize() const;
 
+    bool Enable(bool enable = true);
+
     void AddChild(wxWindow* child);
     void RemoveChild(wxWindow* child);
 
@@ -187,6 +196,7 @@ public:
     %MAKE_BASE_FUNC(PyControl, AcceptsFocus);
     %MAKE_BASE_FUNC(PyControl, AcceptsFocusFromKeyboard);
     %MAKE_BASE_FUNC(PyControl, GetMaxSize);
+    %MAKE_BASE_FUNC(PyControl, Enable);
     %MAKE_BASE_FUNC(PyControl, AddChild);
     %MAKE_BASE_FUNC(PyControl, RemoveChild);
     %MAKE_BASE_FUNC(PyControl, ShouldInheritColours);

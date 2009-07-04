@@ -358,7 +358,7 @@ wx.TREE_HITTEST_ONITEMCOLUMN = TREE_HITTEST_ONITEMCOLUMN
 TR_COLUMN_LINES = _gizmos.TR_COLUMN_LINES
 TR_VIRTUAL = _gizmos.TR_VIRTUAL
 wx.TR_COLUMN_LINES = TR_COLUMN_LINES
-wxTR_VIRTUAL = TR_VIRTUAL    
+wx.TR_VIRTUAL = TR_VIRTUAL    
 
 #// Compatibility aliases for old names/values
 TL_ALIGN_LEFT   = wx.ALIGN_LEFT
@@ -883,10 +883,7 @@ class TreeListCtrl(_core.Control):
         return _gizmos.TreeListCtrl_UnselectAll(*args, **kwargs)
 
     def SelectItem(*args, **kwargs):
-        """
-        SelectItem(self, TreeItemId item, TreeItemId last=(wxTreeItemId *) NULL, 
-            bool unselect_others=True)
-        """
+        """SelectItem(self, TreeItemId item, TreeItemId last=None, bool unselect_others=True)"""
         return _gizmos.TreeListCtrl_SelectItem(*args, **kwargs)
 
     def SelectAll(*args, **kwargs):

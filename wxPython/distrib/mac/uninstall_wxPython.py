@@ -165,8 +165,12 @@ class InstalledReceipt(object):
                 hasFiles = os.listdir(name)
                 if hasFiles:  # perhaps some stale symlinks, or .pyc files
                     for file in hasFiles:
-                        os.unlink(os.path.join(name, file))
-                os.rmdir(name)
+                        fname = os.path.join(name, file)
+                        if not os.path.isdir(fname):
+                            os.unlink(fname)
+                hasFiles = os.listdir(name)
+                if not hasFiles:  # perhaps some stale symlinks, or .pyc files
+                    os.rmdir(name)
 
         try:
             self.testUninstallAccess()
@@ -200,6 +204,10 @@ except NameError:
 
 
 def main():
+    # Need to handle case of starting this file using python
+    # rather than starting this as an executable with ./
+    if not sys.argv[0].startswith(r"./"):
+        sys.argv[0] = "python %s" % sys.argv[0]
     if len(sys.argv) > 1 and sys.argv[1] == "-doit":
         inst = cPickle.loads(urllib.unquote(sys.argv[2]))
         inst.doUninstall()

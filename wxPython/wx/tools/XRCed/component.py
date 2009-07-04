@@ -2,7 +2,7 @@
 # Purpose:      base component classes
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      31.05.2007
-# RCS-ID:       $Id: component.py 50185 2007-11-23 15:15:23Z ROL $
+# RCS-ID:       $Id: component.py 57250 2008-12-11 14:02:08Z ROL $
 
 """
 Component plugin classes.
@@ -38,8 +38,12 @@ DEFAULT_POS = (1000,1000)
 parentChildGroups = {
     'root': ['top_level', 'component'],      # top-level objects
     'frame': ['toolbar', 'menubar', 'statusbar'],
+    'mdi_parent_frame': ['toolbar', 'menubar', 'statusbar', 'mdi_child_frame'],
+    'mdi_child_frame': ['toolbar', 'menubar', 'statusbar', 
+                        'control', 'window', 'sizer', 'btnsizer', 
+                        '!frame', '!mdi_child_frame'],
     'wizard': ['wizard_page'],
-    'window': ['control', 'window', 'sizer', 'btnsizer', '!frame'],
+    'window': ['control', 'window', 'sizer', 'btnsizer', '!frame', '!mdi_child_frame'],
     'sizer': ['control', 'sizer', 'btnsizer', 'spacer'],
     'book': ['control', 'window', '!sizer', '!btnsizer'],
     'btnsizer': ['stdbtn'],
@@ -72,8 +76,7 @@ class Component(object):
     genericExStyles = [
         'wxWS_EX_VALIDATE_RECURSIVELY',
         'wxWS_EX_BLOCK_EVENTS',
-        'wxWS_EX_TRANSIENT',
-        'wxFRAME_EX_CONTEXTHELP',
+#        'wxWS_EX_TRANSIENT',   # not processed by XRC (yet?)
         'wxWS_EX_PROCESS_IDLE',
         'wxWS_EX_PROCESS_UI_UPDATES'
         ]
@@ -130,23 +133,23 @@ class Component(object):
         self.attributes = attributes
         self.styles = []
         self.exStyles = []
-        self.defaults = kargs.get('defaults', {})
+        self.defaults = kargs.pop('defaults', {})
         # Special Attribute classes if required
-        self.specials = kargs.get('specials', {})
+        self.specials = kargs.pop('specials', {})
         # Some default special attributes
         self.specials['font'] = FontAttribute
         self.specials['XRCED'] = CodeAttribute
         # Special Param classes if required
-        self.params = kargs.get('params', {})
+        self.params = kargs.pop('params', {})
         # Tree image
         if 'images' in kargs:
-            self.images = kargs['images']
+            self.images = kargs.pop('images')
         elif 'image' in kargs:
-            self.images = [kargs['image']]
+            self.images = [kargs.pop('image')]
         elif not 'image' in self.__dict__:
             self.images = []
         # Code generation data
-        self.events = kargs.get('events', [])
+        self.events = kargs.pop('events', [])
 
     def addStyles(self, *styles):
         '''Add more styles.'''
@@ -303,7 +306,7 @@ class Component(object):
                 # Style and exstyle are not in attributes and can be treated specially
                 if a == 'style':
                     styles = self.getAttribute(srcNode, a).split('|')
-                    allStyles = dstComp.styles + params.genericStyles
+                    allStyles = dstComp.styles + self.genericStyles
                     dstStyles = [s for s in styles if s.strip() in allStyles]
                     if dstStyles:
                         dstComp.addAttribute(dstNode, a, '|'.join(dstStyles))
@@ -419,11 +422,11 @@ class SmartContainer(Container):
     implicitRenameDict = {}
     def __init__(self, klass, groups, attributes, **kargs):
         Container.__init__(self, klass, groups, attributes, **kargs)
-        self.implicitKlass = kargs['implicit_klass']
-        self.implicitPageName = kargs['implicit_page']
-        self.implicitAttributes = kargs['implicit_attributes']
+        self.implicitKlass = kargs.pop('implicit_klass')
+        self.implicitPageName = kargs.pop('implicit_page')
+        self.implicitAttributes = kargs.pop('implicit_attributes')
         # This is optional
-        self.implicitParams = kargs.get('implicit_params', {})
+        self.implicitParams = kargs.pop('implicit_params', {})
 
     def getTreeNode(self, node):
         if node.getAttribute('class') == self.implicitKlass:
@@ -566,7 +569,6 @@ class BoxSizer(Sizer):
     '''Sizers are not windows and have common implicit node.'''
 
     def __init__(self, klass, groups, attributes, **kargs):
-        self.images = kargs.get('images', None)
         Sizer.__init__(self, klass, groups, attributes, **kargs)
 
     def getTreeImageId(self, node):
@@ -656,6 +658,8 @@ class _ComponentManager:
 
     def getNodeComp(self, node, defaultClass='unknown'):
         # For ref nodes without class name, need to find ref element
+        if node is Model.mainNode:
+            return self.rootComponent
         cls = node.getAttribute('class')
         if node.tagName == 'object_ref':
             if not cls:
@@ -668,7 +672,7 @@ class _ComponentManager:
     def getMenuData(self, menu):
         return self.menus.get(menu, None)
 
-    def setMenu(self, component, menu, label, help, index=1000):
+    def setMenu(self, component, menu, label, help, index=999999):
         '''Set pulldown menu data.'''
         if menu not in self.menuNames: self.menuNames.append(menu)
         if menu not in self.menus: self.menus[menu] = []
@@ -688,7 +692,7 @@ class _ComponentManager:
             if os.path.exists(bmpPath):
                 bitmap = wx.Bitmap(bmpPath)
             else:
-                bitmap = images.getToolDefaultBitmap()
+                bitmap = images.ToolDefault.GetBitmap()
         if g.conf.toolIconScale != 100:
             im = bitmap.ConvertToImage().Scale(
                 bitmap.GetWidth() * g.conf.toolIconScale / 100,

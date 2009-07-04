@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: button.cpp 49304 2007-10-21 18:13:50Z SC $
+// RCS-ID:      $Id: button.cpp 57849 2009-01-06 09:36:54Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -157,7 +157,7 @@ wxSize wxButton::DoGetBestSize() const
         verify_noerr( err );
 
         SInt16 baseline;
-        wxMacCFStringHolder str( m_label,  m_font.GetEncoding() );
+        wxMacCFStringHolder str( m_label,  GetFont().GetEncoding() );
 
 #ifndef __LP64__
         if ( m_font.MacGetThemeFontID() != kThemeCurrentPortFont )

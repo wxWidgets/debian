@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: region.h 41429 2006-09-25 11:47:23Z VZ $
+// RCS-ID:      $Id: region.h 59602 2009-03-18 10:07:58Z VZ $
 // Copyright:   (c) 1997-2002 wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,7 @@ public:
     wxRegion(const wxRect& rect);
     wxRegion(WXHRGN hRegion); // Hangs on to this region
     wxRegion(size_t n, const wxPoint *points, int fillStyle = wxODDEVEN_RULE );
+#if wxUSE_IMAGE
     wxRegion( const wxBitmap& bmp)
     {
         Union(bmp);
@@ -30,6 +31,7 @@ public:
     {
         Union(bmp, transColour, tolerance);
     }
+#endif // wxUSE_IMAGE
 
     virtual ~wxRegion();
 
@@ -52,7 +54,7 @@ protected:
     virtual bool DoOffset(wxCoord x, wxCoord y);
     virtual bool DoCombine(const wxRegion& region, wxRegionOp op);
 
-    friend class WXDLLEXPORT wxRegionIterator;
+    friend class WXDLLIMPEXP_FWD_CORE wxRegionIterator;
 
     DECLARE_DYNAMIC_CLASS(wxRegion)
 };

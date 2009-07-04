@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.00
-// RCS-ID:      $Id: filename.h 49563 2007-10-31 20:46:21Z VZ $
+// RCS-ID:      $Id: filename.h 59869 2009-03-26 15:59:38Z VZ $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -480,6 +480,12 @@ public:
                             wxString *volume,
                             wxString *path,
                             wxPathFormat format = wxPATH_NATIVE);
+
+#if wxABI_VERSION >= 20811
+        // strip the file extension
+    static wxString StripExtension(const wxString& fullpath);
+#endif // wxABI_VERSION >= 20811
+
 
     // Filesize
 
