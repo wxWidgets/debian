@@ -8,6 +8,7 @@ Build-Depends: debhelper (>= 5.0.37.1), flex, bison, gettext, libgtk2.0-dev,
  libgnomeprintui2.2-dev, libgconf2-dev,
  libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev, bc, dpatch
 Maintainer: Adeodato Simó <dato@net.com.org.es>
+Uploaders: Ryan Niebur <ryanryan52@gmail.com>
 XS-Python-Version: all
 Standards-Version: 3.7.3
 Vcs-Git: git://git.debian.org/git/freewx/wx.git
