@@ -2,7 +2,7 @@
 // Name:        src/html/m_image.cpp
 // Purpose:     wxHtml module for displaying images
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_image.cpp 41819 2006-10-09 17:51:07Z VZ $
+// RCS-ID:      $Id: m_image.cpp 52997 2008-04-03 18:55:46Z VS $
 // Copyright:   (c) 1999 Vaclav Slavik, Joel Lucsy
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -388,7 +388,10 @@ wxHtmlImageCell::wxHtmlImageCell(wxHtmlWindowInterface *windowIface,
                         if ( m_gifDecoder->IsAnimation() )
                         {
                             m_gifTimer = new wxGIFTimer(this);
-                            m_gifTimer->Start(m_gifDecoder->GetDelay(0), true);
+                            long delay = m_gifDecoder->GetDelay(0);
+                            if ( delay == 0 )
+                                delay = 1;
+                            m_gifTimer->Start(delay, true);
                         }
                         else
                         {
@@ -522,7 +525,10 @@ void wxHtmlImageCell::AdvanceAnimation(wxTimer *timer)
         win->Refresh(img.HasMask(), &rect);
     }
 
-    timer->Start(m_gifDecoder->GetDelay(m_nCurrFrame), true);
+    long delay = m_gifDecoder->GetDelay(m_nCurrFrame);
+    if ( delay == 0 )
+        delay = 1;
+    timer->Start(delay, true);
 }
 
 void wxHtmlImageCell::Layout(int w)

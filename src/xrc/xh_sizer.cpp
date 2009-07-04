@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxBoxSizer
 // Author:      Vaclav Slavik
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_sizer.cpp 44246 2007-01-18 18:27:58Z VS $
+// RCS-ID:      $Id: xh_sizer.cpp 52334 2008-03-05 15:14:37Z VS $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,7 @@
     #include "wx/frame.h"
     #include "wx/dialog.h"
     #include "wx/button.h"
+    #include "wx/scrolwin.h"
 #endif
 
 #include "wx/gbsizer.h"
@@ -78,6 +79,7 @@ wxSizerXmlHandler::wxSizerXmlHandler()
 
     XRC_ADD_STYLE(wxADJUST_MINSIZE);
     XRC_ADD_STYLE(wxFIXED_MINSIZE);
+    XRC_ADD_STYLE(wxRESERVE_SPACE_EVEN_IF_HIDDEN);
 }
 
 
@@ -237,7 +239,16 @@ wxObject* wxSizerXmlHandler::Handle_sizer()
         wxXmlNode *nd = m_node;
         m_node = parentNode;
         if (GetSize() == wxDefaultSize)
-            sizer->Fit(m_parentAsWindow);
+        {
+            if ( wxDynamicCast(m_parentAsWindow, wxScrolledWindow) != NULL )
+            {
+                sizer->FitInside(m_parentAsWindow);
+            }
+            else
+            {
+                sizer->Fit(m_parentAsWindow);
+            }
+        }
         m_node = nd;
 
         if (m_parentAsWindow->GetWindowStyle() & (wxMAXIMIZE_BOX | wxRESIZE_BORDER))

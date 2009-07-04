@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: statbmp.cpp 42816 2006-10-31 08:50:17Z RD $
+// RCS-ID:      $Id: statbmp.cpp 56532 2008-10-27 18:15:19Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,8 +29,10 @@
 #include "wx/statbmp.h"
 
 #ifndef WX_PRECOMP
+    #include "wx/app.h"
     #include "wx/window.h"
     #include "wx/icon.h"
+    #include "wx/dcclient.h"
 #endif
 
 #include "wx/msw/private.h"
@@ -168,6 +170,21 @@ bool wxStaticBitmap::Create(wxWindow *parent,
     // GetBestSize will work properly now, so set the best size if needed
     SetInitialSize(size);
 
+    // painting manually is reported not to work under Windows CE (see #10093),
+    // so don't do it there even if this probably means that alpha is not
+    // supported there -- but at least bitmaps without alpha appear correctly
+#ifndef __WXWINCE__
+    // Windows versions before XP (and even XP if the application has no
+    // manifest and so the old comctl32.dll is used) don't draw correctly the
+    // images with alpha channel so we need to draw them ourselves and it's
+    // easier to just always do it rather than check if we have an image with
+    // alpha or not
+    if ( wxTheApp->GetComCtl32Version() < 600 )
+    {
+        Connect(wxEVT_PAINT, wxPaintEventHandler(wxStaticBitmap::DoPaintManually));
+    }
+#endif // !__WXWINCE__
+
     return true;
 }
 
@@ -243,6 +260,28 @@ wxSize wxStaticBitmap::DoGetBestSize() const
 
     // this is completely arbitrary
     return wxSize(16, 16);
+}
+
+void wxStaticBitmap::DoPaintManually(wxPaintEvent& WXUNUSED(event))
+{
+    wxPaintDC dc(this);
+
+    const wxSize size(GetSize());
+    const wxBitmap bmp(GetBitmap());
+
+    // Clear the background: notice that we're supposed to be transparent, so
+    // use the parent background colour if we don't have our own instead of
+    // falling back to the default
+    const wxWindow *win = UseBgCol() ? this : GetParent();
+    dc.SetBrush(win->GetBackgroundColour());
+    dc.SetPen(*wxTRANSPARENT_PEN);
+    dc.DrawRectangle(0, 0, size.GetWidth(), size.GetHeight());
+
+    // Draw the image in the middle
+    dc.DrawBitmap(bmp,
+                  (size.GetWidth() - bmp.GetWidth()) / 2,
+                  (size.GetHeight() - bmp.GetHeight()) / 2,
+                  true /* use mask */);
 }
 
 void wxStaticBitmap::SetImage( const wxGDIImage* image )

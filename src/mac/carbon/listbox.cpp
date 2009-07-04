@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: listbox.cpp 44206 2007-01-12 18:25:21Z RD $
+// RCS-ID:      $Id: listbox.cpp 57849 2009-01-06 09:36:54Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -279,7 +279,7 @@ wxSize wxListBox::DoGetBestSize() const
 
             // NB: what if m_font.Ok() == false ???
             ::GetThemeTextDimensions(
-                wxMacCFStringHolder( str, m_font.GetEncoding() ),
+                wxMacCFStringHolder( str, GetFont().GetEncoding() ),
                 kThemeCurrentPortFont,
                 kThemeStateActive,
                 false,

@@ -5,15 +5,16 @@
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id: config.h 33948 2005-05-04 18:57:50Z JS $
+// RCS-ID:      $Id: config.h 60524 2009-05-05 22:51:44Z PC $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CONFIG_H_BASE_
 #define _WX_CONFIG_H_BASE_
 
-#include "wx/defs.h"
 #include "wx/confbase.h"
+
+#if wxUSE_CONFIG
 
 #if defined(__WXMSW__) && wxUSE_CONFIG_NATIVE
 #    ifdef __WIN32__
@@ -27,5 +28,6 @@
 #    include "wx/fileconf.h"
 #endif
 
-#endif
-    // _WX_CONFIG_H_BASE_
+#endif // wxUSE_CONFIG
+
+#endif // _WX_CONFIG_H_BASE_

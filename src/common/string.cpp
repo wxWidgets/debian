@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin, Ryan Norton
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.cpp 49342 2007-10-23 03:30:16Z DE $
+// RCS-ID:      $Id: string.cpp 59534 2009-03-14 18:36:08Z SN $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //              (c) 2004 Ryan Norton <wxprojects@comcast.net>
 // Licence:     wxWindows licence
@@ -209,8 +209,8 @@ bool wxStringBase::AllocBuffer(size_t nLen)
   wxASSERT( nLen >  0 );
 
   // make sure that we don't overflow
-  wxASSERT( nLen < (INT_MAX / sizeof(wxChar)) -
-                   (sizeof(wxStringData) + EXTRA_ALLOC + 1) );
+  wxCHECK( nLen < (INT_MAX / sizeof(wxChar)) -
+                  (sizeof(wxStringData) + EXTRA_ALLOC + 1), false );
 
   STATISTICS_ADD(Length, nLen);
 
@@ -843,6 +843,16 @@ bool wxStringBase::ConcatSelf(size_t nSrcLen, const wxChar *pszSrcData,
     wxStringData *pData = GetStringData();
     size_t nLen = pData->nDataLength;
     size_t nNewLen = nLen + nSrcLen;
+
+    // take special care when appending part of this string to itself: the code
+    // below reallocates our buffer and this invalidates pszSrcData pointer so
+    // we have to copy it in another temporary string in this case (but avoid
+    // doing this unnecessarily)
+    if ( pszSrcData >= m_pchData && pszSrcData < m_pchData + nLen )
+    {
+        wxStringBase tmp(pszSrcData, nSrcLen);
+        return ConcatSelf(nSrcLen, tmp.m_pchData, nSrcLen);
+    }
 
     // alloc new buffer if current is too small
     if ( pData->IsShared() ) {
@@ -1482,8 +1492,8 @@ wxString wxString::AfterFirst(wxChar ch) const
 }
 
 // replace first (or all) occurences of some substring with another one
-size_t wxString::Replace(const wxChar *szOld,
-                  const wxChar *szNew, bool bReplaceAll)
+size_t
+wxString::Replace(const wxChar *szOld, const wxChar *szNew, bool bReplaceAll)
 {
     // if we tried to replace an empty string we'd enter an infinite loop below
     wxCHECK_MSG( szOld && *szOld && szNew, 0,
@@ -1491,33 +1501,48 @@ size_t wxString::Replace(const wxChar *szOld,
 
     size_t uiCount = 0;   // count of replacements made
 
-    size_t uiOldLen = wxStrlen(szOld);
-    size_t uiNewLen = wxStrlen(szNew);
-
-    size_t dwPos = 0;
-
-    while ( this->c_str()[dwPos] != wxT('\0') )
+    // optimize the special common case of replacing one character with another
+    // one
+    if ( szOld[1] == '\0' && (szNew[0] != '\0' && szNew[1] == '\0') )
     {
-        //DO NOT USE STRSTR HERE
-        //this string can contain embedded null characters,
-        //so strstr will function incorrectly
-        dwPos = find(szOld, dwPos);
-        if ( dwPos == npos )
-            break;                  // exit the loop
-        else
+        // this loop is the simplified version of the one below
+        for ( size_t pos = 0; ; )
         {
-            //replace this occurance of the old string with the new one
-            replace(dwPos, uiOldLen, szNew, uiNewLen);
+            pos = find(*szOld, pos);
+            if ( pos == npos )
+                break;
 
-            //move up pos past the string that was replaced
-            dwPos += uiNewLen;
+            (*this)[pos++] = *szNew;
 
-            //increase replace count
-            ++uiCount;
+            uiCount++;
+
+            if ( !bReplaceAll )
+                break;
+        }
+    }
+    else // general case
+    {
+        const size_t uiOldLen = wxStrlen(szOld);
+        const size_t uiNewLen = wxStrlen(szNew);
+
+        for ( size_t pos = 0; ; )
+        {
+            pos = find(szOld, pos);
+            if ( pos == npos )
+                break;
+
+            // replace this occurrence of the old string with the new one
+            replace(pos, uiOldLen, szNew, uiNewLen);
+
+            // move past the string that was replaced
+            pos += uiNewLen;
+
+            // increase replace count
+            uiCount++;
 
             // stop now?
             if ( !bReplaceAll )
-                break;                  // exit the loop
+                break;
         }
     }
 
@@ -1589,9 +1614,9 @@ wxString& wxString::MakeLower()
 // ---------------------------------------------------------------------------
 
 // some compilers (VC++ 6.0 not to name them) return true for a call to
-// isspace('ê') in the C locale which seems to be broken to me, but we have to
-// live with this by checking that the character is a 7 bit one - even if this
-// may fail to detect some spaces (I don't know if Unicode doesn't have
+// isspace('\xEA') in the C locale which seems to be broken to me, but we have
+// to live with this by checking that the character is a 7 bit one - even if 
+// this may fail to detect some spaces (I don't know if Unicode doesn't have
 // space-like symbols somewhere except in the first 128 chars), it is arguably
 // still better than trimming away accented letters
 inline int wxSafeIsspace(wxChar ch) { return (ch < 127) && wxIsspace(ch); }
@@ -1908,7 +1933,7 @@ int wxString::PrintfV(const wxChar* pszFormat, va_list argptr)
             // the user's format string
             return -1;
 #else // assume that system version only returns error if not enough space
-#ifndef __WXWINCE__
+#if !defined(__WXWINCE__) && (!defined(__OS2__) || defined(__INNOTEK_LIBC__))
             if( (errno == EILSEQ) || (errno == EINVAL) )
             // If errno was set to one of the two well-known hard errors
             // then fail immediately to avoid an infinite loop.
@@ -2305,6 +2330,7 @@ void wxArrayString::Shrink()
     memcpy(pNew, m_pItems, m_nCount*sizeof(wxChar *));
     delete [] m_pItems;
     m_pItems = pNew;
+    m_nSize = m_nCount;
   }
 }
 
@@ -2619,4 +2645,11 @@ int wxCMPFUNC_CONV wxStringSortAscending(wxString* s1, wxString* s2)
 int wxCMPFUNC_CONV wxStringSortDescending(wxString* s1, wxString* s2)
 {
     return -s1->Cmp(*s2);
+}
+
+wxString* wxCArrayString::Release()
+{
+    wxString *r = GetStrings();
+    m_strings = NULL;
+    return r;
 }

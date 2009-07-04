@@ -2,7 +2,7 @@
 // Name:        src/html/htmlpars.cpp
 // Purpose:     wxHtmlParser class (generic parser)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlpars.cpp 48319 2007-08-22 06:18:48Z VS $
+// RCS-ID:      $Id: htmlpars.cpp 55388 2008-08-31 13:59:55Z VS $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -571,6 +571,9 @@ wxChar wxHtmlEntitiesParser::GetCharForCode(unsigned code)
 wxChar wxHtmlEntitiesParser::GetEntityChar(const wxString& entity)
 {
     unsigned code = 0;
+
+    if (entity.empty())
+      return 0; // invalid entity reference
 
     if (entity[0] == wxT('#'))
     {

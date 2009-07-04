@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.01.01
-// RCS-ID:      $Id: event.cpp 41547 2006-10-02 05:36:31Z PC $
+// RCS-ID:      $Id: event.cpp 58732 2009-02-07 22:51:03Z VZ $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@
 //
 // and you may use this code directly if you don't care about 2.2 compatibility
 BEGIN_DECLARE_EVENT_TYPES()
-    DECLARE_EVENT_TYPE(wxEVT_MY_CUSTOM_COMMAND, 7777)
+    DECLARE_LOCAL_EVENT_TYPE(wxEVT_MY_CUSTOM_COMMAND, 7777)
 END_DECLARE_EVENT_TYPES()
 
 DEFINE_EVENT_TYPE(wxEVT_MY_CUSTOM_COMMAND)

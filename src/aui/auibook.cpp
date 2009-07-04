@@ -154,7 +154,7 @@ static void DrawFocusRect(wxWindow* win, wxDC& dc, const wxRect& rect, int flags
                      rect.height );
 #elif (defined(__WXMAC__))
 
-#if wxMAC_USE_CORE_GRAPHICS 
+#if wxMAC_USE_CORE_GRAPHICS
     {
         CGRect cgrect = CGRectMake( rect.x , rect.y , rect.width, rect.height ) ;
 
@@ -464,7 +464,7 @@ void wxAuiDefaultTabArt::DrawTab(wxDC& dc,
 {
     wxCoord normal_textx, normal_texty;
     wxCoord selected_textx, selected_texty;
-    wxCoord textx, texty;
+    wxCoord texty;
 
     // if the caption is empty, measure some temporary text
     wxString caption = page.caption;
@@ -500,13 +500,11 @@ void wxAuiDefaultTabArt::DrawTab(wxDC& dc,
     if (page.active)
     {
         dc.SetFont(m_selected_font);
-        textx = selected_textx;
         texty = selected_texty;
     }
      else
     {
         dc.SetFont(m_normal_font);
-        textx = normal_textx;
         texty = normal_texty;
     }
 
@@ -1008,7 +1006,7 @@ wxAuiSimpleTabArt::~wxAuiSimpleTabArt()
 
 wxAuiTabArt* wxAuiSimpleTabArt::Clone()
 {
-    return static_cast<wxAuiTabArt*>(new wxAuiSimpleTabArt);
+    return wx_static_cast(wxAuiTabArt*, new wxAuiSimpleTabArt);
 }
 
 
@@ -1742,6 +1740,11 @@ void wxAuiTabContainer::Render(wxDC* raw_dc, wxWindow* wnd)
         return;
 
     wxMemoryDC dc;
+
+    // use the same layout direction as the window DC uses to ensure that the
+    // text is rendered correctly
+    dc.SetLayoutDirection(raw_dc->GetLayoutDirection());
+
     wxBitmap bmp;
     size_t i;
     size_t page_count = m_pages.GetCount();
@@ -1958,11 +1961,9 @@ void wxAuiTabContainer::Render(wxDC* raw_dc, wxWindow* wnd)
         wxAuiTabContainerButton& tab_button = m_tab_close_buttons.Item(i);
 
         // determine if a close button is on this tab
-        bool close_button = false;
         if ((m_flags & wxAUI_NB_CLOSE_ON_ALL_TABS) != 0 ||
             ((m_flags & wxAUI_NB_CLOSE_ON_ACTIVE_TAB) != 0 && page.active))
         {
-            close_button = true;
             if (tab_button.cur_state == wxAUI_BUTTON_STATE_HIDDEN)
             {
                 tab_button.id = wxAUI_BUTTON_CLOSE;
@@ -2016,14 +2017,6 @@ void wxAuiTabContainer::Render(wxDC* raw_dc, wxWindow* wnd)
         wxAuiNotebookPage& page = m_pages.Item(active);
 
         wxAuiTabContainerButton& tab_button = m_tab_close_buttons.Item(active);
-
-        // determine if a close button is on this tab
-        bool close_button = false;
-        if ((m_flags & wxAUI_NB_CLOSE_ON_ALL_TABS) != 0 ||
-            ((m_flags & wxAUI_NB_CLOSE_ON_ACTIVE_TAB) != 0 && page.active))
-        {
-            close_button = true;
-        }
 
         rect.x = active_offset;
         m_art->DrawTab(dc,
@@ -2341,6 +2334,7 @@ BEGIN_EVENT_TABLE(wxAuiTabCtrl, wxControl)
     EVT_SET_FOCUS(wxAuiTabCtrl::OnSetFocus)
     EVT_KILL_FOCUS(wxAuiTabCtrl::OnKillFocus)
     EVT_CHAR(wxAuiTabCtrl::OnChar)
+    EVT_MOUSE_CAPTURE_LOST(wxAuiTabCtrl::OnCaptureLost)
 END_EVENT_TABLE()
 
 
@@ -2420,6 +2414,10 @@ void wxAuiTabCtrl::OnLeftDown(wxMouseEvent& evt)
         Refresh();
         Update();
     }
+}
+
+void wxAuiTabCtrl::OnCaptureLost(wxMouseCaptureLostEvent& WXUNUSED(event))
+{
 }
 
 void wxAuiTabCtrl::OnLeftUp(wxMouseEvent& evt)
@@ -2730,7 +2728,19 @@ void wxAuiTabCtrl::OnChar(wxKeyEvent& event)
 
     int newPage = -1;
 
-    if (key == WXK_RIGHT)
+    int forwardKey, backwardKey;
+    if (GetLayoutDirection() == wxLayout_RightToLeft)
+    {
+        forwardKey = WXK_LEFT;
+        backwardKey = WXK_RIGHT;
+    }
+    else
+     {
+        forwardKey = WXK_RIGHT;
+        backwardKey = WXK_LEFT;
+    }
+
+    if (key == forwardKey)
     {
         if (m_pages.GetCount() > 1)
         {
@@ -2740,7 +2750,7 @@ void wxAuiTabCtrl::OnChar(wxKeyEvent& event)
                 newPage = GetActivePage() + 1;
         }
     }
-    else if (key == WXK_LEFT)
+    else if (key == backwardKey)
     {
         if (m_pages.GetCount() > 1)
         {
@@ -3003,7 +3013,7 @@ wxAuiNotebook::~wxAuiNotebook()
 {
     // Indicate we're deleting pages
     m_isBeingDeleted = true;
-    
+
     while ( GetPageCount() > 0 )
         DeletePage(0);
 
@@ -3203,7 +3213,7 @@ bool wxAuiNotebook::InsertPage(size_t page_idx,
     wxASSERT_MSG(page, wxT("page pointer must be non-NULL"));
     if (!page)
         return false;
-    
+
     page->Reparent(this);
 
     wxAuiNotebookPage info;
@@ -3780,6 +3790,21 @@ void wxAuiNotebook::OnTabClicked(wxCommandEvent& command_evt)
 
     int idx = m_tabs.GetIdxFromWindow(wnd);
     wxASSERT(idx != -1);
+
+
+    // since a tab was clicked, let the parent know that we received
+    // the focus, even if we will assign that focus immediately
+    // to the child tab in the SetSelection call below
+    // (the child focus event will also let wxAuiManager, if any,
+    // know that the notebook control has been activated)
+    
+    wxWindow* parent = GetParent();
+    if (parent)
+    {
+        wxChildFocusEvent eventFocus(this);
+        parent->GetEventHandler()->ProcessEvent(eventFocus);
+    }
+
 
     SetSelection(idx);
 }
@@ -4369,7 +4394,7 @@ void wxAuiNotebook::OnTabButton(wxCommandEvent& command_evt)
         {
             // if the close button is to the right, use the active
             // page selection to determine which page to close
-            selection = GetSelection();
+            selection = tabs->GetActivePage();
         }
 
         if (selection != -1)

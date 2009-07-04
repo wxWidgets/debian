@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in 50258 2007-11-26 19:44:17Z RD $)dnl
+AC_REVISION($Id: configure.in 60294 2009-04-24 04:23:31Z RD $)dnl
 
 AC_PREREQ(2.58)
 
@@ -10,14 +10,14 @@ dnl Vadim Zeitlin and Ron Lee
 dnl
 dnl This script is under the wxWidgets licence.
 dnl
-dnl Version: $Id: configure.in 50258 2007-11-26 19:44:17Z RD $
+dnl Version: $Id: configure.in 60294 2009-04-24 04:23:31Z RD $
 dnl ---------------------------------------------------------------------------
 
 dnl ---------------------------------------------------------------------------
 dnl initialization
 dnl ---------------------------------------------------------------------------
 
-AC_INIT([wxWidgets], [2.8.7], [wx-dev@lists.wxwidgets.org])
+AC_INIT([wxWidgets], [2.8.10], [wx-dev@lists.wxwidgets.org])
 
 dnl the file passed to AC_CONFIG_SRCDIR should be specific to our package
 AC_CONFIG_SRCDIR([wx-config.in])
@@ -34,7 +34,7 @@ dnl wx_release_number += 1
 
 wx_major_version_number=2
 wx_minor_version_number=8
-wx_release_number=7
+wx_release_number=10
 wx_subrelease_number=1
 
 WX_RELEASE=$wx_major_version_number.$wx_minor_version_number
@@ -944,7 +944,7 @@ dnl compile options
 dnl ---------------------------------------------------------------------------
 
 WX_ARG_ENABLE(shared,      [  --enable-shared         create shared library code], wxUSE_SHARED)
-WX_ARG_ENABLE(optimise,    [  --enable-optimise       create optimised code], wxUSE_OPTIMISE)
+WX_ARG_ENABLE(optimise,    [  --enable-optimise       compile without optimisations], wxUSE_OPTIMISE)
 WX_ARG_ENABLE(debug,       [  --enable-debug          same as debug_flag and debug_info], wxUSE_DEBUG)
 WX_ARG_ENABLE(stl,         [  --enable-stl            use STL for containers], wxUSE_STL)
 if test "$USE_OS2" = "1"; then
@@ -1465,7 +1465,7 @@ if test "$wxUSE_GUI" = "yes"; then
           fi
         fi
         if test "$value" = 1; then
-          toolkit_echo=`echo $toolkit | tr A-Z a-z`
+          toolkit_echo=`echo $toolkit | tr '[[A-Z]]' '[[a-z]]'`
           AC_MSG_RESULT($toolkit_echo)
         fi
       fi
@@ -1576,6 +1576,8 @@ dnl Support the old --enable-universal_binary in case anyone was using it.
         OSX_UNIV_OPTS="-arch ppc -arch i386"
         CXXFLAGS="$OSX_UNIV_OPTS $CXXFLAGS"
         CFLAGS="$OSX_UNIV_OPTS $CFLAGS"
+        OBJCXXFLAGS="$OSX_UNIV_OPTS $OBJCXXFLAGS"
+        OBJCFLAGS="$OSX_UNIV_OPTS $OBJCFLAGS"
         LDFLAGS="$OSX_UNIV_OPTS $LDFLAGS"
         dnl NOTE: Only the compiler driver needs arch flags.  The link editor
         dnl is incapable of using them but the compiler driver (which we use
@@ -2538,6 +2540,86 @@ if test "$wxUSE_STL" = "yes"; then
          AC_DEFINE(HAVE_EXT_HASH_MAP)
          AC_DEFINE(HAVE_GNU_CXX_HASH_MAP)
     fi
+
+    AC_CHECK_HEADER([unordered_map],
+        [AC_CACHE_CHECK([for unordered_map and unordered_set in std],
+            wx_cv_class_stdunorderedmapset,
+            [AC_TRY_COMPILE([#include <unordered_map>
+                #include <unordered_set>],
+                [std::unordered_map<double*, char*> test1;
+                 std::unordered_set<char*> test2;],
+                wx_cv_class_stdunorderedmapset=yes,
+                wx_cv_class_stdunorderedmapset=no)
+            ]
+        )],
+        [],
+        [ ]
+    )
+
+    if test "$wx_cv_class_stdunorderedmapset" = yes; then
+         AC_DEFINE(HAVE_STD_UNORDERED_MAP)
+         AC_DEFINE(HAVE_STD_UNORDERED_SET)
+    else
+        AC_CHECK_HEADER([tr1/unordered_map],
+            [AC_CACHE_CHECK([for unordered_map and unordered_set in std::tr1],
+                wx_cv_class_tr1unorderedmapset,
+                [AC_TRY_COMPILE([#include <tr1/unordered_map>
+                    #include <tr1/unordered_set>],
+                    [std::tr1::unordered_map<double*, char*> test1;
+                     std::tr1::unordered_set<char*> test2;
+            #if defined(__GNUC__) && (__GNUC__==4) && (__GNUC_MINOR__<2)
+            #error can't use unordered_{map,set} with gcc-4.[01]: http://gcc.gnu.org/PR24389
+            #endif],
+                    wx_cv_class_tr1unorderedmapset=yes,
+                    wx_cv_class_tr1unorderedmapset=no)
+                ]
+            )],
+            [],
+            [ ]
+        )
+
+        if test "$wx_cv_class_tr1unorderedmapset" = yes; then
+            AC_DEFINE(HAVE_TR1_UNORDERED_MAP)
+            AC_DEFINE(HAVE_TR1_UNORDERED_SET)
+        else
+            dnl check for hash_map and hash_set headers
+            AC_CHECK_HEADER([hash_map],
+                [AC_CACHE_CHECK([for std::hash_map and hash_set],
+                    wx_cv_class_stdhashmapset,
+                    [AC_TRY_COMPILE([#include <hash_map>
+                        #include <hash_set>],
+                        [std::hash_map<double*, char*, std::hash<double*>, std::equal_to<double*> > test1;
+                         std::hash_set<char*, std::hash<char*>, std::equal_to<char*> > test2;],
+                        wx_cv_class_stdhashmapset=yes,
+                        wx_cv_class_stdhashmapset=no)
+                    ]
+                )],
+                [],
+                [ ]
+            )
+
+            if test "$wx_cv_class_stdhashmapset" = yes; then
+                AC_DEFINE(HAVE_HASH_MAP)
+                AC_DEFINE(HAVE_STD_HASH_MAP)
+            fi
+
+            AC_CHECK_HEADER([ext/hash_map],
+                [AC_CACHE_CHECK([for GNU hash_map and hash_set],
+                    wx_cv_class_gnuhashmapset,
+                    [AC_TRY_COMPILE([#include <ext/hash_map>
+                        #include <ext/hash_set>],
+                        [__gnu_cxx::hash_map<double*, char*, __gnu_cxx::hash<double*>, std::equal_to<double*> > test1;
+                         __gnu_cxx::hash_set<char*, __gnu_cxx::hash<char*>, std::equal_to<char*> > test2;],
+                        wx_cv_class_gnuhashmapset=yes,
+                        wx_cv_class_gnuhashmapset=no)
+                    ]
+                )],
+                [],
+                [ ]
+            )
+
+        fi
+    fi
 fi
 
 dnl pop C++
@@ -2559,6 +2641,10 @@ dnl In the same vein. Motif 2.1 should be tried before Motif 1.2 for the
 dnl systems which have both (AIX 4.x does)
 SEARCH_INCLUDE="\
     /usr/local/include        \
+    /usr/local/X11/include    \
+    /usr/local/include/X11    \
+    /usr/local/X11R6/include  \
+    /usr/local/include/X11R6  \
                               \
     /usr/Motif-2.1/include    \
     /usr/Motif-1.2/include    \
@@ -2571,28 +2657,24 @@ SEARCH_INCLUDE="\
                               \
     /usr/X11R6/include        \
     /usr/X11R6.4/include      \
-    /usr/X11R5/include        \
-    /usr/X11R4/include        \
                               \
     /usr/include/X11R6        \
-    /usr/include/X11R5        \
-    /usr/include/X11R4        \
-                              \
-    /usr/local/X11R6/include  \
-    /usr/local/X11R5/include  \
-    /usr/local/X11R4/include  \
-                              \
-    /usr/local/include/X11R6  \
-    /usr/local/include/X11R5  \
-    /usr/local/include/X11R4  \
                               \
     /usr/X11/include          \
     /usr/include/X11          \
-    /usr/local/X11/include    \
-    /usr/local/include/X11    \
                               \
     /usr/XFree86/include/X11  \
     /usr/pkg/include          \
+                              \
+    /usr/local/X1R5/include  \
+    /usr/local/include/X11R5  \
+    /usr/X11R5/include        \
+    /usr/include/X11R5        \
+                              \
+    /usr/local/X11R4/include  \
+    /usr/local/include/X11R4  \
+    /usr/X11R4/include        \
+    /usr/include/X11R4        \
                               \
     /usr/openwin/share/include"
 
@@ -2784,8 +2866,8 @@ dnl
 dnl at least under SGI these functions are only available in C99 code and not
 dnl in C++ so do these tests using C++ compiler
 AC_LANG_PUSH(C++)
-if test "wxUSE_UNICODE" = "yes"; then
-    WX_CHECK_FUNCS(wcstoull)
+if test "$wxUSE_UNICODE" = "yes"; then
+    WX_CHECK_FUNCS(wcstoull,,,[#include <wchar.h>])
 else
     WX_CHECK_FUNCS(strtoull)
 fi
@@ -3210,8 +3292,15 @@ if test "$USE_WIN32" = 1 ; then
 
     dnl --- FIXME: This is still a somewhat random list of libs,
     dnl ---        some of them should probably be included conditionally.
-    LIBS="$LIBS -lwinspool -lwinmm -lshell32 -lcomctl32 -lcomdlg32 -lctl3d32 -ladvapi32 -lwsock32 -lgdi32"
-
+    case "${host}" in
+	x86_64-*-mingw32* )
+            dnl --- For mingw-w64 lctl3d32's name has changed
+            LIBS="$LIBS -lwinspool -lwinmm -lshell32 -lcomctl32 -lcomdlg32 -lwctl3d32 -ladvapi32 -lwsock32 -lgdi32"
+        ;;
+        * )
+            LIBS="$LIBS -lwinspool -lwinmm -lshell32 -lcomctl32 -lcomdlg32 -lctl3d32 -ladvapi32 -lwsock32 -lgdi32"
+        ;;
+    esac
     if test "$wxUSE_ACCESSIBILITY" = "yes" ; then
         LIBS="$LIBS -loleacc"
     fi
@@ -4000,7 +4089,7 @@ libraries returned by 'pkg-config gtk+-2.0 --libs' or 'gtk-config
     if test "$TOOLKIT" = "PM" ; then
         TOOLKIT_DIR="os2"
     else
-        TOOLKIT_DIR=`echo ${TOOLKIT} | tr A-Z a-z`
+        TOOLKIT_DIR=`echo ${TOOLKIT} | tr '[[A-Z]]' '[[a-z]]'`
     fi
 
     if test "$wxUSE_UNIVERSAL" = "yes"; then
@@ -4183,10 +4272,12 @@ if test "$wxUSE_OPENGL" = "yes"; then
     if test "$wxUSE_MGL" = 1 -o "$wxUSE_DFB" = "1"; then
         AC_MSG_WARN([wxGLCanvas not implemented for this port, library will be compiled without it.])
         wxUSE_OPENGL="no"
-    elif test "$wxUSE_MAC" = 1 -o "$wxUSE_COCOA" = "1"; then
+    elif test "$wxUSE_COCOA" = "1"; then
         OPENGL_LIBS="-framework OpenGL -framework AGL"
     elif test "$wxUSE_MSW" = 1; then
         OPENGL_LIBS="-lopengl32 -lglu32"
+    elif test "$USE_DARWIN" = 1; then
+        OPENGL_LIBS=""
     else
         dnl adjust CPPFLAGS to include GL/gl.h location if necessary
         dnl (/opt/graphics/OpenGL is for HP-UX systems, bug 925307)
@@ -4409,7 +4500,7 @@ if test "$wxUSE_DEBUG_INFO" = "yes"; then
     DEBUG_INFO=1
 fi
 
-WX_VERSION_TAG=`echo WX${lib_unicode_suffix}${lib_debug_suffix}${WX_LIB_FLAVOUR}_${WX_RELEASE} | tr a-z A-Z`
+WX_VERSION_TAG=`echo WX${lib_unicode_suffix}${lib_debug_suffix}${WX_LIB_FLAVOUR}_${WX_RELEASE} | tr '[[a-z]]' '[[A-Z]]'`
 
 TOOLCHAIN_NAME="${TOOLKIT_DIR}${TOOLKIT_VERSION}${WIDGET_SET}${lib_unicode_suffix}${lib_debug_suffix}${WX_LIB_FLAVOUR}-${WX_RELEASE}"
 
@@ -5617,6 +5708,8 @@ dnl from if !MSW
 else
     if test "$wxUSE_THREADS" = "yes" ; then
       case "${host}" in
+	x86_64-*-mingw32* )
+        ;;
         *-*-mingw32* )
             dnl check if the compiler accepts -mthreads
             AC_CACHE_CHECK([if compiler supports -mthreads],
@@ -5874,10 +5967,7 @@ if test "$TOOLKIT" != "MSW" -a "$USE_OS2" != 1; then
     HAVE_DL_FUNCS=0
     HAVE_SHL_FUNCS=0
     if test "$wxUSE_DYNAMIC_LOADER" = "yes" -o "$wxUSE_DYNLIB_CLASS" = "yes" ; then
-        if test "$USE_DARWIN" = 1; then
-            dnl dlopen/dlerror is implemented in dynlib.cpp for Darwin/Mac OS X
-            HAVE_DL_FUNCS=1
-        elif test "$USE_DOS" = 1; then
+        if test "$USE_DOS" = 1; then
             HAVE_DL_FUNCS=0
         else
             dnl the test is a bit complicated because we check for dlopen() both with
@@ -5911,15 +6001,21 @@ if test "$TOOLKIT" != "MSW" -a "$USE_OS2" != 1; then
                             ])
             ])
 
-        dnl check also for dlerror()
-        if test "$HAVE_DL_FUNCS" = 1; then
-            AC_CHECK_FUNCS(dlerror,
-                AC_DEFINE(HAVE_DLERROR),
-                [
-                    AC_CHECK_LIB(dl, dlerror, AC_DEFINE(HAVE_DLERROR))
-                ]
-            )
+            dnl check also for dlerror()
+            if test "$HAVE_DL_FUNCS" = 1; then
+                AC_CHECK_FUNCS(dlerror,
+                    AC_DEFINE(HAVE_DLERROR),
+                    [
+                        AC_CHECK_LIB(dl, dlerror, AC_DEFINE(HAVE_DLERROR))
+                    ]
+                )
+            fi
         fi
+
+        dnl Force HAVE_DL_FUNCS on for Darwin, even if the tests failed (e.g. pre-10.3)
+        if test "$USE_DARWIN" = 1; then
+            dnl dlopen/dlerror is implemented in dynlib.cpp for Darwin/Mac OS X
+            HAVE_DL_FUNCS=1
         fi
 
         if test "$HAVE_DL_FUNCS" = 0; then
@@ -6608,6 +6704,7 @@ if test "$wxUSE_SOCKETS" = "yes" ; then
         AC_CACHE_CHECK([what is the type of the fifth argument of getsockopt],
                        wx_cv_type_getsockopt5,
             [
+                AC_LANG_PUSH(C++)
                 AC_TRY_COMPILE(
                     [
                         #include <sys/types.h>
@@ -6651,6 +6748,7 @@ if test "$wxUSE_SOCKETS" = "yes" ; then
                         AC_LANG_POP()
                     ]
                 )
+                AC_LANG_POP()
             ])
 
         if test "$wx_cv_type_getsockopt5" = "unknown"; then
@@ -7265,6 +7363,11 @@ if test "$wxUSE_TEXTCTRL" = "yes"; then
     AC_DEFINE(wxUSE_TEXTCTRL)
     USES_CONTROLS=1
     SAMPLES_SUBDIRS="$SAMPLES_SUBDIRS text"
+
+    dnl we don't have special switches to disable wxUSE_RICHEDIT[2], it doesn't
+    dnl seem useful to allow disabling them
+    AC_DEFINE(wxUSE_RICHEDIT)
+    AC_DEFINE(wxUSE_RICHEDIT2)
 fi
 
 if test "$wxUSE_TOGGLEBTN" = "yes"; then
@@ -7675,7 +7778,7 @@ if test "$wxUSE_MEDIACTRL" = "yes"; then
             dnl CC-specific "-mt" in its flags, remove it for gcc compilation
             case "${host}" in
                 *-*-solaris2* )
-                    if "$GCC" = yes; then
+                    if test "$GCC" = yes; then
                         GST_CFLAGS=`echo $GST_CFLAGS | sed 's/-mt//'`
                         GST_LIBS=`echo $GST_LIBS | sed 's/-mt//'`
                     fi
@@ -7774,7 +7877,7 @@ if test "$wxUSE_MAC" = 1 ; then
         fi
     fi
     if test "$USE_DARWIN" = 1; then
-        LDFLAGS="$LDFLAGS -framework IOKit -framework Carbon -framework Cocoa -framework System -framework QuickTime"
+        LDFLAGS="$LDFLAGS -framework IOKit -framework Carbon -framework Cocoa -framework System -framework QuickTime -framework OpenGL -framework AGL"
     else
         LDFLAGS="$LDFLAGS -lCarbonLib"
     fi
@@ -7878,6 +7981,8 @@ CPPFLAGS=`echo $WXCONFIG_CPPFLAGS \
 C_AND_CXX_FLAGS="$DEBUG_CFLAGS $PROFILE_FLAGS $OPTIMISE_CFLAGS"
 CFLAGS=`echo $WXCONFIG_CFLAGS $CWARNINGS $C_AND_CXX_FLAGS $CFLAGS `
 CXXFLAGS=`echo $WXCONFIG_CXXFLAGS $CXXWARNINGS $C_AND_CXX_FLAGS $CXXFLAGS `
+OBJCFLAGS=`echo $WXCONFIG_CFLAGS $CWARNINGS $C_AND_CXX_FLAGS $OBJCFLAGS `
+OBJCXXFLAGS=`echo $WXCONFIG_CXXFLAGS $CXXWARNINGS $C_AND_CXX_FLAGS $OBJCXXFLAGS `
 
 dnl now that we added WXCONFIG_CPPFLAGS to CPPFLAGS we can add the wx-config
 dnl only stuff to it
@@ -7954,7 +8059,7 @@ if test "x$wxUSE_UNIVERSAL" = "xyes" ; then
             ;;
 
         *)
-            for t in `echo $wxUNIV_THEMES | tr , ' ' | tr a-z A-Z`; do
+            for t in `echo $wxUNIV_THEMES | tr , ' ' | tr '[[a-z]]' '[[A-Z]]'`; do
                 AC_DEFINE_UNQUOTED(wxUSE_THEME_$t)
             done
     esac
@@ -8025,7 +8130,7 @@ AC_SUBST(UNICODE)
 AC_SUBST(BUILD)
 AC_SUBST(DEBUG_INFO)
 AC_SUBST(DEBUG_FLAG)
-TOOLKIT_LOWERCASE=`echo $TOOLKIT | tr A-Z a-z`
+TOOLKIT_LOWERCASE=`echo $TOOLKIT | tr '[[A-Z]]' '[[a-z]]'`
 AC_SUBST(TOOLKIT_LOWERCASE)
 AC_SUBST(TOOLKIT_VERSION)
 AC_SUBST(SAMPLES_RPATH_FLAG)
@@ -8033,6 +8138,11 @@ AC_SUBST(SAMPLES_RPATH_POSTLINK)
 AC_SUBST(HOST_SUFFIX)
 AC_SUBST(CPPUNIT_CFLAGS)
 AC_SUBST(CPPUNIT_LIBS)
+
+dnl Cocoa sets this, but no other port does. As a result, we run into problems when compiling
+dnl webkit.mm, or other Objective-C sources. This line can be removed when we move to Bakefile 0.2.4
+dnl which adds this call to bakefile.m4.
+AC_SUBST(OBJCXXFLAGS)
 
 case "$TOOLKIT" in
     GTK)
@@ -8095,7 +8205,7 @@ then
 
                 if $CXX -o conftest$PROGRAM_EXT conftest.cpp >/dev/null 2>&1
                 then
-                    if tr -dc a-z < conftest$PROGRAM_EXT |
+                    if tr -dc '[a-z]' < conftest$PROGRAM_EXT |
                         grep awidetest >/dev/null
                     then
                         wx_cv_gcc_pch_bug=no
@@ -8128,7 +8238,11 @@ then
         AC_MSG_WARN([*** see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13361])
     fi
 
-    CPPFLAGS="-DWX_PRECOMP $CPPFLAGS"
+    # Our WX_PRECOMP flag does not make sense for any language except C++ because
+    # the headers that benefit from precompilation are mostly C++ headers.
+    CXXFLAGS="-DWX_PRECOMP $CXXFLAGS"
+    # When Bakefile can do multi-language PCH (e.g. C++ and Objective-C++) enable this:
+    #OBJCXXFLAGS="-DWX_PRECOMP $CXXFLAGS"
 fi
 
 dnl HACK ALERT!!
@@ -8363,7 +8477,7 @@ for subdir in `echo $SUBDIRS`; do
                 dnl assume that everything compiles for utils &c
                 dnl any that shouldn't be built can be added to
                 dnl DISABLED_UTILS, DISABLED_CONTRIB or DISABLED_DEMOS
-                disabled_var=DISABLED_`echo $subdir | tr a-z A-Z`
+                disabled_var=DISABLED_`echo $subdir | tr '[[a-z]]' '[[A-Z]]'`
                 eval "disabled=\$$disabled_var"
                 disabled=/`echo X $disabled | sed 's@ @/|/@g'`/
                 makefiles=`(cd $srcdir ; find $subdir -name Makefile.in) | $EGREP -v "$disabled"`

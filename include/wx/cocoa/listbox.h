@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/03/16
-// RCS-ID:      $Id: listbox.h 38319 2006-03-23 22:05:23Z VZ $
+// RCS-ID:      $Id: listbox.h 51894 2008-02-18 21:51:29Z DE $
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -76,10 +76,14 @@ protected:
     WX_NSMutableArray m_cocoaItems;
     wxArrayPtrVoid m_itemClientData;
     struct objc_object *m_cocoaDataSource;
+    inline bool _WxCocoa_GetNeedsUpdate();
+    inline void _WxCocoa_SetNeedsUpdate(bool needsUpdate);
+    void _WxCocoa_OnIdle(wxIdleEvent &event);
 // ------------------------------------------------------------------------
 // Implementation
 // ------------------------------------------------------------------------
 public:
+    virtual wxSize DoGetBestSize() const;
 // pure virtuals from wxListBoxBase
     virtual bool IsSelected(int n) const;
     virtual int GetSelections(wxArrayInt& aSelections) const;

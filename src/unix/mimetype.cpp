@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.cpp 45893 2007-05-08 20:05:16Z VZ $
+// RCS-ID:      $Id: mimetype.cpp 54353 2008-06-25 07:52:11Z JS $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -516,6 +516,9 @@ void wxMimeTypesManagerImpl::LoadGnomeMimeFilesFromDir(
     wxString dirname = dirbase;
     dirname << wxT("/mime-info");
 
+    // Don't complain if we don't have permissions to read - it confuses users
+    wxLogNull logNull;
+
     if ( !wxDir::Exists(dirname) )
         return;
 
@@ -908,6 +911,10 @@ void wxMimeTypesManagerImpl::LoadKDELinksForMimeType(const wxString& dirbase,
 {
     wxFileName dirname(dirbase, wxEmptyString);
     dirname.AppendDir(subdir);
+
+    // Don't complain if we don't have permissions to read - it confuses users
+    wxLogNull logNull;
+
     wxDir dir(dirname.GetPath());
     if(! dir.IsOpened())
         return;
@@ -935,6 +942,9 @@ void wxMimeTypesManagerImpl::LoadKDELinksForMimeType(const wxString& dirbase,
 void wxMimeTypesManagerImpl::LoadKDELinkFilesFromDir(const wxString& dirname,
                                             const wxArrayString& icondirs)
 {
+    // Don't complain if we don't have permissions to read - it confuses users
+    wxLogNull logNull;
+
     if(! wxDir::Exists(dirname))
         return;
 
@@ -1034,6 +1044,9 @@ void wxMimeTypesManagerImpl::LoadKDEApp(const wxString& filename)
 
 void wxMimeTypesManagerImpl::LoadKDEAppsFilesFromDir(const wxString& dirname)
 {
+    // Don't complain if we don't have permissions to read - it confuses users
+    wxLogNull logNull;
+
     if(! wxDir::Exists(dirname))
         return;
     wxDir dir(dirname);
@@ -1522,6 +1535,85 @@ void wxMimeTypesManagerImpl::Initialize(int mailcapStyles,
     if (mailcapStyles & wxMAILCAP_KDE)
         GetKDEMimeInfo(sExtraDir);
 #endif
+
+    // Load desktop files for Gnome, and then override them with the Gnome defaults.
+    // We will override them one desktop file at a time, rather
+    // than one mime type at a time, but it should be a reasonable
+    // heuristic.
+    if (mailcapStyles & wxMAILCAP_GNOME)
+    {
+        wxString xdgDataHome = wxGetenv(wxT("XDG_DATA_HOME"));
+        if ( xdgDataHome.empty() )
+            xdgDataHome = wxGetHomeDir() + wxT("/.local/share");
+        wxString xdgDataDirs = wxGetenv(wxT("XDG_DATA_DIRS"));
+        if ( xdgDataDirs.empty() )
+            xdgDataDirs = wxT("/usr/local/share:/usr/share:/usr/share/gnome");
+        wxArrayString dirs;
+
+        wxStringTokenizer tokenizer(xdgDataDirs, wxT(":"));
+        while ( tokenizer.HasMoreTokens() )
+        {
+            wxString p = tokenizer.GetNextToken();
+            dirs.Add(p);
+        }
+        dirs.insert(dirs.begin(), xdgDataHome);
+
+        wxString defaultsList;
+        size_t i;
+        for (i = 0; i < dirs.GetCount(); i++)
+        {
+            wxString f(dirs[i] + wxT("/applications/defaults.list"));
+            if (wxFileExists(f))
+            {
+                defaultsList = f;
+                break;
+            }
+        }
+
+        // Load application files and associate them to corresponding mime types.
+        size_t nDirs = dirs.GetCount();
+        for (size_t nDir = 0; nDir < nDirs; nDir++)
+        {
+            wxString dirStr(dirs[nDir] + wxT("/applications"));
+            LoadKDEAppsFilesFromDir(dirStr);
+        }
+
+        if (!defaultsList.IsEmpty())
+        {
+            wxArrayString deskTopFilesSeen;
+
+            wxMimeTextFile textfile(defaultsList);
+            if ( textfile.Open() )
+            {
+                int nIndex = textfile.pIndexOf( wxT("[Default Applications]") );
+                if (nIndex != wxNOT_FOUND)
+                {
+                    for (i = nIndex+1; i < textfile.GetLineCount(); i++)
+                    {
+                        if (textfile[i].Find(wxT("=")) != wxNOT_FOUND)
+                        {
+                            wxString mimeType = textfile.GetVerb(i);
+                            wxString desktopFile = textfile.GetCmd(i);
+
+                            if (deskTopFilesSeen.Index(desktopFile) == wxNOT_FOUND)
+                            {
+                                deskTopFilesSeen.Add(desktopFile);
+                                size_t j;
+                                for (j = 0; j < dirs.GetCount(); j++)
+                                {
+                                    wxString desktopPath(dirs[j] + wxT("/applications/") + desktopFile);
+                                    if (wxFileExists(desktopPath))
+                                    {
+                                        LoadKDEApp(desktopPath);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     m_mailcapStylesInited |= mailcapStyles;
 }

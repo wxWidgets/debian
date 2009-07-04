@@ -34,15 +34,15 @@ cannot be declared outside the class, the shift left operators are used like thi
 <PRE>
     // in the header file
     DECLARE_VARIANT_OBJECT(MyClass)
-    
+
     // in the implementation file
-    IMPLMENT_VARIANT_OBJECT(MyClass)
-    
+    IMPLEMENT_VARIANT_OBJECT(MyClass)
+
     // in the user code
     wxVariant variant;
     MyClass value;
     variant &lt;&lt; value;
-    
+
     // or
     value &lt;&lt; variant;
 </PRE>

@@ -3,7 +3,7 @@
 // Purpose:     wxDC class
 // Author:      Vaclav Slavik
 // Created:     2006-08-07
-// RCS-ID:      $Id: dc.cpp 43550 2006-11-20 20:45:57Z VS $
+// RCS-ID:      $Id: dc.cpp 54748 2008-07-21 17:01:35Z VZ $
 // Copyright:   (c) 2006 REA Elektronik GmbH
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,6 +25,7 @@
 
 #ifndef WX_PRECOMP
     #include "wx/dc.h"
+    #include "wx/dcmemory.h"
     #include "wx/log.h"
 #endif
 

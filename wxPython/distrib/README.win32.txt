@@ -27,5 +27,3 @@ installer will also create Start Menu shortcuts for the tool scripts
 mentioned above.
 
 
-
-

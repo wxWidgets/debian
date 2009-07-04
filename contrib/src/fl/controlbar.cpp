@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: controlbar.cpp 44043 2006-12-23 13:03:00Z MR $
+// RCS-ID:      $Id: controlbar.cpp 50934 2007-12-28 07:16:38Z MR $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -726,6 +726,10 @@ void wxFrameLayout::SetBarState( cbBarInfo* pBar, int newState, bool updateNow )
                     mFloatedFrames.Erase( pNode );
 
                     pFFrm->Show( false );
+
+                    // Workaround assert that causes a crash on the next time something tries to CaptureMouse
+                    if (pFFrm->HasCapture()) pFFrm->ReleaseMouse();
+
                     pFFrm->Destroy(); break;
                 }
 

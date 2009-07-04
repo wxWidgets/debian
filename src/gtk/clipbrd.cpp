@@ -2,7 +2,7 @@
 // Name:        src/gtk/clipbrd.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: clipbrd.cpp 44193 2007-01-11 01:34:08Z VZ $
+// Id:          $Id: clipbrd.cpp 54742 2008-07-21 03:39:40Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -282,11 +282,14 @@ selection_handler( GtkWidget *WXUNUSED(widget),
 
     if (size == 0) return;
 
-    void *d = malloc(size);
+    wxCharBuffer buf(size);
 
-    // Text data will be in UTF8 in Unicode mode.
-    data->GetDataHere( selection_data->target, d );
+    // text data must be returned in UTF8 if format is wxDF_UNICODETEXT
+    data->GetDataHere( format, buf.data() );
 
+    // use UTF8_STRING format if requested in Unicode build but just plain
+    // STRING one in ANSI or if explicitly asked in Unicode
+#if wxUSE_UNICODE
     // NB: GTK+ requires special treatment of UTF8_STRING data, the text
     //     would show as UTF-8 data interpreted as latin1 (?) in other
     //     GTK+ apps if we used gtk_selection_data_set()
@@ -294,20 +297,19 @@ selection_handler( GtkWidget *WXUNUSED(widget),
     {
         gtk_selection_data_set_text(
             selection_data,
-            (const gchar*)d,
+            (const gchar*)buf.data(),
             size );
     }
     else
+#endif // wxUSE_UNICODE
     {
         gtk_selection_data_set(
             selection_data,
             GDK_SELECTION_TYPE_STRING,
             8*sizeof(gchar),
-            (unsigned char*) d,
+            (const guchar*)buf.data(),
             size );
     }
-
-    free(d);
 }
 }
 

@@ -3,7 +3,7 @@
 // Purpose:     generic implementation of wxListCtrl
 // Author:      Robert Roebling
 //              Vadim Zeitlin (virtual list control support)
-// Id:          $Id: listctrl.cpp 49590 2007-11-01 20:41:30Z VZ $
+// Id:          $Id: listctrl.cpp 57542 2008-12-25 13:03:24Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -579,6 +579,8 @@ public:
     // bring the selected item into view, scrolling to it if necessary
     void MoveToItem(size_t item);
 
+    bool ScrollList( int WXUNUSED(dx), int dy );
+
     // bring the current item into view
     void MoveToFocus() { MoveToItem(m_current); }
 
@@ -619,6 +621,8 @@ public:
 
     void OnPaint( wxPaintEvent &event );
 
+    void OnChildFocus(wxChildFocusEvent& event);
+    
     void DrawImage( int index, wxDC *dc, int x, int y );
     void GetImageSize( int index, int &width, int &height ) const;
     int GetTextLength( const wxString &s ) const;
@@ -1902,6 +1906,19 @@ void wxListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
 
         x += wCol;
     }
+
+    // Fill in what's missing to the right of the columns, otherwise we will
+    // leave an unpainted area when columns are removed (and it looks better)
+    if ( x < w )
+    {
+        wxRendererNative::Get().DrawHeaderButton
+                                (
+                                    this,
+                                    dc,
+                                    wxRect(x, HEADER_OFFSET_Y, w - x, h),
+                                    0
+                                );
+    }
 }
 
 void wxListHeaderWindow::DrawCurrent()
@@ -2253,6 +2270,7 @@ BEGIN_EVENT_TABLE(wxListMainWindow,wxScrolledWindow)
   EVT_SET_FOCUS      (wxListMainWindow::OnSetFocus)
   EVT_KILL_FOCUS     (wxListMainWindow::OnKillFocus)
   EVT_SCROLLWIN      (wxListMainWindow::OnScroll)
+  EVT_CHILD_FOCUS    (wxListMainWindow::OnChildFocus)
 END_EVENT_TABLE()
 
 void wxListMainWindow::Init()
@@ -2875,6 +2893,13 @@ void wxListMainWindow::HighlightAll( bool on )
     }
 }
 
+void wxListMainWindow::OnChildFocus(wxChildFocusEvent& WXUNUSED(event))
+{
+    // Do nothing here.  This prevents the default handler in wxScrolledWindow
+    // from needlessly scrolling the window when the edit control is
+    // dismissed.  See ticket #9563.
+}
+
 void wxListMainWindow::SendNotify( size_t line,
                                    wxEventType command,
                                    const wxPoint& point )
@@ -3312,11 +3337,49 @@ void wxListMainWindow::MoveToItem(size_t item)
     }
     else // !report
     {
+        int sx = -1,
+            sy = -1;
+
         if (rect.x-view_x < 5)
-            Scroll( (rect.x - 5) / SCROLL_UNIT_X, -1 );
+            sx = (rect.x - 5) / SCROLL_UNIT_X;
         if (rect.x + rect.width - 5 > view_x + client_w)
-            Scroll( (rect.x + rect.width - client_w + SCROLL_UNIT_X) / SCROLL_UNIT_X, -1 );
+            sx = (rect.x + rect.width - client_w + SCROLL_UNIT_X) / SCROLL_UNIT_X;
+
+        if (rect.y-view_y < 5)
+            sy = (rect.y - 5) / hLine;
+        if (rect.y + rect.height - 5 > view_y + client_h)
+            sy = (rect.y + rect.height - client_h + hLine) / hLine;
+
+        Scroll(sx, sy);
     }
+}
+
+bool wxListMainWindow::ScrollList(int WXUNUSED(dx), int dy)
+{
+    if ( !InReportView() )
+    {
+        // TODO: this should work in all views but is not implemented now
+        return false;
+    }
+
+    size_t top, bottom;
+    GetVisibleLinesRange(&top, &bottom);
+
+    if ( bottom == (size_t)-1 )
+        return 0;
+
+    ResetVisibleLinesRange();
+
+    int hLine = GetLineHeight();
+
+    Scroll(-1, top + dy / hLine);
+
+#ifdef __WXMAC__
+    // see comment in MoveToItem() for why we do this
+    ResetVisibleLinesRange();
+#endif
+
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -3375,16 +3438,9 @@ void wxListMainWindow::OnKeyDown( wxKeyEvent &event )
     wxWindow *parent = GetParent();
 
     // propagate the key event upwards
-    wxKeyEvent ke( wxEVT_KEY_DOWN );
-    ke.m_shiftDown = event.m_shiftDown;
-    ke.m_controlDown = event.m_controlDown;
-    ke.m_altDown = event.m_altDown;
-    ke.m_metaDown = event.m_metaDown;
-    ke.m_keyCode = event.m_keyCode;
-    ke.m_x = event.m_x;
-    ke.m_y = event.m_y;
-    ke.SetEventObject( parent );
-    if (parent->GetEventHandler()->ProcessEvent( ke )) return;
+    wxKeyEvent ke(event);
+    if (parent->GetEventHandler()->ProcessEvent( ke ))
+        return;
 
     event.Skip();
 }
@@ -3394,16 +3450,10 @@ void wxListMainWindow::OnKeyUp( wxKeyEvent &event )
     wxWindow *parent = GetParent();
 
     // propagate the key event upwards
-    wxKeyEvent ke( wxEVT_KEY_UP );
-    ke.m_shiftDown = event.m_shiftDown;
-    ke.m_controlDown = event.m_controlDown;
-    ke.m_altDown = event.m_altDown;
-    ke.m_metaDown = event.m_metaDown;
-    ke.m_keyCode = event.m_keyCode;
-    ke.m_x = event.m_x;
-    ke.m_y = event.m_y;
+    wxKeyEvent ke(event);
     ke.SetEventObject( parent );
-    if (parent->GetEventHandler()->ProcessEvent( ke )) return;
+    if (parent->GetEventHandler()->ProcessEvent( ke ))
+        return;
 
     event.Skip();
 }
@@ -3424,16 +3474,9 @@ void wxListMainWindow::OnChar( wxKeyEvent &event )
     }
 
     // propagate the char event upwards
-    wxKeyEvent ke( wxEVT_CHAR );
-    ke.m_shiftDown = event.m_shiftDown;
-    ke.m_controlDown = event.m_controlDown;
-    ke.m_altDown = event.m_altDown;
-    ke.m_metaDown = event.m_metaDown;
-    ke.m_keyCode = event.m_keyCode;
-    ke.m_x = event.m_x;
-    ke.m_y = event.m_y;
-    ke.SetEventObject( parent );
-    if (parent->GetEventHandler()->ProcessEvent( ke )) return;
+    wxKeyEvent ke(event);
+    if (parent->GetEventHandler()->ProcessEvent( ke ))
+        return;
 
     if (event.GetKeyCode() == WXK_TAB)
     {
@@ -4114,8 +4157,9 @@ wxRect wxListMainWindow::GetViewRect() const
     {
         for ( int i = 0; i < count; i++ )
         {
-            wxRect r;
-            GetItemRect(i, r);
+            // we need logical, not physical, coordinates here, so use
+            // GetLineRect() instead of GetItemRect()
+            wxRect r = GetLineRect(i);
 
             wxCoord x = r.GetRight(),
                     y = r.GetBottom();
@@ -4183,9 +4227,9 @@ void wxListMainWindow::RecalculatePositions(bool noRefresh)
     const size_t count = GetItemCount();
 
     int iconSpacing;
-    if ( HasFlag(wxLC_ICON) )
+    if ( HasFlag(wxLC_ICON) && m_normal_image_list )
         iconSpacing = m_normal_spacing;
-    else if ( HasFlag(wxLC_SMALL_ICON) )
+    else if ( HasFlag(wxLC_SMALL_ICON) && m_small_image_list )
         iconSpacing = m_small_spacing;
     else
         iconSpacing = 0;
@@ -5083,7 +5127,17 @@ void wxGenericListCtrl::SetSingleStyle( long style, bool add )
     else
         flag &= ~style;
 
-    SetWindowStyleFlag( flag );
+    // some styles can be set without recreating everything (as happens in
+    // SetWindowStyleFlag() which calls wxListMainWindow::DeleteEverything())
+    if ( !(style & ~(wxLC_HRULES | wxLC_VRULES)) )
+    {
+        Refresh();
+        wxWindow::SetWindowStyleFlag(flag);
+    }
+    else
+    {
+        SetWindowStyleFlag( flag );
+    }
 }
 
 void wxGenericListCtrl::SetWindowStyleFlag( long flag )
@@ -5581,9 +5635,9 @@ long wxGenericListCtrl::InsertColumn( long col, const wxString &heading,
     return InsertColumn( col, item );
 }
 
-bool wxGenericListCtrl::ScrollList( int WXUNUSED(dx), int WXUNUSED(dy) )
+bool wxGenericListCtrl::ScrollList( int dx, int dy )
 {
-    return 0;
+    return m_mainWin->ScrollList(dx, dy);
 }
 
 // Sort items.
@@ -5711,7 +5765,7 @@ wxGenericListCtrl::GetClassDefaultAttributes(wxWindowVariant variant)
 #else
     wxUnusedVar(variant);
     wxVisualAttributes attr;
-    attr.colFg = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+    attr.colFg = wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOXTEXT);
     attr.colBg = wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX);
     attr.font  = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
     return attr;

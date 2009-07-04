@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     22-May-1998
-// RCS-ID:      $Id: core.i 39219 2006-05-19 01:10:46Z RD $
+// RCS-ID:      $Id: core.i 60303 2009-04-24 05:29:31Z RD $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -31,6 +31,12 @@
 
 
 %pythoncode {
+%#//----------------------------------------------------------------------------
+%#// These will be reset when the _wxPySetDictionary is called.  Dummy
+%#// values are set here for tools that do static source analysis.
+Platform = ""
+PlatformInfo = ()
+
 %#// Give a reference to the dictionary of this module to the C++ extension
 %#// code.
 _core_._wxPySetDictionary(vars())

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: doc.h 35665 2005-09-24 21:43:15Z VZ $
+// RCS-ID:      $Id: doc.h 56679 2008-11-04 17:47:07Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -93,13 +93,14 @@ class TextEditDocument: public wxDocument
   wxSTD ostream& SaveObject(wxSTD ostream& stream);
   wxSTD istream& LoadObject(wxSTD istream& stream);
 */
-  virtual bool OnSaveDocument(const wxString& filename);
-  virtual bool OnOpenDocument(const wxString& filename);
   virtual bool IsModified(void) const;
   virtual void Modify(bool mod);
 
   TextEditDocument(void) {}
-  ~TextEditDocument(void) {}
+  virtual ~TextEditDocument(void) {}
+protected:
+  virtual bool DoOpenDocument(const wxString& filename);
+  virtual bool DoSaveDocument(const wxString& filename);
 };
 
 

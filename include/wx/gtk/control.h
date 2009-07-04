@@ -2,7 +2,7 @@
 // Name:        control.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: control.h 40923 2006-08-30 05:55:56Z PC $
+// Id:          $Id: control.h 58191 2009-01-18 12:21:04Z JS $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -101,5 +101,8 @@ protected:
 private:
     DECLARE_DYNAMIC_CLASS(wxControl)
 };
+
+// Fix sensitivity due to bug in GTK+ < 2.14
+void WXDLLEXPORT wxGtkFixSensitivity(wxWindow* ctrl);
 
 #endif // _WX_GTK_CONTROL_H_

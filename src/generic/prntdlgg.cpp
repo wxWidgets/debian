@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: prntdlgg.cpp 44226 2007-01-15 01:26:05Z PC $
+// RCS-ID:      $Id: prntdlgg.cpp 55256 2008-08-25 14:39:11Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -62,10 +62,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef __WXUNIVERSAL__
+
 #if wxUSE_LIBGNOMEPRINT
     #include "wx/link.h"
     wxFORCE_LINK_MODULE(gnome_print)
 #endif
+
+#endif // !__WXUNIVERSAL__
 
 // ----------------------------------------------------------------------------
 // global vars
@@ -197,9 +201,9 @@ void wxGenericPrintDialog::Init(wxWindow * WXUNUSED(parent))
     if (factory->HasStatusLine())
     {
         flex->Add( new wxStaticText( this, wxID_ANY, _("Status:") ),
-            0, wxALIGN_CENTER_VERTICAL|wxALL-wxTOP, 5 );
+            0, wxALIGN_CENTER_VERTICAL|(wxALL-wxTOP), 5 );
         flex->Add( new wxStaticText( this, wxID_ANY, factory->CreateStatusLine() ),
-            0, wxALIGN_CENTER_VERTICAL|wxALL-wxTOP, 5 );
+            0, wxALIGN_CENTER_VERTICAL|(wxALL-wxTOP), 5 );
     }
 
     mainsizer->Add( topsizer, 0, wxLEFT|wxTOP|wxRIGHT|wxGROW, 10 );
@@ -350,10 +354,12 @@ bool wxGenericPrintDialog::TransferDataToWindow()
              if (m_printDialogData.GetToPage() > 0)
                 m_toText->SetValue(wxString::Format(_T("%d"), m_printDialogData.GetToPage()));
              if(m_rangeRadioBox)
+             {
                 if (m_printDialogData.GetAllPages() || m_printDialogData.GetFromPage() == 0)
                    m_rangeRadioBox->SetSelection(0);
                 else
                    m_rangeRadioBox->SetSelection(1);
+             }
           }
           else
           {

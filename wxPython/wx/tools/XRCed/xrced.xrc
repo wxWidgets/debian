@@ -22,6 +22,7 @@
         <option>1</option>
         <flag>wxEXPAND</flag>
       </object>
+      
       <object class="sizeritem">
         <object class="wxStdDialogButtonSizer">
           <object class="button">
@@ -604,8 +605,6 @@
               <orient>wxVERTICAL</orient>
               <object class="sizeritem">
                 <object class="wxFlexGridSizer">
-                  <cols>2</cols>
-                  <rows>2</rows>
                   <object class="sizeritem">
                     <object class="wxCheckBox" name="check_proportionContainer">
                       <label>proportion</label>
@@ -628,6 +627,9 @@
                       <size>200,-1</size>
                     </object>
                   </object>
+                  <cols>2</cols>
+                  <rows>2</rows>
+                  <vgap>4</vgap>
                   <hgap>10</hgap>
                 </object>
               </object>
@@ -641,8 +643,6 @@
               <orient>wxVERTICAL</orient>
               <object class="sizeritem">
                 <object class="wxFlexGridSizer">
-                  <cols>2</cols>
-                  <rows>2</rows>
                   <object class="sizeritem">
                     <object class="wxCheckBox" name="check_proportionControl">
                       <label>proportion</label>
@@ -665,6 +665,9 @@
                       <size>200,-1</size>
                     </object>
                   </object>
+                  <cols>2</cols>
+                  <rows>2</rows>
+                  <vgap>4</vgap>
                   <hgap>10</hgap>
                 </object>
               </object>
@@ -683,6 +686,7 @@
           <object class="sizeritem">
             <object class="wxCheckBox" name="check_AUI">
               <label>Use AUI</label>
+              <tooltip>Use AUI subsystem for layout</tooltip>
             </object>
             <flag>wxALL</flag>
             <border>5</border>
@@ -695,10 +699,11 @@
                 <item>ToolBook</item>
                 <item>FoldPanelBar</item>
               </content>
+              <dimension>0</dimension>
               <style>wxRA_SPECIFY_COLS</style>
             </object>
-            <flag>wxBOTTOM</flag>
-            <border>5</border>
+            <flag>wxBOTTOM|wxRIGHT</flag>
+            <border>4</border>
           </object>
           <object class="sizeritem">
             <object class="wxStaticBoxSizer">
@@ -742,7 +747,8 @@
               <label>Component palette</label>
               <orient>wxVERTICAL</orient>
             </object>
-            <flag>wxEXPAND</flag>
+            <flag>wxRIGHT|wxEXPAND</flag>
+            <border>4</border>
           </object>
         </object>
       </object>
@@ -791,6 +797,7 @@
           <object class="sizeritem">
             <object class="wxCheckBox" name="check_expandOnOpen">
               <label>Expand tree on open</label>
+              <tooltip>Expand XML tree after opening the resource file</tooltip>
             </object>
             <flag>wxALL</flag>
             <border>5</border>
@@ -798,6 +805,7 @@
           <object class="sizeritem">
             <object class="wxCheckBox" name="check_fitTestWin">
               <label>Fit test window</label>
+              <tooltip>Fit test window after creating</tooltip>
             </object>
             <flag>wxTOP|wxLEFT|wxRIGHT</flag>
             <border>5</border>
@@ -810,6 +818,14 @@
                 <item>atomic change</item>
               </content>
               <style>wxRA_SPECIFY_ROWS</style>
+            </object>
+            <flag>wxTOP|wxLEFT|wxRIGHT</flag>
+            <border>5</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxCheckBox" name="check_useSubclassing">
+              <label>Use subclassing</label>
+              <tooltip>Use subclassing when creating the test view</tooltip>
             </object>
             <flag>wxTOP|wxLEFT|wxRIGHT</flag>
             <border>5</border>

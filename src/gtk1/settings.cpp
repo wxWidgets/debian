@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Modified by: Mart Raudsepp (GetMetric)
-// Id:          $Id: settings.cpp 39701 2006-06-13 20:44:51Z ABX $
+// Id:          $Id: settings.cpp 57542 2008-12-25 13:03:24Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -250,6 +250,7 @@ wxColour wxSystemSettingsNative::GetColour( wxSystemColour index )
         case wxSYS_COLOUR_CAPTIONTEXT:
         case wxSYS_COLOUR_INACTIVECAPTIONTEXT:
         case wxSYS_COLOUR_BTNTEXT:
+        case wxSYS_COLOUR_LISTBOXTEXT:
             if (!gs_objects.m_colBtnText.Ok())
             {
                 int red, green, blue;

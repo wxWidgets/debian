@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/04/01
-// RCS-ID:      $Id: dc.mm 47599 2007-07-20 19:47:02Z DE $
+// RCS-ID:      $Id: dc.mm 51585 2008-02-08 00:35:39Z DE $
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,6 +20,7 @@
 
 #include "wx/cocoa/autorelease.h"
 #include "wx/cocoa/string.h"
+#include "wx/cocoa/ObjcRef.h"
 
 #import <AppKit/NSBezierPath.h>
 #import <AppKit/NSTextStorage.h>
@@ -74,11 +75,16 @@ inline void CocoaSetPenForNSBezierPath(wxPen &pen, NSBezierPath *bezpath)
 
 void wxDC::CocoaInitializeTextSystem()
 {
+    wxAutoNSAutoreleasePool pool;
+
     wxASSERT_MSG(!sm_cocoaNSTextStorage && !sm_cocoaNSLayoutManager && !sm_cocoaNSTextContainer,wxT("Text system already initalized!  BAD PROGRAMMER!"));
 
-    sm_cocoaNSTextStorage = [[NSTextStorage alloc] init];
+    // FIXME: Never released
+    sm_cocoaNSTextStorage = wxGCSafeRetain([[[NSTextStorage alloc] init] autorelease]);
 
-    sm_cocoaNSLayoutManager = [[NSLayoutManager alloc] init];
+    // FIXME: Never released
+    sm_cocoaNSLayoutManager = wxGCSafeRetain([[[NSLayoutManager alloc] init] autorelease]);
+
     [sm_cocoaNSTextStorage addLayoutManager:sm_cocoaNSLayoutManager];
     // NSTextStorage retains NSLayoutManager, but so do we
     // [sm_cocoaNSLayoutManager release]; [sm_cocoaNSLayoutManager retain];
@@ -86,7 +92,8 @@ void wxDC::CocoaInitializeTextSystem()
     // NOTE:  initWithContainerSize is the designated initializer, but the
     // Apple CircleView sample gets away with just calling init, which
     // is all we really need for our purposes.
-    sm_cocoaNSTextContainer = [[NSTextContainer alloc] init];
+    // FIXME: Never released
+    sm_cocoaNSTextContainer = wxGCSafeRetain([[[NSTextContainer alloc] init] autorelease]);
     [sm_cocoaNSLayoutManager addTextContainer:sm_cocoaNSTextContainer];
     // NSLayoutManager retains NSTextContainer, but so do we
     // [sm_cocoaNSTextContainer release]; [sm_cocoaNSTextContainer retain];

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Agron Selimaj
 // Created:     01/02/97
-// RCS-ID:      $Id: listctrl.h 49563 2007-10-31 20:46:21Z VZ $
+// RCS-ID:      $Id: listctrl.h 54419 2008-06-29 01:35:24Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -430,6 +430,16 @@ protected:
 private:
     // process NM_CUSTOMDRAW notification message
     WXLPARAM OnCustomDraw(WXLPARAM lParam);
+
+    // set the extended styles for the control (used by Create() and
+    // UpdateStyle()), only should be called if InReportView()
+    void MSWSetExListStyles();
+
+    // initialize the (already created) m_textCtrl with the associated HWND
+    void InitEditControl(WXHWND hWnd);
+
+    // destroy m_textCtrl if it's currently valid and reset it to NULL
+    void DeleteEditControl();
 
     DECLARE_DYNAMIC_CLASS(wxListCtrl)
     DECLARE_EVENT_TABLE()

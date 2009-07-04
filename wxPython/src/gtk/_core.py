@@ -51,6 +51,12 @@ def _swig_setattr_nondynamic_method(set):
     return set_attr
 
 
+#//----------------------------------------------------------------------------
+#// These will be reset when the _wxPySetDictionary is called.  Dummy
+#// values are set here for tools that do static source analysis.
+Platform = ""
+PlatformInfo = ()
+
 #// Give a reference to the dictionary of this module to the C++ extension
 #// code.
 _core_._wxPySetDictionary(vars())
@@ -333,6 +339,7 @@ GROW = _core_.GROW
 EXPAND = _core_.EXPAND
 SHAPED = _core_.SHAPED
 FIXED_MINSIZE = _core_.FIXED_MINSIZE
+RESERVE_SPACE_EVEN_IF_HIDDEN = _core_.RESERVE_SPACE_EVEN_IF_HIDDEN
 TILE = _core_.TILE
 ADJUST_MINSIZE = _core_.ADJUST_MINSIZE
 BORDER_DEFAULT = _core_.BORDER_DEFAULT
@@ -679,6 +686,9 @@ MOD_ALL = _core_.MOD_ALL
 UPDATE_UI_NONE = _core_.UPDATE_UI_NONE
 UPDATE_UI_RECURSE = _core_.UPDATE_UI_RECURSE
 UPDATE_UI_FROMIDLE = _core_.UPDATE_UI_FROMIDLE
+NOTIFY_NONE = _core_.NOTIFY_NONE
+NOTIFY_ONCE = _core_.NOTIFY_ONCE
+NOTIFY_REPEAT = _core_.NOTIFY_REPEAT
 Layout_Default = _core_.Layout_Default
 Layout_LeftToRight = _core_.Layout_LeftToRight
 Layout_RightToLeft = _core_.Layout_RightToLeft
@@ -1584,13 +1594,35 @@ class Point2D(object):
         """__isub__(self, Point2D pt) -> Point2D"""
         return _core_.Point2D___isub__(*args, **kwargs)
 
-    def __imul__(*args, **kwargs):
+    def __imul__(*args):
         """__imul__(self, Point2D pt) -> Point2D"""
-        return _core_.Point2D___imul__(*args, **kwargs)
+        return _core_.Point2D___imul__(*args)
 
-    def __idiv__(*args, **kwargs):
-        """__idiv__(self, Point2D pt) -> Point2D"""
-        return _core_.Point2D___idiv__(*args, **kwargs)
+    def __idiv__(*args):
+        """__idiv__(self, wxPoint2DDouble pt) -> Point2D"""
+        return _core_.Point2D___idiv__(*args)
+
+    def __add__(*args):
+        """__add__(self, Point2D pt) -> Point2D"""
+        return _core_.Point2D___add__(*args)
+
+    def __sub__(*args):
+        """__sub__(self, Point2D pt) -> Point2D"""
+        return _core_.Point2D___sub__(*args)
+
+    def __mul__(*args):
+        """
+        __mul__(self, Point2D pt) -> Point2D
+        __mul__(self, double n) -> Point2D
+        """
+        return _core_.Point2D___mul__(*args)
+
+    def __div__(*args):
+        """
+        __div__(self, Point2D pt) -> Point2D
+        __div__(self, double n) -> Point2D
+        """
+        return _core_.Point2D___div__(*args)
 
     def __eq__(*args, **kwargs):
         """
@@ -2285,7 +2317,7 @@ def __wxMemoryFSHandler_AddFile_wxBitmap(*args, **kwargs):
   return _core_.__wxMemoryFSHandler_AddFile_wxBitmap(*args, **kwargs)
 
 def __wxMemoryFSHandler_AddFile_Data(*args, **kwargs):
-  """__wxMemoryFSHandler_AddFile_Data(String filename, PyObject data)"""
+  """__wxMemoryFSHandler_AddFile_Data(String filename, buffer data)"""
   return _core_.__wxMemoryFSHandler_AddFile_Data(*args, **kwargs)
 def MemoryFSHandler_AddFile(filename, dataItem, imgType=-1):
     """
@@ -2299,10 +2331,11 @@ def MemoryFSHandler_AddFile(filename, dataItem, imgType=-1):
         __wxMemoryFSHandler_AddFile_wxImage(filename, dataItem, imgType)
     elif isinstance(dataItem, wx.Bitmap):
         __wxMemoryFSHandler_AddFile_wxBitmap(filename, dataItem, imgType)
-    elif type(dataItem) == str:
-        __wxMemoryFSHandler_AddFile_Data(filename, dataItem)
     else:
-        raise TypeError, 'wx.Image, wx.Bitmap or string expected'
+        try:
+            __wxMemoryFSHandler_AddFile_Data(filename, dataItem)
+        except TypeError:
+            raise TypeError, 'wx.Image, wx.Bitmap or buffer object expected'
 
 class MemoryFSHandler(CPPFileSystemHandler):
     """Proxy of C++ MemoryFSHandler class"""
@@ -2318,7 +2351,7 @@ class MemoryFSHandler(CPPFileSystemHandler):
     RemoveFile = staticmethod(RemoveFile)
     AddFile = staticmethod(MemoryFSHandler_AddFile) 
     def AddFileWithMimeType(*args, **kwargs):
-        """AddFileWithMimeType(String filename, PyObject data, String mimetype)"""
+        """AddFileWithMimeType(String filename, buffer data, String mimetype)"""
         return _core_.MemoryFSHandler_AddFileWithMimeType(*args, **kwargs)
 
     AddFileWithMimeType = staticmethod(AddFileWithMimeType)
@@ -2345,7 +2378,7 @@ def MemoryFSHandler_RemoveFile(*args, **kwargs):
   return _core_.MemoryFSHandler_RemoveFile(*args, **kwargs)
 
 def MemoryFSHandler_AddFileWithMimeType(*args, **kwargs):
-  """MemoryFSHandler_AddFileWithMimeType(String filename, PyObject data, String mimetype)"""
+  """MemoryFSHandler_AddFileWithMimeType(String filename, buffer data, String mimetype)"""
   return _core_.MemoryFSHandler_AddFileWithMimeType(*args, **kwargs)
 
 IMAGE_ALPHA_TRANSPARENT = _core_.IMAGE_ALPHA_TRANSPARENT
@@ -3842,7 +3875,10 @@ class EvtHandler(Object):
         return _core_.EvtHandler_Connect(*args, **kwargs)
 
     def Disconnect(*args, **kwargs):
-        """Disconnect(self, int id, int lastId=-1, EventType eventType=wxEVT_NULL) -> bool"""
+        """
+        Disconnect(self, int id, int lastId=-1, EventType eventType=wxEVT_NULL, 
+            PyObject func=None) -> bool
+        """
         return _core_.EvtHandler_Disconnect(*args, **kwargs)
 
     def _setOORInfo(*args, **kwargs):
@@ -3881,19 +3917,56 @@ class EvtHandler(Object):
             id  = source.GetId()
         event.Bind(self, id, id2, handler)              
 
-    def Unbind(self, event, source=None, id=wx.ID_ANY, id2=wx.ID_ANY):
+    def Unbind(self, event, source=None, id=wx.ID_ANY, id2=wx.ID_ANY, handler=None):
         """
-        Disconencts the event handler binding for event from self.
+        Disconnects the event handler binding for event from self.
         Returns True if successful.
         """
         if source is not None:
             id  = source.GetId()
-        return event.Unbind(self, id, id2)              
+        return event.Unbind(self, id, id2, handler)              
 
     EvtHandlerEnabled = property(GetEvtHandlerEnabled,SetEvtHandlerEnabled,doc="See `GetEvtHandlerEnabled` and `SetEvtHandlerEnabled`") 
     NextHandler = property(GetNextHandler,SetNextHandler,doc="See `GetNextHandler` and `SetNextHandler`") 
     PreviousHandler = property(GetPreviousHandler,SetPreviousHandler,doc="See `GetPreviousHandler` and `SetPreviousHandler`") 
 _core_.EvtHandler_swigregister(EvtHandler)
+
+class PyEvtHandler(EvtHandler):
+    """
+    The wx.PyEvtHandler class can be used to intercept calls to the
+    `ProcessEvent` method.  Simply derive a new class from this one,
+    override ProcessEvent, and then push an instance of the class onto the
+    event handler chain for a window using `wx.Window.PushEventHandler`.
+    """
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
+    __repr__ = _swig_repr
+    def __init__(self, *args, **kwargs): 
+        """
+        __init__(self) -> PyEvtHandler
+
+        The wx.PyEvtHandler class can be used to intercept calls to the
+        `ProcessEvent` method.  Simply derive a new class from this one,
+        override ProcessEvent, and then push an instance of the class onto the
+        event handler chain for a window using `wx.Window.PushEventHandler`.
+        """
+        _core_.PyEvtHandler_swiginit(self,_core_.new_PyEvtHandler(*args, **kwargs))
+        self._setOORInfo(self);PyEvtHandler._setCallbackInfo(self, self, PyEvtHandler)
+
+    def _setCallbackInfo(*args, **kwargs):
+        """_setCallbackInfo(self, PyObject self, PyObject _class)"""
+        return _core_.PyEvtHandler__setCallbackInfo(*args, **kwargs)
+
+    def ProcessEvent(*args, **kwargs):
+        """
+        ProcessEvent(self, Event event) -> bool
+
+        Override this method to intercept the events being sent to the window.
+        The default implementation searches the event tables and calls event
+        handler functions if matching event bindings are found.
+        """
+        return _core_.PyEvtHandler_ProcessEvent(*args, **kwargs)
+
+_core_.PyEvtHandler_swigregister(PyEvtHandler)
 
 #---------------------------------------------------------------------------
 
@@ -3919,11 +3992,11 @@ class PyEventBinder(object):
             target.Connect(id1, id2, et, function)
 
 
-    def Unbind(self, target, id1, id2):
+    def Unbind(self, target, id1, id2, handler=None):
         """Remove an event binding."""
         success = 0
         for et in self.evtType:
-            success += target.Disconnect(id1, id2, et)
+            success += target.Disconnect(id1, id2, et, handler)
         return success != 0
 
     def _getEvtType(self):
@@ -5961,6 +6034,10 @@ class ShowEvent(Event):
         """GetShow(self) -> bool"""
         return _core_.ShowEvent_GetShow(*args, **kwargs)
 
+    def IsShown(*args, **kwargs):
+        """IsShown(self) -> bool"""
+        return _core_.ShowEvent_IsShown(*args, **kwargs)
+
     Show = property(GetShow,SetShow,doc="See `GetShow` and `SetShow`") 
 _core_.ShowEvent_swigregister(ShowEvent)
 
@@ -7251,6 +7328,35 @@ class PyApp(EvtHandler):
         """
         return _core_.PyApp_ExitMainLoop(*args, **kwargs)
 
+    def FilterEvent(*args, **kwargs):
+        """
+        FilterEvent(self, Event event) -> int
+
+        Filters all events. `SetCallFilterEvent` controls whether or not your
+        override is called.
+        """
+        return _core_.PyApp_FilterEvent(*args, **kwargs)
+
+    def GetCallFilterEvent(*args, **kwargs):
+        """
+        GetCallFilterEvent(self) -> bool
+
+        Returns the state of the Call FilterEvent flag.
+        """
+        return _core_.PyApp_GetCallFilterEvent(*args, **kwargs)
+
+    def SetCallFilterEvent(*args, **kwargs):
+        """
+        SetCallFilterEvent(self, bool callFilterEvent=True)
+
+        Set the Call FilterEvent flag. When set your override of FilterEvent
+        will be called.  SetCallFilterEvent's purpose is to avoid any
+        performance penalty when you have overriden FilterEvent, but don't
+        want it to be called, and also to reduce the runtime overhead when it
+        is not overridden.
+        """
+        return _core_.PyApp_SetCallFilterEvent(*args, **kwargs)
+
     def Pending(*args, **kwargs):
         """
         Pending(self) -> bool
@@ -7373,6 +7479,19 @@ class PyApp(EvtHandler):
         Get the current OnAssert behaviour setting.
         """
         return _core_.PyApp_GetAssertMode(*args, **kwargs)
+
+    def MacHideApp(*args, **kwargs):
+        """
+        MacHideApp(self)
+
+        Hide all application windows just as the user can do with the system
+        Hide command.  Mac only.
+        """
+        return _core_.PyApp_MacHideApp(*args, **kwargs)
+
+    def MacRequestUserAttention(*args, **kwargs):
+        """MacRequestUserAttention(self, int ?)"""
+        return _core_.PyApp_MacRequestUserAttention(*args, **kwargs)
 
     def GetMacSupportPCMenuShortcuts(*args, **kwargs):
         """GetMacSupportPCMenuShortcuts() -> bool"""
@@ -7670,11 +7789,24 @@ class PyOnDemandOutputWindow:
         self.pos    = wx.DefaultPosition
         self.size   = (450, 300)
         self.parent = None
+        self.triggers = []
+
 
     def SetParent(self, parent):
         """Set the window to be used as the popup Frame's parent."""
         self.parent = parent
 
+
+    def RaiseWhenSeen(self, trigger):
+        """
+        Trigger is a string or list of strings that will cause the
+        output window to be raised when that trigger text is written.
+        """
+        import types
+        if type(trigger) in types.StringTypes:
+            trigger = [trigger]
+        self.triggers = trigger
+        
 
     def CreateOutputWindow(self, st):
         self.frame = wx.Frame(self.parent, -1, self.title, self.pos, self.size,
@@ -7691,6 +7823,7 @@ class PyOnDemandOutputWindow:
             self.frame.Destroy()
         self.frame = None
         self.text  = None
+        self.parent = None
 
 
     # These methods provide the file-like output behaviour.
@@ -7707,9 +7840,18 @@ class PyOnDemandOutputWindow:
                 self.CreateOutputWindow(text)
         else:
             if not wx.Thread_IsMain():
-                wx.CallAfter(self.text.AppendText, text)
+                wx.CallAfter(self.__write, text)
             else:
-                self.text.AppendText(text)
+                self.__write(text)
+
+    def __write(self, text):
+        # helper function for actually writing the text, and
+        # optionally raising the frame if needed
+        self.text.AppendText(text)
+        for item in self.triggers:
+            if item in text:
+                self.frame.Raise()
+                break
 
 
     def close(self):
@@ -8037,6 +8179,17 @@ class EventLoopActivator(object):
     __swig_destroy__ = _core_.delete_EventLoopActivator
     __del__ = lambda self : None;
 _core_.EventLoopActivator_swigregister(EventLoopActivator)
+
+class EventLoopGuarantor(object):
+    """Proxy of C++ EventLoopGuarantor class"""
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
+    __repr__ = _swig_repr
+    def __init__(self, *args, **kwargs): 
+        """__init__(self) -> EventLoopGuarantor"""
+        _core_.EventLoopGuarantor_swiginit(self,_core_.new_EventLoopGuarantor(*args, **kwargs))
+    __swig_destroy__ = _core_.delete_EventLoopGuarantor
+    __del__ = lambda self : None;
+_core_.EventLoopGuarantor_swigregister(EventLoopGuarantor)
 
 #---------------------------------------------------------------------------
 
@@ -8487,7 +8640,7 @@ class Window(EvtHandler):
             ========================  ======================================
             wx.SIZE_AUTO              A -1 indicates that a class-specific
                                       default should be used.
-            wx.SIZE_USE_EXISTING      Axisting dimensions should be used if
+            wx.SIZE_USE_EXISTING      Existing dimensions should be used if
                                       -1 values are supplied.
             wxSIZE_ALLOW_MINUS_ONE    Allow dimensions of -1 and less to be
                                       interpreted as real dimensions, not
@@ -8703,6 +8856,14 @@ class Window(EvtHandler):
         """
         return _core_.Window_GetClientRect(*args, **kwargs)
 
+    def ClientToWindowSize(*args, **kwargs):
+        """ClientToWindowSize(self, Size size) -> Size"""
+        return _core_.Window_ClientToWindowSize(*args, **kwargs)
+
+    def WindowToClientSize(*args, **kwargs):
+        """WindowToClientSize(self, Size size) -> Size"""
+        return _core_.Window_WindowToClientSize(*args, **kwargs)
+
     def GetBestSize(*args, **kwargs):
         """
         GetBestSize(self) -> Size
@@ -8710,7 +8871,7 @@ class Window(EvtHandler):
         This function returns the best acceptable minimal size for the
         window, if applicable. For example, for a static text control, it will
         be the minimal size such that the control label is not truncated. For
-        windows containing subwindows (suzh aswx.Panel), the size returned by
+        windows containing subwindows (such as wx.Panel), the size returned by
         this function will be the same as the size the window would have had
         after calling Fit.
         """
@@ -8723,7 +8884,7 @@ class Window(EvtHandler):
         This function returns the best acceptable minimal size for the
         window, if applicable. For example, for a static text control, it will
         be the minimal size such that the control label is not truncated. For
-        windows containing subwindows (suzh aswx.Panel), the size returned by
+        windows containing subwindows (such as wx.Panel), the size returned by
         this function will be the same as the size the window would have had
         after calling Fit.
         """
@@ -8770,7 +8931,7 @@ class Window(EvtHandler):
         Center(self, int direction=BOTH)
 
         Centers the window.  The parameter specifies the direction for
-        cetering, and may be wx.HORIZONTAL, wx.VERTICAL or wx.BOTH. It may
+        centering, and may be wx.HORIZONTAL, wx.VERTICAL or wx.BOTH. It may
         also include wx.CENTER_ON_SCREEN flag if you want to center the window
         on the entire screen and not on its parent window.  If it is a
         top-level window and has no parent then it will always be centered
@@ -9285,14 +9446,6 @@ class Window(EvtHandler):
         """
         return _core_.Window_RemoveChild(*args, **kwargs)
 
-    def SetDoubleBuffered(*args, **kwargs):
-        """
-        SetDoubleBuffered(self, bool on)
-
-        Currently wxGTK2 only.
-        """
-        return _core_.Window_SetDoubleBuffered(*args, **kwargs)
-
     def FindWindowById(*args, **kwargs):
         """
         FindWindowById(self, long winid) -> Window
@@ -9308,6 +9461,14 @@ class Window(EvtHandler):
         Find a child of this window by name
         """
         return _core_.Window_FindWindowByName(*args, **kwargs)
+
+    def FindWindowByLabel(*args, **kwargs):
+        """
+        FindWindowByLabel(self, String label) -> Window
+
+        Find a child of this window by label
+        """
+        return _core_.Window_FindWindowByLabel(*args, **kwargs)
 
     def GetEventHandler(*args, **kwargs):
         """
@@ -9696,6 +9857,14 @@ class Window(EvtHandler):
         later.
         """
         return _core_.Window_IsDoubleBuffered(*args, **kwargs)
+
+    def SetDoubleBuffered(*args, **kwargs):
+        """
+        SetDoubleBuffered(self, bool on)
+
+        Put the native window into double buffered or composited mode.
+        """
+        return _core_.Window_SetDoubleBuffered(*args, **kwargs)
 
     def GetUpdateRegion(*args, **kwargs):
         """
@@ -10319,7 +10488,6 @@ class Window(EvtHandler):
         DragAcceptFiles(self, bool accept)
 
         Enables or disables eligibility for drop file events, EVT_DROP_FILES.
-        Only functional on Windows.
         """
         return _core_.Window_DragAcceptFiles(*args, **kwargs)
 
@@ -11231,6 +11399,11 @@ class MenuBar(Window):
         return _core_.MenuBar_GetAutoWindowMenu(*args, **kwargs)
 
     GetAutoWindowMenu = staticmethod(GetAutoWindowMenu)
+    def MacSetCommonMenuBar(*args, **kwargs):
+        """MacSetCommonMenuBar(MenuBar menubar)"""
+        return _core_.MenuBar_MacSetCommonMenuBar(*args, **kwargs)
+
+    MacSetCommonMenuBar = staticmethod(MacSetCommonMenuBar)
     def GetMenuLabel(*args, **kwargs):
         """GetMenuLabel(self, size_t pos) -> String"""
         return _core_.MenuBar_GetMenuLabel(*args, **kwargs)
@@ -11267,6 +11440,10 @@ def MenuBar_SetAutoWindowMenu(*args, **kwargs):
 def MenuBar_GetAutoWindowMenu(*args):
   """MenuBar_GetAutoWindowMenu() -> bool"""
   return _core_.MenuBar_GetAutoWindowMenu(*args)
+
+def MenuBar_MacSetCommonMenuBar(*args, **kwargs):
+  """MenuBar_MacSetCommonMenuBar(MenuBar menubar)"""
+  return _core_.MenuBar_MacSetCommonMenuBar(*args, **kwargs)
 
 #---------------------------------------------------------------------------
 
@@ -11787,8 +11964,7 @@ class ItemContainer(object):
     def SetItems(self, items):
         """Clear and set the strings in the control from a list"""
         self.Clear()
-        for i in items:
-            self.Append(i)        
+        self.AppendItems(items)
 
     Count = property(GetCount,doc="See `GetCount`") 
     Items = property(GetItems,SetItems,doc="See `GetItems` and `SetItems`") 
@@ -11940,6 +12116,14 @@ class SizerFlags(object):
         Sets the wx.FIXED_MINSIZE flag.
         """
         return _core_.SizerFlags_FixedMinSize(*args, **kwargs)
+
+    def ReserveSpaceEvenIfHidden(*args, **kwargs):
+        """
+        ReserveSpaceEvenIfHidden(self) -> SizerFlags
+
+        Makes the item ignore window's visibility status
+        """
+        return _core_.SizerFlags_ReserveSpaceEvenIfHidden(*args, **kwargs)
 
     def Border(*args, **kwargs):
         """
@@ -12827,6 +13011,14 @@ class Sizer(Object):
         removed.
         """
         return _core_.Sizer_Layout(*args, **kwargs)
+
+    def ComputeFittingClientSize(*args, **kwargs):
+        """ComputeFittingClientSize(self, Window window) -> Size"""
+        return _core_.Sizer_ComputeFittingClientSize(*args, **kwargs)
+
+    def ComputeFittingWindowSize(*args, **kwargs):
+        """ComputeFittingWindowSize(self, Window window) -> Size"""
+        return _core_.Sizer_ComputeFittingWindowSize(*args, **kwargs)
 
     def Fit(*args, **kwargs):
         """
@@ -13752,6 +13944,55 @@ def GBSizerItemSpacer(*args, **kwargs):
     val = _core_.new_GBSizerItemSpacer(*args, **kwargs)
     return val
 
+class GBSizerItemList_iterator(object):
+    """This class serves as an iterator for a wxGBSizerItemList object."""
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
+    def __init__(self): raise AttributeError, "No constructor defined"
+    __repr__ = _swig_repr
+    __swig_destroy__ = _core_.delete_GBSizerItemList_iterator
+    __del__ = lambda self : None;
+    def next(*args, **kwargs):
+        """next(self) -> GBSizerItem"""
+        return _core_.GBSizerItemList_iterator_next(*args, **kwargs)
+
+_core_.GBSizerItemList_iterator_swigregister(GBSizerItemList_iterator)
+
+class GBSizerItemList(object):
+    """
+    This class wraps a wxList-based class and gives it a Python
+    sequence-like interface.  Sequence operations supported are length,
+    index access and iteration.
+    """
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
+    def __init__(self): raise AttributeError, "No constructor defined"
+    __repr__ = _swig_repr
+    __swig_destroy__ = _core_.delete_GBSizerItemList
+    __del__ = lambda self : None;
+    def __len__(*args, **kwargs):
+        """__len__(self) -> size_t"""
+        return _core_.GBSizerItemList___len__(*args, **kwargs)
+
+    def __getitem__(*args, **kwargs):
+        """__getitem__(self, size_t index) -> GBSizerItem"""
+        return _core_.GBSizerItemList___getitem__(*args, **kwargs)
+
+    def __contains__(*args, **kwargs):
+        """__contains__(self, GBSizerItem obj) -> bool"""
+        return _core_.GBSizerItemList___contains__(*args, **kwargs)
+
+    def __iter__(*args, **kwargs):
+        """__iter__(self) -> GBSizerItemList_iterator"""
+        return _core_.GBSizerItemList___iter__(*args, **kwargs)
+
+    def index(*args, **kwargs):
+        """index(self, GBSizerItem obj) -> int"""
+        return _core_.GBSizerItemList_index(*args, **kwargs)
+
+    def __repr__(self):
+        return "wxGBSizerItemList: " + repr(list(self))
+
+_core_.GBSizerItemList_swigregister(GBSizerItemList)
+
 class GridBagSizer(FlexGridSizer):
     """
     A `wx.Sizer` that can lay out items in a virtual grid like a
@@ -13905,6 +14146,15 @@ class GridBagSizer(FlexGridSizer):
         layout. (non-recursive)
         """
         return _core_.GridBagSizer_FindItemAtPoint(*args, **kwargs)
+
+    def GetChildren(*args, **kwargs):
+        """
+        GetChildren(self) -> GBSizerItemList
+
+        Returns all of the `wx.GBSizerItem` objects managed by the sizer in a
+        list-like object.
+        """
+        return _core_.GridBagSizer_GetChildren(*args, **kwargs)
 
     def CheckForIntersection(*args, **kwargs):
         """

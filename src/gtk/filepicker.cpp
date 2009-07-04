@@ -4,7 +4,7 @@
 // Author:      Francesco Montorsi
 // Modified By:
 // Created:     15/04/2006
-// Id:          $Id: filepicker.cpp 47024 2007-06-29 16:59:23Z JS $
+// Id:          $Id: filepicker.cpp 54732 2008-07-20 22:48:34Z VZ $
 // Copyright:   (c) Francesco Montorsi
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,9 @@ bool wxFileButton::Create( wxWindow *parent, wxWindowID id,
                         long style, const wxValidator& validator,
                         const wxString &name )
 {
-    if (!gtk_check_version(2,6,0))
+    // we can't use the native button for wxFLP_SAVE pickers as it can only
+    // open existing files and there is no way to create a new file using it
+    if ( !(style & wxFLP_SAVE) && !gtk_check_version(2,6,0) )
     {
         // VERY IMPORTANT: this code is identic to relative code in wxDirButton;
         //                 if you find a problem here, fix it also in wxDirButton !
@@ -261,8 +263,14 @@ wxDirButton::~wxDirButton()
     	m_dialog->m_widget = NULL;
 }
 
-void wxDirButton::SetPath(const wxString &str)
+void wxDirButton::SetPath(const wxString& str)
 {
+    if ( m_path == str )
+    {
+        // don't do anything and especially don't set m_bIgnoreNextChange
+        return;
+    }
+
     m_path = str;
 
     // wxDirButton uses the "current-folder-changed" signal which is triggered also

@@ -2,7 +2,7 @@
 // Name:        src/gtk/dcclient.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dcclient.cpp 45895 2007-05-08 20:10:47Z RD $
+// RCS-ID:      $Id: dcclient.cpp 53561 2008-05-11 20:17:30Z PC $
 // Copyright:   (c) 1998 Robert Roebling, Chris Breeze
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -51,8 +51,8 @@
 #include "cross.xbm"
 #define  num_hatches 6
 
-#define IS_15_PIX_HATCH(s) ((s)==wxCROSSDIAG_HATCH || (s)==wxHORIZONTAL_HATCH || (s)==wxVERTICAL_HATCH)
-#define IS_16_PIX_HATCH(s) ((s)!=wxCROSSDIAG_HATCH && (s)!=wxHORIZONTAL_HATCH && (s)!=wxVERTICAL_HATCH)
+#define IS_15_PIX_HATCH(s) ((s)==wxCROSS_HATCH || (s)==wxHORIZONTAL_HATCH || (s)==wxVERTICAL_HATCH)
+#define IS_16_PIX_HATCH(s) ((s)==wxBDIAGONAL_HATCH || (s)==wxCROSSDIAG_HATCH || (s)==wxFDIAGONAL_HATCH)
 
 
 static GdkPixmap  *hatches[num_hatches];
@@ -2239,17 +2239,6 @@ void wxWindowDC::SetBackgroundMode( int mode )
     wxCHECK_RET( Ok(), wxT("invalid window dc") );
 
     m_backgroundMode = mode;
-
-    if (!m_window) return;
-
-    // CMB 21/7/98: fill style of cross-hatch brushes is affected by
-    // transparent/solid background mode
-
-    if (m_brush.GetStyle() != wxSOLID && m_brush.GetStyle() != wxTRANSPARENT)
-    {
-        gdk_gc_set_fill( m_brushGC,
-          (m_backgroundMode == wxTRANSPARENT) ? GDK_STIPPLED : GDK_OPAQUE_STIPPLED);
-    }
 }
 
 void wxWindowDC::SetPalette( const wxPalette& WXUNUSED(palette) )

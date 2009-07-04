@@ -5,7 +5,7 @@
 // Modified by: Wlodzimierz ABX Skiba 2003/2004 Unicode support
 //              Ron Lee
 // Created:     7.9.93
-// RCS-ID:      $Id: htmlutil.cpp 41020 2006-09-05 20:47:48Z VZ $
+// RCS-ID:      $Id: htmlutil.cpp 59105 2009-02-23 11:51:34Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -3044,17 +3044,17 @@ bool HTMLGo(void)
 
         wxChar buf[300];
         if (truncateFilenames)
-            wxSnprintf(buf, sizeof(buf), _T("%s.htm"), FileRoot);
+            wxSnprintf(buf, WXSIZEOF(buf), _T("%s.htm"), FileRoot);
         else
-            wxSnprintf(buf, sizeof(buf), _T("%s_contents.html"), FileRoot);
+            wxSnprintf(buf, WXSIZEOF(buf), _T("%s_contents.html"), FileRoot);
         if (TitlepageName) delete[] TitlepageName;
         TitlepageName = copystring(buf);
         Titlepage = wxFopen(buf, _T("w"));
 
         if (truncateFilenames)
-            wxSnprintf(buf, sizeof(buf), _T("%s_fc.htm"), FileRoot);
+            wxSnprintf(buf, WXSIZEOF(buf), _T("%s_fc.htm"), FileRoot);
         else
-            wxSnprintf(buf, sizeof(buf), _T("%s_fcontents.html"), FileRoot);
+            wxSnprintf(buf, WXSIZEOF(buf), _T("%s_fcontents.html"), FileRoot);
 
         contentsFrameName = copystring(buf);
 

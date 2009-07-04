@@ -2,7 +2,7 @@
 // Name:        src/gtk/checkbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: checkbox.cpp 40815 2006-08-25 12:59:28Z VZ $
+// Id:          $Id: checkbox.cpp 58188 2009-01-17 20:38:43Z JS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -209,10 +209,15 @@ void wxCheckBox::SetLabel( const wxString& label )
 
 bool wxCheckBox::Enable( bool enable )
 {
+    bool isEnabled = IsEnabled();
+
     if ( !wxControl::Enable( enable ) )
         return false;
 
     gtk_widget_set_sensitive( m_widgetLabel, enable );
+
+    if (!isEnabled && enable)
+        wxGtkFixSensitivity(this);
 
     return true;
 }

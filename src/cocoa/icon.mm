@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/08/11
-// RCS-ID:      $Id: icon.mm 41751 2006-10-08 21:56:55Z VZ $
+// RCS-ID:      $Id: icon.mm 50318 2007-11-29 07:24:19Z DE $
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
@@ -108,17 +108,9 @@ bool wxIcon::CreateFromXpm(const char **xpm)
 bool wxIcon::LoadFile(const wxString& filename, wxBitmapType type,
     int desiredWidth, int desiredHeight)
 {
-    UnRef();
-
-    m_refData = new wxIconRefData;
-    M_ICONDATA->m_width = 5;
-    M_ICONDATA->m_height = 5;
-    M_ICONDATA->m_cocoaNSImage = [[NSImage alloc] initWithSize:NSMakeSize(5,5)];
-    M_ICONDATA->m_ok = true;
-    M_ICONDATA->m_numColors = 0;
-    M_ICONDATA->m_quality = 0;
-
-    return false;
+    wxBitmap bitmap(filename, type);
+    CopyFromBitmap(bitmap);
+    return bitmap.Ok();
 }
 
 void wxIcon::CopyFromBitmap(const wxBitmap& bitmap)

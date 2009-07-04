@@ -3,24 +3,18 @@
 # Purpose: Editra's view management service                                   #
 # Author: Cody Precord <cprecord@editra.org>                                  #
 # Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#--------------------------------------------------------------------------#
-# FILE: perspective.py                                                     #
-# AUTHOR: Cody Precord                                                     #
-# LANGUAGE: Python                                                         #
-# SUMMARY:                                                                 #
-#    Provides a perspective management class for saving and loading custom #
-# perspectives in the MainWindow.                                          #
-#                                                                          #
-#--------------------------------------------------------------------------#
+Provides a perspective management class for saving and loading custom
+perspectives in the MainWindow.
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id: perspective.py 50124 2007-11-21 07:57:11Z CJP $"
-__revision__ = "$Revision: 50124 $"
+__cvsid__ = "$Id: perspective.py 59200 2009-02-28 16:36:22Z CJP $"
+__revision__ = "$Revision: 59200 $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
@@ -77,19 +71,21 @@ class PerspectiveManager(object):
         self._menu.Append(ID_DELETE_PERSPECTIVE, _("Delete Saved View"))
         self._menu.AppendSeparator()
         self._menu.Append(ID_AUTO_PERSPECTIVE, _(AUTO_PERSPECTIVE),
-                          _("Automatically save/use window state from last session"), 
+                          _("Automatically save/use window state from last session"),
                           wx.ITEM_CHECK)
         self._menu.AppendSeparator()
         for name in self._viewset:
             self.AddPerspectiveMenuEntry(name)
 
-        # Restore the managed windows previous position and alpha
-        # preferences if they are available.
-        self._window.SetTransparent(Profile_Get('ALPHA', default=255))
-        if Profile_Get('SET_WPOS') and Profile_Get('WPOS', "size_tuple", False):
-            self._window.SetPosition(Profile_Get('WPOS'))
-        else:
-            self._window.CenterOnParent()
+        # Restore the managed windows previous position preference if available.
+        pos = Profile_Get('WPOS', "size_tuple", False)
+        if Profile_Get('SET_WPOS') and pos:
+            # Ensure window is on screen
+            # NOTE: don't default to 0,0 otherwise on osx the frame will be
+            #       stuck behind the menubar.
+            if pos[0] < 0 or pos[1] < 0:
+                pos = (100, 100)
+            self._window.SetPosition(pos)
 
         # Event Handlers
         self._window.Bind(wx.EVT_MENU, self.OnPerspectiveMenu)
@@ -130,7 +126,7 @@ class PerspectiveManager(object):
 
         per_id = wx.NewId()
         self._ids.append(per_id)
-        self._menu.InsertAlpha(per_id, name, _("Change view to \"%s\"") % name, 
+        self._menu.InsertAlpha(per_id, name, _("Change view to \"%s\"") % name,
                                kind=wx.ITEM_CHECK, after=ID_AUTO_PERSPECTIVE)
 
     def GetPerspectiveControls(self):
@@ -178,18 +174,25 @@ class PerspectiveManager(object):
         @return: whether perspective is managed by this manager or not
 
         """
-        return self._viewset.has_key(name)
+        return name in self._viewset
+
+    def InitWindowAlpha(self):
+        """Initialize the windows alpha setting"""
+        level = max(100, Profile_Get('ALPHA', default=255))
+        # Only set the transparency if it is not opaque
+        if level != 255:
+            self._window.SetTransparent(level)
 
     def LoadPerspectives(self):
-        """Loads the perspectives data into the manager. Returns 
+        """Loads the perspectives data into the manager. Returns
         the number of perspectives that were successfully loaded.
         @return: number of perspectives loaded
 
         """
         reader = util.GetFileReader(self._base)
         if reader == -1:
-            util.Log("[perspectives][err] Failed to get " +
-                                           "file reader for %s" % self._base)
+            util.Log("[perspective][err] Failed to get " +
+                     "file reader for %s" % self._base)
             return 0
 
         try:
@@ -201,7 +204,7 @@ class PerspectiveManager(object):
                 self._viewset[label] = val.strip()
             reader.close()
         finally:
-            if self._viewset.has_key(LAST_KEY):
+            if LAST_KEY in self._viewset:
                 self._currview = self._viewset[LAST_KEY]
                 del self._viewset[LAST_KEY]
             return len(self._viewset)
@@ -209,7 +212,7 @@ class PerspectiveManager(object):
     def OnPerspectiveMenu(self, evt):
         """Handles menu events generated by the managers control menu.
         @param evt: event that called this handler
-        
+
         """
         e_id = evt.GetId()
         if e_id == ID_SAVE_PERSPECTIVE:
@@ -230,7 +233,7 @@ class PerspectiveManager(object):
         elif e_id == ID_DELETE_PERSPECTIVE:
             views = [ view for view in self._viewset.keys()
                       if view != AUTO_PERSPECTIVE ]
-            name = wx.GetSingleChoice(_("Perspective to Delete"), 
+            name = wx.GetSingleChoice(_("Perspective to Delete"),
                                       _("Delete Perspective"), views)
 
             if name:
@@ -262,8 +265,6 @@ class PerspectiveManager(object):
         e_id = evt.GetId()
         if e_id in self._ids + [ID_AUTO_PERSPECTIVE]:
             evt.Check(self._menu.GetLabel(e_id) == self._currview)
-            evt.SetMode(wx.UPDATE_UI_PROCESS_SPECIFIED)
-            evt.SetUpdateInterval(500)
         else:
             evt.Skip()
 
@@ -272,7 +273,7 @@ class PerspectiveManager(object):
         @param name: name of perspective to remove/delete
 
         """
-        if self._viewset.has_key(name):
+        if name in self._viewset:
             del self._viewset[name]
             rem_id = self._menu.RemoveItemByName(name)
             if rem_id:
@@ -280,7 +281,7 @@ class PerspectiveManager(object):
 
     def SetAutoPerspective(self):
         """Set the current perspective mangagement into automatic mode
-        @postcondition: window is set into 
+        @postcondition: window is set into
 
         """
         self._currview = AUTO_PERSPECTIVE
@@ -296,7 +297,7 @@ class PerspectiveManager(object):
         """
         writer = util.GetFileWriter(self._base)
         if writer == -1:
-            util.Log("[perspectives][err] Failed to save %s" % self._base)
+            util.Log("[perspective][err] Failed to save %s" % self._base)
             return False
 
         try:
@@ -305,7 +306,7 @@ class PerspectiveManager(object):
                 writer.write(u"%s=%s\n" % (perspect, self._viewset[perspect]))
             del self._viewset[LAST_KEY]
         except (IOError, OSError):
-            util.Log("[perspectives][err] Write error: %s" % self._base)
+            util.Log("[perspective][err] Write error: %s" % self._base)
             return False
         else:
             return True
@@ -318,13 +319,13 @@ class PerspectiveManager(object):
         @rtype: bool
 
         """
-        if self._viewset.has_key(name):
+        if name in self._viewset:
 
             if name == AUTO_PERSPECTIVE:
-                self._viewset[name] = self._viewset[self._currview]
-            else:
-                self._mgr.LoadPerspective(self._viewset[name])
-                self._mgr.Update()
+                self._viewset[AUTO_PERSPECTIVE] = self._viewset[self._currview]
+
+            self._mgr.LoadPerspective(self._viewset[name])
+            self._mgr.Update()
 
             self._currview = name
             self.SavePerspectives()

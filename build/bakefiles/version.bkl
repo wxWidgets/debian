@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: version.bkl 49673 2007-11-06 09:28:42Z CE $ -->
+<!-- $Id: version.bkl 59157 2009-02-26 10:51:53Z VZ $ -->
 
 <makefile>
 
@@ -23,9 +23,9 @@
        3. Else, i.e. if there were no changes at all to API but only internal
           changes, change C:R:A to C:R+1:A
     -->
-    <set var="WX_CURRENT">4</set>
+    <set var="WX_CURRENT">6</set>
     <set var="WX_REVISION">0</set>
-    <set var="WX_AGE">4</set>
+    <set var="WX_AGE">6</set>
 
 
     <!-- ================================================================== -->

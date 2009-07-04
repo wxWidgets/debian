@@ -2,7 +2,7 @@
 // Name:        src/html/htmltag.cpp
 // Purpose:     wxHtmlTag class (represents single tag)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmltag.cpp 40777 2006-08-23 19:07:15Z VS $
+// RCS-ID:      $Id: htmltag.cpp 53433 2008-05-03 00:40:29Z VZ $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -452,11 +452,15 @@ bool wxHtmlTag::GetParamAsColour(const wxString& par, wxColour *clr) const
 
 bool wxHtmlTag::GetParamAsInt(const wxString& par, int *clr) const
 {
-    if (!HasParam(par)) return false;
+    if ( !HasParam(par) )
+        return false;
+
     long i;
-    bool succ = GetParam(par).ToLong(&i);
+    if ( !GetParam(par).ToLong(&i) )
+        return false;
+
     *clr = (int)i;
-    return succ;
+    return true;
 }
 
 wxString wxHtmlTag::GetAllParams() const

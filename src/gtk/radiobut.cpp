@@ -2,7 +2,7 @@
 // Name:        radiobut.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobut.cpp 40815 2006-08-25 12:59:28Z VZ $
+// Id:          $Id: radiobut.cpp 58188 2009-01-17 20:38:43Z JS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -151,10 +151,15 @@ bool wxRadioButton::GetValue() const
 
 bool wxRadioButton::Enable( bool enable )
 {
+    bool isEnabled = IsEnabled();
+
     if ( !wxControl::Enable( enable ) )
         return FALSE;
 
     gtk_widget_set_sensitive(GTK_BIN(m_widget)->child, enable);
+
+    if (!isEnabled && enable)
+        wxGtkFixSensitivity(this);
 
     return TRUE;
 }

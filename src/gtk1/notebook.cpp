@@ -2,7 +2,7 @@
 // Name:        src/gtk1/notebook.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: notebook.cpp 41818 2006-10-09 17:14:31Z VZ $
+// Id:          $Id: notebook.cpp 50855 2007-12-20 10:51:33Z JS $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -287,9 +287,9 @@ static void wxInsertChildInNotebook( wxNotebook* parent, wxWindow* child )
 // wxNotebook
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxNotebook,wxControl)
+IMPLEMENT_DYNAMIC_CLASS(wxNotebook,wxBookCtrlBase)
 
-BEGIN_EVENT_TABLE(wxNotebook, wxControl)
+BEGIN_EVENT_TABLE(wxNotebook, wxBookCtrlBase)
     EVT_NAVIGATION_KEY(wxNotebook::OnNavigationKey)
 END_EVENT_TABLE()
 

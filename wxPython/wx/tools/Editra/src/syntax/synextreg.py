@@ -6,16 +6,23 @@
 #                                                                             #
 # Author: Cody Precord <cprecord@editra.org>                                  #
 # Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# License: wxWindows License                                                  #
 ###############################################################################
 
+"""
+FILE: synextreg.py
+LANGUAGE: Python
+@summary: This module defines all supported language/filetype indentifiers and
+          an extension register for mapping file extensions to filetypes.
+@see: synglob.py for more details on how this data is used
+
+"""
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: synextreg.py 49969 2007-11-15 13:27:21Z CJP $"
-__revision__ = "$Revision: 49969 $"
+__svnid__ = "$Id: synextreg.py 60019 2009-04-04 18:58:40Z CJP $"
+__revision__ = "$Revision: 60019 $"
 
 #-----------------------------------------------------------------------------#
-
 import os
 
 #-----------------------------------------------------------------------------#
@@ -69,18 +76,34 @@ ID_LANG_APACHE = _NewId()
 LANG_APACHE = u'Apache Conf'
 
 # Use LEX_CPP
-ID_LANG_C    = _NewId()
+ID_LANG_AS = _NewId()
+LANG_AS = u'ActionScript'
+ID_LANG_C = _NewId()
 LANG_C = u'C'
-ID_LANG_CPP  = _NewId()
+ID_LANG_CPP = _NewId()
 LANG_CPP = u'CPP'
+ID_LANG_CSHARP = _NewId()
+LANG_CSHARP = u'C#'
 ID_LANG_D = _NewId()
 LANG_D = u'D'
 ID_LANG_DOT = _NewId()
 LANG_DOT = u'DOT'
 ID_LANG_EDJE = _NewId()
 LANG_EDJE = u'Edje'
+ID_LANG_FERITE = _NewId()
+LANG_FERITE = u'Ferite'
+ID_LANG_HAXE = _NewId()
+LANG_HAXE = u'HaXe'
 ID_LANG_JAVA = _NewId()
 LANG_JAVA = u'Java'
+ID_LANG_OBJC = _NewId()
+LANG_OBJC = u'Objective C'
+ID_LANG_PIKE = _NewId()
+LANG_PIKE = u'Pike'
+ID_LANG_SQUIRREL = _NewId()
+LANG_SQUIRREL = u'Squirrel'
+ID_LANG_VALA = _NewId()
+LANG_VALA = u'Vala'
 
 # Use LEX_CSS
 ID_LANG_CSS = _NewId()
@@ -90,7 +113,7 @@ LANG_ESS = u'Editra Style Sheet'
 
 # Use LEX_EIFFEL
 ID_LANG_EIFFEL = _NewId()
-LANG_EIFFEL = u"Eiffel"
+LANG_EIFFEL = u'Eiffel'
 
 # Use LEX_ERLANG
 ID_LANG_ERLANG = _NewId()
@@ -123,8 +146,6 @@ ID_LANG_HTML = _NewId()
 LANG_HTML = u'HTML'
 ID_LANG_JS   = _NewId()
 LANG_JS = u'JavaScript'
-ID_LANG_VBS  = _NewId()
-LANG_VBS = u'VB Script'
 ID_LANG_PHP  = _NewId()
 LANG_PHP = u'PHP'
 ID_LANG_XML  = _NewId()
@@ -142,6 +163,10 @@ LANG_KIX = u'Kix'
 # Use LEX_LISP
 ID_LANG_LISP = _NewId()
 LANG_LISP = u'Lisp'
+ID_LANG_SCHEME = _NewId()
+LANG_SCHEME = u'Scheme'
+ID_LANG_NEWLISP = _NewId()
+LANG_NEWLISP = u'newLISP'
 
 # Use LEX_LOUT
 ID_LANG_LOUT = _NewId()
@@ -172,12 +197,14 @@ ID_LANG_PS = _NewId()
 LANG_PS = u'Postscript'
 
 # Use LEX_PYTHON 
+ID_LANG_BOO = _NewId()
+LANG_BOO = u'Boo'
 ID_LANG_PYTHON = _NewId()
 LANG_PYTHON = u'Python'
 
 # Use LEX_MATLAB
 ID_LANG_MATLAB = _NewId()
-LANG_MATLAB = u"Matlab"
+LANG_MATLAB = u'Matlab'
 
 # Use LEX_RUBY
 ID_LANG_RUBY = _NewId()
@@ -190,6 +217,10 @@ LANG_ST = u'Smalltalk'
 # Use LEX_SQL (PL/SQL, SQL*Plus)
 ID_LANG_SQL = _NewId()
 LANG_SQL = u'SQL'
+ID_LANG_PLSQL = _NewId()
+LANG_PLSQL = u'PL/SQL'
+ID_LANG_4GL = _NewId()
+LANG_4GL = u"Progress 4GL"
 
 # Use LEX_TCL
 ID_LANG_TCL  = _NewId()
@@ -205,9 +236,15 @@ LANG_LATEX = u'LaTeX'
 ID_LANG_VB = _NewId()
 LANG_VB = u'Visual Basic'
 
+# Use LEX_VBSCRIPT
+ID_LANG_VBSCRIPT = _NewId()
+LANG_VBSCRIPT = u'VBScript'
+
 # Use LEX_VERILOG
 ID_LANG_VERILOG = _NewId()
 LANG_VERILOG = u'Verilog'
+ID_LANG_SYSVERILOG = _NewId()
+LANG_SYSVERILOG = u'System Verilog'
 
 # Use LEX_VHDL
 ID_LANG_VHDL = _NewId()
@@ -231,68 +268,103 @@ LANG_PROPS = u'Properties'
 ID_LANG_YAML = _NewId()
 LANG_YAML = u'YAML'
 
+# Use LEX_CONTAINER
+ID_LANG_DJANGO = _NewId()
+LANG_DJANGO = u'Django'
+ID_LANG_ISSL = _NewId()
+LANG_ISSL = u'IssueList'
+ID_LANG_MAKO = _NewId()
+LANG_MAKO = u'Mako'
+ID_LANG_R = _NewId()
+LANG_R = u'R'
+ID_LANG_S = _NewId()
+LANG_S = u'S'
+
+ID_LANG_GROOVY = _NewId()
+LANG_GROOVY = u'Groovy'
+
 #---- End Language Identifier Keys ----#
 
-# Default extensions to file type map
+# Default extensions to file type mapping
 EXT_MAP = {
+           '4gl'                : LANG_4GL,
            '68k'                : LANG_68K,
            'ada adb ads a'      : LANG_ADA,
            'conf htaccess'      : LANG_APACHE,
+           'as asc mx'          : LANG_AS,
            'bsh sh configure'   : LANG_BASH,
            'bat cmd'            : LANG_BATCH,
+           'boo'                : LANG_BOO,
            'c h'                : LANG_C,
            'ml mli'             : LANG_CAML,
            'cfm cfc cfml dbm'   : LANG_COLDFUSION,
            'cc c++ cpp cxx hh h++ hpp hxx' : LANG_CPP,
            'csh'                : LANG_CSH,
+           'cs'                 : LANG_CSHARP,
            'css'                : LANG_CSS,
            'd'                  : LANG_D,
-           'dot'                : LANG_DOT,
            'patch diff'         : LANG_DIFF,
+           'django'             : LANG_DJANGO,
+           'dot'                : LANG_DOT,
            'edc'                : LANG_EDJE,
            'e'                  : LANG_EIFFEL,
            'erl'                : LANG_ERLANG,
            'ess'                : LANG_ESS,
-           'prg'                : LANG_FLAGSHIP,
            'f for'              : LANG_F77,
            'f90 f95 f2k fpp'    : LANG_F95,
+           'prg'                : LANG_FLAGSHIP,
+           'fe'                 : LANG_FERITE,
            'gc gui'             : LANG_GUI4CLI,
            'hs'                 : LANG_HASKELL,
+           'hx hxml'            : LANG_HAXE,
            'htm html shtm shtml xhtml' : LANG_HTML,
+           'isl'                : LANG_ISSL,
            'iss'                : LANG_INNO,
            'java'               : LANG_JAVA,
            'js'                 : LANG_JS,
            'kix'                : LANG_KIX,
            'ksh'                : LANG_KSH,
            'aux tex sty'        : LANG_LATEX,
-           'cl lisp lsp'        : LANG_LISP,
+           'cl lisp'            : LANG_LISP,
+           'lsp'                : LANG_NEWLISP,
            'lt'                 : LANG_LOUT,
            'lua'                : LANG_LUA,
            'mak makefile'       : LANG_MAKE,
+           'mao mako'           : LANG_MAKO,
            'asm masm'           : LANG_MASM,
-           'm matlab'           : LANG_MATLAB,
+           'matlab'             : LANG_MATLAB,
            'mssql'              : LANG_MSSQL,
            'nasm'               : LANG_NASM,
-           'nsi'                : LANG_NSIS,
+           'nsi nsh'            : LANG_NSIS,
+           'mm m'               : LANG_OBJC,
            'oct octave'         : LANG_OCTAVE,
            'dfm dpk dpr inc p pas pp' : LANG_PASCAL,
            'cgi pl pm pod'      : LANG_PERL,
            'php php3 phtml phtm' : LANG_PHP,
+           'pike'                : LANG_PIKE,
+           'plsql'              : LANG_PLSQL,
            'ini inf reg url cfg cnf' : LANG_PROPS,
            'ai ps'              : LANG_PS,
            'py pyw python'      : LANG_PYTHON,
-           'rb rbw rbx'         : LANG_RUBY,
+           'r'                  : LANG_R,        
+           'rake rb rbw rbx gemspec' : LANG_RUBY,
+           's'                  : LANG_S,
+           'scm smd ss'         : LANG_SCHEME,
            'sql'                : LANG_SQL,
+           'nut'                : LANG_SQUIRREL,
            'st'                 : LANG_ST,
+           'sv svh'             : LANG_SYSVERILOG,
            'itcl tcl tk'        : LANG_TCL,
            'txt'                : LANG_TXT,
+           'vala'               : LANG_VALA,
            'bas cls ctl frm vb' : LANG_VB,
+           'vbs dsm'            : LANG_VBSCRIPT,
            'v'                  : LANG_VERILOG,
            'vh vhdl'            : LANG_VHDL,
            'axl dtd plist rdf svg xml xrc xsd xsl xslt xul' : LANG_XML,
            'yaml yml'           : LANG_YAML,
+           'groovy'             : LANG_GROOVY,
           }
-
 
 
 #-----------------------------------------------------------------------------#

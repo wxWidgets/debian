@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.07.01
-// RCS-ID:      $Id: evtloop.cpp 43879 2006-12-09 17:46:20Z PC $
+// RCS-ID:      $Id: evtloop.cpp 51039 2008-01-06 15:26:16Z VZ $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -113,7 +113,6 @@ bool wxEventLoop::Dispatch()
 {
     wxCHECK_MSG( IsRunning(), false, _T("can't call Dispatch() if not running") );
 
-    gtk_main_iteration();
-
-    return true;
+    // gtk_main_iteration() returns TRUE only if gtk_main_quit() was called
+    return !gtk_main_iteration();
 }

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.12.99
-// RCS-ID:      $Id: dir.cpp 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: dir.cpp 56867 2008-11-20 18:12:43Z VZ $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -225,9 +225,6 @@ bool wxDir::Open(const wxString& dirname)
 
     if ( !M_DIR->IsOk() )
     {
-        wxLogSysError(_("Can not enumerate files in directory '%s'"),
-                      dirname.c_str());
-
         delete M_DIR;
         m_data = NULL;
 

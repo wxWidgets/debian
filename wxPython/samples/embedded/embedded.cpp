@@ -6,7 +6,7 @@
 // Author:      Robin Dunn
 //
 // Created:     1-May-2002
-// RCS-ID:      $Id: embedded.cpp 34015 2005-05-11 16:18:25Z RD $
+// RCS-ID:      $Id: embedded.cpp 52942 2008-03-31 17:58:19Z RD $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 //----------------------------------------------------------------------
@@ -162,7 +162,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     // And get a panel from Python
     wxWindow* p2 = DoPythonStuff(sp);
 
-    sp->SplitHorizontally(p1, p2, GetClientSize().y/4);
+    if (p2)
+        sp->SplitHorizontally(p1, p2, GetClientSize().y/4);
 }
 
 void MyFrame::OnExit(wxCommandEvent& event)

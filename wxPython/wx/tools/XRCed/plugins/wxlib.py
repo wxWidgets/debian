@@ -23,7 +23,7 @@ c.addStyles('FPB_DEFAULT_STYLE', 'FPB_SINGLE_FOLD', 'FPB_COLLAPSE_TO_BOTTOM',
             'FPB_EXCLUSIVE_FOLD', 'FPB_HORIZONTAL', 'FPB_VERTICAL')
 component.Manager.register(c)
 component.Manager.addXmlHandler(xh_wxlib.FoldPanelBarXmlHandler)
-component.Manager.setMenu(c, 'bar', 'fold panel bar', 'FoldPanelBar')
+component.Manager.setMenu(c, 'bar', 'fold panel bar', 'FoldPanelBar', 1000)
 
 # wx.lib.ticker.Ticker
 
@@ -36,4 +36,4 @@ c = component.Component('wxTicker', ['control'],
                       'direction': ParamDirection})
 component.Manager.register(c)
 component.Manager.addXmlHandler(wxTickerXmlHandler)
-component.Manager.setMenu(c, 'control', 'ticker', 'Ticker')
+component.Manager.setMenu(c, 'control', 'ticker', 'Ticker', 1000)

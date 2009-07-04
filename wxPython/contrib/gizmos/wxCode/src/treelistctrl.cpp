@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Maintainer:  Otto Wyss
 // Created:     01/02/97
-// RCS-ID:      $Id: treelistctrl.cpp 49922 2007-11-13 18:23:30Z RD $
+// RCS-ID:      $Id: treelistctrl.cpp 51922 2008-02-19 20:47:52Z RD $
 // Copyright:   (c) 2004 Robert Roebling, Julian Smart, Alberto Griggio,
 //              Vadim Zeitlin, Otto Wyss
 // Licence:     wxWindows
@@ -587,7 +587,7 @@ public:
     {
         wxTreeListItem *oldItem = m_curItem;
         m_curItem = (wxTreeListItem*)newItem.m_pItem; 
-        RefreshLine(oldItem);
+        if (oldItem) RefreshLine(oldItem);
     }
 
 protected:
@@ -1624,6 +1624,7 @@ void wxTreeListItem::DeleteChildren (wxTreeListMainWindow *tree) {
         if (tree) {
             tree->SendDeleteEvent (child);
             if (tree->m_selectItem == child) tree->m_selectItem = (wxTreeListItem*)NULL;
+            if (tree->m_curItem == child) tree->m_curItem = this;
         }
         child->DeleteChildren (tree);
         delete child;
@@ -2722,6 +2723,7 @@ void wxTreeListMainWindow::SelectItem (const wxTreeItemId& itemId,
         RefreshLine (item);
         if (unselect_others) {
             m_selectItem = (item->IsSelected())? item: (wxTreeListItem*)NULL;
+            m_curItem = m_selectItem;
         }
     }
 
@@ -3687,7 +3689,7 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
         EnsureVisible (newItem);
         wxTreeListItem *oldItem = m_curItem;
         m_curItem = (wxTreeListItem*)newItem.m_pItem; // make the new item the current item
-        RefreshLine (oldItem);
+        if (oldItem) RefreshLine (oldItem);
     }
 }
 
@@ -4162,6 +4164,7 @@ void wxTreeListMainWindow::CalculatePositions() {
 
 void wxTreeListMainWindow::RefreshSubtree (wxTreeListItem *item) {
     if (m_dirty) return;
+    wxCHECK_RET (item != NULL, _T("bug : invalid item in wxTreeListMainWindow::RefreshSubtree") );
 
     wxClientDC dc(this);
     PrepareDC(dc);
@@ -4182,6 +4185,7 @@ void wxTreeListMainWindow::RefreshSubtree (wxTreeListItem *item) {
 
 void wxTreeListMainWindow::RefreshLine (wxTreeListItem *item) {
     if (m_dirty) return;
+    wxCHECK_RET (item != NULL, _T("bug : invalid item in wxTreeListMainWindow::RefreshLine") );
 
     wxClientDC dc(this);
     PrepareDC( dc );

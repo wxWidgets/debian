@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: doc.cpp 44197 2007-01-11 13:54:29Z JS $
+// RCS-ID:      $Id: doc.cpp 55142 2008-08-21 08:56:50Z SC $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -329,30 +329,23 @@ bool DrawingCommand::Undo(void)
 IMPLEMENT_DYNAMIC_CLASS(TextEditDocument, wxDocument)
 
 // Since text windows have their own method for saving to/loading from files,
-// we override OnSave/OpenDocument instead of Save/LoadObject
-bool TextEditDocument::OnSaveDocument(const wxString& filename)
+// we override DoSave/OpenDocument instead of Save/LoadObject
+bool TextEditDocument::DoSaveDocument(const wxString& filename)
 {
     TextEditView *view = (TextEditView *)GetFirstView();
 
     if (!view->textsw->SaveFile(filename))
         return false;
-    Modify(false);
-#ifdef __WXMAC__
-    wxFileName fn(filename) ;
-    fn.MacSetDefaultTypeAndCreator() ;
-#endif
+
     return true;
 }
 
-bool TextEditDocument::OnOpenDocument(const wxString& filename)
+bool TextEditDocument::DoOpenDocument(const wxString& filename)
 {
     TextEditView *view = (TextEditView *)GetFirstView();
     if (!view->textsw->LoadFile(filename))
         return false;
 
-    SetFilename(filename, true);
-    Modify(false);
-    UpdateAllViews();
     return true;
 }
 

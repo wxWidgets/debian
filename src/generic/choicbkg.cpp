@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by: Wlodzimierz ABX Skiba from generic/listbkg.cpp
 // Created:     15.09.04
-// RCS-ID:      $Id: choicbkg.cpp 49720 2007-11-07 18:16:37Z JS $
+// RCS-ID:      $Id: choicbkg.cpp 58355 2009-01-24 14:12:59Z VZ $
 // Copyright:   (c) Vadim Zeitlin, Wlodzimierz Skiba
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -146,11 +146,15 @@ wxSize wxChoicebook::CalcSizeFromPage(const wxSize& sizePage) const
     wxSize size = sizePage;
     if ( IsVertical() )
     {
+        if ( sizeChoice.x > sizePage.x )
+            size.x = sizeChoice.x;
         size.y += sizeChoice.y + GetInternalBorder();
     }
     else // left/right aligned
     {
         size.x += sizeChoice.x + GetInternalBorder();
+        if ( sizeChoice.y > sizePage.y )
+            size.y = sizeChoice.y;
     }
 
     return size;
@@ -291,6 +295,7 @@ wxWindow *wxChoicebook::DoRemovePage(size_t page)
 
 bool wxChoicebook::DeleteAllPages()
 {
+    m_selection = wxNOT_FOUND;
     GetChoiceCtrl()->Clear();
     return wxBookCtrlBase::DeleteAllPages();
 }

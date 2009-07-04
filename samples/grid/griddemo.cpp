@@ -3,7 +3,7 @@
 // Purpose:     Grid control wxWidgets sample
 // Author:      Michael Bedward
 // Modified by: Santiago Palacios
-// RCS-ID:      $Id: griddemo.cpp 43794 2006-12-04 10:47:02Z VZ $
+// RCS-ID:      $Id: griddemo.cpp 57655 2008-12-30 11:14:12Z VZ $
 // Copyright:   (c) Michael Bedward, Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -297,7 +297,6 @@ GridFrame::GridFrame()
     grid->SetCellAlignment(4, 4, wxALIGN_CENTRE, wxALIGN_CENTRE);
     grid->SetCellRenderer(4, 4, new MyGridCellRenderer);
 
-    grid->SetCellValue(3, 0, _T("0"));
     grid->SetCellRenderer(3, 0, new wxGridCellBoolRenderer);
     grid->SetCellEditor(3, 0, new wxGridCellBoolEditor);
 
@@ -891,8 +890,9 @@ void GridFrame::OnShowSelection(wxCommandEvent& WXUNUSED(event))
                     single = _T("column");
                 }
 
-                const wxArrayInt sels(rows ? grid->GetSelectedRows()
-                                           : grid->GetSelectedCols());
+                // NB: extra parentheses needed to avoid bcc 5.82 errors
+                const wxArrayInt sels((rows ? grid->GetSelectedRows()
+                                            : grid->GetSelectedCols()));
                 size_t count = sels.size();
                 wxLogMessage(_T("%lu %s selected:"),
                              (unsigned long)count, plural);

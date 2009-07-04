@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: uma.cpp 47653 2007-07-22 15:20:58Z SC $
+// RCS-ID:      $Id: uma.cpp 57897 2009-01-07 20:07:09Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     The wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -187,13 +187,20 @@ void UMAInsertSubMenuItem( MenuRef menu , const wxString& title, wxFontEncoding 
 void UMASetMenuItemShortcut( MenuRef menu , MenuItemIndex item , wxAcceleratorEntry *entry )
 {
     if ( !entry )
+    {
+        SetMenuItemModifiers( menu, item , kMenuNoModifiers ); 
+        SetMenuItemKeyGlyph( menu, item , kMenuNullGlyph );        
+        SetItemCmd( menu, item , 0 ); 
         return ;
+    }
 
     UInt8 modifiers = 0 ;
     SInt16 key = entry->GetKeyCode() ;
     if ( key )
     {
-        bool explicitCommandKey = (entry->GetFlags() & wxACCEL_CTRL);
+        bool explicitCommandKey = (entry->GetFlags() & wxACCEL_CMD);
+        if ( !explicitCommandKey )
+            modifiers |= kMenuNoCommandModifier ;
 
         if (entry->GetFlags() & wxACCEL_ALT)
             modifiers |= kMenuOptionModifier ;
@@ -201,12 +208,14 @@ void UMASetMenuItemShortcut( MenuRef menu , MenuItemIndex item , wxAcceleratorEn
         if (entry->GetFlags() & wxACCEL_SHIFT)
             modifiers |= kMenuShiftModifier ;
 
+        if (entry->GetFlags() & wxACCEL_CTRL)
+            modifiers |= kMenuControlModifier ;
+
+
         SInt16 glyph = 0 ;
         SInt16 macKey = key ;
         if ( key >= WXK_F1 && key <= WXK_F15 )
         {
-            if ( !explicitCommandKey )
-                modifiers |= kMenuNoCommandModifier ;
 
             // for some reasons this must be 0 right now
             // everything else leads to just the first function key item
@@ -303,11 +312,6 @@ void UMASetMenuItemShortcut( MenuRef menu , MenuItemIndex item , wxAcceleratorEn
                     macKey = toupper( key ) ;
                     break ;
             }
-
-            // we now allow non command key shortcuts
-            // remove in case this gives problems
-            if ( !explicitCommandKey )
-                modifiers |= kMenuNoCommandModifier ;
         }
 
         // 1d and 1e have special meaning to SetItemCmd, so

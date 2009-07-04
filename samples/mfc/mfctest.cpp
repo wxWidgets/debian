@@ -2,7 +2,7 @@
 // Name:        mfctest.cpp
 // Purpose:     Sample to demonstrate mixing MFC and wxWidgets code
 // Author:      Julian Smart
-// Id:          $Id: mfctest.cpp 42924 2006-11-01 21:53:30Z VZ $
+// Id:          $Id: mfctest.cpp 53058 2008-04-06 16:01:01Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,10 @@
 //
 //     Unless the run-time library settings match for wxWidgets and MFC, you will get
 //     link errors for symbols such as __mbctype, __argc, and __argv 
+//
+// (3) Unicode builds may produce the linker error "unresolved external symbol _WinMain@16".
+//     MFC requires you to manually add the Unicode entry point to the linker settings,
+//     Entry point symbol -> wWinMainCRTStartup
 
 #include "stdafx.h"
 

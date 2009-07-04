@@ -2,7 +2,7 @@
 # Purpose:      XMLTree class
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      31.05.2007
-# RCS-ID:       $Id: XMLTree.py 50264 2007-11-26 23:35:11Z ROL $
+# RCS-ID:       $Id: XMLTree.py 54812 2008-07-29 13:39:00Z ROL $
 
 from globals import *
 from model import Model
@@ -31,17 +31,17 @@ class XMLTree(wx.TreeCtrl):
         # Create image list
         il = wx.ImageList(22, 22, True)
         # 0 is the default image index
-        im = images.getTreeDefaultImage()
+        im = images.TreeDefault.GetImage()
         if im.GetWidth() != 22 or im.GetHeight() != 22:
             im.Resize((22,22), ((22-im.GetWidth())/2,(22-im.GetHeight())/2))
         il.Add(im.ConvertToBitmap())
         # 1 is the default container image
-        im = images.getTreeDefaultContainerImage()
+        im = images.TreeDefaultContainer.GetImage()
         if im.GetWidth() != 22 or im.GetHeight() != 22:
             im.Resize((22,22), ((22-im.GetWidth())/2,(22-im.GetHeight())/2))
         il.Add(im.ConvertToBitmap())
         # root icon
-#        self.rootImage = il.Add(images.getTreeRootImage().Scale(16,16).ConvertToBitmap())
+#        self.rootImage = il.Add(images.TreeRoot.GetImage().Scale(16,16).ConvertToBitmap())
         # Loop through registered components which have images
         for component in Manager.components.values():
             for im in component.images:
@@ -113,7 +113,7 @@ class XMLTree(wx.TreeCtrl):
 
     def FlushSubtree(self, item, node):
         '''Update all items after changes in model.'''
-        if item == self.root:
+        if item is None or item == self.root:
             self.Flush()
             return
         self.DeleteChildren(item)
@@ -187,7 +187,7 @@ class XMLTree(wx.TreeCtrl):
         while item:
             if self.ItemHasChildren(item):
                 state = self.IsExpanded(item)
-                states.append(self.IsExpanded(item))
+                states.append(state)
                 if state: states.extend(self.GetFullState(item))
             item = self.GetNextSibling(item)
         return states

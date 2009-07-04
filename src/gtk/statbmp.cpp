@@ -2,7 +2,7 @@
 // Name:        statbmp.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbmp.cpp 37056 2006-01-22 20:29:17Z MR $
+// Id:          $Id: statbmp.cpp 54676 2008-07-18 02:45:48Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:           wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -66,18 +66,9 @@ void wxStaticBitmap::SetBitmap( const wxBitmap &bitmap )
 
     if (m_bitmap.Ok())
     {
-        GdkBitmap *mask = (GdkBitmap *) NULL;
-        if (m_bitmap.GetMask())
-            mask = m_bitmap.GetMask()->GetBitmap();
-
-        if (m_bitmap.HasPixbuf())
-        {
-            gtk_image_set_from_pixbuf(GTK_IMAGE(m_widget),
-                                      m_bitmap.GetPixbuf());
-        }
-        else
-            gtk_image_set_from_pixmap(GTK_IMAGE(m_widget),
-                                      m_bitmap.GetPixmap(), mask);
+        // always use pixbuf, because pixmap mask does not
+        // work with disabled images in some themes
+        gtk_image_set_from_pixbuf(GTK_IMAGE(m_widget), m_bitmap.GetPixbuf());
 
         InvalidateBestSize();
         SetSize(GetBestSize());

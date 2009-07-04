@@ -4,7 +4,7 @@
 // Author:      Benjamin I. Williams
 // Modified by:
 // Created:     2005-05-17
-// RCS-ID:      $Id: floatpane.cpp 45847 2007-05-05 19:43:02Z RR $
+// RCS-ID:      $Id: floatpane.cpp 54904 2008-08-01 16:07:46Z BIW $
 // Copyright:   (C) Copyright 2005-2006, Kirix Corporation, All Rights Reserved
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
@@ -142,6 +142,11 @@ void wxAuiFloatingFrame::SetPaneWindow(const wxAuiPaneInfo& pane)
         }
 
         SetClientSize(size);
+    }
+    
+    if (pane.IsFixed())
+    {
+        SetWindowStyleFlag(GetWindowStyleFlag() & ~wxRESIZE_BORDER);
     }
 }
 

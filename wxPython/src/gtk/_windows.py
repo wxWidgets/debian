@@ -425,6 +425,10 @@ class TopLevelWindow(_core.Window):
         """MacGetUnifiedAppearance(self) -> bool"""
         return _windows_.TopLevelWindow_MacGetUnifiedAppearance(*args, **kwargs)
 
+    def MacGetTopLevelWindowRef(*args, **kwargs):
+        """MacGetTopLevelWindowRef(self) -> long"""
+        return _windows_.TopLevelWindow_MacGetTopLevelWindowRef(*args, **kwargs)
+
     def CenterOnScreen(*args, **kwargs):
         """
         CenterOnScreen(self, int dir=BOTH)
@@ -783,6 +787,9 @@ def PreMiniFrame(*args, **kwargs):
 SPLASH_CENTRE_ON_PARENT = _windows_.SPLASH_CENTRE_ON_PARENT
 SPLASH_CENTRE_ON_SCREEN = _windows_.SPLASH_CENTRE_ON_SCREEN
 SPLASH_NO_CENTRE = _windows_.SPLASH_NO_CENTRE
+SPLASH_CENTER_ON_PARENT = _windows_.SPLASH_CENTER_ON_PARENT
+SPLASH_CENTER_ON_SCREEN = _windows_.SPLASH_CENTER_ON_SCREEN
+SPLASH_NO_CENTER = _windows_.SPLASH_NO_CENTER
 SPLASH_TIMEOUT = _windows_.SPLASH_TIMEOUT
 SPLASH_NO_TIMEOUT = _windows_.SPLASH_NO_TIMEOUT
 class SplashScreenWindow(_core.Window):
@@ -1426,10 +1433,12 @@ class SashWindow(_core.Window):
         """SetSashBorder(self, int edge, bool border)"""
         return _windows_.SashWindow_SetSashBorder(*args, **kwargs)
 
+    SetSashBorder = wx._deprecated(SetSashBorder) 
     def HasBorder(*args, **kwargs):
         """HasBorder(self, int edge) -> bool"""
         return _windows_.SashWindow_HasBorder(*args, **kwargs)
 
+    HasBorder = wx._deprecated(HasBorder) 
     def GetEdgeMargin(*args, **kwargs):
         """GetEdgeMargin(self, int edge) -> int"""
         return _windows_.SashWindow_GetEdgeMargin(*args, **kwargs)
@@ -2107,6 +2116,11 @@ class SimpleHtmlListBox(HtmlListBox,_core.ItemContainer):
         """
         return _windows_.SimpleHtmlListBox_Create(*args, **kwargs)
 
+    def _Clear(*args, **kwargs):
+        """_Clear(self)"""
+        return _windows_.SimpleHtmlListBox__Clear(*args, **kwargs)
+
+    Clear = _Clear 
 _windows_.SimpleHtmlListBox_swigregister(SimpleHtmlListBox)
 SimpleHtmlListBoxNameStr = cvar.SimpleHtmlListBoxNameStr
 
@@ -2295,7 +2309,7 @@ class ColourDialog(Dialog):
         """
         GetColourData(self) -> ColourData
 
-        Returns a reference to the `wx.ColourData` used by the dialog.
+        Returns a copy of the `wx.ColourData` used by the dialog.
         """
         return _windows_.ColourDialog_GetColourData(*args, **kwargs)
 
@@ -2905,7 +2919,7 @@ PD_ESTIMATED_TIME = _windows_.PD_ESTIMATED_TIME
 PD_REMAINING_TIME = _windows_.PD_REMAINING_TIME
 PD_SMOOTH = _windows_.PD_SMOOTH
 PD_CAN_SKIP = _windows_.PD_CAN_SKIP
-class ProgressDialog(Frame):
+class ProgressDialog(Dialog):
     """
     A dialog that shows a short message and a progress bar. Optionally, it
     can display an ABORT button.
@@ -3460,6 +3474,11 @@ class PyWindow(_core.Window):
     base_GetMaxSize = wx._deprecated(base_GetMaxSize,
                                    "Please use PyWindow.GetMaxSize instead.")
 
+    def base_Enable(*args, **kw):
+        return PyWindow.Enable(*args, **kw)
+    base_Enable = wx._deprecated(base_Enable,
+                                   "Please use PyWindow.Enable instead.")
+
     def base_AddChild(*args, **kw):
         return PyWindow.AddChild(*args, **kw)
     base_AddChild = wx._deprecated(base_AddChild,
@@ -3638,6 +3657,11 @@ class PyPanel(Panel):
     base_GetMaxSize = wx._deprecated(base_GetMaxSize,
                                    "Please use PyPanel.GetMaxSize instead.")
 
+    def base_Enable(*args, **kw):
+        return PyPanel.Enable(*args, **kw)
+    base_Enable = wx._deprecated(base_Enable,
+                                   "Please use PyPanel.Enable instead.")
+
     def base_AddChild(*args, **kw):
         return PyPanel.AddChild(*args, **kw)
     base_AddChild = wx._deprecated(base_AddChild,
@@ -3815,6 +3839,11 @@ class PyScrolledWindow(ScrolledWindow):
         return PyScrolledWindow.GetMaxSize(*args, **kw)
     base_GetMaxSize = wx._deprecated(base_GetMaxSize,
                                    "Please use PyScrolledWindow.GetMaxSize instead.")
+
+    def base_Enable(*args, **kw):
+        return PyScrolledWindow.Enable(*args, **kw)
+    base_Enable = wx._deprecated(base_Enable,
+                                   "Please use PyScrolledWindow.Enable instead.")
 
     def base_AddChild(*args, **kw):
         return PyScrolledWindow.AddChild(*args, **kw)

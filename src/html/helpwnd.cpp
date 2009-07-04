@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpwnd.cpp 48873 2007-09-21 13:30:23Z JS $
+// RCS-ID:      $Id: helpwnd.cpp 59342 2009-03-05 15:54:25Z JS $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -315,17 +315,6 @@ bool wxHtmlHelpWindow::Create(wxWindow* parent, wxWindowID id,
 {
     m_hfStyle = helpStyle;
 
-    wxImageList *ContentsImageList = new wxImageList(16, 16);
-    ContentsImageList->Add(wxArtProvider::GetIcon(wxART_HELP_BOOK,
-                                                  wxART_HELP_BROWSER,
-                                                  wxSize(16, 16)));
-    ContentsImageList->Add(wxArtProvider::GetIcon(wxART_HELP_FOLDER,
-                                                  wxART_HELP_BROWSER,
-                                                  wxSize(16, 16)));
-    ContentsImageList->Add(wxArtProvider::GetIcon(wxART_HELP_PAGE,
-                                                  wxART_HELP_BROWSER,
-                                                  wxSize(16, 16)));
-
     // Do the config in two steps. We read the HtmlWindow customization after we
     // create the window.
     if (m_Config)
@@ -365,7 +354,7 @@ bool wxHtmlHelpWindow::Create(wxWindow* parent, wxWindowID id,
 #ifdef __WXMSW__
     wxBorder htmlWindowBorder = GetThemedBorderStyle();
     if (htmlWindowBorder == wxBORDER_SUNKEN)
-    	htmlWindowBorder = wxBORDER_SIMPLE;
+        htmlWindowBorder = wxBORDER_SIMPLE;
 #else
     wxBorder htmlWindowBorder = wxBORDER_SIMPLE;
 #endif
@@ -458,6 +447,17 @@ bool wxHtmlHelpWindow::Create(wxWindow* parent, wxWindowID id,
                                        wxTR_LINES_AT_ROOT
 #endif
                                        );
+
+        wxImageList *ContentsImageList = new wxImageList(16, 16);
+        ContentsImageList->Add(wxArtProvider::GetIcon(wxART_HELP_BOOK,
+                                                      wxART_HELP_BROWSER,
+                                                      wxSize(16, 16)));
+        ContentsImageList->Add(wxArtProvider::GetIcon(wxART_HELP_FOLDER,
+                                                      wxART_HELP_BROWSER,
+                                                      wxSize(16, 16)));
+        ContentsImageList->Add(wxArtProvider::GetIcon(wxART_HELP_PAGE,
+                                                      wxART_HELP_BROWSER,
+                                                      wxSize(16, 16)));
 
         m_ContentsBox->AssignImageList(ContentsImageList);
 
@@ -563,9 +563,12 @@ bool wxHtmlHelpWindow::Create(wxWindow* parent, wxWindowID id,
     // showtime
     if ( m_NavigPan && m_Splitter )
     {
+        // The panel will have its own min size which the splitter
+        // should respect
+        //if (m_NavigPan)
+        //    m_Splitter->SetMinimumPaneSize(m_NavigPan->GetBestSize().x);
+        //else
         m_Splitter->SetMinimumPaneSize(20);
-        if ( m_Cfg.navig_on )
-            m_Splitter->SplitVertically(m_NavigPan, m_HtmlWin, m_Cfg.sashpos);
 
         if ( m_Cfg.navig_on )
         {
@@ -592,6 +595,9 @@ bool wxHtmlHelpWindow::Create(wxWindow* parent, wxWindowID id,
 
 wxHtmlHelpWindow::~wxHtmlHelpWindow()
 {
+    if ( m_helpController )
+        m_helpController->SetHelpWindow(NULL);
+
     delete m_mergedIndex;
 
     // PopEventHandler(); // wxhtmlhelpcontroller (not any more!)
@@ -1227,9 +1233,19 @@ public:
 
         topsizer->Add(new wxStaticText(this, wxID_ANY, _("Preview:")),
                         0, wxLEFT | wxTOP, 10);
+
+        int style = wxHW_SCROLLBAR_AUTO;
+
+#ifdef __WXMSW__
+        style |= GetThemedBorderStyle();
+#else
+        style |= wxBORDER_SUNKEN;
+#endif
+        topsizer->AddSpacer(5);
+
         topsizer->Add(TestWin = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(20, 150),
-                                                 wxHW_SCROLLBAR_AUTO | wxSUNKEN_BORDER),
-                        1, wxEXPAND | wxLEFT|wxTOP|wxRIGHT, 10);
+                                                 style),
+                        1, wxEXPAND | wxLEFT|wxRIGHT, 10);
 
         wxBoxSizer *sizer2 = new wxBoxSizer(wxHORIZONTAL);
         wxButton *ok;

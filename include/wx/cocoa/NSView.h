@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/02/15
-// RCS-ID:      $Id: NSView.h 48114 2007-08-15 17:58:46Z DE $
+// RCS-ID:      $Id: NSView.h 51576 2008-02-06 20:10:07Z DE $
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,8 @@ typedef struct CGRect NSRect;
 typedef struct _NSRect NSRect;
 #endif
 
+struct objc_object;
+
 class wxWindow;
 
 WX_DECLARE_OBJC_HASHMAP(NSView);
@@ -32,7 +34,7 @@ public:
     void AssociateNSView(WX_NSView cocoaNSView);
     void DisassociateNSView(WX_NSView cocoaNSView);
 protected:
-    static void *sm_cocoaObserver;
+    static struct objc_object *sm_cocoaObserver;
 public:
     virtual wxWindow* GetWxWindow() const
     {   return NULL; }

@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     30-April-2001
-# RCS-ID:      $Id: make_installer.py 50268 2007-11-27 03:02:54Z RD $
+# RCS-ID:      $Id: make_installer.py 60440 2009-04-30 15:19:14Z RD $
 # Copyright:   (c) 2003 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -38,11 +38,11 @@ ISS_Template = r'''
 [Setup]
 AppName = wxPython%(SHORTVER)s-%(CHARTYPE)s-%(PYVER)s
 AppVerName = wxPython %(VERSION)s (%(CHARTYPE)s) for Python %(PYTHONVER)s
-OutputBaseFilename = wxPython%(SHORTVER)s-win32-%(CHARTYPE)s-%(VERSION)s-%(PYVER)s
-AppCopyright = Copyright © 2007 Total Control Software
+OutputBaseFilename = wxPython%(SHORTVER)s-win%(BITS)s-%(CHARTYPE)s-%(VERSION)s-%(PYVER)s
+AppCopyright = Copyright © 2008 Total Control Software
 DefaultDirName = {code:GetInstallDir|c:\DoNotInstallHere}
 DefaultGroupName = wxPython %(VERSION)s (%(CHARTYPE)s) for Python %(PYTHONVER)s
-PrivilegesRequired = none
+PrivilegesRequired = %(PRIV)s
 OutputDir = dist
 DisableStartupPrompt = true
 Compression = bzip
@@ -54,6 +54,8 @@ DisableReadyPage = true
 DisableProgramGroupPage = true
 UsePreviousAppDir = no
 UsePreviousGroup = no
+
+%(ARCH)s
 
 AppPublisher = Total Control Software
 AppPublisherURL = http://wxPython.org/
@@ -69,20 +71,16 @@ LicenseFile = licence\licence.txt
 
 [Components]
 Name: core;     Description: "wxPython modules and library";              Types: full custom;  Flags: fixed
-Name: manifest; Description: "Manifest files for XP Themed LnF";          Types: full
 Name: pthfile;  Description: "Make this install be the default wxPython"; Types: full
 
 ;;------------------------------------------------------------
 
 [Files]
 %(RTDLL)s
-Source: "%(WXDIR)s\lib\vc_dll\wx*%(WXDLLVER)s_*.dll";  DestDir: "{app}\%(PKGDIR)s\wx"; Components: core; Flags: replacesameversion
-Source: "distrib\msw\gdiplus.dll";                     DestDir: "{app}\%(PKGDIR)s\wx"; Components: core; Flags: replacesameversion
+Source: "%(WXDIR)s\lib\%(VCDLLDIR)s\wx*%(WXDLLVER)s_*.dll";  DestDir: "{app}\%(PKGDIR)s\wx"; Components: core; Flags: replacesameversion
+%(GDIPLUS)s
 %(CPPDLL)s
 %(MSLU)s
-
-;; The old way, only installs on pre-XP systems...
-;;Source: "distrib\msw\gdiplus.dll"; DestDir: "{app}\%(PKGDIR)s\wx"; Check: OnlyBeforeXP; Flags: sharedfile; Components: core
 
 
 Source: "wx\_activex.pyd";                     DestDir: "{app}\%(PKGDIR)s\wx"; Components: core; Flags: comparetimestamp
@@ -110,6 +108,11 @@ Source: "wx\_richtext.pyd";                    DestDir: "{app}\%(PKGDIR)s\wx"; C
 Source: "wx\*.py";                              DestDir: "{app}\%(PKGDIR)s\wx"; Components: core
 Source: "wx\build\*.py";                        DestDir: "{app}\%(PKGDIR)s\wx\build"; Components: core
 Source: "wx\lib\*.py";                          DestDir: "{app}\%(PKGDIR)s\wx\lib"; Components: core
+Source: "wx\lib\*.idl";                         DestDir: "{app}\%(PKGDIR)s\wx\lib"; Components: core
+Source: "wx\lib\*.tlb";                         DestDir: "{app}\%(PKGDIR)s\wx\lib"; Components: core
+Source: "wx\lib\agw\*.py";                      DestDir: "{app}\%(PKGDIR)s\wx\lib\agw"; Components: core
+Source: "wx\lib\agw\aui\*.py";                  DestDir: "{app}\%(PKGDIR)s\wx\lib\agw\aui"; Components: core
+Source: "wx\lib\agw\*.png";                     DestDir: "{app}\%(PKGDIR)s\wx\lib\agw"; Components: core
 Source: "wx\lib\analogclock\*.py";              DestDir: "{app}\%(PKGDIR)s\wx\lib\analogclock"; Components: core
 Source: "wx\lib\analogclock\lib_setup\*.py";    DestDir: "{app}\%(PKGDIR)s\wx\lib\analogclock\lib_setup"; Components: core
 Source: "wx\lib\art\*.py";                      DestDir: "{app}\%(PKGDIR)s\wx\lib\art"; Components: core
@@ -140,10 +143,30 @@ Source: "wx\tools\XRCed\plugins\*.crx";         DestDir: "{app}\%(PKGDIR)s\wx\to
 Source: "wx\tools\XRCed\plugins\bitmaps\*.png"; DestDir: "{app}\%(PKGDIR)s\wx\tools\XRCed\plugins\bitmaps"; Components: core
 
 Source: "wx\tools\Editra\docs\*.txt";                        DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\docs"; Components: core
+Source: "wx\tools\Editra\locale\ca_ES@valencia\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\ca_ES@valencia\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\cs_CZ\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\cs_CZ\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\da_DK\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\da_DK\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\de_DE\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\de_DE\LC_MESSAGES"; Components: core
 Source: "wx\tools\Editra\locale\en_US\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\en_US\LC_MESSAGES"; Components: core
 Source: "wx\tools\Editra\locale\es_ES\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\es_ES\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\fr_FR\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\fr_FR\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\it_IT\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\it_IT\LC_MESSAGES"; Components: core
 Source: "wx\tools\Editra\locale\ja_JP\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\ja_JP\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\lv_LV\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\lv_LV\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\nl_NL\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\nl_NL\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\nn_NO\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\nn_NO\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\pl_PL\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\pl_PL\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\pt_BR\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\pt_BR\LC_MESSAGES"; Components: core
 Source: "wx\tools\Editra\locale\ru_RU\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\ru_RU\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\sl_SI\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\sl_SI\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\sr_RS\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\sr_RS\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\sv_SE\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\sv_SE\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\tr_TR\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\tr_TR\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\uk_UA\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\uk_UA\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\zh_CN\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\zh_CN\LC_MESSAGES"; Components: core
+Source: "wx\tools\Editra\locale\zh_TW\LC_MESSAGES\*.mo";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\locale\zh_TW\LC_MESSAGES"; Components: core
+
+
 Source: "wx\tools\Editra\pixmaps\*.png";                     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\pixmaps"; Components: core
 Source: "wx\tools\Editra\pixmaps\*.ico";                     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\pixmaps"; Components: core
 Source: "wx\tools\Editra\pixmaps\*.icns";                    DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\pixmaps"; Components: core
@@ -152,18 +175,34 @@ Source: "wx\tools\Editra\pixmaps\theme\Tango\AUTHORS";       DestDir: "{app}\%(P
 Source: "wx\tools\Editra\pixmaps\theme\Tango\COPYING";       DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\pixmaps\theme\Tango"; Components: core
 Source: "wx\tools\Editra\pixmaps\theme\Tango\menu\*.png";    DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\pixmaps\theme\Tango\menu"; Components: core
 Source: "wx\tools\Editra\pixmaps\theme\Tango\mime\*.png";    DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\pixmaps\theme\Tango\mime"; Components: core
+Source: "wx\tools\Editra\pixmaps\theme\Tango\other\*.png";   DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\pixmaps\theme\Tango\other"; Components: core
 Source: "wx\tools\Editra\pixmaps\theme\Tango\toolbar\*.png"; DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\pixmaps\theme\Tango\toolbar"; Components: core
 Source: "wx\tools\Editra\plugins\*.egg";                     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\plugins"; Components: core
 Source: "wx\tools\Editra\src\*.py";                          DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\src"; Components: core
 Source: "wx\tools\Editra\src\autocomp\*.py";                 DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\src\autocomp"; Components: core
+Source: "wx\tools\Editra\src\eclib\*.py";                    DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\src\eclib"; Components: core
 Source: "wx\tools\Editra\src\extern\*.py";                   DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern"; Components: core
 Source: "wx\tools\Editra\src\extern\README";                 DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern"; Components: core
+Source: "wx\tools\Editra\src\extern\pygments\*.py";          DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\pygments"; Components: core
+Source: "wx\tools\Editra\src\extern\pygments\filters\*.py";    DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\pygments\filters"; Components: core
+Source: "wx\tools\Editra\src\extern\pygments\formatters\*.py"; DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\pygments\formatters"; Components: core
+Source: "wx\tools\Editra\src\extern\pygments\lexers\*.py";     DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\pygments\lexers"; Components: core
 Source: "wx\tools\Editra\src\syntax\*.py";                   DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\src\syntax"; Components: core
 Source: "wx\tools\Editra\src\syntax\README";                 DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\src\syntax"; Components: core
 Source: "wx\tools\Editra\styles\*.ess";                      DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\styles"; Components: core
-Source: "wx\tools\Editra\tests\*.*";                         DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\tests"; Components: core
-Source: "wx\tools\Editra\*";                                 DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
-Source: "wx\tools\Editra\*.py";                              DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
+Source: "wx\tools\Editra\tests\syntax\*.*";                  DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra\tests\syntax"; Components: core
+Source: "wx\tools\Editra\AUTHORS";                           DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
+Source: "wx\tools\Editra\CHANGELOG";                         DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
+Source: "wx\tools\Editra\COPYING";                           DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
+Source: "wx\tools\Editra\NEWS";                              DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
+Source: "wx\tools\Editra\README";                            DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
+Source: "wx\tools\Editra\THANKS";                            DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
+Source: "wx\tools\Editra\FAQ";                               DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
+Source: "wx\tools\Editra\TODO";                              DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
+Source: "wx\tools\Editra\__init__.py";                       DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
+Source: "wx\tools\Editra\launcher.py";                       DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
+Source: "wx\tools\Editra\Editra";                            DestDir: "{app}\%(PKGDIR)s\wx\tools\Editra"; Components: core
+
 
 Source: "wxPython\*.py";                          DestDir: "{app}\%(PKGDIR)s\wxPython"; Components: core
 Source: "wxPython\lib\*.py";                      DestDir: "{app}\%(PKGDIR)s\wxPython\lib"; Components: core
@@ -172,11 +211,7 @@ Source: "wxPython\lib\editor\*.py";               DestDir: "{app}\%(PKGDIR)s\wxP
 Source: "wxPython\lib\mixins\*.py";               DestDir: "{app}\%(PKGDIR)s\wxPython\lib\mixins"; Components: core
 Source: "wxPython\tools\*.py";                    DestDir: "{app}\%(PKGDIR)s\wxPython\tools"; Components: core
 
-
-Source: "src\winxp.manifest";               DestDir: "{code:GetPythonDir}"; DestName: "python.exe.manifest";   Flags: sharedfile; Components:  manifest
-Source: "src\winxp.manifest";               DestDir: "{code:GetPythonDir}"; DestName: "pythonw.exe.manifest";  Flags: sharedfile; Components: manifest
 Source: "wxversion\wxversion.py";           DestDir: "{app}";  Flags: sharedfile;  Components: core
-Source: "wxaddons\*.py";                    DestDir: "{app}\wxaddons";  Flags: sharedfile;  Components: core
 Source: "src\wx.pth";                       DestDir: "{app}";  Flags: sharedfile;  Components: pthfile
 
 %(LOCALE)s
@@ -226,6 +261,10 @@ Type: files; Name: "{app}\%(PKGDIR)s\wx\build\*.pyc";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\build\*.pyo";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\*.pyc";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\*.pyo";
+Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\agw\*.pyc";
+Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\agw\*.pyo";
+Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\agw\aui\*.pyc";
+Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\agw\aui\*.pyo";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\analogclock\*.pyc";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\analogclock\*.pyo";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\analogclock\lib_setup\*.pyc";
@@ -264,8 +303,19 @@ Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\syntax\*.pyc";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\syntax\*.pyo";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\*.pyc";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\*.pyo";
+Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\pygments\*.pyc";      
+Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\pygments\*.pyo";      
+Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\pygments\filters\*.pyc"; 
+Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\pygments\filters\*.pyo"; 
+Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\pygments\formatters\*.pyc";
+Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\pygments\formatters\*.pyo";
+Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\pygments\lexers\*.pyc";    
+Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\extern\pygments\lexers\*.pyo";    
+
 Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\autocomp\*.pyc";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\autocomp\*.pyo";
+Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\eclib\*.pyc";
+Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\eclib\*.pyo";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\*.pyc";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\tools\Editra\src\*.pyo";
 
@@ -285,8 +335,6 @@ Type: files; Name: "{app}\%(PKGDIR)s\wxPython\tools\*.pyo";
 Type: files; Name: "{app}\wxversion.pyc";
 Type: files; Name: "{app}\wxversion.pyo";
 
-Type: files; Name: "{app}\%(PKGDIR)s\wxaddons\*.pyc";
-Type: files; Name: "{app}\%(PKGDIR)s\wxaddons\*.pyo";
 
 %(UNINSTALL_BATCH)s
 
@@ -399,7 +447,7 @@ ISS_DocDemo_Template = r'''
 AppName = wxPython%(SHORTVER)s-docs-demos
 AppVerName = wxPython Docs and Demos %(VERSION)s
 OutputBaseFilename = wxPython%(SHORTVER)s-win32-docs-demos-%(VERSION)s
-AppCopyright = Copyright © 2007 Total Control Software
+AppCopyright = Copyright © 2008 Total Control Software
 DefaultDirName = {pf}\wxPython%(SHORTVER)s Docs and Demos
 DefaultGroupName = wxPython%(SHORTVER)s Docs Demos and Tools
 PrivilegesRequired = none
@@ -438,6 +486,11 @@ Source: "demo\*.xml";                       DestDir: "{app}\demo";
 Source: "demo\*.txt";                       DestDir: "{app}\demo";
 Source: "demo\*.ico";                       DestDir: "{app}\demo";
 
+Source: "demo\agw\*.py";                    DestDir: "{app}\demo\agw";
+Source: "demo\agw\bitmaps\*.png";           DestDir: "{app}\demo\agw\bitmaps";
+Source: "demo\agw\bitmaps\*.ico";           DestDir: "{app}\demo\agw\bitmaps";
+Source: "demo\agw\bitmaps\*.gif";           DestDir: "{app}\demo\agw\bitmaps";
+
 Source: "demo\bitmaps\*.bmp";               DestDir: "{app}\demo\bitmaps";
 Source: "demo\bitmaps\*.gif";               DestDir: "{app}\demo\bitmaps";
 Source: "demo\bitmaps\*.jpg";               DestDir: "{app}\demo\bitmaps";
@@ -470,6 +523,8 @@ Source: "demo\data\locale\de\LC_MESSAGES\*.mo"; DestDir: "{app}\demo\data\locale
 Source: "demo\data\locale\es\LC_MESSAGES\*.mo"; DestDir: "{app}\demo\data\locale\es\LC_MESSAGES";
 Source: "demo\data\locale\fr\LC_MESSAGES\*.mo"; DestDir: "{app}\demo\data\locale\fr\LC_MESSAGES";
 Source: "demo\data\locale\it\LC_MESSAGES\*.mo"; DestDir: "{app}\demo\data\locale\it\LC_MESSAGES";
+
+Source: "demo\snippets\*.py";                   DestDir: "{app}\demo\snippets";
 
 ;;Source: "demo\dllwidget\*.cpp";             DestDir: "{app}\demo\dllwidget";
 ;;Source: "demo\dllwidget\*.py";              DestDir: "{app}\demo\dllwidget";
@@ -670,6 +725,11 @@ Type: files; Name: "{app}\samples\wxPIA_book\Chapter-18\*";
 
 def find_DLLs():
 
+    if os.environ.get('CPU', '') == 'AMD64':
+        # Just hard-code it for now until a good solution for finding
+        # the right dumpbin can be found...
+        return '28uh', sys.version[:3]
+        
     WXDLLVER = PYTHONVER = None
 
     proc = os.popen(r"dumpbin /imports wx\_core_.pyd", "r")
@@ -724,13 +784,29 @@ runtime_template1 = 'Source: "%(name)s"; DestDir: "{code:GetPythonDir}"; Flags: 
 runtime_template2 = 'Source: "%(name)s"; DestDir: "{app}\%(PKGDIR)s\wx"; Components: core; Flags: replacesameversion'
 
 def get_runtime_dlls(PYVER, PKGDIR):
-    if PYVER >= "py24":
-        return ( runtime_template1 % dict(name=r"distrib\msw\msvcr71.dll", PKGDIR=PKGDIR),
-                 runtime_template2 % dict(name=r"distrib\msw\msvcp71.dll", PKGDIR=PKGDIR) )
+    if PYVER >= 'py26':
+        # Since Python 2.6+ uses MSVC 9 then the SxS assemblies
+        # for the CRT will already be installed, so we can not
+        # bother with installing it ourselves.
+        return ('', '')
+        
+    if os.environ.get('CPU', '') == 'AMD64':
+        if PYVER == 'py25':
+            # For now just pull the DLLs from the system dir, and install
+            # them there.  We may eventually want to get more customized
+            # like on win32.
+            return (
+                r'Source: "{sys}\MSVCRT.DLL"; DestDir: "{sys}"; Flags: 64bit uninsneveruninstall external; Components: core',
+                r'Source: "{sys}\MSVCP60.DLL"; DestDir: "{sys}"; Flags: 64bit uninsneveruninstall external; Components: core',
+                )
     else:
-        return (  runtime_template1 % dict(name=r"distrib\msw\MSVCRT.dll", PKGDIR=PKGDIR),
-                  runtime_template2 % dict(name=r"distrib\msw\MSVCIRT.dll", PKGDIR=PKGDIR) + "\n" +
-                  runtime_template2 % dict(name=r"distrib\msw\MSVCP60.dll", PKGDIR=PKGDIR) )
+        if PYVER >= "py24":
+            return ( runtime_template1 % dict(name=r"distrib\msw\msvcr71.dll", PKGDIR=PKGDIR),
+                     runtime_template2 % dict(name=r"distrib\msw\msvcp71.dll", PKGDIR=PKGDIR) )
+        else:
+            return (  runtime_template1 % dict(name=r"distrib\msw\MSVCRT.dll", PKGDIR=PKGDIR),
+                      runtime_template2 % dict(name=r"distrib\msw\MSVCIRT.dll", PKGDIR=PKGDIR) + "\n" +
+                      runtime_template2 % dict(name=r"distrib\msw\MSVCP60.dll", PKGDIR=PKGDIR) )
 
 
 #----------------------------------------------------------------------
@@ -756,6 +832,22 @@ def main():
     LOCALE          = build_locale_string(PKGDIR)
     RTDLL,CPPDLL    = get_runtime_dlls(PYVER, PKGDIR)
 
+    if os.environ.get('CPU', '') == 'AMD64':
+        BITS        = '64'
+        VCDLLDIR    = 'vc_amd64_dll'
+        GDIPLUS     = ''
+        ARCH        = 'ArchitecturesInstallIn64BitMode = x64\nArchitecturesAllowed = x64'
+        #ARCH        = ''
+        PRIV        = 'admin'
+
+    else:
+        BITS        = '32'
+        VCDLLDIR    = 'vc_dll'
+        GDIPLUS     = 'Source: "distrib\msw\gdiplus.dll"; DestDir: "{app}\%(PKGDIR)s\wx"; Components: core; Flags: replacesameversion' % vars()
+        ARCH        = ''
+        PRIV        = 'none'
+
+        
     print """
 Building Win32 installer for wxPython:
     VERSION    = %(VERSION)s
@@ -777,7 +869,8 @@ Building Win32 installer for wxPython:
     MSLU=''
     CHARTYPE='ansi'
     if "UNICODE=1" in sys.argv:
-        MSLU=r'Source: "distrib\msw\unicows.dll"; DestDir: "{code:GetPythonDir}"; Components: core; Flags: replacesameversion sharedfile' % vars()
+        if os.environ.get('CPU', '') != 'AMD64':
+            MSLU=r'Source: "distrib\msw\unicows.dll"; DestDir: "{code:GetPythonDir}"; Components: core; Flags: replacesameversion sharedfile' % vars()
         CHARTYPE='unicode'
 
     f = open(ISSFILE, "w")

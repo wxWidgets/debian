@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     03/02/99
-// RCS-ID:      $Id: print.h 42046 2006-10-16 09:30:01Z ABX $
+// RCS-ID:      $Id: print.h 58157 2009-01-16 19:21:13Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,10 +44,9 @@ public :
 
     virtual void            TransferFrom( wxPrintDialogData * )  ;
     virtual void            TransferTo( wxPrintDialogData * ) ;
-private :
-    virtual void            ValidateOrCreate() ;
 public :
     PMPrintSession          m_macPrintSession ;
+    PMPaper                 m_macPaper ;
     PMPageFormat            m_macPageFormat ;
     PMPrintSettings         m_macPrintSettings ;
 private:

@@ -2,7 +2,7 @@
 # Purpose:      View components for editing attributes
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      17.06.2007
-# RCS-ID:       $Id: AttributePanel.py 49701 2007-11-07 01:01:29Z RD $
+# RCS-ID:       $Id: AttributePanel.py 52316 2008-03-04 13:05:02Z ROL $
 
 import string
 import wx
@@ -14,7 +14,7 @@ import undo
 import images
 
 
-labelSize = (80,-1)
+labelSize = (100,-1)
 
 # Panel class is the attribute panel containing class name, XRC ID and
 # a notebook with particular pages.
@@ -25,7 +25,7 @@ class ScrolledPage(wx.ScrolledWindow):
         self.topSizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.topSizer)
         self.panel = None
-        self.SetScrollRate(1, 1)
+        self.SetScrollRate(5, 5)
 
     def Reset(self):
         if self.panel:
@@ -36,7 +36,8 @@ class ScrolledPage(wx.ScrolledWindow):
         self.Reset()
         self.panel = panel
         self.topSizer.Add(panel, 0, wx.ALL | wx.EXPAND, 2)
-        self.Layout()
+        self.topSizer.Layout()
+        self.SendSizeEvent()
 
 class Panel(wx.Panel):
     '''Attribute panel main class.'''
@@ -64,9 +65,9 @@ class Panel(wx.Panel):
         pinSizer.Add(sizer, 0, wx.ALL, 5)
         pinSizer.Add((0, 0), 1)
         self.pinButton = buttons.GenBitmapToggleButton(
-            self, bitmap=images.getToolPinBitmap(),
+            self, bitmap=images.ToolPin.GetBitmap(),
             style=wx.BORDER_NONE)
-        self.pinButton.SetBitmapSelected(images.getToolPinDownBitmap())
+        self.pinButton.SetBitmapSelected(images.ToolPinDown.GetBitmap())
         self.pinButton.SetToggle(g.conf.panelPinState)
         self.pinButton.SetToolTipString('Sticky page selection')
         # No highlighting please
@@ -171,7 +172,8 @@ class Panel(wx.Panel):
 
         if comp.exStyles or comp.genericExStyles:
             # Create extra style page
-            panel = params.StylePanel(self.pageExStyle, comp.exStyles + comp.genericExStyles)
+            panel = params.StylePanel(self.pageExStyle, comp.exStyles + comp.genericExStyles, 
+                                      tag='exstyle')
             panels.append(panel)
             self.pageExStyle.SetPanel(panel)
             self.nb.AddPage(self.pageExStyle, 'ExStyle')
@@ -189,14 +191,13 @@ class Panel(wx.Panel):
             self.nb.AddPage(self.pageIA, container.implicitPageName)
             self.SetValues(panel, node.parentNode)
 
-        if comp.events:
-            # Create code page
-            panel = CodePanel(self.pageCode, comp.events)
-            panel.node = node
-            panels.append(panel)
-            self.pageCode.SetPanel(panel)
-            self.nb.AddPage(self.pageCode, 'Code')
-            self.SetCodeValues(panel, comp.getAttribute(node, 'XRCED'))
+        # Create code page
+        panel = CodePanel(self.pageCode, comp.events)
+        panel.node = node
+        panels.append(panel)
+        self.pageCode.SetPanel(panel)
+        self.nb.AddPage(self.pageCode, 'Code')
+        self.SetCodeValues(panel, comp.getAttribute(node, 'XRCED'))
 
         # Select old page if possible and pin is down
         if g.conf.panelPinState:

@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxToggleButton
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_tglbtn.cpp 41590 2006-10-03 14:53:40Z VZ $
+// RCS-ID:      $Id: xh_tglbtn.cpp 59641 2009-03-20 11:53:54Z VZ $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,12 +19,15 @@
 
 #include "wx/xrc/xh_tglbtn.h"
 #include "wx/tglbtn.h"
+#include "wx/button.h" // solely for wxBU_EXACTFIT
 
 IMPLEMENT_DYNAMIC_CLASS(wxToggleButtonXmlHandler, wxXmlResourceHandler)
 
 wxToggleButtonXmlHandler::wxToggleButtonXmlHandler()
-: wxXmlResourceHandler()
+    : wxXmlResourceHandler()
 {
+    XRC_ADD_STYLE(wxBU_EXACTFIT);
+
     AddWindowStyles();
 }
 

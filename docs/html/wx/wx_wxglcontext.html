@@ -50,7 +50,7 @@ Context to share display lists with or NULL (the default) for no sharing.</UL></
 <A NAME="wxglcontextsetcurrent"></A>
 <H3>wxGLContext::SetCurrent</H3>
 <P>
-<B>void</B> <B>SetCurrent</B>(<B>const <A HREF="wx_wxglcanvas.html#wxglcanvas">wxGLCanvas</A></B></B><I> win</I>)<P>
+<B>void</B> <B>SetCurrent</B>(<B>const <A HREF="wx_wxglcanvas.html#wxglcanvas">wxGLCanvas</A>&</B></B><I> win</I>)<P>
 Makes the OpenGL state that is represented by this rendering context current with the wxGLCanvas <I>win</I>.
 Note that <I>win</I> can be a different wxGLCanvas window than the one that was passed to the constructor of this rendering context.
 If  <I>RC</I>  is an object of type wxGLContext, the statements <I>RC.SetCurrent(win);</I> and <I>win.SetCurrent(RC);</I> are equivalent,

@@ -1,5 +1,5 @@
 dnl
-dnl  This file is part of Bakefile (http://bakefile.sourceforge.net)
+dnl  This file is part of Bakefile (http://www.bakefile.org)
 dnl
 dnl  Copyright (C) 2003-2007 Vaclav Slavik, David Elliott and others
 dnl
@@ -21,77 +21,15 @@ dnl  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 dnl  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 dnl  DEALINGS IN THE SOFTWARE.
 dnl
-dnl  $Id: bakefile-lang.m4 45826 2007-05-05 14:27:16Z VZ $
+dnl  $Id: bakefile-lang.m4 58915 2009-02-15 15:31:47Z VZ $
 dnl
-dnl  Compiler detection macros by David Elliott
+dnl  Compiler detection macros by David Elliott and Vadim Zeitlin
 dnl
 
 
 dnl ===========================================================================
-dnl Macros to detect non-GNU compilers (MetroWerks, XLC)
+dnl Macros to detect different C/C++ compilers
 dnl ===========================================================================
-
-dnl Based on autoconf _AC_LANG_COMPILER_GNU
-AC_DEFUN([_AC_BAKEFILE_LANG_COMPILER_MWERKS],
-[AC_CACHE_CHECK([whether we are using the Metrowerks _AC_LANG compiler],
-    [bakefile_cv_[]_AC_LANG_ABBREV[]_compiler_mwerks],
-    [AC_TRY_COMPILE([],[#ifndef __MWERKS__
-       choke me
-#endif
-],
-        [bakefile_compiler_mwerks=yes],
-        [bakefile_compiler_mwerks=no])
-    bakefile_cv_[]_AC_LANG_ABBREV[]_compiler_mwerks=$bakefile_compiler_mwerks
-    ])
-])
-
-dnl Loosely based on autoconf AC_PROG_CC
-dnl TODO: Maybe this should wrap the call to AC_PROG_CC and be used instead.
-AC_DEFUN([AC_BAKEFILE_PROG_MWCC],
-[AC_LANG_PUSH(C)
-_AC_BAKEFILE_LANG_COMPILER_MWERKS
-MWCC=`test $bakefile_cv_c_compiler_mwerks = yes && echo yes`
-AC_LANG_POP(C)
-])
-
-dnl Loosely based on autoconf AC_PROG_CXX
-dnl TODO: Maybe this should wrap the call to AC_PROG_CXX and be used instead.
-AC_DEFUN([AC_BAKEFILE_PROG_MWCXX],
-[AC_LANG_PUSH(C++)
-_AC_BAKEFILE_LANG_COMPILER_MWERKS
-MWCXX=`test $bakefile_cv_cxx_compiler_mwerks = yes && echo yes`
-AC_LANG_POP(C++)
-])
-
-dnl Based on autoconf _AC_LANG_COMPILER_GNU
-AC_DEFUN([_AC_BAKEFILE_LANG_COMPILER_XLC],
-[AC_CACHE_CHECK([whether we are using the IBM xlC _AC_LANG compiler],
-    [bakefile_cv_[]_AC_LANG_ABBREV[]_compiler_xlc],
-    [AC_TRY_COMPILE([],[#ifndef __xlC__
-       choke me
-#endif
-],
-        [bakefile_compiler_xlc=yes],
-        [bakefile_compiler_xlc=no])
-    bakefile_cv_[]_AC_LANG_ABBREV[]_compiler_xlc=$bakefile_compiler_xlc
-    ])
-])
-
-dnl Loosely based on autoconf AC_PROG_CC
-AC_DEFUN([AC_BAKEFILE_PROG_XLCC],
-[AC_LANG_PUSH(C)
-_AC_BAKEFILE_LANG_COMPILER_XLC
-XLCC=`test $bakefile_cv_c_compiler_xlc = yes && echo yes`
-AC_LANG_POP(C)
-])
-
-dnl Loosely based on autoconf AC_PROG_CXX
-AC_DEFUN([AC_BAKEFILE_PROG_XLCXX],
-[AC_LANG_PUSH(C++)
-_AC_BAKEFILE_LANG_COMPILER_XLC
-XLCXX=`test $bakefile_cv_cxx_compiler_xlc = yes && echo yes`
-AC_LANG_POP(C++)
-])
 
 dnl Based on autoconf _AC_LANG_COMPILER_GNU
 dnl _AC_BAKEFILE_LANG_COMPILER(NAME, LANG, SYMBOL, IF-YES, IF-NO)
@@ -113,12 +51,64 @@ AC_DEFUN([_AC_BAKEFILE_LANG_COMPILER],
          )
         ]
     )
-    AC_LANG_POP($2)
     if test "x$bakefile_cv_[]_AC_LANG_ABBREV[]_compiler_[]$3" = "xyes"; then
         :; $4
     else
         :; $5
     fi
+    AC_LANG_POP($2)
+])
+
+dnl More specific version of the above macro checking whether the compiler
+dnl version is at least the given one (assumes that we do use this compiler)
+dnl
+dnl _AC_BAKEFILE_LANG_COMPILER_LATER_THAN(NAME, LANG, SYMBOL, VER, VERMSG, IF-YES, IF-NO)
+AC_DEFUN([_AC_BAKEFILE_LANG_COMPILER_LATER_THAN],
+[
+    AC_LANG_PUSH($2)
+    AC_CACHE_CHECK(
+        [whether we are using $1 $2 compiler v$5 or later],
+        [bakefile_cv_[]_AC_LANG_ABBREV[]_compiler_[]$3[]_lt_[]$4],
+        [AC_TRY_COMPILE(
+            [],
+            [
+             #ifndef $3 || $3 < $4
+                choke me
+             #endif
+            ],
+            [bakefile_cv_[]_AC_LANG_ABBREV[]_compiler_[]$3[]_lt_[]$4=yes],
+            [bakefile_cv_[]_AC_LANG_ABBREV[]_compiler_[]$3[]_lt_[]$4=no]
+         )
+        ]
+    )
+    if test "x$bakefile_cv_[]_AC_LANG_ABBREV[]_compiler_[]$3[]_lt_[]$4" = "xyes"; then
+        :; $6
+    else
+        :; $7
+    fi
+    AC_LANG_POP($2)
+])
+
+dnl CodeWarrior Metrowerks compiler defines __MWERKS__ for both C and C++
+AC_DEFUN([AC_BAKEFILE_PROG_MWCC],
+[
+    _AC_BAKEFILE_LANG_COMPILER(Metrowerks, C, __MWERKS__, MWCC=yes)
+])
+
+AC_DEFUN([AC_BAKEFILE_PROG_MWCXX],
+[
+    _AC_BAKEFILE_LANG_COMPILER(Metrowerks, C++, __MWERKS__, MWCXX=yes)
+])
+
+dnl IBM xlC compiler defines __xlC__ for both C and C++
+AC_DEFUN([AC_BAKEFILE_PROG_XLCC],
+[
+    _AC_BAKEFILE_LANG_COMPILER([IBM xlC], C, __xlC__, XLCC=yes)
+])
+
+AC_DEFUN([AC_BAKEFILE_PROG_XLCXX],
+[
+    _AC_BAKEFILE_LANG_COMPILER([IBM xlC], C++, __xlC__, XLCXX=yes)
 ])
 
 dnl recent versions of SGI mipsPro compiler define _SGI_COMPILER_VERSION
@@ -155,6 +145,29 @@ AC_DEFUN([AC_BAKEFILE_PROG_INTELCC],
 AC_DEFUN([AC_BAKEFILE_PROG_INTELCXX],
 [
     _AC_BAKEFILE_LANG_COMPILER(Intel, C++, __INTEL_COMPILER, INTELCXX=yes)
+])
+
+dnl Intel compiler command line options changed in incompatible ways sometimes
+dnl before v8 (-KPIC was replaced with gcc-compatible -fPIC) and again in v10
+dnl (-create-pch deprecated in favour of -pch-create) so we need to test for
+dnl its exact version too
+AC_DEFUN([AC_BAKEFILE_PROG_INTELCC_8],
+[
+    _AC_BAKEFILE_LANG_COMPILER_LATER_THAN(Intel, C, __INTEL_COMPILER, 800, 8, INTELCC8=yes)
+])
+AC_DEFUN([AC_BAKEFILE_PROG_INTELCXX_8],
+[
+    _AC_BAKEFILE_LANG_COMPILER_LATER_THAN(Intel, C++, __INTEL_COMPILER, 800, 8, INTELCXX8=yes)
+])
+
+AC_DEFUN([AC_BAKEFILE_PROG_INTELCC_10],
+[
+    _AC_BAKEFILE_LANG_COMPILER_LATER_THAN(Intel, C, __INTEL_COMPILER, 1000, 10, INTELCC10=yes)
+])
+
+AC_DEFUN([AC_BAKEFILE_PROG_INTELCXX_10],
+[
+    _AC_BAKEFILE_LANG_COMPILER_LATER_THAN(Intel, C++, __INTEL_COMPILER, 1000, 10, INTELCXX10=yes)
 ])
 
 dnl HP-UX aCC: see http://docs.hp.com/en/6162/preprocess.htm#macropredef
@@ -228,7 +241,18 @@ dnl _AC_BAKEFILE_PROG_COMPILER(LANG)
 AC_DEFUN([_AC_BAKEFILE_PROG_COMPILER],
 [
     AC_PROG_$1
+
+    dnl Intel compiler can be used under several different OS and even
+    dnl different architectures (x86, amd64 and Itanium) so it's easier to just
+    dnl always test for it
     AC_BAKEFILE_PROG_INTEL$1
+
+    dnl If we use Intel compiler we also need to know its version
+    if test "$INTEL$1" = "yes"; then
+        AC_BAKEFILE_PROG_INTEL$1_8
+        AC_BAKEFILE_PROG_INTEL$1_10
+    fi
+
     dnl if we're using gcc, we can't be using any of incompatible compilers
     if test "x$G$1" != "xyes"; then
         if test "x$1" = "xC"; then
@@ -248,11 +272,21 @@ AC_DEFUN([_AC_BAKEFILE_PROG_COMPILER],
 
             Darwin)
                 AC_BAKEFILE_PROG_MW$1
-                AC_BAKEFILE_PROG_XL$1
+                if test "$MW$1" != "yes"; then
+                    AC_BAKEFILE_PROG_XL$1
+                fi
                 ;;
 
             IRIX*)
                 AC_BAKEFILE_PROG_SGI$1
+                ;;
+
+            Linux*)
+                dnl Sun CC is now available under Linux too, test for it unless
+                dnl we already found that we were using a different compiler
+                if test "$INTEL$1" != "yes"; then
+                    AC_BAKEFILE_PROG_SUN$1
+                fi
                 ;;
 
             HP-UX*)

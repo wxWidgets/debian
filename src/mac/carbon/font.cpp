@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: font.cpp 46440 2007-06-13 12:35:29Z SC $
+// RCS-ID:      $Id: font.cpp 53452 2008-05-05 08:16:16Z JS $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,6 +23,7 @@
 #include "wx/fontutil.h"
 #include "wx/graphics.h"
 #include "wx/log.h"
+#include "wx/settings.h"
 
 #include "wx/mac/private.h"
 
@@ -188,7 +189,7 @@ void wxFontRefData::Init(int pointSize,
     wxFontEncoding encoding)
 {
     m_style = style;
-    m_pointSize = pointSize;
+    m_pointSize = (pointSize == -1) ? wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT).GetPointSize() : pointSize;
     m_family = family;
     m_style = style;
     m_weight = weight;

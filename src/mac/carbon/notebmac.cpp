@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: notebmac.cpp 42015 2006-10-14 16:55:55Z SC $
+// RCS-ID:      $Id: notebmac.cpp 57849 2009-01-06 09:36:54Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED)
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING)
 
-BEGIN_EVENT_TABLE(wxNotebook, wxControl)
+BEGIN_EVENT_TABLE(wxNotebook, wxBookCtrlBase)
     EVT_NOTEBOOK_PAGE_CHANGED(wxID_ANY, wxNotebook::OnSelChange)
 
     EVT_SIZE(wxNotebook::OnSize)
@@ -42,7 +42,7 @@ BEGIN_EVENT_TABLE(wxNotebook, wxControl)
     EVT_NAVIGATION_KEY(wxNotebook::OnNavigationKey)
 END_EVENT_TABLE()
 
-IMPLEMENT_DYNAMIC_CLASS(wxNotebook, wxControl)
+IMPLEMENT_DYNAMIC_CLASS(wxNotebook, wxBookCtrlBase)
 IMPLEMENT_DYNAMIC_CLASS(wxNotebookEvent, wxCommandEvent)
 
 
@@ -190,7 +190,7 @@ bool wxNotebook::SetPageText(size_t nPage, const wxString& strText)
     wxCHECK_MSG( IS_VALID_PAGE(nPage), false, wxT("SetPageText: invalid notebook page") );
 
     wxNotebookPage *page = m_pages[nPage];
-    page->SetLabel(strText);
+    page->SetLabel(wxStripMenuCodes(strText));
     MacSetupTabs();
 
     return true;
@@ -284,7 +284,7 @@ bool wxNotebook::InsertPage(size_t nPage,
     // don't show pages by default (we'll need to adjust their size first)
     pPage->Show( false ) ;
 
-    pPage->SetLabel( strText );
+    pPage->SetLabel( wxStripMenuCodes(strText) );
 
     m_images.Insert( imageId, nPage );
 
@@ -404,7 +404,7 @@ void wxNotebook::MacSetupTabs()
         page = m_pages[ii];
         info.version = kControlTabInfoVersionOne;
         info.iconSuiteID = 0;
-        wxMacCFStringHolder cflabel( page->GetLabel(), m_font.GetEncoding() ) ;
+        wxMacCFStringHolder cflabel( page->GetLabel(), GetFont().GetEncoding() ) ;
         info.name = cflabel ;
         m_peer->SetData<ControlTabInfoRecV1>( ii + 1, kControlTabInfoTag, &info ) ;
 

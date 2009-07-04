@@ -2,7 +2,7 @@
 // Name:        src/gtk/combobox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: combobox.cpp 45684 2007-04-26 21:18:24Z RR $
+// Id:          $Id: combobox.cpp 54967 2008-08-04 15:33:13Z JS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1365,7 +1365,7 @@ wxSize wxComboBox::DoGetBestSize() const
     }
 
     // empty combobox should have some reasonable default size too
-    if ( ret.x < 100 )
+    if ( GetCount() == 0 && ret.x < 100 )
         ret.x = 100;
 
     CacheBestSize(ret);

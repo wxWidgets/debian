@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: mdi.cpp 45729 2007-05-01 11:49:35Z SC $
+// RCS-ID:      $Id: mdi.cpp 53039 2008-04-06 09:31:01Z CE $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -448,6 +448,7 @@ void wxMDIChildFrame::Restore()
 
 void wxMDIChildFrame::Activate()
 {
+    Raise();
 }
 
 //-----------------------------------------------------------------------------

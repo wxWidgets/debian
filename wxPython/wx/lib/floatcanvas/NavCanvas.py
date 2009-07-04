@@ -4,8 +4,7 @@ A Panel that includes the FloatCanvas and Navigation controls
 """
 
 import wx
-import FloatCanvas, Resources
-
+import FloatCanvas, Resources, GUIMode
 
 class NavCanvas(wx.Panel):
     """
@@ -23,6 +22,12 @@ class NavCanvas(wx.Panel):
                    **kwargs): # The rest just get passed into FloatCanvas
         wx.Panel.__init__(self, parent, id, size=size)
 
+        self.Modes = [("Pointer",  GUIMode.GUIMouse(),   Resources.getPointerBitmap()),
+                      ("Zoom In",  GUIMode.GUIZoomIn(),  Resources.getMagPlusBitmap()),
+                      ("Zoom Out", GUIMode.GUIZoomOut(), Resources.getMagMinusBitmap()),
+                      ("Pan",      GUIMode.GUIMove(),    Resources.getHandBitmap()),
+                      ]
+        
         self.BuildToolbar()
         ## Create the vertical sizer for the toolbar and Panel
         box = wx.BoxSizer(wx.VERTICAL)
@@ -33,47 +38,41 @@ class NavCanvas(wx.Panel):
 
         self.SetSizerAndFit(box)
 
-
-        import GUIMode # here so that it doesn't get imported before wx.App()
-        self.GUIZoomIn  =  GUIMode.GUIZoomIn(self.Canvas)
-        self.GUIZoomOut =  GUIMode.GUIZoomOut(self.Canvas)
-        self.GUIMove    =  GUIMode.GUIMove(self.Canvas)
-        self.GUIMouse   =  GUIMode.GUIMouse(self.Canvas)
-
-        # default to Mouse mode
-        self.ToolBar.ToggleTool(self.PointerTool.GetId(), True)
-        self.Canvas.SetMode(self.GUIMouse)
+        # default to first mode
+        #self.ToolBar.ToggleTool(self.PointerTool.GetId(), True)
+        self.Canvas.SetMode(self.Modes[0][1])
 
         return None
 
     def BuildToolbar(self):
+        """
+        This is here so it can be over-ridden in a ssubclass, to add extra tools, etc
+        """
         tb = wx.ToolBar(self)
         self.ToolBar = tb
         tb.SetToolBitmapSize((24,24))
-
-        self.PointerTool = tb.AddRadioTool(wx.ID_ANY, bitmap=Resources.getPointerBitmap(), shortHelp = "Pointer")
-        self.Bind(wx.EVT_TOOL, lambda evt : self.SetMode(Mode=self.GUIMouse), self.PointerTool)
-
-        self.ZoomInTool = tb.AddRadioTool(wx.ID_ANY, bitmap=Resources.getMagPlusBitmap(), shortHelp = "Zoom In")
-        self.Bind(wx.EVT_TOOL, lambda evt : self.SetMode(Mode=self.GUIZoomIn), self.ZoomInTool)
+        self.AddToolbarModeButtons(tb, self.Modes)
+        self.AddToolbarZoomButton(tb)
+        tb.Realize()
+        ## fixme: remove this when the bug is fixed!
+        #wx.CallAfter(self.HideShowHack) # this required on wxPython 2.8.3 on OS-X
     
-        self.ZoomOutTool = tb.AddRadioTool(wx.ID_ANY, bitmap=Resources.getMagMinusBitmap(), shortHelp = "Zoom Out")
-        self.Bind(wx.EVT_TOOL, lambda evt : self.SetMode(Mode=self.GUIZoomOut), self.ZoomOutTool)
+    def AddToolbarModeButtons(self, tb, Modes):
+        self.ModesDict = {}
+        for Mode in Modes:
+            tool = tb.AddRadioTool(wx.ID_ANY, shortHelp=Mode[0], bitmap=Mode[2])
+            self.Bind(wx.EVT_TOOL, self.SetMode, tool)
+            self.ModesDict[tool.GetId()]=Mode[1]
+        #self.ZoomOutTool = tb.AddRadioTool(wx.ID_ANY, bitmap=Resources.getMagMinusBitmap(), shortHelp = "Zoom Out")
+        #self.Bind(wx.EVT_TOOL, lambda evt : self.SetMode(Mode=self.GUIZoomOut), self.ZoomOutTool)
 
-        self.MoveTool = tb.AddRadioTool(wx.ID_ANY, bitmap=Resources.getHandBitmap(), shortHelp = "Move")
-        self.Bind(wx.EVT_TOOL, lambda evt : self.SetMode(Mode=self.GUIMove), self.MoveTool)
-
+    def AddToolbarZoomButton(self, tb):
         tb.AddSeparator()
 
         self.ZoomButton = wx.Button(tb, label="Zoom To Fit")
         tb.AddControl(self.ZoomButton)
         self.ZoomButton.Bind(wx.EVT_BUTTON, self.ZoomToFit)
 
-        tb.Realize()
-        ## fixme: remove this when the bug is fixed!
-        wx.CallAfter(self.HideShowHack) # this required on wxPython 2.8.3 on OS-X
-
-        return tb
 
     def HideShowHack(self):
         ##fixme: remove this when the bug is fixed!
@@ -84,7 +83,8 @@ class NavCanvas(wx.Panel):
         self.ZoomButton.Hide()
         self.ZoomButton.Show()
 
-    def SetMode(self, Mode):
+    def SetMode(self, event):
+        Mode = self.ModesDict[event.GetId()]
         self.Canvas.SetMode(Mode)
 
     def ZoomToFit(self,Event):

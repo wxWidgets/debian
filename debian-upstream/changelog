@@ -1,3 +1,49 @@
+wxwidgets2.8 (2.8.10.1-0) unstable; urgency=low
+
+  * New upstream stable release. See docs/changes.txt for details.
+
+ -- Robin Dunn <robin@alldunn.com>  Tue, 12 May 2009 12:58:57 -0700
+
+wxwidgets2.8 (2.8.9.2-1) unstable; urgency=low
+
+  * Fixed a Python 2.4 compatibility bug in the FloatCanvas package.
+
+ -- Robin Dunn <robin@alldunn.com>  Thu, 19 Feb 2009 16:46:54 -0800
+
+wxwidgets2.8 (2.8.9.2-0) unstable; urgency=low
+
+  * Many minor bugfixes and enhancements.
+  * removed the wx-addons package
+
+ -- Robin Dunn <robin@alldunn.com>  Thu, 15 Jan 2009 11:18:33 -0800
+
+wxwidgets2.8 (2.8.9.1-0) unstable; urgency=low
+
+  * Fixed Python 2.4 compatibility problem.
+
+ -- Robin Dunn <robin@alldunn.com>  Sat, 28 Sep 2008 16:45:15 -0700
+
+wxwidgets2.8 (2.8.9.0-0) unstable; urgency=low
+
+  * New upstream stable release. See docs/changes.txt for details.
+
+ -- Robin Dunn <robin@alldunn.com>  Sat, 20 Sep 2008 16:56:20 -0700
+
+wxwidgets2.8 (2.8.8.1-0) unstable; urgency=low
+
+  * Fixed bug in wxScrolledWindow when child focus events caused
+    unneccessary or incorrect scrolling.
+  * Fixed a bug in wxGridBagSizer where hidden items were not ignored in
+    part of the layout algorithm.
+
+ -- Robin Dunn <robin@alldunn.com>  Fri, 18 Jul 2008 10:59:05 -0700
+
+wxwidgets2.8 (2.8.8.0-0) unstable; urgency=low
+
+  * New upstream stable release. See docs/changes.txt for details.
+
+ -- Robin Dunn <robin@alldunn.com>  Fri, 20 Jun 2008 12:03:37 -0700
+
 wxwidgets2.8 (2.8.7.1-0) unstable; urgency=low
 
   * wxPython: New version of XRCed from Google SoC project

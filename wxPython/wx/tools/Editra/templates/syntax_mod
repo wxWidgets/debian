@@ -2,21 +2,16 @@
 # Name:                                                                       #
 # Purpose:                                                                    #
 # Author: AUTHOR <email address>                                              #
-# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#-----------------------------------------------------------------------------#
-# FILE:                                                                       #
-# AUTHOR:                                                                     #
-#                                                                             #
-# SUMMARY:                                                                    #
-# Lexer configuration module for                                              #
-#                                                                             #
-# @todo:                                                                      #
-#                                                                             #
-#-----------------------------------------------------------------------------#
+FILE:
+AUTHOR:
+SUMMARY:
+Lexer configuration module for
+
 """
 
 __author__ = ""

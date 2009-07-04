@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     1-Apr-2002
-// RCS-ID:      $Id: _font.i 43425 2006-11-14 22:03:54Z RD $
+// RCS-ID:      $Id: _font.i 55616 2008-09-14 19:32:43Z RD $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -804,6 +804,23 @@ then for a font belonging to the same family.", "");
     virtual void SetNoAntiAliasing( bool no = true );
     virtual bool GetNoAntiAliasing() const;
 
+
+    // Give access to the internal native font handle, ID, pointer, etc.
+#ifdef __WXMSW__
+    void* GetHFONT();
+#endif
+#ifdef __WXMAC__
+    long MacGetATSUFontID();
+#endif
+#ifdef __WXGTK__
+    %extend {
+        void* GetPangoFontDescription() {
+            return self->GetNativeFontInfo()->description;
+        }
+    }
+#endif
+    
+    
     // the default encoding is used for creating all fonts with default
     // encoding parameter
     DocDeclStr(

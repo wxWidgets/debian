@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+WXPYTHONDIR="wx-2.8-gtk2"
+PYVERS="2.4 2.5"
+
+for PY in $PYVERS; do
+    update-alternatives --install /usr/lib/python$PY/site-packages/wx.pth  \
+	wx-python$PY.pth	                                           \
+	/usr/lib/wx/python$PY/wx2.8.pth       28
+done
+
+#DEBHELPER#
+

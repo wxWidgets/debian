@@ -12,6 +12,92 @@ applications can use to alter behaviour at run-time. It can be
 used to optimize behaviour that doesn't deserve a distinct API,
 but is still important to be able to configure.<P>
 These options are currently recognised by wxWidgets.<P>
+<B><FONT COLOR="#FF0000">All platforms</FONT></B><P>
+
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+<B>Option</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+<B>Value</B>
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+filesys.no-mimetypesmanager
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Set to 1 to avoid using the mime types manager in wxFileSystemHandler.
+This can cut down loading time when loading an XRC file at startup, for example.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+msw.window.no-clip-children
+</FONT></TD>
+
+<TD VALIGN=TOP>
+If 1, windows will not automatically get the WS_CLIPCHILDREN
+style. This restores the way windows are refreshed back to the method used in versions of wxWidgets
+earlier than 2.5.4, and for some complex window hierarchies it can reduce apparent refresh delays. You may
+still specify wxCLIP_CHILDREN for individual windows.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+msw.notebook.themed-background
+</FONT></TD>
+
+<TD VALIGN=TOP>
+If set to 0, globally disables themed backgrounds on notebook
+pages. Note that this won't disable the theme on the actual notebook background (noticeable only if there are no
+pages).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+msw.staticbox.optimized-paint
+</FONT></TD>
+
+<TD VALIGN=TOP>
+If set to 0, switches off optimized wxStaticBox painting.
+Setting this to 0 causes more flicker, but allows applications to paint graphics on the parent of a static box
+(the optimized refresh causes any such drawing to disappear).
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+msw.display.directdraw
+</FONT></TD>
+
+<TD VALIGN=TOP>
+If set to 1, use DirectDraw-based implementation of
+<A HREF="wx_wxdisplay.html#wxdisplay">wxDisplay</A>. By default the standard Win32 functions are
+used.
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=277>
+msw.font.no-proof-quality
+</FONT></TD>
+
+<TD VALIGN=TOP>
+If set to 1, use default fonts quality
+instead of proof quality when creating fonts. With proof quality the fonts
+have slightly better appearance but not all fonts are available in this
+quality, e.g. the Terminal font in small sizes is not and this option may be
+used if wider fonts selection is more important than higher quality.
+</FONT></TD></TR>
+
+
+</TABLE>
+<P>
+
 <B><FONT COLOR="#FF0000">Windows</FONT></B><P>
 
 

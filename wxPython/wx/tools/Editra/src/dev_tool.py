@@ -2,93 +2,232 @@
 # Name: dev_tool.py                                                           #
 # Purpose: Provides logging and error tracking utilities                      #
 # Author: Cody Precord <cprecord@editra.org>                                  #
-# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# License: wxWindows License                                                  #
 ###############################################################################
 
-""" Editra Development Tools 
-@author: Cody Precord
+""" Editra Development Tools
+Tools and Utilities for debugging and helping with development of Editra.
 @summary: Utility function for debugging the editor
 
 """
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: dev_tool.py 50253 2007-11-26 12:39:33Z CJP $"
-__revision__ = "$Revision: 50253 $"
+__svnid__ = "$Id: dev_tool.py 60515 2009-05-04 11:58:50Z CJP $"
+__revision__ = "$Revision: 60515 $"
 
+#-----------------------------------------------------------------------------#
+# Imports
 import os
 import sys
+import re
 import platform
 import traceback
-import codecs
 import time
+import urllib2
 import webbrowser
+import codecs
+import locale
+import types
 import wx
-import ed_glob
 
+# Editra Libraries
+import ed_glob
+import ed_msg
+
+#-----------------------------------------------------------------------------#
+# Globals
 _ = wx.GetTranslation
+RE_LOG_LBL = re.compile(r"\[(.+?)\]")
+
+# The default fallback encoding
+DEFAULT_ENCODING = locale.getpreferredencoding()
+try:
+    codecs.lookup(DEFAULT_ENCODING)
+except (LookupError, TypeError):
+    DEFAULT_ENCODING = 'utf-8'
+
+PYTHONW = 'pythonw' in sys.executable.lower()
+
 #-----------------------------------------------------------------------------#
 # General Debuging Helper Functions
 
-def DEBUGP(statement, mode="std"):
-    """Used to print Debug Statements. Statements should be formated as 
-    follows:
-    @note: mode variable and message type information in message string are
-           not currently used but will be in the future for organizing the
-           debug levels.
+def DEBUGP(statement):
+    """Prints debug messages and broadcasts them on the log message channel.
+    Subscribing a listener with any of the EDMSG_LOG_* types will recieve its
+    messages from this method.
 
-        1. Formatting
-            - [object/module name][msg_type] msg
+      1. Formatting
+        - [object/module name][msg_type] message string
 
-        2. Modes of operation:
-            - std = stdout
-            - log = writes to log file
-    
-        3. Message Type:
-            - [err]  : Notes an exception or error condition (high priority)
-            - [warn] : Notes a error that is not severe (medium priority)
-            - [info] : General information message (normal priority)
-            - [evt]  : Some sort of event related message (normal priority)
+      2. Message Type:
+        - [err]  : Notes an exception or error condition (high priority)
+        - [warn] : Notes a error that is not severe (medium priority)
+        - [info] : General information message (normal priority)
+        - [evt]  : Event related message (normal priority)
 
-    @example: [ed_main][err] File failed to open
+    Example:
+      >>> DEBUGP("[ed_main][err] File failed to open")
+
+    @param statement: Should be a formatted string that starts with two
+                      identifier blocks. The first is used to indicate the
+                      source of the message and is used as the primary means
+                      of filtering. The second block is the type of message,
+                      this is used to indicate the priority of the message and
+                      is used as the secondary means of filtering.
 
     """
-    # Turn off normal debugging messages when not in Debug mode
-    if mode == "std" and not ed_glob.DEBUG:
-        return 0
-
-    # Build time string for tstamp
-    now = time.localtime(time.time())
-    now = u"[%s:%s:%s]" % (str(now[3]).zfill(2), str(now[4]).zfill(2), 
-                           str(now[5]).zfill(2))
-
-    # Format Statement
-    statement = unicode(statement)
-    s_lst = [msg for msg in statement.split(u"\n") if len(msg.strip())]
-    
-    if mode == "std":
-        for line in s_lst:
-            out = u"%s %s" % (now, line)
-            print out.encode('utf-8', 'replace')
-    elif mode == "log":
-        logfile = os.environ.get('EDITRA_LOG')
-        if logfile is None or not os.path.exists(logfile):
-            print u"EDITRA_LOG enviroment variable not set!!!"
-            print u"Outputting log information to default log editra_tmp.log"
-            logfile = 'editra_tmp.log'
-        try:
-            file_handle = file(logfile, mode="ab")
-            writer = codecs.lookup('utf-8')[3](file_handle)
-            for line in s_lst:
-                try:
-                    writer.write(u"%s %s\n" % (now, line))
-                except (IOError, OSError):
-                    continue
-            file_handle.close()
-        except (IOError, OSError):
-            pass
+    # Create a LogMsg object from the statement string
+    lbls = [lbl.strip() for lbl in RE_LOG_LBL.findall(statement)]
+    info = RE_LOG_LBL.sub('', statement, 2).rstrip()
+    if len(lbls) > 1:
+        msg = LogMsg(info, lbls[0], lbls[1])
+    elif len(lbls) == 1:
+        msg = LogMsg(info, lbls[0])
     else:
-        print u"Improper DEBUG MODE: Defaulting to stdout"
-        print statement
+        msg = LogMsg(info)
+
+    # Only print to stdout when DEBUG is active
+    # Cant print to stdio if using pythonw
+    if ed_glob.DEBUG and not PYTHONW:
+        mstr = unicode(msg)
+        print mstr.encode('utf-8', 'replace')
+
+        # Check for trapped exceptions to print
+        if ed_glob.VDEBUG and msg.Type in ('err', 'error'):
+            traceback.print_exc()
+
+    # Dispatch message to all interested parties
+    if msg.Type in ('err', 'error'):
+        mtype = ed_msg.EDMSG_LOG_ERROR
+        if ed_glob.VDEBUG:
+            msg = LogMsg(msg.Value + os.linesep + traceback.format_exc(),
+                         msg.Origin, msg.Type)
+    elif msg.Type in ('warn', 'warning'):
+        mtype = ed_msg.EDMSG_LOG_WARN
+    elif msg.Type in ('evt', 'event'):
+        mtype = ed_msg.EDMSG_LOG_EVENT
+    elif msg.Type in ('info', 'information'):
+        mtype = ed_msg.EDMSG_LOG_INFO
+    else:
+        mtype = ed_msg.EDMSG_LOG_ALL
+
+    ed_msg.PostMessage(mtype, msg)
+
+#-----------------------------------------------------------------------------#
+
+class LogMsg(object):
+    """LogMsg is a container class for representing log messages. Converting
+    it to a string will yield a formatted log message with timestamp. Once a
+    message has been displayed once (converted to a string) it is marked as
+    being expired.
+
+    """
+    def __init__(self, msg, msrc='unknown', level="info"):
+        """Create a LogMsg object
+        @param msg: the log message string
+        @keyword msrc: Source of message
+        @keyword level: Priority of the message
+
+        """
+        object.__init__(self)
+
+        # Attributes
+        self._msg = dict(mstr=msg, msrc=msrc, lvl=level, tstamp=time.time())
+        self._ok = True
+
+    def __eq__(self, other):
+        """Define the equal to operation"""
+        return self.TimeStamp == other.TimeStamp
+
+    def __ge__(self, other):
+        """Define the greater than or equal to operation"""
+        return self.TimeStamp >= other.TimeStamp
+
+    def __gt__(self, other):
+        """Define the greater than operation"""
+        return self.TimeStamp > other.TimeStamp
+
+    def __le__(self, other):
+        """Define the less than or equal to operation"""
+        return self.TimeStamp <= other.TimeStamp
+
+    def __lt__(self, other):
+        """Define the less than operation"""
+        return self.TimeStamp < other.TimeStamp
+
+    def __repr__(self):
+        """String representation of the object"""
+        return '<LogMsg %s:%d>' % (self._msg['lvl'], self._msg['tstamp'])
+
+    def __str__(self):
+        """Returns a nice formatted string version of the message"""
+        statement = DecodeString(self._msg['mstr'])
+        s_lst = [u"[%s][%s][%s]%s" % (self.ClockTime, self._msg['msrc'],
+                                      self._msg['lvl'], msg) 
+                 for msg in statement.split(u"\n")
+                 if len(msg.strip())]
+        out = os.linesep.join(s_lst)
+
+        # Mark Message as have being fetched (expired)
+        self._ok = False
+
+        return out
+
+    @property
+    def ClockTime(self):
+        """Formatted timestring of the messages timestamp"""
+        ltime = time.localtime(self._msg['tstamp'])
+        tstamp = u"%s:%s:%s" % (str(ltime[3]).zfill(2),
+                                str(ltime[4]).zfill(2),
+                                str(ltime[5]).zfill(2))
+        return tstamp
+
+    @property
+    def Expired(self):
+        """Has this message already been retrieved"""
+        return not self._ok
+
+    @property
+    def Origin(self):
+        """Where the message came from"""
+        return self._msg['msrc']
+
+    @property
+    def TimeStamp(self):
+        """Property for accessing timestamp"""
+        return self._msg['tstamp']
+
+    @property
+    def Type(self):
+        """The messages level type"""
+        return self._msg['lvl']
+
+    @property
+    def Value(self):
+        """Returns the message part of the log string"""
+        return self._msg['mstr']
+
+#-----------------------------------------------------------------------------#
+
+def DecodeString(string, encoding=None):
+    """Decode the given string to Unicode using the provided
+    encoding or the DEFAULT_ENCODING if None is provided.
+    @param string: string to decode
+    @keyword encoding: encoding to decode string with
+
+    """
+    if encoding is None:
+        encoding = DEFAULT_ENCODING
+
+    if not isinstance(string, types.UnicodeType):
+        try:
+            rtxt = codecs.getdecoder(encoding)(string)[0]
+        except Exception, msg:
+            rtxt = string
+        return rtxt
+    else:
+        # The string is already unicode so just return it
+        return string
 
 #-----------------------------------------------------------------------------#
 
@@ -98,6 +237,9 @@ def EnvironmentInfo():
 
     """
     info = list()
+    info.append("#---- Notes ----#")
+    info.append("Please provide additional information about the crash here")
+    info.extend(["", ""])
     info.append("#---- System Information ----#")
     info.append("%s Version: %s" % (ed_glob.PROG_NAME, ed_glob.VERSION))
     info.append("Operating System: %s" % wx.GetOsDescription())
@@ -105,7 +247,7 @@ def EnvironmentInfo():
         info.append("Mac OSX: %s" % platform.mac_ver()[0])
     info.append("Python Version: %s" % sys.version)
     info.append("wxPython Version: %s" % wx.version())
-    info.append("wxPython Info: %s" % "\n\t\t".join(wx.PlatformInfo))
+    info.append("wxPython Info: (%s)" % ", ".join(wx.PlatformInfo))
     info.append("Python Encoding: Default=%s  File=%s" % \
                 (sys.getdefaultencoding(), sys.getfilesystemencoding()))
     info.append("wxPython Encoding: %s" % wx.GetDefaultPyEncoding())
@@ -114,25 +256,8 @@ def EnvironmentInfo():
     info.append("Byte order: %s" % sys.byteorder)
     info.append("Frozen: %s" % str(getattr(sys, 'frozen', 'False')))
     info.append("#---- End System Information ----#")
-    info.append("#---- Runtime Variables ----#")
-    from profiler import Profile
-    ftypes = list()
-    for key, val in Profile().iteritems():
-        # Exclude "private" information
-        if key.startswith('FILE'):
-            continue
-        elif key == 'LAST_SESSION' or key == 'FHIST':
-            for fname in val:
-                if u'.' in fname:
-                    ext = fname.split('.')[-1]
-                    if ext not in ftypes:
-                        ftypes.append(ext)
-        else:
-            info.append(u"%s=%s" % (key, str(val)))
-    info.append(u"FTYPES=%s" % str(ftypes))
-    info.append("#---- End Runtime Variables ----#")
-
-    return u"\n".join(info)
+    info.append("")
+    return os.linesep.join(info)
 
 def ExceptionHook(exctype, value, trace):
     """Handler for all unhandled exceptions
@@ -142,16 +267,16 @@ def ExceptionHook(exctype, value, trace):
 
     """
     ftrace = FormatTrace(exctype, value, trace)
+
     # Ensure that error gets raised to console as well
     print ftrace
 
     # If abort has been set and we get here again do a more forcefull shutdown
-    global ABORT
-    if ABORT:
+    if ErrorDialog.ABORT:
         os._exit(1)
 
     # Prevent multiple reporter dialogs from opening at once
-    if not REPORTER_ACTIVE and not ABORT:
+    if not ErrorDialog.REPORTER_ACTIVE and not ErrorDialog.ABORT:
         ErrorDialog(ftrace)
 
 def FormatTrace(etype, value, trace):
@@ -160,8 +285,8 @@ def FormatTrace(etype, value, trace):
 
     """
     exc = traceback.format_exception(etype, value, trace)
-    exc.insert(0, "*** %s ***%s" % (TimeStamp(), os.linesep))
-    return "".join(exc)
+    exc.insert(0, u"*** %s ***%s" % (TimeStamp(), os.linesep))
+    return u"".join(exc)
 
 def TimeStamp():
     """Create a formatted time stamp of current time
@@ -177,10 +302,7 @@ def TimeStamp():
 
 class ErrorReporter(object):
     """Crash/Error Reporter Service
-    @summary: Stores all errors caught during the current session and
-              is implemented as a singleton so that all errors pushed
-              onto it are kept in one central location no matter where
-              the object is called from.
+    @summary: Stores all errors caught during the current session.
 
     """
     instance = None
@@ -220,7 +342,7 @@ class ErrorReporter(object):
         @return: formatted log message of errors
 
         """
-        return "\n\n".join(self._sessionerr)
+        return (os.linesep * 2).join(self._sessionerr)
 
     def GetLastError(self):
         """Gets the last error from the current session
@@ -233,32 +355,35 @@ class ErrorReporter(object):
 #-----------------------------------------------------------------------------#
 
 ID_SEND = wx.NewId()
-ABORT = False
-REPORTER_ACTIVE = False
 class ErrorDialog(wx.Dialog):
-    """Dialog for showing and and notifying Editra.org should the
+    """Dialog for showing errors and and notifying Editra.org should the
     user choose so.
 
     """
+    ABORT = False
+    REPORTER_ACTIVE = False
     def __init__(self, message):
         """Initialize the dialog
         @param message: Error message to display
 
         """
-        REPORTER_ACTIVE = True
-        wx.Dialog.__init__(self, None, title="Error/Crash Reporter", 
-                           style=wx.DEFAULT_DIALOG_STYLE)
+        ErrorDialog.REPORTER_ACTIVE = True
+        wx.Dialog.__init__(self, None, title=_("Error/Crash Reporter"), 
+                           style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
         
         # Give message to ErrorReporter
         ErrorReporter().AddMessage(message)
 
         # Attributes
-        self.err_msg = "%s\n\n%s\n%s\n%s" % (EnvironmentInfo(), \
-                                             "#---- Traceback Info ----#", \
-                                             ErrorReporter().GetErrorStack(), \
-                                             "#---- End Traceback Info ----#")
+        self.err_msg = os.linesep.join((EnvironmentInfo(),
+                                        "#---- Traceback Info ----#",
+                                        ErrorReporter().GetErrorStack(),
+                                        "#---- End Traceback Info ----#"))
+
         # Layout
+        self._panel = ErrorPanel(self, self.err_msg)
         self._DoLayout()
+        self.SetMinSize(wx.Size(450, 300))
 
         # Event Handlers
         self.Bind(wx.EVT_BUTTON, self.OnButton)
@@ -273,33 +398,9 @@ class ErrorDialog(wx.Dialog):
         @note: Do not call this method in your code
 
         """
-        # Objects
-        icon = wx.StaticBitmap(self, 
-                               bitmap=wx.ArtProvider.GetBitmap(wx.ART_ERROR))
-        mainmsg = wx.StaticText(self, 
-                                label=_("Error: Oh no something bad happend\n"
-                                        "Help improve Editra by clicking on "
-                                        "Report Error\nto send the Error "
-                                        "Traceback shown below."))
-        t_lbl = wx.StaticText(self, label=_("Error Traceback:"))
-        tctrl = wx.TextCtrl(self, value=self.err_msg, style=wx.TE_MULTILINE | 
-                                                            wx.TE_READONLY)
-        abort_b = wx.Button(self, wx.ID_ABORT, _("Abort"))
-        send_b = wx.Button(self, ID_SEND, _("Report Error"))
-        send_b.SetDefault()
-        close_b = wx.Button(self, wx.ID_CLOSE)
-
-        # Layout
-        sizer = wx.GridBagSizer()
-        sizer.AddMany([(icon, (1, 1)), (mainmsg, (1, 2), (1, 2)), 
-                       ((2, 2), (3, 0)), (t_lbl, (3, 1), (1, 2)),
-                       (tctrl, (4, 1), (8, 5), wx.EXPAND), ((5, 5), (4, 6)),
-                       ((2, 2), (12, 0)),
-                       (abort_b, (13, 1), (1, 1), wx.ALIGN_LEFT),
-                       (send_b, (13, 3), (1, 2), wx.ALIGN_RIGHT),
-                       (close_b, (13, 5), (1, 1), wx.ALIGN_RIGHT),
-                       ((2, 2), (14, 0))])
-        self.SetSizer(sizer)
+        msizer = wx.BoxSizer(wx.VERTICAL)
+        msizer.Add(self._panel, 1, wx.EXPAND)
+        self.SetSizer(msizer)
         self.SetInitialSize()
 
     def OnButton(self, evt):
@@ -313,15 +414,18 @@ class ErrorDialog(wx.Dialog):
         if e_id == wx.ID_CLOSE:
             self.Close()
         elif e_id == ID_SEND:
-            msg = u"mailto:%s?subject=Error Report&body=%s"
-            addr = u"bugs@%s" % (ed_glob.HOME_PAGE.lstrip("http://"))
-            msg = msg % (addr, self.err_msg)
-            msg = msg.replace(u"'", u'')
+            msg = "mailto:%s?subject=Error Report&body=%s"
+            addr = "bugs@%s" % (ed_glob.HOME_PAGE.replace("http://", '', 1))
+            if wx.Platform != '__WXMAC__':
+                body = urllib2.quote(self.err_msg)
+            else:
+                body = self.err_msg
+            msg = msg % (addr, body)
+            msg = msg.replace("'", '')
             webbrowser.open(msg)
             self.Close()
         elif e_id == wx.ID_ABORT:
-            global ABORT
-            ABORT = True
+            ErrorDialog.ABORT = True
             # Try a nice shutdown first time through
             wx.CallLater(500, wx.GetApp().OnExit, 
                          wx.MenuEvent(wx.wxEVT_MENU_OPEN, ed_glob.ID_EXIT),
@@ -335,6 +439,68 @@ class ErrorDialog(wx.Dialog):
         @param evt: Event that called this handler
 
         """
-        REPORTER_ACTIVE = False
+        ErrorDialog.REPORTER_ACTIVE = False
         self.Destroy()
         evt.Skip()
+
+#-----------------------------------------------------------------------------#
+
+class ErrorPanel(wx.Panel):
+    """Error Reporter panel"""
+    def __init__(self, parent, msg):
+        """Create the panel
+        @param parent: wx.Window
+        @param msg: Error message to display
+
+        """
+        wx.Panel.__init__(self, parent)
+
+        self.err_msg = msg
+        
+        self.__DoLayout()
+
+    def __DoLayout(self):
+        """Layout the control"""
+        icon = wx.StaticBitmap(self, 
+                               bitmap=wx.ArtProvider.GetBitmap(wx.ART_ERROR))
+        mainmsg = wx.StaticText(self, 
+                                label=_("Error: Something unexpected happend\n"
+                                        "Help improve Editra by clicking on "
+                                        "Report Error\nto send the Error "
+                                        "Traceback shown below."))
+        t_lbl = wx.StaticText(self, label=_("Error Traceback:"))
+        tctrl = wx.TextCtrl(self, value=self.err_msg, style=wx.TE_MULTILINE | 
+                                                            wx.TE_READONLY)
+
+        abort_b = wx.Button(self, wx.ID_ABORT, _("Abort"))
+        abort_b.SetToolTipString(_("Exit the application"))
+        send_b = wx.Button(self, ID_SEND, _("Report Error"))
+        send_b.SetDefault()
+        close_b = wx.Button(self, wx.ID_CLOSE)
+
+        # Layout
+        vsizer = wx.BoxSizer(wx.VERTICAL)
+
+        hsizer1 = wx.BoxSizer(wx.HORIZONTAL)
+        hsizer1.AddMany([((5, 5), 0), (icon, 0, wx.ALIGN_CENTER_VERTICAL),
+                         ((12, 5), 0), (mainmsg, 0), ((5, 5), 0)])
+
+        hsizer2 = wx.BoxSizer(wx.HORIZONTAL)
+        hsizer2.AddMany([((5, 5), 0), (tctrl, 1, wx.EXPAND), ((5, 5), 0)])
+
+        bsizer = wx.BoxSizer(wx.HORIZONTAL)
+        bsizer.AddMany([((5, 5), 0), (abort_b, 0), ((-1, -1), 1, wx.EXPAND),
+                        (send_b, 0), ((5, 5), 0), (close_b, 0), ((5, 5), 0)])
+
+        vsizer.AddMany([((5, 5), 0),
+                        (hsizer1, 0),
+                        ((10, 10), 0),
+                        (t_lbl, 0, wx.ALIGN_LEFT),
+                        ((3, 3), 0),
+                        (hsizer2, 1, wx.EXPAND),
+                        ((8, 8), 0),
+                        (bsizer, 0, wx.EXPAND),
+                        ((8, 8), 0)])
+
+        self.SetSizer(vsizer)
+        self.SetAutoLayout(True)

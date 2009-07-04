@@ -38,43 +38,45 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-#--------------------------------------------------------------------------#
-# FILE: plugin.py
-# AUTHOR: Cody Precord
-# LANGUAGE: Python
-# @summary:
-#    This module provides the core functionality of the plugin system for
-# Editra. Its design is influenced by the system used in the web based
-# project management software Trac (trac.edgewall.org). To create a plugin
-# plugin class must derive from Plugin and in the class definintion it
-# must state which Interface it Impliments. Interfaces are defined
-# throughout various locations in the core Editra code. The interface
-# defines the contract that the plugin needs to conform to. 
-#
-# Plugins consist of python egg files that can be created with the use of
-# the setuptools package.
-#
-#   There are some issues I dont like with how this is currently working
-# that I hope to find a work around for in later revisions. Namely I
-# dont like the fact that the plugins are loaded and kept in memory
-# even when they are not activated. Although the footprint of the non
-# activated plugin class members being held in memory is not likely to
-# be very large it seems like
-#
-#--------------------------------------------------------------------------#
+This module provides the core functionality of the plugin system for Editra.
+Its design is influenced by the system used in the web based project management
+software Trac (trac.edgewall.org). To create a plugin plugin class must derive
+from Plugin and in the class definintion it must state which Interface it
+Implements. Interfaces are defined throughout various locations in the core
+Editra code. The interface defines the contract that the plugin needs to
+conform to.
+
+Plugins consist of python egg files that can be created with the use of the
+setuptools package.
+
+There are some issues I dont like with how this is currently working that I
+hope to find a work around for in later revisions. Namely I dont like the fact
+that the plugins are loaded and kept in memory even when they are not activated.
+Although the footprint of the non activated plugin class members being held in
+memory is not likely to be very large.
+
+@summary: Plugin interface and mananger implementation
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id: plugin.py 49986 2007-11-15 21:48:46Z CJP $"
-__revision__ = "$Revision: 49986 $"
+__svnid__ = "$Id: plugin.py 59902 2009-03-28 16:21:50Z CJP $"
+__revision__ = "$Revision: 59902 $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
 import os
 import sys
 import wx
+
+# Editra Libraries
 import ed_glob
+from ed_txt import EncodeString
 import util
+from profiler import CalcVersionValue
+
+# Try to use the system version of pkg_resources if available else fall
+# back to the bundled version. Mostly for binary versions of Editra.
 try:
     import pkg_resources
 except ImportError:
@@ -172,11 +174,16 @@ class Plugin(object):
     """Base class for all plugin type objects"""
     __metaclass__ = PluginMeta
 
-    def __new__(cls, *args, **kwargs):
+    @property
+    def __name__(self):
+        return 'EdPlugin'
+
+    def __new__(cls, pluginmgr):
         """Only one instance of each plugin is allowed to exist
         per manager. If an instance of this plugin has already be
         initialized, that instance will be returned. If not this will
         initialize a new instance of the plugin.
+        @keyword mgr: Plugin Manager instance
         @return: a new class object or an existing instance if one
                  exists.
 
@@ -184,15 +191,72 @@ class Plugin(object):
         # Case for a pluginmanager being managed by a plugin manager
         if issubclass(cls, PluginManager):
             self = super(Plugin, cls).__new__(cls)
-            self._pluginmgr = self
+            self.pluginmgr = self
             return self
 
-        pluginmgr = args[0]
         self = pluginmgr.GetPlugins().get(cls)
         if self is None:
             self = super(Plugin, cls).__new__(cls)
             self.pluginmgr = pluginmgr
         return self
+
+    def GetMinVersion(self):
+        """Override in subclasses to return the minimum version of Editra that
+        the plugin is compatible with. By default it will return the current
+        version of Editra.
+        @return: version str
+
+        """
+        return ed_glob.VERSION
+
+    def InstallHook(self):
+        """Override in subclasses to allow the plugin to be loaded
+        dynamically.
+        @return: None
+
+        """
+        pass
+
+    def IsInstalled(self):
+        """Return whether the plugins L{InstallHook} method has been called
+        or not already.
+        @return: bool
+
+        """
+        return False
+
+#-----------------------------------------------------------------------------#
+
+class PluginConfigObject(object):
+    """Plugin configuration object. Plugins that wish to provide a
+    configuration panel should implement a subclass of this object
+    in their __init__ module. The __init__ module must also have a
+    function 'GetConfigObject' that returns an instance of this
+    class.
+
+    """
+    def GetConfigPanel(self, parent):
+        """Get the configuration panel for this plugin
+        @param parent: parent window for the panel
+        @return: wxPanel
+
+        """
+        raise NotImplementedError
+
+    def GetBitmap(self):
+        """Get the 32x32 bitmap to show in the config dialog
+        @return: wx.Bitmap
+        @note: Optional if not implemented default icon will be used
+
+        """
+        return wx.NullBitmap
+
+    def GetLabel(self):
+        """Get the display label for the configuration
+        @return: string
+
+        """
+        raise NotImplementedError
 
 #-----------------------------------------------------------------------------#
 
@@ -310,11 +374,13 @@ class PluginManager(object):
         self.LOG = wx.GetApp().GetLog()
         self._config = self.LoadPluginConfig() # Enabled/Disabled Plugins
         self._pi_path = list(set([ed_glob.CONFIG['PLUGIN_DIR'], 
-                             ed_glob.CONFIG['SYS_PLUGIN_DIR']]))
+                                  ed_glob.CONFIG['SYS_PLUGIN_DIR']]))
         sys.path.extend(self._pi_path)
         self._env = self.CreateEnvironment(self._pi_path)
         self._plugins = dict()      # Set of available plugins
         self._enabled = dict()      # Set of enabled plugins
+        self._loaded = list()       # List of 
+        self._obsolete = dict()     # Obsolete plugins list
         self.InitPlugins(self._env)
         self.RefreshConfig()
 
@@ -389,14 +455,19 @@ class PluginManager(object):
         in path list
         @param path: path(s) to scan for extension points
         @type path: list of path strings
+        @note: pkgutils does not like Unicode! only send encoded strings
 
         """
         if pkg_resources != None:
-            path = [ pname.encode(sys.getfilesystemencoding()) 
+            path = [ EncodeString(pname, sys.getfilesystemencoding())
                      for pname in path ]
-            env = pkg_resources.Environment(path)
+
+            try:
+                env = pkg_resources.Environment(path)
+            except UnicodeDecodeError, msg:
+                self.LOG("[pluginmgr][err] %s" % msg)
         else:
-            self.LOG("[pluginmgr][warn] setup tools is not installed")
+            self.LOG("[pluginmgr][warn] setuptools is not installed")
             env = dict()
         return env
 
@@ -444,6 +515,14 @@ class PluginManager(object):
         """
         return self._env
 
+    def GetIncompatible(self):
+        """Get the list of loaded plugins that are incompatible with the
+        current running version of Editra.
+        return: dict(name=module)
+
+        """
+        return self._obsolete
+
     def GetPlugins(self):
         """Returns a the dictionary of plugins managed by this manager
         @return: all plugins managed by this manger
@@ -465,19 +544,43 @@ class PluginManager(object):
             return
 
         pkg_env = env
+        tmploaded = [ name.lower() for name in self._loaded ]
         for name in pkg_env:
+            self.LOG("[pluginmgr][info] Found plugin: %s" % name)
+            if name.lower() in tmploaded:
+                self.LOG("[pluginmgr][info] %s is already loaded" % name)
+                continue
+
             egg = pkg_env[name][0]  # egg is of type Distrobution
             egg.activate()
             for name in egg.get_entry_map(ENTRYPOINT):
                 try:
-                    entry_point = egg.get_entry_info(ENTRYPOINT, name)
-                    cls = entry_point.load()
+                    # Only load a given entrypoint once
+                    if name not in self._loaded:
+                        entry_point = egg.get_entry_info(ENTRYPOINT, name)
+                        cls = entry_point.load()
+                        self._loaded.append(name)
+                    else:
+                        self.LOG("[pluginmgr][info] Skip reloading: %s" % name)
+                        continue
                 except Exception, msg:
-                    self.LOG("[pluginmgr][err] Couldn't Load %s: %s" % \
-                                                          (str(name), str(msg)))
+                    self.LOG("[pluginmgr][err] Couldn't Load %s: %s" % (name, msg))
                 else:
                     try:
-                        self._plugins[cls] = cls(self)
+                        # Only initialize plugins that haven't already been
+                        # initialized
+                        if cls not in self._plugins:
+                            self.LOG("[pluginmgr][info] Creating Instance of %s" % name)
+                            instance = cls(self)
+                            minv = CalcVersionValue(instance.GetMinVersion())
+                            if minv <= CalcVersionValue(ed_glob.VERSION):
+                                self._plugins[cls] = cls(self)
+                            else:
+                                # Save plugins that are not compatible with
+                                # this version to use for notifications.
+                                self._obsolete[name] = cls.__module__
+                        else:
+                            self.LOG("[pluginmgr][info] Skip re-init of %s" % cls)
                     finally:
                         pass
 
@@ -510,7 +613,7 @@ class PluginManager(object):
         reader = util.GetFileReader(os.path.join(ed_glob.CONFIG['CONFIG_DIR'],
                                                  PLUGIN_CONFIG))
         if reader == -1:
-            self.LOG("[plugin_mgr][err] Failed to read plugin config file")
+            self.LOG("[pluginmgr][err] Failed to read plugin config file")
             return config
 
         reading = True
@@ -595,7 +698,7 @@ class PluginManager(object):
         writer = util.GetFileWriter(os.path.join(ed_glob.CONFIG['CONFIG_DIR'],
                                                  PLUGIN_CONFIG))
         if writer == -1:
-            self.LOG("[plugin_mgr][exception] Failed to write plugin config")
+            self.LOG("[pluginmgr][err] Failed to write plugin config")
             return
 
         writer.write("# Editra %s Plugin Config\n#\n" % ed_glob.VERSION)

@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2002/11/27
-// RCS-ID:      $Id: toplevel.mm 48075 2007-08-14 22:39:46Z DE $
+// RCS-ID:      $Id: toplevel.mm 51585 2008-02-08 00:35:39Z DE $
 // Copyright:   (c) 2002 David Elliott
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,6 +32,7 @@
 
 #include "wx/cocoa/autorelease.h"
 #include "wx/cocoa/string.h"
+#include "wx/cocoa/ObjcRef.h"
 
 #include "wx/cocoa/objc/NSView.h"
 #include "wx/cocoa/objc/NSWindow.h"
@@ -190,8 +191,8 @@ void wxTopLevelWindowCocoa::SetNSWindow(WX_NSWindow cocoaNSWindow)
     bool need_debug = cocoaNSWindow || m_cocoaNSWindow;
     if(need_debug) wxLogTrace(wxTRACE_COCOA_RetainRelease,wxT("wxTopLevelWindowCocoa=%p::SetNSWindow [m_cocoaNSWindow=%p retainCount]=%d"),this,m_cocoaNSWindow,[m_cocoaNSWindow retainCount]);
     DisassociateNSWindow(m_cocoaNSWindow);
-    [cocoaNSWindow retain];
-    [m_cocoaNSWindow release];
+    wxGCSafeRetain(cocoaNSWindow);
+    wxGCSafeRelease(m_cocoaNSWindow);
     m_cocoaNSWindow = cocoaNSWindow;
     // NOTE: We are no longer using posing so we won't get events on the
     // window's view unless it was explicitly created as the wx view class.
@@ -352,20 +353,25 @@ wxString wxTopLevelWindowCocoa::GetTitle() const
 wxWindow* wxTopLevelWindowCocoa::SetDefaultItem(wxWindow *win)
 {
     wxWindow *old = wxTopLevelWindowBase::SetDefaultItem(win);
-    NSView *newView = win->GetNSView();
 
     NSCell *newCell;
-    // newView does not have to be an NSControl, we only cast to NSControl*
-    // to silence the warning about cell not being implemented.
-    if(newView != nil && [newView respondsToSelector:@selector(cell)])
-        newCell = [(NSControl*)newView cell];
+    if(win != NULL)
+    {
+        NSView *newView = win->GetNSView();
+        // newView does not have to be an NSControl, we only cast to NSControl*
+        // to silence the warning about cell not being implemented.
+        if(newView != nil && [newView respondsToSelector:@selector(cell)])
+            newCell = [(NSControl*)newView cell];
+        else
+            newCell = nil;
+    
+        if(newCell != nil && ![newCell isKindOfClass:[NSButtonCell class]])
+        {   // It's not an NSButtonCell, set the default to nil.
+            newCell = nil;
+        }
+    }
     else
         newCell = nil;
-
-    if(newCell != nil && ![newCell isKindOfClass:[NSButtonCell class]])
-    {   // It's not an NSButtonCell, set the default to nil.
-        newCell = nil;
-    }
 
     [GetNSWindow() setDefaultButtonCell:(NSButtonCell*)newCell];
     return old;

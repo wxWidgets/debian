@@ -4,7 +4,7 @@
 // Author:      Jaakko Salli
 // Modified by:
 // Created:     Apr-30-2006
-// RCS-ID:      $Id: combocmn.cpp 45512 2007-04-16 20:51:27Z RD $
+// RCS-ID:      $Id: combocmn.cpp 59691 2009-03-21 10:04:10Z JMS $
 // Copyright:   (c) 2005 Jaakko Salli
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -570,6 +570,8 @@ private:
 
 BEGIN_EVENT_TABLE(wxComboBoxExtraInputHandler, wxEvtHandler)
     EVT_KEY_DOWN(wxComboBoxExtraInputHandler::OnKey)
+    EVT_KEY_UP(wxComboBoxExtraInputHandler::OnKey)
+    EVT_CHAR(wxComboBoxExtraInputHandler::OnKey)
     EVT_SET_FOCUS(wxComboBoxExtraInputHandler::OnFocus)
 END_EVENT_TABLE()
 
@@ -578,14 +580,17 @@ void wxComboBoxExtraInputHandler::OnKey(wxKeyEvent& event)
 {
     // Let the wxComboCtrl event handler have a go first.
     wxComboCtrlBase* combo = m_combo;
-    wxObject* prevObj = event.GetEventObject();
 
-    event.SetId(combo->GetId());
-    event.SetEventObject(combo);
-    combo->GetEventHandler()->ProcessEvent(event);
+    wxKeyEvent redirectedEvent(event);
+    redirectedEvent.SetId(combo->GetId());
+    redirectedEvent.SetEventObject(combo);
 
-    event.SetId(((wxWindow*)prevObj)->GetId());
-    event.SetEventObject(prevObj);
+    if ( !combo->GetEventHandler()->ProcessEvent(redirectedEvent) )
+    {
+        // Don't let TAB through to the text ctrl - looks ugly
+        if ( event.GetKeyCode() != WXK_TAB )
+            event.Skip();
+    }
 }
 
 void wxComboBoxExtraInputHandler::OnFocus(wxFocusEvent& event)
@@ -1138,6 +1143,8 @@ bool wxComboCtrlBase::Enable(bool enable)
         m_btn->Enable(enable);
     if ( m_text )
         m_text->Enable(enable);
+        
+    Refresh();
 
     return true;
 }
@@ -1194,16 +1201,15 @@ void wxComboCtrlBase::SetValidator(const wxValidator& validator)
 
     if ( textCtrl )
         textCtrl->SetValidator( validator );
+    else
+        wxControl::SetValidator( validator );
 }
 
 wxValidator* wxComboCtrlBase::GetValidator()
 {
     wxTextCtrl* textCtrl = GetTextCtrl();
 
-    if ( textCtrl )
-        return textCtrl->GetValidator();
-
-    return wxControl::GetValidator();
+    return textCtrl ? textCtrl->GetValidator() : wxControl::GetValidator();
 }
 #endif // wxUSE_VALIDATORS
 
@@ -1599,7 +1605,8 @@ void wxComboCtrlBase::OnKeyEvent(wxKeyEvent& event)
     {
         int keycode = event.GetKeyCode();
 
-        if ( keycode == WXK_TAB )
+        if ( GetParent()->HasFlag(wxTAB_TRAVERSAL) &&
+             keycode == WXK_TAB )
         {
             wxNavigationKeyEvent evt;
 
@@ -1788,7 +1795,10 @@ void wxComboCtrlBase::OnButtonClick()
 {
     // Derived classes can override this method for totally custom
     // popup action
-    ShowPopup();
+    if ( !IsPopupWindowState(Visible) )
+        ShowPopup();
+    else
+        HidePopup();
 }
 
 void wxComboCtrlBase::ShowPopup()

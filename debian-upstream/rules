@@ -36,7 +36,12 @@ ifeq ($(strip $(PYVERS)),)
     PY_BUILD_DEPS = python$(PYVERS), python$(PYVERS)-dbg, python$(PYVERS)-dev
 else
     DEB_PYTHON_SYSTEM=pycentral
-    PY_BUILD_DEPS = python-all, python-all-dev, python-dbg, python-central
+    PY_BUILD_DEPS = python-all, python-all-dev, python-central
+
+    # Etch doesn't have python-all-dbg, so check if it should be added to the dependencies
+    ifeq (True, $(shell if dpkg-query -s python-all-dbg > /dev/null 2>&1; then echo True; fi))
+        PY_BUILD_DEPS := $(PY_BUILD_DEPS), python-all-dbg
+    endif
 endif
 
 
@@ -196,13 +201,12 @@ package_common           = wx-common
 package_gtk_py_lib      := python-wxgtk$(release)$(unicode_suffix)
 package_gtk_py_ver       = python-wxversion
 package_gtk_py_tools     = python-wxtools
-package_gtk_py_addons    = python-wxaddons
 package_gtk_dbg_py      := python-wxgtk$(release)$(unicode_suffix)-dbg
 
 
 # The packages listed here are common to all wx versions, and may be provided
 # by another source package if more than one is in the release simultaneously.
-common_packages	:= $(package_common) $(package_gtk_py_ver) $(package_gtk_py_tools) $(package_gtk_py_addons)
+common_packages	:= $(package_common) $(package_gtk_py_ver) $(package_gtk_py_tools)
 
 
 package_msw_dev         := libwxmsw$(release)$(unicode_suffix)-dev
@@ -795,9 +799,11 @@ install-headers: install-gtk-shared-stamp
 
 	# TODO:  Should probably use setup.py's install of the wxPython headers...
 	mkdir -p debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython
+	mkdir -p debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython/i_files
 	cp -p wxPython/include/wx/wxPython/*.h \
 	    debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython/
-
+	cp -p wxPython/src/*.i wxPython/src/_*.py wxPython/src/*.swg \
+	    debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython/i_files
 
 install-i18n: DH_OPTIONS=-p$(package_i18n)
 install-i18n: build-i18n-stamp install-gtk-shared-stamp
@@ -867,21 +873,6 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
 endif
 	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/wxversion.py
 	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/wxPython_common*.egg-info
-
-ifndef DEBIAN_WX_DEFAULT_VERSION
-	@# Move files out for the wxaddons package
-	DH_OPTIONS=-p$(package_gtk_py_addons) 					\
-		dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) 		\
-			usr/lib/python$*/site-packages/wxaddons
-
-	if [ -e debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/wxaddons-$(full_version).egg-info ]; then \
-		DH_OPTIONS=-p$(package_gtk_py_addons) 				\
-			dh_movefiles --sourcedir=debian/$(package_gtk_py_lib)	\
-			usr/lib/python$*/site-packages/wxaddons-$(full_version).egg-info; \
-	fi
-endif
-	rm -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/wxaddons*
-
 
 
 install-gtk-py-tools: DH_OPTIONS=-p$(package_gtk_py_tools)

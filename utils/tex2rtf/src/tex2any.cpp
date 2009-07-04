@@ -5,7 +5,7 @@
 // Modified by: Wlodzimierz ABX Skiba 2003/2004 Unicode support
 //              Ron Lee
 // Created:     01/01/99
-// RCS-ID:      $Id: tex2any.cpp 39975 2006-07-04 16:08:16Z AVV $
+// RCS-ID:      $Id: tex2any.cpp 58387 2009-01-25 12:48:40Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -938,18 +938,23 @@ bool ParseNewCommand(wxChar *buffer, int *pos)
 void MacroError(wxChar *buffer)
 {
   wxString errBuf;
-  wxChar macroBuf[200];
-  macroBuf[0] = '\\';
+  wxChar macroBuf[30];
+  macroBuf[0] = wxT('\\');
   int i = 1;
   wxChar ch;
-  while (((ch = buffer[i-1]) != '\n') && (ch != 0))
+  while (((i < 30) && (ch = buffer[i-1]) != wxT('\n')) && (ch != 0))
   {
     macroBuf[i] = ch;
     i ++;
   }
   macroBuf[i] = 0;
   if (i > 20)
-    macroBuf[20] = 0;
+  {
+    macroBuf[20] = wxT('.');
+    macroBuf[21] = wxT('.');
+    macroBuf[22] = wxT('.');
+    macroBuf[23] = 0;
+  }
 
   errBuf.Printf(_T("Could not find macro: %s at line %d, file %s"),
              macroBuf, (int)(LineNumbers[CurrentInputIndex]-1), FileNames[CurrentInputIndex]);

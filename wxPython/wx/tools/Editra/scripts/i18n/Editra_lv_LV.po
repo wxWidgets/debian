@@ -1,0 +1,2747 @@
+# Latvian translation for editra
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-24 20:58-0500\n"
+"PO-Revision-Date: 2009-03-25 20:28+0000\n"
+"Last-Translator: janis.sl <Unknown>\n"
+"Language-Team: Latvian <lv@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-03-28 19:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../../src/ed_search.py:357
+#, python-format
+msgid "\"%s\" was not found"
+msgstr "\"%s\" nav atrasts"
+
+#: ../../src/ed_search.py:521
+#, python-format
+msgid "%d matches were replaced."
+msgstr "Tika aizstātas %d atbilstības."
+
+#: ../../src/util.py:326
+#, python-format
+msgid "%s Source File"
+msgstr "%s avota fails"
+
+#: ../../src/ed_main.py:565
+#, fuzzy, python-format
+msgid ""
+"%s could not be found.\n"
+"Perhaps it's been moved or deleted."
+msgstr ""
+"Nevar atrast %s\n"
+"Tas, iespējams, ir pārvietots vai izdzēsts"
+
+#: ../../src/ed_stc.py:1643
+#, python-format
+msgid "%s does not exist"
+msgstr "%s nepastāv"
+
+#: ../../src/ed_editv.py:243
+#, python-format
+msgid ""
+"%s has been deleted since its last save point.\n"
+"\n"
+"Would you like to save it again?"
+msgstr ""
+"%s ir izdzēsts kopš tā pēdējās saglabāšanas reizes.\n"
+"\n"
+"Vai vēlaties to saglabāt vēlreiz?"
+
+#: ../../src/ed_editv.py:262
+#, fuzzy, python-format
+msgid ""
+"%s has been modified by another application.\n"
+"\n"
+"Would you like to reload it?"
+msgstr ""
+"%s ir modificēts, izmantojot citu lietojumprogrammu.\n"
+"\n"
+"Vai vēlaties to ielādēt atkārtoti?"
+
+#: ../../src/ed_menu.py:882
+msgid "&About"
+msgstr "&Par programmu"
+
+#: ../../src/ed_menu.py:487
+msgid "&Close Tab"
+msgstr "&Aizvērt cilni"
+
+#: ../../src/ed_menu.py:573
+msgid "&Copy"
+msgstr "&Kopēt"
+
+#: ../../src/ed_menu.py:661
+msgid "&Edit"
+msgstr "&Rediģēt"
+
+#: ../../src/ed_menu.py:554
+msgid "&File"
+msgstr "&Fails"
+
+#: ../../src/ed_menu.py:638
+msgid "&Find"
+msgstr "&Atrast"
+
+#: ../../src/ed_menu.py:753
+msgid "&Font"
+msgstr "&Fonts"
+
+#: ../../src/ed_menu.py:722
+msgid "&Goto Line"
+msgstr "&Pāriet uz rindu"
+
+#: ../../src/ed_main.py:147 ../../src/ed_menu.py:900
+msgid "&Help"
+msgstr "&Palīdzība"
+
+#: ../../src/ed_menu.py:473
+msgid "&New Tab"
+msgstr "&Jauna cilne"
+
+#: ../../src/ed_menu.py:480
+msgid "&Open"
+msgstr "&Atvērt"
+
+#: ../../src/ed_menu.py:576
+msgid "&Paste"
+msgstr "&Ielīmēt"
+
+#: ../../src/ed_menu.py:545
+msgid "&Print"
+msgstr "&Drukāt"
+
+#: ../../src/ed_menu.py:644
+msgid "&Quick Find"
+msgstr "Ā&trās atrašanas josla"
+
+#: ../../src/ed_menu.py:498
+msgid "&Save"
+msgstr "&Saglabāt"
+
+#: ../../src/ed_menu.py:845
+msgid "&Settings"
+msgstr "&Iestatījumi"
+
+#: ../../src/ed_menu.py:739
+msgid "&Toolbar"
+msgstr "&Rīkjosla"
+
+#: ../../src/ed_menu.py:873
+msgid "&Tools"
+msgstr "&Rīki"
+
+#: ../../src/ed_menu.py:563
+msgid "&Undo"
+msgstr "&Atsaukt"
+
+#: ../../src/ed_menu.py:744
+msgid "&View"
+msgstr "&Skats"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:302
+msgid "**Alias**"
+msgstr "**Aizstājvārds**"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:302
+msgid "**New Value**"
+msgstr "**Jaunā vērtība**"
+
+#: ../../src/dev_tool.py:470 ../../plugins/Launch/launch/launch.py:526
+msgid "Abort"
+msgstr "Pārtraukt"
+
+#: ../../src/ed_menu.py:884
+msgid "About"
+msgstr "Par programmu"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:238
+msgid "Add a new executable"
+msgstr "Pievienot jaunu izpildāmo failu"
+
+#: ../../src/ed_menu.py:593
+msgid "Add a new line after the current line"
+msgstr "Pievienot jaunu rindu pēc pašreizējās rindas"
+
+#: ../../src/ed_menu.py:597
+msgid "Add a new line before the current line"
+msgstr "Pievienot jaunu rindu pirms pašreizējās rindas"
+
+#: ../../src/ed_menu.py:636
+msgid "Add and remove bookmarks"
+msgstr "Pievienot un noņemt grāmatzīmes"
+
+#: ../../src/prefdlg.py:195
+msgid "Advanced"
+msgstr "Papildu"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:511
+msgid "Alias"
+msgstr "Aizstājvārds"
+
+#: ../../src/ed_log.py:170 ../../src/ed_log.py:247
+msgid "All"
+msgstr "Viss"
+
+#: ../../src/Editra.py:557
+#, python-format
+msgid ""
+"An updated version of Editra is available\n"
+"Would you like to download Editra %s now?"
+msgstr ""
+"Ir pieejama atjaunināta Editra versija\n"
+"Vai vēlaties lejupielādēt Editra %s tūlīt?"
+
+#: ../../src/prefdlg.py:550
+msgid "AntiAliasing"
+msgstr "Kropļojumnovērse"
+
+#: ../../src/prefdlg.py:189
+msgid "Appearance"
+msgstr "Attēlojums"
+
+#: ../../src/prefdlg.py:1535
+msgid "Apply"
+msgstr "Lietot"
+
+#: ../../src/style_editor.py:662
+msgid "Attributes"
+msgstr "Atribūti"
+
+#: ../../src/ed_main.py:1163
+msgid "Aui Pane Navigator"
+msgstr "Rūšu navigators"
+
+#: ../../src/plugdlg.py:900 ../../src/plugdlg.py:1036
+#, python-format
+msgid "Author: %s"
+msgstr "Autors: %s"
+
+#: ../../src/ed_menu.py:827 ../../src/prefdlg.py:725
+msgid "Auto-Completion"
+msgstr "Automātiska pabeigšana"
+
+#: ../../src/ed_menu.py:830 ../../src/prefdlg.py:727
+msgid "Auto-Indent"
+msgstr "Automātiska atkāpe"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:409
+msgid "Automatically clear buffer between runs"
+msgstr "Automātiski iztīrīt buferi starp izpildes reizēm"
+
+#: ../../src/prefdlg.py:344
+msgid "Automatically reload files when changes are detected on disk"
+msgstr "Automātiski vēlreiz ielādēt failus, ja diskā tiek konstatētas izmaiņas"
+
+#: ../../src/perspective.py:74
+msgid "Automatically save/use window state from last session"
+msgstr "Automātiski saglabāt/lietot iepriekšējās sesijas loga stāvokli"
+
+#: ../../src/prefdlg.py:527
+msgid "Automatically trim whitespace on save"
+msgstr "Saglabājot, automātiski nogriezt lieko tukšumzīmi"
+
+#: ../../src/style_editor.py:651 ../../plugins/Launch/launch/cfgdlg.py:426
+msgid "Background"
+msgstr "Fons"
+
+#: ../../src/prefdlg.py:533
+msgid "Backspace Unindents"
+msgstr "Ar atsoļa taustiņu dzēst nepilnās atkāpes"
+
+#: ../../src/style_editor.py:196
+msgid "Base new theme on existing one"
+msgstr "Jaunās tēmas pamatā izmantot esošu tēmu"
+
+#: ../../src/prefdlg.py:1509
+msgid "Binding"
+msgstr "Kombinācija"
+
+#: ../../src/prefdlg.py:1923
+msgid "Black/White"
+msgstr "Melnbaltais"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:415
+msgid "Bookmark Selected Path(s)"
+msgstr "Atzīmēt atlasīto(s) ceļu(s)"
+
+#: ../../src/ed_menu.py:635
+msgid "Bookmarks"
+msgstr "Grāmatzīmes"
+
+#: ../../src/ed_menu.py:834 ../../src/prefdlg.py:705
+msgid "Bracket Highlighting"
+msgstr "Iekavu iezīmēšana"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:530
+msgid "Browse"
+msgstr "Pārlūkot"
+
+#: ../../src/ed_search.py:1120 ../../src/style_editor.py:139
+#: ../../src/updater.py:567
+msgid "Cancel"
+msgstr "Atcelt"
+
+#: ../../src/updater.py:644
+msgid "Canceled"
+msgstr "Atcelts"
+
+#: ../../src/ed_menu.py:755
+msgid "Change Font Settings"
+msgstr "Mainīt fontu iestatījumus"
+
+#: ../../src/perspective.py:129
+#, python-format
+msgid "Change view to \"%s\""
+msgstr "Mainīt skatu uz \"%s\""
+
+#: ../../src/style_editor.py:746
+#, python-format
+msgid "Changed color scheme to %s"
+msgstr "Krāsu struktūra ir mainīta uz %s"
+
+#: ../../src/prefdlg.py:251
+msgid "Changes made in this dialog are saved in your current profile. Some Items such as Language require the program to be restarted before taking effect."
+msgstr "Šajā dialogā veiktās izmaiņas tiek saglabātas pašreizējā profilā. Lai daži iestatījumi, piemēram, valoda, varētu stāties spēkā, programma ir jārestartē."
+
+#: ../../src/plugdlg.py:206
+msgid "Changes will take affect once the program has been restarted"
+msgstr "Izmaiņas stāsies spēkā pēc programmas restartēšanas"
+
+#: ../../src/prefdlg.py:1294
+msgid "Check"
+msgstr "Pārbaudīt"
+
+#: ../../src/prefdlg.py:301
+msgid "Check for updates on startup"
+msgstr "Startējot programmu, pārbaudīt, vai nav atjauninājumu"
+
+#: ../../src/prefdlg.py:339
+msgid "Check if on disk file has been modified by others"
+msgstr "Pārbaudīt, vai diskā esošo failu nav modificējis cits lietotājs"
+
+#: ../../src/eclib/finddlg.py:773
+#, fuzzy
+msgid "Choose Folder"
+msgstr "Izvēlieties pārmeklējamo mapi"
+
+#: ../../src/eclib/finddlg.py:1074
+msgid "Choose Search Folder"
+msgstr "Izvēlieties pārmeklējamo mapi"
+
+#: ../../src/ed_main.py:434
+msgid "Choose a File"
+msgstr "Faila izvēle"
+
+#: ../../src/ed_main.py:655
+msgid "Choose a Save Location"
+msgstr "Saglabāšanas vietas izvēle"
+
+#: ../../src/ed_pages.py:152
+msgid "Choose an Encoding"
+msgstr "Kodējuma izvēle"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:539
+msgid "Choose and executable"
+msgstr "Izvēlēties izpildāmo failu"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:49
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:179
+msgid "Class Definitions"
+msgstr "Klašu definīcijas"
+
+#: ../../src/ed_log.py:140 ../../src/ed_search.py:1129
+#: ../../plugins/Launch/launch/launch.py:183
+#: ../../plugins/PyShell/PyShell/__init__.py:114
+msgid "Clear"
+msgstr "Notīrīt"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:508
+msgid "Click on an item to edit"
+msgstr "Noklikšķiniet uz objekta, lai to rediģētu"
+
+#: ../../src/ed_editv.py:166
+#, python-format
+msgid "Close \"%s\""
+msgstr "Aizvērt \"%s\""
+
+#: ../../src/ed_editv.py:167
+msgid "Close All"
+msgstr "Aizvērt visu"
+
+#: ../../src/ed_menu.py:494
+msgid "Close All Tabs"
+msgstr "Aizvērt visas cilnes"
+
+#: ../../src/ed_menu.py:489
+msgid "Close Current Tab"
+msgstr "Aizvērt pašreizējo cilni"
+
+#: ../../src/ed_menu.py:491
+msgid "Close Window"
+msgstr "Aizvērt logu"
+
+#: ../../src/ed_menu.py:496
+msgid "Close all open tabs"
+msgstr "Aizvērt visas atvērtās cilnes"
+
+#: ../../src/ed_menu.py:493
+msgid "Close the current window"
+msgstr "Aizvērt pašreizējo logu"
+
+#: ../../src/prefdlg.py:463
+msgid "Code"
+msgstr "Kods"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:84
+msgid "Code Browser"
+msgstr "Koda pārlūks"
+
+#: ../../src/ed_menu.py:711 ../../src/ed_menu.py:837 ../../src/prefdlg.py:707
+msgid "Code Folding"
+msgstr "Koda sakļaušanas/izvēršanas josla"
+
+#: ../../src/ed_menu.py:712
+msgid "Code folding toggle actions"
+msgstr "Koda izvēršanas/sakļaušanas darbības"
+
+#: ../../plugins/codebrowser/codebrowser/__init__.py:49
+msgid "CodeBrowser"
+msgstr "Koda pārlūks"
+
+#: ../../src/style_editor.py:635
+msgid "Color"
+msgstr "Krāsa"
+
+#: ../../src/ed_menu.py:842
+msgid "Color Highlight Code Syntax"
+msgstr "Sintakse ar koda iezīmēšanu, izmantojot krāsas"
+
+#: ../../src/prefdlg.py:849 ../../plugins/PyShell/PyShell/__init__.py:109
+msgid "Color Scheme"
+msgstr "Krāsu shēma"
+
+#: ../../src/prefdlg.py:1925
+msgid "Colour/Default"
+msgstr "Krāsu/noklusējuma"
+
+#: ../../src/prefdlg.py:1924
+msgid "Colour/White"
+msgstr "Krāsu/baltais"
+
+#: ../../src/ed_menu.py:586
+msgid "Column Mode"
+msgstr "Slejas režīms"
+
+#: ../../src/ed_cmdbar.py:252
+msgid "Command"
+msgstr "Komanda"
+
+#: ../../src/ed_menu.py:627
+msgid "Commands that affect an entire line"
+msgstr "Komandas, kuras attiecas uz visu rindu"
+
+#: ../../src/prefdlg.py:1104
+msgid "Configuration"
+msgstr "Konfigurācija"
+
+#: ../../src/plugdlg.py:170
+#, fuzzy
+msgid "Configuration Changes Made"
+msgstr "Konfigurācija"
+
+#: ../../src/plugdlg.py:125 ../../src/plugdlg.py:905
+msgid "Configure"
+msgstr "Konfigurēt"
+
+#: ../../src/ed_menu.py:541
+msgid "Configure Printer"
+msgstr "Konfigurēt printeri"
+
+#: ../../src/ed_menu.py:774
+msgid "Convert selected text to all lowercase letters"
+msgstr "Pārveidot atlasīto tekstu par mazajiem burtiem rakstītu tekstu"
+
+#: ../../src/ed_menu.py:771
+msgid "Convert selected text to all uppercase letters"
+msgstr "Pārveidot atlasīto tekstu par lielajiem burtiem rakstītu tekstu"
+
+#: ../../src/ed_menu.py:790
+msgid "Convert spaces to tabs in selected/all text"
+msgstr "Atlasītajā/visā tekstā atstarpes rakstzīmes pārveidot par tabulēšanas rakstzīmēm"
+
+#: ../../src/ed_menu.py:793
+msgid "Convert tabs to spaces in selected/all text"
+msgstr "Atlasītajā/visā tekstā tabulēšanas rakstzīmes pārveidot par atstarpes rakstzīmēm"
+
+#: ../../src/ed_editv.py:284 ../../src/ed_toolbar.py:82
+msgid "Copy"
+msgstr "Kopēt"
+
+#: ../../src/ed_menu.py:607
+msgid "Copy Current Line"
+msgstr "Kopēt pašreizējo rindu"
+
+#: ../../src/ed_editv.py:169
+msgid "Copy Full Path"
+msgstr "Kopēt pilnu ceļu"
+
+#: ../../src/ed_menu.py:605
+msgid "Copy Line"
+msgstr "Kopēt rindu"
+
+#: ../../src/ed_menu.py:575 ../../src/ed_toolbar.py:83
+msgid "Copy Selected Text to Clipboard"
+msgstr "Kopēt atlasīto tekstu uz starpliktuvi"
+
+#: ../../src/ed_main.py:1445
+msgid "Copyright"
+msgstr "Autortiesības"
+
+#: ../../src/eclib/finddlg.py:828
+#, fuzzy
+msgid "Count"
+msgstr "Izgriezt"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:427
+#: ../../plugins/filebrowser/filebrowser/browser.py:542
+#, python-format
+msgid "Create Archive of \"%s\""
+msgstr "Izveidot \"%s\" arhīvu"
+
+#: ../../src/eclib/infodlg.py:187
+msgid "Created"
+msgstr "Izveidots"
+
+#: ../../src/ed_menu.py:570
+msgid "Cu&t"
+msgstr "Izgriez&t"
+
+#: ../../src/eclib/finddlg.py:696
+msgid "Current Document"
+msgstr "Pašreizējais dokuments"
+
+#: ../../src/ed_editv.py:283 ../../src/ed_toolbar.py:80
+msgid "Cut"
+msgstr "Izgriezt"
+
+#: ../../src/ed_menu.py:601
+msgid "Cut Current Line"
+msgstr "Izgriezt pašreizējo rindu"
+
+#: ../../src/ed_menu.py:599
+msgid "Cut Line"
+msgstr "Izgriezt rindu"
+
+#: ../../src/ed_menu.py:572 ../../src/ed_toolbar.py:81
+msgid "Cut Selected Text from File"
+msgstr "Izgriezt atlasīto tekstu no faila"
+
+#: ../../src/ed_search.py:638 ../../src/ed_search.py:642
+msgid "DECODING ERROR"
+msgstr "DEKODĒŠANAS KĻŪDA"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:224
+msgid "Default"
+msgstr "Noklusējums"
+
+#: ../../src/prefdlg.py:545
+msgid "Default EOL Mode"
+msgstr "Rindas beigu marķieru noklusējuma režīms"
+
+#: ../../src/prefdlg.py:698
+msgid "Default Lexer"
+msgstr "Noklusējuma leksikas analizētājs"
+
+#: ../../src/prefdlg.py:962
+msgid "Default Perspective"
+msgstr "Noklusējuma perspektīva"
+
+#: ../../src/prefdlg.py:696
+msgid "Default highlighing for new documents"
+msgstr "Jaunu dokumentu noklusējuma iezīmēšana"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:49
+msgid "Defines"
+msgstr "Definē"
+
+#: ../../src/prefdlg.py:1478
+msgid "Delete"
+msgstr "Dzēst"
+
+#: ../../src/ed_menu.py:602
+msgid "Delete Line"
+msgstr "Dzēst rindu"
+
+#: ../../src/perspective.py:237
+msgid "Delete Perspective"
+msgstr "Dzēst perspektīvu"
+
+#: ../../src/perspective.py:71
+msgid "Delete Saved View"
+msgstr "Dzēst saglabāto skatu"
+
+#: ../../src/ed_menu.py:604
+msgid "Delete the selected line(s)"
+msgstr "Dzēst atlasīto(ās) rindu(as)"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:486
+#: ../../plugins/filebrowser/filebrowser/browser.py:647
+msgid "Desktop"
+msgstr "Darbvirsma"
+
+#: ../../src/eclib/finddlg.py:785
+msgid "Direction"
+msgstr "Virziens"
+
+#: ../../src/prefdlg.py:288
+msgid "Disable Error Reporter"
+msgstr "Deaktivizēt kļūdu ziņotāju"
+
+#: ../../src/prefdlg.py:1004
+msgid "Display Font"
+msgstr "Ekrāna fonts"
+
+#: ../../src/plugdlg.py:157
+msgid "Do you wish to exit?"
+msgstr "Vai vēlaties iziet no programmas?"
+
+#: ../../src/ed_pages.py:823
+#, fuzzy, python-format
+msgid ""
+"Do you wish to open all %d files in this directory?\n"
+"\n"
+"Warning: opening many files at once may cause the editor to temporarily  freeze."
+msgstr ""
+"Vai vēlaties atvērt visus %d šī direktorija failus?\n"
+"\n"
+"Pārāk liela failu skaita atvēršana vienlaikus var izraisīt īslaicīgu redaktora \"uzkāršanos\"."
+
+#: ../../src/prefdlg.py:191
+msgid "Document"
+msgstr "Dokuments"
+
+#: ../../src/eclib/finddlg.py:789
+msgid "Down"
+msgstr "Uz leju"
+
+#: ../../src/plugdlg.py:126 ../../src/plugdlg.py:410 ../../src/plugdlg.py:1015
+#: ../../src/prefdlg.py:1289
+msgid "Download"
+msgstr "Lejupielādēt"
+
+#: ../../src/plugdlg.py:433
+msgid "Downloaded"
+msgstr "Lejupielādēts"
+
+#: ../../src/plugdlg.py:544 ../../src/updater.py:603
+msgid "Downloading"
+msgstr "Lejupielāde"
+
+#: ../../src/updater.py:566
+#, python-format
+msgid "Downloading To: %s"
+msgstr "Lejupielādes vieta: %s"
+
+#: ../../src/Editra.py:563 ../../src/prefdlg.py:1330
+msgid "Downloading Update"
+msgstr "Atjauninājuma lejupielāde"
+
+#: ../../src/updater.py:564
+#, python-format
+msgid "Downloading: %s"
+msgstr "Lejupielādes fails: %s"
+
+#: ../../src/plugdlg.py:156
+msgid "Downloads are incomplete"
+msgstr "Lejupielāde ir nepilnīga"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:426
+msgid "Duplicate"
+msgstr "Dublicēt"
+
+#: ../../src/ed_menu.py:609
+msgid "Duplicate Line"
+msgstr "Dublicēt rindu"
+
+#: ../../src/ed_menu.py:611
+msgid "Duplicate the current line"
+msgstr "Dublicēt pašreizējo rindu"
+
+#: ../../src/ed_menu.py:549
+msgid "E&xit"
+msgstr "I&ziet"
+
+#: ../../src/ed_menu.py:814
+msgid "EOL Mode"
+msgstr "Rindas beigu marķieru režīms"
+
+#: ../../src/ed_main.py:628
+#, python-format
+msgid "ERROR: %s"
+msgstr "KĻŪDA: %s"
+
+#: ../../src/ed_main.py:671
+#, python-format
+msgid "ERROR: Failed to save %s"
+msgstr "KĻŪDA: neizdevās saglabāt %s"
+
+#: ../../src/prefdlg.py:709
+msgid "Edge Guide"
+msgstr "Malas palīglīnija"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:411
+msgid "Edit"
+msgstr "Rediģēt"
+
+#: ../../src/ed_menu.py:658
+msgid "Edit Preferences / Settings"
+msgstr "Rediģēt izvēles iestatījumus/iestatījumus"
+
+#: ../../src/ed_menu.py:862
+msgid "Edit the way syntax is highlighted"
+msgstr "Rediģēt sintakses iezīmēšanas veidu"
+
+#: ../../src/ed_menu.py:702
+msgid "Editor"
+msgstr "Redaktors"
+
+#: ../../src/ed_menu.py:854
+msgid "Editor Command"
+msgstr "Redaktora komanda"
+
+#: ../../src/prefdlg.py:272
+msgid "Editor Mode"
+msgstr "Redaktora režīms"
+
+#: ../../src/ed_log.py:79
+msgid "Editra Log"
+msgstr "Editra žurnāls"
+
+#: ../../src/ed_mdlg.py:85
+#, python-format
+msgid ""
+"Editra could not open %(filename)s\n"
+"\n"
+"Error:\n"
+"%(errormsg)s"
+msgstr ""
+"Editra nevarēja atvērt %(filename)s\n"
+"\n"
+"Kļūda:\n"
+"%(errormsg)s"
+
+#: ../../src/ed_main.py:1435
+msgid "Editra is a programmers text editor."
+msgstr "Editra ir programmētājiem paredzēts programmas koda teksta redaktors."
+
+#: ../../src/ed_menu.py:894
+msgid "Editra translations project"
+msgstr "Editra tulkošanas projekts"
+
+#: ../../src/ed_pages.py:344
+#, fuzzy
+msgid "Empty File"
+msgstr "Atvērt failu"
+
+#: ../../src/plugdlg.py:901
+msgid "Enable"
+msgstr "Iespējot"
+
+#: ../../src/prefdlg.py:729
+msgid "Enable Vi Emulation"
+msgstr "Aktivizēt VI emulēšanu"
+
+#: ../../src/ed_menu.py:588
+msgid "Enable column edit mode."
+msgstr "Aktivizēt slejas rediģēšanas režīmu"
+
+#: ../../src/prefdlg.py:327
+msgid "Encoding to try when auto detection fails"
+msgstr "Kodējums, kas jāmēģina lietot, ja automātiskā noteikšana ir neveiksmīga"
+
+#: ../../src/ed_menu.py:815
+msgid "End of line character formatting"
+msgstr "Rindas beigu rakstzīmju formatēšana"
+
+#: ../../src/eclib/colorsetter.py:82
+msgid "Enter a hex color value"
+msgstr "Ievadiet heksadecimālu krāsas vērtību"
+
+#: ../../src/style_editor.py:292
+msgid "Enter style sheet name"
+msgstr "Ievadiet stilu lapas nosaukumu"
+
+#: ../../src/prefdlg.py:1673
+msgid "Enter the name of the new key profile"
+msgstr "Jaunā taustiņu profila ievade"
+
+#: ../../src/eclib/finddlg.py:806
+msgid "Enter wildcard shell patterns for matching files (*.txt)."
+msgstr "Ievadiet čaulas aizstājējzīmju paraugus, lai meklētu atbilstošus failus (*.txt)."
+
+#: ../../src/ed_editv.py:126 ../../src/plugdlg.py:790
+msgid "Error"
+msgstr "Kļūda"
+
+#: ../../src/ed_pages.py:296
+#, fuzzy
+msgid "Error Loading Session File"
+msgstr "Faila atvēršanas kļūda"
+
+#: ../../src/ed_mdlg.py:87
+msgid "Error Opening File"
+msgstr "Faila atvēršanas kļūda"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:436
+msgid "Error Text"
+msgstr "Kļūdas teksts"
+
+#: ../../src/dev_tool.py:466
+msgid "Error Traceback:"
+msgstr "Kļūdas diagnostikas ziņojums:"
+
+#: ../../src/dev_tool.py:370
+msgid "Error/Crash Reporter"
+msgstr "Kļūdu/avāriju ziņotājs"
+
+#: ../../src/dev_tool.py:462
+msgid ""
+"Error: Something unexpected happend\n"
+"Help improve Editra by clicking on Report Error\n"
+"to send the Error Traceback shown below."
+msgstr ""
+"Kļūda! Ir noticis kaut kas neparedzēts.\n"
+"Palīdziet uzlabot Editra, noklikšķinot uz Ziņot par kļūdu,\n"
+"lai nosūtītu zemāk redzamo kļūdas diagnostikas ziņojumu."
+
+#: ../../src/ed_main.py:1384
+#, python-format
+msgid "Error: Unable to open %s"
+msgstr "Kļūda: nevar atvērt %s"
+
+#: ../../src/plugdlg.py:135
+#, fuzzy
+msgid "Errors"
+msgstr "Kļūda"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:512
+msgid "Executable Commands"
+msgstr "Izpildāmās komandas"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:209
+msgid "Executables"
+msgstr "Izpildāmie faili"
+
+#: ../../plugins/Launch/launch/launch.py:652
+msgid "Exit Code"
+msgstr "Iziešanas kods"
+
+#: ../../src/ed_menu.py:551
+msgid "Exit the Program"
+msgstr "Iziet no programmas"
+
+#: ../../src/dev_tool.py:471
+msgid "Exit the application"
+msgstr "Iziet no lietojumprogrammas"
+
+#: ../../src/style_editor.py:141
+msgid "Export"
+msgstr "Eksportēt"
+
+#: ../../src/style_editor.py:293
+msgid "Export Style Sheet"
+msgstr "Stila lapas eksportēšana"
+
+#: ../../src/prefdlg.py:1812
+msgid "Extensions (space separated, no dots)"
+msgstr "Paplašinājumi (atdalīti ar atstarpes rakstzīmi, bez punkta)"
+
+#: ../../src/ed_menu.py:818
+msgid "F&ormat"
+msgstr "F&ormatēt"
+
+#: ../../src/updater.py:682
+msgid "Failed"
+msgstr "Neizdevās"
+
+#: ../../src/ed_print.py:112
+msgid "Failed to create print preview"
+msgstr ""
+
+#: ../../src/plugdlg.py:792
+#, python-format
+msgid "Failed to install %d plugins"
+msgstr "Neizdevās instalēt %d spraudmoduļus"
+
+#: ../../src/ed_editv.py:124
+#, python-format
+msgid ""
+"Failed to reload %(filename)s:\n"
+"Error: %(errmsg)s"
+msgstr ""
+"Neizdevās ielādēt atkārtoti %(filename)s:\n"
+"Kļūda: %(errmsg)s"
+
+#: ../../src/ed_main.py:1144
+#, python-format
+msgid "Failed to reload the file with: %(encoding)s"
+msgstr "Neizdevās atkārtoti ielādēt failu ar: %(encoding)s"
+
+#: ../../src/ed_mdlg.py:104
+#, python-format
+msgid ""
+"Failed to save file: %(filename)s\n"
+"\n"
+"Error:\n"
+"%(errormsg)s"
+msgstr ""
+"Neizdevās saglabāt failu: %(filename)s\n"
+"\n"
+"Kļūda:\n"
+"%(errormsg)s"
+
+#: ../../src/ed_menu.py:895
+msgid "Feedback"
+msgstr "Sūtīt atsauksmes"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:232
+msgid "File Browser"
+msgstr "Failu pārlūks"
+
+#: ../../src/eclib/finddlg.py:699
+msgid "File Filters:"
+msgstr "Failu filtri:"
+
+#: ../../src/prefdlg.py:307
+msgid "File History Length"
+msgstr "Vēsturē saglabāto failu skaits"
+
+#: ../../src/ed_main.py:567
+msgid "File Not Found"
+msgstr "Fails nav atrasts"
+
+#: ../../src/prefdlg.py:375
+msgid "File Settings"
+msgstr "Failu iestatījumi"
+
+#: ../../src/eclib/infodlg.py:109
+msgid "File Stat Failed"
+msgstr "Faila statistikas izveide neizdevās"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:204
+msgid "File Type"
+msgstr "Faila tips"
+
+#: ../../src/ed_stc.py:1689
+msgid "File is Read Only and cannot be saved"
+msgstr "Fails ir tikai lasāms un to nevar saglabāt"
+
+#: ../../src/ed_pages.py:191
+msgid ""
+"File is already open in an existing page.\n"
+"Do you wish to open it again?"
+msgstr ""
+"Fails jau ir atvērts kādā esošā lapā.\n"
+"Vai vēlaties to atvērt vēlreiz?"
+
+#: ../../src/ed_search.py:1174
+#, python-format
+msgid "Files Searched: %d"
+msgstr "Pārmeklēto failu skaits: %d"
+
+#: ../../src/prefdlg.py:843
+msgid "Filetype Associations"
+msgstr "Failu tipu saistība"
+
+#: ../../src/ed_cmdbar.py:140 ../../src/ed_search.py:91
+#: ../../src/ed_search.py:95 ../../src/ed_toolbar.py:87
+#: ../../src/eclib/finddlg.py:619 ../../src/eclib/finddlg.py:750
+#: ../../src/eclib/finddlg.py:826
+msgid "Find"
+msgstr "Atrast"
+
+#: ../../src/eclib/finddlg.py:829
+msgid "Find All"
+msgstr "Atrast visu"
+
+#: ../../src/ed_search.py:242
+#, fuzzy
+msgid "Find Count"
+msgstr "Meklēšanas opcijas"
+
+#: ../../src/ed_menu.py:650
+msgid "Find Next"
+msgstr "Atrast nākamo"
+
+#: ../../src/eclib/finddlg.py:795
+msgid "Find Options"
+msgstr "Meklēšanas opcijas"
+
+#: ../../src/ed_menu.py:647
+msgid "Find Previous"
+msgstr "Atrast iepriekšējo"
+
+#: ../../src/ed_menu.py:653
+msgid "Find Selected"
+msgstr "Atrast atlasīto"
+
+#: ../../src/ed_menu.py:640 ../../src/ed_toolbar.py:87
+msgid "Find Text"
+msgstr "Atrast tekstu"
+
+#: ../../src/ed_menu.py:643 ../../src/ed_toolbar.py:89
+msgid "Find and Replace Text"
+msgstr "Atrast un aizstāt tekstu"
+
+#: ../../src/eclib/finddlg.py:748
+msgid "Find what"
+msgstr "Atrast (ko)"
+
+#: ../../src/ed_menu.py:641
+msgid "Find/R&eplace"
+msgstr "Atrast/ai&zstāt"
+
+#: ../../src/ed_search.py:91 ../../src/ed_search.py:95
+#: ../../src/ed_toolbar.py:88
+msgid "Find/Replace"
+msgstr "Atrast/aizstāt"
+
+#: ../../src/updater.py:679
+msgid "Finished"
+msgstr "Pabeigts"
+
+#: ../../src/plugdlg.py:436
+msgid "Finshed downloading plugins"
+msgstr "Spraudmoduļu lejupielāde pabeigta"
+
+#: ../../src/util.py:314 ../../src/eclib/infodlg.py:286
+msgid "Folder"
+msgstr "Mape"
+
+#: ../../src/style_editor.py:683
+msgid "Font"
+msgstr "Fonts"
+
+#: ../../src/style_editor.py:678
+msgid "Font Settings"
+msgstr "Fontu iestatījumi"
+
+#: ../../src/style_editor.py:639 ../../plugins/Launch/launch/cfgdlg.py:423
+msgid "Foreground"
+msgstr "Priekšplāns"
+
+#: ../../src/prefdlg.py:579
+msgid "Format"
+msgstr "Formatēt"
+
+#: ../../src/ed_stc.py:998
+msgid "Format EOL?"
+msgstr "Vai formatēt rindas beigu marķierus?"
+
+#: ../../src/ed_menu.py:804 ../../src/ed_menu.py:808 ../../src/ed_menu.py:812
+#, python-format
+msgid "Format all EOL characters to %s Mode"
+msgstr "Formatēt visas rindas beigu rakstzīmes %s režīmā"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:49
+msgid "Function Definitions"
+msgstr "Funkciju definīcijas"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:55
+msgid "Functions"
+msgstr "Funkcijas"
+
+#: ../../src/prefdlg.py:187 ../../src/prefdlg.py:462 ../../src/prefdlg.py:735
+#: ../../plugins/Launch/launch/cfgdlg.py:169
+msgid "General"
+msgstr "Vispārīgi"
+
+#: ../../src/generator.py:288 ../../src/generator.py:675
+#: ../../src/generator.py:878
+#, python-format
+msgid "Generate %s"
+msgstr "Ģenerēt %s"
+
+#: ../../src/generator.py:115
+msgid "Generate Code and Documents"
+msgstr "Ģenerēt kodu un dokumentus"
+
+#: ../../src/generator.py:289 ../../src/generator.py:879
+#, python-format
+msgid "Generate a %s version of the current document"
+msgstr "Ģenerēt pašreizējā dokumenta %s versiju"
+
+#: ../../src/generator.py:676
+#, python-format
+msgid "Generate an %s version of the current document"
+msgstr "Ģenerēt pašreizējā dokumenta %s versiju"
+
+#: ../../src/generator.py:114
+msgid "Generator"
+msgstr "Ģenerators"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:420
+msgid "Get Info"
+msgstr "Iegūt informāciju"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Global Variables"
+msgstr "Globālie mainīgie"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:284
+#, python-format
+msgid "Goto \"%s\""
+msgstr "Pāriet uz \"%s\""
+
+#: ../../src/ed_cmdbar.py:276
+msgid "Goto Line"
+msgstr "Pāriet uz rindu"
+
+#: ../../src/ed_menu.py:724
+msgid "Goto Line Number"
+msgstr "Pāriet uz konkrētu rindu"
+
+#: ../../src/ed_menu.py:725
+msgid "Goto Matching Brace"
+msgstr "Pāriet uz atbilstošo figūriekavu"
+
+#: ../../src/ed_menu.py:856
+msgid "Goto command buffer"
+msgstr "Pāriet uz komandu buferi"
+
+#: ../../src/ed_menu.py:649
+msgid "Goto previous match"
+msgstr "Pāriet uz iepriekšējo atbilstību"
+
+#: ../../src/ed_menu.py:652
+msgid "Goto the next match"
+msgstr "Pāriet uz nākamo atbilstību"
+
+#: ../../src/prefdlg.py:713
+msgid "Guide Column"
+msgstr "Sleja ar palīglīniju"
+
+#: ../../src/ed_menu.py:836
+msgid "Highlight Brackets/Braces"
+msgstr "Iezīmēt apaļās iekavas/figūriekavas"
+
+#: ../../src/ed_menu.py:681 ../../src/prefdlg.py:718
+msgid "Highlight Caret Line"
+msgstr "Iezīmēt kursora rindu"
+
+#: ../../src/ed_menu.py:683
+msgid "Highlight the background of the current line"
+msgstr "Iezīmēt pašreizējās rindas fonu"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:484
+msgid "Home directory"
+msgstr "Sākuma direktorijs"
+
+#: ../../src/ed_main.py:1437
+msgid "Homepage"
+msgstr "Vietne"
+
+#: ../../src/prefdlg.py:940
+msgid "Icon Theme"
+msgstr "Ikonu tēma"
+
+#: ../../src/prefdlg.py:985
+msgid "Icons"
+msgstr "Ikonas"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Identities"
+msgstr "Identitātes"
+
+#: ../../src/ed_menu.py:762
+msgid "Indent Lines"
+msgstr "Ievietot atkāpi"
+
+#: ../../src/prefdlg.py:519
+msgid "Indent Width"
+msgstr "Atkāpes platums"
+
+#: ../../src/ed_menu.py:764
+msgid "Indent the selected lines"
+msgstr "Ievietot atkāpi atlasītajās rindās"
+
+#: ../../src/ed_menu.py:686 ../../src/prefdlg.py:721
+msgid "Indentation Guides"
+msgstr "Rādīt atkāpju palīglīnijas"
+
+#: ../../src/eclib/infodlg.py:52
+msgid "Info"
+msgstr "Informācija"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:443
+msgid "Info Text"
+msgstr "Informācijas teksts"
+
+#: ../../src/prefdlg.py:744
+msgid "Input Helpers"
+msgstr "Ievades palīdzība"
+
+#: ../../src/ed_menu.py:779
+msgid "Insert spaces instead of tab characters with tab key"
+msgstr "Tabulēšanas rakstzīmju vietā ar tabulēšanas taustiņu ievietot atstarpes rakstzīmes"
+
+#: ../../src/plugdlg.py:127 ../../src/plugdlg.py:715
+msgid "Install"
+msgstr "Instalēt"
+
+#: ../../src/plugdlg.py:722
+msgid ""
+"Install the plugins for all users\n"
+" **requires administrative privileges**"
+msgstr ""
+"Instalēt spraudmoduļus visiem lietotājiem\n"
+" **nepieciešamas administratora tiesības**"
+
+#: ../../src/plugdlg.py:719
+msgid "Install the plugins only for the current user"
+msgstr "Instalēt spraudmoduļus tikai pašreizējam lietotājam"
+
+#: ../../src/plugdlg.py:794
+msgid "Installation Error"
+msgstr "Instalēšanas kļūda"
+
+#: ../../src/prefdlg.py:1270
+msgid "Installed Version"
+msgstr "Instalētā versija"
+
+#: ../../src/ed_pages.py:324
+#, fuzzy
+msgid "Invalid File"
+msgstr "Nederīgs fails: %s"
+
+#: ../../src/ed_search.py:278
+#, python-format
+msgid "Invalid expression \"%s\""
+msgstr "Nederīga izteiksme \"%s\""
+
+#: ../../src/ed_pages.py:338
+#, fuzzy
+msgid "Invalid file"
+msgstr "Nederīgs fails: %s"
+
+#: ../../src/ed_pages.py:807
+#, python-format
+msgid "Invalid file: %s"
+msgstr "Nederīgs fails: %s"
+
+#: ../../src/prefdlg.py:1926
+msgid "Inverse"
+msgstr "Inversais"
+
+#: ../../src/ed_menu.py:613
+msgid "Join Lines"
+msgstr "Savienot rindas"
+
+#: ../../src/ed_menu.py:615
+msgid "Join the Selected Lines"
+msgstr "Savienot atlasītās rindas"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:101
+msgid "Jump to Saved Path"
+msgstr "Pāriet uz saglabāto ceļu"
+
+#: ../../src/prefdlg.py:1505
+msgid "Key"
+msgstr "Taustiņš"
+
+#: ../../src/prefdlg.py:1474
+msgid "Key Profile"
+msgstr "Taustiņu profils"
+
+#: ../../src/prefdlg.py:1382
+msgid "Keybindings"
+msgstr "Taustiņu kombinācijas"
+
+#: ../../src/eclib/infodlg.py:176
+msgid "Kind"
+msgstr "Veids"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Labels"
+msgstr "Etiķetes"
+
+#: ../../src/prefdlg.py:354
+msgid "Language"
+msgstr "Valoda"
+
+#: ../../src/prefdlg.py:1276
+msgid "Latest Version"
+msgstr "Jaunākā versija"
+
+#: ../../plugins/Launch/launch/__init__.py:140
+msgid "Launch"
+msgstr ""
+
+#: ../../plugins/Launch/launch/cfgdlg.py:110
+msgid "Launch Configuration"
+msgstr "Launch konfigurācija"
+
+#: ../../src/prefdlg.py:990
+msgid "Layout"
+msgstr "Izkārtojums"
+
+#: ../../src/prefdlg.py:1810
+msgid "Lexer"
+msgstr "Leksikas analizētājs"
+
+#: ../../src/ed_main.py:139
+msgid "Lexers"
+msgstr "Leksikas analizētāji"
+
+#: ../../src/ed_main.py:1439
+msgid "License: wxWindows (see COPYING.txt for full license)"
+msgstr "Licence: wxWindows (pilnu licences tekstu sk. COPYING.txt)"
+
+#: ../../src/ed_menu.py:626
+msgid "Line Edit"
+msgstr "Rindu rediģēšana"
+
+#: ../../src/ed_stc.py:610
+#, python-format
+msgid "Line: %(lnum)d  Column: %(cnum)d"
+msgstr "Rinda: %(lnum)d, kolonna: %(cnum)d"
+
+#: ../../src/prefdlg.py:290
+msgid "Load Last Session"
+msgstr "Ielādēt iepriekšējo sesiju"
+
+#: ../../src/ed_menu.py:521
+msgid "Load Profile"
+msgstr "Ielādēt profilu"
+
+#: ../../src/ed_menu.py:532
+#, fuzzy
+msgid "Load Session"
+msgstr "Ielādēt iepriekšējo sesiju"
+
+#: ../../src/ed_main.py:711 ../../src/ed_menu.py:523
+msgid "Load a Custom Profile"
+msgstr "Pielāgota profila ielāde"
+
+#: ../../src/ed_main.py:762
+#, fuzzy
+msgid "Load a Session file"
+msgstr "Ielādēt iepriekšējo sesiju"
+
+#: ../../src/ed_menu.py:534
+#, fuzzy
+msgid "Load a saved session."
+msgstr "Ielādēt iepriekšējo sesiju"
+
+#: ../../src/ed_menu.py:525
+msgid "Load and save custom Profiles"
+msgstr "Ielādēt un saglabāt pielāgotus profilus"
+
+#: ../../src/ed_menu.py:536
+#, fuzzy
+msgid "Load and save custom sessions."
+msgstr "Ielādēt un saglabāt pielāgotus profilus"
+
+#: ../../src/prefdlg.py:292
+msgid "Load files from last session on startup"
+msgstr "Startējot programmu, ielādēt iepriekšējās sesijas failus"
+
+#: ../../src/ed_main.py:718
+#, python-format
+msgid "Loaded Profile: %s"
+msgstr "Ielādētais profils: %s"
+
+#: ../../src/ed_main.py:776
+#, fuzzy, python-format
+msgid "Loaded Session: %s"
+msgstr "Ielādēt iepriekšējo sesiju"
+
+#: ../../src/prefdlg.py:384
+msgid "Locale Settings"
+msgstr "Lokālie iestatījumi"
+
+#: ../../src/eclib/finddlg.py:776
+msgid "Look in"
+msgstr "Skatīt (kur)"
+
+#: ../../src/ed_menu.py:772
+msgid "Lowercase"
+msgstr "Mazie burti"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Macro Definitions"
+msgstr "Makro definīcijas"
+
+#: ../../src/ed_script.py:201 ../../src/ed_script.py:211
+msgid "Macro Manager"
+msgstr "Makro pārvaldnieks"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:50
+msgid "Macros"
+msgstr "Makro"
+
+#: ../../src/prefdlg.py:980
+msgid "Main display font for various UI components"
+msgstr "Galvenais ekrāna fonts izmantošanai dažādos UI komponentos"
+
+#: ../../src/ed_menu.py:859
+msgid "Manage, Download, and Install plugins"
+msgstr "Pārvaldīt, lejupielādēt un instalēt spraudmoduļus"
+
+#: ../../src/ed_main.py:141
+msgid "Manually Set a Lexer/Syntax"
+msgstr "Leksikas analizētāju/sintaksi iestatīt manuāli"
+
+#: ../../src/ed_cmdbar.py:153
+msgid "Match Case"
+msgstr "Saskaņot burtu reģistru"
+
+#: ../../src/eclib/finddlg.py:797
+msgid "Match case"
+msgstr "Saskaņot reģistru"
+
+#: ../../src/ed_main.py:1337 ../../src/ed_menu.py:718
+msgid "Maximize Editor"
+msgstr "Maksimizēt rediģēšanas rūti"
+
+#: ../../src/prefdlg.py:1487
+msgid "Menu"
+msgstr "Izvēlne"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:170
+msgid "Misc"
+msgstr "Dažādi"
+
+#: ../../src/ed_pages.py:360
+msgid "Missing session files"
+msgstr ""
+
+#: ../../src/ed_stc.py:995
+msgid ""
+"Mixed EOL characters detected.\n"
+"\n"
+"Would you like to format them to all be the same?"
+msgstr ""
+"Atrasti dažādu veidu rindas beigu marķieri.\n"
+"\n"
+"Vai vēlaties tos formatēt, lai pārveidotu par viena veida marķieriem?"
+
+#: ../../src/eclib/infodlg.py:157 ../../src/eclib/infodlg.py:189
+msgid "Modified"
+msgstr "Modificēts"
+
+#: ../../src/prefdlg.py:1497
+msgid "Modifier 1"
+msgstr "1. modifikators"
+
+#: ../../src/prefdlg.py:1501
+msgid "Modifier 2"
+msgstr "2. modifikators"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:55
+msgid "Modules"
+msgstr "Moduļi"
+
+#: ../../src/ed_menu.py:623
+#, fuzzy
+msgid "Move Current Line Down"
+msgstr "Kopēt pašreizējo rindu"
+
+#: ../../src/ed_menu.py:619
+#, fuzzy
+msgid "Move Current Line Up"
+msgstr "Kopēt pašreizējo rindu"
+
+#: ../../src/ed_editv.py:163
+msgid "Move Tab to New Window"
+msgstr "Pārvietot cilni uz jaunu logu"
+
+#: ../../src/ed_menu.py:727
+msgid "Move caret matching brace"
+msgstr "Pārvietot kursoru uz atbilstošo figūriekavu"
+
+#: ../../src/ed_menu.py:625
+#, fuzzy
+msgid "Move the current line down"
+msgstr "Aizvērt pašreizējo logu"
+
+#: ../../src/ed_menu.py:621
+#, fuzzy
+msgid "Move the current line up"
+msgstr "Dublicēt pašreizējo rindu"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:62
+msgid "Move to Recycle Bin"
+msgstr "Pārvietot uz atkritni"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:64
+msgid "Move to Trash"
+msgstr "Pārvietot uz atkritumu tvertni"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Namespaces"
+msgstr "Nosaukumvietas"
+
+#: ../../src/prefdlg.py:193
+msgid "Network"
+msgstr "Tīkls"
+
+#: ../../src/ed_toolbar.py:71 ../../src/prefdlg.py:1477
+#: ../../src/style_editor.py:198
+msgid "New"
+msgstr "Jauns"
+
+#: ../../src/ed_menu.py:476
+msgid "New &Window"
+msgstr "Jauns &logs"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:424
+msgid "New File"
+msgstr "Jauns fails"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:423
+msgid "New Folder"
+msgstr "Jauna mape"
+
+#: ../../src/ed_menu.py:591
+msgid "New Line After"
+msgstr "Ievietot jaunu rindu pēc šīs rindas"
+
+#: ../../src/ed_menu.py:595
+msgid "New Line Before"
+msgstr "Ievietot jaunu rindu pirms šīs rindas"
+
+#: ../../src/prefdlg.py:1672
+msgid "New Profile"
+msgstr "Jaunais profils"
+
+#: ../../src/ed_editv.py:162
+msgid "New Tab"
+msgstr "Jauna cilne"
+
+#: ../../src/ed_cmdbar.py:142
+msgid "Next"
+msgstr "Nākamais"
+
+#: ../../src/ed_menu.py:729
+msgid "Next Bookmark"
+msgstr "Nākamā grāmatzīme"
+
+#: ../../src/plugdlg.py:330
+msgid "No Description Available"
+msgstr "Apraksts nav pieejams"
+
+#: ../../src/ed_pages.py:817
+msgid "No Valid Files to Open"
+msgstr "Nav atvērts neviens derīgs fails"
+
+#: ../../src/prefdlg.py:1571
+msgid "None"
+msgstr "Nav"
+
+#: ../../src/prefdlg.py:1927
+msgid "Normal"
+msgstr "Parastais"
+
+#: ../../src/ed_search.py:501
+msgid "Not implemented"
+msgstr "Nav ieviests"
+
+#: ../../src/style_editor.py:137
+msgid "Ok"
+msgstr "Labi"
+
+#: ../../src/ed_glob.py:359 ../../src/ed_mdlg.py:137
+msgid "Old Machintosh"
+msgstr "Agrākais Macintosh"
+
+#: ../../src/ed_menu.py:802 ../../src/ed_menu.py:805 ../../src/prefdlg.py:540
+msgid "Old Macintosh (\\r)"
+msgstr "Agrākais Macintosh (\\r)"
+
+#: ../../src/ed_menu.py:889
+msgid "Online Documentation"
+msgstr "Tiešsaistē pieejamā dokumentācija"
+
+#: ../../src/ed_menu.py:891
+msgid "Online project documentation and help guides"
+msgstr "Tiešsaistē pieejamā projekta dokumentācija un palīdzības rokasgrāmatas"
+
+#: ../../src/ed_menu.py:482 ../../src/ed_toolbar.py:72
+msgid "Open"
+msgstr "Atvērt"
+
+#: ../../src/ed_menu.py:484
+msgid "Open &Recent"
+msgstr "&Atvērt kādu no pēdējiem failiem"
+
+#: ../../plugins/PyShell/PyShell/__init__.py:66
+msgid "Open A Python Shell"
+msgstr "Atvērt Python čaulu"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:85
+msgid "Open Code Browser Sidepanel"
+msgstr "Atvērt koda pārlūka sānu paneli"
+
+#: ../../src/ed_pages.py:828
+msgid "Open Directory?"
+msgstr "Vai atvērt direktoriju?"
+
+#: ../../src/eclib/finddlg.py:696
+msgid "Open Documents"
+msgstr "Atvērtie dokumenti"
+
+#: ../../src/ed_pages.py:193
+msgid "Open File"
+msgstr "Atvērt failu"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:233
+msgid "Open File Browser Sidepanel"
+msgstr "Atvērt failu pārlūka sānu paneli"
+
+#: ../../src/prefdlg.py:333
+msgid "Open files in new windows by default"
+msgstr "Atvērt failus jaunā logā pēc noklusējuma"
+
+#: ../../src/ed_menu.py:646
+msgid "Open the Quick Find Bar"
+msgstr "Atvērt ātrās atrašanas joslu"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:412
+msgid "Open with "
+msgstr "Atvērt programmā "
+
+#: ../../src/ed_pages.py:848
+#, python-format
+msgid "Opened file: %s"
+msgstr "Atvērtais fails: %s"
+
+#: ../../src/ed_main.py:1381
+#, python-format
+msgid "Opening %s"
+msgstr "Notiek %s atvēršana"
+
+#: ../../src/ed_menu.py:579
+msgid "P&aste After"
+msgstr "Ie&līmēt pēc kursora"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:51
+msgid "Packages"
+msgstr "Pakotnes"
+
+#: ../../src/ed_menu.py:539
+msgid "Page Set&up"
+msgstr "Lappuses iestatīšana"
+
+#: ../../src/ed_print.py:229
+#, python-format
+msgid "Page: %d"
+msgstr "Lappuse: %d."
+
+#: ../../src/ed_menu.py:715
+msgid "Pane Navigator"
+msgstr "Rūšu navigators"
+
+#: ../../src/prefdlg.py:1170
+msgid "Password"
+msgstr "Parole"
+
+#: ../../src/ed_editv.py:285 ../../src/ed_toolbar.py:84
+msgid "Paste"
+msgstr "Ielīmēt"
+
+#: ../../src/ed_menu.py:578 ../../src/ed_toolbar.py:85
+msgid "Paste Text from Clipboard to File"
+msgstr "Ielīmēt tekstu failā no starpliktuves"
+
+#: ../../src/ed_menu.py:581
+msgid "Paste Text from Clipboard to File after the cursor"
+msgstr "Ielīmēt tekstu no starpliktuves failā pēc kursora"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:109
+msgid "Pathmarks"
+msgstr "Ceļu atzīmes"
+
+#: ../../src/eclib/infodlg.py:191
+msgid "Permissions"
+msgstr "Atļaujas"
+
+#: ../../src/perspective.py:219
+msgid "Perspective Name"
+msgstr "Perspektīvas nosaukums"
+
+#: ../../src/perspective.py:236
+msgid "Perspective to Delete"
+msgstr "Dzēšanai paredzēta perspektīva"
+
+#: ../../src/ed_main.py:135
+msgid "Perspectives"
+msgstr "Perspektīvas"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:429
+msgid "Plain Text"
+msgstr "Vienkāršs teksts"
+
+#: ../../src/ed_main.py:1438
+msgid "Platform Info"
+msgstr "Informācija par platformu"
+
+#: ../../src/Editra.py:827 ../../src/Editra.py:1000
+msgid "Please check the preferences dialog to check your preferences"
+msgstr "Lūdzu, apskatiet izvēles iestatījumu dialogu, lai pārbaudītu savus izvēles iestatījumus"
+
+#: ../../src/ed_main.py:1033 ../../src/ed_menu.py:857
+msgid "Plugin Manager"
+msgstr "Spraudmoduļu pārvaldnieks"
+
+#: ../../src/prefdlg.py:1155
+msgid "Port Number"
+msgstr "Porta numurs"
+
+#: ../../src/ed_menu.py:656
+msgid "Pr&eferences"
+msgstr "&Izvēles iestatījumi"
+
+#: ../../src/prefdlg.py:329
+msgid "Prefered Encoding"
+msgstr "Vēlamais kodējums"
+
+#: ../../src/prefdlg.py:99
+msgid "Preferences - Editra"
+msgstr "Izvēles iestatījumi - Editra"
+
+#: ../../src/style_editor.py:130
+msgid "Preview"
+msgstr "Priekšskatījums"
+
+#: ../../src/ed_menu.py:544
+msgid "Preview Printout"
+msgstr "Izdrukas priekšskatījums"
+
+#: ../../src/ed_cmdbar.py:149
+msgid "Previous"
+msgstr "Iepriekšējais"
+
+#: ../../src/ed_menu.py:732
+msgid "Previous Bookmark"
+msgstr "Iepiekšējā grāmatzīme"
+
+#: ../../src/prefdlg.py:594
+msgid "Primary Font"
+msgstr "Primārais fonts"
+
+#: ../../src/ed_toolbar.py:74
+msgid "Print"
+msgstr "Drukāt"
+
+#: ../../src/ed_menu.py:547 ../../src/ed_toolbar.py:75
+msgid "Print Current File"
+msgstr "Drukāt pašreizējo failu"
+
+#: ../../src/ed_print.py:113
+#, fuzzy
+msgid "Print Error"
+msgstr "Ziņot par kļūdu"
+
+#: ../../src/ed_menu.py:542
+msgid "Print Pre&view"
+msgstr "Drukas &priekšskatījums"
+
+#: ../../src/ed_print.py:105
+msgid "Print Preview"
+msgstr "Drukas priekšskatījums"
+
+#: ../../src/ed_print.py:131
+#, fuzzy
+msgid "Printer Error"
+msgstr "Printera režīms"
+
+#: ../../src/prefdlg.py:280
+msgid "Printer Mode"
+msgstr "Printera režīms"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:52
+msgid "Procedure Definitions"
+msgstr "Procedūru definīcijas"
+
+#: ../../src/ed_main.py:692 ../../src/ed_main.py:713 ../../src/ed_menu.py:524
+msgid "Profile"
+msgstr "Profils"
+
+#: ../../src/ed_main.py:697
+#, python-format
+msgid "Profile Saved as: %s"
+msgstr "Profils saglabāts kā: %s"
+
+#: ../../src/Editra.py:829 ../../src/Editra.py:1002
+msgid "Profile Updated"
+msgstr "Profils atjaunināts"
+
+#: ../../plugins/Launch/launch/launch.py:152
+msgid "Program Executable Command"
+msgstr "Programmas izpildes komanda"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:52
+msgid "Programs"
+msgstr "Programmas"
+
+#: ../../src/ed_menu.py:885
+msgid "Project Homepage"
+msgstr "Projekta vietne"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:52
+msgid "Protocols"
+msgstr "Protokoli"
+
+#: ../../src/prefdlg.py:1141
+msgid "Proxy Settings"
+msgstr "Starpniekservera iestatījumi"
+
+#: ../../src/prefdlg.py:1151
+msgid "Proxy URL"
+msgstr "Starpniekservera URL"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:55
+msgid "Public Functions"
+msgstr "Publiskās funkcijas"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:56
+msgid "Public Subroutines"
+msgstr "Publiskās subrutīnas"
+
+#: ../../src/iface.py:295
+msgid "Put an item on the Shelf"
+msgstr "Ielikt elementu plauktā"
+
+#: ../../src/updater.py:672
+#, python-format
+msgid "Rate: %.2f Kb/s"
+msgstr "Ātrums: %.2f Kb/s"
+
+#: ../../plugins/Launch/launch/__init__.py:100
+msgid "Re-run the last run program"
+msgstr "Vēlreiz izpildīt pēdējo izpildīto programmu"
+
+#: ../../src/ed_stc.py:1690
+msgid "Read Only"
+msgstr "Tikai lasāms"
+
+#: ../../src/ed_search.py:679
+msgid "Recent Searches"
+msgstr "Pēdējās meklētās virknes"
+
+#: ../../src/ed_menu.py:485
+msgid "Recently Opened Files"
+msgstr "Pēdējie atvērtie faili"
+
+#: ../../src/ed_stc.py:1255
+msgid "Recording Finished"
+msgstr "Ierakstīšana pabeigta"
+
+#: ../../src/ed_stc.py:1242
+msgid "Recording Macro"
+msgstr "Makro ierakstīšana"
+
+#: ../../src/ed_editv.py:281 ../../src/ed_menu.py:566
+#: ../../src/ed_toolbar.py:78
+msgid "Redo"
+msgstr "Atcelt atsaukšanu"
+
+#: ../../src/ed_menu.py:568 ../../src/ed_toolbar.py:78
+msgid "Redo Last Undo"
+msgstr "Atcelt pēdējās darbības atsaukšanu"
+
+#: ../../src/ed_search.py:279
+msgid "Regex Compile Error"
+msgstr "Regulārās izteiksmes kompilēšanas kļūda"
+
+#: ../../src/ed_cmdbar.py:157
+msgid "Regular Expression"
+msgstr "Regulārā izteiksme"
+
+#: ../../src/eclib/finddlg.py:799
+msgid "Regular expression"
+msgstr "Regulārā izteiksme"
+
+#: ../../src/ed_editv.py:265
+msgid "Reload File?"
+msgstr "Vai ielādēt failu vēlreiz?"
+
+#: ../../src/ed_menu.py:513
+msgid "Reload the file with a specified encoding"
+msgstr "Ielādēt failu vēlreiz, izmantojot norādīto kodējumu"
+
+#: ../../src/ed_main.py:1132 ../../src/ed_menu.py:511
+msgid "Reload with Encoding"
+msgstr "Ielādēt vēlreiz, izmantojot citu kodējumu"
+
+#: ../../src/prefdlg.py:336
+msgid "Remember File Position"
+msgstr "Atcerēties pozīciju failā"
+
+#: ../../src/prefdlg.py:970
+msgid "Remember Window Position on Exit"
+msgstr "Atcerēties loga pozīciju, izejot no programmas"
+
+#: ../../src/prefdlg.py:967
+msgid "Remember Window Size on Exit"
+msgstr "Atcerēties loga lielumu, izejot no programmas"
+
+#: ../../src/ed_menu.py:632
+msgid "Remove All Bookmarks"
+msgstr "Noņemt visas grāmatzīmes"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:103
+msgid "Remove Saved Path"
+msgstr "Noņemt saglabāto ceļu"
+
+#: ../../src/ed_menu.py:634
+msgid "Remove all bookmarks from the current document"
+msgstr "Noņemt pašreizējā dokumentā visas grāmatzīmes"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:240
+msgid "Remove selection from list"
+msgstr "Izņemt atlasīto no saraksta"
+
+#: ../../src/ed_menu.py:796
+msgid "Remove trailing whitespace"
+msgstr "Noņemt beigu tukšumzīmi"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:421
+msgid "Rename"
+msgstr "Pārdēvēt"
+
+#: ../../src/eclib/finddlg.py:622 ../../src/eclib/finddlg.py:827
+msgid "Replace"
+msgstr "Aizstāt"
+
+#: ../../src/eclib/finddlg.py:830
+msgid "Replace All"
+msgstr "Aizstāt visu"
+
+#: ../../src/eclib/finddlg.py:761
+msgid "Replace with"
+msgstr "Aizstāt ar"
+
+#: ../../src/dev_tool.py:472
+msgid "Report Error"
+msgstr "Ziņot par kļūdu"
+
+#: ../../src/ed_editv.py:246
+msgid "Resave File?"
+msgstr "Vai saglabāt failu vēlreiz?"
+
+#: ../../src/ed_main.py:1339
+msgid "Restore Editor"
+msgstr "Atjaunot rediģēšanas rūts lielumu"
+
+#: ../../src/plugdlg.py:625
+msgid "Retrieving Plugin List"
+msgstr "Spraudmoduļu saraksta iegūšana"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:413
+msgid "Reveal in "
+msgstr "Atvērt atrašanās vietu programmā "
+
+#: ../../src/ed_menu.py:510
+msgid "Revert file to last save point"
+msgstr "Atjaunot faila saturu atbilstoši pēdējai saglabāšanas reizei"
+
+#: ../../src/prefdlg.py:860 ../../src/prefdlg.py:1533
+msgid "Revert to Default"
+msgstr "Atjaunot noklusējumu"
+
+#: ../../src/ed_menu.py:508
+msgid "Revert to Saved"
+msgstr "Atjaunot saglabāto versiju"
+
+#: ../../plugins/Launch/launch/__init__.py:93
+#: ../../plugins/Launch/launch/launch.py:175
+#: ../../plugins/Launch/launch/launch.py:532
+msgid "Run"
+msgstr "Izpildīt"
+
+#: ../../plugins/Launch/launch/__init__.py:98
+msgid "Run last executed"
+msgstr "Izpildīt pēdējo izpildīto programmu"
+
+#: ../../plugins/Launch/launch/__init__.py:76
+msgid "Run script from current buffer"
+msgstr "Izpildīt skriptu no pašreizējā bufera"
+
+#: ../../plugins/Launch/launch/__init__.py:95
+msgid "Run the file associated with the current buffer in Launch"
+msgstr "Izpildīt ar pašreizējo buferi saistīto failu, izmantojot Launch"
+
+#: ../../src/ed_toolbar.py:73
+msgid "Save"
+msgstr "Saglabāt"
+
+#: ../../src/ed_editv.py:165
+#, python-format
+msgid "Save \"%s\""
+msgstr "Saglabāt \"%s\""
+
+#: ../../src/ed_menu.py:501
+msgid "Save &As"
+msgstr "Saglabāt &kā"
+
+#: ../../src/ed_menu.py:504
+msgid "Save All"
+msgstr "Saglabāt visu"
+
+#: ../../src/ed_menu.py:503
+msgid "Save As"
+msgstr "Saglabāt kā"
+
+#: ../../src/ed_main.py:1401
+msgid "Save Changes?"
+msgstr "Vai saglabāt izmaiņas?"
+
+#: ../../src/ed_menu.py:500 ../../src/ed_toolbar.py:73
+msgid "Save Current File"
+msgstr "Saglabāt pašreizējo failu"
+
+#: ../../src/ed_menu.py:520
+msgid "Save Current Settings to a New Profile"
+msgstr "Saglabāt pašreizējos iestatījumus jaunā profilā"
+
+#: ../../src/perspective.py:69
+msgid "Save Current View"
+msgstr "Saglabāt pašreizējo skatu"
+
+#: ../../src/ed_mdlg.py:106
+msgid "Save Error"
+msgstr "Saglabāšanas kļūda"
+
+#: ../../src/perspective.py:220
+msgid "Save Perspective"
+msgstr "Perspektīvas saglabāšana"
+
+#: ../../src/ed_menu.py:518
+msgid "Save Profile"
+msgstr "Saglabāt profilu"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:100
+msgid "Save Selected Paths"
+msgstr "Saglabāt atlasītos ceļus"
+
+#: ../../src/ed_menu.py:529
+#, fuzzy
+msgid "Save Session"
+msgstr "Saglabāt stilus"
+
+#: ../../src/style_editor.py:252
+msgid "Save Styles"
+msgstr "Saglabāt stilus"
+
+#: ../../src/ed_menu.py:506
+msgid "Save all open pages"
+msgstr "Saglabāt visas atvērtās lapas"
+
+#: ../../src/ed_menu.py:531
+#, fuzzy
+msgid "Save the current session."
+msgstr "Saglabāt pašreizējo loga izkārtojumu"
+
+#: ../../src/perspective.py:70
+msgid "Save the current window layout"
+msgstr "Saglabāt pašreizējo loga izkārtojumu"
+
+#: ../../src/ed_main.py:674
+#, python-format
+msgid "Saved File As: %s"
+msgstr "Fails saglabāts kā: %s"
+
+#: ../../src/ed_main.py:625
+#, python-format
+msgid "Saved File: %s"
+msgstr "Saglabātais fails: %s"
+
+#: ../../plugins/Launch/launch/launch.py:165
+msgid "Script Arguments"
+msgstr "Skripta argumenti"
+
+#: ../../src/ed_search.py:1173
+#, python-format
+msgid "Search Complete: %d matching lines where found."
+msgstr "Meklēšana pabeigta: atrastas %d atbilstošas rindas."
+
+#: ../../src/eclib/finddlg.py:800
+msgid "Search Recursively"
+msgstr "Meklēt rekursīvi"
+
+#: ../../src/ed_search.py:1147
+msgid "Search Started"
+msgstr "Sākta meklēšana"
+
+#: ../../src/ed_search.py:1166
+msgid "Search complete"
+msgstr "Meklēšana pabeigta"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:418
+#, fuzzy
+msgid "Search in directory"
+msgstr "Sākuma direktorijs"
+
+#: ../../src/ed_search.py:337
+msgid "Search wrapped to bottom"
+msgstr "Meklēt ietvertajā tekstā uz leju"
+
+#: ../../src/ed_search.py:332
+msgid "Search wrapped to top"
+msgstr "Meklēt ietvertajā tekstā uz augšu"
+
+#: ../../src/ed_search.py:1257
+#, python-format
+msgid "Searching in: %s"
+msgstr "Notiek meklēšana šeit: %s"
+
+#: ../../src/prefdlg.py:597
+msgid "Secondary Font"
+msgstr "Sekundārais fonts"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:53
+msgid "Sections"
+msgstr "Sadaļas"
+
+#: ../../src/ed_menu.py:583
+msgid "Select &All"
+msgstr "Atlasīt &visu"
+
+#: ../../src/ed_editv.py:290
+msgid "Select All"
+msgstr "Atlasīt visu"
+
+#: ../../src/ed_menu.py:585
+msgid "Select All Text in Document"
+msgstr "Atlasīt visu dokumenta tekstu"
+
+#: ../../src/ed_main.py:1131
+msgid "Select an encoding to reload the file with"
+msgstr "Izvēlieties kodējumu, kurš jāizmanto, vēlreiz ielādējot failu"
+
+#: ../../src/plugdlg.py:451
+msgid "Select plugins to download"
+msgstr "Atlasiet spraudmoduļus, ko lejupielādēsit"
+
+#: ../../src/ed_pages.py:339
+msgid "Selected file is not a valid session file"
+msgstr ""
+
+#: ../../src/ed_menu.py:897
+msgid "Send bug reports and suggestions"
+msgstr "Nosūtīt ziņojumus par kļūdām un priekšlikumus"
+
+#: ../../src/ed_main.py:737 ../../src/ed_main.py:764
+#, fuzzy
+msgid "Session"
+msgstr "Atļaujas"
+
+#: ../../src/ed_main.py:752
+#, fuzzy, python-format
+msgid "Session Saved as: %s"
+msgstr "Profils saglabāts kā: %s"
+
+#: ../../src/ed_pages.py:324
+#, fuzzy
+msgid "Session file doesn't exist."
+msgstr "%s nepastāv"
+
+#: ../../src/ed_pages.py:344
+msgid "Session file is empty."
+msgstr ""
+
+#: ../../src/ed_menu.py:535
+#, fuzzy
+msgid "Sessions"
+msgstr "Sadaļas"
+
+#: ../../src/eclib/ecpickers.py:80
+msgid "Set Font"
+msgstr "Iestatīt fontu"
+
+#: ../../src/style_editor.py:177
+msgid "Set the preview file type"
+msgstr "Iestatīt priekšskatījuma faila tipu"
+
+#: ../../src/prefdlg.py:572
+msgid "Sets a secondary font used for special regions when syntax highlighting is in use"
+msgstr "Iestata sekundāro fontu, ko lieto īpašos apgabalos, kad tiek izmantota sintakses iezīmēšana"
+
+#: ../../src/prefdlg.py:567
+msgid "Sets the main/default font of the document"
+msgstr "Iestata dokumenta galveno/noklusējuma fontu"
+
+#: ../../plugins/Launch/launch/launch.py:145
+msgid "Settings"
+msgstr "Iestatījumi"
+
+#: ../../src/iface.py:294
+msgid "Shelf"
+msgstr "Plaukts"
+
+#: ../../src/ed_menu.py:693 ../../src/ed_menu.py:695 ../../src/prefdlg.py:552
+msgid "Show EOL Markers"
+msgstr "Rādīt rindas beigu marķierus"
+
+#: ../../src/ed_menu.py:690
+msgid "Show Edge Guide"
+msgstr "Rādīt malas palīglīniju"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:218
+msgid "Show Hidden Files"
+msgstr "Rādīt slēptos failus"
+
+#: ../../src/prefdlg.py:951
+msgid "Show Icons on Tabs"
+msgstr "Rādīt ikonas ciļņu virsrakstos"
+
+#: ../../src/ed_menu.py:688
+msgid "Show Indentation Guides"
+msgstr "Rādīt atkāpju palīglīnijas"
+
+#: ../../src/ed_menu.py:698
+msgid "Show Line Number Margin"
+msgstr "Rādīt malu ar rindu numuriem"
+
+#: ../../src/ed_menu.py:696 ../../src/prefdlg.py:554
+msgid "Show Line Numbers"
+msgstr "Rādīt rindu numurus"
+
+#: ../../src/iface.py:192
+msgid "Show Shelf"
+msgstr "Rādīt plauktu"
+
+#: ../../src/prefdlg.py:294
+msgid "Show Splash Screen"
+msgstr "Rādīt uzplaiksnījuma ekrānu"
+
+#: ../../src/ed_menu.py:738 ../../src/prefdlg.py:972
+msgid "Show Status Bar"
+msgstr "Rādīt statusa joslu"
+
+#: ../../src/ed_menu.py:741 ../../src/prefdlg.py:974
+msgid "Show Toolbar"
+msgstr "Rādīt rīkjoslu"
+
+#: ../../src/ed_menu.py:699 ../../src/prefdlg.py:556
+msgid "Show Whitespace"
+msgstr "Rādīt tukšumzīmes"
+
+#: ../../src/ed_menu.py:701
+msgid "Show Whitespace Markers"
+msgstr "Rādīt tukšumzīmju marķierus"
+
+#: ../../src/ed_log.py:132
+msgid "Show output from"
+msgstr "Rādīt izvadi no"
+
+#: ../../src/iface.py:194
+msgid "Show the Shelf"
+msgstr "Rādīt plauktu"
+
+#: ../../src/ed_menu.py:692
+msgid "Show the edge column guide"
+msgstr "Rādīt slejas malas palīglīniju"
+
+#: ../../src/style_editor.py:695 ../../src/eclib/infodlg.py:183
+msgid "Size"
+msgstr "Lielums"
+
+#: ../../src/ed_pages.py:361
+msgid "Some files in saved session could not be found on disk:\n"
+msgstr ""
+
+#: ../../src/style_editor.py:250
+msgid "Some styles have been changed would you like to save before exiting?"
+msgstr "Daži stili ir mainīti. Vai vēlaties tos saglabāt pirms dialogloga aizvēršanas?"
+
+#: ../../src/ed_search.py:500
+msgid "Sorry will be ready for next version"
+msgstr "Atvainojiet, tas būs gatavs nākamajā versijā"
+
+#: ../../src/ed_menu.py:788
+msgid "Spaces to Tabs"
+msgstr "Atstarpes rakstzīmes nomainīt pret tabulēšanas rakstzīmēm"
+
+#: ../../src/ed_toolbar.py:71
+msgid "Start a New File"
+msgstr "Sākt jaunu failu"
+
+#: ../../src/style_editor.py:199
+msgid "Start a blank new style"
+msgstr "Sākt jaunu tukšu stilu"
+
+#: ../../src/ed_menu.py:475
+msgid "Start a new file in a new tab"
+msgstr "Sākt jaunu failu jaunā cilnē"
+
+#: ../../src/ed_menu.py:478
+msgid "Start a new file in a new window"
+msgstr "Sākt jaunu failu jaunā logā"
+
+#: ../../src/prefdlg.py:364
+msgid "Startup Settings"
+msgstr "Startēšanas iestatījumi"
+
+#: ../../src/updater.py:289
+msgid "Status Unknown"
+msgstr "Statuss nav zināms"
+
+#: ../../src/ed_menu.py:860 ../../src/style_editor.py:63
+msgid "Style Editor"
+msgstr "Stila redaktors"
+
+#: ../../src/style_editor.py:216
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:53
+msgid "Style Tags"
+msgstr "Stila birkas"
+
+#: ../../src/style_editor.py:192
+msgid "Style Theme"
+msgstr "Stila tēma"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:54
+msgid "Subroutine Declarations"
+msgstr "Subrutīnu deklarācijas"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:53
+msgid "Subroutines"
+msgstr "Subrutīnas"
+
+#: ../../src/plugdlg.py:783
+msgid "Successfully Installed Plugins"
+msgstr "Spraudmoduļi sekmīgi instalēti"
+
+#: ../../src/syntax/syntax.py:229
+#, python-format
+msgid "Switch Lexer to %s"
+msgstr "Pārslēgt leksikas analizētāju uz %s"
+
+#: ../../src/style_editor.py:174
+msgid "Syntax Files"
+msgstr "Sintakses faili"
+
+#: ../../src/ed_menu.py:840 ../../src/prefdlg.py:464 ../../src/prefdlg.py:834
+msgid "Syntax Highlighting"
+msgstr "Sintakses iezīmēšana"
+
+#: ../../src/plugdlg.py:721
+msgid "System Directory"
+msgstr "Sistēmas direktorijs"
+
+#: ../../src/prefdlg.py:511
+msgid "Tab Width"
+msgstr "Tabulēšanas rakstzīmes platums"
+
+#: ../../src/ed_menu.py:791
+msgid "Tabs to Spaces"
+msgstr "Tabulēšanas rakstzīmes nomainīt pret atstarpes rakstzīmēm"
+
+#: ../../plugins/codebrowser/codebrowser/cbrowser.py:54
+msgid "Task Definitions"
+msgstr "Uzdevumu definīcijas"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:401
+msgid "Text Colors"
+msgstr "Teksta krāsas"
+
+#: ../../src/util.py:318
+msgid "Text Document"
+msgstr "Teksta dokuments"
+
+#: ../../src/ed_pages.py:142
+#, python-format
+msgid ""
+"The correct encoding of '%s' could not be determined.\n"
+"\n"
+"Choose an encoding and select Ok to open the file with the chosen encoding.\n"
+"Click Cancel to abort opening the file"
+msgstr ""
+"Nevar noteikt pareizo \"%s\" kodējumu.\n"
+"\n"
+"Izvēlieties kodējumu un noklikšķiniet uz Labi, lai failu atvērtu izvēlētajā kodējumā.\n"
+"Lai pārtrauktu faila atvēršanu, noklikšķiniet uz Atcelt"
+
+#: ../../src/ed_main.py:1398
+#, python-format
+msgid ""
+"The file: \"%s\" has been modified since the last save point.\n"
+"\n"
+"Would you like to save the changes?"
+msgstr ""
+"Fails: \"%s\" ir modificēts kopš tā pēdējās saglabāšanas reizes.\n"
+"\n"
+"Vai vēlaties saglabāt izmaiņas?"
+
+#: ../../src/ed_search.py:241
+#, python-format
+msgid "The search term '%(term)s' was found %(count)d times."
+msgstr ""
+
+#: ../../src/ed_pages.py:815
+#, python-format
+msgid "There are no files that Editra can open in %s"
+msgstr "Nav neviena faila, ko Editra varētu atvērt, izmantojot %s"
+
+#: ../../src/ed_print.py:129
+msgid ""
+"There was an error when printing.\n"
+"Check that your printer is properly connected."
+msgstr ""
+
+#: ../../src/plugdlg.py:366
+msgid "This plugin requires a newer version of Editra."
+msgstr ""
+
+#: ../../src/ed_editv.py:288
+msgid "To Lowercase"
+msgstr "Pārveidot par mazajiem burtiem rakstītu tekstu"
+
+#: ../../src/ed_editv.py:287
+msgid "To Uppercase"
+msgstr "Pārveidot par lielajiem burtiem rakstītu tekstu"
+
+#: ../../src/plugdlg.py:704
+msgid ""
+"To add a new item drag and drop the plugin file into the list.\n"
+"\n"
+"To remove an item select it and hit Delete or Backspace."
+msgstr ""
+"Lai pievienotu jaunu elementu, velciet spraudmoduļa failu\n"
+"uz sarakstu un nometiet failu šajā sarakstā.\n"
+"\n"
+"Lai noņemtu elementu, iezīmējiet to un nospiediet taustiņu\n"
+"Delete vai Backspace."
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:93
+#, python-format
+msgid "To open multiple files at once %s+Click to select the desired files/folders then hit Enter to open them all at once"
+msgstr "Ja vēlaties atvērt vienlaikus vairākus failus, izmantojiet taustiņu kombināciju %s + klikšķis ar peles kreiso pogu, lai atlasītu vajadzīgos failus/mapes, un pēc tam nospiediet taustiņu Enter"
+
+#: ../../src/ed_menu.py:832
+msgid "Toggle Auto-Indentation functionality"
+msgstr "Pārslēgt automātiskās atkāpes darbību"
+
+#: ../../src/ed_menu.py:629
+msgid "Toggle Bookmark"
+msgstr "Ievietot/noņemt grāmatzīmi"
+
+#: ../../src/ed_menu.py:839
+msgid "Toggle Code Folding"
+msgstr "Izvērst/sakļaut koda bloku"
+
+#: ../../src/ed_menu.py:757
+msgid "Toggle Comment"
+msgstr "Pārslēgt komentāra statusu"
+
+#: ../../src/ed_menu.py:720
+msgid "Toggle Editor Maximization"
+msgstr "Maksimizēt/atjaunot rediģēšanas rūts lielumu"
+
+#: ../../src/ed_menu.py:703
+msgid "Toggle Editor View Options"
+msgstr "Pārslēgt rediģēšanas rūts skata opcijas"
+
+#: ../../src/ed_menu.py:708 ../../src/ed_menu.py:710
+msgid "Toggle all folds"
+msgstr "Izvērst/sakļaut visus blokus"
+
+#: ../../src/ed_menu.py:631
+msgid "Toggle bookmark of the current line"
+msgstr "Ievietot/noņemt grāmatzīmi pašreizējā rindā"
+
+#: ../../src/ed_menu.py:759
+msgid "Toggle comment on the selected line(s)"
+msgstr "Pārslēgt komentāra statusu atlasītajā(s) rindā(s)"
+
+#: ../../src/ed_menu.py:707
+msgid "Toggle current fold"
+msgstr "Izvērst/sakļaut pašreizējo bloku"
+
+#: ../../src/ed_menu.py:705
+msgid "Toggle fold"
+msgstr "Izvērst/sakļaut bloku"
+
+#: ../../src/prefdlg.py:945
+msgid "Toolbar Icon Size"
+msgstr "Rīkjoslas ikonu lielums"
+
+#: ../../src/ed_menu.py:892
+msgid "Translate Editra"
+msgstr "Tulkot Editra"
+
+#: ../../src/prefdlg.py:998
+msgid "Transparency"
+msgstr "Caurspīdīgums"
+
+#: ../../src/ed_menu.py:616
+msgid "Transpose Line"
+msgstr "Pārcelt rindu"
+
+#: ../../src/ed_menu.py:618
+msgid "Transpose the current line with the previous one"
+msgstr "Samainīt vietām pašreizējo rindu ar iepriekšējo"
+
+#: ../../src/ed_menu.py:794
+msgid "Trim Trailing Whitespace"
+msgstr "Nogriezt beigu tukšumzīmi"
+
+#: ../../src/prefdlg.py:560
+msgid "Turn off for better performance"
+msgstr "Izslēgt, lai uzlabotu veiktspēju"
+
+#: ../../src/util.py:179
+msgid "Unable to accept dropped file or text"
+msgstr "Nevar akceptēt nomestu failu vai tekstu"
+
+#: ../../src/plugdlg.py:456
+msgid "Unable to retrieve plugin list"
+msgstr "Nevar iegūt spraudmoduļu sarakstu"
+
+#: ../../src/updater.py:144
+msgid "Unable to retrieve version info"
+msgstr "Nevar iegūt informāciju par versiju"
+
+#: ../../src/ed_editv.py:280 ../../src/ed_toolbar.py:77
+msgid "Undo"
+msgstr "Atsaukt"
+
+#: ../../src/ed_menu.py:565 ../../src/ed_toolbar.py:77
+msgid "Undo Last Action"
+msgstr "Atsaukt pēdējo darbību"
+
+#: ../../src/ed_menu.py:765
+msgid "Unindent Lines"
+msgstr "Noņemt atkāpi"
+
+#: ../../src/ed_menu.py:767
+msgid "Unindent the selected lines"
+msgstr "Noņemt atkāpi atlasītajās rindās"
+
+#: ../../src/ed_glob.py:360 ../../src/ed_mdlg.py:137
+msgid "Unix"
+msgstr "UNIX"
+
+#: ../../src/ed_menu.py:806 ../../src/ed_menu.py:809 ../../src/prefdlg.py:540
+msgid "Unix (\\n)"
+msgstr "Unix (\\n)"
+
+#: ../../src/plugdlg.py:332 ../../src/plugdlg.py:333 ../../src/plugdlg.py:373
+#: ../../src/plugdlg.py:374 ../../src/util.py:324
+#: ../../src/eclib/infodlg.py:292
+msgid "Unknown"
+msgstr "Nezināms"
+
+#: ../../src/ed_pages.py:211
+#, python-format
+msgid "Untitled - %d"
+msgstr "Bez nosaukuma - %d"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:589
+msgid "Untitled_File"
+msgstr "Fails_bez_nosaukuma"
+
+#: ../../plugins/filebrowser/filebrowser/browser.py:587
+msgid "Untitled_Folder"
+msgstr "Mape_bez_nosaukuma"
+
+#: ../../src/eclib/finddlg.py:787
+msgid "Up"
+msgstr "Uz augšu"
+
+#: ../../src/prefdlg.py:1108
+msgid "Update"
+msgstr "Atjaunināšana"
+
+#: ../../src/Editra.py:559
+msgid "Update Available"
+msgstr "Pieejams atjauninājums"
+
+#: ../../src/ed_menu.py:769
+msgid "Uppercase"
+msgstr "Lielie burti"
+
+#: ../../src/ed_menu.py:829
+msgid "Use Auto Completion when available"
+msgstr "Pēc iespējas lietot automātisko pabeigšanu"
+
+#: ../../src/prefdlg.py:1146
+msgid "Use Proxy"
+msgstr "Izmantot starpniekserveri"
+
+#: ../../src/ed_menu.py:777
+msgid "Use Soft Tabs"
+msgstr "Lietot šaurās tabulēšanas rakstzīmes"
+
+#: ../../src/prefdlg.py:530
+msgid "Use Tabs Instead of Spaces"
+msgstr "Atstarpes rakstzīmju vietā lietot tabulēšanas rakstzīmes"
+
+#: ../../src/plugdlg.py:717
+msgid "User Directory"
+msgstr "Lietotāja direktorijs"
+
+#: ../../src/prefdlg.py:1163
+msgid "Username"
+msgstr "Lietotājvārds"
+
+#: ../../src/ed_log.py:80
+msgid "View Editra's console log"
+msgstr "Skatīt Editra vadības pults žurnālu"
+
+#: ../../src/ed_menu.py:731
+msgid "View Line of Next Bookmark"
+msgstr "Skatīt nākamās grāmatzīmes rindu"
+
+#: ../../src/ed_menu.py:734
+msgid "View Line of Previous Bookmark"
+msgstr "Skatīt iepriekšējās grāmatzīmes rindu"
+
+#: ../../src/prefdlg.py:587
+msgid "View Options"
+msgstr "Skata opcijas"
+
+#: ../../src/ed_script.py:202
+msgid "View and Edit Macros"
+msgstr "Skatīt un rediģēt makro"
+
+#: ../../src/ed_menu.py:717
+msgid "View pane selection list"
+msgstr "Skatīt rūšu atlases sarakstu"
+
+#: ../../src/ed_menu.py:887
+#, python-format
+msgid "Visit the project homepage %s"
+msgstr "Apmeklēt projekta vietni %s"
+
+#: ../../src/prefdlg.py:703
+msgid "Visual Helpers"
+msgstr "Vizuālā palīdzība"
+
+#: ../../src/prefdlg.py:349
+msgid "Warn when mixed eol characters are detected"
+msgstr "Brīdināt par atrastiem atšķirīgiem rindas beigu marķieriem"
+
+#: ../../plugins/Launch/launch/cfgdlg.py:450
+msgid "Warning Text"
+msgstr "Brīdinājuma teksts"
+
+#: ../../src/eclib/infodlg.py:185
+msgid "Where"
+msgstr "Kur"
+
+#: ../../src/ed_main.py:690
+msgid "Where to Save Profile?"
+msgstr "Profila saglabāšanas vietas izvēle"
+
+#: ../../src/ed_main.py:735
+#, fuzzy
+msgid "Where to Save Session?"
+msgstr "Profila saglabāšanas vietas izvēle"
+
+#: ../../src/ed_menu.py:797
+msgid "Whitespace"
+msgstr "Tukšumzīme"
+
+#: ../../src/ed_menu.py:798
+msgid "Whitespace formating commands"
+msgstr "Tukšumzīmju formatēšanas komandas"
+
+#: ../../src/eclib/finddlg.py:798
+msgid "Whole word"
+msgstr "Pilns vārds"
+
+#: ../../src/ed_glob.py:361 ../../src/ed_mdlg.py:138
+msgid "Windows"
+msgstr "Windows"
+
+#: ../../src/ed_menu.py:810 ../../src/ed_menu.py:813 ../../src/prefdlg.py:541
+msgid "Windows (\\r\\n)"
+msgstr "Windows (\\r\\n)"
+
+#: ../../src/ed_menu.py:781 ../../src/prefdlg.py:558
+msgid "Word Wrap"
+msgstr "Aplauzt tekstu"
+
+#: ../../src/ed_menu.py:783
+msgid "Wrap Text Horizontally"
+msgstr "Aplauzt tekstu horizontāli"
+
+#: ../../src/ed_main.py:1436
+#, python-format
+msgid "Written in 100%% Python."
+msgstr "Uzrakstīts 100%% valodā Python."
+
+#: ../../src/plugdlg.py:168
+msgid "You must restart Editra before your changes will take full affect."
+msgstr ""
+
+#: ../../src/Editra.py:825 ../../src/Editra.py:998
+msgid "Your profile has been updated to the latest version"
+msgstr "Jūsu profils ir atjaunināts uz jaunāko versiju"
+
+#: ../../src/ed_menu.py:676 ../../src/ed_menu.py:678
+msgid "Zoom Default"
+msgstr "Noklusējuma tuvinājums"
+
+#: ../../src/ed_menu.py:673 ../../src/ed_menu.py:675
+msgid "Zoom In"
+msgstr "Tuvināt"
+
+#: ../../src/ed_menu.py:670 ../../src/ed_menu.py:672
+msgid "Zoom Out"
+msgstr "Tālināt"
+
+#: ../../plugins/Launch/launch/launch.py:162
+msgid "args"
+msgstr "Argumenti"
+
+#: ../../src/style_editor.py:666
+msgid "bold"
+msgstr "treknraksts"
+
+#: ../../src/style_editor.py:667
+msgid "eol"
+msgstr "rindas beigas"
+
+#: ../../plugins/Launch/launch/launch.py:149
+msgid "exec"
+msgstr "Izpilde"
+
+#: ../../src/style_editor.py:668
+msgid "italic"
+msgstr "slīpraksts"
+
+#: ../../src/style_editor.py:669
+msgid "underline"
+msgstr "pasvītrojums"
+
+#~ msgid "Finished Installing Plugins"
+#~ msgstr "Spraudmoduļu instalēšana pabeigta"
+
+#~ msgid "Go to configuration page?"
+#~ msgstr "Vai pāriet uz konfigurācijas lapu?"
+
+#~ msgid "Untitled"
+#~ msgstr "Bez nosaukuma"
+
+#~ msgid "match case: %s"
+#~ msgstr "saskaņot reģistru: %s"
+
+#~ msgid "regex: %s"
+#~ msgstr "regulārā izteiksme: %s"
+
+#~ msgid "whole word: %s"
+#~ msgstr "pilns vārds: %s"

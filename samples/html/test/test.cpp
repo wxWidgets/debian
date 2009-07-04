@@ -3,7 +3,7 @@
 // Purpose:     wxHtml testing example
 // Author:      Vaclav Slavik
 // Created:     1999-07-07
-// RCS-ID:      $Id: test.cpp 43844 2006-12-07 05:47:05Z PC $
+// RCS-ID:      $Id: test.cpp 52178 2008-02-28 18:44:24Z JS $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -355,7 +355,7 @@ void MyHtmlWindow::OnClipboardEvent(wxClipboardTextEvent& WXUNUSED(event))
     if ( CopySelection() )
     {
         wxTextDataObject data;
-        if ( wxTheClipboard && wxTheClipboard->GetData(data) )
+        if ( wxTheClipboard && wxTheClipboard->Open() && wxTheClipboard->GetData(data) )
         {
             const wxString text = data.GetText();
             const size_t maxTextLength = 100;
@@ -364,6 +364,9 @@ void MyHtmlWindow::OnClipboardEvent(wxClipboardTextEvent& WXUNUSED(event))
                         wxString(text, maxTextLength).c_str(),
                         (text.length() > maxTextLength) ? _T("...")
                                                         : _T("")));
+
+            wxTheClipboard->Close();
+
             return;
         }
     }

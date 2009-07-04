@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-July-1998
-// RCS-ID:      $Id: _cmndlgs.i 44532 2007-02-19 21:17:27Z RD $
+// RCS-ID:      $Id: _cmndlgs.i 57740 2009-01-02 04:28:25Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -98,8 +98,8 @@ which will be copied to the colour dialog's internal ColourData
 instance.", "");
 
     DocDeclStr(
-        wxColourData& , GetColourData(),
-        "Returns a reference to the `wx.ColourData` used by the dialog.", "");
+        wxColourData , GetColourData(),
+        "Returns a copy of the `wx.ColourData` used by the dialog.", "");
 
     %property(ColourData, GetColourData, doc="See `GetColourData`");
 };
@@ -800,7 +800,7 @@ Window Styles
 
 MustHaveApp(wxProgressDialog);
 
-class wxProgressDialog : public wxFrame {
+class wxProgressDialog : public wxDialog {
 public:
     %pythonAppend wxProgressDialog   "self._setOORInfo(self)"
 

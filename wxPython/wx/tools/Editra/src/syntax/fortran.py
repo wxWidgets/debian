@@ -3,27 +3,28 @@
 # Purpose: Define Fortran 77/95 syntax for highlighting and other features    #
 # Author: Cody Precord <cprecord@editra.org>                                  #
 # Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#-----------------------------------------------------------------------------#
-# FILE: fortran.py                                                            #
-# AUTHOR: Cody Precord                                                        #
-#                                                                             #
-# SUMMARY:                                                                    #
-# Lexer configuration module for Fortran f77 and f95                          #
-#                                                                             #
-# @todo: check keywords more throughly                                        #
-#-----------------------------------------------------------------------------#
+FILE: fortran.py
+AUTHOR: Cody Precord
+@summary: Lexer configuration module for Fortran f77 and f95
+@todo: check keywords more throughly
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: fortran.py 49417 2007-10-25 08:03:01Z CJP $"
-__revision__ = "$Revision: 49417 $"
+__svnid__ = "$Id: fortran.py 55180 2008-08-22 17:35:29Z CJP $"
+__revision__ = "$Revision: 55180 $"
 
 #-----------------------------------------------------------------------------#
+# Imports
+import re
+
+# Local Imports
 import synglob
+
 #-----------------------------------------------------------------------------#
 
 #---- Keyword Definitions ----#
@@ -170,6 +171,37 @@ def CommentPattern(lang_id=0):
         return list()
 
 #---- End Required Module Functions ----#
+
+def AutoIndenter(stc, pos, ichar):
+    """Auto indent cpp code. uses \n the text buffer will
+    handle any eol character formatting.
+    @param stc: EditraStyledTextCtrl
+    @param pos: current carat position
+    @param ichar: Indentation character
+    @return: string
+
+    """
+    rtxt = u''
+    line = stc.GetCurrentLine()
+    text = stc.GetTextRange(stc.PositionFromLine(line), pos)
+
+    indent = stc.GetLineIndentation(line)
+    if ichar == u"\t":
+        tabw = stc.GetTabWidth()
+    else:
+        tabw = stc.GetIndent()
+
+    i_space = indent / tabw
+    ndent = u"\n" + ichar * i_space
+    rtxt = ndent + ((indent - (tabw * i_space)) * u' ')
+
+    blks = '(program|function|subroutine|if|do|while)'
+    blk_pat = re.compile(blks + '\s*[(a-zA-Z][a-zA-Z0-9]*', re.IGNORECASE)
+    text = text.strip()
+    if text.endswith('{') or blk_pat.match(text) or text == 'else':
+        rtxt += ichar
+
+    return rtxt
 
 #---- Syntax Modules Internal Functions ----#
 def KeywordString():

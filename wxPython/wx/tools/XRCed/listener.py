@@ -2,7 +2,7 @@
 # Purpose:      Listener for dispatching events from view to presenter
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      07.06.2007
-# RCS-ID:       $Id: listener.py 50264 2007-11-26 23:35:11Z ROL $
+# RCS-ID:       $Id: listener.py 57249 2008-12-11 14:00:41Z ROL $
 
 import wx
 import os,sys,shutil,tempfile
@@ -26,6 +26,7 @@ class _Listener:
         self.panel = panel
         self.toolFrame = toolFrame
         self.testWin = testWin
+        self.lastSearch = None
 
         self.dataElem = wx.CustomDataObject('XRCED_elem')
         self.dataNode = wx.CustomDataObject('XRCED_node')
@@ -80,6 +81,7 @@ class _Listener:
         wx.EVT_MENU(frame, frame.ID_UNSELECT, self.OnUnselect)
         wx.EVT_MENU(frame, frame.ID_TOOL_PASTE, self.OnToolPaste)
         wx.EVT_MENU(frame, wx.ID_FIND, self.OnFind)
+        wx.EVT_MENU(frame, frame.ID_FINDAGAIN, self.OnFindAgain)
         wx.EVT_MENU(frame, frame.ID_LOCATE, self.OnLocate)
         wx.EVT_MENU(frame, frame.ID_TOOL_LOCATE, self.OnLocate)
         # View
@@ -115,6 +117,7 @@ class _Listener:
         wx.EVT_UPDATE_UI(frame, wx.ID_PASTE, self.OnUpdateUI)
         wx.EVT_UPDATE_UI(frame, wx.ID_DELETE, self.OnUpdateUI)
         wx.EVT_UPDATE_UI(frame, frame.ID_LOCATE, self.OnUpdateUI)
+        wx.EVT_UPDATE_UI(frame, frame.ID_FINDAGAIN, self.OnUpdateUI)
         wx.EVT_UPDATE_UI(frame, frame.ID_TOOL_LOCATE, self.OnUpdateUI)
         wx.EVT_UPDATE_UI(frame, frame.ID_TOOL_PASTE, self.OnUpdateUI)
         wx.EVT_UPDATE_UI(frame, wx.ID_UNDO, self.OnUpdateUI)
@@ -169,7 +172,11 @@ class _Listener:
         frame.Bind(wx.EVT_CLOSE, self.OnCloseTestWin)
         frame.Bind(wx.EVT_SIZE, self.OnSizeTestWin)
         frame.SetAcceleratorTable(self.accels)
-        frame.Bind(wx.EVT_MENU, lambda evt: self.frame.ProcessEvent(evt))
+        frame.Bind(wx.EVT_MENU, self.OnTestWinEvent)
+        frame.Bind(wx.EVT_BUTTON, self.OnTestWinEvent)
+
+    def OnTestWinEvent(self, evt):
+        TRACE('Test window event: %s', evt)
 
     def Uninstall(self):
         '''Unbind some event before destroying.'''
@@ -177,19 +184,24 @@ class _Listener:
 
     def OnComponentCreate(self, evt):
         '''Hadnler for creating new elements.'''
+        state = self.tree.GetFullState() # state just before
         comp = Manager.findById(evt.GetId())
-        g.undoMan.RegisterUndo(undo.UndoGlobal()) # !!! TODO
         if comp.groups[0] == 'component':
             node = Model.createComponentNode('Component')
-            Presenter.create(comp, node)
+            item = Presenter.create(comp, node)
         else:
-            Presenter.create(comp)
+            item = Presenter.create(comp)
+        itemIndex = self.tree.ItemFullIndex(item)
+        g.undoMan.RegisterUndo(undo.UndoPasteCreate(itemIndex, state))
 
     def OnComponentReplace(self, evt):
         '''Hadnler for creating new elements.'''
         comp = Manager.findById(evt.GetId() - ID.SHIFT)
-        g.undoMan.RegisterUndo(undo.UndoGlobal()) # !!! TODO
-        Presenter.replace(comp)
+        item = self.tree.GetSelection()
+        index = self.tree.ItemFullIndex(item)
+        oldComp = Presenter.comp
+        oldNode = Presenter.replace(comp)
+        g.undoMan.RegisterUndo(undo.UndoReplace(index, oldComp, oldNode))
 
     def OnReference(self, evt):
         '''Create reference to an existing object.'''
@@ -321,7 +333,7 @@ class _Listener:
         dlg.Destroy()
         wx.Yield()
         if say == wx.ID_YES:
-            self.OnSaveOrSaveAs(wx.CommandEvent(wx.ID_SAVE))
+            self.OnSaveOrSaveAs(wx.CommandEvent(wx.EVT_MENU.typeId, wx.ID_SAVE))
             # If save was successful, modified flag is unset
             if not Presenter.modified: return True
         elif say == wx.ID_NO:
@@ -371,17 +383,22 @@ class _Listener:
 
     def OnCut(self, evt):
         '''wx.ID_CUT handler.'''
-        g.undoMan.RegisterUndo(undo.UndoGlobal()) # !!! TODO
-        Presenter.cut()
+        item = self.tree.GetSelection()
+        index = self.tree.ItemFullIndex(item)
+        state = self.tree.GetFullState()        
+        node = Presenter.cut()
+        g.undoMan.RegisterUndo(undo.UndoCutDelete(index, state, node))
 
     def OnDelete(self, evt):
         '''wx.ID_DELETE handler.'''
         if len(self.tree.GetSelections()) == 1:
             item = self.tree.GetSelection()
             index = self.tree.ItemFullIndex(item)
+            state = self.tree.GetFullState()
             node = Presenter.delete(self.tree.GetSelection())
-            g.undoMan.RegisterUndo(undo.UndoCutDelete(index, node))
+            g.undoMan.RegisterUndo(undo.UndoCutDelete(index, state, node))
         else:
+            # Save all if multiselection
             g.undoMan.RegisterUndo(undo.UndoGlobal())
             Presenter.deleteMany(self.tree.GetSelections())
 
@@ -391,17 +408,24 @@ class _Listener:
 
     def OnMenuPaste(self, evt):
         '''wx.ID_PASTE handler (for XMLTreeMenu).'''
-        g.undoMan.RegisterUndo(undo.UndoGlobal()) # !!! TODO
-        Presenter.paste()
+        state = self.tree.GetFullState() # state just before
+        item = Presenter.paste()
+        if not item: return     # error in paste()
+        itemIndex = self.tree.ItemFullIndex(item)
+        g.undoMan.RegisterUndo(undo.UndoPasteCreate(itemIndex, state))
 
     def OnCmdPaste(self, evt):
         '''ID.PASTE handler (for Edit menu and shortcuts).'''
+        TRACE('OnCmdPaste')
         state = wx.GetMouseState()
         forceSibling = state.AltDown()
         forceInsert = state.ShiftDown()
         g.Presenter.updateCreateState(forceSibling, forceInsert)
-        g.undoMan.RegisterUndo(undo.UndoGlobal()) 
-        Presenter.paste()
+        state = self.tree.GetFullState() # state just before
+        item = Presenter.paste()
+        if not item: return     # error in paste()
+        itemIndex = self.tree.ItemFullIndex(item)
+        g.undoMan.RegisterUndo(undo.UndoPasteCreate(itemIndex, state))
 
     def OnToolPaste(self, evt):
         '''frame.ID_TOOL_PASTE handler.'''
@@ -414,17 +438,22 @@ class _Listener:
             forceSibling = state.ControlDown()
         forceInsert = state.ShiftDown()
         g.Presenter.updateCreateState(forceSibling, forceInsert)
-        g.undoMan.RegisterUndo(undo.UndoGlobal()) 
-        Presenter.paste()
+        treeState = self.tree.GetFullState() # state just before
+        item = Presenter.paste()
+        if not item: return     # error in paste()
+        itemIndex = self.tree.ItemFullIndex(item)
+        g.undoMan.RegisterUndo(undo.UndoPasteCreate(itemIndex, treeState)) 
 
     def OnPasteSibling(self, evt):
         '''ID.PASTE_SIBLING handler.'''
         forceSibling = True
         state = wx.GetMouseState()
         forceInsert = state.ShiftDown()
-        g.Presenter.updateCreateState(forceSibling, forceInsert)        
-        g.undoMan.RegisterUndo(undo.UndoGlobal()) # !!! TODO
-        Presenter.paste()
+        g.Presenter.updateCreateState(forceSibling, forceInsert)
+        treeState = self.tree.GetFullState() # state just before
+        item = Presenter.paste()
+        itemIndex = self.tree.ItemFullIndex(item)
+        g.undoMan.RegisterUndo(undo.UndoPasteCreate(itemIndex, treeState))
 
     def OnUnselect(self, evt):
         self.tree.UnselectAll()
@@ -461,6 +490,8 @@ class _Listener:
     def OnFind(self, evt):
         name = wx.GetTextFromUser('Find name:', caption='Find')
         if not name: return
+        self.lastSearch = name
+        self.frame.SetStatusText('Looking for "%s"' % name)
         if Presenter.item == self.tree.root:
             item = self.tree.Find(self.tree.root, name)
         else:
@@ -487,13 +518,57 @@ class _Listener:
                 if ask == wx.YES:
                     item = self.tree.Find(self.tree.root, name)
                 else:
+                    self.frame.SetStatusText('')
                     return
         if not item: 
+            self.frame.SetStatusText('Search failed')
             wx.LogError('No such name')
             return
+        self.frame.SetStatusText('Search succeded')
         Presenter.unselect()
         self.tree.EnsureVisible(item)
         self.tree.SelectItem(item)        
+
+    def OnFindAgain(self, evt):
+        self.frame.SetStatusText('Looking for "%s"' % self.lastSearch)
+        if Presenter.item == self.tree.root:
+            item = self.tree.Find(self.tree.root, self.lastSearch)
+        else:
+            # Find from current position
+            item = Presenter.item        
+            while item:
+                # Search the rest of the current subtree, then go up
+                next = self.tree.GetNextSibling(item)
+                while not next:
+                    next = self.tree.GetItemParent(item)
+                    if next == self.tree.root:
+                        next = None
+                        break
+                    item = next
+                    next = self.tree.GetNextSibling(next)
+                item = next
+                if item:
+                    found = self.tree.Find(item, self.lastSearch)
+                    if found: 
+                        item = found
+                        break
+            if not item: 
+                ask = wx.MessageBox('Search failed. Search from the root?', 
+                                    'Question', wx.YES_NO)
+                if ask == wx.YES:
+                    item = self.tree.Find(self.tree.root, name)
+                    if not item: 
+                        self.frame.SetStatusText('Search failed')
+                        wx.LogError('Search from the root failed.')
+                        return
+                else:
+                    self.frame.SetStatusText('')
+                    return
+        self.lastFoundItem = item
+        self.frame.SetStatusText('Search succeded')
+        Presenter.unselect()
+        self.tree.EnsureVisible(item)
+        self.tree.SelectItem(item)                
 
     def OnLocate(self, evt):
         frame = self.testWin.GetFrame()
@@ -548,7 +623,6 @@ Homepage: http://xrced.sourceforge.net\
                         +traceback.format_list(tblist))
                 print msg
 
-
     def OnEmbedPanel(self, evt):
         self.frame.EmbedUnembed(evt.IsChecked())
 
@@ -559,7 +633,7 @@ Homepage: http://xrced.sourceforge.net\
         
     def OnTest(self, evt):
         if not Presenter.item: return
-        object = Presenter.createTestWin(Presenter.item)
+        Presenter.createTestWin(Presenter.item)
 
     # Test window events
 
@@ -666,6 +740,8 @@ Homepage: http://xrced.sourceforge.net\
         elif evt.GetId() in [self.frame.ID_LOCATE, self.frame.ID_TOOL_LOCATE,
                              wx.ID_REFRESH]:
             evt.Enable(self.testWin.IsShown())
+        elif evt.GetId() == self.frame.ID_FINDAGAIN:
+            evt.Enable(self.lastSearch is not None)
         elif evt.GetId() == wx.ID_UNDO:  evt.Enable(g.undoMan.CanUndo())
         elif evt.GetId() == wx.ID_REDO:  evt.Enable(g.undoMan.CanRedo())
         elif evt.GetId() in [ID.COLLAPSE, ID.EXPAND]:
@@ -682,7 +758,6 @@ Homepage: http://xrced.sourceforge.net\
             if item: Presenter.update(item)
 
         # Check clipboard
-#        self.clipboardHasData = True
         if not wx.TheClipboard.IsOpened():
             self.clipboardHasData = False
             if wx.TheClipboard.IsSupported(self.dataElem.GetFormat()):
@@ -779,8 +854,7 @@ Homepage: http://xrced.sourceforge.net\
             return
         # If panel has a pending undo, register it
         if Presenter.panelIsDirty():
-            g.undoMan.RegisterUndo(self.panel.undo)
-            self.panel.undo = None
+            Presenter.registerUndoEdit()
         evt.Skip()
 
     def OnTreeSelChanged(self, evt):
@@ -845,15 +919,16 @@ Homepage: http://xrced.sourceforge.net\
     def OnComponentTool(self, evt):
         '''Hadnler for creating new elements.'''
         comp = Manager.findById(evt.GetId())
-        
         # Check compatibility
         if Presenter.checkCompatibility(comp):
-            g.undoMan.RegisterUndo(undo.UndoGlobal()) # !!! TODO
+            state = self.tree.GetFullState() # state just before
             if comp.groups[0] == 'component':
                 node = Model.createComponentNode('Component')
-                Presenter.create(comp, node)
+                item = Presenter.create(comp, node)
             else:
-                Presenter.create(comp)
+                item = Presenter.create(comp)
+            itemIndex = self.tree.ItemFullIndex(item)
+            g.undoMan.RegisterUndo(undo.UndoPasteCreate(itemIndex, state))
         evt.Skip()
 
     def OnCloseToolFrame(self, evt):

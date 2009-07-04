@@ -3,22 +3,17 @@
 # Purpose: Currently Unimplemented                                            #
 # Author: Cody Precord <cprecord@editra.org>                                  #
 # Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#--------------------------------------------------------------------------#
-# FILE:	ed_script       						                           #
-# AUTHOR: Cody Precord <cprecord@editra.org>                               # 
-# LANGUAGE: Python							                               #
-# SUMMARY:                                                                 #
-#
-#--------------------------------------------------------------------------#
+Incomplete not used
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ed_script.py 49416 2007-10-25 06:06:13Z CJP $"
-__revision__ = "$Revision: 49416 $"
+__svnid__ = "$Id: ed_script.py 52855 2008-03-27 14:53:06Z CJP $"
+__revision__ = "$Revision: 52855 $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
@@ -41,17 +36,17 @@ class ScriptProcessorI(plugin.Interface):
         is used to determine what script processor should recieve
         the job request.
         @return: script processor identifier
-        
+
         """
-        
+
     def ExecuteScript(self, script_name):
         """Executes the given script. The name should be the name
         of a script that is in the script cache.
-        
+
         @see: L{ScriptCache}
 
         """
-        
+
 class ScriptProcessor(plugin.Plugin):
     """Processes script/macro data and executes the scripted actions
     @note: implements the ScriptProcessorI
@@ -83,7 +78,7 @@ class ScriptBase(list):
     def __init__(self, name):
         """@param name: name of script object"""
         list.__init__(self)
-        
+
         self.name = name
 
     def __str__(self):
@@ -93,7 +88,7 @@ class ScriptBase(list):
         @return: formatted string version of script
 
         """
-        
+
 
     def AppendCommand(self, cmd):
         """Appends a command to the end of the script
@@ -123,7 +118,7 @@ class ScriptCache(object):
     scripts on request as well as the actual IO of saving and loading.
 
     """
-    
+
 #-----------------------------------------------------------------------------#
 
 class ScriptDaemon(object):
@@ -145,26 +140,26 @@ class ScriptDaemon(object):
         @param script: script to cache
 
         """
-        
+
     def LoadScriptCache(self):
         """Loads on disk scripts into the cache
         @postcondition: scripts saved on disk have been loaded into cache
 
         """
- 
+
     def RunScript(self, script, *args):
         """Runs the specified script passing any arguments
         specified in *args to the script object.
         @param script: script to run
 
         """
-        
+
     def SaveScripts(self):
         """Dumps the script cache onto disk
         @postcondition: script cache is written to disk
 
         """
-        
+
 #-----------------------------------------------------------------------------#
 
 ID_MACRO_MAN = wx.NewId()

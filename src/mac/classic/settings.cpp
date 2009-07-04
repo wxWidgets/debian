@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: settings.cpp 39797 2006-06-19 20:18:46Z ABX $
+// RCS-ID:      $Id: settings.cpp 57542 2008-12-25 13:03:24Z VZ $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -70,6 +70,7 @@ wxColour wxSystemSettingsNative::GetColour(wxSystemColour index)
         case wxSYS_COLOUR_CAPTIONTEXT:
         case wxSYS_COLOUR_INFOTEXT:
         case wxSYS_COLOUR_INACTIVECAPTIONTEXT:
+        case wxSYS_COLOUR_LISTBOXTEXT:
             return *wxBLACK;
             break ;
         case wxSYS_COLOUR_HIGHLIGHT:

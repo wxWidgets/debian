@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _button.i 47670 2007-07-23 15:53:27Z RD $
+// RCS-ID:      $Id: _button.i 54625 2008-07-14 22:20:10Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -62,6 +62,7 @@ Events
 
 
 MustHaveApp(wxButton);
+MustHaveApp(wxButton::GetDefaultSize);
 
 class wxButton : public wxControl
 {

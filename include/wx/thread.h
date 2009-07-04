@@ -5,7 +5,7 @@
 // Modified by: Vadim Zeitlin (modifications partly inspired by omnithreads
 //              package from Olivetti & Oracle Research Laboratory)
 // Created:     04/13/98
-// RCS-ID:      $Id: thread.h 50161 2007-11-22 15:18:37Z VS $
+// RCS-ID:      $Id: thread.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -109,11 +109,11 @@ enum wxMutexType
 };
 
 // forward declarations
-class WXDLLIMPEXP_BASE wxThreadHelper;
-class WXDLLIMPEXP_BASE wxConditionInternal;
-class WXDLLIMPEXP_BASE wxMutexInternal;
-class WXDLLIMPEXP_BASE wxSemaphoreInternal;
-class WXDLLIMPEXP_BASE wxThreadInternal;
+class WXDLLIMPEXP_FWD_BASE wxThreadHelper;
+class WXDLLIMPEXP_FWD_BASE wxConditionInternal;
+class WXDLLIMPEXP_FWD_BASE wxMutexInternal;
+class WXDLLIMPEXP_FWD_BASE wxSemaphoreInternal;
+class WXDLLIMPEXP_FWD_BASE wxThreadInternal;
 
 // ----------------------------------------------------------------------------
 // A mutex object is a synchronization object whose state is set to signaled

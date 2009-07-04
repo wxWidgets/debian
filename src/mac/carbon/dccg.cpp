@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dccg.cpp 42763 2006-10-30 20:34:25Z VZ $
+// RCS-ID:      $Id: dccg.cpp 55129 2008-08-19 04:50:45Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,12 +35,16 @@
 #include "wx/mac/private.h"
 
 
-#ifndef wxMAC_USE_CORE_GRAPHICS_BLEND_MODES
-#define wxMAC_USE_CORE_GRAPHICS_BLEND_MODES 0
-#endif
-
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4
 typedef float CGFloat ;
+#endif
+
+#ifndef wxMAC_USE_CORE_GRAPHICS_BLEND_MODES
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
+    #define wxMAC_USE_CORE_GRAPHICS_BLEND_MODES 1
+#else
+    #define wxMAC_USE_CORE_GRAPHICS_BLEND_MODES 0
+#endif
 #endif
 
 //-----------------------------------------------------------------------------
@@ -1062,6 +1066,9 @@ void wxMacCGContext::GetTextExtent( const wxString &str, wxCoord *width, wxCoord
         *width = FixedToInt(textAfter - textBefore) ;
 
     ::ATSUDisposeTextLayout(atsuLayout);
+#if SIZEOF_WCHAR_T == 4
+    free( ubuf ) ;
+#endif
 }
 
 void wxMacCGContext::GetPartialTextExtents(const wxString& text, wxArrayInt& widths) const
@@ -1119,6 +1126,9 @@ void wxMacCGContext::GetPartialTextExtents(const wxString& text, wxArrayInt& wid
     }
 
     ::ATSUDisposeTextLayout(atsuLayout);
+#if SIZEOF_WCHAR_T == 4
+    free( ubuf ) ;
+#endif
 }
 
 void wxMacCGContext::SetFont( const wxFont &font )
@@ -1561,13 +1571,16 @@ void wxDC::SetLogicalFunction( int function )
 
     m_logicalFunction = function ;
 #if wxMAC_USE_CORE_GRAPHICS_BLEND_MODES
-    CGContextRef cgContext = ((wxMacCGContext*)(m_graphicContext))->GetNativeContext() ;
-    if ( m_logicalFunction == wxCOPY )
-        CGContextSetBlendMode( cgContext, kCGBlendModeNormal ) ;
-    else if ( m_logicalFunction == wxINVERT )
-        CGContextSetBlendMode( cgContext, kCGBlendModeExclusion ) ;
-    else
-        CGContextSetBlendMode( cgContext, kCGBlendModeNormal ) ;
+    if ( CGContextSetBlendMode != 0 )
+    {
+        CGContextRef cgContext = ((wxMacCGContext*)(m_graphicContext))->GetNativeContext() ;
+        if ( m_logicalFunction == wxCOPY )
+            CGContextSetBlendMode( cgContext, kCGBlendModeNormal ) ;
+        else if ( m_logicalFunction == wxINVERT || m_logicalFunction == wxXOR )
+            CGContextSetBlendMode( cgContext, kCGBlendModeExclusion ) ;
+        else
+            CGContextSetBlendMode( cgContext, kCGBlendModeNormal ) ;
+    }
 #endif
 }
 

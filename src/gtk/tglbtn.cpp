@@ -5,7 +5,7 @@
 // Author:      John Norris, minor changes by Axel Schlueter
 // Modified by:
 // Created:     08.02.01
-// RCS-ID:      $Id: tglbtn.cpp 42043 2006-10-15 20:12:41Z RR $
+// RCS-ID:      $Id: tglbtn.cpp 58188 2009-01-17 20:38:43Z JS $
 // Copyright:   (c) 2000 Johnny C. Norris II
 // License:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -145,10 +145,15 @@ void wxToggleBitmapButton::OnSetBitmap()
 
 bool wxToggleBitmapButton::Enable(bool enable /*=true*/)
 {
+    bool isEnabled = IsEnabled();
+
     if (!wxControl::Enable(enable))
         return false;
 
     gtk_widget_set_sensitive(GTK_BIN(m_widget)->child, enable);
+
+    if (!isEnabled && enable)
+        wxGtkFixSensitivity(this);
 
     return true;
 }
@@ -269,10 +274,15 @@ void wxToggleButton::SetLabel(const wxString& label)
 
 bool wxToggleButton::Enable(bool enable /*=true*/)
 {
+    bool isEnabled = IsEnabled();
+
     if (!wxControl::Enable(enable))
         return false;
 
     gtk_widget_set_sensitive(GTK_BIN(m_widget)->child, enable);
+
+    if (!isEnabled && enable)
+        wxGtkFixSensitivity(this);
 
     return true;
 }

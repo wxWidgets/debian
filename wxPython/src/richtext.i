@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     11-April-2006
-// RCS-ID:      $Id: richtext.i 46289 2007-06-02 23:53:22Z RD $
+// RCS-ID:      $Id: richtext.i 54572 2008-07-10 01:35:59Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -58,12 +58,15 @@ enum wxTextAttrAlignment
     wxTEXT_ALIGNMENT_JUSTIFIED
 };
 
+enum wxTextCtrlHitTestResult;
+
 //----------------------------------------------------------------------
 
 %include _richtextbuffer.i
 %include _richtextctrl.i
 %include _richtexthtml.i
 %include _richtextxml.i
+%include _richtextprint.i
 
 //----------------------------------------------------------------------
 

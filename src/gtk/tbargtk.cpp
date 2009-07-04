@@ -3,7 +3,7 @@
 // Purpose:     GTK toolbar
 // Author:      Robert Roebling
 // Modified:    13.12.99 by VZ to derive from wxToolBarBase
-// RCS-ID:      $Id: tbargtk.cpp 46562 2007-06-20 17:49:13Z PC $
+// RCS-ID:      $Id: tbargtk.cpp 53915 2008-06-01 20:18:12Z PC $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -95,6 +95,12 @@ public:
         : wxToolBarToolBase(tbar, control)
     {
         Init();
+        // Hold a reference to keep control alive until DoInsertTool() is
+        // called, or if RemoveTool() is called (see DoDeleteTool)
+        g_object_ref(control->m_widget);
+        // release reference when gtk_widget_destroy() is called on control
+        g_signal_connect(
+            control->m_widget, "destroy", G_CALLBACK(g_object_unref), NULL);
     }
 
     // is this a radio button?
@@ -247,37 +253,14 @@ static gint gtk_toolbar_tool_callback( GtkWidget *WXUNUSED(widget),
 }
 }
 
-extern "C" {
-static
-void gtktoolwidget_size_callback( GtkWidget *widget,
-                                  GtkAllocation *alloc,
-                                  wxWindow *win )
-{
-    // this shouldn't happen...
-    if (win->GetParent()->m_wxwindow) return;
-    
-    wxSize size = win->GetEffectiveMinSize();
-    if (size.y != alloc->height)
-    {
-        GtkAllocation alloc2;
-        alloc2.x = alloc->x;
-        alloc2.y = (alloc->height - size.y + 3) / 2;
-        alloc2.width = alloc->width;
-        alloc2.height = size.y;
-        gtk_widget_size_allocate( widget, &alloc2 );
-    }
-}
-}
 //-----------------------------------------------------------------------------
 // InsertChild callback for wxToolBar
 //-----------------------------------------------------------------------------
 
 static void wxInsertChildInToolBar( wxToolBar* WXUNUSED(parent),
-                                    wxWindow* child)
+                                    wxWindow* /* child */)
 {
-     // Child widget will be inserted into GtkToolbar by DoInsertTool. Ref it
-     // here so reparenting into wxToolBar doesn't delete it.
-     g_object_ref(child->m_widget);
+     // Child widget will be inserted into GtkToolbar by DoInsertTool()
 }
 
 // ----------------------------------------------------------------------------
@@ -504,20 +487,17 @@ bool wxToolBar::DoInsertTool(size_t pos, wxToolBarToolBase *toolBase)
             return true;
 
         case wxTOOL_STYLE_CONTROL:
+            GtkWidget* align = gtk_alignment_new(0.5, 0.5, 0, 0);
+            gtk_widget_show(align);
+            gtk_container_add((GtkContainer*)align, tool->GetControl()->m_widget);
             gtk_toolbar_insert_widget(
                                        m_toolbar,
-                                       tool->GetControl()->m_widget,
+                                       align,
                                        (const char *) NULL,
                                        (const char *) NULL,
                                        posGtk
                                       );
-            // release reference obtained by wxInsertChildInToolBar
-            g_object_unref(tool->GetControl()->m_widget);
-
-            // connect after in order to correct size_allocate events
-            g_signal_connect_after (tool->GetControl()->m_widget, "size_allocate",
-                          G_CALLBACK (gtktoolwidget_size_callback), tool->GetControl());
-                                      
+            tool->m_item = align;
             break;
     }
 
@@ -538,11 +518,17 @@ bool wxToolBar::DoDeleteTool(size_t pos, wxToolBarToolBase *toolBase)
     switch ( tool->GetStyle() )
     {
         case wxTOOL_STYLE_CONTROL:
-            tool->GetControl()->Destroy();
-            break;
+            // don't destroy the control here as we can be called from
+            // RemoveTool() and then we need to keep the control alive;
+            // while if we're called from DeleteTool() the control will
+            // be destroyed when wxToolBarToolBase itself is deleted
+            gtk_container_remove(
+                GTK_CONTAINER(tool->m_item), tool->GetControl()->m_widget);
+            // fall through
 
         case wxTOOL_STYLE_BUTTON:
             gtk_widget_destroy( tool->m_item );
+            tool->m_item = NULL;
             break;
 
         case wxTOOL_STYLE_SEPARATOR:
@@ -709,7 +695,7 @@ void wxToolBar::OnInternalIdle()
         }
     }
 
-    if (wxUpdateUIEvent::CanUpdate(this))
+    if (wxUpdateUIEvent::CanUpdate(this) && IsShownOnScreen())
         UpdateWindowUI(wxUPDATE_UI_FROMIDLE);
 }
 

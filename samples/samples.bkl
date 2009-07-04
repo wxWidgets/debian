@@ -1,11 +1,14 @@
 <?xml version="1.0" ?>
-<!-- $Id: samples.bkl 42759 2006-10-30 20:08:17Z VZ $ -->
+<!-- $Id: samples.bkl 56099 2008-10-05 22:12:04Z VZ $ -->
 <makefile>
 
     <include file="../build/bakefiles/config.bkl"/>
 
-    <template id="sub">
+    <template id="optsub">
         <dir>$(id)</dir>
+    </template>
+
+    <template id="sub" template="optsub">
         <dependency-of>all</dependency-of>
     </template>
 
@@ -52,7 +55,6 @@
     <subproject id="listctrl" template="sub"/>
     <subproject id="mdi" template="sub"/>
     <subproject id="mediaplayer" template="sub"/>
-    <subproject id="memcheck" template="sub"/>
     <subproject id="menu" template="sub"/>
     <subproject id="minifram" template="sub"/>
     <subproject id="minimal" template="sub"/>
@@ -90,7 +92,8 @@
     <subproject id="vscroll" template="sub"/>
     <subproject id="widgets" template="sub"/>
     <subproject id="wizard" template="sub"/>
-    <!-- Put samples most likely to fail at the end -->
-    <subproject id="mfc" template="sub"/>
+    <!-- These samples don't always build so don't build them by default -->
+    <subproject id="mfc" template="optsub"/>
+    <subproject id="memcheck" template="optsub"/>
 
 </makefile>

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     17-March-2000
-// RCS-ID:      $Id: grid.i 48818 2007-09-19 23:28:31Z RD $
+// RCS-ID:      $Id: grid.i 59671 2009-03-20 20:58:50Z RD $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -484,7 +484,8 @@ enum {
     wxGRID_LABEL_EDGE_ZONE,
     wxGRID_MIN_ROW_HEIGHT,
     wxGRID_MIN_COL_WIDTH,
-    wxGRID_DEFAULT_SCROLLBAR_WIDTH
+    wxGRID_DEFAULT_SCROLLBAR_WIDTH,
+    wxGRID_AUTOSIZE
 };
 
 
@@ -1692,6 +1693,11 @@ public:
     int      GetNumberRows();
     int      GetNumberCols();
 
+    // ------ display update functions
+    //
+    wxArrayInt CalcRowLabelsExposed( const wxRegion& reg );
+    wxArrayInt CalcColLabelsExposed( const wxRegion& reg );
+    wxGridCellCoordsArray CalcCellsExposed( const wxRegion& reg );
 
     bool ProcessTableMessage( wxGridTableMessage& );
 
@@ -1725,6 +1731,13 @@ public:
                             int verticalAlignment = wxTOP,
                             int textOrientation = wxHORIZONTAL );
 
+    virtual void DrawRowLabels( wxDC& dc, const wxArrayInt& rows );
+    virtual void DrawRowLabel( wxDC& dc, int row );
+
+    virtual void DrawColLabels( wxDC& dc, const wxArrayInt& cols );
+    virtual void DrawColLabel( wxDC& dc, int col );
+
+    
 //      // Split a string containing newline chararcters into an array of
 //      // strings and return the number of lines
 //      //
@@ -1871,8 +1884,8 @@ public:
     void     DisableDragColSize();
     bool     CanDragColSize();
     void     EnableDragColMove( bool enable = true );
-    void     DisableDragColMove() { EnableDragColMove( false ); }
-    bool     CanDragColMove() { return m_canDragColMove; }
+    void     DisableDragColMove();
+    bool     CanDragColMove();
     void     EnableDragGridSize(bool enable = true);
     void     DisableDragGridSize();
     bool     CanDragGridSize();

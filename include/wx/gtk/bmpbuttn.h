@@ -2,7 +2,7 @@
 // Name:        wx/gtk/bmpbutton.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: bmpbuttn.h 37393 2006-02-08 21:47:09Z VZ $
+// Id:          $Id: bmpbuttn.h 52007 2008-02-22 19:57:54Z VS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -68,6 +68,8 @@ protected:
     void Init();
 
 private:
+    void OnFocusChange(wxFocusEvent& event);
+
     DECLARE_DYNAMIC_CLASS(wxBitmapButton)
 };
 

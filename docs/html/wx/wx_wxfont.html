@@ -670,8 +670,10 @@ Creates the font corresponding to the given native font description string and r
 the creation was successful.
 which must have been previously returned by
 <A HREF="wx_wxfont.html#wxfontgetnativefontinfodesc">GetNativeFontInfoDesc</A>. If the string is
-invalid, font is unchanged. This function is typically used for de-serializing a wxFont
-object previously saved in a string-form.<P>
+invalid, font state is undefined (it becomes invalid in 2.8 but this shouldn't
+be relied on as the next wxWidgets version leaves it unchanged instead). This
+function is typically used for de-serializing a wxFont object previously saved
+in a string-form.<P>
 <B><FONT COLOR="#FF0000">See also</FONT></B><P>
 <A HREF="wx_wxfont.html#wxfontsetnativefontinfouserdesc">wxFont::SetNativeFontInfoUserDesc</A><P>
 

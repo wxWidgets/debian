@@ -7561,6 +7561,10 @@
   <param name="Name" value="wxDocManager::MakeDefaultName">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxdocmanager.html#wxdocmanagermakenewdocumentname">
+  <param name="Name" value="wxDocManager::MakeNewDocumentName">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxdocmanager.html#wxdocmanageroncreatefilehistory">
   <param name="Name" value="wxDocManager::OnCreateFileHistory">
   </OBJECT>
@@ -17377,6 +17381,10 @@
   <param name="Name" value="wxNotebook::AssignImageList">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxnotebook.html#wxnotebookchangeselection">
+  <param name="Name" value="wxNotebook::ChangeSelection">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxnotebook.html#wxnotebookcreate">
   <param name="Name" value="wxNotebook::Create">
   </OBJECT>
@@ -17463,10 +17471,6 @@
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxnotebook.html#wxnotebooksetselection">
   <param name="Name" value="wxNotebook::SetSelection">
-  </OBJECT>
- <LI> <OBJECT type="text/sitemap">
-  <param name="Local" value="wx_wxnotebook.html#wxnotebookchangeselection">
-  <param name="Name" value="wxNotebook::ChangeSelection">
   </OBJECT>
 </UL> <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxnotebookevent.html#wxnotebookevent">
@@ -19291,6 +19295,10 @@
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxrect.html#wxrectinflate">
   <param name="Name" value="wxRect::Inflate">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxrect.html#wxrectintersect">
+  <param name="Name" value="wxRect::Intersect">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxrect.html#wxrectintersects">
@@ -23029,6 +23037,14 @@
   <param name="Name" value="wxSizer::Clear">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxsizer.html#wxsizercomputefittingclientsize">
+  <param name="Name" value="wxSizer::ComputeFittingClientSize">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxsizer.html#wxsizercomputefittingwindowsize">
+  <param name="Name" value="wxSizer::ComputeFittingWindowSize">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxsizer.html#wxsizerdetach">
   <param name="Name" value="wxSizer::Detach">
   </OBJECT>
@@ -23187,6 +23203,10 @@
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxsizerflags.html#wxsizerflagsproportion">
   <param name="Name" value="wxSizerFlags::Proportion">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxsizerflags.html#wxsizerflagsreservespaceevenifhidden">
+  <param name="Name" value="wxSizerFlags::ReserveSpaceEvenIfHidden">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxsizerflags.html#wxsizerflagsright">
@@ -23435,10 +23455,6 @@
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxsockaddress.html#wxsockaddressclear">
   <param name="Name" value="wxSockAddress::Clear">
-  </OBJECT>
- <LI> <OBJECT type="text/sitemap">
-  <param name="Local" value="wx_wxsockaddress.html#wxsockaddresssockaddrlen">
-  <param name="Name" value="wxSockAddress::SockAddrLen">
   </OBJECT>
 </UL> <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxsocketbase.html#wxsocketbase">
@@ -27089,6 +27105,10 @@
   <param name="Name" value="wxTreebook::AssignImageList">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxtreebook.html#wxtreebookchangeselection">
+  <param name="Name" value="wxTreebook::ChangeSelection">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxtreebook.html#wxtreebookcollapsenode">
   <param name="Name" value="wxTreebook::CollapseNode">
   </OBJECT>
@@ -27151,10 +27171,6 @@
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxtreebook.html#wxtreebooksetselection">
   <param name="Name" value="wxTreebook::SetSelection">
-  </OBJECT>
- <LI> <OBJECT type="text/sitemap">
-  <param name="Local" value="wx_wxtreebook.html#wxtreebookchangeselection">
-  <param name="Name" value="wxTreebook::ChangeSelection">
   </OBJECT>
 </UL> <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxtreebookevent.html#wxtreebookevent">
@@ -28405,6 +28421,10 @@
   <param name="Name" value="wxWindow::ClientToScreen">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxwindow.html#wxwindowclienttowindowsize">
+  <param name="Name" value="wxWindow::ClientToWindowSize">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxwindow.html#wxwindowclose">
   <param name="Name" value="wxWindow::Close">
   </OBJECT>
@@ -29076,6 +29096,10 @@
   <param name="Local" value="wx_wxwindow.html#wxwindowwarppointer">
   <param name="Name" value="wxWindow::WarpPointer">
   </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxwindow.html#wxwindowwindowtoclientsize">
+  <param name="Name" value="wxWindow::WindowToClientSize">
+  </OBJECT>
 </UL> <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxwindowupdatelocker.html#wxwindowupdatelocker">
   <param name="Name" value="wxWindowUpdateLocker">
@@ -29371,6 +29395,10 @@
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxxmlnode.html#wxxmlnodeinsertchild">
   <param name="Name" value="wxXmlNode::InsertChild">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxxmlnode.html#wxxmlnodeinsertchildafter">
+  <param name="Name" value="wxXmlNode::InsertChildAfter">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxxmlnode.html#wxxmlnodecontainsiswhitespaceonly">

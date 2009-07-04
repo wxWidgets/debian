@@ -4,7 +4,7 @@
 // Purpose:     Common stuff for all widgets project files
 // Author:      Vadim Zeitlin
 // Created:     27.03.01
-// Id:          $Id: widgets.h 41623 2006-10-04 09:38:56Z ABX $
+// Id:          $Id: widgets.h 51519 2008-02-03 13:48:11Z VZ $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,11 +42,11 @@
     #define USE_ICONS_IN_BOOK 1
 #endif
 
-class WXDLLEXPORT wxCheckBox;
-class WXDLLEXPORT wxSizer;
-class WXDLLEXPORT wxImageList;
-class WXDLLEXPORT wxTextCtrl;
-class WXDLLEXPORT WidgetsBookCtrl;
+class WXDLLIMPEXP_FWD_CORE wxCheckBox;
+class WXDLLIMPEXP_FWD_CORE wxSizer;
+class WXDLLIMPEXP_FWD_CORE wxImageList;
+class WXDLLIMPEXP_FWD_CORE wxTextCtrl;
+class WXDLLIMPEXP_FWD_CORE WidgetsBookCtrl;
 
 class WidgetsPageInfo;
 
@@ -91,7 +91,7 @@ class WidgetsPage : public wxPanel
 public:
     WidgetsPage(WidgetsBookCtrl *book,
                 wxImageList *imaglist,
-                char* icon[]);
+                const char* icon[]);
 
     // return the control shown by this page
     virtual wxControl *GetWidget() const = 0;

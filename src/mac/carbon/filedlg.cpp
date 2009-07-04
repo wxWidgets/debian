@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: filedlg.cpp 46148 2007-05-21 18:54:42Z SC $
+// RCS-ID:      $Id: filedlg.cpp 57849 2009-01-06 09:36:54Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -287,10 +287,10 @@ int wxFileDialog::ShowModal()
     // this was always unset in the old code
     dialogCreateOptions.optionFlags &= ~kNavSelectDefaultLocation;
 
-    wxMacCFStringHolder message(m_message, m_font.GetEncoding());
+    wxMacCFStringHolder message(m_message, GetFont().GetEncoding());
     dialogCreateOptions.windowTitle = message;
 
-    wxMacCFStringHolder defaultFileName(m_fileName, m_font.GetEncoding());
+    wxMacCFStringHolder defaultFileName(m_fileName, GetFont().GetEncoding());
     dialogCreateOptions.saveFileName = defaultFileName;
 
 
@@ -310,7 +310,7 @@ int wxFileDialog::ShowModal()
         myData.menuitems = dialogCreateOptions.popupExtension ;
         for ( size_t i = 0 ; i < numFilters ; ++i )
         {
-            CFArrayAppendValue( popup , (CFStringRef) wxMacCFStringHolder( myData.name[i] , m_font.GetEncoding() ) ) ;
+            CFArrayAppendValue( popup , (CFStringRef) wxMacCFStringHolder( myData.name[i] , GetFont().GetEncoding() ) ) ;
         }
     }
 

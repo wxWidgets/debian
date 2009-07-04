@@ -6,7 +6,7 @@
 #
 # Version       0.1
 # Date:         Nov 19, 2002
-# RCS-ID:       $Id: gridmovers.py 48932 2007-09-24 22:35:17Z RD $
+# RCS-ID:       $Id: gridmovers.py 57790 2009-01-02 20:19:39Z RD $
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
 # 12/07/2003 - Jeff Grimmett (grimmtooth@softhome.net)
@@ -251,7 +251,7 @@ class GridColMover(wx.EvtHandler):
 
     def OnMouseMove(self,evt):
         if not self.isDragging:
-          evt.Skip()
+            evt.Skip()
         else:
             _rlSize = self.grid.GetRowLabelSize()
             if abs(self.startX - evt.m_x) >= 3 \
@@ -375,7 +375,9 @@ class GridRowMover(wx.EvtHandler):
         self.Bind(wx.EVT_LEFT_UP, self.OnRelease)
 
     def OnMouseMove(self,evt):
-        if self.isDragging:
+        if not self.isDragging:
+            evt.Skip()
+        else:
             _clSize = self.grid.GetColLabelSize()
             if abs(self.startY - evt.m_y) >= 3 \
                    and abs(evt.m_y - self.lastY) >= 3:

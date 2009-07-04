@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     11-April-2006
-// RCS-ID:      $Id: _richtextbuffer.i 50096 2007-11-20 03:51:25Z RD $
+// RCS-ID:      $Id: _richtextbuffer.i 53769 2008-05-26 20:50:38Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -61,6 +61,8 @@ enum {
  */
     wxRICHTEXT_FORMATTED,
     wxRICHTEXT_UNFORMATTED,
+    wxRICHTEXT_CACHE_SIZE,
+    wxRICHTEXT_HEIGHT_ONLY,
 
 /*!
  * Flags for SetStyle/SetListStyle
@@ -80,7 +82,7 @@ enum {
  */
     wxRICHTEXT_INSERT_NONE,
     wxRICHTEXT_INSERT_WITH_PREVIOUS_PARAGRAPH_STYLE,
-
+    wxRICHTEXT_INSERT_INTERACTIVE,
 
     // TODO:  Rename these to be wxRICHTEXT_* ??
 
@@ -111,6 +113,11 @@ enum {
     wxTEXT_ATTR_EFFECTS,
     wxTEXT_ATTR_OUTLINE_LEVEL,
 
+// A special flag telling the buffer to keep the first paragraph style
+// as-is, when deleting a paragraph marker. In future we might pass a
+// flag to InsertFragment and DeleteRange to indicate the appropriate mode.
+    wxTEXT_ATTR_KEEP_FIRST_PARA_STYLE,
+    
 /*!
  * Styles for wxTextAttrEx::SetBulletStyle
  */
@@ -621,6 +628,14 @@ class. (This class hasn't been implemented yet!)", "");
 }
 
 
+// Typemap to use wxRTTI to return a proxy object whose type matches the real
+// type of the C++ pointer.  NOTE: It's not a true OOR like can be done for
+// wxWindow pointers, but at least the type is corerct.
+%typemap(out) wxRichTextObject* {
+    $result = wxPyMake_wxObject($1, (bool)$owner);
+}
+
+
 class wxRichTextObject: public wxObject
 {
 public:
@@ -662,6 +677,7 @@ public:
 
     /// Do a split, returning an object containing the second part, and setting
     /// the first part in 'this'.
+    %newobject DoSplit;
     virtual wxRichTextObject* DoSplit(long pos);
 
     /// Calculate range. By default, guess that the object is 1 unit long.
@@ -681,6 +697,14 @@ public:
 
     /// Returns true if this object merged itself with the given one.
     /// The calling code will then delete the given object.
+    %feature("shadow") Merge %{
+        def Merge(self, obj):
+            """Merge(self, RichTextObject object) -> bool"""
+            val = _richtext.RichTextObject_Merge(self, obj)
+            if val:
+                obj.this.own(True)
+            return val
+    %}
     virtual bool Merge(wxRichTextObject* object);
 
     /// Dump to output stream for debugging
@@ -762,6 +786,7 @@ public:
 // Operations
 
     /// Clone the object
+    %newobject Clone;  
     virtual wxRichTextObject* Clone() const;
 
     /// Copy
@@ -1803,6 +1828,11 @@ enum {
     // Don't write header and footer (or BODY), so we can include the
     // fragment in a larger document
     wxRICHTEXT_HANDLER_NO_HEADER_FOOTER,
+
+    // Convert the more common face names to names that will work on the
+    // current platform in a larger document
+    wxRICHTEXT_HANDLER_CONVERT_FACENAMES,
+    
 };
 
 

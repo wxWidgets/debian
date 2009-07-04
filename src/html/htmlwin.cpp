@@ -2,7 +2,7 @@
 // Name:        src/html/htmlwin.cpp
 // Purpose:     wxHtmlWindow class for parsing & displaying HTML (implementation)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlwin.cpp 46060 2007-05-16 07:17:11Z VS $
+// RCS-ID:      $Id: htmlwin.cpp 56333 2008-10-15 15:43:10Z VS $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -533,6 +533,7 @@ bool wxHtmlWindow::LoadPage(const wxString& location)
         {
             wxLogError(_("Unable to open requested HTML document: %s"), location.c_str());
             m_tmpCanDrawLocks--;
+            SetHTMLStatusText(wxEmptyString);
             return false;
         }
 
@@ -880,21 +881,27 @@ wxString wxHtmlWindow::DoSelectionToText(wxHtmlSelection *sel)
         return wxEmptyString;
 
     wxClientDC dc(this);
-
-    const wxHtmlCell *end = sel->GetToCell();
     wxString text;
-    wxHtmlTerminalCellsInterator i(sel->GetFromCell(), end);
-    if ( i )
-    {
-        text << i->ConvertToText(sel);
-        ++i;
-    }
-    const wxHtmlCell *prev = *i;
+
+    wxHtmlTerminalCellsInterator i(sel->GetFromCell(), sel->GetToCell());
+    const wxHtmlCell *prev = NULL;
+
     while ( i )
     {
-        if ( prev->GetParent() != i->GetParent() )
-            text << _T('\n');
-        text << i->ConvertToText(*i == end ? sel : NULL);
+        // When converting HTML content to plain text, the entire paragraph
+        // (container in wxHTML) goes on single line. A new paragraph (that
+        // should go on its own line) has its own container. Therefore, the
+        // simplest way of detecting where to insert newlines in plain text
+        // is to check if the parent container changed -- if it did, we moved
+        // to a new paragraph.
+        if ( prev && prev->GetParent() != i->GetParent() )
+            text << wxT('\n');
+
+        // NB: we don't need to pass the selection to ConvertToText() in the
+        //     middle of the selected text; it's only useful when only part of
+        //     a cell is selected
+        text << i->ConvertToText(sel);
+
         prev = *i;
         ++i;
     }

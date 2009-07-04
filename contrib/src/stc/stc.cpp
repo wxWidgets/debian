@@ -10,7 +10,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: stc.cpp 44312 2007-01-25 22:59:04Z RD $
+// RCS-ID:      $Id: stc.cpp 54251 2008-06-15 22:20:32Z RD $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -3003,7 +3003,7 @@ wxCharBuffer wxStyledTextCtrl::GetTextRaw()
 {
     int len  = GetTextLength();
     wxCharBuffer buf(len);
-    SendMsg(SCI_GETTEXT, len, (long)buf.data());
+    SendMsg(SCI_GETTEXT, len+1, (long)buf.data());
     return buf;
 }
 

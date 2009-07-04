@@ -552,6 +552,12 @@
 #define wxUSE_RICHEDIT2 0
 #endif
 
+#if !defined(__WIN32__) && !defined(__APPLE__)
+#define wxUSE_CAIRO 1
+#else
+#define wxUSE_CAIRO 0
+#endif
+
 #define wxUSE_INKEDIT 0
 
 #define wxUSE_UNICODE_MSLU 0
@@ -624,6 +630,26 @@
  * Define if your compiler has __gnu_cxx::hash_map/hash_set
  */
 #undef HAVE_GNU_CXX_HASH_MAP
+
+/*
+ * Define if your compiler has std::unordered_map
+ */
+#undef HAVE_STD_UNORDERED_MAP
+
+/*
+ * Define if your compiler has std::unordered_set
+ */
+#undef HAVE_STD_UNORDERED_SET
+
+/*
+ * Define if your compiler has std::tr1::unordered_map
+ */
+#undef HAVE_TR1_UNORDERED_MAP
+
+/*
+ * Define if your compiler has std::tr1::unordered_set
+ */
+#undef HAVE_TR1_UNORDERED_SET
 
 /*
  * The built-in regex supports advanced REs in additional to POSIX's basic

@@ -44,6 +44,7 @@ above.<P>
 <A HREF="#wxsizerflagsleft">wxSizerFlags::Left</A><BR>
 <A HREF="#wxsizerflagsfixedminsize">wxSizerFlags::FixedMinSize</A><BR>
 <A HREF="#wxsizerflagsproportion">wxSizerFlags::Proportion</A><BR>
+<A HREF="#wxsizerflagsreservespaceevenifhidden">wxSizerFlags::ReserveSpaceEvenIfHidden</A><BR>
 <A HREF="#wxsizerflagsright">wxSizerFlags::Right</A><BR>
 <A HREF="#wxsizerflagsshaped">wxSizerFlags::Shaped</A><BR>
 <A HREF="#wxsizerflagstriplebleborder">wxSizerFlags::TripleBorder</A><BR>
@@ -160,6 +161,18 @@ the window should be also set as its minimal size.<P>
 <P>
 <B><A HREF="wx_wxsizerflags.html#wxsizerflags">wxSizerFlags</A>& </B> </B> <B>Proportion</B>(<B>int </B><I>proportion = 0</I>)<P>
 Sets the proportion of this wxSizerFlags to <I>proportion</I><P>
+
+
+<HR>
+<A NAME="wxsizerflagsreservespaceevenifhidden"></A>
+<H3>wxSizerFlags::ReserveSpaceEvenIfHidden</H3>
+<P>
+<B><A HREF="wx_wxsizerflags.html#wxsizerflags">wxSizerFlags</A>& </B> </B> <B>ReserveSpaceEvenIfHidden</B>()<P>
+Set the <TT>wxRESERVE_SPACE_EVEN_IF_HIDDEN</TT> flag. Normally wxSizers
+don't allocate space for hidden windows or other items. This flag overrides
+this behavior so that sufficient space is allocated for the window even if it
+isn't visible. This makes it possible to dynamically show and hide controls
+without resizing parent dialog, for example. This function is new since wxWidgets version 2.8.8<P>
 
 
 <HR>

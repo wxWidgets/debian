@@ -498,8 +498,8 @@ for the same events for the middle and the right buttons respectively.<P>
 <B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetPosition</B>() <B>const</B><P>
 <B>void</B> <B>GetPosition</B>(<B>wxCoord*</B><I> x</I>, <B>wxCoord*</B><I> y</I>) <B>const</B><P>
 <B>void</B> <B>GetPosition</B>(<B>long*</B><I> x</I>, <B>long*</B><I> y</I>) <B>const</B><P>
-Sets *x and *y to the position at which the event occurred.<P>
-Returns the physical mouse position in pixels.<P>
+Sets *x and *y to the position at which the event occurred on the window.<P>
+Returns the physical mouse position on the window in pixels.<P>
 Note that if the mouse event has been artificially generated from a special
 keyboard combination (e.g. under Windows when the "menu'' key is pressed), the
 returned position is <TT>wxDefaultPosition</TT>.<P>
@@ -510,9 +510,10 @@ returned position is <TT>wxDefaultPosition</TT>.<P>
 <H3>wxMouseEvent::GetLogicalPosition</H3>
 <P>
 <B><A HREF="wx_wxpoint.html#wxpoint">wxPoint</A></B> </B> <B>GetLogicalPosition</B>(<B>const <A HREF="wx_wxdc.html#wxdc">wxDC</A>&</B></B><I> dc</I>) <B>const</B><P>
-Returns the logical mouse position in pixels (i.e. translated according to the
-translation set for the DC, which usually indicates that the window has been scrolled).<P>
-<P>
+Returns the logical mouse position on the window in pixels (i.e. translated
+according to the translation set for the DC, which usually indicates that the
+window has been scrolled).<P>
+
 
 <HR>
 <A NAME="wxmouseeventgetlinesperaction"></A>
@@ -551,7 +552,7 @@ should occur for each delta.<P>
 <H3>wxMouseEvent::GetX</H3>
 <P>
 <B>long</B> <B>GetX</B>() <B>const</B><P>
-Returns X coordinate of the physical mouse event position.<P>
+Returns the X coordinate of the physical mouse event position on the window.<P>
 
 
 <HR>
@@ -559,7 +560,7 @@ Returns X coordinate of the physical mouse event position.<P>
 <H3>wxMouseEvent::GetY</H3>
 <P>
 <B>long</B> <B>GetY</B>()<P>
-Returns Y coordinate of the physical mouse event position.<P>
+Returns the Y coordinate of the physical mouse event position on the window.<P>
 
 
 <HR>

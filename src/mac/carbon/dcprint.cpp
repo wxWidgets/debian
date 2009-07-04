@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcprint.cpp 43106 2006-11-06 07:49:14Z SC $
+// RCS-ID:      $Id: dcprint.cpp 57932 2009-01-09 10:01:11Z SC $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -89,13 +89,8 @@ wxMacCarbonPrinterDC::wxMacCarbonPrinterDC( wxPrintData* data )
     m_maxY = wxCoord(rPage.bottom - rPage.top);
 
     PMResolution res;
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5 
-    PMPrinter printer;
-    PMSessionGetCurrentPrinter(native->m_macPrintSession, &printer);
-    PMPrinterGetOutputResolution( printer, native->m_macPrintSettings, &res) ;
-#else
     m_err = PMGetResolution((PMPageFormat) (native->m_macPageFormat), &res);
-#endif
+    
     m_ppi = wxSize(int(res.hRes), int(res.vRes));
 }
 
@@ -150,13 +145,8 @@ bool wxMacCarbonPrinterDC::StartDoc(  wxPrinterDC* dc , const wxString& WXUNUSED
     m_maxY = wxCoord(rPage.bottom - rPage.top);
 
     PMResolution res;
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5 
-    PMPrinter printer;
-    PMSessionGetCurrentPrinter(native->m_macPrintSession, &printer);
-    PMPrinterGetOutputResolution( printer, native->m_macPrintSettings, &res) ;
-#else
     m_err = PMGetResolution((PMPageFormat) (native->m_macPageFormat), &res);
-#endif
+    
     m_ppi = wxSize(int(res.hRes), int(res.vRes));
     return true ;
 }

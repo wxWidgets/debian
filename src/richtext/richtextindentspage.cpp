@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/3/2006 2:28:21 PM
-// RCS-ID:      $Id: richtextindentspage.cpp 49946 2007-11-14 14:22:56Z JS $
+// RCS-ID:      $Id: richtextindentspage.cpp 59814 2009-03-24 19:05:15Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -199,7 +199,7 @@ void wxRichTextIndentsSpacingPage::CreateControls()
 
     itemBoxSizer20->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer22 = new wxFlexGridSizer(2, 2, 0, 0);
+    wxFlexGridSizer* itemFlexGridSizer22 = new wxFlexGridSizer(4, 2, 0, 0);
     itemBoxSizer20->Add(itemFlexGridSizer22, 0, wxALIGN_CENTER_VERTICAL, 5);
 
     wxStaticText* itemStaticText23 = new wxStaticText( itemPanel1, wxID_STATIC, _("&Left:"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -239,7 +239,7 @@ void wxRichTextIndentsSpacingPage::CreateControls()
     itemBoxSizer30->Add(m_indentRight, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxStaticText* itemStaticText32 = new wxStaticText( itemPanel1, wxID_STATIC, _("&Outline level:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer22->Add(itemStaticText32, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+    itemFlexGridSizer22->Add(itemStaticText32, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     wxArrayString m_outlineLevelCtrlStrings;
     m_outlineLevelCtrlStrings.Add(_("Normal"));
@@ -277,7 +277,7 @@ void wxRichTextIndentsSpacingPage::CreateControls()
 
     itemBoxSizer39->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer41 = new wxFlexGridSizer(2, 2, 0, 0);
+    wxFlexGridSizer* itemFlexGridSizer41 = new wxFlexGridSizer(3, 2, 0, 0);
     itemFlexGridSizer41->AddGrowableCol(1);
     itemBoxSizer39->Add(itemFlexGridSizer41, 0, wxALIGN_CENTER_VERTICAL, 5);
 
@@ -341,12 +341,12 @@ wxTextAttrEx* wxRichTextIndentsSpacingPage::GetAttributes()
 void wxRichTextIndentsSpacingPage::UpdatePreview()
 {
     static const wxChar* s_para1 = wxT("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. \
-Nullam ante sapien, vestibulum nonummy, pulvinar sed, luctus ut, lacus.");
+Nullam ante sapien, vestibulum nonummy, pulvinar sed, luctus ut, lacus.\n");
 
-    static const wxChar* s_para2 = wxT("\nDuis pharetra consequat dui. Cum sociis natoque penatibus \
-et magnis dis parturient montes, nascetur ridiculus mus. Nullam vitae justo id mauris lobortis interdum.");
+    static const wxChar* s_para2 = wxT("Duis pharetra consequat dui. Cum sociis natoque penatibus \
+et magnis dis parturient montes, nascetur ridiculus mus. Nullam vitae justo id mauris lobortis interdum.\n");
 
-    static const wxChar* s_para3 = wxT("\nInteger convallis dolor at augue \
+    static const wxChar* s_para3 = wxT("Integer convallis dolor at augue \
 iaculis malesuada. Donec bibendum ipsum ut ante porta fringilla.\n");
 
     TransferDataFromWindow();
@@ -448,7 +448,7 @@ bool wxRichTextIndentsSpacingPage::TransferDataFromWindow()
         attr->SetFlags(attr->GetFlags() & (~wxTEXT_ATTR_LINE_SPACING));
     else
         attr->SetLineSpacing(lineSpacing);
-        
+
     int outlineLevel = m_outlineLevelCtrl->GetSelection();
     if (outlineLevel != wxNOT_FOUND)
         attr->SetOutlineLevel(outlineLevel);
@@ -546,7 +546,7 @@ bool wxRichTextIndentsSpacingPage::TransferDataToWindow()
         if (outlineLevel < 0)
             outlineLevel = 0;
         if (outlineLevel > 9)
-            outlineLevel = 9;            
+            outlineLevel = 9;
 
         m_outlineLevelCtrl->SetSelection(outlineLevel);
     }

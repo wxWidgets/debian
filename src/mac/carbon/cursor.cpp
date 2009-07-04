@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: cursor.cpp 48806 2007-09-19 14:53:30Z SC $
+// RCS-ID:      $Id: cursor.cpp 51437 2008-01-29 11:01:27Z JS $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -667,7 +667,9 @@ wxCursor::~wxCursor()
 }
 
 // Global cursor setting
+wxCursor gGlobalCursor;
 void wxSetCursor(const wxCursor& cursor)
 {
     cursor.MacInstall() ;
+    gGlobalCursor = cursor;
 }

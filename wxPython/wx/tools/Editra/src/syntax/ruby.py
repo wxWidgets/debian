@@ -3,37 +3,40 @@
 # Purpose: Define Ruby syntax for highlighting and other features             #
 # Author: Cody Precord <cprecord@editra.org>                                  #
 # Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#-----------------------------------------------------------------------------#
-# FILE: ruby.py                                                               #
-# AUTHOR: Cody Precord                                                        #
-#                                                                             #
-# SUMMARY:                                                                    #
-# Lexer configuration module for Ruby.                                        #
-#                                                                             #
-# @todo: Default Style Refinement.                                            #
-#-----------------------------------------------------------------------------#
+FILE: ruby.py
+AUTHOR: Cody Precord
+@summary: Lexer configuration module for Ruby.
+@todo: Default Style Refinement.
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ruby.py 49393 2007-10-24 13:46:17Z CJP $"
-__revision__ = "$Revision: 49393 $"
+__svnid__ = "$Id: ruby.py 60049 2009-04-07 04:28:52Z CJP $"
+__revision__ = "$Revision: 60049 $"
 
 #-----------------------------------------------------------------------------#
-# Dependancies
+# Imports
+import re
+
+# Local Imports
 import synglob
+
 #-----------------------------------------------------------------------------#
 
 #---- Keyword Specifications ----#
 
 # Ruby Keywords
-RUBY_KW = (0, "__FILE__ and def end in or self unless __LINE__ begin defined? "
-              "ensure module redo super until BEGIN break do false next rescue "
-              "then when END case else for nil retry true while alias class "
-              "elsif if not return undef yieldr puts")
+# NOTE: putting words with question marks in them causes an assertion to be
+#       raised when showing the list in the keyword helper! defined?
+RUBY_KW = (0, "__FILE__ and def end in or self unless __LINE__ begin defined "
+              "ensure module redo super until BEGIN break do false next "
+              "require rescue then when END case else for nil retry true while "
+              "alias class elsif if not return undef yieldr puts raise "
+              "protected private")
 
 #---- Syntax Style Specs ----#
 SYNTAX_ITEMS = [ ('STC_RB_BACKTICKS', 'scalar_style'),
@@ -47,7 +50,7 @@ SYNTAX_ITEMS = [ ('STC_RB_BACKTICKS', 'scalar_style'),
                  ('STC_RB_ERROR', 'error_style'),
                  ('STC_RB_GLOBAL', 'global_style'),
                  ('STC_RB_HERE_DELIM', 'default_style'), # STYLE ME
-                 ('STC_RB_HERE_Q', 'here_style'), 
+                 ('STC_RB_HERE_Q', 'here_style'),
                  ('STC_RB_HERE_QQ', 'here_style'),
                  ('STC_RB_HERE_QX', 'here_style'),
                  ('STC_RB_IDENTIFIER', 'default_style'),
@@ -117,6 +120,37 @@ def CommentPattern(lang_id=0):
         return list()
 
 #---- End Required Module Functions ----#
+
+def AutoIndenter(stc, pos, ichar):
+    """Auto indent cpp code. uses \n the text buffer will handle any
+    eol character formatting.
+
+    @param stc: EditraStyledTextCtrl
+    @param pos: current carat position
+    @param ichar: Indentation character
+    @return: string
+
+    """
+    rtxt = u''
+    line = stc.GetCurrentLine()
+    text = stc.GetTextRange(stc.PositionFromLine(line), pos)
+
+    indent = stc.GetLineIndentation(line)
+    if ichar == u"\t":
+        tabw = stc.GetTabWidth()
+    else:
+        tabw = stc.GetIndent()
+
+    i_space = indent / tabw
+    ndent = u"\n" + ichar * i_space
+    rtxt = ndent + ((indent - (tabw * i_space)) * u' ')
+
+    def_pat = re.compile('\s*(class|def)\s+[a-zA-Z_][a-zA-Z0-9_]*')
+    text = text.strip()
+    if text.endswith('{') or def_pat.match(text):
+        rtxt += ichar
+
+    return rtxt
 
 #---- Syntax Modules Internal Functions ----#
 def KeywordString(option=0):

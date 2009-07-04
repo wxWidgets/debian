@@ -2,7 +2,7 @@
 // Name:        src/html/m_tables.cpp
 // Purpose:     wxHtml module for tables
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_tables.cpp 50119 2007-11-20 22:48:25Z VS $
+// RCS-ID:      $Id: m_tables.cpp 59687 2009-03-21 09:41:09Z VS $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -281,14 +281,19 @@ void wxHtmlTableCell::AddCell(wxHtmlContainerCell *cell, const wxHtmlTag& tag)
 
             if (wd[wd.length()-1] == wxT('%'))
             {
-                wxSscanf(wd.c_str(), wxT("%i%%"), &m_ColsInfo[c].width);
-                m_ColsInfo[c].units = wxHTML_UNITS_PERCENT;
+                if ( wxSscanf(wd.c_str(), wxT("%i%%"), &m_ColsInfo[c].width) == 1 )
+                {
+                    m_ColsInfo[c].units = wxHTML_UNITS_PERCENT;
+                }
             }
             else
             {
-                wxSscanf(wd.c_str(), wxT("%i"), &m_ColsInfo[c].width);
-                m_ColsInfo[c].width = (int)(m_PixelScale * (double)m_ColsInfo[c].width);
-                m_ColsInfo[c].units = wxHTML_UNITS_PIXELS;
+                long width;
+                if ( wd.ToLong(&width) )
+                {
+                    m_ColsInfo[c].width = (int)(m_PixelScale * (double)width);
+                    m_ColsInfo[c].units = wxHTML_UNITS_PIXELS;
+                }
             }
         }
     }
@@ -660,10 +665,12 @@ TAG_HANDLER_BEGIN(TABLE, "TABLE,TR,TD,TH")
     TAG_HANDLER_VARS
         wxHtmlTableCell* m_Table;
         wxString m_tAlign, m_rAlign;
+        wxHtmlContainerCell *m_enclosingContainer;
 
     TAG_HANDLER_CONSTR(TABLE)
     {
         m_Table = NULL;
+        m_enclosingContainer = NULL;
         m_tAlign = m_rAlign = wxEmptyString;
     }
 
@@ -676,9 +683,9 @@ TAG_HANDLER_BEGIN(TABLE, "TABLE,TR,TD,TH")
         if (tag.GetName() == wxT("TABLE"))
         {
             wxHtmlTableCell *oldt = m_Table;
-            wxHtmlContainerCell *oldcont;
 
-            oldcont = c = m_WParser->OpenContainer();
+            wxHtmlContainerCell *oldEnclosing = m_enclosingContainer;
+            m_enclosingContainer = c = m_WParser->OpenContainer();
 
             m_Table = new wxHtmlTableCell(c, tag, m_WParser->GetPixelScale());
 
@@ -712,11 +719,13 @@ TAG_HANDLER_BEGIN(TABLE, "TABLE,TR,TD,TH")
             ParseInner(tag);
 
             m_WParser->SetAlign(oldAlign);
-            m_WParser->SetContainer(oldcont);
+            m_WParser->SetContainer(m_enclosingContainer);
             m_WParser->CloseContainer();
 
             m_Table = oldt;
-            return true;
+            m_enclosingContainer = oldEnclosing;
+
+            return true; // ParseInner() called
         }
 
 
@@ -758,8 +767,19 @@ TAG_HANDLER_BEGIN(TABLE, "TABLE,TR,TD,TH")
                     m_WParser->SetAlign(wxHTML_ALIGN_CENTER);
 
                 m_WParser->OpenContainer();
+
+                ParseInner(tag);
+
+                // set the current container back to the enclosing one so that
+                // text outside of <th> and <td> isn't included in any cell
+                // (this happens often enough in practice because it's common
+                // to use whitespace between </td> and the next <td>):
+                m_WParser->SetContainer(m_enclosingContainer);
+
+                return true; // ParseInner() called
             }
         }
+
         return false;
     }
 

@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: settings.cpp 41224 2006-09-14 17:42:35Z SC $
+// RCS-ID:      $Id: settings.cpp 57542 2008-12-25 13:03:24Z VZ $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -75,6 +75,7 @@ wxColour wxSystemSettingsNative::GetColour(wxSystemColour index)
         case wxSYS_COLOUR_CAPTIONTEXT:
         case wxSYS_COLOUR_INFOTEXT:
         case wxSYS_COLOUR_INACTIVECAPTIONTEXT:
+        case wxSYS_COLOUR_LISTBOXTEXT:
             resultColor = *wxBLACK;
             break ;
 
@@ -118,7 +119,9 @@ wxColour wxSystemSettingsNative::GetColour(wxSystemColour index)
             break ;
 
         case wxSYS_COLOUR_INFOBK :
-            resultColor = *wxWHITE ;
+            // we don't have a way to detect tooltip color, so use the
+            // standard value used at least on 10.4:
+            resultColor = wxColour( 0xFF, 0xFF, 0xD3 ) ;
             break ;
         case wxSYS_COLOUR_APPWORKSPACE:
             resultColor =  wxColor( 0x80, 0x80, 0x80 ); ;

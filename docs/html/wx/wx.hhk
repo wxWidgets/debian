@@ -3710,6 +3710,10 @@
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxsizer.html#wxsizeradd">
+  <param name="Name" value="wxRESERVE_SPACE_EVEN_IF_HIDDEN">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxsizer.html#wxsizeradd">
   <param name="Name" value="wxALIGN_CENTER wxALIGN_CENTRE">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
@@ -12877,6 +12881,10 @@
   <param name="Name" value="wxDialog::~wxDialog">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxdocmanager.html#wxdocmanagermakenewdocumentname">
+  <param name="Name" value="wxDocManager::MakeNewDocumentName">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxlocale.html#wxlocaledtor">
   <param name="Name" value="wxLocale::~wxLocale">
   </OBJECT>
@@ -16937,6 +16945,10 @@
   <param name="Name" value="wxMimeTypesManager::~wxMimeTypesManager">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxsizer.html#wxsizercomputefittingclientsize">
+  <param name="Name" value="wxSizer::ComputeFittingClientSize">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxslider.html#wxslidersetthumblength">
   <param name="Name" value="wxSlider::SetThumbLength">
   </OBJECT>
@@ -18305,6 +18317,10 @@
   <param name="Name" value="LeftIsDown">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxsizer.html#wxsizercomputefittingwindowsize">
+  <param name="Name" value="wxSizer::ComputeFittingWindowSize">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxstring.html#wxstringalloc">
   <param name="Name" value="wxString::Alloc">
   </OBJECT>
@@ -18898,7 +18914,7 @@
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxmultichoicedialog.html#wxmultichoicedialoggetselections">
-  <param name="Name" value="GetSelection">
+  <param name="Name" value="GetSelections">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxpen.html#wxpensetwidth">
@@ -23449,6 +23465,18 @@
   <param name="Name" value="wxRichTextCtrl">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxrichtextctrl.html#wxrichtextctrl">
+  <param name="Name" value="wxRE_READONLY">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxrichtextctrl.html#wxrichtextctrl">
+  <param name="Name" value="wxRE_CENTRE_CARET">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxrichtextctrl.html#wxrichtextctrl">
+  <param name="Name" value="wxRE_CENTER_CARET">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxsocketserver.html#wxsocketserver">
   <param name="Name" value="wxSocketServer">
   </OBJECT>
@@ -24327,10 +24355,6 @@
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxsizer.html#wxsizerisshown">
   <param name="Name" value="IsShown">
-  </OBJECT>
- <LI> <OBJECT type="text/sitemap">
-  <param name="Local" value="wx_wxsockaddress.html#wxsockaddresssockaddrlen">
-  <param name="Name" value="wxSockAddress::SockAddrLen">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxtextattr.html#wxtextattrctor">
@@ -27601,6 +27625,14 @@
   <param name="Name" value="wxPrintData::wxPrintData">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxrect.html#wxrectintersect">
+  <param name="Name" value="wxRect::Intersect">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxrect.html#wxrectintersect">
+  <param name="Name" value="Intersect">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxstreamtotextredirector.html#wxstreamtotextredirector">
   <param name="Name" value="wxStreamToTextRedirector">
   </OBJECT>
@@ -29511,6 +29543,10 @@
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxstreambuffer.html#wxstreambufferflushbuffer">
   <param name="Name" value="wxStreamBuffer::FlushBuffer">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxxmlnode.html#wxxmlnodeinsertchildafter">
+  <param name="Name" value="wxXmlNode::InsertChildAfter">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxapptraits.html#wxapptraitscreaterenderer">
@@ -36593,6 +36629,10 @@
   <param name="Name" value="GetStyleSheet">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxsizerflags.html#wxsizerflagsreservespaceevenifhidden">
+  <param name="Name" value="wxSizerFlags::ReserveSpaceEvenIfHidden">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxwizard.html#wxwizardsetborder">
   <param name="Name" value="wxWizard::SetBorder">
   </OBJECT>
@@ -37083,6 +37123,14 @@
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxsplitterwindow.html#wxsplitterwindowupdatesize">
   <param name="Name" value="wxSplitterWindow::UpdateSize">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxwindow.html#wxwindowclienttowindowsize">
+  <param name="Name" value="wxWindow::ClientToWindowSize">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxwindow.html#wxwindowwindowtoclientsize">
+  <param name="Name" value="wxWindow::WindowToClientSize">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxcontexthelp.html#wxcontexthelpctor">

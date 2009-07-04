@@ -3,7 +3,7 @@
 // Purpose:     wxEventLoop implementation
 // Author:      Vaclav Slavik
 // Created:     2006-08-16
-// RCS-ID:      $Id: evtloop.cpp 44092 2007-01-03 17:25:47Z VS $
+// RCS-ID:      $Id: evtloop.cpp 54748 2008-07-21 17:01:35Z VZ $
 // Copyright:   (c) 2006 REA Elektronik GmbH
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,7 @@
 
 #include "wx/thread.h"
 #include "wx/timer.h"
+#include "wx/toplevel.h"
 #include "wx/private/socketevtdispatch.h"
 #include "wx/dfb/private.h"
 

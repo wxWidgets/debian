@@ -1,414 +1,379 @@
+# encoding: utf-8
 Editra
 Author: Cody Precord
-Copyright: (c) Cody Precord 2005-2007
-Licence: wxWindows
+Copyright: (c) Cody Precord 2005-2009
+License: wxWindows
 
 Change Log:
 
 #-----------------------------------------------------------------------------#
 Changes since last release:
 
-VERSION 0.2.29
-DATE xx/xx/2007
-8th Alpha Release
+VERSION 0.4.xx
+DATE 0x/xx/2009
+27th Alpha Release
 
 NEWS:
 
+
 NEW: [features/improvements]
-+Major improvements to python autocompletion
-+Tab completion for command buffer Edit and Change Directory commands
-+Style Editor now exports optimized stylesheets
-+Automatic perspective mode for saving window state on exit
-+Styles are more configurable with custom settings for text selection,
-whitespace, and indentation guides now being configurable.
-+New Blue color scheme for syntax highlighting can be enabled in preferences
-+Russian translation of editor (contributed by Sergei Zivukov)
++Add automatic file backup option to periodically backup buffer contents.
 
 BUG FIXES:
-+Fixed a number of python2.4 compatibility issues
-+Fixed bug in styling of code folding margin
-+Fixed bugs in updating toolbar/menu items
-+Only activate localization for locales that have translations available
-+Default to crlf on windows for initial installs
-+Fixed bug in management of search history items
-+Fixed some minor bugs and consistancy issues in style editor
-+Fixed error with getting page text of tabs
++Fix python autocomp from failing when word was next to a boundry character.
++Don't do a replace when there is no selection.
+
+#-----------------------------------------------------------------------------#
+Changes since last release:
+
+VERSION 0.4.88
+DATE 05/02/2009
+26th Alpha Release
+
+NEWS:
+
+Quick bug fix release for settings not being able to be saved on a new install.
+
+BUG FIXES:
++Fix major issue with profile not being properly initialized on a new install
+that would cause settings to not be saved.
++Fix attribute error that could occur with extended autocomp (patch from cowo)
++Properly escape text in body of Error Reporter message so that it is a proper
+link for webbrower to open.
 
 #-----------------------------------------------------------------------------#
 
-VERSION 0.2.15
-DATE 10/30/2007
-7th Alpha Release
+VERSION 0.4.85
+DATE 04/26/2009
+25th Alpha Release
 
 NEWS:
-This is mostly a bug fix release that resolves a number of issues throughout the
-editor. Most notably are a correction to some performance issues on Mac OSX,
-a number of UI related issues on Linux, and a fair number of fixes to the
-Style Editor.
 
-From this release onwards updating to the new version of Editra will no longer 
-require you to reconfigure all of your preferences as profiles are now incrementally
-updated so only settings that need to be changed or added are while not affecting
-all the other saved settings.
+This release includes some important bug fixes and performance improvements
+for when loading large files (10MB+). In addition to this there are some new
+and improved vi commands as well as some alternate default key binding profiles.
+Hopefully this will be the last release of the 0.4 series as things are shaping
+up for the 0.5 development cycle. For further details on this release please
+review the following release notes.
 
-There is also a number of new plugins available with this release, most notably
-it is the first public release of the Projects plugin.  The Projects plugin 
-transparently works with your file system and source control.  When you add a 
-project (i.e., a directory) to the plugin, you can open files in the editor 
-simply by double-clicking them in the tree view.  Files that are selected in 
-the editor will automatically display in the tree view if that file exists in 
-one of your registered projects.  In addition, the Projects plugin tracks files 
-under source control (CVS, Subversion, and GIT).  The status of the file is 
-displayed in the file's icon, and most source control operations are available 
-from the right-click menu.  For more information on the plugin and it's 
-configuration options see <http://code.google.com/p/editra-plugins/wiki/ProjectsPlugin>.
+Please also note that if you are using the Projects plugin that you wil also
+need to update it to the newly released 1.0 version due to some api changes that
+make 0.9 incompatible with 1.0.
 
-NEW: [features/improvements]
-+Projects management plugin available through PluginManager.
-+Icon themes are now part of the plugin system so themes can be created and
-installed through the plugin manager using python eggs.
-+New icon themes based on the Humility and Oxygen icon sets available through plugin manager.
-+Improved highlighting for python (decorators are now supported)
-+Support for highlighting (Edje EDC files, Gui4Cli, Inno Setup Scripts, KIX, Verilog)
-+Support for highlighting DOT files (contributed by Rob McMullen)
+NEW: [features/improvments]
++Greatly improved performance of loading large files.
++Add Count feature to find dialog for counting number of matches in a buffer.
++Add Vim find char motions (patch from hasan.aljudy).
++Add Vim bookmarks and navigation (patch from hasan.aljudy).
++Add support for the Groovy programming language (patch from omar.gomez).
++Add new syntax style sheet Guepardo (patch from omar.gomez).
++Add support for loading installation provided key profiles.
++Add VisualStudio keybindings option (from Vivian).
++Updater is only available if user account running program has access
+ permissions to the install directory.
++New version of FileBrowser plugin. (adds search in directory option).
++Add option for extended autocompletion to include results from the simple
+completer in with results.
++Add support for showing images in the autocompletion popup list.
 
 BUG FIXES:
-+Fixed a performance related bug that was most notable Editra was running on OSX.
-+Clipboard related keybindings on GTK version
-+Many UI fixes for when running on GTK
-+Fixed a bug in adjusting theme colors for systems using themes that have lots
-of black in them.
-+Fixed error when loading files was raised when trying to open files that don't
-have read permission.
-+Fixed laggy checkboxes in Preferences Dialog
-+Fixed errors that are caused when trying to drop some data type objects on the
-text control for drag and drop open, such as Mac OSX textClippings.
-+Fixed a bug in that could cause a crash when opening the file dialog
-+Fixed a number of bugs related to saving and loading custom user profiles
-during run time.
-+Toolbar items status is now properly shown at all times
-+Fixed a number of bugs related to the style editors behavior and how it affects
-the editor when changes are made.
-+Fixed some layout issues with the update checker/downloader
-+Fixed code folding for Pascal and Shell script files
-+Fixed Editra Style Sheet parser error for style sheets that have Windows eol
-characters in them.
-+Fixed flickering of toolbar when changing icon themes
-+Don't send clipboard events to text control when it is not the control with the
-capture.
-+Fixed flickering when opening new pages in the notebook, this was most noticeable
-on Windows and GTK.
-+FileBrowser plugin can now properly open files under the "Home directory" and
-"Desktop" nodes.
-+Fixed bug in CPP auto-commenting (patch from Rob McMullen)
++Fix Launch config not properly being initialized when config panel accessed
+from plugin dialog for first time.
++Fix command entry listing of paths (patch from hasan.aljudy).
++Fix autocompletion for when accented characters are in the command string
+ (modified patch from roman.chyla).
++Fix some unicode handling issues in search/replace. (patch from roman.chyla)
++Fix number of printout rendering issues.
++Update readonly status when permissions change on disk.
++Fix error in moving a tab from one window to another when the tab was the only
+tab left in the window it was moved from. (filebrowser bug).
++Fix condition where saving the session file could potentially potentially be
+passed the incorrect type.
++Fix error in loading files that have an improper magic encoding comment.
 
 #-----------------------------------------------------------------------------#
 
-VERSION 0.2.0
-DATE 09/29/2007
-6th Alpha Release
+VERSION 0.4.75
+DATE 03/28/2009
+24th Alpha Release
 
 NEWS:
-This is the second major alpha release of Editra. It introduces a number of new 
-features to the editor, the biggest change being that having multiple top level 
-windows running under a single instance is now supported. In addition to the 
-enhancements there have been a fair number bug fixes, thanks again to all who 
-reported errors. More details can be viewed in the below changelog.
 
-NEW: [features/improvements]
-+Opening multiple toplevel windows is now possible
-+Tabs can be dragged between windows
-+Command Mode for sending commands to the editor, when using Vi emulation it
-acts like an Ex command mode. (see documentation page for description of
-available commands)
-+Faster file loading
-+Bidirectional Text Search
-+Some performance improvements for text input speed
-+Highlighting support for (Apache Config files, ini files, Erlang)
-+Link to project documentation and help guides in Help Menu
-+Shortcut to close quick find bar (ESC will now hide the bar)
-+Command bar now automatically hides it self after most actions
-+Improvements to the Style Editor
-+Updates to all plugins to work with multiple windows
-+Theme system extended to all program icons
-+New icon theme available, derived from the Tango icon set (http://tango.freedesktop.org)
-+Improved file encoding detection and unicode handling
-+Shelf visibility can be toggled with Ctrl+Alt+S
-+Shelf Items are automatically assigned hotkeys Ctrl+Alt+(0-9)
-+Added Abort button to the Error Reporter
-+Spanish Translation of interface from Raul Gonzalez Duque.
+This release fixes a handful of important bugs and new features. The Plugin
+Manager dialog has been completely reworked. Configuration options for plugins
+that provide them are now available in the dialog as well as better error
+reporting for plugins that could not properly be loaded.
+
+File session support has also been improved to allow for saving and loading of 
+multiple custom sessions. Due to format changes the upgrade will require any
+session from previous installations to be overwritten.
+
+NEW: [features/enhancments]
++New Plugin Manager Dialog.
++Improved configuration options for plugins.
++Incompatible plugins are now displayed in PluginManager with message explaining why.
++Some basic autocompletion support for CSS.
++Improved support for sessions. Multiple custom sessions can not be saved and
+reloaded (modified code from Erik Tollerud).
++Add shortcut for LineDelete to delete line without modifying clipboard.
++Add option for automatically reloading files when they have changed on disk.
++Remember last save location when opening save as dialog.
 
 BUG FIXES:
-+Fixed error raised when setting font from preferences dialog.
-+Fixed session loading were files that had been deleted would be opened as new
-documents.
-+Fixed bug with find dialog on windows that arose under certain usage cases
-+Ensure file handle valid when reloading files
-+Many bug and behavior fixes in the Calculator plugin
-+Unicode handling error in file history loading
-+Filename decoding bug in MacOpenFile handler
-+Plugins now properly show activation status in View Menu
-+Don't lose bookmarks on file reload
-+Show Shelf is only enabled when their are shelf related plugins activated
-+Check that Editra is not running before starting installation on Windows to
-avoid faulty installs from files that aren't able to be overwritten.
-+Updater makes sure download file has a unique filename to avoid overwriting
-existing files.
-+Fixed a bug that could crash the editor when style sheets are exported to a 
-location outside of where Edira can load them from.
++Fix incorrect page count shown in print previews.
++Remember print settings throughout session and for every frame.
++Fix error when doing Copy Path from tab right click menu.
++Fix incorrectly showing autocompletion options under some cases in php files.
++Fix condition where window could be placed at (0, 0) on OSX which causes the
+ frame to be placed behind the menubar.
++Fix improper detection of when to auto-unindent in Python files.
++Fix Python auto-indent from incorrectly inserting space when the cursor is
+in the indentation space of a line.
++Fix Close All option in tab context menu not working on GTK.
++Fix Codebrowser not refreshing when files are opened from the file dialog
+on Linux.
++Fix error that could occur while trying to save filehistory on exit.
++Fix toolbar not resizing properly when changing icon size on osx.
++Fix error in highlighing of DTD.
++Fix titlebar showing incorrect text for untitled files.
 
 #-----------------------------------------------------------------------------#
 
-VERSION 0.1.78
-DATE 09/01/2007
-5th Alpha Release
+VERSION 0.4.65
+DATE 02/20/2009
+23rd Alpha Release
 
 NEWS:
-This version of Editra has support for a Vim Emulation mode that emulates
-Vim's Input and Normal modes. A good majority of Vi Normal Mode commands are 
-currently supported with more to come in future releases.
+This release contains a large number of bug fixes and improvements. Most notably
+there has been a fair amount of work done on the autocompletions support. All
+file types now have support for some basic word completion help. HTML and XML
+now have support for smart input assistance and completion tips.
 
-There is also a new plugin interface available to work with in this version.
-The new interface is called 'The Shelf' its provides an easy interface for 
-plugins that want to allow multiple copies of their interface by managing the
-panes in a notebook that is docked by default to the bottom of the editor. The 
-Shelf can also be repositioned or pulled out to a separate floating window and
-saved in that position through the perspectives manager in the view menu.
-
-NEW: [features/improvements]
-+Vim Emulation Mode / Key binding option
-+New plugin interface 'The Shelf' for plugins that wish to allow multiple
-instances to be opened at once in a notebook interface.
-+PyShell is now part of the Shelf, so multiple shells can be open at once
-+Added support for (D, Flagship, Haskell) programming languages
-+Highlighting for Diff/Patch files
-+Basic session saving support for loading files from previous session on launch
-+Remember file filter selection in file open dialog
-+Improvements to windows installer/uninstaller
-+Improved plugin downloaders performance and interface
+NEW: [features/improvments]
++Add autocompletion support for HTML/XML documents.
++Instantly start searching for selected text (Win/Lin Ctrl+F3, OSX Cmd+3)
++Launch adds support for OCaml (patch from quode),
+ Batch scripts (patch from GaÎl), and LaTex.
++Shortcut for maximizing/minimizing the editor pane (patch from Rudi Pettazzi)
++Add menu entry for Fold All action (patch from Giuseppe "Cowo" Corbelli)
++Codebrowser adds support for XML/HTML (patch from Rudi Pettazzi)
++Codebrowser adds support for Vala, VBScript
++Some minor changes to the default hightlighting style. The old default is now
+called Cream.
++Add simple generic autocompleter that provides completions based off of words
+in the current buffer (Ctrl+Space). (patch from Giuseppe "Cowo" Corbelli)
++Add Move Tab to New Window option on tab context menu.
++Keyword helper functionality moved into the simple completer.
 
 BUG FIXES:
-+Fixed bug when closing font dialog with cancel button on MSW
-+Fixed bug that would occure sometimes when closing find dialog
-+Fixed a major bug in the setup file for source package installs that
-excluded copying some of the necessary files.
-+Fixed bug in python autocomp for python files that have syntax errors
-+Fixed bug in handling compatibility issues with older Editra Style Sheets.
++Update window being shown at same time as splash window causing lockups.
++Fix trim trailing whitespace from getting the wrong text position when certain
+unicode characters are present.
++Add some missing JavaScript keywords (patch from Rudi Pettazzi)
++Fix groups not being expanded on a regex replace action.
++Fix Cmd+Shift+Left/Right not selecting line on osx.
++Fix Comment command not working on Latex documents
++Fix some unicode errors in the log system.
++Fix platform detection for some components when running on Vista.
++Fix indentation guides preference not properly being applied on restart.
++Fix transparency settings not being set on Linux.
++Add some missing PHP keywords (patch from Giuseppe "Cowo" Corbelli)
++Fix Display Font preference not being applied.
++Fix error in handling modification event callbacks for mutiple file views.
++Fix text being shown behind busy indicator in status bar while it is busy.
++Fix application crashes that could happen on Linux when compiz is being used.
++Fix autocomp window not being hidden when switching tabs.
 
 #-----------------------------------------------------------------------------#
 
-VERSION 0.1.64
-DATE 07/27/2007
-4th Alpha Release
+VERSION 0.4.40
+DATE 01/02/2009
+22nd Alpha Release
 
 NEWS:
-Thanks to everyone who reported errors and problems in the last release I was
-able to tie up a number loose ends and error cases in the programs operation.
 
-Major changes to profile system, the view of the the profile should not be much
-different from the perspective of usage but the underlying system has been
-completely rewritten to be more robust, reliable, and scalable. These changes
-have made the Pyshell-v0.2 and FileBrowser-v0.1 incompatible with this new
-version of Editra, however there are also new versions of both these plugins
-that are compatible and bundled with the binary versions.
-
-Some changes to the style sheet system have been made that make older syntax
-style sheets incompatible with this version. If you are just using the builtin
-styles there is no need to worry about this but if you have created a custom
-style sheet you will need to change the font face definitions not to use the 
-following format expressions (%(mono), %(helv), %(other), %(times)), and
-instead use the new tags of (%(primary), %(secondary)) these expressions are
-to ensure that the fonts that are set as the preferred fonts in the preference
-dialog are used instead of the defaults when applicable.
+This is the first release of 2009. It was mostly focused on internal cleanup and
+api refactoring. Through this a number of bugs have been fixed and a number of
+existing features have recieved some refinements. The most noteable changes
+are listed below.
 
 NEW: [features/improvements]
-+Improved notebook tab navigation
-+Better Drag and Drop feedback for text and files
-+Font preferences can be saved from session to session
-+New User Profile system
-+FileBrowser plugin is now bundled with Editra binary distrobutions
-+Commandline option to enable debugging
-+Error reporter can be disabled in the preference dialog
++Some improvements to the Python autocompletion.
++Comment/Uncomment are now combined into a single toggle action
+ (modified patch from Giuseppe "Cowo" Corbelli).
++When mixed eol characters are detected a dialog warning of it is now shown,
+ that offers to convert them instead of toggling on eol visibility as it
+ previously did, since this was found to be confusing to many.
++Add option to enable/disable checking of eol characters.
++Add menu shortcut for toggle fold.
++Add a verbose debug mode for view stack tracebacks in editra log messages.
++Updated (Italian, Japanese, Latvian, Polish, Russian, Spanish, Turkish) Translations.
++Reuse existing find results screens more effectively.
++New version of Launch with support for R.
 
 BUG FIXES:
-+Handled some unhandled error conditions in the python autocompleter
-+Fixed a bug where a save would fail when clicking on Yes when the modify save
- dialog was shown.
-+Fixed a number of minor bugs in the plugin manager
-+Fixed bug in the Preferences Dialog where some settings wouldn't get set
-+Filehistory order is properly preserved
-+Fixed a bug in the Style Editor where it would occasionally prompt for saving 
- when it didn't need to.
-+Style Editor and Plugin Manager now properly use Metal style when it is set on
- OSX.
-+Fixed a bug where the Find dialogs menu entries would get disabled after the
- first showing.
++Fix find options not properly being syncronized between dialog and find bar.
++Fix event handlers not properly getting connected when going from 2 -> 1 open windows.
++Fix eol mode settings in preferences.
++Fix search bar text not being colored properly on msw/gtk.
++Fix window not being raised from taskbar when opening file with 'Open with...'
++Fix drag and drop error for instlling plugins through plugin manager.
 
 #-----------------------------------------------------------------------------#
-VERSION 0.1.50
-DATE 07/14/2007
-3rd Alpha Release
+
+VERSION 0.4.28
+DATE 12/20/2008
+21st Alpha Release
 
 NEWS:
-This release is mostly a bug fix and refactoring release. To help with further
-removing bugs and errors there is now an error reporter built into the editor
-that will open when an error condition is raised. Please help to improve Editra
-by clicking on "Report Error" when this dialog is shown.
-
-There are also a few new features that can be seen below, most notable is the
-support for a number of new languages and file encodings. For the specifics
-read the below changelog entries.
+This is yet another quick turnaround bug fix release. The previous build had
+an issue with some missing files. This release also adds the new pane navigator
+feature to make it easy to move from panel to panel with the keyboard.
 
 NEW: [features/improvements]
-+Support for utf-7, uft-16 encoded files
-+New Preferences Dialog
-+Improved command line support
-+Better Error handling and notification
-+File type detection is now configurable
-+To upper/lower case formatting command
-+CssOptimizer plugin available via the plugin manager
-+Lots of new documentation
-+Editra can be packaged as an Egg
-+Support for (Caml, Eiffel, Lout, MatLab, Octave, YAML) syntax highlighting
-+Improved SQL highlighting support
-+Some minor improvements to the LaTeX generator
++Keyboard navigation of MainWindow panes (OSX: Alt+Tab, Others:Alt+1).
+ (modified patch from Giuseppe "Cowo" Corbelli).
 
 BUG FIXES:
-+Respects BOM byte if one is present in the file
-+Cursor/Selection is now set properly after a comment/uncomment action
-+Bracket highlighting can be toggled on/off properly
-+Many bugs fixed in source package install
-+Folding now works for xml files
-+Fixed some styling errors for postscript files
-+Fixed generated rtf documents display issue
-+Incremental search works on Windows
-+Goto line control now properly rejects non integer input (msw/gtk)
-+Fixed cursor postioning bug when inserting lines via (Cmd+L) when CRLF is used
++Fix search string not getting set from buffer selection in search bar.
++Fix error when clicking Regular Expression in Search Bar
++Add some missing sql keywords.
 
 #-----------------------------------------------------------------------------#
-VERSION 0.1.28
-DATE 06/15/2007
-2nd Alpha Release
+
+VERSION 0.4.25
+DATE 12/17/2008
+20th Alpha Release
 
 NEWS:
-The main addition to the release is the plugin manager dialog it offers a complete
-plugin management solution for the editor. The Configuration, downloading, and 
-installation of plugins are all managed by this dialog. I also wrote a couple of
-new plugins that can be downloaded and installed through the manager, so try it
-out.
-
-Also introduced in this release is as a tool to help manage the workspace. 
-The Perspectives manager will allow you to save any number custom workspace 
-views than can be used from session to session. This new feature can be found 
-in the View Menu.
+This is another quick turnaround release to fix some fairly critical bugs in the
+last release.
 
 NEW: [features/improvements]
-+Plugin Manager for configuring, downloading, and installing plugins
-+A new File Browser plugin is available for download through the new
-plugin manager. It allows for quick file opening and bookmarking of
-frequently used paths.
-+Perspective management for managing custom workspace layouts and views
-+Many minor performance enhancements
-+Support for Lua, Fortran77, Fortran95
-+RTF generator/exporter
-+Massive performance improvements to Html/Latex generators
-+Drag and Drop now accepts folders of files
-+New Commands (Save All, Close All)
-+New Formatting options (Convert Tabs to Spaces, Convert Spaces to Tabs, 
-                         Trim Trailing Whitespace)
-+Splash screen can be disabled
-+Checks if other programs have modified the on disk file since the last
-savepoint and prompts to see if it should be reloaded or resaved in the
-case of it having been deleted.
-+Mark tabs of modified files.
-+If current page is empty and unmodified, opening a new file will open it
-in the current page instead of a new page.
-+Adjustable edge column guide
-+MAC a more HIG compliant document icon
++Some autocompletion behavior improvements
++Some minor ui changes to the command bar
 
 BUG FIXES:
-+Tab images now get set properly regardless of how file is opened
-+Correct path handling in the Launch script
-+Launch script now properly handles commandline args.
-+Manual setting of lexer works for all lexer menu items
-+MAC the notebook now refreshes properly when all have been closed
-+MSW  update downloader window displays properly
-+Clicking in text area now properly updates line/column status
-+Drag and Drop now works with files that have non ascii characters in
-their name/path.
++Fix find in files where if the filter was empty no files were searched.
++Fix error in Find All where incorrect search flag parameters were set.
++Fix Find/Replace not working.
++Buffer context menu now works correctly on gtk version.
++Fix column mode keybinding on windows.
++Unicode fixes
 
 #-----------------------------------------------------------------------------#
-VERSION 0.1.0
-DATE 05/24/2007
-1st Alpha Release
+
+VERSION 0.4.20
+DATE 12/12/2008
+19th Alpha Release
 
 NEWS:
-  This is the first release in the alpha release series. The alpha releases will
-probably continue until version 0.5.0 or so when the beta phase begins and 
-most development energy will be shifted to stabilization of the editor and the 
-api as well as improving performance to prepare for a 1.0 release. What can be 
-expected during this alpha release series is the improvement of current features, 
-a few new minor features and more thorough testing prior to a release which will 
-lead to a more powerful, more stable and more usable program.
 
-  The big addition to this version is the support for extensions to the editor
-through plugins written in python. The plugins must be written and packaged
-in a certain way for them to work, but the api is fairly easy to learn and
-even easier to use. To learn more visit the documentation page at read the
-plugins how to in the user documentation section. This version of the editor
-comes with one plugin that can be used as an example of how to do things
-as well.
+This release fixes a number of of bugs and general stability issues introduced
+from the last few rounds of feature enhancements. In addition to these bug
+fixes a few new features such as a column edit mode and more improvements to
+the text searching features have been added.
 
-  There is now a platform independent installer for Editra. It will install
-Editra as a python package. To install Editra as a python package just issue
-the following command from the command line in the source package base 
-directory.
-
-        python setup.py install
-
-   This is of course assuming that python is on your path. On Windows you
-may have to issue the command as follows. Where the XX is replaced with
-the version number of python you have installed (i.e 24, 25, ect...)
-
-        C:\\PythonXX\python.exe setup.py install
-
-   This installation method is in its first iteration and probably has some 
-compatibility issues, so please report bugs either on the bug tracker 
-(code.google.com/issues/list) or on the community page (editra.org/?page=community)
-to help improve it.
 
 NEW: [features/improvements]
-+Extensibility through plugins written in python
-+PyShell Plugin
-+Source package build/install script (OS Independent Installer)
-+Some minor improvements to the Windows Installer
-+Improved OS X integration/behavior of applet
-+More complete themeing support
-+Improved UTF-8 and other non-ascii file handling
-+Update Checker/Downloader (manual install is still required)
-+Keyword helper now bound to Ctrl+K (Cmd+K on Mac)
-+Minor refinement of the logging subsystem
-+Improved (HTML, MASM, NASM, VB, Smalltalk) highlighting support
-+LaTeX document generator
-+Checks EOL characters and warns if mixed, otherwise preserves the EOL char
-used by the document.
-+Extended file type autodetection (checks the shebang(#!) line if there is one)
-+Some minor UI enhancements, and a few new menu icons
++Add shortcut for Find Previous
++Column edit mode
++New version of Launch plugin (Run last executed program)
++Read Only indicators on tabs
++Add support for Progress 4GL
++Middle click can close tabs in Shelf
++Add custom highlighting for Issue Lists (from Torsten Mohr)
++Report number of files searched when doing a Find in Files
++Improve performance of Find All.
++Add ability to filter file type to Find in Files.
++Add commandline option to run Editra in the hotshot profiler.
++Numerous minor performance improvements.
++Add Swedish translation (by Peter Magnusson)
 
 BUG FIXES:
-+GTK keybinding for Undo
-+GTK command bar display issues
-+No more lost text when generating HTML
-+Added some missing c-shell keyword definitions
-+Added a missing style region definitions to the CSS, NSIS, HTML highlighters
-+Fixed improper highlighting in Visual Basic Highlighter
-+Style Editor preview window display issues
-+Addressed numerous issues related to how the text is displayed in documents
- that don't have an associated lexer setting, or when highlighting is turned off.
-+Opening a file from the command line with a relative path now works properly
-+Tab images are set properly for files opened via command line
-+MSW all menu icons now show properly
-+All config directories are properly created on an upgrade/install
++Middle click closes the tab that was clicked on and not the active tab.
++Fix Find dialog not preserving order of lookin choices.
++Fix searching in folded text not being exposed during search.
++Fix random jumping to top/bottom of file during incremental search.
++Fix text Drag n Drop not working on Windows.
++Don't show Python auto-comp choices after numbers.
++Fix file modified indicator not being hidden after saving file.
++Fix number of bugs with opening files from filebrowser on gtk versions.
++Fix statusbar line column number not being updated when clicking on.
+Find Results links.
++Fix drag and drop of text not scrolling window as the mouse is moved towards 
+top or bottom of buffer.
++Fix some python2.4 compatibility issues.
+
+#-----------------------------------------------------------------------------#
+
+VERSION 0.4.01
+DATE 11/24/2008
+18th Alpha Release
+
+NEWS:
+
+Quick Bug fix release to fix some configuration related bugs.
+
+BUG FIXES:
++Language settings not being loaded
++Running Editra from command line on Mac/Linux would not load some config
+settings.
+
+#-----------------------------------------------------------------------------#
+
+VERSION 0.4.0
+DATE 11/23/2008
+17th Alpha Release
+
+NEWS:
+
+On Macintosh and Windows the user configuration files have moved to more 
+platform specific locations. This transition should should happen automatically
+but if there are any problems follow the onscreen instructions to manually
+transition your preference settings to the new location. See the changelog
+below for the details of other major changes.
+
+NEW: [features/improvements]
++User configuration files are now kept at standard platform locations
++Support for multiple views of the same file
++Improved Python auto-indenter (patch from Ofer Schwarz)
++Show auto-completion choices with Ctrl+Space (patch from Ofer Schwarz)
++Add Paste After command (patch from Dario Ghilardi)
++Report number of matches that were replaced in a Replace All action
++Expand groups when doing a regular expression search and replace
++Add (Polish, Slovenian, Latvian) translations
++New version of PyShell. Supports custom styles.
++Middle click closes tabs (patch from craig.ds)
++Double click empty tab area opens new tab (patch from craig.ds)
++Add support for VBScript
++Improved text drag and drop
+
+BUG FIXES:
++Fix encoding errors when loading plugins on some systems
++Fix not being able to cut and copy from Shelf windows
++Fix bug in selecting Cancel when prompted to save modifications that would
+ cause the editor to block paint events and appear frozen.
++Ctrl+W properly closes the active window instead of always defaulting to the
+ tab of the top MainWindow.
++Fix not being able to search for strings with '.' in them in non-regex mode
++Fix bug in Launch output sometimes missing output data
++Fix inaccurate highlighting of words when doing incremental whole word search
++Fix regex not working with '^' (patch from craig.ds)
++Fix bug in populating quick finds search history menu
++Fix bug where selecting cancel when closing a tab would not cancel the action
+
+#-----------------------------------------------------------------------------#
+
+For Alpha 0.3 Release Series Changelog see docs/CHANGELOG_4
+
+#-----------------------------------------------------------------------------#
+
+For Alpha 0.2 Release Series Changelog see docs/CHANGELOG_3
+
+#-----------------------------------------------------------------------------#
+
+For Alpha 0.1 Release Series Changelog see docs/CHANGELOG_2
 
 #-----------------------------------------------------------------------------#
 

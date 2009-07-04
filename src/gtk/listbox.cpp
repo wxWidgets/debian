@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Modified By: Ryan Norton (GtkTreeView implementation)
-// Id:          $Id: listbox.cpp 49264 2007-10-20 15:01:42Z RR $
+// Id:          $Id: listbox.cpp 52940 2008-03-31 16:39:53Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -906,7 +906,7 @@ void wxListBox::GtkSetSelection(int n, const bool select, const bool blockEvent)
     m_blockEvent = false;
 }
 
-void wxListBox::DoSetFirstItem( int n )
+void wxListBox::DoScrollToCell(int n, float alignY, float alignX)
 {
     wxCHECK_RET( m_treeview, wxT("invalid listbox") );
     wxCHECK_RET( IsValid(n), wxT("invalid index"));
@@ -928,9 +928,19 @@ void wxListBox::DoSetFirstItem( int n )
 
     // Scroll to the desired cell (0.0 == topleft alignment)
     gtk_tree_view_scroll_to_cell(m_treeview, path, NULL,
-                                 TRUE, 0.0f, 0.0f);
+                                 TRUE, alignY, alignX);
 
     gtk_tree_path_free(path);
+}
+
+void wxListBox::DoSetFirstItem(int n)
+{
+    DoScrollToCell(n, 0, 0);
+}
+
+void wxListBox::EnsureVisible(int n)
+{
+    DoScrollToCell(n, 0.5, 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -1017,42 +1027,39 @@ wxSize wxListBox::DoGetBestSize() const
     // Start with a minimum size that's not too small
     int cx, cy;
     GetTextExtent( wxT("X"), &cx, &cy);
-    int lbWidth = 3 * cx;
+    int lbWidth = 0;
     int lbHeight = 10;
 
-    // Get the visible area of the tree view (limit to the 10th item
-    // so that it isn't too big)
-    unsigned int count = GetCount();
-    if (count)
+    // Find the widest string.
+    const unsigned int count = GetCount();
+    if ( count )
     {
         int wLine;
-
-        // Find the widest line
-        for(unsigned int i = 0; i < count; i++) {
-            wxString str(GetString(i));
-            GetTextExtent(str, &wLine, NULL);
-            lbWidth = wxMax(lbWidth, wLine);
-        }
-
-        lbWidth += 3 * cx;
-
-        // And just a bit more for the checkbox if present and then some
-        // (these are rough guesses)
-#if wxUSE_CHECKLISTBOX
-        if ( m_hasCheckBoxes )
+        for ( unsigned int i = 0; i < count; i++ )
         {
-            lbWidth += 35;
-            cy = cy > 25 ? cy : 25; // rough height of checkbox
+            GetTextExtent(GetString(i), &wLine, NULL);
+            if ( wLine > lbWidth )
+                lbWidth = wLine;
         }
-#endif
-
-        // don't make the listbox too tall (limit height to around 10 items) but don't
-        // make it too small neither
-        lbHeight = (cy+4) * wxMin(wxMax(count, 3), 10);
     }
+
+    lbWidth += 3 * cx;
+
+    // And just a bit more for the checkbox if present and then some
+    // (these are rough guesses)
+#if wxUSE_CHECKLISTBOX
+    if ( m_hasCheckBoxes )
+    {
+        lbWidth += 35;
+        cy = cy > 25 ? cy : 25; // rough height of checkbox
+    }
+#endif
 
     // Add room for the scrollbar
     lbWidth += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+
+    // Don't make the listbox too tall but don't make it too small neither
+    lbHeight = (cy+4) * wxMin(wxMax(count, 3), 10);
 
     wxSize best(lbWidth, lbHeight);
     CacheBestSize(best);

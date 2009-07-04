@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.01.00
-// RCS-ID:      $Id: exec.cpp 43808 2006-12-04 17:53:32Z VZ $
+// RCS-ID:      $Id: exec.cpp 54352 2008-06-25 07:51:09Z JS $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -817,7 +817,7 @@ void MyFrame::OnFileExec(wxCommandEvent& WXUNUSED(event))
 
     s_filename = filename;
 
-    wxString ext = filename.AfterFirst(_T('.'));
+    wxString ext = filename.AfterLast(_T('.'));
     wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(ext);
     if ( !ft )
     {

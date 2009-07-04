@@ -1,3 +1,31 @@
+2008-07-29  Roman Rolinsky  <rolinsky@poisson>
+
+	* Revision 0.2.0-5. Undo/redo fixes and improvements. Undoing
+	panel edit while test window is open still has some bugs.
+
+2008-05-28  Roman Rolinsky  <rolinsky@poisson>
+
+	* Revision 0.2.0-4. Added wxListBox styles, fixed some other
+	styles. Experimental support for MDI.
+
+2008-05-22  Roman Rolinsky  <rolinsky@poisson>
+
+	* Revision 0.2.0-3. Added "use subclassing" preference for using
+	subclassing in the test view (providing the modules can be found
+	in the PYTHONPATH). Some small fixes. Temporary file is copied
+	instead of moved to the main file to avoid symbolic link
+	redefinition.
+
+2008-02-22  Roman Rolinsky  <rolinsky@hartman.femagsoft.com>
+
+	* Fixes for Cut/Delete undo/redo. wxBitmapButton attributes
+	completed. Revision 0.2.0-2.
+
+2008-01-17  Roman Rolinsky  <rolinsky@hartman.femagsoft.com>
+
+	* Revision 0.2.0-1. Implemented "Find Again" command, added
+	"params" attribute for CRX manifest file.
+
 2007-10-25  Roman Rolinsky  <rolinsky@hartman.femagsoft.com>
 
 	* Added components for: wxHyperlinkCtrl, wxPropertySheetDialog,

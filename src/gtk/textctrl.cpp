@@ -2,7 +2,7 @@
 // Name:        src/gtk/textctrl.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: textctrl.cpp 46610 2007-06-22 10:37:23Z RR $
+// Id:          $Id: textctrl.cpp 58030 2009-01-12 05:34:07Z PC $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin, 2005 Mart Raudsepp
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1283,6 +1283,7 @@ bool wxTextCtrl::Enable( bool enable )
     }
 
     gtk_widget_set_sensitive( m_text, enable );
+    SetCursor(enable ? wxCursor(wxCURSOR_IBEAM) : wxCursor());
 
     return true;
 }

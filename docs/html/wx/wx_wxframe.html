@@ -350,8 +350,8 @@ for further details.<P>
 <H3>wxFrame::CreateStatusBar</H3>
 <P>
 <B>virtual <A HREF="wx_wxstatusbar.html#wxstatusbar">wxStatusBar</A>*</B> </B> <B>CreateStatusBar</B>(<B>int</B><I> number = 1</I>,
- <B>long</B><I> style = 0</I>,
- <B>wxWindowID</B><I> id = -1</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name = "statusBar"</I>)<P>
+ <B>long</B><I> style = wxST_SIZEGRIP | wxFULL_REPAINT_ON_RESIZE</I>,
+ <B>wxWindowID</B><I> id = 0</I>, <B>const <A HREF="wx_wxstring.html#wxstring">wxString</A>&</B></B><I> name = "statusBar"</I>)<P>
 Creates a status bar at the bottom of the frame.<P>
 <B><FONT COLOR="#FF0000">Parameters</FONT></B><P>
 <I>number</I><UL><UL>

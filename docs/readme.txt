@@ -1,4 +1,4 @@
-wxWidgets 2.8.7
+wxWidgets 2.8.10
 ---------------------------------------------------------
 
 Welcome to wxWidgets, a sophisticated cross-platform C++
@@ -126,9 +126,18 @@ See docs/changes.txt for a summary of changes to wxWidgets.
 
 See docs/tech for an archive of technical notes.
 
-The wxWidgets bug database can be browsed at:
+The wxWidgets bug tracker can be browsed at:
 
-  http://sourceforge.net/bugs/?group_id=9863
+    http://trac.wxwidgets.org/report
+
+Please use the search function of our Trac installation to find
+any possibly relevant bugs before reporting new ones. Also please
+notice that often trying to correct the bug yourself is the
+quickest way to fix it. Even if you fail to do it, you may
+discover valuable information allowing us to fix it while doing
+it. We also give much higher priority to bug reports with patches
+fixing the problems so this ensures that your report will be
+addressed sooner.
 
 The Windows HTML Help files are located in docs/htmlhelp.
 The Windows Help files are located in docs/winhelp.
@@ -153,5 +162,5 @@ web site.
 
 Have fun!
 
-The wxWidgets Team, November 2007
+The wxWidgets Team, June 2008
 

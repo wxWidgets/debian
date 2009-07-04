@@ -3,25 +3,25 @@
 # Purpose: Define TCL/TK syntax for highlighting and other features           #
 # Author: Cody Precord <cprecord@editra.org>                                  #
 # Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#-----------------------------------------------------------------------------#
-# FILE: tcl.py                                                                #
-# AUTHOR: Cody Precord                                                        #
-#                                                                             #
-# @summary: Lexer configuration module for tcl                                #
-#                                                                             #
-#-----------------------------------------------------------------------------#
+FILE: tcl.py
+AUTHOR: Cody Precord
+@summary: Lexer configuration module for tcl
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: tcl.py 49393 2007-10-24 13:46:17Z CJP $"
-__revision__ = "$Revision: 49393 $"
+__svnid__ = "$Id: tcl.py 55180 2008-08-22 17:35:29Z CJP $"
+__revision__ = "$Revision: 55180 $"
 
 #-----------------------------------------------------------------------------#
+# Local Imports
 import synglob
+from cpp import AutoIndenter
+
 #-----------------------------------------------------------------------------#
 
 #---- Keyword Definitions ----#
@@ -152,7 +152,7 @@ SYNTAX_ITEMS = [('STC_TCL_BLOCK_COMMENT', 'comment_style'),
                  ('STC_TCL_NUMBER', 'number_style'),
                  ('STC_TCL_OPERATOR', 'operator_style'),
                  ('STC_TCL_SUBSTITUTION', 'scalar_style'),
-                 ('STC_TCL_SUB_BRACE', 'default_style'), # STYLE NEEDED
+                 ('STC_TCL_SUB_BRACE', 'string_style'), # STYLE NEEDED
                  ('STC_TCL_WORD', 'keyword_style'),        # tcl_kw
                  ('STC_TCL_WORD2', 'keyword2_style'),      # tk_kw
                  ('STC_TCL_WORD3', 'keyword3_style'),      # itcl_kw

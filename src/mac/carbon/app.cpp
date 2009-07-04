@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: app.cpp 49620 2007-11-04 14:06:59Z SC $
+// RCS-ID:      $Id: app.cpp 53370 2008-04-26 05:43:41Z KO $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -97,6 +97,8 @@ long      wxApp::s_macExitMenuItemId = wxID_EXIT ;
 wxString  wxApp::s_macHelpMenuTitleName = wxT("&Help") ;
 
 bool      wxApp::sm_isEmbedded = false; // Normally we're not a plugin
+
+void*     wxApp::s_macNotificationRecord = NULL;
 
 //----------------------------------------------------------------------
 // Core Apple Event Support
@@ -300,7 +302,18 @@ void wxApp::MacPrintFile(const wxString & fileName )
 #endif //docview
 }
 
-
+void wxApp::MacRequestUserAttention(wxNotificationOptions options)
+{
+    NMRec nmRec = {0};
+    nmRec.qType = nmType;
+    nmRec.nmMark = 1;
+    NMInstall(&nmRec);
+    
+    if (options == wxNOTIFY_ONCE)
+        NMRemove (&nmRec);
+    else // save the reference and remove it on app activation
+        wxApp::s_macNotificationRecord = &nmRec;
+}
 
 void wxApp::MacNewFile()
 {
@@ -613,8 +626,17 @@ static pascal OSStatus wxMacAppApplicationEventHandler( EventHandlerCallRef hand
     switch ( GetEventKind( event ) )
     {
         case kEventAppActivated :
-            if ( wxTheApp )
+            if ( wxTheApp ) {
                 wxTheApp->SetActive( true , NULL ) ;
+                // If MacRequestUserAttention is set to repeat, then we need
+                // to shut down the notification upon app activation. This
+                // should happen automatically, but let's add the handler 
+                // just in case.
+                if (wxApp::s_macNotificationRecord) {
+                    NMRemove((NMRec*)wxApp::s_macNotificationRecord);
+                    wxApp::s_macNotificationRecord = NULL;
+                }
+            }
             result = noErr ;
             break ;
 
@@ -1676,4 +1698,15 @@ void wxApp::MacCreateKeyEvent( wxKeyEvent& event, wxWindow* focus , long keymess
     event.m_y = wherey;
     event.SetTimestamp(when);
     event.SetEventObject(focus);
+}
+
+
+void wxApp::MacHideApp()
+{
+    wxMacCarbonEvent event( kEventClassCommand , kEventCommandProcess );
+    HICommand command;
+    memset( &command, 0 , sizeof(command) );
+    command.commandID = kHICommandHide ;
+    event.SetParameter<HICommand>(kEventParamDirectObject, command );       
+    SendEventToApplication( event );
 }

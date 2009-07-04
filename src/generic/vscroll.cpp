@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     30.05.03
-// RCS-ID:      $Id: vscroll.cpp 40624 2006-08-16 12:17:05Z MW $
+// RCS-ID:      $Id: vscroll.cpp 57359 2008-12-15 19:09:31Z BP $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -373,8 +373,8 @@ bool wxVScrolledWindow::ScrollToLine(size_t line)
 
     // finally refresh the display -- but only redraw as few lines as possible
     // to avoid flicker
-    if ( GetVisibleBegin() >= lineLastOld ||
-            GetVisibleEnd() <= lineFirstOld )
+    if ( GetChildren().empty() &&
+         (GetVisibleBegin() >= lineLastOld || GetVisibleEnd() <= lineFirstOld ) )
     {
         // the simplest case: we don't have any old lines left, just redraw
         // everything
@@ -382,6 +382,12 @@ bool wxVScrolledWindow::ScrollToLine(size_t line)
     }
     else // overlap between the lines we showed before and should show now
     {
+        // Avoid scrolling visible parts of the screen on Mac
+#ifdef __WXMAC__
+        if (!IsShownOnScreen())
+            Refresh();
+        else
+#endif
         ScrollWindow(0, GetLinesHeight(GetVisibleBegin(), lineFirstOld));
     }
 

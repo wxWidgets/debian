@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: setup0.h 43908 2006-12-11 06:19:27Z RD $
+// RCS-ID:      $Id: setup0.h 60190 2009-04-16 00:57:35Z KO $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -579,6 +579,18 @@
 #define wxUSE_GRAPHICS_CONTEXT 0
 #endif
 
+// Enable the new wxCairoContext classes for an advanced
+// 2D drawing API.  (Still somewhat experimental)
+//
+// Please note that you will need to link with Cairo for this to work.
+//
+// Default is 0
+//
+// Recommended setting: 1
+#ifndef wxUSE_CAIRO
+#define wxUSE_CAIRO 0
+#endif
+
 // ----------------------------------------------------------------------------
 // Individual GUI controls
 // ----------------------------------------------------------------------------
@@ -1042,7 +1054,7 @@
 // ----------------------------------------------------------------------------
 
 // wxSingleInstanceChecker class allows to verify at startup if another program
-// instance is running (it is only available under Win32)
+// instance is running.
 //
 // Default is 1
 //

@@ -263,26 +263,9 @@ return type (without const).<P>
 <A NAME="wxmbconvfromwchar"></A>
 <H3>wxMBConv::FromWChar</H3>
 <P>
-<B>virtual size_t</B> <B>FromWChar</B>(<B>wchar_t *</B><I>dst</I>, <B>size_t </B><I>dstLen</I>, <B>const char *</B><I>src</I>, <B>size_t </B><I>srcLen = wxNO_LEN</I>) <B>const</B><P>
-The most general function for converting a multibyte string to a wide string.
-The main case is when <I>dst</I> is not <TT>NULL</TT> and <I>srcLen</I> is not 
-<TT>wxNO_LEN</TT> (which is defined as <TT>(size_t)-1</TT>): then
-the function converts exactly <I>srcLen</I> bytes starting at <I>src</I> into
-wide string which it output to <I>dst</I>. If the length of the resulting wide
-string is greater than <I>dstLen</I>, an error is returned. Note that if 
-<I>srcLen</I> bytes don't include <TT>NUL</TT> characters, the resulting wide string is
-not <TT>NUL</TT>-terminated neither.<P>
-If <I>srcLen</I> is <TT>wxNO_LEN</TT>, the function supposes that the string is
-properly (i.e. as necessary for the encoding handled by this conversion) 
-<TT>NUL</TT>-terminated and converts the entire string, including any trailing <TT>NUL</TT> 
-bytes. In this case the wide string is also <TT>NUL</TT>-terminated.<P>
-Finally, if <I>dst</I> is <TT>NULL</TT>, the function returns the length of the needed
-buffer.<P>
-<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
-The number of characters written to <I>dst</I> (or the number of characters
-which would have been written to it if it were non-<TT>NULL</TT>) on success or 
-<TT>wxCONV_FAILED</TT> on error.<P>
-
+<B>virtual size_t</B> <B>FromWChar</B>(<B>char_t *</B><I>dst</I>, <B>size_t </B><I>dstLen</I>, <B>const wchar_t *</B><I>src</I>, <B>size_t </B><I>srcLen = wxNO_LEN</I>) <B>const</B><P>
+This function has the same semantics as <A HREF="wx_wxmbconv.html#wxmbconvtowchar">ToWChar</A> 
+except that it converts a wide string to multibyte one.<P>
 
 <HR>
 <A NAME="wxmbconvgetmaxmbnullen"></A>
@@ -312,9 +295,24 @@ The other cases are not currently supported and <TT>wxCONV_FAILED</TT>
 <A NAME="wxmbconvtowchar"></A>
 <H3>wxMBConv::ToWChar</H3>
 <P>
-<B>virtual size_t</B> <B>ToWChar</B>(<B>char_t *</B><I>dst</I>, <B>size_t </B><I>dstLen</I>, <B>const wchar_t *</B><I>src</I>, <B>size_t </B><I>srcLen = wxNO_LEN</I>) <B>const</B><P>
-This function has the same semantics as <A HREF="wx_wxmbconv.html#wxmbconvfromwchar">FromWChar</A> 
-except that it converts a wide string to multibyte one.<P>
-
+<B>virtual size_t</B> <B>ToWChar</B>(<B>wchar_t *</B><I>dst</I>, <B>size_t </B><I>dstLen</I>, <B>const char_t *</B><I>src</I>, <B>size_t </B><I>srcLen = wxNO_LEN</I>) <B>const</B><P>
+The most general function for converting a multibyte string to a wide string.
+The main case is when <I>dst</I> is not <TT>NULL</TT> and <I>srcLen</I> is not 
+<TT>wxNO_LEN</TT> (which is defined as <TT>(size_t)-1</TT>): then
+the function converts exactly <I>srcLen</I> bytes starting at <I>src</I> into
+wide string which it output to <I>dst</I>. If the length of the resulting wide
+string is greater than <I>dstLen</I>, an error is returned. Note that if 
+<I>srcLen</I> bytes don't include <TT>NUL</TT> characters, the resulting wide string is
+not <TT>NUL</TT>-terminated neither.<P>
+If <I>srcLen</I> is <TT>wxNO_LEN</TT>, the function supposes that the string is
+properly (i.e. as necessary for the encoding handled by this conversion) 
+<TT>NUL</TT>-terminated and converts the entire string, including any trailing <TT>NUL</TT> 
+bytes. In this case the wide string is also <TT>NUL</TT>-terminated.<P>
+Finally, if <I>dst</I> is <TT>NULL</TT>, the function returns the length of the needed
+buffer.<P>
+<B><FONT COLOR="#FF0000">Return value</FONT></B><P>
+The number of characters written to <I>dst</I> (or the number of characters
+which would have been written to it if it were non-<TT>NULL</TT>) on success or 
+<TT>wxCONV_FAILED</TT> on error.<P>
 
 </FONT></BODY></HTML>

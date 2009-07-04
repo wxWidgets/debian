@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: choice.cpp 43119 2006-11-06 13:00:02Z JS $
+// RCS-ID:      $Id: choice.cpp 60473 2009-05-02 13:42:25Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -132,7 +132,7 @@ int wxChoice::DoAppend( const wxString& item )
 #endif
 
     m_datas.Insert( NULL , index );
-    UMAInsertMenuItem( MAC_WXHMENU( m_macPopUpMenuHandle ), item, m_font.GetEncoding(), index );
+    UMAInsertMenuItem( MAC_WXHMENU( m_macPopUpMenuHandle ), item, GetFont().GetEncoding(), index );
     DoSetItemClientData( index, NULL );
     m_peer->SetMaximum( GetCount() );
 
@@ -147,7 +147,7 @@ int wxChoice::DoInsert( const wxString& item, unsigned int pos )
     if (pos == GetCount())
         return DoAppend( item );
 
-    UMAInsertMenuItem( MAC_WXHMENU( m_macPopUpMenuHandle ), item, m_font.GetEncoding(), pos );
+    UMAInsertMenuItem( MAC_WXHMENU( m_macPopUpMenuHandle ), item, GetFont().GetEncoding(), pos );
     m_strings.Insert( item, pos );
     m_datas.Insert( NULL, pos );
     DoSetItemClientData( pos, NULL );
@@ -338,7 +338,7 @@ wxSize wxChoice::DoGetBestSize() const
             Point bounds = { 0, 0 } ;
             SInt16 baseline ;
 
-            ::GetThemeTextDimensions( wxMacCFStringHolder( str , m_font.GetEncoding() ) ,
+            ::GetThemeTextDimensions( wxMacCFStringHolder( str , GetFont().GetEncoding() ) ,
                 kThemeCurrentPortFont,
                 kThemeStateActive,
                 false,
@@ -359,7 +359,6 @@ wxSize wxChoice::DoGetBestSize() const
         wxCoord width, height ;
         dc.GetTextExtent( wxT("X"), &width, &height);
         int cx = width ;
-        lbHeight += 4;
 #else
         // And just a bit more
         int cx = ::TextWidth( "X" , 0 , 1 ) ;

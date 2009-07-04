@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/08/02
-// RCS-ID:      $Id: pen.mm 47415 2007-07-13 03:06:22Z DE $
+// RCS-ID:      $Id: pen.mm 51585 2008-02-08 00:35:39Z DE $
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,8 @@
     #include "wx/bitmap.h"
     #include "wx/colour.h"
 #endif //WX_PRECOMP
+
+#include "wx/cocoa/ObjcRef.h"
 
 #import <AppKit/NSColor.h>
 
@@ -131,13 +133,13 @@ inline wxPenRefData::wxPenRefData(const wxPenRefData& data)
     m_nbDash = data.m_nbDash;
     m_dash = data.m_dash;
     m_stipple = data.m_stipple;
-    m_cocoaNSColor = [data.m_cocoaNSColor retain];
+    m_cocoaNSColor = wxGCSafeRetain(data.m_cocoaNSColor);
     m_cocoaDash = NULL;
 }
 
 inline void wxPenRefData::FreeCocoaNSColor()
 {
-    [m_cocoaNSColor release];
+    wxGCSafeRelease(m_cocoaNSColor);
     m_cocoaNSColor = nil;
 }
 
@@ -154,7 +156,7 @@ inline WX_NSColor wxPenRefData::GetNSColor()
         switch( m_style )
         {
         case wxTRANSPARENT:
-            m_cocoaNSColor = [[NSColor clearColor] retain];
+            m_cocoaNSColor = wxGCSafeRetain([NSColor clearColor]);
             break;
         case wxSTIPPLE:
 //  wxBitmap isn't implemented yet
@@ -179,6 +181,7 @@ inline WX_NSColor wxPenRefData::GetNSColor()
             if(!colour_NSColor)
                 colour_NSColor = [NSColor clearColor];
             m_cocoaNSColor = [colour_NSColor copyWithZone:nil];
+            [wxGCSafeRetain(m_cocoaNSColor) release]; // retain in GC. no change in RR.
             break;
         }
     }

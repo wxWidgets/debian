@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: config.bkl 50120 2007-11-20 22:52:40Z VS $ -->
+<!-- $Id: config.bkl 60190 2009-04-16 00:57:35Z KO $ -->
 
 <makefile>
 
@@ -266,6 +266,14 @@ Acts according to BUILD by default.
         </description>
     </option>
 
+    <option name="USE_CAIRO">
+        <values>0,1</values>
+        <default-value>0</default-value>
+        <description>
+            Enable wxCairoContext for platforms other than Linux/GTK.
+        </description>
+    </option>
+
     <if cond="FORMAT!='autoconf'">
         <option name="USE_GDIPLUS">
             <values>0,1</values>
@@ -404,10 +412,9 @@ it if SHARED=1 unless you know what you are doing.
 
         <set var="WITH_PLUGIN_SDL">0</set>
 
-        <set var="SRCDIR">
-            <if cond="BUILDING_LIB=='1'">..$(DIRSEP)..</if>
-            <if cond="BUILDING_LIB=='0'">.</if>
-        </set>
+        <if cond="BUILDING_LIB=='1'">
+            <set-srcdir>../..</set-srcdir>
+        </if>
         <set var="TOP_SRCDIR">$(SRCDIR)/$(WXTOPDIR)</set>
     </if>
 
@@ -454,6 +461,7 @@ Set the version of your Mingw installation here.
         <set var="USE_EXCEPTIONS">1</set>
         <set var="USE_RTTI">1</set>
         <set var="USE_THREADS">1</set>
+        <set var="USE_CAIRO">0</set>
         <if cond="FORMAT!='autoconf'"><set var="USE_GDIPLUS">0</set></if>
         <set var="DEBUG_INFO">$(DEBUG_INFO_DEFAULT)</set>
         <set var="DEBUG_FLAG">default</set>

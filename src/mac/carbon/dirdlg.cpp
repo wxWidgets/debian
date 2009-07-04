@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: dirdlg.cpp 48999 2007-09-30 19:57:39Z SC $
+// RCS-ID:      $Id: dirdlg.cpp 57849 2009-01-06 09:36:54Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ int wxDirDialog::ShowModal()
     options.optionFlags &= ~kNavAllowMultipleFiles;
     if (err == noErr)
     {
-        wxMacCFStringHolder message(m_message, m_font.GetEncoding());
+        wxMacCFStringHolder message(m_message, GetFont().GetEncoding());
         options.message = message;
         err = NavCreateChooseFolderDialog(&options, sStandardNavEventFilter , NULL,  this , &dialog);
         if (err == noErr)

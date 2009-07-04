@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: toolbar.cpp 50285 2007-11-27 20:48:15Z RD $
+// RCS-ID:      $Id: toolbar.cpp 57849 2009-01-06 09:36:54Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -88,8 +88,13 @@ public:
         : wxToolBarToolBase(tbar, control)
     {
         Init();
+#if 0 
+// TODO REMOVE if no other problems arise, embedded controls should
+// not be mistaken for simple tools
+
         if (control != NULL)
             SetControlHandle( (ControlRef) control->GetHandle() );
+#endif
     }
 
     virtual ~wxToolBarTool()
@@ -117,9 +122,8 @@ public:
                 DisposeControl( m_controlHandle );
             else
             {
-                // the embedded control is not under the responsibility of the tool, it will be disposed of in the
+                // the embedded control is not under the responsibility of the tool, it gets disposed of in the
                 // proper wxControl destructor
-                wxASSERT( IsValidControlHandle(GetControl()->GetPeer()->GetControlRef() )) ;
             }
             m_controlHandle = NULL ;
         }
@@ -1143,6 +1147,13 @@ bool wxToolBar::Realize()
 #if wxMAC_USE_NATIVE_TOOLBAR
     CFIndex currentPosition = 0;
     bool insertAll = false;
+    wxFont f;
+    wxFontEncoding enc;
+    f = GetFont();
+    if ( f.IsOk() )
+        enc = f.GetEncoding();
+    else
+        enc = wxFont::GetDefaultEncoding();
 #endif
 
     node = m_tools.GetFirst();
@@ -1187,6 +1198,11 @@ bool wxToolBar::Realize()
             HIToolbarItemRef    hiItemRef = tool->GetToolbarItemRef();
             if ( hiItemRef != NULL )
             {
+                // since setting the help texts is non-virtual we have to update
+                // the strings now
+                HIToolbarItemSetHelpText( hiItemRef,
+                    wxMacCFStringHolder( tool->GetShortHelp(), enc ),
+                    wxMacCFStringHolder( tool->GetLongHelp(), enc ) );
                 if ( insertAll || (tool->GetIndex() != currentPosition) )
                 {
                     OSStatus err = noErr;
@@ -1545,7 +1561,7 @@ bool wxToolBar::DoInsertTool(size_t WXUNUSED(pos), wxToolBarToolBase *toolBase)
                         InstallEventHandler(
                             HIObjectGetEventTarget(item), GetwxMacToolBarEventHandlerUPP(),
                             GetEventTypeCount(toolBarEventList), toolBarEventList, tool, NULL );
-                        HIToolbarItemSetLabel( item, wxMacCFStringHolder(tool->GetLabel(), m_font.GetEncoding()) );
+                        HIToolbarItemSetLabel( item, wxMacCFStringHolder(tool->GetLabel(), GetFont().GetEncoding()) );
                         HIToolbarItemSetImage( item, info2.u.imageRef );
                         HIToolbarItemSetCommandID( item, kHIToolbarCommandPressAction );
                         tool->SetToolbarItemRef( item );

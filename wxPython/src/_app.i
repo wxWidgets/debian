@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Aug-2003
-// RCS-ID:      $Id: _app.i 47179 2007-07-05 23:27:58Z RD $
+// RCS-ID:      $Id: _app.i 60300 2009-04-24 05:26:27Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,8 +16,7 @@
 //---------------------------------------------------------------------------
 // TODOs:
 //
-// 1. Provide another app object that allows FilterEvent to be overloaded.
-// 2. Wrap wxAppTraits and allow wxApp::CreateTraits to be overloaded.
+// * Wrap wxAppTraits and allow wxApp::CreateTraits to be overloaded.
 //
 //---------------------------------------------------------------------------
 %newgroup;
@@ -161,6 +160,24 @@ all top level windows have been closed and destroyed.", "");
         "Exit the main GUI loop during the next iteration of the main
 loop, (i.e. it does not stop the program immediately!)", "");
 
+    DocDeclStr(
+        virtual int, FilterEvent(wxEvent& event),
+        "Filters all events. `SetCallFilterEvent` controls whether or not your
+override is called.", "");
+
+    DocDeclStr(
+        bool,  GetCallFilterEvent(),
+        "Returns the state of the Call FilterEvent flag.", "");
+
+    
+    DocDeclStr(
+        void, SetCallFilterEvent(bool callFilterEvent = true),
+        "Set the Call FilterEvent flag. When set your override of FilterEvent
+will be called.  SetCallFilterEvent's purpose is to avoid any
+performance penalty when you have overriden FilterEvent, but don't
+want it to be called, and also to reduce the runtime overhead when it
+is not overridden.", "");
+
     
     DocDeclStr(
         virtual bool, Pending(),
@@ -264,6 +281,24 @@ systems where more than one is available, (Sun, SGI, XFree86 4, etc.)", "");
         int,  GetAssertMode(),
         "Get the current OnAssert behaviour setting.", "");
 
+    DocStr(MacHideApp,
+           "Hide all application windows just as the user can do with the system
+Hide command.  Mac only.", "");
+#ifdef __WXMAC__
+    void MacHideApp();
+#else
+    %extend {
+        void MacHideApp() {}
+    }
+#endif
+
+#ifdef __WXMAC__
+    void MacRequestUserAttention(wxNotificationOptions);
+#else
+    %extend {
+        void MacRequestUserAttention(wxNotificationOptions) { }
+    }
+#endif
 
     static bool GetMacSupportPCMenuShortcuts();  // TODO, deprecate this
     static long GetMacAboutMenuItemId();

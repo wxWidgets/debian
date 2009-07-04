@@ -1,5 +1,5 @@
 rem Uncomment the next line to set the version; used also in wxWidgets.iss
-SET WXW_VER=2.8.7
+SET WXW_VER=2.8.10
 
 
 if (%WXW_VER%)==() SET WXW_VER=CVS
@@ -40,7 +40,7 @@ echo CVS update  >>  c:\temp.log
 
 rem add bakefile build...
 rem just build the formats not in the CVS to keep down the .#makefile...
-set PATH=%PATH%;C:\wx\Bakefile\src
+set PATH=%PATH%;C:\wx\Bakefile
 cd \wx\inno\wxw28b\build\bakefiles
 del .bakefile_gen.state
 if not exist Bakefiles.local.bkgen echo "Bakefiles.local.bkgen missing" >> c:\temp.log
@@ -77,7 +77,7 @@ call ps2pdf gizmos.ps >> c:\temp.log
 call ps2pdf mmedia.ps >> c:\temp.log
 call ps2pdf ogl.ps >> c:\temp.log
 call ps2pdf svg.ps >> c:\temp.log
-call ps2pdf tex2rtf.ps >> c:\temp.log
+call ps2pdf tex2rtf_rtf.ps >> c:\temp.log
 
 echo Zipping
 cd %WXWIN%
@@ -97,6 +97,7 @@ zip wxWidgets-%WXW_VER%-PDF.zip docs\pdf\*.pdf
 rem copy chm to inno
 cd %WXWIN%
 mkdir c:\wx\inno\wxw28b\docs\htmlhelp
+del \wx\inno\wxw28b\docs\htmlhelp\wx.chm
 copy docs\htmlhelp\wx.chm \wx\inno\wxw28b\docs\htmlhelp\wx.chm
 cd %WXWIN%\build\script
 iscc wxwidgets.iss >> c:\temp.log

@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxComboBox
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_combo.cpp 42258 2006-10-22 22:12:32Z VZ $
+// RCS-ID:      $Id: xh_combo.cpp 56715 2008-11-09 12:40:07Z VZ $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,6 +22,7 @@
 #ifndef WX_PRECOMP
     #include "wx/intl.h"
     #include "wx/combobox.h"
+    #include "wx/textctrl.h" // for wxTE_PROCESS_ENTER
 #endif
 
 IMPLEMENT_DYNAMIC_CLASS(wxComboBoxXmlHandler, wxXmlResourceHandler)
@@ -34,6 +35,7 @@ wxComboBoxXmlHandler::wxComboBoxXmlHandler()
     XRC_ADD_STYLE(wxCB_SORT);
     XRC_ADD_STYLE(wxCB_READONLY);
     XRC_ADD_STYLE(wxCB_DROPDOWN);
+    XRC_ADD_STYLE(wxTE_PROCESS_ENTER);
     AddWindowStyles();
 }
 

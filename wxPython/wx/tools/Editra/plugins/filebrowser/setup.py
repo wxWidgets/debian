@@ -16,7 +16,7 @@ except ImportError:
 if setup != None:
     setup(
         name='FileBrowser',
-        version='0.5',
+        version='1.4',
         description=__doc__,
         author=__author__,
         author_email="cprecord@editra.org",
@@ -24,6 +24,7 @@ if setup != None:
         url="http://editra.org",
         platforms=["Linux", "OS X", "Windows"],
         packages=['filebrowser'],
+        package_data={'filebrowser' : ['CHANGELOG']},
         entry_points='''
         [Editra.plugins]
         FileBrowser = filebrowser:FileBrowserPanel

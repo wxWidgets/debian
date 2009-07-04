@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxToolBar
 // Author:      Vaclav Slavik
 // Created:     2000/08/11
-// RCS-ID:      $Id: xh_toolb.cpp 42844 2006-10-31 13:13:07Z VZ $
+// RCS-ID:      $Id: xh_toolb.cpp 55979 2008-09-30 14:37:26Z VS $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -114,6 +114,7 @@ wxObject *wxToolBarXmlHandler::DoCreateResource()
                          GetSize(),
                          style,
                          GetName());
+        SetupWindow(toolbar);
 
         wxSize bmpsize = GetSize(wxT("bitmapsize"));
         if (!(bmpsize == wxDefaultSize))
@@ -127,8 +128,6 @@ wxObject *wxToolBarXmlHandler::DoCreateResource()
         long separation = GetLong(wxT("separation"), -1);
         if (separation != -1)
             toolbar->SetToolSeparation(separation);
-        if (HasParam(wxT("bg")))
-            toolbar->SetBackgroundColour(GetColour(wxT("bg")));
 
         wxXmlNode *children_node = GetParamNode(wxT("object"));
         if (!children_node)

@@ -4,7 +4,7 @@
 %% Author:      Jaakko Salli
 %% Modified by:
 %% Created:
-%% RCS-ID:      $Id: comboctrl.tex 42470 2006-10-26 20:35:57Z RR $
+%% RCS-ID:      $Id: comboctrl.tex 58657 2009-02-04 17:56:42Z JMS $
 %% Copyright:   (c) Jaakko Salli
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -112,6 +112,7 @@ Here's how you would create and populate it in a dialog constructor:
 
     wxListViewComboPopup* popupCtrl = new wxListViewComboPopup();
 
+    // It is important to call SetPopupControl() as soon as possible
     comboCtrl->SetPopupControl(popupCtrl);
 
     // Populate using wxListView methods

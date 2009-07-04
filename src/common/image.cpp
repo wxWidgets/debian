@@ -2,7 +2,7 @@
 // Name:        src/common/image.cpp
 // Purpose:     wxImage
 // Author:      Robert Roebling
-// RCS-ID:      $Id: image.cpp 46549 2007-06-20 00:13:57Z VZ $
+// RCS-ID:      $Id: image.cpp 59197 2009-02-28 15:44:53Z VZ $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -234,6 +234,7 @@ bool wxImage::Create( int width, int height, unsigned char* data, unsigned char*
     M_IMGDATA->m_height = height;
     M_IMGDATA->m_ok = true;
     M_IMGDATA->m_static = static_data;
+    M_IMGDATA->m_staticAlpha = static_data;
 
     return true;
 }
@@ -538,13 +539,8 @@ wxImage wxImage::ResampleBox(int width, int height) const
     const int scale_factor_x_2 = (int)(scale_factor_x / 2);
     const int scale_factor_y_2 = (int)(scale_factor_y / 2);
 
-    // If we want good-looking results we need to pre-blur the image a bit first
-    wxImage src_image(*this);
-    src_image = src_image.BlurHorizontal(scale_factor_x_2);
-    src_image = src_image.BlurVertical(scale_factor_y_2);
-
-    unsigned char* src_data = src_image.GetData();
-    unsigned char* src_alpha = src_image.GetAlpha();
+    unsigned char* src_data = M_IMGDATA->m_data;
+    unsigned char* src_alpha = M_IMGDATA->m_alpha;
     unsigned char* dst_data = ret_image.GetData();
     unsigned char* dst_alpha = NULL;
 
@@ -576,7 +572,7 @@ wxImage wxImage::ResampleBox(int width, int height) const
                   j++ )
             {
                 // We don't care to average pixels that don't exist (edges)
-                if ( j < 0 || j > M_IMGDATA->m_height )
+                if ( j < 0 || j > M_IMGDATA->m_height - 1 )
                     continue;
 
                 for ( int i = int(src_x - scale_factor_x/2.0 + 1);
@@ -584,11 +580,11 @@ wxImage wxImage::ResampleBox(int width, int height) const
                       i++ )
                 {
                     // Don't average edge pixels
-                    if ( i < 0 || i > M_IMGDATA->m_width )
+                    if ( i < 0 || i > M_IMGDATA->m_width - 1 )
                         continue;
 
                     // Calculate the actual index in our source pixels
-                    src_pixel_index = src_y * M_IMGDATA->m_width + src_x;
+                    src_pixel_index = j * M_IMGDATA->m_width + i;
 
                     sum_r += src_data[src_pixel_index * 3 + 0];
                     sum_g += src_data[src_pixel_index * 3 + 1];
@@ -1279,7 +1275,6 @@ void wxImage::Paste( const wxImage &image, int x, int y )
          (GetMaskGreen()==image.GetMaskGreen()) &&
          (GetMaskBlue()==image.GetMaskBlue()))))
     {
-        width *= 3;
         unsigned char* source_data = image.GetData() + xx*3 + yy*3*image.GetWidth();
         int source_step = image.GetWidth()*3;
 
@@ -1287,11 +1282,30 @@ void wxImage::Paste( const wxImage &image, int x, int y )
         int target_step = M_IMGDATA->m_width*3;
         for (int j = 0; j < height; j++)
         {
-            memcpy( target_data, source_data, width );
+            memcpy( target_data, source_data, width*3 );
             source_data += source_step;
             target_data += target_step;
         }
-        return;
+    }
+
+    // Copy over the alpha channel from the original image
+    if ( image.HasAlpha() )
+    {
+        if ( !HasAlpha() )
+            InitAlpha();
+
+        unsigned char* source_data = image.GetAlpha() + xx + yy*image.GetWidth();
+        int source_step = image.GetWidth();
+
+        unsigned char* target_data = GetAlpha() + (x+xx) + (y+yy)*M_IMGDATA->m_width;
+        int target_step = M_IMGDATA->m_width;
+
+        for (int j = 0; j < height; j++,
+                                    source_data += source_step,
+                                    target_data += target_step)
+        {
+            memcpy( target_data, source_data, width );
+        }
     }
 
     if (!HasMask() && image.HasMask())
@@ -1300,7 +1314,6 @@ void wxImage::Paste( const wxImage &image, int x, int y )
         unsigned char g = image.GetMaskGreen();
         unsigned char b = image.GetMaskBlue();
 
-        width *= 3;
         unsigned char* source_data = image.GetData() + xx*3 + yy*3*image.GetWidth();
         int source_step = image.GetWidth()*3;
 
@@ -1309,7 +1322,7 @@ void wxImage::Paste( const wxImage &image, int x, int y )
 
         for (int j = 0; j < height; j++)
         {
-            for (int i = 0; i < width; i+=3)
+            for (int i = 0; i < width*3; i+=3)
             {
                 if ((source_data[i]   != r) ||
                     (source_data[i+1] != g) ||
@@ -2057,8 +2070,7 @@ bool wxImage::SaveFile( const wxString& filename ) const
     wxImageHandler * pHandler = FindHandler(ext, -1);
     if (pHandler)
     {
-        SaveFile(filename, pHandler->GetType());
-        return true;
+        return SaveFile(filename, pHandler->GetType());
     }
 
     wxLogError(_("Can't save image to file '%s': unknown extension."), filename.c_str());

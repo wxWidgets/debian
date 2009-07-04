@@ -891,7 +891,10 @@ This is a wxWidgets 1.xx compatibility function; you should not use it in new co
 Converts given buffer of binary data from 8-bit string to wxString. In Unicode
 build, the string is interpreted as being in ISO-8859-1 encoding. The version
 without <I>len</I> parameter takes NUL-terminated data.<P>
-This is a convenience method useful when storing binary data in wxString.<P>
+This is a convenience method useful when storing binary data in
+wxString. It should be used <I>only</I> for that purpose and only in
+conjunction with <A HREF="wx_wxstring.html#wxstringto8bitdata">To8BitData</A>.
+Use mb_str() for conversion of character data to known encoding.<P>
 This function is new since wxWidgets version 2.8.4<P>
 <B><FONT COLOR="#FF0000">See also</FONT></B><P>
 <A HREF="wx_wxstring.html#wxstringto8bitdata">To8BitData</A><P>
@@ -1292,7 +1295,9 @@ Converts the string to an 8-bit string (ANSI builds only).<P>
 <B>const wxCharBuffer</B> <B>To8BitData</B>() <B>const</B><P>
 Converts the string to an 8-bit string in ISO-8859-1 encoding in the form of
 a wxCharBuffer (Unicode builds only).<P>
-This is a convenience method useful when storing binary data in wxString.<P>
+This is a convenience method useful when storing binary data in
+wxString. It should be used <I>only</I> for this purpose. It is only valid
+to call this method on strings created using <A HREF="wx_wxstring.html#wxstringfrom8bitdata">From8BitData</A>.<P>
 This function is new since wxWidgets version 2.8.4<P>
 <B><FONT COLOR="#FF0000">See also</FONT></B><P>
 <A HREF="wx_wxstring.html#wxstringfrom8bitdata">From8BitData</A><P>

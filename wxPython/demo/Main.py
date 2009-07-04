@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: Main.py 50244 2007-11-25 22:22:06Z RD $
+# RCS-ID:       $Id: Main.py 59671 2009-03-20 20:58:50Z RD $
 # Copyright:    (c) 1999 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -29,13 +29,39 @@
 
 # * Why don't we move _treeList into a separate module
 
+# =====================
+# = EXTERNAL Packages =
+# =====================
+# In order to let a package (like AGW) be included in the wxPython demo,
+# the package owner should create a sub-directory of the wxPython demo folder
+# in which all the package's demos should live. In addition, the sub-folder
+# should contain a Python file called __demo__.py which, when imported, should
+# contain the following methods:
+#
+# * GetDemoBitmap: returns the bitmap to be used in the wxPython demo tree control
+#   in a PyEmbeddedImage format;
+# * GetRecentAdditions: returns a list of demos which will be displayed under the
+#   "Recent Additions/Updates" tree item. This list should be a subset (or the full
+#   set) of the package's demos;
+# * GetDemos: returns a tuple. The first item of the tuple is the package's name
+#   as will be displayed in the wxPython demo tree, right after the "Custom Controls"
+#   item. The second element of the tuple is the list of demos for the external package.
+# * GetOverview: returns a wx.html-ready representation of the package's documentation.
+#
+# Please see the __demo__.py file in the demo/agw/ folder for an example.
+# Last updated: Andrea Gavana, 20 Oct 2008, 18.00 GMT
+
 import sys, os, time, traceback, types
 
-import wx                  # This module uses the new wx namespace
+import wx              
 import wx.aui
 import wx.html
 
-import images
+import version
+
+# We won't import the images module yet, but we'll assign it to this
+# global when we do.
+images = None
 
 # For debugging
 ##wx.Trap();
@@ -67,9 +93,6 @@ _treeList = [
         'DragScroller',
         'DelayedResult',
         'ExpandoTextCtrl',
-        'ButtonPanel',
-        'FlatNotebook',
-        'CustomTreeCtrl',
         'AboutBox',
         'AlphaDrawing',
         'GraphicsContext',
@@ -85,6 +108,12 @@ _treeList = [
         'TreeMixin',
         'AdjustChannels',
         'RendererNative',
+        'PlateButton',
+        'ResizeWidget',
+        'Cairo',
+        'Cairo_Snippets',
+        'SystemSettings',
+        'GridLabelRenderer',
         ]),
 
     # managed windows == things with a (optional) caption you can close
@@ -132,6 +161,7 @@ _treeList = [
         'Gauge',
         'Grid',
         'Grid_MegaExample',
+        'GridLabelRenderer',
         'ListBox',
         'ListCtrl',
         'ListCtrl_virtual',
@@ -163,6 +193,7 @@ _treeList = [
     ('"Book" Controls', [
         'AUI_Notebook',
         'Choicebook',
+        'FlatNotebook',
         'Listbook',
         'Notebook',
         'Toolbook',
@@ -171,16 +202,14 @@ _treeList = [
 
     ('Custom Controls', [
         'AnalogClock',
-        'ButtonPanel',
         'ColourSelect',
         'ComboTreeBox',
-        'CustomTreeCtrl',
         'Editor',
-        'FlatNotebook',
         'GenericButtons',
         'GenericDirCtrl',
         'LEDNumberCtrl',
         'MultiSash',
+        'PlateButton',
         'PopupControl',
         'PyColourChooser',
         'TreeListCtrl',
@@ -206,9 +235,7 @@ _treeList = [
         'FileBrowseButton',
         'FloatBar',  
         'FloatCanvas',
-        'FoldPanelBar',
         'HtmlWindow',
-        'HyperLinkCtrl',
         'IntCtrl',
         'MVCTree',   
         'MaskedEditControls',
@@ -220,6 +247,7 @@ _treeList = [
         'PyCrust',
         'PyPlot',
         'PyShell',
+        'ResizeWidget',
         'RichTextCtrl',
         'ScrolledPanel',
         'SplitTree',
@@ -288,6 +316,8 @@ _treeList = [
     # Other stuff
     ('Miscellaneous', [
         'AlphaDrawing',
+        'Cairo',
+        'Cairo_Snippets',
         'ColourDB',
         ##'DialogUnits',   # needs more explanations
         'DragScroller',
@@ -307,6 +337,7 @@ _treeList = [
         'ShapedWindow',
         'Sound',
         'StandardPaths',
+        'SystemSettings',
         'Unicode',
         ]),
 
@@ -407,17 +438,23 @@ try:
     from StyledTextCtrl_2 import PythonSTC
 
     class DemoCodeEditor(PythonSTC):
-        def __init__(self, parent):
-            PythonSTC.__init__(self, parent, -1, style=wx.BORDER_NONE)
+        def __init__(self, parent, style=wx.BORDER_NONE):
+            PythonSTC.__init__(self, parent, -1, style=style)
             self.SetUpEditor()
 
         # Some methods to make it compatible with how the wxTextCtrl is used
         def SetValue(self, value):
             if wx.USE_UNICODE:
                 value = value.decode('iso8859_1')
+            val = self.GetReadOnly()
+            self.SetReadOnly(False)
             self.SetText(value)
             self.EmptyUndoBuffer()
             self.SetSavePoint()
+            self.SetReadOnly(val)
+
+        def SetEditable(self, val):
+            self.SetReadOnly(not val)
 
         def IsModified(self):
             return self.GetModify()
@@ -517,15 +554,16 @@ try:
             # Global default style
             if wx.Platform == '__WXMSW__':
                 self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 
-                                  'fore:#000000,back:#FFFFFF,face:Courier New,size:9')
+                                  'fore:#000000,back:#FFFFFF,face:Courier New')
             elif wx.Platform == '__WXMAC__':
                 # TODO: if this looks fine on Linux too, remove the Mac-specific case 
                 # and use this whenever OS != MSW.
                 self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 
                                   'fore:#000000,back:#FFFFFF,face:Monaco')
             else:
+                defsize = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT).GetPointSize()
                 self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 
-                                  'fore:#000000,back:#FFFFFF,face:Courier,size:9')
+                                  'fore:#000000,back:#FFFFFF,face:Courier,size:%d'%defsize)
     
             # Clear styles and revert to default.
             self.StyleClearAll()
@@ -824,7 +862,24 @@ def GetOriginalFilename(name):
     """
     if not name.endswith(".py"):
         name = name + ".py"
-    return name
+
+    if os.path.isfile(name):
+        return name
+    
+    originalDir = os.getcwd()
+    listDir = os.listdir(originalDir)
+    # Loop over the content of the demo directory
+    for item in listDir:
+        if not os.path.isdir(item):
+            # Not a directory, continue
+            continue
+        dirFile = os.listdir(item)
+        # See if a file called "name" is there
+        if name in dirFile:        
+            return os.path.join(item, name)
+
+    # We must return a string...
+    return ""
 
 
 def DoesModifiedExist(name):
@@ -856,6 +911,87 @@ def SearchDemo(name, keyword):
 
     return False    
 
+
+def HuntExternalDemos():
+    """
+    Searches for external demos (i.e. packages like AGW) in the wxPython
+    demo sub-directories. In order to be found, these external packages
+    must have a __demo__.py file in their directory.
+    """
+
+    externalDemos = {}
+    originalDir = os.getcwd()
+    listDir = os.listdir(originalDir)
+    # Loop over the content of the demo directory
+    for item in listDir:
+        if not os.path.isdir(item):
+            # Not a directory, continue
+            continue
+        dirFile = os.listdir(item)
+        # See if a __demo__.py file is there
+        if "__demo__.py" in dirFile:
+            # Extend sys.path and import the external demos
+            sys.path.append(item)
+            externalDemos[item] = __import__("__demo__")
+
+    if not externalDemos:
+        # Nothing to import...
+        return {}
+
+    # Modify the tree items and icons
+    index = 0
+    for category, demos in _treeList:
+        # We put the external packages right before the
+        # More Windows/Controls item
+        if category == "More Windows/Controls":
+            break
+        index += 1
+
+    # Sort and reverse the external demos keys so that they
+    # come back in alphabetical order
+    keys = externalDemos.keys()
+    keys.sort()
+    keys.reverse()
+
+    # Loop over all external packages
+    for extern in keys:
+        package = externalDemos[extern]
+        # Insert a new package in the _treeList of demos
+        _treeList.insert(index, package.GetDemos())
+        # Get the recent additions for this package
+        _treeList[0][1].extend(package.GetRecentAdditions())
+        # Extend the demo bitmaps and the catalog
+        _demoPngs.insert(index+1, extern)
+        images.catalog[extern] = package.GetDemoBitmap()
+
+    # That's all folks...
+    return externalDemos
+
+
+def LookForExternals(externalDemos, demoName):
+    """
+    Checks if a demo name is in any of the external packages (like AGW) or
+    if the user clicked on one of the external packages parent items in the
+    tree, in which case it returns the html overview for the package.
+    """
+
+    pkg = overview = None
+    # Loop over all the external demos
+    for key, package in externalDemos.items():
+        # Get the tree item name for the package and its demos
+        treeName, treeDemos = package.GetDemos()
+        # Get the overview for the package
+        treeOverview = package.GetOverview()
+        if treeName == demoName:
+            # The user clicked on the parent tree item, return the overview
+            return pkg, treeOverview
+        elif demoName in treeDemos:
+            # The user clicked on a real demo, return the package
+            return key, overview
+
+    # No match found, return None for both
+    return pkg, overview
+    
 #---------------------------------------------------------------------------
 
 class ModuleDictWrapper:
@@ -880,16 +1016,20 @@ class DemoModules:
         
         #              (dict , source ,  filename , description   , error information )        
         #              (  0  ,   1    ,     2     ,      3        ,          4        )        
-        self.modules = [[None,  ""    ,    ""     , "<original>"  ,        None],
-                        [None,  ""    ,    ""     , "<modified>"  ,        None]]
+        self.modules = [[dict(),  ""    ,    ""     , "<original>"  ,        None],
+                        [dict(),  ""    ,    ""     , "<modified>"  ,        None]]
         
+        for i in [modOriginal, modModified]:
+            self.modules[i][0]['__file__'] = \
+                os.path.join(os.getcwd(), GetOriginalFilename(name))
+            
         # load original module
         self.LoadFromFile(modOriginal, GetOriginalFilename(name))
         self.SetActive(modOriginal)
 
         # load modified module (if one exists)
         if DoesModifiedExist(name):
-           self.LoadFromFile(modModified, GetModifiedFilename(name))
+            self.LoadFromFile(modModified, GetModifiedFilename(name))
 
 
     def LoadFromFile(self, modID, filename):
@@ -911,7 +1051,6 @@ class DemoModules:
             description = description.encode(sys.getfilesystemencoding())
             
             try:
-                self.modules[modID][0] = {}
                 code = compile(source, description, "exec")        
                 exec code in self.modules[modID][0]
             except:
@@ -1132,7 +1271,7 @@ class DemoTaskBarIcon(wx.TaskBarIcon):
         self.frame = frame
 
         # Set the image
-        icon = self.MakeIcon(images.getWXPdemoImage())
+        icon = self.MakeIcon(images.WXPdemo.GetImage())
         self.SetIcon(icon, "wxPython Demo")
         self.imgidx = 1
         
@@ -1190,12 +1329,12 @@ class DemoTaskBarIcon(wx.TaskBarIcon):
         names = [ "WXPdemo", "Mondrian", "Pencil", "Carrot" ]                  
         name = names[self.imgidx]
         
-        getFunc = getattr(images, "get%sImage" % name)
+        eImg = getattr(images, name)
         self.imgidx += 1
         if self.imgidx >= len(names):
             self.imgidx = 0
             
-        icon = self.MakeIcon(getFunc())
+        icon = self.MakeIcon(eImg.Image)
         self.SetIcon(icon, "This is a new icon: " + name)
 
 
@@ -1230,7 +1369,7 @@ class wxPythonDemo(wx.Frame):
         self.firstTime = True
         self.finddlg = None
 
-        icon = images.getWXPdemoIcon()
+        icon = images.WXPdemo.GetIcon()
         self.SetIcon(icon)
 
         try:
@@ -1253,12 +1392,13 @@ class wxPythonDemo(wx.Frame):
         def EmptyHandler(evt): pass
 
         self.ReadConfigurationFile()
+        self.externalDemos = HuntExternalDemos()        
         
         # Create a Notebook
         self.nb = wx.Notebook(pnl, -1, style=wx.CLIP_CHILDREN)
         imgList = wx.ImageList(16, 16)
         for png in ["overview", "code", "demo"]:
-            bmp = images.catalog[png].getBitmap()
+            bmp = images.catalog[png].GetBitmap()
             imgList.Add(bmp)
         self.nb.AssignImageList(imgList)
 
@@ -1342,6 +1482,8 @@ class wxPythonDemo(wx.Frame):
         leftBox.Add(self.tree, 1, wx.EXPAND)
         leftBox.Add(wx.StaticText(leftPanel, label = "Filter Demos:"), 0, wx.TOP|wx.LEFT, 5)
         leftBox.Add(self.filter, 0, wx.EXPAND|wx.ALL, 5)
+        if 'wxMac' in wx.PlatformInfo:
+            leftBox.Add((5,5))  # Make sure there is room for the focus ring
         leftPanel.SetSizer(leftBox)
 
         # select initial items
@@ -1414,7 +1556,7 @@ class wxPythonDemo(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnToggleRedirect, item)
  
         exitItem = wx.MenuItem(menu, -1, 'E&xit\tCtrl-Q', 'Get the heck outta here!')
-        exitItem.SetBitmap(images.catalog['exit'].getBitmap())
+        exitItem.SetBitmap(images.catalog['exit'].GetBitmap())
         menu.AppendItem(exitItem)
         self.Bind(wx.EVT_MENU, self.OnFileExit, exitItem)
         wx.App.SetMacExitMenuItemId(exitItem.GetId())
@@ -1428,7 +1570,7 @@ class wxPythonDemo(wx.Frame):
             for childItem in item[1]:
                 mi = submenu.Append(-1, childItem)
                 self.Bind(wx.EVT_MENU, self.OnDemoMenu, mi)
-            menuItem.SetBitmap(images.catalog[_demoPngs[indx+1]].getBitmap())
+            menuItem.SetBitmap(images.catalog[_demoPngs[indx+1]].GetBitmap())
             menuItem.SetSubMenu(submenu)
             menu.AppendItem(menuItem)
         self.mainmenu.Append(menu, '&Demo')
@@ -1454,19 +1596,19 @@ class wxPythonDemo(wx.Frame):
             self.perspectives_menu = perspectivesMenu
 
             item = wx.MenuItem(menu, -1, 'Save Perspective', 'Save AUI perspective')
-            item.SetBitmap(images.catalog['saveperspective'].getBitmap())
+            item.SetBitmap(images.catalog['saveperspective'].GetBitmap())
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.OnSavePerspective, item)
 
             item = wx.MenuItem(menu, -1, 'Delete Perspective', 'Delete AUI perspective')
-            item.SetBitmap(images.catalog['deleteperspective'].getBitmap())
+            item.SetBitmap(images.catalog['deleteperspective'].GetBitmap())
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.OnDeletePerspective, item)
 
             menu.AppendSeparator()
 
             item = wx.MenuItem(menu, -1, 'Restore Tree Expansion', 'Restore the initial tree expansion state')
-            item.SetBitmap(images.catalog['expansion'].getBitmap())
+            item.SetBitmap(images.catalog['expansion'].GetBitmap())
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.OnTreeExpansion, item)
 
@@ -1475,23 +1617,23 @@ class wxPythonDemo(wx.Frame):
         # Make a Help menu
         menu = wx.Menu()
         findItem = wx.MenuItem(menu, -1, '&Find\tCtrl-F', 'Find in the Demo Code')
-        findItem.SetBitmap(images.catalog['find'].getBitmap())
+        findItem.SetBitmap(images.catalog['find'].GetBitmap())
         if 'wxMac' not in wx.PlatformInfo:
             findNextItem = wx.MenuItem(menu, -1, 'Find &Next\tF3', 'Find Next')
         else:
             findNextItem = wx.MenuItem(menu, -1, 'Find &Next\tCtrl-G', 'Find Next')
-        findNextItem.SetBitmap(images.catalog['findnext'].getBitmap())
+        findNextItem.SetBitmap(images.catalog['findnext'].GetBitmap())
         menu.AppendItem(findItem)
         menu.AppendItem(findNextItem)
         menu.AppendSeparator()
 
         shellItem = wx.MenuItem(menu, -1, 'Open Py&Shell Window\tF5',
                                 'An interactive interpreter window with the demo app and frame objects in the namesapce')
-        shellItem.SetBitmap(images.catalog['pyshell'].getBitmap())
+        shellItem.SetBitmap(images.catalog['pyshell'].GetBitmap())
         menu.AppendItem(shellItem)
         inspToolItem = wx.MenuItem(menu, -1, 'Open &Widget Inspector\tF6',
                                    'A tool that lets you browse the live widgets and sizers in an application')
-        inspToolItem.SetBitmap(images.catalog['inspect'].getBitmap())
+        inspToolItem.SetBitmap(images.catalog['inspect'].GetBitmap())
         menu.AppendItem(inspToolItem)
         if 'wxMac' not in wx.PlatformInfo:
             menu.AppendSeparator()
@@ -1517,7 +1659,7 @@ class wxPythonDemo(wx.Frame):
             aTable = wx.AcceleratorTable([(wx.ACCEL_ALT,  ord('X'), exitItem.GetId()),
                                           (wx.ACCEL_CTRL, ord('H'), helpItem.GetId()),
                                           (wx.ACCEL_CTRL, ord('F'), findItem.GetId()),
-                                          (wx.ACCEL_NORMAL, wx.WXK_F3, findnextItem.GetId()),
+                                          (wx.ACCEL_NORMAL, wx.WXK_F3, findNextItem.GetId()),
                                           (wx.ACCEL_NORMAL, wx.WXK_F9, shellItem.GetId()),
                                           ])
             self.SetAcceleratorTable(aTable)
@@ -1714,10 +1856,24 @@ class wxPythonDemo(wx.Frame):
                     wx.LogMessage("Loading demo %s.py..." % demoName)
                     self.demoModules = DemoModules(demoName)
                     self.LoadDemoSource()
+
                 else:
-                    self.SetOverview("wxPython", mainOverview)
-                    self.codePage = None
-                    self.UpdateNotebook(0)
+
+                    package, overview = LookForExternals(self.externalDemos, demoName)
+
+                    if package:
+                        wx.LogMessage("Loading demo %s.py..." % ("%s/%s"%(package, demoName)))
+                        self.demoModules = DemoModules("%s/%s"%(package, demoName))
+                        self.LoadDemoSource()
+                    elif overview:
+                        self.SetOverview(demoName, overview)
+                        self.codePage = None
+                        self.UpdateNotebook(0)
+                    else:
+                        self.SetOverview("wxPython", mainOverview)
+                        self.codePage = None
+                        self.UpdateNotebook(0)
+
         finally:
             wx.EndBusyCursor()
             self.pnl.Thaw()
@@ -1837,7 +1993,7 @@ class wxPythonDemo(wx.Frame):
         if wx.USE_UNICODE:
             text = text.decode('iso8859_1')  
         self.ovr.SetPage(text)
-        self.nb.SetPageText(0, name)
+        self.nb.SetPageText(0, os.path.split(name)[1])
 
     #---------------------------------------------
     # Menu methods
@@ -2167,13 +2323,13 @@ class wxPythonDemoTree(ExpansionState, TreeBaseClass):
     def BuildTreeImageList(self):
         imgList = wx.ImageList(16, 16)
         for png in _demoPngs:
-            imgList.Add(images.catalog[png].getBitmap())
+            imgList.Add(images.catalog[png].GetBitmap())
             
         # add the image for modified demos.
-        imgList.Add(images.catalog["custom"].getBitmap())
+        imgList.Add(images.catalog["custom"].GetBitmap())
 
         self.AssignImageList(imgList)
-        
+
 
     def GetItemIdentity(self, item):
         return self.GetPyData(item)
@@ -2183,11 +2339,22 @@ class wxPythonDemoTree(ExpansionState, TreeBaseClass):
 
 class MyApp(wx.App):
     def OnInit(self):
-        """
-        Create and show the splash screen.  It will then create and show
-        the main frame when it is time to do so.
-        """
 
+        # Check runtime version
+        if version.VERSION_STRING != wx.VERSION_STRING:
+            wx.MessageBox(caption="Warning",
+                          message="You're using version %s of wxPython, but this copy of the demo was written for version %s.\n"
+                          "There may be some version incompatibilities..."
+                          % (wx.VERSION_STRING, version.VERSION_STRING))
+
+        # Now that we've warned the user about possibile problems,
+        # lets import images
+        import images as i
+        global images
+        images = i
+        
+        # Create and show the splash screen.  It will then create and show
+        # the main frame when it is time to do so.
         wx.SystemOptions.SetOptionInt("mac.window-plain-transition", 1)
         self.SetAppName("wxPyDemo")
         

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05/25/99
-// RCS-ID:      $Id: dc.h 43745 2006-12-02 14:11:15Z VZ $
+// RCS-ID:      $Id: dc.h 59768 2009-03-23 12:35:12Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,8 +30,8 @@
 #include "wx/dynarray.h"
 #include "wx/math.h"
 
-class WXDLLEXPORT wxDC;
-class WXDLLEXPORT wxDCBase;
+class WXDLLIMPEXP_FWD_CORE wxDC;
+class WXDLLIMPEXP_FWD_CORE wxDCBase;
 
 class WXDLLEXPORT wxDrawObject
 {
@@ -418,6 +418,11 @@ public:
     void SetClippingRegion(const wxRegion& region)
         { DoSetClippingRegionAsRegion(region); }
 
+#if wxABI_VERSION >= 20811
+    void SetDeviceClippingRegion(const wxRegion& region)
+        { DoSetClippingRegionAsRegion(region); }
+#endif
+
     virtual void DestroyClippingRegion() { ResetClipping(); }
 
     void GetClippingBox(wxCoord *x, wxCoord *y, wxCoord *w, wxCoord *h) const
@@ -465,7 +470,6 @@ public:
     // Measure cumulative width of text after each character
     bool GetPartialTextExtents(const wxString& text, wxArrayInt& widths) const
         { return DoGetPartialTextExtents(text, widths); }
-
 
     // size and resolution
     // -------------------
@@ -791,6 +795,13 @@ protected:
 
 #if wxUSE_SPLINES
     virtual void DoDrawSpline(wxList *points);
+#endif
+
+#if wxABI_VERSION >= 20810
+    // returns adjustment factor for converting wxFont "point size"; in wx
+    // it is point size on screen and needs to be multiplied by this value
+    // for rendering on higher-resolution DCs such as printer ones
+    static float GetFontPointSizeAdjustment(float dpi);
 #endif
 
 protected:

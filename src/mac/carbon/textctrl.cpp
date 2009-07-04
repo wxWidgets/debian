@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        src/mac/carbon/textctrl.cpp
 // Purpose:     wxTextCtrl
-// Author:      Stefan Csomor
+// Author:      Stefan Csomor 
 // Modified by: Ryan Norton (MLTE GetLineLength and GetLineText)
 // Created:     1998-01-01
-// RCS-ID:      $Id: textctrl.cpp 49672 2007-11-06 08:06:46Z SC $
+// RCS-ID:      $Id: textctrl.cpp 58957 2009-02-17 05:35:46Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -425,7 +425,7 @@ void wxTextCtrl::CreatePeer(
 
     if ( UMAGetSystemVersion() >= 0x1030 && !forceMLTE )
     {
-        if ( m_windowStyle & wxTE_MULTILINE )
+        if ( (m_windowStyle & wxTE_MULTILINE) || ( UMAGetSystemVersion() >= 0x1050 ) )
             m_peer = new wxMacMLTEHIViewControl( this , str , pos , size , style ) ;
     }
 
@@ -1274,6 +1274,25 @@ int wxMacTextControl::GetLineLength(long lineNo) const
     return 0 ;
 }
 
+void wxMacTextControl::SetFont( const wxFont & font , const wxColour& foreground , long windowStyle )
+{
+    wxMacControl::SetFont(font, foreground, windowStyle );
+#ifndef __LP64__
+
+    // overrule the barrier in wxMacControl for supporting disabled controls, in order to support
+    // setting the color to eg red and back to black by controllers
+
+    if ( foreground == *wxBLACK )
+    {
+        ControlFontStyleRec fontStyle;
+        fontStyle.foreColor.red = fontStyle.foreColor.green = fontStyle.foreColor.blue = 0;
+        fontStyle.flags = kControlUseForeColorMask;
+        ::SetControlFontStyle( m_controlRef , &fontStyle );
+    }
+
+#endif
+}
+
 // ----------------------------------------------------------------------------
 // standard unicode control implementation
 // ----------------------------------------------------------------------------
@@ -1374,13 +1393,14 @@ bool wxMacUnicodeTextControl::Create( wxTextCtrl *wxPeer,
 
     InstallControlEventHandler( m_controlRef , GetwxMacUnicodeTextControlEventHandlerUPP(),
                                 GetEventTypeCount(unicodeTextControlEventList), unicodeTextControlEventList, this,
-                                NULL);
+                                (EventHandlerRef*) &m_macTextCtrlEventHandler);
                                 
     return true;
 }
 
 wxMacUnicodeTextControl::~wxMacUnicodeTextControl()
 {
+    ::RemoveEventHandler((EventHandlerRef) m_macTextCtrlEventHandler);
 }
 
 void wxMacUnicodeTextControl::VisibilityChanged(bool shown)
@@ -1688,6 +1708,7 @@ TXNFrameOptions wxMacMLTEControl::FrameOptionsFromWXStyle( long wxStyle )
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
     frameOptions |= kTXNDoFontSubstitutionMask;
+    frameOptions |= kTXNDisableDragAndDropMask;
 #endif
 
     if ( ! (wxStyle & wxTE_NOHIDESEL) )
@@ -1936,7 +1957,8 @@ void wxMacMLTEControl::TXNSetAttribute( const wxTextAttr& style , long from , lo
     if ( typeAttrCount > 0 )
     {
         verify_noerr( TXNSetTypeAttributes( m_txn , typeAttrCount, typeAttr, from , to ) );
-        relayout = true;
+        if (from != to)
+            relayout = true;
     }
     
     if ( tabs != NULL )
@@ -2231,8 +2253,10 @@ void wxMacMLTEControl::SetTXNData( const wxString& st, TXNOffset start, TXNOffse
 #else
     wxMBConvUTF16 converter ;
     ByteCount byteBufferLen = converter.WC2MB( NULL, st.wc_str(), 0 ) ;
-    UniChar *unibuf = (UniChar*)malloc( byteBufferLen ) ;
-    converter.WC2MB( (char*)unibuf, st.wc_str(), byteBufferLen ) ;
+    wxASSERT_MSG( byteBufferLen != wxCONV_FAILED,
+                  _T("Conversion to UTF-16 unexpectedly failed") );
+    UniChar *unibuf = (UniChar*)malloc( byteBufferLen + 2 ) ; // 2 for NUL in UTF-16
+    converter.WC2MB( (char*)unibuf, st.wc_str(), byteBufferLen + 2 ) ;
     TXNSetData( m_txn, kTXNUnicodeTextData, (void*)unibuf, byteBufferLen, start, end ) ;
     free( unibuf ) ;
 #endif
@@ -3091,7 +3115,7 @@ wxMacMLTEHIViewControl::wxMacMLTEHIViewControl( wxTextCtrl *wxPeer,
 
     m_scrollView = NULL ;
     TXNFrameOptions frameOptions = FrameOptionsFromWXStyle( style ) ;
-    if (( frameOptions & (kTXNWantVScrollBarMask | kTXNWantHScrollBarMask)) || !(frameOptions &kTXNSingleLineOnlyMask))
+    if (( frameOptions & (kTXNWantVScrollBarMask | kTXNWantHScrollBarMask)) || (frameOptions &kTXNSingleLineOnlyMask))
     {
         if ( frameOptions & (kTXNWantVScrollBarMask | kTXNWantHScrollBarMask) )
         {
@@ -3161,22 +3185,26 @@ bool wxMacMLTEHIViewControl::HasFocus() const
 
 void wxMacMLTEHIViewControl::SetBackground( const wxBrush &brush )
 {
-    wxMacMLTEControl::SetBackground( brush ) ;
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
+    if (HITextViewSetBackgroundColor != NULL)
+    {
+        RGBColor col = MAC_WXCOLORREF(brush.GetColour().GetPixel()) ;
 
-#if 0
-    CGColorSpaceRef rgbSpace = CGColorSpaceCreateDeviceRGB();
-    RGBColor col = MAC_WXCOLORREF(brush.GetColour().GetPixel()) ;
+        float component[4] ;
+        component[0] = col.red / 65536.0 ;
+        component[1] = col.green / 65536.0 ;
+        component[2] = col.blue / 65536.0 ;
+        component[3] = 1.0 ; // alpha
 
-    float component[4] ;
-    component[0] = col.red / 65536.0 ;
-    component[1] = col.green / 65536.0 ;
-    component[2] = col.blue / 65536.0 ;
-    component[3] = 1.0 ; // alpha
-
-    CGColorRef color = CGColorCreate( rgbSpace , component );
-    HITextViewSetBackgroundColor( m_textView , color );
-    CGColorSpaceRelease( rgbSpace );
+        CGColorRef color = CGColorCreate( wxMacGetGenericRGBColorSpace() , component );
+        HITextViewSetBackgroundColor( m_textView , color );
+        CGColorRelease(color);
+    }
+    else
 #endif
+    {
+        wxMacMLTEControl::SetBackground( brush ) ;
+    }
 }
 
 #endif // MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_2

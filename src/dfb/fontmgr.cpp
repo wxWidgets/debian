@@ -3,7 +3,7 @@
 // Purpose:     font management for wxDFB
 // Author:      Vaclav Slavik
 // Created:     2006-11-18
-// RCS-ID:      $Id: fontmgr.cpp 43835 2006-12-06 18:48:04Z VS $
+// RCS-ID:      $Id: fontmgr.cpp 54748 2008-07-21 17:01:35Z VZ $
 // Copyright:   (c) 2001-2002 SciTech Software, Inc. (www.scitechsoft.com)
 //              (c) 2006 REA Elektronik GmbH
 // Licence:     wxWindows licence
@@ -20,6 +20,8 @@
 #include "wx/filename.h"
 #include "wx/tokenzr.h"
 #include "wx/dir.h"
+#include "wx/log.h"
+#include "wx/utils.h"
 
 #include "wx/private/fontmgr.h"
 #include "wx/dfb/wrapdfb.h"

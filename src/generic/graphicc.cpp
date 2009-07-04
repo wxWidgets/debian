@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     2006-10-03
-// RCS-ID:      $Id: graphicc.cpp 44597 2007-03-02 16:39:21Z RD $
+// RCS-ID:      $Id: graphicc.cpp 60190 2009-04-16 00:57:35Z KO $
 // Copyright:   (c) 2006 Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@
 #include "wx/graphics.h"
 #include "wx/rawbmp.h"
 
-#if wxUSE_GRAPHICS_CONTEXT
+#if wxUSE_GRAPHICS_CONTEXT && wxUSE_CAIRO
 
 #include <vector>
 
@@ -100,6 +100,10 @@ static inline double RadToDeg(double deg)
 #endif
 
 #include <cairo.h>
+#ifdef __WXMSW__
+#include <cairo-win32.h>
+#endif
+
 #ifdef __WXGTK__
 #include <gtk/gtk.h>
 #endif
@@ -301,12 +305,32 @@ private :
     double m_alpha;
 };
 
+class wxCairoBitmapData : public wxGraphicsObjectRefData
+{
+public:
+    wxCairoBitmapData( wxGraphicsRenderer* renderer, const wxBitmap& bmp );
+    ~wxCairoBitmapData();
+
+    virtual cairo_surface_t* GetCairoSurface() { return m_surface; }
+    virtual cairo_pattern_t* GetCairoPattern() { return m_pattern; }
+    virtual wxSize GetSize() { return wxSize(m_width, m_height); }
+private :
+    cairo_surface_t* m_surface;
+    cairo_pattern_t* m_pattern;
+    int m_width;
+    int m_height;
+    unsigned char* m_buffer;
+};
+
 class WXDLLIMPEXP_CORE wxCairoContext : public wxGraphicsContext
 {
     DECLARE_NO_COPY_CLASS(wxCairoContext)
 
 public:
     wxCairoContext( wxGraphicsRenderer* renderer, const wxWindowDC& dc );
+#ifdef __WXMSW__
+    wxCairoContext( wxGraphicsRenderer* renderer, HDC context );
+#endif
 #ifdef __WXGTK__
     wxCairoContext( wxGraphicsRenderer* renderer, GdkDrawable *drawable );
 #endif
@@ -341,6 +365,7 @@ public:
     // gets the matrix of this context
     virtual wxGraphicsMatrix GetTransform() const;
 
+    void DrawGraphicsBitmapInternal( const wxGraphicsBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h );
     virtual void DrawBitmap( const wxBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h );
     virtual void DrawIcon( const wxIcon &icon, wxDouble x, wxDouble y, wxDouble w, wxDouble h );
     virtual void PushState();
@@ -353,6 +378,9 @@ public:
 
 private:
     cairo_t* m_context;
+#ifdef __WXMSW__
+    cairo_surface_t* m_mswSurface;
+#endif
 };
 
 //-----------------------------------------------------------------------------
@@ -962,6 +990,90 @@ void * wxCairoMatrixData::GetNativeMatrix() const
 }
 
 //-----------------------------------------------------------------------------
+// wxCairoBitmap implementation
+//-----------------------------------------------------------------------------
+
+wxCairoBitmapData::wxCairoBitmapData( wxGraphicsRenderer* renderer, const wxBitmap& bmp ) : wxGraphicsObjectRefData( renderer )
+{
+    wxCHECK_RET( bmp.IsOk(), wxT("Invalid bitmap in wxCairoContext::DrawBitmap"));
+
+    int bw = m_width = bmp.GetWidth();
+    int bh = m_height = bmp.GetHeight();
+    wxBitmap bmpSource = bmp;  // we need a non-const instance
+    m_buffer = new unsigned char[bw*bh*4];
+    wxUint32* data = (wxUint32*)m_buffer;
+    
+    // Create a surface object and copy the bitmap pixel data to it.  if the
+    // image has alpha (or a mask represented as alpha) then we'll use a
+    // different format and iterator than if it doesn't...
+    if (bmpSource.HasAlpha() || bmpSource.GetMask())
+    {
+        m_surface = cairo_image_surface_create_for_data(
+            m_buffer, CAIRO_FORMAT_ARGB32, bw, bh, bw*4);
+        wxAlphaPixelData pixData(bmpSource, wxPoint(0,0), wxSize(bw, bh));
+        wxCHECK_RET( pixData, wxT("Failed to gain raw access to bitmap data."));
+        
+        wxAlphaPixelData::Iterator p(pixData);
+        for (int y=0; y<bh; y++)
+        {
+            wxAlphaPixelData::Iterator rowStart = p;
+            for (int x=0; x<bw; x++)
+            {
+                // Each pixel in CAIRO_FORMAT_ARGB32 is a 32-bit quantity,
+                // with alpha in the upper 8 bits, then red, then green, then
+                // blue. The 32-bit quantities are stored native-endian.
+                // Pre-multiplied alpha is used.
+                unsigned char alpha = p.Alpha();
+                if (alpha == 0)
+                    *data = 0;
+                else
+                    *data = ( alpha                      << 24 
+                              | (p.Red() * alpha/255)    << 16 
+                              | (p.Green() * alpha/255)  <<  8 
+                              | (p.Blue() * alpha/255) );
+                ++data;
+                ++p;
+            }
+            p = rowStart;
+            p.OffsetY(pixData, 1);
+        }        
+    }
+    else  // no alpha
+    {
+        m_surface = cairo_image_surface_create_for_data(
+            m_buffer, CAIRO_FORMAT_RGB24, bw, bh, bw*4);
+        wxNativePixelData pixData(bmpSource, wxPoint(0,0), wxSize(bw, bh));
+        wxCHECK_RET( pixData, wxT("Failed to gain raw access to bitmap data."));
+        
+        wxNativePixelData::Iterator p(pixData);
+        for (int y=0; y<bh; y++)
+        {
+            wxNativePixelData::Iterator rowStart = p;
+            for (int x=0; x<bw; x++)
+            {
+                // Each pixel in CAIRO_FORMAT_RGB24 is a 32-bit quantity, with
+                // the upper 8 bits unused. Red, Green, and Blue are stored in
+                // the remaining 24 bits in that order.  The 32-bit quantities
+                // are stored native-endian.
+                *data = ( p.Red() << 16 | p.Green() << 8 | p.Blue() );
+                ++data;
+                ++p;
+            }
+            p = rowStart;
+            p.OffsetY(pixData, 1);
+        }        
+    }
+    m_pattern = cairo_pattern_create_for_surface(m_surface);
+}
+
+wxCairoBitmapData::~wxCairoBitmapData()
+{
+    cairo_pattern_destroy(m_pattern);
+    cairo_surface_destroy(m_surface);
+    delete [] m_buffer;
+}
+
+//-----------------------------------------------------------------------------
 // wxCairoContext implementation
 //-----------------------------------------------------------------------------
 
@@ -984,6 +1096,18 @@ wxCairoContext::wxCairoContext( wxGraphicsRenderer* renderer, GdkDrawable *drawa
     PushState();
 }
 #endif
+
+#ifdef __WXMSW__
+wxCairoContext::wxCairoContext( wxGraphicsRenderer* renderer, HDC handle )
+: wxGraphicsContext(renderer)
+{
+    m_mswSurface = cairo_win32_surface_create(handle);
+    m_context = cairo_create(m_mswSurface);
+    PushState();
+    PushState();
+}
+#endif
+
 
 wxCairoContext::wxCairoContext( wxGraphicsRenderer* renderer, cairo_t *context )
 : wxGraphicsContext(renderer)
@@ -1016,6 +1140,10 @@ wxCairoContext::wxCairoContext( wxGraphicsRenderer* renderer, wxWindow *window)
     GdkDrawable* drawable = pizza->bin_window;
     m_context = gdk_cairo_create( drawable ) ;
 #endif
+#ifdef __WXMSW__
+    m_mswSurface = cairo_win32_surface_create((HDC)window->GetHandle());
+    m_context = cairo_create(m_mswSurface);
+#endif
     PushState();
     PushState();
 }
@@ -1028,6 +1156,10 @@ wxCairoContext::~wxCairoContext()
         PopState();
         cairo_destroy(m_context);
     }
+#ifdef __WXMSW__
+    if ( m_mswSurface )
+        cairo_surface_destroy(m_mswSurface);
+#endif
 }
 
 
@@ -1144,101 +1276,40 @@ void wxCairoContext::PopState()
     cairo_restore(m_context);
 }
 
+void wxGraphicsContext::DrawGraphicsBitmap(const wxGraphicsBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h)
+{
+    static_cast<wxCairoContext*>(this)->DrawGraphicsBitmapInternal(bmp, x, y, w, h);
+}
+
 void wxCairoContext::DrawBitmap( const wxBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h )
 {
-    wxCHECK_RET( bmp.IsOk(), wxT("Invalid bitmap in wxCairoContext::DrawBitmap"));
+    wxGraphicsBitmap bitmap = GetRenderer()->CreateBitmap(bmp);
+    DrawGraphicsBitmapInternal(bitmap, x, y, w, h);
+}
 
-    cairo_surface_t* surface;
-    int bw = bmp.GetWidth();
-    int bh = bmp.GetHeight();
-    wxBitmap bmpSource = bmp;  // we need a non-const instance
-    unsigned char* buffer = new unsigned char[bw*bh*4];
-    wxUint32* data = (wxUint32*)buffer;
-    
-    // Create a surface object and copy the bitmap pixel data to it.  if the
-    // image has alpha (or a mask represented as alpha) then we'll use a
-    // different format and iterator than if it doesn't...
-    if (bmpSource.HasAlpha() || bmpSource.GetMask())
-    {
-        surface = cairo_image_surface_create_for_data(
-            buffer, CAIRO_FORMAT_ARGB32, bw, bh, bw*4);
-        wxAlphaPixelData pixData(bmpSource, wxPoint(0,0), wxSize(bw, bh));
-        wxCHECK_RET( pixData, wxT("Failed to gain raw access to bitmap data."));
-        
-        wxAlphaPixelData::Iterator p(pixData);
-        for (int y=0; y<bh; y++)
-        {
-            wxAlphaPixelData::Iterator rowStart = p;
-            for (int x=0; x<bw; x++)
-            {
-                // Each pixel in CAIRO_FORMAT_ARGB32 is a 32-bit quantity,
-                // with alpha in the upper 8 bits, then red, then green, then
-                // blue. The 32-bit quantities are stored native-endian.
-                // Pre-multiplied alpha is used.
-                unsigned char alpha = p.Alpha();
-                if (alpha == 0)
-                    *data = 0;
-                else
-                    *data = ( alpha                      << 24 
-                              | (p.Red() * alpha/255)    << 16 
-                              | (p.Green() * alpha/255)  <<  8 
-                              | (p.Blue() * alpha/255) );
-                ++data;
-                ++p;
-            }
-            p = rowStart;
-            p.OffsetY(pixData, 1);
-        }        
-    }
-    else  // no alpha
-    {
-        surface = cairo_image_surface_create_for_data(
-            buffer, CAIRO_FORMAT_RGB24, bw, bh, bw*4);
-        wxNativePixelData pixData(bmpSource, wxPoint(0,0), wxSize(bw, bh));
-        wxCHECK_RET( pixData, wxT("Failed to gain raw access to bitmap data."));
-        
-        wxNativePixelData::Iterator p(pixData);
-        for (int y=0; y<bh; y++)
-        {
-            wxNativePixelData::Iterator rowStart = p;
-            for (int x=0; x<bw; x++)
-            {
-                // Each pixel in CAIRO_FORMAT_RGB24 is a 32-bit quantity, with
-                // the upper 8 bits unused. Red, Green, and Blue are stored in
-                // the remaining 24 bits in that order.  The 32-bit quantities
-                // are stored native-endian.
-                *data = ( p.Red() << 16 | p.Green() << 8 | p.Blue() );
-                ++data;
-                ++p;
-            }
-            p = rowStart;
-            p.OffsetY(pixData, 1);
-        }        
-    }
-
-    
+void wxCairoContext::DrawGraphicsBitmapInternal(const wxGraphicsBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h )
+{
+    wxCairoBitmapData* data = static_cast<wxCairoBitmapData*>(bmp.GetRefData());
+    cairo_pattern_t* pattern = data->GetCairoPattern();
+    wxSize size = data->GetSize();
     PushState();
     
     // In case we're scaling the image by using a width and height different
     // than the bitmap's size create a pattern transformation on the surface and
     // draw the transformed pattern.
-    cairo_pattern_t* pattern = cairo_pattern_create_for_surface(surface);
-    wxDouble scaleX = w / bw;
-    wxDouble scaleY = h / bh;
+    wxDouble scaleX = w / size.GetWidth();
+    wxDouble scaleY = h / size.GetHeight();
     cairo_scale(m_context, scaleX, scaleY);
 
     // prepare to draw the image
     cairo_translate(m_context, x, y);
     cairo_set_source(m_context, pattern);
     // use the original size here since the context is scaled already...
-    cairo_rectangle(m_context, 0, 0, bw, bh);
+    cairo_rectangle(m_context, 0, 0, size.GetWidth(), size.GetHeight());
     // fill the rectangle using the pattern
     cairo_fill(m_context);
 
     // clean up
-    cairo_pattern_destroy(pattern);
-    cairo_surface_destroy(surface);
-    delete [] buffer;
     PopState();
 }
 
@@ -1253,7 +1324,9 @@ void wxCairoContext::DrawIcon( const wxIcon &icon, wxDouble x, wxDouble y, wxDou
 
 void wxCairoContext::DrawText( const wxString &str, wxDouble x, wxDouble y )
 {
-    if ( m_font.IsNull() || str.empty())
+    wxCHECK_RET( !m_font.IsNull(), wxT("wxCairoContext::DrawText - no valid font set") );
+
+    if ( str.empty())
         return;
     
     ((wxCairoFontData*)m_font.GetRefData())->Apply(this);
@@ -1271,7 +1344,9 @@ void wxCairoContext::DrawText( const wxString &str, wxDouble x, wxDouble y )
 void wxCairoContext::GetTextExtent( const wxString &str, wxDouble *width, wxDouble *height,
                                     wxDouble *descent, wxDouble *externalLeading ) const
 {
-    if ( m_font.IsNull() || str.empty())
+    wxCHECK_RET( !m_font.IsNull(), wxT("wxCairoContext::GetTextExtent - no valid font set") );
+
+    if ( str.empty())
         return;
 
     ((wxCairoFontData*)m_font.GetRefData())->Apply((wxCairoContext*)this);
@@ -1302,6 +1377,8 @@ void wxCairoContext::GetPartialTextExtents(const wxString& text, wxArrayDouble& 
 {
     widths.Empty();
     widths.Add(0, text.length());
+
+    wxCHECK_RET( !m_font.IsNull(), wxT("wxCairoContext::GetPartialTextExtents - no valid font set") );
 
     if (text.empty())
         return;
@@ -1366,6 +1443,8 @@ public :
 
     // sets the font
     virtual wxGraphicsFont CreateFont( const wxFont &font , const wxColour &col = *wxBLACK ) ;
+    
+    wxGraphicsBitmap CreateBitmap( const wxBitmap &bitmap ) ;
 
 private :
     DECLARE_DYNAMIC_CLASS_NO_COPY(wxCairoRenderer)
@@ -1400,7 +1479,12 @@ wxGraphicsContext * wxCairoRenderer::CreateContext( const wxMemoryDC& dc)
 
 wxGraphicsContext * wxCairoRenderer::CreateContextFromNativeContext( void * context )
 {
+#if __WXMSW__
+    return new wxCairoContext(this,(HDC)context);
+#endif
+#if __WXGTK__
     return new wxCairoContext(this,(cairo_t*)context);
+#endif
 }
 
 
@@ -1415,6 +1499,9 @@ wxGraphicsContext * wxCairoRenderer::CreateContextFromNativeWindow( void * windo
 
 wxGraphicsContext * wxCairoRenderer::CreateMeasuringContext()
 {
+#ifdef __WXGTK__
+    return CreateContextFromNativeWindow(gdk_get_default_root_window());
+#endif
     return NULL;
     // TODO
 }
@@ -1507,4 +1594,27 @@ wxGraphicsFont wxCairoRenderer::CreateFont( const wxFont &font , const wxColour 
         return wxNullGraphicsFont;
 }
 
-#endif  // wxUSE_GRAPHICS_CONTEXT
+wxGraphicsBitmap wxGraphicsRenderer::CreateBitmap( const wxBitmap& bmp )
+{
+    if ( bmp.Ok() )
+    {
+        wxGraphicsBitmap p;
+        p.SetRefData(new wxCairoBitmapData( this , bmp ));
+        return p;
+    }
+    else
+        return wxNullGraphicsBitmap;
+}
+
+#endif  // wxUSE_GRAPHICS_CONTEXT && wxUSE_CAIRO
+
+#if wxUSE_GRAPHICS_CONTEXT
+wxGraphicsRenderer* wxGraphicsRenderer::GetCairoRenderer()
+{
+#if wxUSE_CAIRO
+    return &gs_cairoGraphicsRenderer;
+#else
+    return NULL;
+#endif
+}
+#endif

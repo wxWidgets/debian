@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.11.97
-// RCS-ID:      $Id: ownerdrw.cpp 44228 2007-01-15 10:54:40Z VZ $
+// RCS-ID:      $Id: ownerdrw.cpp 60531 2009-05-06 16:04:20Z PC $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,21 @@ public:
 #if defined(__WXMSW__) && defined(__WIN32__) && defined(SM_CXMENUCHECK)
         NONCLIENTMETRICS nm;
         nm.cbSize = sizeof(NONCLIENTMETRICS);
-        SystemParametersInfo(SPI_GETNONCLIENTMETRICS,0,&nm,0);
+        if ( !::SystemParametersInfo(SPI_GETNONCLIENTMETRICS,0,&nm,0) )
+        {
+#if WINVER >= 0x0600
+            // a new field has been added to NONCLIENTMETRICS under Vista, so
+            // the call to SystemParametersInfo() fails if we use the struct
+            // size incorporating this new value on an older system -- retry
+            // without it
+            nm.cbSize -= sizeof(int);
+            if ( !::SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, &nm, 0) )
+#endif // WINVER >= 0x0600
+            {
+                // maybe we should initialize the struct with some defaults?
+                wxLogLastError(_T("SystemParametersInfo(SPI_GETNONCLIENTMETRICS)"));
+            }
+        }
 
         ms_systemMenuButtonWidth = nm.iMenuHeight;
         ms_systemMenuHeight = nm.iMenuHeight;
@@ -248,14 +262,9 @@ bool wxOwnerDrawn::OnMeasureItem(size_t *pwidth, size_t *pheight)
 // draw the item
 bool wxOwnerDrawn::OnDrawItem(wxDC& dc,
                               const wxRect& rc,
-                              wxODAction act,
+                              wxODAction,
                               wxODStatus st)
 {
-    // we do nothing on focus change
-    if ( act == wxODFocusChanged )
-        return true;
-
-
     // this flag determines whether or not an edge will
     // be drawn around the bitmap. In most "windows classic"
     // applications, a 1-pixel highlight edge is drawn around

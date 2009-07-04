@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-Sept-1999
-// RCS-ID:      $Id: _sizers.i 46280 2007-06-02 23:42:18Z RD $
+// RCS-ID:      $Id: _sizers.i 60302 2009-04-24 05:27:29Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -109,6 +109,10 @@ calling Align(wx.ALIGN_BOTTOM)", "");
     DocDeclStr(
         wxSizerFlags& , FixedMinSize(),
         "Sets the wx.FIXED_MINSIZE flag.", "");
+    
+    DocDeclStr(
+        wxSizerFlags& , ReserveSpaceEvenIfHidden(),
+        "Makes the item ignore window's visibility status", "");
     
 
     
@@ -866,7 +870,7 @@ index of an item to remove.  Returns True if the child item was found
 and removed.", "
 
 :note: For historical reasons calling this method with a `wx.Window`
-    parameter is depreacted, as it will not be able to destroy the
+    parameter is deprecated, as it will not be able to destroy the
     window since it is owned by its parent.  You should use `Detach`
     instead.
 ");
@@ -1178,6 +1182,9 @@ one of the items in a sizer change size, or items are added or
 removed.", "");
 
 
+    wxSize ComputeFittingClientSize(wxWindow *window);
+    wxSize ComputeFittingWindowSize(wxWindow *window);
+
     DocDeclStr(
         wxSize , Fit( wxWindow *window ),
         "Tell the sizer to resize the *window* to match the sizer's minimal
@@ -1264,7 +1271,7 @@ parameter can be either a window, a sizer, or the zero-based index of
 the item.", "");
         bool IsShown(PyObject* item) {
             wxPyBlock_t blocked = wxPyBeginBlockThreads();
-            wxPySizerItemInfo info = wxPySizerItemTypeHelper(item, false, false);
+            wxPySizerItemInfo info = wxPySizerItemTypeHelper(item, false, true);
             wxPyEndBlockThreads(blocked);
             if ( info.window )
                 return self->IsShown(info.window);

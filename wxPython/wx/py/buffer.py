@@ -1,8 +1,8 @@
 """Buffer class."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: buffer.py 25782 2004-02-13 02:47:59Z PKO $"
-__revision__ = "$Revision: 25782 $"[11:-2]
+__cvsid__ = "$Id: buffer.py 54528 2008-07-07 18:35:49Z RD $"
+__revision__ = "$Revision: 54528 $"[11:-2]
 
 from interpreter import Interpreter
 import imp
@@ -76,7 +76,7 @@ class Buffer:
             text = self.doc.read()
             self.editor._setBuffer(buffer=self, text=text)
 
-    def overwriteConfirm(filepath):
+    def overwriteConfirm(self, filepath):
         """Confirm overwriting an existing file."""
         return False
 

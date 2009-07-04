@@ -83,6 +83,8 @@ RICHTEXT_HITTEST_ON = _richtext.RICHTEXT_HITTEST_ON
 RICHTEXT_HITTEST_OUTSIDE = _richtext.RICHTEXT_HITTEST_OUTSIDE
 RICHTEXT_FORMATTED = _richtext.RICHTEXT_FORMATTED
 RICHTEXT_UNFORMATTED = _richtext.RICHTEXT_UNFORMATTED
+RICHTEXT_CACHE_SIZE = _richtext.RICHTEXT_CACHE_SIZE
+RICHTEXT_HEIGHT_ONLY = _richtext.RICHTEXT_HEIGHT_ONLY
 RICHTEXT_SETSTYLE_NONE = _richtext.RICHTEXT_SETSTYLE_NONE
 RICHTEXT_SETSTYLE_WITH_UNDO = _richtext.RICHTEXT_SETSTYLE_WITH_UNDO
 RICHTEXT_SETSTYLE_OPTIMIZE = _richtext.RICHTEXT_SETSTYLE_OPTIMIZE
@@ -94,6 +96,7 @@ RICHTEXT_SETSTYLE_RESET = _richtext.RICHTEXT_SETSTYLE_RESET
 RICHTEXT_SETSTYLE_REMOVE = _richtext.RICHTEXT_SETSTYLE_REMOVE
 RICHTEXT_INSERT_NONE = _richtext.RICHTEXT_INSERT_NONE
 RICHTEXT_INSERT_WITH_PREVIOUS_PARAGRAPH_STYLE = _richtext.RICHTEXT_INSERT_WITH_PREVIOUS_PARAGRAPH_STYLE
+RICHTEXT_INSERT_INTERACTIVE = _richtext.RICHTEXT_INSERT_INTERACTIVE
 TEXT_ATTR_TEXT_COLOUR = _richtext.TEXT_ATTR_TEXT_COLOUR
 TEXT_ATTR_BACKGROUND_COLOUR = _richtext.TEXT_ATTR_BACKGROUND_COLOUR
 TEXT_ATTR_FONT_FACE = _richtext.TEXT_ATTR_FONT_FACE
@@ -119,6 +122,7 @@ TEXT_ATTR_URL = _richtext.TEXT_ATTR_URL
 TEXT_ATTR_PAGE_BREAK = _richtext.TEXT_ATTR_PAGE_BREAK
 TEXT_ATTR_EFFECTS = _richtext.TEXT_ATTR_EFFECTS
 TEXT_ATTR_OUTLINE_LEVEL = _richtext.TEXT_ATTR_OUTLINE_LEVEL
+TEXT_ATTR_KEEP_FIRST_PARA_STYLE = _richtext.TEXT_ATTR_KEEP_FIRST_PARA_STYLE
 TEXT_ATTR_BULLET_STYLE_NONE = _richtext.TEXT_ATTR_BULLET_STYLE_NONE
 TEXT_ATTR_BULLET_STYLE_ARABIC = _richtext.TEXT_ATTR_BULLET_STYLE_ARABIC
 TEXT_ATTR_BULLET_STYLE_LETTERS_UPPER = _richtext.TEXT_ATTR_BULLET_STYLE_LETTERS_UPPER
@@ -819,9 +823,13 @@ class RichTextObject(_core.Object):
         """CanMerge(self, RichTextObject object) -> bool"""
         return _richtext.RichTextObject_CanMerge(*args, **kwargs)
 
-    def Merge(*args, **kwargs):
+    def Merge(self, obj):
         """Merge(self, RichTextObject object) -> bool"""
-        return _richtext.RichTextObject_Merge(*args, **kwargs)
+        val = _richtext.RichTextObject_Merge(self, obj)
+        if val:
+            obj.this.own(True)
+        return val
+
 
     def Dump(*args, **kwargs):
         """Dump(self) -> String"""
@@ -2124,6 +2132,7 @@ RICHTEXT_HANDLER_SAVE_IMAGES_TO_MEMORY = _richtext.RICHTEXT_HANDLER_SAVE_IMAGES_
 RICHTEXT_HANDLER_SAVE_IMAGES_TO_FILES = _richtext.RICHTEXT_HANDLER_SAVE_IMAGES_TO_FILES
 RICHTEXT_HANDLER_SAVE_IMAGES_TO_BASE64 = _richtext.RICHTEXT_HANDLER_SAVE_IMAGES_TO_BASE64
 RICHTEXT_HANDLER_NO_HEADER_FOOTER = _richtext.RICHTEXT_HANDLER_NO_HEADER_FOOTER
+RICHTEXT_HANDLER_CONVERT_FACENAMES = _richtext.RICHTEXT_HANDLER_CONVERT_FACENAMES
 class RichTextFileHandler(_core.Object):
     """Base class for file handlers"""
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
@@ -2274,6 +2283,8 @@ _richtext.RichTextStdRenderer_swigregister(RichTextStdRenderer)
 
 RE_READONLY = _richtext.RE_READONLY
 RE_MULTILINE = _richtext.RE_MULTILINE
+RE_CENTER_CARET = _richtext.RE_CENTER_CARET
+RE_CENTRE_CARET = _richtext.RE_CENTRE_CARET
 RICHTEXT_SHIFT_DOWN = _richtext.RICHTEXT_SHIFT_DOWN
 RICHTEXT_CTRL_DOWN = _richtext.RICHTEXT_CTRL_DOWN
 RICHTEXT_ALT_DOWN = _richtext.RICHTEXT_ALT_DOWN
@@ -2281,7 +2292,7 @@ RICHTEXT_SELECTED = _richtext.RICHTEXT_SELECTED
 RICHTEXT_TAGGED = _richtext.RICHTEXT_TAGGED
 RICHTEXT_FOCUSSED = _richtext.RICHTEXT_FOCUSSED
 RICHTEXT_IS_FOCUS = _richtext.RICHTEXT_IS_FOCUS
-class RichTextCtrl(_windows.ScrolledWindow):
+class RichTextCtrl(_core.Control):
     """Proxy of C++ RichTextCtrl class"""
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
     __repr__ = _swig_repr
@@ -2382,6 +2393,38 @@ class RichTextCtrl(_windows.ScrolledWindow):
         during sizing.
         """
         return _richtext.RichTextCtrl_GetDelayedLayoutThreshold(*args, **kwargs)
+
+    def SetTextCursor(*args, **kwargs):
+        """
+        SetTextCursor(self, Cursor cursor)
+
+        Set text cursor
+        """
+        return _richtext.RichTextCtrl_SetTextCursor(*args, **kwargs)
+
+    def GetTextCursor(*args, **kwargs):
+        """
+        GetTextCursor(self) -> Cursor
+
+        Get text cursor
+        """
+        return _richtext.RichTextCtrl_GetTextCursor(*args, **kwargs)
+
+    def SetURLCursor(*args, **kwargs):
+        """
+        SetURLCursor(self, Cursor cursor)
+
+        Set URL cursor
+        """
+        return _richtext.RichTextCtrl_SetURLCursor(*args, **kwargs)
+
+    def GetURLCursor(*args, **kwargs):
+        """
+        GetURLCursor(self) -> Cursor
+
+        Get URL cursor
+        """
+        return _richtext.RichTextCtrl_GetURLCursor(*args, **kwargs)
 
     def Clear(*args, **kwargs):
         """Clear(self)"""
@@ -3183,7 +3226,10 @@ class RichTextCtrl(_windows.ScrolledWindow):
         """
         SetSelectionRange(self, RichTextRange range)
 
-        Set the selection range in character positions. -1, -1 means no selection.
+        Set the selection range in character positions. The end point of range
+        is specified as the last character position of the span of text, plus
+        one. So, for example, to set the selection for a character at position
+        5, use the range (5,6).
         """
         return _richtext.RichTextCtrl_SetSelectionRange(*args, **kwargs)
 
@@ -3191,9 +3237,8 @@ class RichTextCtrl(_windows.ScrolledWindow):
         """
         GetInternalSelectionRange(self) -> RichTextRange
 
-        Get the selection range in character positions. -1, -1 means no
-        selection.  The range is in internal format, i.e. a single character
-        selection is denoted by (n, n).
+        Get the selection range in character positions. The range is in
+        internal format, i.e. a single character selection is denoted by (n,n).
 
         """
         return _richtext.RichTextCtrl_GetInternalSelectionRange(*args, **kwargs)
@@ -3202,9 +3247,8 @@ class RichTextCtrl(_windows.ScrolledWindow):
         """
         SetInternalSelectionRange(self, RichTextRange range)
 
-        Set the selection range in character positions. -1, -1 means no
-        selection.  The range is in internal format, i.e. a single character
-        selection is denoted by (n, n).
+        Set the selection range in character positions. The range is in
+        internal format, i.e. a single character selection is denoted by (n,n).
         """
         return _richtext.RichTextCtrl_SetInternalSelectionRange(*args, **kwargs)
 
@@ -3417,7 +3461,7 @@ class RichTextCtrl(_windows.ScrolledWindow):
         Test if this whole range has character attributes of the specified
         kind. If any of the attributes are different within the range, the
         test fails. You can use this to implement, for example, bold button
-        updating. style must have flags indicating which attributes are of
+        updating. ``style`` must have flags indicating which attributes are of
         interest.
 
         """
@@ -3558,6 +3602,215 @@ class RichTextCtrl(_windows.ScrolledWindow):
     StringSelection = property(GetStringSelection,doc="See `GetStringSelection`") 
     StyleSheet = property(GetStyleSheet,SetStyleSheet,doc="See `GetStyleSheet` and `SetStyleSheet`") 
     Value = property(GetValue,SetValue,doc="See `GetValue` and `SetValue`") 
+    def SetupScrollbars(*args, **kwargs):
+        """SetupScrollbars(self, bool atTop=False)"""
+        return _richtext.RichTextCtrl_SetupScrollbars(*args, **kwargs)
+
+    def KeyboardNavigate(*args, **kwargs):
+        """KeyboardNavigate(self, int keyCode, int flags) -> bool"""
+        return _richtext.RichTextCtrl_KeyboardNavigate(*args, **kwargs)
+
+    def PositionCaret(*args, **kwargs):
+        """PositionCaret(self)"""
+        return _richtext.RichTextCtrl_PositionCaret(*args, **kwargs)
+
+    def ExtendSelection(*args, **kwargs):
+        """ExtendSelection(self, long oldPosition, long newPosition, int flags) -> bool"""
+        return _richtext.RichTextCtrl_ExtendSelection(*args, **kwargs)
+
+    def ScrollIntoView(*args, **kwargs):
+        """ScrollIntoView(self, long position, int keyCode) -> bool"""
+        return _richtext.RichTextCtrl_ScrollIntoView(*args, **kwargs)
+
+    def SetCaretPosition(*args, **kwargs):
+        """SetCaretPosition(self, long position, bool showAtLineStart=False)"""
+        return _richtext.RichTextCtrl_SetCaretPosition(*args, **kwargs)
+
+    def GetCaretPosition(*args, **kwargs):
+        """GetCaretPosition(self) -> long"""
+        return _richtext.RichTextCtrl_GetCaretPosition(*args, **kwargs)
+
+    def GetAdjustedCaretPosition(*args, **kwargs):
+        """GetAdjustedCaretPosition(self, long caretPos) -> long"""
+        return _richtext.RichTextCtrl_GetAdjustedCaretPosition(*args, **kwargs)
+
+    def MoveCaretForward(*args, **kwargs):
+        """MoveCaretForward(self, long oldPosition)"""
+        return _richtext.RichTextCtrl_MoveCaretForward(*args, **kwargs)
+
+    def MoveCaretBack(*args, **kwargs):
+        """MoveCaretBack(self, long oldPosition)"""
+        return _richtext.RichTextCtrl_MoveCaretBack(*args, **kwargs)
+
+    def GetCaretPositionForIndex(*args, **kwargs):
+        """GetCaretPositionForIndex(self, long position, Rect rect) -> bool"""
+        return _richtext.RichTextCtrl_GetCaretPositionForIndex(*args, **kwargs)
+
+    def GetVisibleLineForCaretPosition(*args, **kwargs):
+        """GetVisibleLineForCaretPosition(self, long caretPosition) -> RichTextLine"""
+        return _richtext.RichTextCtrl_GetVisibleLineForCaretPosition(*args, **kwargs)
+
+    def GetCommandProcessor(*args, **kwargs):
+        """GetCommandProcessor(self) -> wxCommandProcessor"""
+        return _richtext.RichTextCtrl_GetCommandProcessor(*args, **kwargs)
+
+    def DeleteSelectedContent(*args, **kwargs):
+        """DeleteSelectedContent(self, long OUTPUT) -> bool"""
+        return _richtext.RichTextCtrl_DeleteSelectedContent(*args, **kwargs)
+
+    def GetPhysicalPoint(*args, **kwargs):
+        """GetPhysicalPoint(self, Point ptLogical) -> Point"""
+        return _richtext.RichTextCtrl_GetPhysicalPoint(*args, **kwargs)
+
+    def GetLogicalPoint(*args, **kwargs):
+        """GetLogicalPoint(self, Point ptPhysical) -> Point"""
+        return _richtext.RichTextCtrl_GetLogicalPoint(*args, **kwargs)
+
+    def FindNextWordPosition(*args, **kwargs):
+        """FindNextWordPosition(self, int direction=1) -> long"""
+        return _richtext.RichTextCtrl_FindNextWordPosition(*args, **kwargs)
+
+    def IsPositionVisible(*args, **kwargs):
+        """IsPositionVisible(self, long pos) -> bool"""
+        return _richtext.RichTextCtrl_IsPositionVisible(*args, **kwargs)
+
+    def GetFirstVisiblePosition(*args, **kwargs):
+        """GetFirstVisiblePosition(self) -> long"""
+        return _richtext.RichTextCtrl_GetFirstVisiblePosition(*args, **kwargs)
+
+    def GetCaretPositionForDefaultStyle(*args, **kwargs):
+        """GetCaretPositionForDefaultStyle(self) -> long"""
+        return _richtext.RichTextCtrl_GetCaretPositionForDefaultStyle(*args, **kwargs)
+
+    def SetCaretPositionForDefaultStyle(*args, **kwargs):
+        """SetCaretPositionForDefaultStyle(self, long pos)"""
+        return _richtext.RichTextCtrl_SetCaretPositionForDefaultStyle(*args, **kwargs)
+
+    def IsDefaultStyleShowing(*args, **kwargs):
+        """IsDefaultStyleShowing(self) -> bool"""
+        return _richtext.RichTextCtrl_IsDefaultStyleShowing(*args, **kwargs)
+
+    def SetAndShowDefaultStyle(*args, **kwargs):
+        """SetAndShowDefaultStyle(self, wxRichTextAttr attr)"""
+        return _richtext.RichTextCtrl_SetAndShowDefaultStyle(*args, **kwargs)
+
+    def GetFirstVisiblePoint(*args, **kwargs):
+        """GetFirstVisiblePoint(self) -> Point"""
+        return _richtext.RichTextCtrl_GetFirstVisiblePoint(*args, **kwargs)
+
+    def SetScrollbars(*args, **kwargs):
+        """
+        SetScrollbars(self, int pixelsPerUnitX, int pixelsPerUnitY, int noUnitsX, 
+            int noUnitsY, int xPos=0, int yPos=0, bool noRefresh=False)
+        """
+        return _richtext.RichTextCtrl_SetScrollbars(*args, **kwargs)
+
+    def Scroll(*args, **kwargs):
+        """Scroll(self, int x, int y)"""
+        return _richtext.RichTextCtrl_Scroll(*args, **kwargs)
+
+    def GetScrollPageSize(*args, **kwargs):
+        """GetScrollPageSize(self, int orient) -> int"""
+        return _richtext.RichTextCtrl_GetScrollPageSize(*args, **kwargs)
+
+    def SetScrollPageSize(*args, **kwargs):
+        """SetScrollPageSize(self, int orient, int pageSize)"""
+        return _richtext.RichTextCtrl_SetScrollPageSize(*args, **kwargs)
+
+    def SetScrollRate(*args, **kwargs):
+        """SetScrollRate(self, int xstep, int ystep)"""
+        return _richtext.RichTextCtrl_SetScrollRate(*args, **kwargs)
+
+    def GetScrollPixelsPerUnit(*args, **kwargs):
+        """
+        GetScrollPixelsPerUnit() -> (xUnit, yUnit)
+
+        Get the size of one logical unit in physical units.
+        """
+        return _richtext.RichTextCtrl_GetScrollPixelsPerUnit(*args, **kwargs)
+
+    def EnableScrolling(*args, **kwargs):
+        """EnableScrolling(self, bool x_scrolling, bool y_scrolling)"""
+        return _richtext.RichTextCtrl_EnableScrolling(*args, **kwargs)
+
+    def GetViewStart(*args, **kwargs):
+        """
+        GetViewStart() -> (x,y)
+
+        Get the view start
+        """
+        return _richtext.RichTextCtrl_GetViewStart(*args, **kwargs)
+
+    def SetScale(*args, **kwargs):
+        """SetScale(self, double xs, double ys)"""
+        return _richtext.RichTextCtrl_SetScale(*args, **kwargs)
+
+    def GetScaleX(*args, **kwargs):
+        """GetScaleX(self) -> double"""
+        return _richtext.RichTextCtrl_GetScaleX(*args, **kwargs)
+
+    def GetScaleY(*args, **kwargs):
+        """GetScaleY(self) -> double"""
+        return _richtext.RichTextCtrl_GetScaleY(*args, **kwargs)
+
+    def CalcScrolledPosition(*args):
+        """
+        CalcScrolledPosition(self, Point pt) -> Point
+        CalcScrolledPosition(int x, int y) -> (sx, sy)
+
+        Translate between scrolled and unscrolled coordinates.
+        """
+        return _richtext.RichTextCtrl_CalcScrolledPosition(*args)
+
+    def CalcUnscrolledPosition(*args):
+        """
+        CalcUnscrolledPosition(self, Point pt) -> Point
+        CalcUnscrolledPosition(int x, int y) -> (ux, uy)
+
+        Translate between scrolled and unscrolled coordinates.
+        """
+        return _richtext.RichTextCtrl_CalcUnscrolledPosition(*args)
+
+    def AdjustScrollbars(*args, **kwargs):
+        """AdjustScrollbars(self)"""
+        return _richtext.RichTextCtrl_AdjustScrollbars(*args, **kwargs)
+
+    def CalcScrollInc(*args, **kwargs):
+        """CalcScrollInc(self, ScrollWinEvent event) -> int"""
+        return _richtext.RichTextCtrl_CalcScrollInc(*args, **kwargs)
+
+    def SetTargetWindow(*args, **kwargs):
+        """SetTargetWindow(self, Window target)"""
+        return _richtext.RichTextCtrl_SetTargetWindow(*args, **kwargs)
+
+    def GetTargetWindow(*args, **kwargs):
+        """GetTargetWindow(self) -> Window"""
+        return _richtext.RichTextCtrl_GetTargetWindow(*args, **kwargs)
+
+    def SetTargetRect(*args, **kwargs):
+        """SetTargetRect(self, Rect rect)"""
+        return _richtext.RichTextCtrl_SetTargetRect(*args, **kwargs)
+
+    def GetTargetRect(*args, **kwargs):
+        """GetTargetRect(self) -> Rect"""
+        return _richtext.RichTextCtrl_GetTargetRect(*args, **kwargs)
+
+    def IsEmpty(*args, **kwargs):
+        """IsEmpty(self) -> bool"""
+        return _richtext.RichTextCtrl_IsEmpty(*args, **kwargs)
+
+    def ChangeValue(*args, **kwargs):
+        """ChangeValue(self, String value)"""
+        return _richtext.RichTextCtrl_ChangeValue(*args, **kwargs)
+
+    def SetModified(*args, **kwargs):
+        """SetModified(self, bool modified)"""
+        return _richtext.RichTextCtrl_SetModified(*args, **kwargs)
+
+    def EmulateKeyPress(*args, **kwargs):
+        """EmulateKeyPress(self, KeyEvent event) -> bool"""
+        return _richtext.RichTextCtrl_EmulateKeyPress(*args, **kwargs)
+
 _richtext.RichTextCtrl_swigregister(RichTextCtrl)
 RichTextCtrlNameStr = cvar.RichTextCtrlNameStr
 
@@ -3780,6 +4033,173 @@ class RichTextXMLHandler(RichTextFileHandler):
 _richtext.RichTextXMLHandler_swigregister(RichTextXMLHandler)
 XmlName = cvar.XmlName
 XmlExt = cvar.XmlExt
+
+#---------------------------------------------------------------------------
+
+RICHTEXT_PRINT_MAX_PAGES = _richtext.RICHTEXT_PRINT_MAX_PAGES
+RICHTEXT_PAGE_ODD = _richtext.RICHTEXT_PAGE_ODD
+RICHTEXT_PAGE_EVEN = _richtext.RICHTEXT_PAGE_EVEN
+RICHTEXT_PAGE_ALL = _richtext.RICHTEXT_PAGE_ALL
+RICHTEXT_PAGE_LEFT = _richtext.RICHTEXT_PAGE_LEFT
+RICHTEXT_PAGE_CENTRE = _richtext.RICHTEXT_PAGE_CENTRE
+RICHTEXT_PAGE_RIGHT = _richtext.RICHTEXT_PAGE_RIGHT
+class RichTextPrintout(_windows.Printout):
+    """Proxy of C++ RichTextPrintout class"""
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
+    __repr__ = _swig_repr
+    def __init__(self, *args, **kwargs): 
+        """__init__(self, String title=wxT("Printout")) -> RichTextPrintout"""
+        _richtext.RichTextPrintout_swiginit(self,_richtext.new_RichTextPrintout(*args, **kwargs))
+    __swig_destroy__ = _richtext.delete_RichTextPrintout
+    __del__ = lambda self : None;
+    def SetRichTextBuffer(*args, **kwargs):
+        """SetRichTextBuffer(self, RichTextBuffer buffer)"""
+        return _richtext.RichTextPrintout_SetRichTextBuffer(*args, **kwargs)
+
+    def GetRichTextBuffer(*args, **kwargs):
+        """GetRichTextBuffer(self) -> RichTextBuffer"""
+        return _richtext.RichTextPrintout_GetRichTextBuffer(*args, **kwargs)
+
+    def SetHeaderFooterData(*args, **kwargs):
+        """SetHeaderFooterData(self, wxRichTextHeaderFooterData data)"""
+        return _richtext.RichTextPrintout_SetHeaderFooterData(*args, **kwargs)
+
+    def GetHeaderFooterData(*args, **kwargs):
+        """GetHeaderFooterData(self) -> wxRichTextHeaderFooterData"""
+        return _richtext.RichTextPrintout_GetHeaderFooterData(*args, **kwargs)
+
+    def SetMargins(*args, **kwargs):
+        """SetMargins(self, int top=254, int bottom=254, int left=254, int right=254)"""
+        return _richtext.RichTextPrintout_SetMargins(*args, **kwargs)
+
+    def CalculateScaling(*args, **kwargs):
+        """CalculateScaling(self, DC dc, Rect textRect, Rect headerRect, Rect footerRect)"""
+        return _richtext.RichTextPrintout_CalculateScaling(*args, **kwargs)
+
+_richtext.RichTextPrintout_swigregister(RichTextPrintout)
+
+class RichTextPrinting(_core.Object):
+    """Proxy of C++ RichTextPrinting class"""
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
+    __repr__ = _swig_repr
+    def __init__(self, *args, **kwargs): 
+        """__init__(self, String name=wxT("Printing"), Window parentWindow=None) -> RichTextPrinting"""
+        _richtext.RichTextPrinting_swiginit(self,_richtext.new_RichTextPrinting(*args, **kwargs))
+    __swig_destroy__ = _richtext.delete_RichTextPrinting
+    __del__ = lambda self : None;
+    def PreviewFile(*args, **kwargs):
+        """PreviewFile(self, String richTextFile) -> bool"""
+        return _richtext.RichTextPrinting_PreviewFile(*args, **kwargs)
+
+    def PreviewBuffer(*args, **kwargs):
+        """PreviewBuffer(self, RichTextBuffer buffer) -> bool"""
+        return _richtext.RichTextPrinting_PreviewBuffer(*args, **kwargs)
+
+    def PrintFile(*args, **kwargs):
+        """PrintFile(self, String richTextFile) -> bool"""
+        return _richtext.RichTextPrinting_PrintFile(*args, **kwargs)
+
+    def PrintBuffer(*args, **kwargs):
+        """PrintBuffer(self, RichTextBuffer buffer) -> bool"""
+        return _richtext.RichTextPrinting_PrintBuffer(*args, **kwargs)
+
+    def PageSetup(*args, **kwargs):
+        """PageSetup(self)"""
+        return _richtext.RichTextPrinting_PageSetup(*args, **kwargs)
+
+    def SetHeaderFooterData(*args, **kwargs):
+        """SetHeaderFooterData(self, wxRichTextHeaderFooterData data)"""
+        return _richtext.RichTextPrinting_SetHeaderFooterData(*args, **kwargs)
+
+    def GetHeaderFooterData(*args, **kwargs):
+        """GetHeaderFooterData(self) -> wxRichTextHeaderFooterData"""
+        return _richtext.RichTextPrinting_GetHeaderFooterData(*args, **kwargs)
+
+    def SetHeaderText(*args, **kwargs):
+        """SetHeaderText(self, String text, int page=RICHTEXT_PAGE_ALL, int location=RICHTEXT_PAGE_CENTRE)"""
+        return _richtext.RichTextPrinting_SetHeaderText(*args, **kwargs)
+
+    def GetHeaderText(*args, **kwargs):
+        """GetHeaderText(self, int page=RICHTEXT_PAGE_EVEN, int location=RICHTEXT_PAGE_CENTRE) -> String"""
+        return _richtext.RichTextPrinting_GetHeaderText(*args, **kwargs)
+
+    def SetFooterText(*args, **kwargs):
+        """SetFooterText(self, String text, int page=RICHTEXT_PAGE_ALL, int location=RICHTEXT_PAGE_CENTRE)"""
+        return _richtext.RichTextPrinting_SetFooterText(*args, **kwargs)
+
+    def GetFooterText(*args, **kwargs):
+        """GetFooterText(self, int page=RICHTEXT_PAGE_EVEN, int location=RICHTEXT_PAGE_CENTRE) -> String"""
+        return _richtext.RichTextPrinting_GetFooterText(*args, **kwargs)
+
+    def SetShowOnFirstPage(*args, **kwargs):
+        """SetShowOnFirstPage(self, bool show)"""
+        return _richtext.RichTextPrinting_SetShowOnFirstPage(*args, **kwargs)
+
+    def SetHeaderFooterFont(*args, **kwargs):
+        """SetHeaderFooterFont(self, Font font)"""
+        return _richtext.RichTextPrinting_SetHeaderFooterFont(*args, **kwargs)
+
+    def SetHeaderFooterTextColour(*args, **kwargs):
+        """SetHeaderFooterTextColour(self, Colour font)"""
+        return _richtext.RichTextPrinting_SetHeaderFooterTextColour(*args, **kwargs)
+
+    def GetPrintData(*args, **kwargs):
+        """GetPrintData(self) -> PrintData"""
+        return _richtext.RichTextPrinting_GetPrintData(*args, **kwargs)
+
+    def GetPageSetupData(*args, **kwargs):
+        """GetPageSetupData(self) -> PageSetupDialogData"""
+        return _richtext.RichTextPrinting_GetPageSetupData(*args, **kwargs)
+
+    def SetPrintData(*args, **kwargs):
+        """SetPrintData(self, PrintData printData)"""
+        return _richtext.RichTextPrinting_SetPrintData(*args, **kwargs)
+
+    def SetPageSetupData(*args, **kwargs):
+        """SetPageSetupData(self, wxPageSetupData pageSetupData)"""
+        return _richtext.RichTextPrinting_SetPageSetupData(*args, **kwargs)
+
+    def SetRichTextBufferPreview(*args, **kwargs):
+        """SetRichTextBufferPreview(self, RichTextBuffer buf)"""
+        return _richtext.RichTextPrinting_SetRichTextBufferPreview(*args, **kwargs)
+
+    def GetRichTextBufferPreview(*args, **kwargs):
+        """GetRichTextBufferPreview(self) -> RichTextBuffer"""
+        return _richtext.RichTextPrinting_GetRichTextBufferPreview(*args, **kwargs)
+
+    def SetRichTextBufferPrinting(*args, **kwargs):
+        """SetRichTextBufferPrinting(self, RichTextBuffer buf)"""
+        return _richtext.RichTextPrinting_SetRichTextBufferPrinting(*args, **kwargs)
+
+    def GetRichTextBufferPrinting(*args, **kwargs):
+        """GetRichTextBufferPrinting(self) -> RichTextBuffer"""
+        return _richtext.RichTextPrinting_GetRichTextBufferPrinting(*args, **kwargs)
+
+    def SetParentWindow(*args, **kwargs):
+        """SetParentWindow(self, Window parent)"""
+        return _richtext.RichTextPrinting_SetParentWindow(*args, **kwargs)
+
+    def GetParentWindow(*args, **kwargs):
+        """GetParentWindow(self) -> Window"""
+        return _richtext.RichTextPrinting_GetParentWindow(*args, **kwargs)
+
+    def SetTitle(*args, **kwargs):
+        """SetTitle(self, String title)"""
+        return _richtext.RichTextPrinting_SetTitle(*args, **kwargs)
+
+    def GetTitle(*args, **kwargs):
+        """GetTitle(self) -> String"""
+        return _richtext.RichTextPrinting_GetTitle(*args, **kwargs)
+
+    def SetPreviewRect(*args, **kwargs):
+        """SetPreviewRect(self, Rect rect)"""
+        return _richtext.RichTextPrinting_SetPreviewRect(*args, **kwargs)
+
+    def GetPreviewRect(*args, **kwargs):
+        """GetPreviewRect(self) -> Rect"""
+        return _richtext.RichTextPrinting_GetPreviewRect(*args, **kwargs)
+
+_richtext.RichTextPrinting_swigregister(RichTextPrinting)
 
 
 

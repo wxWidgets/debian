@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id: window.h 50111 2007-11-20 16:12:12Z VZ $
+// RCS-ID:      $Id: window.h 56758 2008-11-13 22:32:21Z VS $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -325,6 +325,12 @@ public:
     {
         return wxRect(GetClientAreaOrigin(), GetClientSize());
     }
+
+#if wxABI_VERSION >= 20808
+    // client<->window size conversion
+    wxSize ClientToWindowSize(const wxSize& size) const;
+    wxSize WindowToClientSize(const wxSize& size) const;
+#endif
 
         // get the size best suited for the window (in fact, minimal
         // acceptable size using which it will still look "nice" in
@@ -998,14 +1004,21 @@ public:
     void SetToolTip( const wxString &tip );
         // attach a tooltip to the window
     void SetToolTip( wxToolTip *tip ) { DoSetToolTip(tip); }
+#if wxABI_VERSION >= 20809
+        // more readable synonym for SetToolTip(NULL)
+    void UnsetToolTip() { SetToolTip(NULL); }
+#endif // wxABI_VERSION >= 2.8.9
         // get the associated tooltip or NULL if none
     wxToolTip* GetToolTip() const { return m_tooltip; }
     wxString GetToolTipText() const ;
-#else
+#else // !wxUSE_TOOLTIPS
         // make it much easier to compile apps in an environment
         // that doesn't support tooltips, such as PocketPC
-    inline void SetToolTip( const wxString & WXUNUSED(tip) ) {}
-#endif // wxUSE_TOOLTIPS
+    void SetToolTip( const wxString & WXUNUSED(tip) ) {}
+#if wxABI_VERSION >= 20809
+    void UnsetToolTip() { }
+#endif // wxABI_VERSION >= 2.8.9
+#endif // wxUSE_TOOLTIPS/!wxUSE_TOOLTIPS
 
     // drag and drop
     // -------------
@@ -1014,6 +1027,14 @@ public:
         // NULL; it's owned by the window and will be deleted by it)
     virtual void SetDropTarget( wxDropTarget *dropTarget ) = 0;
     virtual wxDropTarget *GetDropTarget() const { return m_dropTarget; }
+
+#ifndef __WXMSW__ // MSW version is in msw/window.h
+#if wxABI_VERSION >= 20810
+    // Accept files for dragging
+    void DragAcceptFiles(bool accept);
+#endif // wxABI_VERSION >= 20810
+#endif // !__WXMSW__
+
 #endif // wxUSE_DRAG_AND_DROP
 
     // constraints and sizers

@@ -25,7 +25,7 @@ class Hello(plugin.Plugin):
         if parent:
             # This will let you use Editra's loggin system
             self._log = wx.GetApp().GetLog()
-            self._log("[hello] Installing Hello World")
+            self._log("[hello][info] Installing Hello World")
             vm = parent.GetMenuBar().GetMenuByName("view")
             vm.Append(ID_HELLO, _("Hello World"), 
                       _("Open a Hello World Dialog"))

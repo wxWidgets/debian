@@ -15,13 +15,24 @@
 # Author:      Robin Dunn
 #
 # Created:     23-March-2004
-# RCS-ID:      $Id: config.py 50259 2007-11-26 19:44:39Z RD $
+# RCS-ID:      $Id: config.py 60299 2009-04-24 05:22:36Z RD $
 # Copyright:   (c) 2004 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
 
 import sys, os, glob, fnmatch, tempfile
-from distutils.core      import setup, Extension
+
+EGGing = 'bdist_egg' in sys.argv or 'egg_info' in sys.argv
+if not EGGing:
+    from distutils.core import setup, Extension
+else:
+    # EXPERIMENTAL Egg support...
+    try:
+        from setuptools import setup, Extension
+    except ImportError:
+        print "Setuptools must be installed to build an egg"
+        sys.exit(1)
+
 from distutils.file_util import copy_file
 from distutils.dir_util  import mkpath
 from distutils.dep_util  import newer
@@ -38,7 +49,7 @@ import distutils.command.clean
 
 VER_MAJOR        = 2      # The first three must match wxWidgets
 VER_MINOR        = 8
-VER_RELEASE      = 7
+VER_RELEASE      = 10
 VER_SUBREL       = 1      # wxPython release num for x.y.z release of wxWidgets
 VER_FLAGS        = ""     # release flags, such as prerelease or RC num, etc.
 
@@ -49,7 +60,7 @@ URL              = "http://wxPython.org/"
 DOWNLOAD_URL     = "http://wxPython.org/download.php"
 LICENSE          = "wxWidgets Library License (LGPL derivative)"
 PLATFORMS        = "WIN32,OSX,POSIX"
-KEYWORDS         = "GUI,wx,wxWindows,wxWidgets,cross-platform"
+KEYWORDS         = "GUI,wx,wxWindows,wxWidgets,cross-platform,awesome"
 
 LONG_DESCRIPTION = """\
 wxPython is a GUI toolkit for Python that is a wrapper around the
@@ -67,7 +78,7 @@ Environment :: X11 Applications :: GTK
 Intended Audience :: Developers
 License :: OSI Approved
 Operating System :: MacOS :: MacOS X
-Operating System :: Microsoft :: Windows :: Windows 95/98/2000
+Operating System :: Microsoft :: Windows :: Windows 98/2000/XP/Vista
 Operating System :: POSIX
 Programming Language :: Python
 Topic :: Software Development :: User Interfaces
@@ -86,7 +97,7 @@ BUILD_DLLWIDGET = 0# Build a module that enables unknown wx widgets
                    # to be loaded from a DLL and to be used from Python.
 
                    # Internet Explorer wrapper (experimental)
-BUILD_ACTIVEX = (os.name == 'nt')  # new version of IEWIN and more
+BUILD_ACTIVEX = (os.name == 'nt') # and os.environ.get('CPU',None) != 'AMD64') 
 
 
 CORE_ONLY = 0      # if true, don't build any of the above
@@ -164,7 +175,7 @@ SYS_WX_CONFIG = None # When installing an in tree build, setup.py uses wx-config
 WXPORT = 'gtk2'    # On Linux/Unix there are several ports of wxWidgets available.
                    # Setting this value lets you select which will be used for
                    # the wxPython build.  Possibilites are 'gtk', 'gtk2' and
-                   # 'x11'.  Curently only gtk and gtk2 works.
+                   # 'x11'.  Currently only gtk and gtk2 works.
 
 BUILD_BASE = "build" # Directory to use for temporary build files.
                      # This name will be appended to if the WXPORT or
@@ -402,16 +413,18 @@ def run_swig(files, dir, gendir, package, USE_SWIG, force, swig_args,
 
     return sources
 
+import subprocess as sp
 
 def swig_version():
     # It may come on either stdout or stderr, depending on the
     # version, so read both.
-    i, o, e = os.popen3(SWIG + ' -version', 't')
-    stext = o.read() + e.read()
+    p = sp.Popen(SWIG + ' -version', shell=True, universal_newlines=True,
+                 stdin=sp.PIPE, stdout=sp.PIPE, stderr=sp.PIPE)
+    stext = p.stdout.read() + p.stderr.read()
     import re
     match = re.search(r'[0-9]+\.[0-9]+\.[0-9]+$', stext, re.MULTILINE)
     if not match:
-        raise 'NotFound'
+        raise RuntimeError('SWIG version not found')
     SVER = match.group(0)
     return SVER
 
@@ -506,6 +519,7 @@ class wx_install_headers(distutils.command.install_headers.install_headers):
             self.mkpath(install_dir)
             (out, _) = self.copy_file(header, install_dir)
             self.outfiles.append(out)
+
 
 
 def build_locale_dir(destdir, verbose=1):
@@ -858,8 +872,13 @@ if os.name == 'nt' and  COMPILER == 'msvc':
     WXPLAT = '__WXMSW__'
     GENDIR = 'msw'
 
+    if os.environ.get('CPU', None) == 'AMD64':
+        VCDLL = 'vc_amd64_dll'
+    else:
+        VCDLL = 'vc_dll'
+        
     includes = ['include', 'src',
-                opj(WXDIR, 'lib', 'vc_dll', 'msw'  + libFlag()),
+                opj(WXDIR, 'lib', VCDLL, 'msw'  + libFlag()),
                 opj(WXDIR, 'include'),
                 opj(WXDIR, 'contrib', 'include'),
                 ]
@@ -873,6 +892,7 @@ if os.name == 'nt' and  COMPILER == 'msvc':
                 ('SWIG_TYPE_TABLE', WXPYTHON_TYPE_TABLE),
                 ('SWIG_PYTHON_OUTPUT_TUPLE', None),
                 ('WXP_USE_THREAD', '1'),
+                ('ISOLATION_AWARE_ENABLED', None),
                 ]
 
     if UNDEF_NDEBUG:
@@ -887,11 +907,13 @@ if os.name == 'nt' and  COMPILER == 'msvc':
     if UNICODE:
         defines.append( ('wxUSE_UNICODE', 1) )
 
-    libdirs = [ opj(WXDIR, 'lib', 'vc_dll') ]
+
+    libs = []
+    libdirs = [ opj(WXDIR, 'lib', VCDLL) ]
     if MONOLITHIC:
-        libs = makeLibName('')
+        libs += makeLibName('')
     else:
-        libs = [ 'wxbase' + WXDLLVER + libFlag(), 
+        libs += [ 'wxbase' + WXDLLVER + libFlag(), 
                  'wxbase' + WXDLLVER + libFlag() + '_net',
                  'wxbase' + WXDLLVER + libFlag() + '_xml',
                  makeLibName('core')[0],
@@ -899,27 +921,21 @@ if os.name == 'nt' and  COMPILER == 'msvc':
                  makeLibName('html')[0],
                  ]
 
-    libs = libs + ['kernel32', 'user32', 'gdi32', 'comdlg32',
-            'winspool', 'winmm', 'shell32', 'oldnames', 'comctl32',
-            'odbc32', 'ole32', 'oleaut32', 'uuid', 'rpcrt4',
-            'advapi32', 'wsock32']
-
+    libs += ['kernel32', 'user32', 'gdi32', 'comdlg32',
+             'winspool', 'winmm', 'shell32', 'oldnames', 'comctl32',
+             'odbc32', 'ole32', 'oleaut32', 'uuid', 'rpcrt4',
+             'advapi32', 'wsock32']
 
     cflags = [ '/Gy',
-             # '/GX-'  # workaround for internal compiler error in MSVC on some machines
-             ]
+               '/EHsc',
+               # '/GX-'  # workaround for internal compiler error in MSVC on some machines
+               ]
     lflags = None
 
     # Other MSVC flags...
-    # Too bad I don't remember why I was playing with these, can they be removed?
-    if FINAL:
-        pass #cflags = cflags + ['/O1']
-    elif HYBRID :
-        pass #cflags = cflags + ['/Ox']
-    else:
-        pass # cflags = cflags + ['/Od', '/Z7']
-             # lflags = ['/DEBUG', ]
-
+    # Uncomment these to have debug info for all kinds of builds
+    #cflags += ['/Od', '/Z7']
+    #lflags = ['/DEBUG', ]
 
 
 #----------------------------------------------------------------------
@@ -1025,7 +1041,7 @@ elif os.name == 'posix' or COMPILER == 'mingw32':
     cflags = adjustCFLAGS(cflags, defines, includes)
     lflags = adjustLFLAGS(lflags, libdirs, libs)
 
-    if debug and WXPORT == 'msw':
+    if debug and WXPORT == 'msw' and COMPILER != 'mingw32':
         defines.append( ('_DEBUG', None) )
         
 ##     from pprint import pprint
@@ -1087,7 +1103,7 @@ if UNICODE:
     BUILD_BASE = BUILD_BASE + '.unicode'
 
 if os.path.exists('DAILY_BUILD'):
-    VER_FLAGS += '.' + open('DAILY_BUILD').read().strip()
+    VER_FLAGS += '.pre' + open('DAILY_BUILD').read().strip()
 
 VERSION = "%s.%s.%s.%s%s" % (VER_MAJOR, VER_MINOR, VER_RELEASE,
                              VER_SUBREL, VER_FLAGS)

@@ -40,7 +40,7 @@ if [ $KIND = daily ]; then
 	DATE=`date`
 	TO=wxPython-dev@lists.wxwidgets.org
 
-	cat <<EOF  | /usr/sbin/sendmail  $TO
+	cat <<EOF  | /usr/sbin/sendmail -f rbot@wxpython.org  $TO
 From: R'bot <rbot@wxpython.org>
 To: $TO
 Subject: $DAILY test build uploaded
@@ -58,12 +58,11 @@ Have fun!
 R'bot
 
 EOF
-    fi
 
     echo "Cleaning up staging dir..."
     rm -r $STAGING_DIR/*
     rmdir $STAGING_DIR
-
+    fi
     exit 0
 fi
 
@@ -91,7 +90,7 @@ if [ $KIND = release ]; then
 	DATE=`date`
 	TO=wxPython-dev@lists.wxwidgets.org
 
-	cat <<EOF  | /usr/sbin/sendmail  $TO
+	cat <<EOF  | /usr/sbin/sendmail  -f rbot@wxpython.org  $TO
 From: R'bot <rbot@wxpython.org>
 To: $TO
 Subject: $VERSION release candidate build uploaded
@@ -110,12 +109,10 @@ R'bot
 
 EOF
 
-    fi
-
     echo "Cleaning up staging dir..."
     rm $STAGING_DIR/*
     rmdir $STAGING_DIR
-
+    fi
     exit 0
 fi
 

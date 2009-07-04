@@ -59,6 +59,8 @@ capabilities for the various virtual methods.<P>
 <A HREF="#wxsizeraddstretchspacer">wxSizer::AddStretchSpacer</A><BR>
 <A HREF="#wxsizercalcmin">wxSizer::CalcMin</A><BR>
 <A HREF="#wxsizerclear">wxSizer::Clear</A><BR>
+<A HREF="#wxsizercomputefittingclientsize">wxSizer::ComputeFittingClientSize</A><BR>
+<A HREF="#wxsizercomputefittingwindowsize">wxSizer::ComputeFittingWindowSize</A><BR>
 <A HREF="#wxsizerdetach">wxSizer::Detach</A><BR>
 <A HREF="#wxsizerfit">wxSizer::Fit</A><BR>
 <A HREF="#wxsizerfitinside">wxSizer::FitInside</A><BR>
@@ -210,6 +212,19 @@ started with then use wxFIXED_MINSIZE.
 
 
 <TR><TD VALIGN=TOP WIDTH=198>
+<B>wxRESERVE_SPACE_EVEN_IF_HIDDEN</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Normally wxSizers
+don't allocate space for hidden windows or other items. This flag overrides
+this behavior so that sufficient space is allocated for the window even if it
+isn't visible. This makes it possible to dynamically show and hide controls
+without resizing parent dialog, for example. This function is new since wxWidgets version 2.8.8
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP WIDTH=198>
 <B>wxALIGN_CENTER wxALIGN_CENTRE</B><BR>
 
 <B>wxALIGN_LEFT</B><BR>
@@ -286,6 +301,41 @@ Detaches all children from the sizer. If <I>delete_windows</I> is <TT>true</TT> 
 
 
 <HR>
+<A NAME="wxsizercomputefittingclientsize"></A>
+<H3>wxSizer::ComputeFittingClientSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>ComputeFittingClientSize</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>)<P>
+Computes client area size for <I>window</I> so that it matches the 
+sizer's minimal size. Unlike <A HREF="wx_wxsizer.html#wxsizergetminsize">GetMinSize</A>, this
+method accounts for other constraints imposed on <I>window</I>, namely display's
+size (returned size will never be too large for the display) and maximum
+window size if previously set by
+<A HREF="wx_wxwindow.html#wxwindowsetmaxsize">wxWindow::SetMaxSize</A>.<P>
+The returned value is suitable for passing to
+<A HREF="wx_wxwindow.html#wxwindowsetclientsize">wxWindow::SetClientSize</A>.<P>
+This function is new since wxWidgets version 2.8.8<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsizer.html#wxsizercomputefittingwindowsize">ComputeFittingWindowSize</A>,
+<A HREF="wx_wxsizer.html#wxsizerfit">Fit</A><P>
+
+
+<HR>
+<A NAME="wxsizercomputefittingwindowsize"></A>
+<H3>wxSizer::ComputeFittingWindowSize</H3>
+<P>
+<B><A HREF="wx_wxsize.html#wxsize">wxSize</A></B> </B> <B>ComputeFittingWindowSize</B>(<B><A HREF="wx_wxwindow.html#wxwindow">wxWindow</A>* </B></B><I>window</I>)<P>
+Like <A HREF="wx_wxsizer.html#wxsizercomputefittingclientsize">ComputeFittingClientSize</A>,
+but converts the result into <EM>window</EM> size.<P>
+The returned value is suitable for passing to
+<A HREF="wx_wxwindow.html#wxwindowsetsize">wxWindow::SetSize</A> or
+<A HREF="wx_wxwindow.html#wxwindowsetminsize">wxWindow::SetMinSize</A>.<P>
+This function is new since wxWidgets version 2.8.8<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsizer.html#wxsizercomputefittingclientsize">ComputeFittingClientSize</A>,
+<A HREF="wx_wxsizer.html#wxsizerfit">Fit</A><P>
+
+
+<HR>
 <A NAME="wxsizerdetach"></A>
 <H3>wxSizer::Detach</H3>
 <P>
@@ -311,6 +361,9 @@ Tell the sizer to resize the <I>window</I> to match the sizer's minimal size. Th
 is commonly done in the constructor of the window itself, see sample in the description
 of <A HREF="wx_wxboxsizer.html#wxboxsizer">wxBoxSizer</A>. Returns the new size.<P>
 For a top level window this is the total window size, not client size.<P>
+<B><FONT COLOR="#FF0000">See also</FONT></B><P>
+<A HREF="wx_wxsizer.html#wxsizercomputefittingclientsize">ComputeFittingClientSize</A>,
+<A HREF="wx_wxsizer.html#wxsizercomputefittingwindowsize">ComputeFittingWindowSize</A><P>
 
 
 <HR>
@@ -382,6 +435,12 @@ Returns the current position of the sizer.<P>
 Returns the minimal size of the sizer. This is either the combined minimal
 size of all the children and their borders or the minimal size set by 
 <A HREF="wx_wxsizer.html#wxsizersetminsize">SetMinSize</A>, depending on which is bigger.<P>
+Note that the returned value is <EM>client</EM> size, not window size.  In
+particular, if you use the value to set toplevel window's minimal or actual
+size, you should convert it using
+<A HREF="wx_wxwindow.html#wxwindowclienttowindowsize">wxWindow::ClientToWindowSize</A> before
+passing it to <A HREF="wx_wxwindow.html#wxwindowsetminsize">wxWindow::SetMinSize</A> or
+<A HREF="wx_wxwindow.html#wxwindowsetsize">wxWindow::SetSize</A>.<P>
 
 
 <HR>

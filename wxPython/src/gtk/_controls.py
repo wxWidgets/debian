@@ -1470,7 +1470,52 @@ class CheckListBox(ListBox):
         """GetItemHeight(self) -> int"""
         return _controls_.CheckListBox_GetItemHeight(*args, **kwargs)
 
-    ItemHeight = property(GetItemHeight,doc="See `GetItemHeight`") 
+    def GetChecked(self):
+        """
+        GetChecked(self)
+
+        Return a tuple of integers corresponding to the checked items in
+        the control, based on `IsChecked`.
+        """
+        return tuple([i for i in range(self.Count) if self.IsChecked(i)])
+
+    def GetCheckedStrings(self):
+        """
+        GetCheckedStrings(self)
+
+        Return a tuple of strings corresponding to the checked
+        items of the control, based on `GetChecked`.
+        """
+        return tuple([self.GetString(i) for i in self.GetChecked()])
+
+    def SetChecked(self, indexes):
+        """
+        SetChecked(self, indexes)
+
+        Sets the checked state of items if the index of the item is 
+        found in the indexes sequence.
+        """
+        for i in indexes:
+            assert 0 <= i < self.Count, "Index (%s) out of range" % i
+        for i in range(self.Count):
+            self.Check(i, i in indexes)
+
+    def SetCheckedStrings(self, strings):
+        """
+        SetCheckedStrings(self, indexes)
+
+        Sets the checked state of items if the item's string is found
+        in the strings sequence.
+        """
+        for s in strings:
+            assert s in self.GetStrings(), "String ('%s') not found" % s
+        for i in range(self.Count):
+            self.Check(i, self.GetString(i) in strings)
+
+    Checked = property(GetChecked,SetChecked)
+    CheckedStrings = property(GetCheckedStrings,SetCheckedStrings)
+
+    ItemHeight = property(GetItemHeight) 
 _controls_.CheckListBox_swigregister(CheckListBox)
 
 def PreCheckListBox(*args, **kwargs):
@@ -5913,6 +5958,11 @@ class PyControl(_core.Control):
     base_GetMaxSize = wx._deprecated(base_GetMaxSize,
                                    "Please use PyControl.GetMaxSize instead.")
 
+    def base_Enable(*args, **kw):
+        return PyControl.Enable(*args, **kw)
+    base_Enable = wx._deprecated(base_Enable,
+                                   "Please use PyControl.Enable instead.")
+
     def base_AddChild(*args, **kw):
         return PyControl.AddChild(*args, **kw)
     base_AddChild = wx._deprecated(base_AddChild,
@@ -6368,7 +6418,72 @@ DP_SPIN = _controls_.DP_SPIN
 DP_DROPDOWN = _controls_.DP_DROPDOWN
 DP_SHOWCENTURY = _controls_.DP_SHOWCENTURY
 DP_ALLOWNONE = _controls_.DP_ALLOWNONE
-class DatePickerCtrl(_core.Control):
+class DatePickerCtrlBase(_core.Control):
+    """Proxy of C++ DatePickerCtrlBase class"""
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
+    def __init__(self): raise AttributeError, "No constructor defined"
+    __repr__ = _swig_repr
+    def SetValue(*args, **kwargs):
+        """
+        SetValue(self, DateTime dt)
+
+        Changes the current value of the control. The date should be valid and
+        included in the currently selected range, if any.
+
+        Calling this method does not result in a date change event.
+        """
+        return _controls_.DatePickerCtrlBase_SetValue(*args, **kwargs)
+
+    def GetValue(*args, **kwargs):
+        """
+        GetValue(self) -> DateTime
+
+        Returns the currently selected date. If there is no selection or the
+        selection is outside of the current range, an invalid `wx.DateTime`
+        object is returned.
+        """
+        return _controls_.DatePickerCtrlBase_GetValue(*args, **kwargs)
+
+    def SetRange(*args, **kwargs):
+        """
+        SetRange(self, DateTime dt1, DateTime dt2)
+
+        Sets the valid range for the date selection. If dt1 is valid, it
+        becomes the earliest date (inclusive) accepted by the control. If dt2
+        is valid, it becomes the latest possible date.
+
+        If the current value of the control is outside of the newly set range
+        bounds, the behaviour is undefined.
+        """
+        return _controls_.DatePickerCtrlBase_SetRange(*args, **kwargs)
+
+    def GetLowerLimit(*args, **kwargs):
+        """
+        GetLowerLimit(self) -> DateTime
+
+        Get the lower limit of the valid range for the date selection, if any.
+        If there is no range or there is no lower limit, then the
+        `wx.DateTime` value returned will be invalid.
+        """
+        return _controls_.DatePickerCtrlBase_GetLowerLimit(*args, **kwargs)
+
+    def GetUpperLimit(*args, **kwargs):
+        """
+        GetUpperLimit(self) -> DateTime
+
+        Get the upper limit of the valid range for the date selection, if any.
+        If there is no range or there is no upper limit, then the
+        `wx.DateTime` value returned will be invalid.
+        """
+        return _controls_.DatePickerCtrlBase_GetUpperLimit(*args, **kwargs)
+
+    LowerLimit = property(GetLowerLimit,doc="See `GetLowerLimit`") 
+    UpperLimit = property(GetUpperLimit,doc="See `GetUpperLimit`") 
+    Value = property(GetValue,SetValue,doc="See `GetValue` and `SetValue`") 
+_controls_.DatePickerCtrlBase_swigregister(DatePickerCtrlBase)
+DatePickerCtrlNameStr = cvar.DatePickerCtrlNameStr
+
+class DatePickerCtrl(DatePickerCtrlBase):
     """
     This control allows the user to select a date. Unlike
     `wx.calendar.CalendarCtrl`, which is a relatively big control,
@@ -6405,65 +6520,7 @@ class DatePickerCtrl(_core.Control):
         """
         return _controls_.DatePickerCtrl_Create(*args, **kwargs)
 
-    def SetValue(*args, **kwargs):
-        """
-        SetValue(self, DateTime dt)
-
-        Changes the current value of the control. The date should be valid and
-        included in the currently selected range, if any.
-
-        Calling this method does not result in a date change event.
-        """
-        return _controls_.DatePickerCtrl_SetValue(*args, **kwargs)
-
-    def GetValue(*args, **kwargs):
-        """
-        GetValue(self) -> DateTime
-
-        Returns the currently selected date. If there is no selection or the
-        selection is outside of the current range, an invalid `wx.DateTime`
-        object is returned.
-        """
-        return _controls_.DatePickerCtrl_GetValue(*args, **kwargs)
-
-    def SetRange(*args, **kwargs):
-        """
-        SetRange(self, DateTime dt1, DateTime dt2)
-
-        Sets the valid range for the date selection. If dt1 is valid, it
-        becomes the earliest date (inclusive) accepted by the control. If dt2
-        is valid, it becomes the latest possible date.
-
-        If the current value of the control is outside of the newly set range
-        bounds, the behaviour is undefined.
-        """
-        return _controls_.DatePickerCtrl_SetRange(*args, **kwargs)
-
-    def GetLowerLimit(*args, **kwargs):
-        """
-        GetLowerLimit(self) -> DateTime
-
-        Get the lower limit of the valid range for the date selection, if any.
-        If there is no range or there is no lower limit, then the
-        `wx.DateTime` value returned will be invalid.
-        """
-        return _controls_.DatePickerCtrl_GetLowerLimit(*args, **kwargs)
-
-    def GetUpperLimit(*args, **kwargs):
-        """
-        GetUpperLimit(self) -> DateTime
-
-        Get the upper limit of the valid range for the date selection, if any.
-        If there is no range or there is no upper limit, then the
-        `wx.DateTime` value returned will be invalid.
-        """
-        return _controls_.DatePickerCtrl_GetUpperLimit(*args, **kwargs)
-
-    LowerLimit = property(GetLowerLimit,doc="See `GetLowerLimit`") 
-    UpperLimit = property(GetUpperLimit,doc="See `GetUpperLimit`") 
-    Value = property(GetValue,SetValue,doc="See `GetValue` and `SetValue`") 
 _controls_.DatePickerCtrl_swigregister(DatePickerCtrl)
-DatePickerCtrlNameStr = cvar.DatePickerCtrlNameStr
 
 def PreDatePickerCtrl(*args, **kwargs):
     """
@@ -6472,6 +6529,47 @@ def PreDatePickerCtrl(*args, **kwargs):
     Precreate a DatePickerCtrl for use in 2-phase creation.
     """
     val = _controls_.new_PreDatePickerCtrl(*args, **kwargs)
+    return val
+
+class GenericDatePickerCtrl(DatePickerCtrl):
+    """Proxy of C++ GenericDatePickerCtrl class"""
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
+    __repr__ = _swig_repr
+    def __init__(self, *args, **kwargs): 
+        """
+        __init__(self, Window parent, int id=-1, DateTime dt=wxDefaultDateTime, 
+            Point pos=DefaultPosition, Size size=DefaultSize, 
+            long style=wxDP_DEFAULT|wxDP_SHOWCENTURY, 
+            Validator validator=DefaultValidator, 
+            String name=DatePickerCtrlNameStr) -> GenericDatePickerCtrl
+
+        Create a new GenericDatePickerCtrl.
+        """
+        _controls_.GenericDatePickerCtrl_swiginit(self,_controls_.new_GenericDatePickerCtrl(*args, **kwargs))
+        self._setOORInfo(self)
+
+    def Create(*args, **kwargs):
+        """
+        Create(self, Window parent, int id=-1, DateTime dt=wxDefaultDateTime, 
+            Point pos=DefaultPosition, Size size=DefaultSize, 
+            long style=wxDP_DEFAULT|wxDP_SHOWCENTURY, 
+            Validator validator=DefaultValidator, 
+            String name=DatePickerCtrlNameStr) -> bool
+
+        Create the GUI parts of the GenericDatePickerCtrl, for use in 2-phase
+        creation.
+        """
+        return _controls_.GenericDatePickerCtrl_Create(*args, **kwargs)
+
+_controls_.GenericDatePickerCtrl_swigregister(GenericDatePickerCtrl)
+
+def PreGenericDatePickerCtrl(*args, **kwargs):
+    """
+    PreGenericDatePickerCtrl() -> GenericDatePickerCtrl
+
+    Precreate a GenericDatePickerCtrl for use in 2-phase creation.
+    """
+    val = _controls_.new_PreGenericDatePickerCtrl(*args, **kwargs)
     return val
 
 HL_CONTEXTMENU = _controls_.HL_CONTEXTMENU
@@ -6615,7 +6713,7 @@ class PickerBase(_core.Control):
     """
     Base abstract class for all pickers which support an auxiliary text
     control. This class handles all positioning and sizing of the text
-    control like a an horizontal `wx.BoxSizer` would do, with the text
+    control like a horizontal `wx.BoxSizer` would do, with the text
     control on the left of the picker button and the proportion of the
     picker fixed to value 1.
     """
@@ -6738,6 +6836,59 @@ class PickerBase(_core.Control):
     PickerCtrlGrowable = property(IsPickerCtrlGrowable,SetPickerCtrlGrowable,doc="See `IsPickerCtrlGrowable` and `SetPickerCtrlGrowable`") 
 _controls_.PickerBase_swigregister(PickerBase)
 
+class PyPickerBase(PickerBase):
+    """Proxy of C++ PyPickerBase class"""
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
+    __repr__ = _swig_repr
+    def __init__(self, *args, **kwargs): 
+        """
+        __init__(self, Window parent, int id=-1, String text=wxEmptyString, 
+            Point pos=DefaultPosition, Size size=DefaultSize, 
+            long style=0, Validator validator=DefaultValidator, 
+            String name=wxButtonNameStr) -> PyPickerBase
+        """
+        _controls_.PyPickerBase_swiginit(self,_controls_.new_PyPickerBase(*args, **kwargs))
+        self._setOORInfo(self);PyPickerBase._setCallbackInfo(self, self, PyPickerBase)
+
+    def _setCallbackInfo(*args, **kwargs):
+        """_setCallbackInfo(self, PyObject self, PyObject _class)"""
+        return _controls_.PyPickerBase__setCallbackInfo(*args, **kwargs)
+
+    def UpdatePickerFromTextCtrl(*args, **kwargs):
+        """UpdatePickerFromTextCtrl(self)"""
+        return _controls_.PyPickerBase_UpdatePickerFromTextCtrl(*args, **kwargs)
+
+    def UpdateTextCtrlFromPicker(*args, **kwargs):
+        """UpdateTextCtrlFromPicker(self)"""
+        return _controls_.PyPickerBase_UpdateTextCtrlFromPicker(*args, **kwargs)
+
+    def GetTextCtrlStyle(*args, **kwargs):
+        """GetTextCtrlStyle(self, long style) -> long"""
+        return _controls_.PyPickerBase_GetTextCtrlStyle(*args, **kwargs)
+
+    def GetPickerStyle(*args, **kwargs):
+        """GetPickerStyle(self, long style) -> long"""
+        return _controls_.PyPickerBase_GetPickerStyle(*args, **kwargs)
+
+    def SetTextCtrl(*args, **kwargs):
+        """SetTextCtrl(self, TextCtrl text)"""
+        return _controls_.PyPickerBase_SetTextCtrl(*args, **kwargs)
+
+    def SetPickerCtrl(*args, **kwargs):
+        """SetPickerCtrl(self, Control picker)"""
+        return _controls_.PyPickerBase_SetPickerCtrl(*args, **kwargs)
+
+    def PostCreation(*args, **kwargs):
+        """PostCreation(self)"""
+        return _controls_.PyPickerBase_PostCreation(*args, **kwargs)
+
+_controls_.PyPickerBase_swigregister(PyPickerBase)
+
+def PrePyPickerBase(*args, **kwargs):
+    """PrePyPickerBase() -> PyPickerBase"""
+    val = _controls_.new_PrePyPickerBase(*args, **kwargs)
+    return val
+
 #---------------------------------------------------------------------------
 
 CLRP_SHOW_LABEL = _controls_.CLRP_SHOW_LABEL
@@ -6745,10 +6896,9 @@ CLRP_USE_TEXTCTRL = _controls_.CLRP_USE_TEXTCTRL
 CLRP_DEFAULT_STYLE = _controls_.CLRP_DEFAULT_STYLE
 class ColourPickerCtrl(PickerBase):
     """
-    This control allows the user to select a colour. The generic
-    implementation is a button which brings up a `wx.ColourDialog` when
-    clicked. Native implementations may differ but this is usually a
-    (small) widget which give access to the colour-chooser dialog.
+    This control allows the user to select a colour. The implementation
+    varies by platform but is usually a button which brings up a
+    `wx.ColourDialog` when clicked.
     """
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
     __repr__ = _swig_repr
@@ -6759,10 +6909,9 @@ class ColourPickerCtrl(PickerBase):
             long style=CLRP_DEFAULT_STYLE, Validator validator=DefaultValidator, 
             String name=ColourPickerCtrlNameStr) -> ColourPickerCtrl
 
-        This control allows the user to select a colour. The generic
-        implementation is a button which brings up a `wx.ColourDialog` when
-        clicked. Native implementations may differ but this is usually a
-        (small) widget which give access to the colour-chooser dialog.
+        This control allows the user to select a colour. The implementation
+        varies by platform but is usually a button which brings up a
+        `wx.ColourDialog` when clicked.
         """
         _controls_.ColourPickerCtrl_swiginit(self,_controls_.new_ColourPickerCtrl(*args, **kwargs))
         self._setOORInfo(self)
@@ -6800,10 +6949,9 @@ def PreColourPickerCtrl(*args, **kwargs):
     """
     PreColourPickerCtrl() -> ColourPickerCtrl
 
-    This control allows the user to select a colour. The generic
-    implementation is a button which brings up a `wx.ColourDialog` when
-    clicked. Native implementations may differ but this is usually a
-    (small) widget which give access to the colour-chooser dialog.
+    This control allows the user to select a colour. The implementation
+    varies by platform but is usually a button which brings up a
+    `wx.ColourDialog` when clicked.
     """
     val = _controls_.new_PreColourPickerCtrl(*args, **kwargs)
     return val

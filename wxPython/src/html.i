@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Nov-1998
-// RCS-ID:      $Id: html.i 47871 2007-08-04 04:11:56Z RD $
+// RCS-ID:      $Id: html.i 54628 2008-07-14 22:23:04Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -110,6 +110,7 @@ enum wxHtmlURLType
 class wxHtmlLinkInfo : public wxObject {
 public:
     wxHtmlLinkInfo(const wxString& href, const wxString& target = wxPyEmptyString);
+    ~wxHtmlLinkInfo();
     wxString GetHref();
     wxString GetTarget();
     wxMouseEvent* GetEvent();
@@ -1783,9 +1784,11 @@ public:
 
     /// Obtains the latest settings used by the help frame and the help
     /// frame.
-    virtual wxFrame *GetFrameParameters(wxSize *size = NULL,
-                                        wxPoint *pos = NULL,
-                                        bool *newFrameEachTime = NULL);
+
+    // TODO: return a tuple of values    
+//     virtual wxFrame *GetFrameParameters(wxSize *size = NULL,
+//                                         wxPoint *pos = NULL,
+//                                         bool *newFrameEachTime = NULL);
 
     virtual bool Quit() /* = 0 */;
 

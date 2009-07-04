@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, global variables
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      02.12.2002
-# RCS-ID:       $Id: globals.py 50252 2007-11-26 10:50:45Z ROL $
+# RCS-ID:       $Id: globals.py 54812 2008-07-29 13:39:00Z ROL $
 
 import os,sys
 import wx
@@ -20,7 +20,7 @@ logger = logging.getLogger('xrced')
 
 progname = 'xrced'
 ProgName = 'XRCed'
-version = '0.2.0-beta'
+version = '0.2.0-5'
 # Minimal wxWidgets version
 MinWxVersion = (2,8,0)
 if wx.VERSION[:3] < MinWxVersion:

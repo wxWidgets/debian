@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _listctrl.i 49160 2007-10-15 20:02:03Z RD $
+// RCS-ID:      $Id: _listctrl.i 58367 2009-01-24 22:21:12Z RD $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -541,6 +541,7 @@ public:
             info->m_itemId = itemId;
             info->m_col = col;
             info->m_mask = 0xFFFF;
+            info->m_stateMask = 0xFFFF;
             self->GetItem(*info);
             return info;
         }

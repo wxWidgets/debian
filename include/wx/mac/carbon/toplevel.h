@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     20.09.01
-// RCS-ID:      $Id: toplevel.h 48801 2007-09-19 14:38:55Z SC $
+// RCS-ID:      $Id: toplevel.h 58879 2009-02-13 14:13:53Z SC $
 // Copyright:   (c) 2001 Stefan Csomor
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,8 @@ public:
                 const wxString& name = wxFrameNameStr);
 
     virtual ~wxTopLevelWindowMac();
+    
+    virtual bool Destroy();
 
     virtual wxPoint GetClientAreaOrigin() const;
 
@@ -92,6 +94,9 @@ public:
 
     virtual void SetTitle( const wxString& title);
     virtual wxString GetTitle() const;
+#if wxABI_VERSION >= 20809
+    virtual void SetLabel( const wxString& title);
+#endif
 
     virtual void Raise();
     virtual void Lower();
