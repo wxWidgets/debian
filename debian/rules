@@ -169,7 +169,6 @@ package_gtk_dbg         := libwxgtk$(release)$(unicode_suffix)-dbg
 package_gtk_py_lib      := python-wxgtk$(release)$(unicode_suffix)
 package_gtk_py_ver       = python-wxversion
 package_gtk_py_tools     = python-wxtools
-package_gtk_py_addons    = python-wxaddons
 
 package_headers         := wx$(release)-headers
 package_i18n            := wx$(release)-i18n
@@ -179,7 +178,7 @@ package_common           = wx-common
 
 # The packages listed here are common to all wx versions, and may be provided
 # by another source package if more than one is in the release simultaneously.
-common_packages	:= $(package_common) $(package_gtk_py_ver) $(package_gtk_py_tools) $(package_gtk_py_addons)
+common_packages	:= $(package_common) $(package_gtk_py_ver) $(package_gtk_py_tools)
 
 
 package_gtk_dbg_py      := python-wxgtk$(release)$(unicode_suffix)-dbg
@@ -793,22 +792,6 @@ endif
 	cp debian/xrced.desktop                 debian/$(package_gtk_py_tools)/usr/share/applications
 
 	rm -r debian/$(package_gtk_py_lib)/usr/bin
-
-install-gtk-py-addons: DH_OPTIONS=-p$(package_gtk_py_addons)
-install-gtk-py-addons: install-gtk-py-tools
-	dh_testdir
-	dh_testroot
-	dh_clean -k
-ifndef DEBIAN_WX_DEFAULT_VERSION
-
-	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) \
-		$(foreach pv,$(PYVERS),usr/lib/python$(pv)/site-packages/wxaddons)
-else
-	rm -r debian/$(package_gtk_py_lib)/usr/lib/python*/site-packages/wxaddons
-endif
-
-
-install-gtk-py: install-gtk-py-addons
 
 
 install-common: DH_OPTIONS=-p$(package_common)

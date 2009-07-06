@@ -3,8 +3,9 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * Add myself to Uploaders
   * add a watch file
   * New Upstream Version
+  * remove the python-wxaddons package, wxaddons is removed upstream
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 04 Jul 2009 00:35:11 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 06 Jul 2009 04:01:15 -0700
 
 wxwidgets2.8 (2.8.7.1-1.1) unstable; urgency=low
 
