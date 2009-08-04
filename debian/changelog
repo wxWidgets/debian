@@ -7,6 +7,14 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 06 Jul 2009 04:01:15 -0700
 
+wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
+
+  * Package orphaned, change Maintainer to Debian QA Group.
+  * debian/patches/CVE-2009-2369.dpatch: Fixed Integer overflow in the
+    wxImage::Create function (CVE-2009-2369) (Closes: #537174)
+
+ -- Giuseppe Iuculano <giuseppe@iuculano.it>  Wed, 29 Jul 2009 21:03:42 +0200
+
 wxwidgets2.8 (2.8.7.1-1.1) unstable; urgency=low
 
   * Non-maintainer upload.
