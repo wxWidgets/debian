@@ -8,7 +8,7 @@
 
 #export DH_VERBOSE=1
 
-include /usr/share/dpatch/dpatch.make
+include /usr/share/quilt/quilt.make
 export DH_OPTIONS
 
 WXPYTHON_VERSION = 2.8.7.1
@@ -362,7 +362,7 @@ build_all: control-files-stamp $(build_stamps_native)
 # let the -indep stuff fend for itself later.
 
 build: build-stamp build_arch
-build-stamp: patch-stamp
+build-stamp: $(QUILT_STAMPFN)
 
 
 # The wx2.6 build system makes us run around in circles to get a separate
