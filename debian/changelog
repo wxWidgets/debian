@@ -5,6 +5,7 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * New Upstream Version (Closes: #512939)
     - fixes underscores instead of underline letters in context menu
       in pgadmin3 (Closes: #491006)
+    - fixes Gtk-WARNINGs (Closes: #494424)
   * remove the python-wxaddons package, wxaddons is removed upstream
   * set maintainer to Wx Maintainers
   * switch to quilt
