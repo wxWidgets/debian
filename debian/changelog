@@ -13,8 +13,9 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
     dev
   * s/Source-Version/binary:Version/
   * Debian Policy 3.8.2
+  * add README.source
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 04 Aug 2009 17:30:33 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 04 Aug 2009 17:34:35 -0700
 
 wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
 

@@ -11,7 +11,7 @@
 include /usr/share/quilt/quilt.make
 export DH_OPTIONS
 
-WXPYTHON_VERSION = 2.8.7.1
+WXPYTHON_VERSION = 2.8.10.1
 
 ifdef CONCURRENCY_LEVEL
 
@@ -1048,13 +1048,7 @@ binary-fast:control-files-stamp install-gtk-dbg install-msw-dev install-headers 
 	$(MAKE) -f debian/rules DH_OPTIONS="-p$(package_gtk_dbg) -p$(package_msw_dev) -p$(package_headers) -p$(package_headers_msw)" binary-common
 
 get-orig-source:
-	cd ../; wget http://downloads.sourceforge.net/wxpython/wxPython-src-${WXPYTHON_VERSION}.tar.bz2
-	cd ../; tar fjx wxPython-src-${WXPYTHON_VERSION}.tar.bz2
-	cd ../; rm wxPython-src-${WXPYTHON_VERSION}.tar.bz2
-	cd ../wxPython-src-${WXPYTHON_VERSION}/; mv debian debian-upstream
-	cd ../; mv wxPython-src-${WXPYTHON_VERSION} wxwidgets2.8-${WXPYTHON_VERSION}.orig
-	cd ../; tar czf wxwidgets2.8_${WXPYTHON_VERSION}.orig.tar.gz wxwidgets2.8-${WXPYTHON_VERSION}.orig
-	cd ../; rm -fr wxwidgets2.8-${WXPYTHON_VERSION}.orig
+	uscan --repack --force-download --upstream-version $(WXPYTHON_VERSION)
 
 .PHONY: build build_all build_arch					\
 	clean clean-py purge-release-py purge-dbg-py			\
