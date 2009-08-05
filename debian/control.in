@@ -171,7 +171,7 @@ XB-Python-Version: ${python:Versions}
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython common files)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).  For more information see http://wxwidgets.org
+ unpopular ones as well).
  .
  This package provides support utilities and common files for wxPython=V=U.
  If you wish to use xrced you'll also need the python-xml package installed.
@@ -185,7 +185,7 @@ Replaces: wxwin2.4-headers, libwxgtk2.4-contrib-dev, wx2.6-common
 Description: wxWidgets Cross-platform C++ GUI toolkit (common support files)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).  For more information see http://wxwidgets.org
+ unpopular ones as well).
  .
  This package provides common support files not bound to any
  particular wxWidgets release, such as font metrics required by some
@@ -197,7 +197,7 @@ Section: devel
 Description: wxWidgets Cross-platform C++ GUI toolkit (header files)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).  For more information see http://wxwidgets.org
+ unpopular ones as well).
  .
  This package provides the common header files required to build applications
  using the wxWidgets toolkit.
@@ -211,7 +211,7 @@ Provides: wx-i18n
 Description: wxWidgets Cross-platform C++ GUI toolkit (i18n support)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).  For more information see http://wxwidgets.org
+ unpopular ones as well).
  .
  This package provides the i18n message catalogs for wxWidgets.
 
@@ -223,7 +223,7 @@ Suggests: doc-base, www-browser
 Description: wxWidgets Cross-platform C++ GUI toolkit (documentation)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).  For more information see http://wxwidgets.org
+ unpopular ones as well).
  .
  This package provides a HTML version of the wxWidgets reference manual.
 
@@ -234,7 +234,7 @@ Suggests: libwxgtk=V=U-dev (= ${Source-Version}), wx=V-doc
 Description: wxWidgets Cross-platform C++ GUI toolkit (examples)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).  For more information see http://wxwidgets.org
+ unpopular ones as well).
  .
  This package contains examples of using the wxWidgets toolkit in
  C++ and with the wxPython language binding.
