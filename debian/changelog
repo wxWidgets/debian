@@ -9,8 +9,10 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * -dbg packages => Section: debug
   * add Homepage fields
   * remove reference to homepage in long descriptions
+  * depend on libgl1-mesa-dev instead of the transitional xlibmesa-gl-
+    dev
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 04 Aug 2009 17:24:20 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 04 Aug 2009 17:25:58 -0700
 
 wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
 
