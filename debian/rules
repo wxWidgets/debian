@@ -117,7 +117,6 @@ BASE_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
 
 GTK_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --with-gtk \
-    --enable-mediactrl \
     --enable-sound \
     --with-sdl \
     --enable-display \
@@ -126,7 +125,7 @@ GTK_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --with-libjpeg=sys \
     --with-libpng=sys \
     --with-libtiff=sys \
-
+#   --enable-mediactrl \
 
 PY_WX_CONFIG_OPTIONS = --version=$(release) --toolkit=$(pytoolkit) --static=no
 

@@ -24,8 +24,9 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * fix configure for on hurd (Closes: #512117)
   * use the config.{sub,guess} from autotools-dev during build
   * add shlibs:Depends to libwxgtk2.8-dbg
+  * build without --enable-mediactrl (Closes: #493090)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Aug 2009 02:34:31 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Aug 2009 03:14:25 -0700
 
 wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
 
