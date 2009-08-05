@@ -475,7 +475,7 @@ build-doc-stamp: build-gtk-shared-stamp
 		cd -; \
 		cp docs/latex/wx/*.gif $(objdir_doc); \
 		rm -rf $(objdir_doc_cruft); \
-		rm -f $(objdir_doc)/wx$(release)-manual.{con,hh*,htx,ref}; \
+		rm -f $(objdir_doc)/wx$(release)-manual.con $(objdir_doc)/wx$(release)-manual.hh* $(objdir_doc)/wx$(release)-manual.htx $(objdir_doc)/wx$(release)-manual.ref; \
 	else \
 		mkdir $(objdir_doc); \
 		cp docs/html/wx/* $(objdir_doc); \
