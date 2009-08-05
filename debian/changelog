@@ -23,8 +23,9 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * fix bashism in useless example... (Closes: #489671)
   * fix configure for on hurd (Closes: #512117)
   * use the config.{sub,guess} from autotools-dev during build
+  * add shlibs:Depends to libwxgtk2.8-dbg
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Aug 2009 02:32:54 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Aug 2009 02:34:31 -0700
 
 wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
 

@@ -99,7 +99,7 @@ Package: libwxgtk=V=U-dbg
 Architecture: any
 Section: debug
 Priority: extra
-Depends: wx=V-headers (= ${binary:Version}), libwxbase=V=U-dbg (= ${binary:Version})
+Depends: ${shlibs:Depends}, wx=V-headers (= ${binary:Version}), libwxbase=V=U-dbg (= ${binary:Version})
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ debug)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
