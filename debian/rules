@@ -641,7 +641,7 @@ install-wxbase-lib: build-wxbase-shared-stamp install-gtk-shared-stamp
 	@# No, this is not a typo, we steal these libs from the gtk build.
 	dh_install $(objdir_gtk_install)/lib/libwx_base*.so.*	usr/lib
 	dh_installdirs usr/share/lintian/overrides
-	cp debian/lintian-override debian/$(package_wxbase_lib)/usr/share/lintian/overrides/$(package_wxbase_lib)
+	grep ^$(package_wxbase_lib): debian/lintian-override > debian/$(package_wxbase_lib)/usr/share/lintian/overrides/$(package_wxbase_lib)
 
 install-wxbase-dev: DH_OPTIONS=-p$(package_wxbase_dev)
 install-wxbase-dev: build-wxbase-shared-stamp install-gtk-shared-stamp
@@ -663,7 +663,7 @@ install-wxbase-dbg: build-wxbase-debug-stamp
 	dh_install $(objdir_wxbase_debug)/lib/wx/include	usr/lib/wx
 	dh_install $(objdir_wxbase_debug)/lib/wx/config/base*	usr/lib/wx/config
 	dh_installdirs usr/share/lintian/overrides
-	cp debian/lintian-override debian/$(package_wxbase_dbg)/usr/share/lintian/overrides/$(package_wxbase_dbg)
+	grep ^$(package_wxbase_dbg): debian/lintian-override > debian/$(package_wxbase_dbg)/usr/share/lintian/overrides/$(package_wxbase_dbg)
 
 install-gtk-shared-stamp: build-gtk-shared-stamp build-gtk-shared-contrib-stamp
 	dh_testdir
@@ -681,7 +681,7 @@ install-gtk-lib: install-gtk-shared-stamp
 	dh_clean -k
 	dh_install $(objdir_gtk_install)/lib/libwx_gtk*.so.*	usr/lib
 	dh_installdirs usr/share/lintian/overrides
-	cp debian/lintian-override debian/$(package_gtk_lib)/usr/share/lintian/overrides/$(package_gtk_lib)
+	grep ^$(package_gtk_lib): debian/lintian-override > debian/$(package_gtk_lib)/usr/share/lintian/overrides/$(package_gtk_lib)
 
 install-gtk-dev: DH_OPTIONS=-p$(package_gtk_dev)
 install-gtk-dev: install-gtk-shared-stamp
@@ -701,7 +701,7 @@ install-gtk-dbg: build-gtk-debug-stamp build-gtk-debug-contrib-stamp
 	dh_install $(objdir_gtk_debug)/lib/wx/include		usr/lib/wx
 	dh_install $(objdir_gtk_debug)/lib/wx/config/gtk*	usr/lib/wx/config
 	dh_installdirs usr/share/lintian/overrides
-	cp debian/lintian-override debian/$(package_gtk_dbg)/usr/share/lintian/overrides/$(package_gtk_dbg)
+	grep ^$(package_gtk_dbg): debian/lintian-override > debian/$(package_gtk_dbg)/usr/share/lintian/overrides/$(package_gtk_dbg)
 
 
 install-gtk-py-lib: DH_OPTIONS=-p$(package_gtk_py_lib)
@@ -775,7 +775,7 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pywxrc.1
 
 	dh_installdirs usr/share/lintian/overrides
-	cp debian/lintian-override debian/$(package_gtk_py_tools)/usr/share/lintian/overrides/$(package_gtk_py_tools)
+	grep ^$(package_gtk_py_tools): debian/lintian-override > debian/$(package_gtk_py_tools)/usr/share/lintian/overrides/$(package_gtk_py_tools)
 endif
 	mkdir -p debian/$(package_gtk_py_tools)/usr/share/pixmaps
 	mkdir -p debian/$(package_gtk_py_tools)/usr/share/applications
