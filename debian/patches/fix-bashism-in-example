@@ -1,3 +1,5 @@
+this patch really has no purpose.
+
 --- a/wxPython/demo/b
 +++ b/wxPython/demo/b
 @@ -1,4 +1,4 @@

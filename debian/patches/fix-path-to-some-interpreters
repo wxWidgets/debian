@@ -1,3 +1,5 @@
+useless changes to make lintian quiet
+
 --- a/wxPython/wx/tools/Editra/tests/syntax/octave.oct
 +++ b/wxPython/wx/tools/Editra/tests/syntax/octave.oct
 @@ -1,4 +1,4 @@
