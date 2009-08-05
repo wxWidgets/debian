@@ -35,7 +35,7 @@ Description: wxBase library (runtime) - non-GUI support classes of wxWidgets too
 Package: libwxbase=V=U-dev
 Architecture: any
 Section: libdevel
-Depends: wx=V-headers (= ${Source-Version}), libwxbase=SOV=U (= ${Source-Version}), libc6-dev | libc-dev
+Depends: wx=V-headers (= ${binary:Version}), libwxbase=SOV=U (= ${binary:Version}), libc6-dev | libc-dev
 Suggests: wx=V-doc, gettext
 Description: wxBase library (development) - non-GUI support classes of wxWidgets toolkit
  wxBase is a collection of C++ classes providing basic data structures
@@ -53,7 +53,7 @@ Package: libwxbase=V=U-dbg
 Architecture: any
 Section: debug
 Priority: extra
-Depends: wx=V-headers (= ${Source-Version}), libc6-dev
+Depends: wx=V-headers (= ${binary:Version}), libc6-dev
 Description: wxBase library (debug) - non-GUI support classes of wxWidgets toolkit
  wxBase is a collection of C++ classes providing basic data structures
  (strings, lists, arrays), powerful wxDateTime class for date manipulations,
@@ -85,7 +85,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ runtime)
 Package: libwxgtk=V=U-dev
 Architecture: any
 Section: libdevel
-Depends: wx=V-headers (= ${Source-Version}), libwxgtk=SOV=U (= ${Source-Version}), libwxbase=V=U-dev (= ${Source-Version})
+Depends: wx=V-headers (= ${binary:Version}), libwxgtk=SOV=U (= ${binary:Version}), libwxbase=V=U-dev (= ${binary:Version})
 Suggests: wx-common, wx=V-doc, libstdc++-dev, gettext, libgl1-mesa-dev | xlibmesa-gl-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
@@ -100,7 +100,7 @@ Package: libwxgtk=V=U-dbg
 Architecture: any
 Section: debug
 Priority: extra
-Depends: wx=V-headers (= ${Source-Version}), libwxbase=V=U-dbg (= ${Source-Version})
+Depends: wx=V-headers (= ${binary:Version}), libwxbase=V=U-dbg (= ${binary:Version})
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -135,7 +135,7 @@ Homepage: http://www.wxpython.org/
 Priority: extra
 Architecture: any
 Section: debug
-Depends: python-wxgtk=V=U (= ${Source-Version}), python-dbg, ${shlibs:Depends}
+Depends: python-wxgtk=V=U (= ${binary:Version}), python-dbg, ${shlibs:Depends}
 Suggests: python-xml-dbg
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding, debug version)
  wxWidgets is a class library for C++ providing GUI (Graphical User
@@ -230,7 +230,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (documentation)
 Package: wx=V-examples
 Architecture: all
 Section: devel
-Suggests: libwxgtk=V=U-dev (= ${Source-Version}), wx=V-doc
+Suggests: libwxgtk=V=U-dev (= ${binary:Version}), wx=V-doc
 Description: wxWidgets Cross-platform C++ GUI toolkit (examples)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -242,14 +242,14 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (examples)
 Package: libwxmsw=V=U-dev
 Architecture: i386
 Section: otherosfs
-Depends: wx=V-headers-msw (= ${Source-Version})
+Depends: wx=V-headers-msw (= ${binary:Version})
 Description: wxMSW mingw32msvc-cross
  mingw32msvc-cross wxMSW libs.
 
 Package: libwxmsw=V=U-dbg
 Architecture: i386
 Section: otherosfs
-Depends: wx=V-headers-msw (= ${Source-Version})
+Depends: wx=V-headers-msw (= ${binary:Version})
 Description: wxMSW mingw32msvc-cross (debug)
  mingw32msvc-cross wxMSW libs.
  __WXDEBUG__ version.
@@ -257,7 +257,7 @@ Description: wxMSW mingw32msvc-cross (debug)
 Package: wx=V-headers-msw
 Architecture: i386
 Section: otherosfs
-Depends: wx=V-headers (= ${Source-Version})
+Depends: wx=V-headers (= ${binary:Version})
 Description: Extra wxWidgets headers for mingw32msvc-cross
  Headers required by the wxWidgets mingw32msvc-cross libraries.
 
