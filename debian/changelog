@@ -22,8 +22,9 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * fix the doc-base file (Closes: #476254)
   * fix bashism in useless example... (Closes: #489671)
   * fix configure for on hurd (Closes: #512117)
+  * use the config.{sub,guess} from autotools-dev during build
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 04 Aug 2009 21:42:20 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Aug 2009 02:32:54 -0700
 
 wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
 
