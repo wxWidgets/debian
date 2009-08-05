@@ -12,8 +12,9 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * depend on libgl1-mesa-dev instead of the transitional xlibmesa-gl-
     dev
   * s/Source-Version/binary:Version/
+  * Debian Policy 3.8.2
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 04 Aug 2009 17:27:56 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 04 Aug 2009 17:30:33 -0700
 
 wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
 
