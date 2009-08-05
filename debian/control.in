@@ -50,7 +50,7 @@ Description: wxBase library (development) - non-GUI support classes of wxWidgets
 
 Package: libwxbase=V=U-dbg
 Architecture: any
-Section: libdevel
+Section: debug
 Priority: extra
 Depends: wx=V-headers (= ${Source-Version}), libc6-dev
 Description: wxBase library (debug) - non-GUI support classes of wxWidgets toolkit
@@ -97,7 +97,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
 
 Package: libwxgtk=V=U-dbg
 Architecture: any
-Section: libdevel
+Section: debug
 Priority: extra
 Depends: wx=V-headers (= ${Source-Version}), libwxbase=V=U-dbg (= ${Source-Version})
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
@@ -131,7 +131,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding)
 Package: python-wxgtk=V=U-dbg
 Priority: extra
 Architecture: any
-Section: python
+Section: debug
 Depends: python-wxgtk=V=U (= ${Source-Version}), python-dbg, ${shlibs:Depends}
 Suggests: python-xml-dbg
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding, debug version)
