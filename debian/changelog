@@ -7,8 +7,9 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * set maintainer to Wx Maintainers
   * switch to quilt
   * -dbg packages => Section: debug
+  * add Homepage fields
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 04 Aug 2009 17:21:25 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 04 Aug 2009 17:22:55 -0700
 
 wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
 

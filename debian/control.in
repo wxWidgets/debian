@@ -13,6 +13,7 @@ XS-Python-Version: all
 Standards-Version: 3.7.3
 Vcs-Git: git://git.debian.org/git/freewx/wx.git
 Vcs-Browser: http://git.debian.org/?p=freewx/wx.git
+Homepage: http://www.wxwidgets.org/
 
 Package: libwxbase=SOV=U
 Architecture: any
@@ -112,6 +113,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
 
 Package: python-wxgtk=V=U
 Architecture: any
+Homepage: http://www.wxpython.org/
 Section: python
 Depends: python-wxversion (>= 2.6.3.2.2-2), ${python:Depends}, ${shlibs:Depends}
 Suggests: wx=V-doc, wx=V-examples, python-xml
@@ -129,6 +131,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding)
  need the python-xml package installed.
 
 Package: python-wxgtk=V=U-dbg
+Homepage: http://www.wxpython.org/
 Priority: extra
 Architecture: any
 Section: debug
@@ -143,6 +146,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding, debug v
  This package contains the extensions built for the python debug interpreter.
 
 Package: python-wxversion
+Homepage: http://www.wxpython.org/
 Architecture: all
 Section: python
 Depends: ${python:Depends}, python-wxgtk2.8 (>= 2.8.6.1-0.1) | python-wxgtk2.6 (>= 2.6.3.2.2-2)
@@ -157,6 +161,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython version selector
  This package provides the wxPython version selector.
 
 Package: python-wxtools
+Homepage: http://www.wxpython.org/
 Architecture: all
 Section: python
 Depends: python-wxgtk=V=U, ${python:Depends}
