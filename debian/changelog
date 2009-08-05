@@ -3,6 +3,8 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * Add myself to Uploaders (Closes: #539170)
   * add a watch file
   * New Upstream Version
+    - fixes underscores instead of underline letters in context menu
+      in pgadmin3 (Closes: #491006)
   * remove the python-wxaddons package, wxaddons is removed upstream
   * set maintainer to Wx Maintainers
   * switch to quilt
