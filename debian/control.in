@@ -143,7 +143,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding, debug v
  currently supports subsets of GTK+, Motif, and MS Windows.
  .
  This package provides a Python binding to the wxGTK debug library.
- This package contains the extensions built for the python debug interpreter.
+ This package contains the extensions built for the Python debug interpreter.
 
 Package: python-wxversion
 Homepage: http://www.wxpython.org/
