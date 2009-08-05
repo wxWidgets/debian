@@ -19,6 +19,7 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * fix lintian override handling
   * remove bashism in d/rules (Closes: #535424)
   * fix the doc-base file (Closes: #476254)
+  * fix bashism in useless example... (Closes: #489671)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 04 Aug 2009 20:31:47 -0700
 
