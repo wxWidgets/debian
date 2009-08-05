@@ -1,6 +1,6 @@
 wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
 
-  * Add myself to Uploaders
+  * Add myself to Uploaders (Closes: #539170)
   * add a watch file
   * New Upstream Version
   * remove the python-wxaddons package, wxaddons is removed upstream
