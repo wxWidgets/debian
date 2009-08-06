@@ -968,7 +968,7 @@ ifneq (, $(filter -a, $(DH_OPTIONS)))
 		 -N$(package_gtk_py_lib) -N$(package_gtk_dbg_py)
 	DH_OPTIONS= dh_strip -p$(package_gtk_py_lib) --dbg-package=$(package_gtk_dbg_py) 
 endif
-	dh_compress
+	dh_compress -X.py
 	dh_fixperms
 
 	@# Don't do this for the dbg-py special build because dh_makeshlibs
