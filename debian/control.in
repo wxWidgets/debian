@@ -116,7 +116,7 @@ Homepage: http://www.wxpython.org/
 Section: python
 Depends: python-wxversion (>= 2.6.3.2.2-2), ${python:Depends}, ${shlibs:Depends}
 Suggests: wx=V-doc, wx=V-examples, python-xml
-Conflicts: libwxgtk2.6-0-python, wxpython2.6-0
+Conflicts: libwxgtk2.6-0-python, wxpython2.6-0, python-wxaddons
 Replaces: libwxgtk2.6-0-python, wxpython2.6-0
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
