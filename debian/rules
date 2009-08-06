@@ -254,8 +254,6 @@ install_all_arch = install-wxbase-lib install-wxbase-dev install-wxbase-dbg  \
                    install-headers install-i18n            \
                    install-gtk-py install-gtk-dbg-py
 
-install-gtk-py: install-gtk-py-tools # lolwut?
-
 ifndef DEBIAN_WX_DEFAULT_VERSION
 
   install_all_arch += install-common
@@ -760,6 +758,8 @@ install-gtk-py-tools: install-gtk-py-ver
 	dh_testdir
 	dh_testroot
 	dh_clean -k
+
+install-gtk-py: install-gtk-py-tools
 
 ifndef DEBIAN_WX_DEFAULT_VERSION
 
