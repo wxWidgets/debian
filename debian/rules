@@ -7,8 +7,8 @@
 # Joey Hess and others.
 
 # build takes an hour :/. not sure if this actually helps tho...
-# PATH := /usr/lib/ccache/:$(PATH)
-# export PATH
+PATH := /usr/lib/ccache/:$(PATH)
+export PATH
 
 #export DH_VERBOSE=1
 
