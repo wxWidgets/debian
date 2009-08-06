@@ -12,3 +12,7 @@ get-orig-source" (will download WXPYTHON_VERSION) or "uscan --repack
 upstream source with upstream's debian directory moved to
 debian-upstream.
 
+-----------------------------------------------------------------------
+
+after new upstream versions of this package are uploaded, you need to
+ask the release team to binnmu libalien-wxwidgets-perl.
