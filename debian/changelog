@@ -1,8 +1,5 @@
 wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
 
-  TODO: wth? python-wxgtk2.8_2.8.10.1-1_i386.deb is empty..
-  and it wasn't a few builds ago..
-
   * Add myself to Uploaders (Closes: #539170)
   * add a watch file
   * New Upstream Version (Closes: #512939)

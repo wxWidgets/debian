@@ -6,6 +6,10 @@
 # It makes copious use of the debhelper utilities written by
 # Joey Hess and others.
 
+# build takes an hour :/. not sure if this actually helps tho...
+# PATH := /usr/lib/ccache/:$(PATH)
+# export PATH
+
 #export DH_VERBOSE=1
 
 include /usr/share/quilt/quilt.make
@@ -249,6 +253,8 @@ install_all_arch = install-wxbase-lib install-wxbase-dev install-wxbase-dbg  \
                    install-gtk-lib install-gtk-dev install-gtk-dbg        \
                    install-headers install-i18n            \
                    install-gtk-py install-gtk-dbg-py
+
+install-gtk-py: install-gtk-py-tools # lolwut?
 
 ifndef DEBIAN_WX_DEFAULT_VERSION
 
