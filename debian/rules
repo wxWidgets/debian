@@ -115,6 +115,8 @@ COMMON_CONFIGURE_OPTIONS = \
     --with-flavour=$(DEBIAN_WXFLAVOUR) \
     --with-zlib=sys \
     --disable-reserved_virtual \
+    --enable-compat24 \
+    --with-odbc \
 
 BASE_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --disable-gui \
