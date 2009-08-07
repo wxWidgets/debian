@@ -28,10 +28,8 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * make python-wxgtk2.8 conflict with python-wxaddons to make sure it
     disappears
   * don't compress .py files
-  * pass --enable-compat24 (Closes: #493996)
-  * pass --with-odbc (Closes: #503856)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 07 Aug 2009 00:30:24 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Aug 2009 20:53:11 -0700
 
 wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
 
