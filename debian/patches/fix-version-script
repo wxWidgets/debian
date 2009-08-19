@@ -1,0 +1,30 @@
+diff --git a/version-script.in b/version-script.in
+index c020ccf..6b56683 100644
+--- a/version-script.in
++++ b/version-script.in
+@@ -23,6 +23,14 @@
+ # released with the generic branch version due to the final wildcard below,
+ # and once released its version cannot be changed.
+ 
++# symbols available since the beginning of this branch are only given
++# generic branch tag (don't remove this!):
++
++@WX_VERSION_TAG@ {
++    global:
++        *;
++};
++
+ # public symbols added in 2.8.10 (please keep in alphabetical order):
+ @WX_VERSION_TAG@.11 {
+         *wxDC*SetDeviceClippingRegion*;
+@@ -187,10 +195,3 @@
+         *wxTreeCtrl*IsEmpty*;
+ };
+ 
+-# symbols available since the beginning of this branch are only given
+-# generic branch tag (don't remove this!):
+-
+-@WX_VERSION_TAG@ {
+-    global:
+-        *;
+-};
