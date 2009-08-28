@@ -28,11 +28,6 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * make python-wxgtk2.8 conflict with python-wxaddons to make sure it
     disappears
   * don't compress .py files
-  * work around a bug/behavior change in binutils to fix symbol
-    versioning problems (Closes: #540060)
-    - require at least version 2.19.51.20090723-1 of binutils,
-      since that's where the behavior changed (and previous
-      versions break with the new version script)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 19 Aug 2009 02:41:40 -0700
 

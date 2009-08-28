@@ -1,4 +1,3 @@
-fix-version-script
 fix-config-scripts
 fix-configure-on-hurd
 fix-bashism-in-example
