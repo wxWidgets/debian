@@ -28,8 +28,11 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * make python-wxgtk2.8 conflict with python-wxaddons to make sure it
     disappears
   * don't compress .py files
+  * add versioned build dependencies on binutils..either the version in
+    or before stable, or the version that fixed the bug (Closes:
+    #540060)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 19 Aug 2009 02:41:40 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 10:23:46 -0700
 
 wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
 

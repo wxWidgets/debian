@@ -5,9 +5,8 @@ Build-Depends: debhelper (>= 5.0.37.1), flex, bison, gettext, libgtk2.0-dev,
  python-all-dev, python-all-dbg, python-central,
  zlib1g-dev, libjpeg62-dev, libpng12-dev, libtiff4-dev, libsm-dev,
  libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libesd0-dev,
- libgnomeprintui2.2-dev, bc, quilt, autotools-dev, binutils (>= 2.19.51.20090723-1)
-# backporters: disable fix-version-script patch, and replace the
-# build-depends on binutils with a build-conflicts
+ libgnomeprintui2.2-dev, bc, quilt, autotools-dev,
+ binutils (>= 2.19.51.20090827-1) | binutils (<= 2.18.1~cvs20080103-7)
 Maintainer: Wx Maintainers <freewx-maint@lists.alioth.debian.org>
 Uploaders: Ryan Niebur <ryanryan52@gmail.com>
 XS-Python-Version: all
