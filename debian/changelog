@@ -1,4 +1,4 @@
-wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
+wxwidgets2.8 (2.8.10.1-1) unstable; urgency=low
 
   * Add myself to Uploaders (Closes: #539170)
   * add a watch file
@@ -32,7 +32,7 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
     or before stable, or the version that fixed the bug (Closes:
     #540060)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 10:23:46 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 11:21:38 -0700
 
 wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
 
