@@ -10,6 +10,8 @@
 # PATH := /usr/lib/ccache/:$(PATH)
 # export PATH
 
+SHELL = /bin/bash
+
 #export DH_VERBOSE=1
 
 include /usr/share/quilt/quilt.make
@@ -478,7 +480,7 @@ build-doc-stamp: build-gtk-shared-stamp
 		cd -; \
 		cp docs/latex/wx/*.gif $(objdir_doc); \
 		rm -rf $(objdir_doc_cruft); \
-		rm -f $(objdir_doc)/wx$(release)-manual.con $(objdir_doc)/wx$(release)-manual.hh* $(objdir_doc)/wx$(release)-manual.htx $(objdir_doc)/wx$(release)-manual.ref; \
+		rm -f $(objdir_doc)/wx$(release)-manual.{con,hh*,htx,ref}; \
 	else \
 		mkdir $(objdir_doc); \
 		cp docs/html/wx/* $(objdir_doc); \
