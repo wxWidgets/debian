@@ -15,7 +15,7 @@ wxwidgets2.8 (2.8.10.1-1) unstable; urgency=low
   * depend on libgl1-mesa-dev instead of the transitional xlibmesa-gl-
     dev
   * s/Source-Version/binary:Version/
-  * Debian Policy 3.8.2
+  * Debian Policy 3.8.3
   * add README.source
   * fix lintian override handling
   * remove bashism in d/rules (Closes: #535424)
