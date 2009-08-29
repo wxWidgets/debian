@@ -6,10 +6,6 @@
 # It makes copious use of the debhelper utilities written by
 # Joey Hess and others.
 
-# build takes an hour :/. not sure if this actually helps tho...
-# PATH := /usr/lib/ccache/:$(PATH)
-# export PATH
-
 SHELL = /bin/bash
 
 #export DH_VERBOSE=1
