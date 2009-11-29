@@ -1,6 +1,8 @@
 objs_*
 *-stamp
 *.cache
+*~
+.pc
 
 docs/examples
 docs/wx-manual.html

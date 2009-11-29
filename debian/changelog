@@ -23,7 +23,7 @@ wxwidgets2.8 (2.8.10.1-1) unstable; urgency=low
   * fix bashism in useless example... (Closes: #489671)
   * fix configure for on hurd (Closes: #512117)
   * use the config.{sub,guess} from autotools-dev during build
-  * add shlibs:Depends to libwxgtk2.8-dbg
+  * add shlibs:Depends to libwxgtk2.8-dbg (Closes: #553243)
   * build without --enable-mediactrl (Closes: #493090)
   * make python-wxgtk2.8 conflict with python-wxaddons to make sure it
     disappears
@@ -31,6 +31,8 @@ wxwidgets2.8 (2.8.10.1-1) unstable; urgency=low
   * add versioned build dependencies on binutils..either the version in
     or before stable, or the version that fixed the bug (Closes:
     #540060)
+  * no more get-orig-source (Closes: #545080)
+  * backport r61009 to fix FTBFS (Closes: #549770)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 11:21:38 -0700
 
