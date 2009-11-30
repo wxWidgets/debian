@@ -88,7 +88,7 @@ Suggests: wx-common, wx=V-doc, libstdc++-dev, gettext, libgl1-mesa-dev | xlibmes
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).  For more information see http://wxwidgets.org
+ unpopular ones as well).
  .
  This package provides files needed to compile wxWidgets programs.  If you
  want to compile apps using the (optional) glcanvas library you will need
@@ -102,7 +102,7 @@ Depends: ${shlibs:Depends}, wx=V-headers (= ${binary:Version}), libwxbase=V=U-db
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ debug)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).  For more information see http://wxwidgets.org
+ unpopular ones as well).
  .
  This package provides a debug version of the wxGTK library.  It is compiled
  both with -g for normal debugger tracing and with the __WXDEBUG__ flag which
@@ -122,7 +122,7 @@ XB-Python-Version: ${python:Versions}
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).  For more information see http://wxwidgets.org
+ unpopular ones as well).
  .
  This package provides a Python binding to the wxGTK library and the
  wxPython runtime support libraries.  If you wish to use xrc you'll also
@@ -154,7 +154,7 @@ XB-Python-Version: ${python:Versions}
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython version selector)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).  For more information see http://wxwidgets.org
+ unpopular ones as well).
  .
  This package provides the wxPython version selector.
 

@@ -29,8 +29,7 @@ wxwidgets2.8 (2.8.10.1-1) unstable; urgency=low
     disappears
   * don't compress .py files
   * add versioned build dependencies on binutils..either the version in
-    or before stable, or the version that fixed the bug (Closes:
-    #540060)
+    or before stable, or the version that fixed the bug
   * no more get-orig-source (Closes: #545080)
   * backport r61009 to fix FTBFS (Closes: #549770)
 
