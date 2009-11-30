@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 5.0.37.1), flex, bison, gettext, libgtk2.0-dev,
  libgnomeprintui2.2-dev, bc, quilt, autotools-dev,
  binutils (>= 2.19.51.20090827) | binutils (<= 2.18.1~cvs20080103-7)
 Maintainer: wxWidgets Maintainers <freewx-maint@lists.alioth.debian.org>
-Uploaders: Ryan Niebur <ryanryan52@gmail.com>
+Uploaders: Ryan Niebur <ryan@debian.org>
 XS-Python-Version: all
 Standards-Version: 3.8.3
 Vcs-Git: git://git.debian.org/git/freewx/wx.git
