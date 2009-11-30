@@ -1,4 +1,4 @@
-wxwidgets2.8 (2.8.10.1-1) unstable; urgency=low
+wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
 
   * Add myself to Uploaders (Closes: #539170)
   * add a watch file
@@ -33,6 +33,7 @@ wxwidgets2.8 (2.8.10.1-1) unstable; urgency=low
   * no more get-orig-source (Closes: #545080)
   * backport r61009 to fix FTBFS (Closes: #549770)
   * remove Editra, it has its own package now
+  * fix some lintian warnings, mostly borrowed from Ubuntu
 
  -- Ryan Niebur <ryan@debian.org>  Sun, 29 Nov 2009 17:51:43 -0800
 

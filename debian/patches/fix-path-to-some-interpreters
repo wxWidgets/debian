@@ -16,3 +16,11 @@ useless changes to make lintian quiet
  # Syntax Highlighting Test File for TCL/TK
  # Comments are like this
  # Hello World in tcl/tk
+--- a/wxPython/demo/Main.py
++++ b/wxPython/demo/Main.py
+@@ -1,4 +1,4 @@
+-#!/bin/env python
++#!/usr/bin/env python
+ #----------------------------------------------------------------------------
+ # Name:         Main.py
+ # Purpose:      Testing lots of stuff, controls, window types, etc.
