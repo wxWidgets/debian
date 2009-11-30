@@ -32,8 +32,9 @@ wxwidgets2.8 (2.8.10.1-1) unstable; urgency=low
     or before stable, or the version that fixed the bug
   * no more get-orig-source (Closes: #545080)
   * backport r61009 to fix FTBFS (Closes: #549770)
+  * remove Editra, it has its own package now
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 11:21:38 -0700
+ -- Ryan Niebur <ryan@debian.org>  Sun, 29 Nov 2009 17:51:43 -0800
 
 wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
 

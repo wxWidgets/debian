@@ -731,6 +731,7 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 
 	# This is rather bogus, its included in the main copyright file now though.
 	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/$(wxsubdir)/wx/tools/XRCed/license.txt
+	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/$(wxsubdir)/wx/tools/Editra
 
 install-gtk-py-ver: DH_OPTIONS=-p$(package_gtk_py_ver)
 install-gtk-py-ver: install-gtk-py-lib
@@ -789,7 +790,6 @@ endif
 	cp wxPython/wx/py/PyCrust_32.png        debian/$(package_gtk_py_tools)/usr/share/pixmaps/pycrust.png
 	cp wxPython/wx/py/PyCrust_32.png        debian/$(package_gtk_py_tools)/usr/share/pixmaps/pyshell.png
 	cp wxPython/wx/tools/XRCed/XRCed_32.png debian/$(package_gtk_py_tools)/usr/share/pixmaps/xrced.png
-	cp wxPython/wx/tools/Editra/pixmaps/editra.png debian/$(package_gtk_py_tools)/usr/share/pixmaps/editra.png
 	cp debian/pycrust.desktop               debian/$(package_gtk_py_tools)/usr/share/applications
 	cp debian/pyshell.desktop               debian/$(package_gtk_py_tools)/usr/share/applications
 	cp debian/xrced.desktop                 debian/$(package_gtk_py_tools)/usr/share/applications
