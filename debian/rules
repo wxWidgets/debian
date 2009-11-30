@@ -1050,9 +1050,6 @@ binary-doc: control-files-stamp install-doc
 binary-fast:control-files-stamp install-gtk-dbg install-msw-dev install-headers install-headers-msw
 	$(MAKE) -f debian/rules DH_OPTIONS="-p$(package_gtk_dbg) -p$(package_msw_dev) -p$(package_headers) -p$(package_headers_msw)" binary-common
 
-get-orig-source:
-	uscan --repack --force-download --upstream-version $(WXPYTHON_VERSION)
-
 .PHONY: build build_all build_arch					\
 	clean clean-py purge-release-py purge-dbg-py			\
 	binary-indep binary-arch binary binary-common 			\
