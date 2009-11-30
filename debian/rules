@@ -729,27 +729,13 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 
 	find debian/$(package_gtk_py_lib)/usr/lib/python$* -name '*.py?' -exec rm '{}' ';'
 
-	# Fix script-not-executable lintian warnings.
-	chmod 755 debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra/tests/syntax/c-shell_script.csh
-	chmod 755 debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra/tests/syntax/d.d
-	chmod 755 debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra/tests/syntax/korn_shell_script.ksh
-	chmod 755 debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra/tests/syntax/octave.oct
-	chmod 755 debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra/tests/syntax/perl.pl
-	chmod 755 debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra/tests/syntax/ruby.rb
-	chmod 755 debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra/tests/syntax/tcl_tk.tcl
-
-	# Fix executable-not-elf-or-script lintian warnings.
-	chmod 644 debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra/pixmaps/editra.ico
-	chmod 644 debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra/pixmaps/editra.png
-	chmod 644 debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra/pixmaps/Editra.icns
-	chmod 644 debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra/src/extern/README
-
 	# Fix image-file-in-usr-lib lintian warnings.
 	cp -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins
 	-rm -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps
 
 	# This is rather bogus, its included in the main copyright file now though.
 	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/$(wxsubdir)/wx/tools/XRCed/license.txt
+	# has it's own package, editra
 	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/$(wxsubdir)/wx/tools/Editra
 
 install-gtk-py-ver: DH_OPTIONS=-p$(package_gtk_py_ver)
