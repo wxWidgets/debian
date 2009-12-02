@@ -1,4 +1,4 @@
-wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
+wxwidgets2.8 (2.8.10.1-1) unstable; urgency=low
 
   * Add myself to Uploaders (Closes: #539170)
   * add a watch file
@@ -35,7 +35,7 @@ wxwidgets2.8 (2.8.10.1-1) UNRELEASED; urgency=low
   * remove Editra, it has its own package now
   * fix some lintian warnings, mostly borrowed from Ubuntu
 
- -- Ryan Niebur <ryan@debian.org>  Sun, 29 Nov 2009 17:51:43 -0800
+ -- Ryan Niebur <ryan@debian.org>  Tue, 01 Dec 2009 22:45:38 -0800
 
 wxwidgets2.8 (2.8.7.1-2) unstable; urgency=high
 
