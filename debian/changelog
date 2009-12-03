@@ -1,3 +1,12 @@
+wxwidgets2.6 (2.6.3.2.2-3.1) unstable; urgency=high
+
+  * Non-maintainer upload by the testing Security Team
+  * Fixed Integer overflow in the wxImage::Create function.
+    (CVE-2009-2369) (Closes: #537175)
+  * Avoid name clashes with GSocket from glib 2.21+ and fixed FTBFS
+
+ -- Giuseppe Iuculano <iuculano@debian.org>  Sat, 03 Oct 2009 12:57:53 +0200
+
 wxwidgets2.6 (2.6.3.2.2-3) unstable; urgency=low
 
   * Take the flavour from the changelog, not the top dirname.  sbuild has

@@ -14,8 +14,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define GSocket GlibGSocket
 #include <gdk/gdk.h>
 #include <glib.h>
+#undef GSocket
 
 #include "wx/gsocket.h"
 #include "wx/unix/gsockunx.h"
