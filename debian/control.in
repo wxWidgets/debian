@@ -143,7 +143,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding, debug v
 Package: python-wxversion
 Architecture: all
 Section: python
-Depends: ${python:Depends}, python-wxgtk2.6 (>= 2.6.3.2.2-2) | python-wxgtk2.8 (>= 2.8.6.1-0.1)
+Depends: ${python:Depends}
 Conflicts: wxpython2.6-0, python-wxgtk2.8 (<< 2.8.6.1-0.1), python-wxgtk2.6 (<< 2.6.3.2.2-2), python-wxgtk2.4 (<< 2.4.5.1.2)
 Replaces: wxpython2.6-0
 XB-Python-Version: ${python:Versions}
