@@ -205,6 +205,7 @@ Architecture: all
 Conflicts: wx-i18n, wxwin-i18n, wx2.4-i18n
 Replaces: wx-i18n, wxwin-i18n, wx2.4-i18n, wx2.5-i18n
 Provides: wx-i18n
+Section: localization
 Description: wxWidgets Cross-platform C++ GUI toolkit (i18n support)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
