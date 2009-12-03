@@ -11,6 +11,8 @@ SHELL = /bin/bash
 #export DH_VERBOSE=1
 export DH_OPTIONS
 
+include /usr/share/pycentral-data/pycentral.mk
+
 ifdef CONCURRENCY_LEVEL
 
   # A user who knows what they want, that's like gold...
@@ -70,7 +72,8 @@ sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%)-$(soversion)$(addprefix -,$(DEBI
 alt_prio  := $(subst .,,$(release))
 
 pytoolkit := gtk2
-pydir     := usr/lib/$(PYVER)/site-packages
+pydir     := usr/lib/$(PYVER)/$(call sitedir,$(PYVER))
+
 wxsubdir  := wx-$(release)-$(pytoolkit)-unicode
 wxpydir   := $(pydir)/$(wxsubdir)
 
@@ -684,6 +687,7 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 	dh_installdirs usr/lib/wx/python
 	cd wxPython 								\
 		&& python$* ./setup.py install 				\
+			      --install-layout=deb \
 			      --prefix=`pwd`/../debian/$(package_gtk_py_lib)/usr \
 			      WX_CONFIG='$(wxconfig)'				\
 			      SYS_WX_CONFIG='$(py_wxconfig)'			\
@@ -691,12 +695,12 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 			      UNICODE=1						\
 			      FLAVOUR=$(DEBIAN_WXFLAVOUR)
 
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/wx.pth
+	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/wx.pth
 
 	find debian/$(package_gtk_py_lib)/usr/lib/python$* -name '*.py?' -exec rm '{}' ';'
 
 	# This is rather bogus, its included in the main copyright file now though.
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/$(wxsubdir)/wx/tools/XRCed/license.txt
+	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/XRCed/license.txt
 
 install-gtk-py-ver: DH_OPTIONS=-p$(package_gtk_py_ver)
 install-gtk-py-ver: install-gtk-py-lib
@@ -707,13 +711,13 @@ install-gtk-py-ver: install-gtk-py-lib
 ifndef DEBIAN_WX_DEFAULT_VERSION
 
 	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) \
-		$(foreach pv,$(PYVERS),usr/lib/python$(pv)/site-packages/wxversion.py)
+		$(foreach pv,$(PYVERS),usr/lib/python$(pv)/$(call sitedir,$(pv))/wxversion.py)
 	DH_PYCENTRAL=nomove dh_pycentral
-	for v in $(PYVERS); do \
-	  ln -sf ../../wx/python/wx.pth debian/$(package_gtk_py_ver)/usr/lib/python$$v/site-packages/wx.pth; \
+	for v in $(foreach pv,$(PYVERS),debian/$(package_gtk_py_ver)/usr/lib/python$(pv)/$(call sitedir,$(pv))/wx.pth); do \
+	  ln -sf ../../wx/python/wx.pth $$v; \
 	done
 else
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python*/site-packages/wxversion.py
+	rm -f debian/$(package_gtk_py_lib)/usr/lib/python*/*/wxversion.py
 endif
 
 install-gtk-py-tools: DH_OPTIONS=-p$(package_gtk_py_tools)
@@ -782,7 +786,7 @@ install-headers: install-gtk-shared-stamp
 	 mkdir -p debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython
 	cp -p wxPython/include/wx/wxPython/*.h \
 	    debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython/
-	
+
 install-i18n: DH_OPTIONS=-p$(package_i18n)
 install-i18n: build-i18n-stamp install-gtk-shared-stamp
 	dh_testdir
@@ -819,6 +823,7 @@ install-gtk-dbg-py%: install-gtk-dbg-py-pre build-gtk-dbg-py%-stamp
 	dh_installdirs usr/lib/wx/python
 	cd wxPython 								\
 		&& python$*-dbg ./setup.py install 				\
+			      --install-layout=deb \
 			      --prefix=`pwd`/../debian/$(package_gtk_dbg_py)/usr \
 			      WX_CONFIG='$(wxconfig-dbg)'			\
 			      SYS_WX_CONFIG='$(pyd_wxconfig)'			\
@@ -826,8 +831,8 @@ install-gtk-dbg-py%: install-gtk-dbg-py-pre build-gtk-dbg-py%-stamp
 			      UNICODE=1						\
 			      FLAVOUR=$(addsuffix -,$(DEBIAN_WXFLAVOUR))dbg
 
-	mv debian/$(package_gtk_dbg_py)/usr/lib/python$*/site-packages/$(wxsubdir)-dbg \
-		debian/$(package_gtk_dbg_py)/usr/lib/python$*/site-packages/$(wxsubdir)
+	mv debian/$(package_gtk_dbg_py)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)-dbg \
+		debian/$(package_gtk_dbg_py)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)
 
 	-find debian/$(package_gtk_dbg_py) -name '*_d.so'
 	find debian/$(package_gtk_dbg_py) ! -type d ! -name '*.so' | xargs rm -f
