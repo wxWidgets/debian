@@ -10,6 +10,7 @@ SHELL = /bin/bash
 
 #export DH_VERBOSE=1
 
+include /usr/share/pycentral-data/pycentral.mk
 include /usr/share/quilt/quilt.make
 export DH_OPTIONS
 
@@ -95,7 +96,7 @@ alt_prio  := $(subst .,,$(release))
 alt_prio  := 25
 
 pytoolkit := gtk2
-pydir     := usr/lib/$(python_ver)/site-packages
+pydir     := usr/lib/$(python_ver)/$(call sitedir,$(python_ver))
 wxsubdir  := wx-$(compatible_release)-$(pytoolkit)-unicode
 wxpydir   := $(pydir)/$(wxsubdir)
 
@@ -718,6 +719,7 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 	dh_installdirs usr/lib/wx/python
 	cd wxPython 								\
 		&& python$* ./setup.py install 				\
+			      --install-layout=deb \
 			      --prefix=`pwd`/../debian/$(package_gtk_py_lib)/usr \
 			      WX_CONFIG='$(wxconfig)'				\
 			      SYS_WX_CONFIG='$(py_wxconfig)'			\
@@ -725,19 +727,19 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 			      $(PY_UNICODE)					\
 			      FLAVOUR=$(DEBIAN_WXFLAVOUR)
 
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/wx.pth
+	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/wx.pth
 
 	find debian/$(package_gtk_py_lib)/usr/lib/python$* -name '*.py?' -exec rm '{}' ';'
 
 	# Fix image-file-in-usr-lib lintian warnings.
 	mkdir -p debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
-	cp -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
-	-rm -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps
+	cp -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
+	-rm -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps
 
 	# This is rather bogus, its included in the main copyright file now though.
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/$(wxsubdir)/wx/tools/XRCed/license.txt
+	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/XRCed/license.txt
 	# has it's own package, editra
-	rm -fr debian/$(package_gtk_py_lib)/usr/lib/python$*/site-packages/$(wxsubdir)/wx/tools/Editra
+	rm -fr debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra
 
 install-gtk-py-ver: DH_OPTIONS=-p$(package_gtk_py_ver)
 install-gtk-py-ver: install-gtk-py-lib
@@ -748,12 +750,12 @@ install-gtk-py-ver: install-gtk-py-lib
 ifndef DEBIAN_WX_DEFAULT_VERSION
 
 	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) \
-		$(foreach pv,$(PYVERS),usr/lib/python$(pv)/site-packages/wxversion.py)
-	for v in $(PYVERS); do \
-	  ln -sf ../../wx/python/wx.pth debian/$(package_gtk_py_ver)/usr/lib/python$$v/site-packages/wx.pth; \
+		$(foreach pv,$(PYVERS),usr/lib/python$(pv)/$(call sitedir,$(pv))/wxversion.py)
+	for v in $(foreach pv,$(PYVERS),debian/$(package_gtk_py_ver)/usr/lib/python$(pv)/$(call sitedir,$(pv))/wx.pth); do \
+	  ln -sf ../../wx/python/wx.pth $$v; \
 	done
 else
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python*/site-packages/wxversion.py
+	rm -f debian/$(package_gtk_py_lib)/usr/lib/python*/*/wxversion.py
 endif
 
 
@@ -875,6 +877,7 @@ install-gtk-dbg-py%: install-gtk-dbg-py-pre build-gtk-dbg-py%-stamp
 	dh_installdirs usr/lib/wx/python
 	cd wxPython 								\
 		&& python$*-dbg ./setup.py install 				\
+			      --install-layout=deb \
 			      --prefix=`pwd`/../debian/$(package_gtk_dbg_py)/usr \
 			      WX_CONFIG='$(wxconfig-dbg)'			\
 			      SYS_WX_CONFIG='$(pyd_wxconfig)'			\
@@ -882,8 +885,8 @@ install-gtk-dbg-py%: install-gtk-dbg-py-pre build-gtk-dbg-py%-stamp
 			      $(PY_UNICODE)					\
 			      FLAVOUR=$(addsuffix -,$(DEBIAN_WXFLAVOUR))dbg
 
-	mv debian/$(package_gtk_dbg_py)/usr/lib/python$*/site-packages/$(wxsubdir)-dbg \
-		debian/$(package_gtk_dbg_py)/usr/lib/python$*/site-packages/$(wxsubdir)
+	mv debian/$(package_gtk_dbg_py)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)-dbg \
+		debian/$(package_gtk_dbg_py)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)
 
 	-find debian/$(package_gtk_dbg_py) -name '*_d.so'
 	find debian/$(package_gtk_dbg_py) ! -type d ! -name '*.so' | xargs rm -f
