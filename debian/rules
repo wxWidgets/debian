@@ -46,7 +46,7 @@ PYVERS := $(shell pyversions -vr)
 # target release.
 #
 # for etch:
-#DEBIAN_WX_DEFAULT_VERSION = 2.6
+DEBIAN_WX_DEFAULT_VERSION = 2.8
 
 
 # This will extract a flavour out of the package name in the changelog
