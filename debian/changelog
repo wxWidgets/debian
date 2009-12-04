@@ -2,7 +2,7 @@ wxwidgets2.6 (2.6.3.2.2-4) UNRELEASED; urgency=low
 
   * set maintainer to the team, uploaders to me and ron
   * python-wxversion doesn't have to depend on 'python-wxgtk2.6 |
-    python-wxgtk2.8' (Closes: #479738)
+    python-wxgtk2.8' (see bug #479738)
   * fix to install correctly under Python 2.6 (Closes: #557943)
   * make wxwidgets 2.8 the default
 
