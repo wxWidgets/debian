@@ -49,7 +49,7 @@ PYVERS := $(shell pyversions -vr)
 # all if this is to be the default (or only) wx source package for the
 # target release.
 
-DEBIAN_WX_DEFAULT_VERSION = 2.6
+# DEBIAN_WX_DEFAULT_VERSION = 2.6
 
 
 # This will extract a flavour out of the changelog and flavour the
@@ -92,8 +92,6 @@ endif
 
 # Base value for alternative priorities.
 alt_prio  := $(subst .,,$(release))
-# overwrite; for lenny, we do not want to change the default.
-alt_prio  := 25
 
 pytoolkit := gtk2
 pydir     := usr/lib/$(python_ver)/$(call sitedir,$(python_ver))
