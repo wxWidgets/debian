@@ -2,7 +2,7 @@ wxwidgets2.8 (2.8.10.1-2) UNRELEASED; urgency=low
 
   * set wx2.8-i18n Section to localization
   * python-wxversion doesn't have to depend on 'python-wxgtk2.6 |
-    python-wxgtk2.8' (see bug #479738)
+    python-wxgtk2.8' (Closes: #479738)
   * fix to install correctly under Python 2.6 (see bug #557943)
   * make wxwidgets 2.8 the default
 
