@@ -5,8 +5,9 @@ wxwidgets2.8 (2.8.10.1-2) UNRELEASED; urgency=low
     python-wxgtk2.8' (Closes: #479738)
   * fix to install correctly under Python 2.6 (see bug #557943)
   * make wxwidgets 2.8 the default
+  * Fix spelling errors in wxversion help (Closes: #518540)
 
- -- Ryan Niebur <ryan@debian.org>  Thu, 03 Dec 2009 22:41:50 -0800
+ -- Ryan Niebur <ryan@debian.org>  Sat, 05 Dec 2009 09:24:39 -0800
 
 wxwidgets2.8 (2.8.10.1-1) unstable; urgency=low
 
