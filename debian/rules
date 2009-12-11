@@ -764,6 +764,7 @@ install-gtk-py-tools: install-gtk-py-ver
 	dh_testroot
 	dh_clean -k
 
+install-gtk-py: DH_OPTIONS=-p$(package_gtk_py_tools)
 install-gtk-py: install-gtk-py-tools
 
 ifndef DEBIAN_WX_DEFAULT_VERSION
