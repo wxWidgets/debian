@@ -857,7 +857,6 @@ if __name__ == "__main__":
                            },
               )
 
-        BUILD_OPTIONS['build_base'] = BUILD_BASE + "-common"
         if INSTALL_MULTIVERSION:
             setup(name             = 'wxPython-common',
                   version          = VERSION,
@@ -877,7 +876,7 @@ if __name__ == "__main__":
 
                   data_files = [('', ['src/wx.pth'])],
                   
-                  options = { 'build'            : { 'build_base' : BUILD_BASE },
+                  options = { 'build'            : { 'build_base' : BUILD_BASE + "-common" },
                               },
                   
                   cmdclass = { 'install_data':    wx_smart_install_data,
