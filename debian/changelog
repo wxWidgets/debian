@@ -5,7 +5,7 @@ wxwidgets2.6 (2.6.3.2.2-4) unstable; urgency=low
     python-wxgtk2.8' (see bug #479738)
   * fix to install correctly under Python 2.6 (Closes: #557943)
   * make wxwidgets 2.8 the default
-  * update config.{sub,guess} (Closes: 539605)
+  * update config.{sub,guess} (Closes: #539605)
   * make things get installed to the correct places with the
     multiversion stuff on python2.6
   * add libexpat1-dev to build deps and pass --with-expat=sys to
