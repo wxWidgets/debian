@@ -8,8 +8,10 @@ wxwidgets2.8 (2.8.10.1-2) UNRELEASED; urgency=low
   * Fix spelling errors in wxversion help (Closes: #518540)
   * add patch, fix-build-with-python2.6, to make things get installed to
     the correct places with the multiversion stuff
+  * add libexpat1-dev to build deps and pass --with-expat=sys to
+    configure
 
- -- Ryan Niebur <ryan@debian.org>  Sat, 12 Dec 2009 21:37:22 -0800
+ -- Ryan Niebur <ryan@debian.org>  Sat, 12 Dec 2009 23:09:19 -0800
 
 wxwidgets2.8 (2.8.10.1-1) unstable; urgency=low
 

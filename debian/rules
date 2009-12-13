@@ -111,6 +111,7 @@ COMMON_CONFIGURE_OPTIONS = \
     --cache-file=$(config_cache) \
     --with-flavour=$(DEBIAN_WXFLAVOUR) \
     --with-zlib=sys \
+    --with-expat=sys \
     --disable-reserved_virtual \
 
 BASE_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
