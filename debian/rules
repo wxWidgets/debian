@@ -317,6 +317,7 @@ configure-wxbase-shared-stamp:
 				--with-flavour=$(DEBIAN_WXFLAVOUR)	\
 				--disable-gui 				\
 				--with-zlib=sys				\
+				--with-expat=sys			\
 				--enable-unicode			\
 				--disable-reserved_virtual
 	touch $@
@@ -337,6 +338,7 @@ configure-wxbase-debug-stamp:
 				--disable-gui 				\
 				--enable-debug 				\
 				--with-zlib=sys				\
+				--with-expat=sys			\
 				--enable-unicode			\
 				--disable-reserved_virtual
 	touch $@
@@ -358,6 +360,7 @@ configure-gtk-shared-stamp:
 				--with-opengl				\
 				--with-gnomeprint			\
 				--with-zlib=sys				\
+				--with-expat=sys			\
 				--with-libjpeg=sys			\
 				--with-libpng=sys			\
 				--with-libtiff=sys			\
@@ -382,6 +385,7 @@ configure-gtk-debug-stamp:
 				--with-opengl				\
 				--with-gnomeprint			\
 				--with-zlib=sys				\
+				--with-expat=sys			\
 				--with-libjpeg=sys			\
 				--with-libpng=sys			\
 				--with-libtiff=sys			\

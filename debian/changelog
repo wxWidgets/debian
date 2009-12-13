@@ -8,8 +8,10 @@ wxwidgets2.6 (2.6.3.2.2-4) UNRELEASED; urgency=low
   * update config.{sub,guess} (Closes: 539605)
   * make things get installed to the correct places with the
     multiversion stuff on python2.6
+  * add libexpat1-dev to build deps and pass --with-expat=sys to
+    configure
 
- -- Ryan Niebur <ryan@debian.org>  Sat, 12 Dec 2009 22:05:00 -0800
+ -- Ryan Niebur <ryan@debian.org>  Sat, 12 Dec 2009 23:07:55 -0800
 
 wxwidgets2.6 (2.6.3.2.2-3.1) unstable; urgency=high
 
