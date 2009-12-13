@@ -9,7 +9,7 @@ wxwidgets2.8 (2.8.10.1-2) unstable; urgency=low
   * add patch, fix-build-with-python2.6, to make things get installed to
     the correct places with the multiversion stuff
   * add libexpat1-dev to build deps and pass --with-expat=sys to
-    configure
+    configure (Closes: #560917)
 
  -- Ryan Niebur <ryan@debian.org>  Sat, 12 Dec 2009 23:39:04 -0800
 
