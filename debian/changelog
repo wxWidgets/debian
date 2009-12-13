@@ -1,4 +1,4 @@
-wxwidgets2.6 (2.6.3.2.2-4) UNRELEASED; urgency=low
+wxwidgets2.6 (2.6.3.2.2-4) unstable; urgency=low
 
   * set maintainer to the team, uploaders to me and ron
   * python-wxversion doesn't have to depend on 'python-wxgtk2.6 |
@@ -11,7 +11,7 @@ wxwidgets2.6 (2.6.3.2.2-4) UNRELEASED; urgency=low
   * add libexpat1-dev to build deps and pass --with-expat=sys to
     configure
 
- -- Ryan Niebur <ryan@debian.org>  Sat, 12 Dec 2009 23:07:55 -0800
+ -- Ryan Niebur <ryan@debian.org>  Sat, 12 Dec 2009 23:38:10 -0800
 
 wxwidgets2.6 (2.6.3.2.2-3.1) unstable; urgency=high
 
