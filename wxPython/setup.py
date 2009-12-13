@@ -857,7 +857,7 @@ if __name__ == "__main__":
                            },
               )
 
-
+        BUILD_OPTIONS['build_base'] = BUILD_BASE + "-common"
         if INSTALL_MULTIVERSION:
             setup(name             = 'wxPython-common',
                   version          = VERSION,
@@ -871,7 +871,7 @@ if __name__ == "__main__":
                   platforms        = PLATFORMS,
                   classifiers      = filter(None, CLASSIFIERS.split("\n")),
                   keywords         = KEYWORDS,
-
+                  packages = [''],
                   package_dir = { '': 'wxversion' },
                   py_modules = ['wxversion'],
 
