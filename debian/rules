@@ -778,13 +778,13 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pycrust.1    \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyshell.1    \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/xrced.1      \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/editra.1     \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/helpviewer.1 \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyalacarte.1 \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyalamode.1  \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pywrap.1     \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pywxrc.1
 
+	rm debian/$(package_gtk_py_tools)/usr/bin/editra
 	dh_installdirs usr/share/lintian/overrides
 	grep ^$(package_gtk_py_tools): debian/lintian-override > debian/$(package_gtk_py_tools)/usr/share/lintian/overrides/$(package_gtk_py_tools)
 endif
