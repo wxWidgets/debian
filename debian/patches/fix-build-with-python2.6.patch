@@ -1,0 +1,22 @@
+diff --git a/wxPython/setup.py b/wxPython/setup.py
+index d987c5d..ac1edde 100755
+--- a/wxPython/setup.py
++++ b/wxPython/setup.py
+@@ -1033,7 +1033,7 @@ if __name__ == "__main__":
+ 
+               **other_kw
+               )
+-
++        BUILD_OPTIONS['build_base'] = BUILD_BASE + "-common"
+         if not EGGing:
+             if INSTALL_MULTIVERSION:
+                 setup(name             = 'wxPython-common',
+@@ -1048,7 +1048,7 @@ if __name__ == "__main__":
+                       platforms        = PLATFORMS,
+                       classifiers      = filter(None, CLASSIFIERS.split("\n")),
+                       keywords         = KEYWORDS,
+-
++                      packages = [''],
+                       package_dir = { '': 'wxversion' },
+                       py_modules = ['wxversion'],
+ 
