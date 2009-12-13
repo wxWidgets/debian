@@ -1,4 +1,4 @@
-wxwidgets2.8 (2.8.10.1-2) UNRELEASED; urgency=low
+wxwidgets2.8 (2.8.10.1-2) unstable; urgency=low
 
   * set wx2.8-i18n Section to localization
   * python-wxversion doesn't have to depend on 'python-wxgtk2.6 |
@@ -11,7 +11,7 @@ wxwidgets2.8 (2.8.10.1-2) UNRELEASED; urgency=low
   * add libexpat1-dev to build deps and pass --with-expat=sys to
     configure
 
- -- Ryan Niebur <ryan@debian.org>  Sat, 12 Dec 2009 23:09:19 -0800
+ -- Ryan Niebur <ryan@debian.org>  Sat, 12 Dec 2009 23:39:04 -0800
 
 wxwidgets2.8 (2.8.10.1-1) unstable; urgency=low
 
