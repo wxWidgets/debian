@@ -93,6 +93,8 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
  This package provides files needed to compile wxWidgets programs.  If you
  want to compile apps using the (optional) glcanvas library you will need
  to have Mesa or OpenGL installed too.
+ .
+ This package also provides the wx-config script.
 
 Package: libwxgtk=V=U-dbg
 Architecture: any
