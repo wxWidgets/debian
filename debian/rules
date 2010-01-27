@@ -14,7 +14,7 @@ include /usr/share/pycentral-data/pycentral.mk
 include /usr/share/quilt/quilt.make
 export DH_OPTIONS
 
-WXPYTHON_VERSION = 2.8.10.1
+# WXPYTHON_VERSION = $(shell dpkg-parsechangelog | sed -ne '/^Version: /s@Version: \(.*\)@\1@p')
 
 ifdef CONCURRENCY_LEVEL
 
