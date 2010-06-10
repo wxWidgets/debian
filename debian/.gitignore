@@ -18,6 +18,8 @@ libwxbase2.8-dev
 libwxgtk2.8-0
 libwxgtk2.8-dbg
 libwxgtk2.8-dev
+libwxmsw2.8-dbg
+libwxmsw2.8-dev
 python-wxaddons
 python-wxgtk2.8-dbg
 python-wxgtk2.8
@@ -27,4 +29,5 @@ wx-common
 wx2.8-doc
 wx2.8-examples
 wx2.8-headers
+wx2.8-headers-msw
 wx2.8-i18n

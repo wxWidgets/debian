@@ -129,6 +129,10 @@ GTK_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --with-libtiff=sys \
 #   --enable-mediactrl \
 
+MSW_CONFIGURE_OPTIONS = \
+    --with-msw \
+    --enable-display
+
 PY_WX_CONFIG_OPTIONS = --version=$(release) --toolkit=$(pytoolkit) --static=no
 
 WX_UNICODE ?= 1
@@ -136,6 +140,7 @@ WX_OPENGL := 1
 
 ifeq ($(WX_UNICODE),1)
     COMMON_CONFIGURE_OPTIONS += --enable-unicode
+    MSW_CONFIGURE_OPTIONS += --enable-unicode
     PY_WX_CONFIG_OPTIONS += --unicode
     PY_UNICODE="UNICODE=1"
     wxpydir := $(pydir)/wx-$(compatible_release)-$(pytoolkit)-unicode
@@ -151,8 +156,10 @@ endif
 
 ifeq ($(WX_OPENGL),1)
     GTK_CONFIGURE_OPTIONS += --with-opengl
+    MSW_CONFIGURE_OPTIONS += --with-opengl
 else
     GTK_CONFIGURE_OPTIONS += --without-opengl
+    MSW_CONFIGURE_OPTIONS += --without-opengl
 endif
 
 # Packages to build:
@@ -550,7 +557,8 @@ configure-msw-shared-stamp:
 				--cache-file=$(config_cache_cross)	\
 				--host=$(cross_host)			\
 				--build=$(cross_build)			\
-				--with-flavour=$(DEBIAN_WXFLAVOUR)
+				--with-flavour=$(DEBIAN_WXFLAVOUR)	\
+				$(MSW_CONFIGURE_OPTIONS)
 	touch $@
 
 build-msw-shared-stamp: configure-msw-shared-stamp
@@ -567,6 +575,7 @@ configure-msw-static-stamp:
 				--host=$(cross_host)			\
 				--build=$(cross_build)			\
 				--with-flavour=$(DEBIAN_WXFLAVOUR)	\
+				$(MSW_CONFIGURE_OPTIONS)		\
 				--disable-shared
 	touch $@
 
