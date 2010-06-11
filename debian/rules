@@ -119,6 +119,7 @@ BASE_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
 
 GTK_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --with-gtk \
+    --with-opengl \
     --enable-sound \
     --with-sdl \
     --enable-display \
@@ -131,12 +132,12 @@ GTK_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
 
 MSW_CONFIGURE_OPTIONS = \
     --with-msw \
+    --with-opengl \
     --enable-display
 
 PY_WX_CONFIG_OPTIONS = --version=$(release) --toolkit=$(pytoolkit) --static=no
 
 WX_UNICODE ?= 1
-WX_OPENGL := 1
 
 ifeq ($(WX_UNICODE),1)
     COMMON_CONFIGURE_OPTIONS += --enable-unicode
@@ -152,14 +153,6 @@ else
     # but we do need to use something for non-Unicode packages to distinguish
     # them
     unicode_suffix := -ansi
-endif
-
-ifeq ($(WX_OPENGL),1)
-    GTK_CONFIGURE_OPTIONS += --with-opengl
-    MSW_CONFIGURE_OPTIONS += --with-opengl
-else
-    GTK_CONFIGURE_OPTIONS += --without-opengl
-    MSW_CONFIGURE_OPTIONS += --without-opengl
 endif
 
 # Packages to build:
