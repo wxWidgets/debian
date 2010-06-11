@@ -135,6 +135,12 @@ MSW_CONFIGURE_OPTIONS = \
     --with-opengl \
     --enable-display
 
+# For the MSW packages, enabling threads in wx means that your application will
+# have a dependency on mingwm10.dll.  If you don't use threads, this is just an
+# annoyance, so default to disabling them.  If you want a wx package to use in
+# a threaded application then comment out the next line.
+MSW_CONFIGURE_OPTIONS += --disable-threads
+
 PY_WX_CONFIG_OPTIONS = --version=$(release) --toolkit=$(pytoolkit) --static=no
 
 WX_UNICODE ?= 1
