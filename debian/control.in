@@ -10,7 +10,7 @@ Build-Depends: debhelper (>= 5.0.37.1), flex, bison, gettext, libgtk2.0-dev,
 Maintainer: wxWidgets Maintainers <freewx-maint@lists.alioth.debian.org>
 Uploaders: Ryan Niebur <ryan@debian.org>, Ron Lee <ron@debian.org>
 XS-Python-Version: all
-Standards-Version: 3.8.3
+Standards-Version: 3.8.4
 Vcs-Git: git://git.debian.org/git/freewx/wx.git
 Vcs-Browser: http://git.debian.org/?p=freewx/wx.git
 Homepage: http://www.wxwidgets.org/

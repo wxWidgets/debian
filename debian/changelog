@@ -8,8 +8,9 @@ wxwidgets2.8 (2.8.10.1-4) UNRELEASED; urgency=low
   * msw-cross packages now have OpenGL enabled, build with the specified
     unicode setting, and default to --disable-threads to avoid mingwm10.dll
     being required.
+  * Standards-Version: 3.8.4 (no changes required).
 
- -- Olly Betts <olly@survex.com>  Fri, 11 Jun 2010 03:29:10 +0000
+ -- Olly Betts <olly@survex.com>  Fri, 11 Jun 2010 06:15:57 +0000
 
 wxwidgets2.8 (2.8.10.1-3) unstable; urgency=low
 
