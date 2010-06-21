@@ -240,14 +240,14 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (examples)
  C++ and with the wxPython language binding.
 
 Package: libwxmsw=V=U-dev
-Architecture: i386
+Architecture: any
 Section: otherosfs
 Depends: wx=V-headers-msw (= ${binary:Version})
 Description: wxMSW mingw32msvc-cross
  mingw32msvc-cross wxMSW libs.
 
 Package: libwxmsw=V=U-dbg
-Architecture: i386
+Architecture: any
 Section: otherosfs
 Depends: wx=V-headers-msw (= ${binary:Version})
 Description: wxMSW mingw32msvc-cross (debug)
@@ -255,7 +255,7 @@ Description: wxMSW mingw32msvc-cross (debug)
  __WXDEBUG__ version.
 
 Package: wx=V-headers-msw
-Architecture: i386
+Architecture: any
 Section: otherosfs
 Depends: wx=V-headers (= ${binary:Version})
 Description: Extra wxWidgets headers for mingw32msvc-cross
