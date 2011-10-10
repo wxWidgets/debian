@@ -1,4 +1,4 @@
-wxwidgets2.8 (2.8.10.1-4) unstable; urgency=low
+wxwidgets2.8 (2.8.10.1.dfsg-4) unstable; urgency=low
 
   [ Ryan Niebur ]
   * add contrib/samples to the wx2.8-examples package (Closes: #392591)
@@ -24,7 +24,7 @@ wxwidgets2.8 (2.8.10.1-4) unstable; urgency=low
   * Strip executable bits from files in examples since upstream source has
     them randomly set for some files, and none should be executable.
 
- -- Olly Betts <olly@survex.com>  Mon, 10 Oct 2011 12:47:32 +0000
+ -- Olly Betts <olly@survex.com>  Mon, 10 Oct 2011 13:20:14 +0000
 
 wxwidgets2.8 (2.8.10.1-3) unstable; urgency=low
 
