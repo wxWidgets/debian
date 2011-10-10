@@ -29,6 +29,10 @@ fi
 
 ## Remove stuff
 mv $UP_BASE/debian $UP_BASE/debian-upstream
+# There are some non-free DLLs under wxPython.  DLLs aren't useful for us
+# so just nuke any regardless which protects us from any new DLLs which get
+# added by upstream.
+find "$UP_BASE" -iname '*.dll' -delete
 ## End
 
 mv "$UP_BASE" "$DIR/$REPACK_DIR"
