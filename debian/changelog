@@ -15,8 +15,10 @@ wxwidgets2.8 (2.8.10.1-4) UNRELEASED; urgency=low
   * debian/watch: Restrict to only consider wx 2.8 releases.
   * Add patch fix-configure-for-multiarch which fixes FTBFS since multiarch
     was introduced. (Closes: #636280)
+  * Add patch fix-macro-namespace-pollution.patch to rename ATTRIBUTE_PRINTF
+    macros in public headers to WX_ATTRIBUTE_PRINTF.  (Closes: #521924)
 
- -- Olly Betts <olly@survex.com>  Mon, 10 Oct 2011 10:03:28 +0000
+ -- Olly Betts <olly@survex.com>  Mon, 10 Oct 2011 11:03:15 +0000
 
 wxwidgets2.8 (2.8.10.1-3) unstable; urgency=low
 

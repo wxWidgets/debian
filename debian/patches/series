@@ -8,3 +8,4 @@ fix-bashism-in-example
 fix-path-to-some-interpreters
 CVE-2009-2369.dpatch
 fix-configure-for-multiarch
+fix-macro-namespace-pollution.patch
