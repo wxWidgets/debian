@@ -359,7 +359,8 @@ control-files-stamp: debian/control
 			> debian/lintian-override;                           \
 	touch $@
 
-build_arch: control-files-stamp $(build_arch_stamps)
+build-arch: control-files-stamp $(build_arch_stamps)
+build-indep: control-files-stamp $(build_indep_stamps)
 build_all: control-files-stamp $(build_stamps_native)
 
 # Really we should probably do nothing here until we know which
@@ -368,7 +369,7 @@ build_all: control-files-stamp $(build_stamps_native)
 # from the binary-arch target.  Build all -arch files here then, and
 # let the -indep stuff fend for itself later.
 
-build: build-stamp build_arch
+build: build-stamp build-arch
 build-stamp: $(QUILT_STAMPFN)
 
 
@@ -638,7 +639,7 @@ clean: debian/control clean-py unpatch
 	find -name '*.py[co]' | xargs -r rm -f
 	rm -rf include/wx-$(release)
 
-install_arch: build_arch $(install_all_arch)
+install_arch: build-arch $(install_all_arch)
 
 install: build_all $(install_all_native)
 
@@ -1007,7 +1008,7 @@ binary-indep: build_all install
 		binary-common
 
 # Build just the architecture-dependent files here.
-binary-arch: build_arch install_arch
+binary-arch: build-arch install_arch
 	$(MAKE) -f debian/rules \
 		DH_OPTIONS="-a $(addprefix -N,$(extra_packages))" \
 		binary-common
@@ -1067,7 +1068,7 @@ binary-doc: control-files-stamp install-doc
 binary-fast:control-files-stamp install-gtk-dbg install-msw-dev install-headers install-headers-msw
 	$(MAKE) -f debian/rules DH_OPTIONS="-p$(package_gtk_dbg) -p$(package_msw_dev) -p$(package_headers) -p$(package_headers_msw)" binary-common
 
-.PHONY: build build_all build_arch					\
+.PHONY: build build_all build-arch build-indep				\
 	clean clean-py purge-release-py purge-dbg-py			\
 	binary-indep binary-arch binary binary-common 			\
 	binary-gtk binary-gtk-dev binary-gtk-dbg			\

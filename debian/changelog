@@ -19,8 +19,10 @@ wxwidgets2.8 (2.8.10.1-4) UNRELEASED; urgency=low
     macros in public headers to WX_ATTRIBUTE_PRINTF.  (Closes: #521924)
   * debian/wx-config.1: Remove invalid '.l' macro - leaves formatted output
     unchanged and fixes lintian warning.
+  * debian/rules: Rename build_arch target to build-arch and add build-indep
+    target.
 
- -- Olly Betts <olly@survex.com>  Mon, 10 Oct 2011 12:24:55 +0000
+ -- Olly Betts <olly@survex.com>  Mon, 10 Oct 2011 12:31:04 +0000
 
 wxwidgets2.8 (2.8.10.1-3) unstable; urgency=low
 
