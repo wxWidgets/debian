@@ -4,6 +4,7 @@ wxwidgets2.8 (2.8.10.1-4) UNRELEASED; urgency=low
   * add contrib/samples to the wx2.8-examples package (Closes: #392591)
 
   [ Olly Betts ]
+  * Add myself to Uploaders.
   * Simplify to just always use --with-opengl.
   * msw-cross packages now build for all archs (not just i386), have OpenGL
     enabled, build with the specified Unicode setting, and default to
