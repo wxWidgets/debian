@@ -498,7 +498,7 @@ build-examples-stamp: build-gtk-shared-stamp
 	# copy all samples and the Makefile generated for libwxgtk.
 	# Some files in the sources are randomly executable, so don't
 	# just use cp -a here.
-	cp -dR --preserve=time‐stamps samples $(objdir_examples)
+	cp -dR --preserve=timestamps samples $(objdir_examples)
 	rm -f $(objdir_examples)/samples/Makefile
 	cp -a $(objdir_gtk_shared)/samples/Makefile $(objdir_examples)/samples
 
