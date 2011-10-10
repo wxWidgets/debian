@@ -12,8 +12,10 @@ wxwidgets2.8 (2.8.10.1-4) UNRELEASED; urgency=low
   * Update libjpeg62-dev build dependency to libjpeg-dev. (Closes: #636281)
   * Remove all DLLs when repacking the tarball. (Closes: #625272)
   * debian/watch: Restrict to only consider wx 2.8 releases.
+  * Add patch fix-configure-for-multiarch which fixes FTBFS since multiarch
+    was introduced. (Closes: #636280)
 
- -- Olly Betts <olly@survex.com>  Mon, 10 Oct 2011 04:19:45 +0000
+ -- Olly Betts <olly@survex.com>  Mon, 10 Oct 2011 10:03:28 +0000
 
 wxwidgets2.8 (2.8.10.1-3) unstable; urgency=low
 
