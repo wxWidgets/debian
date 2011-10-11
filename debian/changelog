@@ -1,9 +1,9 @@
 wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
 
   * New upstream release (Closes: #586129, #623583)
-    + Drop patch applied upstream: fix-FTBFS.patch
+    + Drop patches applied upstream: fix-FTBFS.patch, CVE-2009-2369.dpatch
 
- -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 02:05:42 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 02:19:38 +0000
 
 wxwidgets2.8 (2.8.10.1+dfsg-4) unstable; urgency=low
 
