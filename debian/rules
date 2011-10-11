@@ -658,7 +658,7 @@ install-wxbase-lib: DH_OPTIONS=-p$(package_wxbase_lib)
 install-wxbase-lib: build-wxbase-shared-stamp install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	@# No, this is not a typo, we steal these libs from the gtk build.
 	dh_install $(objdir_gtk_install)/lib/libwx_base*.so.*	usr/lib
 	dh_installdirs usr/share/lintian/overrides
@@ -668,7 +668,7 @@ install-wxbase-dev: DH_OPTIONS=-p$(package_wxbase_dev)
 install-wxbase-dev: build-wxbase-shared-stamp install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	@# No, this is not a typo, we steal these libs from the gtk build.
 	dh_install $(objdir_gtk_install)/lib/libwx_base*.so 	usr/lib
 	dh_install $(objdir_wxbase_shared)/lib/wx/include 	usr/lib/wx
@@ -678,7 +678,7 @@ install-wxbase-dbg: DH_OPTIONS=-p$(package_wxbase_dbg)
 install-wxbase-dbg: build-wxbase-debug-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	@# No, this is not a typo, we steal these libs from the gtk debug build.
 	dh_install $(objdir_gtk_debug)/lib/libwx_base*		usr/lib
 	dh_install $(objdir_wxbase_debug)/lib/wx/include	usr/lib/wx
@@ -699,7 +699,7 @@ install-gtk-lib: DH_OPTIONS=-p$(package_gtk_lib)
 install-gtk-lib: install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	dh_install $(objdir_gtk_install)/lib/libwx_gtk*.so.*	usr/lib
 	dh_installdirs usr/share/lintian/overrides
 	grep ^$(package_gtk_lib): debian/lintian-override > debian/$(package_gtk_lib)/usr/share/lintian/overrides/$(package_gtk_lib)
@@ -708,7 +708,7 @@ install-gtk-dev: DH_OPTIONS=-p$(package_gtk_dev)
 install-gtk-dev: install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	dh_install $(objdir_gtk_install)/lib/libwx_gtk*.so 	usr/lib
 	dh_install $(objdir_gtk_install)/lib/wx/include 	usr/lib/wx
 	dh_install $(objdir_gtk_install)/lib/wx/config/gtk* 	usr/lib/wx/config
@@ -717,7 +717,7 @@ install-gtk-dbg: DH_OPTIONS=-p$(package_gtk_dbg)
 install-gtk-dbg: build-gtk-debug-stamp build-gtk-debug-contrib-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	dh_install $(objdir_gtk_debug)/lib/libwx_gtk*		usr/lib
 	dh_install $(objdir_gtk_debug)/lib/wx/include		usr/lib/wx
 	dh_install $(objdir_gtk_debug)/lib/wx/config/gtk*	usr/lib/wx/config
@@ -731,7 +731,7 @@ install-gtk-py-lib: install-gtk-py-lib-pre $(PYVERS:%=install-gtk-pylib%)
 install-gtk-py-lib-pre:
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 	dh_testdir
 	dh_testroot
@@ -764,7 +764,7 @@ install-gtk-py-ver: DH_OPTIONS=-p$(package_gtk_py_ver)
 install-gtk-py-ver: install-gtk-py-lib
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 
 ifndef DEBIAN_WX_DEFAULT_VERSION
 
@@ -783,7 +783,7 @@ install-gtk-py-tools: DH_OPTIONS=-p$(package_gtk_py_tools)
 install-gtk-py-tools: install-gtk-py-ver
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 
 install-gtk-py: DH_OPTIONS=-p$(package_gtk_py_tools)
 install-gtk-py: install-gtk-py-tools
@@ -828,7 +828,7 @@ install-common: DH_OPTIONS=-p$(package_common)
 install-common: install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 
 	dh_install $(objdir_gtk_install)/share/bakefile/presets usr/share/bakefile
 	dh_install $(objdir_gtk_install)/share/bakefile/presets/wx*.bkl usr/share/bakefile/presets
@@ -845,7 +845,7 @@ install-headers: DH_OPTIONS=-p$(package_headers)
 install-headers: install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 
 # The only way to be really sure we get the univ headers correct is to install
 # them.  Do that in a scratch dirs, and move the gtk ones last, so at least
@@ -864,14 +864,14 @@ install-i18n: DH_OPTIONS=-p$(package_i18n)
 install-i18n: build-i18n-stamp install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	dh_install $(objdir_gtk_install)/share/locale 	usr/share
 
 install-doc: DH_OPTIONS=-p$(package_doc)
 install-doc: build-doc-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 
 	@# Link this monstrosity with an overly obfuscated name
 	@# to something that both people and browsers can expect to find.
@@ -882,14 +882,14 @@ install-examples: DH_OPTIONS=-p$(package_examples)
 install-examples: build-examples-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 
 install-gtk-dbg-py: DH_OPTIONS=-p$(package_gtk_dbg_py)
 install-gtk-dbg-py: install-gtk-dbg-py-pre $(PYVERS:%=install-gtk-dbg-py%)
 install-gtk-dbg-py-pre:
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 install-gtk-dbg-py%: install-gtk-dbg-py-pre build-gtk-dbg-py%-stamp
 	dh_testdir
 	dh_testroot
@@ -916,7 +916,7 @@ install-msw-dev: DH_OPTIONS=-p$(package_msw_dev)
 install-msw-dev: build-msw-shared-stamp build-msw-static-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	dh_install $(objdir_msw_shared)/lib/*.dll*		     usr/$(cross_host)/lib
 	dh_install $(objdir_msw_shared)/lib/wx/include		     usr/$(cross_host)/lib/wx
 	dh_install $(objdir_msw_shared)/lib/wx/config/$(cross_host)* usr/$(cross_host)/lib/wx/config
@@ -940,7 +940,7 @@ install-msw-dbg: DH_OPTIONS=-p$(package_msw_dbg)
 install-msw-dbg: build-msw-dbg-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	dh_install $(objdir_msw_dbg)/lib/*.dll*			  usr/$(cross_host)/lib
 	dh_install $(objdir_msw_dbg)/lib/wx/include		  usr/$(cross_host)/lib/wx
 	dh_install $(objdir_msw_dbg)/lib/wx/config/$(cross_host)* usr/$(cross_host)/lib/wx/config
@@ -958,7 +958,7 @@ install-headers-msw: DH_OPTIONS=-p$(package_headers_msw)
 install-headers-msw:
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 
 	cd $(objdir_msw_shared) \
 		&& $(MAKE) install prefix=`pwd`/../$(objdir_msw_install)

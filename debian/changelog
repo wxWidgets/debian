@@ -24,8 +24,10 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
   * Remove versioned conflict on python-wxgtk2.8 << a version which was never
     in Debian.  Adjust versioned conflict of python-wxgtk2.6 to what Ron says
     is the correct version for Debian.
+  * Update debhelper compatibility level from 5 to 7, and use dh_prep instead
+    of dh_clean -k.
 
- -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 13:18:13 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 13:37:07 +0000
 
 wxwidgets2.8 (2.8.10.1+dfsg-4) unstable; urgency=low
 
