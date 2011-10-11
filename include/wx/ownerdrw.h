@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.11.97
-// RCS-ID:      $Id: ownerdrw.h 35695 2005-09-25 20:43:35Z VZ $
+// RCS-ID:      $Id: ownerdrw.h 62511 2009-10-30 14:11:03Z JMS $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -143,6 +143,16 @@ protected:
 
   // get the font to use, whether m_font is set or not
   wxFont GetFontToUse() const;
+
+  // Same as wxOwnerDrawn::SetMarginWidth() but does not affect
+  // ms_nLastMarginWidth. Exists solely to work around bug #4068,
+  // and will not exist in wxWidgets 2.9.0 and later.
+  void SetOwnMarginWidth(int nWidth)
+  {
+      m_nMarginWidth = (size_t) nWidth;
+      if ( ((size_t) nWidth) != ms_nDefaultMarginWidth )
+          m_bOwnerDrawn = true;
+  }
 
 
   wxString  m_strName,      // label for a manu item

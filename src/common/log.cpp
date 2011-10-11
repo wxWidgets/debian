@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: log.cpp 50994 2008-01-02 21:27:31Z VZ $
+// RCS-ID:      $Id: log.cpp 67119 2011-03-03 15:09:44Z JS $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -199,7 +199,7 @@ void wxLogVerbose(const wxChar *szFormat, ...)
     if ( wxLog::IsEnabled() && wxLog::IsAllowedTraceMask(mask) ) {
       wxString msg;
       msg << _T("(") << mask << _T(") ") << wxString::FormatV(szFormat, argptr);
-          
+
       wxLog::OnLog(wxLOG_Trace, msg, time(NULL));
     }
   }
@@ -631,7 +631,7 @@ wxLogChain::wxLogChain(wxLog *logger)
 
 wxLogChain::~wxLogChain()
 {
-    delete m_logOld;
+    wxLog::SetActiveTarget(m_logOld);
 
     if ( m_logNew != this )
         delete m_logNew;

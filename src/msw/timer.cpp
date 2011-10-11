@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (use hash map instead of list, global rewrite)
 // Created:     04/01/98
-// RCS-ID:      $Id: timer.cpp 60297 2009-04-24 05:06:25Z RD $
+// RCS-ID:      $Id: timer.cpp 63485 2010-02-15 17:30:58Z RD $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,7 @@
     #include "wx/intl.h"
     #include "wx/log.h"
     #include "wx/hashmap.h"
+    #include "wx/module.h"
 #endif
 
 #include "wx/msw/private.h"
@@ -50,6 +51,24 @@ static wxTimerMap& TimerMap()
 
     return s_timerMap;
 }
+
+// This gets a unique, non-zero timer ID and creates an entry in the TimerMap
+UINT_PTR GetNewTimerId(wxTimer *t)
+{
+    static UINT_PTR lastTimerId = 0;
+
+    while (lastTimerId == 0 ||
+            TimerMap().find(lastTimerId) != TimerMap().end())
+    {
+        lastTimerId = lastTimerId + 1;
+    }
+
+    TimerMap()[lastTimerId] = t;
+
+    return lastTimerId;
+}
+
+
 
 // ----------------------------------------------------------------------------
 // private functions
@@ -119,38 +138,27 @@ wxTimer::~wxTimer()
 
 bool wxTimer::Start(int milliseconds, bool oneShot)
 {
-    (void)wxTimerBase::Start(milliseconds, oneShot);
+    if ( !wxTimerBase::Start(milliseconds, oneShot) )
+        return false;
 
-    wxCHECK_MSG( m_milli > 0, false, wxT("invalid value for timer timeout") );
+    m_id = GetNewTimerId(this);
 
-    m_id = ::SetTimer(
-        wxTimerHiddenWindowModule::GetHWND(),  // window to send the messages to
-        GetId(),                               // timer ID
-        (UINT)m_milli,                         // delay
-        NULL                                   // timer proc.  Not used since we pass hwnd
-        );
+    // SetTimer() normally returns just idTimer but this might change in the
+    // future so use its return value to be safe
+    UINT_PTR ret = ::SetTimer
+             (
+              wxTimerHiddenWindowModule::GetHWND(),  // window for WM_TIMER
+              m_id,                                  // timer ID to create
+              (UINT)m_milli,                         // delay
+              NULL                                   // timer proc (unused)
+             );
 
-    if ( !m_id )
+    if ( !ret )
     {
         wxLogSysError(_("Couldn't create a timer"));
 
         return false;
     }
-
-    // check that SetTimer() didn't reuse an existing id: according to the MSDN
-    // this can happen and this would be catastrophic to us as we rely on ids
-    // uniquely identifying the timers because we use them as keys in the hash
-    if ( TimerMap().find(m_id) != TimerMap().end() )
-    {
-        wxLogError(_("Timer creation failed."));
-
-        ::KillTimer(wxTimerHiddenWindowModule::GetHWND(), m_id);
-        m_id = 0;
-
-        return false;
-    }
-
-    TimerMap()[m_id] = this;
 
     return true;
 }
@@ -160,11 +168,9 @@ void wxTimer::Stop()
     if ( m_id )
     {
         ::KillTimer(wxTimerHiddenWindowModule::GetHWND(), m_id);
-
         TimerMap().erase(m_id);
+        m_id = 0;
     }
-
-    m_id = 0;
 }
 
 // ----------------------------------------------------------------------------

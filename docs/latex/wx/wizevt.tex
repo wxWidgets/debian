@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     02.04.00
-%% RCS-ID:      $Id: wizevt.tex 32309 2005-02-22 15:09:56Z ABX $
+%% RCS-ID:      $Id: wizevt.tex 63262 2010-01-25 18:47:47Z JS $
 %% Copyright:   (c) Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,6 +37,7 @@ direct input to member functions that take a wxWizardEvent argument.
 changed (this event can not be vetoed).}
 \twocolitem{{\bf EVT\_WIZARD\_PAGE\_CHANGING(id, func)}}{The page is being
 changed (this event can be vetoed).}
+\twocolitem{{\bf EVT\_WIZARD\_PAGE\_SHOWN(id, func)}}{The page was shown and laid out.}
 \twocolitem{{\bf EVT\_WIZARD\_CANCEL(id, func)}}{The user attempted to cancel
 the wizard (this event may also be vetoed).}
 \twocolitem{{\bf EVT\_WIZARD\_HELP(id, func)}}{The wizard help button was pressed.}

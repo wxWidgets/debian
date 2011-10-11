@@ -2,7 +2,7 @@
 // Name:        src/gtk/radiobox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobox.cpp 58188 2009-01-17 20:38:43Z JS $
+// Id:          $Id: radiobox.cpp 63217 2010-01-22 22:01:24Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -653,7 +653,8 @@ GdkWindow *wxRadioBox::GTKGetWindow(wxArrayGdkWindows& windows) const
     {
         GtkWidget *button = GTK_WIDGET( node->GetData()->button );
 
-        windows.push_back(button->window);
+        if (button->window)
+            windows.push_back(button->window);
 
         node = node->GetNext();
     }

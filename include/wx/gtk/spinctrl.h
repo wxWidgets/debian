@@ -3,7 +3,7 @@
 // Purpose:     wxSpinCtrl class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: spinctrl.h 40923 2006-08-30 05:55:56Z PC $
+// RCS-ID:      $Id: spinctrl.h 62574 2009-11-08 23:50:46Z PC $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ public:
                const wxSize& size = wxDefaultSize,
                long style = wxSP_ARROW_KEYS,
                int min = 0, int max = 100, int initial = 0,
-               const wxString& name = _T("wxSpinCtrl"))
+               const wxString& name = wxT("wxSpinCtrl"))
     {
         Create(parent, id, value, pos, size, style, min, max, initial, name);
     }
@@ -38,7 +38,7 @@ public:
                 const wxSize& size = wxDefaultSize,
                 long style = wxSP_ARROW_KEYS,
                 int min = 0, int max = 100, int initial = 0,
-                const wxString& name = _T("wxSpinCtrl"));
+                const wxString& name = wxT("wxSpinCtrl"));
 
     void SetValue(const wxString& text);
     void SetSelection(long from, long to);
@@ -55,9 +55,7 @@ public:
     // implementation
     void OnChar( wxKeyEvent &event );
     
-    void GtkDisableEvents();
-    void GtkEnableEvents();
-
+    // unused
     int m_pos;
 
 protected:

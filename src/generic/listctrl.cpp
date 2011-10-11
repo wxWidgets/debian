@@ -3,7 +3,7 @@
 // Purpose:     generic implementation of wxListCtrl
 // Author:      Robert Roebling
 //              Vadim Zeitlin (virtual list control support)
-// Id:          $Id: listctrl.cpp 57542 2008-12-25 13:03:24Z VZ $
+// Id:          $Id: listctrl.cpp 67017 2011-02-25 09:37:28Z JS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1427,7 +1427,12 @@ bool wxListLineData::SetAttributes(wxDC *dc,
             colText = *wxBLACK;
     }
 #else
-        colText = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT);
+    {
+      if (m_owner->HasFocus())
+          colText = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT);
+      else
+          colText = wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOXHIGHLIGHTTEXT);
+    }
 #endif
     else if ( attr && attr->HasTextColour() )
         colText = attr->GetTextColour();
@@ -2732,7 +2737,12 @@ void wxListMainWindow::Thaw()
     wxCHECK_RET( m_freezeCount > 0, _T("thawing unfrozen list control?") );
 
     if ( --m_freezeCount == 0 )
-        Refresh();
+    {
+        if (m_dirty)
+            RecalculatePositions();
+        else
+            Refresh();
+    }
 }
 
 void wxListMainWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
@@ -5943,6 +5953,14 @@ void wxGenericListCtrl::Refresh(bool eraseBackground, const wxRect *rect)
             }
         }
     }
+}
+
+void wxGenericListCtrl::Update()
+{
+    if (m_mainWin && m_mainWin->m_dirty)
+        m_mainWin->RecalculatePositions();
+
+    wxControl::Update();
 }
 
 void wxGenericListCtrl::Freeze()

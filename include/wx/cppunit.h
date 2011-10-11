@@ -3,7 +3,7 @@
 // Purpose:     wrapper header for CppUnit headers
 // Author:      Vadim Zeitlin
 // Created:     15.02.04
-// RCS-ID:      $Id: cppunit.h 53917 2008-06-01 20:32:26Z VZ $
+// RCS-ID:      $Id: cppunit.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2004 Vadim Zeitlin
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@
     if (Condition) \
         { anyTest; } \
     else \
-        wxLogInfo(wxString::Format(_T("skipping: %s.%s\n  reason: %s equals false\n"), \
+        wxLogInfo(wxString::Format(wxT("skipping: %s.%s\n  reason: %s equals false\n"), \
                                     wxString(suiteName, wxConvUTF8).c_str(), \
                                     wxString(#testMethod, wxConvUTF8).c_str(), \
                                     wxString(#Condition, wxConvUTF8).c_str()))

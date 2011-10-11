@@ -12,8 +12,8 @@ Simple Generic autocompleter for completing words found in the current buffer.
 """
 
 __author__ = "Giuseppe \"Cowo\" Corbelli"
-__cvsid__ = "$Id: simplecomp.py 59583 2009-03-17 03:49:44Z CJP $"
-__revision__ = "$Revision: 59583 $"
+__cvsid__ = "$Id: simplecomp.py 67123 2011-03-04 00:02:35Z CJP $"
+__revision__ = "$Revision: 67123 $"
 
 #--------------------------------------------------------------------------#
 # Imports
@@ -26,11 +26,11 @@ import completer
 #--------------------------------------------------------------------------#
 
 class Completer(completer.BaseCompleter):
-    """Code completer provider"""
+    """Generic word completer provider"""
     wordCharacters = "".join(['_', string.letters])
 
     def __init__(self, stc_buffer):
-        completer.BaseCompleter.__init__(self, stc_buffer)
+        super(Completer, self).__init__(stc_buffer)
 
         # Setup
         self.SetAutoCompKeys([])
@@ -39,7 +39,6 @@ class Completer(completer.BaseCompleter):
         self.SetCallTipKeys([])
         self.SetCallTipCancel([])
         self.SetCaseSensitive(False)
-        self.SetAutoCompAfter(False) # Insert Text after cursor on completions
 
     def _GetCompletionInfo(self, command, calltip=False):
         """Get Completion list or Calltip
@@ -47,14 +46,18 @@ class Completer(completer.BaseCompleter):
 
         """
         bf = self.GetBuffer()
-        kwlst = bf.GetKeywords()
+        # A list of Symbol(keyword, TYPE_UNKNOWN)
+        kwlst = map(
+            lambda kw: completer.Symbol(kw, completer.TYPE_UNKNOWN),
+            bf.GetKeywords()
+        )
 
         if command in (None, u''):
             return kwlst
 
         fillups = self.GetAutoCompFillups()
         if command[0].isdigit() or (command[-1] in fillups):
-            return kwlst
+            return list()
 
         currentPos = bf.GetCurrentPos()
 
@@ -84,8 +87,6 @@ class Completer(completer.BaseCompleter):
         if self.GetCaseSensitive():
             flags |= stc.STC_FIND_MATCHCASE
 
-        # TODO: find out why calling this with an empty command string causes
-        #       a program lockup...
         posFind = bf.FindText(minPos, maxPos, command, flags)
         while posFind >= 0 and posFind < maxPos:
             wordEnd = posFind + len(command)
@@ -96,8 +97,9 @@ class Completer(completer.BaseCompleter):
                 wordLength = wordEnd - posFind
                 if wordLength > len(command):
                     word = bf.GetTextRange(posFind, wordEnd)
-                    if not wordsNear.count(word):
-                        wordsNear.append(word)
+                    sym = completer.Symbol(word, completer.TYPE_UNKNOWN)
+                    if not wordsNear.count(sym):
+                        wordsNear.append(sym)
                         maxWordLength = max(maxWordLength, wordLength)
                         nWords += 1
 

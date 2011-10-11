@@ -31,15 +31,15 @@ attribute that describes the type.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: taglib.py 57119 2008-12-05 02:17:28Z CJP $"
-__revision__ = "$Revision: 57119 $"
+__svnid__ = "$Id: taglib.py 64501 2010-06-06 01:54:09Z CJP $"
+__revision__ = "$Revision: 64501 $"
 
 #-----------------------------------------------------------------------------#
 # Code Object Base Classes
 
 class Code(object):
     """Code representation objects base class all code elements should
-    inheirit from this class.
+    inherit from this class.
 
     """
     def __init__(self, name, line, obj="code", scope=None):
@@ -52,9 +52,12 @@ class Code(object):
 
         """
         object.__init__(self)
+
+        # Attributes
         self.name = name
         self.line = line
         self.type = obj
+        self.doc = name
         self.scope = scope
 
     def __eq__(self, other):
@@ -75,12 +78,33 @@ class Code(object):
         else:
             return self.name
 
+    def GetDocumentation(self):
+        """Get any documentation associated with this object
+        @return: documentation string
+
+        """
+        return self.doc
+
+    def SetDocumentation(self, doc):
+        """Set the documentation string for this object
+        @param doc: documenation string
+
+        """
+        self.doc = doc
+
     def GetLine(self):
         """Returns the line of the code object
         @return: int
 
         """
         return self.line
+
+    def SetLine(self, line):
+        """Set this items line number
+        @param line: int
+
+        """
+        self.line = line
 
     def GetName(self):
         """Get the name of this code object
@@ -89,6 +113,13 @@ class Code(object):
         """
         return self.name
 
+    def SetName(self, objname):
+       """Set the name of this code object
+       @param objname: string
+
+       """
+       self.name = objname
+
     def GetScope(self):
         """Get the scope this object belongs to, if it returns None
         the scope of the object is at the global/top level.
@@ -96,6 +127,20 @@ class Code(object):
 
         """
         return self.scope
+
+    def GetType(self):
+        """Get the objects type identifier
+        @return: string
+
+        """
+        return self.type
+
+    def SetType(self, objtype):
+        """Set the object type id string
+        @param objtype: string
+
+        """
+        self.type = objtype
 
 #-----------------------------------------------------------------------------#
 
@@ -146,15 +191,9 @@ class Scope(Code):
         @return: list of dict
 
         """
-        def cmptup(x, y):
-            if x[1] < y[1]:
-                return -1
-            elif x[1] == y[1]:
-                return 0
-            else:
-                return 1
-
-        sorder = [ key for key, val in sorted(self.prio.items(), cmptup, reverse=True) ]
+        sorder = [ key for key, val in sorted(self.prio.items(),
+                                              key=lambda x: x[1],
+                                              reverse=True) ]
         rlist = list()
         for key in sorder:
             if key in self.elements:

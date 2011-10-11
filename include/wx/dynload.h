@@ -5,7 +5,7 @@
 //               (derived in part from dynlib.cpp (c) 1998 Guilhem Lavaux)
 // Modified by:
 // Created:      03/12/01
-// RCS-ID:       $Id: dynload.h 53135 2008-04-12 02:31:04Z VZ $
+// RCS-ID:       $Id: dynload.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:    (c) 2001 Ron Lee <ron@debian.org>
 // Licence:      wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ public:
     void  RefObj() { ++m_objcount; }
     void  UnrefObj()
     {
-        wxASSERT_MSG( m_objcount > 0, _T("Too many objects deleted??") );
+        wxASSERT_MSG( m_objcount > 0, wxT("Too many objects deleted??") );
         --m_objcount;
     }
 

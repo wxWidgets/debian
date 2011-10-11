@@ -3,7 +3,7 @@
 # Python Code By:
 #
 # Andrea Gavana, @ 18 Oct 2005
-# Latest Revision: 15 Oct 2008, 10.00 GMT
+# Latest Revision: 15 Aug 2010, 15.00 GMT
 #
 #
 # TODO List/Caveats
@@ -40,19 +40,24 @@
 
 
 """
-Description:
+ShapedButton tries to fill the lack of "custom shaped" controls in wxPython
+and it can be used to build round or elliptic-shaped buttons.
+
+
+Description
+===========
 
 ShapedButton tries to fill the lack of "custom shaped" controls in wxPython
 (that depends on the same lack in wxWidgets). It can be used to build round
 buttons or elliptic buttons.
 
-I have stolen some code from wx.lib.buttons in order to recreate the same
-classes (GenButton, GenBitmapButton, GenBitmapTextButton, GenToggleButton,
-GenBitmapToggleButton, GenBitmapTextToggleButton). Here you have the same
+I have stolen some code from `wx.lib.buttons` in order to recreate the same
+classes (`GenButton`, `GenBitmapButton`, `GenBitmapTextButton`, `GenToggleButton`,
+`GenBitmapToggleButton`, `GenBitmapTextToggleButton`). Here you have the same
 classes (with "Gen" replaced by "S"), with the same event handling, but they
 are rounded/elliptical buttons.
 
-ShapedButton is based on a wx.Window, in which 2 images are drawn depending
+ShapedButton is based on a `wx.Window`, in which 2 images are drawn depending
 on the button state (pressed or not pressed). The 2 images have been stolen
 from Audacity (written with wxWidgets) and rearranged/reshaped/restyled
 using adobe PhotoShop.
@@ -64,38 +69,31 @@ the circle/ellipse, even if ShapedButton is built on a rectangular window.
 This behavior is a lot different with respect to Audacity round buttons.
 
 
-Usage:
+Usage
+=====
 
 The ShapedButton constructions, excluding wxPython parameter are, for the
-6 Classes:
+6 Classes::
 
-MyShapedButton = SButton(parent,
-                         label)
+    MyShapedButton = SButton(parent, label)
 
-MyShapedButton = SBitmapButton(parent,
-                               bitmap)
+    MyShapedButton = SBitmapButton(parent, bitmap)
 
-MyShapedButton = SBitmapTextButton(parent,
-                                   bitmap,
-                                   label)
+    MyShapedButton = SBitmapTextButton(parent, bitmap, label)
 
-MyShapedButton = SToggleButton(parent,
-                               label)
+    MyShapedButton = SToggleButton(parent, label)
 
-MyShapedButton = SBitmapToggleButton(parent,
-                                     bitmap)
+    MyShapedButton = SBitmapToggleButton(parent, bitmap)
 
-MyShapedButton = SBitmapTextToggleButton(parent,
-                                         bitmap,
-                                         label)
+    MyShapedButton = SBitmapTextToggleButton(parent, bitmap, label)
 
-The ShapedButton construction and usage is quite similar to the wx.lib.buttons
+
+The ShapedButton construction and usage is quite similar to the `wx.lib.buttons`
 implementation.
-For the full listing of the input parameters, see the ShapedButton __init__()
-method.
 
 
-Methods and Settings:
+Methods and Settings
+====================
 
 With ShapedButton you can:
 
@@ -106,19 +104,37 @@ With ShapedButton you can:
 - Apply a rotation to the ShapedButton label;
 - Change ShapedButton shape and text orientation in runtime.
 
-For more info on methods and initial styles, please refer to the __init__()
-method for ShapedButton or to the specific functions.
 
-|=========================================================================== |
-| NOTE: ShapedButton *requires* PIL (Python Imaging Library) library to      |
-|       be installed.                                                        |
-|=========================================================================== |
+:note: ShapedButton **requires** PIL (Python Imaging Library) library to be installed,
+ which can be downloaded from http://www.pythonware.com/products/pil/ .
 
 
-ShapedButton control is freeware and distributed under the wxPython license.
+Window Styles
+=============
 
-Latest revision: Andrea Gavana @ 15 Oct 2008, 10.00 GMT
-Version 0.3
+`No particular window styles are available for this class.`
+
+
+Events Processing
+=================
+
+This class processes the following events:
+
+================= ==================================================
+Event Name        Description
+================= ==================================================
+``wx.EVT_BUTTON`` Process a `wx.wxEVT_COMMAND_BUTTON_CLICKED` event, when the button is clicked. 
+================= ==================================================
+
+
+License And Version
+===================
+
+ShapedButton is distributed under the wxPython license.
+
+Latest revision: Andrea Gavana @ 15 Aug 2010, 15.00 GMT
+
+Version 0.4
 
 """
 
@@ -158,14 +174,18 @@ from math import sin, cos, pi
 #-----------------------------------------------------------------------------
 
 def opj(path):
-    """ Convert paths to the platform-specific separator. """
+    """
+    Convert paths to the platform-specific separator.
 
-    str = apply(os.path.join, tuple(path.split('/')))
+    :param `path`: the path to convert.
+    """
+
+    strs = apply(os.path.join, tuple(path.split('/')))
     # HACK: on Linux, a leading / gets lost...
     if path.startswith('/'):
-        str = '/' + str
+        strs = '/' + strs
 
-    return str
+    return strs
 
 #-----------------------------------------------------------------------------
 
@@ -179,21 +199,48 @@ def opj(path):
 class SButtonEvent(wx.PyCommandEvent):
     """ Event sent from the generic buttons when the button is activated. """
 
-    def __init__(self, eventType, ID):
-        wx.PyCommandEvent.__init__(self, eventType, ID)
+    def __init__(self, eventType, eventId):
+        """
+        Default class constructor.
+
+        :param `eventType`: the event type;
+        :param `eventId`: the event identifier.
+        """
+
+        wx.PyCommandEvent.__init__(self, eventType, eventId)
         self.isDown = False
         self.theButton = None
+        
 
     def SetIsDown(self, isDown):
+        """
+        Sets the button event as pressed.
+
+        :param `isDown`: ``True`` to set the event as "pressed", ``False`` otherwise.
+        """
+        
         self.isDown = isDown
 
+
     def GetIsDown(self):
+        """ Returns ``True`` if the button event is "pressed". """
+        
         return self.isDown
+    
 
     def SetButtonObj(self, btn):
+        """
+        Sets the event object for the event.
+
+        :param `btn`: the button object.
+        """
+
         self.theButton = btn
 
+
     def GetButtonObj(self):
+        """ Returns the object associated with this event. """
+
         return self.theButton
 
 
@@ -205,18 +252,22 @@ class SButtonEvent(wx.PyCommandEvent):
 #----------------------------------------------------------------------
 
 class SButton(wx.Window):
-
+    """ This is the main implementation of ShapedButton. """
+    
     _labeldelta = 1
 
-    def __init__(self, parent, id=wx.ID_ANY,label="", pos=wx.DefaultPosition,
+    def __init__(self, parent, id=wx.ID_ANY, label="", pos=wx.DefaultPosition,
                  size=wx.DefaultSize):
         """
         Default class constructor.
 
-        Non standard wxPython parameters are:
-
-        a) label: the label you wish to assing to your SButton.
-
+        :param `parent`: the L{SButton} parent. Must not be ``None``;
+        :param `id`: window identifier. A value of -1 indicates a default value;
+        :param `label`: the button text label;
+        :param `pos`: the control position. A value of (-1, -1) indicates a default position,
+         chosen by either the windowing system or wxPython, depending on platform;
+        :param `size`: the control size. A value of (-1, -1) indicates a default size,
+         chosen by either the windowing system or wxPython, depending on platform.
         """
 
         wx.Window.__init__(self, parent, id, pos, size)
@@ -262,9 +313,11 @@ class SButton(wx.Window):
         """
         Sets the button colour, for all button states.
 
-        The original button images are greyscale with a lot of pixels with
-        different colours. Changing smoothly the button colour in order to
-        give the same 3d effect can be efficiently done only with PIL.
+        :param `colour`: an instance of `wx.Colour`.
+        
+        :note: The original button images are greyscale with a lot of pixels with
+         different colours. Changing smoothly the button colour in order to
+         give the same 3D effect can be efficiently done only with PIL.
         """
 
         if colour is None:
@@ -280,13 +333,17 @@ class SButton(wx.Window):
 
 
     def GetButtonColour(self):
-        """ Returns the button colour."""
+        """ Returns the button colour. """
 
         return self._buttoncolour
 
 
     def SetLabelColour(self, colour=None):
-        """ Sets the button label colour."""
+        """
+        Sets the button label colour.
+
+        :param `colour`: an instance of `wx.Colour`.
+        """
 
         if colour is None:
             colour = wx.BLACK
@@ -295,13 +352,17 @@ class SButton(wx.Window):
 
 
     def GetLabelColour(self):
-        """ Returns the button label colour."""
+        """ Returns the button label colour. """
 
         return self._labelcolour
 
 
     def SetLabel(self, label=None):
-        """ Sets the button label."""
+        """
+        Sets the button label.
+
+        :param `label`: the new button label.
+        """
 
         if label is None:
             label = ""
@@ -310,18 +371,23 @@ class SButton(wx.Window):
 
 
     def GetLabel(self):
-        """ Returns the button label."""
+        """ Returns the button label. """
 
         return self._buttonlabel
 
 
     def SetBestSize(self, size=None):
-        """ Given the current font settings, calculate and set a good size. """
+        """
+        Given the current font settings, calculate and set a good size.
+
+        :param `size`: if not ``None``, an instance of `wx.Size` to pass to
+         `SetInitialSize`.
+        """
 
         if size is None:
             size = wx.DefaultSize
 
-        self.SetBestFittingSize(size)
+        self.SetInitialSize(size)
 
 
     def DoGetBestSize(self):
@@ -346,14 +412,18 @@ class SButton(wx.Window):
 
 
     def AcceptsFocus(self):
-        """ Overridden base class virtual. """
+        """
+        Can this window be given focus by mouse click?
+
+        :note: Overridden from `wx.Window`.
+        """
 
         return self.IsShown() and self.IsEnabled()
 
 
     def ShouldInheritColours(self):
         """
-        Overridden base class virtual.  Buttons usually do not inherit
+        Overridden base class virtual. Buttons usually do not inherit
         parent's colours.
         """
 
@@ -361,7 +431,13 @@ class SButton(wx.Window):
 
 
     def Enable(self, enable=True):
-        """ Enables/disables the button. """
+        """
+        Enables/disables the button.
+
+        :param `enable`: ``True`` to enable the button, ``False`` to disable it.
+        
+        :note: Overridden from `wx.Window`.
+        """
 
         self._enabled = enable
         self.Refresh()
@@ -374,7 +450,11 @@ class SButton(wx.Window):
 
 
     def SetUseFocusIndicator(self, flag):
-        """ Specifies if a focus indicator (dotted line) should be used. """
+        """
+        Specifies if a focus indicator (dotted line) should be used.
+
+        :param `flag`: ``True`` to use the focus indicator, ``False`` otherwise.
+        """
 
         self._usefocusind = flag
 
@@ -430,7 +510,13 @@ class SButton(wx.Window):
 
 
     def DrawMainButton(self, dc, width, height):
-        """ Draws the main button, in whichever state it is. """
+        """
+        Draws the main button, in whichever state it is.
+
+        :param `dc`: an instance of `wx.DC`;
+        :param `width`: the button width;
+        :param `height`: the button height.
+        """
 
         w = min(width, height)
 
@@ -504,7 +590,15 @@ class SButton(wx.Window):
 
 
     def DrawLabel(self, dc, width, height, dw=0, dh=0):
-        """ Draws the label on the button. """
+        """
+        Draws the label on the button.
+
+        :param `dc`: an instance of `wx.DC`;
+        :param `width`: the button width;
+        :param `height`: the button height;
+        :param `dw`: width differential, to show a 3D effect;
+        :param `dh`: height differential, to show a 3D effect.        
+        """
 
         dc.SetFont(self.GetFont())
 
@@ -541,6 +635,10 @@ class SButton(wx.Window):
         Draws the focus indicator. This is a circle/ellipse inside the button
         drawn with a dotted-style pen, to let the user know which button has
         the focus.
+
+        :param `dc`: an instance of `wx.DC`;
+        :param `width`: the button width;
+        :param `height`: the button height.        
         """
 
         self._focusindpen.SetColour(self._focusclr)
@@ -565,14 +663,22 @@ class SButton(wx.Window):
 
 
     def OnSize(self, event):
-        """ Handles wx.EVT_SIZE events. Mandatory on windows (MSW)."""
+        """
+        Handles the ``wx.EVT_SIZE`` event for L{SButton}.
+
+        :param `event`: a `wx.SizeEvent` event to be processed.
+        """
 
         self.Refresh()
         event.Skip()
 
 
     def OnPaint(self, event):
-        """ Handles the wx.EVT_PAINT event. Mandatory on all platforms. """
+        """
+        Handles the ``wx.EVT_PAINT`` event for L{SButton}.
+
+        :param `event`: a `wx.PaintEvent` event to be processed.
+        """
 
         (width, height) = self.GetClientSizeTuple()
 
@@ -595,7 +701,12 @@ class SButton(wx.Window):
 
 
     def IsOutside(self, x, y):
-        """ Checks if a mouse events occurred inside the circle/ellipse or not. """
+        """
+        Checks if a mouse events occurred inside the circle/ellipse or not.
+
+        :param `x`: the mouse x position;
+        :param `y`: the mouse y position.
+        """
 
         (width, height) = self.GetClientSizeTuple()
         diam = min(width, height)
@@ -619,7 +730,11 @@ class SButton(wx.Window):
 
 
     def OnLeftDown(self, event):
-        """ Handles left down mouse events. """
+        """
+        Handles the ``wx.EVT_LEFT_DOWN`` event for L{SButton}.
+
+        :param `event`: a `wx.MouseEvent` event to be processed.
+        """
 
         if not self.IsEnabled():
             return
@@ -630,7 +745,10 @@ class SButton(wx.Window):
             return
 
         self._isup = False
-        self.CaptureMouse()
+
+        if not self.HasCapture():
+            self.CaptureMouse()
+
         self.SetFocus()
 
         self.Refresh()
@@ -638,7 +756,11 @@ class SButton(wx.Window):
 
 
     def OnLeftUp(self, event):
-        """ Handles left up mouse events. """
+        """
+        Handles the ``wx.EVT_LEFT_UP`` event for L{SButton}.
+
+        :param `event`: a `wx.MouseEvent` event to be processed.
+        """
 
         if not self.IsEnabled() or not self.HasCapture():
             return
@@ -655,7 +777,11 @@ class SButton(wx.Window):
 
 
     def OnMotion(self, event):
-        """ Handles mouse motion events. """
+        """
+        Handles the ``wx.EVT_MOTION`` event for L{SButton}.
+
+        :param `event`: a `wx.MouseEvent` event to be processed.
+        """
 
         if not self.IsEnabled() or not self.HasCapture():
             return
@@ -677,7 +803,11 @@ class SButton(wx.Window):
 
 
     def OnGainFocus(self, event):
-        """ Handles wx.EVT_SET_FOCUS events. """
+        """
+        Handles the ``wx.EVT_SET_FOCUS`` event for L{SButton}.
+
+        :param `event`: a `wx.FocusEvent` event to be processed.
+        """
 
         self._hasfocus = True
         dc = wx.ClientDC(self)
@@ -688,7 +818,11 @@ class SButton(wx.Window):
 
 
     def OnLoseFocus(self, event):
-        """ Handles wx.EVT_KILL_FOCUS events. """
+        """
+        Handles the ``wx.EVT_KILL_FOCUS`` event for L{SButton}.
+
+        :param `event`: a `wx.FocusEvent` event to be processed.
+        """
 
         self._hasfocus = False
         dc = wx.ClientDC(self)
@@ -701,7 +835,11 @@ class SButton(wx.Window):
 
 
     def OnKeyDown(self, event):
-        """ Handles key down events just like wx.lib.buttons do. """
+        """
+        Handles the ``wx.EVT_KEY_DOWN`` event for L{SButton}.
+
+        :param `event`: a `wx.KeyEvent` event to be processed.
+        """
 
         if self._hasfocus and event.KeyCode() == ord(" "):
 
@@ -712,7 +850,11 @@ class SButton(wx.Window):
 
 
     def OnKeyUp(self, event):
-        """ Handles key up events just like wx.lib.buttons do. """
+        """
+        Handles the ``wx.EVT_KEY_UP`` event for L{SButton}.
+
+        :param `event`: a `wx.KeyEvent` event to be processed.
+        """
 
         if self._hasfocus and event.GetKeyCode() == ord(" "):
 
@@ -724,7 +866,13 @@ class SButton(wx.Window):
 
 
     def MakePalette(self, tr, tg, tb):
-        """ Creates a palette to be applied on an image based on input colour. """
+        """
+        Creates a palette to be applied on an image based on input colour.
+
+        :param `tr`: the red intensity of the input colour;
+        :param `tg`: the green intensity of the input colour;
+        :param `tb`: the blue intensity of the input colour.
+        """
 
         l = []
         for i in range(255):
@@ -734,7 +882,11 @@ class SButton(wx.Window):
 
 
     def ConvertWXToPIL(self, bmp):
-        """ Convert wx.Image into PIL image. """
+        """
+        Converts a `wx.Image` into a PIL image.
+
+        :param `bmp`: an instance of `wx.Image`.    
+        """
 
         width = bmp.GetWidth()
         height = bmp.GetHeight()
@@ -744,7 +896,13 @@ class SButton(wx.Window):
 
 
     def ConvertPILToWX(self, pil, alpha=True):
-        """ Convert PIL image into wx.Image. """
+        """
+        Converts a PIL image into a `wx.Image`.
+
+        :param `pil`: a PIL image;
+        :param `alpha`: ``True`` if the image contains alpha transparency, ``False``
+         otherwise.
+        """
 
         if alpha:
             image = apply(wx.EmptyImage, pil.size)
@@ -760,7 +918,11 @@ class SButton(wx.Window):
 
 
     def SetAngleOfRotation(self, angle=None):
-        """ Sets angle of button label rotation (in degrees!!). """
+        """
+        Sets angle of button label rotation.
+
+        :param `angle`: the label rotation, in degrees.
+        """
 
         if angle is None:
             angle = 0
@@ -769,7 +931,7 @@ class SButton(wx.Window):
 
 
     def GetAngleOfRotation(self):
-        """ Returns angle of button label rotation (in degrees!!). """
+        """ Returns angle of button label rotation, in degrees. """
 
         return self._rotation*180.0/pi
 
@@ -778,6 +940,11 @@ class SButton(wx.Window):
         """
         Sets the ellipse axis. What it is important is not their absolute values
         but their ratio.
+
+        :param `main`: a floating point number representing the absolute dimension
+         of the main ellipse axis;
+        :param `secondary`: a floating point number representing the absolute dimension
+         of the secondary ellipse axis.         
         """
 
         if main is None:
@@ -788,7 +955,7 @@ class SButton(wx.Window):
 
 
     def GetEllipseAxis(self):
-        """ Returns the ellipse axis. """
+        """ Returns the ellipse axes. """
 
         return self._ellipseaxis
 
@@ -798,21 +965,27 @@ class SButton(wx.Window):
 # It Is Derived From SButton, And It Is A Class Useful To Draw A
 # ShapedButton With An Image In The Middle. The Button Can Have 4
 # Different Bitmaps Assigned To Its Different States (Pressed, Non
-# Pressed, With Focus, Disabled.
+# Pressed, With Focus, Disabled).
 #----------------------------------------------------------------------
 
 
 class SBitmapButton(SButton):
+    """
+    Subclass of L{SButton} which displays a bitmap, acting like a
+    `wx.BitmapButton`.
+    """
 
-    def __init__(self, parent, id, bitmap,
-                 pos = wx.DefaultPosition, size = wx.DefaultSize):
+    def __init__(self, parent, id, bitmap, pos=wx.DefaultPosition, size=wx.DefaultSize):
         """
         Default class constructor.
 
-        Non standard wxPython parameters are:
-
-        a) bitmap: the bitmap you wish to assing to your SBitmapButton.
-
+        :param `parent`: the L{SBitmapButton} parent. Must not be ``None``;
+        :param `id`: window identifier. A value of -1 indicates a default value;
+        :param `bitmap`: the button bitmap (if any);
+        :param `pos`: the control position. A value of (-1, -1) indicates a default position,
+         chosen by either the windowing system or wxPython, depending on platform;
+        :param `size`: the control size. A value of (-1, -1) indicates a default size,
+         chosen by either the windowing system or wxPython, depending on platform.
         """
 
         self._bmpdisabled = None
@@ -825,6 +998,8 @@ class SBitmapButton(SButton):
 
 
     def GetBitmapLabel(self):
+        """ Returns the bitmap associated with the button in the normal state. """
+        
         return self._bmplabel
 
 
@@ -847,20 +1022,32 @@ class SBitmapButton(SButton):
 
 
     def SetBitmapDisabled(self, bitmap):
-        """ Sets the bitmap to display when the button is disabled. """
+        """
+        Sets the bitmap to display when the button is disabled.
+
+        :param `bitmap`: a valid `wx.Bitmap` object.
+        """
 
         self._bmpdisabled = bitmap
 
 
     def SetBitmapFocus(self, bitmap):
-        """ Sets the bitmap to display when the button has the focus. """
+        """
+        Sets the bitmap to display when the button has the focus.
+
+        :param `bitmap`: a valid `wx.Bitmap` object.
+        """
 
         self._bmpfocus = bitmap
         self.SetUseFocusIndicator(False)
 
 
     def SetBitmapSelected(self, bitmap):
-        """ Sets the bitmap to display when the button is selected (pressed). """
+        """
+        Sets the bitmap to display when the button is selected (pressed).
+
+        :param `bitmap`: a valid `wx.Bitmap` object.
+        """
 
         self._bmpselected = bitmap
 
@@ -868,9 +1055,11 @@ class SBitmapButton(SButton):
     def SetBitmapLabel(self, bitmap, createothers=True):
         """
         Sets the bitmap to display normally. This is the only one that is
-        required. If "createothers" is true, then the other bitmaps will
-        be generated on the fly. Currently, only the disabled bitmap is
-        generated.
+        required.
+
+        :param `bitmap`: a valid `wx.Bitmap` object;
+        :param `createothers`: if set to ``True``, then the other bitmaps will be
+         generated on the fly. Currently, only the disabled bitmap is generated.
         """
 
         self._bmplabel = bitmap
@@ -891,7 +1080,15 @@ class SBitmapButton(SButton):
 
 
     def DrawLabel(self, dc, width, height, dw=0, dh=0):
-        """ Draws the bitmap in the middle of the button. """
+        """
+        Draws the bitmap in the middle of the button.
+
+        :param `dc`: an instance of `wx.DC`;
+        :param `width`: the button width;
+        :param `height`: the button height;
+        :param `dw`: width differential, to show a 3D effect;
+        :param `dh`: height differential, to show a 3D effect.        
+        """
 
         bmp = self._bmplabel
 
@@ -918,22 +1115,27 @@ class SBitmapButton(SButton):
 # It Is Derived From SButton, And It Is A Class Useful To Draw A
 # ShapedButton With An Image And Some Text Ceneterd In The Middle.
 # The Button Can Have 4 Different Bitmaps Assigned To Its Different
-# States (Pressed, Non Pressed, With Focus, Disabled.
+# States (Pressed, Non Pressed, With Focus, Disabled).
 #----------------------------------------------------------------------
 
 class SBitmapTextButton(SBitmapButton):
+    """
+    Subclass of L{SButton} which displays a bitmap and a label.
+    """
 
     def __init__(self, parent, id, bitmap, label,
-                 pos = wx.DefaultPosition, size = wx.DefaultSize):
-
+                 pos=wx.DefaultPosition, size=wx.DefaultSize):
         """
         Default class constructor.
 
-        Non standard wxPython parameters are:
-
-        a) bitmap: the bitmap you wish to assing to your SBitmapTextButton;
-        b) label: the text that will be displayed together with the bitmap.
-
+        :param `parent`: the L{SBitmapTextButton} parent. Must not be ``None``;
+        :param `id`: window identifier. A value of -1 indicates a default value;
+        :param `bitmap`: the button bitmap (if any);
+        :param `label`: the button text label;
+        :param `pos`: the control position. A value of (-1, -1) indicates a default position,
+         chosen by either the windowing system or wxPython, depending on platform;
+        :param `size`: the control size. A value of (-1, -1) indicates a default size,
+         chosen by either the windowing system or wxPython, depending on platform.
         """
 
         SBitmapButton.__init__(self, parent, id, bitmap, pos, size)
@@ -961,7 +1163,15 @@ class SBitmapTextButton(SBitmapButton):
 
 
     def DrawLabel(self, dc, width, height, dw=0, dh=0):
-        """ Draws the bitmap and the text labels. """
+        """
+        Draws the bitmap and the text label.
+
+        :param `dc`: an instance of `wx.DC`;
+        :param `width`: the button width;
+        :param `height`: the button height;
+        :param `dw`: width differential, to show a 3D effect;
+        :param `dh`: height differential, to show a 3D effect.
+        """
 
         bmp = self._bmplabel
 
@@ -1028,10 +1238,18 @@ class SBitmapTextButton(SBitmapButton):
 # SBitmapTextButton In The Corresponding ToggleButtons.
 #----------------------------------------------------------------------
 
-class __SToggleMixin:
-
+class __SToggleMixin(object):
+    """
+    A mixin that allows to transform any of L{SButton}, L{SBitmapButton} and
+    L{SBitmapTextButton} in the corresponding toggle buttons.
+    """
 
     def SetToggle(self, flag):
+        """
+        Sets the button as toggled/not toggled.
+
+        :param `flag`: ``True`` to set the button as toggled, ``False`` otherwise.
+        """
 
         self._isup = not flag
         self.Refresh()
@@ -1040,6 +1258,7 @@ class __SToggleMixin:
 
 
     def GetToggle(self):
+        """ Returns the toggled state of a button. """
 
         return not self._isup
 
@@ -1047,6 +1266,11 @@ class __SToggleMixin:
 
 
     def OnLeftDown(self, event):
+        """
+        Handles the ``wx.EVT_LEFT_DOWN`` event for the button.
+
+        :param `event`: a `wx.MouseEvent` event to be processed.
+        """
 
         if not self.IsEnabled():
             return
@@ -1058,12 +1282,21 @@ class __SToggleMixin:
 
         self._saveup = self._isup
         self._isup = not self._isup
-        self.CaptureMouse()
+
+        if not self.HasCapture():
+            self.CaptureMouse()
+
         self.SetFocus()
         self.Refresh()
 
 
     def OnLeftUp(self, event):
+        """
+        Handles the ``wx.EVT_LEFT_UP`` event for the button.
+
+        :param `event`: a `wx.MouseEvent` event to be processed.
+        """
+
 
         if not self.IsEnabled() or not self.HasCapture():
             return
@@ -1077,11 +1310,21 @@ class __SToggleMixin:
 
 
     def OnKeyDown(self, event):
+        """
+        Handles the ``wx.EVT_KEY_DOWN`` event for the button.
+
+        :param `event`: a `wx.KeyEvent` event to be processed.
+        """
 
         event.Skip()
 
 
     def OnMotion(self, event):
+        """
+        Handles the ``wx.EVT_MOTION`` event for the button.
+
+        :param `event`: a `wx.MouseEvent` event to be processed.
+        """
 
         if not self.IsEnabled():
             return
@@ -1105,6 +1348,11 @@ class __SToggleMixin:
 
 
     def OnKeyUp(self, event):
+        """
+        Handles the ``wx.EVT_KEY_UP`` event for the button.
+
+        :param `event`: a `wx.KeyEvent` event to be processed.
+        """
 
         if self._hasfocus and event.KeyCode() == ord(" "):
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     13/07/98
-// RCS-ID:      $Id: wincmn.cpp 57704 2009-01-01 15:18:40Z VZ $
+// RCS-ID:      $Id: wincmn.cpp 63032 2009-12-31 13:37:24Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -2363,7 +2363,7 @@ void wxWindowBase::OnMiddleClick( wxMouseEvent& event )
         msg.Printf(_T("wxWidgets Library (%s port)\n")
                    _T("Version %d.%d.%d%s%s, compiled at %s %s\n")
                    _T("Runtime version of toolkit used is %d.%d.%s\n")
-                   _T("Copyright (c) 1995-2009 wxWidgets team"),
+                   _T("Copyright (c) 1995-2010 wxWidgets team"),
                    wxPlatformInfo::Get().GetPortIdName().c_str(),
                    wxMAJOR_VERSION,
                    wxMINOR_VERSION,

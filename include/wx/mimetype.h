@@ -5,7 +5,7 @@
 // Modified by:
 //  Chris Elliott (biol75@york.ac.uk) 5 Dec 00: write support for Win32
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.h 53135 2008-04-12 02:31:04Z VZ $
+// RCS-ID:      $Id: mimetype.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -51,12 +51,12 @@ class WXDLLIMPEXP_BASE wxMimeType : public wxString
 public:
     // all string ctors here
 
-    wxString GetType() const { return BeforeFirst(_T('/')); }
-    wxString GetSubType() const { return AfterFirst(_T('/')); }
+    wxString GetType() const { return BeforeFirst(wxT('/')); }
+    wxString GetSubType() const { return AfterFirst(wxT('/')); }
 
     void SetSubType(const wxString& subtype)
     {
-        *this = GetType() + _T('/') + subtype;
+        *this = GetType() + wxT('/') + subtype;
     }
 
     bool Matches(const wxMimeType& wildcard)

@@ -20,29 +20,30 @@ makes the calls to the other support objects/functions in this library.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id: autocomp.py 60377 2009-04-26 04:47:41Z CJP $"
-__revision__ = "$Revision: 60377 $"
+__svnid__ = "$Id: autocomp.py 66207 2010-11-18 15:56:19Z CJP $"
+__revision__ = "$Revision: 66207 $"
+__all__ = ['AutoCompService',]
 
 #--------------------------------------------------------------------------#
-# Dependancies
+# Dependencies
+import wx
 import wx.stc as stc
 
 # Local imports
-from completer import *
 import simplecomp
 
 #--------------------------------------------------------------------------#
 
 class AutoCompService(object):
-    """Interface to retrieve and provide autcompletion and
+    """Interface to retrieve and provide autocompletion and
     calltip information to an stc control. The plain text
-    (empty) completion provider is built in. All other provders
+    (empty) completion provider is built in. All other providers
     are loaded from external modules on request.
 
     """
     def __init__(self):
         """Initializes the autocompletion service"""
-        object.__init__(self)
+        super(AutoCompService, self).__init__()
 
     @staticmethod
     def GetCompleter(buff, extended=False):
@@ -94,10 +95,13 @@ def GetAutoCompList(self, command):
     'smart' completer.
 
     """
-    data = self.BaseGetAutoCompList(command)
-    exdata = self.scomp.GetAutoCompList(command)
-    data.extend(exdata)
-    return data
+    baseList = self.BaseGetAutoCompList(command)
+    scompList = self.scomp.GetAutoCompList(command)
+    # Wipeout duplicates by creating a set, then sort data alphabetically
+    baseList.extend(scompList)
+    rlist = list(set(baseList))
+    rlist.sort()
+    return rlist
 
 class CompleterFactory(object):
     """Factory for creating composite completer objects"""

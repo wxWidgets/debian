@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-08
-// RCS-ID:      $Id: stackwalk.cpp 47767 2007-07-28 00:16:55Z VZ $
+// RCS-ID:      $Id: stackwalk.cpp 61341 2009-07-07 09:35:56Z VZ $
 // Copyright:   (c) 2003-2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -318,6 +318,8 @@ void wxStackWalker::WalkFrom(const _EXCEPTION_POINTERS *ep, size_t skip)
 
 void wxStackWalker::WalkFromException()
 {
+    // wxGlobalSEInformation is unavailable if wxUSE_ON_FATAL_EXCEPTION==0
+#if wxUSE_ON_FATAL_EXCEPTION
     extern EXCEPTION_POINTERS *wxGlobalSEInformation;
 
     wxCHECK_RET( wxGlobalSEInformation,
@@ -325,6 +327,7 @@ void wxStackWalker::WalkFromException()
 
     // don't skip any frames, the first one is where we crashed
     WalkFrom(wxGlobalSEInformation, 0);
+#endif // wxUSE_ON_FATAL_EXCEPTION
 }
 
 void wxStackWalker::Walk(size_t skip, size_t WXUNUSED(maxDepth))

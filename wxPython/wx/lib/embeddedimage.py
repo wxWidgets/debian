@@ -7,7 +7,7 @@
 # Author:      Anthony Tuininga
 #
 # Created:     26-Nov-2007
-# RCS-ID:      $Id: embeddedimage.py 59672 2009-03-20 20:59:42Z RD $
+# RCS-ID:      $Id: embeddedimage.py 65198 2010-08-04 20:22:39Z RD $
 # Copyright:   (c) 2007 by Anthony Tuininga
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -48,6 +48,7 @@ class PyEmbeddedImage(object):
         return wx.BitmapFromImage(self.GetImage())
 
     def GetData(self):
+        data = self.data
         if self.isBase64:
             data = b64decode(self.data)
         return data

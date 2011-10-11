@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _button.i 54625 2008-07-14 22:20:10Z RD $
+// RCS-ID:      $Id: _button.i 67470 2011-04-13 18:19:58Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -39,6 +39,7 @@ indeed almost any other window.", "
 
 Window Styles
 -------------
+
     ==============   ==========================================
     wx.BU_LEFT       Left-justifies the label. Windows and GTK+ only.
     wx.BU_TOP        Aligns the label to the top of the button.
@@ -53,6 +54,7 @@ Window Styles
 
 Events
 ------
+
     ============     ==========================================
     EVT_BUTTON       Sent when the button is clicked.
     ============     ==========================================

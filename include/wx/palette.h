@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:
-// RCS-ID:      $Id: palette.h 41751 2006-10-08 21:56:55Z VZ $
+// RCS-ID:      $Id: palette.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ public:
 
     virtual bool Ok() const { return IsOk(); }
     virtual bool IsOk() const = 0;
-    virtual int GetColoursCount() const { wxFAIL_MSG( _T("not implemented") ); return 0; }
+    virtual int GetColoursCount() const { wxFAIL_MSG( wxT("not implemented") ); return 0; }
 };
 
 #if defined(__WXPALMOS__)

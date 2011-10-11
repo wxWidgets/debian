@@ -96,7 +96,7 @@ class FWSPanel(wx.Panel):
         self.log = log
 
         cp = ControlPane(self)
-        splitter = FWS.FourWaySplitter(self, style=wx.SP_LIVE_UPDATE)
+        splitter = FWS.FourWaySplitter(self, agwStyle=wx.SP_LIVE_UPDATE)
         self.splitter = splitter
         self.log = log
 
@@ -169,9 +169,9 @@ class FWSPanel(wx.Panel):
     def SetLiveUpdate(self, enable):
 
         if enable:
-            self.splitter.SetWindowStyle(wx.SP_LIVE_UPDATE)
+            self.splitter.SetAGWWindowStyleFlag(wx.SP_LIVE_UPDATE)
         else:
-            self.splitter.SetWindowStyle(0)
+            self.splitter.SetAGWWindowStyleFlag(0)
 
 
     def Swap2and4(self):

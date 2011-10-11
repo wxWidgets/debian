@@ -16,7 +16,7 @@ def runInDir(command, dir=None, verbose=True):
         olddir = os.getcwd()
         os.chdir(dir)
 
-    commandStr = string.join(command, " ")
+    commandStr = " ".join(command)
     if verbose:
         print commandStr
     result = os.system(commandStr)
@@ -86,16 +86,20 @@ class Builder:
             if sys.platform.startswith("win"):
                 path = '"%s"' % path
             return path
-        else:
-            return self.name
+
+        return self.name
 
     def clean(self, dir=None, projectFile=None):
         """
         dir = the directory containing the project file
         projectFile = Some formats need to explicitly specify the project file's name
         """
+        
+        args = [self.getProgramPath(), "clean"]
+        if dir:
+            args.append(dir)
         if self.isAvailable():
-            result = runInDir("%s clean" % self.getProgramPath(), dir)
+            result = runInDir(args)
             return result
 
         return False
@@ -172,7 +176,9 @@ class AutoconfBuilder(GNUMakeBuilder):
             return 1
 
         optionsStr = string.join(options, " ") if options else ""
-        result = os.system("%s %s" % (configure_cmd, optionsStr))
+        command = "%s %s" % (configure_cmd, optionsStr)
+        print command
+        result = os.system(command)
         #os.chdir(olddir)
         return result
 

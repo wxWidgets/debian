@@ -2,7 +2,7 @@
 // Name:        gtk/timer.cpp
 // Purpose:     wxTimer implementation
 // Author:      Robert Roebling
-// Id:          $Id: timer.cpp 36875 2006-01-14 18:32:37Z MR $
+// Id:          $Id: timer.cpp 62333 2009-10-08 13:56:30Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,8 @@ static gint timeout_callback( gpointer data )
 
     // Don't change the order of anything in this callback!
 
-    if (timer->IsOneShot())
+    const bool oneshot = timer->IsOneShot();
+    if ( oneshot )
     {
         // This sets m_tag to -1
         timer->Stop();
@@ -45,7 +46,7 @@ static gint timeout_callback( gpointer data )
     // Release lock again.
     gdk_threads_leave();
 
-    if (timer->IsOneShot())
+    if ( oneshot )
         return FALSE;
 
     return TRUE;

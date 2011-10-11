@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: listctrl.h 55309 2008-08-27 08:21:09Z SC $
+// RCS-ID:      $Id: listctrl.h 60825 2009-05-30 22:38:47Z VZ $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -325,6 +325,12 @@ class WXDLLEXPORT wxListCtrl: public wxControl
   virtual bool SetForegroundColour(const wxColour& colour);
   virtual bool SetBackgroundColour(const wxColour& colour);
   virtual wxColour GetBackgroundColour() const;
+
+#if wxABI_VERSION >= 20811
+  virtual void Freeze ();
+  virtual void Thaw ();
+  virtual void Update ();
+#endif
   
   // functions for editing/timer
   void OnRenameTimer();

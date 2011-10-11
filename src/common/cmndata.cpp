@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cmndata.cpp 43762 2006-12-03 15:26:01Z SC $
+// RCS-ID:      $Id: cmndata.cpp 60700 2009-05-20 13:18:11Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -649,9 +649,12 @@ void wxPageSetupDialogData::CalculatePaperSizeFromId()
 
     wxSize sz = wxThePrintPaperDatabase->GetSize(m_printData.GetPaperId());
 
-    // sz is in 10ths of a mm, while paper size is in mm
-    m_paperSize.x = sz.x / 10;
-    m_paperSize.y = sz.y / 10;
+    if (sz != wxSize(0, 0))
+    {
+        // sz is in 10ths of a mm, while paper size is in mm
+        m_paperSize.x = sz.x / 10;
+        m_paperSize.y = sz.y / 10;
+    }
 }
 
 #endif // wxUSE_PRINTING_ARCHITECTURE

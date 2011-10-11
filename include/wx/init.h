@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.06.2003
-// RCS-ID:      $Id: init.h 42109 2006-10-19 07:43:24Z MR $
+// RCS-ID:      $Id: init.h 61558 2009-07-30 10:14:36Z VS $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -62,6 +62,9 @@ extern int WXDLLIMPEXP_BASE wxEntry(int& argc, char **argv);
 // initialize the library (may be called as many times as needed, but each
 // call to wxInitialize() must be matched by wxUninitialize())
 extern bool WXDLLIMPEXP_BASE wxInitialize(int argc = 0, wxChar **argv = NULL);
+#if wxUSE_UNICODE && wxABI_VERSION >= 20811
+extern bool WXDLLIMPEXP_BASE wxInitialize(int argc, char **argv);
+#endif
 
 // clean up -- the library can't be used any more after the last call to
 // wxUninitialize()
@@ -77,6 +80,13 @@ public:
     {
         m_ok = wxInitialize(argc, argv);
     }
+
+#if wxUSE_UNICODE && wxABI_VERSION >= 20811
+    wxInitializer(int argc, char **argv)
+    {
+        m_ok = wxInitialize(argc, argv);
+    }
+#endif // wxUSE_UNICODE
 
     // has the initialization been successful? (explicit test)
     bool IsOk() const { return m_ok; }

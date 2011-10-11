@@ -14,8 +14,8 @@ Miscellaneous utility functions and gui helpers
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: eclutil.py 60250 2009-04-20 03:35:30Z CJP $"
-__revision__ = "$Revision: 60250 $"
+__svnid__ = "$Id: eclutil.py 67596 2011-04-24 20:05:20Z CJP $"
+__revision__ = "$Revision: 67596 $"
 
 __all__ = ['AdjustAlpha', 'AdjustColour', 'BestLabelColour', 'HexToRGB',
            'GetHighlightColour', 'EmptyBitmapRGBA',
@@ -63,13 +63,13 @@ def AdjustColour(color, percent, alpha=wx.ALPHA_OPAQUE):
     """ Brighten/Darken input colour by percent and adjust alpha
     channel if needed. Returns the modified color.
     @param color: color object to adjust
-    @type color: wx.Color
+    @type color: wx.Colour
     @param percent: percent to adjust +(brighten) or -(darken)
     @type percent: int
     @keyword alpha: amount to adjust alpha channel
 
     """
-    radj, gadj, badj = [ int(val * (abs(percent) / 100.))
+    radj, gadj, badj = [ int(val * (abs(percent) / 100.0))
                          for val in color.Get() ]
 
     if percent < 0:
@@ -88,7 +88,7 @@ def BestLabelColour(color):
     @param color: background color that text will be drawn on
 
     """
-    avg = sum(color.Get()) / 3
+    avg = sum(color.Get()) // 3
     if avg > 192:
         txt_color = wx.BLACK
     elif avg > 128:
@@ -106,14 +106,14 @@ def GetHighlightColour():
     """
     if wx.Platform == '__WXMAC__':
         if CARBON:
-            if wx.VERSION < (2, 9, 0, 0, ''):
+            if hasattr(wx, 'MacThemeColour'):
+                color = wx.MacThemeColour(Carbon.Appearance.kThemeBrushFocusHighlight)
+                return color
+            else:
                 # kThemeBrushButtonPressedLightHighlight
                 brush = wx.Brush(wx.BLACK)
                 brush.MacSetTheme(Carbon.Appearance.kThemeBrushFocusHighlight)
                 return brush.GetColour()
-            else:
-                color = wx.Colour(Carbon.Appearance.kThemeBrushFocusHighlight)
-                return color
 
     # Fallback to text highlight color
     return wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT)
@@ -140,7 +140,8 @@ def HexToRGB(hex_str):
 def EmptyBitmapRGBA(width, height):
     """Create an empty bitmap with an alpha channel"""
     bmp = wx.EmptyBitmap(width, height, 32)
-    bmp.UseAlpha()
+    if hasattr(bmp, 'UseAlpha'):
+        bmp.UseAlpha()
     return bmp
 
 #-----------------------------------------------------------------------------#

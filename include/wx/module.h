@@ -4,7 +4,7 @@
 // Author:      Wolfram Gloger/adapted by Guilhem Lavaux
 // Modified by:
 // Created:     04/11/98
-// RCS-ID:      $Id: module.h 53135 2008-04-12 02:31:04Z VZ $
+// RCS-ID:      $Id: module.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Wolfram Gloger and Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ protected:
     // after that
     void AddDependency(wxClassInfo *dep)
     {
-        wxCHECK_RET( dep, _T("NULL module dependency") );
+        wxCHECK_RET( dep, wxT("NULL module dependency") );
 
         m_dependencies.Add(dep);
     }

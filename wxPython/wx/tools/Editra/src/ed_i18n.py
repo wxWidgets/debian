@@ -18,8 +18,8 @@ METHODS:
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ed_i18n.py 60169 2009-04-15 18:55:37Z CJP $"
-__revision__ = "$Revision: 60169 $"
+__svnid__ = "$Id: ed_i18n.py 67537 2011-04-18 23:10:18Z CJP $"
+__revision__ = "$Revision: 67537 $"
 
 #--------------------------------------------------------------------------#
 # Imports
@@ -83,6 +83,9 @@ def GetLangId(lang_n):
     @return: wx.LANGUAGE_*** id of language
 
     """
+    if lang_n == "Default":
+        # No language set, default to English
+        return wx.LANGUAGE_ENGLISH_US
     lang_desc = GetLocaleDict(GetAvailLocales(), OPT_DESCRIPT)
     return lang_desc.get(lang_n, wx.LANGUAGE_DEFAULT)
 
@@ -113,14 +116,13 @@ class LangListCombo(wx.combo.BitmapComboBox):
 #-----------------------------------------------------------------------------#
 if __name__ == '__main__':
     APP = wx.PySimpleApp(False)
-    # Print a list of Cannonical names usefull for seeing what codes to
+    # Print a list of Canonical names useful for seeing what codes to
     # use when naming po files
     OUT = list()
     for LANG in [x for x in dir(wx) if x.startswith("LANGUAGE")]:
-        LOC_I = wx.Locale(wx.LANGUAGE_DEFAULT).\
-                         GetLanguageInfo(getattr(wx, LANG))
+        LOC_I = wx.Locale.GetLanguageInfo(getattr(wx, LANG))
         if LOC_I:
-            OUT.append(LOC_I.CanonicalName)
+            OUT.append((LOC_I.Description, LOC_I.CanonicalName))
 
     for LANG in sorted(OUT):
         print LANG

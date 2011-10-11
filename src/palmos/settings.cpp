@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by: Wlodzimierz ABX Skiba - native implementation
 // Created:     10/13/04
-// RCS-ID:      $Id: settings.cpp 40943 2006-08-31 19:31:43Z ABX $
+// RCS-ID:      $Id: settings.cpp 67017 2011-02-25 09:37:28Z JS $
 // Copyright:   (c) William Osborne, Wlodzimierz Skiba
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -76,6 +76,7 @@ wxColour wxSystemSettingsNative::GetColour(wxSystemColour index)
         case wxSYS_COLOUR_INACTIVEBORDER:
         case wxSYS_COLOUR_APPWORKSPACE:
         case wxSYS_COLOUR_HIGHLIGHT:
+        case wxSYS_COLOUR_LISTBOXHIGHLIGHTTEXT:
         case wxSYS_COLOUR_HIGHLIGHTTEXT:
         case wxSYS_COLOUR_BTNFACE:
         case wxSYS_COLOUR_BTNSHADOW:

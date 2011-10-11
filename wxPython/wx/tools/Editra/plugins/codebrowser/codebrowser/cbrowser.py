@@ -18,21 +18,23 @@ element is defined in the file.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: cbrowser.py 60379 2009-04-26 05:24:41Z CJP $"
-__revision__ = "$Revision: 60379 $"
+__svnid__ = "$Id: cbrowser.py 67736 2011-05-13 22:42:50Z CJP $"
+__revision__ = "$Revision: 67736 $"
 
 #--------------------------------------------------------------------------#
 # Imports
 import StringIO
-import threading
 import wx
 
 # Editra Libraries
 import ed_glob
+import ebmlib
 from profiler import Profile_Get, Profile_Set
 import ed_msg
+import ed_thread
 
 # Local Imports
+import cbconfig
 import gentag.taglib as taglib
 from tagload import TagLoader
 import IconFile
@@ -43,6 +45,7 @@ ID_CODEBROWSER = wx.NewId()
 ID_BROWSER = wx.NewId()
 ID_GOTO_ELEMENT = wx.NewId()
 PANE_NAME = u"CodeBrowser"
+MSG_CODEBROWSER_MENU = ("CodeBrowser", "ContextMenu")
 _ = wx.GetTranslation
 
 # HACK for i18n scripts to pick up translation strings
@@ -53,7 +56,7 @@ STRINGS = ( _("Class Definitions"), _("Defines"), _("Function Definitions"),
             _("Sections"), _("Style Tags"), _("Subroutines"),
             _("Subroutine Declarations"), _("Task Definitions"), 
             _("Modules"), _("Functions"), _("Public Functions"),
-            _("Public Subroutines") )
+            _("Public Subroutines"), _("Imports"), _("Elements") )
 del STRINGS
 
 #--------------------------------------------------------------------------#
@@ -62,11 +65,12 @@ class CodeBrowserTree(wx.TreeCtrl):
     def __init__(self, parent, id=ID_BROWSER,
                  pos=wx.DefaultPosition, size=wx.DefaultSize,
                  style=wx.TR_DEFAULT_STYLE|wx.TR_HIDE_ROOT):
-        wx.TreeCtrl.__init__(self, parent, id, pos, size, style)
+        super(CodeBrowserTree, self).__init__(parent, id, pos, size, style)
 
         # Attributes
+        self._log = wx.GetApp().GetLog()
         self._mw = parent
-        self._menu = None
+        self._menu = ebmlib.ContextMenuManager()
         self._selected = None
         self._cjob = 0
         self._lastjob = u'' # Name of file in last sent out job
@@ -74,7 +78,11 @@ class CodeBrowserTree(wx.TreeCtrl):
         self.icons = dict()
         self.il = None
 
+        # struct used in buffer-tree sync
+        self._ds_flat = list() # list of tuples - [(line, item_id),(line, item_id)...]
+
         self._timer = wx.Timer(self)
+        self._sync_timer = wx.Timer(self)
         self._cpage = None
         self._force = False
 
@@ -94,13 +102,22 @@ class CodeBrowserTree(wx.TreeCtrl):
         # Event Handlers
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnActivated)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnContext)
+        self.Bind(wx.EVT_TREE_ITEM_EXPANDED, self.OnExpanding)
         self.Bind(wx.EVT_MENU, self.OnMenu)
-        self.Bind(wx.EVT_TIMER, self.OnStartJob)
+        self.Bind(wx.EVT_TIMER, self.OnStartJob, self._timer)
+        self.Bind(wx.EVT_TIMER, lambda evt: self._SyncTree(), self._sync_timer)
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
         self.Bind(EVT_JOB_FINISHED, self.OnTagsReady)
+
+        # Editra Message Handlers
         ed_msg.Subscribe(self.OnThemeChange, ed_msg.EDMSG_THEME_CHANGED)
         ed_msg.Subscribe(self.OnUpdateTree, ed_msg.EDMSG_UI_NB_CHANGED)
         ed_msg.Subscribe(self.OnUpdateTree, ed_msg.EDMSG_FILE_OPENED)
         ed_msg.Subscribe(self.OnUpdateTree, ed_msg.EDMSG_FILE_SAVED)
+        ed_msg.Subscribe(self.OnSyncTree, ed_msg.EDMSG_UI_STC_POS_CHANGED)
+        ed_msg.Subscribe(self.OnEditorRestore, ed_msg.EDMSG_UI_STC_RESTORE)
+        ed_msg.Subscribe(self.OnBrowserCfg,
+                         ed_msg.EDMSG_PROFILE_CHANGE + (cbconfig.CB_PROFILE_KEY,))
 
         # Backwards compatibility
         if hasattr(ed_msg, 'EDMSG_UI_STC_LEXER') and \
@@ -108,15 +125,67 @@ class CodeBrowserTree(wx.TreeCtrl):
             ed_msg.Subscribe(self.OnUpdateFont, ed_msg.EDMSG_DSP_FONT)
             ed_msg.Subscribe(self.OnUpdateTree, ed_msg.EDMSG_UI_STC_LEXER)
 
-    def __del__(self):
-        """Unsubscribe from messages on del"""
-        ed_msg.Unsubscribe(self.OnUpdateTree)
-        ed_msg.Unsubscribe(self.OnThemeChange)
-        ed_msg.Unsubscribe(self.OnUpdateFont)
+    def OnDestroy(self, event):
+        """Unsubscribe from messages on destroy"""
+        if self:
+            self._menu.Clear()
+            ed_msg.Unsubscribe(self.OnUpdateTree)
+            ed_msg.Unsubscribe(self.OnThemeChange)
+            ed_msg.Unsubscribe(self.OnUpdateFont)
+            ed_msg.Unsubscribe(self.OnSyncTree)
+            ed_msg.Unsubscribe(self.OnEditorRestore)
 
     def _GetCurrentCtrl(self):
         """Get the current buffer"""
         return self._mw.GetNotebook().GetCurrentCtrl()
+
+    def _GetFQN(self, node):
+        """Returns fully qualified name of the tree node in the form
+        ...grandparent.parent.child
+        @param node: node id
+
+        """
+        rval=""
+        if node and node.IsOk():
+            path = [self.GetItemText(node)]
+            parent = self.GetItemParent(node)
+            root = self.GetRootItem()
+            while parent and parent.IsOk() and parent != root:
+                path.append(self.GetItemText(parent))
+                parent = self.GetItemParent(parent)
+            
+            # Join path elements and strip line information as this could be changed
+            path.reverse()
+            rval = '.'.join([p.split(u'[')[0].strip() for p in path])
+            
+        return rval
+    
+    def _ClearTree(self):
+        """Clear the tree and caches"""
+        self._cdoc = None
+        self._ds_flat = list()
+        self.DeleteChildren(self.root)
+
+    def _FindNodeForLine(self, line):
+        """Returns node id of the docstruct element given line belongs to
+        @param line: line number
+        @returns: tree node id
+
+        """
+        # HACK This should probably be done with bisect search
+        rval = None
+        line += 1
+        if self._ds_flat:
+            for citem in self._ds_flat:
+                if citem[0] < line:
+                    cline = citem[0]
+                    rval = citem[1]
+                else:
+                    break
+
+#        self._log("[codebrowser][info] For line %d found item %s" % \
+#                  (line, self._GetFQN(rval)))
+        return rval
 
     def _SetupImageList(self):
         """Setup the image list for the tree"""
@@ -153,14 +222,37 @@ class CodeBrowserTree(wx.TreeCtrl):
 
         """
         img = self.icons.get(cobj.type, None)
+
+        # Try and find an appropriate fallback icon
         if img is None:
             if isinstance(cobj, taglib.Function):
                 img = self.icons['function']
+            elif isinstance(cobj, taglib.Class):
+                img = self.icons['class']
             elif isinstance(cobj, taglib.Scope):
                 img = self.icons['section']
             else:
                 img = self.icons['variable']
         return img
+
+    def _SyncTree(self):
+        """Synchronize tree node selection with current position in the text
+        """
+        if not self._ShouldUpdate():
+            return
+        line = self._GetCurrentCtrl().GetCurrentLineNum()
+        self._log("[codebrowser][info] Syncing tree for position %d" % line)
+        scope_item = self._FindNodeForLine(line)
+        if scope_item:
+            selected = self.GetSelection()
+            if selected:
+                if selected != scope_item:
+                    self.Unselect()
+                    self.SelectItem(scope_item)
+            else:
+                self.SelectItem(scope_item)
+                
+            self.EnsureVisible(scope_item)
 
     def _ShouldUpdate(self):
         """Check whether the tree should do an update or not
@@ -179,7 +271,10 @@ class CodeBrowserTree(wx.TreeCtrl):
 
         """
         if self.nodes.get('classes', None) is None:
-            croot = self.AppendItem(self.GetRootItem(), _("Class Definitions"))
+            desc = self._cdoc.GetElementDescription('class')
+            if desc == 'class':
+                desc = "Class Definitions"
+            croot = self.AppendItem(self.GetRootItem(), _(desc))
             self.SetItemHasChildren(croot)
             self.SetPyData(croot, None)
             self.SetItemImage(croot, self.icons['class'])
@@ -195,6 +290,7 @@ class CodeBrowserTree(wx.TreeCtrl):
 
         """
         item_id = self.AppendItem(node, u"%s [%d]" % (cobj.GetName(), 1 + cobj.GetLine()), img)
+        self._ds_flat.append((cobj.GetLine(), item_id))
         self.SetPyData(item_id, cobj.GetLine())
         # If the item is a scope it may have sub items
         if isinstance(cobj, taglib.Scope):
@@ -232,7 +328,7 @@ class CodeBrowserTree(wx.TreeCtrl):
         """
         # Check if there is a node for this Code object
         if self.nodes.get(obj.type, None) is None:
-            # Look for a description to use as catagory title
+            # Look for a description to use as category title
             if self._cdoc is not None:
                 desc = self._cdoc.GetElementDescription(obj.type).title()
             else:
@@ -247,9 +343,13 @@ class CodeBrowserTree(wx.TreeCtrl):
 
     def DeleteChildren(self, item):
         """Delete the children of a given node"""
-        wx.TreeCtrl.DeleteChildren(self, item)
+        super(CodeBrowserTree, self).DeleteChildren(item)
         for key in self.nodes.keys():
             self.nodes[key] = None
+
+    def GetMainWindow(self):
+        """Get this panels main window"""
+        return self._mw
 
     def GotoElement(self, tree_id):
         """Navigate the cursor to the element identified in the
@@ -261,7 +361,10 @@ class CodeBrowserTree(wx.TreeCtrl):
         if line is not None:
             ctrl = self._mw.GetNotebook().GetCurrentCtrl()
             ctrl.GotoLine(line)
-            ctrl.SetFocus()
+
+            # Need CallAfter to make the focus work on Windows
+            # Otherwise the tree control will reclaim the focus
+            wx.CallAfter(ctrl.SetFocus)
 
     def OnActivated(self, evt):
         """Handle when an item is clicked on
@@ -274,18 +377,20 @@ class CodeBrowserTree(wx.TreeCtrl):
 
     def OnContext(self, evt):
         """Show the context menu when an item is clicked on"""
-        if self._menu is not None:
-            self._menu.Destroy()
-            self._menu = None
-
+        self._menu.Clear()
+        self._menu.Menu = wx.Menu()
         tree_id = evt.GetItem()
         data = self.GetPyData(tree_id)
+        # Add the Goto menu option
         if data is not None:
+            self._menu.SetUserData("object", data)
             self._selected = tree_id # Store the selected
-            self._menu = wx.Menu()
             txt = self.GetItemText(self._selected).split('[')[0].strip()
-            self._menu.Append(ID_GOTO_ELEMENT, _("Goto \"%s\"") % txt)
-            self.PopupMenu(self._menu)
+            self._menu.Menu.Append(ID_GOTO_ELEMENT, _("Goto \"%s\"") % txt)
+        # Let clients hook into the context menu
+        # Call AddHandler to add a callback handler callback(menu_id, itemdata)
+        ed_msg.PostMessage(MSG_CODEBROWSER_MENU, self._menu)
+        self.PopupMenu(self._menu.Menu)
 
     def OnCompareItems(self, item1, item2):
         """Compare two tree items for sorting.
@@ -294,24 +399,63 @@ class CodeBrowserTree(wx.TreeCtrl):
         @return: -1, 0, 1
 
         """
-        txt1 = self.GetItemText(item1).lower()
-        txt2 = self.GetItemText(item2).lower()
-#        txt1 = self.GetPyData(item1)
-#        txt2 = self.GetPyData(item2)
-        if txt1 < txt2:
+        sortopt = cbconfig.GetSortOption()
+        if sortopt == cbconfig.CB_ALPHA_SORT:
+            # Sort items by name
+            val1 = self.GetItemText(item1).lower()
+            val2 = self.GetItemText(item2).lower()
+        else:
+            # Sort items by line number
+            val1 = self.GetPyData(item1)
+            val2 = self.GetPyData(item2)
+
+        if val1 < val2:
             return -1
-        elif txt1 == txt2:
+        elif val1 == val2:
             return 0
         else:
             return 1
 
+    def OnBrowserCfg(self, msg):
+        """Profile update message for when CodeBrowser
+        configuration is updated.
+
+        """
+        # Resort all items
+        def SortAllItems(parent):
+            item, cookie = self.GetFirstChild(parent)
+            while item:
+                if self.ItemHasChildren(item):
+                    if self.IsExpanded(item):
+                        self.SortChildren(item)
+                    SortAllItems(item)
+                item, cookie = self.GetNextChild(parent, cookie)
+        SortAllItems(self.root)
+
     def OnMenu(self, evt):
         """Handle the context menu events"""
-        if evt.GetId() == ID_GOTO_ELEMENT:
+        e_id  = evt.GetId()
+        handler = self._menu.GetHandler(e_id)
+        if handler:
+            data = None
+            if self._selected is not None:
+                data = self.GetPyData(self._selected)
+            handler(e_id, data)
+        elif e_id == ID_GOTO_ELEMENT:
             if self._selected is not None:
                 self.GotoElement(self._selected)
         else:
             evt.Skip()
+
+    @ed_msg.mwcontext
+    def OnEditorRestore(self, msg):
+        """Called when editor size is unmaximized"""
+        self.OnUpdateTree()
+
+    def OnExpanding(self, evt):
+        """Update sorting"""
+        item = evt.GetItem()
+        self.SortChildren(item)
 
     def OnThemeChange(self, msg):
         """Update the images when Editra's theme changes
@@ -356,8 +500,24 @@ class CodeBrowserTree(wx.TreeCtrl):
         pane = self._mw.GetFrameManager().GetPane(PANE_NAME)
         evt.Check(pane.IsShown())
 
+    @ed_msg.mwcontext
+    def OnSyncTree(self, msg):
+        """Handler for tree synchronization.
+        Uses a one shot timer to optimize multiple fast caret movement events.
+
+        """
+        if not self._ShouldUpdate():
+            return # If panel is not visible don't update
+        
+        if self._sync_timer.IsRunning():
+            self._sync_timer.Stop()
+        
+        #One shot timer for tree sync
+        self._sync_timer.Start(300, True)
+
     def OnStartJob(self, evt):
         """Start the tree update job
+        
         @param evt: wxTimerEvent
 
         """
@@ -385,12 +545,11 @@ class CodeBrowserTree(wx.TreeCtrl):
                                (self._mw.GetId(), -1, -1))
 
             # Create and start the worker thread
-            thread = TagGenThread(self, self._cjob, genfun,
-                                  StringIO.StringIO(self._cpage.GetText()))
-            wx.CallLater(75, thread.start)
+            task = TagGenJob(self, self._cjob, genfun,
+                             StringIO.StringIO(self._cpage.GetText()))
+            ed_thread.EdThreadPool().QueueJob(task.DoTask)
         else:
-            self._cdoc = None
-            self.DeleteChildren(self.root)
+            self._ClearTree()
             ed_msg.PostMessage(ed_msg.EDMSG_PROGRESS_SHOW,
                                (self._mw.GetId(), False))
             return
@@ -401,9 +560,17 @@ class CodeBrowserTree(wx.TreeCtrl):
         @keyword force: Force update
 
         """
-        # Don't update when this window is not Active
-        istop = wx.GetApp().GetTopWindow() == self._mw
-        if not force and not self._mw.IsActive() and not istop:
+        # Check for if update should be skipped
+        if not force:
+            context = None
+            if msg is not None:
+                context = msg.GetContext()
+
+            if context is not None and context != self._mw.GetId():
+                return
+        
+        # Don't update if panel is not visible
+        if not self._ShouldUpdate():
             return
 
         page = self._GetCurrentCtrl()
@@ -411,8 +578,7 @@ class CodeBrowserTree(wx.TreeCtrl):
 
         # If its a blank document just clear out
         if not len(cfname):
-            self._cdoc = None
-            self.DeleteChildren(self.root)
+            self._ClearTree()
             return
 
         # If document job is same as current don't start a new one
@@ -427,6 +593,14 @@ class CodeBrowserTree(wx.TreeCtrl):
 
             # Start the oneshot timer for beginning the tag generator job
             self._timer.Start(300, True)
+    
+    def OnShowAUIPane(self):
+        """Interface method that the main Editra window will call
+        When its auimanager does a Show when this window is contained
+        within an aui pane. Forces the tree to update.
+
+        """
+        self.OnUpdateTree(force=True)
 
     def OnShowBrowser(self, evt):
         """Show the browser pane
@@ -438,7 +612,7 @@ class CodeBrowserTree(wx.TreeCtrl):
             pane = mgr.GetPane(PANE_NAME)
             pane.Show(not pane.IsShown())
             mgr.Update()
-            self.OnUpdateTree(force=True)
+            self.OnShowAUIPane()
         else:
             evt.Skip()
 
@@ -447,8 +621,8 @@ class CodeBrowserTree(wx.TreeCtrl):
         @param tags: DocStruct object
 
         """
+        self._ClearTree()
         self._cdoc = tags
-        self.DeleteChildren(self.root)
         # Check and add any common types in the document first
 
         # Global Variables
@@ -470,10 +644,13 @@ class CodeBrowserTree(wx.TreeCtrl):
         for node in [ node for node in self.nodes.values()
                       if node is not None and node != self.nodes['globals']]:
             self.Expand(node)
+        
+        self._ds_flat.sort(cmp=lambda x,y: cmp(x[0],y[0]))
+        self._SyncTree()
 
 #--------------------------------------------------------------------------#
-# Tag Generator Thread
-class TagGenThread(threading.Thread):
+# Tag Generator
+class TagGenJob(object):
     """Thread for running tag parser on and returning the results for
     display in the tree.
 
@@ -486,7 +663,7 @@ class TagGenThread(threading.Thread):
         @param buff: string buffer to pass to genfun
 
         """
-        threading.Thread.__init__(self)
+        super(TagGenJob, self).__init__()
 
         # Attributes
         self.reciever = reciever
@@ -494,7 +671,7 @@ class TagGenThread(threading.Thread):
         self.buff = buff
         self.task = genfun
 
-    def run(self):
+    def DoTask(self):
         """Run the generator function and return the docstruct to
         the main thread.
 

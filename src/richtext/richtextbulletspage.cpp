@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/4/2006 10:32:31 AM
-// RCS-ID:      $Id: richtextbulletspage.cpp 54423 2008-06-29 17:04:04Z JS $
+// RCS-ID:      $Id: richtextbulletspage.cpp 66266 2010-11-26 16:31:44Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -301,7 +301,9 @@ void wxRichTextBulletsPage::CreateControls()
     if (wxRichTextBuffer::GetRenderer())
         wxRichTextBuffer::GetRenderer()->EnumerateStandardBulletNames(standardBulletNames);
 
-    m_bulletNameCtrl->Append(standardBulletNames);
+    size_t i;
+    for (i = 0; i < standardBulletNames.GetCount(); i++)
+        m_bulletNameCtrl->Append(wxGetTranslation(standardBulletNames[i]));
 
     wxArrayString facenames = wxRichTextCtrl::GetAvailableFontNames();
     facenames.Sort();
@@ -316,11 +318,24 @@ bool wxRichTextBulletsPage::TransferDataFromWindow()
 
     wxTextAttrEx* attr = GetAttributes();
 
+    int index = m_styleListBox->GetSelection();
+    if (index < 1)
+    {
+        m_hasBulletStyle = false;
+        m_hasBulletNumber = false;
+        m_hasBulletSymbol = false;
+        attr->SetBulletStyle(wxTEXT_ATTR_BULLET_STYLE_NONE);
+        attr->SetFlags(attr->GetFlags() & ~(wxTEXT_ATTR_BULLET_STYLE|wxTEXT_ATTR_BULLET_NUMBER|wxTEXT_ATTR_BULLET_TEXT|wxTEXT_ATTR_BULLET_NAME));
+    }
+    else
+    {
+        m_hasBulletStyle = true;
+    }
+
     if (m_hasBulletStyle)
     {
         long bulletStyle = wxRICHTEXT_BULLETINDEX_NONE;
 
-        int index = m_styleListBox->GetSelection();
         if (index == wxRICHTEXT_BULLETINDEX_ARABIC)
             bulletStyle |= wxTEXT_ATTR_BULLET_STYLE_ARABIC;
 
@@ -348,7 +363,22 @@ bool wxRichTextBulletsPage::TransferDataFromWindow()
         else if (index == wxRICHTEXT_BULLETINDEX_STANDARD)
         {
             bulletStyle |= wxTEXT_ATTR_BULLET_STYLE_STANDARD;
-            attr->SetBulletName(m_bulletNameCtrl->GetValue());
+            wxArrayString standardBulletNames;
+            if (wxRichTextBuffer::GetRenderer() && m_bulletNameCtrl->GetSelection() != wxNOT_FOUND)
+            {
+                int sel = m_bulletNameCtrl->GetSelection();
+                wxString selName = m_bulletNameCtrl->GetString(sel);
+
+                // Try to get the untranslated name using the current selection index of the combobox.
+                // into account.
+                wxRichTextBuffer::GetRenderer()->EnumerateStandardBulletNames(standardBulletNames);
+                if (sel < (int) standardBulletNames.GetCount() && m_bulletNameCtrl->GetValue() == selName)
+                    attr->SetBulletName(standardBulletNames[sel]);
+                else            
+                    attr->SetBulletName(m_bulletNameCtrl->GetValue());
+            }
+            else
+                attr->SetBulletName(m_bulletNameCtrl->GetValue());
         }
 
         if (m_parenthesesCtrl->GetValue())
@@ -466,7 +496,22 @@ bool wxRichTextBulletsPage::TransferDataToWindow()
         m_numberCtrl->SetValue(0);
 
     if (attr->HasBulletName())
-        m_bulletNameCtrl->SetValue(attr->GetBulletName());
+    {
+        wxArrayString standardBulletNames;
+        if (wxRichTextBuffer::GetRenderer())
+        {
+            // Try to set the control by index in order to take translated combo control strings
+            // into account.
+            wxRichTextBuffer::GetRenderer()->EnumerateStandardBulletNames(standardBulletNames);
+            int idx = standardBulletNames.Index(attr->GetBulletName());
+            if (idx != -1 && idx < (int) m_bulletNameCtrl->GetCount())
+                m_bulletNameCtrl->SetSelection(idx);
+            else
+                m_bulletNameCtrl->SetValue(attr->GetBulletName());
+        }
+        else
+            m_bulletNameCtrl->SetValue(attr->GetBulletName());
+    }
     else
         m_bulletNameCtrl->SetValue(wxEmptyString);
 

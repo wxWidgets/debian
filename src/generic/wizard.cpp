@@ -8,7 +8,7 @@
 //              3) Fixed ShowPage() bug on displaying bitmaps
 //              Robert Vazan (sizers)
 // Created:     15.08.99
-// RCS-ID:      $Id: wizard.cpp 47065 2007-07-02 08:00:17Z JS $
+// RCS-ID:      $Id: wizard.cpp 63262 2010-01-25 18:47:47Z JS $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -84,6 +84,7 @@ DEFINE_EVENT_TYPE(wxEVT_WIZARD_PAGE_CHANGING)
 DEFINE_EVENT_TYPE(wxEVT_WIZARD_CANCEL)
 DEFINE_EVENT_TYPE(wxEVT_WIZARD_FINISHED)
 DEFINE_EVENT_TYPE(wxEVT_WIZARD_HELP)
+DEFINE_EVENT_TYPE(wxEVT_WIZARD_PAGE_SHOWN)
 
 BEGIN_EVENT_TABLE(wxWizard, wxDialog)
     EVT_BUTTON(wxID_CANCEL, wxWizard::OnCancel)
@@ -681,6 +682,10 @@ bool wxWizard::ShowPage(wxWizardPage *page, bool goingForward)
                 CentreOnScreen();
         }
     }
+
+    wxWizardEvent pageShownEvent(wxEVT_WIZARD_PAGE_SHOWN, GetId(),
+        goingForward, m_page);
+    m_page->GetEventHandler()->ProcessEvent(pageShownEvent);
 
     return true;
 }

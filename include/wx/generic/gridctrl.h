@@ -4,7 +4,7 @@
 // Author:      Paul Gammans, Roger Gammans
 // Modified by:
 // Created:     11/04/2001
-// RCS-ID:      $Id: gridctrl.h 48089 2007-08-15 11:46:57Z VZ $
+// RCS-ID:      $Id: gridctrl.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) The Computer Surgery (paul@compsurg.co.uk)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,8 +16,8 @@
 
 #if wxUSE_GRID
 
-#define wxGRID_VALUE_CHOICEINT    _T("choiceint")
-#define wxGRID_VALUE_DATETIME     _T("datetime")
+#define wxGRID_VALUE_CHOICEINT    wxT("choiceint")
+#define wxGRID_VALUE_DATETIME     wxT("datetime")
 
 #if wxUSE_DATETIME
 

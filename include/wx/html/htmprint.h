@@ -3,7 +3,7 @@
 // Purpose:     html printing classes
 // Author:      Vaclav Slavik
 // Created:     25/09/99
-// RCS-ID:      $Id: htmprint.h 47862 2007-08-03 08:50:49Z JS $
+// RCS-ID:      $Id: htmprint.h 62758 2009-12-01 20:21:46Z BP $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -261,6 +261,13 @@ public:
             // get the parent window
     void SetParentWindow(wxWindow* window) { m_ParentWindow = window; }
             // set the parent window
+#endif
+
+#if wxABI_VERSION >= 20811
+    const wxString& GetName() const { return m_Name; }
+            // get the printout name
+    void SetName(const wxString& name) { m_Name = name; }
+            // set the printout name
 #endif
 
 protected:

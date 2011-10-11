@@ -32,11 +32,10 @@ gtkChoices = ["3, 6",
               "4, 8", 
               "5, 10"]
 
-styles = [ "CP_DEFAULT_STYLE", 
-           "CP_NO_TLW_RESIZE", 
-           "CP_LINE_ABOVE", 
-           "CP_USE_STATICBOX", 
-           "CP_GTK_EXPANDER" ]
+styles = ["CP_NO_TLW_RESIZE",
+          "CP_LINE_ABOVE",
+          "CP_USE_STATICBOX",
+          "CP_GTK_EXPANDER"]
 
 
 class PyCollapsiblePaneDemo(wx.Panel):
@@ -54,9 +53,9 @@ class PyCollapsiblePaneDemo(wx.Panel):
         title.SetFont(wx.Font(18, wx.SWISS, wx.NORMAL, wx.BOLD))
         title.SetForegroundColour("blue")
 
-        self.cpStyle = wx.CP_DEFAULT_STYLE|wx.CP_NO_TLW_RESIZE
+        self.cpStyle = wx.CP_NO_TLW_RESIZE
         self.cp = cp = PCP.PyCollapsiblePane(self, label=self.label1,
-                                             style=self.cpStyle)
+                                             agwStyle=self.cpStyle)
         self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnPaneChanged, cp)
         self.MakePaneContent(cp.GetPane())
 
@@ -74,7 +73,7 @@ class PyCollapsiblePaneDemo(wx.Panel):
         self.styleCBs = list()
         for styleName in styles:
             cb = wx.CheckBox(self, -1, styleName)
-            if styleName in ["CP_DEFAULT_STYLE",  "CP_NO_TLW_RESIZE",]:
+            if styleName == "CP_NO_TLW_RESIZE":
                 cb.SetValue(True)
                 cb.Disable()
             cb.Bind(wx.EVT_CHECKBOX, self.OnStyleChoice)
@@ -162,6 +161,7 @@ class PyCollapsiblePaneDemo(wx.Panel):
         
         
     def MakeButton(self):
+        
         if self.cpStyle & wx.CP_GTK_EXPANDER:
             return None
         
@@ -187,9 +187,10 @@ class PyCollapsiblePaneDemo(wx.Panel):
     
         
     def Rebuild(self):
+        
         isExpanded = self.cp.IsExpanded()
         self.Freeze()
-        cp = PCP.PyCollapsiblePane(self, label=self.label1, style=self.cpStyle)
+        cp = PCP.PyCollapsiblePane(self, label=self.label1, agwStyle=self.cpStyle)
         cp.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnPaneChanged)
         self.MakePaneContent(cp.GetPane())
         cp.SetExpanderDimensions(*self.GetUserSize())
@@ -210,7 +211,6 @@ class PyCollapsiblePaneDemo(wx.Panel):
         
         self.OnPaneChanged(None)
         self.Layout()
-
 
 
     def OnPaneChanged(self, event=None):

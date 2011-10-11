@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: scriptbinder.cpp 40181 2006-07-18 09:47:16Z MW $
+// RCS-ID:      $Id: scriptbinder.cpp 66918 2011-02-16 21:55:02Z JS $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ ScriptStream::ScriptStream()
 
 ScriptStream::~ScriptStream()
 {
-    if ( m_pBuf ) delete m_pBuf;
+    delete [] m_pBuf;
 }
 
 void ScriptStream::WriteBytes( const void* srcBuf, size_t count )
@@ -74,7 +74,7 @@ void ScriptStream::WriteBytes( const void* srcBuf, size_t count )
         if ( oldBuf )
         {
             memcpy( m_pBuf, oldBuf, m_Size );
-            delete oldBuf;
+            delete [] oldBuf;
         }
     }
 
@@ -593,7 +593,11 @@ bool DocGeneratorBase::SaveDocument( const char*    fname,
     ScriptStream stm;
 
     // check if derived class agrees about saving it
-    if ( !OnSaveDocument( stm ) ) return 0;
+    if ( !OnSaveDocument( stm ) )
+    {
+        fclose( fp );
+        return 0;
+    }
 
     if ( pFromSection )
 

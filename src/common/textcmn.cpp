@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     13.07.99
-// RCS-ID:      $Id: textcmn.cpp 41754 2006-10-08 22:40:14Z VZ $
+// RCS-ID:      $Id: textcmn.cpp 62095 2009-09-24 18:20:21Z JS $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////

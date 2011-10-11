@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2006-10-01
-// RCS-ID:      $Id: richtextformatdlg.cpp 53392 2008-04-28 10:15:49Z JS $
+// RCS-ID:      $Id: richtextformatdlg.cpp 62010 2009-09-22 10:03:45Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -496,7 +496,6 @@ wxRichTextColourSwatchCtrl::wxRichTextColourSwatchCtrl(wxWindow* parent, wxWindo
     wxControl::Create(parent, id, pos, size, style);
 
     SetColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
-    SetBackgroundStyle(wxBG_STYLE_COLOUR);
 }
 
 wxRichTextColourSwatchCtrl::~wxRichTextColourSwatchCtrl()

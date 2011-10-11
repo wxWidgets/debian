@@ -228,7 +228,7 @@ class Extended(wx.Frame):
         # recreate the foldpanelbar
 
         self._pnl = fpb.FoldPanelBar(self._leftWindow1, -1, wx.DefaultPosition,
-                                     wx.Size(-1,-1), fpb.FPB_DEFAULT_STYLE, fpb_flags)
+                                     wx.Size(-1,-1), agwStyle=fpb_flags)
 
         Images = wx.ImageList(16,16)
         Images.Add(GetExpandedIconBitmap())
@@ -240,15 +240,15 @@ class Extended(wx.Frame):
         self._pnl.AddFoldPanelWindow(item, wx.StaticText(item, -1, "Adjust The First Colour"),
                                      fpb.FPB_ALIGN_WIDTH, 5, 20) 
 
-        # RED color spin control
+        # RED colour spin control
         self._rslider1 = wx.Slider(item, -1, 0, 0, 255)
         self._pnl.AddFoldPanelWindow(item, self._rslider1, fpb.FPB_ALIGN_WIDTH, 2, 20) 
 
-        # GREEN color spin control
+        # GREEN colour spin control
         self._gslider1 = wx.Slider(item, -1, 0, 0, 255)
         self._pnl.AddFoldPanelWindow(item, self._gslider1, fpb.FPB_ALIGN_WIDTH, 0, 20) 
 
-        # BLUE color spin control
+        # BLUE colour spin control
         self._bslider1 = wx.Slider(item, -1, 0, 0, 255)
         self._pnl.AddFoldPanelWindow(item, self._bslider1, fpb.FPB_ALIGN_WIDTH,  0, 20) 
         
@@ -257,15 +257,15 @@ class Extended(wx.Frame):
         self._pnl.AddFoldPanelWindow(item, wx.StaticText(item, -1, "Adjust The Second Colour"),
                                      fpb.FPB_ALIGN_WIDTH, 5, 20) 
 
-        # RED color spin control
+        # RED colour spin control
         self._rslider2 = wx.Slider(item, -1, 0, 0, 255)
         self._pnl.AddFoldPanelWindow(item, self._rslider2, fpb.FPB_ALIGN_WIDTH, 2, 20) 
 
-        # GREEN color spin control
+        # GREEN colour spin control
         self._gslider2 = wx.Slider(item, -1, 0, 0, 255)
         self._pnl.AddFoldPanelWindow(item, self._gslider2, fpb.FPB_ALIGN_WIDTH, 0, 20) 
 
-        # BLUE color spin control
+        # BLUE colour spin control
         self._bslider2 = wx.Slider(item, -1, 0, 0, 255)
         self._pnl.AddFoldPanelWindow(item, self._bslider2, fpb.FPB_ALIGN_WIDTH, 0, 20) 
 
@@ -664,7 +664,7 @@ class Collapsed(wx.Frame):
         newstyle = (vertical and [fpb.FPB_VERTICAL] or [fpb.FPB_HORIZONTAL])[0]
 
         bar = fpb.FoldPanelBar(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize,
-                           fpb.FPB_DEFAULT_STYLE | newstyle, fpb.FPB_COLLAPSE_TO_BOTTOM)
+                               agwStyle=fpb.FPB_COLLAPSE_TO_BOTTOM|newstyle)
 
         item = bar.AddFoldPanel("Test me", collapsed=False)
         button1 = wx.Button(item, wx.ID_ANY, "Collapse Me")
@@ -799,7 +799,7 @@ class NotCollapsed(wx.Frame):
         self.statusbar.SetStatusText("Welcome to wxPython!", 1)
 
         pnl = fpb.FoldPanelBar(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize,
-                           fpb.FPB_DEFAULT_STYLE | fpb.FPB_VERTICAL)
+                               agwStyle=fpb.FPB_VERTICAL)
 
         item = pnl.AddFoldPanel("Test Me", collapsed=False)
         

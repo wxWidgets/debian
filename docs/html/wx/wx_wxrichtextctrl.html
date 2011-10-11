@@ -642,6 +642,8 @@ Deletes the content within the given range.<P>
 Deletes content if there is a selection, e.g. when pressing a key.
 Returns the new caret position in <I>newPos</I>, or leaves it if there
 was no action. This is undoable.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes no arguments and returns a 2-element
+list <TT>( ok, newPos )</TT>.<P>
 
 <HR>
 <A NAME="wxrichtextctrldeleteselection"></A>
@@ -866,6 +868,8 @@ Returns the current caret position.<P>
 <P>
 <B>bool</B> <B>GetCaretPositionForIndex</B>(<B>long </B><I>position</I>, <B><A HREF="wx_wxrect.html#wxrect">wxRect</A>& </B></B><I>rect</I>)<P>
 Returns the caret height and position for the given character position<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In wxPerl this method takes the position as argument and
+  returns a 2-element list <TT>( ok, rect )</TT>.<P>
 
 <HR>
 <A NAME="wxrichtextctrlgetcommandprocessor"></A>
@@ -1005,6 +1009,47 @@ because it does not use wxFont objects.<P>
 This function gets the combined style - that is, the style you see on the screen as a result
 of combining base style, paragraph style and character style attributes. To get the character
 or paragraph style alone, use <A HREF="wx_wxrichtextctrl.html#wxrichtextctrlgetuncombinedstyle">GetUncombinedStyle</A>.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In place of a single overloaded method, wxPerl uses:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetTextAttrStyle(pos)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a Wx::TextAttr
+  object, or undef
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetTextAttrExStyle(pos)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a Wx::TextAttrEx
+  object, or undef
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetRichTextAttrStyle(pos)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a Wx::RichTextAttr
+  object, or undef
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
 
 <HR>
 <A NAME="wxrichtextctrlgetstyleforrange"></A>
@@ -1014,6 +1059,37 @@ or paragraph style alone, use <A HREF="wx_wxrichtextctrl.html#wxrichtextctrlgetu
 <B>bool</B> <B>GetStyleForRange</B>(<B>const <A HREF="wx_wxrichtextrange.html#wxrichtextrange">wxRichTextRange</A>& </B></B><I>range</I>, <B><A HREF="wx_wxtextattrex.html#wxtextattrex">wxTextAttrEx</A>& </B></B><I>style</I>)<P>
 Gets the attributes common to the specified range. Attributes that differ in value within the range will
 not be included in <I>style</I>'s flags.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In place of a single overloaded method, wxPerl uses:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetTextAttrExStyleForRange(range)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a Wx::TextAttrEx
+  object, or undef
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetRichTextAttrStyleForRange(range)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a Wx::RichTextAttr
+  object, or undef
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
 
 <HR>
 <A NAME="wxrichtextctrlgetstylesheet"></A>
@@ -1037,6 +1113,47 @@ paragraph or character content, and not necessarily the combined attributes you 
 screen. To get the combined attributes, use <A HREF="wx_wxrichtextctrl.html#wxrichtextctrlgetstyle">GetStyle</A>.<P>
 If you specify (any) paragraph attribute in <I>style</I>'s flags, this function will fetch
 the paragraph attributes. Otherwise, it will return the character attributes.<P>
+<B><FONT COLOR="#0000C8">wxPerl note:</FONT></B> In place of a single overloaded method, wxPerl uses:<P>
+
+<UL><UL>
+
+<TABLE>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetTextAttrUncombinedStyle(pos)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a Wx::TextAttr
+  object, or undef
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetTextAttrExUncombinedStyle(pos)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a Wx::TextAttrEx
+  object, or undef
+</FONT></TD></TR>
+
+
+<TR><TD VALIGN=TOP>
+<B>GetRichTextAttrUncombinedStyle(pos)</B>
+</FONT></TD>
+
+<TD VALIGN=TOP>
+Returns a Wx::RichTextAttr
+  object, or undef
+</FONT></TD></TR>
+
+
+</TABLE>
+
+</UL></UL>
+<P>
 
 <HR>
 <A NAME="wxrichtextctrlgetvalue"></A>

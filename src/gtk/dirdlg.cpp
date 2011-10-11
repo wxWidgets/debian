@@ -2,7 +2,7 @@
 // Name:        src/gtk/dirdlg.cpp
 // Purpose:     native implementation of wxDirDialog
 // Author:      Robert Roebling, Zbigniew Zagorski, Mart Raudsepp, Francesco Montorsi
-// Id:          $Id: dirdlg.cpp 47627 2007-07-21 21:36:30Z VZ $
+// Id:          $Id: dirdlg.cpp 63600 2010-03-02 00:15:45Z VZ $
 // Copyright:   (c) 1998 Robert Roebling, 2004 Zbigniew Zagorski, 2005 Mart Raudsepp
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -143,7 +143,7 @@ wxDirDialog::wxDirDialog(wxWindow* parent, const wxString& title,
 
         if ( !defaultPath.empty() )
             gtk_file_chooser_set_current_folder( GTK_FILE_CHOOSER(m_widget),
-                    wxConvFileName->cWX2MB(defaultPath) );
+                    defaultPath.utf8_str() );
     }
     else
         wxGenericDirDialog::Create(parent, title, defaultPath, style, pos, sz, name);
@@ -187,7 +187,8 @@ void wxDirDialog::SetPath(const wxString& dir)
     {
         if (wxDirExists(dir))
         {
-            gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(m_widget), wxConvFileName->cWX2MB(dir));
+            gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(m_widget),
+                    dir.utf8_str());
         }
     }
     else
@@ -199,7 +200,7 @@ wxString wxDirDialog::GetPath() const
     if (!gtk_check_version(2,4,0))
     {
         wxGtkString str(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(m_widget)));
-        return wxConvFileName->cMB2WX(str);
+        return wxString::FromUTF8(str);
     }
 
     return wxGenericDirDialog::GetPath();

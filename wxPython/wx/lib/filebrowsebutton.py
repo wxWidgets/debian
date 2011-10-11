@@ -7,7 +7,7 @@
 #
 # Author:      Mike Fletcher
 #
-# RCS-ID:      $Id: filebrowsebutton.py 59674 2009-03-20 21:00:16Z RD $
+# RCS-ID:      $Id: filebrowsebutton.py 67476 2011-04-13 18:24:22Z RD $
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -181,16 +181,6 @@ class FileBrowseButton(wx.Panel):
         self.textControl.SetValue(value)
         self.callCallback =  save
 
-
-    def Enable (self, value=True):
-        """ Convenient enabling/disabling of entire control """
-        self.label.Enable (value)
-        self.textControl.Enable (value)
-        return self.browseButton.Enable (value)
-
-    def Disable (self,):
-        """ Convenient disabling of entire control """
-        self.Enable(False)
 
     def GetLabel( self ):
         """ Retrieve the label's current text """

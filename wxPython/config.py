@@ -15,7 +15,7 @@
 # Author:      Robin Dunn
 #
 # Created:     23-March-2004
-# RCS-ID:      $Id: config.py 60299 2009-04-24 05:22:36Z RD $
+# RCS-ID:      $Id: config.py 67474 2011-04-13 18:22:14Z RD $
 # Copyright:   (c) 2004 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -49,7 +49,7 @@ import distutils.command.clean
 
 VER_MAJOR        = 2      # The first three must match wxWidgets
 VER_MINOR        = 8
-VER_RELEASE      = 10
+VER_RELEASE      = 12
 VER_SUBREL       = 1      # wxPython release num for x.y.z release of wxWidgets
 VER_FLAGS        = ""     # release flags, such as prerelease or RC num, etc.
 
@@ -476,6 +476,21 @@ class wx_extra_clean(distutils.command.clean.clean):
 
 
 
+# The Ubuntu Python adds a --install-layout option to distutils that
+# is used in our package build.  If we detect that the current
+# distutils does not have it then make sure that it is removed from
+# the command-line options, otherwise the build will fail.
+for item in distutils.command.install.install.user_options:
+    if item[0] == 'install-layout=':
+        break
+else:
+    for arg in sys.argv:
+        if arg.startswith('--install-layout'):
+            sys.argv.remove(arg)
+            break
+
+
+
 class wx_install(distutils.command.install.install):
     """
     Turns off install_path_file
@@ -483,7 +498,7 @@ class wx_install(distutils.command.install.install):
     def initialize_options(self):
         distutils.command.install.install.initialize_options(self)
         self.install_path_file = 0
-        
+
 
 class wx_install_headers(distutils.command.install_headers.install_headers):
     """
@@ -822,6 +837,29 @@ distutils.cygwinccompiler.CygwinCCompiler._compile = _compile
 
 
 #----------------------------------------------------------------------
+# Yet another distutils hack, this time for the msvc9compiler.  There
+# is a bug in at least version distributed with Python 2.6 where it
+# adds '/pdb:None' to the linker command-line, but that just results
+# in a 'None' file being created instead of putting the debug info
+# into the .pyd files as expected.  So we'll strip out that option via
+# a monkey-patch of the msvc9compiler.MSVCCompiler.initialize method.
+
+if os.name == 'nt' and  COMPILER == 'msvc' and sys.version_info >= (2,6):
+    import distutils.msvc9compiler
+    _orig_initialize = distutils.msvc9compiler.MSVCCompiler.initialize
+
+    def _initialize(self, *args, **kw):
+        rv = _orig_initialize(self, *args, **kw)
+        try:
+            self.ldflags_shared_debug.remove('/pdb:None')
+        except ValueError:
+            pass
+        return rv
+
+    distutils.msvc9compiler.MSVCCompiler.initialize = _initialize
+
+
+#----------------------------------------------------------------------
 # sanity checks
 
 if CORE_ONLY:
@@ -1002,6 +1040,10 @@ elif os.name == 'posix' or COMPILER == 'mingw32':
             #    cflags.append("-isysroot")
             #    cflags.append("/Developer/SDKs/MacOSX10.3.9.sdk")
 
+        if not os.environ.get('CC') or not os.environ.get('CXX'):
+            os.environ["CXX"] = "g++-4.0"
+            os.environ["CC"]  = "gcc-4.0"
+            os.environ["CPP"] = "cpp-4.0"
 
     else:
         # Set flags for other Unix type platforms

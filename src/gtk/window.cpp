@@ -2,7 +2,7 @@
 // Name:        src/gtk/window.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: window.cpp 56390 2008-10-17 04:19:04Z PC $
+// Id:          $Id: window.cpp 66938 2011-02-17 09:57:57Z JS $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,9 @@
     #include "wx/settings.h"
     #include "wx/msgdlg.h"
     #include "wx/textctrl.h"
+#if wxUSE_RADIOBTN
     #include "wx/radiobut.h"
+#endif
     #include "wx/toolbar.h"
     #include "wx/combobox.h"
     #include "wx/layout.h"
@@ -3316,12 +3318,13 @@ void wxWindowGTK::SetFocus()
     {
         if (GTK_IS_CONTAINER(m_widget))
         {
+#if wxUSE_RADIOBTN
             if (IsKindOf(CLASSINFO(wxRadioButton)))
             {
                 gtk_widget_grab_focus (m_widget);
                 return;
             }
-
+#endif
             gtk_widget_child_focus( m_widget, GTK_DIR_TAB_FORWARD );
         }
         else
@@ -3907,7 +3910,21 @@ void wxWindowGTK::DoSetToolTip( wxToolTip *tip )
     wxWindowBase::DoSetToolTip(tip);
 
     if (m_tooltip)
+    {
         m_tooltip->Apply( (wxWindow *)this );
+    }
+    else
+    {
+        GtkWidget *w = GetConnectWidget();
+        wxToolTip::Apply(w, wxCharBuffer());
+#if GTK_CHECK_VERSION(2, 12, 0)
+        // Just applying NULL doesn't work on 2.12.0, so also use
+        // gtk_widget_set_has_tooltip. It is part of the new GtkTooltip API
+        // but seems also to work with the old GtkTooltips.
+        if (gtk_check_version(2, 12, 0) == NULL)
+            gtk_widget_set_has_tooltip(w, FALSE);
+#endif
+    }
 }
 
 void wxWindowGTK::ApplyToolTip( GtkTooltips *tips, const wxChar *tip )

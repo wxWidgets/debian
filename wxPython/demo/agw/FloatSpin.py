@@ -34,7 +34,7 @@ class FloatSpinDemo(wx.Panel):
         self.helptext = wx.StaticText(self.mainpanel, -1, "Welcome to the FloatSpin Demo")
         
         self.floatspin1 = FS.FloatSpin(self.mainpanel, -1, min_val=0, max_val=1,
-                                       increment=0.01, value=0.1, extrastyle=FS.FS_LEFT)
+                                       increment=0.01, value=0.1, agwStyle=FS.FS_LEFT)
         self.floatspin1.SetFormat("%f")
         self.floatspin1.SetDigits(2)
         
@@ -50,7 +50,7 @@ class FloatSpinDemo(wx.Panel):
         self.setfont1 = wx.Button(self.mainpanel, -1, "Set Font")
 
         self.floatspin2 = FS.FloatSpin(self.mainpanel, -1, min_val=-10, max_val=100,
-                                       increment=0.1, extrastyle=FS.FS_RIGHT)
+                                       increment=0.1, agwStyle=FS.FS_RIGHT)
         self.floatspin2.SetFormat("%e")
         self.floatspin2.SetDigits(4)
         
@@ -66,7 +66,7 @@ class FloatSpinDemo(wx.Panel):
         self.setfont2 = wx.Button(self.mainpanel, -1, "Set Font")
 
         self.floatspin3 = FS.FloatSpin(self.mainpanel, -1, min_val=0.01, max_val=0.05,
-                                       increment=0.0001, extrastyle=FS.FS_CENTRE)
+                                       increment=0.0001, agwStyle=FS.FS_CENTRE)
         self.floatspin3.SetFormat("%f")
         self.floatspin3.SetDigits(5)
         
@@ -82,7 +82,7 @@ class FloatSpinDemo(wx.Panel):
         self.setfont3 = wx.Button(self.mainpanel, -1, "Set Font")
 
         self.floatspin4 = FS.FloatSpin(self.mainpanel, -1, min_val=-2, max_val=20000,
-                                       increment=0.1, extrastyle=FS.FS_READONLY)
+                                       increment=0.1, agwStyle=FS.FS_READONLY)
         self.floatspin4.SetFormat("%G")
         self.floatspin4.SetDigits(3)
         

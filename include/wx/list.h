@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 16/11/98: WX_DECLARE_LIST() and typesafe lists added
 // Created:     29/01/98
-// RCS-ID:      $Id: list.h 58742 2009-02-07 23:46:53Z VZ $
+// RCS-ID:      $Id: list.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -207,7 +207,7 @@ private:
             bool operator==(const compatibility_iterator& i) const            \
             {                                                                 \
                 wxASSERT_MSG( m_list && i.m_list,                             \
-                              _T("comparing invalid iterators is illegal") ); \
+                              wxT("comparing invalid iterators is illegal") ); \
                 return (m_list == i.m_list) && (m_iter == i.m_iter);          \
             }                                                                 \
             bool operator!=(const compatibility_iterator& i) const            \

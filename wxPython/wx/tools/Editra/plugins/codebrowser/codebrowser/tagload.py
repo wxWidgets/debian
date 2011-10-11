@@ -17,8 +17,8 @@ file type identifiers defined in Editra.src.syntax.synglob.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: tagload.py 58863 2009-02-13 00:29:52Z CJP $"
-__revision__ = "$Revision: 58863 $"
+__svnid__ = "$Id: tagload.py 63353 2010-02-02 02:55:26Z CJP $"
+__revision__ = "$Revision: 63353 $"
 
 #--------------------------------------------------------------------------#
 # Imports
@@ -39,6 +39,7 @@ LOAD_MAP = { synglob.ID_LANG_ADA : TAGLIB + 'adatags',
              synglob.ID_LANG_CSH : TAGLIB + 'shtags',
              synglob.ID_LANG_CSS : TAGLIB + 'csstags',
              synglob.ID_LANG_D : TAGLIB + 'dtags',
+             synglob.ID_LANG_DIFF : TAGLIB + 'difftags',
              synglob.ID_LANG_ESS : TAGLIB + 'esstags',
              synglob.ID_LANG_F77 : TAGLIB + 'fortrantags',
              synglob.ID_LANG_F95 : TAGLIB + 'fortrantags',
@@ -46,6 +47,7 @@ LOAD_MAP = { synglob.ID_LANG_ADA : TAGLIB + 'adatags',
              synglob.ID_LANG_HAXE : TAGLIB + 'haxetags',
              synglob.ID_LANG_HTML : TAGLIB + 'xmltags',
              synglob.ID_LANG_INNO : TAGLIB + 'innotags',
+             synglob.ID_LANG_JAVA : TAGLIB + 'javatags',
              synglob.ID_LANG_KSH : TAGLIB + 'shtags',
              synglob.ID_LANG_LISP : TAGLIB + 'lisptags',
              synglob.ID_LANG_LUA : TAGLIB + 'luatags',
@@ -64,7 +66,8 @@ LOAD_MAP = { synglob.ID_LANG_ADA : TAGLIB + 'adatags',
              synglob.ID_LANG_VALA : TAGLIB + 'valatags',
              synglob.ID_LANG_VBSCRIPT : TAGLIB + 'vbstags',
              synglob.ID_LANG_VERILOG : TAGLIB + 'verilogtags',
-             synglob.ID_LANG_XML : TAGLIB + 'xmltags' }
+             synglob.ID_LANG_XML : TAGLIB + 'xmltags',
+             synglob.ID_LANG_XTEXT: TAGLIB + 'xtexttags' }
 
 # Compatibility for older versions of Editra
 if hasattr(synglob, 'ID_LANG_SYSVERILOG'):

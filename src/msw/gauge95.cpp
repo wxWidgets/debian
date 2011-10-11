@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gauge95.cpp 41126 2006-09-10 12:23:44Z VZ $
+// RCS-ID:      $Id: gauge95.cpp 62070 2009-09-24 10:18:25Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -206,6 +206,10 @@ void wxGauge95::SetRange(int r)
 
 void wxGauge95::SetValue(int pos)
 {
+    // Setting the (same) position produces flicker on Vista,
+    // especially noticable if ownerdrawn
+    if (GetValue() == pos) return;
+
     // switch to determinate mode if required
     SetDeterminateMode();
 

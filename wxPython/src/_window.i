@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-June-1997
-// RCS-ID:      $Id: _window.i 57744 2009-01-02 04:29:57Z RD $
+// RCS-ID:      $Id: _window.i 68254 2011-07-13 20:24:36Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1202,11 +1202,11 @@ hotkey was registered successfully.", "");
         DocStr(UnregisterHotKey,
                "Unregisters a system wide hotkey.", "");
         bool UnregisterHotKey(int hotkeyId) {
-        #if wxUSE_HOTKEY
+        %#if wxUSE_HOTKEY
             return self->UnregisterHotKey(hotkeyId);
-        #else
+        %#else
             return false;
-        #endif
+        %#endif
         }
     }
 
@@ -1856,9 +1856,12 @@ already on top/bottom and nothing was done.", "");
     DocDeclStr(
         bool , PageDown(),
         "This is just a wrapper for ScrollPages(1).", "");
+
     
-
-
+#ifdef __WXMAC__
+    bool MacIsWindowScrollbar( const wxWindow* sb );
+#endif
+    
 
     // context-sensitive help
     // ----------------------
@@ -1910,7 +1913,16 @@ window.  Note that the text is actually stored by the current
         wxToolTip* , GetToolTip() const,
         "get the associated tooltip or None if none", "");
     
-    // LINK ERROR --> wxString GetToolTipText() const;
+    %pythoncode {
+        def GetToolTipString(self):
+            tip = self.GetToolTip()
+            if tip:
+                return tip.GetTip()
+            else:
+                return None
+
+        ToolTipString = property(GetToolTipString, SetToolTipString)
+    }
 #endif
 
 
@@ -2315,6 +2327,25 @@ dialogs, etc.)", "");
         return wxTopLevelWindows;
     }
 %}
+
+//---------------------------------------------------------------------------
+
+%pythoncode {
+    class FrozenWindow(object):
+        """
+        A context manager to be used with Python 'with' statements
+        that will freeze the given window for the duration of the
+        with block.
+        """
+        def __init__(self, window):
+            self._win = window
+        def __enter__(self):
+            self._win.Freeze()
+            return self
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            self._win.Thaw()
+}
+
 
 //---------------------------------------------------------------------------
 

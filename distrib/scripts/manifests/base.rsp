@@ -37,6 +37,8 @@ src/msw/ole/*.cpp
 
 src/msw/wince/*.cpp
 
+src/xml/*.cpp
+
 src/unix/*.cpp
 
 src/zlib/*.c
@@ -67,6 +69,7 @@ include/wx/private/*.h
 include/wx/protocol/*.h
 include/wx/wx_setup.vms
 include/wx/unix/*.h
+include/wx/xml/*.h
 lib/dummy
 
 include/wx/msw/*.h
@@ -81,6 +84,8 @@ include/wx/msw/wince/*.h
 
 include/wx/msdos/*.h
 
+samples/Makefile*
+samples/makefile*
 samples/console/testdata.fc
 samples/console/*.cpp
 samples/console/*.h

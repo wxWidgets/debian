@@ -20,8 +20,8 @@ happen during run time.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: profiler.py 60484 2009-05-02 18:53:43Z CJP $"
-__revision__ = "$Revision: 60484 $"
+__svnid__ = "$Id: profiler.py 67855 2011-06-04 20:11:21Z CJP $"
+__revision__ = "$Revision: 67855 $"
 
 #--------------------------------------------------------------------------#
 # Imports
@@ -34,6 +34,7 @@ import wx
 from ed_glob import CONFIG, PROG_NAME, VERSION, PRINT_BLACK_WHITE, EOL_MODE_LF
 import util
 import dev_tool
+import ed_msg
 
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
@@ -43,6 +44,7 @@ _DEFAULTS = {
            'AALIASING'  : False,            # Use Anti-Aliasing if availble
            'APPSPLASH'  : True,             # Show splash at startup
            'AUTOBACKUP' : False,            # Automatically backup files
+           'AUTOBACKUP_PATH' : '',          # Backup path
            'AUTO_COMP'  : True,             # Use Auto-comp if available
            'AUTO_COMP_EX' : False,          # Use extended autocompletion
            'AUTO_INDENT': True,             # Use Auto Indent
@@ -50,6 +52,7 @@ _DEFAULTS = {
            'AUTO_RELOAD' : False,           # Automatically reload files?
            'BRACKETHL'  : True,             # Use bracket highlighting
            'BSUNINDENT' : True,             # Backspace Unindents
+           'CTRLBAR'    : dict(),           # ControlBar layouts
            'CHECKMOD'   : True,             # Auto check file for file mod
            'CHECKUPDATE': True,             # Check for updates on start
            'CODE_FOLD'  : True,             # Use code folding
@@ -65,12 +68,13 @@ _DEFAULTS = {
            'GUIDES'     : False,            # Use Indentation guides
            'HLCARETLINE': False,            # Highlight Caret Line
            'ICONS'      : 'Tango',          # Icon Theme
-           'ICON_SZ'    : (24, 24),         # Toolbar Icon Size
+           'ICON_SZ'    : (16, 16),         # Toolbar Icon Size
            'INDENTWIDTH': 4,                # Default indent width
            'ISBINARY'   : False,            # Is this instance a binary
            'KEY_PROFILE': None,             # Keybinding profile
            'LANG'       : 'Default',        # UI language
            'LASTCHECK'  : 0,                # Last time update check was done
+           #'LEXERMENU'  : [lang_name,]     # Created on an as needed basis
            'MAXIMIZED'  : False,            # Was window maximized on exit
            'MODE'       : 'CODE',           # Overall editor mode
            'MYPROFILE'  : 'default.ppb',    # Path to profile file
@@ -89,6 +93,9 @@ _DEFAULTS = {
            'SHOW_EOL'   : False,            # Show EOL markers
            'SHOW_LN'    : True,             # Show Line Numbers
            'SHOW_WS'    : False,            # Show whitespace markers
+           'SPELLCHECK' : dict(auto=False,
+                               dict='en_US',
+                               epath=None), # Spell checking preferences
            'STATBAR'    : True,             # Show Status Bar
            'SYNTAX'     : True,             # Use Syntax Highlighting
            'SYNTHEME'   : 'Default',        # Syntax Highlight color scheme
@@ -98,7 +105,9 @@ _DEFAULTS = {
            'TOOLBAR'    : True,             # Show Toolbar
            'USETABS'    : False,            # Use tabs instead of spaces
            'USE_PROXY'  : False,            # Use Proxy server settings?
+           'VIEWVERTSPACE' : False,         # Allow extra virtual space in buffer
            'VI_EMU'     : False,            # Use Vi emulation mode
+           'VI_NORMAL_DEFAULT' : False,     # Use Normal mode by default
            'WARN_EOL'   : True,             # Warn about mixed eol characters
            'WRAP'       : False,            # Use Wordwrap
            'WSIZE'      : (700, 450)        # Mainwindow size
@@ -222,6 +231,9 @@ class Profile(dict):
         else:
             self.__setitem__(index, _FromObject(val, fmt))
 
+        # Notify all clients with the configuration change message
+        ed_msg.PostMessage(ed_msg.EDMSG_PROFILE_CHANGE + (index,), val) 
+
     def Write(self, path):
         """Write the dataset of this profile as a pickle
         @param path: path to where to write the pickle
@@ -269,30 +281,9 @@ TheProfile = Profile()
 
 #-----------------------------------------------------------------------------#
 # Profile convenience functions
-def Profile_Del(item):
-    """Removes an item from the profile
-    @param item: items key name
-
-    """
-    TheProfile.DeleteItem(item)
-
-def Profile_Get(index, fmt=None, default=None):
-    """Convenience for Profile().Get()
-    @param index: profile index to retrieve
-    @keyword fmt: format to get value as
-    @keyword default: default value to return if not found
-
-    """
-    return TheProfile.Get(index, fmt, default)
-
-def Profile_Set(index, val, fmt=None):
-    """Convenience for Profile().Set()
-    @param index: profile index to set
-    @param val: value to set index to
-    @keyword fmt: format to convert object from
-
-    """
-    return TheProfile.Set(index, val, fmt)
+Profile_Del  = TheProfile.DeleteItem
+Profile_Get = TheProfile.Get
+Profile_Set = TheProfile.Set
 
 def _FromObject(val, fmt):
     """Convert the given value to a to a profile compatible value
@@ -315,49 +306,35 @@ def _ToObject(index, val, fmt):
     @todo: exception handling,
 
     """
-    if not isinstance(fmt, basestring):
-        raise TypeError, "_ToObject expects a string for parameter 2"
-    else:
-        tmp = fmt.lower()
-        if tmp == u'font':
-            fnt = val.split(',')
-            rval = wx.FFont(int(fnt[1]), wx.DEFAULT, face=fnt[0])
-        elif tmp == u'bool':
-            if isinstance(val, bool):
-                rval = val
-            else:
-                rval = _DEFAULTS.get(index, False)
-        elif tmp == u'size_tuple':
-            if len(val) == 2 and \
-               isinstance(val[0], int) and isinstance(val[1], int):
-                rval = val
-            else:
-                rval = _DEFAULTS.get(index, wx.DefaultSize)
-        elif tmp == u'str':
-            rval = unicode(val)
-        elif tmp == u'int':
-            if isinstance(val, int):
-                rval = val
-            elif isinstance(val, basestring) and val.isdigit():
-                rval = int(val)
-            else:
-                rval = _DEFAULTS.get(index)
+    tmp = fmt.lower()
+    if tmp == u'font':
+        fnt = val.split(',')
+        rval = wx.FFont(int(fnt[1]), wx.DEFAULT, face=fnt[0])
+    elif tmp == u'bool':
+        if isinstance(val, bool):
+            rval = val
         else:
-            return val
-        return rval
+            rval = _DEFAULTS.get(index, False)
+    elif tmp == u'size_tuple':
+        if len(val) == 2 and \
+           isinstance(val[0], int) and isinstance(val[1], int):
+            rval = val
+        else:
+            rval = _DEFAULTS.get(index, wx.DefaultSize)
+    elif tmp == u'str':
+        rval = unicode(val)
+    elif tmp == u'int':
+        if isinstance(val, int):
+            rval = val
+        elif isinstance(val, basestring) and val.isdigit():
+            rval = int(val)
+        else:
+            rval = _DEFAULTS.get(index)
+    else:
+        return val
+    return rval
 
 #---- Begin Function Definitions ----#
-def AddFileHistoryToProfile(file_history):
-    """Manages work of adding a file from the profile in order
-    to allow the top files from the history to be available
-    the next time the user opens the program.
-    @param file_history: add saved files to history list
-
-    """
-    files = list()
-    for fnum in xrange(file_history.GetNoHistoryFiles()):
-        files.append(file_history.GetHistoryFile(fnum))
-    Profile_Set('FHIST', files)
 
 def CalcVersionValue(ver_str="0.0.0"):
     """Calculates a version value from the provided dot-formated string
@@ -390,12 +367,8 @@ def GetLoader():
            should be.
 
     """
-    cbase = CONFIG['CONFIG_BASE']
-    if cbase is None:
-        cbase = wx.StandardPaths_Get().GetUserDataDir()
-
+    cbase = util.GetUserConfigBase()
     loader = os.path.join(cbase, u"profiles", u".loader2")
-
     return loader
 
 def GetProfileStr():
@@ -412,6 +385,8 @@ def GetProfileStr():
     profile = reader.readline()
     profile = profile.split("\n")[0] # strip newline from end
     reader.close()
+    if not os.path.isabs(profile):
+        profile = CONFIG['PROFILE_DIR'] + profile
     return profile
 
 def ProfileIsCurrent():
@@ -473,6 +448,9 @@ def UpdateProfileLoader():
         prof_name = os.path.join(CONFIG['CONFIG_DIR'],
                                  os.path.basename(prof_name))
         Profile_Set('MYPROFILE', prof_name)
+
+    # Use just the relative profile name for local(portable) config paths
+    prof_name = os.path.basename(prof_name)
 
     writer.write(prof_name)
     writer.write(u"\nVERSION\t" + VERSION)

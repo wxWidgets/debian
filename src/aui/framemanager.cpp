@@ -4,7 +4,7 @@
 // Author:      Benjamin I. Williams
 // Modified by:
 // Created:     2005-05-17
-// RCS-ID:      $Id: framemanager.cpp 59960 2009-03-31 09:11:19Z BIW $
+// RCS-ID:      $Id: framemanager.cpp 66980 2011-02-20 10:26:32Z TIK $
 // Copyright:   (C) Copyright 2005-2006, Kirix Corporation, All Rights Reserved
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
@@ -249,7 +249,7 @@ public:
                 long style = wxDEFAULT_FRAME_STYLE,
                 const wxString &name = wxT("frame"))
     {
-         if (!CreateBase( parent, id, pos, size, style, wxDefaultValidator, name ))
+        if (!Create( parent, id, title, pos, size, style, name ))
             return;
 
         m_title = title;
@@ -1297,7 +1297,7 @@ void wxAuiManager::RestorePane(wxAuiPaneInfo& pane_info)
     for (i = 0, pane_count = m_panes.GetCount(); i < pane_count; ++i)
     {
         wxAuiPaneInfo& p = m_panes.Item(i);
-        if (!p.IsToolbar())
+        if (!p.IsToolbar() && !p.IsFloating())
         {
             p.SetFlag(wxAuiPaneInfo::optionHidden,
                       p.HasFlag(wxAuiPaneInfo::savedHiddenState));
@@ -3442,6 +3442,9 @@ void wxAuiManager::OnFloatingPaneMoveStart(wxWindow* wnd)
     // try to find the pane
     wxAuiPaneInfo& pane = GetPane(wnd);
     wxASSERT_MSG(pane.IsOk(), wxT("Pane window not found"));
+
+    if(!pane.frame)
+        return;
 
     if (m_flags & wxAUI_MGR_TRANSPARENT_DRAG)
         pane.frame->SetTransparent(150);

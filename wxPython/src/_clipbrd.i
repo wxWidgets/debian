@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     31-October-1999
-// RCS-ID:      $Id: _clipbrd.i 54625 2008-07-14 22:20:10Z RD $
+// RCS-ID:      $Id: _clipbrd.i 65196 2010-08-04 17:50:17Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -126,6 +126,13 @@ normal clipboard, if primary is True.", "");
         static wxClipboard *, Get(),
         "Returns global instance (wxTheClipboard) of the object.", "");
 
+    // for the 'with' statement
+    %pythoncode { 
+        def __enter__(self):
+            return self
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            self.Close()
+    }
 };
 
 

@@ -2,7 +2,7 @@
 // Name:        src/gtk/toplevel.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: toplevel.cpp 56986 2008-11-27 23:00:04Z PC $
+// Id:          $Id: toplevel.cpp 63160 2010-01-15 17:09:29Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -561,6 +561,9 @@ bool wxTopLevelWindowGTK::Create( wxWindow *parent,
     }
 #endif
 
+    if (style & wxMAXIMIZE)
+        gtk_window_maximize(GTK_WINDOW(m_widget));
+
 #if 0
     if (!name.empty())
         gtk_window_set_role( GTK_WINDOW(m_widget), wxGTK_CONV( name ) );
@@ -636,7 +639,17 @@ bool wxTopLevelWindowGTK::Create( wxWindow *parent,
     if ((style & wxSIMPLE_BORDER) || (style & wxNO_BORDER))
     {
         m_gdkDecor = 0;
-        m_gdkFunc = 0;
+        m_gdkFunc = GDK_FUNC_MOVE;
+
+        if ( ( style & wxMINIMIZE_BOX ) == wxMINIMIZE_BOX )
+        {
+            m_gdkFunc |= GDK_FUNC_MINIMIZE;
+        }
+
+        if ( ( style & wxCLOSE_BOX ) == wxCLOSE_BOX )
+        {
+            m_gdkFunc |= GDK_FUNC_CLOSE;
+        }
     }
     else
     if (m_miniEdge > 0)
@@ -810,7 +823,7 @@ bool wxTopLevelWindowGTK::ShowFullScreen(bool show, long style )
         if (frame && frame->GetToolBar())
         {
             frame->GetToolBar()->Show(true);
-	}
+        }
     }
 #endif
 

@@ -88,36 +88,154 @@ Major new features in 2.8 release
   wxSearchCtrl, wxAboutBox, wxTreebook, tar streams.
 
 
-2.8.11:
+2.8.12:
 -------
-
-*** INCOMPATIBLE CHANGE: ***
-
-Due to an oversight, a bug fix in wxMSW resulted in an incompatible change in
-wxTreeCtrl behaviour: its EVT_TREE_ITEM_ACTIVATED handler now must skip the
-event being processed to allow the item to be toggled by double clicking on it.
-I.e. you need to ensure there is an "event.Skip()" in your item activation
-handler if you do wish to allow the item to be toggled.
-
 
 All:
 
+- Fixed a bug in UNC path testing.
+- Improved command line parser usage help.
+- Fixed race condition bugs in wxCondition.
+- Added wxT_2() for forward compatibility with wxWidgets 3. Use it in
+  initialization of wxCmdLineEntryDesc struct elements and (very few) other
+  places where wxT() is required currently but won't be allowed in v3.
+- Fixed crash on exit caused by deleting old logger in wxLogChain dtor.
+
+All (GUI):
+
+- wxRTC: fixed style selection resetting after editing a style.
+- wxRTC: can now edit line spacing in .1 increments from 1 to 2.
+- wxRTC: fixed wrong line spacing and space after paragraph calculations.
+- wxRTC: GetStyleMergedWithBase now detects loops.
+- wxRTC: wxRichTextCtrl::ApplyStyle now applies a paragraph style at the
+  cursor without needing a selection, and setting the default style now
+  avoids duplicating character attributes in subsequently typed text when
+  they exist in the paragraph style.
+- wxRTC: fixed IsPositionVisible to scroll a position into view correctly.
+- wxRTC: fixed a problem with paste resetting the content paragraph style.
+- wxRTC: style list box now copes with names duplicated across style types.
+  Also fixed wxRichTextStyleDefinition::GetStyleMergeWithBase similarly.
+- wxRTC: fixed very poor performance for XML loading on wxGTK.
+- Fixed error in generic tree control CalculatePositions.
+- Added wxFD_FILE_MUST_EXIST to wxFileSelector function.
+- Added wxDataViewCtrl Get/SetValueByRow functions for forward compatibility
+  with 2.9.
+- Right-clicking is now supported in any kind of wxAuiToolBar button.
+- Fixed a bug in wxAcceleratorEntry::IsOk.
+- wxGraphicsContext::DrawBitmap: x and y coordinates no longer affected by
+  stretch factor.
+- Fixed an assert in wxGrid on wxEVT_MOUSE_CAPTURE_LOST.
+- Fixed bug in generic wxTreeCtrl where SelectItem toggles the selection if
+  the item is already in the desired state.
+- Fixed bug in wxSizer::Replace(size_t, wxSizerItem *) whereby SetContainingSizer
+  is not called.
+- Fixed compilation with libpng 1.5 and above.
+- Removed ugly black (simple) border around wxHTML help window.
+
+wxMSW:
+
+- wxOwnerDrawnComboBox and wxComboCtrl with wxCB_READONLY window style now
+  have more native-like focus indicator rendering.
+- Fixed wxOwnerDrawnComboBox keyboard handling: drop-down is no longer
+  displayed when arrow key is pressed (without Alt).
+- In some rare cases wxOwnerDrawnComboBox drop-down animation could display
+  as garbage. This has now been greatly reduced (mcben).
+- Fixed OLE date conversion bug.
+- Added check for double window handle creation.
+- Fixed WIN64 crash in wxStyledTextCtrl.
+- Fixed Watcom compilation when omitting threads.
+- Fixed wxFileName::IsFileReadable on Windows 98.
+- Fixed bug whereby clicking anywhere inside wxListBox generates
+  wxEVT_COMMAND_LISTBOX_SELECTED event. You need to set wxUSE_LISTBOX_SELECTION_FIX
+  to 1 in include/wx/msw/listbox.h to enable this binary-incompatible fix.
+
+wxGTK:
+
+- Fix for --disable-radiobtn compilation.
+- Fixed a bug on GTK+ only whereby wxGrid scrolls back to the previous edit position
+  when another cell is edited.
+- Fix for missing menubar problem under some window managers where menu bar height is
+  reported as 0 when the menu hasn't fully realized yet. Now updates the height during
+  idle time if it is 0, otherwise no menu is shown.
+- Improved list control and tree control selection text theme compatibility by adding
+  wxSYS_COLOUR_LISTBOXHIGHLIGHTTEXT colour index.
+- wxComboCtrl and wxOwnerDrawnComboBox had wrong background colours under some
+  themes (Marcin Wojdyr).
+- Added thread-safe fixes to socket code.
+
+wxUniv:
+
+- Fixed assertion in tree control sample due to colour index not being supported.
+
+2.8.11:
+-------
+
+*** INCOMPATIBLE CHANGES: ***
+
+   Due to an oversight, a bug fix in wxMSW resulted in an incompatible change in
+   wxTreeCtrl behaviour: its EVT_TREE_ITEM_ACTIVATED handler now must skip the
+   event being processed to allow the item to be toggled by double clicking on it.
+   I.e. you need to ensure there is an "event.Skip()" in your item activation
+   handler if you do wish to allow the item to be toggled.
+
+All:
+
+- Fixed crashes due to invalid input in PNG and TIFF image loaders (Tielei Wang).
+- Fix compilation of wxWidgets headers with recent Sun CC (Brian Cameron).
+  NB: If your code uses _T() macro you must either replace it with wxT() to
+      use Sun CC or define wxNEEDS__T before including wx headers and avoid
+      including many standard headers (again, only with this compiler).
 - Added several functions forward compatible with wxWidgets 3.0 (troelsk):
   wxDC::SetDeviceClippingRegion(), wxShowEvent::IsShown(),
   wxIconizeEvent::IsIconized(), wxFileName::StripExtension(),
   wxXmlNode::GetAttribute[s](), wxXmlNode::AddAttribute().
+- wxDateTime timezone functions now dynamic (no caching).
 
 All (GUI):
 
 - Add wxBU_EXACTFIT support to wxToggleButton XRC handler (Ronny Krueger).
-- wxRTC: fixed AltGr+key input on Windows.
+- wxRTC: fixed AltGr+key input and numeric keypad Delete on Windows.
+- wxRTC: added background colour setting to font dialog.
+- wxRTC: added wxRICHTEXT_HANDLER_USE_CSS flag for HTML handler to use CSS
+  where possible.
+- wxRTC: corrected centring and right-justification spacing.
+- wxRTC: corrected some problems with SelectAll. Caret is now set to end.
+- Paper size conversion from dimensions to id now uses definition ordering
+  in order to use common types where there are duplications, fixing problems
+  where invalid sizes caused incorrect second invocation of page setup
+  dialog.
+- Corrected writing direction for Farsi.
+- Added wxBORDER_THEME to XRC.
+- Speeded up wxTreeCtrl by caching text size (botg).
+- Fix building with using system libpng 1.4 (Volker Grabsch).
+- Fixed generic wxDatePickerCtrl keyboard navigation.
+- Added EVT_WIZARD_PAGE_SHOWN event for wxWizard.
 
 wxMSW:
 
+- Fixed crash when copying Unicode URLs to the clipboard (Tim Kosse).
 - Fixed generation of wxEVT_CHAR_HOOK events.
 - Implement wxFileName::SetTimes() for directories (Steve Lamerton).
+- Correct wxTopLevelWindow::SetShape() for windows with menu bar (Peter Friis).
+- Backported speed-up of Vaclav Slavik's high quality print preview speed-up.
+  You now need to set wxUSE_HIGH_QUALITY_PREVIEW_IN_WXMSW in
+  src/common/prntbase.cpp and wxUSE_ENH_METAFILE_FROM_DC in
+  include/wx/msw/enhmeta.h.
+- Worked around child window and caret positioning bug (in Windows) when using
+  wxBORDER_THEME in a container window.
+- Suppressed spurious character event for decimal key in numeric keypad.
+- Prevented wxCheckListBox from corrupting menu items.
 
+wxGTK:
 
+- Don't access a possibly destroyed timer object from GTK callback (Tim Kosse).
+
+wxMac:
+
+- Fixed a problem with wxListCtrl whereby event processing would change
+  the event object identifier, and thereby affect subsequent processing,
+  and defeat custom event propagation of commands from current focus window.
+- Fixed a problem with wxFontDialog on Mac OS 10.6.
 
 2.8.10:
 -------

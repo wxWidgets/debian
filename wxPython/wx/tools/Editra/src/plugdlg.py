@@ -10,11 +10,13 @@
 """
 Provides a dialog for downloading, installing and configuring plugins or Editra.
 
+@todo: refactor list population and list item creation
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id: plugdlg.py 60516 2009-05-04 18:38:14Z CJP $"
-__revision__ = "$Revision: 60516 $"
+__cvsid__ = "$Id: plugdlg.py 67856 2011-06-04 21:14:06Z CJP $"
+__revision__ = "$Revision: 67856 $"
 
 #-----------------------------------------------------------------------------#
 # Imports
@@ -99,8 +101,8 @@ class PluginDialog(wx.Frame):
 
     """
     def __init__(self, parent, id=wx.ID_ANY, title=u'', size=wx.DefaultSize):
-        wx.Frame.__init__(self, parent, title=title, size=size,
-                              style=wx.DEFAULT_FRAME_STYLE)
+        super(PluginDialog, self).__init__(parent, title=title, size=size,
+                                           style=wx.DEFAULT_FRAME_STYLE)
         util.SetWindowIcon(self)
 
         # Attributes
@@ -122,7 +124,7 @@ class PluginDialog(wx.Frame):
         # Add the error page.
         pmgr = wx.GetApp().GetPluginManager()
         if len(pmgr.GetIncompatible()):
-            self._nb.AddPage(ConfigPanel(self._nb, style=wx.BORDER_SUNKEN,
+            self._nb.AddPage(ConfigPanel(self._nb, style=wx.NO_BORDER,
                                          mode=MODE_ERROR),
                              _("Errors"), img_id=IMG_ERROR)
 
@@ -136,12 +138,15 @@ class PluginDialog(wx.Frame):
         # Event Handlers
         self.Bind(eclib.EVT_SB_PAGE_CHANGING, self.OnPageChanging)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy, self)
 
         # Message Handlers
         ed_msg.Subscribe(self.OnThemeChange, ed_msg.EDMSG_THEME_CHANGED)
 
-    def __del__(self):
-        ed_msg.Unsubscribe(self.OnThemeChange)
+    def OnDestroy(self, evt):
+        if evt.GetId() == self.GetId():
+            ed_msg.Unsubscribe(self.OnThemeChange)
+        evt.Skip()
 
     def __InitImageList(self):
         """Initialize the segmentbooks image list"""
@@ -247,11 +252,11 @@ class PluginDialog(wx.Frame):
 
 #-----------------------------------------------------------------------------#
 
-class ConfigPanel(wx.Panel):
+class ConfigPanel(eclib.ControlBox):
     """Creates a panel for configuring plugins."""
-    def __init__(self, parent, style=wx.SUNKEN_BORDER, mode=MODE_CONFIG):
+    def __init__(self, parent, style=wx.NO_BORDER, mode=MODE_CONFIG):
         """Build config panel"""
-        wx.Panel.__init__(self, parent, style=style)
+        eclib.ControlBox.__init__(self, parent, style=style)
 
         # Attrtibutes
         self._mode = mode
@@ -259,16 +264,14 @@ class ConfigPanel(wx.Panel):
         self._list = eclib.PanelBox(self)
 
         # Layout Panel
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self._list, 1, wx.EXPAND)
-        self.SetSizer(sizer)
+        self.SetWindow(self._list)
 
         if self._mode == MODE_CONFIG:
             self.PopulateCtrl()
         else:
             self.PopulateErrors()
 
-        # Event handlers
+        # Event Handlers
         self.Bind(ed_event.EVT_NOTIFY, self.OnNotify)
 
     def ConfigChanged(self):
@@ -320,9 +323,9 @@ class ConfigPanel(wx.Panel):
             parent.AddPage(panel, label, True, idx)
             parent.SetSegmentCanClose(parent.GetPageCount() - 1, True)
         else:
-            enable, pname = evt.GetValue()
+            pname, enabled = evt.GetValue()
             pmgr = wx.GetApp().GetPluginManager()
-            pmgr.EnablePlugin(pname, enable)
+            pmgr.EnablePlugin(pname, enabled)
             self._changed = True
 
     def PopulateCtrl(self):
@@ -331,7 +334,7 @@ class ConfigPanel(wx.Panel):
         this function will clear the list and Repopulate it
         with current config values. Returns the number of
         items populated to the list
-        @postcondition: list is popluated with all plugins that are
+        @postcondition: list is populated with all plugins that are
                         currently loaded and sets the checkmarks accordingly
         @return: number of items added to list
 
@@ -345,22 +348,35 @@ class ConfigPanel(wx.Panel):
         keys = sorted([ ed_txt.DecodeString(name)
                         for name in config.keys() ],
                       key=unicode.lower)
+        uninstalled = Profile_Get('UNINSTALL_PLUGINS', default=list())
+
         for item in keys:
             val = config[item]
             self._list.Freeze()
             mod = sys.modules.get(item)
-            pin = PluginData()
-            pin.SetName(item)
-            desc = getattr(mod, '__doc__', _("No Description Available"))
-            pin.SetDescription(desc.strip())
-            pin.SetAuthor(getattr(mod, '__author__', _("Unknown")))
-            pin.SetVersion(str(getattr(mod, '__version__', _("Unknown"))))
+            dist = p_mgr.GetPluginDistro(item)
+            if dist is not None:
+                item = dist.project_name
+                version = dist.version
+            else:
+                version = str(getattr(mod, '__version__', _("Unknown")))
 
-            pbi = PBPluginItem(self._list, mod, None, item, pin.GetVersion(),
-                               pin.GetDescription(), pin.GetAuthor())
+            pdata = PluginData()
+            pdata.SetName(item)
+            desc = getattr(mod, '__doc__', None)
+            if not isinstance(desc, basestring):
+                desc = _("No Description Available")
+            pdata.SetDescription(desc.strip())
+            pdata.SetAuthor(getattr(mod, '__author__', _("Unknown")))
+            pdata.SetVersion(version)
+            pdata.SetDist(dist)
+            pbi = PBPluginItem(self._list, mod, pdata, None)
 
             pbi.SetChecked(val)
+            util.Log("[pluginmgr][info] Adding %s to list" % item)
             self._list.AppendItem(pbi)
+            if pbi.GetInstallPath() in uninstalled:
+                pbi.Enable(False)
             self._list.Thaw()
 
         self._list.SendSizeEvent()
@@ -372,7 +388,7 @@ class ConfigPanel(wx.Panel):
         this function will clear the list and Repopulate it
         with current config values. Returns the number of
         items populated to the list
-        @postcondition: list is popluated with all plugins that are
+        @postcondition: list is populated with all plugins that are
                         currently loaded and sets the checkmarks accordingly
         @return: number of items added to list
 
@@ -388,16 +404,24 @@ class ConfigPanel(wx.Panel):
                       key=unicode.lower)
         bmp = wx.ArtProvider.GetBitmap(wx.ART_ERROR, wx.ART_TOOLBAR, (32, 32))
         msg = _("This plugin requires a newer version of Editra.")
+
         for item in keys:
             val = errors[item]
             self._list.Freeze()
             mod = sys.modules.get(val)
+            dist = p_mgr.GetPluginDistro(item)
+            if dist is not None:
+                item = dist.project_name
+                version = dist.version
+            else:
+                version = unicode(getattr(mod, '__version__', _("Unknown")))
+
             pin = PluginData()
             pin.SetName(item)
             pin.SetAuthor(getattr(mod, '__author__', _("Unknown")))
-            pin.SetVersion(str(getattr(mod, '__version__', _("Unknown"))))
-            pbi = PluginErrorItem(self._list, bmp, item, pin.GetVersion(),
-                                  msg, pin.GetAuthor())
+            pin.SetVersion(version)
+            pin.SetDist(dist)
+            pbi = PluginErrorItem(self._list, pin, msg, bmp=bmp)
 
             self._list.AppendItem(pbi)
             self._list.Thaw()
@@ -499,16 +523,17 @@ class DownloadPanel(eclib.ControlBox):
                 continue
 
             tmpdat = PluginData()
+            set_map = {'author' : tmpdat.SetAuthor,
+                       'version' : tmpdat.SetVersion,
+                       'name' : tmpdat.SetName,
+                       'description' : tmpdat.SetDescription,
+                       'url' : tmpdat.SetUrl}
+
             for attr in data:
                 tmp = attr.split("=")
                 if len(tmp) != 2:
                     continue
-
-                set_map = {'author' : tmpdat.SetAuthor,
-                           'version' : tmpdat.SetVersion,
-                           'name' : tmpdat.SetName,
-                           'description' : tmpdat.SetDescription,
-                           'url' : tmpdat.SetUrl}
+                
                 funct = set_map.get(tmp[0].lower(), None)
                 if funct:
                     funct(ed_txt.DecodeString(tmp[1].strip()))
@@ -580,7 +605,7 @@ class DownloadPanel(eclib.ControlBox):
 
         """
         index = evt.GetId()
-        enable, pin = evt.GetValue()
+        pin, enable = evt.GetValue()
         self._dl_list[pin] = enable
 
         if enable:
@@ -599,7 +624,7 @@ class DownloadPanel(eclib.ControlBox):
     def PopulateList(self):
         """Populates the list control based off data in the plugin data
         list. The plugin data list is set as a result of calling UpdateList
-        it is not recomended to call this directly.
+        it is not recommended to call this directly.
 
         @return: number of items added to control
 
@@ -610,10 +635,7 @@ class DownloadPanel(eclib.ControlBox):
         pins = sorted([ name for name in self._p_list.keys() ], key=unicode.lower)
         self.Freeze()
         for item in pins:
-            data = self._p_list[item]
-            pbi = PBDownloadItem(self._list, None, data.GetName(),
-                                 data.GetVersion(), data.GetDescription(),
-                                 data.GetAuthor())
+            pbi = PBDownloadItem(self._list, self._p_list[item], None)
             self._list.AppendItem(pbi)
 
         self.Thaw()
@@ -654,7 +676,7 @@ class DownloadPanel(eclib.ControlBox):
 #-----------------------------------------------------------------------------#
 # Download utility functions
 
-# The obtained meta data must be served as a file that is formated
+# The obtained meta data must be served as a file that is formatted
 # as follows. Each meta data item must be on a single line with
 # each set of meta data for different plugins separated by three
 # hash marks '###'.
@@ -805,7 +827,7 @@ class InstallPanel(eclib.ControlBox):
             # All plugins installed correctly
             grand_p = self.GetTopLevelParent()
             grand_p.SetStatusText(_("Successfully Installed Plugins"), 0)
-            # Note: need to do this because Setselection doesn't fire a
+            # Note: need to do this because SetSelection doesn't fire a
             #       page change.
             wx.GetApp().GetPluginManager().ReInit()
             self.GetParent().SetSelection(CONFIG_PG)
@@ -905,51 +927,66 @@ class InstallPanel(eclib.ControlBox):
 
 class PBPluginItem(eclib.PanelBoxItemBase):
     """PanelBox Item to display configuration information about a plugin."""
-    def __init__(self, parent, mod, bmp=None,
-                 title=u'Plugin Name', version=u'0.0',
-                 desc=u'Description', auth='John Doe',
-                 enabled=False):
+    def __init__(self, parent, mod, pdata, bmp=None, enabled=False):
         """Create the PanelBoxItem
         @param parent: L{PanelBox}
+        @param mod: module
+        @param pdata: PluginData
 
         """
-        eclib.PanelBoxItemBase.__init__(self, parent)
+        super(PBPluginItem, self).__init__(parent)
 
         # Attributes
         self._module = mod
+        self._pdata = pdata
         self._bmp = bmp
-        self._title = wx.StaticText(self, label=title)
-        self._version = wx.StaticText(self, label=version)
-        self._desc = wx.StaticText(self, label=desc)
-        self._auth = wx.StaticText(self, label=_("Author: %s") % auth)
+        self._title = wx.StaticText(self, label=self._pdata.GetName())
+        self._version = wx.StaticText(self, label=self._pdata.GetVersion())
+        self._desc = wx.StaticText(self, label=self._pdata.GetDescription())
+        self._auth = wx.StaticText(self, label=_("Author: %s") % self._pdata.GetAuthor())
         self._enabled = wx.CheckBox(self, label=_("Enable"))
         self._enabled.SetValue(enabled)
+        bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DELETE), wx.ART_MENU)
+        self._uninstall = eclib.PlateButton(self, label=_("Uninstall"), bmp=bmp,
+                                            style=eclib.PB_STYLE_NOBG)
+        self._uninstall.Unbind(wx.EVT_ERASE_BACKGROUND)
         bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF), wx.ART_MENU)
         self._config = eclib.PlateButton(self,
                                          label=_("Configure"), bmp=bmp,
                                          style=eclib.PB_STYLE_NOBG)
+        self._config.Unbind(wx.EVT_ERASE_BACKGROUND)
         self._config.Enable(enabled)
 
         # Setup
         if not hasattr(mod, 'GetConfigObject'):
             self._config.Hide()
+
+        ipath = self.GetInstallPath()
+        if ipath:
+            if not os.access(ipath, os.R_OK|os.W_OK):
+                self._uninstall.Show(False)
+        else:
+            util.Log("[pluginmgr][warn] cant find plugin path for %s" % \
+                     self._pdata.GetName())
+            self._uninstall.Show(False) # Should not happen
+
         font = self._title.GetFont()
         font.SetWeight(wx.FONTWEIGHT_BOLD)
         self._title.SetFont(font)
         self._version.SetFont(font)
 
         if wx.Platform == '__WXMAC__':
-            self._desc.SetWindowVariant(wx.WINDOW_VARIANT_SMALL)
-            self._auth.SetWindowVariant(wx.WINDOW_VARIANT_SMALL)
-            self._enabled.SetWindowVariant(wx.WINDOW_VARIANT_SMALL)
-            self._config.SetWindowVariant(wx.WINDOW_VARIANT_SMALL)
+            for ctrl in (self._desc, self._auth, self._enabled,
+                         self._config, self._uninstall):
+                ctrl.SetWindowVariant(wx.WINDOW_VARIANT_SMALL)
 
         # Layout
         self.__DoLayout()
 
         # Event Handlers
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
-        self.Bind(wx.EVT_BUTTON, self.OnButton)
+        self.Bind(wx.EVT_BUTTON, self.OnConfigButton, self._config)
+        self.Bind(wx.EVT_BUTTON, self.OnUninstallButton, self._uninstall)
 
     def __DoLayout(self):
         """Layout the panel"""
@@ -966,12 +1003,14 @@ class PBPluginItem(eclib.PanelBoxItemBase):
         csizer = wx.BoxSizer(wx.VERTICAL)
         tsizer = wx.BoxSizer(wx.HORIZONTAL)
         tsizer.AddMany([(self._title, 0), ((20, -1), 1, wx.EXPAND),
-                        (self._version, 0, wx.ALIGN_RIGHT)])
+                        (self._version, 0, wx.ALIGN_RIGHT),
+                        ((5, 5), 0)])
 
         bsizer = wx.BoxSizer(wx.HORIZONTAL)
-        bsizer.AddMany([(self._auth, 0), ((20, -1), 1, wx.EXPAND),
+        bsizer.AddMany([(self._auth, 0), ((5, -1), 1, wx.EXPAND),
                         (self._enabled, 0, wx.ALIGN_CENTER_VERTICAL),
                         ((5, 5), 0),
+                        (self._uninstall, 0, wx.ALIGN_CENTER_VERTICAL),
                         (self._config, 0, wx.ALIGN_CENTER_VERTICAL)])
         csizer.AddMany([(tsizer, 1, wx.EXPAND), ((3, 3), 0),
                         (self._desc, 0), ((3, 3), 0),
@@ -982,6 +1021,17 @@ class PBPluginItem(eclib.PanelBoxItemBase):
         vsizer.AddMany([((4, 4), 0), (hsizer, 0, wx.EXPAND), ((4, 4), 0)])
         self.SetSizer(vsizer)
         self.SetAutoLayout(True)
+
+    def GetInstallPath(self):
+        """Get the path of the plugin
+        @return: string
+
+        """
+        if self._pdata is not None:
+            dist = self._pdata.GetDist()
+            if dist is not None:
+                return dist.location
+        return u''
 
     def GetPluginName(self):
         """Get the name of the plugin
@@ -997,7 +1047,7 @@ class PBPluginItem(eclib.PanelBoxItemBase):
         """
         return self._version.GetLabel()
 
-    def OnButton(self, evt):
+    def OnConfigButton(self, evt):
         """Handle when the configuration button is hit."""
         if self._module is not None:
             cfg_obj = self._module.GetConfigObject()
@@ -1005,13 +1055,33 @@ class PBPluginItem(eclib.PanelBoxItemBase):
                                                ed_glob.ID_PREF, cfg_obj)
             wx.PostEvent(self.GetParent(), event)
 
+    def OnUninstallButton(self, evt):
+        """Uninstall the plugin"""
+        msg = _("Are you sure you want to uninstall %s?\nThis cannot be undone.") 
+        result = wx.MessageBox(msg % self.GetPluginName(),
+                               _("Uninstall Plugin"),
+                               wx.OK|wx.CANCEL|wx.ICON_WARNING)
+        if result == wx.OK:
+            self.Enable(False)
+            self._desc.SetLabel(_("This plugin will be uninstalled on next program launch."))
+            self._enabled.SetValue(False)
+            pname = self._title.GetLabel()
+            event = ed_event.NotificationEvent(ed_event.edEVT_NOTIFY, self.GetId(),
+                                               (pname, False), self)
+            wx.PostEvent(self.GetParent(), event)
+            plist = Profile_Get('UNINSTALL_PLUGINS', default=list())
+            plist.append(self.GetInstallPath())
+            Profile_Set('UNINSTALL_PLUGINS', plist)
+        else:
+            return
+
     def OnCheck(self, evt):
         """Notify container of changes to state of plugin"""
         enabled = self._enabled.GetValue()
         self._config.Enable(enabled)
         pname = self._title.GetLabel()
         event = ed_event.NotificationEvent(ed_event.edEVT_NOTIFY, self.GetId(),
-                                           (enabled, pname), self)
+                                           (pname, enabled), self)
         wx.PostEvent(self.GetParent(), event)
 
     def SetChecked(self, check=True):
@@ -1026,16 +1096,15 @@ class PBPluginItem(eclib.PanelBoxItemBase):
 
 class PBDownloadItem(PBPluginItem):
     """PanelBox Item to display download information about a plugin."""
-    def __init__(self, parent, bmp=None, title=u'Plugin Name', version=u'0.0',
-                 desc=u'Description', auth='John Doe'):
+    def __init__(self, parent, pdata, bmp=None):
         """Create the PanelBoxItem
         @param parent: L{PanelBox}
 
         """
-        PBPluginItem.__init__(self, parent, None, bmp=bmp, title=title,
-                              version=version, desc=desc, auth=auth)
+        super(PBDownloadItem, self).__init__(parent, None, pdata, bmp=bmp)
 
         # Setup
+        self._uninstall.Hide()
         self._enabled.SetLabel(_("Download"))
         self.Layout()
 
@@ -1043,21 +1112,22 @@ class PBDownloadItem(PBPluginItem):
 
 class PluginErrorItem(eclib.PanelBoxItemBase):
     """PanelBox Item to display configuration information about a plugin."""
-    def __init__(self, parent, bmp,
-                 title=u'Plugin Name', version=u'0.0',
-                 msg=u'Description', auth='John Doe'):
+    def __init__(self, parent, pdata, msg, bmp):
         """Create the PanelBoxItem
         @param parent: L{PanelBox}
+        @param pdata: PluginData
+        @param msg: error msg
+        @param bmp: Bitmap
 
         """
-        eclib.PanelBoxItemBase.__init__(self, parent)
+        super(PluginErrorItem, self).__init__(parent)
 
         # Attributes
         self._bmp = bmp
-        self._title = wx.StaticText(self, label=title)
-        self._version = wx.StaticText(self, label=version)
+        self._title = wx.StaticText(self, label=pdata.GetName())
+        self._version = wx.StaticText(self, label=pdata.GetVersion())
         self._msg = wx.StaticText(self, label=msg)
-        self._auth = wx.StaticText(self, label=_("Author: %s") % auth)
+        self._auth = wx.StaticText(self, label=_("Author: %s") % pdata.GetAuthor())
 
         # Setup
         font = self._title.GetFont()
@@ -1109,14 +1179,16 @@ class PluginData(plugin.PluginData):
     @see: plugin.PluginData
 
     """
-    def __init__(self, name=u'', descript=u'', author=u'', \
-                 ver=u'', url=u''):
+    def __init__(self, name=u'', descript=u'', \
+                 author=u'', ver=u'', url=u''):
         """Extends PluginData to include information about url
         to get it from.
         @param url: url to download plugin from
 
         """
-        plugin.PluginData.__init__(self, name, descript, author, ver)
+        super(PluginData, self).__init__(name, descript, author, ver)
+
+        # Attributes
         self._url = url
 
     def GetUrl(self):

@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor 
 // Modified by: Ryan Norton (MLTE GetLineLength and GetLineText)
 // Created:     1998-01-01
-// RCS-ID:      $Id: textctrl.cpp 58957 2009-02-17 05:35:46Z SC $
+// RCS-ID:      $Id: textctrl.cpp 63334 2010-01-31 15:19:50Z SC $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -425,7 +425,18 @@ void wxTextCtrl::CreatePeer(
 
     if ( UMAGetSystemVersion() >= 0x1030 && !forceMLTE )
     {
-        if ( (m_windowStyle & wxTE_MULTILINE) || ( UMAGetSystemVersion() >= 0x1050 ) )
+        // Non non-CG mode, borders are not refreshed properly when the focus
+        // leaves the text control, when using wxMacMLTEHIViewControl.
+        // This is still true on 10.5.
+        // In fact, even on CG, this causes problems with wxSpinCtrls, whose
+        // focus rings don't refresh when switching between spin controls and spin buttons.
+        // So for now, don't use wxMacLTEHIViewControl unless we really have to.
+        
+        if ( (m_windowStyle & wxTE_MULTILINE)
+#if 1 // wxMAC_USE_CORE_GRAPHICS
+             || ( UMAGetSystemVersion() >= 0x1050 )
+#endif
+             )
             m_peer = new wxMacMLTEHIViewControl( this , str , pos , size , style ) ;
     }
 
@@ -809,14 +820,14 @@ void wxTextCtrl::OnChar(wxKeyEvent& event)
     int key = event.GetKeyCode() ;
     bool eat_key = false ;
 
-    if ( key == 'a' && event.MetaDown() )
+    if ( key == 'a' && event.GetModifiers() == wxMOD_CMD )
     {
         SelectAll() ;
 
         return ;
     }
 
-    if ( key == 'c' && event.MetaDown() )
+    if ( key == 'c' && event.GetModifiers() == wxMOD_CMD )
     {
         if ( CanCopy() )
             Copy() ;
@@ -849,7 +860,7 @@ void wxTextCtrl::OnChar(wxKeyEvent& event)
     // assume that any key not processed yet is going to modify the control
     m_dirty = true;
 
-    if ( key == 'v' && event.MetaDown() )
+    if ( key == 'v' && event.GetModifiers() == wxMOD_CMD )
     {
         if ( CanPaste() )
             Paste() ;
@@ -857,7 +868,7 @@ void wxTextCtrl::OnChar(wxKeyEvent& event)
         return ;
     }
 
-    if ( key == 'x' && event.MetaDown() )
+    if ( key == 'x' && event.GetModifiers() == wxMOD_CMD )
     {
         if ( CanCut() )
             Cut() ;
@@ -2016,6 +2027,15 @@ wxTextPos wxMacMLTEControl::GetLastPosition() const
     wxTextPos actualsize = 0 ;
 
     Handle theText ;
+#if wxUSE_UNICODE
+    OSErr err = TXNGetDataEncoded( m_txn, kTXNStartOffset, kTXNEndOffset, &theText, kTXNUnicodeTextData );
+    // all done
+    if ( err == noErr )
+    {
+        actualsize = GetHandleSize( theText )/sizeof(UniChar);
+        DisposeHandle( theText ) ;
+    }
+#else
     OSErr err = TXNGetDataEncoded( m_txn, kTXNStartOffset, kTXNEndOffset, &theText, kTXNTextData );
 
     // all done
@@ -2024,6 +2044,7 @@ wxTextPos wxMacMLTEControl::GetLastPosition() const
         actualsize = GetHandleSize( theText ) ;
         DisposeHandle( theText ) ;
     }
+#endif
     else
     {
         actualsize = 0 ;

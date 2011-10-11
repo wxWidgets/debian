@@ -4,13 +4,17 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.04.98
-// RCS-ID:      $Id: regconf.h 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: regconf.h 62185 2009-09-28 10:02:42Z JS $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _REGCONF_H
 #define   _REGCONF_H
+
+#include "wx/defs.h"
+
+#if wxUSE_CONFIG
 
 #ifndef   _REGISTRY_H
   #include "wx/msw/registry.h"
@@ -107,4 +111,6 @@ private:
   wxString  m_strPath;
 };
 
-#endif  //_REGCONF_H
+#endif // wxUSE_CONFIG
+
+#endif // _REGCONF_H

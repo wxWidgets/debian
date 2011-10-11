@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     14/4/2006
 // Copyright:   (c) Francesco Montorsi
-// RCS-ID:      $Id: filepicker.h 50240 2007-11-25 13:12:53Z VZ $
+// RCS-ID:      $Id: filepicker.h 63601 2010-03-02 00:20:21Z VZ $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -189,7 +189,7 @@ public:    // used by the GTK callback only
     bool m_bIgnoreNextChange;
 
     void UpdatePath(const char *gtkpath)
-        { m_path = wxString::FromAscii(gtkpath); }
+        { m_path = wxString::FromUTF8(gtkpath); }
 
 private:
     DECLARE_DYNAMIC_CLASS(wxDirButton)

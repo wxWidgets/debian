@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     16/04/2000
-// RCS-ID:      $Id: helpchm.cpp 58145 2009-01-16 16:18:01Z JS $
+// RCS-ID:      $Id: helpchm.cpp 60697 2009-05-20 13:15:24Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -166,7 +166,7 @@ bool wxCHMHelpController::DisplayContextPopup(int contextId)
 
     GetCursorPos(& popup.pt);
     popup.clrForeground = ::GetSysColor(COLOR_INFOTEXT);
-    popup.clrBackground = ::GetSysColor(COLOR_INFOBK);;
+    popup.clrBackground = ::GetSysColor(COLOR_INFOBK);
     popup.rcMargins.top = popup.rcMargins.left = popup.rcMargins.right = popup.rcMargins.bottom = -1;
     popup.pszFont = NULL;
     popup.pszText = NULL;

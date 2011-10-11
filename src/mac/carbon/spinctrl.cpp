@@ -3,7 +3,7 @@
 // Purpose:     wxSpinCtrl
 // Author:      Robert
 // Modified by: Mark Newsam (Based on GTK file)
-// RCS-ID:      $Id: spinctrl.cpp 42816 2006-10-31 08:50:17Z RD $
+// RCS-ID:      $Id: spinctrl.cpp 62128 2009-09-25 15:24:54Z JS $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -379,6 +379,8 @@ void wxSpinCtrl::SetTextValue(int val)
 
     // select all text
     m_text->SetSelection(0, -1);
+
+    m_text->SetInsertionPointEnd();
 
     // and give focus to the control!
     // m_text->SetFocus();    Why???? TODO.

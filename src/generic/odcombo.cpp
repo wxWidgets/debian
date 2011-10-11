@@ -4,7 +4,7 @@
 // Author:      Jaakko Salli
 // Modified by:
 // Created:     Apr-30-2006
-// RCS-ID:      $Id: odcombo.cpp 58203 2009-01-18 20:05:07Z JMS $
+// RCS-ID:      $Id: odcombo.cpp 64259 2010-05-09 10:48:37Z JMS $
 // Copyright:   (c) 2005 Jaakko Salli
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -93,6 +93,17 @@ wxVListBoxComboPopup::~wxVListBoxComboPopup()
 {
     Clear();
 }
+
+#ifdef __WXMSW__
+
+void wxVListBoxComboPopup::SetFocus()
+{
+    // Suppress SetFocus() warning by simply not calling it. This combo popup
+    // has already been designed with the assumption that SetFocus() may not
+    // do anything useful, so it really doesn't need to be called.
+}
+
+#endif // __WXMSW__
 
 bool wxVListBoxComboPopup::LazyCreate()
 {
@@ -506,7 +517,7 @@ int wxVListBoxComboPopup::Append(const wxString& item)
 
         for ( i=0; i<strings.GetCount(); i++ )
         {
-            if ( item.Cmp(strings.Item(i)) < 0 )
+            if ( item.CmpNoCase(strings.Item(i)) < 0 )
             {
                 pos = (int)i;
                 break;
@@ -758,6 +769,11 @@ wxSize wxVListBoxComboPopup::GetAdjustedSize( int minWidth, int prefHeight, int 
             height = maxHeight;
 
         int totalHeight = GetTotalHeight(); // + 3;
+
+#if defined(__WXMAC__)
+        // Take borders into account, or there will be scrollbars even for one or two items.
+        totalHeight += 2;
+#endif
         if ( height >= totalHeight )
         {
             height = totalHeight;

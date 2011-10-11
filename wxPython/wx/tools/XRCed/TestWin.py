@@ -131,7 +131,7 @@ class TestWindow:
                 return None
             parentItem = item
             item = items.pop()
-            index = tree.ItemIndex(item)
+            index = tree.ItemIndexWin(item)
             obj = comp.getChildObject(tree.GetPyData(parentItem), obj, index)
             node = tree.GetPyData(item)
             comp = Manager.getNodeComp(node)
@@ -184,7 +184,7 @@ class TestWindow:
             if rects: parentRect = rects[0]
             parent = obj
             item = items.pop()
-            index = tree.ItemIndex(item)
+            index = tree.ItemIndexWin(item)
             obj = comp.getChildObject(tree.GetPyData(parentItem), parent, index)
             if isinstance(parent, wx.Notebook) and index != parent.GetSelection():
                 parent.SetSelection(index)

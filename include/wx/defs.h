@@ -4,7 +4,7 @@
  *  Author:      Julian Smart and others
  *  Modified by: Ryan Norton (Converted to C)
  *  Created:     01/02/97
- *  RCS-ID:      $Id: defs.h 60027 2009-04-05 12:16:58Z VZ $
+ *  RCS-ID:      $Id: defs.h 66923 2011-02-16 22:37:48Z JS $
  *  Copyright:   (c) Julian Smart
  *  Licence:     wxWindows licence
  */
@@ -829,9 +829,11 @@ typedef wxUint32 wxDword;
 #if SIZEOF_LONG >= SIZEOF_VOID_P && SIZEOF_LONG >= SIZEOF_SIZE_T
     /* normal case */
     typedef unsigned long wxUIntPtr;
+    typedef long wxIntPtr;
 #elif SIZEOF_SIZE_T >= SIZEOF_VOID_P
     /* Win64 case */
     typedef size_t wxUIntPtr;
+    #define wxIntPtr ssize_t
 #else
     /*
        This should never happen for the current architectures but if you're
@@ -915,28 +917,28 @@ inline void *wxUIntToPtr(wxUIntPtr p)
 #if (defined(__VISUALC__) && defined(__WIN32__))
     #define wxLongLong_t __int64
     #define wxLongLongSuffix i64
-    #define wxLongLongFmtSpec _T("I64")
+    #define wxLongLongFmtSpec wxT("I64")
 #elif defined(__BORLANDC__) && defined(__WIN32__) && (__BORLANDC__ >= 0x520)
     #define wxLongLong_t __int64
     #define wxLongLongSuffix i64
-    #define wxLongLongFmtSpec _T("L")
+    #define wxLongLongFmtSpec wxT("L")
 #elif (defined(__WATCOMC__) && (defined(__WIN32__) || defined(__DOS__) || defined(__OS2__)))
       #define wxLongLong_t __int64
       #define wxLongLongSuffix i64
-      #define wxLongLongFmtSpec _T("L")
+      #define wxLongLongFmtSpec wxT("L")
 #elif defined(__DIGITALMARS__)
       #define wxLongLong_t __int64
       #define wxLongLongSuffix LL
-      #define wxLongLongFmtSpec _T("ll")
+      #define wxLongLongFmtSpec wxT("ll")
 #elif defined(__MINGW32__)
     #define wxLongLong_t long long
     #define wxLongLongSuffix ll
-    #define wxLongLongFmtSpec _T("I64")
+    #define wxLongLongFmtSpec wxT("I64")
 #elif defined(__MWERKS__)
     #if __option(longlong)
         #define wxLongLong_t long long
         #define wxLongLongSuffix ll
-        #define wxLongLongFmtSpec _T("ll")
+        #define wxLongLongFmtSpec wxT("ll")
     #else
         #error "The 64 bit integer support in CodeWarrior has been disabled."
         #error "See the documentation on the 'longlong' pragma."
@@ -944,7 +946,7 @@ inline void *wxUIntToPtr(wxUIntPtr p)
 #elif defined(__WXPALMOS__)
     #define wxLongLong_t int64_t
     #define wxLongLongSuffix ll
-    #define wxLongLongFmtSpec _T("ll")
+    #define wxLongLongFmtSpec wxT("ll")
 #elif defined(__VISAGECPP__) && __IBMCPP__ >= 400
     #define wxLongLong_t long long
 #elif (defined(SIZEOF_LONG_LONG) && SIZEOF_LONG_LONG >= 8)  || \
@@ -954,11 +956,11 @@ inline void *wxUIntToPtr(wxUIntPtr p)
         (defined(__DJGPP__) && __DJGPP__ >= 2)
     #define wxLongLong_t long long
     #define wxLongLongSuffix ll
-    #define wxLongLongFmtSpec _T("ll")
+    #define wxLongLongFmtSpec wxT("ll")
 #elif defined(SIZEOF_LONG) && (SIZEOF_LONG == 8)
     #define wxLongLong_t long
     #define wxLongLongSuffix l
-    #define wxLongLongFmtSpec _T("l")
+    #define wxLongLongFmtSpec wxT("l")
     #define wxLongLongIsLong
 #endif
 
@@ -2445,9 +2447,9 @@ typedef void*       WXDisplay;
  * since they are unlikely to be needed in a public header.
  */
 #if defined(__LP64__) && __LP64__
-	typedef double CGFloat;
+    typedef double CGFloat;
 #else
-	typedef float CGFloat;
+    typedef float CGFloat;
 #endif
 
 #if (defined(__LP64__) && __LP64__) || (defined(NS_BUILD_32_LIKE_64) && NS_BUILD_32_LIKE_64)
@@ -2855,9 +2857,11 @@ typedef const void* WXWidget;
 /*  This is required because of clashing macros in windows.h, which may be */
 /*  included before or after wxWidgets classes, and therefore must be */
 /*  disabled here before any significant wxWidgets headers are included. */
+#ifdef __cplusplus
 #ifdef __WXMSW__
 #include "wx/msw/winundef.h"
 #endif /*  __WXMSW__ */
+#endif /* __cplusplus */
 
 /*  --------------------------------------------------------------------------- */
 /*  macro to define a class without copy ctor nor assignment operator */

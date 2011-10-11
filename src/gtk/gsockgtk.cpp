@@ -3,7 +3,7 @@
  * Name:    src/gtk/gsockgtk.cpp
  * Purpose: GSocket: GTK part
  * Licence: The wxWindows licence
- * CVSID:   $Id: gsockgtk.cpp 37159 2006-01-26 16:02:02Z ABX $
+ * CVSID:   $Id: gsockgtk.cpp 67249 2011-03-19 20:35:11Z JS $
  * -------------------------------------------------------------------------
  */
 // For compilers that support precompilation, includes "wx.h".
@@ -15,12 +15,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// newer versions of glib define its own GSocket but we unfortunately use this
+// name in our own (semi-)public header and so can't change it -- rename glib
+// one instead
+#define GSocket GlibGSocket
 #include <gdk/gdk.h>
 #include <glib.h>
+#undef GSocket
 
 #include "wx/gsocket.h"
 #include "wx/unix/gsockunx.h"
-
+#if wxUSE_THREADS
+#include "wx/thread.h"
+#endif
 
 extern "C" {
 static
@@ -37,6 +44,13 @@ void _GSocket_GDK_Input(gpointer data,
 }
 }
 
+typedef struct {
+#if wxUSE_THREADS
+  wxMutex* m_mutex;
+#endif
+  gint m_id[2];
+} GSocketGTKMutexProtected;
+
 bool GSocketGUIFunctionsTableConcrete::CanUseEventLoop()
 {   return true; }
 
@@ -51,25 +65,37 @@ void GSocketGUIFunctionsTableConcrete::OnExit(void)
 
 bool GSocketGUIFunctionsTableConcrete::Init_Socket(GSocket *socket)
 {
-  gint *m_id;
+  socket->m_gui_dependent = (char *)malloc(sizeof(GSocketGTKMutexProtected));
 
-  socket->m_gui_dependent = (char *)malloc(sizeof(gint)*2);
-  m_id = (gint *)(socket->m_gui_dependent);
+  GSocketGTKMutexProtected* guispecific = (GSocketGTKMutexProtected*)socket->m_gui_dependent;
 
-  m_id[0] = -1;
-  m_id[1] = -1;
+#if wxUSE_THREADS
+  guispecific->m_mutex = new wxMutex(wxMUTEX_RECURSIVE);
+#endif
+
+  guispecific->m_id[0] = -1;
+  guispecific->m_id[1] = -1;
 
   return TRUE;
 }
 
 void GSocketGUIFunctionsTableConcrete::Destroy_Socket(GSocket *socket)
 {
-  free(socket->m_gui_dependent);
+  GSocketGTKMutexProtected* guispecific = (GSocketGTKMutexProtected*)socket->m_gui_dependent;
+
+#if wxUSE_THREADS
+  delete guispecific->m_mutex;
+#endif
+
+  free(guispecific);
 }
 
 void GSocketGUIFunctionsTableConcrete::Install_Callback(GSocket *socket, GSocketEvent event)
 {
-  gint *m_id = (gint *)(socket->m_gui_dependent);
+  GSocketGTKMutexProtected* guispecific = (GSocketGTKMutexProtected*)socket->m_gui_dependent;
+
+  assert(guispecific != NULL);
+
   int c;
 
   if (socket->m_fd == -1)
@@ -84,21 +110,40 @@ void GSocketGUIFunctionsTableConcrete::Install_Callback(GSocket *socket, GSocket
     default: return;
   }
 
-  if (m_id[c] != -1)
-    gdk_input_remove(m_id[c]);
+#if wxUSE_THREADS
+  guispecific->m_mutex->Lock();
+#endif
+  gint current_id = guispecific->m_id[c];
+  guispecific->m_id[c] = -1;
+#if wxUSE_THREADS
+  guispecific->m_mutex->Unlock();
+#endif
 
-  m_id[c] = gdk_input_add(socket->m_fd,
+  if (current_id != -1) {
+    gdk_input_remove(current_id);
+  }
+
+  current_id  = gdk_input_add(socket->m_fd,
                           (c ? GDK_INPUT_WRITE : GDK_INPUT_READ),
                           _GSocket_GDK_Input,
                           (gpointer)socket);
+
+#if wxUSE_THREADS
+  guispecific->m_mutex->Lock();
+#endif
+  guispecific->m_id[c] = current_id;
+#if wxUSE_THREADS
+  guispecific->m_mutex->Unlock();
+#endif
+
 }
 
 void GSocketGUIFunctionsTableConcrete::Uninstall_Callback(GSocket *socket, GSocketEvent event)
 {
-  gint *m_id = (gint *)(socket->m_gui_dependent);
+  GSocketGTKMutexProtected* guispecific = (GSocketGTKMutexProtected*)socket->m_gui_dependent;
   int c;
 
-  assert( m_id != NULL );
+  assert( guispecific != NULL );
 
   switch (event)
   {
@@ -109,10 +154,18 @@ void GSocketGUIFunctionsTableConcrete::Uninstall_Callback(GSocket *socket, GSock
     default: return;
   }
 
-  if (m_id[c] != -1)
+#if wxUSE_THREADS
+  guispecific->m_mutex->Lock();
+#endif
+  gint current_id = guispecific->m_id[c];
+  guispecific->m_id[c] = -1;
+#if wxUSE_THREADS
+  guispecific->m_mutex->Unlock();
+#endif
+
+  if (current_id != -1)
   {
-    gdk_input_remove(m_id[c]);
-    m_id[c] = -1;
+    gdk_input_remove(current_id);
   }
 }
 

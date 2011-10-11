@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: _image.i 52459 2008-03-12 22:11:48Z RD $
+// RCS-ID:      $Id: _image.i 67464 2011-04-13 18:14:31Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -219,7 +219,7 @@ public:
 DocStr(wxImage_HSVValue,
 "An object that contains values for hue, saturation and value which
 represent the value of a color.  It is used by `wx.Image.HSVtoRGB` and
-`wx.Image.RGBtoHSV`, which +converts between HSV color space and RGB
+`wx.Image.RGBtoHSV`, which converts between HSV color space and RGB
 color space.", "");
 class wxImage_HSVValue
 {
@@ -1198,9 +1198,9 @@ alpha channel then a alpha channel will be added.", "");
 
 
 
-// Make an image from buffer objects.  Not that this is here instead of in the
+// Make an image from buffer objects.  Note that this is here instead of in the
 // wxImage class (as a constructor) because there is already another one with
-// the exact same signature, so there woudl be ambiguities in the generated
+// the exact same signature, so there would be ambiguities in the generated
 // C++.  Doing it as an independent factory function like this accomplishes
 // the same thing however.
 %newobject _ImageFromBuffer;

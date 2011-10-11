@@ -12,8 +12,8 @@ Simple autocompletion support for Cascading Style Sheets.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id: csscomp.py 59626 2009-03-19 16:39:41Z CJP $"
-__revision__ = "$Revision: 59626 $"
+__cvsid__ = "$Id: csscomp.py 67123 2011-03-04 00:02:35Z CJP $"
+__revision__ = "$Revision: 67123 $"
 
 #--------------------------------------------------------------------------#
 # Imports
@@ -31,12 +31,16 @@ RE_LINK_PSEUDO = re.compile("a:(link|visited|active|hover|focus)*")
 RE_CSS_COMMENT = re.compile("\/\*[^*]*\*+([^/][^*]*\*+)*\/")
 RE_CSS_BLOCK = re.compile("\{[^}]*\}")
 
+PSUEDO_SYMBOLS = completer.CreateSymbols([ u'active', u'focus', u'hover', 
+                                           u'link', u'visited' ],
+                                         )
+
 #--------------------------------------------------------------------------#
 
 class Completer(completer.BaseCompleter):
-    """Code completer provider"""
+    """CSS Code completion provider"""
     def __init__(self, stc_buffer):
-        completer.BaseCompleter.__init__(self, stc_buffer)
+        super(Completer, self).__init__(stc_buffer)
 
         # Setup
         self.SetAutoCompKeys([ord(':'), ord('.') ])
@@ -44,20 +48,19 @@ class Completer(completer.BaseCompleter):
         self.SetAutoCompFillups('')
         self.SetCallTipKeys([ord('('), ])
         self.SetCallTipCancel([ord(')'), wx.WXK_RETURN])
-        self.SetAutoCompAfter(False) # Insert Text after cursor on completions
-
+        
     def GetAutoCompList(self, command):
         """Returns the list of possible completions for a
         command string. If namespace is not specified the lookup
         is based on the locals namespace
-        @param command: commadn lookup is done on
+        @param command: command lookup is done on
         @keyword namespace: namespace to do lookup in
 
         """
         buff = self.GetBuffer()
         keywords = buff.GetKeywords()
         if command in [None, u'']:
-            return keywords
+            return completer.CreateSymbols(keywords, completer.TYPE_UNKNOWN)
 
         cpos = buff.GetCurrentPos()
         cline = buff.GetCurrentLine()
@@ -66,7 +69,7 @@ class Completer(completer.BaseCompleter):
 
         # Check for the case of a pseudo class
         if IsPsuedoClass(command, tmp):
-            return [ u'active', u'focus', u'hover', u'link', u'visited' ]
+            return PSUEDO_SYMBOLS
 
         # Give some help on some common properties
         if tmp.endswith(u':'):
@@ -74,7 +77,7 @@ class Completer(completer.BaseCompleter):
             comps = PROP_OPTS.get(word, list())
             comps = list(set(comps))
             comps.sort()
-            return comps
+            return completer.CreateSymbols(comps, completer.TYPE_PROPERTY)
 
         # Look for if we are completing a tag class
         if tmp.endswith(u'.'):
@@ -89,9 +92,9 @@ class Completer(completer.BaseCompleter):
 
                 classes = list(set(classes))
                 classes.sort()
-            return classes
+            return completer.CreateSymbols(classes, completer.TYPE_CLASS)
 
-        return keywords
+        return completer.CreateSymbols(keywords, completer.TYPE_UNKNOWN)
 
     def GetCallTip(self, command):
         """Returns the formated calltip string for the command.
@@ -146,7 +149,7 @@ def GetWordLeft(line):
 
 #--------------------------------------------------------------------------#
 
-# Proprites to provide some input help on
+# Properties to provide some input help on
 PROP_OPTS = { u'border-style' : [u'none', u'hidden', u'dotted', u'dashed',
                                  u'solid', u'double', u'groove', u'ridge',
                                  u'inset', u'outset'],

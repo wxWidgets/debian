@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.00
-// RCS-ID:      $Id: filename.h 59869 2009-03-26 15:59:38Z VZ $
+// RCS-ID:      $Id: filename.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -494,10 +494,10 @@ public:
     static wxULongLong GetSize(const wxString &file);
 
         // returns the size in a human readable form
-    wxString GetHumanReadableSize(const wxString &nullsize = wxGetTranslation(_T("Not available")),
+    wxString GetHumanReadableSize(const wxString &nullsize = wxGetTranslation(wxT("Not available")),
                                   int precision = 1) const;
     static wxString GetHumanReadableSize(const wxULongLong &sz,
-                                         const wxString &nullsize = wxGetTranslation(_T("Not available")),
+                                         const wxString &nullsize = wxGetTranslation(wxT("Not available")),
                                          int precision = 1);
 
 

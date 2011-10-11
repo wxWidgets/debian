@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: dialog.cpp 49570 2007-10-31 23:31:35Z RD $
+// RCS-ID:      $Id: dialog.cpp 62125 2009-09-25 13:39:04Z JS $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,7 @@
 #endif // WX_PRECOMP
 
 #include "wx/mac/uma.h"
+#include "wx/evtloop.h"
 
 
 // Lists to keep track of windows, so we can disable/enable them
@@ -153,17 +154,19 @@ void wxDialog::DoShowModal()
     if ( GetParent() == NULL )
     {
         windowGroup = GetWindowGroup(windowRef) ;
-        formerParentGroup = GetWindowGroupParent( windowGroup );
-        SetWindowGroupParent( windowGroup, GetWindowGroupOfClass( kMovableModalWindowClass ) );
-        resetGroupParent = true;
+        if ( windowGroup != GetWindowGroupOfClass( kMovableModalWindowClass ) )
+        {
+            formerParentGroup = GetWindowGroupParent( windowGroup );
+            SetWindowGroupParent( windowGroup, GetWindowGroupOfClass( kMovableModalWindowClass ) );
+            resetGroupParent = true;
+        }
     }
     BeginAppModalStateForWindow(windowRef) ;
 
+    wxEventLoopGuarantor ensureHasLoop;
+    wxEventLoopBase * const loop = wxEventLoop::GetActive();
     while ( IsModalShowing() )
-    {
-        wxTheApp->MacDoOneEvent() ;
-        // calls process idle itself
-    }
+        loop->Dispatch();
 
     EndAppModalStateForWindow(windowRef) ;
     if ( resetGroupParent )

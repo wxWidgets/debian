@@ -3,7 +3,7 @@
 // Purpose:     XML resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlres.h 55504 2008-09-07 09:15:46Z VS $
+// RCS-ID:      $Id: xmlres.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ class wxXmlResourceModule;
 #define WX_XMLRES_CURRENT_VERSION_MINOR            5
 #define WX_XMLRES_CURRENT_VERSION_RELEASE          3
 #define WX_XMLRES_CURRENT_VERSION_REVISION         0
-#define WX_XMLRES_CURRENT_VERSION_STRING       _T("2.5.3.0")
+#define WX_XMLRES_CURRENT_VERSION_STRING       wxT("2.5.3.0")
 
 #define WX_XMLRES_CURRENT_VERSION \
                 (WX_XMLRES_CURRENT_VERSION_MAJOR * 256*256*256 + \

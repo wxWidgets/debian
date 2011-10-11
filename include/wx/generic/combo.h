@@ -4,7 +4,7 @@
 // Author:      Jaakko Salli
 // Modified by:
 // Created:     Apr-30-2006
-// RCS-ID:      $Id: combo.h 41835 2006-10-09 20:12:19Z RR $
+// RCS-ID:      $Id: combo.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Jaakko Salli
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,8 +26,8 @@
 // all actions of single line text controls are supported
 
 // popup/dismiss the choice window
-#define wxACTION_COMBOBOX_POPUP     _T("popup")
-#define wxACTION_COMBOBOX_DISMISS   _T("dismiss")
+#define wxACTION_COMBOBOX_POPUP     wxT("popup")
+#define wxACTION_COMBOBOX_DISMISS   wxT("dismiss")
 
 #endif
 

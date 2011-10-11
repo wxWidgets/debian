@@ -2,7 +2,7 @@
 // Name:        src/gtk/dnd.cpp
 // Purpose:     wxDropTarget class
 // Author:      Robert Roebling
-// Id:          $Id: dnd.cpp 49608 2007-11-03 21:46:55Z VZ $
+// Id:          $Id: dnd.cpp 65480 2010-09-08 20:01:32Z RR $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -946,21 +946,27 @@ void wxDropSource::RegisterWindow()
 
 void wxDropSource::UnregisterWindow()
 {
-    if (!m_widget)
-        return;
+    if (m_widget)
+    {
+        g_signal_handlers_disconnect_by_func (m_widget,
+                                              (gpointer) source_drag_data_get,
+                                              this);
+        g_signal_handlers_disconnect_by_func (m_widget,
+                                              (gpointer) source_drag_data_delete,
+                                              this);
+        g_signal_handlers_disconnect_by_func (m_widget,
+                                              (gpointer) source_drag_begin,
+                                              this);
+        g_signal_handlers_disconnect_by_func (m_widget,
+                                              (gpointer) source_drag_end,
+                                              this);
+    }
 
-    g_signal_handlers_disconnect_by_func (m_widget,
-                                          (gpointer) source_drag_data_get,
-                                          this);
-    g_signal_handlers_disconnect_by_func (m_widget,
-                                          (gpointer) source_drag_data_delete,
-                                          this);
-    g_signal_handlers_disconnect_by_func (m_widget,
-                                          (gpointer) source_drag_begin,
-                                          this);
-    g_signal_handlers_disconnect_by_func (m_widget,
-                                          (gpointer) source_drag_end,
-                                          this);
+    if (m_iconWindow)
+    {
+        g_signal_handlers_disconnect_by_func (m_iconWindow,
+                                              (gpointer) gtk_dnd_window_configure_callback, this);
+    }
 }
 
 #endif

@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     17/08/98
-// RCS-ID:      $Id: glcanvas.cpp 51747 2008-02-13 06:58:35Z PC $
+// RCS-ID:      $Id: glcanvas.cpp 60708 2009-05-21 17:58:40Z PC $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -106,6 +106,8 @@ void wxGLContext::SetCurrent(const wxGLCanvas& win) const
     if (m_glContext)
     {
         GdkWindow *window = GTK_PIZZA(win.m_wxwindow)->bin_window;
+        if (window == NULL)
+            return;
 
         if (wxGLCanvas::GetGLXVersion() >= 13)
             // GLX >= 1.3

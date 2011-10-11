@@ -750,14 +750,22 @@ def DrawButton(dc, rect, focus, upperTabs):
     top = wx.RectPP(rect.GetTopLeft(), rightPt)
     bottom = wx.RectPP(leftPt, rect.GetBottomRight())
 
-    topStartColor = wx.WHITE
-
-    if not focus:
-        topStartColor = LightColour(wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE), 50)
-
     topEndColor = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
-    bottomStartColor = topEndColor
-    bottomEndColor = topEndColor
+
+    if wx.Platform != '__WXGTK__':
+        # This type of gradient causes visibility issues with some dark
+        # GTK themes so don't use on GTK for now.
+        topStartColor = wx.WHITE
+        if not focus:
+            topStartColor = LightColour(wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE), 50)
+
+        bottomStartColor = topEndColor
+        bottomEndColor = topEndColor
+    else:
+        # Make whole tab same color on gtk
+        if not focus:
+            topEndColour = LightColour(topEndColor, 30)
+        bottomEndColor = bottomStartColor = topStartColor = topEndColor
 
     # Incase we use bottom tabs, switch the colors
     if upperTabs:
@@ -855,14 +863,16 @@ class FNBDropTarget(wx.DropTarget):
 
     def OnData(self, x, y, dragres):
         """ Handles the OnData() method to call the real DnD routine. """
-        
-        if not self.GetData():
-            return wx.DragNone
+        try:
+            if not self.GetData():
+                return wx.DragNone
 
-        draginfo = self._dataobject.GetData()
-        drginfo = cPickle.loads(draginfo)
-        
-        return self._parent.OnDropTarget(x, y, drginfo.GetPageIndex(), drginfo.GetContainer())
+            draginfo = self._dataobject.GetData()
+            drginfo = cPickle.loads(draginfo)
+            
+            return self._parent.OnDropTarget(x, y, drginfo.GetPageIndex(), drginfo.GetContainer())
+        except wx.PyAssertionError:
+            return wx.DragCancel
 
 
 # ---------------------------------------------------------------------------- #
@@ -3931,7 +3941,7 @@ class PageContainer(wx.Panel):
     def OnMouseWheel(self, event):
         """ Scroll tabs when the mouse whee """
         delta = event.GetWheelRotation()
-        for tab in range(abs(delta)):
+        for tab in range(abs(delta/event.GetWheelDelta())):
             if delta > 0:
                 before = self._nLeftButtonStatus
                 self._nLeftButtonStatus = FNB_BTN_PRESSED
@@ -3951,7 +3961,7 @@ class PageContainer(wx.Panel):
         
         where, tabIdx = self.HitTest(event.GetPosition())
 
-        if where in [FNB_TAB, FNB_TAB_X]:
+        if where in [FNB_TAB, FNB_TAB_X] and tabIdx < len(self._pagesInfoVec):
 
             if self._pagesInfoVec[tabIdx].GetEnabled():
                 # Fire events and eventually (if allowed) change selection

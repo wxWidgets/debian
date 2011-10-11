@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _log.i 60301 2009-04-24 05:26:59Z RD $
+// RCS-ID:      $Id: _log.i 63426 2010-02-08 20:19:39Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -368,6 +368,14 @@ class wxLogNull
 public:
     wxLogNull();
     ~wxLogNull();
+
+    // for the 'with' statement
+    %pythoncode { 
+        def __enter__(self):
+            return self
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            return False
+    }
 };
 
 

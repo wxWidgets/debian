@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _taskbar.i 44173 2007-01-08 23:10:39Z RD $
+// RCS-ID:      $Id: _taskbar.i 63981 2010-04-14 23:23:22Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ MustHaveApp(wxPyTaskBarIcon);
 class wxPyTaskBarIcon : public wxEvtHandler
 {
 public:
-    %pythonAppend wxPyTaskBarIcon   setCallbackInfo(TaskBarIcon)
+    %pythonAppend wxPyTaskBarIcon   "self._setOORInfo(self);" setCallbackInfo(TaskBarIcon)
 
     wxPyTaskBarIcon();
     ~wxPyTaskBarIcon();

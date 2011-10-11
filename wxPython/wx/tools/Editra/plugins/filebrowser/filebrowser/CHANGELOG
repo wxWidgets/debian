@@ -2,6 +2,20 @@ FileBrowser Plugin for Editra
 Author: Cody Precord
 License: wxWindows
 
+Version 1.7:
+xx/xx/2011
+   - Use common ebmlib functions
+
+Version 1.6:
+10/02/2010
+    - More fixes for notebook sync feature
+
+Version 1.5:
+xx/xx/2009
+
+    - Fix crash due to improper page checking in notebook sync feature.
+    - Fix crash on windows when clicking on search in directory menu.
+
 Version 1.4:
 04/18/2009
 

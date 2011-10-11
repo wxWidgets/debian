@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2005/01/11
-// RCS-ID:      $Id: settings.mm 49216 2007-10-18 08:23:05Z DE $
+// RCS-ID:      $Id: settings.mm 67017 2011-02-25 09:37:28Z JS $
 // Copyright:   (c) 2005 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -75,6 +75,7 @@ wxColour wxSystemSettingsNative::GetColour(wxSystemColour index)
         return wxColour([NSColor controlShadowColor]);
     case wxSYS_COLOUR_3DLIGHT:
         return wxColour([NSColor controlHighlightColor]);
+    case wxSYS_COLOUR_LISTBOXHIGHLIGHTTEXT:
     case wxSYS_COLOUR_HIGHLIGHTTEXT:
         return wxColour([NSColor selectedControlTextColor]);
     case wxSYS_COLOUR_INFOBK:

@@ -6,7 +6,7 @@
 //              Bart Jourquin
 //              Mark Johnson
 // Created:     9.96
-// RCS-ID:      $Id: dbtable.h 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: dbtable.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -305,7 +305,7 @@ public:
     HSTMT          *NewCursor(bool setCursor = false, bool bindColumns = true) {  return GetNewCursor(setCursor,bindColumns); }
 #endif
 
-    ULONG           Count(const wxString &args=_T("*"));
+    ULONG           Count(const wxString &args=wxT("*"));
     int             DB_STATUS(void) { return(pDb->DB_STATUS); }
 
     bool            IsColNull(UWORD colNumber) const;

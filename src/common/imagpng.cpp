@@ -2,7 +2,7 @@
 // Name:        src/common/imagepng.cpp
 // Purpose:     wxImage PNG handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagpng.cpp 53479 2008-05-07 16:23:55Z PC $
+// RCS-ID:      $Id: imagpng.cpp 67009 2011-02-24 08:42:57Z JS $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -529,7 +529,7 @@ wxPNGHandler::LoadFile(wxImage *image,
     png_structp png_ptr = png_create_read_struct
                           (
                             PNG_LIBPNG_VER_STRING,
-                            (voidp) NULL,
+                            NULL,
                             wx_png_error,
                             wx_png_warning
                           );
@@ -568,18 +568,16 @@ wxPNGHandler::LoadFile(wxImage *image,
     if (!image->Ok())
         goto error;
 
-    lines = (unsigned char **)malloc( (size_t)(height * sizeof(unsigned char *)) );
+    // initialize all line pointers to NULL to ensure that they can be safely
+    // free()d if an error occurs before all of them could be allocated
+    lines = (unsigned char **)calloc(height, sizeof(unsigned char *));
     if ( !lines )
         goto error;
 
     for (i = 0; i < height; i++)
     {
         if ((lines[i] = (unsigned char *)malloc( (size_t)(width * (sizeof(unsigned char) * 4)))) == NULL)
-        {
-            for ( unsigned int n = 0; n < i; n++ )
-                free( lines[n] );
             goto error;
-        }
     }
 
     png_read_image( png_ptr, lines );
@@ -588,16 +586,19 @@ wxPNGHandler::LoadFile(wxImage *image,
 #if wxUSE_PALETTE
     if (color_type == PNG_COLOR_TYPE_PALETTE)
     {
-        const size_t ncolors = info_ptr->num_palette;
+        int ncolors = 0;
+        png_colorp palette;
+        png_get_PLTE( png_ptr, info_ptr, &palette, &ncolors);
         unsigned char* r = new unsigned char[ncolors];
         unsigned char* g = new unsigned char[ncolors];
         unsigned char* b = new unsigned char[ncolors];
+        int j;
 
-        for (size_t j = 0; j < ncolors; j++)
+        for (j = 0; j < ncolors; j++)
         {
-            r[j] = info_ptr->palette[j].red;
-            g[j] = info_ptr->palette[j].green;
-            b[j] = info_ptr->palette[j].blue;
+            r[j] = palette[j].red;
+            g[j] = palette[j].green;
+            b[j] = palette[j].blue;
         }
 
         image->SetPalette(wxPalette(ncolors, r, g, b));

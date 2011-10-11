@@ -12,14 +12,13 @@ This file contains various helper functions and utilities that the program uses.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: util.py 60536 2009-05-07 02:31:37Z CJP $"
-__revision__ = "$Revision: 60536 $"
+__svnid__ = "$Id: util.py 67367 2011-03-31 19:27:05Z CJP $"
+__revision__ = "$Revision: 67367 $"
 
 #--------------------------------------------------------------------------#
 # Imports
 import os
 import sys
-import types
 import mimetypes
 import encodings
 import codecs
@@ -33,8 +32,6 @@ import ed_crypt
 import dev_tool
 import syntax.syntax as syntax
 import syntax.synglob as synglob
-import eclib # TODO: Temporary till refs to HexToRGB and AdjustColor are
-             #       no longer used anywhere
 import ebmlib
 
 _ = wx.GetTranslation
@@ -51,12 +48,16 @@ class DropTargetFT(wx.PyDropTarget):
         @param window: window to recieve drop objects
 
         """
-        wx.PyDropTarget.__init__(self)
+        super(DropTargetFT, self).__init__()
+
+        # Attributes
         self.window = window
         self._data = dict(data=None, fdata=None, tdata=None,
                           tcallb=textcallback, fcallb=filecallback)
         self._tmp = None
         self._lastp = None
+
+        # Setup
         self.InitObjects()
 
     def CreateDragString(self, txt):
@@ -77,13 +78,16 @@ class DropTargetFT(wx.PyDropTarget):
                 longest = ext
 
         cords = [ (0, x * longest[1]) for x in xrange(len(txt)) ]
-        mdc = wx.MemoryDC(wx.EmptyBitmap(longest[0] + 5,
-                                         longest[1] * len(txt), 32))
-        mdc.SetBackgroundMode(wx.TRANSPARENT)
-        mdc.SetTextForeground(stc.GetDefaultForeColour())
-        mdc.SetFont(stc.GetDefaultFont())
-        mdc.DrawTextList(txt, cords)
-        self._tmp = wx.DragImage(mdc.GetAsBitmap())
+        try:
+            mdc = wx.MemoryDC(wx.EmptyBitmap(longest[0] + 5,
+                                             longest[1] * len(txt), 32))
+            mdc.SetBackgroundMode(wx.TRANSPARENT)
+            mdc.SetTextForeground(stc.GetDefaultForeColour())
+            mdc.SetFont(stc.GetDefaultFont())
+            mdc.DrawTextList(txt, cords)
+            self._tmp = wx.DragImage(mdc.GetAsBitmap())
+        except wx.PyAssertionError, msg:
+            Log("[droptargetft][err] %s" % str(msg))
 
     def InitObjects(self):
         """Initializes the text and file data objects
@@ -99,6 +103,8 @@ class DropTargetFT(wx.PyDropTarget):
 
     def OnEnter(self, x_cord, y_cord, drag_result):
         """Called when a drag starts
+        @keyword x_cord: x cord of enter point
+        @keyword y_cord: y cord of enter point
         @return: result of drop object entering window
 
         """
@@ -124,8 +130,8 @@ class DropTargetFT(wx.PyDropTarget):
 
     def OnDrop(self, x_cord=0, y_cord=0):
         """Gets the drop cords
-        @keyword x: x cord of drop object
-        @keyword y: y cord of drop object
+        @keyword x_cord: x cord of drop object
+        @keyword y_cord: y cord of drop object
         @todo: implement snapback when drop is out of range
 
         """
@@ -135,9 +141,11 @@ class DropTargetFT(wx.PyDropTarget):
 
     def OnDragOver(self, x_cord, y_cord, drag_result):
         """Called when the cursor is moved during a drag action
+        @keyword x_cord: x cord of mouse
+        @keyword y_cord: y cord of mouse
         @return: result of drag over
-        @todo: For some reason the carrat postion changes which can be seen
-               by the brackets getting highlighted. However the actual carrat
+        @todo: For some reason the caret position changes which can be seen
+               by the brackets getting highlighted. However the actual caret
                is not moved.
 
         """
@@ -148,6 +156,7 @@ class DropTargetFT(wx.PyDropTarget):
                 self.ScrollBuffer(stc, x_cord, y_cord)
             drag_result = wx.DragCopy
         else:
+            # A drag image was created
             if hasattr(stc, 'DoDragOver'):
                 point = wx.Point(x_cord, y_cord)
                 self._tmp.BeginDrag(point - self._lastp, stc)
@@ -189,7 +198,7 @@ class DropTargetFT(wx.PyDropTarget):
             elif len(text) > 0:
                 if self._data['tcallb'] is not None:
                     self._data['tcallb'](text)
-                else:
+                elif hasattr(self.window, 'DoDropText'):
                     self.window.DoDropText(x_cord, y_cord, text)
         self.InitObjects()
         return drag_result
@@ -233,6 +242,43 @@ class DropTargetFT(wx.PyDropTarget):
 
 #---- End FileDropTarget ----#
 
+class EdClipboard(ebmlib.CycleCache):
+    """Local clipboard object
+    @todo: make into a singleton
+
+    """
+    def GetNext(self):
+        """Get the next item in the cache"""
+        # Initialize the clipboard if it hasn't been loaded yet and
+        # there is something in the system clipboard
+        if self.GetCurrentSize() == 0:
+            txt = GetClipboardText()
+            if txt is not None:
+                self.Put(txt)
+
+        return super(EdClipboard, self).GetNext()
+
+    def IsAtIndex(self, txt):
+        """Is the passed in phrase at the current cycle index in the
+        cache. Used to check if index should be reset or to continue in
+        the cycle.
+        @param txt: selected text
+
+        """
+        pre = self.PeekPrev()
+        next = self.PeekNext()
+        if txt in (pre, next):
+            return True
+        else:
+            return False
+
+    def Put(self, txt):
+        """Put some text in the clipboard"""
+        pre = self.PeekPrev()
+        next = self.PeekNext()
+        if len(txt) and txt not in (pre, next):
+            self.PutItem(txt)
+
 #---- Misc Common Function Library ----#
 # Used for holding the primary selection on mac/msw
 FAKE_CLIPBOARD = None
@@ -253,7 +299,8 @@ def GetClipboardText(primary=False):
 
     text_obj = wx.TextDataObject()
     rtxt = None
-    if wx.TheClipboard.Open():
+    
+    if wx.TheClipboard.IsOpened() or wx.TheClipboard.Open():
         if wx.TheClipboard.GetData(text_obj):
             rtxt = text_obj.GetText()
         wx.TheClipboard.Close()
@@ -281,7 +328,7 @@ def SetClipboardText(txt, primary=False):
 
     data_o = wx.TextDataObject()
     data_o.SetText(txt)
-    if wx.TheClipboard.Open():
+    if wx.TheClipboard.IsOpened() or wx.TheClipboard.Open():
         wx.TheClipboard.SetData(data_o)
         wx.TheClipboard.Close()
         if primary and wx.Platform == '__WXGTK__':
@@ -394,16 +441,27 @@ def GetFileManagerCmd():
         else:
             return 'nautilus'
 
+def GetUserConfigBase():
+    """Get the base user configuration directory path"""
+    cbase = ed_glob.CONFIG['CONFIG_BASE']
+    if cbase is None:
+        cbase = wx.StandardPaths_Get().GetUserDataDir()
+        if wx.Platform == '__WXGTK__':
+            if u'.config' not in cbase and not os.path.exists(cbase):
+                # If no existing configuration return xdg config path
+                base, cfgdir = os.path.split(cbase)
+                tmp_path = os.path.join(base, '.config')
+                if os.path.exists(tmp_path):
+                    cbase = os.path.join(tmp_path, cfgdir.lstrip(u'.'))
+    return cbase + os.sep
+
 def HasConfigDir(loc=u""):
     """ Checks if the user has a config directory and returns True
     if the config directory exists or False if it does not.
     @return: whether config dir in question exists on an expected path
 
     """
-    cbase = ed_glob.CONFIG['CONFIG_BASE']
-    if cbase is None:
-        cbase = wx.StandardPaths_Get().GetUserDataDir() + os.sep
-
+    cbase = GetUserConfigBase()
     to_check = os.path.join(cbase, loc)
     return os.path.exists(to_check)
 
@@ -412,12 +470,9 @@ def MakeConfigDir(name):
     @param name: name of config directory to make in user config dir
 
     """
-    cbase = ed_glob.CONFIG['CONFIG_BASE']
-    if cbase is None:
-        cbase = wx.StandardPaths_Get().GetUserDataDir()
-
+    cbase = GetUserConfigBase()
     try:
-        os.mkdir(cbase + os.sep + name)
+        os.mkdir(cbase + name)
     except (OSError, IOError):
         pass
 
@@ -442,10 +497,7 @@ def CreateConfigDir():
 
     """
     #---- Resolve Paths ----#
-    config_dir = ed_glob.CONFIG['CONFIG_BASE']
-    if config_dir is None:
-        config_dir = wx.StandardPaths_Get().GetUserDataDir() + os.sep
-
+    config_dir = GetUserConfigBase()
     profile_dir = os.path.join(config_dir, u"profiles")
     dest_file = os.path.join(profile_dir, u"default.ppb")
     ext_cfg = [u"cache", u"styles", u"plugins"]
@@ -480,18 +532,22 @@ def ResolvConfigDir(config_dir, sys_only=False):
            the code has proven itself.
 
     """
-    stdpath = wx.StandardPaths_Get()
-
     # Try to get a User config directory
     if not sys_only:
-        user_config = ed_glob.CONFIG['CONFIG_BASE']
-        if user_config is None:
-            user_config = stdpath.GetUserDataDir() + os.sep
-
+        user_config = GetUserConfigBase()
         user_config = os.path.join(user_config, config_dir)
 
         if os.path.exists(user_config):
             return user_config + os.sep
+
+    # Check if the system install path has already been resolved once before
+    if ed_glob.CONFIG['INSTALL_DIR'] != u"":
+        tmp = os.path.join(ed_glob.CONFIG['INSTALL_DIR'], config_dir)
+        tmp = os.path.normpath(tmp) + os.sep
+        if os.path.exists(tmp):
+            return tmp
+        else:
+            del tmp
 
     # The following lines are used only when Editra is being run as a
     # source package. If the found path does not exist then Editra is
@@ -501,14 +557,14 @@ def ResolvConfigDir(config_dir, sys_only=False):
         path = os.sep.join(path.split(os.sep)[:-2])
         path =  path + os.sep + config_dir + os.sep
         if os.path.exists(path):
-            if not isinstance(path, types.UnicodeType):
+            if not ebmlib.IsUnicode(path):
                 path = unicode(path, sys.getfilesystemencoding())
             return path
 
     # If we get here we need to do some platform dependant lookup
     # to find everything.
     path = sys.argv[0]
-    if not isinstance(path, types.UnicodeType):
+    if not ebmlib.IsUnicode(path):
         path = unicode(path, sys.getfilesystemencoding())
 
     # If it is a link get the real path
@@ -518,25 +574,25 @@ def ResolvConfigDir(config_dir, sys_only=False):
     # Tokenize path
     pieces = path.split(os.sep)
 
-    if os.sys.platform == 'win32':
+    if wx.Platform == u'__WXMSW__':
         # On Windows the exe is in same dir as config directories
         pro_path = os.sep.join(pieces[:-1])
 
         if os.path.isabs(pro_path):
             pass
-        elif pro_path == "":
+        elif pro_path == u"":
             pro_path = os.getcwd()
             pieces = pro_path.split(os.sep)
             pro_path = os.sep.join(pieces[:-1])
         else:
             pro_path = os.path.abspath(pro_path)
-    elif os.sys.platform == "darwin":
+    elif wx.Platform == u'__WXMAC__':
         # On OS X the config directories are in the applet under Resources
+        stdpath = wx.StandardPaths_Get()
         pro_path = stdpath.GetResourcesDir()
         pro_path = os.path.join(pro_path, config_dir)
     else:
         pro_path = os.sep.join(pieces[:-2])
-
         if pro_path.startswith(os.sep):
             pass
         elif pro_path == u"":
@@ -547,13 +603,13 @@ def ResolvConfigDir(config_dir, sys_only=False):
         else:
             pro_path = os.path.abspath(pro_path)
 
-    if os.sys.platform != "darwin":
+    if wx.Platform != u'__WXMAC__':
         pro_path = pro_path + os.sep + config_dir + os.sep
 
     path = os.path.normpath(pro_path) + os.sep
 
     # Make sure path is unicode
-    if not isinstance(path, types.UnicodeType):
+    if not ebmlib.IsUnicode(path):
         path = unicode(path, sys.getdefaultencoding())
 
     return path

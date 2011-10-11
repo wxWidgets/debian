@@ -33,8 +33,8 @@ class SamplePane(wx.Panel):
     """
     def __init__(self, parent, colour, label):
 
-        wx.Panel.__init__(self, parent, style=wx.BORDER_SUNKEN)
-        self.SetBackgroundColour(colour)
+        wx.Panel.__init__(self, parent, style=0)#wx.BORDER_SUNKEN)
+        self.SetBackgroundColour(wx.Colour(255,255,255))
 
         label = label + "\nEnjoy the LabelBook && FlatImageBook demo!"
         static = wx.StaticText(self, -1, label, pos=(10, 10))        
@@ -48,13 +48,15 @@ class LabelBookDemo(wx.Frame):
         wx.Frame.__init__(self, parent)
 
         self.initializing = True
+        self.book = None
+        self._oldTextSize = 1.0
 
         self.log = log
 
         self.splitter = wx.SplitterWindow(self, -1, style=wx.SP_3D|wx.SP_BORDER|
                                           wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
         self.mainpanel = wx.Panel(self.splitter, -1)
-        self.leftpanel = wx.Panel(self.splitter, -1, style=wx.SUNKEN_BORDER)
+        self.leftpanel = wx.Panel(self.splitter, -1, style=0)#wx.SUNKEN_BORDER)
 
         self.sizer_3_staticbox = wx.StaticBox(self.leftpanel, -1, "Book Styles")
         self.sizer_4_staticbox = wx.StaticBox(self.leftpanel, -1, "Colours")
@@ -76,12 +78,14 @@ class LabelBookDemo(wx.Frame):
         self.gradient = wx.CheckBox(self.leftpanel, -1, "Draw Gradient Shading")
         self.web = wx.CheckBox(self.leftpanel, -1, "Web Highlight")
         self.fittext = wx.CheckBox(self.leftpanel, -1, "Fit Label Text")
+        self.boldtext = wx.CheckBox(self.leftpanel, -1, "Bold Label Text")
+        self.textsize = wx.TextCtrl(self.leftpanel, -1, "1.0",style=wx.TE_PROCESS_ENTER)
         self.background = csel.ColourSelect(self.leftpanel, -1, "Choose...",
-                                            wx.Colour(127, 169, 241), size=(-1, 20))
+                                            wx.Colour(132, 164, 213), size=(-1, 20))
         self.activetab = csel.ColourSelect(self.leftpanel, -1, "Choose...",
-                                           wx.Colour(251, 250, 247), size=(-1, 20))
+                                           wx.Colour(255, 255, 255), size=(-1, 20))
         self.tabsborder = csel.ColourSelect(self.leftpanel, -1, "Choose...",
-                                            wx.Colour(172, 168, 153), size=(-1, 20))
+                                            wx.Colour(0, 0, 204), size=(-1, 20))
         self.textcolour = csel.ColourSelect(self.leftpanel, -1, "Choose...",
                                             wx.BLACK, size=(-1, 20))
         self.activetextcolour = csel.ColourSelect(self.leftpanel, -1, "Choose...",
@@ -104,6 +108,8 @@ class LabelBookDemo(wx.Frame):
         self.Bind(wx.EVT_CHECKBOX, self.OnStyle, self.gradient)
         self.Bind(wx.EVT_CHECKBOX, self.OnStyle, self.web)
         self.Bind(wx.EVT_CHECKBOX, self.OnStyle, self.fittext)
+        self.Bind(wx.EVT_CHECKBOX, self.OnStyle, self.boldtext)
+        self.Bind(wx.EVT_TEXT_ENTER,    self.OnStyle, self.textsize)
 
         self.Bind(csel.EVT_COLOURSELECT, self.OnBookColours, self.background)
         self.Bind(csel.EVT_COLOURSELECT, self.OnBookColours, self.activetab)
@@ -141,9 +147,12 @@ class LabelBookDemo(wx.Frame):
     def SetProperties(self):
 
         self.SetTitle("LabelBook & FlatImageBook wxPython Demo ;-)")
-        self.pin.SetValue(1)
         self.splitter.SetMinimumPaneSize(120)
-
+        self.pin.SetValue(0)
+        self.fittext.SetValue(1)
+        self.border.SetValue(1)
+        self.onlytext.SetValue(1)
+       
 
     def DoLayout(self):
 
@@ -152,7 +161,7 @@ class LabelBookDemo(wx.Frame):
         leftsizer = wx.BoxSizer(wx.VERTICAL)
         sizer_3 = wx.StaticBoxSizer(self.sizer_3_staticbox, wx.VERTICAL)
         sizer_4 = wx.StaticBoxSizer(self.sizer_4_staticbox, wx.VERTICAL)
-        gridsizer = wx.FlexGridSizer(6, 2, 5, 5)
+        gridsizer = wx.FlexGridSizer(cols=2, hgap=5, vgap=5)
 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
@@ -169,8 +178,10 @@ class LabelBookDemo(wx.Frame):
         sizer_3.Add(self.gradient, 0, wx.LEFT|wx.BOTTOM, 3)
         sizer_3.Add(self.web, 0, wx.LEFT|wx.BOTTOM, 3)
         sizer_3.Add(self.fittext, 0, wx.LEFT|wx.BOTTOM, 3)
+        sizer_3.Add(self.boldtext, 0, wx.LEFT|wx.BOTTOM, 3)
         leftsizer.Add(sizer_3, 0, wx.ALL|wx.EXPAND, 5)
 
+        lbl = wx.StaticText(self.leftpanel, -1, "Text Font Multiple: ")
         label1 = wx.StaticText(self.leftpanel, -1, "Tab Area Background Colour: ")
         label2 = wx.StaticText(self.leftpanel, -1, "Active Tab Colour: ")
         label3 = wx.StaticText(self.leftpanel, -1, "Tabs Border Colour: ")
@@ -178,6 +189,8 @@ class LabelBookDemo(wx.Frame):
         label5 = wx.StaticText(self.leftpanel, -1, "Active Tab Text Colour: ")
         label6 = wx.StaticText(self.leftpanel, -1, "Tab Highlight Colour: ")
 
+        gridsizer.Add(lbl, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL|wx.LEFT|wx.RIGHT, 3)
+        gridsizer.Add(self.textsize, 0)
         gridsizer.Add(label1, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL|wx.LEFT|wx.RIGHT, 3)
         gridsizer.Add(self.background, 0)
         gridsizer.Add(label2, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL|wx.LEFT|wx.RIGHT, 3)
@@ -222,19 +235,20 @@ class LabelBookDemo(wx.Frame):
         else:
             self.imagelist = self.CreateImageList()
 
+        self.EnableChoices(btype)
         style = self.GetBookStyles()
 
         if btype == 0: # it is a labelbook:
-            self.book = LB.LabelBook(self.mainpanel, -1, style=style)
+            self.book = LB.LabelBook(self.mainpanel, -1, agwStyle=style)
             if self.bookdirection.GetSelection() > 1:
                 self.bookdirection.SetSelection(0)
 
             self.SetUserColours()                
+            self.book.SetFontSizeMultiple(1.0)
+            self.book.SetFontBold(False)
 
         else:
-            self.book = LB.FlatImageBook(self.mainpanel, -1, style=style)
-
-        self.EnableChoices(btype)            
+            self.book = LB.FlatImageBook(self.mainpanel, -1, agwStyle=style)
 
         self.book.AssignImageList(self.imagelist)
 
@@ -253,14 +267,15 @@ class LabelBookDemo(wx.Frame):
             self.Thaw()
 
         self.SendSizeEvent()
+        #wx.CallAfter(self.book.SetAGWWindowStyleFlag, style)
 
 
     def EnableChoices(self, btype):
 
         self.bookdirection.EnableItem(2, btype)
         self.bookdirection.EnableItem(3, btype)
-        self.onlyimages.Enable(btype)
-        self.onlytext.Enable(btype)
+        self.onlyimages.Enable()
+        self.onlytext.Enable()
         self.gradient.Enable(not btype)
         self.web.Enable(not btype)
         self.shadow.Enable(not btype)
@@ -271,6 +286,7 @@ class LabelBookDemo(wx.Frame):
         self.hilite.Enable(not btype)
         self.tabsborder.Enable(not btype)
         self.fittext.Enable(not btype)
+        self.boldtext.Enable(not btype)
 
 
     def GetBookStyles(self):
@@ -292,8 +308,11 @@ class LabelBookDemo(wx.Frame):
             style |= INB_GRADIENT_BACKGROUND
         if self.border.GetValue():
             style |= INB_BORDER
-        if self.fittext.GetValue():
+        if self.fittext.IsEnabled() and self.fittext.GetValue():
             style |= INB_FIT_LABELTEXT
+           
+        if self.book: 
+            self.book.SetFontBold(self.boldtext.GetValue())
 
         return style
 
@@ -333,7 +352,7 @@ class LabelBookDemo(wx.Frame):
     def OnBookOrientation(self, event):
 
         style = self.GetBookStyles()
-        self.book.SetWindowStyleFlag(style)
+        self.book.SetAGWWindowStyleFlag(style)
 
         event.Skip()
 
@@ -341,7 +360,12 @@ class LabelBookDemo(wx.Frame):
     def OnStyle(self, event):
 
         style = self.GetBookStyles()
-        self.book.SetWindowStyleFlag(style)
+        self.book.SetAGWWindowStyleFlag(style)
+       
+        self.book.SetFontSizeMultiple(float(self.textsize.GetValue()))
+        if self.textsize.GetValue() != self._oldTextSize:
+            self.book.ResizeTabArea()
+        self._oldTextSize = self.textsize.GetValue()
 
         event.Skip()
 
@@ -352,29 +376,29 @@ class LabelBookDemo(wx.Frame):
         colour = event.GetValue()
 
         if obj == self.background.GetId():
-            self.book.SetColour(INB_TAB_AREA_BACKGROUND_COLOR, colour)
+            self.book.SetColour(INB_TAB_AREA_BACKGROUND_COLOUR, colour)
         elif obj == self.activetab.GetId():
-            self.book.SetColour(INB_ACTIVE_TAB_COLOR, colour)
+            self.book.SetColour(INB_ACTIVE_TAB_COLOUR, colour)
         elif obj == self.tabsborder.GetId():
-            self.book.SetColour(INB_TABS_BORDER_COLOR, colour)
+            self.book.SetColour(INB_TABS_BORDER_COLOUR, colour)
         elif obj == self.textcolour.GetId():
-            self.book.SetColour(INB_TEXT_COLOR, colour)
+            self.book.SetColour(INB_TEXT_COLOUR, colour)
         elif obj == self.activetextcolour.GetId():
-            self.book.SetColour(INB_ACTIVE_TEXT_COLOR, colour)
+            self.book.SetColour(INB_ACTIVE_TEXT_COLOUR, colour)
         else:
-            self.book.SetColour(INB_HILITE_TAB_COLOR, colour)
+            self.book.SetColour(INB_HILITE_TAB_COLOUR, colour)
 
         self.book.Refresh()
 
 
     def SetUserColours(self):
 
-        self.book.SetColour(INB_TAB_AREA_BACKGROUND_COLOR, self.background.GetColour())
-        self.book.SetColour(INB_ACTIVE_TAB_COLOR, self.activetab.GetColour())
-        self.book.SetColour(INB_TABS_BORDER_COLOR, self.tabsborder.GetColour())
-        self.book.SetColour(INB_TEXT_COLOR, self.textcolour.GetColour())
-        self.book.SetColour(INB_ACTIVE_TEXT_COLOR, self.activetextcolour.GetColour())
-        self.book.SetColour(INB_HILITE_TAB_COLOR, self.hilite.GetColour())
+        self.book.SetColour(INB_TAB_AREA_BACKGROUND_COLOUR, self.background.GetColour())
+        self.book.SetColour(INB_ACTIVE_TAB_COLOUR, self.activetab.GetColour())
+        self.book.SetColour(INB_TABS_BORDER_COLOUR, self.tabsborder.GetColour())
+        self.book.SetColour(INB_TEXT_COLOUR, self.textcolour.GetColour())
+        self.book.SetColour(INB_ACTIVE_TEXT_COLOUR, self.activetextcolour.GetColour())
+        self.book.SetColour(INB_HILITE_TAB_COLOUR, self.hilite.GetColour())
 
 
     def OnPageChanging(self, event):

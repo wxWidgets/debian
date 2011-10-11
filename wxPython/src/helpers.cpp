@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     1-July-1997
-// RCS-ID:      $Id: helpers.cpp 60451 2009-05-01 00:24:29Z RD $
+// RCS-ID:      $Id: helpers.cpp 67473 2011-04-13 18:21:48Z RD $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -190,6 +190,7 @@ wxPyApp::wxPyApp() {
 
 
 wxPyApp::~wxPyApp() {
+    wxPyDoingCleanup = true;
     wxPythonApp = NULL;
     wxApp::SetInstance(NULL);
 }
@@ -301,7 +302,7 @@ void wxPyApp::OnAssertFailure(const wxChar *file,
         if (msg != NULL) 
             buf << wxT(": ") << msg;
         
-        wxLogDebug(buf);
+        wxLogDebug(wxT("%s"), buf.c_str());
         return;
     }
 
@@ -1908,7 +1909,7 @@ void wxPyCallbackHelper::clearRecursionGuard(PyObject* method) const
     if (PyObject_HasAttr(m_self, func->func_name)) {
         PyObject* attr = PyObject_GetAttr(m_self, func->func_name);
         if ( attr == Py_None )
-	    PyObject_DelAttr(m_self, func->func_name);
+            PyObject_DelAttr(m_self, func->func_name);
         Py_DECREF(attr);
     }
 }
@@ -3088,7 +3089,7 @@ PyObject* wxArrayString2PyList_helper(const wxArrayString& arr)
 #if wxUSE_UNICODE
         PyObject* str = PyUnicode_FromWideChar(arr[i].c_str(), arr[i].Len());
 #else
-	PyObject* str = PyString_FromStringAndSize(arr[i].c_str(), arr[i].Len());
+        PyObject* str = PyString_FromStringAndSize(arr[i].c_str(), arr[i].Len());
 #endif
         PyList_Append(list, str);
         Py_DECREF(str);
@@ -3264,7 +3265,7 @@ int wxPyImageHandler::GetImageCount( wxInputStream& stream ) {
 //----------------------------------------------------------------------
 // Function to test if the Display (or whatever is the platform equivallent)
 // can be connected to.  This is accessable from wxPython as a staticmethod of
-// wx.App called DisplayAvailable().
+// wx.App called IsDisplayAvailable().
 
 
 bool wxPyTestDisplayAvailable()
@@ -3283,7 +3284,7 @@ bool wxPyTestDisplayAvailable()
     // MacOS_WMAvailable function.
     bool rv;
     ProcessSerialNumber psn;
-		
+                
     /*
     ** This is a fairly innocuous call to make if we don't have a window
     ** manager, or if we have no permission to talk to it. It will print

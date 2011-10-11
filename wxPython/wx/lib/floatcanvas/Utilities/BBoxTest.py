@@ -544,7 +544,20 @@ class testInfBBox(unittest.TestCase):
     def testOverlaps5(self):
         self.failUnless( self.NB.Overlaps(self.B1) == True)
     
-    
+
+class testSides(unittest.TestCase):
+    B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
+
+    def testLeft(self):
+        self.failUnless( self.B.Left == 1.0  )    
+    def testRight(self):
+        self.failUnless( self.B.Right == 5.0  )    
+    def testBottom(self):
+        self.failUnless( self.B.Bottom == 2.0  )    
+    def testTop(self):
+        self.failUnless( self.B.Top == 10.0  )    
+
+
 
 if __name__ == "__main__":
     unittest.main()

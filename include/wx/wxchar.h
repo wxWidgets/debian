@@ -1,10 +1,10 @@
 /*
  * Name:        wx/wxchar.h
  * Purpose:     Declarations common to wx char/wchar_t usage (wide chars)
- * Author:      Joel Farley, Ove Kåven
+ * Author:      Joel Farley, Ove Kaaven
  * Modified by: Vadim Zeitlin, Robert Roebling, Ron Lee
  * Created:     1998/06/12
- * RCS-ID:      $Id: wxchar.h 50987 2008-01-02 16:31:38Z VZ $
+ * RCS-ID:      $Id: wxchar.h 66970 2011-02-19 13:54:14Z VZ $
  * Copyright:   (c) 1998-2006 wxWidgets dev team
  * Licence:     wxWindows licence
  */
@@ -227,35 +227,55 @@
 #endif /* ASCII/Unicode */
 
 /* ---------------------------------------------------------------------------- */
-/* define _T() and related macros */
+/* define wxT() and related macros */
 /* ---------------------------------------------------------------------------- */
 
-/* BSD systems define _T() to be something different in ctype.h, override it */
-#if defined(__FreeBSD__) || defined(__DARWIN__)
-    #include <ctype.h>
-    #undef _T
+#if wxUSE_UNICODE
+    /* use wxCONCAT_HELPER so that x could be expanded if it's a macro */
+    #define wxT(x) wxCONCAT_HELPER(L, x)
+#else /* !Unicode */
+    #define wxT(x) x
+#endif /* Unicode/!Unicode */
+
+/*
+    This macro is defined for forward compatibility with wxWidgets 3. It should
+    be used in the places where wxWidgets 2 API requires wxT() (in Unicode
+    build) but wxWidgets 3 doesn't accept it, e.g. wxCmdLineEntryDesc struct
+    elements initializers.
+ */
+#define wxT_2(x) wxT(x)
+
+/*
+    We define _T() as a synonym of wxT() for backwards compatibility and also
+    for the benefit of Windows programmers used to it. But this identifier is a
+    reserved one and this does create problems in practice, notably with Sun CC
+    which uses it in the recent versions of its standard headers. So avoid
+    defining it for this compiler at all, unless it was explicitly requested by
+    predefining wxNEEDS__T macro before including this header or if we're
+    building wx itself which does need and compiles fine thanks to the special
+    workarounds for Sun CC in wx/{before,after}std.h.
+ */
+#ifndef wxNEEDS__T
+    #if defined(WXBUILDING) || !(defined (__SUNPRO_C) || defined(__SUNPRO_CC))
+        #define wxNEEDS__T
+    #endif
 #endif
 
-/* could already be defined by tchar.h (it's quasi standard) */
-#ifndef _T
-    #if !wxUSE_UNICODE
-        #define _T(x) x
-    #else /* Unicode */
-        /* use wxCONCAT_HELPER so that x could be expanded if it's a macro */
-        #define _T(x) wxCONCAT_HELPER(L, x)
-    #endif /* ASCII/Unicode */
-#endif /* !defined(_T) */
+#ifdef wxNEEDS__T
+    /* BSDs define _T() to be something different in ctype.h, override it */
+    #if defined(__FreeBSD__) || defined(__DARWIN__)
+        #include <ctype.h>
+    #endif
+    #undef _T
 
-/* although global macros with such names are normally bad, we want to have */
-/* another name for _T() which should be used to avoid confusion between _T() */
-/* and _() in wxWidgets sources */
-#define wxT(x)       _T(x)
+    #define _T(x) wxT(x)
+#endif /* wxNEEDS__T */
 
 /* this macro exists only for forward compatibility with wx 3.0 */
-#define wxS(x)       _T(x)
+#define wxS(x)       wxT(x)
 
 /* a helper macro allowing to make another macro Unicode-friendly, see below */
-#define wxAPPLY_T(x) _T(x)
+#define wxAPPLY_T(x) wxT(x)
 
 /* Unicode-friendly __FILE__, __DATE__ and __TIME__ analogs */
 #ifndef __TFILE__
@@ -1114,7 +1134,7 @@ WXDLLIMPEXP_BASE bool wxOKlibc(); /* for internal use */
 
 #ifdef _WIN32_WCE
     #if _WIN32_WCE <= 211
-        #define isspace(c) ((c) == _T(' ') || (c) == _T('\t'))
+        #define isspace(c) ((c) == wxT(' ') || (c) == wxT('\t'))
     #endif
 #endif /* _WIN32_WCE */
 

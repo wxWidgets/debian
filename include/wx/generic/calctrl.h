@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.h 49804 2007-11-10 01:09:42Z VZ $
+// RCS-ID:      $Id: calctrl.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@ class WXDLLIMPEXP_FWD_CORE wxComboBox;
 class WXDLLIMPEXP_FWD_CORE wxStaticText;
 class WXDLLIMPEXP_FWD_CORE wxSpinCtrl;
 
-#define wxCalendarNameStr _T("CalendarCtrl")
+#define wxCalendarNameStr wxT("CalendarCtrl")
 
 // ----------------------------------------------------------------------------
 // wxCalendarCtrl: a control allowing the user to pick a date interactively
@@ -124,14 +124,14 @@ public:
 
     wxCalendarDateAttr *GetAttr(size_t day) const
     {
-        wxCHECK_MSG( day > 0 && day < 32, NULL, _T("invalid day") );
+        wxCHECK_MSG( day > 0 && day < 32, NULL, wxT("invalid day") );
 
         return m_attrs[day - 1];
     }
 
     void SetAttr(size_t day, wxCalendarDateAttr *attr)
     {
-        wxCHECK_RET( day > 0 && day < 32, _T("invalid day") );
+        wxCHECK_RET( day > 0 && day < 32, wxT("invalid day") );
 
         delete m_attrs[day - 1];
         m_attrs[day - 1] = attr;

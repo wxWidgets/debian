@@ -104,7 +104,7 @@ class PyProgressDemo(wx.Panel):
 
         dlg = PP.PyProgress(None, -1, "PyProgress Example",
                             "An Informative Message",                            
-                            style=style)
+                            agwStyle=style)
 
         proportion = self.slider1.GetValue()
         steps = self.slider2.GetValue()

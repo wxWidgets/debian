@@ -1617,13 +1617,14 @@ class RichTextBuffer(RichTextParagraphLayoutBox):
     """This is a kind of box, used to represent the whole buffer."""
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
     __repr__ = _swig_repr
-    def __init__(self, *args, **kwargs): 
+    def __init__(self, *args): 
         """
         __init__(self) -> RichTextBuffer
+        __init__(self, RichTextBuffer obj) -> RichTextBuffer
 
         This is a kind of box, used to represent the whole buffer.
         """
-        _richtext.RichTextBuffer_swiginit(self,_richtext.new_RichTextBuffer(*args, **kwargs))
+        _richtext.RichTextBuffer_swiginit(self,_richtext.new_RichTextBuffer(*args))
     __swig_destroy__ = _richtext.delete_RichTextBuffer
     __del__ = lambda self : None;
     def GetCommandProcessor(*args, **kwargs):
@@ -2425,6 +2426,14 @@ class RichTextCtrl(_core.Control):
         Get URL cursor
         """
         return _richtext.RichTextCtrl_GetURLCursor(*args, **kwargs)
+
+    def GetContextMenu(*args, **kwargs):
+        """GetContextMenu(self) -> Menu"""
+        return _richtext.RichTextCtrl_GetContextMenu(*args, **kwargs)
+
+    def SetContextMenu(*args, **kwargs):
+        """SetContextMenu(self, Menu menu)"""
+        return _richtext.RichTextCtrl_SetContextMenu(*args, **kwargs)
 
     def Clear(*args, **kwargs):
         """Clear(self)"""

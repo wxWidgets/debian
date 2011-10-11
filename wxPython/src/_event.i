@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-May-1998
-// RCS-ID:      $Id: _event.i 60608 2009-05-12 20:38:58Z RD $
+// RCS-ID:      $Id: _event.i 67462 2011-04-13 18:12:45Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1357,7 +1357,7 @@ character using `GetUnicodeKey`.", "");
         DocStr(
             GetUnicodeKey,
             "Returns the Unicode character corresponding to this key event.  This
-function is only meaningfule in a Unicode build of wxPython.", "");
+function is only meaningful in a Unicode build of wxPython.", "");
         int GetUnicodeKey() {
         %#if wxUSE_UNICODE
             return self->GetUnicodeKey();

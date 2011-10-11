@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id: glcanvas.h 43623 2006-11-24 10:30:42Z MR $
+// RCS-ID:      $Id: glcanvas.h 61872 2009-09-09 22:37:05Z VZ $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -44,7 +44,7 @@ enum
     WX_GL_MIN_ACCUM_ALPHA  /* use alpha buffer with most bits (> MIN_ACCUM_ALPHA bits) */
 };
 
-#define wxGLCanvasName _T("GLCanvas")
+#define wxGLCanvasName wxT("GLCanvas")
 
 #if defined(__WXMSW__)
 #include "wx/msw/glcanvas.h"

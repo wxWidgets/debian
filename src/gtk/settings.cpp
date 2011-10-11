@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Modified by: Mart Raudsepp (GetMetric)
-// Id:          $Id: settings.cpp 57542 2008-12-25 13:03:24Z VZ $
+// Id:          $Id: settings.cpp 67017 2011-02-25 09:37:28Z JS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,8 @@ struct wxSystemObjects
              m_colTooltip,
              m_colTooltipText,
              m_colMenubarBg,
-             m_colListBoxText;
+             m_colListBoxText,
+             m_colListBoxUnfocusedText;
 
     wxFont m_fontSystem;
 };
@@ -307,6 +308,20 @@ wxColour wxSystemSettingsNative::GetColour( wxSystemColour index )
             color = gs_objects.m_colListBoxText;
             break;
 
+        case wxSYS_COLOUR_LISTBOXHIGHLIGHTTEXT:
+        {
+            // This is for the text in a list control (or tree) when the
+            // item is selected, but not focused
+            if (!gs_objects.m_colListBoxUnfocusedText.Ok())
+            {
+                if (GetColourFromGTKWidget(gdkColor, wxGTK_LIST, GTK_STATE_ACTIVE, wxGTK_TEXT))
+                    gs_objects.m_colListBoxUnfocusedText = wxColour(gdkColor);
+                else
+                    gs_objects.m_colListBoxUnfocusedText = GetColour(wxSYS_COLOUR_WINDOWTEXT);
+            }
+            color = gs_objects.m_colListBoxUnfocusedText;
+            break;
+        }
         case wxSYS_COLOUR_MENUTEXT:
         case wxSYS_COLOUR_WINDOWTEXT:
         case wxSYS_COLOUR_CAPTIONTEXT:

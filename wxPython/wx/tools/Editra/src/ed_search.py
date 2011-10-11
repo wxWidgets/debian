@@ -15,15 +15,14 @@ text documents and files.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ed_search.py 60527 2009-05-06 12:26:17Z CJP $"
-__revision__ = "$Revision: 60527 $"
+__svnid__ = "$Id: ed_search.py 67636 2011-04-28 00:32:43Z CJP $"
+__revision__ = "$Revision: 67636 $"
 
 #--------------------------------------------------------------------------#
 # Imports
 import os
 import sys
 import re
-import types
 import wx
 
 # Local imports
@@ -35,11 +34,59 @@ import iface
 from profiler import Profile_Get, Profile_Set
 import eclib
 import ebmlib
+import ed_basewin
+import ed_thread
 
 #--------------------------------------------------------------------------#
 # Globals
 
 _ = wx.GetTranslation
+#--------------------------------------------------------------------------#
+
+class EdSearchEngine(ebmlib.SearchEngine):
+    """Text searching engine"""
+    def __init__(self, query, regex=True, down=True,
+                 matchcase=True, wholeword=False):
+        super(EdSearchEngine, self).__init__(query, regex, down,
+                                             matchcase, wholeword)
+        # Atttributes
+        self._offset = 0
+
+    def FormatResult(self, fname, lnum, match):
+        """Format the search result string for find all action that is performed
+        on a selection.
+        @return: string
+        @todo: better unicode handling
+
+        """
+        fname = ed_txt.DecodeString(fname, sys.getfilesystemencoding())
+        if not ebmlib.IsUnicode(fname):
+            fname = _("DECODING ERROR")
+
+        match = ed_txt.DecodeString(match)
+        if not ebmlib.IsUnicode(match):
+            match = _("DECODING ERROR")
+        else:
+            match = u" " + match.lstrip()
+
+        rstring = u"%(fname)s (%(lnum)d): %(match)s"
+        lnum = lnum + self._offset + 1
+        return rstring % dict(fname=fname, lnum=lnum, match=match)
+
+    def SetOffset(self, offset):
+        """Set the offset for a search in selection action
+        @param offset: int
+
+        """
+        self._offset = offset
+
+    def SetQuery(self, query):
+        """Set the query string"""
+        if ebmlib.IsUnicode(query):
+            # Encode to UTF-8 as used internally by the stc
+            query = query.encode('utf-8')
+        super(EdSearchEngine, self).SetQuery(query)
+
 #--------------------------------------------------------------------------#
 
 class SearchController(object):
@@ -50,19 +97,22 @@ class SearchController(object):
         @param getstc: Callable to get the current buffer with
 
         """
-        object.__init__(self)
+        super(SearchController, self).__init__()
 
         # Attributes
         self._parent   = owner
         self._stc      = getstc
         self._finddlg  = None
         self._posinfo  = dict(scroll=0, start=0, found=0, ldir=None)
-        self._data     = wx.FindReplaceData(eclib.AFR_RECURSIVE)
+        self._data     = self._InitFindData()
         self._li_choices = list()
         self._li_sel   = 0
         self._filters  = None
         self._clients = list()
-        self._engine = None
+        self._engine = EdSearchEngine(u"") # For incremental searches
+
+        # Setup
+        self._engine.SetResultFormatter(self._engine.FormatResult)
 
         # Event handlers
         self._parent.Bind(eclib.EVT_FIND, self.OnFind)
@@ -80,19 +130,27 @@ class SearchController(object):
     def __del__(self):
         """Cleanup message handlers"""
         ed_msg.Unsubscribe(self._OnShowFindMsg)
+        if self._finddlg:
+            self._finddlg.Destroy()
 
     def _CreateNewDialog(self, e_id):
-        """Create and set the controlers find dialog
+        """Create and set the controllers find dialog
         @param e_id: Dialog Type Id
 
         """
+        # TODO: find out why parent is not a Window in some cases...
+        if not isinstance(self._parent, wx.Window):
+            parent = wx.GetApp().GetActiveWindow()
+        else:
+            parent = self._parent
+
         if e_id == ed_glob.ID_FIND_REPLACE:
-            dlg = eclib.AdvFindReplaceDlg(self._parent, self._data,
-                                            (_("Find"), _("Find/Replace")),
-                                            eclib.AFR_STYLE_REPLACEDIALOG)
+            dlg = eclib.AdvFindReplaceDlg(parent, self._data,
+                                          (_("Find"), _("Find/Replace")),
+                                          eclib.AFR_STYLE_REPLACEDIALOG)
         elif e_id == ed_glob.ID_FIND:
-            dlg = eclib.AdvFindReplaceDlg(self._parent, self._data,
-                                            (_("Find"), _("Find/Replace")))
+            dlg = eclib.AdvFindReplaceDlg(parent, self._data,
+                                          (_("Find"), _("Find/Replace")))
         else:
             dlg = None
 
@@ -135,16 +193,18 @@ class SearchController(object):
                 self._finddlg = self._CreateNewDialog(ed_glob.ID_FIND)
                 if self._finddlg is None:
                     return
+                self._finddlg.CenterOnParent()
                 self._finddlg.SetTransparent(240)
     #            self._finddlg.SetExtraStyle(wx.WS_EX_PROCESS_UI_UPDATES)
-                self._finddlg.Show()
             else:
-                # Dialog is open already so just update it
+                # Dialog has been created already so just update it
                 self._UpdateDialogState(ed_glob.ID_FIND)
-                self._finddlg.Raise()
 
             if 'lookin' in data:
                 self._finddlg.SetLookinPath(data.get('lookin'))
+
+            self._finddlg.Show()
+            self._finddlg.Raise()
             self._finddlg.SetFocus()
         else:
             return
@@ -153,6 +213,7 @@ class SearchController(object):
         """Update the state of the existing dialog"""
         if self._finddlg is None:
             self._finddlg = self._CreateNewDialog(e_id)
+            self._finddlg.CenterOnParent()
         else:
             mode = self._finddlg.GetDialogMode()
             if e_id == ed_glob.ID_FIND and mode != eclib.AFR_STYLE_FINDDIALOG:
@@ -166,6 +227,43 @@ class SearchController(object):
         # Update the text that should be shown in the find replace fields
         self._finddlg.RefreshFindReplaceFields()
         self._finddlg.SetFocus()
+
+    def _InitFindData(self):
+        """Get the intial find data
+        @return: wx.FindReplaceData
+
+        """
+        fdata = Profile_Get('SEARCH_SETTINGS', default=None)
+        if fdata is not None:
+            fmap = dict(matchcase=eclib.AFR_MATCHCASE,
+                        wholeword=eclib.AFR_WHOLEWORD,
+                        regex=eclib.AFR_REGEX,
+                        recurse=eclib.AFR_RECURSIVE)
+            flags = 0
+            for flag in fdata:
+                if fdata.get(flag, False):
+                    flags |= fmap.get(flag, 0)
+            fdata = wx.FindReplaceData(flags)
+        else:
+            fdata = wx.FindReplaceData(eclib.AFR_RECURSIVE)
+        return fdata
+
+    def _StoreFindData(self):
+        """Serialize the find/replace settings into the user profile"""
+        fmap = dict(matchcase=eclib.AFR_MATCHCASE,
+                    wholeword=eclib.AFR_WHOLEWORD,
+                    regex=eclib.AFR_REGEX,
+                    recurse=eclib.AFR_RECURSIVE)
+        tostore = dict()
+        flags = self._data.GetFlags()
+        for fname in fmap:
+            flag = fmap[fname]
+            tostore[fname] = False
+            if flags & flag:
+                tostore[fname] = True
+        Profile_Set('SEARCH_SETTINGS', tostore)
+
+    #---- Public Interface ----#
 
     def GetClientString(self, multiline=False):
         """Get the selected text in the current client buffer. By default
@@ -188,7 +286,7 @@ class SearchController(object):
         return rtext
 
     def GetData(self):
-        """Get the contollers FindReplaceData
+        """Get the controllers FindReplaceData
         @return: wx.FindReplaceData
 
         """
@@ -205,7 +303,7 @@ class SearchController(object):
         """Returns the position value of the last found search item
         if the last search resulted in nothing being found then the
         return value will -1.
-        @return: position of last search opperation
+        @return: position of last search operation
         @rtype: int
 
         """
@@ -227,9 +325,19 @@ class SearchController(object):
 
         # Create the search engine
         query = evt.GetFindString()
+        mode = evt.GetSearchType()
         engine = ebmlib.SearchEngine(query, evt.IsRegEx(),
                                      True, evt.IsMatchCase(), evt.IsWholeWord())
-        engine.SetSearchPool(stc.GetTextRaw())
+
+        if mode == eclib.LOCATION_CURRENT_DOC:
+            engine.SetSearchPool(stc.GetTextRaw())
+        elif mode == eclib.LOCATION_IN_SELECTION:
+            engine.SetSearchPool(stc.GetSelectedTextRaw())
+        else:
+            # TODO: report that this is not supported yet
+            #       this case should not happen as the count button is currently
+            #       disabled for any conditions that fall into this case.
+            return
 
         matches = engine.FindAll()
         if matches:
@@ -257,9 +365,12 @@ class SearchController(object):
             flags = data.GetFlags()
             if not findnext and evt.GetId() == ed_glob.ID_FIND_PREVIOUS:
                 flags |= eclib.AFR_UP
+            elif eclib.AFR_UP & flags:
+                # Not a find previous request so make sure that
+                # the search up flag is cleared.
+                flags ^= eclib.AFR_UP
 
-            evt = eclib.FindEvent(eclib.edEVT_FIND_NEXT,
-                                    flags=flags)
+            evt = eclib.FindEvent(eclib.edEVT_FIND_NEXT, flags=flags)
             evt.SetFindString(data.GetFindString())
 
         stc = self._stc()
@@ -267,22 +378,23 @@ class SearchController(object):
 
         # Create the search engine
         isdown = not evt.IsUp()
-        engine = ebmlib.SearchEngine(data.GetFindString(), evt.IsRegEx(),
-                                     isdown, evt.IsMatchCase(),
-                                     evt.IsWholeWord())
-        engine.SetResultFormatter(FormatResult)
-        self._engine = engine
+        self._engine.SetQuery(data.GetFindString())
+        self._engine.SetFlags(isregex=evt.IsRegEx(),
+                              matchcase=evt.IsMatchCase(),
+                              wholeword=evt.IsWholeWord(),
+                              down=isdown)
 
         # Check if expression was valid or not
-        if engine.GetQueryObject() is None:
-            wx.MessageBox(_("Invalid expression \"%s\"") % engine.GetQuery(),
+        if self._engine.GetQueryObject() is None:
+            fail = ed_txt.DecodeString(self._engine.GetQuery(), 'utf-8')
+            wx.MessageBox(_("Invalid expression \"%s\"") % fail,
                           _("Regex Compile Error"),
                           style=wx.OK|wx.CENTER|wx.ICON_ERROR)
             return
 
-        # XXX: may be inefficent to copy whole buffer each time for files
+        # XXX: may be inefficient to copy whole buffer each time for files
         #      that are large.
-        engine.SetSearchPool(stc.GetTextRaw())
+        self._engine.SetSearchPool(stc.GetTextRaw())
 
         # Check if the direction changed
         ldir = self._posinfo['ldir']
@@ -304,7 +416,7 @@ class SearchController(object):
                     spos = end
 
         # Do the find
-        match = engine.Find(spos)
+        match = self._engine.Find(spos)
         if match is not None:
             start, end = match
 
@@ -327,11 +439,11 @@ class SearchController(object):
         else:
             # try search from top again
             if isdown:
-                match = engine.Find(0)
+                match = self._engine.Find(0)
                 ed_msg.PostMessage(ed_msg.EDMSG_UI_SB_TXT,
                                   (ed_glob.SB_INFO, _("Search wrapped to top")))
             else:
-                match = engine.Find(-1)
+                match = self._engine.Find(-1)
                 ed_msg.PostMessage(ed_msg.EDMSG_UI_SB_TXT,
                                   (ed_glob.SB_INFO,
                                   _("Search wrapped to bottom")))
@@ -352,9 +464,10 @@ class SearchController(object):
                 stc.EnsureVisible(line)
             else:
                 self._posinfo['found'] = -1
+                fail = ed_txt.DecodeString(self._engine.GetQuery(), 'utf-8')
                 ed_msg.PostMessage(ed_msg.EDMSG_UI_SB_TXT,
-                                  (ed_glob.SB_INFO,
-                                  _("\"%s\" was not found") % engine.GetQuery()))
+                                   (ed_glob.SB_INFO,
+                                   _("\"%s\" was not found") % fail))
 
     def OnFindAll(self, evt):
         """Find all results for the given query and display results in a
@@ -367,9 +480,9 @@ class SearchController(object):
             return
 
         # Create a new search engine object
-        engine = ebmlib.SearchEngine(query, evt.IsRegEx(), True,
-                                     evt.IsMatchCase(), evt.IsWholeWord())
-        engine.SetResultFormatter(FormatResult)
+        engine = EdSearchEngine(query, evt.IsRegEx(), True,
+                                evt.IsMatchCase(), evt.IsWholeWord())
+        engine.SetResultFormatter(engine.FormatResult)
 
         # Send the search function over to any interested parties that wish
         # to process the results.
@@ -383,11 +496,26 @@ class SearchController(object):
                 engine.SetSearchPool(stc.GetTextRaw())
                 ed_msg.PostMessage(ed_msg.EDMSG_START_SEARCH,
                                    (engine.FindAllLines,))
+        if smode == eclib.LOCATION_IN_SELECTION:
+            stc = self._stc()
+            sel_s = min(stc.GetSelection())
+            offset = stc.LineFromPosition(sel_s)
+            engine.SetOffset(offset)
+            engine.SetSearchPool(stc.GetSelectedTextRaw())
+            ed_msg.PostMessage(ed_msg.EDMSG_START_SEARCH,
+                               (engine.FindAllLines,))
         elif smode == eclib.LOCATION_OPEN_DOCS:
             files = [fname.GetFileName()
                      for fname in self._parent.GetTextControls()]
             ed_msg.PostMessage(ed_msg.EDMSG_START_SEARCH,
                                (engine.SearchInFiles, [files,], dict()))
+        elif smode == eclib.LOCATION_IN_CURRENT_DIR:
+            stc = self._stc()
+            path = ebmlib.GetPathName(stc.GetFileName())
+            engine.SetFileFilters(evt.GetFileFilters())
+            ed_msg.PostMessage(ed_msg.EDMSG_START_SEARCH,
+                               (engine.SearchInDirectory,
+                               [path,], dict(recursive=evt.IsRecursive())))
         elif smode == eclib.LOCATION_IN_FILES:
             path = evt.GetDirectory()
             engine.SetFileFilters(evt.GetFileFilters())
@@ -411,8 +539,8 @@ class SearchController(object):
             evt.Skip()
 
     def OnFindClose(self, evt):
-        """Destroy Find Dialog After Cancel is clicked in it
-        @param evt: event that called this handler
+        """Process storing search dialog state when it is closed
+        @param evt: findlg.EVT_FIND_CLOSE
 
         """
         if self._finddlg is not None:
@@ -421,24 +549,25 @@ class SearchController(object):
             self._li_sel = self._finddlg.GetLookinSelection()
             self._filters = self._finddlg.GetFileFilters()
 
-            # Store in profile. Only save most recent 5 in history
-            if len(self._li_choices) > 5:
-                choices = self._li_choices[-5:]
+            # Store in profile. Only save most recent 8 in history
+            if len(self._li_choices) > 8:
+                choices = self._li_choices[-8:]
             else:
                 choices = self._li_choices
 
             # Save the most recent choices of search locations
             Profile_Set('SEARCH_LOC', choices)
             Profile_Set('SEARCH_FILTER', self._filters)
-
-            # Destroy it
+            self._StoreFindData()
             self._finddlg.Destroy()
-
-        self._finddlg = None
-        evt.Skip()
+            self._finddlg = None
+        buff = wx.GetApp().GetCurrentBuffer()
+        if buff:
+            buff.SetFocus()
 
     def OnOptionChanged(self, evt):
         """Handle when the find options are changed in the dialog"""
+        self._StoreFindData() # Persist new search settings from find dialog
         dead = list()
         for idx, client in enumerate(self._clients):
             try:
@@ -455,7 +584,14 @@ class SearchController(object):
         if evt.IsRegEx() and self._engine is not None:
             match = self._engine.GetLastMatch()
             if match is not None:
-                value = match.expand(replacestring)
+                try:
+                    value = match.expand(replacestring)
+                except re.error, err:
+                    msg = _("Error in regular expression expansion."
+                            "The replace action cannot be completed.\n\n"
+                            "Error Message: %s") % err.message
+                    wx.MessageBox(msg, _("Replace Error"), wx.OK|wx.ICON_ERROR)
+                    return
             else:
                 value = replacestring
         else:
@@ -468,9 +604,13 @@ class SearchController(object):
         self._stc().ReplaceSelection(value)
 
         # Go to the next match
-        # Fake event object for on Find Handler
-        tevt = eclib.FindEvent(eclib.edEVT_FIND_NEXT, ed_glob.ID_FIND_PREVIOUS)
-        self.OnFind(tevt, True)
+        eid = ed_glob.ID_FIND_NEXT
+        if evt.IsUp():
+            eid = ed_glob.ID_FIND_PREVIOUS
+        tevt = eclib.FindEvent(eclib.edEVT_FIND_NEXT, eid)
+        tevt.SetFlags(evt.GetFlags())
+        tevt.SetFindString(evt.GetFindString())
+        self.OnFind(tevt)
 
     def OnReplaceAll(self, evt):
         """Replace all instance of the search string with the given
@@ -479,12 +619,11 @@ class SearchController(object):
         """
         smode = evt.GetSearchType()
         rstring = evt.GetReplaceString()
-        engine = ebmlib.SearchEngine(evt.GetFindString(), evt.IsRegEx(),
-                                     True, evt.IsMatchCase(), evt.IsWholeWord())
-        engine.SetResultFormatter(FormatResult)
+        engine = EdSearchEngine(evt.GetFindString(), evt.IsRegEx(),
+                                True, evt.IsMatchCase(), evt.IsWholeWord())
+        engine.SetResultFormatter(engine.FormatResult)
 
         results = 0
-
         if smode == eclib.LOCATION_CURRENT_DOC:
             stc = self._stc()
             engine.SetSearchPool(stc.GetTextRaw())
@@ -492,6 +631,26 @@ class SearchController(object):
             if matches is not None:
                 self.ReplaceInStc(stc, matches, rstring, evt.IsRegEx())
                 results = len(matches)
+        elif smode == eclib.LOCATION_IN_SELECTION:
+            stc = self._stc()
+            engine.SetSearchPool(stc.GetSelectedTextRaw())
+            matches = engine.FindAll()
+            if matches is not None:
+                self.ReplaceInStcSelection(stc, matches, rstring, evt.IsRegEx())
+                results = len(matches)
+#            regex = engine.GetQueryObject()
+#            if regex is not None:
+#                text = engine.GetSearchPool()
+#                def replaceString(match):
+#                    if evt.IsRegEx():
+#                        value = match.expand(rstring.encode('utf-8')).decode('utf-8')
+#                    else:
+#                        value = rstring
+#                    return value
+#                text = regex.sub(replaceString, text)
+#                stc.ReplaceSelection(text)
+            else:
+                pass # TODO: notify of no matches?
         elif smode == eclib.LOCATION_OPEN_DOCS:
             for ctrl in self._parent.GetTextControls():
                 engine.SetSearchPool(ctrl.GetTextRaw())
@@ -499,9 +658,9 @@ class SearchController(object):
                 if matches is not None:
                     self.ReplaceInStc(ctrl, matches, rstring, evt.IsRegEx())
                     results += len(matches)
-        elif smode == eclib.LOCATION_IN_FILES:
+        elif smode in (eclib.LOCATION_IN_CURRENT_DIR, eclib.LOCATION_IN_FILES):
             dlg = wx.MessageDialog(self._parent,
-                                   _("Sorry will be ready for next version"),
+                                   _("Sorry will be ready for future version"),
                                    _("Not implemented"),
 #                                   _("Warning this cannot be undone!"),
 #                                   _("Do Replace All?"),
@@ -543,12 +702,14 @@ class SearchController(object):
             if self._finddlg is None:
                 evt.Skip()
                 return
+            self._finddlg.CenterOnParent()
             self._finddlg.SetTransparent(240)
 #            self._finddlg.SetExtraStyle(wx.WS_EX_PROCESS_UI_UPDATES)
             self._finddlg.Show()
         else:
             # Dialog is open already so just update it
             self._UpdateDialogState(eid)
+            self._finddlg.Show()
             self._finddlg.Raise()
         self._finddlg.SetFocus()
 
@@ -577,13 +738,38 @@ class SearchController(object):
     def ReplaceInStc(stc, matches, rstring, isregex=True):
         """Replace the strings at the position in the given StyledTextCtrl
         @param stc: StyledTextCtrl
-        @param matches: list of tuples [(s1, e1), (s2, e2)]
+        @param matches: list of match objects
         @param rstring: Replace string
 
         """
         stc.BeginUndoAction()
         for match in reversed(matches):
             start, end = match.span()
+            if isregex:
+                try:
+                    value = match.expand(rstring.encode('utf-8')).decode('utf-8')
+                except re.error, err:
+                    msg = _("Error in regular expression expansion."
+                            "The replace action cannot be completed.\n\n"
+                            "Error Message: %s") % err.message
+                    wx.MessageBox(msg, _("Replace Error"), wx.OK|wx.ICON_ERROR)
+                    break
+            else:
+                value = rstring
+            stc.SetTargetStart(start)
+            stc.SetTargetEnd(end)
+            stc.ReplaceTarget(value)
+        stc.EndUndoAction()
+
+    @staticmethod
+    def ReplaceInStcSelection(stc, matches, rstring, isregex=True):
+        """Replace all the matches in the selection"""
+        sel_s = min(stc.GetSelection())
+        stc.BeginUndoAction()
+        for match in reversed(matches):
+            start, end = match.span()
+            start += sel_s
+            end += sel_s
             if isregex:
                 value = match.expand(rstring.encode('utf-8')).decode('utf-8')
             else:
@@ -623,32 +809,13 @@ class SearchController(object):
         self._data.SetFlags(flags)
         if self._finddlg is not None:
             self._finddlg.SetData(self._data)
+        self._StoreFindData() # Update persistence
 
     def RefreshControls(self):
         """Refresh controls that are associated with this controllers data."""
         if self._finddlg is not None:
             self._finddlg.RefreshFindOptions()
-
-#-----------------------------------------------------------------------------#
-
-def FormatResult(fname, lnum, match):
-    """Format the search result string
-    @return: string
-    @todo: better unicode handling
-
-    """
-    fname = ed_txt.DecodeString(fname, sys.getfilesystemencoding())
-    if not isinstance(fname, types.UnicodeType):
-        fname = _("DECODING ERROR")
-
-    match = ed_txt.DecodeString(match)
-    if not isinstance(match, types.UnicodeType):
-        match = _("DECODING ERROR")
-    else:
-        match = u" " + match.lstrip()
-
-    rstring = u"%(fname)s (%(lnum)d): %(match)s"
-    return rstring % dict(fname=fname, lnum=lnum+1, match=match)
+        self._StoreFindData() # Update persistence
 
 #-----------------------------------------------------------------------------#
 
@@ -666,7 +833,7 @@ class EdSearchCtrl(wx.SearchCtrl):
         @param menulen: max length of history menu
 
         """
-        wx.SearchCtrl.__init__(self, parent, id_, value, pos, size, style)
+        super(EdSearchCtrl, self).__init__(parent, id_, value, pos, size, style)
 
         # Attributes
         self._parent     = parent
@@ -718,6 +885,12 @@ class EdSearchCtrl(wx.SearchCtrl):
             data.SetFlags(self._flags)
             self.FindService.RefreshControls()
 
+    def FindAll(self):
+        """Fire off a FindAll job in the current buffer"""
+        evt = eclib.FindEvent(eclib.edEVT_FIND_ALL, flags=self._flags)
+        evt.SetFindString(self.GetValue())
+        self.FindService.OnFindAll(evt)
+
     def DoSearch(self, next=True):
         """Do the search and move the selection
         @keyword next: search next or previous
@@ -748,7 +921,7 @@ class EdSearchCtrl(wx.SearchCtrl):
         else:
             # ?wxBUG? cant set text back to black after changing color
             # But setting it to this almost black color works. Most likely its
-            # due to bit masking but I havent looked at the source so I am not
+            # due to bit masking but I haven't looked at the source so I am not
             # sure
             if self._txtctrl is None:
                 self.SetForegroundColour(wx.ColourRGB(0 | 1 | 0))
@@ -918,8 +1091,8 @@ class EdSearchCtrl(wx.SearchCtrl):
         tmp = self.GetValue()
         self.ShowCancelButton(len(tmp) > 0)
 
-        # Dont do search for navigation keys
-        if tmp == wx.EmptyString or evt.CmdDown() or \
+        # Don't do search for navigation keys
+        if tmp == wx.EmptyString or evt.CmdDown() or evt.ControlDown() or \
            e_key in [wx.WXK_COMMAND, wx.WXK_LEFT, wx.WXK_RIGHT, wx.WXK_CONTROL,
                      wx.WXK_ALT, wx.WXK_UP, wx.WXK_DOWN, wx.WXK_F1, wx.WXK_F2, 
                      wx.WXK_F3, wx.WXK_F4, wx.WXK_F5, wx.WXK_F6, wx.WXK_F7, 
@@ -1026,7 +1199,7 @@ class EdFindResults(plugin.Plugin):
         return self.__name__
 
     def IsStockable(self):
-        """EdLogViewer can be saved in the shelf preference stack"""
+        """EdFindResults can be saved in the shelf preference stack"""
         return False
 
     @classmethod
@@ -1074,14 +1247,14 @@ class EdFindResults(plugin.Plugin):
 
 #-----------------------------------------------------------------------------#
 
-class SearchResultScreen(eclib.ControlBox):
+class SearchResultScreen(ed_basewin.EdBaseCtrlBox):
     """Screen for displaying search results and navigating to them"""
     def __init__(self, parent):
         """Create the result screen
         @param parent: parent window
 
         """
-        eclib.ControlBox.__init__(self, parent)
+        super(SearchResultScreen, self).__init__(parent)
 
         # Attributes
         self._meth = None
@@ -1095,48 +1268,35 @@ class SearchResultScreen(eclib.ControlBox):
         self._cancelb.Disable()
 
         # Event Handlers
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy, self)
         self.Bind(wx.EVT_BUTTON,
-                  lambda evt: self._list.Clear(), id=wx.ID_CLEAR)
+                  lambda evt: self._list.Clear(), self._clearb)
         self.Bind(wx.EVT_BUTTON,
-                  lambda evt: self.CancelSearch(), id=wx.ID_CANCEL)
+                  lambda evt: self.CancelSearch(), self._cancelb)
         self._list.Bind(eclib.EVT_TASK_START, self.OnTaskStart)
         self._list.Bind(eclib.EVT_TASK_COMPLETE, self.OnTaskComplete)
 
         # Message Handlers
         ed_msg.Subscribe(self.OnThemeChange, ed_msg.EDMSG_THEME_CHANGED)
 
-    def __del__(self):
-        ed_msg.Unsubscribe(self.OnThemeChange)
+    def OnDestroy(self, evt):
+        if evt.GetId() == self.GetId():
+            ed_msg.Unsubscribe(self.OnThemeChange)
+        evt.Skip()
 
     def __DoLayout(self):
         """Layout and setup the results screen ui"""
-        ctrlbar = eclib.ControlBar(self, style=eclib.CTRLBAR_STYLE_GRADIENT)
-        if wx.Platform == '__WXGTK__':
-            ctrlbar.SetWindowStyle(eclib.CTRLBAR_STYLE_DEFAULT)
-
+        ctrlbar = self.CreateControlBar(wx.TOP)
         ctrlbar.AddStretchSpacer()
 
         # Cancel Button
-        cbmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_STOP), wx.ART_MENU)
-        if cbmp.IsNull() or not cbmp.IsOk():
-            cbmp = wx.ArtProvider.GetBitmap(wx.ART_ERROR,
-                                            wx.ART_MENU, (16, 16))
-        cancel = eclib.PlateButton(ctrlbar, wx.ID_CANCEL, _("Cancel"),
-                                      cbmp, style=eclib.PB_STYLE_NOBG)
+        cancel = self.AddPlateButton(_("Cancel"), ed_glob.ID_STOP, wx.ALIGN_RIGHT)
         self._cancelb = cancel
-        ctrlbar.AddControl(cancel, wx.ALIGN_RIGHT)
 
         # Clear Button
-        cbmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DELETE), wx.ART_MENU)
-        if cbmp.IsNull() or not cbmp.IsOk():
-            cbmp = None
-        clear = eclib.PlateButton(ctrlbar, wx.ID_CLEAR, _("Clear"),
-                                     cbmp, style=eclib.PB_STYLE_NOBG)
+        clear = self.AddPlateButton(_("Clear"), ed_glob.ID_DELETE, wx.ALIGN_RIGHT)
         self._clearb = clear
-        ctrlbar.AddControl(clear, wx.ALIGN_RIGHT)
 
-        ctrlbar.SetVMargin(1, 1)
-        self.SetControlBar(ctrlbar)
         self.SetWindow(self._list)
 
     def GetDisplayedLines(self):
@@ -1169,8 +1329,8 @@ class SearchResultScreen(eclib.ControlBox):
         ed_msg.PostMessage(ed_msg.EDMSG_UI_SB_TXT,
                            (ed_glob.SB_INFO, _("Search complete")))
 
-        # Let the update buffer be flushed
-        wx.YieldIfNeeded()
+        # Flush any remaining text to the output buffer
+        self._list.FlushBuffer()
  
         # Add our end message
         lines = max(0, self._list.GetLineCount() - 2)
@@ -1209,8 +1369,8 @@ class SearchResultScreen(eclib.ControlBox):
             self._job.Cancel()
 
         self._list.Clear()
-        self._job = eclib.TaskThread(self._list, searchmeth, *args, **kwargs)
-        self._job.start()
+        self._job = eclib.TaskObject(self._list, searchmeth, *args, **kwargs)
+        ed_thread.EdThreadPool().QueueJob(self._job.DoTask)
         self._cancelb.Enable()
 
 #-----------------------------------------------------------------------------#
@@ -1225,7 +1385,7 @@ class SearchResultList(eclib.OutputBuffer):
     STY_SEARCH_MATCH = eclib.OPB_STYLE_MAX + 1
     RE_FIND_MATCH = re.compile('(.+) \(([0-9]+)\)\: .+')
     def __init__(self, parent):
-        eclib.OutputBuffer.__init__(self, parent)
+        super(SearchResultList, self).__init__(parent)
 
         # Attributes
         self._files = 0
@@ -1247,7 +1407,7 @@ class SearchResultList(eclib.OutputBuffer):
         """
         if isinstance(value, basestring):
             # Regular search result
-            eclib.OutputBuffer.AppendUpdate(self, value)
+            super(SearchResultList, self).AppendUpdate(value)
         else:
             # Search in a new file has started
             self._files += 1

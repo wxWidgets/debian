@@ -4,7 +4,7 @@
 #
 # Author:      Robin Dunn
 #
-# RCS-ID:      $Id: img2py.py 60088 2009-04-10 20:16:37Z RD $
+# RCS-ID:      $Id: img2py.py 61389 2009-07-10 22:25:35Z RD $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -117,7 +117,7 @@ def convert(fileName, maskClr, outputDir, outputName, outType, outExt):
         else:
             newname = os.path.join(outputDir,
                                    os.path.basename(os.path.splitext(fileName)[0]) + outExt)
-        file(newname, "wb").write(file(fileName).read())
+        file(newname, "wb").write(file(fileName, "rb").read())
         return 1, "ok"
   
     else:

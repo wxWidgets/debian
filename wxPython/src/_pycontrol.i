@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _pycontrol.i 57810 2009-01-03 02:44:59Z RD $
+// RCS-ID:      $Id: _pycontrol.i 63667 2010-03-12 23:49:02Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ public:
     DEC_PYCALLBACK_BOOL_const(AcceptsFocusFromKeyboard);
     DEC_PYCALLBACK_SIZE_const(GetMaxSize);
 
-    DEC_PYCALLBACK_BOOL_(Enable);
+    DEC_PYCALLBACK_BOOL_BOOL(Enable);
 
     DEC_PYCALLBACK_VOID_WXWINBASE(AddChild);
     DEC_PYCALLBACK_VOID_WXWINBASE(RemoveChild);
@@ -106,7 +106,7 @@ IMP_PYCALLBACK_BOOL_const(wxPyControl, wxControl, AcceptsFocus);
 IMP_PYCALLBACK_BOOL_const(wxPyControl, wxControl, AcceptsFocusFromKeyboard);
 IMP_PYCALLBACK_SIZE_const(wxPyControl, wxControl, GetMaxSize);
 
-IMP_PYCALLBACK_BOOL_(wxPyControl, wxControl, Enable);
+IMP_PYCALLBACK_BOOL_BOOL(wxPyControl, wxControl, Enable);
 
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyControl, wxControl, AddChild);
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyControl, wxControl, RemoveChild);

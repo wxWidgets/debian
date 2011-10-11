@@ -4,7 +4,7 @@
 // Author:      Harm van der Heijden, Robert Roebling, Julian Smart
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: dirctrlg.cpp 46614 2007-06-22 12:12:10Z JS $
+// RCS-ID:      $Id: dirctrlg.cpp 62093 2009-09-24 17:04:10Z JS $
 // Copyright:   (c) Harm van der Heijden, Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -768,19 +768,12 @@ void wxGenericDirCtrl::CollapseDir(wxTreeItemId parentId)
         return;
 
     data->m_isExpanded = false;
-    wxTreeItemIdValue cookie;
-    /* Workaround because DeleteChildren has disapeared (why?) and
-     * CollapseAndReset doesn't work as advertised (deletes parent too) */
-    child = m_treeCtrl->GetFirstChild(parentId, cookie);
-    while (child.IsOk())
-    {
-        m_treeCtrl->Delete(child);
-        /* Not GetNextChild below, because the cookie mechanism can't
-         * handle disappearing children! */
-        child = m_treeCtrl->GetFirstChild(parentId, cookie);
-    }
+
+    m_treeCtrl->Freeze();
     if (parentId != m_treeCtrl->GetRootItem())
-        m_treeCtrl->Collapse(parentId);
+        m_treeCtrl->CollapseAndReset(parentId);
+    m_treeCtrl->DeleteChildren(parentId);
+    m_treeCtrl->Thaw();
 }
 
 void wxGenericDirCtrl::ExpandDir(wxTreeItemId parentId)

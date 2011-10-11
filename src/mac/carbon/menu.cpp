@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: menu.cpp 57848 2009-01-06 09:34:07Z SC $
+// RCS-ID:      $Id: menu.cpp 62127 2009-09-25 15:07:53Z JS $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -780,6 +780,11 @@ void wxMenuBar::MacInstallMenuBar()
             EnableMenuCommand( NULL , kHICommandQuit ) ;
     }
 #endif
+    wxString strippedHelpMenuTitle = wxStripMenuCodes( wxApp::s_macHelpMenuTitleName ) ;
+    wxString strippedTranslatedHelpMenuTitle = wxStripMenuCodes( wxString( _("&Help") ) ) ;
+
+    wxString strippedWindowMenuTitle = wxStripMenuCodes( wxString(wxT("&Window")) /* wxApp::s_macWindowMenuTitleName */ ) ;
+    wxString strippedTranslatedWindowMenuTitle = wxStripMenuCodes( wxString( _("&Window") ) ) ;
 
     wxMenuList::compatibility_iterator menuIter = m_menus.GetFirst();
     for (size_t i = 0; i < m_menus.GetCount(); i++, menuIter = menuIter->GetNext())
@@ -787,8 +792,9 @@ void wxMenuBar::MacInstallMenuBar()
         wxMenuItemList::compatibility_iterator node;
         wxMenuItem *item;
         wxMenu* menu = menuIter->GetData() , *subMenu = NULL ;
+        wxString strippedMenuTitle = wxStripMenuCodes(m_titles[i]);
 
-        if ( m_titles[i] == wxT("?") || m_titles[i] == wxT("&?")  || m_titles[i] == wxApp::s_macHelpMenuTitleName )
+        if ( strippedMenuTitle == wxT("?") || strippedMenuTitle == strippedHelpMenuTitle || strippedMenuTitle == strippedTranslatedHelpMenuTitle )
         {
             for (node = menu->GetMenuItems().GetFirst(); node; node = node->GetNext())
             {
@@ -796,7 +802,9 @@ void wxMenuBar::MacInstallMenuBar()
                 subMenu = item->GetSubMenu() ;
                 if (subMenu)
                 {
-                    // we don't support hierarchical menus in the help menu yet
+                    UMAAppendMenuItem(mh, wxStripMenuCodes(item->GetText()) , wxFont::GetDefaultEncoding() );
+                    MenuItemIndex position = CountMenuItems(mh);
+                    ::SetMenuItemHierarchicalMenu(mh, position, MAC_WXHMENU(subMenu->GetHMenu()));
                 }
                 else
                 {
@@ -845,8 +853,7 @@ void wxMenuBar::MacInstallMenuBar()
                 }
             }
         }
-
-        else if ( ( m_titles[i] == wxT("Window") || m_titles[i] == wxT("&Window") )
+        else if ( (strippedMenuTitle == wxT("Window") || strippedMenuTitle == strippedWindowMenuTitle || strippedMenuTitle == strippedTranslatedWindowMenuTitle )
                 && GetAutoWindowMenu() )
         {
             if ( MacGetWindowMenuHMenu() == NULL )

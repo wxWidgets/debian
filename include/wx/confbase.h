@@ -5,7 +5,7 @@
 // Author:      Karsten Ballueder & Vadim Zeitlin
 // Modified by:
 // Created:     07.04.98 (adapted from appconf.h)
-// RCS-ID:      $Id: confbase.h 50711 2007-12-15 02:57:58Z VZ $
+// RCS-ID:      $Id: confbase.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1997 Karsten Ballueder   Ballueder@usa.net
 //                       Vadim Zeitlin      <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
@@ -30,13 +30,13 @@ class WXDLLIMPEXP_FWD_BASE wxArrayString;
 
 /// separates group and entry names (probably shouldn't be changed)
 #ifndef wxCONFIG_PATH_SEPARATOR
-  #define   wxCONFIG_PATH_SEPARATOR     _T('/')
+  #define   wxCONFIG_PATH_SEPARATOR     wxT('/')
 #endif
 
 /// introduces immutable entries
 // (i.e. the ones which can't be changed from the local config file)
 #ifndef wxCONFIG_IMMUTABLE_PREFIX
-  #define   wxCONFIG_IMMUTABLE_PREFIX   _T('!')
+  #define   wxCONFIG_IMMUTABLE_PREFIX   wxT('!')
 #endif
 
 #if wxUSE_CONFIG

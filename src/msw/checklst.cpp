@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16.11.97
-// RCS-ID:      $Id: checklst.cpp 60531 2009-05-06 16:04:20Z PC $
+// RCS-ID:      $Id: checklst.cpp 62511 2009-10-30 14:11:03Z JMS $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -160,8 +160,9 @@ wxCheckListBoxItem::wxCheckListBoxItem(wxCheckListBox *pParent, size_t nIndex)
 
     // fix appearance for check list boxes: they don't look quite the same as
     // menu icons
-    SetMarginWidth(::GetSystemMetrics(SM_CXMENUCHECK) -
+    SetOwnMarginWidth(::GetSystemMetrics(SM_CXMENUCHECK) -
                       2*wxSystemSettings::GetMetric(wxSYS_EDGE_X) + 1);
+
     SetBackgroundColour(pParent->GetBackgroundColour());
 }
 

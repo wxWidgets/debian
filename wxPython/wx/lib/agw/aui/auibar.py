@@ -1,11 +1,11 @@
 """
-auibar contains an implementation of AuiToolBar, which is a completely owner-drawn
+auibar contains an implementation of L{AuiToolBar}, which is a completely owner-drawn
 toolbar perfectly integrated with the AUI layout system. This allows drag and drop of
 toolbars, docking/floating behaviour and the possibility to define "overflow" items
 in the toolbar itself.
 
-The default theme that is used is AuiDefaultToolBarArt, which provides a modern,
-glossy look and feel. The theme can be changed by calling AuiToolBar.SetArtProvider.
+The default theme that is used is L{AuiDefaultToolBarArt}, which provides a modern,
+glossy look and feel. The theme can be changed by calling L{AuiToolBar.SetArtProvider}.
 """
 
 __author__ = "Andrea Gavana <andrea.gavana@gmail.com>"
@@ -15,11 +15,14 @@ __date__ = "31 March 2009"
 import wx
 import types
 
-from aui_utilities import BitmapFromBits, StepColour
+from aui_utilities import BitmapFromBits, StepColour, GetLabelSize
 from aui_utilities import GetBaseColour, MakeDisabledBitmap
 
 import framemanager
 from aui_constants import *
+
+# wxPython version string
+_VERSION_STRING = wx.VERSION_STRING
 
 # AuiToolBar events
 wxEVT_COMMAND_AUITOOLBAR_TOOL_DROPDOWN = wx.NewEventType()
@@ -29,11 +32,15 @@ wxEVT_COMMAND_AUITOOLBAR_MIDDLE_CLICK = wx.NewEventType()
 wxEVT_COMMAND_AUITOOLBAR_BEGIN_DRAG = wx.NewEventType()
 
 EVT_AUITOOLBAR_TOOL_DROPDOWN = wx.PyEventBinder(wxEVT_COMMAND_AUITOOLBAR_TOOL_DROPDOWN, 1)
+""" A dropdown `AuiToolBarItem` is being shown. """
 EVT_AUITOOLBAR_OVERFLOW_CLICK = wx.PyEventBinder(wxEVT_COMMAND_AUITOOLBAR_OVERFLOW_CLICK, 1)
+""" The user left-clicked on the overflow button in `AuiToolBar`. """
 EVT_AUITOOLBAR_RIGHT_CLICK = wx.PyEventBinder(wxEVT_COMMAND_AUITOOLBAR_RIGHT_CLICK, 1)
+""" Fires an event when the user right-clicks on a `AuiToolBarItem`. """
 EVT_AUITOOLBAR_MIDDLE_CLICK = wx.PyEventBinder(wxEVT_COMMAND_AUITOOLBAR_MIDDLE_CLICK, 1)
+""" Fires an event when the user middle-clicks on a `AuiToolBarItem`. """
 EVT_AUITOOLBAR_BEGIN_DRAG = wx.PyEventBinder(wxEVT_COMMAND_AUITOOLBAR_BEGIN_DRAG, 1)
-
+""" A drag operation involving a toolbar item has started. """
 
 # ----------------------------------------------------------------------
 
@@ -44,7 +51,7 @@ class CommandToolBarEvent(wx.PyCommandEvent):
         """
         Default class constructor.
 
-        :param `command_type`: the event kind or an instance of L{wx.PyCommandEvent}.
+        :param `command_type`: the event kind or an instance of `wx.PyCommandEvent`.
         :param `win_id`: the window identification number.
         """
         
@@ -59,28 +66,6 @@ class CommandToolBarEvent(wx.PyCommandEvent):
         self.tool_id = -1
 
 
-    def Clone(self):
-        """
-        Returns a copy of the event.
-
-        Any event that is posted to the wxPython event system for later action (via
-        L{wx.EvtHandler.AddPendingEvent} or L{wx.PostEvent}) must implement this method.
-        All wxPython events fully implement this method, but any derived events
-        implemented by the user should also implement this method just in case they
-        (or some event derived from them) are ever posted.
-
-        All wxPython events implement a copy constructor, so the easiest way of
-        implementing the Clone function is to implement a copy constructor for a new
-        event (call it MyEvent) and then define the Clone function like this::
-
-            def Clone(self):
-                return MyEvent(self)
-
-        """
-        
-        return CommandToolBarEvent(self)
-
-
     def IsDropDownClicked(self):
         """ Returns whether the drop down menu has been clicked. """
 
@@ -91,7 +76,7 @@ class CommandToolBarEvent(wx.PyCommandEvent):
         """
         Sets whether the drop down menu has been clicked.
 
-        :param `c`: True to set the drop down as clicked, False otherwise.
+        :param `c`: ``True`` to set the drop down as clicked, ``False`` otherwise.
         """
 
         self.is_dropdown_clicked = c    
@@ -107,7 +92,7 @@ class CommandToolBarEvent(wx.PyCommandEvent):
         """
         Sets the clicking point.
 
-        :param `p`: an wx.Point object.
+        :param `p`: a `wx.Point` object.
         """
         
         self.click_pt = p    
@@ -123,7 +108,7 @@ class CommandToolBarEvent(wx.PyCommandEvent):
         """
         Sets the L{AuiToolBarItem} rectangle.
 
-        :param `rect`: an instance of wx.Rect.
+        :param `r`: an instance of `wx.Rect`.
         """
 
         self.rect = r    
@@ -154,7 +139,7 @@ class AuiToolBarEvent(CommandToolBarEvent):
         """
         Default class constructor.
 
-        :param `command_type`: the event kind or an instance of L{wx.PyCommandEvent}.
+        :param `command_type`: the event kind or an instance of `wx.PyCommandEvent`.
         :param `win_id`: the window identification number.
         """
 
@@ -165,31 +150,9 @@ class AuiToolBarEvent(CommandToolBarEvent):
         else:
             self.notify = wx.NotifyEvent(command_type.GetEventType(), command_type.GetId())
 
-
-    def Clone(self):
-        """
-        Returns a copy of the event.
-
-        Any event that is posted to the wxPython event system for later action (via
-        L{wx.EvtHandler.AddPendingEvent} or L{wx.PostEvent}) must implement this method.
-        All wxPython events fully implement this method, but any derived events
-        implemented by the user should also implement this method just in case they
-        (or some event derived from them) are ever posted.
-
-        All wxPython events implement a copy constructor, so the easiest way of
-        implementing the Clone function is to implement a copy constructor for a new
-        event (call it MyEvent) and then define the Clone function like this::
-
-            def Clone(self):
-                return MyEvent(self)
-
-        """
-        
-        return AuiToolBarEvent(self)
-
         
     def GetNotifyEvent(self):
-        """ Returns the actual wx.NotifyEvent. """
+        """ Returns the actual `wx.NotifyEvent`. """
         
         return self.notify
 
@@ -201,13 +164,24 @@ class AuiToolBarEvent(CommandToolBarEvent):
 
 
     def Veto(self):
-        """ Vetos the event. """
+        """
+        Prevents the change announced by this event from happening.
+
+        It is in general a good idea to notify the user about the reasons for
+        vetoing the change because otherwise the applications behaviour (which
+        just refuses to do what the user wants) might be quite surprising.
+        """
 
         self.notify.Veto()
 
 
     def Allow(self):
-        """ The event is allowed. """
+        """
+        This is the opposite of L{Veto}: it explicitly allows the event to be
+        processed. For most events it is not necessary to call this method as the
+        events are allowed anyhow but some are forbidden by default (this will
+        be mentioned in the corresponding event description).
+        """
 
         self.notify.Allow()
 
@@ -235,37 +209,37 @@ class ToolbarCommandCapture(wx.PyEvtHandler):
         Processes an event, searching event tables and calling zero or more suitable
         event handler function(s).
 
-        :param `event`: Event to process.
+        :param `event`: the event to process.
 
-        @note: Normally, your application would not call this function: it is called
-        in the wxWidgets implementation to dispatch incoming  user interface events
-        to the framework (and application).
-        However, you might need to call it if implementing new functionality (such as
-        a new control) where you define new event types,  as opposed to allowing the
-        user to override  functions.
+        :note: Normally, your application would not call this function: it is called
+         in the wxPython implementation to dispatch incoming user interface events
+         to the framework (and application).
+         However, you might need to call it if implementing new functionality (such as
+         a new control) where you define new event types, as opposed to allowing the
+         user to override functions.
 
-        An instance where you might actually override the ProcessEvent function is where
-        you want to direct event  processing to event handlers not normally noticed by
-        wxWidgets. For example, in the document/view architecture, documents and  views
-        are potential event handlers. When an event reaches a frame, ProcessEvent will
-        need to be called on  the associated document and view in case event handler
-        functions are associated with these objects. 
+         An instance where you might actually override the L{ProcessEvent} function is where
+         you want to direct event processing to event handlers not normally noticed by
+         wxPython. For example, in the document/view architecture, documents and views
+         are potential event handlers. When an event reaches a frame, L{ProcessEvent} will
+         need to be called on the associated document and view in case event handler
+         functions are associated with these objects. 
 
-        The normal order of event table searching is as follows:
+         The normal order of event table searching is as follows:
 
-        1. If the object is disabled (via a call to SetEvtHandlerEnabled) the function
-           skips to step (6).
-        2. If the object is a wx.Window, ProcessEvent is recursively called on the window's 
-           wx.Validator. If this returns ``True``, the function exits.
-        3. wxWidgets SearchEventTable is called for this event handler. If this fails, the
-           base class table is tried,  and so on until no more tables exist or an appropriate
-           function was found, in which case the function exits.
-        4. The search is applied down the entire chain of event handlers (usually the chain
-           has a length of one). If this succeeds, the function exits.
-        5. If the object is a wx.Window and the event is a wx.CommandEvent, ProcessEvent is
-           recursively applied to the parent window's event handler. If this returns ``True``,
-           the function exits.
-        6. Finally, ProcessEvent is called on the wx.App object.
+         1. If the object is disabled (via a call to `SetEvtHandlerEnabled`) the function
+            skips to step (6).
+         2. If the object is a `wx.Window`, L{ProcessEvent} is recursively called on the window's 
+            `wx.Validator`. If this returns ``True``, the function exits.
+         3. wxWidgets `SearchEventTable` is called for this event handler. If this fails, the
+            base class table is tried, and so on until no more tables exist or an appropriate
+            function was found, in which case the function exits.
+         4. The search is applied down the entire chain of event handlers (usually the chain
+            has a length of one). If this succeeds, the function exits.
+         5. If the object is a `wx.Window` and the event is a `wx.CommandEvent`, L{ProcessEvent} is
+            recursively applied to the parent window's event handler. If this returns ``True``,
+            the function exits.
+         6. Finally, L{ProcessEvent} is called on the `wx.App` object.
         """
         
         if event.GetEventType() == wx.wxEVT_COMMAND_MENU_SELECTED:
@@ -283,7 +257,8 @@ class ToolbarCommandCapture(wx.PyEvtHandler):
 class AuiToolBarItem(object):
     """
     AuiToolBarItem is a toolbar element.
-    It has a unique id (except for the separators which always have id -1), the
+    
+    It has a unique id (except for the separators which always have id = -1), the
     style (telling whether it is a normal button, separator or a control), the
     state (toggled or not, enabled or not) and short and long help strings. The
     default implementations use the short help string for the tooltip text which
@@ -303,6 +278,10 @@ class AuiToolBarItem(object):
             return
         
         self.window = None
+        self.clockwisebmp = wx.NullBitmap
+        self.counterclockwisebmp = wx.NullBitmap
+        self.clockwisedisbmp = wx.NullBitmap
+        self.counterclockwisedisbmp = wx.NullBitmap
         self.sizer_item = None
         self.spacer_pixels = 0
         self.id = 0
@@ -322,6 +301,7 @@ class AuiToolBarItem(object):
         self.long_help = ""
         self.min_size = wx.Size(-1, -1)
         self.alignment = wx.ALIGN_CENTER
+        self.orientation = AUI_TBTOOL_HORIZONTAL
         
 
     def Assign(self, c):
@@ -350,13 +330,14 @@ class AuiToolBarItem(object):
         self.sticky = c.sticky
         self.user_data = c.user_data
         self.alignment = c.alignment
+        self.orientation = c.orientation
 
 
     def SetWindow(self, w):
         """
         Assigns a window to the toolbar item.
 
-        :param `w`: an instance of wx.Window.
+        :param `w`: an instance of `wx.Window`.
         """
 
         self.window = w
@@ -388,19 +369,19 @@ class AuiToolBarItem(object):
         """
         Sets the L{AuiToolBarItem} kind.
 
-        :param `kind`: can be one of the following item:
+        :param `new_kind`: can be one of the following items:
 
-        ========================  =============================
-        Item Kind                 Description
-        ========================  =============================
-        ``ITEM_CONTROL``          The item in the AuiToolBar is a control
-        ``ITEM_LABEL``            The item in the AuiToolBar is a text label
-        ``ITEM_SPACER``           The item in the AuiToolBar is a spacer
-        ``ITEM_SEPARATOR``        The item in the AuiToolBar is a separator
-        ``ITEM_CHECK``            The item in the AuiToolBar is a toolbar check item
-        ``ITEM_NORMAL``           The item in the AuiToolBar is a standard toolbar item
-        ``ITEM_RADIO``            The item in the AuiToolBar is a toolbar radio item
-        ========================  =============================
+         ========================  =============================
+         Item Kind                 Description
+         ========================  =============================
+         ``ITEM_CONTROL``          The item in the `AuiToolBar` is a control
+         ``ITEM_LABEL``            The item in the `AuiToolBar` is a text label
+         ``ITEM_SPACER``           The item in the `AuiToolBar` is a spacer
+         ``ITEM_SEPARATOR``        The item in the `AuiToolBar` is a separator
+         ``ITEM_CHECK``            The item in the `AuiToolBar` is a toolbar check item
+         ``ITEM_NORMAL``           The item in the `AuiToolBar` is a standard toolbar item
+         ``ITEM_RADIO``            The item in the `AuiToolBar` is a toolbar radio item
+         ========================  =============================
         """
 
         self.kind = new_kind
@@ -416,18 +397,18 @@ class AuiToolBarItem(object):
         """
         Sets the toolbar item state.
 
-        :param `state`: can be one of the following states:
+        :param `new_state`: can be one of the following states:
 
-        ============================================  ======================================
-        Button State Constant                         Description     
-        ============================================  ======================================
-        ``AUI_BUTTON_STATE_NORMAL``                   Normal button state
-        ``AUI_BUTTON_STATE_HOVER``                    Hovered button state
-        ``AUI_BUTTON_STATE_PRESSED``                  Pressed button state
-        ``AUI_BUTTON_STATE_DISABLED``                 Disabled button state
-        ``AUI_BUTTON_STATE_HIDDEN``                   Hidden button state
-        ``AUI_BUTTON_STATE_CHECKED``                  Checked button state
-        ============================================  ======================================
+         ============================================  ======================================
+         Button State Constant                         Description     
+         ============================================  ======================================
+         ``AUI_BUTTON_STATE_NORMAL``                   Normal button state
+         ``AUI_BUTTON_STATE_HOVER``                    Hovered button state
+         ``AUI_BUTTON_STATE_PRESSED``                  Pressed button state
+         ``AUI_BUTTON_STATE_DISABLED``                 Disabled button state
+         ``AUI_BUTTON_STATE_HIDDEN``                   Hidden button state
+         ``AUI_BUTTON_STATE_CHECKED``                  Checked button state
+         ============================================  ======================================
     
         """
 
@@ -435,7 +416,11 @@ class AuiToolBarItem(object):
 
         
     def GetState(self):
-        """ Returns the toolbar item state. See L{SetState} for more details. """
+        """
+        Returns the toolbar item state. See L{SetState} for more details.
+
+        :see: L{SetState}
+        """
         
         return self.state 
 
@@ -444,7 +429,7 @@ class AuiToolBarItem(object):
         """
         Associates a sizer item to this toolbar item.
 
-        :param `s`: an instance of wx.SizerItem.
+        :param `s`: an instance of `wx.SizerItem`.
         """
 
         self.sizer_item = s
@@ -476,7 +461,7 @@ class AuiToolBarItem(object):
         """
         Sets the toolbar item bitmap.
 
-        :param `bmp`: an instance of wx.Bitmap.
+        :param `bmp`: an instance of `wx.Bitmap`.
         """
         
         self.bitmap = bmp
@@ -485,14 +470,14 @@ class AuiToolBarItem(object):
     def GetBitmap(self):
         """ Returns the toolbar item bitmap. """
 
-        return self.bitmap 
+        return self.GetRotatedBitmap(False)
 
 
     def SetDisabledBitmap(self, bmp):
         """
         Sets the toolbar item disabled bitmap.
 
-        :param `bmp`: an instance of wx.Bitmap.
+        :param `bmp`: an instance of `wx.Bitmap`.
         """
         
         self.disabled_bitmap = bmp
@@ -501,18 +486,35 @@ class AuiToolBarItem(object):
     def GetDisabledBitmap(self):
         """ Returns the toolbar item disabled bitmap. """
         
-        return self.disabled_bitmap 
+        return self.GetRotatedBitmap(True)
 
 
     def SetHoverBitmap(self, bmp):
         """
         Sets the toolbar item hover bitmap.
 
-        :param `bmp`: an instance of wx.Bitmap.
+        :param `bmp`: an instance of `wx.Bitmap`.
         """
         
         self.hover_bitmap = bmp
 
+
+    def SetOrientation(self, a):
+        """
+        Sets the toolbar tool orientation.
+
+        :param `a`: one of ``AUI_TBTOOL_HORIZONTAL``, ``AUI_TBTOOL_VERT_CLOCKWISE`` or
+         ``AUI_TBTOOL_VERT_COUNTERCLOCKWISE``.
+        """
+
+        self.orientation = a
+
+
+    def GetOrientation(self):
+        """ Returns the toolbar tool orientation. """
+
+        return self.orientation
+    
         
     def GetHoverBitmap(self):
         """ Returns the toolbar item hover bitmap. """
@@ -520,10 +522,36 @@ class AuiToolBarItem(object):
         return self.hover_bitmap 
 
 
+    def GetRotatedBitmap(self, disabled):
+        """
+        Returns the correct bitmap depending on the tool orientation.
+
+        :param `disabled`: whether to return the disabled bitmap or not.
+        """
+        
+        bitmap_to_rotate = (disabled and [self.disabled_bitmap] or [self.bitmap])[0]
+        if not bitmap_to_rotate.IsOk() or self.orientation == AUI_TBTOOL_HORIZONTAL:
+            return bitmap_to_rotate
+
+        rotated_bitmap = wx.NullBitmap
+        clockwise = True
+        if self.orientation == AUI_TBTOOL_VERT_CLOCKWISE:
+            rotated_bitmap = (disabled and [self.clockwisedisbmp] or [self.clockwisebmp])[0]
+
+        elif self.orientation == AUI_TBTOOL_VERT_COUNTERCLOCKWISE:
+            rotated_bitmap = (disabled and [self.counterclockwisedisbmp] or [self.counterclockwisebmp])[0]
+            clockwise = False
+
+        if not rotated_bitmap.IsOk():
+            rotated_bitmap = wx.BitmapFromImage(bitmap_to_rotate.ConvertToImage().Rotate90(clockwise))
+
+        return rotated_bitmap
+
+
     def SetShortHelp(self, s):
         """
         Sets the short help string for the L{AuiToolBarItem}, to be displayed in a
-        wx.ToolTip when the mouse hover over the toolbar item.
+        `wx.ToolTip` when the mouse hover over the toolbar item.
 
         :param `s`: the tool short help string.
         """
@@ -559,7 +587,7 @@ class AuiToolBarItem(object):
         """
         Sets the toolbar item minimum size.
 
-        :param `s`: an instance of wx.Size.
+        :param `s`: an instance of `wx.Size`.
         """
 
         self.min_size = wx.Size(*s)
@@ -573,7 +601,7 @@ class AuiToolBarItem(object):
 
     def SetSpacerPixels(self, s):
         """
-        Sets the number of pixels for a toolbar item with kind=``ITEM_SEPARATOR``.
+        Sets the number of pixels for a toolbar item with kind = ``ITEM_SEPARATOR``.
 
         :param `s`: number of pixels.
         """
@@ -582,7 +610,7 @@ class AuiToolBarItem(object):
 
         
     def GetSpacerPixels(self):
-        """ Returns the number of pixels for a toolbar item with kind=``ITEM_SEPARATOR``. """
+        """ Returns the number of pixels for a toolbar item with kind = ``ITEM_SEPARATOR``. """
 
         return self.spacer_pixels 
 
@@ -607,7 +635,7 @@ class AuiToolBarItem(object):
         """
         Activates/deactivates the toolbar item.
 
-        :param `b`: True to activate the item, False to deactivate it.
+        :param `b`: ``True`` to activate the item, ``False`` to deactivate it.
         """
 
         self.active = b
@@ -623,7 +651,7 @@ class AuiToolBarItem(object):
         """
         Sets whether the toolbar item has an associated dropdown menu.
 
-        :param `b`: True to set a dropdown menu, False otherwise.
+        :param `b`: ``True`` to set a dropdown menu, ``False`` otherwise.
         """
 
         self.dropdown = b
@@ -640,7 +668,7 @@ class AuiToolBarItem(object):
         Sets whether the toolbar item is sticky (permanent highlight after mouse enter)
         or not.
 
-        :param `b`: True to set the item as sticky, False otherwise.
+        :param `b`: ``True`` to set the item as sticky, ``False`` otherwise.
         """
 
         self.sticky = b
@@ -655,9 +683,10 @@ class AuiToolBarItem(object):
     def SetUserData(self, l):
         """
         Associates some kind of user data to the toolbar item.
-        The user data can be any Python object.
-
+        
         :param `l`: a Python object.
+
+        :note: The user data can be any Python object.
         """
 
         self.user_data = l
@@ -673,7 +702,7 @@ class AuiToolBarItem(object):
         """
         Sets the toolbar item alignment.
 
-        :param `l`: the item alignment, which can be one of the available wx.Sizer
+        :param `l`: the item alignment, which can be one of the available `wx.Sizer`
          alignments.
         """
 
@@ -691,12 +720,12 @@ class AuiToolBarItem(object):
 class AuiDefaultToolBarArt(object):
     """
     Toolbar art provider code - a tab provider provides all drawing functionality to
-    the AuiToolBar. This allows the AuiToolBar to have a plugable look-and-feel.
+    the L{AuiToolBar}. This allows the L{AuiToolBar} to have a plugable look-and-feel.
 
-    By default, a AuiToolBar uses an instance of this class called AuiDefaultToolBarArt
+    By default, a L{AuiToolBar} uses an instance of this class called L{AuiDefaultToolBarArt}
     which provides bitmap art and a colour scheme that is adapted to the major platforms'
     look. You can either derive from that class to alter its behaviour or write a
-    completely new tab art class. Call AuiToolBar.SetArtProvider to make use this
+    completely new tab art class. Call L{AuiToolBar.SetArtProvider} to make use this
     new tab art.
     """
 
@@ -705,11 +734,12 @@ class AuiDefaultToolBarArt(object):
         
         self._base_colour = GetBaseColour()
 
-        self._flags = 0
+        self._agwFlags = 0
         self._text_orientation = AUI_TBTOOL_TEXT_BOTTOM
         self._highlight_colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT)
 
         self._separator_size = 7
+        self._orientation = AUI_TBTOOL_HORIZONTAL
         self._gripper_size = 7
         self._overflow_size = 16
 
@@ -736,41 +766,52 @@ class AuiDefaultToolBarArt(object):
 
 
     def Clone(self):
-        """ Clones the AuiToolBar art. """
+        """ Clones the L{AuiToolBar} art. """
 
         return AuiDefaultToolBarArt()
 
 
-    def SetFlags(self, flags):
+    def SetAGWFlags(self, agwFlags):
         """
         Sets the toolbar art flags.
 
-        :param `flags`: a combination of the following values:
+        :param `agwFlags`: a combination of the following values:
 
-        ==================================== ==================================
-        Flag name                            Description
-        ==================================== ==================================
-        ``AUI_TB_TEXT``                      Shows the text in the toolbar buttons; by default only icons are shown
-        ``AUI_TB_NO_TOOLTIPS``               Don't show tooltips on AuiToolBar items
-        ``AUI_TB_NO_AUTORESIZE``             Do not auto-resize the AuiToolBar
-        ``AUI_TB_GRIPPER``                   Shows a gripper on the AuiToolBar
-        ``AUI_TB_OVERFLOW``                  The AuiToolBar can contain overflow items
-        ``AUI_TB_VERTICAL``                  The AuiToolBar is vertical
-        ``AUI_TB_HORZ_LAYOUT``               Shows the text and the icons alongside, not vertically stacked. This style must be used with ``AUI_TB_TEXT``.
-        ``AUI_TB_PLAIN_BACKGROUND``          Don't draw a gradient background on the toolbar
-        ``AUI_TB_HORZ_TEXT``                 Combination of ``AUI_TB_HORZ_LAYOUT`` and ``AUI_TB_TEXT``
-        ==================================== ==================================
+         ==================================== ==================================
+         Flag name                            Description
+         ==================================== ==================================
+         ``AUI_TB_TEXT``                      Shows the text in the toolbar buttons; by default only icons are shown
+         ``AUI_TB_NO_TOOLTIPS``               Don't show tooltips on `AuiToolBar` items
+         ``AUI_TB_NO_AUTORESIZE``             Do not auto-resize the `AuiToolBar`
+         ``AUI_TB_GRIPPER``                   Shows a gripper on the `AuiToolBar`
+         ``AUI_TB_OVERFLOW``                  The `AuiToolBar` can contain overflow items
+         ``AUI_TB_VERTICAL``                  The `AuiToolBar` is vertical
+         ``AUI_TB_HORZ_LAYOUT``               Shows the text and the icons alongside, not vertically stacked. This style must be used with ``AUI_TB_TEXT``
+         ``AUI_TB_PLAIN_BACKGROUND``          Don't draw a gradient background on the toolbar
+         ``AUI_TB_HORZ_TEXT``                 Combination of ``AUI_TB_HORZ_LAYOUT`` and ``AUI_TB_TEXT``
+         ==================================== ==================================
         
         """
         
-        self._flags = flags
+        self._agwFlags = agwFlags
+
+
+    def GetAGWFlags(self):
+        """
+        Returns the L{AuiDefaultToolBarArt} flags. See L{SetAGWFlags} for more
+        details.
+
+        :see: L{SetAGWFlags}
+        """
+
+        return self._agwFlags
 
 
     def SetFont(self, font):
         """
         Sets the L{AuiDefaultToolBarArt} font.
 
-        :param `font`: a wx.Font object.
+        :param `font`: a `wx.Font` object.
         """
 
         self._font = font
@@ -782,27 +823,18 @@ class AuiDefaultToolBarArt(object):
 
         :param `orientation`: can be one of the following constants:
 
-        ==================================== ==================================
-        Orientation Switches                 Description
-        ==================================== ==================================
-        ``AUI_TBTOOL_TEXT_LEFT``             Text in AuiToolBar items is aligned left
-        ``AUI_TBTOOL_TEXT_RIGHT``            Text in AuiToolBar items is aligned right
-        ``AUI_TBTOOL_TEXT_TOP``              Text in AuiToolBar items is aligned top
-        ``AUI_TBTOOL_TEXT_BOTTOM``           Text in AuiToolBar items is aligned bottom
-        ==================================== ==================================
+         ==================================== ==================================
+         Orientation Switches                 Description
+         ==================================== ==================================
+         ``AUI_TBTOOL_TEXT_LEFT``             Text in `AuiToolBar` items is aligned left
+         ``AUI_TBTOOL_TEXT_RIGHT``            Text in `AuiToolBar` items is aligned right
+         ``AUI_TBTOOL_TEXT_TOP``              Text in `AuiToolBar` items is aligned top
+         ``AUI_TBTOOL_TEXT_BOTTOM``           Text in `AuiToolBar` items is aligned bottom
+         ==================================== ==================================
         
         """
 
         self._text_orientation = orientation
-
-
-    def GetFlags(self):
-        """
-        Returns the L{AuiDefaultToolBarArt} flags. See L{SetFlags} for more
-        details.
-        """
-
-        return self._flags
 
 
     def GetFont(self):
@@ -815,19 +847,38 @@ class AuiDefaultToolBarArt(object):
         """
         Returns the L{AuiDefaultToolBarArt} text orientation. See
         L{SetTextOrientation} for more details.
+
+        :see: L{SetTextOrientation}
         """
 
         return self._text_orientation
+
+
+    def SetOrientation(self, orientation):
+        """
+        Sets the toolbar tool orientation.
+
+        :param `orientation`: one of ``AUI_TBTOOL_HORIZONTAL``, ``AUI_TBTOOL_VERT_CLOCKWISE`` or
+         ``AUI_TBTOOL_VERT_COUNTERCLOCKWISE``.
+        """
+
+        self._orientation = orientation
+
+
+    def GetOrientation(self):
+        """ Returns the toolbar orientation. """
+
+        return self._orientation        
 
 
     def DrawBackground(self, dc, wnd, _rect, horizontal=True):
         """
         Draws a toolbar background with a gradient shading.
 
-        :param `dc`: a L{wx.DC} device context;
-        :param `wnd`: a wx.Window derived window;
+        :param `dc`: a `wx.DC` device context;
+        :param `wnd`: a `wx.Window` derived window;
         :param `_rect`: the L{AuiToolBar} rectangle;
-        :param `horizontal`: True if the toolbar is horizontal, False if it is vertical.
+        :param `horizontal`: ``True`` if the toolbar is horizontal, ``False`` if it is vertical.
         """
 
         rect = wx.Rect(*_rect)
@@ -855,15 +906,14 @@ class AuiDefaultToolBarArt(object):
         """
         Draws a toolbar background with a plain colour.
 
-        This method contrasts with the default behaviour of the AuiToolBar that
+        This method contrasts with the default behaviour of the L{AuiToolBar} that
         draws a background gradient and this break the window design when putting
         it within a control that has margin between the borders and the toolbar
-        (example: put AuiToolBar within a wx.StaticBoxSizer that has a plain background).
+        (example: put L{AuiToolBar} within a `wx.StaticBoxSizer` that has a plain background).
       
-        :param `dc`: a L{wx.DC} device context;
-        :param `wnd`: a wx.Window derived window;
-        :param `_rect`: the L{AuiToolBar} rectangle;
-        :param `horizontal`: True if the toolbar is horizontal, False if it is vertical.
+        :param `dc`: a `wx.DC` device context;
+        :param `wnd`: a `wx.Window` derived window;
+        :param `_rect`: the L{AuiToolBar} rectangle.
         """
         
         rect = wx.Rect(*_rect)
@@ -877,67 +927,50 @@ class AuiDefaultToolBarArt(object):
         """
         Draws a toolbar item label.
         
-        :param `dc`: a L{wx.DC} device context;
-        :param `wnd`: a wx.Window derived window;
+        :param `dc`: a `wx.DC` device context;
+        :param `wnd`: a `wx.Window` derived window;
         :param `item`: an instance of L{AuiToolBarItem};
         :param `rect`: the L{AuiToolBarItem} rectangle.
         """
         
         dc.SetFont(self._font)
         dc.SetTextForeground(wx.BLACK)
+        orient = item.GetOrientation()
 
+        horizontal = orient == AUI_TBTOOL_HORIZONTAL
         # we only care about the text height here since the text
         # will get cropped based on the width of the item
-        text_width = text_height = 0
-        text_width, text_height = dc.GetTextExtent("ABCDHgj")
+        label_size = GetLabelSize(dc, item.GetLabel(), not horizontal)
+        text_width = label_size.GetWidth()
+        text_height = label_size.GetHeight()
 
-        # set the clipping region
-        clip_rect = wx.Rect(*rect)
-        clip_rect.width -= 1
-        dc.SetClippingRect(clip_rect)
+        if orient == AUI_TBTOOL_HORIZONTAL:
+            text_x = rect.x
+            text_y = rect.y + (rect.height-text_height)/2
+            dc.DrawText(item.GetLabel(), text_x, text_y)
 
-        text_x = rect.x + 1
-        text_y = rect.y + (rect.height-text_height)/2
-        dc.DrawText(item.GetLabel(), text_x, text_y)
-        dc.DestroyClippingRegion()
+        elif orient == AUI_TBTOOL_VERT_CLOCKWISE:
+            text_x = rect.x + (rect.width+text_width)/2
+            text_y = rect.y
+            dc.DrawRotatedText(item.GetLabel(), text_x, text_y, 270)
+
+        elif AUI_TBTOOL_VERT_COUNTERCLOCKWISE:
+            text_x = rect.x + (rect.width-text_width)/2
+            text_y = rect.y + text_height
+            dc.DrawRotatedText(item.GetLabel(), text_x, text_y, 90)
 
 
     def DrawButton(self, dc, wnd, item, rect):
         """
         Draws a toolbar item button.
         
-        :param `dc`: a L{wx.DC} device context;
-        :param `wnd`: a wx.Window derived window;
+        :param `dc`: a `wx.DC` device context;
+        :param `wnd`: a `wx.Window` derived window;
         :param `item`: an instance of L{AuiToolBarItem};
         :param `rect`: the L{AuiToolBarItem} rectangle.
         """
-        
-        text_width = text_height = 0
 
-        if self._flags & AUI_TB_TEXT:
-            dc.SetFont(self._font)
-
-            tx, text_height = dc.GetTextExtent("ABCDHgj")
-            text_width, ty = dc.GetTextExtent(item.GetLabel())
-        
-        bmp_x = bmp_y = 0
-        text_x = text_y = 0
-
-        if self._text_orientation == AUI_TBTOOL_TEXT_BOTTOM:
-        
-            bmp_x = rect.x + (rect.width/2) - (item.GetBitmap().GetWidth()/2)
-            bmp_y = rect.y + ((rect.height-text_height)/2) - (item.GetBitmap().GetHeight()/2)
-
-            text_x = rect.x + (rect.width/2) - (text_width/2) + 1
-            text_y = rect.y + rect.height - text_height - 1
-        
-        elif self._text_orientation == AUI_TBTOOL_TEXT_RIGHT:
-        
-            bmp_x = rect.x + 3
-            bmp_y = rect.y + (rect.height/2) - (item.GetBitmap().GetHeight()/2)
-
-            text_x = bmp_x + 3 + item.GetBitmap().GetWidth()
-            text_y = rect.y + (rect.height/2) - (text_height/2)
+        bmp_rect, text_rect = self.GetToolsPosition(dc, item, rect)
         
         if not item.GetState() & AUI_BUTTON_STATE_DISABLED:
         
@@ -953,7 +986,7 @@ class AuiDefaultToolBarArt(object):
                 dc.SetBrush(wx.Brush(StepColour(self._highlight_colour, 170)))
 
                 # draw an even lighter background for checked item hovers (since
-                # the hover background is the same color as the check background)
+                # the hover background is the same colour as the check background)
                 if item.GetState() & AUI_BUTTON_STATE_CHECKED:
                     dc.SetBrush(wx.Brush(StepColour(self._highlight_colour, 180)))
 
@@ -973,61 +1006,52 @@ class AuiDefaultToolBarArt(object):
             bmp = item.GetBitmap()
 
         if bmp.IsOk():
-            dc.DrawBitmap(bmp, bmp_x, bmp_y, True)
+            dc.DrawBitmap(bmp, bmp_rect.x, bmp_rect.y, True)
 
-        # set the item's text color based on if it is disabled
+        # set the item's text colour based on if it is disabled
         dc.SetTextForeground(wx.BLACK)
         if item.GetState() & AUI_BUTTON_STATE_DISABLED:
-            dc.SetTextForeground(DISABLED_TEXT_COLOR)
+            dc.SetTextForeground(DISABLED_TEXT_COLOUR)
 
-        if self._flags & AUI_TB_TEXT and item.GetLabel() != "":
-            dc.DrawText(item.GetLabel(), text_x, text_y)
+        if self._agwFlags & AUI_TB_TEXT and item.GetLabel() != "":
+            self.DrawLabel(dc, wnd, item, text_rect)
         
 
     def DrawDropDownButton(self, dc, wnd, item, rect):
         """
         Draws a toolbar dropdown button.
         
-        :param `dc`: a L{wx.DC} device context;
-        :param `wnd`: a wx.Window derived window;
+        :param `dc`: a `wx.DC` device context;
+        :param `wnd`: a `wx.Window` derived window;
         :param `item`: an instance of L{AuiToolBarItem};
         :param `rect`: the L{AuiToolBarItem} rectangle.
         """
         
-        text_width = text_height = text_x = text_y = 0
-        bmp_x = bmp_y = dropbmp_x = dropbmp_y = 0
+        dropbmp_x = dropbmp_y = 0
 
         button_rect = wx.Rect(rect.x, rect.y, rect.width-BUTTON_DROPDOWN_WIDTH, rect.height)
         dropdown_rect = wx.Rect(rect.x+rect.width-BUTTON_DROPDOWN_WIDTH-1, rect.y, BUTTON_DROPDOWN_WIDTH+1, rect.height)
 
-        if self._flags & AUI_TB_TEXT:
+        horizontal = item.GetOrientation() == AUI_TBTOOL_HORIZONTAL
         
-            dc.SetFont(self._font)
+        if horizontal:
+            button_rect = wx.Rect(rect.x, rect.y, rect.width-BUTTON_DROPDOWN_WIDTH, rect.height)
+            dropdown_rect = wx.Rect(rect.x+rect.width-BUTTON_DROPDOWN_WIDTH-1, rect.y, BUTTON_DROPDOWN_WIDTH+1, rect.height)
+        else:
+            button_rect = wx.Rect(rect.x, rect.y, rect.width, rect.height-BUTTON_DROPDOWN_WIDTH)
+            dropdown_rect = wx.Rect(rect.x, rect.y+rect.height-BUTTON_DROPDOWN_WIDTH-1, rect.width, BUTTON_DROPDOWN_WIDTH+1)
 
-            if self._flags & AUI_TB_TEXT:
-            
-                tx, text_height = dc.GetTextExtent("ABCDHgj")
-            
-            text_width, ty = dc.GetTextExtent(item.GetLabel())
-        
-        dropbmp_x = dropdown_rect.x + (dropdown_rect.width/2) - (self._button_dropdown_bmp.GetWidth()/2)
-        dropbmp_y = dropdown_rect.y + (dropdown_rect.height/2) - (self._button_dropdown_bmp.GetHeight()/2)
+        dropbmp_width = self._button_dropdown_bmp.GetWidth()
+        dropbmp_height = self._button_dropdown_bmp.GetHeight()
+        if not horizontal:
+            tmp = dropbmp_width
+            dropbmp_width = dropbmp_height
+            dropbmp_height = tmp
 
-        if self._text_orientation == AUI_TBTOOL_TEXT_BOTTOM:
-        
-            bmp_x = button_rect.x + (button_rect.width/2) - (item.GetBitmap().GetWidth()/2)
-            bmp_y = button_rect.y + ((button_rect.height-text_height)/2) - (item.GetBitmap().GetHeight()/2)
+        dropbmp_x = dropdown_rect.x + (dropdown_rect.width/2) - dropbmp_width/2
+        dropbmp_y = dropdown_rect.y + (dropdown_rect.height/2) - dropbmp_height/2
 
-            text_x = rect.x + (rect.width/2) - (text_width/2) + 1
-            text_y = rect.y + rect.height - text_height - 1
-        
-        elif self._text_orientation == AUI_TBTOOL_TEXT_RIGHT:
-        
-            bmp_x = rect.x + 3
-            bmp_y = rect.y + (rect.height/2) - (item.GetBitmap().GetHeight()/2)
-
-            text_x = bmp_x + 3 + item.GetBitmap().GetWidth()
-            text_y = rect.y + (rect.height/2) - (text_height/2)
+        bmp_rect, text_rect = self.GetToolsPosition(dc, item, button_rect)
         
         if item.GetState() & AUI_BUTTON_STATE_PRESSED:
         
@@ -1042,7 +1066,15 @@ class AuiDefaultToolBarArt(object):
             dc.SetBrush(wx.Brush(StepColour(self._highlight_colour, 170)))
             dc.DrawRectangleRect(button_rect)
             dc.DrawRectangleRect(dropdown_rect)
-        
+
+        elif item.GetState() & AUI_BUTTON_STATE_CHECKED:
+            # it's important to put this code in an else statment after the 
+            # hover, otherwise hovers won't draw properly for checked items 
+            dc.SetPen(wx.Pen(self._highlight_colour))
+            dc.SetBrush(wx.Brush(StepColour(self._highlight_colour, 170)))
+            dc.DrawRectangle(button_rect)
+            dc.DrawRectangle(dropdown_rect)
+            
         if item.GetState() & AUI_BUTTON_STATE_DISABLED:
         
             bmp = item.GetDisabledBitmap()
@@ -1056,40 +1088,39 @@ class AuiDefaultToolBarArt(object):
         if not bmp.IsOk():
             return
 
-        dc.DrawBitmap(bmp, bmp_x, bmp_y, True)
-        dc.DrawBitmap(dropbmp, dropbmp_x, dropbmp_y, True)
-
-        # set the item's text color based on if it is disabled
+        dc.DrawBitmap(bmp, bmp_rect.x, bmp_rect.y, True)
+        if horizontal:
+            dc.DrawBitmap(dropbmp, dropbmp_x, dropbmp_y, True)
+        else:
+            dc.DrawBitmap(wx.BitmapFromImage(dropbmp.ConvertToImage().Rotate90(item.GetOrientation() == AUI_TBTOOL_VERT_CLOCKWISE)),
+                          dropbmp_x, dropbmp_y, True)
+            
+        # set the item's text colour based on if it is disabled
         dc.SetTextForeground(wx.BLACK)
         if item.GetState() & AUI_BUTTON_STATE_DISABLED:
-            dc.SetTextForeground(DISABLED_TEXT_COLOR)
+            dc.SetTextForeground(DISABLED_TEXT_COLOUR)
 
-        if self._flags & AUI_TB_TEXT and item.GetLabel() != "":  
-            dc.DrawText(item.GetLabel(), text_x, text_y)
+        if self._agwFlags & AUI_TB_TEXT and item.GetLabel() != "":  
+            self.DrawLabel(dc, wnd, item, text_rect)
         
 
     def DrawControlLabel(self, dc, wnd, item, rect):
         """
         Draws a label for a toolbar control.
         
-        :param `dc`: a L{wx.DC} device context;
-        :param `wnd`: a wx.Window derived window;
+        :param `dc`: a `wx.DC` device context;
+        :param `wnd`: a `wx.Window` derived window;
         :param `item`: an instance of L{AuiToolBarItem};
         :param `rect`: the L{AuiToolBarItem} rectangle.
         """
 
-        if not self._flags & AUI_TB_TEXT:
-            return
-
-        if self._text_orientation != AUI_TBTOOL_TEXT_BOTTOM:
-            return
-
-        text_x = text_y = 0
-        text_width = text_height = 0
+        label_size = GetLabelSize(dc, item.GetLabel(), item.GetOrientation() != AUI_TBTOOL_HORIZONTAL)
+        text_height = label_size.GetHeight()
+        text_width = label_size.GetWidth()
 
         dc.SetFont(self._font)
 
-        if self._flags & AUI_TB_TEXT:
+        if self._agwFlags & AUI_TB_TEXT:
         
             tx, text_height = dc.GetTextExtent("ABCDHgj")        
 
@@ -1099,13 +1130,13 @@ class AuiDefaultToolBarArt(object):
         if text_width > rect.width:
             return
 
-        # set the label's text color
+        # set the label's text colour
         dc.SetTextForeground(wx.BLACK)
 
         text_x = rect.x + (rect.width/2) - (text_width/2) + 1
         text_y = rect.y + rect.height - text_height - 1
 
-        if self._flags & AUI_TB_TEXT and item.GetLabel() != "": 
+        if self._agwFlags & AUI_TB_TEXT and item.GetLabel() != "": 
             dc.DrawText(item.GetLabel(), text_x, text_y)
     
 
@@ -1113,66 +1144,67 @@ class AuiDefaultToolBarArt(object):
         """
         Returns the label size for a toolbar item.
         
-        :param `dc`: a L{wx.DC} device context;
-        :param `wnd`: a wx.Window derived window;
+        :param `dc`: a `wx.DC` device context;
+        :param `wnd`: a `wx.Window` derived window;
         :param `item`: an instance of L{AuiToolBarItem}.
         """
 
         dc.SetFont(self._font)
+        label_size = GetLabelSize(dc, item.GetLabel(), self._orientation != AUI_TBTOOL_HORIZONTAL)
 
-        # get label's height
-        width, height = dc.GetTextExtent("ABCDHgj")
-        # get item's width
-        width = item.GetMinSize().GetWidth()
-
-        if item.GetLabel() != "" and width == -1:
-            tx, ty = dc.GetTextExtent(item.GetLabel())
-            width = max(width, tx)
-
-        return wx.Size(width, height)
+        return wx.Size(item.GetMinSize().GetWidth(), label_size.GetHeight())
 
 
     def GetToolSize(self, dc, wnd, item):
         """
         Returns the toolbar item size.
         
-        :param `dc`: a L{wx.DC} device context;
-        :param `wnd`: a wx.Window derived window;
+        :param `dc`: a `wx.DC` device context;
+        :param `wnd`: a `wx.Window` derived window;
         :param `item`: an instance of L{AuiToolBarItem}.
         """
         
-        if not item.GetBitmap().IsOk() and not self._flags & AUI_TB_TEXT:
+        if not item.GetBitmap().IsOk() and not self._agwFlags & AUI_TB_TEXT:
             return wx.Size(16, 16)
 
         width = item.GetBitmap().GetWidth()
         height = item.GetBitmap().GetHeight()
 
-        if self._flags & AUI_TB_TEXT:
+        if self._agwFlags & AUI_TB_TEXT:
         
             dc.SetFont(self._font)
-
+            label_size = GetLabelSize(dc, item.GetLabel(), self.GetOrientation() != AUI_TBTOOL_HORIZONTAL)
+            padding = 6
+            
             if self._text_orientation == AUI_TBTOOL_TEXT_BOTTOM:
             
-                tx, ty = dc.GetTextExtent("ABCDHgj")
-                height += ty
+                if self.GetOrientation() != AUI_TBTOOL_HORIZONTAL:
+                    height += 3   # space between top border and bitmap
+                    height += 3   # space between bitmap and text
+                    padding = 0
 
+                height += label_size.GetHeight()
+            
                 if item.GetLabel() != "":
-                
-                    tx, ty = dc.GetTextExtent(item.GetLabel())
-                    width = max(width, tx+6)
+                    width = max(width, label_size.GetWidth()+padding)
                 
             elif self._text_orientation == AUI_TBTOOL_TEXT_RIGHT and item.GetLabel() != "":
             
-                width += 3 # space between left border and bitmap
-                width += 3 # space between bitmap and text
+                if self.GetOrientation() == AUI_TBTOOL_HORIZONTAL:
+                    
+                    width += 3  # space between left border and bitmap
+                    width += 3  # space between bitmap and text
+                    padding = 0
 
-                tx, ty = dc.GetTextExtent(item.GetLabel())
-                width += tx
-                height = max(height, ty)
+                width += label_size.GetWidth()
+                height = max(height, label_size.GetHeight()+padding)
                 
         # if the tool has a dropdown button, add it to the width
         if item.HasDropDown():
-            width += BUTTON_DROPDOWN_WIDTH+4
+            if item.GetOrientation() == AUI_TBTOOL_HORIZONTAL:
+                width += BUTTON_DROPDOWN_WIDTH+4
+            else:
+                height += BUTTON_DROPDOWN_WIDTH+4
 
         return wx.Size(width, height)
 
@@ -1181,13 +1213,13 @@ class AuiDefaultToolBarArt(object):
         """
         Draws a toolbar separator.
         
-        :param `dc`: a L{wx.DC} device context;
-        :param `wnd`: a wx.Window derived window;
+        :param `dc`: a `wx.DC` device context;
+        :param `wnd`: a `wx.Window` derived window;
         :param `_rect`: the L{AuiToolBarItem} rectangle.
         """
         
         horizontal = True
-        if self._flags & AUI_TB_VERTICAL:
+        if self._agwFlags & AUI_TB_VERTICAL:
             horizontal = False
 
         rect = wx.Rect(*_rect)
@@ -1217,15 +1249,15 @@ class AuiDefaultToolBarArt(object):
         """
         Draws the toolbar gripper.
         
-        :param `dc`: a L{wx.DC} device context;
-        :param `wnd`: a wx.Window derived window;
+        :param `dc`: a `wx.DC` device context;
+        :param `wnd`: a `wx.Window` derived window;
         :param `rect`: the L{AuiToolBar} rectangle.
         """
         
         i = 0
         while 1:
         
-            if self._flags & AUI_TB_VERTICAL:
+            if self._agwFlags & AUI_TB_VERTICAL:
             
                 x = rect.x + (i*4) + 4
                 y = rect.y + 3
@@ -1256,8 +1288,8 @@ class AuiDefaultToolBarArt(object):
         """
         Draws the overflow button for the L{AuiToolBar}.
         
-        :param `dc`: a L{wx.DC} device context;
-        :param `wnd`: a wx.Window derived window;
+        :param `dc`: a `wx.DC` device context;
+        :param `wnd`: a `wx.Window` derived window;
         :param `rect`: the L{AuiToolBar} rectangle;
         :param `state`: the overflow button state.
         """
@@ -1267,7 +1299,7 @@ class AuiDefaultToolBarArt(object):
             cli_rect = wnd.GetClientRect()
             light_gray_bg = StepColour(self._highlight_colour, 170)
 
-            if self._flags & AUI_TB_VERTICAL:
+            if self._agwFlags & AUI_TB_VERTICAL:
             
                 dc.SetPen(wx.Pen(self._highlight_colour))
                 dc.DrawLine(rect.x, rect.y, rect.x+rect.width, rect.y)
@@ -1294,13 +1326,13 @@ class AuiDefaultToolBarArt(object):
 
         :param `element_id`: can be one of the following:
 
-        ==================================== ==================================
-        Element Identifier                   Description
-        ==================================== ==================================
-        ``AUI_TBART_SEPARATOR_SIZE``         Separator size in AuiToolBar
-        ``AUI_TBART_GRIPPER_SIZE``           Gripper size in AuiToolBar
-        ``AUI_TBART_OVERFLOW_SIZE``          Overflow button size in AuiToolBar
-        ==================================== ==================================        
+         ==================================== ==================================
+         Element Identifier                   Description
+         ==================================== ==================================
+         ``AUI_TBART_SEPARATOR_SIZE``         Separator size in `AuiToolBar`
+         ``AUI_TBART_GRIPPER_SIZE``           Gripper size in `AuiToolBar`
+         ``AUI_TBART_OVERFLOW_SIZE``          Overflow button size in `AuiToolBar`
+         ==================================== ==================================        
         """
         
         if element_id == AUI_TBART_SEPARATOR_SIZE:
@@ -1319,13 +1351,13 @@ class AuiDefaultToolBarArt(object):
 
         :param `element_id`: can be one of the following:
 
-        ==================================== ==================================
-        Element Identifier                   Description
-        ==================================== ==================================
-        ``AUI_TBART_SEPARATOR_SIZE``         Separator size in AuiToolBar
-        ``AUI_TBART_GRIPPER_SIZE``           Gripper size in AuiToolBar
-        ``AUI_TBART_OVERFLOW_SIZE``          Overflow button size in AuiToolBar
-        ==================================== ==================================
+         ==================================== ==================================
+         Element Identifier                   Description
+         ==================================== ==================================
+         ``AUI_TBART_SEPARATOR_SIZE``         Separator size in `AuiToolBar`
+         ``AUI_TBART_GRIPPER_SIZE``           Gripper size in `AuiToolBar`
+         ``AUI_TBART_OVERFLOW_SIZE``          Overflow button size in `AuiToolBar`
+         ==================================== ==================================
 
         :param `size`: the new size of the UI element.        
         """
@@ -1342,8 +1374,8 @@ class AuiDefaultToolBarArt(object):
         """
         Shows the drop down window menu for overflow items.
 
-        :param `wnd`: an instance of wx.Window;
-        :param `items`: the overflow toolbar items.
+        :param `wnd`: an instance of `wx.Window`;
+        :param `items`: the overflow toolbar items (a Python list).
         """
 
         menuPopup = wx.Menu()
@@ -1351,7 +1383,7 @@ class AuiDefaultToolBarArt(object):
 
         for item in items:
 
-            if item.GetKind() != ITEM_SEPARATOR:
+            if item.GetKind() not in [ITEM_SEPARATOR, ITEM_SPACER, ITEM_CONTROL]:
             
                 text = item.GetShortHelp()
                 if text == "":
@@ -1361,8 +1393,13 @@ class AuiDefaultToolBarArt(object):
 
                 kind = item.GetKind()
                 m = wx.MenuItem(menuPopup, item.GetId(), text, item.GetShortHelp(), kind)
+                orientation = item.GetOrientation()
+                item.SetOrientation(AUI_TBTOOL_HORIZONTAL)
+                
                 if kind not in [ITEM_CHECK, ITEM_RADIO]:
                     m.SetBitmap(item.GetBitmap())
+
+                item.SetOrientation(orientation)                    
                     
                 menuPopup.AppendItem(m)
                 if kind in [ITEM_CHECK, ITEM_RADIO]:            
@@ -1373,7 +1410,7 @@ class AuiDefaultToolBarArt(object):
             
             else:
             
-                if items_added > 0:
+                if items_added > 0 and item.GetKind() == ITEM_SEPARATOR:
                     menuPopup.AppendSeparator()
             
         # find out where to put the popup menu of window items
@@ -1399,18 +1436,66 @@ class AuiDefaultToolBarArt(object):
         return command
 
 
+    def GetToolsPosition(self, dc, item, rect):
+        """
+        Returns the bitmap and text rectangles for a toolbar item.
+        
+        :param `dc`: a `wx.DC` device context;
+        :param `item`: an instance of L{AuiToolBarItem};
+        :param `rect`: the tool rect.
+        """
+        
+        text_width = text_height = 0
+        horizontal = self._orientation == AUI_TBTOOL_HORIZONTAL
+        text_bottom = self._text_orientation == AUI_TBTOOL_TEXT_BOTTOM
+        text_right = self._text_orientation == AUI_TBTOOL_TEXT_RIGHT
+        bmp_width = item.GetBitmap().GetWidth()
+        bmp_height = item.GetBitmap().GetHeight()
+     
+        if self._agwFlags & AUI_TB_TEXT:        
+            dc.SetFont(self._font)
+            label_size = GetLabelSize(dc, item.GetLabel(), not horizontal)
+            text_height = label_size.GetHeight()
+            text_width = label_size.GetWidth()
+        
+        bmp_x = bmp_y = text_x = text_y = 0
+
+        if horizontal and text_bottom:
+            bmp_x = rect.x + (rect.width/2) - (bmp_width/2)
+            bmp_y = rect.y + 3
+            text_x = rect.x + (rect.width/2) - (text_width/2)
+            text_y = rect.y + ((bmp_y - rect.y) * 2) + bmp_height
+        
+        elif horizontal and text_right:
+            bmp_x = rect.x + 3
+            bmp_y = rect.y + (rect.height/2) - (bmp_height / 2)
+            text_x = rect.x + ((bmp_x - rect.x) * 2) + bmp_width
+            text_y = rect.y + (rect.height/2) - (text_height/2)
+        
+        elif not horizontal and text_bottom:
+            bmp_x = rect.x + (rect.width / 2) - (bmp_width / 2)
+            bmp_y = rect.y + 3
+            text_x = rect.x + (rect.width / 2) - (text_width / 2)
+            text_y = rect.y + ((bmp_y - rect.y) * 2) + bmp_height
+        
+        bmp_rect = wx.Rect(bmp_x, bmp_y, bmp_width, bmp_height)
+        text_rect = wx.Rect(text_x, text_y, text_width, text_height)
+
+        return bmp_rect, text_rect
+
+    
 class AuiToolBar(wx.PyControl):
     """
     AuiToolBar is a completely owner-drawn toolbar perfectly integrated with the
     AUI layout system. This allows drag and drop of toolbars, docking/floating
     behaviour and the possibility to define "overflow" items in the toolbar itself.
 
-    The default theme that is used is AuiDefaultToolBarArt, which provides a modern,
-    glossy look and feel. The theme can be changed by calling AuiToolBar.SetArtProvider.
+    The default theme that is used is L{AuiDefaultToolBarArt}, which provides a modern,
+    glossy look and feel. The theme can be changed by calling L{AuiToolBar.SetArtProvider}.
     """
 
     def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
-                 size=wx.DefaultSize, style=AUI_TB_DEFAULT_STYLE):
+                 size=wx.DefaultSize, style=0, agwStyle=AUI_TB_DEFAULT_STYLE):
         """
         Default class constructor.
 
@@ -1420,24 +1505,25 @@ class AuiToolBar(wx.PyControl):
          chosen by either the windowing system or wxPython, depending on platform;
         :param `size`: the control size. A value of (-1, -1) indicates a default size,
          chosen by either the windowing system or wxPython, depending on platform;
-        :param `style`: the window style. This can be a combination of the bollowing bits:
+        :param `style`: the control window style;
+        :param `agwStyle`: the AGW-specific window style. This can be a combination of the
+         following bits:
         
-        ==================================== ==================================
-        Flag name                            Description
-        ==================================== ==================================
-        ``AUI_TB_TEXT``                      Shows the text in the toolbar buttons; by default only icons are shown
-        ``AUI_TB_NO_TOOLTIPS``               Don't show tooltips on AuiToolBar items
-        ``AUI_TB_NO_AUTORESIZE``             Do not auto-resize the AuiToolBar
-        ``AUI_TB_GRIPPER``                   Shows a gripper on the AuiToolBar
-        ``AUI_TB_OVERFLOW``                  The AuiToolBar can contain overflow items
-        ``AUI_TB_VERTICAL``                  The AuiToolBar is vertical
-        ``AUI_TB_HORZ_LAYOUT``               Shows the text and the icons alongside, not vertically stacked. This style must be used with ``AUI_TB_TEXT``.
-        ``AUI_TB_PLAIN_BACKGROUND``          Don't draw a gradient background on the toolbar
-        ``AUI_TB_HORZ_TEXT``                 Combination of ``AUI_TB_HORZ_LAYOUT`` and ``AUI_TB_TEXT``
-        ==================================== ==================================
+         ==================================== ==================================
+         Flag name                            Description
+         ==================================== ==================================
+         ``AUI_TB_TEXT``                      Shows the text in the toolbar buttons; by default only icons are shown
+         ``AUI_TB_NO_TOOLTIPS``               Don't show tooltips on `AuiToolBar` items
+         ``AUI_TB_NO_AUTORESIZE``             Do not auto-resize the `AuiToolBar`
+         ``AUI_TB_GRIPPER``                   Shows a gripper on the `AuiToolBar`
+         ``AUI_TB_OVERFLOW``                  The `AuiToolBar` can contain overflow items
+         ``AUI_TB_VERTICAL``                  The `AuiToolBar` is vertical
+         ``AUI_TB_HORZ_LAYOUT``               Shows the text and the icons alongside, not vertically stacked. This style must be used with ``AUI_TB_TEXT``
+         ``AUI_TB_PLAIN_BACKGROUND``          Don't draw a gradient background on the toolbar
+         ``AUI_TB_HORZ_TEXT``                 Combination of ``AUI_TB_HORZ_LAYOUT`` and ``AUI_TB_TEXT``
+         ==================================== ==================================
 
-        The default value for `style` is:
-        ``AUI_TB_DEFAULT_STYLE`` = 0
+         The default value for `agwStyle` is: ``AUI_TB_DEFAULT_STYLE`` = 0
 
         """
         
@@ -1455,14 +1541,17 @@ class AuiToolBar(wx.PyControl):
         self._tool_packing = 2
         self._tool_border_padding = 3
         self._tool_text_orientation = AUI_TBTOOL_TEXT_BOTTOM
+        self._tool_orientation = AUI_TBTOOL_HORIZONTAL
+        self._tool_alignment = wx.EXPAND
         self._gripper_sizer_item = None
         self._overflow_sizer_item = None
         self._dragging = False
-        self._style = style | wx.NO_BORDER
-        self._gripper_visible = (self._style & AUI_TB_GRIPPER and [True] or [False])[0]
-        self._overflow_visible = (self._style & AUI_TB_OVERFLOW and [True] or [False])[0]
+
+        self._agwStyle = self._originalStyle = agwStyle
+
+        self._gripper_visible = (self._agwStyle & AUI_TB_GRIPPER and [True] or [False])[0]
+        self._overflow_visible = (self._agwStyle & AUI_TB_OVERFLOW and [True] or [False])[0]
         self._overflow_state = 0
-        self._style = style
         self._custom_overflow_prepend = []
         self._custom_overflow_append = []
 
@@ -1470,12 +1559,17 @@ class AuiToolBar(wx.PyControl):
         
         self.SetMargins(5, 5, 2, 2)
         self.SetFont(wx.NORMAL_FONT)
-        self._art.SetFlags(self._style)
+        self._art.SetAGWFlags(self._agwStyle)
         self.SetExtraStyle(wx.WS_EX_PROCESS_IDLE)
         
-        if style & AUI_TB_HORZ_LAYOUT:
+        if agwStyle & AUI_TB_HORZ_LAYOUT:
             self.SetToolTextOrientation(AUI_TBTOOL_TEXT_RIGHT)
-
+        elif agwStyle & AUI_TB_VERTICAL:
+            if agwStyle & AUI_TB_CLOCKWISE:
+                self.SetToolOrientation(AUI_TBTOOL_VERT_CLOCKWISE)
+            elif agwStyle & AUI_TB_COUNTERCLOCKWISE:
+                self.SetToolOrientation(AUI_TBTOOL_VERT_COUNTERCLOCKWISE)
+ 
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         
         self.Bind(wx.EVT_SIZE, self.OnSize)
@@ -1498,63 +1592,100 @@ class AuiToolBar(wx.PyControl):
 
     def SetWindowStyleFlag(self, style):
         """
-        Overridden from wx.PyControl.
         Sets the style of the window.
         
-        :param `style`: the new window style.
+        :param `style`: the new window style. 
 
-        @note: Please note that some styles cannot be changed after the window
-        creation and that `Refresh` might need to be be called after changing the
-        others for the change to take place immediately.
+        :note: Please note that some styles cannot be changed after the window
+         creation and that `Refresh` might need to be be called after changing the
+         others for the change to take place immediately.
+
+        :note: Overridden from `wx.PyControl`.
+        """
+
+        wx.PyControl.SetWindowStyleFlag(self, style|wx.BORDER_NONE)
+        
+
+    def SetAGWWindowStyleFlag(self, agwStyle):
+        """
+        Sets the AGW-specific style of the window.
+        
+        :param `agwStyle`: the new window style. This can be a combination of the
+         following bits:
+        
+         ==================================== ==================================
+         Flag name                            Description
+         ==================================== ==================================
+         ``AUI_TB_TEXT``                      Shows the text in the toolbar buttons; by default only icons are shown
+         ``AUI_TB_NO_TOOLTIPS``               Don't show tooltips on `AuiToolBar` items
+         ``AUI_TB_NO_AUTORESIZE``             Do not auto-resize the `AuiToolBar`
+         ``AUI_TB_GRIPPER``                   Shows a gripper on the `AuiToolBar`
+         ``AUI_TB_OVERFLOW``                  The `AuiToolBar` can contain overflow items
+         ``AUI_TB_VERTICAL``                  The `AuiToolBar` is vertical
+         ``AUI_TB_HORZ_LAYOUT``               Shows the text and the icons alongside, not vertically stacked. This style must be used with ``AUI_TB_TEXT``
+         ``AUI_TB_PLAIN_BACKGROUND``          Don't draw a gradient background on the toolbar
+         ``AUI_TB_HORZ_TEXT``                 Combination of ``AUI_TB_HORZ_LAYOUT`` and ``AUI_TB_TEXT``
+         ==================================== ==================================
+
+        :note: Please note that some styles cannot be changed after the window
+         creation and that `Refresh` might need to be be called after changing the
+         others for the change to take place immediately.
         """
         
-        style |= wx.BORDER_NONE
-        wx.PyControl.SetWindowStyleFlag(self, style)
-        self._style = style
+        self._agwStyle = self._originalStyle = agwStyle
 
         if self._art:
-            self._art.SetFlags(self._style)
+            self._art.SetAGWFlags(self._agwStyle)
         
-        if self._style & AUI_TB_GRIPPER:
+        if agwStyle & AUI_TB_GRIPPER:
             self._gripper_visible = True
         else:
             self._gripper_visible = False
 
-        if self._style & AUI_TB_OVERFLOW:
+        if agwStyle & AUI_TB_OVERFLOW:
             self._overflow_visible = True
         else:
             self._overflow_visible = False
 
-        if style & AUI_TB_HORZ_LAYOUT:
+        if agwStyle & AUI_TB_HORZ_LAYOUT:
             self.SetToolTextOrientation(AUI_TBTOOL_TEXT_RIGHT)
         else:
             self.SetToolTextOrientation(AUI_TBTOOL_TEXT_BOTTOM)
 
+        if agwStyle & AUI_TB_VERTICAL:
+            if agwStyle & AUI_TB_CLOCKWISE:
+                self.SetToolOrientation(AUI_TBTOOL_VERT_CLOCKWISE)
+            elif agwStyle & AUI_TB_COUNTERCLOCKWISE:
+                self.SetToolOrientation(AUI_TBTOOL_VERT_COUNTERCLOCKWISE)
 
-    def GetWindowStyleFlag(self):
+                
+    def GetAGWWindowStyleFlag(self):
         """
-        Overridden from wx.PyControl.
-        Returns the window style flag.
+        Returns the AGW-specific window style flag.
+
+        :see: L{SetAGWWindowStyleFlag} for an explanation of various AGW-specific style.
         """
 
-        return self._style
+        return self._agwStyle
     
 
     def SetArtProvider(self, art):
         """
         Instructs L{AuiToolBar} to use art provider specified by parameter `art`
-        for all drawing calls. This allows plugable look-and-feel features. The previous
-        art provider object, if any, will be deleted by L{AuiToolBar}.
+        for all drawing calls. This allows plugable look-and-feel features. 
 
         :param `art`: an art provider.
+
+        :note: The previous art provider object, if any, will be deleted by L{AuiToolBar}.
         """
         
         del self._art
         self._art = art
 
         if self._art:
-            self._art.SetFlags(self._style)
+            self._art.SetAGWFlags(self._agwStyle)
             self._art.SetTextOrientation(self._tool_text_orientation)
+            self._art.SetOrientation(self._tool_orientation)
         
 
     def GetArtProvider(self):
@@ -1574,17 +1705,17 @@ class AuiToolBar(wx.PyControl):
         :param `short_help_string`: this string is used for the tools tooltip;
         :param `kind`: the item kind. Can be one of the following:
 
-        ========================  =============================
-        Item Kind                 Description
-        ========================  =============================
-        ``ITEM_CONTROL``          The item in the AuiToolBar is a control
-        ``ITEM_LABEL``            The item in the AuiToolBar is a text label
-        ``ITEM_SPACER``           The item in the AuiToolBar is a spacer
-        ``ITEM_SEPARATOR``        The item in the AuiToolBar is a separator
-        ``ITEM_CHECK``            The item in the AuiToolBar is a toolbar check item
-        ``ITEM_NORMAL``           The item in the AuiToolBar is a standard toolbar item
-        ``ITEM_RADIO``            The item in the AuiToolBar is a toolbar radio item
-        ========================  =============================
+         ========================  =============================
+         Item Kind                 Description
+         ========================  =============================
+         ``ITEM_CONTROL``          The item in the `AuiToolBar` is a control
+         ``ITEM_LABEL``            The item in the `AuiToolBar` is a text label
+         ``ITEM_SPACER``           The item in the `AuiToolBar` is a spacer
+         ``ITEM_SEPARATOR``        The item in the `AuiToolBar` is a separator
+         ``ITEM_CHECK``            The item in the `AuiToolBar` is a toolbar check item
+         ``ITEM_NORMAL``           The item in the `AuiToolBar` is a standard toolbar item
+         ``ITEM_RADIO``            The item in the `AuiToolBar` is a toolbar radio item
+         ========================  =============================
         """
         
         return self.AddTool(tool_id, label, bitmap, wx.NullBitmap, kind, short_help_string, "", None)
@@ -1597,7 +1728,7 @@ class AuiToolBar(wx.PyControl):
         :param `tool_id`: an integer by which the tool may be identified in subsequent operations;
         :param `bitmap`: the primary tool bitmap;
         :param `disabled_bitmap`: the bitmap to use when the tool is disabled. If it is equal to
-         wx.NullBitmap, the disabled bitmap is automatically generated by greing the normal one;
+         `wx.NullBitmap`, the disabled bitmap is automatically generated by greing the normal one;
         :param `client_data`: whatever Python object to associate with the toolbar item;
         :param `short_help_string`: this string is used for the tools tooltip;
         :param `long_help_string`: this string is shown in the statusbar (if any) of the parent
@@ -1610,26 +1741,26 @@ class AuiToolBar(wx.PyControl):
 
     def AddTool(self, tool_id, label, bitmap, disabled_bitmap, kind, short_help_string, long_help_string, client_data):
         """
-        Adds a tool to the toolbar. This is the full feature version of AddTool.
+        Adds a tool to the toolbar. This is the full feature version of L{AddTool}.
 
         :param `tool_id`: an integer by which the tool may be identified in subsequent operations;
         :param `label`: the toolbar tool label;
         :param `bitmap`: the primary tool bitmap;
         :param `disabled_bitmap`: the bitmap to use when the tool is disabled. If it is equal to
-         wx.NullBitmap, the disabled bitmap is automatically generated by greing the normal one;
+         `wx.NullBitmap`, the disabled bitmap is automatically generated by greing the normal one;
         :param `kind`: the item kind. Can be one of the following:
 
-        ========================  =============================
-        Item Kind                 Description
-        ========================  =============================
-        ``ITEM_CONTROL``          The item in the AuiToolBar is a control
-        ``ITEM_LABEL``            The item in the AuiToolBar is a text label
-        ``ITEM_SPACER``           The item in the AuiToolBar is a spacer
-        ``ITEM_SEPARATOR``        The item in the AuiToolBar is a separator
-        ``ITEM_CHECK``            The item in the AuiToolBar is a toolbar check item
-        ``ITEM_NORMAL``           The item in the AuiToolBar is a standard toolbar item
-        ``ITEM_RADIO``            The item in the AuiToolBar is a toolbar radio item
-        ========================  =============================
+         ========================  =============================
+         Item Kind                 Description
+         ========================  =============================
+         ``ITEM_CONTROL``          The item in the `AuiToolBar` is a control
+         ``ITEM_LABEL``            The item in the `AuiToolBar` is a text label
+         ``ITEM_SPACER``           The item in the `AuiToolBar` is a spacer
+         ``ITEM_SEPARATOR``        The item in the `AuiToolBar` is a separator
+         ``ITEM_CHECK``            The item in the `AuiToolBar` is a toolbar check item
+         ``ITEM_NORMAL``           The item in the `AuiToolBar` is a standard toolbar item
+         ``ITEM_RADIO``            The item in the `AuiToolBar` is a toolbar radio item
+         ========================  =============================
 
         :param `short_help_string`: this string is used for the tools tooltip;
         :param `long_help_string`: this string is shown in the statusbar (if any) of the parent
@@ -1659,6 +1790,7 @@ class AuiToolBar(wx.PyControl):
         item.min_size = wx.Size(-1, -1)
         item.user_data = 0
         item.sticky = False
+        item.orientation = self._tool_orientation
 
         if not item.disabled_bitmap.IsOk():
             # no disabled bitmap specified, we need to make one
@@ -1672,7 +1804,8 @@ class AuiToolBar(wx.PyControl):
     def AddCheckTool(self, tool_id, label, bitmap, disabled_bitmap, short_help_string="", long_help_string="", client_data=None):
         """
         Adds a new check (or toggle) tool to the L{AuiToolBar}.
-        The parameters are the same as in L{AddTool}.
+        
+        :see: L{AddTool}.
         """
 
         return self.AddTool(tool_id, label, bitmap, disabled_bitmap, ITEM_CHECK, short_help_string, long_help_string, client_data) 
@@ -1681,15 +1814,17 @@ class AuiToolBar(wx.PyControl):
     def AddRadioTool(self, tool_id, label, bitmap, disabled_bitmap, short_help_string="", long_help_string="", client_data=None):
         """
         Adds a new radio tool to the toolbar.
+
         Consecutive radio tools form a radio group such that exactly one button
         in the group is pressed at any moment, in other words whenever a button
         in the group is pressed the previously pressed button is automatically
         released. You should avoid having the radio groups of only one element
         as it would be impossible for the user to use such button.
 
-        By default, the first button in the radio group is initially pressed, the others are not.
+        :note: By default, the first button in the radio group is initially pressed,
+         the others are not.
 
-        The parameters are the same as in L{AddTool}.
+        :see: L{AddTool}.
         """
 
         return self.AddTool(tool_id, label, bitmap, disabled_bitmap, ITEM_RADIO, short_help_string, long_help_string, client_data)
@@ -1720,6 +1855,7 @@ class AuiToolBar(wx.PyControl):
         item.min_size = control.GetEffectiveMinSize()
         item.user_data = 0
         item.sticky = False
+        item.orientation = self._tool_orientation
 
         self._items.append(item)
         return self._items[-1]
@@ -1759,6 +1895,7 @@ class AuiToolBar(wx.PyControl):
         item.min_size = min_size
         item.user_data = 0
         item.sticky = False
+        item.orientation = self._tool_orientation
 
         self._items.append(item)
         return self._items[-1]
@@ -1782,6 +1919,7 @@ class AuiToolBar(wx.PyControl):
         item.min_size = wx.Size(-1, -1)
         item.user_data = 0
         item.sticky = False
+        item.orientation = self._tool_orientation
 
         self._items.append(item)
         return self._items[-1]
@@ -1810,6 +1948,7 @@ class AuiToolBar(wx.PyControl):
         item.min_size = wx.Size(-1, -1)
         item.user_data = 0
         item.sticky = False
+        item.orientation = self._tool_orientation
 
         self._items.append(item)
         return self._items[-1]
@@ -1838,6 +1977,7 @@ class AuiToolBar(wx.PyControl):
         item.min_size = wx.Size(-1, -1)
         item.user_data = 0
         item.sticky = False
+        item.orientation = self._tool_orientation
 
         self._items.append(item)
         return self._items[-1]
@@ -1858,16 +1998,14 @@ class AuiToolBar(wx.PyControl):
 
     def DeleteTool(self, tool_id):
         """
-        Removes the specified tool from the toolbar and deletes it. If you don't
-        want to delete the tool, but just to remove it from the toolbar (to possibly
-        add it back later), you may use L{RemoveTool} instead.
+        Removes the specified tool from the toolbar and deletes it.
 
         :param `tool_id`: the L{AuiToolBarItem} identifier.
-        
-        @note: Note that it is unnecessary to call L{Realize} for the change to
-        take place, it will happen immediately.
 
-        Returns True if the tool was deleted, False otherwise.
+        :returns: ``True`` if the tool was deleted, ``False`` otherwise.
+        
+        :note: Note that it is unnecessary to call L{Realize} for the change to
+         take place, it will happen immediately.
         """
 
         idx = self.GetToolIndex(tool_id)
@@ -1885,7 +2023,9 @@ class AuiToolBar(wx.PyControl):
         This function behaves like L{DeleteTool} but it deletes the tool at the
         specified position and not the one with the given id.
 
-        :param `pos`: the tool position.        
+        :param `pos`: the tool position.
+
+        :see: L{DeleteTool}        
         """
         
         if pos >= 0 and pos < len(self._items):
@@ -1899,7 +2039,7 @@ class AuiToolBar(wx.PyControl):
 
     def FindControl(self, id):
         """
-        Returns a pointer to the control identified by `id` or None if no corresponding
+        Returns a pointer to the control identified by `id` or ``None`` if no corresponding
         control is found.
 
         :param `id`: the control identifier.        
@@ -1927,10 +2067,10 @@ class AuiToolBar(wx.PyControl):
         """
         Finds a tool for the given mouse position.
 
-        :param `x`: `x` position;
-        :param `y`: `y` position.
+        :param `x`: mouse `x` position;
+        :param `y`: mouse `y` position.
 
-        Returns a pointer to a L{AuiToolBarItem} if a tool is found, or None otherwise.
+        :returns: a pointer to a L{AuiToolBarItem} if a tool is found, or ``None`` otherwise.
         """
 
         for i, item in enumerate(self._items):
@@ -1954,10 +2094,10 @@ class AuiToolBar(wx.PyControl):
         Finds a tool for the given mouse position, taking into account also the
         tool packing.
 
-        :param `x`: `x` position;
-        :param `y`: `y` position.
+        :param `x`: mouse `x` position;
+        :param `y`: mouse `y` position.
 
-        Returns a pointer to a L{AuiToolBarItem} if a tool is found, or None otherwise.
+        :returns: a pointer to a L{AuiToolBarItem} if a tool is found, or ``None`` otherwise.
         """
         
         count = len(self._items)
@@ -1988,6 +2128,8 @@ class AuiToolBar(wx.PyControl):
         Finds a tool for the given tool position in the L{AuiToolBar}.
 
         :param `pos`: the tool position in the toolbar.
+
+        :returns: a pointer to a L{AuiToolBarItem} if a tool is found, or ``None`` otherwise.        
         """
         
         if pos < 0 or pos >= len(self._items):
@@ -2003,11 +2145,13 @@ class AuiToolBar(wx.PyControl):
 
         :param `size`: the size of the bitmaps in the toolbar.
 
-        @note: This should be called to tell the toolbar what the tool bitmap
-        size is. Call it before you add tools.
+        :note: This should be called to tell the toolbar what the tool bitmap
+         size is. Call it before you add tools.
 
-        @note: Note that this is the size of the bitmap you pass to L{AddTool},
-        and not the eventual size of the tool button.
+        :note: Note that this is the size of the bitmap you pass to L{AddTool},
+         and not the eventual size of the tool button.
+
+        :todo: Add `wx.ToolBar` compatibility, actually implementing this method.
         """
 
         # TODO: wx.ToolBar compatibility
@@ -2019,8 +2163,10 @@ class AuiToolBar(wx.PyControl):
         Returns the size of bitmap that the toolbar expects to have. The default
         bitmap size is 16 by 15 pixels.
 
-        @note: Note that this is the size of the bitmap you pass to L{AddTool},
-        and not the eventual size of the tool button.
+        :note: Note that this is the size of the bitmap you pass to L{AddTool},
+         and not the eventual size of the tool button.
+
+        :todo: Add `wx.ToolBar` compatibility, actually implementing this method.
         """
         
         # TODO: wx.ToolBar compatibility
@@ -2068,7 +2214,7 @@ class AuiToolBar(wx.PyControl):
 
 
     def GetToolSeparation(self):
-        """ Returns the separator size for the toolbar. """
+        """ Returns the separator size for the toolbar, in pixels. """
         
         if self._art:
             return self._art.GetElementSize(AUI_TBART_SEPARATOR_SIZE)
@@ -2157,7 +2303,7 @@ class AuiToolBar(wx.PyControl):
 
 
     def GetToolBorderPadding(self):
-        """ Returns the padding between the tool border and the label. """
+        """ Returns the padding between the tool border and the label, in pixels. """
 
         return self._tool_border_padding
 
@@ -2181,9 +2327,27 @@ class AuiToolBar(wx.PyControl):
         return self._tool_text_orientation
 
 
+    def SetToolOrientation(self, orientation):
+        """
+        Sets the tool orientation for the toolbar items.
+
+        :param `orientation`: the L{AuiToolBarItem} orientation.
+        """
+
+        self._tool_orientation = orientation
+        if self._art:
+            self._art.SetOrientation(orientation)
+
+
+    def GetToolOrientation(self):
+        """ Returns the orientation for the toolbar items. """
+
+        return self._tool_orientation        
+
+
     def SetToolPacking(self, packing):
         """
-        Sets the value used for spacing tools. The default value is 1.
+        Sets the value used for spacing tools. The default value is 1 pixel.
 
         :param `packing`: the value for packing.
         """
@@ -2192,16 +2356,19 @@ class AuiToolBar(wx.PyControl):
 
 
     def GetToolPacking(self):
-        """ Returns the value used for spacing tools. The default value is 1. """
+        """ Returns the value used for spacing tools. The default value is 1 pixel. """
 
         return self._tool_packing
 
 
     def SetOrientation(self, orientation):
         """
-        Sets the toolbar orientation. Overridden by AuiManager.
+        Sets the toolbar orientation.
 
         :param `orientation`: either ``wx.VERTICAL`` or ``wx.HORIZONTAL``.
+
+        :note: This can be temporarily overridden by L{AuiManager} when floating and
+         docking a L{AuiToolBar}.
         """
 
         pass
@@ -2231,7 +2398,7 @@ class AuiToolBar(wx.PyControl):
         """
         Set the values to be used as margins for the toolbar.
 
-        :param `size`: the margin size
+        :param `size`: the margin size (an instance of `wx.Size`).
         """
         
         self.SetMargins(size.x, size.x, size.y, size.y)
@@ -2258,14 +2425,14 @@ class AuiToolBar(wx.PyControl):
         """
         Sets whether the toolbar gripper is visible or not.
 
-        :param `visible`: True for a visible gripper, False otherwise.
+        :param `visible`: ``True`` for a visible gripper, ``False`` otherwise.
         """
 
         self._gripper_visible = visible
         if visible:
-            self._style |= AUI_TB_GRIPPER
+            self._agwStyle |= AUI_TB_GRIPPER
         else:
-            self._style &= ~AUI_TB_GRIPPER
+            self._agwStyle &= ~AUI_TB_GRIPPER
             
         self.Realize()
         self.Refresh(False)
@@ -2281,24 +2448,25 @@ class AuiToolBar(wx.PyControl):
         """
         Sets whether the overflow button is visible or not.
 
-        :param `visible`: True for a visible overflow button, False otherwise.
+        :param `visible`: ``True`` for a visible overflow button, ``False`` otherwise.
         """
 
         self._overflow_visible = visible
         if visible:
-            self._style |= AUI_TB_OVERFLOW
+            self._agwStyle |= AUI_TB_OVERFLOW
         else:
-            self._style &= ~AUI_TB_OVERFLOW
-            
+            self._agwStyle &= ~AUI_TB_OVERFLOW
+
         self.Refresh(False)
 
 
     def SetFont(self, font):
         """
-        Overridden from wx.PyControl.
         Sets the L{AuiToolBar} font.
 
-        :param `font`: a wx.Font object.        
+        :param `font`: a `wx.Font` object.
+
+        :note: Overridden from `wx.PyControl`.
         """        
 
         res = wx.PyControl.SetFont(self, font)
@@ -2374,8 +2542,13 @@ class AuiToolBar(wx.PyControl):
 
         # find out if the mouse cursor is inside the dropdown rectangle
         if overflow_rect.Contains((pt.x, pt.y)):
+
+            if _VERSION_STRING < "2.9":
+                leftDown = wx.GetMouseState().LeftDown()
+            else:
+                leftDown = wx.GetMouseState().LeftIsDown()
         
-            if wx.GetMouseState().LeftDown():
+            if leftDown:
                 overflow_state = AUI_BUTTON_STATE_PRESSED
             else:
                 overflow_state = AUI_BUTTON_STATE_HOVER
@@ -2393,9 +2566,9 @@ class AuiToolBar(wx.PyControl):
         Toggles a tool on or off. This does not cause any event to get emitted.
 
         :param `tool_id`: tool in question.
-        :param `state`: if True, toggles the tool on, otherwise toggles it off.
+        :param `state`: if ``True``, toggles the tool on, otherwise toggles it off.
 
-        @note: only applies to a tool that has been specified as a toggle tool.
+        :note: This only applies to a tool that has been specified as a toggle tool.
         """
         
         tool = self.FindTool(tool_id)
@@ -2413,7 +2586,7 @@ class AuiToolBar(wx.PyControl):
                             break
                         tool.state &= ~AUI_BUTTON_STATE_CHECKED
 
-                    for i in xrange(idx, 0, -1):
+                    for i in xrange(idx, -1, -1):
                         tool = self.FindToolByIndex(i)
                         if tool.kind != ITEM_RADIO:
                             break
@@ -2434,7 +2607,7 @@ class AuiToolBar(wx.PyControl):
 
         :param `tool_id`: the toolbar item identifier.
 
-        @note: only applies to a tool that has been specified as a toggle tool.
+        :note: This only applies to a tool that has been specified as a toggle tool.
         """        
 
         tool = self.FindTool(tool_id)
@@ -2452,8 +2625,8 @@ class AuiToolBar(wx.PyControl):
         """
         Enables or disables the tool.
 
-        :param `tool_id`: tool to enable or disable.
-        :param `state`: if True, enables the tool, otherwise disables it.
+        :param `tool_id`: identifier for the tool to enable or disable.
+        :param `state`: if ``True``, enables the tool, otherwise disables it.
         """
 
         tool = self.FindTool(tool_id)
@@ -2527,7 +2700,7 @@ class AuiToolBar(wx.PyControl):
         Sets the tool bitmap for the tool identified by `tool_id`.
 
         :param `tool_id`: the tool identifier;
-        :param `bitmap`: the new bitmap for the toolbar item.
+        :param `bitmap`: the new bitmap for the toolbar item (an instance of `wx.Bitmap`).
         """
         
         tool = self.FindTool(tool_id)
@@ -2540,7 +2713,7 @@ class AuiToolBar(wx.PyControl):
         Sets the tool bitmap for the tool identified by `tool_id`.
 
         :param `tool_id`: the tool identifier;
-        :param `bitmap`: the new bitmap for the toolbar item.
+        :param `bitmap`: the new bitmap for the toolbar item (an instance of `wx.Bitmap`).
         """
         
         self.SetToolBitmap(tool_id, bitmap)
@@ -2551,7 +2724,7 @@ class AuiToolBar(wx.PyControl):
         Sets the tool disabled bitmap for the tool identified by `tool_id`.
 
         :param `tool_id`: the tool identifier;
-        :param `bitmap`: the new disabled bitmap for the toolbar item.
+        :param `bitmap`: the new disabled bitmap for the toolbar item (an instance of `wx.Bitmap`).
         """
         
         tool = self.FindTool(tool_id)
@@ -2600,6 +2773,19 @@ class AuiToolBar(wx.PyControl):
         return tool.long_help
 
 
+    def SetToolAlignment(self, alignment=wx.EXPAND):
+        """
+        This sets the alignment for all of the tools within the
+        toolbar (only has an effect when the toolbar is expanded).
+
+        :param `alignment`: `wx.Sizer` alignment value
+         (``wx.ALIGN_CENTER_HORIZONTAL`` or ``wx.ALIGN_CENTER_VERTICAL``).
+        """
+
+        self._tool_alignment = alignment
+
+
+
     def SetToolLongHelp(self, tool_id, help_string):
         """
         Sets the long help for the given tool.
@@ -2615,10 +2801,10 @@ class AuiToolBar(wx.PyControl):
 
     def SetCustomOverflowItems(self, prepend, append):
         """
-        Sets the two lists `prepend` and `append` as custom overflow items
+        Sets the two lists `prepend` and `append` as custom overflow items.
 
-        :param `prepend`: a list of L{AuiToolBarItem}s to be prepended;
-        :param `append`: a list of L{AuiToolBarItem}s to be appended.
+        :param `prepend`: a list of L{AuiToolBarItem} to be prepended;
+        :param `append`: a list of L{AuiToolBarItem} to be appended.
         """
 
         self._custom_overflow_prepend = prepend
@@ -2660,23 +2846,23 @@ class AuiToolBar(wx.PyControl):
         return self.GetToolIndex(tool_id)
                                 
 
-    def GetToolFitsByIndex(self, tool_idx):
+    def GetToolFitsByIndex(self, tool_id):
         """
-        Returns whether the tool identified by `tool_idx` fits into the toolbar or not.
+        Returns whether the tool identified by `tool_id` fits into the toolbar or not.
 
-        :param `tool_idx`: the toolbar item identifier.
+        :param `tool_id`: the toolbar item identifier.
         """
         
-        if tool_idx < 0 or tool_idx >= len(self._items):
+        if tool_id < 0 or tool_id >= len(self._items):
             return False
 
-        if not self._items[tool_idx].sizer_item:
+        if not self._items[tool_id].sizer_item:
             return False
 
         cli_w, cli_h = self.GetClientSize()
-        rect = self._items[tool_idx].sizer_item.GetRect()
+        rect = self._items[tool_id].sizer_item.GetRect()
 
-        if self._style & AUI_TB_VERTICAL:
+        if self._agwStyle & AUI_TB_VERTICAL:
             # take the dropdown size into account
             if self._overflow_visible:
                 cli_h -= self._overflow_sizer_item.GetSize().y
@@ -2740,7 +2926,7 @@ class AuiToolBar(wx.PyControl):
             return False
 
         horizontal = True
-        if self._style & AUI_TB_VERTICAL:
+        if self._agwStyle & AUI_TB_VERTICAL:
             horizontal = False
 
         # create the new sizer to add toolbar elements to
@@ -2818,7 +3004,7 @@ class AuiToolBar(wx.PyControl):
                 ctrl_sizer_item = vert_sizer.Add(item.window, 0, wx.EXPAND)
                 vert_sizer.AddStretchSpacer(1)
                 
-                if self._style & AUI_TB_TEXT and \
+                if self._agwStyle & AUI_TB_TEXT and \
                     self._tool_text_orientation == AUI_TBTOOL_TEXT_BOTTOM and \
                     item.GetLabel() != "":
                 
@@ -2834,8 +3020,8 @@ class AuiToolBar(wx.PyControl):
                     min_size.x = 1
                 
                 if min_size.IsFullySpecified():
-                    sizer_item.SetMinSize(min_size)
-                    ctrl_sizer_item.SetMinSize(min_size)
+                    sizer.SetItemMinSize(vert_sizer, min_size)
+                    vert_sizer.SetItemMinSize(item.window, min_size)
                 
                 # add tool packing
                 if i+1 < count:
@@ -2854,7 +3040,7 @@ class AuiToolBar(wx.PyControl):
         # add drop down area
         self._overflow_sizer_item = None
 
-        if self._style & AUI_TB_OVERFLOW:
+        if self._agwStyle & AUI_TB_OVERFLOW:
         
             overflow_size = self._art.GetElementSize(AUI_TBART_OVERFLOW_SIZE)
             if overflow_size > 0 and self._overflow_visible:
@@ -2880,7 +3066,7 @@ class AuiToolBar(wx.PyControl):
                 outside_sizer.Add((self._top_padding, 1))
         
         # add the sizer that contains all of the toolbar elements
-        outside_sizer.Add(sizer, 1, wx.EXPAND)
+        outside_sizer.Add(sizer, 1, self._tool_alignment)
 
         # add "bottom" padding
         if self._bottom_padding > 0:
@@ -2914,7 +3100,7 @@ class AuiToolBar(wx.PyControl):
         self._minWidth = size.x
         self._minHeight = size.y
 
-        if self._style & AUI_TB_NO_AUTORESIZE == 0:
+        if self._agwStyle & AUI_TB_NO_AUTORESIZE == 0:
         
             cur_size = self.GetClientSize()
             new_size = self.GetMinSize()
@@ -2949,7 +3135,7 @@ class AuiToolBar(wx.PyControl):
         overflow_rect = wx.Rect(*self._overflow_sizer_item.GetRect())
         overflow_size = self._art.GetElementSize(AUI_TBART_OVERFLOW_SIZE)
 
-        if self._style & AUI_TB_VERTICAL:
+        if self._agwStyle & AUI_TB_VERTICAL:
         
             overflow_rect.y = cli_rect.height - overflow_size
             overflow_rect.x = 0
@@ -2976,19 +3162,22 @@ class AuiToolBar(wx.PyControl):
         dc = wx.ClientDC(self)
         dc.SetFont(self._font)
 
-        # get the text height
-        tx, text_height = dc.GetTextExtent("ABCDHgj")
-
-        # get the text width
-        text_width, ty = dc.GetTextExtent(label)
-
-        return wx.Size(text_width, text_height)
+        return GetLabelSize(dc, label, self._tool_orientation != AUI_TBTOOL_HORIZONTAL)
 
 
     def GetAuiManager(self):
         """ Returns the L{AuiManager} which manages the toolbar. """
 
-        return framemanager.GetManager(self)
+        try:
+            return self._auiManager
+        except AttributeError:
+            return False
+
+
+    def SetAuiManager(self, auiManager):
+        """ Sets the L{AuiManager} which manages the toolbar. """
+        
+        self._auiManager = auiManager        
 
         
     def DoIdleUpdate(self):
@@ -3054,12 +3243,13 @@ class AuiToolBar(wx.PyControl):
         
     def OnSize(self, event):
         """
-        Handles the wx.EVT_SIZE event for L{AuiToolBar}.
+        Handles the ``wx.EVT_SIZE`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.SizeEvent} event to be processed.        
+        :param `event`: a `wx.SizeEvent` event to be processed.        
         """
         
         x, y = self.GetClientSize()
+        realize = False
 
         if x > y:
             self.SetOrientation(wx.HORIZONTAL)
@@ -3069,30 +3259,43 @@ class AuiToolBar(wx.PyControl):
         if (x >= y and self._absolute_min_size.x > x) or (y > x and self._absolute_min_size.y > y):
         
             # hide all flexible items
-            for item in self._items:                
+            for item in self._items:
                 if item.sizer_item and item.proportion > 0 and item.sizer_item.IsShown():
                     item.sizer_item.Show(False)
                     item.sizer_item.SetProportion(0)
-   
+
+            if self._originalStyle & AUI_TB_OVERFLOW:
+                if not self.GetOverflowVisible():
+                    self.SetOverflowVisible(True)
+                    realize = True
+                       
         else:
-        
+
+            if self._originalStyle & AUI_TB_OVERFLOW and not self._custom_overflow_append and \
+               not self._custom_overflow_prepend:
+                if self.GetOverflowVisible():
+                    self.SetOverflowVisible(False)
+                    realize = True
+
             # show all flexible items
-            for item in self._items:            
+            for item in self._items:
                 if item.sizer_item and item.proportion > 0 and not item.sizer_item.IsShown():
                     item.sizer_item.Show(True)
                     item.sizer_item.SetProportion(item.proportion)
                 
         self._sizer.SetDimension(0, 0, x, y)
 
-        self.Refresh(False)
+        if realize:
+            self.Realize()
+        else:
+            self.Refresh(False)
+            
         self.Update()
 
         
     def DoSetSize(self, x, y, width, height, sizeFlags=wx.SIZE_AUTO):
-        """
-        Overridden from wx.PyControl.
-        
-        Sets the position and size of the window in pixels. The `flags`
+        """        
+        Sets the position and size of the window in pixels. The `sizeFlags`
         parameter indicates the interpretation of the other params if they are
         equal to -1.
 
@@ -3100,18 +3303,20 @@ class AuiToolBar(wx.PyControl):
         :param `y`: the window `y` position;
         :param `width`: the window width;
         :param `height`: the window height;
-        :param `flags`: may have one of this bit set:
+        :param `sizeFlags`: may have one of this bit set:
    
-        ===================================  ======================================
-        Size Flags                           Description
-        ===================================  ======================================
-        ``wx.SIZE_AUTO``                     A -1 indicates that a class-specific default should be used.
-        ``wx.SIZE_AUTO_WIDTH``               A -1 indicates that a class-specific default should be used for the width.
-        ``wx.SIZE_AUTO_HEIGHT``              A -1 indicates that a class-specific default should be used for the height.
-        ``wx.SIZE_USE_EXISTING``             Existing dimensions should be used if -1 values are supplied.
-        ``wx.SIZE_ALLOW_MINUS_ONE``          Allow dimensions of -1 and less to be interpreted as real dimensions, not default values.
-        ``wx.SIZE_FORCE``                    Normally, if the position and the size of the window are already the same as the parameters of this function, nothing is done. but with this flag a window resize may be forced even in this case (supported in wx 2.6.2 and later and only implemented for MSW and ignored elsewhere currently) 
-        ===================================  ======================================
+         ===================================  ======================================
+         Size Flags                           Description
+         ===================================  ======================================
+         ``wx.SIZE_AUTO``                     A -1 indicates that a class-specific default should be used.
+         ``wx.SIZE_AUTO_WIDTH``               A -1 indicates that a class-specific default should be used for the width.
+         ``wx.SIZE_AUTO_HEIGHT``              A -1 indicates that a class-specific default should be used for the height.
+         ``wx.SIZE_USE_EXISTING``             Existing dimensions should be used if -1 values are supplied.
+         ``wx.SIZE_ALLOW_MINUS_ONE``          Allow dimensions of -1 and less to be interpreted as real dimensions, not default values.
+         ``wx.SIZE_FORCE``                    Normally, if the position and the size of the window are already the same as the parameters of this function, nothing is done. but with this flag a window resize may be forced even in this case (supported in wx 2.6.2 and later and only implemented for MSW and ignored elsewhere currently) 
+         ===================================  ======================================
+
+        :note: Overridden from `wx.PyControl`.
         """
         
         parent_size = self.GetParent().GetClientSize()
@@ -3125,9 +3330,9 @@ class AuiToolBar(wx.PyControl):
 
     def OnIdle(self, event):
         """
-        Handles the wx.EVT_IDLE event for L{AuiToolBar}.
+        Handles the ``wx.EVT_IDLE`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.IdleEvent} event to be processed.        
+        :param `event`: a `wx.IdleEvent` event to be processed.        
         """
         
         self.DoIdleUpdate()
@@ -3135,26 +3340,32 @@ class AuiToolBar(wx.PyControl):
 
 
     def DoGetBestSize(self):
-        """ Overridden from wx.PyControl. """
+        """
+        Gets the size which best suits the window: for a control, it would be the
+        minimal size which doesn't truncate the control, for a panel - the same
+        size as it would have after a call to `Fit()`.
+        
+        :note: Overridden from `wx.PyControl`.
+        """
 
         return self._absolute_min_size
     
 
     def OnPaint(self, event):
         """
-        Handles the wx.EVT_PAINT event for L{AuiToolBar}.
+        Handles the ``wx.EVT_PAINT`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.PaintEvent} event to be processed.        
+        :param `event`: a `wx.PaintEvent` event to be processed.        
         """
 
         dc = wx.AutoBufferedPaintDC(self)
         cli_rect = wx.RectPS(wx.Point(0, 0), self.GetClientSize())
 
         horizontal = True
-        if self._style & AUI_TB_VERTICAL:
+        if self._agwStyle & AUI_TB_VERTICAL:
             horizontal = False
 
-        if self._style & AUI_TB_PLAIN_BACKGROUND:
+        if self._agwStyle & AUI_TB_PLAIN_BACKGROUND:
             self._art.DrawPlainBackground(dc, self, cli_rect)
         else:
             self._art.DrawBackground(dc, self, cli_rect, horizontal)
@@ -3189,7 +3400,7 @@ class AuiToolBar(wx.PyControl):
 
             item_rect = wx.Rect(*item.sizer_item.GetRect())
 
-            if (horizontal  and item_rect.x + item_rect.width >= last_extent) or \
+            if (horizontal and item_rect.x + item_rect.width >= last_extent) or \
                (not horizontal and item_rect.y + item_rect.height >= last_extent):
 
                 break
@@ -3210,8 +3421,11 @@ class AuiToolBar(wx.PyControl):
                     self._art.DrawDropDownButton(dc, self, item, item_rect)
             
             elif item.kind == ITEM_CHECK:
-                # draw a toggle button
-                self._art.DrawButton(dc, self, item, item_rect)
+                # draw a regular toggle button or a dropdown one
+                if not item.dropdown:
+                    self._art.DrawButton(dc, self, item, item_rect)
+                else:
+                    self._art.DrawDropDownButton(dc, self, item, item_rect)
 
             elif item.kind == ITEM_RADIO:
                 # draw a toggle button
@@ -3232,10 +3446,11 @@ class AuiToolBar(wx.PyControl):
         
     def OnEraseBackground(self, event):
         """
-        Handles the wx.EVT_ERASE_BACKGROUND event for L{AuiToolBar}.
-        This is intentionally empty, to reduce flicker.
+        Handles the ``wx.EVT_ERASE_BACKGROUND`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.EraseEvent} event to be processed.
+        :param `event`: a `wx.EraseEvent` event to be processed.
+
+        :note: This is intentionally empty, to reduce flicker.
         """
 
         pass
@@ -3243,12 +3458,13 @@ class AuiToolBar(wx.PyControl):
 
     def OnLeftDown(self, event):
         """
-        Handles the wx.EVT_LEFT_DOWN event for L{AuiToolBar}.
+        Handles the ``wx.EVT_LEFT_DOWN`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.MouseEvent} event to be processed.        
+        :param `event`: a `wx.MouseEvent` event to be processed.        
         """
         
         cli_rect = wx.RectPS(wx.Point(0, 0), self.GetClientSize())
+        self.StopPreviewTimer()
 
         if self._gripper_sizer_item:
         
@@ -3256,7 +3472,7 @@ class AuiToolBar(wx.PyControl):
             if gripper_rect.Contains(event.GetPosition()):
             
                 # find aui manager
-                manager = framemanager.GetManager(self)
+                manager = self.GetAuiManager()
                 if not manager:
                     return
 
@@ -3339,14 +3555,18 @@ class AuiToolBar(wx.PyControl):
             e.SetToolId(self._action_item.id)
             e.SetDropDownClicked(False)
 
-            mouse_x = event.GetX()
+            mouse_x, mouse_y = event.GetX(), event.GetY()
             rect = wx.Rect(*self._action_item.sizer_item.GetRect())
 
-            if self._action_item.dropdown and \
-               mouse_x >= (rect.x+rect.width-BUTTON_DROPDOWN_WIDTH-1) and \
-               mouse_x < rect.x+rect.width:
-            
-                e.SetDropDownClicked(True)
+            if self._action_item.dropdown:
+                if (self._action_item.orientation == AUI_TBTOOL_HORIZONTAL and \
+                    mouse_x >= (rect.x+rect.width-BUTTON_DROPDOWN_WIDTH-1) and \
+                    mouse_x < (rect.x+rect.width)) or \
+                    (self._action_item.orientation != AUI_TBTOOL_HORIZONTAL and \
+                     mouse_y >= (rect.y+rect.height-BUTTON_DROPDOWN_WIDTH-1) and \
+                     mouse_y < (rect.y+rect.height)):
+                    
+                    e.SetDropDownClicked(True)            
             
             e.SetClickPoint(event.GetPosition())
             e.SetItemRect(rect)
@@ -3356,9 +3576,9 @@ class AuiToolBar(wx.PyControl):
 
     def OnLeftUp(self, event):
         """
-        Handles the wx.EVT_LEFT_UP event for L{AuiToolBar}.
+        Handles the ``wx.EVT_LEFT_UP`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.MouseEvent} event to be processed.        
+        :param `event`: a `wx.MouseEvent` event to be processed.        
         """
         
         self.SetPressedItem(None)
@@ -3400,7 +3620,7 @@ class AuiToolBar(wx.PyControl):
 
                     if self._action_item.id == ID_RESTORE_FRAME:
                         # find aui manager
-                        manager = framemanager.GetManager(self)
+                        manager = self.GetAuiManager()
 
                         if not manager:
                             return
@@ -3411,7 +3631,7 @@ class AuiToolBar(wx.PyControl):
                         e.SetManager(manager)
                         e.SetPane(pane)
 
-                        manager.ProcessMgrEvent(e)
+                        manager.ProcessEvent(e)
                         self.DoIdleUpdate()
 
                     else:
@@ -3429,9 +3649,9 @@ class AuiToolBar(wx.PyControl):
 
     def OnRightDown(self, event):
         """
-        Handles the wx.EVT_RIGHT_DOWN event for L{AuiToolBar}.
+        Handles the ``wx.EVT_RIGHT_DOWN`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.MouseEvent} event to be processed.        
+        :param `event`: a `wx.MouseEvent` event to be processed.        
         """
         
         cli_rect = wx.RectPS(wx.Point(0, 0), self.GetClientSize())
@@ -3444,8 +3664,8 @@ class AuiToolBar(wx.PyControl):
         if self._overflow_sizer_item:
         
             dropdown_size = self._art.GetElementSize(AUI_TBART_OVERFLOW_SIZE)
-            if dropdown_size > 0 and event.m_x > cli_rect.width - dropdown_size and \
-               event.m_y >= 0 and event.m_y < cli_rect.height and self._art:
+            if dropdown_size > 0 and event.GetX() > cli_rect.width - dropdown_size and \
+               event.GetY() >= 0 and event.GetY() < cli_rect.height and self._art:
                 return
             
         self._action_pos = wx.Point(*event.GetPosition())
@@ -3461,9 +3681,9 @@ class AuiToolBar(wx.PyControl):
 
     def OnRightUp(self, event):
         """
-        Handles the wx.EVT_RIGHT_UP event for L{AuiToolBar}.
+        Handles the ``wx.EVT_RIGHT_UP`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.MouseEvent} event to be processed.        
+        :param `event`: a `wx.MouseEvent` event to be processed.        
         """
         
         hit_item = self.FindToolForPosition(*event.GetPosition())
@@ -3494,9 +3714,9 @@ class AuiToolBar(wx.PyControl):
 
     def OnMiddleDown(self, event):
         """
-        Handles the wx.EVT_MIDDLE_DOWN event for L{AuiToolBar}.
+        Handles the ``wx.EVT_MIDDLE_DOWN`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.MouseEvent} event to be processed.        
+        :param `event`: a `wx.MouseEvent` event to be processed.        
         """
         
         cli_rect = wx.RectPS(wx.Point(0, 0), self.GetClientSize())
@@ -3510,8 +3730,8 @@ class AuiToolBar(wx.PyControl):
         if self._overflow_sizer_item:
         
             dropdown_size = self._art.GetElementSize(AUI_TBART_OVERFLOW_SIZE)
-            if dropdown_size > 0 and event.m_x > cli_rect.width - dropdown_size and \
-               event.m_y >= 0 and event.m_y < cli_rect.height and self._art:            
+            if dropdown_size > 0 and event.GetX() > cli_rect.width - dropdown_size and \
+               event.GetY() >= 0 and event.GetY() < cli_rect.height and self._art:            
                 return
             
         self._action_pos = wx.Point(*event.GetPosition())
@@ -3527,9 +3747,9 @@ class AuiToolBar(wx.PyControl):
 
     def OnMiddleUp(self, event):
         """
-        Handles the wx.EVT_MIDDLE_UP event for L{AuiToolBar}.
+        Handles the ``wx.EVT_MIDDLE_UP`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.MouseEvent} event to be processed.        
+        :param `event`: a `wx.MouseEvent` event to be processed.        
         """
         
         hit_item = self.FindToolForPosition(*event.GetPosition())
@@ -3551,14 +3771,14 @@ class AuiToolBar(wx.PyControl):
 
     def OnMotion(self, event):
         """
-        Handles the wx.EVT_MOTION event for L{AuiToolBar}.
+        Handles the ``wx.EVT_MOTION`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.MouseEvent} event to be processed.        
+        :param `event`: a `wx.MouseEvent` event to be processed.        
         """
         
         # start a drag event
         if not self._dragging and self._action_item != None and self._action_pos != wx.Point(-1, -1) and \
-           abs(event.m_x - self._action_pos.x) + abs(event.m_y - self._action_pos.y) > 5:
+           abs(event.GetX() - self._action_pos.x) + abs(event.GetY() - self._action_pos.y) > 5:
         
             self.SetToolTipString("")
             self._dragging = True
@@ -3591,14 +3811,17 @@ class AuiToolBar(wx.PyControl):
                 self._tip_item = packing_hit_item
 
                 if packing_hit_item.short_help != "":
+                    self.StartPreviewTimer()
                     self.SetToolTipString(packing_hit_item.short_help)
                 else:
                     self.SetToolTipString("")
+                    self.StopPreviewTimer()
             
         else:
         
             self.SetToolTipString("")
             self._tip_item = None
+            self.StopPreviewTimer()
         
         # if we've pressed down an item and we're hovering
         # over it, make sure it's state is set to pressed
@@ -3615,9 +3838,9 @@ class AuiToolBar(wx.PyControl):
 
     def OnLeaveWindow(self, event):
         """
-        Handles the wx.EVT_LEAVE_WINDOW event for L{AuiToolBar}.
+        Handles the ``wx.EVT_LEAVE_WINDOW`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.MouseEvent} event to be processed.        
+        :param `event`: a `wx.MouseEvent` event to be processed.        
         """
 
         self.RefreshOverflowState()
@@ -3625,13 +3848,14 @@ class AuiToolBar(wx.PyControl):
         self.SetPressedItem(None)
 
         self._tip_item = None
+        self.StopPreviewTimer()
 
 
     def OnSetCursor(self, event):
         """
-        Handles the wx.EVT_SET_CURSOR event for L{AuiToolBar}.
+        Handles the ``wx.EVT_SET_CURSOR`` event for L{AuiToolBar}.
 
-        :param `event`: a L{wx.SetCursorEvent} event to be processed.        
+        :param `event`: a `wx.SetCursorEvent` event to be processed.        
         """
         
         cursor = wx.NullCursor
@@ -3648,13 +3872,55 @@ class AuiToolBar(wx.PyControl):
     def OnCustomRender(self, dc, item, rect):
         """
         Handles custom render for single L{AuiToolBar} items.
-        This method must be ocverridden to provide custom rendering of items.
-
-        :param `dc`: a L{wx.DC} device context;
+        
+        :param `dc`: a `wx.DC` device context;
         :param `item`: an instance of L{AuiToolBarItem};
         :param `rect`: the toolbar item rect.
+
+        :note: This method must be overridden to provide custom rendering of items.
         """
         
         pass
 
+
+    def IsPaneMinimized(self):
+        """ Returns whether this L{AuiToolBar} contains a minimized pane tool. """
+        
+        manager = self.GetAuiManager()
+        if not manager:
+            return False
+        
+        if manager.GetAGWFlags() & AUI_MGR_PREVIEW_MINIMIZED_PANES == 0:
+            # No previews here
+            return False
+
+        self_name = manager.GetPane(self).name
+        
+        if not self_name.endswith("_min"):
+            # Wrong tool name
+            return False
+
+        return self_name[0:-4]
     
+        
+    def StartPreviewTimer(self):
+        """ Starts a timer in L{AuiManager} to slide-in/slide-out the minimized pane. """
+
+        self_name = self.IsPaneMinimized()
+        if not self_name:
+            return
+
+        manager = self.GetAuiManager()        
+        manager.StartPreviewTimer(self)
+
+
+    def StopPreviewTimer(self):
+        """ Stops a timer in L{AuiManager} to slide-in/slide-out the minimized pane. """
+
+        self_name = self.IsPaneMinimized()
+        if not self_name:
+            return
+
+        manager = self.GetAuiManager()        
+        manager.StopPreviewTimer()
+            

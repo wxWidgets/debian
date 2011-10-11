@@ -43,7 +43,7 @@ class ThumbnailCtrlDemo(wx.Frame):
         self.panel = wx.Panel(splitter, -1)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        scroll = TC.ThumbnailCtrl(splitter, -1)
+        scroll = TC.ThumbnailCtrl(splitter, -1, imagehandler=TC.NativeImageHandler)
         
         scroll.ShowFileNames()
         if os.path.isdir("../bitmaps"):

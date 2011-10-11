@@ -4,7 +4,7 @@
 // Author:      Jaakko Salli
 // Modified by:
 // Created:     Apr-30-2006
-// RCS-ID:      $Id: combocmn.cpp 59691 2009-03-21 10:04:10Z JMS $
+// RCS-ID:      $Id: combocmn.cpp 67178 2011-03-13 09:32:19Z JMS $
 // Copyright:   (c) 2005 Jaakko Salli
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -858,7 +858,18 @@ void wxComboCtrlBase::OnThemeChange()
     // be the correct colour and themed brush.  Instead we'll use
     // wxSYS_COLOUR_WINDOW in the EVT_PAINT handler as needed.
 #ifndef __WXMAC__
-    SetOwnBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+    if ( !m_hasBgCol )
+    {
+#ifdef __WXGTK__
+        // Set background to gtk_rc_get_style(m_widget)->bg[GTK_STATE_NORMAL],
+        // which can be different than the background of text entry.
+        wxColour bgCol = GetDefaultAttributes().colBg;
+#else
+        wxColour bgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
+#endif
+        SetOwnBackgroundColour(bgCol);
+        m_hasBgCol = false;
+    }
 #endif
 }
 
@@ -1262,37 +1273,48 @@ void wxComboCtrlBase::PrepareBackground( wxDC& dc, const wxRect& rect, int flags
     selRect.x += wcp + focusSpacingX;
     selRect.width -= wcp + (focusSpacingX*2);
 
+    wxColour fgCol;
     wxColour bgCol;
 
     if ( isEnabled )
     {
-        // If popup is hidden and this control is focused,
-        // then draw the focus-indicator (selbgcolor background etc.).
         if ( isFocused )
-        {
-            dc.SetTextForeground( wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT) );
-            bgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
-        }
+            fgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT);
+        else if ( m_hasFgCol )
+            // Honour the custom foreground colour
+            fgCol = GetForegroundColour();
         else
-        {
-            dc.SetTextForeground( wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT) );
-#ifndef __WXMAC__  // see note in OnThemeChange
-            bgCol = GetBackgroundColour();
-#else
-            bgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
-#endif
-        }
+            fgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
     }
     else
     {
-        dc.SetTextForeground( wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT) );
-#ifndef __WXMAC__  // see note in OnThemeChange
-        bgCol = GetBackgroundColour();
+        fgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT);
+    }
+
+    if ( isEnabled )
+    {
+        if ( isFocused )
+            bgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
+        else if ( m_hasBgCol )
+            // Honour the custom background colour
+            bgCol = GetBackgroundColour();
+        else
+#if defined(__WXMAC__) || defined(__WXGTK__)  // see note in OnThemeChange
+            bgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
 #else
+            bgCol = GetBackgroundColour();
+#endif
+    }
+    else
+    {
+#if defined(__WXMAC__) || defined(__WXGTK__)  // see note in OnThemeChange
         bgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
+#else
+        bgCol = GetBackgroundColour();
 #endif
     }
 
+    dc.SetTextForeground( fgCol );
     dc.SetBrush( bgCol );
     dc.SetPen( bgCol );
     dc.DrawRectangle( selRect );
@@ -1310,7 +1332,7 @@ void wxComboCtrlBase::PrepareBackground( wxDC&, const wxRect&, int ) const
 }
 #endif
 
-void wxComboCtrlBase::DrawButton( wxDC& dc, const wxRect& rect, int paintBg )
+void wxComboCtrlBase::DrawButton( wxDC& dc, const wxRect& rect, int flags )
 {
     int drawState = m_btnState;
 
@@ -1337,8 +1359,11 @@ void wxComboCtrlBase::DrawButton( wxDC& dc, const wxRect& rect, int paintBg )
 
     if ( !m_bmpNormal.Ok() )
     {
+        if ( flags & Draw_BitmapOnly )
+            return;
+
         // Need to clear button background even if m_btn is present
-        if ( paintBg )
+        if ( flags & Draw_PaintBg )
         {
             wxColour bgCol;
 
@@ -1377,7 +1402,7 @@ void wxComboCtrlBase::DrawButton( wxDC& dc, const wxRect& rect, int paintBg )
         {
             // If using blank button background, we need to clear its background
             // with button face colour instead of colour for rest of the control.
-            if ( paintBg )
+            if ( flags & Draw_PaintBg )
             {
                 wxColour bgCol = GetParent()->GetBackgroundColour(); //wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
                 //wxColour bgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
@@ -1397,7 +1422,7 @@ void wxComboCtrlBase::DrawButton( wxDC& dc, const wxRect& rect, int paintBg )
         {
             // Need to clear button background even if m_btn is present
             // (assume non-button background was cleared just before this call so brushes are good)
-            if ( paintBg )
+            if ( flags & Draw_PaintBg )
                 dc.DrawRectangle(rect);
         }
 
@@ -1605,12 +1630,12 @@ void wxComboCtrlBase::OnKeyEvent(wxKeyEvent& event)
     {
         int keycode = event.GetKeyCode();
 
-        if ( GetParent()->HasFlag(wxTAB_TRAVERSAL) &&
+        wxWindow* mainCtrl = GetMainWindowOfCompositeControl();
+
+        if ( mainCtrl->GetParent()->HasFlag(wxTAB_TRAVERSAL) &&
              keycode == WXK_TAB )
         {
             wxNavigationKeyEvent evt;
-
-            wxWindow* mainCtrl = GetMainWindowOfCompositeControl();
 
             evt.SetFlags(wxNavigationKeyEvent::FromTab|
                          (!event.ShiftDown() ? wxNavigationKeyEvent::IsForward
@@ -2090,6 +2115,9 @@ void wxComboCtrlBase::SetButtonPosition( int width, int height,
     m_btnHei = height;
     m_btnSide = side;
     m_btnSpacingX = spacingX;
+
+    if ( width > 0 || height > 0 || spacingX )
+        m_iFlags |= wxCC_IFLAG_HAS_NONSTANDARD_BUTTON;
 
     RecalcAndRefresh();
 }

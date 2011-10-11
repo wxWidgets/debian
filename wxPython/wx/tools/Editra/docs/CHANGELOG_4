@@ -1,4 +1,4 @@
-Changlog for Alpha 0.3 releases
+Changelog for Alpha 0.3 releases
 
 #-----------------------------------------------------------------------------#
 
@@ -7,7 +7,7 @@ DATE 11/03/2008
 16th Alpha Release
 
 NEWS:
-This is primarly a bug fix release which fixes a number of bugs. A few new
+This is primarily a bug fix release which fixes a number of bugs. A few new
 features and improvements have also been added to improve usability. This is
 also the first release to be compatible with Python 2.6.
 

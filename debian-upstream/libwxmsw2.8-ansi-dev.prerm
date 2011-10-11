@@ -1,7 +1,0 @@
-#! /bin/sh
-set -e
-
-update-alternatives --remove wx-config /usr/lib/wx/config/i586-mingw32msvc-msw-ansi-release-2.8
-
-#DEBHELPER#
-

@@ -2,7 +2,7 @@
 // Name:        src/gtk/clipbrd.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: clipbrd.cpp 54742 2008-07-21 03:39:40Z VZ $
+// Id:          $Id: clipbrd.cpp 62148 2009-09-26 16:27:08Z JS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -369,6 +369,7 @@ wxClipboard::~wxClipboard()
 
 void wxClipboard::Clear()
 {
+    gtk_selection_clear_targets(m_clipboardWidget, m_usePrimary ? GDK_SELECTION_PRIMARY : g_clipboardAtom);
     if (m_data)
     {
 #if wxUSE_THREADS

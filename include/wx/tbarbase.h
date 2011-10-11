@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: tbarbase.h 49563 2007-10-31 20:46:21Z VZ $
+// RCS-ID:      $Id: tbarbase.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -115,7 +115,7 @@ public:
 
     wxControl *GetControl() const
     {
-        wxASSERT_MSG( IsControl(), _T("this toolbar tool is not a control") );
+        wxASSERT_MSG( IsControl(), wxT("this toolbar tool is not a control") );
 
         return m_control;
     }
@@ -129,7 +129,7 @@ public:
     int GetStyle() const { return m_toolStyle; }
     wxItemKind GetKind() const
     {
-        wxASSERT_MSG( IsButton(), _T("only makes sense for buttons") );
+        wxASSERT_MSG( IsButton(), wxT("only makes sense for buttons") );
 
         return m_kind;
     }

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.07.99
-// RCS-ID:      $Id: ffile.h 38570 2006-04-05 14:37:47Z VZ $
+// RCS-ID:      $Id: ffile.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,13 +37,13 @@ public:
     // def ctor
   wxFFile() { m_fp = NULL; }
     // open specified file (may fail, use IsOpened())
-  wxFFile(const wxChar *filename, const wxChar *mode = _T("r"));
+  wxFFile(const wxChar *filename, const wxChar *mode = wxT("r"));
     // attach to (already opened) file
   wxFFile(FILE *lfp) { m_fp = lfp; }
 
   // open/close
     // open a file (existing or not - the mode controls what happens)
-  bool Open(const wxChar *filename, const wxChar *mode = _T("r"));
+  bool Open(const wxChar *filename, const wxChar *mode = wxT("r"));
     // closes the opened file (this is a NOP if not opened)
   bool Close();
 

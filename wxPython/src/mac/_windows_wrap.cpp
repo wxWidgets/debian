@@ -3289,6 +3289,18 @@ SWIGINTERNINLINE PyObject*
   return PyBool_FromLong(value ? 1 : 0);
 }
 
+SWIGINTERN PyObject *wxProgressDialog_Pulse(wxProgressDialog *self,wxString const &newmsg=wxPyEmptyString){            
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
+            PyObject* rval;
+            bool r;
+            bool skip=false;
+            r = self->Pulse(newmsg, &skip);
+            rval = PyTuple_New(2);
+            PyTuple_SET_ITEM(rval, 0, PyBool_FromLong((int)r));
+            PyTuple_SET_ITEM(rval, 1, PyBool_FromLong((int)skip));
+            wxPyEndBlockThreads(blocked);
+            return rval;
+        }
 
 #include <wx/mdi.h>
 
@@ -3338,7 +3350,7 @@ public:
     DEC_PYCALLBACK_BOOL_const(AcceptsFocusFromKeyboard);
     DEC_PYCALLBACK_SIZE_const(GetMaxSize);
 
-    DEC_PYCALLBACK_BOOL_(Enable);
+    DEC_PYCALLBACK_BOOL_BOOL(Enable);
 
     DEC_PYCALLBACK_VOID_WXWINBASE(AddChild);
     DEC_PYCALLBACK_VOID_WXWINBASE(RemoveChild);
@@ -3377,7 +3389,7 @@ IMP_PYCALLBACK_BOOL_const(wxPyWindow, wxWindow, AcceptsFocus);
 IMP_PYCALLBACK_BOOL_const(wxPyWindow, wxWindow, AcceptsFocusFromKeyboard);
 IMP_PYCALLBACK_SIZE_const(wxPyWindow, wxWindow, GetMaxSize);
 
-IMP_PYCALLBACK_BOOL_(wxPyWindow, wxWindow, Enable);
+IMP_PYCALLBACK_BOOL_BOOL(wxPyWindow, wxWindow, Enable);
 
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyWindow, wxWindow, AddChild);
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyWindow, wxWindow, RemoveChild);
@@ -3436,7 +3448,7 @@ public:
     DEC_PYCALLBACK_BOOL_const(AcceptsFocusFromKeyboard);
     DEC_PYCALLBACK_SIZE_const(GetMaxSize);
 
-    DEC_PYCALLBACK_BOOL_(Enable);
+    DEC_PYCALLBACK_BOOL_BOOL(Enable);
 
     DEC_PYCALLBACK_VOID_WXWINBASE(AddChild);
     DEC_PYCALLBACK_VOID_WXWINBASE(RemoveChild);
@@ -3476,7 +3488,7 @@ IMP_PYCALLBACK_BOOL_const(wxPyPanel, wxPanel, AcceptsFocus);
 IMP_PYCALLBACK_BOOL_const(wxPyPanel, wxPanel, AcceptsFocusFromKeyboard);
 IMP_PYCALLBACK_SIZE_const(wxPyPanel, wxPanel, GetMaxSize);
 
-IMP_PYCALLBACK_BOOL_(wxPyPanel, wxPanel, Enable);
+IMP_PYCALLBACK_BOOL_BOOL(wxPyPanel, wxPanel, Enable);
 
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyPanel, wxPanel, AddChild);
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyPanel, wxPanel, RemoveChild);
@@ -3534,7 +3546,7 @@ public:
     DEC_PYCALLBACK_BOOL_const(AcceptsFocusFromKeyboard);
     DEC_PYCALLBACK_SIZE_const(GetMaxSize);
 
-    DEC_PYCALLBACK_BOOL_(Enable);
+    DEC_PYCALLBACK_BOOL_BOOL(Enable);
 
     DEC_PYCALLBACK_VOID_WXWINBASE(AddChild);
     DEC_PYCALLBACK_VOID_WXWINBASE(RemoveChild);
@@ -3573,7 +3585,7 @@ IMP_PYCALLBACK_BOOL_const(wxPyScrolledWindow, wxScrolledWindow, AcceptsFocus);
 IMP_PYCALLBACK_BOOL_const(wxPyScrolledWindow, wxScrolledWindow, AcceptsFocusFromKeyboard);
 IMP_PYCALLBACK_SIZE_const(wxPyScrolledWindow, wxScrolledWindow, GetMaxSize);
 
-IMP_PYCALLBACK_BOOL_(wxPyScrolledWindow, wxScrolledWindow, Enable);
+IMP_PYCALLBACK_BOOL_BOOL(wxPyScrolledWindow, wxScrolledWindow, Enable);
 
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyScrolledWindow, wxScrolledWindow, AddChild);
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyScrolledWindow, wxScrolledWindow, RemoveChild);
@@ -19922,20 +19934,16 @@ SWIGINTERN PyObject *_wrap_ProgressDialog_Pulse(PyObject *SWIGUNUSEDPARM(self), 
   wxProgressDialog *arg1 = (wxProgressDialog *) 0 ;
   wxString const &arg2_defvalue = wxPyEmptyString ;
   wxString *arg2 = (wxString *) &arg2_defvalue ;
-  bool *arg3 = (bool *) 0 ;
-  bool result;
+  PyObject *result = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   bool temp2 = false ;
-  bool temp3 ;
-  int res3 = SWIG_TMPOBJ ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   char *  kwnames[] = {
     (char *) "self",(char *) "newmsg", NULL 
   };
   
-  arg3 = &temp3;
   if (!PyArg_ParseTupleAndKeywords(args,kwargs,(char *)"O|O:ProgressDialog_Pulse",kwnames,&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_wxProgressDialog, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
@@ -19951,19 +19959,11 @@ SWIGINTERN PyObject *_wrap_ProgressDialog_Pulse(PyObject *SWIGUNUSEDPARM(self), 
   }
   {
     PyThreadState* __tstate = wxPyBeginAllowThreads();
-    result = (bool)(arg1)->Pulse((wxString const &)*arg2,arg3);
+    result = (PyObject *)wxProgressDialog_Pulse(arg1,(wxString const &)*arg2);
     wxPyEndAllowThreads(__tstate);
     if (PyErr_Occurred()) SWIG_fail;
   }
-  {
-    resultobj = result ? Py_True : Py_False; Py_INCREF(resultobj);
-  }
-  if (SWIG_IsTmpObj(res3)) {
-    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_bool((*arg3)));
-  } else {
-    int new_flags = SWIG_IsNewObj(res3) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
-    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg3), SWIGTYPE_p_bool, new_flags));
-  }
+  resultobj = result;
   {
     if (temp2)
     delete arg2;

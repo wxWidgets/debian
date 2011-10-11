@@ -27,9 +27,9 @@ class PeakMeterCtrlDemo(wx.Panel):
         self.mainPanel = wx.Panel(self)
         
         # Initialize Peak Meter control 1
-        self.vertPeak = PM.PeakMeterCtrl(self.mainPanel, -1, style=PM.PM_VERTICAL|wx.SIMPLE_BORDER)
+        self.vertPeak = PM.PeakMeterCtrl(self.mainPanel, -1, style=wx.SIMPLE_BORDER, agwStyle=PM.PM_VERTICAL)
         # Initialize Peak Meter control 2
-        self.horzPeak = PM.PeakMeterCtrl(self.mainPanel, -1, style=PM.PM_HORIZONTAL|wx.SUNKEN_BORDER)
+        self.horzPeak = PM.PeakMeterCtrl(self.mainPanel, -1, style=wx.SUNKEN_BORDER, agwStyle=PM.PM_HORIZONTAL)
 
         self.startButton = wx.Button(self.mainPanel, -1, "Start")
         self.stopButton = wx.Button(self.mainPanel, -1, "Stop")
@@ -170,7 +170,7 @@ class PeakMeterCtrlDemo(wx.Panel):
             low = self.lowColour.GetColour()
             med = self.mediumColour.GetColour()
             high = self.highColour.GetColour()
-            self.horzPeak.SetBandsColor(low, med, high)
+            self.horzPeak.SetBandsColour(low, med, high)
 
             
 #----------------------------------------------------------------------

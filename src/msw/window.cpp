@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ on 13.05.99: no more Default(), MSWOnXXX() reorganisation
 // Created:     04/01/98
-// RCS-ID:      $Id: window.cpp 60057 2009-04-07 15:00:09Z VZ $
+// RCS-ID:      $Id: window.cpp 66914 2011-02-16 21:44:15Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -3021,6 +3021,7 @@ WXLRESULT wxWindowMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
                     case VK_SUBTRACT:
                     case VK_MULTIPLY:
                     case VK_DIVIDE:
+                    case VK_DECIMAL:
                     case VK_NUMPAD0:
                     case VK_NUMPAD1:
                     case VK_NUMPAD2:
@@ -3361,7 +3362,9 @@ WXLRESULT wxWindowMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
                             csparam->rgrc[0] = rcClient;
                         else
                             *((RECT*)lParam) = rcClient;
-                        rc.result = WVR_REDRAW;
+                        // WVR_REDRAW triggers a bug whereby child windows are moved up and left,
+                        // so don't use.
+                        //rc.result = WVR_REDRAW;
                     }
                 }
             }
@@ -3576,6 +3579,16 @@ bool wxWindowMSW::MSWCreate(const wxChar *wclass,
                             WXDWORD style,
                             WXDWORD extendedStyle)
 {
+    // check a common bug in the user code: if the window is created with a
+    // non-default ctor and Create() is called too, we'd create 2 HWND for a
+    // single wxWindow object and this results in all sorts of trouble,
+    // especially for wxTLWs
+    wxCHECK_MSG( !m_hWnd, true, wxT("window can't be recreated") );
+
+    // this can happen if this function is called using the return value of
+    // wxApp::GetRegisteredClassName() which failed
+    wxCHECK_MSG( wclass, false, wxT("failed to register window class?") );
+
     // choose the position/size for the new window
     int x, y, w, h;
     (void)MSWGetCreateWindowCoords(pos, size, x, y, w, h);
@@ -4069,6 +4082,8 @@ bool wxWindowMSW::HandleSetCursor(WXHWND WXUNUSED(hWnd),
         y = pt.y;
     ScreenToClient(&x, &y);
     wxSetCursorEvent event(x, y);
+    event.SetId(GetId());
+    event.SetEventObject(this);
 
     bool processedEvtSetCursor = GetEventHandler()->ProcessEvent(event);
     if ( processedEvtSetCursor && event.HasCursor() )

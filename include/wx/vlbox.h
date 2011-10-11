@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.05.03
-// RCS-ID:      $Id: vlbox.h 53135 2008-04-12 02:31:04Z VZ $
+// RCS-ID:      $Id: vlbox.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 
 class WXDLLIMPEXP_FWD_CORE wxSelectionStore;
 
-#define wxVListBoxNameStr _T("wxVListBox")
+#define wxVListBoxNameStr wxT("wxVListBox")
 
 // ----------------------------------------------------------------------------
 // wxVListBox
@@ -86,7 +86,7 @@ public:
     int GetSelection() const
     {
         wxASSERT_MSG( !HasMultipleSelection(),
-                        _T("GetSelection() can't be used with wxLB_MULTIPLE") );
+                        wxT("GetSelection() can't be used with wxLB_MULTIPLE") );
 
         return m_current;
     }

@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.2000
-// RCS-ID:      $Id: filename.cpp 60030 2009-04-05 12:54:37Z VZ $
+// RCS-ID:      $Id: filename.cpp 66915 2011-02-16 21:46:49Z JS $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -284,15 +284,22 @@ static wxString wxGetVolumeString(const wxString& volume, wxPathFormat format)
     return path;
 }
 
+// return true if the character is a DOS path separator i.e. either a slash or
+// a backslash
+inline bool IsDOSPathSep(wxChar ch)
+{
+    return ch == wxFILE_SEP_PATH_DOS || ch == wxFILE_SEP_PATH_UNIX;
+}
+
 // return true if the format used is the DOS/Windows one and the string looks
 // like a UNC path
 static bool IsUNCPath(const wxString& path, wxPathFormat format)
 {
     return format == wxPATH_DOS &&
                 path.length() >= 4 && // "\\a" can't be a UNC path
-                    path[0u] == wxFILE_SEP_PATH_DOS &&
-                        path[1u] == wxFILE_SEP_PATH_DOS &&
-                            path[2u] != wxFILE_SEP_PATH_DOS;
+                    IsDOSPathSep(path[0u]) &&
+                        IsDOSPathSep(path[1u]) &&
+                            !IsDOSPathSep(path[2u]);
 }
 
 // ============================================================================
@@ -305,6 +312,9 @@ static bool IsUNCPath(const wxString& path, wxPathFormat format)
 
 void wxFileName::Assign( const wxFileName &filepath )
 {
+    if ( &filepath == this )
+        return;
+
     m_volume = filepath.GetVolume();
     m_dirs = filepath.GetDirs();
     m_name = filepath.GetName();

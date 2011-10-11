@@ -4,7 +4,7 @@
 // Author:      Julian Smart (extracted from docview.h by VZ)
 // Modified by:
 // Created:     05.11.00
-// RCS-ID:      $Id: cmdproc.cpp 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: cmdproc.cpp 65725 2010-10-02 13:05:08Z TIK $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -108,18 +108,6 @@ void wxCommandProcessor::Store(wxCommand *command)
 {
     wxCHECK_RET( command, _T("no command in wxCommandProcessor::Store") );
 
-    if ( (int)m_commands.GetCount() == m_maxNoCommands )
-    {
-        wxList::compatibility_iterator firstNode = m_commands.GetFirst();
-        wxCommand *firstCommand = (wxCommand *)firstNode->GetData();
-        delete firstCommand;
-        m_commands.Erase(firstNode);
-
-        // Make sure m_lastSavedCommand won't point to freed memory
-        if ( m_lastSavedCommand == firstNode )
-            m_lastSavedCommand = wxList::compatibility_iterator();
-    }
-
     // Correct a bug: we must chop off the current 'branch'
     // so that we're at the end of the command list.
     if (!m_currentCommand)
@@ -139,6 +127,18 @@ void wxCommandProcessor::Store(wxCommand *command)
 
             node = next;
         }
+    }
+
+    if ( (int)m_commands.GetCount() == m_maxNoCommands )
+    {
+        wxList::compatibility_iterator firstNode = m_commands.GetFirst();
+        wxCommand *firstCommand = (wxCommand *)firstNode->GetData();
+        delete firstCommand;
+        m_commands.Erase(firstNode);
+
+        // Make sure m_lastSavedCommand won't point to freed memory
+        if ( m_lastSavedCommand == firstNode )
+            m_lastSavedCommand = wxList::compatibility_iterator();
     }
 
     m_commands.Append(command);

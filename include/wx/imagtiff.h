@@ -2,7 +2,7 @@
 // Name:        imagtiff.h
 // Purpose:     wxImage TIFF handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagtiff.h 37393 2006-02-08 21:47:09Z VZ $
+// RCS-ID:      $Id: imagtiff.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,10 +21,10 @@
 #include "wx/image.h"
 
 // defines for wxImage::SetOption
-#define wxIMAGE_OPTION_BITSPERSAMPLE               wxString(_T("BitsPerSample"))
-#define wxIMAGE_OPTION_SAMPLESPERPIXEL             wxString(_T("SamplesPerPixel"))
-#define wxIMAGE_OPTION_COMPRESSION                 wxString(_T("Compression"))
-#define wxIMAGE_OPTION_IMAGEDESCRIPTOR             wxString(_T("ImageDescriptor"))
+#define wxIMAGE_OPTION_BITSPERSAMPLE               wxString(wxT("BitsPerSample"))
+#define wxIMAGE_OPTION_SAMPLESPERPIXEL             wxString(wxT("SamplesPerPixel"))
+#define wxIMAGE_OPTION_COMPRESSION                 wxString(wxT("Compression"))
+#define wxIMAGE_OPTION_IMAGEDESCRIPTOR             wxString(wxT("ImageDescriptor"))
 
 class WXDLLEXPORT wxTIFFHandler: public wxImageHandler
 {

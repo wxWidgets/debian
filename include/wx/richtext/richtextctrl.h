@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2005-09-30
-// RCS-ID:      $Id: richtextctrl.h 58256 2009-01-21 12:05:11Z JS $
+// RCS-ID:      $Id: richtextctrl.h 62194 2009-09-29 06:45:04Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -158,6 +158,12 @@ public:
 
     /// Get URL cursor
     wxCursor GetURLCursor() const { return m_urlCursor; }
+#endif
+
+#if wxABI_VERSION >= 20811
+    /// Get/set context menu
+    wxMenu* GetContextMenu() const { return m_contextMenu; }
+    void SetContextMenu(wxMenu* menu);
 #endif
 
 // Operations

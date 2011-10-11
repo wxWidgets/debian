@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.01.99
-// RCS-ID:      $Id: tooltip.cpp 49520 2007-10-29 15:27:40Z VZ $
+// RCS-ID:      $Id: tooltip.cpp 62542 2009-11-03 14:11:01Z VZ $
 // Copyright:   (c) 1999 Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -195,11 +195,17 @@ LRESULT APIENTRY wxToolTipWndProc(HWND hwndTT,
 
 void wxToolTip::Enable(bool flag)
 {
+    // Make sure the tooltip has been created
+    (void) GetToolTipCtrl();
+
     SendTooltipMessageToAll(ms_hwndTT, TTM_ACTIVATE, flag, 0);
 }
 
 void wxToolTip::SetDelay(long milliseconds)
 {
+    // Make sure the tooltip has been created
+    (void) GetToolTipCtrl();
+
     SendTooltipMessageToAll(ms_hwndTT, TTM_SETDELAYTIME,
                             TTDT_INITIAL, milliseconds);
 }
@@ -447,8 +453,10 @@ void wxToolTip::SetTip(const wxString& tip)
     {
         // update the tip text shown by the control
         wxToolInfo ti(GetHwndOf(m_window));
-        ti.lpszText = (wxChar *)m_text.c_str();
+        ti.lpszText = (wxChar *)wxT("");
+        (void)SendTooltipMessage(GetToolTipCtrl(), TTM_UPDATETIPTEXT, &ti);
 
+        ti.lpszText = (wxChar *)m_text.c_str();
         (void)SendTooltipMessage(GetToolTipCtrl(), TTM_UPDATETIPTEXT, &ti);
     }
 }

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.05.99
-// RCS-ID:      $Id: datetime.cpp 58486 2009-01-28 21:52:37Z VZ $
+// RCS-ID:      $Id: datetime.cpp 65730 2010-10-02 16:50:34Z TIK $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //              parts of code taken from sndcal library by Scott E. Lee:
 //
@@ -150,14 +150,10 @@ wxCUSTOM_TYPE_INFO(wxDateTime, wxToStringConverter<wxDateTime> , wxFromStringCon
     #elif defined(__WXMSW__)
         static long wxGetTimeZone()
         {
-            static long s_timezone = MAXLONG; // invalid timezone
-            if (s_timezone == MAXLONG)
-            {
-                TIME_ZONE_INFORMATION info;
-                GetTimeZoneInformation(&info);
-                s_timezone = info.Bias * 60;  // convert minutes to seconds
-            }
-            return s_timezone;
+            TIME_ZONE_INFORMATION info;
+            GetTimeZoneInformation(&info);
+            long timeZone = info.Bias * 60;  // convert minutes to seconds
+            return timeZone;
         }
         #define WX_TIMEZONE wxGetTimeZone()
     #elif defined(__VISAGECPP__)
@@ -375,6 +371,7 @@ wxDateTime::wxDateTime_t GetNumOfDaysInMonth(int year, wxDateTime::Month month)
 // (in seconds)
 static int GetTimeZone()
 {
+#ifdef WX_GMTOFF_IN_TM
     // set to true when the timezone is set
     static bool s_timezoneSet = false;
     static long gmtoffset = LONG_MAX; // invalid timezone
@@ -390,17 +387,15 @@ static int GetTimeZone()
         wxLocaltime_r(&t, &tm);
         s_timezoneSet = true;
 
-#ifdef WX_GMTOFF_IN_TM
         // note that GMT offset is the opposite of time zone and so to return
         // consistent results in both WX_GMTOFF_IN_TM and !WX_GMTOFF_IN_TM
         // cases we have to negate it
         gmtoffset = -tm.tm_gmtoff;
-#else // !WX_GMTOFF_IN_TM
-        gmtoffset = WX_TIMEZONE;
-#endif // WX_GMTOFF_IN_TM/!WX_GMTOFF_IN_TM
     }
-
     return (int)gmtoffset;
+#else // !WX_GMTOFF_IN_TM
+    return WX_TIMEZONE;
+#endif // WX_GMTOFF_IN_TM/!WX_GMTOFF_IN_TM
 }
 
 // return the integral part of the JDN for the midnight of the given date (to
@@ -2183,16 +2178,22 @@ wxDateTime::wxDateTime_t wxDateTime::GetWeekOfMonth(wxDateTime::WeekFlags flags,
                                                     const TimeZone& tz) const
 {
     Tm tm = GetTm(tz);
-    wxDateTime dtMonthStart = wxDateTime(1, tm.mon, tm.year);
-    int nWeek = GetWeekOfYear(flags) - dtMonthStart.GetWeekOfYear(flags) + 1;
-    if ( nWeek < 0 )
+    const wxDateTime dateFirst = wxDateTime(1, tm.mon, tm.year);
+    const wxDateTime::WeekDay wdFirst = dateFirst.GetWeekDay();
+
+    if ( flags == Default_First )
     {
-        // this may happen for January when Jan, 1 is the last week of the
-        // previous year
-        nWeek += IsLeapYear(tm.year - 1) ? 53 : 52;
+        flags = GetCountry() == USA ? Sunday_First : Monday_First;
     }
 
-    return (wxDateTime::wxDateTime_t)nWeek;
+    // compute offset of dateFirst from the beginning of the week
+    int firstOffset;
+    if ( flags == Sunday_First )
+        firstOffset = wdFirst - Sun;
+    else
+        firstOffset = wdFirst == Sun ? DAYS_PER_WEEK - 1 : wdFirst - Mon;
+
+    return (wxDateTime::wxDateTime_t)((tm.mday - 1 + firstOffset)/7 + 1);
 }
 
 wxDateTime& wxDateTime::SetToYearDay(wxDateTime::wxDateTime_t yday)
@@ -2360,12 +2361,13 @@ wxString wxDateTime::Format(const wxChar *format, const TimeZone& tz) const
 
     // used for calls to strftime() when we only deal with time
     struct tm tmTimeOnly;
+    memset(&tmTimeOnly, 0, sizeof(tmTimeOnly));
     tmTimeOnly.tm_hour = tm.hour;
     tmTimeOnly.tm_min = tm.min;
     tmTimeOnly.tm_sec = tm.sec;
     tmTimeOnly.tm_wday = 0;
     tmTimeOnly.tm_yday = 0;
-    tmTimeOnly.tm_mday = 1;         // any date will do
+    tmTimeOnly.tm_mday = 1;         // any date will do, use 1976-01-01
     tmTimeOnly.tm_mon = 0;
     tmTimeOnly.tm_year = 76;
     tmTimeOnly.tm_isdst = 0;        // no DST, we adjust for tz ourselves
@@ -2663,9 +2665,10 @@ wxString wxDateTime::Format(const wxChar *format, const TimeZone& tz) const
 
                 default:
                     // is it the format width?
-                    fmt.Empty();
-                    while ( *p == _T('-') || *p == _T('+') ||
-                            *p == _T(' ') || wxIsdigit(*p) )
+                    for( fmt.clear();
+                         *p == _T('-') || *p == _T('+') ||
+                           *p == _T(' ') || wxIsdigit(*p);
+                         ++p )
                     {
                         fmt += *p;
                     }

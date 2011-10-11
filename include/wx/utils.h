@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: utils.h 53135 2008-04-12 02:31:04Z VZ $
+// RCS-ID:      $Id: utils.h 62544 2009-11-03 14:11:30Z VZ $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -228,6 +228,12 @@ public:
     bool        LeftDown()    { return m_leftDown; }
     bool        MiddleDown()  { return m_middleDown; }
     bool        RightDown()   { return m_rightDown; }
+
+#if wxABI_VERSION >= 20811
+    bool        LeftIsDown()    { return m_leftDown; }
+    bool        MiddleIsDown()  { return m_middleDown; }
+    bool        RightIsDown()   { return m_rightDown; }
+#endif // wx >= 2.8.11
 
     bool        ControlDown() { return m_controlDown; }
     bool        ShiftDown()   { return m_shiftDown; }

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     24.09.01
-// RCS-ID:      $Id: toplevel.cpp 53701 2008-05-22 16:46:08Z PC $
+// RCS-ID:      $Id: toplevel.cpp 60894 2009-06-04 22:24:13Z VZ $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -1001,7 +1001,7 @@ bool wxTopLevelWindowMSW::SetShape(const wxRegion& region)
     DWORD dwStyle =   ::GetWindowLong(GetHwnd(), GWL_STYLE);
     DWORD dwExStyle = ::GetWindowLong(GetHwnd(), GWL_EXSTYLE);
     ::GetClientRect(GetHwnd(), &rect);
-    ::AdjustWindowRectEx(&rect, dwStyle, FALSE, dwExStyle);
+    ::AdjustWindowRectEx(&rect, dwStyle, ::GetMenu(GetHwnd()) != NULL, dwExStyle);
     ::OffsetRgn(hrgn, -rect.left, -rect.top);
 
     // Now call the shape API with the new region.

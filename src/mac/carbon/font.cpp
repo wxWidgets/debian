@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: font.cpp 53452 2008-05-05 08:16:16Z JS $
+// RCS-ID:      $Id: font.cpp 62122 2009-09-25 13:13:59Z JS $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -226,6 +226,8 @@ void wxFontRefData::MacFindFont()
     OSStatus status = noErr;
     Str255 qdFontName ;
 
+    wxCHECK_RET( m_pointSize > 0, wxT("Point size should not be zero.") );
+
 #ifdef __LP64__
     if ( m_faceName.empty() && m_family == wxDEFAULT )
     {
@@ -235,7 +237,7 @@ void wxFontRefData::MacFindFont()
     if ( m_macUIFontType != kCTFontNoFontType )
     {
         m_macFontRef = CTFontCreateUIFontForLanguage( m_macUIFontType, 0.0, NULL );
-		wxMacCFStringHolder name( CTFontCopyFamilyName( m_macFontRef ) );
+        wxMacCFStringHolder name( CTFontCopyFamilyName( m_macFontRef ) );
         m_faceName = name.AsString();
     }
     else
@@ -305,18 +307,18 @@ void wxFontRefData::MacFindFont()
     Boolean kFalse = false ;
 
     Fixed atsuSize = IntToFixed( m_pointSize );
-	short m_macATSUAdditionalQDStyles = 0;
+    short m_macATSUAdditionalQDStyles = 0;
     ATSUVerticalCharacterType kHorizontal = kATSUStronglyHorizontal;
-	ATSUFontID atsuFontID = 0;
-	int attributeCount = sizeof(atsuTags) / sizeof(ATSUAttributeTag) ;
-	
-	// attempt to add atsu font 
-	status = ATSUFindFontFromName(m_faceName.c_str(), strlen(m_faceName.c_str()), kFontFamilyName, kFontNoPlatform, kFontNoScript, kFontNoLanguage, &atsuFontID);
-	if ( status != noErr )
-	{
-		attributeCount--;
-	}
-	
+    ATSUFontID atsuFontID = 0;
+    int attributeCount = sizeof(atsuTags) / sizeof(ATSUAttributeTag) ;
+    
+    // attempt to add atsu font 
+    status = ATSUFindFontFromName(m_faceName.c_str(), strlen(m_faceName.c_str()), kFontFamilyName, kFontNoPlatform, kFontNoScript, kFontNoLanguage, &atsuFontID);
+    if ( status != noErr )
+    {
+        attributeCount--;
+    }
+    
     ATSUAttributeValuePtr    atsuValues[sizeof(atsuTags) / sizeof(ATSUAttributeTag)] =
     {
             &atsuSize ,
@@ -326,12 +328,11 @@ void wxFontRefData::MacFindFont()
             (m_macATSUAdditionalQDStyles & underline) ? &kTrue : &kFalse ,
             (m_macATSUAdditionalQDStyles & condense) ? &kTrue : &kFalse ,
             (m_macATSUAdditionalQDStyles & extend) ? &kTrue : &kFalse ,
-			&atsuFontID ,
+            &atsuFontID ,
       };
 
     status = ::ATSUSetAttributes( (ATSUStyle)m_macATSUStyle, attributeCount, atsuTags, atsuSizes, atsuValues);
-
-    wxASSERT_MSG( status == noErr , wxT("couldn't modify ATSU style") );
+    wxASSERT_MSG( status == noErr , wxString::Format(wxT("couldn't modify ATSU style. Status was %d"), (int) status).c_str() );
 #else
     if ( m_macThemeFontID != kThemeCurrentPortFont )
     {
@@ -547,7 +548,7 @@ bool wxFont::MacCreateUIFont(wxUint32 ctFontType )
 bool wxFont::MacCreateThemeFont(wxUint16 themeFontID)
 {
 #ifdef __LP64__
-	return MacCreateUIFont(HIThemeGetUIFontType(themeFontID));
+    return MacCreateUIFont(HIThemeGetUIFontType(themeFontID));
 #else
     UnRef();
 

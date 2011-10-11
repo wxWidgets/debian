@@ -8,14 +8,14 @@
 
 """
 This file contains variables that are or may be used in multiple files and
-libraries within the project. Its pupose is to create a globally accessable
+libraries within the project. Its purpose is to create a globally accessible
 access point for all common variables in the project.
 
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ed_glob.py 60557 2009-05-09 03:07:55Z CJP $"
-__revision__ = "$Revision: 60557 $"
+__svnid__ = "$Id: ed_glob.py 67594 2011-04-24 15:24:40Z CJP $"
+__revision__ = "$Revision: 67594 $"
 
 __all__ = [ 'CONFIG', 'SB_INFO', 'VERSION', 'PROG_NAME', 'ID_NEW', 'ID_OPEN',
             'ID_CLOSE', 'ID_CLOSEALL', 'ID_SAVE', 'ID_SAVEAS', 'ID_SAVEALL',
@@ -37,13 +37,15 @@ __all__ = [ 'CONFIG', 'SB_INFO', 'VERSION', 'PROG_NAME', 'ID_NEW', 'ID_OPEN',
             'ID_FOLDING', 'ID_BRACKETHL', 'ID_LEXER',
             'ID_PLUGMGR', 'ID_STYLE_EDIT', 'ID_MACRO_START', 'ID_MACRO_STOP',
             'ID_MACRO_PLAY', 'ID_ABOUT', 'ID_HOMEPAGE', 'ID_CONTACT',
-            'ID_DOCUMENTATION', 'ID_COMMAND',
+            'ID_BUG_TRACKER', 'ID_DOCUMENTATION', 'ID_COMMAND',
             'ID_USE_SOFTTABS', 'ID_DUP_LINE', 'ID_TRANSLATE',
             'I18N_PAGE', 'ID_GOTO_MBRACE', 'ID_HLCARET_LINE', 'ID_SHOW_SB',
             'ID_REVERT_FILE', 'ID_RELOAD_ENC', 'ID_DOCPROP', 'ID_PASTE_AFTER',
-            'ID_COLUMN_MODE', 'ID_PANELIST', 'ID_MAXIMIZE_EDITOR', 
+            'ID_COLUMN_MODE', 'ID_PANELIST', 'ID_MAXIMIZE_EDITOR',
             'ID_NEW_WINDOW', 'ID_TOGGLE_FOLD', 'ID_TOGGLE_ALL_FOLDS',
-            'ID_SAVE_SESSION', 'ID_LOAD_SESSION']
+            'ID_SAVE_SESSION', 'ID_LOAD_SESSION', 'ID_NEXT_POS', 'ID_PRE_POS',
+            'ID_CYCLE_CLIPBOARD', 'ID_LEXER_CUSTOM', 'ID_SHOW_AUTOCOMP',
+            'ID_SHOW_CALLTIP' ]
 
 #---- Project Info ----#
 # The project info was moved to another module so it could be accessed
@@ -65,6 +67,7 @@ import wxcompat
 #---- Configuration Locations ----#
 # Values set when main loads
 CONFIG = {
+          'ISLOCAL'     : False, # Using local config (no abs path)
           'CONFIG_BASE' : None, # Set if config base is in nonstandard location
           'INSTALL_DIR' : "",   # Instal directory
           'CONFIG_DIR'  : "",   # Root configration directory
@@ -93,6 +96,7 @@ ID_OPEN          = wx.ID_OPEN
 ID_FHIST         = wx.NewId()
 ID_CLOSE         = wx.ID_CLOSE
 ID_CLOSEALL      = wx.ID_CLOSE_ALL
+ID_CLOSE_OTHERS  = wx.NewId()
 ID_CLOSE_WINDOW  = wx.NewId()
 ID_SAVE          = wx.ID_SAVE
 ID_SAVEAS        = wx.ID_SAVEAS
@@ -114,12 +118,13 @@ ID_REDO          = wx.ID_REDO
 ID_CUT           = wx.ID_CUT
 ID_COPY          = wx.ID_COPY
 ID_PASTE         = wx.ID_PASTE
+ID_CYCLE_CLIPBOARD = wx.NewId()
 ID_PASTE_AFTER   = wx.NewId()
 ID_SELECTALL     = wx.ID_SELECTALL
 ID_COLUMN_MODE   = wx.NewId()
 ID_LINE_EDIT     = wx.NewId()
 ID_BOOKMARK      = wx.NewId()
-ID_ADD_BM        = wx.ID_ADD
+ID_ADD_BM        = wx.NewId()
 ID_DEL_BM        = wx.ID_REMOVE # Not used in menu anymore
 ID_DEL_ALL_BM    = wx.NewId()
 ID_LINE_AFTER    = wx.NewId()
@@ -132,6 +137,8 @@ ID_JOIN_LINES    = wx.NewId()
 ID_TRANSPOSE     = wx.NewId()
 ID_LINE_MOVE_UP  = wx.NewId()
 ID_LINE_MOVE_DOWN= wx.NewId()
+ID_SHOW_AUTOCOMP = wx.NewId()
+ID_SHOW_CALLTIP  = wx.NewId()
 ID_FIND          = wx.ID_FIND
 ID_FIND_PREVIOUS = wx.NewId()
 ID_FIND_NEXT     = wx.NewId()
@@ -146,7 +153,7 @@ if wx.Platform == '__WXMAC__':
 ID_QUICK_FIND    = wx.NewId()
 ID_PREF          = wx.ID_PREFERENCES
 
-# Prefrence Dlg Ids
+# Preference Dlg Ids
 ID_PREF_LANG     = wx.NewId()
 ID_PREF_AALIAS   = wx.NewId()
 ID_PREF_AUTOBKUP = wx.NewId()
@@ -174,6 +181,7 @@ ID_PRINT_MODE    = wx.NewId()
 ID_TRANSPARENCY  = wx.NewId()
 ID_PREF_SPOS     = wx.NewId()
 ID_PREF_UPDATE_BAR = wx.NewId()
+ID_PREF_VIRT_SPACE = wx.NewId()
 ID_PREF_WARN_EOL = wx.NewId()
 ID_SESSION       = wx.NewId()
 
@@ -197,6 +205,8 @@ ID_GOTO_LINE     = wx.NewId()
 ID_GOTO_MBRACE   = wx.NewId()
 ID_TOGGLE_FOLD   = wx.NewId()
 ID_TOGGLE_ALL_FOLDS = wx.NewId()
+ID_NEXT_POS      = wx.NewId()
+ID_PRE_POS       = wx.NewId()
 ID_NEXT_MARK     = wx.ID_FORWARD
 ID_PRE_MARK      = wx.ID_BACKWARD
 ID_MAXIMIZE_EDITOR = wx.NewId()
@@ -228,6 +238,7 @@ ID_SYN_OFF       = wx.NewId()
 ID_FOLDING       = wx.NewId()
 ID_BRACKETHL     = wx.NewId()
 ID_LEXER         = wx.NewId()
+ID_LEXER_CUSTOM  = wx.NewId()
 
 # Tool Menu IDs
 ID_COMMAND       = wx.NewId()
@@ -249,8 +260,10 @@ ID_HOMEPAGE      = wx.ID_HOME
 ID_DOCUMENTATION = wx.NewId()
 ID_TRANSLATE     = wx.NewId()
 ID_CONTACT       = wx.NewId()
+ID_BUG_TRACKER   = wx.NewId()
 
 # Misc IDs
+ID_ADD               = wx.ID_ADD
 ID_ADVANCED          = wx.NewId()
 ID_APP_SPLASH        = wx.NewId()
 ID_BACKWARD          = wx.ID_BACKWARD
@@ -259,6 +272,7 @@ ID_CDROM             = wx.NewId()
 ID_COMMAND_LINE_OPEN = wx.NewId()
 ID_COMPUTER          = wx.NewId()
 ID_COPY_PATH         = wx.NewId()
+ID_COPY_FILE         = wx.NewId()
 ID_DELETE            = wx.NewId()
 ID_DOCPROP           = wx.NewId()
 ID_DOWN              = wx.ID_DOWN
@@ -271,16 +285,19 @@ ID_FORWARD           = wx.ID_FORWARD
 ID_HARDDISK          = wx.NewId()
 ID_KEY_PROFILES      = wx.NewId()
 ID_LOGGER            = wx.NewId()
+ID_BOOKMARK_MGR      = wx.NewId()
 ID_MOVE_TAB          = wx.NewId()
 ID_PACKAGE           = wx.NewId()
 ID_PYSHELL           = wx.NewId()
 ID_REFRESH           = wx.ID_REFRESH
+ID_REMOVE            = wx.ID_REMOVE
 ID_REPORTER          = wx.NewId()
 ID_STOP              = wx.ID_STOP
 ID_THEME             = wx.NewId()
 ID_USB               = wx.NewId()
 ID_UP                = wx.ID_UP
 ID_VI_MODE           = wx.NewId()
+ID_VI_NORMAL_DEFAULT = wx.NewId()
 ID_WEB               = wx.NewId()
 ID_READONLY          = wx.NewId()
 
@@ -297,8 +314,8 @@ ID_METHOD_TYPE = wx.NewId()
 SB_INFO          = 0
 SB_BUFF          = 1
 SB_LEXER         = 2
-SB_READONLY      = 3
-SB_ENCODING      = 4
+SB_ENCODING      = 3
+SB_EOL           = 4
 SB_ROWCOL        = 5
 
 # Print Mode Identifiers
@@ -358,7 +375,9 @@ ID_2_PROF = {
              ID_PREF_TABW         : 'TABWIDTH',
              ID_VIEW_TOOL         : 'TOOLBAR',
              ID_PREF_TABS         : 'USETABS',
+             ID_PREF_VIRT_SPACE   : 'VIEWVERTSPACE',
              ID_VI_MODE           : 'VI_EMU',
+             ID_VI_NORMAL_DEFAULT : 'VI_NORMAL_DEFAULT',
              ID_PREF_WARN_EOL     : 'WARN_EOL',
              ID_WORD_WRAP         : 'WRAP',
 }
@@ -368,12 +387,12 @@ EOL_MODE_LF   = 1
 EOL_MODE_CRLF = 2
 def EOLModeMap():
     """Get the eol mode map"""
-    # Maintenance Note: ints must be kept in sync with EDSTC_EOL_* in edstc 
-    return { EOL_MODE_CR : _("Old Machintosh") + u" (\\r)",
-             EOL_MODE_LF : _("Unix") + u" (\\n)",
-             EOL_MODE_CRLF : _("Windows") + u" (\\r\\n)"}
+    # Maintenance Note: ints must be kept in sync with EDSTC_EOL_* in edstc
+    return { EOL_MODE_CR : _("Old Machintosh (\\r)"),
+             EOL_MODE_LF : _("Unix (\\n)"),
+             EOL_MODE_CRLF : _("Windows (\\r\\n)")}
 
 # Default Plugins
 DEFAULT_PLUGINS = ("generator.Html", "generator.LaTeX", "generator.Rtf",
                    "iface.Shelf", "ed_theme.TangoTheme", "ed_log.EdLogViewer",
-                   "ed_search.EdFindResults")
+                   "ed_search.EdFindResults", "ed_bookmark.EdBookmarks")

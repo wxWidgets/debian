@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: filedlg.cpp 57849 2009-01-06 09:36:54Z SC $
+// RCS-ID:      $Id: filedlg.cpp 62110 2009-09-25 07:52:08Z JS $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -278,6 +278,9 @@ pascal Boolean CrossPlatformFilterCallback(
 
 int wxFileDialog::ShowModal()
 {
+    m_paths.Empty();
+    m_fileNames.Empty();
+
     OSErr err;
     NavDialogCreationOptions dialogCreateOptions;
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     11-April-2006
-// RCS-ID:      $Id: _richtextbuffer.i 53769 2008-05-26 20:50:38Z RD $
+// RCS-ID:      $Id: _richtextbuffer.i 67465 2011-04-13 18:15:33Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1437,7 +1437,11 @@ class wxRichTextAction;
 class wxRichTextBuffer: public wxRichTextParagraphLayoutBox
 {
 public:
+    %nokwargs wxRichTextBuffer;
+    
     wxRichTextBuffer();
+    wxRichTextBuffer(const wxRichTextBuffer& obj);
+
     virtual ~wxRichTextBuffer() ;
 
 // Accessors

@@ -4,18 +4,18 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     2006-10-03
-// RCS-ID:      $Id: graphicc.cpp 60190 2009-04-16 00:57:35Z KO $
+// RCS-ID:      $Id: graphicc.cpp 66928 2011-02-16 23:31:13Z JS $
 // Copyright:   (c) 2006 Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #include "wx/wxprec.h"
 
-#include "wx/dc.h"
-
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
+
+#if wxUSE_GRAPHICS_CONTEXT
 
 #ifndef WX_PRECOMP
 #include "wx/image.h"
@@ -39,11 +39,7 @@
 #include "wx/graphics.h"
 #include "wx/rawbmp.h"
 
-#if wxUSE_GRAPHICS_CONTEXT && wxUSE_CAIRO
-
-#include <vector>
-
-using namespace std;
+#if wxUSE_CAIRO
 
 //-----------------------------------------------------------------------------
 // constants
@@ -215,7 +211,7 @@ public :
     virtual void Scale( wxDouble xScale , wxDouble yScale );
 
     // add the rotation to this matrix (radians)
-    virtual void Rotate( wxDouble angle );	
+    virtual void Rotate( wxDouble angle );
 
     //
     // apply the transforms
@@ -959,7 +955,7 @@ void wxCairoMatrixData::Scale( wxDouble xScale , wxDouble yScale )
 void wxCairoMatrixData::Rotate( wxDouble angle ) 
 {
     cairo_matrix_rotate( &m_matrix, angle) ;
-}	
+}
 
 //
 // apply the transforms
@@ -1294,15 +1290,14 @@ void wxCairoContext::DrawGraphicsBitmapInternal(const wxGraphicsBitmap &bmp, wxD
     wxSize size = data->GetSize();
     PushState();
     
+    // prepare to draw the image
+    cairo_translate(m_context, x, y);
     // In case we're scaling the image by using a width and height different
     // than the bitmap's size create a pattern transformation on the surface and
     // draw the transformed pattern.
     wxDouble scaleX = w / size.GetWidth();
     wxDouble scaleY = h / size.GetHeight();
     cairo_scale(m_context, scaleX, scaleY);
-
-    // prepare to draw the image
-    cairo_translate(m_context, x, y);
     cairo_set_source(m_context, pattern);
     // use the original size here since the context is scaled already...
     cairo_rectangle(m_context, 0, 0, size.GetWidth(), size.GetHeight());
@@ -1606,9 +1601,8 @@ wxGraphicsBitmap wxGraphicsRenderer::CreateBitmap( const wxBitmap& bmp )
         return wxNullGraphicsBitmap;
 }
 
-#endif  // wxUSE_GRAPHICS_CONTEXT && wxUSE_CAIRO
+#endif  // wxUSE_CAIRO
 
-#if wxUSE_GRAPHICS_CONTEXT
 wxGraphicsRenderer* wxGraphicsRenderer::GetCairoRenderer()
 {
 #if wxUSE_CAIRO
@@ -1617,4 +1611,5 @@ wxGraphicsRenderer* wxGraphicsRenderer::GetCairoRenderer()
     return NULL;
 #endif
 }
-#endif
+
+#endif // wxUSE_GRAPHICS_CONTEXT
