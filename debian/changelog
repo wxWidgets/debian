@@ -2,7 +2,8 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
 
   * New upstream release (Closes: #586129, #623583)
     + Avoid installing emission hook more than once which could lead to 100%
-      CPU when using a timer (Closes: #583746)
+      CPU when using a timer. (Closes: #583746)
+    + Fixes encoding problem with wxDirPickerCtrl::GetPath(). (Closes: #584330)
     + Drop patches applied upstream: fix-FTBFS.patch, CVE-2009-2369.dpatch
     + Removed hunks from patches/fix-path-to-some-interpreters which are no
       longer relevant since those files no longer have '#!' lines upstream.
@@ -13,7 +14,7 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
     package in etch.
   * Migrate from dh_pycentral to dh_python2 (Closes: #617148)
 
- -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 11:11:03 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 11:15:29 +0000
 
 wxwidgets2.8 (2.8.10.1+dfsg-4) unstable; urgency=low
 
