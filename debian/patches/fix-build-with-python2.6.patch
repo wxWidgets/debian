@@ -1,3 +1,5 @@
+make things get installed to the correct places with the multiversion stuff
+
 diff --git a/wxPython/setup.py b/wxPython/setup.py
 index d987c5d..ac1edde 100755
 --- a/wxPython/setup.py
