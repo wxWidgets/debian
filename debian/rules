@@ -114,6 +114,10 @@ COMMON_CONFIGURE_OPTIONS = \
     --with-expat=sys \
     --disable-reserved_virtual \
 
+ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
+COMMON_CONFIGURE_OPTIONS += --disable-optimise
+endif
+
 BASE_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --disable-gui \
 
