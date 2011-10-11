@@ -14,8 +14,9 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
     package in etch.
   * Migrate from dh_pycentral to dh_python2 (Closes: #617148)
   * Support DEB_BUILD_OPTIONS=noopt (Closes: #571597)
+  * Support DEB_BUILD_OPTIONS=parallel=n
 
- -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 12:23:35 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 12:28:19 +0000
 
 wxwidgets2.8 (2.8.10.1+dfsg-4) unstable; urgency=low
 

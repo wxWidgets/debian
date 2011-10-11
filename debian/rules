@@ -16,7 +16,12 @@ export DH_OPTIONS
 
 # WXPYTHON_VERSION = $(shell dpkg-parsechangelog | sed -ne '/^Version: /s@Version: \(.*\)@\1@p')
 
-ifdef CONCURRENCY_LEVEL
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+
+    # The standard way to specify the number of jobs.
+    JOB_COUNT := $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+
+else ifdef CONCURRENCY_LEVEL
 
   # A user who knows what they want, that's like gold...
   # respect their precious opinion of how much blue smoke to use.
