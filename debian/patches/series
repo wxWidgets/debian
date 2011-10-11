@@ -1,7 +1,6 @@
 fix-build-with-python2.6.patch
 fix-wxversion-help-spelling
 xrced_bitmaps.dpatch
-fix-FTBFS.patch
 fix-config-scripts
 fix-configure-on-hurd
 fix-bashism-in-example
