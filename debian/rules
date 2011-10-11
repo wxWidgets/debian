@@ -10,7 +10,7 @@ SHELL = /bin/bash
 
 #export DH_VERBOSE=1
 
-include /usr/share/pycentral-data/pycentral.mk
+include /usr/share/python/python.mk
 include /usr/share/quilt/quilt.make
 export DH_OPTIONS
 
@@ -94,7 +94,7 @@ endif
 alt_prio  := $(subst .,,$(release))
 
 pytoolkit := gtk2
-pydir     := usr/lib/$(python_ver)/$(call sitedir,$(python_ver))
+pydir     := $(call py_libdir,$(python_ver))
 wxsubdir  := wx-$(compatible_release)-$(pytoolkit)-unicode
 wxpydir   := $(pydir)/$(wxsubdir)
 
@@ -737,19 +737,19 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 			      $(PY_UNICODE)					\
 			      FLAVOUR=$(DEBIAN_WXFLAVOUR)
 
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/wx.pth
+	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/wx.pth
 
 	find debian/$(package_gtk_py_lib)/usr/lib/python$* -name '*.py?' -exec rm '{}' ';'
 
 	# Fix image-file-in-usr-lib lintian warnings.
 	mkdir -p debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
-	cp -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
-	-rm -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps
+	cp -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
+	-rm -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps
 
 	# This is rather bogus, its included in the main copyright file now though.
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/XRCed/license.txt
+	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/XRCed/license.txt
 	# has it's own package, editra
-	rm -fr debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)/wx/tools/Editra
+	rm -fr debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/Editra
 
 install-gtk-py-ver: DH_OPTIONS=-p$(package_gtk_py_ver)
 install-gtk-py-ver: install-gtk-py-lib
@@ -760,8 +760,8 @@ install-gtk-py-ver: install-gtk-py-lib
 ifndef DEBIAN_WX_DEFAULT_VERSION
 
 	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) \
-		$(foreach pv,$(PYVERS),usr/lib/python$(pv)/$(call sitedir,$(pv))/wxversion.py)
-	for v in $(foreach pv,$(PYVERS),debian/$(package_gtk_py_ver)/usr/lib/python$(pv)/$(call sitedir,$(pv))/wx.pth); do \
+		$(foreach pv,$(PYVERS),$(call py_libdir,$(pv))/wxversion.py)
+	for v in $(foreach pv,$(PYVERS),debian/$(package_gtk_py_ver)$(call py_libdir,$(pv))/wx.pth); do \
 	  ln -sf ../../wx/python/wx.pth $$v; \
 	done
 else
@@ -895,8 +895,8 @@ install-gtk-dbg-py%: install-gtk-dbg-py-pre build-gtk-dbg-py%-stamp
 			      $(PY_UNICODE)					\
 			      FLAVOUR=$(addsuffix -,$(DEBIAN_WXFLAVOUR))dbg
 
-	mv debian/$(package_gtk_dbg_py)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)-dbg \
-		debian/$(package_gtk_dbg_py)/usr/lib/python$*/$(call sitedir,$*)/$(wxsubdir)
+	mv debian/$(package_gtk_dbg_py)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)-dbg \
+		debian/$(package_gtk_dbg_py)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)
 
 	-find debian/$(package_gtk_dbg_py) -name '*_d.so'
 	find debian/$(package_gtk_dbg_py) ! -type d ! -name '*.so' | xargs rm -f
@@ -975,7 +975,7 @@ binary-common:
 	dh_installexamples
 	dh_installmenu
 	dh_link
-	DH_PYCENTRAL=nomove dh_pycentral
+	dh_python2
 
 	@# Don't strip debug libs at all, and strip cross libs elsewhere
 	@# with the cross host tools until dh_strip gets smarter.
