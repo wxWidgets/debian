@@ -4,8 +4,9 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
     + Drop patches applied upstream: fix-FTBFS.patch, CVE-2009-2369.dpatch
     + Removed hunks from patches/fix-path-to-some-interpreters which are no
       longer relevant since those files no longer have '#!' lines upstream.
+    + Refresh patches.
 
- -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 02:23:24 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 02:34:36 +0000
 
 wxwidgets2.8 (2.8.10.1+dfsg-4) unstable; urgency=low
 

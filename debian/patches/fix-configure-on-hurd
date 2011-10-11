@@ -2,7 +2,7 @@ fix build on hurd
 
 --- a/build/aclocal/bakefile.m4
 +++ b/build/aclocal/bakefile.m4
-@@ -444,7 +444,7 @@
+@@ -443,7 +443,7 @@
        ;;
  
        powerpc-apple-macos* | \
@@ -11,7 +11,7 @@ fix build on hurd
        *-*-mirbsd* | \
        *-*-sunos4* | \
        *-*-osf* | \
-@@ -496,7 +496,7 @@
+@@ -495,7 +495,7 @@
  
      case "${BAKEFILE_HOST}" in
        *-*-linux* | *-*-freebsd* | *-*-openbsd* | *-*-netbsd* | \
@@ -22,7 +22,7 @@ fix build on hurd
          else
 --- a/configure
 +++ b/configure
-@@ -49098,7 +49098,7 @@
+@@ -49214,7 +49214,7 @@
        ;;
  
        powerpc-apple-macos* | \
@@ -31,7 +31,7 @@ fix build on hurd
        *-*-mirbsd* | \
        *-*-sunos4* | \
        *-*-osf* | \
-@@ -49142,7 +49142,7 @@
+@@ -49258,7 +49258,7 @@
  
      case "${BAKEFILE_HOST}" in
        *-*-linux* | *-*-freebsd* | *-*-openbsd* | *-*-netbsd* | \

@@ -8,7 +8,7 @@
 @DPATCH@
 --- a/wxPython/wx/tools/XRCed/component.py
 +++ b/wxPython/wx/tools/XRCed/component.py
-@@ -688,7 +688,7 @@
+@@ -708,7 +708,7 @@
          if panel not in self.panels: self.panels[panel] = []
          # Auto-select bitmap if not provided
          if not bitmap:

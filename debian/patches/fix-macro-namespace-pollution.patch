@@ -158,7 +158,7 @@ diff --git a/include/wx/wxchar.h b/include/wx/wxchar.h
 index bbdcab1..b33db89 100644
 --- a/include/wx/wxchar.h
 +++ b/include/wx/wxchar.h
-@@ -997,7 +997,7 @@ WXDLLIMPEXP_BASE bool wxOKlibc(); /* for internal use */
+@@ -1017,7 +1017,7 @@ WXDLLIMPEXP_BASE bool wxOKlibc(); /* for internal use */
  #ifndef wxSnprintf_
      /* no snprintf(), cook our own */
      WXDLLIMPEXP_BASE int
@@ -167,7 +167,7 @@ index bbdcab1..b33db89 100644
  #endif
  #ifndef wxVsnprintf_
      /* no (suitable) vsnprintf(), cook our own */
-@@ -1037,13 +1037,13 @@ WXDLLIMPEXP_BASE bool wxOKlibc(); /* for internal use */
+@@ -1057,13 +1057,13 @@ WXDLLIMPEXP_BASE bool wxOKlibc(); /* for internal use */
          either because we don't have them at all or because they don't have the
          semantics we need
       */
@@ -187,7 +187,7 @@ index bbdcab1..b33db89 100644
      int wxVfprintf( FILE *stream, const wxChar *format, va_list ap );
      int wxVprintf( const wxChar *format, va_list ap );
      int wxVsprintf( wxChar *str, const wxChar *format, va_list ap );
-@@ -1056,7 +1056,7 @@ WXDLLIMPEXP_BASE bool wxOKlibc(); /* for internal use */
+@@ -1076,7 +1076,7 @@ WXDLLIMPEXP_BASE bool wxOKlibc(); /* for internal use */
     anything as our own wxVsnprintf_() already behaves as needed.
  */
  #if defined(wxNEED_PRINTF_CONVERSION) && defined(wxVsnprintf_)
