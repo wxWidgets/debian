@@ -1,21 +1,5 @@
 useless changes to make lintian quiet
 
---- a/wxPython/wx/tools/Editra/tests/syntax/octave.oct
-+++ b/wxPython/wx/tools/Editra/tests/syntax/octave.oct
-@@ -1,4 +1,4 @@
--#! /bin/octave -qf
-+#! /usr/bin/octave -qf
- # Syntax Highlight Test File for Octave
- # Some comments about this file
- 
---- a/wxPython/wx/tools/Editra/tests/syntax/tcl_tk.tcl
-+++ b/wxPython/wx/tools/Editra/tests/syntax/tcl_tk.tcl
-@@ -1,4 +1,4 @@
--#!/usr/local/bin/wish -f
-+#!/usr/bin/wish -f
- # Syntax Highlighting Test File for TCL/TK
- # Comments are like this
- # Hello World in tcl/tk
 --- a/wxPython/demo/Main.py
 +++ b/wxPython/demo/Main.py
 @@ -1,4 +1,4 @@
