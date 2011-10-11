@@ -26,8 +26,9 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
     is the correct version for Debian.
   * Update debhelper compatibility level from 5 to 7, and use dh_prep instead
     of dh_clean -k.
+  * Add ${misc:Depends}.
 
- -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 13:37:07 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 14:26:50 +0000
 
 wxwidgets2.8 (2.8.10.1+dfsg-4) unstable; urgency=low
 

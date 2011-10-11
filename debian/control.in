@@ -16,7 +16,7 @@ Homepage: http://www.wxwidgets.org/
 
 Package: libwxbase=SOV=U
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: wxBase library (runtime) - non-GUI support classes of wxWidgets toolkit
  wxBase is a collection of C++ classes providing basic data structures
  (strings, lists, arrays), powerful wxDateTime class for date manipulations,
@@ -33,7 +33,7 @@ Description: wxBase library (runtime) - non-GUI support classes of wxWidgets too
 Package: libwxbase=V=U-dev
 Architecture: any
 Section: libdevel
-Depends: wx=V-headers (= ${binary:Version}), libwxbase=SOV=U (= ${binary:Version}), libc6-dev | libc-dev
+Depends: wx=V-headers (= ${binary:Version}), libwxbase=SOV=U (= ${binary:Version}), libc6-dev | libc-dev, ${misc:Depends}
 Suggests: wx=V-doc, gettext
 Description: wxBase library (development) - non-GUI support classes of wxWidgets toolkit
  wxBase is a collection of C++ classes providing basic data structures
@@ -51,7 +51,7 @@ Package: libwxbase=V=U-dbg
 Architecture: any
 Section: debug
 Priority: extra
-Depends: wx=V-headers (= ${binary:Version}), libc6-dev
+Depends: wx=V-headers (= ${binary:Version}), libc6-dev, ${misc:Depends}
 Description: wxBase library (debug) - non-GUI support classes of wxWidgets toolkit
  wxBase is a collection of C++ classes providing basic data structures
  (strings, lists, arrays), powerful wxDateTime class for date manipulations,
@@ -68,7 +68,7 @@ Description: wxBase library (debug) - non-GUI support classes of wxWidgets toolk
 
 Package: libwxgtk=SOV=U
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: libgnomeprintui2.2-0
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ runtime)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
@@ -82,7 +82,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ runtime)
 Package: libwxgtk=V=U-dev
 Architecture: any
 Section: libdevel
-Depends: wx=V-headers (= ${binary:Version}), libwxgtk=SOV=U (= ${binary:Version}), libwxbase=V=U-dev (= ${binary:Version})
+Depends: wx=V-headers (= ${binary:Version}), libwxgtk=SOV=U (= ${binary:Version}), libwxbase=V=U-dev (= ${binary:Version}), ${misc:Depends}
 Suggests: wx-common, wx=V-doc, libstdc++-dev, gettext, libgl1-mesa-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
@@ -99,7 +99,7 @@ Package: libwxgtk=V=U-dbg
 Architecture: any
 Section: debug
 Priority: extra
-Depends: ${shlibs:Depends}, wx=V-headers (= ${binary:Version}), libwxbase=V=U-dbg (= ${binary:Version})
+Depends: ${shlibs:Depends}, wx=V-headers (= ${binary:Version}), libwxbase=V=U-dbg (= ${binary:Version}), ${misc:Depends}
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ debug)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -114,7 +114,7 @@ Package: python-wxgtk=V=U
 Architecture: any
 Homepage: http://www.wxpython.org/
 Section: python
-Depends: python-wxversion (>= 2.6.3.2.2-2), ${python:Depends}, ${shlibs:Depends}
+Depends: python-wxversion (>= 2.6.3.2.2-2), ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Suggests: wx=V-doc, wx=V-examples, python-xml, editra
 Conflicts: libwxgtk2.6-0-python, wxpython2.6-0, python-wxaddons
 Replaces: libwxgtk2.6-0-python, wxpython2.6-0
@@ -133,7 +133,7 @@ Homepage: http://www.wxpython.org/
 Priority: extra
 Architecture: any
 Section: debug
-Depends: python-wxgtk=V=U (= ${binary:Version}), python-dbg, ${shlibs:Depends}
+Depends: python-wxgtk=V=U (= ${binary:Version}), python-dbg, ${shlibs:Depends}, ${misc:Depends}
 Suggests: python-xml-dbg
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding, debug version)
  wxWidgets is a class library for C++ providing GUI (Graphical User
@@ -147,7 +147,7 @@ Package: python-wxversion
 Homepage: http://www.wxpython.org/
 Architecture: all
 Section: python
-Depends: ${python:Depends}
+Depends: ${python:Depends}, ${misc:Depends}
 Conflicts: wxpython2.6-0, python-wxgtk2.6 (<< 2.6.3.2.2-2), python-wxgtk2.4 (<< 2.4.5.1.2)
 Replaces: wxpython2.6-0
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython version selector)
@@ -161,7 +161,7 @@ Package: python-wxtools
 Homepage: http://www.wxpython.org/
 Architecture: all
 Section: python
-Depends: python-wxgtk=V=U, ${python:Depends}
+Depends: python-wxgtk=V=U, ${python:Depends}, ${misc:Depends}
 Conflicts: wxpython2.6-0
 Replaces: wxpython2.6-0, libwxgtk2.4-python, wxpython2.4-1
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython common files)
@@ -175,7 +175,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython common files)
 Package: wx-common
 Architecture: any
 Section: devel
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Conflicts: wx2.6-common
 Replaces: wxwin2.4-headers, libwxgtk2.4-contrib-dev, wx2.6-common
 Description: wxWidgets Cross-platform C++ GUI toolkit (common support files)
@@ -238,14 +238,14 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (examples)
 Package: libwxmsw=V=U-dev
 Architecture: any
 Section: otherosfs
-Depends: wx=V-headers-msw (= ${binary:Version})
+Depends: wx=V-headers-msw (= ${binary:Version}), ${misc:Depends}
 Description: wxMSW mingw32msvc-cross
  mingw32msvc-cross wxMSW libs.
 
 Package: libwxmsw=V=U-dbg
 Architecture: any
 Section: otherosfs
-Depends: wx=V-headers-msw (= ${binary:Version})
+Depends: wx=V-headers-msw (= ${binary:Version}), ${misc:Depends}
 Description: wxMSW mingw32msvc-cross (debug)
  mingw32msvc-cross wxMSW libs.
  __WXDEBUG__ version.
@@ -253,7 +253,7 @@ Description: wxMSW mingw32msvc-cross (debug)
 Package: wx=V-headers-msw
 Architecture: any
 Section: otherosfs
-Depends: wx=V-headers (= ${binary:Version})
+Depends: wx=V-headers (= ${binary:Version}), ${misc:Depends}
 Description: Extra wxWidgets headers for mingw32msvc-cross
  Headers required by the wxWidgets mingw32msvc-cross libraries.
 
