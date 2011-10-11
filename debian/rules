@@ -798,7 +798,6 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
 
 	rm debian/$(package_gtk_py_tools)/usr/bin/editra
 	dh_installdirs usr/share/lintian/overrides
-	grep ^$(package_gtk_py_tools): debian/lintian-override > debian/$(package_gtk_py_tools)/usr/share/lintian/overrides/$(package_gtk_py_tools)
 endif
 	mkdir -p debian/$(package_gtk_py_tools)/usr/share/pixmaps
 	mkdir -p debian/$(package_gtk_py_tools)/usr/share/applications
