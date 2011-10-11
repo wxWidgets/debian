@@ -84,7 +84,7 @@ Package: libwxgtk=V=U-dev
 Architecture: any
 Section: libdevel
 Depends: wx=V-headers (= ${binary:Version}), libwxgtk=SOV=U (= ${binary:Version}), libwxbase=V=U-dev (= ${binary:Version})
-Suggests: wx-common, wx=V-doc, libstdc++-dev, gettext, libgl1-mesa-dev | xlibmesa-gl-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
+Suggests: wx-common, wx=V-doc, libstdc++-dev, gettext, libgl1-mesa-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some

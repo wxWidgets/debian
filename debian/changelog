@@ -7,8 +7,10 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
     + Refresh patches.
   * Removed unused lintian override "python-wxtools:
     python-script-but-no-python-dep".
+  * Drop "Suggests:" alternative of xlibmesa-gl-dev, which became a dummy
+    package in etch.
 
- -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 02:47:47 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 02:50:37 +0000
 
 wxwidgets2.8 (2.8.10.1+dfsg-4) unstable; urgency=low
 
