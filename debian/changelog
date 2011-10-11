@@ -17,8 +17,9 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
   * Support DEB_BUILD_OPTIONS=parallel=n
   * Add description for patch fix-build-with-python2.6.patch (just taken from
     Ryan's commit message).
+  * Create debian/source/format to squash lintian warning.
 
- -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 13:07:09 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 13:08:43 +0000
 
 wxwidgets2.8 (2.8.10.1+dfsg-4) unstable; urgency=low
 
