@@ -21,8 +21,11 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
   * Remove bundled copy of expat (which we don't use) when we repack the
     upstream sources to fix lintian warning about an ancient copy of libtool in
     there.
+  * Remove versioned conflict on python-wxgtk2.8 << a version which was never
+    in Debian.  Adjust versioned conflict of python-wxgtk2.6 to what Ron says
+    is the correct version for Debian.
 
- -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 13:11:36 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 13:18:13 +0000
 
 wxwidgets2.8 (2.8.10.1+dfsg-4) unstable; urgency=low
 
