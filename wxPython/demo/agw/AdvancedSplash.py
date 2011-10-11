@@ -34,7 +34,7 @@ class TestPanel(wx.Panel):
         shadow = wx.WHITE
         
         frame = AS.AdvancedSplash(self, bitmap=bitmap, timeout=5000,
-                                  extrastyle=AS.AS_TIMEOUT |
+                                  agwStyle=AS.AS_TIMEOUT |
                                   AS.AS_CENTER_ON_PARENT |
                                   AS.AS_SHADOW_BITMAP,
                                   shadowcolour=shadow)

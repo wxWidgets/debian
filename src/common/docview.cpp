@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docview.cpp 51392 2008-01-26 23:23:09Z VZ $
+// RCS-ID:      $Id: docview.cpp 66911 2011-02-16 21:31:33Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -630,8 +630,10 @@ wxView::wxView()
 
 wxView::~wxView()
 {
-    GetDocumentManager()->ActivateView(this, false);
-    m_viewDocument->RemoveView(this);
+    if (m_viewDocument && GetDocumentManager())
+        GetDocumentManager()->ActivateView(this, false);
+    if (m_viewDocument)
+        m_viewDocument->RemoveView(this);
 }
 
 // Extend event processing to search the document's event table
@@ -1026,6 +1028,7 @@ void wxDocManager::OnPrint(wxCommandEvent& WXUNUSED(event))
 void wxDocManager::OnPreview(wxCommandEvent& WXUNUSED(event))
 {
 #if wxUSE_PRINTING_ARCHITECTURE
+    wxBusyCursor busy;
     wxView *view = GetCurrentView();
     if (!view)
         return;
@@ -2007,12 +2010,15 @@ bool wxDocParentFrame::ProcessEvent(wxEvent& event)
 // - must delete all frames except for the main one.
 void wxDocParentFrame::OnCloseWindow(wxCloseEvent& event)
 {
-    if (m_docManager->Clear(!event.CanVeto()))
+    if ( m_docManager && !m_docManager->Clear(!event.CanVeto()) )
+    {
+        // The user decided not to close finally, abort.
+        event.Veto();
+    }
+    else
     {
         this->Destroy();
     }
-    else
-        event.Veto();
 }
 
 #if wxUSE_PRINTING_ARCHITECTURE

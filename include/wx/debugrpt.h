@@ -3,7 +3,7 @@
 // Purpose:     declaration of wxDebugReport class
 // Author:      Vadim Zeitlin
 // Created:     2005-01-17
-// RCS-ID:      $Id: debugrpt.h 49563 2007-10-31 20:46:21Z VZ $
+// RCS-ID:      $Id: debugrpt.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -161,7 +161,7 @@ public:
     wxDebugReportUpload(const wxString& url,
                         const wxString& input,
                         const wxString& action,
-                        const wxString& curl = _T("curl"));
+                        const wxString& curl = wxT("curl"));
 
 protected:
     virtual bool DoProcess();

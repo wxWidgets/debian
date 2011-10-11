@@ -4,7 +4,7 @@
 // Author:      Michael Bedward (based on code by Julian Smart, Robin Dunn)
 // Modified by: Robin Dunn, Vadim Zeitlin, Santiago Palacios
 // Created:     1/08/1999
-// RCS-ID:      $Id: grid.cpp 58753 2009-02-08 10:23:19Z VZ $
+// RCS-ID:      $Id: grid.cpp 66945 2011-02-17 15:01:48Z JS $
 // Copyright:   (c) Michael Bedward (mbedward@ozemail.com.au)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -147,18 +147,45 @@ DEFINE_EVENT_TYPE(wxEVT_GRID_EDITOR_CREATED)
 // private classes
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_ADV wxGridRowLabelWindow : public wxWindow
+// common base class for various grid subwindows
+class WXDLLIMPEXP_ADV wxGridSubwindow : public wxWindow
 {
 public:
-    wxGridRowLabelWindow() { m_owner = (wxGrid *)NULL; }
+    wxGridSubwindow() { m_owner = NULL; }
+    wxGridSubwindow(wxGrid *owner,
+                    wxWindowID id,
+                    const wxPoint& pos,
+                    const wxSize& size,
+                    int additionalStyle = 0,
+                    const wxString& name = wxPanelNameStr)
+        : wxWindow(owner, id, pos, size,
+                   wxWANTS_CHARS | wxBORDER_NONE | additionalStyle,
+                   name)
+    {
+        m_owner = owner;
+    }
+
+    wxGrid *GetOwner() { return m_owner; }
+
+protected:
+    void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
+
+    wxGrid *m_owner;
+
+    DECLARE_EVENT_TABLE()
+    DECLARE_NO_COPY_CLASS(wxGridSubwindow)
+};
+
+class WXDLLIMPEXP_ADV wxGridRowLabelWindow : public wxGridSubwindow
+{
+public:
+    wxGridRowLabelWindow() { }
     wxGridRowLabelWindow( wxGrid *parent, wxWindowID id,
                           const wxPoint &pos, const wxSize &size );
 
     virtual bool AcceptsFocus() const { return false; }
 
 private:
-    wxGrid   *m_owner;
-
     void OnPaint( wxPaintEvent& event );
     void OnMouseEvent( wxMouseEvent& event );
     void OnMouseWheel( wxMouseEvent& event );
@@ -172,18 +199,16 @@ private:
 };
 
 
-class WXDLLIMPEXP_ADV wxGridColLabelWindow : public wxWindow
+class WXDLLIMPEXP_ADV wxGridColLabelWindow : public wxGridSubwindow
 {
 public:
-    wxGridColLabelWindow() { m_owner = (wxGrid *)NULL; }
+    wxGridColLabelWindow() { }
     wxGridColLabelWindow( wxGrid *parent, wxWindowID id,
                           const wxPoint &pos, const wxSize &size );
 
     virtual bool AcceptsFocus() const { return false; }
 
 private:
-    wxGrid   *m_owner;
-
     void OnPaint( wxPaintEvent& event );
     void OnMouseEvent( wxMouseEvent& event );
     void OnMouseWheel( wxMouseEvent& event );
@@ -197,18 +222,16 @@ private:
 };
 
 
-class WXDLLIMPEXP_ADV wxGridCornerLabelWindow : public wxWindow
+class WXDLLIMPEXP_ADV wxGridCornerLabelWindow : public wxGridSubwindow
 {
 public:
-    wxGridCornerLabelWindow() { m_owner = (wxGrid *)NULL; }
+    wxGridCornerLabelWindow() { }
     wxGridCornerLabelWindow( wxGrid *parent, wxWindowID id,
                              const wxPoint &pos, const wxSize &size );
 
     virtual bool AcceptsFocus() const { return false; }
 
 private:
-    wxGrid *m_owner;
-
     void OnMouseEvent( wxMouseEvent& event );
     void OnMouseWheel( wxMouseEvent& event );
     void OnKeyDown( wxKeyEvent& event );
@@ -221,12 +244,11 @@ private:
     DECLARE_NO_COPY_CLASS(wxGridCornerLabelWindow)
 };
 
-class WXDLLIMPEXP_ADV wxGridWindow : public wxWindow
+class WXDLLIMPEXP_ADV wxGridWindow : public wxGridSubwindow
 {
 public:
     wxGridWindow()
     {
-        m_owner = NULL;
         m_rowLabelWin = NULL;
         m_colLabelWin = NULL;
     }
@@ -235,14 +257,10 @@ public:
                   wxGridRowLabelWindow *rowLblWin,
                   wxGridColLabelWindow *colLblWin,
                   wxWindowID id, const wxPoint &pos, const wxSize &size );
-    virtual ~wxGridWindow() {}
 
     void ScrollWindow( int dx, int dy, const wxRect *rect );
 
-    wxGrid* GetOwner() { return m_owner; }
-
 private:
-    wxGrid                   *m_owner;
     wxGridRowLabelWindow     *m_rowLabelWin;
     wxGridColLabelWindow     *m_colLabelWin;
 
@@ -2809,30 +2827,30 @@ void wxGridRowOrColAttrData::SetAttr(wxGridCellAttr *attr, int rowOrCol)
     {
         if ( attr )
         {
-            // add the attribute - no need to do anything to reference count
-            //                     since we take ownership of the attribute.
+            // store the new attribute, taking its ownership
             m_rowsOrCols.Add(rowOrCol);
             m_attrs.Add(attr);
         }
         // nothing to remove
     }
-    else
+    else // we have an attribute for this row or column
     {
         size_t n = (size_t)i;
-        if ( m_attrs[n] == attr )
-            // nothing to do
-            return;
+
+        // notice that this code works correctly even when the old attribute is
+        // the same as the new one: as we own of it, we must call DecRef() on
+        // it in any case and this won't result in destruction of the new
+        // attribute if it's the same as old one because it must have ref count
+        // of at least 2 to be passed to us while we keep a reference to it too
+        m_attrs[n]->DecRef();
+
         if ( attr )
         {
-            // change the attribute, handling reference count manually,
-            //                       taking ownership of the new attribute.
-            m_attrs[n]->DecRef();
+            // replace the attribute with the new one
             m_attrs[n] = attr;
         }
-        else
+        else // remove the attribute
         {
-            // remove this attribute, handling reference count manually
-            m_attrs[n]->DecRef();
             m_rowsOrCols.RemoveAt(n);
             m_attrs.RemoveAt(n);
         }
@@ -3837,9 +3855,18 @@ void wxGridStringTable::SetColLabelValue( int col, const wxString& value )
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+BEGIN_EVENT_TABLE(wxGridSubwindow, wxWindow)
+    EVT_MOUSE_CAPTURE_LOST(wxGridSubwindow::OnMouseCaptureLost)
+END_EVENT_TABLE()
+
+void wxGridSubwindow::OnMouseCaptureLost(wxMouseCaptureLostEvent& WXUNUSED(event))
+{
+    m_owner->CancelMouseCapture();
+}
+
 IMPLEMENT_DYNAMIC_CLASS( wxGridRowLabelWindow, wxWindow )
 
-BEGIN_EVENT_TABLE( wxGridRowLabelWindow, wxWindow )
+BEGIN_EVENT_TABLE( wxGridRowLabelWindow, wxGridSubwindow )
     EVT_PAINT( wxGridRowLabelWindow::OnPaint )
     EVT_MOUSEWHEEL( wxGridRowLabelWindow::OnMouseWheel )
     EVT_MOUSE_EVENTS( wxGridRowLabelWindow::OnMouseEvent )
@@ -3851,7 +3878,7 @@ END_EVENT_TABLE()
 wxGridRowLabelWindow::wxGridRowLabelWindow( wxGrid *parent,
                                             wxWindowID id,
                                             const wxPoint &pos, const wxSize &size )
-  : wxWindow( parent, id, pos, size, wxWANTS_CHARS | wxBORDER_NONE | wxFULL_REPAINT_ON_RESIZE )
+  : wxGridSubwindow(parent, id, pos, size)
 {
     m_owner = parent;
 }
@@ -3910,7 +3937,7 @@ void wxGridRowLabelWindow::OnChar( wxKeyEvent& event )
 
 IMPLEMENT_DYNAMIC_CLASS( wxGridColLabelWindow, wxWindow )
 
-BEGIN_EVENT_TABLE( wxGridColLabelWindow, wxWindow )
+BEGIN_EVENT_TABLE( wxGridColLabelWindow, wxGridSubwindow )
     EVT_PAINT( wxGridColLabelWindow::OnPaint )
     EVT_MOUSEWHEEL( wxGridColLabelWindow::OnMouseWheel )
     EVT_MOUSE_EVENTS( wxGridColLabelWindow::OnMouseEvent )
@@ -3922,7 +3949,7 @@ END_EVENT_TABLE()
 wxGridColLabelWindow::wxGridColLabelWindow( wxGrid *parent,
                                             wxWindowID id,
                                             const wxPoint &pos, const wxSize &size )
-  : wxWindow( parent, id, pos, size, wxWANTS_CHARS | wxBORDER_NONE | wxFULL_REPAINT_ON_RESIZE )
+  : wxGridSubwindow(parent, id, pos, size)
 {
     m_owner = parent;
 }
@@ -3984,7 +4011,7 @@ void wxGridColLabelWindow::OnChar( wxKeyEvent& event )
 
 IMPLEMENT_DYNAMIC_CLASS( wxGridCornerLabelWindow, wxWindow )
 
-BEGIN_EVENT_TABLE( wxGridCornerLabelWindow, wxWindow )
+BEGIN_EVENT_TABLE( wxGridCornerLabelWindow, wxGridSubwindow )
     EVT_MOUSEWHEEL( wxGridCornerLabelWindow::OnMouseWheel )
     EVT_MOUSE_EVENTS( wxGridCornerLabelWindow::OnMouseEvent )
     EVT_PAINT( wxGridCornerLabelWindow::OnPaint )
@@ -3996,7 +4023,7 @@ END_EVENT_TABLE()
 wxGridCornerLabelWindow::wxGridCornerLabelWindow( wxGrid *parent,
                                                   wxWindowID id,
                                                   const wxPoint &pos, const wxSize &size )
-  : wxWindow( parent, id, pos, size, wxWANTS_CHARS | wxBORDER_NONE | wxFULL_REPAINT_ON_RESIZE )
+  : wxGridSubwindow(parent, id, pos, size)
 {
     m_owner = parent;
 }
@@ -4067,7 +4094,7 @@ void wxGridCornerLabelWindow::OnChar( wxKeyEvent& event )
 
 IMPLEMENT_DYNAMIC_CLASS( wxGridWindow, wxWindow )
 
-BEGIN_EVENT_TABLE( wxGridWindow, wxWindow )
+BEGIN_EVENT_TABLE( wxGridWindow, wxGridSubwindow )
     EVT_PAINT( wxGridWindow::OnPaint )
     EVT_MOUSEWHEEL( wxGridWindow::OnMouseWheel )
     EVT_MOUSE_EVENTS( wxGridWindow::OnMouseEvent )
@@ -4085,10 +4112,8 @@ wxGridWindow::wxGridWindow( wxGrid *parent,
                             wxWindowID id,
                             const wxPoint &pos,
                             const wxSize &size )
-            : wxWindow(
-                parent, id, pos, size,
-                wxWANTS_CHARS | wxBORDER_NONE | wxCLIP_CHILDREN | wxFULL_REPAINT_ON_RESIZE,
-                wxT("grid window") )
+            : wxGridSubwindow(parent, id, pos, size,
+                              wxCLIP_CHILDREN, wxT("grid window") )
 {
     m_owner = parent;
     m_rowLabelWin = rowLblWin;
@@ -4630,6 +4655,7 @@ void wxGrid::Init()
 
     m_currentCellCoords = wxGridNoCellCoords;
 
+    m_batchCount = 0; // used by ClearSelection() so init before calling it
     ClearSelection();
 
     m_selectionBackground = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
@@ -4638,7 +4664,6 @@ void wxGrid::Init()
     m_editable = true;  // default for whole grid
 
     m_inOnKeyDown = false;
-    m_batchCount = 0;
 
     m_extraWidth =
     m_extraHeight = 0;
@@ -5943,6 +5968,21 @@ void wxGrid::ProcessCornerLabelMouseEvent( wxMouseEvent& event )
         {
             // no default action at the moment
         }
+    }
+}
+
+void wxGrid::CancelMouseCapture()
+{
+    // cancel operation currently in progress, whatever it is
+    if ( m_winCapture )
+    {
+        m_isDragging = false;
+        m_cursorMode = WXGRID_CURSOR_SELECT_CELL;
+        m_winCapture->SetCursor( *wxSTANDARD_CURSOR );
+        m_winCapture = NULL;
+
+        // remove traces of whatever we drew on screen
+        Refresh();
     }
 }
 
@@ -8596,6 +8636,11 @@ void wxGrid::ShowCellEditControl()
                     editor->GetControl()->GetPosition().y );
             editor->Show( true, attr );
 
+#ifdef __WXGTK20__
+            int px, py;
+            GetViewStart(& px, & py);
+#endif
+
             // recalc dimensions in case we need to
             // expand the scrolled window to account for editor
             CalcDimensions();
@@ -8605,6 +8650,14 @@ void wxGrid::ShowCellEditControl()
 
             editor->DecRef();
             attr->DecRef();
+
+#ifdef __WXGTK20__
+            // On GTK+, erroneous scrolling to the old control
+            // position can happen when the grid window gets a
+            // focus event and this is processed by wxScrollHelper.
+            // This line resets the scroll position.
+            Scroll(px, py);
+#endif
         }
     }
 }

@@ -11953,6 +11953,10 @@
   <param name="Name" value="wxRICHTEXT_HANDLER_NO_HEADER_FOOTER">
   </OBJECT>
  <LI> <OBJECT type="text/sitemap">
+  <param name="Local" value="wx_wxrichtexthtmlhandler.html#wxrichtexthtmlhandler">
+  <param name="Name" value="wxRICHTEXT_HANDLER_USE_CSS">
+  </OBJECT>
+ <LI> <OBJECT type="text/sitemap">
   <param name="Local" value="wx_wxbufferedinputstream.html#wxbufferedinputstream">
   <param name="Name" value="wxBufferedInputStream">
   </OBJECT>

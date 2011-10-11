@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2003-07-12
-// RCS-ID:      $Id: tbarwce.cpp 44268 2007-01-20 14:13:52Z VZ $
+// RCS-ID:      $Id: tbarwce.cpp 61236 2009-06-28 17:01:27Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -276,6 +276,10 @@ bool wxToolMenuBar::DoInsertTool(size_t WXUNUSED(pos), wxToolBarToolBase *tool)
 
 bool wxToolMenuBar::DoDeleteTool(size_t pos, wxToolBarToolBase *tool)
 {
+    // Skip over the menus
+    if (GetMenuBar())
+        pos += GetMenuBar()->GetMenuCount();
+        
     // the main difficulty we have here is with the controls in the toolbars:
     // as we (sometimes) use several separators to cover up the space used by
     // them, the indices are not the same for us and the toolbar

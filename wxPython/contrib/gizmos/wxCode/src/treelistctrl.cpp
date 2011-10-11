@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Maintainer:  Otto Wyss
 // Created:     01/02/97
-// RCS-ID:      $Id: treelistctrl.cpp 51922 2008-02-19 20:47:52Z RD $
+// RCS-ID:      $Id: treelistctrl.cpp 63311 2010-01-30 00:42:45Z RD $
 // Copyright:   (c) 2004 Robert Roebling, Julian Smart, Alberto Griggio,
 //              Vadim Zeitlin, Otto Wyss
 // Licence:     wxWindows
@@ -992,7 +992,8 @@ wxEditTextCtrl::wxEditTextCtrl (wxWindow *parent,
                                 int style,
                                 const wxValidator& validator,
                                 const wxString &name)
-    : wxTextCtrl (parent, id, value, pos, size, style|wxSIMPLE_BORDER, validator, name)
+    : wxTextCtrl (parent, id, value, pos, size,
+                  style|wxSIMPLE_BORDER|wxTE_PROCESS_ENTER, validator, name)
 {
     m_res = res;
     m_accept = accept;
@@ -2697,9 +2698,9 @@ void wxTreeListMainWindow::SelectItem (const wxTreeItemId& itemId,
     }
 
     // select item or item range
-    if (lastId.IsOk() && (itemId != lastId)) {
+    if (!is_single && lastId.IsOk() && (itemId != lastId)) {
 
-        if (!unselected) UnselectAll();
+        if (!unselected && unselect_others) UnselectAll();
         wxTreeListItem *last = (wxTreeListItem*) lastId.m_pItem;
 
         // ensure that the position of the item it calculated in any case

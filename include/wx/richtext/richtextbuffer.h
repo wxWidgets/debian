@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2005-09-30
-// RCS-ID:      $Id: richtextbuffer.h 58841 2009-02-12 10:16:07Z JS $
+// RCS-ID:      $Id: richtextbuffer.h 64777 2010-06-28 21:21:53Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -70,10 +70,10 @@
 #include "wx/dataobj.h"
 #endif
 
-// Setting wxRICHTEXT_USE_OWN_CARET to 1 implements a non-flashing
-// cursor reliably without using wxClientDC in case there
+// Setting wxRICHTEXT_USE_OWN_CARET to 1 implements a
+// caret reliably without using wxClientDC in case there
 // are platform-specific problems with the generic caret.
-#if defined(wxMAC_USE_CORE_GRAPHICS) && wxMAC_USE_CORE_GRAPHICS
+#if defined(__WXGTK__) || (defined(wxMAC_USE_CORE_GRAPHICS) && wxMAC_USE_CORE_GRAPHICS)
 #define wxRICHTEXT_USE_OWN_CARET 1
 #else
 #define wxRICHTEXT_USE_OWN_CARET 0
@@ -287,7 +287,7 @@ class WXDLLIMPEXP_FWD_RICHTEXT wxRichTextBuffer;
 #define wxTEXT_ATTR_PARAGRAPH (wxTEXT_ATTR_ALIGNMENT|wxTEXT_ATTR_LEFT_INDENT|wxTEXT_ATTR_RIGHT_INDENT|wxTEXT_ATTR_TABS|\
     wxTEXT_ATTR_PARA_SPACING_BEFORE|wxTEXT_ATTR_PARA_SPACING_AFTER|wxTEXT_ATTR_LINE_SPACING|\
     wxTEXT_ATTR_BULLET_STYLE|wxTEXT_ATTR_BULLET_NUMBER|wxTEXT_ATTR_BULLET_TEXT|wxTEXT_ATTR_BULLET_NAME|\
-    wxTEXT_ATTR_PARAGRAPH_STYLE_NAME|wxTEXT_ATTR_LIST_STYLE_NAME|wxTEXT_ATTR_OUTLINE_LEVEL)
+    wxTEXT_ATTR_PARAGRAPH_STYLE_NAME|wxTEXT_ATTR_LIST_STYLE_NAME|wxTEXT_ATTR_OUTLINE_LEVEL|wxTEXT_ATTR_PAGE_BREAK)
 
 #define wxTEXT_ATTR_ALL (wxTEXT_ATTR_CHARACTER|wxTEXT_ATTR_PARAGRAPH)
 

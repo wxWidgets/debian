@@ -4,13 +4,17 @@
 // Author:      Wlodzimierz ABX Skiba
 // Modified by:
 // Created:     28.12.2004
-// RCS-ID:      $Id: prefconf.h 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: prefconf.h 62185 2009-09-28 10:02:42Z JS $
 // Copyright:   (c) Wlodzimierz Skiba
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _PREFCONF_H_
 #define _PREFCONF_H_
+
+#include "wx/defs.h"
+
+#if wxUSE_CONFIG
 
 // ----------------------------------------------------------------------------
 // wxPrefConfig
@@ -86,5 +90,6 @@ private:
   bool m_modGroup;
 };
 
-#endif // _PREFCONF_H_
+#endif // wxUSE_CONFIG
 
+#endif // _PREFCONF_H_

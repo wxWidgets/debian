@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: imaglist.cpp 38920 2006-04-26 08:21:31Z ABX $
+// RCS-ID:      $Id: imaglist.cpp 62205 2009-09-30 06:58:50Z JS $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ bool wxImageList::GetSize(int WXUNUSED(index), int &width, int &height) const
 // ----------------------------------------------------------------------------
 
 int wxImageList::Add(const wxBitmap& bitmap, const wxBitmap& mask)
-
+{
     return 0;
 }
 

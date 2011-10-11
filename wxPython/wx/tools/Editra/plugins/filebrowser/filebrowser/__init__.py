@@ -9,7 +9,6 @@
 # Plugin Meta
 """Adds a File Browser Sidepanel"""
 __author__ = "Cody Precord"
-__version__ = "1.4"
 
 #-----------------------------------------------------------------------------#
 # Imports

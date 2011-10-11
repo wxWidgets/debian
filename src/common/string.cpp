@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin, Ryan Norton
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.cpp 59534 2009-03-14 18:36:08Z SN $
+// RCS-ID:      $Id: string.cpp 63008 2009-12-28 20:01:39Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //              (c) 2004 Ryan Norton <wxprojects@comcast.net>
 // Licence:     wxWindows licence
@@ -819,7 +819,11 @@ bool wxStringBase::AssignCopy(size_t nSrcLen, const wxChar *pszSrcData)
       // allocation failure handled by caller
       return false;
     }
-    memcpy(m_pchData, pszSrcData, nSrcLen*sizeof(wxChar));
+
+    // use memmove() and not memcpy() here as we might be copying from our own
+    // buffer in case of assignment such as "s = s.c_str()" (see #11294)
+    memmove(m_pchData, pszSrcData, nSrcLen*sizeof(wxChar));
+
     GetStringData()->nDataLength = nSrcLen;
     m_pchData[nSrcLen] = wxT('\0');
   }

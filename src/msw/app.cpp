@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: app.cpp 58750 2009-02-08 10:01:03Z VZ $
+// RCS-ID:      $Id: app.cpp 62085 2009-09-24 15:42:13Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -563,6 +563,10 @@ void wxApp::WakeUpIdle()
             }
         }
     }
+#if wxUSE_THREADS
+    else
+        wxWakeUpMainThread();
+#endif // wxUSE_THREADS
 }
 
 // ----------------------------------------------------------------------------

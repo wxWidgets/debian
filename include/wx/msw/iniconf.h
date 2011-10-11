@@ -4,13 +4,17 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.07.98
-// RCS-ID:      $Id: iniconf.h 28931 2004-08-27 18:59:37Z ABX $
+// RCS-ID:      $Id: iniconf.h 62185 2009-09-28 10:02:42Z JS $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _INICONF_H
 #define   _INICONF_H
+
+#include "wx/defs.h"
+
+#if wxUSE_CONFIG
 
 // ----------------------------------------------------------------------------
 // wxIniConfig is a wxConfig implementation which uses MS Windows INI files to
@@ -92,4 +96,6 @@ private:
            m_strPath;     // the rest of the path (no trailing '_'!)
 };
 
-#endif  //_INICONF_H
+#endif // wxUSE_CONFIG
+
+#endif // _INICONF_H

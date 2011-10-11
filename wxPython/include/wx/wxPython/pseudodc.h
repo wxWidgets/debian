@@ -4,7 +4,7 @@
 // Author:      Paul Lanier
 // Modified by:
 // Created:     05/25/06
-// RCS-ID:      $Id: pseudodc.h 49047 2007-10-05 18:08:39Z RD $
+// RCS-ID:      $Id: pseudodc.h 61290 2009-07-02 17:16:45Z RD $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -473,7 +473,10 @@ class pdcDrawSplineOp : public pdcOp
         {
             int i;
             for(i=0; i<m_n; i++)
-                m_points[i].x+=dx; m_points[i].y+=dy;
+            {
+                m_points[i].x += dx;
+                m_points[i].y += dy;
+            }
         }
     protected:
         wxPoint *m_points;

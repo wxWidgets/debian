@@ -15,11 +15,11 @@ automatic icon theming to whats already available in the base toolbar class.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ed_toolbar.py 60516 2009-05-04 18:38:14Z CJP $"
-__revision__ = "$Revision: 60516 $"
+__svnid__ = "$Id: ed_toolbar.py 66745 2011-01-24 20:42:39Z CJP $"
+__revision__ = "$Revision: 66745 $"
 
 #--------------------------------------------------------------------------#
-# Dependancies
+# Dependencies
 import wx
 import ed_glob
 import ed_msg
@@ -47,20 +47,25 @@ class EdToolBar(wx.ToolBar):
         sstyle = wx.TB_HORIZONTAL | wx.NO_BORDER
         if wx.Platform == '__WXGTK__':
             sstyle = sstyle | wx.TB_DOCKABLE
-        wx.ToolBar.__init__(self, parent, style=sstyle)
+        super(EdToolBar, self).__init__(parent, style=sstyle)
 
         # Attributes
         self._theme = Profile_Get('ICONS')
         self.SetToolBitmapSize(Profile_Get('ICON_SZ', 'size_tuple'))
         self._PopulateTools()
 
+        # Event Handlers
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy, self)
+
         # Message Handlers
         ed_msg.Subscribe(self.OnThemeChange, ed_msg.EDMSG_THEME_CHANGED)
 
         self.Realize()
 
-    def __del__(self):
-        ed_msg.Unsubscribe(self.OnThemeChange)
+    def OnDestroy(self, evt):
+        if evt.GetId() == self.GetId():
+            ed_msg.Unsubscribe(self.OnThemeChange)
+        evt.Skip()
 
     #---- End Init ----#
 
@@ -94,10 +99,10 @@ class EdToolBar(wx.ToolBar):
 
     def AddSimpleTool(self, tool_id, lbl, helpstr):
         """Overides the default function to allow for easier tool
-        generation/placement by automatically getting an appropriat icon from
+        generation/placement by automatically getting an appropriate icon from
         the art provider.
         @param tool_id: Id of tool to add
-        @param lbl: tool lable
+        @param lbl: tool label
         @param helpstr: tool help string
 
         """
@@ -129,7 +134,13 @@ class EdToolBar(wx.ToolBar):
         """
         self._theme = Profile_Get('ICONS')
         csize = self.GetToolBitmapSize()
-        self.SetToolBitmapSize(Profile_Get('ICON_SZ', 'size_tuple'))
+        nsize = Profile_Get('ICON_SZ', 'size_tuple')
+        if nsize != csize:
+            # Size changed must recreate toolbar
+            wx.CallAfter(self.GetParent().SetupToolBar)
+            return
+
+        # Change Bitmaps
         if self.GetToolBitmapSize() == (16, 16):
             client = wx.ART_MENU
         else:
@@ -138,10 +149,3 @@ class EdToolBar(wx.ToolBar):
         for tool_id in TOOL_ID:
             bmp = wx.ArtProvider.GetBitmap(str(tool_id), client)
             self.SetToolNormalBitmap(tool_id, bmp)
-
-        # HACK: to make toolbar resize properly when icon size changes
-        if csize != self.GetToolBitmapSize():
-            self.GetParent().Freeze()
-            self.Hide()
-            self.Show()
-            self.GetParent().Thaw()

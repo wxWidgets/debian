@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     11-Nov-2006
-// RCS-ID:      $Id: combo.i 46284 2007-06-02 23:46:36Z RD $
+// RCS-ID:      $Id: combo.i 63674 2010-03-12 23:53:02Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,12 @@ public:
         return wxComboCtrl::GetMainWindowOfCompositeControl();
     }
 
-    
+    void DestroyPopup()
+    {
+        wxComboCtrlBase::DestroyPopup();
+    }
+        
+
     enum
     {
         ShowBelow       = 0x0000,  // Showing popup below the control
@@ -513,6 +518,7 @@ flags are the same as wx.RendererNative flags:
     // Set value returned by GetMainWindowOfCompositeControl
     void SetCtrlMainWnd( wxWindow* wnd );
     virtual wxWindow *GetMainWindowOfCompositeControl();
+    void DestroyPopup();
 
     DocDeclStr(
         static int , GetFeatures(),

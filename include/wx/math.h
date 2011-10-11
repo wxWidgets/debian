@@ -4,7 +4,7 @@
 * Author:      John Labenski and others
 * Modified by:
 * Created:     02/02/03
-* RCS-ID:      $Id: math.h 44690 2007-03-08 04:31:24Z PC $
+* RCS-ID:      $Id: math.h 62541 2009-11-03 14:10:46Z VZ $
 * Copyright:   (c) John Labenski
 * Licence:     wxWindows licence
 */
@@ -129,8 +129,8 @@
     extern "C" {
 #endif
     /* functions from common/extended.c */
-    extern wxFloat64 ConvertFromIeeeExtended(const wxInt8 *bytes);
-    extern void ConvertToIeeeExtended(wxFloat64 num, wxInt8 *bytes);
+    WXDLLEXPORT wxFloat64 ConvertFromIeeeExtended(const wxInt8 *bytes);
+    WXDLLEXPORT void ConvertToIeeeExtended(wxFloat64 num, wxInt8 *bytes);
 #ifdef __cplusplus
     }
 #endif

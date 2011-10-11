@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2004/01/29
-// RCS-ID:      $Id: sound.cpp 39402 2006-05-28 23:32:12Z VZ $
+// RCS-ID:      $Id: sound.cpp 62181 2009-09-28 08:12:24Z JS $
 // Copyright:   (c) 2004 Vaclav Salvik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

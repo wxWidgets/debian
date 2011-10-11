@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon and Vadim Zeitlin
 // Modified by:
 // Created:     07/07/03
-// RCS-ID:      $Id: arrstr.h 56758 2008-11-13 22:32:21Z VS $
+// RCS-ID:      $Id: arrstr.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2003 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -152,7 +152,7 @@ public:
   wxString& Item(size_t nIndex) const
     {
         wxASSERT_MSG( nIndex < m_nCount,
-                      _T("wxArrayString: index out of bounds") );
+                      wxT("wxArrayString: index out of bounds") );
 
         return *(wxString *)&(m_pItems[nIndex]);
     }
@@ -163,7 +163,7 @@ public:
   wxString& Last() const
   {
       wxASSERT_MSG( !IsEmpty(),
-                    _T("wxArrayString: index out of bounds") );
+                    wxT("wxArrayString: index out of bounds") );
       return Item(Count() - 1);
   }
 

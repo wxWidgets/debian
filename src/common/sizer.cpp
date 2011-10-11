@@ -5,7 +5,7 @@
 //              Dirk Holtwick, Ron Lee
 // Modified by: Ron Lee
 // Created:
-// RCS-ID:      $Id: sizer.cpp 52359 2008-03-06 13:48:50Z VS $
+// RCS-ID:      $Id: sizer.cpp 66936 2011-02-17 09:52:57Z JS $
 // Copyright:   (c) Robin Dunn, Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -771,6 +771,10 @@ bool wxSizer::Replace( size_t old, wxSizerItem *newitem )
 
     wxSizerItem *item = node->GetData();
     node->SetData(newitem);
+
+    if (item->IsWindow() && item->GetWindow())
+        item->GetWindow()->SetContainingSizer(NULL);
+
     delete item;
 
     return true;

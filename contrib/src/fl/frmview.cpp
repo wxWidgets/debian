@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     02/01/99
-// RCS-ID:      $Id: frmview.cpp 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: frmview.cpp 66919 2011-02-16 21:57:42Z JS $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -199,10 +199,13 @@ int wxFrameManager::GetViewNo( wxFrameView* pView )
 void wxFrameManager::EnableMenusForView( wxFrameView* pView, bool enable )
 {
     wxMenuBar* pMenuBar = GetParentFrame()->GetMenuBar();
-    int count = pMenuBar->GetMenuCount();
 
     if ( !pMenuBar )
         return;
+
+    int count = pMenuBar->GetMenuCount();
+
+
 
     wxStringList::compatibility_iterator pNode = pView->mTopMenus.GetFirst();
 

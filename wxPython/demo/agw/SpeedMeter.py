@@ -50,7 +50,7 @@ class SpeedMeterDemo(wx.Panel):
         #                          The Main Ticks (Intervals)
 
         self.SpeedWindow1 = SM.SpeedMeter(panel1,
-                                          extrastyle=SM.SM_DRAW_HAND |
+                                          agwStyle=SM.SM_DRAW_HAND |
                                           SM.SM_DRAW_SECTORS |
                                           SM.SM_DRAW_MIDDLE_TEXT |
                                           SM.SM_DRAW_SECONDARY_TICKS
@@ -110,7 +110,7 @@ class SpeedMeterDemo(wx.Panel):
         # SM_DRAW_SHADOW: A Shadow For The Hand Indicator Is Drawn
         
         self.SpeedWindow2 = SM.SpeedMeter(panel2,
-                                          extrastyle=SM.SM_DRAW_HAND |
+                                          agwStyle=SM.SM_DRAW_HAND |
                                           SM.SM_DRAW_SECTORS |
                                           SM.SM_DRAW_MIDDLE_TEXT |
                                           SM.SM_DRAW_SECONDARY_TICKS |
@@ -159,7 +159,7 @@ class SpeedMeterDemo(wx.Panel):
         # SM_DRAW_MIDDLE_ICON: We Draw An Icon In The Center Of SpeedMeter
         
         self.SpeedWindow3 = SM.SpeedMeter(panel3,
-                                          extrastyle=SM.SM_DRAW_HAND |
+                                          agwStyle=SM.SM_DRAW_HAND |
                                           SM.SM_DRAW_PARTIAL_SECTORS |
                                           SM.SM_DRAW_MIDDLE_ICON
                                           )
@@ -207,7 +207,7 @@ class SpeedMeterDemo(wx.Panel):
         # Value Using The Mouse
         
         self.SpeedWindow4 = SM.SpeedMeter(panel4,
-                                          extrastyle=SM.SM_DRAW_HAND |
+                                          agwStyle=SM.SM_DRAW_HAND |
                                           SM.SM_DRAW_SECTORS |
                                           SM.SM_DRAW_SHADOW |
                                           SM.SM_DRAW_MIDDLE_ICON,
@@ -264,7 +264,7 @@ class SpeedMeterDemo(wx.Panel):
         # SM_ROTATE_TEXT: The Ticks Texts Are Rotated Accordingly To Their Angle
         
         self.SpeedWindow5 = SM.SpeedMeter(panel5,
-                                          extrastyle=SM.SM_DRAW_HAND |
+                                          agwStyle=SM.SM_DRAW_HAND |
                                           SM.SM_DRAW_PARTIAL_SECTORS |
                                           SM.SM_DRAW_SECONDARY_TICKS |
                                           SM.SM_DRAW_MIDDLE_TEXT |
@@ -316,7 +316,7 @@ class SpeedMeterDemo(wx.Panel):
         # SM_DRAW_SHADOW: A Shadow For The Hand Indicator Is Drawn
         
         self.SpeedWindow6 = SM.SpeedMeter(panel6,
-                                          extrastyle=SM.SM_DRAW_HAND |
+                                          agwStyle=SM.SM_DRAW_HAND |
                                           SM.SM_DRAW_PARTIAL_FILLER  |
                                           SM.SM_DRAW_MIDDLE_ICON |
                                           SM.SM_DRAW_GRADIENT |

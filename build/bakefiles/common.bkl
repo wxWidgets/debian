@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: common.bkl 60190 2009-04-16 00:57:35Z KO $ -->
+<!-- $Id: common.bkl 62894 2009-12-15 15:38:27Z VS $ -->
 
 <makefile>
 
@@ -261,6 +261,11 @@
         <if cond="FORMAT!='autoconf' and BUILD=='debug' and DEBUG_FLAG=='default'">__WXDEBUG__</if>
         <if cond="FORMAT!='autoconf' and DEBUG_FLAG=='1'">__WXDEBUG__</if>
     </set>
+    <set var="NDEBUG_DEFINE">
+        <if cond="FORMAT!='autoconf' and DEBUG_RUNTIME_LIBS=='default' and BUILD=='release'">NDEBUG</if>
+        <if cond="FORMAT!='autoconf' and DEBUG_RUNTIME_LIBS=='0'">NDEBUG</if>
+    </set>
+
     <!-- does not cover all cases, but better than nothing -->
     <set var="NO_VC_CRTDBG">
         <if cond="FORMAT=='msvc' and BUILD=='debug' and DEBUG_RUNTIME_LIBS=='0'">__NO_VC_CRTDBG__</if>
@@ -485,6 +490,7 @@ $(TAB)$(VC_COMPILER) /EP /nologo "$(DOLLAR)(InputPath)" > "$(SETUPHDIR)\wx\msw\r
         <define>__WX$(TOOLKIT)__</define>
         <define>$(WXUNIV_DEFINE)</define>
         <define>$(DEBUG_DEFINE)</define>
+        <define>$(NDEBUG_DEFINE)</define>
         <define>$(EXCEPTIONS_DEFINE)</define>
         <define>$(RTTI_DEFINE)</define>
         <define>$(THREAD_DEFINE)</define>
@@ -602,6 +608,8 @@ $(TAB)$(VC_COMPILER) /EP /nologo "$(DOLLAR)(InputPath)" > "$(SETUPHDIR)\wx\msw\r
     <template id="wx_lib_b" template="wx,anylib">
         <set var="WXLIBNAME">$(wxwin.mkLibName(wxid))</set>
         <libname>$(WXLIBNAME)</libname>
+
+        <define>WXBUILDING</define>
 
         <if cond="WX_DISABLE_PRECOMP_HEADERS=='0'">
             <if cond="FORMAT!='autoconf' and TOOLKIT in ['MSW','MGL','PM','WINCE']">

@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     26-Jan-2007
-# RCS-ID:      $Id: inspection.py 60590 2009-05-12 00:41:01Z RD $
+# RCS-ID:      $Id: inspection.py 63676 2010-03-12 23:53:48Z RD $
 # Copyright:   (c) 2007 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------------
@@ -608,6 +608,24 @@ class InspectionInfoPanel(wx.stc.StyledTextCtrl):
 
 
     def FmtWidget(self, obj):
+        def _countChildren(children):
+            count = 0
+            for child in children:
+                if not child.IsTopLevel():
+                    count += 1
+                    count += _countChildren(child.GetChildren())
+            return count
+        def _countAllChildren(children):
+            count = 0
+            for child in children:
+                count += 1
+                count += _countAllChildren(child.GetChildren())
+            return count
+
+        count = len([c for c in obj.GetChildren() if not c.IsTopLevel()])
+        rcount = _countChildren(obj.GetChildren())
+        tlwcount = _countAllChildren(obj.GetChildren())
+
         st = ["Widget:"]
         st.append(self.Fmt('name',        obj.GetName()))
         st.append(self.Fmt('class',       obj.__class__))
@@ -635,6 +653,8 @@ class InspectionInfoPanel(wx.stc.StyledTextCtrl):
                 st.append(self.Fmt('value',   obj.GetValue()))
             except:
                 pass
+        st.append('    child count = %d (direct)  %d (recursive)  %d (include TLWs)' %
+                  (count, rcount, tlwcount))
         if obj.GetContainingSizer() is not None:
             st.append('')
             sizer = obj.GetContainingSizer()
@@ -760,9 +780,11 @@ class _InspectionHighlighter(object):
     # should non TLWs be flashed too?  Otherwise use a highlight rectangle
     flashAll = False
 
-    color1 = 'red'      # for widgets and sizers
-    color2 = 'red'      # for item boundaries in sizers
-    color3 = '#00008B'  # for items in sizers
+    color1 = 'red'         # for widgets and sizers
+    color2 = 'red'         # for item boundaries in sizers
+    color3 = '#00008B'     # for items in sizers
+
+    highlightTime = 3000   # how long to display the highlights
 
     def HighlightCurrentItem(self, tree):
         """
@@ -954,7 +976,7 @@ class _InspectionHighlighter(object):
         if not useWinDC:
             pos = tlw.ScreenToClient(drawRect.GetPosition())
             drawRect.SetPosition(pos)
-        wx.CallLater(3000, tlw.RefreshRect, drawRect)
+        wx.CallLater(self.highlightTime, tlw.RefreshRect, drawRect)
 
         return dc
 

@@ -14,8 +14,8 @@ FileBrowser Plugin.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: browser.py 60285 2009-04-22 18:25:17Z CJP $"
-__revision__ = "$Revision: 60285 $"
+__svnid__ = "$Id: browser.py 67507 2011-04-16 14:38:39Z CJP $"
+__revision__ = "$Revision: 67507 $"
 
 #-----------------------------------------------------------------------------#
 # Imports
@@ -37,9 +37,6 @@ import syntax.syntax
 import util
 import eclib
 import ebmlib
-
-# Local Imports
-import Trash
 
 #-----------------------------------------------------------------------------#
 # Globals
@@ -375,6 +372,8 @@ class FileBrowser(wx.GenericDirCtrl):
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnOpen)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnContext)
         self.Bind(wx.EVT_MENU, self.OnMenu)
+
+        # Editra Message Handlers
         ed_msg.Subscribe(self.OnThemeChanged, ed_msg.EDMSG_THEME_CHANGED)
         ed_msg.Subscribe(self.OnPageChange, ed_msg.EDMSG_UI_NB_CHANGED)
 #        self.Bind(wx.EVT_TREE_BEGIN_DRAG, self.OnDragStart)
@@ -504,6 +503,10 @@ class FileBrowser(wx.GenericDirCtrl):
 
         return r_txt + os.sep.join(path)
 
+    def GetMainWindow(self):
+        """Get the main window, needed by L{ed_msg.mwcontext}"""
+        return self._mw
+
     def GetPaths(self):
         """Gets a list of abs paths of the selected items"""
         ret_val = list()
@@ -564,8 +567,9 @@ class FileBrowser(wx.GenericDirCtrl):
             worker = OpenerThread([os.path.dirname(fname) for fname in paths])
             worker.start()
         elif e_id == ID_SEARCH_DIR:
-            path = self.GetPath()
-            if path:
+            paths = self.GetPaths()
+            if len(paths):
+                path = paths[0] # Go off of the first selected item
                 if not os.path.isdir(path):
                     path = os.path.dirname(path)
                 mdata = dict(mainw=self._mw, lookin=path)
@@ -593,7 +597,7 @@ class FileBrowser(wx.GenericDirCtrl):
         elif e_id == ID_ARCHIVE:
             ok = MakeArchive(path)
         elif e_id == ID_DELETE:
-            Trash.moveToTrash(paths)
+            ebmlib.MoveToTrash(paths)
             ok = (True, os.path.dirname(path))
         else:
             evt.Skip()
@@ -625,16 +629,19 @@ class FileBrowser(wx.GenericDirCtrl):
         self.OpenFiles(files)
         ed_msg.Subscribe(self.OnPageChange, ed_msg.EDMSG_UI_NB_CHANGED)
 
+    @ed_msg.mwcontext
     def OnPageChange(self, msg):
         """Syncronize selection with the notebook page changes
         @param msg: MessageObject
         @todo: check if message is from a page closing and avoid updates
 
         """
-        
         nbdata = msg.GetData()
-        if nbdata[0].GetPageCount() < nbdata[1]:
-            return # must have closed all pages in the notebook
+        pg_count = nbdata[0].GetPageCount()
+        if nbdata[1] > pg_count  or nbdata[1] < 0:
+            # Page is out of range, something has changed since the message was
+            # sent.
+            return
 
         page = nbdata[0].GetPage(nbdata[1])
         path = page.GetFileName()

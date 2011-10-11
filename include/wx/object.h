@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id: object.h 53135 2008-04-12 02:31:04Z VZ $
+// RCS-ID:      $Id: object.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1997 Julian Smart
 //              (c) 2001 Ron Lee <ron@debian.org>
 // Licence:     wxWindows licence
@@ -311,7 +311,7 @@ name##PluginSentinel  m_pluginsentinel;
 #ifdef __WXDEBUG__
 inline void* wxCheckCast(void *ptr)
 {
-    wxASSERT_MSG( ptr, _T("wxStaticCast() used incorrectly") );
+    wxASSERT_MSG( ptr, wxT("wxStaticCast() used incorrectly") );
     return ptr;
 }
 #define wxStaticCast(obj, className) \

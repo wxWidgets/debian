@@ -103,8 +103,8 @@ class KnobCtrlDemo(wx.Panel):
         
         self.Bind(wx.EVT_COMMAND_SCROLL, self.OnKnobRadius, knobslider)
         self.Bind(wx.EVT_COMMAND_SCROLL, self.OnTicks, tickslider)
-        self.Bind(KC.KC_EVENT_ANGLE_CHANGED, self.OnAngleChanged1, self.knob1)
-        self.Bind(KC.KC_EVENT_ANGLE_CHANGED, self.OnAngleChanged2, self.knob2)
+        self.Bind(KC.EVT_KC_ANGLE_CHANGED, self.OnAngleChanged1, self.knob1)
+        self.Bind(KC.EVT_KC_ANGLE_CHANGED, self.OnAngleChanged2, self.knob2)
         tagscolour.Bind(csel.EVT_COLOURSELECT, self.OnTagsColour)
         boundingcolour.Bind(csel.EVT_COLOURSELECT, self.OnBoundingColour)
         firstcolour.Bind(csel.EVT_COLOURSELECT, self.OnFirstColour)

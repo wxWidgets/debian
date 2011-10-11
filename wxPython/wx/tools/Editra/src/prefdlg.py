@@ -16,11 +16,11 @@ and setting of the program by setting values in the Profile.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: prefdlg.py 60557 2009-05-09 03:07:55Z CJP $"
-__revision__ = "$Revision: 60557 $"
+__svnid__ = "$Id: prefdlg.py 67857 2011-06-05 00:16:24Z CJP $"
+__revision__ = "$Revision: 67857 $"
 
 #----------------------------------------------------------------------------#
-# Dependancies
+# Dependencies
 import wx
 import wx.lib.mixins.listctrl as listmix
 import locale
@@ -39,13 +39,21 @@ import updater
 import util
 import syntax.syntax as syntax
 import ed_msg
+import ed_txt
 import eclib
+import extern.stcspellcheck as stcspellcheck
 
 #----------------------------------------------------------------------------#
 # Globals
 ID_CHECK_UPDATE = wx.NewId()
 ID_DOWNLOAD     = wx.NewId()
 ID_UPDATE_MSG   = wx.NewId()
+
+ID_PREF_BKUP_PATH = wx.NewId()
+ID_PREF_BKUP_LBL = wx.NewId()
+ID_PREF_AUTO_SPELL = wx.NewId()
+ID_PREF_SPELL_DICT = wx.NewId()
+ID_PREF_ENCHANT_PATH = wx.NewId()
 
 _ = wx.GetTranslation
 #----------------------------------------------------------------------------#
@@ -66,8 +74,9 @@ def MakeThemeTool(tool_id):
 #----------------------------------------------------------------------------#
 
 class PreferencesPanelBase(object):
+    """Base mixin class for preference panels"""
     def __init__(self):
-        object.__init__(self)
+        super(PreferencesPanelBase, self).__init__()
 
         # Attributes
         self._layout_done = False
@@ -90,17 +99,18 @@ class PreferencesDialog(wx.Frame):
 
     def __init__(self, parent, id_=wx.ID_ANY,
                  style=wx.DEFAULT_DIALOG_STYLE | wx.TAB_TRAVERSAL):
-        """Initialises the preference dialog
+        """Initializes the preference dialog
         @param parent: The parent window of this window
         @param id_: The id of this window
 
         """
-        wx.Frame.__init__(self, parent, id_,
-                          _("Preferences - Editra"), style=style)
+        super(PreferencesDialog, self).__init__(parent, id_,
+                                                _("Preferences - Editra"),
+                                                style=style)
         util.SetWindowIcon(self)
 
         # Extra Styles
-        self.SetTransparent(Profile_Get('ALPHA', 'int', 255))
+        self.SetTransparent(Profile_Get('ALPHA', default=255))
 
         # Attributes
         self._accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, wx.ID_CLOSE)])
@@ -148,9 +158,6 @@ class PreferencesDialog(wx.Frame):
 class PrefTools(eclib.SegmentBook):
     """Main sections of the configuration pages
     @note: implements the top level book control for the prefdlg
-    @todo: when using BK_BUTTONBAR style so that the icons have text
-           under them the icons get scaled to larger size on the Mac
-           causing them to look poor.
 
     """
     GENERAL_PG = 0
@@ -163,16 +170,11 @@ class PrefTools(eclib.SegmentBook):
         """Initializes the main book control of the preferences dialog
         @summary: Creates the top level notebook control for the prefdlg
                   a toolbar is used for changing pages.
-        @todo: There is some nasty dithering/icon rescaling happening on
-               osx. need to se why this is.
-        @note: Look into wxtoolbook source and see why images cant be changed
-               after they have been set. Because of this when the theme is
-               changed the toolbook icons cannont be updated instantly.
 
         """
-        eclib.SegmentBook.__init__(self, parent, wx.ID_ANY,
-                                       style=eclib.SEGBOOK_STYLE_LABELS|\
-                                             eclib.SEGBOOK_STYLE_NO_DIVIDERS)
+        super(PrefTools, self).__init__(parent, wx.ID_ANY,
+                                        style=eclib.SEGBOOK_STYLE_LABELS|\
+                                              eclib.SEGBOOK_STYLE_NO_DIVIDERS)
 
         # Attributes
         self._imglst = list()
@@ -192,12 +194,15 @@ class PrefTools(eclib.SegmentBook):
         # Event Handlers
         self.Bind(eclib.EVT_SB_PAGE_CHANGED, self.OnPageChanged)
         self.Bind(eclib.EVT_SB_PAGE_CHANGING, self.OnPageChanging)
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy, self)
 
         # Message Handlers
         ed_msg.Subscribe(self.OnThemeChange, ed_msg.EDMSG_THEME_CHANGED)
 
-    def __del__(self):
-        ed_msg.Unsubscribe(self.OnThemeChange)
+    def OnDestroy(self, evt):
+        if evt.GetId() == self.GetId():
+            ed_msg.Unsubscribe(self.OnThemeChange)
+        evt.Skip()
 
     def __InitImgList(self):
         """Setup the image list for the SegmentBook"""
@@ -291,6 +296,86 @@ class GeneralPanel(wx.Panel, PreferencesPanelBase):
 
         """
         # Startup Section
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        nbook = wx.Notebook(self)
+        nbook.AddPage(GeneralStartupPanel(nbook), _("Startup"))
+        nbook.AddPage(GeneralFilePanel(nbook), _("Files"))
+        sizer.AddMany([((10, 10), 0), (nbook, 1, wx.EXPAND), ((10, 10), 0)])
+        msizer = wx.BoxSizer(wx.VERTICAL)
+        msizer.AddMany([(sizer, 1, wx.EXPAND), ((10, 10), 0)])
+        self.SetSizer(msizer)
+
+    def OnCheck(self, evt):
+        """Handles events from the check boxes
+        @param evt: event that called this handler
+
+        """
+        util.Log("[prefdlg][evt] General Page: Check box clicked")
+        e_id = evt.GetId()
+        e_obj = evt.GetEventObject()
+        val = e_obj.GetValue()
+        if e_id in (ed_glob.ID_APP_SPLASH, ed_glob.ID_PREF_SPOS,
+                    ed_glob.ID_SESSION,
+                    ed_glob.ID_NEW_WINDOW, ed_glob.ID_PREF_CHKUPDATE,
+                    ed_glob.ID_PREF_WARN_EOL, ed_glob.ID_PREF_AUTO_RELOAD):
+            Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
+        elif e_id == ed_glob.ID_REPORTER:
+            Profile_Set(ed_glob.ID_2_PROF[e_id], not e_obj.GetValue())
+        elif e_id == ed_glob.ID_PREF_CHKMOD:
+            Profile_Set(ed_glob.ID_2_PROF[e_id], val)
+            self.FindWindowById(ed_glob.ID_PREF_AUTO_RELOAD).Enable(val)
+        elif e_id == ed_glob.ID_PREF_AUTOBKUP:
+            Profile_Set(ed_glob.ID_2_PROF[e_id], val)
+        elif e_id == ID_PREF_AUTO_SPELL:
+            spref = Profile_Get('SPELLCHECK', default=dict())
+            spref['auto'] = val
+            Profile_Set('SPELLCHECK', spref)
+        else:
+            pass
+        evt.Skip()
+
+    @staticmethod
+    def OnChoice(evt):
+        """Handles events from the choice controls
+        @param evt: event that called this handler
+        @note: Also handles the Language ComboBox
+
+        """
+        e_id = evt.GetId()
+        e_obj = evt.GetEventObject()
+        if e_id in [ed_glob.ID_PREF_MODE,
+                    ed_glob.ID_PREF_FHIST,
+                    ed_glob.ID_PREF_LANG,
+                    ed_glob.ID_PREF_ENCODING]:
+
+            Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
+            if e_id == ed_glob.ID_PREF_MODE:
+                val = e_obj.GetValue()
+                ed_glob.DEBUG = ('DEBUG' in val)
+                ed_glob.VDEBUG = ('VERBOSE' in val)
+        elif e_id == ed_glob.ID_PRINT_MODE:
+            Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetSelection())
+        elif e_id == ID_PREF_SPELL_DICT:
+            ssel = e_obj.GetStringSelection()
+            sprefs = Profile_Get('SPELLCHECK', default=dict())
+            sprefs['dict'] = ssel
+            Profile_Set('SPELLCHECK', sprefs)
+        else:
+            evt.Skip()
+
+#-----------------------------------------------------------------------------#
+
+class GeneralStartupPanel(wx.Panel):
+    """General Startup Settings"""
+    def __init__(self, parent):
+        super(GeneralStartupPanel, self).__init__(parent)
+
+        # Attributes
+
+        # Setup
+        self._DoLayout()
+
+    def _DoLayout(self):
         msizer = wx.BoxSizer(wx.HORIZONTAL)
         msizer.AddMany([(wx.StaticText(self, label=_("Editor Mode") + u": "),
                          0, wx.ALIGN_CENTER_VERTICAL), ((5, 5), 0),
@@ -324,6 +409,64 @@ class GeneralPanel(wx.Panel, PreferencesPanelBase):
                                      _("Check for updates on startup"))
             chk_update.SetValue(Profile_Get('CHECKUPDATE'))
 
+        # Locale
+        lsizer = wx.BoxSizer(wx.HORIZONTAL)
+        lsizer.AddMany([(wx.StaticText(self, label=_("Language") + u": "),
+                         0, wx.ALIGN_CENTER_VERTICAL), ((5, 5), 0),
+                        (ed_i18n.LangListCombo(self, ed_glob.ID_PREF_LANG,
+                                               Profile_Get('LANG')),
+                         0, wx.ALIGN_CENTER_VERTICAL)])
+
+        # Layout items
+        sizer = wx.FlexGridSizer(11, 2, 5, 5)
+        sizer.AddMany([((10, 10), 0), ((10, 10), 0),
+                       (wx.StaticText(self,
+                        label=_("Startup Settings") + u": "),
+                        0, wx.ALIGN_CENTER_VERTICAL), (msizer, 0),
+                       ((5, 5),), (psizer, 0),
+                       ((5, 5),), (reporter_cb, 0),
+                       ((5, 5),), (sess_cb, 0),
+                       ((5, 5),), (splash_cb, 0)])
+
+        if isadmin:
+            sizer.AddMany([((5, 5),), (chk_update, 0)])
+
+        sizer.AddMany([((5, 5),), ((5, 5),),
+                       (wx.StaticText(self, label=_("Locale Settings") + u": "),
+                        0, wx.ALIGN_CENTER_VERTICAL), (lsizer, 0),
+                       ((10, 10), 0)])
+
+        msizer = wx.BoxSizer(wx.HORIZONTAL)
+        msizer.AddMany([((10, 10), 0), (sizer, 1, wx.EXPAND), ((10, 10), 0)])
+        self.SetSizer(msizer)
+
+#-----------------------------------------------------------------------------#
+
+class GeneralFilePanel(wx.Panel):
+    """Configuration panel for general file settings"""
+    def __init__(self, parent):
+        super(GeneralFilePanel, self).__init__(parent)
+
+        # Attributes
+        
+        # Setup
+        self._DoLayout()
+
+        # Event Handlers
+        self.Bind(wx.EVT_CHECKBOX,
+                  self.OnAutoBkup,
+                  id=ed_glob.ID_PREF_AUTOBKUP)
+        self.Bind(wx.EVT_CHECKBOX,
+                  self.OnCustomBackupPath,
+                  id=ID_PREF_BKUP_LBL)
+        self.Bind(wx.EVT_DIRPICKER_CHANGED,
+                  self.OnDirChange,
+                  id=ID_PREF_BKUP_PATH)
+        self.Bind(wx.EVT_FILEPICKER_CHANGED,
+                  self.OnFileChange,
+                  id=ID_PREF_ENCHANT_PATH)
+
+    def _DoLayout(self):
         # File settings
         fhsizer = wx.BoxSizer(wx.HORIZONTAL)
         fhsizer.AddMany([(wx.StaticText(self,
@@ -337,11 +480,10 @@ class GeneralPanel(wx.Panel, PreferencesPanelBase):
         # Encoding options
         d_encoding = Profile_Get('ENCODING',
                                  'str',
-                                 default=locale.getpreferredencoding())
+                                 default=ed_txt.DEFAULT_ENCODING)
         if d_encoding is None:
             d_encoding = 'utf-8'
             Profile_Set('ENCODING', d_encoding)
-
         d_encoding = encodings.normalize_encoding(d_encoding)
 
         enc_ch = ExChoice(self, ed_glob.ID_PREF_ENCODING,
@@ -354,8 +496,25 @@ class GeneralPanel(wx.Panel, PreferencesPanelBase):
 
         autobk_cb = wx.CheckBox(self, ed_glob.ID_PREF_AUTOBKUP,
                              _("Automatically Backup Files"))
-        autobk_cb.SetValue(Profile_Get('AUTOBACKUP'))
+        bAutoBkup = Profile_Get('AUTOBACKUP', default=False)
+        autobk_cb.SetValue(bAutoBkup)
         autobk_cb.SetToolTipString(_("Backup buffer to file periodically"))
+        bdir = Profile_Get('AUTOBACKUP_PATH', default="")
+        bkup_path_lbl = wx.CheckBox(self, ID_PREF_BKUP_LBL,
+                                    label=_("Backup Path:"))
+        bkup_path_lbl.SetValue(bool(bdir))
+        bkup_path = wx.DirPickerCtrl(self, ID_PREF_BKUP_PATH,
+                                     path=bdir,
+                                     style=wx.DIRP_CHANGE_DIR|wx.DIRP_USE_TEXTCTRL)
+        bkup_path.SetToolTipString(_("Used to set a custom backup path. "
+                                     "If not specified the backup will be "
+                                     "put in the same directory as the file."))
+        bkup_path_lbl.Enable(bAutoBkup)
+        bkup_path.Enable(bAutoBkup)
+        bkup_p_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        bkup_p_sizer.AddMany([(bkup_path_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                              ((5, 5), 0),
+                              (bkup_path, 1, wx.ALIGN_CENTER_VERTICAL|wx.EXPAND)])
         win_cb = wx.CheckBox(self, ed_glob.ID_NEW_WINDOW,
                              _("Open files in new windows by default"))
         win_cb.SetValue(Profile_Get('OPEN_NW'))
@@ -376,96 +535,120 @@ class GeneralPanel(wx.Panel, PreferencesPanelBase):
                                  _("Warn when mixed eol characters are detected"))
         eolwarn_cb.SetValue(Profile_Get('WARN_EOL', default=True))
 
-        # Locale
-        lsizer = wx.BoxSizer(wx.HORIZONTAL)
-        lsizer.AddMany([(wx.StaticText(self, label=_("Language") + u": "),
-                         0, wx.ALIGN_CENTER_VERTICAL), ((5, 5), 0),
-                        (ed_i18n.LangListCombo(self, ed_glob.ID_PREF_LANG,
-                                               Profile_Get('LANG')),
-                         0, wx.ALIGN_CENTER_VERTICAL)])
-
         # Layout items
-        sizer = wx.FlexGridSizer(20, 2, 5, 5)
+        sizer = wx.FlexGridSizer(11, 2, 5, 5)
         sizer.AddMany([((10, 10), 0), ((10, 10), 0),
-                       (wx.StaticText(self,
-                        label=_("Startup Settings") + u": "),
-                        0, wx.ALIGN_CENTER_VERTICAL), (msizer, 0),
-                       ((5, 5),), (psizer, 0),
-                       ((5, 5),), (reporter_cb, 0),
-                       ((5, 5),), (sess_cb, 0),
-                       ((5, 5),), (splash_cb, 0)])
-
-        if isadmin:
-            sizer.AddMany([((5, 5),), (chk_update, 0)])
-
-        sizer.AddMany([((5, 5),), ((5, 5),),
                        (wx.StaticText(self, label=_("File Settings") + u": "),
                         0, wx.ALIGN_CENTER_VERTICAL), (enc_sz, 0),
                        ((5, 5),), (fhsizer, 0),
                        ((5, 5),), (autobk_cb, 0),
+                       ((5, 5),), (bkup_p_sizer, 1, wx.EXPAND),
                        ((5, 5),), (win_cb, 0),
                        ((5, 5),), (pos_cb, 0),
                        ((5, 5),), (chkmod_cb, 0),
                        ((5, 5),), (autorl_cb, 0),
                        ((5, 5),), (eolwarn_cb, 0),
-                       ((5, 5),), ((5, 5),),
-                       (wx.StaticText(self, label=_("Locale Settings") + u": "),
-                        0, wx.ALIGN_CENTER_VERTICAL), (lsizer, 0),
                        ((10, 10), 0)])
+
+        # Spellchecking settings
+        spell_dicts = stcspellcheck.STCSpellCheck.getAvailableLanguages()
+        sbox = wx.StaticBox(self, label=_("Spell Checking"))
+        sboxsz = wx.StaticBoxSizer(sbox, wx.VERTICAL)
+        sprefs = Profile_Get('SPELLCHECK', default=dict())
+        auto_cb = wx.CheckBox(self, id=ID_PREF_AUTO_SPELL,
+                              label=_("Check spelling while typing"))
+        auto_cb.SetValue(sprefs.get('auto', False))
+        dict_ch = wx.Choice(self, id=ID_PREF_SPELL_DICT, choices=spell_dicts)
+        sdict = sprefs.get('dict', 'en_US')
+        if sdict in spell_dicts:
+            dict_ch.SetStringSelection(sdict)
+        sdh_sz = wx.BoxSizer(wx.HORIZONTAL)
+        dlbl = wx.StaticText(self, label=_("Dictionary") + u":")
+        sdh_sz.AddMany([(dlbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                         ((5, 5), 0),
+                         (dict_ch, 1, wx.ALIGN_CENTER_VERTICAL|wx.EXPAND)])
+        sboxsz.AddMany([(auto_cb, 0), ((5,5),0), (sdh_sz, 0, wx.EXPAND)])
+
+        if not stcspellcheck.STCSpellCheck.isEnchantOk():
+            for ctrl in (auto_cb, dict_ch, dlbl):
+                ctrl.Enable(False)
+
+        liblbl = wx.StaticText(self, label=_("Enchant Path") + u":")
+        libpath = os.environ.get('PYENCHANT_LIBRARY_PATH', '')
+        prefpath = sprefs.get('epath', libpath)
+        libpicker = wx.FilePickerCtrl(self, ID_PREF_ENCHANT_PATH,
+                                      path=libpath,
+                                      message=_("Path to libenchant"))
+        libpicker.SetToolTipString(_("Path to libenchant"))
+        lib_hsz = wx.BoxSizer(wx.HORIZONTAL)
+        lib_hsz.AddMany([(liblbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                         ((5, 5), 0),
+                         (libpicker, 1, wx.ALIGN_CENTER_VERTICAL|wx.EXPAND)])
+        sboxsz.AddMany([((5, 5), 0), (lib_hsz, 0, wx.EXPAND)])
+
+        vsizer = wx.BoxSizer(wx.VERTICAL)
+        vsizer.AddMany([(sizer, 1, wx.EXPAND),
+                        ((5,5),0), (sboxsz, 0, wx.EXPAND),
+                        ((10,10),0)])
+
         msizer = wx.BoxSizer(wx.HORIZONTAL)
-        msizer.AddMany([((10, 10), 0), (sizer, 1, wx.EXPAND), ((10, 10), 0)])
+        msizer.AddMany([((10, 10), 0), (vsizer, 1, wx.EXPAND), ((10, 10), 0)])
         self.SetSizer(msizer)
 
-    def OnCheck(self, evt):
-        """Handles events from the check boxes
-        @param evt: event that called this handler
+    def OnAutoBkup(self, evt):
+        """Enable/Disable the backup path controls
+        The profile is updated by L{GeneralPanel} so the event must be skipped
 
         """
-        util.Log("[prefdlg][evt] General Page: Check box clicked")
-        e_id = evt.GetId()
-        e_obj = evt.GetEventObject()
-        if e_id in (ed_glob.ID_APP_SPLASH, ed_glob.ID_PREF_SPOS,
-                    ed_glob.ID_SESSION,
-                    ed_glob.ID_NEW_WINDOW, ed_glob.ID_PREF_CHKUPDATE,
-                    ed_glob.ID_PREF_WARN_EOL, ed_glob.ID_PREF_AUTO_RELOAD):
-            Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
-        elif e_id == ed_glob.ID_REPORTER:
-            Profile_Set(ed_glob.ID_2_PROF[e_id], not e_obj.GetValue())
-        elif e_id == ed_glob.ID_PREF_CHKMOD:
+        blbl = self.FindWindowById(ID_PREF_BKUP_LBL)
+        if blbl:
+            e_obj = evt.GetEventObject()
             val = e_obj.GetValue()
-            Profile_Set(ed_glob.ID_2_PROF[e_id], val)
-            self.FindWindowById(ed_glob.ID_PREF_AUTO_RELOAD).Enable(val)
-        elif e_id == ed_glob.ID_PREF_AUTOBKUP:
-            enable = e_obj.GetValue()
-            Profile_Set(ed_glob.ID_2_PROF[e_id], enable)
-            DoUpdates('EnableAutoBackup', [enable,])
-        else:
-            pass
+            blbl.Enable(val)
+            dpick = self.FindWindowById(ID_PREF_BKUP_PATH)
+            bpath = Profile_Get('AUTOBACKUP_PATH', default="")
+            dpick.SetPath(bpath)
+            if not val:
+                dpick = self.FindWindowById(ID_PREF_BKUP_PATH)
+                dpick.Enable(False)
         evt.Skip()
 
-    @staticmethod
-    def OnChoice(evt):
-        """Handles events from the choice controls
-        @param evt: event that called this handler
-        @note: Also handles the Language ComboBox
-
-        """
-        e_id = evt.GetId()
+    def OnCustomBackupPath(self, evt):
+        """Enable the use of a custom backup path"""
         e_obj = evt.GetEventObject()
-        if e_id in [ed_glob.ID_PREF_MODE,
-                    ed_glob.ID_PREF_FHIST,
-                    ed_glob.ID_PREF_LANG,
-                    ed_glob.ID_PREF_ENCODING]:
+        eval = e_obj.GetValue()
+        dpick = self.FindWindowById(ID_PREF_BKUP_PATH)
+        if not eval:
+            dpick.SetPath(u"")
+            Profile_Set('AUTOBACKUP_PATH', u"")
+        dpick.Enable(eval)
 
-            Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
-            if e_id == ed_glob.ID_PREF_MODE:
-                val = e_obj.GetValue()
-                ed_glob.DEBUG = ('DEBUG' in val)
-                ed_glob.VDEBUG = ('VERBOSE' in val)
-        elif e_id == ed_glob.ID_PRINT_MODE:
-            Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetSelection())
-        else:
-            evt.Skip()
+    def OnDirChange(self, evt):
+        """Update the backup directory path"""
+        path = evt.GetPath().strip()
+        bpath = Profile_Get('AUTOBACKUP_PATH', default="")
+        if bpath != path:
+            Profile_Set('AUTOBACKUP_PATH', path)
+
+    def OnFileChange(self, evt):
+        """Update enchant path and attempt to reload enchant if necessary"""
+        path = evt.GetPath().strip()
+        sprefs = Profile_Get('SPELLCHECK', default=dict())
+        cpath = sprefs.get('epath', u'')
+        if path != cpath:
+            try:
+                ok = stcspellcheck.STCSpellCheck.reloadEnchant(path)
+            except OSError:
+                ok = False
+
+            if ok:
+                # Reload was successful
+                sprefs['epath'] = path
+                Profile_Set('SPELLCHECK', sprefs)
+            else:
+                wx.MessageBox(_("Failed to load Enchant"),
+                              _("Library Error"),
+                              wx.OK|wx.ICON_ERROR)
 
 #-----------------------------------------------------------------------------#
 
@@ -522,7 +705,7 @@ class DocGenPanel(wx.Panel):
         @param parent: Parent window of this panel
 
         """
-        wx.Panel.__init__(self, parent)
+        super(DocGenPanel, self).__init__(parent)
 
         # Layout
         self._DoLayout()
@@ -572,7 +755,7 @@ class DocGenPanel(wx.Panel):
                            choices=[_("Old Macintosh (\\r)"), _("Unix (\\n)"),
                                     _("Windows (\\r\\n)")])
         eolmode.SetSelection(Profile_Get('EOL_MODE'))
-                        
+
         eolsz.AddMany([(wx.StaticText(self,
                         label=_("Default EOL Mode") + u": "),
                         0, wx.ALIGN_CENTER_VERTICAL), ((5, 5), 0),
@@ -590,6 +773,10 @@ class DocGenPanel(wx.Panel):
         ww_cb = wx.CheckBox(self, ed_glob.ID_WORD_WRAP, _("Word Wrap"))
         ww_cb.SetValue(Profile_Get('WRAP'))
         ww_cb.SetToolTipString(_("Turn off for better performance"))
+        vs_cb = wx.CheckBox(self, ed_glob.ID_PREF_VIRT_SPACE,
+                            _("View Virtual Space After Last Line"))
+        vs_cb.SetValue(Profile_Get('VIEWVERTSPACE', default=False))
+        vs_cb.SetToolTipString(_("Adds extra scrolling room after last line"))
 
         # Font Options
         fnt = Profile_Get('FONT1', 'font', wx.Font(10, wx.FONTFAMILY_MODERN,
@@ -605,7 +792,7 @@ class DocGenPanel(wx.Panel):
                                   "regions when syntax highlighting is in use"))
 
         # Layout
-        sizer = wx.FlexGridSizer(19, 2, 5, 5)
+        sizer = wx.FlexGridSizer(20, 2, 5, 5)
         sizer.AddGrowableCol(1, 1)
         sizer.AddMany([((10, 10), 0), ((10, 10), 0),
                        (wx.StaticText(self, label=_("Format") + u": "),
@@ -622,6 +809,7 @@ class DocGenPanel(wx.Panel):
                        ((5, 5), 0), (sln_cb, 0),
                        ((5, 5), 0), (sws_cb, 0),
                        ((5, 5), 0), (ww_cb, 0),
+                       ((5, 5), 0), (vs_cb, 0),
                        ((10, 10), 0), ((10, 10), 0),
                        (wx.StaticText(self, label=_("Primary Font") + u": "),
                         0, wx.ALIGN_CENTER_VERTICAL),
@@ -662,10 +850,10 @@ class DocGenPanel(wx.Panel):
         @param evt: Event that called this handler
 
         """
-        # XXX Why when running on windows this and other imports randomly 
+        # XXX Why when running on windows this and other imports randomly
         #     become None. I have been unable to reproduce this behavior myself
-        #     but have recieved enough error reports about it to beleive it.
-        #     If they were actually NoneTypes the dialog would not be able to 
+        #     but have received enough error reports about it to believe it.
+        #     If they were actually NoneTypes the dialog would not be able to
         #     be shown so this is very strange!!
         global ed_glob
         if ed_glob is None:
@@ -677,7 +865,8 @@ class DocGenPanel(wx.Panel):
                     ed_glob.ID_PREF_AALIAS, ed_glob.ID_SHOW_EOL,
                     ed_glob.ID_SHOW_LN, ed_glob.ID_SHOW_WS,
                     ed_glob.ID_WORD_WRAP, ed_glob.ID_PREF_AALIAS,
-                    ed_glob.ID_PREF_INDENTW, ed_glob.ID_PREF_AUTOTRIM ]:
+                    ed_glob.ID_PREF_INDENTW, ed_glob.ID_PREF_AUTOTRIM,
+                    ed_glob.ID_PREF_VIRT_SPACE ]:
 
             e_value = evt.GetEventObject().GetValue()
             if e_id == ed_glob.ID_EOL_MODE:
@@ -685,7 +874,7 @@ class DocGenPanel(wx.Panel):
 
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_value)
 
-            # Do updates for everything but text encoding
+            # Do updates for everything but autotrim whitespace
             if e_id not in (ed_glob.ID_PREF_AUTOTRIM, ):
                 wx.CallLater(25, DoUpdates)
         else:
@@ -704,7 +893,7 @@ class DocCodePanel(wx.Panel):
         @param parent: Parent window of this panel
 
         """
-        wx.Panel.__init__(self, parent)
+        super(DocCodePanel, self).__init__(parent)
 
         # Layout
         self._DoLayout()
@@ -741,7 +930,7 @@ class DocCodePanel(wx.Panel):
         edge_cb = wx.CheckBox(self, ed_glob.ID_SHOW_EDGE, _("Edge Guide"))
         edge_cb.SetValue(Profile_Get('SHOW_EDGE'))
         edge_sp = wx.SpinCtrl(self, ed_glob.ID_PREF_EDGE,
-                              Profile_Get('EDGE', 'str'), min=0, max=120)
+                              Profile_Get('EDGE', 'str'), min=0, max=160)
         edge_sp.SetToolTipString(_("Guide Column"))
         edge_col = wx.BoxSizer(wx.HORIZONTAL)
         edge_col.AddMany([(edge_cb, 0, wx.ALIGN_CENTER_VERTICAL),
@@ -768,9 +957,15 @@ class DocCodePanel(wx.Panel):
         ai_cb.SetValue(Profile_Get('AUTO_INDENT'))
         vi_cb = wx.CheckBox(self, ed_glob.ID_VI_MODE, _("Enable Vi Emulation"))
         vi_cb.SetValue(Profile_Get('VI_EMU'))
+        vi_ncb = wx.CheckBox(self, ed_glob.ID_VI_NORMAL_DEFAULT,
+                             _("Start in Normal Mode"))
+        vi_ncb.SetValue(Profile_Get('VI_NORMAL_DEFAULT'))
+        vi_ncb.Enable(vi_cb.GetValue())
+        vi_ncb_sz = wx.BoxSizer(wx.HORIZONTAL)
+        vi_ncb_sz.AddMany([((16, -1), 0), (vi_ncb, 0)])
 
         # Layout the controls
-        sizer = wx.FlexGridSizer(14, 2, 5, 5)
+        sizer = wx.FlexGridSizer(15, 2, 5, 5)
         sizer.AddMany([((10, 10), 0), ((10, 10), 0),
                        (wx.StaticText(self, label=_("General") + u": "),
                         0, wx.ALIGN_CENTER_VERTICAL), (dlex_sz, 0),
@@ -786,6 +981,7 @@ class DocCodePanel(wx.Panel):
                        ((5, 5), 0), (compex_sz, 0),
                        ((5, 5), 0), (ai_cb, 0),
                        ((5, 5), 0), (vi_cb, 0),
+                       ((5, 5), 0), (vi_ncb_sz, 0),
                        ((10, 10), 0), ((10, 10), 0)])
         msizer = wx.BoxSizer(wx.HORIZONTAL)
         msizer.AddMany([((10, 10), 0), (sizer, 1, wx.EXPAND), ((10, 10), 0)])
@@ -801,6 +997,7 @@ class DocCodePanel(wx.Panel):
                     ed_glob.ID_INDENT_GUIDES, ed_glob.ID_FOLDING,
                     ed_glob.ID_AUTOCOMP, ed_glob.ID_AUTOINDENT,
                     ed_glob.ID_PREF_EDGE, ed_glob.ID_VI_MODE,
+                    ed_glob.ID_VI_NORMAL_DEFAULT,
                     ed_glob.ID_PREF_DLEXER, ed_glob.ID_HLCARET_LINE,
                     ed_glob.ID_PREF_AUTOCOMPEX):
 
@@ -820,9 +1017,13 @@ class DocCodePanel(wx.Panel):
                 cbox = self.FindWindowById(ed_glob.ID_PREF_AUTOCOMPEX)
                 if cbox is not None:
                     cbox.Enable(e_val)
+            elif e_id == ed_glob.ID_VI_MODE:
+                cbox = self.FindWindowById(ed_glob.ID_VI_NORMAL_DEFAULT)
+                if cbox is not None:
+                    cbox.Enable(e_val)
 
             if e_id == ed_glob.ID_PREF_AUTOCOMPEX:
-                meth = 'ConfigureAutoComp'
+                return
 
             # Inform views of preference changes
             wx.CallLater(25, DoUpdates, meth, args)
@@ -859,7 +1060,7 @@ class DocSyntaxPanel(wx.Panel):
         @param parent: parent window of this panel
 
         """
-        wx.Panel.__init__(self, parent)
+        super(DocSyntaxPanel, self).__init__(parent)
 
         # Attributes
         self._elist = ExtListCtrl(self)
@@ -884,9 +1085,10 @@ class DocSyntaxPanel(wx.Panel):
         # Syntax Settings
         syn_cb = wx.CheckBox(self, ed_glob.ID_SYNTAX, _("Syntax Highlighting"))
         syn_cb.SetValue(Profile_Get('SYNTAX'))
+        ss_lst = util.GetResourceFiles(u'styles', get_all=True)
+        ss_lst = [sheet for sheet in ss_lst if not sheet.startswith('.')]
         syntheme = ExChoice(self, ed_glob.ID_PREF_SYNTHEME,
-                            choices=util.GetResourceFiles(u'styles',
-                                                          get_all=True),
+                            choices=sorted(ss_lst),
                             default=Profile_Get('SYNTHEME', 'str'))
         line = wx.StaticLine(self, size=(-1, 2))
         lsizer = wx.BoxSizer(wx.VERTICAL)
@@ -939,19 +1141,8 @@ class DocSyntaxPanel(wx.Panel):
         """
         e_id = evt.GetId()
         e_obj = evt.GetEventObject()
-        if e_id == ed_glob.ID_PREF_SYNTHEME:
+        if e_id in (ed_glob.ID_PREF_SYNTHEME, ed_glob.ID_SYNTAX):
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
-
-            for mainw in wx.GetApp().GetMainWindows():
-                mainw.nb.UpdateTextControls('UpdateAllStyles')
-
-        elif e_id == ed_glob.ID_SYNTAX:
-            val = e_obj.GetValue()
-            Profile_Set(ed_glob.ID_2_PROF[e_id], val)
-
-            for mainw in wx.GetApp().GetMainWindows():
-                mainw.nb.UpdateTextControls('SyntaxOnOff', [val])
-
         else:
             evt.Skip()
 
@@ -1174,7 +1365,7 @@ ID_PASSWORD = wx.NewId()
 class NetConfigPage(wx.Panel):
     """Configuration page for network and proxy settings"""
     def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
+        super(NetConfigPage, self).__init__(parent)
 
         # Layout
         self._DoLayout()
@@ -1303,7 +1494,7 @@ class UpdatePage(wx.Panel):
         @param parent: Parent window of this panel
 
         """
-        wx.Panel.__init__(self, parent)
+        super(UpdatePage, self).__init__(parent)
 
         # Layout
         self._DoLayout()
@@ -1327,7 +1518,7 @@ class UpdatePage(wx.Panel):
         upd_box = wx.StaticBox(self, label=_("Latest Version"))
         upd_bsz = wx.StaticBoxSizer(upd_box, wx.HORIZONTAL)
         upd_bsz.SetMinSize(wx.Size(150, 40))
-        upd_bsz.Add(wx.StaticText(self, ID_UPDATE_MSG, _(e_update.GetStatus())),
+        upd_bsz.Add(wx.StaticText(self, ID_UPDATE_MSG, _("Status Unknown")),
                     0, wx.ALIGN_CENTER_HORIZONTAL)
         upd_bsz.Layout()
 
@@ -1368,6 +1559,7 @@ class UpdatePage(wx.Panel):
         if e_id == ID_CHECK_UPDATE:
             util.Log("[prefdlg][evt] Update Page: Check Update Clicked")
             e_obj.Disable()
+            self.FindWindowById(ID_UPDATE_MSG).SetLabel(_("Checking..."))
             prog_bar = self.FindWindowById(ed_glob.ID_PREF_UPDATE_BAR)
             # Note this function returns right away but its result is
             # handled on a separate thread. This window is then notified
@@ -1401,6 +1593,10 @@ class UpdatePage(wx.Panel):
         nbevt = wx.NotebookEvent(wx.wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED,
                                  0, curr_pg, curr_pg)
         wx.PostEvent(self.GetParent(), nbevt)
+        gauge = self.FindWindowById(ed_glob.ID_PREF_UPDATE_BAR)
+        if gauge:
+            gauge.Stop()
+            gauge.SetValue(100)
         self.Refresh()
 
 #-----------------------------------------------------------------------------#
@@ -1418,7 +1614,7 @@ class AdvancedPanel(wx.Panel):
         @param parent: Parent window of this panel
 
         """
-        wx.Panel.__init__(self, parent, style=wx.BORDER_SUNKEN)
+        super(AdvancedPanel, self).__init__(parent, style=wx.BORDER_SUNKEN)
 
         # Layout
         self._layout_done = False
@@ -1455,9 +1651,9 @@ ID_BINDING = wx.NewId()
 KEYS = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
         'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '+', '/', ',',
-        '.', '[', ']', '{', '}', ':', 'Left', 'Right', 'Down', 'Up', 'Home',
-        'End', 'Enter', 'Tab']
-KEYS.extend(["F" + str(x) for x in range(1, 13)])
+        '.', '[', ']', '{', '}', '>', '<', ':', '|', 'Left', 'Right', 'Down',
+        'Up', 'Home', 'End', 'Enter', 'Tab', 'Space', '"', "'"]
+KEYS.extend(["F" + str(x) for x in range(1, 13)]) # Add function keys
 
 if wx.Platform == '__WXMSW__':
     KEYS.remove('Tab')
@@ -1473,27 +1669,21 @@ class KeyBindingPanel(wx.Panel):
     """Keybinding configration options"""
     def __init__(self, parent):
         """Create the panel"""
-        wx.Panel.__init__(self, parent)
+        super(KeyBindingPanel, self).__init__(parent)
 
         # Attributes
+        self._dirty = False
         self.menub = wx.GetApp().GetActiveWindow().GetMenuBar()
         self.binder = self.menub.GetKeyBinder()
         self.menumap = dict()
 
         # Load the Menu Map
-        def _tupSort(tup1, tup2):
-            """Method for sorting the menu tuples"""
-            if tup1[1] > tup2[1]:
-                return 1
-            elif tup1[1] < tup2[1]:
-                return -1
-            else:
-                return 0
         for item in self.menub.GetMenuMap():
             for key, val in item.iteritems():
-                if isinstance(val[0], int):
-                    val = val[1:]
-                self.menumap[key] = sorted(val, _tupSort)
+                if len(val):
+                    if isinstance(val[0], int):
+                        val = val[1:]
+                    self.menumap[key] = sorted(val, key=lambda x: x[1])
 
         # Layout
         self._DoLayout()
@@ -1502,6 +1692,9 @@ class KeyBindingPanel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnButton)
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
         self.Bind(wx.EVT_LISTBOX, self.OnListBox)
+        self.Bind(wx.EVT_UPDATE_UI,
+                  lambda evt: evt.Enable(self.Dirty),
+                  id=wx.ID_APPLY)
 
     def _DoLayout(self):
         """Layout the controls"""
@@ -1513,12 +1706,12 @@ class KeyBindingPanel(wx.Panel):
         kprofiles = self.binder.GetKeyProfiles()
         # Add an empty selection for the default profile
         if len(kprofiles):
-            kprofiles.insert(0, '')
+            kprofiles.insert(0, u'')
         cprofile = Profile_Get('KEY_PROFILE', default=None)
         profiles = wx.Choice(self, ed_glob.ID_KEY_PROFILES, choices=kprofiles)
         profiles.Enable(len(kprofiles))
         if cprofile is None:
-            profiles.SetStringSelection('')
+            profiles.SetStringSelection(u'')
         else:
             profiles.SetStringSelection(cprofile)
         profsz.AddMany([spacer,
@@ -1671,6 +1864,11 @@ class KeyBindingPanel(wx.Panel):
 
         self._UpdateBinding()
 
+    #---- Properties ----#
+
+    Dirty = property(lambda self: self._dirty,
+                     lambda self, bDirty: setattr(self, '_dirty', bDirty))
+
     def ClearKeyView(self):
         """Clear all selections in the keybinding controls"""
         self.FindWindowById(ID_MOD1).SetStringSelection('')
@@ -1805,8 +2003,10 @@ class KeyBindingPanel(wx.Panel):
                 mod2.SetItems(tmods)
                 mod2.SetStringSelection('')
             self._UpdateBinding()
+            self.Dirty = True
         elif e_id in [ID_MOD2, ID_KEYS]:
             self._UpdateBinding()
+            self.Dirty = True
         else:
             evt.Skip()
 
@@ -1944,7 +2144,7 @@ class ExChoice(wx.Choice):
         if len(choices) and isinstance(choices[0], int):
             choices = [ unicode(choice) for choice in choices ]
 
-        wx.Choice.__init__(self, parent, cid, choices=choices)
+        super(ExChoice, self).__init__(parent, cid, choices=choices)
 
         if default != None and isinstance(default, basestring):
             self.SetStringSelection(default)

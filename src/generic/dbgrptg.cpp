@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin, Andrej Putrin
 // Modified by:
 // Created:     2005-01-21
-// RCS-ID:      $Id: dbgrptg.cpp 49242 2007-10-19 11:40:07Z JS $
+// RCS-ID:      $Id: dbgrptg.cpp 61631 2009-08-09 15:55:56Z JS $
 // Copyright:   (c) 2005 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -333,9 +333,9 @@ wxDebugReportDialog::wxDebugReportDialog(wxDebugReport& dbgrpt)
     // ... and the list of files in this debug report with buttons to view them
     wxSizer *sizerFileBtns = new wxBoxSizer(wxVERTICAL);
     sizerFileBtns->AddStretchSpacer(1);
-    sizerFileBtns->Add(new wxButton(this, wxID_VIEW_DETAILS, _T("&View...")),
+    sizerFileBtns->Add(new wxButton(this, wxID_VIEW_DETAILS, _("&View...")),
                         wxSizerFlags().Border(wxBOTTOM));
-    sizerFileBtns->Add(new wxButton(this, wxID_OPEN, _T("&Open...")),
+    sizerFileBtns->Add(new wxButton(this, wxID_OPEN, _("&Open...")),
                         wxSizerFlags().Border(wxTOP));
     sizerFileBtns->AddStretchSpacer(1);
 

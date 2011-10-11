@@ -4,7 +4,7 @@
 // Author:      Ryan Norton
 // Modified by:
 // Created:     2004-10-03
-// RCS-ID:      $Id: fontdlgosx.mm 39337 2006-05-25 21:08:11Z ABX $
+// RCS-ID:      $Id: fontdlgosx.mm 61800 2009-09-01 13:36:08Z JS $
 // Copyright:   (c) Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -169,7 +169,11 @@ int RunMixedFontDialog(wxFontDialog* dialog)
 
     NSModalSession session = [NSApp beginModalSessionForWindow:fontPanel];
 
-    [NSApp runModalSession:session];
+    for (;;)
+    {
+        if ([NSApp runModalSession:session] != NSRunContinuesResponse)
+            break;
+    }
 
     [NSApp endModalSession:session];
 

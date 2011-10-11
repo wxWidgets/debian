@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     12-Oct-2000
-# RCS-ID:      $Id: setup.py 60438 2009-04-30 15:16:33Z RD $
+# RCS-ID:      $Id: setup.py 67484 2011-04-13 21:05:17Z RD $
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -865,6 +865,8 @@ WX_PKGLIST =      [ 'wx',
                     'wx.lib',
                     'wx.lib.agw',
                     'wx.lib.agw.aui',
+                    'wx.lib.agw.persist',
+                    'wx.lib.agw.ribbon',
                     'wx.lib.analogclock',
                     'wx.lib.analogclock.lib_setup',
                     'wx.lib.art',
@@ -875,6 +877,13 @@ WX_PKGLIST =      [ 'wx',
                     'wx.lib.masked',
                     'wx.lib.mixins',
                     'wx.lib.ogl',
+                    'wx.lib.pubsub',
+                    'wx.lib.pubsub.core',
+                    'wx.lib.pubsub.core.arg1',
+                    'wx.lib.pubsub.core.kwargs',
+                    'wx.lib.pubsub.pubsub1',
+                    'wx.lib.pubsub.pubsub2',
+                    'wx.lib.pubsub.utils',
                     'wx.py',
                     'wx.tools',
                     'wx.tools.XRCed',
@@ -883,7 +892,15 @@ WX_PKGLIST =      [ 'wx',
                     'wx.tools.Editra.src',
                     'wx.tools.Editra.src.autocomp',
                     'wx.tools.Editra.src.eclib',
+                    'wx.tools.Editra.src.ebmlib',
                     'wx.tools.Editra.src.extern',
+                    'wx.tools.Editra.src.extern.aui',
+                    'wx.tools.Editra.src.extern.dexml',
+                    'wx.tools.Editra.src.extern.pygments',
+                    'wx.tools.Editra.src.extern.pygments.filters',
+                    'wx.tools.Editra.src.extern.pygments.formatters',
+                    'wx.tools.Editra.src.extern.pygments.lexers',
+                    'wx.tools.Editra.src.extern.pygments.styles',
                     'wx.tools.Editra.src.syntax',
                     ]
 
@@ -913,6 +930,8 @@ else:
                opj('scripts/xrced'),
                opj('scripts/editra'),
                ]
+    if os.name == 'nt':
+        SCRIPTS.append( opj('scripts/genaxmodule') ) 
 
 
 

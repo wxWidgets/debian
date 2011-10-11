@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to be less MSW-specific on 10.10.98
 // Created:     1997
-// RCS-ID:      $Id: treectrl.cpp 58755 2009-02-08 10:32:23Z VZ $
+// RCS-ID:      $Id: treectrl.cpp 61830 2009-09-04 19:10:46Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1268,6 +1268,12 @@ bool wxTreeCtrl::IsVisible(const wxTreeItemId& item) const
 bool wxTreeCtrl::ItemHasChildren(const wxTreeItemId& item) const
 {
     wxCHECK_MSG( item.IsOk(), false, wxT("invalid tree item") );
+
+    if ( IS_VIRTUAL_ROOT(item) )
+    {
+        wxTreeItemIdValue cookie;
+        return GetFirstChild(item, cookie).IsOk();
+    }
 
     wxTreeViewItem tvItem(item, TVIF_CHILDREN);
     DoGetItem(&tvItem);

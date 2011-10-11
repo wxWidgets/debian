@@ -2,7 +2,7 @@
 // Name:        src/common/imagtiff.cpp
 // Purpose:     wxImage TIFF handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagtiff.cpp 48694 2007-09-14 23:21:29Z VZ $
+// RCS-ID:      $Id: imagtiff.cpp 60897 2009-06-04 22:28:48Z VZ $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -261,7 +261,6 @@ bool wxTIFFHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
     }
 
     uint32 w, h;
-    uint32 npixels;
     uint32 *raster;
 
     TIFFGetField( tif, TIFFTAG_IMAGEWIDTH, &w );
@@ -275,9 +274,20 @@ bool wxTIFFHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
                            (samplesInfo[0] == EXTRASAMPLE_ASSOCALPHA ||
                             samplesInfo[0] == EXTRASAMPLE_UNASSALPHA));
 
-    npixels = w * h;
+    // guard against integer overflow during multiplication which could result
+    // in allocating a too small buffer and then overflowing it
+    const double bytesNeeded = (double)w * (double)h * sizeof(uint32);
+    if ( bytesNeeded >= 4294967295U /* UINT32_MAX */ )
+    {
+        if ( verbose )
+            wxLogError( _("TIFF: Image size is abnormally big.") );
 
-    raster = (uint32*) _TIFFmalloc( npixels * sizeof(uint32) );
+        TIFFClose(tif);
+
+        return false;
+    }
+
+    raster = (uint32*) _TIFFmalloc( bytesNeeded );
 
     if (!raster)
     {

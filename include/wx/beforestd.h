@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07/07/03
-// RCS-ID:      $Id: beforestd.h 42906 2006-11-01 14:16:42Z VZ $
+// RCS-ID:      $Id: beforestd.h 61871 2009-09-09 22:29:51Z VZ $
 // Copyright:   (c) 2003 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -62,4 +62,14 @@
     // 'id': identifier was truncated to 'num' characters in the debug info
     #pragma warning(disable:4786)
 #endif // VC++ < 7
+
+/*
+    Recent versions of Sun C++ compiler use _T in their standard headers and
+    our definition of it in wx/wxchar.h conflicts with them and breaks
+    compilation, so undefine _T before including them and redefine it back in
+    wx/afterstd.h if needed.
+ */
+#if defined(__SUNPRO_CC) || defined(__SUNPRO_C)
+    #undef _T
+#endif /* SUNCC */
 

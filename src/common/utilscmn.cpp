@@ -3,7 +3,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: utilscmn.cpp 51328 2008-01-22 10:19:39Z VS $
+// RCS-ID:      $Id: utilscmn.cpp 66917 2011-02-16 21:51:31Z JS $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -761,13 +761,13 @@ static bool wxLaunchDefaultBrowserBaseImpl(const wxString& url, int flags)
             wxRegKey keyDDE(key, wxT("DDEExec"));
             if ( keyDDE.Exists() )
             {
-                const wxString ddeTopic = wxRegKey(keyDDE, wxT("topic"));
-
                 // we only know the syntax of WWW_OpenURL DDE request for IE,
                 // optimistically assume that all other browsers are compatible
                 // with it
+                static const wxString TOPIC_OPEN_URL = wxT("WWW_OpenURL");
                 wxString ddeCmd;
-                bool ok = ddeTopic == wxT("WWW_OpenURL");
+                wxRegKey keyTopic(keyDDE, wxT("topic"));
+                bool ok = keyTopic.Exists() && (keyTopic.QueryDefaultValue() = TOPIC_OPEN_URL);
                 if ( ok )
                 {
                     ddeCmd = keyDDE.QueryDefaultValue();
@@ -795,8 +795,8 @@ static bool wxLaunchDefaultBrowserBaseImpl(const wxString& url, int flags)
                     // try to send it the DDE request now but ignore the errors
                     wxLogNull noLog;
 
-                    const wxString ddeServer = wxRegKey(keyDDE, wxT("application"));
-                    if ( wxExecuteDDE(ddeServer, ddeTopic, ddeCmd) )
+                    const wxString ddeServer = wxRegKey(keyDDE, wxT("application")).QueryDefaultValue();
+                    if ( wxExecuteDDE(ddeServer, TOPIC_OPEN_URL, ddeCmd) )
                         return true;
 
                     // this is not necessarily an error: maybe browser is
@@ -814,18 +814,23 @@ static bool wxLaunchDefaultBrowserBaseImpl(const wxString& url, int flags)
     sei.lpFile = url.c_str();
     sei.lpVerb = _T("open");
     sei.nShow = SW_SHOWNORMAL;
+    sei.fMask = SEE_MASK_FLAG_NO_UI; // we give error message ourselves
 
-    ::ShellExecuteEx(&sei);
+    BOOL nExecResult = ::ShellExecuteEx(&sei);
 
+    //From MSDN for wince
+    //hInstApp member is only valid if the function fails, in which case it
+    //receives one of the following error values, which are less than or
+    //equal to 32.
     const int nResult = (int) sei.hInstApp;
 
     // Firefox returns file not found for some reason, so make an exception
     // for it
-    if ( nResult > 32 || nResult == SE_ERR_FNF )
+    if ( nResult > 32 || nResult == SE_ERR_FNF  || nExecResult == TRUE )
     {
 #ifdef __WXDEBUG__
         // Log something if SE_ERR_FNF happens
-        if ( nResult == SE_ERR_FNF )
+        if ( nResult == SE_ERR_FNF || nExecResult == FALSE )
             wxLogDebug(wxT("SE_ERR_FNF from ShellExecute -- maybe FireFox?"));
 #endif // __WXDEBUG__
         return true;
@@ -859,7 +864,7 @@ static bool wxLaunchDefaultBrowserBaseImpl(const wxString& url, int flags)
         wxLogDebug(wxT("ICStart error %d"), (int) err);
         return false;
     }
-#else 
+#else
     // (non-Mac, non-MSW)
 
 #ifdef __UNIX__
@@ -1280,7 +1285,7 @@ wxString wxGetPasswordFromUser(const wxString& message,
 
 wxColour wxGetColourFromUser(wxWindow *parent, const wxColour& colInit, const wxString& caption)
 {
-    wxColourData data;
+    static wxColourData data;
     data.SetChooseFull(true);
     if ( colInit.Ok() )
     {

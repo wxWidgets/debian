@@ -4,7 +4,7 @@
 // Author:      Roger Gammans, Paul Gammans
 // Modified by:
 // Created:
-// RCS-ID:      $Id: dbgrid.h 41020 2006-09-05 20:47:48Z VZ $
+// RCS-ID:      $Id: dbgrid.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1999 The Computer Surgery (roger@computer-surgery.co.uk)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 #include "wx/grid.h"
 #include "wx/dbkeyg.h"
 
-#define wxGRID_VALUE_DBAUTO     _T("dbauto")
+#define wxGRID_VALUE_DBAUTO     wxT("dbauto")
 
 WX_DECLARE_USER_EXPORTED_OBJARRAY(GenericKey,keyarray,WXDLLIMPEXP_DBGRID);
 
@@ -119,12 +119,12 @@ public:
 
     virtual int GetNumberRows()
     {
-        wxLogDebug(_T(" GetNumberRows() = %i"),m_rowtotal);
+        wxLogDebug(wxT(" GetNumberRows() = %i"),m_rowtotal);
         return m_rowtotal;
     }
     virtual int GetNumberCols()
     {
-        wxLogDebug(_T(" GetNumberCols() = %i"),m_nocols);
+        wxLogDebug(wxT(" GetNumberCols() = %i"),m_nocols);
         return m_nocols;
     }
     virtual bool     IsEmptyCell(int row, int col) ;

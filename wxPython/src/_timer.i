@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _timer.i 43595 2006-11-22 01:57:47Z RD $
+// RCS-ID:      $Id: _timer.i 63424 2010-02-08 20:14:30Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@ wxPyTimer::wxPyTimer(wxEvtHandler *owner, int id)
     : wxTimer(owner, id)
 {
     if (owner == NULL)
-        SetOwner(this);
+        SetOwner(this, id);
 }
 
 wxPyTimer::~wxPyTimer()

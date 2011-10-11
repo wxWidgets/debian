@@ -3012,7 +3012,7 @@ wxPyTimer::wxPyTimer(wxEvtHandler *owner, int id)
     : wxTimer(owner, id)
 {
     if (owner == NULL)
-        SetOwner(this);
+        SetOwner(this, id);
 }
 
 wxPyTimer::~wxPyTimer()
@@ -42131,6 +42131,7 @@ SWIGEXPORT void SWIG_init(void) {
   SWIG_Python_SetConstant(d, "SYS_COLOUR_MENUHILIGHT",SWIG_From_int(static_cast< int >(wxSYS_COLOUR_MENUHILIGHT)));
   SWIG_Python_SetConstant(d, "SYS_COLOUR_MENUBAR",SWIG_From_int(static_cast< int >(wxSYS_COLOUR_MENUBAR)));
   SWIG_Python_SetConstant(d, "SYS_COLOUR_LISTBOXTEXT",SWIG_From_int(static_cast< int >(wxSYS_COLOUR_LISTBOXTEXT)));
+  SWIG_Python_SetConstant(d, "SYS_COLOUR_LISTBOXHIGHLIGHTTEXT",SWIG_From_int(static_cast< int >(wxSYS_COLOUR_LISTBOXHIGHLIGHTTEXT)));
   SWIG_Python_SetConstant(d, "SYS_COLOUR_MAX",SWIG_From_int(static_cast< int >(wxSYS_COLOUR_MAX)));
   SWIG_Python_SetConstant(d, "SYS_MOUSE_BUTTONS",SWIG_From_int(static_cast< int >(wxSYS_MOUSE_BUTTONS)));
   SWIG_Python_SetConstant(d, "SYS_BORDER_X",SWIG_From_int(static_cast< int >(wxSYS_BORDER_X)));

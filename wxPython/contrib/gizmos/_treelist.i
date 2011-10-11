@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     12-Sept-2006
-// RCS-ID:      $Id: _treelist.i 56559 2008-10-29 00:21:25Z RD $
+// RCS-ID:      $Id: _treelist.i 67469 2011-04-13 18:19:21Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -632,7 +632,7 @@ public:
 
     // select this item
     void SelectItem(const wxTreeItemId& item,
-                    const wxTreeItemId& last = NULL,
+                    const wxTreeItemId& last = wxTreeItemId(),
                     bool unselect_others=true);
 
     void SelectAll();

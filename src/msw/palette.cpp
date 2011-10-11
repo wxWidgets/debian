@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: palette.cpp 41385 2006-09-23 09:35:09Z RR $
+// RCS-ID:      $Id: palette.cpp 67095 2011-03-01 00:02:52Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -79,6 +79,11 @@ int wxPalette::GetColoursCount() const
 
 bool wxPalette::Create(int n, const unsigned char *red, const unsigned char *green, const unsigned char *blue)
 {
+    // The number of colours in LOGPALETTE is a WORD so we can't create
+    // palettes with more entries than USHRT_MAX.
+    if ( n < 0 || n > 65535 )
+        return false;
+
     UnRef();
 
 #if defined(__WXMICROWIN__)

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     11-April-2006
-// RCS-ID:      $Id: _richtextctrl.i 57742 2009-01-02 04:29:11Z RD $
+// RCS-ID:      $Id: _richtextctrl.i 63397 2010-02-05 01:30:48Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -179,7 +179,10 @@ during sizing.", "");
     DocDeclStr(
         wxCursor , GetURLCursor() const,
         "Get URL cursor", "");
+
     
+    wxMenu* GetContextMenu() const;
+    void SetContextMenu(wxMenu* menu);
 
     
 

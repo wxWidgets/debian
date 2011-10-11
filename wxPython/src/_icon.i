@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _icon.i 41774 2006-10-09 02:36:38Z RD $
+// RCS-ID:      $Id: _icon.i 67463 2011-04-13 18:14:08Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ public:
     // returns the first icon in the bundle
     const wxIcon& GetIcon( const wxSize& size ) const;
 
-    %property(Icon, GetIcon, doc="See `GetIcon`");
+//    %property(Icon, GetIcon, doc="See `GetIcon`");
 };
 
 //---------------------------------------------------------------------------

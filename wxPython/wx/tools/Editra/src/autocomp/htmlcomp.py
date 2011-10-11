@@ -12,8 +12,8 @@ Simple autocompletion support for HTML and XML documents.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id: htmlcomp.py 60432 2009-04-29 18:15:57Z CJP $"
-__revision__ = "$Revision: 60432 $"
+__cvsid__ = "$Id: htmlcomp.py 67123 2011-03-04 00:02:35Z CJP $"
+__revision__ = "$Revision: 67123 $"
 
 #--------------------------------------------------------------------------#
 # Imports
@@ -27,31 +27,35 @@ import completer
 #--------------------------------------------------------------------------#
 # Standard Html Tags
 TAGS = ['!--', 'a', 'abbr', 'accept', 'accesskey', 'acronym', 'action',
-        'address', 'align', 'alink', 'alt', 'applet', 'archive', 'area', 'axis',
-        'b', 'background', 'base', 'basefont', 'bdo', 'bgcolor', 'big',
-        'blockquote', 'body', 'border', 'bordercolor', 'br', 'button',
-        'caption', 'cellpadding', 'cellspacing', 'center', 'char', 'charoff',
-        'charset', 'checked', 'cite', 'cite', 'class', 'classid', 'clear',
-        'code', 'codebase', 'codetype', 'col', 'colgroup', 'color', 'cols',
-        'colspan', 'compact', 'content', 'coords', 'data', 'datetime', 'dd',
-        'declare', 'defer', 'del', 'dfn', 'dir', 'dir', 'disabled', 'div', 'dl',
-        'dt', 'dtml-call', 'dtml-comment', 'dtml-if', 'dtml-in', 'dtml-let',
-        'dtml-raise', 'dtml-tree', 'dtml-try', 'dtml-unless', 'dtml-var',
-        'dtml-with', 'em', 'enctype', 'face', 'fieldset', 'font', 'for', 'form',
-        'frame', 'gutter', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head',
-        'headers', 'height', 'hr', 'href', 'hreflang', 'hspace', 'html',
-        'http-equiv', 'i', 'id', 'iframe', 'img', 'input', 'ins', 'isindex',
-        'ismap', 'kbd', 'label', 'lang', 'language', 'legend', 'li', 'link',
-        'link', 'longdesc', 'lowsrc', 'map', 'marginheight', 'marginwidth',
-        'maxlength', 'menu', 'meta', 'method', 'multiple', 'name', 'nohref',
-        'noscript', 'nowrap', 'object', 'ol', 'optgroup', 'option', 'p',
-        'param', 'pre', 'profile', 'prompt', 'q', 'readonly', 'rel', 'rev',
-        'rows', 'rowspan', 'rules', 's', 'samp', 'scheme', 'scope', 'script',
-        'scrolling', 'select', 'selected', 'shape', 'size', 'small', 'span',
-        'src', 'standby', 'start', 'strike', 'strong', 'style', 'sub',
-        'summary', 'sup', 'tabindex', 'table', 'target', 'tbody', 'td', 'text',
-        'textarea', 'tfoot', 'th', 'thead', 'title', 'tr', 'tt', 'type', 'u',
-        'ul', 'url', 'usemap', 'valign', 'value', 'valuetype', 'var', 'version',
+        'address', 'align', 'alink', 'alt', 'applet', 'archive', 'area',
+        'article', 'aside', 'audio', 'axis', 'b', 'background', 'base',
+        'basefont', 'bdo', 'bgcolor', 'big', 'blockquote', 'body', 'border',
+        'bordercolor', 'br', 'button', 'canvas', 'caption', 'cellpadding',
+        'cellspacing', 'center', 'char', 'charoff', 'charset', 'checked',
+        'cite', 'cite', 'class', 'classid', 'clear', 'code', 'codebase',
+        'codetype', 'col', 'colgroup', 'color', 'cols', 'colspan', 'command',
+        'compact', 'content', 'coords', 'data', 'datetime', 'datalist', 'dd',
+        'declare', 'defer', 'del', 'details', 'dfn', 'dialog', 'dir', 'dir',
+        'disabled', 'div', 'dl', 'dt', 'dtml-call', 'dtml-comment', 'dtml-if',
+        'dtml-in', 'dtml-let', 'dtml-raise', 'dtml-tree', 'dtml-try',
+        'dtml-unless', 'dtml-var', 'dtml-with', 'em', 'embed', 'enctype',
+        'face', 'fieldset', 'figcaption', 'figure', 'font', 'for', 'form',
+        'footer', 'frame', 'gutter', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head',
+        'header', 'headers', 'height', 'hgroup', 'hr', 'href', 'hreflang',
+        'hspace', 'html', 'http-equiv', 'i', 'id', 'iframe', 'img', 'input',
+        'ins', 'isindex', 'ismap', 'kbd', 'keygen', 'label', 'lang', 'language',
+        'legend', 'li', 'link', 'link', 'longdesc', 'lowsrc', 'map',
+        'marginheight', 'marginwidth', 'mark', 'maxlength', 'menu', 'meta',
+        'meter', 'method', 'multiple', 'name', 'nav', 'nohref', 'noscript',
+        'nowrap', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param',
+        'pre', 'profile', 'progress', 'prompt', 'q', 'readonly', 'rel', 'rev',
+        'rows', 'rowspan', 'rp', 'rt', 'ruby', 'rules', 's', 'samp', 'scheme',
+        'scope', 'script', 'scrolling', 'section', 'select', 'selected',
+        'shape', 'size', 'small', 'source', 'span', 'src', 'standby', 'start',
+        'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'tabindex',
+        'table', 'target', 'tbody', 'td', 'text', 'textarea', 'tfoot', 'th',
+        'thead', 'time', 'title', 'tr', 'tt', 'type', 'u', 'ul', 'url',
+        'usemap', 'valign', 'value', 'valuetype', 'var', 'version', 'video',
         'vlink', 'vspace', 'width', 'wrap', 'xmp']
 
 # Tags that usually have a new line inbetween them
@@ -86,21 +90,20 @@ HTML_AREA = [wx.stc.STC_H_ASP, wx.stc.STC_H_ASPAT, wx.stc.STC_H_ATTRIBUTE,
 #--------------------------------------------------------------------------#
 
 class Completer(completer.BaseCompleter):
-    """Code completer provider"""
+    """HTML/XML Code completion provider"""
     def __init__(self, stc_buffer):
-        completer.BaseCompleter.__init__(self, stc_buffer)
+        super(Completer, self).__init__(stc_buffer)
 
         # Setup
         self.SetAutoCompKeys([ord('>'), ord('<')])
         self.SetAutoCompStops(' ')
         self.SetAutoCompFillups('')
-        self.SetAutoCompAfter(True) # Insert Text after cursor on completions
 
     def GetAutoCompList(self, command):
         """Returns the list of possible completions for a
         command string. If namespace is not specified the lookup
         is based on the locals namespace
-        @param command: commadn lookup is done on
+        @param command: command lookup is done on
         @keyword namespace: namespace to do lookup in
 
         """
@@ -114,20 +117,30 @@ class Completer(completer.BaseCompleter):
         if buff.GetStyleAt(cpos) not in HTML_AREA:
             return list()
 
+        # Get current context
         cline = buff.GetCurrentLine()
-
+        ccol = buff.GetColumn(cpos)
         tmp = buff.GetLine(cline).rstrip()
+        if ccol < len(tmp):
+            tmp = tmp[:ccol].rstrip()
 
-        # Check if we are completing an open tag
+        # Check if we are completing an open tag (i.e < was typed)
         if tmp.endswith('<'):
             if buff.GetLexer() == wx.stc.STC_LEX_XML:
                 taglst = _FindXmlTags(buff.GetText())
             else:
                 taglst = TAGS
-            return WrapTagImages(taglst)
+            return completer.CreateSymbols(taglst, completer.TYPE_ELEMENT)
 
+        # Check for a self closing tag (i.e />)
+        endchk = tmp.strip().replace(u" ", u"").replace(u"\t", u"")
+        if endchk.endswith(u"/>"):
+            return list()
+
+        # Try to autocomplete a closing tag (if necessary)
         tmp = tmp.rstrip('>').rstrip()
         if len(tmp) and (tmp[-1] in '"\' \t' or tmp[-1].isalpha()):
+            # Walk backwards from the current line
             for line in range(cline, -1, -1):
                 txt = buff.GetLine(line)
                 if line == cline:
@@ -142,15 +155,25 @@ class Completer(completer.BaseCompleter):
                            tag not in ('img', 'br', '?php', '?xml', '?') and \
                            not tag[0] in ('!', '/'):
                             rtag = u"</" + tag + u">"
-                            if tag in NLINE_TAGS:
-                                rtag = buff.GetEOLChar() + rtag
 
                             if not parts[-1].endswith('>'):
                                 rtag = u">" + rtag
-                            return [rtag, ]
+                            return [ completer.Symbol(rtag, completer.TYPE_ELEMENT) ]
                     break
 
         return list()
+
+    def OnCompletionInserted(self, pos, text):
+        """Handle adjusting caret position after some insertions.
+        @param pos: position caret was at before insertion
+        @param text: text that was inserted
+
+        """
+        buff = self.GetBuffer()
+        if text.strip().startswith(u"</"):
+            buff.SetCurrentPos(pos) # move caret back between the tags
+            # HACK: SetCurrentPos causes text to be selected
+            buff.SetSelection(pos, pos)
 
 #--------------------------------------------------------------------------#
 
@@ -169,11 +192,3 @@ def _FindXmlTags(text):
     else:
         matches = [u'!--', ]
     return matches
-
-def WrapTagImages(taglst):
-    """Apply image identifiers to completion strings
-    @return: list
-
-    """
-    tagstr = u"?%d" % completer.IMG_ELEMENT
-    return [ tag + tagstr for tag in taglst ]

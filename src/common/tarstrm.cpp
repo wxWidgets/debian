@@ -2,7 +2,7 @@
 // Name:        tarstrm.cpp
 // Purpose:     Streams for Tar files
 // Author:      Mike Wetherell
-// RCS-ID:      $Id: tarstrm.cpp 53248 2008-04-17 17:29:22Z MW $
+// RCS-ID:      $Id: tarstrm.cpp 63302 2010-01-28 21:46:09Z MW $
 // Copyright:   (c) 2004 Mike Wetherell
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1299,6 +1299,11 @@ bool wxTarOutputStream::WriteHeaders(wxTarEntry& entry)
         m_tarsize += rounded;
 
         *m_extendedHdr = 0;
+
+        // update m_headpos which is used to seek back to fix up the file
+        // length if it is not known in advance
+        if (m_tarstart != wxInvalidOffset)
+            m_headpos = m_tarstart + m_tarsize;
     }
 
     // if don't have extended headers just report error

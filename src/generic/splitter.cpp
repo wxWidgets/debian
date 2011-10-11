@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: splitter.cpp 59341 2009-03-05 15:44:24Z JS $
+// RCS-ID:      $Id: splitter.cpp 60837 2009-05-31 13:13:07Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -922,9 +922,12 @@ wxSize wxSplitterWindow::DoGetBestSize() const
         pSash = &sizeBest.y;
     }
 
-    // account for the border and the sash
+    // account for the sash if the window is actually split
+    if ( m_windowOne && m_windowTwo )
+        *pSash += GetSashSize();
+
+    // account for the border too
     int border = 2*GetBorderSize();
-    *pSash += GetSashSize();
     sizeBest.x += border;
     sizeBest.y += border;
 

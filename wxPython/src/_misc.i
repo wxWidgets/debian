@@ -6,7 +6,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _misc.i 44036 2006-12-22 23:55:58Z RD $
+// RCS-ID:      $Id: _misc.i 63426 2010-02-08 20:19:39Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -38,6 +38,7 @@ public:
 
     static void Enable(bool flag);
     static void SetDelay(long milliseconds);
+
 
     %property(Tip, GetTip, SetTip, doc="See `GetTip` and `SetTip`");
     %property(Window, GetWindow, doc="See `GetWindow`");
@@ -106,6 +107,14 @@ class  wxBusyCursor {
 public:
     wxBusyCursor(wxCursor* cursor = wxHOURGLASS_CURSOR);
     ~wxBusyCursor();
+
+    // for the 'with' statement
+    %pythoncode { 
+        def __enter__(self):
+            return self
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            return False
+    }  
 };
 
 //---------------------------------------------------------------------------
@@ -116,6 +125,14 @@ class wxWindowDisabler {
 public:
     wxWindowDisabler(wxWindow *winToSkip = NULL);
     ~wxWindowDisabler();
+
+    // for the 'with' statement
+    %pythoncode { 
+        def __enter__(self):
+            return self
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            return False
+    }
 };
 
 //---------------------------------------------------------------------------
@@ -128,6 +145,14 @@ public:
     ~wxBusyInfo();
 
     %pythoncode { def Destroy(self): pass }
+
+    // for the 'with' statement
+    %pythoncode { 
+        def __enter__(self):
+            return self
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            return False
+    }
 };
 
 

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.10.99
-// RCS-ID:      $Id: init.cpp 51336 2008-01-22 13:59:45Z SC $
+// RCS-ID:      $Id: init.cpp 61555 2009-07-30 07:42:54Z VS $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -108,14 +108,6 @@ public:
 
 private:
     wxAppConsole *m_app;
-};
-
-// another tiny class which simply exists to ensure that wxEntryCleanup is
-// always called
-class wxCleanupOnExit
-{
-public:
-    ~wxCleanupOnExit() { wxEntryCleanup(); }
 };
 
 // ----------------------------------------------------------------------------
@@ -422,7 +414,9 @@ void wxEntryCleanup()
 int wxEntryReal(int& argc, wxChar **argv)
 {
     // library initialization
-    if ( !wxEntryStart(argc, argv) )
+    wxInitializer initializer(argc, argv);
+
+    if ( !initializer.IsOk() )
     {
 #if wxUSE_LOG
         // flush any log messages explaining why we failed
@@ -430,12 +424,6 @@ int wxEntryReal(int& argc, wxChar **argv)
 #endif
         return -1;
     }
-
-    // if wxEntryStart succeeded, we must call wxEntryCleanup even if the code
-    // below returns or throws
-    wxCleanupOnExit cleanupOnExit;
-
-    WX_SUPPRESS_UNUSED_WARN(cleanupOnExit);
 
     wxTRY
     {
@@ -490,6 +478,21 @@ bool wxInitialize(int argc, wxChar **argv)
 
     return wxEntryStart(argc, argv);
 }
+
+#if wxUSE_UNICODE
+bool wxInitialize(int argc, char **argv)
+{
+    wxCRIT_SECT_LOCKER(lockInit, gs_initData.csInit);
+
+    if ( gs_initData.nInitCount++ )
+    {
+        // already initialized
+        return true;
+    }
+
+    return wxEntryStart(argc, argv);
+}
+#endif // wxUSE_UNICODE
 
 void wxUninitialize()
 {

@@ -7,12 +7,11 @@
 # License: wxWindows License                                                  #
 ###############################################################################
 # Plugin Metadata
-"""Run the script in the current buffer"""
-__version__ = "1.2"
+"""Run scripts and view output"""
 
 __author__ = "Cody Precord"
-__svnid__ = "$Id: __init__.py 59917 2009-03-29 17:51:59Z CJP $"
-__revision__ = "$Revision: 59917 $"
+__svnid__ = "$Id: __init__.py 67778 2011-05-23 20:58:56Z CJP $"
+__revision__ = "$Revision: 67778 $"
 
 #-----------------------------------------------------------------------------#
 # Imports
@@ -27,6 +26,7 @@ import ed_glob
 import iface
 import plugin
 import ed_msg
+import profiler
 import util
 import syntax.synglob as synglob
 from ed_menu import EdMenuBar
@@ -44,9 +44,7 @@ class Launch(plugin.Plugin):
     INSTALLED = False
     SHELF = None
 
-    @property
-    def __name__(self):
-        return u'Launch'
+    __name__ = u'Launch'
 
     def AllowMultiple(self):
         """Launch allows multiple instances"""
@@ -68,27 +66,29 @@ class Launch(plugin.Plugin):
 
     def GetId(self):
         """The unique identifier of this plugin"""
-        return self.ID_LAUNCH
+        return Launch.ID_LAUNCH
 
     def GetMenuEntry(self, menu):
         """This plugins menu entry"""
-        item = wx.MenuItem(menu, self.ID_LAUNCH, self.__name__, 
+        item = wx.MenuItem(menu, Launch.ID_LAUNCH, Launch.__name__, 
                            _("Run script from current buffer"))
         item.SetBitmap(self.GetBitmap())
         return item
 
     def GetMinVersion(self):
-        return "3.15"
+        return "0.6.27"
 
     def GetName(self):
         """The name of this plugin"""
-        return self.__name__
+        return Launch.__name__
 
     def InstallComponents(self, mainw):
         """Install extra menu components
         param mainw: MainWindow Instance
 
         """
+        # Delete obsolete configuration from older versions
+        profiler.Profile_Del('Launch.Prefs') # New config is Launch.Config2
         tmenu = mainw.GetMenuBar().GetMenuByName("tools")
         tmenu.Insert(0, ed_glob.ID_RUN_LAUNCH, _("Run") + \
                      EdMenuBar.keybinder.GetBinding(ed_glob.ID_RUN_LAUNCH),
@@ -130,6 +130,8 @@ class LaunchConfigObject(plugin.PluginConfigObject):
         @return: wxPanel
 
         """
+        # Ensure preferences are initialized
+        cfgdlg.InitConfig()
         return cfgdlg.ConfigNotebook(parent)
 
     def GetLabel(self):

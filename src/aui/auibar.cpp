@@ -5,7 +5,7 @@
 // Author:      Benjamin I. Williams
 // Modified by:
 // Created:     2005-05-17
-// RCS-ID:      $Id: auibar.cpp 60197 2009-04-16 12:58:37Z BIW $
+// RCS-ID:      $Id: auibar.cpp 66926 2011-02-16 23:25:21Z JS $
 // Copyright:   (C) Copyright 2005-2006, Kirix Corporation, All Rights Reserved
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
@@ -539,13 +539,13 @@ wxSize wxAuiDefaultToolBarArt::GetLabelSize(
 
     // get item's width
     width = item.GetMinSize().GetWidth();
-    
+
     if (width == -1)
     {
         // no width specified, measure the text ourselves
         width = dc.GetTextExtent(item.GetLabel()).GetX();
     }
-    
+
     return wxSize(width, height);
 }
 
@@ -941,9 +941,9 @@ void wxAuiToolBar::AddTool(int tool_id,
     item.min_size = wxDefaultSize;
     item.user_data = 0;
     item.sticky = false;
-    
-    if (item.id == wxID_ANY) 
-        item.id = wxNewId(); 
+
+    if (item.id == wxID_ANY)
+        item.id = wxNewId();
 
     if (!item.disabled_bitmap.IsOk())
     {
@@ -1008,9 +1008,9 @@ void wxAuiToolBar::AddLabel(int tool_id,
     item.user_data = 0;
     item.sticky = false;
 
-    if (item.id == wxID_ANY) 
-        item.id = wxNewId(); 
- 	
+    if (item.id == wxID_ANY)
+        item.id = wxNewId();
+
     m_items.Add(item);
 }
 
@@ -1482,7 +1482,7 @@ void wxAuiToolBar::ToggleTool(int tool_id, bool state)
             int i, idx, count;
             idx = GetToolIndex(tool_id);
             count = (int)m_items.GetCount();
-            
+
             if (idx >= 0 && idx < count)
             {
                 for (i = idx; i < count; ++i)
@@ -1498,7 +1498,7 @@ void wxAuiToolBar::ToggleTool(int tool_id, bool state)
                     m_items[i].state &= ~wxAUI_BUTTON_STATE_CHECKED;
                 }
             }
-            
+
             tool->state |= wxAUI_BUTTON_STATE_CHECKED;
         }
          else if (tool->kind == wxITEM_CHECK)
@@ -2426,13 +2426,14 @@ void wxAuiToolBar::OnLeftUp(wxMouseEvent& evt)
                     toggle = true;
 
                 ToggleTool(m_action_item->id, toggle);
-                
+
                 // repaint immediately
                 Refresh(false);
                 Update();
-        
+
                 wxCommandEvent e(wxEVT_COMMAND_MENU_SELECTED, m_action_item->id);
                 e.SetEventObject(this);
+                e.SetInt(toggle);
                 ProcessEvent(e);
                 DoIdleUpdate();
             }
@@ -2497,15 +2498,12 @@ void wxAuiToolBar::OnRightUp(wxMouseEvent& evt)
 
     if (m_action_item && hit_item == m_action_item)
     {
-        if (hit_item->kind == wxITEM_NORMAL)
-        {
-            wxAuiToolBarEvent e(wxEVT_COMMAND_AUITOOLBAR_RIGHT_CLICK, m_action_item->id);
-            e.SetEventObject(this);
-            e.SetToolId(m_action_item->id);
-            e.SetClickPoint(m_action_pos);
-            ProcessEvent(e);
-            DoIdleUpdate();
-        }
+        wxAuiToolBarEvent e(wxEVT_COMMAND_AUITOOLBAR_RIGHT_CLICK, m_action_item->id);
+        e.SetEventObject(this);
+        e.SetToolId(m_action_item->id);
+        e.SetClickPoint(m_action_pos);
+        ProcessEvent(e);
+        DoIdleUpdate();
     }
     else
     {

@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: settings.cpp 57542 2008-12-25 13:03:24Z VZ $
+// RCS-ID:      $Id: settings.cpp 67017 2011-02-25 09:37:28Z JS $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -106,6 +106,7 @@ wxColour wxSystemSettingsNative::GetColour(wxSystemColour index)
             break ;
 
         case wxSYS_COLOUR_HIGHLIGHTTEXT :
+        case wxSYS_COLOUR_LISTBOXHIGHLIGHTTEXT :
 #if 0 && (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
             // NB: enable this case as desired
             resultColor = *wxWHITE ;

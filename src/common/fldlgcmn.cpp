@@ -4,7 +4,7 @@
 // Author:      John Labenski
 // Modified by:
 // Created:     14.06.03 (extracted from src/*/filedlg.cpp)
-// RCS-ID:      $Id: fldlgcmn.cpp 47482 2007-07-15 14:12:08Z VS $
+// RCS-ID:      $Id: fldlgcmn.cpp 66916 2011-02-16 21:48:55Z JS $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -300,7 +300,7 @@ static wxString wxDefaultFileSelector(bool load,
     }
 
     return wxFileSelector(prompt, NULL, default_name, ext, wild,
-                          load ? wxFD_OPEN : wxFD_SAVE, parent);
+                          load ? (wxFD_OPEN | wxFD_FILE_MUST_EXIST) : wxFD_SAVE, parent);
 }
 
 //----------------------------------------------------------------------------

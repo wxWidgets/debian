@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-Oct-2006
-// RCS-ID:      $Id: _graphics.i 60608 2009-05-12 20:38:58Z RD $
+// RCS-ID:      $Id: _graphics.i 63673 2010-03-12 23:52:21Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -312,6 +312,8 @@ public :
     virtual wxGraphicsBrush CreateRadialGradientBrush(wxDouble , wxDouble , wxDouble , wxDouble , wxDouble ,
                                                       const wxColour &, const wxColour &)  { return wxNullGraphicsBrush; }
     virtual wxGraphicsFont CreateFont( const wxFont & , const wxColour & ) { return wxNullGraphicsFont; }
+    wxGraphicsBitmap CreateBitmap( const wxBitmap &bitmap ) const { return wxNullGraphicsBitmap; }
+    
 };
 
 
@@ -700,7 +702,7 @@ pointer for GDIPlus or a cairo_t pointer for Cairo.  NOTE: For
 wxPython we still need a way to make this value usable.", "");
     
 
-    %newobject CreateFromNative;
+    %newobject CreateFromNativeWindow;
     DocDeclStr(
         static wxGraphicsContext* , CreateFromNativeWindow( void * window ) ,
         "Creates a wx.GraphicsContext from a native window.  NOTE: For wxPython

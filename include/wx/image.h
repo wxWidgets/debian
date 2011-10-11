@@ -2,7 +2,7 @@
 // Name:        wx/image.h
 // Purpose:     wxImage class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: image.h 49563 2007-10-31 20:46:21Z VZ $
+// RCS-ID:      $Id: image.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,14 +27,14 @@
 // which breaks the compilation below
 #undef index
 
-#define wxIMAGE_OPTION_QUALITY  wxString(_T("quality"))
-#define wxIMAGE_OPTION_FILENAME wxString(_T("FileName"))
+#define wxIMAGE_OPTION_QUALITY  wxString(wxT("quality"))
+#define wxIMAGE_OPTION_FILENAME wxString(wxT("FileName"))
 
-#define wxIMAGE_OPTION_RESOLUTION            wxString(_T("Resolution"))
-#define wxIMAGE_OPTION_RESOLUTIONX           wxString(_T("ResolutionX"))
-#define wxIMAGE_OPTION_RESOLUTIONY           wxString(_T("ResolutionY"))
+#define wxIMAGE_OPTION_RESOLUTION            wxString(wxT("Resolution"))
+#define wxIMAGE_OPTION_RESOLUTIONX           wxString(wxT("ResolutionX"))
+#define wxIMAGE_OPTION_RESOLUTIONY           wxString(wxT("ResolutionY"))
 
-#define wxIMAGE_OPTION_RESOLUTIONUNIT        wxString(_T("ResolutionUnit"))
+#define wxIMAGE_OPTION_RESOLUTIONUNIT        wxString(wxT("ResolutionUnit"))
 
 // constants used with wxIMAGE_OPTION_RESOLUTIONUNIT
 enum

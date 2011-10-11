@@ -8,7 +8,7 @@
  *              Guillermo Rodriguez Garcia <guille@iies.es>
  * Purpose:     GSocket main Unix and OS/2 file
  * Licence:     The wxWindows licence
- * CVSID:       $Id: gsocket.cpp 58386 2009-01-25 12:45:29Z VZ $
+ * CVSID:       $Id: gsocket.cpp 66982 2011-02-20 11:04:45Z TIK $
  * -------------------------------------------------------------------------
  */
 
@@ -198,8 +198,8 @@ int _System soclose(int);
 
 #if defined(HAVE_GETHOSTBYNAME)
 static struct hostent * deepCopyHostent(struct hostent *h,
-					const struct hostent *he,
-					char *buffer, int size, int *err)
+                                        const struct hostent *he,
+                                        char *buffer, int size, int *err)
 {
   /* copy old structure */
   memcpy(h, he, sizeof(struct hostent));
@@ -283,7 +283,7 @@ static struct hostent * deepCopyHostent(struct hostent *h,
 static wxMutex nameLock;
 #endif
 struct hostent * wxGethostbyname_r(const char *hostname, struct hostent *h,
-				   void *buffer, int size, int *err)
+                                   void *buffer, int size, int *err)
 
 {
   struct hostent *he = NULL;
@@ -318,20 +318,20 @@ struct hostent * wxGethostbyname_r(const char *hostname, struct hostent *h,
 static wxMutex addrLock;
 #endif
 struct hostent * wxGethostbyaddr_r(const char *addr_buf, int buf_size,
-				   int proto, struct hostent *h,
-				   void *buffer, int size, int *err)
+                                   int proto, struct hostent *h,
+                                   void *buffer, int size, int *err)
 {
   struct hostent *he = NULL;
   *err = 0;
 #if defined(HAVE_FUNC_GETHOSTBYNAME_R_6)
   if (gethostbyaddr_r(addr_buf, buf_size, proto, h,
-		      (char*)buffer, size, &he, err))
+                      (char*)buffer, size, &he, err))
     he = NULL;
 #elif defined(HAVE_FUNC_GETHOSTBYNAME_R_5)
   he = gethostbyaddr_r(addr_buf, buf_size, proto, h, (char*)buffer, size, err);
 #elif defined(HAVE_FUNC_GETHOSTBYNAME_R_3)
   if (gethostbyaddr_r(addr_buf, buf_size, proto, h,
-			(struct hostent_data*) buffer))
+                        (struct hostent_data*) buffer))
   {
     he = NULL;
     *err = h_errno;
@@ -353,8 +353,8 @@ struct hostent * wxGethostbyaddr_r(const char *addr_buf, int buf_size,
 
 #if defined(HAVE_GETSERVBYNAME)
 static struct servent * deepCopyServent(struct servent *s,
-					const struct servent *se,
-					char *buffer, int size)
+                                        const struct servent *se,
+                                        char *buffer, int size)
 {
   /* copy plain old structure */
   memcpy(s, se, sizeof(struct servent));
@@ -418,7 +418,7 @@ static struct servent * deepCopyServent(struct servent *s,
 static wxMutex servLock;
 #endif
 struct servent *wxGetservbyname_r(const char *port, const char *protocol,
-				  struct servent *serv, void *buffer, int size)
+                                  struct servent *serv, void *buffer, int size)
 {
   struct servent *se = NULL;
 #if defined(HAVE_FUNC_GETSERVBYNAME_R_6)
@@ -995,7 +995,12 @@ GSocketError GSocket::Connect(GSocketStream stream)
   // If a local address has been set, then we need to bind to it before calling connect
   if (m_local && m_local->m_addr)
   {
-     bind(m_fd, m_local->m_addr, m_local->m_len);
+    if (bind(m_fd, m_local->m_addr, m_local->m_len) < 0)
+    {
+      Close();
+      m_error = GSOCK_IOERR;
+      return GSOCK_IOERR;
+    }
   }
 
   /* Connect it to the peer address, with a timeout (see below) */
@@ -1533,6 +1538,15 @@ void GSocket::Disable(GSocketEvent event)
  */
 GSocketError GSocket::Input_Timeout()
 {
+#ifdef __WXMAC__
+  // This seems to happen under OS X sometimes, see #8904.
+  if ( m_fd == INVALID_SOCKET )
+  {
+    m_error = GSOCK_TIMEDOUT;
+    return GSOCK_TIMEDOUT;
+  }
+#endif // __WXMAC__
+
   struct timeval tv;
   fd_set readfds;
   int ret;
@@ -2132,7 +2146,7 @@ GSocketError GAddress_INET_SetPortName(GAddress *address, const char *port,
 #endif
   struct servent serv;
   se = wxGetservbyname_r(port, protocol, &serv,
-			 (void*)&buffer, sizeof(buffer));
+                         (void*)&buffer, sizeof(buffer));
   if (!se)
   {
     /* the cast to int suppresses compiler warnings about subscript having the
@@ -2191,7 +2205,7 @@ GSocketError GAddress_INET_GetHostName(GAddress *address, char *hostname, size_t
 #endif
   int err;
   he = wxGethostbyaddr_r(addr_buf, sizeof(addr->sin_addr), AF_INET, &temphost,
-			 (void*)&buffer, sizeof(buffer), &err);
+                         (void*)&buffer, sizeof(buffer), &err);
   if (he == NULL)
   {
     address->m_error = GSOCK_NOHOST;

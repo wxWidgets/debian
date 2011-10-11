@@ -16,11 +16,11 @@ configuration and presentation options.
 The following items are the options that the AdvancedFindReplaceDialog offers
 over the basic FindReplaceDialog.
 
-  * Hide/Show each option or section indvidually (basic dialog only disables them)
+  * Hide/Show each option or section individually (basic dialog only disables them)
   * Multi-Find/Replace event action for Find All / Replace All actions
   * Switch dialog from Find mode to Replace mode or visa-versa once its already
     been created.
-  * Options for specifiying the location to look in.
+  * Options for specifying the location to look in.
   * Regular Expression option
   * Use standard dialog or a floating MiniFrame (default)
 
@@ -35,22 +35,24 @@ eclib.ctrlbox
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: finddlg.py 60131 2009-04-14 02:44:17Z CJP $"
-__revision__ = "$Revision: 60131 $"
+__svnid__ = "$Id: finddlg.py 68232 2011-07-12 02:08:53Z CJP $"
+__revision__ = "$Revision: 68232 $"
 
 __all__ = ["FindBox", "FindEvent", "FindPanel", "FindReplaceDlg",
            "MiniFindReplaceDlg", "AdvFindReplaceDlg",
 
            "AFR_STYLE_FINDDIALOG", "AFR_STYLE_REPLACEDIALOG",
-           "AFR_STYLE_NON_FLOATING",
+           "AFR_STYLE_NON_FLOATING", "AFR_STYLE_NO_MODE_SELECT",
            
            "AFR_UP", "AFR_WHOLEWORD", 
            "AFR_MATCHCASE", "AFR_REGEX", "AFR_RECURSIVE", "AFR_NOLOOKIN",
            "AFR_NOUPDOWN", "AFR_NOWHOLEWORD", "AFR_NOMATCHCASE", "AFR_NOREGEX",
-           "AFR_NOFILTER", "AFR_NOOPTIONS",
+           "AFR_NOFILTER", "AFR_NOOPTIONS", "AFR_NO_COUNT", "AFR_NO_ALL_BTN",
+           "AFR_SIMPLE",
 
-           "LOCATION_CURRENT_DOC",
-           "LOCATION_OPEN_DOCS", "LOCATION_IN_FILES", "LOCATION_MAX",
+           "LOCATION_CURRENT_DOC", "LOCATION_IN_SELECTION",
+           "LOCATION_OPEN_DOCS", "LOCATION_IN_CURRENT_DIR",
+           "LOCATION_IN_FILES", "LOCATION_MAX",
 
            "edEVT_FIND_CLOSE", "EVT_FIND_CLOSE", "edEVT_FIND", "EVT_FIND",
            "edEVT_FIND_NEXT", "EVT_FIND_NEXT", "edEVT_FIND_ALL", "EVT_FIND_ALL",
@@ -71,9 +73,10 @@ import platebtn
 # Globals
 
 # Style Flags
-AFR_STYLE_FINDDIALOG    = 0
-AFR_STYLE_REPLACEDIALOG = 1
-AFR_STYLE_NON_FLOATING  = 2
+AFR_STYLE_FINDDIALOG        = 0 # Start dialog in Find mode
+AFR_STYLE_REPLACEDIALOG     = 1 # Start dialog in Replace mode
+AFR_STYLE_NON_FLOATING      = 2 # Use a standard dialog as the tlw
+AFR_STYLE_NO_MODE_SELECT    = 4 # Hide the mode selector buttons
 
 # FindReplaceData Flags
 AFR_UP          = 1             # Set dialogs Search Up flag
@@ -88,12 +91,20 @@ AFR_NOMATCHCASE = 256           # Hide the Match Case option in the dialog
 AFR_NOREGEX     = 512           # Hide the Regular Expression option
 AFR_NOFILTER    = 1024          # Hide the File Filter option
 AFR_NOOPTIONS   = 2048          # Hide all options in the dialog
+AFR_NO_COUNT    = 4096          # Hide Count Button
+AFR_NO_ALL_BTN  = 8192          # Hide Find All / Replace All buttons
+
+# Convenience Flags
+AFR_SIMPLE = (AFR_NOLOOKIN | AFR_NOOPTIONS | AFR_NOUPDOWN | \
+              AFR_NO_COUNT | AFR_NO_ALL_BTN)
 
 # Search Location Parameters (NOTE: must be kept in sync with Lookin List)
-LOCATION_CURRENT_DOC  = 0
-LOCATION_OPEN_DOCS    = 1
-LOCATION_IN_FILES     = 2
-LOCATION_MAX          = 2
+LOCATION_CURRENT_DOC    = 0
+LOCATION_IN_SELECTION   = 1
+LOCATION_OPEN_DOCS      = 2
+LOCATION_IN_CURRENT_DIR = 3
+LOCATION_IN_FILES       = 4
+LOCATION_MAX            = LOCATION_IN_CURRENT_DIR
 
 # Control Names
 FindBoxName = "EdFindBox"
@@ -112,6 +123,7 @@ ID_FIND_ALL = wx.NewId()
 ID_REPLACE_ALL = wx.NewId()
 ID_OPTION_CHANGE = wx.NewId()
 ID_CHOOSE_DIR = wx.NewId()
+ID_DIR_BOX = wx.NewId()
 
 _ = wx.GetTranslation
 
@@ -170,7 +182,7 @@ class FindEvent(wx.PyCommandEvent):
         @keyword flags: Find/Replace flags
 
         """
-        wx.PyCommandEvent.__init__(self, etype, eid)
+        super(FindEvent, self).__init__(etype, eid)
 
         # Attributes
         self._flags = flags
@@ -337,6 +349,7 @@ def AdvFindReplaceDlg(parent, fdata, title, style=AFR_STYLE_FINDDIALOG):
         dlg = FindReplaceDlg(parent, fdata, title, style)
     else:
         dlg = MiniFindReplaceDlg(parent, fdata, title, style)
+
     return dlg
 
 #--------------------------------------------------------------------------#
@@ -393,8 +406,8 @@ class FindReplaceDlgBase:
         data.SetFindString(self._panel._ftxt.GetValue())
         data.SetReplaceString(self._panel._rtxt.GetValue())
         evt = FindEvent(edEVT_FIND_CLOSE, self.GetId())
-        wx.PostEvent(self.GetParent(), evt)
         self.Hide()
+        wx.PostEvent(self.GetParent(), evt)
 
     def _OnModeChange(self, evt):
         """Update the the dialog when the mode changes"""
@@ -609,8 +622,8 @@ class FindBox(ctrlbox.ControlBox):
         @param fdata: wx.FindReplaceData
 
         """
-        ctrlbox.ControlBox.__init__(self, parent, id, pos, size,
-                                    wx.TAB_TRAVERSAL|wx.NO_BORDER, name)
+        super(FindBox, self).__init__(parent, id, pos, size,
+                                      wx.TAB_TRAVERSAL|wx.NO_BORDER, name)
 
         # Attributes
         self._fpanel = FindPanel(self, fdata, style=style)
@@ -632,6 +645,9 @@ class FindBox(ctrlbox.ControlBox):
         ctrlbar.AddControl(self.replace, wx.ALIGN_LEFT)
         self.SetControlBar(ctrlbar)
         self.SetWindow(self._fpanel)
+
+        if style & AFR_STYLE_NO_MODE_SELECT:
+            self.GetControlBar().Hide()
 
         # Event Handlers
         self.Bind(wx.EVT_BUTTON, self.OnButton)
@@ -684,8 +700,8 @@ class FindPanel(wx.Panel):
         @param fdata: wx.FindReplaceData
 
         """
-        wx.Panel.__init__(self, parent, id, pos, size,
-                          wx.TAB_TRAVERSAL|wx.NO_BORDER, name)
+        super(FindPanel, self).__init__(parent, id, pos, size,
+                                        wx.TAB_TRAVERSAL|wx.NO_BORDER, name)
 
         # Attributes
         # TODO: change to editable combo box when wxMac has native widget
@@ -693,7 +709,8 @@ class FindPanel(wx.Panel):
         self._mode = style
         self._ftxt = wx.TextCtrl(self, value=fdata.GetFindString())
         self._rtxt = wx.TextCtrl(self, value=fdata.GetReplaceString())
-        locations = [_("Current Document"), _("Open Documents")]
+        locations = [_("Current Document"), _("Selected Text"),
+                     _("Open Documents"), _("Current Directory")]
         self._lookin = wx.Choice(self, ID_LOOKIN, choices=locations)
         self._lookin.SetSelection(0)
         self._filterlbl = wx.StaticText(self, label=_("File Filters:"))
@@ -782,7 +799,7 @@ class FindPanel(wx.Panel):
 
         # Search Direction Box
         self._sizers['dir'] = wx.BoxSizer(wx.VERTICAL)
-        dbox = wx.StaticBox(self, label=_("Direction"))
+        dbox = wx.StaticBox(self, id=ID_DIR_BOX, label=_("Direction"))
         dboxsz = wx.StaticBoxSizer(dbox, wx.HORIZONTAL)
         dboxsz.AddMany([(wx.RadioButton(self, wx.ID_UP, _("Up")), 0),
                         ((20, 5), 0),
@@ -880,11 +897,25 @@ class FindPanel(wx.Panel):
 
         """
         if find:
-            show = (wx.ID_FIND, ID_COUNT, ID_FIND_ALL, 'fspacer')
-            hide = (wx.ID_REPLACE, ID_REPLACE_ALL, 'frspacer')
+            show = [wx.ID_FIND, ID_COUNT, ID_FIND_ALL, 'fspacer']
+            hide = [wx.ID_REPLACE, ID_REPLACE_ALL, 'frspacer']
         else:
-            show = (wx.ID_REPLACE, ID_REPLACE_ALL, 'frspacer')
-            hide = (ID_FIND_ALL, ID_COUNT, 'fspacer')
+            show = [wx.ID_REPLACE, ID_REPLACE_ALL, 'frspacer']
+            hide = [ID_FIND_ALL, ID_COUNT, 'fspacer']
+
+        # Hide extra buttons as per configured preference
+        flags = self._fdata.GetFlags()
+        if flags & AFR_NO_COUNT and ID_COUNT in show:
+            show.remove(ID_COUNT)
+            hide.append(ID_COUNT)
+
+        if flags & AFR_NO_ALL_BTN:
+            if ID_FIND_ALL in show:
+                show.remove(ID_FIND_ALL)
+                hide.append(ID_FIND_ALL)
+            if ID_REPLACE_ALL in show:
+                show.remove(ID_REPLACE_ALL)
+                hide.append(ID_REPLACE_ALL)
 
         for ctrl in show:
             if isinstance(ctrl, basestring):
@@ -907,6 +938,11 @@ class FindPanel(wx.Panel):
         self.FindWindowById(ID_RECURSE).Enable(in_files)
         flags = self._fdata.GetFlags()
 
+        # Disable direction settings when searcing in file since they
+        # are ignored anyway.
+        for cid in (wx.ID_UP, wx.ID_DOWN, ID_DIR_BOX):
+            self.FindWindowById(cid).Enable(not in_files)
+
         # Only update visibility of file filter field if it is enabled
         if not (flags & AFR_NOFILTER):
             self.ShowFileFilters(in_files)
@@ -920,18 +956,26 @@ class FindPanel(wx.Panel):
         find_all = self.FindWindowById(ID_FIND_ALL)
         replace = self.FindWindowById(wx.ID_REPLACE)
         replace_all = self.FindWindowById(ID_REPLACE_ALL)
+        count = self.FindWindowById(ID_COUNT)
 
-        if self._lookin.GetSelection() > LOCATION_CURRENT_DOC:
+        lookin = self._lookin.GetSelection()
+        if  lookin > LOCATION_IN_SELECTION:
             if self._mode == AFR_STYLE_FINDDIALOG:
                 find_all.SetDefault()
             else:
                 replace_all.SetDefault()
             find.Disable()
             replace.Disable()
+            count.Disable()
+        elif lookin == LOCATION_IN_SELECTION:
+            find.Disable()
+            replace.Disable()
+            replace_all.SetDefault()
         else:
             find.SetDefault()
             find.Enable()
             replace.Enable()
+            count.Enable()
 
     #------------------------------------------------------#
 

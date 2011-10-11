@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     08/09/2000
-// RCS-ID:      $Id: cshelp.h 39675 2006-06-11 21:10:32Z VZ $
+// RCS-ID:      $Id: cshelp.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2000 Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -134,7 +134,7 @@ public:
                                  const wxPoint& pt,
                                  wxHelpEvent::Origin origin)
     {
-        wxCHECK_MSG( window, false, _T("window must not be NULL") );
+        wxCHECK_MSG( window, false, wxT("window must not be NULL") );
 
         m_helptextAtPoint = pt;
         m_helptextOrigin = origin;

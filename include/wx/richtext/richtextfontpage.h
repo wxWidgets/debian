@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2006-10-02
-// RCS-ID:      $Id: richtextfontpage.h 53105 2008-04-10 14:05:25Z JS $
+// RCS-ID:      $Id: richtextfontpage.h 60641 2009-05-15 11:22:40Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -132,6 +132,7 @@ public:
     wxComboBox* m_weightCtrl;
     wxComboBox* m_underliningCtrl;
     wxRichTextColourSwatchCtrl* m_colourCtrl;
+    wxRichTextColourSwatchCtrl* m_bgColourCtrl;
     wxCheckBox* m_strikethroughCtrl;
     wxCheckBox* m_capitalsCtrl;
     wxCheckBox* m_superscriptCtrl;
@@ -148,6 +149,7 @@ public:
         ID_RICHTEXTFONTPAGE_WEIGHTCTRL = 10004,
         ID_RICHTEXTFONTPAGE_UNDERLINING_CTRL = 10008,
         ID_RICHTEXTFONTPAGE_COLOURCTRL = 10009,
+        ID_RICHTEXTFONTPAGE_BGCOLOURCTRL = 10014,
         ID_RICHTEXTFONTPAGE_STRIKETHROUGHCTRL = 10010,
         ID_RICHTEXTFONTPAGE_CAPSCTRL = 10011,
         ID_RICHTEXTFONTPAGE_SUPERSCRIPT = 10012,
@@ -158,6 +160,7 @@ public:
 
     bool m_dontUpdate;
     bool m_colourPresent;
+    bool m_bgColourPresent;
 };
 
 #endif

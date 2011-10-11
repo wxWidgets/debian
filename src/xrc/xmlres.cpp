@@ -3,7 +3,7 @@
 // Purpose:     XRC resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlres.cpp 59633 2009-03-19 23:43:55Z VZ $
+// RCS-ID:      $Id: xmlres.cpp 63465 2010-02-11 12:36:43Z VS $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -822,7 +822,8 @@ void wxXmlResourceHandler::AddWindowStyles()
     // the border styles all have the old and new names, recognize both for now
     XRC_ADD_STYLE(wxSIMPLE_BORDER); XRC_ADD_STYLE(wxBORDER_SIMPLE);
     XRC_ADD_STYLE(wxSUNKEN_BORDER); XRC_ADD_STYLE(wxBORDER_SUNKEN);
-    XRC_ADD_STYLE(wxDOUBLE_BORDER); XRC_ADD_STYLE(wxBORDER_DOUBLE);
+    XRC_ADD_STYLE(wxDOUBLE_BORDER); XRC_ADD_STYLE(wxBORDER_DOUBLE); // deprecated
+    XRC_ADD_STYLE(wxBORDER_THEME);
     XRC_ADD_STYLE(wxRAISED_BORDER); XRC_ADD_STYLE(wxBORDER_RAISED);
     XRC_ADD_STYLE(wxSTATIC_BORDER); XRC_ADD_STYLE(wxBORDER_STATIC);
     XRC_ADD_STYLE(wxNO_BORDER);     XRC_ADD_STYLE(wxBORDER_NONE);
@@ -1560,9 +1561,9 @@ static XRCID_record *XRCID_Records[XRCID_TABLE_SIZE] = {NULL};
 
 static int XRCID_Lookup(const wxChar *str_id, int value_if_not_found = wxID_NONE)
 {
-    int index = 0;
+    unsigned int index = 0;
 
-    for (const wxChar *c = str_id; *c != wxT('\0'); c++) index += (int)*c;
+    for (const wxChar *c = str_id; *c != wxT('\0'); c++) index += (unsigned int)*c;
     index %= XRCID_TABLE_SIZE;
 
     XRCID_record *oldrec = NULL;

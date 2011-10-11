@@ -2,7 +2,7 @@
 // Name:        src/gtk/frame.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: frame.cpp 43974 2006-12-14 07:19:21Z PC $
+// Id:          $Id: frame.cpp 67149 2011-03-08 14:47:25Z JS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -78,6 +78,30 @@ static void gtk_menu_detached_callback( GtkWidget *WXUNUSED(widget), GtkWidget *
 }
 }
 
+//-----------------------------------------------------------------------------
+// "size-request" from menubar
+//-----------------------------------------------------------------------------
+
+extern "C" {
+static void menubar_size_request(GtkWidget* widget, GtkRequisition*, wxFrame* win)
+{
+    g_signal_handlers_disconnect_by_func(
+        widget, (void*)menubar_size_request, win);
+    win->UpdateMenuBarSize();
+}
+}
+
+//-----------------------------------------------------------------------------
+// "style-set" from menubar
+//-----------------------------------------------------------------------------
+
+extern "C" {
+static void menubar_style_set(GtkWidget* widget, GtkStyle*, wxFrame* win)
+{
+    g_signal_connect(widget, "size-request",
+        G_CALLBACK(menubar_size_request), win);
+}
+}
 #endif // wxUSE_MENUS_NATIVE
 
 #if wxUSE_TOOLBAR
@@ -361,7 +385,7 @@ void wxFrame::GtkOnSize()
 #if wxUSE_MENUS_NATIVE
         if (m_frameMenuBar && !(m_fsIsShowing && (m_fsSaveFlag & wxFULLSCREEN_NOMENUBAR) != 0))
         {
-            if (!GTK_WIDGET_VISIBLE(m_frameMenuBar->m_widget))
+            if (m_frameMenuBar->IsShown() && !GTK_WIDGET_VISIBLE(m_frameMenuBar->m_widget))
                 gtk_widget_show( m_frameMenuBar->m_widget );
             int xx = m_miniEdge;
             int yy = m_miniEdge + m_miniTitle;
@@ -536,6 +560,16 @@ void wxFrame::OnInternalIdle()
 
 #if wxUSE_MENUS_NATIVE
     if (m_frameMenuBar) m_frameMenuBar->OnInternalIdle();
+
+    // UpdateMenuBarSize may return a height of zero on some
+    // systems (e.g. Ubuntu 11.04 Alpha as of 2010-12-06),
+    // when the menubar widget has not been fully realized.
+    // Update the menu bar size again at this point, otherwise
+    // the menu would not be visible at all.
+    if (!m_menuBarHeight)
+    {
+        UpdateMenuBarSize();
+    }
 #endif // wxUSE_MENUS_NATIVE
 #if wxUSE_TOOLBAR
     if (m_frameToolBar) m_frameToolBar->OnInternalIdle();
@@ -571,6 +605,9 @@ void wxFrame::DetachMenuBar()
 
     if ( m_frameMenuBar )
     {
+        g_signal_handlers_disconnect_by_func(
+            m_frameMenuBar->m_widget, (void*)menubar_style_set, this);
+
         m_frameMenuBar->UnsetInvokingWindow( this );
 
         if (m_frameMenuBar->GetWindowStyle() & wxMB_DOCKABLE)
@@ -621,6 +658,9 @@ void wxFrame::AttachMenuBar( wxMenuBar *menuBar )
         gtk_widget_show( m_frameMenuBar->m_widget );
 
         UpdateMenuBarSize();
+
+        g_signal_connect(menuBar->m_widget, "style-set",
+            G_CALLBACK(menubar_style_set), this);
     }
     else
     {
@@ -631,6 +671,7 @@ void wxFrame::AttachMenuBar( wxMenuBar *menuBar )
 
 void wxFrame::UpdateMenuBarSize()
 {
+    int oldMenuBarHeight = m_menuBarHeight;
     m_menuBarHeight = 2;
 
     // this is called after Remove with a NULL m_frameMenuBar
@@ -647,7 +688,8 @@ void wxFrame::UpdateMenuBarSize()
     }
 
     // resize window in OnInternalIdle
-    GtkUpdateSize();
+    if (oldMenuBarHeight != m_menuBarHeight)
+        GtkUpdateSize();
 }
 
 #endif // wxUSE_MENUS_NATIVE

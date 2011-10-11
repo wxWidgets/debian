@@ -6,7 +6,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: private.h 54029 2008-06-08 15:53:15Z SC $
+// RCS-ID:      $Id: private.h 62113 2009-09-25 09:06:07Z JS $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -802,6 +802,8 @@ public :
     OSStatus SetHeaderDesc( DataBrowserPropertyID property, DataBrowserListViewHeaderDesc *desc );
 
     OSStatus SetDisclosureColumn( DataBrowserPropertyID property , Boolean expandableRows );
+
+    OSStatus GetItemPartBounds( DataBrowserItemID item, DataBrowserPropertyID property, DataBrowserPropertyPart part, Rect * bounds );
 protected :
 
     static pascal void DataBrowserItemNotificationProc(

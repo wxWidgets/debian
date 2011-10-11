@@ -9,9 +9,8 @@
 
 """Launch User Interface"""
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: launch.py 59917 2009-03-29 17:51:59Z CJP $"
-__revision__ = "$Revision: 59917 $"
-__version__ = "0.1"
+__svnid__ = "$Id: launch.py 67778 2011-05-23 20:58:56Z CJP $"
+__revision__ = "$Revision: 67778 $"
 
 #-----------------------------------------------------------------------------#
 # Imports
@@ -25,25 +24,27 @@ import cfgdlg
 
 # Editra Libraries
 import ed_glob
+import ed_basestc
 import util
 from profiler import Profile_Get, Profile_Set
+import ed_txt
 import ed_msg
+import ebmlib
 import eclib
+import ed_basewin
 
 #-----------------------------------------------------------------------------#
 # Globals
-ID_SETTINGS = wx.NewId()
 ID_EXECUTABLE = wx.NewId()
 ID_ARGS = wx.NewId()
-ID_RUN = wx.NewId()
 
 # Profile Settings Key
-LAUNCH_KEY = 'Launch.Config'
 #LAUNCH_PREFS = 'Launch.Prefs' # defined in cfgdlg
 
 # Custom Messages
 MSG_RUN_LAUNCH = ('launch', 'run')
 MSG_RUN_LAST = ('launch', 'runlast')
+MSG_LAUNCH_REGISTER = ('launch', 'registerhandler') # msgdata == xml string
 
 # Value request messages
 REQUEST_ACTIVE = 'Launch.IsActive'
@@ -52,56 +53,55 @@ REQUEST_RELAUNCH = 'Launch.CanRelaunch'
 _ = wx.GetTranslation
 #-----------------------------------------------------------------------------#
 
-def OnStoreConfig(msg):
-    Profile_Set(LAUNCH_KEY, handlers.GetState())
-ed_msg.Subscribe(OnStoreConfig, cfgdlg.EDMSG_LAUNCH_CFG_EXIT)
+def OnRegisterHandler(msg):
+    """Register a custom handler
+    @param msg: dict(xml=xml_str, loaded=bool)
+
+    """
+    data = msg.GetData()
+    loaded = False
+    if isinstance(data, dict) and 'xml' in data:
+        loaded = handlers.LoadCustomHandler(data['xml'])
+    data['loaded'] = loaded
+ed_msg.Subscribe(OnRegisterHandler, MSG_LAUNCH_REGISTER)
 
 #-----------------------------------------------------------------------------#
 
-class LaunchWindow(eclib.ControlBox):
+class LaunchWindow(ed_basewin.EdBaseCtrlBox):
     """Control window for showing and running scripts"""
     def __init__(self, parent):
-        eclib.ControlBox.__init__(self, parent)
+        super(LaunchWindow, self).__init__(parent)
 
         # Attributes
-        self._mw = self.__FindMainWindow()
+        self._log = wx.GetApp().GetLog()
+        self._mw = ed_basewin.FindMainWindow(self)
         self._buffer = OutputDisplay(self)
         self._fnames = list()
-        self._chFiles = None # Created in __DoLayout
+        self._run = None        # Created in __DoLayout
+        self._pbtn = None       # Created in __DoLayout
+        self._clear = None      # Created in __DoLayout
+        self._lockFile = None   # Created in __DoLayout
+        self._chFiles = None    # Created in __DoLayout
         self._worker = None
         self._busy = False
         self._isready = False
-        self._config = dict(file='', lang=0,
-                            cfile='', clang=0,
-                            last='', lastlang=0,
-                            prelang=0, largs='',
-                            lcmd='')
-        self._prefs = Profile_Get(cfgdlg.LAUNCH_PREFS, default=None)
+        self._state = dict(file='', lang=0, cfile='', clang=0, last='', 
+                           lastlang=0, prelang=0, largs='', lcmd='')
 
         # Setup
         self.__DoLayout()
-        hstate = Profile_Get(LAUNCH_KEY)
-        if hstate is not None:
-            handlers.SetState(hstate)
-        if self._prefs is None:
-            Profile_Set(cfgdlg.LAUNCH_PREFS,
-                        dict(autoclear=False,
-                             defaultf=self._buffer.GetDefaultForeground().Get(),
-                             defaultb=self._buffer.GetDefaultBackground().Get(),
-                             errorf=self._buffer.GetErrorForeground().Get(),
-                             errorb=self._buffer.GetErrorBackground().Get(),
-                             infof=self._buffer.GetInfoForeground().Get(),
-                             infob=self._buffer.GetInfoBackground().Get(),
-                             warnf=self._buffer.GetWarningForeground().Get(),
-                             warnb=self._buffer.GetWarningBackground().Get()))
-            self._prefs = Profile_Get(cfgdlg.LAUNCH_PREFS)
+        if not handlers.InitCustomHandlers(ed_glob.CONFIG['CACHE_DIR']):
+            util.Log(u"[launch][warn] failed to load launch extensions")
+
+        # Ensure preferences have been initialized
+        cfgdlg.InitConfig()
 
         self.UpdateBufferColors()
-        cbuffer = self._mw.GetNotebook().GetCurrentCtrl()
+        cbuffer = GetTextBuffer(self.MainWindow)
         self.SetupControlBar(cbuffer)
-        self._config['lang'] = GetLangIdFromMW(self._mw)
-        self.UpdateCurrentFiles(self._config['lang'])
-        self.SetFile(GetTextBuffer(self._mw).GetFileName())
+        self.State['lang'] = GetLangIdFromMW(self.MainWindow)
+        self.UpdateCurrentFiles(self.State['lang'])
+        self.SetFile(cbuffer.GetFileName())
 
         # Setup filetype settings
         self.RefreshControlBar()
@@ -109,41 +109,45 @@ class LaunchWindow(eclib.ControlBox):
         # Event Handlers
         self.Bind(wx.EVT_BUTTON, self.OnButton)
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy, self)
         ed_msg.Subscribe(self.OnPageChanged, ed_msg.EDMSG_UI_NB_CHANGED)
         ed_msg.Subscribe(self.OnFileOpened, ed_msg.EDMSG_FILE_OPENED)
         ed_msg.Subscribe(self.OnThemeChanged, ed_msg.EDMSG_THEME_CHANGED)
         ed_msg.Subscribe(self.OnLexerChange, ed_msg.EDMSG_UI_STC_LEXER)
-        ed_msg.Subscribe(self.OnConfigExit, cfgdlg.EDMSG_LAUNCH_CFG_EXIT)
+        ed_msg.Subscribe(self.OnConfigChange,
+                         ed_msg.EDMSG_PROFILE_CHANGE + (handlers.CONFIG_KEY,))
         ed_msg.Subscribe(self.OnRunMsg, MSG_RUN_LAUNCH)
         ed_msg.Subscribe(self.OnRunLastMsg, MSG_RUN_LAST)
         ed_msg.RegisterCallback(self._CanLaunch, REQUEST_ACTIVE)
         ed_msg.RegisterCallback(self._CanReLaunch, REQUEST_RELAUNCH)
 
-    def __del__(self):
-        ed_msg.Unsubscribe(self.OnPageChanged)
-        ed_msg.Unsubscribe(self.OnFileOpened)
-        ed_msg.Unsubscribe(self.OnThemeChanged)
-        ed_msg.Unsubscribe(self.OnLexerChange)
-        ed_msg.Unsubscribe(self.OnConfigExit)
-        ed_msg.Unsubscribe(self.OnRunMsg)
-        ed_msg.Unsubscribe(self.OnRunLastMsg)
-        ed_msg.UnRegisterCallback(self._CanLaunch)
-        ed_msg.UnRegisterCallback(self._CanReLaunch)
-        super(LaunchWindow, self).__del__()
+    #---- Properties ----#
+    Locked = property(lambda self: self._lockFile.IsChecked())
+    MainWindow = property(lambda self: self._mw)
+    Preferences = property(lambda self: Profile_Get(handlers.CONFIG_KEY, default=None),
+                           lambda self, prefs: Profile_Set(handlers.CONFIG_KEY, prefs))
+    State = property(lambda self: self._state)
+
+    def OnDestroy(self, evt):
+        if self:
+            ed_msg.Unsubscribe(self.OnPageChanged)
+            ed_msg.Unsubscribe(self.OnFileOpened)
+            ed_msg.Unsubscribe(self.OnThemeChanged)
+            ed_msg.Unsubscribe(self.OnLexerChange)
+            ed_msg.Unsubscribe(self.OnConfigChange)
+            ed_msg.Unsubscribe(self.OnRunMsg)
+            ed_msg.Unsubscribe(self.OnRunLastMsg)
+            ed_msg.UnRegisterCallback(self._CanLaunch)
+            ed_msg.UnRegisterCallback(self._CanReLaunch)
 
     def __DoLayout(self):
         """Layout the window"""
-        #-- Setup ControlBar --#
-        ctrlbar = eclib.ControlBar(self, style=eclib.CTRLBAR_STYLE_GRADIENT)
-        if wx.Platform == '__WXGTK__':
-            ctrlbar.SetWindowStyle(eclib.CTRLBAR_STYLE_DEFAULT)
+        ctrlbar = self.CreateControlBar(wx.TOP)
 
         # Preferences
-        prefbmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF), wx.ART_MENU)
-        pref = eclib.PlateButton(ctrlbar, ID_SETTINGS, '', prefbmp,
-                                 style=eclib.PB_STYLE_NOBG)
-        pref.SetToolTipString(_("Settings"))
-        ctrlbar.AddControl(pref, wx.ALIGN_LEFT)
+        self._pbtn = self.AddPlateButton(u"", ed_glob.ID_PREF)
+        self._pbtn.SetToolTipString(_("Settings"))
 
         # Exe
         ctrlbar.AddControl(wx.StaticText(ctrlbar, label=_("exec") + ":"),
@@ -154,58 +158,29 @@ class LaunchWindow(eclib.ControlBox):
 
         # Script Label
         ctrlbar.AddControl((5, 5), wx.ALIGN_LEFT)
-        self._chFiles = wx.Choice(ctrlbar, choices=[''])
+        self._lockFile = wx.CheckBox(ctrlbar, wx.ID_ANY)
+        self._lockFile.SetToolTipString(_("Lock File"))
+        ctrlbar.AddControl(self._lockFile, wx.ALIGN_LEFT)
+        self._chFiles = wx.Choice(ctrlbar, wx.ID_ANY)#, choices=[''])
         ctrlbar.AddControl(self._chFiles, wx.ALIGN_LEFT)
 
         # Args
         ctrlbar.AddControl((5, 5), wx.ALIGN_LEFT)
         ctrlbar.AddControl(wx.StaticText(ctrlbar, label=_("args") + ":"),
                            wx.ALIGN_LEFT)
-        args = wx.TextCtrl(ctrlbar, ID_ARGS)
-        args.SetToolTipString(_("Script Arguments"))
-        ctrlbar.AddControl(args, wx.ALIGN_LEFT)
+        args = wx.TextCtrl(ctrlbar, ID_ARGS, size=(100,-1))
+        args.SetToolTipString(_("Arguments"))
+        ctrlbar.AddControl(args, wx.ALIGN_LEFT, 1)
 
         # Spacer
         ctrlbar.AddStretchSpacer()
         
-        # Run Button
-        rbmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_BIN_FILE), wx.ART_MENU)
-        if rbmp.IsNull() or not rbmp.IsOk():
-            rbmp = None
-        run = eclib.PlateButton(ctrlbar, ID_RUN, _("Run"), rbmp,
-                                style=eclib.PB_STYLE_NOBG)
-        ctrlbar.AddControl(run, wx.ALIGN_RIGHT)
-
-        # Clear Button
-        cbmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DELETE), wx.ART_MENU)
-        if cbmp.IsNull() or not cbmp.IsOk():
-            cbmp = None
-        clear = eclib.PlateButton(ctrlbar, wx.ID_CLEAR, _("Clear"),
-                                  cbmp, style=eclib.PB_STYLE_NOBG)
-        ctrlbar.AddControl(clear, wx.ALIGN_RIGHT)
-        ctrlbar.SetVMargin(1, 1)
-        self.SetControlBar(ctrlbar)
-
+        # Buttons
+        self._run = self.AddPlateButton(_("Run"), ed_glob.ID_BIN_FILE, 
+                                        wx.ALIGN_LEFT)
+        self._clear = self.AddPlateButton(_("Clear"), ed_glob.ID_DELETE,
+                                          wx.ALIGN_RIGHT)
         self.SetWindow(self._buffer)
-
-    def __FindMainWindow(self):
-        """Find the mainwindow of this control
-        @return: MainWindow or None
-
-        """
-        def IsMainWin(win):
-            """Check if the given window is a main window"""
-            return getattr(tlw, '__name__', '') == 'MainWindow'
-
-        tlw = self.GetTopLevelParent()
-        if IsMainWin(tlw):
-            return tlw
-        elif hasattr(tlw, 'GetParent'):
-            tlw = tlw.GetParent()
-            if IsMainWin(tlw):
-                return tlw
-
-        return None
 
     def _CanLaunch(self):
         """Method to use with RegisterCallback for getting status"""
@@ -217,7 +192,7 @@ class LaunchWindow(eclib.ControlBox):
     def _CanReLaunch(self):
         """Method to use with RegisterCallback for getting status"""
         val = self.CanLaunch()
-        if not val or not len(self._config['last']):
+        if not val or not len(self.State['last']):
             val = ed_msg.NullValue()
         return val
 
@@ -226,46 +201,38 @@ class LaunchWindow(eclib.ControlBox):
         @return: bool
 
         """
-        parent = self.GetParent()
-        return parent.GetParent().IsActive() and self._isready
+        return self.TopLevelParent.IsActive() and self._isready
 
     def GetFile(self):
         """Get the file that is currently set to be run
         @return: file path
 
         """
-        return self._config['file']
+        return self.State['file']
 
     def GetLastRun(self):
         """Get the last file that was run
         @return: (fname, lang_id)
 
         """
-        return (self._config['last'], self._config['lastlang'])
-
-    def GetMainWindow(self):
-        """Get the mainwindow that created this instance
-        @return: reference to MainWindow
-
-        """
-        return self._mw
+        return (self.State['last'], self.State['lastlang'])
 
     def OnButton(self, evt):
         """Handle events from the buttons on the control bar"""
-        e_id = evt.GetId()
-        if e_id == ID_SETTINGS:
+        e_obj = evt.GetEventObject()
+        if e_obj == self._pbtn:
             app = wx.GetApp()
             win = app.GetWindowInstance(cfgdlg.ConfigDialog)
             if win is None:
-                config = cfgdlg.ConfigDialog(self._mw)
+                config = cfgdlg.ConfigDialog(self.MainWindow)
                 config.CentreOnParent()
                 config.Show()
             else:
                 win.Raise()
-        elif e_id == ID_RUN:
+        elif e_obj is self._run:
             # May be run or abort depending on current state
             self.StartStopProcess()
-        elif e_id == wx.ID_CLEAR:
+        elif e_obj == self._clear:
             self._buffer.Clear()
         else:
             evt.Skip()
@@ -283,34 +250,49 @@ class LaunchWindow(eclib.ControlBox):
             self._chFiles.SetToolTipString(fname)
         elif e_id == ID_EXECUTABLE:
             e_obj = evt.GetEventObject()
-            handler = handlers.GetHandlerById(self._config['lang'])
+            handler = handlers.GetHandlerById(self.State['lang'])
             cmd = e_obj.GetStringSelection()
             e_obj.SetToolTipString(handler.GetCommand(cmd))
         else:
             evt.Skip()
 
-    def OnConfigExit(self, msg):
-        """Update current state when the config dialog has been closed
+    def OnCheck(self, evt):
+        """CheckBox for Lock File was clicked"""
+        e_obj = evt.GetEventObject()
+        if e_obj is self._lockFile:
+            if self.Locked:
+                self._chFiles.Disable()
+            else:
+                self._chFiles.Enable()
+                cbuff = GetTextBuffer(self.MainWindow)
+                if isinstance(cbuff, ed_basestc.EditraBaseStc):
+                    self.UpdateCurrentFiles(cbuff.GetLangId())
+                    self.SetupControlBar(cbuff)
+        else:
+            evt.Skip()
+
+    def OnConfigChange(self, msg):
+        """Update current state when the configuration has been changed
         @param msg: Message Object
 
         """
         util.Log("[Launch][info] Saving config to profile")
         self.RefreshControlBar()
-        Profile_Set(LAUNCH_KEY, handlers.GetState())
+        self._buffer.UpdateWrapMode()
         self.UpdateBufferColors()
 
+    @ed_msg.mwcontext
     def OnFileOpened(self, msg):
-        """Reset state when a file open message is recieved
+        """Reset state when a file open message is received
         @param msg: Message Object
 
         """
-        # Only update when in the active window
-        if not self._mw.IsActive():
-            return
+        if self.Locked:
+            return # Mode is locked ignore update
 
         # Update the file choice control
-        self._config['lang'] = GetLangIdFromMW(self._mw)
-        self.UpdateCurrentFiles(self._config['lang'])
+        self.State['lang'] = GetLangIdFromMW(self.MainWindow)
+        self.UpdateCurrentFiles(self.State['lang'])
 
         fname = msg.GetData()
         self.SetFile(fname)
@@ -318,6 +300,7 @@ class LaunchWindow(eclib.ControlBox):
         # Setup filetype settings
         self.RefreshControlBar()
 
+    @ed_msg.mwcontext
     def OnLexerChange(self, msg):
         """Update the status of the currently associated file
         when a file is saved. Used for updating after a file type has
@@ -325,8 +308,11 @@ class LaunchWindow(eclib.ControlBox):
         @param msg: Message object
 
         """
-        if not self._mw.IsActive():
-            return
+        self._log("[launch][info] Lexer changed handler - context %d" %
+                  self.MainWindow.GetId())
+
+        if self.Locked:
+            return # Mode is locked ignore update
 
         mdata = msg.GetData()
         # For backwards compatibility with older message format
@@ -334,25 +320,31 @@ class LaunchWindow(eclib.ControlBox):
             return
 
         fname, ftype = msg.GetData()
-        if ftype != self._config['lang']:
+        # Update regardless of whether lexer has changed or not as the buffer
+        # may have the lexer set before the file was saved to disk.
+        if fname:
             self.UpdateCurrentFiles(ftype)
             self.SetControlBarState(fname, ftype)
 
+    @ed_msg.mwcontext
     def OnPageChanged(self, msg):
         """Update the status of the currently associated file
         when the page changes in the main notebook.
         @param msg: Message object
 
         """
-        # Only update when in the active window
-        if not self._mw.IsActive():
+        # The current mode is locked
+        if self.Locked:
             return
 
         mval = msg.GetData()
         ctrl = mval[0].GetCurrentCtrl()
-        self.UpdateCurrentFiles(ctrl.GetLangId())
-        if hasattr(ctrl, 'GetFileName'):
+        if isinstance(ctrl, ed_basestc.EditraBaseStc):
+            self.UpdateCurrentFiles(ctrl.GetLangId())
             self.SetupControlBar(ctrl)
+        else:
+            self._log("[launch][info] Non STC object in notebook")
+            return # Doesn't implement EdStc interface
 
     def OnRunMsg(self, msg):
         """Run or abort a launch process if this is the current 
@@ -361,7 +353,7 @@ class LaunchWindow(eclib.ControlBox):
 
         """
         if self.CanLaunch():
-            shelf = self._mw.GetShelf()
+            shelf = self.MainWindow.GetShelf()
             shelf.RaiseWindow(self)
             self.StartStopProcess()
 
@@ -376,60 +368,64 @@ class LaunchWindow(eclib.ControlBox):
             if not len(fname):
                 return
 
-            shelf = self._mw.GetShelf()
+            shelf = self.MainWindow.GetShelf()
             self.UpdateCurrentFiles(ftype)
             self.SetFile(fname)
             self.RefreshControlBar()
             shelf.RaiseWindow(self)
 
-            if self._prefs.get('autoclear'):
+            if self.Preferences.get('autoclear'):
                 self._buffer.Clear()
 
             self.SetProcessRunning(True)
 
-            self.Run(fname, self._config['lcmd'], self._config['largs'], ftype)
+            self.Run(fname, self.State['lcmd'], self.State['largs'], ftype)
 
     def OnThemeChanged(self, msg):
         """Update icons when the theme has been changed
         @param msg: Message Object
 
         """
-        ctrls = ((ID_SETTINGS, ed_glob.ID_PREF),
-                 (wx.ID_CLEAR, ed_glob.ID_DELETE))
+        ctrls = ((self._pbtn, ed_glob.ID_PREF),
+                 (self._clear, ed_glob.ID_DELETE))
         if self._busy:
-            ctrls += ((ID_RUN, ed_glob.ID_STOP),)
+            ctrls += ((self._run, ed_glob.ID_STOP),)
         else:
-            ctrls += ((ID_RUN, ed_glob.ID_BIN_FILE),)
+            ctrls += ((self._run, ed_glob.ID_BIN_FILE),)
 
-        for ctrl, art in ctrls:
-            btn = self.FindWindowById(ctrl)
+        for btn, art in ctrls:
             bmp = wx.ArtProvider.GetBitmap(str(art), wx.ART_MENU)
             btn.SetBitmap(bmp)
             btn.Refresh()
+        self.GetControlBar().Refresh()
 
     def RefreshControlBar(self):
         """Refresh the state of the control bar based on the current config"""
-        handler = handlers.GetHandlerById(self._config['lang'])
+        handler = handlers.GetHandlerById(self.State['lang'])
         cmds = handler.GetAliases()
 
         # Get the controls
         exe_ch = self.FindWindowById(ID_EXECUTABLE)
         args_txt = self.FindWindowById(ID_ARGS)
-        run_btn = self.FindWindowById(ID_RUN)
 
-        # Set control states
         csel = exe_ch.GetStringSelection()
         exe_ch.SetItems(cmds)
-        if len(cmds):
+        ncmds = len(cmds)
+        if ncmds > 0:
             exe_ch.SetToolTipString(handler.GetCommand(cmds[0]))
 
-        util.Log("[Launch][info] Found commands %s" % str(cmds))
-        if handler.GetName() != handlers.DEFAULT_HANDLER and len(self.GetFile()):
-            for ctrl in (exe_ch, args_txt, run_btn, self._chFiles):
+        util.Log("[Launch][info] Found commands %s" % repr(cmds))
+        if handler.GetName() != handlers.DEFAULT_HANDLER and \
+           ncmds > 0 and len(self.GetFile()):
+            for ctrl in (exe_ch, args_txt, self._run,
+                         self._chFiles, self._lockFile):
                 ctrl.Enable()
-            self._isready = True
 
-            if self._config['lang'] == self._config['prelang'] and len(csel):
+            self._isready = True
+            if self.Locked:
+                self._chFiles.Enable(False)
+
+            if self.State['lang'] == self.State['prelang'] and len(csel):
                 exe_ch.SetStringSelection(csel)
             else:
                 csel = handler.GetDefault()
@@ -439,7 +435,8 @@ class LaunchWindow(eclib.ControlBox):
             self.GetControlBar().Layout()
         else:
             self._isready = False
-            for ctrl in (exe_ch, args_txt, run_btn, self._chFiles):
+            for ctrl in (exe_ch, args_txt, self._run,
+                         self._chFiles, self._lockFile):
                 ctrl.Disable()
 
     def Run(self, fname, cmd, args, ftype):
@@ -451,7 +448,7 @@ class LaunchWindow(eclib.ControlBox):
 
         """
         # Find and save the file if it is modified
-        nb = self._mw.GetNotebook()
+        nb = self.MainWindow.GetNotebook()
         for ctrl in nb.GetTextControls():
             tname = ctrl.GetFileName()
             if fname == tname:
@@ -461,6 +458,11 @@ class LaunchWindow(eclib.ControlBox):
 
         handler = handlers.GetHandlerById(ftype)
         path, fname = os.path.split(fname)
+        if wx.Platform == '__WXMSW__':
+            fname = u"\"" + fname + u"\""
+        else:
+            fname = fname.replace(u' ', u'\\ ')
+
         self._worker = eclib.ProcessThread(self._buffer,
                                            cmd, fname,
                                            args, path,
@@ -469,20 +471,28 @@ class LaunchWindow(eclib.ControlBox):
 
     def StartStopProcess(self):
         """Run or abort the context of the current process if possible"""
-        if self._prefs.get('autoclear'):
+        if self.Preferences.get('autoclear', False):
             self._buffer.Clear()
 
+        # Check Auto-save preferences
+        if not self._busy:
+            if self.Preferences.get('autosaveall', False):
+                self.MainWindow.SaveAllBuffers()
+            elif self.Preferences.get('autosave', False):
+                self.MainWindow.SaveCurrentBuffer()
+
+        # Start or stop the process
         self.SetProcessRunning(not self._busy)
         if self._busy:
             util.Log("[Launch][info] Starting process")
-            handler = handlers.GetHandlerById(self._config['lang'])
+            handler = handlers.GetHandlerById(self.State['lang'])
             cmd = self.FindWindowById(ID_EXECUTABLE).GetStringSelection()
-            self._config['lcmd'] = cmd
+            self.State['lcmd'] = cmd
             cmd = handler.GetCommand(cmd)
             args = self.FindWindowById(ID_ARGS).GetValue().split()
-            self._config['largs'] = args
-            self.Run(self._config['file'], cmd, args, self._config['lang'])
-        else:
+            self.State['largs'] = args
+            self.Run(self.State['file'], cmd, args, self.State['lang'])
+        elif self._worker:
             util.Log("[Launch][info] Aborting process")
             self._worker.Abort()
             self._worker = None
@@ -493,7 +503,7 @@ class LaunchWindow(eclib.ControlBox):
 
         """
         # Set currently selected file
-        self._config['file'] = fname
+        self.State['file'] = fname
         self._chFiles.SetStringSelection(os.path.split(fname)[1])
         self.GetControlBar().Layout()
 
@@ -502,8 +512,8 @@ class LaunchWindow(eclib.ControlBox):
         @param langid: syntax.synglob lang id
 
         """
-        self._config['prelang'] = self._config['lang']
-        self._config['lang'] = langid
+        self.State['prelang'] = self.State['lang']
+        self.State['lang'] = langid
 
     def SetProcessRunning(self, running=True):
         """Set the state of the window into either process running mode
@@ -511,33 +521,32 @@ class LaunchWindow(eclib.ControlBox):
         @keyword running: Is a process running or not
 
         """
-        rbtn = self.FindWindowById(ID_RUN)
         self._busy = running
         if running:
-            self._config['last'] = self._config['file']
-            self._config['lastlang'] = self._config['lang']
-            self._config['cfile'] = self._config['file']
-            self._config['clang'] = self._config['lang']
+            self.State['last'] = self.State['file']
+            self.State['lastlang'] = self.State['lang']
+            self.State['cfile'] = self.State['file']
+            self.State['clang'] = self.State['lang']
             abort = wx.ArtProvider.GetBitmap(str(ed_glob.ID_STOP), wx.ART_MENU)
             if abort.IsNull() or not abort.IsOk():
                 abort = wx.ArtProvider.GetBitmap(wx.ART_ERROR,
                                                  wx.ART_MENU, (16, 16))
-            rbtn.SetBitmap(abort)
-            rbtn.SetLabel(_("Abort"))
+            self._run.SetBitmap(abort)
+            self._run.SetLabel(_("Abort"))
         else:
             rbmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_BIN_FILE), wx.ART_MENU)
             if rbmp.IsNull() or not rbmp.IsOk():
                 rbmp = None
-            rbtn.SetBitmap(rbmp)
-            rbtn.SetLabel(_("Run"))
+            self._run.SetBitmap(rbmp)
+            self._run.SetLabel(_("Run"))
             # If the buffer was changed while this was running we should
             # update to the new buffer now that it has stopped.
-            self.SetFile(self._config['cfile'])
-            self.SetLangId(self._config['clang'])
+            self.SetFile(self.State['cfile'])
+            self.SetLangId(self.State['clang'])
             self.RefreshControlBar()
 
         self.GetControlBar().Layout()
-        rbtn.Refresh()
+        self._run.Refresh()
 
     def SetupControlBar(self, ctrl):
         """Set the state of the controlbar based data found in the buffer
@@ -552,21 +561,22 @@ class LaunchWindow(eclib.ControlBox):
     def SetControlBarState(self, fname, lang_id):
         # Don't update the bars status if the buffer is busy
         if self._buffer.IsRunning():
-            self._config['cfile'] = fname
-            self._config['clang'] = lang_id
+            self.State['cfile'] = fname
+            self.State['clang'] = lang_id
         else:
-            self.SetFile(fname)
-            self.SetLangId(lang_id)
+            if not self.Locked:
+                self.SetFile(fname)
+                self.SetLangId(lang_id)
 
-            # Refresh the control bars view
-            self.RefreshControlBar()
+                # Refresh the control bars view
+                self.RefreshControlBar()
 
     def UpdateBufferColors(self):
         """Update the buffers colors"""
         colors = dict()
         for color in ('defaultf', 'defaultb', 'errorf', 'errorb',
                       'infof', 'infob', 'warnf', 'warnb'):
-            val = self._prefs.get(color, None)
+            val = self.Preferences.get(color, None)
             if val is not None:
                 colors[color] = wx.Colour(*val)
             else:
@@ -586,15 +596,16 @@ class LaunchWindow(eclib.ControlBox):
 
         """
         self._fnames = list()
-        for txt_ctrl in self._mw.GetNotebook().GetTextControls():
+        for txt_ctrl in self.MainWindow.GetNotebook().GetTextControls():
             if lang_id == txt_ctrl.GetLangId():
                 self._fnames.append(txt_ctrl.GetFileName())
 
         items = [ os.path.basename(fname) for fname in self._fnames ]
         try:
-            self._chFiles.SetItems(items)
-            if len(self._fnames):
-                self._chFiles.SetToolTipString(self._fnames[0])
+            if len(u''.join(items)):
+                self._chFiles.SetItems(items)
+                if len(self._fnames):
+                    self._chFiles.SetToolTipString(self._fnames[0])
         except TypeError:
             util.Log("[Launch][err] UpdateCurrent Files: " + str(items))
             self._chFiles.SetItems([''])
@@ -608,7 +619,7 @@ class OutputDisplay(eclib.OutputBuffer, eclib.ProcessBufferMixin):
         eclib.ProcessBufferMixin.__init__(self)
 
         # Attributes
-        self._mw = parent.GetMainWindow()
+        self._mw = parent.MainWindow
         self._cfile = ''
 
         # Setup
@@ -616,6 +627,10 @@ class OutputDisplay(eclib.OutputBuffer, eclib.ProcessBufferMixin):
                                                     wx.FONTSTYLE_NORMAL,
                                                     wx.FONTWEIGHT_NORMAL))
         self.SetFont(font)
+        self.UpdateWrapMode()
+
+    Preferences = property(lambda self: Profile_Get(handlers.CONFIG_KEY, default=dict()),
+                           lambda self, prefs: Profile_Set(handlers.CONFIG_KEY, prefs))
 
     def ApplyStyles(self, start, txt):
         """Apply any desired output formatting to the text in
@@ -625,7 +640,12 @@ class OutputDisplay(eclib.OutputBuffer, eclib.ProcessBufferMixin):
 
         """
         handler = self.GetCurrentHandler()
-        handler.StyleText(self, start, txt)
+        style = handler.StyleText(self, start, txt)
+
+        # Ring the bell if there was an error and option is enabled
+        if style == handlers.STYLE_ERROR and \
+           self.Preferences.get('errorbeep', False):
+            wx.Bell()
 
     def DoFilterInput(self, txt):
         """Filter the incoming input
@@ -647,9 +667,43 @@ class OutputDisplay(eclib.OutputBuffer, eclib.ProcessBufferMixin):
         handler.HandleHotSpot(self._mw, self, line, fname)
         self.GetParent().SetupControlBar(GetTextBuffer(self._mw))
 
+    def DoProcessError(self, code, excdata=None):
+        """Handle notifications of when an error occurs in the process
+        @param code: an OBP error code
+        @keyword excdata: Exception string
+        @return: None
+
+        """
+        if code == eclib.OPB_ERROR_INVALID_COMMAND:
+            self.AppendUpdate(_("The requested command could not be executed.") + u"\n")
+
+        # Log the raw exception data to the log as well
+        if excdata is not None:
+            try:
+                excstr = str(excdata)
+                if not ebmlib.IsUnicode(excstr):
+                    excstr = ed_txt.DecodeString(excstr)
+                util.Log(u"[launch][err] %s" % excdata)
+            except UnicodeDecodeError:
+                util.Log(u"[launch][err] error decoding log message string")
+
     def DoProcessExit(self, code=0):
         """Do all that is needed to be done after a process has exited"""
-        self.AppendUpdate(">>> %s: %d%s" % (_("Exit Code"), code, os.linesep))
+        # Peek in the queue to see the last line before the exit line
+        queue = self.GetUpdateQueue()
+        prepend_nl = True
+        if len(queue):
+            line = queue[-1]
+        else:
+            line = self.GetLine(self.GetLineCount() - 1)
+        if line.endswith('\n') or line.endswith('\r'):
+            prepend_nl = False
+        final_line = u">>> %s: %d%s" % (_("Exit Code"), code, os.linesep)
+        # Add an extra line feed if necessary to make sure the final line
+        # is output on a new line.
+        if prepend_nl:
+            final_line = os.linesep + final_line
+        self.AppendUpdate(final_line)
         self.Stop()
         self.GetParent().SetProcessRunning(False)
 
@@ -666,6 +720,13 @@ class OutputDisplay(eclib.OutputBuffer, eclib.ProcessBufferMixin):
         lang_id = self.GetParent().GetLastRun()[1]
         handler = handlers.GetHandlerById(lang_id)
         return handler
+
+    def UpdateWrapMode(self):
+        """Update the word wrapping mode"""
+        mode = wx.stc.STC_WRAP_NONE
+        if self.Preferences.get('wrapoutput', False):
+            mode = wx.stc.STC_WRAP_WORD
+        self.SetWrapMode(mode)
 
 #-----------------------------------------------------------------------------#
 def GetLangIdFromMW(mainw):

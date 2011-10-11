@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2005-09-30
-// RCS-ID:      $Id: richtextstyles.cpp 59958 2009-03-31 08:04:56Z JS $
+// RCS-ID:      $Id: richtextstyles.cpp 67222 2011-03-17 09:23:18Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -56,17 +56,48 @@ bool wxRichTextStyleDefinition::Eq(const wxRichTextStyleDefinition& def) const
 /// Gets the style combined with the base style
 wxRichTextAttr wxRichTextStyleDefinition::GetStyleMergedWithBase(const wxRichTextStyleSheet* sheet) const
 {
-    if (!m_baseStyle.IsEmpty())
+    if (m_baseStyle.IsEmpty())
+        return m_style;
+
+    bool isParaStyle = IsKindOf(CLASSINFO(wxRichTextParagraphStyleDefinition));
+    bool isCharStyle = IsKindOf(CLASSINFO(wxRichTextCharacterStyleDefinition));
+    bool isListStyle = IsKindOf(CLASSINFO(wxRichTextListStyleDefinition));
+
+    // Collect the styles, detecting loops
+    wxArrayString styleNames;
+    wxList styles;
+    const wxRichTextStyleDefinition* def = this;
+    while (def)
     {
-        wxRichTextStyleDefinition* baseStyle = sheet->FindStyle(m_baseStyle);
-        if (baseStyle)
+        styles.Insert((wxObject*) def);
+        styleNames.Add(def->GetName());
+
+        wxString baseStyleName = def->GetBaseStyle();
+        if (!baseStyleName.IsEmpty() && styleNames.Index(baseStyleName) == wxNOT_FOUND)
         {
-            wxRichTextAttr baseAttr = baseStyle->GetStyleMergedWithBase(sheet);
-            baseAttr.Apply(m_style, NULL);
-            return baseAttr;
+            if (isParaStyle)
+                def = sheet->FindParagraphStyle(baseStyleName);
+            else if (isCharStyle)
+                def = sheet->FindCharacterStyle(baseStyleName);
+            else if (isListStyle)
+                def = sheet->FindListStyle(baseStyleName);
+            else
+                def = sheet->FindStyle(baseStyleName);
         }
+        else
+            def = NULL;
     }
-    return m_style;
+
+    wxRichTextAttr attr;
+    wxList::compatibility_iterator node = styles.GetFirst();
+    while (node)
+    {
+        wxRichTextStyleDefinition* def = (wxRichTextStyleDefinition*) node->GetData();
+        attr.Apply(def->GetStyle(), NULL);
+        node = node->GetNext();
+    }
+
+    return attr;
 }
 
 /*!
@@ -461,6 +492,20 @@ bool wxRichTextStyleSheet::operator==(const wxRichTextStyleSheet& WXUNUSED(sheet
 
 
 #if wxUSE_HTML
+
+// Functions for dealing with clashing names for different kinds of style.
+// Returns "P", "C", or "L" (paragraph, character, list) for
+// style name | type.
+static wxString wxGetRichTextStyleType(const wxString& style)
+{
+    return style.AfterLast(wxT('|'));
+}
+
+static wxString wxGetRichTextStyle(const wxString& style)
+{
+    return style.BeforeLast(wxT('|'));
+}
+
 /*!
  * wxRichTextStyleListBox: a listbox to display styles.
  */
@@ -512,7 +557,16 @@ wxRichTextStyleDefinition* wxRichTextStyleListBox::GetStyle(size_t i) const
     if (i >= m_styleNames.GetCount() /* || i < 0 */ )
         return NULL;
 
-    return GetStyleSheet()->FindStyle(m_styleNames[i]);
+    wxString styleType = wxGetRichTextStyleType(m_styleNames[i]);
+    wxString style = wxGetRichTextStyle(m_styleNames[i]);
+    if (styleType == wxT("P"))
+        return GetStyleSheet()->FindParagraphStyle(style);
+    else if (styleType == wxT("C"))
+        return GetStyleSheet()->FindCharacterStyle(style);
+    else if (styleType == wxT("L"))
+        return GetStyleSheet()->FindListStyle(style);
+    else
+        return GetStyleSheet()->FindStyle(style);
 }
 
 /// Updates the list
@@ -520,6 +574,8 @@ void wxRichTextStyleListBox::UpdateStyles()
 {
     if (GetStyleSheet())
     {
+        int oldSel = GetSelection();
+
         SetSelection(wxNOT_FOUND);
 
         m_styleNames.Clear();
@@ -528,17 +584,17 @@ void wxRichTextStyleListBox::UpdateStyles()
         if (GetStyleType() == wxRICHTEXT_STYLE_ALL || GetStyleType() == wxRICHTEXT_STYLE_PARAGRAPH)
         {
             for (i = 0; i < GetStyleSheet()->GetParagraphStyleCount(); i++)
-                m_styleNames.Add(GetStyleSheet()->GetParagraphStyle(i)->GetName());
+                m_styleNames.Add(GetStyleSheet()->GetParagraphStyle(i)->GetName() + wxT("|P"));
         }
         if (GetStyleType() == wxRICHTEXT_STYLE_ALL || GetStyleType() == wxRICHTEXT_STYLE_CHARACTER)
         {
             for (i = 0; i < GetStyleSheet()->GetCharacterStyleCount(); i++)
-                m_styleNames.Add(GetStyleSheet()->GetCharacterStyle(i)->GetName());
+                m_styleNames.Add(GetStyleSheet()->GetCharacterStyle(i)->GetName() + wxT("|C"));
         }
         if (GetStyleType() == wxRICHTEXT_STYLE_ALL || GetStyleType() == wxRICHTEXT_STYLE_LIST)
         {
             for (i = 0; i < GetStyleSheet()->GetListStyleCount(); i++)
-                m_styleNames.Add(GetStyleSheet()->GetListStyle(i)->GetName());
+                m_styleNames.Add(GetStyleSheet()->GetListStyle(i)->GetName() + wxT("|L"));
         }
 
         m_styleNames.Sort();
@@ -546,9 +602,15 @@ void wxRichTextStyleListBox::UpdateStyles()
 
         Refresh();
 
-        if (GetItemCount() > 0)
+        int newSel = -1;
+        if (oldSel >= 0 && oldSel < (int) GetItemCount())
+            newSel = oldSel;
+        else if (GetItemCount() > 0)
+            newSel = 0;
+
+        if (newSel >= 0)
         {
-            SetSelection(0);
+            SetSelection(newSel);
             SendSelectedEvent();
         }
     }
@@ -557,7 +619,23 @@ void wxRichTextStyleListBox::UpdateStyles()
 // Get index for style name
 int wxRichTextStyleListBox::GetIndexForStyle(const wxString& name) const
 {
-    return m_styleNames.Index(name);
+    wxString s(name);
+    if (GetStyleType() == wxRICHTEXT_STYLE_PARAGRAPH)
+        s += wxT("|P");
+    else if (GetStyleType() == wxRICHTEXT_STYLE_CHARACTER)
+        s += wxT("|C");
+    else if (GetStyleType() == wxRICHTEXT_STYLE_LIST)
+        s += wxT("|L");
+    else
+    {
+        if (m_styleNames.Index(s + wxT("|P")) != wxNOT_FOUND)
+            s += wxT("|P");
+        else if (m_styleNames.Index(s + wxT("|C")) != wxNOT_FOUND)
+            s += wxT("|C");
+        else if (m_styleNames.Index(s + wxT("|L")) != wxNOT_FOUND)
+            s += wxT("|L");
+    }
+    return m_styleNames.Index(s);
 }
 
 /// Set selection for string
@@ -619,31 +697,28 @@ wxString wxRichTextStyleListBox::CreateHTML(wxRichTextStyleDefinition* def) cons
     int size = 3;
 #endif
 
-	// Guess a standard font size
+    // Guess a standard font size
     int stdFontSize = 0;
 
     // First see if we have a default/normal style to base the size on
     wxString normalTranslated(_("normal"));
     wxString defaultTranslated(_("default"));
     size_t i;
-    for (i = 0; i < m_styleNames.GetCount(); i++)
+    for (i = 0; i < GetStyleSheet()->GetParagraphStyleCount(); i++)
     {
-		wxString name = m_styleNames[i].Lower();
-		if (name.Find(wxT("normal")) != wxNOT_FOUND || name.Find(normalTranslated) != wxNOT_FOUND ||
-		    name.Find(wxT("default")) != wxNOT_FOUND || name.Find(defaultTranslated) != wxNOT_FOUND)
-		{
-    		wxRichTextStyleDefinition* d = GetStyleSheet()->FindStyle(m_styleNames[i]);
-    		if (d)
-    		{
-    			wxRichTextAttr attr2(d->GetStyleMergedWithBase(GetStyleSheet()));
-    			if (attr2.HasFontSize())
-    			{
-					stdFontSize = attr2.GetFontSize();
-					break;
-				}
-			}
-		}
-	}
+        wxRichTextStyleDefinition* d = GetStyleSheet()->GetParagraphStyle(i);
+        wxString name = d->GetName().Lower();
+        if (name.Find(wxT("normal")) != wxNOT_FOUND || name.Find(normalTranslated) != wxNOT_FOUND ||
+            name.Find(wxT("default")) != wxNOT_FOUND || name.Find(defaultTranslated) != wxNOT_FOUND)
+        {
+            wxRichTextAttr attr2(d->GetStyleMergedWithBase(GetStyleSheet()));
+            if (attr2.HasFontSize())
+            {
+                stdFontSize = attr2.GetFontSize();
+                break;
+            }
+        }
+    }
 
     if (stdFontSize == 0)
     {
@@ -654,7 +729,7 @@ wxString wxRichTextStyleListBox::CreateHTML(wxRichTextStyleDefinition* def) cons
             sizes.Add(0);
         for (i = 0; i < m_styleNames.GetCount(); i++)
         {
-            wxRichTextStyleDefinition* d = GetStyleSheet()->FindStyle(m_styleNames[i]);
+            wxRichTextStyleDefinition* d = GetStyle(i);
             if (d)
             {
                 wxRichTextAttr attr2(d->GetStyleMergedWithBase(GetStyleSheet()));
@@ -670,13 +745,13 @@ wxString wxRichTextStyleListBox::CreateHTML(wxRichTextStyleDefinition* def) cons
         {
             if (sizes[i] > mostCommonSize)
                 mostCommonSize = i;
-		}
+        }
         if (mostCommonSize > 0)
             stdFontSize = mostCommonSize;
     }
 
     if (stdFontSize == 0)
-    	stdFontSize = 12;
+        stdFontSize = 12;
 
     int thisFontSize = ((attr.GetFlags() & wxTEXT_ATTR_FONT_SIZE) != 0) ? attr.GetFontSize() : stdFontSize;
 
@@ -950,6 +1025,7 @@ void wxRichTextStyleListCtrl::OnChooseType(wxCommandEvent& event)
             return;
 
         wxRichTextStyleListBox::wxRichTextStyleType styleType = StyleIndexToType(event.GetSelection());
+        m_styleListBox->SetSelection(-1);
         m_styleListBox->SetStyleType(styleType);
     }
 }

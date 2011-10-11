@@ -5,7 +5,7 @@
 # Created:      02/11/2003
 # Copyright:    (c) 2003 by Jeff Childers, Will Sadkin, 2003
 # Portions:     (c) 2002 by Will Sadkin, 2002-2007
-# RCS-ID:       $Id: maskededit.py 60305 2009-04-24 05:32:14Z RD $
+# RCS-ID:       $Id: maskededit.py 67477 2011-04-13 18:24:56Z RD $
 # License:      wxWidgets license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -2313,25 +2313,26 @@ class MaskedEditMixin:
         # marking the appropriate positions for field boundaries:
         ismasked = {}
         explicit_field_boundaries = []
+        s = list(s)
         i = 0
         while i < len(s):
             if s[i] == '\\':            # if escaped character:
                 ismasked[i] = False     #     mark position as not a mask char
                 if i+1 < len(s):        #     if another char follows...
-                    s = s[:i] + s[i+1:] #         elide the '\'
-                    if i+2 < len(s) and s[i+1] == '\\':
-                        # if next char also a '\', char is a literal '\'
-                        s = s[:i] + s[i+1:]     # elide the 2nd '\' as well
-                i += 1                      # increment to next char
+                    del s[i]            #         elide the '\'
+                    if s[i] == '\\':    #         if next char also a '\', char is a literal '\'
+                        del s[i]        #             elide the 2nd '\' as well
+                i += 1                  # increment to next char
             elif s[i] == '|':
-                s = s[:i] + s[i+1:] #         elide the '|'
+                del s[i]                    #         elide the '|'
                 explicit_field_boundaries.append(i)
-                # keep index where it is:
+                                            # keep index where it is:
             else:                       # else if special char, mark position accordingly
                 ismasked[i] = s[i] in maskchars
-####                dbg('ismasked[%d]:' % i, ismasked[i], s)
+####                dbg('ismasked[%d]:' % i, ismasked[i], ''.join(s))
                 i += 1                      # increment to next char
 ####        dbg('ismasked:', ismasked)
+        s = ''.join(s)
 ##        dbg('new mask: "%s"' % s, indent=0)
 
         return s, ismasked, explicit_field_boundaries
@@ -3876,7 +3877,7 @@ class MaskedEditMixin:
 ##                    dbg('cursor before 1st field; go to start of field')
                     wx.CallAfter(self._SetInsertionPoint, field_start)
                     if field._selectOnFieldEntry:
-                        wx.CallAfter(self._SetSelection, field_start, field_end)
+                        wx.CallAfter(self._SetSelection, field_end, field_start)
                     else:
                         wx.CallAfter(self._SetSelection, field_start, field_start)
                     return False
@@ -3922,7 +3923,7 @@ class MaskedEditMixin:
                             wx.CallAfter(self._SetInsertionPoint, next_pos)
                             edit_start, edit_end = self._FindFieldExtent(next_pos)
 ##                            dbg('queuing select', edit_start, edit_end)
-                            wx.CallAfter(self._SetSelection, edit_start, edit_end)
+                            wx.CallAfter(self._SetSelection, edit_end, edit_start)
                         else:
                             if field._insertRight:
                                 next_pos = field._extent[1]
@@ -3961,7 +3962,7 @@ class MaskedEditMixin:
             wx.CallAfter(self._SetInsertionPoint, start)
             if fraction._selectOnFieldEntry:
 ##                dbg('queuing selection after decimal point to:', (start, end))
-                wx.CallAfter(self._SetSelection, start, end)
+                wx.CallAfter(self._SetSelection, end, start)
             else:
                 wx.CallAfter(self._SetSelection, start, start)
             keep_processing = False
@@ -6468,7 +6469,7 @@ def _makeDate( year, month, day, dateFmt, dateStr):
     elif dateFmt == "YMD":
         return "%s%s%s%s%s" % (year,sep,month,sep,day)  ## year, month, date parts
     else:
-        return none
+        return None
 
 
 def _getYear(dateStr,dateFmt):

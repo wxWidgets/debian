@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docmdi.cpp 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: docmdi.cpp 66911 2011-02-16 21:31:33Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -80,14 +80,16 @@ bool wxDocMDIParentFrame::ProcessEvent(wxEvent& event)
 
 void wxDocMDIParentFrame::OnCloseWindow(wxCloseEvent& event)
 {
-  if (m_docManager->Clear(!event.CanVeto()))
-  {
-    this->Destroy();
-  }
-  else
-    event.Veto();
+    if ( m_docManager && !m_docManager->Clear(!event.CanVeto()) )
+    {
+        // The user decided not to close finally, abort.
+        event.Veto();
+    }
+    else
+    {
+        this->Destroy();
+    }
 }
-
 
 /*
  * Default document child frame for MDI children

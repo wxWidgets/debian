@@ -18,8 +18,8 @@ Function Definitions.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: phptags.py 55031 2008-08-08 22:23:34Z CJP $"
-__revision__ = "$Revision: 55031 $"
+__svnid__ = "$Id: phptags.py 60797 2009-05-29 22:41:06Z CJP $"
+__revision__ = "$Revision: 60797 $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
@@ -44,6 +44,7 @@ def GenerateTags(buff):
     infundef = False     # Inside a function definition
     lastclass = None
     lastfun = None
+    instring = False
     openb = 0            # Keep track of open brackets
 
     for lnum, line in enumerate(buff):
@@ -53,6 +54,13 @@ def GenerateTags(buff):
         while idx < len(line):
             # Skip Whitespace
             idx = parselib.SkipWhitespace(line, idx)
+
+            # Walk through strings ignoring contents
+            if instring or line[idx] in (u"'", u'"'):
+                idx, instring = parselib.FindStringEnd(line[idx:], idx)
+                # For multiline strings
+                if instring:
+                    continue
 
             # Check if in a <?php ?> block or not
             if line[idx:].startswith(u'<?'):
@@ -151,16 +159,26 @@ def GenerateTags(buff):
 
 #-----------------------------------------------------------------------------#
 # Test
+# Test
 if __name__ == '__main__':
-    import sys
-    import StringIO
-    fhandle = open(sys.argv[1])
-    txt = fhandle.read()
-    fhandle.close()
-    tags = GenerateTags(StringIO.StringIO(txt))
-    print "\n\nElements:"
-    for element in tags.GetElements():
-        print "\n%s:" % element.keys()[0]
-        for val in element.values()[0]:
-            print "%s [%d]" % (val.GetName(), val.GetLine())
-    print "END"
+   import sys
+   import StringIO
+
+   fhandle = open(sys.argv[1])
+   txt = fhandle.read()
+   fhandle.close()
+   tags = GenerateTags(StringIO.StringIO(txt))
+   print "\n\nElements:"
+
+   def printElements(elements):
+       for element in elements:
+           print "\n%s:" % element.keys()[0]
+           for val in element.values()[0]:
+               print "%s [%d]" % (val.GetName(), val.GetLine())
+               if isinstance(val, taglib.Scope):
+                   print "----"
+                   printElements(val.GetElements())
+
+   elements = tags.GetElements()
+   printElements(elements)
+   print "END"

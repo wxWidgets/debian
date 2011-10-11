@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor, Dan "Bud" Keith (composite combobox)
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id: combobox.cpp 58883 2009-02-13 16:06:13Z SC $
+// RCS-ID:      $Id: combobox.cpp 61101 2009-06-17 21:44:19Z JS $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -154,6 +154,13 @@ protected:
     
     void OnFocus( wxFocusEvent& event )
     {
+        // Unfortunately the fix below completely disables the combobox on Mac OS 10.4 (and presumably below)
+        if (UMAGetSystemVersion() < 0x1050)
+        {
+            event.Skip();
+            return;            
+        }
+
         // in case the textcontrol gets the focus we propagate
         // it to the parent's handlers.
         wxFocusEvent evt2(event.GetEventType(),m_cb->GetId());

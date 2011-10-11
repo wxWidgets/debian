@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: filefn.h 53877 2008-05-31 12:43:44Z SN $
+// RCS-ID:      $Id: filefn.h 63300 2010-01-28 21:36:09Z MW $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -166,7 +166,9 @@ enum wxFileKind
         defined(__BORLANDC__) \
       )
 
+    // temporary defines just used immediately below
     #undef wxHAS_HUGE_FILES
+    #undef wxHAS_HUGE_STDIO_FILES
 
     // detect compilers which have support for huge files
     #if defined(__VISUALC__)
@@ -175,6 +177,17 @@ enum wxFileKind
         #define wxHAS_HUGE_FILES 1
     #elif defined(_LARGE_FILES)
         #define wxHAS_HUGE_FILES 1
+    #endif
+
+    // detect compilers which have support for huge stdio files
+    #if defined __VISUALC__ && __VISUALC__ >= 1400
+        #define wxHAS_HUGE_STDIO_FILES
+        #define wxFseek _fseeki64
+        #define wxFtell _ftelli64
+    #elif wxCHECK_MINGW32_VERSION(3, 5) // mingw-runtime version (not gcc)
+        #define wxHAS_HUGE_STDIO_FILES
+        #define wxFseek fseeko64
+        #define wxFtell ftello64
     #endif
 
     // other Windows compilers (DMC, Watcom, Metrowerks and Borland) don't have
@@ -381,16 +394,19 @@ enum wxFileKind
     #endif // wxHAS_UNDERSCORES_IN_POSIX_IDENTS
 
     #ifdef wxHAS_HUGE_FILES
-        // wxFile is present and supports large files. Currently wxFFile
-        // doesn't have large file support with any Windows compiler (even
-        // Win64 ones).
+        // wxFile is present and supports large files.
         #if wxUSE_FILE
             #define wxHAS_LARGE_FILES
         #endif
+        // wxFFile is present and supports large files
+        #if wxUSE_FFILE && defined wxHAS_HUGE_STDIO_FILES
+            #define wxHAS_LARGE_FFILES
+        #endif
     #endif
 
-    // it's a private define, undefine it so that nobody gets tempted to use it
+    // private defines, undefine so that nobody gets tempted to use
     #undef wxHAS_HUGE_FILES
+    #undef wxHAS_HUGE_STDIO_FILES
 #else // Unix or Windows using unknown compiler, assume POSIX supported
     typedef off_t wxFileOffset;
     #ifdef _LARGE_FILES
@@ -405,8 +421,12 @@ enum wxFileKind
         #if SIZEOF_LONG == 8 || defined HAVE_FSEEKO
             #define wxHAS_LARGE_FFILES
         #endif
+        #ifdef HAVE_FSEEKO
+            #define wxFseek fseeko
+            #define wxFtell ftello
+        #endif
     #else
-        #define wxFileOffsetFmtSpec _T("")
+        #define wxFileOffsetFmtSpec wxT("")
     #endif
     // functions
     #define   wxClose      close
@@ -442,6 +462,15 @@ enum wxFileKind
 
     #define wxHAS_NATIVE_LSTAT
 #endif // platforms
+
+// define wxFseek/wxFtell to large file versions if available (done above) or
+// to fseek/ftell if not, to save ifdefs in using code
+#ifndef wxFseek
+    #define wxFseek fseek
+#endif
+#ifndef wxFtell
+    #define wxFtell ftell
+#endif
 
 #ifdef O_BINARY
     #define wxO_BINARY O_BINARY

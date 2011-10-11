@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: frame.cpp 59086 2009-02-22 16:07:58Z CE $
+// RCS-ID:      $Id: frame.cpp 61213 2009-06-27 12:31:00Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -957,6 +957,11 @@ bool wxFrame::HandleCommand(WXWORD id, WXWORD cmd, WXHWND control)
         if ( win )
             return win->MSWCommand(cmd, id);
     }
+
+#if defined(WINCE_WITHOUT_COMMANDBAR)
+    if (GetToolBar() && GetToolBar()->FindById(id))
+        return GetToolBar()->MSWCommand(cmd, id);
+#endif
 
     // handle here commands from menus and accelerators for our menu bar items,
     // all the rest is handled by wxWindow itself

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: opengl.bkl 23457 2003-09-09 22:15:25Z VS $ -->
+<!-- $Id: opengl.bkl 62443 2009-10-17 17:37:02Z PC $ -->
 
 <makefile>
     
@@ -28,6 +28,7 @@
         <depends>coredll</depends>
         <!-- link against the wxWin library in monolithic build: -->
         <sys-lib>$(WXLIB_MONO)</sys-lib>
+        <depends>monodll</depends>
 
         <ldlibs>$(EXTRALIBS_OPENGL)</ldlibs>
     </dll>

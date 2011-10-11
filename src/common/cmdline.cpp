@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.01.00
-// RCS-ID:      $Id: cmdline.cpp 54704 2008-07-19 01:53:04Z VZ $
+// RCS-ID:      $Id: cmdline.cpp 66920 2011-02-16 22:00:30Z JS $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -951,14 +951,13 @@ void wxCmdLineParser::Usage()
 wxString wxCmdLineParser::GetUsageString()
 {
     wxString appname;
-    if ( m_data->m_arguments.empty() )
+    if ( wxTheApp )
     {
-        if ( wxTheApp )
-            appname = wxTheApp->GetAppName();
+        appname = wxFileName(wxTheApp->argv[0]).GetFullName();
     }
-    else // use argv[0]
+    else if (!m_data->m_arguments.empty() )
     {
-        appname = wxFileName(m_data->m_arguments[0]).GetName();
+        appname = wxFileName(m_data->m_arguments[0]).GetFullName();
     }
 
     // we construct the brief cmd line desc on the fly, but not the detailed

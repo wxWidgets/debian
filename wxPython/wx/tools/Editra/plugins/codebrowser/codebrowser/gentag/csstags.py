@@ -17,8 +17,8 @@ Sheet. Currently supports parsing of global identities and classes.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: csstags.py 53001 2008-04-04 04:08:04Z CJP $"
-__revision__ = "$Revision: 53001 $"
+__svnid__ = "$Id: csstags.py 64501 2010-06-06 01:54:09Z CJP $"
+__revision__ = "$Revision: 64501 $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
@@ -37,13 +37,13 @@ def GenerateTags(buff):
     rtags = taglib.DocStruct()
 
     # Setup document structure
-#    rtags.SetElementDescription('tag', "Selectors")
     # Use variables node for global identities
     rtags.SetElementDescription('variable', "Identities")
+    rtags.SetElementDescription('tag_red', "Elements")
     # Use classes for global classes
     # Uses DocStruct builtin
 
-    c_tag = None      # Currenly found tag
+    c_tag = None      # Currently found tag
     incomment = False # Inside a comment
     indef = False     # Inside a style definition {}
 
@@ -52,15 +52,9 @@ def GenerateTags(buff):
         llen = len(line)
         idx = 0
         while idx < len(line):
-            # Skip Whitespace
             idx = parselib.SkipWhitespace(line, idx)
 
-            # Check if valid item to add to document
-#            if c_tag is not None and line[idx] == u'{':
-#                rtags.AddElement('tag', c_tag)
-#                c_tag = None
-
-            # Check for coments
+            # Check for comments
             if llen > idx+1 and line[idx] == u'/' and line[idx+1] == u'*':
                 idx += 2
                 incomment = True
@@ -82,30 +76,92 @@ def GenerateTags(buff):
                 idx += 1
                 indef = False
             elif not indef and line[idx] in (u'.', u'#'):
+                # Classes and ID's
                 if idx == 0 or line[idx-1].isspace():
-                    name = parselib.GetFirstIdentifier(line[idx+1:])
+                    names = line[idx:].split()
+                    if len(names):
+                        name = names[0]
+                    else:
+                        name = None
                     if name is not None:
-                        name = line[idx] + name
                         if line[idx] == u'.':
-                            rtags.AddClass(taglib.Class(name, lnum))
+                            # See if we already have found previous
+                            # defs using this class identifier
+                            cobj = rtags.GetElement('class', name)
+                            if cobj is None:
+                                cobj = taglib.Class(name, lnum)
+                                rtags.AddClass(cobj)
+
+                            # Update the index
+                            idx += len(name)
+                            # Grab all other defs that may be children of
+                            # the current one.
+                            idx = CaptureClassElements(cobj, line, idx)
                         else:
+                            # Stand alone ID
                             rtags.AddVariable(taglib.Variable(name, lnum))
-                        idx += len(name)
+                            idx += len(name)
+                        continue
+                # TODO: smarter skip ahead to speed up parse
                 idx += 1
+            elif not indef and not line[idx].isspace():
+                # Possible element
+                nparen = line[idx:].find(u'{') + idx
+                token = line[idx:nparen]
+                if token:
+                    idx += len(token)
+                    if not token.startswith(u"@"):
+                        obj = CSSTag(token.strip(), lnum)
+                        rtags.AddElement('tag_red', obj)
+                else:
+                    idx += 1
             else:
+                # TODO: smarter skip ahead to speed up parse
                 idx += 1
 
     return rtags
 
 #-----------------------------------------------------------------------------#
 # Utilities
-class Tag(taglib.Scope):
-    """Tag Scope Object, Tag derives from Scope so it can
-    contain identities and classes
+
+class CSSTag(taglib.Code):
+    """CSSTag object for representing css elements"""
+    def __init__(self, name, line, scope=None):
+        taglib.Code.__init__(self, name, line, "tag_red", scope)
+
+def CaptureClassElements(scope, line, idx):
+    """Get recursively capture all the elements defined on the line from
+    the index.
+    @param scope: Scope object to append element to
+    @param line: string of text to parse
+    @param idx: current index in line
+    @return: new index
 
     """
-    def __init__(self, name, line, scope=None):
-        taglib.Scope.__init__(self, name, line, "tag", scope)
+    idx = parselib.SkipWhitespace(line, idx)
+    dend = line[idx:].find(u"{") + idx
+    if idx >= len(line) or idx == dend:
+        return idx
+
+    segments = line[idx:dend].strip().split()
+    if len(segments):
+        token = segments[0]
+        idx += len(token)
+        if token.startswith(u'.'):
+            # Descendant class
+            nextscope = taglib.Class(token, scope.GetLine())
+            scope.AddElement('class', nextscope)
+            # Recurse to look for more children
+            idx = CaptureClassElements(nextscope, line, idx)
+        elif token.startswith(u'#'):
+            # An ID
+            obj = taglib.Variable(token, scope.GetLine())
+            scope.AddElement('variable', obj)
+        else:
+            # Element p, div, etc..
+            obj = CSSTag(token, scope.GetLine())
+            scope.AddElement('tag_red', obj)
+    return idx
 
 #-----------------------------------------------------------------------------#
 # Test

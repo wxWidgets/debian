@@ -2,7 +2,7 @@
 // Name:        src/gtk/textctrl.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: textctrl.cpp 58030 2009-01-12 05:34:07Z PC $
+// Id:          $Id: textctrl.cpp 62555 2009-11-04 05:18:38Z PC $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin, 2005 Mart Raudsepp
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -740,6 +740,9 @@ bool wxTextCtrl::Create( wxWindow *parent,
         // a single-line text control: no need for scrollbars
         m_widget =
         m_text = gtk_entry_new();
+        // work around probable bug in GTK+ 2.18 when calling WriteText on a
+        // new, empty control, see http://trac.wxwidgets.org/ticket/11409
+        gtk_entry_get_text((GtkEntry*)m_text);
 
         if (style & wxNO_BORDER)
             g_object_set (m_text, "has-frame", FALSE, NULL);

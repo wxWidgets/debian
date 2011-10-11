@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpwnd.cpp 59342 2009-03-05 15:54:25Z JS $
+// RCS-ID:      $Id: helpwnd.cpp 67259 2011-03-20 12:27:35Z JS $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -356,14 +356,19 @@ bool wxHtmlHelpWindow::Create(wxWindow* parent, wxWindowID id,
     if (htmlWindowBorder == wxBORDER_SUNKEN)
         htmlWindowBorder = wxBORDER_SIMPLE;
 #else
-    wxBorder htmlWindowBorder = wxBORDER_SIMPLE;
+    wxBorder htmlWindowBorder = wxBORDER_SUNKEN;
 #endif
 
     if (helpStyle & (wxHF_CONTENTS | wxHF_INDEX | wxHF_SEARCH))
     {
         // traditional help controller; splitter window with html page on the
         // right and a notebook containing various pages on the left
-        m_Splitter = new wxSplitterWindow(this);
+        long splitterStyle = wxSP_3D;
+        // Drawing moving sash can cause problems on wxMac
+#ifdef __WXMAC__
+        splitterStyle |= wxSP_LIVE_UPDATE;
+#endif
+        m_Splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, splitterStyle);
 
         topWindowSizer->Add(m_Splitter, 1, wxEXPAND);
 

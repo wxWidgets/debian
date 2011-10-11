@@ -4,7 +4,7 @@
 // Author:      Ryan Norton <wxprojects@comcast.net>
 // Modified by:
 // Created:     11/07/04
-// RCS-ID:      $Id: mediactrl_wmp10.cpp 41799 2006-10-09 12:56:26Z ABX $
+// RCS-ID:      $Id: mediactrl_wmp10.cpp 67183 2011-03-14 10:27:12Z JS $
 // Copyright:   (c) Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -723,7 +723,9 @@ wxWMP10MediaBackend::wxWMP10MediaBackend()
 #ifndef WXTEST_ATL
                 m_pAX(NULL),
 #endif
-                m_pWMPPlayer(NULL)
+                m_pWMPPlayer(NULL),
+                m_pWMPSettings(NULL),
+                m_pWMPControls(NULL)
 
 {
 }
@@ -746,8 +748,10 @@ wxWMP10MediaBackend::~wxWMP10MediaBackend()
 #endif
 
         m_pWMPPlayer->Release();
-        m_pWMPSettings->Release();
-        m_pWMPControls->Release();
+        if (m_pWMPSettings)
+            m_pWMPSettings->Release();
+        if (m_pWMPControls)
+            m_pWMPControls->Release();
     }
 }
 

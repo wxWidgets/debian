@@ -133,13 +133,13 @@ class ToasterBoxDemo(scrolled.ScrolledPanel):
 
         horSz5 = wx.BoxSizer(wx.HORIZONTAL)
         mainSz.Add(horSz5, 1, wx.EXPAND | wx.ALL, 5)
-        self.colButton1 = wx.Button(self, -1, "Set BG Color")
+        self.colButton1 = wx.Button(self, -1, "Set BG Colour")
         self.colButton1.SetToolTip(wx.ToolTip("Set the ToasterBox background colour"))
-        self.colButton1.Bind(wx.EVT_BUTTON, self.SetColors)
+        self.colButton1.Bind(wx.EVT_BUTTON, self.SetColours)
         horSz5.Add(self.colButton1, 1, 0, 5)
-        self.colButton2 = wx.Button(self, -1, "Set FG Color")
+        self.colButton2 = wx.Button(self, -1, "Set FG Colour")
         self.colButton2.SetToolTip(wx.ToolTip("Set the ToasterBox text colour"))
-        self.colButton2.Bind(wx.EVT_BUTTON, self.SetColors2)
+        self.colButton2.Bind(wx.EVT_BUTTON, self.SetColours2)
         horSz5.Add(self.colButton2, 1, 0, 5)
 
         horSz6 = wx.BoxSizer(wx.HORIZONTAL)
@@ -189,7 +189,7 @@ class ToasterBoxDemo(scrolled.ScrolledPanel):
         self.SetupScrolling()
 
 
-    def SetColors(self, event):
+    def SetColours(self, event):
         
         cd = wx.ColourDialog(self)
         cd.ShowModal()
@@ -198,7 +198,7 @@ class ToasterBoxDemo(scrolled.ScrolledPanel):
         colButton1.SetBackgroundColour(colBg)  
 
 
-    def SetColors2(self, event):
+    def SetColours2(self, event):
         
         cd = wx.ColourDialog(self)
         cd.ShowModal()
@@ -231,7 +231,7 @@ class ToasterBoxDemo(scrolled.ScrolledPanel):
 
     def OnRadioBox(self, event):
 
-        mainsizer = self.GetChildren()[0].GetSizer()
+        mainsizer = self.GetSizer()
         
         if event.GetInt() == 0:
             self.linger.SetValue("4000")
@@ -276,7 +276,7 @@ class ToasterBoxDemo(scrolled.ScrolledPanel):
             txts = self.captiontext.GetValue().strip()
             windowstyle = TB.TB_CAPTION
         else:
-            windowstyle = TB.DEFAULT_TB_STYLE
+            windowstyle = TB.TB_DEFAULT_STYLE
         
         if demochoice == 1:
             tbstyle = TB.TB_COMPLEX
@@ -288,7 +288,9 @@ class ToasterBoxDemo(scrolled.ScrolledPanel):
         else:
             closingstyle = TB.TB_ONTIME
             
-        tb = TB.ToasterBox(self, tbstyle, windowstyle, closingstyle)
+        tb = TB.ToasterBox(self, tbstyle, windowstyle, closingstyle,
+                           scrollType=TB.TB_SCR_TYPE_FADE
+                           )
 
         if windowstyle == TB.TB_CAPTION:
             tb.SetTitle(txts)
@@ -317,13 +319,13 @@ class ToasterBoxDemo(scrolled.ScrolledPanel):
 
     def RunSimpleDemo(self, tb):
 
-        tb.SetPopupBackgroundColor(self.colButton1.GetBackgroundColour())
-        tb.SetPopupTextColor(self.colButton2.GetBackgroundColour())
+        tb.SetPopupBackgroundColour(self.colButton1.GetBackgroundColour())
+        tb.SetPopupTextColour(self.colButton2.GetBackgroundColour())
         bmp = self.backimage.GetPath()
         dummybmp = wx.NullBitmap
         
         if os.path.isfile(bmp):
-            dummybmp = wx.Bitmap(bmp, wx.BITMAP_TYPE_BMP)
+            dummybmp = wx.Bitmap(bmp)
 
         if dummybmp.Ok():
             tb.SetPopupBitmap(bmp)
@@ -384,8 +386,8 @@ class ToasterBoxDemo(scrolled.ScrolledPanel):
         horsizer3.Add((5,0))
         sizer.Add(horsizer3, 0, wx.EXPAND)
         
-        sizer.Layout()
         panel.SetSizer(sizer)
+        panel.Layout()
         
         tb.AddPanel(panel)
         

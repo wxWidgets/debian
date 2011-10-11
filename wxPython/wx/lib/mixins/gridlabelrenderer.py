@@ -6,8 +6,8 @@
 #
 # Author:      Robin Dunn
 #
-# Created:     9-Dec-1999
-# RCS-ID:      $Id: gridlabelrenderer.py 59671 2009-03-20 20:58:50Z RD $
+# Created:     20-Mar-2009
+# RCS-ID:      $Id: gridlabelrenderer.py 67478 2011-04-13 18:25:25Z RD $
 # Copyright:   (c) 2009 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -98,6 +98,8 @@ class GridWithLabelRenderersMixin(object):
         dc = wx.PaintDC(window)
                 
         rows = self.CalcRowLabelsExposed(window.GetUpdateRegion())
+        if rows == [-1]:
+            return
 
         x, y = self.CalcUnscrolledPosition((0,0))
         pt = dc.GetDeviceOrigin()
@@ -120,6 +122,8 @@ class GridWithLabelRenderersMixin(object):
         dc = wx.PaintDC(window)
 
         cols = self.CalcColLabelsExposed(window.GetUpdateRegion())
+        if cols == [-1]:
+            return
 
         x, y = self.CalcUnscrolledPosition((0,0))
         pt = dc.GetDeviceOrigin()

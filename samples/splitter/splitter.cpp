@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: splitter.cpp 33179 2005-03-30 15:36:15Z JS $
+// RCS-ID:      $Id: splitter.cpp 61458 2009-07-18 22:46:26Z PC $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -283,6 +283,7 @@ void MyFrame::SplitHorizontal(wxCommandEvent& WXUNUSED(event) )
     m_left->Show(true);
     m_right->Show(true);
     m_splitter->SplitHorizontally( m_left, m_right );
+    m_replacewindow = NULL;
 
 #if wxUSE_STATUSBAR
     SetStatusText(_T("Splitter split horizontally"), 1);
@@ -296,6 +297,7 @@ void MyFrame::SplitVertical(wxCommandEvent& WXUNUSED(event) )
     m_left->Show(true);
     m_right->Show(true);
     m_splitter->SplitVertically( m_left, m_right );
+    m_replacewindow = NULL;
 
 #if wxUSE_STATUSBAR
     SetStatusText(_T("Splitter split vertically"), 1);

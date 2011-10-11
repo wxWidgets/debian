@@ -53,7 +53,7 @@ class SettingsPanel(wx.MiniFrame):
         self.verticalgradient = wx.RadioButton(self.panel, -1, "Vertical Gradient", style=wx.RB_GROUP)
         self.horizontalgradient = wx.RadioButton(self.panel, -1, "Horizontal Gradient")
 
-        b = self.CreateColorBitmap(wx.BLACK)
+        b = self.CreateColourBitmap(wx.BLACK)
         
         self.bakbrush = wx.BitmapButton(self.panel, ID_BackgroundColour, b, size=wx.Size(50,25))
         self.gradientfrom = wx.BitmapButton(self.panel, ID_GradientFrom, b, size=wx.Size(50,25))
@@ -118,7 +118,7 @@ class SettingsPanel(wx.MiniFrame):
         self.marginspin.SetValue(self.targetTitleBar.GetBPArt().GetMetric(bp.BP_MARGINS_SIZE).x)
         self.paddingspin.SetValue(self.targetTitleBar.GetBPArt().GetMetric(bp.BP_PADDING_SIZE).x)
 
-        self.UpdateColors()        
+        self.UpdateColours()        
         
 
     def __do_layout(self):
@@ -267,7 +267,7 @@ class SettingsPanel(wx.MiniFrame):
         self.Fit()
 
 
-    def CreateColorBitmap(self, c):
+    def CreateColourBitmap(self, c):
     
         image = wx.EmptyImage(25, 14)
         
@@ -282,34 +282,34 @@ class SettingsPanel(wx.MiniFrame):
         return image.ConvertToBitmap()
 
 
-    def UpdateColors(self):
+    def UpdateColours(self):
     
-        bk = self.targetTitleBar.GetBPArt().GetColor(bp.BP_BACKGROUND_COLOR)
-        self.bakbrush.SetBitmapLabel(self.CreateColorBitmap(bk))
+        bk = self.targetTitleBar.GetBPArt().GetColour(bp.BP_BACKGROUND_COLOUR)
+        self.bakbrush.SetBitmapLabel(self.CreateColourBitmap(bk))
         
-        capfrom = self.targetTitleBar.GetBPArt().GetColor(bp.BP_GRADIENT_COLOR_FROM)
-        self.gradientfrom.SetBitmapLabel(self.CreateColorBitmap(capfrom))
+        capfrom = self.targetTitleBar.GetBPArt().GetColour(bp.BP_GRADIENT_COLOUR_FROM)
+        self.gradientfrom.SetBitmapLabel(self.CreateColourBitmap(capfrom))
 
-        capto = self.targetTitleBar.GetBPArt().GetColor(bp.BP_GRADIENT_COLOR_TO)
-        self.gradientto.SetBitmapLabel(self.CreateColorBitmap(capto))
+        capto = self.targetTitleBar.GetBPArt().GetColour(bp.BP_GRADIENT_COLOUR_TO)
+        self.gradientto.SetBitmapLabel(self.CreateColourBitmap(capto))
 
-        captxt = self.targetTitleBar.GetBPArt().GetColor(bp.BP_TEXT_COLOR)
-        self.captioncolour.SetBitmapLabel(self.CreateColorBitmap(captxt))
+        captxt = self.targetTitleBar.GetBPArt().GetColour(bp.BP_TEXT_COLOUR)
+        self.captioncolour.SetBitmapLabel(self.CreateColourBitmap(captxt))
 
-        bor = self.targetTitleBar.GetBPArt().GetColor(bp.BP_BORDER_COLOR)
-        self.bordercolour.SetBitmapLabel(self.CreateColorBitmap(bor))
+        bor = self.targetTitleBar.GetBPArt().GetColour(bp.BP_BORDER_COLOUR)
+        self.bordercolour.SetBitmapLabel(self.CreateColourBitmap(bor))
         
-        btntext = self.targetTitleBar.GetBPArt().GetColor(bp.BP_BUTTONTEXT_COLOR)
-        self.textbuttoncolour.SetBitmapLabel(self.CreateColorBitmap(btntext))
+        btntext = self.targetTitleBar.GetBPArt().GetColour(bp.BP_BUTTONTEXT_COLOUR)
+        self.textbuttoncolour.SetBitmapLabel(self.CreateColourBitmap(btntext))
 
-        selb = self.targetTitleBar.GetBPArt().GetColor(bp.BP_SELECTION_BRUSH_COLOR)
-        self.selectionbrush.SetBitmapLabel(self.CreateColorBitmap(selb))
+        selb = self.targetTitleBar.GetBPArt().GetColour(bp.BP_SELECTION_BRUSH_COLOUR)
+        self.selectionbrush.SetBitmapLabel(self.CreateColourBitmap(selb))
 
-        selp = self.targetTitleBar.GetBPArt().GetColor(bp.BP_SELECTION_PEN_COLOR)
-        self.selectionpen.SetBitmapLabel(self.CreateColorBitmap(selp))
+        selp = self.targetTitleBar.GetBPArt().GetColour(bp.BP_SELECTION_PEN_COLOUR)
+        self.selectionpen.SetBitmapLabel(self.CreateColourBitmap(selp))
         
-        sepc = self.targetTitleBar.GetBPArt().GetColor(bp.BP_SEPARATOR_COLOR)
-        self.separatorcolour.SetBitmapLabel(self.CreateColorBitmap(sepc))
+        sepc = self.targetTitleBar.GetBPArt().GetColour(bp.BP_SEPARATOR_COLOUR)
+        self.separatorcolour.SetBitmapLabel(self.CreateColourBitmap(sepc))
 
 
     def OnDefaultStyle(self, event):
@@ -355,36 +355,36 @@ class SettingsPanel(wx.MiniFrame):
 
         dlg = wx.ColourDialog(self.parent)
         
-        dlg.SetTitle("Color Picker")
+        dlg.SetTitle("Colour Picker")
         
         if dlg.ShowModal() != wx.ID_OK:
             return
         
         var = 0
         if event.GetId() == ID_BackgroundColour:
-            var = bp.BP_BACKGROUND_COLOR
+            var = bp.BP_BACKGROUND_COLOUR
         elif event.GetId() == ID_GradientFrom:
-            var = bp.BP_GRADIENT_COLOR_FROM
+            var = bp.BP_GRADIENT_COLOUR_FROM
         elif event.GetId() == ID_GradientTo:
-            var = bp.BP_GRADIENT_COLOR_TO
+            var = bp.BP_GRADIENT_COLOUR_TO
         elif event.GetId() == ID_BorderColour:
-            var = bp.BP_BORDER_COLOR
+            var = bp.BP_BORDER_COLOUR
         elif event.GetId() == ID_CaptionColour:
-            var = bp.BP_TEXT_COLOR
+            var = bp.BP_TEXT_COLOUR
         elif event.GetId() == ID_ButtonTextColour:
-            var = bp.BP_BUTTONTEXT_COLOR
+            var = bp.BP_BUTTONTEXT_COLOUR
         elif event.GetId() == ID_SelectionBrush:
-            var = bp.BP_SELECTION_BRUSH_COLOR
+            var = bp.BP_SELECTION_BRUSH_COLOUR
         elif event.GetId() == ID_SelectionPen:
-            var = bp.BP_SELECTION_PEN_COLOR
+            var = bp.BP_SELECTION_PEN_COLOUR
         elif event.GetId() == ID_SeparatorColour:
-            var = bp.BP_SEPARATOR_COLOR
+            var = bp.BP_SEPARATOR_COLOUR
         else:
             return        
         
-        self.targetTitleBar.GetBPArt().SetColor(var, dlg.GetColourData().GetColour())
+        self.targetTitleBar.GetBPArt().SetColour(var, dlg.GetColourData().GetColour())
         self.targetTitleBar.Refresh()
-        self.UpdateColors()
+        self.UpdateColours()
 
         self.parent.useredited = True
 
@@ -478,10 +478,10 @@ class ButtonPanelDemo(wx.Frame):
         self.alignments = [bp.BP_ALIGN_LEFT, bp.BP_ALIGN_RIGHT, bp.BP_ALIGN_TOP, bp.BP_ALIGN_BOTTOM]
         
         self.alignment = bp.BP_ALIGN_LEFT
-        self.style = bp.BP_USE_GRADIENT
+        self.agwStyle = bp.BP_USE_GRADIENT
         
         self.titleBar = bp.ButtonPanel(self.mainPanel, -1, "A Simple Test & Demo",
-                                       style=self.style, alignment=self.alignment)
+                                       agwStyle=self.agwStyle, alignment=self.alignment)
 
         self.created = False
         self.pngs = [ (images._bp_btn1.GetBitmap(), 'label1'),
@@ -586,7 +586,7 @@ class ButtonPanelDemo(wx.Frame):
             self.titleBar.Hide()
             wx.CallAfter(self.titleBar.Destroy)
             self.titleBar = bp.ButtonPanel(self.mainPanel, -1, "A Simple Test & Demo",
-                                           style=self.style, alignment=self.alignment)
+                                           agwStyle=self.agwStyle, alignment=self.alignment)
             self.SetProperties()
                     
         self.indices = []
@@ -649,7 +649,7 @@ class ButtonPanelDemo(wx.Frame):
             self.titleBar.Hide()
             wx.CallAfter(self.titleBar.Destroy)
             self.titleBar = bp.ButtonPanel(self.mainPanel, -1, "A Simple Test & Demo",
-                                           style=self.style, alignment=self.alignment)
+                                           agwStyle=self.agwStyle, alignment=self.alignment)
             self.SetProperties()
 
         # Buttons are created completely random, with random images, toggle behavior
@@ -718,36 +718,36 @@ class ButtonPanelDemo(wx.Frame):
         # modify the colours and sizes using the Settings Panel
         bpArt = self.titleBar.GetBPArt()
         
-        if self.style & bp.BP_USE_GRADIENT:
-            # set the color the text is drawn with
-            bpArt.SetColor(bp.BP_TEXT_COLOR, wx.WHITE)
+        if self.agwStyle & bp.BP_USE_GRADIENT:
+            # set the colour the text is drawn with
+            bpArt.SetColour(bp.BP_TEXT_COLOUR, wx.WHITE)
 
             # These default to white and whatever is set in the system
             # settings for the wx.SYS_COLOUR_ACTIVECAPTION.  We'll use
             # some specific settings to ensure a consistent look for the
             # demo.
-            bpArt.SetColor(bp.BP_BORDER_COLOR, wx.Colour(120,23,224))
-            bpArt.SetColor(bp.BP_GRADIENT_COLOR_FROM, wx.Colour(60,11,112))
-            bpArt.SetColor(bp.BP_GRADIENT_COLOR_TO, wx.Colour(120,23,224))
-            bpArt.SetColor(bp.BP_BUTTONTEXT_COLOR, wx.Colour(70,143,255))
-            bpArt.SetColor(bp.BP_SEPARATOR_COLOR,
-                           bp.BrightenColour(wx.Colour(60, 11, 112), 0.85))
-            bpArt.SetColor(bp.BP_SELECTION_BRUSH_COLOR, wx.Colour(225, 225, 255))
-            bpArt.SetColor(bp.BP_SELECTION_PEN_COLOR, wx.SystemSettings_GetColour(wx.SYS_COLOUR_ACTIVECAPTION))
+            bpArt.SetColour(bp.BP_BORDER_COLOUR, wx.Colour(120,23,224))
+            bpArt.SetColour(bp.BP_GRADIENT_COLOUR_FROM, wx.Colour(60,11,112))
+            bpArt.SetColour(bp.BP_GRADIENT_COLOUR_TO, wx.Colour(120,23,224))
+            bpArt.SetColour(bp.BP_BUTTONTEXT_COLOUR, wx.Colour(70,143,255))
+            bpArt.SetColour(bp.BP_SEPARATOR_COLOUR,
+                            bp.BrightenColour(wx.Colour(60, 11, 112), 0.85))
+            bpArt.SetColour(bp.BP_SELECTION_BRUSH_COLOUR, wx.Colour(225, 225, 255))
+            bpArt.SetColour(bp.BP_SELECTION_PEN_COLOUR, wx.SystemSettings_GetColour(wx.SYS_COLOUR_ACTIVECAPTION))
 
         else:
 
             background = self.titleBar.GetBackgroundColour()            
-            bpArt.SetColor(bp.BP_TEXT_COLOR, wx.BLUE)
-            bpArt.SetColor(bp.BP_BORDER_COLOR,
-                           bp.BrightenColour(background, 0.85))
-            bpArt.SetColor(bp.BP_SEPARATOR_COLOR,
-                           bp.BrightenColour(background, 0.85))
-            bpArt.SetColor(bp.BP_BUTTONTEXT_COLOR, wx.BLACK)
-            bpArt.SetColor(bp.BP_SELECTION_BRUSH_COLOR, wx.Colour(242, 242, 235))
-            bpArt.SetColor(bp.BP_SELECTION_PEN_COLOR, wx.Colour(206, 206, 195))
+            bpArt.SetColour(bp.BP_TEXT_COLOUR, wx.BLUE)
+            bpArt.SetColour(bp.BP_BORDER_COLOUR,
+                            bp.BrightenColour(background, 0.85))
+            bpArt.SetColour(bp.BP_SEPARATOR_COLOUR,
+                            bp.BrightenColour(background, 0.85))
+            bpArt.SetColour(bp.BP_BUTTONTEXT_COLOUR, wx.BLACK)
+            bpArt.SetColour(bp.BP_SELECTION_BRUSH_COLOUR, wx.Colour(242, 242, 235))
+            bpArt.SetColour(bp.BP_SELECTION_PEN_COLOUR, wx.Colour(206, 206, 195))
 
-        self.titleBar.SetStyle(self.style)
+        self.titleBar.SetStyle(self.agwStyle)
         
         
     def OnAlignment(self, event):
@@ -768,7 +768,7 @@ class ButtonPanelDemo(wx.Frame):
     def OnDefaultStyle(self, event):
         
         # Restore the ButtonPanel default style (no gradient)
-        self.style = bp.BP_DEFAULT_STYLE
+        self.agwStyle = bp.BP_DEFAULT_STYLE
         self.SetProperties()
 
         event.Skip()        
@@ -777,7 +777,7 @@ class ButtonPanelDemo(wx.Frame):
     def OnGradientStyle(self, event):
 
         # Use gradients to paint ButtonPanel background
-        self.style = bp.BP_USE_GRADIENT
+        self.agwStyle = bp.BP_USE_GRADIENT
         self.SetProperties()
 
         event.Skip()        

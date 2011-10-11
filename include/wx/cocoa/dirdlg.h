@@ -4,7 +4,7 @@
 // Author:      Ryan Norton
 // Modified by: Hiroyuki Nakamura(maloninc)
 // Created:     2006-01-10
-// RCS-ID:      $Id: dirdlg.h 41020 2006-09-05 20:47:48Z VZ $
+// RCS-ID:      $Id: dirdlg.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ class WXDLLEXPORT wxDirDialog: public wxDirDialogBase
 public:
     wxDirDialog(wxWindow *parent,
                 const wxString& message = wxDirSelectorPromptStr,
-                const wxString& defaultPath = _T(""),
+                const wxString& defaultPath = wxT(""),
                 long style = wxDD_DEFAULT_STYLE,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,

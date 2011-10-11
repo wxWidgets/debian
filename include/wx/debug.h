@@ -4,7 +4,7 @@
 *  Author:      Vadim Zeitlin
 *  Modified by: Ryan Norton (Converted to C)
 *  Created:     29/01/98
-*  RCS-ID:      $Id: debug.h 54492 2008-07-05 17:54:03Z SN $
+*  RCS-ID:      $Id: debug.h 61872 2009-09-09 22:37:05Z VZ $
 *  Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 *  Licence:     wxWindows licence
 */
@@ -123,13 +123,13 @@
       if ( cond )                                                             \
       {}                                                                      \
       else                                                                    \
-          wxOnAssert(__TFILE__, __LINE__, __WXFUNCTION__, _T(#cond), msg)
+          wxOnAssert(__TFILE__, __LINE__, __WXFUNCTION__, wxT(#cond), msg)
   #else
     #define wxASSERT_MSG(cond, msg)                                           \
       if ( cond )                                                             \
           ;                                                                   \
       else                                                                    \
-          wxOnAssert(__TFILE__, __LINE__, __WXFUNCTION__, _T(#cond), msg)
+          wxOnAssert(__TFILE__, __LINE__, __WXFUNCTION__, wxT(#cond), msg)
   #endif
 
   /*  special form of assert: always triggers it (in debug mode) */
@@ -140,7 +140,7 @@
 
   /*  FAIL with some message and a condition */
   #define wxFAIL_COND_MSG(cond, msg)                                          \
-      wxOnAssert(__TFILE__, __LINE__,  __WXFUNCTION__, _T(cond), msg)
+      wxOnAssert(__TFILE__, __LINE__,  __WXFUNCTION__, wxT(cond), msg)
 
   /*  An assert helper used to avoid warning when testing constant expressions, */
   /*  i.e. wxASSERT( sizeof(int) == 4 ) can generate a compiler warning about */

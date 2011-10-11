@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: splitter.h 53135 2008-04-12 02:31:04Z VZ $
+// RCS-ID:      $Id: splitter.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ public:
     void SetSplitMode(int mode)
     {
         wxASSERT_MSG( mode == wxSPLIT_VERTICAL || mode == wxSPLIT_HORIZONTAL,
-                      _T("invalid split mode") );
+                      wxT("invalid split mode") );
 
         m_splitMode = (wxSplitMode)mode;
     }

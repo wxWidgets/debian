@@ -16,8 +16,8 @@ consistancy and reduction in redundant code.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ed_mdlg.py 59256 2009-03-02 00:52:16Z CJP $"
-__revision__ = "$Revision: 59256 $"
+__svnid__ = "$Id: ed_mdlg.py 66817 2011-01-29 21:32:20Z CJP $"
+__revision__ = "$Revision: 66817 $"
 
 #--------------------------------------------------------------------------#
 # Imports
@@ -119,8 +119,8 @@ class EdFileInfoDlg(eclib.FileInfoDlg):
         @param fname: file path
 
         """
-        eclib.FileInfoDlg.__init__(self, parent, fname=fname,
-                                     ftype=None, bmp=FileIcon.GetBitmap())
+        super(EdFileInfoDlg, self).__init__(parent, fname=fname, ftype=None, 
+                                            bmp=FileIcon.GetBitmap())
 
         # Setup
         self.SetFileTypeLabel(util.GetFileType(fname))
@@ -134,13 +134,13 @@ class EdFormatEOLDlg(eclib.ChoiceDialog):
         @keyword selection: default selection (wx.stc.STC_EOL_*)
 
         """
-        choices = [_("Old Machintosh") + u" (\\r)", _("Unix") + u" (\\n)",
-                   _("Windows") + u" (\\r\\n)"]
+        choices = [_("Old Machintosh (\\r)"), _("Unix (\\n)"),
+                   _("Windows (\\r\\n)")]
         self._eol = [wx.stc.STC_EOL_CR, wx.stc.STC_EOL_LF, wx.stc.STC_EOL_CRLF]
         idx = self._eol.index(selection)
-        eclib.ChoiceDialog.__init__(self, parent, msg=msg, title=title,
-                                        choices=choices,
-                                        style=wx.YES_NO|wx.YES_DEFAULT)
+        super(EdFormatEOLDlg, self).__init__(parent, msg=msg, title=title,
+                                             choices=choices,
+                                             style=wx.YES_NO|wx.YES_DEFAULT)
         self.SetSelection(idx)
 
         # Setup

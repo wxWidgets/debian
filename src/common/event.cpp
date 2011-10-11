@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: event.cpp 56712 2008-11-08 22:41:10Z VZ $
+// RCS-ID:      $Id: event.cpp 61982 2009-09-20 21:48:50Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1087,14 +1087,18 @@ wxEvtHandler::~wxEvtHandler()
     // Remove us from wxPendingEvents if necessary.
     if(wxPendingEventsLocker)
         wxENTER_CRIT_SECT(*wxPendingEventsLocker);
+#endif // wxUSE_THREADS
+
     if ( wxPendingEvents )
     {
         // Delete all occurences of this from the list of pending events
         while (wxPendingEvents->DeleteObject(this)) { } // Do nothing
     }
+
+#if wxUSE_THREADS
     if(wxPendingEventsLocker)
         wxLEAVE_CRIT_SECT(*wxPendingEventsLocker);
-#endif
+#endif // wxUSE_THREADS
 
     // we only delete object data, not untyped
     if ( m_clientDataType == wxClientData_Object )
@@ -1178,17 +1182,21 @@ void wxEvtHandler::ProcessPendingEvents()
           node;
           node = m_pendingEvents->GetFirst() )
     {
-        wxEventPtr event(wx_static_cast(wxEvent *, node->GetData()));
+        {
+            wxEventPtr event(wx_static_cast(wxEvent *, node->GetData()));
 
-        // It's important we remove event from list before processing it.
-        // Else a nested event loop, for example from a modal dialog, might
-        // process the same event again.
+            // It's important we remove event from list before processing it.
+            // Else a nested event loop, for example from a modal dialog, might
+            // process the same event again.
 
-        m_pendingEvents->Erase(node);
+            m_pendingEvents->Erase(node);
 
-        wxLEAVE_CRIT_SECT( Lock() );
+            wxLEAVE_CRIT_SECT( Lock() );
 
-        ProcessEvent(*event);
+            ProcessEvent(*event);
+        } // delete the event at this block exit, before re-locking our
+          // critical section, to avoid deadlocks if the event dtor locks
+          // something else itself (see #10790)
 
         wxENTER_CRIT_SECT( Lock() );
 

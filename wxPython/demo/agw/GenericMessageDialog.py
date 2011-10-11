@@ -48,6 +48,10 @@ class GenericMessageDialogDemo(wx.Panel):
                                                  "wx.ICON_EXCLAMATION", "wx.ICON_ERROR",
                                                  "wx.ICON_QUESTION"],
                                         majorDimension=5, style=wx.RA_SPECIFY_ROWS)
+        self.buttonKinds = wx.RadioBox(self.mainPanel, -1, "Button Kind",
+                                        choices=["Themed buttons", "AquaButtons",
+                                                 "GradientButtons"],
+                                        majorDimension=3, style=wx.RA_SPECIFY_ROWS)
         self.showDialog = wx.Button(self.mainPanel, -1, "Show GenericMessageDialog")
 
         self.SetProperties()
@@ -83,6 +87,7 @@ class GenericMessageDialogDemo(wx.Panel):
         buttonSizer.Add((0, 2), 0, 0, 0)
         buttonSizer.Add(self.help, 0, wx.LEFT|wx.RIGHT|wx.BOTTOM, 5)
         mainSizer.Add(buttonSizer, 0, wx.ALL, 5)
+        mainSizer.Add(self.buttonKinds, 0, wx.ALL, 5)
         mainSizer.Add(self.dialogStyles, 0, wx.ALL, 5)
         mainSizer.Add((10, 0), 0, 0, 0)
         mainSizer.Add(self.showDialog, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 10)
@@ -117,6 +122,15 @@ class GenericMessageDialogDemo(wx.Panel):
                     btnStyle |= eval(child.GetLabel())
 
         dlgStyle = eval(self.dialogStyles.GetStringSelection())
+        buttonKind = self.buttonKinds.GetSelection()
+
+        if buttonKind == 1:
+            # Aquabuttons
+            dlgStyle += GMD.GMD_USE_AQUABUTTONS
+        elif buttonKind == 2:
+            # GradientButtons
+            dlgStyle += GMD.GMD_USE_GRADIENTBUTTONS
+            
         dlg = GMD.GenericMessageDialog(self, _msg,
                                        "A Nice Message Box",
                                        btnStyle | dlgStyle)

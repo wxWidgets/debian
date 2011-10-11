@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2005-09-30
-// RCS-ID:      $Id: richtexthtml.cpp 56989 2008-11-28 12:20:12Z JS $
+// RCS-ID:      $Id: richtexthtml.cpp 64162 2010-04-27 16:10:27Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -77,79 +77,108 @@ bool wxRichTextHTMLHandler::DoSaveFile(wxRichTextBuffer *buffer, wxOutputStream&
 
     buffer->Defragment();
 
-    wxTextOutputStream str(stream);
-
-    wxTextAttrEx currentParaStyle = buffer->GetAttributes();
-    wxTextAttrEx currentCharStyle = buffer->GetAttributes();
-
-    if ((GetFlags() & wxRICHTEXT_HANDLER_NO_HEADER_FOOTER) == 0)
-        str << wxT("<html><head></head><body>\n");
-
-    OutputFont(currentParaStyle, str);
-
-    m_font = false;
-    m_inTable = false;
-
-    m_indents.Clear();
-    m_listTypes.Clear();
-
-    wxRichTextObjectList::compatibility_iterator node = buffer->GetChildren().GetFirst();
-    while (node)
+#if wxUSE_UNICODE
+    wxCSConv* customEncoding = NULL;
+    wxMBConv* conv = NULL;
+    if (!GetEncoding().IsEmpty())
     {
-        wxRichTextParagraph* para = wxDynamicCast(node->GetData(), wxRichTextParagraph);
-        wxASSERT (para != NULL);
-
-        if (para)
+        customEncoding = new wxCSConv(GetEncoding());
+        if (!customEncoding->IsOk())
         {
-            wxTextAttrEx paraStyle(para->GetCombinedAttributes());
+            delete customEncoding;
+            customEncoding = NULL;
+        }
+    }
+    if (customEncoding)
+        conv = customEncoding;
+    else
+        conv = & wxConvUTF8;
+#endif
 
-            BeginParagraphFormatting(currentParaStyle, paraStyle, str);
+    {
+#if wxUSE_UNICODE
+        wxTextOutputStream str(stream, wxEOL_NATIVE, *conv);
+#else
+        wxTextOutputStream str(stream, wxEOL_NATIVE);
+#endif
 
-            wxRichTextObjectList::compatibility_iterator node2 = para->GetChildren().GetFirst();
-            while (node2)
+        wxTextAttrEx currentParaStyle = buffer->GetAttributes();
+        wxTextAttrEx currentCharStyle = buffer->GetAttributes();
+
+        if ((GetFlags() & wxRICHTEXT_HANDLER_NO_HEADER_FOOTER) == 0)
+            str << wxT("<html><head></head><body>\n");
+
+        OutputFont(currentParaStyle, str);
+
+        m_font = false;
+        m_inTable = false;
+
+        m_indents.Clear();
+        m_listTypes.Clear();
+
+        wxRichTextObjectList::compatibility_iterator node = buffer->GetChildren().GetFirst();
+        while (node)
+        {
+            wxRichTextParagraph* para = wxDynamicCast(node->GetData(), wxRichTextParagraph);
+            wxASSERT (para != NULL);
+
+            if (para)
             {
-                wxRichTextObject* obj = node2->GetData();
-                wxRichTextPlainText* textObj = wxDynamicCast(obj, wxRichTextPlainText);
-                if (textObj && !textObj->IsEmpty())
+                wxTextAttrEx paraStyle(para->GetCombinedAttributes());
+
+                BeginParagraphFormatting(currentParaStyle, paraStyle, str);
+
+                wxRichTextObjectList::compatibility_iterator node2 = para->GetChildren().GetFirst();
+                while (node2)
                 {
-                    wxTextAttrEx charStyle(para->GetCombinedAttributes(obj->GetAttributes()));
-                    BeginCharacterFormatting(currentCharStyle, charStyle, paraStyle, str);
+                    wxRichTextObject* obj = node2->GetData();
+                    wxRichTextPlainText* textObj = wxDynamicCast(obj, wxRichTextPlainText);
+                    if (textObj && !textObj->IsEmpty())
+                    {
+                        wxTextAttrEx charStyle(para->GetCombinedAttributes(obj->GetAttributes()));
+                        BeginCharacterFormatting(currentCharStyle, charStyle, paraStyle, str);
 
-                    wxString text = textObj->GetText();
+                        wxString text = textObj->GetText();
 
-                    if (charStyle.HasTextEffects() && (charStyle.GetTextEffects() & wxTEXT_ATTR_EFFECT_CAPITALS))
-                        text.MakeUpper();
+                        if (charStyle.HasTextEffects() && (charStyle.GetTextEffects() & wxTEXT_ATTR_EFFECT_CAPITALS))
+                            text.MakeUpper();
 
-                    wxString toReplace = wxRichTextLineBreakChar;
-                    text.Replace(toReplace, wxT("<br>"));
+                        wxString toReplace = wxRichTextLineBreakChar;
+                        text.Replace(toReplace, wxT("<br>"));
 
-                    str << text;
+                        str << text;
 
-                    EndCharacterFormatting(currentCharStyle, charStyle, paraStyle, str);
+                        EndCharacterFormatting(currentCharStyle, charStyle, paraStyle, str);
+                    }
+
+                    wxRichTextImage* image = wxDynamicCast(obj, wxRichTextImage);
+                    if( image && (!image->IsEmpty() || image->GetImageBlock().GetData()))
+                        WriteImage( image, stream );
+
+                    node2 = node2->GetNext();
                 }
 
-                wxRichTextImage* image = wxDynamicCast(obj, wxRichTextImage);
-                if( image && (!image->IsEmpty() || image->GetImageBlock().GetData()))
-                    WriteImage( image, stream );
+                EndParagraphFormatting(currentParaStyle, paraStyle, str);
 
-                node2 = node2->GetNext();
+                str << wxT("\n");
             }
-
-            EndParagraphFormatting(currentParaStyle, paraStyle, str);
-
-            str << wxT("\n");
+            node = node->GetNext();
         }
-        node = node->GetNext();
+
+        CloseLists(-1, str);
+
+        str << wxT("</font>");
+
+        if ((GetFlags() & wxRICHTEXT_HANDLER_NO_HEADER_FOOTER) == 0)
+            str << wxT("</body></html>");
+
+        str << wxT("\n");
     }
 
-    CloseLists(-1, str);
-
-    str << wxT("</font>");
-
-    if ((GetFlags() & wxRICHTEXT_HANDLER_NO_HEADER_FOOTER) == 0)
-        str << wxT("</body></html>");
-
-    str << wxT("\n");
+#if wxUSE_UNICODE
+    if (customEncoding)
+        delete customEncoding;
+#endif
 
     m_buffer = NULL;
 
@@ -253,22 +282,59 @@ void wxRichTextHTMLHandler::BeginParagraphFormatting(const wxTextAttrEx& WXUNUSE
             CloseLists(-1, str);
 
             wxString align = GetAlignment(thisStyle);
-            str << wxString::Format(wxT("<p align=\"%s\">"), align.c_str());
+            str << wxString::Format(wxT("<p align=\"%s\""), align.c_str());
 
-            // Use a table
-            int indentTenthsMM = thisStyle.GetLeftIndent() + thisStyle.GetLeftSubIndent();
+            wxString styleStr;
+
+            if ((GetFlags() & wxRICHTEXT_HANDLER_USE_CSS) && thisStyle.HasParagraphSpacingBefore())
+            {
+                float spacingBeforeMM = thisStyle.GetParagraphSpacingBefore() / 10.0;
+
+                styleStr += wxString::Format(wxT("margin-top: %.2fmm; "), spacingBeforeMM);
+            }
+            if ((GetFlags() & wxRICHTEXT_HANDLER_USE_CSS) && thisStyle.HasParagraphSpacingAfter())
+            {
+                float spacingAfterMM = thisStyle.GetParagraphSpacingAfter() / 10.0;
+
+                styleStr += wxString::Format(wxT("margin-bottom: %.2fmm; "), spacingAfterMM);
+            }
+
+            float indentLeftMM = (thisStyle.GetLeftIndent() + thisStyle.GetLeftSubIndent())/10.0;
+            if ((GetFlags() & wxRICHTEXT_HANDLER_USE_CSS) && (indentLeftMM > 0.0))
+            {
+                styleStr += wxString::Format(wxT("margin-left: %.2fmm; "), indentLeftMM);
+            }
+            float indentRightMM = thisStyle.GetRightIndent()/10.0;
+            if ((GetFlags() & wxRICHTEXT_HANDLER_USE_CSS) && thisStyle.HasRightIndent() && (indentRightMM > 0.0))
+            {
+                styleStr += wxString::Format(wxT("margin-right: %.2fmm; "), indentRightMM);
+            }
+            // First line indentation
+            float firstLineIndentMM = - thisStyle.GetLeftSubIndent() / 10.0;
+            if ((GetFlags() & wxRICHTEXT_HANDLER_USE_CSS) && (firstLineIndentMM > 0.0))
+            {
+                styleStr += wxString::Format(wxT("text-indent: %.2fmm; "), firstLineIndentMM);
+            }
+
+            if (!styleStr.IsEmpty())
+                str << wxT(" style=\"") << styleStr << wxT("\"");
+
+            str << wxT(">");
+
             // TODO: convert to pixels
-            int indentPixels = indentTenthsMM/4;
-            str << wxString::Format(wxT("<table border=0 cellpadding=0 cellspacing=0><tr><td width=\"%d\"></td><td>"), indentPixels);
+            int indentPixels = indentLeftMM*10/4;
 
-            OutputFont(thisStyle, str);
+            if ((GetFlags() & wxRICHTEXT_HANDLER_USE_CSS) == 0)
+            {
+                // Use a table to do indenting if we don't have CSS
+                str << wxString::Format(wxT("<table border=0 cellpadding=0 cellspacing=0><tr><td width=\"%d\"></td><td>"), indentPixels);
+                m_inTable = true;
+            }
 
-            if (thisStyle.GetLeftSubIndent() < 0)
+            if (((GetFlags() & wxRICHTEXT_HANDLER_USE_CSS) == 0) && (thisStyle.GetLeftSubIndent() < 0))
             {
                 str << SymbolicIndent( - thisStyle.GetLeftSubIndent());
             }
-
-            m_inTable = true;
         }
     }
     else
@@ -276,18 +342,39 @@ void wxRichTextHTMLHandler::BeginParagraphFormatting(const wxTextAttrEx& WXUNUSE
         CloseLists(-1, str);
 
         wxString align = GetAlignment(thisStyle);
-        str << wxString::Format(wxT("<p align=\"%s\">"), align.c_str());
+        str << wxString::Format(wxT("<p align=\"%s\""), align.c_str());
+
+        wxString styleStr;
+
+        if ((GetFlags() & wxRICHTEXT_HANDLER_USE_CSS) && thisStyle.HasParagraphSpacingBefore())
+        {
+            float spacingBeforeMM = thisStyle.GetParagraphSpacingBefore() / 10.0;
+
+            styleStr += wxString::Format(wxT("margin-top: %.2fmm; "), spacingBeforeMM);
+        }
+        if ((GetFlags() & wxRICHTEXT_HANDLER_USE_CSS) && thisStyle.HasParagraphSpacingAfter())
+        {
+            float spacingAfterMM = thisStyle.GetParagraphSpacingAfter() / 10.0;
+
+            styleStr += wxString::Format(wxT("margin-bottom: %.2fmm; "), spacingAfterMM);
+        }
+
+        if (!styleStr.IsEmpty())
+            str << wxT(" style=\"") << styleStr << wxT("\"");
+
+        str << wxT(">");
     }
+    OutputFont(thisStyle, str);
 }
 
 /// End paragraph formatting
 void wxRichTextHTMLHandler::EndParagraphFormatting(const wxTextAttrEx& WXUNUSED(currentStyle), const wxTextAttrEx& thisStyle, wxTextOutputStream& stream)
 {
+    if (thisStyle.HasFont())
+        stream << wxT("</font>");
+
     if (m_inTable)
     {
-        if (thisStyle.HasFont())
-            stream << wxT("</font>");
-
         stream << wxT("</td></tr></table></p>\n");
         m_inTable = false;
     }

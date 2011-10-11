@@ -10,7 +10,7 @@
 
 ; Global Variables
 !define PRODUCT_NAME "Editra"
-!define PRODUCT_VERSION "0.4.88"
+!define PRODUCT_VERSION "0.6.48"
 !define PRODUCT_PUBLISHER "Cody Precord"
 !define PRODUCT_WEB_SITE "http://editra.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_NAME}.exe"
@@ -26,30 +26,29 @@ SetCompressor lzma
 !define MUI_ABORTWARNING
 !define MUI_ICON "pixmaps\editra.ico"
 !define MUI_UNICON "pixmaps\editra.ico"
+!define MUI_FILEICON "pixmaps\editra_doc.png"
 
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
-
 ; License page (Read the Licence)
 !insertmacro MUI_PAGE_LICENSE "COPYING"
-
 ; Components Page (Select what parts to install)
 !insertmacro MUI_PAGE_COMPONENTS
-
 ; Directory page (Set Where to Install)
 !insertmacro MUI_PAGE_DIRECTORY
-
 ; Instfiles page (Do the installation)
 !insertmacro MUI_PAGE_INSTFILES
-
 ; Finish page (Post installation tasks)
 !define MUI_FINISHPAGE_RUN
 !define MUI_FINISHPAGE_RUN_TEXT "Run Editra"
 !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchEditra"
 !insertmacro MUI_PAGE_FINISH
 
-; Uninstaller pages
+; Un-Installer pages
+!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_COMPONENTS
 !insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_FINISH
 
 ; Language files
 !insertmacro MUI_LANGUAGE "English"
@@ -69,6 +68,8 @@ InstallDir "$PROGRAMFILES\${PRODUCT_NAME}"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
+
+RequestExecutionLevel admin 
 
 ;---- !defines for use with SHChangeNotify
 !ifdef SHCNE_ASSOCCHANGED
@@ -122,17 +123,18 @@ Section "Editra Core" SEC01
   File /r ".\*.*"
 
   ; Add the shortcuts to the start menu and desktop
+  SetShellVarContext all
   CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
-  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Editra.lnk" "$INSTDIR\Editra.exe"
-  CreateShortCut "$DESKTOP\Editra.lnk" "$INSTDIR\Editra.exe"
+  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\${PRODUCT_NAME}.exe" "" "$INSTDIR\${MUI_ICON}"
+  CreateShortCut "$DESKTOP\${PRODUCT_NAME}.lnk" "$INSTDIR\${PRODUCT_NAME}.exe"  "" "$INSTDIR\${MUI_ICON}"
 SectionEnd
 
 ; Enabled if Add openwith entry is checked
 Section "Context Menus" SEC02
   SectionIn 1
   WriteRegStr HKCR "*\shell\OpenWithEditra" "" "Edit with ${PRODUCT_NAME}"
-  WriteRegStr HKCR "*\shell\OpenWithEditra\command" "" '$INSTDIR\Editra.exe "%1"'
-;  WriteRegStr HKCR "*\shell\OpenWithEditra\DefaultIcon" "" "$INSTDIR\Editra.exe,1"
+  WriteRegStr HKCR "*\shell\OpenWithEditra\command" "" '$INSTDIR\${PRODUCT_NAME}.exe "%1"'
+;  WriteRegStr HKCR "*\shell\OpenWithEditra\DefaultIcon" "" "${MUI_FILEICON}"
 
   ; Notify of the shell extension changes
   System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_FLUSH}, i 0, i 0)'
@@ -141,24 +143,25 @@ SectionEnd
 ; Add QuickLaunch Icon (That small icon bar next to the start button)
 Section "Add Quick Launch Icon" SEC03
   SectionIn 1
-  CreateShortCut "$QUICKLAUNCH\Editra.lnk" "$INSTDIR\Editra.exe"
+  CreateShortCut "$QUICKLAUNCH\${PRODUCT_NAME}.lnk" "$INSTDIR\${PRODUCT_NAME}.exe"
 SectionEnd
 
 ; Make/Install Shortcut links
 Section -AdditionalIcons
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
+  SetShellVarContext all
   CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
-  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\${MUI_UNICON}"
 SectionEnd
 
 ; Post installation setup
 Section -Post
   ;---- Write registry keys for uninstaller
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\Editra.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\${PRODUCT_NAME}.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\Editra.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\${MUI_UNICON}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
@@ -166,48 +169,64 @@ SectionEnd
 
 ; Called if Run Editra is checked on the last page of installer
 Function LaunchEditra
-  Exec '"$INSTDIR\Editra.exe" "$INSTDIR\CHANGELOG" '
+  Exec '"$INSTDIR\${PRODUCT_NAME}.exe" "$INSTDIR\CHANGELOG" '
 FunctionEnd
 
 ; Description Texts for Component page
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Required core program files"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Add context menu item 'Edit with Editra'"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Add context menu item 'Edit with ${PRODUCT_NAME}'"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Add shortcut to Quick Launch Bar"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
-;------------------------------- End Installer --------------------------------
 
+;------------------------------- End Installer --------------------------------
 
 ;----------------------------- Start Uninstaller ------------------------------
 
-Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
-  Abort
-FunctionEnd
+;Function un.onInit
+;FunctionEnd
 
-Section Uninstall
-  ; Remove all Files
-  RmDir /r "$INSTDIR\"
+; Cleans up registry, links, and main program files
+Section "un.Program Data" UNSEC01
+  SectionIn RO 1
 
-  ; Remove all shortcuts
-  Delete "$SMPROGRAMS\${PRODUCT_NAME}\Uninstall.lnk"
-  Delete "$SMPROGRAMS\${PRODUCT_NAME}\Website.lnk"
-  Delete "$SMPROGRAMS\${PRODUCT_NAME}\Editra.lnk"
-  Delete "$DESKTOP\Editra.lnk"
-  Delete "$QUICKLAUNCH\Editra.lnk"
-  RMDir "$SMPROGRAMS\${PRODUCT_NAME}"
+  ; Ensure shortcuts are removed from user directory as well
+  RmDir /r "$SMPROGRAMS\${PRODUCT_NAME}"
+  Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
+  Delete "$QUICKLAUNCH\${PRODUCT_NAME}.lnk"
+  
+  ; Remove all shortcuts from All Users directory
+  SetShellVarContext all
+  RmDir /r "$SMPROGRAMS\${PRODUCT_NAME}"
+  Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
+  Delete "$QUICKLAUNCH\${PRODUCT_NAME}.lnk"
 
   ; Cleanup Registry
   DeleteRegKey HKCR "*\shell\OpenWithEditra"
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
 
-  SetAutoClose true
+  ; Remove all Files
+  RmDir /r "$INSTDIR\"
+
+  SetAutoClose false
 SectionEnd
 
-Function un.onUninstSuccess
-  HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) was successfully removed from your computer."
-FunctionEnd
+; Optionally cleans up user data/plugins
+Section /o "un.User settings and plugins" UNSEC02
+    SectionIn 1
+    SetShellVarContext current ; Current user only
+    RmDir /r "$APPDATA\${PRODUCT_NAME}" ; Remove app generated config data/plugins
+    RmDir /r "$LOCALAPPDATA\${PRODUCT_NAME}" ; Remove app generated config data/plugins
+SectionEnd
+
+;Function un.onUninstSuccess
+;FunctionEnd
+
+; Description Texts for Component page
+!insertmacro MUI_UNFUNCTION_DESCRIPTION_BEGIN
+  !insertmacro MUI_DESCRIPTION_TEXT ${UNSEC01} "Core program files"
+  !insertmacro MUI_DESCRIPTION_TEXT ${UNSEC02} "User settings and plugins"
+!insertmacro MUI_UNFUNCTION_DESCRIPTION_END
 
 ;------------------------------ End Uninstaller -------------------------------

@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux, Vadim Zeitlin, Vaclav Slavik
 // Modified by:
 // Created:     20/07/98
-// RCS-ID:      $Id: dynlib.h 58750 2009-02-08 10:01:03Z VZ $
+// RCS-ID:      $Id: dynlib.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1998 Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ enum wxPluginCategory
 // type only once, as the first parameter, and creating a variable of this type
 // called "pfn<name>" initialized with the "name" from the "dynlib"
 #define wxDYNLIB_FUNCTION(type, name, dynlib) \
-    type pfn ## name = (type)(dynlib).GetSymbol(_T(#name))
+    type pfn ## name = (type)(dynlib).GetSymbol(wxT(#name))
 
 // ----------------------------------------------------------------------------
 // wxDynamicLibraryDetails: contains details about a loaded wxDynamicLibrary

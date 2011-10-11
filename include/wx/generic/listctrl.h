@@ -3,7 +3,7 @@
 // Purpose:     Generic list control
 // Author:      Robert Roebling
 // Created:     01/02/97
-// RCS-ID:      $Id: listctrl.h 46432 2007-06-13 03:46:20Z SC $
+// RCS-ID:      $Id: listctrl.h 62158 2009-09-26 17:47:23Z JS $
 // Copyright:   (c) 1998 Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -136,8 +136,7 @@ public:
     bool ScrollList( int dx, int dy );
     bool SortItems( wxListCtrlCompare fn, long data );
     bool Update( long item );
-    // Must provide overload to avoid hiding it (and warnings about it)
-    virtual void Update() { wxControl::Update(); }
+    virtual void Update();
 
     // are we in report mode?
     bool InReportView() const { return HasFlag(wxLC_REPORT); }

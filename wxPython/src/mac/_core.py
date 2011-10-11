@@ -2596,7 +2596,7 @@ class Image_HSVValue(object):
     """
     An object that contains values for hue, saturation and value which
     represent the value of a color.  It is used by `wx.Image.HSVtoRGB` and
-    `wx.Image.RGBtoHSV`, which +converts between HSV color space and RGB
+    `wx.Image.RGBtoHSV`, which converts between HSV color space and RGB
     color space.
     """
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
@@ -3913,6 +3913,9 @@ class EvtHandler(Object):
         :param id2: Used when it is desirable to bind a handler
                       to a range of IDs, such as with EVT_MENU_RANGE.
         """
+        assert isinstance(event, wx.PyEventBinder)
+        assert handler is None or callable(handler)
+        assert source is None or hasattr(source, 'GetId')
         if source is not None:
             id  = source.GetId()
         event.Bind(self, id, id2, handler)              
@@ -5477,7 +5480,7 @@ class KeyEvent(Event):
         GetUnicodeKey(self) -> int
 
         Returns the Unicode character corresponding to this key event.  This
-        function is only meaningfule in a Unicode build of wxPython.
+        function is only meaningful in a Unicode build of wxPython.
         """
         return _core_.KeyEvent_GetUnicodeKey(*args, **kwargs)
 
@@ -10401,6 +10404,10 @@ class Window(EvtHandler):
         """
         return _core_.Window_PageDown(*args, **kwargs)
 
+    def MacIsWindowScrollbar(*args, **kwargs):
+        """MacIsWindowScrollbar(self, Window sb) -> bool"""
+        return _core_.Window_MacIsWindowScrollbar(*args, **kwargs)
+
     def SetHelpText(*args, **kwargs):
         """
         SetHelpText(self, String text)
@@ -10465,6 +10472,15 @@ class Window(EvtHandler):
         get the associated tooltip or None if none
         """
         return _core_.Window_GetToolTip(*args, **kwargs)
+
+    def GetToolTipString(self):
+        tip = self.GetToolTip()
+        if tip:
+            return tip.GetTip()
+        else:
+            return None
+
+    ToolTipString = property(GetToolTipString, SetToolTipString)
 
     def SetDropTarget(*args, **kwargs):
         """
@@ -10891,6 +10907,20 @@ def GetTopLevelWindows(*args):
     dialogs, etc.)
     """
   return _core_.GetTopLevelWindows(*args)
+class FrozenWindow(object):
+    """
+    A context manager to be used with Python 'with' statements
+    that will freeze the given window for the duration of the
+    with block.
+    """
+    def __init__(self, window):
+        self._win = window
+    def __enter__(self):
+        self._win.Freeze()
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._win.Thaw()
+
 #---------------------------------------------------------------------------
 
 class Validator(EvtHandler):
@@ -12347,6 +12377,14 @@ class SizerItem(Object):
         """
         return _core_.SizerItem_GetMinSize(*args, **kwargs)
 
+    def SetMinSize(*args, **kwargs):
+        """
+        SetMinSize(self, Size size)
+
+        Set the min size needed for the item
+        """
+        return _core_.SizerItem_SetMinSize(*args, **kwargs)
+
     def GetMinSizeWithBorder(*args, **kwargs):
         """
         GetMinSizeWithBorder(self) -> Size
@@ -12743,6 +12781,23 @@ class Sizer(Object):
     def _SetItemMinSize(*args, **kwargs):
         """_SetItemMinSize(self, PyObject item, Size size)"""
         return _core_.Sizer__SetItemMinSize(*args, **kwargs)
+
+    def GetItemIndex(self, item):
+        """
+        Returns the index of the given *item* within the sizer. Does not
+        search recursivly.  The *item* parameter can be either a window
+        or a sizer.  An assertion is raised if the item is not found in
+        the sizer.
+        """
+        sItem = self.GetItem(item)
+        assert sItem is not None, "Item not found in the sizer."
+        allItems = self.Children
+        idx = 0
+        for i in allItems:
+            if i.this == sItem.this:
+                break
+            idx += 1
+        return idx
 
     def _ReplaceWin(*args, **kwargs):
         """_ReplaceWin(self, Window oldwin, Window newwin, bool recursive=False) -> bool"""

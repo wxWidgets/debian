@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: Main.py 59671 2009-03-20 20:58:50Z RD $
+# RCS-ID:       $Id: Main.py 67536 2011-04-18 21:00:07Z RD $
 # Copyright:    (c) 1999 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -114,6 +114,7 @@ _treeList = [
         'Cairo_Snippets',
         'SystemSettings',
         'GridLabelRenderer',
+        'ItemsPicker',
         ]),
 
     # managed windows == things with a (optional) caption you can close
@@ -207,6 +208,7 @@ _treeList = [
         'Editor',
         'GenericButtons',
         'GenericDirCtrl',
+        'ItemsPicker',
         'LEDNumberCtrl',
         'MultiSash',
         'PlateButton',
@@ -1021,7 +1023,7 @@ class DemoModules:
         
         for i in [modOriginal, modModified]:
             self.modules[i][0]['__file__'] = \
-                os.path.join(os.getcwd(), GetOriginalFilename(name))
+                os.path.join(os.getcwdu(), GetOriginalFilename(name))
             
         # load original module
         self.LoadFromFile(modOriginal, GetOriginalFilename(name))

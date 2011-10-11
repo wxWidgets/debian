@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-Sept-1999
-// RCS-ID:      $Id: _sizers.i 60302 2009-04-24 05:27:29Z RD $
+// RCS-ID:      $Id: _sizers.i 67467 2011-04-13 18:17:51Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -296,6 +296,11 @@ account.", "");
     DocDeclStr(
         wxSize , GetMinSize(),
         "Get the minimum size needed for the item.", "");
+
+    DocDeclStr(
+        void , SetMinSize(const wxSize& size),
+        "Set the min size needed for the item", "");
+    
 
     DocDeclStr(
         wxSize , GetMinSizeWithBorder() const,
@@ -942,7 +947,27 @@ the item to be found.", "");
             else if ( info.gotPos )
                 self->SetItemMinSize(info.pos, size);
         }
+    }  // end of the %extend
+
+    %pythoncode {
+        def GetItemIndex(self, item):
+            """
+            Returns the index of the given *item* within the sizer. Does not
+            search recursivly.  The *item* parameter can be either a window
+            or a sizer.  An assertion is raised if the item is not found in
+            the sizer.
+            """
+            sItem = self.GetItem(item)
+            assert sItem is not None, "Item not found in the sizer."
+            allItems = self.Children
+            idx = 0
+            for i in allItems:
+                if i.this == sItem.this:
+                    break
+                idx += 1
+            return idx
     }
+
 
     
     %Rename(_ReplaceWin,

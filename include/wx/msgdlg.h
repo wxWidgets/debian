@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:
-// RCS-ID:      $Id: msgdlg.h 49765 2007-11-09 18:32:38Z DE $
+// RCS-ID:      $Id: msgdlg.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,10 +23,10 @@ protected:
     void SetMessageDialogStyle(long style)
     {
         wxASSERT_MSG( ((style & wxYES_NO) == wxYES_NO) || ((style & wxYES_NO) == 0),
-                      _T("wxYES and wxNO may only be used together in wxMessageDialog") );
+                      wxT("wxYES and wxNO may only be used together in wxMessageDialog") );
 
         wxASSERT_MSG( (style & wxID_OK) != wxID_OK,
-                      _T("wxMessageBox: Did you mean wxOK (and not wxID_OK)?") );
+                      wxT("wxMessageBox: Did you mean wxOK (and not wxID_OK)?") );
 
         m_dialogStyle = style;
     }
