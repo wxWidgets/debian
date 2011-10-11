@@ -18,8 +18,11 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
   * Add description for patch fix-build-with-python2.6.patch (just taken from
     Ryan's commit message).
   * Create debian/source/format to squash lintian warning.
+  * Remove bundled copy of expat (which we don't use) when we repack the
+    upstream sources to fix lintian warning about an ancient copy of libtool in
+    there.
 
- -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 13:08:43 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 13:11:36 +0000
 
 wxwidgets2.8 (2.8.10.1+dfsg-4) unstable; urgency=low
 

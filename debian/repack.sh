@@ -33,6 +33,9 @@ mv $UP_BASE/debian $UP_BASE/debian-upstream
 # so just nuke any regardless which protects us from any new DLLs which get
 # added by upstream.
 find "$UP_BASE" -iname '*.dll' -delete
+# We don't use the built-in copy of expat and it contains an ancient copy
+# of libtool which lintian warns about, so just delete it.
+rm -rf "$UP_BASE"/src/expat
 ## End
 
 mv "$UP_BASE" "$DIR/$REPACK_DIR"
