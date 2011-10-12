@@ -3,6 +3,8 @@ wxwidgets2.6 (2.6.3.2.2-6) UNRELEASED; urgency=low
   * Update libjpeg62-dev build dependency to libjpeg-dev. (Closes: #634643)
   * Add patch fix-configure-for-multiarch which fixes FTBFS since multiarch
     was introduced. (Closes: #632847)
+  * Drop "Suggests:" alternative of xlibmesa-gl-dev, which became a dummy
+    package in etch. (Closes: #601352)
 
  -- Olly Betts <olly@survex.com>  Wed, 12 Oct 2011 14:53:06 +0000
 
