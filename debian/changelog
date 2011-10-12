@@ -27,8 +27,10 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
   * Update debhelper compatibility level from 5 to 7, and use dh_prep instead
     of dh_clean -k.
   * Add ${misc:Depends}.
+  * Fix another spelling mistake in the same line as the two which
+    fix-wxversion-help-spelling already fixes!
 
- -- Olly Betts <olly@survex.com>  Tue, 11 Oct 2011 14:26:50 +0000
+ -- Olly Betts <olly@survex.com>  Wed, 12 Oct 2011 00:01:37 +0000
 
 wxwidgets2.8 (2.8.10.1+dfsg-4) unstable; urgency=low
 
