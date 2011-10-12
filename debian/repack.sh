@@ -34,8 +34,16 @@ mv $UP_BASE/debian $UP_BASE/debian-upstream
 # added by upstream.
 find "$UP_BASE" -iname '*.dll' -delete
 # We don't use the built-in copy of expat and it contains an ancient copy
-# of libtool which lintian warns about, so just delete it.
+# of libtool which lintian warns about, so just delete it.  This also ensures
+# that we don't accidentally start building against it in future.  By similar
+# logic, remove other embedded copies of libraries we don't want to use, and
+# which lintian might warn about in future.
 rm -rf "$UP_BASE"/src/expat
+rm -rf "$UP_BASE"/src/iodbc
+rm -rf "$UP_BASE"/src/jpeg
+rm -rf "$UP_BASE"/src/png
+rm -rf "$UP_BASE"/src/tiff
+rm -rf "$UP_BASE"/src/zlib
 ## End
 
 mv "$UP_BASE" "$DIR/$REPACK_DIR"

@@ -20,7 +20,9 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
   * Create debian/source/format to squash lintian warning.
   * Remove bundled copy of expat (which we don't use) when we repack the
     upstream sources to fix lintian warning about an ancient copy of libtool in
-    there.
+    there.  This also will ensure that we don't accidentally start to use the
+    embedded copy in the future.  By similar logic, remove the embedded copies
+    of other libraries we don't want to use.
   * Remove versioned conflict on python-wxgtk2.8 << a version which was never
     in Debian.  Adjust versioned conflict of python-wxgtk2.6 to what Ron says
     is the correct version for Debian.
@@ -33,7 +35,7 @@ wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
     there for those who want to build their own non-Unicode flavoured packages.
     (Closes: #602436)
 
- -- Olly Betts <olly@survex.com>  Wed, 12 Oct 2011 04:49:38 +0000
+ -- Olly Betts <olly@survex.com>  Wed, 12 Oct 2011 05:08:12 +0000
 
 wxwidgets2.8 (2.8.10.1+dfsg-4) unstable; urgency=low
 
