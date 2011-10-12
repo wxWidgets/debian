@@ -364,6 +364,7 @@ control-files-stamp: debian/control
 #			> debian/$(package_common).menu;
 	@echo "generating control file lintian-override";                    \
 		sed -e  's/=V/$(release)/g;s/=SOV/$(sorelease)/g'            \
+		    -e	's/=U/$(unicode_suffix)/'                            \
 			< debian/lintian-override.in                         \
 			> debian/lintian-override;                           \
 	touch $@
