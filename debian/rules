@@ -9,6 +9,8 @@
 SHELL = /bin/bash
 
 #export DH_VERBOSE=1
+
+include /usr/share/quilt/quilt.make
 export DH_OPTIONS
 
 include /usr/share/pycentral-data/pycentral.mk
@@ -299,7 +301,8 @@ build_all: control-files-stamp $(build_stamps_native)
 # from the binary-arch target.  Build all -arch files here then, and
 # let the -indep stuff fend for itself later.
 
-build: build_arch
+build: build-stamp build_arch
+build-stamp: $(QUILT_STAMPFN)
 
 
 # The wx2.6 build system makes us run around in circles to get a separate
@@ -572,7 +575,7 @@ clean-py:
 # its not enough by itself to get the tree properly clean again.
 #		&& ./setup.py clean
 
-clean: debian/control clean-py
+clean: debian/control clean-py unpatch
 	dh_testdir
 	dh_testroot
 
