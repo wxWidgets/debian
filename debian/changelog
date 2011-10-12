@@ -1,4 +1,4 @@
-wxwidgets2.8 (2.8.12.1-1) UNRELEASED; urgency=low
+wxwidgets2.8 (2.8.12.1-1) experimental; urgency=low
 
   * New upstream release (Closes: #586129, #623583)
     + Avoid installing emission hook more than once which could lead to 100%
