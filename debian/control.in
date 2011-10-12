@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Build-Depends: debhelper (>= 5.0.37.1), flex, bison, gettext, libgtk2.0-dev,
  python-all-dev, python-all-dbg, python-central,
- zlib1g-dev, libjpeg62-dev, libpng12-dev, libtiff4-dev,
+ zlib1g-dev, libjpeg-dev, libpng12-dev, libtiff4-dev,
  libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev,
  libesd0-dev, libgnomeprintui2.2-dev, libexpat1-dev,
 Maintainer: wxWidgets Maintainers <freewx-maint@lists.alioth.debian.org>
