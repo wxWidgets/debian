@@ -1,3 +1,10 @@
+wxwidgets2.8 (2.8.12.1-2) UNRELEASED; urgency=low
+
+  * wxPython/demo/b is completely useless to include in the package, so just
+    exclude it rather than carefully patching it to fix a bashism.
+
+ -- Olly Betts <olly@survex.com>  Thu, 13 Oct 2011 01:49:19 +0000
+
 wxwidgets2.8 (2.8.12.1-1) experimental; urgency=low
 
   * New upstream release (Closes: #586129, #623583)

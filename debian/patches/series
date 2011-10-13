@@ -3,7 +3,6 @@ fix-wxversion-help-spelling
 xrced_bitmaps.dpatch
 fix-config-scripts
 fix-configure-on-hurd
-fix-bashism-in-example
 fix-path-to-some-interpreters
 fix-configure-for-multiarch
 fix-macro-namespace-pollution.patch
