@@ -1,3 +1,9 @@
+wxwidgets2.6 (2.6.3.2.2-7) UNRELEASED; urgency=low
+
+  * Fix section override disparities.
+
+ -- Olly Betts <olly@survex.com>  Thu, 13 Oct 2011 02:53:40 +0000
+
 wxwidgets2.6 (2.6.3.2.2-6) unstable; urgency=low
 
   * Add myself to Uploaders.

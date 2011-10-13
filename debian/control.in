@@ -49,7 +49,7 @@ Description: wxBase library (development) - non-GUI support classes of wxWidgets
 
 Package: libwxbase=V-dbg
 Architecture: any
-Section: libdevel
+Section: debug
 Priority: extra
 Depends: wx=V-headers (= ${Source-Version}), libc6-dev
 Replaces: libwxgtk2.6-dbg (<<2.6.3.2)
@@ -97,7 +97,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
 
 Package: libwxgtk=V-dbg
 Architecture: any
-Section: libdevel
+Section: debug
 Priority: extra
 Depends: wx=V-headers (= ${Source-Version}), libwxbase=V-dbg (= ${Source-Version}), libc6-dev
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
@@ -130,7 +130,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding)
 Package: python-wxgtk=V-dbg
 Priority: extra
 Architecture: any
-Section: python
+Section: debug
 Depends: python-wxgtk=V (= ${Source-Version}), python-dbg, ${shlibs:Depends}
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding, debug version)
  wxWidgets is a class library for C++ providing GUI (Graphical User
@@ -196,7 +196,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (header files)
 
 Package: wx=V-i18n
 Architecture: all
-Section: libs
+Section: localization
 Conflicts: wx-i18n, wxwin-i18n, wx2.4-i18n
 Replaces: wx-i18n, wxwin-i18n, wx2.4-i18n, wx2.5-i18n
 Provides: wx-i18n
