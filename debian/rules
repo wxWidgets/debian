@@ -116,8 +116,7 @@ COMMON_CONFIGURE_OPTIONS = \
     --cache-file=$(config_cache) \
     --with-flavour=$(DEBIAN_WXFLAVOUR) \
     --with-zlib=sys \
-    --with-expat=sys \
-    --disable-reserved_virtual \
+    --with-expat=sys
 
 ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 COMMON_CONFIGURE_OPTIONS += --disable-optimise
