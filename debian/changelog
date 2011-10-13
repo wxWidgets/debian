@@ -6,8 +6,10 @@ wxwidgets2.8 (2.8.12.1-2) UNRELEASED; urgency=low
   * Fix typos in debian/copyright.
   * Upstream configure no longer has a --disable-reserved_virtual option, so
     stop passing it.
+  * Remove python-xml and python-xml-dbg from "Suggests:" as these packages no
+    longer exist. (Closes: #568702)
 
- -- Olly Betts <olly@survex.com>  Thu, 13 Oct 2011 23:45:38 +0000
+ -- Olly Betts <olly@survex.com>  Thu, 13 Oct 2011 23:52:05 +0000
 
 wxwidgets2.8 (2.8.12.1-1) experimental; urgency=low
 

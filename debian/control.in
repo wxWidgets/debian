@@ -115,7 +115,7 @@ Architecture: any
 Homepage: http://www.wxpython.org/
 Section: python
 Depends: python-wxversion (>= 2.6.3.2.2-2), ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
-Suggests: wx=V-doc, wx=V-examples, python-xml, editra
+Suggests: wx=V-doc, wx=V-examples, editra
 Conflicts: libwxgtk2.6-0-python, wxpython2.6-0, python-wxaddons
 Replaces: libwxgtk2.6-0-python, wxpython2.6-0
 Provides: ${python:Provides}
@@ -125,8 +125,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding)
  unpopular ones as well).
  .
  This package provides a Python binding to the wxGTK library and the
- wxPython runtime support libraries.  If you wish to use xrc you'll also
- need the python-xml package installed.
+ wxPython runtime support libraries.
 
 Package: python-wxgtk=V=U-dbg
 Homepage: http://www.wxpython.org/
@@ -134,7 +133,6 @@ Priority: extra
 Architecture: any
 Section: debug
 Depends: python-wxgtk=V=U (= ${binary:Version}), python-dbg, ${shlibs:Depends}, ${misc:Depends}
-Suggests: python-xml-dbg
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding, debug version)
  wxWidgets is a class library for C++ providing GUI (Graphical User
  Interface) and other facilities on more than one platform.  Version =V
@@ -170,7 +168,6 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython common files)
  unpopular ones as well).
  .
  This package provides support utilities and common files for wxPython=V=U.
- If you wish to use xrced you'll also need the python-xml package installed.
 
 Package: wx-common
 Architecture: any
