@@ -72,13 +72,10 @@ wx_subrelease_number    := $(shell sed -n 's/^wx_subrelease_number=//p' configur
 ##release   := $(shell dpkg-parsechangelog | sed -n 's/^Source: wxwidgets//p' | sed 's/-ansi//')
 release  := $(wx_major_version_number).$(wx_minor_version_number)
 
-# This is broken completely now by bakefiles changes.  Until we add
-# some hocus pocus to the main tree, to export these values from it
-# again, we approximate its behaviour (fairly precisely fwiw) to
-# specify $soversion below.  Re-automate if incompatible changes
-# result in it actually changing.
-#soversion := $(shell grep '^WX_CURRENT=' configure.in | sed 's/WX_CURRENT=\([0-9]\+\).*/\1/')
-soversion := 0
+so_cur := $(shell sed 's,<set var="WX_CURRENT">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
+so_age := $(shell sed 's,<set var="WX_AGE">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
+soversion := $(shell expr $(so_cur) - $(so_age))
+
 sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%)-$(soversion)$(addprefix -,$(DEBIAN_WXFLAVOUR))
 
 # In some places we use the full version number, including the micro version,

@@ -11,8 +11,9 @@ wxwidgets2.8 (2.8.12.1-2) UNRELEASED; urgency=low
   * debian/rules: export WX_UNICODE so it gets passed to sub-invocations of
     debian/rules, allowing ANSI packages to be built for binary-cross.
   * Remove unused substitutions of =PY and =WXPYDIR.
+  * Compute soversion rather than hard-coding it.
 
- -- Olly Betts <olly@survex.com>  Fri, 14 Oct 2011 13:09:11 +0000
+ -- Olly Betts <olly@survex.com>  Fri, 14 Oct 2011 13:25:40 +0000
 
 wxwidgets2.8 (2.8.12.1-1) experimental; urgency=low
 
