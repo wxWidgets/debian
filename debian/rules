@@ -38,7 +38,7 @@ else ifdef DISTCC_HOSTS
 endif
 
 ifdef JOB_COUNT
-  FAST_MAKE  = $(MAKE) -j $(JOB_COUNT)
+  FAST_MAKE = $(MAKE) -j $(JOB_COUNT)
 else
   FAST_MAKE = $(MAKE)
 endif
@@ -404,7 +404,7 @@ build-wxbase-shared-stamp: configure-wxbase-shared-stamp
 configure-wxbase-debug-stamp:
 	dh_testdir
 	mkdir -p $(objdir_wxbase_debug)
-	cd $(objdir_wxbase_debug) 					\
+	cd $(objdir_wxbase_debug)					\
 	    && ../configure $(BASE_CONFIGURE_OPTIONS) --enable-debug
 	touch $@
 
@@ -466,11 +466,11 @@ build-gtk-py%-stamp: build-gtk-shared-stamp # purge-dbg-py
 	dh_testdir
 	touch docs/lgpl.txt
 	cd wxPython \
-		&& python$* ./setup.py 	build			\
+		&& python$* ./setup.py build			\
 						WX_CONFIG='$(wxconfig)'	\
 						WXPORT=$(pytoolkit)	\
 						$(PY_UNICODE)		\
-					    	FLAVOUR=$(DEBIAN_WXFLAVOUR)
+						FLAVOUR=$(DEBIAN_WXFLAVOUR)
 	touch $@
 
 build-doc-stamp: build-gtk-shared-stamp
@@ -672,8 +672,8 @@ install-wxbase-dev: build-wxbase-shared-stamp install-gtk-shared-stamp
 	dh_testroot
 	dh_prep
 	@# No, this is not a typo, we steal these libs from the gtk build.
-	dh_install $(objdir_gtk_install)/lib/libwx_base*.so 	usr/lib
-	dh_install $(objdir_wxbase_shared)/lib/wx/include 	usr/lib/wx
+	dh_install $(objdir_gtk_install)/lib/libwx_base*.so	usr/lib
+	dh_install $(objdir_wxbase_shared)/lib/wx/include	usr/lib/wx
 	dh_install $(objdir_wxbase_shared)/lib/wx/config/base*	usr/lib/wx/config
 
 install-wxbase-dbg: DH_OPTIONS=-p$(package_wxbase_dbg)
@@ -711,9 +711,9 @@ install-gtk-dev: install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
-	dh_install $(objdir_gtk_install)/lib/libwx_gtk*.so 	usr/lib
-	dh_install $(objdir_gtk_install)/lib/wx/include 	usr/lib/wx
-	dh_install $(objdir_gtk_install)/lib/wx/config/gtk* 	usr/lib/wx/config
+	dh_install $(objdir_gtk_install)/lib/libwx_gtk*.so	usr/lib
+	dh_install $(objdir_gtk_install)/lib/wx/include		usr/lib/wx
+	dh_install $(objdir_gtk_install)/lib/wx/config/gtk*	usr/lib/wx/config
 
 install-gtk-dbg: DH_OPTIONS=-p$(package_gtk_dbg)
 install-gtk-dbg: build-gtk-debug-stamp build-gtk-debug-contrib-stamp
@@ -738,8 +738,8 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 	dh_testdir
 	dh_testroot
 	dh_installdirs usr/lib/wx/python
-	cd wxPython 								\
-		&& python$* ./setup.py install 				\
+	cd wxPython								\
+		&& python$* ./setup.py install				\
 			      --install-layout=deb \
 			      --prefix=`pwd`/../debian/$(package_gtk_py_lib)/usr \
 			      WX_CONFIG='$(wxconfig)'				\
@@ -857,7 +857,7 @@ install-headers: install-gtk-shared-stamp
 #		&& $(MAKE) install prefix=`pwd`/../$(objdir_univ_install)/usr
 
 #	dh_movefiles --sourcedir=$(objdir_univ_install)
-	dh_install $(objdir_gtk_install)/include 	usr
+	dh_install $(objdir_gtk_install)/include	usr
 	mkdir -p debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython
 	cp -p wxPython/include/wx/wxPython/*.h \
 	    debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython/
@@ -867,7 +867,7 @@ install-i18n: build-i18n-stamp install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
-	dh_install $(objdir_gtk_install)/share/locale 	usr/share
+	dh_install $(objdir_gtk_install)/share/locale	usr/share
 
 install-doc: DH_OPTIONS=-p$(package_doc)
 install-doc: build-doc-stamp
@@ -896,8 +896,8 @@ install-gtk-dbg-py%: install-gtk-dbg-py-pre build-gtk-dbg-py%-stamp
 	dh_testdir
 	dh_testroot
 	dh_installdirs usr/lib/wx/python
-	cd wxPython 								\
-		&& python$*-dbg ./setup.py install 				\
+	cd wxPython								\
+		&& python$*-dbg ./setup.py install				\
 			      --install-layout=deb \
 			      --prefix=`pwd`/../debian/$(package_gtk_dbg_py)/usr \
 			      WX_CONFIG='$(wxconfig-dbg)'			\
@@ -994,7 +994,7 @@ ifneq (, $(filter -a, $(DH_OPTIONS)))
 	dh_strip -N$(package_gtk_dbg) -N$(package_wxbase_dbg) \
 		 -N$(package_msw_dev) -N$(package_msw_dbg) \
 		 -N$(package_gtk_py_lib) -N$(package_gtk_dbg_py)
-	DH_OPTIONS= dh_strip -p$(package_gtk_py_lib) --dbg-package=$(package_gtk_dbg_py) 
+	DH_OPTIONS= dh_strip -p$(package_gtk_py_lib) --dbg-package=$(package_gtk_dbg_py)
 endif
 	dh_compress -X.py
 	dh_fixperms
@@ -1034,7 +1034,7 @@ binary: binary-arch binary-indep
 # This is a special target for building the wxMSW-cross packages.
 # It's not currently called during the official package build run
 # but may be run separately to build the extra packages.
-# There is an implied build dep on the mingw32 cross compiler 
+# There is an implied build dep on the mingw32 cross compiler
 # that is not in the control file.
 binary-cross: control-files-stamp $(install_all_cross)
 	$(MAKE) -f debian/rules \
@@ -1082,12 +1082,12 @@ binary-fast:control-files-stamp install-gtk-dbg install-msw-dev install-headers 
 
 .PHONY: build build_all build-arch build-indep				\
 	clean clean-py purge-release-py purge-dbg-py			\
-	binary-indep binary-arch binary binary-common 			\
+	binary-indep binary-arch binary binary-common			\
 	binary-gtk binary-gtk-dev binary-gtk-dbg			\
 	binary-wxbase binary-wxbase-dev binary-wxbase-dbg		\
 	binary-doc binary-cross binary-dbg-py				\
-	install install_arch install-gtk-lib install-gtk-dev 		\
-        install-gtk-dbg                                             	\
+	install install_arch install-gtk-lib install-gtk-dev		\
+	install-gtk-dbg							\
 	install-gtk-py install-gtk-py-tools install-gtk-py-ver		\
 	install-gtk-py-lib install-gtk-dbg-py				\
 	install-common install-headers install-i18n install-doc         \
