@@ -43,10 +43,7 @@ else
   FAST_MAKE = $(MAKE)
 endif
 
-python_ver := $(shell pyversions -d)
-PYVER := $(shell pyversions -vd)
 PYVERS := $(shell pyversions -vr)
-
 
 # If another source package is to supply the common binary packages
 # for a particular Debian release, then define this variable to indicate
@@ -99,9 +96,7 @@ endif
 alt_prio  := $(subst .,,$(release))
 
 pytoolkit := gtk2
-pydir     := $(call py_libdir,$(python_ver))
 wxsubdir  := wx-$(compatible_release)-$(pytoolkit)-unicode
-wxpydir   := $(pydir)/$(wxsubdir)
 
 cross_host  := i586-mingw32msvc
 cross_build := $(shell ./config.guess)
@@ -160,7 +155,6 @@ ifeq ($(WX_UNICODE),1)
     MSW_CONFIGURE_OPTIONS += --enable-unicode
     PY_WX_CONFIG_OPTIONS += --unicode
     PY_UNICODE="UNICODE=1"
-    wxpydir := $(pydir)/wx-$(compatible_release)-$(pytoolkit)-unicode
 
     # for compatibility with the existing 2.6 packages, we don't use "u" in
     # the Unicode (default) package names
@@ -299,7 +293,7 @@ pyd_wxconfig := wx-config $(PY_WX_CONFIG_OPTIONS) --debug
 # The Rules:
 
 debian/control: debian/control.in
-	sed -e 's/=V/$(release)/g;s/=SOV/$(sorelease)/g;s/=PY/python/g;s/=U/$(unicode_suffix)/g'\
+	sed -e 's/=V/$(release)/g;s/=SOV/$(sorelease)/g;s/=U/$(unicode_suffix)/g'\
 		< debian/control.in > debian/control
 
 control-files-stamp: debian/control
@@ -331,8 +325,6 @@ control-files-stamp: debian/control
 	@for f in docs postinst prerm; do                                    \
 		echo "generating control file $(package_gtk_py_lib).$$f";    \
 		sed -e  's/=V/$(release)/g;s/=PRIO/$(alt_prio)/g'            \
-		    -e  's/=PY/$(python_ver)/g;'                             \
-		    -e  's|=WXPYDIR|$(wxpydir)|g;'                           \
 			< debian/python-wxgtk.$$f                            \
 			> debian/$(package_gtk_py_lib).$$f;                  \
 	done;
