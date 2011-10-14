@@ -69,8 +69,7 @@ wx_minor_version_number := $(shell sed -n 's/^wx_minor_version_number=//p' confi
 wx_release_number       := $(shell sed -n 's/^wx_release_number=//p' configure.in)
 wx_subrelease_number    := $(shell sed -n 's/^wx_subrelease_number=//p' configure.in)
 
-##release   := $(shell dpkg-parsechangelog | sed -n 's/^Source: wxwidgets//p' | sed 's/-ansi//')
-release  := $(wx_major_version_number).$(wx_minor_version_number)
+release := $(wx_major_version_number).$(wx_minor_version_number)
 
 so_cur := $(shell sed 's,<set var="WX_CURRENT">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
 so_age := $(shell sed 's,<set var="WX_AGE">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
@@ -82,8 +81,8 @@ sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%)-$(soversion)$(addprefix -,$(DEBI
 # for the development releases (which can be incompatible for the same major
 # and minor version) but just the major.minor for the stable releases (which
 # are supposed to be compatible), this variable contains the appropriate value
-ifeq ($(shell echo `echo $(release) | sed 's/.\+\.\(.\+\)/\1/'`%2 | bc),1)
-    # development release
+ifeq ($(shell expr '$(wx_minor_version_number)' : '.*[02468]$$'),0)
+    # Odd minor version, so development release.
     compatible_release := $(release).$(wx_release_number)
 else
     compatible_release := $(release)
