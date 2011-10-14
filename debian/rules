@@ -623,7 +623,7 @@ clean-py:
 
 
 # We do the equivalent of this above by removing build, unfortunately
-# its not enough by itself to get the tree properly clean again.
+# it's not enough by itself to get the tree properly clean again.
 #		&& ./setup.py clean
 
 clean: debian/control clean-py unpatch
@@ -757,9 +757,9 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 	cp -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
 	-rm -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps
 
-	# This is rather bogus, its included in the main copyright file now though.
+	# This is rather bogus, it's included in the main copyright file now though.
 	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/XRCed/license.txt
-	# has it's own package, editra
+	# has its own package, editra
 	rm -fr debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/Editra
 
 install-gtk-py-ver: DH_OPTIONS=-p$(package_gtk_py_ver)
