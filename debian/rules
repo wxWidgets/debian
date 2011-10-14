@@ -152,6 +152,8 @@ MSW_CONFIGURE_OPTIONS += --disable-threads
 PY_WX_CONFIG_OPTIONS = --version=$(release) --toolkit=$(pytoolkit) --static=no
 
 WX_UNICODE ?= 1
+# Needed in binary-cross, and perhaps other sub-invocations of debian/rules.
+export WX_UNICODE
 
 ifeq ($(WX_UNICODE),1)
     COMMON_CONFIGURE_OPTIONS += --enable-unicode
@@ -166,6 +168,7 @@ ifeq ($(WX_UNICODE),1)
 else
     # but we do need to use something for non-Unicode packages to distinguish
     # them
+    PY_UNICODE=
     unicode_suffix := -ansi
 endif
 
