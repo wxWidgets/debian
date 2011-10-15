@@ -798,6 +798,7 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pywxrc.1
 
 	rm debian/$(package_gtk_py_tools)/usr/bin/editra
+	rm debian/$(package_gtk_py_tools)/usr/bin/pyshell
 	dh_installdirs usr/share/lintian/overrides
 endif
 	mkdir -p debian/$(package_gtk_py_tools)/usr/share/pixmaps
