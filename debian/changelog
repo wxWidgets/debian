@@ -1,4 +1,4 @@
-wxwidgets2.8 (2.8.12.1-2) UNRELEASED; urgency=low
+wxwidgets2.8 (2.8.12.1-2) experimental; urgency=low
 
   * Fix wxJoystick to send wxEVT_JOY_MOVE events. (Closes: #568702)
   * wxPython/demo/b is completely useless to include in the package, so just
@@ -21,7 +21,7 @@ wxwidgets2.8 (2.8.12.1-2) UNRELEASED; urgency=low
   * Update package descriptions.
   * Add patch wxglcanvas-avoid-segv-when-glx-not-available. (Closes: #575536)
 
- -- Olly Betts <olly@survex.com>  Sat, 15 Oct 2011 10:53:03 +0000
+ -- Olly Betts <olly@survex.com>  Sat, 15 Oct 2011 11:30:05 +0000
 
 wxwidgets2.8 (2.8.12.1-1) experimental; urgency=low
 
