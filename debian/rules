@@ -1,5 +1,5 @@
 #!/usr/bin/make -f
-# debian/rules file to build packages from wx CVS source
+# debian/rules file to build packages from wx source
 #
 # Sculpted 13/2/2000 by Ron Lee <ron@debian.org> from new and
 # variously stolen code :-)
@@ -1038,7 +1038,7 @@ binary-dbg-py: control-files-stamp install-gtk-dbg-py
 ############################################################################
 #
 # Some rules to build a subset of the complete list of packages that can be
-# built from CVS.  Beware that packages produced with these rules may *NOT*
+# built.  Beware that packages produced with these rules may *NOT*
 # be compatible with packages built using the 'binary' target or even with
 # Debian policy.  Do not distribute packages built with these rules, they
 # are currently useful for rapid in-house testing by developers only.
@@ -1058,7 +1058,6 @@ binary-gtk-dbg: control-files-stamp install-gtk-dbg install-wxbase-dbg install-h
 	$(MAKE) -f debian/rules \
 	    DH_OPTIONS="-p$(package_wxbase_dbg) -p$(package_gtk_dbg) -p$(package_headers)" \
 	    binary-common
-
 
 # docs package
 binary-doc: control-files-stamp install-doc
