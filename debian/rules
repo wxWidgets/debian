@@ -299,59 +299,59 @@ control-files-stamp: debian/control
 		sed -e  's/=V/$(release)/g;s/=PRIO/$(alt_prio)/g'            \
 			< debian/libwxbase-dev.$$f                           \
 			> debian/$(package_wxbase_dev).$$f;                  \
-	done;
+	done
 	@for f in postinst prerm; do                                         \
 		echo "generating control file $(package_wxbase_dbg).$$f";    \
 		sed -e  's/=V/$(release)/g;s/=PRIO/$(alt_prio)/g'            \
 			< debian/libwxbase-dbg.$$f                           \
 			> debian/$(package_wxbase_dbg).$$f;                  \
-	done;
+	done
 	@for f in postinst prerm; do                                         \
 		echo "generating control file $(package_gtk_dev).$$f";       \
 		sed -e  's/=V/$(release)/g;s/=PRIO/$(alt_prio)/g'            \
 			< debian/libwxgtk-dev.$$f                            \
 			> debian/$(package_gtk_dev).$$f;                     \
-	done;
+	done
 	@for f in postinst prerm; do                                         \
 		echo "generating control file $(package_gtk_dbg).$$f";       \
 		sed -e  's/=V/$(release)/g;s/=PRIO/$(alt_prio)/g'            \
 			< debian/libwxgtk-dbg.$$f                            \
 			> debian/$(package_gtk_dbg).$$f;                     \
-	done;
+	done
 	@for f in docs postinst prerm; do                                    \
 		echo "generating control file $(package_gtk_py_lib).$$f";    \
 		sed -e  's/=V/$(release)/g;s/=PRIO/$(alt_prio)/g'            \
 			< debian/python-wxgtk.$$f                            \
 			> debian/$(package_gtk_py_lib).$$f;                  \
-	done;
-	@echo "generating control file $(package_gtk_dbg_py).docs";
-	@cp debian/python-wxgtk.docs debian/$(package_gtk_dbg_py).docs;
+	done
+	@echo "generating control file $(package_gtk_dbg_py).docs"
+	@cp debian/python-wxgtk.docs debian/$(package_gtk_dbg_py).docs
 	@for f in docs doc-base; do                                          \
 		echo "generating control file $(package_doc).$$f";           \
 		sed -e 's/=V/$(release)/g' < debian/wx-doc.$$f               \
 			> debian/$(package_doc).$$f;                         \
-	done;
+	done
 	@for f in examples; do                                               \
 		echo "generating control file $(package_examples).$$f";      \
 		cp debian/wx-examples.$$f debian/$(package_examples).$$f;    \
-	done;
+	done
 	@for f in postinst prerm; do                                         \
 		echo "generating control file $(package_msw_dev).$$f";       \
 		sed -e  's/=V/$(release)/g;s/=PRIO/$(alt_prio)/g'            \
 		    -e	's/=H/$(cross_host)/g;'                              \
 			< debian/libwxmsw-dev.$$f                            \
 			> debian/$(package_msw_dev).$$f;                     \
-	done;
+	done
 	@for f in postinst prerm; do                                         \
 		echo "generating control file $(package_msw_dbg).$$f";       \
 		sed -e  's/=V/$(release)/g;s/=PRIO/$(alt_prio)/g'            \
 		    -e	's/=H/$(cross_host)/g;'                              \
 			< debian/libwxmsw-dbg.$$f                            \
 			> debian/$(package_msw_dbg).$$f;                     \
-	done;
+	done
 #	@echo "generating control file $(package_common).menu";              \
 #		sed -e 's/=V/$(release)/g' < debian/wx-common.menu           \
-#			> debian/$(package_common).menu;
+#			> debian/$(package_common).menu
 	@echo "generating control file lintian-override";                    \
 		sed -e  's/=V/$(release)/g;s/=SOV/$(sorelease)/g'            \
 		    -e	's/=U/$(unicode_suffix)/'                            \
@@ -514,7 +514,7 @@ build-examples-stamp: build-gtk-shared-stamp
 	# Remove useless file.
 	rm -f $(objdir_examples)/wxPython/b
 
-	echo "generating install_examples.sh script";
+	echo "generating install_examples.sh script"
 	sed -e 's/=V/$(release)/g' < debian/unpack_examples.sh.in	\
 				   > debian/unpack_examples.sh
 	chmod 755 debian/unpack_examples.sh
