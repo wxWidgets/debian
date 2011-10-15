@@ -22,8 +22,10 @@ wxwidgets2.8 (2.8.12.1-2) experimental; urgency=low
   * Add patch wxglcanvas-avoid-segv-when-glx-not-available. (Closes: #575536)
   * Also add ${misc:Depends} to binary packages which didn't already have
     "Depends:".
+  * Prune any empty locale directories (fixes lintian warning about
+    usr/share/locale/zh/LC_MESSAGES/).
 
- -- Olly Betts <olly@survex.com>  Sat, 15 Oct 2011 11:36:26 +0000
+ -- Olly Betts <olly@survex.com>  Sat, 15 Oct 2011 11:46:51 +0000
 
 wxwidgets2.8 (2.8.12.1-1) experimental; urgency=low
 
