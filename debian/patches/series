@@ -7,3 +7,4 @@ fix-path-to-some-interpreters
 fix-configure-for-multiarch
 fix-macro-namespace-pollution.patch
 wxjoystick-send-move-events
+wxglcanvas-avoid-segv-when-glx-not-available

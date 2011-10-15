@@ -19,8 +19,9 @@ wxwidgets2.8 (2.8.12.1-2) UNRELEASED; urgency=low
     is gone in upstream trunk anyway.
   * Remove build dependencies on bison and flex as they're no longer used.
   * Update package descriptions.
+  * Add patch wxglcanvas-avoid-segv-when-glx-not-available. (Closes: #575536)
 
- -- Olly Betts <olly@survex.com>  Sat, 15 Oct 2011 02:52:47 +0000
+ -- Olly Betts <olly@survex.com>  Sat, 15 Oct 2011 10:53:03 +0000
 
 wxwidgets2.8 (2.8.12.1-1) experimental; urgency=low
 

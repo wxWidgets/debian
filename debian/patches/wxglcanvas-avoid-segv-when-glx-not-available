@@ -1,0 +1,23 @@
+Fix for #575536 - SEGV when GLX not available.
+
+diff --git a/src/gtk/glcanvas.cpp b/src/gtk/glcanvas.cpp
+index 24ab43f..332fa50 100644
+--- a/src/gtk/glcanvas.cpp
++++ b/src/gtk/glcanvas.cpp
+@@ -299,6 +299,8 @@ bool wxGLCanvas::Create( wxWindow *parent,
+                          int *attribList,
+                          const wxPalette& palette)
+ {
++    wxWindow::Create(parent, id, pos, size, style, name);
++
+     m_sharedContext = (wxGLContext*)shared;  // const_cast
+     m_sharedContextOf = (wxGLCanvas*)shared_context_of;  // const_cast
+     m_glContext = (wxGLContext*) NULL;
+@@ -358,7 +360,6 @@ bool wxGLCanvas::Create( wxWindow *parent,
+     unsigned sig_id = g_signal_lookup("parent-set", GTK_TYPE_WIDGET);
+     g_signal_add_emission_hook(sig_id, 0, parent_set_hook, this, NULL);
+ 
+-    wxWindow::Create(parent, id, pos, size, style, name);
+     m_glWidget = m_wxwindow;
+ 
+     gtk_widget_set_double_buffered( m_glWidget, FALSE );
