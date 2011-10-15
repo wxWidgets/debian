@@ -790,7 +790,6 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/img2xpm.1    \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/img2png.1    \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pycrust.1    \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyshell.1    \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/xrced.1      \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/helpviewer.1 \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyalacarte.1 \
@@ -805,13 +804,10 @@ endif
 	mkdir -p debian/$(package_gtk_py_tools)/usr/share/applications
 
 	cp debian/pycrust.xpm                   debian/$(package_gtk_py_tools)/usr/share/pixmaps/pycrust.xpm
-	cp debian/pycrust.xpm                   debian/$(package_gtk_py_tools)/usr/share/pixmaps/pyshell.xpm
 	cp debian/xrced.xpm                     debian/$(package_gtk_py_tools)/usr/share/pixmaps/xrced.xpm
 	cp wxPython/wx/py/PyCrust_32.png        debian/$(package_gtk_py_tools)/usr/share/pixmaps/pycrust.png
-	cp wxPython/wx/py/PyCrust_32.png        debian/$(package_gtk_py_tools)/usr/share/pixmaps/pyshell.png
 	cp wxPython/wx/tools/XRCed/XRCed_32.png debian/$(package_gtk_py_tools)/usr/share/pixmaps/xrced.png
 	cp debian/pycrust.desktop               debian/$(package_gtk_py_tools)/usr/share/applications
-	cp debian/pyshell.desktop               debian/$(package_gtk_py_tools)/usr/share/applications
 	cp debian/xrced.desktop                 debian/$(package_gtk_py_tools)/usr/share/applications
 
 	rm -r debian/$(package_gtk_py_lib)/usr/bin

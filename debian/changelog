@@ -14,8 +14,11 @@ wxwidgets2.8 (2.8.12.1-2) UNRELEASED; urgency=low
   * Compute soversion rather than hard-coding it.
   * Simplify check for development release, in the process eliminating bc as a
     build-dependency.
+  * Remove pyshell since it's been deprecated upstream for almost a decade, and
+    pycrust is also included and has equivalent functionality.  Also, pyshell
+    is gone in upstream trunk anyway.
 
- -- Olly Betts <olly@survex.com>  Fri, 14 Oct 2011 13:36:02 +0000
+ -- Olly Betts <olly@survex.com>  Sat, 15 Oct 2011 02:47:41 +0000
 
 wxwidgets2.8 (2.8.12.1-1) experimental; urgency=low
 
