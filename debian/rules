@@ -624,22 +624,22 @@ clean: debian/control clean-py unpatch
 	rm -rf config_deb.cache config_deb_cross.cache *-stamp $(objdirs)
 
 	dh_clean
-	rm -f debian/$(package_wxbase_lib).*
-	rm -f debian/$(package_wxbase_dev).*
-	rm -f debian/$(package_wxbase_dbg).*
-	rm -f debian/$(package_gtk_lib).*
-	rm -f debian/$(package_gtk_dev).*
-	rm -f debian/$(package_gtk_dbg).*
-	rm -f debian/$(package_gtk_py_lib).*
-	rm -f debian/$(package_headers).*
-	rm -f debian/$(package_i18n).*
-	rm -f debian/$(package_doc).*
-	rm -f debian/$(package_examples).*
-	rm -f debian/$(package_gtk_dbg_py).*
-	rm -f debian/$(package_msw_dev).*
-	rm -f debian/$(package_msw_dbg).*
-	rm -f debian/lintian-override
-	rm -f debian/unpack_examples.sh
+	rm -f debian/$(package_wxbase_lib).* \
+	      debian/$(package_wxbase_dev).* \
+	      debian/$(package_wxbase_dbg).* \
+	      debian/$(package_gtk_lib).* \
+	      debian/$(package_gtk_dev).* \
+	      debian/$(package_gtk_dbg).* \
+	      debian/$(package_gtk_py_lib).* \
+	      debian/$(package_headers).* \
+	      debian/$(package_i18n).* \
+	      debian/$(package_doc).* \
+	      debian/$(package_examples).* \
+	      debian/$(package_gtk_dbg_py).* \
+	      debian/$(package_msw_dev).* \
+	      debian/$(package_msw_dbg).* \
+	      debian/lintian-override \
+	      debian/unpack_examples.sh
 	find -name '*.py[co]' | xargs -r rm -f
 	rm -rf include/wx-$(release)
 
