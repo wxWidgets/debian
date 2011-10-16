@@ -503,7 +503,7 @@ build-examples-stamp: build-gtk-shared-stamp
 	cp -a $(objdir_gtk_shared)/samples/Makefile $(objdir_examples)/samples
 
 	cd $(objdir_examples)/samples					\
-		&& find -name 'Makefile.in' -exec rm -f '{}' ';'	\
+		&& find -name 'Makefile.in' -delete			\
 		&& for d in $$(find -type d); do			\
 			if [ -f $$d/makefile.unx ]; then		\
 				mv $$d/makefile.unx $$d/Makefile;	\
@@ -640,7 +640,7 @@ clean: debian/control clean-py unpatch
 	      debian/$(package_msw_dbg).* \
 	      debian/lintian-override \
 	      debian/unpack_examples.sh
-	find -name '*.py[co]' | xargs -r rm -f
+	find -name '*.py[co]' -delete
 	rm -rf include/wx-$(release)
 
 install_arch: build-arch $(install_all_arch)
@@ -741,7 +741,7 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 
 	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/wx.pth
 
-	find debian/$(package_gtk_py_lib)/usr/lib/python$* -name '*.py?' -exec rm '{}' ';'
+	find debian/$(package_gtk_py_lib)/usr/lib/python$* -name '*.py?' -delete
 
 	# Fix image-file-in-usr-lib lintian warnings.
 	mkdir -p debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
@@ -900,8 +900,8 @@ install-gtk-dbg-py%: install-gtk-dbg-py-pre build-gtk-dbg-py%-stamp
 		debian/$(package_gtk_dbg_py)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)
 
 	-find debian/$(package_gtk_dbg_py) -name '*_d.so'
-	find debian/$(package_gtk_dbg_py) ! -type d ! -name '*.so' | xargs rm -f
-	find debian/$(package_gtk_dbg_py) -depth -type d -empty -exec rmdir {} \;
+	find debian/$(package_gtk_dbg_py) ! -type d ! -name '*.so' -delete
+	find debian/$(package_gtk_dbg_py) -depth -type d -empty -delete
 
 
 install-msw-dev: DH_OPTIONS=-p$(package_msw_dev)
