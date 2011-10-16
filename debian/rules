@@ -389,7 +389,7 @@ configure-wxbase-shared-stamp:
 build-wxbase-shared-stamp: configure-wxbase-shared-stamp
 	dh_testdir
 	# Nothing to build here, move along...
-	#cd $(objdir_wxbase_shared) && $(FAST_MAKE)
+	#$(FAST_MAKE) -C $(objdir_wxbase_shared)
 	touch $@
 
 configure-wxbase-debug-stamp:
@@ -402,7 +402,7 @@ configure-wxbase-debug-stamp:
 build-wxbase-debug-stamp: configure-wxbase-debug-stamp
 	dh_testdir
 	# Nothing to build here, move along...
-	#cd $(objdir_wxbase_debug) && $(FAST_MAKE)
+	#$(FAST_MAKE) -C $(objdir_wxbase_debug)
 	touch $@
 
 configure-gtk-shared-stamp:
@@ -414,7 +414,7 @@ configure-gtk-shared-stamp:
 
 build-gtk-shared-stamp: configure-gtk-shared-stamp
 	dh_testdir
-	cd $(objdir_gtk_shared) && $(FAST_MAKE)
+	$(FAST_MAKE) -C $(objdir_gtk_shared)
 	touch $@
 
 
@@ -427,20 +427,20 @@ configure-gtk-debug-stamp:
 
 build-gtk-debug-stamp: configure-gtk-debug-stamp
 	dh_testdir
-	cd $(objdir_gtk_debug) && $(FAST_MAKE)
+	$(FAST_MAKE) -C $(objdir_gtk_debug)
 	touch $@
 
 
 build-gtk-shared-contrib-stamp: build-gtk-shared-stamp
 	dh_testdir
-	cd $(objdir_gtk_shared)/contrib/src && $(FAST_MAKE)
-	cd $(objdir_gtk_shared)/utils/wxrc && $(FAST_MAKE)
+	$(FAST_MAKE) -C $(objdir_gtk_shared)/contrib/src
+	$(FAST_MAKE) -C $(objdir_gtk_shared)/utils/wxrc
 	touch $@
 
 
 build-gtk-debug-contrib-stamp: build-gtk-debug-stamp
 	dh_testdir
-	cd $(objdir_gtk_debug)/contrib/src && $(FAST_MAKE)
+	$(FAST_MAKE) -C $(objdir_gtk_debug)/contrib/src
 	touch $@
 
 
@@ -468,8 +468,7 @@ build-doc-stamp: build-gtk-shared-stamp
 	dh_testdir
 	# the tarball may already have the generated docs in it
 	if [ ! -e docs/html/wx/index.html ]; then \
-		cd $(objdir_gtk_shared)/utils/tex2rtf/src && $(FAST_MAKE); \
-		cd -; \
+		$(FAST_MAKE) -C $(objdir_gtk_shared)/utils/tex2rtf/src; \
 		rm -rf $(objdir_doc); \
 		rm -rf $(objdir_doc_cruft); \
 		mkdir $(objdir_doc); \
@@ -564,7 +563,7 @@ configure-msw-shared-stamp:
 
 build-msw-shared-stamp: configure-msw-shared-stamp
 	dh_testdir
-	cd $(objdir_msw_shared) && $(FAST_MAKE)
+	$(FAST_MAKE) -C $(objdir_msw_shared)
 	touch $@
 
 configure-msw-static-stamp:
@@ -582,7 +581,7 @@ configure-msw-static-stamp:
 
 build-msw-static-stamp: configure-msw-static-stamp
 	dh_testdir
-	cd $(objdir_msw_static) && $(FAST_MAKE)
+	$(FAST_MAKE) -C $(objdir_msw_static)
 	touch $@
 
 configure-msw-dbg-stamp:
@@ -599,7 +598,7 @@ configure-msw-dbg-stamp:
 
 build-msw-dbg-stamp: configure-msw-dbg-stamp
 	dh_testdir
-	cd $(objdir_msw_dbg) && $(FAST_MAKE)
+	$(FAST_MAKE) -C $(objdir_msw_dbg)
 	touch $@
 
 
