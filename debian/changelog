@@ -14,7 +14,7 @@ wxwidgets2.8 (2.8.12.1-2) experimental; urgency=low
   * Upstream configure no longer has a --disable-reserved_virtual option, so
     stop passing it.
   * Remove python-xml and python-xml-dbg from "Suggests:" as these packages no
-    longer exist. (Closes: #568702)
+    longer exist. (Closes: #645268)
   * debian/rules: export WX_UNICODE so it gets passed to sub-invocations of
     debian/rules, allowing ANSI packages to be built for binary-cross.
   * Remove unused substitutions of =PY and =WXPYDIR.
