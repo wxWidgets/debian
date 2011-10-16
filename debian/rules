@@ -511,7 +511,7 @@ build-examples-stamp: build-gtk-shared-stamp
 	# Remove useless file.
 	rm -f $(objdir_examples)/wxPython/b
 
-	echo "generating install_examples.sh script"
+	echo "generating unpack_examples.sh script"
 	sed -e 's/=V/$(release)/g' < debian/unpack_examples.sh.in	\
 				   > debian/unpack_examples.sh
 	chmod 755 debian/unpack_examples.sh
