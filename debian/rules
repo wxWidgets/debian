@@ -502,13 +502,10 @@ build-examples-stamp: build-gtk-shared-stamp
 	rm -f $(objdir_examples)/samples/Makefile
 	cp -a $(objdir_gtk_shared)/samples/Makefile $(objdir_examples)/samples
 
-	cd $(objdir_examples)/samples					\
-		&& find -name 'Makefile.in' -delete			\
-		&& for d in $$(find -type d); do			\
-			if [ -f $$d/makefile.unx ]; then		\
-				mv $$d/makefile.unx $$d/Makefile;	\
-			fi;						\
-		done							\
+	find $(objdir_examples)/samples -name 'Makefile.in' -delete
+	for f in `find $(objdir_examples)/samples -name makefile.unx` ; do \
+		mv $$f `dirname $$f`/Makefile ; \
+	done
 
 	cp -a wxPython/demo $(objdir_examples)/wxPython
 	# Remove useless file.
