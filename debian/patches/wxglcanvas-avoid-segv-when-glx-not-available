@@ -1,23 +1,26 @@
 Fix for #575536 - SEGV when GLX not available.
 
+Revised in the light of vadz's comment: http://trac.wxwidgets.org/ticket/13566#comment:1
+
 diff --git a/src/gtk/glcanvas.cpp b/src/gtk/glcanvas.cpp
-index 24ab43f..332fa50 100644
+index 24ab43f..d30935c 100644
 --- a/src/gtk/glcanvas.cpp
 +++ b/src/gtk/glcanvas.cpp
-@@ -299,6 +299,8 @@ bool wxGLCanvas::Create( wxWindow *parent,
-                          int *attribList,
-                          const wxPalette& palette)
- {
-+    wxWindow::Create(parent, id, pos, size, style, name);
-+
-     m_sharedContext = (wxGLContext*)shared;  // const_cast
-     m_sharedContextOf = (wxGLCanvas*)shared_context_of;  // const_cast
-     m_glContext = (wxGLContext*) NULL;
-@@ -358,7 +360,6 @@ bool wxGLCanvas::Create( wxWindow *parent,
-     unsigned sig_id = g_signal_lookup("parent-set", GTK_TYPE_WIDGET);
-     g_signal_add_emission_hook(sig_id, 0, parent_set_hook, this, NULL);
+@@ -327,6 +327,8 @@ bool wxGLCanvas::Create( wxWindow *parent,
+             m_canFreeFBC = true;
+         }
+         m_fbc = fbc;  // save for later use
++        if (!m_fbc)
++            wxWindow::Create(parent, id, pos, size, style, name);
+         wxCHECK_MSG( m_fbc, false, _T("required FBConfig couldn't be found") );
+     }
  
--    wxWindow::Create(parent, id, pos, size, style, name);
-     m_glWidget = m_wxwindow;
+@@ -350,6 +352,8 @@ bool wxGLCanvas::Create( wxWindow *parent,
  
-     gtk_widget_set_double_buffered( m_glWidget, FALSE );
+     m_vi = vi;  // save for later use
+ 
++    if (!m_vi)
++        wxWindow::Create(parent, id, pos, size, style, name);
+     wxCHECK_MSG( m_vi, false, _T("required visual couldn't be found") );
+ 
+     // watch for the "parent-set" signal on m_wxwindow so we can set colormap

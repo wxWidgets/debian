@@ -2,8 +2,10 @@ wxwidgets2.8 (2.8.12.1-3) UNRELEASED; urgency=low
 
   * Use find's -delete option to simplify places where we use find to delete
     files or directories.
+  * Revise patch wxglcanvas-avoid-segv-when-glx-not-available in the light of
+    upstream comments.
 
- -- Olly Betts <olly@survex.com>  Sun, 16 Oct 2011 00:50:26 +0000
+ -- Olly Betts <olly@survex.com>  Mon, 17 Oct 2011 11:53:11 +0000
 
 wxwidgets2.8 (2.8.12.1-2) experimental; urgency=low
 
