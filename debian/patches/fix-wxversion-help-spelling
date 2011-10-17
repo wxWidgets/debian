@@ -1,4 +1,8 @@
-#518540
+Description: Fix typos in wxversion help
+Origin: vendor
+Bug-Debian: http://bugs.debian.org/518540
+Forwarded: http://trac.wxwidgets.org/attachment/ticket/13574
+Last-Update: 2011-10-17
 
 --- a/wxPython/wxversion/wxversion.py
 +++ b/wxPython/wxversion/wxversion.py
