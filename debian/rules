@@ -636,8 +636,8 @@ clean: debian/control clean-py unpatch
 	      debian/$(package_msw_dbg).* \
 	      debian/lintian-override \
 	      debian/unpack_examples.sh
-	find -name '*.py[co]' -delete
 	rm -rf include/wx-$(release)
+	find -name '*.py[co]' -delete
 
 install_arch: build-arch $(install_all_arch)
 
