@@ -1,0 +1,15 @@
+Patch by Olly Betts for #646654.
+
+diff --git a/src/common/cmdline.cpp b/src/common/cmdline.cpp
+index c7b135d..0a32c55 100644
+--- a/src/common/cmdline.cpp
++++ b/src/common/cmdline.cpp
+@@ -951,7 +951,7 @@ void wxCmdLineParser::Usage()
+ wxString wxCmdLineParser::GetUsageString()
+ {
+     wxString appname;
+-    if ( wxTheApp )
++    if ( wxTheApp && wxTheApp->argc > 0 )
+     {
+         appname = wxFileName(wxTheApp->argv[0]).GetFullName();
+     }
