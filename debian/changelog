@@ -1,8 +1,9 @@
 wxwidgets2.8 (2.8.12.1-4) UNRELEASED; urgency=low
 
   * debian/wxrc-tools.1: "2.6" -> "2.8"; "wxWindows -> wxWidgets".
+  * debian/wx-config.1: Fix typos.
 
- -- Olly Betts <olly@survex.com>  Mon, 05 Dec 2011 23:21:42 +0000
+ -- Olly Betts <olly@survex.com>  Mon, 05 Dec 2011 23:51:09 +0000
 
 wxwidgets2.8 (2.8.12.1-3) unstable; urgency=low
 
