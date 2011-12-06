@@ -5,8 +5,9 @@ wxwidgets2.8 (2.8.12.1-5) UNRELEASED; urgency=low
   * Drop patch fix-config-scripts and instead copy them from /usr/share/misc
     so we get up-to-date versions.
   * debian/wx-config.1: Clarify text about debug builds.
+  * debian/control.in: Add missing ${misc:Depends} and ${misc:Pre-Depends}.
 
- -- Olly Betts <olly@survex.com>  Tue, 06 Dec 2011 12:22:43 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 06 Dec 2011 23:16:13 +0000
 
 wxwidgets2.8 (2.8.12.1-4) unstable; urgency=low
 

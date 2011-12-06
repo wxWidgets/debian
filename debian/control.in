@@ -53,6 +53,7 @@ Description: wxBase library (development) - non-GUI support classes of wxWidgets
 
 Package: libwxbase=V=U-dbg
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Section: debug
 Priority: extra
 Multi-Arch: same
@@ -105,6 +106,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
 
 Package: libwxgtk=V=U-dbg
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Section: debug
 Priority: extra
 Multi-Arch: same
@@ -196,6 +198,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (common support files)
 Package: wx=V-headers
 Architecture: any
 Section: devel
+Depends: ${misc:Depends}
 Description: wxWidgets Cross-platform C++ GUI toolkit (header files)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -206,6 +209,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (header files)
 
 Package: wx=V-i18n
 Architecture: all
+Depends: ${misc:Depends}
 Conflicts: wx-i18n, wxwin-i18n, wx2.4-i18n
 Replaces: wx-i18n, wxwin-i18n, wx2.4-i18n, wx2.5-i18n
 Provides: wx-i18n
@@ -221,6 +225,7 @@ Package: wx=V-doc
 Architecture: all
 Section: doc
 Provides: wx-doc
+Depends: ${misc:Depends}
 Suggests: doc-base, www-browser
 Description: wxWidgets Cross-platform C++ GUI toolkit (documentation)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
@@ -232,6 +237,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (documentation)
 Package: wx=V-examples
 Architecture: all
 Section: devel
+Depends: ${misc:Depends}
 Suggests: libwxgtk=V=U-dev (= ${binary:Version}), wx=V-doc
 Description: wxWidgets Cross-platform C++ GUI toolkit (examples)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
