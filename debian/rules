@@ -805,7 +805,6 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
 
 	rm debian/$(package_gtk_py_tools)/usr/bin/editra
 	rm debian/$(package_gtk_py_tools)/usr/bin/pyshell
-	dh_installdirs usr/share/lintian/overrides
 endif
 	mkdir -p debian/$(package_gtk_py_tools)/usr/share/pixmaps
 	mkdir -p debian/$(package_gtk_py_tools)/usr/share/applications

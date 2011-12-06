@@ -6,8 +6,10 @@ wxwidgets2.8 (2.8.12.1-5) UNRELEASED; urgency=low
     so we get up-to-date versions.
   * debian/wx-config.1: Clarify text about debug builds.
   * debian/control.in: Add missing ${misc:Depends} and ${misc:Pre-Depends}.
+  * debian/rules: Get rid of empty /usr/share/lintian/overrides directory
+    in python-wxtools.
 
- -- Olly Betts <olly@survex.com>  Tue, 06 Dec 2011 23:16:13 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 06 Dec 2011 23:19:23 +0000
 
 wxwidgets2.8 (2.8.12.1-4) unstable; urgency=low
 
