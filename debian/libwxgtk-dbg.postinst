@@ -2,7 +2,7 @@
 set -e
 
 update-alternatives --install /usr/bin/wx-config wx-config              \
-			      /usr/lib/wx/config/gtk2-unicode-debug-=V  \
+			      /usr/lib/=MA/wx/config/gtk2-unicode-debug-=V  \
 			      $(( =PRIO * 10 + 6 ))
 
 #DEBHELPER#

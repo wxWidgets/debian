@@ -1,7 +1,7 @@
 Source: wxwidgets=V
 Section: libs
 Priority: optional
-Build-Depends: debhelper (>= 7), gettext, libgtk2.0-dev,
+Build-Depends: debhelper (>= 8.1.3), gettext, libgtk2.0-dev,
  python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~), python-all-dbg (>= 2.6.6-3~),
  zlib1g-dev, libjpeg-dev, libpng12-dev, libtiff4-dev, libsm-dev,
  libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libesd0-dev,
@@ -16,7 +16,9 @@ Homepage: http://www.wxwidgets.org/
 
 Package: libwxbase=SOV=U
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Multi-Arch: same
 Description: wxBase library (runtime) - non-GUI support classes of wxWidgets toolkit
  wxBase is a collection of C++ classes providing basic data structures
  (strings, lists, arrays), powerful wxDateTime class for date manipulations,
@@ -53,6 +55,7 @@ Package: libwxbase=V=U-dbg
 Architecture: any
 Section: debug
 Priority: extra
+Multi-Arch: same
 Depends: wx=V-headers (= ${binary:Version}), libc6-dev, ${misc:Depends}
 Description: wxBase library (debug) - non-GUI support classes of wxWidgets toolkit
  wxBase is a collection of C++ classes providing basic data structures
@@ -71,7 +74,9 @@ Description: wxBase library (debug) - non-GUI support classes of wxWidgets toolk
 
 Package: libwxgtk=SOV=U
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Multi-Arch: same
 Suggests: libgnomeprintui2.2-0
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ runtime)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
@@ -102,6 +107,7 @@ Package: libwxgtk=V=U-dbg
 Architecture: any
 Section: debug
 Priority: extra
+Multi-Arch: same
 Depends: ${shlibs:Depends}, wx=V-headers (= ${binary:Version}), libwxbase=V=U-dbg (= ${binary:Version}), ${misc:Depends}
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ debug)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
