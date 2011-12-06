@@ -110,10 +110,12 @@ match in the absence of a stricter specification.
 Specify whether to create a debug or release build for the application.
 If unspecified, the system default (release) will be preferred, but any
 type may match in the absence of a stricter specification.
-Debug builds should never be uploaded to Debian, but are very useful
-for finding certain common failure idioms.  You are encouraged to use
-them during active development of applications.  They are not binary
-compatible with the release libraries.
+
+Debug versions are very useful for finding certain common ways of
+misusing the wxWidgets API, and you are encouraged to use them during
+active development of applications.  They are not binary compatible with
+release versions, and packages built against wxWidgets debug builds
+should never be uploaded to Debian.
 .TP 15
 .B  \-\-static[=yes|no]]
 Specify whether to statically or dynamically link wxWidgets libraries
@@ -121,8 +123,8 @@ into your application.  If unspecified, the system default (dynamic)
 will be preferred, but any type may match in the absence of a stricter
 specification.  Static linking is mainly useful still for cross ports
 not natively supported by Debian, and can be hazardous in conjunction
-with the GTK toolkits.  Note that static libraries are no longer supplied
-in the wxGTK packages any more.
+with the GTK toolkits.  Note that static libraries are no longer
+included in the wxGTK packages.
 
 .SS Compiler options
 These options generate output required to build an application using
