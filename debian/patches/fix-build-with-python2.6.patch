@@ -1,4 +1,6 @@
-make things get installed to the correct places with the multiversion stuff
+Description: Install things in the correct places with the multiversion stuff
+Author: Ryan Niebur <ryan@debian.org>
+Last-Update: 2009-12-12
 
 diff --git a/wxPython/setup.py b/wxPython/setup.py
 index d987c5d..ac1edde 100755

@@ -1,8 +1,9 @@
 wxwidgets2.8 (2.8.12.1-5) UNRELEASED; urgency=low
 
   * Remove references to CVS and cvs.wxwidgets.org (which no longer works).
+  * Add DEP3 headers to more patches.
 
- -- Olly Betts <olly@survex.com>  Tue, 06 Dec 2011 09:32:10 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 06 Dec 2011 10:06:11 +0000
 
 wxwidgets2.8 (2.8.12.1-4) unstable; urgency=low
 

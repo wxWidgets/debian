@@ -1,10 +1,7 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## WX_CONFIG.dpatch by Devid Filoni <d.filoni@techemail.com>
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: No description.
+Description: Patch build_options.py
+Author: Devid Filoni <d.filoni@techemail.com>
+Last-Update: 2007-12.09
 
-@DPATCH@
 diff -urNad wxwidgets2.8-2.8.6.1~/wxPython/wx/build/build_options.py wxwidgets2.8-2.8.6.1/wxPython/wx/build/build_options.py
 --- wxwidgets2.8-2.8.6.1~/wxPython/wx/build/build_options.py	2007-10-27 01:41:07.000000000 +0200
 +++ wxwidgets2.8-2.8.6.1/wxPython/wx/build/build_options.py	2007-12-09 18:19:56.000000000 +0100
