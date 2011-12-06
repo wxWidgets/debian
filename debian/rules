@@ -528,7 +528,7 @@ build-i18n-stamp: build-gtk-shared-stamp
 
 	# touch .po files first, since if they are not already up
 	# to date then _now_ is not the time to fix it.
-	# That should have been been done before cvs was tagged.
+	# That should have been been done before the release was tagged.
 	cd $(objdir_i18n) \
 		&& touch *.po \
 		&& $(MAKE) allmo
