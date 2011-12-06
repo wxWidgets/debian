@@ -1,6 +1,9 @@
-Fix for #575536 - SEGV when GLX not available.
-
-Revised in the light of vadz's comment: http://trac.wxwidgets.org/ticket/13566#comment:1
+Description: Fix SEGV when GLX not available.
+ Revised in the light of vadz's comment:
+ http://trac.wxwidgets.org/ticket/13566#comment:1
+Bug-Debian: http://bugs.debian.org/575536
+Forwarded: http://trac.wxwidgets.org/ticket/13566
+Last-Update: 2011-10-18
 
 diff --git a/src/gtk/glcanvas.cpp b/src/gtk/glcanvas.cpp
 index 24ab43f..d30935c 100644

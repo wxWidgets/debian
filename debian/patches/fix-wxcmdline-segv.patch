@@ -1,4 +1,8 @@
-Patch by Olly Betts for #646654.
+Description: Fix segfault in wxCmdLineParser::GetUsageString()
+Bug-Debian: 646654.
+Author: Olly Betts <olly@survex.com>
+Forwarded: http://trac.wxwidgets.org/ticket/13731
+Last-Update: 2011-11-11
 
 diff --git a/src/common/cmdline.cpp b/src/common/cmdline.cpp
 index c7b135d..0a32c55 100644

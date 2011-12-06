@@ -1,6 +1,6 @@
 Description: Patch build_options.py
 Author: Devid Filoni <d.filoni@techemail.com>
-Last-Update: 2007-12.09
+Last-Update: 2007-12-09
 
 diff -urNad wxwidgets2.8-2.8.6.1~/wxPython/wx/build/build_options.py wxwidgets2.8-2.8.6.1/wxPython/wx/build/build_options.py
 --- wxwidgets2.8-2.8.6.1~/wxPython/wx/build/build_options.py	2007-10-27 01:41:07.000000000 +0200

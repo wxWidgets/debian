@@ -1,11 +1,9 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## xrced_bitmaps.dpatch by Devid Filoni <d.filoni@techemail.com>
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: load bitmaps from /usr/share/python-wxgtk2.8/XRCed/plugins/bitmaps,
-## DP: needed to fix image-file-in-usr-lib lintian warning.
+Description: Fix paths to bitmaps in XRCed
+ load bitmaps from /usr/share/python-wxgtk2.8/XRCed/plugins/bitmaps,
+ needed to fix image-file-in-usr-lib lintian warning.
+Author: Devid Filoni <d.filoni@techemail.com>
+Last-Update: 2009-11-29
 
-@DPATCH@
 --- a/wxPython/wx/tools/XRCed/component.py
 +++ b/wxPython/wx/tools/XRCed/component.py
 @@ -708,7 +708,7 @@
