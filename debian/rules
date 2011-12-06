@@ -97,7 +97,7 @@ pytoolkit := gtk2
 wxsubdir  := wx-$(compatible_release)-$(pytoolkit)-unicode
 
 cross_host  := i586-mingw32msvc
-cross_build := $(shell ./config.guess)
+cross_build := $(shell /usr/share/misc/config.guess)
 
 config_cache       = ../config_deb.cache
 config_cache_cross = ../config_deb_cross.cache
@@ -292,6 +292,9 @@ pyd_wxconfig := wx-config $(PY_WX_CONFIG_OPTIONS) --debug
 
 # The Rules:
 
+config.guess config.sub:
+	ln -sf /usr/share/misc/config.guess /usr/share/misc/config.sub .
+
 debian/control: debian/control.in
 	sed -e 's/=V/$(release)/g;s/=SOV/$(sorelease)/g;s/=U/$(unicode_suffix)/g'\
 		< debian/control.in > debian/control
@@ -383,7 +386,7 @@ build-stamp: $(QUILT_STAMPFN)
 # wxgtk build is going to do that again anyway.  We'll move the relevant
 # files out when that is done.
 
-configure-wxbase-shared-stamp:
+configure-wxbase-shared-stamp: config.guess
 	dh_testdir
 	mkdir -p $(objdir_wxbase_shared)
 	cd $(objdir_wxbase_shared) \
@@ -396,7 +399,7 @@ build-wxbase-shared-stamp: configure-wxbase-shared-stamp
 	#$(FAST_MAKE) -C $(objdir_wxbase_shared)
 	touch $@
 
-configure-wxbase-debug-stamp:
+configure-wxbase-debug-stamp: config.guess
 	dh_testdir
 	mkdir -p $(objdir_wxbase_debug)
 	cd $(objdir_wxbase_debug)					\
@@ -409,7 +412,7 @@ build-wxbase-debug-stamp: configure-wxbase-debug-stamp
 	#$(FAST_MAKE) -C $(objdir_wxbase_debug)
 	touch $@
 
-configure-gtk-shared-stamp:
+configure-gtk-shared-stamp: config.guess
 	dh_testdir
 	mkdir -p $(objdir_gtk_shared)
 	cd $(objdir_gtk_shared) \
@@ -423,7 +426,7 @@ build-gtk-shared-stamp: configure-gtk-shared-stamp
 	touch $@
 
 
-configure-gtk-debug-stamp:
+configure-gtk-debug-stamp: config.guess
 	dh_testdir
 	mkdir -p $(objdir_gtk_debug)
 	cd $(objdir_gtk_debug) \
@@ -555,7 +558,7 @@ build-gtk-dbg-py%-stamp: build-gtk-debug-stamp # purge-release-py
 	touch $@
 
 
-configure-msw-shared-stamp:
+configure-msw-shared-stamp: config.guess
 	dh_testdir
 	mkdir -p $(objdir_msw_shared)
 	cd $(objdir_msw_shared)						\
@@ -572,7 +575,7 @@ build-msw-shared-stamp: configure-msw-shared-stamp
 	$(FAST_MAKE) -C $(objdir_msw_shared)
 	touch $@
 
-configure-msw-static-stamp:
+configure-msw-static-stamp: config.guess
 	dh_testdir
 	mkdir -p $(objdir_msw_static)
 	cd $(objdir_msw_static)						\
@@ -590,7 +593,7 @@ build-msw-static-stamp: configure-msw-static-stamp
 	$(FAST_MAKE) -C $(objdir_msw_static)
 	touch $@
 
-configure-msw-dbg-stamp:
+configure-msw-dbg-stamp: config.guess
 	dh_testdir
 	mkdir -p $(objdir_msw_dbg)
 	cd $(objdir_msw_dbg)						\
@@ -641,7 +644,8 @@ clean: debian/control clean-py unpatch
 	      debian/$(package_msw_dev).* \
 	      debian/$(package_msw_dbg).* \
 	      debian/lintian-override \
-	      debian/unpack_examples.sh
+	      debian/unpack_examples.sh \
+	      config.guess config.sub
 	rm -rf include/wx-$(release)
 	find -name '*.py[co]' -delete
 
