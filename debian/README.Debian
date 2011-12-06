@@ -1,7 +1,7 @@
 wxwidgets for Debian
 ----------------------
 
-The following packages are built from the wxWidgets CVS source.
+The following packages are built from the wxWidgets source:
 
 libwxbase		wxBase runtime shared libraries
 libwxbase-dev		extra files and static libs for building wxBase apps
