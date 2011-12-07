@@ -1,4 +1,4 @@
-wxwidgets2.8 (2.8.12.1-5) UNRELEASED; urgency=low
+wxwidgets2.8 (2.8.12.1-5) unstable; urgency=low
 
   * Remove references to CVS and cvs.wxwidgets.org (which no longer works).
   * Add DEP3 headers to more patches.
@@ -9,7 +9,7 @@ wxwidgets2.8 (2.8.12.1-5) UNRELEASED; urgency=low
   * debian/rules: Get rid of empty /usr/share/lintian/overrides directory
     in python-wxtools.
 
- -- Olly Betts <olly@survex.com>  Tue, 06 Dec 2011 23:19:23 +0000
+ -- Olly Betts <olly@survex.com>  Wed, 07 Dec 2011 01:27:29 +0000
 
 wxwidgets2.8 (2.8.12.1-4) unstable; urgency=low
 
