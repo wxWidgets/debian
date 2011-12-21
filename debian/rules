@@ -518,6 +518,17 @@ build-examples-stamp: build-gtk-shared-stamp
 	cp -a wxPython/demo $(objdir_examples)/wxPython
 	# Remove useless file.
 	rm -f $(objdir_examples)/wxPython/b
+	# Stop files being randomly executable.
+	-chmod a-x \
+		$(objdir_examples)/samples/samples/Info.plist \
+		$(objdir_examples)/samples/aui/descrip.mms \
+		$(objdir_examples)/samples/db/descrip.mms \
+		$(objdir_examples)/samples/docview/docview.r \
+		$(objdir_examples)/samples/internat/ar/internat.mo \
+		$(objdir_examples)/samples/internat/ar/internat.po \
+		$(objdir_examples)/samples/minimal/minimal.plc \
+		$(objdir_examples)/samples/xrc/descrip.mms \
+		$(objdir_examples)/wxPython/bmp_source/customcontrol.png
 
 	echo "generating unpack_examples.sh script"
 	sed -e 's/=V/$(release)/g' < debian/unpack_examples.sh.in	\
