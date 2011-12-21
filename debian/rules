@@ -745,6 +745,9 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 			      $(PY_UNICODE)					\
 			      FLAVOUR=$(DEBIAN_WXFLAVOUR)
 
+	cp -a include/wx-$(release) \
+	    debian/$(package_headers)/usr/include
+
 	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/wx.pth
 
 	find debian/$(package_gtk_py_lib)/usr/lib/python$* -name '*.py?' -delete
@@ -851,9 +854,6 @@ install-headers: install-gtk-shared-stamp
 
 #	dh_movefiles --sourcedir=$(objdir_univ_install)
 	dh_install $(objdir_gtk_install)/include	usr
-	mkdir -p debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython
-	cp -p wxPython/include/wx/wxPython/*.h \
-	    debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython/
 
 install-i18n: DH_OPTIONS=-p$(package_i18n)
 install-i18n: build-i18n-stamp install-gtk-shared-stamp

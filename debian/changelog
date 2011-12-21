@@ -1,3 +1,10 @@
+wxwidgets2.8 (2.8.12.1-6) unstable; urgency=low
+
+  * Install the files needed to wrap wx-using projects with SWIG.
+    (Closes: #627728)
+
+ -- Olly Betts <olly@survex.com>  Wed, 21 Dec 2011 10:47:07 +0000
+
 wxwidgets2.8 (2.8.12.1-5) unstable; urgency=low
 
   * Remove references to CVS and cvs.wxwidgets.org (which no longer works).
