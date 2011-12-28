@@ -1,3 +1,10 @@
+wxwidgets2.8 (2.8.12.1-7) UNRELEASED; urgency=low
+
+  * Fix path to one of the bogus executable files in wx2.8-examples so it gets 
+    made non-executable as intended.
+
+ -- Olly Betts <olly@survex.com>  Wed, 28 Dec 2011 08:00:12 +0000
+
 wxwidgets2.8 (2.8.12.1-6) unstable; urgency=low
 
   * Install the files needed to wrap wx-using projects with SWIG.

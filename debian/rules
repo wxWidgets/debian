@@ -520,7 +520,7 @@ build-examples-stamp: build-gtk-shared-stamp
 	rm -f $(objdir_examples)/wxPython/b
 	# Stop files being randomly executable.
 	-chmod a-x \
-		$(objdir_examples)/samples/samples/Info.plist \
+		$(objdir_examples)/samples/Info.plist \
 		$(objdir_examples)/samples/aui/descrip.mms \
 		$(objdir_examples)/samples/db/descrip.mms \
 		$(objdir_examples)/samples/docview/docview.r \
