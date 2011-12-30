@@ -12,8 +12,10 @@ wxwidgets3.0 (2.9.3.0-1) UNRELEASED; urgency=low
     + New patch add-missing-Makefile.in.patch to add in Makefile.in missing
       from upstream release.
   * debian/rules: Set DEBIAN_WX_DEFAULT_VERSION=2.8.
+  * debian/rules: Remove references to contrib/ subdirectory which has been
+    removed from upstream sources.
 
- -- Olly Betts <olly@survex.com>  Fri, 30 Dec 2011 08:47:37 +0000
+ -- Olly Betts <olly@survex.com>  Fri, 30 Dec 2011 09:13:12 +0000
 
 wxwidgets2.8 (2.8.12.1-7) UNRELEASED; urgency=low
 
