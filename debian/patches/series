@@ -4,3 +4,4 @@ fix-configure-on-hurd
 fix-path-to-some-interpreters
 fix-configure-for-multiarch
 wxpython2.8-eliminate-string-exceptions.patch
+add-missing-Makefile.in.patch
