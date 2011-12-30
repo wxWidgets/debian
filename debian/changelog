@@ -1,6 +1,7 @@
 wxwidgets3.0 (2.9.3.0-1) UNRELEASED; urgency=low
 
-  * Make a start on packaging wx 2.9, so we're ready for wxwidgets3.0.
+  * New upstream development release.
+    + Make a start on packaging wx 2.9, so we're ready for wxwidgets3.0.
     + Update patches, and drop those which are no longer required:
       - fix-macro-namespace-pollution.patch
       - fix-wxcmdline-segv.patch
