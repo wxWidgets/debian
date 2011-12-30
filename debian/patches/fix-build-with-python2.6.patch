@@ -1,21 +1,20 @@
 Description: Install things in the correct places with the multiversion stuff
 Author: Ryan Niebur <ryan@debian.org>
-Last-Update: 2009-12-12
+Last-Update: 2011-12-30
 
 diff --git a/wxPython/setup.py b/wxPython/setup.py
-index d987c5d..ac1edde 100755
+index c2787aa..c013c77 100755
 --- a/wxPython/setup.py
 +++ b/wxPython/setup.py
-@@ -1052,7 +1052,7 @@ if __name__ == "__main__":
+@@ -1011,6 +1011,7 @@ if EGGing:
+ if __name__ == "__main__":
+     if not PREP_ONLY:
  
-               **other_kw
-               )
--
 +        BUILD_OPTIONS['build_base'] = BUILD_BASE + "-common"
          if not EGGing:
              if INSTALL_MULTIVERSION:
                  setup(name             = 'wxPython-common',
-@@ -1067,7 +1067,7 @@ if __name__ == "__main__":
+@@ -1025,7 +1026,7 @@ if __name__ == "__main__":
                        platforms        = PLATFORMS,
                        classifiers      = filter(None, CLASSIFIERS.split("\n")),
                        keywords         = KEYWORDS,

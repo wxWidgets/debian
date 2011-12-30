@@ -1,8 +1,12 @@
-fix build on hurd
+Description: Fix build on hurd
+Bug-Debian: http://bugs.debian.org/512117
+Last-Update: 2011-12-30
 
+diff --git a/build/aclocal/bakefile.m4 b/build/aclocal/bakefile.m4
+index 990766d..a1d1dc6 100644
 --- a/build/aclocal/bakefile.m4
 +++ b/build/aclocal/bakefile.m4
-@@ -443,7 +443,7 @@
+@@ -443,7 +443,7 @@ AC_DEFUN([AC_BAKEFILE_SHARED_LD],
        ;;
  
        powerpc-apple-macos* | \
@@ -11,7 +15,7 @@ fix build on hurd
        *-*-mirbsd* | \
        *-*-sunos4* | \
        *-*-osf* | \
-@@ -495,7 +495,7 @@
+@@ -495,7 +495,7 @@ AC_DEFUN([AC_BAKEFILE_SHARED_VERSIONS],
  
      case "${BAKEFILE_HOST}" in
        *-*-linux* | *-*-freebsd* | *-*-openbsd* | *-*-netbsd* | \
@@ -20,9 +24,11 @@ fix build on hurd
          if test "x$SUNCXX" = "xyes"; then
              SONAME_FLAG="-h "
          else
+diff --git a/configure b/configure
+index 3d5b60d..883a331 100755
 --- a/configure
 +++ b/configure
-@@ -49214,7 +49214,7 @@
+@@ -53734,7 +53736,7 @@ EOF
        ;;
  
        powerpc-apple-macos* | \
@@ -31,7 +37,7 @@ fix build on hurd
        *-*-mirbsd* | \
        *-*-sunos4* | \
        *-*-osf* | \
-@@ -49258,7 +49258,7 @@
+@@ -53778,7 +53780,7 @@ echo "$as_me: error: unknown system type $BAKEFILE_HOST." >&2;}
  
      case "${BAKEFILE_HOST}" in
        *-*-linux* | *-*-freebsd* | *-*-openbsd* | *-*-netbsd* | \

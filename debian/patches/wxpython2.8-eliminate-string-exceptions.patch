@@ -3,7 +3,7 @@ Description: Eliminate throwing of string exceptions in wxPython
 Author: Olly Betts <olly@survex.com>
 Bug-Debian: http://bugs.debian.org/585339
 Forwarded: http://trac.wxwidgets.org/ticket/13580
-Last-Update: 2011-11-11
+Last-Update: 2011-12-30
 Applied-Upstream: no
 
 diff --git a/wxPython/wx/lib/evtmgr.py b/wxPython/wx/lib/evtmgr.py
@@ -20,7 +20,7 @@ index 5741622..9427984 100644
          # Support a more OO API.  This allows the GUI widget itself to
          # be specified, and the id to be retrieved from the system,
 diff --git a/wxPython/wx/lib/ogl/_basic.py b/wxPython/wx/lib/ogl/_basic.py
-index f0be159..a1aa09d 100644
+index 90ec20a..b5f1eb2 100644
 --- a/wxPython/wx/lib/ogl/_basic.py
 +++ b/wxPython/wx/lib/ogl/_basic.py
 @@ -1717,7 +1717,7 @@ class Shape(ShapeEvtHandler):
@@ -51,7 +51,7 @@ index f0be159..a1aa09d 100644
          return root
  
 diff --git a/wxPython/wx/lib/ogl/_lines.py b/wxPython/wx/lib/ogl/_lines.py
-index 302cee1..eef160b 100644
+index 4e6935c..255f48f 100644
 --- a/wxPython/wx/lib/ogl/_lines.py
 +++ b/wxPython/wx/lib/ogl/_lines.py
 @@ -752,7 +752,7 @@ class LineShape(Shape):
@@ -64,10 +64,10 @@ index 302cee1..eef160b 100644
                  # Rotate about the centre of the object, then place
                  # the object on the line.
 diff --git a/wxPython/wx/lib/pubsub/pubsub1/pub.py b/wxPython/wx/lib/pubsub/pubsub1/pub.py
-index 9c84733..28575aa 100644
+index 8dd2736..8715f83 100644
 --- a/wxPython/wx/lib/pubsub/pubsub1/pub.py
 +++ b/wxPython/wx/lib/pubsub/pubsub1/pub.py
-@@ -112,7 +112,7 @@ def _paramMinCount(callableObject):
+@@ -155,7 +155,7 @@ def _paramMinCount(callableObject):
              try:
                  return _paramMinCountFunc(callableObject)
              except exc:
