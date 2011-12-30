@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: toolbar.cpp 38945 2006-04-28 12:44:37Z ABX $
+// RCS-ID:      $Id: toolbar.cpp 58757 2009-02-08 11:45:59Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -112,8 +112,8 @@ public:
     {
     }
 
-    wxToolBarTool(wxToolBar *tbar, wxControl *control)
-        : wxToolBarToolBase(tbar, control)
+    wxToolBarTool(wxToolBar *tbar, wxControl *control, const wxString& label)
+        : wxToolBarToolBase(tbar, control, label)
     {
     }
 
@@ -129,7 +129,7 @@ public:
 private:
     size_t m_nSepCount;
 
-    DECLARE_NO_COPY_CLASS(wxToolBarTool)
+    wxDECLARE_NO_COPY_CLASS(wxToolBarTool);
 };
 
 
@@ -154,9 +154,10 @@ wxToolBarToolBase *wxToolBar::CreateTool(int id,
                              clientData, shortHelp, longHelp);
 }
 
-wxToolBarToolBase *wxToolBar::CreateTool(wxControl *control)
+wxToolBarToolBase *
+wxToolBar::CreateTool(wxControl *control, const wxString& label)
 {
-    return new wxToolBarTool(this, control);
+    return new wxToolBarTool(this, control, label);
 }
 
 // ----------------------------------------------------------------------------

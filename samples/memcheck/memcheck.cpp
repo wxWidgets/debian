@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: memcheck.cpp 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: memcheck.cpp 64940 2010-07-13 13:29:13Z VZ $
 // Copyright:   (c) Julian Smart
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // For compilers that support precompilation, includes "wx.h".
@@ -22,8 +22,8 @@
 
 #include "wx/datetime.h"
 
-#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
-#include "mondrian.xpm"
+#if !defined(__WXMSW__) && !defined(__WXPM__)
+    #include "../sample.xpm"
 #endif
 
 #ifndef __WXDEBUG__
@@ -56,24 +56,27 @@ IMPLEMENT_APP(MyApp)
 // `Main program' equivalent, creating windows and returning main app frame
 bool MyApp::OnInit(void)
 {
+  if ( !wxApp::OnInit() )
+      return false;
+
   // Create the main frame window
   MyFrame *frame = new MyFrame((wxFrame *) NULL);
 
   // Give it an icon
-  frame->SetIcon(wxICON(mondrian));
+  frame->SetIcon(wxICON(sample));
 
   // Make a menubar
   wxMenu *file_menu = new wxMenu;
 
-  file_menu->Append(wxID_EXIT, _T("E&xit"));
+  file_menu->Append(wxID_EXIT, wxT("E&xit"));
   wxMenuBar *menu_bar = new wxMenuBar;
-  menu_bar->Append(file_menu, _T("File"));
+  menu_bar->Append(file_menu, wxT("File"));
   frame->SetMenuBar(menu_bar);
 
   // Make a panel with a message
   wxPanel *panel = new wxPanel(frame);
 
-  (void)new wxStaticText(panel, wxID_ANY, _T("Hello, this is a minimal debugging wxWidgets program!"), wxPoint(10, 10));
+  (void)new wxStaticText(panel, wxID_ANY, wxT("Hello, this is a minimal debugging wxWidgets program!"), wxPoint(10, 10));
 
   // Show the frame
   frame->Show(true);
@@ -124,7 +127,7 @@ END_EVENT_TABLE()
 
 // My frame constructor
 MyFrame::MyFrame(wxFrame *parent):
-  wxFrame(parent, wxID_ANY, _T("MemCheck wxWidgets Sample"), wxDefaultPosition, wxSize(400, 200))
+  wxFrame(parent, wxID_ANY, wxT("MemCheck wxWidgets Sample"), wxDefaultPosition, wxSize(400, 200))
 {}
 
 // Intercept menu commands

@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: imaglist.cpp 62205 2009-09-30 06:58:50Z JS $
+// RCS-ID:      $Id: imaglist.cpp 52227 2008-03-02 00:53:32Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -34,9 +34,7 @@
     #include "wx/log.h"
 #endif
 
-#include "wx/palmos/imaglist.h"
-#include "wx/palmos/private.h"
-
+#include "wx/imaglist.h"
 
 // ----------------------------------------------------------------------------
 // wxWin macros

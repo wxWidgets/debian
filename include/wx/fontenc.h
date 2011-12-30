@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.03.00
-// RCS-ID:      $Id: fontenc.h 29139 2004-09-14 12:08:28Z ABX $
+// RCS-ID:      $Id: fontenc.h 65056 2010-07-23 23:32:40Z VZ $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ enum wxFontEncoding
     wxFONTENCODING_CP874,           // WinThai
     wxFONTENCODING_CP932,           // Japanese (shift-JIS)
     wxFONTENCODING_CP936,           // Chinese simplified (GB)
-    wxFONTENCODING_CP949,           // Korean (Hangul charset)
+    wxFONTENCODING_CP949,           // Korean (Hangul charset, a.k.a. EUC-KR)
     wxFONTENCODING_CP950,           // Chinese (traditional - Big5)
     wxFONTENCODING_CP1250,          // WinLatin2
     wxFONTENCODING_CP1251,          // WinCyrillic
@@ -116,6 +116,10 @@ enum wxFontEncoding
     wxFONTENCODING_MACGAELIC,
     wxFONTENCODING_MACKEYBOARD,
 
+    // more CJK encodings (for historical reasons some are already declared
+    // above)
+    wxFONTENCODING_ISO2022_JP,      // ISO-2022-JP JIS encoding
+
     wxFONTENCODING_MAX,             // highest enumerated encoding value
 
     wxFONTENCODING_MACMIN = wxFONTENCODING_MACROMAN ,
@@ -144,7 +148,10 @@ enum wxFontEncoding
     wxFONTENCODING_BIG5 = wxFONTENCODING_CP950,   // Traditional Chinese
 
         // Japanese (see http://zsigri.tripod.com/fontboard/cjk/jis.html)
-    wxFONTENCODING_SHIFT_JIS = wxFONTENCODING_CP932 // Shift JIS
+    wxFONTENCODING_SHIFT_JIS = wxFONTENCODING_CP932, // Shift JIS
+
+        // Korean (CP 949 not actually the same but close enough)
+    wxFONTENCODING_EUC_KR = wxFONTENCODING_CP949
 };
 
 #endif // _WX_FONTENC_H_

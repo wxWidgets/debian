@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     31.05.01 (extracted from other files)
-// RCS-ID:      $Id: accel.h 66927 2011-02-16 23:27:30Z JS $
+// RCS-ID:      $Id: accel.h 68718 2011-08-16 11:55:39Z SC $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -27,24 +27,25 @@ class WXDLLIMPEXP_FWD_CORE wxKeyEvent;
 // ----------------------------------------------------------------------------
 
 // wxAcceleratorEntry flags
-enum
+enum wxAcceleratorEntryFlags
 {
     wxACCEL_NORMAL  = 0x0000,   // no modifiers
     wxACCEL_ALT     = 0x0001,   // hold Alt key down
     wxACCEL_CTRL    = 0x0002,   // hold Ctrl key down
     wxACCEL_SHIFT   = 0x0004,   // hold Shift key down
 #if defined(__WXMAC__) || defined(__WXCOCOA__)
-    wxACCEL_CMD      = 0x0008   // Command key on OS X
+    wxACCEL_RAW_CTRL= 0x0008,   // 
 #else
-    wxACCEL_CMD      = wxACCEL_CTRL
+    wxACCEL_RAW_CTRL= wxACCEL_CTRL,
 #endif
+    wxACCEL_CMD     = wxACCEL_CTRL
 };
 
 // ----------------------------------------------------------------------------
 // an entry in wxAcceleratorTable corresponds to one accelerator
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxAcceleratorEntry
+class WXDLLIMPEXP_CORE wxAcceleratorEntry
 {
 public:
     wxAcceleratorEntry(int flags = 0, int keyCode = 0, int cmd = 0,
@@ -68,7 +69,8 @@ public:
 
     wxAcceleratorEntry& operator=(const wxAcceleratorEntry& entry)
     {
-        Set(entry.m_flags, entry.m_keyCode, entry.m_command, entry.m_item);
+        if (&entry != this)
+            Set(entry.m_flags, entry.m_keyCode, entry.m_command, entry.m_item);
         return *this;
     }
 
@@ -106,7 +108,7 @@ public:
 
     bool IsOk() const
     {
-        return m_keyCode != 0;
+        return  m_keyCode != 0;
     }
 
 
@@ -115,7 +117,7 @@ public:
 
     // returns a wxString for the this accelerator.
     // this function formats it using the <flags>-<keycode> format
-    // where <flags> maybe a hyphen-separed list of "shift|alt|ctrl"
+    // where <flags> maybe a hyphen-separated list of "shift|alt|ctrl"
     wxString ToString() const;
 
     // returns true if the given string correctly initialized this object
@@ -155,14 +157,14 @@ private:
 #elif defined(__WXGTK__)
     #include "wx/gtk1/accel.h"
 #elif defined(__WXMAC__)
-    #include "wx/mac/accel.h"
+    #include "wx/osx/accel.h"
 #elif defined(__WXCOCOA__)
     #include "wx/generic/accel.h"
 #elif defined(__WXPM__)
     #include "wx/os2/accel.h"
 #endif
 
-extern WXDLLEXPORT_DATA(wxAcceleratorTable) wxNullAcceleratorTable;
+extern WXDLLIMPEXP_DATA_CORE(wxAcceleratorTable) wxNullAcceleratorTable;
 
 #endif // wxUSE_ACCEL
 

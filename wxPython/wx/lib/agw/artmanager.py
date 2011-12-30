@@ -79,7 +79,7 @@ class RendererBase(object):
         Draws borders for buttons.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the button's client rectangle;
+        :param `wx.Rect` `rect`: the button's client rectangle;
         :param `penColour`: a valid `wx.Colour` for the pen border;
         :param `brushColour`: a valid `wx.Colour` for the brush.
         """
@@ -96,10 +96,10 @@ class RendererBase(object):
         Draws the area below a bitmap and the bitmap itself using a gradient shading.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `xpm_name`: a name of a XPM bitmap;
-        :param `rect`: the bitmap client rectangle;
+        :param string `xpm_name`: a name of a XPM bitmap;
+        :param `wx.Rect` `rect`: the bitmap client rectangle;
         :param `baseColour`: a valid `wx.Colour` for the bitmap background;
-        :param `flipSide`: ``True`` to flip the gradient direction, ``False`` otherwise.
+        :param bool `flipSide`: ``True`` to flip the gradient direction, ``False`` otherwise.
         """
 
         # draw the gradient area
@@ -122,7 +122,7 @@ class RendererBase(object):
         Draws borders for a bitmap.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the button's client rectangle;
+        :param `wx.Rect` `rect`: the button's client rectangle;
         :param `penColour`: a valid `wx.Colour` for the pen border;
         :param `bitmapBorderUpperLeftPen`: a valid `wx.Colour` for the pen upper
          left border.
@@ -143,25 +143,41 @@ class RendererBase(object):
 
 
     def GetMenuFaceColour(self):
-        """ Returns the foreground colour for the menu. """
+        """
+        Returns the foreground colour for the menu.
+
+        :return: An instance of `wx.Colour`.
+        """
         
         return ArtManager.Get().LightColour(wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE), 80)
 
 
     def GetTextColourEnable(self):
-        """ Returns the colour used for text colour when enabled. """
+        """
+        Returns the colour used for text colour when enabled.
+
+        :return: An instance of `wx.Colour`.
+        """
 
         return wx.BLACK
 
 
     def GetTextColourDisable(self):
-        """ Returns the colour used for text colour when disabled. """
+        """
+        Returns the colour used for text colour when disabled.
+
+        :return: An instance of `wx.Colour`.
+        """
 
         return ArtManager.Get().LightColour(wx.SystemSettings_GetColour(wx.SYS_COLOUR_GRAYTEXT), 30)
 
 
     def GetFont(self):
-        """ Returns the font used for text. """
+        """
+        Returns the font used for text.
+
+        :return: An instance of `wx.Font`.
+        """
 
         return wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
 
@@ -184,8 +200,8 @@ class RendererXP(RendererBase):
         Draws a button using the XP theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the button's client rectangle;
-        :param `state`: the button state;
+        :param `wx.Rect` `rect`: the button's client rectangle;
+        :param integer `state`: the button state;
         :param `input`: a flag used to call the right method.
         """
 
@@ -200,9 +216,9 @@ class RendererXP(RendererBase):
         Draws a button using the XP theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the button's client rectangle;
-        :param `state`: the button state;
-        :param `useLightColours`: ``True`` to use light colours, ``False`` otherwise.
+        :param `wx.Rect` `rect`: the button's client rectangle;
+        :param integer `state`: the button state;
+        :param bool `useLightColours`: ``True`` to use light colours, ``False`` otherwise.
         """
 
         # switch according to the status
@@ -225,8 +241,8 @@ class RendererXP(RendererBase):
         Draws a button using the XP theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the button's client rectangle;
-        :param `state`: the button state;
+        :param `wx.Rect` `rect`: the button's client rectangle;
+        :param integer `state`: the button state;
         :param `colour`: a valid `wx.Colour` instance.
         """
 
@@ -250,7 +266,7 @@ class RendererXP(RendererBase):
         Draws the menu bar background according to the active theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the menu bar's client rectangle.
+        :param `wx.Rect` `rect`: the menu bar's client rectangle.
         """
 
         # For office style, we simple draw a rectangle with a gradient colouring
@@ -280,7 +296,7 @@ class RendererXP(RendererBase):
         Draws the toolbar background according to the active theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the toolbar's client rectangle.
+        :param `wx.Rect` `rect`: the toolbar's client rectangle.
         """
 
         artMgr = ArtManager.Get()
@@ -306,7 +322,11 @@ class RendererXP(RendererBase):
 
 
     def GetTextColourEnable(self):
-        """ Returns the colour used for text colour when enabled. """
+        """
+        Returns the colour used for text colour when enabled.
+
+        :return: An instance of `wx.Colour`.
+        """
 
         return wx.BLACK
 
@@ -328,7 +348,7 @@ class RendererMSOffice2007(RendererBase):
         """
         Returns a `wx.Colour` according to the menu item state.
 
-        :param `state`: one of the following bits:
+        :param integer `state`: one of the following bits:
 
          ==================== ======= ==========================
          Item State            Value  Description
@@ -338,7 +358,8 @@ class RendererMSOffice2007(RendererBase):
          ``ControlDisabled``        2 The item is disabled
          ``ControlNormal``          3 Normal state
          ==================== ======= ==========================
-        
+
+        :return: An instance of `wx.Colour`.        
         """
 
         # switch according to the status        
@@ -383,9 +404,9 @@ class RendererMSOffice2007(RendererBase):
         Draws a button using the MS Office 2007 theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the button's client rectangle;
-        :param `state`: the button state;
-        :param `useLightColours`: ``True`` to use light colours, ``False`` otherwise.
+        :param `wx.Rect` `rect`: the button's client rectangle;
+        :param integer `state`: the button state;
+        :param bool `useLightColours`: ``True`` to use light colours, ``False`` otherwise.
         """
 
         self.DrawButtonColour(dc, rect, state, ArtManager.Get().GetThemeBaseColour(useLightColours))
@@ -396,8 +417,8 @@ class RendererMSOffice2007(RendererBase):
         Draws a button using the MS Office 2007 theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the button's client rectangle;
-        :param `state`: the button state;
+        :param `wx.Rect` `rect`: the button's client rectangle;
+        :param integer `state`: the button state;
         :param `colour`: a valid `wx.Colour` instance.
         """
 
@@ -447,7 +468,7 @@ class RendererMSOffice2007(RendererBase):
         Draws the menu bar background according to the active theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the menu bar's client rectangle.
+        :param `wx.Rect` `rect`: the menu bar's client rectangle.
         """
 
         # Keep old pen and brush
@@ -517,7 +538,7 @@ class RendererMSOffice2007(RendererBase):
         Draws the toolbar background according to the active theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the toolbar's client rectangle.
+        :param `wx.Rect` `rect`: the toolbar's client rectangle.
         """
 
         artMgr = ArtManager.Get()
@@ -591,7 +612,11 @@ class RendererMSOffice2007(RendererBase):
 
 
     def GetTextColourEnable(self):
-        """ Returns the colour used for text colour when enabled. """
+        """
+        Returns the colour used for text colour when enabled.
+
+        :return: An instance of `wx.Colour`.
+        """
 
         return wx.NamedColour("MIDNIGHT BLUE")
     
@@ -634,7 +659,9 @@ class ArtManager(wx.EvtHandler):
         """
         Sets the alpha channel value for transparent windows.
 
-        :param `amount`: the actual transparency value (between 0 and 255).
+        :param integer `amount`: the actual transparency value (between 0 and 255).
+
+        :raise: `Exception` if the `amount` parameter is lower than ``0`` or greater than ``255``.        
         """
 
         if self._transparency == amount:
@@ -647,7 +674,11 @@ class ArtManager(wx.EvtHandler):
 
 
     def GetTransparency(self):
-        """ Returns the alpha channel value for transparent windows. """
+        """
+        Returns the alpha channel value for transparent windows.
+
+        :return: An integer representing the alpha channel value.
+        """
 
         return self._transparency
     
@@ -658,7 +689,11 @@ class ArtManager(wx.EvtHandler):
         channel to it.
 
         :param `xpm`: a list of strings formatted as XPM;
+        :type `xpm`: list of strings
         :param `alpha`: a list of alpha values, the same size as the xpm bitmap.
+        :type `alpha`: list of integers
+
+        :return: An instance of `wx.Bitmap`.        
         """
 
         if alpha is not None:
@@ -713,7 +748,7 @@ class ArtManager(wx.EvtHandler):
         """
         Returns a bitmap from a stock. 
 
-        :param `name`: the bitmap name.
+        :param string `name`: the bitmap name.
 
         :return: The stock bitmap, if `name` was found in the stock bitmap dictionary.
          Othewise, `wx.NullBitmap` is returned.
@@ -726,7 +761,11 @@ class ArtManager(wx.EvtHandler):
 
 
     def Get(self):
-        """ Accessor to the unique art manager object. """
+        """
+        Accessor to the unique art manager object.
+
+        :return: A unique instance of L{ArtManager}.
+        """
 
         if not hasattr(self, "_instance"):
         
@@ -767,9 +806,11 @@ class ArtManager(wx.EvtHandler):
         Return light contrast of `colour`. The colour returned is from the scale of
         `colour` ==> white.
 
-        :param `colour`: the input colour to be brightened;
-        :param `percent`: determines how light the colour will be. `percent` = 100
-         returns white, `percent` = 0 returns `colour`.
+        :param `colour`: the input colour to be brightened, an instance of `wx.Colour`;
+        :param integer `percent`: determines how light the colour will be. `percent` = ``100``
+         returns white, `percent` = ``0`` returns `colour`.
+
+        :return: A light contrast of the input `colour`, an instance of `wx.Colour`.         
         """
 
         end_colour = wx.WHITE
@@ -791,9 +832,11 @@ class ArtManager(wx.EvtHandler):
         """
         Like the L{LightColour} function, but create the colour darker by `percent`.
 
-        :param `colour`: the input colour to be darkened;
-        :param `percent`: determines how dark the colour will be. `percent` = 100
-         returns black, `percent` = 0 returns `colour`.
+        :param `colour`: the input colour to be darkened, an instance of `wx.Colour`;
+        :param integer `percent`: determines how dark the colour will be. `percent` = ``100``
+         returns black, `percent` = ``0`` returns `colour`.
+
+        :return: A dark contrast of the input `colour`, an instance of `wx.Colour`.                  
         """
 
         end_colour = wx.BLACK
@@ -817,10 +860,10 @@ class ArtManager(wx.EvtHandler):
         horizontal or vertical.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the rectangle to be filled with gradient shading;
-        :param `startColour`: the first colour of the gradient shading;
-        :param `endColour`: the second colour of the gradient shading;
-        :param `vertical`: ``True`` for gradient colouring in the vertical direction,
+        :param `wx.Rect` `rect`: the rectangle to be filled with gradient shading;
+        :param `wx.Colour` `startColour`: the first colour of the gradient shading;
+        :param `wx.Colour` `endColour`: the second colour of the gradient shading;
+        :param bool `vertical`: ``True`` for gradient colouring in the vertical direction,
          ``False`` for horizontal shading.
         """
 
@@ -846,9 +889,9 @@ class ArtManager(wx.EvtHandler):
         :param `dc`: an instance of `wx.DC`;
         :param `region`: a region to be filled with gradient shading (an instance of
          `wx.Region`);
-        :param `startColour`: the first colour of the gradient shading;
-        :param `endColour`: the second colour of the gradient shading;
-        :param `vertical`: ``True`` for gradient colouring in the vertical direction,
+        :param `wx.Colour` `startColour`: the first colour of the gradient shading;
+        :param `wx.Colour` `endColour`: the second colour of the gradient shading;
+        :param bool `vertical`: ``True`` for gradient colouring in the vertical direction,
          ``False`` for horizontal shading.
  
         """
@@ -894,12 +937,12 @@ class ArtManager(wx.EvtHandler):
         and may start from the upper left corner or from the upper right corner.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the rectangle to be filled with gradient shading;
-        :param `startColour`: the first colour of the gradient shading;
-        :param `endColour`: the second colour of the gradient shading;
-        :param `startAtUpperLeft`: ``True`` to start the gradient lines at the upper
+        :param `wx.Rect` `rect`: the rectangle to be filled with gradient shading;
+        :param `wx.Colour` `startColour`: the first colour of the gradient shading;
+        :param `wx.Colour` `endColour`: the second colour of the gradient shading;
+        :param bool `startAtUpperLeft`: ``True`` to start the gradient lines at the upper
          left corner of the rectangle, ``False`` to start at the upper right corner;
-        :param `trimToSquare`: ``True`` to trim the gradient lines in a square.
+        :param bool `trimToSquare`: ``True`` to trim the gradient lines in a square.
         """
 
         # Save the current pen and brush
@@ -1036,10 +1079,10 @@ class ArtManager(wx.EvtHandler):
         which fits the 2007 style.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the rectangle to be filled with gradient shading;
-        :param `startColour`: the first colour of the gradient shading;
-        :param `endColour`: the second colour of the gradient shading;
-        :param `concave`: ``True`` for a concave effect, ``False`` for a convex one.
+        :param `wx.Rect` `rect`: the rectangle to be filled with gradient shading;
+        :param `wx.Colour` `startColour`: the first colour of the gradient shading;
+        :param `wx.Colour` `endColour`: the second colour of the gradient shading;
+        :param bool `concave`: ``True`` for a concave effect, ``False`` for a convex one.
         """
 
         diagonalRectWidth = rect.GetWidth()/4
@@ -1061,19 +1104,31 @@ class ArtManager(wx.EvtHandler):
 
 
     def FrameColour(self):
-        """ Return the surrounding colour for a control. """
+        """
+        Return the surrounding colour for a control.
+
+        :return: An instance of `wx.Colour`.
+        """
 
         return wx.SystemSettings_GetColour(wx.SYS_COLOUR_ACTIVECAPTION)
 
 
     def BackgroundColour(self):
-        """ Returns the background colour of a control when not in focus. """
+        """
+        Returns the background colour of a control when not in focus.
+
+        :return: An instance of `wx.Colour`.
+        """
 
         return self.LightColour(self.FrameColour(), 75)
 
 
     def HighlightBackgroundColour(self):
-        """ Returns the background colour of a control when it is in focus. """
+        """
+        Returns the background colour of a control when it is in focus.
+
+        :return: An instance of `wx.Colour`.
+        """
 
         return self.LightColour(self.FrameColour(), 60)
 
@@ -1084,8 +1139,10 @@ class ArtManager(wx.EvtHandler):
 
         :param `firstColour`: the first colour to be mixed, an instance of `wx.Colour`;
         :param `secondColour`: the second colour to be mixed, an instance of `wx.Colour`;
-        :param `percent`: the relative percentage of `firstColour` with respect to
+        :param integer `percent`: the relative percentage of `firstColour` with respect to
          `secondColour`.
+
+        :return: An instance of `wx.Colour`.
         """
 
         # calculate gradient coefficients
@@ -1098,7 +1155,11 @@ class ArtManager(wx.EvtHandler):
 
 
     def RandomColour(): 
-        """ Creates a random colour. """
+        """
+        Creates a random colour.
+
+        :return: An instance of `wx.Colour`.
+        """
         
         r = random.randint(0, 255) # Random value betweem 0-255
         g = random.randint(0, 255) # Random value betweem 0-255
@@ -1112,6 +1173,8 @@ class ArtManager(wx.EvtHandler):
         Returns whether a colour is dark or light.
 
         :param `colour`: an instance of `wx.Colour`.
+
+        :return: ``True`` if the average RGB values are dark, ``False`` otherwise.
         """
 
         evg = (colour.Red() + colour.Green() + colour.Blue())/3
@@ -1129,8 +1192,10 @@ class ArtManager(wx.EvtHandler):
         is <truncate text ...>.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `text`: the text to be (eventually) truncated;
-        :param `maxWidth`: the maximum width allowed for the text.
+        :param string `text`: the text to be (eventually) truncated;
+        :param integer `maxWidth`: the maximum width allowed for the text.
+
+        :return: A new string containining the (possibly) truncated text.
         """
 
         textLen = len(text)
@@ -1166,9 +1231,9 @@ class ArtManager(wx.EvtHandler):
         Colour rectangle according to the theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the rectangle to be filled with gradient shading;
-        :param `theme`: the theme to use to draw the button;
-        :param `state`: the button state;
+        :param `wx.Rect` `rect`: the rectangle to be filled with gradient shading;
+        :param string `theme`: the theme to use to draw the button;
+        :param integer `state`: the button state;
         :param `input`: a flag used to call the right method.
         """
 
@@ -1183,10 +1248,10 @@ class ArtManager(wx.EvtHandler):
         Draws a button using the appropriate theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the button's client rectangle;
-        :param `theme`: the theme to use to draw the button;
-        :param `state`: the button state;
-        :param `useLightColours`: ``True`` to use light colours, ``False`` otherwise.
+        :param `wx.Rect` `rect`: the button's client rectangle;
+        :param string `theme`: the theme to use to draw the button;
+        :param integer `state`: the button state;
+        :param bool  `useLightColours`: ``True`` to use light colours, ``False`` otherwise.
         """
 
         renderer = self._renderers[theme]
@@ -1200,9 +1265,9 @@ class ArtManager(wx.EvtHandler):
         Draws a button using the appropriate theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the button's client rectangle;
-        :param `theme`: the theme to use to draw the button;
-        :param `state`: the button state;
+        :param `wx.Rect` `rect`: the button's client rectangle;
+        :param string `theme`: the theme to use to draw the button;
+        :param integer `state`: the button state;
         :param `colour`: a valid `wx.Colour` instance.
         """
 
@@ -1236,8 +1301,8 @@ class ArtManager(wx.EvtHandler):
         """
         Used internally. Makes a toplevel window transparent if the system supports it.
 
-        :param `wnd`: the toplevel window to make transparent;
-        :param `amount`: the window transparency to apply.
+        :param `wnd`: the toplevel window to make transparent, an instance of `wx.TopLevelWindow`;
+        :param integer `amount`: the window transparency to apply.
         """
 
         if wnd.GetSize() == (0, 0):
@@ -1285,8 +1350,8 @@ class ArtManager(wx.EvtHandler):
         Draws a shadow using background bitmap.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the bitmap's client rectangle;
-        :param `where`: where to draw the shadow. This can be any combination of the
+        :param `wx.Rect` `rect`: the bitmap's client rectangle;
+        :param integer `where`: where to draw the shadow. This can be any combination of the
          following bits:
 
          ========================== ======= ================================
@@ -1341,10 +1406,10 @@ class ArtManager(wx.EvtHandler):
 
     def DropShadow(self, wnd, drop=True):
         """
-        Adds a shadow under the window (Windows Only).
+        Adds a shadow under the window (Windows only).
 
-        :param `wnd`: the window for which we are dropping a shadow;
-        :param `drop`: ``True`` to drop a shadow, ``False`` to remove it.
+        :param `wnd`: the window for which we are dropping a shadow, an instance of `wx.TopLevelWindow`;
+        :param bool `drop`: ``True`` to drop a shadow, ``False`` to remove it.
         """
 
         if not self.CanMakeWindowsTransparent() or not _libimported:
@@ -1386,10 +1451,10 @@ class ArtManager(wx.EvtHandler):
         Returns the top left `x` and `y` cordinates of the bitmap drawing.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the bitmap's client rectangle;
-        :param `bitmap`: the bitmap associated with the button;
-        :param `text`: the button label;
-        :param `style`: the button style. This can be one of the following bits:
+        :param `wx.Rect` `rect`: the bitmap's client rectangle;
+        :param `wx.Bitmap` `bitmap`: the bitmap associated with the button;
+        :param string `text`: the button label;
+        :param integer `style`: the button style. This can be one of the following bits:
 
          ============================== ======= ================================
          Button style                    Value  Description
@@ -1401,7 +1466,8 @@ class ArtManager(wx.EvtHandler):
          ``BU_EXT_RIGHT_ALIGN_STYLE``      16   A right-aligned button
          ``BU_EXT_RIGHT_TO_LEFT_STYLE``    32   A button suitable for right-to-left languages
          ============================== ======= ================================
-        
+
+        :return: A tuple containining the top left `x` and `y` cordinates of the bitmap drawing.
         """
 
         alignmentBuffer = self.GetAlignBuffer()
@@ -1427,7 +1493,7 @@ class ArtManager(wx.EvtHandler):
             
                 maxWidth = rect.x + rect.width - (2 * alignmentBuffer) - bitmap.GetWidth() # the alignment is for both sides
                 
-                # get the truncaed text. The text may stay as is, it is not a must that is will be trancated
+                # get the truncated text. The text may stay as is, it is not a must that is will be trancated
                 fixedText = self.TruncateText(dc, text, maxWidth)
 
                 # get the fixed text dimentions
@@ -1445,7 +1511,7 @@ class ArtManager(wx.EvtHandler):
             
                 maxWidth = rect.x + rect.width - (2 * alignmentBuffer) - bitmap.GetWidth() # the alignment is for both sides
 
-                # get the truncaed text. The text may stay as is, it is not a must that is will be trancated
+                # get the truncated text. The text may stay as is, it is not a must that is will be trancated
                 fixedText = self.TruncateText(dc, text, maxWidth)
 
                 # get the fixed text dimentions
@@ -1475,10 +1541,13 @@ class ArtManager(wx.EvtHandler):
         a '...' mark is added in the end).
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the text's client rectangle;
-        :param `bitmap`: the bitmap associated with the button;
-        :param `text`: the button label;
-        :param `style`: the button style. 
+        :param `wx.Rect` `rect`: the text's client rectangle;
+        :param `wx.Bitmap` `bitmap`: the bitmap associated with the button;
+        :param string `text`: the button label;
+        :param integer `style`: the button style. 
+
+        :return: A tuple containining the top left `x` and `y` cordinates of the text drawing, plus
+         the truncated version of the input `text`.
 
         :see: L{GetBitmapStartLocation} for a list of valid button styles.
         """
@@ -1536,16 +1605,16 @@ class ArtManager(wx.EvtHandler):
         Draws the text & bitmap on the input dc.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the text and bitmap client rectangle;
-        :param `text`: the button label;
-        :param `enable`: ``True`` if the button is enabled, ``False`` otherwise;
+        :param `wx.Rect` `rect`: the text and bitmap client rectangle;
+        :param string `text`: the button label;
+        :param bool `enable`: ``True`` if the button is enabled, ``False`` otherwise;
         :param `font`: the font to use to draw the text, an instance of `wx.Font`;
         :param `fontColour`: the colour to use to draw the text, an instance of
          `wx.Colour`;
-        :param `bitmap`: the bitmap associated with the button;
+        :param `bitmap`: the bitmap associated with the button, an instance of `wx.Bitmap`;
         :param `grayBitmap`: a greyed-out version of the input `bitmap` representing
-         a disabled bitmap;
-        :param `style`: the button style. 
+         a disabled bitmap, an instance of `wx.Bitmap`;
+        :param integer `style`: the button style. 
 
         :see: L{GetBitmapStartLocation} for a list of valid button styles.
         """
@@ -1628,8 +1697,10 @@ class ArtManager(wx.EvtHandler):
         """
         Returns the best fit size for the supplied label & bitmap.
 
-        :param `label`: the button label;
-        :param `bmp`: the bitmap associated with the button.
+        :param string `label`: the button label;
+        :param `bmp`: the bitmap associated with the button, an instance of `wx.Bitmap`.
+
+        :return: An instance of `wx.Size`, representing the best fit size for the supplied label & bitmap.        
         """
 
         if "__WXMSW__" in wx.Platform:
@@ -1663,28 +1734,44 @@ class ArtManager(wx.EvtHandler):
 
 
     def GetMenuFaceColour(self):
-        """ Returns the colour used for the menu foreground. """
+        """
+        Returns the colour used for the menu foreground.
+
+        :return: An instance of `wx.Colour`.
+        """
 
         renderer = self._renderers[self.GetMenuTheme()]
         return renderer.GetMenuFaceColour()
 
 
     def GetTextColourEnable(self):
-        """ Returns the colour used for enabled menu items. """
+        """
+        Returns the colour used for enabled menu items.
+
+        :return: An instance of `wx.Colour`.
+        """
 
         renderer = self._renderers[self.GetMenuTheme()]
         return renderer.GetTextColourEnable()
 
 
     def GetTextColourDisable(self):
-        """ Returns the colour used for disabled menu items. """
+        """
+        Returns the colour used for disabled menu items.
+
+        :return: An instance of `wx.Colour`.
+        """
 
         renderer = self._renderers[self.GetMenuTheme()]
         return renderer.GetTextColourDisable()
 
 
     def GetFont(self):
-        """ Returns the font used by this theme. """
+        """
+        Returns the font used by this theme.
+
+        :return: An instance of `wx.Font`.
+        """
 
         renderer = self._renderers[self.GetMenuTheme()]
         return renderer.GetFont()
@@ -1695,7 +1782,10 @@ class ArtManager(wx.EvtHandler):
         Returns the mnemonic index of the label and the label stripped of the ampersand mnemonic
         (e.g. 'lab&el' ==> will result in 3 and labelOnly = label).
 
-        :param `label`: a string containining an ampersand.        
+        :param string `label`: a string containining an ampersand.
+
+        :return: A tuple containining the mnemonic index of the label and the label
+         stripped of the ampersand mnemonic.
         """
 
         indexAccel = 0
@@ -1719,7 +1809,9 @@ class ArtManager(wx.EvtHandler):
         Returns the theme (Blue, Silver, Green etc.) base colour, if no theme is active
         it return the active caption colour, lighter in 30%.
 
-        :param `useLightColours`: ``True`` to use light colours, ``False`` otherwise.        
+        :param bool `useLightColours`: ``True`` to use light colours, ``False`` otherwise.
+
+        :return: An instance of `wx.Colour`.        
         """
 
         if not useLightColours and not self.IsDark(self.FrameColour()):
@@ -1729,7 +1821,11 @@ class ArtManager(wx.EvtHandler):
 
 
     def GetAlignBuffer(self):
-        """ Return the padding buffer for a text or bitmap. """
+        """
+        Return the padding buffer for a text or bitmap.
+
+        :return: An integer representing the padding buffer.
+        """
 
         return self._alignmentBuffer
 
@@ -1738,14 +1834,18 @@ class ArtManager(wx.EvtHandler):
         """
         Set the menu theme, possible values (Style2007, StyleXP, StyleVista).
 
-        :param `theme`: a rendering theme class, either `StyleXP`, `Style2007` or `StyleVista`.
+        :param string `theme`: a rendering theme class, either `StyleXP`, `Style2007` or `StyleVista`.
         """
         
         self._menuTheme = theme
 
 
     def GetMenuTheme(self):
-        """ Returns the currently used menu theme. """
+        """
+        Returns the currently used menu theme.
+
+        :return: A string containining the currently used theme for the menu.
+        """
 
         return self._menuTheme
 
@@ -1756,6 +1856,8 @@ class ArtManager(wx.EvtHandler):
 
         :param `render`: a rendering theme class, which must be derived from
          L{RendererBase}.
+
+        :return: An integer representing the size of the renderers dictionary.
         """
 
         # Add new theme
@@ -1769,14 +1871,18 @@ class ArtManager(wx.EvtHandler):
         """
         Sets MS 2007 button style sunken or not.
 
-        :param `sunken`: ``True`` to have a sunken border effect, ``False`` otherwise.
+        :param bool `sunken`: ``True`` to have a sunken border effect, ``False`` otherwise.
         """
         
         self._ms2007sunken = sunken
 
 
     def GetMS2007ButtonSunken(self):
-        """ Returns the sunken flag for MS 2007 buttons. """
+        """
+        Returns the sunken flag for MS 2007 buttons.
+
+        :return: ``True`` if the MS 2007 buttons are sunken, ``False`` otherwise.
+        """
 
         return self._ms2007sunken
 
@@ -1791,7 +1897,7 @@ class ArtManager(wx.EvtHandler):
         """
         Sets the menu bar gradient style.
 
-        :param `v`: ``True`` for a vertical shaded gradient, ``False`` otherwise.
+        :param bool `v`: ``True`` for a vertical shaded gradient, ``False`` otherwise.
         """
 
         self._verticalGradient = v
@@ -1801,14 +1907,18 @@ class ArtManager(wx.EvtHandler):
         """
         Enables menu border drawing (XP style only).
 
-        :param `border`: ``True`` to draw the menubar border, ``False`` otherwise.
+        :param bool `border`: ``True`` to draw the menubar border, ``False`` otherwise.
         """
 
         self._drowMBBorder = border
         
 
     def GetMenuBarBorder(self):
-        """ Returns menu bar border drawing flag. """
+        """
+        Returns menu bar border drawing flag.
+
+        :return: ``True`` if the menu bar border is to be drawn, ``False`` otherwise.
+        """
 
         return self._drowMBBorder
 
@@ -1819,14 +1929,14 @@ class ArtManager(wx.EvtHandler):
         The higher the value, the menu bar will look more raised
         """
 
-        return self._menuBgFactor        
+        return self._menuBgFactor
 
 
     def DrawDragSash(self, rect):
         """
         Draws resize sash.
 
-        :param `rect`: the sash client rectangle.
+        :param `wx.Rect` `rect`: the sash client rectangle.
         """
   
         dc = wx.ScreenDC()
@@ -1845,8 +1955,8 @@ class ArtManager(wx.EvtHandler):
         """
         Takes a screenshot of the screen at given position & size (rect).
 
-        :param `rect`: the screen rectangle we wish to capture;
-        :param `bmp`: currently unused.
+        :param `wx.Rect` `rect`: the screen rectangle we wish to capture;
+        :param `wx.Bitmap` `bmp`: currently unused.
         """
 
         # Create a DC for the whole screen area
@@ -1885,7 +1995,7 @@ class ArtManager(wx.EvtHandler):
         Draws the toolbar background according to the active theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the toolbar's client rectangle.
+        :param `wx.Rect` `rect`: the toolbar's client rectangle.
         """
 
         renderer = self._renderers[self.GetMenuTheme()]
@@ -1899,7 +2009,7 @@ class ArtManager(wx.EvtHandler):
         Draws the menu bar background according to the active theme.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the menubar's client rectangle.
+        :param `wx.Rect` `rect`: the menubar's client rectangle.
         """
 
         renderer = self._renderers[self.GetMenuTheme()]
@@ -1911,7 +2021,7 @@ class ArtManager(wx.EvtHandler):
         """
         Sets the menu bar colour scheme to use.
 
-        :param `scheme`: a string representing a colour scheme (i.e., 'Default',
+        :param string `scheme`: a string representing a colour scheme (i.e., 'Default',
          'Dark', 'Dark Olive Green', 'Generic').
         """
 
@@ -1922,19 +2032,31 @@ class ArtManager(wx.EvtHandler):
 
 
     def GetMenuBarColourScheme(self):
-        """ Returns the current colour scheme. """
+        """
+        Returns the current colour scheme.
+
+        :return: A string representing the current colour scheme.
+        """
 
         return self._menuBarColourScheme
 
 
     def GetMenuBarFaceColour(self):
-        """ Returns the menu bar face colour. """
+        """
+        Returns the menu bar face colour.
+
+        :return: An instance of `wx.Colour`.
+        """
 
         return self._menuBarBgColour
 
 
     def GetMenuBarSelectionColour(self):
-        """ Returns the menu bar selection colour. """
+        """
+        Returns the menu bar selection colour.
+
+        :return: An instance of `wx.Colour`.
+        """
 
         return self._menuBarSelColour
 
@@ -1949,7 +2071,11 @@ class ArtManager(wx.EvtHandler):
 
 
     def GetColourSchemes(self):
-        """ Returns the available colour schemes. """
+        """
+        Returns the available colour schemes.
+
+        :return: A list of strings representing the available colour schemes.
+        """
 
         return self._colourSchemeMap.keys()     
                 
@@ -1959,6 +2085,8 @@ class ArtManager(wx.EvtHandler):
         Creates a grey bitmap image from the input bitmap.
 
         :param `bmp`: a valid `wx.Bitmap` object to be greyed out.
+
+        :return: A greyed-out representation of the input bitmap, an instance of `wx.Bitmap`.
         """
 
         img = bmp.ConvertToImage()
@@ -1975,7 +2103,7 @@ class ArtManager(wx.EvtHandler):
         """
         Enables/disables toobar shadow drop.
 
-        :param `rais`: ``True`` to drop a shadow below a toolbar, ``False`` otherwise.
+        :param bool `rais`: ``True`` to drop a shadow below a toolbar, ``False`` otherwise.
         """
 
         self._raiseTB = rais

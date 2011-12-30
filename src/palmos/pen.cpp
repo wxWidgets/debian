@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: pen.cpp 39228 2006-05-19 09:37:38Z ABX $
+// RCS-ID:      $Id: pen.cpp 56644 2008-11-02 02:39:52Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ wxPen::~wxPen()
 }
 
 // Should implement Create
-wxPen::wxPen(const wxColour& col, int Width, int Style)
+wxPen::wxPen(const wxColour& col, int Width, wxPenStyle Style)
 {
 }
 
@@ -80,10 +80,6 @@ bool wxPen::IsFree() const
     return false;
 }
 
-void wxPen::Unshare()
-{
-}
-
 void wxPen::SetColour(const wxColour& col)
 {
 }
@@ -96,7 +92,7 @@ void wxPen::SetWidth(int Width)
 {
 }
 
-void wxPen::SetStyle(int Style)
+void wxPen::SetStyle(wxPenStyle Style)
 {
 }
 
@@ -108,10 +104,21 @@ void wxPen::SetDashes(int nb_dashes, const wxDash *Dash)
 {
 }
 
-void wxPen::SetJoin(int Join)
+void wxPen::SetJoin(wxPenJoin Join)
 {
 }
 
-void wxPen::SetCap(int Cap)
+void wxPen::SetCap(wxPenCap Cap)
 {
 }
+
+wxGDIRefData *wxPen::CreateGDIRefData() const
+{
+    return new wxPenRefData();
+}
+
+wxGDIRefData *wxPen::CloneGDIRefData(const wxGDIRefData *data) const
+{
+    return new wxPenRefData(*static_cast<const wxPenRefData *>(data));
+}
+

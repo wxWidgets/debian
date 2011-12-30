@@ -3,7 +3,7 @@
 // Purpose:     a generic wxStaticLine class
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.cpp 39487 2006-05-31 18:27:51Z ABX $
+// Version:     $Id: statline.cpp 66555 2011-01-04 08:31:53Z SC $
 // Copyright:   (c) 1998 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,8 +35,6 @@
 // ============================================================================
 // implementation
 // ============================================================================
-
-IMPLEMENT_DYNAMIC_CLASS(wxStaticLine, wxControl)
 
 // ----------------------------------------------------------------------------
 // wxStaticLine

@@ -60,8 +60,8 @@ memory is not likely to be very large.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: plugin.py 61940 2009-09-16 01:04:03Z CJP $"
-__revision__ = "$Revision: 61940 $"
+__svnid__ = "$Id: plugin.py 69327 2011-10-09 02:40:38Z CJP $"
+__revision__ = "$Revision: 69327 $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
@@ -693,7 +693,7 @@ class PluginManager(object):
                 self.LOG("[pluginmgr][info] %s is already loaded" % name)
                 continue
 
-            egg = pkg_env[name][0]  # egg is of type Distrobution
+            egg = pkg_env[name][0]  # egg is of type Distribution
             egg.activate()
             editra_version = CalcVersionValue(ed_glob.VERSION)
             for name in egg.get_entry_map(ENTRYPOINT):

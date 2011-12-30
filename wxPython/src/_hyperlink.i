@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     28-May-2006
-// RCS-ID:      $Id: _hyperlink.i 41163 2006-09-11 16:54:57Z RD $
+// RCS-ID:      $Id: _hyperlink.i 65979 2010-11-02 02:39:58Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,8 +51,9 @@ public:
 
     // Constructor.
     wxHyperlinkCtrl(wxWindow *parent,
-                    wxWindowID id,
-                    const wxString& label, const wxString& url,
+                    wxWindowID id=-1,
+                    const wxString& label = wxEmptyString,
+                    const wxString& url = wxEmptyString,
                     const wxPoint& pos = wxDefaultPosition,
                     const wxSize& size = wxDefaultSize,
                     long style = wxHL_DEFAULT_STYLE,
@@ -61,8 +62,9 @@ public:
 
     // Creation function (for two-step construction).
     bool Create(wxWindow *parent,
-                wxWindowID id,
-                const wxString& label, const wxString& url,
+                wxWindowID id=-1,
+                const wxString& label = wxEmptyString,
+                const wxString& url = wxEmptyString,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
                 long style = wxHL_DEFAULT_STYLE,

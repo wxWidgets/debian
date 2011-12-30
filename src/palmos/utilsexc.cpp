@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: utilsexc.cpp 40943 2006-08-31 19:31:43Z ABX $
+// RCS-ID:      $Id: utilsexc.cpp 65896 2010-10-24 22:40:11Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -87,12 +87,14 @@ static bool wxExecuteDDE(const wxString& ddeServer,
 
 #endif // wxUSE_IPC
 
-long wxExecute(const wxString& cmd, int flags, wxProcess *handler)
+long wxExecute(const wxString& cmd, int flags, wxProcess *handler,
+    const wxExecuteEnv *env)
 {
     return 0;
 }
 
-long wxExecute(wxChar **argv, int flags, wxProcess *handler)
+long wxExecute(wxChar **argv, int flags, wxProcess *handler,
+    const wxExecuteEnv *env)
 {
     return 0;
 }

@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by: Mark Oxenham
 // Created:     2004/04/25
-// RCS-ID:      $Id: scrolbar.mm 47997 2007-08-10 05:14:14Z DE $
+// RCS-ID:      $Id: scrolbar.mm 66555 2011-01-04 08:31:53Z SC $
 // Copyright:   (c) 2004 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,6 @@
 
 #import <AppKit/NSScroller.h>
 
-IMPLEMENT_DYNAMIC_CLASS(wxScrollBar, wxControl)
 BEGIN_EVENT_TABLE(wxScrollBar, wxScrollBarBase)
 END_EVENT_TABLE()
 WX_IMPLEMENT_COCOA_OWNER(wxScrollBar,NSScroller,NSControl,NSView)
@@ -176,7 +175,7 @@ void wxScrollBar::Cocoa_wxNSScrollerAction()
     wxScrollEvent event(command, GetId(), GetThumbPosition(),
         HasFlag(wxSB_VERTICAL)?wxVERTICAL:wxHORIZONTAL);
     event.SetEventObject(this);
-    GetEventHandler()->ProcessEvent(event);
+    HandleWindowEvent(event);
 }
 
 #endif // wxUSE_SCROLLBAR

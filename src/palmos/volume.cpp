@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: volume.cpp 39802 2006-06-20 10:24:07Z ABX $
+// RCS-ID:      $Id: volume.cpp 52227 2008-03-02 00:53:32Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,11 @@
 #endif // WX_PRECOMP
 
 #include <VFSMgr.h>
+#ifdef __WXPALMOS6__
 #include <PalmTypesCompatibility.h>
+#else
+#include <PalmCompatibility.h>
+#endif
 
 #if wxUSE_BASE
 

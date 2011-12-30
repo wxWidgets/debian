@@ -2,7 +2,7 @@
 # Purpose:      base component classes
 # Author:       Roman Rolinsky <rolinsky@femagsoft.com>
 # Created:      31.05.2007
-# RCS-ID:       $Id: component.py 64627 2010-06-18 18:17:45Z ROL $
+# RCS-ID:       $Id: component.py 69876 2011-11-30 15:46:26Z ROL $
 
 """
 Component plugin classes.
@@ -21,7 +21,8 @@ using the Manager global object.
 
 import os,sys,bisect
 import wx
-from sets import Set
+try: set
+except: from sets import Set as set
 from globals import *
 from model import Model
 from attribute import *
@@ -44,12 +45,12 @@ parentChildGroups = {
                         '!frame', '!mdi_child_frame'],
     'wizard': ['wizard_page'],
     'window': ['control', 'window', 'sizer', 'btnsizer', '!frame', '!mdi_child_frame'],
-    'sizer': ['control', 'sizer', 'btnsizer', 'spacer'],
+    'sizer': ['control', 'sizer', 'btnsizer', 'spacer', 'toolbar'],
     'book': ['control', 'window', '!sizer', '!btnsizer'],
     'btnsizer': ['stdbtn'],
     'menubar': ['menu'],
     'toolbar': ['tool', 'separator'],
-    'menu': ['menu', 'menu_item', 'separator'],
+    'menu': ['menu', 'menu_item', 'separator', 'break'],
 }
 '''
 Definition of compatibility of component groups as I{key}:I{group_list} pairs, where
@@ -67,11 +68,21 @@ class Component(object):
                         'enabled', 'focused', 'hidden']
     '''Default window attributes for window-like components.'''
     genericStyles = [
-        'wxSIMPLE_BORDER', 'wxSUNKEN_BORDER', 'wxDOUBLE_BORDER',
-        'wxRAISED_BORDER', 'wxSTATIC_BORDER', 'wxNO_BORDER',
+        'wxBORDER_SIMPLE', 'wxBORDER_SUNKEN', 'wxBORDER_THEME',
+        'wxBORDER_RAISED', 'wxBORDER_STATIC', 'wxBORDER_NONE',
         'wxCLIP_CHILDREN', 'wxTRANSPARENT_WINDOW', 'wxWANTS_CHARS',
-        'wxNO_FULL_REPAINT_ON_RESIZE', 'wxFULL_REPAINT_ON_RESIZE'
+        'wxNO_FULL_REPAINT_ON_RESIZE', 'wxFULL_REPAINT_ON_RESIZE',
+        'wxTAB_TRANSVERSAL', 'wxALWAYS_SHOW_SB',
+        # deprecated
+        'wxBORDER_DOUBLE'
         ]
+    '''Default style flag equivalents'''
+    equivStyles = {'wxBORDER_SIMPLE': 'wxSIMPLE_BORDER',
+             'wxBORDER_SUNKEN': 'wxSUNKEN_BORDER',
+             'wxBORDER_DOUBLE': 'wxDOUBLE_BORDER',
+             'wxBORDER_RAISED': 'wxRAISED_BORDER',
+             'wxBORDER_STATIC': 'wxSTATIC_BORDER',
+             'wxBORDER_NONE': 'wxNO_BORDER'}
     '''Default generic styles.'''
     genericExStyles = [
         'wxWS_EX_VALIDATE_RECURSIVELY',
@@ -160,6 +171,10 @@ class Component(object):
     def addExStyles(self, *styles):
         '''Add more extra styles.'''
         self.exStyles.extend(styles)
+
+    def addEquivStyles(self, equiv):
+        '''Add more style equivalencies'''
+        self.equivStyles.update(equiv)
 
     def setSpecial(self, attrName, attrClass):
         '''Set special attribute class for processing XML.
@@ -310,13 +325,13 @@ class Component(object):
                 # Style and exstyle are not in attributes and can be treated specially
                 if a == 'style':
                     styles = self.getAttribute(srcNode, a).split('|')
-                    allStyles = dstComp.styles + self.genericStyles
+                    allStyles = dstComp.styles + self.genericStyles + self.equivStyles.values()
                     dstStyles = [s for s in styles if s.strip() in allStyles]
                     if dstStyles:
                         dstComp.addAttribute(dstNode, a, '|'.join(dstStyles))
                 elif a == 'exstyle':
                     styles = self.getAttribute(srcNode, a).split('|')
-                    allStyles = dstComp.exStyles + self.genericExStyles
+                    allStyles = dstComp.exStyles + self.genericExStyles + self.equivStyles.values()
                     dstStyles = [s for s in styles if s.strip() in allStyles]
                     if dstStyles:
                         dstComp.addAttribute(dstNode, a, '|'.join(dstStyles))
@@ -347,7 +362,7 @@ class Container(Component):
         for g in self.groups:
             if '!'+component.groups[0] in parentChildGroups.get(g, []): return False
         # Test for any possible parent-child
-        groups = Set(component.groups)
+        groups = set(component.groups)
         for g in self.groups:
             if groups.intersection(parentChildGroups.get(g, [])):
                 return True

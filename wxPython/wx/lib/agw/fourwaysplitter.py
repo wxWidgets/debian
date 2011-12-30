@@ -2,7 +2,7 @@
 # FOURWAYSPLITTER wxPython IMPLEMENTATION
 #
 # Andrea Gavana, @ 03 Nov 2006
-# Latest Revision: 14 Apr 2010, 12.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List
@@ -12,7 +12,7 @@
 # For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please
 # Write To Me At:
 #
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 # andrea.gavana@gmail.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
@@ -22,23 +22,23 @@
 # --------------------------------------------------------------------------------- #
 
 """
-FourWaySplitter is a layout manager which manages 4 children like 4 panes in a
+L{FourWaySplitter} is a layout manager which manages 4 children like 4 panes in a
 window.
 
 
 Description
 ===========
 
-The FourWaySplitter is a layout manager which manages four children like four
+The L{FourWaySplitter} is a layout manager which manages four children like four
 panes in a window. You can use a four-way splitter for example in a CAD program
 where you may want to maintain three orthographic views, and one oblique view of
 a model.
 
-The FourWaySplitter allows interactive repartitioning of the panes by
-means of moving the central splitter bars. When the FourWaySplitter is itself
+The L{FourWaySplitter} allows interactive repartitioning of the panes by
+means of moving the central splitter bars. When the L{FourWaySplitter} is itself
 resized, each child is proportionally resized, maintaining the same split-percentage.
 
-The main characteristics of FourWaySplitter are:
+The main characteristics of L{FourWaySplitter} are:
 
 - Handles horizontal, vertical or four way sizing via the sashes;
 - Delayed or live update when resizing;
@@ -49,10 +49,47 @@ The main characteristics of FourWaySplitter are:
 And a lot more. See the demo for a complete review of the functionalities.
 
 
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.fourwaysplitter as fws
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "FourWaySplitter Demo")
+
+            splitter = fws.FourWaySplitter(self, -1, agwStyle=wx.SP_LIVE_UPDATE)
+
+            # Put in some coloured panels...
+            for colour in [wx.RED, wx.WHITE, wx.BLUE, wx.GREEN]:
+
+                panel = wx.Panel(splitter)
+                panel.SetBackgroundColour(colour)
+
+                splitter.AppendWindow(panel)
+
+        
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
+
+
 Supported Platforms
 ===================
 
-FourWaySplitter has been tested on the following platforms:
+L{FourWaySplitter} has been tested on the following platforms:
   * Windows (Windows XP);
   * Linux Ubuntu (Dapper 6.06)
 
@@ -65,7 +102,7 @@ This class supports the following window styles:
 ================== =========== ==================================================
 Window Styles      Hex Value   Description
 ================== =========== ==================================================
-``SP_NOSASH``             0x10 No sash will be drawn on `FourWaySplitter`.
+``SP_NOSASH``             0x10 No sash will be drawn on L{FourWaySplitter}.
 ``SP_LIVE_UPDATE``        0x80 Don't draw XOR line but resize the child windows immediately.
 ``SP_3DBORDER``          0x200 Draws a 3D effect border.
 ================== =========== ==================================================
@@ -79,17 +116,17 @@ This class processes the following events:
 ================================== ==================================================
 Event Name                         Description
 ================================== ==================================================
-``EVT_SPLITTER_SASH_POS_CHANGED``  The sash position was changed. This event is generated after the user releases the mouse after dragging the splitter. Processes a `wx.wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED` event.
-``EVT_SPLITTER_SASH_POS_CHANGING`` The sash position is in the process of being changed. You may prevent this change from happening by calling `Veto` or you may also modify the position of the tracking bar to properly reflect the position that would be set if the drag were to be completed at this point. Processes a `wx.wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGING` event.
+``EVT_SPLITTER_SASH_POS_CHANGED``  The sash position was changed. This event is generated after the user releases the mouse after dragging the splitter. Processes a ``wx.wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED`` event.
+``EVT_SPLITTER_SASH_POS_CHANGING`` The sash position is in the process of being changed. You may prevent this change from happening by calling `Veto` or you may also modify the position of the tracking bar to properly reflect the position that would be set if the drag were to be completed at this point. Processes a ``wx.wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGING`` event.
 ================================== ==================================================
 
 
 License And Version
 ===================
 
-FourWaySplitter is distributed under the wxPython license. 
+L{FourWaySplitter} is distributed under the wxPython license. 
 
-Latest Revision: Andrea Gavana @ 14 Apr 2010, 12.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.4
 
@@ -112,7 +149,7 @@ FLAG_PRESSED = 2
 
 # FourWaySplitter styles
 SP_NOSASH = wx.SP_NOSASH
-""" No sash will be drawn on `FourWaySplitter`. """
+""" No sash will be drawn on L{FourWaySplitter}. """
 SP_LIVE_UPDATE = wx.SP_LIVE_UPDATE
 """ Don't draw XOR line but resize the child windows immediately. """
 SP_3DBORDER = wx.SP_3DBORDER
@@ -123,10 +160,10 @@ EVT_SPLITTER_SASH_POS_CHANGING = wx.EVT_SPLITTER_SASH_POS_CHANGING
 """ The sash position is in the process of being changed. You may prevent this change""" \
 """ from happening by calling `Veto` or you may also modify the position of the tracking""" \
 """ bar to properly reflect the position that would be set if the drag were to be""" \
-""" completed at this point. Processes a `wx.wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGING` event."""
+""" completed at this point. Processes a ``wx.wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGING`` event."""
 EVT_SPLITTER_SASH_POS_CHANGED = wx.EVT_SPLITTER_SASH_POS_CHANGED
 """ The sash position was changed. This event is generated after the user releases the""" \
-""" mouse after dragging the splitter. Processes a `wx.wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED` event. """
+""" mouse after dragging the splitter. Processes a ``wx.wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED`` event. """
 
 # ---------------------------------------------------------------------------- #
 # Class FourWaySplitterEvent

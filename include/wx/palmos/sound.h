@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: sound.h 41020 2006-09-05 20:47:48Z VZ $
+// RCS-ID:      $Id: sound.h 69178 2011-09-21 15:08:02Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,14 +21,14 @@ class WXDLLIMPEXP_ADV wxSound : public wxSoundBase
 public:
   wxSound();
   wxSound(const wxString& fileName, bool isResource = false);
-  wxSound(int size, const wxByte* data);
+  wxSound(size_t size, const void* data);
   virtual ~wxSound();
 
 public:
   // Create from resource or file
   bool  Create(const wxString& fileName, bool isResource = false);
   // Create from data
-  bool Create(int size, const wxByte* data);
+  bool Create(size_t size, const void* data);
 
   bool  IsOk() const { return (m_waveData ? true : false); };
 
@@ -44,7 +44,7 @@ private:
   int   m_waveLength;
   bool  m_isResource;
 
-    DECLARE_NO_COPY_CLASS(wxSound)
+    wxDECLARE_NO_COPY_CLASS(wxSound);
 };
 #endif
 #endif

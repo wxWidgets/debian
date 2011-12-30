@@ -7,7 +7,7 @@
 # Author:      Robin Dunn
 #
 # Created:     05-Nov-2004
-# RCS-ID:      $Id: taskrunner.py 44280 2007-01-21 07:03:55Z RD $
+# RCS-ID:      $Id: taskrunner.py 65598 2010-09-23 18:15:36Z RD $
 # Copyright:   (c) 2004 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -48,6 +48,9 @@ class Config:
             if len(data) == 2:
                 self.__dict__[data[0].strip()] = data[1].strip()
         myfile.close()
+
+
+#----------------------------------------------------------------------
 
 class Job(object):
     """

@@ -2,7 +2,7 @@
 # MULTIDIRDIALOG wxPython IMPLEMENTATION
 #
 # Andrea Gavana, @ 07 October 2008
-# Latest Revision: 12 Sep 2010, 10.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List
@@ -17,7 +17,7 @@
 # write to me at:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, obviously, to the wxPython mailing list!!!
 #
@@ -36,7 +36,7 @@ Description
 This class represents a possible replacement for `wx.DirDialog`, with the additional
 ability of selecting multiple folders at once. It may be useful when you wish to
 present to the user a directory browser which allows multiple folder selections.
-MultiDirDialog sports the following features:
+L{MultiDirDialog} sports the following features:
 
 * Ability to select a single or mutliple folders, depending on the style passed;
 * More colourful and eye-catching buttons;
@@ -45,10 +45,41 @@ MultiDirDialog sports the following features:
 And a lot more. Check the demo for an almost complete review of the functionalities.
 
 
+Usage
+=====
+
+Usage example::
+
+    import os
+    import wx
+    
+    import wx.lib.agw.multidirdialog as MDD
+
+    # Our normal wxApp-derived class, as usual
+    app = wx.App(0)
+
+    dlg = MDD.MultiDirDialog(None, title="Custom MultiDirDialog", defaultPath=os.getcwd(),
+                             agwStyle=MDD.DD_MULTIPLE|MDD.DD_DIR_MUST_EXIST)
+        
+    if dlg.ShowModal() != wx.ID_OK:
+        print "You Cancelled The Dialog!"
+        dlg.Destroy()
+        return
+
+    paths = dlg.GetPaths()
+    for indx, path in enumerate(paths):
+        print "Path %d: %s"%(indx+1, path)
+        
+    dlg.Destroy()
+
+    app.MainLoop()
+
+
+
 Supported Platforms
 ===================
 
-MultiDirDialog has been tested on the following platforms:
+L{MultiDirDialog} has been tested on the following platforms:
   * Windows (Windows XP).
 
 
@@ -75,9 +106,9 @@ Events Processing
 License And Version
 ===================
 
-MultiDirDialog is distributed under the wxPython license.
+L{MultiDirDialog} is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 12 Sep 2010, 10.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.3
 

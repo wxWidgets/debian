@@ -25,9 +25,9 @@ Event Name                          Description
 =================================== ===================================
 ``EVT_RIBBONGALLERY_SELECTED``      Triggered when the user selects an item from the gallery. Note that the ID is that of the gallery, not of the item.
 ``EVT_RIBBONGALLERY_HOVER_CHANGED`` Triggered when the item being hovered over by the user changes. The item in the event will be the new item being hovered, or ``None`` if there is no longer an item being hovered. Note that the ID is that of the gallery, not of the item.
+``EVT_RIBBONGALLERY_CLICKED``       Triggered when the user clicks on an item in the gallery.
 ``EVT_BUTTON``                      Triggered when the "extension" button of the gallery is pressed.
 =================================== ===================================
-
 """
 
 import wx
@@ -37,9 +37,11 @@ from art import *
 
 wxEVT_COMMAND_RIBBONGALLERY_HOVER_CHANGED = wx.NewEventType()
 wxEVT_COMMAND_RIBBONGALLERY_SELECTED = wx.NewEventType()
+wxEVT_COMMAND_RIBBONGALLERY_CLICKED = wx.NewEventType()
 
 EVT_RIBBONGALLERY_HOVER_CHANGED = wx.PyEventBinder(wxEVT_COMMAND_RIBBONGALLERY_HOVER_CHANGED, 1)
 EVT_RIBBONGALLERY_SELECTED = wx.PyEventBinder(wxEVT_COMMAND_RIBBONGALLERY_SELECTED, 1)
+EVT_RIBBONGALLERY_CLICKED = wx.PyEventBinder(wxEVT_COMMAND_RIBBONGALLERY_CLICKED, 1)
 
 
 class RibbonGalleryEvent(wx.PyCommandEvent):
@@ -157,6 +159,7 @@ class RibbonGallery(RibbonControl):
         self.Bind(wx.EVT_LEAVE_WINDOW, self.OnMouseLeave)
         self.Bind(wx.EVT_LEFT_DOWN, self.OnMouseDown)
         self.Bind(wx.EVT_LEFT_UP, self.OnMouseUp)
+        self.Bind(wx.EVT_LEFT_DCLICK, self.OnMouseDClick)        
         self.Bind(wx.EVT_MOTION, self.OnMouseMove)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_SIZE, self.OnSize)
@@ -361,11 +364,26 @@ class RibbonGallery(RibbonControl):
                         notification.SetGallery(self)
                         notification.SetGalleryItem(self._selected_item)
                         self.GetEventHandler().ProcessEvent(notification)
-                    
+
+                    notification = RibbonGalleryEvent(wxEVT_COMMAND_RIBBONGALLERY_CLICKED, self.GetId())
+                    notification.SetEventObject(self)
+                    notification.SetGallery(self)
+                    notification.SetGalleryItem(self._selected_item)
+                    self.GetEventHandler().ProcessEvent(notification)
+                
             self._mouse_active_rect = None
             self._active_item = None
             self.Refresh(False)
 
+
+    def OnMouseDClick(self, event):
+
+        # The 2nd click of a double-click should be handled as a click in the
+        # same way as the 1st click of the double-click. This is useful for
+        # scrolling through the gallery.
+        self.OnMouseDown(event)
+        self.OnMouseUp(event)
+        
 
     def SetItemClientData(self, item, data):
         """
@@ -487,10 +505,7 @@ class RibbonGallery(RibbonControl):
         if self._art == None:
             return
 
-        cur_size = self.GetSize()
-        min_size = self.GetMinSize()
-        
-        self._art.DrawGalleryBackground(dc, self, wx.Rect(0, 0, *cur_size))
+        self._art.DrawGalleryBackground(dc, self, wx.Rect(0, 0, *self.GetSize()))
 
         padding_top = self._art.GetMetric(RIBBON_ART_GALLERY_BITMAP_PADDING_TOP_SIZE)
         padding_left = self._art.GetMetric(RIBBON_ART_GALLERY_BITMAP_PADDING_LEFT_SIZE)

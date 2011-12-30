@@ -29,8 +29,8 @@
 
 """
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: setup.py 67669 2011-05-01 21:18:05Z CJP $"
-__revision__ = "$Revision: 67669 $"
+__svnid__ = "$Id: setup.py 70094 2011-12-22 19:12:57Z CJP $"
+__revision__ = "$Revision: 70094 $"
 
 #---- Imports ----#
 import os
@@ -357,14 +357,15 @@ def BuildOSXApp():
     from setuptools import setup
 
     CleanBuild()
-
+    fextents = synextreg.GetFileExtensions()
+    fextents.append("*")
     PLIST = dict(CFBundleName = info.PROG_NAME,
              CFBundleIconFile = 'Editra.icns',
              CFBundleShortVersionString = info.VERSION,
              CFBundleGetInfoString = info.PROG_NAME + " " + info.VERSION,
              CFBundleExecutable = info.PROG_NAME,
              CFBundleIdentifier = "org.editra.%s" % info.PROG_NAME.title(),
-             CFBundleDocumentTypes = [dict(CFBundleTypeExtensions=synextreg.GetFileExtensions(),
+             CFBundleDocumentTypes = [dict(CFBundleTypeExtensions=fextents,
                                            CFBundleTypeIconFile='editra_doc',
                                            CFBundleTypeRole="Editor"
                                           ),
@@ -552,7 +553,7 @@ def DoSourcePackage():
         maintainer = AUTHOR,
         maintainer_email = AUTHOR_EMAIL,
         url = URL,
-        download_url = "http://editra.org/?page=download",
+        download_url = "http://editra.org/download",
         license = LICENSE,
         platforms = [ "Many" ],
         packages = [ NAME ],

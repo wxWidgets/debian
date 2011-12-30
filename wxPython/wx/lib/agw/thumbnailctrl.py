@@ -3,7 +3,7 @@
 # Python Code By:
 #
 # Andrea Gavana And Peter Damoc, @ 12 Dec 2005
-# Latest Revision: 12 Sep 2010, 10.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List/Caveats
@@ -22,7 +22,7 @@
 # Write To Me At:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
 #
@@ -32,22 +32,22 @@
 
 
 """
-Thumbnailctrl is a widget that can be used to display a series of images in
+L{ThumbnailCtrl} is a widget that can be used to display a series of images in
 a "thumbnail" format.
 
 
 Description
 ===========
 
-Thumbnailctrl is a widget that can be used to display a series of images in
+L{ThumbnailCtrl} is a widget that can be used to display a series of images in
 a "thumbnail" format; it mimics, for example, the windows explorer behavior
 when you select the "view thumbnails" option.
 Basically, by specifying a folder that contains some image files, the files
 in the folder are displayed as miniature versions of the actual images in
 a `wx.ScrolledWindow`.
 
-The code is partly based on wxVillaLib, a wxWidgets implementation of this
-control. However, ThumbnailCtrl wouldn't have been so fast and complete
+The code is partly based on `wxVillaLib`, a wxWidgets implementation of this
+control. However, L{ThumbnailCtrl} wouldn't have been so fast and complete
 without the suggestions and hints from Peter Damoc. So, if he accepts the
 mention, this control is his as much as mine.
 
@@ -55,17 +55,46 @@ mention, this control is his as much as mine.
 Usage
 =====
 
-Sample construction::
+Usage example::
 
-    ThumbnailCtrl.__init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
-                           size=wx.DefaultSize, thumboutline=THUMB_OUTLINE_RECT,
-                           thumbfilter=THUMB_FILTER_IMAGES)
+    import os
+    
+    import wx
+    import wx.lib.agw.thumbnailctrl as TC
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "ThumbnailCtrl Demo")
+
+            panel = wx.Panel(self)
+            
+            sizer = wx.BoxSizer(wx.VERTICAL)
+
+            thumbnail = TC.ThumbnailCtrl(panel, imagehandler=TC.NativeImageHandler)
+            sizer.Add(thumbnail, 1, wx.EXPAND | wx.ALL, 10)
+
+            thumbnail.ShowDir(os.getcwd())
+            panel.SetSizer(sizer)
+
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
 
 
 Methods and Settings
 ====================
 
-With ThumbnailCtrl you can:
+With L{ThumbnailCtrl} you can:
 
 - Create different thumbnail outlines (none, images only, full, etc...);
 - Highlight thumbnails on mouse hovering;
@@ -80,10 +109,10 @@ With ThumbnailCtrl you can:
   c) ``a`` key rotates 180 degrees.
   
 - Delete files/thumbnails (via the ``del`` key);
-- Drag and drop thumbnails from ThumbnailCtrl to whatever application you want;
+- Drag and drop thumbnails from L{ThumbnailCtrl} to whatever application you want;
 - Use local (when at least one thumbnail is selected) or global (no need for
   thumbnail selection) popup menus;
-- Show/hide a `wx.ComboBox` at the top of ThumbnailCtrl: this combobox contains
+- Show/hide a `wx.ComboBox` at the top of L{ThumbnailCtrl}: this combobox contains
   working directory information and it has history entries;
 - possibility to show tooltips on thumbnails, which display file information
   (like file name, size, last modification date and thumbnail size).
@@ -118,9 +147,9 @@ Event Name                         Description
 License And Version
 ===================
 
-ThumbnailCtrl is distributed under the wxPython license.
+L{ThumbnailCtrl} is distributed under the wxPython license.
 
-Latest revision: Andrea Gavana @ 12 Sep 2010, 10.00 GMT
+Latest revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.9
 
@@ -869,7 +898,7 @@ class Thumb(object):
 
 class ThumbnailCtrl(wx.Panel):
     """
-    ThumbnailCtrl is a widget that can be used to display a series of images in
+    L{ThumbnailCtrl} is a widget that can be used to display a series of images in
     a "thumbnail" format.
     """
 

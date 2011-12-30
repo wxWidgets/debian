@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        cocoa/NSBox.mm
+// Name:        src/cocoa/NSBox.mm
 // Purpose:     wxCocoaNSBox
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/03/19
-// RCS-ID:      $Id: 
+// RCS-ID:      $Id: NSBox.mm 67254 2011-03-20 00:14:35Z DS $
 // Copyright:   (c) 2003 David Elliott
-// Licence:     wxWidgets licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================

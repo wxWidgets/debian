@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: dcscreen.cpp 39123 2006-05-09 13:55:29Z ABX $
+// RCS-ID:      $Id: dcscreen.cpp 50704 2007-12-15 01:25:56Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,20 +16,21 @@
     #pragma hdrstop
 #endif
 
-#include "wx/dcscreen.h"
+#include "wx/palmos/dcscreen.h"
 
 #ifndef WX_PRECOMP
    #include "wx/string.h"
    #include "wx/window.h"
 #endif
 
-IMPLEMENT_DYNAMIC_CLASS(wxScreenDC, wxWindowDC)
+IMPLEMENT_ABSTRACT_CLASS(wxScreenDCImpl, wxPalmDCImpl)
 
 // Create a DC representing the whole screen
-wxScreenDC::wxScreenDC()
+wxScreenDCImpl::wxScreenDCImpl( wxScreenDC *owner ) :
+    wxPalmDCImpl( owner )
 {
 }
 
-void wxScreenDC::DoGetSize(int *width, int *height) const
+void wxScreenDCImpl::DoGetSize (int *w, int *h) const
 {
 }

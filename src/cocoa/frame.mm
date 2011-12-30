@@ -4,9 +4,9 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/03/16
-// RCS-ID:      $Id: frame.mm 47398 2007-07-12 21:17:27Z DE $
+// RCS-ID:      $Id: frame.mm 66555 2011-01-04 08:31:53Z SC $
 // Copyright:   (c) 2003 David Elliott
-// Licence:     wxWidgets licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #include "wx/wxprec.h"
@@ -33,8 +33,6 @@
 
 BEGIN_EVENT_TABLE(wxFrame, wxFrameBase)
 END_EVENT_TABLE()
-
-IMPLEMENT_DYNAMIC_CLASS(wxFrame, wxTopLevelWindow)
 
 void wxFrame::Init()
 {

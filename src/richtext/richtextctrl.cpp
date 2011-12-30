@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        src/richtext/richeditctrl.cpp
+// Name:        src/richtext/richtextctrl.cpp
 // Purpose:     A rich edit control
 // Author:      Julian Smart
 // Modified by:
 // Created:     2005-09-30
-// RCS-ID:      $Id: richtextctrl.cpp 67025 2011-02-25 17:28:13Z JS $
+// RCS-ID:      $Id: richtextctrl.cpp 69585 2011-10-30 13:39:11Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,32 +37,37 @@
 
 // DLL options compatibility check:
 #include "wx/app.h"
-
-// Refresh the area affected by a selection change
-bool wxRichTextCtrlRefreshForSelectionChange(wxRichTextCtrl& ctrl, const wxRichTextRange& oldSelection, const wxRichTextRange& newSelection);
-
 WX_CHECK_BUILD_OPTIONS("wxRichTextCtrl")
 
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_LEFT_CLICK)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_MIDDLE_CLICK)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_RIGHT_CLICK)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_LEFT_DCLICK)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_RETURN)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_CHARACTER)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_DELETE)
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_LEFT_CLICK, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_MIDDLE_CLICK, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_RIGHT_CLICK, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_LEFT_DCLICK, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_RETURN, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_CHARACTER, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_DELETE, wxRichTextEvent );
 
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_STYLESHEET_REPLACING)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_STYLESHEET_REPLACED)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_STYLESHEET_CHANGING)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_STYLESHEET_CHANGED)
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_STYLESHEET_REPLACING, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_STYLESHEET_REPLACED, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_STYLESHEET_CHANGING, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_STYLESHEET_CHANGED, wxRichTextEvent );
 
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_CONTENT_INSERTED)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_CONTENT_DELETED)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_STYLE_CHANGED)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_SELECTION_CHANGED)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_RICHTEXT_BUFFER_RESET)
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_CONTENT_INSERTED, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_CONTENT_DELETED, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_STYLE_CHANGED, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_SELECTION_CHANGED, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_BUFFER_RESET, wxRichTextEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_RICHTEXT_FOCUS_OBJECT_CHANGED, wxRichTextEvent );
 
 #if wxRICHTEXT_USE_OWN_CARET
+
+/*!
+ * wxRichTextCaret
+ *
+ * This implements a non-flashing cursor in case there
+ * are platform-specific problems with the generic caret.
+ * wxRICHTEXT_USE_OWN_CARET is set in richtextbuffer.h.
+ */
 
 class wxRichTextCaret;
 class wxRichTextCaretTimer: public wxTimer
@@ -75,14 +80,6 @@ class wxRichTextCaretTimer: public wxTimer
     virtual void Notify();
     wxRichTextCaret* m_caret;
 };
-
-/*!
- * wxRichTextCaret
- *
- * This implements a non-flashing cursor in case there
- * are platform-specific problems with the generic caret.
- * wxRICHTEXT_USE_OWN_CARET is set in richtextbuffer.h.
- */
 
 class wxRichTextCaret: public wxCaret
 {
@@ -140,11 +137,11 @@ private:
 };
 #endif
 
-IMPLEMENT_CLASS( wxRichTextCtrl, wxTextCtrlBase )
+IMPLEMENT_DYNAMIC_CLASS( wxRichTextCtrl, wxControl )
 
-IMPLEMENT_CLASS( wxRichTextEvent, wxNotifyEvent )
+IMPLEMENT_DYNAMIC_CLASS( wxRichTextEvent, wxNotifyEvent )
 
-BEGIN_EVENT_TABLE( wxRichTextCtrl, wxTextCtrlBase )
+BEGIN_EVENT_TABLE( wxRichTextCtrl, wxControl )
     EVT_PAINT(wxRichTextCtrl::OnPaint)
     EVT_ERASE_BACKGROUND(wxRichTextCtrl::OnEraseBackground)
     EVT_IDLE(wxRichTextCtrl::OnIdle)
@@ -162,6 +159,7 @@ BEGIN_EVENT_TABLE( wxRichTextCtrl, wxTextCtrlBase )
     EVT_KILL_FOCUS(wxRichTextCtrl::OnKillFocus)
     EVT_MOUSE_CAPTURE_LOST(wxRichTextCtrl::OnCaptureLost)
     EVT_CONTEXT_MENU(wxRichTextCtrl::OnContextMenu)
+    EVT_SYS_COLOUR_CHANGED(wxRichTextCtrl::OnSysColourChanged)
 
     EVT_MENU(wxID_UNDO, wxRichTextCtrl::OnUndo)
     EVT_UPDATE_UI(wxID_UNDO, wxRichTextCtrl::OnUpdateUndo)
@@ -183,6 +181,16 @@ BEGIN_EVENT_TABLE( wxRichTextCtrl, wxTextCtrlBase )
 
     EVT_MENU(wxID_SELECTALL, wxRichTextCtrl::OnSelectAll)
     EVT_UPDATE_UI(wxID_SELECTALL, wxRichTextCtrl::OnUpdateSelectAll)
+
+    EVT_MENU(wxID_RICHTEXT_PROPERTIES1, wxRichTextCtrl::OnProperties)
+    EVT_UPDATE_UI(wxID_RICHTEXT_PROPERTIES1, wxRichTextCtrl::OnUpdateProperties)
+
+    EVT_MENU(wxID_RICHTEXT_PROPERTIES2, wxRichTextCtrl::OnProperties)
+    EVT_UPDATE_UI(wxID_RICHTEXT_PROPERTIES2, wxRichTextCtrl::OnUpdateProperties)
+
+    EVT_MENU(wxID_RICHTEXT_PROPERTIES3, wxRichTextCtrl::OnProperties)
+    EVT_UPDATE_UI(wxID_RICHTEXT_PROPERTIES3, wxRichTextCtrl::OnUpdateProperties)
+
 END_EVENT_TABLE()
 
 /*!
@@ -215,19 +223,14 @@ wxRichTextCtrl::wxRichTextCtrl(wxWindow* parent,
 bool wxRichTextCtrl::Create( wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style,
                              const wxValidator& validator, const wxString& name)
 {
-    if ((style & wxBORDER_MASK) == wxBORDER_DEFAULT)
-#ifdef __WXMSW__
-        style |= GetThemedBorderStyle();
-#else
-        style |= wxBORDER_SUNKEN;
-#endif
+    style |= wxVSCROLL;
 
-    if (!wxTextCtrlBase::Create(parent, id, pos, size,
-                                style|wxFULL_REPAINT_ON_RESIZE,
-                                validator, name))
+    if (!wxControl::Create(parent, id, pos, size,
+                           style|wxFULL_REPAINT_ON_RESIZE,
+                           validator, name))
         return false;
 
-    if (!GetFont().Ok())
+    if (!GetFont().IsOk())
     {
         SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
     }
@@ -239,7 +242,7 @@ bool wxRichTextCtrl::Create( wxWindow* parent, wxWindowID id, const wxString& va
         SetEditable(false);
 
     // The base attributes must all have default values
-    wxTextAttrEx attributes;
+    wxRichTextAttr attributes;
     attributes.SetFont(GetFont());
     attributes.SetTextColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
     attributes.SetAlignment(wxTEXT_ALIGNMENT_LEFT);
@@ -249,9 +252,12 @@ bool wxRichTextCtrl::Create( wxWindow* parent, wxWindowID id, const wxString& va
 
     SetBasicStyle(attributes);
 
+    int margin = 5;
+    SetMargins(margin, margin);
+
     // The default attributes will be merged with base attributes, so
     // can be empty to begin with
-    wxTextAttrEx defaultAttributes;
+    wxRichTextAttr defaultAttributes;
     SetDefaultStyle(defaultAttributes);
 
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
@@ -287,12 +293,12 @@ bool wxRichTextCtrl::Create( wxWindow* parent, wxWindowID id, const wxString& va
     // Accelerators
     wxAcceleratorEntry entries[6];
 
-    entries[0].Set(wxACCEL_CMD,   (int) 'C',       wxID_COPY);
-    entries[1].Set(wxACCEL_CMD,   (int) 'X',       wxID_CUT);
-    entries[2].Set(wxACCEL_CMD,   (int) 'V',       wxID_PASTE);
-    entries[3].Set(wxACCEL_CMD,   (int) 'A',       wxID_SELECTALL);
-    entries[4].Set(wxACCEL_CMD,   (int) 'Z',       wxID_UNDO);
-    entries[5].Set(wxACCEL_CMD,   (int) 'Y',       wxID_REDO);
+    entries[0].Set(wxACCEL_CTRL,   (int) 'C',       wxID_COPY);
+    entries[1].Set(wxACCEL_CTRL,   (int) 'X',       wxID_CUT);
+    entries[2].Set(wxACCEL_CTRL,   (int) 'V',       wxID_PASTE);
+    entries[3].Set(wxACCEL_CTRL,   (int) 'A',       wxID_SELECTALL);
+    entries[4].Set(wxACCEL_CTRL,   (int) 'Z',       wxID_UNDO);
+    entries[5].Set(wxACCEL_CTRL,   (int) 'Y',       wxID_REDO);
 
     wxAcceleratorTable accel(6, entries);
     SetAcceleratorTable(accel);
@@ -307,12 +313,15 @@ bool wxRichTextCtrl::Create( wxWindow* parent, wxWindowID id, const wxString& va
     m_contextMenu->Append(wxID_CLEAR, _("&Delete"));
     m_contextMenu->AppendSeparator();
     m_contextMenu->Append(wxID_SELECTALL, _("Select &All"));
+    m_contextMenu->AppendSeparator();
+    m_contextMenu->Append(wxID_RICHTEXT_PROPERTIES1, _("&Properties"));
 
     return true;
 }
 
 wxRichTextCtrl::~wxRichTextCtrl()
 {
+    SetFocusObject(& GetBuffer(), false);
     GetBuffer().RemoveEventHandler(this);
 
     delete m_contextMenu;
@@ -321,12 +330,12 @@ wxRichTextCtrl::~wxRichTextCtrl()
 /// Member initialisation
 void wxRichTextCtrl::Init()
 {
-    m_freezeCount = 0;
     m_contextMenu = NULL;
     m_caret = NULL;
     m_caretPosition = -1;
-    m_selectionRange.SetRange(-2, -2);
     m_selectionAnchor = -2;
+    m_selectionAnchorObject = NULL;
+    m_selectionState = wxRichTextCtrlSelectionState_Normal;
     m_editable = true;
     m_caretAtLineStart = false;
     m_dragging = false;
@@ -335,48 +344,47 @@ void wxRichTextCtrl::Init()
     m_fullLayoutSavedPosition = 0;
     m_delayedLayoutThreshold = wxRICHTEXT_DEFAULT_DELAYED_LAYOUT_THRESHOLD;
     m_caretPositionForDefaultStyle = -2;
+    m_focusObject = & m_buffer;
 }
 
-/// Call Freeze to prevent refresh
-void wxRichTextCtrl::Freeze()
+void wxRichTextCtrl::DoThaw()
 {
-    m_freezeCount ++;
-}
+    if (GetBuffer().IsDirty())
+        LayoutContent();
+    else
+        SetupScrollbars();
 
-/// Call Thaw to refresh
-void wxRichTextCtrl::Thaw()
-{
-    m_freezeCount --;
-
-    if (m_freezeCount == 0)
-    {
-        if (GetBuffer().GetDirty())
-            LayoutContent();
-        else
-            SetupScrollbars();
-
-        Refresh(false);
-    }
+    wxWindow::DoThaw();
 }
 
 /// Clear all text
 void wxRichTextCtrl::Clear()
 {
-    m_buffer.ResetAndClearCommands();
-    m_buffer.SetDirty(true);
+    if (GetFocusObject() == & GetBuffer())
+    {
+        m_buffer.ResetAndClearCommands();
+        m_buffer.Invalidate(wxRICHTEXT_ALL);
+    }
+    else
+    {
+        GetFocusObject()->Reset();
+    }
+
     m_caretPosition = -1;
     m_caretPositionForDefaultStyle = -2;
     m_caretAtLineStart = false;
-    m_selectionRange.SetRange(-2, -2);
+    m_selection.Reset();
+    m_selectionState = wxRichTextCtrlSelectionState_Normal;
 
     Scroll(0,0);
 
-    if (m_freezeCount == 0)
+    if (!IsFrozen())
     {
         LayoutContent();
         Refresh(false);
     }
-    SendTextUpdatedEvent();
+
+    wxTextCtrl::SendTextUpdatedEvent(this);
 }
 
 /// Painting
@@ -393,12 +401,11 @@ void wxRichTextCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
 #else
         wxPaintDC dc(this);
 #endif
-        PrepareDC(dc);
 
         if (IsFrozen())
-        {
             return;
-        }
+
+        PrepareDC(dc);
 
         dc.SetFont(GetFont());
 
@@ -411,10 +418,10 @@ void wxRichTextCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
         drawingArea.SetPosition(GetLogicalPoint(drawingArea.GetPosition()));
 
         wxRect availableSpace(GetClientSize());
-        if (GetBuffer().GetDirty())
+        if (GetBuffer().IsDirty())
         {
             GetBuffer().Layout(dc, availableSpace, wxRICHTEXT_FIXED_WIDTH|wxRICHTEXT_VARIABLE_HEIGHT);
-            GetBuffer().SetDirty(false);
+            GetBuffer().Invalidate(wxRICHTEXT_NONE);
             SetupScrollbars();
         }
 
@@ -426,9 +433,16 @@ void wxRichTextCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
         clipRect.SetPosition(GetLogicalPoint(clipRect.GetPosition()));
         dc.SetClippingRegion(clipRect);
 
-        GetBuffer().Draw(dc, GetBuffer().GetRange(), GetInternalSelectionRange(), drawingArea, 0 /* descent */, 0 /* flags */);
+        int flags = 0;
+        if ((GetExtraStyle() & wxRICHTEXT_EX_NO_GUIDELINES) == 0)
+            flags |= wxRICHTEXT_DRAW_GUIDELINES;
+
+        GetBuffer().Draw(dc, GetBuffer().GetOwnRange(), GetSelection(), drawingArea, 0 /* descent */, flags);
 
         dc.DestroyClippingRegion();
+
+        // Other user defined painting after everything else (i.e. all text) is painted
+        PaintAboveContent(dc);
 
 #if wxRICHTEXT_USE_OWN_CARET
         if (GetCaret()->IsVisible())
@@ -436,13 +450,17 @@ void wxRichTextCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
             ((wxRichTextCaret*) GetCaret())->DoDraw(& dc);
         }
 #endif
-
     }
 
 #if !wxRICHTEXT_USE_OWN_CARET
     if (GetCaret())
         GetCaret()->Show();
     PositionCaret();
+#else
+#if !defined(__WXMAC__)
+    // Causes caret dropouts on Mac
+    PositionCaret();
+#endif
 #endif
 }
 
@@ -489,6 +507,33 @@ void wxRichTextCtrl::OnCaptureLost(wxMouseCaptureLostEvent& WXUNUSED(event))
     m_dragging = false;
 }
 
+// Set up the caret for the given position and container, after a mouse click
+bool wxRichTextCtrl::SetCaretPositionAfterClick(wxRichTextParagraphLayoutBox* container, long position, int hitTestFlags, bool extendSelection)
+{
+    bool caretAtLineStart = false;
+
+    if (hitTestFlags & wxRICHTEXT_HITTEST_BEFORE)
+    {
+        // If we're at the start of a line (but not first in para)
+        // then we should keep the caret showing at the start of the line
+        // by showing the m_caretAtLineStart flag.
+        wxRichTextParagraph* para = container->GetParagraphAtPosition(position);
+        wxRichTextLine* line = container->GetLineAtPosition(position);
+
+        if (line && para && line->GetAbsoluteRange().GetStart() == position && para->GetRange().GetStart() != position)
+            caretAtLineStart = true;
+        position --;
+    }
+
+    if (extendSelection && (m_caretPosition != position))
+        ExtendSelection(m_caretPosition, position, wxRICHTEXT_SHIFT_DOWN);
+
+    MoveCaret(position, caretAtLineStart);
+    SetDefaultStyleToCursorStyle();
+
+    return true;
+}
+
 /// Left-click
 void wxRichTextCtrl::OnLeftClick(wxMouseEvent& event)
 {
@@ -498,42 +543,32 @@ void wxRichTextCtrl::OnLeftClick(wxMouseEvent& event)
     PrepareDC(dc);
     dc.SetFont(GetFont());
 
+    // TODO: detect change of focus object
     long position = 0;
-    int hit = GetBuffer().HitTest(dc, event.GetLogicalPosition(dc), position);
+    wxRichTextObject* hitObj = NULL;
+    wxRichTextObject* contextObj = NULL;
+    int hit = GetBuffer().HitTest(dc, event.GetLogicalPosition(dc), position, & hitObj, & contextObj);
 
-    if (hit != wxRICHTEXT_HITTEST_NONE)
+    if (hit != wxRICHTEXT_HITTEST_NONE && hitObj)
     {
+        wxRichTextParagraphLayoutBox* oldFocusObject = GetFocusObject();
+        wxRichTextParagraphLayoutBox* container = wxDynamicCast(contextObj, wxRichTextParagraphLayoutBox);
+        if (container && container != GetFocusObject() && container->AcceptsFocus())
+        {
+            SetFocusObject(container, false /* don't set caret position yet */);
+        }
+
         m_dragStart = event.GetLogicalPosition(dc);
         m_dragging = true;
         CaptureMouse();
 
-        bool caretAtLineStart = false;
-
-        if (hit & wxRICHTEXT_HITTEST_BEFORE)
-        {
-            // If we're at the start of a line (but not first in para)
-            // then we should keep the caret showing at the start of the line
-            // by showing the m_caretAtLineStart flag.
-            wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(position);
-            wxRichTextLine* line = GetBuffer().GetLineAtPosition(position);
-
-            if (line && para && line->GetAbsoluteRange().GetStart() == position && para->GetRange().GetStart() != position)
-                caretAtLineStart = true;
-            position --;
-        }
-
         long oldCaretPos = m_caretPosition;
 
-        MoveCaret(position, caretAtLineStart);
-        SetDefaultStyleToCursorStyle();
+        SetCaretPositionAfterClick(container, position, hit);
 
-        if (event.ShiftDown())
-        {
-            if (m_selectionRange.GetStart() == -2)
-                ExtendSelection(oldCaretPos, m_caretPosition, wxRICHTEXT_SHIFT_DOWN);
-            else
-                ExtendSelection(m_caretPosition, m_caretPosition, wxRICHTEXT_SHIFT_DOWN);
-        }
+        // For now, don't handle shift-click when we're selecting multiple objects.
+        if (event.ShiftDown() && GetFocusObject() == oldFocusObject && m_selectionState == wxRichTextCtrlSelectionState_Normal)
+            ExtendSelection(oldCaretPos, m_caretPosition, wxRICHTEXT_SHIFT_DOWN);
         else
             SelectNone();
     }
@@ -557,34 +592,48 @@ void wxRichTextCtrl::OnLeftUp(wxMouseEvent& event)
 
         long position = 0;
         wxPoint logicalPt = event.GetLogicalPosition(dc);
-        int hit = GetBuffer().HitTest(dc, logicalPt, position);
+        wxRichTextObject* hitObj = NULL;
+        wxRichTextObject* contextObj = NULL;
+        // Only get objects at this level, not nested, because otherwise we couldn't swipe text at a single level.
+        int hit = GetFocusObject()->HitTest(dc, logicalPt, position, & hitObj, & contextObj, wxRICHTEXT_HITTEST_NO_NESTED_OBJECTS);
 
         if ((hit != wxRICHTEXT_HITTEST_NONE) && !(hit & wxRICHTEXT_HITTEST_OUTSIDE))
         {
-            wxTextAttrEx attr;
-            if (GetStyle(position, attr))
+            wxRichTextEvent cmdEvent(
+                wxEVT_COMMAND_RICHTEXT_LEFT_CLICK,
+                GetId());
+            cmdEvent.SetEventObject(this);
+            cmdEvent.SetPosition(position);
+            if (hitObj)
+                cmdEvent.SetContainer(hitObj->GetContainer());
+
+            if (!GetEventHandler()->ProcessEvent(cmdEvent))
             {
-                if (attr.HasFlag(wxTEXT_ATTR_URL))
+                wxRichTextAttr attr;
+                if (GetStyle(position, attr))
                 {
-                    wxString urlTarget = attr.GetURL();
-                    if (!urlTarget.IsEmpty())
+                    if (attr.HasFlag(wxTEXT_ATTR_URL))
                     {
-                        wxMouseEvent mouseEvent(event);
-
-                        long startPos = 0, endPos = 0;
-                        wxRichTextObject* obj = GetBuffer().GetLeafObjectAtPosition(position);
-                        if (obj)
+                        wxString urlTarget = attr.GetURL();
+                        if (!urlTarget.IsEmpty())
                         {
-                            startPos = obj->GetRange().GetStart();
-                            endPos = obj->GetRange().GetEnd();
+                            wxMouseEvent mouseEvent(event);
+
+                            long startPos = 0, endPos = 0;
+                            wxRichTextObject* obj = GetFocusObject()->GetLeafObjectAtPosition(position);
+                            if (obj)
+                            {
+                                startPos = obj->GetRange().GetStart();
+                                endPos = obj->GetRange().GetEnd();
+                            }
+
+                            wxTextUrlEvent urlEvent(GetId(), mouseEvent, startPos, endPos);
+                            InitCommandEvent(urlEvent);
+
+                            urlEvent.SetString(urlTarget);
+
+                            GetEventHandler()->ProcessEvent(urlEvent);
                         }
-
-                        wxTextUrlEvent urlEvent(GetId(), mouseEvent, startPos, endPos);
-                        InitCommandEvent(urlEvent);
-
-                        urlEvent.SetString(urlTarget);
-
-                        GetEventHandler()->ProcessEvent(urlEvent);
                     }
                 }
             }
@@ -601,15 +650,29 @@ void wxRichTextCtrl::OnMoveMouse(wxMouseEvent& event)
 
     long position = 0;
     wxPoint logicalPt = event.GetLogicalPosition(dc);
-    int hit = GetBuffer().HitTest(dc, logicalPt, position);
+    wxRichTextObject* hitObj = NULL;
+    wxRichTextObject* contextObj = NULL;
+
+    int flags = 0;
+
+    // If we're dragging, let's only consider positions at this level; otherwise
+    // selecting a range is not going to work.
+    wxRichTextParagraphLayoutBox* container = & GetBuffer();
+    if (m_dragging)
+    {
+        flags = wxRICHTEXT_HITTEST_NO_NESTED_OBJECTS;
+        container = GetFocusObject();
+    }
+    int hit = container->HitTest(dc, logicalPt, position, & hitObj, & contextObj, flags);
 
     // See if we need to change the cursor
 
     {
-        if (hit != wxRICHTEXT_HITTEST_NONE && !(hit & wxRICHTEXT_HITTEST_OUTSIDE))
+        if (hit != wxRICHTEXT_HITTEST_NONE && !(hit & wxRICHTEXT_HITTEST_OUTSIDE) && hitObj)
         {
-            wxTextAttrEx attr;
-            if (GetStyle(position, attr))
+            wxRichTextParagraphLayoutBox* actualContainer = wxDynamicCast(contextObj, wxRichTextParagraphLayoutBox);
+            wxRichTextAttr attr;
+            if (actualContainer && GetStyle(position, attr, actualContainer))
             {
                 if (attr.HasFlag(wxTEXT_ATTR_URL))
                 {
@@ -631,32 +694,83 @@ void wxRichTextCtrl::OnMoveMouse(wxMouseEvent& event)
         return;
     }
 
-    if (m_dragging && hit != wxRICHTEXT_HITTEST_NONE)
+    if (m_dragging)
+    {
+        wxRichTextParagraphLayoutBox* commonAncestor = NULL;
+        wxRichTextParagraphLayoutBox* otherContainer = NULL;
+        wxRichTextParagraphLayoutBox* firstContainer = NULL;
+
+        // Check for dragging across multiple containers
+        long position2 = 0;
+        wxRichTextObject* hitObj2 = NULL, *contextObj2 = NULL;
+        int hit2 = GetBuffer().HitTest(dc, logicalPt, position2, & hitObj2, & contextObj2, 0);
+        if (hit2 != wxRICHTEXT_HITTEST_NONE && !(hit2 & wxRICHTEXT_HITTEST_OUTSIDE) && hitObj2 && hitObj != hitObj2)
+        {
+            // See if we can find a common ancestor
+            if (m_selectionState == wxRichTextCtrlSelectionState_Normal)
+            {
+                firstContainer = GetFocusObject();
+                commonAncestor = wxDynamicCast(firstContainer->GetParent(), wxRichTextParagraphLayoutBox);
+            }
+            else
+            {
+                firstContainer = wxDynamicCast(m_selectionAnchorObject, wxRichTextParagraphLayoutBox);
+                //commonAncestor = GetFocusObject(); // when the selection state is not normal, the focus object (e.g. table)
+                                                   // is the common ancestor.
+                commonAncestor = wxDynamicCast(firstContainer->GetParent(), wxRichTextParagraphLayoutBox);
+            }
+
+            if (commonAncestor && commonAncestor->HandlesChildSelections())
+            {
+                wxRichTextObject* p = hitObj2;
+                while (p)
+                {
+                    if (p->GetParent() == commonAncestor)
+                    {
+                        otherContainer = wxDynamicCast(p, wxRichTextParagraphLayoutBox);
+                        break;
+                    }
+                    p = p->GetParent();
+                }
+            }
+
+            if (commonAncestor && firstContainer && otherContainer)
+            {
+                // We have now got a second container that shares a parent with the current or anchor object.
+                if (m_selectionState == wxRichTextCtrlSelectionState_Normal)
+                {
+                    // Don't go into common-ancestor selection mode if we still have the same
+                    // container.
+                    if (otherContainer != firstContainer)
+                    {
+                        m_selectionState = wxRichTextCtrlSelectionState_CommonAncestor;
+                        m_selectionAnchorObject = firstContainer;
+                        m_selectionAnchor = firstContainer->GetRange().GetStart();
+
+                        // The common ancestor, such as a table, returns the cell selection
+                        // between the anchor and current position.
+                        m_selection = commonAncestor->GetSelection(m_selectionAnchor, otherContainer->GetRange().GetStart());
+                    }
+                }
+                else
+                {
+                    m_selection = commonAncestor->GetSelection(m_selectionAnchor, otherContainer->GetRange().GetStart());
+                }
+
+                Refresh();
+
+                if (otherContainer->AcceptsFocus())
+                    SetFocusObject(otherContainer, false /* don't set caret and clear selection */);
+                MoveCaret(-1, false);
+                SetDefaultStyleToCursorStyle();
+            }
+        }
+    }
+
+    if (hitObj && m_dragging && hit != wxRICHTEXT_HITTEST_NONE && m_selectionState == wxRichTextCtrlSelectionState_Normal)
     {
         // TODO: test closeness
-
-        bool caretAtLineStart = false;
-
-        if (hit & wxRICHTEXT_HITTEST_BEFORE)
-        {
-            // If we're at the start of a line (but not first in para)
-            // then we should keep the caret showing at the start of the line
-            // by showing the m_caretAtLineStart flag.
-            wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(position);
-            wxRichTextLine* line = GetBuffer().GetLineAtPosition(position);
-
-            if (line && para && line->GetAbsoluteRange().GetStart() == position && para->GetRange().GetStart() != position)
-                caretAtLineStart = true;
-            position --;
-        }
-
-        if (m_caretPosition != position)
-        {
-            ExtendSelection(m_caretPosition, position, wxRICHTEXT_SHIFT_DOWN);
-
-            MoveCaret(position, caretAtLineStart);
-            SetDefaultStyleToCursorStyle();
-        }
+        SetCaretPositionAfterClick(container, position, hit, true /* extend selection */);
     }
 }
 
@@ -664,20 +778,67 @@ void wxRichTextCtrl::OnMoveMouse(wxMouseEvent& event)
 void wxRichTextCtrl::OnRightClick(wxMouseEvent& event)
 {
     SetFocus();
-    event.Skip();
+
+    wxClientDC dc(this);
+    PrepareDC(dc);
+    dc.SetFont(GetFont());
+
+    long position = 0;
+    wxPoint logicalPt = event.GetLogicalPosition(dc);
+    wxRichTextObject* hitObj = NULL;
+    wxRichTextObject* contextObj = NULL;
+    int hit = GetFocusObject()->HitTest(dc, logicalPt, position, & hitObj, & contextObj);
+
+    if (hitObj && hitObj->GetContainer() != GetFocusObject())
+    {
+        wxRichTextParagraphLayoutBox* actualContainer = wxDynamicCast(contextObj, wxRichTextParagraphLayoutBox);
+        if (actualContainer && actualContainer->AcceptsFocus())
+        {
+            SetFocusObject(actualContainer, false /* don't set caret position yet */);
+            SetCaretPositionAfterClick(actualContainer, position, hit);
+        }
+    }
+
+    wxRichTextEvent cmdEvent(
+        wxEVT_COMMAND_RICHTEXT_RIGHT_CLICK,
+        GetId());
+    cmdEvent.SetEventObject(this);
+    cmdEvent.SetPosition(position);
+    if (hitObj)
+        cmdEvent.SetContainer(hitObj->GetContainer());
+
+    if (!GetEventHandler()->ProcessEvent(cmdEvent))
+        event.Skip();
 }
 
 /// Left-double-click
-void wxRichTextCtrl::OnLeftDClick(wxMouseEvent& event)
+void wxRichTextCtrl::OnLeftDClick(wxMouseEvent& WXUNUSED(event))
 {
-    SelectWord(GetCaretPosition()+1);
-    event.Skip();
+    wxRichTextEvent cmdEvent(
+        wxEVT_COMMAND_RICHTEXT_LEFT_DCLICK,
+        GetId());
+    cmdEvent.SetEventObject(this);
+    cmdEvent.SetPosition(m_caretPosition+1);
+    cmdEvent.SetContainer(GetFocusObject());
+
+    if (!GetEventHandler()->ProcessEvent(cmdEvent))
+    {
+        SelectWord(GetCaretPosition()+1);
+    }
 }
 
 /// Middle-click
 void wxRichTextCtrl::OnMiddleClick(wxMouseEvent& event)
 {
-    event.Skip();
+    wxRichTextEvent cmdEvent(
+        wxEVT_COMMAND_RICHTEXT_MIDDLE_CLICK,
+        GetId());
+    cmdEvent.SetEventObject(this);
+    cmdEvent.SetPosition(m_caretPosition+1);
+    cmdEvent.SetContainer(GetFocusObject());
+
+    if (!GetEventHandler()->ProcessEvent(cmdEvent))
+        event.Skip();
 }
 
 /// Key press
@@ -693,23 +854,7 @@ void wxRichTextCtrl::OnChar(wxKeyEvent& event)
 
     if (event.GetEventType() == wxEVT_KEY_DOWN)
     {
-        if (event.GetKeyCode() == WXK_LEFT ||
-            event.GetKeyCode() == WXK_RIGHT ||
-            event.GetKeyCode() == WXK_UP ||
-            event.GetKeyCode() == WXK_DOWN ||
-            event.GetKeyCode() == WXK_HOME ||
-            event.GetKeyCode() == WXK_PAGEUP ||
-            event.GetKeyCode() == WXK_PAGEDOWN ||
-            event.GetKeyCode() == WXK_END ||
-
-            event.GetKeyCode() == WXK_NUMPAD_LEFT ||
-            event.GetKeyCode() == WXK_NUMPAD_RIGHT ||
-            event.GetKeyCode() == WXK_NUMPAD_UP ||
-            event.GetKeyCode() == WXK_NUMPAD_DOWN ||
-            event.GetKeyCode() == WXK_NUMPAD_HOME ||
-            event.GetKeyCode() == WXK_NUMPAD_PAGEUP ||
-            event.GetKeyCode() == WXK_NUMPAD_PAGEDOWN ||
-            event.GetKeyCode() == WXK_NUMPAD_END)
+        if (event.IsKeyInCategory(WXK_CATEGORY_NAVIGATION))
         {
             KeyboardNavigate(event.GetKeyCode(), flags);
             return;
@@ -812,20 +957,20 @@ void wxRichTextCtrl::OnChar(wxKeyEvent& event)
                     long pos = wxRichTextCtrl::FindNextWordPosition(-1);
                     if (pos < newPos)
                     {
-                        GetBuffer().DeleteRangeWithUndo(wxRichTextRange(pos+1, newPos), this);
+                        GetFocusObject()->DeleteRangeWithUndo(wxRichTextRange(pos+1, newPos), this, & GetBuffer());
                         processed = true;
                     }
                 }
 
                 if (!processed)
-                    GetBuffer().DeleteRangeWithUndo(wxRichTextRange(newPos, newPos), this);
+                    GetFocusObject()->DeleteRangeWithUndo(wxRichTextRange(newPos, newPos), this, & GetBuffer());
             }
 
             EndBatchUndo();
 
             if (GetLastPosition() == -1)
             {
-                GetBuffer().Reset();
+                GetFocusObject()->Reset();
 
                 m_caretPosition = -1;
                 PositionCaret();
@@ -840,6 +985,7 @@ void wxRichTextCtrl::OnChar(wxKeyEvent& event)
             cmdEvent.SetEventObject(this);
             cmdEvent.SetFlags(flags);
             cmdEvent.SetPosition(m_caretPosition+1);
+            cmdEvent.SetContainer(GetFocusObject());
             GetEventHandler()->ProcessEvent(cmdEvent);
 
             Update();
@@ -870,12 +1016,12 @@ void wxRichTextCtrl::OnChar(wxKeyEvent& event)
         {
             wxString text;
             text = wxRichTextLineBreakChar;
-            GetBuffer().InsertTextWithUndo(newPos+1, text, this);
+            GetFocusObject()->InsertTextWithUndo(newPos+1, text, this, & GetBuffer());
             m_caretAtLineStart = true;
             PositionCaret();
         }
         else
-            GetBuffer().InsertNewlineWithUndo(newPos+1, this, wxRICHTEXT_INSERT_WITH_PREVIOUS_PARAGRAPH_STYLE|wxRICHTEXT_INSERT_INTERACTIVE);
+            GetFocusObject()->InsertNewlineWithUndo(newPos+1, this, & GetBuffer(), wxRICHTEXT_INSERT_WITH_PREVIOUS_PARAGRAPH_STYLE|wxRICHTEXT_INSERT_INTERACTIVE);
 
         EndBatchUndo();
         SetDefaultStyleToCursorStyle();
@@ -888,6 +1034,7 @@ void wxRichTextCtrl::OnChar(wxKeyEvent& event)
         cmdEvent.SetEventObject(this);
         cmdEvent.SetFlags(flags);
         cmdEvent.SetPosition(newPos+1);
+        cmdEvent.SetContainer(GetFocusObject());
 
         if (!GetEventHandler()->ProcessEvent(cmdEvent))
         {
@@ -916,20 +1063,20 @@ void wxRichTextCtrl::OnChar(wxKeyEvent& event)
                 long pos = wxRichTextCtrl::FindNextWordPosition(-1);
                 if (pos < newPos)
                 {
-                    GetBuffer().DeleteRangeWithUndo(wxRichTextRange(pos+1, newPos), this);
+                    GetFocusObject()->DeleteRangeWithUndo(wxRichTextRange(pos+1, newPos), this, & GetBuffer());
                     processed = true;
                 }
             }
 
             if (!processed)
-                GetBuffer().DeleteRangeWithUndo(wxRichTextRange(newPos, newPos), this);
+                GetFocusObject()->DeleteRangeWithUndo(wxRichTextRange(newPos, newPos), this, & GetBuffer());
         }
 
         EndBatchUndo();
 
         if (GetLastPosition() == -1)
         {
-            GetBuffer().Reset();
+            GetFocusObject()->Reset();
 
             m_caretPosition = -1;
             PositionCaret();
@@ -944,6 +1091,7 @@ void wxRichTextCtrl::OnChar(wxKeyEvent& event)
         cmdEvent.SetEventObject(this);
         cmdEvent.SetFlags(flags);
         cmdEvent.SetPosition(m_caretPosition+1);
+        cmdEvent.SetContainer(GetFocusObject());
         GetEventHandler()->ProcessEvent(cmdEvent);
 
         Update();
@@ -957,27 +1105,27 @@ void wxRichTextCtrl::OnChar(wxKeyEvent& event)
         bool processed = DeleteSelectedContent(& newPos);
 
         // Submit range in character positions, which are greater than caret positions,
-        if (newPos < GetBuffer().GetRange().GetEnd()+1)
+        if (newPos < GetFocusObject()->GetOwnRange().GetEnd()+1)
         {
             if (event.CmdDown())
             {
                 long pos = wxRichTextCtrl::FindNextWordPosition(1);
                 if (pos != -1 && (pos > newPos))
                 {
-                    GetBuffer().DeleteRangeWithUndo(wxRichTextRange(newPos+1, pos), this);
+                    GetFocusObject()->DeleteRangeWithUndo(wxRichTextRange(newPos+1, pos), this, & GetBuffer());
                     processed = true;
                 }
             }
 
             if (!processed && newPos < (GetLastPosition()-1))
-                GetBuffer().DeleteRangeWithUndo(wxRichTextRange(newPos+1, newPos+1), this);
+                GetFocusObject()->DeleteRangeWithUndo(wxRichTextRange(newPos+1, newPos+1), this, & GetBuffer());
         }
 
         EndBatchUndo();
 
         if (GetLastPosition() == -1)
         {
-            GetBuffer().Reset();
+            GetFocusObject()->Reset();
 
             m_caretPosition = -1;
             PositionCaret();
@@ -990,6 +1138,7 @@ void wxRichTextCtrl::OnChar(wxKeyEvent& event)
         cmdEvent.SetEventObject(this);
         cmdEvent.SetFlags(flags);
         cmdEvent.SetPosition(m_caretPosition+1);
+        cmdEvent.SetContainer(GetFocusObject());
         GetEventHandler()->ProcessEvent(cmdEvent);
 
         Update();
@@ -1029,13 +1178,14 @@ void wxRichTextCtrl::OnChar(wxKeyEvent& event)
                 cmdEvent.SetCharacter((wxChar) keycode);
 #endif
                 cmdEvent.SetPosition(m_caretPosition+1);
+                cmdEvent.SetContainer(GetFocusObject());
 
                 if (keycode == wxT('\t'))
                 {
                     // See if we need to promote or demote the selection or paragraph at the cursor
                     // position, instead of inserting a tab.
                     long pos = GetAdjustedCaretPosition(GetCaretPosition());
-                    wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(pos);
+                    wxRichTextParagraph* para = GetFocusObject()->GetParagraphAtPosition(pos);
                     if (para && para->GetRange().GetStart() == pos && para->GetAttributes().HasListStyleName())
                     {
                         wxRichTextRange range;
@@ -1064,13 +1214,14 @@ void wxRichTextCtrl::OnChar(wxKeyEvent& event)
 #else
                 wxString str = (wxChar) event.GetKeyCode();
 #endif
-                GetBuffer().InsertTextWithUndo(newPos+1, str, this, 0);
+                GetFocusObject()->InsertTextWithUndo(newPos+1, str, this, & GetBuffer(), 0);
 
                 EndBatchUndo();
 
                 SetDefaultStyleToCursorStyle();
                 ScrollIntoView(m_caretPosition, WXK_RIGHT);
 
+                cmdEvent.SetPosition(m_caretPosition);
                 GetEventHandler()->ProcessEvent(cmdEvent);
 
                 Update();
@@ -1084,8 +1235,8 @@ bool wxRichTextCtrl::DeleteSelectedContent(long* newPos)
 {
     if (HasSelection())
     {
-        long pos = m_selectionRange.GetStart();
-        wxRichTextRange range = m_selectionRange;
+        long pos = m_selection.GetRange().GetStart();
+        wxRichTextRange range = m_selection.GetRange();
 
         // SelectAll causes more to be selected than doing it interactively,
         // and causes a new paragraph to be inserted. So for multiline buffers,
@@ -1093,8 +1244,9 @@ bool wxRichTextCtrl::DeleteSelectedContent(long* newPos)
         if (range.GetEnd() == GetLastPosition() && GetNumberOfLines() > 0)
             range.SetEnd(range.GetEnd()-1);
 
-        GetBuffer().DeleteRangeWithUndo(range, this);
-        m_selectionRange.SetRange(-2, -2);
+        GetFocusObject()->DeleteRangeWithUndo(range, this, & GetBuffer());
+        m_selection.Reset();
+        m_selectionState = wxRichTextCtrlSelectionState_Normal;
 
         if (newPos)
             *newPos = pos-1;
@@ -1207,33 +1359,44 @@ bool wxRichTextCtrl::ExtendSelection(long oldPos, long newPos, int flags)
         if (oldPos == newPos)
             return false;
 
-        wxRichTextRange oldSelection = m_selectionRange;
+        wxRichTextSelection oldSelection = m_selection;
+
+        m_selection.SetContainer(GetFocusObject());
+
+        wxRichTextRange oldRange;
+        if (m_selection.IsValid())
+            oldRange = m_selection.GetRange();
+        else
+            oldRange = wxRICHTEXT_NO_SELECTION;
+        wxRichTextRange newRange;
 
         // If not currently selecting, start selecting
-        if (m_selectionRange.GetStart() == -2)
+        if (oldRange.GetStart() == -2)
         {
             m_selectionAnchor = oldPos;
 
             if (oldPos > newPos)
-                m_selectionRange.SetRange(newPos+1, oldPos);
+                newRange.SetRange(newPos+1, oldPos);
             else
-                m_selectionRange.SetRange(oldPos+1, newPos);
+                newRange.SetRange(oldPos+1, newPos);
         }
         else
         {
             // Always ensure that the selection range start is greater than
             // the end.
             if (newPos > m_selectionAnchor)
-                m_selectionRange.SetRange(m_selectionAnchor+1, newPos);
+                newRange.SetRange(m_selectionAnchor+1, newPos);
             else if (newPos == m_selectionAnchor)
-                m_selectionRange = wxRichTextRange(-2, -2);
+                newRange = wxRichTextRange(-2, -2);
             else
-                m_selectionRange.SetRange(newPos+1, m_selectionAnchor);
+                newRange.SetRange(newPos+1, m_selectionAnchor);
         }
 
-        wxRichTextCtrlRefreshForSelectionChange(*this, oldSelection, m_selectionRange);
+        m_selection.SetRange(newRange);
 
-        if (m_selectionRange.GetStart() > m_selectionRange.GetEnd())
+        RefreshForSelectionChange(oldSelection, m_selection);
+
+        if (newRange.GetStart() > newRange.GetEnd())
         {
             wxLogDebug(wxT("Strange selection range"));
         }
@@ -1272,7 +1435,16 @@ bool wxRichTextCtrl::ScrollIntoView(long position, int keyCode)
     bool scrolled = false;
 
     wxSize clientSize = GetClientSize();
-    clientSize.y -= GetBuffer().GetBottomMargin();
+
+    int leftMargin, rightMargin, topMargin, bottomMargin;
+
+    {
+        wxClientDC dc(this);
+        wxRichTextObject::GetTotalMargin(dc, & GetBuffer(), GetBuffer().GetAttributes(), leftMargin, rightMargin,
+            topMargin, bottomMargin);
+    }
+//    clientSize.y -= GetBuffer().GetBottomMargin();
+    clientSize.y -= bottomMargin;
 
     if (GetWindowStyle() & wxRE_CENTRE_CARET)
     {
@@ -1411,13 +1583,13 @@ void wxRichTextCtrl::SetCaretPosition(long position, bool showAtLineStart)
 /// to the start of the next, which may be the exact same caret position.
 void wxRichTextCtrl::MoveCaretForward(long oldPosition)
 {
-    wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(oldPosition);
+    wxRichTextParagraph* para = GetFocusObject()->GetParagraphAtPosition(oldPosition);
 
     // Only do the check if we're not at the end of the paragraph (where things work OK
     // anyway)
     if (para && (oldPosition != para->GetRange().GetEnd() - 1))
     {
-        wxRichTextLine* line = GetBuffer().GetLineAtPosition(oldPosition);
+        wxRichTextLine* line = GetFocusObject()->GetLineAtPosition(oldPosition);
 
         if (line)
         {
@@ -1456,13 +1628,13 @@ void wxRichTextCtrl::MoveCaretForward(long oldPosition)
 /// to the start of the next, which may be the exact same caret position.
 void wxRichTextCtrl::MoveCaretBack(long oldPosition)
 {
-    wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(oldPosition);
+    wxRichTextParagraph* para = GetFocusObject()->GetParagraphAtPosition(oldPosition);
 
     // Only do the check if we're not at the start of the paragraph (where things work OK
     // anyway)
     if (para && (oldPosition != para->GetRange().GetStart()))
     {
-        wxRichTextLine* line = GetBuffer().GetLineAtPosition(oldPosition);
+        wxRichTextLine* line = GetFocusObject()->GetLineAtPosition(oldPosition);
 
         if (line)
         {
@@ -1504,7 +1676,7 @@ void wxRichTextCtrl::MoveCaretBack(long oldPosition)
 /// Move right
 bool wxRichTextCtrl::MoveRight(int noPositions, int flags)
 {
-    long endPos = GetBuffer().GetRange().GetEnd();
+    long endPos = GetFocusObject()->GetOwnRange().GetEnd();
 
     if (m_caretPosition + noPositions < endPos)
     {
@@ -1561,6 +1733,40 @@ bool wxRichTextCtrl::MoveLeft(int noPositions, int flags)
         return false;
 }
 
+// Find the caret position for the combination of hit-test flags and character position.
+// Returns the caret position and also an indication of where to place the caret (caretLineStart)
+// since this is ambiguous (same position used for end of line and start of next).
+long wxRichTextCtrl::FindCaretPositionForCharacterPosition(long position, int hitTestFlags, wxRichTextParagraphLayoutBox* container,
+                                                   bool& caretLineStart)
+{
+    // If end of previous line, and hitTest is wxRICHTEXT_HITTEST_BEFORE,
+    // we want to be at the end of the last line but with m_caretAtLineStart set to true,
+    // so we view the caret at the start of the line.
+    caretLineStart = false;
+    long caretPosition = position;
+
+    if (hitTestFlags & wxRICHTEXT_HITTEST_BEFORE)
+    {
+        wxRichTextLine* thisLine = container->GetLineAtPosition(position-1);
+        wxRichTextRange lineRange;
+        if (thisLine)
+            lineRange = thisLine->GetAbsoluteRange();
+
+        if (thisLine && (position-1) == lineRange.GetEnd())
+        {
+            caretPosition --;
+            caretLineStart = true;
+        }
+        else
+        {
+            wxRichTextParagraph* para = container->GetParagraphAtPosition(position);
+            if (para && para->GetRange().GetStart() == position)
+                caretPosition --;
+        }
+    }
+    return caretPosition;
+}
+
 /// Move up
 bool wxRichTextCtrl::MoveUp(int noLines, int flags)
 {
@@ -1573,74 +1779,93 @@ bool wxRichTextCtrl::MoveDown(int noLines, int flags)
     if (!GetCaret())
         return false;
 
-    long lineNumber = GetBuffer().GetVisibleLineNumber(m_caretPosition, true, m_caretAtLineStart);
+    long lineNumber = GetFocusObject()->GetVisibleLineNumber(m_caretPosition, true, m_caretAtLineStart);
     wxPoint pt = GetCaret()->GetPosition();
     long newLine = lineNumber + noLines;
+    bool notInThisObject = false;
 
     if (lineNumber != -1)
     {
         if (noLines > 0)
         {
-            long lastLine = GetBuffer().GetVisibleLineNumber(GetBuffer().GetRange().GetEnd());
-
+            long lastLine = GetFocusObject()->GetVisibleLineNumber(GetFocusObject()->GetOwnRange().GetEnd());
             if (newLine > lastLine)
-                return false;
+                notInThisObject = true;
         }
         else
         {
             if (newLine < 0)
-                return false;
+                notInThisObject = true;
         }
     }
 
-    wxRichTextLine* lineObj = GetBuffer().GetLineForVisibleLineNumber(newLine);
-    if (lineObj)
+    wxRichTextParagraphLayoutBox* container = GetFocusObject();
+    int hitTestFlags = wxRICHTEXT_HITTEST_NO_NESTED_OBJECTS|wxRICHTEXT_HITTEST_NO_FLOATING_OBJECTS;
+
+    if (notInThisObject)
     {
-        pt.y = lineObj->GetAbsolutePosition().y + 2;
+        // If we know we're navigating out of the current object,
+        // try to find an object anywhere in the buffer at the new position (up or down a bit)
+        container = & GetBuffer();
+        hitTestFlags &= ~wxRICHTEXT_HITTEST_NO_NESTED_OBJECTS;
+
+        if (noLines > 0) // going down
+        {
+            pt.y = GetFocusObject()->GetPosition().y + GetFocusObject()->GetCachedSize().y + 2;
+        }
+        else // going up
+        {
+            pt.y = GetFocusObject()->GetPosition().y - 2;
+        }
     }
     else
-        return false;
+    {
+        wxRichTextLine* lineObj = GetFocusObject()->GetLineForVisibleLineNumber(newLine);
+        if (lineObj)
+            pt.y = lineObj->GetAbsolutePosition().y + 2;
+        else
+            return false;
+    }
 
     long newPos = 0;
     wxClientDC dc(this);
     PrepareDC(dc);
     dc.SetFont(GetFont());
 
-    int hitTest = GetBuffer().HitTest(dc, pt, newPos);
+    wxRichTextObject* hitObj = NULL;
+    wxRichTextObject* contextObj = NULL;
+    int hitTest = container->HitTest(dc, pt, newPos, & hitObj, & contextObj, hitTestFlags);
 
-    if (hitTest != wxRICHTEXT_HITTEST_NONE)
+    if (hitObj &&
+        ((hitTest & wxRICHTEXT_HITTEST_NONE) == 0) &&
+        (! (hitObj == (& m_buffer) && ((hitTest & wxRICHTEXT_HITTEST_OUTSIDE) != 0))) // outside the buffer counts as 'do nothing'
+        )
     {
-        // If end of previous line, and hitTest is wxRICHTEXT_HITTEST_BEFORE,
-        // we want to be at the end of the last line but with m_caretAtLineStart set to true,
-        // so we view the caret at the start of the line.
-        bool caretLineStart = false;
-        if (hitTest & wxRICHTEXT_HITTEST_BEFORE)
+        if (notInThisObject)
         {
-            wxRichTextLine* thisLine = GetBuffer().GetLineAtPosition(newPos-1);
-            wxRichTextRange lineRange;
-            if (thisLine)
-                lineRange = thisLine->GetAbsoluteRange();
+            wxRichTextParagraphLayoutBox* actualContainer = wxDynamicCast(contextObj, wxRichTextParagraphLayoutBox);
+            if (actualContainer && actualContainer != GetFocusObject() && actualContainer->AcceptsFocus())
+            {
+                SetFocusObject(actualContainer, false /* don't set caret position yet */);
 
-            if (thisLine && (newPos-1) == lineRange.GetEnd())
-            {
-                newPos --;
-                caretLineStart = true;
-            }
-            else
-            {
-                wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(newPos);
-                if (para && para->GetRange().GetStart() == newPos)
-                    newPos --;
+                container = actualContainer;
             }
         }
 
-        long newSelEnd = newPos;
+        bool caretLineStart = true;
+        long caretPosition = FindCaretPositionForCharacterPosition(newPos, hitTest, container, caretLineStart);
+        long newSelEnd = caretPosition;
+        bool extendSel;
 
-        bool extendSel = ExtendSelection(m_caretPosition, newSelEnd, flags);
+        if (notInThisObject)
+            extendSel = false;
+        else
+            extendSel = ExtendSelection(m_caretPosition, newSelEnd, flags);
+
         if (!extendSel)
             SelectNone();
 
-        SetCaretPosition(newPos, caretLineStart);
+        SetCaretPosition(caretPosition, caretLineStart);
         PositionCaret();
         SetDefaultStyleToCursorStyle();
 
@@ -1653,7 +1878,7 @@ bool wxRichTextCtrl::MoveDown(int noLines, int flags)
 /// Move to the end of the paragraph
 bool wxRichTextCtrl::MoveToParagraphEnd(int flags)
 {
-    wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(m_caretPosition, true);
+    wxRichTextParagraph* para = GetFocusObject()->GetParagraphAtPosition(m_caretPosition, true);
     if (para)
     {
         long newPos = para->GetRange().GetEnd() - 1;
@@ -1674,7 +1899,7 @@ bool wxRichTextCtrl::MoveToParagraphEnd(int flags)
 /// Move to the start of the paragraph
 bool wxRichTextCtrl::MoveToParagraphStart(int flags)
 {
-    wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(m_caretPosition, true);
+    wxRichTextParagraph* para = GetFocusObject()->GetParagraphAtPosition(m_caretPosition, true);
     if (para)
     {
         long newPos = para->GetRange().GetStart() - 1;
@@ -1728,7 +1953,7 @@ bool wxRichTextCtrl::MoveToLineStart(int flags)
         if (!extendSel)
             SelectNone();
 
-        wxRichTextParagraph* para = GetBuffer().GetParagraphForLine(line);
+        wxRichTextParagraph* para = GetFocusObject()->GetParagraphForLine(line);
 
         SetCaretPosition(newPos, para->GetRange().GetStart() != lineRange.GetStart());
         PositionCaret();
@@ -1762,7 +1987,7 @@ bool wxRichTextCtrl::MoveHome(int flags)
 /// Move to the end of the buffer
 bool wxRichTextCtrl::MoveEnd(int flags)
 {
-    long endPos = GetBuffer().GetRange().GetEnd()-1;
+    long endPos = GetFocusObject()->GetOwnRange().GetEnd()-1;
 
     if (m_caretPosition != endPos)
     {
@@ -1796,14 +2021,14 @@ bool wxRichTextCtrl::PageDown(int noPages, int flags)
         wxSize clientSize = GetClientSize();
         int newY = line->GetAbsolutePosition().y + noPages*clientSize.y;
 
-        wxRichTextLine* newLine = GetBuffer().GetLineAtYPosition(newY);
+        wxRichTextLine* newLine = GetFocusObject()->GetLineAtYPosition(newY);
         if (newLine)
         {
             wxRichTextRange lineRange = newLine->GetAbsoluteRange();
             long pos = lineRange.GetStart()-1;
             if (pos != m_caretPosition)
             {
-                wxRichTextParagraph* para = GetBuffer().GetParagraphForLine(newLine);
+                wxRichTextParagraph* para = GetFocusObject()->GetParagraphForLine(newLine);
 
                 bool extendSel = ExtendSelection(m_caretPosition, pos, flags);
                 if (!extendSel)
@@ -1829,7 +2054,7 @@ static bool wxRichTextCtrlIsWhitespace(const wxString& str)
 // Finds the caret position for the next word
 long wxRichTextCtrl::FindNextWordPosition(int direction) const
 {
-    long endPos = GetBuffer().GetRange().GetEnd();
+    long endPos = GetFocusObject()->GetOwnRange().GetEnd();
 
     if (direction > 0)
     {
@@ -1839,8 +2064,8 @@ long wxRichTextCtrl::FindNextWordPosition(int direction) const
         while (i < endPos && i > -1)
         {
             // i is in character, not caret positions
-            wxString text = GetBuffer().GetTextForRange(wxRichTextRange(i, i));
-            wxRichTextLine* line = GetBuffer().GetLineAtPosition(i, false);
+            wxString text = GetFocusObject()->GetTextForRange(wxRichTextRange(i, i));
+            wxRichTextLine* line = GetFocusObject()->GetLineAtPosition(i, false);
             if (line && (i == line->GetAbsoluteRange().GetEnd()))
             {
                 break;
@@ -1855,8 +2080,8 @@ long wxRichTextCtrl::FindNextWordPosition(int direction) const
         while (i < endPos && i > -1)
         {
             // i is in character, not caret positions
-            wxString text = GetBuffer().GetTextForRange(wxRichTextRange(i, i));
-            wxRichTextLine* line = GetBuffer().GetLineAtPosition(i, false);
+            wxString text = GetFocusObject()->GetTextForRange(wxRichTextRange(i, i));
+            wxRichTextLine* line = GetFocusObject()->GetLineAtPosition(i, false);
             if (line && (i == line->GetAbsoluteRange().GetEnd()))
                 return wxMax(-1, i);
 
@@ -1882,8 +2107,8 @@ long wxRichTextCtrl::FindNextWordPosition(int direction) const
         while (i < endPos && i > -1)
         {
             // i is in character, not caret positions
-            wxString text = GetBuffer().GetTextForRange(wxRichTextRange(i, i));
-            wxRichTextLine* line = GetBuffer().GetLineAtPosition(i, false);
+            wxString text = GetFocusObject()->GetTextForRange(wxRichTextRange(i, i));
+            wxRichTextLine* line = GetFocusObject()->GetLineAtPosition(i, false);
 
             if (text.empty() || (line && (i == line->GetAbsoluteRange().GetStart()))) // End of paragraph, or maybe an image
                 break;
@@ -1896,8 +2121,8 @@ long wxRichTextCtrl::FindNextWordPosition(int direction) const
         while (i < endPos && i > -1)
         {
             // i is in character, not caret positions
-            wxString text = GetBuffer().GetTextForRange(wxRichTextRange(i, i));
-            wxRichTextLine* line = GetBuffer().GetLineAtPosition(i, false);
+            wxString text = GetFocusObject()->GetTextForRange(wxRichTextRange(i, i));
+            wxRichTextLine* line = GetFocusObject()->GetLineAtPosition(i, false);
             if (line && line->GetAbsoluteRange().GetStart() == i)
                 return i-1;
 
@@ -1920,7 +2145,7 @@ bool wxRichTextCtrl::WordLeft(int WXUNUSED(n), int flags)
     long pos = FindNextWordPosition(-1);
     if (pos != m_caretPosition)
     {
-        wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(pos, true);
+        wxRichTextParagraph* para = GetFocusObject()->GetParagraphAtPosition(pos, true);
 
         bool extendSel = ExtendSelection(m_caretPosition, pos, flags);
         if (!extendSel)
@@ -1942,7 +2167,7 @@ bool wxRichTextCtrl::WordRight(int WXUNUSED(n), int flags)
     long pos = FindNextWordPosition(1);
     if (pos != m_caretPosition)
     {
-        wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(pos, true);
+        wxRichTextParagraph* para = GetFocusObject()->GetParagraphAtPosition(pos, true);
 
         bool extendSel = ExtendSelection(m_caretPosition, pos, flags);
         if (!extendSel)
@@ -1962,7 +2187,7 @@ bool wxRichTextCtrl::WordRight(int WXUNUSED(n), int flags)
 void wxRichTextCtrl::OnSize(wxSizeEvent& event)
 {
     // Only do sizing optimization for large buffers
-    if (GetBuffer().GetRange().GetEnd() > m_delayedLayoutThreshold)
+    if (GetBuffer().GetOwnRange().GetEnd() > m_delayedLayoutThreshold)
     {
         m_fullLayoutRequired = true;
         m_fullLayoutTime = wxGetLocalTimeMillis();
@@ -1977,6 +2202,20 @@ void wxRichTextCtrl::OnSize(wxSizeEvent& event)
 #endif
 
     event.Skip();
+}
+
+// Force any pending layout due to large buffer
+void wxRichTextCtrl::ForceDelayedLayout()
+{
+    if (m_fullLayoutRequired)
+    {
+        m_fullLayoutRequired = false;
+        m_fullLayoutTime = 0;
+        GetBuffer().Invalidate(wxRICHTEXT_ALL);
+        ShowPosition(m_fullLayoutSavedPosition);
+        Refresh(false);
+        Update();
+    }
 }
 
 /// Idle-time processing
@@ -2030,7 +2269,7 @@ void wxRichTextCtrl::OnScroll(wxScrollWinEvent& event)
 /// Set up scrollbars, e.g. after a resize
 void wxRichTextCtrl::SetupScrollbars(bool atTop)
 {
-    if (m_freezeCount)
+    if (IsFrozen())
         return;
 
     if (GetBuffer().IsEmpty())
@@ -2053,7 +2292,7 @@ void wxRichTextCtrl::SetupScrollbars(bool atTop)
     if (!atTop)
         GetViewStart(& startX, & startY);
 
-    int maxPositionX = 0; // wxMax(sz.x - clientSize.x, 0);
+    int maxPositionX = 0;
     int maxPositionY = (int) ((((float)(wxMax((unitsY*pixelsPerUnit) - clientSize.y, 0)))/((float)pixelsPerUnit)) + 0.5);
 
     int newStartX = wxMin(maxPositionX, startX);
@@ -2071,6 +2310,10 @@ void wxRichTextCtrl::SetupScrollbars(bool atTop)
     if (oldPPUX == 0 && oldPPUY == pixelsPerUnit && oldVirtualSizeY == unitsY && oldStartX == newStartX && oldStartY == newStartY)
         return;
 
+    // Don't set scrollbars if there were none before, and there will be none now.
+    if (oldPPUY != 0 && (oldVirtualSizeY*oldPPUY < clientSize.y) && (unitsY*pixelsPerUnit < clientSize.y))
+        return;
+
     // Move to previous scroll position if
     // possible
     SetScrollbars(0, pixelsPerUnit, 0, unitsY, newStartX, newStartY);
@@ -2080,7 +2323,7 @@ void wxRichTextCtrl::SetupScrollbars(bool atTop)
 void wxRichTextCtrl::PaintBackground(wxDC& dc)
 {
     wxColour backgroundColour = GetBackgroundColour();
-    if (!backgroundColour.Ok())
+    if (!backgroundColour.IsOk())
         backgroundColour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE);
 
     // Clear the background
@@ -2107,9 +2350,9 @@ bool wxRichTextCtrl::RecreateBuffer(const wxSize& size)
     if (sz.x < 1 || sz.y < 1)
         return false;
 
-    if (!m_bufferBitmap.Ok() || m_bufferBitmap.GetWidth() < sz.x || m_bufferBitmap.GetHeight() < sz.y)
+    if (!m_bufferBitmap.IsOk() || m_bufferBitmap.GetWidth() < sz.x || m_bufferBitmap.GetHeight() < sz.y)
         m_bufferBitmap = wxBitmap(sz.x, sz.y);
-    return m_bufferBitmap.Ok();
+    return m_bufferBitmap.IsOk();
 }
 #endif
 
@@ -2119,7 +2362,7 @@ bool wxRichTextCtrl::RecreateBuffer(const wxSize& size)
 
 bool wxRichTextCtrl::DoLoadFile(const wxString& filename, int fileType)
 {
-    bool success = GetBuffer().LoadFile(filename, fileType);
+    bool success = GetBuffer().LoadFile(filename, (wxRichTextFileType)fileType);
     if (success)
         m_filename = filename;
 
@@ -2129,7 +2372,7 @@ bool wxRichTextCtrl::DoLoadFile(const wxString& filename, int fileType)
     PositionCaret();
     SetupScrollbars(true);
     Refresh(false);
-    SendTextUpdatedEvent();
+    wxTextCtrl::SendTextUpdatedEvent(this);
 
     if (success)
         return true;
@@ -2143,7 +2386,7 @@ bool wxRichTextCtrl::DoLoadFile(const wxString& filename, int fileType)
 
 bool wxRichTextCtrl::DoSaveFile(const wxString& filename, int fileType)
 {
-    if (GetBuffer().SaveFile(filename, fileType))
+    if (GetBuffer().SaveFile(filename, (wxRichTextFileType)fileType))
     {
         m_filename = filename;
 
@@ -2164,7 +2407,8 @@ bool wxRichTextCtrl::DoSaveFile(const wxString& filename, int fileType)
 /// Add a new paragraph of text to the end of the buffer
 wxRichTextRange wxRichTextCtrl::AddParagraph(const wxString& text)
 {
-    wxRichTextRange range = GetBuffer().AddParagraph(text);
+    wxRichTextRange range = GetFocusObject()->AddParagraph(text);
+    GetBuffer().Invalidate();
     LayoutContent();
     return range;
 }
@@ -2172,7 +2416,8 @@ wxRichTextRange wxRichTextCtrl::AddParagraph(const wxString& text)
 /// Add an image
 wxRichTextRange wxRichTextCtrl::AddImage(const wxImage& image)
 {
-    wxRichTextRange range = GetBuffer().AddImage(image);
+    wxRichTextRange range = GetFocusObject()->AddImage(image);
+    GetBuffer().Invalidate();
     LayoutContent();
     return range;
 }
@@ -2189,15 +2434,17 @@ void wxRichTextCtrl::SelectAll()
 /// Select none
 void wxRichTextCtrl::SelectNone()
 {
-    if (!(GetSelectionRange() == wxRichTextRange(-2, -2)))
+    if (m_selection.IsValid())
     {
-        wxRichTextRange oldSelection = m_selectionRange;
+        wxRichTextSelection oldSelection = m_selection;
 
-        m_selectionRange = wxRichTextRange(-2, -2);
+        m_selection.Reset();
 
-        wxRichTextCtrlRefreshForSelectionChange(*this, oldSelection, m_selectionRange);
+        RefreshForSelectionChange(oldSelection, m_selection);
     }
     m_selectionAnchor = -2;
+    m_selectionAnchorObject = NULL;
+    m_selectionState = wxRichTextCtrlSelectionState_Normal;
 }
 
 static bool wxIsWordDelimiter(const wxString& text)
@@ -2208,10 +2455,10 @@ static bool wxIsWordDelimiter(const wxString& text)
 /// Select the word at the given character position
 bool wxRichTextCtrl::SelectWord(long position)
 {
-    if (position < 0 || position > GetBuffer().GetRange().GetEnd())
+    if (position < 0 || position > GetFocusObject()->GetOwnRange().GetEnd())
         return false;
 
-    wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(position);
+    wxRichTextParagraph* para = GetFocusObject()->GetParagraphAtPosition(position);
     if (!para)
         return false;
 
@@ -2223,7 +2470,7 @@ bool wxRichTextCtrl::SelectWord(long position)
 
     for (positionStart = position; positionStart >= para->GetRange().GetStart(); positionStart --)
     {
-        wxString text = GetBuffer().GetTextForRange(wxRichTextRange(positionStart, positionStart));
+        wxString text = GetFocusObject()->GetTextForRange(wxRichTextRange(positionStart, positionStart));
         if (wxIsWordDelimiter(text))
         {
             positionStart ++;
@@ -2235,7 +2482,7 @@ bool wxRichTextCtrl::SelectWord(long position)
 
     for (positionEnd = position; positionEnd < para->GetRange().GetEnd(); positionEnd ++)
     {
-        wxString text = GetBuffer().GetTextForRange(wxRichTextRange(positionEnd, positionEnd));
+        wxString text = GetFocusObject()->GetTextForRange(wxRichTextRange(positionEnd, positionEnd));
         if (wxIsWordDelimiter(text))
         {
             positionEnd --;
@@ -2299,7 +2546,9 @@ wxRichTextCtrl::HitTest(const wxPoint& pt,
     // so convert
     wxPoint pt2 = GetLogicalPoint(pt);
 
-    int hit = ((wxRichTextCtrl*)this)->GetBuffer().HitTest(dc, pt2, *pos);
+    wxRichTextObject* hitObj = NULL;
+    wxRichTextObject* contextObj = NULL;
+    int hit = ((wxRichTextCtrl*)this)->GetFocusObject()->HitTest(dc, pt2, *pos, & hitObj, & contextObj, wxRICHTEXT_HITTEST_NO_NESTED_OBJECTS);
 
     if ((hit & wxRICHTEXT_HITTEST_BEFORE) && (hit & wxRICHTEXT_HITTEST_OUTSIDE))
         return wxTE_HT_BEFORE;
@@ -2315,7 +2564,7 @@ wxRichTextCtrl::HitTest(const wxPoint& pt,
 // set/get the controls text
 // ----------------------------------------------------------------------------
 
-wxString wxRichTextCtrl::GetValue() const
+wxString wxRichTextCtrl::DoGetValue() const
 {
     return GetBuffer().GetText();
 }
@@ -2323,22 +2572,23 @@ wxString wxRichTextCtrl::GetValue() const
 wxString wxRichTextCtrl::GetRange(long from, long to) const
 {
     // Public API for range is different from internals
-    return GetBuffer().GetTextForRange(wxRichTextRange(from, to-1));
+    return GetFocusObject()->GetTextForRange(wxRichTextRange(from, to-1));
 }
 
 void wxRichTextCtrl::DoSetValue(const wxString& value, int flags)
 {
     // Don't call Clear here, since it always sends a text updated event
     m_buffer.ResetAndClearCommands();
-    m_buffer.SetDirty(true);
+    m_buffer.Invalidate(wxRICHTEXT_ALL);
     m_caretPosition = -1;
     m_caretPositionForDefaultStyle = -2;
     m_caretAtLineStart = false;
-    m_selectionRange.SetRange(-2, -2);
+    m_selection.Reset();
+    m_selectionState = wxRichTextCtrlSelectionState_Normal;
 
     Scroll(0,0);
 
-    if (m_freezeCount == 0)
+    if (!IsFrozen())
     {
         LayoutContent();
         Refresh(false);
@@ -2357,7 +2607,7 @@ void wxRichTextCtrl::DoSetValue(const wxString& value, int flags)
     {
         // still send an event for consistency
         if (flags & SetValue_SendEvent)
-            SendTextUpdatedEvent();
+            wxTextCtrl::SendTextUpdatedEvent(this);
     }
     DiscardEdits();
 }
@@ -2371,10 +2621,10 @@ void wxRichTextCtrl::DoWriteText(const wxString& value, int flags)
 {
     wxString valueUnix = wxTextFile::Translate(value, wxTextFileType_Unix);
 
-    GetBuffer().InsertTextWithUndo(m_caretPosition+1, valueUnix, this, wxRICHTEXT_INSERT_WITH_PREVIOUS_PARAGRAPH_STYLE);
+    GetFocusObject()->InsertTextWithUndo(m_caretPosition+1, valueUnix, this, & GetBuffer(), wxRICHTEXT_INSERT_WITH_PREVIOUS_PARAGRAPH_STYLE);
 
     if ( flags & SetValue_SendEvent )
-        SendTextUpdatedEvent();
+        wxTextCtrl::SendTextUpdatedEvent(this);
 }
 
 void wxRichTextCtrl::AppendText(const wxString& text)
@@ -2385,51 +2635,100 @@ void wxRichTextCtrl::AppendText(const wxString& text)
 }
 
 /// Write an image at the current insertion point
-bool wxRichTextCtrl::WriteImage(const wxImage& image, int bitmapType)
+bool wxRichTextCtrl::WriteImage(const wxImage& image, wxBitmapType bitmapType, const wxRichTextAttr& textAttr)
 {
     wxRichTextImageBlock imageBlock;
 
     wxImage image2 = image;
     if (imageBlock.MakeImageBlock(image2, bitmapType))
-        return WriteImage(imageBlock);
+        return WriteImage(imageBlock, textAttr);
 
     return false;
 }
 
-bool wxRichTextCtrl::WriteImage(const wxString& filename, int bitmapType)
+bool wxRichTextCtrl::WriteImage(const wxString& filename, wxBitmapType bitmapType, const wxRichTextAttr& textAttr)
 {
     wxRichTextImageBlock imageBlock;
 
     wxImage image;
     if (imageBlock.MakeImageBlock(filename, bitmapType, image, false))
-        return WriteImage(imageBlock);
+        return WriteImage(imageBlock, textAttr);
 
     return false;
 }
 
-bool wxRichTextCtrl::WriteImage(const wxRichTextImageBlock& imageBlock)
+bool wxRichTextCtrl::WriteImage(const wxRichTextImageBlock& imageBlock, const wxRichTextAttr& textAttr)
 {
-    return GetBuffer().InsertImageWithUndo(m_caretPosition+1, imageBlock, this);
+    return GetFocusObject()->InsertImageWithUndo(m_caretPosition+1, imageBlock, this, & GetBuffer(), 0, textAttr);
 }
 
-bool wxRichTextCtrl::WriteImage(const wxBitmap& bitmap, int bitmapType)
+bool wxRichTextCtrl::WriteImage(const wxBitmap& bitmap, wxBitmapType bitmapType, const wxRichTextAttr& textAttr)
 {
-    if (bitmap.Ok())
+    if (bitmap.IsOk())
     {
         wxRichTextImageBlock imageBlock;
 
         wxImage image = bitmap.ConvertToImage();
-        if (image.Ok() && imageBlock.MakeImageBlock(image, bitmapType))
-            return WriteImage(imageBlock);
+        if (image.IsOk() && imageBlock.MakeImageBlock(image, bitmapType))
+            return WriteImage(imageBlock, textAttr);
     }
 
     return false;
 }
 
+// Write a text box at the current insertion point.
+wxRichTextBox* wxRichTextCtrl::WriteTextBox(const wxRichTextAttr& textAttr)
+{
+    wxRichTextBox* textBox = new wxRichTextBox;
+    textBox->SetAttributes(textAttr);
+    textBox->SetParent(& GetBuffer()); // set parent temporarily for AddParagraph to use correct style
+    textBox->AddParagraph(wxEmptyString);
+    textBox->SetParent(NULL);
+
+    // The object returned is the one actually inserted into the buffer,
+    // while the original one is deleted.
+    wxRichTextObject* obj = GetFocusObject()->InsertObjectWithUndo(m_caretPosition+1, textBox, this, & GetBuffer(), wxRICHTEXT_INSERT_WITH_PREVIOUS_PARAGRAPH_STYLE);
+    wxRichTextBox* box = wxDynamicCast(obj, wxRichTextBox);
+    return box;
+}
+
+// Write a table at the current insertion point, returning the table.
+wxRichTextTable* wxRichTextCtrl::WriteTable(int rows, int cols, const wxRichTextAttr& tableAttr, const wxRichTextAttr& cellAttr)
+{
+    wxASSERT(rows > 0 && cols > 0);
+
+    if (rows <= 0 || cols <= 0)
+        return NULL;
+
+    wxRichTextTable* table = new wxRichTextTable;
+    table->SetAttributes(tableAttr);
+    table->SetParent(& GetBuffer()); // set parent temporarily for AddParagraph to use correct style
+
+    table->CreateTable(rows, cols);
+
+    table->SetParent(NULL);
+
+    int i, j;
+    for (j = 0; j < rows; j++)
+    {
+        for (i = 0; i < cols; i++)
+        {
+            table->GetCell(j, i)->GetAttributes() = cellAttr;
+        }
+    }
+
+    // The object returned is the one actually inserted into the buffer,
+    // while the original one is deleted.
+    wxRichTextObject* obj = GetFocusObject()->InsertObjectWithUndo(m_caretPosition+1, table, this, & GetBuffer(), wxRICHTEXT_INSERT_WITH_PREVIOUS_PARAGRAPH_STYLE);
+    wxRichTextTable* tableResult = wxDynamicCast(obj, wxRichTextTable);
+    return tableResult;
+}
+
+
 /// Insert a newline (actually paragraph) at the current insertion point.
 bool wxRichTextCtrl::Newline()
 {
-    return GetBuffer().InsertNewlineWithUndo(m_caretPosition+1, this, wxRICHTEXT_INSERT_WITH_PREVIOUS_PARAGRAPH_STYLE);
+    return GetFocusObject()->InsertNewlineWithUndo(m_caretPosition+1, this, & GetBuffer(), wxRICHTEXT_INSERT_WITH_PREVIOUS_PARAGRAPH_STYLE);
 }
 
 /// Insert a line break at the current insertion point.
@@ -2437,7 +2736,7 @@ bool wxRichTextCtrl::LineBreak()
 {
     wxString text;
     text = wxRichTextLineBreakChar;
-    return GetBuffer().InsertTextWithUndo(m_caretPosition+1, text, this);
+    return GetFocusObject()->InsertTextWithUndo(m_caretPosition+1, text, this, & GetBuffer());
 }
 
 // ----------------------------------------------------------------------------
@@ -2491,7 +2790,12 @@ void wxRichTextCtrl::DeleteSelection()
 
 bool wxRichTextCtrl::HasSelection() const
 {
-    return m_selectionRange.GetStart() != -2 && m_selectionRange.GetEnd() != -2;
+    return (m_selection.IsValid() && m_selection.GetContainer() == GetFocusObject());
+}
+
+bool wxRichTextCtrl::HasUnfocusedSelection() const
+{
+    return m_selection.IsValid();
 }
 
 bool wxRichTextCtrl::CanCopy() const
@@ -2559,17 +2863,24 @@ long wxRichTextCtrl::GetInsertionPoint() const
 
 wxTextPos wxRichTextCtrl::GetLastPosition() const
 {
-    return GetBuffer().GetRange().GetEnd();
+    return GetFocusObject()->GetOwnRange().GetEnd();
 }
 
 // If the return values from and to are the same, there is no
 // selection.
 void wxRichTextCtrl::GetSelection(long* from, long* to) const
 {
-    *from = m_selectionRange.GetStart();
-    *to = m_selectionRange.GetEnd();
-    if ((*to) != -1 && (*to) != -2)
+    if (m_selection.IsValid())
+    {
+        *from = m_selection.GetRange().GetStart();
+        *to = m_selection.GetRange().GetEnd();
         (*to) ++;
+    }
+    else
+    {
+        *from = -2;
+        *to = -2;
+    }
 }
 
 bool wxRichTextCtrl::IsEditable() const
@@ -2591,24 +2902,21 @@ void wxRichTextCtrl::SetSelection(long from, long to)
         to = GetLastPosition()+1;
     }
 
-    DoSetSelection(from, to);
-}
-
-void wxRichTextCtrl::DoSetSelection(long from, long to, bool WXUNUSED(scrollCaret))
-{
     if (from == to)
     {
         SelectNone();
     }
     else
     {
-        wxRichTextRange oldSelection = m_selectionRange;
+        wxRichTextSelection oldSelection = m_selection;
+
         m_selectionAnchor = from-1;
-        m_selectionRange.SetRange(from, to-1);
+        m_selectionAnchorObject = NULL;
+        m_selection.Set(wxRichTextRange(from, to-1), GetFocusObject());
 
         m_caretPosition = wxMax(-1, to-1);
 
-        wxRichTextCtrlRefreshForSelectionChange(*this, oldSelection, m_selectionRange);
+        RefreshForSelectionChange(oldSelection, m_selection);
         PositionCaret();
     }
 }
@@ -2617,12 +2925,18 @@ void wxRichTextCtrl::DoSetSelection(long from, long to, bool WXUNUSED(scrollCare
 // Editing
 // ----------------------------------------------------------------------------
 
-void wxRichTextCtrl::Replace(long WXUNUSED(from), long WXUNUSED(to),
+void wxRichTextCtrl::Replace(long from, long to,
                              const wxString& value)
 {
     BeginBatchUndo(_("Replace"));
 
+    SetSelection(from, to);
+
+    wxRichTextAttr attr = GetDefaultStyle();
+
     DeleteSelectedContent();
+
+    SetDefaultStyle(attr);
 
     DoWriteText(value, SetValue_SelectionOnly);
 
@@ -2633,7 +2947,7 @@ void wxRichTextCtrl::Remove(long from, long to)
 {
     SelectNone();
 
-    GetBuffer().DeleteRangeWithUndo(wxRichTextRange(from, to-1), this);
+    GetFocusObject()->DeleteRangeWithUndo(wxRichTextRange(from, to-1), this, & GetBuffer());
 
     LayoutContent();
     if (!IsFrozen())
@@ -2659,7 +2973,7 @@ void wxRichTextCtrl::DiscardEdits()
 
 int wxRichTextCtrl::GetNumberOfLines() const
 {
-    return GetBuffer().GetParagraphCount();
+    return GetFocusObject()->GetParagraphCount();
 }
 
 // ----------------------------------------------------------------------------
@@ -2668,12 +2982,12 @@ int wxRichTextCtrl::GetNumberOfLines() const
 
 long wxRichTextCtrl::XYToPosition(long x, long y) const
 {
-    return GetBuffer().XYToPosition(x, y);
+    return GetFocusObject()->XYToPosition(x, y);
 }
 
 bool wxRichTextCtrl::PositionToXY(long pos, long *x, long *y) const
 {
-    return GetBuffer().PositionToXY(pos, x, y);
+    return GetFocusObject()->PositionToXY(pos, x, y);
 }
 
 // ----------------------------------------------------------------------------
@@ -2688,12 +3002,12 @@ void wxRichTextCtrl::ShowPosition(long pos)
 
 int wxRichTextCtrl::GetLineLength(long lineNo) const
 {
-    return GetBuffer().GetParagraphLength(lineNo);
+    return GetFocusObject()->GetParagraphLength(lineNo);
 }
 
 wxString wxRichTextCtrl::GetLineText(long lineNo) const
 {
-    return GetBuffer().GetParagraphText(lineNo);
+    return GetFocusObject()->GetParagraphText(lineNo);
 }
 
 // ----------------------------------------------------------------------------
@@ -2827,6 +3141,25 @@ void wxRichTextCtrl::OnUpdateSelectAll(wxUpdateUIEvent& event)
     event.Enable(GetLastPosition() > 0);
 }
 
+void wxRichTextCtrl::OnProperties(wxCommandEvent& event)
+{
+    int idx = event.GetId() - wxID_RICHTEXT_PROPERTIES1;
+    if (idx >= 0 && idx < m_contextMenuPropertiesInfo.GetCount())
+    {
+        wxRichTextObject* obj = m_contextMenuPropertiesInfo.GetObject(idx);
+        if (obj && obj->CanEditProperties())
+            obj->EditProperties(this, & GetBuffer());
+
+        m_contextMenuPropertiesInfo.Clear();
+    }
+}
+
+void wxRichTextCtrl::OnUpdateProperties(wxUpdateUIEvent& event)
+{
+    int idx = event.GetId() - wxID_RICHTEXT_PROPERTIES1;
+    event.Enable(idx >= 0 && idx < m_contextMenuPropertiesInfo.GetCount());
+}
+
 void wxRichTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 {
     if (event.GetEventObject() != this)
@@ -2835,110 +3168,119 @@ void wxRichTextCtrl::OnContextMenu(wxContextMenuEvent& event)
         return;
     }
 
-    if (m_contextMenu)
-        PopupMenu(m_contextMenu);
-    return;
-}
+    wxClientDC dc(this);
+    PrepareDC(dc);
+    dc.SetFont(GetFont());
 
-bool wxRichTextCtrl::SetStyle(long start, long end, const wxTextAttrEx& style)
-{
-    return GetBuffer().SetStyle(wxRichTextRange(start, end-1), style);
+    long position = 0;
+    wxPoint pt = event.GetPosition();
+    wxPoint logicalPt = GetLogicalPoint(ScreenToClient(pt));
+    wxRichTextObject* hitObj = NULL;
+    wxRichTextObject* contextObj = NULL;
+    int hit = GetFocusObject()->HitTest(dc, logicalPt, position, & hitObj, & contextObj);
+
+    m_contextMenuPropertiesInfo.Clear();
+
+    if (hit == wxRICHTEXT_HITTEST_ON || hit == wxRICHTEXT_HITTEST_BEFORE || hit == wxRICHTEXT_HITTEST_AFTER)
+    {
+        wxRichTextParagraphLayoutBox* actualContainer = wxDynamicCast(contextObj, wxRichTextParagraphLayoutBox);
+        if (hitObj && actualContainer)
+        {
+            if (actualContainer->AcceptsFocus())
+            {
+                SetFocusObject(actualContainer, false /* don't set caret position yet */);
+                SetCaretPositionAfterClick(actualContainer, position, hit);
+            }
+
+            m_contextMenuPropertiesInfo.AddItems(actualContainer, hitObj);
+        }
+        else
+            m_contextMenuPropertiesInfo.AddItems(GetFocusObject(), NULL);
+    }
+    else
+    {
+        m_contextMenuPropertiesInfo.AddItems(GetFocusObject(), NULL);
+    }
+
+    if (m_contextMenu)
+    {
+        m_contextMenuPropertiesInfo.AddMenuItems(m_contextMenu);
+        PopupMenu(m_contextMenu);
+    }
 }
 
 bool wxRichTextCtrl::SetStyle(long start, long end, const wxTextAttr& style)
 {
-    return GetBuffer().SetStyle(wxRichTextRange(start, end-1), wxTextAttrEx(style));
+    return GetFocusObject()->SetStyle(wxRichTextRange(start, end-1), wxRichTextAttr(style));
+}
+
+bool wxRichTextCtrl::SetStyle(long start, long end, const wxRichTextAttr& style)
+{
+    return GetFocusObject()->SetStyle(wxRichTextRange(start, end-1), style);
+}
+
+bool wxRichTextCtrl::SetStyle(const wxRichTextRange& range, const wxTextAttr& style)
+{
+    return GetFocusObject()->SetStyle(range.ToInternal(), wxRichTextAttr(style));
 }
 
 bool wxRichTextCtrl::SetStyle(const wxRichTextRange& range, const wxRichTextAttr& style)
 {
-    return GetBuffer().SetStyle(range.ToInternal(), style);
+    return GetFocusObject()->SetStyle(range.ToInternal(), style);
+}
+
+void wxRichTextCtrl::SetStyle(wxRichTextObject *obj, const wxRichTextAttr& textAttr)
+{
+    GetFocusObject()->SetStyle(obj, textAttr);
 }
 
 // extended style setting operation with flags including:
 // wxRICHTEXT_SETSTYLE_WITH_UNDO, wxRICHTEXT_SETSTYLE_OPTIMIZE, wxRICHTEXT_SETSTYLE_PARAGRAPHS_ONLY.
 // see richtextbuffer.h for more details.
-bool wxRichTextCtrl::SetStyleEx(long start, long end, const wxTextAttrEx& style, int flags)
-{
-    return GetBuffer().SetStyle(wxRichTextRange(start, end-1), style, flags);
-}
-
-bool wxRichTextCtrl::SetStyleEx(const wxRichTextRange& range, const wxTextAttrEx& style, int flags)
-{
-    return GetBuffer().SetStyle(range.ToInternal(), style, flags);
-}
 
 bool wxRichTextCtrl::SetStyleEx(const wxRichTextRange& range, const wxRichTextAttr& style, int flags)
 {
-    return GetBuffer().SetStyle(range.ToInternal(), style, flags);
-}
-
-bool wxRichTextCtrl::SetDefaultStyle(const wxTextAttrEx& style)
-{
-    return GetBuffer().SetDefaultStyle(style);
+    return GetFocusObject()->SetStyle(range.ToInternal(), style, flags);
 }
 
 bool wxRichTextCtrl::SetDefaultStyle(const wxTextAttr& style)
 {
-    return GetBuffer().SetDefaultStyle(wxTextAttrEx(style));
+    return GetBuffer().SetDefaultStyle(style);
 }
 
-const wxTextAttrEx& wxRichTextCtrl::GetDefaultStyleEx() const
+bool wxRichTextCtrl::SetDefaultStyle(const wxRichTextAttr& style)
 {
-    return GetBuffer().GetDefaultStyle();
+    wxRichTextAttr attr1(style);
+    attr1.GetTextBoxAttr().Reset();
+    return GetBuffer().SetDefaultStyle(attr1);
 }
 
-const wxTextAttr& wxRichTextCtrl::GetDefaultStyle() const
+const wxRichTextAttr& wxRichTextCtrl::GetDefaultStyleEx() const
 {
     return GetBuffer().GetDefaultStyle();
 }
 
 bool wxRichTextCtrl::GetStyle(long position, wxTextAttr& style)
 {
-    wxTextAttrEx attr(style);
-    if (GetBuffer().GetStyle(position, attr))
+    wxRichTextAttr attr;
+    if (GetFocusObject()->GetStyle(position, attr))
     {
         style = attr;
         return true;
     }
     else
         return false;
-}
-
-bool wxRichTextCtrl::GetStyle(long position, wxTextAttrEx& style)
-{
-    return GetBuffer().GetStyle(position, style);
 }
 
 bool wxRichTextCtrl::GetStyle(long position, wxRichTextAttr& style)
 {
-    return GetBuffer().GetStyle(position, style);
+    return GetFocusObject()->GetStyle(position, style);
 }
 
-// get the common set of styles for the range
-bool wxRichTextCtrl::GetStyleForRange(const wxRichTextRange& range, wxRichTextAttr& style)
+bool wxRichTextCtrl::GetStyle(long position, wxRichTextAttr& style, wxRichTextParagraphLayoutBox* container)
 {
-    wxTextAttrEx styleEx;
-    if (GetBuffer().GetStyleForRange(range.ToInternal(), styleEx))
-    {
-        style = styleEx;
-        return true;
-    }
-    else
-        return false;
-}
-
-bool wxRichTextCtrl::GetStyleForRange(const wxRichTextRange& range, wxTextAttrEx& style)
-{
-    return GetBuffer().GetStyleForRange(range.ToInternal(), style);
-}
-
-/// Get the content (uncombined) attributes for this position.
-
-bool wxRichTextCtrl::GetUncombinedStyle(long position, wxTextAttr& style)
-{
-    wxTextAttrEx attr(style);
-    if (GetBuffer().GetUncombinedStyle(position, attr))
+    wxRichTextAttr attr;
+    if (container->GetStyle(position, attr))
     {
         style = attr;
         return true;
@@ -2947,14 +3289,39 @@ bool wxRichTextCtrl::GetUncombinedStyle(long position, wxTextAttr& style)
         return false;
 }
 
-bool wxRichTextCtrl::GetUncombinedStyle(long position, wxTextAttrEx& style)
+// get the common set of styles for the range
+bool wxRichTextCtrl::GetStyleForRange(const wxRichTextRange& range, wxTextAttr& style)
 {
-    return GetBuffer().GetUncombinedStyle(position, style);
+    wxRichTextAttr attr;
+    if (GetFocusObject()->GetStyleForRange(range.ToInternal(), attr))
+    {
+        style = attr;
+        return true;
+    }
+    else
+        return false;
 }
 
+bool wxRichTextCtrl::GetStyleForRange(const wxRichTextRange& range, wxRichTextAttr& style)
+{
+    return GetFocusObject()->GetStyleForRange(range.ToInternal(), style);
+}
+
+bool wxRichTextCtrl::GetStyleForRange(const wxRichTextRange& range, wxRichTextAttr& style, wxRichTextParagraphLayoutBox* container)
+{
+    return container->GetStyleForRange(range.ToInternal(), style);
+}
+
+/// Get the content (uncombined) attributes for this position.
 bool wxRichTextCtrl::GetUncombinedStyle(long position, wxRichTextAttr& style)
 {
-    return GetBuffer().GetUncombinedStyle(position, style);
+    return GetFocusObject()->GetUncombinedStyle(position, style);
+}
+
+/// Get the content (uncombined) attributes for this position.
+bool wxRichTextCtrl::GetUncombinedStyle(long position, wxRichTextAttr& style, wxRichTextParagraphLayoutBox* container)
+{
+    return container->GetUncombinedStyle(position, style);
 }
 
 /// Set font, and also the buffer attributes
@@ -2962,7 +3329,7 @@ bool wxRichTextCtrl::SetFont(const wxFont& font)
 {
     wxControl::SetFont(font);
 
-    wxTextAttrEx attr = GetBuffer().GetAttributes();
+    wxRichTextAttr attr = GetBuffer().GetAttributes();
     attr.SetFont(font);
     GetBuffer().SetBasicStyle(attr);
 
@@ -2991,28 +3358,45 @@ wxPoint wxRichTextCtrl::GetLogicalPoint(const wxPoint& ptPhysical) const
 }
 
 /// Position the caret
-void wxRichTextCtrl::PositionCaret()
+void wxRichTextCtrl::PositionCaret(wxRichTextParagraphLayoutBox* container)
 {
     if (!GetCaret())
         return;
 
+    //wxLogDebug(wxT("PositionCaret"));
+
     wxRect caretRect;
-    if (GetCaretPositionForIndex(GetCaretPosition(), caretRect))
+    if (GetCaretPositionForIndex(GetCaretPosition(), caretRect, container))
     {
         wxPoint newPt = caretRect.GetPosition();
         wxSize newSz = caretRect.GetSize();
         wxPoint pt = GetPhysicalPoint(newPt);
         if (GetCaret()->GetPosition() != pt || GetCaret()->GetSize() != newSz)
         {
-            //wxLogDebug(wxT("Positioning caret %d, %d"), pt.x, pt.y);
             GetCaret()->Hide();
             if (GetCaret()->GetSize() != newSz)
                 GetCaret()->SetSize(newSz);
 
-            int halfSize = newSz.y/2;
-            // If the caret is beyond the margin, hide it by moving it out of the way
-            if (((pt.y + halfSize) < GetBuffer().GetTopMargin()) || ((pt.y + halfSize) > (GetClientSize().y - GetBuffer().GetBottomMargin())))
+            // Adjust size so the caret size and position doesn't appear in the margins
+            if (((pt.y + newSz.y) <= GetBuffer().GetTopMargin()) || (pt.y >= (GetClientSize().y - GetBuffer().GetBottomMargin())))
+            {
+                pt.x = -200;
                 pt.y = -200;
+            }
+            else if (pt.y < GetBuffer().GetTopMargin() && (pt.y + newSz.y) > GetBuffer().GetTopMargin())
+            {
+                newSz.y -= (GetBuffer().GetTopMargin() - pt.y);
+                if (newSz.y > 0)
+                {
+                    pt.y = GetBuffer().GetTopMargin();
+                    GetCaret()->SetSize(newSz);
+                }
+            }
+            else if (pt.y < (GetClientSize().y - GetBuffer().GetBottomMargin()) && (pt.y + newSz.y) > (GetClientSize().y - GetBuffer().GetBottomMargin()))
+            {
+                newSz.y = GetClientSize().y - GetBuffer().GetBottomMargin() - pt.y;
+                GetCaret()->SetSize(newSz);
+            }
 
             GetCaret()->Move(pt);
             GetCaret()->Show();
@@ -3021,7 +3405,7 @@ void wxRichTextCtrl::PositionCaret()
 }
 
 /// Get the caret height and position for the given character position
-bool wxRichTextCtrl::GetCaretPositionForIndex(long position, wxRect& rect)
+bool wxRichTextCtrl::GetCaretPositionForIndex(long position, wxRect& rect, wxRichTextParagraphLayoutBox* container)
 {
     wxClientDC dc(this);
     dc.SetFont(GetFont());
@@ -3031,7 +3415,10 @@ bool wxRichTextCtrl::GetCaretPositionForIndex(long position, wxRect& rect)
     wxPoint pt;
     int height = 0;
 
-    if (GetBuffer().FindPosition(dc, position, pt, & height, m_caretAtLineStart))
+    if (!container)
+        container = GetFocusObject();
+
+    if (container->FindPosition(dc, position, pt, & height, m_caretAtLineStart))
     {
         // Caret height can't be zero
         if (height == 0)
@@ -3050,8 +3437,8 @@ bool wxRichTextCtrl::GetCaretPositionForIndex(long position, wxRect& rect)
 /// if this is the case.
 wxRichTextLine* wxRichTextCtrl::GetVisibleLineForCaretPosition(long caretPosition) const
 {
-    wxRichTextLine* line = GetBuffer().GetLineAtPosition(caretPosition, true);
-    wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(caretPosition, true);
+    wxRichTextLine* line = GetFocusObject()->GetLineAtPosition(caretPosition, true);
+    wxRichTextParagraph* para = GetFocusObject()->GetParagraphAtPosition(caretPosition, true);
     if (line)
     {
         wxRichTextRange lineRange = line->GetAbsoluteRange();
@@ -3059,7 +3446,7 @@ wxRichTextLine* wxRichTextCtrl::GetVisibleLineForCaretPosition(long caretPositio
             (para->GetRange().GetStart() != lineRange.GetStart()))
         {
             if (!m_caretAtLineStart)
-                line = GetBuffer().GetLineAtPosition(caretPosition-1, true);
+                line = GetFocusObject()->GetLineAtPosition(caretPosition-1, true);
         }
     }
     return line;
@@ -3067,16 +3454,19 @@ wxRichTextLine* wxRichTextCtrl::GetVisibleLineForCaretPosition(long caretPositio
 
 
 /// Move the caret to the given character position
-bool wxRichTextCtrl::MoveCaret(long pos, bool showAtLineStart)
+bool wxRichTextCtrl::MoveCaret(long pos, bool showAtLineStart, wxRichTextParagraphLayoutBox* container)
 {
-    if (GetBuffer().GetDirty())
+    if (GetBuffer().IsDirty())
         LayoutContent();
 
-    if (pos <= GetBuffer().GetRange().GetEnd())
+    if (!container)
+        container = GetFocusObject();
+
+    if (pos <= container->GetOwnRange().GetEnd())
     {
         SetCaretPosition(pos, showAtLineStart);
 
-        PositionCaret();
+        PositionCaret(container);
 
         return true;
     }
@@ -3088,7 +3478,7 @@ bool wxRichTextCtrl::MoveCaret(long pos, bool showAtLineStart)
 /// setting the caret position.
 bool wxRichTextCtrl::LayoutContent(bool onlyVisibleRect)
 {
-    if (GetBuffer().GetDirty() || onlyVisibleRect)
+    if (GetBuffer().IsDirty() || onlyVisibleRect)
     {
         wxRect availableSpace(GetClientSize());
         if (availableSpace.width == 0)
@@ -3111,7 +3501,7 @@ bool wxRichTextCtrl::LayoutContent(bool onlyVisibleRect)
         GetBuffer().Defragment();
         GetBuffer().UpdateRanges();     // If items were deleted, ranges need recalculation
         GetBuffer().Layout(dc, availableSpace, flags);
-        GetBuffer().SetDirty(false);
+        GetBuffer().Invalidate(wxRICHTEXT_NONE);
 
         if (!IsFrozen())
             SetupScrollbars();
@@ -3120,7 +3510,7 @@ bool wxRichTextCtrl::LayoutContent(bool onlyVisibleRect)
     return true;
 }
 
-/// Is all of the selection bold?
+/// Is all of the selection, or the current caret position, bold?
 bool wxRichTextCtrl::IsSelectionBold()
 {
     if (HasSelection())
@@ -3128,7 +3518,7 @@ bool wxRichTextCtrl::IsSelectionBold()
         wxRichTextAttr attr;
         wxRichTextRange range = GetSelectionRange();
         attr.SetFlags(wxTEXT_ATTR_FONT_WEIGHT);
-        attr.SetFontWeight(wxBOLD);
+        attr.SetFontWeight(wxFONTWEIGHT_BOLD);
 
         return HasCharacterAttributes(range, attr);
     }
@@ -3144,13 +3534,13 @@ bool wxRichTextCtrl::IsSelectionBold()
         {
             if (IsDefaultStyleShowing())
                 wxRichTextApplyStyle(attr, GetDefaultStyleEx());
-            return attr.GetFontWeight() == wxBOLD;
+            return attr.GetFontWeight() == wxFONTWEIGHT_BOLD;
         }
     }
     return false;
 }
 
-/// Is all of the selection italics?
+/// Is all of the selection, or the current caret position, italics?
 bool wxRichTextCtrl::IsSelectionItalics()
 {
     if (HasSelection())
@@ -3158,7 +3548,7 @@ bool wxRichTextCtrl::IsSelectionItalics()
         wxRichTextRange range = GetSelectionRange();
         wxRichTextAttr attr;
         attr.SetFlags(wxTEXT_ATTR_FONT_ITALIC);
-        attr.SetFontStyle(wxITALIC);
+        attr.SetFontStyle(wxFONTSTYLE_ITALIC);
 
         return HasCharacterAttributes(range, attr);
     }
@@ -3174,13 +3564,13 @@ bool wxRichTextCtrl::IsSelectionItalics()
         {
             if (IsDefaultStyleShowing())
                 wxRichTextApplyStyle(attr, GetDefaultStyleEx());
-            return attr.GetFontStyle() == wxITALIC;
+            return attr.GetFontStyle() == wxFONTSTYLE_ITALIC;
         }
     }
     return false;
 }
 
-/// Is all of the selection underlined?
+/// Is all of the selection, or the current caret position, underlined?
 bool wxRichTextCtrl::IsSelectionUnderlined()
 {
     if (HasSelection())
@@ -3210,12 +3600,39 @@ bool wxRichTextCtrl::IsSelectionUnderlined()
     return false;
 }
 
+/// Does all of the selection, or the current caret position, have this wxTextAttrEffects flag(s)?
+bool wxRichTextCtrl::DoesSelectionHaveTextEffectFlag(int flag)
+{
+    wxRichTextAttr attr;
+    attr.SetFlags(wxTEXT_ATTR_EFFECTS);
+    attr.SetTextEffectFlags(flag);
+    attr.SetTextEffects(flag);
+
+    if (HasSelection())
+    {
+        return HasCharacterAttributes(GetSelectionRange(), attr);
+    }
+    else
+    {
+        // If no selection, then we need to combine current style with default style
+        // to see what the effect would be if we started typing.
+        long pos = GetAdjustedCaretPosition(GetCaretPosition());
+        if (GetStyle(pos, attr))
+        {
+            if (IsDefaultStyleShowing())
+                wxRichTextApplyStyle(attr, GetDefaultStyleEx());
+            return (attr.GetTextEffectFlags() & flag) != 0;
+        }
+    }
+    return false;
+}
+
 /// Apply bold to the selection
 bool wxRichTextCtrl::ApplyBoldToSelection()
 {
     wxRichTextAttr attr;
     attr.SetFlags(wxTEXT_ATTR_FONT_WEIGHT);
-    attr.SetFontWeight(IsSelectionBold() ? wxNORMAL : wxBOLD);
+    attr.SetFontWeight(IsSelectionBold() ? wxFONTWEIGHT_NORMAL : wxFONTWEIGHT_BOLD);
 
     if (HasSelection())
         return SetStyleEx(GetSelectionRange(), attr, wxRICHTEXT_SETSTYLE_WITH_UNDO|wxRICHTEXT_SETSTYLE_OPTIMIZE|wxRICHTEXT_SETSTYLE_CHARACTERS_ONLY);
@@ -3233,7 +3650,7 @@ bool wxRichTextCtrl::ApplyItalicToSelection()
 {
     wxRichTextAttr attr;
     attr.SetFlags(wxTEXT_ATTR_FONT_ITALIC);
-    attr.SetFontStyle(IsSelectionItalics() ? wxNORMAL : wxITALIC);
+    attr.SetFontStyle(IsSelectionItalics() ? wxFONTSTYLE_NORMAL : wxFONTSTYLE_ITALIC);
 
     if (HasSelection())
         return SetStyleEx(GetSelectionRange(), attr, wxRICHTEXT_SETSTYLE_WITH_UNDO|wxRICHTEXT_SETSTYLE_OPTIMIZE|wxRICHTEXT_SETSTYLE_CHARACTERS_ONLY);
@@ -3252,6 +3669,28 @@ bool wxRichTextCtrl::ApplyUnderlineToSelection()
     wxRichTextAttr attr;
     attr.SetFlags(wxTEXT_ATTR_FONT_UNDERLINE);
     attr.SetFontUnderlined(!IsSelectionUnderlined());
+
+    if (HasSelection())
+        return SetStyleEx(GetSelectionRange(), attr, wxRICHTEXT_SETSTYLE_WITH_UNDO|wxRICHTEXT_SETSTYLE_OPTIMIZE|wxRICHTEXT_SETSTYLE_CHARACTERS_ONLY);
+    else
+    {
+        wxRichTextAttr current = GetDefaultStyleEx();
+        current.Apply(attr);
+        SetAndShowDefaultStyle(current);
+    }
+    return true;
+}
+
+/// Apply the wxTextAttrEffects flag(s) to the selection, or the current caret position if there's no selection
+bool wxRichTextCtrl::ApplyTextEffectToSelection(int flags)
+{
+    wxRichTextAttr attr;
+    attr.SetFlags(wxTEXT_ATTR_EFFECTS);
+    attr.SetTextEffectFlags(flags);
+    if (!DoesSelectionHaveTextEffectFlag(flags))
+        attr.SetTextEffects(flags);
+     else
+        attr.SetTextEffects(attr.GetTextEffectFlags() & ~flags);
 
     if (HasSelection())
         return SetStyleEx(GetSelectionRange(), attr, wxRICHTEXT_SETSTYLE_WITH_UNDO|wxRICHTEXT_SETSTYLE_OPTIMIZE|wxRICHTEXT_SETSTYLE_CHARACTERS_ONLY);
@@ -3288,7 +3727,7 @@ bool wxRichTextCtrl::ApplyAlignmentToSelection(wxTextAttrAlignment alignment)
         return SetStyle(GetSelectionRange(), attr);
     else
     {
-        wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(GetCaretPosition()+1);
+        wxRichTextParagraph* para = GetFocusObject()->GetParagraphAtPosition(GetCaretPosition()+1);
         if (para)
             return SetStyleEx(para->GetRange().FromInternal(), attr, wxRICHTEXT_SETSTYLE_WITH_UNDO|wxRICHTEXT_SETSTYLE_OPTIMIZE|wxRICHTEXT_SETSTYLE_PARAGRAPHS_ONLY);
     }
@@ -3357,7 +3796,7 @@ bool wxRichTextCtrl::ApplyStyle(wxRichTextStyleDefinition* def)
         if (isPara)
         {
             long pos = GetAdjustedCaretPosition(GetCaretPosition());
-            wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(pos);
+            wxRichTextParagraph* para = GetFocusObject()->GetParagraphAtPosition(pos);
             if (para)
             {
                 return SetStyleEx(para->GetRange().FromInternal(), attr, flags);
@@ -3388,7 +3827,7 @@ bool wxRichTextCtrl::ApplyStyleSheet(wxRichTextStyleSheet* styleSheet)
 /// Sets the default style to the style under the cursor
 bool wxRichTextCtrl::SetDefaultStyleToCursorStyle()
 {
-    wxTextAttrEx attr;
+    wxRichTextAttr attr;
     attr.SetFlags(wxTEXT_ATTR_CHARACTER);
 
     // If at the start of a paragraph, use the next position.
@@ -3406,7 +3845,7 @@ bool wxRichTextCtrl::SetDefaultStyleToCursorStyle()
 /// Returns the first visible position in the current view
 long wxRichTextCtrl::GetFirstVisiblePosition() const
 {
-    wxRichTextLine* line = GetBuffer().GetLineAtYPosition(GetLogicalPoint(wxPoint(0, 0)).y);
+    wxRichTextLine* line = GetFocusObject()->GetLineAtYPosition(GetLogicalPoint(wxPoint(0, 0)).y);
     if (line)
         return line->GetAbsoluteRange().GetStart();
     else
@@ -3430,7 +3869,7 @@ wxPoint wxRichTextCtrl::GetFirstVisiblePoint() const
 /// style information should be taken from the next position, not current one.
 long wxRichTextCtrl::GetAdjustedCaretPosition(long caretPos) const
 {
-    wxRichTextParagraph* para = GetBuffer().GetParagraphAtPosition(caretPos+1);
+    wxRichTextParagraph* para = GetFocusObject()->GetParagraphAtPosition(caretPos+1);
 
     if (para && (caretPos+1 == para->GetRange().GetStart()))
         caretPos ++;
@@ -3456,46 +3895,46 @@ void wxRichTextCtrl::SetSelectionRange(const wxRichTextRange& range)
 /// Set list style
 bool wxRichTextCtrl::SetListStyle(const wxRichTextRange& range, wxRichTextListStyleDefinition* def, int flags, int startFrom, int specifiedLevel)
 {
-    return GetBuffer().SetListStyle(range.ToInternal(), def, flags, startFrom, specifiedLevel);
+    return GetFocusObject()->SetListStyle(range.ToInternal(), def, flags, startFrom, specifiedLevel);
 }
 
 bool wxRichTextCtrl::SetListStyle(const wxRichTextRange& range, const wxString& defName, int flags, int startFrom, int specifiedLevel)
 {
-    return GetBuffer().SetListStyle(range.ToInternal(), defName, flags, startFrom, specifiedLevel);
+    return GetFocusObject()->SetListStyle(range.ToInternal(), defName, flags, startFrom, specifiedLevel);
 }
 
 /// Clear list for given range
 bool wxRichTextCtrl::ClearListStyle(const wxRichTextRange& range, int flags)
 {
-    return GetBuffer().ClearListStyle(range.ToInternal(), flags);
+    return GetFocusObject()->ClearListStyle(range.ToInternal(), flags);
 }
 
 /// Number/renumber any list elements in the given range
 bool wxRichTextCtrl::NumberList(const wxRichTextRange& range, wxRichTextListStyleDefinition* def, int flags, int startFrom, int specifiedLevel)
 {
-    return GetBuffer().NumberList(range.ToInternal(), def, flags, startFrom, specifiedLevel);
+    return GetFocusObject()->NumberList(range.ToInternal(), def, flags, startFrom, specifiedLevel);
 }
 
 bool wxRichTextCtrl::NumberList(const wxRichTextRange& range, const wxString& defName, int flags, int startFrom, int specifiedLevel)
 {
-    return GetBuffer().NumberList(range.ToInternal(), defName, flags, startFrom, specifiedLevel);
+    return GetFocusObject()->NumberList(range.ToInternal(), defName, flags, startFrom, specifiedLevel);
 }
 
 /// Promote the list items within the given range. promoteBy can be a positive or negative number, e.g. 1 or -1
 bool wxRichTextCtrl::PromoteList(int promoteBy, const wxRichTextRange& range, wxRichTextListStyleDefinition* def, int flags, int specifiedLevel)
 {
-    return GetBuffer().PromoteList(promoteBy, range.ToInternal(), def, flags, specifiedLevel);
+    return GetFocusObject()->PromoteList(promoteBy, range.ToInternal(), def, flags, specifiedLevel);
 }
 
 bool wxRichTextCtrl::PromoteList(int promoteBy, const wxRichTextRange& range, const wxString& defName, int flags, int specifiedLevel)
 {
-    return GetBuffer().PromoteList(promoteBy, range.ToInternal(), defName, flags, specifiedLevel);
+    return GetFocusObject()->PromoteList(promoteBy, range.ToInternal(), defName, flags, specifiedLevel);
 }
 
 /// Deletes the content in the given range
 bool wxRichTextCtrl::Delete(const wxRichTextRange& range)
 {
-    return GetBuffer().DeleteRangeWithUndo(range.ToInternal(), this);
+    return GetFocusObject()->DeleteRangeWithUndo(range.ToInternal(), this, & GetBuffer());
 }
 
 const wxArrayString& wxRichTextCtrl::GetAvailableFontNames()
@@ -3513,39 +3952,72 @@ void wxRichTextCtrl::ClearAvailableFontNames()
     sm_availableFontNames.Clear();
 }
 
-// Refresh the area affected by a selection change
-bool wxRichTextCtrlRefreshForSelectionChange(wxRichTextCtrl& ctrl, const wxRichTextRange& oldSelection, const wxRichTextRange& newSelection)
+void wxRichTextCtrl::OnSysColourChanged(wxSysColourChangedEvent& WXUNUSED(event))
 {
+    //wxLogDebug(wxT("wxRichTextCtrl::OnSysColourChanged"));
+
+    wxTextAttrEx basicStyle = GetBasicStyle();
+    basicStyle.SetTextColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
+    SetBasicStyle(basicStyle);
+    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+
+    Refresh();
+}
+
+// Refresh the area affected by a selection change
+bool wxRichTextCtrl::RefreshForSelectionChange(const wxRichTextSelection& oldSelection, const wxRichTextSelection& newSelection)
+{
+    // If the selection is not part of the focus object, or we have multiple ranges, then the chances are that
+    // the selection contains whole containers rather than just text, so refresh everything
+    // for now as it would be hard to compute the rectangle bounding all selections.
+    // TODO: improve on this.
+    if ((oldSelection.IsValid() && (oldSelection.GetContainer() != GetFocusObject() || oldSelection.GetCount() > 1)) ||
+        (newSelection.IsValid() && (newSelection.GetContainer() != GetFocusObject() || newSelection.GetCount() > 1)))
+    {
+        Refresh(false);
+        return true;
+    }
+
+    wxRichTextRange oldRange, newRange;
+    if (oldSelection.IsValid())
+        oldRange = oldSelection.GetRange();
+    else
+        oldRange = wxRICHTEXT_NO_SELECTION;
+    if (newSelection.IsValid())
+        newRange = newSelection.GetRange();
+    else
+        newRange = wxRICHTEXT_NO_SELECTION;
+
     // Calculate the refresh rectangle - just the affected lines
     long firstPos, lastPos;
-    if (oldSelection.GetStart() == -2 && newSelection.GetStart() != -2)
+    if (oldRange.GetStart() == -2 && newRange.GetStart() != -2)
     {
-        firstPos = newSelection.GetStart();
-        lastPos = newSelection.GetEnd();
+        firstPos = newRange.GetStart();
+        lastPos = newRange.GetEnd();
     }
-    else if (oldSelection.GetStart() != -2 && newSelection.GetStart() == -2)
+    else if (oldRange.GetStart() != -2 && newRange.GetStart() == -2)
     {
-        firstPos = oldSelection.GetStart();
-        lastPos = oldSelection.GetEnd();
+        firstPos = oldRange.GetStart();
+        lastPos = oldRange.GetEnd();
     }
-    else if (oldSelection.GetStart() == -2 && newSelection.GetStart() == -2)
+    else if (oldRange.GetStart() == -2 && newRange.GetStart() == -2)
     {
         return false;
     }
     else
     {
-        firstPos = wxMin(oldSelection.GetStart(), newSelection.GetStart());
-        lastPos = wxMax(oldSelection.GetEnd(), newSelection.GetEnd());
+        firstPos = wxMin(oldRange.GetStart(), newRange.GetStart());
+        lastPos = wxMax(oldRange.GetEnd(), newRange.GetEnd());
     }
 
-    wxRichTextLine* firstLine = ctrl.GetBuffer().GetLineAtPosition(firstPos);
-    wxRichTextLine* lastLine = ctrl.GetBuffer().GetLineAtPosition(lastPos);
+    wxRichTextLine* firstLine = GetFocusObject()->GetLineAtPosition(firstPos);
+    wxRichTextLine* lastLine = GetFocusObject()->GetLineAtPosition(lastPos);
 
     if (firstLine && lastLine)
     {
-        wxSize clientSize = ctrl.GetClientSize();
-        wxPoint pt1 = ctrl.GetPhysicalPoint(firstLine->GetAbsolutePosition());
-        wxPoint pt2 = ctrl.GetPhysicalPoint(lastLine->GetAbsolutePosition()) + wxPoint(0, lastLine->GetSize().y);
+        wxSize clientSize = GetClientSize();
+        wxPoint pt1 = GetPhysicalPoint(firstLine->GetAbsolutePosition());
+        wxPoint pt2 = GetPhysicalPoint(lastLine->GetAbsolutePosition()) + wxPoint(0, lastLine->GetSize().y);
 
         pt1.x = 0;
         pt1.y = wxMax(0, pt1.y);
@@ -3553,11 +4025,67 @@ bool wxRichTextCtrlRefreshForSelectionChange(wxRichTextCtrl& ctrl, const wxRichT
         pt2.y = wxMin(clientSize.y, pt2.y);
 
         wxRect rect(pt1, wxSize(clientSize.x, pt2.y - pt1.y));
-        ctrl.RefreshRect(rect, false);
+        RefreshRect(rect, false);
     }
     else
-        ctrl.Refresh(false);
+        Refresh(false);
 
+    return true;
+}
+
+// margins functions
+bool wxRichTextCtrl::DoSetMargins(const wxPoint& pt)
+{
+    GetBuffer().GetAttributes().GetTextBoxAttr().GetMargins().GetLeft().SetValue(pt.x, wxTEXT_ATTR_UNITS_PIXELS);
+    GetBuffer().GetAttributes().GetTextBoxAttr().GetMargins().GetRight().SetValue(pt.x, wxTEXT_ATTR_UNITS_PIXELS);
+    GetBuffer().GetAttributes().GetTextBoxAttr().GetMargins().GetTop().SetValue(pt.y, wxTEXT_ATTR_UNITS_PIXELS);
+    GetBuffer().GetAttributes().GetTextBoxAttr().GetMargins().GetBottom().SetValue(pt.y, wxTEXT_ATTR_UNITS_PIXELS);
+
+    return true;
+}
+
+wxPoint wxRichTextCtrl::DoGetMargins() const
+{
+    return wxPoint(GetBuffer().GetAttributes().GetTextBoxAttr().GetMargins().GetLeft().GetValue(),
+                   GetBuffer().GetAttributes().GetTextBoxAttr().GetMargins().GetTop().GetValue());
+}
+
+bool wxRichTextCtrl::SetFocusObject(wxRichTextParagraphLayoutBox* obj, bool setCaretPosition)
+{
+    if (obj && !obj->AcceptsFocus())
+        return false;
+
+    wxRichTextParagraphLayoutBox* oldContainer = GetFocusObject();
+    bool changingContainer = (m_focusObject != obj);
+
+    m_focusObject = obj;
+
+    if (!obj)
+        m_focusObject = & m_buffer;
+
+    if (setCaretPosition && changingContainer)
+    {
+        m_selection.Reset();
+        m_selectionAnchor = -2;
+        m_selectionAnchorObject = NULL;
+        m_selectionState = wxRichTextCtrlSelectionState_Normal;
+
+        long pos = -1;
+
+        m_caretAtLineStart = false;
+        MoveCaret(pos, m_caretAtLineStart);
+        SetDefaultStyleToCursorStyle();
+
+        wxRichTextEvent cmdEvent(
+            wxEVT_COMMAND_RICHTEXT_FOCUS_OBJECT_CHANGED,
+            GetId());
+        cmdEvent.SetEventObject(this);
+        cmdEvent.SetPosition(m_caretPosition+1);
+        cmdEvent.SetOldContainer(oldContainer);
+        cmdEvent.SetContainer(m_focusObject);
+
+        GetEventHandler()->ProcessEvent(cmdEvent);
+    }
     return true;
 }
 
@@ -3699,8 +4227,110 @@ void wxRichTextCaretTimer::Notify()
 {
     m_caret->Notify();
 }
-
 #endif
     // wxRICHTEXT_USE_OWN_CARET
+
+// Add an item
+bool wxRichTextContextMenuPropertiesInfo::AddItem(const wxString& label, wxRichTextObject* obj)
+{
+    if (GetCount() < 3)
+    {
+        m_labels.Add(label);
+        m_objects.Add(obj);
+        return true;
+    }
+    else
+        return false;
+}
+
+// Returns number of menu items were added.
+int wxRichTextContextMenuPropertiesInfo::AddMenuItems(wxMenu* menu, int startCmd) const
+{
+    wxMenuItem* item = menu->FindItem(startCmd);
+    // If none of the standard properties identifiers are in the menu, assume it's
+    // a custom menu without properties commands, and don't add them.
+    if (item)
+    {
+        // If no items, to add just set the text to something generic
+        if (GetCount() == 0)
+        {
+            menu->SetLabel(startCmd, _("&Properties"));
+
+            // Delete the others if necessary
+            int i;
+            for (i = startCmd+1; i < startCmd+3; i++)
+            {
+                if (menu->FindItem(i))
+                {
+                    menu->Delete(i);
+                }
+            }
+        }
+        else
+        {
+            int i;
+            int pos = -1;
+            // Find the position of the first properties item
+            for (i = 0; i < (int) menu->GetMenuItemCount(); i++)
+            {
+                wxMenuItem* item = menu->FindItemByPosition(i);
+                if (item && item->GetId() == startCmd)
+                {
+                    pos = i;
+                    break;
+                }
+            }
+
+            if (pos != -1)
+            {
+                int insertBefore = pos+1;
+                for (i = startCmd; i < startCmd+GetCount(); i++)
+                {
+                    if (menu->FindItem(i))
+                    {
+                        menu->SetLabel(i, m_labels[i - startCmd]);
+                    }
+                    else
+                    {
+                        if (insertBefore >= (int) menu->GetMenuItemCount())
+                            menu->Append(i, m_labels[i - startCmd]);
+                        else
+                            menu->Insert(insertBefore, i, m_labels[i - startCmd]);
+                    }
+                    insertBefore ++;
+                }
+
+                // Delete any old items still left on the menu
+                for (i = startCmd + GetCount(); i < startCmd+3; i++)
+                {
+                    if (menu->FindItem(i))
+                    {
+                        menu->Delete(i);
+                    }
+                }
+            }
+        }
+    }
+
+    return GetCount();
+}
+
+// Add appropriate menu items for the current container and clicked on object
+// (and container's parent, if appropriate).
+int wxRichTextContextMenuPropertiesInfo::AddItems(wxRichTextObject* container, wxRichTextObject* obj)
+{
+    Clear();
+    if (obj && obj->CanEditProperties())
+        AddItem(obj->GetPropertiesMenuLabel(), obj);
+
+    if (container && container != obj && container->CanEditProperties() && m_labels.Index(container->GetPropertiesMenuLabel()) == wxNOT_FOUND)
+        AddItem(container->GetPropertiesMenuLabel(), container);
+
+    if (container && container->GetParent() && container->GetParent()->CanEditProperties() && m_labels.Index(container->GetParent()->GetPropertiesMenuLabel()) == wxNOT_FOUND)
+        AddItem(container->GetParent()->GetPropertiesMenuLabel(), container->GetParent());
+
+    return GetCount();
+}
+
 #endif
     // wxUSE_RICHTEXT

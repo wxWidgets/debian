@@ -6,7 +6,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _misc.i 63426 2010-02-08 20:19:39Z RD $
+// RCS-ID:      $Id: _misc.i 70133 2011-12-28 02:14:56Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -39,6 +39,19 @@ public:
     static void Enable(bool flag);
     static void SetDelay(long milliseconds);
 
+    // set the delay after which the tooltip disappears or how long the tooltip remains visible
+    static void SetAutoPop(long milliseconds);
+    // set the delay between subsequent tooltips to appear
+    static void SetReshow(long milliseconds);
+    
+#ifdef __WXMSW__
+    // MSW only
+    static void SetMaxWidth(int width);
+#else
+    %extend {
+        static void SetMaxWidth(int width) { }
+    }
+#endif
 
     %property(Tip, GetTip, SetTip, doc="See `GetTip` and `SetTip`");
     %property(Window, GetWindow, doc="See `GetWindow`");
@@ -123,7 +136,9 @@ MustHaveApp(wxWindowDisabler);
 
 class wxWindowDisabler {
 public:
-    wxWindowDisabler(wxWindow *winToSkip = NULL);
+    %nokwargs wxWindowDisabler;
+    wxWindowDisabler(bool disable = true);
+    wxWindowDisabler(wxWindow *winToSkip);
     ~wxWindowDisabler();
 
     // for the 'with' statement
@@ -175,6 +190,9 @@ public:
     
     // resume it
     void Resume();
+
+    // Get elapsed time since the last Start() in microseconds.
+    wxLongLong TimeInMicro() const;
 
     // get elapsed time since the last Start() in milliseconds
     long Time() const;
@@ -247,6 +265,13 @@ public:
     // returns False if initialization failed, it doesn't mean that another
     // instance is running - use IsAnotherRunning() to check it
     bool Create(const wxString& name, const wxString& path = wxPyEmptyString);
+
+    // use the default name, which is a combination of wxTheApp->GetAppName()
+    // and wxGetUserId() for mutex/lock file
+    //
+    // this is called implicitly by IsAnotherRunning() if the checker hadn't
+    // been created until then
+    bool CreateDefault();
 
     // is another copy of this program already running?
     bool IsAnotherRunning() const;
@@ -342,6 +367,16 @@ enum wxEndianness
     wxENDIAN_MAX
 };
 
+struct wxLinuxDistributionInfo
+{
+    wxString Id;
+    wxString Release;
+    wxString CodeName;
+    wxString Description;
+};
+
+
+
 // Information about the toolkit that the app is running under and some basic
 // platform and architecture info
 
@@ -402,6 +437,8 @@ public:
     bool IsUsingUniversalWidgets() const;
 
     wxOperatingSystemId GetOperatingSystemId() const;
+    wxLinuxDistributionInfo GetLinuxDistributionInfo() const;
+
     wxPortId GetPortId() const;
     wxArchitecture GetArchitecture() const;
     wxEndianness GetEndianness() const;
@@ -416,6 +453,11 @@ public:
     wxString GetPortIdShortName() const;
     wxString GetArchName() const;
     wxString GetEndiannessName() const;
+    wxString GetOperatingSystemDescription() const;
+    wxString GetDesktopEnvironment() const;
+
+    static wxString GetOperatingSystemDirectory();
+
 
     // setters
     // -----------------
@@ -424,10 +466,15 @@ public:
     void SetToolkitVersion(int major, int minor);
 
     void SetOperatingSystemId(wxOperatingSystemId n);
+    void SetOperatingSystemDescription(const wxString& desc);
+
     void SetPortId(wxPortId n);
     void SetArchitecture(wxArchitecture n);
     void SetEndianness(wxEndianness n);
+    void SetDesktopEnvironment(const wxString& de);
+    void SetLinuxDistributionInfo(const wxLinuxDistributionInfo& di);
 
+    
     // miscellaneous
     // -----------------
 
@@ -452,6 +499,65 @@ public:
 
 
 //---------------------------------------------------------------------------
+
+%{
+#include <wx/notifmsg.h>
+%}
+
+
+class wxNotificationMessage : public wxEvtHandler
+{
+public:
+    %nokwargs wxNotificationMessage;
+    wxNotificationMessage();
+    wxNotificationMessage(const wxString& title,
+                          const wxString& message = wxEmptyString,
+                          wxWindow *parent = NULL);
+    virtual ~wxNotificationMessage();
+
+
+   // set the title: short string, markup not allowed
+    void SetTitle(const wxString& title);
+
+    // set the text of the message: this is a longer string than the title and
+    // some platforms allow simple HTML-like markup in it
+    void SetMessage(const wxString& message);
+
+    // set the parent for this notification: we'll be associated with the top
+    // level parent of this window or, if this method is not called, with the
+    // main application window by default
+    void SetParent(wxWindow *parent);
+
+    // this method can currently be used to choose a standard icon to use: the
+    // parameter may be one of wxICON_INFORMATION, wxICON_WARNING or
+    // wxICON_ERROR only (but not wxICON_QUESTION)
+    void SetFlags(int flags);
+
+
+    // showing and hiding
+    // ------------------
+
+    // possible values for Show() timeout
+    enum
+    {
+        Timeout_Auto = -1,  // notification will be hidden automatically
+        Timeout_Never = 0   // notification will never time out
+    };
+
+    // show the notification to the user and hides it after timeout seconds
+    // pass (special values Timeout_Auto and Timeout_Never can be used)
+    //
+    // returns false if an error occurred
+    virtual bool Show(int timeout = Timeout_Auto);
+
+    // hide the notification, returns true if it was hidden or false if it
+    // couldn't be done (e.g. on some systems automatically hidden
+    // notifications can't be hidden manually)
+    virtual bool Close();
+};
+
+
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 // Experimental...
 
@@ -464,7 +570,7 @@ public:
 
 
 %inline %{
-
+#if 0
 bool wxDrawWindowOnDC(wxWindow* window, const wxDC& dc
 #if 0
                       , int method
@@ -472,6 +578,7 @@ bool wxDrawWindowOnDC(wxWindow* window, const wxDC& dc
     )
 {
 #ifdef __WXMSW__
+    HDC hdc = (HDC)((wxMSWDCImpl*)dc.GetImpl())->GetHDC();
 #if 0
     switch (method)
     {
@@ -480,7 +587,7 @@ bool wxDrawWindowOnDC(wxWindow* window, const wxDC& dc
             // "standard" convention that not all widgets adhear to.  For
             // example, for some widgets backgrounds or non-client areas may
             // not be painted.
-            ::SendMessage(GetHwndOf(window), WM_PAINT, (long)GetHdcOf(dc), 0);
+            ::SendMessage(GetHwndOf(window), WM_PAINT, (long)hdc, 0);
             break;
 
         case 2:
@@ -496,7 +603,7 @@ bool wxDrawWindowOnDC(wxWindow* window, const wxDC& dc
             // ** For example the radio buttons in a wxRadioBox are not its
             // children by default, but you can capture it via the panel
             // instead, or change RADIOBTN_PARENT_IS_RADIOBOX in radiobox.cpp.
-            ::SendMessage(GetHwndOf(window), WM_PRINT, (long)GetHdcOf(dc),
+            ::SendMessage(GetHwndOf(window), WM_PRINT, (long)hdc,
                           PRF_CLIENT | PRF_NONCLIENT | PRF_CHILDREN |
                           PRF_ERASEBKGND | PRF_OWNED );
             return true;
@@ -535,12 +642,12 @@ bool wxDrawWindowOnDC(wxWindow* window, const wxDC& dc
             if (pfnPrintWindow)
             {
                 //printf("Using PrintWindow\n");
-                pfnPrintWindow(GetHwndOf(window), GetHdcOf(dc), 0);
+                pfnPrintWindow(GetHwndOf(window), hdc, 0);
             }
             else
             {
                 //printf("Using WM_PRINT\n");
-                ::SendMessage(GetHwndOf(window), WM_PRINT, (long)GetHdcOf(dc),
+                ::SendMessage(GetHwndOf(window), WM_PRINT, (long)hdc,
                               PRF_CLIENT | PRF_NONCLIENT | PRF_CHILDREN |
                               PRF_ERASEBKGND | PRF_OWNED );
             }
@@ -550,7 +657,7 @@ bool wxDrawWindowOnDC(wxWindow* window, const wxDC& dc
     return false;
 #endif  // __WXMSW__    
 }
-
+#endif
 %}
 
 

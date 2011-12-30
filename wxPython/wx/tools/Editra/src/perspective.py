@@ -13,15 +13,19 @@ perspectives in the MainWindow.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id: perspective.py 67680 2011-05-03 14:37:40Z CJP $"
-__revision__ = "$Revision: 67680 $"
+__cvsid__ = "$Id: perspective.py 68263 2011-07-14 03:00:36Z CJP $"
+__revision__ = "$Revision: 68263 $"
 
 #--------------------------------------------------------------------------#
 # Dependencies
 import os
 import wx
+import wx.aui as aui
+
+# Editra Imports
 import util
 import ed_menu
+import ed_fmgr
 from profiler import Profile_Get, Profile_Set
 
 #--------------------------------------------------------------------------#
@@ -54,16 +58,16 @@ class PerspectiveManager(object):
         """
         super(PerspectiveManager, self).__init__()
 
-        hint = wx.aui.AUI_MGR_TRANSPARENT_HINT
+        hint = aui.AUI_MGR_TRANSPARENT_HINT
         if wx.Platform == '__WXGTK__':
             # Use venetian blinds style as transparent can cause crashes
             # on linux when desktop compositing is used.
-            hint = wx.aui.AUI_MGR_VENETIAN_BLINDS_HINT
+            hint = aui.AUI_MGR_VENETIAN_BLINDS_HINT
 
-        self._mgr = wx.aui.AuiManager(flags=wx.aui.AUI_MGR_DEFAULT |
-                                      wx.aui.AUI_MGR_TRANSPARENT_DRAG |
-                                      hint |
-                                      wx.aui.AUI_MGR_ALLOW_ACTIVE_PANE)
+        self._mgr = ed_fmgr.EdFrameManager(flags=aui.AUI_MGR_DEFAULT |
+                                                 aui.AUI_MGR_TRANSPARENT_DRAG |
+                                                 hint |
+                                                 aui.AUI_MGR_ALLOW_ACTIVE_PANE)
         self._mgr.SetManagedWindow(self)
 
         # Attributes

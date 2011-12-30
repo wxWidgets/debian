@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="rect" id="node9" href="$classwx_f_t_p.html" title="wxFTP can be used to establish a connection to an FTP server and perform all the usual operations..." alt="" coords="5,326,67,357"/>
+<area shape="rect" id="node11" href="$classwx_h_t_t_p.html" title="wxHTTP can be used to establish a connection to an HTTP server." alt="" coords="91,326,163,357"/>
+<area shape="rect" id="node2" href="$classwx_socket_client.html" title="wxSocketClient" alt="" coords="25,166,137,197"/>
+<area shape="rect" id="node4" href="$classwx_socket_base.html" title="wxSocketBase is the base class for all socket&#45;related objects, and it defines all basic IO functional..." alt="" coords="27,86,136,117"/>
+<area shape="rect" id="node6" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="44,6,119,37"/>
+</map>

@@ -84,3 +84,12 @@ class EdXml(dexml.Model):
         except (IOError, OSError):
             instance = None
         return instance
+
+    @classmethod
+    def LoadString(cls, xmlstr):
+        """Load an object from an XML string
+        @param xmlstr: string
+
+        """
+        instance = cls.parse(xmlstr)
+        return instance

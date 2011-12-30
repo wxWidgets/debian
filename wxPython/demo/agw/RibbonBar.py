@@ -41,6 +41,7 @@ ID_POSITION_TOP_BOTH = ID_CIRCLE + 16
 ID_POSITION_LEFT = ID_CIRCLE + 17
 ID_POSITION_LEFT_LABELS = ID_CIRCLE + 18
 ID_POSITION_LEFT_BOTH = ID_CIRCLE + 19
+ID_TOGGLE_PANELS = ID_CIRCLE + 20
 
 # --------------------------------------------------- #
 # Some bitmaps for ribbon buttons
@@ -261,8 +262,10 @@ class RibbonFrame(wx.Frame):
                  size=wx.DefaultSize, style=wx.DEFAULT_FRAME_STYLE, log=None):
 
         wx.Frame.__init__(self, parent, id, title, pos, size, style)
+
+        panel = wx.Panel(self)
         
-        self._ribbon = RB.RibbonBar(self, wx.ID_ANY)
+        self._ribbon = RB.RibbonBar(panel, wx.ID_ANY)
 
         self._bitmap_creation_dc = wx.MemoryDC()
         self._colour_data = wx.ColourData()
@@ -287,30 +290,55 @@ class RibbonFrame(wx.Frame):
         toolbar.AddTool(wx.ID_ANY, wx.ArtProvider.GetBitmap(wx.ART_REPORT_VIEW, wx.ART_OTHER, wx.Size(16, 15)))
         toolbar.AddTool(wx.ID_ANY, wx.ArtProvider.GetBitmap(wx.ART_LIST_VIEW, wx.ART_OTHER, wx.Size(16, 15)))
         toolbar.AddSeparator()
-        toolbar.AddHybridTool(ID_POSITION_LEFT, CreateBitmap("position_left"))
-        toolbar.AddHybridTool(ID_POSITION_TOP, CreateBitmap("position_top"))
+        toolbar.AddHybridTool(ID_POSITION_LEFT, CreateBitmap("position_left"), "Align ribbonbar vertically\non the left\nfor demonstration purposes")
+        toolbar.AddHybridTool(ID_POSITION_TOP, CreateBitmap("position_top"), "Align the ribbonbar horizontally\nat the top\nfor demonstration purposes")
         toolbar.AddSeparator()
-        toolbar.AddHybridTool(wx.ID_PRINT, wx.ArtProvider.GetBitmap(wx.ART_PRINT, wx.ART_OTHER, wx.Size(16, 15)))
+        toolbar.AddHybridTool(wx.ID_PRINT, wx.ArtProvider.GetBitmap(wx.ART_PRINT, wx.ART_OTHER, wx.Size(16, 15)),
+                              "This is the Print button tooltip\ndemonstrating a tooltip")
         toolbar.SetRows(2, 3)
 
         selection_panel = RB.RibbonPanel(home, wx.ID_ANY, "Selection", CreateBitmap("selection_panel"))
         selection = RB.RibbonButtonBar(selection_panel)
-        selection.AddSimpleButton(ID_SELECTION_EXPAND_V, "Expand Vertically", CreateBitmap("expand_selection_v"), "")
+        selection.AddSimpleButton(ID_SELECTION_EXPAND_V, "Expand Vertically", CreateBitmap("expand_selection_v"),
+                                  "This is a tooltip for Expand Vertically\ndemonstrating a tooltip")
         selection.AddSimpleButton(ID_SELECTION_EXPAND_H, "Expand Horizontally", CreateBitmap("expand_selection_h"), "")
-        selection.AddSimpleButton(ID_SELECTION_CONTRACT, "Contract", CreateBitmap("auto_crop_selection"),
+        selection.AddButton(ID_SELECTION_CONTRACT, "Contract", CreateBitmap("auto_crop_selection"),
                                   CreateBitmap("auto_crop_selection_small"))
 
         shapes_panel = RB.RibbonPanel(home, wx.ID_ANY, "Shapes", CreateBitmap("circle_small"))
         shapes = RB.RibbonButtonBar(shapes_panel)
-        shapes.AddSimpleButton(ID_CIRCLE, "Circle", CreateBitmap("circle"), CreateBitmap("circle_small"))
+        shapes.AddButton(ID_CIRCLE, "Circle", CreateBitmap("circle"), CreateBitmap("circle_small"),
+                         help_string="This is a tooltip for the circle button\ndemonstrating another tooltip",
+                         kind=RB.RIBBON_BUTTON_TOGGLE)
         shapes.AddSimpleButton(ID_CROSS, "Cross", CreateBitmap("cross"), "")
         shapes.AddHybridButton(ID_TRIANGLE, "Triangle", CreateBitmap("triangle"))
         shapes.AddSimpleButton(ID_SQUARE, "Square", CreateBitmap("square"), "")
         shapes.AddDropdownButton(ID_POLYGON, "Other Polygon", CreateBitmap("hexagon"), "")
 
-        dummy_1 = RB.RibbonPanel(home, wx.ID_ANY, "Another Panel", wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize,
-                                 agwStyle=RB.RIBBON_PANEL_EXT_BUTTON)
-    
+        sizer_panel = RB.RibbonPanel(home, wx.ID_ANY, "Panel with Sizer",
+                                     wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize,
+                                     agwStyle=RB.RIBBON_PANEL_DEFAULT_STYLE)
+
+        strs = ["Item 1 using a box sizer now", "Item 2 using a box sizer now"]
+        sizer_panelcombo = wx.ComboBox(sizer_panel, wx.ID_ANY, "", wx.DefaultPosition, wx.DefaultSize,
+                                       strs, wx.CB_READONLY)
+
+        sizer_panelcombo2 = wx.ComboBox(sizer_panel, wx.ID_ANY, "", wx.DefaultPosition, wx.DefaultSize,
+                                        strs, wx.CB_READONLY)
+
+        sizer_panelcombo.Select(0)
+        sizer_panelcombo2.Select(1)
+        sizer_panelcombo.SetMinSize(wx.Size(150, -1))
+        sizer_panelcombo2.SetMinSize(wx.Size(150, -1))
+
+        # not using wx.WrapSizer(wx.HORIZONTAL) as it reports an incorrect min height
+        sizer_panelsizer = wx.BoxSizer(wx.VERTICAL)
+        sizer_panelsizer.AddStretchSpacer(1)
+        sizer_panelsizer.Add(sizer_panelcombo, 0, wx.ALL|wx.EXPAND, 2)
+        sizer_panelsizer.Add(sizer_panelcombo2, 0, wx.ALL|wx.EXPAND, 2)
+        sizer_panelsizer.AddStretchSpacer(1)
+        sizer_panel.SetSizer(sizer_panelsizer)
+        
         label_font = wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_LIGHT)
         self._bitmap_creation_dc.SetFont(label_font)
 
@@ -336,15 +364,20 @@ class RibbonFrame(wx.Frame):
 
         self._ribbon.Realize()
 
-        self._logwindow = wx.TextCtrl(self, wx.ID_ANY, "", wx.DefaultPosition, wx.DefaultSize,
+        self._logwindow = wx.TextCtrl(panel, wx.ID_ANY, "", wx.DefaultPosition, wx.DefaultSize,
                                       wx.TE_MULTILINE | wx.TE_READONLY | wx.TE_LEFT | wx.TE_BESTWRAP | wx.BORDER_NONE)
 
+        self._togglePanels = wx.ToggleButton(panel, ID_TOGGLE_PANELS, "&Toggle panels")
+        self._togglePanels.SetValue(True)
+    
         s = wx.BoxSizer(wx.VERTICAL)
 
         s.Add(self._ribbon, 0, wx.EXPAND)
         s.Add(self._logwindow, 1, wx.EXPAND)
+        s.Add(self._togglePanels, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 10)
 
-        self.SetSizer(s)
+        panel.SetSizer(s)
+        self.panel = panel
 
         self.BindEvents([selection, shapes, provider_bar])
 
@@ -391,6 +424,7 @@ class RibbonFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnPositionTopLabels, id=ID_POSITION_TOP)
         self.Bind(wx.EVT_MENU, self.OnPositionTopIcons, id=ID_POSITION_TOP_ICONS)
         self.Bind(wx.EVT_MENU, self.OnPositionTopBoth, id=ID_POSITION_TOP_BOTH)
+        self._togglePanels.Bind(wx.EVT_TOGGLEBUTTON, self.OnTogglePanels, id=ID_TOGGLE_PANELS)
 
 
     def SetBarStyle(self, agwStyle):
@@ -398,7 +432,7 @@ class RibbonFrame(wx.Frame):
         self._ribbon.Freeze()
         self._ribbon.SetAGWWindowStyleFlag(agwStyle)
         
-        pTopSize = self.GetSizer()
+        pTopSize = self.panel.GetSizer()
         pToolbar = wx.FindWindowById(ID_MAIN_TOOLBAR)
 
         if agwStyle & RB.RIBBON_BAR_FLOW_VERTICAL:
@@ -416,8 +450,8 @@ class RibbonFrame(wx.Frame):
                 pToolbar.SetRows(2, 3)
         
         self._ribbon.Realize()
-        self.Layout()
         self._ribbon.Thaw()
+        self.panel.Layout()
         
 
     def PopulateColoursPanel(self, panel, defc, gallery_id):
@@ -706,6 +740,11 @@ class RibbonFrame(wx.Frame):
         event.PopupMenu(menu)
 
 
+    def OnTogglePanels(self, event):
+
+        self._ribbon.ShowPanels(self._togglePanels.GetValue())
+        
+    
     def AddText(self, msg):
 
         self._logwindow.AppendText(msg)
@@ -716,11 +755,13 @@ class RibbonFrame(wx.Frame):
     def AddColourToGallery(self, gallery, colour, dc, value=None):
 
         item = None
-        c = wx.NamedColour(colour)
-        
-        if value != None:
-            c = value
 
+        if colour != "Default":
+            c = wx.NamedColour(colour)
+            
+        if value is not None:
+            c = value
+        
         if c.IsOk():
             
             iWidth = 64
@@ -832,7 +873,7 @@ class RibbonFrame(wx.Frame):
                                   ID_SECONDARY_COLOUR)
 
         self._ribbon.Thaw()
-        self.GetSizer().Layout()
+        self.panel.GetSizer().Layout()
         self._ribbon.Realize()
 
 

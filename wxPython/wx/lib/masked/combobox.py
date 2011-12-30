@@ -4,7 +4,7 @@
 # Email:        wsadkin@nameconnector.com
 # Created:      02/11/2003
 # Copyright:    (c) 2003 by Will Sadkin, 2003
-# RCS-ID:       $Id: combobox.py 45970 2007-05-11 19:55:57Z RD $
+# RCS-ID:       $Id: combobox.py 65775 2010-10-05 23:39:19Z RD $
 # License:      wxWidgets license
 #----------------------------------------------------------------------------
 #
@@ -69,6 +69,7 @@ class MaskedComboBoxEventHandler(wx.EvtHandler):
                                                                         ## ctrl selection into maskededit framework
         self.Bind(wx.EVT_TEXT, self.combobox._OnTextChange )            ## color control appropriately & keep
                                                                         ## track of previous value for undo
+
 
 
 class BaseMaskedComboBox( wx.ComboBox, MaskedEditMixin ):
@@ -194,7 +195,8 @@ class BaseMaskedComboBox( wx.ComboBox, MaskedEditMixin ):
     def OnWindowDestroy(self, event):
         # clean up associated event handler object:
         if self.RemoveEventHandler(self.evt_handler):
-            self.evt_handler.Destroy()
+            wx.CallAfter(self.evt_handler.Destroy)
+        event.Skip()        
 
 
     def _CalcSize(self, size=None):

@@ -1,11 +1,11 @@
 #----------------------------------------------------------------------------
-# Name:        wxPython.lib.mixins.listctrl
+# Name:        wx.lib.mixins.listctrl
 # Purpose:     Helpful mix-in classes for wxListCtrl
 #
 # Author:      Robin Dunn
 #
 # Created:     15-May-2001
-# RCS-ID:      $Id: listctrl.py 63322 2010-01-30 00:59:55Z RD $
+# RCS-ID:      $Id: listctrl.py 70137 2011-12-28 02:16:21Z RD $
 # Copyright:   (c) 2001 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------------
@@ -669,7 +669,7 @@ class TextEditMixin:
 FILENAME: CheckListCtrlMixin.py
 AUTHOR:   Bruce Who (bruce.who.hk at gmail.com)
 DATE:     2006-02-09
-$Revision: 63322 $
+$Revision: 70137 $
 DESCRIPTION:
     This script provide a mixin for ListCtrl which add a checkbox in the first
     column of each row. It is inspired by limodou's CheckList.py(which can be

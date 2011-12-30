@@ -4,7 +4,7 @@
 // Author:      Brian Victor, Vadim Zeitlin
 // Modified by:
 // Created:     12/05/02
-// RCS-ID:      $Id: displayx11.cpp 50143 2007-11-22 02:52:10Z PC $
+// RCS-ID:      $Id: displayx11.cpp 64388 2010-05-23 16:31:33Z PC $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -39,24 +39,83 @@
 
 #include "wx/display_impl.h"
 
-/* These must be included after the wx files.  Otherwise the Data macro in
- * Xlibint.h conflicts with a function declaration in wx/list.h.  */
-extern "C"
+#ifdef __WXGTK20__
+    #include <gdk/gdk.h>
+    #include <gdk/gdkx.h>
+
+    // define the struct with the same fields as XineramaScreenInfo (except for
+    // screen number which we don't need) but which we can use without
+    // including Xinerama headers
+    struct ScreenInfo
+    {
+       short x_org;
+       short y_org;
+       short width;
+       short height;
+    };
+#else // use raw Xinerama functions
+    /* These must be included after the wx files.  Otherwise the Data macro in
+     * Xlibint.h conflicts with a function declaration in wx/list.h.  */
+    extern "C"
+    {
+        #include <X11/Xlib.h>
+        #include <X11/Xlibint.h>
+
+        #include <X11/extensions/Xinerama.h>
+    }
+
+    typedef XineramaScreenInfo ScreenInfo;
+#endif // GTK+/Xinerama
+
+// ----------------------------------------------------------------------------
+// helper class storing information about all screens
+// ----------------------------------------------------------------------------
+
+// the base class provides access to ScreenInfo array, derived class
+// initializes it using either GTK+ or Xinerama functions
+class ScreensInfoBase
 {
-    #include <X11/Xlib.h>
-    #include <X11/Xlibint.h>
+public:
+    operator const ScreenInfo *() const { return m_screens; }
 
-    #include <X11/extensions/Xinerama.h>
-    #ifdef HAVE_X11_EXTENSIONS_XF86VMODE_H
-        #include <X11/extensions/xf86vmode.h>
-    #endif
-}
+    unsigned GetCount() const { return static_cast<unsigned>(m_num); }
 
-// ----------------------------------------------------------------------------
-// helper class to automatically free XineramaQueryScreens() return value
-// ----------------------------------------------------------------------------
+protected:
+    ScreenInfo *m_screens;
+    int m_num;
+};
 
-class ScreensInfo
+#ifdef __WXGTK20__
+
+class ScreensInfo : public ScreensInfoBase
+{
+public:
+    ScreensInfo()
+    {
+        GdkScreen * const screen = gdk_screen_get_default();
+
+        m_num = gdk_screen_get_n_monitors(screen);
+        m_screens = new ScreenInfo[m_num];
+        for ( int i = 0; i < m_num; i++ )
+        {
+            GdkRectangle rect;
+            gdk_screen_get_monitor_geometry(screen, i, &rect);
+            m_screens[i].x_org = rect.x;
+            m_screens[i].y_org = rect.y;
+            m_screens[i].width = rect.width;
+            m_screens[i].height = rect.height;
+        }
+    }
+
+    ~ScreensInfo()
+    {
+        delete [] m_screens;
+    }
+};
+
+#else // Xinerama
+
+class ScreensInfo : public ScreensInfoBase
 {
 public:
     ScreensInfo()
@@ -68,15 +127,9 @@ public:
     {
         XFree(m_screens);
     }
-
-    operator const XineramaScreenInfo *() const { return m_screens; }
-
-    unsigned GetCount() const { return wx_static_cast(unsigned, m_num); }
-
-private:
-    XineramaScreenInfo *m_screens;
-    int m_num;
 };
+
+#endif // GTK+/Xinerama
 
 // ----------------------------------------------------------------------------
 // display and display factory classes
@@ -85,7 +138,7 @@ private:
 class WXDLLEXPORT wxDisplayImplX11 : public wxDisplayImpl
 {
 public:
-    wxDisplayImplX11(unsigned n, const XineramaScreenInfo& info)
+    wxDisplayImplX11(unsigned n, const ScreenInfo& info)
         : wxDisplayImpl(n),
           m_rect(info.x_org, info.y_org, info.width, info.height)
     {
@@ -110,7 +163,7 @@ private:
     wxRect m_rect;
     int m_depth;
 
-    DECLARE_NO_COPY_CLASS(wxDisplayImplX11)
+    wxDECLARE_NO_COPY_CLASS(wxDisplayImplX11);
 };
 
 class wxDisplayFactoryX11 : public wxDisplayFactory
@@ -123,7 +176,7 @@ public:
     virtual int GetFromPoint(const wxPoint& pt);
 
 protected:
-    DECLARE_NO_COPY_CLASS(wxDisplayFactoryX11)
+    wxDECLARE_NO_COPY_CLASS(wxDisplayFactoryX11);
 };
 
 // ============================================================================
@@ -142,7 +195,7 @@ int wxDisplayFactoryX11::GetFromPoint(const wxPoint& p)
     const unsigned numscreens(screens.GetCount());
     for ( unsigned i = 0; i < numscreens; ++i )
     {
-        const XineramaScreenInfo& s = screens[i];
+        const ScreenInfo& s = screens[i];
         if ( p.x >= s.x_org && p.x < s.x_org + s.width &&
                 p.y >= s.y_org && p.y < s.y_org + s.height )
         {
@@ -165,6 +218,8 @@ wxDisplayImpl *wxDisplayFactoryX11::CreateDisplay(unsigned n)
 // ============================================================================
 
 #ifdef HAVE_X11_EXTENSIONS_XF86VMODE_H
+
+#include <X11/extensions/xf86vmode.h>
 
 //
 //  See (http://www.xfree86.org/4.2.0/XF86VidModeDeleteModeLine.3.html) for more
@@ -252,9 +307,9 @@ bool wxDisplayImplX11::ChangeMode(const wxVideoMode& mode)
         for (int i = 0; i < nNumModes; ++i)
         {
             if (!bRet &&
-                ppXModes[i]->hdisplay == mode.w &&
-                ppXModes[i]->vdisplay == mode.h &&
-                wxCRR((*ppXModes[i])) == mode.refresh)
+                ppXModes[i]->hdisplay == mode.GetWidth() &&
+                ppXModes[i]->vdisplay == mode.GetHeight() &&
+                wxCRR((*ppXModes[i])) == mode.GetRefresh())
             {
                 //switch!
                 bRet = XF86VidModeSwitchToMode((Display*)wxGetDisplay(), DefaultScreen((Display*)wxGetDisplay()),
@@ -314,19 +369,36 @@ bool wxDisplayImplX11::ChangeMode(const wxVideoMode& WXUNUSED(mode))
 
 /* static */ wxDisplayFactory *wxDisplay::CreateFactory()
 {
-    if ( XineramaIsActive((Display*)wxGetDisplay()) )
-    {
-        return new wxDisplayFactoryX11;
-    }
+    // GTK+ screen functions are always available, no need to check for them
+#ifndef __WXGTK20__
+    if ( !XineramaIsActive((Display*)wxGetDisplay()) )
+        return new wxDisplayFactorySingle;
+#endif
 
-    return new wxDisplayFactorySingle;
+    return new wxDisplayFactoryX11;
 }
 
 #endif /* wxUSE_DISPLAY */
 
-#if defined(__WXGTK__) || defined(__X__)
-
 #include "wx/utils.h"
+
+#if wxUSE_LIBHILDON || wxUSE_LIBHILDON2
+
+void wxClientDisplayRect(int *x, int *y, int *width, int *height)
+{
+    // TODO: don't hardcode display size
+    if ( x )
+        *x = 0;
+    if ( y )
+        *y = 0;
+    if ( width )
+        *width = 672;
+    if ( height )
+        *height = 396;
+}
+
+#else // !wxUSE_LIBHILDON || !wxUSE_LIBHILDON2
+
 #include "wx/log.h"
 
 #include <X11/Xlib.h>
@@ -342,15 +414,15 @@ public:
 private:
     void *m_ptr;
 
-    DECLARE_NO_COPY_CLASS(wxX11Ptr)
+    wxDECLARE_NO_COPY_CLASS(wxX11Ptr);
 };
 
 // NB: this function is implemented using X11 and not GDK calls as it's shared
 //     by wxGTK[12], wxX11 and wxMotif ports
 void wxClientDisplayRect(int *x, int *y, int *width, int *height)
 {
-    Display * const dpy = (Display *)wxGetDisplay();
-    wxCHECK_RET( dpy, _T("can't be called before initializing the GUI") );
+    Display * const dpy = wxGetX11Display();
+    wxCHECK_RET( dpy, wxT("can't be called before initializing the GUI") );
 
     const Atom atomWorkArea = XInternAtom(dpy, "_NET_WORKAREA", True);
     if ( atomWorkArea )
@@ -386,7 +458,7 @@ void wxClientDisplayRect(int *x, int *y, int *width, int *height)
                     format != 32 ||
                         numItems != 4 )
             {
-                wxLogDebug(_T("XGetWindowProperty(\"_NET_WORKAREA\") failed"));
+                wxLogDebug(wxT("XGetWindowProperty(\"_NET_WORKAREA\") failed"));
                 return;
             }
 
@@ -412,15 +484,4 @@ void wxClientDisplayRect(int *x, int *y, int *width, int *height)
     wxDisplaySize(width, height);
 }
 
-#else // !(wxGTK or X)
-
-void wxClientDisplayRect(int *x, int *y, int *width, int *height)
-{
-    if (x)
-        *x = 0;
-    if (y)
-        *y = 0;
-    wxDisplaySize(width, height);
-}
-
-#endif // wxGTK or X
+#endif // wxUSE_LIBHILDON/!wxUSE_LIBHILDON

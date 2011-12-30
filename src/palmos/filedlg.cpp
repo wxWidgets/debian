@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: filedlg.cpp 39651 2006-06-09 17:50:46Z ABX $
+// RCS-ID:      $Id: filedlg.cpp 52227 2008-03-02 00:53:32Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,8 +37,6 @@
     #include "wx/app.h"
     #include "wx/math.h"
 #endif
-
-#include "wx/palmos/private.h"
 
 #include <stdlib.h>
 #include <string.h>

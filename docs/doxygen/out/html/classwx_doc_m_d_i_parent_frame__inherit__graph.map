@@ -1,0 +1,10 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classwx_m_d_i_parent_frame.html" title="An MDI (Multiple Document Interface) parent frame is a window which can contain MDI child frames in i..." alt="" coords="29,486,163,517"/>
+<area shape="rect" id="node4" href="$classwx_frame.html" title="A frame is a window whose size and position can (usually) be changed by the user." alt="" coords="59,406,133,437"/>
+<area shape="rect" id="node6" href="$classwx_top_level_window.html" title="wxTopLevelWindow is a common base class for wxDialog and wxFrame." alt="" coords="29,326,163,357"/>
+<area shape="rect" id="node8" href="$classwx_non_owned_window.html" title="Common base class for all non&#45;child windows." alt="" coords="24,246,168,277"/>
+<area shape="rect" id="node10" href="$classwx_window.html" title="wxWindow is the base class for all windows and represents any visible object on screen." alt="" coords="55,166,137,197"/>
+<area shape="rect" id="node12" href="$classwx_evt_handler.html" title="A class that can handle events from the windowing system." alt="" coords="45,86,147,117"/>
+<area shape="rect" id="node14" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="5,6,80,37"/>
+<area shape="rect" id="node16" href="$classwx_trackable.html" title="Add&#45;on base class for a trackable object." alt="" coords="104,6,197,37"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classwx_message_output_stderr.html" title="Output messages to stderr or another STDIO file stream." alt="" coords="5,86,171,117"/>
+<area shape="rect" id="node4" href="$classwx_message_output.html" title="Simple class allowing to write strings to various output channels." alt="" coords="23,6,153,37"/>
+</map>

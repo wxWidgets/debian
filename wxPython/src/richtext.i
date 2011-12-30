@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     11-April-2006
-// RCS-ID:      $Id: richtext.i 54572 2008-07-10 01:35:59Z RD $
+// RCS-ID:      $Id: richtext.i 69251 2011-09-30 18:04:22Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,7 @@
 %{
 #include "wx/wxPython/wxPython.h"
 #include "wx/wxPython/pyclasses.h"
+#include "wx/wxPython/pytree.h"
 #include "wx/wxPython/printfw.h"
 #include "wx/wxPython/twoitem.h"
 
@@ -31,14 +32,13 @@ class wxBufferedPaintDC;
 class wxMetaFile;
 class wxMetaFileDC;
 class wxPrinterDC;
-
+class wxPyTreeCtrl;
 %}
-
-#define USE_TEXTATTREX 0
 
 //----------------------------------------------------------------------
 
 %import windows.i
+%import controls.i
 
 %pythoncode { wx = _core }
 %pythoncode { __docfilter__ = wx.__DocFilter(globals()) }
@@ -47,20 +47,8 @@ MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
 
 //----------------------------------------------------------------------
 
-// TODO:  These are already defined in _textctrl.i, do we really need them here?
-enum wxTextAttrAlignment
-{
-    wxTEXT_ALIGNMENT_DEFAULT,
-    wxTEXT_ALIGNMENT_LEFT,
-    wxTEXT_ALIGNMENT_CENTRE,
-    wxTEXT_ALIGNMENT_CENTER = wxTEXT_ALIGNMENT_CENTRE,
-    wxTEXT_ALIGNMENT_RIGHT,
-    wxTEXT_ALIGNMENT_JUSTIFIED
-};
-
+enum wxTextAttrAlignment;
 enum wxTextCtrlHitTestResult;
-
-//----------------------------------------------------------------------
 
 %include _richtextbuffer.i
 %include _richtextctrl.i

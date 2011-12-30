@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _treectrl.i 44173 2007-01-08 23:10:39Z RD $
+// RCS-ID:      $Id: _treectrl.i 64487 2010-06-05 01:08:51Z RD $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -63,6 +63,11 @@ enum wxTreeItemIcon
     wxTreeItemIcon_Max
 };
 
+enum {
+    wxTREE_ITEMSTATE_NONE,    // not state (no display state image)
+    wxTREE_ITEMSTATE_NEXT,    // cycle to the next state
+    wxTREE_ITEMSTATE_PREV     // cycle to the previous state
+};
 
 // constants for HitTest
 enum {
@@ -417,20 +422,13 @@ public:
         // get the wxPyTreeItemData associated with the tree item
         wxPyTreeItemData* GetItemData(const wxTreeItemId& item) {
             wxPyTreeItemData* data = (wxPyTreeItemData*)self->GetItemData(item);
-            if (data == NULL) {
-                data = new wxPyTreeItemData();
-                data->SetId(item); // set the id
-                self->SetItemData(item, data);
-            }
             return data;
         }
         // Get the Python object associated with the tree item
         PyObject* GetItemPyData(const wxTreeItemId& item) {
             wxPyTreeItemData* data = (wxPyTreeItemData*)self->GetItemData(item);
             if (data == NULL) {
-                data = new wxPyTreeItemData();
-                data->SetId(item); // set the id
-                self->SetItemData(item, data);
+                RETURN_NONE();
             }
             return data->GetData();
         }
@@ -447,8 +445,8 @@ public:
     // get the item's font
     wxFont GetItemFont(const wxTreeItemId& item) const;
 
-    
-
+    int GetItemState(const wxTreeItemId& item) const;
+ 
     // set items label
     void SetItemText(const wxTreeItemId& item, const wxString& text);
 
@@ -460,7 +458,6 @@ public:
         // associate a wxPyTreeItemData with the tree item
         %disownarg( wxPyTreeItemData* data );
         void SetItemData(const wxTreeItemId& item, wxPyTreeItemData* data) {
-            data->SetId(item); // set the id
             self->SetItemData(item, data);
         }
         %cleardisown( wxPyTreeItemData* data );
@@ -470,10 +467,10 @@ public:
             wxPyTreeItemData* data = (wxPyTreeItemData*)self->GetItemData(item);
             if (data == NULL) {
                 data = new wxPyTreeItemData(obj);
-                data->SetId(item); // set the id
                 self->SetItemData(item, data);
-            } else
+            } else {
                 data->SetData(obj);
+            }
         }
     }
     %pythoncode { SetPyData = SetItemPyData }
@@ -500,6 +497,7 @@ public:
     // set the items font (should be of the same height for all items)
     void SetItemFont(const wxTreeItemId& item, const wxFont& font);
 
+    void SetItemState(const wxTreeItemId& item, int state);
 
     // is the item visible (it might be outside the view or not expanded)?
     bool IsVisible(const wxTreeItemId& item) const;
@@ -556,6 +554,10 @@ public:
             return rval;
         }
     }
+
+    virtual wxTreeItemId GetFocusedItem() const;
+    virtual void ClearFocusedItem();
+    virtual void SetFocusedItem(const wxTreeItemId& item);
 
     // get the parent of this item
     // wxTreeItemId.IsOk() will return False if there is no such item
@@ -700,6 +702,7 @@ public:
 
     // select this item
     void SelectItem(const wxTreeItemId& item, bool select = true);
+    void SelectChildren(const wxTreeItemId& parent);
 
     // toggle the item selection
     void ToggleItemSelection(const wxTreeItemId& item);
@@ -763,12 +766,6 @@ value is set to a bitmask of wxTREE_HITTEST_xxx constants.
                 RETURN_NONE();
         }
     }
-
-#ifdef __WXMSW__
-    // set/get the item state.image (state == -1 means cycle to the next one)
-    void SetState(const wxTreeItemId& node, int state);
-    int GetState(const wxTreeItemId& node);
-#endif
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);

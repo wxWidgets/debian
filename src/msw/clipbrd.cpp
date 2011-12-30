@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: clipbrd.cpp 43884 2006-12-09 19:49:40Z PC $
+// RCS-ID:      $Id: clipbrd.cpp 67681 2011-05-03 16:29:04Z DS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -90,13 +90,15 @@ bool wxOpenClipboard()
         gs_wxClipboardIsOpen = ::OpenClipboard((HWND)win->GetHWND()) != 0;
 
         if ( !gs_wxClipboardIsOpen )
+        {
             wxLogSysError(_("Failed to open the clipboard."));
+        }
 
         return gs_wxClipboardIsOpen;
     }
     else
     {
-        wxLogDebug(wxT("Can not open clipboard without a main window."));
+        wxLogDebug(wxT("Cannot open clipboard without a main window."));
 
         return false;
     }
@@ -212,7 +214,7 @@ bool wxSetClipboardData(wxDataFormat dataFormat,
             {
                 wxBitmap *bitmap = (wxBitmap *)data;
 
-                if ( bitmap && bitmap->Ok() )
+                if ( bitmap && bitmap->IsOk() )
                 {
                     wxDIB dib(*bitmap);
                     if ( dib.IsOk() )
@@ -547,6 +549,9 @@ wxClipboard::~wxClipboard()
 
 void wxClipboard::Clear()
 {
+    if ( IsUsingPrimarySelection() )
+        return;
+
 #if wxUSE_OLE_CLIPBOARD
     if (m_lastDataObject)
     {
@@ -613,6 +618,9 @@ bool wxClipboard::IsOpened() const
 
 bool wxClipboard::SetData( wxDataObject *data )
 {
+    if ( IsUsingPrimarySelection() )
+        return false;
+
 #if !wxUSE_OLE_CLIPBOARD
     (void)wxEmptyClipboard();
 #endif // wxUSE_OLE_CLIPBOARD
@@ -625,6 +633,9 @@ bool wxClipboard::SetData( wxDataObject *data )
 
 bool wxClipboard::AddData( wxDataObject *data )
 {
+    if ( IsUsingPrimarySelection() )
+        return false;
+
     wxCHECK_MSG( data, false, wxT("data is invalid") );
 
 #if wxUSE_OLE_CLIPBOARD
@@ -718,11 +729,14 @@ void wxClipboard::Close()
 
 bool wxClipboard::IsSupported( const wxDataFormat& format )
 {
-    return wxIsClipboardFormatAvailable(format);
+    return !IsUsingPrimarySelection() && wxIsClipboardFormatAvailable(format);
 }
 
 bool wxClipboard::GetData( wxDataObject& data )
 {
+    if ( IsUsingPrimarySelection() )
+        return false;
+
 #if wxUSE_OLE_CLIPBOARD
     IDataObject *pDataObject = NULL;
     HRESULT hr = OleGetClipboard(&pDataObject);
@@ -758,7 +772,7 @@ bool wxClipboard::GetData( wxDataObject& data )
     // enumerate all explicit formats on the clipboard.
     // note that this does not include implicit / synthetic (automatically
     // converted) formats.
-#ifdef __WXDEBUG__
+#if wxDEBUG_LEVEL >= 2
     // get the format enumerator
     IEnumFORMATETC *pEnumFormatEtc = NULL;
     hr = pDataObject->EnumFormatEtc(DATADIR_GET, &pEnumFormatEtc);
@@ -791,7 +805,7 @@ bool wxClipboard::GetData( wxDataObject& data )
 
         pEnumFormatEtc->Release();
     }
-#endif // Debug
+#endif // wxDEBUG_LEVEL >= 2
 
     STGMEDIUM medium;
     // stop at the first valid format found on the clipboard

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Nov-1998
-// RCS-ID:      $Id: _datetime.i 49752 2007-11-09 17:05:51Z RD $
+// RCS-ID:      $Id: _datetime.i 69427 2011-10-14 17:08:14Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -136,7 +136,7 @@ public:
         // adoption of the Gregorian calendar (see IsGregorian())
         //
         // All data and comments taken verbatim from "The Calendar FAQ (v 2.0)"
-        // by Claus Tøndering, http://www.pip.dknet.dk/~c-t/calendar.html
+        // by Claus TÃ¸ndering, http://www.pip.dknet.dk/~c-t/calendar.html
         // except for the comments "we take".
         //
         // Symbol "->" should be read as "was followed by" in the comments
@@ -347,10 +347,9 @@ public:
 
         // returns the number of days in this year (356 or 355 for Gregorian
         // calendar usually :-)
-    %Rename(GetNumberOfDaysInYear, 
+    %Rename(GetNumberOfDaysinYear, 
         static wxDateTime_t, GetNumberOfDays(int year, Calendar cal = Gregorian));
-    %pythoncode { GetNumberOfDaysinYear = GetNumberOfDaysInYear # for compatibility }
-    
+
         // get the number of the days in the given month (default value for
         // the year means the current one)
     %Rename(GetNumberOfDaysInMonth, 
@@ -367,6 +366,14 @@ public:
         // locale, returns empty string on error
     static wxString GetWeekDayName(WeekDay weekday,
                                    NameFlags flags = Name_Full);
+
+        // get the standard English full (default) or abbreviated month name
+    static wxString GetEnglishMonthName(Month month,
+                                        NameFlags flags = Name_Full);
+
+        // get the standard English full (default) or abbreviated weekday name
+    static wxString GetEnglishWeekDayName(WeekDay weekday,
+                                          NameFlags flags = Name_Full);
 
     %extend {
         DocAStr(
@@ -438,6 +445,11 @@ public:
     // ------------------------------------------------------------------------
     // Set methods
 
+    // This typemap ensures that the returned object is the same
+    // Python instance as what was passed in as `self`, instead of
+    // creating a new proxy as SWIG would normally do.
+    %typemap(out) wxDateTime& { $result = $self; Py_INCREF($result); }
+    
     wxDateTime& SetToCurrent();
 
         // set to given time_t value
@@ -511,10 +523,6 @@ public:
                       int n = 1,
                       Month month = Inv_Month,
                       int year = Inv_Year);
-//      wxDateTime GetWeekDay(WeekDay weekday,
-//                            int n = 1,
-//                            Month month = Inv_Month,
-//                            int year = Inv_Year);
 
         // sets to the last weekday in the given month, year
     bool SetToLastWeekDay(WeekDay weekday,
@@ -524,17 +532,6 @@ public:
                               Month month = Inv_Month,
                               int year = Inv_Year);
 
-        // sets the date to the given day of the given week in the year,
-        // returns True on success and False if given date doesn't exist (e.g.
-        // numWeek is > 53)
-    bool SetToTheWeek(wxDateTime_t numWeek, WeekDay weekday = Mon, WeekFlags flags = Monday_First);
-    wxDateTime GetWeek(wxDateTime_t numWeek, WeekDay weekday = Mon, WeekFlags flags = Monday_First);
-
-    %pythoncode {
-        SetToTheWeek = wx._deprecated(SetToTheWeek, "SetToTheWeek is deprecated, use (static) SetToWeekOfYear instead")
-        GetWeek = wx._deprecated(GetWeek, "GetWeek is deprecated, use GetWeekOfYear instead")
-    }
-            
         // returns the date corresponding to the given week day of the given
         // week (in ISO notation) of the specified year
     static wxDateTime SetToWeekOfYear(int year,
@@ -619,6 +616,8 @@ public:
         // the information is not available (this is compatible with ANSI C)
     int IsDST(Country country = Country_Default);
 
+    // Clear the typemap
+    %typemap(out) wxDateTime& ;
 
 
     // ------------------------------------------------------------------------
@@ -792,73 +791,64 @@ public:
         }            
     }
 
-
-
    
-        
-    // ------------------------------------------------------------------------
-    // conversion from text: all conversions from text return -1 on failure,
-    // or the index in the string where the next character following the date
-    // specification (i.e. the one where the scan had to stop) is located.
-
     %extend {
-
         // parse a string in RFC 822 format (found e.g. in mail headers and
         // having the form "Wed, 10 Feb 1999 19:07:07 +0100")
-        int ParseRfc822Date(const wxString& date) {
-            const wxChar* rv;
-            const wxChar* _date = date;
-            rv = self->ParseRfc822Date(_date);
-            if (rv == NULL) return -1;
-            return rv - _date;
+        bool ParseRfc822Date(const wxString& date)
+        {
+            wxString::const_iterator end;
+            return self->ParseRfc822Date(date, &end);
         }
-
 
         // parse a date/time in the given format (see strptime(3)), fill in
         // the missing (in the string) fields with the values of dateDef (by
         // default, they will not change if they had valid values or will
         // default to Today() otherwise)
-        int ParseFormat(const wxString& date,
-                        const wxString& format = wxPyDefaultDateTimeFormat,
-                        const wxDateTime& dateDef = wxDefaultDateTime) {
-            const wxChar* rv;
-            const wxChar* _date = date;
-            rv = self->ParseFormat(_date, format, dateDef);
-            if (rv == NULL) return -1;
-            return rv - _date;
-        }
-
-        // parse a string containing the date/time in "free" format, this
-        // function will try to make an educated guess at the string contents
-        int ParseDateTime(const wxString& datetime) {
-            const wxChar* rv;
-            const wxChar* _datetime = datetime;
-            rv = self->ParseDateTime(_datetime);
-            if (rv == NULL) return -1;
-            return rv - _datetime;
-        }
-
-
-        // parse a string containing the date only in "free" format (less
-        // flexible than ParseDateTime)
-        int ParseDate(const wxString& date) {
-            const wxChar* rv;
-            const wxChar* _date = date;
-            rv = self->ParseDate(_date);
-            if (rv == NULL) return -1;
-            return rv - _date;
-        }
-
-        // parse a string containing the time only in "free" format
-        int ParseTime(const wxString& time) {
-            const wxChar* rv;
-            const wxChar* _time = time;
-            rv = self->ParseTime(_time);
-            if (rv == NULL) return -1;
-            return rv - _time;
+        bool ParseFormat(const wxString& date,
+                         const wxString& format = wxPyDefaultDateTimeFormat,
+                         const wxDateTime& dateDef = wxDefaultDateTime)
+        {
+            wxString::const_iterator end;
+            return self->ParseFormat(date, format, dateDef, &end);
         }
     }
 
+    
+    // parse a string containing date, time or both in ISO 8601 format
+    //
+    // notice that these functions are new in wx 3.0 and so we don't
+    // provide compatibility overloads for them
+    bool ParseISODate(const wxString& date);
+    bool ParseISOTime(const wxString& time);
+    bool ParseISOCombined(const wxString& datetime, char sep = 'T');
+
+
+    %extend {
+        // parse a string containing the date/time in "free" format, this
+        // function will try to make an educated guess at the string contents
+        bool ParseDateTime(const wxString& datetime)
+        {
+            wxString::const_iterator end;
+            return self->ParseDateTime(datetime, &end);
+        }
+
+        // parse a string containing the date only in "free" format (less
+        // flexible than ParseDateTime)
+        bool ParseDate(const wxString& date)
+        {
+            wxString::const_iterator end;
+            return self->ParseDate(date, &end);
+        }
+            
+        // parse a string containing the time only in "free" format
+        bool ParseTime(const wxString& time)
+        {
+            wxString::const_iterator end;
+            return self->ParseTime(time, &end);
+        }
+
+    }
 
         // this function accepts strftime()-like format string (default
         // argument corresponds to the preferred date and time representation
@@ -881,6 +871,11 @@ public:
         // (HH:MM:SS)
     wxString FormatISOTime() const;
 
+        // return the combined date time representation in ISO 8601 format; the
+        // separator character should be 'T' according to the standard but it
+        // can also be useful to set it to ' '
+    wxString FormatISOCombined(char sep = 'T') const;
+    
     %pythoncode {
     def __repr__(self):
         if self.IsValid():
@@ -912,7 +907,6 @@ public:
     %property(RataDie, GetRataDie, doc="See `GetRataDie`");
     %property(Second, GetSecond, SetSecond, doc="See `GetSecond` and `SetSecond`");
     %property(Ticks, GetTicks, doc="See `GetTicks`");
-    %property(Week, GetWeek, doc="See `GetWeek`");
     %property(WeekDay, GetWeekDay, doc="See `GetWeekDay`");
     %property(WeekDayInSameWeek, GetWeekDayInSameWeek, doc="See `GetWeekDayInSameWeek`");
     %property(WeekOfMonth, GetWeekOfMonth, doc="See `GetWeekOfMonth`");
@@ -976,6 +970,11 @@ public:
     // ------------------------------------------------------------------------
     // arithmetics with time spans
 
+    // This typemap ensures that the returned object is the same
+    // Python instance as what was passed in as `self`, instead of
+    // creating a new proxy as SWIG would normally do.
+    %typemap(out) wxTimeSpan& { $result = $self; Py_INCREF($result); }
+
         // add two timespans together
     inline wxTimeSpan& Add(const wxTimeSpan& diff);
 
@@ -998,6 +997,9 @@ public:
     wxTimeSpan& operator*=(int n);
     wxTimeSpan& operator-();
 
+    // Clear the typemap
+    %typemap(out) wxTimeSpan& ;
+    
     %extend {
         wxTimeSpan __add__(const wxTimeSpan& other) { return *self + other; }
         wxTimeSpan __sub__(const wxTimeSpan& other) { return *self - other; }
@@ -1152,6 +1154,11 @@ public:
 
     // ------------------------------------------------------------------------
 
+    // This typemap ensures that the returned object is the same
+    // Python instance as what was passed in as `self`, instead of
+    // creating a new proxy as SWIG would normally do.
+    %typemap(out) wxDateSpan& { $result = $self; Py_INCREF($result); }
+
         // set number of years
     wxDateSpan& SetYears(int n);
         // set number of months
@@ -1192,6 +1199,9 @@ public:
     wxDateSpan& operator-() { return Neg(); }
     inline wxDateSpan& operator*=(int factor) { return Multiply(factor); }
 
+    // Clear the typemap
+    %typemap(out) wxDateSpan& ;
+    
     %extend {
         wxDateSpan __add__(const wxDateSpan& other) { return *self + other; }
         wxDateSpan __sub__(const wxDateSpan& other) { return *self - other; }

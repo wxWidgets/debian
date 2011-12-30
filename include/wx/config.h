@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        config.h
+// Name:        wx/config.h
 // Purpose:     wxConfig base header
 // Author:      Julian Smart
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id: config.h 60524 2009-05-05 22:51:44Z PC $
+// RCS-ID:      $Id: config.h 67254 2011-03-20 00:14:35Z DS $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -16,16 +16,24 @@
 
 #if wxUSE_CONFIG
 
+// ----------------------------------------------------------------------------
+// define the native wxConfigBase implementation
+// ----------------------------------------------------------------------------
+
+// under Windows we prefer to use the native implementation but can be forced
+// to use the file-based one
 #if defined(__WXMSW__) && wxUSE_CONFIG_NATIVE
-#    ifdef __WIN32__
-#        include "wx/msw/regconf.h"
-#    else
-#        include "wx/msw/iniconf.h"
-#    endif
+    #include "wx/msw/regconf.h"
+    #define wxConfig  wxRegConfig
+#elif defined(__WXOS2__) && wxUSE_CONFIG_NATIVE
+    #include "wx/os2/iniconf.h"
+    #define wxConfig wxIniConfig
 #elif defined(__WXPALMOS__) && wxUSE_CONFIG_NATIVE
-#    include "wx/palmos/prefconf.h"
-#else
-#    include "wx/fileconf.h"
+    #include "wx/palmos/prefconf.h"
+    #define wxConfig wxPrefConfig
+#else // either we're under Unix or wish to always use config files
+    #include "wx/fileconf.h"
+    #define wxConfig wxFileConfig
 #endif
 
 #endif // wxUSE_CONFIG

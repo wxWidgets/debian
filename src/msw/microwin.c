@@ -1,12 +1,12 @@
 /*
 /////////////////////////////////////////////////////////////////////////////
-// Name:        microwin.cpp
+// Name:        src/msw/microwin.cpp
 // Purpose:     Extra implementation for MicroWindows
 // Author:      Julian Smart
 // Created:     2001-05-31
-// RCS-ID:      $Id: microwin.c 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: microwin.c 67254 2011-03-20 00:14:35Z DS $
 // Copyright:   (c) Julian Smart
-// Licence:     wxWidgets licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 */
@@ -42,7 +42,7 @@ int GetScrollPosWX (HWND hWnd, int iSBar)
 }
 
 BOOL ScrollWindow(HWND hWnd, int xAmount, int yAmount,
-		  CONST RECT* lpRect, CONST RECT* lpClipRect)
+                  CONST RECT* lpRect, CONST RECT* lpClipRect)
 {
     /* TODO */
     return FALSE;
@@ -89,12 +89,12 @@ BOOL IsIconic(HWND hWnd)
     return FALSE;
 }
 
-int SetMapMode(HDC hDC, int mode)
+int SetMapMode(HDC hDC, wxMappingMode mode)
 {
     return MM_TEXT;
 }
 
-int GetMapMode(HDC hDC)
+wxMappingMode GetMapMode(HDC hDC)
 {
     return MM_TEXT;
 }
@@ -163,7 +163,7 @@ BOOL GetClipBox(HDC hdc, RECT* rect)
     rect->right = mwrect.right;
     rect->bottom = mwrect.bottom;
 
-    return TRUE;    
+    return TRUE;
 }
 
 BOOL DrawIconEx(HDC hdc, int x, int y, HICON hIcon, int w, int h, UINT istepIfAniCur, HBRUSH hbrFlickerFreeDraw, UINT diFlags)
@@ -218,7 +218,7 @@ BOOL MaskBlt(HDC hdc, int x, int y, int w, int h,
               HDC hDCSource, int xSrc, int ySrc, HBITMAP hBitmapMask, int xMask, int yMask, DWORD rop)
 {
     /* TODO */
-    return FALSE;  
+    return FALSE;
 }
 
 UINT RealizePalette(HDC hDC)
@@ -243,34 +243,34 @@ int GetObject(HGDIOBJ hObj, int sz, LPVOID logObj)
 
         GdGetFontInfo(((MWFONTOBJ*) hFont)->pfont, &fi);
 
-	/* FIXME many items are guessed for the time being*/
-	logFont->lfHeight = fi.height;
+        /* FIXME many items are guessed for the time being*/
+        logFont->lfHeight = fi.height;
 
-   	 /* reversed for kaffe port
-	logFont->tmAscent = fi.height - fi.baseline;
-	logFont->tmDescent= fi.baseline;
-	 */
+        /* reversed for kaffe port
+           logFont->tmAscent = fi.height - fi.baseline;
+           logFont->tmDescent= fi.baseline;
+           */
 
-	logFont->lfWidth = fi.widths['x'];
-	logFont->lfWeight = FW_NORMAL;
+        logFont->lfWidth = fi.widths['x'];
+        logFont->lfWeight = FW_NORMAL;
         logFont->lfEscapement = 0;
         logFont->lfOrientation = 0;
         logFont->lfOutPrecision = OUT_OUTLINE_PRECIS;
         logFont->lfClipPrecision = CLIP_DEFAULT_PRECIS;
         logFont->lfQuality = DEFAULT_QUALITY;
-	logFont->lfItalic = 0;
-	logFont->lfUnderline = 0;
-	logFont->lfStrikeOut = 0;
-	/* note that win32 has the TMPF_FIXED_PITCH flags REVERSED...*/
-	logFont->lfPitchAndFamily = fi.fixed?
-			FF_DONTCARE: (FF_DONTCARE | TMPF_FIXED_PITCH);
-	logFont->lfCharSet = OEM_CHARSET;
-	/* TODO I don't know how to get the font name. May
-	 * test for different font classes.
+        logFont->lfItalic = 0;
+        logFont->lfUnderline = 0;
+        logFont->lfStrikeOut = 0;
+        /* note that win32 has the TMPF_FIXED_PITCH flags REVERSED...*/
+        logFont->lfPitchAndFamily = fi.fixed?
+            FF_DONTCARE: (FF_DONTCARE | TMPF_FIXED_PITCH);
+        logFont->lfCharSet = OEM_CHARSET;
+        /* TODO I don't know how to get the font name. May
+         * test for different font classes.
          */
         logFont->lfFaceName[0] = 0;
 #if 0
-	strncpy(logFont->lfFaceName, ??, sizeof(logFont->lfFaceName));
+        strncpy(logFont->lfFaceName, ??, sizeof(logFont->lfFaceName));
 #endif
         return sz;
     }
@@ -285,36 +285,36 @@ int GetObject(HGDIOBJ hObj, int sz, LPVOID logObj)
 HBITMAP WINAPI
 CreateCompatibleBitmap(HDC hdc, int nWidth, int nHeight)
 {
-	MWBITMAPOBJ *	hbitmap;
-	int		size;
-	int		linelen;
+    MWBITMAPOBJ *hbitmap;
+    int size;
+    int linelen;
 
-	if(!hdc)
-		return NULL;
+    if(!hdc)
+        return NULL;
 
-	nWidth = MWMAX(nWidth, 1);
-	nHeight = MWMAX(nHeight, 1);
+    nWidth = MWMAX(nWidth, 1);
+    nHeight = MWMAX(nHeight, 1);
 
-	/* calc memory allocation size and linelen from width and height*/
-	if(!GdCalcMemGCAlloc(hdc->psd, nWidth, nHeight, 0, 0, &size, &linelen))
-		return NULL;
+    /* calc memory allocation size and linelen from width and height*/
+    if(!GdCalcMemGCAlloc(hdc->psd, nWidth, nHeight, 0, 0, &size, &linelen))
+        return NULL;
 
-	/* allocate gdi object*/
-	hbitmap = (MWBITMAPOBJ *)GdItemAlloc(sizeof(MWBITMAPOBJ)-1+size);
-	if(!hbitmap)
-		return NULL;
-	hbitmap->hdr.type = OBJ_BITMAP;
-	hbitmap->hdr.stockobj = FALSE;
-	hbitmap->width = nWidth;
-	hbitmap->height = nHeight;
+    /* allocate gdi object*/
+    hbitmap = (MWBITMAPOBJ *)GdItemAlloc(sizeof(MWBITMAPOBJ)-1+size);
+    if(!hbitmap)
+        return NULL;
+    hbitmap->hdr.type = OBJ_BITMAP;
+    hbitmap->hdr.stockobj = FALSE;
+    hbitmap->width = nWidth;
+    hbitmap->height = nHeight;
 
-	/* create compatible with hdc*/
-	hbitmap->planes = hdc->psd->planes;
-	hbitmap->bpp = hdc->psd->bpp;
-	hbitmap->linelen = linelen;
-	hbitmap->size = size;
+    /* create compatible with hdc*/
+    hbitmap->planes = hdc->psd->planes;
+    hbitmap->bpp = hdc->psd->bpp;
+    hbitmap->linelen = linelen;
+    hbitmap->size = size;
 
-	return (HBRUSH)hbitmap;
+    return (HBRUSH)hbitmap;
 }
 #endif
 
@@ -325,41 +325,41 @@ CreateCompatibleBitmap(HDC hdc, int nWidth, int nHeight)
 HBITMAP WINAPI
 CreateBitmap( int nWidth, int nHeight, int nPlanes, int bPP, LPCVOID lpData)
 {
-	MWBITMAPOBJ *	hbitmap;
-	int		size;
-	int		linelen;
+    MWBITMAPOBJ *hbitmap;
+    int size;
+    int linelen;
 
-        HDC hScreenDC;
+    HDC hScreenDC;
 
-        hScreenDC = GetDC(NULL);
+    hScreenDC = GetDC(NULL);
 
-	nWidth = MWMAX(nWidth, 1);
-	nHeight = MWMAX(nHeight, 1);
+    nWidth = MWMAX(nWidth, 1);
+    nHeight = MWMAX(nHeight, 1);
 
-	/* calc memory allocation size and linelen from width and height*/
-	if(!GdCalcMemGCAlloc(hScreenDC->psd, nWidth, nHeight, nPlanes, bPP, &size, &linelen))
-        {
-                ReleaseDC(NULL, hScreenDC);
-		return NULL;
-	}
+    /* calc memory allocation size and linelen from width and height*/
+    if(!GdCalcMemGCAlloc(hScreenDC->psd, nWidth, nHeight, nPlanes, bPP, &size, &linelen))
+    {
         ReleaseDC(NULL, hScreenDC);
+        return NULL;
+    }
+    ReleaseDC(NULL, hScreenDC);
 
-	/* allocate gdi object*/
-	hbitmap = (MWBITMAPOBJ *)GdItemAlloc(sizeof(MWBITMAPOBJ)-1+size);
-	if(!hbitmap)
-		return NULL;
-	hbitmap->hdr.type = OBJ_BITMAP;
-	hbitmap->hdr.stockobj = FALSE;
-	hbitmap->width = nWidth;
-	hbitmap->height = nHeight;
+    /* allocate gdi object*/
+    hbitmap = (MWBITMAPOBJ *)GdItemAlloc(sizeof(MWBITMAPOBJ)-1+size);
+    if(!hbitmap)
+        return NULL;
+    hbitmap->hdr.type = OBJ_BITMAP;
+    hbitmap->hdr.stockobj = FALSE;
+    hbitmap->width = nWidth;
+    hbitmap->height = nHeight;
 
-	/* create with specified parameters */
-	hbitmap->planes = nPlanes;
-	hbitmap->bpp = bPP;
-	hbitmap->linelen = linelen;
-	hbitmap->size = size;
+    /* create with specified parameters */
+    hbitmap->planes = nPlanes;
+    hbitmap->bpp = bPP;
+    hbitmap->linelen = linelen;
+    hbitmap->size = size;
 
-        /* TODO: copy data */
+    /* TODO: copy data */
 
-	return (HBRUSH)hbitmap;
+    return (HBRUSH)hbitmap;
 }

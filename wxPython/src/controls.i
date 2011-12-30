@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: controls.i 54040 2008-06-08 23:03:22Z RD $
+// RCS-ID:      $Id: controls.i 65980 2010-11-02 02:56:20Z RD $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -64,6 +64,10 @@ MAKE_CONST_WXSTRING_NOSWIG(ControlNameStr);
 %include _collpane.i
 %include _srchctrl.i
 %include _axbase.i
+%include _filectrl.i
+%include _infobar.i
+%include _cmdlinkbtn.i
+
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

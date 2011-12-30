@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: Mickael Gilabert
 // Created:     28/06/98
-// RCS-ID:      $Id: datstrm.cpp 53028 2008-04-05 17:28:32Z VZ $
+// RCS-ID:      $Id: datstrm.cpp 61764 2009-08-26 20:44:01Z VZ $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,6 +44,14 @@ wxDataInputStream::~wxDataInputStream()
     delete m_conv;
 #endif // wxUSE_UNICODE
 }
+
+#if wxUSE_UNICODE
+void wxDataInputStream::SetConv( const wxMBConv &conv )
+{
+    delete m_conv;
+    m_conv = conv.Clone();
+}
+#endif
 
 #if wxHAS_INT64
 wxUint64 wxDataInputStream::Read64()
@@ -92,7 +100,7 @@ double wxDataInputStream::ReadDouble()
   char buf[10];
 
   m_input->Read(buf, 10);
-  return ConvertFromIeeeExtended((const wxInt8 *)buf);
+  return wxConvertFromIeeeExtended((const wxInt8 *)buf);
 #else
   return 0.0;
 #endif
@@ -473,6 +481,14 @@ wxDataOutputStream::~wxDataOutputStream()
 #endif // wxUSE_UNICODE
 }
 
+#if wxUSE_UNICODE
+void wxDataOutputStream::SetConv( const wxMBConv &conv )
+{
+    delete m_conv;
+    m_conv = conv.Clone();
+}
+#endif
+
 #if wxHAS_INT64
 void wxDataOutputStream::Write64(wxUint64 i)
 {
@@ -531,10 +547,15 @@ void wxDataOutputStream::WriteDouble(double d)
   char buf[10];
 
 #if wxUSE_APPLE_IEEE
-  ConvertToIeeeExtended(d, (wxInt8 *)buf);
+  wxConvertToIeeeExtended(d, (wxInt8 *)buf);
 #else
+  wxUnusedVar(d);
 #if !defined(__VMS__) && !defined(__GNUG__)
+#ifdef _MSC_VER
+# pragma message("wxDataOutputStream::WriteDouble() not using IeeeExtended - will not work!")
+#else
 # pragma warning "wxDataOutputStream::WriteDouble() not using IeeeExtended - will not work!"
+#endif
 #endif
    buf[0] = '\0';
 #endif
@@ -650,13 +671,6 @@ void wxDataOutputStream::WriteDouble(const double *buffer, size_t size)
   {
     WriteDouble(*(buffer++));
   }
-}
-
-wxDataOutputStream& wxDataOutputStream::operator<<(const wxChar *string)
-{
-  Write32(wxStrlen(string));
-  m_output->Write((const char *)string, wxStrlen(string)*sizeof(wxChar));
-  return *this;
 }
 
 wxDataOutputStream& wxDataOutputStream::operator<<(const wxString& string)

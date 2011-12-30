@@ -172,7 +172,7 @@ class Topic(PublisherMixin):
         '''Return tuple form of full topic name'''
         return self.__tupleName
 
-    def getTailName(self):
+    def getNodeName(self):
         '''Return the last part of the topic name (has no dots)'''
         name = self.__tupleName[-1]
         return name
@@ -413,7 +413,7 @@ class Topic(PublisherMixin):
     def __adoptSubtopic(self, topicObj):
         '''Link self to a Topic instance via self.attrName. Always succeeds.'''
         assert topicObj.__parentTopic() is self
-        attrName = topicObj.getTailName()
+        attrName = topicObj.getNodeName()
         self.__subTopics[attrName] = topicObj
 
     def __abandonSubtopic(self, attrName):

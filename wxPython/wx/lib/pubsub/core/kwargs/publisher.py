@@ -16,25 +16,17 @@ import policies
 class PublisherKwargs(PublisherBase):
     '''
     Publisher used for kwargs protocol, ie when sending message data
-    via kwargs.
+    via keyword arguments.
     '''
 
-    def sendMessage(self, _topicName, **kwargs):
-        '''Send message of type _topicName to all subscribed listeners,
-        with message data in kwargs. If topicName is a subtopic, listeners
-        of topics more general will also get the message. Note also that
-        kwargs must be compatible with topic.
-
-        Note that any listener that lets a raised exception escape will
-        interrupt the send operation, unless an exception handler was
-        specified via pub.setListenerExcHandler().
+    def sendMessage(self, topicName, **kwargs):
+        '''Send a message. 
+        
+        :param topicName: name of message topic (dotted or tuple format)
+        :param kwargs: message data (must satisfy the topic's MDS)
         '''
         topicMgr = self.getTopicMgr()
-        topicObj = topicMgr.getOrCreateTopic(_topicName)
-
-        # don't care if topic not final: topicObj.getListeners()
-        # will return nothing if not final but notification will still work
-
+        topicObj = topicMgr.getOrCreateTopic(topicName)
         topicObj.publish(**kwargs)
 
     def getMsgProtocol(self):

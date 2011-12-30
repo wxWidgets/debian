@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: printpalm.cpp 42522 2006-10-27 13:07:40Z JS $
+// RCS-ID:      $Id: printpalm.cpp 58227 2009-01-19 13:55:27Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -79,7 +79,7 @@ bool wxPalmPrinter::Print(wxWindow *parent, wxPrintout *printout, bool prompt)
 
 wxDC* wxPalmPrinter::PrintDialog(wxWindow *parent)
 {
-    wxDC* dc = (wxDC*) NULL;
+    wxDC* dc = NULL;
 
     return dc;
 }

@@ -58,6 +58,7 @@ ArtIDs = [ "wx.ART_ADD_BOOKMARK",
            "wx.ART_NEW",
            "wx.ART_UNDO",
            "wx.ART_REDO",
+           "wx.ART_CLOSE",
            "wx.ART_QUIT",
            "wx.ART_FIND",
            "wx.ART_FIND_AND_REPLACE",
@@ -126,7 +127,7 @@ class TestPanel(wx.Panel):
         line = wx.StaticLine(self, -1, size=(20,-1), style=wx.LI_HORIZONTAL)
         sizer.Add(line, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
 
-        fgs = wx.FlexGridSizer(0, 3, 10, 10)
+        fgs = wx.FlexGridSizer(cols=3, hgap=10, vgap=10)
 
         combo = wx.ComboBox(self, -1, "", choices = ArtClients,
                            style = wx.CB_DROPDOWN|wx.CB_READONLY)

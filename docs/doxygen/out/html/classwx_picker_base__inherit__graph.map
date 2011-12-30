@@ -1,0 +1,11 @@
+<map id="G" name="G">
+<area shape="rect" id="node13" href="$classwx_colour_picker_ctrl.html" title="This control allows the user to select a colour." alt="" coords="5,406,136,437"/>
+<area shape="rect" id="node15" href="$classwx_dir_picker_ctrl.html" title="This control allows the user to select a directory." alt="" coords="160,406,269,437"/>
+<area shape="rect" id="node17" href="$classwx_file_picker_ctrl.html" title="This control allows the user to select a file." alt="" coords="293,406,408,437"/>
+<area shape="rect" id="node19" href="$classwx_font_picker_ctrl.html" title="This control allows the user to select a font." alt="" coords="432,406,552,437"/>
+<area shape="rect" id="node2" href="$classwx_control.html" title="This is the base class for a control or &quot;widget&quot;." alt="" coords="244,246,321,277"/>
+<area shape="rect" id="node4" href="$classwx_window.html" title="wxWindow is the base class for all windows and represents any visible object on screen." alt="" coords="241,166,324,197"/>
+<area shape="rect" id="node6" href="$classwx_evt_handler.html" title="A class that can handle events from the windowing system." alt="" coords="232,86,333,117"/>
+<area shape="rect" id="node8" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="192,6,267,37"/>
+<area shape="rect" id="node10" href="$classwx_trackable.html" title="Add&#45;on base class for a trackable object." alt="" coords="291,6,384,37"/>
+</map>

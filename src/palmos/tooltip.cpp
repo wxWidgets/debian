@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: tooltip.cpp 31557 2005-01-21 21:04:05Z ABX $
+// RCS-ID:      $Id: tooltip.cpp 48093 2007-08-15 12:57:36Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -96,6 +96,14 @@ void wxToolTip::Enable(bool flag)
 }
 
 void wxToolTip::SetDelay(long milliseconds)
+{
+}
+
+void wxToolTip::SetAutoPop( long WXUNUSED(milliseconds) )
+{
+}
+
+void wxToolTip::SetReshow( long WXUNUSED(milliseconds) )
 {
 }
 

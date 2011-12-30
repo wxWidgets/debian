@@ -1,0 +1,12 @@
+<map id="G" name="G">
+<area shape="rect" id="node5" href="$classwx_data_view_bitmap_renderer.html" title="This class is used by wxDataViewCtrl to render bitmap controls." alt="" coords="331,5,517,35"/>
+<area shape="rect" id="node7" href="$classwx_data_view_choice_renderer.html" title="This class is used by wxDataViewCtrl to render choice controls." alt="" coords="332,58,516,89"/>
+<area shape="rect" id="node9" href="$classwx_data_view_custom_renderer.html" title="You need to derive a new class from wxDataViewCustomRenderer in order to write a new renderer..." alt="" coords="329,111,519,142"/>
+<area shape="rect" id="node13" href="$classwx_data_view_date_renderer.html" title="This class is used by wxDataViewCtrl to render calendar controls." alt="" coords="339,165,509,195"/>
+<area shape="rect" id="node15" href="$classwx_data_view_icon_text_renderer.html" title="The wxDataViewIconTextRenderer class is used to display text with a small icon next to it as it is ty..." alt="" coords="327,218,521,249"/>
+<area shape="rect" id="node17" href="$classwx_data_view_progress_renderer.html" title="This class is used by wxDataViewCtrl to render progress bars." alt="" coords="325,271,523,302"/>
+<area shape="rect" id="node19" href="$classwx_data_view_text_renderer.html" title="wxDataViewTextRenderer is used for rendering text." alt="" coords="339,325,509,355"/>
+<area shape="rect" id="node21" href="$classwx_data_view_toggle_renderer.html" title="This class is used by wxDataViewCtrl to render toggle controls." alt="" coords="333,378,515,409"/>
+<area shape="rect" id="node2" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="7,191,81,222"/>
+<area shape="rect" id="node11" href="$classwx_data_view_spin_renderer.html" title="This is a specialized renderer for rendering integer values." alt="" coords="571,111,741,142"/>
+</map>

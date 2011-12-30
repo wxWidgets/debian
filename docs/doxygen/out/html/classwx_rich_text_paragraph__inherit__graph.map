@@ -1,0 +1,5 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classwx_rich_text_composite_object.html" title="Objects of this class can contain other objects." alt="" coords="5,166,195,197"/>
+<area shape="rect" id="node4" href="$classwx_rich_text_object.html" title="This is the base for drawable rich text objects." alt="" coords="37,86,163,117"/>
+<area shape="rect" id="node6" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="63,6,137,37"/>
+</map>

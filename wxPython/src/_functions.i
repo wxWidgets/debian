@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-July-1997
-// RCS-ID:      $Id: _functions.i 46360 2007-06-07 18:45:06Z RD $
+// RCS-ID:      $Id: _functions.i 63597 2010-03-01 23:39:58Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,7 @@
 
 %{
 #include <wx/stockitem.h>
+#include <wx/thread.h>
 %}
 
 //---------------------------------------------------------------------------
@@ -40,11 +41,20 @@ bool wxIsStockLabel(wxWindowID id, const wxString& label);
 
 enum wxStockLabelQueryFlag
 {
-    wxSTOCK_NOFLAGS = 0,
+    wxSTOCK_NOFLAGS,
 
-    wxSTOCK_WITH_MNEMONIC = 1,
-    wxSTOCK_WITH_ACCELERATOR = 2
+    wxSTOCK_WITH_MNEMONIC,
+    wxSTOCK_WITH_ACCELERATOR,
+
+    // by default, stock items text is returned with ellipsis, if appropriate,
+    // this flag allows to avoid having it
+    wxSTOCK_WITHOUT_ELLIPSIS,
+
+    // return label for button, not menu item: buttons should always use
+    // mnemonics and never use ellipsis
+    wxSTOCK_FOR_BUTTON,
 };
+
 
 // Returns label that should be used for given stock UI element (e.g. "&OK"
 // for wxID_OK):
@@ -70,13 +80,9 @@ void wxBell();
 MustHaveApp(wxEndBusyCursor);
 void wxEndBusyCursor();
 
-long wxGetElapsedTime(bool resetTimer = true);
-%pythoncode { GetElapsedTime = wx._deprecated(GetElapsedTime) }
-    
 bool wxIsBusy();
 wxString wxNow();
 bool wxShell(const wxString& command = wxPyEmptyString);
-void wxStartTimer();
 
 
 DocDeclA(
@@ -121,8 +127,10 @@ wxMemorySize wxGetFreeMemory();
 
 enum wxShutdownFlags
 {
-    wxSHUTDOWN_POWEROFF,    // power off the computer
-    wxSHUTDOWN_REBOOT       // shutdown and reboot
+    wxSHUTDOWN_FORCE    = 1,// can be combined with other flags (MSW-only)
+    wxSHUTDOWN_POWEROFF = 2,// power off the computer
+    wxSHUTDOWN_REBOOT   = 4,// shutdown and reboot
+    wxSHUTDOWN_LOGOFF   = 8 // close session (currently MSW-only)
 };
 
 // Shutdown or reboot the PC
@@ -273,6 +281,9 @@ DocDeclA(
 MustHaveApp(wxGetDisplaySizeMM);
 wxSize wxGetDisplaySizeMM();
 
+MustHaveApp(wxGetDisplayPPI);
+wxSize wxGetDisplayPPI();
+
 MustHaveApp(wxClientDisplayRect);
 DocDeclA(
     void, wxClientDisplayRect(int *OUTPUT, int *OUTPUT, int *OUTPUT, int *OUTPUT),
@@ -341,11 +352,23 @@ MustHaveApp(wxGetTopLevelParent);
 wxWindow* wxGetTopLevelParent(wxWindow *win);
 
 
+// flags for wxLaunchDefaultBrowser
+enum
+{
+    wxBROWSER_NEW_WINDOW,
+    wxBROWSER_NOBUSYCURSOR
+};
+
 DocDeclStr(
-    bool , wxLaunchDefaultBrowser(const wxString& url),
+    bool , wxLaunchDefaultBrowser(const wxString& url, int flags = 0),
     "Launches the user's default browser and tells it to open the location
 at ``url``.  Returns ``True`` if the application was successfully
 launched.", "");
+
+
+DocDeclStr(
+    bool , wxLaunchDefaultApplication(const wxString& path, int flags = 0),
+    "Launch document in the user's default application.", "");
 
 
 
@@ -359,73 +382,11 @@ function is able to detect.
 ", "");
 
 
-
-//---------------------------------------------------------------------------
-
-DocStr(wxMouseState,
-"`wx.MouseState` is used to hold information about mouse button and
-modifier key states and is what is returned from `wx.GetMouseState`.",
-"");
-
-class wxMouseState
-{
-public:
-    wxMouseState();
-    ~wxMouseState();
-
-    wxCoord     GetX();
-    wxCoord     GetY();
-
-    bool        LeftDown();
-    bool        MiddleDown();
-    bool        RightDown();
-
-    bool        ControlDown();
-    bool        ShiftDown();
-    bool        AltDown();
-    bool        MetaDown();
-    bool        CmdDown();
-
-    void        SetX(wxCoord x);
-    void        SetY(wxCoord y);
-
-    void        SetLeftDown(bool down);
-    void        SetMiddleDown(bool down);
-    void        SetRightDown(bool down);
-    
-    void        SetControlDown(bool down);
-    void        SetShiftDown(bool down);
-    void        SetAltDown(bool down);
-    void        SetMetaDown(bool down);
-
-    %pythoncode {
-        x = property(GetX, SetX)
-        y = property(GetY, SetY)
-        leftDown = property(LeftDown, SetLeftDown)
-        middleDown = property(MiddleDown, SetMiddleDown)
-        rightDown = property(RightDown, SetRightDown)
-        controlDown = property(ControlDown, SetControlDown)
-        shiftDown = property(ShiftDown, SetShiftDown)
-        altDown = property(AltDown, SetAltDown)
-        metaDown = property(MetaDown, SetMetaDown)
-        cmdDown = property(CmdDown)
-    }
-};
-
-
-DocDeclStr(
-    wxMouseState , wxGetMouseState(),
-    "Returns the current state of the mouse.  Returns an instance of a
-`wx.MouseState` object that contains the current position of the mouse
-pointer in screen coordinants, as well as boolean values indicating
-the up/down status of the mouse buttons and the modifier keys.", "");
-
-
 //---------------------------------------------------------------------------
 
 MustHaveApp(wxWakeUpMainThread);
 
-#if defined(__WXMSW__) || defined(__WXMAC__)
+#if defined(__WXMSW__)
 void wxWakeUpMainThread();
 #else
 %inline %{

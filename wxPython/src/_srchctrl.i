@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Dec-2006
-// RCS-ID:      $Id: _srchctrl.i 44257 2007-01-19 05:27:16Z RD $
+// RCS-ID:      $Id: _srchctrl.i 52875 2008-03-27 21:35:08Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -107,8 +107,18 @@ Events
     =========================    =========================================
 ");
 
+#ifdef __WXMAC__
+class wxSearchCtrlBase : public wxTextCtrl
+{
+};
+#else
+class wxSearchCtrlBase : public wxControl,
+                         public wxTextCtrlIface
+{
+};
+#endif
 
-class wxSearchCtrl : public wxTextCtrl
+class wxSearchCtrl : public wxSearchCtrlBase
 {
 public:
     %pythonAppend wxSearchCtrl         "self._setOORInfo(self)";
@@ -134,7 +144,6 @@ public:
                 long style = 0,
                 const wxValidator& validator = wxDefaultValidator,
                 const wxString& name = wxPySearchCtrlNameStr);
-
 
     DocDeclStr(
         virtual void , SetMenu( wxMenu* menu ),

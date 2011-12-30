@@ -3,7 +3,7 @@
 # Ported From Angelo Mandato C++ Code By:
 #
 # Andrea Gavana, @ 27 Mar 2005
-# Latest Revision: 27 Nov 2009, 17.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # Original Web Site (For The C++ Code):
@@ -17,7 +17,7 @@
 # write to me at:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, obviously, to the wxPython mailing list!!!
 #
@@ -26,20 +26,67 @@
 # --------------------------------------------------------------------------- #
 
 """
-HyperLinkCtrl is a control for wxPython that acts like a hyper link
+L{HyperLinkCtrl} is a control for wxPython that acts like a hyper link
 in a typical browser.
 
 
 Description
 ===========
 
-`HyperLinkCtrl` is a control for wxPython that acts like a hyper link
+L{HyperLinkCtrl} is a control for wxPython that acts like a hyper link
 in a typical browser. Latest features include the ability to capture
 your own left, middle, and right click events to perform your own
 custom event handling and ability to open link in a new or current
 browser window.
 
 Special thanks to Robin Dunn for the event binder for the 3 mouse buttons.
+
+
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.hyperlink as hl
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "HyperLink Demo")
+
+            panel = wx.Panel(self, -1)
+
+            # Default Web links:
+            hyper1 = hl.HyperLinkCtrl(panel, -1, "wxPython Main Page", pos=(100, 100),
+                                      URL="http://www.wxpython.org/")
+            
+            
+            # Web link with underline rollovers, opens in same window
+            hyper2 = hl.HyperLinkCtrl(panel, -1, "My Home Page", pos=(100, 150),
+                                      URL="http://xoomer.virgilio.it/infinity77/")
+                                      
+            hyper2.AutoBrowse(False)
+            hyper2.SetColours("BLUE", "BLUE", "BLUE")
+            hyper2.EnableRollover(True)
+            hyper2.SetUnderlines(False, False, True)
+            hyper2.SetBold(True)
+            hyper2.OpenInSameWindow(True)
+            hyper2.SetToolTip(wx.ToolTip("Hello World!"))
+            hyper2.UpdateLink()
+        
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+    
 
 
 Window Styles
@@ -65,9 +112,9 @@ Event Name               Description
 License And Version
 ===================
 
-HyperLinkCtrl is distributed under the wxPython license.
+L{HyperLinkCtrl} is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 27 Nov 2009, 17.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.6
 

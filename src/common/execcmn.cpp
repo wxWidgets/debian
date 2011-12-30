@@ -1,12 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        common/wxexec.cpp
+// Name:        src/common/execcmn.cpp
 // Purpose:     defines wxStreamTempInputBuffer which is used by Unix and MSW
 //              implementations of wxExecute; this file is only used by the
 //              library and never by the user code
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.08.02
-// RCS-ID:      $Id: execcmn.cpp 35289 2005-08-23 23:12:48Z VZ $
+// RCS-ID:      $Id: execcmn.cpp 67254 2011-03-20 00:14:35Z DS $
 // Copyright:   (c) 2002 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,9 @@ public:
     void Init(wxPipeInputStream *stream);
 
     // check for input on our stream and cache it in our buffer if any
-    void Update();
+    //
+    // return true if anything was done
+    bool Update();
 
     ~wxStreamTempInputBuffer();
 
@@ -66,7 +68,7 @@ private:
     // the size of the buffer
     size_t m_size;
 
-    DECLARE_NO_COPY_CLASS(wxStreamTempInputBuffer)
+    wxDECLARE_NO_COPY_CLASS(wxStreamTempInputBuffer);
 };
 
 inline wxStreamTempInputBuffer::wxStreamTempInputBuffer()
@@ -82,30 +84,32 @@ inline void wxStreamTempInputBuffer::Init(wxPipeInputStream *stream)
 }
 
 inline
-void wxStreamTempInputBuffer::Update()
+bool wxStreamTempInputBuffer::Update()
 {
-    if ( m_stream && m_stream->CanRead() )
-    {
-        // realloc in blocks of 4Kb: this is the default (and minimal) buffer
-        // size of the Unix pipes so it should be the optimal step
-        //
-        // NB: don't use "static int" in this inline function, some compilers
-        //     (e.g. IBM xlC) don't like it
-        enum { incSize = 4096 };
+    if ( !m_stream || !m_stream->CanRead() )
+        return false;
 
-        void *buf = realloc(m_buffer, m_size + incSize);
-        if ( !buf )
-        {
-            // don't read any more, we don't have enough memory to do it
-            m_stream = NULL;
-        }
-        else // got memory for the buffer
-        {
-            m_buffer = buf;
-            m_stream->Read((char *)m_buffer + m_size, incSize);
-            m_size += m_stream->LastRead();
-        }
+    // realloc in blocks of 4Kb: this is the default (and minimal) buffer
+    // size of the Unix pipes so it should be the optimal step
+    //
+    // NB: don't use "static int" in this inline function, some compilers
+    //     (e.g. IBM xlC) don't like it
+    enum { incSize = 4096 };
+
+    void *buf = realloc(m_buffer, m_size + incSize);
+    if ( !buf )
+    {
+        // don't read any more, we don't have enough memory to do it
+        m_stream = NULL;
     }
+    else // got memory for the buffer
+    {
+        m_buffer = buf;
+        m_stream->Read((char *)m_buffer + m_size, incSize);
+        m_size += m_stream->LastRead();
+    }
+
+    return true;
 }
 
 inline

@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Modified by: Ryan Norton (Native GTK2.0+ checklist)
-// Id:          $Id: checklst.cpp 42469 2006-10-26 20:29:02Z RR $
+// Id:          $Id: checklst.cpp 66557 2011-01-04 09:13:49Z SC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@
 // "toggled"
 //-----------------------------------------------------------------------------
 extern "C" {
-static void gtk_checklist_toggled(GtkCellRendererToggle *renderer,
+static void gtk_checklist_toggled(GtkCellRendererToggle * WXUNUSED(renderer),
                                   gchar                 *stringpath,
                                   wxCheckListBox        *listbox)
 {
@@ -35,17 +35,16 @@ static void gtk_checklist_toggled(GtkCellRendererToggle *renderer,
                               listbox->GetId() );
     new_event.SetEventObject( listbox );
     new_event.SetInt( gtk_tree_path_get_indices(path)[0] );
+    new_event.SetString( listbox->GetString( new_event.GetInt() ));
     gtk_tree_path_free(path);
     listbox->Check( new_event.GetInt(), !listbox->IsChecked(new_event.GetInt()));
-    listbox->GetEventHandler()->ProcessEvent( new_event );
+    listbox->HandleWindowEvent( new_event );
 }
 }
 
 //-----------------------------------------------------------------------------
 // wxCheckListBox
 //-----------------------------------------------------------------------------
-
-IMPLEMENT_DYNAMIC_CLASS(wxCheckListBox,wxListBox)
 
 wxCheckListBox::wxCheckListBox() : wxListBox()
 {
@@ -87,7 +86,12 @@ void wxCheckListBox::DoCreateCheckList()
         gtk_tree_view_column_new_with_attributes( "", renderer,
                                                   "active", 0,
                                                   NULL );
-    gtk_tree_view_column_set_fixed_width(column, 20);
+#if wxUSE_LIBHILDON2
+    gtk_tree_view_column_set_fixed_width(column, 40);
+#else
+    gtk_tree_view_column_set_fixed_width(column, 22);
+#endif // wxUSE_LIBHILDON2/!wxUSE_LIBHILDON2
+
     gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
     gtk_tree_view_column_set_clickable(column, TRUE);
 

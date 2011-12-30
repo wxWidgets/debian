@@ -5,7 +5,7 @@
 # Created:      02/11/2003
 # Copyright:    (c) 2003 by Jeff Childers, Will Sadkin, 2003
 # Portions:     (c) 2002 by Will Sadkin, 2002-2007
-# RCS-ID:       $Id: maskededit.py 67477 2011-04-13 18:24:56Z RD $
+# RCS-ID:       $Id: maskededit.py 69422 2011-10-14 17:00:32Z RD $
 # License:      wxWidgets license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -2876,14 +2876,23 @@ class MaskedEditMixin:
         cont = (size is None or size == wx.DefaultSize)
 
         if cont and self._autofit:
-            sizing_text = 'M' * self._masklength
+####            dbg('isinstance(self, wx.lib.masked.numctrl.NumCtrl): "%s"' % self.__class__)
+            # sizing of numctrl when using proportional font and
+            # wxPython 2.9 is not working when using "M"
+            # GetTextExtent returns a width which is way to large
+            if isinstance(self, wx.lib.masked.numctrl.NumCtrl):
+                sizing_text = '9' * self._masklength
+                wAdjust = 8
+            else:
+                sizing_text = 'M' * self._masklength
+                wAdjust = 4
             if wx.Platform != "__WXMSW__":   # give it a little extra space
                 sizing_text += 'M'
             if wx.Platform == "__WXMAC__":   # give it even a little more...
                 sizing_text += 'M'
 ####            dbg('len(sizing_text):', len(sizing_text), 'sizing_text: "%s"' % sizing_text)
             w, h = self.GetTextExtent(sizing_text)
-            size = (w+4, self.GetSize().height)
+            size = (w+wAdjust, self.GetSize().height)
 ####            dbg('size:', size, indent=0)
         return size
 
@@ -3240,7 +3249,7 @@ class MaskedEditMixin:
         previous field.
         """
 ##        dbg('MaskedEditMixin::_OnUpNumeric', indent=1)
-        event.m_shiftDown = 1
+        event.shiftDown = 1
 ##        dbg('event.ShiftDown()?', event.ShiftDown())
         self._OnChangeField(event)
 ##        dbg(indent=0)
@@ -3270,7 +3279,7 @@ class MaskedEditMixin:
         # treat as shifted up/down arrows as tab/reverse tab:
         if event.ShiftDown() and keycode in (wx.WXK_UP, wx.WXK_DOWN, wx.WXK_NUMPAD_UP, wx.WXK_NUMPAD_DOWN):
             # remove "shifting" and treat as (forward) tab:
-            event.m_shiftDown = False
+            event.shiftDown = False
             keep_processing = self._OnChangeField(event)
 
         elif self._FindField(pos)._selectOnFieldEntry:
@@ -3282,15 +3291,15 @@ class MaskedEditMixin:
 
                 # call _OnChangeField to handle "ctrl-shifted event"
                 # (which moves to previous field and selects it.)
-                event.m_shiftDown = True
-                event.m_ControlDown = True
+                event.shiftDown = True
+                event.sontrolDown = True
                 keep_processing = self._OnChangeField(event)
             elif( keycode in (wx.WXK_DOWN, wx.WXK_RIGHT, wx.WXK_NUMPAD_DOWN, wx.WXK_NUMPAD_RIGHT)
                   and sel_to != self._masklength
                   and self._isTemplateChar(sel_to)):
 
                 # when changing field to the right, ensure don't accidentally go left instead
-                event.m_shiftDown = False
+                event.shiftDown = False
                 keep_processing = self._OnChangeField(event)
             else:
                 # treat arrows as normal, allowing selection
@@ -4155,7 +4164,7 @@ class MaskedEditMixin:
             if event.ShiftDown():
                 if keycode in (wx.WXK_DOWN, wx.WXK_RIGHT, wx.WXK_NUMPAD_DOWN, wx.WXK_NUMPAD_RIGHT):
                     # remove "shifting" and treat as (forward) tab:
-                    event.m_shiftDown = False
+                    event.shiftDown = False
                 keep_processing = self._OnChangeField(event)
             else:
                 keep_processing = self._OnArrow(event)
@@ -6485,7 +6494,7 @@ def _getDay(dateStr,dateFmt):
     return parts[2]
 
 ## ---------- ---------- ---------- ---------- ---------- ---------- ----------
-class __test(wx.PySimpleApp):
+class __test(wx.App):
         def OnInit(self):
             from wx.lib.rcsizer import RowColSizer
             self.frame = wx.Frame( None, -1, "MaskedEditMixin 0.0.7 Demo Page #1", size = (700,600))

@@ -8,13 +8,29 @@
 // Author:      Robin Dunn
 //
 // Created:     1-July-1997
-// RCS-ID:      $Id: wxPython_int.h 60300 2009-04-24 05:26:27Z RD $
+// RCS-ID:      $Id: wxPython_int.h 66323 2010-12-04 03:26:17Z RD $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __wxp_helpers__
 #define __wxp_helpers__
+
+#if defined(__APPLE__)
+    // When it's possible that we're building universal binaries with both
+    // 32-bit and 64-bit architectures then these need to be undefed because
+    // otherwise the values set by configure could conflict with those set
+    // based on runtime flags in Python's headers.  We also do something
+    // similar in wx/platform.h so it's okay to undef them now because they
+    // will be defined again soon.
+    #undef SIZEOF_VOID_P
+    #undef SIZEOF_LONG
+    #undef SIZEOF_SIZE_T
+
+    // Turn off the warning about converting string literals to char*
+    // TODO: fix these the right way...
+    #pragma GCC diagnostic ignored "-Wwrite-strings"
+#endif
 
 #include <wx/wx.h>
 
@@ -41,12 +57,15 @@
 #include <wx/fs_mem.h>
 #include <wx/fs_zip.h>
 #include <wx/gbsizer.h>
+#include <wx/wrapsizer.h>
 #include <wx/geometry.h>
 #include <wx/htmllbox.h>
 #include <wx/image.h>
 #include <wx/imaglist.h>
+#include <wx/infobar.h>
 #include <wx/intl.h>
 #include <wx/laywin.h>
+#include <wx/listbase.h>
 #include <wx/listbook.h>
 #include <wx/minifram.h>
 #include <wx/notebook.h>
@@ -81,7 +100,10 @@
 #include <wx/collpane.h>
 #include <wx/srchctrl.h>
 #include <wx/generic/datectrl.h>
-
+#include <wx/filectrl.h>
+#include <wx/notifmsg.h>
+#include <wx/commandlinkbutton.h>
+#include <wx/versioninfo.h>
 
 #ifdef _MSC_VER
 # pragma warning(disable:4800)
@@ -136,13 +158,13 @@ const char* wxGetDefaultPyEncoding();
 void wxPyEventThunker(wxObject*, wxEvent& event);
 
 
-bool wxPyCheckSwigType(const wxChar* className);
+bool wxPyCheckSwigType(const wxString& className);
 PyObject* wxPyConstructObject(void* ptr,
-                              const wxChar* className,
+                              const wxString& className,
                               int setThisOwn=0);
 bool wxPyConvertSwigPtr(PyObject* obj, void **ptr,
-                        const wxChar* className);
-PyObject* wxPyMakeSwigPtr(void* ptr, const wxChar* classname);
+                        const wxString& className);
+PyObject* wxPyMakeSwigPtr(void* ptr, const wxString& classname);
 
 
 PyObject* wx2PyString(const wxString& src);
@@ -223,6 +245,10 @@ void wxPyEndBlockThreads(wxPyBlock_t blocked);
 #define wxPyRaiseNotImplemented() \
     wxPyBLOCK_THREADS(PyErr_SetNone(PyExc_NotImplementedError))
 
+// Raise the NotImplementedError exception with a message  (blocking threads)
+#define wxPyRaiseNotImplementedMsg(msg) \
+    wxPyBLOCK_THREADS(PyErr_SetString(PyExc_NotImplementedError, msg))
+
 // Raise any exception with a string value  (blocking threads)
 #define wxPyErr_SetString(err, str) \
     wxPyBLOCK_THREADS(PyErr_SetString(err, str))
@@ -253,7 +279,13 @@ bool wxRect_helper(PyObject* source, wxRect** obj);
 bool wxColour_helper(PyObject* source, wxColour** obj);
 bool wxPoint2D_helper(PyObject* source, wxPoint2D** obj);
 bool wxRect2D_helper(PyObject* source, wxRect2D** obj);
+bool wxPosition_helper(PyObject* source, wxPosition** obj);
 
+wxVariant wxVariant_in_helper(PyObject* source);
+PyObject* wxVariant_out_helper(const wxVariant& value);
+
+bool wxPyTextOrBitmap_helper(PyObject* obj, bool& wasString,
+                             wxString& outstr, wxBitmap& outbmp);
 
 bool wxPySimple_typecheck(PyObject* source, const wxChar* classname, int seqLen);
 bool wxColour_typecheck(PyObject* source);
@@ -287,7 +319,7 @@ PyObject* wxArrayDouble2PyList_helper(const wxArrayDouble& arr);
 
 #ifndef wxPyUSE_EXPORTED_API
 
-class wxPyCallback : public wxObject {
+class wxPyCallback : public wxEvtHandler {
     DECLARE_ABSTRACT_CLASS(wxPyCallback)
 public:
     wxPyCallback(PyObject* func);
@@ -324,7 +356,7 @@ protected:
 
 
 class wxPyEvent : public wxEvent, public wxPyEvtSelfRef {
-    DECLARE_ABSTRACT_CLASS(wxPyEvent)
+    DECLARE_DYNAMIC_CLASS(wxPyEvent)
 public:
     wxPyEvent(int winid=0, wxEventType commandType = wxEVT_NULL);
     wxPyEvent(const wxPyEvent& evt);
@@ -335,7 +367,7 @@ public:
 
 
 class wxPyCommandEvent : public wxCommandEvent, public wxPyEvtSelfRef {
-    DECLARE_ABSTRACT_CLASS(wxPyCommandEvent)
+    DECLARE_DYNAMIC_CLASS(wxPyCommandEvent)
 public:
     wxPyCommandEvent(wxEventType commandType = wxEVT_NULL, int id=0);
     wxPyCommandEvent(const wxPyCommandEvent& evt);
@@ -372,10 +404,10 @@ class wxPyCallbackHelper;
 
 struct wxPyCoreAPI {
 
-    bool                (*p_wxPyCheckSwigType)(const wxChar* className);
-    PyObject*           (*p_wxPyConstructObject)(void* ptr, const wxChar* className, int setThisOwn);
-    bool                (*p_wxPyConvertSwigPtr)(PyObject* obj, void **ptr, const wxChar* className);
-    PyObject*           (*p_wxPyMakeSwigPtr)(void* ptr, const wxChar* className);
+    bool                (*p_wxPyCheckSwigType)(const wxString& className);
+    PyObject*           (*p_wxPyConstructObject)(void* ptr, const wxString& className, int setThisOwn);
+    bool                (*p_wxPyConvertSwigPtr)(PyObject* obj, void **ptr, const wxString& className);
+    PyObject*           (*p_wxPyMakeSwigPtr)(void* ptr, const wxString& className);
         
     PyThreadState*      (*p_wxPyBeginAllowThreads)();
     void                (*p_wxPyEndAllowThreads)(PyThreadState* state);
@@ -434,14 +466,20 @@ struct wxPyCoreAPI {
 
     bool                (*p_wxPyCheckForApp)();
 
-    // Add all new items at the end...
     PyObject*           (*p_wxArrayDoublePyList_helper)(const wxArrayDouble& arr);
     wxPoint2D*          (*p_wxPoint2D_LIST_helper)(PyObject* source, size_t* npoints);
     bool                (*p_wxRect2D_helper)(PyObject* source, wxRect2D** obj);
+    bool                (*p_wxPosition_helper)(PyObject* source, wxPosition** obj);
 
     wxPyCBOutputStream*  (*p_wxPyCBOutputStream_create)(PyObject *py, bool block);
     wxPyCBOutputStream*  (*p_wxPyCBOutputStream_copy)(wxPyCBOutputStream* other);
-    
+
+    wxVariant            (*p_wxVariant_in_helper)(PyObject* source);
+    PyObject*            (*p_wxVariant_out_helper)(const wxVariant& value);
+
+    bool                 (*p_wxPyTextOrBitmap_helper)(PyObject* obj, bool& wasString, wxString& outstr, wxBitmap& outbmp);
+
+    // Add all new items at the end...
 };
 
 
@@ -640,13 +678,13 @@ public:
 
     virtual bool OnInitGui();
     virtual int OnExit();
-#ifdef __WXDEBUG__
+    virtual void OnEventLoopEnter(wxEventLoopBase* loop);
+    virtual void OnEventLoopExit(wxEventLoopBase* loop);
     virtual void OnAssertFailure(const wxChar *file,
                                  int line,
                                  const wxChar *func,
                                  const wxChar *cond,
                                  const wxChar *msg);
-#endif
 #if wxUSE_EXCEPTIONS
     virtual bool OnExceptionInMainLoop();
 #endif
@@ -654,8 +692,9 @@ public:
     virtual int FilterEvent(wxEvent& event);
 
     // For catching Apple Events
-    virtual void MacOpenFile(const wxString &fileName);
-    virtual void MacPrintFile(const wxString &fileName);
+    virtual void MacOpenFile(const wxString& fileName);
+    virtual void MacOpenURL(const wxString& url);
+    virtual void MacPrintFile(const wxString& fileName);
     virtual void MacNewFile();
     virtual void MacReopenApp();
 
@@ -2352,7 +2391,7 @@ extern wxPyApp *wxPythonApp;
 #define IMP_PYCALLBACK_OBJECT__pure(CLASS, PCLASS, CBNAME)                      \
     wxObject* CLASS::CBNAME() {                                                 \
         wxObject* rv = NULL;                                                    \
-        wxPyBlock_t blocked = wxPyBeginBlockThreads();                          \
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();                                 \
         if (wxPyCBH_findCallback(m_myInst, #CBNAME)) {                          \
             PyObject* ro;                                                       \
             ro = wxPyCBH_callCallbackObj(m_myInst, Py_BuildValue("()"));        \

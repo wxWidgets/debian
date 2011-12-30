@@ -2,7 +2,7 @@
 // Name:        src/gtk1/checklst.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: checklst.cpp 38319 2006-03-23 22:05:23Z VZ $
+// Id:          $Id: checklst.cpp 66557 2011-01-04 09:13:49Z SC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,8 +21,6 @@
 //-----------------------------------------------------------------------------
 // wxCheckListBox
 //-----------------------------------------------------------------------------
-
-IMPLEMENT_DYNAMIC_CLASS(wxCheckListBox,wxListBox)
 
 wxCheckListBox::wxCheckListBox() : wxListBox()
 {

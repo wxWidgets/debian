@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node5" href="$classwx_html_colour_cell.html" title="This cell changes the colour of either the background or the foreground." alt="" coords="5,166,128,197"/>
+<area shape="rect" id="node7" href="$classwx_html_container_cell.html" title="The wxHtmlContainerCell class is an implementation of a cell that may contain more cells in it..." alt="" coords="152,166,293,197"/>
+<area shape="rect" id="node9" href="$classwx_html_widget_cell.html" title="wxHtmlWidgetCell is a class that provides a connection between HTML cells and widgets (an object deri..." alt="" coords="317,166,443,197"/>
+<area shape="rect" id="node2" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="185,6,260,37"/>
+</map>

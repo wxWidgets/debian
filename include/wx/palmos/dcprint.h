@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: dcprint.h 42522 2006-10-27 13:07:40Z JS $
+// RCS-ID:      $Id: dcprint.h 62823 2009-12-08 16:35:47Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,11 +17,11 @@
 #include "wx/dc.h"
 #include "wx/cmndata.h"
 
-class WXDLLEXPORT wxPrinterDC : public wxDC
+class WXDLLIMPEXP_CORE wxPrinterDC : public wxDC
 {
 public:
     // Create a printer DC (obsolete function: use wxPrintData version now)
-    wxPrinterDC(const wxString& driver, const wxString& device, const wxString& output, bool interactive = TRUE, int orientation = wxPORTRAIT);
+    wxPrinterDC(const wxString& driver, const wxString& device, const wxString& output, bool interactive = TRUE, wxPrintOrientation orientation = wxPORTRAIT);
 
     // Create from print data
     wxPrinterDC(const wxPrintData& data);
@@ -34,7 +34,7 @@ public:
     virtual void StartPage();
     virtual void EndPage();
 
-    wxRect GetPaperRect();
+    wxRect GetPaperRect() const;
 
 protected:
     virtual void DoDrawBitmap(const wxBitmap &bmp, wxCoord x, wxCoord y,
@@ -42,7 +42,8 @@ protected:
     virtual bool DoBlit(wxCoord xdest, wxCoord ydest,
                         wxCoord width, wxCoord height,
                         wxDC *source, wxCoord xsrc, wxCoord ysrc,
-                        int rop = wxCOPY, bool useMask = FALSE, wxCoord xsrcMask = -1, wxCoord ysrcMask = -1);
+                        wxRasterOperationMode rop = wxCOPY, bool useMask = FALSE,
+                        wxCoord xsrcMask = -1, wxCoord ysrcMask = -1);
 
     // init the dc
     void Init();
@@ -54,10 +55,10 @@ private:
 };
 
 // Gets an HDC for the default printer configuration
-// WXHDC WXDLLEXPORT wxGetPrinterDC(int orientation);
+// WXHDC WXDLLIMPEXP_CORE wxGetPrinterDC(int orientation);
 
 // Gets an HDC for the specified printer configuration
-WXHDC WXDLLEXPORT wxGetPrinterDC(const wxPrintData& data);
+WXHDC WXDLLIMPEXP_CORE wxGetPrinterDC(const wxPrintData& data);
 
 #endif // wxUSE_PRINTING_ARCHITECTURE
 

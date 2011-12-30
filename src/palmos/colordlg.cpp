@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: colordlg.cpp 39337 2006-05-25 21:08:11Z ABX $
+// RCS-ID:      $Id: colordlg.cpp 66615 2011-01-07 05:26:57Z PC $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,6 @@
 
 #ifndef WX_PRECOMP
     #include "wx/intl.h"
-    #include "wx/cmndata.h"
 #endif
 
 #include <UIColor.h>

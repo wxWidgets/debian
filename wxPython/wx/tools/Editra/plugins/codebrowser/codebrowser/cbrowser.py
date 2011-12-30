@@ -18,8 +18,8 @@ element is defined in the file.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: cbrowser.py 67736 2011-05-13 22:42:50Z CJP $"
-__revision__ = "$Revision: 67736 $"
+__svnid__ = "$Id: cbrowser.py 69238 2011-09-29 23:30:16Z CJP $"
+__revision__ = "$Revision: 69238 $"
 
 #--------------------------------------------------------------------------#
 # Imports
@@ -164,6 +164,7 @@ class CodeBrowserTree(wx.TreeCtrl):
         """Clear the tree and caches"""
         self._cdoc = None
         self._ds_flat = list()
+        self.Unselect() # XXX: workaround focus issue in 2.9
         self.DeleteChildren(self.root)
 
     def _FindNodeForLine(self, line):
@@ -694,7 +695,7 @@ class TagGenEvent(wx.PyCommandEvent):
     """
     def __init__(self, etype, eid, value=taglib.DocStruct()):
         """Creates the event object"""
-        wx.PyCommandEvent.__init__(self, etype, eid)
+        super(TagGenEvent, self).__init__(etype, eid)
         self._value = value
 
     def GetValue(self):

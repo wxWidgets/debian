@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2006-01-29
-// RCS-ID:      $Id: toolbkg.cpp 44271 2007-01-21 00:52:05Z VZ $
+// RCS-ID:      $Id: toolbkg.cpp 65931 2010-10-27 16:54:36Z VZ $
 // Copyright:   (c) 2006 Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -44,12 +44,9 @@
 // ----------------------------------------------------------------------------
 
 IMPLEMENT_DYNAMIC_CLASS(wxToolbook, wxBookCtrlBase)
-IMPLEMENT_DYNAMIC_CLASS(wxToolbookEvent, wxNotifyEvent)
 
-#if !WXWIN_COMPATIBILITY_EVENT_TYPES
-const wxEventType wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGING = wxNewEventType();
-const wxEventType wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED = wxNewEventType();
-#endif
+wxDEFINE_EVENT( wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGING, wxBookCtrlEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED,  wxBookCtrlEvent );
 
 BEGIN_EVENT_TABLE(wxToolbook, wxBookCtrlBase)
     EVT_SIZE(wxToolbook::OnSize)
@@ -67,7 +64,6 @@ END_EVENT_TABLE()
 
 void wxToolbook::Init()
 {
-    m_selection = wxNOT_FOUND;
     m_needsRealizing = false;
 }
 
@@ -89,14 +85,19 @@ bool wxToolbook::Create(wxWindow *parent,
                             wxDefaultValidator, name) )
         return false;
 
-    int orient = wxTB_HORIZONTAL;
-    if ( (style & (wxBK_LEFT | wxBK_RIGHT)) != 0)
-        orient = wxTB_VERTICAL;
+    int tbFlags = wxTB_TEXT | wxTB_FLAT | wxBORDER_NONE;
+    if ( (style & (wxBK_LEFT | wxBK_RIGHT)) != 0 )
+        tbFlags |= wxTB_VERTICAL;
+    else
+        tbFlags |= wxTB_HORIZONTAL;
+
+    if ( style & wxTBK_HORZ_LAYOUT )
+        tbFlags |= wxTB_HORZ_LAYOUT;
 
     // TODO: make more configurable
 
 #if defined(__WXMAC__) && wxUSE_TOOLBAR && wxUSE_BMPBUTTON
-    if (style & wxBK_BUTTONBAR)
+    if (style & wxTBK_BUTTONBAR)
     {
         m_bookctrl = new wxButtonToolBar
                  (
@@ -104,7 +105,7 @@ bool wxToolbook::Create(wxWindow *parent,
                     wxID_ANY,
                     wxDefaultPosition,
                     wxDefaultSize,
-                    orient|wxTB_TEXT|wxTB_FLAT|wxNO_BORDER
+                    tbFlags
                  );
     }
     else
@@ -116,7 +117,7 @@ bool wxToolbook::Create(wxWindow *parent,
                     wxID_ANY,
                     wxDefaultPosition,
                     wxDefaultSize,
-                    orient|wxTB_TEXT|wxTB_FLAT|wxTB_NODIVIDER|wxNO_BORDER
+                    tbFlags | wxTB_NODIVIDER
                  );
     }
 
@@ -127,52 +128,12 @@ bool wxToolbook::Create(wxWindow *parent,
 // wxToolbook geometry management
 // ----------------------------------------------------------------------------
 
-wxSize wxToolbook::GetControllerSize() const
-{
-    const wxSize sizeClient = GetClientSize(),
-                 sizeBorder = m_bookctrl->GetSize() - m_bookctrl->GetClientSize(),
-                 sizeToolBar = GetToolBar()->GetSize() + sizeBorder;
-
-    wxSize size;
-
-    if ( IsVertical() )
-    {
-        size.x = sizeClient.x;
-        size.y = sizeToolBar.y;
-    }
-    else // left/right aligned
-    {
-        size.x = sizeToolBar.x;
-        size.y = sizeClient.y;
-    }
-
-    return size;
-}
-
 void wxToolbook::OnSize(wxSizeEvent& event)
 {
     if (m_needsRealizing)
         Realize();
 
     wxBookCtrlBase::OnSize(event);
-}
-
-wxSize wxToolbook::CalcSizeFromPage(const wxSize& sizePage) const
-{
-    // we need to add the size of the list control and the border between
-    const wxSize sizeToolBar = GetControllerSize();
-
-    wxSize size = sizePage;
-    if ( IsVertical() )
-    {
-        size.y += sizeToolBar.y + GetInternalBorder();
-    }
-    else // left/right aligned
-    {
-        size.x += sizeToolBar.x + GetInternalBorder();
-    }
-
-    return size;
 }
 
 // ----------------------------------------------------------------------------
@@ -203,7 +164,7 @@ wxString wxToolbook::GetPageText(size_t n) const
 
 int wxToolbook::GetPageImage(size_t WXUNUSED(n)) const
 {
-    wxFAIL_MSG( _T("wxToolbook::GetPageImage() not implemented") );
+    wxFAIL_MSG( wxT("wxToolbook::GetPageImage() not implemented") );
 
     return wxNOT_FOUND;
 }
@@ -239,17 +200,12 @@ void wxToolbook::SetImageList(wxImageList *imageList)
 // selection
 // ----------------------------------------------------------------------------
 
-int wxToolbook::GetSelection() const
+wxBookCtrlEvent* wxToolbook::CreatePageChangingEvent() const
 {
-    return m_selection;
+    return new wxBookCtrlEvent(wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGING, m_windowId);
 }
 
-wxBookCtrlBaseEvent* wxToolbook::CreatePageChangingEvent() const
-{
-    return new wxToolbookEvent(wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGING, m_windowId);
-}
-
-void wxToolbook::MakeChangedEvent(wxBookCtrlBaseEvent &event)
+void wxToolbook::MakeChangedEvent(wxBookCtrlEvent &event)
 {
     event.SetEventType(wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED);
 }
@@ -266,23 +222,20 @@ void wxToolbook::Realize()
 {
     if (m_needsRealizing)
     {
+        m_needsRealizing = false;
+
         GetToolBar()->SetToolBitmapSize(m_maxBitmapSize);
 
-        int remap = wxSystemOptions::GetOptionInt(wxT("msw.remap"));
-        wxSystemOptions::SetOption(wxT("msw.remap"), 0);
         GetToolBar()->Realize();
-        wxSystemOptions::SetOption(wxT("msw.remap"), remap);
     }
 
-    m_needsRealizing = false;
-
-    if (m_selection == -1)
+    if (m_selection == wxNOT_FOUND)
         m_selection = 0;
 
     if (GetPageCount() > 0)
     {
         int sel = m_selection;
-        m_selection = -1;
+        m_selection = wxNOT_FOUND;
         SetSelection(sel);
     }
 
@@ -393,7 +346,7 @@ wxWindow *wxToolbook::DoRemovePage(size_t page)
             int sel = m_selection - 1;
             if (page_count == 1)
                 sel = wxNOT_FOUND;
-            else if ((page_count == 2) || (sel == -1))
+            else if ((page_count == 2) || (sel == wxNOT_FOUND))
                 sel = 0;
 
             // force sel invalid if deleting current page - don't try to hide it

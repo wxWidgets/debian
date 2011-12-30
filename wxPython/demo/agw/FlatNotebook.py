@@ -11,9 +11,9 @@ except:
 sys.path.append(os.path.split(dirName)[0])
 
 try:
-    from agw import flatnotebook as fnb
+    import agw.flatnotebook as FNB
 except ImportError: # if it's not there locally, try the wxPython lib.
-    import wx.lib.agw.flatnotebook as fnb
+    import wx.lib.agw.flatnotebook as FNB
 
 import random
 import images
@@ -64,6 +64,10 @@ MENU_SMART_TABS = wx.NewId()
 MENU_USE_DROP_ARROW_BUTTON = wx.NewId()
 MENU_ALLOW_FOREIGN_DND = wx.NewId()
 
+MENU_TILE_HORIZONTALLY = wx.NewId()
+MENU_TILE_VERTICALLY = wx.NewId()
+MENU_TILE_NONE = wx.NewId()
+
 
 class FlatNotebookDemo(wx.Frame):
 
@@ -95,11 +99,11 @@ class FlatNotebookDemo(wx.Frame):
         self.CreateRightClickMenu()
         self.LayoutItems()
 
-        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
-        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
-        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
-        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_DROPPED_FOREIGN, self.OnForeignDrop)
-        self.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_DROPPED, self.OnDrop)
+        self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
+        self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+        self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
+        self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_DROPPED_FOREIGN, self.OnForeignDrop)
+        self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_DROPPED, self.OnDrop)
         
         self.Bind(wx.EVT_UPDATE_UI, self.OnDropDownArrowUI, id=MENU_USE_DROP_ARROW_BUTTON)
         self.Bind(wx.EVT_UPDATE_UI, self.OnHideNavigationButtonsUI, id=MENU_HIDE_NAV_BUTTONS)
@@ -232,9 +236,35 @@ class FlatNotebookDemo(wx.Frame):
                            "Use drop down arrow for quick tab navigation", wx.ITEM_CHECK)
         self._editMenu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OnDropDownArrow, item)
-        item.Check(False);
+        item.Check(False)
         self._editMenu.AppendSeparator()
 
+        item = wx.MenuItem(self._editMenu, MENU_TILE_HORIZONTALLY, "Tile pages horizontally",
+                           "Tile all the panels in an horizontal sizer", wx.ITEM_RADIO)
+        self._editMenu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.OnTile, item)
+        
+        item = wx.MenuItem(self._editMenu, MENU_TILE_VERTICALLY, "Tile pages vertically",
+                           "Tile all the panels in a vertical sizer", wx.ITEM_RADIO)
+        self._editMenu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.OnTile, item)
+
+        item = wx.MenuItem(self._editMenu, MENU_TILE_NONE, "No tiling",
+                           "No tiling, standard FlatNotebook behaviour", wx.ITEM_RADIO)
+        self._editMenu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.OnTile, item)
+
+        item.Check(True)
+
+        self._editMenu.AppendSeparator()
+
+        item = wx.MenuItem(self._editMenu, wx.ID_ANY, "Use custom page",
+                           "Shows a custom page when the main notebook has no pages left", wx.ITEM_CHECK)
+        self._editMenu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.OnCustomPanel, item)
+
+        self._editMenu.AppendSeparator()
+        
         item = wx.MenuItem(self._editMenu, MENU_USE_MOUSE_MIDDLE_BTN, "Use Mouse Middle Button as 'X' button",
                            "Use Mouse Middle Button as 'X' button", wx.ITEM_CHECK)
         self._editMenu.AppendItem(item)
@@ -341,13 +371,13 @@ class FlatNotebookDemo(wx.Frame):
         mainSizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(mainSizer)
 
-        bookStyle = fnb.FNB_NODRAG
+        bookStyle = FNB.FNB_NODRAG
 
-        self.book = fnb.FlatNotebook(self, wx.ID_ANY, agwStyle=bookStyle)
+        self.book = FNB.FlatNotebook(self, wx.ID_ANY, agwStyle=bookStyle)
 
-        bookStyle &= ~(fnb.FNB_NODRAG)
-        bookStyle |= fnb.FNB_ALLOW_FOREIGN_DND 
-        self.secondBook = fnb.FlatNotebook(self, wx.ID_ANY, agwStyle=bookStyle)
+        bookStyle &= ~(FNB.FNB_NODRAG)
+        bookStyle |= FNB.FNB_ALLOW_FOREIGN_DND 
+        self.secondBook = FNB.FlatNotebook(self, wx.ID_ANY, agwStyle=bookStyle)
 
         # Set right click menu to the notebook
         self.book.SetRightClickMenu(self._rmenu)
@@ -386,65 +416,65 @@ class FlatNotebookDemo(wx.Frame):
         if eventid == MENU_HIDE_NAV_BUTTONS:
             if event.IsChecked():            
                 # Hide the navigation buttons
-                style |= fnb.FNB_NO_NAV_BUTTONS
+                style |= FNB.FNB_NO_NAV_BUTTONS
             else:
-                style &= ~fnb.FNB_NO_NAV_BUTTONS
-                style &= ~fnb.FNB_DROPDOWN_TABS_LIST
+                style &= ~FNB.FNB_NO_NAV_BUTTONS
+                style &= ~FNB.FNB_DROPDOWN_TABS_LIST
 
             self.book.SetAGWWindowStyleFlag(style)
 
         elif eventid == MENU_HIDE_ON_SINGLE_TAB:
             if event.IsChecked():
                 # Hide the navigation buttons
-                style |= fnb.FNB_HIDE_ON_SINGLE_TAB
+                style |= FNB.FNB_HIDE_ON_SINGLE_TAB
             else:
-                style &= ~(fnb.FNB_HIDE_ON_SINGLE_TAB)
+                style &= ~(FNB.FNB_HIDE_ON_SINGLE_TAB)
                 
             self.book.SetAGWWindowStyleFlag(style)
                 
         elif eventid == MENU_HIDE_TABS:
             if event.IsChecked():
                 # Hide the tabs
-                style |= fnb.FNB_HIDE_TABS
+                style |= FNB.FNB_HIDE_TABS
             else:
-                style &= ~(fnb.FNB_HIDE_TABS)
+                style &= ~(FNB.FNB_HIDE_TABS)
 
             self.book.SetAGWWindowStyleFlag(style)
 
         elif eventid == MENU_HIDE_X:
             if event.IsChecked():
                 # Hide the X button
-                style |= fnb.FNB_NO_X_BUTTON
+                style |= FNB.FNB_NO_X_BUTTON
             else:
-                if style & fnb.FNB_NO_X_BUTTON:
-                    style ^= fnb.FNB_NO_X_BUTTON
+                if style & FNB.FNB_NO_X_BUTTON:
+                    style ^= FNB.FNB_NO_X_BUTTON
 
             self.book.SetAGWWindowStyleFlag(style)
 
         elif eventid == MENU_DRAW_BORDER:
             if event.IsChecked():
-                style |= fnb.FNB_TABS_BORDER_SIMPLE
+                style |= FNB.FNB_TABS_BORDER_SIMPLE
             else:
-                if style & fnb.FNB_TABS_BORDER_SIMPLE:
-                    style ^= fnb.FNB_TABS_BORDER_SIMPLE
+                if style & FNB.FNB_TABS_BORDER_SIMPLE:
+                    style ^= FNB.FNB_TABS_BORDER_SIMPLE
 
             self.book.SetAGWWindowStyleFlag(style)
 
         elif eventid == MENU_USE_MOUSE_MIDDLE_BTN:
             if event.IsChecked():
-                style |= fnb.FNB_MOUSE_MIDDLE_CLOSES_TABS            
+                style |= FNB.FNB_MOUSE_MIDDLE_CLOSES_TABS            
             else:
-                if style & fnb.FNB_MOUSE_MIDDLE_CLOSES_TABS:
-                    style ^= fnb.FNB_MOUSE_MIDDLE_CLOSES_TABS
+                if style & FNB.FNB_MOUSE_MIDDLE_CLOSES_TABS:
+                    style ^= FNB.FNB_MOUSE_MIDDLE_CLOSES_TABS
 
             self.book.SetAGWWindowStyleFlag(style)
 
         elif eventid == MENU_USE_BOTTOM_TABS:
             if event.IsChecked():
-                style |= fnb.FNB_BOTTOM
+                style |= FNB.FNB_BOTTOM
             else:
-                if style & fnb.FNB_BOTTOM:
-                    style ^= fnb.FNB_BOTTOM
+                if style & FNB.FNB_BOTTOM:
+                    style ^= FNB.FNB_BOTTOM
 
             self.book.SetAGWWindowStyleFlag(style)
             self.book.Refresh()
@@ -452,9 +482,9 @@ class FlatNotebookDemo(wx.Frame):
         elif eventid == MENU_NO_TABS_FOCUS:
             if event.IsChecked():
                 # Hide the navigation buttons
-                style |= fnb.FNB_NO_TAB_FOCUS
+                style |= FNB.FNB_NO_TAB_FOCUS
             else:
-                style &= ~(fnb.FNB_NO_TAB_FOCUS)
+                style &= ~(FNB.FNB_NO_TAB_FOCUS)
 
             self.book.SetAGWWindowStyleFlag(style)
 
@@ -492,10 +522,10 @@ class FlatNotebookDemo(wx.Frame):
         style = self.book.GetAGWWindowStyleFlag()
 
         # remove old tabs style
-        mirror = ~(fnb.FNB_VC71 | fnb.FNB_VC8 | fnb.FNB_FANCY_TABS | fnb.FNB_FF2 | fnb.FNB_RIBBON_TABS)
+        mirror = ~(FNB.FNB_VC71 | FNB.FNB_VC8 | FNB.FNB_FANCY_TABS | FNB.FNB_FF2 | FNB.FNB_RIBBON_TABS)
         style &= mirror
 
-        style |= fnb.FNB_FF2
+        style |= FNB.FNB_FF2
 
         self.book.SetAGWWindowStyleFlag(style)
 
@@ -505,10 +535,10 @@ class FlatNotebookDemo(wx.Frame):
         style = self.book.GetAGWWindowStyleFlag()
 
         # remove old tabs style
-        mirror = ~(fnb.FNB_VC71 | fnb.FNB_VC8 | fnb.FNB_FANCY_TABS | fnb.FNB_FF2 | fnb.FNB_RIBBON_TABS)
+        mirror = ~(FNB.FNB_VC71 | FNB.FNB_VC8 | FNB.FNB_FANCY_TABS | FNB.FNB_FF2 | FNB.FNB_RIBBON_TABS)
         style &= mirror
 
-        style |= fnb.FNB_VC71
+        style |= FNB.FNB_VC71
 
         self.book.SetAGWWindowStyleFlag(style)
 
@@ -518,11 +548,11 @@ class FlatNotebookDemo(wx.Frame):
         style = self.book.GetAGWWindowStyleFlag()
 
         # remove old tabs style
-        mirror = ~(fnb.FNB_VC71 | fnb.FNB_VC8 | fnb.FNB_FANCY_TABS | fnb.FNB_FF2 | fnb.FNB_RIBBON_TABS)
+        mirror = ~(FNB.FNB_VC71 | FNB.FNB_VC8 | FNB.FNB_FANCY_TABS | FNB.FNB_FF2 | FNB.FNB_RIBBON_TABS)
         style &= mirror
 
         # set new style
-        style |= fnb.FNB_VC8
+        style |= FNB.FNB_VC8
 
         self.book.SetAGWWindowStyleFlag(style)
         
@@ -531,11 +561,11 @@ class FlatNotebookDemo(wx.Frame):
         style = self.book.GetAGWWindowStyleFlag()
 
         # remove old tabs style
-        mirror = ~(fnb.FNB_VC71 | fnb.FNB_VC8 | fnb.FNB_FANCY_TABS | fnb.FNB_FF2 | fnb.FNB_RIBBON_TABS)
+        mirror = ~(FNB.FNB_VC71 | FNB.FNB_VC8 | FNB.FNB_FANCY_TABS | FNB.FNB_FF2 | FNB.FNB_RIBBON_TABS)
         style &= mirror
 
         # set new style
-        style |= fnb.FNB_RIBBON_TABS
+        style |= FNB.FNB_RIBBON_TABS
 
         self.book.SetAGWWindowStyleFlag(style)
 
@@ -545,7 +575,7 @@ class FlatNotebookDemo(wx.Frame):
         style = self.book.GetAGWWindowStyleFlag()
 
         # remove old tabs style
-        mirror = ~(fnb.FNB_VC71 | fnb.FNB_VC8 | fnb.FNB_FANCY_TABS | fnb.FNB_FF2 | fnb.FNB_RIBBON_TABS)
+        mirror = ~(FNB.FNB_VC71 | FNB.FNB_VC8 | FNB.FNB_FANCY_TABS | FNB.FNB_FF2 | FNB.FNB_RIBBON_TABS)
         style &= mirror
 
         self.book.SetAGWWindowStyleFlag(style)
@@ -556,10 +586,10 @@ class FlatNotebookDemo(wx.Frame):
         style = self.book.GetAGWWindowStyleFlag()
 
         # remove old tabs style
-        mirror = ~(fnb.FNB_VC71 | fnb.FNB_VC8 | fnb.FNB_FANCY_TABS | fnb.FNB_FF2 | fnb.FNB_RIBBON_TABS)
+        mirror = ~(FNB.FNB_VC71 | FNB.FNB_VC8 | FNB.FNB_FANCY_TABS | FNB.FNB_FF2 | FNB.FNB_RIBBON_TABS)
         style &= mirror
 
-        style |= fnb.FNB_FANCY_TABS
+        style |= FNB.FNB_FANCY_TABS
         self.book.SetAGWWindowStyleFlag(style)
         
 
@@ -609,7 +639,7 @@ class FlatNotebookDemo(wx.Frame):
 
     def CreatePage(self, caption):
 
-        p = wx.Panel(self.book)
+        p = wx.Panel(self.book, style=wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
         wx.StaticText(p, -1, caption, (20,20))
         wx.TextCtrl(p, -1, "", (20,40), (150,-1))
         return p
@@ -656,13 +686,13 @@ class FlatNotebookDemo(wx.Frame):
         style2 = self.secondBook.GetAGWWindowStyleFlag()
 
         if event.IsChecked():        
-            if style & fnb.FNB_NODRAG:
-                style ^= fnb.FNB_NODRAG
-            if style2 & fnb.FNB_NODRAG:
-                style2 ^= fnb.FNB_NODRAG
+            if style & FNB.FNB_NODRAG:
+                style ^= FNB.FNB_NODRAG
+            if style2 & FNB.FNB_NODRAG:
+                style2 ^= FNB.FNB_NODRAG
         else:
-            style |= fnb.FNB_NODRAG
-            style2 |= fnb.FNB_NODRAG
+            style |= FNB.FNB_NODRAG
+            style2 |= FNB.FNB_NODRAG
 
         self.book.SetAGWWindowStyleFlag(style)
         self.secondBook.SetAGWWindowStyleFlag(style2)
@@ -672,9 +702,9 @@ class FlatNotebookDemo(wx.Frame):
 
         style = self.book.GetAGWWindowStyleFlag()
         if event.IsChecked():
-            style |= fnb.FNB_ALLOW_FOREIGN_DND 
+            style |= FNB.FNB_ALLOW_FOREIGN_DND 
         else:
-            style &= ~(fnb.FNB_ALLOW_FOREIGN_DND)
+            style &= ~(FNB.FNB_ALLOW_FOREIGN_DND)
 
         self.book.SetAGWWindowStyleFlag(style)
         self.book.Refresh() 
@@ -730,10 +760,10 @@ class FlatNotebookDemo(wx.Frame):
 
         style = self.book.GetAGWWindowStyleFlag()
         if event.IsChecked():
-            style |= fnb.FNB_X_ON_TAB
+            style |= FNB.FNB_X_ON_TAB
         else:
-            if style & fnb.FNB_X_ON_TAB:
-                style ^= fnb.FNB_X_ON_TAB       
+            if style & FNB.FNB_X_ON_TAB:
+                style ^= FNB.FNB_X_ON_TAB       
 
         self.book.SetAGWWindowStyleFlag(style)
 
@@ -742,9 +772,9 @@ class FlatNotebookDemo(wx.Frame):
 
         style = self.book.GetAGWWindowStyleFlag()
         if event.IsChecked():       
-            style |= fnb.FNB_DCLICK_CLOSES_TABS
+            style |= FNB.FNB_DCLICK_CLOSES_TABS
         else:
-            style &= ~(fnb.FNB_DCLICK_CLOSES_TABS)      
+            style &= ~(FNB.FNB_DCLICK_CLOSES_TABS)      
 
         self.book.SetAGWWindowStyleFlag(style)
 
@@ -753,9 +783,9 @@ class FlatNotebookDemo(wx.Frame):
 
         style = self.book.GetAGWWindowStyleFlag()
         if event.IsChecked():
-            style |= fnb.FNB_BACKGROUND_GRADIENT
+            style |= FNB.FNB_BACKGROUND_GRADIENT
         else:
-            style &= ~(fnb.FNB_BACKGROUND_GRADIENT)
+            style &= ~(FNB.FNB_BACKGROUND_GRADIENT)
 
         self.book.SetAGWWindowStyleFlag(style)
         self.book.Refresh()
@@ -765,9 +795,9 @@ class FlatNotebookDemo(wx.Frame):
 
         style = self.book.GetAGWWindowStyleFlag()
         if event.IsChecked():
-            style |= fnb.FNB_COLOURFUL_TABS
+            style |= FNB.FNB_COLOURFUL_TABS
         else:
-            style &= ~(fnb.FNB_COLOURFUL_TABS)
+            style &= ~(FNB.FNB_COLOURFUL_TABS)
 
         self.book.SetAGWWindowStyleFlag(style)
         self.book.Refresh()
@@ -777,9 +807,9 @@ class FlatNotebookDemo(wx.Frame):
 
         style = self.book.GetAGWWindowStyleFlag()
         if event.IsChecked():
-            style |= fnb.FNB_SMART_TABS
+            style |= FNB.FNB_SMART_TABS
         else:
-            style &= ~fnb.FNB_SMART_TABS
+            style &= ~FNB.FNB_SMART_TABS
 
         self.book.SetAGWWindowStyleFlag(style)
         self.book.Refresh()
@@ -791,34 +821,54 @@ class FlatNotebookDemo(wx.Frame):
 
         if event.IsChecked():
 
-            style |= fnb.FNB_DROPDOWN_TABS_LIST
-            style |= fnb.FNB_NO_NAV_BUTTONS
+            style |= FNB.FNB_DROPDOWN_TABS_LIST
+            style |= FNB.FNB_NO_NAV_BUTTONS
 
         else:
 
-            style &= ~fnb.FNB_DROPDOWN_TABS_LIST
-            style &= ~fnb.FNB_NO_NAV_BUTTONS
+            style &= ~FNB.FNB_DROPDOWN_TABS_LIST
+            style &= ~FNB.FNB_NO_NAV_BUTTONS
 
         self.book.SetAGWWindowStyleFlag(style)
         self.book.Refresh()
 
 
+    def OnTile(self, event):
+
+        evId = event.GetId()
+        if evId == MENU_TILE_HORIZONTALLY:
+            self.book.Tile(wx.HORIZONTAL)
+        elif evId == MENU_TILE_VERTICALLY:
+            self.book.Tile(wx.VERTICAL)
+        else:
+            self.book.Tile(None)
+        
+
+    def OnCustomPanel(self, event):
+
+        if event.IsChecked():
+            custom = LogoPanel(self.book, -1)
+            self.book.SetCustomPage(custom)
+        else:
+            self.book.SetCustomPage(None)
+
+
     def OnHideNavigationButtonsUI(self, event):
 
         style = self.book.GetAGWWindowStyleFlag()
-        event.Check((style & fnb.FNB_NO_NAV_BUTTONS and [True] or [False])[0])
+        event.Check((style & FNB.FNB_NO_NAV_BUTTONS and [True] or [False])[0])
 
 
     def OnDropDownArrowUI(self, event):
 
         style = self.book.GetAGWWindowStyleFlag()
-        event.Check((style & fnb.FNB_DROPDOWN_TABS_LIST and [True] or [False])[0])
+        event.Check((style & FNB.FNB_DROPDOWN_TABS_LIST and [True] or [False])[0])
 
 
     def OnAllowForeignDndUI(self, event): 
 
         style = self.book.GetAGWWindowStyleFlag()
-        event.Enable((style & fnb.FNB_NODRAG and [False] or [True])[0])
+        event.Enable((style & FNB.FNB_NODRAG and [False] or [True])[0])
 
 
     def OnAbout(self, event):
@@ -827,7 +877,7 @@ class FlatNotebookDemo(wx.Frame):
             "Author: Andrea Gavana @ 02 Oct 2006\n\n" + \
             "Please Report Any Bug/Requests Of Improvements\n" + \
             "To Me At The Following Adresses:\n\n" + \
-            "andrea.gavana@gmail.com\n" + "gavana@kpo.kz\n\n" + \
+            "andrea.gavana@gmail.com\n" + "andrea.gavana@maerskoil.com\n\n" + \
             "Based On Eran C++ Implementation (wxWidgets Forum).\n\n" + \
             "Welcome To wxPython " + wx.VERSION_STRING + "!!"
 
@@ -836,6 +886,75 @@ class FlatNotebookDemo(wx.Frame):
         dlg.ShowModal()
         dlg.Destroy()        
 
+
+class LogoPanel(wx.Panel):
+
+    def __init__(self, parent, id=-1, pos=wx.DefaultPosition, size=wx.DefaultSize,
+                 style=wx.CLIP_CHILDREN):
+
+        wx.Panel.__init__(self, parent, id, pos, size, style)
+
+        self.SetBackgroundColour(wx.WHITE)
+        self.bmp = images.Vippi.GetBitmap()
+
+        self.bigfont = wx.Font(18, wx.SWISS, wx.NORMAL, wx.BOLD, False)
+        self.normalfont = wx.Font(14, wx.SWISS, wx.NORMAL, wx.BOLD, True)
+
+        self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
+        
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+
+
+    def OnSize(self, event):
+
+        event.Skip()
+        self.Refresh()
+        
+
+    def OnPaint(self, event):
+        
+        dc = wx.AutoBufferedPaintDC(self)
+        self.DoDrawing(dc)    
+        
+
+    def DoDrawing(self, dc):
+
+        dc.SetBackground(wx.WHITE_BRUSH)
+        dc.Clear()
+        
+        w, h = self.GetClientSize()
+        bmpW, bmpH = self.bmp.GetWidth(), self.bmp.GetHeight()
+
+        xpos, ypos = int((w - bmpW)/2), int((h - bmpH)/2)
+        
+        dc.DrawBitmap(self.bmp, xpos, ypos, True)
+
+        dc.SetFont(self.bigfont)
+        dc.SetTextForeground(wx.BLUE)
+        dc.SetBrush(wx.TRANSPARENT_BRUSH)
+        dc.SetPen(wx.Pen(wx.BLUE, 2))
+        
+        tw, th = dc.GetTextExtent("FlatNotebook")
+        xpos = int((w - tw)/2)
+        ypos = int(h/3)
+
+        dc.DrawRoundedRectangle(xpos-5, ypos-3, tw+10, th+6, 3)
+        dc.DrawText("FlatNotebook", xpos, ypos)
+        
+        dc.SetFont(self.normalfont)
+        dc.SetTextForeground(wx.RED)
+        tw, th = dc.GetTextExtent("Andrea Gavana")
+        xpos = int((w - tw)/2)
+        ypos = int(2*h/3)
+        dc.DrawText("Andrea Gavana", xpos, ypos)
+        tw, th = dc.GetTextExtent("02 Oct 2006")
+
+        xpos = int((w - tw)/2)
+        ypos = int(2*h/3 + 3*th/2)
+        
+        dc.DrawText("02 Oct 2006", xpos, ypos)
+        
 
 #---------------------------------------------------------------------------
 
@@ -862,7 +981,7 @@ def runTest(frame, nb, log):
 #----------------------------------------------------------------------
 
 
-overview = fnb.__doc__
+overview = FNB.__doc__
 
 
 

@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node5" href="$classwx_h_scrolled_window.html" title="In the name of this class, &quot;H&quot; stands for &quot;horizontal&quot; because it can be used for..." alt="" coords="5,166,144,197"/>
+<area shape="rect" id="node7" href="$classwx_var_h_v_scroll_helper.html" title="This class provides functions wrapping the wxVarHScrollHelper and wxVarVScrollHelper classes..." alt="" coords="168,166,312,197"/>
+<area shape="rect" id="node2" href="$classwx_var_scroll_helper_base.html" title="This class provides all common base functionality for scroll calculations shared among all variable s..." alt="" coords="79,6,236,37"/>
+<area shape="rect" id="node9" href="$classwx_h_v_scrolled_window.html" title="This window inherits all functionality of both vertical and horizontal, variable scrolled windows..." alt="" coords="167,246,313,277"/>
+</map>

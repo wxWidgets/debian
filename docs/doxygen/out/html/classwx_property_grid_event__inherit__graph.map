@@ -1,0 +1,5 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classwx_command_event.html" title="This event class contains information about command events, which originate from a variety of simple ..." alt="" coords="12,166,143,197"/>
+<area shape="rect" id="node4" href="$classwx_event.html" title="An event is a structure holding information about an event passed to a callback or member function..." alt="" coords="43,86,112,117"/>
+<area shape="rect" id="node6" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="40,6,115,37"/>
+</map>

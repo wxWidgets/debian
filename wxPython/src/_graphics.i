@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-Oct-2006
-// RCS-ID:      $Id: _graphics.i 63673 2010-03-12 23:52:21Z RD $
+// RCS-ID:      $Id: _graphics.i 69711 2011-11-08 18:04:04Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -20,6 +20,55 @@
 #include <wx/graphics.h>
 %}
 
+enum wxAntialiasMode
+{
+    wxANTIALIAS_NONE, // should be 0
+    wxANTIALIAS_DEFAULT,
+};
+
+enum wxInterpolationQuality
+{
+    // default interpolation
+    wxINTERPOLATION_DEFAULT,
+    // no interpolation
+    wxINTERPOLATION_NONE, 
+    // fast interpolation, suited for interactivity
+    wxINTERPOLATION_FAST,
+    // better quality
+    wxINTERPOLATION_GOOD,
+    // best quality, not suited for interactivity
+    wxINTERPOLATION_BEST
+};
+
+
+enum wxCompositionMode
+{
+    // R = Result, S = Source, D = Destination, premultiplied with alpha
+    // Ra, Sa, Da their alpha components
+    
+    // classic Porter-Duff compositions
+    // http://keithp.com/~keithp/porterduff/p253-porter.pdf
+
+    wxCOMPOSITION_INVALID,
+    
+    wxCOMPOSITION_CLEAR, /* R = 0 */
+    wxCOMPOSITION_SOURCE, /* R = S */
+    wxCOMPOSITION_OVER, /* R = S + D*(1 - Sa) */
+    wxCOMPOSITION_IN, /* R = S*Da */
+    wxCOMPOSITION_OUT, /* R = S*(1 - Da) */
+    wxCOMPOSITION_ATOP, /* R = S*Da + D*(1 - Sa) */
+
+    wxCOMPOSITION_DEST, /* R = D, essentially a noop */
+    wxCOMPOSITION_DEST_OVER, /* R = S*(1 - Da) + D */
+    wxCOMPOSITION_DEST_IN, /* R = D*Sa */
+    wxCOMPOSITION_DEST_OUT, /* R = D*(1 - Sa) */
+    wxCOMPOSITION_DEST_ATOP, /* R = S*(1 - Da) + D*Sa */
+    wxCOMPOSITION_XOR, /* R = S*(1 - Da) + D*(1 - Sa) */
+    
+    // mathematical compositions
+    wxCOMPOSITION_ADD, /* R = S + D */
+};
+
 // Turn off the aquisition of the Global Interpreter Lock for the classes and
 // functions in this file
 %threadWrapperOff
@@ -33,6 +82,54 @@
 // C++ stub classes for platforms or build configurations that don't have
 // wxGraphicsContext yet.
 
+enum wxAntialiasMode
+{
+    wxANTIALIAS_NONE, // should be 0
+    wxANTIALIAS_DEFAULT,
+};
+
+enum wxInterpolationQuality
+{
+    // default interpolation
+    wxINTERPOLATION_DEFAULT,
+    // no interpolation
+    wxINTERPOLATION_NONE, 
+    // fast interpolation, suited for interactivity
+    wxINTERPOLATION_FAST,
+    // better quality
+    wxINTERPOLATION_GOOD,
+    // best quality, not suited for interactivity
+    wxINTERPOLATION_BEST
+};
+
+enum wxCompositionMode
+{
+    // R = Result, S = Source, D = Destination, premultiplied with alpha
+    // Ra, Sa, Da their alpha components
+    
+    // classic Porter-Duff compositions
+    // http://keithp.com/~keithp/porterduff/p253-porter.pdf
+    
+    wxCOMPOSITION_INVALID,
+
+    wxCOMPOSITION_CLEAR, /* R = 0 */
+    wxCOMPOSITION_SOURCE, /* R = S */
+    wxCOMPOSITION_OVER, /* R = S + D*(1 - Sa) */
+    wxCOMPOSITION_IN, /* R = S*Da */
+    wxCOMPOSITION_OUT, /* R = S*(1 - Da) */
+    wxCOMPOSITION_ATOP, /* R = S*Da + D*(1 - Sa) */
+
+    wxCOMPOSITION_DEST, /* R = D, essentially a noop */
+    wxCOMPOSITION_DEST_OVER, /* R = S*(1 - Da) + D */
+    wxCOMPOSITION_DEST_IN, /* R = D*Sa */
+    wxCOMPOSITION_DEST_OUT, /* R = D*(1 - Sa) */
+    wxCOMPOSITION_DEST_ATOP, /* R = S*(1 - Da) + D*Sa */
+    wxCOMPOSITION_XOR, /* R = S*(1 - Da) + D*(1 - Sa) */
+    
+    // mathematical compositions
+    wxCOMPOSITION_ADD, /* R = S + D */
+};
+    
 class wxGraphicsRenderer;
 class wxGraphicsMatrix;
 
@@ -128,8 +225,8 @@ public :
     void GetBox(wxDouble *, wxDouble *, wxDouble *, wxDouble *) const {}
     wxRect2D GetBox() const { return wxRect2D(0,0,0,0); }
 
-    bool Contains( wxDouble , wxDouble , int ) const { return false; }
-    bool Contains( const wxPoint2DDouble& , int ) const { return false; }
+    bool Contains( wxDouble , wxDouble , wxPolygonFillMode ) const { return false; }
+    bool Contains( const wxPoint2DDouble& , wxPolygonFillMode ) const { return false; }
 };
 wxGraphicsPath wxNullGraphicsPath;
 
@@ -162,6 +259,38 @@ public :
 wxGraphicsMatrix wxNullGraphicsMatrix;
 
 
+class wxGraphicsGradientStop
+{
+public:
+    wxGraphicsGradientStop(wxColour col = wxTransparentColour,
+                           float pos = 0.0) {} 
+    ~wxGraphicsGradientStop() {}
+    
+    const wxColour& GetColour() const { return wxNullColour; }
+    void SetColour(const wxColour& col) {}
+
+    float GetPosition() const { return 0.0; }
+    void SetPosition(float pos) {}
+};
+
+class wxGraphicsGradientStops
+{
+public:
+    wxGraphicsGradientStops(wxColour, wxColour) {}
+    ~wxGraphicsGradientStops() {}
+    
+    void Add(const wxGraphicsGradientStop& stop) {}
+    void Add(wxColour col, float pos) {}
+    unsigned GetCount() { return 0; }
+    wxGraphicsGradientStop Item(unsigned n) const { return wxGraphicsGradientStop(); }
+    void SetStartColour(wxColour col) {}
+    wxColour GetStartColour() const { return wxNullColour; }
+    void SetEndColour(wxColour col) {}
+    wxColour GetEndColour() const { return wxNullColour; }
+};
+
+
+
 class wxGraphicsContext : public wxGraphicsObject
 {
 public:
@@ -178,7 +307,26 @@ public:
                         "wx.GraphicsContext is not available on this platform.");
         return NULL;
     }
+
+    static wxGraphicsContext* Create( const wxEnhMetaFileDC& )  {
+        PyErr_SetString(PyExc_NotImplementedError,
+                        "wx.GraphicsContext is not available on this platform.");
+        return NULL;
+    }
+
     static wxGraphicsContext* Create( const wxWindowDC& )  {
+        PyErr_SetString(PyExc_NotImplementedError,
+                        "wx.GraphicsContext is not available on this platform.");
+        return NULL;
+    }
+
+    static wxGraphicsContext * Create( const wxMemoryDC& dc) {
+        PyErr_SetString(PyExc_NotImplementedError,
+                        "wx.GraphicsContext is not available on this platform.");
+        return NULL;
+    }
+
+    static wxGraphicsContext * Create( const wxPrinterDC& dc) {
         PyErr_SetString(PyExc_NotImplementedError,
                         "wx.GraphicsContext is not available on this platform.");
         return NULL;
@@ -202,22 +350,56 @@ public:
         return NULL;
     }
 
+    static wxGraphicsContext* Create(wxImage& ) {
+        PyErr_SetString(PyExc_NotImplementedError,
+                        "wx.GraphicsContext is not available on this platform.");
+        return NULL;
+    }
+    
+    virtual bool StartDoc( const wxString& message ) { return false; }
+    virtual void EndDoc() {}
+    virtual void StartPage( wxDouble, wxDouble) {}
+    virtual void EndPage() {}
+    virtual void Flush() {}
+    virtual void BeginLayer(wxDouble) {}
+    virtual void EndLayer() {}
+
     wxGraphicsPath CreatePath()  { return wxNullGraphicsPath; }
 
     virtual wxGraphicsPen CreatePen(const wxPen& )  { return wxNullGraphicsPen; }
 
     virtual wxGraphicsBrush CreateBrush(const wxBrush& ) { return wxNullGraphicsBrush; }
 
-    virtual wxGraphicsBrush CreateLinearGradientBrush( wxDouble , wxDouble , wxDouble , wxDouble ,
-                                                        const wxColour&, const wxColour&) { return wxNullGraphicsBrush; }
+    wxGraphicsBrush CreateLinearGradientBrush(
+        wxDouble , wxDouble , wxDouble , wxDouble ,
+        const wxColour&, const wxColour&) const { return wxNullGraphicsBrush; }
+    wxGraphicsBrush
+    CreateLinearGradientBrush(wxDouble x1, wxDouble y1,
+                              wxDouble x2, wxDouble y2,
+                              const wxGraphicsGradientStops& stops) const
+         { return wxNullGraphicsBrush; }
 
-    virtual wxGraphicsBrush CreateRadialGradientBrush( wxDouble xo, wxDouble yo,
-                                                        wxDouble xc, wxDouble yc, wxDouble radius,
-                                                        const wxColour &oColor, const wxColour &cColor) { return wxNullGraphicsBrush; }
+    wxGraphicsBrush
+    CreateRadialGradientBrush(wxDouble xo, wxDouble yo,
+                              wxDouble xc, wxDouble yc, wxDouble radius,
+                              const wxColour &oColor, const wxColour &cColor) const
+        { return wxNullGraphicsBrush; }
+    
+    wxGraphicsBrush
+    CreateRadialGradientBrush(wxDouble xo, wxDouble yo,
+                              wxDouble xc, wxDouble yc, wxDouble radius,
+                              const wxGraphicsGradientStops& stops) const
+         { return wxNullGraphicsBrush; }
 
     virtual wxGraphicsFont CreateFont( const wxFont &, const wxColour & )  { return wxNullGraphicsFont; }
+    virtual wxGraphicsFont CreateFont(double sizeInPixels,
+                                      const wxString& facename,
+                                      int flags = wxFONTFLAG_DEFAULT,
+                                      const wxColour& col = *wxBLACK) const { return wxNullGraphicsFont; }
 
-    wxGraphicsBitmap CreateBitmap( const wxBitmap &bitmap ) const { return wxNullGraphicsBitmap; }
+    virtual wxGraphicsBitmap CreateBitmap( const wxBitmap & ) const { return wxNullGraphicsBitmap; }
+    wxGraphicsBitmap CreateBitmapFromImage(const wxImage& image) const { return wxNullGraphicsBitmap; }
+    virtual wxGraphicsBitmap CreateSubBitmap( const wxGraphicsBitmap &, wxDouble, wxDouble, wxDouble, wxDouble ) const  { return wxNullGraphicsBitmap; }
     
     virtual wxGraphicsMatrix CreateMatrix( wxDouble, wxDouble, wxDouble, wxDouble,
                                             wxDouble, wxDouble)  { return wxNullGraphicsMatrix; }
@@ -228,8 +410,17 @@ public:
     virtual void Clip( wxDouble , wxDouble , wxDouble , wxDouble  ) {}
     virtual void ResetClip() {}
     virtual void * GetNativeContext() { return NULL; }
-    virtual int GetLogicalFunction() const { return 0; }
-    virtual bool SetLogicalFunction(int ) {}    
+    virtual int GetAntialiasMode() const { return 0; }
+    virtual bool SetAntialiasMode(wxAntialiasMode antialias) { return false; }
+
+    virtual wxInterpolationQuality GetInterpolationQuality() const { return wxINTERPOLATION_DEFAULT; }
+    virtual bool SetInterpolationQuality(wxInterpolationQuality) { return false; };
+
+    virtual int GetCompositionMode() const { return 0; }
+    virtual bool SetCompositionMode(wxCompositionMode op) { return false; }
+    virtual void GetSize( wxDouble*, wxDouble* );
+    virtual void GetDPI( wxDouble*, wxDouble* );
+    
     virtual void Translate( wxDouble , wxDouble ) {}
     virtual void Scale( wxDouble , wxDouble ) {}
     virtual void Rotate( wxDouble ) {}
@@ -247,8 +438,8 @@ public:
     void SetFont( const wxFont&, const wxColour& ) {}
 
     virtual void StrokePath( const wxGraphicsPath & ) {}
-    virtual void FillPath( const wxGraphicsPath &, int ) {}
-    virtual void DrawPath( const wxGraphicsPath &, int ) {}
+    virtual void FillPath( const wxGraphicsPath &, wxPolygonFillMode ) {}
+    virtual void DrawPath( const wxGraphicsPath &, wxPolygonFillMode ) {}
 
     virtual void DrawText( const wxString &, wxDouble , wxDouble  )  {}
     virtual void DrawText( const wxString &, wxDouble , wxDouble , wxDouble ) {}
@@ -258,18 +449,23 @@ public:
                                 wxDouble *, wxDouble * ) const {}
     virtual void GetPartialTextExtents(const wxString& , wxArrayDouble& ) const  {}
 
-    void DrawGraphicsBitmap( const wxGraphicsBitmap &, wxDouble, wxDouble, wxDouble, wxDouble ) {}
+    virtual void DrawBitmap( const wxGraphicsBitmap &, wxDouble, wxDouble, wxDouble, wxDouble ) {}
     virtual void DrawBitmap( const wxBitmap &, wxDouble , wxDouble , wxDouble , wxDouble  )  {}
     virtual void DrawIcon( const wxIcon &, wxDouble , wxDouble , wxDouble , wxDouble  )  {}
 
     virtual void StrokeLine( wxDouble , wxDouble , wxDouble , wxDouble ) {}
     virtual void StrokeLines( size_t , const wxPoint2DDouble *) {}
     virtual void StrokeLines( size_t , const wxPoint2DDouble *, const wxPoint2DDouble *) {}
-    virtual void DrawLines( size_t , const wxPoint2DDouble *, int ) {}
+    virtual void DrawLines( size_t , const wxPoint2DDouble *, wxPolygonFillMode ) {}
     virtual void DrawRectangle( wxDouble , wxDouble , wxDouble , wxDouble ) {}
     virtual void DrawEllipse( wxDouble , wxDouble , wxDouble , wxDouble ) {}
     virtual void DrawRoundedRectangle( wxDouble , wxDouble , wxDouble , wxDouble , wxDouble ) {}
     virtual bool ShouldOffset() const { return false; }
+
+    virtual void EnableOffset(bool enable = true) {}
+    void DisableOffset() { }
+    bool OffsetEnabled() { return false; }
+  
 };
 
 
@@ -294,10 +490,14 @@ public :
         return NULL;
     }   
 
+    virtual wxGraphicsContext * CreateContext( const wxEnhMetaFileDC& ) { return NULL; }
     virtual wxGraphicsContext * CreateContext( const wxWindowDC& ) { return NULL; }
+    virtual wxGraphicsContext * CreateContext( const wxMemoryDC& ) { return NULL; }
+    virtual wxGraphicsContext * CreateContext( const wxPrinterDC& ) { return NULL; }
     virtual wxGraphicsContext * CreateContextFromNativeContext( void *  ) { return NULL; }
     virtual wxGraphicsContext * CreateContextFromNativeWindow( void *  )  { return NULL; }
     virtual wxGraphicsContext * CreateContext( wxWindow*  ) { return NULL; }
+    virtual wxGraphicsContext * CreateContextFromImage(wxImage&) { return NULL; }
     virtual wxGraphicsContext * CreateMeasuringContext() { return NULL; }
 
     virtual wxGraphicsPath CreatePath()  { return wxNullGraphicsPath; }
@@ -307,35 +507,83 @@ public :
 
     virtual wxGraphicsPen CreatePen(const wxPen& )  { return wxNullGraphicsPen; }
     virtual wxGraphicsBrush CreateBrush(const wxBrush&  )  { return wxNullGraphicsBrush; }
-    virtual wxGraphicsBrush CreateLinearGradientBrush(wxDouble , wxDouble , wxDouble , wxDouble ,
-                                                      const wxColour&, const wxColour&)  { return wxNullGraphicsBrush; }
-    virtual wxGraphicsBrush CreateRadialGradientBrush(wxDouble , wxDouble , wxDouble , wxDouble , wxDouble ,
-                                                      const wxColour &, const wxColour &)  { return wxNullGraphicsBrush; }
-    virtual wxGraphicsFont CreateFont( const wxFont & , const wxColour & ) { return wxNullGraphicsFont; }
-    wxGraphicsBitmap CreateBitmap( const wxBitmap &bitmap ) const { return wxNullGraphicsBitmap; }
+
+    wxGraphicsBrush
+    CreateLinearGradientBrush(wxDouble x1, wxDouble y1,
+                              wxDouble x2, wxDouble y2,
+                              const wxGraphicsGradientStops& stops) const
+    { return wxNullGraphicsBrush; }
     
+    wxGraphicsBrush
+    CreateRadialGradientBrush(wxDouble xo, wxDouble yo,
+                              wxDouble xc, wxDouble yc, wxDouble radius,
+                              const wxGraphicsGradientStops& stops) const
+    { return wxNullGraphicsBrush; }
+
+    virtual wxGraphicsFont CreateFont( const wxFont & , const wxColour & ) { return wxNullGraphicsFont; }
+    virtual wxGraphicsFont CreateFont(double,
+                                      const wxString&,
+                                      int flags,
+                                      const wxColour&)  { return wxNullGraphicsFont; }
+
+    virtual wxGraphicsBitmap CreateBitmap( const wxBitmap & ) const { return wxNullGraphicsBitmap; }
+    virtual wxGraphicsBitmap CreateBitmapFromImage(const wxImage&) { return wxNullGraphicsBitmap; }
+    virtual wxGraphicsBitmap CreateSubBitmap( const wxGraphicsBitmap &, wxDouble, wxDouble, wxDouble, wxDouble ) const  { return wxNullGraphicsBitmap; }
 };
 
 
 
-class wxGCDC: public wxWindowDC
+class wxGCDC: public wxDC
 {
 public:
-    wxGCDC(const wxWindowDC&) {
+    wxGCDC(const wxWindowDC&)
+        : wxDC(NULL)
+    {
         wxPyBlock_t blocked = wxPyBeginBlockThreads();
         PyErr_SetString(PyExc_NotImplementedError,
                         "wxGCDC is not available on this platform.");
         wxPyEndBlockThreads(blocked);
      }
 
-    wxGCDC(const wxWindow*) {
+    wxGCDC(const wxMemoryDC&)
+        : wxDC(NULL)
+    {
         wxPyBlock_t blocked = wxPyBeginBlockThreads();
         PyErr_SetString(PyExc_NotImplementedError,
                         "wxGCDC is not available on this platform.");
         wxPyEndBlockThreads(blocked);
      }
 
-    wxGCDC() {
+    wxGCDC(const wxPrinterDC& dc)
+        : wxDC(NULL)
+    {
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
+        PyErr_SetString(PyExc_NotImplementedError,
+                        "wxGCDC is not available on this platform.");
+        wxPyEndBlockThreads(blocked);
+     }
+
+    wxGCDC(wxGraphicsContext*&)
+        : wxDC(NULL)
+    {
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
+        PyErr_SetString(PyExc_NotImplementedError,
+                        "wxGCDC is not available on this platform.");
+        wxPyEndBlockThreads(blocked);
+     }
+    
+    wxGCDC(const wxGraphicsContext& ctx)
+        : wxDC(NULL)
+    {
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
+        PyErr_SetString(PyExc_NotImplementedError,
+                        "wxGCDC is not available on this platform.");
+        wxPyEndBlockThreads(blocked);
+     }
+
+    wxGCDC()
+        : wxDC(NULL)
+    {
         wxPyBlock_t blocked = wxPyBeginBlockThreads();
         PyErr_SetString(PyExc_NotImplementedError,
                         "wxGCDC is not available on this platform.");
@@ -344,7 +592,7 @@ public:
 
     virtual ~wxGCDC() {}
 
-    wxGraphicsContext* GetGraphicsContext() { return NULL; }
+    wxGraphicsContext* GetGraphicsContext() const { return NULL; }
     void SetGraphicsContext( wxGraphicsContext* ) {}
     void Flush() {}
 };
@@ -352,6 +600,7 @@ public:
 #endif
 %}
 
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 
@@ -443,6 +692,7 @@ public :
     wxGraphicsBitmap();
     virtual ~wxGraphicsBitmap();
 };
+
 
 //---------------------------------------------------------------------------
 
@@ -646,8 +896,8 @@ points)", "");
     %nokwargs Contains;
     DocStr(Contains,
         "Returns ``True`` if the point is within the path.", "");
-    virtual bool Contains( wxDouble x, wxDouble y, int fillStyle = wxODDEVEN_RULE) const;
-    bool Contains( const wxPoint2D& c, int fillStyle = wxODDEVEN_RULE) const;
+    virtual bool Contains( wxDouble x, wxDouble y, wxPolygonFillMode fillStyle = wxODDEVEN_RULE) const;
+    bool Contains( const wxPoint2D& c, wxPolygonFillMode fillStyle = wxODDEVEN_RULE) const;
 
 };
 
@@ -662,6 +912,68 @@ const wxGraphicsBitmap  wxNullGraphicsBitmap;
 const wxGraphicsMatrix  wxNullGraphicsMatrix;
 const wxGraphicsPath    wxNullGraphicsPath;
 %mutable;
+
+//---------------------------------------------------------------------------
+
+// Describes a single gradient stop.
+class wxGraphicsGradientStop
+{
+public:
+    wxGraphicsGradientStop(wxColour col = wxTransparentColour,
+                           float pos = 0.0);
+    ~wxGraphicsGradientStop();
+    
+    const wxColour& GetColour() const;
+    void SetColour(const wxColour& col);
+
+    float GetPosition() const;
+    void SetPosition(float pos);
+
+    %property(Position, GetPosition, SetPosition);
+    %property(Colour, GetColour, SetColour);
+};
+
+// A collection of gradient stops ordered by their positions (from lowest to
+// highest). The first stop (index 0, position 0.0) is always the starting
+// colour and the last one (index GetCount() - 1, position 1.0) is the end
+// colour.
+class wxGraphicsGradientStops
+{
+public:
+    wxGraphicsGradientStops(wxColour startCol = wxTransparentColour,
+                            wxColour endCol = wxTransparentColour);
+    ~wxGraphicsGradientStops();
+
+    // Add a stop in correct order.
+    %nokwargs Add;
+    void Add(const wxGraphicsGradientStop& stop);
+    void Add(wxColour col, float pos);
+
+    // Get the number of stops.
+    unsigned GetCount();
+
+    // Return the stop at the given index (which must be valid).
+    wxGraphicsGradientStop Item(unsigned n) const;
+
+    // Get/set start and end colours.
+    void SetStartColour(wxColour col);
+    wxColour GetStartColour() const;
+    void SetEndColour(wxColour col);
+    wxColour GetEndColour() const;
+
+    %extend {
+        unsigned __len__()
+            { return self->GetCount(); }
+        wxGraphicsGradientStop __getitem__(unsigned n)
+            { return self->Item(n); }
+    }
+
+    %property(Count, GetCount);
+    %property(StartColour, GetStartColour, SetStartColour);
+    %property(EndColour, GetEndColour, SetEndColour);
+};
+
+
 
 //---------------------------------------------------------------------------
 
@@ -685,8 +997,15 @@ public:
     DocStr(Create,
            "Creates a wx.GraphicsContext either from a window or a DC.", "");
     static wxGraphicsContext* Create( const wxWindowDC& dc);
+    static wxGraphicsContext* Create( const wxMemoryDC& dc);
     static wxGraphicsContext* Create( wxWindow* window ) ;
-
+    static wxGraphicsContext* Create( const wxPrinterDC& dc) ;
+#ifdef __WXMSW__
+    static wxGraphicsContext* Create( const wxMetaFileDC& dc) ;
+    static wxGraphicsContext* Create( const wxEnhMetaFileDC& dc) ;
+#endif
+    static wxGraphicsContext* Create(wxImage& );
+    
     %pythonAppend Create "";
     DocDeclStrName(
         static wxGraphicsContext* , Create(),
@@ -709,7 +1028,33 @@ wxPython we still need a way to make this value usable.", "");
 we still need a way to make this value usable.", "");
     
 
+    DocDeclStr(
+        virtual bool , StartDoc( const wxString& message ) ,
+        "Begin a new document (relevant only for printing / pdf etc) if there
+is a progress dialog, message will be shown", "");
+    
+    
+    DocDeclStr(
+        virtual void , EndDoc(),
+        "Done with that document (relevant only for printing / pdf etc) ", "");
+    
 
+    DocDeclStr(
+        virtual void , StartPage( wxDouble width = 0, wxDouble height = 0 ),
+        "Opens a new page (relevant only for printing / pdf etc) with the given
+size in points (if both are null the default page size will be used)
+", "");
+    
+    
+    DocDeclStr(
+        virtual void , EndPage(),
+        "Ends the current page  (relevant only for printing / pdf etc) ", "");
+    
+    
+    DocDeclStr(
+        virtual void , Flush(),
+        "Make sure that the current content of this context is immediately visible", "");
+    
     DocDeclStr(
         virtual wxGraphicsPath , CreatePath(),
         "Creates a native graphics path which is initially empty.", "");
@@ -725,31 +1070,56 @@ we still need a way to make this value usable.", "");
         "Creates a native brush from a `wx.Brush`.", "");
 
 
-    DocDeclStr(
-        virtual wxGraphicsBrush ,
-        CreateLinearGradientBrush( wxDouble x1, wxDouble y1, wxDouble x2, wxDouble y2,
-                                   const wxColour& c1, const wxColour& c2),
+    DocStr(CreateLinearGradientBrush,
         "Creates a native brush, having a linear gradient, starting at (x1,y1)
-with color c1 to (x2,y2) with color c2.", "");
+to (x2,y2) with the given boundary colors or the specified stops.", "");
+    %nokwargs CreateLinearGradientBrush;
+    wxGraphicsBrush 
+    CreateLinearGradientBrush( wxDouble x1, wxDouble y1, wxDouble x2, wxDouble y2,
+                               const wxColour& c1, const wxColour& c2) const;
+    wxGraphicsBrush
+    CreateLinearGradientBrush(wxDouble x1, wxDouble y1,
+                              wxDouble x2, wxDouble y2,
+                              const wxGraphicsGradientStops& stops) const;
 
     
-    DocDeclStr(
-        virtual wxGraphicsBrush ,
-        CreateRadialGradientBrush( wxDouble xo, wxDouble yo, wxDouble xc, wxDouble yc, wxDouble radius,
-                                   const wxColour &oColor, const wxColour &cColor),
+    DocStr(CreateRadialGradientBrush,
         "Creates a native brush, having a radial gradient originating at point
-(xo,yc) with color oColour and ends on a circle around (xc,yc) with
-radius r and color cColour.", "");
+(xo,yo) and ending on a circle around (xc,yc) with the given radius; the colours may be
+specified by just the two extremes or the full array of gradient stops.", "");
+    %nokwargs CreateRadialGradientBrush;
+    wxGraphicsBrush 
+    CreateRadialGradientBrush( wxDouble xo, wxDouble yo,
+                               wxDouble xc, wxDouble yc, wxDouble radius,
+                               const wxColour &oColor, const wxColour &cColor) const;
+    wxGraphicsBrush
+    CreateRadialGradientBrush(wxDouble xo, wxDouble yo,
+                              wxDouble xc, wxDouble yc, wxDouble radius,
+                              const wxGraphicsGradientStops& stops) const;
 
 
+    %nokwargs CreateFont;   
     DocDeclStr(
         virtual wxGraphicsFont , CreateFont( const wxFont &font , const wxColour &col = *wxBLACK ),
         "Creates a native graphics font from a `wx.Font` and a text colour.", "");
 
-    wxGraphicsBitmap CreateBitmap( const wxBitmap &bitmap ) const;
-    //virtual wxGraphicsBitmap CreateSubBitmap( const wxGraphicsBitmap &bitmap, wxDouble x, wxDouble y, wxDouble w, wxDouble h  ) const;
+    virtual wxGraphicsFont CreateFont(double sizeInPixels,
+                                      const wxString& facename,
+                                      int flags = wxFONTFLAG_DEFAULT,
+                                      const wxColour& col = *wxBLACK) const;
 
- 
+    DocDeclStr(
+        virtual wxGraphicsBitmap , CreateBitmap( const wxBitmap &bitmap ) const,
+        "Create a native bitmap representation.", "");
+
+    wxGraphicsBitmap CreateBitmapFromImage(const wxImage& image) const;
+
+    
+    DocDeclStr(
+        virtual wxGraphicsBitmap , CreateSubBitmap( const wxGraphicsBitmap &bitmap, wxDouble x, wxDouble y, wxDouble w, wxDouble h  ) const,
+        "Create a native bitmap representation using a subset of a wx.Bitmap.", "");
+    
+
     DocDeclStr(
         virtual wxGraphicsMatrix , CreateMatrix( wxDouble a=1.0, wxDouble b=0.0,
                                                  wxDouble c=0.0, wxDouble d=1.0,
@@ -793,15 +1163,53 @@ pointer for GDIPlus and cairo_t pointer for cairo).", "");
 
     
     DocDeclStr(
-        virtual int , GetLogicalFunction() const,
-        "Returns the current logical function.", "");
+        virtual wxAntialiasMode , GetAntialiasMode() const,
+        "Returns the current shape antialiasing mode", "");
+    
+    DocDeclStr(
+        virtual bool , SetAntialiasMode(wxAntialiasMode antialias),
+        "Sets the antialiasing mode, returns true if it is supported", "");
+    
+    // returns the current interpolation quality
+    virtual wxInterpolationQuality GetInterpolationQuality() const;
+    
+    // sets the interpolation quality, returns true if it supported
+    virtual bool SetInterpolationQuality(wxInterpolationQuality interpolation);
+
+    DocDeclStr(
+        virtual wxCompositionMode , GetCompositionMode() const,
+        "Returns the current compositing operator", "");
     
     
     DocDeclStr(
-        virtual bool , SetLogicalFunction(int function) ,
-        "Sets the current logical function, returns ``True`` if it supported", "");
-       
+        virtual bool , SetCompositionMode(wxCompositionMode op),
+        "Sets the compositing operator, returns True if it supported", "");
+
     
+    DocDeclAStr(
+        virtual void , GetSize( wxDouble* OUTPUT, wxDouble* OUTPUT),
+        "GetSize(self) --> (width, height)",
+        "Returns the size of the graphics context in device coordinates", "");
+    
+
+    DocDeclAStr(
+        virtual void , GetDPI( wxDouble* OUTPUT, wxDouble* OUTPUT),
+        "GetDPI(self) --> (dpiX, dpiY)",
+        "Returns the resolution of the graphics context in device points per inch", "");
+    
+
+    DocDeclStr(
+        virtual void , BeginLayer(wxDouble opacity),
+        "all rendering is done into a fully transparent temporary context", "");
+    
+
+    DocDeclStr(
+        virtual void , EndLayer(),
+        "composites back the drawings into the context with the opacity given
+at the BeginLayer call", "");
+    
+    
+
     DocDeclStr(
         virtual void , Translate( wxDouble dx , wxDouble dy ),
         "Translates the current transformation matrix.", "");
@@ -860,12 +1268,12 @@ this context.", "");
 
     
     DocDeclStr(
-        virtual void , FillPath( const wxGraphicsPath& path, int fillStyle = wxODDEVEN_RULE ),
+        virtual void , FillPath( const wxGraphicsPath& path, wxPolygonFillMode fillStyle = wxODDEVEN_RULE ),
         "Fills a path with the current brush.", "");
 
    
     DocDeclStr(
-        virtual void , DrawPath( const wxGraphicsPath& path, int fillStyle = wxODDEVEN_RULE ),
+        virtual void , DrawPath( const wxGraphicsPath& path, wxPolygonFillMode fillStyle = wxODDEVEN_RULE ),
         "Draws the path by first filling and then stroking.", "");
 
 
@@ -944,13 +1352,15 @@ coresponding character in ``text``.", "");
         }
     }
 
-    
-    void DrawGraphicsBitmap( const wxGraphicsBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h );
-    
-    DocDeclStr(
-        virtual void , DrawBitmap( const wxBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h ),
-        "Draws the bitmap. In case of a mono bitmap, this is treated as a mask
+
+    %nokwargs DrawBitmap;
+    DocStr(DrawBitmap,
+           "Draws the bitmap. In case of a mono bitmap, this is treated as a mask
 and the current brush is used for filling.", "");
+#ifndef __WXGTK__
+    virtual void DrawBitmap( const wxGraphicsBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h );
+#endif
+    virtual void DrawBitmap( const wxBitmap &bmp, wxDouble x, wxDouble y, wxDouble w, wxDouble h );    
 
 
     DocDeclStr(
@@ -971,10 +1381,10 @@ and the current brush is used for filling.", "");
 
 
     %extend {
-        DocAStr(StrokeLineSegments,
+        DocAStr(StrokeLineSegements,
                 "StrokeLineSegments(self, List beginPoints, List endPoints)",
                 "Stroke disconnected lines from begin to end points", "");
-        void StrokeLineSegments(PyObject* beginPoints, PyObject* endPoints)
+        void StrokeLineSegements(PyObject* beginPoints, PyObject* endPoints)
         {
             size_t c1, c2, count;
             wxPoint2D* beginP = wxPoint2D_LIST_helper(beginPoints, &c1);
@@ -993,7 +1403,7 @@ and the current brush is used for filling.", "");
 
     DocDeclStr(
         virtual void , DrawLines( size_t points, const wxPoint2D *points_array,
-                                  int fillStyle = wxODDEVEN_RULE ),
+                                  wxPolygonFillMode fillStyle = wxODDEVEN_RULE ),
         "Draws a polygon.", "");
 
 
@@ -1016,7 +1426,14 @@ and the current brush is used for filling.", "");
     DocDeclStr(
         virtual bool , ShouldOffset() const,
         "helper to determine if a 0.5 offset should be applied for the drawing operation", "");
-    
+
+
+    // indicates whether the context should try to offset for pixel boundaries, this only makes sense on 
+    // bitmap devices like screen, by default this is turned off
+    virtual void EnableOffset(bool enable = true);
+    void DisableOffset() { EnableOffset(false); }
+    bool OffsetEnabled() { return m_enableOffset; }
+      
 };
 
 
@@ -1029,14 +1446,21 @@ public :
 
     virtual ~wxGraphicsRenderer();
 
-    // %newobject GetDefaultRenderer;  ???
     static wxGraphicsRenderer* GetDefaultRenderer();
     static wxGraphicsRenderer* GetCairoRenderer();
 
     %nokwargs CreateContext;
     %newobject CreateContext;
     virtual wxGraphicsContext * CreateContext( const wxWindowDC& dc) ;
+    virtual wxGraphicsContext * CreateContext( const wxMemoryDC& dc) ;
+    virtual wxGraphicsContext * CreateContext( const wxPrinterDC& dc) ;
     virtual wxGraphicsContext * CreateContext( wxWindow* window );
+#ifdef __WXMSW__
+    virtual wxGraphicsContext * CreateContext( const wxMetaFileDC& dc) ;
+    virtual wxGraphicsContext * CreateContext( const wxEnhMetaFileDC& dc) ;
+#endif
+
+    virtual wxGraphicsContext * CreateContextFromImage(wxImage& image);
     
     // create a context that can be used for measuring texts only, no drawing allowed
     virtual wxGraphicsContext * CreateMeasuringContext();
@@ -1057,15 +1481,26 @@ public :
     
     virtual wxGraphicsBrush CreateBrush(const wxBrush& brush ) ;
     
-    virtual wxGraphicsBrush CreateLinearGradientBrush( wxDouble x1, wxDouble y1, wxDouble x2, wxDouble y2, 
-                                                        const wxColour&c1, const wxColour&c2);
+    wxGraphicsBrush
+    CreateLinearGradientBrush(wxDouble x1, wxDouble y1,
+                              wxDouble x2, wxDouble y2,
+                              const wxGraphicsGradientStops& stops);
+    
+    wxGraphicsBrush
+    CreateRadialGradientBrush(wxDouble xo, wxDouble yo,
+                              wxDouble xc, wxDouble yc, wxDouble radius,
+                              const wxGraphicsGradientStops& stops);
 
-    virtual wxGraphicsBrush CreateRadialGradientBrush( wxDouble xo, wxDouble yo, wxDouble xc, wxDouble yc, wxDouble radius,
-                                                        const wxColour &oColor, const wxColour &cColor);
 
     virtual wxGraphicsFont CreateFont( const wxFont &font , const wxColour &col = *wxBLACK );
+    virtual wxGraphicsFont CreateFont(double sizeInPixels,
+                                      const wxString& facename,
+                                      int flags = wxFONTFLAG_DEFAULT,
+                                      const wxColour& col = *wxBLACK);
 
-    wxGraphicsBitmap CreateBitmap( const wxBitmap &bmp );
+    virtual wxGraphicsBitmap CreateBitmap( const wxBitmap &bitmap );
+    virtual wxGraphicsBitmap CreateBitmapFromImage(const wxImage& image);
+    virtual wxGraphicsBitmap CreateSubBitmap( const wxGraphicsBitmap &bitmap, wxDouble x, wxDouble y, wxDouble w, wxDouble h  );
 };
 
 
@@ -1083,15 +1518,22 @@ public:
     %pythonAppend wxGCDC
         "self.__dc = args[0] # save a ref so the other dc will not be deleted before self";
     wxGCDC(const wxWindowDC& dc);
+    wxGCDC(const wxMemoryDC& dc);
+    wxGCDC(const wxPrinterDC& dc);
     wxGCDC(wxWindow* window);
+
+    %disownarg( wxGraphicsContext* ctx );
+    wxGCDC(wxGraphicsContext* ctx);
+    %cleardisown( wxGraphicsContext* ctx );
+    
     //wxGCDC();
     virtual ~wxGCDC();
 
-    wxGraphicsContext* GetGraphicsContext();
-    virtual void SetGraphicsContext( wxGraphicsContext* ctx );
+    wxGraphicsContext* GetGraphicsContext() const; 
 
-    // flushing the content of this dc immediately onto screen
-    void Flush();
+    %disownarg( wxGraphicsContext* ctx );
+    virtual void SetGraphicsContext( wxGraphicsContext* ctx );
+    %cleardisown( wxGraphicsContext* ctx );
 
     %property(GraphicsContext, GetGraphicsContext, SetGraphicsContext);
 };

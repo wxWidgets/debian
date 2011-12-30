@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     26-May-1998
-// RCS-ID:      $Id: _mdi.i 41118 2006-09-09 22:57:42Z RD $
+// RCS-ID:      $Id: _mdi.i 57734 2009-01-02 03:25:22Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -131,13 +131,14 @@ public:
     %pythonAppend wxMDIClientWindow()       ""
     %typemap(out) wxMDIClientWindow*;    // turn off this typemap
 
-    wxMDIClientWindow(wxMDIParentFrame* parent, long style = 0);
+    wxMDIClientWindow();
     %RenameCtor(PreMDIClientWindow, wxMDIClientWindow());
 
     // Turn it back on again
     %typemap(out) wxMDIClientWindow* { $result = wxPyMake_wxObject($1, $owner); }
 
-    bool Create(wxMDIParentFrame* parent, long style = 0);
+    bool CreateClient(wxMDIParentFrame *parent,
+                      long style = wxVSCROLL | wxHSCROLL);
 };
 
 

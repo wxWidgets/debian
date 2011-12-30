@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Sept-2003
-// RCS-ID:      $Id: _core_api.i 51090 2008-01-08 04:36:23Z RD $
+// RCS-ID:      $Id: _core_api.i 60204 2009-04-16 19:23:12Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ WX_DECLARE_STRING_HASH_MAP( swig_type_info*, wxPyTypeInfoHashMap );
 // SWIG tables for it.
 extern PyObject* wxPyPtrTypeMap; 
 static
-swig_type_info* wxPyFindSwigType(const wxChar* className) {
+swig_type_info* wxPyFindSwigType(const wxString& className) {
 
     static wxPyTypeInfoHashMap* typeInfoCache = NULL;
 
@@ -66,7 +66,7 @@ swig_type_info* wxPyFindSwigType(const wxChar* className) {
 
 
 // Check if a class name is a type known to SWIG
-bool wxPyCheckSwigType(const wxChar* className) {
+bool wxPyCheckSwigType(const wxString& className) {
 
     swig_type_info* swigType = wxPyFindSwigType(className);
     return swigType != NULL;
@@ -76,7 +76,7 @@ bool wxPyCheckSwigType(const wxChar* className) {
 // Given a pointer to a C++ object and a class name, construct a Python proxy
 // object for it.    
 PyObject* wxPyConstructObject(void* ptr,
-                              const wxChar* className,
+                              const wxString& className,
                               int setThisOwn) {
 
     swig_type_info* swigType = wxPyFindSwigType(className);
@@ -91,7 +91,7 @@ PyObject* wxPyConstructObject(void* ptr,
 // not able to perform the conversion then a Python exception is set and the
 // error should be handled properly in the caller.  Returns True on success.
 bool wxPyConvertSwigPtr(PyObject* obj, void **ptr,
-                        const wxChar* className) {
+                        const wxString& className) {
 
     swig_type_info* swigType = wxPyFindSwigType(className);
     wxCHECK_MSG(swigType != NULL, false, wxT("Unknown type in wxPyConvertSwigPtr"));
@@ -105,7 +105,7 @@ bool wxPyConvertSwigPtr(PyObject* obj, void **ptr,
 #if SWIG_VERSION < 0x010328
 %{
 // Make a SWIGified pointer object suitable for a .this attribute
-PyObject* wxPyMakeSwigPtr(void* ptr, const wxChar* className) {
+PyObject* wxPyMakeSwigPtr(void* ptr, const wxString& className) {
     
     PyObject* robj = NULL;
 
@@ -128,7 +128,7 @@ PyObject* wxPyMakeSwigPtr(void* ptr, const wxChar* className) {
 #else // SWIG_VERSION >= 1.3.28
 %{
 // Make a SWIGified pointer object suitable for a .this attribute
-PyObject* wxPyMakeSwigPtr(void* ptr, const wxChar* className) {
+PyObject* wxPyMakeSwigPtr(void* ptr, const wxString& className) {
     
     PyObject* robj = NULL;
 
@@ -186,7 +186,8 @@ static wxPyCoreAPI API = {
     wxPyBeginBlockThreads,
     wxPyEndBlockThreads,
                                              
-    NULL,
+    NULL,  // A function was removed, reserve the slot so the others don't
+           // change location
                                              
     wxString_in_helper,
     Py2wxString,
@@ -240,9 +241,15 @@ static wxPyCoreAPI API = {
     wxArrayDouble2PyList_helper,
     wxPoint2D_LIST_helper,
     wxRect2D_helper,
-
+    wxPosition_helper,
+    
     wxPyCBOutputStream_create,
     wxPyCBOutputStream_copy,
+
+    wxVariant_in_helper,
+    wxVariant_out_helper,
+
+    wxPyTextOrBitmap_helper,
 };
 
 #endif

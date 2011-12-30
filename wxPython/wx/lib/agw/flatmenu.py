@@ -2,7 +2,7 @@
 # FLATMENU wxPython IMPLEMENTATION
 #
 # Andrea Gavana, @ 03 Nov 2006
-# Latest Revision: 21 Sep 2010, 23.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 # TODO List
 #
@@ -13,7 +13,7 @@
 # For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please
 # Write To Me At:
 #
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 # andrea.gavana@gmail.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
@@ -23,17 +23,17 @@
 # --------------------------------------------------------------------------------- #
 
 """
-FlatMenu is a generic menu implementation.
+L{FlatMenu} is a generic menu implementation.
 
 
 Description
 ===========
 
-FlatMenu, like the name implies, it is a generic menu implementation. 
+L{FlatMenu}, like the name implies, it is a generic menu implementation. 
 I tried to provide a full functionality for menus, menubar and toolbar.
 
 
-FlatMenu supports the following features:
+L{FlatMenu} supports the following features:
 
 - Fires all the events (UI & Cmd);
 - Check items;
@@ -66,24 +66,89 @@ FlatMenu supports the following features:
 - 4 different colour schemes for the menu bar (more can easily added);
 - Scrolling is available if the menu height is greater than the screen height;
 - Context menus for menu items;
-- Show/hide the drop down arrow which allows the customization of FlatMenu;
+- Show/hide the drop down arrow which allows the customization of L{FlatMenu};
 - Multiple columns menu window;
 - Tooltips for menus and toolbar items on a `wx.StatusBar` (if present);
 - Transparency (alpha channel) for menu windows (for platforms supporting it);
+- FileHistory support through a pure-Python `wx.FileHistory` implementation;
+- Possibility to set a background bitmap for a L{FlatMenu};
 - First attempt in adding controls to FlatToolbar;
 - Added a MiniBar (thanks to Vladiuz);
 - Added `wx.ToolBar` methods AddCheckTool/AddRadioTool (thanks to Vladiuz).
   
 
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.flatmenu as FM
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "FlatMenu Demo")
+
+            self.CreateMenu()
+
+            panel = wx.Panel(self, -1)
+            btn = wx.Button(panel, -1, "Hello", (15, 12), (100, 120))
+
+            main_sizer = wx.BoxSizer(wx.VERTICAL)
+            main_sizer.Add(self.menubar, 0, wx.EXPAND)
+            main_sizer.Add(panel, 1, wx.EXPAND)
+
+            self.SetSizer(main_sizer)
+            main_sizer.Layout()
+
+
+        def CreateMenu(self):
+
+            self.menubar = FM.FlatMenuBar(self, -1)
+
+            f_menu = FM.FlatMenu()
+            e_menu = FM.FlatMenu()
+            v_menu = FM.FlatMenu()
+            t_menu = FM.FlatMenu()
+            w_menu = FM.FlatMenu()
+
+            # Append the menu items to the menus
+            f_menu.Append(-1, "Simple\tCtrl+N", "Text", None)
+            e_menu.Append(-1, "FlatMenu", "Text", None)
+            v_menu.Append(-1, "Example", "Text", None)
+            t_menu.Append(-1, "Hello", "Text", None)
+            w_menu.Append(-1, "World", "Text", None)
+
+            # Append menus to the menubar
+            self.menubar.Append(f_menu, "&File")
+            self.menubar.Append(e_menu, "&Edit")
+            self.menubar.Append(v_menu, "&View")
+            self.menubar.Append(t_menu, "&Options")
+            self.menubar.Append(w_menu, "&Help")
+
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
+
+
 Supported Platforms
 ===================
 
-FlatMenu v0.8 has been tested on the following platforms:
-  * Windows (Windows XP);
-  * Linux Ubuntu (Dapper 6.06)
-v0.9.* has been tested on
+L{FlatMenu} has been tested on the following platforms:
   * Windows (Windows XP, Vista);
+  * Linux Ubuntu (Dapper 6.06)
 
+  
 
 Window Styles
 =============
@@ -109,27 +174,28 @@ This class processes the following events:
 Event Name                        Description
 ================================= ==================================================
 ``EVT_FLAT_MENU_DISMISSED``       Used internally.
-``EVT_FLAT_MENU_ITEM_MOUSE_OUT``  Fires an event when the mouse leaves a `FlatMenuItem`.
-``EVT_FLAT_MENU_ITEM_MOUSE_OVER`` Fires an event when the mouse enters a `FlatMenuItem`.
-``EVT_FLAT_MENU_SELECTED``        Fires the `wx.EVT_MENU` event for `FlatMenu`.
+``EVT_FLAT_MENU_ITEM_MOUSE_OUT``  Fires an event when the mouse leaves a L{FlatMenuItem}.
+``EVT_FLAT_MENU_ITEM_MOUSE_OVER`` Fires an event when the mouse enters a L{FlatMenuItem}.
+``EVT_FLAT_MENU_SELECTED``        Fires the `wx.EVT_MENU` event for L{FlatMenu}.
 ================================= ==================================================
 
 
 License And Version
 ===================
 
-FlatMenu is distributed under the wxPython license.
+L{FlatMenu} is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 21 Sep 2010, 23.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
-Version 0.9.6
+Version 1.0
 
 """
 
 __docformat__ = "epytext"
-__version__ = "0.9.6"
+__version__ = "1.0"
 
 import wx
+import os
 import math
 import cStringIO
 
@@ -214,11 +280,13 @@ wxEVT_FLAT_MENU_ITEM_MOUSE_OUT = wx.NewEventType()
 EVT_FLAT_MENU_DISMISSED = wx.PyEventBinder(wxEVT_FLAT_MENU_DISMISSED, 1)
 """ Used internally. """
 EVT_FLAT_MENU_SELECTED = wx.PyEventBinder(wxEVT_FLAT_MENU_SELECTED, 2)
-""" Fires the wx.EVT_MENU event for `FlatMenu`. """
+""" Fires the wx.EVT_MENU event for L{FlatMenu}. """
+EVT_FLAT_MENU_RANGE = wx.PyEventBinder(wxEVT_FLAT_MENU_SELECTED, 2)
+""" Fires the wx.EVT_MENU event for a series of L{FlatMenu}. """
 EVT_FLAT_MENU_ITEM_MOUSE_OUT = wx.PyEventBinder(wxEVT_FLAT_MENU_ITEM_MOUSE_OUT, 1)
-""" Fires an event when the mouse leaves a `FlatMenuItem`. """
+""" Fires an event when the mouse leaves a L{FlatMenuItem}. """
 EVT_FLAT_MENU_ITEM_MOUSE_OVER = wx.PyEventBinder(wxEVT_FLAT_MENU_ITEM_MOUSE_OVER, 1)
-""" Fires an event when the mouse enters a `FlatMenuItem`. """
+""" Fires an event when the mouse enters a L{FlatMenuItem}. """
 
 
 def GetAccelIndex(label):
@@ -667,11 +735,11 @@ class FMRenderer(object):
         artMgr.PaintStraightGradientBox(dc, sepRect2, lightColour, backColour, False) 
         
 
-    def DrawMenuItem(self, item, dc, xCoord, yCoord, imageMarginX, markerMarginX, textX, rightMarginX, selected=False):
+    def DrawMenuItem(self, item, dc, xCoord, yCoord, imageMarginX, markerMarginX, textX, rightMarginX, selected=False, backgroundImage=None):
         """
         Draws the menu item.
 
-        :param `item`: `FlatMenuItem` instance;
+        :param `item`: a L{FlatMenuItem} instance;
         :param `dc`: an instance of `wx.DC`;
         :param `xCoord`: the current x position where to draw the menu;
         :param `yCoord`: the current y position where to draw the menu;
@@ -682,6 +750,8 @@ class FMRenderer(object):
         :param `rightMarginX`: the right margin between the text and the menu border;
         :param `selected`: ``True`` if this menu item is currentl hovered by the mouse,
          ``False`` otherwise.
+        :param `backgroundImage`: if not ``None``, an instance of `wx.Bitmap` which will
+         become the background image for this L{FlatMenu}.
         """
  
         borderXSize = item._parentMenu.GetBorderXWidth()
@@ -699,11 +769,12 @@ class FMRenderer(object):
         penColour  = backColour
         backBrush = wx.Brush(backColour)
         leftMarginWidth = item._parentMenu.GetLeftMarginWidth()
-        
-        pen = wx.Pen(penColour)
-        dc.SetPen(pen)
-        dc.SetBrush(backBrush)
-        dc.DrawRectangleRect(rect)
+
+        if backgroundImage is None:
+            pen = wx.Pen(penColour)
+            dc.SetPen(pen)
+            dc.SetBrush(backBrush)
+            dc.DrawRectangleRect(rect)
 
         # Draw the left margin gradient
         if self.drawLeftMargin:
@@ -776,13 +847,20 @@ class FMRenderer(object):
         
         if text:
 
-            font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+            font = item.GetFont()
+            if font is None:
+                font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+                
             if selected:
                 enabledTxtColour = colourutils.BestLabelColour(self.menuFocusFaceColour, bw=True)
             else:
                 enabledTxtColour = colourutils.BestLabelColour(self.menuFaceColour, bw=True)
+                
             disabledTxtColour = self.itemTextColourDisabled
             textColour = (item.IsEnabled() and [enabledTxtColour] or [disabledTxtColour])[0]
+
+            if item.IsEnabled() and item.GetTextColour():
+                textColour = item.GetTextColour()
 
             dc.SetFont(font)
             w, h = dc.GetTextExtent(text)
@@ -1165,7 +1243,7 @@ class FMRenderer(object):
                     
             posx += rect.width + padding # + menubar._spacer
 
-        # Get a backgroud image of the more menu button
+        # Get a background image of the more menu button
         moreMenubtnBgBmpRect = wx.Rect(*menubar.GetMoreMenuButtonRect())
         if not menubar._moreMenuBgBmp:
             menubar._moreMenuBgBmp = wx.EmptyBitmap(moreMenubtnBgBmpRect.width, moreMenubtnBgBmpRect.height)
@@ -1223,7 +1301,12 @@ class FMRenderer(object):
         mem_dc.SetPen(pen)
         mem_dc.SetBrush(backBrush)
         mem_dc.DrawRectangleRect(menuRect)
+
+        backgroundImage = flatmenu._backgroundImage
         
+        if backgroundImage:
+            mem_dc.DrawBitmap(backgroundImage, flatmenu._leftMarginWidth, 0, True)
+
         # draw items
         posy = 3
         nItems = len(flatmenu._itemsArr)
@@ -1249,15 +1332,11 @@ class FMRenderer(object):
 
             visibleItems += 1
             item = flatmenu._itemsArr[nCount]
-            self.DrawMenuItem(item, mem_dc,
-                          posx,
-                          posy,     
-                          flatmenu._imgMarginX,
-                          flatmenu._markerMarginX,
-                          flatmenu._textX, 
-                          flatmenu._rightMarginPosX,
-                          nCount == flatmenu._selectedItem 
-                          )
+            self.DrawMenuItem(item, mem_dc, posx, posy,
+                              flatmenu._imgMarginX, flatmenu._markerMarginX,
+                              flatmenu._textX, flatmenu._rightMarginPosX,
+                              nCount == flatmenu._selectedItem,
+                              backgroundImage=backgroundImage)
             posy += item.GetHeight()
             item.Show()
             
@@ -1763,6 +1842,316 @@ class FMRendererXP(FMRenderer):
 
         return wx.BLACK
 
+
+# ----------------------------------------------------------------------------
+# File history (a.k.a. MRU, most recently used, files list)
+# ----------------------------------------------------------------------------
+
+def GetMRUEntryLabel(n, path):
+    """
+    Returns the string used for the MRU list items in the menu.
+
+    :param `n`: the index of the file name in the MRU list;
+    :param `path`: the full path of the file name.
+
+    :note: The index `n` is 0-based, as usual, but the strings start from 1.
+    """
+
+    # we need to quote '&' characters which are used for mnemonics
+    pathInMenu = path.replace("&", "&&")
+    return "&%d %s"%(n + 1, pathInMenu)
+
+
+# ----------------------------------------------------------------------------
+# File history management
+# ----------------------------------------------------------------------------
+
+class FileHistory(object):
+    """
+    The L{FileHistory} encapsulates a user interface convenience, the list of most
+    recently visited files as shown on a menu (usually the File menu).
+
+    L{FileHistory} can manage one or more file menus. More than one menu may be
+    required in an MDI application, where the file history should appear on each MDI
+    child menu as well as the MDI parent frame.
+    """
+
+    def __init__(self, maxFiles=9, idBase=wx.ID_FILE1):
+        """
+        Default class constructor.
+
+        :param `maxFiles`: the maximum number of files that should be stored and displayed;
+        :param `idBase`: defaults to ``wx.ID_FILE1`` and represents the id given to the first
+         history menu item.
+
+        :note: Since menu items can't share the same ID you should change `idBase` to one of
+         your own defined IDs when using more than one L{FileHistory} in your application.
+         """
+
+        # The ID of the first history menu item (Doesn't have to be wxID_FILE1)
+        self._idBase = idBase
+
+        # Last n files
+        self._fileHistory = []
+
+        # Menus to maintain (may need several for an MDI app)
+        self._fileMenus = []
+
+        # Max files to maintain
+        self._fileMaxFiles = maxFiles
+        
+
+    def GetMaxFiles(self):
+        """ Returns the maximum number of files that can be stored. """
+
+        return self._fileMaxFiles
+    
+
+    # Accessors
+    def GetHistoryFile(self, index):
+        """
+        Returns the file at this index (zero-based).
+
+        :param `index`: the index at which the file is stored in the file list (zero-based).
+        """
+
+        return self._fileHistory[index]
+
+    
+    def GetCount(self):
+        """ Returns the number of files currently stored in the file history. """
+
+        return len(self._fileHistory)
+    
+
+    def GetMenus(self):
+        """
+        Returns the list of menus that are managed by this file history object.
+
+        :see: L{UseMenu}.
+        """
+
+        return self._fileMenus
+
+
+    # Set/get base id
+    def SetBaseId(self, baseId):
+        """
+        Sets the base identifier for the range used for appending items.
+
+        :param `baseId`: the base identifier for the range used for appending items.
+        """
+
+        self._idBase = baseId
+
+
+    def GetBaseId(self):
+        """ Returns the base identifier for the range used for appending items. """
+
+        return self._idBase
+        
+
+    def GetNoHistoryFiles(self):
+        """ Returns the number of files currently stored in the file history. """
+
+        return self.GetCount()
+    
+
+    def AddFileToHistory(self, fnNew):
+        """
+        Adds a file to the file history list, if the object has a pointer to an
+        appropriate file menu.
+
+        :param `fnNew`: the file name to add to the history list.
+        """
+
+        # check if we don't already have this file
+        numFiles = len(self._fileHistory)
+
+        for index, fileH in enumerate(self._fileHistory):
+            if fnNew == fileH: 
+                # we do have it, move it to the top of the history
+                self.RemoveFileFromHistory(index)
+                numFiles -= 1
+                break        
+
+        # if we already have a full history, delete the one at the end
+        if numFiles == self._fileMaxFiles:        
+            self.RemoveFileFromHistory(numFiles-1)
+
+        # add a new menu item to all file menus (they will be updated below)
+        for menu in self._fileMenus:
+            if numFiles == 0 and menu.GetMenuItemCount() > 0:
+                menu.AppendSeparator()
+
+            # label doesn't matter, it will be set below anyhow, but it can't
+            # be empty (this is supposed to indicate a stock item)
+            menu.Append(self._idBase + numFiles, " ")
+        
+        # insert the new file in the beginning of the file history
+        self._fileHistory.insert(0, fnNew)
+        numFiles += 1
+
+        # update the labels in all menus
+        for index in xrange(numFiles):
+        
+            # if in same directory just show the filename otherwise the full path
+            fnOld = self._fileHistory[index]
+            oldPath, newPath = os.path.split(fnOld)[0], os.path.split(fnNew)[0]
+            
+            if oldPath == newPath:            
+                pathInMenu = os.path.split(fnOld)[1]
+            
+            else:
+                # file in different directory
+                # absolute path could also set relative path
+                pathInMenu = self._fileHistory[index]
+            
+            for menu in self._fileMenus:
+                menu.SetLabel(self._idBase + index, GetMRUEntryLabel(index, pathInMenu))
+            
+
+    def RemoveFileFromHistory(self, index):
+        """
+        Removes the specified file from the history.
+
+        :param `index`: the zero-based index indicating the file name position in
+         the file list.
+        """
+
+        numFiles = len(self._fileHistory)
+        if index >= numFiles:
+            raise Exception("Invalid index in RemoveFileFromHistory: %d (only %d files)"%(index, numFiles))
+
+        # delete the element from the array
+        self._fileHistory.pop(index)
+        numFiles -= 1
+
+        for menu in self._fileMenus:
+            # shift filenames up
+            for j in xrange(numFiles):            
+                menu.SetLabel(self._idBase + j, GetMRUEntryLabel(j, self._fileHistory[j]))
+            
+            # delete the last menu item which is unused now
+            lastItemId = self._idBase + numFiles
+            if menu.FindItem(lastItemId):
+                menu.Delete(lastItemId)
+
+            if not self._fileHistory:
+                lastMenuItem = menu.GetMenuItems()[-1]
+                if lastMenuItem.IsSeparator():
+                    menu.Delete(lastMenuItem)
+                
+                #else: menu is empty somehow
+            
+
+    def UseMenu(self, menu):
+        """
+        Adds this menu to the list of those menus that are managed by this file history
+        object.
+
+        :param `menu`: an instance of L{FlatMenu}.        
+
+        :see: L{AddFilesToMenu} for initializing the menu with filenames that are already
+         in the history when this function is called, as this is not done automatically.
+        """
+        
+        if menu not in self._fileMenus:
+            self._fileMenus.append(menu)
+
+
+    def RemoveMenu(self, menu):
+        """
+        Removes this menu from the list of those managed by this object.
+
+        :param `menu`: an instance of L{FlatMenu}.        
+        """
+        
+        self._fileMenus.remove(menu)
+
+
+    def Load(self, config):
+        """
+        Loads the file history from the given `config` object.
+
+        :param `config`: an instance of `wx.Config`.
+        
+        :note: This function should be called explicitly by the application.
+
+        :see: L{Save}.
+        """
+
+        self._fileHistory = []
+        buffer = "file%d"
+        count = 1
+
+        while 1:
+            historyFile = config.Read(buffer%count)
+            if not historyFile or len(self._fileHistory) >= self._fileMaxFiles:
+                break
+    
+            self._fileHistory.append(historyFile)
+            count += 1
+
+        self.AddFilesToMenu()
+
+
+    def Save(self, config):
+        """
+        Saves the file history to the given `config` object.
+
+        :param `config`: an instance of `wx.Config`.
+        
+        :note: This function should be called explicitly by the application.
+
+        :see: L{Load}.
+        """
+
+        buffer = "file%d"
+
+        for index in xrange(self._fileMaxFiles):
+        
+            if index < len(self._fileHistory):
+                config.Write(buffer%(index+1), self._fileHistory[i])
+            else:
+                config.Write(buffer%(index+1), "")
+    
+
+    def AddFilesToMenu(self, menu=None):
+        """
+        Appends the files in the history list, to all menus managed by the file history object
+        if `menu` is ``None``. Otherwise it calls the auxiliary method L{AddFilesToMenu2}.
+
+        :param `menu`: if not ``None``, an instance of L{FlatMenu}.        
+        """        
+
+        if not self._fileHistory:
+            return
+
+        if menu is not None:
+            self.AddFilesToMenu2(menu)
+            return
+        
+        for menu in self._fileMenus:
+            self.AddFilesToMenu2(menu)
+    
+
+    def AddFilesToMenu2(self, menu):
+        """
+        Appends the files in the history list, to the given menu only.
+
+        :param `menu`: an instance of L{FlatMenu}.        
+        """
+        
+        if not self._fileHistory:
+            return
+
+        if menu.GetMenuItemCount():
+            menu.AppendSeparator()
+
+        for index in xrange(len(self._fileHistory)):        
+            menu.Append(self._idBase + index, GetMRUEntryLabel(index, self._fileHistory[i]))
+        
 
 # ---------------------------------------------------------------------------- #
 # Class FlatMenuEvent
@@ -2693,11 +3082,13 @@ class FlatMenuBar(wx.Panel):
                 return self._tbButtons.index(but)
         
         return wx.NOT_FOUND
+
     
     def GetBackgroundColour(self):
         """ Returns the menu bar background colour. """
         
         return self.GetRenderer().menuBarFaceColour
+
     
     def SetBackgroundColour(self, colour):
         """
@@ -2904,11 +3295,10 @@ class FlatMenuBar(wx.Panel):
         """
         
         # we handle only button clicks
-        if self._tbButtons[idx]._tbItem.IsRegularItem() or \
-            self._tbButtons[idx]._tbItem.IsCheckItem():
-
+        tbItem = self._tbButtons[idx]._tbItem
+        if tbItem.IsRegularItem() or tbItem.IsCheckItem() or tbItem.IsRadioItem():
             # Create the event
-            event = wx.CommandEvent(wxEVT_FLAT_MENU_SELECTED, self._tbButtons[idx]._tbItem.GetId())
+            event = wx.CommandEvent(wxEVT_FLAT_MENU_SELECTED, tbItem.GetId())
             event.SetEventObject(self)
 
             # all events are handled by this control and its parents
@@ -4172,6 +4562,7 @@ class FlatToolbarItem(object):
         self._shortHelp = shortHelp
         self._longHelp = longHelp
 
+
     def GetLabel(self):
         """ Returns the tool label. """
 
@@ -4420,6 +4811,8 @@ class FlatMenuItem(object):
         self._groupPtr = None
         self._visible = False
         self._contextMenu = None
+        self._font = None
+        self._textColour = None
 
         self.SetLabel(self._text)
         self.SetMenuBar()
@@ -4693,6 +5086,7 @@ class FlatMenuItem(object):
 
         self._visible = show
 
+
     def GetHeight(self):
         """ Returns the menu item height. """
 
@@ -4728,7 +5122,7 @@ class FlatMenuItem(object):
 
         :param `text`: the new item label (excluding the accelerator).
         """
- 
+
         if text:
 
             indx = text.find("\t")
@@ -4811,6 +5205,29 @@ class FlatMenuItem(object):
             self._parentMenu.UpdateItem(self)
 
 
+    def SetFont(self, font=None):
+
+        self._font = font
+
+        if self._parentMenu:
+            self._parentMenu.UpdateItem(self)
+
+
+    def GetFont(self):
+
+        return self._font
+    
+
+    def SetTextColour(self, colour=None):
+
+        self._textColour = colour
+
+
+    def GetTextColour(self):
+
+        return self._textColour        
+
+
 #--------------------------------------------------------
 # Class FlatMenu
 #--------------------------------------------------------
@@ -4856,6 +5273,8 @@ class FlatMenu(FlatMenuBase):
         self._mb_submenu = 0
         self._is_dismiss = False
         self._numCols = 1
+        self._backgroundImage = None
+        self._originalBackgroundImage = None
 
         FlatMenuBase.__init__(self, parent)        
 
@@ -5095,6 +5514,11 @@ class FlatMenu(FlatMenuBase):
                     
         self.SetSize(wx.Size(self._menuWidth*self._numCols, menuHeight+4))
 
+        if self._originalBackgroundImage:
+            img = wx.ImageFromBitmap(self._originalBackgroundImage)
+            img = img.Scale(self._menuWidth*self._numCols-2-self._leftMarginWidth, menuHeight, wx.IMAGE_QUALITY_HIGH)
+            self._backgroundImage = img.ConvertToBitmap()
+
         # Add accelerator entry to the menu if needed
         accel = menuItem.GetAcceleratorEntry()
         
@@ -5126,7 +5550,10 @@ class FlatMenu(FlatMenuBase):
 
         dc = wx.ClientDC(self)
 
-        font = ArtManager.Get().GetFont()
+        font = menuItem.GetFont()
+        if font is None:
+            font = ArtManager.Get().GetFont()
+
         dc.SetFont(font)
 
         accelFiller = "XXXX"     # 4 spaces betweem text and accel column
@@ -6144,6 +6571,8 @@ class FlatMenu(FlatMenuBase):
             
         return self._RemoveById(item)
 
+    Delete = Remove
+    
 
     def _DestroyById(self, id):
         """ Used internally. """
@@ -6319,7 +6748,61 @@ class FlatMenu(FlatMenuBase):
                 return parentMenu._itemsArr[idx]
             else:
                 return None
-            
+
+
+    def SetItemFont(self, itemId, font=None):
+        
+        item = self.FindItem(itemId)
+        item.SetFont(font)
+
+
+    def GetItemFont(self, itemId):
+
+        item = self.FindItem(itemId)
+        return item.GetFont()
+        
+
+    def SetItemTextColour(self, itemId, colour=None):
+        
+        item = self.FindItem(itemId)
+        item.SetTextColour(colour)
+
+
+    def GetItemTextColour(self, itemId):
+
+        item = self.FindItem(itemId)
+        return item.GetTextColour()
+
+
+    def SetLabel(self, itemId, label):
+        """
+        Sets the label of a L{FlatMenuItem}.
+
+        :param `id`: The menu item identifier;
+        :param `label`: The menu item label to set.
+
+        :see: L{GetLabel}.
+        """
+
+        item = self.FindItem(itemId)
+        item.SetLabel(label)
+        item.SetText(label)
+
+        self.ResizeMenu()
+        
+
+    def GetLabel(self, itemId):
+        """
+        Returns the label of a L{FlatMenuItem}.
+
+        :param `id`: The menu item identifier;
+
+        :see: L{SetLabel}.
+        """        
+
+        item = self.FindItem(itemId)
+        return item.GetText()
+    
 
     def FindMenuItemPos(self, itemId, menu=None):
         """
@@ -6375,6 +6858,12 @@ class FlatMenu(FlatMenuBase):
 
         return table
 
+
+    def GetMenuItemCount(self):
+        """ Returns the number of items in the L{FlatMenu}. """
+
+        return len(self._itemsArr)
+    
 
     def GetAccelArray(self):
         """ Returns an array filled with the accelerator entries for the menu. """
@@ -6498,6 +6987,30 @@ class FlatMenu(FlatMenuBase):
                 return i
         
         return wx.NOT_FOUND
+
+
+    def SetBackgroundBitmap(self, bitmap=None):
+        """
+        Sets a background bitmap for this particular L{FlatMenu}.
+
+        :param `bitmap`: an instance of `wx.Bitmap`. Set `bitmap` to ``None`` if you
+         wish to remove the background bitmap altogether.
+
+        :note: the bitmap is rescaled to fit the menu width and height.
+        """
+
+        self._originalBackgroundImage = bitmap
+        # Now we can resize the menu
+        self._resizeMenu = True
+        self.ResizeMenu()
+        
+
+    def GetBackgroundBitmap(self):
+        """
+        Returns the background bitmap for this particular L{FlatMenu}, if any.
+        """
+
+        return self._originalBackgroundImage
 
 
     def GetAllItems(self, menu=None, items=[]):

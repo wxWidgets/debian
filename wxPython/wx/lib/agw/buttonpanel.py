@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------- #
-# FANCYBUTTONPANEL Widget wxPython IMPLEMENTATION
+# BUTTONPANEL Widget wxPython IMPLEMENTATION
 #
 # Original C++ Code From Eran. You Can Find It At:
 #
@@ -11,14 +11,14 @@
 # Python Code By:
 #
 # Andrea Gavana, @ 02 Oct 2006
-# Latest Revision: 28 Nov 2010, 16.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please
 # Write To Me At:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
 #
@@ -34,7 +34,7 @@ add buttons and controls still respecting the gradient background.
 Description
 ===========
 
-With `ButtonPanel` class you have a panel with gradient colouring
+With L{ButtonPanel} class you have a panel with gradient colouring
 on it and with the possibility to place some buttons on it. Using a
 standard panel with normal `wx.Buttons` leads to an ugly result: the
 buttons are placed correctly on the panel - but with grey area around
@@ -56,86 +56,97 @@ classic look).
 Usage
 =====
 
-ButtonPanel supports 4 alignments: left, right, top, bottom, which have a
+L{ButtonPanel} supports 4 alignments: left, right, top, bottom, which have a
 different meaning and behavior with respect to `wx.Toolbar`. The easiest
 thing is to try the demo to understand, but I'll try to explain how it works.
 
-**CASE 1**: `ButtonPanel` has a main caption text.
+**CASE 1**: L{ButtonPanel} has a main caption text.
 
-- Left alignment means `ButtonPanel` is horizontal, with the text aligned to the
+- Left alignment means L{ButtonPanel} is horizontal, with the text aligned to the
   left. When you shrink the demo frame, if there is not enough room for all
   the controls to be shown, the controls closest to the text are hidden;
 
-- Right alignment means `ButtonPanel` is horizontal, with the text aligned to the
+- Right alignment means L{ButtonPanel} is horizontal, with the text aligned to the
   right. Item layout as above;
 
-- Top alignment means `ButtonPanel` is vertical, with the text aligned to the top.
+- Top alignment means L{ButtonPanel} is vertical, with the text aligned to the top.
   Item layout as above;
 
-- Bottom alignment means `ButtonPanel` is vertical, with the text aligned to the
+- Bottom alignment means L{ButtonPanel} is vertical, with the text aligned to the
   bottom. Item layout as above.
 
 
-**CASE 2**: `ButtonPanel` has **no** main caption text.
+**CASE 2**: L{ButtonPanel} has **no** main caption text.
 
 - In this case, left and right alignment are the same (as top and bottom are the same),
   but the layout strategy changes: now if there is not enough room for all the controls
-  to be shown, the last added items are hidden ("last" means on the far right for
-  horizontal ButtonPanels and far bottom for vertical ButtonPanels).
+  to be shown, the last added items are hidden ("last" means on the far right for an
+  horizontal L{ButtonPanel} and far bottom for a vertical L{ButtonPanel}).
 
 
-The following example shows a simple implementation that uses `ButtonPanel`
-inside a very simple frame::
+Usage example::
 
-  class MyFrame(wx.Frame):
+    import wx
+    import wx.lib.agw.buttonpanel as BP
 
-      def __init__(self, parent, id=-1, title="ButtonPanel", pos=wx.DefaultPosition,
-                   size=(800, 600), style=wx.DEFAULT_FRAME_STYLE):
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent, id=-1, title="ButtonPanel", pos=wx.DefaultPosition,
+                     size=(800, 600), style=wx.DEFAULT_FRAME_STYLE):
                  
-          wx.Frame.__init__(self, parent, id, title, pos, size, style)
+            wx.Frame.__init__(self, parent, id, title, pos, size, style)
 
-          mainPanel = wx.Panel(self, -1)
-          self.logtext = wx.TextCtrl(mainPanel, -1, "", style=wx.TE_MULTILINE)
+            mainPanel = wx.Panel(self, -1)
+            self.logtext = wx.TextCtrl(mainPanel, -1, "", style=wx.TE_MULTILINE)
 
-          vSizer = wx.BoxSizer(wx.VERTICAL) 
-          mainPanel.SetSizer(vSizer) 
+            vSizer = wx.BoxSizer(wx.VERTICAL) 
+            mainPanel.SetSizer(vSizer) 
 
-          alignment = BP_ALIGN_RIGHT 
+            titleBar = BP.ButtonPanel(mainPanel, -1, "A Simple Test & Demo")
 
-          titleBar = ButtonPanel(mainPanel, -1, "A Simple Test & Demo")
+            btn1 = BP.ButtonInfo(titleBar, wx.NewId(), wx.Bitmap("png4.png", wx.BITMAP_TYPE_PNG))
+            titleBar.AddButton(btn1)
+            self.Bind(wx.EVT_BUTTON, self.OnButton, btn1)
 
-          btn1 = ButtonInfo(titleBar, wx.NewId(), wx.Bitmap("png4.png", wx.BITMAP_TYPE_PNG))
-          titleBar.AddButton(btn1)
-          self.Bind(wx.EVT_BUTTON, self.OnButton, btn1)
+            btn2 = BP.ButtonInfo(titleBar, wx.NewId(), wx.Bitmap("png3.png", wx.BITMAP_TYPE_PNG))
+            titleBar.AddButton(btn2)
+            self.Bind(wx.EVT_BUTTON, self.OnButton, btn2)
 
-          btn2 = ButtonInfo(titleBar, wx.NewId(), wx.Bitmap("png3.png", wx.BITMAP_TYPE_PNG))
-          titleBar.AddButton(btn2)
-          self.Bind(wx.EVT_BUTTON, self.OnButton, btn2)
+            btn3 = BP.ButtonInfo(titleBar, wx.NewId(), wx.Bitmap("png2.png", wx.BITMAP_TYPE_PNG))
+            titleBar.AddButton(btn3)
+            self.Bind(wx.EVT_BUTTON, self.OnButton, btn3)
 
-          btn3 = ButtonInfo(titleBar, wx.NewId(), wx.Bitmap("png2.png", wx.BITMAP_TYPE_PNG))
-          titleBar.AddButton(btn3)
-          self.Bind(wx.EVT_BUTTON, self.OnButton, btn3)
+            btn4 = BP.ButtonInfo(titleBar, wx.NewId(), wx.Bitmap("png1.png", wx.BITMAP_TYPE_PNG))
+            titleBar.AddButton(btn4)
+            self.Bind(wx.EVT_BUTTON, self.OnButton, btn4)
 
-          btn4 = ButtonInfo(titleBar, wx.NewId(), wx.Bitmap("png1.png", wx.BITMAP_TYPE_PNG))
-          titleBar.AddButton(btn4)
-          self.Bind(wx.EVT_BUTTON, self.OnButton, btn4)
+            vSizer.Add(titleBar, 0, wx.EXPAND)
+            vSizer.Add((20, 20))
+            vSizer.Add(self.logtext, 1, wx.EXPAND|wx.ALL, 5)
 
-          vSizer.Add(titleBar, 0, wx.EXPAND)
-          vSizer.Add((20, 20))
-          vSizer.Add(self.logtext, 1, wx.EXPAND|wx.ALL, 5)
+            titleBar.DoLayout()
+            vSizer.Layout()
 
-          titleBar.DoLayout()
-          vSizer.Layout()
-  
-  # our normal wxApp-derived class, as usual
 
-  app = wx.PySimpleApp()
-  
-  frame = MyFrame(None)
-  app.SetTopWindow(frame)
-  frame.Show()
-  
-  app.MainLoop()
+        def OnButton(self, event):
+            ''' Handler for the ``wx.EVT_BUTTON`` event. '''
+
+            obj = event.GetEventObject()
+
+            # This will print the button label
+            print obj.GetText()
+
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
 
 
 Window Styles
@@ -146,8 +157,8 @@ This class supports the following window styles:
 ==================== =========== ==================================================
 Window Styles        Hex Value   Description
 ==================== =========== ==================================================
-``BP_DEFAULT_STYLE``         0x1 `ButtonPanel` has a plain solid background.
-``BP_USE_GRADIENT``          0x2 `ButtonPanel` has a gradient shading background.
+``BP_DEFAULT_STYLE``         0x1 L{ButtonPanel} has a plain solid background.
+``BP_USE_GRADIENT``          0x2 L{ButtonPanel} has a gradient shading background.
 ==================== =========== ==================================================
 
 
@@ -166,9 +177,9 @@ Event Name        Description
 License And Version
 ===================
 
-ButtonPanel is distributed under the wxPython license. 
+L{ButtonPanel} is distributed under the wxPython license. 
 
-Latest Revision: Andrea Gavana @ 28 Nov 2010, 16.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.6.
 
@@ -181,13 +192,13 @@ import wx
 BP_BACKGROUND_COLOUR = 0
 """ Background brush colour when no gradient shading exists. """
 BP_GRADIENT_COLOUR_FROM = 1
-""" Starting gradient colour, used only when BP_USE_GRADIENT style is applied. """
+""" Starting gradient colour, used only when ``BP_USE_GRADIENT`` style is applied. """
 BP_GRADIENT_COLOUR_TO = 2
-""" Ending gradient colour, used only when BP_USE_GRADIENT style is applied. """
+""" Ending gradient colour, used only when ``BP_USE_GRADIENT`` style is applied. """
 BP_BORDER_COLOUR = 3
-""" Pen colour to paint the border of ButtonPanel. """
+""" Pen colour to paint the border of L{ButtonPanel}. """
 BP_TEXT_COLOUR = 4
-""" Main ButtonPanel caption colour. """
+""" Main L{ButtonPanel} caption colour. """
 BP_BUTTONTEXT_COLOUR = 5
 """ Text colour for buttons with text. """
 BP_BUTTONTEXT_INACTIVE_COLOUR = 6
@@ -199,7 +210,7 @@ BP_SELECTION_PEN_COLOUR = 8
 BP_SEPARATOR_COLOUR = 9
 """ Pen colour used to paint the separators. """
 BP_TEXT_FONT = 10
-""" Font of the ButtonPanel main caption. """
+""" Font of the L{ButtonPanel} main caption. """
 BP_BUTTONTEXT_FONT = 11
 """ Text font for the buttons with text. """
 
@@ -209,15 +220,9 @@ BP_BUTTONTEXT_ALIGN_RIGHT = 13
 """ Flag that indicates the text is shown alongside the image in buttons with text. """
 
 BP_SEPARATOR_SIZE = 14
-"""
-Separator size. NB: This is not the line width, but the sum of the space before
-and after the separator line plus the width of the line.
-"""
+""" Separator size. NB: This is not the line width, but the sum of the space before and after the separator line plus the width of the line. """
 BP_MARGINS_SIZE = 15
-"""
-Size of the left/right margins in ButtonPanel (top/bottom for vertically
-aligned ButtonPanels).
-"""
+""" Size of the left/right margins in L{ButtonPanel} (top/bottom for vertically aligned L{ButtonPanel})."""
 BP_BORDER_SIZE = 16
 """ Size of the border. """
 BP_PADDING_SIZE = 17
@@ -233,19 +238,25 @@ BP_GRADIENT_HORIZONTAL = 2
 
 # Flags for HitTest() method
 BP_HT_BUTTON = 200
+""" This flag indicates that the user has hit a button inside L{ButtonPanel}. """
 BP_HT_NONE = 201
+""" This flag indicates that no buttons were hit inside L{ButtonPanel}. """
 
 # Alignment of buttons in the panel
 BP_ALIGN_RIGHT = 1
+""" Aligns the buttons to the right (for an horizontal L{ButtonPanel}). """
 BP_ALIGN_LEFT = 2
+""" Aligns the buttons to the left (for an horizontal L{ButtonPanel}). """
 BP_ALIGN_TOP = 4
+""" Aligns the buttons at the top (for a vertical L{ButtonPanel}). """
 BP_ALIGN_BOTTOM = 8
+""" Aligns the buttons at the bottom (for a vertical L{ButtonPanel}). """
 
 # ButtonPanel styles
 BP_DEFAULT_STYLE = 1
-""" `ButtonPanel` has a plain solid background. """
+""" L{ButtonPanel} has a plain solid background. """
 BP_USE_GRADIENT = 2
-""" `ButtonPanel` has a gradient shading background. """
+""" L{ButtonPanel} has a gradient shading background. """
 
 # Delay used to cancel the longHelp in the statusbar field
 _DELAY = 3000
@@ -261,7 +272,9 @@ def BrightenColour(colour, factor):
     Brighten the input colour by a factor.
 
     :param `colour`: a valid `wx.Colour` instance;
-    :param `factor`: the factor by which the input colour should be brightened.
+    :param integer `factor`: the factor by which the input colour should be brightened.
+
+    :return: An instance of `wx.Colour`, a brightened version of the input `colour`.    
     """
 
     val = colour.Red()*factor
@@ -292,6 +305,8 @@ def MakeDisabledBitmap(original):
     Creates a disabled-looking bitmap starting from the input one.
 
     :param `original`: an instance of `wx.Bitmap` to be greyed-out.
+
+    :return: A greyed-out representation of the input bitmap, an instance of `wx.Bitmap`.
     """
     
     img = original.ConvertToImage()
@@ -315,7 +330,7 @@ class BPArt(object):
         """
         Default class constructor.
 
-        :param `parentStyle`: the window style for L{ButtonPanel}.
+        :param integer `parentStyle`: the window style for L{ButtonPanel}.
         """
 
         base_colour = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
@@ -357,18 +372,21 @@ class BPArt(object):
         """
         Returns the option value for the specified size `id`.
 
-        :param `id`: the identification bit for the size value. This can be one of the
+        :param integer `id`: the identification bit for the size value. This can be one of the
          following bits:
 
          ============================== ======= =====================================
          Size Id                         Value  Description
          ============================== ======= =====================================
          ``BP_SEPARATOR_SIZE``               14 Separator size. Note: This is not the line width, but the sum of the space before and after the separator line plus the width of the line
-         ``BP_MARGINS_SIZE``                 15 Size of the left/right margins in L{ButtonPanel} (top/bottom for vertically aligned ButtonPanels)
+         ``BP_MARGINS_SIZE``                 15 Size of the left/right margins in L{ButtonPanel} (top/bottom for vertically aligned L{ButtonPanel})
          ``BP_BORDER_SIZE``                  16 Size of the border
          ``BP_PADDING_SIZE``                 17 Inter-tool separator size
          ============================== ======= =====================================
 
+        :return: An integer representing the option value for the input `id`.
+
+        :raise: `Exception` if the `id` is not recognized.        
         """
 
         if id == BP_SEPARATOR_SIZE:
@@ -387,8 +405,10 @@ class BPArt(object):
         """
         Sets the option value for the specified size `id`.
 
-        :param `id`: the identification bit for the size value;
-        :param `new_val`: the new value for the size.
+        :param integer `id`: the identification bit for the size value;
+        :param input`new_val`: the new value for the size.
+
+        :raise: `Exception` if the `id` is not recognized.        
 
         :see: L{GetMetric} for a list of meaningful size ids.        
         """
@@ -410,7 +430,7 @@ class BPArt(object):
         """
         Returns the option value for the specified colour `id`.
 
-        :param `id`: the identification bit for the colour value. This can be one of the
+        :param internal`id`: the identification bit for the colour value. This can be one of the
          following bits:
 
          ================================== ======= =====================================
@@ -420,7 +440,7 @@ class BPArt(object):
          ``BP_GRADIENT_COLOUR_FROM``              1 Starting gradient colour, used only when ``BP_USE_GRADIENT`` style is applied
          ``BP_GRADIENT_COLOUR_TO``                2 Ending gradient colour, used only when ``BP_USE_GRADIENT`` style is applied
          ``BP_BORDER_COLOUR``                     3 Pen colour to paint the border of L{ButtonPanel}
-         ``BP_TEXT_COLOUR``                       4 Main ButtonPanel caption colour
+         ``BP_TEXT_COLOUR``                       4 Main L{ButtonPanel} caption colour
          ``BP_BUTTONTEXT_COLOUR``                 5 Text colour for buttons with text
          ``BP_BUTTONTEXT_INACTIVE_COLOUR``        6 Text colour for inactive buttons with text
          ``BP_SELECTION_BRUSH_COLOUR``            7 Brush colour to be used when hovering or selecting a button
@@ -428,6 +448,9 @@ class BPArt(object):
          ``BP_SEPARATOR_COLOUR``                  9 Pen colour used to paint the separators
          ================================== ======= =====================================
 
+        :return: An instance of `wx.Colour` for the input `id`.
+
+        :raise: `Exception` if the `id` is not recognized.
         """
 
         if id == BP_BACKGROUND_COLOUR:
@@ -458,8 +481,10 @@ class BPArt(object):
         """
         Sets the option value for the specified colour `id`.
 
-        :param `id`: the identification bit for the colour value;
+        :param integer `id`: the identification bit for the colour value;
         :param `colour`: the new value for the colour (a valid `wx.Colour` instance).
+
+        :raise: `Exception` if the `id` is not recognized.
 
         :see: L{GetColour} for a list of meaningful colour ids. 
         """
@@ -496,7 +521,7 @@ class BPArt(object):
         """
         Returns the option value for the specified font `id`.
 
-        :param `id`: the identification bit for the font value. This can be one of the
+        :param integer `id`: the identification bit for the font value. This can be one of the
          following bits:
 
          ============================== ======= =====================================
@@ -505,7 +530,10 @@ class BPArt(object):
          ``BP_TEXT_FONT``                    10 Font of the L{ButtonPanel} main caption
          ``BP_BUTTONTEXT_FONT``              11 Text font for the buttons with text
          ============================== ======= =====================================
-         
+
+        :return: An instance of `wx.Font` for the input `id`.
+
+        :raise: `Exception` if the `id` is not recognized.         
         """
 
         if id == BP_TEXT_FONT:
@@ -520,8 +548,10 @@ class BPArt(object):
         """
         Sets the option value for the specified font `id`.
 
-        :param `id`: the identification bit for the font value;
+        :param integer `id`: the identification bit for the font value;
         :param `colour`: the new value for the font (a valid `wx.Font` instance).
+
+        :raise: `Exception` if the `id` is not recognized.
 
         :see: L{GetFont} for a list of meaningful font ids. 
         """
@@ -536,7 +566,7 @@ class BPArt(object):
         """
         Sets the gradient type for L{BPArt} drawings.
 
-        :param `gradient`: can be one of the following bits:
+        :param integer `gradient`: can be one of the following bits:
 
          ============================ ======= ============================ 
          Gradient Type                 Value  Description
@@ -555,6 +585,8 @@ class BPArt(object):
         """
         Returns the gradient type for L{BPArt} drawings.
 
+        :return: An integer representing the gradient type.
+        
         :see: L{SetGradientType} for a list of possible gradient types.
         """
 
@@ -566,8 +598,8 @@ class BPArt(object):
         Draws a separator in L{ButtonPanel}.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the separator client rectangle;
-        :param `isVertical`: ``True`` if L{ButtonPanel} is in vertical orientation,
+        :param `wx.Rect` `rect`: the separator client rectangle;
+        :param bool `isVertical`: ``True`` if L{ButtonPanel} is in vertical orientation,
          ``False`` otherwise.
         """
                     
@@ -590,8 +622,8 @@ class BPArt(object):
         Draws the main caption text in L{ButtonPanel}.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the main caption text rectangle;
-        :param `captionText`: the caption text string.
+        :param `wx.Rect` `rect`: the main caption text rectangle;
+        :param string `captionText`: the caption text string.
         """
 
         textColour = self._caption_text_colour
@@ -610,14 +642,14 @@ class BPArt(object):
         Draws a button in L{ButtonPanel}, together with its text (if any).
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the button client rectangle;
-        :param `buttonBitmap`: the bitmap associated with the button;
-        :param `isVertical`: ``True`` if L{ButtonPanel} is in vertical orientation,
+        :param `wx.Rect` `rect`: the button client rectangle;
+        :param `wx.Bitmap` `buttonBitmap`: the bitmap associated with the button;
+        :param bool `isVertical`: ``True`` if L{ButtonPanel} is in vertical orientation,
          ``False`` otherwise;
-        :param `buttonStatus`: one of "Normal", "Toggled", "Pressed", "Disabled" or "Hover";
-        :param `isToggled`: whether the button is toggled or not;
-        :param `textAlignment`: the text alignment inside the button;
-        :param `text`: the button label.
+        :param string `buttonStatus`: one of "Normal", "Toggled", "Pressed", "Disabled" or "Hover";
+        :param bool `isToggled`: whether the button is toggled or not;
+        :param integer `textAlignment`: the text alignment inside the button;
+        :param string `text`: the button label.
         """
         
         bmpxsize, bmpysize = buttonBitmap.GetWidth(), buttonBitmap.GetHeight()
@@ -701,10 +733,10 @@ class BPArt(object):
         Draws the label for a button.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `text`: the button label;
-        :param `isEnabled`: ``True`` if the button is enabled, ``False`` otherwise;
-        :param `xpos`: the text x position inside the button;
-        :param `ypos`: the text y position inside the button.
+        :param string `text`: the button label;
+        :param bool `isEnabled`: ``True`` if the button is enabled, ``False`` otherwise;
+        :param integer `xpos`: the text `x` position inside the button;
+        :param integer `ypos`: the text `y` position inside the button.
         """
 
         if not isEnabled:
@@ -720,8 +752,8 @@ class BPArt(object):
         Paint the L{ButtonPanel}'s background.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the L{ButtonPanel} client rectangle;
-        :param `style`: the L{ButtonPanel} window style.
+        :param `wx.Rect` `rect`: the L{ButtonPanel} client rectangle;
+        :param integer `style`: the L{ButtonPanel} window style.
         """
 
         if style & BP_USE_GRADIENT:
@@ -742,7 +774,7 @@ class BPArt(object):
         Gradient fill from colour 1 to colour 2 with top to bottom or left to right.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the L{ButtonPanel} client rectangle.        
+        :param `wx.Rect` `rect`: the L{ButtonPanel} client rectangle.        
         """
 
         if rect.height < 1 or rect.width < 1: 
@@ -784,6 +816,8 @@ class StatusBarTimer(wx.Timer):
         """
         Default class constructor.
         For internal use: do not call it in your code!
+
+        :param `owner`: an instance of L{ButtonPanel}.        
         """
         
         wx.Timer.__init__(self)
@@ -806,11 +840,11 @@ class Control(wx.EvtHandler):
         """
         Default class constructor.
         
-        :param `parent`: the control parent object;
-        :param `size`: the control size. ``wx.DefaultSize`` indicates that wxPython should
-         generate a default size for the window. If no suitable size can be found, the
-         window will be sized to 20x20 pixels so that the window is visible but obviously
-         not correctly sized.
+        :param `wx.Window` `parent`: the control parent object. Must not be ``None``;
+        :param `size`: the control size. A value of (-1, -1) indicates a default size,
+         chosen by either the windowing system or wxPython, depending on platform;
+        :type `size`: tuple or `wx.Size`
+        :param integer `id`: window identifier. A value of -1 indicates a default value.
         """
 
         wx.EvtHandler.__init__(self)
@@ -831,7 +865,7 @@ class Control(wx.EvtHandler):
         """
         Shows or hide the control.
 
-        :param `show`: If ``True`` displays the window. Otherwise, it hides it.
+        :param bool `show`: If ``True`` displays the window. Otherwise, it hides it.
         """
 
         self._isshown = show
@@ -857,6 +891,8 @@ class Control(wx.EvtHandler):
         """
         Returns the identifier of the window.
 
+        :return: An integer representing the identifier of the window.
+        
         :note: Each window has an integer identifier. If the application has not provided
          one (or the default ``wx.ID_ANY``) an unique identifier with a negative value will
          be generated.
@@ -872,6 +908,8 @@ class Control(wx.EvtHandler):
         label is not truncated. For windows containing subwindows (typically `wx.Panel`),
         the size returned by this function will be the same as the size the window would
         have had after calling `Fit()`.
+
+        :return: An instance of `wx.Size`.
         """
 
         return self._size
@@ -894,7 +932,7 @@ class Control(wx.EvtHandler):
         """
         Enable or disable the window for user input. 
 
-        :param `enable`: If ``True``, enables the window for input. If ``False``, disables the window.
+        :param bool `enable`: If ``True``, enables the window for input. If ``False``, disables the window.
 
         :returns: ``True`` if the window has been enabled or disabled, ``False`` if nothing was
          done, i.e. if the window had already been in the specified state.
@@ -911,14 +949,18 @@ class Control(wx.EvtHandler):
         """
         Sets or kills the focus on the control.
 
-        :param `focus`: whether the control can receive keyboard inputs or not.
+        :param bool `focus`: whether the control can receive keyboard inputs or not.
         """
 
         self._focus = focus
 
         
     def HasFocus(self):
-        """ Returns whether the control has the focus or not. """
+        """
+        Returns whether the control has the focus or not.
+
+        :return: ``True`` if the control has the focus, ``False`` otherwise.
+        """
 
         return self._focus
     
@@ -927,8 +969,8 @@ class Control(wx.EvtHandler):
         """
         Handles the ``wx.EVT_MOUSE_EVENTS`` events for the control.
 
-        :param `x`: the mouse x position;
-        :param `y`: the mouse y position;
+        :param integer `x`: the mouse `x` position;
+        :param integer `y`: the mouse `y` position;
         :param `event`: the `wx.MouseEvent` event to be processed.
         """
         
@@ -939,7 +981,7 @@ class Control(wx.EvtHandler):
         """
         Handles the drawing of the control.
 
-        :param `rect`: the control client rectangle.
+        :param `wx.Rect` `rect`: the control client rectangle.
         """
         
         pass
@@ -975,6 +1017,8 @@ class Sizer(object):
     def GetBestSize(self):
         """
         This functions returns the best acceptable minimal size for the sizer object.
+
+        :return: An instance of `wx.Size`.        
         """
 
         # this should be handled by the wx.Sizer based class
@@ -989,7 +1033,7 @@ class BoxSizer(Sizer, wx.BoxSizer):
         """
         Constructor for L{BoxSizer}.
 
-        :param `orient`: may be one of ``wx.VERTICAL`` or ``wx.HORIZONTAL`` for creating
+        :param integer `orient`: may be one of ``wx.VERTICAL`` or ``wx.HORIZONTAL`` for creating
          either a column sizer or a row sizer.
         """
         
@@ -1007,14 +1051,14 @@ class BoxSizer(Sizer, wx.BoxSizer):
 
         :param `item`: the item to be added to L{BoxSizer}. Can be an instance of `wx.Window`,
          `wx.Sizer` or a spacer;
-        :param `proportion`: this parameter is used in L{BoxSizer} to indicate if a child of
+        :param integer `proportion`: this parameter is used in L{BoxSizer} to indicate if a child of
          a sizer can change its size in the main orientation of the L{BoxSizer} - where 0
          stands for not changeable and a value of more than zero is interpreted relative
          to the value of other children of the same L{BoxSizer}. For example, you might have
          a horizontal L{BoxSizer} with three children, two of which are supposed to change their
          size with the sizer. Then the two stretchable windows would get a value of 1 each to
          make them grow and shrink equally with the sizer's horizontal dimension.
-        :param `flag`: this parameter can be used to set a number of flags which can be combined using the binary OR operator ``|``. 
+        :param integer `flag`: this parameter can be used to set a number of flags which can be combined using the binary OR operator ``|``. 
          Two main behaviours are defined using these flags. One is the border around a window: the border parameter determines the border 
          width whereas the flags given here determine which side(s) of the item that the border will be added. The other flags determine 
          how the sizer item behaves when the space allotted to the sizer changes, and is somewhat dependent on the specific kind of sizer used:
@@ -1039,7 +1083,7 @@ class BoxSizer(Sizer, wx.BoxSizer):
          |                                                                     | maintaining its aspect ratio                                                |
          +---------------------------------------------------------------------+-----------------------------------------------------------------------------+
          | ``wx.FIXED_MINSIZE``                                                | Normally `wx.Sizers` will use                                               |
-         |                                                                     | `wx.Window.GetAdjustedBestSize` to                                          |
+         |                                                                     | ``wx.Window.GetAdjustedBestSize`` to                                        |
          |                                                                     | determine what the minimal size of window items should be, and will use that| 
          |                                                                     | size to calculate the layout. This allows layouts to adjust when an item    |
          |                                                                     | changes and its best size becomes different. If you would rather have a     |
@@ -1066,9 +1110,9 @@ class BoxSizer(Sizer, wx.BoxSizer):
          | ``wx.ALIGN_CENTER_HORIZONTAL`` **or** ``wx.ALIGN_CENTRE_HORIZONTAL``|                                                                             |
          +---------------------------------------------------------------------+-----------------------------------------------------------------------------+
 
-        :param `border`: determines the border width, if the flag parameter is set
+        :param integer `border`: determines the border width, if the flag parameter is set
          to include any border flag.
-        :param `userData`: Allows an extra object to be attached to the sizer item,
+        :param object `userData`: Allows an extra object to be attached to the sizer item,
          for use in derived classes when sizing information is more complex than the
          proportion and flag will allow for.
 
@@ -1141,8 +1185,8 @@ class BoxSizer(Sizer, wx.BoxSizer):
         L{BoxSizer.Layout} to update the layout on screen after removing a child from
         the sizer.
 
-        :param `indx`: the zero-based index of an item to remove;
-        :param `pop`: whether to remove the sizer item from the list of children.
+        :param integer `indx`: the zero-based index of an item to remove;
+        :param bool `pop`: whether to remove the sizer item from the list of children.
         """
         
         if pop >= 0:
@@ -1171,7 +1215,7 @@ class BoxSizer(Sizer, wx.BoxSizer):
         Shows or hides the sizer item.
 
         :param `item`: the sizer item we want to show/hide;
-        :param `show`: ``True`` to show the item, ``False`` to hide it.
+        :param bool `show`: ``True`` to show the item, ``False`` to hide it.
         """
         
         child = self.GetChildren()[item]
@@ -1197,7 +1241,7 @@ class Separator(Control):
         """
         Default class constructor.
         
-        :param `parent`: the separator parent object.
+        :param `parent`: the separator parent object, an instance of L{ButtonPanel}.
         """
         
         self._isshown = True
@@ -1206,7 +1250,11 @@ class Separator(Control):
 
     
     def GetBestSize(self):
-        """ Returns the separator best size. """
+        """
+        Returns the separator best size.
+
+        :return: An instance of `wx.Size`.
+        """
 
         # 10 is completely arbitrary, but it works anyhow
         if self._parent.IsVertical():
@@ -1220,7 +1268,7 @@ class Separator(Control):
         Draws the separator. Actually the drawing is done in L{BPArt}.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the separator client rectangle.
+        :param `wx.Rect` `rect`: the separator client rectangle.
         """
 
         if not self.IsShown():
@@ -1242,8 +1290,8 @@ class ButtonPanelText(Control):
         """
         Default class constructor.
         
-        :param `parent`: the text parent object;
-        :param `text`: the actual main caption string.
+        :param `parent`: the text parent object, an instance of L{ButtonPanel};
+        :param string `text`: the actual main caption string.
         """
 
         self._text = text
@@ -1254,7 +1302,11 @@ class ButtonPanelText(Control):
 
 
     def GetText(self):
-        """ Returns the caption text. """
+        """
+        Returns the caption text.
+
+        :return: A string representing the caption text.    
+        """
 
         return self._text
 
@@ -1263,7 +1315,7 @@ class ButtonPanelText(Control):
         """
         Sets the caption text.
 
-        :param `text`: the main caption string.
+        :param string `text`: the main caption string.
         """
 
         self._text = text
@@ -1280,7 +1332,11 @@ class ButtonPanelText(Control):
 
         
     def GetBestSize(self):
-        """ Returns the best size for the main caption in L{ButtonPanel}. """
+        """
+        Returns the best size for the main caption in L{ButtonPanel}.
+
+        :return: An instance of `wx.Size`.
+        """
 
         if self._text == "":
             return wx.Size(0, 0)
@@ -1300,7 +1356,7 @@ class ButtonPanelText(Control):
         Draws the main caption. Actually the drawing is done in L{BPArt}.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the main caption text client rectangle.
+        :param `wx.Rect` `rect`: the main caption text client rectangle.
         """
 
         if not self.IsShown():
@@ -1328,14 +1384,14 @@ class ButtonInfo(Control):
         Default class constructor.
 
         :param `parent`: the parent window (L{ButtonPanel});
-        :param `id`: the button id;
-        :param `bmp`: the associated bitmap;
-        :param `status`: button status ("Pressed", "Hover", "Normal", "Toggled", "Disabled");
-        :param `text`: text to be displayed either below of to the right of the button;
-        :param `kind`: button kind, may be ``wx.ITEM_NORMAL`` for standard buttons or
+        :param integer `id`: the button id;
+        :param `wx.Bitmap` `bmp`: the associated bitmap;
+        :param string `status`: button status ("Pressed", "Hover", "Normal", "Toggled", "Disabled");
+        :param string `text`: text to be displayed either below of to the right of the button;
+        :param integer `kind`: button kind, may be ``wx.ITEM_NORMAL`` for standard buttons or
          ``wx.ITEM_CHECK`` for toggle buttons;
-        :param `shortHelp`: a short help to be shown in the button tooltip;
-        :param `longHelp`: this string is shown in the statusbar (if any) of the parent
+        :param string `shortHelp`: a short help to be shown in the button tooltip;
+        :param string `longHelp`: this string is shown in the statusbar (if any) of the parent
          frame when the mouse pointer is inside the button.
         """
         
@@ -1363,7 +1419,11 @@ class ButtonInfo(Control):
         
 
     def GetBestSize(self):
-        """ Returns the best size for the button. """
+        """
+        Returns the best size for the button.
+
+        :return: An instance of `wx.Size`.
+        """
 
         xsize = self.GetBitmap().GetWidth()
         ysize = self.GetBitmap().GetHeight()
@@ -1400,7 +1460,7 @@ class ButtonInfo(Control):
         Draws the button on L{ButtonPanel}. Actually the drawing is done in L{BPArt}.
 
         :param `dc`: an instance of `wx.DC`;
-        :param `rect`: the main caption text client rectangle.
+        :param `wx.Rect` `rect`: the main caption text client rectangle.
         """
 
         if not self.IsShown():
@@ -1423,7 +1483,7 @@ class ButtonInfo(Control):
         """
         Checks whether a L{ButtonPanel} repaint is needed or not. This is a convenience function.
 
-        :param `status`: the status of a newly added L{ButtonInfo} or a change in the
+        :param bool `status`: the status of a newly added L{ButtonInfo} or a change in the
          L{ButtonInfo} status.
         """
 
@@ -1436,7 +1496,7 @@ class ButtonInfo(Control):
         Sets the bitmap associated with this instance of L{ButtonInfo}.
 
         :param `bmp`: a valid `wx.Bitmap` object;
-        :param `status`: the L{ButtonInfo} status ("Pressed", "Hover", "Normal",
+        :param string `status`: the L{ButtonInfo} status ("Pressed", "Hover", "Normal",
          "Toggled", "Disabled").
         """
 
@@ -1448,8 +1508,10 @@ class ButtonInfo(Control):
         """
         Returns the bitmap associated with this instance of L{ButtonInfo}.
 
-        :param `status`: the L{ButtonInfo} status ("Pressed", "Hover", "Normal",
+        :param string `status`: the L{ButtonInfo} status ("Pressed", "Hover", "Normal",
          "Toggled", "Disabled").
+
+        :return: An instance of `wx.Bitmap`.         
         """
 
         if status is None:
@@ -1468,19 +1530,32 @@ class ButtonInfo(Control):
 
 
     def GetRect(self):
-        """ Returns the L{ButtonInfo} client rectangle. """
+        """
+        Returns the L{ButtonInfo} client rectangle.
+
+        :return: An instance of `wx.Rect`.
+        """
 
         return self._rect
 
 
     def GetStatus(self):
-        """ Returns the L{ButtonInfo} status. """
+        """
+        Returns the L{ButtonInfo} status.
+
+        :return: A string containing the L{ButtonInfo} status (one of "Pressed", "Hover", "Normal",
+         "Toggled", "Disabled").
+        """
 
         return self._status
 
 
     def GetId(self):
-        """ Returns the L{ButtonInfo} id. """
+        """
+        Returns the L{ButtonInfo} id.
+
+        :return: An integer representing the button id.
+        """
         
         return self._id
 
@@ -1499,7 +1574,7 @@ class ButtonInfo(Control):
         """
         Sets the L{ButtonInfo} status.
 
-        :param `status`: one of "Pressed", "Hover", "Normal", "Toggled", "Disabled".
+        :param string `status`: one of "Pressed", "Hover", "Normal", "Toggled", "Disabled".
         """
 
         if status == self._status:
@@ -1513,7 +1588,11 @@ class ButtonInfo(Control):
 
 
     def GetTextAlignment(self):
-        """ Returns the text alignment in the button (bottom or right). """
+        """
+        Returns the text alignment in the button (bottom or right).
+
+        :return: An integer representing the L{ButtonInfo} text alignment.
+        """
 
         return self._textAlignment
 
@@ -1522,7 +1601,7 @@ class ButtonInfo(Control):
         """
         Sets the text alignment in the button (bottom or right).
 
-        :param `alignment`: the text alignment in this L{ButtonInfo} instance.
+        :param integer `alignment`: the text alignment in this L{ButtonInfo} instance.
         """
 
         if alignment == self._textAlignment:
@@ -1532,7 +1611,11 @@ class ButtonInfo(Control):
         
 
     def GetToggled(self):
-        """ Returns whether a ``wx.ITEM_CHECK`` button is toggled or not. """
+        """
+        Returns whether a ``wx.ITEM_CHECK`` button is toggled or not.
+
+        :return: ``True`` if the button is toggled, ``False`` otherwise.
+        """
 
         if self._kind == wx.ITEM_NORMAL:
             return False
@@ -1544,7 +1627,7 @@ class ButtonInfo(Control):
         """
         Sets a ``wx.ITEM_CHECK`` button toggled/not toggled.
 
-        :param `toggle`: ``True`` to toggle the button, ``False`` otherwise.
+        :param bool `toggle`: ``True`` to toggle the button, ``False`` otherwise.
         """
 
         if self._kind == wx.ITEM_NORMAL:
@@ -1557,7 +1640,7 @@ class ButtonInfo(Control):
         """
         Sets the L{ButtonInfo} identifier.
 
-        :param `id`: the identifier of the window.
+        :param integer `id`: the identifier of the window.
         """
 
         self._id = id
@@ -1573,8 +1656,8 @@ class ButtonInfo(Control):
          - Pressed;
          - Toggled.
 
-        :param `name`: the new status name;
-        :param `bmp`: the bitmap associated with the new status.
+        :param string `name`: the new status name;
+        :param `wx.Bitmap` `bmp`: the bitmap associated with the new status.
         """
 
         self._bitmaps.update({name: bmp})
@@ -1584,7 +1667,7 @@ class ButtonInfo(Control):
         """
         Enables/disables this instance of L{ButtonInfo}.
 
-        :param `enable`: ``True`` to enable the button, ``False`` otherwise.
+        :param bool `enable`: ``True`` to enable the button, ``False`` otherwise.
         """
         
         if enable:
@@ -1606,20 +1689,28 @@ class ButtonInfo(Control):
         """
         Sets the button label text.
 
-        :param `text`: the button label string.
+        :param string `text`: the button label string.
         """
 
         self._text = text
 
 
     def GetText(self):
-        """ Returns the text associated to the button. """
+        """
+        Returns the text associated to the button.
+
+        :return: A string containing the L{ButtonInfo} text.
+        """
 
         return self._text
 
 
     def HasText(self):
-        """ Returns whether the button has text or not. """
+        """
+        Returns whether the button has text or not.
+
+        :return: ``True`` if this L{ButtonInfo} instance has a label, ``False`` otherwise.
+        """
 
         return self._text != ""
     
@@ -1628,14 +1719,18 @@ class ButtonInfo(Control):
         """
         Sets the button type (standard or toggle).
 
-        :param `kind`: one of ``wx.ITEM_NORMAL``, ``wx.ITEM_CHECK``.
+        :param integer `kind`: one of ``wx.ITEM_NORMAL``, ``wx.ITEM_CHECK``.
         """
 
         self._kind = kind
 
 
     def GetKind(self):
-        """ Returns the button type (standard or toggle). """
+        """
+        Returns the button type (standard or toggle).
+
+        :return: An integer representing the button type, one of ``wx.ITEM_NORMAL``, ``wx.ITEM_CHECK``.
+        """
 
         return self._kind
 
@@ -1644,14 +1739,18 @@ class ButtonInfo(Control):
         """
         Sets the help string to be shown in a tooltip.
 
-        :param `help`: the string for the short help.
+        :param string `help`: the string for the short help.
         """
         
         self._shortHelp = help
 
 
     def GetShortHelp(self):
-        """ Returns the help string shown in a tooltip. """
+        """
+        Returns the help string shown in a tooltip.
+
+        :return: A string containing the L{ButtonInfo} short help string.
+        """
 
         return self._shortHelp
 
@@ -1660,14 +1759,18 @@ class ButtonInfo(Control):
         """
         Sets the help string to be shown in the statusbar.
 
-        :param `help`: the string for the long help.
+        :param string `help`: the string for the long help.
         """
 
         self._longHelp = help
 
 
     def GetLongHelp(self):
-        """ Returns the help string shown in the statusbar. """
+        """
+        Returns the help string shown in the statusbar.
+
+        :return: A string containing the L{ButtonInfo} long help string.
+        """
 
         return self._longHelp
     
@@ -1692,12 +1795,12 @@ class ButtonPanel(wx.PyPanel):
         """
         Default class constructor.
 
-        :param `parent`: the parent window;
-        :param `id`: window identifier. If ``wx.ID_ANY``, will automatically create an identifier;
-        :param `text`: the main caption text for L{ButtonPanel};
-        :param `agwStyle`: the AGW-specific window style (one of ``BP_DEFAULT_STYLE``, ``BP_USE_GRADIENT``);
-        :param `alignment`: alignment of buttons (left or right);
-        :param `name`: window class name.
+        :param `wx.Window` `parent`: the parent window. Must not be ``None``;
+        :param integer `id`: window identifier. If ``wx.ID_ANY``, will automatically create an identifier;
+        :param string `text`: the main caption text for L{ButtonPanel};
+        :param integer `agwStyle`: the AGW-specific window style (one of ``BP_DEFAULT_STYLE``, ``BP_USE_GRADIENT``);
+        :param integer `alignment`: alignment of buttons (left or right);
+        :param string `name`: window class name.
         """
         
         wx.PyPanel.__init__(self, parent, id, wx.DefaultPosition, wx.DefaultSize,
@@ -1747,7 +1850,7 @@ class ButtonPanel(wx.PyPanel):
         """
         Sets the main caption text.
 
-        :param `text`: the main caption text label. An empty string erases the
+        :param string `text`: the main caption text label. An empty string erases the
          main caption text.
          """
 
@@ -1807,13 +1910,21 @@ class ButtonPanel(wx.PyPanel):
 
                     
     def GetBarText(self):
-        """ Returns the main caption text. """
+        """
+        Returns the main caption text.
+
+        :return: A string representing the caption text.
+        """
 
         return self._text.GetText()
 
 
     def HasBarText(self):
-        """ Returns whether L{ButtonPanel} has a main caption text or not. """
+        """
+        Returns whether L{ButtonPanel} has a main caption text or not.
+
+        :return: ``True`` if L{ButtonPanel} has a main caption text, ``False`` otherwise.
+        """
 
         return hasattr(self, "_text") and self._text.GetText() != ""
 
@@ -1838,10 +1949,10 @@ class ButtonPanel(wx.PyPanel):
         """
         Adds a spacer (stretchable or fixed-size) to L{ButtonPanel}.
 
-        :param `size`: the spacer size as a tuple;
-        :param `proportion`: the spacer proportion (0 for fixed-size, 1 or more for a
+        :param tuple `size`: the spacer size as a tuple;
+        :param integer `proportion`: the spacer proportion (0 for fixed-size, 1 or more for a
          stretchable one);
-        :param `flag`: one of the `wx.BoxSizer` flags. 
+        :param integer `flag`: one of the `wx.BoxSizer` flags. 
         """
 
         lenChildren = len(self._mainsizer.GetChildren())
@@ -1853,10 +1964,10 @@ class ButtonPanel(wx.PyPanel):
         Adds a wxPython control to L{ButtonPanel}.
 
         :param `control`: an instance of `wx.Window`;
-        :param `proportion`: the control proportion (0 for fixed-size, 1 or more for a
+        :param integer `proportion`: the control proportion (0 for fixed-size, 1 or more for a
          stretchable one);
-        :param `flag`: one of the `wx.BoxSizer` flags;
-        :param `border`: the control border width (in pixels), if the `flag` parameter
+        :param integer `flag`: one of the `wx.BoxSizer` flags;
+        :param integer `border`: the control border width (in pixels), if the `flag` parameter
          is set to include any border flag.        
         """
 
@@ -1883,7 +1994,7 @@ class ButtonPanel(wx.PyPanel):
         """
         Remove all the buttons from L{ButtonPanel}.
         
-        :note: This function is only for internal use only. If you are interested in
+        :note: This function is for internal use only. If you are interested in
          manipulating a L{ButtonPanel} in real time (ie. removing things on it)
          have a look at the L{Clear} method.
         """
@@ -1895,7 +2006,7 @@ class ButtonPanel(wx.PyPanel):
         """
         Remove all the separators from L{ButtonPanel}.
         
-        :note: This function is only for internal use only. If you are interested in
+        :note: This function is for internal use only. If you are interested in
          manipulating a L{ButtonPanel} in real time (ie. removing things on it)
          have a look at the L{Clear} method.
         """
@@ -1927,6 +2038,8 @@ class ButtonPanel(wx.PyPanel):
         """
         Returns the buttons alignment.
 
+        :return: An integer specifying the buttons alignment.
+        
         :see: L{SetAlignment} for a set of valid alignment bits.
         """
 
@@ -1937,7 +2050,7 @@ class ButtonPanel(wx.PyPanel):
         """
         Sets the buttons alignment.
 
-        :param `alignment`: can be one of the following bits:
+        :param integer `alignment`: can be one of the following bits:
 
          ====================== ======= ==========================
          Alignment Flag          Value  Description
@@ -1970,13 +2083,21 @@ class ButtonPanel(wx.PyPanel):
 
 
     def IsVertical(self):
-        """ Returns whether L{ButtonPanel} is vertically aligned or not. """
+        """
+        Returns whether L{ButtonPanel} is vertically aligned or not.
+
+        :return: ``True`` if L{ButtonPanel} is vertically aligned, ``False`` otherwise.
+        """
 
         return self._alignment not in [BP_ALIGN_RIGHT, BP_ALIGN_LEFT]
         
 
     def IsStandard(self):
-        """ Returns whether L{ButtonPanel} is aligned "Standard" (left/top) or not. """
+        """
+        Returns whether L{ButtonPanel} is aligned "Standard" (left/top) or not.
+
+        :return: ``True`` if L{ButtonPanel} is aligned "standard", ``False`` otherwise.
+        """
 
         return self._alignment in [BP_ALIGN_LEFT, BP_ALIGN_TOP]
 
@@ -2012,7 +2133,7 @@ class ButtonPanel(wx.PyPanel):
         """
         Recreates the L{ButtonPanel} sizer accordingly to the alignment specified.
 
-        :param `text`: the text to display as main caption. If `text` is set to ``None``,
+        :param string `text`: the text to display as main caption. If `text` is set to ``None``,
          the main caption will not be displayed.
         """
         
@@ -2068,6 +2189,8 @@ class ButtonPanel(wx.PyPanel):
         Gets the size which best suits L{ButtonPanel}: for a control, it would be
         the minimal size which doesn't truncate the control, for a panel - the
         same size as it would have after a call to `Fit()`.
+
+        :return: An instance of `wx.Size`.
 
         :note: Overridden from `wx.PyPanel`.        
         """
@@ -2189,8 +2312,8 @@ class ButtonPanel(wx.PyPanel):
         """
         Layout the items when no main caption exists.
 
-        :param `nonspacers`: a list of items which are not spacers;
-        :param `children`: a list of all the children of L{ButtonPanel}.
+        :param list `nonspacers`: a list of items which are not spacers;
+        :param list `children`: a list of all the children of L{ButtonPanel}.
         """
 
         size = self.GetSize()
@@ -2216,8 +2339,10 @@ class ButtonPanel(wx.PyPanel):
         Returns the size of an item in the main L{ButtonPanel} sizer.
 
         :param `item`: an instance of L{ButtonInfo};
-        :param `isVertical`: ``True`` if L{ButtonPanel} is in vertical orientation,
+        :param bool `isVertical`: ``True`` if L{ButtonPanel} is in vertical orientation,
          ``False`` otherwise.
+
+        :return: An instance of `wx.Size`.
         """
         
         if item.GetUserData():
@@ -2230,8 +2355,8 @@ class ButtonPanel(wx.PyPanel):
         """
         Layout the items when the main caption exists.
 
-        :param `nonspacers`: a list of items which are not spacers;
-        :param `allchildren`: a list of all the children of L{ButtonPanel}.
+        :param list `nonspacers`: a list of items which are not spacers;
+        :param list `allchildren`: a list of all the children of L{ButtonPanel}.
         """
 
         if len(nonspacers) < 2:
@@ -2277,6 +2402,8 @@ class ButtonPanel(wx.PyPanel):
         """
         Returns all the L{ButtonPanel} main sizer's children that are not
         flexible spacers.
+
+        :return: A list of items inside L{ButtonPanel} that are not flexible spacers.
         """
 
         children1 = []
@@ -2293,7 +2420,11 @@ class ButtonPanel(wx.PyPanel):
 
 
     def GetControls(self):
-        """ Returns the wxPython controls that belongs to L{ButtonPanel}. """
+        """
+        Returns the wxPython controls that belongs to L{ButtonPanel}.
+
+        :return: A list of items inside L{ButtonPanel} that are wxPython controls.
+        """
     
         children2 = self._mainsizer.GetChildren()
         children1 = [child for child in children2 if not child.IsSpacer()]
@@ -2305,7 +2436,7 @@ class ButtonPanel(wx.PyPanel):
         """
         Sets the L{ButtonPanel} window style.
 
-        :param `agwStyle`: one of the following bits:
+        :param integer `agwStyle`: one of the following bits:
 
          ==================== =========== ==================================================
          Window Styles        Hex Value   Description
@@ -2545,7 +2676,7 @@ class ButtonPanel(wx.PyPanel):
         Sets whether or not short and long help strings should be displayed as tooltips
         and `wx.StatusBar` items respectively.
 
-        :param `useHelp`: ``True`` to display short and long help strings as tooltips
+        :param bool `useHelp`: ``True`` to display short and long help strings as tooltips
          and `wx.StatusBar` items respectively, ``False`` otherwise.
         """
 
@@ -2556,6 +2687,9 @@ class ButtonPanel(wx.PyPanel):
         """
         Returns whether or not short and long help strings should be displayed as tooltips
         and `wx.StatusBar` items respectively.
+
+        :return: ``True`` if the short and long help strings should be displayed as tooltips
+         and `wx.StatusBar` items respectively, ``False`` otherwise.
         """
         
         return self._useHelp

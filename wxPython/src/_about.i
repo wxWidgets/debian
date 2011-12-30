@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     08-Oct-2006
-// RCS-ID:      $Id: _about.i 42132 2006-10-19 21:38:17Z RD $
+// RCS-ID:      $Id: _about.i 63453 2010-02-09 21:54:05Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,8 @@ returned by `wx.App.GetAppName` will be shown in the dialog.", "");
     %property(Name, GetName, SetName);
 
     DocDeclStr(
-        void , SetVersion(const wxString& version),
+        void , SetVersion(const wxString& version,
+                          const wxString& longVersion = wxEmptyString),
         "Set the version of the program. The version is in free format,
 i.e. not necessarily in the x.y.z form but it shouldn't contain the
 \"version\" word.", "");
@@ -70,7 +71,13 @@ i.e. not necessarily in the x.y.z form but it shouldn't contain the
         "Returns the version value.", "");
     
     %property(Version, GetVersion, SetVersion);
+
+    DocDeclStr(
+        wxString , GetLongVersion() const,
+        "", "");
     
+    %property(LongVersion, GetLongVersion);
+
 
     DocDeclStr(
         void , SetDescription(const wxString& desc),
@@ -285,6 +292,10 @@ this function for maximally native look and feel.", "");
     // artists and translators) as a one long multiline string
     wxString GetDescriptionAndCredits() const;
 
+    // returns the copyright with the (C) string substituted by the Unicode
+    // character U+00A9
+    wxString GetCopyrightToDisplay() const;
+
 };
 
 
@@ -296,7 +307,7 @@ native about dialog which is capable of showing all the fields in
 `wx.AboutDialogInfo`, the native dialog is used, otherwise the
 function falls back to the generic wxWidgets version of the dialog.", "");
 
-void wxAboutBox(const wxAboutDialogInfo& info);
+void wxAboutBox(const wxAboutDialogInfo& info, wxWindow* parent = NULL);
 
 
 //---------------------------------------------------------------------------

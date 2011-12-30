@@ -4,9 +4,9 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/03/16
-// RCS-ID:      $Id: radiobut.mm 48532 2007-09-03 18:16:03Z DE $
+// RCS-ID:      $Id: radiobut.mm 66555 2011-01-04 08:31:53Z SC $
 // Copyright:   (c) 2003 David Elliott
-// Licence:     wxWidgets licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #include "wx/wxprec.h"
@@ -28,7 +28,6 @@
 
 WX_DEFINE_LIST(wxRadioButtonList);
 
-IMPLEMENT_DYNAMIC_CLASS(wxRadioButton, wxControl)
 // wxRadioButtonBase == wxControl
 BEGIN_EVENT_TABLE(wxRadioButton, wxControl)
 END_EVENT_TABLE()

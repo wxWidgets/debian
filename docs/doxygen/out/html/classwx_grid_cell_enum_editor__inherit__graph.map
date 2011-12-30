@@ -1,0 +1,4 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classwx_grid_cell_choice_editor.html" title="Grid cell editor for string data providing the user a choice from a list of strings." alt="" coords="5,86,163,117"/>
+<area shape="rect" id="node4" href="$classwx_grid_cell_editor.html" title="This class is responsible for providing and manipulating the in&#45;place edit controls for the grid..." alt="" coords="25,6,143,37"/>
+</map>

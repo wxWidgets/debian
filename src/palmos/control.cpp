@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by: Wlodzimierz ABX Skiba - native implementation
 // Created:     10/13/04
-// RCS-ID:      $Id: control.cpp 42816 2006-10-31 08:50:17Z RD $
+// RCS-ID:      $Id: control.cpp 58246 2009-01-20 18:33:33Z VZ $
 // Copyright:   (c) William Osborne, Wlodzimierz Skiba
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,11 @@
 
 #include <Control.h>
 #include <Form.h>
-#include <StatusBar.h>
+#ifdef __WXPALMOS6__
+    #include <StatusBar.h>
+#else
+    #include <PenInputMgr.h>
+#endif // __WXPALMOS6__
 
 // ----------------------------------------------------------------------------
 // wxWin macros
@@ -73,8 +77,9 @@ void wxControl::Init()
 
 wxControl::~wxControl()
 {
+    SendDestroyEvent();
+
     SetLabel(wxEmptyString);
-    m_isBeingDeleted = true;
 
     DestroyChildren();
 
@@ -137,7 +142,7 @@ bool wxControl::PalmCreateControl(int style,
                                (void **)&form,
                                GetId(),
                                (ControlStyleType)style,
-                               wxEmptyString,
+                               NULL,
                                x,
                                y,
                                w,
@@ -421,7 +426,7 @@ void wxControl::SetControlLabel(const wxString& label)
     ControlType* control = (ControlType*)GetObjectPtr();
     if(control==NULL)
         return;
-    CtlSetLabel(control,wxEmptyString);
+    CtlSetLabel(control, "");
     m_label = label;
     if(!m_label.empty())
         CtlSetLabel(control,m_label.c_str());
@@ -452,7 +457,7 @@ wxString wxControl::GetControlLabel()
         return wxEmptyString;
     return CtlGetLabel(control);
 }
-
+#if 0
 wxString wxControl::GetLabel()
 {
     if(IsPalmField())
@@ -464,7 +469,7 @@ wxString wxControl::GetLabel()
 
     return wxEmptyString;
 }
-
+#endif
 /* static */ wxVisualAttributes
 wxControl::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
 {
@@ -501,7 +506,7 @@ wxControl::GetCompositeControlsDefaultAttributes(wxWindowVariant WXUNUSED(varian
 
 bool wxControl::ProcessCommand(wxCommandEvent& event)
 {
-    return GetEventHandler()->ProcessEvent(event);
+    return HandleWindowEvent(event);
 }
 
 void wxControl::OnEraseBackground(wxEraseEvent& event)

@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        statbmp.cpp
+// Name:        src/gtk/statbmp.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbmp.cpp 54676 2008-07-18 02:45:48Z PC $
+// Id:          $Id: statbmp.cpp 67681 2011-05-03 16:29:04Z DS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:           wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,14 +14,11 @@
 
 #include "wx/statbmp.h"
 
-#include "gdk/gdk.h"
-#include "gtk/gtk.h"
+#include <gtk/gtk.h>
 
 //-----------------------------------------------------------------------------
 // wxStaticBitmap
 //-----------------------------------------------------------------------------
-
-IMPLEMENT_DYNAMIC_CLASS(wxStaticBitmap,wxControl)
 
 wxStaticBitmap::wxStaticBitmap(void)
 {
@@ -38,8 +35,6 @@ bool wxStaticBitmap::Create( wxWindow *parent, wxWindowID id, const wxBitmap &bi
                              const wxPoint &pos, const wxSize &size,
                              long style, const wxString &name )
 {
-    m_needParent = TRUE;
-
     if (!PreCreation( parent, pos, size ) ||
         !CreateBase( parent, id, pos, size, style, wxDefaultValidator, name ))
     {
@@ -50,8 +45,9 @@ bool wxStaticBitmap::Create( wxWindow *parent, wxWindowID id, const wxBitmap &bi
     m_bitmap = bitmap;
 
     m_widget = gtk_image_new();
+    g_object_ref(m_widget);
 
-    if (bitmap.Ok())
+    if (bitmap.IsOk())
         SetBitmap(bitmap);
 
     PostCreation(size);
@@ -64,7 +60,7 @@ void wxStaticBitmap::SetBitmap( const wxBitmap &bitmap )
 {
     m_bitmap = bitmap;
 
-    if (m_bitmap.Ok())
+    if (m_bitmap.IsOk())
     {
         // always use pixbuf, because pixmap mask does not
         // work with disabled images in some themes

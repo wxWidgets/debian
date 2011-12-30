@@ -1,0 +1,5 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classwx_log_interposer.html" title="A special version of wxLogChain which uses itself as the new log target." alt="" coords="5,166,123,197"/>
+<area shape="rect" id="node4" href="$classwx_log_chain.html" title="This simple class allows you to chain log sinks, that is to install a new sink but keep passing log m..." alt="" coords="19,86,109,117"/>
+<area shape="rect" id="node6" href="$classwx_log.html" title="wxLog class defines the interface for the log targets used by wxWidgets logging functions as explaine..." alt="" coords="35,6,93,37"/>
+</map>

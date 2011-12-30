@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: brush.cpp 41194 2006-09-13 16:16:37Z ABX $
+// RCS-ID:      $Id: brush.cpp 52569 2008-03-16 16:47:57Z FM $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ wxBrush::wxBrush()
 {
 }
 
-wxBrush::wxBrush(const wxColour& col, int style)
+wxBrush::wxBrush(const wxColour& col, wxBrushStyle style)
 {
 }
 
@@ -71,12 +71,12 @@ bool wxBrush::operator==(const wxBrush& brush) const
     return false;
 }
 
-wxObjectRefData *wxBrush::CreateRefData() const
+wxGDIRefData *wxBrush::CreateGDIRefData() const
 {
     return NULL;
 }
 
-wxObjectRefData *wxBrush::CloneRefData(const wxObjectRefData *data) const
+wxGDIRefData *wxBrush::CloneGDIRefData(const wxGDIRefData *data) const
 {
     return NULL;
 }
@@ -90,7 +90,7 @@ wxColour wxBrush::GetColour() const
     return wxNullColour;
 }
 
-int wxBrush::GetStyle() const
+wxBrushStyle wxBrush::GetStyle() const
 {
     return -1;
 }
@@ -117,7 +117,7 @@ void wxBrush::SetColour(unsigned char WXUNUSED(r), unsigned char WXUNUSED(g), un
 {
 }
 
-void wxBrush::SetStyle(int WXUNUSED(style))
+void wxBrush::SetStyle(wxBrushStyle WXUNUSED(style))
 {
 }
 

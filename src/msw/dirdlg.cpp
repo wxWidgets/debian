@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dirdlg.cpp 39613 2006-06-07 11:44:19Z ABX $
+// RCS-ID:      $Id: dirdlg.cpp 66961 2011-02-19 00:30:32Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -100,20 +100,18 @@ void wxDirDialog::SetPath(const wxString& path)
     m_path = path;
 
     // SHBrowseForFolder doesn't like '/'s nor the trailing backslashes
-    m_path.Replace(_T("/"), _T("\\"));
-    if ( !m_path.empty() )
-    {
-        while ( *(m_path.end() - 1) == _T('\\') )
-        {
-            m_path.erase(m_path.length() - 1);
-        }
+    m_path.Replace(wxT("/"), wxT("\\"));
 
-        // but the root drive should have a trailing slash (again, this is just
-        // the way the native dialog works)
-        if ( *(m_path.end() - 1) == _T(':') )
-        {
-            m_path += _T('\\');
-        }
+    while ( !m_path.empty() && (*(m_path.end() - 1) == wxT('\\')) )
+    {
+        m_path.erase(m_path.length() - 1);
+    }
+
+    // but the root drive should have a trailing slash (again, this is just
+    // the way the native dialog works)
+    if ( !m_path.empty() && (*(m_path.end() - 1) == wxT(':')) )
+    {
+        m_path += wxT('\\');
     }
 }
 
@@ -134,7 +132,7 @@ int wxDirDialog::ShowModal()
 #endif
     bi.ulFlags        = BIF_RETURNONLYFSDIRS | BIF_STATUSTEXT;
     bi.lpfn           = BrowseCallbackProc;
-    bi.lParam         = (LPARAM)m_path.c_str();    // param for the callback
+    bi.lParam         = (LPARAM)m_path.wx_str(); // param for the callback
 
     static const int verComCtl32 = wxApp::GetComCtl32Version();
 
@@ -234,7 +232,7 @@ BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lp, LPARAM pData)
                     }
 
                     SendMessage(hwnd, BFFM_SETSTATUSTEXT,
-                                0, (LPARAM)strDir.c_str());
+                                0, (LPARAM)strDir.wx_str());
                 }
             }
             break;

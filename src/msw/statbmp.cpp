@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: statbmp.cpp 56532 2008-10-27 18:15:19Z VZ $
+// RCS-ID:      $Id: statbmp.cpp 67681 2011-05-03 16:29:04Z DS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -45,59 +45,6 @@
 // macors
 // ---------------------------------------------------------------------------
 
-#if wxUSE_EXTENDED_RTTI
-WX_DEFINE_FLAGS( wxStaticBitmapStyle )
-
-wxBEGIN_FLAGS( wxStaticBitmapStyle )
-    // new style border flags, we put them first to
-    // use them for streaming out
-    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
-    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
-    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
-    wxFLAGS_MEMBER(wxBORDER_RAISED)
-    wxFLAGS_MEMBER(wxBORDER_STATIC)
-    wxFLAGS_MEMBER(wxBORDER_NONE)
-
-    // old style border flags
-    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
-    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
-    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
-    wxFLAGS_MEMBER(wxRAISED_BORDER)
-    wxFLAGS_MEMBER(wxSTATIC_BORDER)
-    wxFLAGS_MEMBER(wxBORDER)
-
-    // standard window styles
-    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
-    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
-    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
-    wxFLAGS_MEMBER(wxWANTS_CHARS)
-    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
-    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
-    wxFLAGS_MEMBER(wxVSCROLL)
-    wxFLAGS_MEMBER(wxHSCROLL)
-
-wxEND_FLAGS( wxStaticBitmapStyle )
-
-IMPLEMENT_DYNAMIC_CLASS_XTI(wxStaticBitmap, wxControl,"wx/statbmp.h")
-
-wxBEGIN_PROPERTIES_TABLE(wxStaticBitmap)
-    wxPROPERTY_FLAGS( WindowStyle , wxStaticBitmapStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE, 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
-wxEND_PROPERTIES_TABLE()
-
-wxBEGIN_HANDLERS_TABLE(wxStaticBitmap)
-wxEND_HANDLERS_TABLE()
-
-wxCONSTRUCTOR_5( wxStaticBitmap, wxWindow* , Parent , wxWindowID , Id , wxBitmap, Bitmap, wxPoint , Position , wxSize , Size )
-
-#else
-IMPLEMENT_DYNAMIC_CLASS(wxStaticBitmap, wxControl)
-#endif
-
-/*
-    TODO PROPERTIES :
-        bitmap
-*/
-
 // ===========================================================================
 // implementation
 // ===========================================================================
@@ -119,7 +66,7 @@ static wxGDIImage* ConvertImage( const wxGDIImage& bitmap )
     if( !isIcon )
     {
         wxASSERT_MSG( wxDynamicCast(&bitmap, wxBitmap),
-                      _T("not an icon and not a bitmap?") );
+                      wxT("not an icon and not a bitmap?") );
 
         const wxBitmap& bmp = (const wxBitmap&)bitmap;
         wxMask *mask = bmp.GetMask();
@@ -158,7 +105,7 @@ bool wxStaticBitmap::Create(wxWindow *parent,
     m_isIcon = image->IsKindOf( CLASSINFO(wxIcon) );
 
     // create the native control
-    if ( !MSWCreateControl(_T("STATIC"), wxEmptyString, pos, size) )
+    if ( !MSWCreateControl(wxT("STATIC"), wxEmptyString, pos, size) )
     {
         // control creation failed
         return false;
@@ -188,11 +135,6 @@ bool wxStaticBitmap::Create(wxWindow *parent,
     return true;
 }
 
-wxBorder wxStaticBitmap::GetDefaultBorder() const
-{
-    return wxBORDER_NONE;
-}
-
 WXDWORD wxStaticBitmap::MSWGetStyle(long style, WXDWORD *exstyle) const
 {
     WXDWORD msStyle = wxControl::MSWGetStyle(style, exstyle);
@@ -211,15 +153,15 @@ WXDWORD wxStaticBitmap::MSWGetStyle(long style, WXDWORD *exstyle) const
 
 bool wxStaticBitmap::ImageIsOk() const
 {
-    return m_image && m_image->Ok();
+    return m_image && m_image->IsOk();
 }
 
 wxIcon wxStaticBitmap::GetIcon() const
 {
-    wxCHECK_MSG( m_image, wxIcon(), _T("no image in wxStaticBitmap") );
+    wxCHECK_MSG( m_image, wxIcon(), wxT("no image in wxStaticBitmap") );
 
     // we can't ask for an icon if all we have is a bitmap
-    wxCHECK_MSG( m_isIcon, wxIcon(), _T("no icon in this wxStaticBitmap") );
+    wxCHECK_MSG( m_isIcon, wxIcon(), wxT("no icon in this wxStaticBitmap") );
 
     return *(wxIcon *)m_image;
 }
@@ -236,7 +178,7 @@ wxBitmap wxStaticBitmap::GetBitmap() const
     }
     else // we have a bitmap
     {
-        wxCHECK_MSG( m_image, wxBitmap(), _T("no image in wxStaticBitmap") );
+        wxCHECK_MSG( m_image, wxBitmap(), wxT("no image in wxStaticBitmap") );
 
         return *(wxBitmap *)m_image;
     }
@@ -244,9 +186,7 @@ wxBitmap wxStaticBitmap::GetBitmap() const
 
 void wxStaticBitmap::Free()
 {
-    delete m_image;
-
-    m_image = NULL;
+    wxDELETE(m_image);
 }
 
 wxSize wxStaticBitmap::DoGetBestSize() const
@@ -261,6 +201,8 @@ wxSize wxStaticBitmap::DoGetBestSize() const
     // this is completely arbitrary
     return wxSize(16, 16);
 }
+
+#ifndef __WXWINCE__
 
 void wxStaticBitmap::DoPaintManually(wxPaintEvent& WXUNUSED(event))
 {
@@ -283,6 +225,8 @@ void wxStaticBitmap::DoPaintManually(wxPaintEvent& WXUNUSED(event))
                   (size.GetHeight() - bmp.GetHeight()) / 2,
                   true /* use mask */);
 }
+
+#endif // !__WXWINCE__
 
 void wxStaticBitmap::SetImage( const wxGDIImage* image )
 {

@@ -2,7 +2,7 @@
 // Name:        src/gtk1/minifram.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: minifram.cpp 39123 2006-05-09 13:55:29Z ABX $
+// Id:          $Id: minifram.cpp 64279 2010-05-10 21:09:57Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,8 +19,10 @@
 #endif
 
 #include "gtk/gtk.h"
+#include "wx/dcclient.h"
 #include "wx/gtk1/win_gtk.h"
 #include "wx/gtk1/private.h"
+#include "wx/gtk1/dcclient.h"
 
 #include <gdk/gdk.h>
 #include <gdk/gdkprivate.h>
@@ -86,8 +88,7 @@ static void gtk_window_own_expose_callback( GtkWidget *widget, GdkEventExpose *g
 
     if (!win->GetTitle().empty() &&
         ((win->GetWindowStyle() & wxCAPTION) ||
-         (win->GetWindowStyle() & wxTINY_CAPTION_HORIZ) ||
-         (win->GetWindowStyle() & wxTINY_CAPTION_VERT)))
+         (win->GetWindowStyle() & wxTINY_CAPTION)))
     {
         wxClientDC dc(win);
         dc.SetFont( *wxSMALL_FONT );
@@ -103,7 +104,7 @@ static void gtk_window_own_expose_callback( GtkWidget *widget, GdkEventExpose *g
         gdk_gc_unref( gc );
 
         // Hack alert
-        dc.m_window = pizza->bin_window;
+        static_cast<wxClientDCImpl *>(dc.GetImpl())->m_window = pizza->bin_window;
         dc.SetTextForeground( *wxWHITE );
         dc.DrawText( win->GetTitle(), 6, 3 );
     }
@@ -132,8 +133,7 @@ static void gtk_window_own_draw_callback( GtkWidget *widget, GdkRectangle *WXUNU
 
     if (!win->GetTitle().empty() &&
         ((win->GetWindowStyle() & wxCAPTION) ||
-         (win->GetWindowStyle() & wxTINY_CAPTION_HORIZ) ||
-         (win->GetWindowStyle() & wxTINY_CAPTION_VERT)))
+         (win->GetWindowStyle() & wxTINY_CAPTION)))
     {
         wxClientDC dc(win);
         dc.SetFont( *wxSMALL_FONT );
@@ -149,7 +149,7 @@ static void gtk_window_own_draw_callback( GtkWidget *widget, GdkRectangle *WXUNU
         gdk_gc_unref( gc );
 
         // Hack alert
-        dc.m_window = pizza->bin_window;
+        static_cast<wxClientDCImpl *>(dc.GetImpl())->m_window = pizza->bin_window;
         dc.SetTextForeground( *wxWHITE );
         dc.DrawText( win->GetTitle(), 6, 3 );
     }
@@ -190,8 +190,8 @@ static gint gtk_window_button_press_callback( GtkWidget *widget, GdkEventButton 
                           GDK_POINTER_MOTION_HINT_MASK  |
                           GDK_BUTTON_MOTION_MASK        |
                           GDK_BUTTON1_MOTION_MASK),
-                      (GdkWindow *) NULL,
-                      (GdkCursor *) NULL,
+                      NULL,
+                      NULL,
                       (unsigned int) GDK_CURRENT_TIME );
 
     win->m_diffX = (int)gdk_event->x;
@@ -328,7 +328,7 @@ bool wxMiniFrame::Create( wxWindow *parent, wxWindowID id, const wxString &title
 {
     style = style | wxCAPTION;
 
-    if ((style & wxCAPTION) || (style & wxTINY_CAPTION_HORIZ) || (style & wxTINY_CAPTION_VERT))
+    if ((style & wxCAPTION) || (style & wxTINY_CAPTION))
         m_miniTitle = 13;
 
     m_miniEdge = 3;
@@ -346,9 +346,9 @@ bool wxMiniFrame::Create( wxWindow *parent, wxWindowID id, const wxString &title
     }
 
     if ((style & wxSYSTEM_MENU) &&
-        ((style & wxCAPTION) || (style & wxTINY_CAPTION_HORIZ) || (style & wxTINY_CAPTION_VERT)))
+        ((style & wxCAPTION) || (style & wxTINY_CAPTION)))
     {
-        GdkBitmap *mask = (GdkBitmap*) NULL;
+        GdkBitmap *mask = NULL;
         GdkPixmap *pixmap = gdk_pixmap_create_from_xpm_d
                             (
                                 wxGetRootWindow()->window,
@@ -399,7 +399,7 @@ void wxMiniFrame::SetTitle( const wxString &title )
 {
     wxFrame::SetTitle( title );
 
-    gtk_widget_draw( m_mainWidget, (GdkRectangle*) NULL );
+    gtk_widget_draw( m_mainWidget, NULL );
 }
 
 #endif // wxUSE_MINIFRAME

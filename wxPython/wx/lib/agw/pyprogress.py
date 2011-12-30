@@ -2,7 +2,7 @@
 # PYPROGRESS wxPython IMPLEMENTATION
 #
 # Andrea Gavana, @ 03 Nov 2006
-# Latest Revision: 14 Apr 2010, 12.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List
@@ -15,7 +15,7 @@
 # For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please
 # Write To Me At:
 #
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 # andrea.gavana@gmail.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
@@ -25,14 +25,14 @@
 # --------------------------------------------------------------------------------- #
 
 """
-PyProgress is similar to `wx.ProgressDialog` in indeterminated mode, but with a
+L{PyProgress} is similar to `wx.ProgressDialog` in indeterminated mode, but with a
 different gauge appearance and a different spinning behavior.
 
 
 Description
 ===========
 
-PyProgress is similar to `wx.ProgressDialog` in indeterminated mode, but with a
+L{PyProgress} is similar to `wx.ProgressDialog` in indeterminated mode, but with a
 different gauge appearance and a different spinning behavior. The moving gauge
 can be drawn with a single solid colour or with a shading gradient foreground.
 The gauge background colour is user customizable.
@@ -47,14 +47,54 @@ Other options include:
 - Modifying the number of steps the spinning bar performs before a forward
   (or backward) loop reverses.
     
-PyProgress can optionally display a ``Cancel`` button, and a `wx.StaticText` which
+L{PyProgress} can optionally display a ``Cancel`` button, and a `wx.StaticText` which
 outputs the elapsed time from the starting of the process.
 
+
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.pyprogress as PP
+
+    # Our normal wxApp-derived class, as usual
+    app = wx.App(0)
+    
+    dlg = PP.PyProgress(None, -1, "PyProgress Example",
+                        "An Informative Message",                            
+                        agwStyle=wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME)
+
+    dlg.SetGaugeProportion(0.2)
+    dlg.SetGaugeSteps(50)
+    dlg.SetGaugeBackground(wx.WHITE)
+    dlg.SetFirstGradientColour(wx.WHITE)
+    dlg.SetSecondGradientColour(wx.BLUE)
+    
+    max = 400
+    keepGoing = True
+    count = 0
+
+    while keepGoing and count < max:
+        count += 1
+        wx.MilliSleep(30)
+
+        if count >= max / 2:
+            keepGoing = dlg.UpdatePulse("Half-time!")
+        else:
+            keepGoing = dlg.UpdatePulse()
+
+    dlg.Destroy()
+
+    app.MainLoop()
+    
+    
 
 Supported Platforms
 ===================
 
-PyProgress has been tested on the following platforms:
+L{PyProgress} has been tested on the following platforms:
   * Windows (Windows XP);
   * Linux Ubuntu (Dapper 6.06)
 
@@ -83,9 +123,9 @@ Events Processing
 License And Version
 ===================
 
-PyProgress is distributed under the wxPython license. 
+L{PyProgress} is distributed under the wxPython license. 
 
-Latest Revision: Andrea Gavana @ 14 Apr 2010, 12.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.4
 
@@ -354,7 +394,7 @@ class ProgressGauge(wx.PyWindow):
 
 class PyProgress(wx.Dialog):
     """
-    PyProgress is similar to `wx.ProgressDialog` in indeterminated mode, but with a
+    L{PyProgress} is similar to `wx.ProgressDialog` in indeterminated mode, but with a
     different gauge appearance and a different spinning behavior. The moving gauge
     can be drawn with a single solid colour or with a shading gradient foreground.
     The gauge background colour is user customizable.

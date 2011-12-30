@@ -15,8 +15,8 @@ in this library.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: parselib.py 64494 2010-06-05 22:03:14Z CJP $"
-__revision__ = "$Revision: 64494 $"
+__svnid__ = "$Id: parselib.py 69297 2011-10-03 15:53:48Z CJP $"
+__revision__ = "$Revision: 69297 $"
 
 #--------------------------------------------------------------------------#
 import pygments
@@ -58,6 +58,34 @@ def HasToken(line, searchToken, searchValue=None):
                     return True
             else:
                 return True
+    return False
+
+def BeginsWithToken(line, searchToken, searchValue):
+    """Returns true it the first non whitespace token in the
+    given line is the given token.
+    @param line: pygments line enumeration
+    @param searchToken: pygments.Token.
+    @param searchValue: unicode
+
+    """
+    bOk = False
+    if len(line):
+        for token, val in line:
+            if token == Token.Text and val.isspace():
+                continue
+            bOk = (searchToken == token and val == searchValue)
+            break
+    return bOk
+
+def BeginsWithAnyOf(line, searchToken, searchValueList):
+    """Returns true if the line begins with any of the given values
+    @param searchValueList: list of unicode
+    @see: BeginsWithToken
+
+    """
+    for value in searchValueList:
+        if BeginsWithToken(line, searchToken, value):
+            return True
     return False
 
 #--------------------------------------------------------------------------#

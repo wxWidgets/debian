@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: dcprint.cpp 42522 2006-10-27 13:07:40Z JS $
+// RCS-ID:      $Id: dcprint.cpp 62823 2009-12-08 16:35:47Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ wxPrinterDC::wxPrinterDC(const wxString& driver_name,
                          const wxString& device_name,
                          const wxString& file,
                          bool interactive,
-                         int orientation)
+                         wxPrintOrientation orientation)
 {
 }
 
@@ -100,7 +100,7 @@ void wxPrinterDC::EndPage()
 {
 }
 
-wxRect wxPrinterDC::GetPaperRect()
+wxRect wxPrinterDC::GetPaperRect() const
 {
     // Use page rect if we can't get paper rect.
     wxCoord w, h;
@@ -143,7 +143,7 @@ bool wxPrinterDC::DoBlit(wxCoord xdest, wxCoord ydest,
                          wxCoord width, wxCoord height,
                          wxDC *source,
                          wxCoord WXUNUSED(xsrc), wxCoord WXUNUSED(ysrc),
-                         int WXUNUSED(rop), bool useMask,
+                         wxRasterOperationMode WXUNUSED(rop), bool useMask,
                          wxCoord WXUNUSED(xsrcMask), wxCoord WXUNUSED(ysrcMask))
 {
     return false;

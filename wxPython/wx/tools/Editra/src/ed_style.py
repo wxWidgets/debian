@@ -20,8 +20,8 @@ U{http://editra.org/editra_style_sheets}.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ed_style.py 67815 2011-05-31 19:08:47Z CJP $"
-__revision__ = "$Revision: 67815 $"
+__svnid__ = "$Id: ed_style.py 70097 2011-12-22 21:36:43Z CJP $"
+__revision__ = "$Revision: 70097 $"
 
 #--------------------------------------------------------------------------#
 # Imports
@@ -34,6 +34,7 @@ import ed_glob
 import util
 from profiler import Profile_Get, Profile_Set
 import eclib
+import ebmlib
 
 # Globals
 STY_ATTRIBUTES     = (u"face", u"fore", u"back", u"size", u"modifiers")
@@ -83,7 +84,7 @@ class StyleItem(object):
 
     def __eq__(self, other):
         """Defines the == operator for the StyleItem Class
-        @param si2: style item to compare to
+        @param other: style item to compare to
         @return: whether the two items are equal
         @rtype: bool
 
@@ -495,10 +496,8 @@ class StyleMgr(object):
         """Gets the background color of the default style and returns
         a Colour object. Otherwise returns white if the default
         style is not found.
-        @keyword hex: return a hex string or colour object
-        @type hex: bool
+        @keyword as_hex: return a hex string or colour object
         @return: wx.Colour of default style background or hex value
-        @rtype: wx.Colour or string
 
         """
         back = self.GetItemByName('default_style').GetBack()
@@ -514,7 +513,6 @@ class StyleMgr(object):
         """Gets and returns a style item using its name for the search
         @param name: tag name of style item to get
         @return: style item (may be empty/null style item)
-        @rtype: L{StyleItem}
 
         """
         scheme = self.GetStyleSet()
@@ -581,16 +579,14 @@ class StyleMgr(object):
         """
         if sheet_name:
             style = sheet_name
-            if sheet_name.split(u'.')[-1] != u"ess":
-                style += u".ess"
-        elif Profile_Get('SYNTHEME', 'str').split(u'.')[-1] != u"ess":
-            style = (Profile_Get('SYNTHEME', 'str') + u".ess").lower()
         else:
-            style = Profile_Get('SYNTHEME', 'str').lower()
+            style = Profile_Get('SYNTHEME', 'str')
+        style = ebmlib.AddFileExtension(style, u'.ess').lower()
 
         # Get Correct Filename if it exists
-        for sheet in util.GetResourceFiles(u'styles', False, True, title=False):
-            if sheet.lower() == style.lower():
+        for sheet in util.GetResourceFiles(u'styles', trim=False, 
+                                           get_all=True, title=False):
+            if sheet.lower() == style:
                 style = sheet
                 break
 
@@ -994,12 +990,13 @@ class StyleMgr(object):
         if sum(sback.Get()) < 384:
             self.SetSelForeground(True, wx.WHITE)
         else:
-            self.SetSelForeground(False, wx.BLACK)
+            self.SetSelForeground(True, wx.BLACK)
         self.SetSelBackground(True, sback)
 
-        wspace = self.GetItemByName('whitespace_style')
-        self.SetWhitespaceBackground(True, wspace.GetBack())
-        self.SetWhitespaceForeground(True, wspace.GetFore())
+        # Causes issues with selecting text when view whitespace is on
+#        wspace = self.GetItemByName('whitespace_style')
+#        self.SetWhitespaceBackground(True, wspace.GetBack())
+#        self.SetWhitespaceForeground(True, wspace.GetFore())
 
         default_fore = self.GetDefaultForeColour()
         edge_colour = self.GetItemByName('edge_style')
@@ -1074,8 +1071,7 @@ DEF_STYLE_DICT = \
          'stringeol_style' : StyleItem("#000000", "#EEC0EE",
                                        "%(secondary)s", ex=["bold", "eol"]),
          'unknown_style' : StyleItem("#FFFFFF", "#DD0101", ex=["bold", "eol"]),
-         'userkw_style' : StyleItem(),
-         'whitespace_style' : StyleItem('#838383')
+         'userkw_style' : StyleItem()
          }
 
 def MergeFonts(style_dict, font_dict):

@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     3-Sept-2008
-# RCS-ID:      $Id: wxcairo.py 67480 2011-04-13 18:27:18Z RD $
+# RCS-ID:      $Id: wxcairo.py 69252 2011-09-30 18:04:58Z RD $
 # Copyright:   (c) 2008 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -36,7 +36,7 @@ normal 'python setup.py install' dance.
 
 On Windows you can get a Cairo DLL from here:
 
-    http://www.gtk.org/download-windows.html
+    http://www.gtk.org/download/win32.php
 
 You'll also want to get the zlib and libpng binaries from the same
 page.  Once you get those files extract the DLLs from each of the zip
@@ -138,12 +138,9 @@ def FontFaceFromFont(font):
     """
     
     if 'wxMac' in wx.PlatformInfo:
-        # NOTE: This currently uses the ATSUFontID, but wxMac may
-        # someday transition to the CGFont.  If so, this API call will
-        # need to be changed.
         fontfaceptr = voidp(
-            cairoLib.cairo_quartz_font_face_create_for_atsu_font_id(
-                font.MacGetATSUFontID()) )
+            cairoLib.cairo_quartz_font_face_create_for_cgfont(
+                voidp(font.OSXGetCGFont())) )
         fontface = pycairoAPI.FontFace_FromFontFace(fontfaceptr)
 
 
@@ -398,6 +395,48 @@ class Pycairo_CAPI(ctypes.Structure):
             ('PSSurface_Type', ctypes.py_object),
             ('SVGSurface_Type', ctypes.py_object),
             ('Win32Surface_Type', ctypes.py_object),
+            ('XlibSurface_Type', ctypes.py_object),
+            ('Surface_FromSurface', ctypes.PYFUNCTYPE(ctypes.py_object,
+                                                      ctypes.c_void_p,
+                                                      ctypes.py_object)),
+            ('Check_Status', ctypes.PYFUNCTYPE(ctypes.c_int, ctypes.c_int))]
+
+    # This structure is known good with pycairo 1.10.0. They keep adding stuff
+    # to the middle of the structure instead of only adding to the end!
+    elif cairo.version_info < (1,11):  
+        _fields_ = [
+            ('Context_Type', ctypes.py_object),
+            ('Context_FromContext', ctypes.PYFUNCTYPE(ctypes.py_object,
+                                                      ctypes.c_void_p,
+                                                      ctypes.py_object,
+                                                      ctypes.py_object)),
+            ('FontFace_Type', ctypes.py_object),
+            ('ToyFontFace_Type', ctypes.py_object),  
+            ('FontFace_FromFontFace', ctypes.PYFUNCTYPE(ctypes.py_object, ctypes.c_void_p)),
+            ('FontOptions_Type', ctypes.py_object),
+            ('FontOptions_FromFontOptions', ctypes.PYFUNCTYPE(ctypes.py_object, ctypes.c_void_p)),
+            ('Matrix_Type', ctypes.py_object),
+            ('Matrix_FromMatrix', ctypes.PYFUNCTYPE(ctypes.py_object, ctypes.c_void_p)),
+            ('Path_Type', ctypes.py_object),
+            ('Path_FromPath', ctypes.PYFUNCTYPE(ctypes.py_object, ctypes.c_void_p)),
+            ('Pattern_Type', ctypes.py_object),
+            ('SolidPattern_Type', ctypes.py_object),
+            ('SurfacePattern_Type', ctypes.py_object),
+            ('Gradient_Type', ctypes.py_object),
+            ('LinearGradient_Type', ctypes.py_object),
+            ('RadialGradient_Type', ctypes.py_object),
+            ('Pattern_FromPattern', ctypes.PYFUNCTYPE(ctypes.py_object, ctypes.c_void_p,
+                                                      ctypes.py_object)), #** changed in 1.8.4
+            ('ScaledFont_Type', ctypes.py_object),
+            ('ScaledFont_FromScaledFont', ctypes.PYFUNCTYPE(ctypes.py_object, ctypes.c_void_p)),
+            ('Surface_Type', ctypes.py_object),
+            ('ImageSurface_Type', ctypes.py_object),
+            ('PDFSurface_Type', ctypes.py_object),
+            ('PSSurface_Type', ctypes.py_object),
+            ('SVGSurface_Type', ctypes.py_object),
+            ('Win32Surface_Type', ctypes.py_object),
+            ('Win32PrintingSurface_Type', ctypes.py_object),  #** new
+            ('XCBSurface_Type', ctypes.py_object),            #** new
             ('XlibSurface_Type', ctypes.py_object),
             ('Surface_FromSurface', ctypes.PYFUNCTYPE(ctypes.py_object,
                                                       ctypes.c_void_p,

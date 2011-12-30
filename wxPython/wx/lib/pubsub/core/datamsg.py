@@ -8,9 +8,16 @@
 class Message:
     """
     A simple container object for the two components of a message: the 
-    topic and the user data. An instance of Message is given to your 
-    listener when called by sendMessage(topic). The data is accessed
-    via the 'data' attribute, and can be type of object. 
+    topic and the user data. Each listener called by sendMessage(topic, data)
+    gets an instance of Message. The given 'data' is accessed
+    via Message.data, while the topic name is available in Message.topic::
+    
+        def listener(msg):
+            print "data is ", msg.data
+            print "topic name is ", msg.topic
+            print msg
+            
+    The example shows how a message can be converted to string.
     """
     def __init__(self, topic, data):
         self.topic = topic

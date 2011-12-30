@@ -14,24 +14,11 @@ class PyOnDemandOutputWindow:
         self.pos    = wx.DefaultPosition
         self.size   = (450, 300)
         self.parent = None
-        self.triggers = []
-
 
     def SetParent(self, parent):
         """Set the window to be used as the popup Frame's parent."""
         self.parent = parent
 
-
-    def RaiseWhenSeen(self, trigger):
-        """
-        Trigger is a string or list of strings that will cause the
-        output window to be raised when that trigger text is written.
-        """
-        import types
-        if type(trigger) in types.StringTypes:
-            trigger = [trigger]
-        self.triggers = trigger
-        
 
     def CreateOutputWindow(self, st):
         self.frame = wx.Frame(self.parent, -1, self.title, self.pos, self.size,
@@ -65,18 +52,9 @@ class PyOnDemandOutputWindow:
                 self.CreateOutputWindow(text)
         else:
             if not wx.Thread_IsMain():
-                wx.CallAfter(self.__write, text)
+                wx.CallAfter(self.text.AppendText, text)
             else:
-                self.__write(text)
-
-    def __write(self, text):
-        # helper function for actually writing the text, and
-        # optionally raising the frame if needed
-        self.text.AppendText(text)
-        for item in self.triggers:
-            if item in text:
-                self.frame.Raise()
-                break
+                self.text.AppendText(text)
 
 
     def close(self):
@@ -91,8 +69,6 @@ class PyOnDemandOutputWindow:
 
 #----------------------------------------------------------------------
 
-_defRedirect = (wx.Platform == '__WXMSW__' or wx.Platform == '__WXMAC__')
-        
 class App(wx.PyApp):
     """
     The ``wx.App`` class represents the application and is used to:
@@ -119,18 +95,20 @@ class App(wx.PyApp):
     
     outputWindowClass = PyOnDemandOutputWindow
 
-    def __init__(self, redirect=_defRedirect, filename=None,
-                 useBestVisual=False, clearSigInt=True):
+    def __init__(self,
+                 redirect=False,
+                 filename=None,
+                 useBestVisual=False,
+                 clearSigInt=True):
         """
         Construct a ``wx.App`` object.  
 
         :param redirect: Should ``sys.stdout`` and ``sys.stderr`` be
-            redirected?  Defaults to True on Windows and Mac, False
-            otherwise.  If `filename` is None then output will be
-            redirected to a window that pops up as needed.  (You can
-            control what kind of window is created for the output by
-            resetting the class variable ``outputWindowClass`` to a
-            class of your choosing.)
+            redirected?  Defaults to False. If ``filename`` is None
+            then output will be redirected to a window that pops up
+            as needed.  (You can control what kind of window is created
+            for the output by resetting the class variable
+            ``outputWindowClass`` to a class of your choosing.)
 
         :param filename: The name of a file to redirect output to, if
             redirect is True.
@@ -158,8 +136,8 @@ class App(wx.PyApp):
             
             if wx.Platform == "__WXMAC__":
                 msg = """This program needs access to the screen.
-Please run with 'pythonw', not 'python', and only when you are logged
-in on the main display of your Mac."""
+Please run with a Framework build of python, and only when you are
+logged in on the main display of your Mac."""
                 
             elif wx.Platform == "__WXGTK__":
                 msg ="Unable to access the X Display, is $DISPLAY set properly?"
@@ -281,6 +259,7 @@ App_GetComCtl32Version           = _core_.PyApp_GetComCtl32Version
 
 #----------------------------------------------------------------------------
 
+@wx.deprecated
 class PySimpleApp(wx.App):
     """
     A simple application class.  You can just create one of these and

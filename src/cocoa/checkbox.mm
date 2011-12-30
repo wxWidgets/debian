@@ -4,9 +4,9 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/03/16
-// RCS-ID:      $Id: checkbox.mm 47907 2007-08-06 14:55:00Z DE $
+// RCS-ID:      $Id: checkbox.mm 66555 2011-01-04 08:31:53Z SC $
 // Copyright:   (c) 2003 David Elliott
-// Licence:     wxWidgets licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #include "wx/wxprec.h"
@@ -26,7 +26,6 @@
 #import <AppKit/NSButton.h>
 #import <Foundation/NSString.h>
 
-IMPLEMENT_DYNAMIC_CLASS(wxCheckBox, wxControl)
 BEGIN_EVENT_TABLE(wxCheckBox, wxCheckBoxBase)
 END_EVENT_TABLE()
 WX_IMPLEMENT_COCOA_OWNER(wxCheckBox,NSButton,NSControl,NSView)

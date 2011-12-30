@@ -16,7 +16,7 @@ erase %DOCDIR%\latex\wx\*.ref
 
 cd %DOCDIR%\html\wx
 copy %DOCDIR%\latex\wx\wx.css .
-c:\tools\HTMLHelpWorkshop\hhc.exe wx.hhp
-mkdir %DOCDIR%\htmlhelp
+hhc wx.hhp
+mkdir ..\..\htmlhelp
 erase %DOCDIR%\htmlhelp\wx.chm
-move wx.chm %DOCDIR%\htmlhelp
+move wx.chm ..\..\htmlhelp

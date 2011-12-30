@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     22-March-2004
-# RCS-ID:      $Id: pdfwin.py 64237 2010-05-06 18:25:24Z RD $
+# RCS-ID:      $Id: pdfwin.py 64238 2010-05-06 18:25:39Z RD $
 # Copyright:   (c) 2008 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------

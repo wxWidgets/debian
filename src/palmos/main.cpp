@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/07/04
-// RCS-ID:      $Id: main.cpp 38945 2006-04-28 12:44:37Z ABX $
+// RCS-ID:      $Id: main.cpp 56644 2008-11-02 02:39:52Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -43,23 +43,16 @@
 
 int wxEntry()
 {
-    /* There is no command line in PalmOS.  For now generate a fake arument
+    /* There is no command line in PalmOS.  For now generate a fake argument
      * list.  Later this may be changed to reflect the application launch code
      */
-    wxArrayString args;
-    int argc = args.GetCount();
-
-    // +1 here for the terminating NULL
+    static const int argc = 0;
     wxChar **argv = new wxChar *[argc + 1];
-    for ( int i = 0; i < argc; i++ )
-    {
-        argv[i] = wxStrdup(args[i]);
-    }
 
     // argv[] must be NULL-terminated
     argv[argc] = NULL;
 
-    return wxEntry(argc, argv);
+    return wxEntry(const_cast<int>(argc), argv);
 }
 
 #endif // wxUSE_GUI

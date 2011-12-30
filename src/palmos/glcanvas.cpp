@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: glcanvas.cpp 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: glcanvas.cpp 46536 2007-06-19 11:54:36Z VS $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ void wxGLContext::SetCurrent()
 {
 }
 
-void wxGLContext::SetColour(const wxChar *colour)
+void wxGLContext::SetColour(const wxString& colour)
 {
 }
 
@@ -133,13 +133,6 @@ void wxGLCanvas::SetupPixelFormat(int *attribList) // (HDC hDC)
 
 void wxGLCanvas::SetupPalette(const wxPalette& palette)
 {
-}
-
-wxPalette wxGLCanvas::CreateDefaultPalette()
-{
-    wxPalette palette;
-
-    return palette;
 }
 
 void wxGLCanvas::SwapBuffers()

@@ -2,7 +2,7 @@
 #                                                                            *
 # Make file for VMS                                                          *
 # Author : J.Jansen (joukj@hrem.nano.tudelft.nl)                             *
-# Date : 20 September 2006                                                   *
+# Date : 27 September 2011                                                   *
 #                                                                            *
 #*****************************************************************************
 .first
@@ -15,7 +15,7 @@ CC_DEFINE = /define=(__WXGTK__=1,__WXUNIVERSAL__==1)/float=ieee\
 	/name=(as_is,short)/ieee=denorm
 .else
 CXX_DEFINE = /define=(__WXGTK__=1)/float=ieee/name=(as_is,short)/iee=denorm\
-	   /assume=(nostdnew,noglobal_array_new)
+	   /assume=(nostdnew,noglobal_array_new)/list/show=all
 CC_DEFINE = /define=(__WXGTK__=1)/float=ieee/name=(as_is,short)/iee=denorm
 .endif
 
@@ -44,7 +44,7 @@ OBJECTS = \
 	filedlg.obj,\
 	font.obj,\
         glcanvas.obj,\
-	gsockgtk.obj,\
+	sockgtk.obj,\
 	main.obj,\
 	minifram.obj,\
 	pen.obj,\
@@ -87,10 +87,10 @@ OBJECTS0= \
 	statbox.obj,\
 	statline.obj,\
 	stattext.obj,\
-	tbargtk.obj,\
+	toolbar.obj,\
 	textctrl.obj,\
 	tglbtn.obj,\
-	msgdlg.obj
+	msgdlg.obj,mnemonics.obj
 
 SOURCES =\
 	app.cpp,\
@@ -121,7 +121,7 @@ SOURCES =\
 	frame.cpp,\
 	gauge.cpp,\
         glcanvas.cpp,\
-	gsockgtk.cpp,\
+	sockgtk.cpp,\
 	listbox.cpp,\
 	main.cpp,\
 	mdi.cpp,\
@@ -145,7 +145,7 @@ SOURCES =\
 	statbox.cpp,\
 	statline.cpp,\
 	stattext.cpp,\
-	tbargtk.cpp,\
+	toolbar.cpp,\
 	textctrl.cpp,\
 	tglbtn.cpp,\
 	timer.cpp,\
@@ -154,19 +154,22 @@ SOURCES =\
 	utilsgtk.cpp,\
 	utilsres.cpp,\
         win_gtk.c,\
-	window.cpp
+	window.cpp,mnemonics.cpp
    
 all : $(SOURCES)
 	$(MMS)$(MMSQUALIFIERS) $(OBJECTS)
 .ifdef __WXUNIVERSAL__
 	library [--.lib]libwx_gtk_univ.olb $(OBJECTS)
-	library [--.lib]libwx_gtk_univ.olb [.CXX_REPOSITORY]*.obj
+	If f$getsyi("HW_MODEL") .le. 2048 then library [--.lib]libwx_gtk_univ.olb [.CXX_REPOSITORY]*.obj
 .else
 	library [--.lib]libwx_gtk.olb $(OBJECTS)
-	library [--.lib]libwx_gtk.olb [.CXX_REPOSITORY]*.obj
+	If f$getsyi("HW_MODEL") .le. 2048 then library [--.lib]libwx_gtk.olb [.CXX_REPOSITORY]*.obj
 	$(MMS)$(MMSQUALIFIERS) $(OBJECTS0)
 	library [--.lib]libwx_gtk.olb $(OBJECTS0)
 .endif
+
+$(OBJECTS) : [--.include.wx]setup.h
+$(OBJECTS0) : [--.include.wx]setup.h
 
 app.obj : app.cpp
 bitmap.obj : bitmap.cpp
@@ -196,7 +199,7 @@ fontdlg.obj : fontdlg.cpp
 frame.obj : frame.cpp
 gauge.obj : gauge.cpp
 glcanvas.obj : glcanvas.cpp
-gsockgtk.obj : gsockgtk.cpp
+sockgtk.obj : sockgtk.cpp
 listbox.obj : listbox.cpp
 main.obj : main.cpp
 msgdlg.obj : msgdlg.cpp
@@ -220,7 +223,7 @@ statbmp.obj : statbmp.cpp
 statbox.obj : statbox.cpp
 statline.obj : statline.cpp
 stattext.obj : stattext.cpp
-tbargtk.obj : tbargtk.cpp
+toolbar.obj : toolbar.cpp
 textctrl.obj : textctrl.cpp
 tglbtn.obj : tglbtn.cpp
 timer.obj : timer.cpp
@@ -230,3 +233,4 @@ utilsgtk.obj : utilsgtk.cpp
 utilsres.obj : utilsres.cpp
 win_gtk.obj : win_gtk.c
 window.obj : window.cpp
+mnemonics.obj : mnemonics.cpp

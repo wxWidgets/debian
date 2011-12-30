@@ -13,12 +13,12 @@ this module returns the following information:
                        
 These meta data are merged into the wxPython demo tree at startup.
 
-Last updated: Andrea Gavana @ 28 Jan 2011, 15.00 GMT.
-Version 0.9.1.
+Last updated: Andrea Gavana @ 29 Nov 2011, 15.00 GMT.
+Version 0.9.2.
 
 """
 
-__version__ = "0.9.1"
+__version__ = "0.9.2"
 __author__ = "Andrea Gavana <andrea.gavana@gmail.com>"
 
 
@@ -83,12 +83,12 @@ def GetRecentAdditions():
                            'PeakMeter', 'PersistentControls', 'PieCtrl', 'PyBusyInfo',
                            'PyCollapsiblePane', 'PyProgress', 'RibbonBar', 'RulerCtrl',
                            'ShapedButton', 'SpeedMeter', 'SuperToolTip', 'ThumbnailCtrl',
-                           'ToasterBox', 'UltimateListCtrl', 'ZoomBar']
+                           'ToasterBox', 'UltimateListCtrl', 'XLSGrid', 'ZoomBar']
     elif wx.VERSION < (2,9,2):
         recentAdditions = ['AUI', 'PersistentControls', 'PyBusyInfo', 'PyGauge',
-                           'RibbonBar', 'UltimateListCtrl', 'ZoomBar']
+                           'RibbonBar', 'UltimateListCtrl', 'XLSGrid', 'ZoomBar']
     else:
-        recentAdditions = ['PersistentControls']
+        recentAdditions = ['PersistentControls', 'XLSGrid']
 
     # Return the Recent Additions for AGW    
     return recentAdditions
@@ -113,7 +113,8 @@ def GetDemos():
                 'PeakMeter', 'PersistentControls', 'PieCtrl', 'PyBusyInfo',
                 'PyCollapsiblePane', 'PyGauge', 'PyProgress', 'RibbonBar',
                 'RulerCtrl', 'ShapedButton', 'SpeedMeter', 'SuperToolTip',
-                'ThumbnailCtrl', 'ToasterBox', 'UltimateListCtrl', 'ZoomBar']
+                'ThumbnailCtrl', 'ToasterBox', 'UltimateListCtrl', 'XLSGrid',
+                'ZoomBar']
 
     return AGWTreeItem, AGWDemos
 
@@ -129,7 +130,7 @@ def GetOverview():
                        "wx.Menu", "wx.ToolBar", "wx.Notebook", "wx.MessageDialog",
                        "wx.gizmos.TreeListCtrl", "wx.DirDialog", "wx.CollapsiblePane",
                        "wx.ProgressDialog", "wx.TipWindow", "wx.lib", "wx.aui", "wx.ListCtrl",
-                       "wx.BusyInfo", "wx.Panel", "wx.Gauge"]
+                       "wx.BusyInfo", "wx.Panel", "wx.Gauge", "wx.grid.Grid"]
 
     import wx.lib.agw
     _agwDocs = wx.lib.agw.__doc__

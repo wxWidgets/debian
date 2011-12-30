@@ -1,0 +1,5 @@
+<map id="G" name="G">
+<area shape="rect" id="node5" href="$classwx_message_output_best.html" title="Output messages in the best possible way." alt="" coords="5,166,163,197"/>
+<area shape="rect" id="node7" href="$classwx_message_output_debug.html" title="Output messages to the system debug output channel." alt="" coords="187,166,352,197"/>
+<area shape="rect" id="node2" href="$classwx_message_output.html" title="Simple class allowing to write strings to various output channels." alt="" coords="111,6,241,37"/>
+</map>

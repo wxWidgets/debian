@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#set -x
+
+if [ "$1" == "" ]; then
+    echo "Usage:  $0 revnum"
+    #echo "   or:  $0 revnum1 revnum2"
+    exit 1
+fi
+
+#if [ "$2" == "" ]; then
+    rev2=$1
+    let rev1=rev2-1
+#else
+#    rev1=$1
+#    rev2=$2
+#fi
+
+ROOT=https://svn.wxwidgets.org/svn/wx/wxPython/branches/WX_2_8_BRANCH 
+
+echo svn merge -r $rev1:$rev2 $ROOT
+svn merge -r $rev1:$rev2 $ROOT
+echo
+svn st
+echo
+echo if the merge was successful, commit like this:
+echo svn ci -m \"Merge r$rev2 from 2.8 branch\"

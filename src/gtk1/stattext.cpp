@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        stattext.cpp
+// Name:        src/gtk1/stattext.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: stattext.cpp 37342 2006-02-05 23:02:47Z VZ $
+// Id:          $Id: stattext.cpp 67254 2011-03-20 00:14:35Z DS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,8 +26,6 @@ void wxgtk_window_size_request_callback(GtkWidget *widget,
 //-----------------------------------------------------------------------------
 // wxStaticText
 //-----------------------------------------------------------------------------
-
-IMPLEMENT_DYNAMIC_CLASS(wxStaticText,wxControl)
 
 wxStaticText::wxStaticText()
 {

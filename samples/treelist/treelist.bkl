@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<!-- $Id: treelist.bkl 68916 2011-08-27 14:11:03Z VZ $ -->
+
+<makefile>
+
+    <include file="../../build/bakefiles/common_samples.bkl"/>
+
+    <exe id="treelist" template="wx_sample" template_append="wx_append">
+        <sources>treelist.cpp</sources>
+        <wx-lib>adv</wx-lib>
+        <wx-lib>core</wx-lib>
+        <wx-lib>base</wx-lib>
+    </exe>
+
+</makefile>

@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by: Wlodzimierz ABX Skiba - native implementation
 // Created:     10/13/04
-// RCS-ID:      $Id: slider.cpp 42816 2006-10-31 08:50:17Z RD $
+// RCS-ID:      $Id: slider.cpp 66844 2011-02-05 16:36:30Z VZ $
 // Copyright:   (c) William Osborne, Wlodzimierz Skiba
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,73 +29,6 @@
 #include <Form.h>
 #include <Control.h>
 
-#if wxUSE_EXTENDED_RTTI
-WX_DEFINE_FLAGS( wxSliderStyle )
-
-wxBEGIN_FLAGS( wxSliderStyle )
-    // new style border flags, we put them first to
-    // use them for streaming out
-    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
-    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
-    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
-    wxFLAGS_MEMBER(wxBORDER_RAISED)
-    wxFLAGS_MEMBER(wxBORDER_STATIC)
-    wxFLAGS_MEMBER(wxBORDER_NONE)
-
-    // old style border flags
-    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
-    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
-    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
-    wxFLAGS_MEMBER(wxRAISED_BORDER)
-    wxFLAGS_MEMBER(wxSTATIC_BORDER)
-    wxFLAGS_MEMBER(wxBORDER)
-
-    // standard window styles
-    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
-    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
-    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
-    wxFLAGS_MEMBER(wxWANTS_CHARS)
-    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
-    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
-    wxFLAGS_MEMBER(wxVSCROLL)
-    wxFLAGS_MEMBER(wxHSCROLL)
-
-    wxFLAGS_MEMBER(wxSL_HORIZONTAL)
-    wxFLAGS_MEMBER(wxSL_VERTICAL)
-    wxFLAGS_MEMBER(wxSL_AUTOTICKS)
-    wxFLAGS_MEMBER(wxSL_LABELS)
-    wxFLAGS_MEMBER(wxSL_LEFT)
-    wxFLAGS_MEMBER(wxSL_TOP)
-    wxFLAGS_MEMBER(wxSL_RIGHT)
-    wxFLAGS_MEMBER(wxSL_BOTTOM)
-    wxFLAGS_MEMBER(wxSL_BOTH)
-    wxFLAGS_MEMBER(wxSL_SELRANGE)
-
-wxEND_FLAGS( wxSliderStyle )
-
-IMPLEMENT_DYNAMIC_CLASS_XTI(wxSlider, wxControl,"wx/slider.h")
-
-wxBEGIN_PROPERTIES_TABLE(wxSlider)
-    wxEVENT_RANGE_PROPERTY( Scroll , wxEVT_SCROLL_TOP , wxEVT_SCROLL_ENDSCROLL , wxScrollEvent )
-    wxEVENT_PROPERTY( Updated , wxEVT_COMMAND_SLIDER_UPDATED , wxCommandEvent )
-
-    wxPROPERTY( Value , int , SetValue, GetValue , 0, 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
-    wxPROPERTY( Minimum , int , SetMin, GetMin, 0 , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
-    wxPROPERTY( Maximum , int , SetMax, GetMax, 0 , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
-    wxPROPERTY( PageSize , int , SetPageSize, GetLineSize, 1 , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
-    wxPROPERTY( LineSize , int , SetLineSize, GetLineSize, 1 , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
-    wxPROPERTY( ThumbLength , int , SetThumbLength, GetThumbLength, 1 , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
-    wxPROPERTY_FLAGS( WindowStyle , wxSliderStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
-wxEND_PROPERTIES_TABLE()
-
-wxBEGIN_HANDLERS_TABLE(wxSlider)
-wxEND_HANDLERS_TABLE()
-
-wxCONSTRUCTOR_8( wxSlider , wxWindow* , Parent , wxWindowID , Id , int , Value , int , Minimum , int , Maximum , wxPoint , Position , wxSize , Size , long , WindowStyle )
-#else
-IMPLEMENT_DYNAMIC_CLASS(wxSlider, wxControl)
-#endif
-
 // Slider
 void wxSlider::Init()
 {
@@ -117,7 +50,7 @@ bool wxSlider::Create(wxWindow *parent, wxWindowID id,
     // wxSL_TOP is ignored - always off
     // wxSL_SELRANGE is ignored - always off
     // wxSL_VERTICAL is impossible in native form
-    wxCHECK_MSG(!(style & wxSL_VERTICAL), false, _T("non vertical slider on PalmOS"));
+    wxCHECK_MSG(!(style & wxSL_VERTICAL), false, wxT("non vertical slider on PalmOS"));
 
     if(!wxControl::Create(parent, id, pos, size, style, validator, name))
         return false;
@@ -135,6 +68,7 @@ bool wxSlider::Create(wxWindow *parent, wxWindowID id,
 
     AdjustForParentClientOrigin(x, y);
 
+#ifdef __WXPALMOS6__
     SliderControlType *slider = CtlNewSliderControl (
                                    (void **)&form,
                                    GetId(),
@@ -151,6 +85,17 @@ bool wxSlider::Create(wxWindow *parent, wxWindowID id,
                                    1,
                                    value
                               );
+#else // __WXPALMOS5__
+    //SliderControlType *CtlNewSliderControl (void **formPP, UInt16 ID, ControlStyleType style, DmResID thumbID,
+    //    DmResID backgroundID, Coord x, Coord y, Coord width, Coord height, UInt16 minValue, UInt16 maxValue,
+    //    UInt16 pageSize, UInt16 value);
+    SliderControlType *slider =  CtlNewSliderControl ((void **)&form,
+             GetId(),
+             feedbackSliderCtl,//style
+             0,//thumbID
+             0,//backgroundid
+             x, y, w, h, minValue, maxValue, 1, value);
+#endif // __WXPALMOS6__/__WXPALMOS5__
 
     if(slider==NULL)
         return false;
@@ -223,7 +168,7 @@ void wxSlider::SetRange(int WXUNUSED(minValue), int WXUNUSED(maxValue))
     // unsupported feature
 }
 
-void wxSlider::SetTickFreq(int WXUNUSED(n), int WXUNUSED(pos))
+void wxSlider::DoSetTickFreq(int WXUNUSED(n))
 {
     // unsupported feature
 }
@@ -308,7 +253,7 @@ bool wxSlider::SendUpdatedEvent()
     wxScrollEvent eventWxTrack(wxEVT_SCROLL_THUMBRELEASE, GetId());
     eventWxTrack.SetPosition(m_oldPos);
     eventWxTrack.SetEventObject(this);
-    bool handled = GetEventHandler()->ProcessEvent(eventWxTrack);
+    bool handled = HandleWindowEvent(eventWxTrack);
 
     // then slider event if position changed
     if( m_oldValue != m_oldPos )
@@ -339,7 +284,7 @@ bool wxSlider::SendScrollEvent(WXEVENTPTR event)
     wxScrollEvent eventWx(wxEVT_SCROLL_THUMBTRACK, GetId());
     eventWx.SetPosition(newPos);
     eventWx.SetEventObject(this);
-    return GetEventHandler()->ProcessEvent(eventWx);
+    return HandleWindowEvent(eventWx);
 }
 
 void wxSlider::Command (wxCommandEvent & event)

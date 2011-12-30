@@ -1,12 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        src/palmos/basemsw.cpp
+// Name:        src/palmos/base.cpp
 // Purpose:     misc stuff only used in applications under PalmOS
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10.13.2004
-// RCS-ID:      $Id: base.cpp 31557 2005-01-21 21:04:05Z ABX $
+// RCS-ID:      $Id: base.cpp 67288 2011-03-22 17:15:56Z VZ $
 // Copyright:   (c) 2004 William Osborne
-// License:     wxWindows licence
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -28,16 +28,12 @@
 #endif //WX_PRECOMP
 
 #include "wx/apptrait.h"
-
 #include "wx/recguard.h"
+#include "wx/evtloop.h" // wxEventLoop
 
 // ============================================================================
 // wxConsoleAppTraits implementation
 // ============================================================================
-
-void wxConsoleAppTraits::AlwaysYield()
-{
-}
 
 void *wxConsoleAppTraits::BeforeChildWaitLoop()
 {
@@ -48,8 +44,24 @@ void wxConsoleAppTraits::AfterChildWaitLoop(void * WXUNUSED(data))
 {
 }
 
+#if wxUSE_THREADS
 bool wxConsoleAppTraits::DoMessageFromThreadWait()
 {
     return true;
 }
+
+WXDWORD wxConsoleAppTraits::WaitForThread(WXHANDLE hThread)
+{
+    // TODO
+    return 0;
+}
+#endif // wxUSE_THREADS
+
+#if wxUSE_CONSOLE_EVENTLOOP
+wxEventLoopBase *
+wxConsoleAppTraits::CreateEventLoop()
+{
+    return new wxEventLoop;
+}
+#endif // wxUSE_CONSOLE_EVENTLOOP
 

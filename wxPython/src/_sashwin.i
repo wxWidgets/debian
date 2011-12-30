@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     22-Dec-1998
-// RCS-ID:      $Id: _sashwin.i 53181 2008-04-15 20:25:02Z RD $
+// RCS-ID:      $Id: _sashwin.i 53016 2008-04-04 23:43:06Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -75,14 +75,6 @@ public:
 
     // Get whether there's a sash in this position
     bool GetSashVisible(wxSashEdgePosition edge) const;
-
-    // Set whether there's a border in this position
-    void SetSashBorder(wxSashEdgePosition edge, bool border);
-    %pythoncode { SetSashBorder = wx._deprecated(SetSashBorder) }
-    
-    // Get whether there's a border in this position
-    bool HasBorder(wxSashEdgePosition edge) const;
-    %pythoncode { HasBorder = wx._deprecated(HasBorder) }
 
     // Get border size
     int GetEdgeMargin(wxSashEdgePosition edge) const;

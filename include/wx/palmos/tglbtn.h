@@ -5,7 +5,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by: Wlodzimierz ABX Skiba - native implementation
 // Created:     10/13/04
-// RCS-ID:      $Id: tglbtn.h 36891 2006-01-16 14:59:55Z MR $
+// RCS-ID:      $Id: tglbtn.h 66992 2011-02-22 13:25:30Z VZ $
 // Copyright:   (c) William Osborne, Wlodzimierz Skiba
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,10 +13,10 @@
 #ifndef _WX_TOGGLEBUTTON_H_
 #define _WX_TOGGLEBUTTON_H_
 
-WXDLLEXPORT_DATA(extern const wxChar) wxCheckBoxNameStr[];
+#include "wx/checkbox.h" // wxCheckBoxNameStr, in datacmn.cpp
 
 // Checkbox item (single checkbox)
-class WXDLLEXPORT wxToggleButton : public wxControl
+class WXDLLIMPEXP_CORE wxToggleButton : public wxToggleButtonBase
 {
 public:
     wxToggleButton() {}

@@ -1,0 +1,13 @@
+<map id="G" name="G">
+<area shape="rect" id="node5" href="$classwx_animation.html" title="This class encapsulates the concept of a platform&#45;dependent animation." alt="" coords="5,166,101,197"/>
+<area shape="rect" id="node7" href="$classwx_bitmap.html" title="This class encapsulates the concept of a platform&#45;dependent bitmap, either monochrome or colour or co..." alt="" coords="125,166,203,197"/>
+<area shape="rect" id="node9" href="$classwx_brush.html" title="A brush is a drawing tool for filling in areas." alt="" coords="227,166,299,197"/>
+<area shape="rect" id="node11" href="$classwx_cursor.html" title="A cursor is a small bitmap usually used for denoting where the mouse pointer is, with a picture that ..." alt="" coords="323,166,397,197"/>
+<area shape="rect" id="node13" href="$classwx_font.html" title="A font is an object which determines the appearance of text." alt="" coords="421,166,485,197"/>
+<area shape="rect" id="node15" href="$classwx_icon.html" title="An icon is a small rectangular bitmap usually used for denoting a minimized application." alt="" coords="509,166,571,197"/>
+<area shape="rect" id="node17" href="$classwx_icon_bundle.html" title="This class contains multiple copies of an icon in different sizes." alt="" coords="595,166,696,197"/>
+<area shape="rect" id="node19" href="$classwx_palette.html" title="A palette is a table that maps pixel values to RGB colours." alt="" coords="720,166,797,197"/>
+<area shape="rect" id="node21" href="$classwx_pen.html" title="A pen is a drawing tool for drawing outlines." alt="" coords="821,166,880,197"/>
+<area shape="rect" id="node23" href="$classwx_region.html" title="A wxRegion represents a simple or complex region on a device context or window." alt="" coords="904,166,981,197"/>
+<area shape="rect" id="node2" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="459,6,533,37"/>
+</map>

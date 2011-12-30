@@ -9,13 +9,13 @@
 # Python Code By:
 #
 # Andrea Gavana, @ 15 Oct 2009
-# Latest Revision: 12 Sep 2010, 10.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 # For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please
 # Write To Me At:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
 #
@@ -77,6 +77,7 @@ Event Name                        Description
 ``EVT_RIBBONBAR_TAB_MIDDLE_UP``   Triggered when the middle mouse button is released on a tab.
 ``EVT_RIBBONBAR_TAB_RIGHT_DOWN``  Triggered when the right mouse button is pressed on a tab.
 ``EVT_RIBBONBAR_TAB_RIGHT_UP``    Triggered when the right mouse button is released on a tab.
+``EVT_RIBBONBAR_TAB_LEFT_DCLICK`` Triggered when the user double-clicks on a tab.
 ================================= =================================
 
 
@@ -102,6 +103,7 @@ wxEVT_COMMAND_RIBBONBAR_TAB_MIDDLE_DOWN = wx.NewEventType()
 wxEVT_COMMAND_RIBBONBAR_TAB_MIDDLE_UP = wx.NewEventType()
 wxEVT_COMMAND_RIBBONBAR_TAB_RIGHT_DOWN = wx.NewEventType()
 wxEVT_COMMAND_RIBBONBAR_TAB_RIGHT_UP = wx.NewEventType()
+wxEVT_COMMAND_RIBBONBAR_TAB_LEFT_DCLICK = wx.NewEventType()
 
 EVT_RIBBONBAR_PAGE_CHANGED = wx.PyEventBinder(wxEVT_COMMAND_RIBBONBAR_PAGE_CHANGED, 1)
 EVT_RIBBONBAR_PAGE_CHANGING = wx.PyEventBinder(wxEVT_COMMAND_RIBBONBAR_PAGE_CHANGING, 1)
@@ -109,6 +111,7 @@ EVT_RIBBONBAR_TAB_MIDDLE_DOWN = wx.PyEventBinder(wxEVT_COMMAND_RIBBONBAR_TAB_MID
 EVT_RIBBONBAR_TAB_MIDDLE_UP = wx.PyEventBinder(wxEVT_COMMAND_RIBBONBAR_TAB_MIDDLE_UP, 1)
 EVT_RIBBONBAR_TAB_RIGHT_DOWN = wx.PyEventBinder(wxEVT_COMMAND_RIBBONBAR_TAB_RIGHT_DOWN, 1)
 EVT_RIBBONBAR_TAB_RIGHT_UP = wx.PyEventBinder(wxEVT_COMMAND_RIBBONBAR_TAB_RIGHT_UP, 1)
+EVT_RIBBONBAR_TAB_LEFT_DCLICK = wx.PyEventBinder(wxEVT_COMMAND_RIBBONBAR_TAB_LEFT_DCLICK, 1)
 
 
 def SET_FLAG(variable, flag):
@@ -231,11 +234,13 @@ class RibbonBar(RibbonControl):
         self._tab_scroll_left_button_state = RIBBON_SCROLL_BTN_NORMAL
         self._tab_scroll_right_button_state = RIBBON_SCROLL_BTN_NORMAL
         self._tab_scroll_buttons_shown = False
+        self._arePanelsShown = True
         self._pages = []
 
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
         self.Bind(wx.EVT_LEAVE_WINDOW, self.OnMouseLeave)
         self.Bind(wx.EVT_LEFT_DOWN, self.OnMouseLeftDown)
+        self.Bind(wx.EVT_LEFT_DCLICK, self.OnMouseDoubleClick)        
         self.Bind(wx.EVT_LEFT_UP, self.OnMouseLeftUp)
         self.Bind(wx.EVT_MIDDLE_DOWN, self.OnMouseMiddleDown)
         self.Bind(wx.EVT_MIDDLE_UP, self.OnMouseMiddleUp)
@@ -300,6 +305,19 @@ class RibbonBar(RibbonControl):
             return False
         
         return self._pages[self._current_page].page.DismissExpandedPanel()
+
+
+    def ShowPanels(self, show=True):
+        """
+        Shows or hides the panels inside L{RibbonBar}.
+
+        :param `show`: ``True`` to show the panels, ``False`` to hide them.
+        """
+
+        self._arePanelsShown = show
+        self.SetMinSize(wx.Size(self.GetSize().GetWidth(), self.DoGetBestSize().GetHeight()))
+        self.Realise()
+        self.GetParent().Layout()
 
 
     def SetAGWWindowStyleFlag(self, agwStyle):
@@ -749,6 +767,7 @@ class RibbonBar(RibbonControl):
         self._tab_scroll_left_button_state = RIBBON_SCROLL_BTN_NORMAL
         self._tab_scroll_right_button_state = RIBBON_SCROLL_BTN_NORMAL
         self._tab_scroll_buttons_shown = False
+        self._arePanelsShown = True
         self._tab_scroll_left_button_rect = wx.Rect()
         self._tab_scroll_right_button_rect = wx.Rect()
 
@@ -922,7 +941,12 @@ class RibbonBar(RibbonControl):
             elif self._tab_scroll_right_button_rect.Contains(event.GetPosition()):
                 self._tab_scroll_right_button_state |= RIBBON_SCROLL_BTN_ACTIVE | RIBBON_SCROLL_BTN_HOVERED
                 self.RefreshTabBar()
-            
+
+
+    def OnMouseDoubleClick(self, event):
+
+        self.DoMouseButtonCommon(event, wxEVT_COMMAND_RIBBONBAR_TAB_LEFT_DCLICK)
+
         
     def OnMouseLeftUp(self, event):
 
@@ -1049,7 +1073,7 @@ class RibbonBar(RibbonControl):
             min_size.IncBy(0, self._tab_height)
 
         self._minWidth = min_size.GetWidth()
-        self._minHeight = min_size.GetHeight()
+        self._minHeight = (self._arePanelsShown and [min_size.GetHeight()] or [self._tab_height])[0]
 
 
     def DoGetBestSize(self):
@@ -1063,6 +1087,9 @@ class RibbonBar(RibbonControl):
             best.SetHeight(self._tab_height)
         else:        
             best.IncBy(0, self._tab_height)
+
+        if not self._arePanelsShown:
+            best.SetHeight(self._tab_height)
 
         return best
 

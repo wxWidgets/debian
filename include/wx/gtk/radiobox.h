@@ -2,7 +2,7 @@
 // Name:        wx/gtk/radiobox.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobox.h 40815 2006-08-25 12:59:28Z VZ $
+// Id:          $Id: radiobox.h 67298 2011-03-23 17:36:10Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 
 #include "wx/bitmap.h"
 
-class WXDLLIMPEXP_CORE wxGTKRadioButtonInfo;
+class WXDLLIMPEXP_FWD_CORE wxGTKRadioButtonInfo;
 
 #include "wx/list.h"
 
@@ -36,8 +36,8 @@ public:
                const wxSize& size = wxDefaultSize,
                int n = 0,
                const wxString choices[] = (const wxString *) NULL,
-               int majorDim = 1,
-               long style = wxRA_HORIZONTAL,
+               int majorDim = 0,
+               long style = wxRA_SPECIFY_COLS,
                const wxValidator& val = wxDefaultValidator,
                const wxString& name = wxRadioBoxNameStr)
     {
@@ -52,8 +52,8 @@ public:
                const wxPoint& pos,
                const wxSize& size,
                const wxArrayString& choices,
-               int majorDim = 1,
-               long style = wxRA_HORIZONTAL,
+               int majorDim = 0,
+               long style = wxRA_SPECIFY_COLS,
                const wxValidator& val = wxDefaultValidator,
                const wxString& name = wxRadioBoxNameStr)
     {
@@ -70,7 +70,7 @@ public:
                 int n = 0,
                 const wxString choices[] = (const wxString *) NULL,
                 int majorDim = 0,
-                long style = wxRA_HORIZONTAL,
+                long style = wxRA_SPECIFY_COLS,
                 const wxValidator& val = wxDefaultValidator,
                 const wxString& name = wxRadioBoxNameStr);
     bool Create(wxWindow *parent,
@@ -80,7 +80,7 @@ public:
                 const wxSize& size,
                 const wxArrayString& choices,
                 int majorDim = 0,
-                long style = wxRA_HORIZONTAL,
+                long style = wxRA_SPECIFY_COLS,
                 const wxValidator& val = wxDefaultValidator,
                 const wxString& name = wxRadioBoxNameStr);
 
@@ -128,20 +128,17 @@ public:
     // implementation
     // --------------
 
-    void SetFocus();
     void GtkDisableEvents();
     void GtkEnableEvents();
 #if wxUSE_TOOLTIPS
-    void ApplyToolTip( GtkTooltips *tips, const wxChar *tip );
+    virtual void GTKApplyToolTip(const char* tip);
 #endif // wxUSE_TOOLTIPS
 
-    virtual void OnInternalIdle();
-
-    bool                        m_hasFocus,
-                                m_lostFocus;
     wxRadioBoxButtonsInfoList   m_buttonsInfo;
 
 protected:
+    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
+
 #if wxUSE_TOOLTIPS
     virtual void DoSetItemToolTip(unsigned int n, wxToolTip *tooltip);
 #endif
@@ -149,11 +146,10 @@ protected:
     virtual void DoApplyWidgetStyle(GtkRcStyle *style);
     virtual GdkWindow *GTKGetWindow(wxArrayGdkWindows& windows) const;
 
+    virtual bool GTKNeedsToFilterSameWindowFocus() const { return true; }
+
     virtual bool GTKWidgetNeedsMnemonic() const;
     virtual void GTKWidgetDoSetMnemonic(GtkWidget* w);
-
-    // common part of all ctors
-    void Init();
 
 private:
     DECLARE_DYNAMIC_CLASS(wxRadioBox)

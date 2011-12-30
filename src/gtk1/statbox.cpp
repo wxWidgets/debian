@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        gtk/statbox.cpp
+// Name:        src/gtk1/statbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbox.cpp 37063 2006-01-23 01:14:32Z MR $
+// Id:          $Id: statbox.cpp 67254 2011-03-20 00:14:35Z DS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,8 +21,6 @@
 //-----------------------------------------------------------------------------
 // wxStaticBox
 //-----------------------------------------------------------------------------
-
-IMPLEMENT_DYNAMIC_CLASS(wxStaticBox, wxControl)
 
 wxStaticBox::wxStaticBox()
 {

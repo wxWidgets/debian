@@ -84,6 +84,8 @@ an asterisk were already present in `wx.lib` before:
   "toaster" popups easier;
 - UltimateListCtrl: mimics the behaviour of `wx.ListCtrl`, with almost the same
   base functionalities plus some more enhancements;
+- XLSGrid: a class based on `wx.grid.Grid` that can be used to faithfully
+  reproduce the appearance of a Microsoft Excel spreadsheets;
 - ZoomBar: a class that *appoximatively* mimics the behaviour of the Mac Dock,
   inside a `wx.Panel`.
 
@@ -110,13 +112,13 @@ Please let me know if you are using AGW!
 You can contact me at:
 
 andrea.gavana@gmail.com
-gavana@kpo.kz
+andrea.gavana@maerskoil.com
 
-AGW version: 0.9.1
+AGW version: 0.9.2
 
-Last updated: 21 Jun 2011, 22.00 GMT
+Last updated: 11 Dec 2011, 09.00 GMT
 
 """
 
-__version__ = "0.9.1"
+__version__ = "0.9.2"
 __author__ = "Andrea Gavana <andrea.gavana@gmail.com>"

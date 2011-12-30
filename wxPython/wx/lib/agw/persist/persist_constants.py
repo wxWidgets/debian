@@ -8,15 +8,16 @@ import wx
 # PersistenceManager styles
 
 PM_SAVE_RESTORE_AUI_PERSPECTIVES     = 1 << 0
-PM_SAVE_RESTORE_TREE_LIST_SELECTIONS = 2 << 0
-PM_DEFAULT_STYLE                     = PM_SAVE_RESTORE_AUI_PERSPECTIVES
-
+PM_SAVE_RESTORE_TREE_LIST_SELECTIONS = 1 << 1
+PM_PERSIST_CONTROL_VALUE             = 1 << 2
+PM_DEFAULT_STYLE                     = PM_SAVE_RESTORE_AUI_PERSPECTIVES | PM_PERSIST_CONTROL_VALUE
 
 # ----------------------------------------------------------------------------------- #
-
 CONFIG_PATH_SEPARATOR = "/"
 
-BAD_DEFAULT_NAMES = []
+BAD_DEFAULT_NAMES = ["widget", "wxSpinButton", "auiFloating", "AuiTabCtrl", "maskedTextCtrl",
+                     "numctrl", "IpAddrCtrl", "masked.num", "time", "scrolledpanel"]
+
 for name in dir(wx):
     if "NameStr" in name:
         BAD_DEFAULT_NAMES.append(eval("wx.%s"%name))
@@ -110,8 +111,8 @@ PERSIST_RADIOBUTTON_VALUE = "Value"
 # String constants used by ScrolledWindowHandler
 
 PERSIST_SCROLLEDWINDOW_KIND = "ScrolledWindow"
-PERSIST_SCROLLEDWINDOW_POS_X = "Scroll_X"
-PERSIST_SCROLLEDWINDOW_POS_Y = "Scroll_Y"
+PERSIST_SCROLLEDWINDOW_POS_H = "Scroll_H"
+PERSIST_SCROLLEDWINDOW_POS_V = "Scroll_V"
 
 # ----------------------------------------------------------------------------------- #
 # String constants used by SliderHandler

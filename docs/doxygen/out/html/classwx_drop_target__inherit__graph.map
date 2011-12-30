@@ -1,0 +1,4 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classwx_file_drop_target.html" title="This is a drop target which accepts files (dragged from File Manager or Explorer)." alt="" coords="5,86,128,117"/>
+<area shape="rect" id="node5" href="$classwx_text_drop_target.html" title="A predefined drop target for dealing with text data." alt="" coords="152,86,277,117"/>
+</map>

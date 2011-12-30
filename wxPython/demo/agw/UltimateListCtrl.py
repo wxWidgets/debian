@@ -17,11 +17,12 @@ except ImportError: # if it's not there locally, try the wxPython lib.
 #---------------------------------------------------------------------------
 
 buttonDefs = {
-    814 : ('UltimateReportDemo',   ' UltimateListCtrl, wx.LC_REPORT style '),
-    815 : ('UltimateVirtualDemo',  ' UltimateListCtrl, wx.LC_VIRTUAL style '),
-    816 : ('UltimateListIconDemo', ' UltimateListCtrl, wx.LC_ICON style '),
-    817 : ('UltimateListListDemo', ' UltimateListCtrl, wx.LC_LIST style '),
-    818 : ('MacLargeDemo', ' UltimateListCtrl, Torrent Style :-D')
+    814 : ('UltimateReportDemo',   ' wx.LC_REPORT style '),
+    815 : ('UltimateVirtualDemo',  ' wx.LC_VIRTUAL style '),
+    816 : ('UltimateListIconDemo', ' wx.LC_ICON style '),
+    817 : ('UltimateListListDemo', ' wx.LC_LIST style '),
+    818 : ('Windows7Explorer_Contents', ' Windows 7 Explorer "Contents" style'),
+    819 : ('MacLargeDemo', ' Torrent Style :-D')
     }
 
 
@@ -46,11 +47,17 @@ class ButtonPanel(wx.Panel):
         box.Fit(self)
         
 
-    def OnButton(self, evt):
-        modName = buttonDefs[evt.GetId()][0]
+    def OnButton(self, event):
+        
+        event.Skip()
+
+        wx.BeginBusyCursor()
+        
+        modName = buttonDefs[event.GetId()][0]
         module = __import__(modName)
         frame = module.TestFrame(None, self.log)
 
+        wx.EndBusyCursor()
 
 #---------------------------------------------------------------------------
 

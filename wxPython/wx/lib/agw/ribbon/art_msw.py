@@ -48,14 +48,14 @@ gallery_right_xpm = ["5 5 2 1", "  c None", "x c #FF00FF", " x   ", " xx  ", " x
 gallery_extension_xpm = ["5 5 2 1", "  c None", "x c #FF00FF", "xxxxx", "     ", "xxxxx", " xxx ", "  x  "]
 
 
-def LikePrimary(primary_hsl, h, s, l):
+def LikePrimary(primary_hsl, is_gray, h, s, l):
 
-    return primary_hsl.ShiftHue(h).Saturated(s).Lighter(l).ToRGB()
+    return primary_hsl.ShiftHue(h).Saturated((is_gray and [0] or [s])[0]).Lighter(l).ToRGB()
 
 
-def LikeSecondary(secondary_hsl, h, s, l):
+def LikeSecondary(secondary_hsl, is_gray, h, s, l):
     
-    return secondary_hsl.ShiftHue(h).Saturated(s).Lighter(l).ToRGB()
+    return secondary_hsl.ShiftHue(h).Saturated((is_gray and [0] or [s])[0]).Lighter(l).ToRGB()
 
 
 def SingleLine(dc, rect, start, finish):
@@ -68,9 +68,9 @@ class RibbonMSWArtProvider(object):
     def __init__(self, set_colour_scheme=True):
 
         self._flags = 0
-        self._tab_label_font = wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False)
-        self._button_bar_label_font = wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False)
-        self._panel_label_font = wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False)
+        self._tab_label_font = wx.NORMAL_FONT
+        self._button_bar_label_font = wx.NORMAL_FONT
+        self._panel_label_font = wx.NORMAL_FONT
 
         self._gallery_up_bitmap = [wx.NullBitmap for i in xrange(4)]
         self._gallery_down_bitmap = [wx.NullBitmap for i in xrange(4)]
@@ -155,102 +155,113 @@ class RibbonMSWArtProvider(object):
         # tertiary not used for anything
 
         # Map primary saturation from [0, 1] to [.25, .75]
-        primary_hsl.saturation = cos(primary_hsl.saturation * M_PI) * -0.25 + 0.5
+        primary_is_gray = False
+        gray_saturation_threshold = 0.01
+
+        if primary_hsl.saturation <= gray_saturation_threshold:
+            primary_is_gray = True
+        else:    
+            primary_hsl.saturation = cos(primary_hsl.saturation * M_PI) * -0.25 + 0.5
 
         # Map primary luminance from [0, 1] to [.23, .83]
         primary_hsl.luminance = cos(primary_hsl.luminance * M_PI) * -0.3 + 0.53
 
         # Map secondary saturation from [0, 1] to [0.16, 0.84]
-        secondary_hsl.saturation = cos(secondary_hsl.saturation * M_PI) * -0.34 + 0.5
+        secondary_is_gray = False
+        
+        if secondary_hsl.saturation <= gray_saturation_threshold:
+            secondary_is_gray = True
+        else:
+            secondary_hsl.saturation = cos(secondary_hsl.saturation * M_PI) * -0.34 + 0.5
 
         # Map secondary luminance from [0, 1] to [0.1, 0.9]
         secondary_hsl.luminance = cos(secondary_hsl.luminance * M_PI) * -0.4 + 0.5
 
-        self._page_border_pen = wx.Pen(LikePrimary(primary_hsl, 1.4, 0.00, -0.08))
+        self._page_border_pen = wx.Pen(LikePrimary(primary_hsl, primary_is_gray, 1.4, 0.00, -0.08))
+        self._page_background_top_colour = LikePrimary(primary_hsl, primary_is_gray, -0.1, -0.03, 0.12)
+        self._page_hover_background_top_colour = LikePrimary(primary_hsl, primary_is_gray, -2.8, 0.27, 0.17)
+        self._page_background_top_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, 0.1, -0.10, 0.08)
+        self._page_hover_background_top_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, 3.2, 0.16, 0.13)
+        self._page_background_colour = LikePrimary(primary_hsl, primary_is_gray, 0.4, -0.09, 0.05)
+        self._page_hover_background_colour = LikePrimary(primary_hsl, primary_is_gray, 0.1, 0.19, 0.10)
+        self._page_background_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, -3.2, 0.27, 0.10)
+        self._page_hover_background_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, 1.8, 0.01, 0.15)
 
-        self._page_background_top_colour = LikePrimary(primary_hsl, -0.1, -0.03, 0.12)
-        self._page_hover_background_top_colour = LikePrimary(primary_hsl, -2.8, 0.27, 0.17)
-        self._page_background_top_gradient_colour = LikePrimary(primary_hsl, 0.1, -0.10, 0.08)
-        self._page_hover_background_top_gradient_colour = LikePrimary(primary_hsl, 3.2, 0.16, 0.13)
-        self._page_background_colour = LikePrimary(primary_hsl, 0.4, -0.09, 0.05)
-        self._page_hover_background_colour = LikePrimary(primary_hsl, 0.1, 0.19, 0.10)
-        self._page_background_gradient_colour = LikePrimary(primary_hsl, -3.2, 0.27, 0.10)
-        self._page_hover_background_gradient_colour = LikePrimary(primary_hsl, 1.8, 0.01, 0.15)
+        self._tab_active_background_colour = LikePrimary(primary_hsl, primary_is_gray, -0.1, -0.31, 0.16)
+        self._tab_active_background_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, -0.1, -0.03, 0.12)
+        self._tab_separator_colour = LikePrimary(primary_hsl, primary_is_gray, 0.9, 0.24, 0.05)
+        self._tab_ctrl_background_brush = wx.Brush(LikePrimary(primary_hsl, primary_is_gray, 1.0, 0.39, 0.07))
+        self._tab_hover_background_colour = LikePrimary(primary_hsl, primary_is_gray, 1.3, 0.15, 0.10)
+        self._tab_hover_background_top_colour = LikePrimary(primary_hsl, primary_is_gray, 1.4, 0.36, 0.08)
+        self._tab_border_pen = wx.Pen(LikePrimary(primary_hsl, primary_is_gray, 1.4, 0.03, -0.05)  )
+        self._tab_separator_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, 1.7, -0.15, -0.18)
+        self._tab_hover_background_top_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, 1.8, 0.34, 0.13)   
+        self._tab_label_colour = LikePrimary(primary_hsl, primary_is_gray, 4.3, 0.13, -0.49)
+        self._tab_hover_background_gradient_colour = LikeSecondary(primary_hsl, secondary_is_gray, -1.5, -0.34, 0.01)
 
-        self._tab_active_background_colour = LikePrimary(primary_hsl, -0.1, -0.31, 0.16)
-        self._tab_active_background_gradient_colour = LikePrimary(primary_hsl, -0.1, -0.03, 0.12)
-        self._tab_separator_colour = LikePrimary(primary_hsl, 0.9, 0.24, 0.05)
-        self._tab_ctrl_background_brush = wx.Brush(LikePrimary(primary_hsl, 1.0, 0.39, 0.07))
-        self._tab_hover_background_colour = LikePrimary(primary_hsl, 1.3, 0.15, 0.10)
-        self._tab_hover_background_top_colour = LikePrimary(primary_hsl, 1.4, 0.36, 0.08)
-        self._tab_border_pen = wx.Pen(LikePrimary(primary_hsl, 1.4, 0.03, -0.05)  )
-        self._tab_separator_gradient_colour = LikePrimary(primary_hsl, 1.7, -0.15, -0.18)
-        self._tab_hover_background_top_gradient_colour = LikePrimary(primary_hsl, 1.8, 0.34, 0.13)   
-        self._tab_label_colour = LikePrimary(primary_hsl, 4.3, 0.13, -0.49)
-        self._tab_hover_background_gradient_colour = LikeSecondary(primary_hsl, -1.5, -0.34, 0.01)
-
-        self._panel_minimised_border_gradient_pen = wx.Pen(LikePrimary(primary_hsl, -6.9, -0.17, -0.09))
-        self._panel_minimised_border_pen = wx.Pen(LikePrimary(primary_hsl, -5.3, -0.24, -0.06))
-        self._panel_border_gradient_pen = wx.Pen(LikePrimary(primary_hsl, -5.2, -0.15, -0.06))
-        self._panel_border_pen = wx.Pen(LikePrimary(primary_hsl, -2.8, -0.32, 0.02))
-        self._panel_label_background_brush = wx.Brush(LikePrimary(primary_hsl, -1.5, 0.03, 0.05))
-        self._panel_active_background_gradient_colour = LikePrimary(primary_hsl, 0.5, 0.34, 0.05)
-        self._panel_hover_label_background_brush = wx.Brush(LikePrimary(primary_hsl, 1.0, 0.30, 0.09))
-        self._panel_active_background_top_gradient_colour = LikePrimary(primary_hsl, 1.4, -0.17, -0.13)
-        self._panel_active_background_colour = LikePrimary(primary_hsl, 1.6, -0.18, -0.18)
-        self._panel_active_background_top_colour = LikePrimary(primary_hsl, 1.7, -0.20, -0.03)
-        self._panel_label_colour = LikePrimary(primary_hsl, 2.8, -0.14, -0.35)
+        self._panel_minimised_border_gradient_pen = wx.Pen(LikePrimary(primary_hsl, primary_is_gray, -6.9, -0.17, -0.09))
+        self._panel_minimised_border_pen = wx.Pen(LikePrimary(primary_hsl, primary_is_gray, -5.3, -0.24, -0.06))
+        self._panel_border_gradient_pen = wx.Pen(LikePrimary(primary_hsl, primary_is_gray, -5.2, -0.15, -0.06))
+        self._panel_border_pen = wx.Pen(LikePrimary(primary_hsl, primary_is_gray, -2.8, -0.32, 0.02))
+        self._panel_label_background_brush = wx.Brush(LikePrimary(primary_hsl, primary_is_gray, -1.5, 0.03, 0.05))
+        self._panel_active_background_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, 0.5, 0.34, 0.05)
+        self._panel_hover_label_background_brush = wx.Brush(LikePrimary(primary_hsl, primary_is_gray, 1.0, 0.30, 0.09))
+        self._panel_active_background_top_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, 1.4, -0.17, -0.13)
+        self._panel_active_background_colour = LikePrimary(primary_hsl, primary_is_gray, 1.6, -0.18, -0.18)
+        self._panel_active_background_top_colour = LikePrimary(primary_hsl, primary_is_gray, 1.7, -0.20, -0.03)
+        self._panel_label_colour = LikePrimary(primary_hsl, primary_is_gray, 2.8, -0.14, -0.35)
         self._panel_hover_label_colour = self._panel_label_colour
         self._panel_minimised_label_colour = self._tab_label_colour
 
-        self._gallery_button_disabled_background_colour = LikePrimary(primary_hsl, -2.8, -0.46, 0.09)
-        self._gallery_button_disabled_background_top_brush = wx.Brush(LikePrimary(primary_hsl, -2.8, -0.36, 0.15))
-        self._gallery_hover_background_brush = wx.Brush(LikePrimary(primary_hsl, -0.8, 0.05, 0.15))
-        self._gallery_border_pen = wx.Pen(LikePrimary(primary_hsl, 0.7, -0.02, 0.03))
-        self._gallery_button_background_top_brush = wx.Brush(LikePrimary(primary_hsl, 0.8, 0.34, 0.13))
-        self._gallery_button_background_colour = LikePrimary(primary_hsl, 1.3, 0.10, 0.08)
+        self._gallery_button_disabled_background_colour = LikePrimary(primary_hsl, primary_is_gray, -2.8, -0.46, 0.09)
+        self._gallery_button_disabled_background_top_brush = wx.Brush(LikePrimary(primary_hsl, primary_is_gray, -2.8, -0.36, 0.15))
+        self._gallery_hover_background_brush = wx.Brush(LikePrimary(primary_hsl, primary_is_gray, -0.8, 0.05, 0.15))
+        self._gallery_border_pen = wx.Pen(LikePrimary(primary_hsl, primary_is_gray, 0.7, -0.02, 0.03))
+        self._gallery_button_background_top_brush = wx.Brush(LikePrimary(primary_hsl, primary_is_gray, 0.8, 0.34, 0.13))
+        self._gallery_button_background_colour = LikePrimary(primary_hsl, primary_is_gray, 1.3, 0.10, 0.08)
+        
         # SetColour used so that the relevant bitmaps are generated
-        self.SetColour(RIBBON_ART_GALLERY_BUTTON_FACE_COLOUR, LikePrimary(primary_hsl, 1.4, -0.21, -0.23))
-        self.SetColour(RIBBON_ART_GALLERY_BUTTON_HOVER_FACE_COLOUR, LikePrimary(primary_hsl, 1.5, -0.24, -0.29))
-        self.SetColour(RIBBON_ART_GALLERY_BUTTON_ACTIVE_FACE_COLOUR, LikePrimary(primary_hsl, 1.5, -0.24, -0.29))
-        self.SetColour(RIBBON_ART_GALLERY_BUTTON_DISABLED_FACE_COLOUR, LikePrimary(primary_hsl, 0.0, -1.0, 0.0))
-        self._gallery_button_disabled_background_gradient_colour = LikePrimary(primary_hsl, 1.5, -0.43, 0.12)
-        self._gallery_button_background_gradient_colour = LikePrimary(primary_hsl, 1.7, 0.11, 0.09)
-        self._gallery_item_border_pen = wx.Pen(LikeSecondary(secondary_hsl, -3.9, -0.16, -0.14))
-        self._gallery_button_hover_background_colour = LikeSecondary(secondary_hsl, -0.9, 0.16, -0.07)
-        self._gallery_button_hover_background_gradient_colour = LikeSecondary(secondary_hsl, 0.1, 0.12, 0.03)
-        self._gallery_button_hover_background_top_brush = wx.Brush(LikeSecondary(secondary_hsl, 4.3, 0.16, 0.17))
+        self.SetColour(RIBBON_ART_GALLERY_BUTTON_FACE_COLOUR, LikePrimary(primary_hsl, primary_is_gray, 1.4, -0.21, -0.23))
+        self.SetColour(RIBBON_ART_GALLERY_BUTTON_HOVER_FACE_COLOUR, LikePrimary(primary_hsl, primary_is_gray, 1.5, -0.24, -0.29))
+        self.SetColour(RIBBON_ART_GALLERY_BUTTON_ACTIVE_FACE_COLOUR, LikePrimary(primary_hsl, primary_is_gray, 1.5, -0.24, -0.29))
+        self.SetColour(RIBBON_ART_GALLERY_BUTTON_DISABLED_FACE_COLOUR, LikePrimary(primary_hsl, primary_is_gray, 0.0, -1.0, 0.0))
+        self._gallery_button_disabled_background_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, 1.5, -0.43, 0.12)
+        self._gallery_button_background_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, 1.7, 0.11, 0.09)
+        self._gallery_item_border_pen = wx.Pen(LikeSecondary(secondary_hsl, secondary_is_gray, -3.9, -0.16, -0.14))
+        self._gallery_button_hover_background_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -0.9, 0.16, -0.07)
+        self._gallery_button_hover_background_gradient_colour = LikeSecondary(secondary_hsl, secondary_is_gray, 0.1, 0.12, 0.03)
+        self._gallery_button_hover_background_top_brush = wx.Brush(LikeSecondary(secondary_hsl, secondary_is_gray, 4.3, 0.16, 0.17))
 
-        self._gallery_button_active_background_colour = LikeSecondary(secondary_hsl, -9.9, 0.03, -0.22)
-        self._gallery_button_active_background_gradient_colour = LikeSecondary(secondary_hsl, -9.5, 0.14, -0.11)
-        self._gallery_button_active_background_top_brush = wx.Brush(LikeSecondary(secondary_hsl, -9.0, 0.15, -0.08))
+        self._gallery_button_active_background_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -9.9, 0.03, -0.22)
+        self._gallery_button_active_background_gradient_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -9.5, 0.14, -0.11)
+        self._gallery_button_active_background_top_brush = wx.Brush(LikeSecondary(secondary_hsl, secondary_is_gray, -9.0, 0.15, -0.08))
         
         self._button_bar_label_colour = self._tab_label_colour
-        self._button_bar_hover_border_pen = wx.Pen(LikeSecondary(secondary_hsl, -6.2, -0.47, -0.14))
-        self._button_bar_hover_background_gradient_colour = LikeSecondary(secondary_hsl, -0.6, 0.16, 0.04)
-        self._button_bar_hover_background_colour = LikeSecondary(secondary_hsl, -0.2, 0.16, -0.10)
-        self._button_bar_hover_background_top_gradient_colour = LikeSecondary(secondary_hsl, 0.2, 0.16, 0.03)
-        self._button_bar_hover_background_top_colour = LikeSecondary(secondary_hsl, 8.8, 0.16, 0.17)
-        self._button_bar_active_border_pen = wx.Pen(LikeSecondary(secondary_hsl, -6.2, -0.47, -0.25))
-        self._button_bar_active_background_top_colour = LikeSecondary(secondary_hsl, -8.4, 0.08, 0.06)
-        self._button_bar_active_background_top_gradient_colour = LikeSecondary(secondary_hsl, -9.7, 0.13, -0.07)
-        self._button_bar_active_background_colour = LikeSecondary(secondary_hsl, -9.9, 0.14, -0.14)
-        self._button_bar_active_background_gradient_colour = LikeSecondary(secondary_hsl, -8.7, 0.17, -0.03)
+        self._button_bar_hover_border_pen = wx.Pen(LikeSecondary(secondary_hsl, secondary_is_gray, -6.2, -0.47, -0.14))
+        self._button_bar_hover_background_gradient_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -0.6, 0.16, 0.04)
+        self._button_bar_hover_background_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -0.2, 0.16, -0.10)
+        self._button_bar_hover_background_top_gradient_colour = LikeSecondary(secondary_hsl, secondary_is_gray, 0.2, 0.16, 0.03)
+        self._button_bar_hover_background_top_colour = LikeSecondary(secondary_hsl, secondary_is_gray, 8.8, 0.16, 0.17)
+        self._button_bar_active_border_pen = wx.Pen(LikeSecondary(secondary_hsl, secondary_is_gray, -6.2, -0.47, -0.25))
+        self._button_bar_active_background_top_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -8.4, 0.08, 0.06)
+        self._button_bar_active_background_top_gradient_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -9.7, 0.13, -0.07)
+        self._button_bar_active_background_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -9.9, 0.14, -0.14)
+        self._button_bar_active_background_gradient_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -8.7, 0.17, -0.03)
 
-        self._toolbar_border_pen = wx.Pen(LikePrimary(primary_hsl, 1.4, -0.21, -0.16))
-        self.SetColour(RIBBON_ART_TOOLBAR_FACE_COLOUR, LikePrimary(primary_hsl, 1.4, -0.17, -0.22))
-        self._tool_background_top_colour = LikePrimary(primary_hsl, -1.9, -0.07, 0.06)
-        self._tool_background_top_gradient_colour = LikePrimary(primary_hsl, 1.4, 0.12, 0.08)
-        self._tool_background_colour = LikePrimary(primary_hsl, 1.4, -0.09, 0.03)
-        self._tool_background_gradient_colour = LikePrimary(primary_hsl, 1.9, 0.11, 0.09)
-        self._tool_hover_background_top_colour = LikeSecondary(secondary_hsl, 3.4, 0.11, 0.16)
-        self._tool_hover_background_top_gradient_colour = LikeSecondary(secondary_hsl, -1.4, 0.04, 0.08)
-        self._tool_hover_background_colour = LikeSecondary(secondary_hsl, -1.8, 0.16, -0.12)
-        self._tool_hover_background_gradient_colour = LikeSecondary(secondary_hsl, -2.6, 0.16, 0.05)
-        self._tool_active_background_top_colour = LikeSecondary(secondary_hsl, -9.9, -0.12, -0.09)
-        self._tool_active_background_top_gradient_colour = LikeSecondary(secondary_hsl, -8.5, 0.16, -0.12)
-        self._tool_active_background_colour = LikeSecondary(secondary_hsl, -7.9, 0.16, -0.20)
-        self._tool_active_background_gradient_colour = LikeSecondary(secondary_hsl, -6.6, 0.16, -0.10)
+        self._toolbar_border_pen = wx.Pen(LikePrimary(primary_hsl, primary_is_gray, 1.4, -0.21, -0.16))
+        self.SetColour(RIBBON_ART_TOOLBAR_FACE_COLOUR, LikePrimary(primary_hsl, primary_is_gray, 1.4, -0.17, -0.22))
+        self._tool_background_top_colour = LikePrimary(primary_hsl, primary_is_gray, -1.9, -0.07, 0.06)
+        self._tool_background_top_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, 1.4, 0.12, 0.08)
+        self._tool_background_colour = LikePrimary(primary_hsl, primary_is_gray, 1.4, -0.09, 0.03)
+        self._tool_background_gradient_colour = LikePrimary(primary_hsl, primary_is_gray, 1.9, 0.11, 0.09)
+        self._tool_hover_background_top_colour = LikeSecondary(secondary_hsl, secondary_is_gray, 3.4, 0.11, 0.16)
+        self._tool_hover_background_top_gradient_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -1.4, 0.04, 0.08)
+        self._tool_hover_background_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -1.8, 0.16, -0.12)
+        self._tool_hover_background_gradient_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -2.6, 0.16, 0.05)
+        self._tool_active_background_top_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -9.9, -0.12, -0.09)
+        self._tool_active_background_top_gradient_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -8.5, 0.16, -0.12)
+        self._tool_active_background_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -7.9, 0.16, -0.20)
+        self._tool_active_background_gradient_colour = LikeSecondary(secondary_hsl, secondary_is_gray, -6.6, 0.16, -0.10)
 
         # Invalidate cached tab separator
         self._cached_tab_separator_visibility = -1.0
@@ -967,11 +978,13 @@ class RibbonMSWArtProvider(object):
             
         if self._flags & RIBBON_BAR_SHOW_PAGE_ICONS:
             icon = tab.page.GetIcon()
-            x = tab.rect.x + 4
-            if self._flags & RIBBON_BAR_SHOW_PAGE_LABELS == 0:
-                x = tab.rect.x + (tab.rect.width - icon.GetWidth()) / 2
-                
-            dc.DrawBitmap(icon, x, tab.rect.y + 1 + (tab.rect.height - 1 - icon.GetHeight()) / 2, True)
+
+            if icon.IsOk():
+                x = tab.rect.x + 4
+                if self._flags & RIBBON_BAR_SHOW_PAGE_LABELS == 0:
+                    x = tab.rect.x + (tab.rect.width - icon.GetWidth()) / 2
+                    
+                dc.DrawBitmap(icon, x, tab.rect.y + 1 + (tab.rect.height - 1 - icon.GetHeight()) / 2, True)
         
         if self._flags & RIBBON_BAR_SHOW_PAGE_LABELS:
             label = tab.page.GetLabel()
@@ -1862,6 +1875,11 @@ class RibbonMSWArtProvider(object):
          
         """
 
+        if kind == RIBBON_BUTTON_TOGGLE:
+            kind = RIBBON_BUTTON_NORMAL
+            if state & RIBBON_BUTTONBAR_BUTTON_TOGGLED:
+                state ^= RIBBON_BUTTONBAR_BUTTON_ACTIVE_MASK
+    
         if state & (RIBBON_BUTTONBAR_BUTTON_HOVER_MASK | RIBBON_BUTTONBAR_BUTTON_ACTIVE_MASK):        
             if state & RIBBON_BUTTONBAR_BUTTON_ACTIVE_MASK:
                 dc.SetPen(self._button_bar_active_border_pen)
@@ -2073,7 +2091,7 @@ class RibbonMSWArtProvider(object):
          hybrid or dropdown tool, then the foreground should also contain a standard
          dropdown button;
         :param `kind`: The kind of tool to draw (normal, dropdown, or hybrid);
-        :param `state`: A combination of wx.RibbonToolBarToolState flags giving the
+        :param `state`: A combination of `RibbonToolBarToolState` flags giving the
          state of the tool and it's relative position within a tool group.
 
         """
@@ -2163,7 +2181,7 @@ class RibbonMSWArtProvider(object):
         :param `dc`: A device context to use when one is required for size calculations;
         :param `wnd`: The window onto which the tab will eventually be drawn;
         :param `label`: The tab's label (or "" if it has none);
-        :param `bitmap`: The tab's icon (or wx.NullBitmap if it has none);
+        :param `bitmap`: The tab's icon (or `wx.NullBitmap` if it has none);
         :param `ideal`: The ideal width (in pixels) of the tab;
         :param `small_begin_need_separator`: A size less than the size, at which a
          tab separator should begin to be drawn (i.e. drawn, but still fairly transparent);
@@ -2313,7 +2331,12 @@ class RibbonMSWArtProvider(object):
                 client_offset = wx.Point(2, 3)
             else:
                 client_offset = wx.Point(3, 2)
-        
+
+        if size.x < 0:
+            size.x = 0
+        if size.y < 0:
+            size.y = 0
+    
         return size, client_offset
 
 
@@ -2487,7 +2510,7 @@ class RibbonMSWArtProvider(object):
             # Small bitmap, no label
             button_size = bitmap_size_small + wx.Size(6, 4)
             
-            if kind == RIBBON_BUTTON_NORMAL:
+            if kind in [RIBBON_BUTTON_NORMAL, RIBBON_BUTTON_TOGGLE]:
                 normal_region = wx.Rect(0, 0, *button_size)
                 dropdown_region = wx.Rect(0, 0, 0, 0)
 
@@ -2517,7 +2540,7 @@ class RibbonMSWArtProvider(object):
                 dropdown_region.SetX(dropdown_region.GetX() + text_size)
                 normal_region.SetWidth(normal_region.GetWidth() + text_size)
                 # no break
-            elif kind == RIBBON_BUTTON_NORMAL:
+            elif kind in [RIBBON_BUTTON_NORMAL, RIBBON_BUTTON_TOGGLE]:
                 normal_region.SetWidth(normal_region.GetWidth() + text_size)
             
         elif result == RIBBON_BUTTONBAR_BUTTON_LARGE:
@@ -2526,13 +2549,10 @@ class RibbonMSWArtProvider(object):
             icon_size = wx.Size(*bitmap_size_large)
             icon_size += wx.Size(4, 4)
             best_width, label_height = dc.GetTextExtent(label)
-#            label_height += 1
-            best_num_lines = 1
             last_line_extra_width = 0
             
-            if kind != RIBBON_BUTTON_NORMAL:            
+            if kind not in [RIBBON_BUTTON_NORMAL, RIBBON_BUTTON_TOGGLE]:
                 last_line_extra_width += 8
-                best_num_lines = 2 # label on top line, button below
             
             for i in xrange(0, len(label)):            
                 if RibbonCanLabelBreakAtPosition(label, i):
@@ -2541,7 +2561,6 @@ class RibbonMSWArtProvider(object):
                                 dc.GetTextExtent(label[i+1:])[0] + last_line_extra_width)
                     if width < best_width:
                         best_width = width
-                        best_num_lines = 2
 
             label_height *= 2 # Assume two lines even when only one is used
                               # (to give all buttons a consistent height)
@@ -2558,7 +2577,7 @@ class RibbonMSWArtProvider(object):
                 dropdown_region.y = normal_region.height
                 dropdown_region.width = icon_size.GetWidth()
                 dropdown_region.height = icon_size.GetHeight() - normal_region.height
-            elif kind == RIBBON_BUTTON_NORMAL:
+            elif kind in [RIBBON_BUTTON_NORMAL, RIBBON_BUTTON_TOGGLE]:
                 normal_region = wx.Rect(0, 0, *icon_size)
             
         return True, button_size, normal_region, dropdown_region

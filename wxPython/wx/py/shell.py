@@ -5,8 +5,8 @@ based on wxPython's wxStyledTextCtrl.
 Sponsored by Orbtech - Your source for Python programming expertise."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: shell.py 63479 2010-02-14 05:24:22Z RD $"
-__revision__ = "$Revision: 63479 $"[11:-2]
+__cvsid__ = "$Id: shell.py 63480 2010-02-14 05:34:39Z RD $"
+__revision__ = "$Revision: 63480 $"[11:-2]
 
 import wx
 from wx import stc
@@ -1447,8 +1447,6 @@ class Shell(editwindow.EditWindow):
         self.callTipInsert = config.ReadBool('Options/CallTipInsert', True)
         self.SetWrapMode(config.ReadBool('View/WrapMode', True))
 
-        useAA = config.ReadBool('Options/UseAntiAliasing', self.GetUseAntiAliasing())
-        self.SetUseAntiAliasing(useAA)
         self.lineNumbers = config.ReadBool('View/ShowLineNumbers', True)
         self.setDisplayLineNumbers (self.lineNumbers)
         zoom = config.ReadInt('View/Zoom/Shell', -99)
@@ -1466,7 +1464,6 @@ class Shell(editwindow.EditWindow):
                          self.autoCompleteIncludeDouble)
         config.WriteBool('Options/AutoCallTip', self.autoCallTip)
         config.WriteBool('Options/CallTipInsert', self.callTipInsert)
-        config.WriteBool('Options/UseAntiAliasing', self.GetUseAntiAliasing())
         config.WriteBool('View/WrapMode', self.GetWrapMode())
         config.WriteBool('View/ShowLineNumbers', self.lineNumbers)
         config.WriteInt('View/Zoom/Shell', self.GetZoom())

@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10.13.04
-// RCS-ID:      $Id: enhmeta.cpp 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: enhmeta.cpp 58227 2009-01-19 13:55:27Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ IMPLEMENT_ABSTRACT_CLASS(wxEnhMetaFileDC, wxDC)
 
 // we must pass NULL if the string is empty to metafile functions
 static inline const wxChar *GetMetaFileName(const wxString& fn)
-    { return !fn ? (wxChar *)NULL : fn.c_str(); }
+    { return !fn ? NULL : fn.c_str(); }
 
 // ============================================================================
 // implementation

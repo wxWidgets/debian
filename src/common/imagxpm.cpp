@@ -2,7 +2,7 @@
 // Name:        src/common/imagxpm.cpp
 // Purpose:     wxXPMHandler
 // Author:      Vaclav Slavik, Robert Roebling
-// RCS-ID:      $Id: imagxpm.cpp 53477 2008-05-07 07:28:57Z JS $
+// RCS-ID:      $Id: imagxpm.cpp 67681 2011-05-03 16:29:04Z DS $
 // Copyright:   (c) 2001 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -80,6 +80,7 @@ license is as follows:
 #include "wx/imagxpm.h"
 #include "wx/wfstream.h"
 #include "wx/xpmdecod.h"
+#include "wx/filename.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxXPMHandler,wxImageHandler)
 
@@ -96,7 +97,7 @@ bool wxXPMHandler::LoadFile(wxImage *image,
     wxXPMDecoder decoder;
 
     wxImage img = decoder.ReadFile(stream);
-    if ( !img.Ok() )
+    if ( !img.IsOk() )
         return false;
     *image = img;
     return true;
@@ -123,8 +124,8 @@ bool wxXPMHandler::SaveFile(wxImage * image,
     wxString sName;
     if ( image->HasOption(wxIMAGE_OPTION_FILENAME) )
     {
-        wxSplitPath(image->GetOption(wxIMAGE_OPTION_FILENAME),
-                    NULL, &sName, NULL);
+        wxFileName::SplitPath(image->GetOption(wxIMAGE_OPTION_FILENAME),
+                              NULL, &sName, NULL);
         sName << wxT("_xpm");
     }
 
@@ -217,6 +218,7 @@ bool wxXPMHandler::DoCanRead(wxInputStream& stream)
 {
     wxXPMDecoder decoder;
     return decoder.CanRead(stream);
+         // it's ok to modify the stream position here
 }
 
 #endif  // wxUSE_STREAMS

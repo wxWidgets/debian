@@ -1,0 +1,47 @@
+/homeoverviews/richtextctrl.h:3446: warning: Found unknown command `\null'
+/homeoverviews/string.h:346: warning: explicit link request to 'wxSnprintf' could not be resolved
+/homeoverviews/string.h:346: warning: explicit link request to 'wxVsnprintf' could not be resolved
+/homewx/affinematrix2d.h:95: warning: Found unknown command `\t'
+/homewx/affinematrix2d.h:85: warning: Found unknown command `\t'
+/homewx/affinematrix2d.h:85: warning: Found unknown command `\t'
+/homewx/affinematrix2d.h:85: warning: Found unknown command `\t'
+/homewx/affinematrix2d.h:95: warning: Found unknown command `\t'
+/homewx/affinematrix2d.h:85: warning: Found unknown command `\t'
+/homewx/control.h:90: warning: The following parameters of wxControl::wxControl(wxWindow *parent, wxWindowID id, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, long style=0, const wxValidator &validator=wxDefaultValidator, const wxString &name=wxControlNameStr) are not documented:
+  parameter 'validator'
+/homewx/fileconf.h:34: warning: explicit link request to 'wxCONFIG_USE_LOCAL_FILE' could not be resolved
+/homewx/fileconf.h:37: warning: explicit link request to 'wxCONFIG_USE_GLOBAL_FILE' could not be resolved
+/homewx/valnum.h:307: warning: argument 'precision' of command @param is not found in the argument list of wxFloatingPointValidator< T >::wxFloatingPointValidator(ValueType *value=NULL, int style=wxNUM_VAL_DEFAULT)
+/homewx/event.h:3285: warning: explicit link request to 'wxHelpEventOrigin' could not be resolved
+/homewx/event.h:3285: warning: explicit link request to 'wxHelpEventOrigin' could not be resolved
+/homewx/event.h:3285: warning: explicit link request to 'wxHelpEventOrigin' could not be resolved
+/homewx/html/helpctrl.h:174: warning: Found unknown command `\enable'
+/homewx/intl.h:445: warning: argument 'short' of command @param is not found in the argument list of wxLocale::Init(const wxString &name, const wxString &shortName=wxEmptyString, const wxString &locale=wxEmptyString, bool bLoadDefault=true)
+/homewx/intl.h:445: warning: The following parameters of wxLocale::Init(const wxString &name, const wxString &shortName=wxEmptyString, const wxString &locale=wxEmptyString, bool bLoadDefault=true) are not documented:
+  parameter 'shortName'
+/homewx/msgdlg.h:25: warning: found </div> at different nesting level (7) than expected (5)
+/homewx/msgdlg.h:75: warning: end of comment block while expecting command </div>
+/homewx/event.h:3662: warning: explicit link request to 'wxNavigationKeyEventFlags' could not be resolved
+/homewx/richtext/richtextctrl.h:2122: warning: argument 'id' of command @param is not found in the argument list of wxRichTextEvent::wxRichTextEvent(wxEventType commandType=wxEVT_NULL, int winid=0)
+/homewx/richtext/richtextctrl.h:2122: warning: The following parameters of wxRichTextEvent::wxRichTextEvent(wxEventType commandType=wxEVT_NULL, int winid=0) are not documented:
+  parameter 'winid'
+/homewx/stopwatch.h:23: warning: explicit link request to 'QueryPerformanceCounter()' could not be resolved
+/homewx/textctrl.h:1274: warning: argument 'col' of command @param is not found in the argument list of wxTextCtrl::HitTest(const wxPoint &pt, long *pos) const
+/homewx/textctrl.h:1274: warning: argument 'row' of command @param is not found in the argument list of wxTextCtrl::HitTest(const wxPoint &pt, long *pos) const
+/homewx/textctrl.h:1274: warning: argument 'pos' of command @param is not found in the argument list of wxTextCtrl::HitTest(const wxPoint &pt, wxTextCoord *col, wxTextCoord *row) const
+/homewx/thread.h:1275: warning: argument 'waitMode' of command @param is not found in the argument list of wxThread::Wait(wxThreadWait flags=wxTHREAD_WAIT_BLOCK)
+/homewx/thread.h:1275: warning: The following parameters of wxThread::Wait(wxThreadWait flags=wxTHREAD_WAIT_BLOCK) are not documented:
+  parameter 'flags'
+/homewx/toolbar.h:732: warning: The following parameters of wxToolBar::SetToolClientData(int id, wxObject *clientData) are not documented:
+  parameter 'clientData'
+/homewx/toolbar.h:740: warning: The following parameters of wxToolBar::SetToolDisabledBitmap(int id, const wxBitmap &bitmap) are not documented:
+  parameter 'bitmap'
+/homewx/toolbar.h:770: warning: The following parameters of wxToolBar::SetToolNormalBitmap(int id, const wxBitmap &bitmap) are not documented:
+  parameter 'bitmap'
+/homewx/treelist.h:409: warning: The following parameters of wxTreeListCtrl::InsertItem(wxTreeListItem parent, wxTreeListItem previous, const wxString &text, int imageClosed=NO_IMAGE, int imageOpened=NO_IMAGE, wxClientData *data=NULL) are not documented:
+  parameter 'text'
+/homewx/webview.h:275: warning: The following parameters of wxWebView::New(wxWindow *parent, wxWindowID id, const wxString &url=wxWebViewDefaultURLStr, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, wxWebViewBackend backend=wxWEB_VIEW_BACKEND_DEFAULT, long style=0, const wxString &name=wxWebViewNameStr) are not documented:
+  parameter 'style'
+  parameter 'name'
+/homewx/wizard.h:461: warning: Illegal command \xrefitem as the argument of a \b command
+error: failed to run html help compiler on index.hhp

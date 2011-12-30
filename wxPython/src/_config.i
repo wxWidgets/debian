@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Nov-1998
-// RCS-ID:      $Id: _config.i 54768 2008-07-23 02:07:47Z RD $
+// RCS-ID:      $Id: _config.i 54770 2008-07-23 02:17:21Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -263,6 +263,8 @@ subgroups.", "");
         }
     }
 
+    // TODO: ReadBinary and WriteBinary
+    
 
     // write the value (return True on success)
     DocDeclStr(
@@ -425,8 +427,11 @@ public:
                      const wxString& globalFilename = wxPyEmptyString,
                      long style = wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_GLOBAL_FILE),
         "", "");
-    
     ~wxFileConfig();
+    
+    static wxString GetGlobalFileName(const wxString& szFile);
+    static wxString GetLocalFileName(const wxString& szFile, int style = 0);
+    
 };
 
 

@@ -1,7 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        widget.cpp
-// Purpose:     wxHtml testing example
-//              Demonstrates embedded controls
+// Name:        zip.cpp
+// Purpose:     wxHtml sample: Demonstrates embedded controls
+// Author:      ?
+// Modified by:
+// Created:     ?
+// RCS-ID:      $Id: widget.cpp 66528 2011-01-02 22:05:14Z VZ $
+// Copyright:   (c) wxWidgets team
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -17,22 +22,16 @@
     #include "wx/wx.h"
 #endif
 
-
 #include "wx/html/htmlwin.h"
-
 #include "../../sample.xpm"
 
 
-/*
 
-
-TAG HANDER FOR 'MYBIND' TAG
-
-
-*/
+// ----------------------------------------------------------------------------
+// TAG HANDER FOR 'MYBIND' TAG
+// ----------------------------------------------------------------------------
 
 #include "wx/html/m_templ.h"
-
 
 TAG_HANDLER_BEGIN(MYBIND, "MYBIND")
 
@@ -156,14 +155,15 @@ IMPLEMENT_APP(MyApp)
 // `Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
+    if ( !wxApp::OnInit() )
+        return false;
+
     // Create the main application window
     MyFrame *frame = new MyFrame( _("wxHtmlWindow testing application"),
         wxDefaultPosition, wxSize(640, 480) );
 
-    // Show it and tell the application that it's our main window
-    // @@@ what does it do exactly, in fact? is it necessary here?
+    // Show it
     frame->Show(true);
-    SetTopWindow(frame);
 
     // success: wxApp::OnRun() will be called which will enter the main message
     // loop and the application will run. If we returned false here, the
@@ -179,8 +179,10 @@ wxHtmlWindow *html;
 
 // frame constructor
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-: wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size)
+    : wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size)
 {
+    SetIcon(wxICON(sample));
+
     // create a menu bar
     wxMenu *menuFile = new wxMenu;
     wxMenu *menuNav = new wxMenu;
@@ -198,7 +200,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     SetMenuBar(menuBar);
 
     SetIcon(wxIcon(sample_xpm));
-    
+
 #if wxUSE_STATUSBAR
     CreateStatusBar(2);
 #endif // wxUSE_STATUSBAR

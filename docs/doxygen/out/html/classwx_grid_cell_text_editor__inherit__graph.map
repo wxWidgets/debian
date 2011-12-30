@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node5" href="$classwx_grid_cell_auto_wrap_string_editor.html" title="Grid cell editor for wrappable string/text data." alt="" coords="5,166,213,197"/>
+<area shape="rect" id="node7" href="$classwx_grid_cell_float_editor.html" title="The editor for floating point numbers data." alt="" coords="237,166,384,197"/>
+<area shape="rect" id="node9" href="$classwx_grid_cell_number_editor.html" title="Grid cell editor for numeric integer data." alt="" coords="408,166,571,197"/>
+<area shape="rect" id="node2" href="$classwx_grid_cell_editor.html" title="This class is responsible for providing and manipulating the in&#45;place edit controls for the grid..." alt="" coords="252,6,369,37"/>
+</map>

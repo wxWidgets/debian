@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: metafile.cpp 37162 2006-01-26 16:50:23Z ABX $
+// RCS-ID:      $Id: metafile.cpp 57907 2009-01-08 14:21:53Z FM $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -119,7 +119,8 @@ wxMetafileDC::~wxMetafileDC()
 }
 
 void wxMetafileDC::GetTextExtent(const wxString& string, long *x, long *y,
-                                 long *descent, long *externalLeading, wxFont *theFont, bool WXUNUSED(use16bit)) const
+                                 long *descent, long *externalLeading,
+                                 const wxFont *theFont, bool WXUNUSED(use16bit)) const
 {
 }
 
@@ -128,7 +129,7 @@ wxMetafile *wxMetafileDC::Close()
     return NULL;
 }
 
-void wxMetafileDC::SetMapMode(int mode)
+void wxMetafileDC::SetMapMode(wxMappingMode mode)
 {
 }
 

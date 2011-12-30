@@ -4,7 +4,7 @@
 // Author:      Paul Lanier
 // Modified by:
 // Created:     05/25/06
-// RCS-ID:      $Id: pseudodc.cpp 55608 2008-09-14 19:15:06Z RD $
+// RCS-ID:      $Id: pseudodc.cpp 58701 2009-02-07 07:24:38Z KO $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ wxBitmap &GetGreyBitmap(wxBitmap &bmp)
 // pdcDrawPolyPolygonOp constructor
 // ----------------------------------------------------------------------------
 pdcDrawPolyPolygonOp::pdcDrawPolyPolygonOp(int n, int count[], wxPoint points[],
-                 wxCoord xoffset, wxCoord yoffset, int fillStyle) 
+                 wxCoord xoffset, wxCoord yoffset, wxPolygonFillMode fillStyle) 
 {
     m_n=n; m_xoffset=xoffset; m_yoffset=yoffset; m_fillStyle=fillStyle;
     int total_n=0;
@@ -181,7 +181,7 @@ pdcDrawLinesOp::~pdcDrawLinesOp()
 // pdcDrawPolygonOp constructor
 // ----------------------------------------------------------------------------
 pdcDrawPolygonOp::pdcDrawPolygonOp(int n, wxPoint points[],
-             wxCoord xoffset, wxCoord yoffset, int fillStyle)
+             wxCoord xoffset, wxCoord yoffset, wxPolygonFillMode fillStyle)
 {
     m_n=n; m_xoffset=xoffset; m_yoffset=yoffset; m_fillStyle=fillStyle;
     if (n)

@@ -1316,6 +1316,7 @@ class AuiFrame(wx.Frame):
         self._mgr.GetPane("thirdauto").Show()
         self._mgr.GetPane("test10").Show()
         self._mgr.GetPane("notebook_content").Show()
+
         perspective_default = self._mgr.SavePerspective()
 
         self._perspectives = []
@@ -1328,6 +1329,13 @@ class AuiFrame(wx.Frame):
         self._nb_perspectives.append(nb_perspective_default)
         
         self._mgr.LoadPerspective(perspective_default)
+
+        # Show how to get a custom minimizing behaviour, i.e., to minimize a pane
+        # inside an existing AuiToolBar
+        tree = self._mgr.GetPane("test8")
+        tree.MinimizeMode(aui.AUI_MINIMIZE_POS_TOOLBAR)
+        toolbarPane = self._mgr.GetPane(tb4)
+        tree.MinimizeTarget(toolbarPane)
     
         # "commit" all changes made to AuiManager
         self._mgr.Update()
@@ -1492,6 +1500,8 @@ class AuiFrame(wx.Frame):
         self.Bind(aui.EVT_AUI_PANE_DOCKING, self.OnFloatDock)
         self.Bind(aui.EVT_AUI_PANE_DOCKED, self.OnFloatDock)
 
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
+
         self.Bind(wx.EVT_TIMER, self.TimerHandler)
         self.timer = wx.Timer(self)
         self.timer.Start(100)
@@ -1501,6 +1511,13 @@ class AuiFrame(wx.Frame):
 
         self.timer.Stop()
 
+
+    def OnClose(self, event):
+
+        self.timer.Stop()
+        self._mgr.UnInit()
+        event.Skip()
+        
 
     def TimerHandler(self, event):
 
@@ -1795,7 +1812,8 @@ class AuiFrame(wx.Frame):
             
         all_panes = self._mgr.GetAllPanes()
         for pane in all_panes:
-            pane.MinimizeMode(minize_mode | (pane.GetMinimizeMode() & aui.AUI_MINIMIZE_CAPT_MASK))
+            if pane.name != "test8":
+                pane.MinimizeMode(minize_mode | (pane.GetMinimizeMode() & aui.AUI_MINIMIZE_CAPT_MASK))
 
 
     def OnMinimizeCaption(self, event):
@@ -2477,7 +2495,7 @@ class AuiFrame(wx.Frame):
               "Author: Andrea Gavana @ 23 Dec 2005\n\n" + \
               "Please Report Any Bug/Requests Of Improvements\n" + \
               "To Me At The Following Adresses:\n\n" + \
-              "gavana@kpo.kz\n" + "andrea.gavana@gmail.com\n\n" + \
+              "andrea.gavana@maerskoil.com\n" + "andrea.gavana@gmail.com\n\n" + \
               "Welcome To wxPython " + wx.VERSION_STRING + "!!"
               
         dlg = wx.MessageDialog(self, msg, "AUI Demo",
@@ -2727,7 +2745,7 @@ def GetIntroText():
     "<li>Splittable notebook control</li>" \
     "</ul>" \
     "<p><b>What's new in AUI?</b></p>" \
-    "<p>Current wxAUI Version Tracked: wxWidgets 2.9.0 (SVN HEAD)" \
+    "<p>Current wxAUI Version Tracked: wxWidgets 2.9.2 (SVN HEAD)" \
     "<p>The wxPython AUI version fixes the following bugs or implement the following" \
     " missing features (the list is not exhaustive): " \
     "<p><ul>" \
@@ -2888,6 +2906,9 @@ def GetIntroText():
     "<li>Ability of creating <i>AuiToolBar</i> tools with [counter]clockwise rotation. This allows to propose a " \
     "variant of the minimizing functionality with a rotated button which keeps the caption of the pane as label;</li>" \
     "<li>Allow setting the alignment of all tools in a toolbar that is expanded.</li>" \
+    "<li>Implementation of the <tt>AUI_MINIMIZE_POS_TOOLBAR</tt> flag, which allows to minimize a pane inside " \
+     "an existing toolbar. Limitation: if the minimized icon in the toolbar ends up in the overflowing " \
+     "items (i.e., a menu is needed to show the icon), this style will not work.</li>" \
     "</ul>" \
     "</ul><p>" \
     "<p>" \

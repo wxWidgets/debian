@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        unix/dlunix.cpp
+// Name:        src/unix/dlunix.cpp
 // Purpose:     Unix-specific part of wxDynamicLibrary and related classes
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-16 (extracted from common/dynlib.cpp)
-// RCS-ID:      $Id: dlunix.cpp 51903 2008-02-19 01:13:48Z DE $
+// RCS-ID:      $Id: dlunix.cpp 67254 2011-03-20 00:14:35Z DS $
 // Copyright:   (c) 2000-2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -67,11 +67,11 @@
 
 // standard shared libraries extensions for different Unix versions
 #if defined(__HPUX__)
-    const wxChar *wxDynamicLibrary::ms_dllext = _T(".sl");
+    const wxString wxDynamicLibrary::ms_dllext(".sl");
 #elif defined(__DARWIN__)
-    const wxChar *wxDynamicLibrary::ms_dllext = _T(".bundle");
+    const wxString wxDynamicLibrary::ms_dllext(".bundle");
 #else
-    const wxChar *wxDynamicLibrary::ms_dllext = _T(".so");
+    const wxString wxDynamicLibrary::ms_dllext(".so");
 #endif
 
 // ============================================================================
@@ -116,7 +116,7 @@ static void *wx_darwin_dlopen(const char *path, int WXUNUSED(mode) /* mode is ig
     {
         handle = NULL;
 
-        static const char *errorStrings[] =
+        static const char *const errorStrings[] =
         {
             "%d: Object Image Load Failure",
             "%d: Object Image Load Success",
@@ -256,7 +256,7 @@ wxDllType wxDynamicLibrary::GetProgramHandle()
 wxDllType wxDynamicLibrary::RawLoad(const wxString& libname, int flags)
 {
     wxASSERT_MSG( !(flags & wxDL_NOW) || !(flags & wxDL_LAZY),
-                  _T("wxDL_LAZY and wxDL_NOW are mutually exclusive.") );
+                  wxT("wxDL_LAZY and wxDL_NOW are mutually exclusive.") );
 
 #ifdef USE_POSIX_DL_FUNCS
     // we need to use either RTLD_NOW or RTLD_LAZY because if we call dlopen()
@@ -329,14 +329,12 @@ void *wxDynamicLibrary::RawGetSymbol(wxDllType handle, const wxString& name)
 /* static */
 void wxDynamicLibrary::Error()
 {
-#if wxUSE_UNICODE
-    wxWCharBuffer buffer = wxConvLocal.cMB2WC( wx_dlerror() );
-    const wxChar *err = buffer;
-#else
-    const wxChar *err = wx_dlerror();
-#endif
+    wxString err(wx_dlerror());
 
-    wxLogError(wxT("%s"), err ? err : _("Unknown dynamic library error"));
+    if ( err.empty() )
+        err = _("Unknown dynamic library error");
+
+    wxLogError(wxT("%s"), err);
 }
 
 #endif // wxHAVE_DYNLIB_ERROR
@@ -356,22 +354,22 @@ public:
     {
         wxDynamicLibraryDetails *details = new wxDynamicLibraryDetails;
         details->m_path = path;
-        details->m_name = path.AfterLast(_T('/'));
+        details->m_name = path.AfterLast(wxT('/'));
         details->m_address = start;
         details->m_length = (char *)end - (char *)start;
 
         // try to extract the library version from its name
-        const size_t posExt = path.rfind(_T(".so"));
+        const size_t posExt = path.rfind(wxT(".so"));
         if ( posExt != wxString::npos )
         {
-            if ( path.c_str()[posExt + 3] == _T('.') )
+            if ( path.c_str()[posExt + 3] == wxT('.') )
             {
                 // assume "libfoo.so.x.y.z" case
                 details->m_version.assign(path, posExt + 4, wxString::npos);
             }
             else
             {
-                size_t posDash = path.find_last_of(_T('-'), posExt);
+                size_t posDash = path.find_last_of(wxT('-'), posExt);
                 if ( posDash != wxString::npos )
                 {
                     // assume "libbar-x.y.z.so" case
@@ -392,7 +390,7 @@ wxDynamicLibraryDetailsArray wxDynamicLibrary::ListLoaded()
 
 #ifdef __LINUX__
     // examine /proc/self/maps to find out what is loaded in our address space
-    wxFFile file(_T("/proc/self/maps"));
+    wxFFile file(wxT("/proc/self/maps"));
     if ( file.IsOpened() )
     {
         // details of the module currently being parsed
@@ -422,13 +420,13 @@ wxDynamicLibraryDetailsArray wxDynamicLibrary::ListLoaded()
                 default:
                     // chop '\n'
                     buf[strlen(buf) - 1] = '\0';
-                    wxLogDebug(_T("Failed to parse line \"%s\" in /proc/self/maps."),
+                    wxLogDebug(wxT("Failed to parse line \"%s\" in /proc/self/maps."),
                                buf);
                     continue;
             }
 
             wxASSERT_MSG( start >= endCur,
-                          _T("overlapping regions in /proc/self/maps?") );
+                          wxT("overlapping regions in /proc/self/maps?") );
 
             wxString pathNew = wxString::FromAscii(path);
             if ( pathCur.empty() )

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Mar-2004
-// RCS-ID:      $Id: _display.i 54625 2008-07-14 22:20:10Z RD $
+// RCS-ID:      $Id: _display.i 54685 2008-07-18 03:46:35Z RD $
 // Copyright:   (c) 2004 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,8 @@ one (except for refresh which is allowed to have a greater value)", "");
         "Returns the screen's bits per pixel (e.g. 32), 1 is monochrome and 0
 means unspecified/known", "");
 
-
+    int GetRefresh() const;
+    
     DocDeclStr(
         bool , IsOk() const,
         "returns true if the object has been initialized", "");
@@ -77,6 +78,7 @@ means unspecified/known", "");
     %property(Depth, GetDepth, doc="See `GetDepth`");
     %property(Height, GetHeight, doc="See `GetHeight`");
     %property(Width, GetWidth, doc="See `GetWidth`");
+    %property(Refresh, GetRefresh);
 };
 
 
@@ -125,7 +127,7 @@ doesn't belong to any display", "");
            "Find the display where the given window lies, return wx.NOT_FOUND if
 it is not shown at all.", "");
 
-    static int GetFromWindow(wxWindow *window);
+    static int GetFromWindow(const wxWindow *window);
 
 
     DocDeclStr(

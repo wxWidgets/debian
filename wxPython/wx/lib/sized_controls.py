@@ -42,7 +42,6 @@ border = {  "left": wx.LEFT,
          }
            
 minsize = {   "fixed":    wx.FIXED_MINSIZE,
-              "adjust":   wx.ADJUST_MINSIZE,
           }
                 
 misc_flags = {   "expand": wx.EXPAND, }
@@ -284,7 +283,7 @@ def SetDefaultSizerProps(self):
     item = self.GetParent().GetSizer().GetItem(self)    
     item.SetProportion(0)
     item.SetFlag(wx.ALL)
-    item.SetBorder(self.GetDefaultBorder())
+    item.SetBorder(self.GetDefaultHIGBorder())
         
 def GetSizerProps(self):
     """
@@ -377,9 +376,9 @@ def SetSizerProp(self, prop, value):
         else:
             row, col = divmod( itemnum, cols )
         
-        if lprop == "expand":
+        if lprop == "expand" and not sizer.IsColGrowable(col):
             sizer.AddGrowableCol(col)
-        elif lprop == "proportion" and int(value) != 0:
+        elif lprop == "proportion" and int(value) != 0 and not sizer.IsRowGrowable(row):
             sizer.AddGrowableRow(row)
 
     item.SetFlag(flag)
@@ -433,11 +432,11 @@ def GetDefaultPanelBorder(self):
 
 # Why, Python?! Why do you make it so easy?! ;-)    
 wx.Dialog.GetDialogBorder = GetDialogBorder
-wx.Panel.GetDefaultBorder = GetDefaultPanelBorder
-wx.Notebook.GetDefaultBorder = GetDefaultPanelBorder
-wx.SplitterWindow.GetDefaultBorder = GetDefaultPanelBorder
+wx.Panel.GetDefaultHIGBorder = GetDefaultPanelBorder
+wx.Notebook.GetDefaultHIGBorder = GetDefaultPanelBorder
+wx.SplitterWindow.GetDefaultHIGBorder = GetDefaultPanelBorder
 
-wx.Window.GetDefaultBorder = GetDefaultBorder
+wx.Window.GetDefaultHIGBorder = GetDefaultBorder
 wx.Window.SetDefaultSizerProps = SetDefaultSizerProps
 wx.Window.SetSizerProp = SetSizerProp
 wx.Window.SetSizerProps = SetSizerProps

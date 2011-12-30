@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-#
+#!/usr/bin/env python
 # --------------------------------------------------------------------------- #
 # PersistentControls Library wxPython IMPLEMENTATION
 #
@@ -8,13 +10,13 @@
 # Python Code By:
 #
 # Andrea Gavana, @ 16 Nov 2009
-# Latest Revision: 28 Jan 2011, 15.00 GMT
+# Latest Revision: 24 Oct 2011, 21.00 GMT
 #
 # For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please
 # Write To Me At:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
 #
@@ -32,16 +34,16 @@ import datetime
 
 import wx.gizmos
 
-from persist_handlers import FindHandler
+from persist_handlers import FindHandler, HasCtrlHandler
 
 from persist_constants import BAD_DEFAULT_NAMES, CONFIG_PATH_SEPARATOR
-from persist_constants import PM_DEFAULT_STYLE
+from persist_constants import PM_DEFAULT_STYLE, PM_PERSIST_CONTROL_VALUE
 
 # ----------------------------------------------------------------------------------- #
 
 class PersistentObject(object):
     """
-    PersistentObject: ABC for anything persistent.
+    L{PersistentObject}: ABC for anything persistent.
 
     This is the base class for persistent object adapters.
     wxPython persistence framework is non-intrusive, i.e. can work with the
@@ -143,7 +145,7 @@ class PersistentObject(object):
         """
         Save the specified value using the given name.
         
-        :param `name`: the name of the value in the configuration file.
+        :param `name`: the name of the value in the configuration file;
         :param `value`: the value to save.
 
         :returns: ``True`` if the value was saved or ``False`` if an error occurred.
@@ -152,23 +154,52 @@ class PersistentObject(object):
         return PersistenceManager.Get().SaveValue(self, name, value)
 
 
+    def SaveCtrlValue(self, name, value):
+        """
+        Save the specified value using the given name, should be used only for
+        controls data value.
+        
+        :param `name`: the name of the value in the configuration file;
+        :param `value`: the value to save.
+
+        :returns: ``True`` if the value was saved or ``False`` if an error occurred.
+        """
+    
+        return PersistenceManager.Get().SaveCtrlValue(self, name, value)
+
+
     def RestoreValue(self, name):
         """
-        Restore the value saved by L{Save}.
+        Restore the value saved by L{SaveValue}.
         
-        :param `name`: the same name as was used by L{Save}.
+        :param `name`: the same name as was used by L{SaveValue}.
 
-        :returns: ``True`` if the value was successfully read or ``False`` if it was not
-         found or an error occurred.
+        :returns: ``True`` if the value was successfully read or ``False`` if
+         it was not found or an error occurred.
         """
 
         return PersistenceManager.Get().RestoreValue(self, name)
+
+
+    def RestoreCtrlValue(self, name):
+        """
+        Restore the value saved by L{SaveCtrlValue}, should be used only for
+        controls data value.
+        
+        :param `name`: the same name as was used by L{SaveCtrlValue}.
+
+        :returns: ``True`` if the value was successfully read or ``False`` if
+         it was not found or an error occurred.
+        """
+
+        return PersistenceManager.Get().RestoreCtrlValue(self, name)
+
 
 # ----------------------------------------------------------------------------------- #
 
 class PersistenceManager(object):
     """
-    PersistenceManager: global aspects of persistent windows.
+    L{PersistenceManager}: global aspects of persistent windows.
 
     Provides support for automatically saving and restoring object properties
     to persistent storage.
@@ -197,7 +228,7 @@ class PersistenceManager(object):
         - `configKey`: the persistent key name inside the configuration file for
           L{PersistenceManager};
         - `customConfigHandler`: the persistent configuration handler for L{PersistenceManager};
-          this attribute is object capable of saving/restoring UI settings. This
+          this attribute is an object capable of saving/restoring UI settings. This
           can be a cPickle object or a ConfigObj one, for example.
         - `style`: a combination of the following values:
 
@@ -206,6 +237,7 @@ class PersistenceManager(object):
           ======================================== ==================================
           ``PM_SAVE_RESTORE_AUI_PERSPECTIVES``     If a toplevel window has an AUI manager associated, the manager will save and restore its AUI perspective
           ``PM_SAVE_RESTORE_TREE_LIST_SELECTIONS`` If set, the manager will save items selections in list and tree controls
+          ``PM_PERSIST_CONTROL_VALUE``             If set, control values will be persisted. This is handy for e.g. applications using a database, where the data (control value) is persisted in the database and persisting it with PM again would only cause confusion.
           ``PM_DEFAULT_STYLE``                     Same as ``PM_SAVE_RESTORE_AUI_PERSPECTIVES``
           ======================================== ==================================
         
@@ -235,7 +267,7 @@ class PersistenceManager(object):
         # one of them to False may make sense in some situations)
         self._doSave = True
         self._doRestore = True
-
+        
         # map with the registered objects as keys and associated
         # PersistentObjects as values        
         self._persistentObjects = {}
@@ -282,6 +314,7 @@ class PersistenceManager(object):
         ======================================== ==================================
         ``PM_SAVE_RESTORE_AUI_PERSPECTIVES``     If a toplevel window has an AUI manager associated, the manager will save and restore its AUI perspective
         ``PM_SAVE_RESTORE_TREE_LIST_SELECTIONS`` If set, the manager will save items selections in list and tree controls
+        ``PM_PERSIST_CONTROL_VALUE``             If set, control values will be persisted. This is handy for e.g. applications using a database, where the data (control value) is persisted in the database and persisting it with PM again would only cause confusion.
         ``PM_DEFAULT_STYLE``                     Same as ``PM_SAVE_RESTORE_AUI_PERSPECTIVES``.        
         ======================================== ==================================
         """
@@ -373,7 +406,7 @@ class PersistenceManager(object):
 
         return self._customConfigHandler        
 
-        
+
     def GetPersistenceDirectory(self):
         """
         Returns a default persistent option directory for L{PersistenceManager}.
@@ -407,9 +440,12 @@ class PersistenceManager(object):
         :param `persistenceHandler`: if not ``None``, this should a custom handler derived
          from L{persist_handlers.AbstractHandler}.
 
-        :note: Note that registering the object doesn't do anything except allowing to call
+        :note:
+
+         Note that registering the object doesn't do anything except allowing to call
          L{Restore} for it later. If you want to register the object and restore its
          properties, use L{RegisterAndRestore}.
+         
 
         :note: The manager takes ownership of the L{PersistentObject} and will delete it when
          it is unregistered.         
@@ -570,13 +606,38 @@ class PersistenceManager(object):
         return self.Register(window) and self.Restore(window)
 
 
+    def RegisterAndRestoreAll(self, window, children=None):
+        """
+        Recursively registers and restore the state of the input `window` and of
+        all of its children.
+
+        :param `window`: an instance of `wx.Window`;
+        :param `children`: list of children of the input `window`, on first call it is equal to ``None``.
+        """
+        
+        if children is None:
+            if HasCtrlHandler(window):
+                # Control has persist support
+                self.RegisterAndRestore(window)
+            children = window.GetChildren()
+
+        for child in children:
+            name = child.GetName()
+
+            if name not in BAD_DEFAULT_NAMES:
+                if HasCtrlHandler(child):
+                    # Control has persist support
+                    self.RegisterAndRestore(child)
+
+            self.RegisterAndRestoreAll(window, child.GetChildren())
+        
+
     def GetKey(self, obj, keyName):
         """
         Returns a correctly formatted key name for the object `obj` and `keyName` parameters.
 
         :param `obj`: an instance of L{PersistentObject};
         :param `keyName`: a string specifying the key name.
-
         """
 
         key = (self._configKey is None and ["Persistence_Options"] or [self._configKey])[0]       
@@ -587,8 +648,33 @@ class PersistenceManager(object):
         
         return key
 
-    
+
+    def SaveCtrlValue(self, obj, keyName, value):
+        """
+        Check if we persist the widget value, if so pass it to L{DoSaveValue}.
+
+        :param `obj`: an instance of L{PersistentObject};
+        :param `keyName`: a string specifying the key name;
+        :param `value`: the value to store in the configuration file.
+        """
+
+        if self._style & PM_PERSIST_CONTROL_VALUE:
+            return self.DoSaveValue(obj, keyName, value)
+
+
     def SaveValue(self, obj, keyName, value):
+        """
+        Convenience method, all the action is done in L{DoSaveValue}.
+
+        :param `obj`: an instance of L{PersistentObject};
+        :param `keyName`: a string specifying the key name;
+        :param `value`: the value to store in the configuration file.
+        """
+
+        return self.DoSaveValue(obj, keyName, value)
+        
+    
+    def DoSaveValue(self, obj, keyName, value):
         """
         Method used by the persistent objects to save the data.
 
@@ -599,7 +685,6 @@ class PersistenceManager(object):
         :param `obj`: an instance of L{PersistentObject};
         :param `keyName`: a string specifying the key name;
         :param `value`: the value to store in the configuration file.
-        
         """
 
         kind = repr(value.__class__).split("'")[1]
@@ -614,7 +699,30 @@ class PersistenceManager(object):
         return result        
     
 
+    def RestoreCtrlValue(self, obj, keyName):
+        """
+        Check if we persist the widget value, if so pass it to L{DoRestoreValue}.
+
+        :param `obj`: an instance of L{PersistentObject};
+        :param `keyName`: a string specifying the key name.
+        """
+        
+        if self._style & PM_PERSIST_CONTROL_VALUE:
+            return self.DoRestoreValue(obj, keyName)
+
+
     def RestoreValue(self, obj, keyName):
+        """
+        Convenience method, all the action is done in L{DoRestoreValue}.
+
+        :param `obj`: an instance of L{PersistentObject};
+        :param `keyName`: a string specifying the key name.
+        """
+
+        return self.DoRestoreValue(obj, keyName)
+
+
+    def DoRestoreValue(self, obj, keyName):
         """
         Method used by the persistent objects to restore the data.
         
@@ -643,4 +751,13 @@ class PersistenceManager(object):
             
             return eval(result)
 
+
+    def AddBadDefaultName(self, name):
+        """
+        Adds a name to the ``BAD_DEFAULT_NAMES`` constant.
         
+        :param `name`: a string specifying the control's default name.
+        """
+
+        global BAD_DEFAULT_NAMES
+        BAD_DEFAULT_NAMES.append(name)

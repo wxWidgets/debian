@@ -2,7 +2,7 @@
 // Name:        src/gtk1/checkbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: checkbox.cpp 38788 2006-04-18 08:11:26Z ABX $
+// Id:          $Id: checkbox.cpp 67681 2011-05-03 16:29:04Z DS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,8 @@ extern wxWindowGTK   *g_delayedFocus;
 //-----------------------------------------------------------------------------
 
 extern "C" {
-static void gtk_checkbox_toggled_callback(GtkWidget *widget, wxCheckBox *cb)
+static void gtk_checkbox_toggled_callback(GtkWidget *WXUNUSED(widget),
+                                          wxCheckBox *cb)
 {
     if (g_isIdle) wxapp_install_idle_handler();
 
@@ -49,15 +50,13 @@ static void gtk_checkbox_toggled_callback(GtkWidget *widget, wxCheckBox *cb)
     wxCommandEvent event(wxEVT_COMMAND_CHECKBOX_CLICKED, cb->GetId());
     event.SetInt(cb->GetValue());
     event.SetEventObject(cb);
-    cb->GetEventHandler()->ProcessEvent(event);
+    cb->HandleWindowEvent(event);
 }
 }
 
 //-----------------------------------------------------------------------------
 // wxCheckBox
 //-----------------------------------------------------------------------------
-
-IMPLEMENT_DYNAMIC_CLASS(wxCheckBox,wxControl)
 
 wxCheckBox::wxCheckBox()
 {
@@ -76,17 +75,13 @@ bool wxCheckBox::Create(wxWindow *parent,
     m_acceptsFocus = true;
     m_blockEvent = false;
 
+    WXValidateStyle(&style);
     if (!PreCreation( parent, pos, size ) ||
         !CreateBase( parent, id, pos, size, style, validator, name ))
     {
         wxFAIL_MSG( wxT("wxCheckBox creation failed") );
         return false;
     }
-
-    wxASSERT_MSG( (style & wxCHK_ALLOW_3RD_STATE_FOR_USER) == 0 ||
-                  (style & wxCHK_3STATE) != 0,
-                  wxT("Using wxCHK_ALLOW_3RD_STATE_FOR_USER")
-                  wxT(" style flag for a 2-state checkbox is useless") );
 
     if ( style & wxALIGN_RIGHT )
     {
@@ -177,10 +172,10 @@ bool wxCheckBox::IsOwnGtkWindow( GdkWindow *window )
 void wxCheckBox::OnInternalIdle()
 {
     wxCursor cursor = m_cursor;
-    if (g_globalCursor.Ok()) cursor = g_globalCursor;
+    if (g_globalCursor.IsOk()) cursor = g_globalCursor;
 
     GdkWindow *event_window = TOGGLE_BUTTON_EVENT_WIN(m_widgetCheckbox);
-    if ( event_window && cursor.Ok() )
+    if ( event_window && cursor.IsOk() )
     {
         /* I now set the cursor the anew in every OnInternalIdle call
            as setting the cursor in a parent window also effects the

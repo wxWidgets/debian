@@ -1,0 +1,4 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classwx_file_translations_loader.html" title="Standard wxTranslationsLoader implementation." alt="" coords="5,86,173,117"/>
+<area shape="rect" id="node5" href="$classwx_resource_translations_loader.html" title="This loader makes it possible to load translations from Windows resources." alt="" coords="197,86,400,117"/>
+</map>

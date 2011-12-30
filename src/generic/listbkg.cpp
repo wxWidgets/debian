@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.08.03
-// RCS-ID:      $Id: listbkg.cpp 48783 2007-09-19 11:24:38Z RR $
+// RCS-ID:      $Id: listbkg.cpp 65967 2010-10-31 13:33:34Z VZ $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -36,6 +36,26 @@
 #include "wx/statline.h"
 #include "wx/imaglist.h"
 
+#include "wx/sysopt.h"
+
+namespace
+{
+
+// FIXME: This function exists because native OS X wxListCtrl seems to have
+// problems with report view, either imperfect display or reported hanging, so
+// disable it for now (but it should be fixed, and this function removed).
+bool CanUseReportView()
+{
+#if defined(__WXMAC__) && !defined(__WXUNIVERSAL__) && wxOSX_USE_CARBON
+    if (wxSystemOptions::GetOptionInt(wxMAC_ALWAYS_USE_GENERIC_LISTCTRL) == 0)
+        return false;
+    else
+#endif
+        return true;
+}
+
+} // anonymous namespace
+
 // ----------------------------------------------------------------------------
 // various wxWidgets macros
 // ----------------------------------------------------------------------------
@@ -48,12 +68,9 @@
 // ----------------------------------------------------------------------------
 
 IMPLEMENT_DYNAMIC_CLASS(wxListbook, wxBookCtrlBase)
-IMPLEMENT_DYNAMIC_CLASS(wxListbookEvent, wxNotifyEvent)
 
-#if !WXWIN_COMPATIBILITY_EVENT_TYPES
-const wxEventType wxEVT_COMMAND_LISTBOOK_PAGE_CHANGING = wxNewEventType();
-const wxEventType wxEVT_COMMAND_LISTBOOK_PAGE_CHANGED = wxNewEventType();
-#endif
+wxDEFINE_EVENT( wxEVT_COMMAND_LISTBOOK_PAGE_CHANGING, wxBookCtrlEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_LISTBOOK_PAGE_CHANGED,  wxBookCtrlEvent );
 
 BEGIN_EVENT_TABLE(wxListbook, wxBookCtrlBase)
     EVT_SIZE(wxListbook::OnSize)
@@ -67,11 +84,6 @@ END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 // wxListbook creation
 // ----------------------------------------------------------------------------
-
-void wxListbook::Init()
-{
-    m_selection = wxNOT_FOUND;
-}
 
 bool
 wxListbook::Create(wxWindow *parent,
@@ -105,9 +117,13 @@ wxListbook::Create(wxWindow *parent,
                     wxID_ANY,
                     wxDefaultPosition,
                     wxDefaultSize,
-                    wxLC_ICON | wxLC_SINGLE_SEL |
-                        (IsVertical() ? wxLC_ALIGN_LEFT : wxLC_ALIGN_TOP)
+                    wxLC_SINGLE_SEL |
+                    (CanUseReportView() ? GetListCtrlReportViewFlags()
+                                        : GetListCtrlIconViewFlags())
                  );
+
+    if ( CanUseReportView() )
+        GetListView()->InsertColumn(0, wxT("Pages"));
 
 #ifdef __WXMSW__
     // On XP with themes enabled the GetViewRect used in GetControllerSize() to
@@ -123,30 +139,22 @@ wxListbook::Create(wxWindow *parent,
 }
 
 // ----------------------------------------------------------------------------
-// wxListbook geometry management
+// wxListCtrl flags
 // ----------------------------------------------------------------------------
 
-wxSize wxListbook::GetControllerSize() const
+long wxListbook::GetListCtrlIconViewFlags() const
 {
-    const wxSize sizeClient = GetClientSize(),
-                 sizeBorder = m_bookctrl->GetSize() - m_bookctrl->GetClientSize(),
-                 sizeList = GetListView()->GetViewRect().GetSize() + sizeBorder;
-
-    wxSize size;
-
-    if ( IsVertical() )
-    {
-        size.x = sizeClient.x;
-        size.y = sizeList.y;
-    }
-    else // left/right aligned
-    {
-        size.x = sizeList.x;
-        size.y = sizeClient.y;
-    }
-
-    return size;
+    return (IsVertical() ? wxLC_ALIGN_LEFT : wxLC_ALIGN_TOP) | wxLC_ICON;
 }
+
+long wxListbook::GetListCtrlReportViewFlags() const
+{
+    return wxLC_REPORT | wxLC_NO_HEADER;
+}
+
+// ----------------------------------------------------------------------------
+// wxListbook geometry management
+// ----------------------------------------------------------------------------
 
 void wxListbook::OnSize(wxSizeEvent& event)
 {
@@ -155,9 +163,11 @@ void wxListbook::OnSize(wxSizeEvent& event)
     // under MSW, we'd finish with an ugly looking list control with both
     // vertical and horizontal scrollbar (with one of them being added because
     // the other one is not accounted for in client size computations)
-    wxListView *list = GetListView();
-    if (list) list->Arrange();
-    wxBookCtrlBase::OnSize(event);
+    wxListView * const list = GetListView();
+    if ( list )
+        list->Arrange();
+
+    event.Skip();
 }
 
 int wxListbook::HitTest(const wxPoint& pt, long *flags) const
@@ -199,24 +209,13 @@ int wxListbook::HitTest(const wxPoint& pt, long *flags) const
     return pagePos;
 }
 
-wxSize wxListbook::CalcSizeFromPage(const wxSize& sizePage) const
+void wxListbook::UpdateSize()
 {
-    // we need to add the size of the list control and the border between
-    const wxSize sizeList = GetControllerSize();
-
-    wxSize size = sizePage;
-    if ( IsVertical() )
-    {
-        size.y += sizeList.y + GetInternalBorder();
-    }
-    else // left/right aligned
-    {
-        size.x += sizeList.x + GetInternalBorder();
-    }
-
-    return size;
+    // we should find a more elegant way to force a layout than generating this
+    // dummy event
+    wxSizeEvent sz(GetSize(), GetId());
+    GetEventHandler()->ProcessEvent(sz);
 }
-
 
 // ----------------------------------------------------------------------------
 // accessing the pages
@@ -234,11 +233,19 @@ wxString wxListbook::GetPageText(size_t n) const
     return GetListView()->GetItemText(n);
 }
 
-int wxListbook::GetPageImage(size_t WXUNUSED(n)) const
+int wxListbook::GetPageImage(size_t n) const
 {
-    wxFAIL_MSG( _T("wxListbook::GetPageImage() not implemented") );
+    wxListItem item;
+    item.SetId(n);
 
-    return wxNOT_FOUND;
+    if (GetListView()->GetItem(item))
+    {
+       return item.GetImage();
+    }
+    else
+    {
+       return wxNOT_FOUND;
+    }
 }
 
 bool wxListbook::SetPageImage(size_t n, int imageId)
@@ -252,7 +259,38 @@ bool wxListbook::SetPageImage(size_t n, int imageId)
 
 void wxListbook::SetImageList(wxImageList *imageList)
 {
-    GetListView()->SetImageList(imageList, wxIMAGE_LIST_NORMAL);
+    if ( CanUseReportView() )
+    {
+        wxListView * const list = GetListView();
+
+        // If imageList presence has changed, we update the list control view
+        if ( (imageList != NULL) != (GetImageList() != NULL) )
+        {
+            // Preserve the selection which is lost when changing the mode
+            const int oldSel = GetSelection();
+
+            // Update the style to use icon view for images, report view otherwise
+            long style = wxLC_SINGLE_SEL;
+            if ( imageList )
+            {
+                style |= GetListCtrlIconViewFlags();
+            }
+            else // no image list
+            {
+                style |= GetListCtrlReportViewFlags();
+            }
+
+            list->SetWindowStyleFlag(style);
+            if ( !imageList )
+                list->InsertColumn(0, wxT("Pages"));
+
+            // Restore selection
+            if ( oldSel != wxNOT_FOUND )
+                SetSelection(oldSel);
+        }
+
+        list->SetImageList(imageList, wxIMAGE_LIST_NORMAL);
+    }
 
     wxBookCtrlBase::SetImageList(imageList);
 }
@@ -268,17 +306,12 @@ void wxListbook::UpdateSelectedPage(size_t newsel)
     GetListView()->Focus(newsel);
 }
 
-int wxListbook::GetSelection() const
+wxBookCtrlEvent* wxListbook::CreatePageChangingEvent() const
 {
-    return m_selection;
+    return new wxBookCtrlEvent(wxEVT_COMMAND_LISTBOOK_PAGE_CHANGING, m_windowId);
 }
 
-wxBookCtrlBaseEvent* wxListbook::CreatePageChangingEvent() const
-{
-    return new wxListbookEvent(wxEVT_COMMAND_LISTBOOK_PAGE_CHANGING, m_windowId);
-}
-
-void wxListbook::MakeChangedEvent(wxBookCtrlBaseEvent &event)
+void wxListbook::MakeChangedEvent(wxBookCtrlEvent &event)
 {
     event.SetEventType(wxEVT_COMMAND_LISTBOOK_PAGE_CHANGED);
 }
@@ -310,22 +343,10 @@ wxListbook::InsertPage(size_t n,
         GetListView()->Focus(m_selection);
     }
 
-    // some page should be selected: either this one or the first one if there
-    // is still no selection
-    int selNew = -1;
-    if ( bSelect )
-        selNew = n;
-    else if ( m_selection == -1 )
-        selNew = 0;
-
-    if ( selNew != m_selection )
+    if ( !DoSetSelectionAfterInsertion(n, bSelect) )
         page->Hide();
 
-    if ( selNew != -1 )
-        SetSelection(selNew);
-
-    wxSizeEvent sz(GetSize(), GetId());
-    GetEventHandler()->ProcessEvent(sz);
+    UpdateSize();
 
     return true;
 }
@@ -345,7 +366,7 @@ wxWindow *wxListbook::DoRemovePage(size_t page)
             int sel = m_selection - 1;
             if (page_count == 1)
                 sel = wxNOT_FOUND;
-            else if ((page_count == 2) || (sel == -1))
+            else if ((page_count == 2) || (sel == wxNOT_FOUND))
                 sel = 0;
 
             // force sel invalid if deleting current page - don't try to hide it
@@ -356,11 +377,7 @@ wxWindow *wxListbook::DoRemovePage(size_t page)
         }
 
         GetListView()->Arrange();
-        if (GetPageCount() == 0)
-        {
-            wxSizeEvent sz(GetSize(), GetId());
-            ProcessEvent(sz);
-        }
+        UpdateSize();
     }
 
     return win;
@@ -373,10 +390,7 @@ bool wxListbook::DeleteAllPages()
     if (!wxBookCtrlBase::DeleteAllPages())
         return false;
 
-    m_selection = -1;
-
-    wxSizeEvent sz(GetSize(), GetId());
-    ProcessEvent(sz);
+    UpdateSize();
 
     return true;
 }

@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        cocoa/NSButton.cpp
+// Name:        src/cocoa/NSButton.mm
 // Purpose:     wxCocoaNSButton
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/01/31
-// RCS-ID:      $Id: NSButton.mm 47445 2007-07-13 21:49:41Z DE $
+// RCS-ID:      $Id: NSButton.mm 67254 2011-03-20 00:14:35Z DS $
 // Copyright:   (c) 2003-2004 David Elliott
-// Licence:     wxWidgets licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================

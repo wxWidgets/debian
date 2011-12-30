@@ -4,9 +4,9 @@
 // Author:      Wlodzimierz ABX Skiba
 // Modified by:
 // Created:     29.12.2004
-// RCS-ID:      $Id: progdlg.cpp 39326 2006-05-25 07:07:23Z ABX $
+// RCS-ID:      $Id: progdlg.cpp 64940 2010-07-13 13:29:13Z VZ $
 // Copyright:   (c) Wlodzimierz Skiba
-// License:     wxWindows licence
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // For compilers that support precompilation, includes "wx.h".
@@ -111,7 +111,9 @@ Boolean wxProgressDialog::Callback(void *data)
     PrgCallbackData *palmData = (PrgCallbackData *)data;
     strncpy( palmData->textP, m_msg.ToAscii() , palmData->textLen - 1 );
     palmData->textChanged = true;
+#ifdef __WXPALMOS6__
     palmData->displaySkipBtn = m_canSkip;
+#endif // __WXPALMOS6__
     palmData->barMaxValue = (uint32_t)m_max;
     palmData->barCurValue = (uint32_t)m_cur;
     palmData->delay = (m_max == m_cur);

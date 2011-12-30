@@ -22,11 +22,11 @@ definitions.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: pytags.py 54063 2008-06-10 03:53:08Z CJP $"
-__revision__ = "$Revision: 54063 $"
+__svnid__ = "$Id: pytags.py 69297 2011-10-03 15:53:48Z CJP $"
+__revision__ = "$Revision: 69297 $"
 
 #--------------------------------------------------------------------------#
-# Dependancies
+# Dependencies
 import taglib
 import parselib
 from pygments import highlight
@@ -42,6 +42,8 @@ class PyFormatter(Formatter):
         self.rtags = taglib.DocStruct()
         self.rtags.SetElementDescription('function', "Function Definitions")
         self.rtags.SetElementDescription('class', "Class Definitions")
+        self._levels = [0]
+        self._toplevel = True
 
         line_count = 0
         current_line = []
@@ -59,12 +61,30 @@ class PyFormatter(Formatter):
         self.getCFV(code_lines)
 
     def _getLevel(self, line):
-        t, v = line[0]
-        if t == Token.Text:
-            return len(v)
+        try:
+            t, v = line[0]
+            if t == Token.Text:
+                return len(v)
+        except:
+            pass
         return 0
 
+    def pushPopScope(self, level):
+        """Push a scope onto the stack. If less than previous scope
+        it will pop levels until it finds a matching indent level.
+
+        """
+        nlevels = list()
+        for lvl in self._levels:
+            if lvl < level:
+                nlevels.append(lvl)
+            else:
+                break
+        nlevels.append(level)
+        self._levels = nlevels
+
     def insertClass(self, line, num, container_list):
+        """Insert a class into the container"""
         cname = parselib.GetTokenValue(line, Token.Name.Class)
         clevel = self._getLevel(line)
 
@@ -90,7 +110,7 @@ class PyFormatter(Formatter):
         flevel = self._getLevel(line)
 
         ftag = None
-        # top level funcion
+        # top level function
         if flevel == 0:
             ftag = taglib.Function(fname, num)
             self.rtags.AddFunction(ftag)
@@ -100,14 +120,15 @@ class PyFormatter(Formatter):
             for l, c, ob in reversed(container_list):
                 if l < flevel:
                     if isinstance(ob, taglib.Class):
-                        ob.AddMethod(taglib.Method(fname, num, c))
+                        ftag = taglib.Method(fname, num, c)
+                        ob.AddMethod(ftag)
                     else:
-                        ob.AddElement('function', taglib.Function(fname, num, c))
+                        ftag = taglib.Function(fname, num, c)
+                        ob.AddElement('function', ftag)
                     break
 
         if ftag:
-            container_list.append((flevel, fname, ftag ))
-
+            container_list.append((flevel, fname, ftag))
 
     def getCFV(self, code_lines):
 
@@ -116,6 +137,15 @@ class PyFormatter(Formatter):
 
         for num, line in code_lines:
             try:
+                if len(line):
+                    ltxt = u"".join([l[1].strip() for l in line])
+                    if len(ltxt) and not ltxt.startswith(u"#"):
+                        if parselib.BeginsWithAnyOf(line, Token.Keyword,
+                                                    (u"def", u"class", u"if", u"else")):
+                            self.pushPopScope(self._getLevel(line))
+                            if len(self._levels) == 1:
+                                container_list = [(0, u"", self.rtags)]
+
                 # FUNCTION
                 #
                 if parselib.HasToken(line, Token.Keyword, "def"):

@@ -3,7 +3,7 @@
 # Inspired By And Heavily Based On wx.gizmos.TreeListCtrl.
 #
 # Andrea Gavana, @ 08 May 2006
-# Latest Revision: 21 Jun 2011, 22.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List
@@ -31,7 +31,7 @@
 # Write To Me At:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
 #
@@ -41,25 +41,25 @@
 
 
 """
-HyperTreeList is a class that mimics the behaviour of `wx.gizmos.TreeListCtrl`, with
+L{HyperTreeList} is a class that mimics the behaviour of `wx.gizmos.TreeListCtrl`, with
 some more functionalities.
 
 
 Description
 ===========
 
-HyperTreeList is a class that mimics the behaviour of `wx.gizmos.TreeListCtrl`, with
+L{HyperTreeList} is a class that mimics the behaviour of `wx.gizmos.TreeListCtrl`, with
 almost the same base functionalities plus some more enhancements. This class does
 not rely on the native control, as it is a full owner-drawn tree-list control.
 
-HyperTreeList is somewhat an hybrid between L{CustomTreeCtrl} and `wx.gizmos.TreeListCtrl`.
+L{HyperTreeList} is somewhat an hybrid between L{CustomTreeCtrl} and `wx.gizmos.TreeListCtrl`.
 
 In addition to the standard `wx.gizmos.TreeListCtrl` behaviour this class supports:
 
 * CheckBox-type items: checkboxes are easy to handle, just selected or unselected
   state with no particular issues in handling the item's children;
 * Added support for 3-state value checkbox items;
-* RadioButton-type items: since I elected to put radiobuttons in CustomTreeCtrl, I
+* RadioButton-type items: since I elected to put radiobuttons in L{CustomTreeCtrl}, I
   needed some way to handle them, that made sense. So, I used the following approach:
   
   - All peer-nodes that are radiobuttons will be mutually exclusive. In other words,
@@ -79,10 +79,10 @@ In addition to the standard `wx.gizmos.TreeListCtrl` behaviour this class suppor
 * Default selection style, gradient (horizontal/vertical) selection style and Windows
   Vista selection style;
 * Customized drag and drop images built on the fly;
-* Setting the HyperTreeList item buttons to a personalized imagelist;
-* Setting the HyperTreeList check/radio item icons to a personalized imagelist;
+* Setting the L{HyperTreeList} item buttons to a personalized imagelist;
+* Setting the L{HyperTreeList} check/radio item icons to a personalized imagelist;
 * Changing the style of the lines that connect the items (in terms of `wx.Pen` styles);
-* Using an image as a HyperTreeList background (currently only in "tile" mode);
+* Using an image as a L{HyperTreeList} background (currently only in "tile" mode);
 
 And a lot more. Check the demo for an almost complete review of the functionalities.
 
@@ -90,7 +90,7 @@ And a lot more. Check the demo for an almost complete review of the functionalit
 Base Functionalities
 ====================
 
-HyperTreeList supports all the `wx.gizmos.TreeListCtrl` styles, except:
+L{HyperTreeList} supports all the `wx.gizmos.TreeListCtrl` styles, except:
 
 - ``TR_EXTENDED``: supports for this style is on the todo list (Am I sure of this?).
 
@@ -102,16 +102,54 @@ Plus it has 3 more styles to handle checkbox-type items:
 
 And a style useful to hide the TreeListCtrl header:
 
-- ``TR_NO_HEADER``: hides the HyperTreeList header.
+- ``TR_NO_HEADER``: hides the L{HyperTreeList} header.
 
 
-All the methods available in `wx.gizmos.TreeListCtrl` are also available in HyperTreeList.
+All the methods available in `wx.gizmos.TreeListCtrl` are also available in L{HyperTreeList}.
+
+
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.hypertreelist as HTL
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "HyperTreeList Demo")
+
+            tree_list = HTL.HyperTreeList(self)
+            
+            tree_list.AddColumn("First column")
+
+            root = tree_list.AddRoot("Root", ct_type=1)
+
+            parent = tree_list.AppendItem(root, "First child", ct_type=1)
+            child = tree_list.AppendItem(parent, "First Grandchild", ct_type=1)
+            
+            tree_list.AppendItem(root, "Second child", ct_type=1)
+
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+    
 
 
 Events
 ======
 
-All the events supported by `wx.gizmos.TreeListCtrl` are also available in HyperTreeList,
+All the events supported by `wx.gizmos.TreeListCtrl` are also available in L{HyperTreeList},
 with a few exceptions:
 
 - ``EVT_TREE_GET_INFO`` (don't know what this means);
@@ -119,7 +157,7 @@ with a few exceptions:
 - ``EVT_TREE_ITEM_MIDDLE_CLICK`` (not implemented, but easy to add);
 - ``EVT_TREE_STATE_IMAGE_CLICK`` (no need for that, look at the checking events below).
 
-Plus, HyperTreeList supports the events related to the checkbutton-type items:
+Plus, L{HyperTreeList} supports the events related to the checkbutton-type items:
 
 - ``EVT_TREE_ITEM_CHECKING``: an item is being checked;
 - ``EVT_TREE_ITEM_CHECKED``: an item has been checked.
@@ -133,7 +171,7 @@ And to hyperlink-type items:
 Supported Platforms
 ===================
 
-HyperTreeList has been tested on the following platforms:
+L{HyperTreeList} has been tested on the following platforms:
   * Windows (Windows XP);
 
 
@@ -165,7 +203,7 @@ Window Styles                  Hex Value   Description
 ``TR_AUTO_CHECK_PARENT``           0x10000 Only meaningful foe checkbox-type items: when a child item is checked/unchecked its parent item is checked/unchecked as well.
 ``TR_ALIGN_WINDOWS``               0x20000 Flag used to align windows (in items with windows) at the same horizontal position.
 ``TR_NO_HEADER``                   0x40000 Use this style to hide the columns header.
-``TR_VIRTUAL``                     0x80000 `HyperTreeList` will have virtual behaviour.
+``TR_VIRTUAL``                     0x80000 L{HyperTreeList} will have virtual behaviour.
 ============================== =========== ==================================================
 
 
@@ -183,38 +221,38 @@ Event Name                     Description
 ``EVT_LIST_COL_END_DRAG``      A column has been resized by the user.
 ``EVT_LIST_COL_RIGHT_CLICK``   A column has been right-clicked.
 ``EVT_TREE_BEGIN_DRAG``        Begin dragging with the left mouse button.
-``EVT_TREE_BEGIN_LABEL_EDIT``  Begin editing a label. This can be prevented by calling `Veto()`.
+``EVT_TREE_BEGIN_LABEL_EDIT``  Begin editing a label. This can be prevented by calling L{TreeEvent.Veto}.
 ``EVT_TREE_BEGIN_RDRAG``       Begin dragging with the right mouse button.
 ``EVT_TREE_DELETE_ITEM``       Delete an item.
 ``EVT_TREE_END_DRAG``          End dragging with the left or right mouse button.
-``EVT_TREE_END_LABEL_EDIT``    End editing a label. This can be prevented by calling `Veto()`.
-``EVT_TREE_GET_INFO``          Request information from the application (not implemented in `CustomTreeCtrl`).
+``EVT_TREE_END_LABEL_EDIT``    End editing a label. This can be prevented by calling L{TreeEvent.Veto}.
+``EVT_TREE_GET_INFO``          Request information from the application (not implemented in L{HyperTreeList}).
 ``EVT_TREE_ITEM_ACTIVATED``    The item has been activated, i.e. chosen by double clicking it with mouse or from keyboard.
 ``EVT_TREE_ITEM_CHECKED``      A checkbox or radiobox type item has been checked.
 ``EVT_TREE_ITEM_CHECKING``     A checkbox or radiobox type item is being checked.
 ``EVT_TREE_ITEM_COLLAPSED``    The item has been collapsed.
-``EVT_TREE_ITEM_COLLAPSING``   The item is being collapsed. This can be prevented by calling `Veto()`.
-``EVT_TREE_ITEM_EXPANDED``     The item has been expanded.
-``EVT_TREE_ITEM_EXPANDING``    The item is being expanded. This can be prevented by calling `Veto()`.
-``EVT_TREE_ITEM_GETTOOLTIP``   The opportunity to set the item tooltip is being given to the application (call `TreeEvent.SetToolTip`).
+``EVT_TREE_ITEM_COLLAPSING``   The item is being collapsed. This can be prevented by calling L{TreeEvent.Veto}.
+``EVT_TREE_ITEM_EXPANDED``     The item has been expanded.s
+``EVT_TREE_ITEM_EXPANDING``    The item is being expanded. This can be prevented by calling L{TreeEvent.Veto}.
+``EVT_TREE_ITEM_GETTOOLTIP``   The opportunity to set the item tooltip is being given to the application (call L{TreeEvent.SetToolTip}).
 ``EVT_TREE_ITEM_HYPERLINK``    An hyperlink type item has been clicked.
 ``EVT_TREE_ITEM_MENU``         The context menu for the selected item has been requested, either by a right click or by using the menu key.
-``EVT_TREE_ITEM_MIDDLE_CLICK`` The user has clicked the item with the middle mouse button (not implemented in `CustomTreeCtrl`).
+``EVT_TREE_ITEM_MIDDLE_CLICK`` The user has clicked the item with the middle mouse button (not implemented in L{HyperTreeList}).
 ``EVT_TREE_ITEM_RIGHT_CLICK``  The user has clicked the item with the right mouse button.
 ``EVT_TREE_KEY_DOWN``          A key has been pressed.
 ``EVT_TREE_SEL_CHANGED``       Selection has changed.
-``EVT_TREE_SEL_CHANGING``      Selection is changing. This can be prevented by calling `Veto()`.
-``EVT_TREE_SET_INFO``          Information is being supplied to the application (not implemented in `CustomTreeCtrl`).
-``EVT_TREE_STATE_IMAGE_CLICK`` The state image has been clicked (not implemented in `CustomTreeCtrl`).
+``EVT_TREE_SEL_CHANGING``      Selection is changing. This can be prevented by calling L{TreeEvent.Veto}.
+``EVT_TREE_SET_INFO``          Information is being supplied to the application (not implemented in L{HyperTreeList}).
+``EVT_TREE_STATE_IMAGE_CLICK`` The state image has been clicked (not implemented in L{HyperTreeList}).
 ============================== ==================================================
 
 
 License And Version
 ===================
 
-HyperTreeList is distributed under the wxPython license.
+L{HyperTreeList} is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 21 Jun 2011, 22.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 1.2
 
@@ -306,7 +344,7 @@ TR_AUTO_CHECK_PARENT = 0x10000                                 # only meaningful
 TR_ALIGN_WINDOWS = 0x20000                                     # to align windows horizontally for items at the same level
 """ Flag used to align windows (in items with windows) at the same horizontal position. """
 TR_VIRTUAL = 0x80000
-""" `HyperTreeList` will have virtual behaviour. """
+""" L{HyperTreeList} will have virtual behaviour. """
 
 # --------------------------------------------------------------------------
 # Additional HyperTreeList style to hide the header
@@ -2261,7 +2299,7 @@ class TreeListMainWindow(CustomTreeCtrl):
         :param `item`: an instance of L{TreeListItem}.
         """                
 
-        return self.GetNext(item, False)
+        return CustomTreeCtrl.GetNextExpanded(self, item)
 
 
     def GetPrevExpanded(self, item):
@@ -2271,7 +2309,7 @@ class TreeListMainWindow(CustomTreeCtrl):
         :param `item`: an instance of L{TreeListItem}.
         """                
 
-        return self.GetPrev(item, False)
+        return CustomTreeCtrl.GetPrevExpanded(self, item)
 
 
     def GetFirstVisibleItem(self):
@@ -2287,11 +2325,11 @@ class TreeListMainWindow(CustomTreeCtrl):
         :param `item`: an instance of L{TreeListItem}.
         """                
 
-        i = self.GetNext(item, False)
+        i = self.GetPrev(item)
         while i:
             if self.IsItemVisible(i):
                 return i
-            i = self.GetPrev(i, False)
+            i = self.GetPrev(i)
         
         return None
 
@@ -2835,8 +2873,8 @@ class TreeListMainWindow(CustomTreeCtrl):
                 w = (col_w - (image_w + wcheck + text_w + off_w + _MARGIN))/2
                 x += (w > 0 and [w] or [0])[0]
             else:
-                if not item.HasPlus() and image_w == 0 and wcheck:
-                    x += 3*_MARGIN
+                if image_w == 0 and wcheck:
+                    x += 2*_MARGIN
             
             text_x = x + image_w + wcheck + 1
             
@@ -4014,12 +4052,12 @@ _methods = ["GetIndent", "SetIndent", "GetSpacing", "SetSpacing", "GetImageList"
             "IsDescendantOf", "SetItemHyperText", "IsItemHyperText", "SetItemBold", "SetItemDropHighlight", "SetItemItalic",
             "GetEditControl", "ShouldInheritColours", "GetItemWindow", "SetItemWindow", "SetItemTextColour", "HideItem",
             "DeleteAllItems", "ItemHasChildren", "ToggleItemSelection", "SetItemType", "GetCurrentItem",
-            "SetItem3State", "SetItem3StateValue", "GetItem3StateValue", "IsItem3State"]
+            "SetItem3State", "SetItem3StateValue", "GetItem3StateValue", "IsItem3State", "GetPrev"]
 
 
 class HyperTreeList(wx.PyControl):
     """
-    HyperTreeList is a class that mimics the behaviour of `wx.gizmos.TreeListCtrl`, with
+    L{HyperTreeList} is a class that mimics the behaviour of `wx.gizmos.TreeListCtrl`, with
     almost the same base functionalities plus some more enhancements. This class does
     not rely on the native control, as it is a full owner-drawn tree-list control.
     """
@@ -4282,7 +4320,7 @@ class HyperTreeList(wx.PyControl):
          you may wish to call `wx.Window.ClearBackground` or `wx.Window.Refresh` after
          calling this function.
 
-        :note: Overridden from `wx.PyControl`.         
+        :note: Overridden from `wx.PyControl`.
         """
 
         if not self._main_win:
@@ -4644,6 +4682,8 @@ class HyperTreeList(wx.PyControl):
         Gets the size which best suits the window: for a control, it would be the
         minimal size which doesn't truncate the control, for a panel - the same size
         as it would have after a call to `Fit()`.
+
+        :note: Overridden from `wx.PyControl`.        
         """
 
         # something is better than nothing...
@@ -4710,6 +4750,7 @@ class HyperTreeList(wx.PyControl):
         :param `item`: an instance of L{TreeListItem};
         :param `column`: an integer specifying the column index.
         """
+
         return EditTextCtrl(self.GetMainWindow(), -1, item, column,
                             self.GetMainWindow(), item.GetText(column),
                             style=self.GetTextCtrlStyle(column))
@@ -4721,10 +4762,11 @@ class HyperTreeList(wx.PyControl):
         labels of items. 
         
         Override this function in the derived class to support a different
-        style, e.g. wx.TE_MULTILINE.
+        style, e.g. ``wx.TE_MULTILINE``.
         
         :param `column`: an integer specifying the column index.
         """
+        
         return self.GetTextCtrlAlignmentStyle(column) | wx.TE_PROCESS_ENTER
 
         
@@ -4736,6 +4778,7 @@ class HyperTreeList(wx.PyControl):
         
         :param `column`: an integer specifying the column index.
         """
+
         header_win = self.GetHeaderWindow()
         alignment = header_win.GetColumnAlignment(column)
         return {wx.ALIGN_LEFT: wx.TE_LEFT, 

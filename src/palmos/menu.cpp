@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/12/04
-// RCS-ID:      $Id: menu.cpp 48053 2007-08-13 17:07:01Z JS $
+// RCS-ID:      $Id: menu.cpp 66637 2011-01-07 21:36:17Z SC $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,12 @@
     #include "wx/ownerdrw.h"
 #endif
 
+#ifdef __WXPALMOS6__
 #include <Loader.h>
+#else // __WXPALMOS5__
+#include <UIResources.h> // MenuRscType
+#endif
+
 #include <Form.h>
 #include <Menu.h>
 
@@ -63,100 +68,6 @@ static const int idMenuTitle = -3;
 // ============================================================================
 // implementation
 // ============================================================================
-
-#include "wx/listimpl.cpp"
-
-WX_DEFINE_LIST( wxMenuInfoList )
-
-#if wxUSE_EXTENDED_RTTI
-
-WX_DEFINE_FLAGS( wxMenuStyle )
-
-wxBEGIN_FLAGS( wxMenuStyle )
-    wxFLAGS_MEMBER(wxMENU_TEAROFF)
-wxEND_FLAGS( wxMenuStyle )
-
-IMPLEMENT_DYNAMIC_CLASS_XTI(wxMenu, wxEvtHandler,"wx/menu.h")
-
-wxCOLLECTION_TYPE_INFO( wxMenuItem * , wxMenuItemList ) ;
-
-template<> void wxCollectionToVariantArray( wxMenuItemList const &theList, wxxVariantArray &value)
-{
-    wxListCollectionToVariantArray<wxMenuItemList::compatibility_iterator>( theList , value ) ;
-}
-
-wxBEGIN_PROPERTIES_TABLE(wxMenu)
-    wxEVENT_PROPERTY( Select , wxEVT_COMMAND_MENU_SELECTED , wxCommandEvent)
-    wxPROPERTY( Title, wxString , SetTitle, GetTitle, wxString(), 0 /*flags*/ , wxT("Helpstring") , wxT("group") )
-    wxREADONLY_PROPERTY_FLAGS( MenuStyle , wxMenuStyle , long , GetStyle , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
-    wxPROPERTY_COLLECTION( MenuItems , wxMenuItemList , wxMenuItem* , Append , GetMenuItems , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
-wxEND_PROPERTIES_TABLE()
-
-wxBEGIN_HANDLERS_TABLE(wxMenu)
-wxEND_HANDLERS_TABLE()
-
-wxDIRECT_CONSTRUCTOR_2( wxMenu , wxString , Title , long , MenuStyle  )
-
-WX_DEFINE_FLAGS( wxMenuBarStyle )
-
-wxBEGIN_FLAGS( wxMenuBarStyle )
-    wxFLAGS_MEMBER(wxMB_DOCKABLE)
-wxEND_FLAGS( wxMenuBarStyle )
-
-// the negative id would lead the window (its superclass !) to vetoe streaming out otherwise
-bool wxMenuBarStreamingCallback( const wxObject *WXUNUSED(object), wxWriter * , wxPersister * , wxxVariantArray & )
-{
-    return true ;
-}
-
-IMPLEMENT_DYNAMIC_CLASS_XTI_CALLBACK(wxMenuBar, wxWindow ,"wx/menu.h",wxMenuBarStreamingCallback)
-
-IMPLEMENT_DYNAMIC_CLASS_XTI(wxMenuInfo, wxObject , "wx/menu.h" )
-
-wxBEGIN_PROPERTIES_TABLE(wxMenuInfo)
-    wxREADONLY_PROPERTY( Menu , wxMenu* , GetMenu , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
-    wxREADONLY_PROPERTY( Title , wxString , GetTitle , wxString() , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
-wxEND_PROPERTIES_TABLE()
-
-wxBEGIN_HANDLERS_TABLE(wxMenuInfo)
-wxEND_HANDLERS_TABLE()
-
-wxCONSTRUCTOR_2( wxMenuInfo , wxMenu* , Menu , wxString , Title )
-
-wxCOLLECTION_TYPE_INFO( wxMenuInfo * , wxMenuInfoList ) ;
-
-template<> void wxCollectionToVariantArray( wxMenuInfoList const &theList, wxxVariantArray &value)
-{
-    wxListCollectionToVariantArray<wxMenuInfoList::compatibility_iterator>( theList , value ) ;
-}
-
-wxBEGIN_PROPERTIES_TABLE(wxMenuBar)
-    wxPROPERTY_COLLECTION( MenuInfos , wxMenuInfoList , wxMenuInfo* , Append , GetMenuInfos , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
-wxEND_PROPERTIES_TABLE()
-
-wxBEGIN_HANDLERS_TABLE(wxMenuBar)
-wxEND_HANDLERS_TABLE()
-
-wxCONSTRUCTOR_DUMMY( wxMenuBar )
-
-#else
-IMPLEMENT_DYNAMIC_CLASS(wxMenu, wxEvtHandler)
-IMPLEMENT_DYNAMIC_CLASS(wxMenuBar, wxWindow)
-IMPLEMENT_DYNAMIC_CLASS(wxMenuInfo, wxObject)
-#endif
-
-const wxMenuInfoList& wxMenuBar::GetMenuInfos() const
-{
-    wxMenuInfoList* list = const_cast< wxMenuInfoList* >( &m_menuInfos ) ;
-    WX_CLEAR_LIST( wxMenuInfoList , *list ) ;
-    for( size_t i = 0 ; i < GetMenuCount() ; ++i )
-    {
-        wxMenuInfo* info = new wxMenuInfo() ;
-        info->Create( const_cast<wxMenuBar*>(this)->GetMenu(i) , GetLabelTop(i) ) ;
-        list->Append( info ) ;
-    }
-    return m_menuInfos ;
-}
 
 // ---------------------------------------------------------------------------
 // wxMenu construction, adding and removing menu items
@@ -212,7 +123,7 @@ void wxMenu::EndRadioGroup()
 
 wxMenuItem* wxMenu::DoAppend(wxMenuItem *item)
 {
-    wxCHECK_MSG( item, NULL, _T("NULL item in wxMenu::DoAppend") );
+    wxCHECK_MSG( item, NULL, wxT("NULL item in wxMenu::DoAppend") );
 
     if(!wxMenuBase::DoAppend(item) || !DoInsertOrAppend(item))
     {
@@ -372,11 +283,11 @@ void wxMenuBar::EnableTop(size_t pos, bool enable)
     // Palm OS does not have support for grayed or disabled items
 }
 
-void wxMenuBar::SetLabelTop(size_t pos, const wxString& label)
+void wxMenuBar::SetMenuLabel(size_t pos, const wxString& label)
 {
     wxCHECK_RET( pos < GetMenuCount(), wxT("invalid menu index") );
 
-    m_titles[pos]=wxStripMenuCodes(label);
+    m_titles[pos] = label;
 
     if ( !IsAttached() )
     {
@@ -387,15 +298,6 @@ void wxMenuBar::SetLabelTop(size_t pos, const wxString& label)
     Refresh();
 }
 
-wxString wxMenuBar::GetLabelTop(size_t pos) const
-{
-    wxCHECK_MSG( pos < GetMenuCount(), wxEmptyString,
-                 wxT("invalid menu index in wxMenuBar::GetLabelTop") );
-
-    return wxMenuItem::GetLabelFromText(m_titles[pos]);
-}
-
-// Gets the original label at the top-level of the menubar
 wxString wxMenuBar::GetMenuLabel(size_t pos) const
 {
     wxCHECK_MSG( pos < GetMenuCount(), wxEmptyString,
@@ -414,7 +316,7 @@ wxMenu *wxMenuBar::Replace(size_t pos, wxMenu *menu, const wxString& title)
     if ( !menuOld )
         return NULL;
 
-    m_titles[pos]=wxStripMenuCodes(title);
+    m_titles[pos] = title;
 
     if ( IsAttached() )
     {
@@ -430,7 +332,7 @@ bool wxMenuBar::Insert(size_t pos, wxMenu *menu, const wxString& title)
     if ( !wxMenuBarBase::Insert(pos, menu, title) )
         return false;
 
-    m_titles.Insert(wxStripMenuCodes(title), pos);
+    m_titles.Insert(title, pos);
 
     if ( IsAttached() )
     {
@@ -446,7 +348,7 @@ bool wxMenuBar::Append(wxMenu *menu, const wxString& title)
     if ( !wxMenuBarBase::Append(menu, title) )
         return false;
 
-    m_titles.Add(wxStripMenuCodes(title));
+    m_titles.Add(title);
 
     if(IsAttached())
     {
@@ -546,12 +448,13 @@ void wxMenuBar::LoadMenu()
 {
     int i=0;
     int j=0;
-
+#ifdef __WXPALMOS6__
     // Handle to the currently running application database
     DmOpenRef    AppDB;
 
     // Get app database reference - needed for some Palm OS Menu API calls.
     SysGetModuleDatabase(SysGetRefNum(), NULL, &AppDB);
+#endif // __WXPALMOS6__
 
     // Get the number of menus
     int NumMenus=GetMenuCount();
@@ -563,24 +466,24 @@ void wxMenuBar::LoadMenu()
     // Load the menu template and set up the menu pointers
     if(NumMenus==1)
     {
-        PalmOSMenuBar=DmGetResource(AppDB,'MBAR',1000);
-        PalmOSMenuBarPtr=(char *)MemHandleLock(PalmOSMenuBar);
+        PalmOSMenuBar = POS_DmGetResource (AppDB, MenuRscType, 1000);
+        PalmOSMenuBarPtr = (char *)MemHandleLock (PalmOSMenuBar);
 
-        PalmOSMenuBarPtr+=74;
+        PalmOSMenuBarPtr += 74;
     }
     else if(NumMenus==2)
     {
-        PalmOSMenuBar=DmGetResource(AppDB,'MBAR',2000);
-        PalmOSMenuBarPtr=(char *)MemHandleLock(PalmOSMenuBar);
+        PalmOSMenuBar = POS_DmGetResource (AppDB, MenuRscType, 2000);
+        PalmOSMenuBarPtr = (char *)MemHandleLock (PalmOSMenuBar);
 
-        PalmOSMenuBarPtr+=116;
+        PalmOSMenuBarPtr += 116;
     }
     else if(NumMenus==3)
     {
-        PalmOSMenuBar=DmGetResource(AppDB,'MBAR',3000);
-        PalmOSMenuBarPtr=(char *)MemHandleLock(PalmOSMenuBar);
+        PalmOSMenuBar = POS_DmGetResource (AppDB, MenuRscType, 3000);
+        PalmOSMenuBarPtr = (char *)MemHandleLock (PalmOSMenuBar);
 
-        PalmOSMenuBarPtr+=158;
+        PalmOSMenuBarPtr += 158;
     }
     else
     {
@@ -588,10 +491,10 @@ void wxMenuBar::LoadMenu()
         // more than we can handle.
         NumMenus=4;
 
-        PalmOSMenuBar=DmGetResource(AppDB,'MBAR',4000);
-        PalmOSMenuBarPtr=(char *)MemHandleLock(PalmOSMenuBar);
+        PalmOSMenuBar = POS_DmGetResource (AppDB, MenuRscType, 4000);
+        PalmOSMenuBarPtr = (char *)MemHandleLock (PalmOSMenuBar);
 
-        PalmOSMenuBarPtr+=200;
+        PalmOSMenuBarPtr += 200;
     }
 
     // Set the proper names for the drop-down triggers.
@@ -604,11 +507,11 @@ void wxMenuBar::LoadMenu()
         wxString MenuTitle=m_titles.Item(i);
 
         // Make sure we don't copy more than 8 bytes for the label
-        int LengthToCopy=MenuTitle.length();
-        if(LengthToCopy>8)
-            LengthToCopy=8;
+        int LengthToCopy = MenuTitle.length();
+        if(LengthToCopy > 8)
+            LengthToCopy = 8;
 
-        MemMove(PalmOSMenuBarPtr,MenuTitle,LengthToCopy);
+        MemMove(PalmOSMenuBarPtr,(char*)(&MenuTitle),LengthToCopy);
         PalmOSMenuBarPtr+=11;
     }
 
@@ -618,7 +521,7 @@ void wxMenuBar::LoadMenu()
 
     // We must make the menu active before we can add items to the drop-down
     // triggers.
-    FrmSetMenu(FrmGetActiveForm(),AppDB,NumMenus*1000);
+    POS_FrmSetMenu (FrmGetActiveForm(), AppDB, NumMenus * 1000);
 
     /* Add the menu items to the drop-down triggers.  This must be done after
      * setting the triggers, because setting the names of drop-down triggers
@@ -646,9 +549,9 @@ void wxMenuBar::LoadMenu()
             else
             {
                 if(j==0)
-                    MenuAddItem(9000+i,((i*1000)+1000)+j,0x00,ItemLabel);
+                    MenuAddItem(9000+i,((i*1000)+1000)+j,0x00,(char *)(&ItemLabel));
                 else
-                    MenuAddItem(((i*1000)+1000)+j-1,((i*1000)+1000)+j,0x00,ItemLabel);
+                    MenuAddItem(((i*1000)+1000)+j-1,((i*1000)+1000)+j,0x00,(char *)(&ItemLabel));
             }
         }
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _listctrl.i 58367 2009-01-24 22:21:12Z RD $
+// RCS-ID:      $Id: _listctrl.i 69705 2011-11-08 17:42:25Z RD $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -380,8 +380,8 @@ EVT_LIST_COL_END_DRAG      = wx.PyEventBinder(wxEVT_COMMAND_LIST_COL_END_DRAG   
 EVT_LIST_ITEM_FOCUSED      = wx.PyEventBinder(wxEVT_COMMAND_LIST_ITEM_FOCUSED     , 1)
 
 #WXWIN_COMPATIBILITY_2_4
-#EVT_LIST_GET_INFO = wx._deprecated(EVT_LIST_GET_INFO)
-#EVT_LIST_SET_INFO = wx._deprecated(EVT_LIST_SET_INFO)
+#EVT_LIST_GET_INFO = wx.deprecated(EVT_LIST_GET_INFO)
+#EVT_LIST_SET_INFO = wx.deprecated(EVT_LIST_SET_INFO)
 }
 
 //---------------------------------------------------------------------------
@@ -389,7 +389,7 @@ EVT_LIST_ITEM_FOCUSED      = wx.PyEventBinder(wxEVT_COMMAND_LIST_ITEM_FOCUSED   
 
 
 %{ // Python aware sorting function for wxPyListCtrl
-    static int wxCALLBACK wxPyListCtrl_SortItems(long item1, long item2, long funcPtr) {
+    static int wxCALLBACK wxPyListCtrl_SortItems(wxIntPtr item1, wxIntPtr item2, wxIntPtr funcPtr) {
         int retval = 0;
         PyObject* func = (PyObject*)funcPtr;
         wxPyBlock_t blocked = wxPyBeginBlockThreads();
@@ -521,6 +521,54 @@ public:
     // Sets the column width
     bool SetColumnWidth(int col, int width) ;
 
+
+    %extend {
+        static bool HasColumnOrderSupport() {
+        %#ifdef wxHAS_LISTCTRL_COLUMN_ORDER
+            return true;
+        %#else
+            return false;
+        %#endif
+        }
+        
+        int GetColumnOrder(int col) const {
+        %#ifdef wxHAS_LISTCTRL_COLUMN_ORDER
+            return self->GetColumnOrder(col);
+        %#else
+            wxPyRaiseNotImplemented();
+            return 0;
+        %#endif
+        }
+        
+        int GetColumnIndexFromOrder(int order) const {
+        %#ifdef wxHAS_LISTCTRL_COLUMN_ORDER
+            return self->GetColumnIndexFromOrder(order);
+        %#else
+            wxPyRaiseNotImplemented();
+            return 0;
+        %#endif
+        }
+        
+        wxArrayInt GetColumnsOrder() const {
+        %#ifdef wxHAS_LISTCTRL_COLUMN_ORDER
+            return self->GetColumnsOrder();
+        %#else
+            wxPyRaiseNotImplemented();
+            return wxArrayInt();
+        %#endif
+        }
+            
+        bool SetColumnsOrder(const wxArrayInt& orders) {
+        %#ifdef wxHAS_LISTCTRL_COLUMN_ORDER
+            return self->SetColumnsOrder(orders);
+        %#else
+            wxPyRaiseNotImplemented();
+            return false;
+        %#endif
+        }
+    }
+
+    
     // Gets the number of items that can fit vertically in the
     // visible area of the list control (list or report view)
     // or the total number of items in the list control (icon
@@ -564,7 +612,7 @@ public:
     bool SetItemColumnImage( long item, long column, int image );
 
     // Gets the item text
-    wxString GetItemText(long item) const ;
+    wxString GetItemText(long item, int col=0) const ;
 
     // Sets the item text
     void SetItemText(long item, const wxString& str) ;
@@ -613,9 +661,11 @@ public:
 
     // get the horizontal and vertical components of the item spacing
     wxSize GetItemSpacing() const;
+    %pythoncode { GetItemSpacing = wx.deprecated(GetItemSpacing) }
 
 #ifndef __WXMSW__
     void SetItemSpacing( int spacing, bool isSmall = false );
+    %pythoncode { SetItemSpacing = wx.deprecated(SetItemSpacing) }
 #endif
 
     // Gets the number of selected items in the list control

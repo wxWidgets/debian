@@ -5,7 +5,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: snglinst.cpp 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: snglinst.cpp 58757 2009-02-08 11:45:59Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ private:
     // the mutex handle, may be NULL
     HANDLE m_hMutex;
 
-    DECLARE_NO_COPY_CLASS(wxSingleInstanceCheckerImpl)
+    wxDECLARE_NO_COPY_CLASS(wxSingleInstanceCheckerImpl);
 };
 
 // ============================================================================

@@ -7,7 +7,7 @@ Output various aspects of topic tree to string or file.
 
 from textwrap import TextWrapper
 
-from topictreevisitor import ITopicTreeVisitor
+from core.topictreetraverser import ITopicTreeVisitor
 
 
 class TopicTreePrinter(ITopicTreeVisitor):
@@ -18,8 +18,8 @@ class TopicTreePrinter(ITopicTreeVisitor):
     printed is specified via the 'extra' kwarg. Its value must be a
     list of characters, the order determines output order:
     - D: print description of topic
-    - A: print topic kwargs and their description
     - a: print kwarg names only
+    - A: print topic kwargs and their description
     - L: print listeners currently subscribed to topic
 
     E.g. TopicTreePrinter(extra='LaDA') would print, for each topic,
@@ -91,7 +91,7 @@ class TopicTreePrinter(ITopicTreeVisitor):
         if topicObj.isAll():
             topicName = self.ALL_TOPICS_NAME
         else:
-            topicName = topicObj.getTailName()
+            topicName = topicObj.getNodeName()
         head = '%s Topic "%s"' % (self.__topicsBullet, topicName)
         self.__output.append( self.__formatDefn(indent, head) )
         indent += self.__indentStep
@@ -161,7 +161,7 @@ class TopicTreePrinter(ITopicTreeVisitor):
                 self.__output.append( self.__formatDefn(tmpIndent, item) )
 
 
-def printTreeDocs(pubModule, rootTopic=None, **kwargs):
+def printTreeDocs(rootTopic=None, topicMgr=None, **kwargs):
     '''Print out the topic tree to a file (or file-like object like a
     StringIO), starting at rootTopic. If root topic should be root of
     whole tree, get it from pub.getDefaultRootAllTopics().
@@ -172,21 +172,27 @@ def printTreeDocs(pubModule, rootTopic=None, **kwargs):
         from pubsub import pub
         from pubsub.utils.topictreeprinter import TopicTreePrinter
         traverser = pub.TopicTreeTraverser( TopicTreePrinter(**kwargs) )
-        traverser.traverse( pub.getDefaultRootTopic() )
+        traverser.traverse( pub.getDefaultRootAllTopics() )
 
     With printTreeDocs, it looks like this::
 
         from pubsub import pub
-        from pubsub.utils.topictreeprinter import printTreeDocs
-        printTreeDocs(pub)
+        from pubsub.utils import printTreeDocs
+        printTreeDocs()
 
     The kwargs are the same as for TopicTreePrinter constructor:
     extra(None), width(70), indentStep(4), bulletTopic, bulletTopicItem,
     bulletTopicArg, fileObj(stdout). If fileObj not given, stdout is used.'''
-    printer = TopicTreePrinter(**kwargs)
-    traverser = pubModule.TopicTreeTraverser(printer)
     if rootTopic is None:
-        rootTopic = pubModule.getDefaultRootTopic()
+        if topicMgr is None:
+            from intraimport import parentImport
+            pub = parentImport('pub')
+            topicMgr = pub.getDefaultTopicMgr()
+        rootTopic = topicMgr.getRootTopic()
+
+    printer = TopicTreePrinter(**kwargs)
+    from core.topictreetraverser import TopicTreeTraverser
+    traverser = TopicTreeTraverser(printer)
     traverser.traverse(rootTopic)
 
 

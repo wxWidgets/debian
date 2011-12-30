@@ -2,7 +2,7 @@
 // Name:        src/common/arcfind.cpp
 // Purpose:     Streams for archive formats
 // Author:      Mike Wetherell
-// RCS-ID:      $Id: arcfind.cpp 42508 2006-10-27 09:53:38Z MW $
+// RCS-ID:      $Id: arcfind.cpp 46391 2007-06-10 17:42:41Z VS $
 // Copyright:   (c) Mike Wetherell
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 // the archive classes they use.
 
 const wxArchiveClassFactory *
-wxArchiveClassFactory::Find(const wxChar *protocol, wxStreamProtocolType type)
+wxArchiveClassFactory::Find(const wxString& protocol, wxStreamProtocolType type)
 {
     for (const wxArchiveClassFactory *f = GetFirst(); f; f = f->GetNext())
         if (f->CanHandle(protocol, type))

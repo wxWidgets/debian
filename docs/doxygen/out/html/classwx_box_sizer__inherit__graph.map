@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="rect" id="node7" href="$classwx_static_box_sizer.html" title="wxStaticBoxSizer is a sizer derived from wxBoxSizer but adds a static box around the sizer..." alt="" coords="5,246,131,277"/>
+<area shape="rect" id="node9" href="$classwx_std_dialog_button_sizer.html" title="This class creates button layouts which conform to the standard button spacing and ordering defined b..." alt="" coords="155,246,317,277"/>
+<area shape="rect" id="node11" href="$classwx_wrap_sizer.html" title="A wrap sizer lays out its items in a single line, like a box sizer &#45;&#45; as long as there is space avail..." alt="" coords="341,246,437,277"/>
+<area shape="rect" id="node2" href="$classwx_sizer.html" title="wxSizer is the abstract base class used for laying out subwindows in a window." alt="" coords="203,86,269,117"/>
+<area shape="rect" id="node4" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="199,6,273,37"/>
+</map>

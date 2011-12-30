@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-#
+#!/usr/bin/env python
 """
 This module contains different classes which handle different kind of saving/restoring
 actions depending on the widget kind.
@@ -72,9 +74,11 @@ def wxDate2PyDate(date):
 
 def CreateFont(font):
     """
-    Returns a tuple of 7 `wx.Font` attributes from the `font` input parameter.
+    Creates a tuple of 7 `wx.Font` attributes from the `font` input parameter.
 
     :param `font`: a `wx.Font` instance.
+
+    :returns: A tuple of 7 `wx.Font` attributes from the `font` input parameter.
     """
     
     return font.GetPointSize(), font.GetFamily(), font.GetStyle(), font.GetWeight(), \
@@ -452,9 +456,9 @@ class CheckBoxHandler(AbstractHandler):
         check, obj = self._window, self._pObject
 
         if check.Is3State():
-            obj.SaveValue(PERSIST_CHECKBOX_3STATE, check.Get3StateValue())
+            obj.SaveCtrlValue(PERSIST_CHECKBOX_3STATE, check.Get3StateValue())
         else:
-            obj.SaveValue(PERSIST_CHECKBOX, check.GetValue())
+            obj.SaveCtrlValue(PERSIST_CHECKBOX, check.GetValue())
                     
         return True
     
@@ -464,12 +468,12 @@ class CheckBoxHandler(AbstractHandler):
         check, obj = self._window, self._pObject
 
         if check.Is3State():
-            value = obj.RestoreValue(PERSIST_CHECKBOX_3STATE)
+            value = obj.RestoreCtrlValue(PERSIST_CHECKBOX_3STATE)
             if value is not None:
                 check.Set3StateValue(value)
                 return True
         else:
-            value = obj.RestoreValue(PERSIST_CHECKBOX)
+            value = obj.RestoreCtrlValue(PERSIST_CHECKBOX)
             if value is not None:
                 check.SetValue(value)
                 return True
@@ -746,7 +750,7 @@ class ChoiceComboHandler(AbstractHandler):
         combo, obj = self._window, self._pObject
 
         value = combo.GetStringSelection()
-        obj.SaveValue(PERSIST_CHOICECOMBO_SELECTION, value)
+        obj.SaveCtrlValue(PERSIST_CHOICECOMBO_SELECTION, value)
         return True
 
 
@@ -754,7 +758,7 @@ class ChoiceComboHandler(AbstractHandler):
 
         combo, obj = self._window, self._pObject
         
-        value = obj.RestoreValue(PERSIST_CHOICECOMBO_SELECTION)
+        value = obj.RestoreCtrlValue(PERSIST_CHOICECOMBO_SELECTION)
         if value is not None:
             if value in combo.GetStrings():
                 combo.SetStringSelection(value)
@@ -837,14 +841,14 @@ class RadioBoxHandler(AbstractHandler):
     def Save(self):
 
         radio, obj = self._window, self._pObject
-        obj.SaveValue(PERSIST_RADIOBOX_SELECTION, radio.GetSelection())
+        obj.SaveCtrlValue(PERSIST_RADIOBOX_SELECTION, radio.GetSelection())
         return True
                     
 
     def Restore(self):
 
         radio, obj = self._window, self._pObject
-        value = obj.RestoreValue(PERSIST_RADIOBOX_SELECTION)
+        value = obj.RestoreCtrlValue(PERSIST_RADIOBOX_SELECTION)
         if value is not None:
             if value < radio.GetCount():
                 radio.SetSelection(value)
@@ -878,14 +882,14 @@ class RadioButtonHandler(AbstractHandler):
     def Save(self):
 
         radio, obj = self._window, self._pObject
-        obj.SaveValue(PERSIST_RADIOBUTTON_VALUE, radio.GetValue())
+        obj.SaveCtrlValue(PERSIST_RADIOBUTTON_VALUE, radio.GetValue())
         return True
                     
 
     def Restore(self):
 
         radio, obj = self._window, self._pObject
-        value = obj.RestoreValue(PERSIST_RADIOBUTTON_VALUE)
+        value = obj.RestoreCtrlValue(PERSIST_RADIOBUTTON_VALUE)
         if value is not None:
             radio.SetValue(value)
             return True
@@ -921,29 +925,23 @@ class ScrolledWindowHandler(AbstractHandler):
 
         scroll, obj = self._window, self._pObject
         
-        scrollPos = scroll.GetScrollPos()
-        obj.SaveValue(PERSIST_SCROLLEDWINDOW_POS_X, scrollPos.x)
-        obj.SaveValue(PERSIST_SCROLLEDWINDOW_POS_Y, scrollPos.y)
+        scrollPos = scroll.GetScrollPos(wx.HORIZONTAL)
+        obj.SaveValue(PERSIST_SCROLLEDWINDOW_POS_H, scrollPos)
+        scrollPos = scroll.GetScrollPos(wx.VERTICAL)
+        obj.SaveValue(PERSIST_SCROLLEDWINDOW_POS_V, scrollPos)
         return True
 
 
     def Restore(self):
 
         scroll, obj = self._window, self._pObject
-        xpos = obj.RestoreValue(PERSIST_SCROLLEDWINDOW_POS_X)
-        ypos = obj.RestoreValue(PERSIST_SCROLLEDWINDOW_POS_Y)
+        hpos = obj.RestoreValue(PERSIST_SCROLLEDWINDOW_POS_H)
+        vpos = obj.RestoreValue(PERSIST_SCROLLEDWINDOW_POS_V)
 
-        if xpos is not None and ypos is not None:
-            maxX, maxY = scroll.GetVirtualSize()
-            unitsX, unitsY = scroll.GetScrollPixelsPerUnit()
-            if unitsX > 0 and maxX/unitsX > xpos:
-                if unitsY > 0 and maxY/unitsY > ypos:
-                    return False
-                
-            scroll.Scroll(xpos, ypos)
-            return True
-        
-        return False
+        if hpos:
+            scroll.SetScrollPos(wx.HORIZONTAL, hpos)
+        if vpos:
+            scroll.SetScrollPos(wx.VERTICAL, vpos, True)
 
 
     def GetKind(self):
@@ -972,14 +970,14 @@ class SliderHandler(AbstractHandler):
     def Save(self):
 
         slider, obj = self._window, self._pObject        
-        obj.SaveValue(PERSIST_SLIDER_VALUE, slider.GetValue())
+        obj.SaveCtrlValue(PERSIST_SLIDER_VALUE, slider.GetValue())
         return True
 
 
     def Restore(self):
 
         slider, obj = self._window, self._pObject
-        value = obj.RestoreValue(PERSIST_SLIDER_VALUE)
+        value = obj.RestoreCtrlValue(PERSIST_SLIDER_VALUE)
 
         if issubclass(slider.__class__, wx.Slider):
             minVal, maxVal = slider.GetMin(), slider.GetMax()
@@ -1020,14 +1018,14 @@ class SpinHandler(AbstractHandler):
     def Save(self):
 
         spin, obj = self._window, self._pObject        
-        obj.SaveValue(PERSIST_SPIN_VALUE, spin.GetValue())
+        obj.SaveCtrlValue(PERSIST_SPIN_VALUE, spin.GetValue())
         return True
     
 
     def Restore(self):
 
         spin, obj = self._window, self._pObject
-        value = obj.RestoreValue(PERSIST_SPIN_VALUE)
+        value = obj.RestoreCtrlValue(PERSIST_SPIN_VALUE)
 
         if value is not None:
             minVal, maxVal = spin.GetMin(), spin.GetMax()
@@ -1064,6 +1062,7 @@ class SplitterHandler(AbstractHandler):
 
         splitter, obj = self._window, self._pObject        
         obj.SaveValue(PERSIST_SPLITTER_POSITION, splitter.GetSashPosition())
+        print 'sash on save: %s' % splitter.GetSashPosition()
         return True
     
 
@@ -1072,6 +1071,7 @@ class SplitterHandler(AbstractHandler):
         splitter, obj = self._window, self._pObject
         value = obj.RestoreValue(PERSIST_SPLITTER_POSITION)
 
+        print 'sash on restore: %s' % value
         if value is None:
             return False
 
@@ -1091,6 +1091,7 @@ class SplitterHandler(AbstractHandler):
             if value > width - minPaneSize:
                 return False
             
+        print 'sash on restore 2: %s' % value            
         splitter.SetSashPosition(value)
         return True
         
@@ -1127,17 +1128,17 @@ class TextCtrlHandler(AbstractHandler):
     def Save(self):
 
         text, obj = self._window, self._pObject        
-        obj.SaveValue(PERSIST_TEXTCTRL_VALUE, text.GetValue())
+        obj.SaveCtrlValue(PERSIST_TEXTCTRL_VALUE, text.GetValue())
         return True
     
 
     def Restore(self):
 
         text, obj = self._window, self._pObject
-        value = obj.RestoreValue(PERSIST_TEXTCTRL_VALUE)
+        value = obj.RestoreCtrlValue(PERSIST_TEXTCTRL_VALUE)
 
         if value is not None:
-            text.SetValue(value)
+            text.ChangeValue(value)
             return True
         
         return False
@@ -1343,7 +1344,9 @@ class TreeCtrlHandler(AbstractHandler):
         Returns a list of checked items. Checked items are coded as determined by
         the result of L{TreeCtrlHandler.GetItemIdentity}.
         
-        :note: This is meaningful only for L{customtreectrl.CustomTreeCtrl} and
+        :note:
+
+         This is meaningful only for L{customtreectrl.CustomTreeCtrl} and
          L{hypertreelist.HyperTreeList}.
         """
         
@@ -1363,7 +1366,9 @@ class TreeCtrlHandler(AbstractHandler):
         
         :param `listOfCheckedItems`: a list of checked L{customtreectrl.CustomTreeCtrl} items.
 
-        :note: This is meaningful only for L{customtreectrl.CustomTreeCtrl} and
+        :note:
+
+         This is meaningful only for L{customtreectrl.CustomTreeCtrl} and
          L{hypertreelist.HyperTreeList}.
         """
         
@@ -1557,25 +1562,25 @@ class TreeCtrlHandler(AbstractHandler):
 
         tree, obj = self._window, self._pObject
 
-        obj.SaveValue(PERSIST_TREECTRL_EXPANSION, self.GetExpansionState())
+        obj.SaveCtrlValue(PERSIST_TREECTRL_EXPANSION, self.GetExpansionState())
 
         if issubclass(tree.__class__, (HTL.HyperTreeList, CT.CustomTreeCtrl)):
-            obj.SaveValue(PERSIST_TREECTRL_CHECKED_ITEMS, self.GetCheckedState())
+            obj.SaveCtrlValue(PERSIST_TREECTRL_CHECKED_ITEMS, self.GetCheckedState())
             
         manager = PM.PersistenceManager.Get()
         if manager.GetManagerStyle() & PM_SAVE_RESTORE_TREE_LIST_SELECTIONS == 0:
             # We don't want to save selected items
             return True
         
-        obj.SaveValue(PERSIST_TREECTRL_SELECTIONS, self.GetSelectionState())
+        obj.SaveCtrlValue(PERSIST_TREECTRL_SELECTIONS, self.GetSelectionState())
         return True
     
 
     def Restore(self):
 
         tree, obj = self._window, self._pObject
-        expansion = obj.RestoreValue(PERSIST_TREECTRL_EXPANSION)
-        selections = obj.RestoreValue(PERSIST_TREECTRL_SELECTIONS)
+        expansion = obj.RestoreCtrlValue(PERSIST_TREECTRL_EXPANSION)
+        selections = obj.RestoreCtrlValue(PERSIST_TREECTRL_SELECTIONS)
         
         if expansion is not None:
             self.SetExpansionState(expansion)
@@ -1589,7 +1594,7 @@ class TreeCtrlHandler(AbstractHandler):
         if not issubclass(tree.__class__, (HTL.HyperTreeList, CT.CustomTreeCtrl)):
             return (expansion is not None and selections is not None)
 
-        checked = obj.RestoreValue(PERSIST_TREECTRL_CHECKED_ITEMS)
+        checked = obj.RestoreCtrlValue(PERSIST_TREECTRL_CHECKED_ITEMS)
         if checked is not None:
             self.SetCheckedState(checked)
             
@@ -1674,14 +1679,14 @@ class CalendarCtrlHandler(AbstractHandler):
     def Save(self):
 
         calend, obj = self._window, self._pObject
-        obj.SaveValue(PERSIST_CALENDAR_DATE, wxDate2PyDate(calend.GetDate()))
+        obj.SaveCtrlValue(PERSIST_CALENDAR_DATE, wxDate2PyDate(calend.GetDate()))
         return True
     
 
     def Restore(self):
 
         calend, obj = self._window, self._pObject
-        value = obj.RestoreValue(PERSIST_CALENDAR_DATE)
+        value = obj.RestoreCtrlValue(PERSIST_CALENDAR_DATE)
 
         if value is not None:
             calend.SetDate(PyDate2wxDate(value))
@@ -1757,14 +1762,14 @@ class DatePickerHandler(AbstractHandler):
     def Save(self):
 
         datePicker, obj = self._window, self._pObject
-        obj.SaveValue(PERSIST_DATEPICKER_DATE, wxDate2PyDate(datePicker.GetValue()))
+        obj.SaveCtrlValue(PERSIST_DATEPICKER_DATE, wxDate2PyDate(datePicker.GetValue()))
         return True
     
 
     def Restore(self):
 
         datePicker, obj = self._window, self._pObject
-        value = obj.RestoreValue(PERSIST_DATEPICKER_DATE)
+        value = obj.RestoreCtrlValue(PERSIST_DATEPICKER_DATE)
 
         if value is not None:
             datePicker.SetValue(PyDate2wxDate(value))
@@ -1927,7 +1932,7 @@ class FileDirPickerHandler(AbstractHandler):
 
 class FontPickerHandler(AbstractHandler):
     """
-    Supports saving/restoring a `wx.FontPicker` font.
+    Supports saving/restoring a `wx.FontPickerCtrl` font.
 
     This class handles the following wxPython widgets:
 
@@ -2210,7 +2215,7 @@ class FindReplaceHandler(TLWHandler):
 
     This class handles the following wxPython widgets:
 
-    - L`wx.FindReplaceDialog`.
+    - `wx.FindReplaceDialog`.
 
     :todo: Find a way to properly save and restore dialog data (`wx.ColourDialog`, `wx.FontDialog` etc...).
 
@@ -2535,13 +2540,18 @@ if hasSB:
 
 def FindHandler(pObject):
     """
-    Finds a suitable handler for the input Persistent Object depending on the widget kind.
+    Finds a suitable handler for the input Persistent Object depending on the
+    widget kind.
 
     :param `pObject`: an instance of L{persistencemanager.PersistentObject} class.
     """
 
     window = pObject.GetWindow()
     klass = window.__class__
+
+    if hasattr(window, "_persistentHandler"):
+        # if control has a handler, just return it
+        return window._persistentHandler
     
     for handler, subclasses in STANDALONE_HANDLERS.items():
         for subclass in subclasses:
@@ -2556,4 +2566,28 @@ def FindHandler(pObject):
     raise Exception("Unsupported persistent handler (class=%s, name=%s)"%(klass, window.GetName()))
 
 # ----------------------------------------------------------------------------------- #
+
+def HasCtrlHandler(control):
+    """
+    Is there a suitable handler for this control
+
+    :param `control`: the control instance to check if a handler for it exists.
+    """
+
+    klass = control.__class__
+
+    if hasattr(control, "_persistentHandler"):
+        # if control has a handler, just return it
+        return True
     
+    for handler, subclasses in STANDALONE_HANDLERS.items():
+        for subclass in subclasses:
+            if issubclass(klass, subclass):
+                return True
+    
+    for handler, subclasses in HANDLERS.items():
+        for subclass in subclasses:
+            if issubclass(klass, subclass):
+                return True
+
+    return False

@@ -4,7 +4,7 @@
 // Author:      Hans Van Leemputten
 // Modified by: Benjamin I. Williams / Kirix Corporation
 // Created:     29/07/2002
-// RCS-ID:      $Id: tabmdi.cpp 55206 2008-08-23 16:19:16Z VZ $
+// RCS-ID:      $Id: tabmdi.cpp 69590 2011-10-30 14:20:03Z VZ $
 // Copyright:   (c) Hans Van Leemputten
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -110,9 +110,11 @@ bool wxAuiMDIParentFrame::Create(wxWindow *parent,
     }
 #endif // wxUSE_MENUS
 
-    wxFrame::Create(parent, id, title, pos, size, style, name);
-    OnCreateClient();
-    return true;
+    if ( !wxFrame::Create(parent, id, title, pos, size, style, name) )
+        return false;
+
+    m_pClientWindow = OnCreateClient();
+    return m_pClientWindow != NULL;
 }
 
 
@@ -134,7 +136,7 @@ wxAuiTabArt* wxAuiMDIParentFrame::GetArtProvider()
 
 wxAuiNotebook* wxAuiMDIParentFrame::GetNotebook() const
 {
-    return wx_static_cast(wxAuiNotebook*, m_pClientWindow);
+    return static_cast<wxAuiNotebook*>(m_pClientWindow);
 }
 
 
@@ -179,13 +181,13 @@ void wxAuiMDIParentFrame::SetChildMenuBar(wxAuiMDIChildFrame* pChild)
         // No Child, set Our menu bar back.
         if (m_pMyMenuBar)
             SetMenuBar(m_pMyMenuBar);
-             else
+        else
             SetMenuBar(GetMenuBar());
 
         // Make sure we know our menu bar is in use
         m_pMyMenuBar = NULL;
     }
-     else
+    else
     {
         if (pChild->GetMenuBar() == NULL)
             return;
@@ -252,8 +254,7 @@ wxAuiMDIClientWindow *wxAuiMDIParentFrame::GetClientWindow() const
 
 wxAuiMDIClientWindow *wxAuiMDIParentFrame::OnCreateClient()
 {
-    m_pClientWindow = new wxAuiMDIClientWindow( this );
-    return m_pClientWindow;
+    return new wxAuiMDIClientWindow( this );
 }
 
 void wxAuiMDIParentFrame::ActivateNext()
@@ -314,7 +315,7 @@ void wxAuiMDIParentFrame::AddWindowMenu(wxMenuBar *pMenuBar)
         int pos = pMenuBar->FindMenu(wxGetStockLabel(wxID_HELP,wxSTOCK_NOFLAGS));
         if (pos == wxNOT_FOUND)
             pMenuBar->Append(m_pWindowMenu, _("&Window"));
-             else
+        else
             pMenuBar->Insert(pos, m_pWindowMenu, _("&Window"));
     }
 }
@@ -366,7 +367,7 @@ void wxAuiMDIParentFrame::Tile(wxOrientation orient)
     {
         client_window->Split(cur_idx, wxLEFT);
     }
-     else if (orient == wxHORIZONTAL)
+    else if (orient == wxHORIZONTAL)
     {
         client_window->Split(cur_idx, wxTOP);
     }
@@ -408,7 +409,7 @@ wxAuiMDIChildFrame::wxAuiMDIChildFrame(wxAuiMDIParentFrame *parent,
     // is, but those are the expected symantics.  No style flag is passed
     // onto the panel underneath.
     if (style & wxMINIMIZE)
-        m_activate_on_create = false;
+        m_activateOnCreate = false;
 
     Create(parent, id, title, wxDefaultPosition, size, 0, name);
 }
@@ -446,20 +447,20 @@ bool wxAuiMDIChildFrame::Create(wxAuiMDIParentFrame* parent,
                                 const wxString& name)
 {
     wxAuiMDIClientWindow* pClientWindow = parent->GetClientWindow();
-    wxASSERT_MSG((pClientWindow != (wxWindow*) NULL), wxT("Missing MDI client window."));
+    wxASSERT_MSG((pClientWindow != NULL), wxT("Missing MDI client window."));
 
     // see comment in constructor
     if (style & wxMINIMIZE)
-        m_activate_on_create = false;
+        m_activateOnCreate = false;
 
     wxSize cli_size = pClientWindow->GetClientSize();
 
     // create the window off-screen to prevent flicker
     wxPanel::Create(pClientWindow,
-		    id,
-		    wxPoint(cli_size.x+1, cli_size.y+1),
-		    size,
-		    wxNO_BORDER, name);
+                    id,
+                    wxPoint(cli_size.x+1, cli_size.y+1),
+                    size,
+                    wxNO_BORDER, name);
 
     DoShow(false);
 
@@ -470,7 +471,7 @@ bool wxAuiMDIChildFrame::Create(wxAuiMDIParentFrame* parent,
 
     m_title = title;
 
-    pClientWindow->AddPage(this, title, m_activate_on_create);
+    pClientWindow->AddPage(this, title, m_activateOnCreate);
     pClientWindow->Refresh();
 
     return true;
@@ -564,12 +565,12 @@ void wxAuiMDIChildFrame::SetIcons(const wxIconBundle& icons)
 {
     // get icon with the system icon size
     SetIcon(icons.GetIcon(-1));
-    m_icon_bundle = icons;
+    m_iconBundle = icons;
 }
 
 const wxIconBundle& wxAuiMDIChildFrame::GetIcons() const
 {
-    return m_icon_bundle;
+    return m_iconBundle;
 }
 
 void wxAuiMDIChildFrame::SetIcon(const wxIcon& icon)
@@ -657,7 +658,7 @@ wxAuiMDIParentFrame* wxAuiMDIChildFrame::GetMDIParentFrame() const
 
 void wxAuiMDIChildFrame::Init()
 {
-    m_activate_on_create = true;
+    m_activateOnCreate = true;
     m_pMDIParentFrame = NULL;
 #if wxUSE_MENUS
     m_pMenuBar = NULL;
@@ -666,7 +667,7 @@ void wxAuiMDIChildFrame::Init()
 
 bool wxAuiMDIChildFrame::Show(bool show)
 {
-    m_activate_on_create = show;
+    m_activateOnCreate = show;
 
     // do nothing
     return true;
@@ -679,7 +680,7 @@ void wxAuiMDIChildFrame::DoShow(bool show)
 
 void wxAuiMDIChildFrame::DoSetSize(int x, int y, int width, int height, int sizeFlags)
 {
-    m_mdi_newrect = wxRect(x, y, width, height);
+    m_mdiNewRect = wxRect(x, y, width, height);
 #ifdef __WXGTK__
     wxPanel::DoSetSize(x,y,width, height, sizeFlags);
 #else
@@ -689,16 +690,16 @@ void wxAuiMDIChildFrame::DoSetSize(int x, int y, int width, int height, int size
 
 void wxAuiMDIChildFrame::DoMoveWindow(int x, int y, int width, int height)
 {
-    m_mdi_newrect = wxRect(x, y, width, height);
+    m_mdiNewRect = wxRect(x, y, width, height);
 }
 
 void wxAuiMDIChildFrame::ApplyMDIChildFrameRect()
 {
-    if (m_mdi_currect != m_mdi_newrect)
+    if (m_mdiCurRect != m_mdiNewRect)
     {
-        wxPanel::DoMoveWindow(m_mdi_newrect.x, m_mdi_newrect.y,
-                              m_mdi_newrect.width, m_mdi_newrect.height);
-        m_mdi_currect = m_mdi_newrect;
+        wxPanel::DoMoveWindow(m_mdiNewRect.x, m_mdiNewRect.y,
+                              m_mdiNewRect.width, m_mdiNewRect.height);
+        m_mdiCurRect = m_mdiNewRect;
     }
 }
 
@@ -722,10 +723,6 @@ wxAuiMDIClientWindow::wxAuiMDIClientWindow()
 wxAuiMDIClientWindow::wxAuiMDIClientWindow(wxAuiMDIParentFrame* parent, long style)
 {
     CreateClient(parent, style);
-}
-
-wxAuiMDIClientWindow::~wxAuiMDIClientWindow()
-{
 }
 
 bool wxAuiMDIClientWindow::CreateClient(wxAuiMDIParentFrame* parent, long style)
@@ -808,8 +805,8 @@ void wxAuiMDIClientWindow::PageChanged(int old_selection, int new_selection)
 
 void wxAuiMDIClientWindow::OnPageClose(wxAuiNotebookEvent& evt)
 {
-    wxAuiMDIChildFrame*
-        wnd = wx_static_cast(wxAuiMDIChildFrame*, GetPage(evt.GetSelection()));
+    wxAuiMDIChildFrame* wnd;
+    wnd = static_cast<wxAuiMDIChildFrame*>(GetPage(evt.GetSelection()));
 
     wnd->Close();
 
@@ -832,6 +829,5 @@ void wxAuiMDIClientWindow::OnSize(wxSizeEvent& evt)
         ((wxAuiMDIChildFrame *)GetPage(pos))->ApplyMDIChildFrameRect();
 }
 
+#endif //wxUSE_AUI
 #endif // wxUSE_MDI
-
-#endif // wxUSE_AUI

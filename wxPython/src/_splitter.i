@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _splitter.i 41166 2006-09-12 03:20:12Z RD $
+// RCS-ID:      $Id: _splitter.i 69707 2011-11-08 17:44:35Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -22,6 +22,7 @@ MAKE_CONST_WXSTRING2(SplitterNameStr, wxT("splitter"));
 
 enum {
     wxSP_NOBORDER,
+    wxSP_THIN_SASH,
     wxSP_NOSASH,
     wxSP_PERMIT_UNSPLIT,
     wxSP_LIVE_UPDATE,
@@ -359,15 +360,11 @@ the window may be unsplit even if minimum size is non-zero.", "");
         "Resizes subwindows", "");
     
 
-    void SetNeedUpdating(bool needUpdating);
-    bool GetNeedUpdating() const;
-
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
     
     %property(BorderSize, GetBorderSize, SetBorderSize, doc="See `GetBorderSize` and `SetBorderSize`");
     %property(MinimumPaneSize, GetMinimumPaneSize, SetMinimumPaneSize, doc="See `GetMinimumPaneSize` and `SetMinimumPaneSize`");
-    %property(NeedUpdating, GetNeedUpdating, SetNeedUpdating, doc="See `GetNeedUpdating` and `SetNeedUpdating`");
     %property(SashGravity, GetSashGravity, SetSashGravity, doc="See `GetSashGravity` and `SetSashGravity`");
     %property(SashPosition, GetSashPosition, SetSashPosition, doc="See `GetSashPosition` and `SetSashPosition`");
     %property(SashSize, GetSashSize, SetSashSize, doc="See `GetSashSize` and `SetSashSize`");

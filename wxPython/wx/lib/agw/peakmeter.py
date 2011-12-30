@@ -2,7 +2,7 @@
 # PEAKMETERCTRL wxPython IMPLEMENTATION
 #
 # Andrea Gavana, @ 07 October 2008
-# Latest Revision: 14 Apr 2010, 12.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List
@@ -16,7 +16,7 @@
 # write to me at:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, obviously, to the wxPython mailing list!!!
 #
@@ -25,14 +25,14 @@
 # --------------------------------------------------------------------------------- #
 
 """
-PeakMeterCtrl mimics the behaviour of equalizers that are usually found in stereos
+L{PeakMeterCtrl} mimics the behaviour of equalizers that are usually found in stereos
 and MP3 players.
 
 
 Description
 ===========
 
-PeakMeterCtrl mimics the behaviour of equalizers that are usually found in stereos
+L{PeakMeterCtrl} mimics the behaviour of equalizers that are usually found in stereos
 and MP3 players. This widgets supports:
 
 * Vertical and horizontal led bands;
@@ -44,10 +44,90 @@ and MP3 players. This widgets supports:
 And a lot more. Check the demo for an almost complete review of the functionalities.
 
 
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import random
+    
+    import wx.lib.agw.peakmeter as PM
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "PeakMeterCtrl Demo")
+
+            panel = wx.Panel(self)
+        
+            # Initialize Peak Meter control 1
+            self.vertPeak = PM.PeakMeterCtrl(panel, -1, style=wx.SIMPLE_BORDER, agwStyle=PM.PM_VERTICAL)
+            # Initialize Peak Meter control 2
+            self.horzPeak = PM.PeakMeterCtrl(panel, -1, style=wx.SUNKEN_BORDER, agwStyle=PM.PM_HORIZONTAL)
+
+            self.vertPeak.SetMeterBands(10, 15)
+            self.horzPeak.SetMeterBands(10, 15)
+
+            # Layout the two PeakMeterCtrl            
+            mainSizer = wx.BoxSizer(wx.HORIZONTAL)
+            mainSizer.Add(self.vertPeak, 0, wx.EXPAND|wx.ALL, 15)
+            mainSizer.Add(self.horzPeak, 0, wx.EXPAND|wx.ALL, 15)
+
+            panel.SetSizer(mainSizer)
+            mainSizer.Layout()
+
+            self.timer = wx.Timer(self)
+            self.Bind(wx.EVT_TIMER, self.OnTimer)
+
+            wx.CallLater(500, self.Start)
+
+
+        def Start(self):
+            ''' Starts the PeakMeterCtrl. '''
+
+            self.timer.Start(1000/2)            # 2 fps
+            
+            self.vertPeak.Start(1000/18)        # 18 fps
+            self.horzPeak.Start(1000/20)        # 20 fps
+
+
+        def OnTimer(self, event):
+            '''
+            Handles the ``wx.EVT_TIMER`` event for L{PeakMeterCtrl}.
+
+            :param `event`: a `wx.TimerEvent` event to be processed.
+            '''
+
+            # Generate 15 random number and set them as data for the meter
+            nElements = 15
+            arrayData = []
+            
+            for i in xrange(nElements):
+                nRandom = random.randint(0, 100)
+                arrayData.append(nRandom)
+
+            self.vertPeak.SetData(arrayData, 0, nElements)
+            self.horzPeak.SetData(arrayData, 0, nElements)
+
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
+
+
 Supported Platforms
 ===================
 
-PeakMeterCtrl has been tested on the following platforms:
+L{PeakMeterCtrl} has been tested on the following platforms:
   * Windows (Windows XP).
 
 
@@ -59,8 +139,8 @@ This class supports the following window styles:
 ================= =========== ==================================================
 Window Styles     Hex Value   Description
 ================= =========== ==================================================
-``PM_HORIZONTAL``         0x0 Shows horizontal bands in `PeakMeterCtrl`.
-``PM_VERTICAL``           0x1 Shows vertical bands in `PeakMeterCtrl`.
+``PM_HORIZONTAL``         0x0 Shows horizontal bands in L{PeakMeterCtrl}.
+``PM_VERTICAL``           0x1 Shows vertical bands in L{PeakMeterCtrl}.
 ================= =========== ==================================================
 
 
@@ -73,9 +153,9 @@ Events Processing
 License And Version
 ===================
 
-PeakMeterCtrl is distributed under the wxPython license.
+L{PeakMeterCtrl} is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 12 Apr 2010, 12.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.3
 
@@ -85,9 +165,9 @@ import wx
 
 # Horizontal or vertical PeakMeterCtrl
 PM_HORIZONTAL = 0
-""" Shows horizontal bands in `PeakMeterCtrl`. """
+""" Shows horizontal bands in L{PeakMeterCtrl}. """
 PM_VERTICAL = 1
-""" Shows vertical bands in `PeakMeterCtrl`. """
+""" Shows vertical bands in L{PeakMeterCtrl}. """
 
 # Some useful constants...
 BAND_DEFAULT = 8
@@ -559,6 +639,8 @@ class PeakMeterCtrl(wx.PyControl):
         Gets the size which best suits the window: for a control, it would be the
         minimal size which doesn't truncate the control, for a panel - the same size
         as it would have after a call to `Fit()`.
+
+        :note: Overridden from `wx.PyControl`.
         """
 
         # something is better than nothing...

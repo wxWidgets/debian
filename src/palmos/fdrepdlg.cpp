@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10.13.04
-// RCS-ID:      $Id: fdrepdlg.cpp 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: fdrepdlg.cpp 58757 2009-02-08 11:45:59Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ private:
     // registered Message for Dialog
     static UINT ms_msgFindDialog;
 
-    DECLARE_NO_COPY_CLASS(wxFindReplaceDialogImpl)
+    wxDECLARE_NO_COPY_CLASS(wxFindReplaceDialogImpl);
 };
 
 UINT wxFindReplaceDialogImpl::ms_msgFindDialog = 0;

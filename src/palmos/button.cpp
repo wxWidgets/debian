@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by: Wlodzimierz ABX Skiba - native wxButton implementation
 // Created:     10/13/04
-// RCS-ID:      $Id: button.cpp 40978 2006-09-03 12:23:04Z RR $
+// RCS-ID:      $Id: button.cpp 66555 2011-01-04 08:31:53Z SC $
 // Copyright:   (c) William Osborne, Wlodzimierz Skiba
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -47,67 +47,6 @@
 // ----------------------------------------------------------------------------
 // macros
 // ----------------------------------------------------------------------------
-
-#if wxUSE_EXTENDED_RTTI
-
-WX_DEFINE_FLAGS( wxButtonStyle )
-
-wxBEGIN_FLAGS( wxButtonStyle )
-    // new style border flags, we put them first to
-    // use them for streaming out
-    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
-    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
-    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
-    wxFLAGS_MEMBER(wxBORDER_RAISED)
-    wxFLAGS_MEMBER(wxBORDER_STATIC)
-    wxFLAGS_MEMBER(wxBORDER_NONE)
-
-    // old style border flags
-    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
-    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
-    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
-    wxFLAGS_MEMBER(wxRAISED_BORDER)
-    wxFLAGS_MEMBER(wxSTATIC_BORDER)
-    wxFLAGS_MEMBER(wxBORDER)
-
-    // standard window styles
-    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
-    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
-    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
-    wxFLAGS_MEMBER(wxWANTS_CHARS)
-    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
-    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
-    wxFLAGS_MEMBER(wxVSCROLL)
-    wxFLAGS_MEMBER(wxHSCROLL)
-
-    wxFLAGS_MEMBER(wxBU_LEFT)
-    wxFLAGS_MEMBER(wxBU_RIGHT)
-    wxFLAGS_MEMBER(wxBU_TOP)
-    wxFLAGS_MEMBER(wxBU_BOTTOM)
-    wxFLAGS_MEMBER(wxBU_EXACTFIT)
-wxEND_FLAGS( wxButtonStyle )
-
-IMPLEMENT_DYNAMIC_CLASS_XTI(wxButton, wxControl,"wx/button.h")
-
-wxBEGIN_PROPERTIES_TABLE(wxButton)
-    wxEVENT_PROPERTY( Click , wxEVT_COMMAND_BUTTON_CLICKED , wxCommandEvent)
-
-    wxPROPERTY( Font , wxFont , SetFont , GetFont  , EMPTY_MACROVALUE, 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
-    wxPROPERTY( Label, wxString , SetLabel, GetLabel, wxString(), 0 /*flags*/ , wxT("Helpstring") , wxT("group") )
-
-    wxPROPERTY_FLAGS( WindowStyle , wxButtonStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
-
-wxEND_PROPERTIES_TABLE()
-
-wxBEGIN_HANDLERS_TABLE(wxButton)
-wxEND_HANDLERS_TABLE()
-
-wxCONSTRUCTOR_6( wxButton , wxWindow* , Parent , wxWindowID , Id , wxString , Label , wxPoint , Position , wxSize , Size , long , WindowStyle  )
-
-
-#else
-IMPLEMENT_DYNAMIC_CLASS(wxButton, wxControl)
-#endif
 
 // this macro tries to adjust the default button height to a reasonable value
 // using the char height as the base
@@ -196,12 +135,16 @@ wxSize wxButtonBase::GetDefaultSize()
     return wxSize(36,12);
 }
 
-void wxButton::SetDefault()
+wxWindow *wxButton::SetDefault()
 {
     FormType* form = (FormType* )GetParentForm();
     if(form==NULL)
-        return;
+        return NULL;
+#ifdef __WXPALMOS6__
     FrmSetDefaultButtonID(form,GetId());
+#endif // __WXPALMOS6__
+
+    return wxButtonBase::SetDefault();
 }
 
 void wxButton::SetTmpDefault()

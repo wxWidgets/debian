@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _dc.i 67471 2011-04-13 18:20:58Z RD $
+// RCS-ID:      $Id: _dc.i 69711 2011-11-08 18:04:04Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -18,25 +18,115 @@
 
 %{
 #include "wx/wxPython/pydrawxxx.h"
+#ifdef __WXMSW__
+#include <wx/msw/dc.h>
+#endif
+#ifdef __WXGTK__
+#include <wx/gtk/dc.h>
+#endif
+#include <wx/dcgraph.h>
 %}
 
 // TODO: 1. wrappers for wxDrawObject and wxDC::DrawObject
-
-
-//---------------------------------------------------------------------------
-
-%typemap(in) (int points, wxPoint* points_array ) {
-    $2 = wxPoint_LIST_helper($input, &$1);
-    if ($2 == NULL) SWIG_fail;
-}
-%typemap(freearg) (int points, wxPoint* points_array ) {
-    if ($2) delete [] $2;
-}
-
+//       2. Do the factory and wxDCImpl classes need to be exposed?
 
 //---------------------------------------------------------------------------
 %newgroup;
 
+class wxDCImpl;
+
+
+//  Logical ops
+enum wxRasterOperationMode
+{
+    wxCLEAR,       // 0
+    wxXOR,         // src XOR dst
+    wxINVERT,      // NOT dst
+    wxOR_REVERSE,  // src OR (NOT dst)
+    wxAND_REVERSE, // src AND (NOT dst)
+    wxCOPY,        // src
+    wxAND,         // src AND dst
+    wxAND_INVERT,  // (NOT src) AND dst
+    wxNO_OP,       // dst
+    wxNOR,         // (NOT src) AND (NOT dst)
+    wxEQUIV,       // (NOT src) XOR dst
+    wxSRC_INVERT,  // (NOT src)
+    wxOR_INVERT,   // (NOT src) OR dst
+    wxNAND,        // (NOT src) OR (NOT dst)
+    wxOR,          // src OR dst
+    wxSET          // 1
+
+
+    // We never had these in wxPython, and it looks like they are going away
+    // so don't bother with them...
+    
+// #if WXWIN_COMPATIBILITY_2_8
+//     ,wxROP_BLACK = wxCLEAR,
+//     wxBLIT_BLACKNESS = wxCLEAR,
+//     wxROP_XORPEN = wxXOR,
+//     wxBLIT_SRCINVERT = wxXOR,
+//     wxROP_NOT = wxINVERT,
+//     wxBLIT_DSTINVERT = wxINVERT,
+//     wxROP_MERGEPENNOT = wxOR_REVERSE,
+//     wxBLIT_00DD0228 = wxOR_REVERSE,
+//     wxROP_MASKPENNOT = wxAND_REVERSE,
+//     wxBLIT_SRCERASE = wxAND_REVERSE,
+//     wxROP_COPYPEN = wxCOPY,
+//     wxBLIT_SRCCOPY = wxCOPY,
+//     wxROP_MASKPEN = wxAND,
+//     wxBLIT_SRCAND = wxAND,
+//     wxROP_MASKNOTPEN = wxAND_INVERT,
+//     wxBLIT_00220326 = wxAND_INVERT,
+//     wxROP_NOP = wxNO_OP,
+//     wxBLIT_00AA0029 = wxNO_OP,
+//     wxROP_NOTMERGEPEN = wxNOR,
+//     wxBLIT_NOTSRCERASE = wxNOR,
+//     wxROP_NOTXORPEN = wxEQUIV,
+//     wxBLIT_00990066 = wxEQUIV,
+//     wxROP_NOTCOPYPEN = wxSRC_INVERT,
+//     wxBLIT_NOTSCRCOPY = wxSRC_INVERT,
+//     wxROP_MERGENOTPEN = wxOR_INVERT,
+//     wxBLIT_MERGEPAINT = wxOR_INVERT,
+//     wxROP_NOTMASKPEN = wxNAND,
+//     wxBLIT_007700E6 = wxNAND,
+//     wxROP_MERGEPEN = wxOR,
+//     wxBLIT_SRCPAINT = wxOR,
+//     wxROP_WHITE = wxSET,
+//     wxBLIT_WHITENESS = wxSET
+// #endif //WXWIN_COMPATIBILITY_2_8
+};
+
+//  Flood styles
+enum wxFloodFillStyle
+{
+    wxFLOOD_SURFACE = 1,
+    wxFLOOD_BORDER
+};
+
+//  Mapping modes (same values as used by Windows, don't change)
+enum wxMappingMode
+{
+    wxMM_TEXT = 1,
+    wxMM_TWIPS,
+    wxMM_POINTS,
+    wxMM_METRIC
+};
+
+
+struct wxFontMetrics
+{
+    wxFontMetrics();
+    ~wxFontMetrics();
+    
+    int height,             // Total character height.
+        ascent,             // Part of the height above the baseline.
+        descent,            // Part of the height below the baseline.
+        internalLeading,    // Intra-line spacing.
+        externalLeading,    // Inter-line spacing.
+        averageWidth;       // Average font width, a.k.a. "x-width".
+};
+
+//---------------------------------------------------------------------------
 
 DocStr(wxDC,
 "A wx.DC is a device context onto which graphics and text can be
@@ -67,9 +157,15 @@ public:
     }
     
 
+    wxDCImpl *GetImpl();
+    wxWindow *GetWindow();
+
     
 // TODO    virtual void DrawObject(wxDrawObject* drawobject);
 
+    
+    // copy attributes (font, colours and writing direction) from another DC
+    void CopyAttributes(const wxDC& dc);
 
     DocStr(
         FloodFill,
@@ -87,8 +183,8 @@ Returns False if the operation failed.
 Note: The present implementation for non-Windows platforms may fail to
 find colour borders if the pixels do not match the colour
 exactly. However the function will still return true.", "");
-    bool FloodFill(wxCoord x, wxCoord y, const wxColour& col, int style = wxFLOOD_SURFACE);
-    %Rename(FloodFillPoint, bool, FloodFill(const wxPoint& pt, const wxColour& col, int style = wxFLOOD_SURFACE));
+    bool FloodFill(wxCoord x, wxCoord y, const wxColour& col, wxFloodFillStyle style = wxFLOOD_SURFACE);
+    %Rename(FloodFillPoint, bool, FloodFill(const wxPoint& pt, const wxColour& col, wxFloodFillStyle style = wxFLOOD_SURFACE));
 
     // fill the area specified by rect with a radial gradient, starting from
     // initialColour in the centre of the cercle and fading to destColour.
@@ -307,7 +403,7 @@ font. ``wx.SWISS_FONT`` is an example of a font which is.","
     DocDeclStr(
         bool , Blit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
                     wxDC *source, wxCoord xsrc, wxCoord ysrc,
-                    int rop = wxCOPY, bool useMask = false,
+                    wxRasterOperationMode rop = wxCOPY, bool useMask = false,
                     wxCoord xsrcMask = -1, wxCoord ysrcMask = -1),
         "Copy from a source DC to this DC.  Parameters specify the destination
 coordinates, size of area to copy, source DC, source coordinates,
@@ -334,7 +430,7 @@ position.", "
     DocDeclStrName(
         bool , Blit(const wxPoint& destPt, const wxSize& sz,
                     wxDC *source, const wxPoint& srcPt,
-                    int rop = wxCOPY, bool useMask = false,
+                    wxRasterOperationMode rop = wxCOPY, bool useMask = false,
                     const wxPoint& srcPtMask = wxDefaultPosition),
         "Copy from a source DC to this DC.  Parameters specify the destination
 coordinates, size of area to copy, source DC, source coordinates,
@@ -353,6 +449,57 @@ position.", "
 ",
         BlitPointSize);
 
+
+    DocDeclStr(
+        bool , StretchBlit(wxCoord dstX, wxCoord dstY, 
+                           wxCoord dstWidth, wxCoord dstHeight,
+                           wxDC *source, 
+                           wxCoord srcX, wxCoord srcY,
+                           wxCoord srcWidth, wxCoord srcHeight,
+                           wxRasterOperationMode rop = wxCOPY, bool useMask = false, 
+                           wxCoord srcMaskX = wxDefaultCoord,
+                           wxCoord srcMaskY = wxDefaultCoord),
+        "Copy from a source DC to this DC, specifying the destination
+coordinates, destination size, source DC, source coordinates, size of
+source area to copy, logical function, whether to use a bitmap mask,
+and mask source position.", "
+
+    :param xdest:       Destination device context x position.
+    :param ydest:       Destination device context y position.
+    :param dstWidth:    Width of destination area.
+    :param dstHeight:   Height of destination area.
+    :param source:      Source device context.
+    :param xsrc:        Source device context x position.
+    :param ysrc:        Source device context y position.
+    :param srcWidth:    Width of source area to be copied.
+    :param srcHeight:   Height of source area to be copied.
+    :param logicalFunc: Logical function to use: see `SetLogicalFunction`.
+    :param useMask:     If true, StretchBlit does a transparent blit using
+                        the mask that is associated with the bitmap selected
+                        into the source device context.
+    :param xsrcMask:    Source x position on the mask. If both xsrcMask and
+                        ysrcMask are -1, xsrc and ysrc will be assumed for
+                        the mask source position. Currently only implemented
+                        on Windows.
+    :param ysrcMask:    Source y position on the mask. 
+");
+    
+
+
+    DocDeclStrName(
+        bool , StretchBlit(const wxPoint& dstPt, const wxSize& dstSize,
+                           wxDC *source, const wxPoint& srcPt, const wxSize& srcSize,
+                           wxRasterOperationMode rop = wxCOPY, bool useMask = false,
+                           const wxPoint& srcMaskPt = wxDefaultPosition),
+        "Copy from a source DC to this DC, specifying the destination
+coordinates, destination size, source DC, source coordinates, size of
+source area to copy, logical function, whether to use a bitmap mask,
+and mask source position.  This version is the same as `StretchBlit`
+except `wx.Point` and `wx.Size` objects are used instead of individual
+position and size components.", "",
+        StretchBlitPointSize);
+    
+   
 
     DocDeclStr(
         wxBitmap , GetAsBitmap(const wxRect *subrect = NULL) const,
@@ -379,7 +526,12 @@ screen is damaged.", "
     %Rename(SetClippingRegionAsRegion, void, SetClippingRegion(const wxRegion& region));
     %Rename(SetClippingRect, void, SetClippingRegion(const wxRect& rect));
 
-    void SetDeviceClippingRegion(const wxRegion& region);
+    DocDeclStr(
+        void , SetDeviceClippingRegion(const wxRegion& region),
+        "The coordinates of the region used in this method one are in device
+coordinates, not the logical ones", "");
+    
+
     
     DocDeclAStr(
         void , DrawLines(int points, wxPoint* points_array,
@@ -393,9 +545,9 @@ lines.", "");
     DocDeclAStr(
         void , DrawPolygon(int points, wxPoint* points_array,
                      wxCoord xoffset = 0, wxCoord yoffset = 0,
-                           int fillStyle = wxODDEVEN_RULE),
+                           wxPolygonFillMode fillStyle = wxODDEVEN_RULE),
         "DrawPolygon(self, List points, int xoffset=0, int yoffset=0,
-    int fillStyle=ODDEVEN_RULE)",
+    wxPolygonFillMode fillStyle=ODDEVEN_RULE)",
         "Draws a filled polygon using a sequence of `wx.Point` objects, adding
 the optional offset coordinate.  The last argument specifies the fill
 rule: ``wx.ODDEVEN_RULE`` (the default) or ``wx.WINDING_RULE``.
@@ -480,6 +632,7 @@ printer). *Message* is a message to show whilst printing.", "");
         "Ends a document page (only relevant when outputting to a printer).", "");
     
 
+    
 
     // set objects to use for drawing
     // ------------------------------
@@ -528,9 +681,9 @@ window or bitmap associated with the DC. If the argument is
 context, and the original palette restored.", "
 
 :see: `wx.Palette`");
+
+   
     
-
-
     DocDeclStr(
         virtual void , DestroyClippingRegion(),
         "Destroys the current clipping region so that none of the DC is
@@ -568,6 +721,7 @@ clipped.", "
         virtual wxCoord , GetCharWidth() const,
         "Gets the average character width of the currently set font.", "");
     
+    wxFontMetrics GetFontMetrics() const;
 
 
     DocDeclAStr(
@@ -579,7 +733,7 @@ works for single line strings.", "");
     DocDeclAStrName(
         void, GetTextExtent(const wxString& string,
                             wxCoord *OUTPUT, wxCoord *OUTPUT, wxCoord *OUTPUT, wxCoord* OUTPUT,
-                            wxFont* font = NULL),
+                            const wxFont* font = NULL),
         "GetFullTextExtent(wxString string, Font font=None) ->\n   (width, height, descent, externalLeading)",
         "Get the width, height, decent and leading of the text using the
 current or specified font. Only works for single line strings.", "",
@@ -590,7 +744,7 @@ current or specified font. Only works for single line strings.", "",
     DocDeclAStr(
         void, GetMultiLineTextExtent(const wxString& text,
                                      wxCoord *OUTPUT, wxCoord *OUTPUT, wxCoord *OUTPUT,
-                                     wxFont *font = NULL),
+                                     const wxFont *font = NULL),
         "GetMultiLineTextExtent(wxString string, Font font=None) ->\n   (width, height, lineHeight)",
         "Get the width, height, and line height of the text using the
 current or specified font. Works for single as well as multi-line
@@ -644,8 +798,10 @@ fit on the printer page::
         "GetSizeMMTuple() -> (width, height)",
         GetSizeMMTuple);
 
+    
+    int GetResolution();
 
-
+    
     // coordinates conversions
     // -----------------------
 
@@ -767,7 +923,7 @@ converting a height, for example.", "");
         "Gets the current *mapping mode* for the device context ", "");
     
     DocDeclStr(
-        virtual void , SetMapMode(int mode),
+        virtual void , SetMapMode(wxMappingMode mode),
         "The *mapping mode* of the device context defines the unit of
 measurement used to convert logical units to device units.  The
 mapping mode can be one of the following:
@@ -849,12 +1005,21 @@ highest values on the axis). The default orientation is the natural
 orientation, e.g. x axis from left to right and y axis from bottom up.", "");
 
 
+    
+    // TODO
+    //bool CanUseTransformMatrix() const;
+    //bool SetTransformMatrix(const wxAffineMatrix2D &matrix);
+    //wxAffineMatrix2D GetTransformMatrix() const;
+    //void ResetTransformMatrix();
+
+    
+
     DocDeclStr(
-        int , GetLogicalFunction() const,
+        wxRasterOperationMode , GetLogicalFunction() const,
         "Gets the current logical function (set by `SetLogicalFunction`).", "");
     
     DocDeclStr(
-        virtual void , SetLogicalFunction(int function),
+        virtual void , SetLogicalFunction(wxRasterOperationMode function),
         "Sets the current logical function for the device context. This
 determines how a source pixel (from a pen or brush colour, or source
 device context if using `Blit`) combines with a destination pixel in
@@ -890,12 +1055,11 @@ colour.
 ", "");
     
 
-    DocDeclStr(
-        void , ComputeScaleAndOrigin(),
-        "Performs all necessary computations for given platform and context
-type after each change of scale and origin parameters. Usually called
-automatically internally after such changes.
-", "");
+//     DocDeclStr(
+//         void , ComputeScaleAndOrigin(),
+//         "Performs all necessary computations for given platform and context
+// type after each change of scale and origin parameters. Usually called
+// automatically internally after such changes.", "");
     
 
     
@@ -923,8 +1087,8 @@ automatically internally after such changes.
         def GetOptimization(self):
             return False
 
-        SetOptimization = wx._deprecated(SetOptimization)
-        GetOptimization = wx._deprecated(GetOptimization)
+        SetOptimization = wx.deprecated(SetOptimization)
+        GetOptimization = wx.deprecated(GetOptimization)
    }
 
     
@@ -999,33 +1163,28 @@ supported.", "");
 
     
 
+    %extend {
+        long GetHDC()
+        {
 #ifdef __WXMSW__
-    long GetHDC();
+            return (long)((wxMSWDCImpl*)self->GetImpl())->GetHDC();
+#else
+            wxPyRaiseNotImplemented();
+            return 0;
 #endif
+        }
+
+        // TODO: Do GetTempHDC ?
+    }
 
 #ifdef __WXMAC__
     %extend {
         void* GetCGContext() {
             void* cgctx = NULL;
-#if 1
-            wxGraphicsContext* gc = self->GetGraphicsContext();
+            wxGraphicsContext* gc = ((wxGCDCImpl*)self->GetImpl())->GetGraphicsContext();
             if (gc) {
                 cgctx = gc->GetNativeContext();
             }
-#else
-            wxMemoryDC* mdc = wxDynamicCast(self, wxMemoryDC);
-            wxWindowDC* wdc = wxDynamicCast(self, wxWindowDC);
-            if (mdc) {
-                wxGraphicsContext* gc = self->GetGraphicsContext();
-                if (gc)
-                    cgctx = gc->GetNativeContext();
-            }
-            else if (wdc) {
-                wxWindow* win = wdc->GetWindow();
-                if (win)
-                    cgctx = win->MacGetCGContextRef();
-            }
-#endif
             return cgctx;
         }
     }
@@ -1037,7 +1196,7 @@ supported.", "");
             // TODO: Is this always non-null?  if not then we can check
             // GetSelectedBitmap and get the GdkPixmap from it, as that is a
             // drawable too.
-            return self->GetGDKWindow();
+            return ((wxGTKDCImpl*)self->GetImpl())->GetGDKWindow();
         }
     }    
 #endif
@@ -1256,8 +1415,6 @@ supported.", "");
     %property(PPI, GetPPI, doc="See `GetPPI`");
     %property(PartialTextExtents, GetPartialTextExtents, doc="See `GetPartialTextExtents`");
     %property(Pen, GetPen, SetPen, doc="See `GetPen` and `SetPen`");
-    %property(Pixel, GetPixel, doc="See `GetPixel`");
-    %property(PixelPoint, GetPixelPoint, doc="See `GetPixelPoint`");
     %property(Size, GetSize, doc="See `GetSize`");
     %property(SizeMM, GetSizeMM, doc="See `GetSizeMM`");
     %property(TextBackground, GetTextBackground, SetTextBackground, doc="See `GetTextBackground` and `SetTextBackground`");
@@ -1367,6 +1524,19 @@ public:
     }  
 };
 
+
+
+DocStr(wxDCFontChanger,
+"wx.wxDCFontChanger sets the DC's font when it is constructed,
+and then restores the old font whrn it goes out of scope.", "");
+
+class wxDCFontChanger
+{
+public:
+    wxDCFontChanger(wxDC& dc, const wxFont& font);
+    ~wxDCFontChanger();
+    void Set(const wxFont& font);
+};
 
 
 
@@ -1543,8 +1713,6 @@ destroyed safely.", "");
     DocDeclStr(
         void , SelectObjectAsSource(const wxBitmap& bmp),
         "", "");
-    
-    
 };
 
 
@@ -1558,7 +1726,8 @@ destroyed safely.", "");
 
 enum {
     wxBUFFER_VIRTUAL_AREA,
-    wxBUFFER_CLIENT_AREA
+    wxBUFFER_CLIENT_AREA,
+    wxBUFFER_USES_SHARED_BUFFER
 };
 
 MustHaveApp(wxBufferedDC);
@@ -1667,7 +1836,7 @@ EVT_PAINT event handler. Just create an object of this class instead
 of `wx.PaintDC` and that's all you have to do to (mostly) avoid
 flicker. The only thing to watch out for is that if you are using this
 class together with `wx.ScrolledWindow`, you probably do **not** want
-to call `wx.Window.PrepareDC` on it as it already does this internally
+to call `wx.ScrolledWindow.PrepareDC` on it as it already does this internally
 for the real underlying `wx.PaintDC`.
 
 If your window is already fully buffered in a `wx.Bitmap` then your
@@ -1784,6 +1953,28 @@ on the wx.MirrorDC will appear on the *dc*, and will be mirrored if
 #include <wx/dcps.h>
 %}
 
+%{
+#if !wxUSE_POSTSCRIPT
+class wxPostScriptDC : public wxDC
+{
+public:
+    wxPostScriptDC()
+        : wxDC(NULL)
+    {
+        PyErr_SetString(PyExc_NotImplementedError,
+                        "wx.PostScriptDC is not available on this platform.");
+    };
+
+    wxPostScriptDC(const wxPrintData&)
+        : wxDC(NULL)
+    {
+        PyErr_SetString(PyExc_NotImplementedError,
+                        "wx.PostScriptDC is not available on this platform.");
+    };
+};
+#endif
+%}
+
 MustHaveApp(wxPostScriptDC);
 
 DocStr(wxPostScriptDC,
@@ -1796,19 +1987,6 @@ public:
         "Constructs a PostScript printer device context from a `wx.PrintData`
 object.", "");
 
-    wxPrintData& GetPrintData();
-    void SetPrintData(const wxPrintData& data);
-
-    DocDeclStr(
-        static void , SetResolution(int ppi),
-        "Set resolution (in pixels per inch) that will be used in PostScript
-output. Default is 720ppi.", "");
-    
-    DocDeclStr(
-        static int , GetResolution(),
-        "Return resolution used in PostScript output.", "");
-
-    %property(PrintData, GetPrintData, SetPrintData, doc="See `GetPrintData` and `SetPrintData`");
 };
 
 //---------------------------------------------------------------------------
@@ -1859,6 +2037,7 @@ public:
 
     %newobject Close;
     wxMetaFile* Close();
+//    wxMetafile *GetMetafile() const 
 };
 
 
@@ -1875,7 +2054,9 @@ public:
 class wxMetaFileDC : public wxClientDC {
 public:
     wxMetaFileDC(const wxString&, int, int, const wxString&)
+        : wxClientDC((wxWindow*)NULL)
         { wxPyRaiseNotImplemented(); }
+    wxMetaFile* Close() { return NULL; }
 };
 
 %}
@@ -1901,58 +2082,27 @@ public:
 
 MustHaveApp(wxPrinterDC);
 
-#if defined(__WXMSW__) || defined(__WXMAC__)
-
 class  wxPrinterDC : public wxDC {
 public:
     wxPrinterDC(const wxPrintData& printData);
 };
 
-#else
-%{
-class  wxPrinterDC : public wxClientDC {
-public:
-    wxPrinterDC(const wxPrintData&)
-        { wxPyRaiseNotImplemented(); }
 
-};
+//---------------------------------------------------------------------------
+
+%{
+#include <wx/dcsvg.h>
 %}
 
-class  wxPrinterDC : public wxDC {
-public:
-    wxPrinterDC(const wxPrintData& printData);
-};
-#endif
-
-
-
-#ifdef __WXGTK__
-%{
-#if wxUSE_LIBGNOMEPRINT
-    #include <wx/gtk/gnome/gprint.h>
-#else
-    class wxGnomePrintDC: public wxClientDC
-    {
-    public:
-        wxGnomePrintDC( const wxPrintData& ) { wxPyRaiseNotImplemented(); } 
-
-        static void SetResolution(int) {  wxPyRaiseNotImplemented(); } 
-        static int GetResolution() {  wxPyRaiseNotImplemented();  return -1; }
-    };
-#endif
-%}
-
-class wxGnomePrintDC: public wxDC
+class wxSVGFileDC : public wxDC
 {
 public:
-    wxGnomePrintDC( const wxPrintData& data );
-
-    static void SetResolution(int ppi);
-    static int GetResolution();
+    wxSVGFileDC(wxString filename,
+                int width=320,
+                int height=240,
+                double dpi=72.0);
+    
 };
-#endif
-
-
 
 
 //---------------------------------------------------------------------------

@@ -8,6 +8,68 @@ be used in advanced pub-sub applications.
 Note that many functions in this module actually make use of a
 Publisher and TopicManager instance created upon import. 
 
+Some usage details for some functions: 
+
+- importTopicTree():
+
+    Using pub.sendMessage('your.topic.name', **kwargs) is nice but in bigger
+    apps you soon realize that typos are too easy and will create new topics. 
+    Also, by default the first sendMessage or subscribe creates the message 
+    data specification, which all other sendMessage and subscribe must adhere 
+    to. It is better for this to be done in one place and validated every time
+    sendMessage and subscribe are called. 
+    
+    To help with this, it is possible to create a hierarchy of topic definitions, 
+    which contain the topic names and a signature that all listeners of the 
+    topic will have to satisfy. The format of this tree can be seen by calling
+    exportTopicTree(moduleName='yourModule'); then look at the contents of the 
+    yourModule.py. If setTopicUnspecfiedFatal() has been called, then
+    only topics that have a definition are allowed. 
+      
+    If lazy is True, the topics will be
+    put in topic tree only upon first use by the application, otherwise,
+    all topics that don't already exist are incorporated (this may result
+    in a smaller topic tree if an application has evolved significantly).
+    
+    Some sources can accept extra arguments in **providerKwargs; these 
+    get passed on to the TopicDefinitionProvider as is. 
+    
+    The doc string for the source is returned (for a module source, this
+    is the module doc string; etc). 
+    
+    A typical workflow would be: 
+    
+    - use exportTopicTree() once in a while and inspect the generated 
+      file for topics that differ only by a typo, fix issues
+    - once the topic tree has started to gel, save the topic tree file
+      created by exportTopicTree() and complete it with documentation
+    - use importTopicTree() and setTopicUnspecifiedFatal()
+    - to add new topics, manually add them to the topic tree file, OR
+      comment out the call to setTopicUnspecifiedFatal() and recall 
+      exportTopicTree (your docs should *not* be affected but YMMV)
+    - by importing the topic tree file, you can use code completion
+    
+    Example::
+    
+        from pubsub import pub
+        import your_topic_tree_module
+        pub.importTopicTree(your_topic_tree_module)
+        pub.setTopicUnspecifiedFatal()
+        
+        pub.subscribe(listener, your_topic_tree_module.topic1)
+        pub.sendMessage(your_topic_tree_module.topic1.subtopic1, kwarg1=..., ...)
+
+    Notes: 
+    
+    - This function can be called several times, but should be called
+      only once per source. The topics get merged; existing topics get
+      overwritten. 
+    - More source formats can be defined via
+      pub.registerTopicDefnProviderType(), which must be given a class
+      that adheres to the pub.ITopicDefnProvider interface.
+    - If lazy=True, then a later call to exportTopicTree() will only
+      export those topics that have been used by the application 
+
 TODO: add isMsgReceivable(listener, topicName) to find out if listener is
       subscribed to topicName or any of its subtopics. 
 
@@ -105,10 +167,16 @@ getNotificationFlags      = _publisher.getNotificationFlags
 setTopicUnspecifiedFatal = _publisher.setTopicUnspecifiedFatal
 getMsgProtocol = _publisher.getMsgProtocol
 
+def getDefaultPublisher():
+    '''Get the Publisher that is created by default when you 
+    import package.'''
+    return _publisher
+
+
 # ---------------------------------------------
 _topicMgr = _publisher.getTopicMgr()
 
-topics    = _topicMgr._allTopics
+topics    = _topicMgr.getRootTopic()
 topicsMap = _topicMgr._topicsMap
 AUTO_TOPIC  = Listener.AUTO_TOPIC
 
@@ -142,12 +210,12 @@ def getDefaultRootAllTopics():
     '''Get the topic that is parent of all root (ie top-level) topics. Useful
     characteristics:
     
-    - all top-level topics satisfy isAll()==False, isRoot()==True, and
-      getParent() is getDefaultRootAllTopics();
     - "root of all topics" topic satisfies isAll()==True, isRoot()==False,
       getParent() is None;
+    - all top-level topics satisfy isAll()==False, isRoot()==True, and
+      getParent() is getDefaultRootAllTopics();
     - all other topics satisfy neither. '''
-    return _topicMgr._allTopics
+    return _topicMgr.getRootTopic()
 
 getOrCreateTopic     = _topicMgr.getOrCreateTopic
 newTopic             = _topicMgr.newTopic
@@ -160,30 +228,14 @@ addTopicDefnProvider = _topicMgr.addDefnProvider
 clearTopicDefnProviders = _topicMgr.clearDefnProviders
 
 
-def importTopicTree(source, format = TOPIC_TREE_FROM_MODULE, lazy=False):
-    '''Import topic definitions from a source. The format of the
-    source defaults to TOPIC_TREE_FROM_MODULE, ie default is to import
-    from a module (typically, exported by exportTopicTree(source).
-    The doc string for the source is returned (for a module source, this
-    is the module doc string; etc). If lazy is True, the topics will be
-    put in topic tree only upon first use by the application, otherwise,
-    all topics that don't already exist are incorporated (this may result
-    in a smaller topic tree if an application has evolved significantly).
-    
-    Other source formats are TOPIC_TREE_FROM_STRING and
-    TOPIC_TREE_FROM_CLASS. They are explained in the package API
-    documentation.
-    
-    Notes: 
-    - This function can be called several times, but should be called
-      only once per source.
-    - More source formats can be defined via
-      pub.registerTopicDefnProviderType(), which must be given a class
-      that adheres to the pub.ITopicDefnProvider interface.
-    - If lazy=True, then a later call to exportTopicTree() will only
-      export those topics that have been used by the application 
+def importTopicTree(source, format = TOPIC_TREE_FROM_CLASS, lazy=False, **providerKwargs):
+    '''Import topic definitions. The source contains the definitions and can be one of 
+    several types (module, class, string), indicated by the "format" parameter. If lazy 
+    is True, all topics defined in source get instantiated even if not used by the 
+    application. The providerKwargs are given vertabim to the TopicDefnProvider that 
+    is used by this function. 
     '''
-    provider = TopicDefnProvider(source, format)
+    provider = TopicDefnProvider(source, format, **providerKwargs)
     addTopicDefnProvider(provider)
     if not lazy:
         for topicName in provider:
@@ -201,17 +253,15 @@ def _backupIfExists(filename, bak):
 
 def exportTopicTree(moduleName = None, rootTopicName=None, rootTopic=None, 
     bak='bak', moduleDoc=None):
-    '''Export the topic tree to a string and return the string.
-    The export only traverses the children of rootTopic. Notes:
+    '''Export the topic tree to a string and return the string. Parameters:
 
-    - If moduleName is given, the string is also written to moduleName.py in
-      os.getcwd() (the file is overwritten). If bak is not None, the module file
-      is first copied to moduleName.py.bak. 
-    - If rootTopicName or rootTopic are not specified, the pub.ALL_TOPICS
-      topic will used.
-    - The moduleDoc is the doc string for the module.
-    - If importTopicTree() was called with lazy=True, then only those topics
-      that were used by application will be exported.'''
+        - If moduleName is given, the string is also written to moduleName.py in
+          os.getcwd() (the file is overwritten). If bak is None, the module file
+          is not backed up. 
+        - If rootTopicName or rootTopic are specified, the export only traverses 
+          tree from corresponding topic. Otherwise, pub.ALL_TOPICS is starting point. 
+        - The moduleDoc is the doc string for the module.
+    '''
 
     if rootTopicName:
         rootTopic = _topicMgr.getTopic(rootTopicName)

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/24/97
-// RCS-ID:      $Id: _defs.i 60451 2009-05-01 00:24:29Z RD $
+// RCS-ID:      $Id: _defs.i 69040 2011-09-10 01:00:23Z RD $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -395,6 +395,7 @@ typedef double          wxDouble;
     decl
 %enddef
 
+// Combine renaming and docstrings
 #ifdef _DO_FULL_DOCS
     %define %RenameDocCtor(newname, docstr, details, decl)
         %feature("docstring") decl docstr details;
@@ -448,7 +449,7 @@ typedef double          wxDouble;
     %pythoncode {
         def base_##Method(*args, **kw):
             return Class.Method(*args, **kw)
-        base_##Method = wx._deprecated(base_##Method,
+        base_##Method = wx.deprecated(base_##Method,
                                        "Please use Class.Method instead.")
     }
 %enddef    
@@ -488,7 +489,7 @@ FORWARD_DECLARE(wxStaticBox,      StaticBox);
 
 
 //---------------------------------------------------------------------------
-// These macros makes a class to wrap a type specific class derived from wxList,
+// These macros make a class to wrap a type specific class derived from wxList,
 // and make it look like a Python sequence, including iterator support.
 
 
@@ -690,7 +691,7 @@ public:
 
         KeepGIL(__contains__);
         bool __contains__(const ItemClass* obj) {
-            return self->m_list->Find(obj) != NULL;
+            return self->m_list->Find(obj);
         }
 
         KeepGIL(__iter__);
@@ -720,6 +721,108 @@ typedef wxList ListClass##_t;
 
 
 
+
+// and now something similar for wxArray
+
+%define wxARRAY_WRAPPER(ArrayClass, ItemClass)
+// first a bit of C++ code...    
+%{
+class ArrayClass##_iterator
+{
+public:
+    ArrayClass##_iterator(ArrayClass &array)
+    : m_array(array), m_idx(0) {}
+    
+    ItemClass* next() {
+        ItemClass* obj = NULL;
+        if (m_idx < m_array.GetCount()) {
+            obj = (ItemClass*)&m_array.Item(m_idx);
+            m_idx += 1;
+        }
+        else PyErr_SetString(PyExc_StopIteration, "");
+        return obj;
+    }
+private:
+    ArrayClass& m_array;
+    size_t      m_idx;
+};
+%}
+
+// Now declare the classes for SWIG
+
+DocStr(ArrayClass##_iterator,
+"This class serves as an iterator for a ArrayClass object.", "");
+
+class ArrayClass##_iterator
+{
+public:
+    //ArrayClass##_iterator();
+    ~ArrayClass_iterator();
+    KeepGIL(next);
+    ItemClass* next();
+};
+
+
+DocStr(ArrayClass,
+"This class wraps a wxArray-based class and gives it a Python
+sequence-like interface.  Sequence operations supported are length,
+index access and iteration.", "");
+
+class ArrayClass
+{
+public:
+    //ArrayClass();      This will always be created by some C++ function
+    ~ArrayClass();
+
+    %extend {
+        KeepGIL(__len__);
+        size_t __len__() {
+            return self->GetCount();
+        }
+
+        KeepGIL(__getitem__);
+        ItemClass* __getitem__(size_t index) {
+            if (index < self->GetCount()) {
+                return (ItemClass*)&self->Item(index);
+            }
+            PyErr_SetString(PyExc_IndexError, "sequence index out of range");
+            return NULL;
+        }
+
+// TODO        
+//         KeepGIL(__contains__);
+//         bool __contains__(const ItemClass* obj) {
+//         }
+//         KeepGIL(index);
+//         int index(ItemClass* obj) {
+//         }
+
+        KeepGIL(__iter__);
+        %newobject __iter__;
+        ArrayClass##_iterator* __iter__() {
+            return new ArrayClass##_iterator(*self);
+        }
+
+        %disownarg( ItemClass *object );
+        KeepGIL(append);
+        void append(ItemClass* object){
+            self->Add(*object);
+        }
+        KeepGIL(insert);
+        void insert(size_t index, ItemClass* object) {
+            self->Insert(*object, index);
+        }
+        %cleardisown( ItemClass *object );
+    }
+    
+    %pythoncode {
+        def __repr__(self):
+            return "ArrayClass: " + repr(list(self))
+    }
+};
+%enddef
+
+
 //---------------------------------------------------------------------------
 
 %{
@@ -737,7 +840,10 @@ enum {
 //     wxMINOR_VERSION,
 //     wxRELEASE_NUMBER,
 
+    wxDefaultCoord,
+    
     wxNOT_FOUND,
+    wxNO_LEN,
 
     wxVSCROLL,
     wxHSCROLL,
@@ -781,8 +887,6 @@ enum {
     wxLB_EXTENDED,
     wxLB_OWNERDRAW,
     wxLB_HSCROLL,
-    wxPROCESS_ENTER,
-    wxPASSWORD,
 
     wxCB_SIMPLE,
     wxCB_DROPDOWN,
@@ -798,15 +902,7 @@ enum {
     wxSB_HORIZONTAL,
     wxSB_VERTICAL,
     wxRB_USE_CHECKBOX,
-    wxST_SIZEGRIP,
-    wxST_NO_AUTORESIZE,
-    wxST_DOTS_MIDDLE,
-    wxST_DOTS_END,
     
-    wxFLOOD_SURFACE,
-    wxFLOOD_BORDER,
-    wxODDEVEN_RULE,
-    wxWINDING_RULE,
     wxTOOL_TOP,
     wxTOOL_BOTTOM,
     wxTOOL_LEFT,
@@ -818,6 +914,11 @@ enum {
     wxNO,
     wxNO_DEFAULT,
     wxYES_DEFAULT,
+    wxOK_DEFAULT,
+    wxCANCEL_DEFAULT,
+    wxAPPLY,
+    wxCLOSE,
+     
     wxICON_EXCLAMATION,
     wxICON_HAND,
     wxICON_QUESTION,
@@ -827,6 +928,7 @@ enum {
     wxICON_MASK,
     wxICON_WARNING,
     wxICON_ERROR,
+    wxICON_NONE,
 
     wxFORWARD,
     wxBACKWARD,
@@ -835,19 +937,21 @@ enum {
     wxMORE,
     wxSETUP,
 
-
     wxSIZE_AUTO_WIDTH,
     wxSIZE_AUTO_HEIGHT,
     wxSIZE_AUTO,
     wxSIZE_USE_EXISTING,
     wxSIZE_ALLOW_MINUS_ONE,
     wxSIZE_FORCE,
-    wxPORTRAIT,
-    wxLANDSCAPE,
+    wxSIZE_FORCE_EVENT,
+    
     wxPRINT_QUALITY_HIGH,
     wxPRINT_QUALITY_MEDIUM,
     wxPRINT_QUALITY_LOW,
     wxPRINT_QUALITY_DRAFT,
+
+    wxID_AUTO_LOWEST,
+    wxID_AUTO_HIGHEST,
 
     wxID_ANY,
     wxID_SEPARATOR,
@@ -956,7 +1060,53 @@ enum {
     wxID_ZOOM_OUT,
     wxID_UNDELETE,
     wxID_REVERT_TO_SAVED,
-   
+
+    wxID_CDROM,
+    wxID_CONVERT,
+    wxID_EXECUTE,
+    wxID_FLOPPY,
+    wxID_HARDDISK,
+    wxID_BOTTOM,
+    wxID_FIRST,
+    wxID_LAST,
+    wxID_TOP,
+    wxID_INFO,
+    wxID_JUMP_TO,
+    wxID_NETWORK,
+    wxID_SELECT_COLOR,
+    wxID_SELECT_FONT,
+    wxID_SORT_ASCENDING,
+    wxID_SORT_DESCENDING,
+    wxID_SPELL_CHECK,
+    wxID_STRIKETHROUGH,
+
+    /*  System menu IDs (used by wxUniv): */
+    wxID_SYSTEM_MENU,
+    wxID_CLOSE_FRAME,
+    wxID_MOVE_FRAME,
+    wxID_RESIZE_FRAME,
+    wxID_MAXIMIZE_FRAME,
+    wxID_ICONIZE_FRAME,
+    wxID_RESTORE_FRAME,
+
+    /* MDI window menu ids */
+    wxID_MDI_WINDOW_FIRST,
+    wxID_MDI_WINDOW_CASCADE,
+    wxID_MDI_WINDOW_TILE_HORZ,
+    wxID_MDI_WINDOW_TILE_VERT,
+    wxID_MDI_WINDOW_ARRANGE_ICONS,
+    wxID_MDI_WINDOW_PREV,
+    wxID_MDI_WINDOW_NEXT,
+    wxID_MDI_WINDOW_LAST,
+
+    wxID_OSX_MENU_FIRST,
+    wxID_OSX_HIDE,
+    wxID_OSX_HIDEOTHERS,
+    wxID_OSX_SHOWALL,
+    wxID_OSX_MENU_LAST,
+
+    wxID_FILEDLGG,
+    wxID_FILECTRL,
     wxID_HIGHEST,
 
     wxMENU_TEAROFF,
@@ -975,31 +1125,6 @@ enum {
     wxWS_EX_PROCESS_IDLE,
     wxWS_EX_PROCESS_UI_UPDATES,
 
-
-    // Mapping modes (as per Windows)
-    wxMM_TEXT,
-    wxMM_LOMETRIC,
-    wxMM_HIMETRIC,
-    wxMM_LOENGLISH,
-    wxMM_HIENGLISH,
-    wxMM_TWIPS,
-    wxMM_ISOTROPIC,
-    wxMM_ANISOTROPIC,
-    wxMM_POINTS,
-    wxMM_METRIC,
-
-
-    // It looks like wxTabCtrl may rise from the dead.  Uncomment these if
-    // it gets an implementation for all platforms...
-//     wxTC_RIGHTJUSTIFY,
-//     wxTC_FIXEDWIDTH,
-//     wxTC_TOP,
-//     wxTC_LEFT,
-//     wxTC_RIGHT,
-//     wxTC_BOTTOM,
-//     wxTC_MULTILINE,
-//     wxTC_OWNERDRAW,
-
 };
 
 
@@ -1015,7 +1140,8 @@ enum wxOrientation
 {
     wxHORIZONTAL,
     wxVERTICAL,
-    wxBOTH
+    wxBOTH,
+    wxORIENTATION_MASK
 };
 
 enum wxDirection
@@ -1033,11 +1159,13 @@ enum wxDirection
     wxWEST,
     wxEAST,
 
-    wxALL
+    wxALL,
+    wxDIRECTION_MASK
 };
 
 enum wxAlignment
 {
+    wxALIGN_INVALID,
     wxALIGN_NOT,
     wxALIGN_CENTER_HORIZONTAL,
     wxALIGN_CENTRE_HORIZONTAL,
@@ -1054,6 +1182,14 @@ enum wxAlignment
     wxALIGN_MASK,
 };
 
+enum wxSizerFlagBits
+{
+    wxFIXED_MINSIZE                = 0x8000,
+    wxRESERVE_SPACE_EVEN_IF_HIDDEN = 0x0002,
+    wxSIZER_FLAG_BITS_MASK         = 0x8002
+};
+%pythoncode { ADJUST_MINSIZE = 0 }
+
 enum wxStretch
 {
     wxSTRETCH_NOT,
@@ -1061,12 +1197,9 @@ enum wxStretch
     wxGROW,
     wxEXPAND,
     wxSHAPED,
-    wxFIXED_MINSIZE,
-    wxRESERVE_SPACE_EVEN_IF_HIDDEN,
     wxTILE,
-    wxADJUST_MINSIZE,
+    wxSTRETCH_MASK
 };
-
 
 enum wxBorder
 {
@@ -1084,9 +1217,14 @@ enum wxBorder
 
 enum wxBackgroundStyle
 {
-  wxBG_STYLE_SYSTEM,
-  wxBG_STYLE_COLOUR,
-  wxBG_STYLE_CUSTOM
+    wxBG_STYLE_ERASE,
+    wxBG_STYLE_SYSTEM,
+    wxBG_STYLE_PAINT,
+    wxBG_STYLE_TRANSPARENT,
+
+    // these two are deprecated
+    wxBG_STYLE_COLOUR,
+    wxBG_STYLE_CUSTOM,
 };
 
 
@@ -1121,36 +1259,39 @@ enum {
   wxCROSS_HATCH,
   wxHORIZONTAL_HATCH,
   wxVERTICAL_HATCH,
-  wxJOIN_BEVEL,
-  wxJOIN_MITER,
-  wxJOIN_ROUND,
-  wxCAP_ROUND,
-  wxCAP_PROJECTING,
-  wxCAP_BUTT
 };
 
-typedef enum {
-  wxCLEAR,      // 0
-  wxXOR,        // src XOR dst
-  wxINVERT,     // NOT dst
-  wxOR_REVERSE, // src OR (NOT dst)
-  wxAND_REVERSE,// src AND (NOT dst)
-  wxCOPY,       // src
-  wxAND,        // src AND dst
-  wxAND_INVERT, // (NOT src) AND dst
-  wxNO_OP,      // dst
-  wxNOR,        // (NOT src) AND (NOT dst)
-  wxEQUIV,      // (NOT src) XOR dst
-  wxSRC_INVERT, // (NOT src)
-  wxOR_INVERT,  // (NOT src) OR dst
-  wxNAND,       // (NOT src) OR (NOT dst)
-  wxOR,         // src OR dst
-  wxSET,        // 1
-//  wxSRC_OR,     // source _bitmap_ OR destination
-//  wxSRC_AND     // source _bitmap_ AND destination
-} form_ops_t;
 
 enum wxKeyCode {
+    WXK_NONE = 0,
+    
+    WXK_CONTROL_A = 1,
+    WXK_CONTROL_B,
+    WXK_CONTROL_C,
+    WXK_CONTROL_D,
+    WXK_CONTROL_E,
+    WXK_CONTROL_F,
+    WXK_CONTROL_G,
+    WXK_CONTROL_H,
+    WXK_CONTROL_I,
+    WXK_CONTROL_J,
+    WXK_CONTROL_K,
+    WXK_CONTROL_L,
+    WXK_CONTROL_M,
+    WXK_CONTROL_N,
+    WXK_CONTROL_O,
+    WXK_CONTROL_P,
+    WXK_CONTROL_Q,
+    WXK_CONTROL_R,
+    WXK_CONTROL_S,
+    WXK_CONTROL_T,
+    WXK_CONTROL_U,
+    WXK_CONTROL_V,
+    WXK_CONTROL_W,
+    WXK_CONTROL_X,
+    WXK_CONTROL_Y,
+    WXK_CONTROL_Z,
+    
     WXK_BACK    =    8,
     WXK_TAB     =    9,
     WXK_RETURN  =    13,
@@ -1170,8 +1311,6 @@ enum wxKeyCode {
     WXK_MENU,
     WXK_PAUSE,
     WXK_CAPITAL,
-    WXK_PRIOR,  /* Page up */
-    WXK_NEXT,   /* Page down */
     WXK_END,
     WXK_HOME,
     WXK_LEFT,
@@ -1241,9 +1380,7 @@ enum wxKeyCode {
     WXK_NUMPAD_UP,
     WXK_NUMPAD_RIGHT,
     WXK_NUMPAD_DOWN,
-    WXK_NUMPAD_PRIOR,
     WXK_NUMPAD_PAGEUP,
-    WXK_NUMPAD_NEXT,
     WXK_NUMPAD_PAGEDOWN,
     WXK_NUMPAD_END,
     WXK_NUMPAD_BEGIN,
@@ -1260,7 +1397,7 @@ enum wxKeyCode {
     WXK_WINDOWS_LEFT,
     WXK_WINDOWS_RIGHT,
     WXK_WINDOWS_MENU,
-
+    WXK_RAW_CONTROL,
     WXK_COMMAND,
 
     // Hardware-specific buttons
@@ -1286,7 +1423,13 @@ enum wxKeyCode {
     WXK_SPECIAL20
 };
 
-
+// deprecated synonymns
+%pythoncode {
+    WXK_PRIOR = WXK_PAGEUP
+    WXK_NEXT  = WXK_PAGEDOWN
+    WXK_NUMPAD_PRIOR = WXK_NUMPAD_PAGEUP
+    WXK_NUMPAD_NEXT  = WXK_NUMPAD_PAGEDOWN    
+}
 
 typedef enum {
     wxPAPER_NONE,               // Use specific dimensions
@@ -1407,9 +1550,19 @@ typedef enum {
     wxPAPER_PENV_7_ROTATED,     /* PRC Envelope #7 Rotated 230 x 160 mm */
     wxPAPER_PENV_8_ROTATED,     /* PRC Envelope #8 Rotated 309 x 120 mm */
     wxPAPER_PENV_9_ROTATED,     /* PRC Envelope #9 Rotated 324 x 229 mm */
-    wxPAPER_PENV_10_ROTATED    /* PRC Envelope #10 Rotated 458 x 324 m */
+    wxPAPER_PENV_10_ROTATED,    /* PRC Envelope #10 Rotated 458 x 324 m */
+    wxPAPER_A0,                 /* A0 Sheet 841 x 1189 mm */
+    wxPAPER_A1                  /* A1 Sheet 594 x 841 mm */
    
-} wxPaperSize ;
+} wxPaperSize;
+
+
+/* Printing orientation */
+enum wxPrintOrientation
+{
+   wxPORTRAIT = 1,
+   wxLANDSCAPE
+};
 
 typedef enum {
     wxDUPLEX_SIMPLEX, // Non-duplex
@@ -1426,9 +1579,17 @@ enum wxItemKind
     wxITEM_NORMAL,
     wxITEM_CHECK,
     wxITEM_RADIO,
+    wxITEM_DROPDOWN,
     wxITEM_MAX
 };
 
+
+enum wxCheckBoxState
+{
+    wxCHK_UNCHECKED,
+    wxCHK_CHECKED,
+    wxCHK_UNDETERMINED /* 3-state checkbox only */
+};
 
 enum wxHitTest
 {
@@ -1466,6 +1627,7 @@ enum wxKeyModifier
     wxMOD_SHIFT,
     wxMOD_META,
     wxMOD_WIN,
+    wxMOD_RAW_CONTROL,
     wxMOD_CMD,
     wxMOD_ALL       
 };
@@ -1479,12 +1641,12 @@ enum wxUpdateUI
 };
 
 
-enum wxNotificationOptions
-{
-    wxNOTIFY_NONE           = 0x0000,
-    wxNOTIFY_ONCE           = 0x0001,
-    wxNOTIFY_REPEAT         = 0x0002
-};
+// enum wxNotificationOptions
+// {
+//     wxNOTIFY_NONE           = 0x0000,
+//     wxNOTIFY_ONCE           = 0x0001,
+//     wxNOTIFY_REPEAT         = 0x0002
+// };
 
 
 enum wxLayoutDirection

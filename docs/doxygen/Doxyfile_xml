@@ -1,0 +1,16 @@
+#############################################################################
+## Name:        Doxyfile.xml
+## Purpose:     Doxygen configuration file for generating XML only
+## Author:      Francesco Montorsi
+## RCS-ID:      $Id: Doxyfile_xml 64940 2010-07-13 13:29:13Z VZ $
+## Licence:     wxWindows licence
+#############################################################################
+
+@INCLUDE = Doxyfile_inc
+
+#---------------------------------------------------------------------------
+# Generation switches
+#---------------------------------------------------------------------------
+
+GENERATE_XML           = YES
+

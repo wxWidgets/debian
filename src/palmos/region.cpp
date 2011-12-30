@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: region.cpp 41429 2006-09-25 11:47:23Z VZ $
+// RCS-ID:      $Id: region.cpp 57915 2009-01-08 16:43:56Z FM $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ wxRegion::wxRegion(const wxRect& rect)
 {
 }
 
-wxRegion::wxRegion(size_t n, const wxPoint *points, int fillStyle)
+wxRegion::wxRegion(size_t n, const wxPoint *points, wxPolygonFillMode fillStyle)
 {
 }
 
@@ -73,12 +73,12 @@ wxRegion::~wxRegion()
 {
 }
 
-wxObjectRefData *wxRegion::CreateRefData() const
+wxGDIRefData *wxRegion::CreateGDIRefData() const
 {
     return NULL;
 }
 
-wxObjectRefData *wxRegion::CloneRefData(const wxObjectRefData *data) const
+wxGDIRefData *wxRegion::CloneGDIRefData(const wxGDIRefData *data) const
 {
     return NULL;
 }

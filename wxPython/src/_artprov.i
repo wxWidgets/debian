@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _artprov.i 43425 2006-11-14 22:03:54Z RD $
+// RCS-ID:      $Id: _artprov.i 66755 2011-01-25 05:51:31Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -31,6 +31,7 @@ MAKE_CONST_WXSTRING(ART_CMN_DIALOG);
 MAKE_CONST_WXSTRING(ART_HELP_BROWSER);
 MAKE_CONST_WXSTRING(ART_MESSAGE_BOX);
 MAKE_CONST_WXSTRING(ART_BUTTON);
+MAKE_CONST_WXSTRING(ART_LIST);
 MAKE_CONST_WXSTRING(ART_OTHER);
 
 // Art IDs
@@ -47,6 +48,8 @@ MAKE_CONST_WXSTRING(ART_GO_UP);
 MAKE_CONST_WXSTRING(ART_GO_DOWN);
 MAKE_CONST_WXSTRING(ART_GO_TO_PARENT);
 MAKE_CONST_WXSTRING(ART_GO_HOME);
+MAKE_CONST_WXSTRING(ART_GOTO_FIRST);
+MAKE_CONST_WXSTRING(ART_GOTO_LAST);
 MAKE_CONST_WXSTRING(ART_FILE_OPEN);
 MAKE_CONST_WXSTRING(ART_FILE_SAVE);
 MAKE_CONST_WXSTRING(ART_FILE_SAVE_AS);
@@ -79,6 +82,9 @@ MAKE_CONST_WXSTRING(ART_DELETE);
 MAKE_CONST_WXSTRING(ART_NEW);
 MAKE_CONST_WXSTRING(ART_UNDO);
 MAKE_CONST_WXSTRING(ART_REDO);
+MAKE_CONST_WXSTRING(ART_PLUS);
+MAKE_CONST_WXSTRING(ART_MINUS);
+MAKE_CONST_WXSTRING(ART_CLOSE);
 MAKE_CONST_WXSTRING(ART_QUIT);
 MAKE_CONST_WXSTRING(ART_FIND);
 MAKE_CONST_WXSTRING(ART_FIND_AND_REPLACE);
@@ -107,6 +113,30 @@ public:
             Py_DECREF(s2);
             if (ro) {
                 if (wxPyConvertSwigPtr(ro, (void**)&ptr, wxT("wxBitmap")))
+                    rval = *ptr;
+                Py_DECREF(ro);
+            }
+        }
+        wxPyEndBlockThreads(blocked);
+        return rval;
+    }
+
+    virtual wxIconBundle CreateIconBundle(const wxArtID& id,
+                                          const wxArtClient& client)
+    {
+        wxIconBundle rval = wxNullIconBundle;
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
+        if ((wxPyCBH_findCallback(m_myInst, "CreateIconBundle"))) {
+            PyObject* ro;
+            wxIconBundle* ptr;
+            PyObject* s1, *s2;
+            s1 = wx2PyString(id);
+            s2 = wx2PyString(client);
+            ro = wxPyCBH_callCallbackObj(m_myInst, Py_BuildValue("(OO)", s1, s2));
+            Py_DECREF(s1);
+            Py_DECREF(s2);
+            if (ro) {
+                if (wxPyConvertSwigPtr(ro, (void**)&ptr, wxT("wxIconBundle")))
                     rval = *ptr;
                 Py_DECREF(ro);
             }
@@ -237,6 +267,7 @@ identical bitmap for different client values!
 MustHaveApp(wxPyArtProvider);
 MustHaveApp(wxPyArtProvider::GetBitmap);
 MustHaveApp(wxPyArtProvider::GetIcon);
+MustHaveApp(wxPyArtProvider::GetBundle);
 
 %rename(ArtProvider) wxPyArtProvider;
 class wxPyArtProvider /*: public wxObject*/
@@ -249,12 +280,24 @@ public:
     
     void _setCallbackInfo(PyObject* self, PyObject* _class);
 
+    DocDeclStr(
+        static bool , HasNativeProvider(),
+        "Does this platform implement native icons theme?", "");
+    
+    
     %disownarg( wxPyArtProvider *provider );
 
     DocDeclStr(
         static void , Push(wxPyArtProvider *provider),
         "Add new provider to the top of providers stack.", "");
     %pythoncode { PushProvider = Push }
+
+     
+    DocDeclStr(
+        static void , PushBack(wxArtProvider *provider),
+        "Add new provider to the bottom of providers stack (i.e. the provider
+will be queried as the last one).", "");
+    
     
     DocDeclStr(
         static void , Insert(wxPyArtProvider *provider),
@@ -287,11 +330,34 @@ wx.NullBitmap if no provider provides it.", "");
 
     DocDeclStr(
         static wxIcon , GetIcon(const wxString& id,
-                          const wxString& client = wxPyART_OTHER,
+                                const wxString& client = wxPyART_OTHER,
                                 const wxSize& size = wxDefaultSize),
         "Query the providers for icon with given ID and return it.  Return
 wx.NullIcon if no provider provides it.", "");
 
+    
+    static wxArtID GetMessageBoxIconId(int flags);
+
+    DocDeclStr(
+        static wxIcon , GetMessageBoxIcon(int flags),
+        "Helper used by several generic classes: return the icon corresponding
+to the standard wx.ICON_INFORMATION/WARNING/ERROR/QUESTION flags (only
+one can be set)", "");
+    
+
+    DocDeclStr(
+        static wxIconBundle , GetIconBundle(const wxArtID& id,
+                                            const wxArtClient& client = wxART_OTHER),
+        "Query the providers for iconbundle with given ID and return it. Return
+wx.NullIconBundle if no provider provides it.", "");
+
+    
+    DocDeclStr(
+        static wxSize , GetNativeSizeHint(const wxArtClient& client),
+        "Gets native size for given 'client' or wxDefaultSize if it doesn't
+have native equivalent.", "");
+    
+    
     DocDeclStr(
         static wxSize , GetSizeHint(const wxString& client, bool platform_dependent = false),
         "Get the size hint of an icon from a specific Art Client, queries the

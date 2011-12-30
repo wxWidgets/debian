@@ -4,7 +4,7 @@
 // Author:      Francesco Montorsi
 // Modified by:
 // Created:     15/04/2006
-// RCS-ID:      $Id: filepickerg.cpp 52835 2008-03-26 15:49:08Z JS $
+// RCS-ID:      $Id: filepickerg.cpp 68921 2011-08-27 14:11:25Z VZ $
 // Copyright:   (c) Francesco Montorsi
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,15 +40,38 @@ IMPLEMENT_DYNAMIC_CLASS(wxGenericDirButton, wxButton)
 // wxGenericFileButton
 // ----------------------------------------------------------------------------
 
-bool wxGenericFileDirButton::Create( wxWindow *parent, wxWindowID id,
-                        const wxString &label, const wxString &path,
-                        const wxString &message, const wxString &wildcard,
-                        const wxPoint &pos, const wxSize &size, long style,
-                        const wxValidator& validator, const wxString &name)
+bool wxGenericFileDirButton::Create(wxWindow *parent,
+                                    wxWindowID id,
+                                    const wxString& label,
+                                    const wxString& path,
+                                    const wxString& message,
+                                    const wxString& wildcard,
+                                    const wxPoint& pos,
+                                    const wxSize& size,
+                                    long style,
+                                    const wxValidator& validator,
+                                    const wxString& name)
 {
+    m_pickerStyle = style;
+
+    // If the special wxPB_SMALL flag is used, ignore the provided label and
+    // use the shortest possible label and the smallest possible button fitting
+    // it.
+    long styleButton = 0;
+    wxString labelButton;
+    if ( m_pickerStyle & wxPB_SMALL )
+    {
+        labelButton = _("...");
+        styleButton = wxBU_EXACTFIT;
+    }
+    else
+    {
+        labelButton = label;
+    }
+
     // create this button
-    if (!wxButton::Create(parent, id, label, pos, size, style,
-                          validator, name))
+    if ( !wxButton::Create(parent, id, labelButton,
+                           pos, size, styleButton, validator, name) )
     {
         wxFAIL_MSG( wxT("wxGenericFileButton creation failed") );
         return false;

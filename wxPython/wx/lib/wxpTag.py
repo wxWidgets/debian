@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     13-Sept-1999
-# RCS-ID:      $Id: wxpTag.py 44433 2007-02-09 23:43:24Z RD $
+# RCS-ID:      $Id: wxpTag.py 63496 2010-02-16 06:47:55Z RD $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -206,12 +206,12 @@ class wxpTagHandler(wx.html.HtmlWinTagHandler):
                 red   = int('0x'+value[1:3], 16)
                 green = int('0x'+value[3:5], 16)
                 blue  = int('0x'+value[5:], 16)
-                value = wx.Color(red, green, blue)
+                value = wx.Colour(red, green, blue)
             except:
                 pass
 
         if self.ctx:
-          self.ctx.kwargs[str(name)] = value
+            self.ctx.kwargs[str(name)] = value
         return False
 
 

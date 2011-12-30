@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _pen.i 41774 2006-10-09 02:36:38Z RD $
+// RCS-ID:      $Id: _pen.i 65979 2010-11-02 02:39:58Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -29,26 +29,76 @@
 %newgroup
 
 
+enum wxPenStyle
+{
+    wxPENSTYLE_INVALID,
+
+    wxPENSTYLE_SOLID,
+    wxPENSTYLE_DOT,
+    wxPENSTYLE_LONG_DASH,
+    wxPENSTYLE_SHORT_DASH,
+    wxPENSTYLE_DOT_DASH,
+    wxPENSTYLE_USER_DASH,
+
+    wxPENSTYLE_TRANSPARENT,
+
+    wxPENSTYLE_STIPPLE_MASK_OPAQUE,
+    wxPENSTYLE_STIPPLE_MASK,
+    wxPENSTYLE_STIPPLE,
+
+    wxPENSTYLE_BDIAGONAL_HATCH,
+    wxPENSTYLE_CROSSDIAG_HATCH,
+    wxPENSTYLE_FDIAGONAL_HATCH,
+    wxPENSTYLE_CROSS_HATCH,
+    wxPENSTYLE_HORIZONTAL_HATCH,
+    wxPENSTYLE_VERTICAL_HATCH,
+
+    wxPENSTYLE_FIRST_HATCH,
+    wxPENSTYLE_LAST_HATCH,
+};
+
+enum wxPenJoin
+{
+    wxJOIN_INVALID,
+
+    wxJOIN_BEVEL,
+    wxJOIN_MITER,
+    wxJOIN_ROUND,
+};
+
+enum wxPenCap
+{
+    wxCAP_INVALID,
+
+    wxCAP_ROUND,
+    wxCAP_PROJECTING,
+    wxCAP_BUTT
+};
+
+
+
+
+
 MustHaveApp(wxPen);
 
 class wxPen : public wxGDIObject {
 public:
-    wxPen(wxColour& colour, int width=1, int style=wxSOLID);
+    wxPen(wxColour& colour, int width=1, wxPenStyle style=wxSOLID);
     ~wxPen();
 
-    int GetCap();
+    wxPenCap GetCap();
     wxColour GetColour();
-    int GetJoin();
-    int GetStyle();
+    wxPenJoin GetJoin();
+    wxPenStyle GetStyle();
     int GetWidth();
 
     bool IsOk();
     %pythoncode { Ok = IsOk }
 
-    void SetCap(int cap_style);
+    void SetCap(wxPenCap cap_style);
     void SetColour(wxColour& colour);
-    void SetJoin(int join_style);
-    void SetStyle(int style);
+    void SetJoin(wxPenJoin join_style);
+    void SetStyle(wxPenStyle style);
     void SetWidth(int width);
 
     void SetDashes(int dashes, wxDash* dashes_array);
@@ -108,7 +158,10 @@ public:
     %property(Stipple, GetStipple, SetStipple, doc="See `GetStipple` and `SetStipple`");
 #endif
 
+    bool IsTransparent() const;
+    bool IsNonTransparent() const;
     
+
     %extend {
         bool __eq__(const wxPen* other) { return other ? (*self == *other) : false; }
         bool __ne__(const wxPen* other) { return other ? (*self != *other) : true;  }

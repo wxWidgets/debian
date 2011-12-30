@@ -4,7 +4,7 @@
 // Author:      Paul Lanier
 // Modified by:
 // Created:     05/25/06
-// RCS-ID:      $Id: pseudodc.h 61290 2009-07-02 17:16:45Z RD $
+// RCS-ID:      $Id: pseudodc.h 61289 2009-07-02 17:16:04Z RD $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -203,7 +203,7 @@ class pdcFloodFillOp : public pdcOp
 {
     public:
         pdcFloodFillOp(wxCoord x, wxCoord y, const wxColour& col,
-                   int style) {m_x=x; m_y=y; m_col=col; m_style=style;}
+                   wxFloodFillStyle style) {m_x=x; m_y=y; m_col=col; m_style=style;}
         virtual void DrawToDC(wxDC *dc, bool grey=false) 
         {
             if (!grey) dc->FloodFill(m_x,m_y,m_col,m_style);
@@ -214,7 +214,7 @@ class pdcFloodFillOp : public pdcOp
     protected:
         wxCoord m_x,m_y;
         wxColour m_col;
-        int m_style;
+        wxFloodFillStyle m_style;
 };
 
 class pdcCrossHairOp : public pdcOp
@@ -357,7 +357,7 @@ class pdcDrawPolygonOp : public pdcOp
     public:
         pdcDrawPolygonOp(int n, wxPoint points[],
                      wxCoord xoffset = 0, wxCoord yoffset = 0,
-                     int fillStyle = wxODDEVEN_RULE);
+                     wxPolygonFillMode fillStyle = wxODDEVEN_RULE);
         virtual ~pdcDrawPolygonOp();
         virtual void DrawToDC(wxDC *dc, bool WXUNUSED(grey)=false) 
             {dc->DrawPolygon(m_n,m_points,m_xoffset,m_yoffset,m_fillStyle);}
@@ -374,7 +374,7 @@ class pdcDrawPolygonOp : public pdcOp
         int m_n;
         wxPoint *m_points;
         wxCoord m_xoffset,m_yoffset;
-        int m_fillStyle;
+        wxPolygonFillMode m_fillStyle;
 };
 
 class pdcDrawPolyPolygonOp : public pdcOp
@@ -382,7 +382,7 @@ class pdcDrawPolyPolygonOp : public pdcOp
     public:
         pdcDrawPolyPolygonOp(int n, int count[], wxPoint points[],
                          wxCoord xoffset = 0, wxCoord yoffset = 0,
-                         int fillStyle = wxODDEVEN_RULE);
+                         wxPolygonFillMode fillStyle = wxODDEVEN_RULE);
         virtual ~pdcDrawPolyPolygonOp();
         virtual void DrawToDC(wxDC *dc, bool WXUNUSED(grey)=false) 
             {dc->DrawPolyPolygon(m_n,m_count,m_points,
@@ -401,7 +401,7 @@ class pdcDrawPolyPolygonOp : public pdcOp
         int *m_count;
         wxPoint *m_points;
         wxCoord m_xoffset, m_yoffset;
-        int m_fillStyle;
+        wxPolygonFillMode m_fillStyle;
 };
 
 class pdcDrawRotatedTextOp : public pdcOp
@@ -498,10 +498,10 @@ class pdcSetPaletteOp : public pdcOp
 class pdcSetLogicalFunctionOp : public pdcOp
 {
     public:
-        pdcSetLogicalFunctionOp(int function) {m_function=function;}
+        pdcSetLogicalFunctionOp(wxRasterOperationMode function) {m_function=function;}
         virtual void DrawToDC(wxDC *dc, bool WXUNUSED(grey)=false) {dc->SetLogicalFunction(m_function);}
     protected:
-        int m_function;
+        wxRasterOperationMode m_function;
 };
 
 //----------------------------------------------------------------------------
@@ -640,10 +640,10 @@ public:
     // Methods mirrored from wxDC
     //
     void FloodFill(wxCoord x, wxCoord y, const wxColour& col,
-                   int style = wxFLOOD_SURFACE)
+                   wxFloodFillStyle style = wxFLOOD_SURFACE)
         {AddToList(new pdcFloodFillOp(x,y,col,style));}
     void FloodFill(const wxPoint& pt, const wxColour& col,
-                   int style = wxFLOOD_SURFACE)
+                   wxFloodFillStyle style = wxFLOOD_SURFACE)
         { FloodFill(pt.x, pt.y, col, style); }
 
     void DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
@@ -682,12 +682,12 @@ public:
 
     void DrawPolygon(int n, wxPoint points[],
                      wxCoord xoffset = 0, wxCoord yoffset = 0,
-                     int fillStyle = wxODDEVEN_RULE)
+                     wxPolygonFillMode fillStyle = wxODDEVEN_RULE)
         {AddToList(new pdcDrawPolygonOp(n,points,xoffset,yoffset,fillStyle));}
 
     void DrawPolyPolygon(int n, int count[], wxPoint points[],
                          wxCoord xoffset = 0, wxCoord yoffset = 0,
-                         int fillStyle = wxODDEVEN_RULE)
+                         wxPolygonFillMode fillStyle = wxODDEVEN_RULE)
         {AddToList(new pdcDrawPolyPolygonOp(n,count,points,xoffset,yoffset,fillStyle));}
 
     void DrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
@@ -784,7 +784,7 @@ public:
         {AddToList(new pdcSetPaletteOp(palette));}
 #endif // wxUSE_PALETTE
 
-    void SetLogicalFunction(int function)
+    void SetLogicalFunction(wxRasterOperationMode function)
         {AddToList(new pdcSetLogicalFunctionOp(function));}
     void SetFont(const wxFont& font) 
         {AddToList(new pdcSetFontOp(font));}

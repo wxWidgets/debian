@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: dcmemory.cpp 42755 2006-10-30 19:41:46Z VZ $
+// RCS-ID:      $Id: dcmemory.cpp 61724 2009-08-21 10:41:26Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,6 +25,7 @@
 #endif
 
 #include "wx/dcmemory.h"
+#include "wx/palmos/dcmemory.h"
 
 #ifndef WX_PRECOMP
     #include "wx/utils.h"
@@ -32,55 +33,61 @@
 #endif
 
 // ----------------------------------------------------------------------------
-// wxWin macros
+// wxMemoryDCImpl
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxMemoryDC, wxDC)
+IMPLEMENT_ABSTRACT_CLASS(wxMemoryDCImpl, wxPalmDCImpl)
 
-// ============================================================================
-// implementation
-// ============================================================================
+wxMemoryDCImpl::wxMemoryDCImpl( wxMemoryDC *owner )
+        : wxPalmDCImpl( owner )
+{
+    CreateCompatible(NULL);
+    Init();
+}
 
-// ----------------------------------------------------------------------------
-// wxMemoryDC
-// ----------------------------------------------------------------------------
+wxMemoryDCImpl::wxMemoryDCImpl( wxMemoryDC *owner, wxBitmap& bitmap )
+        : wxPalmDCImpl( owner )
+{
+    CreateCompatible(NULL);
+    Init();
+    DoSelect(bitmap);
+}
 
-wxMemoryDC::wxMemoryDC(wxDC *dc)
+wxMemoryDCImpl::wxMemoryDCImpl( wxMemoryDC *owner, wxDC *dc )
+        : wxPalmDCImpl( owner )
+{
+    wxCHECK_RET( dc, wxT("NULL dc in wxMemoryDC ctor") );
+
+    CreateCompatible(dc);
+
+    Init();
+}
+
+void wxMemoryDCImpl::Init()
 {
 }
 
-void wxMemoryDC::Init()
+bool wxMemoryDCImpl::CreateCompatible(wxDC *dc)
 {
-}
+    wxDCImpl *impl = dc ? dc->GetImpl() : NULL ;
+    wxPalmDCImpl *msw_impl = wxDynamicCast( impl, wxPalmDCImpl );
+    if ( dc && !msw_impl)
+    {
+        m_ok = false;
+        return false;
+    }
 
-bool wxMemoryDC::CreateCompatible(wxDC *dc)
-{
     return false;
 }
 
-void wxMemoryDC::DoSelect(const wxBitmap& bitmap)
+void wxMemoryDCImpl::DoSelect( const wxBitmap& bitmap )
 {
 }
 
-void wxMemoryDC::DoGetSize(int *width, int *height) const
+void wxMemoryDCImpl::DoGetSize(int *width, int *height) const
 {
 }
 
-// the rest of this file deals with drawing rectangles workaround, disabled by
-// default
-
-#define wxUSE_MEMORY_DC_DRAW_RECTANGLE 0
-
-#if wxUSE_MEMORY_DC_DRAW_RECTANGLE
-
-// For some reason, drawing a rectangle on a memory DC has problems.
-// Use this substitute if we can.
-static void wxDrawRectangle(wxDC& dc, wxCoord x, wxCoord y, wxCoord width, wxCoord height)
-{
-}
-
-#endif // wxUSE_MEMORY_DC_DRAW_RECTANGLE
-
-void wxMemoryDC::DoDrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
+wxBitmap wxMemoryDCImpl::DoGetAsBitmap(const wxRect* subrect) const
 {
 }

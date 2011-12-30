@@ -3,7 +3,7 @@
 # Python Code By:
 #
 # Andrea Gavana, @ 18 Oct 2005
-# Latest Revision: 15 Aug 2010, 15.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List/Caveats
@@ -30,7 +30,7 @@
 # Write To Me At:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
 #
@@ -40,14 +40,14 @@
 
 
 """
-ShapedButton tries to fill the lack of "custom shaped" controls in wxPython
+`ShapedButton` tries to fill the lack of "custom shaped" controls in wxPython
 and it can be used to build round or elliptic-shaped buttons.
 
 
 Description
 ===========
 
-ShapedButton tries to fill the lack of "custom shaped" controls in wxPython
+`ShapedButton` tries to fill the lack of "custom shaped" controls in wxPython
 (that depends on the same lack in wxWidgets). It can be used to build round
 buttons or elliptic buttons.
 
@@ -57,55 +57,72 @@ classes (`GenButton`, `GenBitmapButton`, `GenBitmapTextButton`, `GenToggleButton
 classes (with "Gen" replaced by "S"), with the same event handling, but they
 are rounded/elliptical buttons.
 
-ShapedButton is based on a `wx.Window`, in which 2 images are drawn depending
+`ShapedButton` is based on a `wx.Window`, in which 2 images are drawn depending
 on the button state (pressed or not pressed). The 2 images have been stolen
 from Audacity (written with wxWidgets) and rearranged/reshaped/restyled
 using adobe PhotoShop.
 Changing the button colour in runtime was more difficult, but using some
 intelligent instruction from the PIL library it can be done.
 
-ShapedButton reacts on mouse events *only* if the mouse event occurred inside
-the circle/ellipse, even if ShapedButton is built on a rectangular window.
+`ShapedButton` reacts on mouse events *only* if the mouse event occurred inside
+the circle/ellipse, even if `ShapedButton` is built on a rectangular window.
 This behavior is a lot different with respect to Audacity round buttons.
 
 
 Usage
 =====
 
-The ShapedButton constructions, excluding wxPython parameter are, for the
-6 Classes::
+Usage example::
 
-    MyShapedButton = SButton(parent, label)
+    import wx
+    import wx.lib.agw.shapedbutton as SB
 
-    MyShapedButton = SBitmapButton(parent, bitmap)
+    class MyFrame(wx.Frame):
 
-    MyShapedButton = SBitmapTextButton(parent, bitmap, label)
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "ShapedButton Demo")
 
-    MyShapedButton = SToggleButton(parent, label)
+            panel = wx.Panel(self)
 
-    MyShapedButton = SBitmapToggleButton(parent, bitmap)
+            # Create 2 bitmaps for the button
+            upbmp = wx.Bitmap("play.png", wx.BITMAP_TYPE_PNG)
+            disbmp = wx.Bitmap("playdisabled.png", wx.BITMAP_TYPE_PNG)
+            
+            play = SB.SBitmapToggleButton(panel, -1, upbmp, (100, 50))
+            play.SetUseFocusIndicator(False)
+            play.SetBitmapDisabled(disbmp)
+        
+        
+    # our normal wxApp-derived class, as usual
 
-    MyShapedButton = SBitmapTextToggleButton(parent, bitmap, label)
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
 
 
-The ShapedButton construction and usage is quite similar to the `wx.lib.buttons`
+The `ShapedButton` construction and usage is quite similar to the `wx.lib.buttons`
 implementation.
 
 
 Methods and Settings
 ====================
 
-With ShapedButton you can:
+With `ShapedButton` you can:
 
-- create rounded/elliptical buttons/togglebuttons;
+- Create rounded/elliptical buttons/togglebuttons;
 - Set images for the enabled/disabled/focused/selected state of the button;
 - Draw the focus indicator (or disable it);
 - Set label colour and font;
-- Apply a rotation to the ShapedButton label;
-- Change ShapedButton shape and text orientation in runtime.
+- Apply a rotation to the `ShapedButton` label;
+- Change `ShapedButton` shape and text orientation in runtime.
 
 
-:note: ShapedButton **requires** PIL (Python Imaging Library) library to be installed,
+:note: `ShapedButton` **requires** PIL (Python Imaging Library) library to be installed,
  which can be downloaded from http://www.pythonware.com/products/pil/ .
 
 
@@ -130,9 +147,9 @@ Event Name        Description
 License And Version
 ===================
 
-ShapedButton is distributed under the wxPython license.
+`ShapedButton` is distributed under the wxPython license.
 
-Latest revision: Andrea Gavana @ 15 Aug 2010, 15.00 GMT
+Latest revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.4
 
@@ -144,7 +161,6 @@ Version 0.4
 #----------------------------------------------------------------------
 
 import wx
-from wx.lib import imageutils
 
 # First Check If PIL Is Installed Properly
 try:
@@ -252,7 +268,7 @@ class SButtonEvent(wx.PyCommandEvent):
 #----------------------------------------------------------------------
 
 class SButton(wx.Window):
-    """ This is the main implementation of ShapedButton. """
+    """ This is the main implementation of `ShapedButton`. """
     
     _labeldelta = 1
 
@@ -394,6 +410,8 @@ class SButton(wx.Window):
         """
         Overridden base class virtual. Determines the best size of the button
         based on the label size.
+
+        :note: Overridden from `wx.Window`.
         """
 
         w, h, usemin = self._GetLabelSize()
@@ -906,7 +924,7 @@ class SButton(wx.Window):
 
         if alpha:
             image = apply(wx.EmptyImage, pil.size)
-            image.SetData( pil.convert("RGB").tostring() )
+            image.SetData(pil.convert("RGB").tostring())
             image.SetAlphaData(pil.convert("RGBA").tostring()[3::4])
         else:
             image = wx.EmptyImage(pil.size[0], pil.size[1])
@@ -1065,9 +1083,8 @@ class SBitmapButton(SButton):
         self._bmplabel = bitmap
 
         if bitmap is not None and createothers:
-            image = wx.ImageFromBitmap(bitmap)
-            imageutils.grayOut(image)
-            self.SetBitmapDisabled(wx.BitmapFromImage(image))
+            dis_bitmap = wx.BitmapFromImage(bitmap.ConvertToImage().ConvertToGreyscale())
+            self.SetBitmapDisabled(dis_bitmap)
 
 
     def _GetLabelSize(self):
@@ -1368,7 +1385,7 @@ class __SToggleMixin(object):
 #----------------------------------------------------------------------
 
 class SToggleButton(__SToggleMixin, SButton):
-    """ A ShapedButton toggle button. """
+    """ A `ShapedButton` toggle button. """
     pass
 
 
@@ -1377,7 +1394,7 @@ class SToggleButton(__SToggleMixin, SButton):
 #----------------------------------------------------------------------
 
 class SBitmapToggleButton(__SToggleMixin, SBitmapButton):
-    """ A ShapedButton toggle bitmap button. """
+    """ A `ShapedButton` toggle bitmap button. """
     pass
 
 
@@ -1386,7 +1403,7 @@ class SBitmapToggleButton(__SToggleMixin, SBitmapButton):
 #----------------------------------------------------------------------
 
 class SBitmapTextToggleButton(__SToggleMixin, SBitmapTextButton):
-    """ A ShapedButton toggle bitmap button with a text label. """
+    """ A `ShapedButton` toggle bitmap button with a text label. """
     pass
 
 

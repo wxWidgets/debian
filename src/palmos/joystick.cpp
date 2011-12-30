@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: joystick.cpp 39021 2006-05-04 07:57:04Z ABX $
+// RCS-ID:      $Id: joystick.cpp 44843 2007-03-16 00:51:43Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,6 +33,18 @@ wxJoystick::wxJoystick(int joystick)
 wxPoint wxJoystick::GetPosition() const
 {
     return wxPoint(0, 0);
+}
+
+int wxJoystick::GetPosition(unsigned axis) const
+{
+    // TODO
+    return 0;
+}
+
+bool wxJoystick::GetButtonState(unsigned id) const
+{
+    // TODO
+    return false;
 }
 
 int wxJoystick::GetZPosition() const

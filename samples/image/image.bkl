@@ -1,22 +1,22 @@
 <?xml version="1.0" ?>
-<!-- $Id: image.bkl 42799 2006-10-31 00:35:09Z VZ $ -->
+<!-- $Id: image.bkl 65073 2010-07-24 11:49:05Z VZ $ -->
 
 <makefile>
 
     <include file="../../build/bakefiles/common_samples.bkl"/>
 
     <exe id="image" template="wx_sample" template_append="wx_append">
-        <sources>image.cpp</sources>
+        <sources>image.cpp canvas.cpp</sources>
+        <headers>canvas.h</headers>
         <wx-lib>core</wx-lib>
         <wx-lib>base</wx-lib>
-        <win32-res>image.rc</win32-res>
     </exe>
 
     <wx-data id="data">
         <files>
             horse.png horse.jpg horse.bmp horse.gif horse.pcx horse.pnm horse_ag.pnm horse_rg.pnm
             horse.tif horse.tga horse.xpm horse.cur horse.ico horse3.ani
-            smile.xbm toucan.png cmyk.jpg
+            smile.xbm toucan.png cmyk.jpg cursor.png
         </files>
     </wx-data>
 

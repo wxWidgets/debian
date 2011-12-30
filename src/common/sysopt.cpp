@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2001-07-10
-// RCS-ID:      $Id: sysopt.cpp 39851 2006-06-27 14:33:14Z VZ $
+// RCS-ID:      $Id: sysopt.cpp 67280 2011-03-22 14:17:38Z DS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -76,23 +76,24 @@ wxString wxSystemOptions::GetOption(const wxString& name)
     {
         val = gs_optionValues[idx];
     }
-    else // not set explicitely
+    else // not set explicitly
     {
         // look in the environment: first for a variable named "wx_appname_name"
         // which can be set to affect the behaviour or just this application
         // and then for "wx_name" which can be set to change the option globally
         wxString var(name);
-        var.Replace(_T("."), _T("_"));  // '.'s not allowed in env var names
+        var.Replace(wxT("."), wxT("_"));  // '.'s not allowed in env var names
+        var.Replace(wxT("-"), wxT("_"));  // and neither are '-'s
 
         wxString appname;
         if ( wxTheApp )
             appname = wxTheApp->GetAppName();
 
         if ( !appname.empty() )
-            val = wxGetenv(_T("wx_") + appname + _T('_') + var);
+            val = wxGetenv(wxT("wx_") + appname + wxT('_') + var);
 
         if ( val.empty() )
-            val = wxGetenv(_T("wx_") + var);
+            val = wxGetenv(wxT("wx_") + var);
     }
 
     return val;
@@ -100,7 +101,12 @@ wxString wxSystemOptions::GetOption(const wxString& name)
 
 int wxSystemOptions::GetOptionInt(const wxString& name)
 {
-    return wxAtoi(GetOption(name));
+#ifdef _PACC_VER
+    // work around the PalmOS pacc compiler bug
+    return wxAtoi (GetOption(name).data());
+#else
+    return wxAtoi (GetOption(name));
+#endif
 }
 
 bool wxSystemOptions::HasOption(const wxString& name)

@@ -3,7 +3,7 @@
 # Ported And Enhanced From wxWidgets Contribution (Aj Bommarito) By:
 #
 # Andrea Gavana, @ 16 September 2005
-# Latest Revision: 28 Nov 2010, 16.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO/Caveats List
@@ -15,7 +15,7 @@
 # Write To Me At:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
 #
@@ -47,6 +47,48 @@ It has 2 main styles:
 Both styles support the setting of ToasterBox position (on screen coordinates),
 size, the time after which the ToasterBox is destroyed (linger), and the scroll
 speed of ToasterBox.
+
+
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.toasterbox as TB
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "ToasterBox Demo")
+
+            toaster = TB.ToasterBox(self, tbstyle=TB.TB_COMPLEX)
+            toaster.SetPopupPauseTime(3000)
+
+            tbpanel = toaster.GetToasterBoxWindow()
+            panel = wx.Panel(tbpanel, -1)
+            sizer = wx.BoxSizer(wx.VERTICAL)
+
+            button = wx.Button(panel, wx.ID_ANY, "Simple button")
+            sizer.Add(button, 0, wx.EXPAND)
+
+            panel.SetSizer(sizer)
+            toaster.AddPanel(panel)
+
+            wx.CallLater(1000, toaster.Play)
+
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
 
 
 Supported Platforms
@@ -87,7 +129,7 @@ License And Version
 
 ToasterBox is distributed under the wxPython license.
 
-Latest revision: Andrea Gavana @ 28 Nov 2010, 16.00 GMT
+Latest revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.3
 
@@ -108,7 +150,7 @@ TB_COMPLEX = 2
 """ to it a dummy frame and a wx.Panel. See the demo for details. """
 TB_DEFAULT_STYLE = wx.SIMPLE_BORDER | wx.STAY_ON_TOP | wx.FRAME_NO_TASKBAR
 """ Default window style for `ToasterBox`, with no caption nor close box. """
-TB_CAPTION = TB_DEFAULT_STYLE | wx.CAPTION | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.FRAME_TOOL_WINDOW
+TB_CAPTION = TB_DEFAULT_STYLE | wx.CAPTION | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.FRAME_NO_TASKBAR
 """ `ToasterBox` will have a caption, with the possibility to set a title """ \
 """ for the `ToasterBox` frame, and a close box. """
 TB_ONTIME = 1
@@ -957,8 +999,9 @@ class ToasterBoxWindow(wx.Frame):
     def NotifyTimer(self, event):
         """ Hides gradually the L{ToasterBoxWindow}. """
 
-        self.showtime.Stop()
-        del self.showtime
+        if self._scrollType != TB_SCR_TYPE_FADE:
+            self.showtime.Stop()
+            del self.showtime
 
         self._direction = wx.DOWN
         self.SetupPositions()

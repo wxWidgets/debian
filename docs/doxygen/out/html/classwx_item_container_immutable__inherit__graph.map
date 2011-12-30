@@ -1,0 +1,12 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classwx_item_container.html" title="This class is an abstract base class for some wxWidgets controls which contain several items such as ..." alt="" coords="161,86,279,117"/>
+<area shape="rect" id="node21" href="$classwx_radio_box.html" title="A radio box item is used to select one of number of mutually exclusive choices." alt="" coords="303,86,396,117"/>
+<area shape="rect" id="node5" href="$classwx_combo_box.html" title="A combobox is like a combination of an edit control and a listbox." alt="" coords="25,166,127,197"/>
+<area shape="rect" id="node9" href="$classwx_control_with_items.html" title="This is convenience class that derives from both wxControl and wxItemContainer." alt="" coords="151,166,289,197"/>
+<area shape="rect" id="node19" href="$classwx_simple_html_list_box.html" title="wxSimpleHtmlListBox is an implementation of wxHtmlListBox which shows HTML content in the listbox row..." alt="" coords="313,166,463,197"/>
+<area shape="rect" id="node7" href="$classwx_bitmap_combo_box.html" title="A combobox that displays bitmap in front of the list items." alt="" coords="5,246,147,277"/>
+<area shape="rect" id="node11" href="$classwx_choice.html" title="A choice item is used to select one of a list of strings." alt="" coords="176,246,253,277"/>
+<area shape="rect" id="node13" href="$classwx_list_box.html" title="A listbox is used to select one or more of a list of strings." alt="" coords="277,246,360,277"/>
+<area shape="rect" id="node15" href="$classwx_check_list_box.html" title="A wxCheckListBox is like a wxListBox, but allows items to be checked or unchecked." alt="" coords="260,326,377,357"/>
+<area shape="rect" id="node17" href="$classwx_rearrange_list.html" title="A listbox&#45;like control allowing the user to rearrange the items and to enable or disable them..." alt="" coords="260,406,377,437"/>
+</map>

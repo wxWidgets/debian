@@ -7,7 +7,7 @@
 #
 # Author:      Mike Fletcher
 #
-# RCS-ID:      $Id: filebrowsebutton.py 67476 2011-04-13 18:24:22Z RD $
+# RCS-ID:      $Id: filebrowsebutton.py 65245 2010-08-11 01:56:28Z RD $
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------

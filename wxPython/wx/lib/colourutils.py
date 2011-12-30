@@ -1,14 +1,24 @@
 """
-Some useful colour-realted utility functions
+Some useful colour-realted utility functions.
+
 """
+
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id:  $"
+__revision__ = "$Revision:  $"
 
 import wx
 
 # Used on OSX to get access to carbon api constants
 if wx.Platform == '__WXMAC__':
-    import Carbon.Appearance
+    try:
+        import Carbon.Appearance
+    except ImportError:
+        CARBON = False
+    else:
+        CARBON = True
 
-
+#-----------------------------------------------------------------------------#
 
 def AdjustAlpha(colour, alpha):
     """Adjust the alpha of a given colour"""
@@ -19,7 +29,7 @@ def AdjustColour(color, percent, alpha=wx.ALPHA_OPAQUE):
     """ Brighten/Darken input colour by percent and adjust alpha
     channel if needed. Returns the modified color.
     @param color: color object to adjust
-    @type color: wx.Color
+    @type color: wx.Colour
     @param percent: percent to adjust +(brighten) or -(darken)
     @type percent: int
     @keyword alpha: amount to adjust alpha channel
@@ -59,17 +69,21 @@ def BestLabelColour(color, bw=False):
         else: txt_color = AdjustColour(color, 95)
     return txt_color
 
-
 def GetHighlightColour():
     """Get the default highlight color
-    @return: wx.Color
+    @return: wx.Colour
 
     """
     if wx.Platform == '__WXMAC__':
-        brush = wx.Brush(wx.BLACK)
-        # kThemeBrushButtonPressedLightHighlight
-        brush.MacSetTheme(Carbon.Appearance.kThemeBrushFocusHighlight)
-        return brush.GetColour()
-    else:
-        return wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT)
+        if CARBON:
+            if wx.VERSION < (2, 9, 0, 0, ''):
+                # kThemeBrushButtonPressedLightHighlight
+                brush = wx.Brush(wx.BLACK)
+                brush.MacSetTheme(Carbon.Appearance.kThemeBrushFocusHighlight)
+                return brush.GetColour()
+            else:
+                color = wx.MacThemeColour(Carbon.Appearance.kThemeBrushFocusHighlight)
+                return color
 
+    # Fallback to text highlight color
+    return wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT)

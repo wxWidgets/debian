@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _textctrl.i 43586 2006-11-22 00:01:08Z RD $
+// RCS-ID:      $Id: _textctrl.i 65979 2010-11-02 02:39:58Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -70,6 +70,12 @@ enum {
 
 %pythoncode { TE_LINEWRAP = TE_CHARWRAP }
 
+// deprecated synonymns
+%pythoncode {
+PROCESS_ENTER = TE_PROCESS_ENTER
+PASSWORD = TE_PASSWORD
+}
+
 
 
 enum wxTextAttrAlignment
@@ -82,7 +88,7 @@ enum wxTextAttrAlignment
     wxTEXT_ALIGNMENT_JUSTIFIED
 };
 
-enum {
+enum wxTextAttrFlags {
     // Flags to indicate which attributes are being applied
     wxTEXT_ATTR_TEXT_COLOUR,
     wxTEXT_ATTR_BACKGROUND_COLOUR,
@@ -91,20 +97,88 @@ enum {
     wxTEXT_ATTR_FONT_WEIGHT,
     wxTEXT_ATTR_FONT_ITALIC,
     wxTEXT_ATTR_FONT_UNDERLINE,
+    wxTEXT_ATTR_FONT_ENCODING,
+    wxTEXT_ATTR_FONT_FAMILY,
+
     wxTEXT_ATTR_FONT,
     wxTEXT_ATTR_ALIGNMENT,
     wxTEXT_ATTR_LEFT_INDENT,
     wxTEXT_ATTR_RIGHT_INDENT,
-    wxTEXT_ATTR_TABS
+    wxTEXT_ATTR_TABS,
+
+    wxTEXT_ATTR_PARA_SPACING_AFTER,
+    wxTEXT_ATTR_LINE_SPACING,
+    wxTEXT_ATTR_CHARACTER_STYLE_NAME,
+    wxTEXT_ATTR_PARAGRAPH_STYLE_NAME,
+    wxTEXT_ATTR_LIST_STYLE_NAME,
+    wxTEXT_ATTR_BULLET_STYLE,
+    wxTEXT_ATTR_BULLET_NUMBER,
+    wxTEXT_ATTR_BULLET_TEXT,
+    wxTEXT_ATTR_BULLET_NAME,
+    wxTEXT_ATTR_BULLET,
+    
+    wxTEXT_ATTR_URL,
+    wxTEXT_ATTR_PAGE_BREAK,
+    wxTEXT_ATTR_EFFECTS,
+    wxTEXT_ATTR_OUTLINE_LEVEL,
+
+    wxTEXT_ATTR_CHARACTER,
+    wxTEXT_ATTR_PARAGRAPH,
+    wxTEXT_ATTR_ALL,
 };
 
-enum wxTextCtrlHitTestResult
-{
-    wxTE_HT_UNKNOWN = -2,   // this means HitTest() is simply not implemented
-    wxTE_HT_BEFORE,         // either to the left or upper
-    wxTE_HT_ON_TEXT,        // directly on
-    wxTE_HT_BELOW,          // below [the last line]
-    wxTE_HT_BEYOND          // after [the end of line]
+
+/*!
+ * Styles for wxTextAttr::SetBulletStyle
+ */
+enum wxTextAttrBulletStyle {
+    wxTEXT_ATTR_BULLET_STYLE_NONE,
+    wxTEXT_ATTR_BULLET_STYLE_ARABIC,
+    wxTEXT_ATTR_BULLET_STYLE_LETTERS_UPPER,
+    wxTEXT_ATTR_BULLET_STYLE_LETTERS_LOWER,
+    wxTEXT_ATTR_BULLET_STYLE_ROMAN_UPPER,
+    wxTEXT_ATTR_BULLET_STYLE_ROMAN_LOWER,
+    wxTEXT_ATTR_BULLET_STYLE_SYMBOL,
+    wxTEXT_ATTR_BULLET_STYLE_BITMAP,
+    wxTEXT_ATTR_BULLET_STYLE_PARENTHESES,
+    wxTEXT_ATTR_BULLET_STYLE_PERIOD,
+    wxTEXT_ATTR_BULLET_STYLE_STANDARD,
+    wxTEXT_ATTR_BULLET_STYLE_RIGHT_PARENTHESIS,
+    wxTEXT_ATTR_BULLET_STYLE_OUTLINE,
+
+    wxTEXT_ATTR_BULLET_STYLE_ALIGN_LEFT,
+    wxTEXT_ATTR_BULLET_STYLE_ALIGN_RIGHT,
+    wxTEXT_ATTR_BULLET_STYLE_ALIGN_CENTRE,
+};
+
+
+
+/*!
+ * Styles for wxTextAttr::SetTextEffects
+ */
+enum wxTextAttrEffects {
+    wxTEXT_ATTR_EFFECT_NONE,
+    wxTEXT_ATTR_EFFECT_CAPITALS,
+    wxTEXT_ATTR_EFFECT_SMALL_CAPITALS,
+    wxTEXT_ATTR_EFFECT_STRIKETHROUGH,
+    wxTEXT_ATTR_EFFECT_DOUBLE_STRIKETHROUGH,
+    wxTEXT_ATTR_EFFECT_SHADOW,
+    wxTEXT_ATTR_EFFECT_EMBOSS,
+    wxTEXT_ATTR_EFFECT_OUTLINE,
+    wxTEXT_ATTR_EFFECT_ENGRAVE,
+    wxTEXT_ATTR_EFFECT_SUPERSCRIPT,
+    wxTEXT_ATTR_EFFECT_SUBSCRIPT,
+};
+
+
+
+/*!
+ * Line spacing values
+ */
+enum wxTextAttrLineSpacing {
+    wxTEXT_ATTR_LINE_SPACING_NORMAL,
+    wxTEXT_ATTR_LINE_SPACING_HALF,
+    wxTEXT_ATTR_LINE_SPACING_TWICE,
 };
 
 
@@ -115,54 +189,86 @@ enum {
     wxTEXT_TYPE_ANY
 };
 
+enum wxFontStyle;
+enum wxFontWeight;
+enum wxFontEncoding;
+enum wxFontFamily;
+
 //---------------------------------------------------------------------------
 
 // wxTextAttr: a structure containing the visual attributes of a text
 class wxTextAttr
 {
-public:    
+public:
     wxTextAttr(const wxColour& colText = wxNullColour,
                const wxColour& colBack = wxNullColour,
                const wxFont& font = wxNullFont,
                wxTextAttrAlignment alignment = wxTEXT_ALIGNMENT_DEFAULT);
     ~wxTextAttr();
-    
+
     // operations
     void Init();
 
-    // merges the attributes of the base and the overlay objects and returns
-    // the result; the parameter attributes take precedence
-    //
-    // WARNING: the order of arguments is the opposite of Combine()
-    static wxTextAttr Merge(const wxTextAttr& base, const wxTextAttr& overlay);
-    
-//     // merges the attributes of this object and overlay
-//     void Merge(const wxTextAttr& overlay);
+    void Copy(const wxTextAttr& attr);
+
+    // Partial equality test
+    bool EqPartial(const wxTextAttr& attr) const;
+
+    // Get attributes from font.
+    bool GetFontAttributes(const wxFont& font, int flags = wxTEXT_ATTR_FONT);
 
     
     // setters
     void SetTextColour(const wxColour& colText);
     void SetBackgroundColour(const wxColour& colBack);
-    void SetFont(const wxFont& font, long flags = wxTEXT_ATTR_FONT);
     void SetAlignment(wxTextAttrAlignment alignment);
     void SetTabs(const wxArrayInt& tabs);
     void SetLeftIndent(int indent, int subIndent=0);
     void SetRightIndent(int indent);
+
+    void SetFontSize(int pointSize);
+    void SetFontStyle(wxFontStyle fontStyle);
+    void SetFontWeight(wxFontWeight fontWeight);
+    void SetFontFaceName(const wxString& faceName);
+    void SetFontUnderlined(bool underlined);
+    void SetFontEncoding(wxFontEncoding encoding);
+    void SetFontFamily(wxFontFamily family);
+    void SetFont(const wxFont& font, int flags = wxTEXT_ATTR_FONT);
+    
     void SetFlags(long flags);
 
-    // accessors
-    bool HasTextColour() const;
-    bool HasBackgroundColour() const;
-    bool HasFont() const;
-    bool HasAlignment() const;
-    bool HasTabs() const;
-    bool HasLeftIndent() const;
-    bool HasRightIndent() const;
-    bool HasFlag(long flag) const;
+    void SetCharacterStyleName(const wxString& name);
+    void SetParagraphStyleName(const wxString& name);
+    void SetListStyleName(const wxString& name);
+    void SetParagraphSpacingAfter(int spacing);
+    void SetParagraphSpacingBefore(int spacing);
+    void SetLineSpacing(int spacing);
+    void SetBulletStyle(int style);
+    void SetBulletNumber(int n);
+    void SetBulletText(const wxString& text);
+    void SetBulletFont(const wxString& bulletFont);
+    void SetBulletName(const wxString& name);
+    void SetURL(const wxString& url);
+    void SetPageBreak(bool pageBreak = true);
+    void SetTextEffects(int effects);
+    void SetTextEffectFlags(int effects);
+    void SetOutlineLevel(int level);
 
+
+    
+//     // accessors
+//     bool HasTextColour() const;
+//     bool HasBackgroundColour() const;
+//     bool HasFont() const;
+//     bool HasAlignment() const;
+//     bool HasTabs() const;
+//     bool HasLeftIndent() const;
+//     bool HasRightIndent() const;
+//     bool HasFlag(long flag) const;
+
+    
     const wxColour& GetTextColour() const;
     const wxColour& GetBackgroundColour() const;
-    const wxFont& GetFont() const;
     wxTextAttrAlignment GetAlignment() const;
     const wxArrayInt& GetTabs() const;
     long GetLeftIndent() const;
@@ -170,9 +276,91 @@ public:
     long GetRightIndent() const;
     long GetFlags() const;
 
+    int GetFontSize() const;
+    int GetFontStyle() const;
+    int GetFontWeight() const;
+    bool GetFontUnderlined() const;
+    const wxString& GetFontFaceName() const;
+    wxFontEncoding GetFontEncoding() const;
+    wxFontFamily GetFontFamily() const;
+    
+    wxFont GetFont() const;
+    %pythoncode { CreateFont = GetFont }
+    
+    const wxString& GetCharacterStyleName() const;
+    const wxString& GetParagraphStyleName() const;
+    const wxString& GetListStyleName() const;
+    int GetParagraphSpacingAfter() const;
+    int GetParagraphSpacingBefore() const;
+    int GetLineSpacing() const;
+    int GetBulletStyle() const;
+    int GetBulletNumber() const;
+    const wxString& GetBulletText() const;
+    const wxString& GetBulletFont() const;
+    const wxString& GetBulletName() const;
+    const wxString& GetURL() const;
+    int GetTextEffects() const;
+    int GetTextEffectFlags() const;
+    int GetOutlineLevel() const;
+
+    // accessors
+    bool HasTextColour() const;
+    bool HasBackgroundColour() const;
+    bool HasAlignment() const;
+    bool HasTabs() const;
+    bool HasLeftIndent() const;
+    bool HasRightIndent() const;
+    bool HasFontWeight() const;
+    bool HasFontSize() const;
+    bool HasFontItalic() const;
+    bool HasFontUnderlined() const;
+    bool HasFontFaceName() const;
+    bool HasFontEncoding() const;
+    bool HasFontFamily() const;
+    bool HasFont() const;
+
+    bool HasParagraphSpacingAfter() const;
+    bool HasParagraphSpacingBefore() const;
+    bool HasLineSpacing() const;
+    bool HasCharacterStyleName() const;
+    bool HasParagraphStyleName() const;
+    bool HasListStyleName() const;
+    bool HasBulletStyle() const;
+    bool HasBulletNumber() const;
+    bool HasBulletText() const;
+    bool HasBulletName() const;
+    bool HasURL() const;
+    bool HasPageBreak() const;
+    bool HasTextEffects() const;
+    bool HasTextEffect(int effect) const;
+    bool HasOutlineLevel() const;
+
+    bool HasFlag(long flag) const;
+    void RemoveFlag(long flag);
+    void AddFlag(long flag);
+
+    // Is this a character style?
+    bool IsCharacterStyle() const;
+    bool IsParagraphStyle() const;
+
+    
     // returns False if we have any attributes set, True otherwise
     bool IsDefault() const;
 
+    // Merges the given attributes. Does not affect 'this'. If compareWith
+    // is non-NULL, then it will be used to mask out those attributes that are the same in style
+    // and compareWith, for situations where we don't want to explicitly set inherited attributes.
+    bool Apply(const wxTextAttr& style, const wxTextAttr* compareWith = NULL);
+
+//     // merges the attributes of the base and the overlay objects and returns
+//     // the result; the parameter attributes take precedence
+//     //
+//     // WARNING: the order of arguments is the opposite of Combine()
+//     static wxTextAttr Merge(const wxTextAttr& base, const wxTextAttr& overlay);
+
+    // merges the attributes of this object and overlay
+    void Merge(const wxTextAttr& overlay);
+    
     // return the attribute having the valid font and colours: it uses the
     // attributes set in attr and falls back first to attrDefault and then to
     // the text control font/colours for those attributes which are not set
@@ -180,15 +368,53 @@ public:
                               const wxTextAttr& attrDef,
                               const wxTextCtrl *text);
 
-    %property(Alignment, GetAlignment, SetAlignment, doc="See `GetAlignment` and `SetAlignment`");
-    %property(BackgroundColour, GetBackgroundColour, SetBackgroundColour, doc="See `GetBackgroundColour` and `SetBackgroundColour`");
-    %property(Flags, GetFlags, SetFlags, doc="See `GetFlags` and `SetFlags`");
-    %property(Font, GetFont, SetFont, doc="See `GetFont` and `SetFont`");
-    %property(LeftIndent, GetLeftIndent, SetLeftIndent, doc="See `GetLeftIndent` and `SetLeftIndent`");
-    %property(LeftSubIndent, GetLeftSubIndent, doc="See `GetLeftSubIndent`");
-    %property(RightIndent, GetRightIndent, SetRightIndent, doc="See `GetRightIndent` and `SetRightIndent`");
-    %property(Tabs, GetTabs, SetTabs, doc="See `GetTabs` and `SetTabs`");
-    %property(TextColour, GetTextColour, SetTextColour, doc="See `GetTextColour` and `SetTextColour`");
+    // Compare tabs
+    static bool TabsEq(const wxArrayInt& tabs1, const wxArrayInt& tabs2);
+
+    // Remove attributes
+    static bool RemoveStyle(wxTextAttr& destStyle, const wxTextAttr& style);
+
+    // Combine two bitlists, specifying the bits of interest with separate flags.
+    static bool CombineBitlists(int& valueA, int valueB, int& flagsA, int flagsB);
+
+    // Compare two bitlists
+    static bool BitlistsEqPartial(int valueA, int valueB, int flags);
+
+    // Split into paragraph and character styles
+    static bool SplitParaCharStyles(const wxTextAttr& style, wxTextAttr& parStyle, wxTextAttr& charStyle);
+    
+    
+    %property(Alignment, GetAlignment, SetAlignment);
+    %property(BackgroundColour, GetBackgroundColour, SetBackgroundColour);
+    %property(Flags, GetFlags, SetFlags);
+    %property(Font, GetFont, SetFont);
+    %property(LeftIndent, GetLeftIndent, SetLeftIndent);
+    %property(LeftSubIndent, GetLeftSubIndent);
+    %property(RightIndent, GetRightIndent, SetRightIndent);
+    %property(Tabs, GetTabs, SetTabs);
+    %property(TextColour, GetTextColour, SetTextColour);
+    %property(FontSize, GetFontSize, SetFontSize);
+    %property(FontStyle, GetFontStyle, SetFontStyle);
+    %property(FontWeight, GetFontWeight, SetFontWeight);
+    %property(FontUnderlined, GetFontUnderlined, SetFontUnderlined);
+    %property(FontFaceName, GetFontFaceName, SetFontFaceName);
+    %property(FontEncoding, GetFontEncoding, SetFontEncoding);
+    %property(FontFamily, GetFontFamily, SetFontFamily);
+    %property(CharacterStyleName, GetCharacterStyleName, SetCharacterStyleName);
+    %property(ParagraphStyleName, GetParagraphStyleName, SetParagraphStyleName);
+    %property(ListStyleName, GetListStyleName, SetListStyleName);
+    %property(ParagraphSpacingAfter, GetParagraphSpacingAfter, SetParagraphSpacingAfter);
+    %property(ParagraphSpacingBefore, GetParagraphSpacingBefore, SetParagraphSpacingBefore);
+    %property(LineSpacing, GetLineSpacing, SetLineSpacing);
+    %property(BulletStyle, GetBulletStyle, SetBulletStyle);
+    %property(BulletNumber, GetBulletNumber, SetBulletNumber);
+    %property(BulletText, GetBulletText, SetBulletText);
+    %property(BulletFont, GetBulletFont, SetBulletFont);
+    %property(BulletName, GetBulletName, SetBulletName);
+    %property(URL, GetURL, SetURL);
+    %property(TextEffects, GetTextEffects, SetTextEffects);
+    %property(TextEffectFlags, GetTextEffectFlags, SetTextEffectFlags);
+    %property(OutlineLevel, GetOutlineLevel, SetOutlineLevel);
 };
 
 //---------------------------------------------------------------------------
@@ -196,7 +422,7 @@ public:
 // wxTextCtrl: a single or multiple line text zone where user can enter and
 // edit text
 MustHaveApp(wxTextCtrl);
-class wxTextCtrl : public wxControl
+class wxTextCtrl : public wxTextCtrlBase
 {
 public:
     %pythonAppend wxTextCtrl         "self._setOORInfo(self)"
@@ -223,127 +449,17 @@ public:
                const wxValidator& validator = wxDefaultValidator,
                const wxString& name = wxPyTextCtrlNameStr);
 
-    
-    virtual wxString GetValue() const;
-    virtual void SetValue(const wxString& value);
-
-    virtual bool IsEmpty() const;
-
-    virtual void ChangeValue(const wxString &value);
-    
-    virtual wxString GetRange(long from, long to) const;
-
-    virtual int GetLineLength(long lineNo) const;
-    virtual wxString GetLineText(long lineNo) const;
-    virtual int GetNumberOfLines() const;
-
-    virtual bool IsModified() const;
-    virtual bool IsEditable() const;
 
     // more readable flag testing methods
     bool IsSingleLine() const;
     bool IsMultiLine() const;
 
 
-    DocDeclAStr(
-        virtual void, GetSelection(long* OUTPUT, long* OUTPUT) const,
-        "GetSelection() -> (from, to)",
-        "If the return values from and to are the same, there is no selection.", "");
-
-    virtual wxString GetStringSelection() const;
-
-
-    // editing
-    virtual void Clear();
-    virtual void Replace(long from, long to, const wxString& value);
-    virtual void Remove(long from, long to);
-
-    // load/save the controls contents from/to the file
-    virtual bool LoadFile(const wxString& file, int fileType = wxTEXT_TYPE_ANY);
-    virtual bool SaveFile(const wxString& file = wxPyEmptyString, int fileType = wxTEXT_TYPE_ANY);
-
-    // sets/clears the dirty flag
-    virtual void MarkDirty();
-    virtual void DiscardEdits();
-    void SetModified(bool modified);
-    
-    // set the max number of characters which may be entered in a single line
-    // text control
-    virtual void SetMaxLength(unsigned long len);
-
-    // writing text inserts it at the current position, appending always
-    // inserts it at the end
-    virtual void WriteText(const wxString& text);
-    virtual void AppendText(const wxString& text);
-
     // insert the character which would have resulted from this key event,
     // return True if anything has been inserted
     virtual bool EmulateKeyPress(const wxKeyEvent& event);
 
-    // text control under some platforms supports the text styles: these
-    // methods allow to apply the given text style to the given selection or to
-    // set/get the style which will be used for all appended text
-    virtual bool SetStyle(long start, long end, const wxTextAttr& style);
-    virtual bool GetStyle(long position, wxTextAttr& style);
-    virtual bool SetDefaultStyle(const wxTextAttr& style);
-    virtual const wxTextAttr& GetDefaultStyle() const;
 
-    // translate between the position (which is just an index in the text ctrl
-    // considering all its contents as a single strings) and (x, y) coordinates
-    // which represent column and line.
-    virtual long XYToPosition(long x, long y) const;
-    DocDeclA(
-        virtual /*bool*/ void, PositionToXY(long pos, long *OUTPUT, long *OUTPUT) const,
-        "PositionToXY(long pos) -> (x, y)");
-
-    virtual void ShowPosition(long pos);
-
-
-    DocDeclAStr(
-        virtual wxTextCtrlHitTestResult, HitTest(const wxPoint& pt,
-                                                 long* OUTPUT, long* OUTPUT) const,
-        "HitTest(Point pt) -> (result, col, row)",
-        "Find the row, col coresponding to the character at the point given in
-pixels. NB: pt is in device coords but is not adjusted for the client
-area origin nor scrolling.", "");
-
-
-    DocDeclAStrName(
-        virtual wxTextCtrlHitTestResult , HitTest(const wxPoint& pt, long *OUTPUT) const,
-        "HitTestPos(Point pt) -> (result, position)",
-        "Find the character position in the text coresponding to the point
-given in pixels. NB: pt is in device coords but is not adjusted for
-the client area origin nor scrolling. ", "",
-        HitTestPos);
-
-    
-    
-    // Clipboard operations
-    virtual void Copy();
-    virtual void Cut();
-    virtual void Paste();
-
-    virtual bool CanCopy() const;
-    virtual bool CanCut() const;
-    virtual bool CanPaste() const;
-
-    // Undo/redo
-    virtual void Undo();
-    virtual void Redo();
-
-    virtual bool CanUndo() const;
-    virtual bool CanRedo() const;
-
-    // Insertion point
-    virtual void SetInsertionPoint(long pos);
-    virtual void SetInsertionPointEnd();
-    virtual long GetInsertionPoint() const;
-    virtual long GetLastPosition() const;
-
-    virtual void SetSelection(long from, long to);
-    virtual void SelectAll();
-    virtual void SetEditable(bool editable);
-    
 #ifdef __WXMAC__
     virtual void MacCheckSpelling(bool check);
 #else
@@ -368,23 +484,10 @@ the client area origin nor scrolling. ", "",
         }
     }
 
-    // TODO: replace this when the method is really added to wxTextCtrl
-    %extend {
-        wxString GetString(long from, long to) {
-            return self->GetValue().Mid(from, to - from);
-        }
-    }
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
 
-    %property(DefaultStyle, GetDefaultStyle, SetDefaultStyle, doc="See `GetDefaultStyle` and `SetDefaultStyle`");
-    %property(InsertionPoint, GetInsertionPoint, SetInsertionPoint, doc="See `GetInsertionPoint` and `SetInsertionPoint`");
-    %property(LastPosition, GetLastPosition, doc="See `GetLastPosition`");
-    %property(NumberOfLines, GetNumberOfLines, doc="See `GetNumberOfLines`");
-    %property(Selection, GetSelection, SetSelection, doc="See `GetSelection` and `SetSelection`");
-    %property(StringSelection, GetStringSelection, doc="See `GetStringSelection`");
-    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
 };
 
 //---------------------------------------------------------------------------
@@ -410,7 +513,7 @@ public:
 
     // get the end of the URL
     long GetURLEnd() const;
-    
+
     %property(MouseEvent, GetMouseEvent, doc="See `GetMouseEvent`");
     %property(URLEnd, GetURLEnd, doc="See `GetURLEnd`");
     %property(URLStart, GetURLStart, doc="See `GetURLStart`");
@@ -420,12 +523,12 @@ public:
 %pythoncode {
 EVT_TEXT        = wx.PyEventBinder( wxEVT_COMMAND_TEXT_UPDATED, 1)
 EVT_TEXT_ENTER  = wx.PyEventBinder( wxEVT_COMMAND_TEXT_ENTER, 1)
-EVT_TEXT_URL    = wx.PyEventBinder( wxEVT_COMMAND_TEXT_URL, 1) 
+EVT_TEXT_URL    = wx.PyEventBinder( wxEVT_COMMAND_TEXT_URL, 1)
 EVT_TEXT_MAXLEN = wx.PyEventBinder( wxEVT_COMMAND_TEXT_MAXLEN, 1)
 }
 
 
-    
+
 
 //---------------------------------------------------------------------------
 

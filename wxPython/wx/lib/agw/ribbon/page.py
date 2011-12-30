@@ -50,7 +50,6 @@ class RibbonPageScrollButton(RibbonControl):
         self._sibling = sibling
         self._flags = (style & RIBBON_SCROLL_BTN_DIRECTION_MASK) | RIBBON_SCROLL_BTN_FOR_PAGE
 
-
         self.Bind(wx.EVT_ENTER_WINDOW, self.OnMouseEnter)
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
         self.Bind(wx.EVT_LEAVE_WINDOW, self.OnMouseLeave)
@@ -138,6 +137,8 @@ class RibbonPage(RibbonControl):
         self._icon = icon
         self._scroll_left_btn = None
         self._scroll_right_btn = None
+        self._size_calc_array = None
+        self._size_calc_array_size = 0
         self._scroll_amount = 0
         self._scroll_buttons_visible = False
         self._collapse_stack = []
@@ -354,6 +355,11 @@ class RibbonPage(RibbonControl):
                     height -= h
                     self._scroll_right_btn.SetPosition(wx.Point(x, y + height))
 
+        if width < 0:
+            width = 0
+        if height < 0:
+            height = 0
+            
         self.SetDimensions(x, y, width, height)
 
 

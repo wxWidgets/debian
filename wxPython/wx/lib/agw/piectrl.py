@@ -3,7 +3,7 @@
 # Python Code By:
 #
 # Andrea Gavana, @ 31 Oct 2005
-# Latest Revision: 30 Nov 2009, 17.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List/Caveats
@@ -18,7 +18,7 @@
 # Write To Me At:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
 #
@@ -28,73 +28,100 @@
 
 
 """
-PieCtrl/ProgressPie are simple classes that reproduce the behavior of a pie
+L{PieCtrl} and L{ProgressPie} are simple classes that reproduce the behavior of a pie
 chart.
 
 
 Description
 ===========
 
-PieCtrl/ProgressPie are simple classes that reproduce the behavior of a pie
+L{PieCtrl} and L{ProgressPie} are simple classes that reproduce the behavior of a pie
 chart. They use only pure wxPython classes/methods, without external dependencies.
-PieCtrl is somewhat a "static" control, that you may create in order to display
-a simple pie chart on a `wx.Panel` or similar. ProgressPie tries to emulate the
+L{PieCtrl} is somewhat a "static" control, that you may create in order to display
+a simple pie chart on a `wx.Panel` or similar. L{ProgressPie} tries to emulate the
 behavior of `wx.ProgressDialog`, but using a pie chart instead of a gauge.
 
 
 Usage
 =====
 
-An example of use of PieCtrl is as follows::
+Usage example::
 
-    # create a simple PieCtrl with 3 sectors
-    mypie = PieCtrl(panel, -1, wx.DefaultPosition, wx.Size(180,270))
+    import wx    
+    import wx.lib.agw.piectrl as PC
 
-    part = PiePart()
+    class MyFrame(wx.Frame):
 
-    part.SetLabel("serieslabel_1")
-    part.SetValue(300)
-    part.SetColour(wx.Colour(200, 50, 50))
-    mypie._series.append(part)
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "PieCtrl Demo")
 
-    part = PiePart()
+            panel = wx.Panel(self)
+    
+            # create a simple PieCtrl with 3 sectors
+            mypie = PC.PieCtrl(panel, -1, wx.DefaultPosition, wx.Size(180,270))
 
-    part.SetLabel("series label 2")
-    part.SetValue(200)
-    part.SetColour(wx.Colour(50, 200, 50))
-    mypie._series.append(part)
+            part = PC.PiePart()
 
-    part = PiePart()
+            part.SetLabel("Label 1")
+            part.SetValue(300)
+            part.SetColour(wx.Colour(200, 50, 50))
+            mypie._series.append(part)
 
-    part.SetLabel("helloworld label 3")
-    part.SetValue(50)
-    part.SetColour(wx.Colour(50, 50, 200))
-    mypie._series.append(part)
+            part = PC.PiePart()
+
+            part.SetLabel("Label 2")
+            part.SetValue(200)
+            part.SetColour(wx.Colour(50, 200, 50))
+            mypie._series.append(part)
+
+            part = PC.PiePart()
+
+            part.SetLabel("helloworld label 3")
+            part.SetValue(50)
+            part.SetColour(wx.Colour(50, 50, 200))
+            mypie._series.append(part)
+
+            # create a ProgressPie
+            progress_pie = PC.ProgressPie(panel, 100, 50, -1, wx.DefaultPosition,
+                                          wx.Size(180, 200), wx.SIMPLE_BORDER)
+
+            progress_pie.SetBackColour(wx.Colour(150, 200, 255))
+            progress_pie.SetFilledcolour(wx.Colour(255, 0, 0))
+            progress_pie.SetUnfilledColour(wx.WHITE)
+            progress_pie.SetHeight(20)
+
+            main_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+            main_sizer.Add(mypie, 1, wx.EXPAND | wx.ALL, 5)
+            main_sizer.Add(progress_pie, 1, wx.EXPAND | wx.ALL, 5)
+
+            panel.SetSizer(main_sizer)
+            main_sizer.Layout()
 
 
-An example of use of ProgressPie is as follows::
+    # our normal wxApp-derived class, as usual
 
-    # create a progresspie
-    MyProgressPie = ProgressPie(panel, 100, 50, -1, wx.DefaultPosition,
-                                wx.Size(180, 200), wx.SIMPLE_BORDER)
+    app = wx.PySimpleApp()
 
-    MyProgressPie.SetBackColour(wx.Colour(150, 200, 255))
-    myprogresspie.SetFilledcolour(wx.Colour(255, 0, 0))
-    MyProgressPie.SetUnfilledColour(wx.WHITE)
-    MyProgressPie.SetHeight(20)
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
 
 
 
 Methods and Settings
 ====================
 
-With PieCtrl you can:
+With L{PieCtrl} you can:
 
-- Create a PieCtrl with different sectors;
+- Create a L{PieCtrl} with different sectors;
 - Set the sector values, colours and labels;
-- Assign a legend to the PieCtrl;
-- Use an image as the PieCtrl background;
-- Change the vertical rotation (perspective) of the PieCtrl;
+- Assign a legend to the L{PieCtrl};
+- Use an image as the L{PieCtrl} background;
+- Change the vertical rotation (perspective) of the L{PieCtrl};
 - Show/hide the segment edges.
 
 
@@ -113,9 +140,9 @@ Events Processing
 License And Version
 ===================
 
-PieCtrl is distributed under the wxPython license.
+L{PieCtrl} is distributed under the wxPython license.
 
-Latest revision: Andrea Gavana @ 30 Nov 2009, 17.00 GMT
+Latest revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.2
 
@@ -424,7 +451,7 @@ class PiePart(object):
 
 class PieCtrl(wx.Window):
     """
-    PieCtrl is somewhat a "static" control, that you may create in order to display
+    L{PieCtrl} is somewhat a "static" control, that you may create in order to display
     a simple pie chart on a `wx.Panel` or similar.
     """
     
@@ -847,7 +874,7 @@ class PieCtrl(wx.Window):
 
 class ProgressPie(PieCtrl):
     """
-    ProgressPie tries to emulate the behavior of `wx.ProgressDialog`, but
+    L{ProgressPie} tries to emulate the behavior of `wx.ProgressDialog`, but
     using a pie chart instead of a gauge.
     """
     

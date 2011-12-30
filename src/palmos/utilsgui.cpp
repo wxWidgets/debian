@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: utilsgui.cpp 38765 2006-04-16 22:18:29Z VZ $
+// RCS-ID:      $Id: utilsgui.cpp 45280 2007-04-06 21:08:30Z RD $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,53 +33,6 @@
 // ============================================================================
 // implementation
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// functions to work with .INI files
-// ----------------------------------------------------------------------------
-
-// Reading and writing resources (eg WIN.INI, .Xdefaults)
-#if wxUSE_RESOURCES
-bool wxWriteResource(const wxString& section, const wxString& entry, const wxString& value, const wxString& file)
-{
-    return false;
-}
-
-bool wxWriteResource(const wxString& section, const wxString& entry, float value, const wxString& file)
-{
-    return false;
-}
-
-bool wxWriteResource(const wxString& section, const wxString& entry, long value, const wxString& file)
-{
-    return false;
-}
-
-bool wxWriteResource(const wxString& section, const wxString& entry, int value, const wxString& file)
-{
-    return false;
-}
-
-bool wxGetResource(const wxString& section, const wxString& entry, wxChar **value, const wxString& file)
-{
-    return false;
-}
-
-bool wxGetResource(const wxString& section, const wxString& entry, float *value, const wxString& file)
-{
-    return false;
-}
-
-bool wxGetResource(const wxString& section, const wxString& entry, long *value, const wxString& file)
-{
-    return false;
-}
-
-bool wxGetResource(const wxString& section, const wxString& entry, int *value, const wxString& file)
-{
-    return false;
-}
-#endif // wxUSE_RESOURCES
 
 // ---------------------------------------------------------------------------
 // helper functions for showing a "busy" cursor

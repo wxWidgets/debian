@@ -4,7 +4,7 @@
 // Author:      Ryan Norton <wxprojects@comcast.net>
 // Modified by:
 // Created:     02/04/05
-// RCS-ID:      $Id: mediactrl.cpp 49496 2007-10-27 21:16:54Z VZ $
+// RCS-ID:      $Id: mediactrl.cpp 69561 2011-10-27 21:10:35Z VZ $
 // Copyright:   (c) 2004-2005 Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,8 +37,9 @@
 #include "wx/thread.h"              // wxMutex/wxMutexLocker
 
 #ifdef __WXGTK__
-#    include "wx/gtk/win_gtk.h"
-#    include <gdk/gdkx.h>           // for GDK_WINDOW_XWINDOW
+    #include <gtk/gtk.h>
+    #include <gdk/gdkx.h>
+    #include "wx/gtk/private/gtk2-compat.h"
 #endif
 
 //-----------------------------------------------------------------------------
@@ -129,28 +130,6 @@
 #define wxGSTREAMER_TIMEOUT (100 * GST_MSECOND) // Max 100 milliseconds
 
 //-----------------------------------------------------------------------------
-// wxGTK Debugging and idle stuff
-//-----------------------------------------------------------------------------
-#ifdef __WXGTK__
-
-#   ifdef __WXDEBUG__
-#       if wxUSE_THREADS
-#           define DEBUG_MAIN_THREAD \
-                if (wxThread::IsMain() && g_mainThreadLocked) \
-                    wxPrintf(wxT("gui reentrance"));
-#       else
-#           define DEBUG_MAIN_THREAD
-#       endif
-#   else
-#      define DEBUG_MAIN_THREAD
-#   endif // Debug
-
-extern void wxapp_install_idle_handler();
-extern bool g_isIdle;
-extern bool g_mainThreadLocked;
-#endif // wxGTK
-
-//-----------------------------------------------------------------------------
 //  wxLogTrace mask string
 //-----------------------------------------------------------------------------
 #define wxTRACE_GStreamer wxT("GStreamer")
@@ -182,6 +161,10 @@ public:
 
     virtual bool Load(const wxString& fileName);
     virtual bool Load(const wxURI& location);
+    virtual bool Load(const wxURI& location,
+                      const wxURI& proxy)
+        { return wxMediaBackendCommonBase::Load(location, proxy); }
+
 
     virtual wxMediaState GetState();
 
@@ -224,7 +207,7 @@ public:
 
     friend class wxGStreamerMediaEventHandler;
     friend class wxGStreamerLoadWaitTimer;
-    DECLARE_DYNAMIC_CLASS(wxGStreamerMediaBackend);
+    DECLARE_DYNAMIC_CLASS(wxGStreamerMediaBackend)
 };
 
 //-----------------------------------------------------------------------------
@@ -280,7 +263,7 @@ static gboolean gtk_window_expose_callback(GtkWidget *widget,
     if(event->count > 0)
         return FALSE;
 
-    GdkWindow *window = GTK_PIZZA(be->GetControl()->m_wxwindow)->bin_window;
+    GdkWindow* window = gtk_widget_get_window(widget);
 
     // I've seen this reccommended somewhere...
     // TODO: Is this needed? Maybe it is just cruft...
@@ -318,18 +301,12 @@ static gboolean gtk_window_expose_callback(GtkWidget *widget,
 //-----------------------------------------------------------------------------
 #ifdef __WXGTK__
 extern "C" {
-static gint gtk_window_realize_callback(GtkWidget* theWidget,
+static gint gtk_window_realize_callback(GtkWidget* widget,
                                         wxGStreamerMediaBackend* be)
 {
-    DEBUG_MAIN_THREAD // TODO: Is this neccessary?
+    gdk_flush();
 
-    if (g_isIdle)   // FIXME: Why is needed? For wxYield? ??
-        wxapp_install_idle_handler();
-
-    wxYield();    // FIXME: RN: X Server gets an error/crash if I don't do
-                  //       this or a messagebox beforehand?!?!??
-
-    GdkWindow *window = GTK_PIZZA(theWidget)->bin_window;
+    GdkWindow* window = gtk_widget_get_window(widget);
     wxASSERT(window);
 
     gst_x_overlay_set_xwindow_id( GST_X_OVERLAY(be->m_xoverlay),
@@ -373,7 +350,7 @@ static void gst_state_change_callback(GstElement *play,
 // Called by gstreamer when the media is done playing ("end of stream")
 //-----------------------------------------------------------------------------
 extern "C" {
-static void gst_finish_callback(GstElement *play,
+static void gst_finish_callback(GstElement *WXUNUSED(play),
                                 wxGStreamerMediaBackend* be)
 {
     wxLogTrace(wxTRACE_GStreamer, wxT("gst_finish_callback"));
@@ -390,11 +367,11 @@ static void gst_finish_callback(GstElement *play,
 // on the command line as well for those who want extra traces.
 //-----------------------------------------------------------------------------
 extern "C" {
-static void gst_error_callback(GstElement *play,
-                               GstElement *src,
+static void gst_error_callback(GstElement *WXUNUSED(play),
+                               GstElement *WXUNUSED(src),
                                GError     *err,
                                gchar      *debug,
-                               wxGStreamerMediaBackend* be)
+                               wxGStreamerMediaBackend* WXUNUSED(be))
 {
     wxString sError;
     sError.Printf(wxT("gst_error_callback\n")
@@ -416,7 +393,7 @@ static void gst_error_callback(GstElement *play,
 //-----------------------------------------------------------------------------
 extern "C" {
 static void gst_notify_caps_callback(GstPad* pad,
-                                     GParamSpec* pspec,
+                                     GParamSpec* WXUNUSED(pspec),
                                      wxGStreamerMediaBackend* be)
 {
     wxLogTrace(wxTRACE_GStreamer, wxT("gst_notify_caps_callback"));
@@ -438,8 +415,8 @@ static void gst_notify_caps_callback(GstPad* pad,
 //-----------------------------------------------------------------------------
 #if GST_VERSION_MAJOR > 0 || GST_VERSION_MINOR >= 10
 extern "C" {
-static void gst_notify_stream_info_callback(GstElement* element,
-                                            GParamSpec* pspec,
+static void gst_notify_stream_info_callback(GstElement* WXUNUSED(element),
+                                            GParamSpec* WXUNUSED(pspec),
                                             wxGStreamerMediaBackend* be)
 {
     wxLogTrace(wxTRACE_GStreamer, wxT("gst_notify_stream_info_callback"));
@@ -489,7 +466,7 @@ static void gst_desired_size_changed_callback(GstElement * play,
 //-----------------------------------------------------------------------------
 #if GST_VERSION_MAJOR > 0 || GST_VERSION_MINOR >= 10
 extern "C" {
-static gboolean gst_bus_async_callback(GstBus* bus,
+static gboolean gst_bus_async_callback(GstBus* WXUNUSED(bus),
                                        GstMessage* message,
                                        wxGStreamerMediaBackend* be)
 {
@@ -722,7 +699,7 @@ void wxGStreamerMediaBackend::SetupXOverlay()
 {
     // Use the xoverlay extension to tell gstreamer to play in our window
 #ifdef __WXGTK__
-    if(!GTK_WIDGET_REALIZED(m_ctrl->m_wxwindow))
+    if (!gtk_widget_get_realized(m_ctrl->m_wxwindow))
     {
         // Not realized yet - set to connect at realization time
         g_signal_connect (m_ctrl->m_wxwindow,
@@ -732,21 +709,20 @@ void wxGStreamerMediaBackend::SetupXOverlay()
     }
     else
     {
-        wxYield(); // see realize callback...
-        GdkWindow *window = GTK_PIZZA(m_ctrl->m_wxwindow)->bin_window;
+        gdk_flush();
+
+        GdkWindow* window = gtk_widget_get_window(m_ctrl->m_wxwindow);
         wxASSERT(window);
 #endif
-
-    gst_x_overlay_set_xwindow_id( GST_X_OVERLAY(m_xoverlay),
+        gst_x_overlay_set_xwindow_id(GST_X_OVERLAY(m_xoverlay),
 #ifdef __WXGTK__
                         GDK_WINDOW_XWINDOW( window )
 #else
                         ctrl->GetHandle()
 #endif
                                   );
-
 #ifdef __WXGTK__
-    g_signal_connect (m_ctrl->m_wxwindow,
+        g_signal_connect(m_ctrl->m_wxwindow,
                         // m_ctrl->m_wxwindow/*m_ctrl->m_widget*/,
                       "expose_event",
                       G_CALLBACK(gtk_window_expose_callback), this);
@@ -1003,7 +979,11 @@ bool wxGStreamerMediaBackend::CreateControl(wxControl* ctrl, wxWindow* parent,
     char **argvGST = new char*[wxTheApp->argc + 1];
     for ( i = 0; i < wxTheApp->argc; i++ )
     {
+#if wxUSE_UNICODE_WCHAR
         argvGST[i] = wxStrdupA(wxConvUTF8.cWX2MB(wxTheApp->argv[i]));
+#else
+        argvGST[i] = wxStrdupA(wxTheApp->argv[i].utf8_str());
+#endif
     }
 
     argvGST[wxTheApp->argc] = NULL;
@@ -1456,7 +1436,10 @@ wxLongLong wxGStreamerMediaBackend::GetDuration()
 // Called when the window is moved - GStreamer takes care of this
 // for us so nothing is needed
 //-----------------------------------------------------------------------------
-void wxGStreamerMediaBackend::Move(int x, int y, int w, int h)
+void wxGStreamerMediaBackend::Move(int WXUNUSED(x),
+                                   int WXUNUSED(y),
+                                   int WXUNUSED(w),
+                                   int WXUNUSED(h))
 {
 }
 
@@ -1514,6 +1497,8 @@ bool wxGStreamerMediaBackend::SetPlaybackRate(double dRate)
         m_dRate = dRate;
         return true;
     }
+#else
+    wxUnusedVar(dRate);
 #endif
 #endif
 

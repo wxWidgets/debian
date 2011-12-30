@@ -2,7 +2,7 @@
 // Name:        src/gtk1/control.cpp
 // Purpose:     wxControl implementation for wxGTK
 // Author:      Robert Roebling
-// Id:          $Id: control.cpp 42816 2006-10-31 08:50:17Z RD $
+// Id:          $Id: control.cpp 61508 2009-07-23 20:30:22Z VZ $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ void wxControl::GTKSetLabelForFrame(GtkFrame *w, const wxString& label)
 
     const wxString labelGTK = GTKRemoveMnemonics(label);
 
-    gtk_frame_set_label(w, labelGTK.empty() ? (char *)NULL
+    gtk_frame_set_label(w, labelGTK.empty() ? (const char *)NULL
                                             : wxGTK_CONV(labelGTK));
 }
 
@@ -134,7 +134,7 @@ wxString wxControl::GTKRemoveMnemonics(const wxString& label)
     {
         wxChar ch = label[i];
 
-        if ( ch == _T('&') )
+        if ( ch == wxT('&') )
         {
             if ( i == len - 1 )
             {
@@ -144,7 +144,7 @@ wxString wxControl::GTKRemoveMnemonics(const wxString& label)
             }
 
             ch = label[++i]; // skip '&' itself
-            if ( ch == _T('&') )
+            if ( ch == wxT('&') )
             {
                 // special case: "&&" is not a mnemonic at all but just an
                 // escaped "&"

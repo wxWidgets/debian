@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Sept-2003
-// RCS-ID:      $Id: _gdiobj.i 38805 2006-04-18 21:56:24Z RD $
+// RCS-ID:      $Id: _gdiobj.i 50779 2007-12-17 23:45:06Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -19,11 +19,12 @@ MustHaveApp(wxGDIObject);
 
 class wxGDIObject : public wxObject {
 public:
-    wxGDIObject();
+    //wxGDIObject();      ****  It's an ABC
     ~wxGDIObject();
 
-    bool IsNull();
-
+    bool IsNull() const;
+    bool IsOk() const;
+    %pythoncode { Ok = IsOk }    
 };
 
 //---------------------------------------------------------------------------

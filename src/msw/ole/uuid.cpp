@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.96
-// RCS-ID:      $Id: uuid.cpp 55125 2008-08-18 20:04:58Z VZ $
+// RCS-ID:      $Id: uuid.cpp 59725 2009-03-22 12:53:48Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@
 #pragma hdrstop
 #endif
 
-#if wxUSE_OLE && ( wxUSE_DRAG_AND_DROP || (defined(__WXDEBUG__) && wxUSE_DATAOBJ) )
+#if wxUSE_OLE && (wxUSE_DRAG_AND_DROP || wxUSE_DATAOBJ)
 
 #ifndef WX_PRECOMP
     #include "wx/msw/wrapwin.h"
@@ -87,11 +87,6 @@ bool Uuid::operator==(const Uuid& uuid) const
     // IsEqualGUID() returns BOOL and not bool so use an explicit comparison to
     // avoid MSVC warnings about int->bool conversion
     return IsEqualGUID(m_uuid, uuid.m_uuid) == TRUE;
-}
-
-bool Uuid::operator!=(const Uuid& uuid) const
-{
-    return !(*this == uuid);
 }
 
 // dtor

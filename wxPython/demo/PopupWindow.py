@@ -8,20 +8,17 @@
 
 import  wx
 
-havePopupWindow = 1
-if wx.Platform == '__WXMAC__':
-    havePopupWindow = 0
-    wx.PopupWindow = wx.PopupTransientWindow = wx.Window
-
 #---------------------------------------------------------------------------
 
 class TestPopup(wx.PopupWindow):
     """Adds a bit of text and mouse movement to the wx.PopupWindow"""
     def __init__(self, parent, style):
         wx.PopupWindow.__init__(self, parent, style)
-        self.SetBackgroundColour("CADET BLUE")
+        pnl = self.pnl = wx.Panel(self)
+        pnl.SetBackgroundColour("CADET BLUE")
 
-        st = wx.StaticText(self, -1,
+
+        st = wx.StaticText(pnl, -1,
                           "This is a special kind of top level\n"
                           "window that can be used for\n"
                           "popup menus, combobox popups\n"
@@ -37,11 +34,12 @@ class TestPopup(wx.PopupWindow):
 
         sz = st.GetBestSize()
         self.SetSize( (sz.width+20, sz.height+20) )
+        pnl.SetSize( (sz.width+20, sz.height+20) )
 
-        self.Bind(wx.EVT_LEFT_DOWN, self.OnMouseLeftDown)
-        self.Bind(wx.EVT_MOTION, self.OnMouseMotion)
-        self.Bind(wx.EVT_LEFT_UP, self.OnMouseLeftUp)
-        self.Bind(wx.EVT_RIGHT_UP, self.OnRightUp)
+        pnl.Bind(wx.EVT_LEFT_DOWN, self.OnMouseLeftDown)
+        pnl.Bind(wx.EVT_MOTION, self.OnMouseMotion)
+        pnl.Bind(wx.EVT_LEFT_UP, self.OnMouseLeftUp)
+        pnl.Bind(wx.EVT_RIGHT_UP, self.OnRightUp)
 
         st.Bind(wx.EVT_LEFT_DOWN, self.OnMouseLeftDown)
         st.Bind(wx.EVT_MOTION, self.OnMouseMotion)
@@ -49,12 +47,13 @@ class TestPopup(wx.PopupWindow):
         st.Bind(wx.EVT_RIGHT_UP, self.OnRightUp)
 
         wx.CallAfter(self.Refresh)
+        
 
     def OnMouseLeftDown(self, evt):
         self.Refresh()
         self.ldPos = evt.GetEventObject().ClientToScreen(evt.GetPosition())
         self.wPos = self.ClientToScreen((0,0))
-        self.CaptureMouse()
+        self.pnl.CaptureMouse()
 
     def OnMouseMotion(self, evt):
         if evt.Dragging() and evt.LeftIsDown():
@@ -64,11 +63,13 @@ class TestPopup(wx.PopupWindow):
             self.Move(nPos)
 
     def OnMouseLeftUp(self, evt):
-        self.ReleaseMouse()
+        if self.pnl.HasCapture():
+            self.pnl.ReleaseMouse()
 
     def OnRightUp(self, evt):
         self.Show(False)
         self.Destroy()
+
 
 
 class TestTransientPopup(wx.PopupTransientWindow):
@@ -76,25 +77,44 @@ class TestTransientPopup(wx.PopupTransientWindow):
     def __init__(self, parent, style, log):
         wx.PopupTransientWindow.__init__(self, parent, style)
         self.log = log
-        self.SetBackgroundColour("#FFB6C1")
-        st = wx.StaticText(self, -1,
+        panel = wx.Panel(self)
+        panel.SetBackgroundColour("#FFB6C1")
+        
+        st = wx.StaticText(panel, -1,
                           "wx.PopupTransientWindow is a\n"
                           "wx.PopupWindow which disappears\n"
                           "automatically when the user\n"
                           "clicks the mouse outside it or if it\n"
                           "(or its first child) loses focus in \n"
-                          "any other way."
-                          ,
-                          pos=(10,10))
-        sz = st.GetBestSize()
-        self.SetSize( (sz.width+20, sz.height+20) )
+                          "any other way.")
+        btn = wx.Button(panel, -1, "Press Me")
+        spin = wx.SpinCtrl(panel, -1, "Hello", size=(100,-1))
+        btn.Bind(wx.EVT_BUTTON, self.OnButton)
 
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(st, 0, wx.ALL, 5)
+        sizer.Add(btn, 0, wx.ALL, 5)
+        sizer.Add(spin, 0, wx.ALL, 5)
+        panel.SetSizer(sizer)
+
+        sizer.Fit(panel)
+        sizer.Fit(self)
+        self.Layout()
+        
+        
     def ProcessLeftDown(self, evt):
-        self.log.write("ProcessLeftDown\n")
-        return False
+        self.log.write("ProcessLeftDown: %s\n" % evt.GetPosition())
+        return wx.PopupTransientWindow.ProcessLeftDown(self, evt)
 
     def OnDismiss(self):
         self.log.write("OnDismiss\n")
+
+    def OnButton(self, evt):
+        btn = evt.GetEventObject()
+        if btn.GetLabel() == "Press Me":
+            btn.SetLabel("Pressed")
+        else:
+            btn.SetLabel("Press Me")
 
 
 
@@ -117,7 +137,7 @@ class TestPanel(wx.Panel):
 
 
     def OnShowPopup(self, evt):
-        win = TestPopup(self, wx.SIMPLE_BORDER)
+        win = TestPopup(self.GetTopLevelParent(), wx.SIMPLE_BORDER)
         #win = TestPopupWithListbox(self, wx.SIMPLE_BORDER, self.log)
 
         # Show the popup right below or above the button
@@ -189,14 +209,8 @@ class TestPopupWithListbox(wx.PopupWindow):
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    if havePopupWindow:
-        win = TestPanel(nb, log)
-        return win
-    else:
-        from Main import MessagePanel
-        win = MessagePanel(nb, 'wx.PopupWindow is not available on this platform.',
-                           'Sorry', wx.ICON_WARNING)
-        return win
+    win = TestPanel(nb, log)
+    return win
 
 #---------------------------------------------------------------------------
 

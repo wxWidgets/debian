@@ -2,11 +2,11 @@
 // Name:        wx/palmos/progdlg.h
 // Purpose:     wxProgressDialog interface
 // Author:      Wlodzimierz ABX Skiba
-// Modified by: 
+// Modified by:
 // Created:     29.12.2004
-// RCS-ID:      $Id: progdlg.h 41020 2006-09-05 20:47:48Z VZ $
+// RCS-ID:      $Id: progdlg.h 64940 2010-07-13 13:29:13Z VZ $
 // Copyright:   (c) Wlodzimierz Skiba
-// License:     wxWindows licence
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _PREFCONF_H_
@@ -18,7 +18,7 @@
 
 #include "wx/dialog.h"
 
-class WXDLLEXPORT wxProgressDialog : public wxDialog
+class WXDLLIMPEXP_CORE wxProgressDialog : public wxDialog
 {
 DECLARE_DYNAMIC_CLASS(wxProgressDialog)
 public:
@@ -35,6 +35,10 @@ public:
 
     Boolean Callback(/*PrgCallbackData */ void *data);
 
+    int GetValue() const { return m_cur; }
+    int GetRange() const { return m_max; }
+    wxString GetMessage() const { return m_msg; }
+
 private:
 
     /*ProgressType*/ void *m_prgFrame;
@@ -46,7 +50,7 @@ private:
     // Virtual function hiding supression
     virtual void Update() { wxDialog::Update(); }
 
-    DECLARE_NO_COPY_CLASS(wxProgressDialog)
+    wxDECLARE_NO_COPY_CLASS(wxProgressDialog);
 };
 
 #endif // wxUSE_PROGRESSDLG

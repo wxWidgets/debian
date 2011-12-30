@@ -10,20 +10,20 @@
 # Python Code By:
 #
 # Andrea Gavana, @ 03 Nov 2006
-# Latest Revision: 17 Jan 2011, 15.00 GMT
+# Latest Revision: 07 Dec 2011, 21.00 GMT
 #
 #
 # For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please
 # Write To Me At:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
 #
 # TODO:
 # LabelBook - Support IMB_SHOW_ONLY_IMAGES
-# LabelBook - An option for the draw border to only draw the border 
+# LabelBook - An option to only draw the border 
 #             between the controls and the pages so the background
 #             colour can flow into the window background
 #
@@ -33,17 +33,17 @@
 # --------------------------------------------------------------------------- #
 
 """
-LabelBook and FlatImageBook are a quasi-full generic and owner-drawn
+L{LabelBook} and L{FlatImageBook} are a quasi-full generic and owner-drawn
 implementations of `wx.Notebook`.
 
 
 Description
 ===========
 
-LabelBook and FlatImageBook are a quasi-full implementations of the `wx.Notebook`,
+L{LabelBook} and L{FlatImageBook} are quasi-full implementations of the `wx.Notebook`,
 and designed to be a drop-in replacement for `wx.Notebook`. The API functions are
 similar so one can expect the function to behave in the same way.
-LabelBook anf FlatImageBook share their appearance with `wx.Toolbook` and
+L{LabelBook} anf L{FlatImageBook} share their appearance with `wx.Toolbook` and
 `wx.Listbook`, while having more options for custom drawings, label positioning,
 mouse pointing and so on. Moreover, they retain also some visual characteristics
 of the Outlook address book.
@@ -51,25 +51,66 @@ of the Outlook address book.
 Some features:
 
 - They are generic controls;
-- Supports for left, right, top (FlatImageBook only), bottom (FlatImageBook
+- Supports for left, right, top (L{FlatImageBook} only), bottom (L{FlatImageBook}
   only) book styles;
-- Possibility to draw images only, text only or both (FlatImageBook only);
+- Possibility to draw images only, text only or both (L{FlatImageBook} only);
 - Support for a "pin-button", that allows the user to shrink/expand the book
   tab area;
-- Shadows behind tabs (LabelBook only);
-- Gradient shading of the tab area (LabelBook only);
-- Web-like mouse pointing on tabs style (LabelBook only);
+- Shadows behind tabs (L{LabelBook} only);
+- Gradient shading of the tab area (L{LabelBook} only);
+- Web-like mouse pointing on tabs style (L{LabelBook} only);
 - Many customizable colours (tab area, active tab text, tab borders, active
-  tab, highlight) - LabelBook only.
+  tab, highlight) - L{LabelBook} only.
   
 And much more. See the demo for a quasi-complete review of all the functionalities
-of LabelBook and FlatImageBook.
+of L{LabelBook} and L{FlatImageBook}.
+
+
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.labelbook as LB
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+
+            wx.Frame.__init__(self, parent, -1, "LabelBook Demo")
+            
+            # Possible values for Tab placement are INB_TOP, INB_BOTTOM, INB_RIGHT, INB_LEFT
+
+            notebook = LB.LabelBook(self, -1, agwStyle=LB.INB_FIT_LABELTEXT|LB.INB_LEFT|LB.INB_DRAW_SHADOW|LB.INB_GRADIENT_BACKGROUND)
+
+            pane1 = wx.Panel(notebook)
+            pane2 = wx.Panel(notebook)
+
+            imagelist = wx.ImageList(32, 32)
+            imagelist.Add(wx.Bitmap("my_bitmap.png", wx.BITMAP_TYPE_PNG))
+            notebook.AssignImageList(imagelist)
+
+            notebook.AddPage(pane_1, "Tab1", 1, 0)
+            notebook.AddPage(pane_2, "Tab2", 0, 0)
+
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
 
 
 Supported Platforms
 ===================
 
-LabelBook and FlatImageBook have been tested on the following platforms:
+L{LabelBook} and L{FlatImageBook} have been tested on the following platforms:
   * Windows (Windows XP);
   * Linux Ubuntu (Dapper 6.06)
 
@@ -82,20 +123,21 @@ This class supports the following window styles:
 =========================== =========== ==================================================
 Window Styles               Hex Value   Description
 =========================== =========== ==================================================
-``INB_BOTTOM``                      0x1 Place labels below the page area. Available only for `FlatImageBook`.
-``INB_LEFT``                        0x2 Place labels on the left side. Available only for `FlatImageBook`.
+``INB_BOTTOM``                      0x1 Place labels below the page area. Available only for L{FlatImageBook}.
+``INB_LEFT``                        0x2 Place labels on the left side. Available only for L{FlatImageBook}.
 ``INB_RIGHT``                       0x4 Place labels on the right side.
 ``INB_TOP``                         0x8 Place labels above the page area.
-``INB_BORDER``                     0x10 Draws a border around `LabelBook` or `FlatImageBook`.
-``INB_SHOW_ONLY_TEXT``             0x20 Shows only text labels and no images. Available only for `LabelBook`.
-``INB_SHOW_ONLY_IMAGES``           0x40 Shows only tab images and no label texts. Available only for `LabelBook`.
+``INB_BORDER``                     0x10 Draws a border around L{LabelBook} or L{FlatImageBook}.
+``INB_SHOW_ONLY_TEXT``             0x20 Shows only text labels and no images. Available only for L{LabelBook}.
+``INB_SHOW_ONLY_IMAGES``           0x40 Shows only tab images and no label texts. Available only for L{LabelBook}.
 ``INB_FIT_BUTTON``                 0x80 Displays a pin button to show/hide the book control.
-``INB_DRAW_SHADOW``               0x100 Draw shadows below the book tabs. Available only for `LabelBook`.
+``INB_DRAW_SHADOW``               0x100 Draw shadows below the book tabs. Available only for L{LabelBook}.
 ``INB_USE_PIN_BUTTON``            0x200 Displays a pin button to show/hide the book control.
-``INB_GRADIENT_BACKGROUND``       0x400 Draws a gradient shading on the tabs background. Available only for `LabelBook`.
-``INB_WEB_HILITE``                0x800 On mouse hovering, tabs behave like html hyperlinks. Available only for `LabelBook`.
+``INB_GRADIENT_BACKGROUND``       0x400 Draws a gradient shading on the tabs background. Available only for L{LabelBook}.
+``INB_WEB_HILITE``                0x800 On mouse hovering, tabs behave like html hyperlinks. Available only for L{LabelBook}.
 ``INB_NO_RESIZE``                0x1000 Don't allow resizing of the tab area.
 ``INB_FIT_LABELTEXT``            0x2000 Will fit the tab area to the longest text (or text+image if you have images) in all the tabs.
+``INB_BOLD_TAB_SELECTION``       0x4000 Show the selected tab text using a bold font. 
 =========================== =========== ==================================================
 
 
@@ -107,25 +149,34 @@ This class processes the following events:
 =================================== ==================================================
 Event Name                          Description
 =================================== ==================================================
-``EVT_IMAGENOTEBOOK_PAGE_CHANGED``  Notify client objects when the active page in `ImageNotebook` has changed.
-``EVT_IMAGENOTEBOOK_PAGE_CHANGING`` Notify client objects when the active page in `ImageNotebook` is about to change.
-``EVT_IMAGENOTEBOOK_PAGE_CLOSED``   Notify client objects when a page in `ImageNotebook` has been closed.
-``EVT_IMAGENOTEBOOK_PAGE_CLOSING``  Notify client objects when a page in `ImageNotebook` is closing.
+``EVT_IMAGENOTEBOOK_PAGE_CHANGED``  Notify client objects when the active page in L{FlatImageBook} or L{LabelBook} has changed.
+``EVT_IMAGENOTEBOOK_PAGE_CHANGING`` Notify client objects when the active page in L{FlatImageBook} or L{LabelBook} is about to change.
+``EVT_IMAGENOTEBOOK_PAGE_CLOSED``   Notify client objects when a page in L{FlatImageBook} or L{LabelBook} has been closed.
+``EVT_IMAGENOTEBOOK_PAGE_CLOSING``  Notify client objects when a page in L{FlatImageBook} or L{LabelBook} is closing.
 =================================== ==================================================
+
+
+TODOs
+=====
+
+- L{LabelBook}: support ``IMB_SHOW_ONLY_IMAGES``;
+- L{LabelBook}: an option to only draw the border between the controls and the pages so the background
+  colour can flow into the window background.
 
 
 License And Version
 ===================
 
-LabelBook and FlatImageBook are distributed under the wxPython license. 
+L{LabelBook} and L{FlatImageBook} are distributed under the wxPython license. 
 
-Latest Revision: Andrea Gavana @ 17 Jan 2011, 15.00 GMT
+Latest Revision: Andrea Gavana @ 07 Dec 2011, 21.00 GMT
 
-Version 0.5.
+Version 0.6.
 
 """
 
 __docformat__ = "epytext"
+__version__ = "0.6"
 
 
 #----------------------------------------------------------------------
@@ -143,33 +194,35 @@ if wx.VERSION_STRING < "2.7":
 
 # FlatImageBook and LabelBook styles
 INB_BOTTOM = 1
-""" Place labels below the page area. Available only for `FlatImageBook`."""
+""" Place labels below the page area. Available only for L{FlatImageBook}."""
 INB_LEFT = 2
-""" Place labels on the left side. Available only for `FlatImageBook`."""
+""" Place labels on the left side. Available only for L{FlatImageBook}."""
 INB_RIGHT = 4
 """ Place labels on the right side. """
 INB_TOP = 8
 """ Place labels above the page area. """
 INB_BORDER = 16
-""" Draws a border around `LabelBook` or `FlatImageBook`. """
+""" Draws a border around L{LabelBook} or L{FlatImageBook}. """
 INB_SHOW_ONLY_TEXT = 32
-""" Shows only text labels and no images. Available only for `LabelBook`."""
+""" Shows only text labels and no images. Available only for L{LabelBook}."""
 INB_SHOW_ONLY_IMAGES = 64
-""" Shows only tab images and no label texts. Available only for `LabelBook`."""
+""" Shows only tab images and no label texts. Available only for L{LabelBook}."""
 INB_FIT_BUTTON = 128
 """ Displays a pin button to show/hide the book control. """
 INB_DRAW_SHADOW = 256
-""" Draw shadows below the book tabs. Available only for `LabelBook`."""
+""" Draw shadows below the book tabs. Available only for L{LabelBook}."""
 INB_USE_PIN_BUTTON = 512
 """ Displays a pin button to show/hide the book control. """
 INB_GRADIENT_BACKGROUND = 1024
-""" Draws a gradient shading on the tabs background. Available only for `LabelBook`."""
+""" Draws a gradient shading on the tabs background. Available only for L{LabelBook}."""
 INB_WEB_HILITE = 2048
-""" On mouse hovering, tabs behave like html hyperlinks. Available only for `LabelBook`."""
+""" On mouse hovering, tabs behave like html hyperlinks. Available only for L{LabelBook}."""
 INB_NO_RESIZE = 4096
 """ Don't allow resizing of the tab area. """
 INB_FIT_LABELTEXT = 8192
 """ Will fit the tab area to the longest text (or text+image if you have images) in all the tabs. """
+INB_BOLD_TAB_SELECTION = 16384
+""" Show the selected tab text using a bold font. """
 
 wxEVT_IMAGENOTEBOOK_PAGE_CHANGED = wx.wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED
 wxEVT_IMAGENOTEBOOK_PAGE_CHANGING = wx.wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING
@@ -181,13 +234,13 @@ wxEVT_IMAGENOTEBOOK_PAGE_CLOSED = wx.NewEventType()
 #-----------------------------------#
 
 EVT_IMAGENOTEBOOK_PAGE_CHANGED = wx.EVT_NOTEBOOK_PAGE_CHANGED
-""" Notify client objects when the active page in `ImageNotebook` has changed. """
+""" Notify client objects when the active page in L{FlatImageBook} or L{LabelBook} has changed. """
 EVT_IMAGENOTEBOOK_PAGE_CHANGING = wx.EVT_NOTEBOOK_PAGE_CHANGING
-""" Notify client objects when the active page in `ImageNotebook` is about to change. """
+""" Notify client objects when the active page in L{FlatImageBook} or L{LabelBook} is about to change. """
 EVT_IMAGENOTEBOOK_PAGE_CLOSING = wx.PyEventBinder(wxEVT_IMAGENOTEBOOK_PAGE_CLOSING, 1)
-""" Notify client objects when a page in `ImageNotebook` is closing. """
+""" Notify client objects when a page in L{FlatImageBook} or L{LabelBook} is closing. """
 EVT_IMAGENOTEBOOK_PAGE_CLOSED = wx.PyEventBinder(wxEVT_IMAGENOTEBOOK_PAGE_CLOSED, 1)
-""" Notify client objects when a page in `ImageNotebook` has been closed. """
+""" Notify client objects when a page in L{FlatImageBook} or L{LabelBook} has been closed. """
 
 
 # ---------------------------------------------------------------------------- #
@@ -291,13 +344,14 @@ class ImageInfo(object):
     This class holds all the information (caption, image, etc...) belonging to a
     single tab in L{LabelBook}.
     """
-    def __init__(self, strCaption="", imageIndex=-1):    
+    def __init__(self, strCaption="", imageIndex=-1, enabled=True):    
         """
         Default class constructor.
 
         :param `strCaption`: the tab caption;
         :param `imageIndex`: the tab image index based on the assigned (set)
-         `wx.ImageList` (if any).
+         `wx.ImageList` (if any);
+        :param `enabled`: sets the tab as enabled or disabled.
         """
         
         self._pos = wx.Point()
@@ -305,6 +359,7 @@ class ImageInfo(object):
         self._strCaption = strCaption
         self._ImageIndex = imageIndex
         self._captionRect = wx.Rect()
+        self._bEnabled = enabled
 
 
     def SetCaption(self, value):
@@ -387,6 +442,22 @@ class ImageInfo(object):
         return self._captionRect
 
 
+    def GetEnabled(self):
+        """ Returns whether the tab is enabled or not. """
+
+        return self._bEnabled
+
+
+    def EnableTab(self, enabled):
+        """
+        Sets the tab enabled or disabled.
+
+        :param `enabled`: ``True`` to enable a tab, ``False`` to disable it.
+        """
+
+        self._bEnabled = enabled
+
+
 # ---------------------------------------------------------------------------- #
 # Class ImageContainerBase
 # ---------------------------------------------------------------------------- #
@@ -427,6 +498,7 @@ class ImageContainerBase(wx.Panel):
          ``INB_WEB_HILITE``                0x800 On mouse hovering, tabs behave like html hyperlinks. Available only for L{LabelBook}.
          ``INB_NO_RESIZE``                0x1000 Don't allow resizing of the tab area.
          ``INB_FIT_LABELTEXT``            0x2000 Will fit the tab area to the longest text (or text+image if you have images) in all the tabs.
+         ``INB_BOLD_TAB_SELECTION``       0x4000 Show the selected tab text using a bold font. 
          =========================== =========== ==================================================
 
         :param `name`: the window name.         
@@ -435,7 +507,7 @@ class ImageContainerBase(wx.Panel):
         self._nIndex = -1
         self._nImgSize = 16
         self._ImageList = None
-        self._nHoeveredImgIdx = -1
+        self._nHoveredImgIdx = -1
         self._bCollapsed = False
         self._tabAreaSize = (-1, -1)
         self._nPinButtonStatus = INB_PIN_NONE
@@ -468,6 +540,7 @@ class ImageContainerBase(wx.Panel):
          ``INB_WEB_HILITE``                0x800 On mouse hovering, tabs behave like html hyperlinks. Available only for L{LabelBook}.
          ``INB_NO_RESIZE``                0x1000 Don't allow resizing of the tab area.
          ``INB_FIT_LABELTEXT``            0x2000 Will fit the tab area to the longest text (or text+image if you have images) in all the tabs.
+         ``INB_BOLD_TAB_SELECTION``       0x4000 Show the selected tab text using a bold font. 
          =========================== =========== ==================================================
         """
         
@@ -620,7 +693,36 @@ class ImageContainerBase(wx.Panel):
         imgInfo = self._pagesInfoVec[page]
         return imgInfo.GetCaption()
 
+
+    def GetEnabled(self, page):
+        """
+        Returns whether a tab is enabled or not.
+
+        :param `page`: an integer specifying the page index.
+        """
+
+        if page >= len(self._pagesInfoVec):
+            return True # Adding a page - enabled by default
+
+        imgInfo = self._pagesInfoVec[page]
+        return imgInfo.GetEnabled()
+
+
+    def EnableTab(self, page, enabled=True):
+        """
+        Enables or disables a tab.
+
+        :param `page`: an integer specifying the page index;
+        :param `enabled`: ``True`` to enable a tab, ``False`` to disable it.
+        """
+
+        if page >= len(self._pagesInfoVec):
+            return
+
+        imgInfo = self._pagesInfoVec[page]
+        imgInfo.EnableTab(enabled)
         
+
     def ClearAll(self):
         """ Deletes all the pages in the container. """
 
@@ -781,7 +883,7 @@ class ImageContainerBase(wx.Panel):
         tabIdx, where = self.HitTest(event.GetPosition())
 
         if where == IMG_OVER_IMG:
-            self._nHoeveredImgIdx = -1        
+            self._nHoveredImgIdx = -1        
 
         if tabIdx == -1:
             return
@@ -796,8 +898,8 @@ class ImageContainerBase(wx.Panel):
         :param `event`: a `wx.MouseEvent` event to be processed.
         """
 
-        bRepaint = self._nHoeveredImgIdx != -1
-        self._nHoeveredImgIdx = -1
+        bRepaint = self._nHoveredImgIdx != -1
+        self._nHoveredImgIdx = -1
 
         # Make sure the pin button status is NONE
         # incase we were in pin button style
@@ -887,29 +989,25 @@ class ImageContainerBase(wx.Panel):
                 self.DrawPin(dc, self._pinBtnRect, not self._bCollapsed)
             
         imgIdx, where = self.HitTest(event.GetPosition())
-        self._nHoeveredImgIdx = imgIdx
+        
+        # Allow hovering unless over current tab or tab is disabled
+        self._nHoveredImgIdx = -1
+
+        if imgIdx < len(self._pagesInfoVec) and self.GetEnabled(imgIdx) and imgIdx != self._nIndex:
+            self._nHoveredImgIdx = imgIdx
         
         if not self._bCollapsed:
         
-            if self._nHoeveredImgIdx >= 0 and self._nHoeveredImgIdx < len(self._pagesInfoVec):
+            if self._nHoveredImgIdx >= 0 and self.HasAGWFlag(INB_WEB_HILITE):
             
-                # Change the cursor to be Hand
-                if self.HasAGWFlag(INB_WEB_HILITE) and self._nHoeveredImgIdx != self._nIndex:
-                    wx.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
+                # Change the cursor to be Hand if we have the Web hover style set
+                wx.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
             
-            else:
+            elif not self.PointOnSash(event.GetPosition()):
             
-                # Restore the cursor only if we have the Web hover style set,
-                # and we are not currently hovering the sash
-                if self.HasAGWFlag(INB_WEB_HILITE) and not self.PointOnSash(event.GetPosition()):
-                    wx.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
-            
-        # Dont display hover effect when hoevering the 
-        # selected label
-        
-        if self._nHoeveredImgIdx == self._nIndex:
-            self._nHoeveredImgIdx = -1
-        
+                # Restore the cursor if we are not currently hovering the sash
+                wx.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
+
         self.Refresh()
 
 
@@ -1005,6 +1103,7 @@ class ImageContainer(ImageContainerBase):
          ``INB_WEB_HILITE``                0x800 On mouse hovering, tabs behave like html hyperlinks. Available only for L{LabelBook}.
          ``INB_NO_RESIZE``                0x1000 Don't allow resizing of the tab area.
          ``INB_FIT_LABELTEXT``            0x2000 Will fit the tab area to the longest text (or text+image if you have images) in all the tabs.
+         ``INB_BOLD_TAB_SELECTION``       0x4000 Show the selected tab text using a bold font. 
          =========================== =========== ==================================================
 
         :param `name`: the window name.         
@@ -1163,6 +1262,9 @@ class ImageContainer(ImageContainerBase):
         nTextPaddingLeft = 2
 
         count = 0
+        normalFont = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        boldFont = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        boldFont.SetWeight(wx.BOLD)
         
         for i in xrange(len(self._pagesInfoVec)):
 
@@ -1172,14 +1274,12 @@ class ImageContainer(ImageContainerBase):
             # text width plus padding
             # Incase the style IS applied, but the style is either LEFT or RIGHT
             # we ignore it
-            normalFont = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
             dc.SetFont(normalFont)
 
+            if style & INB_BOLD_TAB_SELECTION and self._nIndex == i:
+                dc.SetFont(boldFont)
+                
             textWidth, textHeight = dc.GetTextExtent(self._pagesInfoVec[i].GetCaption())
-
-            # Restore font to be normal
-            normalFont.SetWeight(wx.FONTWEIGHT_NORMAL)
-            dc.SetFont(normalFont)
 
             # Default values for the surronounding rectangle 
             # around a button
@@ -1236,7 +1336,7 @@ class ImageContainer(ImageContainerBase):
                 
                 dc.DrawRectangleRect(buttonRect)
             
-            if self._nHoeveredImgIdx == i:
+            if self._nHoveredImgIdx == i:
             
                 # Set the colours
                 penColour = wx.SystemSettings_GetColour(wx.SYS_COLOUR_ACTIVECAPTION)
@@ -1290,8 +1390,11 @@ class ImageContainer(ImageContainerBase):
                             
             # Draw the text
             if not style & INB_SHOW_ONLY_IMAGES and not self._pagesInfoVec[i].GetCaption() == "":
-            
-                dc.SetFont(normalFont)
+
+                if style & INB_BOLD_TAB_SELECTION and self._nIndex == i:
+                    dc.SetFont(boldFont)
+                else:
+                    dc.SetFont(normalFont)
                             
                 # Check if the text can fit the size of the rectangle,
                 # if not truncate it 
@@ -1375,6 +1478,7 @@ class LabelContainer(ImageContainerBase):
          ``INB_WEB_HILITE``                0x800 On mouse hovering, tabs behave like html hyperlinks. Available only for L{LabelBook}.
          ``INB_NO_RESIZE``                0x1000 Don't allow resizing of the tab area.
          ``INB_FIT_LABELTEXT``            0x2000 Will fit the tab area to the longest text (or text+image if you have images) in all the tabs.
+         ``INB_BOLD_TAB_SELECTION``       0x4000 Show the selected tab text using a bold font. 
          =========================== =========== ==================================================
 
         :param `name`: the window name.         
@@ -1535,8 +1639,12 @@ class LabelContainer(ImageContainerBase):
             if self.HasAGWFlag(INB_SHOW_ONLY_TEXT):
                 font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
                 font.SetPointSize(font.GetPointSize() * self.GetParent().GetFontSizeMultiple())
+
                 if self.GetParent().GetFontBold():
                     font.SetWeight(wx.FONTWEIGHT_BOLD)
+                elif self.HasAGWFlag(INB_BOLD_TAB_SELECTION) and self._nIndex == i:
+                    font.SetWeight(wx.FONTWEIGHT_BOLD)
+                    
                 dc.SetFont(font)
                 w, h = dc.GetTextExtent(self._pagesInfoVec[i].GetCaption())
                 rectHeight = h * 2
@@ -1560,7 +1668,7 @@ class LabelContainer(ImageContainerBase):
 
             self.DrawLabel(dc, buttonRect, self._pagesInfoVec[i].GetCaption(), bmp,
                            self._pagesInfoVec[i], self.HasAGWFlag(INB_LEFT) or self.HasAGWFlag(INB_TOP),
-                           i, self._nIndex == i, self._nHoeveredImgIdx == i)
+                           i, self._nIndex == i, self._nHoveredImgIdx == i)
 
             posy += rectHeight
         
@@ -1833,14 +1941,15 @@ class LabelContainer(ImageContainerBase):
             dc.DrawLine(rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
         
 
-    def DrawWebHover(self, dc, caption, xCoord, yCoord):
+    def DrawWebHover(self, dc, caption, xCoord, yCoord, selected):
         """
         Draws a web style hover effect (cursor set to hand & text is underlined).
 
         :param `dc`: an instance of `wx.DC`;
         :param `caption`: the tab caption text;
         :param `xCoord`: the x position of the tab caption;
-        :param `yCoord`: the y position of the tab caption.
+        :param `yCoord`: the y position of the tab caption;
+        :param `selected`: ``True`` if the tab is selected, ``False`` otherwise.
         """
 
         # Redraw the text with underlined font
@@ -1848,6 +1957,9 @@ class LabelContainer(ImageContainerBase):
         underLinedFont.SetPointSize(underLinedFont.GetPointSize() * self.GetParent().GetFontSizeMultiple())
         if self.GetParent().GetFontBold():
             underLinedFont.SetWeight(wx.FONTWEIGHT_BOLD)
+        elif self.HasAGWFlag(INB_BOLD_TAB_SELECTION) and selected:
+            underLinedFont.SetWeight(wx.FONTWEIGHT_BOLD)
+            
         underLinedFont.SetUnderlined(True)
         dc.SetFont(underLinedFont)
         dc.DrawText(caption, xCoord, yCoord)
@@ -1942,8 +2054,12 @@ class LabelContainer(ImageContainerBase):
         
         font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
         font.SetPointSize(font.GetPointSize() * self.GetParent().GetFontSizeMultiple())
+
         if self.GetParent().GetFontBold():
             font.SetWeight(wx.FONTWEIGHT_BOLD)
+        elif self.HasAGWFlag(INB_BOLD_TAB_SELECTION) and selected:
+            font.SetWeight(wx.FONTWEIGHT_BOLD)
+            
         dc.SetFont(font)
 
         # First we define the rectangle for the text
@@ -2035,15 +2151,14 @@ class LabelContainer(ImageContainerBase):
             
             else:
             
-                if imgIdx+1 != self._nHoeveredImgIdx:
-                
+                if imgIdx+1 != self._nHoveredImgIdx:
                     ArtManager.Get().DrawBitmapShadow(dc, rect, sstyle)
                 
         # Draw hover effect 
         if hover:
         
             if self.HasAGWFlag(INB_WEB_HILITE) and caption != "":   
-                self.DrawWebHover(dc, caption, textRect.x, textRect.y)
+                self.DrawWebHover(dc, caption, textRect.x, textRect.y, selected)
             else:
                 self.DrawRegularHover(dc, rect)
         
@@ -2091,6 +2206,7 @@ class FlatBookBase(wx.Panel):
          ``INB_WEB_HILITE``                0x800 On mouse hovering, tabs behave like html hyperlinks. Available only for L{LabelBook}.
          ``INB_NO_RESIZE``                0x1000 Don't allow resizing of the tab area.
          ``INB_FIT_LABELTEXT``            0x2000 Will fit the tab area to the longest text (or text+image if you have images) in all the tabs.
+         ``INB_BOLD_TAB_SELECTION``       0x4000 Show the selected tab text using a bold font. 
          =========================== =========== ==================================================
 
         :param `name`: the window name.         
@@ -2109,6 +2225,8 @@ class FlatBookBase(wx.Panel):
 
         wx.Panel.__init__(self, parent, id, pos, size, style, name)
         self._bInitializing = False
+
+        self.Bind(wx.EVT_NAVIGATION_KEY, self.OnNavigationKey)
 
 
     def SetAGWWindowStyleFlag(self, agwStyle):
@@ -2134,6 +2252,7 @@ class FlatBookBase(wx.Panel):
          ``INB_WEB_HILITE``                0x800 On mouse hovering, tabs behave like html hyperlinks. Available only for L{LabelBook}.
          ``INB_NO_RESIZE``                0x1000 Don't allow resizing of the tab area.
          ``INB_FIT_LABELTEXT``            0x2000 Will fit the tab area to the longest text (or text+image if you have images) in all the tabs.
+         ``INB_BOLD_TAB_SELECTION``       0x4000 Show the selected tab text using a bold font. 
          =========================== =========== ==================================================
         
         """
@@ -2153,10 +2272,7 @@ class FlatBookBase(wx.Panel):
 
         self._mainSizer.Detach(self._pages)
         
-        # Create new sizer with the requested orientaion
-        className = self.GetName()
-
-        if className == "LabelBook":
+        if isinstance(self, LabelBook):
             self._mainSizer = wx.BoxSizer(wx.HORIZONTAL)
         else:
             if agwStyle & INB_LEFT or agwStyle & INB_RIGHT:
@@ -2169,8 +2285,7 @@ class FlatBookBase(wx.Panel):
         # Add the tab container and the separator
         self._mainSizer.Add(self._pages, 0, wx.EXPAND)
 
-        if className == "FlatImageBook":
-        
+        if isinstance(self, FlatImageBook):
             if agwStyle & INB_LEFT or agwStyle & INB_RIGHT:
                 self._pages.SetSizeHints(self._pages._nImgSize * 2, -1)
             else:
@@ -2233,7 +2348,7 @@ class FlatBookBase(wx.Panel):
         self._windows.append(page)
         
         if select or len(self._windows) == 1:
-            self.DoSetSelection(page)
+            self.SetSelection(len(self._windows)-1)
         else:
             page.Hide()
 
@@ -2263,7 +2378,7 @@ class FlatBookBase(wx.Panel):
         self._windows.insert(page_idx, page)
         
         if select or len(self._windows) == 1:
-            self.DoSetSelection(page)
+            self.SetSelection(page_idx)
         else:
             page.Hide()
 
@@ -2384,7 +2499,7 @@ class FlatBookBase(wx.Panel):
             dc.SelectObject(wx.EmptyBitmap(1, 1))
             font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
             font.SetPointSize(font.GetPointSize()*self._fontSizeMultiple)
-            if self.GetFontBold():
+            if self.GetFontBold() or agwStyle & INB_BOLD_TAB_SELECTION:
                 font.SetWeight(wx.FONTWEIGHT_BOLD)
             dc.SetFont(font)
             maxW = 0
@@ -2434,6 +2549,9 @@ class FlatBookBase(wx.Panel):
         """
 
         if page >= len(self._windows):
+            return
+
+        if not self.GetEnabled(page):
             return
 
         if page == self.GetSelection() and not self._bForceSelection:
@@ -2608,6 +2726,31 @@ class FlatBookBase(wx.Panel):
         return self._pages.GetPageImage(page)
 
 
+    def GetEnabled(self, page):
+        """
+        Returns whether a tab is enabled or not.
+
+        :param `page`: an integer specifying the page index.
+        """
+
+        return self._pages.GetEnabled(page)
+
+
+    def EnableTab(self, page, enabled=True):
+        """
+        Enables or disables a tab.
+
+        :param `page`: an integer specifying the page index;
+        :param `enabled`: ``True`` to enable a tab, ``False`` to disable it.
+        """
+
+        if page >= len(self._windows):
+            return
+
+        self._windows[page].Enable(enabled)
+        self._pages.EnableTab(page, enabled)
+
+    
     def GetPage(self, page):
         """
         Returns the window at the given page position.
@@ -2628,6 +2771,24 @@ class FlatBookBase(wx.Panel):
             return
 
         return self.GetPage(self.GetSelection())
+
+
+    def OnNavigationKey(self, event):
+        """
+        Handles the ``wx.EVT_NAVIGATION_KEY`` event for L{FlatBookBase}.
+
+        :param `event`: a `wx.NavigationKeyEvent` event to be processed.
+        """
+
+        if event.IsWindowChange():
+            if self.GetPageCount() == 0:
+                return
+            
+            # change pages
+            self.AdvanceSelection(event.GetDirection())
+
+        else:
+            event.Skip()
 
 
     def AdvanceSelection(self, forward=True):
@@ -2725,6 +2886,7 @@ class FlatImageBook(FlatBookBase):
          ``INB_WEB_HILITE``                0x800 On mouse hovering, tabs behave like html hyperlinks. Available only for L{LabelBook}.
          ``INB_NO_RESIZE``                0x1000 Don't allow resizing of the tab area.
          ``INB_FIT_LABELTEXT``            0x2000 Will fit the tab area to the longest text (or text+image if you have images) in all the tabs.
+         ``INB_BOLD_TAB_SELECTION``       0x4000 Show the selected tab text using a bold font. 
          =========================== =========== ==================================================
 
         :param `name`: the window name.         
@@ -2800,6 +2962,7 @@ class LabelBook(FlatBookBase):
          ``INB_WEB_HILITE``                0x800 On mouse hovering, tabs behave like html hyperlinks. Available only for L{LabelBook}.
          ``INB_NO_RESIZE``                0x1000 Don't allow resizing of the tab area.
          ``INB_FIT_LABELTEXT``            0x2000 Will fit the tab area to the longest text (or text+image if you have images) in all the tabs.
+         ``INB_BOLD_TAB_SELECTION``       0x4000 Show the selected tab text using a bold font. 
          =========================== =========== ==================================================
 
         :param `name`: the window name.         

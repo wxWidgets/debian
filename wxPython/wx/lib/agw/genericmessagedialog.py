@@ -2,7 +2,7 @@
 # GENERICMESSAGEDIALOG wxPython IMPLEMENTATION
 #
 # Andrea Gavana, @ 07 October 2008
-# Latest Revision: 12 Sep 2010, 10.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List
@@ -14,7 +14,7 @@
 # write to me at:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, obviously, to the wxPython mailing list!!!
 #
@@ -45,10 +45,33 @@ replacement for the standard `wx.MessageDialog`, with these extra functionalitie
 And a lot more. Check the demo for an almost complete review of the functionalities.
 
 
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.genericmessagedialog as GMD
+
+    # Our normal wxApp-derived class, as usual
+    app = wx.App(0)
+    
+    main_message = "Hello world! I am the main message."
+    
+    dlg = GMD.GenericMessageDialog(None, main_message, "A Nice Message Box",
+                                   agwStyle=wx.ICON_INFORMATION|wx.OK)
+                                   
+    dlg.ShowModal()
+    dlg.Destroy()
+
+    app.MainLoop()
+
+
+
 Supported Platforms
 ===================
 
-GenericMessageDialog has been tested on the following platforms:
+L{GenericMessageDialog} has been tested on the following platforms:
   * Windows (Windows XP).
 
 
@@ -64,6 +87,24 @@ Window Styles               Hex Value   Description
 ``GMD_USE_GRADIENTBUTTONS``        0x40 Uses `wx.lib.agw.gradientbutton` buttons instead of generic buttons.
 =========================== =========== ==================================================
 
+The styles above are mutually exclusive. The style chosen above can be combined with a
+bitlist containing flags chosen from the following:
+
+=========================== =========== ==================================================
+Window Styles               Hex Value   Description
+=========================== =========== ==================================================
+``wx.OK``                           0x4 Shows an ``OK`` button.  
+``wx.CANCEL``                      0x10 Shows a ``Cancel`` button.  
+``wx.YES_NO``                       0xA Show ``Yes`` and ``No`` buttons.
+``wx.YES_DEFAULT``                  0x0 Used with ``wx.YES_NO``, makes ``Yes`` button the default - which is the default behaviour.  
+``wx.NO_DEFAULT``                  0x80 Used with ``wx.YES_NO``, makes ``No`` button the default.  
+``wx.ICON_EXCLAMATION``           0x100 Shows an exclamation mark icon.  
+``wx.ICON_HAND``                  0x200 Shows an error icon.  
+``wx.ICON_ERROR``                 0x200 Shows an error icon - the same as ``wx.ICON_HAND``.  
+``wx.ICON_QUESTION``              0x400 Shows a question mark icon.  
+``wx.ICON_INFORMATION``           0x800 Shows an information icon.  
+=========================== =========== ==================================================
+
 
 Events Processing
 =================
@@ -74,11 +115,11 @@ Events Processing
 License And Version
 ===================
 
-GenericMessageDialog is distributed under the wxPython license.
+L{GenericMessageDialog} is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 12 Sep 2010, 10.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
-Version 0.5
+Version 0.6
 
 """
 
@@ -576,6 +617,24 @@ class GenericMessageDialog(wx.Dialog):
          ``GMD_USE_GRADIENTBUTTONS``        0x40 Uses L{GradientButton} buttons instead of generic buttons.
          =========================== =========== ==================================================
 
+         The styles above are mutually exclusive. The style chosen above can be combined with a
+         bitlist containing flags chosen from the following:
+
+         =========================== =========== ==================================================
+         Window Styles               Hex Value   Description
+         =========================== =========== ==================================================
+         ``wx.OK``                           0x4 Shows an ``OK`` button.  
+         ``wx.CANCEL``                      0x10 Shows a ``Cancel`` button.  
+         ``wx.YES_NO``                       0xA Show ``Yes`` and ``No`` buttons.
+         ``wx.YES_DEFAULT``                  0x0 Used with ``wx.YES_NO``, makes ``Yes`` button the default - which is the default behaviour.  
+         ``wx.NO_DEFAULT``                  0x80 Used with ``wx.YES_NO``, makes ``No`` button the default.  
+         ``wx.ICON_EXCLAMATION``           0x100 Shows an exclamation mark icon.  
+         ``wx.ICON_HAND``                  0x200 Shows an error icon.  
+         ``wx.ICON_ERROR``                 0x200 Shows an error icon - the same as ``wx.ICON_HAND``.  
+         ``wx.ICON_QUESTION``              0x400 Shows a question mark icon.  
+         ``wx.ICON_INFORMATION``           0x800 Shows an information icon.  
+         =========================== =========== ==================================================
+
         :param `pos`: the dialog position on screen;
         :param `size`: the dialog size;
         :param `style`: the underlying `wx.Dialog` style;
@@ -652,23 +711,39 @@ class GenericMessageDialog(wx.Dialog):
         self.Bind(wx.EVT_NAVIGATION_KEY, self.OnNavigation)
         self.SwitchFocus()
         
+
+    def EndDialog(self, rc):
+        """
+        Ends the L{GenericMessageDialog} life. This will be done differently depending on
+        the dialog modal/non-modal behaviour.
+
+        :param `rc`: one of the ``wx.ID_YES``, ``wx.ID_NO``, ``wx.ID_OK``, ``wx.ID_CANCEL`` constants.
+
+        :note: the `rc` parameter is unused if the dialog is not modal.        
+        """
+
+        if self.IsModal():
+            self.EndModal(rc)
+        else:
+            self.Hide()
+                    
         
     def OnYes(self, event):
         """ L{GenericMessageDialog} had received a ``wx.ID_YES`` answer. """
 
-        self.EndModal(wx.ID_YES)
+        self.EndDialog(wx.ID_YES)
 
 
     def OnOk(self, event):
         """ L{GenericMessageDialog} had received a ``wx.ID_OK`` answer. """
 
-        self.EndModal(wx.ID_OK)
+        self.EndDialog(wx.ID_OK)
 
 
     def OnNo(self, event):
         """ L{GenericMessageDialog} had received a ``wx.ID_NO`` answer. """
 
-        self.EndModal(wx.ID_NO)
+        self.EndDialog(wx.ID_NO)
 
 
     def OnCancel(self, event):
@@ -678,7 +753,7 @@ class GenericMessageDialog(wx.Dialog):
         # only YES and NO are specified.
         
         if self._agwStyle & wx.YES_NO != wx.YES_NO or self._agwStyle & wx.CANCEL:
-            self.EndModal(wx.ID_CANCEL)
+            self.EndDialog(wx.ID_CANCEL)
 
 
     def OnKeyDown(self, event):
@@ -729,7 +804,7 @@ class GenericMessageDialog(wx.Dialog):
 
         button = wx.Window.FindFocus()
         buttonId = button.GetId()
-        self.EndModal(buttonId)
+        self.EndDialog(buttonId)
             
 
     def SwitchFocus(self):

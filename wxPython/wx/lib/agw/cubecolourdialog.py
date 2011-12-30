@@ -4,7 +4,7 @@
 # Python Code By:
 #
 # Andrea Gavana, @ 16 Aug 2007
-# Latest Revision: 14 Apr 2010, 12.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List
@@ -19,7 +19,7 @@
 # Write To Me At:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
 #
@@ -28,13 +28,13 @@
 # --------------------------------------------------------------------------- #
 
 """
-CubeColourDialog is an alternative implementation of `wx.ColourDialog`.
+L{CubeColourDialog} is an alternative implementation of `wx.ColourDialog`.
 
 
 Description
 ===========
 
-The CubeColourDialog is an alternative implementation of `wx.ColourDialog`, and it
+The L{CubeColourDialog} is an alternative implementation of `wx.ColourDialog`, and it
 offers different functionalities with respect to the default wxPython one. It
 can be used as a replacement of `wx.ColourDialog` with exactly the same syntax and
 methods.
@@ -53,7 +53,7 @@ Some features:
   dialog, via a simple `wx.CheckBox`;
 - The "old colour" and "new colour" are displayed in two small custom panel,
   which support alpha transparency and texture;
-- CubeColourDialog displays also the HTML colour code in hexadecimal format;
+- L{CubeColourDialog} displays also the HTML colour code in hexadecimal format;
 - When available, a corresponding "Web Safe" colour is generated using a 500
   web colours "database" (a dictionary inside the widget source code). Web Safe
   colours are recognized by all the browsers;
@@ -65,6 +65,42 @@ Some features:
 And much more.
 
 
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.cubecolourdialog as CCD
+
+    # Our normal wxApp-derived class, as usual
+    app = wx.App(0)
+    
+    colourData = wx.ColourData()
+    dlg = CCD.CubeColourDialog(None, colourData)
+
+    if dlg.ShowModal() == wx.ID_OK:
+
+        # If the user selected OK, then the dialog's wx.ColourData will
+        # contain valid information. Fetch the data ...
+        colourData = dlg.GetColourData()
+        h, s, v, a = dlg.GetHSVAColour()
+
+        # ... then do something with it. The actual colour data will be
+        # returned as a three-tuple (r, g, b) in this particular case.
+        colour = colourData.GetColour()
+        r, g, b, alpha = colour.Red(), colour.Green(), colour.Blue(), colour.Alpha()
+        print "You selected (RGBA): %d, %d, %d, %d"%(r, g, b, alpha)
+        print "You selected (HSVA): %d, %d, %d, %d"%(h, s, v, a)
+
+    # Once the dialog is destroyed, Mr. wx.ColourData is no longer your
+    # friend. Don't use it again!
+    dlg.Destroy()
+
+    app.MainLoop()
+    
+
+
 Window Styles
 =============
 
@@ -73,7 +109,7 @@ This class supports the following window styles:
 ================== =========== ==================================================
 Window Styles      Hex Value   Description
 ================== =========== ==================================================
-``CCD_SHOW_ALPHA``         0x1 Show the widget used to control colour alpha channels in `CubeColourDialog`.
+``CCD_SHOW_ALPHA``         0x1 Show the widget used to control colour alpha channels in L{CubeColourDialog}.
 ================== =========== ==================================================
 
 
@@ -86,9 +122,9 @@ Events Processing
 License And Version
 ===================
 
-CubeColourDialog is distributed under the wxPython license. 
+L{CubeColourDialog} is distributed under the wxPython license. 
 
-Latest Revision: Andrea Gavana @ 14 Apr 2010, 12.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.3.
 
@@ -113,7 +149,7 @@ _ = wx.GetTranslation
 
 # Show the alpha control in the dialog
 CCD_SHOW_ALPHA = 1
-""" Show the widget used to control colour alpha channels in `CubeColourDialog`. """
+""" Show the widget used to control colour alpha channels in L{CubeColourDialog}. """
 
 # Radius of the HSB colour wheel
 RADIUS = 100
@@ -1175,6 +1211,7 @@ def rad2deg(x):
     
     return 180.0*x/pi
 
+
 def deg2rad(x):
     """
     Transforms degrees into radians.
@@ -1183,6 +1220,7 @@ def deg2rad(x):
     """
 
     return x*pi/180.0
+
 
 def toscale(x):
     """
@@ -1193,6 +1231,7 @@ def toscale(x):
 
     return x*RADIUS/255.0
 
+
 def scaletomax(x):
     """
     Normalize a value as a function of the radius.
@@ -1201,6 +1240,7 @@ def scaletomax(x):
     """ 
 
     return x*255.0/RADIUS
+
 
 def rgb2html(colour):
     """
@@ -1740,7 +1780,12 @@ class BasePyControl(wx.PyControl):
         
 
     def DoGetBestSize(self):
-        """ Returns the custom control best size (used by sizers). """
+        """
+        Overridden base class virtual. Determines the best size of the
+        control based on the bitmap size.
+
+        :note: Overridden from `wx.PyControl`.
+        """
 
         return wx.Size(self._bitmap.GetWidth(), self._bitmap.GetHeight())        
 
@@ -2168,7 +2213,11 @@ class BaseLineCtrl(wx.PyControl):
 
 
     def DoGetBestSize(self):
-        """ Returns the custom control best size (used by sizers). """
+        """
+        Overridden base class virtual. Determines the best size of the control.
+
+        :note: Overridden from `wx.PyControl`.
+        """
 
         return wx.Size(24, 208)    
 
@@ -2576,7 +2625,7 @@ class ColourPanel(wx.PyPanel):
 
 class CustomPanel(wx.PyControl):
     """
-    This panel displays a series of cutom colours (chosen by the user) just like
+    This panel displays a series of custom colours (chosen by the user) just like
     the standard `wx.ColourDialog`.
     """
 
@@ -2627,7 +2676,11 @@ class CustomPanel(wx.PyControl):
 
 
     def DoGetBestSize(self):
-        """ Returns the custom control best size (used by sizers). """
+        """
+        Overridden base class virtual. Determines the best size of the control.
+
+        :note: Overridden from `wx.PyControl`.
+        """
 
         return self._customColourRect.width+4, self._customColourRect.height+4
 

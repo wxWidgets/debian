@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     12-Sept-2006
-// RCS-ID:      $Id: _treelist.i 67469 2011-04-13 18:19:21Z RD $
+// RCS-ID:      $Id: _treelist.i 63144 2010-01-14 03:12:48Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -348,11 +348,6 @@ public:
         // if needed.
         wxPyTreeItemData* GetItemData(const wxTreeItemId& item) {
             wxPyTreeItemData* data = (wxPyTreeItemData*)self->GetItemData(item);
-            if (data == NULL) {
-                data = new wxPyTreeItemData();
-                data->SetId(item); // set the id
-                self->SetItemData(item, data);
-            }
             return data;
         }
 
@@ -368,9 +363,7 @@ public:
         PyObject* GetItemPyData(const wxTreeItemId& item) {
             wxPyTreeItemData* data = (wxPyTreeItemData*)self->GetItemData(item);
             if (data == NULL) {
-                data = new wxPyTreeItemData();
-                data->SetId(item); // set the id
-                self->SetItemData(item, data);
+                RETURN_NONE();
             }
             return data->GetData();
         }

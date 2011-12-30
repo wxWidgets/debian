@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classwx_message_output_message_box.html" title="Output messages by showing them in a message box." alt="" coords="5,86,211,117"/>
+<area shape="rect" id="node5" href="$classwx_message_output_stderr.html" title="Output messages to stderr or another STDIO file stream." alt="" coords="235,86,400,117"/>
+<area shape="rect" id="node7" href="$classwx_message_output_best.html" title="Output messages in the best possible way." alt="" coords="145,166,303,197"/>
+<area shape="rect" id="node9" href="$classwx_message_output_debug.html" title="Output messages to the system debug output channel." alt="" coords="327,166,492,197"/>
+</map>

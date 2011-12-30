@@ -3,7 +3,7 @@
 # Author:       Will Sadkin
 # Created:      09/19/2002
 # Copyright:    (c) 2002 by Will Sadkin, 2002
-# RCS-ID:       $Id: timectrl.py 58925 2009-02-16 00:06:57Z RD $
+# RCS-ID:       $Id: timectrl.py 60211 2009-04-16 19:35:12Z RD $
 # License:      wxWindows license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -725,9 +725,7 @@ class TimeCtrl(BaseMaskedTextCtrl):
             wxdt = wx.DateTimeFromDMY(1, 0, 1970)
 ##            dbg('attempting conversion')
             value = value.strip()    # (parser doesn't like leading spaces)
-            checkTime    = wxdt.ParseTime(value)
-            valid = checkTime == len(value)     # entire string parsed?
-##            dbg('checkTime == len(value)?', valid)
+            valid = wxdt.ParseTime(value)
 
             if not valid:
                 # deal with bug/deficiency in wx.DateTime:

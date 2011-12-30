@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _dirctrl.i 50317 2007-11-28 22:47:38Z RD $
+// RCS-ID:      $Id: _dirctrl.i 63597 2010-03-01 23:39:58Z RD $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,10 @@ enum
     // Use 3D borders on internal controls
     wxDIRCTRL_3D_INTERNAL    = 0x0080,
     // Editable labels
-    wxDIRCTRL_EDIT_LABELS    = 0x0100
+    wxDIRCTRL_EDIT_LABELS    = 0x0100,
+    // Allow multiple selection
+    wxDIRCTRL_MULTIPLE       = 0x0200
+
 };
 
 
@@ -66,7 +69,7 @@ public:
                      const wxString& dir = wxPyDirDialogDefaultFolderStr,
                      const wxPoint& pos = wxDefaultPosition,
                      const wxSize& size = wxDefaultSize,
-                     long style = wxDIRCTRL_3D_INTERNAL|wxSUNKEN_BORDER,
+                     long style = wxDIRCTRL_3D_INTERNAL,
                      const wxString& filter = wxPyEmptyString,
                      int defaultFilter = 0,
                      const wxString& name = wxPyTreeCtrlNameStr);
@@ -77,7 +80,7 @@ public:
                 const wxString& dir = wxPyDirDialogDefaultFolderStr,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
-                long style = wxDIRCTRL_3D_INTERNAL|wxSUNKEN_BORDER,
+                long style = wxDIRCTRL_3D_INTERNAL,
                 const wxString& filter = wxPyEmptyString,
                 int defaultFilter = 0,
                 const wxString& name = wxPyTreeCtrlNameStr);
@@ -94,12 +97,29 @@ public:
 
     // Get dir or filename
     virtual wxString GetPath() const;
+    %extend {
+        wxArrayString GetPaths() {
+            wxArrayString paths;
+            self->GetPaths(paths);
+            return paths;
+        }        
+    }
     
     // Get selected filename path only (else empty string).
     // I.e. don't count a directory as a selection
     virtual wxString GetFilePath() const;
     virtual void SetPath(const wxString& path);
-    
+    %extend {
+        wxArrayString GetFilePaths() {
+            wxArrayString paths;
+            self->GetFilePaths(paths);
+            return paths;
+        }        
+    }
+
+    virtual void SelectPath(const wxString& path, bool select = true);
+    virtual void SelectPaths(const wxArrayString& paths);
+
     virtual void ShowHidden( bool show );
     virtual bool GetShowHidden();
 
@@ -113,6 +133,8 @@ public:
 
     virtual wxPyTreeCtrl* GetTreeCtrl() const;
     virtual wxDirFilterListCtrl* GetFilterListCtrl() const;
+
+    virtual void UnselectAll();
 
     %extend {
         wxDirItemData *GetDirItemData(const wxTreeItemId& id) const

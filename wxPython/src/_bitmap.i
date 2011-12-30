@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _bitmap.i 67461 2011-04-13 18:12:03Z RD $
+// RCS-ID:      $Id: _bitmap.i 69247 2011-09-30 18:01:08Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@
 // See http://tinyurl.com/e5adr for what premultiplying alpha means. wxMSW and
 // wxMac want to have the values premultiplied by the alpha value, but the
 // other platforms don't.  These macros help keep the code clean.
-#if defined(__WXMSW__) || (defined(__WXMAC__) && wxMAC_USE_CORE_GRAPHICS)
+#if defined(__WXMSW__) || defined(__WXMAC__)
 #define wxPy_premultiply(p, a)   ((p) * (a) / 0xff)
 #define wxPy_unpremultiply(p, a) ((a) ? ((p) * 0xff / (a)) : (p))    
 #else
@@ -70,7 +70,7 @@
 //---------------------------------------------------------------------------
 // Helper functions for copying bitmap data to/from buffers
 
-    
+
 enum wxBitmapBufferFormat {
     wxBitmapBufferFormat_RGB,
     wxBitmapBufferFormat_RGBA,
@@ -140,7 +140,6 @@ enum wxBitmapBufferFormat {
                                       "Failed to gain raw access to bitmap data.");
                     return;
                 }
-                pixData.UseAlpha();
                 wxAlphaPixelData::Iterator p(pixData);
                 for (int y=0; y<height; y++) {
                     wxAlphaPixelData::Iterator rowStart = p;
@@ -193,7 +192,6 @@ enum wxBitmapBufferFormat {
                                       "Failed to gain raw access to bitmap data.");
                     return;    
                 }
-                if (useAlpha) pixData.UseAlpha();
 
                 wxAlphaPixelData::Iterator pix(pixData);
                 for (int y=0; y<height; y++) {
@@ -310,7 +308,6 @@ enum wxBitmapBufferFormat {
                 }
                 if (depth = 32) {
                     MAKE_PIXDATA(wxAlphaPixelData);
-                    pixData.UseAlpha();
                     for (int y=0; y<height; y++) {
                         rowStart = p;
                         for (int x=0; x<width; x++) {
@@ -400,6 +397,10 @@ enum wxBitmapBufferFormat {
 
 //---------------------------------------------------------------------------
 
+enum {
+    wxBITMAP_SCREEN_DEPTH
+};
+
 
 DocStr(wxBitmap,
 "The wx.Bitmap class encapsulates the concept of a platform-dependent
@@ -466,7 +467,7 @@ public:
     ~wxBitmap();
 
     DocCtorStrName(
-        wxBitmap(int width, int height, int depth=-1),
+        wxBitmap(int width, int height, int depth=wxBITMAP_SCREEN_DEPTH),
         "Creates a new bitmap of the given size.  A depth of -1 indicates the
 depth of the current screen or visual. Some platforms only support 1
 for monochrome and -1 for the current display depth.", "",
@@ -478,7 +479,7 @@ for monochrome and -1 for the current display depth.", "",
         BitmapFromIcon);
 
     DocCtorStrName(
-        wxBitmap(const wxImage& image, int depth=-1),
+        wxBitmap(const wxImage& image, int depth=wxBITMAP_SCREEN_DEPTH),
         "Creates bitmap object from a `wx.Image`. This has to be done to
 actually display a `wx.Image` as you cannot draw an image directly on
 a window. The resulting bitmap will use the provided colour depth (or
@@ -553,13 +554,10 @@ monochrome bitmap.", "");
     
 
 
-    %extend {
-        DocStr(GetSize, "Get the size of the bitmap.", "");
-        wxSize GetSize() {
-            wxSize size(self->GetWidth(), self->GetHeight());
-            return size;
-        }
-    }
+    DocDeclStr(
+        wxSize , GetSize() const,
+        "Get the size of the bitmap.", "");
+    
 
     
     DocDeclStr(
@@ -596,15 +594,29 @@ file or explpicitly set for the bitmap.
             self->SetMask(mask);
         }
     }
-
+    
 
     DocDeclStr(
         virtual wxBitmap , GetSubBitmap(const wxRect& rect) const,
         "Returns a sub-bitmap of the current one as long as the rect belongs
 entirely to the bitmap. This function preserves bit depth and mask
 information.", "");
-    
 
+    
+    // Convert to disabled (dimmed) bitmap.
+#ifdef __WXMSW__
+    %extend {
+        wxBitmap ConvertToDisabled(byte brightness = 255) const {
+            wxImage image = self->ConvertToImage();
+            wxBitmap bmp = wxBitmap(image.ConvertToDisabled(brightness));
+            return bmp;
+        }
+    }
+#else
+    wxBitmap ConvertToDisabled(byte brightness = 255) const;
+#endif
+
+    
     DocDeclStr(
         virtual bool , SaveFile(const wxString &name, wxBitmapType type,
                                 wxPalette *palette = NULL),
@@ -707,7 +719,6 @@ format details.", "");
     // (these functions are internal and shouldn't be used, they risk to
     // disappear in the future)
     bool HasAlpha() const;
-    void UseAlpha();   
     
     %pythoncode { def __nonzero__(self): return self.IsOk() }
 
@@ -723,7 +734,6 @@ format details.", "");
     %property(Mask, GetMask, SetMask, doc="See `GetMask` and `SetMask`");
     %property(Palette, GetPalette, doc="See `GetPalette`");
     %property(Size, GetSize, SetSize, doc="See `GetSize` and `SetSize`");
-    %property(SubBitmap, GetSubBitmap, doc="See `GetSubBitmap`");
     %property(Width, GetWidth, SetWidth, doc="See `GetWidth` and `SetWidth`");
 
 };
@@ -761,7 +771,6 @@ format details.", "");
             return NULL;
         }
                 
-        pixData.UseAlpha();
         wxAlphaPixelData::Iterator p(pixData);
         for (int y=0; y<height; y++) {
             wxAlphaPixelData::Iterator rowStart = p;
@@ -885,7 +894,6 @@ def BitmapFromBufferRGBA(width, height, dataBuffer):
             return NULL;
         }
                 
-        pixData.UseAlpha();
         wxAlphaPixelData::Iterator p(pixData);
         for (int y=0; y<height; y++) {
             wxAlphaPixelData::Iterator rowStart = p;
@@ -960,7 +968,10 @@ public:
     ~PixelData();
 
     PixelData##_Accessor GetPixels() const;
-    void UseAlpha();
+    %pythoncode {
+        def UseAlpha(self): pass
+        UseAlpha = wx.deprecated(UseAlpha)
+    }
 
     %extend {
         bool __nonzero__() { return self->operator bool(); }
@@ -1058,8 +1069,6 @@ public:
 %enddef
 
 
-%pythonAppend wxAlphaPixelData::wxAlphaPixelData "self.UseAlpha()"
-
 // Make the classes
 PIXELDATA(wxNativePixelData)
 PIXELDATA(wxAlphaPixelData)    
@@ -1155,7 +1164,7 @@ passed then BLACK is used.
     ~wxMask();
 };
 
-%pythoncode { MaskColour = wx._deprecated(Mask, "wx.MaskColour is deprecated, use `wx.Mask` instead.") }
+%pythoncode { MaskColour = wx.deprecated(Mask, "wx.MaskColour is deprecated, use `wx.Mask` instead.") }
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

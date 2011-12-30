@@ -1,0 +1,5 @@
+<map id="G" name="G">
+<area shape="rect" id="node5" href="$classwx_html_printout.html" title="This class serves as printout class for HTML documents." alt="" coords="5,166,115,197"/>
+<area shape="rect" id="node7" href="$classwx_rich_text_printout.html" title="This class implements print layout for wxRichTextBuffer." alt="" coords="139,166,272,197"/>
+<area shape="rect" id="node2" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="95,6,169,37"/>
+</map>

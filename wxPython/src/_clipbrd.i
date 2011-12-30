@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     31-October-1999
-// RCS-ID:      $Id: _clipbrd.i 65196 2010-08-04 17:50:17Z RD $
+// RCS-ID:      $Id: _clipbrd.i 65195 2010-08-04 17:49:55Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -95,6 +95,9 @@ do not delete the data explicitly.
         "Returns True if the given format is available in the data object(s) on
 the clipboard.", "");
 
+    
+    virtual bool IsSupportedAsync( wxEvtHandler *sink );
+    
     DocDeclStr(
         virtual bool , GetData( wxDataObject& data ),
         "Call this function to fill data with data on the clipboard, if
@@ -117,10 +120,18 @@ exit.  Returns False if the operation is unsuccesful for any reason.", "");
 
     DocDeclStr(
         virtual void , UsePrimarySelection( bool primary = true ),
-        "On platforms supporting it (the X11 based platforms), selects the
-so called PRIMARY SELECTION as the clipboard as opposed to the
-normal clipboard, if primary is True.", "");
+        "On platforms supporting it (the X11 based platforms), selects the so
+called PRIMARY SELECTION as the clipboard as opposed to the normal
+clipboard, if primary is True.  On other platforms all clipboard
+operations fail when using the primary selection.  This allows code
+supporting the primary selection to be written without ill effects on
+the other platforms.", "");
 
+    
+    DocDeclStr(
+        bool , IsUsingPrimarySelection() const,
+        "Return true if we're using primary selection", "");
+    
 
     DocDeclStr(
         static wxClipboard *, Get(),
@@ -185,5 +196,24 @@ successfully opened.", "");
     }
 };
 
+
+//---------------------------------------------------------------------------
+
+
+class wxClipboardEvent : public wxEvent
+{
+public:
+    wxClipboardEvent(wxEventType evtType = wxEVT_NULL);
+    //wxClipboardEvent(const wxClipboardEvent& event);
+
+    bool SupportsFormat(const wxDataFormat& format) const;
+    void AddFormat(const wxDataFormat& format);
+};
+
+%constant wxEventType wxEVT_CLIPBOARD_CHANGED;
+
+%pythoncode {
+    EVT_CLIPBOARD_CHANGED = wx.PyEventBinder( wxEVT_CLIPBOARD_CHANGED )
+}
 
 //---------------------------------------------------------------------------

@@ -1,42 +1,85 @@
 
 #---------------------------------------------------------------------------
 """
-This module provides a publish-subscribe mechanism that allows one part 
-of your application to send a "message" and many other parts to receive 
-it, without any knowledge of each other. This helps decouple 
-modules of your application. 
+Provides "version 1" of pubsub's publish-subscribe API. 
 
-Receivers are referred to as "listeners", having subscribed to messages 
-of a specific "topic". Sending a message is as simple as calling a 
+Sending a message is as simple as calling a 
 function with a topic name and (optionally) some data that will be sent 
 to the listeners.  
 
-Any callable object can be a listener, if it can be called with one 
-parameter. Topic names form a hierarchy. Example use::
+Any callable object can be a message listener, if it can be called with one 
+parameter. Example use::
  
-    from wx.lib.pubsub import Publisher as pub
+    from pubsub import Publisher
     def aCallable(msg):
         print 'data received', msg.data
-    pub.subscribe(aCallable, 'some.topic')
-    pub.sendMessage('some.topic', data=123)
+    Publisher.subscribe(aCallable, 'some_topic')
+    Publisher.sendMessage('some_topic', data=123)
     // should see 'data received 123'
     
-An important feature of pubsub is that it does not affect callables' 
-lifetime: as soon as a listener is no longer in use in your application 
-except for being subscribed to pubsub topics, the Python interpreter 
-will be able to garbage collect it and pubsub will automatically 
-unsubscribe it. See Publisher class docs for more details. 
+Note: in this documentation, pubsub version 1 is assumed to be part of
+wxPython's `wx.lib` package. There isn't a reason for using version 1 
+other than for legacy wxPython applications. Even then, consider upgrading 
+your wxPython application to the latest API, as explained on the pubsub 
+website. 
 
-The version of pubsub in wx.lib is referred to as "pubsub 1". Thanks 
-to Robb Shecter and Robin Dunn for having provided its basis pre-2004
-and for offering that I take over its maintenance. Pubsub has since 
-evolved into a separate package called PyPubSub hosted on SourceForge
-(http://pubsub.sourceforge.net), aka "pubsub 3". It has better support 
-for message data via keyword arguments, notifications for calls into
-pubsub, exception trapping for listeners, and topic tree documentation.
+The three important concepts for pubsub are:
+
+- listener: a function, bound method or callable object that can be 
+  called with one parameter (not counting 'self' in the case of methods). 
+  For instance, these listeners are ok::
+
+      class Foo:
+          def __call__(self, a, b=1): pass # can be called with only one arg
+          def meth(self,  a):         pass # takes only one arg
+          def meth2(self, a=2, b=''): pass # can be called with one arg
+
+      def func(a, b=''): pass
+
+      Foo foo
+
+      import pubsub as Publisher
+      Publisher.subscribe(foo)           # functor
+      Publisher.subscribe(foo.meth)      # bound method
+      Publisher.subscribe(foo.meth2)     # bound method
+      Publisher.subscribe(func)          # function
+
+  The three types of callables all have signature that allows a call 
+  with only one argument. When called, the argument will be a reference 
+  to a pub.Message object, containing both the data and topic name of 
+  the message. In every example above, the 'a.data' will contain
+  the message data, 'a.topic' will contain the topic name. 
+
+- topic: a single word, a tuple of words, or a string containing a
+  set of words separated by dots, for example: 'sports.baseball'.
+  A tuple or a dotted notation string denotes a hierarchy of
+  topics from most general to least. For example, a listener of
+  this topic::
+
+      'sports.baseball'
+
+  would receive messages for these topics::
+
+      'sports.baseball               # because same
+      'sports.baseball.highscores'   # because more specific
+
+  but not these::
+
+       'sports'      # because more general
+       'news'        # because different topic
+
+- message: this is an instance of pub.Message, with self.topic referring to 
+  the topic name for which the message was sent, and self.data referring to
+  the `data` given to sendMessage(). 
+
+Note that an important feature of pubsub is that as soon as a listener 
+is no longer in use in your application (except for being subscribed 
+to pubsub topics), pubsub will automatically unsubscribe it. See 
+PublisherClass docs for more details. 
+
 
 :Author:      Oliver Schoenborn
-:Copyright: Copyright 2006-2009 by Oliver Schoenborn, all rights reserved.
+:Copyright: Copyright since 2006 by Oliver Schoenborn, all rights reserved.
 :License: BSD, see LICENSE.txt for details.
 """
 
@@ -495,73 +538,16 @@ class _SingletonKey:
 
 class PublisherClass:
     """
-    The publish/subscribe manager.  It keeps track of which listeners
-    are interested in which topics (see subscribe()), and sends a
-    Message for a given topic to listeners that have subscribed to
-    that topic, with optional user data (see sendMessage()).
+    Class to manage publishing, subscribing and message sending.  
     
-    The three important concepts for pubsub are:
-        
-    - listener: a function, bound method or
-      callable object that can be called with one parameter
-      (not counting 'self' in the case of methods). The parameter
-      will be a reference to a Message object. E.g., these listeners
-      are ok::
-          
-          class Foo:
-              def __call__(self, a, b=1): pass # can be called with only one arg
-              def meth(self,  a):         pass # takes only one arg
-              def meth2(self, a=2, b=''): pass # can be called with one arg
-        
-          def func(a, b=''): pass
-          
-          Foo foo
-        
-          import pubsub as Publisher
-          Publisher.subscribe(foo)           # functor
-          Publisher.subscribe(foo.meth)      # bound method
-          Publisher.subscribe(foo.meth2)     # bound method
-          Publisher.subscribe(func)          # function
-          
-      The three types of callables all have arguments that allow a call 
-      with only one argument. In every case, the parameter 'a' will contain
-      the message. 
+    Note: User code should not instantiate this class directly. 
+    Instead, a module attribute named 'Publisher' provides a
+    unique instance of this class, ensuring that all modules 
+    use the same publisher. 
     
-    - topic: a single word, a tuple of words, or a string containing a
-      set of words separated by dots, for example: 'sports.baseball'.
-      A tuple or a dotted notation string denotes a hierarchy of
-      topics from most general to least. For example, a listener of
-      this topic::
-    
-          ('sports','baseball')
-    
-      would receive messages for these topics::
-    
-          ('sports', 'baseball')                 # because same
-          ('sports', 'baseball', 'highscores')   # because more specific
-    
-      but not these::
-    
-           'sports'      # because more general
-          ('sports',)    # because more general
-          () or ('')     # because only for those listening to 'all' topics
-          ('news')       # because different topic
-          
-    - message: this is an instance of Message, containing the topic for 
-      which the message was sent, and any data the sender specified. 
-    
-    :note: This class is not directly visible to importers of pubsub.
-           A singleton instance of it, named Publisher, is created by 
-           the module at load time, allowing to write 'Publisher.method()'.
-           All the singleton's methods are made accessible at module
-           level so that knowing about the singleton is not necessary.
-           This does imply that help docs generated from this module via 
-           help(pubsub) will show several module-level functions, whose 
-           first parameter is `self`. You should ignore that parameter 
-           and consider it to be implicitely refering to the singleton. 
-           E.g. if help() lists `getDeliveryCount(self)`, you call it as 
-           `pubsub.getDeliveryCount()`.
-
+    The most important methods are sendMessage() and subscribe(). 
+    The remaining ones are likely helpful only for debugging an 
+    application's message sending/receiving.
     """
     
     __ALL_TOPICS_TPL = (ALL_TOPICS, )
@@ -729,7 +715,7 @@ class PublisherClass:
                 'topic1' and ('topic2','subtopic2'), this method
                 returns::
             
-                associatedTopics = [('topic1',), ('topic2','subtopic2')]
+                    associatedTopics = [('topic1',), ('topic2','subtopic2')]
         """
         return self.__topicTree.getTopics(listener)
     

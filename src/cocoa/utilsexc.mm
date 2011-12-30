@@ -4,7 +4,7 @@
 // Author:      Ryan Norton
 // Modified by:
 // Created:     2004-10-05
-// RCS-ID:      $Id: utilsexc.mm 48107 2007-08-15 16:12:45Z DE $
+// RCS-ID:      $Id: utilsexc.mm 65896 2010-10-24 22:40:11Z VZ $
 // Copyright:   (c) Ryan Norton
 // Licence:     wxWindows licence
 // Notes:       This code may be useful on platforms other than Darwin.
@@ -142,7 +142,8 @@ WX_IMPLEMENT_GET_OBJC_CLASS(wxTaskHandler,NSObject)
 
 long wxExecute(const wxString& command,
                int sync,
-               wxProcess *handle)
+               wxProcess *handle,
+               const wxExecuteEnv *env)
 {
     NSTask* theTask = [[NSTask alloc] init];
 

@@ -1,15 +1,15 @@
 """
-ZoomBar is a class that *appoximatively* mimics the behaviour of the Mac Dock,
+L{ZoomBar} is a class that *appoximatively* mimics the behaviour of the Mac Dock,
 inside a `wx.Panel`.
 
 
 Description
 ===========
 
-ZoomBar is a class that *appoximatively* mimics the behaviour of the Mac Dock,
+L{ZoomBar} is a class that *appoximatively* mimics the behaviour of the Mac Dock,
 inside a `wx.Panel`.
 
-Once you hover mouse over the ZoomBar correct button will bubble up, grow to
+Once you hover mouse over the L{ZoomBar} correct button will bubble up, grow to
 predefined size, so you can easily see the button you are about to click and
 have larger area to click. Difference this makes is amazing.
 
@@ -18,31 +18,67 @@ as to zoom from a central point. Also the container is able to move the
 remaining buttons around the zoomed button.
 
 
-Example Usage
-=============
+Usage
+=====
 
-Sample usage for ZoomBar::
+Usage example::
 
-    bar = ZB.ZoomBar(self, -1)
-
-    normalImages = glob.glob(bitmapDir + "/*96.png")
-    reflectionImages = glob.glob(bitmapDir + "/*96Flip40.png")
-        
-    for std, ref in zip(normalImages, reflectionImages):
+    import os
+    import random
+    import glob
     
-        bname = os.path.split(std)[1][0:-6]
+    import wx
+    import wx.lib.agw.zoombar as ZB
 
-        normalBmp = wx.Bitmap(std, wx.BITMAP_TYPE_PNG)
-        reflectionBmp = wx.Bitmap(ref, wx.BITMAP_TYPE_PNG)
-        bar.AddButton(normalBmp, reflectionBmp, bname)
+    class MyFrame(wx.Frame):
 
-    bar.ResetSize()
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "ZoomBar Demo")
+
+            panel = wx.Panel(self)
+            
+            bar = ZB.ZoomBar(panel, -1)
+
+            standard = glob.glob(bitmapDir + "/*96.png")
+            reflections = glob.glob(bitmapDir + "/*96Flip40.png")
+
+            separatorImage = bitmapDir + "/separator.gif"
+            separatorReflection = bitmapDir + "/separatorFlip.png"
+            count = 0
+            
+            for std, ref in zip(standard, reflections):
+                if random.randint(0, 1) == 1 and count > 0:
+                    sep1 = wx.Bitmap(separatorImage, wx.BITMAP_TYPE_GIF)
+                    sep2 = wx.Bitmap(separatorReflection, wx.BITMAP_TYPE_PNG)
+                    bar.AddSeparator(sep1, sep2)
+                    
+                bname = os.path.split(std)[1][0:-6]
+                bar.AddButton(wx.Bitmap(std, wx.BITMAP_TYPE_PNG), wx.Bitmap(ref, wx.BITMAP_TYPE_PNG), bname)
+                count += 1
+                
+            bar.ResetSize()
+
+            sizer = wx.BoxSizer(wx.HORIZONTAL)
+            sizer.Add(bar, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 15)
+            panel.SetSizer(sizer)
+            
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
 
 
 Supported Platforms
 ===================
 
-ZoomBar has been tested on the following platforms:
+L{ZoomBar} has been tested on the following platforms:
   * Windows (Windows XP).
 
 
@@ -60,16 +96,16 @@ This class processes the following events:
 ============================== ==================================================
 Event Name                     Description
 ============================== ==================================================
-``EVT_ZOOMBAR``                Process a `wxEVT_ZOOMBAR` event, when a `ZoomBar` button is clicked.
+``EVT_ZOOMBAR``                Process a ``wxEVT_ZOOMBAR`` event, when a L{ZoomBar} button is clicked.
 ============================== ==================================================
 
 
 License And Version
 ===================
 
-ZoomBar is distributed under the wxPython license.
+L{ZoomBar} is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 03 Dec 2009, 09.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.1
 
@@ -265,7 +301,7 @@ zoombackgrey = PyEmbeddedImage(
 
 wxEVT_ZOOMBAR = wx.NewEventType()
 EVT_ZOOMBAR = wx.PyEventBinder(wxEVT_ZOOMBAR, 1)
-""" Process a `wxEVT_ZOOMBAR` event, when a `ZoomBar` button is clicked. """
+""" Process a `wxEVT_ZOOMBAR` event, when a L{ZoomBar} button is clicked. """
 
 # ----------------------------------------------------------------------------
 
@@ -671,7 +707,7 @@ class ZoomBarEvent(wx.PyCommandEvent):
 
 class ZoomBar(wx.PyControl):
     """
-    ZoomBar is a class that *appoximatively* mimics the behaviour of the Mac Dock,
+    L{ZoomBar} is a class that *appoximatively* mimics the behaviour of the Mac Dock,
     inside a `wx.Panel`.
 
     This is the main class implementation.
@@ -734,6 +770,8 @@ class ZoomBar(wx.PyControl):
         Gets the size which best suits the window: for a control, it would be the
         minimal size which doesn't truncate the control, for a panel - the same size
         as it would have after a call to `Fit()`.
+
+        :note: Overridden from `wx.PyControl`.
         """
 
         xSize = self._buttonSize*len(self._buttons) + len(self._buttons) + self._buttonSize
@@ -751,8 +789,7 @@ class ZoomBar(wx.PyControl):
         """
         Repositions all the buttons inside the L{ZoomBar}.
 
-        :param `toButton`: the button currently hovered by the mouse (and hence
-         zoomed).
+        :param `toButton`: the button currently hovered by the mouse (and hence zoomed).
         """
 
         nLeft = toButton._left

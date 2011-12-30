@@ -3,6 +3,20 @@
 # License: wxWindows
 
 #-----------------------------------------------------------------------------#
+Version 1.5
+Released: xx/xx/2011
+
++Fix parsing issue in Python tag generator for when line continuation characters
+are encountered.
+
+#-----------------------------------------------------------------------------#
+Version 1.4
+Released: 10/01/2011
+
++Workaround focus issue in wxPython 2.9 TreeCtrl
++Major improvements and fixes to Python scope handling.
+
+#-----------------------------------------------------------------------------#
 Version 1.3
 Released: 05/14/2011
 

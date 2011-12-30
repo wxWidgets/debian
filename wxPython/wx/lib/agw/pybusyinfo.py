@@ -1,14 +1,14 @@
 """
-PyBusyInfo constructs a busy info window and displays a message in it.
+L{PyBusyInfo} constructs a busy info window and displays a message in it.
 
 
 Description
 ===========
 
-PyBusyInfo constructs a busy info window and displays a message in it.
+L{PyBusyInfo} constructs a busy info window and displays a message in it.
 
 This class makes it easy to tell your user that the program is temporarily busy.
-Just create a PyBusyInfo object, and within the current scope, a message window
+Just create a L{PyBusyInfo} object, and within the current scope, a message window
 will be shown.
 
 For example::
@@ -26,10 +26,55 @@ You may also want to call `wx.Yield()` to refresh the window periodically (in ca
 it had been obscured by other windows, for example).
 
 
+Usage
+=====
+
+Usage example::
+
+    import wx    
+    import wx.lib.agw.pybusyinfo as PBI
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "PyBusyInfo Demo")
+
+            panel = wx.Panel(self)
+    
+            b = wx.Button(panel, -1, "Test PyBusyInfo ", (50,50))
+            self.Bind(wx.EVT_BUTTON, self.OnButton, b)
+
+
+        def OnButton(self, event):
+            
+            message = "Please wait 5 seconds, working..."
+            busy = PBI.PyBusyInfo(message, parent=self, title="Really Busy")
+
+            wx.Yield()
+            
+            for indx in xrange(5):
+                wx.MilliSleep(1000)
+
+            del busy
+
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
+
+
 Supported Platforms
 ===================
 
-PyBusyInfo has been tested on the following platforms:
+L{PyBusyInfo} has been tested on the following platforms:
   * Windows (Windows XP).
 
 
@@ -48,9 +93,9 @@ Events Processing
 License And Version
 ===================
 
-PyBusyInfo is distributed under the wxPython license.
+L{PyBusyInfo} is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 03 Dec 2009, 09.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.1
 

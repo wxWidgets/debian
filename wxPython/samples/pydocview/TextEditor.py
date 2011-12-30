@@ -5,7 +5,7 @@
 # Author:       Peter Yared
 #
 # Created:      8/15/03
-# CVS-ID:       $Id: TextEditor.py 46336 2007-06-05 21:50:57Z RD $
+# CVS-ID:       $Id: TextEditor.py 63496 2010-02-16 06:47:55Z RD $
 # Copyright:    (c) 2003-2005 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------
@@ -119,7 +119,7 @@ class TextView(wx.lib.docview.View):
             red = int("0x" + colorData[0:2], 16)
             green = int("0x" + colorData[2:4], 16)
             blue = int("0x" + colorData[4:6], 16)
-            color = wx.Color(red, green, blue)
+            color = wx.Colour(red, green, blue)
         return font, color
 
 
@@ -498,7 +498,7 @@ class TextOptionsPanel(wx.Panel):
             red = int("0x" + colorData[0:2], 16)
             green = int("0x" + colorData[2:4], 16)
             blue = int("0x" + colorData[4:6], 16)
-            self._textColor = wx.Color(red, green, blue)
+            self._textColor = wx.Colour(red, green, blue)
         self._originalTextColor = self._textColor
         parent.AddPage(self, _("Text"))
         fontLabel = wx.StaticText(self, -1, _("Font:"))

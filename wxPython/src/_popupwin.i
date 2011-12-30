@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     22-Dec-1998
-// RCS-ID:      $Id: _popupwin.i 43425 2006-11-14 22:03:54Z RD $
+// RCS-ID:      $Id: _popupwin.i 52876 2008-03-27 21:35:38Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,6 @@
 %}
 
 //---------------------------------------------------------------------------
-#ifndef __WXMAC__
 %newgroup;
 
 MustHaveApp(wxPopupWindow);
@@ -98,44 +97,11 @@ public:
     virtual void Popup(wxWindow *focus = NULL);
 
     // hide the window
-    virtual void Dismiss();   
+    virtual void Dismiss();
+
+    virtual bool CanDismiss();
+    virtual bool ProcessLeftDown(wxMouseEvent& event);
+
 };
 
-//---------------------------------------------------------------------------
-
-
-
-#else  // On Mac we need to provide dummy classes to keep the renamers in sync
-%{
-class wxPopupWindow : public wxWindow {
-public:
-    wxPopupWindow(wxWindow *, int)  { wxPyRaiseNotImplemented(); }
-    wxPopupWindow()                 { wxPyRaiseNotImplemented(); }
-};
-
-class wxPyPopupTransientWindow : public wxPopupWindow
-{
-public:
-    wxPyPopupTransientWindow(wxWindow *, int)  { wxPyRaiseNotImplemented(); }
-    wxPyPopupTransientWindow()                 { wxPyRaiseNotImplemented(); }
-};
-%}
-
-
-class wxPopupWindow : public wxWindow {
-public:
-    wxPopupWindow(wxWindow *parent, int flags = wxBORDER_NONE);
-    %RenameCtor(PrePopupWindow, wxPopupWindow());
-};
-
-%rename(PopupTransientWindow) wxPyPopupTransientWindow;
-class wxPyPopupTransientWindow : public wxPopupWindow
-{
-public:
-    wxPyPopupTransientWindow(wxWindow *parent, int style = wxBORDER_NONE);
-    %RenameCtor(PrePopupTransientWindow, wxPyPopupTransientWindow());
-};
-
-
-#endif
 //---------------------------------------------------------------------------

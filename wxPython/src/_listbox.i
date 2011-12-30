@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _listbox.i 55024 2008-08-08 04:54:54Z RD $
+// RCS-ID:      $Id: _listbox.i 63448 2010-02-09 21:38:51Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -132,9 +132,6 @@ public:
     // listbox and ensures that it is visible i.e. not scrolled out of view
     void AppendAndEnsureVisible(const wxString& s);
 
-    // return True if this listbox is sorted
-    bool IsSorted() const;
-
     // return the index of the item at this position or wxNOT_FOUND
     int HitTest(const wxPoint& pt) const;
 
@@ -205,14 +202,14 @@ public:
     bool  IsChecked(unsigned int index);
     void  Check(unsigned int index, int check = true);
 
-#if defined(__WXMSW__) || defined(__WXGTK__)
-    int GetItemHeight();
-#else
-    %pythoncode {
-        def GetItemHeight(self):
-            raise NotImplementedError
-    }
-#endif
+// #if defined(__WXMSW__) || defined(__WXGTK__)
+//     int GetItemHeight();
+// #else
+//     %pythoncode {
+//         def GetItemHeight(self):
+//             raise NotImplementedError
+//     }
+// #endif
 
     %pythoncode {
         def GetChecked(self):
@@ -260,8 +257,6 @@ public:
         Checked = property(GetChecked,SetChecked)
         CheckedStrings = property(GetCheckedStrings,SetCheckedStrings)
     }
-    
-    %property(ItemHeight, GetItemHeight);
 };
 
 //---------------------------------------------------------------------------

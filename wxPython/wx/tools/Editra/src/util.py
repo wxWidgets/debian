@@ -12,8 +12,8 @@ This file contains various helper functions and utilities that the program uses.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: util.py 67367 2011-03-31 19:27:05Z CJP $"
-__revision__ = "$Revision: 67367 $"
+__svnid__ = "$Id: util.py 69826 2011-11-27 17:07:37Z CJP $"
+__revision__ = "$Revision: 69826 $"
 
 #--------------------------------------------------------------------------#
 # Imports
@@ -420,26 +420,8 @@ def GetFileWriter(file_name, enc='utf-8'):
         writer = file_h
     return writer
 
-def GetFileManagerCmd():
-    """Get the file manager open command for the current os. Under linux
-    it will check for xdg-open, nautilus, konqueror, and Thunar, it will then
-    return which one it finds first or 'nautilus' it finds nothing.
-    @return: string
-
-    """
-    if wx.Platform == '__WXMAC__':
-        return 'open'
-    elif wx.Platform == '__WXMSW__':
-        return 'explorer'
-    else:
-        # Check for common linux filemanagers returning first one found
-        #          Gnome/ubuntu KDE/kubuntu  xubuntu
-        for cmd in ('xdg-open', 'nautilus', 'konqueror', 'Thunar'):
-            result = os.system("which %s > /dev/null" % cmd)
-            if result == 0:
-                return cmd
-        else:
-            return 'nautilus'
+# TODO: DEPRECATED - remove once callers migrate to ebmlib
+GetFileManagerCmd = ebmlib.GetFileManagerCmd
 
 def GetUserConfigBase():
     """Get the base user configuration directory path"""
@@ -554,6 +536,8 @@ def ResolvConfigDir(config_dir, sys_only=False):
     # running as as a built package.
     if not hasattr(sys, 'frozen'):
         path = __file__
+        if not ebmlib.IsUnicode(path):
+            path = path.decode(sys.getfilesystemencoding())
         path = os.sep.join(path.split(os.sep)[:-2])
         path =  path + os.sep + config_dir + os.sep
         if os.path.exists(path):
@@ -561,7 +545,7 @@ def ResolvConfigDir(config_dir, sys_only=False):
                 path = unicode(path, sys.getfilesystemencoding())
             return path
 
-    # If we get here we need to do some platform dependant lookup
+    # If we get here we need to do some platform dependent lookup
     # to find everything.
     path = sys.argv[0]
     if not ebmlib.IsUnicode(path):
@@ -754,7 +738,7 @@ class IntValidator(wx.PyValidator):
         self._min = min_
         self._max = max_
 
-        # Event managment
+        # Event management
         self.Bind(wx.EVT_CHAR, self.OnChar)
 
     def Clone(self):

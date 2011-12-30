@@ -1,9 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        src/gtk1/spinbutt.cpp
+// Name:        src/gtk1/spinctrl.cpp
 // Purpose:     wxSpinCtrl
 // Author:      Robert
 // Modified by:
-// RCS-ID:      $Id: spinctrl.cpp 39745 2006-06-15 17:58:49Z ABX $
+// RCS-ID:      $Id: spinctrl.cpp 69021 2011-09-07 16:57:42Z PC $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,7 @@
     #include "wx/utils.h"
     #include "wx/textctrl.h"    // for wxEVT_COMMAND_TEXT_UPDATED
     #include "wx/math.h"
+    #include "wx/crt.h"
 #endif
 
 #include "wx/gtk1/private.h"
@@ -60,7 +61,7 @@ static void gtk_spinctrl_callback( GtkWidget *WXUNUSED(widget), wxSpinCtrl *win 
     // values in range 5..50 is then, ummm, quite challenging (hint: you can't
     // enter 1!) (VZ)
     event.SetInt( (int)ceil(win->m_adjust->value) );
-    win->GetEventHandler()->ProcessEvent( event );
+    win->HandleWindowEvent( event );
 }
 }
 
@@ -82,15 +83,13 @@ gtk_spinctrl_text_changed_callback( GtkWidget *WXUNUSED(widget), wxSpinCtrl *win
 
     // see above
     event.SetInt( (int)ceil(win->m_adjust->value) );
-    win->GetEventHandler()->ProcessEvent( event );
+    win->HandleWindowEvent( event );
 }
 }
 
 //-----------------------------------------------------------------------------
 // wxSpinCtrl
 //-----------------------------------------------------------------------------
-
-IMPLEMENT_DYNAMIC_CLASS(wxSpinCtrl,wxControl)
 
 BEGIN_EVENT_TABLE(wxSpinCtrl, wxControl)
     EVT_CHAR(wxSpinCtrl::OnChar)
@@ -283,7 +282,7 @@ void wxSpinCtrl::OnChar( wxKeyEvent &event )
         GtkSpinButton *gsb = GTK_SPIN_BUTTON(m_widget);
         wxString val = wxGTK_CONV_BACK( gtk_entry_get_text( &gsb->entry ) );
         evt.SetString( val );
-        if (GetEventHandler()->ProcessEvent(evt)) return;
+        if (HandleWindowEvent(evt)) return;
     }
 
     event.Skip();

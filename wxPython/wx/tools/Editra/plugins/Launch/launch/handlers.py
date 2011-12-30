@@ -31,8 +31,8 @@ StyleText : Perform custom styling on the text as its added, line by line
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: handlers.py 67779 2011-05-23 21:12:48Z CJP $"
-__revision__ = "$Revision: 67779 $"
+__svnid__ = "$Id: handlers.py 69216 2011-09-29 03:13:32Z CJP $"
+__revision__ = "$Revision: 69216 $"
 
 __all__ = ['GetHandlerById', 'GetHandlerByName', 'GetState', 'DEFAULT_HANDLER']
 
@@ -179,7 +179,13 @@ class Meta:
     def __init__(self, meta_attrs):
         for (attr,default) in self._defaults.items():
             attr_val = meta_attrs.get(attr, default)
-            setattr(self, attr, copy.copy(attr_val))
+            try:
+                if attr in ('error', 'hotspot'):
+                    setattr(self, attr, attr_val)
+                else:
+                    setattr(self, attr, copy.copy(attr_val))
+            except Exception, msg:
+                util.Log("[Launch][err] Metadata copy error")
 
 class HandlerMeta(type):
     """Metaclass for manipulating a handler classes metadata converts

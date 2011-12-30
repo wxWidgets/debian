@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: statusbr.h 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: statusbr.h 61624 2009-08-06 00:01:43Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -14,14 +14,14 @@
 
 #if wxUSE_NATIVE_STATUSBAR
 
-class WXDLLEXPORT wxStatusBarPalm : public wxStatusBarBase
+class WXDLLIMPEXP_CORE wxStatusBarPalm : public wxStatusBarBase
 {
 public:
     // ctors and such
     wxStatusBarPalm();
     wxStatusBarPalm(wxWindow *parent,
                     wxWindowID id = wxID_ANY,
-                    long style = wxST_SIZEGRIP,
+                    long style = wxSTB_DEFAULT_STYLE,
                     const wxString& name = wxEmptyString)
     {
         (void)Create(parent, id, style, name);
@@ -29,7 +29,7 @@ public:
 
     bool Create(wxWindow *parent,
                 wxWindowID id = wxID_ANY,
-                long style = wxST_SIZEGRIP,
+                long style = wxSTB_DEFAULT_STYLE,
                 const wxString& name = wxEmptyString);
 
     virtual ~wxStatusBarPalm();
@@ -41,29 +41,22 @@ public:
     // a status line can have several (<256) fields numbered from 0
     virtual void SetFieldsCount(int number = 1, const int *widths = NULL);
 
-    // each field of status line has it's own text
-    virtual void     SetStatusText(const wxString& text, int number = 0);
-    virtual wxString GetStatusText(int number = 0) const;
-
-    // set status line fields' widths
+    // implement base class methods
     virtual void SetStatusWidths(int n, const int widths_field[]);
-
-    // sets the minimal vertical size of the status bar
     virtual void SetMinHeight(int height);
-
-    // get the position and size of the field's internal bounding rectangle
     virtual bool GetFieldRect(int i, wxRect& rect) const;
 
-    // get the border size
     virtual int GetBorderX() const;
     virtual int GetBorderY() const;
 
     void DrawStatusBar();
 
 protected:
+    virtual void DoUpdateStatusText(int nField);
+
     void CopyFieldsWidth(const int widths[]);
     void SetFieldsWidth();
-
+/*
     // store the text in the status bar
     wxListString **StatusTextBuffer;
     void SetStatusBufferText(const wxString& text, int number);
@@ -71,6 +64,9 @@ protected:
     wxListString *GetOrCreateStatusBuffer(int i);
     wxListString *GetStatusBufferStack(int i) const;
     void DeleteStatusBuffer();
+
+    TODO: reuse wxStatusBarBase's stack routines instead of reimplementing them here
+*/
 
     // override base class virtual
     void DoMoveWindow(int x, int y, int width, int height);

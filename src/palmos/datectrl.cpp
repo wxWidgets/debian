@@ -4,7 +4,7 @@
 // Author:      Wlodzimierz ABX Skiba
 // Modified by:
 // Created:     02/14/05
-// RCS-ID:      $Id: datectrl.cpp 38945 2006-04-28 12:44:37Z ABX $
+// RCS-ID:      $Id: datectrl.cpp 61508 2009-07-23 20:30:22Z VZ $
 // Copyright:   (c) Wlodzimierz Skiba
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,6 @@
 
 #include "wx/dynlib.h"
 
-#define _WX_DEFINE_DATE_EVENTS_
 #include "wx/dateevt.h"
 
 #include <Control.h>
@@ -123,7 +122,8 @@ bool wxDatePickerCtrl::SendClickEvent()
     int16_t day = m_dt.GetDay();
     int16_t year = m_dt.GetYear();
 
-    if(!SelectDay(selectDayByDay,&month,&day,&year,_T("Pick date")))
+    //if(!SelectDay(selectDayByDay,&month,&day,&year,wxT("Pick date")))
+    if(!SelectDay(selectDayByDay,&month,&day,&year, "Pick date"))
         return false;
     wxDateTime dt(m_dt);
     dt.Set((wxDateTime::wxDateTime_t)day,

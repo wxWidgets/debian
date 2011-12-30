@@ -7,7 +7,7 @@
 // Author:      Robin Dunn
 //
 // Created:     11-Oct-2003
-// RCS-ID:      $Id: pyclasses.h 57773 2009-01-02 05:25:50Z RD $
+// RCS-ID:      $Id: pyclasses.h 57774 2009-01-02 05:29:02Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -164,7 +164,9 @@ public:
 
 //---------------------------------------------------------------------------
 
+class wxPyHScrolledWindow;
 class wxPyVScrolledWindow;
+class wxPyHVScrolledWindow;
 class wxPyVListBox;
 class wxPyHtmlListBox;
 class wxPyPanel;

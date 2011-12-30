@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/5/2006 12:05:31 PM
-// RCS-ID:      $Id: richtextstyledlg.h 52117 2008-02-26 15:04:54Z JS $
+// RCS-ID:      $Id: richtextstyledlg.h 66680 2011-01-14 11:57:44Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,8 @@
 /*!
  * Includes
  */
+
+#include "wx/richtext/richtextuicustomization.h"
 
 ////@begin includes
 ////@end includes
@@ -31,6 +33,7 @@
 class wxBoxSizer;
 class wxRichTextStyleListCtrl;
 class wxRichTextCtrl;
+class wxStdDialogButtonSizer;
 ////@end forward declarations
 
 class WXDLLIMPEXP_FWD_CORE wxButton;
@@ -79,6 +82,7 @@ class WXDLLIMPEXP_RICHTEXT wxRichTextStyleOrganiserDialog: public wxDialog
 {
     DECLARE_DYNAMIC_CLASS( wxRichTextStyleOrganiserDialog )
     DECLARE_EVENT_TABLE()
+    DECLARE_HELP_PROVISION()
 
 public:
     /// Constructors
@@ -207,6 +211,7 @@ public:
     wxButton* m_closeButton;
     wxBoxSizer* m_bottomButtonSizer;
     wxCheckBox* m_restartNumberingCtrl;
+    wxStdDialogButtonSizer* m_stdButtonSizer;
     wxButton* m_okButton;
     wxButton* m_cancelButton;
     /// Control identifiers

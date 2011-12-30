@@ -2,7 +2,7 @@
 // Name:        wx/gtk/region.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: region.h 42873 2006-10-31 22:48:38Z RR $
+// Id:          $Id: region.h 69815 2011-11-25 00:52:24Z PC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,8 +35,10 @@ public:
         InitRect(rect.x, rect.y, rect.width, rect.height);
     }
 
-    wxRegion( size_t n, const wxPoint *points, int fillStyle = wxODDEVEN_RULE );
+    wxRegion( size_t n, const wxPoint *points,
+              wxPolygonFillMode fillStyle = wxODDEVEN_RULE );
 
+#if wxUSE_IMAGE
     wxRegion( const wxBitmap& bmp)
     {
         Union(bmp);
@@ -46,6 +48,7 @@ public:
     {
         Union(bmp, transColour, tolerance);
     }
+#endif // wxUSE_IMAGE
 
     virtual ~wxRegion();
 
@@ -61,9 +64,8 @@ public:
     GdkRegion *GetRegion() const;
 
 protected:
-    // ref counting code
-    virtual wxObjectRefData *CreateRefData() const;
-    virtual wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
+    virtual wxGDIRefData *CreateGDIRefData() const;
+    virtual wxGDIRefData *CloneGDIRefData(const wxGDIRefData *data) const;
 
     // wxRegionBase pure virtuals
     virtual bool DoIsEqual(const wxRegion& region) const;
@@ -120,13 +122,11 @@ private:
     void Init();
     void CreateRects( const wxRegion& r );
 
-    size_t   m_current;
     wxRegion m_region;
-
     wxRect *m_rects;
-    size_t  m_numRects;
+    int m_numRects;
+    int m_current;
 
-private:
     DECLARE_DYNAMIC_CLASS(wxRegionIterator)
 };
 

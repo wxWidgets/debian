@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node9" href="$classwx_grid_bag_sizer.html" title="A wxSizer that can lay out items in a virtual grid like a wxFlexGridSizer but in this case explicit p..." alt="" coords="7,326,121,357"/>
+<area shape="rect" id="node2" href="$classwx_grid_sizer.html" title="A grid sizer is a sizer which lays out its children in a two&#45;dimensional table with all table fields ..." alt="" coords="19,166,109,197"/>
+<area shape="rect" id="node4" href="$classwx_sizer.html" title="wxSizer is the abstract base class used for laying out subwindows in a window." alt="" coords="31,86,97,117"/>
+<area shape="rect" id="node6" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="27,6,101,37"/>
+</map>

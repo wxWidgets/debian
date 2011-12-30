@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        cocoa/NSControl.cpp
+// Name:        src/cocoa/NSControl.mm
 // Purpose:     wxCocoaNSControl
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/02/15
-// RCS-ID:      $Id: 
+// RCS-ID:      $Id: NSControl.mm 67254 2011-03-20 00:14:35Z DS $
 // Copyright:   (c) 2003 David Elliott
-// Licence:     wxWidgets licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================

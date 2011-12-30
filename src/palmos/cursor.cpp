@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: cursor.cpp 42752 2006-10-30 19:26:48Z VZ $
+// RCS-ID:      $Id: cursor.cpp 55884 2008-09-25 17:56:07Z FM $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -80,23 +80,15 @@ wxCursor::wxCursor(const wxImage& image)
 }
 #endif
 
-wxCursor::wxCursor(const char WXUNUSED(bits)[],
-                   int WXUNUSED(width),
-                   int WXUNUSED(height),
-                   int WXUNUSED(hotSpotX), int WXUNUSED(hotSpotY),
-                   const char WXUNUSED(maskBits)[])
-{
-}
-
 wxCursor::wxCursor(const wxString& filename,
-                   long kind,
+                   wxBitmapType kind,
                    int hotSpotX,
                    int hotSpotY)
 {
 }
 
 // Cursors by stock number
-wxCursor::wxCursor(int idCursor)
+void wxCursor::InitFromStock(wxStockCursor idCursor)
 {
 }
 

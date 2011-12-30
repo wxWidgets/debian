@@ -2,7 +2,7 @@
 // Name:        src/gtk/dialog.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dialog.cpp 45606 2007-04-23 20:11:11Z VZ $
+// Id:          $Id: dialog.cpp 66559 2011-01-04 09:20:10Z SC $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,35 +13,29 @@
 #include "wx/dialog.h"
 
 #ifndef WX_PRECOMP
-    #include "wx/app.h"
-    #include "wx/frame.h"
     #include "wx/cursor.h"
 #endif // WX_PRECOMP
 
 #include "wx/evtloop.h"
 
-#include <gdk/gdk.h>
+#include "wx/scopedptr.h"
+
 #include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h>
 
-#include "wx/gtk/win_gtk.h"
+// this is defined in src/gtk/toplevel.cpp
+extern int wxOpenModalDialogsCount;
 
-//-----------------------------------------------------------------------------
-// global data
-//-----------------------------------------------------------------------------
+wxDEFINE_TIED_SCOPED_PTR_TYPE(wxGUIEventLoop)
 
-extern int g_openDialogs;
 
 //-----------------------------------------------------------------------------
 // wxDialog
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxDialog,wxTopLevelWindow)
-
 void wxDialog::Init()
 {
+    m_modalLoop = NULL;
     m_returnCode = 0;
-    m_sizeSet = false;
     m_modalShowing = false;
     m_themeEnabled = true;
 }
@@ -76,21 +70,22 @@ bool wxDialog::Show( bool show )
         EndModal( wxID_CANCEL );
     }
 
-    if (show && !m_sizeSet)
-    {
-        /* by calling GtkOnSize here, we don't have to call
-           either after showing the frame, which would entail
-           much ugly flicker nor from within the size_allocate
-           handler, because GTK 1.1.X forbids that. */
+    if (show && CanDoLayoutAdaptation())
+        DoLayoutAdaptation();
 
-        GtkOnSize();
-    }
+    bool ret = wxDialogBase::Show(show);
 
-    bool ret = wxWindow::Show( show );
-
-    if (show) InitDialog();
+    if (show)
+        InitDialog();
 
     return ret;
+}
+
+wxDialog::~wxDialog()
+{
+    // if the dialog is modal, this will end its event loop
+    if ( IsModal() )
+        EndModal(wxID_CANCEL);
 }
 
 bool wxDialog::IsModal() const
@@ -105,31 +100,20 @@ void wxDialog::SetModal( bool WXUNUSED(flag) )
 
 int wxDialog::ShowModal()
 {
-    if (IsModal())
+    wxASSERT_MSG( !IsModal(), "ShowModal() can't be called twice" );
+
+    // release the mouse if it's currently captured as the window having it
+    // will be disabled when this dialog is shown -- but will still keep the
+    // capture making it impossible to do anything in the modal dialog itself
+    wxWindow * const win = wxWindow::GetCapture();
+    if ( win )
+        win->GTKReleaseMouseAndNotify();
+
+    wxWindow * const parent = GetParentForModalDialog();
+    if ( parent )
     {
-       wxFAIL_MSG( wxT("wxDialog:ShowModal called twice") );
-       return GetReturnCode();
-    }
-
-    // use the apps top level window as parent if none given unless explicitly
-    // forbidden
-    if ( !GetParent() && !(GetWindowStyleFlag() & wxDIALOG_NO_PARENT) )
-    {
-        extern WXDLLIMPEXP_DATA_CORE(wxList) wxPendingDelete;
-
-        wxWindow * const parent = wxTheApp->GetTopWindow();
-
-        if ( parent &&
-                parent != this &&
-                    parent->IsShownOnScreen() &&
-                        !parent->IsBeingDeleted() &&
-                            !wxPendingDelete.Member(parent) &&
-                                !(parent->GetExtraStyle() & wxWS_EX_TRANSIENT) )
-        {
-            m_parent = parent;
-            gtk_window_set_transient_for( GTK_WINDOW(m_widget),
-                                          GTK_WINDOW(parent->m_widget) );
-        }
+        gtk_window_set_transient_for( GTK_WINDOW(m_widget),
+                                      GTK_WINDOW(parent->m_widget) );
     }
 
     wxBusyCursorSuspender cs; // temporarily suppress the busy cursor
@@ -138,16 +122,20 @@ int wxDialog::ShowModal()
 
     m_modalShowing = true;
 
-    g_openDialogs++;
+    wxOpenModalDialogsCount++;
 
     // NOTE: gtk_window_set_modal internally calls gtk_grab_add() !
     gtk_window_set_modal(GTK_WINDOW(m_widget), TRUE);
 
-    wxEventLoop().Run();
+    // Run modal dialog event loop.
+    {
+        wxGUIEventLoopTiedPtr modal(&m_modalLoop, new wxGUIEventLoop());
+        m_modalLoop->Run();
+    }
 
     gtk_window_set_modal(GTK_WINDOW(m_widget), FALSE);
 
-    g_openDialogs--;
+    wxOpenModalDialogsCount--;
 
     return GetReturnCode();
 }
@@ -158,13 +146,16 @@ void wxDialog::EndModal( int retCode )
 
     if (!IsModal())
     {
-        wxFAIL_MSG( wxT("wxDialog:EndModal called twice") );
+        wxFAIL_MSG( "either wxDialog:EndModal called twice or ShowModal wasn't called" );
         return;
     }
 
     m_modalShowing = false;
 
-    gtk_main_quit();
+    // Ensure Exit() is only called once. The dialog's event loop may be terminated
+    // externally due to an uncaught exception.
+    if (m_modalLoop && m_modalLoop->IsRunning())
+        m_modalLoop->Exit();
 
     Show( false );
 }

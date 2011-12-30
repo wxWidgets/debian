@@ -4,9 +4,9 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/06/17
-// RCS-ID:      $Id: colour.mm 51585 2008-02-08 00:35:39Z DE $
+// RCS-ID:      $Id: colour.mm 66555 2011-01-04 08:31:53Z SC $
 // Copyright:   (c) 2003 David Elliott
-// Licence:     wxWidgets licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #include "wx/wxprec.h"
@@ -21,8 +21,6 @@
 #include "wx/cocoa/ObjcRef.h"
 
 #import <AppKit/NSColor.h>
-
-IMPLEMENT_DYNAMIC_CLASS(wxColour, wxObject)
 
 void wxColour::Init()
 {

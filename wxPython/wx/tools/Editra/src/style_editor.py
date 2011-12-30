@@ -17,8 +17,8 @@ editor can load to configure the styles of the text.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: style_editor.py 67139 2011-03-07 02:44:26Z CJP $"
-__revision__ = "$Revision: 67139 $"
+__svnid__ = "$Id: style_editor.py 69752 2011-11-13 23:15:40Z CJP $"
+__revision__ = "$Revision: 69752 $"
 
 #--------------------------------------------------------------------------#
 # Imports
@@ -34,6 +34,7 @@ from ed_style import StyleItem
 import util
 import syntax.syntax as syntax
 import eclib
+import ebmlib
 import ed_basewin
 
 # Function Aliases
@@ -174,7 +175,7 @@ class StyleEditor(ed_basewin.EdBaseDialog):
 
 #-----------------------------------------------------------------------------#
 
-class StyleEditorBox(eclib.ControlBox):
+class StyleEditorBox(ed_basewin.EdBaseCtrlBox):
     """StyleEditor main Panel"""
     def __init__(self, parent):
         super(StyleEditorBox, self).__init__(parent)
@@ -182,7 +183,7 @@ class StyleEditorBox(eclib.ControlBox):
         # Attributes
         self._prevTheme = None
         ctrlbar = self.CreateControlBar(wx.TOP)
-        ss_lst = util.GetResourceFiles(u'styles', get_all=True)
+        ss_lst = util.GetResourceFiles(u'styles', get_all=True, title=False)
         ss_lst = [sheet for sheet in ss_lst if not sheet.startswith('.')]
         self._style_ch = wx.Choice(ctrlbar, ed_glob.ID_PREF_SYNTHEME,
                                    choices=sorted(ss_lst))
@@ -255,12 +256,12 @@ class StyleEditorBox(eclib.ControlBox):
         @param sheet: sheet name
 
         """
-        cfgdir = ed_glob.CONFIG['STYLES_DIR']
         if syspath:
-            cfgdir = ed_glob.CONFIG['SYS_STYLES_DIR']
+            cfgdir = ed_glob.CONFIG['SYS_STYLES_DIR'] # System Directory
+        else:
+            cfgdir = ed_glob.CONFIG['STYLES_DIR'] # User Directory
         sheet_path = os.path.join(cfgdir, sheet)
-        if not sheet_path.endswith(u"ess"):
-            sheet_path += u".ess"
+        sheet_path = ebmlib.AddFileExtension(sheet_path, '.ess')
         return sheet_path
 
     def IsSystemStyleSheet(self):
@@ -274,7 +275,7 @@ class StyleEditorBox(eclib.ControlBox):
 
     def RefreshStyleSheets(self):
         """Update the list of style sheets"""
-        ss_lst = util.GetResourceFiles(u'styles', get_all=True)
+        ss_lst = util.GetResourceFiles(u'styles', get_all=True, title=False)
         ss_lst = [sname for sname in ss_lst if not sname.startswith('.')]
         self.SyntaxSheets = ss_lst
 

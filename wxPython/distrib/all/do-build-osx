@@ -21,7 +21,7 @@ set -o errexit
 echo "-=-=-=-  Hello from $HOSTNAME  -=-=-=-"
 
 if [ $# -lt 6 ]; then
-    echo "Usage: $0 WXDIR DESTDIR SKIPCLEAN VERSION PYVER CHARTYPE [FLAGS]"
+    echo "Usage: $0 WXDIR DESTDIR SKIPCLEAN VERSION PYVER [carbon|cocoa]"
     exit 1
 fi
 
@@ -30,11 +30,10 @@ DESTDIR=$2
 SKIPCLEAN=$3
 VERSION=$4
 PYVER=$5
-CHARTYPE=$6
+PORT=$6
 
 
-#export PATH=/sw/bin:/usr/local/bin:$PATH
-export PATH=/sw/bin:/sw/sbin:/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:.:/usr/X11R6/bin
+export PATH=/sw/bin:/sw/sbin:/mp/bin:/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:.:/usr/X11R6/bin
 
 # untar the source 
 echo "Unarchiving wxPython-src-$VERSION.tar.bz2"
@@ -55,24 +54,15 @@ mkdir -p dist
 
 OSX_VERSION=`sw_vers -productVersion`
 OSX_VERSION=${OSX_VERSION:0:4}
-TAG=universal
-#PYTHON=`which python$PYVER`
-#PYTHONW=`which pythonw$PYVER`
+if [ "$PORT" = "cocoa" ]; then
+    COCOA="--osx_cocoa"
+fi
 PYTHON=python$PYVER
 PYTHONW=pythonw$PYVER
 SHORTVER=${VERSION:0:3}
 #PYPREFIX=`$PYTHON -c "import sys; print sys.exec_prefix"`
 #PYLIB=$PYPREFIX/lib/python$PYVER
 PYSYSEXE=`$PYTHON -c "import sys; print sys.executable"`
-
-
-# Test if the python we are using is the System installed framework 
-# or one that was installed by the user.  This changes where the 
-# site-packages (or its alias) is located in the installer tree.
-#APPLE_PYTHON=no
-#if [ -e /Library/Python/$PYVER ] && [ `dirname $PYTHON` == "/usr/bin" ]; then
-#    APPLE_PYTHON=yes
-#fi
 
 
 TARBALL=$TARBALLDIR/wxPython-src-$VERSION.tar.bz2
@@ -95,25 +85,28 @@ fi
 
 
 
+function my_makedmg {
+    DMGROOTDIR=$1
+    DMGDIR=$2
+    dmgname=$3
+    echo my_makedmg $DMGROOTDIR $DMGDIR $dmgname
+    hdiutil create -format UDZO -volname $dmgname -imagekey zlib-level=9 \
+                   -srcfolder $DMGROOTDIR   $DMGDIR/$dmgname.dmg
+}
 
 
 function do_universal_build {
 
-    CTYPE=$1
-    if [ $CTYPE = unicode ]; then 
-        PYUNICODEOPT=1
-    else
-        PYUNICODEOPT=0
-    fi
-
-    PREFIX=/usr/local/lib/wxPython-$CTYPE-$VERSION
-    PREFIX_LINK=/usr/local/lib/wxPython-$CTYPE
-#    SITEPACKAGES=$PYLIB/site-packages
+    PYUNICODEOPT="--unicode"
+    
+    PREFIX=/usr/local/lib/wxPython-$VERSION
+    PREFIX_LINK=/usr/local/lib/wxPython
     SITEPACKAGES=$PREFIX/lib/python$PYVER/site-packages
     BINPREFIX=/usr/local/bin
     WXROOT=$WXDIR
-    TMPDIR=$DESTDIR/_build_
-    BUILDROOT=$TMPDIR/build
+    ##TMPDIR=$DESTDIR/_build_
+    TMPDIR=$DESTDIR
+    BUILDROOT=$TMPDIR/bld
     INSTALLROOT=$TMPDIR/install-root
     INSTALLAPPS=$TMPDIR/install-apps
 
@@ -137,129 +130,30 @@ function do_universal_build {
 
     pushd $BUILDROOT
 
+    # Call the new fangled handy dandy build script to build both
+    # wxWidgets and wxPython.
+    pushd $WXROOT/wxPython
+    echo $PYTHON -u ./build-wxpython.py \
+	$PYUNICODEOPT \
+	--mac_universal_binary $COCOA \
+	--build_dir=$BUILDROOT \
+	--install \
+	--prefix=$PREFIX \
+	--installdir=$INSTALLROOT \
+        --wxpy_installdir=$INSTALLROOT$PREFIX
 
-    #-----------------------------------------------------------------
-    # Build and install wxWidgets
-    export WXROOT
-    export BUILDPREFIX=$PREFIX
-    export INSTALLDIR=$INSTALLROOT$PREFIX
-    if [ $PYVER = 2.7 ]; then
-	export PPC_USE_10_4=yes
-    fi
-    $WXDIR/distrib/scripts/mac/macbuild-lipo wxpython $CTYPE
+    $PYTHON -u ./build-wxpython.py \
+	$PYUNICODEOPT \
+	--mac_universal_binary $COCOA \
+	--build_dir=$BUILDROOT \
+	--install \
+	--prefix=$PREFIX \
+	--installdir=$INSTALLROOT \
+        --wxpy_installdir=$INSTALLROOT$PREFIX
 
-    # relink wx-config with a relative link
-    cd $INSTALLROOT$PREFIX/bin
-    rm wx-config
-    ln -s ../lib/wx/config/* wx-config
-
-    #-----------------------------------------------------------------
-    # Now wxPython.  Build ppc, then i386
-    ARCH=ppc
-    if [ $PYVER = 2.7 ]; then
-	export CXX="g++-4.0 -arch $ARCH"
-	export CC="gcc-4.0 -arch $ARCH"
-	export MACOSX_DEPLOYMENT_TARGET=10.4
-    else
-	export CXX="g++-3.3 -arch $ARCH -DMAC_OS_X_VERSION_MAX_ALLOWED=1040"
-	export CC="gcc-3.3 -arch $ARCH -DMAC_OS_X_VERSION_MAX_ALLOWED=1040"
-	export MACOSX_DEPLOYMENT_TARGET=10.3
-    fi
-#    mkdir -p $INSTALLROOT/$ARCH
-    mkdir -p $BUILDROOT/$ARCH
-        
-    echo "Building wxPython for PPC..."
-    cd $WXROOT/wxPython
-    $PYTHON setup.py \
-        UNICODE=$PYUNICODEOPT \
-        NO_SCRIPTS=1 \
-        EP_ADD_OPTS=1 \
-        WX_CONFIG="$INSTALLROOT/$PREFIX/bin/wx-config --prefix=$INSTALLROOT$PREFIX" \
-        BUILD_BASE=$BUILDROOT/$ARCH/wxPython \
-        ARCH="$ARCH" \
-        build
-        
-    ARCH=i386
-    export CXX="g++-4.0 -arch $ARCH"
-    export CC="gcc-4.0 -arch $ARCH"
-    export MACOSX_DEPLOYMENT_TARGET=10.4
-#    mkdir -p $INSTALLROOT/$ARCH
-    mkdir -p $BUILDROOT/$ARCH
-        
-    echo "Building wxPython for Intel..."        
-    cd $WXROOT/wxPython
-    $PYTHON setup.py \
-        UNICODE=$PYUNICODEOPT \
-        NO_SCRIPTS=1 \
-        EP_ADD_OPTS=1 \
-        WX_CONFIG="$INSTALLROOT/$PREFIX/bin/wx-config --prefix=$INSTALLROOT$PREFIX" \
-        BUILD_BASE=$BUILDROOT/$ARCH/wxPython \
-        ARCH="$ARCH" \
-        build
+    popd
 
 
-
-    #-----------------------------------------------------------------
-    # Install the two builds of wxPython
-
-    ARCH=ppc
-    if [ $PYVER = 2.7 ]; then
-	export CXX="g++-4.0 -arch $ARCH"
-	export CC="gcc-4.0 -arch $ARCH"
-	export MACOSX_DEPLOYMENT_TARGET=10.4
-    else
-	export CXX="g++-3.3 -arch $ARCH -DMAC_OS_X_VERSION_MAX_ALLOWED=1030"
-	export CC="gcc-3.3 -arch $ARCH -DMAC_OS_X_VERSION_MAX_ALLOWED=1030"
-	export MACOSX_DEPLOYMENT_TARGET=10.3
-    fi
-    cd $WXROOT/wxPython
-    $PYTHON setup.py \
-        UNICODE=$PYUNICODEOPT \
-        NO_SCRIPTS=1 \
-        EP_ADD_OPTS=1 \
-        WX_CONFIG="$INSTALLROOT$PREFIX/bin/wx-config --prefix=$INSTALLROOT$PREFIX" \
-        BUILD_BASE=$BUILDROOT/$ARCH/wxPython \
-        install \
-	--prefix=$INSTALLROOT$PREFIX/$ARCH
-
-#        --root=$INSTALLROOT/$ARCH
-
-    ARCH=i386
-    export CXX="g++-4.0 -arch $ARCH"
-    export CC="gcc-4.0 -arch $ARCH"
-    export MACOSX_DEPLOYMENT_TARGET=10.4
-    cd $WXROOT/wxPython
-    $PYTHON setup.py \
-        UNICODE=$PYUNICODEOPT \
-        NO_SCRIPTS=1 \
-        EP_ADD_OPTS=1 \
-        WX_CONFIG="$INSTALLROOT$PREFIX/bin/wx-config --prefix=$INSTALLROOT$PREFIX" \
-        BUILD_BASE=$BUILDROOT/$ARCH/wxPython \
-        install \
-	--prefix=$INSTALLROOT$PREFIX/$ARCH
-
-#        --root=$INSTALLROOT/$ARCH
-
-    # Lipo them together
-    echo "Lipoing $INSTALLROOT/ppc and $INSTALLROOT/i386..."
-    $PYTHON $WXROOT/distrib/scripts/mac/lipo-dir.py $INSTALLROOT$PREFIX/ppc $INSTALLROOT$PREFIX/i386 $INSTALLROOT$PREFIX
-    
-    rm -rf $INSTALLROOT$PREFIX/ppc $INSTALLROOT$PREFIX/i386
-
-
-#     # Apple's Python Framework (such as what comes with Panther)
-#     # sym-links the site-packages dir in the framework to
-#     # /Library/Python/$PYVER so we need to move the files so they are
-#     # installed in the physical location, not the virtual one.
-#     if [ $APPLE_PYTHON == yes ]; then
-#         if [ -e $INSTALLROOT/Library/Python/$PYVER ]; then
-#             rm -r $INSTALLROOT/Library/Python/$PYVER
-#         fi          
-#         mkdir -p $INSTALLROOT/Library/Python/$PYVER
-#         mv $INSTALLROOT/$SITEPACKAGES/* $INSTALLROOT/Library/Python/$PYVER
-#         rm -r $INSTALLROOT/System
-#         SITEPACKAGES=/Library/Python/$PYVER
-#     fi
 
     PKGDIR=`cat $INSTALLROOT$SITEPACKAGES/wx.pth`
     rm $INSTALLROOT$SITEPACKAGES/wx.pth
@@ -279,7 +173,7 @@ EOF
     $PYTHON CreateMacScripts.py $INSTALLROOT $BINPREFIX
 
 
-    # Remove the .pyc/.pyo files they just take up space and can be recreated
+    # Remove the .pyc/.pyo files, they just take up space and can be recreated
     # during the install.
     pushd $WXROOT/wxPython
     $PYTHON $WXROOT/wxPython/distrib/mac/zappycfiles.py $INSTALLROOT > /dev/null
@@ -300,7 +194,7 @@ EOF
     cat > $RESOURCEDIR/Welcome.txt <<EOF
 Welcome!
 
-This Installer package will install the wxPython $CTYPE runtime $VERSION for the Universal version of MacPython $PYVER.  This includes:
+This Installer package will install the wxPython runtime $VERSION for the Universal version of MacPython $PYVER.  This includes:
 
     * The wxPython extension modules and library packages
     * The wxWidgets shared libraries and headers
@@ -370,17 +264,6 @@ done
 
 EOF
 
-#     # On Tiger the structure of the user installable dir changed
-#     # slightly.  Since we are installing the files as if it were
-#     # Panther then we need this little tweak to make it compatible.
-#     if [ $APPLE_PYTHON == yes ]; then
-#         cat >> $RESOURCEDIR/postflight <<EOF
-# # Add a .pth file for Tiger so our wx.pth can be found before the default wx from Apple
-# if [ -e \$2$SITEPACKAGES/site-packages ]; then
-#     echo "import site; site.addsitedir('$SITEPACKAGES')" > \$2$SITEPACKAGES/site-packages/00-compat-wx-path.pth
-# fi
-# EOF
-#     fi
 
 cat >> $RESOURCEDIR/postflight <<EOF
 exit 0
@@ -390,12 +273,12 @@ EOF
 
 
     # Build the main Installer Package...
-    PKGNAME=wxPython${SHORTVER}-osx-$CTYPE-$TAG-py$PYVER
+    PKGNAME=wxPython${SHORTVER}-osx-$PORT-py$PYVER
     rm -rf $PKGNAME.pkg
     $PYTHON $PROGDIR/buildpkg.py \
         --Title=$PKGNAME \
         --Version=$VERSION \
-        --Description="wxPython $CTYPE runtime $VERSION for the Universal version of MacPython $PYVER" \
+        --Description="wxPython runtime $VERSION for the Universal version of MacPython $PYVER" \
         --NeedsAuthorization="YES" \
         --Relocatable="NO" \
         --InstallOnly="YES" \
@@ -414,12 +297,11 @@ Welcome to wxPython!
 
 This disk image contains the following items:
 
-    wxPython${SHORTVER}-osx-$CTYPE-$VERSION-$TAG
+    wxPython${SHORTVER}-osx-$VERSION-$PORT
 
-        This Installer contains the wxPython runtime, built using the
-        $CTYPE build of the wxWidgets library.  It includes the
-        Python modules and extension modules for wxPython, as well as
-        the wxWidgets libraries.
+        This Installer contains the wxPython runtime version $VERSION.
+        It includes all the Python modules and extension modules for
+        wxPython, as well as the wxWidgets libraries.
 
         It is possible to have more than one version of the runtime
         installed at once if you wish.  The most recently installed
@@ -447,8 +329,10 @@ EOF
     cp $PROGDIR/uninstall_wxPython.py $DMGROOT
 
     # Make a disk image to hold these files
-    dmgname=wxPython${SHORTVER}-osx-$CTYPE-$VERSION-$TAG-py$PYVER
-    $PROGDIR/makedmg $DMGROOT $DMGDIR $dmgname
+    dmgname=wxPython${SHORTVER}-osx-$VERSION-$PORT-py$PYVER
+    #$PROGDIR/makedmg $DMGROOT $DMGDIR $dmgname
+    my_makedmg $DMGROOT $DMGDIR $dmgname
+
 
     echo Moving $DMGDIR/$dmgname.dmg to $DESTDIR
     mv $DMGDIR/$dmgname.dmg  $DESTDIR/$dmgname.dmg
@@ -505,9 +389,6 @@ installed wxPython runtime to be able to use any of them.
 Happy Hacking!
 EOF
 
-#   PyAlaMode            An extension of PyCrust that includes source
-#                        file editing capabilities.
-
 
     # wxDocs
     if [ ! -e $TARBALLDIR/wxPython-docs-$VERSION.tar.bz2 ]; then
@@ -522,17 +403,22 @@ EOF
         tar xjvf $TARBALLDIR/wxPython-docs-$VERSION.tar.bz2
         popd
 
-        # Make an app to launch viewdocs.py
-        $PYTHONW $PROGDIR/buildapp.py \
-            --builddir=$DMGAPPS/Docs \
-            --name=wxDocsViewer \
-            --mainprogram=$BUILDROOT/wxPython-$VERSION/docs/viewdocs.py \
-            --iconfile=$PROGDIR/Info.icns \
-	    --python=/usr/bin/python \
-	    --executable=$PYSYSEXE \
-            build
+        ## Make an app to launch viewdocs.py
+        #$PYTHONW $PROGDIR/buildapp.py \
+        #    --builddir=$DMGAPPS/Docs \
+        #    --name=wxDocsViewer \
+        #    --mainprogram=$BUILDROOT/wxPython-$VERSION/docs/viewdocs.py \
+        #    --iconfile=$PROGDIR/Info.icns \
+	#    --python=/usr/bin/python \
+	#    --executable=$PYSYSEXE \
+        #    build
+        #
+        #cp $BUILDROOT/wxPython-$VERSION/docs/*.zip $DMGAPPS/Docs/wxDocsViewer.app/Contents/Resources
 
-        cp $BUILDROOT/wxPython-$VERSION/docs/*.zip $DMGAPPS/Docs/wxDocsViewer.app/Contents/Resources
+
+	# Until the DocsViewer app is working again just copy the html files
+	mv $BUILDROOT/wxPython-$VERSION/docs/wx $DMGAPPS/Docs
+ 
 
         cat > "$DMGAPPS/Docs/README 1st.txt" <<EOF
 
@@ -636,34 +522,29 @@ EOF
 
 
     # and then finally make a disk image containing everything
-    dmgname=wxPython${SHORTVER}-osx-docs-demos-$VERSION-$TAG-py$PYVER
-    $PROGDIR/makedmg $DMGAPPS $DMGDIR $dmgname
+    dmgname=wxPython${SHORTVER}-osx-docs-demos-$VERSION-$PORT-py$PYVER
+    #$PROGDIR/makedmg $DMGAPPS $DMGDIR $dmgname
+    my_makedmg $DMGAPPS $DMGDIR $dmgname
 
     echo Moving $DMGDIR/$dmgname.dmg to $DESTDIR
     mv $DMGDIR/$dmgname.dmg  $DESTDIR/$dmgname.dmg
 
-
-    if [ $SKIPCLEAN != yes ]; then 
-	rm -r $TMPDIR || true
-    fi
 }
 
 
+do_universal_build
 
-if [ $CHARTYPE = both ]; then
-    do_universal_build ansi 
-    do_universal_build unicode 
-else
-    do_universal_build $CHARTYPE 
-fi
 
 
 #----------------------------------------------------------------------
 
-
 if [ $SKIPCLEAN != yes ]; then 
     echo "Cleaning up..."
     cd $DESTDIR
+    rm -rf $BUILDROOT || true
+    rm -rf $INSTALLROOT || true
+    rm -rf $INSTALLAPPS || true
+    rm -rf $DMGDIR || true
     rm -r $WXDIR || true
     rm wxPython-docs-$VERSION.tar.bz2 || true
     rm wxPython-demo-$VERSION.tar.bz2 || true

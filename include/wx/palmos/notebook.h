@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: notebook.h 41738 2006-10-08 17:37:23Z VZ $
+// RCS-ID:      $Id: notebook.h 68810 2011-08-21 14:08:49Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@
 // wxNotebook
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxNotebookPageInfo : public wxObject
+class WXDLLIMPEXP_CORE wxNotebookPageInfo : public wxObject
 {
 public :
     wxNotebookPageInfo() { m_page = NULL ; m_imageId = -1 ; m_selected = false ; }
@@ -48,7 +48,7 @@ private :
 
 WX_DECLARE_EXPORTED_LIST(wxNotebookPageInfo, wxNotebookPageInfoList );
 
-class WXDLLEXPORT wxNotebook : public wxNotebookBase
+class WXDLLIMPEXP_CORE wxNotebook : public wxNotebookBase
 {
 public:
     // ctors
@@ -127,7 +127,7 @@ public:
                     wxNotebookPage *pPage,
                     const wxString& strText,
                     bool bSelect = false,
-                    int imageId = -1);
+                    int imageId = NO_IMAGE);
 
     void AddPageInfo( wxNotebookPageInfo* info ) { AddPage( info->GetPage() , info->GetText() , info->GetSelected() , info->GetImageId() ) ; }
     const wxNotebookPageInfoList& GetPageInfos() const ;
@@ -145,7 +145,7 @@ public:
     // callbacks
     // ---------
     void OnSize(wxSizeEvent& event);
-    void OnSelChange(wxNotebookEvent& event);
+    void OnSelChange(wxBookCtrlEvent& event);
     void OnNavigationKey(wxNavigationKeyEvent& event);
 
     // base class virtuals

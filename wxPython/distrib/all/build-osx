@@ -5,9 +5,10 @@ set -o errexit
 
 host=$1
 pyver=$2
-chartype=$3
-flags=$4
+port=$3
 
+#user=root
+user=robind
 
 if [ $skiposx != yes ]; then
     # test if the target machine is online
@@ -18,32 +19,23 @@ if [ $skiposx != yes ]; then
 	exit 0
     fi
 
-    if [ $chartype == ansi -a $buildansi == no ]; then
-	echo "Skipping ansi-only build host"
-	exit 0
-    fi
-
-    if [ $chartype == both -a $buildansi == no ]; then
-	chartype=unicode
-    fi
-
     echo "Copying source files and build script..."
-    ssh root@$host "mkdir -p $OSX_BUILD && rm -rf $OSX_BUILD/* || true"
+#    ssh $user@$host "mkdir -p $OSX_BUILD && rm -rf $OSX_BUILD/* || true"
     
     scp $STAGING_DIR/wxPython-src-$VERSION.tar.bz2 \
 	$STAGING_DIR/wxPython-docs-$VERSION.tar.bz2 \
 	$STAGING_DIR/wxPython-demo-$VERSION.tar.bz2 \
 	distrib/all/do-build-osx \
-	root@$host:$OSX_BUILD
+	$user@$host:$OSX_BUILD
 
     echo "Running build script on $host..."
     wxdir=$OSX_BUILD/wxPython-src-$VERSION
     cmd=./do-build-osx
-    ssh root@$host "cd $OSX_BUILD && $cmd $wxdir $OSX_BUILD $skipclean $VERSION $pyver $chartype $flags && rm $cmd"
+    ssh $user@$host "cd $OSX_BUILD && $cmd $wxdir $OSX_BUILD $skipclean $VERSION $pyver $port && rm $cmd"
     
     echo "Fetching the results..."
-    scp "root@$host:$OSX_BUILD/wxPython*-osx*"  $STAGING_DIR
-    ssh root@$host "rm $OSX_BUILD/wxPython*-osx*"
+    scp "$user@$host:$OSX_BUILD/wxPython*-osx*"  $STAGING_DIR
+    ssh $user@$host "rm $OSX_BUILD/wxPython*-osx*"
 
     echo "Done!"
     sleep 1

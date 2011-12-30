@@ -347,7 +347,7 @@ class SuperToolTipDemo(wx.Frame):
               "Author: Andrea Gavana @ 07 Oct 2008\n\n" + \
               "Please report any bugs/requests of improvements\n" + \
               "to me at the following addresses:\n\n" + \
-              "andrea.gavana@gmail.com\n" + "gavana@kpo.kz\n\n" + \
+              "andrea.gavana@gmail.com\n" + "andrea.gavana@maerskoil.com\n\n" + \
               "Welcome to wxPython " + wx.VERSION_STRING + "!!"
               
         dlg = wx.MessageDialog(self, msg, "SuperToolTip wxPython Demo",

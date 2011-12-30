@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node5" href="$classwx_rich_text_character_style_definition.html" title="This class represents a character style definition, usually added to a wxRichTextStyleSheet." alt="" coords="5,166,235,197"/>
+<area shape="rect" id="node7" href="$classwx_rich_text_paragraph_style_definition.html" title="This class represents a paragraph style definition, usually added to a wxRichTextStyleSheet." alt="" coords="259,166,488,197"/>
+<area shape="rect" id="node2" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="209,6,284,37"/>
+<area shape="rect" id="node9" href="$classwx_rich_text_list_style_definition.html" title="This class represents a list style definition, usually added to a wxRichTextStyleSheet." alt="" coords="276,246,471,277"/>
+</map>

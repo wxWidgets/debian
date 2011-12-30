@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: wxprec.h 39484 2006-05-31 12:18:02Z ABX $
+// RCS-ID:      $Id: wxprec.h 61724 2009-08-21 10:41:26Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@
     defined(__MWERKS__)    || \
     defined(__WATCOMC__)   || \
     defined(__BORLANDC__)
-         
+
 
     // If user did not request NOCPH and we're not building using configure
     // then assume user wants precompiled headers.
@@ -36,9 +36,9 @@
 
 #ifdef WX_PRECOMP
 
-// include "wx/wxchar.h" first to ensure that UNICODE macro is correctly set
+// include "wx/chartype.h" first to ensure that UNICODE macro is correctly set
 // _before_ including <windows.h>
-#include "wx/wxchar.h"
+#include "wx/chartype.h"
 
 // include standard Windows headers
 #if defined(__WXMSW__)

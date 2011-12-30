@@ -4,9 +4,9 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/03/16
-// RCS-ID:      $Id: bmpbuttn.mm 39354 2006-05-26 18:47:45Z ABX $
+// RCS-ID:      $Id: bmpbuttn.mm 66555 2011-01-04 08:31:53Z SC $
 // Copyright:   (c) 2003 David Elliott
-// Licence:     wxWidgets licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #include "wx/wxprec.h"
@@ -24,7 +24,6 @@
 #import <AppKit/NSButton.h>
 #import <Foundation/NSString.h>
 
-IMPLEMENT_DYNAMIC_CLASS(wxBitmapButton, wxControl)
 BEGIN_EVENT_TABLE(wxBitmapButton, wxBitmapButtonBase)
 END_EVENT_TABLE()
 WX_IMPLEMENT_COCOA_OWNER(wxBitmapButton,NSButton,NSControl,NSView)

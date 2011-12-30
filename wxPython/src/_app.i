@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Aug-2003
-// RCS-ID:      $Id: _app.i 60300 2009-04-24 05:26:27Z RD $
+// RCS-ID:      $Id: _app.i 66755 2011-01-25 05:51:31Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -75,6 +75,20 @@ public:
         "Set the application name. This value may be used automatically by
 `wx.Config` and such.", "");
 
+    
+    DocDeclStr(
+        wxString , GetAppDisplayName() const,
+        "Get the application display name.", "");
+    
+    DocDeclStr(
+        void , SetAppDisplayName(const wxString& name),
+        "Set the application display name.  The display name is the name shown
+to the user in titles, reports, etc while the app name is used for
+paths, config, and other places the user doesn't see, for example the
+app name could be myapp while display name could be 'My App'
+", "");
+    
+    
     DocDeclStr(
         wxString, GetClassName() const,
         "Get the application's class name.", "");
@@ -91,6 +105,16 @@ X-resources if applicable for the platform", "");
         "Set the application's vendor name. This value may be used
 automatically by `wx.Config` and such.", "");
 
+    DocDeclStr(
+        const wxString& , GetVendorDisplayName() const,
+        "Get the vendor display name.", "");
+    
+    DocDeclStr(
+        void , SetVendorDisplayName(const wxString& name),
+        "Set the vendor display name.  The display name is shown in
+titles/reports/dialogs to the user, while the vendor name is used in
+some areas such as wxConfig, wxStandardPaths, etc.", "");
+    
 
     DocDeclStr(
         wxAppTraits*, GetTraits(),
@@ -103,6 +127,32 @@ differences behind the common facade.
 
 :todo: Add support for overriding CreateAppTraits in wxPython.", "");
 
+    DocDeclStr(
+        static wxAppTraits*, GetTraitsIfExists(),
+        "This function provides safer access to traits object than
+wx.GetApp().GetTraits() during startup or termination when the global
+application object itself may be unavailable.", "");
+
+    
+    DocDeclStr(
+        wxEventLoopBase* , GetMainLoop() const,
+        "Returns the main event loop instance, i.e. the event loop which is started
+by OnRun() and which dispatches all events sent from the native toolkit
+to the application (except when new event loops are temporarily set-up).
+The returned value maybe None. Put initialization code which needs a
+non-None main event loop into OnEventLoopEnter().", "");
+        
+
+    DocDeclStr(
+        virtual void , SuspendProcessingOfPendingEvents(),
+        "Temporarily suspends the processing of pending events.", "");
+    
+
+    DocDeclStr(
+        virtual void , ResumeProcessingOfPendingEvents(),
+        "Resume (after having been suspended) the processing of pending events.", "");
+    
+        
 
     DocDeclStr(
         virtual void, ProcessPendingEvents(),
@@ -110,6 +160,34 @@ differences behind the common facade.
 call this function to process posted events. This normally happens
 during each event loop iteration.", "");
 
+
+    DocDeclStr(
+        bool , HasPendingEvents() const,
+        "Check if there are pending events on global pending event list", "");
+
+    // called by ~wxEvtHandler to (eventually) remove the handler from the list of
+    // the handlers with pending events
+    void RemovePendingEventHandler(wxEvtHandler* toRemove);
+    
+    // adds an event handler to the list of the handlers with pending events
+    void AppendPendingEventHandler(wxEvtHandler* toAppend);
+
+    // moves the event handler from the list of the handlers with pending events
+    //to the list of the handlers with _delayed_ pending events
+    void DelayPendingEventHandler(wxEvtHandler* toDelay);
+
+    // deletes the current pending events
+    void DeletePendingEvents();
+
+    // schedule the object for destruction in the near future
+    void ScheduleForDestruction(wxObject *object);
+
+    // return true if the object is scheduled for destruction
+    bool IsScheduledForDestruction(wxObject *object) const;
+
+
+
+    
 
     DocDeclStr(
         virtual bool, Yield(bool onlyIfNeeded = false),
@@ -125,6 +203,10 @@ recursively unless the value of ``onlyIfNeeded`` is True.
 :see: `wx.Yield`, `wx.YieldIfNeeded`, `wx.SafeYield`
 ", "");
 
+    virtual bool SafeYield(wxWindow *win, bool onlyIfNeeded);
+    virtual bool SafeYieldFor(wxWindow *win, long eventsToProcess);
+
+    
     
     DocDeclStr(
         virtual void, WakeUpIdle(),
@@ -154,12 +236,18 @@ all top level windows have been closed and destroyed.", "");
         virtual wxLayoutDirection , GetLayoutDirection() const,
         "Return the layout direction for the current locale.", "");
     
+
+    DocDeclStr(
+        virtual bool , SetNativeTheme(const wxString& theme),
+        "Change the theme used by the application, return true on success.", "");
+    
     
     DocDeclStr(
         virtual void, ExitMainLoop(),
         "Exit the main GUI loop during the next iteration of the main
 loop, (i.e. it does not stop the program immediately!)", "");
 
+    
     DocDeclStr(
         virtual int, FilterEvent(wxEvent& event),
         "Filters all events. `SetCallFilterEvent` controls whether or not your
@@ -178,7 +266,6 @@ performance penalty when you have overriden FilterEvent, but don't
 want it to be called, and also to reduce the runtime overhead when it
 is not overridden.", "");
 
-    
     DocDeclStr(
         virtual bool, Pending(),
         "Returns True if there are unprocessed events in the event queue.", "");
@@ -197,12 +284,6 @@ no pending events) and sends a `wx.IdleEvent` to all interested
 parties.  Returns True if more idle events are needed, False if not.", "");
 
     
-    DocDeclStr(
-        virtual bool, SendIdleEvents(wxWindow* win, wxIdleEvent& event),
-        "Send idle event to window and all subwindows.  Returns True if more
-idle time is requested.", "");
-
-
     DocDeclStr(
         virtual bool, IsActive() const,
         "Return True if our app has focus.", "");
@@ -292,13 +373,35 @@ Hide command.  Mac only.", "");
     }
 #endif
 
-#ifdef __WXMAC__
-    void MacRequestUserAttention(wxNotificationOptions);
-#else
-    %extend {
-        void MacRequestUserAttention(wxNotificationOptions) { }
-    }
-#endif
+//     // execute the functor to handle the given event
+//     //
+//     // this is a generalization of HandleEvent() below and the base class
+//     // implementation of CallEventHandler() still calls HandleEvent() for
+//     // compatibility for functors which are just wxEventFunctions (i.e. methods
+//     // of wxEvtHandler)
+//     virtual void CallEventHandler(wxEvtHandler *handler,
+//                                   wxEventFunctor& functor,
+//                                   wxEvent& event) const;
+
+//     // call the specified handler on the given object with the given event
+//     //
+//     // this method only exists to allow catching the exceptions thrown by any
+//     // event handler, it would lead to an extra (useless) virtual function call
+//     // if the exceptions were not used, so it doesn't even exist in that case
+//     virtual void HandleEvent(wxEvtHandler *handler,
+//                              wxEventFunction func,
+//                              wxEvent& event) const;
+
+
+
+    
+// #ifdef __WXMAC__
+//     void MacRequestUserAttention(wxNotificationOptions);
+// #else
+//     %extend {
+//         void MacRequestUserAttention(wxNotificationOptions) { }
+//     }
+// #endif
 
     static bool GetMacSupportPCMenuShortcuts();  // TODO, deprecate this
     static long GetMacAboutMenuItemId();
@@ -329,13 +432,27 @@ it wasn't found at all.  Raises an exception on non-Windows platforms.", "");
     }
 #endif
 
+    
+    DocStr(GetShell32Version,
+           "Returns 400, 470, 471, etc. for shell32.dll 4.00, 4.70, 4.71 or 0 if
+it wasn't found at all.  Raises an exception on non-Windows platforms.", "");
+#ifdef __WXMSW__
+    static int GetShell32Version();
+#else
+    %extend {
+        static int GetShell32Version()
+            { wxPyRaiseNotImplemented(); return 0; }
+    }
+#endif
+    
+    
     %extend {
         DocStr(IsDisplayAvailable,
                "Tests if it is possible to create a GUI in the current environment.
 This will mean different things on the different platforms.
 
    * On X Windows systems this function will return ``False`` if it is
-     not able to open a connection to the X display, which can happen
+     not able to open a connection to the X server, which can happen
      if $DISPLAY is not set, or is not set correctly.
 
    * On Mac OS X a ``False`` return value will mean that wx is not
@@ -363,6 +480,9 @@ This will mean different things on the different platforms.
     %property(VendorName, GetVendorName, SetVendorName, doc="See `GetVendorName` and `SetVendorName`");
 
     %property(Active, IsActive);
+    %property(AppDisplayName, GetAppDisplayName, SetAppDisplayName);
+    %property(VendorDisplayName, GetVendorDisplayName, SetVendorDisplayName);
+    
 };
 
 
@@ -403,7 +523,7 @@ sent.", "");
 
 
 DocDeclStr(
-    void, wxPostEvent(wxEvtHandler *dest, wxEvent& event),
+    void, wxPostEvent(wxEvtHandler *dest, const wxEvent& event),
     "Send an event to a window or other wx.EvtHandler to be processed
 later.", "");
 

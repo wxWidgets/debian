@@ -3,7 +3,7 @@
 # Python Code By:
 #
 # Andrea Gavana, @ 25 Sep 2005
-# Latest Revision: 14 Apr 2010, 12.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List/Caveats
@@ -25,7 +25,7 @@
 # Write To Me At:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
 #
@@ -35,20 +35,20 @@
 
 
 """
-SpeedMeter tries to reproduce the behavior of some car controls (but not only),
+L{SpeedMeter} tries to reproduce the behavior of some car controls (but not only),
 by creating an "angular" control (actually, circular).
 
 
 Description
 ===========
 
-SpeedMeter tries to reproduce the behavior of some car controls (but not only),
+L{SpeedMeter} tries to reproduce the behavior of some car controls (but not only),
 by creating an "angular" control (actually, circular). I remember to have seen
 it somewhere, and i decided to implement it in wxPython.
 
-SpeedMeter starts its construction from an empty bitmap, and it uses some
+L{SpeedMeter} starts its construction from an empty bitmap, and it uses some
 functions of the `wx.DC` class to create the rounded effects. everything is
-processed in the `Draw()` method of SpeedMeter class.
+processed in the `Draw()` method of L{SpeedMeter} class.
 
 This implementation allows you to use either directly the `wx.PaintDC`, or the
 better (for me) double buffered style with `wx.BufferedPaintDC`. the double
@@ -60,27 +60,84 @@ http://wiki.wxpython.org/index.cgi/doublebuffereddrawing
 Usage
 =====
 
-Sample usage::
+Usage example::
 
-    speedwindow1 = SM.SpeedMeter(parent, bufferedstyle,
-                                 agwStyle, mousestyle)
+    import wx
+    import wx.lib.agw.speedmeter as SM
 
+    class MyFrame(wx.Frame):
 
-None of the options (a part of parent class) are strictly required, if you
-use the defaults you get a very simple SpeedMeter. 
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "SpeedMeter Demo")
+
+            speed = SM.SpeedMeter(self, agwStyle=SM.SM_DRAW_HAND|SM.SM_DRAW_SECTORS|SM.SM_DRAW_MIDDLE_TEXT|SM.SM_DRAW_SECONDARY_TICKS)
+
+            # Set The Region Of Existence Of SpeedMeter (Always In Radians!!!!)
+            speed.SetAngleRange(-pi/6, 7*pi/6)
+
+            # Create The Intervals That Will Divide Our SpeedMeter In Sectors        
+            intervals = range(0, 201, 20)
+            speed.SetIntervals(intervals)
+
+            # Assign The Same Colours To All Sectors (We Simulate A Car Control For Speed)
+            # Usually This Is Black
+            colours = [wx.BLACK]*10
+            speed.SetIntervalColours(colours)
+
+            # Assign The Ticks: Here They Are Simply The String Equivalent Of The Intervals
+            ticks = [str(interval) for interval in intervals]
+            speed.SetTicks(ticks)
+            # Set The Ticks/Tick Markers Colour
+            speed.SetTicksColour(wx.WHITE)
+            # We Want To Draw 5 Secondary Ticks Between The Principal Ticks
+            speed.SetNumberOfSecondaryTicks(5)
+
+            # Set The Font For The Ticks Markers
+            speed.SetTicksFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
+                                           
+            # Set The Text In The Center Of SpeedMeter
+            speed.SetMiddleText("Km/h")
+            # Assign The Colour To The Center Text
+            speed.SetMiddleTextColour(wx.WHITE)
+            # Assign A Font To The Center Text
+            speed.SetMiddleTextFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
+
+            # Set The Colour For The Hand Indicator
+            speed.SetHandColour(wx.Colour(255, 50, 0))
+
+            # Do Not Draw The External (Container) Arc. Drawing The External Arc May
+            # Sometimes Create Uglier Controls. Try To Comment This Line And See It
+            # For Yourself!
+            speed.DrawExternalArc(False)        
+
+            # Set The Current Value For The SpeedMeter
+            speed.SetSpeedValue(44)
+        
+        
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
 
 
 Methods and Settings
 ====================
 
-SpeedMeter is highly customizable, and in particular you can set:
+L{SpeedMeter} is highly customizable, and in particular you can set:
 
-- The start and end angle of existence for SpeedMeter;
-- The intervals in which you divide the SpeedMeter (numerical values);
+- The start and end angle of existence for L{SpeedMeter};
+- The intervals in which you divide the L{SpeedMeter} (numerical values);
 - The corresponding thicks for the intervals;
 - The interval colours (different intervals may have different filling colours);
 - The ticks font and colour;
-- The background colour (outsize the SpeedMeter region);
+- The background colour (outsize the L{SpeedMeter} region);
 - The external arc colour;
 - The hand (arrow) colour;
 - The hand's shadow colour;
@@ -90,7 +147,7 @@ SpeedMeter is highly customizable, and in particular you can set:
 - The direction of increasing speed ("advance" or "reverse");
 - The text to be drawn in the middle and its font;
 - The icon to be drawn in the middle;
-- The first and second gradient colours (that fills the SpeedMeter control);
+- The first and second gradient colours (that fills the L{SpeedMeter} control);
 - The current value.
 
 
@@ -125,9 +182,9 @@ Events Processing
 License And Version
 ===================
 
-SpeedMeter is distributed under the wxPython license.
+L{SpeedMeter} is distributed under the wxPython license.
 
-Latest revision: Andrea Gavana @ 14 Apr 2010, 12.00 GMT
+Latest revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.3
 
@@ -231,7 +288,7 @@ stylesname = ["normal", "italic", "slant"]
 
 class BufferedWindow(wx.Window):
     """
-    A Buffered window class.
+    A buffered window class.
 
     To use it, subclass it and define a `Draw(dc)` method that takes a `dc`
     to draw to. In that method, put the code needed to draw the picture
@@ -353,7 +410,7 @@ class BufferedWindow(wx.Window):
 
 class SpeedMeter(BufferedWindow):
     """
-    SpeedMeter tries to reproduce the behavior of some car controls (but not only),
+    L{SpeedMeter} tries to reproduce the behavior of some car controls (but not only),
     by creating an "angular" control (actually, circular).
 
     This is the main class implementation.

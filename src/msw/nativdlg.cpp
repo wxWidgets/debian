@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: nativdlg.cpp 39720 2006-06-14 15:55:43Z VZ $
+// RCS-ID:      $Id: nativdlg.cpp 61508 2009-07-23 20:30:22Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -162,6 +162,8 @@ wxWindow* wxWindow::GetWindowChild(wxWindowID id)
 
 wxWindow* wxWindow::CreateWindowFromHWND(wxWindow* parent, WXHWND hWnd)
 {
+    wxCHECK_MSG( parent, NULL, wxT("must have valid parent for a control") );
+
     wxString str(wxGetWindowClass(hWnd));
     str.UpperCase();
 
@@ -306,9 +308,6 @@ wxWindow* wxWindow::CreateWindowFromHWND(wxWindow* parent, WXHWND hWnd)
     if (win)
     {
         parent->AddChild(win);
-        win->SetEventHandler(win);
-        win->SetHWND(hWnd);
-        win->SetId(id);
         win->SubclassWin(hWnd);
         win->AdoptAttributesFromHWND();
         win->SetupColours();
@@ -318,10 +317,11 @@ wxWindow* wxWindow::CreateWindowFromHWND(wxWindow* parent, WXHWND hWnd)
 }
 
 // Make sure the window style (etc.) reflects the HWND style (roughly)
-void wxWindow::AdoptAttributesFromHWND(void)
+void wxWindow::AdoptAttributesFromHWND()
 {
-    HWND hWnd = (HWND) GetHWND();
-    long style = GetWindowLong((HWND) hWnd, GWL_STYLE);
+    SetId(wxGetWindowId(m_hWnd));
+
+    long style = GetWindowLong(GetHwnd(), GWL_STYLE);
 
     if (style & WS_VSCROLL)
         m_windowStyle |= wxVSCROLL;

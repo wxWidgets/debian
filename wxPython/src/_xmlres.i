@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     4-June-2001
-// RCS-ID:      $Id: _xmlres.i 60428 2009-04-28 19:28:04Z RD $
+// RCS-ID:      $Id: _xmlres.i 63597 2010-03-01 23:39:58Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -97,6 +97,9 @@ public:
         }
     }
 
+    // Loads resources from single XRC file.
+    bool LoadFile(const wxString& file);
+
     // Unload resource from the given XML file (wildcards not allowed)
     bool Unload(const wxString& filename);
     
@@ -166,9 +169,27 @@ public:
     // Load an object from the resource specifying both the resource name and
     // the classname.  This form lets you finish the creation of an existing
     // instance.
-    %Rename(LoadOnObject, bool,  LoadObject(wxObject *instance, wxWindow *parent, const wxString& name,
-                                       const wxString& classname));
+    %Rename(LoadOnObject,
+            bool,  LoadObject(wxObject *instance,
+                              wxWindow *parent,
+                              const wxString& name,
+                              const wxString& classname));
 
+    // These versions of LoadObject() look for the object with the given name
+    // recursively (breadth first) and can be used to instantiate an individual
+    // control defined anywhere in an XRC file. No check is done that the name
+    // is unique, it's up to the caller to ensure this.
+    wxObject *LoadObjectRecursively(wxWindow *parent,
+                                    const wxString& name,
+                                    const wxString& classname);
+
+    %Rename(LoadOnObjectRecursively,
+            bool , LoadObjectRecursively(wxObject *instance,
+                                         wxWindow *parent,
+                                         const wxString& name,
+                                         const wxString& classname));
+
+    
     // Loads a bitmap resource from a file.
     wxBitmap LoadBitmap(const wxString& name);
 
@@ -210,6 +231,14 @@ public:
     // Get/Set the domain to be passed to the translation functions, defaults to NULL.
     wxString GetDomain() const;
     void SetDomain(const wxString& domain);
+
+    // This function returns the wxXmlNode containing the definition of the
+    // object with the given name or NULL.
+    //
+    // It can be used to access additional information defined in the XRC file
+    // and not used by wxXmlResource itself.
+    const wxXmlNode *GetResourceNode(const wxString& name) const;
+
     
     %property(Domain, GetDomain, SetDomain, doc="See `GetDomain` and `SetDomain`");
     %property(Flags, GetFlags, SetFlags, doc="See `GetFlags` and `SetFlags`");

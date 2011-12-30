@@ -2,10 +2,17 @@
 // Name:        src/gtk/treeentry_gtk.c
 // Purpose:     GtkTreeEntry implementation
 // Author:      Ryan Norton
-// Id:          $Id: treeentry_gtk.c 45943 2007-05-10 15:10:04Z VZ $
+// Id:          $Id: treeentry_gtk.c 67433 2011-04-11 09:36:56Z JJ $
 // Copyright:   (c) 2006 Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////// */
+
+#ifdef __VMS
+#include <types.h>
+typedef pid_t GPid;
+#define G_GNUC_INTERNAL 
+#define GSEAL(x) x
+#endif
 
 #include "wx/gtk/treeentry_gtk.h"
 
@@ -39,14 +46,14 @@ gtk_tree_entry_new()
     return GTK_TREE_ENTRY(g_object_new(GTK_TYPE_TREE_ENTRY, NULL));
 }
 
-GtkType
+GType
 gtk_tree_entry_get_type ()
 {
-    static GtkType tree_entry_type = 0;
+    static GType tree_entry_type = 0;
 
     if (!tree_entry_type)
     {
-        static const GTypeInfo tree_entry_info =
+        const GTypeInfo tree_entry_info =
         {
             sizeof (GtkTreeEntryClass),
             NULL,           /* base_init */
@@ -89,6 +96,7 @@ gpointer   gtk_tree_entry_get_userdata  (GtkTreeEntry* entry)
 void     gtk_tree_entry_set_label       (GtkTreeEntry* entry, const gchar* label)
 {
     g_assert(GTK_IS_TREE_ENTRY(entry));
+    gchar *temp;
 
     /* free previous if it exists */
     if(entry->label)
@@ -98,7 +106,9 @@ void     gtk_tree_entry_set_label       (GtkTreeEntry* entry, const gchar* label
     }
 
     entry->label = g_strdup(label);
-    entry->collate_key = g_utf8_collate_key(label, -1); /* -1 == null terminated */
+    temp = g_utf8_casefold(label, -1); /* -1 == null terminated */
+    entry->collate_key = g_utf8_collate_key(temp, -1); /* -1 == null terminated */
+    g_free( temp );
 }
 
 void   gtk_tree_entry_set_userdata      (GtkTreeEntry* entry, gpointer userdata)

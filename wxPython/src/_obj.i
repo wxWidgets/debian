@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Aug-2003
-// RCS-ID:      $Id: _obj.i 42801 2006-10-31 00:57:21Z RD $
+// RCS-ID:      $Id: _obj.i 65979 2010-11-02 02:39:58Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -47,6 +47,26 @@ object.", "");
 
     %property(ClassName, GetClassName, doc="See `GetClassName`");
 };
+
+
+
+
+class wxRefCounter
+{
+public:
+    wxRefCounter();
+    %extend {
+        ~wxRefCounter() { self->DecRef(); }
+    }
+    
+    int GetRefCount() const;
+    void IncRef();
+    void DecRef();
+};
+
+
+typedef wxRefCounter wxObjectRefData;
+
 
 
 //---------------------------------------------------------------------------

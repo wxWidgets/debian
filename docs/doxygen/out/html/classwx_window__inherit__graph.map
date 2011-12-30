@@ -1,0 +1,50 @@
+<map id="G" name="G">
+<area shape="rect" id="node9" href="$classwx_banner_window.html" title="A simple banner window showing either a bitmap or text." alt="" coords="441,778,564,809"/>
+<area shape="rect" id="node11" href="$classwx_control.html" title="This is the base class for a control or &quot;widget&quot;." alt="" coords="464,831,541,862"/>
+<area shape="rect" id="node77" href="$classwx_g_l_canvas.html" title="wxGLCanvas is a class for displaying OpenGL graphics." alt="" coords="453,885,552,915"/>
+<area shape="rect" id="node79" href="$classwx_html_help_window.html" title="This class is used by wxHtmlHelpController to display help within a frame or dialog, but you can use it yourself to create an embedded HTML help window." alt="" coords="435,938,571,969"/>
+<area shape="rect" id="node81" href="$classwx_m_d_i_client_window.html" title="An MDI client window is a child of wxMDIParentFrame, and manages zero or more wxMDIChildFrame objects..." alt="" coords="433,991,572,1022"/>
+<area shape="rect" id="node83" href="$classwx_menu_bar.html" title="A menu bar is a series of menus accessible from the top of a frame." alt="" coords="457,1045,548,1075"/>
+<area shape="rect" id="node85" href="$classwx_non_owned_window.html" title="Common base class for all non&#45;child windows." alt="" coords="431,1098,575,1129"/>
+<area shape="rect" id="node87" href="$classwx_panel.html" title="A panel is a window on which controls are placed." alt="" coords="468,1151,537,1182"/>
+<area shape="rect" id="node89" href="$classwx_p_g_multi_button.html" title="This class can be used to have multiple buttons in a property editor." alt="" coords="441,1205,564,1235"/>
+<area shape="rect" id="node91" href="$classwx_sash_window.html" title="wxSashWindow allows any of its edges to have a sash which can be dragged to resize the window..." alt="" coords="447,1258,559,1289"/>
+<area shape="rect" id="node93" href="$classwx_splitter_window.html" title="This class manages up to two subwindows." alt="" coords="441,1311,564,1342"/>
+<area shape="rect" id="node95" href="$classwx_tip_window.html" title="Shows simple text in a popup tip window on creation." alt="" coords="452,1365,553,1395"/>
+<area shape="rect" id="node97" href="$classwx_tree_list_ctrl.html" title="A control combining wxTreeCtrl and wxListCtrl features." alt="" coords="451,1418,555,1449"/>
+<area shape="rect" id="node2" href="$classwx_evt_handler.html" title="A class that can handle events from the windowing system." alt="" coords="149,1098,251,1129"/>
+<area shape="rect" id="node4" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="16,1071,91,1102"/>
+<area shape="rect" id="node6" href="$classwx_trackable.html" title="Add&#45;on base class for a trackable object." alt="" coords="7,1125,100,1155"/>
+<area shape="rect" id="node13" href="$classwx_active_x_container.html" title="wxActiveXContainer is a host for an ActiveX control on Windows (and as such is a platform&#45;specific cl..." alt="" coords="635,5,773,35"/>
+<area shape="rect" id="node15" href="$classwx_animation_ctrl.html" title="This is a static control which displays an animation." alt="" coords="647,58,761,89"/>
+<area shape="rect" id="node17" href="$classwx_any_button.html" title="A class for common button functionality used as the base for the various button classes." alt="" coords="655,111,753,142"/>
+<area shape="rect" id="node19" href="$classwx_aui_tool_bar.html" title="wxAuiToolBar is a dockable toolbar, part of the wxAUI class framework." alt="" coords="653,165,755,195"/>
+<area shape="rect" id="node21" href="$classwx_book_ctrl_base.html" title="A book control is a convenient way of displaying multiple pages of information, displayed one page at..." alt="" coords="645,218,763,249"/>
+<area shape="rect" id="node23" href="$classwx_calendar_ctrl.html" title="The calendar control allows the user to pick a date." alt="" coords="649,271,759,302"/>
+<area shape="rect" id="node25" href="$classwx_check_box.html" title="A checkbox is a labelled box which by default is either on (checkmark is visible) or off (no checkmar..." alt="" coords="655,325,753,355"/>
+<area shape="rect" id="node27" href="$classwx_collapsible_pane.html" title="A collapsible pane is a container with an embedded button&#45;like control which can be used by the user ..." alt="" coords="639,378,769,409"/>
+<area shape="rect" id="node29" href="$classwx_combo_box.html" title="A combobox is like a combination of an edit control and a listbox." alt="" coords="653,431,755,462"/>
+<area shape="rect" id="node31" href="$classwx_combo_ctrl.html" title="A combo control is a generic combobox that allows totally custom popup." alt="" coords="655,485,753,515"/>
+<area shape="rect" id="node33" href="$classwx_control_with_items.html" title="This is convenience class that derives from both wxControl and wxItemContainer." alt="" coords="635,538,773,569"/>
+<area shape="rect" id="node35" href="$classwx_data_view_ctrl.html" title="wxDataViewCtrl is a control to display data either in a tree like fashion or in a tabular form or bot..." alt="" coords="648,591,760,622"/>
+<area shape="rect" id="node37" href="$classwx_date_picker_ctrl.html" title="This control allows the user to select a date." alt="" coords="643,645,765,675"/>
+<area shape="rect" id="node39" href="$classwx_file_ctrl.html" title="This control allows the user to select a file." alt="" coords="665,698,743,729"/>
+<area shape="rect" id="node41" href="$classwx_gauge.html" title="A gauge is a horizontal or vertical bar which shows a quantity (often time)." alt="" coords="667,751,741,782"/>
+<area shape="rect" id="node43" href="$classwx_generic_dir_ctrl.html" title="This control can be used to place a directory listing (with optional files) on an arbitrary window..." alt="" coords="645,805,763,835"/>
+<area shape="rect" id="node45" href="$classwx_header_ctrl.html" title="wxHeaderCtrl is the control containing the column headings which is usually used for display of tabul..." alt="" coords="655,858,753,889"/>
+<area shape="rect" id="node47" href="$classwx_hyperlink_ctrl.html" title="This class shows a static text element which links to an URL." alt="" coords="648,911,760,942"/>
+<area shape="rect" id="node49" href="$classwx_info_bar.html" title="An info bar is a transient window shown at top or bottom of its parent window to display non&#45;critical..." alt="" coords="664,965,744,995"/>
+<area shape="rect" id="node51" href="$classwx_list_ctrl.html" title="A list control presents lists in a number of formats: list view, report view, icon view and small ico..." alt="" coords="665,1018,743,1049"/>
+<area shape="rect" id="node53" href="$classwx_media_ctrl.html" title="wxMediaCtrl is a class for displaying types of media, such as videos, audio files, natively through native codecs." alt="" coords="657,1071,751,1102"/>
+<area shape="rect" id="node55" href="$classwx_picker_base.html" title="Base abstract class for all pickers which support an auxiliary text control." alt="" coords="652,1125,756,1155"/>
+<area shape="rect" id="node57" href="$classwx_property_grid.html" title="wxPropertyGrid is a specialized grid for editing properties &#45; in other words name = value pairs..." alt="" coords="649,1178,759,1209"/>
+<area shape="rect" id="node59" href="$classwx_radio_box.html" title="A radio box item is used to select one of number of mutually exclusive choices." alt="" coords="657,1231,751,1262"/>
+<area shape="rect" id="node61" href="$classwx_radio_button.html" title="A radio button item is a button which usually denotes one of several mutually exclusive options..." alt="" coords="649,1285,759,1315"/>
+<area shape="rect" id="node63" href="$classwx_ribbon_control.html" title="wxRibbonControl serves as a base class for all controls which share the ribbon characteristics of hav..." alt="" coords="645,1338,763,1369"/>
+<area shape="rect" id="node65" href="$classwx_rich_text_ctrl.html" title="wxRichTextCtrl provides a generic, ground&#45;up implementation of a text control capable of showing mult..." alt="" coords="649,1391,759,1422"/>
+<area shape="rect" id="node67" href="$classwx_rich_text_style_list_ctrl.html" title="This class incorporates a wxRichTextStyleListBox and a choice control that allows the user to select ..." alt="" coords="624,1445,784,1475"/>
+<area shape="rect" id="node69" href="$classwx_scroll_bar.html" title="A wxScrollBar is a control that represents a horizontal or vertical scrollbar." alt="" coords="659,1498,749,1529"/>
+<area shape="rect" id="node71" href="$classwx_slider.html" title="A slider is a control with a handle which can be pulled back and forth to change the value..." alt="" coords="669,1551,739,1582"/>
+<area shape="rect" id="node73" href="$classwx_spin_button.html" title="A wxSpinButton has two small up and down (or left and right) arrow buttons." alt="" coords="653,1605,755,1635"/>
+<area shape="rect" id="node75" href="$classwx_spin_ctrl.html" title="wxSpinCtrl combines wxTextCtrl and wxSpinButton in one control." alt="" coords="663,1658,745,1689"/>
+</map>

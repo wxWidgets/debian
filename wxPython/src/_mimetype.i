@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _mimetype.i 54679 2008-07-18 03:29:02Z RD $
+// RCS-ID:      $Id: _mimetype.i 55337 2008-08-29 01:28:51Z KO $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -371,18 +371,6 @@ public:
     // other operations: return True if there were no errors or False if there
     // were some unrecognized entries (the good entries are always read anyhow)
     //
-
-    // read in additional file (the standard ones are read automatically)
-    // in mailcap format (see mimetype.cpp for description)
-    //
-    // 'fallback' parameter may be set to True to avoid overriding the
-    // settings from other, previously parsed, files by this one: normally,
-    // the files read most recently would override the older files, but with
-    // fallback == True this won't happen
-    bool ReadMailcap(const wxString& filename, bool fallback = false);
-
-    // read in additional file in mime.types format
-    bool ReadMimeTypes(const wxString& filename);
 
     // enumerate all known MIME types
     %extend {

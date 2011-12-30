@@ -5,7 +5,7 @@
 // Author:      Julian Smart
 // Modified by: Vaclav Slavik
 // Created:     24/3/98
-// RCS-ID:      $Id: taskbar.cpp 38791 2006-04-18 09:56:17Z ABX $
+// RCS-ID:      $Id: taskbar.cpp 47557 2007-07-19 01:02:28Z VZ $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,8 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if wxUSE_TASKBARICON
 
 #ifndef WX_PRECOMP
     #include "wx/window.h"
@@ -106,3 +108,5 @@ long wxTaskBarIcon::WindowProc(unsigned int msg,
 }
 
 #endif // __WIN95__
+
+#endif // wxUSE_TASKBARICON

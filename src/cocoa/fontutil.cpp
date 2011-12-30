@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.cpp 40943 2006-08-31 19:31:43Z ABX $
+// RCS-ID:      $Id: fontutil.cpp 64940 2010-07-13 13:29:13Z VZ $
 // Copyright:   (c) Vadim Zeitlin
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -179,7 +179,7 @@ bool wxGetNativeFontEncoding(wxFontEncoding encoding,
 // private data
 // ----------------------------------------------------------------------------
 
-static wxHashTable *g_fontHash = (wxHashTable*) NULL;
+static wxHashTable *g_fontHash = NULL;
 
 // ----------------------------------------------------------------------------
 // private functions
@@ -249,9 +249,7 @@ bool wxFontModule::OnInit()
 
 void wxFontModule::OnExit()
 {
-    delete g_fontHash;
-
-    g_fontHash = (wxHashTable *)NULL;
+    wxDELETE(g_fontHash);
 }
 
 #endif

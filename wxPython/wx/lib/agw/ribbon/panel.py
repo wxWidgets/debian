@@ -133,8 +133,8 @@ class RibbonPanel(RibbonControl):
         self.SetName(label)
         self.SetLabel(label)
 
-        self._minimised_size = wx.Size() # Unknown / none
-        self._smallest_unminimised_size = wx.Size(0, 0) # Unknown / none
+        self._minimised_size = wx.Size(-1, -1) # Unknown / none
+        self._smallest_unminimised_size = wx.Size(-1, -1) # Unknown / none
         self._preferred_expand_direction = wx.SOUTH
         self._expanded_dummy = None
         self._expanded_panel = None
@@ -290,6 +290,15 @@ class RibbonPanel(RibbonControl):
 
         """
 
+        if self.GetSizer():
+            # we have no information on size change direction 
+            # so check both
+            size = self.GetMinNotMinimisedSize()
+            if size.x > at_size.x or size.y > at_size.y:
+                return True
+
+            return False
+    
         if not self._minimised_size.IsFullySpecified():
             return False
             
@@ -330,34 +339,53 @@ class RibbonPanel(RibbonControl):
             # expanded panel
             return self._expanded_panel.DoGetNextSmallerSize(direction, relative_to)
         
-        # TODO: Check for, and delegate to, a sizer
+        if self._art is not None:
+        
+            dc = wx.ClientDC(self)
+            child_relative, dummy = self._art.GetPanelClientSize(dc, self, wx.Size(*relative_to), None)
+            smaller = wx.Size(-1, -1)
+            minimise = False
 
-        # Simple (and common) case of single ribbon child
-        if len(self.GetChildren()) == 1:
-            child = self.GetChildren()[0]
+            if self.GetSizer():
             
-            if self._art != None and isinstance(child, RibbonControl):            
-                dc = wx.ClientDC(self)
-                child_relative, dummy = self._art.GetPanelClientSize(dc, self, wx.Size(*relative_to), None)
-                smaller = child.GetNextSmallerSize(direction, child_relative)
-
-                if smaller == child_relative:                
-                    if self.CanAutoMinimise():
-                        minimised = wx.Size(*self._minimised_size)
-
-                        if direction == wx.HORIZONTAL:
-                            minimised.SetHeight(relative_to.GetHeight())
-                        elif direction == wx.VERTICAL:
-                            minimised.SetWidth(relative_to.GetWidth())
-
-                        return minimised
-                    
-                    else:                    
-                        return relative_to
-                    
-                else:                
-                    return self._art.GetPanelSize(dc, self, wx.Size(*smaller), None)
+                # Get smallest non minimised size
+                smaller = self.GetMinSize()
                 
+                # and adjust to child_relative for parent page
+                if self._art.GetFlags() & RIBBON_BAR_FLOW_VERTICAL:
+                     minimise = child_relative.y <= smaller.y
+                     if smaller.x < child_relative.x:
+                        smaller.x = child_relative.x            
+                else:            
+                    minimise = child_relative.x <= smaller.x
+                    if smaller.y < child_relative.y:
+                        smaller.y = child_relative.y
+                
+            elif len(self.GetChildren()) == 1:
+            
+                # Simple (and common) case of single ribbon child or Sizer
+                ribbon_child = self.GetChildren()[0]
+                if isinstance(ribbon_child, RibbonControl):            
+                    smaller = ribbon_child.GetNextSmallerSize(direction, child_relative)                
+                    minimise = smaller == child_relative
+                
+            if minimise:        
+                if self.CanAutoMinimise():            
+                    minimised = wx.Size(*self._minimised_size)
+
+                    if direction == wx.HORIZONTAL:
+                        minimised.SetHeight(relative_to.GetHeight())
+                    elif direction == wx.VERTICAL:
+                        minimised.SetWidth(relative_to.GetWidth())
+                    
+                    return minimised
+                
+                else:
+                    return relative_to
+
+            elif smaller.IsFullySpecified(): # Use fallback if !(sizer/child = 1)
+                return self._art.GetPanelSize(dc, self, wx.Size(*smaller), None)
+            
         # Fallback: Decrease by 20% (or minimum size, whichever larger)
         current = wx.Size(*relative_to)
         minimum = wx.Size(*self.GetMinSize())
@@ -398,23 +426,40 @@ class RibbonPanel(RibbonControl):
                 if min_size.x > current.x and min_size.y > current.y:
                     return min_size        
 
-        # TODO: Check for, and delegate to, a sizer
+        if self._art is not None:
+        
+            dc = wx.ClientDC(self)
+            child_relative, dummy = self._art.GetPanelClientSize(dc, self, wx.Size(*relative_to), None)
+            larger = wx.Size(-1, -1)
 
-        # Simple (and common) case of single ribbon child
-        if len(self.GetChildren()) == 1:
-            child = self.GetChildren()[0]
+            if self.GetSizer():
             
-            if isinstance(child, RibbonControl):            
-                dc = wx.ClientDC(self)
-                child_relative, dummy = self._art.GetPanelClientSize(dc, self, wx.Size(*relative_to), None)
-                larger = child.GetNextLargerSize(direction, child_relative)
+                # We could just let the sizer expand in flow direction but see comment 
+                # in IsSizingContinuous()
+                larger = self.GetPanelSizerBestSize()
                 
-                if larger == child_relative:                
+                # and adjust for page in non flow direction
+                if self._art.GetFlags() & RIBBON_BAR_FLOW_VERTICAL:
+                     if larger.x != child_relative.x:
+                        larger.x = child_relative.x
+                
+                elif larger.y != child_relative.y:            
+                    larger.y = child_relative.y
+                        
+            elif len(self.GetChildren()) == 1:
+            
+                # Simple (and common) case of single ribbon child
+                ribbon_child = self.GetChildren()[0]
+                if isinstance(ribbon_child, RibbonControl):
+                    larger = ribbon_child.GetNextLargerSize(direction, child_relative)
+                
+            if larger.IsFullySpecified(): # Use fallback if !(sizer/child = 1)
+                if larger == child_relative:
                     return relative_to
-                else:                
-                    dc = wx.ClientDC(self)
+                else:            
                     return self._art.GetPanelSize(dc, self, wx.Size(*larger), None)
                 
+
         # Fallback: Increase by 25% (equal to a prior or subsequent 20% decrease)
         # Note that due to rounding errors, this increase may not exactly equal a
         # matching decrease - an ideal solution would not have these errors, but
@@ -430,6 +475,7 @@ class RibbonPanel(RibbonControl):
             current.y = (current.y * 5 + 3) / 4
         
         return current
+
 
 
     def CanAutoMinimise(self):
@@ -454,10 +500,13 @@ class RibbonPanel(RibbonControl):
 
     def GetMinNotMinimisedSize(self):
 
-        # TODO: Ask sizer
-
+        # Ask sizer if present
+        if self.GetSizer():
+            dc = wx.ClientDC(self)
+            return self._art.GetPanelSize(dc, self, wx.Size(*self.GetPanelSizerMinSize()), None)
+        
         # Common case of no sizer and single child taking up the entire panel
-        if len(self.GetChildren()) == 1:
+        elif len(self.GetChildren()) == 1:
             child = self.GetChildren()[0]
             dc = wx.ClientDC(self)
             return self._art.GetPanelSize(dc, self, wx.Size(*child.GetMinSize()), None)
@@ -465,12 +514,41 @@ class RibbonPanel(RibbonControl):
         return wx.Size(*RibbonControl.GetMinSize(self))
 
 
+    def GetPanelSizerMinSize(self):
+
+        # Called from Realize() to set self._smallest_unminimised_size and from other
+        # functions to get the minimum size.
+        # The panel will be invisible when minimised and sizer calcs will be 0
+        # Uses self._smallest_unminimised_size in preference to self.GetSizer().CalcMin()
+        # to eliminate flicker.
+
+        # Check if is visible and not previously calculated
+        if self.IsShown() and not self._smallest_unminimised_size.IsFullySpecified():
+             return self.GetSizer().CalcMin()
+
+        # else use previously calculated self._smallest_unminimised_size
+        dc = wx.ClientDC(self)
+        return self._art.GetPanelClientSize(dc, self, wx.Size(*self._smallest_unminimised_size), None)[0]
+
+
+    def GetPanelSizerBestSize(self):
+
+        size = self.GetPanelSizerMinSize()
+        # TODO allow panel to increase its size beyond minimum size
+        # by steps similarly to ribbon control panels (preferred for aesthetics)
+        # or continuously.
+        return size
+
+
     def DoGetBestSize(self):
 
-        # TODO: Ask sizer
-
+        # Ask sizer if present
+        if self.GetSizer():
+            dc = wx.ClientDC(self)
+            return self._art.GetPanelSize(dc, self, wx.Size(*self.GetPanelSizerBestSize()), None)
+        
         # Common case of no sizer and single child taking up the entire panel
-        if len(self.GetChildren()) == 1:
+        elif len(self.GetChildren()) == 1:
             child = self.GetChildren()[0]
             dc = wx.ClientDC(self)
             return self._art.GetPanelSize(dc, self, wx.Size(*child.GetBestSize()), None)
@@ -496,9 +574,11 @@ class RibbonPanel(RibbonControl):
                 status = False
 
         minimum_children_size = wx.Size(0, 0)
-        # TODO: Ask sizer if there is one
         
-        if len(children) == 1:
+        # Ask sizer if there is one present
+        if self.GetSizer():
+            minimum_children_size = wx.Size(*self.GetPanelSizerMinSize())
+        elif len(children) == 1:
             minimum_children_size = wx.Size(*children[0].GetMinSize())
 
         if self._art != None:
@@ -537,14 +617,16 @@ class RibbonPanel(RibbonControl):
             # Children are all invisible when minimised
             return True
         
-        # TODO: Delegate to a sizer
+        dc = wx.ClientDC(self)
+        size, position = self._art.GetPanelClientSize(dc, self, wx.Size(*self.GetSize()), wx.Point())
 
-        # Common case of no sizer and single child taking up the entire panel
         children = self.GetChildren()
-        if len(children) == 1:        
-            dc = wx.ClientDC(self)
-            size, position = self._art.GetPanelClientSize(dc, self, wx.Size(*self.GetSize()), wx.Point())
-            children[0].SetDimensions(position.x, position.y, size.GetWidth(), size.GetHeight())
+
+        if self.GetSizer():
+            self.GetSizer().SetDimension(position.x, position.y, size.x, size.y) # SetSize and Layout()           
+        elif len(children) == 1:        
+           # Common case of no sizer and single child taking up the entire panel
+             children[0].SetDimensions(position.x, position.y, size.GetWidth(), size.GetHeight())
         
         return True
 
@@ -632,7 +714,13 @@ class RibbonPanel(RibbonControl):
             child.Reparent(self._expanded_panel)
             child.Show()
         
-        # TODO: Move sizer to new panel
+
+        # Move sizer to new panel
+        if self.GetSizer():
+            sizer = self.GetSizer()
+            self.SetSizer(None, False)
+            self._expanded_panel.SetSizer(sizer)
+
         self._expanded_panel.Realize()
         self.Refresh()
         container.Show()

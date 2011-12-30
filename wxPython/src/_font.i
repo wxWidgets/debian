@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     1-Apr-2002
-// RCS-ID:      $Id: _font.i 55616 2008-09-14 19:32:43Z RD $
+// RCS-ID:      $Id: _font.i 69040 2011-09-10 01:00:23Z RD $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -57,8 +57,21 @@ enum wxFontWeight
 };
 
 
+// Symbolic font sizes as defined in CSS specification.
+enum wxFontSymbolicSize
+{
+    wxFONTSIZE_XX_SMALL = -3,
+    wxFONTSIZE_X_SMALL,
+    wxFONTSIZE_SMALL,
+    wxFONTSIZE_MEDIUM,
+    wxFONTSIZE_LARGE,
+    wxFONTSIZE_X_LARGE,
+    wxFONTSIZE_XX_LARGE
+};
+
+
 // the font flag bits for the new font ctor accepting one combined flags word
-enum
+enum wxFontFlag
 {
     // no special flags: font with default weight/slant/anti-aliasing
     wxFONTFLAG_DEFAULT,
@@ -188,6 +201,8 @@ enum wxFontEncoding
     wxFONTENCODING_MACGAELIC,
     wxFONTENCODING_MACKEYBOARD,
 
+    wxFONTENCODING_ISO2022_JP,
+    
     wxFONTENCODING_MACMIN = wxFONTENCODING_MACROMAN ,
     wxFONTENCODING_MACMAX = wxFONTENCODING_MACKEYBOARD ,
 
@@ -208,7 +223,11 @@ enum wxFontEncoding
     wxFONTENCODING_BIG5 = wxFONTENCODING_CP950,   // Traditional Chinese
 
         // Japanese (see http://zsigri.tripod.com/fontboard/cjk/jis.html)
-    wxFONTENCODING_SHIFT_JIS = wxFONTENCODING_CP932 // Shift JIS
+    wxFONTENCODING_SHIFT_JIS = wxFONTENCODING_CP932, // Shift JIS
+
+        // Korean (CP 949 not actually the same but close enough)
+    wxFONTENCODING_EUC_KR = wxFONTENCODING_CP949
+    
 };
 
 //---------------------------------------------------------------------------
@@ -254,6 +273,7 @@ public:
     void SetFamily(wxFontFamily family);
     void SetEncoding(wxFontEncoding encoding);
 
+    
 // TODO:     
 //     // sets the first facename in the given array which is found
 //     // to be valid. If no valid facename is given, sets the
@@ -306,7 +326,6 @@ struct wxNativeEncodingInfo
 };
 
 
-#ifndef __WXMSW__
 // translate a wxFontEncoding into native encoding parameter (defined above),
 // returning a wxNativeEncodingInfo if an (exact) match could be found, NULL
 // otherwise.
@@ -324,16 +343,6 @@ struct wxNativeEncodingInfo
 // return True if such font(s) exist, False otherwise
 bool wxTestFontEncoding(const wxNativeEncodingInfo& info);
 
-#else
-
-%inline %{
-    wxNativeEncodingInfo* wxGetNativeFontEncoding(wxFontEncoding encoding)
-        { wxPyRaiseNotImplemented(); return NULL; }
-
-    bool wxTestFontEncoding(const wxNativeEncodingInfo& info)
-        { wxPyRaiseNotImplemented(); return false; }
-%}
-#endif
 
 //---------------------------------------------------------------------------
 %newgroup
@@ -437,8 +446,6 @@ public:
     // the title for the dialogs (note that default is quite reasonable)
     void SetDialogTitle(const wxString& title);
 
-
-     %property(AltForEncoding, GetAltForEncoding, doc="See `GetAltForEncoding`");
 };
 
 
@@ -528,8 +535,12 @@ public:
     %pythonPrepend wxFont   "if kwargs.has_key('faceName'): kwargs['face'] = kwargs['faceName'];del kwargs['faceName']"
 
     DocCtorStr(
-        wxFont( int pointSize, int family, int style, int weight,
-                bool underline=false, const wxString& face = wxPyEmptyString,
+        wxFont( int pointSize,
+                wxFontFamily family,
+                wxFontStyle style,
+                wxFontWeight weight,
+                bool underline=false,
+                const wxString& face = wxPyEmptyString,
                 wxFontEncoding encoding = wxFONTENCODING_DEFAULT),
         "Creates a font object with the specified attributes.
 
@@ -604,7 +615,7 @@ combination of the following:
 
             wxFont(int pointSize,
                    wxFontFamily family,
-                   int flags = wxFONTFLAG_DEFAULT,
+                   wxFontFlag flags = wxFONTFLAG_DEFAULT,
                    const wxString& face = wxPyEmptyString,
                    wxFontEncoding encoding = wxFONTENCODING_DEFAULT))
             {
@@ -684,15 +695,15 @@ size.", "");
     
     
     DocDeclStr(
-        virtual int , GetFamily() const,
+        virtual wxFontFamily , GetFamily() const,
         "Gets the font family. ", "");
     
     DocDeclStr(
-        virtual int , GetStyle() const,
+        virtual wxFontStyle , GetStyle() const,
         "Gets the font style.", "");
     
     DocDeclStr(
-        virtual int , GetWeight() const,
+        virtual wxFontWeight , GetWeight() const,
         "Gets the font weight. ", "");
     
     DocDeclStr(
@@ -741,15 +752,15 @@ support for this then it is used, otherwise a font with the closest
 size is found using a binary search.", "");
     
     DocDeclStr(
-        virtual void , SetFamily( int family ),
+        virtual void , SetFamily( wxFontFamily family ),
         "Sets the font family.", "");
     
     DocDeclStr(
-        virtual void , SetStyle( int style ),
+        virtual void , SetStyle( wxFontStyle style ),
         "Sets the font style.", "");
     
     DocDeclStr(
-        virtual void , SetWeight( int weight ),
+        virtual void , SetWeight( wxFontWeight weight ),
         "Sets the font weight.", "");
     
     DocDeclStr(
@@ -786,7 +797,17 @@ then for a font belonging to the same family.", "");
         bool , SetNativeFontInfoUserDesc(const wxString& info),
         "Set the font's attributes from a string formerly returned from
 `GetNativeFontInfoDesc`.", "");
-    
+
+    // Symbolic font sizes support: set the font size to "large" or "very
+    // small" either absolutely (i.e. compared to the default font size) or
+    // relatively to the given font size.
+    void SetSymbolicSize(wxFontSymbolicSize size);
+    void SetSymbolicSizeRelativeTo(wxFontSymbolicSize size, int base);
+
+    // Adjust the base size in points according to symbolic size.
+    static int AdjustToSymbolicSize(wxFontSymbolicSize size, int base);
+
+
 
     DocDeclStr(
         wxString , GetFamilyString() const,
@@ -803,14 +824,47 @@ then for a font belonging to the same family.", "");
 
     virtual void SetNoAntiAliasing( bool no = true );
     virtual bool GetNoAntiAliasing() const;
+    %pythoncode {
+        SetNoAntiAliasing = wx.deprecated(SetNoAntiAliasing)
+        GetNoAntiAliasing = wx.deprecated(GetNoAntiAliasing)
+    }
 
+
+    // This typemap ensures that the returned object is the same Python
+    // instance as what was passed in as `self`, instead of creating a new
+    // proxy as SWIG would normally do.  This lets the method calls be chained
+    // together.
+    %typemap(out) wxFont& { $result = $self; Py_INCREF($result); }
+
+    wxFont& MakeBold(); 
+    wxFont& MakeItalic();
+    wxFont& MakeUnderlined();
+    wxFont& MakeLarger();
+    wxFont& MakeSmaller();
+    wxFont& Scale(float x);
+
+    // Clear the typemap
+    %typemap(out) wxFont&;
+
+    
+    /* functions for creating new fonts based on this one */ 
+    wxFont Bold() const; 
+    wxFont Italic() const;
+    wxFont Underlined() const;
+    wxFont Larger() const;
+    wxFont Smaller() const;
+    wxFont Scaled(float x) const;
+    
 
     // Give access to the internal native font handle, ID, pointer, etc.
 #ifdef __WXMSW__
     void* GetHFONT();
 #endif
+// #ifdef __WXMAC__ && wxOSX_USE_ATSU_TEXT
+//     long MacGetATSUFontID();
+// #endif
 #ifdef __WXMAC__
-    long MacGetATSUFontID();
+    void* OSXGetCGFont() const;
 #endif
 #ifdef __WXGTK__
     %extend {
@@ -850,7 +904,7 @@ then for a font belonging to the same family.", "");
     
 };
 
-%pythoncode { Font2 = wx._deprecated(FFont, "Use `wx.FFont` instead.") }
+%pythoncode { Font2 = wx.deprecated(FFont, "Use `wx.FFont` instead.") }
 
 //---------------------------------------------------------------------------
 %newgroup

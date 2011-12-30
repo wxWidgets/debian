@@ -1,0 +1,18 @@
+<map id="G" name="G">
+<area shape="rect" id="node11" href="$classwx_editable_list_box.html" title="An editable listbox is composite control that lets the user easily enter, delete and reorder a list o..." alt="" coords="567,5,695,35"/>
+<area shape="rect" id="node13" href="$classwx_h_scrolled_window.html" title="In the name of this class, &quot;H&quot; stands for &quot;horizontal&quot; because it can be used for..." alt="" coords="561,58,700,89"/>
+<area shape="rect" id="node15" href="$classwx_h_v_scrolled_window.html" title="This window inherits all functionality of both vertical and horizontal, variable scrolled windows..." alt="" coords="557,111,704,142"/>
+<area shape="rect" id="node17" href="$classwx_preview_control_bar.html" title="This is the default implementation of the preview control bar, a panel with buttons and a zoom contro..." alt="" coords="559,165,703,195"/>
+<area shape="rect" id="node19" href="$classwx_property_grid_manager.html" title="wxPropertyGridManager is an efficient multi&#45;page version of wxPropertyGrid, which can optionally have..." alt="" coords="551,218,711,249"/>
+<area shape="rect" id="node21" href="$classwx_v_scrolled_window.html" title="In the name of this class, &quot;V&quot; may stand for &quot;variable&quot; because it can be used fo..." alt="" coords="561,271,700,302"/>
+<area shape="rect" id="node31" href="$classwx_wizard_page.html" title="wxWizardPage is one of the screens in wxWizard: it must know what are the following and preceding pag..." alt="" coords="577,325,684,355"/>
+<area shape="rect" id="node2" href="$classwx_window.html" title="wxWindow is the base class for all windows and represents any visible object on screen." alt="" coords="299,165,381,195"/>
+<area shape="rect" id="node4" href="$classwx_evt_handler.html" title="A class that can handle events from the windowing system." alt="" coords="149,165,251,195"/>
+<area shape="rect" id="node6" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="16,138,91,169"/>
+<area shape="rect" id="node8" href="$classwx_trackable.html" title="Add&#45;on base class for a trackable object." alt="" coords="7,191,100,222"/>
+<area shape="rect" id="node23" href="$classwx_v_list_box.html" title="wxVListBox is a wxListBox&#45;like control with the following two main differences from a regular wxListB..." alt="" coords="788,271,879,302"/>
+<area shape="rect" id="node25" href="$classwx_html_list_box.html" title="wxHtmlListBox is an implementation of wxVListBox which shows HTML content in the listbox rows..." alt="" coords="955,271,1064,302"/>
+<area shape="rect" id="node27" href="$classwx_rich_text_style_list_box.html" title="This is a listbox that can display the styles in a wxRichTextStyleSheet, and apply the selection to a..." alt="" coords="1112,245,1275,275"/>
+<area shape="rect" id="node29" href="$classwx_simple_html_list_box.html" title="wxSimpleHtmlListBox is an implementation of wxHtmlListBox which shows HTML content in the listbox row..." alt="" coords="1119,298,1268,329"/>
+<area shape="rect" id="node33" href="$classwx_wizard_page_simple.html" title="wxWizardPageSimple is the simplest possible wxWizardPage implementation: it just returns the pointers..." alt="" coords="760,325,907,355"/>
+</map>

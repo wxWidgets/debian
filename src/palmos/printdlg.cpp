@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: printdlg.cpp 39111 2006-05-08 22:34:12Z ABX $
+// RCS-ID:      $Id: printdlg.cpp 58227 2009-01-19 13:55:27Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ int wxPrintDialog::ShowModal()
 
 wxDC *wxPrintDialog::GetPrintDC()
 {
-    return (wxDC*) NULL;
+    return NULL;
 }
 
 // ---------------------------------------------------------------------------

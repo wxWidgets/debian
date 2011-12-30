@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     03-July-1997
-// RCS-ID:      $Id: _accel.i 41774 2006-10-09 02:36:38Z RD $
+// RCS-ID:      $Id: _accel.i 69026 2011-09-08 19:33:52Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -30,11 +30,12 @@
 //---------------------------------------------------------------------------
 %newgroup;
 
-enum {
+enum wxAcceleratorEntryFlags {
     wxACCEL_ALT,
     wxACCEL_CTRL,
     wxACCEL_SHIFT,
     wxACCEL_NORMAL,
+    wxACCEL_RAW_CTRL,
     wxACCEL_CMD,
 };
 
@@ -165,6 +166,11 @@ const wxAcceleratorTable wxNullAcceleratorTable;
 %mutable;
 
 
-wxAcceleratorEntry *wxGetAccelFromString(const wxString& label);
+%pythoncode {
+    def GetAccelFromString(label):
+        entry = AcceleratorEntry()
+        entry.FromString(label)
+        return entry
+}
 
 //---------------------------------------------------------------------------

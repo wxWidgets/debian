@@ -2,7 +2,7 @@
 // Name:        src/html/m_fonts.cpp
 // Purpose:     wxHtml module for fonts & colors of fonts
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_fonts.cpp 39371 2006-05-28 13:51:34Z VZ $
+// RCS-ID:      $Id: m_fonts.cpp 69512 2011-10-22 13:19:40Z JS $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 
 #if wxUSE_HTML && wxUSE_STREAMS
 
-#ifndef WXPRECOMP
+#ifndef WX_PRECOMP
 #endif
 
 #include "wx/html/forcelnk.h"
@@ -51,10 +51,11 @@ TAG_HANDLER_BEGIN(FONT, "FONT" )
 
         if (tag.HasParam(wxT("SIZE")))
         {
-            int tmp = 0;
-            wxChar c = tag.GetParam(wxT("SIZE")).GetChar(0);
-            if (tag.GetParamAsInt(wxT("SIZE"), &tmp))
+            long tmp = 0;
+            const wxString sizeStr = tag.GetParam(wxT("SIZE"));
+            if (sizeStr.ToLong(&tmp))
             {
+                wxChar c = sizeStr[0];
                 if (c == wxT('+') || c == wxT('-'))
                     m_WParser->SetFontSize(oldsize+tmp);
                 else
@@ -106,7 +107,7 @@ TAG_HANDLER_BEGIN(FONT, "FONT" )
 TAG_HANDLER_END(FONT)
 
 
-TAG_HANDLER_BEGIN(FACES_U, "U,STRIKE")
+TAG_HANDLER_BEGIN(FACES_U, "U,STRIKE,DEL")
 
     TAG_HANDLER_CONSTR(FACES_U) { }
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Nov-1998
-// RCS-ID:      $Id: html.i 54628 2008-07-14 22:23:04Z RD $
+// RCS-ID:      $Id: html.i 70133 2011-12-28 02:14:56Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -163,7 +163,7 @@ public:
     wxObject* Parse(const wxString& source);
     void InitParser(const wxString& source);
     void DoneParser();
-    void DoParsing(int begin_pos, int end_pos);
+    void DoParsing(/*int begin_pos, int end_pos*/);
     void StopParsing();
     // wxObject* GetProduct();
 
@@ -197,8 +197,6 @@ public:
     wxDC* GetDC();
     int GetCharHeight();
     int GetCharWidth();
-    wxPyHtmlWindow* GetWindow();
-    %pythoncode { GetWindow = wx._deprecated(GetWindow) }
 
     wxHtmlWindowInterface *GetWindowInterface();
 
@@ -227,6 +225,9 @@ public:
 
     int GetFontSize();
     void SetFontSize(int s);
+    // Try to map a font size in points to the HTML 1-7 font size range.
+    void SetFontPointSize(int pt);
+    
     int GetFontBold();
     void SetFontBold(int x);
     int GetFontItalic();
@@ -239,6 +240,10 @@ public:
     void SetAlign(int a);
     wxColour GetLinkColor();
     void SetLinkColor(const wxColour& clr);
+    %pythoncode {
+        GetLinkColour = GetLinkColor
+        SetLinkColour = SetLinkColor
+    }
     wxColour GetActualColor();
     void SetActualColor(const wxColour& clr);
     %pythoncode {
@@ -263,6 +268,7 @@ public:
     %property(FontUnderlined, GetFontUnderlined, SetFontUnderlined, doc="See `GetFontUnderlined` and `SetFontUnderlined`");
     %property(Link, GetLink, SetLink, doc="See `GetLink` and `SetLink`");
     %property(LinkColor, GetLinkColor, SetLinkColor, doc="See `GetLinkColor` and `SetLinkColor`");
+    %property(LinkColour, GetLinkColour, SetLinkColour, doc="See `GetLinkColour` and `SetLinkColour`");
     %property(WindowInterface, GetWindowInterface, doc="See `GetWindowInterface`");
 };
 
@@ -443,21 +449,21 @@ public:
     const wxPoint& GetFromPos() const;
     const wxPoint& GetToPos() const;
 
-    // these are From/ToCell's private data
-    const wxPoint& GetFromPrivPos() const;
-    const wxPoint& GetToPrivPos() const;
-    void SetFromPrivPos(const wxPoint& pos);
-    void SetToPrivPos(const wxPoint& pos);
-    void ClearPrivPos();
+    // // these are From/ToCell's private data
+    // const wxPoint& GetFromPrivPos() const;
+    // const wxPoint& GetToPrivPos() const;
+    // void SetFromPrivPos(const wxPoint& pos);
+    // void SetToPrivPos(const wxPoint& pos);
+    // void ClearPrivPos();
 
     const bool IsEmpty() const;
 
     %property(FromCell, GetFromCell, doc="See `GetFromCell`");
     %property(FromPos, GetFromPos, doc="See `GetFromPos`");
-    %property(FromPrivPos, GetFromPrivPos, SetFromPrivPos, doc="See `GetFromPrivPos` and `SetFromPrivPos`");
+    // %property(FromPrivPos, GetFromPrivPos, SetFromPrivPos, doc="See `GetFromPrivPos` and `SetFromPrivPos`");
     %property(ToCell, GetToCell, doc="See `GetToCell`");
     %property(ToPos, GetToPos, doc="See `GetToPos`");
-    %property(ToPrivPos, GetToPrivPos, SetToPrivPos, doc="See `GetToPrivPos` and `SetToPrivPos`");
+    // %property(ToPrivPos, GetToPrivPos, SetToPrivPos, doc="See `GetToPrivPos` and `SetToPrivPos`");
 };
 
 
@@ -577,10 +583,6 @@ public:
     // Returns cursor to be used when mouse is over the cell:
     virtual wxCursor GetMouseCursor(wxHtmlWindowInterface *window) const;
 
-    // Returns cursor to be used when mouse is over the cell:
-    wxCursor GetCursor() const;
-    %pythoncode { GetCursor = wx._deprecated(GetCursor) }
-
     // Formatting cells are not visible on the screen, they only alter
     // renderer's state.
     bool IsFormattingCell() const;
@@ -652,7 +654,6 @@ public:
     // only part of the cell inside the selection is converted.
     wxString ConvertToText(wxHtmlSelection *sel) const;
 
-    %property(Cursor, GetCursor, doc="See `GetCursor`");
     %property(Depth, GetDepth, doc="See `GetDepth`");
     %property(Descent, GetDescent, doc="See `GetDescent`");
     %property(FirstChild, GetFirstChild, doc="See `GetFirstChild`");
@@ -682,6 +683,17 @@ public:
 };
 
 
+
+class wxHtmlWordWithTabsCell : public wxHtmlWordCell
+{
+public:
+    wxHtmlWordWithTabsCell(const wxString& word,
+                           const wxString& wordOrig,
+                           size_t linepos,
+                           const wxDC& dc);
+};
+
+
 class wxHtmlContainerCell : public wxHtmlCell {
 public:
     wxHtmlContainerCell(wxHtmlContainerCell *parent);
@@ -703,7 +715,7 @@ public:
     void SetMinHeight(int h, int align = wxHTML_ALIGN_TOP);
     void SetBackgroundColour(const wxColour& clr);
     wxColour GetBackgroundColour();
-    void SetBorder(const wxColour& clr1, const wxColour& clr2);
+    void SetBorder(const wxColour& clr1, const wxColour& clr2, int border=1);
     wxHtmlCell* GetFirstChild();
     %pragma(python) addtoclass = "GetFirstCell = GetFirstChild"
 
@@ -1060,7 +1072,9 @@ public:
 
     // After(!) calling SetRelatedFrame, this sets statusbar slot where messages
     // will be displayed. Default is -1 = no messages.
+    %nokwargs SetRelatedStatusBar;
     void SetRelatedStatusBar(int bar);
+    void SetRelatedStatusBar(wxStatusBar*, int index = 0);
 
     // Sets fonts to be used when displaying HTML page.
     %extend {
@@ -1200,7 +1214,10 @@ public:
     wxHtmlDCRenderer();
     ~wxHtmlDCRenderer();
 
-    void SetDC(wxDC *dc, int maxwidth);
+    %nokwargs SetDC;
+    void SetDC(wxDC *dc, double pixel_scale = 1.0);
+    void SetDC(wxDC *dc, double pixel_scale, double font_scale);
+    
     void SetSize(int width, int height);
     void SetHtmlText(const wxString& html,
                      const wxString& basepath = wxPyEmptyString,
@@ -1223,7 +1240,7 @@ public:
                           const wxString& fixed_face = wxPyEmptyString);
 
     int Render(int x, int y, wxArrayInt& known_pagebreaks, int from = 0,
-               int dont_render = FALSE, int to = INT_MAX);
+               int dont_render = false, int to = INT_MAX);
     int GetTotalHeight();
                 // returns total height of the html document
                 // (compare Render's return value with this)
@@ -1291,10 +1308,10 @@ public:
                        wxWindow *parentWindow = NULL);
     ~wxHtmlEasyPrinting();
 
-    void PreviewFile(const wxString &htmlfile);
-    void PreviewText(const wxString &htmltext, const wxString& basepath = wxPyEmptyString);
-    void PrintFile(const wxString &htmlfile);
-    void PrintText(const wxString &htmltext, const wxString& basepath = wxPyEmptyString);
+    bool PreviewFile(const wxString &htmlfile);
+    bool PreviewText(const wxString &htmltext, const wxString& basepath = wxPyEmptyString);
+    bool PrintFile(const wxString &htmlfile);
+    bool PrintText(const wxString &htmltext, const wxString& basepath = wxPyEmptyString);
 //    void PrinterSetup();
     void PageSetup();
     void SetHeader(const wxString& header, int pg = wxPAGE_ALL);
@@ -1322,9 +1339,14 @@ public:
     wxWindow* GetParentWindow() const;
     void SetParentWindow(wxWindow* window);
 
+    const wxString& GetName() const;
+    void SetName(const wxString& name);
+    
     
     %property(PageSetupData, GetPageSetupData, doc="See `GetPageSetupData`");
     %property(PrintData, GetPrintData, doc="See `GetPrintData`");
+    %property(ParentWindow, GetParentWindow, SetParentWindow);
+    %property(Name, GetName, SetName);
 };
 
 
@@ -1645,6 +1667,8 @@ public:
 
     void AddGrabIfNeeded();
 
+    void SetShouldPreventAppExit(bool enable);
+
     /// Returns the help controller associated with the window.
     wxHtmlHelpController* GetController() const;
 
@@ -1815,6 +1839,8 @@ public:
 
     wxHtmlHelpController(int style = wxHF_DEFAULT_STYLE, wxWindow* parentWindow = NULL);
     ~wxHtmlHelpController();
+
+    void SetShouldPreventAppExit(bool enable);
 
     wxHtmlHelpWindow* GetHelpWindow();
     void SetHelpWindow(wxHtmlHelpWindow* helpWindow);

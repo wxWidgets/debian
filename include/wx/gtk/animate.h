@@ -4,7 +4,7 @@
 // Author:      Julian Smart and Guillermo Rodriguez Garcia
 // Modified by: Francesco Montorsi
 // Created:     13/8/99
-// RCS-ID:      $Id: animate.h 58350 2009-01-24 10:00:38Z FM $
+// RCS-ID:      $Id: animate.h 53629 2008-05-17 22:51:52Z VZ $
 // Copyright:   (c) Julian Smart and Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,10 +27,8 @@ typedef struct _GdkPixbufAnimationIter GdkPixbufAnimationIter;
 class WXDLLIMPEXP_ADV wxAnimation : public wxAnimationBase
 {
 public:
-#if wxABI_VERSION >= 20810
     wxAnimation(const wxString &name, wxAnimationType type = wxANIMATION_TYPE_ANY)
         : m_pixbuf(NULL) { LoadFile(name, type); }
-#endif
     wxAnimation(GdkPixbufAnimation *p = NULL);
     wxAnimation(const wxAnimation&);
     ~wxAnimation() { UnRef(); }
@@ -115,6 +113,7 @@ public:     // event handler
 public:     // public API
 
     virtual bool LoadFile(const wxString& filename, wxAnimationType type = wxANIMATION_TYPE_ANY);
+    virtual bool Load(wxInputStream& stream, wxAnimationType type = wxANIMATION_TYPE_ANY);
 
     virtual void SetAnimation(const wxAnimation &anim);
     virtual wxAnimation GetAnimation() const

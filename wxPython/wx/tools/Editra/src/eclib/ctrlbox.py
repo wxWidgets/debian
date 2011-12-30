@@ -45,8 +45,8 @@ that require a sandwich like layout.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ctrlbox.py 67325 2011-03-27 20:24:20Z CJP $"
-__revision__ = "$Revision: 67325 $"
+__svnid__ = "$Id: ctrlbox.py 70073 2011-12-20 23:37:14Z CJP $"
+__revision__ = "$Revision: 70073 $"
 
 __all__ = ["ControlBox", "CTRLBOX_NAME_STR",
 
@@ -229,12 +229,10 @@ class ControlBox(wx.PyPanel):
         """
         cbar = self.GetControlBar(pos)
         if cbar is None:
-            dsize = (-1, 24)
             style=CTRLBAR_STYLE_GRADIENT
             if pos in (wx.LEFT, wx.RIGHT):
-                dsize = (24, -1)
                 style |= CTRLBAR_STYLE_VERTICAL
-            cbar = ControlBar(self, size=dsize, style=style)
+            cbar = ControlBar(self, style=style)
             self.SetControlBar(cbar, pos)
         return cbar
 

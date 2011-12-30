@@ -2,7 +2,7 @@
 # KNOBCTRL wxPython IMPLEMENTATION
 #
 # Andrea Gavana, @ 03 Nov 2006
-# Latest Revision: 14 Apr 2010, 12.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List
@@ -12,7 +12,7 @@
 # For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please
 # Write To Me At:
 #
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 # andrea.gavana@gmail.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
@@ -22,13 +22,13 @@
 # --------------------------------------------------------------------------------- #
 
 """
-KnobCtrl lets the user select a numerical value by rotating it.
+L{KnobCtrl} lets the user select a numerical value by rotating it.
 
 
 Description
 ===========
 
-KnobCtrl lets the user select a numerical value by rotating it. It works like a
+L{KnobCtrl} lets the user select a numerical value by rotating it. It works like a
 scrollbar: just set the ticks range property and read the value property in the
 associated ``EVT_KC_ANGLE_CHANGING``/``EVT_KC_ANGLE_CHANGED`` events. Simple but
 effective.
@@ -37,10 +37,57 @@ It can be easily used if you want to simulate the volume knob of a music player
 or similar functionalities.
 
 
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.knobctrl as KC
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "KnobCtrl Demo")
+
+            panel = wx.Panel(self)
+            
+            knob1 = KC.KnobCtrl(panel, -1, size=(100, 100))
+            knob2 = KC.KnobCtrl(panel, -1, size=(100, 100))
+
+            knob1.SetTags(range(0, 151, 10))
+            knob1.SetAngularRange(-45, 225)
+            knob1.SetValue(45)
+
+            knob2.SetTags(range(0, 151, 10))
+            knob2.SetAngularRange(0, 270)
+            knob2.SetValue(100)
+        
+            main_sizer = wx.BoxSizer(wx.VERTICAL)
+            main_sizer.Add(knob1, 0, wx.EXPAND|wx.ALL, 20)
+            main_sizer.Add(knob2, 0, wx.EXPAND|wx.ALL, 20)
+
+            panel.SetSizer(main_sizer)
+            main_sizer.Layout()
+            
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
+
+
 Events
 ======
 
-KnobCtrl implements two events that can be intercepted by the user:
+L{KnobCtrl} implements two events that can be intercepted by the user:
 
 - ``EVT_KC_ANGLE_CHANGING``;
 - ``EVT_KC_ANGLE_CHANGED``.
@@ -52,7 +99,7 @@ event handler.
 Supported Platforms
 ===================
 
-KnobCtrl has been tested on the following platforms:
+L{KnobCtrl} has been tested on the following platforms:
   * Windows (Windows XP);
   * Linux Ubuntu (Dapper 6.06)
 
@@ -85,9 +132,9 @@ Event Name                Description
 License And Version
 ===================
 
-KnobCtrl is distributed under the wxPython license. 
+L{KnobCtrl} is distributed under the wxPython license. 
 
-Latest Revision: Andrea Gavana @ 14 Apr 2010, 12.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.3
 

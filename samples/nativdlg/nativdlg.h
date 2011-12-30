@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: nativdlg.h 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: nativdlg.h 64940 2010-07-13 13:29:13Z VZ $
 // Copyright:   (c) Julian Smart
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // Define a new application

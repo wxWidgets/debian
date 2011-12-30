@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6-June-2006
-// RCS-ID:      $Id: _picker.i 60609 2009-05-12 20:40:23Z RD $
+// RCS-ID:      $Id: _picker.i 69026 2011-09-08 19:33:52Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -486,8 +486,11 @@ enum {
     wxFLP_OVERWRITE_PROMPT,
     wxFLP_FILE_MUST_EXIST,
     wxFLP_CHANGE_DIR,
+    wxFLP_SMALL,
+    
     wxDIRP_DIR_MUST_EXIST,
     wxDIRP_CHANGE_DIR,
+    wxDIRP_SMALL,
 
     wxFLP_USE_TEXTCTRL,
     wxFLP_DEFAULT_STYLE,

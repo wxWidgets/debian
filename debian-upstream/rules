@@ -29,45 +29,15 @@ endif
 
 
 # Find the python version(s) to build for
-PYVERS := $(shell pyversions -vr 2> /dev/null || pyversions -vs 2> /dev/null)
+PYVERS := $(shell pyversions -vr || pyversions -vs)
 ifeq ($(strip $(PYVERS)),)
     PYVERS := $(shell python -c 'import sys; print sys.version[:3]')
     NO_PYCENTRAL = 1
     PY_BUILD_DEPS = python$(PYVERS), python$(PYVERS)-dbg, python$(PYVERS)-dev
 else
     DEB_PYTHON_SYSTEM=pycentral
-    PY_BUILD_DEPS = python-all, python-all-dev, python-central
-
-    # Etch doesn't have python-all-dbg, so check if it should be added to the dependencies
-    ifeq (True, $(shell if dpkg-query -s python-all-dbg > /dev/null 2>&1; then echo True; fi))
-        PY_BUILD_DEPS := $(PY_BUILD_DEPS), python-all-dbg
-    endif
+    PY_BUILD_DEPS = python-all, python-all-dbg, python-all-dev, python-central
 endif
-
-# sitedir: name of the site-packages/dist-packages directory depending on the
-# python version. Call as: $(call sitedir, <python version>).
-sitedir = $(if $(filter $(subst python,,$(1)), 2.3 2.4 2.5),site,dist)-packages
-
-
-# The python-dbg on Dapper had a configuration bug that makes trying
-# to use distutils with it error out.  The problem seems to be that
-# the exec_prefix was set wrong.  Try to detect that so we can skip
-# building the py -dbg pacakge there.
-ifeq (/usr, $(shell python-dbg -c "import sys;print sys.exec_prefix" 2> /dev/null))
-
-    # Also check if this python will put the _d on the end of the 
-    # extension modules as this is needed to allow them to be installed 
-    # side-by-side with the non-debug package.  Ubuntu appears to be 
-    # handling this by adding a sys.pydebug attribute that is checked for
-    # in distutils to know which config dir to use.  We can use the same 
-    # thing here, but there should probably be a safer way to do it.
-    ifeq (True, $(shell python-dbg -c "import sys; print hasattr(sys,'pydebug') and sys.pydebug" 2> /dev/null))
-
-        # This means it is ok to try and build the dbg wxPython package
-        PY_DBG_OK = 1
-    endif
-endif
-
 
 # If another source package is to supply the common binary packages
 # for a particular Debian release, then define this variable to indicate
@@ -95,7 +65,6 @@ wx_major_version_number := $(shell sed -n 's/^wx_major_version_number=//p' confi
 wx_minor_version_number := $(shell sed -n 's/^wx_minor_version_number=//p' configure.in)
 wx_release_number       := $(shell sed -n 's/^wx_release_number=//p' configure.in)
 wx_subrelease_number    := $(shell sed -n 's/^wx_subrelease_number=//p' configure.in)
-full_version := $(wx_major_version_number).$(wx_minor_version_number).$(wx_release_number).$(wx_subrelease_number)
 
 ##release   := $(shell dpkg-parsechangelog | sed -n 's/^Source: wxwidgets//p' | sed 's/-ansi//')
 release  := $(wx_major_version_number).$(wx_minor_version_number)
@@ -157,7 +126,7 @@ GTK_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
 pytoolkit := gtk2
 PY_WX_CONFIG_OPTIONS = --version=$(release) --toolkit=$(pytoolkit) --static=no
 
-WX_UNICODE ?= 1
+WX_UNICODE := 1
 WX_OPENGL := 1
 
 ifeq ($(WX_UNICODE),1)
@@ -179,10 +148,8 @@ endif
 
 ifeq ($(WX_OPENGL),1)
     GTK_CONFIGURE_OPTIONS += --with-opengl
-    PY_OPENGL = BUILD_GLCANVAS=1
 else
     GTK_CONFIGURE_OPTIONS += --without-opengl
-    PY_OPENGL = BUILD_GLCANVAS=0
 endif
 
 #---------------------------------------------------------------------------
@@ -205,12 +172,13 @@ package_common           = wx-common
 package_gtk_py_lib      := python-wxgtk$(release)$(unicode_suffix)
 package_gtk_py_ver       = python-wxversion
 package_gtk_py_tools     = python-wxtools
+package_gtk_py_addons    = python-wxaddons
 package_gtk_dbg_py      := python-wxgtk$(release)$(unicode_suffix)-dbg
 
 
 # The packages listed here are common to all wx versions, and may be provided
 # by another source package if more than one is in the release simultaneously.
-common_packages	:= $(package_common) $(package_gtk_py_ver) $(package_gtk_py_tools)
+common_packages	:= $(package_common) $(package_gtk_py_ver) $(package_gtk_py_tools) $(package_gtk_py_addons)
 
 
 package_msw_dev         := libwxmsw$(release)$(unicode_suffix)-dev
@@ -221,13 +189,8 @@ package_headers_msw     := wx$(release)-headers-msw
 extra_packages := $(package_msw_dev) $(package_msw_dbg) $(package_headers_msw)
 
 ifdef DEBIAN_WX_DEFAULT_VERSION
-    extra_packages += $(common_packages)
+  extra_packages += $(common_packages)
 endif
-
-ifndef PY_DBG_OK
-    extra_packages += $(package_gtk_dbg_py)
-endif
-
 
 
 #---------------------------------------------------------------------------
@@ -268,11 +231,7 @@ objdirs := $(objdir_wxbase_shared) $(objdir_wxbase_debug)                  \
 build_arch_stamps = build-wxbase-shared-stamp build-wxbase-debug-stamp    \
                     build-gtk-shared-stamp build-gtk-shared-contrib-stamp \
                     build-gtk-debug-stamp build-gtk-debug-contrib-stamp   \
-                    build-i18n-stamp build-gtk-py-stamp 
-
-ifdef PY_DBG_OK
-    build_arch_stamps += build-gtk-dbg-py-stamp
-endif
+                    build-i18n-stamp build-gtk-py-stamp build-gtk-dbg-py-stamp
 
 build_indep_stamps = build-examples-stamp build-doc-stamp
 
@@ -285,17 +244,12 @@ build_stamps := $(build_stamps_native) $(build_cross_stamps)
 
 #---------------------------------------------------------------------------
 # Install targets:
-
 install_all_arch = install-wxbase-lib install-wxbase-dev install-wxbase-dbg	\
                    install-gtk-lib install-gtk-dev install-gtk-dbg        	\
-                   install-headers install-i18n install-gtk-py 
+                   install-headers install-i18n install-gtk-py install-gtk-dbg-py
 
 ifndef DEBIAN_WX_DEFAULT_VERSION
-    install_all_arch += install-common
-endif
-
-ifdef PY_DBG_OK
-    install_all_arch += install-gtk-dbg-py
+  install_all_arch += install-common
 endif
 
 install_all_indep = install-examples install-doc
@@ -305,6 +259,7 @@ install_all_cross = install-msw-dev install-msw-dbg install-headers-msw
 install_all_native := $(install_all_arch) $(install_all_indep)
 
 install_all := $(install_all_native) $(install_all_cross)
+
 
 
 #---------------------------------------------------------------------------
@@ -482,17 +437,33 @@ build-gtk-debug-contrib-stamp: build-gtk-debug-stamp
 	touch $@
 
 
+purge-dbg-py:
+	@if [ ! -e build-gtk-py-stamp ]; then				\
+		$(MAKE) -f debian/rules clean-py;			\
+	fi
+	$(RM) build-gtk-dbg-py-stamp
+
+build-gtk-py-stamp: build-gtk-shared-stamp purge-dbg-py
+	dh_testdir
+	touch docs/lgpl.txt
+	cd wxPython \
+		&& $(python_ver) ./setup.py 	build			\
+						WX_CONFIG='$(wxconfig)'	\
+						WXPORT=$(pytoolkit)	\
+						$(PY_UNICODE)		\
+					    	FLAVOUR=$(DEBIAN_WXFLAVOUR)
+	touch $@
+
 build-doc-stamp: build-gtk-shared-stamp
 	dh_testdir
 	# the tarball may already have the generated docs in it
-	@if [ ! -e docs/html/wx/index.html ]; then \
-		echo Generating docs...; \
+	if [ ! -e docs/html/wx/index.html ]; then \
 		cd $(objdir_gtk_shared)/utils/tex2rtf/src && $(FAST_MAKE); \
 		cd -; \
 		rm -rf $(objdir_doc); \
 		rm -rf $(objdir_doc_cruft); \
-		mkdir -p $(objdir_doc); \
-		mkdir -p $(objdir_doc_cruft); \
+		mkdir $(objdir_doc); \
+		mkdir $(objdir_doc_cruft); \
 		cd $(objdir_doc_cruft); \
 		LD_LIBRARY_PATH=../$(objdir_gtk_shared)/lib:$(LD_LIBRARY_PATH) \
 		   ../$(objdir_gtk_shared)/utils/tex2rtf/src/tex2rtf           \
@@ -548,59 +519,23 @@ build-i18n-stamp: build-gtk-shared-stamp
 		&& $(MAKE) allmo
 	touch $@
 
-#---------------------------------------------------------------------------
-# wxPython build rules
+purge-release-py:
+	@if [ ! -e build-gtk-dbg-py-stamp ]; then			\
+		$(MAKE) -f debian/rules clean-py;			\
+	fi
+	$(RM) build-gtk-py-stamp
 
-# wxPython uses this to build in-tree
-wxconfig     := $(shell pwd)/$(objdir_gtk_shared)/wx-config --no_rpath
-wxconfig-dbg := $(shell pwd)/$(objdir_gtk_debug)/wx-config --no_rpath
-
-# and this after it is installed.
-py_wxconfig  := wx-config $(PY_WX_CONFIG_OPTIONS) --debug=no
-pyd_wxconfig := wx-config $(PY_WX_CONFIG_OPTIONS) --debug
-
-
-
-build-gtk-py-stamp: build-gtk-shared-contrib-stamp $(PYVERS:%=build-gtk-py%-stamp)
-	touch $@
-
-# Notice the make magic here with the % sign.  In effect this
-# duplicates this rule for every matching dependency, and then the
-# value of the match can be used in the recipe as $*.  The
-# $(PYVERS...) substitution above gives us one dependency for every
-# version of Python that we are supporting.
-
-build-gtk-py%-stamp:
+build-gtk-dbg-py-stamp: build-gtk-debug-stamp purge-release-py
 	dh_testdir
 	touch docs/lgpl.txt
-	cd wxPython && 							\
-		python$* ./setup.py  build				\
-			WX_CONFIG='$(wxconfig)'				\
-			WXPORT=$(pytoolkit)				\
-			$(PY_UNICODE)					\
-			$(PY_OPENGL)					\
-			FLAVOUR=$(DEBIAN_WXFLAVOUR)
+	cd wxPython							\
+		&& $(python_ver) ./setup.py build			\
+					    WX_CONFIG='$(wxconfig-dbg)' \
+					    WXPORT=$(pytoolkit)		\
+					    $(PY_UNICODE)		\
+					    FLAVOUR=$(addsuffix -,$(DEBIAN_WXFLAVOUR))dbg
 	touch $@
 
-
-build-gtk-dbg-py-stamp: build-gtk-debug-contrib-stamp $(PYVERS:%=build-gtk-dbg-py%-stamp)
-	touch $@
-
-build-gtk-dbg-py%-stamp:
-	dh_testdir
-	touch docs/lgpl.txt
-	cd wxPython && 							\
-		python$*-dbg  ./setup.py build				\
-		    WX_CONFIG='$(wxconfig-dbg)' 			\
-		    WXPORT=$(pytoolkit)					\
-		    $(PY_UNICODE)					\
-		    $(PY_OPENGL)					\
-		    FLAVOUR=$(DEBIAN_WXFLAVOUR)
-	touch $@
-
-
-#---------------------------------------------------------------------------
-# MSW cross build rules
 
 configure-msw-shared-stamp:
 	dh_testdir
@@ -767,6 +702,97 @@ install-gtk-dbg: build-gtk-debug-stamp build-gtk-debug-contrib-stamp
 	cp debian/lintian-override debian/$(package_gtk_dbg)/usr/share/lintian/overrides/$(package_gtk_dbg)
 
 
+install-gtk-py-lib: DH_OPTIONS=-p$(package_gtk_py_lib)
+install-gtk-py-lib: build-gtk-py-stamp
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs usr/lib/wx/python
+	cd wxPython 								\
+		&& $(python_ver) ./setup.py install 				\
+			      --prefix=`pwd`/../debian/$(package_gtk_py_lib)/usr \
+			      WX_CONFIG='$(wxconfig)'				\
+			      SYS_WX_CONFIG='$(py_wxconfig)'			\
+			      WXPORT=$(pytoolkit)				\
+			      $(PY_UNICODE)					\
+			      FLAVOUR=$(DEBIAN_WXFLAVOUR)
+
+	mv debian/$(package_gtk_py_lib)/$(pydir)/wx.pth 			\
+	   debian/$(package_gtk_py_lib)/usr/lib/wx/python/wx$(release).pth
+
+	find debian/$(package_gtk_py_lib)/$(pydir) -name '*.py?' -exec rm '{}' ';'
+
+	# This is rather bogus, its included in the main copyright file now though.
+	rm -f debian/$(package_gtk_py_lib)/$(wxpydir)/wx/tools/XRCed/license.txt
+
+install-gtk-py-ver: DH_OPTIONS=-p$(package_gtk_py_ver)
+install-gtk-py-ver: install-gtk-py-lib
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+
+ifndef DEBIAN_WX_DEFAULT_VERSION
+
+	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) $(pydir)/wxversion.py
+else
+	rm debian/$(package_gtk_py_lib)/$(pydir)/wxversion.py
+endif
+
+
+
+install-gtk-py-tools: DH_OPTIONS=-p$(package_gtk_py_tools)
+install-gtk-py-tools: install-gtk-py-ver
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+
+ifndef DEBIAN_WX_DEFAULT_VERSION
+
+	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) usr/bin
+
+	dh_installman debian/wxPython-tools.1
+	dh_link usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/img2py.1     \
+		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/img2xpm.1    \
+		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/img2png.1    \
+		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pycrust.1    \
+		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyshell.1    \
+		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/xrced.1      \
+		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/helpviewer.1 \
+		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyalacarte.1 \
+		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyalamode.1  \
+		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pywrap.1     \
+		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pywxrc.1
+
+	dh_installdirs usr/share/lintian/overrides
+	cp debian/lintian-override debian/$(package_gtk_py_tools)/usr/share/lintian/overrides/$(package_gtk_py_tools)
+endif
+	mkdir -p debian/$(package_gtk_py_tools)/usr/share/pixmaps
+	mkdir -p debian/$(package_gtk_py_tools)/usr/share/applications
+
+	cp wxPython/wx/py/PyCrust_32.png        debian/$(package_gtk_py_tools)/usr/share/pixmaps/pycrust.png
+	cp wxPython/wx/py/PyCrust_32.png        debian/$(package_gtk_py_tools)/usr/share/pixmaps/pyshell.png
+	cp wxPython/wx/tools/XRCed/XRCed_32.png debian/$(package_gtk_py_tools)/usr/share/pixmaps/xrced.png
+	cp debian/pycrust.desktop               debian/$(package_gtk_py_tools)/usr/share/applications
+	cp debian/pyshell.desktop               debian/$(package_gtk_py_tools)/usr/share/applications
+	cp debian/xrced.desktop                 debian/$(package_gtk_py_tools)/usr/share/applications
+
+	rm -r debian/$(package_gtk_py_lib)/usr/bin
+
+install-gtk-py-addons: DH_OPTIONS=-p$(package_gtk_py_addons)
+install-gtk-py-addons: install-gtk-py-tools
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+ifndef DEBIAN_WX_DEFAULT_VERSION
+
+	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) $(pydir)/wxaddons
+else
+	rm -r debian/$(package_gtk_py_lib)/$(pydir)/wxaddons
+endif
+
+
+install-gtk-py: install-gtk-py-addons
+
 
 install-common: DH_OPTIONS=-p$(package_common)
 install-common: install-gtk-shared-stamp
@@ -806,7 +832,8 @@ install-headers: install-gtk-shared-stamp
 	mkdir -p debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython/i_files
 	cp -p wxPython/include/wx/wxPython/*.h \
 	    debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython/
-	cp -p wxPython/src/*.i wxPython/src/_*.py wxPython/src/*.swg \
+	cp -p wxPython/include/wx/wxPython/src/*.i wxPython/include/wx/wxPython/src/_*.py \
+	    wxPython/include/wx/wxPython/src/*.swg \
 	    debian/$(package_headers)/usr/include/wx-$(release)/wx/wxPython/i_files
 
 install-i18n: DH_OPTIONS=-p$(package_i18n)
@@ -836,135 +863,30 @@ install-examples: build-examples-stamp
 	dh_testroot
 	dh_clean -k
 
-
-#---------------------------------------------------------------------------
-# wxPython install rules
-
-install-gtk-py-lib: DH_OPTIONS=-p$(package_gtk_py_lib)
-install-gtk-py-lib: build-gtk-py-stamp install-gtk-py-lib-prereq $(PYVERS:%=install-gtk-py%-lib)
-
-install-gtk-py-lib-prereq:
-	dh_testdir
-	dh_testroot
-	dh_clean -k
-
-# More makefile magic here to duplicate this rule for all supported Python versions
-install-gtk-py%-lib: 
-	dh_installdirs usr/lib/wx/python$*
-	cd wxPython && 								\
-		python$* ./setup.py install 					\
-	        	--prefix=`pwd`/../debian/$(package_gtk_py_lib)/usr	\
-			--install-layout=deb					\
-		        WX_CONFIG='$(wxconfig)'					\
-			SYS_WX_CONFIG='$(py_wxconfig)'				\
-	        	WXPORT=$(pytoolkit)					\
-			$(PY_UNICODE)						\
-			$(PY_OPENGL)						\
-			FLAVOUR=$(DEBIAN_WXFLAVOUR)
-
-	mv debian/$(package_gtk_py_lib)/usr/lib/python$*/*-packages/wx.pth	\
-	       debian/$(package_gtk_py_lib)/usr/lib/wx/python$*/wx$(release).pth
-
-	find debian/$(package_gtk_py_lib)/usr/lib/python$* -name '*.py?' -exec rm '{}' ';'
-
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/*-packages/$(wxpydir)/wx/tools/XRCed/license.txt
-
-ifndef DEBIAN_WX_DEFAULT_VERSION
-	@# Move files out for the wxversion package
-	DH_OPTIONS=-p$(package_gtk_py_ver)					\
-		 dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) 		\
-				usr/lib/python$*/$(call sitedir, $*)/wxversion.py		
-endif
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir, $*)/wxversion.py
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir, $*)/wxPython_common*.egg-info
-
-	# Not sure why yet, but for Py2.6 an extra set of .py files are being installed in the 
-	# wrong place, so let's get rid of them if they are there
-	rm -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir, $*)/wx
-	rm -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call sitedir, $*)/wxPython
-
-
-install-gtk-py-tools: DH_OPTIONS=-p$(package_gtk_py_tools)
-install-gtk-py-tools: install-gtk-py-lib
-	dh_testdir
-	dh_testroot
-	dh_clean -k
-
-ifndef DEBIAN_WX_DEFAULT_VERSION
-
-	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) usr/bin
-
-	@# replace the pythonX.Y in the scripts with just python
-	for f in debian/$(package_gtk_py_tools)/usr/bin/*; do			\
-		sed '1s,#!.*python[^ ]*\(.*\),#!/usr/bin/python\1,' $$f > $$f.tmp; \
-		mv $$f.tmp $$f;							\
-		chmod +x $$f;							\
-	done
-
-	dh_installman debian/wxPython-tools.1
-	dh_link usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/img2py.1     \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/img2xpm.1    \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/img2png.1    \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pycrust.1    \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyshell.1    \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/xrced.1      \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/editra.1     \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/helpviewer.1 \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyalacarte.1 \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyalamode.1  \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pywrap.1     \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pywxrc.1
-
-	dh_installdirs usr/share/lintian/overrides
-	cp debian/lintian-override debian/$(package_gtk_py_tools)/usr/share/lintian/overrides/$(package_gtk_py_tools)
-
-	mkdir -p debian/$(package_gtk_py_tools)/usr/share/pixmaps
-	mkdir -p debian/$(package_gtk_py_tools)/usr/share/applications
-
-	cp wxPython/wx/py/PyCrust_32.png               debian/$(package_gtk_py_tools)/usr/share/pixmaps/pycrust.png
-	cp wxPython/wx/py/PyCrust_32.png               debian/$(package_gtk_py_tools)/usr/share/pixmaps/pyshell.png
-	cp wxPython/wx/tools/XRCed/XRCed_32.png        debian/$(package_gtk_py_tools)/usr/share/pixmaps/xrced.png
-	cp wxPython/wx/tools/Editra/pixmaps/editra.png debian/$(package_gtk_py_tools)/usr/share/pixmaps/editra.png
-	cp debian/pycrust.desktop                      debian/$(package_gtk_py_tools)/usr/share/applications
-	cp debian/pyshell.desktop                      debian/$(package_gtk_py_tools)/usr/share/applications
-	cp debian/xrced.desktop                        debian/$(package_gtk_py_tools)/usr/share/applications
-	cp debian/editra.desktop                       debian/$(package_gtk_py_tools)/usr/share/applications
-endif
-	rm -r debian/$(package_gtk_py_lib)/usr/bin
-
-
-
-install-gtk-py: install-gtk-py-tools
-
-
 install-gtk-dbg-py: DH_OPTIONS=-p$(package_gtk_dbg_py)
-install-gtk-dbg-py: build-gtk-dbg-py-stamp install-gtk-dbg-py-prereq $(PYVERS:%=install-gtk-dbg-py%)
-
-install-gtk-dbg-py-prereq:
+install-gtk-dbg-py: build-gtk-dbg-py-stamp
 	dh_testdir
 	dh_testroot
 	dh_clean -k
+	dh_installdirs usr/lib/wx/python
+	cd wxPython 								\
+		&& $(python_ver) ./setup.py install 				\
+			      --prefix=`pwd`/../debian/$(package_gtk_dbg_py)/usr \
+			      WX_CONFIG='$(wxconfig-dbg)'			\
+			      SYS_WX_CONFIG='$(pyd_wxconfig)'			\
+			      WXPORT=$(pytoolkit)				\
+			      $(PY_UNICODE)					\
+			      FLAVOUR=$(addsuffix -,$(DEBIAN_WXFLAVOUR))dbg
 
-install-gtk-dbg-py%:
-	dh_installdirs usr/lib/wx/pythnon$*
-	cd wxPython && 								\
-	    python$*-dbg  ./setup.py install					\
-	          --prefix=`pwd`/../debian/$(package_gtk_dbg_py)/usr 		\
-	          WX_CONFIG='$(wxconfig-dbg)'					\
-		  SYS_WX_CONFIG='$(pyd_wxconfig)'				\
-	          WXPORT=$(pytoolkit)						\
-		  $(PY_UNICODE)							\
-		  $(PY_OPENGL)							\
-		  FLAVOUR=$(DEBIAN_WXFLAVOUR)
+	mv debian/$(package_gtk_py_lib)/$(pydir)/wx.pth 			\
+	   debian/$(package_gtk_py_lib)/usr/lib/wx/python/wx$(release)-dbg.pth
 
-	# Remove all files but the *_d.so
-	find debian/$(package_gtk_dbg_py)					\
-		! -type d ! \( -name '*_d.so' -o -name '*.h' \) | xargs rm -f
-	find debian/$(package_gtk_dbg_py) -depth -empty -exec rmdir {} \;
+	find debian/$(package_gtk_dbg_py)/$(pydir) -name '*.py?' -exec rm '{}' ';'
+	rm -rf usr/bin $(pydir)/{wxversion.py,wx.pth}
 
+	# This is rather bogus, its included in the main copyright file now though.
+	rm -f debian/$(package_gtk_dbg_py)/$(wxpydir)/wx/tools/XRCed/license.txt
 
-#---------------------------------------------------------------------------
-# MSW cross install rules
 
 install-msw-dev: DH_OPTIONS=-p$(package_msw_dev)
 install-msw-dev: build-msw-shared-stamp build-msw-static-stamp
@@ -1056,7 +978,6 @@ endif
 	dh_builddeb -i
 
 
-binary-arch: DH_OPTIONS=$(addprefix -N,$(extra_packages))
 binary-arch: build_arch install_arch
 	dh_testdir -a
 	dh_testroot -a
@@ -1064,13 +985,10 @@ binary-arch: build_arch install_arch
 	dh_installchangelogs -a
 	dh_installexamples -a
 	dh_installmenu -a
-ifdef PY_DBG_OK
+
 	rm -rf debian/$(package_gtk_dbg_py)/usr/share/doc/$(package_gtk_dbg_py)
-	mkdir -p $(package_gtk_py_lib) debian/$(package_gtk_dbg_py)/usr/share/doc
 	ln -s $(package_gtk_py_lib) debian/$(package_gtk_dbg_py)/usr/share/doc/$(package_gtk_dbg_py)
-else
-	rm -rf debian/$(package_gtk_dbg_py)
-endif
+
 ifdef NO_PYCENTRAL
 	dh_python -a
 else
@@ -1090,7 +1008,7 @@ endif
 	dh_makeshlibs -N$(package_gtk_py_lib) -N$(package_gtk_dbg_py) -V
 	dh_installdeb -a
 	dh_shlibdeps -ldebian/$(package_wxbase_lib)/usr/lib:debian/$(package_wxbase_dbg)/usr/lib:debian/$(package_gtk_lib)/usr/lib:debian/$(package_gtk_dbg)/usr/lib
-	dh_gencontrol -a 
+	dh_gencontrol -a
 	dh_md5sums -a
 	dh_builddeb -a
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     31-October-1999
-// RCS-ID:      $Id: _dataobj.i 58929 2009-02-16 01:10:21Z RD $
+// RCS-ID:      $Id: _dataobj.i 63597 2010-03-01 23:39:58Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -546,6 +546,14 @@ the clipboard or the DnD operation.  You can use this method to find
 out what kind of data object was recieved.", "");
     
     %property(ReceivedFormat, GetReceivedFormat, doc="See `GetReceivedFormat`");
+
+    DocDeclStr(
+        wxDataObjectSimple *, GetObject(const wxDataFormat& format,
+                                        wxDataObjectBase::Direction dir = Get) const,
+        "Returns the pointer to the object which supports this format or None.
+TODO: Fix this to use OOR and return the right object type.", "");
+    
+    
 };
 
 //---------------------------------------------------------------------------

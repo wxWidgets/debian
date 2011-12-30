@@ -1,0 +1,9 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classwx_grid_cell_bool_editor.html" title="Grid cell editor for boolean data." alt="" coords="181,5,325,35"/>
+<area shape="rect" id="node5" href="$classwx_grid_cell_choice_editor.html" title="Grid cell editor for string data providing the user a choice from a list of strings." alt="" coords="175,58,332,89"/>
+<area shape="rect" id="node9" href="$classwx_grid_cell_text_editor.html" title="Grid cell editor for string/text data." alt="" coords="183,138,324,169"/>
+<area shape="rect" id="node7" href="$classwx_grid_cell_enum_editor.html" title="Grid cell editor which displays an enum number as a textual equivalent (eg." alt="" coords="411,45,560,75"/>
+<area shape="rect" id="node11" href="$classwx_grid_cell_auto_wrap_string_editor.html" title="Grid cell editor for wrappable string/text data." alt="" coords="381,98,589,129"/>
+<area shape="rect" id="node13" href="$classwx_grid_cell_float_editor.html" title="The editor for floating point numbers data." alt="" coords="412,151,559,182"/>
+<area shape="rect" id="node15" href="$classwx_grid_cell_number_editor.html" title="Grid cell editor for numeric integer data." alt="" coords="404,205,567,235"/>
+</map>

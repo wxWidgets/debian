@@ -1,0 +1,5 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classwx_text_data_object.html" title="wxTextDataObject is a specialization of wxDataObjectSimple for text data." alt="" coords="12,166,140,197"/>
+<area shape="rect" id="node4" href="$classwx_data_object_simple.html" title="This is the simplest possible implementation of the wxDataObject class." alt="" coords="5,86,147,117"/>
+<area shape="rect" id="node6" href="$classwx_data_object.html" title="A wxDataObject represents data that can be copied to or from the clipboard, or dragged and dropped..." alt="" coords="25,6,127,37"/>
+</map>

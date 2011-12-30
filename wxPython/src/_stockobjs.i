@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Sept-2003
-// RCS-ID:      $Id: _stockobjs.i 39350 2006-05-26 16:43:24Z RD $
+// RCS-ID:      $Id: _stockobjs.i 64076 2010-04-20 20:19:32Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -25,6 +25,7 @@ public:
         BRUSH_BLUE,
         BRUSH_CYAN,
         BRUSH_GREEN,
+        BRUSH_YELLOW,
         BRUSH_GREY,
         BRUSH_LIGHTGREY,
         BRUSH_MEDIUMGREY,
@@ -35,6 +36,7 @@ public:
         COLOUR_BLUE,
         COLOUR_CYAN,
         COLOUR_GREEN,
+        COLOUR_YELLOW,
         COLOUR_LIGHTGREY,
         COLOUR_RED,
         COLOUR_WHITE,
@@ -47,8 +49,10 @@ public:
         FONT_SWISS,
         PEN_BLACK,
         PEN_BLACKDASHED,
+        PEN_BLUE,
         PEN_CYAN,
         PEN_GREEN,
+        PEN_YELLOW,
         PEN_GREY,
         PEN_LIGHTGREY,
         PEN_MEDIUMGREY,
@@ -81,8 +85,10 @@ public:
                                               
         wx.BLACK_DASHED_PEN.this  = StockGDI.GetPen(StockGDI.PEN_BLACKDASHED).this
         wx.BLACK_PEN.this         = StockGDI.GetPen(StockGDI.PEN_BLACK).this
+        wx.BLUE_PEN.this          = StockGDI.GetPen(StockGDI.PEN_BLUE).this
         wx.CYAN_PEN.this          = StockGDI.GetPen(StockGDI.PEN_CYAN).this
         wx.GREEN_PEN.this         = StockGDI.GetPen(StockGDI.PEN_GREEN).this
+        wx.YELLOW_PEN.this        = StockGDI.GetPen(StockGDI.PEN_YELLOW).this
         wx.GREY_PEN.this          = StockGDI.GetPen(StockGDI.PEN_GREY).this
         wx.LIGHT_GREY_PEN.this    = StockGDI.GetPen(StockGDI.PEN_LIGHTGREY).this
         wx.MEDIUM_GREY_PEN.this   = StockGDI.GetPen(StockGDI.PEN_MEDIUMGREY).this
@@ -94,6 +100,7 @@ public:
         wx.BLUE_BRUSH.this         = StockGDI.GetBrush(StockGDI.BRUSH_BLUE).this
         wx.CYAN_BRUSH.this         = StockGDI.GetBrush(StockGDI.BRUSH_CYAN).this
         wx.GREEN_BRUSH.this        = StockGDI.GetBrush(StockGDI.BRUSH_GREEN).this
+        wx.YELLOW_BRUSH.this       = StockGDI.GetBrush(StockGDI.BRUSH_YELLOW).this
         wx.GREY_BRUSH.this         = StockGDI.GetBrush(StockGDI.BRUSH_GREY).this
         wx.LIGHT_GREY_BRUSH.this   = StockGDI.GetBrush(StockGDI.BRUSH_LIGHTGREY).this
         wx.MEDIUM_GREY_BRUSH.this  = StockGDI.GetBrush(StockGDI.BRUSH_MEDIUMGREY).this
@@ -105,6 +112,7 @@ public:
         wx.BLUE.this        = StockGDI.GetColour(StockGDI.COLOUR_BLUE).this
         wx.CYAN.this        = StockGDI.GetColour(StockGDI.COLOUR_CYAN).this
         wx.GREEN.this       = StockGDI.GetColour(StockGDI.COLOUR_GREEN).this
+        wx.YELLOW.this       = StockGDI.GetColour(StockGDI.COLOUR_YELLOW).this
         wx.LIGHT_GREY.this  = StockGDI.GetColour(StockGDI.COLOUR_LIGHTGREY).this
         wx.RED.this         = StockGDI.GetColour(StockGDI.COLOUR_RED).this
         wx.WHITE.this       = StockGDI.GetColour(StockGDI.COLOUR_WHITE).this
@@ -117,7 +125,6 @@ public:
         wx.ThePenList.this        = _wxPyInitThePenList().this
         wx.TheBrushList.this      = _wxPyInitTheBrushList().this
         wx.TheColourDatabase.this = _wxPyInitTheColourDatabase().this
-
         
     _initStockObjects = staticmethod(_initStockObjects)
     }
@@ -134,8 +141,10 @@ SWISS_FONT   = Font.__new__(Font)
                                    
 BLACK_DASHED_PEN  = Pen.__new__(Pen)
 BLACK_PEN         = Pen.__new__(Pen)
+BLUE_PEN          = Pen.__new__(Pen)                                               
 CYAN_PEN          = Pen.__new__(Pen)
 GREEN_PEN         = Pen.__new__(Pen)
+YELLOW_PEN        = Pen.__new__(Pen)                                                
 GREY_PEN          = Pen.__new__(Pen)
 LIGHT_GREY_PEN    = Pen.__new__(Pen)
 MEDIUM_GREY_PEN   = Pen.__new__(Pen)
@@ -147,6 +156,7 @@ BLACK_BRUSH        = Brush.__new__(Brush)
 BLUE_BRUSH         = Brush.__new__(Brush)
 CYAN_BRUSH         = Brush.__new__(Brush)
 GREEN_BRUSH        = Brush.__new__(Brush)
+YELLOW_BRUSH       = Brush.__new__(Brush)                                                
 GREY_BRUSH         = Brush.__new__(Brush)
 LIGHT_GREY_BRUSH   = Brush.__new__(Brush)
 MEDIUM_GREY_BRUSH  = Brush.__new__(Brush)
@@ -158,6 +168,7 @@ BLACK       = Colour.__new__(Colour)
 BLUE        = Colour.__new__(Colour)
 CYAN        = Colour.__new__(Colour)
 GREEN       = Colour.__new__(Colour)
+YELLOW      = Colour.__new__(Colour)                                                
 LIGHT_GREY  = Colour.__new__(Colour)
 RED         = Colour.__new__(Colour)
 WHITE       = Colour.__new__(Colour)
@@ -171,18 +182,22 @@ STANDARD_CURSOR   = Cursor.__new__(Cursor)
 %immutable;
 %threadWrapperOff;
 
-const wxBitmap wxNullBitmap;
-const wxIcon   wxNullIcon;
-const wxCursor wxNullCursor;
-const wxPen    wxNullPen;
-const wxBrush  wxNullBrush;
-const wxPalette wxNullPalette;
-const wxFont   wxNullFont;
-const wxColour wxNullColour;
+const wxBitmap     wxNullBitmap;
+const wxIcon       wxNullIcon;
+const wxCursor     wxNullCursor;
+const wxPen        wxNullPen;
+const wxBrush      wxNullBrush;
+const wxPalette    wxNullPalette;
+const wxFont       wxNullFont;
+const wxColour     wxNullColour;
+const wxIconBundle wxNullIconBundle;
 
 %threadWrapperOn;
 %mutable;
 
+%pythoncode {
+    TransparentColour = Colour(0,0,0,ALPHA_TRANSPARENT)
+}
 
 //---------------------------------------------------------------------------
 
@@ -198,14 +213,6 @@ class wxPenList : public wxGDIObjListBase {
 public:
 
     wxPen* FindOrCreatePen(const wxColour& colour, int width, int style);
-
-    void AddPen(wxPen* pen);
-    void RemovePen(wxPen* pen);
-    %pythoncode {
-        AddPen = wx._deprecated(AddPen)
-        RemovePen = wx._deprecated(RemovePen)
-    }            
-//    int GetCount();
 };
 
 
@@ -213,33 +220,16 @@ class wxBrushList : public wxGDIObjListBase {
 public:
 
     wxBrush * FindOrCreateBrush(const wxColour& colour, int style=wxSOLID);
-
-    void AddBrush(wxBrush *brush);
-    void RemoveBrush(wxBrush *brush);
-    %pythoncode {
-        AddBrush = wx._deprecated(AddBrush)
-        RemoveBrush = wx._deprecated(RemoveBrush)
-    }
-//    int GetCount();
 };
 
 
 class wxFontList : public wxGDIObjListBase {
 public:
 
-    wxFont * FindOrCreateFont(int point_size, int family, int style, int weight,
-                              bool underline = false,
+    wxFont * FindOrCreateFont(int point_size, wxFontFamily family, wxFontStyle style,
+                              wxFontWeight weight, bool underline = false,
                               const wxString& facename = wxPyEmptyString,
                               wxFontEncoding encoding = wxFONTENCODING_DEFAULT);
-
-    void AddFont(wxFont* font);
-    void RemoveFont(wxFont *font);
-    %pythoncode {
-        AddFont = wx._deprecated(AddFont)
-        RemoveFont = wx._deprecated(RemoveFont)
-    }
-
-//    int GetCount();
 };
 
 //---------------------------------------------------------------------------
@@ -290,7 +280,6 @@ TheColourDatabase = ColourDatabase.__new__(ColourDatabase)
 
 //---------------------------------------------------------------------------
  
-%pythoncode { NullColor = NullColour }
 
 
 

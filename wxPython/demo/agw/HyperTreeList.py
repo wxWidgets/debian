@@ -1100,7 +1100,7 @@ class HyperTreeListDemo(wx.Frame):
               "Author: Andrea Gavana @ 08 May 2007\n\n" + \
               "Please Report Any Bug/Requests Of Improvements\n" + \
               "To Me At The Following Adresses:\n\n" + \
-              "gavana@kpo.kz\n" + "andrea.gavana@gmail.com\n\n" + \
+              "andrea.gavana@maerskoil.com\n" + "andrea.gavana@gmail.com\n\n" + \
               "Welcome To wxPython " + wx.VERSION_STRING + "!!"
               
         dlg = wx.MessageDialog(self, msg, "HyperTreeList Demo",

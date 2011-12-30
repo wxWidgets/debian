@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.06.2003
-// RCS-ID:      $Id: init.h 61558 2009-07-30 10:14:36Z VS $
+// RCS-ID:      $Id: init.h 64531 2010-06-09 13:23:13Z FM $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #define _WX_INIT_H_
 
 #include "wx/defs.h"
-#include "wx/wxchar.h"
+#include "wx/chartype.h"
 
 // ----------------------------------------------------------------------------
 // wxEntry helper functions which allow to have more fine grained control
@@ -55,14 +55,15 @@ extern int WXDLLIMPEXP_BASE wxEntry(int& argc, char **argv);
 
 // ----------------------------------------------------------------------------
 // Using the library without (explicit) application object: you may avoid using
-// DECLARE_APP and IMPLEMENT_APP macros and call the functions below instead at
+// wxDECLARE_APP and wxIMPLEMENT_APP macros and call the functions below instead at
 // the program startup and termination
 // ----------------------------------------------------------------------------
 
 // initialize the library (may be called as many times as needed, but each
 // call to wxInitialize() must be matched by wxUninitialize())
-extern bool WXDLLIMPEXP_BASE wxInitialize(int argc = 0, wxChar **argv = NULL);
-#if wxUSE_UNICODE && wxABI_VERSION >= 20811
+extern bool WXDLLIMPEXP_BASE wxInitialize();
+extern bool WXDLLIMPEXP_BASE wxInitialize(int argc, wxChar **argv);
+#if wxUSE_UNICODE
 extern bool WXDLLIMPEXP_BASE wxInitialize(int argc, char **argv);
 #endif
 
@@ -76,12 +77,17 @@ class WXDLLIMPEXP_BASE wxInitializer
 {
 public:
     // initialize the library
-    wxInitializer(int argc = 0, wxChar **argv = NULL)
+    wxInitializer()
+    {
+        m_ok = wxInitialize();
+    }
+
+    wxInitializer(int argc, wxChar **argv)
     {
         m_ok = wxInitialize(argc, argv);
     }
 
-#if wxUSE_UNICODE && wxABI_VERSION >= 20811
+#if wxUSE_UNICODE
     wxInitializer(int argc, char **argv)
     {
         m_ok = wxInitialize(argc, argv);

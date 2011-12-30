@@ -2,7 +2,7 @@
 # Purpose:      View components for editing attributes
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      17.06.2007
-# RCS-ID:       $Id: AttributePanel.py 65408 2010-08-25 22:52:11Z RD $
+# RCS-ID:       $Id: AttributePanel.py 69876 2011-11-30 15:46:26Z ROL $
 
 import string
 import wx
@@ -191,7 +191,8 @@ class Panel(wx.Panel):
 
         if comp.styles or comp.genericStyles:
             # Create style page
-            panel = params.StylePanel(self.pageStyle, comp.styles, comp.genericStyles)
+            panel = params.StylePanel(self.pageStyle, comp.styles, comp.genericStyles,
+                                      equiv = comp.equivStyles)
             panels.append(panel)
             self.pageStyle.SetPanel(panel)
             self.nb.AddPage(self.pageStyle, 'Style')
@@ -200,7 +201,7 @@ class Panel(wx.Panel):
         if comp.exStyles or comp.genericExStyles:
             # Create extra style page
             panel = params.StylePanel(self.pageExStyle, comp.exStyles + comp.genericExStyles, 
-                                      tag='exstyle')
+                                      tag='exstyle', equiv = comp.equivStyles)
             panels.append(panel)
             self.pageExStyle.SetPanel(panel)
             self.nb.AddPage(self.pageExStyle, 'ExStyle')
@@ -272,9 +273,7 @@ class Panel(wx.Panel):
     def SetStyleValues(self, panel, style):
         panel.style = style
         panel.node = self.node
-        styles = map(string.strip, style.split('|')) # to list
-        for s,w in panel.controls:
-            w.SetValue(s in styles)
+        panel.SetValues([('XRCED', style)])
 
     # Set data for a style panel
     def SetCodeValues(self, panel, data):

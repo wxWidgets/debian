@@ -6,7 +6,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _statctrls.i 43889 2006-12-10 01:48:28Z RD $
+// RCS-ID:      $Id: _statctrls.i 67451 2011-04-13 17:54:45Z RD $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -95,6 +95,15 @@ public:
 
 MustHaveApp(wxStaticText);
 
+enum {
+    wxST_NO_AUTORESIZE,
+
+    wxST_ELLIPSIZE_START,
+    wxST_ELLIPSIZE_MIDDLE,
+    wxST_ELLIPSIZE_END
+};
+
+
 class wxStaticText : public wxControl {
 public:
     %pythonAppend wxStaticText         "self._setOORInfo(self)"
@@ -121,8 +130,14 @@ public:
 becomes at most ``width`` pixels wide if possible (the lines are
 broken at words boundaries so it might not be the case if words are
 too long). If ``width`` is negative, no wrapping is done.", "");
+
+    bool IsEllipsized() const;
     
-    
+
+    // get the string without mnemonic characters ('&') and without markup
+    // TODO: static wxString GetLabelText(const wxString& label);
+
+
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
 };

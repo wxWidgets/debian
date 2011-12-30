@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: ownerdrw.cpp 40943 2006-08-31 19:31:43Z ABX $
+// RCS-ID:      $Id: ownerdrw.cpp 64656 2010-06-20 18:18:23Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,8 +45,7 @@ public:
 
     virtual void OnExit()
     {
-        delete ms_systemMenuFont;
-        ms_systemMenuFont = NULL;
+        wxDELETE(ms_systemMenuFont);
     }
 
     static wxFont* ms_systemMenuFont;

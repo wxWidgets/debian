@@ -2,7 +2,7 @@
 # RULERCTRL wxPython IMPLEMENTATION
 #
 # Andrea Gavana, @ 03 Nov 2006
-# Latest Revision: 01 Dec 2009, 09.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List
@@ -12,7 +12,7 @@
 # For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please
 # Write To Me At:
 #
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 # andrea.gavana@gmail.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
@@ -22,18 +22,18 @@
 # --------------------------------------------------------------------------------- #
 
 """
-RulerCtrl implements a ruler window that can be placed on top, bottom, left or right
+L{RulerCtrl} implements a ruler window that can be placed on top, bottom, left or right
 to any wxPython widget.
 
 
 Description
 ===========
 
-RulerCtrl implements a ruler window that can be placed on top, bottom, left or right
+L{RulerCtrl} implements a ruler window that can be placed on top, bottom, left or right
 to any wxPython widget. It is somewhat similar to the rulers you can find in text
 editors software, though not so powerful.
 
-RulerCtrl has the following characteristics:
+L{RulerCtrl} has the following characteristics:
 
 - Can be horizontal or vertical;
 - 4 built-in formats: integer, real, time and linearDB formats;
@@ -53,10 +53,62 @@ RulerCtrl has the following characteristics:
 And a lot more. See the demo for a review of the functionalities.
 
 
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.rulerctrl as RC
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "RulerCtrl Demo")
+
+            panel = wx.Panel(self)
+
+            text = wx.TextCtrl(panel, -1, "Hello World! wxPython rules", style=wx.TE_MULTILINE)
+
+            ruler1 = RC.RulerCtrl(panel, -1, orient=wx.HORIZONTAL, style=wx.SUNKEN_BORDER)
+            ruler2 = RC.RulerCtrl(panel, -1, orient=wx.VERTICAL, style=wx.SUNKEN_BORDER)
+
+            mainsizer = wx.BoxSizer(wx.HORIZONTAL)
+            leftsizer = wx.BoxSizer(wx.VERTICAL)
+            bottomleftsizer = wx.BoxSizer(wx.HORIZONTAL)
+            topsizer = wx.BoxSizer(wx.HORIZONTAL)
+
+            leftsizer.Add((20, 20), 0, wx.ADJUST_MINSIZE, 0)
+            topsizer.Add((39, 0), 0, wx.ADJUST_MINSIZE, 0)
+            topsizer.Add(ruler1, 1, wx.EXPAND, 0)
+            leftsizer.Add(topsizer, 0, wx.EXPAND, 0)
+
+            bottomleftsizer.Add((10, 0))
+            bottomleftsizer.Add(ruler2, 0, wx.EXPAND, 0)
+            bottomleftsizer.Add(text, 1, wx.EXPAND, 0)
+            leftsizer.Add(bottomleftsizer, 1, wx.EXPAND, 0)
+            mainsizer.Add(leftsizer, 3, wx.EXPAND, 0)
+
+            panel.SetSizer(mainsizer)
+
+        
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
+
+
 Events
 ======
 
-RulerCtrl implements the following events related to indicators:
+L{RulerCtrl} implements the following events related to indicators:
 
 - ``EVT_INDICATOR_CHANGING``: the user is about to change the position of one indicator;
 - ``EVT_INDICATOR_CHANGED``: the user has changed the position of one indicator.
@@ -65,7 +117,7 @@ RulerCtrl implements the following events related to indicators:
 Supported Platforms
 ===================
 
-RulerCtrl has been tested on the following platforms:
+L{RulerCtrl} has been tested on the following platforms:
   * Windows (Windows XP);
   * Linux Ubuntu (Dapper 6.06)
 
@@ -92,9 +144,9 @@ Event Name                 Description
 License And Version
 ===================
 
-RulerCtrl is distributed under the wxPython license. 
+L{RulerCtrl} is distributed under the wxPython license. 
 
-Latest Revision: Andrea Gavana @ 01 Dec 2009, 09.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.3
 
@@ -496,7 +548,7 @@ class Indicator(object):
 
 class RulerCtrl(wx.PyPanel):
     """
-    RulerCtrl implements a ruler window that can be placed on top, bottom, left or right
+    L{RulerCtrl} implements a ruler window that can be placed on top, bottom, left or right
     to any wxPython widget. It is somewhat similar to the rulers you can find in text
     editors software, though not so powerful.
     """

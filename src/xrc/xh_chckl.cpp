@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxCheckListBox
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_chckl.cpp 42258 2006-10-22 22:12:32Z VZ $
+// RCS-ID:      $Id: xh_chckl.cpp 47450 2007-07-14 10:07:41Z VS $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,16 +44,8 @@ wxCheckListBoxXmlHandler::wxCheckListBoxXmlHandler()
 
 wxObject *wxCheckListBoxXmlHandler::DoCreateResource()
 {
-    if (m_class == wxT("wxCheckListBox")
-#if WXWIN_COMPATIBILITY_2_4
-        || m_class == wxT("wxCheckList")
-#endif
-       )
+    if (m_class == wxT("wxCheckListBox"))
     {
-#if WXWIN_COMPATIBILITY_2_4
-        if (m_class == wxT("wxCheckList"))
-            wxLogDebug(wxT("'wxCheckList' name is deprecated, use 'wxCheckListBox' instead."));
-#endif
         // need to build the list of strings from children
         m_insideBox = true;
         CreateChildrenPrivately(NULL, GetParamNode(wxT("content")));
@@ -80,9 +72,9 @@ wxObject *wxCheckListBoxXmlHandler::DoCreateResource()
                { n = n->GetNext(); continue; }
 
             // checking boolean is a bit ugly here (see GetBool() )
-            wxString v = n->GetPropVal(wxT("checked"), wxEmptyString);
+            wxString v = n->GetAttribute(wxT("checked"), wxEmptyString);
             v.MakeLower();
-            if (v && v == wxT("1"))
+            if (v == wxT("1"))
                 control->Check( i, true );
 
             i++;
@@ -112,9 +104,6 @@ wxObject *wxCheckListBoxXmlHandler::DoCreateResource()
 bool wxCheckListBoxXmlHandler::CanHandle(wxXmlNode *node)
 {
     return (IsOfClass(node, wxT("wxCheckListBox")) ||
-#if WXWIN_COMPATIBILITY_2_4
-            IsOfClass(node, wxT("wxCheckList")) ||
-#endif
            (m_insideBox && node->GetName() == wxT("item")));
 }
 

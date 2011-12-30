@@ -842,7 +842,7 @@ class ButtonPanelDemo(wx.Frame):
               "Author: Andrea Gavana @ 02 Oct 2006\n\n" + \
               "Please Report Any Bug/Requests Of Improvements\n" + \
               "To Me At The Following Adresses:\n\n" + \
-              "andrea.gavana@gmail.com\n" + "gavana@kpo.kz\n\n" + \
+              "andrea.gavana@gmail.com\n" + "andrea.gavana@maerskoil.com\n\n" + \
               "Based On Eran C++ Implementation (wxWidgets Forum).\n\n" + \
               "Welcome To wxPython " + wx.VERSION_STRING + "!!"
               

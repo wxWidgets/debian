@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: accel.cpp 41751 2006-10-08 21:56:55Z VZ $
+// RCS-ID:      $Id: accel.cpp 58757 2009-02-08 11:45:59Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@ protected:
     HACCEL      m_hAccel;
     bool        m_ok;
 
-    DECLARE_NO_COPY_CLASS(wxAcceleratorRefData)
+    wxDECLARE_NO_COPY_CLASS(wxAcceleratorRefData);
 };
 
 #define M_ACCELDATA ((wxAcceleratorRefData *)m_refData)

@@ -2,7 +2,7 @@
 // Name:        src/html/m_links.cpp
 // Purpose:     wxHtml module for links & anchors
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_links.cpp 38788 2006-04-18 08:11:26Z ABX $
+// RCS-ID:      $Id: m_links.cpp 58757 2009-02-08 11:45:59Z VZ $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 
 #if wxUSE_HTML && wxUSE_STREAMS
 
-#ifndef WXPRECOMP
+#ifndef WX_PRECOMP
 #endif
 
 #include "wx/html/forcelnk.h"
@@ -51,7 +51,7 @@ public:
         }
     }
 
-    DECLARE_NO_COPY_CLASS(wxHtmlAnchorCell)
+    wxDECLARE_NO_COPY_CLASS(wxHtmlAnchorCell);
 };
 
 

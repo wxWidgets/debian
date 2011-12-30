@@ -2,7 +2,7 @@
 // Name:        src/html/m_dflist.cpp
 // Purpose:     wxHtml module for definition lists (DL,DT,DD)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_dflist.cpp 38788 2006-04-18 08:11:26Z ABX $
+// RCS-ID:      $Id: m_dflist.cpp 45700 2007-04-27 21:35:43Z VS $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 
 #if wxUSE_HTML && wxUSE_STREAMS
 
-#ifndef WXPRECOMP
+#ifndef WX_PRECOMP
 #endif
 
 #include "wx/html/forcelnk.h"

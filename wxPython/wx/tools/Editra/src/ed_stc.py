@@ -18,8 +18,8 @@ specific options such as commenting code.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: ed_stc.py 68139 2011-07-02 20:35:04Z CJP $"
-__revision__ = "$Revision: 68139 $"
+__svnid__ = "$Id: ed_stc.py 70097 2011-12-22 21:36:43Z CJP $"
+__revision__ = "$Revision: 70097 $"
 
 #-------------------------------------------------------------------------#
 # Imports
@@ -39,6 +39,7 @@ import ed_msg
 import ed_mdlg
 import ed_txt
 from ed_keyh import KeyHandler, ViKeyHandler
+import eclib
 import ebmlib
 import ed_thread
 
@@ -94,6 +95,11 @@ class EditraStc(ed_basestc.EditraBaseStc):
                  style=0, use_dt=True):
         """Initializes a control and sets the default objects for
         Tracking events that occur in the control.
+        @param parent: Parent Window
+        @param id_: Control ID
+        @keyword pos: Control position
+        @keyword size: Control size
+        @keyword style: Control style bitmask
         @keyword use_dt: whether to use a drop target or not
 
         """
@@ -731,17 +737,15 @@ class EditraStc(ed_basestc.EditraBaseStc):
     def DoAutoComplete(self):
         """Atempt to perform an autocompletion event."""
         self.HidePopups()
-        if self._config['autocomp']:
-            command = self.GetCommandStr()
-            self.ShowAutoCompOpt(command)
+        command = self.GetCommandStr()
+        self.ShowAutoCompOpt(command)
 
     def DoCallTip(self):
         """Attempt to show a calltip for the current cursor position"""
         self.HidePopups()
-        if self._config['autocomp']:
-            command = self.GetCommandStr()
-            # TODO: GetCommandStr seems to be inadquate under some cases
-            self.ShowCallTip(command)
+        command = self.GetCommandStr()
+        # TODO: GetCommandStr seems to be inadequate under some cases
+        self.ShowCallTip(command)
 
     def OnKeyUp(self, evt):
         """Update status bar of window
@@ -1864,10 +1868,9 @@ class EditraStc(ed_basestc.EditraBaseStc):
                         is re-saved if it has an on disk file.
 
         """
-        self.Freeze()
-        while self.CanUndo():
-            self.Undo()
-        self.Thaw()
+        with eclib.Freezer(self) as _tmp:
+            while self.CanUndo():
+                self.Undo()
 
         fname = self.GetFileName()
         if len(fname):
@@ -1875,13 +1878,12 @@ class EditraStc(ed_basestc.EditraBaseStc):
 
     def RevertToSaved(self):
         """Revert the current buffer back to the last save point"""
-        self.Freeze()
-        while self.CanUndo():
-            if self.GetModify():
-                self.Undo()
-            else:
-                break
-        self.Thaw()
+        with eclib.Freezer(self) as _tmp:
+            while self.CanUndo():
+                if self.GetModify():
+                    self.Undo()
+                else:
+                    break
 
     def SaveFile(self, path):
         """Save buffers contents to disk

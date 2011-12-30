@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-June-2005
-// RCS-ID:      $Id: _renderer.i 53769 2008-05-26 20:50:38Z RD $
+// RCS-ID:      $Id: _renderer.i 69040 2011-09-10 01:00:23Z RD $
 // Copyright:   (c) 2005 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -31,6 +31,7 @@ enum
     wxCONTROL_ISSUBMENU  = wxCONTROL_SPECIAL, // only for the menu items
     wxCONTROL_EXPANDED   = wxCONTROL_SPECIAL, // only for the tree items
     wxCONTROL_SIZEGRIP   = wxCONTROL_SPECIAL, // only for the status bar panes
+    wxCONTROL_FLAT       = wxCONTROL_SPECIAL, // checkboxes only: flat border
     wxCONTROL_CURRENT    = 0x00000010,  // mouse is currently over the control
     wxCONTROL_SELECTED   = 0x00000020,  // selected item in e.g. listbox
     wxCONTROL_CHECKED    = 0x00000040,  // (check/radio button) is checked
@@ -44,6 +45,14 @@ enum
     wxCONTROL_DIRTY      = 0x80000000
 };
 
+enum wxTitleBarButton
+{
+    wxTITLEBAR_BUTTON_CLOSE    = 0x01000000,
+    wxTITLEBAR_BUTTON_MAXIMIZE = 0x02000000,
+    wxTITLEBAR_BUTTON_ICONIZE  = 0x04000000,
+    wxTITLEBAR_BUTTON_RESTORE  = 0x08000000,
+    wxTITLEBAR_BUTTON_HELP     = 0x10000000
+};
 
 
 DocStr(wxSplitterRenderParams,
@@ -181,6 +190,9 @@ arrows, etc.)  Normally this is only called by `DrawHeaderButton`.", "");
         "Returns the default height of a header button, either a fixed platform
 height if available, or a generic height based on the window's font.", "");    
 
+    // Returns the margin on left and right sides of header button's label
+    virtual int GetHeaderButtonMargin(wxWindow *win);
+
 
     DocDeclStr(
         virtual void , DrawTreeItemButton(wxWindow *win,
@@ -243,6 +255,11 @@ you need. ``flags`` may have the ``wx.CONTROL_PRESSED`` or
                                     int flags = 0),
         "Draw a check button.  Flags may use wx.CONTROL_CHECKED,
 wx.CONTROL_UNDETERMINED and wx.CONTROL_CURRENT.", "");
+
+    
+    DocDeclStr(
+        wxSize , GetCheckBoxSize(wxWindow *win),
+        "", "");
     
 
     DocDeclStr(
@@ -274,31 +291,67 @@ The flags parameter may be:
     
     
     DocDeclStr(
+        virtual void , DrawFocusRect(wxWindow* win, wxDC& dc, const wxRect& rect, int flags = 0),
+        "Draw the focus rectangle around the label contained in the given rect.
+Only wxCONTROL_SELECTED makes sense in flags here", "");
+    
+
+    DocDeclStr(
         virtual wxSplitterRenderParams , GetSplitterParams(const wxWindow *win),
         "Get the splitter parameters, see `wx.SplitterRenderParams`.", "");
     
+    DocDeclStr(
+        void, DrawChoice(wxWindow* win, wxDC& dc,
+                             const wxRect& rect, int flags=0),
+            "Draw a native wxChoice", "");
+    DocDeclStr(
+        void, DrawComboBox(wxWindow* win, wxDC& dc,
+                             const wxRect& rect, int flags=0),
+            "Draw a native wxComboBox", "");
+
+    DocDeclStr(
+        void, DrawTextCtrl(wxWindow* win, wxDC& dc,
+                              const wxRect& rect, int flags=0),
+            "Draw a native wxTextCtrl", "");
+
+    DocDeclStr(
+        void, DrawRadioBitmap(wxWindow* win, wxDC& dc,
+                                const wxRect& rect, int flags=0),
+            "Draw a native wxRadioButton (just the button image, not the text)", "");
+    %pythoncode {
+        DrawRadioButton = wx.deprecated(DrawRadioBitmap,
+            'DrawRadioButton is deprecated, use `DrawRadioBitmap` instead.')
+    }
 
 
+    DocStr(DrawTitleBarBitmap,
+           "Draw one of the standard title bar buttons.
+
+This is currently implemented only for MSW and OS X (for the close
+button only) because there is no way to render standard title bar
+buttons under the other platforms, the best can be done is to use
+normal (only) images which wxArtProvider provides for wxART_HELP and
+wxART_CLOSE (but not any other title bar buttons)", "");
+#ifdef __WXGTK__
     %extend {
-        void DrawChoice(wxWindow *win, wxDC& dc, const wxRect& rect, int flags=0)
+        void DrawTitleBarBitmap(wxWindow *win,
+                                wxDC& dc,
+                                const wxRect& rect,
+                                wxTitleBarButton button,
+                                int flags = 0)
         {
-            wxRenderer_DrawChoice(win, dc, rect, flags);
-        }
-        void DrawComboBox(wxWindow *win, wxDC& dc, const wxRect& rect, int flags=0)
-        {
-            wxRenderer_DrawComboBox(win, dc, rect, flags);
-        }
-        void DrawTextCtrl(wxWindow *win, wxDC& dc, const wxRect& rect, int flags=0)
-        {
-            wxRenderer_DrawTextCtrl(win, dc, rect, flags);
-        }
-        void DrawRadioButton(wxWindow *win, wxDC& dc, const wxRect& rect, int flags=0)
-        {
-            wxRenderer_DrawRadioButton(win, dc, rect, flags);
+            wxPyRaiseNotImplemented();
         }
     }
-    
+#else
+    void DrawTitleBarBitmap(wxWindow *win,
+                            wxDC& dc,
+                            const wxRect& rect,
+                            wxTitleBarButton button,
+                            int flags = 0);        
+#endif
 
+    
     MustHaveApp(Get);
     DocDeclStr(
         static wxRendererNative& , Get(),
@@ -352,20 +405,6 @@ compatibility of dynamically loaded renderers.", "");
 
 //---------------------------------------------------------------------------
 
-#if defined(__WXMSW__) || defined(__WXMAC__)
-
-void wxRenderer_DrawChoice(wxWindow* win, wxDC& dc,
-                             const wxRect& rect, int flags=0);
-
-void wxRenderer_DrawComboBox(wxWindow* win, wxDC& dc,
-                             const wxRect& rect, int flags=0);
-
-void wxRenderer_DrawTextCtrl(wxWindow* win, wxDC& dc,
-                             const wxRect& rect, int flags=0);
-
-void wxRenderer_DrawRadioButton(wxWindow* win, wxDC& dc,
-                                const wxRect& rect, int flags=0);
-#endif
 
 //---------------------------------------------------------------------------
 

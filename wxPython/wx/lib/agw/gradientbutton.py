@@ -2,7 +2,7 @@
 # GRADIENTBUTTON wxPython IMPLEMENTATION
 #
 # Andrea Gavana, @ 07 October 2008
-# Latest Revision: 27 Nov 2009, 17.00 GMT
+# Latest Revision: 17 Aug 2011, 15.00 GMT
 #
 #
 # TODO List
@@ -14,7 +14,7 @@
 # write to me at:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, obviously, to the wxPython mailing list!!!
 #
@@ -23,16 +23,16 @@
 # --------------------------------------------------------------------------------- #
 
 """
-GradientButton is another custom-drawn button class which mimics Windows CE mobile
+L{GradientButton} is another custom-drawn button class which mimics Windows CE mobile
 gradient buttons.
 
 
 Description
 ===========
 
-GradientButton is another custom-drawn button class which mimics Windows CE mobile
+L{GradientButton} is another custom-drawn button class which mimics Windows CE mobile
 gradient buttons, using a tri-vertex blended gradient plus some ClearType bold
-font (best effect with Tahoma Bold). GradientButton supports:
+font (best effect with Tahoma Bold). L{GradientButton} supports:
 
 * Triple blended gradient background, with customizable colours;
 * Custom colours for the "pressed" state;
@@ -42,10 +42,46 @@ font (best effect with Tahoma Bold). GradientButton supports:
 And a lot more. Check the demo for an almost complete review of the functionalities.
 
 
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.gradientbutton as GB
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "GradientButton Demo")
+
+            panel = wx.Panel(self, -1)
+
+            # One button without bitmap            
+            button_1 = GB.GradientButton(panel, -1, None, "Hello World", (100, 50))
+
+            # One button with bitmap
+            my_bitmap = wx.Bitmap("my_bitmap.png", wx.BITMAP_TYPE_PNG)
+            button_2 = GB.GradientButton(panel, -1, my_bitmap, "GradientButton", (100, 150))
+
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
+
+
 Supported Platforms
 ===================
 
-GradientButton has been tested on the following platforms:
+L{GradientButton} has been tested on the following platforms:
   * Windows (Windows XP).
 
 
@@ -70,9 +106,9 @@ Event Name        Description
 License And Version
 ===================
 
-GradientButton is distributed under the wxPython license.
+L{GradientButton} is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 27 Nov 2009, 17.00 GMT
+Latest Revision: Andrea Gavana @ 17 Aug 2011, 15.00 GMT
 
 Version 0.3
 
@@ -624,6 +660,8 @@ class GradientButton(wx.PyControl):
         """
         Overridden base class virtual. Determines the best size of the
         button based on the label and bezel size.
+
+        :note: Overridden from `wx.PyControl`.
         """
 
         label = self.GetLabel()

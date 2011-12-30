@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        src/palmos/helpwin.cpp
+// Name:        src/palmos/help.cpp
 // Purpose:     Help system: WinHelp implementation
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: help.cpp 38791 2006-04-18 09:56:17Z ABX $
+// RCS-ID:      $Id: help.cpp 67254 2011-03-20 00:14:35Z DS $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,12 +22,6 @@
 #endif
 
 #include "wx/filefn.h"
-
-#include <time.h>
-
-#include "wx/palmos/private.h"
-
-#include <string.h>
 
 
 IMPLEMENT_DYNAMIC_CLASS(wxWinHelpController, wxHelpControllerBase)

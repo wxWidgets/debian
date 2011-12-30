@@ -4,10 +4,10 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/02/15
-// RCS-ID:      $Id: radiobox.mm 47952 2007-08-08 03:18:05Z DE $
+// RCS-ID:      $Id: radiobox.mm 67280 2011-03-22 14:17:38Z DS $
 // Copyright:   (c) 2003 David Elliott
 //              (c) 2007 Software 2000 Ltd.
-// Licence:     wxWidgets licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #include "wx/wxprec.h"
@@ -255,7 +255,7 @@ bool wxRadioBox::Show(unsigned int n, bool show)
     // TODO
     // NOTE: Cocoa has no visible state for cells so we'd need to replace the
     // cell with a dummy one to hide it or alternatively subclass NSButtonCell
-    // and add the behavior.
+    // and add the behaviour.
     return false;
 }
 

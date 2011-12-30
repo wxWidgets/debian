@@ -6,12 +6,22 @@
 #
 
 #-----------------------------------------------------------------------------#
+Version 1.13
+Released: xx/xx/2011
+
++Add configuration for number of lines to buffer in the output display.
++Fix incorrect behavior of Clear Between Runs feature that was clearing the
+buffer when the abort button was clicked instead of right before next launch.
+
+#-----------------------------------------------------------------------------#
 Version 1.12
-Released:
+Released: 10/01/2011
 
 +Fix bug with handling initialization of color preferences on new installs.
 +Fix issue in class factory causing incorrect data display for handler classes
 that are generated dynamically on the fly.
++Fix issue with lock file failing to keep file locked after clicking on an error
+hotspot in the buffer.
 
 #-----------------------------------------------------------------------------#
 Version 1.11

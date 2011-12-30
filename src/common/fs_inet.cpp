@@ -3,7 +3,7 @@
 // Purpose:     HTTP and FTP file system
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// RCS-ID:      $Id: fs_inet.cpp 41033 2006-09-06 13:49:42Z RR $
+// RCS-ID:      $Id: fs_inet.cpp 61724 2009-08-21 10:41:26Z VZ $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -20,7 +20,7 @@
 
 #if wxUSE_FILESYSTEM && wxUSE_FS_INET
 
-#ifndef WXPRECOMP
+#ifndef WX_PRECOMP
     #include "wx/module.h"
 #endif
 
@@ -107,7 +107,6 @@ wxFSFile* wxInternetFSHandler::OpenFile(wxFileSystem& WXUNUSED(fs),
     {
         wxInputStream *s = url.GetInputStream();
         wxString content = url.GetProtocol().GetContentType();
-        if (content == wxEmptyString) content = GetMimeTypeFromExt(location);
         if (s)
         {
             wxString tmpfile =
@@ -130,7 +129,7 @@ wxFSFile* wxInternetFSHandler::OpenFile(wxFileSystem& WXUNUSED(fs),
         }
     }
 
-    return (wxFSFile*) NULL; // incorrect URL
+    return NULL; // incorrect URL
 #endif
 }
 
@@ -153,7 +152,7 @@ class wxFileSystemInternetModule : public wxModule
             return true;
         }
 
-        virtual void OnExit() 
+        virtual void OnExit()
         {
             delete wxFileSystem::RemoveHandler(m_handler);
         }

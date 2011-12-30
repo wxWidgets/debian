@@ -2,7 +2,7 @@
 // Name:        src/common/imagfill.cpp
 // Purpose:     FloodFill for wxImage
 // Author:      Julian Smart
-// RCS-ID:      $Id: imagfill.cpp 63770 2010-03-28 22:34:12Z VZ $
+// RCS-ID:      $Id: imagfill.cpp 65820 2010-10-15 23:46:46Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -274,9 +274,9 @@ wxImageFloodFill(wxImage *image,
 
 
 bool wxDoFloodFill(wxDC *dc, wxCoord x, wxCoord y,
-                   const wxColour& col, int style)
+                   const wxColour& col, wxFloodFillStyle style)
 {
-    if (dc->GetBrush().GetStyle() == wxTRANSPARENT)
+    if (dc->GetBrush().IsTransparent())
         return true;
 
     int height = 0;

@@ -16,7 +16,7 @@ except ImportError:
 if setup != None:
     setup(
         name='CodeBrowser',
-        version='1.3',
+        version='1.5',
         description=__doc__,
         author=__author__,
         author_email="cprecord@editra.org",

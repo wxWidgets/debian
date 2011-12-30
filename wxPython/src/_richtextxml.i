@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-May-2007
-// RCS-ID:      $Id: _richtextxml.i 46525 2007-06-18 18:52:15Z RD $
+// RCS-ID:      $Id: _richtextxml.i 50605 2007-12-10 04:34:52Z RD $
 // Copyright:   (c) 2007 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -43,10 +43,10 @@ public:
 //     bool ImportStyleDefinition(wxRichTextStyleSheet* sheet, wxXmlNode* node);
 
 //     /// Create style parameters
-//     wxString CreateStyle(const wxTextAttrEx& attr, bool isPara = false);
+//     wxString CreateStyle(const wxTextAttr& attr, bool isPara = false);
 
 //     /// Get style parameters
-//     bool GetStyle(wxTextAttrEx& attr, wxXmlNode* node, bool isPara = false);
+//     bool GetStyle(wxTextAttr& attr, wxXmlNode* node, bool isPara = false);
 // #endif
 
     /// Can we save using this handler?

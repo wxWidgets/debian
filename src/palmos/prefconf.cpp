@@ -4,9 +4,9 @@
 // Author:      Wlodzimierz ABX Skiba
 // Modified by:
 // Created:     28.12.2004
-// RCS-ID:      $Id: prefconf.cpp 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: prefconf.cpp 64940 2010-07-13 13:29:13Z VZ $
 // Copyright:   (c) Wlodzimierz Skiba
-// License:     wxWindows licence
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // For compilers that support precompilation, includes "wx.h".
@@ -82,6 +82,7 @@ know structures of Preferences of other non wxW applications.
 // ----------------------------------------------------------------------------
 // ctor/dtor
 // ----------------------------------------------------------------------------
+IMPLEMENT_ABSTRACT_CLASS(wxPrefConfig, wxConfigBase)
 
 wxPrefConfig::wxPrefConfig(const wxString& appName, const wxString& vendorName,
                            const wxString& strLocal, const wxString& strGlobal,
@@ -177,6 +178,14 @@ bool wxPrefConfig::DoReadLong(const wxString& key, long *plResult) const
     return false;
 }
 
+#if wxUSE_BASE64
+bool wxPrefConfig::DoReadBinary(const wxString& key, wxMemoryBuffer *buf) const
+{
+    /* TODO */
+    return false;
+}
+#endif // wxUSE_BASE64
+
 bool wxPrefConfig::DoWriteString(const wxString& key, const wxString& szValue)
 {
     /* TODO */
@@ -188,6 +197,14 @@ bool wxPrefConfig::DoWriteLong(const wxString& key, long lValue)
     /* TODO */
     return false;
 }
+
+#if wxUSE_BASE64
+bool wxPrefConfig::DoWriteBinary(const wxString& key, const wxMemoryBuffer& buf)
+{
+    /* TODO */
+    return false;
+}
+#endif // wxUSE_BASE64
 
 // ----------------------------------------------------------------------------
 // renaming

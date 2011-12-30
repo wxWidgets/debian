@@ -3,7 +3,7 @@
 # Inspired by and heavily based on the wxWidgets C++ generic version of wxListCtrl.
 #
 # Andrea Gavana, @ 08 May 2009
-# Latest Revision: 10 Mar 2011, 15.00 GMT
+# Latest Revision: 27 Nov 2011, 13.00 GMT
 #
 #
 # TODO List
@@ -24,7 +24,7 @@
 # write to me at:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, obviously, to the wxPython mailing list!!!
 #
@@ -76,6 +76,55 @@ Appearance
 
 
 And a lot more. Check the demo for an almost complete review of the functionalities.
+
+
+Usage
+=====
+
+Usage example::
+
+    import sys
+    
+    import wx 
+    import wx.lib.agw.ultimatelistctrl as ULC
+
+    class MyFrame(wx.Frame): 
+
+        def __init__(self):
+        
+            wx.Frame.__init__(self, parent, -1, "UltimateListCtrl Demo")
+
+            list = ULC.UltimateListCtrl(self, wx.ID_ANY, agwStyle=wx.LC_REPORT|wx.LC_VRULES|wx.LC_HRULES|wx.LC_SINGLE_SEL) 
+
+            list.InsertColumn(0, "Column 1") 
+            list.InsertColumn(1, "Column 2") 
+
+            index = list.InsertStringItem(sys.maxint, "Item 1") 
+            list.SetStringItem(index, 1, "Sub-item 1") 
+
+            index = list.InsertStringItem(sys.maxint, "Item 2") 
+            list.SetStringItem(index, 1, "Sub-item 2") 
+
+            choice = wx.Choice(list, -1, choices=["one", "two"]) 
+            index = list.InsertStringItem(sys.maxint, "A widget") 
+
+            list.SetItemWindow(index, 1, choice, expand=True) 
+
+            sizer = wx.BoxSizer(wx.VERTICAL) 
+            sizer.Add(list, 1, wx.EXPAND) 
+            self.SetSizer(sizer) 
+
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
 
 
 Window Styles
@@ -176,7 +225,7 @@ License And Version
 
 UltimateListCtrl is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 10 Mar 2011, 15.00 GMT
+Latest Revision: Andrea Gavana @ 27 Nov 2011, 13.00 GMT
 
 Version 0.8
 
@@ -501,6 +550,10 @@ if wx.Platform == "__WXMSW__":
 IL_FIXED_SIZE = 0
 IL_VARIABLE_SIZE = 1
 
+# Python integers, to make long types to work with CreateListItem
+INTEGER_TYPES = [types.IntType, types.LongType]
+
+
 # ----------------------------------------------------------------------------
 # Functions
 # ----------------------------------------------------------------------------
@@ -544,7 +597,7 @@ def CreateListItem(itemOrId, col):
     :param `col`: the item column.
     """
 
-    if type(itemOrId) == types.IntType:
+    if type(itemOrId) in INTEGER_TYPES:
         item = UltimateListItem()
         item._itemId = itemOrId
         item._col = col
@@ -4549,7 +4602,6 @@ class UltimateListLineData(object):
                         dc.SetTextForeground(item.GetColour())
                     elif useVista and drawn:
                         dc.SetTextForeground(wx.BLACK)
-                        dc.SetFont(boldFont)
 
                 if item.IsHyperText():
                     dc.SetFont(self._owner.GetHyperTextFont())
@@ -4577,12 +4629,12 @@ class UltimateListLineData(object):
                     wnd.Show()
                     
                 if item._expandWin:
-                    if wnd.GetRect() != itemRect:
-                        wRect = wx.Rect(*itemRect)
-                        wRect.x += 2
-                        wRect.width = width - 4
-                        wRect.y = ya + 2
-                        wRect.height -= 6
+                    wRect = wx.Rect(*itemRect)
+                    wRect.x += xa + 2
+                    wRect.width = width - 8
+                    wRect.y = ya + 2
+                    wRect.height -= 4
+                    if wnd.GetRect() != wRect: 
                         wnd.SetRect(wRect)
                 else:
                     if wnd.GetPosition() != (wndx, ya):
@@ -4907,6 +4959,8 @@ class UltimateListHeaderWindow(wx.PyControl):
         self._currentCursor = wx.NullCursor
         self._resizeCursor = wx.StockCursor(wx.CURSOR_SIZEWE)
         self._isDragging = False
+        self._headerHeight = None
+        self._footerHeight = None
        
         # Custom renderer for every column
         self._headerCustomRenderer = None
@@ -4978,6 +5032,15 @@ class UltimateListHeaderWindow(wx.PyControl):
         as it would have after a call to `Fit()`.
         """
 
+        if not self._isFooter:
+            if self._headerHeight is not None:
+                self.GetParent()._headerHeight = self._headerHeight
+                return wx.Size(200, self._headerHeight)
+        else:
+            if self._footerHeight is not None:
+                self.GetParent()._footerHeight = self._footerHeight
+                return wx.Size(200, self._footerHeight)
+        
         w, h, d, dummy = self.GetFullTextExtent("Hg")
         maxH = self.GetTextHeight()
         nativeH = wx.RendererNative.Get().GetHeaderButtonHeight(self.GetParent())
@@ -4993,6 +5056,12 @@ class UltimateListHeaderWindow(wx.PyControl):
             
         return wx.Size(200, maxH)
 
+
+    def GetWindowHeight(self):
+        """ Returns the L{UltimateListHeaderWindow} height, in pixels. """
+
+        return self.DoGetBestSize()
+    
 
     def IsColumnShown(self, column):
         """
@@ -6377,7 +6446,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         Called by L{UltimateListCtrl.OnSize} when the window is resized.
         """
 
-        if not self: # Avoid PyDeadObjectError's on Mac
+        if not self: # Avoid PyDeadObjectErrors on Mac
             return
         
         if self._resizeColumn == -1:
@@ -6403,7 +6472,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
         totColWidth = 0 # Width of all columns except last one.
         for col in range(numCols):
-            if col != (resizeCol):
+            if col != (resizeCol) and self.IsColumnShown(col):
                 totColWidth = totColWidth + self.GetColumnWidth(col)
 
         resizeColWidth = self.GetColumnWidth(resizeCol)
@@ -7389,7 +7458,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
             if event.RightDown():
                 self.SendNotify(-1, wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, event.GetPosition())
 
-                evtCtx = wx.ContextMenuEvent(wx.EVT_CONTEXT_MENU, self.GetParent().GetId(),
+                evtCtx = wx.ContextMenuEvent(wx.wxEVT_CONTEXT_MENU, self.GetParent().GetId(),
                                              self.ClientToScreen(event.GetPosition()))
                 evtCtx.SetEventObject(self.GetParent())
                 self.GetParent().GetEventHandler().ProcessEvent(evtCtx)
@@ -7560,7 +7629,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
             # outside of any item
             if event.RightDown():
                 self.SendNotify(-1, wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, event.GetPosition())
-                evtCtx = wx.ContextMenuEvent(wx.EVT_CONTEXT_MENU, self.GetParent().GetId(),
+                evtCtx = wx.ContextMenuEvent(wx.wxEVT_CONTEXT_MENU, self.GetParent().GetId(),
                                              self.ClientToScreen(event.GetPosition()))
                 evtCtx.SetEventObject(self.GetParent())
                 self.GetParent().GetEventHandler().ProcessEvent(evtCtx)
@@ -10310,10 +10379,10 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
         if not func:
             self.__func = None
-            self._lines.sort(self.OnCompareItems)
         else:
             self.__func = func
-            self._lines.sort(self.OnCompareItems)
+
+        self._lines.sort(self.OnCompareItems)
         
         if self.IsShownOnScreen():
             self._dirty = True
@@ -10796,7 +10865,7 @@ class UltimateListCtrl(wx.PyControl):
 
             self._headerWin = UltimateListHeaderWindow(self, wx.ID_ANY, self._mainWin,
                                                        wx.Point(0, 0),
-                                                       wx.Size(self.GetClientSize().x, self._headerHeight),
+                                                       wx.DefaultSize,
                                                        wx.TAB_TRAVERSAL, isFooter=False)
 
             # ----------------------------------------------------
@@ -10834,7 +10903,7 @@ class UltimateListCtrl(wx.PyControl):
 
             self._footerWin = UltimateListHeaderWindow(self, wx.ID_ANY, self._mainWin,
                                                        wx.Point(0, 0),
-                                                       wx.Size(self.GetClientSize().x, self._footerHeight),
+                                                       wx.DefaultSize,
                                                        wx.TAB_TRAVERSAL, isFooter=True)
 
             # ----------------------------------------------------
@@ -11659,7 +11728,9 @@ class UltimateListCtrl(wx.PyControl):
         :param `which`: one of ``wx.IMAGE_LIST_NORMAL``, ``wx.IMAGE_LIST_SMALL``,
          ``wx.IMAGE_LIST_STATE`` (the last is unimplemented).
 
-        :note: As L{UltimateListCtrl} allows you to use a standard `wx.ImageList` or
+        :note:
+
+         As L{UltimateListCtrl} allows you to use a standard `wx.ImageList` or
          L{PyImageList}, the returned object depends on which kind of image list you
          chose.
         """
@@ -12099,7 +12170,7 @@ class UltimateListCtrl(wx.PyControl):
         """
 
         self._mainWin.SortItems(func)
-        wx.CallAfter(self.Update)
+        wx.CallAfter(self.Refresh)
         
         return True
         
@@ -12131,19 +12202,8 @@ class UltimateListCtrl(wx.PyControl):
         # the scrollable area as set that ourselves by
         # calling SetScrollbar() further down.
 
-        self.Layout()
+        self.DoLayout()
         
-        self._mainWin.ResizeColumns()
-        self._mainWin.ResetVisibleLinesRange(True)
-        self._mainWin.RecalculatePositions()
-        self._mainWin.AdjustScrollbars()
-
-        if self._headerWin:
-            self._headerWin.Refresh()
-            
-        if self._footerWin:
-            self._footerWin.Refresh()
-
 
     def OnSetFocus(self, event):
         """
@@ -12516,7 +12576,9 @@ class UltimateListCtrl(wx.PyControl):
 
         :param `item`: an integer specifying the item index.
 
-        :note: L{UltimateListCtrl} will not delete the pointer or keep a reference of it.
+        :note:
+
+         L{UltimateListCtrl} will not delete the pointer or keep a reference of it.
          You can return the same L{UltimateListItemAttr} pointer for every
          L{OnGetItemAttr} call.
 
@@ -13420,4 +13482,82 @@ class UltimateListCtrl(wx.PyControl):
             return self._mainWin.GetScrollRange()
 
         return 0
+
+
+    def SetHeaderHeight(self, height):
+        """
+        Sets the L{UltimateListHeaderWindow} height, in pixels. This overrides the default
+        header window size derived from `wx.RendererNative`. If `height` is ``None``, the
+        default behaviour is restored.
+
+        :param `height`: the header window height, in pixels (if it is ``None``, the default
+         height obtained using `wx.RendererNative` is used).
+        """
+
+        if not self._headerWin:
+            return
+
+        if height is not None and height < 1:
+            raise Exception("Invalid height passed to SetHeaderHeight: %s"%repr(height))
+        
+        self._headerWin._headerHeight = height
+        self.DoLayout()
+
+
+    def GetHeaderHeight(self):
+        """ Returns the L{UltimateListHeaderWindow} height, in pixels. """
+
+        if not self._headerWin:
+            return -1
+
+        return self._headerWin.GetWindowHeight()
+    
+
+    def SetFooterHeight(self, height):
+        """
+        Sets the L{UltimateListHeaderWindow} height, in pixels. This overrides the default
+        footer window size derived from `wx.RendererNative`. If `height` is ``None``, the
+        default behaviour is restored.
+
+        :param `height`: the footer window height, in pixels (if it is ``None``, the default
+         height obtained using `wx.RendererNative` is used).
+        """
+
+        if not self._footerWin:
+            return
+
+        if height is not None and height < 1:
+            raise Exception("Invalid height passed to SetFooterHeight: %s"%repr(height))
+        
+        self._footerWin._footerHeight = height
+        self.DoLayout()
+
+
+    def GetFooterHeight(self):
+        """ Returns the L{UltimateListHeaderWindow} height, in pixels. """
+
+        if not self._footerWin:
+            return -1
+
+        return self._headerWin.GetWindowHeight()
+
+
+    def DoLayout(self):
+        """
+        Layouts the header, main and footer windows. This is an auxiliary method to avoid code
+        duplication.
+        """
+
+        self.Layout()
+        
+        self._mainWin.ResizeColumns()
+        self._mainWin.ResetVisibleLinesRange(True)
+        self._mainWin.RecalculatePositions()
+        self._mainWin.AdjustScrollbars()
+
+        if self._headerWin:
+            self._headerWin.Refresh()
+            
+        if self._footerWin:
+            self._footerWin.Refresh()
 

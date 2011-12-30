@@ -4,9 +4,9 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/03/16
-// RCS-ID:      $Id: NSWindow.mm 48107 2007-08-15 16:12:45Z DE $
+// RCS-ID:      $Id: NSWindow.mm 64940 2010-07-13 13:29:13Z VZ $
 // Copyright:   (c) 2003 David Elliott
-// Licence:     wxWidgets licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================

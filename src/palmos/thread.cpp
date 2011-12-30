@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: thread.cpp 40943 2006-08-31 19:31:43Z ABX $
+// RCS-ID:      $Id: thread.cpp 69883 2011-12-01 14:22:15Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -146,6 +146,11 @@ void wxCriticalSection::Enter()
 {
 }
 
+bool wxCriticalSection::TryEnter()
+{
+    return false;
+}
+
 void wxCriticalSection::Leave()
 {
 }
@@ -171,7 +176,7 @@ private:
 
     HANDLE m_mutex;
 
-    DECLARE_NO_COPY_CLASS(wxMutexInternal)
+    wxDECLARE_NO_COPY_CLASS(wxMutexInternal);
 };
 
 // all mutexes are recursive under Win32 so we don't use mutexType
@@ -224,7 +229,7 @@ public:
 private:
     HANDLE m_semaphore;
 
-    DECLARE_NO_COPY_CLASS(wxSemaphoreInternal)
+    wxDECLARE_NO_COPY_CLASS(wxSemaphoreInternal);
 };
 
 wxSemaphoreInternal::wxSemaphoreInternal(int initialcount, int maxcount)
@@ -339,7 +344,7 @@ private:
     // reaches 0 we kill the owning wxThread -- and die ourselves with it
     LONG m_nRef;
 
-    DECLARE_NO_COPY_CLASS(wxThreadInternal)
+    wxDECLARE_NO_COPY_CLASS(wxThreadInternal);
 };
 
 // small class which keeps a thread alive during its lifetime
@@ -412,10 +417,6 @@ void wxThread::Yield()
 {
 }
 
-void wxThread::Sleep(unsigned long milliseconds)
-{
-}
-
 int wxThread::GetCPUCount()
 {
     return 1;
@@ -471,12 +472,12 @@ wxThreadError wxThread::Resume()
 // stopping thread
 // ---------------
 
-wxThread::ExitCode wxThread::Wait()
+wxThread::ExitCode wxThread::Wait(wxThreadWait WXUNUSED(waitMode))
 {
     return 0;
 }
 
-wxThreadError wxThread::Delete(ExitCode *pRc)
+wxThreadError wxThread::Delete(ExitCode *pRc, wxThreadWait WXUNUSED(waitMode))
 {
     return wxTHREAD_NO_ERROR;
 }
@@ -557,11 +558,11 @@ void wxThreadModule::OnExit()
 // not a mutex, so the names are a bit confusing
 // ----------------------------------------------------------------------------
 
-void WXDLLIMPEXP_BASE wxMutexGuiEnter()
+void wxMutexGuiEnterImpl()
 {
 }
 
-void WXDLLIMPEXP_BASE wxMutexGuiLeave()
+void wxMutexGuiLeaveImpl()
 {
 }
 

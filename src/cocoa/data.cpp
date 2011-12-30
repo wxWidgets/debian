@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        data.cpp
+// Name:        src/cocoa/data.cpp
 // Purpose:     Various data
 // Author:      AUTHOR
 // Modified by:
 // Created:     ??/??/98
-// RCS-ID:      $Id: data.cpp 27408 2004-05-23 20:53:33Z JS $
+// RCS-ID:      $Id: data.cpp 67254 2011-03-20 00:14:35Z DS $
 // Copyright:   (c) AUTHOR
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: sound.cpp 35650 2005-09-23 12:56:45Z MR $
+// RCS-ID:      $Id: sound.cpp 69178 2011-09-21 15:08:02Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@ wxSound::wxSound(const wxString& sFileName, bool isResource)
 {
 }
 
-wxSound::wxSound(int size, const wxByte* data)
+wxSound::wxSound(size_t size, const void* data)
   : m_waveData(NULL), m_waveLength(0), m_isResource(false)
 {
 }
@@ -50,7 +50,7 @@ bool wxSound::Create(const wxString& fileName, bool isResource)
     return false;
 }
 
-bool wxSound::Create(int size, const wxByte* data)
+bool wxSound::Create(size_t size, const void* data)
 {
     return false;
 }

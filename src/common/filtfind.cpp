@@ -2,7 +2,7 @@
 // Name:        src/common/filtfind.cpp
 // Purpose:     Streams for filter formats
 // Author:      Mike Wetherell
-// RCS-ID:      $Id: filtfind.cpp 42412 2006-10-25 20:41:12Z MW $
+// RCS-ID:      $Id: filtfind.cpp 46391 2007-06-10 17:42:41Z VS $
 // Copyright:   (c) Mike Wetherell
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 // the filter classes they use.
 
 const wxFilterClassFactory *
-wxFilterClassFactory::Find(const wxChar *protocol, wxStreamProtocolType type)
+wxFilterClassFactory::Find(const wxString& protocol, wxStreamProtocolType type)
 {
     for (const wxFilterClassFactory *f = GetFirst(); f; f = f->GetNext())
         if (f->CanHandle(protocol, type))

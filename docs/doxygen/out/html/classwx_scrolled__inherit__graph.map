@@ -1,0 +1,5 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classwx_grid.html" title="wxGrid and its related classes are used for displaying and editing tabular data." alt="" coords="5,86,139,117"/>
+<area shape="rect" id="node5" href="$classwx_html_window.html" title="wxHtmlWindow is probably the only class you will directly use unless you want to do something special..." alt="" coords="163,86,344,117"/>
+<area shape="rect" id="node7" href="$classwx_preview_canvas.html" title="A preview canvas is the default canvas used by the print preview system to display the preview..." alt="" coords="368,86,568,117"/>
+</map>

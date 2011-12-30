@@ -3,7 +3,7 @@
 # Ported From Jorgen Bodde & Julian Smart (Extended Demo) C++ Code By:
 #
 # Andrea Gavana, @ 23 Mar 2005
-# Latest Revision: 14 Nov 2010, 12.00 GMT
+# Latest Revision: 17 Sep 2011, 23.00 GMT
 #
 #
 # TODO List
@@ -49,7 +49,7 @@
 # Write To Me At:
 #
 # andrea.gavana@gmail.com
-# gavana@kpo.kz
+# andrea.gavana@maerskoil.com
 #
 # Or, Obviously, To The wxPython Mailing List!!!
 #
@@ -59,18 +59,18 @@
 
 
 """
-FoldPanelBar is a control that contains multiple panels, which can be expanded
+L{FoldPanelBar} is a control that contains multiple panels, which can be expanded
 or collapsed.
 
 
 Description
 ===========
 
-The FoldPanelBar is a control that contains multiple panels (of type
+The L{FoldPanelBar} is a control that contains multiple panels (of type
 L{FoldPanelItem}) that can be expanded or collapsed. The captionbar of
-the FoldPanelBar can be customized by setting it to a horizontal gradient
+the L{FoldPanelBar} can be customized by setting it to a horizontal gradient
 style, vertical gradient style, a single colour, a rectangle or filled
-rectangle. The FoldPanel items can be collapsed in place or to the
+rectangle. The `FoldPanel` items can be collapsed in place or to the
 bottom of the control. `wx.Window` derived controls can be added
 dynamically, and separated by separator lines.
  
@@ -78,15 +78,15 @@ dynamically, and separated by separator lines.
 How does it work
 ----------------
 
-The internals of the FoldPanelBar is a list of L{FoldPanelItem} objects. Through
+The internals of the L{FoldPanelBar} is a list of L{FoldPanelItem} objects. Through
 the reference of `FoldPanel` these panels can be controlled by adding new controls
-to a FoldPanel or adding new FoldPanels to the FoldPanelBar.
+to a FoldPanel or adding new FoldPanels to the L{FoldPanelBar}.
 
 The L{CaptionBar} fires events to the parent (container of all panel items) when a
 sub-panel needs resizing (either folding or expanding). The fold or expand process
 is simply a resize of the panel so it looks like all controls on it are gone. All
 controls are still child of the `FoldPanel` they are located on. If they don't
-handle the event (and they won't) then the owner of the FoldPanelBar gets the
+handle the event (and they won't) then the owner of the L{FoldPanelBar} gets the
 events.
 
 This is what you need to handle the controls. There isn't much to it just
@@ -111,14 +111,55 @@ b) What it cannot do:
    * Dragging and dropping the panels;
    * Re-ordering the panels (not yet). 
 
+
+Usage
+=====
+
+Usage example::
+
+    import wx
+    import wx.lib.agw.foldpanelbar as fpb
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+        
+            wx.Frame.__init__(self, parent, -1, "FoldPanelBar Demo")
+
+            text_ctrl = wx.TextCtrl(self, -1, size=(400, 100), style=wx.TE_MULTILINE)
+            
+            panel_bar = fpb.FoldPanelBar(self, -1, agwStyle=fpb.FPB_HORIZONTAL|fpb.FPB_DEFAULT_STYLE)
+            
+            fold_panel = panel_bar.AddFoldPanel("Thing")
+            thing = wx.TextCtrl(fold_panel, -1, size=(400, -1), style=wx.TE_MULTILINE)
+            
+            panel_bar.AddFoldPanelWindow(fold_panel, thing)
+
+            main_sizer = wx.BoxSizer(wx.HORIZONTAL)
+            main_sizer.Add(text_ctrl, 1, wx.EXPAND)
+            main_sizer.Add(panel_bar, 0, wx.EXPAND)
+            self.SetSizer(main_sizer)
+
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
+
+
  
 Supported Platforms
 ===================
 
-FoldPanelBar is supported on the following platforms: 
+L{FoldPanelBar} is supported on the following platforms: 
   * Windows (Verified on Windows XP, 2000)
   * Linux/Unix (GTK2) (Thanks to Toni Brkic and Robin Dunn)
-  * Mac OSX (Thanks to Robin Dunn for the CaptionBar size patch)
+  * Mac OSX (Thanks to Robin Dunn for the L{CaptionBar} size patch)
 
 
 Window Styles
@@ -129,11 +170,11 @@ This class supports the following window styles:
 ========================== =========== ==================================================
 Window Styles              Hex Value   Description
 ========================== =========== ==================================================
-``FPB_SINGLE_FOLD``                0x1 Single fold forces other panels to close when they are open, and only opens the current panel. This will allow the open panel to gain the full size left in the client area. This is an extra style.
-``FPB_COLLAPSE_TO_BOTTOM``         0x2 All panels are stacked to the bottom. When they are expanded again they show up at the top. This is an extra style.
-``FPB_EXCLUSIVE_FOLD``             0x4 ``FPB_SINGLE_FOLD`` style plus the panels will be stacked at the bottom.  This is an extra style.
-``FPB_HORIZONTAL``                 0x8 `FoldPanelBar` will be horizontal.
-``FPB_VERTICAL``                  0x10 `FoldPanelBar` will be vertical.
+``FPB_SINGLE_FOLD``                0x1 Single fold forces other panels to close when they are open, and only opens the current panel. This will allow the open panel to gain the full size left in the client area.
+``FPB_COLLAPSE_TO_BOTTOM``         0x2 All panels are stacked to the bottom. When they are expanded again they show up at the top.
+``FPB_EXCLUSIVE_FOLD``             0x4 ``FPB_SINGLE_FOLD`` style plus the panels will be stacked at the bottom.
+``FPB_HORIZONTAL``                 0x8 L{FoldPanelBar} will be horizontal.
+``FPB_VERTICAL``                  0x10 L{FoldPanelBar} will be vertical.
 ========================== =========== ==================================================
 
 
@@ -145,16 +186,16 @@ This class processes the following events:
 ================== ==================================================
 Event Name         Description
 ================== ==================================================
-``EVT_CAPTIONBAR`` The user has pressed the caption bar: `FoldPanelBar` will either expand or collapse the underlying panel.
+``EVT_CAPTIONBAR`` The user has pressed the caption bar: L{FoldPanelBar} will either expand or collapse the underlying panel.
 ================== ==================================================
 
 
 License And Version
 ===================
 
-FoldPanelBar is distributed under the wxPython license.
+L{FoldPanelBar} is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 27 Nov 2009, 15.00 GMT
+Latest Revision: Andrea Gavana @ 17 Sep 2011, 23.00 GMT
 
 Version 0.5
 
@@ -209,25 +250,24 @@ FPB_BMP_RIGHTSPACE = 2
 FPB_SINGLE_FOLD = 0x0001
 """ Single fold forces other panels to close when they are open, and only opens""" \
 """ the current panel. This will allow the open panel to gain the full size left""" \
-""" in the client area. This is an extra style. """
+""" in the client area."""
 
 # All panels are stacked to the bottom. When they are expanded again they
 # show up at the top
 FPB_COLLAPSE_TO_BOTTOM = 0x0002
 """ All panels are stacked to the bottom. When they are expanded again they show""" \
-""" up at the top. This is an extra style. """
+""" up at the top. """
 
 # Now supported! Single fold plus panels
 # will be stacked at the bottom
 FPB_EXCLUSIVE_FOLD = 0x0004
-""" ``FPB_SINGLE_FOLD`` style plus the panels will be stacked at the bottom. """ \
-""" This is an extra style. """
+""" ``FPB_SINGLE_FOLD`` style plus the panels will be stacked at the bottom. """
 
 # Orientation Flag 
 FPB_HORIZONTAL = 0x0008
-""" `FoldPanelBar` will be horizontal. """
+""" L{FoldPanelBar} will be horizontal. """
 FPB_VERTICAL = 0x0010  
-""" `FoldPanelBar` will be vertical. """
+""" L{FoldPanelBar} will be vertical. """
 
 # FoldPanelItem default settings
 FPB_ALIGN_LEFT = 0 
@@ -465,7 +505,7 @@ class CaptionBarStyle(object):
 #-----------------------------------#
 wxEVT_CAPTIONBAR = wx.NewEventType()
 EVT_CAPTIONBAR = wx.PyEventBinder(wxEVT_CAPTIONBAR, 0)
-""" The user has pressed the caption bar: `FoldPanelBar` will either expand or""" \
+""" The user has pressed the caption bar: L{FoldPanelBar} will either expand or""" \
 """ collapse the underlying panel. """
 
 # Define Empty CaptionBar Style
@@ -544,7 +584,7 @@ class CaptionBar(wx.Window):
     This class is a graphical caption component that consists of a
     caption and a clickable arrow.
 
-    The CaptionBar fires an event ``EVT_CAPTIONBAR`` which is a
+    The L{CaptionBar} fires an event ``EVT_CAPTIONBAR`` which is a
     L{CaptionBarEvent}. This event can be caught and the parent window
     can act upon the collapsed or expanded state of the bar (which is
     actually just the icon which changed). The parent panel can
@@ -916,6 +956,8 @@ class CaptionBar(wx.Window):
         """
         Returns the best size for this panel, based upon the font
         assigned to this window, and the caption string.
+
+        :note: Overridden from `wx.Window`.        
         """
         
         if self.IsVertical():
@@ -1130,7 +1172,7 @@ class CaptionBar(wx.Window):
 
 class FoldPanelBar(wx.Panel):
     """
-    The FoldPanelBar is a class which can maintain a list of
+    The L{FoldPanelBar} is a class which can maintain a list of
     collapsible panels. Once a panel is collapsed, only it's caption
     bar is visible to the user. This will provide more space for the
     other panels, or allow the user to close panels which are not used
@@ -1176,10 +1218,10 @@ class FoldPanelBar(wx.Panel):
         self._controlCreated = False
         
         # make sure there is any orientation
-        if agwStyle & FPB_HORIZONTAL != FPB_HORIZONTAL:
+        if not agwStyle & (FPB_HORIZONTAL | FPB_VERTICAL):
             agwStyle = agwStyle | FPB_VERTICAL
 
-        if agwStyle & FPB_HORIZONTAL == 4:
+        if agwStyle & FPB_HORIZONTAL:
             self._isVertical = False
         else:
             self._isVertical = True
@@ -1277,7 +1319,7 @@ class FoldPanelBar(wx.Panel):
         
         :note: Make the window be a child of the fold panel!
         
-         The following example adds a FoldPanel to the FoldPanelBar and
+         The following example adds a FoldPanel to the L{FoldPanelBar} and
          adds two `wx.Window` derived controls to the FoldPanel::
 
                # Create the FoldPanelBar
@@ -1583,7 +1625,9 @@ class FoldPanelBar(wx.Panel):
         :param `foldpanel`: an instance of L{FoldPanelItem};
         :param `cbstyle`: an instance of L{CaptionBarStyle}.
 
-        :note: The changes are applied immediately. All styles not set in the
+        :note:
+
+         The changes are applied immediately. All styles not set in the
          L{CaptionBarStyle} class are not applied. Use the L{CaptionBar} reference
          to indicate what captionbar you want to apply the style to. To apply one
          style to all L{CaptionBar} items, use L{ApplyCaptionStyleAll}.

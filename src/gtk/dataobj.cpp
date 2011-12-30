@@ -2,7 +2,7 @@
 // Name:        src/gtk/dataobj.cpp
 // Purpose:     wxDataObject class
 // Author:      Robert Roebling
-// Id:          $Id: dataobj.cpp 53663 2008-05-20 05:19:07Z PC $
+// Id:          $Id: dataobj.cpp 67681 2011-05-03 16:29:04Z DS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,13 +58,7 @@ wxDataFormat::wxDataFormat( wxDataFormatId type )
     SetType( type );
 }
 
-wxDataFormat::wxDataFormat( const wxChar *id )
-{
-    PrepareFormats();
-    SetId( id );
-}
-
-wxDataFormat::wxDataFormat( const wxString &id )
+void wxDataFormat::InitFromString( const wxString &id )
 {
     PrepareFormats();
     SetId( id );
@@ -87,10 +81,13 @@ void wxDataFormat::SetType( wxDataFormatId type )
         m_format = g_textAtom;
     else if (m_type == wxDF_TEXT)
         m_format = g_altTextAtom;
-#else
-    if (m_type == wxDF_TEXT || m_type == wxDF_UNICODETEXT)
+#else // !wxUSE_UNICODE
+    // notice that we don't map wxDF_UNICODETEXT to g_textAtom here, this
+    // would lead the code elsewhere to treat data objects with this format as
+    // containing UTF-8 data which is not true
+    if (m_type == wxDF_TEXT)
         m_format = g_textAtom;
-#endif
+#endif // wxUSE_UNICODE/!wxUSE_UNICODE
     else
     if (m_type == wxDF_BITMAP)
         m_format = g_pngAtom;
@@ -138,19 +135,18 @@ void wxDataFormat::SetId( NativeFormat format )
         m_type = wxDF_PRIVATE;
 }
 
-void wxDataFormat::SetId( const wxChar *id )
+void wxDataFormat::SetId( const wxString& id )
 {
     PrepareFormats();
     m_type = wxDF_PRIVATE;
-    wxString tmp( id );
-    m_format = gdk_atom_intern( (const char*) tmp.ToAscii(), FALSE );
+    m_format = gdk_atom_intern( id.ToAscii(), FALSE );
 }
 
 void wxDataFormat::PrepareFormats()
 {
     // VZ: GNOME included in RedHat 6.1 uses the MIME types below and not the
     //     atoms STRING and file:ALL as the old code was, but normal X apps
-    //     use STRING for text selection when transfering the data via
+    //     use STRING for text selection when transferring the data via
     //     clipboard, for example, so do use STRING for now (GNOME apps will
     //     probably support STRING as well for compatibility anyhow), but use
     //     text/uri-list for file dnd because compatibility is not important
@@ -213,13 +209,17 @@ bool wxDataObject::IsSupportedFormat(const wxDataFormat& format, Direction dir) 
 // wxTextDataObject
 // ----------------------------------------------------------------------------
 
-#if defined(__WXGTK20__) && wxUSE_UNICODE
-void wxTextDataObject::GetAllFormats(wxDataFormat *formats, wxDataObjectBase::Direction dir) const
+#if wxUSE_UNICODE
+
+void
+wxTextDataObject::GetAllFormats(wxDataFormat *formats,
+                                wxDataObjectBase::Direction WXUNUSED(dir)) const
 {
     *formats++ = GetPreferredFormat();
     *formats = g_altTextAtom;
 }
-#endif
+
+#endif // wxUSE_UNICODE
 
 // ----------------------------------------------------------------------------
 // wxFileDataObject
@@ -261,7 +261,7 @@ bool wxFileDataObject::SetData(size_t WXUNUSED(size), const void *buf)
     // (filenames prefixed by "file:") delimited by "\r\n". size includes
     // the trailing zero (in theory, not for Nautilus in early GNOME
     // versions).
-    
+
     m_filenames.Empty();
 
     const gchar *nexttemp = (const gchar*) buf;
@@ -279,7 +279,7 @@ bool wxFileDataObject::SetData(size_t WXUNUSED(size), const void *buf)
                     nexttemp = temp+len;
                     break;
                 }
-                    
+
                 return true;
             }
             if (temp[len] == '\r')
@@ -292,17 +292,17 @@ bool wxFileDataObject::SetData(size_t WXUNUSED(size), const void *buf)
             }
             len++;
         }
-        
+
         if (len == 0)
             break;
-        
+
         // required to give it a trailing zero
         gchar *uri = g_strndup( temp, len );
-    
+
         gchar *fn = g_filename_from_uri( uri, NULL, NULL );
-        
+
         g_free( uri );
-    
+
         if (fn)
         {
             AddFile( wxConvFileName->cMB2WX( fn ) );
@@ -384,12 +384,12 @@ bool wxBitmapDataObject::SetData(size_t size, const void *buf)
 
     m_bitmap = wxBitmap(image);
 
-    return m_bitmap.Ok();
+    return m_bitmap.IsOk();
 }
 
 void wxBitmapDataObject::DoConvertToPng()
 {
-    if ( !m_bitmap.Ok() )
+    if ( !m_bitmap.IsOk() )
         return;
 
     wxCHECK_RET( wxImage::FindHandler(wxBITMAP_TYPE_PNG) != NULL,
@@ -406,5 +406,54 @@ void wxBitmapDataObject::DoConvertToPng()
     wxMemoryOutputStream mstream((char*) m_pngData, m_pngSize);
     image.SaveFile(mstream, wxBITMAP_TYPE_PNG);
 }
+
+// ----------------------------------------------------------------------------
+// wxURLDataObject
+// ----------------------------------------------------------------------------
+
+wxURLDataObject::wxURLDataObject(const wxString& url) :
+   wxDataObjectSimple( wxDataFormat( gdk_atom_intern("text/x-moz-url",FALSE) ) )
+{
+   m_url = url;
+}
+
+size_t wxURLDataObject::GetDataSize() const
+{
+    if (m_url.empty())
+        return 0;
+
+    return 2*m_url.Len()+2;
+}
+
+bool wxURLDataObject::GetDataHere(void *buf) const
+{
+    if (m_url.empty())
+        return false;
+
+    wxCSConv conv( "UCS2" );
+    conv.FromWChar( (char*) buf, 2*m_url.Len()+2, m_url.wc_str() );
+
+    return true;
+}
+
+    // copy data from buffer to our data
+bool wxURLDataObject::SetData(size_t len, const void *buf)
+{
+    if (len == 0)
+    {
+        m_url = wxEmptyString;
+        return false;
+    }
+
+    wxCSConv conv( "UCS2" );
+    wxWCharBuffer res = conv.cMB2WC( (const char*) buf );
+    m_url = res;
+    int pos = m_url.Find( '\n' );
+    if (pos != wxNOT_FOUND)
+        m_url.Remove( pos, m_url.Len() - pos );
+
+    return true;
+}
+
 
 #endif // wxUSE_DATAOBJ

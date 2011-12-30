@@ -4,7 +4,7 @@
 // Author:      Ryan Norton <wxprojects@comcast.net>
 // Modified by:
 // Created:     11/07/04
-// RCS-ID:      $Id: mediactrl_wmp10.cpp 67183 2011-03-14 10:27:12Z JS $
+// RCS-ID:      $Id: mediactrl_wmp10.cpp 67182 2011-03-14 10:27:01Z JS $
 // Copyright:   (c) Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -675,6 +675,7 @@ public:
     wxSize m_bestSize;              // Actual movie size
 
     bool m_bWasStateChanged;        // See the "introduction"
+    wxEvtHandler* m_evthandler;
 
     friend class wxWMP10MediaEvtHandler;
     DECLARE_DYNAMIC_CLASS(wxWMP10MediaBackend)
@@ -699,7 +700,7 @@ public:
 private:
     wxWMP10MediaBackend *m_amb;
 
-    DECLARE_NO_COPY_CLASS(wxWMP10MediaEvtHandler)
+    wxDECLARE_NO_COPY_CLASS(wxWMP10MediaEvtHandler);
 };
 #endif
 
@@ -728,6 +729,7 @@ wxWMP10MediaBackend::wxWMP10MediaBackend()
                 m_pWMPControls(NULL)
 
 {
+    m_evthandler = NULL;
 }
 
 //---------------------------------------------------------------------------
@@ -741,7 +743,11 @@ wxWMP10MediaBackend::~wxWMP10MediaBackend()
         m_pAX->DissociateHandle();
         delete m_pAX;
 
-        m_ctrl->PopEventHandler(true);
+        if (m_evthandler)
+        {
+            m_ctrl->RemoveEventHandler(m_evthandler);
+            delete m_evthandler;
+        }
 #else
         AtlAxWinTerm();
         _Module.Term();
@@ -816,7 +822,8 @@ bool wxWMP10MediaBackend::CreateControl(wxControl* ctrl, wxWindow* parent,
     m_pAX = new wxActiveXContainer(ctrl, IID_IWMPPlayer, m_pWMPPlayer);
 
     // Connect for events
-    m_ctrl->PushEventHandler(new wxWMP10MediaEvtHandler(this));
+    m_evthandler = new wxWMP10MediaEvtHandler(this);
+    m_ctrl->PushEventHandler(m_evthandler);
 #else
     _Module.Init(NULL, ::GetModuleHandle(NULL));
     AtlAxWinInit();
@@ -827,7 +834,7 @@ bool wxWMP10MediaBackend::CreateControl(wxControl* ctrl, wxWindow* parent,
     ::GetClientRect((HWND)ctrl->GetHandle(), &rcClient);
     m_wndView.Create((HWND)ctrl->GetHandle(), rcClient, NULL, WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN, WS_EX_CLIENTEDGE);
     hr = m_wndView.QueryHost(&spHost);
-    hr = spHost->CreateControl(CComBSTR(_T("{6BF52A52-394A-11d3-B153-00C04F79FAA6}")), m_wndView, 0);
+    hr = spHost->CreateControl(CComBSTR(wxT("{6BF52A52-394A-11d3-B153-00C04F79FAA6}")), m_wndView, 0);
     hr = m_wndView.QueryControl(&m_pWMPPlayer);
 
     if( m_pWMPPlayer->get_settings(&m_pWMPSettings) != 0)
@@ -1449,9 +1456,11 @@ void wxWMP10MediaEvtHandler::OnActiveX(wxActiveXEvent& event)
 }
 
 #endif
-// in source file that contains stuff you don't directly use
-#include "wx/html/forcelnk.h"
-FORCE_LINK_ME(wxmediabackend_wmp10)
+
+// Allow the user code to use wxFORCE_LINK_MODULE() to ensure that this object
+// file is not discarded by the linker.
+#include "wx/link.h"
+wxFORCE_LINK_THIS_MODULE(wxmediabackend_wmp10)
 
 #if 0 // Windows Media Player Mobile 9 hacks
 
@@ -1474,7 +1483,7 @@ bool wxWinCEExecute(const wxString& path, int nShowStyle = SW_SHOWNORMAL)
 {
     WinStruct<SHELLEXECUTEINFO> sei;
     sei.lpFile = path.c_str();
-    sei.lpVerb = _T("open");
+    sei.lpVerb = wxT("open");
     sei.nShow = nShowStyle;
 
     ::ShellExecuteEx(&sei);

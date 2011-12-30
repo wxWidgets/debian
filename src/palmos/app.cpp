@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/08/04
-// RCS-ID:      $Id: app.cpp 40943 2006-08-31 19:31:43Z ABX $
+// RCS-ID:      $Id: app.cpp 67288 2011-03-22 17:15:56Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@
     #include "wx/dialog.h"
     #include "wx/msgdlg.h"
     #include "wx/intl.h"
-    #include "wx/wxchar.h"
+    #include "wx/crt.h"
     #include "wx/log.h"
     #include "wx/module.h"
 #endif
@@ -47,6 +47,7 @@
 #include "wx/apptrait.h"
 #include "wx/filename.h"
 #include "wx/dynlib.h"
+#include "wx/evtloop.h"
 
 #if wxUSE_TOOLTIPS
     #include "wx/tooltip.h"
@@ -99,19 +100,16 @@ void *wxGUIAppTraits::BeforeChildWaitLoop()
     return NULL;
 }
 
-void wxGUIAppTraits::AlwaysYield()
-{
-    wxYield();
-}
-
 void wxGUIAppTraits::AfterChildWaitLoop(void *dataOrig)
 {
 }
 
+#if wxUSE_THREADS
 bool wxGUIAppTraits::DoMessageFromThreadWait()
 {
     return false;
 }
+#endif // wxUSE_THREADS
 
 wxPortId wxGUIAppTraits::GetToolkitVersion(int *majVer, int *minVer) const
 {
@@ -119,6 +117,17 @@ wxPortId wxGUIAppTraits::GetToolkitVersion(int *majVer, int *minVer) const
     return wxPORT_PALMOS;
 }
 
+#if wxUSE_TIMER
+wxTimerImpl* wxGUIAppTraits::CreateTimerImpl(wxTimer *timer)
+{
+    return new wxPalmOSTimerImpl(timer);
+};
+#endif // wxUSE_TIMER
+
+wxEventLoopBase* wxGUIAppTraits::CreateEventLoop()
+{
+    return new wxEventLoop;
+}
 // ===========================================================================
 // wxApp implementation
 // ===========================================================================
@@ -132,7 +141,6 @@ int wxApp::m_nCmdShow = 0;
 IMPLEMENT_DYNAMIC_CLASS(wxApp, wxEvtHandler)
 
 BEGIN_EVENT_TABLE(wxApp, wxEvtHandler)
-    EVT_IDLE(wxApp::OnIdle)
     EVT_END_SESSION(wxApp::OnEndSession)
     EVT_QUERY_END_SESSION(wxApp::OnQueryEndSession)
 END_EVENT_TABLE()
@@ -203,8 +211,7 @@ void wxApp::CleanUp()
     // unregister the classes now
     UnregisterWindowClasses();
 
-    delete wxWinHandleHash;
-    wxWinHandleHash = NULL;
+    wxDELETE(wxWinHandleHash);
 }
 
 // ----------------------------------------------------------------------------
@@ -218,27 +225,26 @@ wxApp::wxApp()
 
 wxApp::~wxApp()
 {
+    wxChar **argv_tmp;
+    argv_tmp = argv;
+    // src/palmos/main.cpp
     // our cmd line arguments are allocated inside wxEntry(HINSTANCE), they
     // don't come from main(), so we have to free them
-
     while ( argc )
     {
         // m_argv elements were allocated by wxStrdup()
-        free(argv[--argc]);
+        if (argv_tmp[--argc]) {
+            free((void *)(argv_tmp[--argc]));
+        }
     }
-
     // but m_argv itself -- using new[]
-    delete [] argv;
+    delete [] argv_tmp;
+    //argv = NULL;
 }
 
 // ----------------------------------------------------------------------------
 // wxApp idle handling
 // ----------------------------------------------------------------------------
-
-void wxApp::OnIdle(wxIdleEvent& event)
-{
-    wxAppBase::OnIdle(event);
-}
 
 void wxApp::WakeUpIdle()
 {
@@ -273,13 +279,6 @@ void wxApp::OnQueryEndSession(wxCloseEvent& event)
 int wxApp::GetComCtl32Version()
 {
     return 0;
-}
-
-// Yield to incoming messages
-
-bool wxApp::Yield(bool onlyIfNeeded)
-{
-    return true;
 }
 
 #if wxUSE_EXCEPTIONS

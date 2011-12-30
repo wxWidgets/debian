@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
+
 from __future__ import division
+
 import sys
 mac = sys.platform.startswith("darwin")
  
@@ -2547,9 +2549,8 @@ class FloatCanvas(wx.Panel):
     def MouseOverTest(self, event):
         ##fixme: Can this be cleaned up?
         if (self.HitDict and
-
-                (self.HitDict[EVT_FC_ENTER_OBJECT ] or
-                 self.HitDict[EVT_FC_LEAVE_OBJECT ]    )
+            (self.HitDict[EVT_FC_ENTER_OBJECT ] or
+             self.HitDict[EVT_FC_LEAVE_OBJECT ]    )
             ):
             xy = event.GetPosition()
             color = self.GetHitTestColor( xy )
@@ -2569,12 +2570,12 @@ class FloatCanvas(wx.Panel):
                 elif not (Object == OldObject):
                     # call the leave object callback
                     try:
-                        self._CallHitCallback(Object, xy, EVT_FC_LEAVE_OBJECT)
+                        self._CallHitCallback(OldObject, xy, EVT_FC_LEAVE_OBJECT)
                         ObjectCallbackCalled =  True
                     except KeyError:
                         pass # this means the leave event isn't bound for that object
                     try:
-                        self._CallHitCallback(Object, xy, EVT_FC_LEAVE_OBJECT)
+                        self._CallHitCallback(Object, xy, EVT_FC_ENTER_OBJECT)
                         ObjectCallbackCalled =  True
                     except KeyError:
                         pass # this means the enter event isn't bound for that object
@@ -2599,6 +2600,7 @@ class FloatCanvas(wx.Panel):
     ## fixme: There is a lot of repeated code here
     ##        Is there a better way?
     ##    probably -- shouldn't there always be a GUIMode?
+    ##    there cvould be a null GUI Mode, and use that instead of None
     def LeftDoubleClickEvent(self, event):
         if self.GUIMode:
             self.GUIMode.OnLeftDouble(event)

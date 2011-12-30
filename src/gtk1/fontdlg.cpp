@@ -2,7 +2,7 @@
 // Name:        src/gtk1/fontdlg.cpp
 // Purpose:     wxFontDialog
 // Author:      Robert Roebling
-// Id:          $Id: fontdlg.cpp 39326 2006-05-25 07:07:23Z ABX $
+// Id:          $Id: fontdlg.cpp 67681 2011-05-03 16:29:04Z DS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ void gtk_fontdialog_ok_callback( GtkWidget *WXUNUSED(widget), wxFontDialog *dial
 
     wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK);
     event.SetEventObject( dialog );
-    dialog->GetEventHandler()->ProcessEvent( event );
+    dialog->HandleWindowEvent( event );
 }
 }
 
@@ -101,7 +101,7 @@ void gtk_fontdialog_cancel_callback( GtkWidget *WXUNUSED(w), wxFontDialog *dialo
 
     wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_CANCEL);
     event.SetEventObject( dialog );
-    dialog->GetEventHandler()->ProcessEvent( event );
+    dialog->HandleWindowEvent( event );
 }
 }
 
@@ -148,7 +148,7 @@ bool wxFontDialog::DoCreate(wxWindow *parent)
         GTK_SIGNAL_FUNC(gtk_fontdialog_delete_callback), (gpointer)this );
 
     wxFont font = m_fontData.GetInitialFont();
-    if( font.Ok() )
+    if( font.IsOk() )
     {
         const wxNativeFontInfo *info = font.GetNativeFontInfo();
 
@@ -164,7 +164,7 @@ bool wxFontDialog::DoCreate(wxWindow *parent)
         else
         {
             // this is not supposed to happen!
-            wxFAIL_MSG(_T("font is ok but no native font info?"));
+            wxFAIL_MSG(wxT("font is ok but no native font info?"));
         }
     }
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     11-April-2006
-// RCS-ID:      $Id: _richtextctrl.i 63397 2010-02-05 01:30:48Z RD $
+// RCS-ID:      $Id: _richtextctrl.i 69712 2011-11-08 18:05:56Z RD $
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -31,11 +31,12 @@ enum {
     wxRICHTEXT_CTRL_DOWN,
     wxRICHTEXT_ALT_DOWN,
 
+#if 0
     wxRICHTEXT_SELECTED,
     wxRICHTEXT_TAGGED,
     wxRICHTEXT_FOCUSSED,
     wxRICHTEXT_IS_FOCUS,
-
+#endif
 };
 
 
@@ -50,11 +51,9 @@ DocStr(wxRichTextCtrl,
 "", "");
 
 
-// NOTE: This really derives from wxScrollHelper and wxTextCtrlBase.  To
-// workaround the lack of wrappers for these we'll just copy the method decls
-// into this class.
-
-class wxRichTextCtrl : public wxControl
+class wxRichTextCtrl : public wxControl,
+                       public wxTextCtrlIface,
+                       public wxScrollHelper
 {
 public:
     %pythonAppend wxRichTextCtrl         "self._setOORInfo(self)"
@@ -160,6 +159,18 @@ during sizing.", "");
         "Get the threshold in character positions for doing layout optimization
 during sizing.", "");
 
+    bool GetFullLayoutRequired() const;
+    void SetFullLayoutRequired(bool b);
+
+    wxLongLong GetFullLayoutTime() const;
+    void SetFullLayoutTime(wxLongLong t);
+
+    long GetFullLayoutSavedPosition() const;
+    void SetFullLayoutSavedPosition(long p);
+
+    // Force any pending layout due to large buffer
+    void ForceDelayedLayout();
+
 
     DocDeclStr(
         void , SetTextCursor(const wxCursor& cursor ),
@@ -181,8 +192,32 @@ during sizing.", "");
         "Get URL cursor", "");
 
     
+    /// Are we showing the caret position at the start of a line
+    /// instead of at the end of the previous one?
+    bool GetCaretAtLineStart() const;
+    void SetCaretAtLineStart(bool atStart);
+
+    /// Are we dragging a selection?
+    bool GetDragging() const;
+    void SetDragging(bool dragging);
+
+    /// Get/set drag start position
+    const wxPoint& GetDragStart() const;
+    void SetDragStart(const wxPoint& pt);
+
+#ifdef __WXMSW__
+    /// Get the buffer bitmap
+    wxBitmap& GetBufferBitmap();
+#endif
+
+    /// Get/set context menu
     wxMenu* GetContextMenu() const;
     void SetContextMenu(wxMenu* menu);
+
+    /// Anchor so we know how to extend the selection
+    /// It's a caret position since it's between two characters.
+    long GetSelectionAnchor() const;
+    void SetSelectionAnchor(long anchor);
 
     
 
@@ -246,23 +281,23 @@ text control.", "");
 
 
     DocDeclStr(
-        virtual bool , SetStyle(const wxRichTextRange& range, const wxTextAttrEx& style),
+        virtual bool , SetStyle(const wxRichTextRange& range, const wxRichTextAttr& style),
         "Set the style for the text in ``range`` to ``style``", "");
 
     DocDeclStr(
-        virtual bool , GetStyle(long position, wxTextAttrEx& style),
+        virtual bool , GetStyle(long position, wxRichTextAttr& style),
         "Retrieve the style used at the given position.  Copies the style
 values at ``position`` into the ``style`` parameter and returns ``True``
 if successful.  Returns ``False`` otherwise.", "");
 
 
     DocDeclStr(
-        virtual bool , GetStyleForRange(const wxRichTextRange& range, wxTextAttrEx& style),
+        virtual bool , GetStyleForRange(const wxRichTextRange& range, wxRichTextAttr& style),
         "Get the common set of styles for the range", "");
     
 
     DocDeclStr(
-        virtual bool , SetStyleEx(const wxRichTextRange& range, const wxTextAttrEx& style,
+        virtual bool , SetStyleEx(const wxRichTextRange& range, const wxRichTextAttr& style,
                                   int flags = wxRICHTEXT_SETSTYLE_WITH_UNDO),
         "Extended style setting operation with flags including:
 RICHTEXT_SETSTYLE_WITH_UNDO, RICHTEXT_SETSTYLE_OPTIMIZE,
@@ -271,19 +306,19 @@ RICHTEXT_SETSTYLE_PARAGRAPHS_ONLY, RICHTEXT_SETSTYLE_CHARACTERS_ONLY", "");
 
     
     DocDeclStr(
-        virtual bool , GetUncombinedStyle(long position, wxTextAttrEx& style),
+        virtual bool , GetUncombinedStyle(long position, wxRichTextAttr& style),
         "Get the content (uncombined) attributes for this position.  Copies the
 style values at ``position`` into the ``style`` parameter and returns
 ``True`` if successful.  Returns ``False`` otherwise.", "");
 
 
     DocDeclStr(
-        virtual bool , SetDefaultStyle(const wxTextAttrEx& style),
+        virtual bool , SetDefaultStyle(const wxRichTextAttr& style),
         "Set the style used by default for the rich text document.", "");
 
 
     DocDeclStrName(
-        virtual const wxTextAttrEx , GetDefaultStyleEx() const,
+        virtual const wxRichTextAttr , GetDefaultStyleEx() const,
         "Retrieves a copy of the default style object.", "",
         GetDefaultStyle);
 
@@ -479,21 +514,24 @@ flag.", "");
 ///// Functionality specific to wxRichTextCtrl
 
     DocDeclStr(
-        virtual bool , WriteImage(const wxImage& image, int bitmapType = wxBITMAP_TYPE_PNG),
+        virtual bool , WriteImage(const wxImage& image,
+                                  wxBitmapType bitmapType = wxBITMAP_TYPE_PNG),
         "Write an image at the current insertion point. Supply optional type to
 use for internal and file storage of the raw data.
 ", "");
 
 
     DocDeclStrName(
-        virtual bool , WriteImage(const wxBitmap& bitmap, int bitmapType = wxBITMAP_TYPE_PNG),
+        virtual bool , WriteImage(const wxBitmap& bitmap,
+                                  wxBitmapType bitmapType = wxBITMAP_TYPE_PNG),
         "Write a bitmap at the current insertion point. Supply optional type to
 use for internal and file storage of the raw data.", "",
         WriteBitmap);
 
 
     DocDeclStrName(
-        virtual bool , WriteImage(const wxString& filename, int bitmapType),
+        virtual bool , WriteImage(const wxString& filename,
+                                  wxBitmapType bitmapType),
         "Load an image from file and write at the current insertion point.", "",
         WriteImageFile);
 
@@ -516,17 +554,17 @@ use for internal and file storage of the raw data.", "",
 
     
     DocDeclStr(
-        virtual void , SetBasicStyle(const wxTextAttrEx& style),
+        virtual void , SetBasicStyle(const wxRichTextAttr& style),
         "", "");
 
 
     DocDeclStr(
-        virtual const wxTextAttrEx , GetBasicStyle() const,
+        virtual const wxRichTextAttr , GetBasicStyle() const,
         "Get basic (overall) style", "");
 
 
     DocDeclStr(
-        virtual bool , BeginStyle(const wxTextAttrEx& style),
+        virtual bool , BeginStyle(const wxRichTextAttr& style),
         "Begin using a style", "");
 
     
@@ -893,7 +931,7 @@ setting the caret position.", "");
 
     DocDeclStr(
         virtual bool , HasCharacterAttributes(const wxRichTextRange& range,
-                                              const wxTextAttrEx& style) const,
+                                              const wxRichTextAttr& style) const,
         "Test if this whole range has character attributes of the specified
 kind. If any of the attributes are different within the range, the
 test fails. You can use this to implement, for example, bold button
@@ -905,7 +943,7 @@ interest.
 
     DocDeclStr(
         virtual bool , HasParagraphAttributes(const wxRichTextRange& range,
-                                              const wxTextAttrEx& style) const,
+                                              const wxRichTextAttr& style) const,
         "Test if this whole range has paragraph attributes of the specified
 kind. If any of the attributes are different within the range, the
 test fails. You can use this to implement, for example, centering
@@ -929,6 +967,8 @@ of interest.
         virtual bool , IsSelectionUnderlined(),
         "Is all of the selection underlined?", "");
 
+        virtual bool DoesSelectionHaveTextEffectFlag(int flag);
+
 
     DocDeclStr(
         virtual bool , IsSelectionAligned(wxTextAttrAlignment alignment),
@@ -949,6 +989,7 @@ of interest.
         virtual bool , ApplyUnderlineToSelection(),
         "Apply underline to the selection", "");
 
+    virtual bool ApplyTextEffectToSelection(int flags);
 
     DocDeclStr(
         virtual bool , ApplyAlignmentToSelection(wxTextAttrAlignment alignment),
@@ -988,19 +1029,14 @@ changed.", "");
 
 
 
-    %property(Buffer, GetBuffer, doc="See `GetBuffer`");
-    %property(DefaultStyle, GetDefaultStyle, SetDefaultStyle, doc="See `GetDefaultStyle` and `SetDefaultStyle`");
-    %property(DelayedLayoutThreshold, GetDelayedLayoutThreshold, SetDelayedLayoutThreshold, doc="See `GetDelayedLayoutThreshold` and `SetDelayedLayoutThreshold`");
-    %property(Filename, GetFilename, SetFilename, doc="See `GetFilename` and `SetFilename`");
-    %property(InsertionPoint, GetInsertionPoint, SetInsertionPoint, doc="See `GetInsertionPoint` and `SetInsertionPoint`");
-    %property(InternalSelectionRange, GetInternalSelectionRange, SetInternalSelectionRange, doc="See `GetInternalSelectionRange` and `SetInternalSelectionRange`");
-    %property(LastPosition, GetLastPosition, doc="See `GetLastPosition`");
-    %property(NumberOfLines, GetNumberOfLines, doc="See `GetNumberOfLines`");
-    %property(Selection, GetSelection, SetSelectionRange, doc="See `GetSelection` and `SetSelection`");
-    %property(SelectionRange, GetSelectionRange, SetSelectionRange, doc="See `GetSelectionRange` and `SetSelectionRange`");
-    %property(StringSelection, GetStringSelection, doc="See `GetStringSelection`");
-    %property(StyleSheet, GetStyleSheet, SetStyleSheet, doc="See `GetStyleSheet` and `SetStyleSheet`");
-    %property(Value, GetValue, SetValue, doc="See `GetValue` and `SetValue`");
+    %property(Buffer, GetBuffer);
+    %property(DelayedLayoutThreshold, GetDelayedLayoutThreshold, SetDelayedLayoutThreshold);
+    %property(Filename, GetFilename, SetFilename);
+    %property(InternalSelectionRange, GetInternalSelectionRange, SetInternalSelectionRange);
+    %property(SelectionRange, GetSelectionRange, SetSelectionRange);
+    %property(StyleSheet, GetStyleSheet, SetStyleSheet);
+    %property(TextCursor, GetTextCursor, SetTextCursor);
+    %property(URLCursor, GetURLCursor, SetURLCursor);
 
 
     /// Set up scrollbars, e.g. after a resize
@@ -1191,7 +1227,7 @@ changed.", "");
     
     // insert the character which would have resulted from this key event,
     // return True if anything has been inserted
-    virtual bool EmulateKeyPress(const wxKeyEvent& event);
+//    virtual bool EmulateKeyPress(const wxKeyEvent& event);
 
 };
 
@@ -1217,6 +1253,7 @@ changed.", "");
 %constant wxEventType wxEVT_COMMAND_RICHTEXT_CONTENT_DELETED;
 %constant wxEventType wxEVT_COMMAND_RICHTEXT_STYLE_CHANGED;
 %constant wxEventType wxEVT_COMMAND_RICHTEXT_SELECTION_CHANGED;
+%constant wxEventType wxEVT_COMMAND_RICHTEXT_BUFFER_RESET;
 
 %pythoncode {
 EVT_RICHTEXT_LEFT_CLICK = wx.PyEventBinder(wxEVT_COMMAND_RICHTEXT_LEFT_CLICK, 1)
@@ -1236,6 +1273,7 @@ EVT_RICHTEXT_CONTENT_INSERTED = wx.PyEventBinder( wxEVT_COMMAND_RICHTEXT_CONTENT
 EVT_RICHTEXT_CONTENT_DELETED = wx.PyEventBinder( wxEVT_COMMAND_RICHTEXT_CONTENT_DELETED, 1)
 EVT_RICHTEXT_STYLE_CHANGED = wx.PyEventBinder( wxEVT_COMMAND_RICHTEXT_STYLE_CHANGED, 1)
 EVT_RICHTEXT_SELECTION_CHANGED = wx.PyEventBinder( wxEVT_COMMAND_RICHTEXT_SELECTION_CHANGED, 1)    
+EVT_RICHTEXT_BUFFER_RESET = wx.PyEventBinder( wxEVT_COMMAND_RICHTEXT_BUFFER_RESET, 1)
 }
 
 

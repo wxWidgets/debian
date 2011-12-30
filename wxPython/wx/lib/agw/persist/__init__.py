@@ -6,6 +6,7 @@ Persistent objects are simply the objects which automatically save their state
 when they are destroyed and restore it when they are recreated, even during
 another program invocation.
 
+
 .. _persistent-overview:
 
 Persistent Object Overview
@@ -44,7 +45,7 @@ following classes are supported:
   L{labelbook.FlatImageBook};
 * wx.CheckBox;
 * wx.ListBox, wx.VListBox, wx.HtmlListBox, wx.SimpleHtmlListBox, wx.gizmos.EditableListBox;
-* wx.ListCtrl, wx.ListView;
+* wx.ListCtrl, wx.ListView, L{ultimatelistctrl.UltimateListCtrl};
 * wx.CheckListBox;
 * wx.Choice, wx.ComboBox, wx.combo.OwnerDrawnComboBox;
 * wx.RadioBox;
@@ -97,15 +98,38 @@ Usage
 
 Example of using a notebook control which automatically remembers the last open page::
 
-    book = wx.Notebook(parent, wx.ID_ANY)
-    book.SetName("MyBook") # Do not use the default name!!
-    book.AddPage(page1)
-    book.AddPage(page2)
-    book.AddPage(page3)
-    
-    if not PersistenceManager.RegisterAndRestore(book):
-        # Nothing was restored, so choose the default page ourselves
-        book.SetSelection(0)
+
+    import wx
+    import wx.lib.agw.persist as PM
+
+    class MyFrame(wx.Frame):
+
+        def __init__(self, parent):
+
+            wx.Frame.__init(self, parent, -1, "Persistent Controls Demo")        
+
+            book = wx.Notebook(self, wx.ID_ANY)
+
+            # Very important step!!            
+            book.SetName("MyBook") # Do not use the default name!!
+            
+            book.AddPage(wx.Panel(book), "Hello")
+            book.AddPage(wx.Panel(book), "World")
+            
+            if not PM.PersistenceManager.RegisterAndRestore(book):
+                # Nothing was restored, so choose the default page ourselves
+                book.SetSelection(0)
+
+
+    # our normal wxApp-derived class, as usual
+
+    app = wx.PySimpleApp()
+
+    frame = MyFrame(None)
+    app.SetTopWindow(frame)
+    frame.Show()
+
+    app.MainLoop()
 
 
 .. _persistent-windows:
@@ -145,10 +169,10 @@ TODOs
 License And Version
 ===================
 
-PersistentObjects library is distributed under the wxPython license. 
+`PersistentObjects` library is distributed under the wxPython license. 
 
-Latest revision: Andrea Gavana @ 28 Jan 2011, 15.00 GMT
-Version 0.2. 
+Latest revision: Andrea Gavana @ 24 Oct 2011, 21.00 GMT
+Version 0.4. 
 
 """
 
@@ -159,4 +183,3 @@ __date__ = "16 November 2009"
 from persist_constants import *
 from persistencemanager import *
 from persist_handlers import *
-

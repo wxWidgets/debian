@@ -33,11 +33,13 @@ if RELEASE_VERSION != _core_.RELEASE_VERSION:
 
 def version():
     """Returns a string containing version and port info"""
-    ctype = wx.USE_UNICODE and 'unicode' or 'ansi'
     if wx.Platform == '__WXMSW__':
         port = 'msw'
     elif wx.Platform == '__WXMAC__':
-        port = 'mac'
+        if 'wxOSX-carbon' in wx.PlatformInfo:
+            port = 'osx-carbon'
+        else:
+            port = 'osx-cocoa'
     elif wx.Platform == '__WXGTK__':
         port = 'gtk'
         if 'gtk2' in wx.PlatformInfo:
@@ -45,8 +47,8 @@ def version():
     else:
         port = '?'
 
-    return "%s (%s-%s)" % (wx.VERSION_STRING, port, ctype)
-                       
+    return "%s %s (classic)" % (wx.VERSION_STRING, port)
+                      
     
 #----------------------------------------------------------------------------
 
@@ -126,10 +128,14 @@ class _wxPyUnbornObject(object):
     attrStr = "The C++ part of this object has not been initialized, attribute access not allowed."
 
     def __repr__(self):
-        return self.reprStr
+        #if not hasattr(self, "_name"):
+        #    self._name = "[unknown]"
+        return self.reprStr #% self._name
 
     def __getattr__(self, *args):
-        raise PyUnbornObjectError(self.attrStr) 
+        #if not hasattr(self, "_name"):
+        #    self._name = "[unknown]"
+        raise PyUnbornObjectError(self.attrStr) # % self._name )
 
     def __nonzero__(self):
         return 0
@@ -137,7 +143,7 @@ class _wxPyUnbornObject(object):
 
 #----------------------------------------------------------------------------
 
-def CallAfter(callable, *args, **kw):
+def CallAfter(callableObj, *args, **kw):
     """
     Call the specified function after the current and pending event
     handlers have been completed.  This is also good for making GUI
@@ -146,6 +152,7 @@ def CallAfter(callable, *args, **kw):
 
     :see: `wx.CallLater`
     """
+    assert callable(callableObj), "callableObj is not callable"
     app = wx.GetApp()
     assert app is not None, 'No wx.App created yet'
 
@@ -155,7 +162,7 @@ def CallAfter(callable, *args, **kw):
                     lambda event: event.callable(*event.args, **event.kw) )
     evt = wx.PyEvent()
     evt.SetEventType(app._CallAfterId)
-    evt.callable = callable
+    evt.callable = callableObj
     evt.args = args
     evt.kw = kw
     wx.PostEvent(app, evt)
@@ -179,9 +186,10 @@ class CallLater:
 
     :see: `wx.CallAfter`
     """
-    def __init__(self, millis, callable, *args, **kwargs):
+    def __init__(self, millis, callableObj, *args, **kwargs):
+        assert callable(callableObj), "callableObj is not callable"
         self.millis = millis
-        self.callable = callable
+        self.callable = callableObj
         self.SetArgs(*args, **kwargs)
         self.runCount = 0
         self.running = False

@@ -588,6 +588,11 @@ class RibbonToolBar(RibbonControl):
                         new_hover = tool
                         break
                 break
+
+        if new_hover and new_hover != self._hover_tool:
+            self.SetToolTipString(new_hover.help_string)
+        elif self.GetToolTip() and new_hover != self._hover_tool:
+            self.SetToolTipString("")
             
         if new_hover != self._hover_tool:
             if self._hover_tool:            
@@ -658,10 +663,13 @@ class RibbonToolBar(RibbonControl):
                 notification.SetBar(self)
                 self.ProcessEvent(notification)
             
-            self._active_tool.state &= ~RIBBON_TOOLBAR_TOOL_ACTIVE_MASK
-            self._active_tool = None
-            self.Refresh(False)
-    
+            # Notice that m_active_tool could have been reset by the event handler
+            # above so we need to test it again.
+            if self._active_tool:
+                self._active_tool.state &= ~RIBBON_TOOLBAR_TOOL_ACTIVE_MASK
+                self._active_tool = None
+                self.Refresh(False)
+
 
     def OnMouseEnter(self, event):
 

@@ -4,7 +4,7 @@
 // Author:      Kevin Smith
 // Modified by:
 // Created:     Jan 22 1999
-// RCS-ID:      $Id: valgen.cpp 39463 2006-05-29 21:26:35Z ABX $
+// RCS-ID:      $Id: valgen.cpp 68225 2011-07-11 14:51:32Z VZ $
 // Copyright:   (c) 1999 Kevin Smith
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -38,6 +38,7 @@
 #endif
 
 #include "wx/spinctrl.h"
+// #include "wx/datectrl.h" -- can't use it in this (core) file for now
 
 #if wxUSE_SPINBTN
     #include "wx/spinbutt.h"
@@ -45,6 +46,7 @@
 #if wxUSE_TOGGLEBTN
     #include "wx/tglbtn.h"
 #endif
+#include "wx/filename.h"
 
 #include "wx/valgen.h"
 
@@ -74,6 +76,34 @@ wxGenericValidator::wxGenericValidator(wxArrayInt *val)
     m_pArrayInt = val;
 }
 
+#if wxUSE_DATETIME
+
+wxGenericValidator::wxGenericValidator(wxDateTime *val)
+{
+    Initialize();
+    m_pDateTime = val;
+}
+
+wxGenericValidator::wxGenericValidator(wxFileName *val)
+{
+    Initialize();
+    m_pFileName = val;
+}
+
+wxGenericValidator::wxGenericValidator(float *val)
+{
+    Initialize();
+    m_pFloat = val;
+}
+
+wxGenericValidator::wxGenericValidator(double *val)
+{
+    Initialize();
+    m_pDouble = val;
+}
+
+#endif // wxUSE_DATETIME
+
 wxGenericValidator::wxGenericValidator(const wxGenericValidator& val)
     : wxValidator()
 {
@@ -88,6 +118,12 @@ bool wxGenericValidator::Copy(const wxGenericValidator& val)
     m_pInt = val.m_pInt;
     m_pString = val.m_pString;
     m_pArrayInt = val.m_pArrayInt;
+#if wxUSE_DATETIME
+    m_pDateTime = val.m_pDateTime;
+#endif // wxUSE_DATETIME
+    m_pFileName = val.m_pFileName;
+    m_pFloat = val.m_pFloat;
+    m_pDouble = val.m_pDouble;
 
     return true;
 }
@@ -121,6 +157,7 @@ bool wxGenericValidator::TransferToWindow(void)
         }
     } else
 #endif
+
 #if wxUSE_TOGGLEBTN
     if (m_validatorWindow->IsKindOf(CLASSINFO(wxToggleButton)) )
     {
@@ -131,6 +168,17 @@ bool wxGenericValidator::TransferToWindow(void)
             return true;
         }
     } else
+#if (defined(__WXMAC__) || defined(__WXMSW__) || defined(__WXGTK20__)) && !defined(__WXUNIVERSAL__)
+    if (m_validatorWindow->IsKindOf(CLASSINFO(wxBitmapToggleButton)) )
+    {
+        wxBitmapToggleButton * pControl = (wxBitmapToggleButton *) m_validatorWindow;
+        if (m_pBool)
+        {
+            pControl->SetValue(*m_pBool);
+            return true;
+        }
+    } else
+#endif
 #endif
 
     // int controls
@@ -196,6 +244,19 @@ bool wxGenericValidator::TransferToWindow(void)
         if (m_pInt)
         {
             pControl->SetValue(*m_pInt) ;
+            return true;
+        }
+    } else
+#endif
+
+    // date time controls
+#if 0 // wxUSE_DATEPICKCTRL -- temporary fix for shared build linking
+    if (m_validatorWindow->IsKindOf(CLASSINFO(wxDatePickerCtrl)) )
+    {
+        wxDatePickerCtrl* pControl = (wxDatePickerCtrl*) m_validatorWindow;
+        if (m_pDateTime)
+        {
+            pControl->SetValue(*m_pDateTime) ;
             return true;
         }
     } else
@@ -282,6 +343,21 @@ bool wxGenericValidator::TransferToWindow(void)
             pControl->SetValue(str);
             return true;
         }
+        else if (m_pFileName)
+        {
+            pControl->SetValue(m_pFileName->GetFullPath());
+            return true;
+        }
+        else if (m_pFloat)
+        {
+            pControl->SetValue(wxString::Format(wxT("%g"), *m_pFloat));
+            return true;
+        }
+        else if (m_pDouble)
+        {
+            pControl->SetValue(wxString::Format(wxT("%g"), *m_pDouble));
+            return true;
+        }
     } else
 #endif
 
@@ -331,7 +407,8 @@ bool wxGenericValidator::TransferToWindow(void)
         }
     } else
 #endif
-        ;   // to match the last 'else' above
+    {   // to match the last 'else' above
+    }
 
   // unrecognized control, or bad pointer
   return false;
@@ -376,6 +453,17 @@ bool wxGenericValidator::TransferFromWindow(void)
             return true;
         }
     } else
+#if (defined(__WXMAC__) || defined(__WXMSW__) || defined(__WXGTK20__)) && !defined(__WXUNIVERSAL__)
+    if (m_validatorWindow->IsKindOf(CLASSINFO(wxBitmapToggleButton)) )
+    {
+        wxBitmapToggleButton *pControl = (wxBitmapToggleButton *) m_validatorWindow;
+        if (m_pBool)
+        {
+            *m_pBool = pControl->GetValue() ;
+            return true;
+        }
+    } else
+#endif
 #endif
 
     // INT CONTROLS ***************************************
@@ -441,6 +529,19 @@ bool wxGenericValidator::TransferFromWindow(void)
         if (m_pInt)
         {
             *m_pInt = pControl->GetValue() ;
+            return true;
+        }
+    } else
+#endif
+
+    // DATE TIME CONTROLS ************************************
+#if 0 // wxUSE_DATEPICKCTRL -- temporary fix for shared build linking
+    if (m_validatorWindow->IsKindOf(CLASSINFO(wxDatePickerCtrl)) )
+    {
+        wxDatePickerCtrl* pControl = (wxDatePickerCtrl*) m_validatorWindow;
+        if (m_pDateTime)
+        {
+            *m_pDateTime = pControl->GetValue() ;
             return true;
         }
     } else
@@ -518,6 +619,21 @@ bool wxGenericValidator::TransferFromWindow(void)
             *m_pInt = wxAtoi(pControl->GetValue());
             return true;
         }
+        else if (m_pFileName)
+        {
+            m_pFileName->Assign(pControl->GetValue());
+            return true;
+        }
+        else if (m_pFloat)
+        {
+            *m_pFloat = (float)wxAtof(pControl->GetValue());
+            return true;
+        }
+        else if (m_pDouble)
+        {
+            *m_pDouble = wxAtof(pControl->GetValue());
+            return true;
+        }
     } else
 #endif
 
@@ -581,11 +697,16 @@ bool wxGenericValidator::TransferFromWindow(void)
 */
 void wxGenericValidator::Initialize()
 {
-    m_pBool = 0;
-    m_pInt = 0;
-    m_pString = 0;
-    m_pArrayInt = 0;
+    m_pBool = NULL;
+    m_pInt = NULL;
+    m_pString = NULL;
+    m_pArrayInt = NULL;
+#if wxUSE_DATETIME
+    m_pDateTime = NULL;
+#endif // wxUSE_DATETIME
+    m_pFileName = NULL;
+    m_pFloat = NULL;
+    m_pDouble = NULL;
 }
 
-#endif
-  // wxUSE_VALIDATORS
+#endif // wxUSE_VALIDATORS

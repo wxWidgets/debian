@@ -1,0 +1,30 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classwx_input_stream.html" title="wxInputStream is an abstract base class which may not be used directly." alt="" coords="171,538,280,569"/>
+<area shape="rect" id="node31" href="$classwx_output_stream.html" title="wxOutputStream is an abstract base class which may not be used directly." alt="" coords="167,218,284,249"/>
+<area shape="rect" id="node5" href="$classwx_f_file_input_stream.html" title="This class represents data read in from a file." alt="" coords="351,431,489,462"/>
+<area shape="rect" id="node9" href="$classwx_file_input_stream.html" title="This class represents data read in from a file." alt="" coords="355,591,485,622"/>
+<area shape="rect" id="node13" href="$classwx_filter_input_stream.html" title="A filter stream has the capability of a normal stream but it can be placed on top of another stream..." alt="" coords="351,698,489,729"/>
+<area shape="rect" id="node25" href="$classwx_memory_input_stream.html" title="This class allows to use all methods taking a wxInputStream reference to read in&#45;memory data..." alt="" coords="343,485,497,515"/>
+<area shape="rect" id="node27" href="$classwx_socket_input_stream.html" title="This class implements an input stream which reads data from a connected socket." alt="" coords="345,538,495,569"/>
+<area shape="rect" id="node29" href="$classwx_string_input_stream.html" title="This class implements an input stream which reads data from a string." alt="" coords="349,645,491,675"/>
+<area shape="rect" id="node7" href="$classwx_f_file_stream.html" title="This stream allows to both read from and write to a file using buffered STDIO functions." alt="" coords="584,351,693,382"/>
+<area shape="rect" id="node11" href="$classwx_file_stream.html" title="This class represents data that can be both read from and written to a file." alt="" coords="588,458,689,489"/>
+<area shape="rect" id="node15" href="$classwx_archive_input_stream.html" title="This is an abstract base class which serves as a common interface to archive input streams such as wx..." alt="" coords="563,645,715,675"/>
+<area shape="rect" id="node21" href="$classwx_buffered_input_stream.html" title="This stream acts as a cache." alt="" coords="560,698,717,729"/>
+<area shape="rect" id="node23" href="$classwx_zlib_input_stream.html" title="This filter stream decompresses a stream that is in zlib or gzip format." alt="" coords="573,751,704,782"/>
+<area shape="rect" id="node17" href="$classwx_tar_input_stream.html" title="Input stream for reading tar files." alt="" coords="777,618,903,649"/>
+<area shape="rect" id="node19" href="$classwx_zip_input_stream.html" title="Input stream for reading zip files." alt="" coords="777,671,903,702"/>
+<area shape="rect" id="node33" href="$classwx_counting_output_stream.html" title="wxCountingOutputStream is a specialized output stream which does not write any data anywhere..." alt="" coords="335,111,505,142"/>
+<area shape="rect" id="node35" href="$classwx_f_file_output_stream.html" title="This class represents data written to a file." alt="" coords="347,218,493,249"/>
+<area shape="rect" id="node38" href="$classwx_file_output_stream.html" title="This class represents data written to a file." alt="" coords="351,378,489,409"/>
+<area shape="rect" id="node41" href="$classwx_filter_output_stream.html" title="A filter stream has the capability of a normal stream but it can be placed on top of another stream..." alt="" coords="347,165,493,195"/>
+<area shape="rect" id="node53" href="$classwx_memory_output_stream.html" title="This class allows to use all methods taking a wxOutputStream reference to write to in&#45;memory data..." alt="" coords="337,271,503,302"/>
+<area shape="rect" id="node55" href="$classwx_socket_output_stream.html" title="This class implements an output stream which writes data from a connected socket." alt="" coords="340,325,500,355"/>
+<area shape="rect" id="node57" href="$classwx_string_output_stream.html" title="This class implements an output stream which writes data either to a user&#45;provided or internally allo..." alt="" coords="344,5,496,35"/>
+<area shape="rect" id="node59" href="$classwx_temp_file_output_stream.html" title="wxTempFileOutputStream is an output stream based on wxTempFile." alt="" coords="335,58,505,89"/>
+<area shape="rect" id="node43" href="$classwx_archive_output_stream.html" title="This is an abstract base class which serves as a common interface to archive output streams such as w..." alt="" coords="557,111,720,142"/>
+<area shape="rect" id="node49" href="$classwx_buffered_output_stream.html" title="This stream acts as a cache." alt="" coords="555,165,723,195"/>
+<area shape="rect" id="node51" href="$classwx_zlib_output_stream.html" title="This stream compresses all data written to it." alt="" coords="569,218,708,249"/>
+<area shape="rect" id="node45" href="$classwx_tar_output_stream.html" title="Output stream for writing tar files." alt="" coords="772,85,908,115"/>
+<area shape="rect" id="node47" href="$classwx_zip_output_stream.html" title="Output stream for writing zip files." alt="" coords="772,138,908,169"/>
+</map>

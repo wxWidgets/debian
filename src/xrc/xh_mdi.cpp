@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxMDI
 // Author:      David M. Falkinder & Vaclav Slavik
 // Created:     14/02/2005
-// RCS-ID:      $Id: xh_mdi.cpp 41590 2006-10-03 14:53:40Z VZ $
+// RCS-ID:      $Id: xh_mdi.cpp 59931 2009-03-29 21:25:23Z VS $
 // Copyright:   (c) 2005 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,12 +18,12 @@
 #if wxUSE_XRC && wxUSE_MDI
 
 #include "wx/xrc/xh_mdi.h"
+#include "wx/mdi.h"
 
 #ifndef WX_PRECOMP
     #include "wx/intl.h"
     #include "wx/log.h"
     #include "wx/dialog.h" // to get wxDEFAULT_DIALOG_STYLE
-    #include "wx/mdi.h"
 #endif
 
 IMPLEMENT_DYNAMIC_CLASS(wxMdiXmlHandler, wxXmlResourceHandler)
@@ -88,7 +88,7 @@ wxWindow *wxMdiXmlHandler::CreateFrame()
 
         if ( !mdiParent )
         {
-            wxLogError(wxT("Parent of wxMDIParentFrame must be wxMDIParentFrame."));
+            ReportError("parent of wxMDIChildFrame must be wxMDIParentFrame");
             return NULL;
         }
 
@@ -117,7 +117,7 @@ wxObject *wxMdiXmlHandler::DoCreateResource()
     {
         wxFrame* f = wxDynamicCast(frame, wxFrame);
         if (f)
-            f->SetIcon(GetIcon(wxT("icon"), wxART_FRAME_ICON));
+            f->SetIcons(GetIconBundle(wxT("icon"), wxART_FRAME_ICON));
     }
 
     SetupWindow(frame);

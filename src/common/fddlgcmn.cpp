@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        src/common/fdrepdlg.cpp
+// Name:        src/common/fddlgcmn.cpp
 // Purpose:     common parts of wxFindReplaceDialog implementations
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.08.01
-// RCS-ID:
+// RCS-ID:      $Id: fddlgcmn.cpp 67254 2011-03-20 00:14:35Z DS $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,11 +37,11 @@
 
 IMPLEMENT_DYNAMIC_CLASS(wxFindDialogEvent, wxCommandEvent)
 
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_FIND)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_FIND_NEXT)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_FIND_REPLACE)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_FIND_REPLACE_ALL)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_FIND_CLOSE)
+wxDEFINE_EVENT( wxEVT_COMMAND_FIND, wxFindDialogEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_FIND_NEXT, wxFindDialogEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_FIND_REPLACE, wxFindDialogEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_FIND_REPLACE_ALL, wxFindDialogEvent );
+wxDEFINE_EVENT( wxEVT_COMMAND_FIND_CLOSE, wxFindDialogEvent );
 
 // ============================================================================
 // implementations

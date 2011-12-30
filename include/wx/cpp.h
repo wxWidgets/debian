@@ -3,7 +3,7 @@
  *  Purpose:     Various preprocessor helpers
  *  Author:      Vadim Zeitlin
  *  Created:     2006-09-30
- *  RCS-ID:      $Id: cpp.h 42993 2006-11-03 21:06:57Z VZ $
+ *  RCS-ID:      $Id: cpp.h 66054 2010-11-07 13:16:20Z VZ $
  *  Copyright:   (c) 2006 Vadim Zeitlin <vadim@wxwindows.org>
  *  Licence:     wxWindows licence
  */
@@ -17,12 +17,26 @@
 #define wxCONCAT_HELPER(text, line) text ## line
 #define wxCONCAT(text, line)        wxCONCAT_HELPER(text, line)
 
+#define wxCONCAT3(x1, x2, x3) wxCONCAT(wxCONCAT(x1, x2), x3)
+#define wxCONCAT4(x1, x2, x3, x4) wxCONCAT(wxCONCAT3(x1, x2, x3), x4)
+#define wxCONCAT5(x1, x2, x3, x4, x5) wxCONCAT(wxCONCAT4(x1, x2, x3, x4), x5)
+
 /* wxSTRINGIZE works as the preprocessor # operator but also works with macros */
 #define wxSTRINGIZE_HELPER(x)       #x
 #define wxSTRINGIZE(x)              wxSTRINGIZE_HELPER(x)
 
 /* a Unicode-friendly version of wxSTRINGIZE_T */
 #define wxSTRINGIZE_T(x)            wxAPPLY_T(wxSTRINGIZE(x))
+
+/*
+    Special workarounds for compilers with broken "##" operator. For all the
+    other ones we can just use it directly.
+ */
+#ifdef wxCOMPILER_BROKEN_CONCAT_OPER
+    #define wxPREPEND_L(x)      L ## x
+    #define wxAPPEND_i64(x)     x ## i64
+    #define wxAPPEND_ui64(x)    x ## ui64
+#endif /* wxCOMPILER_BROKEN_CONCAT_OPER */
 
 /*
    Helper macros for wxMAKE_UNIQUE_NAME: normally this works by appending the
@@ -53,5 +67,27 @@
  */
 #define wxEMPTY_PARAMETER_VALUE /* Fake macro parameter value */
 
-#endif // _WX_CPP_H_
+/*
+    Define __WXFUNCTION__ which is like standard __FUNCTION__ but defined as
+    NULL for the compilers which don't support the latter.
+ */
+#ifndef __WXFUNCTION__
+    /* TODO: add more compilers supporting __FUNCTION__ */
+    #if defined(__DMC__)
+        /*
+           __FUNCTION__ happens to be not defined within class members
+           http://www.digitalmars.com/drn-bin/wwwnews?c%2B%2B.beta/485
+        */
+        #define __WXFUNCTION__ (NULL)
+    #elif defined(__GNUC__) || \
+          (defined(_MSC_VER) && _MSC_VER >= 1300) || \
+          defined(__FUNCTION__)
+        #define __WXFUNCTION__ __FUNCTION__
+    #else
+        /* still define __WXFUNCTION__ to avoid #ifdefs elsewhere */
+        #define __WXFUNCTION__ (NULL)
+    #endif
+#endif /* __WXFUNCTION__ already defined */
+
+#endif /* _WX_CPP_H_ */
 
