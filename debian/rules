@@ -72,8 +72,7 @@ wx_release_number       := $(shell sed -n 's/^wx_release_number=//p' configure.i
 wx_subrelease_number    := $(shell sed -n 's/^wx_subrelease_number=//p' configure.in)
 
 release := $(wx_major_version_number).$(wx_minor_version_number)
-# Override temporarily.
-release := 3.0
+pkg_release := $(release)
 
 so_cur := $(shell sed 's,<set var="WX_CURRENT">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
 so_age := $(shell sed 's,<set var="WX_AGE">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)

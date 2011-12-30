@@ -1,8 +1,6 @@
-wxwidgets3.0 (2.9.3.0-1) unstable; urgency=low
+wxwidgets2.9 (2.9.3.0-1) experimental; urgency=low
 
-  * New upstream development release.
-    + Make a start on packaging wx 2.9, so we're ready for wxwidgets3.0.
-      (Closes: #613431, #492896)
+  * New upstream development release. (Closes: #613431)
     + Update patches, and drop those which are no longer required:
       - fix-macro-namespace-pollution.patch
       - fix-wxcmdline-segv.patch
