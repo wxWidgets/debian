@@ -1,4 +1,4 @@
-wxwidgets3.0 (2.9.3.0-1) UNRELEASED; urgency=low
+wxwidgets3.0 (2.9.3.0-1) unstable; urgency=low
 
   * New upstream development release.
     + Make a start on packaging wx 2.9, so we're ready for wxwidgets3.0.
@@ -15,7 +15,7 @@ wxwidgets3.0 (2.9.3.0-1) UNRELEASED; urgency=low
   * debian/rules: Remove references to contrib/ subdirectory which has been
     removed from upstream sources.
 
- -- Olly Betts <olly@survex.com>  Fri, 30 Dec 2011 09:13:12 +0000
+ -- Olly Betts <olly@survex.com>  Fri, 30 Dec 2011 09:17:56 +0000
 
 wxwidgets2.8 (2.8.12.1-7) UNRELEASED; urgency=low
 
