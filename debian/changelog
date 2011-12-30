@@ -10,8 +10,9 @@ wxwidgets3.0 (2.9.3.0-1) UNRELEASED; urgency=low
       - wxjoystick-send-move-events
     + New patch add-missing-Makefile.in.patch to add in Makefile.in missing
       from upstream release.
+  * debian/rules: Set DEBIAN_WX_DEFAULT_VERSION=2.8.
 
- -- Olly Betts <olly@survex.com>  Fri, 30 Dec 2011 08:45:11 +0000
+ -- Olly Betts <olly@survex.com>  Fri, 30 Dec 2011 08:46:25 +0000
 
 wxwidgets2.8 (2.8.12.1-7) UNRELEASED; urgency=low
 
