@@ -9,7 +9,7 @@ wxwidgets2.8 (2.8.12.1-7) unstable; urgency=low
     documentation, documentation comments, and docstrings.
   * "debian/rules clean" now removes wxPython/build-options.cache.
 
- -- Olly Betts <olly@survex.com>  Mon, 09 Jan 2012 07:00:44 +0000
+ -- Olly Betts <olly@survex.com>  Mon, 09 Jan 2012 07:38:56 +0000
 
 wxwidgets2.8 (2.8.12.1-6) unstable; urgency=low
 
