@@ -624,7 +624,7 @@ build-msw-dbg-stamp: configure-msw-dbg-stamp
 
 clean-py:
 	cd wxPython && \
-	    rm -rf build*/ wx/*.py build_options.py src/wx.pth wx/build/build_options.py
+	    rm -rf build-options.cache build*/ wx/*.py build_options.py src/wx.pth wx/build/build_options.py
 
 	# What to do about src/__version__.py ???
 
