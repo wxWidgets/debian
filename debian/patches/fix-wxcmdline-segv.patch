@@ -1,5 +1,5 @@
 Description: Fix segfault in wxCmdLineParser::GetUsageString()
-Bug-Debian: 646654.
+Bug-Debian: http://bugs.debian.org/646654
 Author: Olly Betts <olly@survex.com>
 Forwarded: http://trac.wxwidgets.org/ticket/13731
 Last-Update: 2011-11-11

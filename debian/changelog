@@ -4,8 +4,9 @@ wxwidgets2.8 (2.8.12.1-7) UNRELEASED; urgency=low
     made non-executable as intended.
   * Add patch remove-refs-to-FPB_DEFAULT_STYLE.patch to fix warning upon
     refresh in XRCed.  (Closes: #654990)
+  * Fix syntax of "Bug-Debian" header in fix-wxcmdline-segv.patch.
 
- -- Olly Betts <olly@survex.com>  Mon, 09 Jan 2012 05:08:53 +0000
+ -- Olly Betts <olly@survex.com>  Mon, 09 Jan 2012 05:11:17 +0000
 
 wxwidgets2.8 (2.8.12.1-6) unstable; urgency=low
 
