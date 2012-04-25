@@ -1,8 +1,9 @@
 wxwidgets2.8 (2.8.12.1-8) unstable; urgency=low
 
   * New patch handle-positional-printf-arguments.patch.  (Closes: #631696)
+  * debian/patches/remove-refs-to-FPB_DEFAULT_STYLE.patch: Strip CR.
 
- -- Olly Betts <olly@survex.com>  Wed, 25 Apr 2012 00:15:18 +0000
+ -- Olly Betts <olly@survex.com>  Wed, 25 Apr 2012 01:25:08 +0000
 
 wxwidgets2.8 (2.8.12.1-7) unstable; urgency=low
 
