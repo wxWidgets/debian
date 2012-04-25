@@ -130,7 +130,7 @@ GTK_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --with-libjpeg=sys \
     --with-libpng=sys \
     --with-libtiff=sys \
-	--libdir=\$${exec_prefix}/lib/$(DEB_HOST_MULTIARCH)
+    --libdir=\$${exec_prefix}/lib/$(DEB_HOST_MULTIARCH)
 #   --enable-mediactrl \
 
 MSW_CONFIGURE_OPTIONS = \
