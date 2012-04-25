@@ -12,3 +12,4 @@ wxpython2.8-eliminate-string-exceptions.patch
 remove-refs-to-FPB_DEFAULT_STYLE.patch
 fix-more-typos.patch
 handle-positional-printf-arguments.patch
+de.po.patch
