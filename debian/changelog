@@ -1,3 +1,11 @@
+wxwidgets2.8 (2.8.12.1-9) unstable; urgency=low
+
+  * Switch to "3.0 (quilt)" to fix issues with patches not getting applied at
+    the right time, fixing FTBFS on buildds since they started to use
+    build-arch.  (Closes: #670447)
+
+ -- Olly Betts <olly@survex.com>  Thu, 26 Apr 2012 22:16:01 +0000
+
 wxwidgets2.8 (2.8.12.1-8) unstable; urgency=low
 
   * New patch handle-positional-printf-arguments.patch.  (Closes: #631696)

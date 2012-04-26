@@ -11,7 +11,6 @@ SHELL = /bin/bash
 #export DH_VERBOSE=1
 
 include /usr/share/python/python.mk
-include /usr/share/quilt/quilt.make
 export DH_OPTIONS
 
 # WXPYTHON_VERSION = $(shell dpkg-parsechangelog | sed -ne '/^Version: /s@Version: \(.*\)@\1@p')
@@ -377,7 +376,7 @@ build_all: control-files-stamp $(build_stamps_native)
 # let the -indep stuff fend for itself later.
 
 build: build-stamp build-arch
-build-stamp: $(QUILT_STAMPFN)
+build-stamp:
 
 
 # The wx2.6 build system makes us run around in circles to get a separate
@@ -633,7 +632,7 @@ clean-py:
 # it's not enough by itself to get the tree properly clean again.
 #		&& ./setup.py clean
 
-clean: debian/control clean-py unpatch
+clean: debian/control clean-py
 	dh_testdir
 	dh_testroot
 
