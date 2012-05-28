@@ -1,5 +1,6 @@
 wxwidgets2.8 (2.8.12.1-10) UNRELEASED; urgency=low
 
+  * Add patch bp-menubar-fix.patch to fix sizing of new menubar.  
   * Drop build-dependency on quilt, no longer used since -9.
 
  -- Olly Betts <olly@survex.com>  Thu, 24 May 2012 12:51:21 +0000
