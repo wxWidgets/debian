@@ -3,6 +3,8 @@ wxwidgets2.8 (2.8.12.1-10) UNRELEASED; urgency=low
   * Build-depends on libpng-dev instead of libpng12-dev.  (Closes: #662553)
   * Add patch bp-menubar-fix.patch to fix sizing of new menubar.  
   * Drop build-dependency on quilt, no longer used since -9.
+  * New patch desktop-files.patch which updates .desktop files to match the
+    current specification.
 
  -- Olly Betts <olly@survex.com>  Thu, 24 May 2012 12:51:21 +0000
 

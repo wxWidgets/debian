@@ -14,3 +14,4 @@ fix-more-typos.patch
 handle-positional-printf-arguments.patch
 de.po.patch
 bp-menubar-fix.patch
+desktop-files.patch
