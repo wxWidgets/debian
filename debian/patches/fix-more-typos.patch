@@ -1,6 +1,6 @@
 Description: Fix an assortment of typos
 Author: Olly Betts <olly@survex.com>
-Forwarded: no
+Forwarded: http://trac.wxwidgets.org/ticket/14346
 Last-Update: 2012-01-09
 
 --- a/contrib/include/wx/foldbar/captionbar.h
