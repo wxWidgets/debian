@@ -1,3 +1,9 @@
+wxwidgets2.8 (2.8.12.1-11) UNRELEASED; urgency=low
+
+  * Fix typo in package descriptions.
+
+ -- Olly Betts <olly@survex.com>  Tue, 29 May 2012 23:20:43 +0000
+
 wxwidgets2.8 (2.8.12.1-10) unstable; urgency=low
 
   * Build-depends on libpng-dev instead of libpng12-dev.  (Closes: #662553)

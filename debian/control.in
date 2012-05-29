@@ -23,7 +23,7 @@ Description: wxBase library (runtime) - non-GUI support classes of wxWidgets too
  wxBase is a collection of C++ classes providing basic data structures
  (strings, lists, arrays), powerful wxDateTime class for date manipulations,
  portable wrappers around many OS-specific functions allowing the same
- program to be work for all supported platforms, wxThread class for writing
+ program to work for all supported platforms, wxThread class for writing
  multithreaded programs, and much more.
  .
  wxBase currently supports the following platforms: Generic Unix (Linux,
@@ -42,7 +42,7 @@ Description: wxBase library (development) - non-GUI support classes of wxWidgets
  wxBase is a collection of C++ classes providing basic data structures
  (strings, lists, arrays), powerful wxDateTime class for date manipulations,
  portable wrappers around many OS-specific functions allowing the same
- program to be work for all supported platforms, wxThread class for writing
+ program to work for all supported platforms, wxThread class for writing
  multithreaded programs, and much more.
  .
  wxBase currently supports the following platforms: Generic Unix (Linux,
@@ -62,7 +62,7 @@ Description: wxBase library (debug) - non-GUI support classes of wxWidgets toolk
  wxBase is a collection of C++ classes providing basic data structures
  (strings, lists, arrays), powerful wxDateTime class for date manipulations,
  portable wrappers around many OS-specific functions allowing the same
- program to be work for all supported platforms, wxThread class for writing
+ program to work for all supported platforms, wxThread class for writing
  multithreaded programs, and much more.
  .
  wxBase currently supports the following platforms: Generic Unix (Linux,
