@@ -1,5 +1,6 @@
 wxwidgets2.8 (2.8.12.1-11) UNRELEASED; urgency=low
 
+  * New patch ico-saving-buffer-overrun.patch, backported from upstream SVN.
   * Fix typo in package descriptions.
 
  -- Olly Betts <olly@survex.com>  Tue, 29 May 2012 23:20:43 +0000

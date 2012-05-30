@@ -15,3 +15,4 @@ handle-positional-printf-arguments.patch
 de.po.patch
 bp-menubar-fix.patch
 desktop-files.patch
+ico-saving-buffer-overrun.patch
