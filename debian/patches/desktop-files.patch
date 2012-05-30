@@ -1,6 +1,7 @@
 Description: Update .desktop files to match current specification
 Author: Olly Betts <olly@survex.com>
 Forwarded: http://trac.wxwidgets.org/ticket/14345
+Applied-Upstream: http://trac.wxwidgets.org/changeset/71590 (2.9.4)
 Last-Update: 2012-05-28
 
 Index: wx/wxPython/distrib/PyAlaMode.desktop
