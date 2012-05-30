@@ -17,3 +17,4 @@ bp-menubar-fix.patch
 desktop-files.patch
 ico-saving-buffer-overrun.patch
 richtextxml-fix.patch
+it.po.patch
