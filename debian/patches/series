@@ -19,3 +19,4 @@ ico-saving-buffer-overrun.patch
 richtextxml-fix.patch
 it.po.patch
 hu.po.patch
+slider-label-update.patch

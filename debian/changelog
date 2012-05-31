@@ -2,6 +2,7 @@ wxwidgets2.8 (2.8.12.1-11) UNRELEASED; urgency=low
 
   * New patch ico-saving-buffer-overrun.patch, backported from upstream SVN.
   * New patch richtextxml-fix.patch, backported from upstream SVN.
+  * New patch slider-label-update.patch, backported from upstream SVN.
   * New patch it.po.patch, backported from upstream SVN.
   * New patch hu.po.patch, backported from upstream SVN.
   * Add Tamil and Arabic i18n, backported from upstream SVN.
