@@ -5,8 +5,8 @@ Last-Update: 2012-05-31
 
 Index: wxWidgets/branches/WX_2_8_BRANCH/src/richtext/richtextxml.cpp
 ===================================================================
---- branches/WX_2_8_BRANCH/src/richtext/richtextxml.cpp (revision 67247)
-+++ branches/WX_2_8_BRANCH/src/richtext/richtextxml.cpp (revision 67390)
+--- a/src/richtext/richtextxml.cpp (revision 67247)
++++ b/src/richtext/richtextxml.cpp (revision 67390)
 @@ -862,12 +862,12 @@
  
      wxString baseStyle = def->GetBaseStyle();

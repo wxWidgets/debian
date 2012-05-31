@@ -5,8 +5,8 @@ Last-Update: 2012-05-31
 
 Index: wxWidgets/branches/WX_2_8_BRANCH/src/common/imagbmp.cpp
 ===================================================================
---- branches/WX_2_8_BRANCH/src/common/imagbmp.cpp (revision 54942)
-+++ branches/WX_2_8_BRANCH/src/common/imagbmp.cpp (revision 67297)
+--- a/src/common/imagbmp.cpp (revision 54942)
++++ b/src/common/imagbmp.cpp (revision 67297)
 @@ -137,6 +137,6 @@
  
      unsigned width = image->GetWidth();
@@ -18,8 +18,8 @@ Index: wxWidgets/branches/WX_2_8_BRANCH/src/common/imagbmp.cpp
      struct
 Index: wxWidgets/branches/WX_2_8_BRANCH/docs/changes.txt
 ===================================================================
---- branches/WX_2_8_BRANCH/docs/changes.txt (revision 67259)
-+++ branches/WX_2_8_BRANCH/docs/changes.txt (revision 67297)
+--- a/docs/changes.txt (revision 67259)
++++ b/docs/changes.txt (revision 67297)
 @@ -132,4 +132,5 @@
  - Fixed compilation with libpng 1.5 and above.
  - Removed ugly black (simple) border around wxHTML help window.
