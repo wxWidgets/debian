@@ -16,13 +16,3 @@ Index: wxWidgets/branches/WX_2_8_BRANCH/src/common/imagbmp.cpp
 +    unsigned row_width = (width * bpp + 7) / 8 + row_padding; // # of bytes per row
  
      struct
-Index: wxWidgets/branches/WX_2_8_BRANCH/docs/changes.txt
-===================================================================
---- a/docs/changes.txt (revision 67259)
-+++ b/docs/changes.txt (revision 67297)
-@@ -132,4 +132,5 @@
- - Fixed compilation with libpng 1.5 and above.
- - Removed ugly black (simple) border around wxHTML help window.
-+- Fixed buffer overrun when saving ICO image with a width that's not a multiple of 4.
- 
- wxMSW:
