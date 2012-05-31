@@ -2,6 +2,7 @@ Description: Fix segfault in wxCmdLineParser::GetUsageString()
 Bug-Debian: http://bugs.debian.org/646654
 Author: Olly Betts <olly@survex.com>
 Forwarded: http://trac.wxwidgets.org/ticket/13731
+Applied-Upstream: http://trac.wxwidgets.org/changeset/69979
 Last-Update: 2011-11-11
 
 diff --git a/src/common/cmdline.cpp b/src/common/cmdline.cpp
