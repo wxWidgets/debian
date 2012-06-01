@@ -1,6 +1,9 @@
-wxwidgets2.8 (2.8.12.1-11) UNRELEASED; urgency=low
+wxwidgets2.8 (2.8.12.1-11) unstable; urgency=low
 
-  * Backport several simple but useful patches from upstream 2.8 SVN branch:
+  * It looks like upstream may not make another 2.8 release, and if they do
+    it's unlikely to happen before the freeze, so backport several simple but
+    useful patches from upstream's 2.8 SVN branch:
+
     + ico-saving-buffer-overrun.patch
     + richtextxml-fix.patch
     + slider-label-update.patch
@@ -12,9 +15,10 @@ wxwidgets2.8 (2.8.12.1-11) UNRELEASED; urgency=low
     + wxdatetime-chained.patch (Closes: #242737)
     + Update Italian and Hungarian i18n.
     + Add Tamil and Arabic i18n.
+
   * Fix typo in package descriptions.
 
- -- Olly Betts <olly@survex.com>  Tue, 29 May 2012 23:20:43 +0000
+ -- Olly Betts <olly@survex.com>  Fri, 01 Jun 2012 05:08:47 +0000
 
 wxwidgets2.8 (2.8.12.1-10) unstable; urgency=low
 
