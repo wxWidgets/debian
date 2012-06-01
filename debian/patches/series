@@ -22,3 +22,4 @@ hu.po.patch
 slider-label-update.patch
 wxclipboard-getdata.patch
 wxvlistboxcombopopup-wxcbsort.patch
+wxstatictext-rtl-alignright.patch

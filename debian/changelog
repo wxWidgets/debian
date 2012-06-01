@@ -5,6 +5,7 @@ wxwidgets2.8 (2.8.12.1-11) UNRELEASED; urgency=low
   * New patch slider-label-update.patch, backported from upstream SVN.
   * New patch wxclipboard-getdata.patch, backported from upstream SVN.
   * New patch wxvlistboxcombopopup-wxcbsort.patch, backported from upstream SVN.
+  * New patch wxstatictext-rtl-alignright.patch, backported from upstream SVN.
   * New patch it.po.patch, backported from upstream SVN.
   * New patch hu.po.patch, backported from upstream SVN.
   * Add Tamil and Arabic i18n, backported from upstream SVN.
