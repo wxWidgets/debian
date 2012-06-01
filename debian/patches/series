@@ -21,3 +21,4 @@ it.po.patch
 hu.po.patch
 slider-label-update.patch
 wxclipboard-getdata.patch
+wxvlistboxcombopopup-wxcbsort.patch
