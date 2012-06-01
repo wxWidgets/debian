@@ -9,6 +9,7 @@ wxwidgets2.8 (2.8.12.1-11) UNRELEASED; urgency=low
     + wxstatictext-rtl-alignright.patch
     + improve-bmp-decoding.patch
     + fix-aui-dock-crash.patch
+    + wxdatetime-chained.patch (Closes: #242737)
     + Update Italian and Hungarian i18n.
     + Add Tamil and Arabic i18n.
   * Fix typo in package descriptions.

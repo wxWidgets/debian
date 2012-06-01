@@ -25,3 +25,4 @@ wxvlistboxcombopopup-wxcbsort.patch
 wxstatictext-rtl-alignright.patch
 improve-bmp-decoding.patch
 fix-aui-dock-crash.patch
+wxdatetime-chained.patch
