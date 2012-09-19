@@ -1,3 +1,11 @@
+wxwidgets2.8 (2.8.12.1-12) unstable; urgency=low
+
+  * Make python-wxversion conflict with python-wxgtk2.8 (<< 2.8.12.1-1~) to
+    guarantee upgrade ordering when moving from pycentral to dh_python2.
+    (Closes: #684150)
+
+ -- Olly Betts <olly@survex.com>  Wed, 19 Sep 2012 00:37:03 +0000
+
 wxwidgets2.8 (2.8.12.1-11) unstable; urgency=low
 
   * It looks like upstream may not make another 2.8 release, and if they do
