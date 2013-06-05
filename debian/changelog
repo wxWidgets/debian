@@ -6,6 +6,8 @@ wxwidgets2.8 (2.8.12.1-13) UNRELEASED; urgency=low
   * Allow img2py to work with an X display (new patch
     img2py-no-display.patch from Nicolas Boulenguez).  (Closes: #698198)
   * Standards-Version: 3.9.4 (no changes required).
+  * Update debhelper compatibility level from 7 to 9, to enable hardening
+    flags.
 
  -- Olly Betts <olly@survex.com>  Wed, 05 Jun 2013 10:32:54 +0000
 
