@@ -1,3 +1,11 @@
+wxwidgets2.8 (2.8.12.1-13) UNRELEASED; urgency=low
+
+  * We don't actually use pangox, so don't test for it (new patch
+    dont-check-for-pangox.patch from Emilio Pozuelo Monfort).
+    (Closes: #701836)
+
+ -- Olly Betts <olly@survex.com>  Wed, 05 Jun 2013 10:32:54 +0000
+
 wxwidgets2.8 (2.8.12.1-12) unstable; urgency=low
 
   * Make python-wxversion conflict with python-wxgtk2.8 (<< 2.8.12.1-1~) to

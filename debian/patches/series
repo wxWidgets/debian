@@ -26,3 +26,4 @@ wxstatictext-rtl-alignright.patch
 improve-bmp-decoding.patch
 fix-aui-dock-crash.patch
 wxdatetime-chained.patch
+dont-check-for-pangox.patch
