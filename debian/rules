@@ -103,12 +103,13 @@ config_cache_cross = ../config_deb_cross.cache
 
 
 # build options
-COMMON_CONFIGURE_OPTIONS = \
+COMMON_CONFIGURE_OPTIONS := \
     --prefix=/usr \
     --cache-file=$(config_cache) \
     --with-flavour=$(DEBIAN_WXFLAVOUR) \
     --with-zlib=sys \
-    --with-expat=sys
+    --with-expat=sys \
+    $(shell dpkg-buildflags --export=configure)
 
 ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 COMMON_CONFIGURE_OPTIONS += --disable-optimise

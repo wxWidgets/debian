@@ -1,0 +1,119 @@
+Description: Don't check for pangox, it's not needed.
+Bug-Debian: http://bugs.debian.org/701836
+Author: Emilio Pozuelo Monfort <pochu@debian.org>
+
+Index: wx/configure.in
+===================================================================
+--- wx.orig/configure.in	2013-06-05 22:31:18.968042669 +1200
++++ wx/configure.in	2013-06-05 22:31:21.620042851 +1200
+@@ -3727,16 +3727,6 @@
+         if test "$wxUSE_UNICODE" = "yes"; then
+             PKG_PROG_PKG_CONFIG()
+ 
+-            PKG_CHECK_MODULES(PANGOX, pangox,
+-                [
+-                    CFLAGS="$PANGOX_CFLAGS $CFLAGS"
+-                    CXXFLAGS="$PANGOX_CFLAGS $CXXFLAGS"
+-                    GUI_TK_LIBRARY="$GUI_TK_LIBRARY $PANGOX_LIBS"
+-                ],
+-                [
+-                    AC_MSG_ERROR([pangox library not found, library cannot be compiled in Unicode mode])
+-                ]
+-            )
+             PKG_CHECK_MODULES(PANGOFT2, pangoft2,
+                 [
+                     CFLAGS="$PANGOFT2_CFLAGS $CFLAGS"
+Index: wx/configure
+===================================================================
+--- wx.orig/configure	2013-06-05 22:31:18.976042950 +1200
++++ wx/configure	2013-06-05 22:31:21.636042850 +1200
+@@ -31236,89 +31236,6 @@
+ 
+ 
+ pkg_failed=no
+-echo "$as_me:$LINENO: checking for PANGOX" >&5
+-echo $ECHO_N "checking for PANGOX... $ECHO_C" >&6
+-
+-if test -n "$PKG_CONFIG"; then
+-    if test -n "$PANGOX_CFLAGS"; then
+-        pkg_cv_PANGOX_CFLAGS="$PANGOX_CFLAGS"
+-    else
+-        if test -n "$PKG_CONFIG" && \
+-    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"pangox\"") >&5
+-  ($PKG_CONFIG --exists --print-errors "pangox") 2>&5
+-  ac_status=$?
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); }; then
+-  pkg_cv_PANGOX_CFLAGS=`$PKG_CONFIG --cflags "pangox" 2>/dev/null`
+-else
+-  pkg_failed=yes
+-fi
+-    fi
+-else
+-	pkg_failed=untried
+-fi
+-if test -n "$PKG_CONFIG"; then
+-    if test -n "$PANGOX_LIBS"; then
+-        pkg_cv_PANGOX_LIBS="$PANGOX_LIBS"
+-    else
+-        if test -n "$PKG_CONFIG" && \
+-    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"pangox\"") >&5
+-  ($PKG_CONFIG --exists --print-errors "pangox") 2>&5
+-  ac_status=$?
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); }; then
+-  pkg_cv_PANGOX_LIBS=`$PKG_CONFIG --libs "pangox" 2>/dev/null`
+-else
+-  pkg_failed=yes
+-fi
+-    fi
+-else
+-	pkg_failed=untried
+-fi
+-
+-
+-
+-if test $pkg_failed = yes; then
+-
+-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+-        _pkg_short_errors_supported=yes
+-else
+-        _pkg_short_errors_supported=no
+-fi
+-        if test $_pkg_short_errors_supported = yes; then
+-	        PANGOX_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "pangox"`
+-        else
+-	        PANGOX_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "pangox"`
+-        fi
+-	# Put the nasty error message in config.log where it belongs
+-	echo "$PANGOX_PKG_ERRORS" >&5
+-
+-
+-                    { { echo "$as_me:$LINENO: error: pangox library not found, library cannot be compiled in Unicode mode" >&5
+-echo "$as_me: error: pangox library not found, library cannot be compiled in Unicode mode" >&2;}
+-   { (exit 1); exit 1; }; }
+-
+-
+-elif test $pkg_failed = untried; then
+-
+-                    { { echo "$as_me:$LINENO: error: pangox library not found, library cannot be compiled in Unicode mode" >&5
+-echo "$as_me: error: pangox library not found, library cannot be compiled in Unicode mode" >&2;}
+-   { (exit 1); exit 1; }; }
+-
+-
+-else
+-	PANGOX_CFLAGS=$pkg_cv_PANGOX_CFLAGS
+-	PANGOX_LIBS=$pkg_cv_PANGOX_LIBS
+-        echo "$as_me:$LINENO: result: yes" >&5
+-echo "${ECHO_T}yes" >&6
+-
+-                    CFLAGS="$PANGOX_CFLAGS $CFLAGS"
+-                    CXXFLAGS="$PANGOX_CFLAGS $CXXFLAGS"
+-                    GUI_TK_LIBRARY="$GUI_TK_LIBRARY $PANGOX_LIBS"
+-
+-fi
+-
+-pkg_failed=no
+ echo "$as_me:$LINENO: checking for PANGOFT2" >&5
+ echo $ECHO_N "checking for PANGOFT2... $ECHO_C" >&6
+ 

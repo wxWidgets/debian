@@ -7,12 +7,12 @@ wxwidgets2.8 (2.8.12.1-13) unstable; urgency=low
     img2py-no-display.patch from Nicolas Boulenguez).  (Closes: #698198)
   * Build --without-gnomeprint.  (Closes: #644571)
   * Update B-D from libtiff4-dev to libtiff5-dev.
+  * Enable hardening flags.
   * Standards-Version: 3.9.4 (no changes required).
-  * Update debhelper compatibility level from 7 to 9, to enable hardening
-    flags.
+  * Update debhelper compatibility level from 7 to 9.
   * Fix vcs-field-not-canonical lintian warning by updating VCS URLs.
 
- -- Olly Betts <olly@survex.com>  Sat, 08 Jun 2013 13:31:45 +0000
+ -- Olly Betts <olly@survex.com>  Sat, 08 Jun 2013 14:32:05 +0000
 
 wxwidgets2.8 (2.8.12.1-12) unstable; urgency=low
 
