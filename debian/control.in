@@ -5,8 +5,7 @@ Build-Depends: debhelper (>= 9), gettext, libgtk2.0-dev,
  python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~), python-all-dbg (>= 2.6.6-3~),
  zlib1g-dev, libjpeg-dev, libpng-dev, libtiff5-dev, libsm-dev,
  libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libesd0-dev,
- autotools-dev, libexpat1-dev, dpkg-dev (>= 1.16.1~),
- binutils (>= 2.19.51.20090827) | binutils (<= 2.18.1~cvs20080103-7)
+ autotools-dev, libexpat1-dev, dpkg-dev (>= 1.16.1~)
 Maintainer: wxWidgets Maintainers <freewx-maint@lists.alioth.debian.org>
 Uploaders: Ryan Niebur <ryan@debian.org>, Ron Lee <ron@debian.org>, Olly Betts <olly@survex.com>
 Standards-Version: 3.9.4
@@ -156,7 +155,7 @@ Homepage: http://www.wxpython.org/
 Architecture: all
 Section: python
 Depends: ${python:Depends}, ${misc:Depends}
-Conflicts: wxpython2.6-0, python-wxgtk2.6 (<< 2.6.3.2.2-2), python-wxgtk2.4 (<< 2.4.5.1.2), python-wxgtk2.8 (<< 2.8.12.1-1~)
+Conflicts: wxpython2.6-0, python-wxgtk2.6 (<< 2.6.3.2.2-2), python-wxgtk2.8 (<< 2.8.12.1-1~)
 Replaces: wxpython2.6-0
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython version selector)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
@@ -171,7 +170,7 @@ Architecture: all
 Section: python
 Depends: python-wxgtk=V=U, ${python:Depends}, ${misc:Depends}
 Conflicts: wxpython2.6-0
-Replaces: wxpython2.6-0, libwxgtk2.4-python, wxpython2.4-1
+Replaces: wxpython2.6-0
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython common files)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -184,7 +183,7 @@ Architecture: any
 Section: devel
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Conflicts: wx2.6-common
-Replaces: wxwin2.4-headers, libwxgtk2.4-contrib-dev, wx2.6-common
+Replaces: wx2.6-common
 Description: wxWidgets Cross-platform C++ GUI toolkit (common support files)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -209,8 +208,8 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (header files)
 Package: wx=V-i18n
 Architecture: all
 Depends: ${misc:Depends}
-Conflicts: wx-i18n, wxwin-i18n, wx2.4-i18n
-Replaces: wx-i18n, wxwin-i18n, wx2.4-i18n, wx2.5-i18n
+Conflicts: wx-i18n
+Replaces: wx-i18n
 Provides: wx-i18n
 Section: localization
 Description: wxWidgets Cross-platform C++ GUI toolkit (i18n support)
