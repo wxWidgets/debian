@@ -5,7 +5,7 @@ Build-Depends: debhelper (>= 9), gettext, libgtk2.0-dev,
  python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~), python-all-dbg (>= 2.6.6-3~),
  zlib1g-dev, libjpeg-dev, libpng-dev, libtiff4-dev, libsm-dev,
  libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libesd0-dev,
- libgnomeprintui2.2-dev, autotools-dev, libexpat1-dev,
+ autotools-dev, libexpat1-dev,
  binutils (>= 2.19.51.20090827) | binutils (<= 2.18.1~cvs20080103-7)
 Maintainer: wxWidgets Maintainers <freewx-maint@lists.alioth.debian.org>
 Uploaders: Ryan Niebur <ryan@debian.org>, Ron Lee <ron@debian.org>, Olly Betts <olly@survex.com>
@@ -78,7 +78,6 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Multi-Arch: same
-Suggests: libgnomeprintui2.2-0
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ runtime)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
