@@ -1,5 +1,7 @@
-wxwidgets2.8 (2.8.12.1-14) UNRELEASED; urgency=low
+wxwidgets2.8 (2.8.12.1-14) unstable; urgency=low
 
+  * Apply patch from Fabrice Coutadeur to enable wxmediactrl.
+    (Closes: #588104)
   * debian/control.in: Remove errant backquote.  (Closes: #713866)
 
  -- Olly Betts <olly@survex.com>  Sat, 06 Jul 2013 15:34:45 +1200

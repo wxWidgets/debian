@@ -131,8 +131,8 @@ GTK_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --with-libjpeg=sys \
     --with-libpng=sys \
     --with-libtiff=sys \
+    --enable-mediactrl \
     --libdir=\$${exec_prefix}/lib/$(DEB_HOST_MULTIARCH)
-#   --enable-mediactrl \
 
 MSW_CONFIGURE_OPTIONS = \
     --with-msw \
@@ -176,8 +176,9 @@ package_gtk_lib         := libwxgtk$(sorelease)$(unicode_suffix)
 package_gtk_dev         := libwxgtk$(release)$(unicode_suffix)-dev
 package_gtk_dbg         := libwxgtk$(release)$(unicode_suffix)-dbg
 
-
-
+package_gtkmedia_lib         := libwxgtk-media$(sorelease)$(unicode_suffix)
+package_gtkmedia_dev         := libwxgtk-media$(release)$(unicode_suffix)-dev
+package_gtkmedia_dbg         := libwxgtk-media$(release)$(unicode_suffix)-dbg
 
 package_gtk_py_lib      := python-wxgtk$(release)$(unicode_suffix)
 package_gtk_py_ver       = python-wxversion
@@ -261,6 +262,8 @@ build_stamps := $(build_stamps_native) $(build_cross_stamps)
 # Install targets:
 install_all_arch = install-wxbase-lib install-wxbase-dev install-wxbase-dbg  \
                    install-gtk-lib install-gtk-dev install-gtk-dbg        \
+		   install-gtkmedia-lib install-gtkmedia-dev \
+                   install-gtkmedia-dbg \
                    install-headers install-i18n            \
                    install-gtk-py install-gtk-dbg-py
 
@@ -711,7 +714,7 @@ install-gtk-lib: install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
-	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*.so.*	usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -X_media $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*.so.*	usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_installdirs usr/share/lintian/overrides
 	grep ^$(package_gtk_lib): debian/lintian-override > debian/$(package_gtk_lib)/usr/share/lintian/overrides/$(package_gtk_lib)
 
@@ -720,8 +723,8 @@ install-gtk-dev: install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
-	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*.so	usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/wx/include	usr/lib/$(DEB_HOST_MULTIARCH)/wx
+	dh_install -X_media $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*.so	usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -Xmediactrl $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/wx/include	usr/lib/$(DEB_HOST_MULTIARCH)/wx
 	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/wx/config/gtk*	usr/lib/$(DEB_HOST_MULTIARCH)/wx/config
 
 install-gtk-dbg: DH_OPTIONS=-p$(package_gtk_dbg)
@@ -729,12 +732,36 @@ install-gtk-dbg: build-gtk-debug-stamp build-gtk-debug-contrib-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
-	dh_install $(objdir_gtk_debug)/lib/libwx_gtk*		usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -X_media $(objdir_gtk_debug)/lib/libwx_gtk*		usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install $(objdir_gtk_debug)/lib/wx/include		usr/lib/$(DEB_HOST_MULTIARCH)/wx
 	dh_install $(objdir_gtk_debug)/lib/wx/config/gtk*	usr/lib/$(DEB_HOST_MULTIARCH)/wx/config
 	dh_installdirs usr/share/lintian/overrides
 	grep ^$(package_gtk_dbg): debian/lintian-override > debian/$(package_gtk_dbg)/usr/share/lintian/overrides/$(package_gtk_dbg)
 
+install-gtkmedia-lib: DH_OPTIONS=-p$(package_gtkmedia_lib)
+install-gtkmedia-lib: install-gtk-shared-stamp
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*media*.so.*	usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_installdirs usr/share/lintian/overrides
+	grep ^$(package_gtkmedia_lib): debian/lintian-override > debian/$(package_gtkmedia_lib)/usr/share/lintian/overrides/$(package_gtkmedia_lib)
+
+install-gtkmedia-dev: DH_OPTIONS=-p$(package_gtkmedia_dev)
+install-gtkmedia-dev: install-gtk-shared-stamp
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*media*.so	usr/lib/$(DEB_HOST_MULTIARCH)
+
+install-gtkmedia-dbg: DH_OPTIONS=-p$(package_gtkmedia_dbg)
+install-gtkmedia-dbg: build-gtk-debug-stamp build-gtk-debug-contrib-stamp
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_install $(objdir_gtk_debug)/lib/libwx_gtk*media*	usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_installdirs usr/share/lintian/overrides
+	grep ^$(package_gtkmedia_dbg): debian/lintian-override > debian/$(package_gtkmedia_dbg)/usr/share/lintian/overrides/$(package_gtkmedia_dbg)
 
 install-gtk-py-lib: DH_OPTIONS=-p$(package_gtk_py_lib)
 install-gtk-py-lib: install-gtk-py-lib-pre $(PYVERS:%=install-gtk-pylib%)
@@ -1013,7 +1040,7 @@ ifneq ($(DH_OPTIONS),-p$(package_gtk_dbg_py))
 endif
 
 	dh_installdeb
-	dh_shlibdeps -ldebian/$(package_wxbase_lib)/usr/lib:debian/$(package_wxbase_dbg)/usr/lib:debian/$(package_gtk_lib)/usr/lib:debian/$(package_gtk_dbg)/usr/lib
+	dh_shlibdeps -ldebian/$(package_wxbase_lib)/usr/lib:debian/$(package_wxbase_dbg)/usr/lib:debian/$(package_gtk_lib)/usr/lib:debian/$(package_gtk_dbg)/usr/lib:debian/$(package_gtkmedia_lib):debian/$(package_gtkmedia_dbg)
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
@@ -1066,15 +1093,15 @@ binary-dbg-py: control-files-stamp install-gtk-dbg-py
 DH_OPTIONS_GTK := -p$(package_wxbase_lib) -p$(package_gtk_lib) -p$(package_headers)
 
 # libwxgtk shared lib package
-binary-gtk: control-files-stamp install-gtk-lib install-wxbase-lib install-headers
+binary-gtk: control-files-stamp install-gtk-lib install-wxbase-lib install-headers install-gtkmedia-lib
 	$(MAKE) -f debian/rules DH_OPTIONS="$(DH_OPTIONS_GTK)" binary-common
 
-binary-gtk-dev: control-files-stamp install-gtk-dev install-wxbase-dev install-headers
+binary-gtk-dev: control-files-stamp install-gtk-dev install-gtkmedia-dev install-wxbase-dev install-headers
 	$(MAKE) -f debian/rules \
-	    DH_OPTIONS="-p$(package_wxbase_dev) -p$(package_gtk_dev) $(DH_OPTIONS_GTK)" \
+	    DH_OPTIONS="-p$(package_wxbase_dev) -p$(package_gtk_dev) -p$(package_gtkmedia_dev) $(DH_OPTIONS_GTK)" \
 	    binary-common
 
-binary-gtk-dbg: control-files-stamp install-gtk-dbg install-wxbase-dbg install-headers
+binary-gtk-dbg: control-files-stamp install-gtk-dbg install-wxbase-dbg install-headers install-gtkmedia-dbg
 	$(MAKE) -f debian/rules \
 	    DH_OPTIONS="-p$(package_wxbase_dbg) -p$(package_gtk_dbg) -p$(package_headers)" \
 	    binary-common
@@ -1094,6 +1121,7 @@ binary-fast:control-files-stamp install-gtk-dbg install-msw-dev install-headers 
 	binary-doc binary-cross binary-dbg-py				\
 	install install_arch install-gtk-lib install-gtk-dev		\
 	install-gtk-dbg							\
+	install-gtkmedia-lib install-gtkmedia-dbg install-gtkmedia-dev	\
 	install-gtk-py install-gtk-py-tools install-gtk-py-ver		\
 	install-gtk-py-lib install-gtk-dbg-py				\
 	install-common install-headers install-i18n install-doc         \

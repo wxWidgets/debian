@@ -4,3 +4,6 @@ libwxbase=SOV=U: package-name-doesnt-match-sonames
 libwxgtk=V=U-dbg: non-dev-pkg-with-shlib-symlink
 libwxgtk=V=U-dbg: package-name-doesnt-match-sonames
 libwxgtk=SOV=U: package-name-doesnt-match-sonames
+libwxgtk-media=V=U-dbg: non-dev-pkg-with-shlib-symlink
+libwxgtk-media=V=U-dbg: package-name-doesnt-match-sonames
+libwxgtk-media=SOV=U: package-name-doesnt-match-sonames

@@ -28,3 +28,4 @@ fix-aui-dock-crash.patch
 wxdatetime-chained.patch
 dont-check-for-pangox.patch
 img2py-no-display.patch
+disable_media_python.patch
