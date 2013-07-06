@@ -1,3 +1,9 @@
+wxwidgets2.8 (2.8.12.1-14) UNRELEASED; urgency=low
+
+  * debian/control.in: Remove errant backquote.  (Closes: #713866)
+
+ -- Olly Betts <olly@survex.com>  Sat, 06 Jul 2013 15:34:45 +1200
+
 wxwidgets2.8 (2.8.12.1-13) unstable; urgency=low
 
   * We don't actually use pangox, so don't test for it (new patch

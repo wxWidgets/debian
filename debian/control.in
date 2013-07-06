@@ -10,7 +10,7 @@ Maintainer: wxWidgets Maintainers <freewx-maint@lists.alioth.debian.org>
 Uploaders: Ryan Niebur <ryan@debian.org>, Ron Lee <ron@debian.org>, Olly Betts <olly@survex.com>
 Standards-Version: 3.9.4
 Vcs-Git: git://anonscm.debian.org/freewx/wx.git
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=freewx/wx.git`
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=freewx/wx.git
 Homepage: http://www.wxwidgets.org/
 
 Package: libwxbase=SOV=U
