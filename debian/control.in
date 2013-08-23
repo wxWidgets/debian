@@ -124,7 +124,7 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Multi-Arch: same
-Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ runtime)
+Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ media library runtime)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
  unpopular ones as well).  For more information see http://wxwidgets.org
@@ -138,7 +138,7 @@ Pre-Depends: ${misc:Pre-Depends}
 Section: debug
 Priority: extra
 Depends: ${shlibs:Depends}, wx=V-headers (= ${binary:Version}), libwxgtk=V=U-dbg (= ${binary:Version}), ${misc:Depends}
-Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ debug)
+Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ media library debug)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
  unpopular ones as well).
@@ -153,7 +153,7 @@ Architecture: any
 Section: libdevel
 Depends: wx-common, wx=V-headers (= ${binary:Version}), libwxgtk-media=SOV=U (= ${binary:Version}), libwxgtk=V=U-dev (= ${binary:Version}), ${misc:Depends}
 Suggests: wx=V-doc, libstdc++-dev, gettext, libgl1-mesa-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
-Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
+Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ media library development)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
  unpopular ones as well).

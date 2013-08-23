@@ -5,6 +5,7 @@ wxwidgets2.8 (2.8.12.1-15) UNRELEASED; urgency=low
     (Closes: #719086)
   * Don't mark -dbg packages as "Multi-Arch: same" - they depend on
     wx2.8-headers, which isn't multi-arch, so they can't be parallel installed.
+  * Improve short descriptions of libwxgtk-media* packages.
 
  -- Olly Betts <olly@survex.com>  Sat, 24 Aug 2013 05:08:36 +1200
 
