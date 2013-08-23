@@ -2,9 +2,11 @@ wxwidgets2.8 (2.8.12.1-14) unstable; urgency=low
 
   * Apply patch from Fabrice Coutadeur to enable wxmediactrl.
     (Closes: #588104)
+  * New patch wx-2.8.12-print-ps-in-latin1-locale-segv-v2.patch
+    (Closes: #702378)
   * debian/control.in: Remove errant backquote.  (Closes: #713866)
 
- -- Olly Betts <olly@survex.com>  Sat, 06 Jul 2013 15:34:45 +1200
+ -- Olly Betts <olly@survex.com>  Fri, 12 Jul 2013 22:47:48 +1200
 
 wxwidgets2.8 (2.8.12.1-13) unstable; urgency=low
 
