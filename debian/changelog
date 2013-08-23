@@ -23,8 +23,8 @@ wxwidgets2.8 (2.8.12.1-13) unstable; urgency=low
     img2py-no-display.patch from Nicolas Boulenguez).  (Closes: #698198)
   * Build --without-gnomeprint.  (Closes: #644571)
   * Update B-D from libtiff4-dev to libtiff5-dev.
-  * Enable hardening flags, except for wxPython for which we need a way to get the
-    extra compiler flags through setup.py.
+  * Enable hardening flags, except for wxPython for which we need a way to get
+    the extra compiler flags through setup.py.
   * Drop 'Conflicts' and 'Replaces' on wx 2.4 and 2.5 packages, and versioned
     'Build-Depends' relating to pre-squeeze versions.
   * Standards-Version: 3.9.4 (no changes required).
