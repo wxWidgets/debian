@@ -226,6 +226,7 @@ Package: wx-common
 Architecture: any
 Section: devel
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: zip
 Conflicts: wx2.6-common
 Replaces: wx2.6-common
 Description: wxWidgets Cross-platform C++ GUI toolkit (common support files)

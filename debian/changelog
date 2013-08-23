@@ -1,3 +1,9 @@
+wxwidgets2.8 (2.8.12.1-15) UNRELEASED; urgency=low
+
+  * wx-common now "Recommends: zip".  (Closes: #717857)
+
+ -- Olly Betts <olly@survex.com>  Sat, 24 Aug 2013 05:08:36 +1200
+
 wxwidgets2.8 (2.8.12.1-14) unstable; urgency=low
 
   * Apply patch from Fabrice Coutadeur to enable wxmediactrl.
