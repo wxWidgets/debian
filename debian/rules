@@ -714,7 +714,7 @@ install-gtk-lib: install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
-	dh_install -X_media $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*.so.*	usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -Xmedia $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*.so.*	usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_installdirs usr/share/lintian/overrides
 	grep ^$(package_gtk_lib): debian/lintian-override > debian/$(package_gtk_lib)/usr/share/lintian/overrides/$(package_gtk_lib)
 
@@ -723,7 +723,7 @@ install-gtk-dev: install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
-	dh_install -X_media $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*.so	usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -Xmedia $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*.so	usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -Xmediactrl $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/wx/include	usr/lib/$(DEB_HOST_MULTIARCH)/wx
 	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/wx/config/gtk*	usr/lib/$(DEB_HOST_MULTIARCH)/wx/config
 
@@ -732,7 +732,7 @@ install-gtk-dbg: build-gtk-debug-stamp build-gtk-debug-contrib-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
-	dh_install -X_media $(objdir_gtk_debug)/lib/libwx_gtk*		usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -Xmedia $(objdir_gtk_debug)/lib/libwx_gtk*		usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install $(objdir_gtk_debug)/lib/wx/include		usr/lib/$(DEB_HOST_MULTIARCH)/wx
 	dh_install $(objdir_gtk_debug)/lib/wx/config/gtk*	usr/lib/$(DEB_HOST_MULTIARCH)/wx/config
 	dh_installdirs usr/share/lintian/overrides
