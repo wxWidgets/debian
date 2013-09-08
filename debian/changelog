@@ -1,3 +1,10 @@
+wxwidgets2.8 (2.8.12.1-16) UNRELEASED; urgency=low
+
+  * Fix warning when compiling with recent GCC in C++11 mode.
+    (Closes: #721184)
+
+ -- Olly Betts <olly@survex.com>  Mon, 09 Sep 2013 09:08:55 +1200
+
 wxwidgets2.8 (2.8.12.1-15) unstable; urgency=low
 
   * Fix race condition which could result in mmedia libraries going into more
