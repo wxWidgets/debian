@@ -8,7 +8,7 @@ set -u
 
 VER="$2"
 FILE="$3"
-PKG=`dpkg-parsechangelog|grep ^Source:|sed 's/^Source: //'`
+PKG=`dpkg-parsechangelog|sed 's/^Source: //p;d'`
 
 REPACK_DIR="$PKG-$VER.orig" # DevRef § 6.7.8.2
 
