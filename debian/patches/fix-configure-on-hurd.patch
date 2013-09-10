@@ -3,6 +3,7 @@ Author: Samuel Thibault <samuel.thibault@ens-lyon.org>
 Bug-Debian: http://bugs.debian.org/512117
 Bug: http://trac.wxwidgets.org/ticket/15480
 Forwarded: http://trac.wxwidgets.org/attachment/ticket/15480/fix-configure-on-hurd
+Applied-Upstream: http://trac.wxwidgets.org/changeset/74779
 Last-Update: 2013-09-10
 
 --- a/build/aclocal/bakefile.m4
