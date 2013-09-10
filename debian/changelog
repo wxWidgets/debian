@@ -5,6 +5,9 @@ wxwidgets2.8 (2.8.12.1-16) UNRELEASED; urgency=low
   * Actually apply patches to add Tamil and Arabic i18n.
   * debian/build_all: Remove unused script.
   * debian/patches/WX_CONFIG.dpatch: Remove unused, obsolete patch.
+  * debian/patches/dont-check-for-pangox.patch: The check for pangox is only
+    done if building wxX11, which we don't do, so this patch isn't actually
+    necessary, so drop it.
 
  -- Olly Betts <olly@survex.com>  Mon, 09 Sep 2013 09:08:55 +1200
 

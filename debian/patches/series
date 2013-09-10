@@ -26,7 +26,6 @@ wxstatictext-rtl-alignright.patch
 improve-bmp-decoding.patch
 fix-aui-dock-crash.patch
 wxdatetime-chained.patch
-dont-check-for-pangox.patch
 img2py-no-display.patch
 disable_media_python.patch
 wx-2.8.12-print-ps-in-latin1-locale-segv-v2.patch
