@@ -12,6 +12,7 @@ wxwidgets2.9 (2.9.5.0-1) UNRELEASED; urgency=low
       - wxpython2.8-eliminate-string-exceptions.patch
       - xrced_bitmaps.dpatch
   * debian/watch: Don't restrict to just 2.8.x releases.
+  * debian/rules: Set DEBIAN_WX_DEFAULT_VERSION=2.8.
 
  -- Olly Betts <olly@survex.com>  Tue, 10 Sep 2013 15:01:20 +1200
 
