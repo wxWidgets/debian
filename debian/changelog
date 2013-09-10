@@ -8,6 +8,8 @@ wxwidgets2.8 (2.8.12.1-16) UNRELEASED; urgency=low
   * debian/patches/dont-check-for-pangox.patch: The check for pangox is only
     done if building wxX11, which we don't do, so this patch isn't actually
     necessary, so drop it.
+  * New patch wxpython-=-should-be-==.patch which fixes mishandling of the
+    bitmap depth in the wxPython wrapper code.
 
  -- Olly Betts <olly@survex.com>  Mon, 09 Sep 2013 09:08:55 +1200
 

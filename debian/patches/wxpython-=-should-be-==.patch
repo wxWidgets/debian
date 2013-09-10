@@ -1,0 +1,16 @@
+Description: Fix code typo
+ = should be ==!
+Author: Olly Betts <olly@survex.com>
+Last-Update: 2013-09-10
+
+--- a/wxPython/src/_bitmap.i
++++ b/wxPython/src/_bitmap.i
+@@ -308,7 +308,7 @@
+                         p.OffsetY(pixData, 1);
+                     }
+                 }
+-                if (depth = 32) {
++                if (depth == 32) {
+                     MAKE_PIXDATA(wxAlphaPixelData);
+                     pixData.UseAlpha();
+                     for (int y=0; y<height; y++) {
