@@ -227,7 +227,7 @@ objdirs := $(objdir_wxbase_shared) $(objdir_wxbase_debug)                  \
 # Build stamps:
 build_arch_stamps = build-wxbase-shared-stamp build-wxbase-debug-stamp    \
                     build-gtk-shared-stamp build-gtk-shared-contrib-stamp \
-                    build-gtk-debug-stamp build-gtk-debug-contrib-stamp   \
+                    build-gtk-debug-stamp				  \
                     build-i18n-stamp build-gtk-py-stamp build-gtk-dbg-py-stamp
 
 build_indep_stamps = build-examples-stamp build-doc-stamp
@@ -269,9 +269,6 @@ wxconfig-dbg := $(shell pwd)/$(objdir_gtk_debug)/wx-config --no_rpath
 # and this after it is installed.
 py_wxconfig  := wx-config $(PY_WX_CONFIG_OPTIONS) --debug=no
 pyd_wxconfig := wx-config $(PY_WX_CONFIG_OPTIONS) --debug
-
-
-#contrib_libs := $(subst CVS,,$(notdir $(wildcard contrib/include/wx/*)))
 
 
 # The Rules:
@@ -425,14 +422,7 @@ build-gtk-debug-stamp: configure-gtk-debug-stamp
 
 build-gtk-shared-contrib-stamp: build-gtk-shared-stamp
 	dh_testdir
-	$(FAST_MAKE) -C $(objdir_gtk_shared)/contrib/src
 	$(FAST_MAKE) -C $(objdir_gtk_shared)/utils/wxrc
-	touch $@
-
-
-build-gtk-debug-contrib-stamp: build-gtk-debug-stamp
-	dh_testdir
-	$(FAST_MAKE) -C $(objdir_gtk_debug)/contrib/src
 	touch $@
 
 
@@ -684,8 +674,6 @@ install-gtk-shared-stamp: build-gtk-shared-stamp build-gtk-shared-contrib-stamp
 	mkdir -p $(objdir_gtk_install)
 	cd $(objdir_gtk_shared) \
 		&& $(MAKE) install prefix=`pwd`/../$(objdir_gtk_install)
-	cd $(objdir_gtk_shared)/contrib/src \
-		&& $(MAKE) install prefix=`pwd`/../../../$(objdir_gtk_install)
 	touch $@
 
 install-gtk-lib: DH_OPTIONS=-p$(package_gtk_lib)
@@ -707,7 +695,7 @@ install-gtk-dev: install-gtk-shared-stamp
 	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/wx/config/gtk*	usr/lib/$(DEB_HOST_MULTIARCH)/wx/config
 
 install-gtk-dbg: DH_OPTIONS=-p$(package_gtk_dbg)
-install-gtk-dbg: build-gtk-debug-stamp build-gtk-debug-contrib-stamp
+install-gtk-dbg: build-gtk-debug-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
@@ -734,7 +722,7 @@ install-gtkmedia-dev: install-gtk-shared-stamp
 	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*media*.so	usr/lib/$(DEB_HOST_MULTIARCH)
 
 install-gtkmedia-dbg: DH_OPTIONS=-p$(package_gtkmedia_dbg)
-install-gtkmedia-dbg: build-gtk-debug-stamp build-gtk-debug-contrib-stamp
+install-gtkmedia-dbg: build-gtk-debug-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
