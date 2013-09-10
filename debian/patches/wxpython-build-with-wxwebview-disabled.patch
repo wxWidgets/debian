@@ -1,0 +1,71 @@
+Description: Fix wxPython to build with wxWebView disabled
+ Enabling wxWebView would require us to depend on webkit, which doesn't
+ seem a good idea.  If wxWebView is disabled, wxPython tries to provide
+ a stub version, but that code doesn't compile - this patch fixes that.
+Author: Olly Betts <olly@survex.com>
+Bug: http://trac.wxwidgets.org/ticket/15491
+Forwarded: http://trac.wxwidgets.org/ticket/15491
+Last-Update: 2013-09-11
+
+--- a/wxPython/src/html2.i
++++ b/wxPython/src/html2.i
+@@ -128,6 +128,8 @@
+ };
+ 
+ 
++class wxWebView;
++
+ class wxWebViewFactory : public wxObject
+ {
+ public:
+@@ -147,7 +149,7 @@
+ public:
+     virtual bool Create(wxWindow*, wxWindowID, const wxString&, const wxPoint&,
+                         const wxSize&, long style, const wxString&) { _RaiseError(); return false; }
+-    static wxWebView* New(wxWebViewBackend) { _RaiseError(); return NULL; }
++    static wxWebView* New(const wxString&) { _RaiseError(); return NULL; }
+     static wxWebView* New(wxWindow*, wxWindowID, const wxString&, const wxPoint& ,
+                           const wxSize& , const wxString&, long style,
+                           const wxString&) { _RaiseError(); return NULL; }
+@@ -206,8 +208,8 @@
+ public:
+     wxWebViewEvent(wxEventType type, int id, const wxString href,
+                    const wxString target) { _RaiseError(); }
+-    const wxString& GetTarget() const { return wxEmptyString; }
+-    const wxString& GetURL() const { return wxEmptyString; }
++    const wxString& GetTarget() const { return wxString(); }
++    const wxString& GetURL() const { return wxString(); }
+ };
+ 
+ 
+--- a/wxPython/src/gtk/html2_wrap.cpp
++++ b/wxPython/src/gtk/html2_wrap.cpp
+@@ -2767,6 +2767,8 @@
+ };
+ 
+ 
++class wxWebView;
++
+ class wxWebViewFactory : public wxObject
+ {
+ public:
+@@ -2786,7 +2788,7 @@
+ public:
+     virtual bool Create(wxWindow*, wxWindowID, const wxString&, const wxPoint&,
+                         const wxSize&, long style, const wxString&) { _RaiseError(); return false; }
+-    static wxWebView* New(wxWebViewBackend) { _RaiseError(); return NULL; }
++    static wxWebView* New(const wxString&) { _RaiseError(); return NULL; }
+     static wxWebView* New(wxWindow*, wxWindowID, const wxString&, const wxPoint& ,
+                           const wxSize& , const wxString&, long style,
+                           const wxString&) { _RaiseError(); return NULL; }
+@@ -2845,8 +2847,8 @@
+ public:
+     wxWebViewEvent(wxEventType type, int id, const wxString href,
+                    const wxString target) { _RaiseError(); }
+-    const wxString& GetTarget() const { return wxEmptyString; }
+-    const wxString& GetURL() const { return wxEmptyString; }
++    const wxString& GetTarget() const { return wxString(); }
++    const wxString& GetURL() const { return wxString(); }
+ };
+ 
+ 

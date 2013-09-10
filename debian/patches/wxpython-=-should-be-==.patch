@@ -12,5 +12,5 @@ Last-Update: 2013-09-10
 -                if (depth = 32) {
 +                if (depth == 32) {
                      MAKE_PIXDATA(wxAlphaPixelData);
-                     pixData.UseAlpha();
                      for (int y=0; y<height; y++) {
+                         rowStart = p;

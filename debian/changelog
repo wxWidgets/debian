@@ -11,6 +11,9 @@ wxwidgets2.9 (2.9.5.0-1) UNRELEASED; urgency=low
       - wx-2.8.12-print-ps-in-latin1-locale-segv-v2.patch
       - wxpython2.8-eliminate-string-exceptions.patch
       - xrced_bitmaps.dpatch
+    + New patch to make wxPython build with wxWebView disabled (we really
+      don't want to depend on webkit):
+      wxpython-build-with-wxwebview-disabled.patch
   * debian/watch: Don't restrict to just 2.8.x releases.
   * debian/rules: Set DEBIAN_WX_DEFAULT_VERSION=2.8.
 

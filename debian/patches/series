@@ -7,3 +7,4 @@ img2py-no-display.patch
 disable_media_python.patch
 wx-2.9.5-print-ps-in-latin1-locale-segv.patch
 wxpython-=-should-be-==.patch
+wxpython-build-with-wxwebview-disabled.patch
