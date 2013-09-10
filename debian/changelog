@@ -1,6 +1,6 @@
 wxwidgets2.9 (2.9.5.0-1) UNRELEASED; urgency=low
 
-  * New upstream development release.
+  * New upstream development release. (Closes: #613431)
     + Update patches for new release and drop patches which are no longer
       required - remaining patches are:
       - disable_media_python.patch
