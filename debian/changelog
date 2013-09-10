@@ -4,6 +4,7 @@ wxwidgets2.8 (2.8.12.1-16) UNRELEASED; urgency=low
     (Closes: #721184)
   * Actually apply patches to add Tamil and Arabic i18n.
   * debian/build_all: Remove unused script.
+  * debian/patches/WX_CONFIG.dpatch: Remove unused, obsolete patch.
 
  -- Olly Betts <olly@survex.com>  Mon, 09 Sep 2013 09:08:55 +1200
 
