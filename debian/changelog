@@ -1,6 +1,16 @@
 wxwidgets2.9 (2.9.5.0-1) UNRELEASED; urgency=low
 
   * New upstream development release.
+    + Update patches for new release and drop patches which are no longer
+      required - remaining patches are:
+      - disable_media_python.patch
+      - fix-build-with-python2.6.patch
+      - fix-configure-on-hurd
+      - fix-path-to-some-interpreters
+      - img2py-no-display.patch
+      - wx-2.8.12-print-ps-in-latin1-locale-segv-v2.patch
+      - wxpython2.8-eliminate-string-exceptions.patch
+      - xrced_bitmaps.dpatch
   * debian/watch: Don't restrict to just 2.8.x releases.
 
  -- Olly Betts <olly@survex.com>  Tue, 10 Sep 2013 15:01:20 +1200
