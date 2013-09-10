@@ -19,7 +19,6 @@ keyMap = {
     wx.WXK_CLEAR : "WXK_CLEAR",
     wx.WXK_SHIFT : "WXK_SHIFT",
     wx.WXK_ALT : "WXK_ALT",
-    wx.WXK_CONTROL : "WXK_CONTROL",
     wx.WXK_MENU : "WXK_MENU",
     wx.WXK_PAUSE : "WXK_PAUSE",
     wx.WXK_CAPITAL : "WXK_CAPITAL",
@@ -113,8 +112,6 @@ keyMap = {
     wx.WXK_WINDOWS_RIGHT : "WXK_WINDOWS_RIGHT",
     wx.WXK_WINDOWS_MENU : "WXK_WINDOWS_MENU",
 
-    wx.WXK_COMMAND : "WXK_COMMAND",
-
     wx.WXK_SPECIAL1 : "WXK_SPECIAL1",
     wx.WXK_SPECIAL2 : "WXK_SPECIAL2",
     wx.WXK_SPECIAL3 : "WXK_SPECIAL3",
@@ -137,6 +134,14 @@ keyMap = {
     wx.WXK_SPECIAL2 : "WXK_SPECIAL2",
 }
 
+if 'wxMac' in wx.PlatformInfo:
+    keyMap[wx.WXK_RAW_CONTROL] = 'WXK_RAW_CONTROL'
+    keyMap[wx.WXK_CONTROL] = "WXK_CONTROL"
+    keyMap[wx.WXK_COMMAND] = "WXK_COMMAND"
+else:
+    keyMap[wx.WXK_COMMAND] = "WXK_COMMAND"
+    keyMap[wx.WXK_CONTROL] = "WXK_CONTROL"
+    
 
 #----------------------------------------------------------------------
 
@@ -259,21 +264,22 @@ class KeyLog(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
                 if keycode == 0:
                     keyname = "NUL"
                 elif keycode < 27:
-                    keyname = "Ctrl-%s" % chr(ord('A') + keycode-1)
+                    keyname = u"Ctrl-%s" % unichr(ord('A') + keycode-1)
                 else:
-                    keyname = "\"%s\"" % chr(keycode)
+                    keyname = u"\"%s\"" % unichr(keycode)
             else:
-                keyname = "(%s)" % keycode
+                keyname = u"(%s)" % keycode
 
         UniChr = ''
         if "unicode" in wx.PlatformInfo:
             UniChr = "\"" + unichr(evt.GetUnicodeKey()) + "\""
             
         modifiers = ""
-        for mod, ch in [(evt.ControlDown(), 'C'),
-                        (evt.AltDown(),     'A'),
-                        (evt.ShiftDown(),   'S'),
-                        (evt.MetaDown(),    'M')]:
+        for mod, ch in [(evt.ControlDown(),    'C'),
+                        (evt.AltDown(),        'A'),
+                        (evt.ShiftDown(),      'S'),
+                        (evt.MetaDown(),       'M'),
+                        (evt.RawControlDown(), 'R'),]:
             if mod:
                 modifiers += ch
             else:

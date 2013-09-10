@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     27-Aug-1998
-// RCS-ID:      $Id: _toplvl.i 63426 2010-02-08 20:19:39Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -30,17 +30,15 @@ enum
     wxMINIMIZE,
     wxMAXIMIZE,
     wxCLOSE_BOX,
-    wxTHICK_FRAME,
     wxSYSTEM_MENU,
     wxMINIMIZE_BOX,
     wxMAXIMIZE_BOX,
     wxTINY_CAPTION_HORIZ,
     wxTINY_CAPTION_VERT,
-    wxRESIZE_BOX,
     wxRESIZE_BORDER,
 
     wxDIALOG_NO_PARENT,
-    
+
     wxDEFAULT_FRAME_STYLE,
     wxDEFAULT_DIALOG_STYLE,
 
@@ -54,16 +52,22 @@ enum
     wxFRAME_EX_METAL,
     wxDIALOG_EX_METAL,
     wxWS_EX_CONTEXTHELP,
-    
-    // Obsolete
-    wxDIALOG_MODAL,
-    wxDIALOG_MODELESS,
-    wxUSER_COLOURS,
-    wxNO_3D,
 
     wxFRAME_EX_CONTEXTHELP,
     wxDIALOG_EX_CONTEXTHELP,
-};    
+};
+
+%pythoncode {
+    %# deprecated
+    RESIZE_BOX  = MAXIMIZE_BOX
+    THICK_FRAME = RESIZE_BORDER
+
+    %# Obsolete
+    wxDIALOG_MODAL = 0
+    wxDIALOG_MODELESS = 0
+    wxUSER_COLOURS = 0
+    wxNO_3D = 0
+}
 
 
 enum
@@ -83,6 +87,14 @@ enum
 {
     wxUSER_ATTENTION_INFO = 1,
     wxUSER_ATTENTION_ERROR = 2
+};
+
+
+enum wxDialogModality
+{
+    wxDIALOG_MODALITY_NONE = 0,
+    wxDIALOG_MODALITY_WINDOW_MODAL = 1,
+    wxDIALOG_MODALITY_APP_MODAL = 2
 };
 
 //---------------------------------------------------------------------------
@@ -108,7 +120,7 @@ public:
     // return true if the frame is always maximized
     // due to native guidelines or current policy
     virtual bool IsAlwaysMaximized() const;
-    
+
     // return True if the frame is iconized
     virtual bool IsIconized() const;
 
@@ -123,6 +135,10 @@ public:
 
     // maximize the window to cover entire screen
     virtual bool ShowFullScreen(bool show, long style = wxFULLSCREEN_ALL);
+
+    // shows the window, but doesn't activate it. If the base code is being run,
+    // it means the port doesn't implement this method yet and so alert the user.
+    virtual void ShowWithoutActivating(); 
 
     // return True if the frame is in fullscreen mode
     virtual bool IsFullScreen() const;
@@ -145,7 +161,6 @@ public:
     // Is this the active frame (highlighted in the taskbar)?
     virtual bool IsActive();
 
-#ifdef __WXMAC__
     %extend {
         void MacSetMetalAppearance( bool on ) {
             int style = self->GetExtraStyle();
@@ -155,25 +170,11 @@ public:
                 style &= ~wxFRAME_EX_METAL;
             self->SetExtraStyle(style);
         }
-    }
-    bool MacGetMetalAppearance() const;
-#else
-    %extend
-    {
-        // TODO: Should they raise not implemented or just NOP???
-        void MacSetMetalAppearance( bool on ) { /*wxPyRaiseNotImplemented();*/ }
-        bool MacGetMetalAppearance() const    { /*wxPyRaiseNotImplemented();*/ return false; }
-    }
-#endif
+        
+        bool MacGetMetalAppearance() const { return self->GetExtraStyle() & wxFRAME_EX_METAL; }
 
-#ifdef __WXMAC__
-    bool MacGetUnifiedAppearance() const;
-#else
-    %extend
-    {
-        bool MacGetUnifiedAppearance() const    { return false; }
+        bool MacGetUnifiedAppearance() const    { return true; }
     }
-#endif
 
     %extend {
         long MacGetTopLevelWindowRef() {
@@ -190,16 +191,21 @@ public:
         "Center the window on screen", "");
     %pythoncode { CentreOnScreen = CenterOnScreen }
 
+
+    // Get the default size for a new top level window. This is used when
+    // creating a wxTLW under some platforms if no explicit size given.
+    static wxSize GetDefaultSize();
     
+
     DocDeclStr(
         virtual wxWindow *, GetDefaultItem() const,
         "Get the default child of this parent, i.e. the one which is activated
 by pressing <Enter> such as the OK button on a wx.Dialog.", "");
-    
+
     DocDeclStr(
         virtual wxWindow *, SetDefaultItem(wxWindow * child),
         "Set this child as default, return the old default.", "");
-    
+
     DocDeclStr(
         virtual void , SetTmpDefaultItem(wxWindow * win),
         "Set this child as temporary default", "");
@@ -207,11 +213,16 @@ by pressing <Enter> such as the OK button on a wx.Dialog.", "");
     DocDeclStr(
         virtual wxWindow *, GetTmpDefaultItem() const,
         "Return the temporary default item, which can be None.", "");
-       
+
+    bool OSXIsModified() const;
+    void OSXSetModified(bool modified);
+    void SetRepresentedFilename(const wxString& filename);
+    
     %property(DefaultItem, GetDefaultItem, SetDefaultItem, doc="See `GetDefaultItem` and `SetDefaultItem`");
     %property(Icon, GetIcon, SetIcon, doc="See `GetIcon` and `SetIcon`");
     %property(Title, GetTitle, SetTitle, doc="See `GetTitle` and `SetTitle`");
     %property(TmpDefaultItem, GetTmpDefaultItem, SetTmpDefaultItem, doc="See `GetTmpDefaultItem` and `SetTmpDefaultItem`");
+    %property(OSXModified, OSXIsModified, OSXSetModified);
 };
 
 
@@ -261,9 +272,6 @@ public:
     // if the frame has a toolbar) in client coordinates
     virtual wxPoint GetClientAreaOrigin() const;
 
-    // sends a size event to the window using its current size:
-    //  this has a side effect of refreshing the window layout
-    virtual void SendSizeEvent();
 
     // menu bar functions
     // ------------------
@@ -271,9 +279,15 @@ public:
     virtual void SetMenuBar(wxMenuBar *menubar);
     virtual wxMenuBar *GetMenuBar() const;
 
+    // find the item by id in the frame menu bar: this is an internal function
+    // and exists mainly in order to be overridden in the MDI parent frame
+    // which also looks at its active child menu bar
+    virtual const wxMenuItem *FindItemInMenuBar(int menuId) const;
+
     // process menu command: returns True if processed
+    %nokwargs ProcessCommand;
     bool ProcessCommand(int winid);
-    %pythoncode { Command = ProcessCommand }
+    bool ProcessCommand(wxMenuItem *item);
 
     // status bar functions
     // --------------------
@@ -345,17 +359,35 @@ public:
 //---------------------------------------------------------------------------
 %newgroup
 
+enum {
+    // Don't do any layout adaptation
+    wxDIALOG_ADAPTATION_NONE,
+
+    // Only look for wxStdDialogButtonSizer for non-scrolling part
+    wxDIALOG_ADAPTATION_STANDARD_SIZER,
+
+    // Also look for any suitable sizer for non-scrolling part
+    wxDIALOG_ADAPTATION_ANY_SIZER,
+
+    // Also look for 'loose' standard buttons for non-scrolling part
+    wxDIALOG_ADAPTATION_LOOSE_BUTTONS,
+};
+
+// Layout adaptation mode, for SetLayoutAdaptationMode
+enum wxDialogLayoutAdaptationMode
+{
+    wxDIALOG_ADAPTATION_MODE_DEFAULT = 0,   // use global adaptation enabled status
+    wxDIALOG_ADAPTATION_MODE_ENABLED = 1,   // enable this dialog overriding global status
+    wxDIALOG_ADAPTATION_MODE_DISABLED = 2   // disable this dialog overriding global status
+};
+
+
+
 MustHaveApp(wxDialog);
 
 class wxDialog : public wxTopLevelWindow
 {
 public:
-    enum
-    {
-        // all flags allowed in wxDialogBase::CreateButtonSizer()
-        ButtonSizerFlags = wxOK | wxCANCEL | wxYES | wxNO | wxHELP | wxNO_DEFAULT
-    };
-
     %pythonAppend wxDialog   "self._setOORInfo(self)"
     %pythonAppend wxDialog() ""
     %typemap(out) wxDialog*;    // turn off this typemap
@@ -397,10 +429,23 @@ public:
     void SetEscapeId(int escapeId);
     int GetEscapeId() const;
 
+    // Returns the parent to use for modal dialogs if the user did not specify it
+    // explicitly
+    %nokwargs GetParentForModalDialog;
+    wxWindow *GetParentForModalDialog(wxWindow *parent, long style) const;
+    wxWindow *GetParentForModalDialog() const;
+
     // splits text up at newlines and places the
     // lines into a vertical wxBoxSizer
     wxSizer* CreateTextSizer( const wxString &message );
+    
+    // TODO:  wxSizer *CreateTextSizer( const wxString& message,
+    //                           wxTextSizerWrapper& wrapper );
 
+
+    // returns a sizer containing the given one and a static line separating it
+    // from the preceding elements if it's appropriate for the current platform
+    wxSizer *CreateSeparatedSizer(wxSizer *sizer);
 
     // returns a horizontal wxBoxSizer containing the given buttons
     //
@@ -418,7 +463,7 @@ public:
     // static line for the platforms which use static lines for items
     // separation (i.e. not Mac)
     wxSizer *CreateSeparatedButtonSizer(long flags);
-   
+
     wxStdDialogButtonSizer* CreateStdDialogButtonSizer( long flags );
 
     //void SetModal( bool flag );
@@ -433,6 +478,57 @@ public:
     // may be called to terminate the dialog with the given return code
     virtual void EndModal(int retCode);
 
+    
+    // show the dialog frame-modally (needs a parent), using app-modal
+    // dialogs on platforms that don't support it
+    virtual void ShowWindowModal();
+    virtual void SendWindowModalDialogEvent( wxEventType type );
+
+    
+    // Do layout adaptation
+    virtual bool DoLayoutAdaptation();
+
+    // Can we do layout adaptation?
+    virtual bool CanDoLayoutAdaptation();
+
+    // Returns a content window if there is one. This can be used by the layout adapter, for
+    // example to make the pages of a book control into scrolling windows
+    virtual wxWindow* GetContentWindow() const;
+
+    // Add an id to the list of main button identifiers that should be in the button sizer
+    void AddMainButtonId(wxWindowID id);
+    wxArrayInt& GetMainButtonIds();
+
+    // Is this id in the main button id array?
+    bool IsMainButtonId(wxWindowID id) const;
+
+    // Level of adaptation, from none (Level 0) to full (Level 3). To disable adaptation,
+    // set level 0, for example in your dialog constructor. You might
+    // do this if you know that you are displaying on a large screen and you don't want the
+    // dialog changed.
+    void SetLayoutAdaptationLevel(int level);
+    int GetLayoutAdaptationLevel() const;
+
+    /// Override global adaptation enabled/disabled status
+    void SetLayoutAdaptationMode(wxDialogLayoutAdaptationMode mode);
+    wxDialogLayoutAdaptationMode GetLayoutAdaptationMode() const;
+
+    // Returns true if the adaptation has been done
+    void SetLayoutAdaptationDone(bool adaptationDone);
+    bool GetLayoutAdaptationDone() const;
+
+    // Set layout adapter class, returning old adapter
+    static wxDialogLayoutAdapter* SetLayoutAdapter(wxDialogLayoutAdapter* adapter);
+    static wxDialogLayoutAdapter* GetLayoutAdapter();
+
+    // Global switch for layout adaptation
+    static bool IsLayoutAdaptationEnabled();
+    static void EnableLayoutAdaptation(bool enable);
+
+    // modality kind
+    virtual wxDialogModality GetModality() const;
+
+    
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
 
@@ -448,6 +544,99 @@ public:
     %property(EscapeId, GetEscapeId, SetEscapeId, doc="See `GetEscapeId` and `SetEscapeId`");
     %property(ReturnCode, GetReturnCode, SetReturnCode, doc="See `GetReturnCode` and `SetReturnCode`");
 };
+
+
+
+/*!
+ * Base class for layout adapters - code that, for example, turns a dialog into a
+ * scrolling dialog if there isn't enough screen space. You can derive further
+ * adapter classes to do any other kind of adaptation, such as applying a watermark, or adding
+ * a help mechanism.
+ */
+
+// TODO:  Virtualize this for wxPython
+class wxDialogLayoutAdapter: public wxObject
+{
+public:
+    wxDialogLayoutAdapter() {}
+
+    // Override this function to indicate that adaptation should be done
+    virtual bool CanDoLayoutAdaptation(wxDialog* dialog) = 0;
+
+    // Override this function to do the adaptation
+    virtual bool DoLayoutAdaptation(wxDialog* dialog) = 0;
+};
+
+/*!
+ * Standard adapter. Does scrolling adaptation for paged and regular dialogs.
+ *
+ */
+
+class wxStandardDialogLayoutAdapter: public wxDialogLayoutAdapter
+{
+public:
+    wxStandardDialogLayoutAdapter() {}
+
+
+    // Indicate that adaptation should be done
+    virtual bool CanDoLayoutAdaptation(wxDialog* dialog);
+
+    // Do layout adaptation
+    virtual bool DoLayoutAdaptation(wxDialog* dialog);
+
+
+    // Create the scrolled window
+    virtual wxScrolledWindow* CreateScrolledWindow(wxWindow* parent);
+
+    // Find a standard or horizontal box sizer
+    virtual wxSizer* FindButtonSizer(bool stdButtonSizer, wxDialog* dialog, wxSizer* sizer, int& retBorder, int accumlatedBorder = 0);
+
+    // Check if this sizer contains standard buttons, and so can be repositioned in the dialog
+    virtual bool IsOrdinaryButtonSizer(wxDialog* dialog, wxBoxSizer* sizer);
+
+    // Check if this is a standard button
+    virtual bool IsStandardButton(wxDialog* dialog, wxButton* button);
+
+    // Find 'loose' main buttons in the existing layout and add them to the standard dialog sizer
+    virtual bool FindLooseButtons(wxDialog* dialog, wxStdDialogButtonSizer* buttonSizer, wxSizer* sizer, int& count);
+
+    // Reparent the controls to the scrolled window, except those in buttonSizer
+    virtual void ReparentControls(wxWindow* parent, wxWindow* reparentTo, wxSizer* buttonSizer = NULL);
+    static void DoReparentControls(wxWindow* parent, wxWindow* reparentTo, wxSizer* buttonSizer = NULL);
+
+    // A function to fit the dialog around its contents, and then adjust for screen size.
+    // If scrolled windows are passed, scrolling is enabled in the required orientation(s).
+    virtual bool FitWithScrolling(wxDialog* dialog, wxScrolledWindow* scrolledWindow);
+//    virtual bool FitWithScrolling(wxDialog* dialog, wxWindowList& windows);
+    static bool DoFitWithScrolling(wxDialog* dialog, wxScrolledWindow* scrolledWindow);
+//    static bool DoFitWithScrolling(wxDialog* dialog, wxWindowList& windows);
+
+    // Find whether scrolling will be necessary for the dialog, returning wxVERTICAL, wxHORIZONTAL or both
+    virtual int MustScroll(wxDialog* dialog, wxSize& windowSize, wxSize& displaySize);
+    static int DoMustScroll(wxDialog* dialog, wxSize& windowSize, wxSize& displaySize);
+};
+
+
+
+
+class wxWindowModalDialogEvent  : public wxCommandEvent
+{
+public:
+    wxWindowModalDialogEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
+
+    wxDialog *GetDialog() const;
+    int GetReturnCode() const;
+
+    %property(Dialog, GetDialog);
+    %property(ReturnCode, GetReturnCode);
+};
+
+
+%constant wxEventType wxEVT_WINDOW_MODAL_DIALOG_CLOSED;
+%pythoncode {
+    EVT_WINDOW_MODAL_DIALOG_CLOSED = wx.PyEventBinder(wxEVT_WINDOW_MODAL_DIALOG_CLOSED)
+}
+
 
 //---------------------------------------------------------------------------
 %newgroup

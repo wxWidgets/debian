@@ -41,9 +41,9 @@ class ButtonPanel(wx.Panel):
             self.Bind(wx.EVT_BUTTON, self.OnButton, btn)
 
         #** Enable this to show putting a GLCanvas on the wx.Panel
-        if 0:
+        if 1:
             c = CubeCanvas(self)
-            c.SetSize((200, 200))
+            c.SetMinSize((200, 200))
             box.Add(c, 0, wx.ALIGN_CENTER|wx.ALL, 15)
 
         self.SetAutoLayout(True)
@@ -78,6 +78,8 @@ class MyCanvasBase(glcanvas.GLCanvas):
     def __init__(self, parent):
         glcanvas.GLCanvas.__init__(self, parent, -1)
         self.init = False
+        self.context = glcanvas.GLContext(self)
+        
         # initial mouse position
         self.lastx = self.x = 30
         self.lasty = self.y = 30
@@ -95,16 +97,19 @@ class MyCanvasBase(glcanvas.GLCanvas):
 
 
     def OnSize(self, event):
-        size = self.size = self.GetClientSize()
-        if self.GetContext():
-            self.SetCurrent()
-            glViewport(0, 0, size.width, size.height)
+        wx.CallAfter(self.DoSetViewport)
         event.Skip()
+
+    def DoSetViewport(self):
+        size = self.size = self.GetClientSize()
+        self.SetCurrent(self.context)
+        glViewport(0, 0, size.width, size.height)
+        
 
 
     def OnPaint(self, event):
         dc = wx.PaintDC(self)
-        self.SetCurrent()
+        self.SetCurrent(self.context)
         if not self.init:
             self.InitGL()
             self.init = True

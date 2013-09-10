@@ -3,7 +3,7 @@
 # Name:       debian/build_all
 # Purpose:    build both ANSI and Unicode Debian packages at once
 # Created:    2006-12-13
-# RCS-ID:     $Id: build_all 43966 2006-12-13 13:14:40Z VZ $
+# RCS-ID:     $Id$
 # Copyright:  (c) 2006 Vadim Zeitlin <vadim@wxwindows.org>
 # Licence:    wxWindows licence
 ##############################################################################
@@ -44,6 +44,7 @@ rm debian/control
 ./debian/rules debian/control
 dpkg-buildpackage -rfakeroot > /dev/null
 
+sed -i '/^WX_UNICODE := /s/0/1/' debian/rules
 fakeroot ./debian/rules clean
 
 ) 2>&1 | tee $wx_dir/debian/build.log

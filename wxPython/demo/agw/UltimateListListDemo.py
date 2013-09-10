@@ -117,7 +117,7 @@ class TestFrame(wx.Frame):
 
 if __name__ == '__main__':
     import sys
-    app = wx.PySimpleApp()
+    app = wx.App(0)
     frame = TestFrame(None, sys.stdout)
     frame.Show(True)
     app.MainLoop()

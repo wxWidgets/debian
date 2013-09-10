@@ -13,7 +13,6 @@ class TestDialog(wx.Dialog):
     def __init__(
             self, parent, ID, title, size=wx.DefaultSize, pos=wx.DefaultPosition, 
             style=wx.DEFAULT_DIALOG_STYLE,
-            useMetal=False,
             ):
 
         # Instead of calling wx.Dialog.__init__ we precreate the dialog
@@ -28,11 +27,6 @@ class TestDialog(wx.Dialog):
         # object into the real wrapper of the dialog (instead of pre)
         # as far as the wxPython extension is concerned.
         self.PostCreate(pre)
-
-        # This extra style can be set after the UI object has been created.
-        if 'wxMac' in wx.PlatformInfo and useMetal:
-            self.SetExtraStyle(wx.DIALOG_EX_METAL)
-
 
         # Now continue with the normal construction of the dialog
         # contents
@@ -100,19 +94,14 @@ class TestPanel(wx.Panel):
         b = wx.Button(self, -1, "Create and Show a custom Dialog", (50,50))
         self.Bind(wx.EVT_BUTTON, self.OnButton, b)
 
-        if 'wxMac' in wx.PlatformInfo:
-            self.cb = wx.CheckBox(self, -1, "Set Metal appearance", (50,90))
-            
+        b = wx.Button(self, -1, "Show dialog with ShowWindowModal", (50, 140))
+        self.Bind(wx.EVT_BUTTON, self.OnShowWindowModal, b)
+        self.Bind(wx.EVT_WINDOW_MODAL_DIALOG_CLOSED, self.OnWindowModalDialogClosed)
+        
 
     def OnButton(self, evt):
-        useMetal = False
-        if 'wxMac' in wx.PlatformInfo:
-            useMetal = self.cb.IsChecked()
-            
         dlg = TestDialog(self, -1, "Sample Dialog", size=(350, 200),
-                         #style=wx.CAPTION | wx.SYSTEM_MENU | wx.THICK_FRAME,
-                         style=wx.DEFAULT_DIALOG_STYLE, # & ~wx.CLOSE_BOX,
-                         useMetal=useMetal,
+                         style=wx.DEFAULT_DIALOG_STYLE,
                          )
         dlg.CenterOnScreen()
 
@@ -126,6 +115,25 @@ class TestPanel(wx.Panel):
 
         dlg.Destroy()
         
+
+    def OnShowWindowModal(self, evt):
+        dlg = TestDialog(self, -1, "Sample Dialog", size=(350, 200),
+                         style=wx.DEFAULT_DIALOG_STYLE)
+        dlg.ShowWindowModal()
+
+
+    def OnWindowModalDialogClosed(self, evt):
+        dialog = evt.GetDialog()
+        val = evt.GetReturnCode()
+        try:
+            btnTxt = { wx.ID_OK : "OK",
+                       wx.ID_CANCEL: "Cancel" }[val]
+        except KeyError:
+            btnTxt = '<unknown>'
+            
+        wx.MessageBox("You closed the window-modal dialog with the %s button" % btnTxt)
+
+        dialog.Destroy()
 
 #---------------------------------------------------------------------------
 

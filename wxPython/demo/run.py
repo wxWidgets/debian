@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      6-March-2000
-# RCS-ID:       $Id: run.py 53286 2008-04-21 15:33:51Z RD $
+# RCS-ID:       $Id$
 # Copyright:    (c) 2000 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -23,9 +23,10 @@ import wx.lib.mixins.inspection
 import sys, os
 
 # stuff for debugging
+print "Python", sys.version
 print "wx.version:", wx.version()
 print "pid:", os.getpid()
-##raw_input("Press Enter...")
+##print "executable:", sys.executable; raw_input("Press Enter...")
 
 assertMode = wx.PYAPP_ASSERT_DIALOG
 ##assertMode = wx.PYAPP_ASSERT_EXCEPTION
@@ -50,10 +51,10 @@ class RunDemoApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
 
 
     def OnInit(self):
-        wx.Log_SetActiveTarget(wx.LogStderr())
+        wx.Log.SetActiveTarget(wx.LogStderr())
 
         self.SetAssertMode(assertMode)
-        self.Init()  # InspectionMixin
+        self.InitInspection()  # for the InspectionMixin base class
 
         frame = wx.Frame(None, -1, "RunDemo: " + self.name, pos=(50,50), size=(200,100),
                         style=wx.DEFAULT_FRAME_STYLE, name="run a sample")
@@ -63,7 +64,7 @@ class RunDemoApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
         menu = wx.Menu()
         item = menu.Append(-1, "&Widget Inspector\tF6", "Show the wxPython Widget Inspection Tool")
         self.Bind(wx.EVT_MENU, self.OnWidgetInspector, item)
-        item = menu.Append(-1, "E&xit\tCtrl-Q", "Exit demo")
+        item = menu.Append(wx.ID_EXIT, "E&xit\tCtrl-Q", "Exit demo")
         self.Bind(wx.EVT_MENU, self.OnExitApp, item)
         menuBar.Append(menu, "&File")
 

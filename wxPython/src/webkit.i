@@ -5,7 +5,7 @@
 // Author:      Robin Dunn / Kevin Ollivier
 //
 // Created:     18-Oct-2004
-// RCS-ID:      $Id: webkit.i 53938 2008-06-02 19:35:15Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2004 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,6 @@
 %module(package="wx", docstring=DOCSTRING) webkit
 
 %{
-
 #include "wx/wxPython/wxPython.h"
 #include "wx/wxPython/pyclasses.h"
 #include "wx/wxPython/pyistream.h"
@@ -98,9 +97,6 @@ public:
     bool IsEditable() { return false; }
     
     wxString RunScript(const wxString& javascript) { return wxEmptyString; }
-    
-    void SetScrollPos(int pos) { }
-    int GetScrollPos() { return 0; }
     
 };
 
@@ -225,15 +221,11 @@ public:
     bool IsEditable();
     
     wxString RunScript(const wxString& javascript);
-    
-    void SetScrollPos(int pos);
-    int GetScrollPos();
-    
+
     
     %property(PageSource, GetPageSource, SetPageSource, doc="See `GetPageSource` and `SetPageSource`");
     %property(PageTitle, GetPageTitle, doc="See `GetPageTitle`");
     %property(PageURL, GetPageURL, doc="See `GetPageURL`");    
-    %property(ScrollPos, GetScrollPos, SetScrollPos, doc="See `GetScrollPos and SetScrollPos`");
     %property(Selection, GetSelection, doc="See `GetSelection`");
 };
 

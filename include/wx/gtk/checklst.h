@@ -3,7 +3,7 @@
 // Purpose:     wxCheckListBox class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: checklst.h 61872 2009-09-09 22:37:05Z VZ $
+// RCS-ID:      $Id$
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@
 // wxCheckListBox
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxCheckListBox : public wxListBox
+class WXDLLIMPEXP_CORE wxCheckListBox : public wxCheckListBoxBase
 {
 public:
     wxCheckListBox();

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     02/07/2001
-// RCS-ID:      $Id: anitest.h 43476 2006-11-17 18:15:44Z VZ $
+// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

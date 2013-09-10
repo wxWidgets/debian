@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _region.i 41447 2006-09-25 20:22:58Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -17,16 +17,6 @@
 
 %{
 %}
-
-//---------------------------------------------------------------------------
-
-%typemap(in) (int points, wxPoint* points_array ) {
-    $2 = wxPoint_LIST_helper($input, &$1);
-    if ($2 == NULL) SWIG_fail;
-}
-%typemap(freearg) (int points, wxPoint* points_array ) {
-    if ($2) delete [] $2;
-}
 
 //---------------------------------------------------------------------------
 %newgroup
@@ -72,7 +62,7 @@ public:
                                                  const wxColour& transColour,
                                                  int   tolerance = 0));
     %RenameCtor(RegionFromPoints, wxRegion(int points, wxPoint* points_array,
-                                           int fillStyle = wxWINDING_RULE));
+                                           wxPolygonFillMode fillStyle = wxWINDING_RULE));
 
     ~wxRegion();
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-Aug-1998
-// RCS-ID:      $Id: _toolbar.i 44317 2007-01-25 23:35:07Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -77,11 +77,14 @@ public:
     int GetId();
     wxControl *GetControl();
     wxToolBarBase *GetToolBar();
+    bool IsStretchable() const;
     int IsButton();
     int IsControl();
     int IsSeparator();
+    bool IsStretchableSpace() const;
     int GetStyle();
     wxItemKind GetKind();
+    void MakeStretchable();
     bool IsEnabled();
     bool IsToggled();
     bool CanBeToggled();
@@ -102,18 +105,17 @@ public:
     void Detach();
     void Attach(wxToolBarBase *tbar);
 
+    // these methods are only for tools of wxITEM_DROPDOWN kind (but even such
+    // tools can have a NULL associated menu)
+    void SetDropdownMenu(wxMenu *menu);
+    wxMenu *GetDropdownMenu() const;
+
     //wxObject *GetClientData();
     %extend {
         // convert the ClientData back to a PyObject
         PyObject* GetClientData() {
             wxPyUserData* udata = (wxPyUserData*)self->GetClientData();
-            if (udata) {
-                Py_INCREF(udata->m_obj);
-                return udata->m_obj;
-            } else {
-                Py_INCREF(Py_None);
-                return Py_None;
-            }
+            return wxPyUserData::SafeGetData(udata);
         }
 
         void SetClientData(PyObject* clientData) {
@@ -325,12 +327,20 @@ public:
     %Rename(AddToolItem,  wxToolBarToolBase*, AddTool (wxToolBarToolBase *tool));
     %Rename(InsertToolItem,  wxToolBarToolBase*, InsertTool (size_t pos, wxToolBarToolBase *tool));
 
-    wxToolBarToolBase *AddControl(wxControl *control);
-    wxToolBarToolBase *InsertControl(size_t pos, wxControl *control);
+    wxToolBarToolBase *AddControl(wxControl *control,
+                                  const wxString& label = wxEmptyString);
+    wxToolBarToolBase *InsertControl(size_t pos, wxControl *control,
+                                     const wxString& label = wxEmptyString);
     wxControl *FindControl( int id );
 
     wxToolBarToolBase *AddSeparator();
     wxToolBarToolBase *InsertSeparator(size_t pos);
+
+    // add a stretchable space to the toolbar: this is similar to a separator
+    // except that it's always blank and that all the extra space the toolbar
+    // has is [equally] distributed among the stretchable spaces in it
+    virtual wxToolBarToolBase *AddStretchableSpace();
+    virtual wxToolBarToolBase *InsertStretchableSpace(size_t pos);
 
     wxToolBarToolBase *RemoveTool(int id);
 
@@ -348,13 +358,7 @@ public:
         // convert the ClientData back to a PyObject
         PyObject* GetToolClientData(int id) {
             wxPyUserData* udata = (wxPyUserData*)self->GetToolClientData(id);
-            if (udata) {
-                Py_INCREF(udata->m_obj);
-                return udata->m_obj;
-            } else {
-                Py_INCREF(Py_None);
-                return Py_None;
-            }
+            return wxPyUserData::SafeGetData(udata);
         }
 
         void SetToolClientData(int id, PyObject* clientData) {
@@ -401,7 +405,12 @@ public:
     bool IsVertical();
 
     size_t GetToolsCount() const;
+    const wxToolBarToolBase *GetToolByPos(int pos);
 
+    // Set dropdown menu
+    bool SetDropdownMenu(int toolid, wxMenu *menu);
+
+    
     %property(Margins, GetMargins, SetMargins, doc="See `GetMargins` and `SetMargins`");
     %property(MaxCols, GetMaxCols, doc="See `GetMaxCols`");
     %property(MaxRows, GetMaxRows, doc="See `GetMaxRows`");

@@ -3,7 +3,7 @@
 // Purpose:     Information window when app is busy
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// RCS-ID:      $Id: busyinfo.cpp 44898 2007-03-18 20:39:13Z VZ $
+// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -24,6 +24,7 @@
 #endif
 
 #include "wx/busyinfo.h"
+#include "wx/generic/stattextg.h"
 
 class WXDLLEXPORT wxInfoFrame : public wxFrame
 {
@@ -31,7 +32,7 @@ public:
     wxInfoFrame(wxWindow *parent, const wxString& message);
 
 private:
-    DECLARE_NO_COPY_CLASS(wxInfoFrame)
+    wxDECLARE_NO_COPY_CLASS(wxInfoFrame);
 };
 
 
@@ -43,10 +44,14 @@ wxInfoFrame::wxInfoFrame(wxWindow *parent, const wxString& message)
 #else
                      wxSIMPLE_BORDER
 #endif
-                     | wxFRAME_TOOL_WINDOW)
+                     | wxFRAME_TOOL_WINDOW | wxSTAY_ON_TOP)
 {
     wxPanel *panel = new wxPanel( this );
+#ifdef __WXGTK__
+    wxGenericStaticText *text = new wxGenericStaticText(panel, wxID_ANY, message);
+#else
     wxStaticText *text = new wxStaticText(panel, wxID_ANY, message);
+#endif
 
     panel->SetCursor(*wxHOURGLASS_CURSOR);
     text->SetCursor(*wxHOURGLASS_CURSOR);
@@ -114,13 +119,7 @@ wxInfoFrame::wxInfoFrame(wxWindow *parent, const wxString& message)
 
 wxBusyInfo::wxBusyInfo(const wxString& message, wxWindow *parent)
 {
-    m_InfoFrame = new wxInfoFrame( parent, message);
-    if ( parent && parent->HasFlag(wxSTAY_ON_TOP) )
-    {
-        // we must have this flag to be in front of our parent if it has it
-        m_InfoFrame->SetWindowStyleFlag(wxSTAY_ON_TOP);
-    }
-
+    m_InfoFrame = new wxInfoFrame(parent, message);
     m_InfoFrame->Show(true);
     m_InfoFrame->Refresh();
     m_InfoFrame->Update();

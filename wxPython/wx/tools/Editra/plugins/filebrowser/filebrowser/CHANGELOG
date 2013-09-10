@@ -2,9 +2,23 @@ FileBrowser Plugin for Editra
 Author: Cody Precord
 License: wxWindows
 
-Version 1.7:
-xx/xx/2011
+Version 2.2:
+01/05/2013
+- Fix naming error in duplicate file
+- Fix various refresh issues
+
+Version 2.1:
+08/12/2012
+  - Handle PyDeadObject errors.
+  - Fix error when clicking in blank area.
+
+Version 2.0:
+06/08/2012
+   - Major re-write
+   - View filter configuration
+   - View Hidden files option moved to configuration dialog
    - Use common ebmlib functions
+   - Add option to disable browser synchronization
 
 Version 1.6:
 10/02/2010

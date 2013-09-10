@@ -9,8 +9,8 @@
 
 """Launch User Interface"""
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: launch.py 67778 2011-05-23 20:58:56Z CJP $"
-__revision__ = "$Revision: 67778 $"
+__svnid__ = "$Id: launch.py 73234 2012-12-21 18:28:43Z CJP $"
+__revision__ = "$Revision: 73234 $"
 
 #-----------------------------------------------------------------------------#
 # Imports
@@ -279,6 +279,7 @@ class LaunchWindow(ed_basewin.EdBaseCtrlBox):
         util.Log("[Launch][info] Saving config to profile")
         self.RefreshControlBar()
         self._buffer.UpdateWrapMode()
+        self._buffer.UpdateBuffering()
         self.UpdateBufferColors()
 
     @ed_msg.mwcontext
@@ -471,19 +472,20 @@ class LaunchWindow(ed_basewin.EdBaseCtrlBox):
 
     def StartStopProcess(self):
         """Run or abort the context of the current process if possible"""
-        if self.Preferences.get('autoclear', False):
-            self._buffer.Clear()
+        # Start or stop the process
+        self.SetProcessRunning(not self._busy)
+        if self._busy:
+            # Starting new process
+            # Check Auto-clear preference
+            if self.Preferences.get('autoclear', False):
+                self._buffer.Clear()
 
-        # Check Auto-save preferences
-        if not self._busy:
+            # Check Auto-save preferences
             if self.Preferences.get('autosaveall', False):
                 self.MainWindow.SaveAllBuffers()
             elif self.Preferences.get('autosave', False):
                 self.MainWindow.SaveCurrentBuffer()
 
-        # Start or stop the process
-        self.SetProcessRunning(not self._busy)
-        if self._busy:
             util.Log("[Launch][info] Starting process")
             handler = handlers.GetHandlerById(self.State['lang'])
             cmd = self.FindWindowById(ID_EXECUTABLE).GetStringSelection()
@@ -628,6 +630,7 @@ class OutputDisplay(eclib.OutputBuffer, eclib.ProcessBufferMixin):
                                                     wx.FONTWEIGHT_NORMAL))
         self.SetFont(font)
         self.UpdateWrapMode()
+        self.UpdateBuffering()
 
     Preferences = property(lambda self: Profile_Get(handlers.CONFIG_KEY, default=dict()),
                            lambda self, prefs: Profile_Set(handlers.CONFIG_KEY, prefs))
@@ -665,7 +668,6 @@ class OutputDisplay(eclib.OutputBuffer, eclib.ProcessBufferMixin):
         fname, lang_id = self.GetParent().GetLastRun()
         handler = handlers.GetHandlerById(lang_id)
         handler.HandleHotSpot(self._mw, self, line, fname)
-        self.GetParent().SetupControlBar(GetTextBuffer(self._mw))
 
     def DoProcessError(self, code, excdata=None):
         """Handle notifications of when an error occurs in the process
@@ -720,6 +722,10 @@ class OutputDisplay(eclib.OutputBuffer, eclib.ProcessBufferMixin):
         lang_id = self.GetParent().GetLastRun()[1]
         handler = handlers.GetHandlerById(lang_id)
         return handler
+
+    def UpdateBuffering(self):
+        """Update line buffering settings"""
+        self.SetLineBuffering(self.Preferences.get('linebuffer', 1000))
 
     def UpdateWrapMode(self):
         """Update the word wrapping mode"""

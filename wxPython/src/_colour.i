@@ -5,13 +5,19 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _colour.i 60451 2009-05-01 00:24:29Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 // Not a %module
 
+
+%{
+#ifdef __WXMAC__
+#include <wx/osx/private.h>
+#endif
+%}
 
 //---------------------------------------------------------------------------
 %newgroup;
@@ -74,7 +80,7 @@ public:
         wxColour(byte red=0, byte green=0, byte blue=0, byte alpha=wxALPHA_OPAQUE),
         "Constructs a colour from red, green, blue and alpha values.
 
-:see: Alternate constructors `wx.NamedColour` and `wx.ColourRGB`.
+:see: Alternate constructors `wx.NamedColour`, `wx.ColourRGB` and `MacThemeColour`.
 ", "");
     
     %RenameADocCtor(
@@ -88,11 +94,26 @@ wxColour typemaps.", "",
         wxColour( const wxColour& colourName ));
 
     
-    DocCtorStrName(
-        wxColour( unsigned long colRGB ),
+    %RenameDocCtor(
+        ColourRGB,
         "Constructs a colour from a packed RGB value.", "",
-        ColourRGB);
+        wxColour( unsigned long colRGB ));
 
+    %extend {
+        %RenameDocCtor(
+            MacThemeColour,
+            "Creates a color (or pattern) from a Mac theme brush ID.  Raises a
+NotImplemented exception on other platforms.", "",
+            wxColour( int themeBrushID ))
+            {
+#ifdef __WXMAC__
+                return new wxColour(wxMacCreateCGColorFromHITheme(themeBrushID));
+#else
+                wxPyRaiseNotImplemented(); return NULL;
+#endif
+            }
+    }
+    
     ~wxColour();
 
     
@@ -122,11 +143,6 @@ initialised with RGB values).", "");
         void , Set(byte red, byte green, byte blue, byte alpha=wxALPHA_OPAQUE),
         "Sets the RGB intensity values.", "");
 
-    DocDeclStrName(
-        void , Set(unsigned long colRGB),
-        "Sets the RGB intensity values from a packed RGB value.", "",
-        SetRGB);
-
     %pythoncode {
         def SetFromString(self, colourName):
             """
@@ -150,7 +166,44 @@ initialised with RGB values).", "");
             wx.C2S_CSS_SYNTAX    return colour in rgb(r,g,b) syntax
             wx.C2S_HTML_SYNTAX   return colour in #rrggbb syntax     
             =================== ==================================", "");
+
     
+    DocDeclStr(
+        void , SetRGB(wxUint32 colRGB),
+        "Sets the RGB colour values from a single 32 bit value.
+
+The argument colRGB should be of the form 0x00BBGGRR and where 0xRR,
+0xGG and 0xBB are the values of the red, green and blue components.", "");
+    
+    DocDeclStr(
+        void , SetRGBA(wxUint32 colRGBA),
+        "Sets the RGBA colour values from a single 32 bit value.
+
+The argument colRGBA should be of the form 0xAABBGGRR where 0xRR,
+0xGG, 0xBB and 0xAA are the values of the red, green, blue and alpha
+components.", "");
+    
+    DocDeclStr(
+        wxUint32 , GetRGB() const,
+        "", "");
+    
+    DocDeclStr(
+        wxUint32 , GetRGBA() const,
+        "", "");
+    
+
+    
+    // TODO: deal with these...
+    
+    // static void MakeMono    (byte* r, byte* g, byte* b, bool on);
+    // static void MakeDisabled(byte* r, byte* g, byte* b, byte brightness = 255);
+    // static void MakeGrey    (byte* r, byte* g, byte* b); // integer version
+    // static void MakeGrey    (byte* r, byte* g, byte* b, 
+    //                          double weight_r, double weight_g, double weight_b); // floating point version
+    // static byte AlphaBlend  (byte fg, byte bg, double alpha);
+    // static void ChangeLightness(byte* r, byte* g, byte* b, int ialpha);
+    // wxColour ChangeLightness(int ialpha) const;
+
     
     DocDeclStr(
         long , GetPixel() const,
@@ -222,7 +275,7 @@ is returned if the pixel is invalid (on X, unallocated).", "");
 
 
     %pythoncode {
-        asTuple = wx._deprecated(Get, "asTuple is deprecated, use `Get` instead")
+        asTuple = wx.deprecated(Get, "asTuple is deprecated, use `Get` instead")
         def __str__(self):                  return str(self.Get(True))
 
         %# help() can access the stock colors before they are created,  
@@ -247,13 +300,6 @@ is returned if the pixel is invalid (on X, unallocated).", "");
     %property(blue,  Blue);
     %property(alpha, Alpha);                           
 };
-
-// TODO: I should really get rid of these one of these days...
-%pythoncode {
-    Color = Colour
-    NamedColor = NamedColour
-    ColorRGB = ColourRGB
-}
 
 //---------------------------------------------------------------------------
 

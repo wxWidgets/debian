@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     14-Oct-2003
-// RCS-ID:      $Id: pydrawxxx.h 24621 2003-11-21 07:39:05Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////

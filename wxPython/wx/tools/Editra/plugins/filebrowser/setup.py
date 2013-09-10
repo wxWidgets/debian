@@ -16,7 +16,7 @@ except ImportError:
 if setup != None:
     setup(
         name='FileBrowser',
-        version='1.6',
+        version='2.2',
         description=__doc__,
         author=__author__,
         author_email="cprecord@editra.org",

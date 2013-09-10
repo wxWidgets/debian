@@ -15,8 +15,8 @@ in this library.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: parselib.py 64494 2010-06-05 22:03:14Z CJP $"
-__revision__ = "$Revision: 64494 $"
+__svnid__ = "$Id: parselib.py 70229 2012-01-01 01:27:10Z CJP $"
+__revision__ = "$Revision: 70229 $"
 
 #--------------------------------------------------------------------------#
 import pygments
@@ -60,6 +60,34 @@ def HasToken(line, searchToken, searchValue=None):
                 return True
     return False
 
+def BeginsWithToken(line, searchToken, searchValue):
+    """Returns true it the first non whitespace token in the
+    given line is the given token.
+    @param line: pygments line enumeration
+    @param searchToken: pygments.Token.
+    @param searchValue: unicode
+
+    """
+    bOk = False
+    if len(line):
+        for token, val in line:
+            if token == Token.Text and val.isspace():
+                continue
+            bOk = (searchToken == token and val == searchValue)
+            break
+    return bOk
+
+def BeginsWithAnyOf(line, searchToken, searchValueList):
+    """Returns true if the line begins with any of the given values
+    @param searchValueList: list of unicode
+    @see: BeginsWithToken
+
+    """
+    for value in searchValueList:
+        if BeginsWithToken(line, searchToken, value):
+            return True
+    return False
+
 #--------------------------------------------------------------------------#
 # Function Definitions
 
@@ -85,8 +113,8 @@ def GetFirstIdentifier(line):
 def GetTokenParenLeft(line, exchars='_'):
     """Get the first identifier token to the left of the first opening paren
     found in the given line.
+    Example: function myfunct(param1) => myfunct
     @param line: line to search
-    @example: function myfunct(param1) => myfunct
     @keyword exchars: Extra non-alphanumeric characters that can be in the token
     @return: string or None
 

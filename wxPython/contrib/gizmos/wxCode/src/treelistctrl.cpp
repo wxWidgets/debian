@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Maintainer:  Otto Wyss
 // Created:     01/02/97
-// RCS-ID:      $Id: treelistctrl.cpp 63311 2010-01-30 00:42:45Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2004 Robert Roebling, Julian Smart, Alberto Griggio,
 //              Vadim Zeitlin, Otto Wyss
 // Licence:     wxWindows
@@ -40,7 +40,7 @@
 #endif
 
 #ifdef __WXMAC__
-#include "wx/mac/private.h"
+#include "wx/osx/private.h"
 #endif
 
 #include "wx/treelistctrl.h"
@@ -1870,12 +1870,12 @@ void wxTreeListMainWindow::Init() {
     m_findTimer = new wxTimer (this, -1);
 
 #if defined( __WXMAC__ ) && defined(__WXMAC_CARBON__)
-    m_normalFont.MacCreateThemeFont (kThemeViewsFont);
+    m_normalFont.MacCreateFromThemeFont (kThemeViewsFont);
 #else
     m_normalFont = wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT);
 #endif
     m_boldFont = wxFont( m_normalFont.GetPointSize(),
-                         m_normalFont.GetFamily(),
+                         (m_normalFont.GetFamily() != wxFONTFAMILY_UNKNOWN ? m_normalFont.GetFamily() : wxSWISS),
                          m_normalFont.GetStyle(),
                          wxBOLD,
                          m_normalFont.GetUnderlined(),
@@ -2438,7 +2438,7 @@ void wxTreeListMainWindow::SendDeleteEvent (wxTreeListItem *item) {
     event.SetItem (item);
 #endif
     event.SetEventObject (m_owner);
-    m_owner->ProcessEvent (event);
+    m_owner->GetEventHandler()->ProcessEvent (event);
 }
 
 void wxTreeListMainWindow::Delete (const wxTreeItemId& itemId) {
@@ -2527,14 +2527,14 @@ void wxTreeListMainWindow::Expand (const wxTreeItemId& itemId) {
     event.SetItem (item);
 #endif
     event.SetEventObject (m_owner);
-    if (m_owner->ProcessEvent (event) && !event.IsAllowed()) return; // expand canceled
+    if (m_owner->GetEventHandler()->ProcessEvent (event) && !event.IsAllowed()) return; // expand canceled
 
     item->Expand();
     m_dirty = true;
 
     // send event to user code
     event.SetEventType (wxEVT_COMMAND_TREE_ITEM_EXPANDED);
-    m_owner->ProcessEvent (event);
+    m_owner->GetEventHandler()->ProcessEvent (event);
 }
 
 void wxTreeListMainWindow::ExpandAll (const wxTreeItemId& itemId) {
@@ -2566,14 +2566,14 @@ void wxTreeListMainWindow::Collapse (const wxTreeItemId& itemId) {
     event.SetItem (item);
 #endif
     event.SetEventObject (m_owner);
-    if (m_owner->ProcessEvent (event) && !event.IsAllowed()) return; // collapse canceled
+    if (m_owner->GetEventHandler()->ProcessEvent (event) && !event.IsAllowed()) return; // collapse canceled
 
     item->Collapse();
     m_dirty = true;
 
     // send event to user code
     event.SetEventType (wxEVT_COMMAND_TREE_ITEM_COLLAPSED);
-    ProcessEvent (event);
+    GetEventHandler()->ProcessEvent (event);
 }
 
 void wxTreeListMainWindow::CollapseAndReset (const wxTreeItemId& item) {
@@ -3665,7 +3665,7 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
         default:
             if (event.GetKeyCode() >= (int)' ') {
                 if (!m_findTimer->IsRunning()) m_findStr.Clear();
-                m_findStr.Append (event.GetKeyCode());
+                m_findStr.Append ((char)event.GetKeyCode());
                 m_findTimer->Start (FIND_TIMER_TICKS, wxTIMER_ONE_SHOT);
                 wxTreeItemId prev = m_curItem? (wxTreeItemId*)m_curItem: (wxTreeItemId*)NULL;
                 while (true) {

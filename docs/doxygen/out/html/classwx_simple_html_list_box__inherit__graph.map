@@ -1,0 +1,14 @@
+<map id="wxSimpleHtmlListBox" name="wxSimpleHtmlListBox">
+<area shape="rect" id="node2" href="$classwx_html_list_box.html" title="wxHtmlListBox is an implementation of wxVListBox which shows HTML content in the listbox rows..." alt="" coords="115,470,221,498"/>
+<area shape="rect" id="node4" href="$classwx_v_list_box.html" title="wxVListBox is a wxListBox&#45;like control with the following two main differences from a regular wxListB..." alt="" coords="120,393,205,421"/>
+<area shape="rect" id="node6" href="$classwx_v_scrolled_window.html" title="In the name of this class, &quot;V&quot; may stand for &quot;variable&quot; because it can be used for scrolling rows of ..." alt="" coords="95,315,231,343"/>
+<area shape="rect" id="node8" href="$classwx_panel.html" title="A panel is a window on which controls are placed." alt="" coords="65,238,135,266"/>
+<area shape="rect" id="node10" href="$classwx_window.html" title="wxWindow is the base class for all windows and represents any visible object on screen." alt="" coords="55,161,137,189"/>
+<area shape="rect" id="node12" href="$classwx_evt_handler.html" title="A class that can handle events from the windowing system." alt="" coords="47,83,145,111"/>
+<area shape="rect" id="node14" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="5,6,80,34"/>
+<area shape="rect" id="node16" href="$classwx_trackable.html" title="Add&#45;on base class for a trackable object." alt="" coords="104,6,197,34"/>
+<area shape="rect" id="node18" href="$classwx_var_v_scroll_helper.html" title="This class provides functions wrapping the wxVarScrollHelperBase class, targeted for vertical&#45;specifi..." alt="" coords="167,238,300,266"/>
+<area shape="rect" id="node20" href="$classwx_var_scroll_helper_base.html" title="This class provides all common base functionality for scroll calculations shared among all variable s..." alt="" coords="161,161,316,189"/>
+<area shape="rect" id="node22" href="$classwx_item_container.html" title="This class is an abstract base class for some wxWidgets controls which contain several items such as ..." alt="" coords="255,470,372,498"/>
+<area shape="rect" id="node24" href="$classwx_item_container_immutable.html" title="wxItemContainer defines an interface which is implemented by all controls which have string subitems ..." alt="" coords="229,393,408,421"/>
+</map>

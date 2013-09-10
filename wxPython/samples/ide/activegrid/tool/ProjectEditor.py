@@ -5,7 +5,7 @@
 # Author:       Morgan Hua, Peter Yared
 #
 # Created:      8/15/03
-# CVS-ID:       $Id: ProjectEditor.py 41610 2006-10-03 21:31:28Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2003-2006 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------
@@ -2928,7 +2928,7 @@ class ProjectView(wx.lib.docview.View):
         
 
     def OnKeyPressed(self, event):
-        key = event.KeyCode()
+        key = event.GetKeyCode()
         if key == wx.WXK_DELETE:
             self.OnClear(event)
         else:

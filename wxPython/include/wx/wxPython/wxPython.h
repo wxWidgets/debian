@@ -8,7 +8,7 @@
 // Author:      Robin Dunn
 //
 // Created:     14-Dec-2000
-// RCS-ID:      $Id: wxPython.h 51090 2008-01-08 04:36:23Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -121,9 +121,15 @@ inline wxPyCoreAPI* wxPyGetCoreAPIPtr()
 #define wxArrayDouble2PyList_helper(a)          (wxPyGetCoreAPIPtr()->p_wxArrayDoublePyList_helper(a))
 #define wxPoint2D_LIST_helper(a,b)              (wxPyGetCoreAPIPtr()->p_wxPoint2D_LIST_helper(a, b))
 #define wxRect2D_helper(a,b)                    (wxPyGetCoreAPIPtr()->p_wxRect2D_helper(a,b))
+#define wxPosition_helper(a,b)                  (wxPyGetCoreAPIPtr()->p_wxPosition_helper(a,b))
 
 #define wxPyCBOutputStream_create(a, b)         (wxPyGetCoreAPIPtr()->p_wxPyCBOutputStream_create(a, b))
 #define wxPyCBOutputStream_copy(a)              (wxPyGetCoreAPIPtr()->p_wxPyCBOutputStream_copy(a))
+
+#define wxVariant_in_helper(a)                  (wxPyGetCoreAPIPtr()->p_wxVariant_in_helper(a))
+#define wxVariant_out_helper(a)                 (wxPyGetCoreAPIPtr()->p_wxVariant_out_helper(a))
+
+#define wxPyTextOrBitmap_helper(a, b, c, d)     (wxPyGetCoreAPIPtr()->p_wxPyTextOrBitmap_helper(a, b, c, d))
 
 //----------------------------------------------------------------------
 #endif

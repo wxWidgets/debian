@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _tglbtn.i 41242 2006-09-15 21:31:02Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ MAKE_CONST_WXSTRING2(ToggleButtonNameStr, _T("wxToggleButton"));
 
 #define wxEVT_COMMAND_TOGGLEBUTTON_CLICKED 0
     
-class wxToggleButton : public wxControl
+class wxToggleButton : public wxAnyButton
 {
 public:
     wxToggleButton(wxWindow *, wxWindowID, const wxString&,
@@ -52,7 +52,7 @@ public:
 
 MustHaveApp(wxToggleButton);
 
-class wxToggleButton : public wxControl
+class wxToggleButton : public wxAnyButton
 {
 public:
     %pythonAppend wxToggleButton         "self._setOORInfo(self)"
@@ -79,8 +79,9 @@ public:
 
     void SetValue(bool value);
     bool GetValue() const ;
-    void SetLabel(const wxString& label);
 
+    void SetLabel(const wxString& label);
+    
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
 

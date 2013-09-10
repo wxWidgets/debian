@@ -4,7 +4,7 @@
 // Author:      Wlodzimierz ABX Skiba
 // Modified by:
 // Created:     04/08/2004
-// RCS-ID:      $Id: splash.pov 28620 2004-08-04 17:08:53Z ABX $
+// RCS-ID:      $Id$
 // Copyright:   (c) Wlodzimierz Skiba
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

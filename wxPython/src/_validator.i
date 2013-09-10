@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-June-1997
-// RCS-ID:      $Id: _validator.i 43425 2006-11-14 22:03:54Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@ public:
 
     // Called when the value in the window must be validated.
     // This function can pop up an error message.
-    virtual bool Validate(wxWindow *WXUNUSED(parent));
+    virtual bool Validate(wxWindow *parent);
 
     // Called to transfer data to the window
     virtual bool TransferToWindow();
@@ -61,6 +61,7 @@ public:
     // validators beep by default if invalid key is pressed, these functions
     // allow to change it
     static bool IsSilent();
+    static void SuppressBellOnError(bool suppress = true);
     static void SetBellOnError(int doIt = true);
 
     %property(Window, GetWindow, SetWindow, doc="See `GetWindow` and `SetWindow`");

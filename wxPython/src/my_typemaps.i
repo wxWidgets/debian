@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/3/97
-// RCS-ID:      $Id: my_typemaps.i 58365 2009-01-24 22:17:32Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -41,6 +41,17 @@ MAKE_INT_ARRAY_TYPEMAPS(styles, styles_field)
     if ($2) delete [] $2;
 }
 
+// wxPoint
+%typemap(in) (int points, wxPoint* points_array ) {
+    $2 = wxPoint_LIST_helper($input, &$1);
+    if ($2 == NULL) SWIG_fail;
+}
+%typemap(freearg) (int points, wxPoint* points_array ) {
+    if ($2) delete [] $2;
+}
+
+
+//---------------------------------------------------------------------------
 
 
 //---------------------------------------------------------------------------
@@ -184,6 +195,7 @@ MAKE_INT_ARRAY_TYPEMAPS(styles, styles_field)
 %typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER) wxRect& {
     $1 = wxPySimple_typecheck($input, wxT("wxRect"), 4);
 }
+
 
 %apply wxRect& { wxRect* };
 
@@ -385,6 +397,20 @@ MAKE_INT_ARRAY_TYPEMAPS(styles, styles_field)
 
 
 
+
+//---------------------------------------------------------------------------
+// Typemaps for wxVariant
+
+%typemap(in) wxVariant& (wxVariant temp) {
+    temp = wxVariant_in_helper($input);
+    $1 = &temp;
+}
+
+%typemap(out) wxVariant {
+    $result = wxVariant_out_helper($1);
+}
+
+
 //---------------------------------------------------------------------------
 // Typemaps to convert return values that are base class pointers
 // to the real derived type, if possible.  See wxPyMake_wxObject in
@@ -438,6 +464,8 @@ MAKE_INT_ARRAY_TYPEMAPS(styles, styles_field)
 %typemap(out) wxScrolledWindow*         { $result = wxPyMake_wxObject($1, (bool)$owner); }
 
 %typemap(out) wxSizer*                  { $result = wxPyMake_wxObject($1, (bool)$owner); }
+%typemap(out) wxTimer*                  { $result = wxPyMake_wxObject($1, (bool)$owner); }
+%typemap(out) wxTimer&                  { $result = wxPyMake_wxObject($1, (bool)$owner); }
 
 
 //---------------------------------------------------------------------------

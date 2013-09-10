@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: power.bkl 39359 2006-05-27 14:09:40Z VZ $ -->
+<!-- $Id$ -->
 
 <makefile>
     <include file="../../build/bakefiles/common_samples.bkl"/>

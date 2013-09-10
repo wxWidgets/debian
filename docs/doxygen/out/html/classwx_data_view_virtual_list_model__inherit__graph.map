@@ -1,0 +1,5 @@
+<map id="wxDataViewVirtualListModel" name="wxDataViewVirtualListModel">
+<area shape="rect" id="node2" href="$classwx_data_view_list_model.html" title="Base class with abstract API for wxDataViewIndexListModel and wxDataViewVirtualListModel." alt="" coords="23,161,169,189"/>
+<area shape="rect" id="node4" href="$classwx_data_view_model.html" title="wxDataViewModel is the base class for all data model to be displayed by a wxDataViewCtrl." alt="" coords="33,83,159,111"/>
+<area shape="rect" id="node6" href="$classwx_ref_counter.html" title="This class is used to manage reference&#45;counting providing a simple interface and a counter..." alt="" coords="45,6,147,34"/>
+</map>

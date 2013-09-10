@@ -5,7 +5,7 @@
 # Author:       Kevin Ollivier, Jeff Norton
 #
 # Created:      8/27/05
-# CVS-ID:       $Id: appdirs.py 38852 2006-04-20 06:26:03Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2004-2005 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------

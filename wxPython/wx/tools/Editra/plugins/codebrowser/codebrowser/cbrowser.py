@@ -18,8 +18,8 @@ element is defined in the file.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: cbrowser.py 67736 2011-05-13 22:42:50Z CJP $"
-__revision__ = "$Revision: 67736 $"
+__svnid__ = "$Id: cbrowser.py 71180 2012-04-11 22:49:47Z CJP $"
+__revision__ = "$Revision: 71180 $"
 
 #--------------------------------------------------------------------------#
 # Imports
@@ -164,6 +164,7 @@ class CodeBrowserTree(wx.TreeCtrl):
         """Clear the tree and caches"""
         self._cdoc = None
         self._ds_flat = list()
+        self.Unselect() # XXX: workaround focus issue in 2.9
         self.DeleteChildren(self.root)
 
     def _FindNodeForLine(self, line):
@@ -299,6 +300,9 @@ class CodeBrowserTree(wx.TreeCtrl):
                 self.SetItemHasChildren(item_id)
                 for elem in elements: # Ordered list of dict objects
                     for otype in elem[elem.keys()[0]]:
+                        if otype is cobj:
+                            # attempt to prevent infinite recursion with bad doc trees
+                            continue
                         img = self._GetIconIndex(otype)
                         # Make recursive call as Scope's may contain other
                         # Scopes.
@@ -357,7 +361,12 @@ class CodeBrowserTree(wx.TreeCtrl):
         @param tree_id: Tree Id
 
         """
-        line = self.GetPyData(tree_id)
+        try:
+            line = self.GetPyData(tree_id)
+        except wx.PyAssertionError:
+            # Ignore unexplainable errors from wx...
+            line = None
+
         if line is not None:
             ctrl = self._mw.GetNotebook().GetCurrentCtrl()
             ctrl.GotoLine(line)
@@ -694,7 +703,7 @@ class TagGenEvent(wx.PyCommandEvent):
     """
     def __init__(self, etype, eid, value=taglib.DocStruct()):
         """Creates the event object"""
-        wx.PyCommandEvent.__init__(self, etype, eid)
+        super(TagGenEvent, self).__init__(etype, eid)
         self._value = value
 
     def GetValue(self):

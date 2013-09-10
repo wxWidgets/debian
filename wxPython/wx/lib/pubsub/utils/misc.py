@@ -8,7 +8,15 @@ printTreeDocs and printTreeSpec.
 
 
 
-__all__ = ('StructMsg', 'Callback', 'Enum' )
+__all__ = ('printImported', 'StructMsg', 'Callback', 'Enum' )
+
+
+def printImported():
+    '''Output a list of pubsub modules imported so far'''
+    import sys
+    ll = [mod for mod in sys.modules.keys() if mod.find('pubsub') >= 0]
+    ll.sort()
+    print '\n'.join(ll)
 
 
 class StructMsg:

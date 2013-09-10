@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Aug-2003
-// RCS-ID:      $Id: _evthandler.i 66418 2010-12-20 20:42:57Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -36,27 +36,60 @@ public:
     bool GetEvtHandlerEnabled();
     void SetEvtHandlerEnabled(bool enabled);
 
+    void Unlink();
+    bool IsUnlinked() const;
 
     // process an event right now
     bool ProcessEvent(wxEvent& event);
 
+    // Process an event by calling ProcessEvent and handling any exceptions
+    // thrown by event handlers. It's mostly useful when processing wx events
+    // when called from C code (e.g. in GTK+ callback) when the exception
+    // wouldn't correctly propagate to wxEventLoop.
+    bool SafelyProcessEvent(wxEvent& event);
+
+    // This method tries to process the event in this event handler, including
+    // any preprocessing done by TryBefore() and all the handlers chained to
+    // it, but excluding the post-processing done in TryAfter().
+    //
+    // It is meant to be called from ProcessEvent() only and is not virtual,
+    // additional event handlers can be hooked into the normal event processing
+    // logic using TryBefore() and TryAfter() hooks.
+    //
+    // You can also call it yourself to forward an event to another handler but
+    // without propagating it upwards if it's unhandled (this is usually
+    // unwanted when forwarding as the original handler would already do it if
+    // needed normally).
+    bool ProcessEventLocally(wxEvent& event);
+
+    
+    void QueueEvent(wxEvent *event);
+    
     // add an event to be processed later
-    void AddPendingEvent(wxEvent& event);
+    void AddPendingEvent(const wxEvent& event);
 
     // process all pending events
     void ProcessPendingEvents();
 
+    void DeletePendingEvents();
+    
     %extend {
         // Dynamic association of a member function handler with the event handler
-        void Connect( int id, int lastId, int eventType, PyObject* func) {
-            if (PyCallable_Check(func)) {
+        void Connect( int id, int lastId, wxEventType eventType, PyObject* func) {
+            bool is_callable = false;
+            {
+                wxPyThreadBlocker blocker;
+                is_callable = PyCallable_Check(func) != 0;
+            }
+            if (is_callable) {
                 self->Connect(id, lastId, eventType,
-                          (wxObjectEventFunction) &wxPyCallback::EventThunker,
-                          new wxPyCallback(func));
+                              (wxObjectEventFunction)(wxEventFunction)
+                              &wxPyCallback::EventThunker,
+                              new wxPyCallback(func));
             }
             else if (func == Py_None) {
                 self->Disconnect(id, lastId, eventType,
-                                 (wxObjectEventFunction)
+                                 (wxObjectEventFunction)(wxEventFunction)
                                  &wxPyCallback::EventThunker);
             }
             else {
@@ -80,7 +113,8 @@ public:
                     if ((entry->m_id == id) &&
                         ((entry->m_lastId == lastId) || (lastId == wxID_ANY)) &&
                         ((entry->m_eventType == eventType) || (eventType == wxEVT_NULL)) &&
-                        ((entry->m_fn == (wxObjectEventFunction)&wxPyCallback::EventThunker)) &&
+                        // FIXME?
+                        //((entry->m_fn->IsMatching((wxObjectEventFunction)(wxEventFunction)&wxPyCallback::EventThunker))) &&
                         (entry->m_callbackUserData != NULL))
                     {
                         wxPyCallback *cb = (wxPyCallback*)entry->m_callbackUserData;

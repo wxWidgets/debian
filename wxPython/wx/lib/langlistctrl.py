@@ -5,7 +5,7 @@
 # Author:      Riaan Booysen
 #
 # Created:     2006
-# RCS-ID:      $Id: langlistctrl.py 43868 2006-12-08 23:46:22Z RD $
+# RCS-ID:      $Id$
 # Copyright:   (c) 2006 Riaan Booysen
 # License:     wxPython
 #-----------------------------------------------------------------------------

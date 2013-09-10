@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     23-Nov-2004
-// RCS-ID:      $Id: media.i 41451 2006-09-26 00:26:35Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2004 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -188,6 +188,7 @@ class wxMediaCtrl : public wxControl
 public:
     %pythonAppend wxMediaCtrl      "self._setOORInfo(self)"
     %pythonAppend wxMediaCtrl()    ""
+    %typemap(out) wxMediaCtrl*;    // turn off this typemap
 
 
     wxMediaCtrl(wxWindow* parent,
@@ -202,6 +203,9 @@ public:
     
     %RenameCtor(PreMediaCtrl,  wxMediaCtrl());
 
+    // Turn it back on again
+    %typemap(out) wxMediaCtrl* { $result = wxPyMake_wxObject($1, $owner); }
+    
     bool Create(wxWindow* parent,
                 wxWindowID id=-1,
                 const wxString& fileName = wxPyEmptyString,

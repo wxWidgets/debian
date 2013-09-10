@@ -58,6 +58,7 @@
 #include <wx/string.h>
 #include <wx/datetime.h>
 #include <wx/log.h>
+#include <wx/msw/dc.h>
 #include <oleidl.h>
 #include <winerror.h>
 #include <idispids.h>
@@ -445,7 +446,7 @@ void wxActiveX::CreateActiveX(LPOLESTR progId)
 typedef map<wxString, wxEventType *, NS_wxActiveX::less_wxStringI> ActiveXNamedEventMap;
 static ActiveXNamedEventMap sg_NamedEventMap;
 
-const wxEventType& RegisterActiveXEvent(const wxChar *eventName)
+const wxEventType& RegisterActiveXEvent(const wxString& eventName)
 {
     wxString ev = eventName;
     ActiveXNamedEventMap::iterator it = sg_NamedEventMap.find(ev);
@@ -1716,14 +1717,16 @@ void wxActiveX::OnPaint(wxPaintEvent& event)
     posRect.right = w;
     posRect.bottom = h;
 
-    // Draw only when control is windowless or deactivated
+    // Draw only when control is windowlss or deactivated
     if (m_viewObject)
     {
         ::RedrawWindow(m_oleObjectHWND, NULL, NULL, RDW_INTERNALPAINT);
         {
+            HDC hdc = (HDC)((wxMSWDCImpl*)dc.GetImpl())->GetHDC();
+
             RECTL *prcBounds = (RECTL *) &posRect;
             m_viewObject->Draw(DVASPECT_CONTENT, -1, NULL, NULL, NULL, 
-                (HDC)dc.GetHDC(), prcBounds, NULL, NULL, 0);
+                               hdc, prcBounds, NULL, NULL, 0);
         }
     }
     else

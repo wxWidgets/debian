@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-June-1997
-// RCS-ID:      $Id: _menu.i 53375 2008-04-27 03:59:28Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -191,6 +191,9 @@ public:
     void SetLabel(int id, const wxString& label);
     wxString GetLabel(int id) const;
 
+    //  Returns the stripped label
+    wxString GetLabelText(int itemid) const;
+    
     virtual void SetHelpString(int id, const wxString& helpString);
     virtual wxString GetHelpString(int id) const;
 
@@ -207,6 +210,9 @@ public:
     void SetInvokingWindow(wxWindow *win);
     wxWindow *GetInvokingWindow() const;
 
+    wxWindow* GetWindow() const;
+
+    
     // style
     long GetStyle() const { return m_style; }
 
@@ -233,9 +239,6 @@ public:
     wxMenu *GetParent() const;
 
     
-    //  Returns the stripped label
-    wxString GetLabelText(int itemid) const;
-
     %property(EventHandler, GetEventHandler, SetEventHandler, doc="See `GetEventHandler` and `SetEventHandler`");
     %property(HelpString, GetHelpString, SetHelpString, doc="See `GetHelpString` and `SetHelpString`");
     %property(InvokingWindow, GetInvokingWindow, SetInvokingWindow, doc="See `GetInvokingWindow` and `SetInvokingWindow`");
@@ -247,6 +250,9 @@ public:
     %property(Title, GetTitle, SetTitle, doc="See `GetTitle` and `SetTitle`");
     
 };
+
+//---------------------------------------------------------------------------
+
 
 //---------------------------------------------------------------------------
 %newgroup
@@ -293,10 +299,16 @@ public:
     virtual bool IsEnabledTop(size_t pos) const;
 
     // get or change the label of the menu at given position
-    virtual void SetLabelTop(size_t pos, const wxString& label);
-    virtual wxString GetLabelTop(size_t pos) const;
+    virtual void SetMenuLabel(size_t pos, const wxString& label);
+    virtual wxString GetMenuLabel(size_t pos) const;
+    %pythoncode {
+        SetLabelTop = SetMenuLabel
+        GetLabelTop = GetMenuLabel    
+    }
 
-
+    // get the stripped label of the menu at given position
+    virtual wxString GetMenuLabelText(size_t pos) const;
+    
     // by menu and item names, returns wxNOT_FOUND if not found or id of the
     // found item
     virtual int FindMenuItem(const wxString& menu, const wxString& item) const;
@@ -356,19 +368,6 @@ public:
     }
 #endif
 
-    // Gets the original label at the top-level of the menubar
-    wxString GetMenuLabel(size_t pos) const;
-
-    // Replacement for SetLabelTop
-    void SetMenuLabel(size_t pos, const wxString& label) { SetLabelTop(pos, label); }
-
-    // Gets the original label at the top-level of the menubar
-    // Implemented per port, since we can't have virtual functions in the stable branch.
-    // wxString GetMenuLabel(size_t pos) const;
-
-    // Get the text only, from the label at the top-level of the menubar
-    wxString GetMenuLabelText(size_t pos) const;
-
 
     %pythoncode {
         def GetMenus(self):
@@ -426,12 +425,26 @@ public:
     //     any), i.e. it may contain '&' or '_' or "\t..." and thus is
     //     different from the item's label which only contains the text shown
     //     in the menu
-    virtual void SetText(const wxString& str);
-    wxString GetLabel() const;
-    const wxString& GetText() const;
+    virtual void SetItemLabel(const wxString& str);
+    
+    // return the item label including any mnemonics and accelerators.
+    // This used to be called GetText.
+    virtual wxString GetItemLabel() const;
+    
+    // return just the text of the item label, without any mnemonics
+    // This used to be called GetLabel.
+    virtual wxString GetItemLabelText() const;
+    
+    // return just the text part of the given label (implemented in platform-specific code)
+    // This used to be called GetLabelFromText.
+    static wxString GetLabelText(const wxString& label);
 
-    // get the label from text 
-    static wxString GetLabelFromText(const wxString& text);
+    %pythoncode {
+        GetLabel = GetItemLabelText
+        GetText = GetItemLabel
+        SetText = SetItemLabel
+        GetLabelFromText = GetLabelText
+    }
 
     // what kind of menu item we are
     wxItemKind GetKind() const;
@@ -463,11 +476,12 @@ public:
     // SetText()
     virtual void SetAccel(wxAcceleratorEntry *accel);
 
-    void SetBitmap(const wxBitmap& bitmap);
-    const wxBitmap& GetBitmap();
 
     // wxOwnerDrawn methods
 #ifdef __WXMSW__
+    void SetBitmap(const wxBitmap& bmp, bool bChecked = true);
+    const wxBitmap& GetBitmap(bool bChecked = true) const;
+
     void SetFont(const wxFont& font);
     wxFont GetFont();
     void SetTextColour(const wxColour& colText);
@@ -487,8 +501,13 @@ public:
 
     // switch on/off owner-drawing the item
     void SetOwnerDrawn(bool ownerDrawn = true);
-    void ResetOwnerDrawn();
+//    void ResetOwnerDrawn();
+
 #else
+
+    void SetBitmap(const wxBitmap& bitmap);
+    const wxBitmap& GetBitmap();
+
     %extend {
         void SetFont(const wxFont& font) {}
         wxFont GetFont() { return wxNullFont; }
@@ -509,24 +528,11 @@ public:
         static int GetDefaultMarginWidth() { return 0; }
         bool IsOwnerDrawn() { return false; }
         void SetOwnerDrawn(bool ownerDrawn = true) {}
-        void ResetOwnerDrawn() {}
+//        void ResetOwnerDrawn() {}
     }
 #endif
 
-    // return the item label including any mnemonics and accelerators.
-    // This used to be called GetText.
-    wxString GetItemLabel() const;
 
-    // Sets the label. This function replaces SetText.
-    void SetItemLabel(const wxString& str);
-
-    // return just the text of the item label, without any mnemonics
-    // This used to be called GetLabel.
-    wxString GetItemLabelText() const;
-
-    // return just the text part of the given label. In 2.9 and up, this is implemented in
-    // platform-specific code, but is now implemented in terms of GetLabelFromText.
-    static wxString GetLabelText(const wxString& label);
     %property(Accel, GetAccel, SetAccel, doc="See `GetAccel` and `SetAccel`");
     %property(BackgroundColour, GetBackgroundColour, SetBackgroundColour, doc="See `GetBackgroundColour` and `SetBackgroundColour`");
     %property(Bitmap, GetBitmap, SetBitmap, doc="See `GetBitmap` and `SetBitmap`");
@@ -541,8 +547,8 @@ public:
     %property(SubMenu, GetSubMenu, SetSubMenu, doc="See `GetSubMenu` and `SetSubMenu`");
     %property(Text, GetText, SetText, doc="See `GetText` and `SetText`");
     %property(TextColour, GetTextColour, SetTextColour, doc="See `GetTextColour` and `SetTextColour`");
-    %property(ItemLabel, GetItemLabel);
-    
+    %property(ItemLabel, GetItemLabel, SetItemLabel);
+    %property(ItemLabelText, GetItemLabelText);
 };
 
 //---------------------------------------------------------------------------

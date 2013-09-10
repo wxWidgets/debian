@@ -138,3 +138,46 @@ class NotificationMgr:
         import atexit
         atexit.register(self.clearHandlers)
         self.__atExitRegistered = True
+
+
+
+class INotificationHandler:
+    '''
+    Defines the interface expected by pubsub for notification 
+    messages. Any instance that supports the same methods, or 
+    derives from this class, will work as a notification handler
+    for pubsub events.
+
+    In all methods,
+    - pubListener is the instance of pub.Listener that wraps
+      the un/subscribed listener
+    - topicObj is the pub.Topic object representing the topic that
+      lead to the notification (use topicObj.getName() for its name in
+      dotted form)
+    '''
+    
+    def notifySubscribe(self, pubListener, topicObj, newSub):
+        '''Called when a listener is subscribed to a pubsub topic.
+        NewSub is false if listener was already subscribed. '''
+        raise NotImplementedError
+    def notifyUnsubscribe(self, pubListener, topicObj):
+        '''Called when a listener is unsubscribed from given topic. '''
+        raise NotImplementedError
+    def notifyDeadListener(self, pubListener, topicObj):
+        '''Called when a listener has been garbage collected'''
+        raise NotImplementedError
+    def notifySend(self, stage, topicObj, pubListener=None):
+        '''Called when a sendMessage is about to start (stage='pre'),
+        has completed (stage='post') and for each listener that is about
+        to be sent a message (stage='loop'). The pubListener is the
+        listener for stage=loop (other stages have pubListener=None).'''
+        raise NotImplementedError
+    
+    def notifyNewTopic(self, topicObj, description, required, argsDocs):
+        '''Called whenever a new topic is added to the topic tree. '''
+        raise NotImplementedError
+    def notifyDelTopic(self, topicName):
+        '''Called whenever a topic is removed from topic tree. '''
+        raise NotImplementedError
+
+

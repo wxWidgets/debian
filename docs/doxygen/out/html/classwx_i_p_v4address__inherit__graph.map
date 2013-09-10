@@ -1,0 +1,5 @@
+<map id="wxIPV4address" name="wxIPV4address">
+<area shape="rect" id="node2" href="$classwx_i_paddress.html" title="wxIPaddress is an abstract base class for all internet protocol address objects." alt="" coords="15,161,108,189"/>
+<area shape="rect" id="node4" href="$classwx_sock_address.html" title="You are unlikely to need to use this class: only wxSocketBase uses it." alt="" coords="5,83,117,111"/>
+<area shape="rect" id="node6" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="24,6,99,34"/>
+</map>

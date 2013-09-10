@@ -41,7 +41,7 @@ class MyCanvas(wx.ScrolledWindow):
         self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftButtonEvent)
         self.Bind(wx.EVT_LEFT_UP,   self.OnLeftButtonEvent)
         self.Bind(wx.EVT_MOTION,    self.OnLeftButtonEvent)
-        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_PAINT,     self.OnPaint)
 
 
     def getWidth(self):
@@ -61,8 +61,10 @@ class MyCanvas(wx.ScrolledWindow):
         else:
             dc = wx.PaintDC(self)
             self.PrepareDC(dc)
-            # since we're not buffering in this case, we have to
-            # paint the whole window, potentially very time consuming.
+            # Since we're not buffering in this case, we have to
+            # (re)paint the all the contents of the window, which can
+            # be potentially time consuming and flickery depending on
+            # what is being drawn and how much of it there is.
             self.DoDrawing(dc)
 
 
@@ -93,11 +95,6 @@ class MyCanvas(wx.ScrolledWindow):
         dc.DrawBitmap(self.bmp, 200, 20, True)
         dc.SetTextForeground(wx.Colour(0, 0xFF, 0x80))
         dc.DrawText("a bitmap", 200, 85)
-
-##         dc.SetFont(wx.Font(14, wx.SWISS, wx.NORMAL, wx.NORMAL))
-##         dc.SetTextForeground("BLACK")
-##         dc.DrawText("TEST this STRING", 10, 200)
-##         print dc.GetFullTextExtent("TEST this STRING")
 
         font = wx.Font(20, wx.SWISS, wx.NORMAL, wx.NORMAL)
         dc.SetFont(font)
@@ -150,7 +147,6 @@ class MyCanvas(wx.ScrolledWindow):
 
     def DrawSavedLines(self, dc):
         dc.SetPen(wx.Pen('MEDIUM FOREST GREEN', 4))
-
         for line in self.lines:
             for coords in line:
                 apply(dc.DrawLine, coords)
@@ -164,6 +160,9 @@ class MyCanvas(wx.ScrolledWindow):
         return newpos
 
     def OnLeftButtonEvent(self, event):
+        if self.IsAutoScrolling():
+            self.StopAutoScrolling()
+        
         if event.LeftDown():
             self.SetFocus()
             self.SetXY(event)
@@ -175,8 +174,9 @@ class MyCanvas(wx.ScrolledWindow):
             if BUFFERED:
                 # If doing buffered drawing we'll just update the
                 # buffer here and then refresh that portion of the
-                # window, then that portion of the buffer will be
-                # redrawn in the EVT_PAINT handler.
+                # window.  Then the system will send an event and that
+                # portion of the buffer will be redrawn in the
+                # EVT_PAINT handler.
                 dc = wx.BufferedDC(None, self.buffer)
             else:
                 # otherwise we'll draw directly to a wx.ClientDC
@@ -190,7 +190,8 @@ class MyCanvas(wx.ScrolledWindow):
             self.SetXY(event)
             
             if BUFFERED:
-                # figure out what part of the window to refresh
+                # figure out what part of the window to refresh, based
+                # on what parts of the buffer we just updated
                 x1,y1, x2,y2 = dc.GetBoundingBox()
                 x1,y1 = self.CalcScrolledPosition(x1, y1)
                 x2,y2 = self.CalcScrolledPosition(x2, y2)

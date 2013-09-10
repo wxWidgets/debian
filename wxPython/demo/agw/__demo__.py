@@ -13,12 +13,12 @@ this module returns the following information:
                        
 These meta data are merged into the wxPython demo tree at startup.
 
-Last updated: Andrea Gavana @ 28 Jan 2011, 15.00 GMT.
-Version 0.9.1.
+Last updated: Andrea Gavana @ 04 Feb 2013, 21.00 GMT.
+Version 0.9.7.
 
 """
 
-__version__ = "0.9.1"
+__version__ = "0.9.7"
 __author__ = "Andrea Gavana <andrea.gavana@gmail.com>"
 
 
@@ -79,16 +79,18 @@ def GetRecentAdditions():
                            'FlatMenu', 'FlatNotebook', 'FloatSpin',
                            'FoldPanelBar', 'FourWaySplitter', 'GenericMessageDialog',
                            'GradientButton', 'HyperLinkCtrl', 'HyperTreeList',
-                           'KnobCtrl', 'LabelBook', 'MultiDirDialog',
+                           'AGWInfoBar', 'KnobCtrl', 'LabelBook', 'MultiDirDialog',
                            'PeakMeter', 'PersistentControls', 'PieCtrl', 'PyBusyInfo',
                            'PyCollapsiblePane', 'PyProgress', 'RibbonBar', 'RulerCtrl',
-                           'ShapedButton', 'SpeedMeter', 'SuperToolTip', 'ThumbnailCtrl',
-                           'ToasterBox', 'UltimateListCtrl', 'ZoomBar']
+                           'ShapedButton', 'ShortcutEditor', 'SpeedMeter', 'SuperToolTip',
+                           'ThumbnailCtrl', 'ToasterBox', 'UltimateListCtrl',
+                           'XLSGrid', 'ZoomBar']
     elif wx.VERSION < (2,9,2):
-        recentAdditions = ['AUI', 'PersistentControls', 'PyBusyInfo', 'PyGauge',
-                           'RibbonBar', 'UltimateListCtrl', 'ZoomBar']
+        recentAdditions = ['AUI', 'AGWInfoBar', 'PersistentControls', 'PyBusyInfo', 'PyGauge',
+                           'RibbonBar', 'ShortcutEditor', 'UltimateListCtrl',
+                           'XLSGrid', 'ZoomBar']
     else:
-        recentAdditions = ['PersistentControls']
+        recentAdditions = ['AGWInfoBar', 'PersistentControls', 'ShortcutEditor', 'XLSGrid']
 
     # Return the Recent Additions for AGW    
     return recentAdditions
@@ -109,11 +111,12 @@ def GetDemos():
                 'FlatMenu', 'FlatNotebook', 'FloatSpin',
                 'FoldPanelBar', 'FourWaySplitter', 'GenericMessageDialog',
                 'GradientButton', 'HyperLinkCtrl', 'HyperTreeList',
-                'KnobCtrl', 'LabelBook', 'MultiDirDialog',
+                'AGWInfoBar', 'KnobCtrl', 'LabelBook', 'MultiDirDialog',
                 'PeakMeter', 'PersistentControls', 'PieCtrl', 'PyBusyInfo',
                 'PyCollapsiblePane', 'PyGauge', 'PyProgress', 'RibbonBar',
-                'RulerCtrl', 'ShapedButton', 'SpeedMeter', 'SuperToolTip',
-                'ThumbnailCtrl', 'ToasterBox', 'UltimateListCtrl', 'ZoomBar']
+                'RulerCtrl', 'ShapedButton', 'ShortcutEditor', 'SpeedMeter',
+                'SuperToolTip', 'ThumbnailCtrl', 'ToasterBox',
+                'UltimateListCtrl', 'XLSGrid', 'ZoomBar']
 
     return AGWTreeItem, AGWDemos
 
@@ -129,7 +132,7 @@ def GetOverview():
                        "wx.Menu", "wx.ToolBar", "wx.Notebook", "wx.MessageDialog",
                        "wx.gizmos.TreeListCtrl", "wx.DirDialog", "wx.CollapsiblePane",
                        "wx.ProgressDialog", "wx.TipWindow", "wx.lib", "wx.aui", "wx.ListCtrl",
-                       "wx.BusyInfo", "wx.Panel", "wx.Gauge"]
+                       "wx.BusyInfo", "wx.Panel", "wx.Gauge", "wx.grid.Grid"]
 
     import wx.lib.agw
     _agwDocs = wx.lib.agw.__doc__

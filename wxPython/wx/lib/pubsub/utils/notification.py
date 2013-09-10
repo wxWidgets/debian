@@ -19,45 +19,8 @@ relevant information.
 :license: BSD, see LICENSE.txt for details.
 '''
 
-
-class INotificationHandler:
-    '''
-    Defines the interface expected by pubsub for notification 
-    messages. Any instance that supports the same methods, or 
-    derives from this class, will work as a notification handler
-    for pubsub events.
-
-    In all methods,
-    - pubListener is the instance of pub.Listener that wraps
-      the un/subscribed listener
-    - topicObj is the pub.Topic object representing the topic that
-      lead to the notification (use topicObj.getName() for its name in
-      dotted form)
-    '''
-    
-    def notifySubscribe(self, pubListener, topicObj, newSub):
-        '''Called when a listener is subscribed to a pubsub topic.
-        NewSub is false if listener was already subscribed. '''
-        raise NotImplementedError
-    def notifyUnsubscribe(self, pubListener, topicObj):
-        '''Called when a listener is unsubscribed from given topic. '''
-        raise NotImplementedError
-    def notifyDeadListener(self, pubListener, topicObj):
-        '''Called when a listener has been garbage collected'''
-        raise NotImplementedError
-    def notifySend(self, stage, topicObj, pubListener=None):
-        '''Called when a sendMessage is about to start (stage='pre'),
-        has completed (stage='post') and for each listener that is about
-        to be sent a message (stage='loop'). The pubListener is the
-        listener for stage=loop (other stages have pubListener=None).'''
-        raise NotImplementedError
-    
-    def notifyNewTopic(self, topicObj, description, required, argsDocs):
-        '''Called whenever a new topic is added to the topic tree. '''
-        raise NotImplementedError
-    def notifyDelTopic(self, topicName):
-        '''Called whenever a topic is removed from topic tree. '''
-        raise NotImplementedError
+from core import callables
+from core.notificationmgr import INotificationHandler
 
 
 class IgnoreNotificationsMixin(INotificationHandler):
@@ -314,7 +277,7 @@ def _createTopics(topicMap, topicMgr):
         listener = 'instance of pub.Listener containing dead listener')
 
 
-def useNotifyByPubsubMessage(pubModule=None, topicMgr=None, all=True, **kwargs):
+def useNotifyByPubsubMessage(publisher=None, all=True, **kwargs):
     '''Will cause all of pubsub's notifications of pubsub "actions" (such as
     new topic created, message sent, listener subscribed, etc) to be sent
     out as messages. Topic will be 'pubsub' subtopics, such as
@@ -323,32 +286,31 @@ def useNotifyByPubsubMessage(pubModule=None, topicMgr=None, all=True, **kwargs):
     The 'all' and kwargs args are the same as pubsub's setNotificationFlags(), 
     except that 'all' defaults to True.
     
-    The pubModule and topicMgr are rarely needed:
+    The publisher is rarely needed:
 
-    * The pubModule only needs to be specfied if pubsub is not installed
+    * The publisher only needs to be specfied if pubsub is not installed
       on the system search path (ie from pubsub import ... would fail or
       import wrong pubsub -- such as if pubsub is within wxPython's
       wx.lib package). Then pbuModule is the pub module to use::
 
         from wx.lib.pubsub import pub
         from wx.lib.pubsub.utils import notification
-        notification.useNotifyByPubsubMessage(pub)
+        notification.useNotifyByPubsubMessage()
 
-    * The topicMgr only needs to be specified if you are not using the default
-      topic manager created by pubsub.pub (or by provided pubModule).
     '''
-    if pubModule is None:
-        from pubsub import pub as pubModule
-    if topicMgr is None:
-        topicMgr = pubModule.getDefaultTopicMgr()
+    if publisher is None:
+        from intraimport import parentImport
+        pub = parentImport('pub')
+        publisher = pub.getDefaultPublisher()
+    topicMgr = publisher.getTopicMgr()
     notifHandler = NotifyByPubsubMessage( topicMgr )
-    pubModule.addNotificationHandler(notifHandler)
-
-    pubModule.setNotificationFlags(all=all, **kwargs)
+    
+    publisher.addNotificationHandler(notifHandler)
+    publisher.setNotificationFlags(all=all, **kwargs)
 
 
 def useNotifyByWriteFile(fileObj=None, prefix=None, 
-    pubModule=None, all=True, **kwargs):
+    publisher=None, all=True, **kwargs):
     '''Will cause all pubsub notifications of pubsub "actions" (such as
     new topic created, message sent, listener died etc) to be written to
     specified file (or stdout if none given). The fileObj need only
@@ -359,10 +321,13 @@ def useNotifyByWriteFile(fileObj=None, prefix=None,
     setNotificationFlags(), except that 'all' defaults to True.  See
     useNotifyByPubsubMessage() for an explanation of pubModule (typically
     only if pubsub inside wxPython's wx.lib)'''
-    if pubModule is None:
-        from pubsub import pub as pubModule
     notifHandler = NotifyByWriteFile(fileObj, prefix)
-    pubModule.addNotificationHandler(notifHandler)
-    pubModule.setNotificationFlags(all=all, **kwargs)
+
+    if publisher is None:
+        from intraimport import parentImport
+        pub = parentImport('pub')
+        publisher = pub.getDefaultPublisher()
+    publisher.addNotificationHandler(notifHandler)
+    publisher.setNotificationFlags(all=all, **kwargs)
 
 

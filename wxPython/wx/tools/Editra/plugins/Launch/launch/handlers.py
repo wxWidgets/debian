@@ -31,8 +31,8 @@ StyleText : Perform custom styling on the text as its added, line by line
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: handlers.py 67779 2011-05-23 21:12:48Z CJP $"
-__revision__ = "$Revision: 67779 $"
+__svnid__ = "$Id: handlers.py 70431 2012-01-21 16:38:15Z CJP $"
+__revision__ = "$Revision: 70431 $"
 
 __all__ = ['GetHandlerById', 'GetHandlerByName', 'GetState', 'DEFAULT_HANDLER']
 
@@ -179,7 +179,13 @@ class Meta:
     def __init__(self, meta_attrs):
         for (attr,default) in self._defaults.items():
             attr_val = meta_attrs.get(attr, default)
-            setattr(self, attr, copy.copy(attr_val))
+            try:
+                if attr in ('error', 'hotspot'):
+                    setattr(self, attr, attr_val)
+                else:
+                    setattr(self, attr, copy.copy(attr_val))
+            except Exception, msg:
+                util.Log("[Launch][err] Metadata copy error")
 
 class HandlerMeta(type):
     """Metaclass for manipulating a handler classes metadata converts
@@ -232,8 +238,8 @@ class FileTypeHandler(object):
         """Create an instance of a FileTypeHandler for the given
         file type. One of the two arguments must be provided. If
         both are provided the ftype argument will take preference.
-        @keyword ftype: Editra file type ID
-        @keyword name: File type description string
+        @param cls: Class object
+        @param ftype: Editra file type ID
 
         """
         obj = cls.handler_cache.get(ftype, None)
@@ -260,6 +266,7 @@ class FileTypeHandler(object):
     @classmethod
     def AppendCommand(cls, cmd):
         """Add a command to the list of commands known to this handler
+        @param cls: Class object
         @param cmd: Tuple of (Command alias, executable path or name)
 
         """
@@ -270,6 +277,7 @@ class FileTypeHandler(object):
     def RegisterClass(cls, handler):
         """Register a filetype handler in the handler
         chain cache.
+        @param cls: Class object
         @param handler: FileTypeHandler
 
         """
@@ -277,22 +285,33 @@ class FileTypeHandler(object):
 
     @classmethod
     def GetAliases(cls):
-        """Get the list of command aliases"""
+        """Get the list of command aliases
+        @param cls: Class object
+
+        """
         return sorted(cls.meta.commands.keys())
 
     @classmethod
     def GetCommand(cls, alias):
-        """Get the command for a given alias"""
+        """Get the command for a given alias
+        @param cls: Class object
+        @param alias: Command Alias (Unicode)
+
+        """
         return cls.meta.commands.get(alias, alias)
 
     @classmethod
     def GetCommands(cls):
-        """Get the set of commands available for this file type"""
+        """Get the set of commands available for this file type
+        @param cls: Class object
+
+        """
         return sorted(cls.meta.commands.items())
 
     @classmethod
     def GetDefault(cls):
         """Get the preferred default command
+        @param cls: Class object
         @return: string
 
         """
@@ -301,19 +320,25 @@ class FileTypeHandler(object):
     def GetEnvironment(self):
         """Get the dictionary of environmental variables to run the
         command under.
+        @return: dict
 
         """
         return dict(os.environ)
 
     @classmethod
     def GetName(cls):
-        """Get the name of this handler"""
+        """Get the name of this handler
+        @param cls: Class object
+        @return: Unicode
+
+        """
         return cls.meta.name
 
     @classmethod
     def HandleHotSpot(cls, mainw, outbuffer, line, fname):
         """Handle hotspot clicks. Called when a hotspot is clicked
         in an output buffer of this file type.
+        @param cls: Class object
         @param mainw: MainWindow instance that created the launch instance
         @param outbuffer: Buffer the click took place in
         @param line: line number of the hotspot region in the buffer
@@ -336,6 +361,7 @@ class FileTypeHandler(object):
     @classmethod
     def SetCommands(cls, cmds):
         """Set the list of commands known by the handler
+        @param cls: Class object
         @param cmds: list of command tuples
 
         """
@@ -360,6 +386,7 @@ class FileTypeHandler(object):
     @classmethod
     def SetDefault(cls, cmd):
         """Set the preferred default command
+        @param cls: Class object
         @param cmd: Command alias/path tuple to set as the preferred one
         @postcondition: if cmd is not in the saved command list it will be
                         added to that list.
@@ -372,7 +399,10 @@ class FileTypeHandler(object):
 
     @classmethod
     def StoreState(cls):
-        """Store the state of this handler"""
+        """Store the state of this handler
+        @param cls: Class object
+
+        """
         if cls.meta.transient:
             util.Log("[Launch][info] Transient XML handler: settings will not persist")
             # TODO: update XML configuration file?
@@ -386,7 +416,13 @@ class FileTypeHandler(object):
 
     @classmethod
     def StyleText(cls, stc, start, txt):
-        """Style Information and Error messages from script output."""
+        """Style Information and Error messages from script output.
+        @param cls: Class object
+        @param stc: EditraStc instance
+        @param start: Start position (int)
+        @param txt: Text to style (Unicode)
+
+        """
         if cls.meta.error is not None:
             sty = STYLE_NORMAL
             err, more = _StyleError(stc, start, txt, cls.meta.error)
@@ -402,6 +438,7 @@ class FileTypeHandler(object):
     @classmethod
     def _StyleText(cls, stc, start, txt):
         """Style the text in the given buffer
+        @param cls: Class object
         @param stc: stc based buffer to apply styling to
         @param start: start of text that was just added to buffer
         @param txt: text that was just added at start point
@@ -441,7 +478,11 @@ class BashHandler(FileTypeHandler):
         hotspot = re.compile('(.+): line ([0-9]+): .*' + os.linesep)
 
     def FilterInput(self, txt):
-        """Filter out ansi escape sequences from input"""
+        """Filter out ansi escape sequences from input
+        @param txt: Text to apply filter to
+        @return: Filtered Text
+
+        """
         txt = RE_ANSI_START.sub('', txt)
         return RE_ANSI_END.sub('', txt)
 
@@ -494,6 +535,8 @@ class CHandler(FileTypeHandler):
         typeid = synglob.ID_LANG_C
         commands = {'gcc -c' : 'gcc -c'}
         default = 'gcc -c'
+        error = re.compile  ('(.+):([0-9]+): error:.+')
+        hotspot = re.compile('(.+):([0-9]+): error:.+')
 
 class CPPHandler(FileTypeHandler):
     """FileTypeHandler for C++ Files"""
@@ -501,6 +544,8 @@ class CPPHandler(FileTypeHandler):
         typeid = synglob.ID_LANG_CPP
         commands = {'g++ -c' : 'g++ -c'}
         default = 'g++ -c'
+        error = re.compile  ('(.+):([0-9]+): error:.+')
+        hotspot = re.compile('(.+):([0-9]+): error:.+')
 
 #-----------------------------------------------------------------------------#
 

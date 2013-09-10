@@ -5,7 +5,7 @@
 # Author:       Joel Hare
 #
 # Created:      7/28/04
-# CVS-ID:       $Id: sysutils.py 38852 2006-04-20 06:26:03Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2004-2005 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------

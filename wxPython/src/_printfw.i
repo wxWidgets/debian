@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        _????.i
-// Purpose:     SWIG interface for wx????
+// Name:        _printfw.i
+// Purpose:     SWIG interface for Print Framework classes
 //
 // Author:      Robin Dunn
 //
 // Created:     9-Aug-2003
-// RCS-ID:      $Id: _printfw.i 43425 2006-11-14 22:03:54Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -55,6 +55,19 @@ enum wxPrintBin
     wxPRINTBIN_FORMSOURCE,
 
     wxPRINTBIN_USER,
+};
+
+// Preview frame modality kind used with wxPreviewFrame::Initialize()
+enum wxPreviewFrameModalityKind
+{
+    // Disable all the other top level windows while the preview is shown.
+    wxPreviewFrame_AppModal,
+
+    // Disable only the parent window while the preview is shown.
+    wxPreviewFrame_WindowModal,
+
+    // Don't disable any windows.
+    wxPreviewFrame_NonModal
 };
 
 
@@ -539,8 +552,10 @@ public:
     void SetPaperRectPixels(const wxRect& paperRectPixels);
     wxRect GetPaperRectPixels() const;
 
+
+    virtual void SetPreview(wxPrintPreview *preview);
+    wxPrintPreview *GetPreview() const;
     bool IsPreview();
-    void SetIsPreview(bool p);
 
     
     bool OnBeginDocument(int startPage, int endPage);
@@ -586,6 +601,8 @@ public:
                     const wxSize& size = wxDefaultSize,
                     long style = 0,
                     const wxString& name = wxPyPreviewCanvasNameStr);
+
+    void SetPreview(wxPrintPreviewBase *preview);
 };
 
 
@@ -605,6 +622,8 @@ public:
     %cleardisown(wxPrintPreview*);
 
     void Initialize();
+    void InitializeWithModality(wxPreviewFrameModalityKind kind);
+    
     void CreateControlBar();
     void CreateCanvas();
 
@@ -650,15 +669,10 @@ public:
                         long style = wxTAB_TRAVERSAL,
                         const wxString& name = wxPyPanelNameStr);
 
+    void SetPageInfo(int minPage, int maxPage);
     int GetZoomControl();
     void SetZoomControl(int zoom);
     wxPrintPreview* GetPrintPreview();
-
-    void OnNext();
-    void OnPrevious();
-    void OnFirst();
-    void OnLast();
-    void OnGoto();
 
     %property(PrintPreview, GetPrintPreview, doc="See `GetPrintPreview`");
     %property(ZoomControl, GetZoomControl, SetZoomControl, doc="See `GetZoomControl` and `SetZoomControl`");    
@@ -702,6 +716,10 @@ public:
     // The preview canvas should call this from OnPaint
     virtual bool PaintPage(wxPreviewCanvas *canvas, wxDC& dc);
 
+    // Updates rendered page by calling RenderPage() if needed, returns true
+    // if there was some change. Preview canvas should call it at idle time
+    virtual bool UpdatePageRendering();
+    
     // This draws a blank page onto the preview canvas
     virtual bool DrawBlankPage(wxPreviewCanvas *canvas, wxDC& dc);
 
@@ -910,6 +928,7 @@ public:
     void SetControlBar(wxPreviewControlBar* bar);
 
     void Initialize();
+    void InitializeWithModality(wxPreviewFrameModalityKind kind);
     void CreateCanvas();
     void CreateControlBar();
 

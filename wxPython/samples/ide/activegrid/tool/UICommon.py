@@ -5,7 +5,7 @@
 # Author:       Matt Fryer, Morgan Hua
 #
 # Created:      3/10/05
-# CVS-ID:       $Id: UICommon.py 38852 2006-04-20 06:26:03Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2005-2006 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------

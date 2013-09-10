@@ -53,9 +53,6 @@ class MyParentFrame(wx.MDIParentFrame):
     def OnEraseBackground(self, evt):
         dc = evt.GetDC()
 
-        if not dc:
-            dc = wx.ClientDC(self.GetClientWindow())
-
         # tile the background bitmap
         sz = self.GetClientSize()
         w = self.bg_bmp.GetWidth()
@@ -77,7 +74,6 @@ class MyParentFrame(wx.MDIParentFrame):
 if __name__ == '__main__':
     class MyApp(wx.App):
         def OnInit(self):
-            wx.InitAllImageHandlers()
             frame = MyParentFrame()
             frame.Show(True)
             self.SetTopWindow(frame)

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     4-June-2001
-// RCS-ID:      $Id: _xmlhandler.i 49695 2007-11-06 20:52:28Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,23 +27,9 @@ public:
     ~wxPyXmlResourceHandler() {}
 
     // Base class virtuals
-    DEC_PYCALLBACK_BOOL_NODE_pure(CanHandle);
 
-    // Don't use the macro for this one so we can pass false to findCallback
-    wxObject* DoCreateResource() {
-        wxObject* rv = NULL;
-        wxPyBlock_t blocked = wxPyBeginBlockThreads();
-        if (wxPyCBH_findCallback2(m_myInst, "DoCreateResource", false)) {
-            PyObject* ro;
-            ro = wxPyCBH_callCallbackObj(m_myInst, Py_BuildValue("()"));
-            if (ro) {
-                wxPyConvertSwigPtr(ro, (void **)&rv, wxT("wxObject"));
-                Py_DECREF(ro);
-            }
-        }
-        wxPyEndBlockThreads(blocked);
-        return rv;
-    }
+    DEC_PYCALLBACK_OBJECT__pure(DoCreateResource);
+    DEC_PYCALLBACK_BOOL_NODE_pure(CanHandle);
 
 
     // accessors for protected members
@@ -119,7 +105,7 @@ public:
                    wxSize size = wxDefaultSize)
         { return wxXmlResourceHandler::GetIcon(param, defaultArtClient, size); }
 
-    wxAnimation GetAnimation(const wxString& param = wxT("animation"))
+    wxAnimation* GetAnimation(const wxString& param = wxT("animation"))
         { return wxXmlResourceHandler::GetAnimation(param); }
 
     wxFont GetFont(const wxString& param = wxT("font"))
@@ -145,6 +131,7 @@ public:
     PYPRIVATE;
 };
 
+IMP_PYCALLBACK_OBJECT__pure(wxPyXmlResourceHandler, wxXmlResourceHandler, DoCreateResource);
 IMP_PYCALLBACK_BOOL_NODE_pure(wxPyXmlResourceHandler, wxXmlResourceHandler, CanHandle);
 
 %}
@@ -260,7 +247,7 @@ public:
     wxFont GetFont(const wxString& param = wxPyFontString);
 
     // Gets an animation.
-    wxAnimation GetAnimation(const wxString& param = wxPyAnimationString);
+    wxAnimation* GetAnimation(const wxString& param = wxPyAnimationString);
 
     // Sets common window options.
     void SetupWindow(wxWindow *wnd);

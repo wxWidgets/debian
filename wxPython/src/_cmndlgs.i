@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-July-1998
-// RCS-ID:      $Id: _cmndlgs.i 65975 2010-11-02 00:41:01Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -33,6 +33,12 @@ chooser dialog, used to transfer settings and results to and from the
 
 class wxColourData : public wxObject {
 public:
+    // number of custom colours we store
+    enum
+    {
+        NUM_CUSTOM = 16
+    };
+    
     DocCtorStr(
         wxColourData(),
         "Constructor, sets default values.", "");
@@ -72,6 +78,14 @@ black.", "");
         "Sets the i'th custom colour for the colour dialog. i should be an
 integer between 0 and 15. The default custom colours are all invalid colours.", "");
 
+    DocDeclStr(
+        wxString , ToString() const,
+        "Serialize to a string.", "");
+    
+    DocDeclStr(
+        bool , FromString(const wxString& str),
+        "Restore from a serialized string.", "");
+        
 
     %property(ChooseFull, GetChooseFull, SetChooseFull, doc="See `GetChooseFull` and `SetChooseFull`");
     %property(Colour, GetColour, SetColour, doc="See `GetColour` and `SetColour`");
@@ -107,7 +121,8 @@ instance.", "");
 
 wxColour wxGetColourFromUser(wxWindow *parent = (wxWindow *)NULL,
                              const wxColour& colInit = wxNullColour,
-                             const wxString& caption = wxPyEmptyString);
+                             const wxString& caption = wxPyEmptyString,
+                             wxColourData* data = NULL);
 
 
 //--------------------------------------------------------------------------------
@@ -198,15 +213,6 @@ public:
 %}
 
 enum {
-    // These will dissappear in 2.8
-    wxOPEN,
-    wxSAVE,
-    wxOVERWRITE_PROMPT,
-    wxFILE_MUST_EXIST,
-    wxMULTIPLE,
-    wxCHANGE_DIR,
-    wxHIDE_READONLY,
-
     wxFD_OPEN,
     wxFD_SAVE,
     wxFD_OVERWRITE_PROMPT,
@@ -216,6 +222,17 @@ enum {
     wxFD_PREVIEW,
     wxFD_DEFAULT_STYLE,
 };
+
+%pythoncode {
+    %# deprecated names
+    OPEN              = FD_OPEN
+    SAVE              = FD_SAVE
+    OVERWRITE_PROMPT  = FD_OVERWRITE_PROMPT
+    FILE_MUST_EXIST   = FD_FILE_MUST_EXIST
+    MULTIPLE          = FD_MULTIPLE
+    CHANGE_DIR        = FD_CHANGE_DIR
+}
+         
 
 DocStr(wxFileDialog,
 "wx.FileDialog allows the user to select one or more files from the
@@ -272,7 +289,8 @@ public:
                      const wxString& defaultFile = wxPyEmptyString,
                      const wxString& wildcard = wxPyFileSelectorDefaultWildcardStr,
                      long style = wxFD_DEFAULT_STYLE,
-                     const wxPoint& pos = wxDefaultPosition),
+                     const wxPoint& pos = wxDefaultPosition,
+                     const wxSize& size = wxDefaultSize),
         "Constructor.  Use ShowModal method to show the dialog.", "");
 
 
@@ -341,6 +359,7 @@ GetFilename for the others.", "");
         PyObject* GetFilenames() {
             wxArrayString arr;
             self->GetFilenames(arr);
+            wxPyThreadBlocker blocker;
             return wxArrayString2PyList_helper(arr);
         }
 
@@ -352,6 +371,7 @@ style, use GetPath for the others.", "");
         PyObject* GetPaths() {
             wxArrayString arr;
             self->GetPaths(arr);
+            wxPyThreadBlocker blocker;
             return wxArrayString2PyList_helper(arr);
         }
     }
@@ -407,7 +427,7 @@ public:
         wxMultiChoiceDialog(wxWindow *parent,
                             const wxString& message,
                             const wxString& caption,
-                            int choices=0, wxString* choices_array=NULL,
+                            const wxArrayString& choices,
                             long style = wxCHOICEDLG_STYLE,
                             const wxPoint& pos = wxDefaultPosition),
         "__init__(self, Window parent, String message, String caption,
@@ -466,17 +486,17 @@ public:
             "Constructor.  Use ShowModal method to show the dialog.", "");
 
     %extend {
-        // TODO: ignoring clientData for now...  FIX THIS
-        //       SWIG is messing up the &/*'s for some reason.
+        // TODO: ignoring clientData for now...  FIX THIS. SWIG is messing up
+        //       the &/*'s for some reason, and we need a typemap anyway
         wxSingleChoiceDialog(wxWindow* parent,
                              const wxString& message,
                              const wxString& caption,
-                             int choices, wxString* choices_array,
-                             //char** clientData = NULL,
+                             const wxArrayString& choices,
+                             //void** clientData = NULL,
                              long style = wxCHOICEDLG_STYLE,
                              const wxPoint& pos = wxDefaultPosition) {
             return new wxSingleChoiceDialog(parent, message, caption,
-                                            choices, choices_array, NULL, style, pos);
+                                            choices, (void**)NULL, style, pos);
         }
     }
 
@@ -738,23 +758,46 @@ public:
                         const wxPoint& pos = wxDefaultPosition),
         "Constructor, use `ShowModal` to display the dialog.", "");
 
+    // methods for setting up more custom message dialogs -- all functions
+    // return false if they're not implemented
+    virtual bool SetYesNoLabels(const wxString& yes,
+                                const wxString& no);
+
+    virtual bool SetYesNoCancelLabels(const wxString& yes,
+                                      const wxString& no,
+                                      const wxString& cancel);
+
+    virtual bool SetOKLabel(const wxString& ok);
+
+    virtual bool SetOKCancelLabels(const wxString& ok,
+                                   const wxString& cancel);
+
+    virtual bool SetHelpLabel(const wxString& help);
+    
+    wxString GetHelpLabel() const;
+    
+    virtual void SetMessage(const wxString& message);
+
+    virtual void SetExtendedMessage(const wxString& extendedMessage);
+
+  
 };
 
 //---------------------------------------------------------------------------
 
 enum {
-    wxPD_AUTO_HIDE,
-    wxPD_APP_MODAL,
-    wxPD_CAN_ABORT,
-    wxPD_ELAPSED_TIME,
-    wxPD_ESTIMATED_TIME,
-    wxPD_REMAINING_TIME,
-    wxPD_SMOOTH,
-    wxPD_CAN_SKIP
+    wxPD_CAN_ABORT,      
+    wxPD_APP_MODAL,      
+    wxPD_AUTO_HIDE,      
+    wxPD_ELAPSED_TIME,   
+    wxPD_ESTIMATED_TIME, 
+    wxPD_SMOOTH,         
+    wxPD_REMAINING_TIME, 
+    wxPD_CAN_SKIP,       
 };
 
 
-DocStr(wxProgressDialog,
+DocStr(wxGenericProgressDialog,
 "A dialog that shows a short message and a progress bar. Optionally, it
 can display an ABORT button.", "
 
@@ -798,14 +841,14 @@ Window Styles
 
 // TODO: wxPD_CAN_SKIP
 
-MustHaveApp(wxProgressDialog);
+MustHaveApp(wxGenericProgressDialog);
 
-class wxProgressDialog : public wxDialog {
+class wxGenericProgressDialog : public wxDialog {
 public:
-    %pythonAppend wxProgressDialog   "self._setOORInfo(self)"
+    %pythonAppend wxGenericProgressDialog   "self._setOORInfo(self)"
 
     DocCtorStr(
-        wxProgressDialog(const wxString& title,
+        wxGenericProgressDialog(const wxString& title,
                          const wxString& message,
                          int maximum = 100,
                          wxWindow* parent = NULL,
@@ -863,7 +906,49 @@ progress.", "")
         "Can be used to continue with the dialog, after the user had chosen to
 abort.", "");
 
+    
+    DocDeclStr(
+        int , GetValue() const,
+        "", "");
+    
+    DocDeclStr(
+        int , GetRange() const,
+        "", "");
+
+    DocDeclStr(
+        void , SetRange(int maximum),
+        "", "");
+    
+    
+    DocDeclStr(
+        wxString , GetMessage() const,
+        "", "");
+
+    // Return whether "Cancel" or "Skip" button was pressed, always return
+    // false if the corresponding button is not shown.
+    bool WasCancelled() const;
+    bool WasSkipped() const;
+
+    
+    %property(Value, GetValue);
+    %property(Range, GetRange, SetRange);
+    %property(Message, GetMessage);
 };
+
+
+MustHaveApp(wxProgressDialog);
+
+class wxProgressDialog : public wxGenericProgressDialog
+{
+public:
+    %pythonAppend wxProgressDialog   "self._setOORInfo(self)"
+    
+    wxProgressDialog( const wxString& title, const wxString& message,
+                      int maximum = 100,
+                      wxWindow *parent = NULL,
+                      int style = wxPD_APP_MODAL | wxPD_AUTO_HIDE );
+};
+
 
 //---------------------------------------------------------------------------
 
@@ -934,7 +1019,7 @@ public:
 wx.FR_DOWN, wx.FR_WHOLEWORD and wx.FR_MATCHCASE flags.", "");
 
     DocDeclStr(
-        const wxString& , GetFindString(),
+        const wxString , GetFindString(),
         "Return the string to find (never empty).", "");
 
     DocDeclStr(

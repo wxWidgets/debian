@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/3/2006 2:28:21 PM
-// RCS-ID:      $Id: richtextindentspage.h 43277 2006-11-10 15:48:46Z JS $
+// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,8 @@
 /*!
  * Includes
  */
+
+#include "wx/richtext/richtextdialogpage.h"
 
 ////@begin includes
 #include "wx/statline.h"
@@ -34,7 +36,7 @@ class wxRichTextCtrl;
 
 ////@begin control identifiers
 #define SYMBOL_WXRICHTEXTINDENTSSPACINGPAGE_STYLE wxRESIZE_BORDER|wxTAB_TRAVERSAL
-#define SYMBOL_WXRICHTEXTINDENTSSPACINGPAGE_TITLE _("wxRichTextFontPage")
+#define SYMBOL_WXRICHTEXTINDENTSSPACINGPAGE_TITLE wxEmptyString
 #define SYMBOL_WXRICHTEXTINDENTSSPACINGPAGE_IDNAME ID_RICHTEXTINDENTSSPACINGPAGE
 #define SYMBOL_WXRICHTEXTINDENTSSPACINGPAGE_SIZE wxSize(400, 300)
 #define SYMBOL_WXRICHTEXTINDENTSSPACINGPAGE_POSITION wxDefaultPosition
@@ -44,10 +46,11 @@ class wxRichTextCtrl;
  * wxRichTextIndentsSpacingPage class declaration
  */
 
-class WXDLLIMPEXP_RICHTEXT wxRichTextIndentsSpacingPage: public wxPanel
+class WXDLLIMPEXP_RICHTEXT wxRichTextIndentsSpacingPage: public wxRichTextDialogPage
 {
     DECLARE_DYNAMIC_CLASS( wxRichTextIndentsSpacingPage )
     DECLARE_EVENT_TABLE()
+    DECLARE_HELP_PROVISION()
 
 public:
     /// Constructors
@@ -71,44 +74,44 @@ public:
     void UpdatePreview();
 
     /// Gets the attributes associated with the main formatting dialog
-    wxTextAttrEx* GetAttributes();
+    wxRichTextAttr* GetAttributes();
 
 ////@begin wxRichTextIndentsSpacingPage event handler declarations
 
-    /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RICHTEXTINDENTSSPACINGPAGE_ALIGNMENT_LEFT
+    /// wxEVT_RADIOBUTTON event handler for ID_RICHTEXTINDENTSSPACINGPAGE_ALIGNMENT_LEFT
     void OnAlignmentLeftSelected( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RICHTEXTINDENTSSPACINGPAGE_ALIGNMENT_RIGHT
+    /// wxEVT_RADIOBUTTON event handler for ID_RICHTEXTINDENTSSPACINGPAGE_ALIGNMENT_RIGHT
     void OnAlignmentRightSelected( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RICHTEXTINDENTSSPACINGPAGE_ALIGNMENT_JUSTIFIED
+    /// wxEVT_RADIOBUTTON event handler for ID_RICHTEXTINDENTSSPACINGPAGE_ALIGNMENT_JUSTIFIED
     void OnAlignmentJustifiedSelected( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RICHTEXTINDENTSSPACINGPAGE_ALIGNMENT_CENTRED
+    /// wxEVT_RADIOBUTTON event handler for ID_RICHTEXTINDENTSSPACINGPAGE_ALIGNMENT_CENTRED
     void OnAlignmentCentredSelected( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RICHTEXTINDENTSSPACINGPAGE_ALIGNMENT_INDETERMINATE
+    /// wxEVT_RADIOBUTTON event handler for ID_RICHTEXTINDENTSSPACINGPAGE_ALIGNMENT_INDETERMINATE
     void OnAlignmentIndeterminateSelected( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_RICHTEXTINDENTSSPACINGPAGE_INDENT_LEFT
+    /// wxEVT_TEXT event handler for ID_RICHTEXTINDENTSSPACINGPAGE_INDENT_LEFT
     void OnIndentLeftUpdated( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_RICHTEXTINDENTSSPACINGPAGE_INDENT_LEFT_FIRST
+    /// wxEVT_TEXT event handler for ID_RICHTEXTINDENTSSPACINGPAGE_INDENT_LEFT_FIRST
     void OnIndentLeftFirstUpdated( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_RICHTEXTINDENTSSPACINGPAGE_INDENT_RIGHT
+    /// wxEVT_TEXT event handler for ID_RICHTEXTINDENTSSPACINGPAGE_INDENT_RIGHT
     void OnIndentRightUpdated( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_COMBOBOX_SELECTED event handler for ID_RICHTEXTINDENTSSPACINGPAGE_OUTLINELEVEL
+    /// wxEVT_COMBOBOX event handler for ID_RICHTEXTINDENTSSPACINGPAGE_OUTLINELEVEL
     void OnRichtextOutlinelevelSelected( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_RICHTEXTINDENTSSPACINGPAGE_SPACING_BEFORE
+    /// wxEVT_TEXT event handler for ID_RICHTEXTINDENTSSPACINGPAGE_SPACING_BEFORE
     void OnSpacingBeforeUpdated( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_RICHTEXTINDENTSSPACINGPAGE_SPACING_AFTER
+    /// wxEVT_TEXT event handler for ID_RICHTEXTINDENTSSPACINGPAGE_SPACING_AFTER
     void OnSpacingAfterUpdated( wxCommandEvent& event );
 
-    /// wxEVT_COMMAND_COMBOBOX_SELECTED event handler for ID_RICHTEXTINDENTSSPACINGPAGE_SPACING_LINE
+    /// wxEVT_COMBOBOX event handler for ID_RICHTEXTINDENTSSPACINGPAGE_SPACING_LINE
     void OnSpacingLineSelected( wxCommandEvent& event );
 
 ////@end wxRichTextIndentsSpacingPage event handler declarations
@@ -138,6 +141,7 @@ public:
     wxTextCtrl* m_spacingBefore;
     wxTextCtrl* m_spacingAfter;
     wxComboBox* m_spacingLine;
+    wxCheckBox* m_pageBreakCtrl;
     wxRichTextCtrl* m_previewCtrl;
     /// Control identifiers
     enum {
@@ -154,6 +158,7 @@ public:
         ID_RICHTEXTINDENTSSPACINGPAGE_SPACING_BEFORE = 10114,
         ID_RICHTEXTINDENTSSPACINGPAGE_SPACING_AFTER = 10116,
         ID_RICHTEXTINDENTSSPACINGPAGE_SPACING_LINE = 10115,
+        ID_RICHTEXTINDENTSSPACINGPAGE_PAGEBREAK = 10106,
         ID_RICHTEXTINDENTSSPACINGPAGE_PREVIEW_CTRL = 10109
     };
 ////@end wxRichTextIndentsSpacingPage member variables

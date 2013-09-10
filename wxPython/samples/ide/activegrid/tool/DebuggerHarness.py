@@ -5,7 +5,7 @@
 # Author:       Matt Fryer
 #
 # Created:      7/28/04
-# CVS-ID:       $Id: DebuggerHarness.py 36607 2005-12-30 23:02:03Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2005 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-Aug-1998
-// RCS-ID:      $Id: _statusbar.i 41166 2006-09-12 03:20:12Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,19 @@
 //---------------------------------------------------------------------------
 %newgroup;
 
+// wxStatusBar styles
+enum {
+    wxSTB_SIZEGRIP,
+    wxSTB_SHOW_TIPS,
+
+    wxSTB_ELLIPSIZE_START,
+    wxSTB_ELLIPSIZE_MIDDLE,
+    wxSTB_ELLIPSIZE_END,
+
+    wxSTB_DEFAULT_STYLE,
+
+    wxST_SIZEGRIP,
+};
 
 enum {
     wxSB_NORMAL,
@@ -28,8 +41,39 @@ enum {
     wxSB_RAISED
 };
 
+//---------------------------------------------------------------------------
 
 
+class wxStatusBarPane
+{
+public:
+    wxStatusBarPane(int style = wxSB_NORMAL, size_t width = 0);
+
+    int GetWidth() const;
+    int GetStyle() const;
+    wxString GetText() const;
+
+    bool IsEllipsized() const;
+    void SetIsEllipsized(bool isEllipsized);
+
+    void SetWidth(int width);
+    void SetStyle(int style);
+
+    // set text, return true if it changed or false if it was already set to
+    // this value
+    bool SetText(const wxString& text);
+
+    // save the existing text on top of our stack and make the new text
+    // current; return true if the text really changed
+    bool PushText(const wxString& text);
+
+    // restore the message saved by the last call to Push() (unless it was
+    // changed by an intervening call to SetText()) and return true if we
+    // really restored anything
+    bool PopText();
+};
+
+//---------------------------------------------------------------------------
       
 // wxStatusBar: a window near the bottom of the frame used for status info
 MustHaveApp(wxStatusBar);
@@ -71,14 +115,15 @@ public:
     // negative width according to the abs value of the width (field with width
     // -2 grows twice as much as one with width -1 &c)
     virtual void SetStatusWidths(int widths, const int* widths_field); 
-
+    int GetStatusWidth(int n) const;
+    
 
     // Set the field style. Use either wxSB_NORMAL (default) for a standard 3D 
     // border around a field, wxSB_FLAT for no border around a field, so that it 
     // appears flat or wxSB_POPOUT to make the field appear raised.
     // Setting field styles only works on wxMSW
     virtual void SetStatusStyles(int styles, const int* styles_field);
-    
+    int GetStatusStyle(int n) const;    
     
     // Get the position and size of the field's internal bounding rectangle
     %extend {
@@ -95,6 +140,9 @@ public:
     // get the dimensions of the horizontal and vertical borders
     virtual int GetBorderX() const;
     virtual int GetBorderY() const;
+    wxSize GetBorders() const;
+
+    const wxStatusBarPane& GetField(int n) const;
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);

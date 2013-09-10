@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _slider.i 47393 2007-07-12 21:04:00Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -30,14 +30,16 @@ enum {
     wxSL_VERTICAL,
     wxSL_TICKS,
     wxSL_AUTOTICKS,
-    wxSL_LABELS,
     wxSL_LEFT,
     wxSL_TOP,
     wxSL_RIGHT,
     wxSL_BOTTOM,
     wxSL_BOTH,
     wxSL_SELRANGE,
-    wxSL_INVERSE
+    wxSL_INVERSE,
+    wxSL_MIN_MAX_LABELS,
+    wxSL_VALUE_LABEL,   
+    wxSL_LABELS,
 };
 
 

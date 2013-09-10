@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Modified by: Ryan Norton (Native GTK2.0+ checklist)
-// Id:          $Id: checklst.cpp 42469 2006-10-26 20:29:02Z RR $
+// Id:          $Id$
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,30 +14,28 @@
 #if wxUSE_CHECKLISTBOX
 
 #include "wx/checklst.h"
-#include "wx/gtk/private.h"
-#include "wx/gtk/treeentry_gtk.h"
 
-#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
 //-----------------------------------------------------------------------------
 // "toggled"
 //-----------------------------------------------------------------------------
 extern "C" {
-static void gtk_checklist_toggled(GtkCellRendererToggle *renderer,
+static void gtk_checklist_toggled(GtkCellRendererToggle * WXUNUSED(renderer),
                                   gchar                 *stringpath,
                                   wxCheckListBox        *listbox)
 {
     wxCHECK_RET( listbox->m_treeview != NULL, wxT("invalid listbox") );
 
     GtkTreePath* path = gtk_tree_path_new_from_string(stringpath);
-    wxCommandEvent new_event( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,
+    wxCommandEvent new_event( wxEVT_CHECKLISTBOX,
                               listbox->GetId() );
     new_event.SetEventObject( listbox );
     new_event.SetInt( gtk_tree_path_get_indices(path)[0] );
+    new_event.SetString( listbox->GetString( new_event.GetInt() ));
     gtk_tree_path_free(path);
     listbox->Check( new_event.GetInt(), !listbox->IsChecked(new_event.GetInt()));
-    listbox->GetEventHandler()->ProcessEvent( new_event );
+    listbox->HandleWindowEvent( new_event );
 }
 }
 
@@ -45,9 +43,7 @@ static void gtk_checklist_toggled(GtkCellRendererToggle *renderer,
 // wxCheckListBox
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxCheckListBox,wxListBox)
-
-wxCheckListBox::wxCheckListBox() : wxListBox()
+wxCheckListBox::wxCheckListBox() : wxCheckListBoxBase()
 {
     m_hasCheckBoxes = true;
 }
@@ -87,7 +83,12 @@ void wxCheckListBox::DoCreateCheckList()
         gtk_tree_view_column_new_with_attributes( "", renderer,
                                                   "active", 0,
                                                   NULL );
-    gtk_tree_view_column_set_fixed_width(column, 20);
+#if wxUSE_LIBHILDON2
+    gtk_tree_view_column_set_fixed_width(column, 40);
+#else
+    gtk_tree_view_column_set_fixed_width(column, 22);
+#endif // wxUSE_LIBHILDON2/!wxUSE_LIBHILDON2
+
     gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
     gtk_tree_view_column_set_clickable(column, TRUE);
 
@@ -117,7 +118,7 @@ bool wxCheckListBox::IsChecked(unsigned int index) const
                              0, //column
                              &value);
 
-    return g_value_get_boolean(&value) == TRUE ? true : false;
+    return g_value_get_boolean(&value) != 0;
 }
 
 void wxCheckListBox::Check(unsigned int index, bool check)

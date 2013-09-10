@@ -1,0 +1,11 @@
+<map id="wxFilterInputStream" name="wxFilterInputStream">
+<area shape="rect" id="node7" href="$classwx_archive_input_stream.html" title="This is an abstract base class which serves as a common interface to archive input streams such as wx..." alt="" coords="68,238,217,266"/>
+<area shape="rect" id="node13" href="$classwx_buffered_input_stream.html" title="This stream acts as a cache." alt="" coords="241,238,396,266"/>
+<area shape="rect" id="node15" href="$classwx_wrapper_input_stream.html" title="A wrapper input stream is a kind of filter stream which forwards all the operations to its base strea..." alt="" coords="420,238,575,266"/>
+<area shape="rect" id="node19" href="$classwx_zlib_input_stream.html" title="This filter stream decompresses a stream that is in zlib or gzip format." alt="" coords="599,238,727,266"/>
+<area shape="rect" id="node2" href="$classwx_input_stream.html" title="wxInputStream is an abstract base class which may not be used directly." alt="" coords="355,83,461,111"/>
+<area shape="rect" id="node4" href="$classwx_stream_base.html" title="This class is the base class of most stream related classes in wxWidgets." alt="" coords="355,6,461,34"/>
+<area shape="rect" id="node9" href="$classwx_tar_input_stream.html" title="Input stream for reading tar files." alt="" coords="5,315,131,343"/>
+<area shape="rect" id="node11" href="$classwx_zip_input_stream.html" title="Input stream for reading zip files." alt="" coords="155,315,280,343"/>
+<area shape="rect" id="node17" href="$classwx_f_s_input_stream.html" title="Input stream for virtual file stream files." alt="" coords="435,315,560,343"/>
+</map>

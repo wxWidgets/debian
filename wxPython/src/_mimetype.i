@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _mimetype.i 54679 2008-07-18 03:29:02Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -158,7 +158,9 @@ public:
     %extend {
         PyObject* GetMimeType() {
             wxString str;
-            if (self->GetMimeType(&str)) 
+            bool res = self->GetMimeType(&str);
+            wxPyThreadBlocker blocker;
+            if (res)
                 return wx2PyString(str);
             else
                 RETURN_NONE();
@@ -166,7 +168,9 @@ public:
         
         PyObject* GetMimeTypes() {
             wxArrayString arr;
-            if (self->GetMimeTypes(arr))
+            bool res = self->GetMimeTypes(arr);
+            wxPyThreadBlocker blocker;
+            if (res)
                 return wxArrayString2PyList_helper(arr);
             else
                 RETURN_NONE();
@@ -178,7 +182,9 @@ public:
     %extend {
         PyObject* GetExtensions() {
             wxArrayString arr;
-            if (self->GetExtensions(arr))
+            bool res = self->GetExtensions(arr);
+            wxPyThreadBlocker blocker;
+            if (res)
                 return wxArrayString2PyList_helper(arr);
             else
                 RETURN_NONE();
@@ -372,23 +378,12 @@ public:
     // were some unrecognized entries (the good entries are always read anyhow)
     //
 
-    // read in additional file (the standard ones are read automatically)
-    // in mailcap format (see mimetype.cpp for description)
-    //
-    // 'fallback' parameter may be set to True to avoid overriding the
-    // settings from other, previously parsed, files by this one: normally,
-    // the files read most recently would override the older files, but with
-    // fallback == True this won't happen
-    bool ReadMailcap(const wxString& filename, bool fallback = false);
-
-    // read in additional file in mime.types format
-    bool ReadMimeTypes(const wxString& filename);
-
     // enumerate all known MIME types
     %extend {
         PyObject* EnumAllFileTypes() {
             wxArrayString arr;
             self->EnumAllFileTypes(arr);
+            wxPyThreadBlocker blocker;
             return wxArrayString2PyList_helper(arr);
         }
     }

@@ -1,0 +1,5 @@
+<map id="wxGridCellBoolRenderer" name="wxGridCellBoolRenderer">
+<area shape="rect" id="node2" href="$classwx_grid_cell_renderer.html" title="This class is responsible for actually drawing the cell in the grid." alt="" coords="89,83,223,111"/>
+<area shape="rect" id="node4" href="$classwx_client_data_container.html" title="This class is a mixin that provides storage and management of &quot;client data&quot;." alt="" coords="5,6,157,34"/>
+<area shape="rect" id="node6" href="$classwx_ref_counter.html" title="This class is used to manage reference&#45;counting providing a simple interface and a counter..." alt="" coords="181,6,283,34"/>
+</map>

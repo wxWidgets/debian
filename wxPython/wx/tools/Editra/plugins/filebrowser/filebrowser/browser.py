@@ -3,7 +3,7 @@
 # Name: browser.py                                                            #
 # Purpose: UI portion of the FileBrowser Plugin                               #
 # Author: Cody Precord <cprecord@editra.org>                                  #
-# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# Copyright: (c) 2008-2013 Cody Precord <staff@editra.org>                    #
 # License: wxWindows License                                                  #
 ###############################################################################
 
@@ -14,18 +14,19 @@ FileBrowser Plugin.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: browser.py 67507 2011-04-16 14:38:39Z CJP $"
-__revision__ = "$Revision: 67507 $"
+__svnid__ = "$Id: browser.py 73347 2013-01-05 19:58:31Z CJP $"
+__revision__ = "$Revision: 73347 $"
 
 #-----------------------------------------------------------------------------#
 # Imports
 import os
 import sys
+import fnmatch
+import time
 import stat
 import zipfile
 import shutil
 import subprocess
-import threading
 import wx
 
 # Editra Library Modules
@@ -33,15 +34,20 @@ import ed_glob
 import ed_msg
 import ed_menu
 import ed_mdlg
-import syntax.syntax
-import util
+import syntax.synglob as synglob
+import syntax.syntax as syntax
+import util as util
+import ed_thread
 import eclib
 import ebmlib
+import ed_basewin
+
+# Local Modules
+import filebrowser.fbcfg as fbcfg
 
 #-----------------------------------------------------------------------------#
 # Globals
 PANE_NAME = u'FileBrowser'
-ID_BROWSERPANE = wx.NewId()
 ID_FILEBROWSE = wx.NewId()
 
 # Configure Platform specific commands
@@ -60,6 +66,20 @@ def TrashString():
     else:
         return _("Move to Trash")
 
+def refreshAfter(func):
+    """Do a file refresh after call. Helper decorator for
+    FileBrowser2 class
+
+    """
+    def callRefresh(*args, **kwds):
+      rval = func(*args, **kwds)
+      args[0].RefreshView()
+      return rval
+
+    callRefresh.__name__ = func.__name__
+    callRefresh.__doc__ = func.__doc__
+    return callRefresh
+
 _ = wx.GetTranslation
 #-----------------------------------------------------------------------------#
 
@@ -69,10 +89,9 @@ ID_REMOVE_MARK = wx.NewId()
 
 class BrowserMenuBar(eclib.ControlBar):
     """Creates a menubar with """
-
     def __init__(self, parent):
-        eclib.ControlBar.__init__(self, parent,
-                                  style=eclib.CTRLBAR_STYLE_GRADIENT)
+        super(BrowserMenuBar, self).__init__(parent,
+                                             style=eclib.CTRLBAR_STYLE_GRADIENT)
 
         if wx.Platform == '__WXGTK__':
             self.SetWindowStyle(eclib.CTRLBAR_STYLE_DEFAULT)
@@ -83,15 +102,6 @@ class BrowserMenuBar(eclib.ControlBar):
         self._ids = list()  # List of ids of menu items
         self._rids = list() # List of remove menu item ids
 
-        key = u'Ctrl'
-        if wx.Platform == '__WXMAC__':
-            key = u'Cmd'
-
-        tt = wx.ToolTip(_("To open multiple files at once %s+Click to select "
-                          "the desired files/folders then hit Enter to open "
-                          "them all at once") % key)
-        self.SetToolTip(tt)
-
         # Build Menus
         menu = ed_menu.EdMenu()
         menu.Append(ID_MARK_PATH, _("Save Selected Paths"))
@@ -100,6 +110,9 @@ class BrowserMenuBar(eclib.ControlBar):
         menu.AppendMenu(ID_REMOVE_MARK, _("Remove Saved Path"), self._rmpath)
 
         # Button
+        bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF), wx.ART_MENU)
+        self.prefb = eclib.PlateButton(self, bmp=bmp,
+                                       style=eclib.PB_STYLE_NOBG)
         bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_ADD_BM), wx.ART_MENU)
         self.menub = eclib.PlateButton(self, bmp=bmp,
                                        style=eclib.PB_STYLE_NOBG)
@@ -107,15 +120,28 @@ class BrowserMenuBar(eclib.ControlBar):
         self.menub.SetMenu(menu)
 
         # Layout bar
+        self.AddControl(self.prefb, wx.ALIGN_LEFT)
         self.AddControl(self.menub, wx.ALIGN_LEFT)
 
         # Event Handlers
         ed_msg.Subscribe(self.OnThemeChanged, ed_msg.EDMSG_THEME_CHANGED)
+        self.Bind(wx.EVT_BUTTON, self.OnPref, self.prefb)
         self.Bind(wx.EVT_BUTTON, lambda evt: self.menub.ShowMenu(), self.menub)
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy, self)
 
-    def __del__(self):
+    SavedMenu = property(lambda self: self._saved)
+    RemoveMenu = property(lambda self: self._rmpath)
+
+    def OnDestroy(self, evt):
         """Unsubscribe from messages"""
-        ed_msg.Unsubscribe(self.OnThemeChanged)
+        if self:
+            ed_msg.Unsubscribe(self.OnThemeChanged)
+
+    def OnPref(self, evt):
+        """Show the preferences dialog"""
+        dlg = fbcfg.FBConfigDlg(self.TopLevelParent)
+        dlg.ShowModal()
+        dlg.Destroy()
 
     # XXX maybe change to list the more recently added items near the top
     def AddItem(self, label):
@@ -140,22 +166,14 @@ class BrowserMenuBar(eclib.ControlBar):
 
     def GetItemText(self, item_id):
         """Retrieves the text label of the given item"""
-        item = self.GetSavedMenu().FindItemById(item_id)
+        item = self.SavedMenu.FindItemById(item_id)
         if not item:
-            item = self.GetRemoveMenu().FindItemById(item_id)
+            item = self.RemoveMenu.FindItemById(item_id)
 
         if item:
             return item.GetLabel()
         else:
             return u''
-
-    def GetRemoveMenu(self):
-        """Returns the remove menu"""
-        return self._rmpath
-
-    def GetSavedMenu(self):
-        """Returns the menu containg the saved items"""
-        return self._saved
 
     def OnThemeChanged(self, msg):
         """Update the buttons icon when the icon theme changes
@@ -176,8 +194,8 @@ class BrowserMenuBar(eclib.ControlBar):
 
         if path_id in r_ids:
             index = r_ids.index(path_id)
-            self.GetRemoveMenu().Remove(path_id)
-            self.GetSavedMenu().Remove(o_ids[index])
+            self.RemoveMenu.Remove(path_id)
+            self.SavedMenu.Remove(o_ids[index])
             self._rids.remove(path_id)
             del self._ids[index]
 
@@ -185,93 +203,63 @@ class BrowserMenuBar(eclib.ControlBar):
 
 class BrowserPane(eclib.ControlBox):
     """Creates a filebrowser Pane"""
-    ID_SHOW_HIDDEN = wx.NewId()
-
-    def __init__(self, parent, id, pos=wx.DefaultPosition,
-                 size=wx.DefaultSize, style=wx.NO_BORDER|wx.TAB_TRAVERSAL):
-        eclib.ControlBox.__init__(self, parent, id, pos, size, style)
+    def __init__(self, parent):
+        super(BrowserPane, self).__init__(parent)
         
         # Attributes
         self._mw = parent
-        filters = u"".join(syntax.syntax.GenFileFilters())
         self._menbar = BrowserMenuBar(self)
-        self._browser = FileBrowser(self, ID_FILEBROWSE, 
-                                    dir=wx.GetHomeDir(),
-                                    style=wx.DIRCTRL_SHOW_FILTERS | 
-                                          wx.DIRCTRL_EDIT_LABELS | 
-                                          wx.BORDER_SUNKEN,
-                                    filter=filters)
+        self._browser = FileBrowser2(self)
         self._browser.SetMainWindow(self._mw)
         self._config = PathMarkConfig(ed_glob.CONFIG['CACHE_DIR'])
         for item in self._config.GetItemLabels():
             self._menbar.AddItem(item)
 
-        # Setup hidden files checkbox
-        bbar = eclib.ControlBar(self, style=eclib.CTRLBAR_STYLE_GRADIENT)
-        if wx.Platform == '__WXGTK__':
-            bbar.SetWindowStyle(eclib.CTRLBAR_STYLE_DEFAULT)
-
-        self._showh_cb = wx.CheckBox(bbar, self.ID_SHOW_HIDDEN, 
-                                     _("Show Hidden Files"))
-        self._showh_cb.SetValue(False)
-        bbar.AddControl(self._showh_cb, wx.ALIGN_LEFT)
-
         # Layout
         self.SetWindow(self._browser)
         self.SetControlBar(self._menbar, wx.TOP)
-        self.SetControlBar(bbar, wx.BOTTOM)
-        if wx.Platform == '__WXMSW__':
-            bbar.Hide()
         self.Layout()
 
         #---- Add Menu Items ----#
-        viewm = self._mw.GetMenuBar().GetMenuByName("view")
+        viewm = self._mw.MenuBar.GetMenuByName("view")
         self._mi = viewm.InsertAlpha(ID_FILEBROWSE, _("File Browser"), 
                                      _("Open File Browser Sidepanel"),
                                      wx.ITEM_CHECK,
                                      after=ed_glob.ID_PRE_MARK)
 
         # Event Handlers
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
         self.Bind(wx.EVT_MENU, self.OnMenu)
+        self.Bind(wx.EVT_SHOW, self.OnShow)
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
 
         # Messages
         ed_msg.Subscribe(self.OnUpdateFont, ed_msg.EDMSG_DSP_FONT)
 
-    def __del__(self):
+    def OnDestroy(self, evt):
         """Save the config before we get destroyed"""
-        self._config.Save()
-        ed_msg.Unsubscribe(self.OnUpdateFont)
+        if self:
+            self._config.Save()
+            ed_msg.Unsubscribe(self.OnUpdateFont)
+
+    def OnShow(self, evt):
+        if self and self._browser:
+            self._browser.SuspendChecks(not evt.IsShown())
+        evt.Skip()
 
     def GetMainWindow(self):
         """Get the MainWindow that owns this panel"""
         return self._mw
 
-    def OnCheck(self, evt):
-        """Toggles visibility of hidden files on and off"""
-        e_id = evt.GetId()
-        if e_id == self.ID_SHOW_HIDDEN:
-            style = self._browser.GetTreeStyle()
-            self._browser.SetTreeStyle(wx.TR_SINGLE)
-            self._browser.Refresh()
-            self._browser.ShowHidden(self._showh_cb.GetValue())
-            self._browser.SetTreeStyle(style)
-            self._browser.Refresh()
-        else:
-            evt.Skip()
-
-    # TODO after a jump the window should be properly rescrolled
-    #      to have the jumped-to path at the top when possible
     def OnMenu(self, evt):
         """Handles the events associated with adding, opening,
         and removing paths in the menubars menus.
 
         """
-        e_id = evt.GetId()
+        e_id = evt.Id
         o_ids = self._menbar.GetOpenIds()
         d_ids = self._menbar.GetRemoveIds()
         if e_id == ID_MARK_PATH:
-            items = self._browser.GetPaths()
+            items = self._browser.SelectedFiles
             for item in items:
                 self._menbar.AddItem(item)
                 self._config.AddPathMark(item, item)
@@ -279,8 +267,8 @@ class BrowserPane(eclib.ControlBox):
         elif e_id in o_ids:
             pmark = self._menbar.GetItemText(e_id)
             path = self._config.GetPath(pmark)
-            self._browser.ExpandPath(path)
-            self._browser.GetTreeCtrl().SetFocus()
+            self._browser.SelectFile(path)
+            self._browser.SetFocus()
         elif e_id in d_ids:
             plabel = self._menbar.GetItemText(e_id)
             self._menbar.RemoveItemById(e_id)
@@ -291,7 +279,7 @@ class BrowserPane(eclib.ControlBox):
 
     def OnShowBrowser(self, evt):
         """Shows the filebrowser"""
-        if evt.GetId() == ID_FILEBROWSE:
+        if evt.Id == ID_FILEBROWSE:
             mgr = self._mw.GetFrameManager()
             pane = mgr.GetPane(PANE_NAME)
             if pane.IsShown():
@@ -301,7 +289,7 @@ class BrowserPane(eclib.ControlBox):
                 cbuff = self._mw.GetNotebook().GetCurrentCtrl()
                 path = cbuff.GetFileName()
                 if path:
-                    self._browser.GotoPath(path)
+                    self._browser.SelectFile(path)
             mgr.Update()
         else:
             evt.Skip()
@@ -310,7 +298,7 @@ class BrowserPane(eclib.ControlBox):
         """Update the ui font when a message comes saying to do so."""
         font = msg.GetData()
         if isinstance(font, wx.Font) and not font.IsNull():
-            for child in (self, self._browser, self._browser.GetTreeCtrl()):
+            for child in (self, self._browser):
                 if hasattr(child, 'SetFont'):
                     child.SetFont(font)
 
@@ -323,9 +311,139 @@ class BrowserPane(eclib.ControlBox):
         pane = self._mw.GetFrameManager().GetPane(PANE_NAME)
         evt.Check(pane.IsShown())
 
-    def SetFocus(self):
-        """Set the focus to this window"""
-        self._browser.GetTreeCtrl().SetFocus()
+#-----------------------------------------------------------------------------#
+
+class FBMimeMgr(object):
+    """Manager class for managing known file types and icons"""
+    IMAGES = range(18)
+    IMG_COMPUTER, \
+    IMG_FLOPPY, \
+    IMG_HARDDISK, \
+    IMG_CD, \
+    IMG_USB, \
+    IMG_FOLDER, \
+    IMG_FOLDER_OPEN, \
+    IMG_NO_ACCESS, \
+    IMG_BIN, \
+    IMG_FILE, \
+    IMG_PYTHON, \
+    IMG_BOO, \
+    IMG_CSS, \
+    IMG_HTML, \
+    IMG_JAVA, \
+    IMG_PHP, \
+    IMG_RUBY, \
+    IMG_SHELL = IMAGES
+    IMGMAP = { IMG_COMPUTER : ed_glob.ID_COMPUTER,
+               IMG_FLOPPY  : ed_glob.ID_FLOPPY,
+               IMG_HARDDISK : ed_glob.ID_HARDDISK,
+               IMG_CD      : ed_glob.ID_CDROM,
+               IMG_USB     : ed_glob.ID_USB,
+               IMG_FOLDER  : ed_glob.ID_FOLDER,
+               IMG_FOLDER_OPEN : ed_glob.ID_OPEN,
+               IMG_NO_ACCESS : ed_glob.ID_STOP,
+               IMG_BIN     : ed_glob.ID_BIN_FILE,
+               IMG_FILE    : ed_glob.ID_FILE,
+               IMG_PYTHON  : synglob.ID_LANG_PYTHON,
+               IMG_BOO     : synglob.ID_LANG_BOO,
+               IMG_CSS     : synglob.ID_LANG_CSS,
+               IMG_HTML    : synglob.ID_LANG_HTML,
+               IMG_JAVA    : synglob.ID_LANG_JAVA,
+               IMG_PHP     : synglob.ID_LANG_PHP,
+               IMG_RUBY    : synglob.ID_LANG_RUBY,
+               IMG_SHELL   : synglob.ID_LANG_BASH }
+    def __init__(self):
+        super(FBMimeMgr, self).__init__()
+
+        # Attributes
+        self._ftype = FBMimeMgr.IMG_FILE
+        
+    @classmethod
+    def PopulateImageList(cls, imglist):
+        """Populate an ImageList with the icons for the file tree
+        @param imglist: wx.ImageList instance (16x16)
+
+        """
+        imglist.RemoveAll()
+        for img in FBMimeMgr.IMAGES:
+            imgid = FBMimeMgr.IMGMAP[img]
+            bmp = wx.ArtProvider_GetBitmap(str(imgid), wx.ART_MENU)
+            if bmp.IsOk():
+                imglist.Add(bmp)
+
+    @classmethod
+    def RefreshImageList(cls, imglist):
+        """Refresh all icons from the icon manager"""
+        for idx, img in enumerate(FBMimeMgr.IMAGES):
+            imgid = FBMimeMgr.IMGMAP[img]
+            bmp = wx.ArtProvider_GetBitmap(str(imgid), wx.ART_MENU)
+            if bmp.IsOk():
+                imglist.Replace(idx, bmp)
+
+    def GetImageIndex(self, path, expanded=False):
+        """Get the appropriate file index for the given path
+        @param path: file name or path
+
+        """
+        self._ftype = FBMimeMgr.IMG_FILE
+        if not os.access(path, os.R_OK):
+            self._ftype = FBMimeMgr.IMG_NO_ACCESS
+        elif self.IsDevice(path):
+            pass
+        elif os.path.isdir(path):
+            if expanded:
+                self._ftype = FBMimeMgr.IMG_FOLDER_OPEN
+            else:
+                self._ftype = FBMimeMgr.IMG_FOLDER
+        elif self.IsKnownTextFile(path):
+            pass
+        elif self.IsKnownBinType(path):
+            pass
+        return self._ftype
+
+    def IsKnownTextFile(self, path):
+        """Is a known text file type
+        @param path: file path / name
+
+        """
+        tpath = os.path.basename(path)
+        ext = ebmlib.GetFileExtension(tpath)
+        etype = syntax.GetIdFromExt(ext)
+        tmap = { synglob.ID_LANG_PYTHON : FBMimeMgr.IMG_PYTHON,
+                 synglob.ID_LANG_BOO : FBMimeMgr.IMG_BOO,
+                 synglob.ID_LANG_CSS : FBMimeMgr.IMG_CSS,
+                 synglob.ID_LANG_HTML : FBMimeMgr.IMG_HTML,
+                 synglob.ID_LANG_JAVA : FBMimeMgr.IMG_JAVA,
+                 synglob.ID_LANG_PHP : FBMimeMgr.IMG_PHP,
+                 synglob.ID_LANG_RUBY : FBMimeMgr.IMG_RUBY,
+                 synglob.ID_LANG_BASH : FBMimeMgr.IMG_SHELL }
+        self._ftype = tmap.get(etype, FBMimeMgr.IMG_FILE)
+        return self._ftype != FBMimeMgr.IMG_FILE
+
+    def IsKnownBinType(self, path):
+        """Is a known binary file type
+        @param path: file path / name
+
+        """
+        ext = ebmlib.GetFileExtension(path)
+        if ext in ('exe', 'dll', 'so'): # TODO better mapping
+            self._ftype = FBMimeMgr.IMG_BIN
+        else:
+            return False
+        return True
+
+    def IsDevice(self, path):
+        """Is the path some sort of device"""
+        if os.path.ismount(path):
+            self._ftype = FBMimeMgr.IMG_HARDDISK
+            if wx.Platform == '__WXMSW__':
+                dtype = ebmlib.GetWindowsDriveType(path)
+                if isinstance(dtype, ebmlib.RemovableDrive):
+                    self._ftype = FBMimeMgr.IMG_USB
+                elif isinstance(dtype, ebmlib.CDROMDrive):
+                    self._ftype = FBMimeMgr.IMG_CD
+        rval = self._ftype != FBMimeMgr.IMG_FILE
+        return rval
 
 #-----------------------------------------------------------------------------#
 # Menu Id's
@@ -341,331 +459,260 @@ ID_DELETE = wx.NewId()
 ID_DUPLICATE = wx.NewId()
 ID_ARCHIVE = wx.NewId()
 
-class FileBrowser(wx.GenericDirCtrl):
-    """Custom directory control for displaying and managing files"""
-    def __init__(self, parent, id, dir=u'', pos=wx.DefaultPosition,
-                 size=wx.DefaultSize,
-                 style=wx.DIRCTRL_SHOW_FILTERS|wx.DIRCTRL_EDIT_LABELS,
-                 filter=wx.EmptyString, defaultFilter=0):
-        wx.GenericDirCtrl.__init__(self, parent, id, dir, pos, 
-                                   size, style, filter, defaultFilter)
+class FileBrowser2(ed_basewin.EDBaseFileTree):
+    """File browser Tree"""
+    def __init__(self, parent):
+        self._mime = FBMimeMgr()
+
+        super(FileBrowser2, self).__init__(parent)
 
         # Attributes
         self._mw = None
-        self._tree = self.GetTreeCtrl()
-        self._treeId = 0                # id of TreeItem that was last rclicked
-        self._fmenu = self._MakeMenu()
-        self._drag_img = None
+        self._menu = ebmlib.ContextMenuManager()
+        self._monitor = ebmlib.DirectoryMonitor(checkFreq=-1) # manual refresh...
+        self._monitor.SubscribeCallback(self.OnFilesChanged)
+        self._monitor.StartMonitoring()
+        self.isClosing = False
+        self.syncTimer = wx.Timer(self)
+        self._cpath = None
 
-        # Show hidden files by default on windows since the option is disabled
-        # due to it crashing out the program...
+        # Setup
+        self.SetupImageList()
         if wx.Platform == '__WXMSW__':
-            self.ShowHidden(True)
-        
-        # Set custom styles
-        self._tree.SetWindowStyle(self._tree.GetWindowStyle() | wx.TR_MULTIPLE)
-        self._tree.Refresh()
-        self._imglst = self._tree.GetImageList()
-        self._SetupIcons()
+            for dname in ebmlib.GetWindowsDrives():
+                if os.path.exists(dname.Name):
+                    self.AddWatchDirectory(dname.Name)
+        else:
+            self.AddWatchDirectory("/")
 
         # Event Handlers
-        self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnOpen)
-        self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnContext)
         self.Bind(wx.EVT_MENU, self.OnMenu)
-
-        # Editra Message Handlers
+        self.Bind(wx.EVT_TIMER, self.OnTimer)
         ed_msg.Subscribe(self.OnThemeChanged, ed_msg.EDMSG_THEME_CHANGED)
         ed_msg.Subscribe(self.OnPageChange, ed_msg.EDMSG_UI_NB_CHANGED)
-#        self.Bind(wx.EVT_TREE_BEGIN_DRAG, self.OnDragStart)
-#        self.Bind(wx.EVT_MOUSE_EVENTS, self.OnDragging)
-#        self.Bind(wx.EVT_TREE_END_DRAG, self.OnDragEnd)
+        ed_msg.Subscribe(self.OnPageClosing, ed_msg.EDMSG_UI_NB_CLOSING)
+        ed_msg.Subscribe(self.OnConfig, ed_msg.EDMSG_PROFILE_CHANGE + (fbcfg.FB_PROF_KEY,))
 
-    def __del__(self):
-        """Unsubscribe from messages"""
+    def DoOnActivate(self, active):
+        """Handle activation of main window that this
+        tree belongs too.
+        @param active: bool
+
+        """
+        # Suspend background checks when window is not active
+        if active and self.IsShown():
+            self.SuspendChecks(False) # Resume
+        elif not active:
+            self.SuspendChecks(True) # Suspend
+
+    def DoOnDestroy(self):
+        """Clean up resources and message handlers"""
+        self._menu.Clear()
         ed_msg.Unsubscribe(self.OnPageChange)
+        ed_msg.Unsubscribe(self.OnPageClosing)
         ed_msg.Unsubscribe(self.OnThemeChanged)
+        ed_msg.Unsubscribe(self.OnConfig)
+        if self.syncTimer.IsRunning():
+            self.syncTimer.Stop()
 
-    def _SetupIcons(self):
-        """If a custom theme is in use by Editra set the icons of the
-        directory control to match.
+    def SuspendChecks(self, suspend=True):
+        """Suspend/Continue background monitoring"""
+        self._monitor.Suspend(suspend)
 
-        """
-        # HACK if the GenericDirCtrl ever changes the order of the images used 
-        #      in it this will have to be updated accordingly
-        ids = [ed_glob.ID_FOLDER, ed_glob.ID_OPEN, ed_glob.ID_COMPUTER, 
-               ed_glob.ID_HARDDISK, ed_glob.ID_CDROM, ed_glob.ID_FLOPPY, 
-               ed_glob.ID_USB, ed_glob.ID_FILE, ed_glob.ID_BIN_FILE]
+    #--- FileTree interface methods ----#
 
-        for idx, art in enumerate(ids):
-            bmp = wx.ArtProvider.GetBitmap(str(art), wx.ART_MENU)
-            if bmp.IsOk():
-                self._imglst.Replace(idx, bmp)
+    def DoSetupImageList(self):
+        """Setup the image list for this control"""
+        self._mime.PopulateImageList(self.ImageList)
 
-    @staticmethod
-    def _MakeMenu():
-        """Setup the context menu"""
-        menu = wx.Menu()
+    def DoGetFileImage(self, path):
+        """Get the image for the given item"""
+        return self._mime.GetImageIndex(path)
 
-        # MenuItems
-        items = [(ID_EDIT, _("Edit"), None),
-                 (ID_OPEN, _("Open with " + FILEMAN), ed_glob.ID_OPEN),
-                 (ID_REVEAL, _("Reveal in " + FILEMAN), None),
-                 (wx.ID_SEPARATOR, '', None),
-                 (ID_MARK_PATH, _("Bookmark Selected Path(s)"),
-                  ed_glob.ID_ADD_BM),
-                 (wx.ID_SEPARATOR, '', None),
-                 (ID_SEARCH_DIR, _("Search in directory"), ed_glob.ID_FIND),
-                 (wx.ID_SEPARATOR, '', None),
-                 (ID_GETINFO, _("Get Info"), None),
-                 (ID_RENAME, _("Rename"), None),
-                 (wx.ID_SEPARATOR, '', None),
-                 (ID_NEW_FOLDER, _("New Folder"), ed_glob.ID_FOLDER),
-                 (ID_NEW_FILE, _("New File"), ed_glob.ID_NEW),
-                 (wx.ID_SEPARATOR, '', None),
-                 (ID_DUPLICATE, _("Duplicate"), None),
-                 (ID_ARCHIVE, _("Create Archive of \"%s\"") % '', None),
-                 (wx.ID_SEPARATOR, '', None),
-                 (ID_DELETE, TrashString(), ed_glob.ID_DELETE),
-                ]
-
-        for item in items:
-            mitem = wx.MenuItem(menu, item[0], item[1])
-            if item[2] is not None:
-                bmp = wx.ArtProvider.GetBitmap(str(item[2]), wx.ART_MENU)
-                mitem.SetBitmap(bmp)
-
-            menu.AppendItem(mitem)
-        return menu
-
-    def _SCommand(self, cmd, *args):
-        """Run a tree command that requires de-hacking the windows style
-        before running. (Some commands raise errors on msw if the style is
-        not set back to TR_SINGLE before calling it.
-        @param cmd: self.METHOD
-        @keyword args: args to pass to command
+    def DoGetToolTip(self, item):
+        """Get the tooltip to show for an item
+        @return: string or None
 
         """
-        style = self.GetTreeStyle()
-        self.SetTreeStyle(wx.TR_SINGLE)
-        self.Refresh()
-        rval = cmd(*args)
-        self.SetTreeStyle(style)
-        self.Refresh()
-        return rval
+        tip = None
+        if self.GetItemImage(item) == self._mime.IMG_NO_ACCESS:
+            tip = _("Access Denied")
+#        elif item: # Slightly annoying on GTK disable for now
+#            tip = self.GetPyData(item)
+        return tip
 
-    def AcceptsFocus(self):
-        print "HELLO1"
+    def DoItemActivated(self, item):
+        """Override to handle item activation
+        @param item: TreeItem
+
+        """
+        self.OpenFiles(self.GetSelectedFiles())
+
+    def DoItemCollapsed(self, item):
+        """Handle when an item is collapsed"""
+        d = self.GetPyData(item)
+        if d:
+            self._monitor.RemoveDirectory(d)
+        super(FileBrowser2, self).DoItemCollapsed(item)
+        self.SetItemImage(item, self._mime.GetImageIndex(d, False))
+
+    def ShouldDisplayFile(self, path):
+        """Check if the given file should be displayed based on configuration
+        @param path: file path
+        @return: bool
+
+        """
+        showHidden = fbcfg.GetFBOption(fbcfg.FB_SHF_OPT, False)
+        if not showHidden and ebmlib.IsHidden(path):
+            return False
+        name = os.path.basename(path)
+        filters = fbcfg.GetFBOption(fbcfg.FB_FILTER_OPT,
+                                    fbcfg.FB_DEFAULT_FILTERS)
+        if filter(lambda x: fnmatch.fnmatchcase(name, x), filters):
+                return False
         return True
 
-    def GetItemPath(self, itemId):
-        """Get and return the path of the given item id
-        @param itemId: TreeItemId
-        @return: string
+    def FilterFileList(self, paths):
+        """Filter a list of files returning only the ones that are valid to
+        display in the tree. Optimized for large lists of paths.
+        @param paths: list of paths
+        @return: filtered list
 
         """
-        root = self._tree.GetRootItem()
-        start = itemId
-        atoms = [itemId]
-        while self._tree.GetItemParent(start) != root:
-            atoms.append(self._tree.GetItemParent(start))
-            start = atoms[-1]
+        showHidden = fbcfg.GetFBOption(fbcfg.FB_SHF_OPT, False)
+        filters = fbcfg.GetFBOption(fbcfg.FB_FILTER_OPT,
+                                    fbcfg.FB_DEFAULT_FILTERS)
+        isHidden = ebmlib.IsHidden
+        rval = list()
+        rAdd = rval.append
+        getBase = os.path.basename
+        for path in paths:
+            if not showHidden and isHidden(path):
+                continue
+            name = getBase(path)
+            if filter(lambda x: fnmatch.fnmatchcase(name, x), filters):
+                continue
+            rAdd(path)
+        return rval
 
-        atoms.reverse()
-        path = list()
-        for atom in atoms:
-            path.append(self._tree.GetItemText(atom))
-
-        if wx.Platform == '__WXMSW__':
-            r_txt = u''
-        else:
-            # Handle localized paths for special nodes on gtk version
-            if wx.Platform == '__WXGTK__':
-                if path[0] == _("Home directory"):
-                    path[0] = wx.GetHomeDir()
-                elif path[0] == _("Desktop"):
-                    path.insert(0, wx.GetHomeDir())
-                else:
-                    pass
-
-            elif wx.Platform == '__WXMAC__':
-                if path[0] != "/":
-                    if path == 'Macintosh HD':
-                        path.pop(0)
-                    else:
-                        path.insert(0, 'Volumes')
-
-                if u'Macintosh HD' in path:
-                    idx = path.index(u'Macintosh HD')
-                    if len(path) > idx:
-                        path = path[idx+1:]
-
-            r_txt = os.path.sep
-
-        return r_txt + os.sep.join(path)
-
-    def GetMainWindow(self):
-        """Get the main window, needed by L{ed_msg.mwcontext}"""
-        return self._mw
-
-    def GetPaths(self):
-        """Gets a list of abs paths of the selected items"""
-        ret_val = list()
-        for leaf in self._tree.GetSelections():
-            ret_val.append(self.GetItemPath(leaf))
-        return ret_val
-
-    def GetScrollRange(self, orient=wx.VERTICAL):
-        """Returns the scroll range of the tree control"""
-        return self._tree.GetScrollRange(orient)
-
-    def GetTreeStyle(self):
-        """Returns the trees current style"""
-        return self._tree.GetWindowStyle()
-
-    def GotoPath(self, path):
-        """Move the selection to the given path
-        @param path: string:
+    def DoItemExpanding(self, item):
+        """Handle when an item is expanding to display the folder contents
+        @param item: TreeItem
 
         """
-        style = self.GetTreeStyle()
-        self.SetTreeStyle(wx.TR_SINGLE)
-        self.Refresh()
-        self.SetPath(path)
-        self.SetTreeStyle(style)
-        self.Refresh()        
+        busy = wx.BusyCursor() # can take a few seconds on big directories
 
-    def OnContext(self, evt):
-        """Show the popup context menu"""
-        self._fmenu.Destroy()
-        self._fmenu = self._MakeMenu()
-        self._treeId = evt.GetItem()
-        path = self.GetItemPath(self._treeId)
-        mitem = self._fmenu.FindItemById(ID_ARCHIVE)
+        d = None
+        try:
+            d = self.GetPyData(item)
+        except wx.PyAssertionError:
+            util.Log("[FileBrowser][err] FileBrowser2.DoItemExpanding")
+            return
+
+        if d and os.path.exists(d) and os.access(d, os.R_OK):
+            contents = FileBrowser2.GetDirContents(d)
+            t1 = time.time()
+            with eclib.Freezer(self) as _tmp:
+                self.AppendFileNodes(item, self.FilterFileList(contents))
+                self.SortChildren(item)
+            util.Log("[FileBrowser][info] Tree expand time: %f" % (time.time() - t1))
+
+            if not self._monitor.AddDirectory(d):
+                self.SetItemImage(item, self._mime.IMG_NO_ACCESS)
+                return
+
+        # Update tree image
+        self.SetItemImage(item, self._mime.GetImageIndex(d, True))
+
+    def DoBeginEdit(self, item):
+        """Handle when an item is requested to be edited"""
+        d = None
+        try:
+            d = self.GetPyData(item)
+        except wx.PyAssertionError:
+            util.Log("[FileBrowser][err] FileBrowser2.DoItemExpanding")
+            return False
+        if d and not os.access(d, os.W_OK) or os.path.ismount(d):
+            return False
+        return True
+
+    def DoEndEdit(self, item, newlabel):
+        """Handle after a user has made changes to a label"""
+        editOk = False
+        path = self.GetPyData(item)
+        # TODO: check access rights and validate input
+        if path:
+            newpath = os.path.join(os.path.dirname(path), newlabel)
+            try:
+                dobjs = TakeSnapshots([path,])
+                os.rename(path, newpath)
+                editOk = True
+                if dobjs:
+                    self.RefreshView(dobjs)
+            except OSError:
+                editOk = False # TODO: notify user of error
+        return editOk
+
+    def DoShowMenu(self, item):
+        """Show context menu"""
+        # Check if click was in blank window area
+        activeNode = None
+        try:
+            activeNode = self.GetPyData(item)
+        except wx.PyAssertionError:
+            pass
+
+        if not self._menu.Menu:
+            self._menu.Menu = wx.Menu()
+            # TODO: bother with theme changes ...?
+            items = [(ID_EDIT, _("Edit"), None),
+                     (ID_OPEN, _("Open with " + FILEMAN), ed_glob.ID_OPEN),
+                     (ID_REVEAL, _("Reveal in " + FILEMAN), None),
+                     (wx.ID_SEPARATOR, '', None),
+                     (wx.ID_REFRESH, _("Refresh"), ed_glob.ID_REFRESH),
+                     (wx.ID_SEPARATOR, '', None),
+                     (ID_MARK_PATH, _("Bookmark Selected Path(s)"),
+                      ed_glob.ID_ADD_BM),
+                     (wx.ID_SEPARATOR, '', None),
+                     (ID_SEARCH_DIR, _("Search in directory"), ed_glob.ID_FIND),
+                     (wx.ID_SEPARATOR, '', None),
+                     (ID_GETINFO, _("Get Info"), None),
+                     (ID_RENAME, _("Rename"), None),
+                     (wx.ID_SEPARATOR, '', None),
+                     (ID_NEW_FOLDER, _("New Folder"), ed_glob.ID_FOLDER),
+                     (ID_NEW_FILE, _("New File"), ed_glob.ID_NEW),
+                     (wx.ID_SEPARATOR, '', None),
+                     (ID_DUPLICATE, _("Duplicate"), None),
+                     (ID_ARCHIVE, _("Create Archive of \"%s\"") % '', None),
+                     (wx.ID_SEPARATOR, '', None),
+                     (ID_DELETE, TrashString(), ed_glob.ID_DELETE),
+                    ]
+
+            for mi_tup in items:
+                mitem = wx.MenuItem(self._menu.Menu, mi_tup[0], mi_tup[1])
+                if mi_tup[2] is not None:
+                    bmp = wx.ArtProvider.GetBitmap(str(mi_tup[2]), wx.ART_MENU)
+                    mitem.SetBitmap(bmp)
+
+                self._menu.Menu.AppendItem(mitem)
+
+        # Set contextual data
+        self._menu.SetUserData('item_id', item)
+        self._menu.SetUserData('active_node', activeNode)
+        self._menu.SetUserData('selected_nodes', self.GetSelectedFiles())
+
+        # Update Menu
+        mitem = self._menu.Menu.FindItemById(ID_ARCHIVE)
         if mitem != wx.NOT_FOUND:
+            path = self._menu.GetUserData('active_node')
             mitem.SetText(_("Create Archive of \"%s\"") % \
                           path.split(os.path.sep)[-1])
+        for mitem in (ID_DUPLICATE,):
+            self._menu.Menu.Enable(mitem, len(self.GetSelections()) == 1)
 
-        for item in (ID_DUPLICATE,):
-            self._fmenu.Enable(item, len(self._tree.GetSelections()) == 1)
-        self.PopupMenu(self._fmenu)
+        self.PopupMenu(self._menu.Menu)
 
-    def OnMenu(self, evt):
-        """Handle the context menu events for performing
-        filesystem operations
-
-        """
-        e_id = evt.GetId()
-        path = self.GetItemPath(self._treeId)
-        paths = self.GetPaths()
-        ok = (False, '')
-        if e_id == ID_EDIT:
-            self.OpenFiles(paths)
-        elif e_id == ID_OPEN:
-            worker = OpenerThread(paths)
-            worker.start()
-        elif e_id == ID_REVEAL:
-            worker = OpenerThread([os.path.dirname(fname) for fname in paths])
-            worker.start()
-        elif e_id == ID_SEARCH_DIR:
-            paths = self.GetPaths()
-            if len(paths):
-                path = paths[0] # Go off of the first selected item
-                if not os.path.isdir(path):
-                    path = os.path.dirname(path)
-                mdata = dict(mainw=self._mw, lookin=path)
-                ed_msg.PostMessage(ed_msg.EDMSG_FIND_SHOW_DLG, mdata) 
-        elif e_id == ID_GETINFO:
-            last = None
-            for fname in paths:
-                info = ed_mdlg.EdFileInfoDlg(self.GetTopLevelParent(), fname)
-                if last is None:
-                    info.CenterOnParent()
-                else:
-                    lpos = last.GetPosition()
-                    info.SetPosition((lpos[0] + 14, lpos[1] + 14))
-                info.Show()
-                last = info
-        elif e_id == ID_RENAME:
-            self._tree.EditLabel(self._treeId)
-        elif e_id == ID_NEW_FOLDER:
-            ok = ebmlib.MakeNewFolder(path, _("Untitled_Folder"))
-        elif e_id == ID_NEW_FILE:
-            ok = ebmlib.MakeNewFile(path, _("Untitled_File") + ".txt")
-        elif e_id == ID_DUPLICATE:
-            for fname in paths:
-                ok = DuplicatePath(fname)
-        elif e_id == ID_ARCHIVE:
-            ok = MakeArchive(path)
-        elif e_id == ID_DELETE:
-            ebmlib.MoveToTrash(paths)
-            ok = (True, os.path.dirname(path))
-        else:
-            evt.Skip()
-            return
-
-        if e_id in (ID_NEW_FOLDER, ID_NEW_FILE, ID_DUPLICATE, ID_ARCHIVE,
-                    ID_DELETE):
-            if ok[0]:
-                self.ReCreateTree()
-                self._SCommand(self.SetPath, ok[1])
-
-    def OnOpen(self, evt):
-        """Handles item activations events. (i.e double clicked or 
-        enter is hit) and passes the clicked on file to be opened in 
-        the notebook.
-
-        """
-        files = self.GetPaths()
-        item = self._SCommand(self.GetPath)
-        if os.path.isdir(item):
-            evt.Skip()
-            return
-        else:
-            files = [ fname for fname in files if not os.path.isdir(fname) ]
-
-        # Disconnect from page change notifications while opening files
-        # from the browser.
-        ed_msg.Unsubscribe(self.OnPageChange)
-        self.OpenFiles(files)
-        ed_msg.Subscribe(self.OnPageChange, ed_msg.EDMSG_UI_NB_CHANGED)
-
-    @ed_msg.mwcontext
-    def OnPageChange(self, msg):
-        """Syncronize selection with the notebook page changes
-        @param msg: MessageObject
-        @todo: check if message is from a page closing and avoid updates
-
-        """
-        nbdata = msg.GetData()
-        pg_count = nbdata[0].GetPageCount()
-        if nbdata[1] > pg_count  or nbdata[1] < 0:
-            # Page is out of range, something has changed since the message was
-            # sent.
-            return
-
-        page = nbdata[0].GetPage(nbdata[1])
-        path = page.GetFileName()
-        if len(path) and os.path.exists(path):
-            if wx.Platform == '__WXMAC__' and \
-               path.startswith('/Volumes/Macintosh HD'):
-                path = path.replace('/Volumes/Macintosh HD', '', 1)
-            elif wx.Platform == '__WXGTK__':
-                home = wx.GetHomeDir()
-                desk = home + _("Desktop")
-                if path.startswith(desk):
-                    path = path.replace(desk, '', 1)
-                elif path.startswith(home):
-                    path = path.replace(home, '', 1)
-
-            self.GotoPath(path)
-
-    def OnThemeChanged(self, msg):
-        """Update the icons when the icon theme has changed
-        @param msg: Message Object
-
-        """
-        self._SetupIcons()
-        self._tree.Refresh()
+    #---- End FileTree Interface Methods ----#
 
     @staticmethod
     def OpenFiles(files):
@@ -686,61 +733,230 @@ class FileBrowser(wx.GenericDirCtrl):
         if win:
             win.GetNotebook().OnDrop(to_open)
 
-      # TODO implement drag and drop from the control to the editor
-#    def OnDragStart(self, evt):
-#        """Start dragging a file from the tree"""
-#        item = self._tree.GetSelection()
-#        img = self._imglst.GetBitmap(self._tree.GetItemImage(item))
-#        lbl = self._tree.GetItemText(item)
-#        fdo = wx.FileDataObject()
-#        fdo.AddFile(self.GetPath())
-#        self._drag_img = FileDragImage(self._tree, lbl, img, fdo)
-#        mw = self.GetParent().GetMainWindow()
-#        self._drag_img.BeginDrag(wx.GetMousePosition(), self,
-#                                 rect=mw.GetClientRect())
-#        self._drag_img.Show()
-#        self._drag_img.Move(wx.GetMousePosition())
+    def OnCompareItems(self, item1, item2):
+        """Handle SortItems"""
+        data = self.GetPyData(item1)
+        if data is not None:
+            path1 = int(not os.path.isdir(data))
+        else:
+            path1 = 0
+        tup1 = (path1, data.lower())
 
-#    def OnDragging(self, evt):
-#        """Move the drag image"""
-#        if evt.Dragging() and self._drag_img is not None:
-#            self._drag_img.Move(evt.GetPosition())#wx.GetMousePosition())
-#        elif self._drag_img is not None and evt.LeftUp():
-#            print "LEFTUP"
-#            self._drag_img.EndDrag()
-#            self._drag_img.Destroy()
-#            self._drag_img = None
-#        else:
-#            evt.Skip()
+        data2 = self.GetPyData(item2)
+        if data2 is not None:
+            path2 = int(not os.path.isdir(data2))
+        else:
+            path2 = 0
+        tup2 = (path2, data2.lower())
 
-#    def OnDragEnd(self, evt):
-#        """End the drag"""
-#        print "END DRAG"
-#        if self._drag_img is not None:
-#            self._drag_img.EndDrag()
-#            self._drag_img.Destroy()
-#            self._drag_img = None
-#        else:
-#            evt.Skip()
+        if tup1 < tup2:
+            return -1
+        elif tup1 == tup2:
+            return 0
+        else:
+            return 1
 
-#        evt.Skip()
+    def OnFilesChanged(self, added, deleted, modified):
+        """DirectoryMonitor callback - synchronize the view
+        with the filesystem.
+        @param added: list of paths added
+        @param deleted: list of paths removed
+        @param modified: list of paths modified
 
-#     def SelectPath(self, path):
-#         """Selects the given path"""
-#         parts = path.split(os.path.sep)
-#         root = self._tree.GetRootItem()
-#         rtxt = self._tree.GetItemText(root)
-#         item, cookie = self._tree.GetFirstChild(root)
-#         while item:
-#             if self._tree.ItemHasChildren(item):
-#                 i_txt = self._tree.GetItemText(item)
-#                 print i_txt
-#                 item, cookie = self._tree.GetFirstChild(item)
-#                 continue
-#             else:
-#                 i_txt = self._tree.GetItemText(item)
-#                 print i_txt
-#             item, cookie = self._tree.GetNextChild(item, cookie)
+        """
+        nodes = self.GetExpandedNodes()
+        visible = list()
+        for node in nodes:
+            visible.extend(self.GetChildNodes(node))
+
+        # Remove any deleted file objects
+        for fobj in deleted:
+            for item in visible:
+                path = self.GetPyData(item)
+                if fobj.Path == path:
+                    self.Delete(item)
+                    visible.remove(item)
+                    break
+
+        # Add any new file objects to the view
+        pathCache = dict()
+        needsort = list()
+        for fobj in added:
+            # apply filters to any new files
+            if not self.ShouldDisplayFile(fobj.Path):
+                continue
+            dpath = os.path.dirname(fobj.Path)
+            for item in nodes:
+                path = self.GetPyData(item)
+                if path == dpath:
+                    # prevent duplicates from being added
+                    if path not in pathCache:
+                        pathCache[path] = self.GetNodePaths(item)
+                        if fobj.Path in pathCache[path]:
+                            continue
+
+                    self.AppendFileNode(item, fobj.Path)
+                    if item not in needsort:
+                        needsort.append(item)
+                    break
+
+        # Re-sort display
+        for item in needsort:
+            self.SortChildren(item)
+
+    def OnMenu(self, evt):
+        """Handle the context menu events for performing
+        filesystem operations
+
+        """
+        e_id = evt.Id
+        path = self._menu.GetUserData('active_node')
+        paths = self._menu.GetUserData('selected_nodes')
+
+        def Opener(paths):
+            """File opener job
+            @param paths: list of paths
+
+            """
+            for fname in paths:
+                subprocess.call([FILEMAN_CMD, fname])
+                time.sleep(.25)
+
+        if e_id == ID_EDIT:
+            self.OpenFiles(paths)
+        elif e_id == ID_OPEN:
+            ed_thread.EdThreadPool().QueueJob(Opener, paths)
+        elif e_id == ID_REVEAL:
+            dpaths = [os.path.dirname(fname) for fname in paths]
+            dpaths = list(set(dpaths))
+            ed_thread.EdThreadPool().QueueJob(Opener, dpaths)
+        elif e_id == wx.ID_REFRESH:
+            # Refresh the view
+            self.RefreshView()
+        elif e_id == ID_SEARCH_DIR:
+            if len(paths):
+                path = paths[0] # Go off of the first selected item
+                if not os.path.isdir(path):
+                    path = os.path.dirname(path)
+                mdata = dict(mainw=self._mw, lookin=path)
+                ed_msg.PostMessage(ed_msg.EDMSG_FIND_SHOW_DLG, mdata) 
+        elif e_id == ID_GETINFO:
+            last = None
+            for fname in paths:
+                info = ed_mdlg.EdFileInfoDlg(self.TopLevelParent, fname)
+                if last is None:
+                    info.CenterOnParent()
+                else:
+                    lpos = last.GetPosition()
+                    info.SetPosition((lpos[0] + 14, lpos[1] + 14))
+                info.Show()
+                last = info
+        elif e_id == ID_RENAME:
+            item = self._menu.GetUserData('item_id')
+            self.EditLabel(item)
+        elif e_id == ID_NEW_FOLDER:
+            name = wx.GetTextFromUser(_("Enter folder name:"), _("New Folder"),
+                                      parent=self.TopLevelParent)
+            if name:
+                dobjs = TakeSnapshots([path,])
+                err, msg = ebmlib.MakeNewFolder(path, name)
+                if not err:
+                    wx.MessageBox(msg, _("Failed to create folder"),
+                                  style=wx.OK|wx.CENTER|wx.ICON_ERROR)
+                else:
+                    self.RefreshView(dobjs)
+        elif e_id == ID_NEW_FILE:
+            name = wx.GetTextFromUser(_("Enter file name:"), _("New File"),
+                                      parent=self.TopLevelParent)
+            if name:
+                dobjs = TakeSnapshots([path,])
+                err, msg = ebmlib.MakeNewFile(path, name)
+                if not err:
+                    wx.MessageBox(msg, _("Failed to create file"),
+                                  style=wx.OK|wx.CENTER|wx.ICON_ERROR)
+                else:
+                    self.RefreshView(dobjs)
+        elif e_id == ID_DUPLICATE:
+            dobjs = TakeSnapshots(paths)
+            for fname in paths:
+                DuplicatePath(fname)
+            self.RefreshView(dobjs)
+        elif e_id == ID_ARCHIVE:
+            dobjs = TakeSnapshots([path,])
+            MakeArchive(path)
+            self.RefreshView(dobjs)
+        elif e_id == ID_DELETE:
+            dobjs = TakeSnapshots(paths)
+            ebmlib.MoveToTrash(paths)
+            self.RefreshView(dobjs)
+        else:
+            evt.Skip()
+            return
+
+    def OnThemeChanged(self, msg):
+        """Update the icons when the icon theme has changed
+        @param msg: Message Object
+
+        """
+        self._mime.RefreshImageList(self.ImageList)
+
+    def OnConfig(self, msg):
+        """Handle updates for filebrowser preference updates"""
+        # TODO: refresh tree for hidden files on/off
+        pass
+
+    @ed_msg.mwcontext
+    def OnPageClosing(self, msg):
+        self.isClosing = True
+
+    @ed_msg.mwcontext
+    def OnPageChange(self, msg):
+        """Synchronize selection with the notebook page changes
+        @param msg: MessageObject
+        @todo: check if message is from a page closing and avoid updates
+
+        """
+        if self.isClosing:
+            self.isClosing = False
+            return
+
+        if not fbcfg.GetFBOption(fbcfg.FB_SYNC_OPT, True):
+            return
+
+        nbdata = msg.GetData()
+        if not nbdata[0]:
+            return
+
+        pg_count = nbdata[0].GetPageCount()
+        if nbdata[1] > pg_count  or nbdata[1] < 0:
+            # Page is out of range, something has changed since the 
+            # message was sent.
+            return
+
+        page = nbdata[0].GetPage(nbdata[1])
+        if page:
+            path = getattr(page, 'GetFileName', lambda: u"")()
+            if len(path) and os.path.exists(path):
+                # Delay selection for smoother operation when many
+                # page change events are received in a short time.
+                if self.syncTimer.IsRunning():
+                    self.syncTimer.Stop()
+                self._cpath = path
+                self.syncTimer.Start(500, True)
+
+    @refreshAfter
+    def OnTimer(self, evt):
+        """Handle tab synchronization"""
+        if self._cpath:
+            self.SelectFile(self._cpath)
+
+    def RefreshView(self, paths=None):
+        """Refresh file view of monitored directories"""
+        self._monitor.Refresh(paths)
+
+    def GetMainWindow(self):
+        """Get the main window, needed by L{ed_msg.mwcontext}"""
+        return self._mw
 
     def SetMainWindow(self, mainw):
         """Set the main window this browser belongs to.
@@ -748,10 +964,6 @@ class FileBrowser(wx.GenericDirCtrl):
 
         """
         self._mw = mainw
-
-    def SetTreeStyle(self, style):
-        """Sets the style of directory controls tree"""
-        self._tree.SetWindowStyle(style)
 
 #-----------------------------------------------------------------------------#
 
@@ -769,10 +981,10 @@ class PathMarkConfig(object):
         is the base path to store the config file at on write.
 
         """
-        object.__init__(self)
+        super(PathMarkConfig, self).__init__()
 
         # Attributes
-        self._base = os.path.join(pname, self.CONFIG_FILE)
+        self._base = os.path.join(pname, PathMarkConfig.CONFIG_FILE)
         self._pmarks = dict()
 
         self.Load()
@@ -846,6 +1058,9 @@ def DuplicatePath(path):
                 tmp.insert(-1, "_Copy.")
 
             tmp = ''.join(tmp)
+        elif '.' not in tail:
+            # file with no extension
+            tmp = tail + "_Copy"
         else:
             tmp = '.'.join(tmp[:-1]) + "_Copy." + tmp[-1]
 
@@ -855,7 +1070,7 @@ def DuplicatePath(path):
 
     try:
         copy(path, name)
-    except Exception, msg:
+    except (OSError, IOError, shutil.Error), msg:
         return (False, str(msg))
 
     return (True, name)
@@ -898,85 +1113,25 @@ def MakeArchive(path):
 
     return (ok, name)
 
+def TakeSnapshots(paths):
+    """Take snapshots of the given paths
+    @param paths: list of paths to snapshot
+    @return: list of DirectoryObjects or None
+
+    """
+    assert isinstance(paths, list)
+    rlist = list()
+    tpaths = list()
+    for path in paths:
+        path = os.path.dirname(path)
+        if os.path.exists(path) and path not in tpaths:
+            tpaths.append(path)
+    for dpath in tpaths:
+        dobj = ebmlib.GetDirectoryObject(dpath, False, True)
+        rlist.append(dobj)
+    if not len(rlist):
+        rlist = None
+
+    return rlist
+
 #-----------------------------------------------------------------------------#
-
-class OpenerThread(threading.Thread):
-    """Job runner thread for opening files with the systems filemanager"""
-    def __init__(self, files):
-        self._files = files
-        threading.Thread.__init__(self)
-
-    def run(self):
-        """Do the work of opeing the files"""
-        for fname in self._files:
-            subprocess.call([FILEMAN_CMD, fname])
-
-#-----------------------------------------------------------------------------#
-
-class FileDragImage(wx.DragImage):
-    def __init__(self, treeCtrl, lbl, img, fdo):
-        """Create the drag image
-        @param treeCtrl: Tree control drag started from
-        @param lbl: drag image label
-        @param img: file image
-
-        """
-        bmp = self.MakeBitmap(treeCtrl, lbl, img)
-        wx.DragImage.__init__(self, bmp, wx.StockCursor(wx.CURSOR_COPY_ARROW))
-
-        # Attributes
-        self._backgroundColour = None
-
-    def MakeBitmap(self, treeCtrl, lbl, img):
-        """Draw and create the drag image
-        @param treeCtrl: tree control drag started from
-        @param lbl: label to draw
-        @param img: image to draw
-
-        """
-        memory = wx.MemoryDC()
-
-        # Calculate Sizes
-        img_sz = img.GetSize()
-        txt_sz = treeCtrl.GetTextExtent(lbl)
-        bitmap = wx.EmptyBitmap(img_sz[0] + 7 + txt_sz[0],
-                                max(img_sz[1], txt_sz[1]) + 2)
-        memory.SelectObject(bitmap)
-
-        if wx.Platform == '__WXMAC__':
-            memory.SetBackground(wx.TRANSPARENT_BRUSH)
-        else:
-            backcolour = treeCtrl.GetBackgroundColour()
-            r, g, b = int(backcolour.Red()), int(backcolour.Green()), int(backcolour.Blue())
-            backcolour = ((r >> 1) + 20, (g >> 1) + 20, (b >> 1) + 20)
-            backcolour = wx.Colour(backcolour[0], backcolour[1], backcolour[2])
-            memory.SetBackground(wx.Brush(backcolour))
-
-        memory.SetBackgroundMode(wx.TRANSPARENT)
-        memory.SetFont(treeCtrl.GetFont())
-        memory.SetTextForeground(treeCtrl.GetForegroundColour())
-        memory.Clear()
-
-        memory.DrawBitmap(img, 2, 1, True)
-
-        textrect = wx.Rect(2 + img_sz[1] + 3, 2, txt_sz[0], txt_sz[1])
-        memory.DrawLabel(lbl, textrect)
-
-        memory.SelectObject(wx.NullBitmap)
-
-        # Gtk and Windows unfortunatly don't do so well with transparent
-        # drawing so this hack corrects the image to have a transparent
-        # background.
-        if wx.Platform != '__WXMAC__':
-            timg = bitmap.ConvertToImage()
-            if not timg.HasAlpha():
-                timg.InitAlpha()
-            for y in xrange(timg.GetHeight()):
-                for x in xrange(timg.GetWidth()):
-                    pix = wx.Colour(timg.GetRed(x, y),
-                                    timg.GetGreen(x, y),
-                                    timg.GetBlue(x, y))
-                    if pix == self._backgroundColour:
-                        timg.SetAlpha(x, y, 0)
-            bitmap = timg.ConvertToBitmap()
-        return bitmap

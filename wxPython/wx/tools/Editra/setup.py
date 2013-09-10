@@ -3,7 +3,7 @@
 # Name: setup.py                                                              #
 # Purpose: Setup/build script for Editra                                      #
 # Author: Cody Precord <cprecord@editra.org>                                  #
-# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# Copyright: (c) 2008-2013 Cody Precord <staff@editra.org>                    #
 # License: wxWindows License                                                  #
 ###############################################################################
 
@@ -29,8 +29,8 @@
 
 """
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: setup.py 67669 2011-05-01 21:18:05Z CJP $"
-__revision__ = "$Revision: 67669 $"
+__svnid__ = "$Id: setup.py 73347 2013-01-05 19:58:31Z CJP $"
+__revision__ = "$Revision: 73347 $"
 
 #---- Imports ----#
 import os
@@ -65,7 +65,7 @@ __platform__ = os.sys.platform
 APP = ['src/Editra.py']
 AUTHOR = "Cody Precord"
 AUTHOR_EMAIL = "staff@editra.org"
-YEAR = 2008
+YEAR = 2013
 
 CLASSIFIERS = [
             'Development Status :: 3 - Alpha',
@@ -209,14 +209,14 @@ Overview
 Editra is a multi-platform text editor with an implementation that focuses on
 creating an easy to use interface and features that aid in code development.
 Currently it supports syntax highlighting and variety of other useful features
-for over 60 programing languages. For a more complete list of features and
+for over 70 programing languages. For a more complete list of features and
 screenshots visit the projects homepage at `Editra.org
 <http://www.editra.org/>`_.
 
 ============
-Dependancies
+Dependencies
 ============
-  * Python 2.4+
+  * Python 2.6+
   * wxPython 2.8.3+ (Unicode build suggested)
   * setuptools 0.6+
 
@@ -233,7 +233,7 @@ INCLUDES = ['syntax.*', 'ed_bookmark', 'ed_log', 'shutil', 'subprocess', 'zipfil
             'pygments.*', 'pygments.lexers.*', 'pygments.formatters.*',
             'pygments.filters.*', 'pygments.styles.*', 'ftplib', 'xmlrpclib',
             'hmac', 'SimpleXMLRPCServer', 'SocketServer', 'commands', 
-            'BaseHTTPServer', 'wx.gizmos',
+            'BaseHTTPServer', 'wx.gizmos', 'wx.lib.intctrl',
             'extern.flatnotebook'] # temporary till all references can be removed
 if sys.platform.startswith('win'):
     INCLUDES.extend(['ctypes', 'ctypes.wintypes'])
@@ -357,14 +357,15 @@ def BuildOSXApp():
     from setuptools import setup
 
     CleanBuild()
-
+    fextents = synextreg.GetFileExtensions()
+    fextents.append("*")
     PLIST = dict(CFBundleName = info.PROG_NAME,
              CFBundleIconFile = 'Editra.icns',
              CFBundleShortVersionString = info.VERSION,
              CFBundleGetInfoString = info.PROG_NAME + " " + info.VERSION,
              CFBundleExecutable = info.PROG_NAME,
              CFBundleIdentifier = "org.editra.%s" % info.PROG_NAME.title(),
-             CFBundleDocumentTypes = [dict(CFBundleTypeExtensions=synextreg.GetFileExtensions(),
+             CFBundleDocumentTypes = [dict(CFBundleTypeExtensions=fextents,
                                            CFBundleTypeIconFile='editra_doc',
                                            CFBundleTypeRole="Editor"
                                           ),
@@ -552,7 +553,7 @@ def DoSourcePackage():
         maintainer = AUTHOR,
         maintainer_email = AUTHOR_EMAIL,
         url = URL,
-        download_url = "http://editra.org/?page=download",
+        download_url = "http://editra.org/download",
         license = LICENSE,
         platforms = [ "Many" ],
         packages = [ NAME ],

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: _image.i 67464 2011-04-13 18:14:31Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,12 +27,16 @@ enum {
     wxIMAGE_ALPHA_OPAQUE
 };
 
-
 // Constants for wxImage::Scale() for determining the level of quality
-enum
+enum wxImageResizeQuality
 {
-    wxIMAGE_QUALITY_NORMAL = 0,
-    wxIMAGE_QUALITY_HIGH = 1
+    wxIMAGE_QUALITY_NEAREST,
+    wxIMAGE_QUALITY_BILINEAR,
+    wxIMAGE_QUALITY_BICUBIC,
+    wxIMAGE_QUALITY_BOX_AVERAGE,
+
+    wxIMAGE_QUALITY_NORMAL,
+    wxIMAGE_QUALITY_HIGH,
 };
 
 //---------------------------------------------------------------------------
@@ -47,7 +51,8 @@ public:
     // wxImageHandler();    Abstract Base Class
     wxString GetName();
     wxString GetExtension();
-    long GetType();
+    const wxArrayString& GetAltExtensions() const;
+    wxBitmapType GetType();
     wxString GetMimeType();
 
     //bool LoadFile(wxImage* image, wxInputStream& stream);
@@ -59,10 +64,12 @@ public:
     
     void SetName(const wxString& name);
     void SetExtension(const wxString& extension);
-    void SetType(long type);
+    void SetAltExtensions(const wxArrayString& exts);
+    void SetType(wxBitmapType type);
     void SetMimeType(const wxString& mimetype);
 
     %property(Extension, GetExtension, SetExtension, doc="See `GetExtension` and `SetExtension`");
+    %property(AltExtensions, GetAltExtensions, SetAltExtensions);
     %property(MimeType, GetMimeType, SetMimeType, doc="See `GetMimeType` and `SetMimeType`");
     %property(Name, GetName, SetName, doc="See `GetName` and `SetName`");
     %property(Type, GetType, SetType, doc="See `GetType` and `SetType`");
@@ -240,7 +247,8 @@ public:
     %typemap(out) wxImage*;    // turn off this typemap
 
     DocCtorStr(
-        wxImage( const wxString& name, long type = wxBITMAP_TYPE_ANY, int index = -1 ),
+        wxImage( const wxString& name, wxBitmapType type = wxBITMAP_TYPE_ANY,
+                 int index = -1 ),
         "Loads an image from a file.",
         "
     :param name:  Name of the file from which to load the image.
@@ -286,7 +294,7 @@ public:
         ImageFromMime);
     
     DocCtorStrName(
-        wxImage(wxInputStream& stream, long type = wxBITMAP_TYPE_ANY, int index = -1),
+        wxImage(wxInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1),
         "Loads an image from an input stream, or any readable Python file-like
 object.", "
 
@@ -409,7 +417,8 @@ initialized to black. Otherwise, the image data will be uninitialized.", "");
     
 
     DocDeclStr(
-        wxImage , Scale( int width, int height, int quality = wxIMAGE_QUALITY_NORMAL ),
+        wxImage , Scale( int width, int height,
+                         wxImageResizeQuality quality = wxIMAGE_QUALITY_NORMAL ),
         "Returns a scaled version of the image. This is also useful for scaling
 bitmaps in general as the only other way to scale bitmaps is to blit a
 `wx.MemoryDC` into another `wx.MemoryDC`.  The ``quality`` parameter
@@ -435,7 +444,9 @@ partially. Using the alpha channel will work.
 :see: `Rescale`");
 
     
+    wxImage ResampleNearest(int width, int height) const;
     wxImage ResampleBox(int width, int height) const;
+    wxImage ResampleBilinear(int width, int height) const;
     wxImage ResampleBicubic(int width, int height) const;
 
     DocDeclStr(
@@ -467,7 +478,8 @@ used when using a single mask colour for transparency.", "");
     %typemap(out) wxImage& { $result = $self; Py_INCREF($result); }
     
     DocDeclStr(
-        wxImage& , Rescale(int width, int height, int quality = wxIMAGE_QUALITY_NORMAL),
+        wxImage& , Rescale(int width, int height,
+                           wxImageResizeQuality quality = wxIMAGE_QUALITY_NORMAL),
         "Changes the size of the image in-place by scaling it: after a call to
 this function, the image will have the given width and height.
 
@@ -555,6 +567,7 @@ the image already has alpha data. If it doesn't, alpha data will be by
 default initialized to all pixels being fully opaque. But if the image
 has a a mask colour, all mask pixels will be completely transparent.", "");
 
+    void ClearAlpha();
 
     DocDeclStr(
         bool , IsTransparent(int x, int y,
@@ -583,7 +596,11 @@ chosen automatically using `FindFirstUnusedColour`.
 
 If the image image doesn't have alpha channel, ConvertAlphaToMask does
 nothing.", "");
-    
+
+    // TODO
+    //bool ConvertAlphaToMask(unsigned char mr, unsigned char mg, unsigned char mb,
+    //                        unsigned char threshold = wxIMAGE_ALPHA_THRESHOLD);
+
 
     DocDeclStr(
         bool , ConvertColourToAlpha( byte r, byte g, byte b ),
@@ -625,14 +642,14 @@ computationally intensive operation.", "");
         "Returns True if the image handlers can read this file.", "");
     
     DocDeclStr(
-        static int , GetImageCount( const wxString& filename, long type = wxBITMAP_TYPE_ANY ),
+        static int , GetImageCount( const wxString& filename, wxBitmapType type = wxBITMAP_TYPE_ANY ),
         "If the image file contains more than one image and the image handler
 is capable of retrieving these individually, this function will return
 the number of available images.", "");
     
 
     DocDeclStr(
-        bool , LoadFile( const wxString& name, long type = wxBITMAP_TYPE_ANY, int index = -1 ),
+        bool , LoadFile( const wxString& name, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1 ),
         "Loads an image from a file. If no handler type is provided, the
 library will try to autodetect the format.", "");
     
@@ -644,7 +661,7 @@ string.", "",
     
 
     DocDeclStr(
-        bool , SaveFile( const wxString& name, int type ),
+        bool , SaveFile( const wxString& name, wxBitmapType type ),
         "Saves an image in the named file.", "");
 
     
@@ -654,7 +671,7 @@ string.", "",
         SaveMimeFile);
 
     DocDeclStrName(
-        bool , SaveFile( wxOutputStream& stream, int type ),
+        bool , SaveFile( wxOutputStream& stream, wxBitmapType type ),
         "Saves an image in the named file.", "",
         SaveStream);
 
@@ -674,7 +691,7 @@ object.", "",
 
 
     DocDeclStrName(
-        bool , LoadFile( wxInputStream& stream, long type = wxBITMAP_TYPE_ANY, int index = -1 ),
+        bool , LoadFile( wxInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1 ),
         "Loads an image from an input stream or a readable Python file-like
 object. If no handler type is provided, the library will try to
 autodetect the format.", "",
@@ -702,14 +719,23 @@ object, using a MIME type string to specify the image file format.", "",
         "Gets the height of the image in pixels.", "");
     
 
-    %extend {
-        DocStr(GetSize,
-               "Returns the size of the image in pixels.", "");
-        wxSize GetSize() {
-            wxSize size(self->GetWidth(), self->GetHeight());
-            return size;
-        }
-    }
+    DocDeclStr(
+        wxBitmapType , GetType() const,
+        "Gets the type of image found by LoadFile or specified with SaveFile", "");
+    
+
+    DocDeclStr(
+        void , SetType(wxBitmapType type),
+        "Set the image type, this is normally only called if the image is being
+created from data in the given format but not using LoadFile() (e.g.
+wxGIFDecoder uses this)
+", "");
+    
+
+    DocDeclStr(
+        wxSize , GetSize(),
+        "Returns the size of the image in pixels.", "");
+    
 
     
     DocDeclStr(
@@ -731,7 +757,12 @@ newly exposed areas.", "
 
 :see: `Resize`");
     
+
+    DocDeclStr(
+        void , Clear(unsigned char value = 0),
+        "initialize the image data with zeroes", "");
     
+
     DocDeclStr(
         wxImage , Copy(),
         "Returns an identical copy of the image.", "");
@@ -922,6 +953,8 @@ Returns the rotated image, leaving this image intact.", "");
         wxImage , Rotate90( bool clockwise = true ) ,
         "Returns a copy of the image rotated 90 degrees in the direction
 indicated by ``clockwise``.", "");
+
+    wxImage Rotate180() const;
     
     DocDeclStr(
         wxImage , Mirror( bool horizontally = true ) ,
@@ -935,20 +968,24 @@ indicates the orientation.", "");
         "Replaces the colour specified by ``(r1,g1,b1)`` by the colour
 ``(r2,g2,b2)``.", "");
 
+    
+    %nokwargs ConvertToGreyscale;
+    wxImage ConvertToGreyscale();
     DocDeclStr(
-        wxImage , ConvertToGreyscale( double lr = 0.299,
-                                      double lg = 0.587,
-                                      double lb = 0.114 ) const,
+        wxImage , ConvertToGreyscale( double lr, double lg, double lb ) const,
         "Convert to greyscale image. Uses the luminance component (Y) of the
 image.  The luma value (YUV) is calculated using (R * lr) + (G * lg) + (B * lb),
 defaults to ITU-T BT.601", "");
-    
+
 
     DocDeclStr(
         wxImage , ConvertToMono( byte r, byte g, byte b ) const,
         "Returns monochromatic version of the image. The returned image has
 white colour where the original has ``(r,g,b)`` colour and black
 colour everywhere else.", "");
+
+    // Convert to disabled (dimmed) image.
+    wxImage ConvertToDisabled(unsigned char brightness = 255) const;
     
 
     DocDeclStr(
@@ -1198,7 +1235,7 @@ alpha channel then a alpha channel will be added.", "");
 
 
 
-// Make an image from buffer objects.  Note that this is here instead of in the
+// Make an image from buffer objects.  Not that this is here instead of in the
 // wxImage class (as a constructor) because there is already another one with
 // the exact same signature, so there would be ambiguities in the generated
 // C++.  Doing it as an independent factory function like this accomplishes
@@ -1260,6 +1297,7 @@ def ImageFromBuffer(width, height, dataBuffer, alphaBuffer=None):
 ///void wxInitAllImageHandlers();
 
 %pythoncode {
+    @wx.deprecated
     def InitAllImageHandlers():
         """
         The former functionality of InitAllImageHanders is now done internal to
@@ -1286,11 +1324,25 @@ MAKE_CONST_WXSTRING(IMAGE_OPTION_RESOLUTIONY);
 MAKE_CONST_WXSTRING(IMAGE_OPTION_RESOLUTIONUNIT);
 MAKE_CONST_WXSTRING(IMAGE_OPTION_QUALITY);
 
-enum
+MAKE_CONST_WXSTRING(IMAGE_OPTION_MAX_WIDTH);
+MAKE_CONST_WXSTRING(IMAGE_OPTION_MAX_HEIGHT);
+MAKE_CONST_WXSTRING(IMAGE_OPTION_ORIGINAL_WIDTH);
+MAKE_CONST_WXSTRING(IMAGE_OPTION_ORIGINAL_HEIGHT);
+
+
+// constants used with wxIMAGE_OPTION_RESOLUTIONUNIT
+enum wxImageResolution
 {
+    // Resolution not specified
+    wxIMAGE_RESOLUTION_NONE = 0,
+
+    // Resolution specified in inches
     wxIMAGE_RESOLUTION_INCHES = 1,
+
+    // Resolution specified in centimeters
     wxIMAGE_RESOLUTION_CM = 2
 };
+
 
 
 MAKE_CONST_WXSTRING(IMAGE_OPTION_BITSPERSAMPLE);

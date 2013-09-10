@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Sept-2003
-// RCS-ID:      $Id: _gdicmn.i 56562 2008-10-29 00:25:58Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -33,6 +33,7 @@ enum wxBitmapType
     wxBITMAP_TYPE_XPM,
     wxBITMAP_TYPE_XPM_DATA,
     wxBITMAP_TYPE_TIF,
+    wxBITMAP_TYPE_TIFF,
     wxBITMAP_TYPE_GIF,
     wxBITMAP_TYPE_PNG,
     wxBITMAP_TYPE_JPEG,
@@ -59,7 +60,15 @@ enum wxBitmapType
 //    wxBITMAP_TYPE_ICON_RESOURCE,
 //    wxBITMAP_TYPE_MACCURSOR_RESOURCE,
 
-    wxBITMAP_TYPE_ANY = 50
+    wxBITMAP_TYPE_MAX,
+    wxBITMAP_TYPE_ANY,
+    wxBITMAP_DEFAULT_TYPE
+};
+
+
+enum wxPolygonFillMode {
+    wxODDEVEN_RULE,
+    wxWINDING_RULE
 };
 
 // Standard cursors
@@ -105,6 +114,9 @@ enum wxStockCursor
 
     wxCURSOR_ARROWWAIT,
 
+    wxCURSOR_OPEN_HAND,
+    wxCURSOR_CLOSED_HAND,
+
     wxCURSOR_MAX
 };
 
@@ -138,7 +150,6 @@ public:
 
     
     %extend {
-        //KeepGIL(__eq__);
         DocStr(__eq__, "Test for equality of wx.Size objects.", "");
         bool __eq__(PyObject* other) {
             wxSize  temp, *obj = &temp;
@@ -147,11 +158,10 @@ public:
                 PyErr_Clear();
                 return false;
             }
-            return self->operator==(*obj);
+            return *self == *obj;
         }
 
         
-        //KeepGIL(__ne__);
         DocStr(__ne__, "Test for inequality of wx.Size objects.", "");
         bool __ne__(PyObject* other) {
             wxSize  temp, *obj = &temp;
@@ -160,17 +170,22 @@ public:
                 PyErr_Clear();
                 return true;
             }
-            return self->operator!=(*obj);
+            return *self != *obj;
+        }
+    
+
+        DocStr(__add__, "Add sz's proprties to this and return the result.", "");
+        wxSize __add__(const wxSize& sz) {
+            return *self + sz;
+        }
+
+        
+        DocStr(__sub__, "Subtract sz's properties from this and return the result.", "");
+        wxSize __sub__(const wxSize& sz) {
+            return *self - sz;
         }
     }
-
-    DocDeclStr(
-        wxSize, operator+(const wxSize& sz),
-        "Add sz's proprties to this and return the result.", "");
-
-    DocDeclStr(
-        wxSize, operator-(const wxSize& sz),
-        "Subtract sz's properties from this and return the result.", "");
+        
 
     DocDeclStr(
         void, IncTo(const wxSize& sz),
@@ -240,7 +255,7 @@ of this object (i.e. equal to -1) with those of the other.", "");
         }
     }
     %pythoncode {
-    asTuple = wx._deprecated(Get, "asTuple is deprecated, use `Get` instead")
+    asTuple = wx.deprecated(Get, "asTuple is deprecated, use `Get` instead")
     def __str__(self):                   return str(self.Get())
     def __repr__(self):                  return 'wx.Size'+str(self.Get())
     def __len__(self):                   return len(self.Get())
@@ -276,7 +291,6 @@ public:
     ~wxRealPoint();
 
     %extend {
-        //KeepGIL(__eq__);
         DocStr(__eq__, "Test for equality of wx.RealPoint objects.", "");
         bool __eq__(PyObject* other) {
             wxRealPoint  temp, *obj = &temp;
@@ -285,11 +299,10 @@ public:
                 PyErr_Clear();
                 return false;
             }
-            return self->operator==(*obj);
+            return *self == *obj;
         }
 
         
-        //KeepGIL(__ne__);
         DocStr(__ne__, "Test for inequality of wx.RealPoint objects.", "");
         bool __ne__(PyObject* other) {
             wxRealPoint  temp, *obj = &temp;
@@ -298,21 +311,21 @@ public:
                 PyErr_Clear();
                 return true;
             }
-            return self->operator!=(*obj);
+            return *self != *obj;
         }
-    }
 
-    
-    DocDeclStr(
-        wxRealPoint, operator+(const wxRealPoint& pt),
-        "Add pt's proprties to this and return the result.", "");
+        DocStr(__add__, "Add pt's proprties to this and return the result.", "");
+        wxRealPoint __add__(const wxRealPoint& pt) {
+            return *self + pt;
+        }
 
-    DocDeclStr(
-        wxRealPoint, operator-(const wxRealPoint& pt),
-        "Subtract pt's proprties from this and return the result", "");
+        
+        DocStr(__sub__, "Subtract pt's properties from this and return the result.", "");
+        wxRealPoint __sub__(const wxRealPoint& pt) {
+            return *self - pt;
+        }
 
-
-    %extend {
+        
         DocStr(Set, "Set both the x and y properties", "");
         void Set(double x, double y) {
             self->x = x;
@@ -333,7 +346,7 @@ public:
     }
 
     %pythoncode {
-    asTuple = wx._deprecated(Get, "asTuple is deprecated, use `Get` instead")
+    asTuple = wx.deprecated(Get, "asTuple is deprecated, use `Get` instead")
     def __str__(self):                   return str(self.Get())
     def __repr__(self):                  return 'wx.RealPoint'+str(self.Get())
     def __len__(self):                   return len(self.Get())
@@ -369,9 +382,15 @@ public:
 
     ~wxPoint();
 
+
+    // check if both components are set/initialized
+    bool IsFullySpecified() const;
+
+    // fill in the unset components with the values from the other point
+    void SetDefaults(const wxPoint& pt);
+    
     
     %extend {
-        //KeepGIL(__eq__);
         DocStr(__eq__, "Test for equality of wx.Point objects.", "");
         bool __eq__(PyObject* other) {
             wxPoint  temp, *obj = &temp;
@@ -380,11 +399,10 @@ public:
                 PyErr_Clear();
                 return false;
             }
-            return self->operator==(*obj);
+            return *self == *obj; 
         }
 
         
-        //KeepGIL(__ne__);
         DocStr(__ne__, "Test for inequality of wx.Point objects.", "");
         bool __ne__(PyObject* other) {
             wxPoint  temp, *obj = &temp;
@@ -393,57 +411,21 @@ public:
                 PyErr_Clear();
                 return true;
             }
-            return self->operator!=(*obj);
+            return *self != *obj;
         }
-    }
+
+        DocStr(__add__, "Add pt's proprties to this and return the result.", "");
+        wxPoint __add__(const wxPoint& pt) {
+            return *self + pt;
+        }
+
+        
+        DocStr(__sub__, "Subtract pt's properties from this and return the result.", "");
+        wxPoint __sub__(const wxPoint& pt) {
+            return *self - pt;
+        }
 
 
-//     %nokwargs operator+;
-//     %nokwargs operator-;
-//     %nokwargs operator+=;
-//     %nokwargs operator-=;
-    
-    DocDeclStr(
-        wxPoint, operator+(const wxPoint& pt),
-        "Add pt's proprties to this and return the result.", "");
-
-   
-    DocDeclStr(
-        wxPoint, operator-(const wxPoint& pt),
-        "Subtract pt's proprties from this and return the result", "");
-
-
-    DocDeclStr(
-        wxPoint&, operator+=(const wxPoint& pt),
-        "Add pt to this object.", "");
-
-    DocDeclStr(
-        wxPoint&, operator-=(const wxPoint& pt),
-        "Subtract pt from this object.", "");
-
-
-    
-//     DocDeclStr(
-//         wxPoint, operator+(const wxSize& sz),
-//         "Add sz to this Point and return the result.", "");
-
-//     DocDeclStr(
-//         wxPoint, operator-(const wxSize& sz),
-//         "Subtract sz from this Point and return the result", "");
-
-
-//     DocDeclStr(
-//         wxPoint&, operator+=(const wxSize& sz),
-//         "Add sz to this object.", "");
-
-//     DocDeclStr(
-//         wxPoint&, operator-=(const wxSize& sz),
-//         "Subtract sz from this object.", "");
-
-
-    
-    
-    %extend {
         DocStr(Set, "Set both the x and y properties", "");
         void Set(long x, long y) {
             self->x = x;
@@ -464,7 +446,7 @@ public:
     }
 
     %pythoncode {
-    asTuple = wx._deprecated(Get, "asTuple is deprecated, use `Get` instead")
+    asTuple = wx.deprecated(Get, "asTuple is deprecated, use `Get` instead")
     def __str__(self):                   return str(self.Get())
     def __repr__(self):                  return 'wx.Point'+str(self.Get())
     def __len__(self):                   return len(self.Get())
@@ -622,7 +604,7 @@ that means:
 
     
     DocDeclStr(
-        wxRect, Deflate(wxCoord dx, wxCoord dy),
+        wxRect&, Deflate(wxCoord dx, wxCoord dy),
         "Decrease the rectangle size. This method is the opposite of `Inflate`
 in that Deflate(a,b) is equivalent to Inflate(-a,-b).  Please refer to
 `Inflate` for a full description.", "");
@@ -651,16 +633,7 @@ bottom, otherwise it is moved to the left or top respectively.", "",
         "Returns the union of this rectangle and rect.", "");
     
     
-    DocDeclStr(
-        wxRect, operator+(const wxRect& rect) const,
-        "Add the properties of rect to this rectangle and return the result.", "");
-
-    DocDeclStr(
-        wxRect&, operator+=(const wxRect& rect),
-        "Add the properties of rect to this rectangle, updating this rectangle.", "");
-
     %extend {
-        //KeepGIL(__eq__);
         DocStr(__eq__, "Test for equality of wx.Rect objects.", "");
         bool __eq__(PyObject* other) {
             wxRect  temp, *obj = &temp;
@@ -669,11 +642,10 @@ bottom, otherwise it is moved to the left or top respectively.", "",
                 PyErr_Clear();
                 return false;
             }
-            return self->operator==(*obj);
+            return *self == *obj; 
         }
 
         
-        //KeepGIL(__ne__);
         DocStr(__ne__, "Test for inequality of wx.Rect objects.", "");
         bool __ne__(PyObject* other) {
             wxRect  temp, *obj = &temp;
@@ -682,9 +654,26 @@ bottom, otherwise it is moved to the left or top respectively.", "",
                 PyErr_Clear();
                 return true;
             }
-            return self->operator!=(*obj);
+            return *self != *obj;
+        }
+
+
+        DocStr(__add__, "Add rect's proprties to this and return the result.", "");
+        wxRect __add__(const wxRect& rect) {
+            return *self + rect;
+        }
+
+        
+        DocStr(__mul__, "Calculate the intersection of the rectangles and return the result.", "");
+        wxRect __mul__(const wxRect& rect) {
+            return *self * rect;
         }
     }
+
+    
+    DocDeclStr(
+        wxRect&, operator+=(const wxRect& rect),
+        "Add the properties of rect to this rectangle, updating this rectangle.", "");
 
     
     DocStr( Contains, "Return True if the point is inside the rect.", "");
@@ -698,9 +687,9 @@ rectangle or touches its boundary.", "",
         ContainsRect);
     
     %pythoncode {
-        %#Inside = wx._deprecated(Contains, "Use `Contains` instead.")
-        %#InsideXY = wx._deprecated(ContainsXY, "Use `ContainsXY` instead.")
-        %#InsideRect = wx._deprecated(ContainsRect, "Use `ContainsRect` instead.")
+        %#Inside = wx.deprecated(Contains, "Use `Contains` instead.")
+        %#InsideXY = wx.deprecated(ContainsXY, "Use `ContainsXY` instead.")
+        %#InsideRect = wx.deprecated(ContainsRect, "Use `ContainsRect` instead.")
         Inside = Contains
         InsideXY = ContainsXY
         InsideRect = ContainsRect
@@ -745,7 +734,7 @@ usually, but not necessarily, the larger one.", "");
     }
 
     %pythoncode {
-    asTuple = wx._deprecated(Get, "asTuple is deprecated, use `Get` instead")
+    asTuple = wx.deprecated(Get, "asTuple is deprecated, use `Get` instead")
     def __str__(self):                   return str(self.Get())
     def __repr__(self):                  return 'wx.Rect'+str(self.Get())
     def __len__(self):                   return len(self.Get())
@@ -799,11 +788,10 @@ DocAStr(wxIntersectRect,
         reg1.Intersect(reg2);
         dest = reg1.GetBox();
 
+        wxPyThreadBlocker blocker;
         if (dest != wxRect(0,0,0,0)) {
-            wxPyBlock_t blocked = wxPyBeginBlockThreads();
             wxRect* newRect = new wxRect(dest);
             obj = wxPyConstructObject((void*)newRect, wxT("wxRect"), true);
-            wxPyEndBlockThreads(blocked);
             return obj;
         }
         Py_INCREF(Py_None);
@@ -949,7 +937,7 @@ public:
     }
 
     %pythoncode {
-    asTuple = wx._deprecated(Get, "asTuple is deprecated, use `Get` instead")
+    asTuple = wx.deprecated(Get, "asTuple is deprecated, use `Get` instead")
     def __str__(self):                   return str(self.Get())
     def __repr__(self):                  return 'wx.Point2D'+str(self.Get())
     def __len__(self):                   return len(self.Get())
@@ -1141,6 +1129,59 @@ public:
     }
 
 };
+
+//---------------------------------------------------------------------------
+
+class wxPosition
+{
+public:
+    wxPosition(int row=0, int col=0);
+    ~wxPosition();
+
+    int GetRow() const;
+    int GetColumn() const;
+    int GetCol() const;
+    void SetRow(int row);
+    void SetColumn(int column);
+    void SetCol(int column);
+
+    %extend {
+        DocStr(__eq__, "Test for equality of wx.Position objects.", "");
+        bool __eq__(PyObject* other) {
+            wxPosition  temp, *obj = &temp;
+            if ( other == Py_None ) return false;
+            if ( ! wxPosition_helper(other, &obj) ) {
+                PyErr_Clear();
+                return false;
+            }
+            return self->operator==(*obj);
+        }
+
+        
+        DocStr(__ne__, "Test for inequality of wx.Position objects.", "");
+        bool __ne__(PyObject* other) {
+            wxPosition  temp, *obj = &temp;
+            if ( other == Py_None ) return true;
+            if ( ! wxPosition_helper(other, &obj)) {
+                PyErr_Clear();
+                return true;
+            }
+            return self->operator!=(*obj);
+        }
+    }
+
+    %nokwargs operator+;
+    %nokwargs operator-;
+    wxPosition operator+(const wxPosition& p) const;
+    wxPosition operator-(const wxPosition& p) const;
+    wxPosition operator+(const wxSize& s) const;
+    wxPosition operator-(const wxSize& s) const;
+
+    %property(row, GetRow, SetRow);
+    %property(col, GetCol, SetCol);
+};
+
+
 
 //---------------------------------------------------------------------------
 

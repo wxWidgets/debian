@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: pyistream.h 47786 2007-07-28 17:01:57Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -88,6 +88,7 @@ protected:
     virtual size_t OnSysWrite(const void *buffer, size_t bufsize);
     virtual wxFileOffset OnSysSeek(wxFileOffset off, wxSeekMode mode);
     virtual wxFileOffset OnSysTell() const;
+    virtual bool IsSeekable() const;
 
     PyObject* m_read;
     PyObject* m_seek;
@@ -159,6 +160,7 @@ protected:
     virtual size_t OnSysWrite(const void *buffer, size_t bufsize);
     virtual wxFileOffset OnSysSeek(wxFileOffset off, wxSeekMode mode);
     virtual wxFileOffset OnSysTell() const;
+    virtual bool IsSeekable() const;
 
     PyObject* m_write;
     PyObject* m_seek;

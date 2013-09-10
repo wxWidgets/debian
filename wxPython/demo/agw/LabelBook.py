@@ -79,6 +79,8 @@ class LabelBookDemo(wx.Frame):
         self.web = wx.CheckBox(self.leftpanel, -1, "Web Highlight")
         self.fittext = wx.CheckBox(self.leftpanel, -1, "Fit Label Text")
         self.boldtext = wx.CheckBox(self.leftpanel, -1, "Bold Label Text")
+        self.boldselection = wx.CheckBox(self.leftpanel, -1, "Bold Selected Tab")
+        
         self.textsize = wx.TextCtrl(self.leftpanel, -1, "1.0",style=wx.TE_PROCESS_ENTER)
         self.background = csel.ColourSelect(self.leftpanel, -1, "Choose...",
                                             wx.Colour(132, 164, 213), size=(-1, 20))
@@ -109,6 +111,7 @@ class LabelBookDemo(wx.Frame):
         self.Bind(wx.EVT_CHECKBOX, self.OnStyle, self.web)
         self.Bind(wx.EVT_CHECKBOX, self.OnStyle, self.fittext)
         self.Bind(wx.EVT_CHECKBOX, self.OnStyle, self.boldtext)
+        self.Bind(wx.EVT_CHECKBOX, self.OnStyle, self.boldselection)
         self.Bind(wx.EVT_TEXT_ENTER,    self.OnStyle, self.textsize)
 
         self.Bind(csel.EVT_COLOURSELECT, self.OnBookColours, self.background)
@@ -179,6 +182,7 @@ class LabelBookDemo(wx.Frame):
         sizer_3.Add(self.web, 0, wx.LEFT|wx.BOTTOM, 3)
         sizer_3.Add(self.fittext, 0, wx.LEFT|wx.BOTTOM, 3)
         sizer_3.Add(self.boldtext, 0, wx.LEFT|wx.BOTTOM, 3)
+        sizer_3.Add(self.boldselection, 0, wx.LEFT|wx.BOTTOM, 3)
         leftsizer.Add(sizer_3, 0, wx.ALL|wx.EXPAND, 5)
 
         lbl = wx.StaticText(self.leftpanel, -1, "Text Font Multiple: ")
@@ -310,7 +314,9 @@ class LabelBookDemo(wx.Frame):
             style |= INB_BORDER
         if self.fittext.IsEnabled() and self.fittext.GetValue():
             style |= INB_FIT_LABELTEXT
-           
+        if self.boldselection.IsEnabled() and self.boldselection.GetValue():
+            style |= INB_BOLD_TAB_SELECTION
+            
         if self.book: 
             self.book.SetFontBold(self.boldtext.GetValue())
 
@@ -365,6 +371,7 @@ class LabelBookDemo(wx.Frame):
         self.book.SetFontSizeMultiple(float(self.textsize.GetValue()))
         if self.textsize.GetValue() != self._oldTextSize:
             self.book.ResizeTabArea()
+
         self._oldTextSize = self.textsize.GetValue()
 
         event.Skip()
@@ -514,7 +521,7 @@ class LabelBookDemo(wx.Frame):
             "Author: Andrea Gavana @ 03 Nov 2006\n\n" + \
             "Please Report Any Bug/Requests Of Improvements\n" + \
             "To Me At The Following Adresses:\n\n" + \
-            "andrea.gavana@gmail.com\n" + "gavana@kpo.kz\n\n" + \
+            "andrea.gavana@gmail.com\n" + "andrea.gavana@maerskoil.com\n\n" + \
             "Welcome To wxPython " + wx.VERSION_STRING + "!!"
 
         dlg = wx.MessageDialog(self, msg, "LabelBook wxPython Demo",

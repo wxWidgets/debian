@@ -5,7 +5,7 @@
 # Author:       Peter Yared
 #
 # Created:      8/10/03
-# CVS-ID:       $Id: CodeEditor.py 38852 2006-04-20 06:26:03Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2004-2005 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------
@@ -804,7 +804,7 @@ class CodeCtrl(STCTextEditor.TextCtrl):
     def OnKeyPressed(self, event):
         if self.CallTipActive():
             self.CallTipCancel()
-        key = event.KeyCode()
+        key = event.GetKeyCode()
         if False:  # key == wx.WXK_SPACE and event.ControlDown():
             pos = self.GetCurrentPos()
             # Tips

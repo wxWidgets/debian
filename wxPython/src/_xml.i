@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     4-June-2001
-// RCS-ID:      $Id: _xml.i 60608 2009-05-12 20:38:58Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,8 @@ public:
               const wxString& name = wxPyEmptyString,
               const wxString& content = wxPyEmptyString,
               wxXmlProperty *props = NULL,
-              wxXmlNode *next = NULL);
+              wxXmlNode *next = NULL,
+              int lineNo=-1);
     ~wxXmlNode();
 
 
@@ -119,6 +120,10 @@ public:
     wxXmlNode *GetNext() const;
     wxXmlNode *GetChildren() const;
 
+    bool HasAttribute(const wxString& attrName) const;
+
+    int GetLineNumber() const;
+
     wxXmlProperty *GetProperties() const;
     wxString GetPropVal(const wxString& propName,
                         const wxString& defaultVal) const;
@@ -134,10 +139,15 @@ public:
 
     void SetProperties(wxXmlProperty *prop);
 
+    void SetAttributes(wxXmlAttribute *attr);
+
+    %nokwargs AddAttribute;
+    virtual void AddAttribute(wxXmlAttribute *attr);
+    void AddAttribute(const wxString& attrName, const wxString& value);
+
     wxString GetAttribute(const wxString& attrName,
                           const wxString& defaultVal) const;
     //bool GetAttribute(const wxString& attrName, wxString *value) const;
-    void AddAttribute(const wxString& attrName, const wxString& value);
     wxXmlProperty* GetAttributes() const;
 
     

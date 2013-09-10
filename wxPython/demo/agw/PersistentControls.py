@@ -54,13 +54,14 @@ class PersistentPanel(wx.Panel):
         sizer = wx.FlexGridSizer(3, 2, 10, 10)
         
         btn1 = wx.Button(self, -1, "Example 1")
-        text1 = ExpandoTextCtrl(self, -1, _sampleText1, style=wx.TE_READONLY)
+        text1 = ExpandoTextCtrl(self, -1, _sampleText1, size=(300,-1), style=wx.TE_READONLY)
 
         btn2 = wx.Button(self, -1, "Example 2")
-        text2 = ExpandoTextCtrl(self, -1, _sampleText2, style=wx.TE_READONLY)
+        text2 = ExpandoTextCtrl(self, -1, _sampleText2, size=(300,-1), style=wx.TE_READONLY)
 
         sizer.Add(btn1, 0, wx.ALIGN_CENTER)
         sizer.Add(text1, 1, wx.EXPAND)
+        
         sizer.Add(btn2, 0, wx.ALIGN_CENTER)
         sizer.Add(text2, 1, wx.EXPAND)
 

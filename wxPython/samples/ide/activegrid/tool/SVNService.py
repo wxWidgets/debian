@@ -5,7 +5,7 @@
 # Author:       Morgan Hua
 #
 # Created:      5/13/05
-# CVS-ID:       $Id: SVNService.py 38852 2006-04-20 06:26:03Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2005 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------

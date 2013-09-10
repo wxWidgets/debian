@@ -8,13 +8,29 @@
 // Author:      Robin Dunn
 //
 // Created:     1-July-1997
-// RCS-ID:      $Id: wxPython_int.h 60300 2009-04-24 05:26:27Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __wxp_helpers__
 #define __wxp_helpers__
+
+#if defined(__APPLE__)
+    // When it's possible that we're building universal binaries with both
+    // 32-bit and 64-bit architectures then these need to be undefed because
+    // otherwise the values set by configure could conflict with those set
+    // based on runtime flags in Python's headers.  We also do something
+    // similar in wx/platform.h so it's okay to undef them now because they
+    // will be defined again soon.
+    #undef SIZEOF_VOID_P
+    #undef SIZEOF_LONG
+    #undef SIZEOF_SIZE_T
+
+    // Turn off the warning about converting string literals to char*
+    // TODO: fix these the right way...
+    #pragma GCC diagnostic ignored "-Wwrite-strings"
+#endif
 
 #include <wx/wx.h>
 
@@ -41,12 +57,15 @@
 #include <wx/fs_mem.h>
 #include <wx/fs_zip.h>
 #include <wx/gbsizer.h>
+#include <wx/wrapsizer.h>
 #include <wx/geometry.h>
 #include <wx/htmllbox.h>
 #include <wx/image.h>
 #include <wx/imaglist.h>
+#include <wx/infobar.h>
 #include <wx/intl.h>
 #include <wx/laywin.h>
+#include <wx/listbase.h>
 #include <wx/listbook.h>
 #include <wx/minifram.h>
 #include <wx/notebook.h>
@@ -81,7 +100,10 @@
 #include <wx/collpane.h>
 #include <wx/srchctrl.h>
 #include <wx/generic/datectrl.h>
-
+#include <wx/filectrl.h>
+#include <wx/notifmsg.h>
+#include <wx/commandlinkbutton.h>
+#include <wx/versioninfo.h>
 
 #ifdef _MSC_VER
 # pragma warning(disable:4800)
@@ -136,13 +158,13 @@ const char* wxGetDefaultPyEncoding();
 void wxPyEventThunker(wxObject*, wxEvent& event);
 
 
-bool wxPyCheckSwigType(const wxChar* className);
+bool wxPyCheckSwigType(const wxString& className);
 PyObject* wxPyConstructObject(void* ptr,
-                              const wxChar* className,
+                              const wxString& className,
                               int setThisOwn=0);
 bool wxPyConvertSwigPtr(PyObject* obj, void **ptr,
-                        const wxChar* className);
-PyObject* wxPyMakeSwigPtr(void* ptr, const wxChar* classname);
+                        const wxString& className);
+PyObject* wxPyMakeSwigPtr(void* ptr, const wxString& classname);
 
 
 PyObject* wx2PyString(const wxString& src);
@@ -200,6 +222,9 @@ typedef PyGILState_STATE wxPyBlock_t;
 typedef int Py_ssize_t;
 #endif
 
+#ifndef Py_TYPE
+#define Py_TYPE(o) ((o)->ob_type)
+#endif
 
 #ifndef wxPyUSE_EXPORTED_API
 
@@ -213,7 +238,6 @@ void wxPyEndBlockThreads(wxPyBlock_t blocked);
 
 #endif // wxPyUSE_EXPORTED_API
 
-
 // A macro that will help to execute simple statments wrapped in
 // StartBlock/EndBlockThreads calls
 #define wxPyBLOCK_THREADS(stmt) \
@@ -222,6 +246,10 @@ void wxPyEndBlockThreads(wxPyBlock_t blocked);
 // Raise the NotImplementedError exception  (blocking threads)
 #define wxPyRaiseNotImplemented() \
     wxPyBLOCK_THREADS(PyErr_SetNone(PyExc_NotImplementedError))
+
+// Raise the NotImplementedError exception with a message  (blocking threads)
+#define wxPyRaiseNotImplementedMsg(msg) \
+    wxPyBLOCK_THREADS(PyErr_SetString(PyExc_NotImplementedError, msg))
 
 // Raise any exception with a string value  (blocking threads)
 #define wxPyErr_SetString(err, str) \
@@ -253,7 +281,13 @@ bool wxRect_helper(PyObject* source, wxRect** obj);
 bool wxColour_helper(PyObject* source, wxColour** obj);
 bool wxPoint2D_helper(PyObject* source, wxPoint2D** obj);
 bool wxRect2D_helper(PyObject* source, wxRect2D** obj);
+bool wxPosition_helper(PyObject* source, wxPosition** obj);
 
+wxVariant wxVariant_in_helper(PyObject* source);
+PyObject* wxVariant_out_helper(const wxVariant& value);
+
+bool wxPyTextOrBitmap_helper(PyObject* obj, bool& wasString,
+                             wxString& outstr, wxBitmap& outbmp);
 
 bool wxPySimple_typecheck(PyObject* source, const wxChar* classname, int seqLen);
 bool wxColour_typecheck(PyObject* source);
@@ -287,7 +321,7 @@ PyObject* wxArrayDouble2PyList_helper(const wxArrayDouble& arr);
 
 #ifndef wxPyUSE_EXPORTED_API
 
-class wxPyCallback : public wxObject {
+class wxPyCallback : public wxEvtHandler {
     DECLARE_ABSTRACT_CLASS(wxPyCallback)
 public:
     wxPyCallback(PyObject* func);
@@ -324,7 +358,7 @@ protected:
 
 
 class wxPyEvent : public wxEvent, public wxPyEvtSelfRef {
-    DECLARE_ABSTRACT_CLASS(wxPyEvent)
+    DECLARE_DYNAMIC_CLASS(wxPyEvent)
 public:
     wxPyEvent(int winid=0, wxEventType commandType = wxEVT_NULL);
     wxPyEvent(const wxPyEvent& evt);
@@ -335,7 +369,7 @@ public:
 
 
 class wxPyCommandEvent : public wxCommandEvent, public wxPyEvtSelfRef {
-    DECLARE_ABSTRACT_CLASS(wxPyCommandEvent)
+    DECLARE_DYNAMIC_CLASS(wxPyCommandEvent)
 public:
     wxPyCommandEvent(wxEventType commandType = wxEVT_NULL, int id=0);
     wxPyCommandEvent(const wxPyCommandEvent& evt);
@@ -351,6 +385,7 @@ public:
 class wxPyClientData;
 class wxPyUserData;
 class wxPyOORClientData;
+class wxPyTreeItemData;
 class wxPyCBInputStream;
 class wxPyCBOutputStream;
 
@@ -372,10 +407,10 @@ class wxPyCallbackHelper;
 
 struct wxPyCoreAPI {
 
-    bool                (*p_wxPyCheckSwigType)(const wxChar* className);
-    PyObject*           (*p_wxPyConstructObject)(void* ptr, const wxChar* className, int setThisOwn);
-    bool                (*p_wxPyConvertSwigPtr)(PyObject* obj, void **ptr, const wxChar* className);
-    PyObject*           (*p_wxPyMakeSwigPtr)(void* ptr, const wxChar* className);
+    bool                (*p_wxPyCheckSwigType)(const wxString& className);
+    PyObject*           (*p_wxPyConstructObject)(void* ptr, const wxString& className, int setThisOwn);
+    bool                (*p_wxPyConvertSwigPtr)(PyObject* obj, void **ptr, const wxString& className);
+    PyObject*           (*p_wxPyMakeSwigPtr)(void* ptr, const wxString& className);
         
     PyThreadState*      (*p_wxPyBeginAllowThreads)();
     void                (*p_wxPyEndAllowThreads)(PyThreadState* state);
@@ -434,14 +469,20 @@ struct wxPyCoreAPI {
 
     bool                (*p_wxPyCheckForApp)();
 
-    // Add all new items at the end...
     PyObject*           (*p_wxArrayDoublePyList_helper)(const wxArrayDouble& arr);
     wxPoint2D*          (*p_wxPoint2D_LIST_helper)(PyObject* source, size_t* npoints);
     bool                (*p_wxRect2D_helper)(PyObject* source, wxRect2D** obj);
+    bool                (*p_wxPosition_helper)(PyObject* source, wxPosition** obj);
 
     wxPyCBOutputStream*  (*p_wxPyCBOutputStream_create)(PyObject *py, bool block);
     wxPyCBOutputStream*  (*p_wxPyCBOutputStream_copy)(wxPyCBOutputStream* other);
-    
+
+    wxVariant            (*p_wxVariant_in_helper)(PyObject* source);
+    PyObject*            (*p_wxVariant_out_helper)(const wxVariant& value);
+
+    bool                 (*p_wxPyTextOrBitmap_helper)(PyObject* obj, bool& wasString, wxString& outstr, wxBitmap& outbmp);
+
+    // Add all new items at the end...
 };
 
 
@@ -452,62 +493,148 @@ static wxPyCoreAPI* wxPyCoreAPIPtr = NULL;
 inline wxPyCoreAPI* wxPyGetCoreAPIPtr();
 #endif // wxPyUSE_EXPORTED_API
 
+// helper for RAII thread blocking
+class wxPyThreadBlocker {
+public:
+    #ifdef wxPyUSE_EXPORTED_API
+    static wxPyBlock_t wxPyBeginBlockThreads() { return wxPyGetCoreAPIPtr()->p_wxPyBeginBlockThreads(); }
+    static void wxPyEndBlockThreads(wxPyBlock_t oldstate) { wxPyGetCoreAPIPtr()->p_wxPyEndBlockThreads(oldstate); }
+    #endif
+
+    explicit wxPyThreadBlocker(bool block=true)
+        :   m_oldstate(block ?  wxPyBeginBlockThreads() : wxPyBlock_t_default),
+            m_block(block)
+    {
+    }
+
+    ~wxPyThreadBlocker() {
+        if (m_block) {
+            wxPyEndBlockThreads(m_oldstate);
+        }
+    } 
+
+private:
+    void operator=(const wxPyThreadBlocker&);
+    explicit wxPyThreadBlocker(const wxPyThreadBlocker&);    
+    wxPyBlock_t m_oldstate;
+    bool        m_block;
+};
+
 //---------------------------------------------------------------------------
 
-// A wxObject that holds a reference to a Python object
-class wxPyUserData : public wxObject {
+// helper template to make common code for all of the various user data owners
+template<typename Base>
+    class wxPyUserDataHelper : public Base {
 public:
-    wxPyUserData(PyObject* obj) {
-        m_obj = obj;
+    // This incRef flag seems to be used by the wxApp OOR stuff ONLY.
+    explicit wxPyUserDataHelper(PyObject* obj, bool incRef=true) : m_obj(obj ? obj : Py_None) {
+        if (incRef) {
+            wxPyThreadBlocker blocker;
+            Py_INCREF(m_obj);   
+        }
+    }  
+    ~wxPyUserDataHelper()
+    {   // normally the derived class does the clean up, or deliberately leaks
+        // by setting m_obj to 0, but if not then do it here.
+        if (m_obj) {    
+            wxPyThreadBlocker blocker;
+            Py_DECREF(m_obj);
+            m_obj = 0;
+        }
+    }
+
+    // Return Value: New reference
+    PyObject* GetData() const {
+        wxPyThreadBlocker blocker;
         Py_INCREF(m_obj);
+        return m_obj;
+    }
+    // Return Value: Borrowed reference
+    PyObject* BorrowData() const {
+        return m_obj;
     }
 
-    ~wxPyUserData() {
-#ifdef wxPyUSE_EXPORTED_API
-        wxPyGetCoreAPIPtr()->p_wxPyUserData_dtor(this);
-#else
-        wxPyUserData_dtor(this);
-#endif
-    }
-    PyObject* m_obj;
-};
-
-
-// A wxClientData that holds a refernece to a Python object
-class wxPyClientData : public wxClientData {
-public:
-    wxPyClientData(PyObject* obj, bool incref=true) {
-        m_obj = obj;
-        m_incRef = incref;
-        if (incref)
+    void SetData(PyObject* obj) {
+        if (obj != m_obj) {
+            wxPyThreadBlocker blocker;
+            Py_DECREF(m_obj);
+            m_obj = obj ? obj : Py_None;
             Py_INCREF(m_obj);
+        }
     }
-    ~wxPyClientData() {
+    
+    // Return the object in udata or None if udata is null
+    // Return Value: New reference
+    static PyObject* SafeGetData(wxPyUserDataHelper<Base>* udata) {
+        wxPyThreadBlocker blocker;
+        PyObject* obj = udata ? udata->BorrowData() : Py_None;
+        Py_INCREF(obj);
+        return obj;
+    }
+    
+    // Set the m_obj to null, this should only be used during clean up, when
+    // the object should be leaked.
+    // Calling any other methods on this object is then undefined behaviour
+    void ReleaseDataDuringCleanup()
+    {
+        m_obj = 0;        
+    }
 
-#ifdef wxPyUSE_EXPORTED_API
-        wxPyGetCoreAPIPtr()->p_wxPyClientData_dtor(this);
-#else
-        wxPyClientData_dtor(this);
-#endif
-    }
+private:
     PyObject* m_obj;
-    bool      m_incRef;
 };
 
+// A wxObject that holds a reference to a Python object
+class wxPyUserData : public wxPyUserDataHelper<wxObject> {
+public:
+    explicit wxPyUserData(PyObject* obj) 
+        :   wxPyUserDataHelper<wxObject>(obj) {
+    }
+    #ifdef wxPyUSE_EXPORTED_API
+        static void wxPyUserData_dtor(wxPyUserData* self) { wxPyGetCoreAPIPtr()->p_wxPyUserData_dtor(self); }
+    #endif
+    ~wxPyUserData() {
+        wxPyUserData_dtor(this);
+    }
+};
+// A wxClientData that holds a reference to a Python object
+class wxPyClientData : public wxPyUserDataHelper<wxClientData> {
+public:
+    explicit wxPyClientData(PyObject* obj) 
+        :   wxPyUserDataHelper<wxClientData>(obj) {
+    }
+    #ifdef wxPyUSE_EXPORTED_API
+        static void wxPyClientData_dtor(wxPyClientData* self) { wxPyGetCoreAPIPtr()->p_wxPyClientData_dtor(self); }
+    #endif
+    ~wxPyClientData() {
+        wxPyClientData_dtor(this);
+    }
+};
 
 // Just like wxPyClientData, except when this object is destroyed it does some
 // OOR magic on the Python Object.
-class wxPyOORClientData : public wxPyClientData {
+class wxPyOORClientData : public wxPyUserDataHelper<wxClientData> {
 public:
-    wxPyOORClientData(PyObject* obj, bool incref=true)
-        : wxPyClientData(obj, incref) {}
+    explicit wxPyOORClientData(PyObject* obj, bool incRef=true)
+        :   wxPyUserDataHelper<wxClientData>(obj, incRef),
+            m_incRef(incRef) {
+    }
+    #ifdef wxPyUSE_EXPORTED_API
+        static void wxPyOORClientData_dtor(wxPyOORClientData* self) { wxPyGetCoreAPIPtr()->p_wxPyOORClientData_dtor(self); }
+    #endif
     ~wxPyOORClientData() {
-
-#ifdef wxPyUSE_EXPORTED_API
-        wxPyGetCoreAPIPtr()->p_wxPyOORClientData_dtor(this);
-#else
         wxPyOORClientData_dtor(this);
-#endif
+    }
+private:
+    friend void wxPyOORClientData_dtor(wxPyOORClientData* self);
+    bool      m_incRef;
+};
+
+// hold python object for association in a tree. This class was in PyTree.h
+class wxPyTreeItemData : public wxPyUserDataHelper<wxTreeItemData> {
+public:
+    explicit wxPyTreeItemData(PyObject* obj)
+        :   wxPyUserDataHelper<wxTreeItemData>(obj) {
     }
 };
 
@@ -640,13 +767,13 @@ public:
 
     virtual bool OnInitGui();
     virtual int OnExit();
-#ifdef __WXDEBUG__
+    virtual void OnEventLoopEnter(wxEventLoopBase* loop);
+    virtual void OnEventLoopExit(wxEventLoopBase* loop);
     virtual void OnAssertFailure(const wxChar *file,
                                  int line,
                                  const wxChar *func,
                                  const wxChar *cond,
                                  const wxChar *msg);
-#endif
 #if wxUSE_EXCEPTIONS
     virtual bool OnExceptionInMainLoop();
 #endif
@@ -654,8 +781,9 @@ public:
     virtual int FilterEvent(wxEvent& event);
 
     // For catching Apple Events
-    virtual void MacOpenFile(const wxString &fileName);
-    virtual void MacPrintFile(const wxString &fileName);
+    virtual void MacOpenFile(const wxString& fileName);
+    virtual void MacOpenURL(const wxString& url);
+    virtual void MacPrintFile(const wxString& fileName);
     virtual void MacNewFile();
     virtual void MacReopenApp();
 
@@ -721,6 +849,24 @@ extern wxPyApp *wxPythonApp;
 
 #define IMP_PYCALLBACK_BOOL_INTINT(CLASS, PCLASS, CBNAME)               \
     bool CLASS::CBNAME(int a, int b) {                                  \
+        bool rval=false, found;                                         \
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();                         \
+        if ((found = wxPyCBH_findCallback(m_myInst, #CBNAME)))          \
+            rval = wxPyCBH_callCallback(m_myInst, Py_BuildValue("(ii)",a,b));    \
+        wxPyEndBlockThreads(blocked);                                   \
+        if (! found)                                                    \
+            rval = PCLASS::CBNAME(a,b);                                 \
+        return rval;                                                    \
+    }
+
+//---------------------------------------------------------------------------
+
+#define DEC_PYCALLBACK_BOOL_2COORD(CBNAME)                      \
+    bool CBNAME(wxCoord a, wxCoord b)
+
+
+#define IMP_PYCALLBACK_BOOL_2COORD(CLASS, PCLASS, CBNAME)               \
+    bool CLASS::CBNAME(wxCoord a, wxCoord b) {                                  \
         bool rval=false, found;                                         \
         wxPyBlock_t blocked = wxPyBeginBlockThreads();                         \
         if ((found = wxPyCBH_findCallback(m_myInst, #CBNAME)))          \
@@ -1920,7 +2066,25 @@ extern wxPyApp *wxPythonApp;
 #define IMP_PYCALLBACK_BOOL_INTINTSTR_pure(CLASS, PCLASS, CBNAME)       \
     bool CLASS::CBNAME(int a, int b, const wxString& c) {               \
         bool rval=false;                                                \
-        wxPyBlock_t blocked = wxPyBeginBlockThreads();                         \
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();                  \
+        if (wxPyCBH_findCallback(m_myInst, #CBNAME)) {                  \
+            PyObject* s = wx2PyString(c);                               \
+            rval = wxPyCBH_callCallback(m_myInst, Py_BuildValue("(iiO)",a,b,s));\
+            Py_DECREF(s);                                               \
+        }                                                               \
+        wxPyEndBlockThreads(blocked);                                   \
+        return rval;                                                    \
+    }                                                                   \
+
+//---------------------------------------------------------------------------
+
+#define DEC_PYCALLBACK_BOOL_2COORDSTR_pure(CBNAME)                      \
+    bool CBNAME(wxCoord a, wxCoord b, const wxString& c)
+
+#define IMP_PYCALLBACK_BOOL_2COORDSTR_pure(CLASS, PCLASS, CBNAME)       \
+    bool CLASS::CBNAME(wxCoord a, wxCoord b, const wxString& c) {       \
+        bool rval=false;                                                \
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();                  \
         if (wxPyCBH_findCallback(m_myInst, #CBNAME)) {                  \
             PyObject* s = wx2PyString(c);                               \
             rval = wxPyCBH_callCallback(m_myInst, Py_BuildValue("(iiO)",a,b,s));\
@@ -2352,7 +2516,7 @@ extern wxPyApp *wxPythonApp;
 #define IMP_PYCALLBACK_OBJECT__pure(CLASS, PCLASS, CBNAME)                      \
     wxObject* CLASS::CBNAME() {                                                 \
         wxObject* rv = NULL;                                                    \
-        wxPyBlock_t blocked = wxPyBeginBlockThreads();                          \
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();                                 \
         if (wxPyCBH_findCallback(m_myInst, #CBNAME)) {                          \
             PyObject* ro;                                                       \
             ro = wxPyCBH_callCallbackObj(m_myInst, Py_BuildValue("()"));        \

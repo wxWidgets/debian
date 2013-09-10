@@ -1,15 +1,3 @@
-#-------------------------------------------------------------------
-# essaimenu.py
-#
-# menus in wxPython 2.3.3
-#
-#-------------------------------------------------------------------
-#
-# o Debug message when adding a menu item (see last menu):
-#
-#   Debug: ..\..\src\msw\menuitem.cpp(370): 'GetMenuState' failed with 
-#   error 0x00000002 (the system cannot find the file specified.). 
-#
 
 import  time
 import  wx
@@ -20,7 +8,7 @@ import  images
 class MyFrame(wx.Frame):
 
     def __init__(self, parent, id, log):
-        wx.Frame.__init__(self, parent, id, 'Playing with menus', size=(400, 200))
+        wx.Frame.__init__(self, parent, id, 'Playing with menus', size=(500, 250))
         self.log = log
         self.CenterOnScreen()
 
@@ -244,10 +232,7 @@ check the source for this sample to see how to implement them.
 
         # now insert the new item
         ID = wx.NewId()
-        ##menu.Insert(pos, ID, "NewItem " + str(ID))
-        item = wx.MenuItem(menu)
-        item.SetId(ID)
-        item.SetText("NewItem " + str(ID))
+        item = wx.MenuItem(menu, ID, "NewItem " + str(ID))
         menu.InsertItem(pos, item)
 
 

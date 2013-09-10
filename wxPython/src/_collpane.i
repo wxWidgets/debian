@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-Nov-2006
-// RCS-ID:      $Id: _collpane.i 43329 2006-11-12 02:32:43Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////

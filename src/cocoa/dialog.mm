@@ -4,9 +4,9 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2002/12/15
-// RCS-ID:      $Id: dialog.mm 47995 2007-08-10 04:47:49Z DE $
+// RCS-ID:      $Id$
 // Copyright:   2002 David Elliott
-// Licence:     wxWidgets licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #include "wx/wxprec.h"
@@ -19,6 +19,7 @@
     #include "wx/settings.h"
 #endif //WX_PRECOMP
 
+#include "wx/modalhook.h"
 #include "wx/cocoa/autorelease.h"
 #include "wx/cocoa/string.h"
 
@@ -99,6 +100,10 @@ bool wxDialog::Show(bool show)
     if(show)
     {
         wxAutoNSAutoreleasePool pool;
+
+    	if (CanDoLayoutAdaptation())
+        	DoLayoutAdaptation();
+
         InitDialog();
         if(IsModal())
         {   // ShowModal() will show the dialog
@@ -123,6 +128,8 @@ bool wxDialog::Show(bool show)
 // is stopped (via EndModal()) it returns the exit code.
 int wxDialog::ShowModal()
 {
+    WX_HOOK_MODAL_DIALOG();
+
     wxCHECK_MSG(!IsModal(),GetReturnCode(),wxT("wxDialog::ShowModal called within its own modal loop"));
 
     // Show(true) will set m_isShown = true

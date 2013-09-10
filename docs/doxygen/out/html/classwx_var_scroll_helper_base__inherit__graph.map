@@ -1,0 +1,12 @@
+<map id="wxVarScrollHelperBase" name="wxVarScrollHelperBase">
+<area shape="rect" id="node3" href="$classwx_var_h_scroll_helper.html" title="This class provides functions wrapping the wxVarScrollHelperBase class, targeted for horizontal&#45;speci..." alt="" coords="93,83,227,111"/>
+<area shape="rect" id="node11" href="$classwx_var_v_scroll_helper.html" title="This class provides functions wrapping the wxVarScrollHelperBase class, targeted for vertical&#45;specifi..." alt="" coords="251,83,384,111"/>
+<area shape="rect" id="node5" href="$classwx_h_scrolled_window.html" title="In the name of this class, &quot;H&quot; stands for &quot;horizontal&quot; because it can be used for scrolling columns o..." alt="" coords="5,161,144,189"/>
+<area shape="rect" id="node7" href="$classwx_var_h_v_scroll_helper.html" title="This class provides functions wrapping the wxVarHScrollHelper and wxVarVScrollHelper classes..." alt="" coords="168,161,309,189"/>
+<area shape="rect" id="node9" href="$classwx_h_v_scrolled_window.html" title="This window inherits all functionality of both vertical and horizontal, variable scrolled windows..." alt="" coords="165,238,312,266"/>
+<area shape="rect" id="node14" href="$classwx_v_scrolled_window.html" title="In the name of this class, &quot;V&quot; may stand for &quot;variable&quot; because it can be used for scrolling rows of ..." alt="" coords="333,161,469,189"/>
+<area shape="rect" id="node16" href="$classwx_v_list_box.html" title="wxVListBox is a wxListBox&#45;like control with the following two main differences from a regular wxListB..." alt="" coords="359,238,444,266"/>
+<area shape="rect" id="node18" href="$classwx_html_list_box.html" title="wxHtmlListBox is an implementation of wxVListBox which shows HTML content in the listbox rows..." alt="" coords="348,315,455,343"/>
+<area shape="rect" id="node20" href="$classwx_rich_text_style_list_box.html" title="This is a listbox that can display the styles in a wxRichTextStyleSheet, and apply the selection to a..." alt="" coords="235,393,392,421"/>
+<area shape="rect" id="node22" href="$classwx_simple_html_list_box.html" title="wxSimpleHtmlListBox is an implementation of wxHtmlListBox which shows HTML content in the listbox row..." alt="" coords="416,393,563,421"/>
+</map>

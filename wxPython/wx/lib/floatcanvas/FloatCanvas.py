@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
+
 from __future__ import division
+
 import sys
 mac = sys.platform.startswith("darwin")
  
@@ -63,8 +65,7 @@ EVT_MOUSEWHEEL = wx.PyEventBinder(EVT_FC_MOUSEWHEEL)
 
 class _MouseEvent(wx.PyCommandEvent):
 
-    """!
-
+    """
     This event class takes a regular wxWindows mouse event as a parameter,
     and wraps it so that there is access to all the original methods. This
     is similar to subclassing, but you can't subclass a wxWindows event
@@ -96,6 +97,7 @@ class _MouseEvent(wx.PyCommandEvent):
 ## fixme: This should probably be re-factored into a class
 _testBitmap = None
 _testDC = None
+
 def _cycleidxs(indexcount, maxvalue, step):
 
     """
@@ -147,14 +149,14 @@ def _colorGenerator():
     """
     return _cycleidxs(indexcount=3, maxvalue=256, step=1)
 
-class DrawObject:
-    """!
+class DrawObject(object):
+    """
     This is the base class for all the objects that can be drawn.
 
-    One must subclass from this (and an assortment of Mixins) to create
+    One must subclass from this (and an assortment of mixins) to create
     a new DrawObject.
 
-      \note This class contain a series of static dictionaries:
+      note: This class contain a series of static dictionaries:
 
       * BrushList
       * PenList
@@ -166,12 +168,14 @@ class DrawObject:
     """
 
     def __init__(self, InForeground  = False, IsVisible = True):
-        """! \param InForeground (bool)
-             \param IsVisible (Bool)
+        """
+        :param InForeground=False: whether you want the object in the foreground
+        :param param IsVisible = True: whther the object is visible
         """
         self.InForeground = InForeground
 
         self._Canvas = None
+        #self._Actual_Canvas = None
 
         self.HitColor = None
         self.CallBackFuncs = {}
@@ -239,6 +243,20 @@ class DrawObject:
             "DotDash"    : wx.DOT_DASH,
             }
 
+    # # made a property so sub-classes c
+    # @property
+    # def _Canvas(self):
+    #     """
+    #     getter for the _Canvas property
+    #     """
+    #     return self._Actual_Canvas
+    # @_Canvas.setter
+    # def _Canvas(self, canvas):
+    #     """
+    #     setter for Canvas property
+    #     """
+    #     self._Actual_Canvas = canvas
+
     def Bind(self, Event, CallBackFun):
         ##fixme: Way too much Canvas Manipulation here!
         self.CallBackFuncs[Event] = CallBackFun
@@ -280,6 +298,7 @@ class DrawObject:
         else:
             self.Brush = self.BrushList.setdefault( (FillColor,FillStyle),  wx.Brush(FillColor,self.FillStyleList[FillStyle] ) )
             #print "Setting Brush, BrushList length:", len(self.BrushList)
+
     def SetPen(self,LineColor,LineStyle,LineWidth):
         if (LineColor is None) or (LineStyle is None):
             self.Pen = wx.TRANSPARENT_PEN
@@ -349,13 +368,38 @@ class Group(DrawObject):
     """
 
     def __init__(self, ObjectList=[], InForeground  = False, IsVisible = True):
-        self.ObjectList = list(ObjectList)
+        self.ObjectList = []
+
         DrawObject.__init__(self, InForeground, IsVisible)
+
+        # this one uses a proprty for _Canvas...
+        self._Actual_Canvas = None
+
+        for obj in ObjectList:
+            self.AddObject(obj, calcBB = False)
         self.CalcBoundingBox()
 
-    def AddObject(self, obj):
+    ## re-define _Canvas property so that the sub-objects get set up right
+    @property
+    def _Canvas(self):
+        """
+        getter for the _Canvas property
+        """
+        return self._Actual_Canvas
+    @_Canvas.setter
+    def _Canvas(self, canvas):
+        """
+        setter for Canvas property
+        """
+        self._Actual_Canvas = canvas
+        for obj in self.ObjectList:
+            obj._Canvas = canvas
+
+    def AddObject(self, obj, calcBB=True):
         self.ObjectList.append(obj)
-        self.BoundingBox.Merge(obj.BoundingBox)
+        obj._Canvas = self._Canvas
+        if calcBB:
+            self.BoundingBox.Merge(obj.BoundingBox)
 
     def AddObjects(self, Objects):
         for o in Objects:
@@ -410,15 +454,24 @@ class Group(DrawObject):
                 self._Canvas.HitColorGenerator.next() # first call to prevent the background color from being used.
             # Set all contained objects to the same Hit color:
             self.HitColor = self._Canvas.HitColorGenerator.next()
-        for obj in self.ObjectList:
-            obj.SetHitPen(self.HitColor, self.HitLineWidth)
-            obj.SetHitBrush(self.HitColor)
-            obj.HitAble = True
+        # for obj in self.ObjectList:
+        #     obj.SetHitPen(self.HitColor, self.HitLineWidth)
+        #     obj.SetHitBrush(self.HitColor)
+        #     obj.HitAble = True
         # put the object in the hit dict, indexed by it's color
+        self._ChangeChildrenHitColor(self.ObjectList)
         if not self._Canvas.HitDict:
             self._Canvas.MakeHitDict()
         self._Canvas.HitDict[Event][self.HitColor] = (self)
 
+    def _ChangeChildrenHitColor(self, objlist):
+        for obj in objlist:
+            obj.SetHitPen(self.HitColor, self.HitLineWidth)
+            obj.SetHitBrush(self.HitColor)
+            obj.HitAble = True
+            
+            if isinstance(obj, Group):
+                self._ChangeChildrenHitColor(obj.ObjectList)
 
     def _Draw(self, dc , WorldToPixel, ScaleWorldToPixel = None, HTdc=None):
         for obj in self.ObjectList:
@@ -450,11 +503,13 @@ class LineOnlyMixin:
     def SetLineColor(self, LineColor):
         self.LineColor = LineColor
         self.SetPen(LineColor,self.LineStyle,self.LineWidth)
+        print "In SetLineColor setting the pen:", self.LineColor,self.LineStyle,self.LineWidth
     SetColor = SetLineColor# so that it will do something reasonable
     
     def SetLineStyle(self, LineStyle):
         self.LineStyle = LineStyle
         self.SetPen(self.LineColor,LineStyle,self.LineWidth)
+        print "In SetLineStyle setting the pen:", self.LineColor,LineStyle,self.LineWidth
 
     def SetLineWidth(self, LineWidth):
         self.LineWidth = LineWidth
@@ -668,21 +723,24 @@ class Spline(Line):
 
 class Arrow(XYObjectMixin, LineOnlyMixin, DrawObject):
     """
+    Arrow class definition.
+    
+    API definition::
 
-    Arrow(XY, # coords of origin of arrow (x,y)
-          Length, # length of arrow in pixels
-          theta, # angle of arrow in degrees: zero is straight up
-                 # +angle is to the right
-          LineColor = "Black",
-          LineStyle = "Solid",
-          LineWidth    = 1,
-          ArrowHeadSize = 4, # size of arrowhead in pixels
-          ArrowHeadAngle = 45, # angle of arrow head in degrees
-          InForeground = False):
+        Arrow(XY, # coords of origin of arrow (x,y)
+              Length, # length of arrow in pixels
+              theta, # angle of arrow in degrees: zero is straight up
+                     # +angle is to the right
+              LineColor = "Black",
+              LineStyle = "Solid",
+              LineWidth    = 1,
+              ArrowHeadSize = 4, # size of arrowhead in pixels
+              ArrowHeadAngle = 45, # angle of arrow head in degrees
+              InForeground = False):
+
 
     It will draw an arrow , starting at the point, (X,Y) pointing in
     direction, theta.
-
 
     """
     def __init__(self,
@@ -773,14 +831,18 @@ class Arrow(XYObjectMixin, LineOnlyMixin, DrawObject):
 
 class ArrowLine(PointsObjectMixin, LineOnlyMixin, DrawObject):
     """
+    ArrowLine class definition.
+    
+    API definition::
+    
+        ArrowLine(Points, # coords of points
+                  LineColor = "Black",
+                  LineStyle = "Solid",
+                  LineWidth    = 1,
+                  ArrowHeadSize = 4, # in pixels
+                  ArrowHeadAngle = 45,
+                  InForeground = False):
 
-    ArrowLine(Points, # coords of points
-              LineColor = "Black",
-              LineStyle = "Solid",
-              LineWidth    = 1,
-              ArrowHeadSize = 4, # in pixels
-              ArrowHeadAngle = 45,
-              InForeground = False):
 
     It will draw a set of arrows from point to point.
 
@@ -1243,23 +1305,23 @@ class Text(TextObjectMixin, DrawObject, ):
     (if it ever gets implimented). Those will be the same, If you assume
     72 PPI.
 
-    Family:
-        Font family, a generic way of referring to fonts without
-        specifying actual facename. One of:
-            wx.DEFAULT:  Chooses a default font.
-            wx.DECORATIVE: A decorative font.
-            wx.ROMAN: A formal, serif font.
-            wx.SCRIPT: A handwriting font.
-            wx.SWISS: A sans-serif font.
-            wx.MODERN: A fixed pitch font.
-        NOTE: these are only as good as the wxWindows defaults, which aren't so good.
-    Style:
-        One of wx.NORMAL, wx.SLANT and wx.ITALIC.
-    Weight:
-        One of wx.NORMAL, wx.LIGHT and wx.BOLD.
-    Underlined:
-        The value can be True or False. At present this may have an an
-        effect on Windows only.
+    * Family: Font family, a generic way of referring to fonts without
+      specifying actual facename. One of:
+      
+            * wx.DEFAULT:  Chooses a default font.
+            * wx.DECORATI: A decorative font.
+            * wx.ROMAN: A formal, serif font.
+            * wx.SCRIPT: A handwriting font.
+            * wx.SWISS: A sans-serif font.
+            * wx.MODERN: A fixed pitch font.
+            
+      .. note:: these are only as good as the wxWindows defaults, which aren't so good.
+      
+    * Style: One of wx.NORMAL, wx.SLANT and wx.ITALIC.
+    * Weight: One of wx.NORMAL, wx.LIGHT and wx.BOLD.
+    * Underlined: The value can be True or False. At present this may have an an
+      effect on Windows only.
+
 
     Alternatively, you can set the kw arg: Font, to a wx.Font, and the
     above will be ignored.
@@ -1345,23 +1407,23 @@ class ScaledText(TextObjectMixin, DrawObject, ):
 
     Size is the size of the font in world coordinates.
 
-    Family:
-        Font family, a generic way of referring to fonts without
-        specifying actual facename. One of:
-            wx.DEFAULT:  Chooses a default font.
-            wx.DECORATI: A decorative font.
-            wx.ROMAN: A formal, serif font.
-            wx.SCRIPT: A handwriting font.
-            wx.SWISS: A sans-serif font.
-            wx.MODERN: A fixed pitch font.
-        NOTE: these are only as good as the wxWindows defaults, which aren't so good.
-    Style:
-        One of wx.NORMAL, wx.SLANT and wx.ITALIC.
-    Weight:
-        One of wx.NORMAL, wx.LIGHT and wx.BOLD.
-    Underlined:
-        The value can be True or False. At present this may have an an
-        effect on Windows only.
+    * Family: Font family, a generic way of referring to fonts without
+      specifying actual facename. One of:
+      
+            * wx.DEFAULT:  Chooses a default font.
+            * wx.DECORATI: A decorative font.
+            * wx.ROMAN: A formal, serif font.
+            * wx.SCRIPT: A handwriting font.
+            * wx.SWISS: A sans-serif font.
+            * wx.MODERN: A fixed pitch font.
+            
+      .. note:: these are only as good as the wxWindows defaults, which aren't so good.
+      
+    * Style: One of wx.NORMAL, wx.SLANT and wx.ITALIC.
+    * Weight: One of wx.NORMAL, wx.LIGHT and wx.BOLD.
+    * Underlined: The value can be True or False. At present this may have an an
+      effect on Windows only.
+
 
     Alternatively, you can set the kw arg: Font, to a wx.Font, and the
     above will be ignored. The size of the font you specify will be
@@ -1519,23 +1581,23 @@ class ScaledTextBox(TextObjectMixin, DrawObject):
 
     Size is the size of the font in world coordinates.
 
-    Family:
-        Font family, a generic way of referring to fonts without
-        specifying actual facename. One of:
-            wx.DEFAULT:  Chooses a default font.
-            wx.DECORATIVE: A decorative font.
-            wx.ROMAN: A formal, serif font.
-            wx.SCRIPT: A handwriting font.
-            wx.SWISS: A sans-serif font.
-            wx.MODERN: A fixed pitch font.
-        NOTE: these are only as good as the wxWindows defaults, which aren't so good.
-    Style:
-        One of wx.NORMAL, wx.SLANT and wx.ITALIC.
-    Weight:
-        One of wx.NORMAL, wx.LIGHT and wx.BOLD.
-    Underlined:
-        The value can be True or False. At present this may have an an
-        effect on Windows only.
+    * Family: Font family, a generic way of referring to fonts without
+      specifying actual facename. One of:
+      
+            * wx.DEFAULT:  Chooses a default font.
+            * wx.DECORATI: A decorative font.
+            * wx.ROMAN: A formal, serif font.
+            * wx.SCRIPT: A handwriting font.
+            * wx.SWISS: A sans-serif font.
+            * wx.MODERN: A fixed pitch font.
+            
+      .. note:: these are only as good as the wxWindows defaults, which aren't so good.
+      
+    * Style: One of wx.NORMAL, wx.SLANT and wx.ITALIC.
+    * Weight: One of wx.NORMAL, wx.LIGHT and wx.BOLD.
+    * Underlined: The value can be True or False. At present this may have an an
+      effect on Windows only.
+
 
     Alternatively, you can set the kw arg: Font, to a wx.Font, and the
     above will be ignored. The size of the font you specify will be
@@ -1964,7 +2026,7 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
         """
         delta = Pw - self.XY
         Pb = delta * self.BmpScale
-        Pb *= (1, -1) ##fixme: this may only works for Yup projection!
+        Pb *= (1, -1) ##fixme: this may only works for Y-up projection!
                       ##       and may only work for top left position
 
         return Pb.astype(N.int_)
@@ -2049,7 +2111,6 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
         Hs = int(scale * Hb + 0.5)
         if (self.ScaledBitmap is None) or (self.ScaledBitmap[0] != (Xb, Yb, Wb, Hb, Ws, Ws) ):
             Img = self.Image.GetSubImage(wx.Rect(Xb, Yb, Wb, Hb))
-            print "rescaling with High quality"
             Img.Rescale(Ws, Hs, quality=wx.IMAGE_QUALITY_HIGH)
             bmp = wx.BitmapFromImage(Img)
             self.ScaledBitmap = ((Xb, Yb, Wb, Hb, Ws, Ws), bmp)# this defines the cached bitmap
@@ -2224,7 +2285,7 @@ class Arc(XYObjectMixin, LineAndFillMixin, DrawObject):
         self.HitLineWidth = max(LineWidth,self.MinHitLineWidth)
 
         self.SetPen(LineColor, LineStyle, LineWidth)
-        self.SetBrush(FillColor, FillStyle)                  #Why isn't this working ???
+        self.SetBrush(FillColor, FillStyle)
 
     def Move(self, Delta ):
         """
@@ -2449,7 +2510,7 @@ class FloatCanvas(wx.Panel):
         else:
             raise FloatCanvasError('Projectionfun must be either:'
                                    ' "FlatEarth", None, or a callable object '
-                                   '(function, for instance) that takes the '
+                                   '(function or callable object) that takes the '
                                    'ViewPortCenter and returns a MapProjectionVector')
 
     def FlatEarthProjection(self, CenterPoint):
@@ -2547,9 +2608,8 @@ class FloatCanvas(wx.Panel):
     def MouseOverTest(self, event):
         ##fixme: Can this be cleaned up?
         if (self.HitDict and
-
-                (self.HitDict[EVT_FC_ENTER_OBJECT ] or
-                 self.HitDict[EVT_FC_LEAVE_OBJECT ]    )
+            (self.HitDict[EVT_FC_ENTER_OBJECT ] or
+             self.HitDict[EVT_FC_LEAVE_OBJECT ]    )
             ):
             xy = event.GetPosition()
             color = self.GetHitTestColor( xy )
@@ -2569,12 +2629,12 @@ class FloatCanvas(wx.Panel):
                 elif not (Object == OldObject):
                     # call the leave object callback
                     try:
-                        self._CallHitCallback(Object, xy, EVT_FC_LEAVE_OBJECT)
+                        self._CallHitCallback(OldObject, xy, EVT_FC_LEAVE_OBJECT)
                         ObjectCallbackCalled =  True
                     except KeyError:
                         pass # this means the leave event isn't bound for that object
                     try:
-                        self._CallHitCallback(Object, xy, EVT_FC_LEAVE_OBJECT)
+                        self._CallHitCallback(Object, xy, EVT_FC_ENTER_OBJECT)
                         ObjectCallbackCalled =  True
                     except KeyError:
                         pass # this means the enter event isn't bound for that object
@@ -2599,6 +2659,7 @@ class FloatCanvas(wx.Panel):
     ## fixme: There is a lot of repeated code here
     ##        Is there a better way?
     ##    probably -- shouldn't there always be a GUIMode?
+    ##    there cvould be a null GUI Mode, and use that instead of None
     def LeftDoubleClickEvent(self, event):
         if self.GUIMode:
             self.GUIMode.OnLeftDouble(event)
@@ -2864,11 +2925,12 @@ class FloatCanvas(wx.Panel):
 
         """
         shift = N.asarray(shift,N.float)
-        if CoordType == 'Panel':# convert from panel coordinates
+        CoordType = CoordType.lower()
+        if CoordType == 'panel':# convert from panel coordinates
             shift = shift * N.array((-1,1),N.float) *self.PanelSize/self.TransformVector
-        elif CoordType == 'Pixel': # convert from pixel coordinates
+        elif CoordType == 'pixel': # convert from pixel coordinates
             shift = shift/self.TransformVector
-        elif CoordType == 'World': # No conversion
+        elif CoordType == 'world': # No conversion
             pass
         else:
             raise FloatCanvasError('CoordType must be either "Panel", "Pixel", or "World"')
@@ -2880,28 +2942,47 @@ class FloatCanvas(wx.Panel):
         if ReDraw:
             self.Draw()
 
-    def Zoom(self, factor, center = None, centerCoords="world"):
+    def Zoom(self, factor, center = None, centerCoords="world", keepPointInPlace=False):
 
         """
         Zoom(factor, center) changes the amount of zoom of the image by factor.
         If factor is greater than one, the image gets larger.
         If factor is less than one, the image gets smaller.
+        :param factor: amount to zoom in or out If factor is greater than one,
+                       the image gets larger. If factor is less than one, the
+                       image gets smaller.
+        :param center: a tuple of (x,y) coordinates of the center of the viewport,
+                       after zooming. If center is not given, the center will stay the same.
 
-        center is a tuple of (x,y) coordinates of the center of the viewport, after zooming.
-        If center is not given, the center will stay the same.
-
-        centerCoords is a flag indicating whether the center given is in pixel or world 
-        coords. Options are: "world" or "pixel"
-        
+        :param centerCoords: flag indicating whether the center given is in pixel or world 
+                             coords. Options are: "world" or "pixel"
+        :param keepPointInPlace: boolean flag. If False, the center point is what's given.
+                                 If True, the image is shifted so that the given center point
+                                 is kept in the same pixel space. This facilitates keeping the 
+                                 same point under the mouse when zooming with the scroll wheel.
         """
+        if center is None:
+            center = self.ViewPortCenter
+            centerCoords = 'world' #override input if they don't give a center point.
+
+        if centerCoords == "pixel":
+            oldpoint = self.PixelToWorld( center )
+        else:
+            oldpoint = N.array(center, N.float)
+
         self.Scale = self.Scale*factor
-        if not center is None:
+        if keepPointInPlace:
+            self.SetToNewScale(False)
+    
             if centerCoords == "pixel":
-                center = self.PixelToWorld( center )
+                newpoint = self.PixelToWorld( center )
             else:
-                center = N.array(center,N.float)
-            self.ViewPortCenter = center
-        self.SetToNewScale()
+                newpoint = N.array(center, N.float)
+            delta = (newpoint - oldpoint)
+            self.MoveImage(-delta, 'world')       
+        else:
+            self.ViewPortCenter = oldpoint
+            self.SetToNewScale()         
 
     def ZoomToBB(self, NewBB=None, DrawFlag=True):
 

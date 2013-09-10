@@ -5,7 +5,7 @@
 # Author:       Morgan Hua
 #
 # Created:      1/5/04
-# CVS-ID:       $Id: PerlEditor.py 38852 2006-04-20 06:26:03Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2005 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------

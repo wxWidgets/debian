@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _cursor.i 54038 2008-06-08 22:58:05Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,6 +14,10 @@
 
 
 //---------------------------------------------------------------------------
+
+// enum {
+//     wxCURSOR_DEFAULT_TYPE
+// };
 
 
 DocStr(wxCursor,
@@ -73,7 +77,11 @@ public:
 wx.BITMAP_TYPE* constants, and specify the hotspot if not using a .cur
 file.","
 :see: Alternate constructors `wx.StockCursor`,`wx.CursorFromImage`");
-        wxCursor(const wxString& cursorName, long type, int hotSpotX=0, int hotSpotY=0) {
+        wxCursor(const wxString& cursorName,
+                 // defaulting to a resource type on some platforms makes no
+                 // sense from wxPython perspective
+                 wxBitmapType type, /*=wxCURSOR_DEFAULT_TYPE,*/  
+                 int hotSpotX=0, int hotSpotY=0) {
 %#ifdef __WXGTK__
             wxImage img(cursorName, type);
             img.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, hotSpotX);
@@ -88,7 +96,7 @@ file.","
     ~wxCursor();
 
     DocCtorStrName(
-        wxCursor(int id),
+        wxCursor(wxStockCursor id),
         "Create a cursor using one of the stock cursors.  Note that not all
 stock cursors are available on all platforms.", "",
         StockCursor);

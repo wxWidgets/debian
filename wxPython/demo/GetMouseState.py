@@ -51,7 +51,7 @@ class TestPanel(wx.Panel):
         fgs.Add(lbl)
         fgs.Add(self.lft)
 
-        lbl = StaticText(self, -1, "Middle Down:")
+        lbl = StaticText(self, -1, "Middle down:")
         self.mid = StaticText(self, -1, "False")
         fgs.Add(lbl)
         fgs.Add(self.mid)
@@ -60,6 +60,16 @@ class TestPanel(wx.Panel):
         self.rgt = StaticText(self, -1, "False")
         fgs.Add(lbl)
         fgs.Add(self.rgt)
+
+        lbl = StaticText(self, -1, "AUX1 down:")
+        self.aux1 = StaticText(self, -1, "False")
+        fgs.Add(lbl)
+        fgs.Add(self.aux1)
+
+        lbl = StaticText(self, -1, "AUX2 down:")
+        self.aux2 = StaticText(self, -1, "False")
+        fgs.Add(lbl)
+        fgs.Add(self.aux2)
 
         fgs = wx.FlexGridSizer(cols=2, hgap=5, vgap=10)
         row.Add(fgs, 0, wx.ALL, 30)
@@ -99,9 +109,11 @@ class TestPanel(wx.Panel):
         self.x.SetLabel( str(ms.x) )
         self.y.SetLabel( str(ms.y) )
         
-        self.lft.SetLabel( str(ms.leftDown) )
-        self.mid.SetLabel( str(ms.middleDown) )
-        self.rgt.SetLabel( str(ms.rightDown) )
+        self.lft.SetLabel( str(ms.leftIsDown) )
+        self.mid.SetLabel( str(ms.middleIsDown) )
+        self.rgt.SetLabel( str(ms.rightIsDown) )
+        self.aux1.SetLabel( str(ms.aux1IsDown) )
+        self.aux2.SetLabel( str(ms.aux2IsDown) )
 
         self.ctrl.SetLabel( str(ms.controlDown) )
         self.shft.SetLabel( str(ms.shiftDown) )

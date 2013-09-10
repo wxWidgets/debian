@@ -4,7 +4,7 @@
 #
 # Author:      Robin Dunn
 #
-# RCS-ID:      $Id: img2py.py 61389 2009-07-10 22:25:35Z RD $
+# RCS-ID:      $Id$
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -102,7 +102,7 @@ DEFAULT_MASKCLR = None
 DEFAULT_IMGNAME = ""
 DEFAULT_ICON = False
 DEFAULT_CATALOG = False
-DEFAULT_COMPATIBLE = True   # True for 2.8, change to False in 2.9...
+DEFAULT_COMPATIBLE = False
 
 # THIS IS USED TO IDENTIFY, IN THE GENERATED SCRIPT, LINES IN THE FORM
 # "index.append('Image name')"

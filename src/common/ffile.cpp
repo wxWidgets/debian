@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        ffile.cpp
+// Name:        src/common/ffile.cpp
 // Purpose:     wxFFile encapsulates "FILE *" IO stream
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.07.99
-// RCS-ID:      $Id: ffile.cpp 63300 2010-01-28 21:36:09Z MW $
+// RCS-ID:      $Id$
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,6 +29,7 @@
 #ifndef WX_PRECOMP
     #include "wx/intl.h"
     #include "wx/log.h"
+    #include "wx/crt.h"
 #endif
 
 #ifdef __WINDOWS__
@@ -45,14 +46,14 @@
 // opening the file
 // ----------------------------------------------------------------------------
 
-wxFFile::wxFFile(const wxChar *filename, const wxChar *mode)
+wxFFile::wxFFile(const wxString& filename, const wxString& mode)
 {
     Detach();
 
     (void)Open(filename, mode);
 }
 
-bool wxFFile::Open(const wxChar *filename, const wxChar *mode)
+bool wxFFile::Open(const wxString& filename, const wxString& mode)
 {
     wxASSERT_MSG( !m_fp, wxT("should close or detach the old file first") );
 
@@ -101,14 +102,14 @@ bool wxFFile::ReadAll(wxString *str, const wxMBConv& conv)
 
     clearerr(m_fp);
 
-    wxCharBuffer buf(length + 1);
+    wxCharBuffer buf(length);
 
     // note that real length may be less than file length for text files with DOS EOLs
     // ('\r's get dropped by CRT when reading which means that we have
     // realLen = fileLen - numOfLinesInTheFile)
-    length = fread(buf.data(), sizeof(char), length, m_fp);
+    length = fread(buf.data(), 1, length, m_fp);
 
-    if ( Error() ) 
+    if ( Error() )
     {
         wxLogSysError(_("Read error on file '%s'"), m_name.c_str());
 
@@ -116,7 +117,9 @@ bool wxFFile::ReadAll(wxString *str, const wxMBConv& conv)
     }
 
     buf.data()[length] = 0;
-    *str = wxString(buf, conv);
+
+    wxString strTmp(buf, conv);
+    str->swap(strTmp);
 
     return true;
 }
@@ -149,13 +152,21 @@ size_t wxFFile::Write(const void *pBuf, size_t nCount)
     return nWritten;
 }
 
+bool wxFFile::Write(const wxString& s, const wxMBConv& conv)
+{
+  const wxWX2MBbuf buf = s.mb_str(conv);
+  if ( !buf )
+      return false;
+
+  const size_t size = strlen(buf); // FIXME: use buf.length() when available
+  return Write(buf, size) == size;
+}
+
 bool wxFFile::Flush()
 {
     if ( IsOpened() )
     {
-        // fflush returns non-zero on error
-        //
-        if ( fflush(m_fp) )
+        if ( fflush(m_fp) != 0 )
         {
             wxLogSysError(_("failed to flush the file '%s'"), m_name.c_str());
 
@@ -218,7 +229,7 @@ bool wxFFile::Seek(wxFileOffset ofs, wxSeekMode mode)
 wxFileOffset wxFFile::Tell() const
 {
     wxCHECK_MSG( IsOpened(), wxInvalidOffset,
-                 _T("wxFFile::Tell(): file is closed!") );
+                 wxT("wxFFile::Tell(): file is closed!") );
 
     wxFileOffset rc = wxFtell(m_fp);
     if ( rc == wxInvalidOffset )
@@ -233,9 +244,9 @@ wxFileOffset wxFFile::Tell() const
 wxFileOffset wxFFile::Length() const
 {
     wxCHECK_MSG( IsOpened(), wxInvalidOffset,
-                 _T("wxFFile::Length(): file is closed!") );
+                 wxT("wxFFile::Length(): file is closed!") );
 
-    wxFFile& self = *(wxFFile *)this;   // const_cast
+    wxFFile& self = *const_cast<wxFFile *>(this);
 
     wxFileOffset posOld = Tell();
     if ( posOld != wxInvalidOffset )

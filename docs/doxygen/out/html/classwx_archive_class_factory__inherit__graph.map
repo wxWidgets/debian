@@ -1,0 +1,5 @@
+<map id="wxArchiveClassFactory" name="wxArchiveClassFactory">
+<area shape="rect" id="node5" href="$classwx_tar_class_factory.html" title="Class factory for the tar archive format." alt="" coords="5,161,136,189"/>
+<area shape="rect" id="node7" href="$classwx_zip_class_factory.html" title="Class factory for the zip archive format." alt="" coords="160,161,288,189"/>
+<area shape="rect" id="node2" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="109,6,184,34"/>
+</map>

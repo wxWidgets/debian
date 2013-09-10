@@ -1,0 +1,15 @@
+<map id="wxBookCtrlBase" name="wxBookCtrlBase">
+<area shape="rect" id="node15" href="$classwx_aui_notebook.html" title="wxAuiNotebook is part of the wxAUI class framework, which represents a notebook control, managing multiple windows with associated tabs." alt="" coords="5,393,115,421"/>
+<area shape="rect" id="node17" href="$classwx_choicebook.html" title="wxChoicebook is a class similar to wxNotebook, but uses a wxChoice control to show the labels instead..." alt="" coords="139,393,243,421"/>
+<area shape="rect" id="node19" href="$classwx_listbook.html" title="wxListbook is a class similar to wxNotebook but which uses a wxListCtrl to show the labels instead of..." alt="" coords="267,393,352,421"/>
+<area shape="rect" id="node21" href="$classwx_notebook.html" title="This class represents a notebook control, which manages multiple windows with associated tabs..." alt="" coords="376,393,467,421"/>
+<area shape="rect" id="node23" href="$classwx_simplebook.html" title="wxSimplebook is a control showing exactly one of its several pages." alt="" coords="491,393,595,421"/>
+<area shape="rect" id="node25" href="$classwx_toolbook.html" title="wxToolbook is a class similar to wxNotebook but which uses a wxToolBar to show the labels instead of ..." alt="" coords="619,393,709,421"/>
+<area shape="rect" id="node27" href="$classwx_treebook.html" title="This class is an extension of the wxNotebook class that allows a tree structured set of pages to be s..." alt="" coords="733,393,824,421"/>
+<area shape="rect" id="node2" href="$classwx_control.html" title="This is the base class for a control or &quot;widget&quot;." alt="" coords="325,238,403,266"/>
+<area shape="rect" id="node4" href="$classwx_window.html" title="wxWindow is the base class for all windows and represents any visible object on screen." alt="" coords="323,161,405,189"/>
+<area shape="rect" id="node6" href="$classwx_evt_handler.html" title="A class that can handle events from the windowing system." alt="" coords="315,83,413,111"/>
+<area shape="rect" id="node8" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="273,6,348,34"/>
+<area shape="rect" id="node10" href="$classwx_trackable.html" title="Add&#45;on base class for a trackable object." alt="" coords="372,6,465,34"/>
+<area shape="rect" id="node12" href="$classwx_with_images.html" title="A mixin class to be used with other classes that use a wxImageList." alt="" coords="427,238,531,266"/>
+</map>

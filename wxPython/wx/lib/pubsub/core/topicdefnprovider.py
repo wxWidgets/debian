@@ -146,12 +146,13 @@ class TopicDefnDeserialClass(ITopicDefnDeserializer):
     def getDefinedTopics(self):
         return [nt for (nt, defn) in self.__rootTopics]
 
-    def __findTopics(self, pyClassObj, parentNameTuple=()):
+    def __findTopics(self, pyClassObj, parentNameTuple):
         assert not self.__iterStarted
-        if parentNameTuple: # sanity check
-            assert pyClassObj.__name__ == parentNameTuple[-1]
+        assert parentNameTuple
+        assert pyClassObj.__name__ == parentNameTuple[-1]
 
         topicClasses = self.__getTopicClasses(pyClassObj, parentNameTuple)
+        pyClassObj._topicNameStr = '.'.join(parentNameTuple)
 
         # make sure to update rootTopics BEFORE we recurse, so that toplevel
         # topics come first in the list
@@ -215,22 +216,9 @@ class TopicDefnDeserialModule(ITopicDefnDeserializer):
         topic definitions with a doc string and a message data specification
         method as described in TopicDefnDeserialClass'.
         '''
-        import imp
-        fp, pathname, description = imp.find_module(moduleName, searchPath)
-        try:
-            module = imp.load_module(moduleName, fp, pathname, description)
-        finally:
-            # Since we may exit via an exception, close fp explicitly.
-            if fp:
-                fp.close()
-
+        import imp2
+        module = imp2.load_module(moduleName, searchPath)
         self.__classDeserial = TopicDefnDeserialClass(module)
-#        self.__moduleDoc = module.__doc__
-#        memberNames = dir(module)
-#        for memberName in memberNames:
-#            member = getattr(module, memberName)
-#            if inspect.isclass(member):
-#                self.__classDeserial.addDefnFromClassObj(member)
 
     def getTreeDoc(self):
         return self.__classDeserial.getTreeDoc()
@@ -333,9 +321,9 @@ class TopicDefnProvider(ITopicDefnProvider):
 
     typeRegistry = {}
 
-    def __init__(self, source, format=IMPORT_MODULE):
+    def __init__(self, source, format=IMPORT_MODULE, **providerKwargs):
         providerClassObj = self.typeRegistry[format]
-        provider = providerClassObj(source)
+        provider = providerClassObj(source, **providerKwargs)
         self.__topicDefns = {}
         self.__treeDocs = provider.getTreeDoc()
         try:
@@ -542,7 +530,7 @@ class TopicTreeAsSpec:
         self.__output.append( '' ) # empty line
         # topic name
         self.__wrapper.width = self.__width
-        head = 'class %s:' % topicObj.getTailName()
+        head = 'class %s:' % topicObj.getNodeName()
         self.__formatItem(head)
 
         # each extra content (assume constructor verified that chars are valid)
@@ -627,7 +615,7 @@ defaultTopicTreeSpecFooter = \
 """
 
 
-def exportTreeAsSpec(rootTopic=None, **kwargs):
+def exportTreeAsSpec(rootTopic, **kwargs):
     '''Prints the topic tree specification starting from rootTopic.
     If not specified, the whole topic tree is printed. The kwargs are the
     same as TopicTreeAsSpec's constructor: width(70), indentStep(4),

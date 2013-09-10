@@ -173,6 +173,10 @@ for afile in fileList:
 # copy include/wx/msw/setup0.h -> include/wx/msw/setup.h
 mswSetup0 = os.path.join(wxCopyDir, "include","wx","msw","setup0.h") 
 shutil.copy(mswSetup0, mswSetup0.replace("setup0.h", "setup.h")), 
+
+# compile gettext catalogs
+print "Compiling gettext catalogs..."
+os.system("make -C %s/locale allmo" % wxCopyDir)
     
 all = options.compression == "all"
     
@@ -206,7 +210,7 @@ shutil.rmtree(copyDir)
 # build any docs packages:
 doc_formats = string.split(options.docs, ",")
 doxy_dir = "docs/doxygen"
-output_dir = "out"
+output_dir = os.path.join(rootDir,"docs/doxygen/out")
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 

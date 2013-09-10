@@ -6,7 +6,7 @@
 #
 # Created:      12/24/04
 # Copyright:    (c) 2004-2005 ActiveGrid, Inc.
-# CVS-ID:       $Id: ImageEditor.py 36607 2005-12-30 23:02:03Z RD $
+# CVS-ID:       $Id$
 # License:      wxWindows License
 #----------------------------------------------------------------------------
 import wx

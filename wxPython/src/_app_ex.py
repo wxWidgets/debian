@@ -14,24 +14,11 @@ class PyOnDemandOutputWindow:
         self.pos    = wx.DefaultPosition
         self.size   = (450, 300)
         self.parent = None
-        self.triggers = []
-
 
     def SetParent(self, parent):
         """Set the window to be used as the popup Frame's parent."""
         self.parent = parent
 
-
-    def RaiseWhenSeen(self, trigger):
-        """
-        Trigger is a string or list of strings that will cause the
-        output window to be raised when that trigger text is written.
-        """
-        import types
-        if type(trigger) in types.StringTypes:
-            trigger = [trigger]
-        self.triggers = trigger
-        
 
     def CreateOutputWindow(self, st):
         self.frame = wx.Frame(self.parent, -1, self.title, self.pos, self.size,
@@ -65,18 +52,9 @@ class PyOnDemandOutputWindow:
                 self.CreateOutputWindow(text)
         else:
             if not wx.Thread_IsMain():
-                wx.CallAfter(self.__write, text)
+                wx.CallAfter(self.text.AppendText, text)
             else:
-                self.__write(text)
-
-    def __write(self, text):
-        # helper function for actually writing the text, and
-        # optionally raising the frame if needed
-        self.text.AppendText(text)
-        for item in self.triggers:
-            if item in text:
-                self.frame.Raise()
-                break
+                self.text.AppendText(text)
 
 
     def close(self):
@@ -91,8 +69,6 @@ class PyOnDemandOutputWindow:
 
 #----------------------------------------------------------------------
 
-_defRedirect = (wx.Platform == '__WXMSW__' or wx.Platform == '__WXMAC__')
-        
 class App(wx.PyApp):
     """
     The ``wx.App`` class represents the application and is used to:
@@ -119,18 +95,20 @@ class App(wx.PyApp):
     
     outputWindowClass = PyOnDemandOutputWindow
 
-    def __init__(self, redirect=_defRedirect, filename=None,
-                 useBestVisual=False, clearSigInt=True):
+    def __init__(self,
+                 redirect=False,
+                 filename=None,
+                 useBestVisual=False,
+                 clearSigInt=True):
         """
         Construct a ``wx.App`` object.  
 
         :param redirect: Should ``sys.stdout`` and ``sys.stderr`` be
-            redirected?  Defaults to True on Windows and Mac, False
-            otherwise.  If `filename` is None then output will be
-            redirected to a window that pops up as needed.  (You can
-            control what kind of window is created for the output by
-            resetting the class variable ``outputWindowClass`` to a
-            class of your choosing.)
+            redirected?  Defaults to False. If ``filename`` is None
+            then output will be redirected to a window that pops up
+            as needed.  (You can control what kind of window is created
+            for the output by resetting the class variable
+            ``outputWindowClass`` to a class of your choosing.)
 
         :param filename: The name of a file to redirect output to, if
             redirect is True.
@@ -158,8 +136,8 @@ class App(wx.PyApp):
             
             if wx.Platform == "__WXMAC__":
                 msg = """This program needs access to the screen.
-Please run with 'pythonw', not 'python', and only when you are logged
-in on the main display of your Mac."""
+Please run with a Framework build of python, and only when you are
+logged in on the main display of your Mac."""
                 
             elif wx.Platform == "__WXGTK__":
                 msg ="Unable to access the X Display, is $DISPLAY set properly?"
@@ -264,7 +242,9 @@ in on the main display of your Mac."""
                 self.stdioWin.size = size
             
 
-
+    @staticmethod
+    def Get():
+        return wx.GetApp()
 
 # change from wx.PyApp_XX to wx.App_XX
 App_GetMacSupportPCMenuShortcuts = _core_.PyApp_GetMacSupportPCMenuShortcuts
@@ -281,6 +261,7 @@ App_GetComCtl32Version           = _core_.PyApp_GetComCtl32Version
 
 #----------------------------------------------------------------------------
 
+@wx.deprecated
 class PySimpleApp(wx.App):
     """
     A simple application class.  You can just create one of these and
@@ -323,22 +304,11 @@ class PyWidgetTester(wx.App):
         self.frame.Show(True)
 
 #----------------------------------------------------------------------------
-# DO NOT hold any other references to this object.  This is how we
-# know when to cleanup system resources that wxWidgets is holding.  When
-# the sys module is unloaded, the refcount on sys.__wxPythonCleanup
-# goes to zero and it calls the wx.App_CleanUp function.
-
-class __wxPyCleanup:
-    def __init__(self):
-        self.cleanup = _core_.App_CleanUp
-    def __del__(self):
-        self.cleanup()
-
-_sys.__wxPythonCleanup = __wxPyCleanup()
-
-## # another possible solution, but it gets called too early...
-## import atexit
-## atexit.register(_core_.wxApp_CleanUp)
-
+# Make sure that system resources allocated by wx are properly cleaned
+# up when the Python interpreter exits.
+        
+import atexit
+atexit.register(_core_.App_CleanUp)
+del atexit
 
 #----------------------------------------------------------------------------

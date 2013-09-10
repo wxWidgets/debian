@@ -1,0 +1,4 @@
+<map id="wxEventFilter" name="wxEventFilter">
+<area shape="rect" id="node3" href="$classwx_app_console.html" title="This class is essential for writing console&#45;only or hybrid apps without having to define wxUSE_GUI=0..." alt="" coords="5,83,112,111"/>
+<area shape="rect" id="node5" href="$classwx_app.html" title="The wxApp class represents the application itself when wxUSE_GUI=1." alt="" coords="29,161,88,189"/>
+</map>

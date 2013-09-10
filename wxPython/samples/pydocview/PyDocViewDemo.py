@@ -5,7 +5,7 @@
 # Author:       Peter Yared, Morgan Hua
 #
 # Created:      5/15/03
-# CVS-ID:       $Id: PyDocViewDemo.py 36607 2005-12-30 23:02:03Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2003-2005 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------

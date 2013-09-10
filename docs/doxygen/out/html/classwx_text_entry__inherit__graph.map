@@ -1,0 +1,10 @@
+<map id="wxTextEntry" name="wxTextEntry">
+<area shape="rect" id="node3" href="$classwx_combo_box.html" title="A combobox is like a combination of an edit control and a listbox." alt="" coords="56,83,155,111"/>
+<area shape="rect" id="node7" href="$classwx_combo_ctrl.html" title="A combo control is a generic combobox that allows totally custom popup." alt="" coords="235,83,333,111"/>
+<area shape="rect" id="node13" href="$classwx_styled_text_ctrl.html" title="A wxWidgets implementation of the Scintilla source code editing component." alt="" coords="357,83,475,111"/>
+<area shape="rect" id="node15" href="$classwx_text_ctrl.html" title="A text control allows text to be displayed and edited." alt="" coords="552,83,635,111"/>
+<area shape="rect" id="node5" href="$classwx_bitmap_combo_box.html" title="A combobox that displays bitmap in front of the list items." alt="" coords="5,161,147,189"/>
+<area shape="rect" id="node9" href="$classwx_owner_drawn_combo_box.html" title="wxOwnerDrawnComboBox is a combobox with owner&#45;drawn list items." alt="" coords="171,161,344,189"/>
+<area shape="rect" id="node11" href="$classwx_rich_text_style_combo_ctrl.html" title="This is a combo control that can display the styles in a wxRichTextStyleSheet, and apply the selectio..." alt="" coords="368,161,547,189"/>
+<area shape="rect" id="node17" href="$classwx_search_ctrl.html" title="A search control is a composite control with a search button, a text control, and a cancel button..." alt="" coords="571,161,669,189"/>
+</map>

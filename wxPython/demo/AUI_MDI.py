@@ -15,7 +15,7 @@ class ParentFrame(wx.aui.AuiMDIParentFrame):
         mb = self.MakeMenuBar()
         self.SetMenuBar(mb)
         self.CreateStatusBar()
-        self.Bind(wx.EVT_CLOSE)
+        self.Bind(wx.EVT_CLOSE, self.OnDoClose)
         
     def MakeMenuBar(self):
         mb = wx.MenuBar()
@@ -30,7 +30,7 @@ class ParentFrame(wx.aui.AuiMDIParentFrame):
     def OnNewChild(self, evt):
         self.count += 1
         child = ChildFrame(self, self.count)
-        child.Show()
+        child.Activate()
 
     def OnDoClose(self, evt):
         # Close all ChildFrames first else Python crashes

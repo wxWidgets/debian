@@ -5,7 +5,7 @@
 # Author:      Gordon Williams
 #
 # Created:     2003/11/03
-# RCS-ID:      $Id: plot.py 65712 2010-10-01 17:56:32Z RD $
+# RCS-ID:      $Id$
 # Copyright:   (c) 2002
 # Licence:     Use as you wish.
 #-----------------------------------------------------------------------------
@@ -113,23 +113,17 @@ import  time as _time
 import  sys
 import  wx
 
-# Needs Numeric or numarray or NumPy
+# Needs NumPy
 try:
     import numpy.oldnumeric as _Numeric
 except:
-    try:
-        import numarray as _Numeric  #if numarray is used it is renamed Numeric
-    except:
-        try:
-            import Numeric as _Numeric
-        except:
-            msg= """
-            This module requires the Numeric/numarray or NumPy module,
-            which could not be imported.  It probably is not installed
-            (it's not part of the standard Python distribution). See the
-            Numeric Python site (http://numpy.scipy.org) for information on
-            downloading source or binaries."""
-            raise ImportError, "Numeric,numarray or NumPy not found. \n" + msg
+    msg= """
+    This module requires the NumPy module, which could not be
+    imported.  It probably is not installed (it's not part of the
+    standard Python distribution). See the Numeric Python site
+    (http://numpy.scipy.org) for information on downloading source or
+    binaries."""
+    raise ImportError, "NumPy not found.\n" + msg
 
 
 
@@ -234,14 +228,19 @@ class PolyLine(PolyPoints):
                    'legend': ''}
 
     def __init__(self, points, **attr):
-        """Creates PolyLine object
-            points - sequence (array, tuple or list) of (x,y) points making up line
-            **attr - key word attributes
-                Defaults:
-                    'colour'= 'black',          - wx.Pen Colour any wx.NamedColour
-                    'width'= 1,                 - Pen width
-                    'style'= wx.SOLID,          - wx.Pen style
-                    'legend'= ''                - Line Legend to display
+        """
+        Creates PolyLine object
+        
+        :param `points`: sequence (array, tuple or list) of (x,y) points making up line
+        :keyword `attr`: keyword attributes, default to:
+
+         ==========================  ================================  
+         'colour'= 'black'           wx.Pen Colour any wx.NamedColour
+         'width'= 1                  Pen width
+         'style'= wx.SOLID           wx.Pen style
+         'legend'= ''                Line Legend to display
+         ==========================  ================================  
+
         """
         PolyPoints.__init__(self, points, attr)
 
@@ -277,14 +276,19 @@ class PolySpline(PolyLine):
                    'legend': ''}
 
     def __init__(self, points, **attr):
-        """Creates PolyLine object
-            points - sequence (array, tuple or list) of (x,y) points making up line
-            **attr - key word attributes
-                Defaults:
-                    'colour'= 'black',          - wx.Pen Colour any wx.NamedColour
-                    'width'= 1,                 - Pen width
-                    'style'= wx.SOLID,          - wx.Pen style
-                    'legend'= ''                - Line Legend to display
+        """
+        Creates PolyLine object
+
+        :param `points`: sequence (array, tuple or list) of (x,y) points making up spline
+        :keyword `attr`: keyword attributes, default to:
+
+         ==========================  ================================  
+         'colour'= 'black'           wx.Pen Colour any wx.NamedColour
+         'width'= 1                  Pen width
+         'style'= wx.SOLID           wx.Pen style
+         'legend'= ''                Line Legend to display
+         ==========================  ================================  
+
         """
         PolyLine.__init__(self, points, **attr)
 
@@ -317,26 +321,31 @@ class PolyMarker(PolyPoints):
                    'legend': ''}
 
     def __init__(self, points, **attr):
-        """Creates PolyMarker object
-        points - sequence (array, tuple or list) of (x,y) points
-        **attr - key word attributes
-            Defaults:
-                'colour'= 'black',          - wx.Pen Colour any wx.NamedColour
-                'width'= 1,                 - Pen width
-                'size'= 2,                  - Marker size
-                'fillcolour'= same as colour,      - wx.Brush Colour any wx.NamedColour
-                'fillstyle'= wx.SOLID,      - wx.Brush fill style (use wx.TRANSPARENT for no fill)
-                'marker'= 'circle'          - Marker shape
-                'legend'= ''                - Marker Legend to display
-              
-            Marker Shapes:
-                - 'circle'
-                - 'dot'
-                - 'square'
-                - 'triangle'
-                - 'triangle_down'
-                - 'cross'
-                - 'plus'
+        """
+        Creates PolyMarker object
+
+        :param `points`: sequence (array, tuple or list) of (x,y) points
+        :keyword `attr`: keyword attributes, default to:
+
+         ============================  ================================  
+         'colour'= 'black'             wx.Pen Colour any wx.NamedColour
+         'width'= 1                    Pen width
+         'size'= 2                     Marker size
+         'fillcolour'= same as colour  wx.Brush Colour any wx.NamedColour
+         'fillstyle'= wx.SOLID         wx.Brush fill style (use wx.TRANSPARENT for no fill)
+         'style'= wx.SOLID             wx.Pen style
+         'marker'= 'circle'            Marker shape
+         'legend'= ''                  Line Legend to display
+         ============================  ================================  
+
+         Marker Shapes:
+         - 'circle'
+         - 'dot'
+         - 'square'
+         - 'triangle'
+         - 'triangle_down'
+         - 'cross'
+         - 'plus'
         """
       
         PolyPoints.__init__(self, points, attr)
@@ -745,7 +754,7 @@ class PlotCanvas(wx.Panel):
                 self.pageSetupData.SetMarginBottomRight(data.GetMarginBottomRight())
                 self.pageSetupData.SetMarginTopLeft(data.GetMarginTopLeft())
                 self.pageSetupData.SetPrintData(data.GetPrintData())
-                self.print_data=wx.PrintData(data.GetPrintData()) # updates print_data
+                self._print_data=wx.PrintData(data.GetPrintData()) # updates print_data
         finally:
             dlg.Destroy()
                 
@@ -758,7 +767,7 @@ class PlotCanvas(wx.Panel):
         out = PlotPrintout(self)
         print_ok = printer.Print(self.parent, out)
         if print_ok:
-            self.print_data = wx.PrintData(printer.GetPrintDialogData().GetPrintData())
+            self._print_data = wx.PrintData(printer.GetPrintDialogData().GetPrintData())
         out.Destroy()
 
     def PrintPreview(self):
@@ -1016,20 +1025,22 @@ class PlotCanvas(wx.Panel):
     def SetXSpec(self, type= 'auto'):
         """xSpec- defines x axis type. Can be 'none', 'min' or 'auto'
         where:
-            'none' - shows no axis or tick mark values
-            'min' - shows min bounding box values
-            'auto' - rounds axis range to sensible values
-            <number> - like 'min', but with <number> tick marks
+        
+        * 'none' - shows no axis or tick mark values
+        * 'min' - shows min bounding box values
+        * 'auto' - rounds axis range to sensible values
+        * <number> - like 'min', but with <number> tick marks
         """
         self._xSpec= type
         
     def SetYSpec(self, type= 'auto'):
         """ySpec- defines x axis type. Can be 'none', 'min' or 'auto'
         where:
-            'none' - shows no axis or tick mark values
-            'min' - shows min bounding box values
-            'auto' - rounds axis range to sensible values
-            <number> - like 'min', but with <number> tick marks
+
+        * 'none' - shows no axis or tick mark values
+        * 'min' - shows min bounding box values
+        * 'auto' - rounds axis range to sensible values
+        * <number> - like 'min', but with <number> tick marks
         """
         self._ySpec= type
 

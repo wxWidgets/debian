@@ -5,7 +5,7 @@
 # Author:       Matt Fryer
 #
 # Created:      12/9/04
-# CVS-ID:       $Id: DebuggerService.py 38852 2006-04-20 06:26:03Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2004-2005 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------
@@ -1331,7 +1331,7 @@ class BaseFramesUI(wx.SplitterWindow):
             return
 
         def OnKeyPressed(event):
-            key = event.KeyCode()
+            key = event.GetKeyCode()
             if key == wx.WXK_RETURN:
                 handleCommand()
             elif key == wx.WXK_UP:

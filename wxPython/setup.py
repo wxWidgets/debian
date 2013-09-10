@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     12-Oct-2000
-# RCS-ID:      $Id: setup.py 67484 2011-04-13 21:05:17Z RD $
+# RCS-ID:      $Id$
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -47,8 +47,10 @@ from config import *
 #----------------------------------------------------------------------
 
 copy_file('config.py', 'wx/build', update=1, verbose=1)
+copy_file('cfg_version.py', 'wx/build', update=1, verbose=1)
 copy_file('build_options.py', 'wx/build', update=1, verbose=1)
 CLEANUP.append('wx/build/config.py')
+CLEANUP.append('wx/build/cfg_version.py')
 CLEANUP.append('wx/build/build_options.py')
 
 #----------------------------------------------------------------------
@@ -130,6 +132,8 @@ swig_sources = run_swig(['core.i'], 'src', GENDIR, PKGDIR,
                           'src/__core_rename.i',
                           'src/__core_reverse.txt',
                           'src/_defs.i',
+                          'src/_keyboardstate.i',
+                          'src/_mousestate.i',
                           'src/_event.i',
                           'src/_event_ex.py',
                           'src/_evtloop.i',
@@ -146,6 +150,10 @@ swig_sources = run_swig(['core.i'], 'src', GENDIR, PKGDIR,
                           'src/_window.i',
                           'src/_control.i',
                           'src/_swigtype.i',
+                          'src/_headercol.i',
+                          'src/_versioninfo.i',
+                          'src/_withimages.i',
+                          'src/_bookctrl.i',
                           ],
                         True)
 
@@ -297,6 +305,9 @@ swig_sources = run_swig(['controls.i'], 'src', GENDIR, PKGDIR,
                           'src/_collpane.i',
                           'src/_srchctrl.i',
                           'src/_axbase.i',
+                          'src/_filectrl.i',
+                          'src/_infobar.i',
+                          'src/_cmdlinkbtn.i',
                           ],
                         True)
 ext = Extension('_controls_', swig_sources,
@@ -336,6 +347,7 @@ swig_sources = run_swig(['misc.i'], 'src', GENDIR, PKGDIR,
                           'src/_stdpaths.i',
                           'src/_power.i',
                           'src/_about.i',
+                          'src/_uiaction.i',
                           ],
                         True)
 ext = Extension('_misc_', swig_sources,
@@ -458,6 +470,19 @@ ext = Extension('_wizard', swig_sources,
 wxpExtensions.append(ext)
 
 
+swig_sources = run_swig(['dataview.i'], 'src', GENDIR, PKGDIR,
+                        USE_SWIG, swig_force, swig_args, swig_deps)
+ext = Extension('_dataview', swig_sources,
+                include_dirs =  includes,
+                define_macros = defines,
+                library_dirs = libdirs,
+                libraries = libs,
+                extra_compile_args = cflags,
+                extra_link_args = lflags,
+                **depends
+                )
+wxpExtensions.append(ext)
+
 
 swig_sources = run_swig(['xrc.i'], 'src', GENDIR, PKGDIR,
                         USE_SWIG, swig_force, swig_args, swig_deps +
@@ -494,7 +519,6 @@ swig_sources = run_swig(['richtext.i'], 'src', GENDIR, PKGDIR,
                                       'src/_richtextctrl.i',
                                       'src/_richtexthtml.i',
                                       'src/_richtextxml.i',
-                                      'src/_richtextprint.i',
                                       ])
 if not MONOLITHIC and findLib('richtext', libdirs):
     richLib = makeLibName('richtext')
@@ -557,19 +581,88 @@ ext = Extension('_animate',
 wxpExtensions.append(ext)
 
 
+swig_sources = run_swig(['propgrid.i'], 'src', GENDIR, PKGDIR,
+                        USE_SWIG, swig_force,
+                        swig_args + ['-I'+opj(WXDIR, 'include/wx/propgrid')],
+                        swig_deps + [#'src/_propgrid_docstrings.i',
+                                     opj(WXDIR, 'include/wx/propgrid/advprops.h'),
+                                     opj(WXDIR, 'include/wx/propgrid/editors.h'),
+                                     opj(WXDIR, 'include/wx/propgrid/manager.h'),
+                                     opj(WXDIR, 'include/wx/propgrid/property.h'),
+                                     opj(WXDIR, 'include/wx/propgrid/propgrid.h'),
+                                     opj(WXDIR, 'include/wx/propgrid/propgriddefs.h'),
+                                     opj(WXDIR, 'include/wx/propgrid/propgridiface.h'),
+                                     opj(WXDIR, 'include/wx/propgrid/propgridpagestate.h'),
+                                     opj(WXDIR, 'include/wx/propgrid/props.h'),
+                                     ])
+if not MONOLITHIC and findLib('propgrid', libdirs):
+    propgridLib = makeLibName('propgrid')
+else:
+    propgridLib = []
+ext = Extension('_propgrid', swig_sources,
+                include_dirs =  includes,
+                define_macros = defines,
+                library_dirs = libdirs,
+                libraries = libs + propgridLib,
+                extra_compile_args = cflags,
+                extra_link_args = lflags,
+                **depends
+                )
+wxpExtensions.append(ext)
 
 
-#----------------------------------------------------------------------
-# Define the GLCanvas extension module
-#----------------------------------------------------------------------
+swig_sources = run_swig(['html2.i'], 'src', GENDIR, PKGDIR,
+                        USE_SWIG, swig_force, swig_args, swig_deps)
+if not MONOLITHIC and findLib('webview', libdirs):
+    webviewLib = makeLibName('webview')
+else:
+    webviewLib = []
+ext = Extension('_html2', swig_sources,
+                include_dirs =  includes,
+                define_macros = defines,
+                library_dirs = libdirs,
+                libraries = libs + webviewLib,
+                extra_compile_args = cflags,
+                extra_link_args = lflags,
+                **depends
+                )
+wxpExtensions.append(ext)
+
+
+
+if BUILD_STC:
+    msg('Preparing STC...')
+    STC_H = opj(WXDIR, 'include/wx/stc')
+
+    swig_sources = run_swig(['stc.i'], 'src', GENDIR, PKGDIR,
+                            USE_SWIG, swig_force, swig_args + ['-I'+STC_H],
+                            [opj(STC_H, 'stc.h'),
+                             opj("src/_stc_utf8_methods.py"),
+                             opj("src/_stc_docstrings.i"),
+                             opj("src/_stc_gendocs.i"),
+                             ] + swig_deps)
+
+    stcLibs = libs[:]
+    if not MONOLITHIC and findLib('stc', libdirs):
+        stcLibs += makeLibName('stc')
+
+    ext = Extension('_stc',
+                    swig_sources,
+                    include_dirs = includes + CONTRIBS_INC,
+                    define_macros = defines,
+                    library_dirs = libdirs,
+                    libraries = stcLibs,
+                    extra_compile_args = cflags,
+                    extra_link_args = lflags,
+                    )
+
+    wxpExtensions.append(ext)
+
 
 if BUILD_GLCANVAS:
     msg('Preparing GLCANVAS...')
-    location = 'contrib/glcanvas'
-
-    swig_sources = run_swig(['glcanvas.i'], location, GENDIR, PKGDIR,
+    swig_sources = run_swig(['glcanvas.i'], 'src', GENDIR, PKGDIR,
                             USE_SWIG, swig_force, swig_args, swig_deps)
-
     gl_libs = []
     gl_libdirs = libdirs[:]
     if os.name == 'posix':
@@ -577,118 +670,27 @@ if BUILD_GLCANVAS:
                     os.popen(WX_CONFIG + ' --libs gl', 'r').read()[:-1]
         gl_lflags = gl_config.split()
         gl_lflags = adjustLFLAGS(gl_lflags, gl_libdirs, gl_libs)
-
-
     else:
         gl_libs = libs + ['opengl32', 'glu32'] + makeLibName('gl')
         gl_lflags = lflags
 
-    if sys.platform[:6] == "darwin" and WXPORT == 'mac':
+    if sys.platform[:6] == "darwin" and WXPORT == 'osx_carbon':
         if not ARCH == "":
             gl_lflags.append("-arch")
             gl_lflags.append(ARCH)
 
     ext = Extension('_glcanvas',
                     swig_sources,
-
                     include_dirs = includes + CONTRIBS_INC,
                     define_macros = defines,
-
                     library_dirs = gl_libdirs,
                     libraries = gl_libs,
-
                     extra_compile_args = cflags,
                     extra_link_args = gl_lflags,
                     )
 
     wxpExtensions.append(ext)
 
-
-#----------------------------------------------------------------------
-# Define the OGL extension module
-#----------------------------------------------------------------------
-
-if BUILD_OGL:
-    msg('Preparing OGL...')
-    location = 'contrib/ogl'
-
-    swig_sources = run_swig(['ogl.i'], location, GENDIR, PKGDIR,
-                            USE_SWIG, swig_force, swig_args, swig_deps +
-                            [ '%s/_oglbasic.i' % location,
-                              '%s/_oglshapes.i' % location,
-                              '%s/_oglshapes2.i' % location,
-                              '%s/_oglcanvas.i' % location,
-                              '%s/_ogldefs.i' % location,
-                              ])
-
-    ext = Extension('_ogl',
-                    swig_sources,
-
-                    include_dirs =  includes + [ location ] + CONTRIBS_INC,
-                    define_macros = defines + [('wxUSE_DEPRECATED', '0')],
-
-                    library_dirs = libdirs,
-                    libraries = libs + makeLibName('ogl'),
-
-                    extra_compile_args = cflags,
-                    extra_link_args = lflags,
-                    )
-
-    wxpExtensions.append(ext)
-
-
-
-#----------------------------------------------------------------------
-# Define the STC extension module
-#----------------------------------------------------------------------
-
-if BUILD_STC:
-    msg('Preparing STC...')
-    location = 'contrib/stc'
-    #if os.name == 'nt':
-    STC_H = opj(WXDIR, 'contrib', 'include/wx/stc')
-    #else:
-    #    STC_H = opj(WXPREFIX, 'include/wx-%d.%d/wx/stc' % (VER_MAJOR, VER_MINOR))
-
-## NOTE: need to add something like this to the stc.bkl...
-
-##         # Check if gen_iface needs to be run for the wxSTC sources
-##         if (newer(opj(CTRB_SRC, 'stc/stc.h.in'),     opj(CTRB_INC, 'stc/stc.h'  )) or
-##             newer(opj(CTRB_SRC, 'stc/stc.cpp.in'),   opj(CTRB_SRC, 'stc/stc.cpp')) or
-##             newer(opj(CTRB_SRC, 'stc/gen_iface.py'), opj(CTRB_SRC, 'stc/stc.cpp'))):
-
-##             msg('Running gen_iface.py, regenerating stc.h and stc.cpp...')
-##             cwd = os.getcwd()
-##             os.chdir(opj(CTRB_SRC, 'stc'))
-##             sys.path.insert(0, os.curdir)
-##             import gen_iface
-##             gen_iface.main([])
-##             os.chdir(cwd)
-
-
-    swig_sources = run_swig(['stc.i'], location, GENDIR, PKGDIR,
-                            USE_SWIG, swig_force,
-                            swig_args + ['-I'+STC_H, '-I'+location],
-                            [opj(STC_H, 'stc.h'),
-                             opj(location, "_stc_utf8_methods.py"),
-                             opj(location, "_stc_docstrings.i"),
-                             opj(location, "_stc_gendocs.i"),
-                             ] + swig_deps)
-
-    ext = Extension('_stc',
-                    swig_sources,
-
-                    include_dirs = includes + CONTRIBS_INC,
-                    define_macros = defines,
-
-                    library_dirs = libdirs,
-                    libraries = libs + makeLibName('stc'),
-
-                    extra_compile_args = cflags,
-                    extra_link_args = lflags,
-                    )
-
-    wxpExtensions.append(ext)
 
 
 #----------------------------------------------------------------------
@@ -737,13 +739,19 @@ if BUILD_GIZMOS:
                             [ '%s/_treelist.i' % location])
 
     ext = Extension('_gizmos',
-                    [ '%s/treelistctrl.cpp' % opj(location, 'wxCode/src') ] + swig_sources,
+                    [ '%s/treelistctrl.cpp'        % opj(location, 'wxCode/src'),
+                      '%s/gizmos/dynamicsash.cpp'  % opj(location, 'wxCode/src'),
+                      #'%s/gizmos/editlbox.cpp'     % opj(location, 'wxCode/src'),
+                      '%s/gizmos/ledctrl.cpp'      % opj(location, 'wxCode/src'),
+                      '%s/gizmos/splittree.cpp'    % opj(location, 'wxCode/src'),
+                      '%s/gizmos/statpict.cpp'     % opj(location, 'wxCode/src'),
+                      ] + swig_sources,
 
                     include_dirs =  includes + [ location, opj(location, 'wxCode/include') ] + CONTRIBS_INC,
                     define_macros = defines,
 
                     library_dirs = libdirs,
-                    libraries = libs + makeLibName('gizmos'),
+                    libraries = libs,
 
                     extra_compile_args = cflags,
                     extra_link_args = lflags,
@@ -877,6 +885,7 @@ WX_PKGLIST =      [ 'wx',
                     'wx.lib.masked',
                     'wx.lib.mixins',
                     'wx.lib.ogl',
+                    'wx.lib.pdfviewer',
                     'wx.lib.pubsub',
                     'wx.lib.pubsub.core',
                     'wx.lib.pubsub.core.arg1',
@@ -894,25 +903,9 @@ WX_PKGLIST =      [ 'wx',
                     'wx.tools.Editra.src.eclib',
                     'wx.tools.Editra.src.ebmlib',
                     'wx.tools.Editra.src.extern',
-                    'wx.tools.Editra.src.extern.aui',
-                    'wx.tools.Editra.src.extern.dexml',
-                    'wx.tools.Editra.src.extern.pygments',
-                    'wx.tools.Editra.src.extern.pygments.filters',
-                    'wx.tools.Editra.src.extern.pygments.formatters',
-                    'wx.tools.Editra.src.extern.pygments.lexers',
-                    'wx.tools.Editra.src.extern.pygments.styles',
                     'wx.tools.Editra.src.syntax',
                     ]
 
-if not EGGing:
-    WX_PKGLIST += [ 'wxPython',
-                    'wxPython.lib',
-                    'wxPython.lib.colourchooser',
-                    'wxPython.lib.editor',
-                    'wxPython.lib.mixins',
-                    'wxPython.tools',
-                    ]
-                     
 
 if NO_SCRIPTS or EGGing:
     SCRIPTS = None
@@ -935,6 +928,7 @@ else:
 
 
 
+DATA_FILES += find_data_files('wx/lib/agw/data', '*.png', '*.html')
 DATA_FILES += find_data_files('wx/lib/editor', '*.txt')
 DATA_FILES += find_data_files('wx/py', '*.txt', '*.ico', '*.css', '*.html')
 
@@ -1018,6 +1012,33 @@ if EGGing:
 if __name__ == "__main__":
     if not PREP_ONLY:
 
+        if not EGGing:
+            if INSTALL_MULTIVERSION:
+                setup(name             = 'wxPython-common',
+                      version          = VERSION,
+                      description      = DESCRIPTION,
+                      long_description = LONG_DESCRIPTION,
+                      author           = AUTHOR,
+                      author_email     = AUTHOR_EMAIL,
+                      url              = URL,
+                      download_url     = DOWNLOAD_URL,
+                      license          = LICENSE,
+                      platforms        = PLATFORMS,
+                      classifiers      = filter(None, CLASSIFIERS.split("\n")),
+                      keywords         = KEYWORDS,
+
+                      package_dir = { '': 'wxversion' },
+                      py_modules = ['wxversion'],
+
+                      data_files = [('', ['src/wx.pth'])],
+
+                      options = { 'build' : BUILD_OPTIONS,
+                                  },
+
+                      cmdclass = { 'install_data':    wx_smart_install_data,
+                                   },
+                      )
+
         setup(name             = 'wxPython',
               version          = VERSION,
               description      = DESCRIPTION,
@@ -1053,32 +1074,6 @@ if __name__ == "__main__":
               **other_kw
               )
 
-        if not EGGing:
-            if INSTALL_MULTIVERSION:
-                setup(name             = 'wxPython-common',
-                      version          = VERSION,
-                      description      = DESCRIPTION,
-                      long_description = LONG_DESCRIPTION,
-                      author           = AUTHOR,
-                      author_email     = AUTHOR_EMAIL,
-                      url              = URL,
-                      download_url     = DOWNLOAD_URL,
-                      license          = LICENSE,
-                      platforms        = PLATFORMS,
-                      classifiers      = filter(None, CLASSIFIERS.split("\n")),
-                      keywords         = KEYWORDS,
-
-                      package_dir = { '': 'wxversion' },
-                      py_modules = ['wxversion'],
-
-                      data_files = [('', ['src/wx.pth'])],
-
-                      options = { 'build' : BUILD_OPTIONS,
-                                  },
-
-                      cmdclass = { 'install_data':    wx_smart_install_data,
-                                   },
-                      )
 
 
 #----------------------------------------------------------------------

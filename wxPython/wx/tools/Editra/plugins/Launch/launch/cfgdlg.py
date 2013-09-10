@@ -10,14 +10,15 @@
 """Launch Configuration Dialog"""
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: cfgdlg.py 67778 2011-05-23 20:58:56Z CJP $"
-__revision__ = "$Revision: 67778 $"
+__svnid__ = "$Id: cfgdlg.py 70228 2011-12-31 20:39:16Z CJP $"
+__revision__ = "$Revision: 70228 $"
 
 #-----------------------------------------------------------------------------#
 # Imports
 import sys
 import wx
 import wx.lib.mixins.listctrl as listmix
+import wx.lib.intctrl as intctrl
 import cStringIO
 import zlib
 
@@ -63,6 +64,7 @@ COLOR_MAP = { ID_DEF_BACK : 'defaultb', ID_DEF_FORE : 'defaultf',
 _ = wx.GetTranslation
 
 #----------------------------------------------------------------------
+DEFAULT_LINEBUFFER = 1000
 
 def InitConfig():
     """Initialize the Launch configuration"""
@@ -73,7 +75,7 @@ def InitConfig():
                      ('defaultb', wx.WHITE), ('errorf', wx.RED),
                      ('errorb', wx.WHITE), ('infof', wx.BLUE),
                      ('infob', wx.WHITE), ('warnf', wx.RED),
-                     ('warnb', wx.WHITE)):
+                     ('warnb', wx.WHITE), ('linebuffer', DEFAULT_LINEBUFFER)):
         # Set default value for any uninitialized preference
         if key not in cfg:
             cfg[key] = val
@@ -91,7 +93,7 @@ class ConfigDialog(ed_basewin.EdBaseFrame):
     def __init__(self, parent, ftype=0):
         """Create the ConfigDialog
         @param parent: The parent window
-        @keyword: The filetype to set
+        @keyword ftype: The filetype to set
 
         """
         super(ConfigDialog, self).__init__(parent, title=_("Launch Configuration"))
@@ -369,11 +371,13 @@ class OutputPanel(wx.Panel):
         super(OutputPanel, self).__init__(parent)
 
         # Layout
+        self._bufftxt = None
         self.__DoLayout()
 
         # Event Handlers
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
         self.Bind(eclib.EVT_COLORSETTER, self.OnColor)
+        self._bufftxt.Bind(wx.EVT_KILL_FOCUS, self.OnLineBuffKillFocus)
 
     def __DoLayout(self):
         """Layout the controls"""
@@ -394,6 +398,14 @@ class OutputPanel(wx.Panel):
         wrap_cb = wx.CheckBox(self, ID_WRAP_OUTPUT,
                               _("Wrap lines in output buffer"))
         wrap_cb.SetValue(cfg.get('wrapoutput', False))
+        buff_sz = wx.BoxSizer(wx.HORIZONTAL)
+        buff_sz.Add(wx.StaticText(self, label=_("Line Buffering:")), 0,
+                    wx.ALIGN_CENTER_VERTICAL)
+        self._bufftxt = intctrl.IntCtrl(self, min=0, max=50000, allow_none=True)
+        self._bufftxt.ToolTip = wx.ToolTip(_("0-50000 (0 unlimited)"))
+        lbufcfg = max(0, cfg.get('linebuffer', DEFAULT_LINEBUFFER))
+        self._bufftxt.Value = unicode(lbufcfg)
+        buff_sz.Add(self._bufftxt, 0, wx.ALL, 5)
 
         # Colors
         colors = dict()
@@ -447,6 +459,7 @@ class OutputPanel(wx.Panel):
                         ((5, 5), 0), (clear_cb, 0),
                         ((5, 5), 0), (error_cb, 0),
                         ((5, 5), 0), (wrap_cb, 0),
+                        ((5, 5), 0), (buff_sz, 0),
                         ((10, 10), 0), (wx.StaticLine(self), 0, wx.EXPAND),
                         ((10, 10), 0),
                         (boxsz, 1, wx.EXPAND)])
@@ -481,6 +494,24 @@ class OutputPanel(wx.Panel):
             Profile_Set(handlers.CONFIG_KEY, cfg)
         else:
             evt.Skip()
+
+    def OnLineBuffKillFocus(self, evt):
+        self.UpdateLineBuffCfg()
+        evt.Skip()
+
+    def UpdateLineBuffCfg(self):
+        """Update the line buffer configuration"""
+        util.Log("[Launch][info] LineBuffer config updated")
+        val = self._bufftxt.GetValue()
+        if self._bufftxt.IsInBounds(val):
+            cfg = Profile_Get(handlers.CONFIG_KEY, default=dict())
+            cval = cfg.get('linebuffer', DEFAULT_LINEBUFFER)
+            ival = int(val)
+            if ival == 0:
+                ival = -1
+            if ival != cval:
+                cfg['linebuffer'] = ival
+                Profile_Set(handlers.CONFIG_KEY, cfg)
 
 #-----------------------------------------------------------------------------#
 

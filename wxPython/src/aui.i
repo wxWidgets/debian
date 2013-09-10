@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     5-July-2006
-// RCS-ID:      $Id: aui.i 58924 2009-02-16 00:05:05Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -118,6 +118,8 @@ The following example shows a simple implementation that utilizes
 #include "wx/wxPython/wxPython.h"
 #include "wx/wxPython/pyclasses.h"
 #include <wx/aui/aui.h>
+
+#define NO_IMAGE -1
 %}
 
 //---------------------------------------------------------------------------
@@ -125,11 +127,37 @@ The following example shows a simple implementation that utilizes
 %import core.i
 %import windows.i
 
+
 %pythoncode { wx = _core }
 %pythoncode { __docfilter__ = wx.__DocFilter(globals()) }
 
 
 %include _aui_docstrings.i
+
+//---------------------------------------------------------------------------
+
+
+ // TODO: This should be moved to its own module, but this is the only place
+ // it is needed so far.
+template <class W>
+class wxNavigationEnabled : public W
+{
+public:
+
+    //wxNavigationEnabled();
+    
+    //virtual bool AcceptsFocus() const;
+    //virtual bool AcceptsFocusRecursively() const;
+    //virtual bool AcceptsFocusFromKeyboard() const;
+    //virtual void AddChild(wxWindowBase *child);
+    //virtual void RemoveChild(wxWindowBase *child);
+    //virtual void SetFocus();
+    //void SetFocusIgnoringChildren();
+    //void AcceptFocus(bool acceptFocus);
+};
+
+%rename(wxNavigationEnabled_BookCtrlBase)  wxNavigationEnabled<wxBookCtrlBase>;
+%template(wxNavigationEnabled_BookCtrlBase) wxNavigationEnabled<wxBookCtrlBase>;
 
 //---------------------------------------------------------------------------
 
@@ -144,6 +172,7 @@ The following example shows a simple implementation that utilizes
 
 #define WXDLLIMPEXP_AUI
 #define WXDLLIMPEXP_FWD_AUI
+#define WXDLLIMPEXP_FWD_CORE
 #define unsigned
 #define wxDEPRECATED(decl)
 #define DECLARE_EVENT_TABLE()
@@ -191,7 +220,7 @@ The following example shows a simple implementation that utilizes
 
 %pythonAppend wxAuiNotebook::wxAuiNotebook    "self._setOORInfo(self)";
 %pythonAppend wxAuiNotebook::wxAuiNotebook()  "val._setOORInfo(val)";
-%ignore wxAuiiNotebook::~wxAuiNotebook;
+%ignore wxAuiNotebook::~wxAuiNotebook;
 %rename(PreAuiNotebook) wxAuiNotebook::wxAuiNotebook();
 
 // NB: Since we can't target the use of a typemap to specific methods make
@@ -287,6 +316,10 @@ The following example shows a simple implementation that utilizes
 
 %typemap(out) wxEvtHandler*             { $result = wxPyMake_wxObject($1, $owner); }
 
+
+%nokwargs wxAuiToolBarItem;
+%nokwargs wxAuiToolBar::SetMargins;
+
 //---------------------------------------------------------------------------
 // Get all our defs from the REAL header files.
 
@@ -356,9 +389,9 @@ The following example shows a simple implementation that utilizes
 
     // For backwards compatibility
     %pythoncode {
-         SetFrame = wx._deprecated(SetManagedWindow,
+         SetFrame = wx.deprecated(SetManagedWindow,
                                    "SetFrame is deprecated, use `SetManagedWindow` instead.")
-         GetFrame = wx._deprecated(GetManagedWindow,
+         GetFrame = wx.deprecated(GetManagedWindow,
                                    "GetFrame is deprecated, use `GetManagedWindow` instead.")
     }
 }
@@ -594,17 +627,6 @@ public:
 
 
 //---------------------------------------------------------------------------
-
-%extend wxAuiNotebook {
-    %property(PageCount, GetPageCount, doc="See `GetPageCount`");
-    %property(Selection, GetSelection, SetSelection, doc="See `GetSelection` and `SetSelection`");
-}
-
-
-%extend wxAuiNotebookEvent {
-    %property(OldSelection, GetOldSelection, SetOldSelection, doc="See `GetOldSelection` and `SetOldSelection`");
-    %property(Selection, GetSelection, SetSelection, doc="See `GetSelection` and `SetSelection`");
-}
 
 
 %extend wxAuiTabContainer {
@@ -949,9 +971,9 @@ public:
 //                                    const wxSize& required_bmp_size);
 
 
-    wxFont GetNormalFont() const { return m_normal_font; }
-    wxFont GetSelectedFont() const { return m_selected_font; }
-    wxFont GetMeasuringFont() const { return m_measuring_font; }
+    wxFont GetNormalFont() const { return m_normalFont; }
+    wxFont GetSelectedFont() const { return m_selectedFont; }
+    wxFont GetMeasuringFont() const { return m_measuringFont; }
 
     int GetFlags() const { return (int)m_flags; }
 

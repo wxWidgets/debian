@@ -1,0 +1,6 @@
+<map id="wxObjectRefData" name="wxObjectRefData">
+<area shape="rect" id="node3" href="$classwx_variant_data.html" title="The wxVariantData class is used to implement a new type for wxVariant." alt="" coords="212,83,316,111"/>
+<area shape="rect" id="node5" href="$classwx_variant_data_currency.html" title="This class represents a thin wrapper for Microsoft Windows CURRENCY type." alt="" coords="5,161,160,189"/>
+<area shape="rect" id="node7" href="$classwx_variant_data_error_code.html" title="This class represents a thin wrapper for Microsoft Windows SCODE type (which is the same as HRESULT)..." alt="" coords="184,161,344,189"/>
+<area shape="rect" id="node9" href="$classwx_variant_data_safe_array.html" title="This class represents a thin wrapper for Microsoft Windows SAFEARRAY type." alt="" coords="368,161,528,189"/>
+</map>

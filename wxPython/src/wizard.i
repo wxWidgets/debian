@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     16-Aug-2002
-// RCS-ID:      $Id: wizard.i 47076 2007-07-02 17:03:33Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ or pages."
 #include "wx/wxPython/printfw.h"
 
 #include <wx/wizard.h>
-    
+
 %}
 
 //----------------------------------------------------------------------
@@ -38,6 +38,14 @@ MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
 
 enum {
     wxWIZARD_EX_HELPBUTTON,
+
+    wxWIZARD_VALIGN_TOP,
+    wxWIZARD_VALIGN_CENTRE,
+    wxWIZARD_VALIGN_BOTTOM,
+    wxWIZARD_HALIGN_LEFT,
+    wxWIZARD_HALIGN_CENTRE,
+    wxWIZARD_HALIGN_RIGHT,
+    wxWIZARD_TILE,
 };
 
 %constant wxEventType wxEVT_WIZARD_PAGE_CHANGED;
@@ -45,6 +53,8 @@ enum {
 %constant wxEventType wxEVT_WIZARD_CANCEL;
 %constant wxEventType wxEVT_WIZARD_HELP;
 %constant wxEventType wxEVT_WIZARD_FINISHED;
+%constant wxEventType wxEVT_WIZARD_PAGE_SHOWN;
+%constant wxEventType wxEVT_WIZARD_BEFORE_PAGE_CHANGED;
 
 
 
@@ -54,6 +64,8 @@ EVT_WIZARD_PAGE_CHANGING = wx.PyEventBinder( wxEVT_WIZARD_PAGE_CHANGING, 1)
 EVT_WIZARD_CANCEL        = wx.PyEventBinder( wxEVT_WIZARD_CANCEL, 1)
 EVT_WIZARD_HELP          = wx.PyEventBinder( wxEVT_WIZARD_HELP, 1)
 EVT_WIZARD_FINISHED      = wx.PyEventBinder( wxEVT_WIZARD_FINISHED, 1)
+EVT_WIZARD_PAGE_SHOWN    = wx.PyEventBinder( wxEVT_WIZARD_PAGE_SHOWN, 1)
+EVT_WIZARD_BEFORE_PAGE_CHANGED    = wx.PyEventBinder( wxEVT_WIZARD_PAGE_SHOWN, 1)
 }
 
 //----------------------------------------------------------------------
@@ -95,20 +107,11 @@ public:
 //     // that no other parameters are needed because the wizard will resize and
 //     // reposition the page anyhow
 //     wxWizardPage(wxWizard *parent,
-//                  const wxBitmap& bitmap = wxNullBitmap,
-//                  const char* resource = NULL);
+//                  const wxBitmap& bitmap = wxNullBitmap);
 //     %RenameCtor(PreWizardPage, wxWizardPage());
 
-    %extend {
-        bool Create(wxWizard *parent,
-                    const wxBitmap& bitmap = wxNullBitmap,
-                    const wxString& resource = wxPyEmptyString) {
-            wxChar* res = NULL;
-            if (resource.length())
-                res = (wxChar*)resource.c_str();
-            return self->Create(parent, bitmap, res);
-        }
-    }
+    bool Create(wxWizard *parent,
+                const wxBitmap& bitmap = wxNullBitmap);
 
 
     // these functions are used by the wizard to show another page when the
@@ -135,9 +138,8 @@ class wxPyWizardPage : public wxWizardPage {
 public:
     wxPyWizardPage() : wxWizardPage() {}
     wxPyWizardPage(wxWizard *parent,
-                   const wxBitmap& bitmap = wxNullBitmap,
-                   const wxChar* resource = NULL)
-        : wxWizardPage(parent, bitmap, resource) {}
+                   const wxBitmap& bitmap = wxNullBitmap)
+        : wxWizardPage(parent, bitmap) {}
 
     DEC_PYCALLBACK_WIZPG__pure(GetPrev);
     DEC_PYCALLBACK_WIZPG__pure(GetNext);
@@ -213,37 +215,21 @@ public:
     %pythonAppend wxPyWizardPage   "self._setOORInfo(self);" setCallbackInfo(PyWizardPage)
     %pythonAppend wxPyWizardPage() ""
     %typemap(out) wxPyWizardPage*;    // turn off this typemap
-    
+
     // ctor accepts an optional bitmap which will be used for this page instead
     // of the default one for this wizard (should be of the same size). Notice
     // that no other parameters are needed because the wizard will resize and
     // reposition the page anyhow
-    %extend {
-        wxPyWizardPage(wxWizard *parent,
-                       const wxBitmap* bitmap = &wxNullBitmap,
-                       const wxString* resource = &wxPyEmptyString) {
-            wxChar* res = NULL;
-            if (resource->length())
-                res = (wxChar*)resource->c_str();
-            return new wxPyWizardPage(parent, *bitmap, res);
-        }
-    }
+    wxPyWizardPage(wxWizard *parent,
+                   const wxBitmap& bitmap = wxNullBitmap);
 
     %RenameCtor(PrePyWizardPage, wxPyWizardPage());
 
     // Turn it back on again
     %typemap(out) wxPyWizardPage* { $result = wxPyMake_wxObject($1, $owner); }
 
-    %extend {
-        bool Create(wxWizard *parent,
-                    const wxBitmap& bitmap = wxNullBitmap,
-                    const wxString& resource = wxPyEmptyString) {
-            wxChar* res = NULL;
-            if (resource.length())
-                res = (wxChar*)resource.c_str();
-            return self->Create(parent, bitmap, res);
-        }
-    }
+    bool Create(wxWizard *parent,
+                const wxBitmap& bitmap = wxNullBitmap);
 
     void _setCallbackInfo(PyObject* self, PyObject* _class);
 
@@ -304,7 +290,7 @@ public:
     %MAKE_BASE_FUNC(PyWizardPage, ShouldInheritColours);
     %MAKE_BASE_FUNC(PyWizardPage, GetDefaultAttributes);
     %MAKE_BASE_FUNC(PyWizardPage, OnInternalIdle);
-    
+
 };
 
 //----------------------------------------------------------------------
@@ -323,20 +309,18 @@ public:
 
     %pythonAppend wxWizardPageSimple   "self._setOORInfo(self)"
     %pythonAppend wxWizardPageSimple() ""
-    
+
     // ctor takes the previous and next pages
     wxWizardPageSimple(wxWizard *parent,
                        wxWizardPage *prev = NULL,
                        wxWizardPage *next = NULL,
-                       const wxBitmap& bitmap = wxNullBitmap,
-                       const wxChar* resource = NULL);
+                       const wxBitmap& bitmap = wxNullBitmap);
     %RenameCtor(PreWizardPageSimple, wxWizardPageSimple());
 
     bool Create(wxWizard *parent = NULL,
                 wxWizardPage *prev = NULL,
                 wxWizardPage *next = NULL,
-                const wxBitmap& bitmap = wxNullBitmap,
-                const wxChar* resource = NULL);
+                const wxBitmap& bitmap = wxNullBitmap);
 
     // the pointers may be also set later - but before starting the wizard
     void SetPrev(wxWizardPage *prev);
@@ -356,7 +340,7 @@ class  wxWizard : public wxDialog
 public:
     %pythonAppend wxWizard   "self._setOORInfo(self)"
     %pythonAppend wxWizard() ""
-    
+
     // ctor
     wxWizard(wxWindow *parent,
              int id = -1,
@@ -407,17 +391,32 @@ public:
     // page to GetPageAreaSizer and 5 if you don't.
     virtual void SetBorder(int border);
 
-    const wxBitmap& GetBitmap() const { return m_bitmap; }
+    const wxBitmap& GetBitmap() const;
+
     void SetBitmap(const wxBitmap& bitmap);
 
     // is the wizard running?
     bool IsRunning() const;
 
+    // Set/get bitmap background colour
+    void SetBitmapBackgroundColour(const wxColour& colour);
+    const wxColour& GetBitmapBackgroundColour() const;
+
+    // Set/get bitmap placement (centred, tiled etc.)
+    void SetBitmapPlacement(int placement);
+    int GetBitmapPlacement() const;
+
+    // Set/get minimum bitmap width
+    void SetMinimumBitmapWidth(int w);
+    int GetMinimumBitmapWidth() const;
+
+    // Tile bitmap
+    static bool TileBitmap(const wxRect& rect, wxDC& dc, const wxBitmap& bitmap);
+
     // show the prev/next page, but call TransferDataFromWindow on the current
     // page first and return False without changing the page if
     // TransferDataFromWindow() returns False - otherwise, returns True
     bool ShowPage(wxWizardPage *page, bool goingForward = true);
-
     bool HasNextPage(wxWizardPage* page);
     bool HasPrevPage(wxWizardPage* page);
 

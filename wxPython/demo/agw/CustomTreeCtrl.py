@@ -1276,6 +1276,8 @@ class CustomTreeCtrl(CT.CustomTreeCtrl):
 
         CT.CustomTreeCtrl.__init__(self, parent, id, pos, size, style, agwStyle)
 
+        self.SetBackgroundColour(wx.WHITE)
+        
         alldata = dir(CT)
 
         treestyles = []
@@ -1337,6 +1339,9 @@ class CustomTreeCtrl(CT.CustomTreeCtrl):
             if random.randint(0, 3) == 0:
                 self.SetItemLeftImage(child, random.randint(0, lenArtIds))
 
+            if random.randint(0, 5) == 0:
+                self.AppendSeparator(self.root)
+
             for y in range(5):
                 if y == 0 and x == 1:
                     last = self.AppendItem(child, "item %d-%s" % (x, chr(ord("a")+y)), ct_type=2, wnd=self.gauge)
@@ -1358,6 +1363,9 @@ class CustomTreeCtrl(CT.CustomTreeCtrl):
 
                 if random.randint(0, 3) == 0:
                     self.SetItemLeftImage(last, random.randint(0, lenArtIds))
+
+                if random.randint(0, 5) == 0:
+                    self.AppendSeparator(child)
                     
                 for z in range(5):
                     if z > 2:
@@ -1375,6 +1383,9 @@ class CustomTreeCtrl(CT.CustomTreeCtrl):
 
                     if random.randint(0, 3) == 0:
                         self.SetItemLeftImage(item, random.randint(0, lenArtIds))
+
+                    if random.randint(0, 5) == 0:
+                        self.AppendSeparator(last)
 
         self.Bind(wx.EVT_LEFT_DCLICK, self.OnLeftDClick)
         self.Bind(wx.EVT_IDLE, self.OnIdle)
@@ -1522,57 +1533,70 @@ class CustomTreeCtrl(CT.CustomTreeCtrl):
         itemtype = self.GetItemType(item)
         text = self.GetItemText(item)
         pydata = self.GetPyData(item)
+        separator = self.IsItemSeparator(item)
         
         self.current = item
         self.itemdict = {"ishtml": ishtml, "back": back, "fore": fore, "isbold": isbold,
                          "font": font, "normal": normal, "selected": selected, "expanded": expanded,
                          "selexp": selexp, "haswin": haswin, "children": children,
-                         "itemtype": itemtype, "text": text, "pydata": pydata, "enabled": enabled}
+                         "itemtype": itemtype, "text": text, "pydata": pydata, "enabled": enabled,
+                         "separator": separator}
         
         menu = wx.Menu()
 
-        item1 = menu.Append(wx.ID_ANY, "Change Item Background Colour")
-        item2 = menu.Append(wx.ID_ANY, "Modify Item Text Colour")
+        item1 = menu.Append(wx.ID_ANY, "Change item background colour")
+        item2 = menu.Append(wx.ID_ANY, "Modify item text colour")
         menu.AppendSeparator()
+
         if isbold:
-            strs = "Make Item Text Not Bold"
+            strs = "Make item text not bold"
         else:
-            strs = "Make Item Text Bold"
+            strs = "Make item text bold"
+
         item3 = menu.Append(wx.ID_ANY, strs)
-        item4 = menu.Append(wx.ID_ANY, "Change Item Font")
+        item4 = menu.Append(wx.ID_ANY, "Change item font")
         menu.AppendSeparator()
+
         if ishtml:
-            strs = "Set Item As Non-Hyperlink"
+            strs = "Set item as non-hyperlink"
         else:
-            strs = "Set Item As Hyperlink"
+            strs = "Set item as hyperlink"
+            
         item5 = menu.Append(wx.ID_ANY, strs)
         menu.AppendSeparator()
+
+        item13 = menu.Append(wx.ID_ANY, "Insert separator")
+        menu.AppendSeparator()
+        
         if haswin:
             enabled = self.GetItemWindowEnabled(item)
             if enabled:
-                strs = "Disable Associated Widget"
+                strs = "Disable associated widget"
             else:
-                strs = "Enable Associated Widget"
+                strs = "Enable associated widget"
         else:
-            strs = "Enable Associated Widget"
+            strs = "Enable associated widget"
+            
         item6 = menu.Append(wx.ID_ANY, strs)
 
         if not haswin:
             item6.Enable(False)
 
-        item7 = menu.Append(wx.ID_ANY, "Disable Item")
+        item7 = menu.Append(wx.ID_ANY, "Disable item")
         
         menu.AppendSeparator()
-        item8 = menu.Append(wx.ID_ANY, "Change Item Icons")
+        item8 = menu.Append(wx.ID_ANY, "Change item icons")
         menu.AppendSeparator()
-        item9 = menu.Append(wx.ID_ANY, "Get Other Information For This Item")
+        item9 = menu.Append(wx.ID_ANY, "Get other information for this item")
         menu.AppendSeparator()
 
-        item10 = menu.Append(wx.ID_ANY, "Delete Item")
+        item10 = menu.Append(wx.ID_ANY, "Delete item")
         if item == self.GetRootItem():
             item10.Enable(False)
-        item11 = menu.Append(wx.ID_ANY, "Prepend An Item")
-        item12 = menu.Append(wx.ID_ANY, "Append An Item")
+            item13.Enable(False)
+            
+        item11 = menu.Append(wx.ID_ANY, "Prepend an item")
+        item12 = menu.Append(wx.ID_ANY, "Append an item")
 
         self.Bind(wx.EVT_MENU, self.OnItemBackground, item1)
         self.Bind(wx.EVT_MENU, self.OnItemForeground, item2)
@@ -1586,6 +1610,7 @@ class CustomTreeCtrl(CT.CustomTreeCtrl):
         self.Bind(wx.EVT_MENU, self.OnItemDelete, item10)
         self.Bind(wx.EVT_MENU, self.OnItemPrepend, item11)
         self.Bind(wx.EVT_MENU, self.OnItemAppend, item12)
+        self.Bind(wx.EVT_MENU, self.OnSeparatorInsert, item13)
         
         self.PopupMenu(menu)
         menu.Destroy()
@@ -1746,6 +1771,12 @@ class CustomTreeCtrl(CT.CustomTreeCtrl):
 
         dlg.Destroy()
         
+
+    def OnSeparatorInsert(self, event):
+
+        newitem = self.InsertSeparator(self.GetItemParent(self.current), self.current)
+        self.EnsureVisible(newitem)
+
 
     def OnBeginEdit(self, event):
         
@@ -2004,4 +2035,3 @@ if __name__ == '__main__':
     import sys,os
     import run
     run.main(['', os.path.basename(sys.argv[0])] + sys.argv[1:])
-

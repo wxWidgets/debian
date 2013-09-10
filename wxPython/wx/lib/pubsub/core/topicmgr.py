@@ -66,18 +66,23 @@ class TopicManager:
     def __init__(self, treeConfig=None):
         '''The optional treeConfig is an instance of TreeConfig. A
         default one is created if not given. '''
-        self._allTopics = None # root of topic tree
+        self.__allTopics = None # root of topic tree
         self._topicsMap = {} # registry of all topics
         self.__treeConfig = treeConfig or TreeConfig()
         self.__defnProvider = MasterTopicDefnProvider(self.__treeConfig)
 
         # define root of all topics
-        assert self._allTopics is None
+        assert self.__allTopics is None
         argsDocs, reqdArgs = getRootTopicSpec()
         desc = 'Root of all topics'
         specGiven = ArgSpecGiven(argsDocs, reqdArgs)
-        self._allTopics = self.__createTopic((ALL_TOPICS,), desc, specGiven=specGiven)
+        self.__allTopics = self.__createTopic((ALL_TOPICS,), desc, specGiven=specGiven)
 
+    def getRootTopic(self):
+        '''Get root topic of topic tree. This is the pub.ALL_TOPICS topic, 
+        it receives messages for all topics.'''
+        return self.__allTopics
+    
     def addDefnProvider(self, provider):
         '''Register provider as topic specification provider. Whenever a 
         topic must be created, the first provider that has a specification
@@ -103,7 +108,7 @@ class TopicManager:
         '''Get the Topic instance that corresponds to the given topic name 
         path. By default, raises an UndefinedTopic or UndefinedSubtopic
         exception if a topic with given name doesn't exist. If
-        raiseOnNone=False, returns None instead of raising an exception.'''
+        okIfNone=True, returns None instead of raising an exception.'''
         topicNameDotted = stringize(name)
         #if not name:
         #    raise TopicNameInvalid(name, 'Empty topic name not allowed')
@@ -120,7 +125,7 @@ class TopicManager:
         assert subtopicNames
         
         subtopicName = subtopicNames[0]
-        if parentObj is self._allTopics:
+        if parentObj is self.__allTopics:
             raise UndefinedTopic(subtopicName)
 
         raise UndefinedSubtopic(parentObj.getName(), subtopicName)
@@ -295,7 +300,7 @@ class TopicManager:
             headTail = parentName.rsplit('.', 1)
             
         subtopicNames.insert( 0, headTail[0] )
-        return self._allTopics, subtopicNames
+        return self.__allTopics, subtopicNames
     
     def __createParentTopics(self, topicName):
         '''This will find which parents need to be created such that
@@ -305,7 +310,7 @@ class TopicManager:
         parentObj, subtopicNames = self.__getClosestParent(stringize(topicName))
         
         # will create subtopics of parentObj one by one from subtopicNames
-        if parentObj is self._allTopics:
+        if parentObj is self.__allTopics:
             nextTopicNameList = []
         else:
             nextTopicNameList = list(parentObj.getNameTuple())
@@ -337,7 +342,7 @@ class TopicManager:
                             argsInfo, parent = parent)
         # sanity checks:
         assert not self._topicsMap.has_key(newTopicObj.getName())
-        if parent is self._allTopics:
+        if parent is self.__allTopics:
             assert len( newTopicObj.getNameTuple() ) == 1
         else:
             assert parent.getNameTuple() == newTopicObj.getNameTuple()[:-1]

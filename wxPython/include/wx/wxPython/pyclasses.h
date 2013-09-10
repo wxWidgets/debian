@@ -7,7 +7,7 @@
 // Author:      Robin Dunn
 //
 // Created:     11-Oct-2003
-// RCS-ID:      $Id: pyclasses.h 57773 2009-01-02 05:25:50Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -154,7 +154,7 @@ public:
     // this function is called when data is dropped at position (x, y) - if it
     // returns True, OnData() will be called immediately afterwards which will
     // allow to retrieve the data dropped.
-    DEC_PYCALLBACK_BOOL_INTINT(OnDrop);
+    DEC_PYCALLBACK_BOOL_2COORD(OnDrop);
 
     PYPRIVATE;
 };
@@ -164,7 +164,9 @@ public:
 
 //---------------------------------------------------------------------------
 
+class wxPyHScrolledWindow;
 class wxPyVScrolledWindow;
+class wxPyHVScrolledWindow;
 class wxPyVListBox;
 class wxPyHtmlListBox;
 class wxPyPanel;

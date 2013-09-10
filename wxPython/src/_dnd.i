@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     31-October-1999
-// RCS-ID:      $Id: _dnd.i 43425 2006-11-14 22:03:54Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -96,7 +96,7 @@ def DROP_ICON(filename):
     """
     Returns either a `wx.Cursor` or `wx.Icon` created from the image file
     ``filename``.  This function is useful with the `wx.DropSource` class
-    which, depending on platform accepts either a icon or a cursor.
+    which, depending on platform accepts either an icon or a cursor.
     """
     img = wx.Image(filename)
     if wx.Platform == '__WXGTK__':
@@ -130,7 +130,7 @@ IMP_PYCALLBACK__(wxPyDropTarget, wxDropTarget, OnLeave);
 IMP_PYCALLBACK_DR_2WXCDR(wxPyDropTarget, wxDropTarget, OnEnter);
 IMP_PYCALLBACK_DR_2WXCDR(wxPyDropTarget, wxDropTarget, OnDragOver);
 IMP_PYCALLBACK_DR_2WXCDR_pure(wxPyDropTarget, wxDropTarget, OnData);
-IMP_PYCALLBACK_BOOL_INTINT(wxPyDropTarget, wxDropTarget, OnDrop);
+IMP_PYCALLBACK_BOOL_2COORD(wxPyDropTarget, wxDropTarget, OnDrop);
 %}
 
 
@@ -196,23 +196,23 @@ class wxPyTextDropTarget : public wxTextDropTarget {
 public:
     wxPyTextDropTarget() {}
 
-    DEC_PYCALLBACK_BOOL_INTINTSTR_pure(OnDropText);
+    DEC_PYCALLBACK_BOOL_2COORDSTR_pure(OnDropText);
 
     DEC_PYCALLBACK__(OnLeave);
     DEC_PYCALLBACK_DR_2WXCDR(OnEnter);
     DEC_PYCALLBACK_DR_2WXCDR(OnDragOver);
     DEC_PYCALLBACK_DR_2WXCDR(OnData);
-    DEC_PYCALLBACK_BOOL_INTINT(OnDrop);
+    DEC_PYCALLBACK_BOOL_2COORD(OnDrop);
 
     PYPRIVATE;
 };
 
-IMP_PYCALLBACK_BOOL_INTINTSTR_pure(wxPyTextDropTarget, wxTextDropTarget, OnDropText);
+IMP_PYCALLBACK_BOOL_2COORDSTR_pure(wxPyTextDropTarget, wxTextDropTarget, OnDropText);
 IMP_PYCALLBACK__(wxPyTextDropTarget, wxTextDropTarget, OnLeave);
 IMP_PYCALLBACK_DR_2WXCDR(wxPyTextDropTarget, wxTextDropTarget, OnEnter);
 IMP_PYCALLBACK_DR_2WXCDR(wxPyTextDropTarget, wxTextDropTarget, OnDragOver);
 IMP_PYCALLBACK_DR_2WXCDR(wxPyTextDropTarget, wxTextDropTarget, OnData);
-IMP_PYCALLBACK_BOOL_INTINT(wxPyTextDropTarget, wxTextDropTarget, OnDrop);
+IMP_PYCALLBACK_BOOL_2COORD(wxPyTextDropTarget, wxTextDropTarget, OnDrop);
 
 %}
 
@@ -255,7 +255,7 @@ public:
     DEC_PYCALLBACK_DR_2WXCDR(OnEnter);
     DEC_PYCALLBACK_DR_2WXCDR(OnDragOver);
     DEC_PYCALLBACK_DR_2WXCDR(OnData);
-    DEC_PYCALLBACK_BOOL_INTINT(OnDrop);
+    DEC_PYCALLBACK_BOOL_2COORD(OnDrop);
 
     PYPRIVATE;
 };

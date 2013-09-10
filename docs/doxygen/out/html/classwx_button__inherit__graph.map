@@ -1,0 +1,11 @@
+<map id="wxButton" name="wxButton">
+<area shape="rect" id="node15" href="$classwx_bitmap_button.html" title="A bitmap button is a control that contains a bitmap." alt="" coords="20,470,135,498"/>
+<area shape="rect" id="node19" href="$classwx_command_link_button.html" title="Objects of this class are similar in appearance to the normal wxButtons but are similar to the links ..." alt="" coords="159,470,316,498"/>
+<area shape="rect" id="node2" href="$classwx_any_button.html" title="A class for common button functionality used as the base for the various button classes." alt="" coords="109,315,205,343"/>
+<area shape="rect" id="node4" href="$classwx_control.html" title="This is the base class for a control or &quot;widget&quot;." alt="" coords="119,238,196,266"/>
+<area shape="rect" id="node6" href="$classwx_window.html" title="wxWindow is the base class for all windows and represents any visible object on screen." alt="" coords="116,161,199,189"/>
+<area shape="rect" id="node8" href="$classwx_evt_handler.html" title="A class that can handle events from the windowing system." alt="" coords="108,83,207,111"/>
+<area shape="rect" id="node10" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="67,6,141,34"/>
+<area shape="rect" id="node12" href="$classwx_trackable.html" title="Add&#45;on base class for a trackable object." alt="" coords="165,6,259,34"/>
+<area shape="rect" id="node17" href="$classwx_context_help_button.html" title="Instances of this class may be used to add a question mark button that when pressed, puts the application into context&#45;help mode." alt="" coords="5,547,149,575"/>
+</map>

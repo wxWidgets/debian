@@ -5,7 +5,7 @@
 # Author:       Peter Yared, Morgan Hua
 #
 # Created:      7/28/04
-# CVS-ID:       $Id: AbstractEditor.py 38852 2006-04-20 06:26:03Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2004-2005 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------
@@ -208,7 +208,7 @@ class CanvasView(wx.lib.docview.View):
         
 
     def OnKeyPressed(self, event):
-        key = event.KeyCode()
+        key = event.GetKeyCode()
         if key == wx.WXK_DELETE:
             self.OnClear(event)
         else:

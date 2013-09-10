@@ -6,7 +6,7 @@
 #
 # Created:      3/22/05
 # Copyright:    (c) 2005-2006 ActiveGrid, Inc.
-# CVS-ID:       $Id: AboutDialog.py 38852 2006-04-20 06:26:03Z RD $
+# CVS-ID:       $Id$
 # License:      wxWindows License
 #----------------------------------------------------------------------------
 

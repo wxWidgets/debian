@@ -1,0 +1,41 @@
+<map id="wxNonOwnedWindow" name="wxNonOwnedWindow">
+<area shape="rect" id="node11" href="$classwx_popup_window.html" title="A special kind of top level window used for popup menus, combobox popups and such." alt="" coords="631,385,748,413"/>
+<area shape="rect" id="node15" href="$classwx_top_level_window.html" title="wxTopLevelWindow is a common base class for wxDialog and wxFrame." alt="" coords="623,435,756,463"/>
+<area shape="rect" id="node2" href="$classwx_window.html" title="wxWindow is the base class for all windows and represents any visible object on screen." alt="" coords="296,410,379,438"/>
+<area shape="rect" id="node4" href="$classwx_evt_handler.html" title="A class that can handle events from the windowing system." alt="" coords="149,410,248,438"/>
+<area shape="rect" id="node6" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="16,385,91,413"/>
+<area shape="rect" id="node8" href="$classwx_trackable.html" title="Add&#45;on base class for a trackable object." alt="" coords="7,435,100,463"/>
+<area shape="rect" id="node13" href="$classwx_popup_transient_window.html" title="A wxPopupWindow which disappears automatically when the user clicks mouse outside it or if it loses f..." alt="" coords="807,385,977,413"/>
+<area shape="rect" id="node17" href="$classwx_dialog.html" title="A dialog box is a window with a title bar and sometimes a system menu, which can be moved around the ..." alt="" coords="856,435,928,463"/>
+<area shape="rect" id="node59" href="$classwx_frame.html" title="A frame is a window whose size and position can (usually) be changed by the user." alt="" coords="855,1034,929,1062"/>
+<area shape="rect" id="node19" href="$classwx_colour_dialog.html" title="This class represents the colour chooser dialog." alt="" coords="1059,5,1168,33"/>
+<area shape="rect" id="node21" href="$classwx_dir_dialog.html" title="This class represents the directory chooser dialog." alt="" coords="1069,55,1157,83"/>
+<area shape="rect" id="node23" href="$classwx_file_dialog.html" title="This class represents the file chooser dialog." alt="" coords="1067,106,1160,134"/>
+<area shape="rect" id="node25" href="$classwx_find_replace_dialog.html" title="wxFindReplaceDialog is a standard modeless dialog which is used to allow the user to search for some ..." alt="" coords="1041,157,1185,185"/>
+<area shape="rect" id="node27" href="$classwx_font_dialog.html" title="This class represents the font chooser dialog." alt="" coords="1064,207,1163,235"/>
+<area shape="rect" id="node29" href="$classwx_generic_progress_dialog.html" title="This class represents a dialog that shows a short message and a progress bar." alt="" coords="1029,258,1197,286"/>
+<area shape="rect" id="node33" href="$classwx_html_help_dialog.html" title="This class is used by wxHtmlHelpController to display help." alt="" coords="1051,309,1176,337"/>
+<area shape="rect" id="node35" href="$classwx_message_dialog.html" title="This class represents a dialog that shows a single or multi&#45;line message, with a choice of OK..." alt="" coords="1052,359,1175,387"/>
+<area shape="rect" id="node37" href="$classwx_multi_choice_dialog.html" title="This class represents a dialog that shows a list of strings, and allows the user to select one or mor..." alt="" coords="1043,410,1184,438"/>
+<area shape="rect" id="node39" href="$classwx_print_abort_dialog.html" title="The dialog created by default by the print framework that enables aborting the printing process..." alt="" coords="1048,461,1179,489"/>
+<area shape="rect" id="node41" href="$classwx_property_sheet_dialog.html" title="This class represents a property sheet dialog: a tabbed dialog for showing settings." alt="" coords="1036,511,1191,539"/>
+<area shape="rect" id="node45" href="$classwx_rearrange_dialog.html" title="A dialog allowing the user to rearrange the specified items." alt="" coords="1048,562,1179,590"/>
+<area shape="rect" id="node47" href="$classwx_rich_text_style_organiser_dialog.html" title="This class shows a style sheet and allows the user to edit, add and remove styles." alt="" coords="1028,613,1199,657"/>
+<area shape="rect" id="node49" href="$classwx_single_choice_dialog.html" title="This class represents a dialog that shows a list of strings, and allows the user to select one..." alt="" coords="1039,679,1188,707"/>
+<area shape="rect" id="node51" href="$classwx_symbol_picker_dialog.html" title="wxSymbolPickerDialog presents the user with a choice of fonts and a grid of available characters..." alt="" coords="1037,730,1189,758"/>
+<area shape="rect" id="node53" href="$classwx_text_entry_dialog.html" title="This class represents a dialog that requests a one&#45;line text string from the user." alt="" coords="1051,781,1176,809"/>
+<area shape="rect" id="node57" href="$classwx_wizard.html" title="wxWizard is the central class for implementing &#39;wizard&#45;like&#39; dialogs." alt="" coords="1076,831,1151,859"/>
+<area shape="rect" id="node31" href="$classwx_progress_dialog.html" title="If supported by the platform this class will provide the platform&#39;s native progress dialog..." alt="" coords="1280,258,1403,286"/>
+<area shape="rect" id="node43" href="$classwx_rich_text_formatting_dialog.html" title="This dialog allows the user to edit a character and/or paragraph style." alt="" coords="1248,511,1435,539"/>
+<area shape="rect" id="node55" href="$classwx_password_entry_dialog.html" title="This class represents a dialog that requests a one&#45;line password string from the user." alt="" coords="1263,781,1420,809"/>
+<area shape="rect" id="node61" href="$classwx_doc_child_frame.html" title="The wxDocChildFrame class provides a default frame for displaying documents on separate windows..." alt="" coords="1051,882,1176,910"/>
+<area shape="rect" id="node63" href="$classwx_doc_parent_frame.html" title="The wxDocParentFrame class provides a default top&#45;level frame for applications using the document/vie..." alt="" coords="1047,933,1180,961"/>
+<area shape="rect" id="node65" href="$classwx_html_help_frame.html" title="This class is used by wxHtmlHelpController to display help." alt="" coords="1051,983,1176,1011"/>
+<area shape="rect" id="node67" href="$classwx_m_d_i_child_frame.html" title="An MDI child frame is a frame that can only exist inside a wxMDIClientWindow, which is itself a child..." alt="" coords="1051,1034,1176,1062"/>
+<area shape="rect" id="node71" href="$classwx_m_d_i_parent_frame.html" title="An MDI (Multiple Document Interface) parent frame is a window which can contain MDI child frames in i..." alt="" coords="1045,1085,1181,1113"/>
+<area shape="rect" id="node75" href="$classwx_mini_frame.html" title="A miniframe is a frame with a small title bar." alt="" coords="1064,1135,1163,1163"/>
+<area shape="rect" id="node77" href="$classwx_preview_frame.html" title="This class provides the default method of managing the print preview interface." alt="" coords="1055,1186,1172,1214"/>
+<area shape="rect" id="node79" href="$classwx_splash_screen.html" title="wxSplashScreen shows a window with a thin border, displaying a bitmap describing your application..." alt="" coords="1055,1237,1172,1265"/>
+<area shape="rect" id="node69" href="$classwx_doc_m_d_i_child_frame.html" title="The wxDocMDIChildFrame class provides a default frame for displaying documents on separate windows..." alt="" coords="1267,1034,1416,1062"/>
+<area shape="rect" id="node73" href="$classwx_doc_m_d_i_parent_frame.html" title="The wxDocMDIParentFrame class provides a default top&#45;level frame for applications using the document/..." alt="" coords="1263,1085,1420,1113"/>
+</map>

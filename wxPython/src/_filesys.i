@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: _filesys.i 60428 2009-04-28 19:28:04Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -67,23 +67,23 @@ public:
     DEC_PYCALLBACK_STRING_STRINGINT_pure(FindFirst);
     DEC_PYCALLBACK_STRING__pure(FindNext);
 
-    wxString GetProtocol(const wxString& location) {
+    static wxString GetProtocol(const wxString& location) {
         return wxFileSystemHandler::GetProtocol(location);
     }
 
-    wxString GetLeftLocation(const wxString& location) {
+    static wxString GetLeftLocation(const wxString& location) {
         return wxFileSystemHandler::GetLeftLocation(location);
     }
 
-    wxString GetAnchor(const wxString& location) {
+    static wxString GetAnchor(const wxString& location) {
         return wxFileSystemHandler::GetAnchor(location);
     }
 
-    wxString GetRightLocation(const wxString& location) {
+    static wxString GetRightLocation(const wxString& location) {
         return wxFileSystemHandler::GetRightLocation(location);
     }
 
-    wxString GetMimeTypeFromExt(const wxString& location) {
+    static wxString GetMimeTypeFromExt(const wxString& location) {
         return wxFileSystemHandler::GetMimeTypeFromExt(location);
     }
 
@@ -125,17 +125,11 @@ public:
     wxString FindFirst(const wxString& spec, int flags = 0);
     wxString FindNext();
 
-    wxString GetProtocol(const wxString& location);
-    wxString GetLeftLocation(const wxString& location);
-    wxString GetAnchor(const wxString& location);
-    wxString GetRightLocation(const wxString& location);
-    wxString GetMimeTypeFromExt(const wxString& location);
-    
-    %property(Anchor, GetAnchor, doc="See `GetAnchor`");
-    %property(LeftLocation, GetLeftLocation, doc="See `GetLeftLocation`");
-    %property(MimeTypeFromExt, GetMimeTypeFromExt, doc="See `GetMimeTypeFromExt`");
-    %property(Protocol, GetProtocol, doc="See `GetProtocol`");
-    %property(RightLocation, GetRightLocation, doc="See `GetRightLocation`");
+    static wxString GetProtocol(const wxString& location);
+    static wxString GetLeftLocation(const wxString& location);
+    static wxString GetAnchor(const wxString& location);
+    static wxString GetRightLocation(const wxString& location);
+    static wxString GetMimeTypeFromExt(const wxString& location);
 };
 
 
@@ -221,13 +215,13 @@ public:
 %inline %{
     void __wxMemoryFSHandler_AddFile_wxImage(const wxString& filename,
                                              wxImage& image,
-                                             long type) {
+                                             wxBitmapType type) {
         wxMemoryFSHandler::AddFile(filename, image, type);
     }
 
     void __wxMemoryFSHandler_AddFile_wxBitmap(const wxString& filename,
                                               const wxBitmap& bitmap,
-                                              long type) {
+                                              wxBitmapType type) {
         wxMemoryFSHandler::AddFile(filename, bitmap, type);
     }
 

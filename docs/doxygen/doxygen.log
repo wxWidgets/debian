@@ -1,0 +1,151 @@
+/home/robind/projects/wx/2.9/wx/interface/wx/utils.h:602: warning: end of comment block while expecting command </code>
+/home/robind/projects/wx/2.9/wx/interface/wx/utils.h:602: warning: end of comment block while expecting command </code>
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2d.h:95: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2d.h:85: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2d.h:85: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:128: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:118: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:118: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2d.h:85: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2d.h:95: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2d.h:85: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:128: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:118: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:118: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:118: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:128: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:118: warning: Found unknown command `\t'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:189: warning: argument 'p' of command @param is not found in the argument list of wxAffineMatrix2DBase::TransformDistance(const wxPoint2DDouble &src) const
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:189: warning: The following parameters of wxAffineMatrix2DBase::TransformDistance(const wxPoint2DDouble &src) const are not documented:
+  parameter 'src'
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:178: warning: argument 'p' of command @param is not found in the argument list of wxAffineMatrix2DBase::TransformPoint(const wxPoint2DDouble &src) const
+/home/robind/projects/wx/2.9/wx/interface/wx/affinematrix2dbase.h:178: warning: The following parameters of wxAffineMatrix2DBase::TransformPoint(const wxPoint2DDouble &src) const are not documented:
+  parameter 'src'
+/home/robind/projects/wx/2.9/wx/interface/wx/commandlinkbutton.h:153: warning: image file appear-commandlinkbutton-mac.png is not found in IMAGE_PATH: assuming external image.
+/home/robind/projects/wx/2.9/wx/interface/wx/control.h:92: warning: The following parameters of wxControl::wxControl(wxWindow *parent, wxWindowID id, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, long style=0, const wxValidator &validator=wxDefaultValidator, const wxString &name=wxControlNameStr) are not documented:
+  parameter 'validator'
+/home/robind/projects/wx/2.9/wx/interface/wx/dir.h:259: warning: explicit link request to 'wxFILE_SEP_PATH' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/dir.h:268: warning: explicit link request to 'wxFILE_SEP_PATH' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/event.h:490: warning: argument 'x2' of command @param is not found in the argument list of wxEvtHandler::CallAfter(void(T::*method)(T1,...), T1 x1,...)
+/home/robind/projects/wx/2.9/wx/interface/wx/filectrl.h:59: warning: image file appear-filectrl-msw.png is not found in IMAGE_PATH: assuming external image.
+/home/robind/projects/wx/2.9/wx/interface/wx/filectrl.h:63: warning: image file appear-filectrl-mac.png is not found in IMAGE_PATH: assuming external image.
+/home/robind/projects/wx/2.9/wx/interface/wx/valnum.h:309: warning: argument 'precision' of command @param is not found in the argument list of wxFloatingPointValidator< T >::wxFloatingPointValidator(ValueType *value=NULL, int style=wxNUM_VAL_DEFAULT)
+/home/robind/projects/wx/2.9/wx/interface/wx/dirctrl.h:57: warning: found </div> tag without matching <div>
+/home/robind/projects/wx/2.9/wx/interface/wx/dirctrl.h:63: warning: found </div> at different nesting level (7) than expected (5)
+/home/robind/projects/wx/2.9/wx/interface/wx/dirctrl.h:66: warning: end of comment block while expecting command </div>
+/home/robind/projects/wx/2.9/wx/interface/wx/dirctrl.h:66: warning: end of comment block while expecting command </div>
+/home/robind/projects/wx/2.9/wx/interface/wx/graphics.h:1346: warning: argument 'radians' of command @param is not found in the argument list of wxGraphicsMatrix::Rotate(wxDouble angle)
+/home/robind/projects/wx/2.9/wx/interface/wx/graphics.h:1346: warning: The following parameters of wxGraphicsMatrix::Rotate(wxDouble angle) are not documented:
+  parameter 'angle'
+/home/robind/projects/wx/2.9/wx/interface/wx/event.h:3438: warning: explicit link request to 'wxHelpEventOrigin' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/event.h:3438: warning: explicit link request to 'wxHelpEventOrigin' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/event.h:3438: warning: explicit link request to 'wxHelpEventOrigin' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/html/helpctrl.h:196: warning: Found unknown command `\enable'
+/home/robind/projects/wx/2.9/wx/interface/wx/iconbndl.h:117: warning: explicit link request to 'FALLBACK_NONE' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/iconbndl.h:118: warning: explicit link request to 'FALLBACK_SYSTEM' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/iconbndl.h:121: warning: explicit link request to 'FALLBACK_NEAREST_LARGER' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/listctrl.h:1538: warning: image file appear-listview-msw.png is not found in IMAGE_PATH: assuming external image.
+/home/robind/projects/wx/2.9/wx/interface/wx/listctrl.h:1542: warning: image file appear-listview-mac.png is not found in IMAGE_PATH: assuming external image.
+/home/robind/projects/wx/2.9/wx/interface/wx/intl.h:452: warning: argument 'short' of command @param is not found in the argument list of wxLocale::Init(const wxString &name, const wxString &shortName=wxEmptyString, const wxString &locale=wxEmptyString, bool bLoadDefault=true)
+/home/robind/projects/wx/2.9/wx/interface/wx/intl.h:452: warning: The following parameters of wxLocale::Init(const wxString &name, const wxString &shortName=wxEmptyString, const wxString &locale=wxEmptyString, bool bLoadDefault=true) are not documented:
+  parameter 'shortName'
+/home/robind/projects/wx/2.9/wx/interface/wx/msgdlg.h:33: warning: found </div> at different nesting level (7) than expected (5)
+/home/robind/projects/wx/2.9/wx/interface/wx/msgdlg.h:76: warning: found </div> at different nesting level (7) than expected (5)
+/home/robind/projects/wx/2.9/wx/interface/wx/msgdlg.h:92: warning: end of comment block while expecting command </div>
+/home/robind/projects/wx/2.9/wx/interface/wx/msgdlg.h:92: warning: end of comment block while expecting command </div>
+/home/robind/projects/wx/2.9/wx/interface/wx/event.h:3854: warning: explicit link request to 'wxNavigationKeyEventFlags' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:328: warning: argument 'toolId' of command @param is not found in the argument list of wxRibbonToolBar::GetToolClientData(int tool_id) const
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:328: warning: The following parameters of wxRibbonToolBar::GetToolClientData(int tool_id) const are not documented:
+  parameter 'tool_id'
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:340: warning: argument 'toolId' of command @param is not found in the argument list of wxRibbonToolBar::GetToolEnabled(int tool_id) const
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:340: warning: The following parameters of wxRibbonToolBar::GetToolEnabled(int tool_id) const are not documented:
+  parameter 'tool_id'
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:354: warning: argument 'toolId' of command @param is not found in the argument list of wxRibbonToolBar::GetToolHelpString(int tool_id) const
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:354: warning: The following parameters of wxRibbonToolBar::GetToolHelpString(int tool_id) const are not documented:
+  parameter 'tool_id'
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:364: warning: argument 'toolId' of command @param is not found in the argument list of wxRibbonToolBar::GetToolKind(int tool_id) const
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:364: warning: The following parameters of wxRibbonToolBar::GetToolKind(int tool_id) const are not documented:
+  parameter 'tool_id'
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:374: warning: argument 'toolId' of command @param is not found in the argument list of wxRibbonToolBar::GetToolPos(int tool_id) const
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:374: warning: The following parameters of wxRibbonToolBar::GetToolPos(int tool_id) const are not documented:
+  parameter 'tool_id'
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:385: warning: argument 'toolId' of command @param is not found in the argument list of wxRibbonToolBar::GetToolState(int tool_id) const
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:385: warning: The following parameters of wxRibbonToolBar::GetToolState(int tool_id) const are not documented:
+  parameter 'tool_id'
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:422: warning: argument 'id' of command @param is not found in the argument list of wxRibbonToolBar::SetToolClientData(int tool_id, wxObject *clientData)
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:422: warning: The following parameters of wxRibbonToolBar::SetToolClientData(int tool_id, wxObject *clientData) are not documented:
+  parameter 'tool_id'
+  parameter 'clientData'
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:432: warning: The following parameters of wxRibbonToolBar::SetToolDisabledBitmap(int tool_id, const wxBitmap &bitmap) are not documented:
+  parameter 'bitmap'
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:443: warning: argument 'tool_Id' of command @param is not found in the argument list of wxRibbonToolBar::SetToolHelpString(int tool_id, const wxString &helpString)
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:443: warning: The following parameters of wxRibbonToolBar::SetToolHelpString(int tool_id, const wxString &helpString) are not documented:
+  parameter 'tool_id'
+/home/robind/projects/wx/2.9/wx/interface/wx/ribbon/toolbar.h:457: warning: The following parameters of wxRibbonToolBar::SetToolNormalBitmap(int tool_id, const wxBitmap &bitmap) are not documented:
+  parameter 'bitmap'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextctrl.h:497: warning: The following parameters of wxRichTextCtrl::SetFocusObject(wxRichTextParagraphLayoutBox *obj, bool setCaretPosition=true) are not documented:
+  parameter 'obj'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextctrl.h:2291: warning: argument 'id' of command @param is not found in the argument list of wxRichTextEvent::wxRichTextEvent(wxEventType commandType=wxEVT_NULL, int winid=0)
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextctrl.h:2291: warning: The following parameters of wxRichTextEvent::wxRichTextEvent(wxEventType commandType=wxEVT_NULL, int winid=0) are not documented:
+  parameter 'winid'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:2087: warning: Found unknown command `\rect'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:3566: warning: Found unknown command `\rect'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:3667: warning: argument 'parent' of command @param is not found in the argument list of wxRichTextFieldTypeStandard::wxRichTextFieldTypeStandard(const wxString &name, const wxString &label, int displayStyle=wxRICHTEXT_FIELD_STYLE_RECTANGLE)
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:3667: warning: The following parameters of wxRichTextFieldTypeStandard::wxRichTextFieldTypeStandard(const wxString &name, const wxString &label, int displayStyle=wxRICHTEXT_FIELD_STYLE_RECTANGLE) are not documented:
+  parameter 'name'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:3683: warning: argument 'parent' of command @param is not found in the argument list of wxRichTextFieldTypeStandard::wxRichTextFieldTypeStandard(const wxString &name, const wxBitmap &bitmap, int displayStyle=wxRICHTEXT_FIELD_STYLE_NO_BORDER)
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:3683: warning: argument 'label' of command @param is not found in the argument list of wxRichTextFieldTypeStandard::wxRichTextFieldTypeStandard(const wxString &name, const wxBitmap &bitmap, int displayStyle=wxRICHTEXT_FIELD_STYLE_NO_BORDER)
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:3683: warning: The following parameters of wxRichTextFieldTypeStandard::wxRichTextFieldTypeStandard(const wxString &name, const wxBitmap &bitmap, int displayStyle=wxRICHTEXT_FIELD_STYLE_NO_BORDER) are not documented:
+  parameter 'name'
+  parameter 'bitmap'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:3731: warning: Found unknown command `\rect'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:2087: warning: Found unknown command `\rect'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:2087: warning: Found unknown command `\rect'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:2087: warning: Found unknown command `\rect'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:2087: warning: Found unknown command `\rect'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:2087: warning: Found unknown command `\rect'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextprint.h:343: warning: Found unknown command `\showPrintDialog'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextprint.h:349: warning: Found unknown command `\showPrintDialog'
+/home/robind/projects/wx/2.9/wx/interface/wx/richtext/richtextbuffer.h:2087: warning: Found unknown command `\rect'
+/home/robind/projects/wx/2.9/wx/interface/wx/simplebook.h:132: warning: unable to resolve reference to `page_libs_none' for \ref command
+/home/robind/projects/wx/2.9/wx/interface/wx/htmllbox.h:197: warning: image file appear-simplehtmllistbox-msw.png is not found in IMAGE_PATH: assuming external image.
+/home/robind/projects/wx/2.9/wx/interface/wx/htmllbox.h:201: warning: image file appear-simplehtmllistbox-mac.png is not found in IMAGE_PATH: assuming external image.
+/home/robind/projects/wx/2.9/wx/interface/wx/stopwatch.h:25: warning: explicit link request to 'QueryPerformanceCounter()' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/stc/stc.h:3736: warning: Found unknown command `\d'
+/home/robind/projects/wx/2.9/wx/interface/wx/stc/stc.h:4083: warning: End of list marker found without any preceding list items
+/home/robind/projects/wx/2.9/wx/interface/wx/stc/stc.h:3736: warning: Found unknown command `\d'
+/home/robind/projects/wx/2.9/wx/interface/wx/stc/stc.h:3738: warning: Found unknown command `\d'
+/home/robind/projects/wx/2.9/wx/interface/wx/stc/stc.h:3741: warning: Found unknown command `\d'
+/home/robind/projects/wx/2.9/wx/interface/wx/stc/stc.h:5566: warning: explicit link request to 'RRGGBB' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/stc/stc.h:5567: warning: explicit link request to 'RRGGBB' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/stc/stc.h:5796: warning: unable to resolve reference to `page_libs_stc' for \ref command
+/home/robind/projects/wx/2.9/wx/interface/wx/dcsvg.h:101: warning: Unsupported xml/html tag <g> found
+/home/robind/projects/wx/2.9/wx/interface/wx/dcsvg.h:71: warning: Unsupported xml/html tag <g> found
+/home/robind/projects/wx/2.9/wx/interface/wx/textctrl.h:1307: warning: argument 'col' of command @param is not found in the argument list of wxTextCtrl::HitTest(const wxPoint &pt, long *pos) const
+/home/robind/projects/wx/2.9/wx/interface/wx/textctrl.h:1307: warning: argument 'row' of command @param is not found in the argument list of wxTextCtrl::HitTest(const wxPoint &pt, long *pos) const
+/home/robind/projects/wx/2.9/wx/interface/wx/textctrl.h:1307: warning: argument 'pos' of command @param is not found in the argument list of wxTextCtrl::HitTest(const wxPoint &pt, wxTextCoord *col, wxTextCoord *row) const
+/home/robind/projects/wx/2.9/wx/interface/wx/thread.h:1220: warning: explicit link request to 'wxPRIORITY_MIN' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/thread.h:1221: warning: explicit link request to 'wxPRIORITY_DEFAULT' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/thread.h:1222: warning: explicit link request to 'wxPRIORITY_MAX' could not be resolved
+/home/robind/projects/wx/2.9/wx/interface/wx/thread.h:1255: warning: argument 'waitMode' of command @param is not found in the argument list of wxThread::Wait(wxThreadWait flags=wxTHREAD_WAIT_BLOCK)
+/home/robind/projects/wx/2.9/wx/interface/wx/thread.h:1255: warning: The following parameters of wxThread::Wait(wxThreadWait flags=wxTHREAD_WAIT_BLOCK) are not documented:
+  parameter 'flags'
+/home/robind/projects/wx/2.9/wx/interface/wx/toolbar.h:884: warning: The following parameters of wxToolBar::SetToolClientData(int id, wxObject *clientData) are not documented:
+  parameter 'clientData'
+/home/robind/projects/wx/2.9/wx/interface/wx/toolbar.h:890: warning: The following parameters of wxToolBar::SetToolDisabledBitmap(int id, const wxBitmap &bitmap) are not documented:
+  parameter 'bitmap'
+/home/robind/projects/wx/2.9/wx/interface/wx/toolbar.h:920: warning: The following parameters of wxToolBar::SetToolNormalBitmap(int id, const wxBitmap &bitmap) are not documented:
+  parameter 'bitmap'
+/home/robind/projects/wx/2.9/wx/interface/wx/treelist.h:454: warning: The following parameters of wxTreeListCtrl::InsertItem(wxTreeListItem parent, wxTreeListItem previous, const wxString &text, int imageClosed=NO_IMAGE, int imageOpened=NO_IMAGE, wxClientData *data=NULL) are not documented:
+  parameter 'text'
+/home/robind/projects/wx/2.9/wx/interface/wx/webview.h:329: warning: The following parameters of wxWebView::New(wxWindow *parent, wxWindowID id, const wxString &url=wxWebViewDefaultURLStr, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, const wxString &backend=wxWebViewBackendDefault, long style=0, const wxString &name=wxWebViewNameStr) are not documented:
+  parameter 'style'
+  parameter 'name'
+/home/robind/projects/wx/2.9/wx/interface/wx/webview.h:151: warning: The following parameters of wxWebViewFactory::Create(wxWindow *parent, wxWindowID id, const wxString &url=wxWebViewDefaultURLStr, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, long style=0, const wxString &name=wxWebViewNameStr)=0 are not documented:
+  parameter 'style'
+  parameter 'name'
+/home/robind/projects/wx/2.9/wx/interface/wx/wizard.h:251: warning: argument 'next' of command @param is not found in the argument list of wxWizardPageSimple::Chain(wxWizardPageSimple *first, wxWizardPageSimple *second)
+/home/robind/projects/wx/2.9/wx/interface/wx/wizard.h:251: warning: The following parameters of wxWizardPageSimple::Chain(wxWizardPageSimple *first, wxWizardPageSimple *second) are not documented:
+  parameter 'first'
+  parameter 'second'
+error: failed to run html help compiler on index.hhp

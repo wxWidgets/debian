@@ -111,9 +111,6 @@ class BundleBuilder(Defaults):
     # Verbosity level.
     verbosity = 1
 
-    # Destination root directory
-    destroot = ""
-
     def setup(self):
         # XXX rethink self.name munging, this is brittle.
         self.name, ext = os.path.splitext(self.name)
@@ -145,24 +142,11 @@ class BundleBuilder(Defaults):
         self.message("Building %s" % repr(self.bundlepath), 1)
         if os.path.exists(self.bundlepath):
             shutil.rmtree(self.bundlepath)
-        if os.path.exists(self.bundlepath + '~'):
-            shutil.rmtree(self.bundlepath + '~')
-        bp = self.bundlepath
-
-        # Create the app bundle in a temporary location and then
-        # rename the completed bundle. This way the Finder will
-        # never see an incomplete bundle (where it might pick up
-        # and cache the wrong meta data)
-        self.bundlepath = bp + '~'
-        try:
-            os.mkdir(self.bundlepath)
-            self.preProcess()
-            self._copyFiles()
-            self._addMetaFiles()
-            self.postProcess()
-            os.rename(self.bundlepath, bp)
-        finally:
-            self.bundlepath = bp
+        os.mkdir(self.bundlepath)
+        self.preProcess()
+        self._copyFiles()
+        self._addMetaFiles()
+        self.postProcess()
         self.message("Done.", 1)
 
     def preProcess(self):
@@ -461,7 +445,7 @@ class AppBuilder(BundleBuilder):
                 execname = os.path.basename(self.executable)
             execpath = pathjoin(self.execdir, execname)
             if not self.symlink_exec:
-                self.files.append((self.destroot + self.executable, execpath))
+                self.files.append((self.executable, execpath))
             self.execpath = execpath
 
         if self.mainprogram is not None:
@@ -844,7 +828,7 @@ def main(builder=None):
         "mainprogram=", "creator=", "nib=", "plist=", "link",
         "link-exec", "help", "verbose", "quiet", "argv", "standalone",
         "exclude=", "include=", "package=", "strip", "iconfile=",
-        "lib=", "python=", "semi-standalone", "bundle-id=", "destroot=")
+        "lib=", "python=", "semi-standalone", "bundle-id=")
 
     try:
         options, args = getopt.getopt(sys.argv[1:], shortopts, longopts)
@@ -906,8 +890,6 @@ def main(builder=None):
             builder.includePackages.append(arg)
         elif opt == '--strip':
             builder.strip = 1
-        elif opt == '--destroot':
-            builder.destroot = arg
 
     if len(args) != 1:
         usage("Must specify one command ('build', 'report' or 'help')")

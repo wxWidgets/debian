@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _pycontrol.i 63667 2010-03-12 23:49:02Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -13,12 +13,16 @@
 // Not a %module
 
 
+%{
+#ifdef __WXMSW__
+#include <wx/msw/dc.h>
+#endif
+%}
+
 //---------------------------------------------------------------------------
 %newgroup
 
 
-
-//---------------------------------------------------------------------------
 
 %{ // C++ version of Python aware wxControl
 class wxPyControl : public wxControl
@@ -37,7 +41,7 @@ public:
 
     bool DoEraseBackground(wxDC* dc) {
 #ifdef __WXMSW__
-        return wxWindow::DoEraseBackground(dc->GetHDC());
+        return wxWindow::DoEraseBackground(((wxMSWDCImpl*)dc->GetImpl())->GetHDC());
 #else
         dc->SetBackground(wxBrush(GetBackgroundColour()));
         dc->Clear();

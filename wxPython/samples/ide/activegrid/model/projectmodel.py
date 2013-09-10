@@ -5,7 +5,7 @@
 # Author:       Morgan Hua
 #
 # Created:      4/18/06
-# CVS-ID:       $Id: projectmodel.py 38852 2006-04-20 06:26:03Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2006 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 # Author:       Jeff Norton
 #
 # Created:      6/2/05
-# CVS-ID:       $Id: xmlutils.py 38852 2006-04-20 06:26:03Z RD $
+# CVS-ID:       $Id$
 # Copyright:    (c) 2004-2005 ActiveGrid, Inc.
 # License:      wxWindows License
 #----------------------------------------------------------------------------

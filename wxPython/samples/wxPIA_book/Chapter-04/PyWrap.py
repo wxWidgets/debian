@@ -2,8 +2,8 @@
 additional runtime-tools, such as PyCrust."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: PyWrap.py 42925 2006-11-01 22:36:23Z RD $"
-__revision__ = "$Revision: 42925 $"[11:-2]
+__cvsid__ = "$Id$"
+__revision__ = "$Revision$"[11:-2]
 
 import wx
 from wx import py

@@ -39,6 +39,8 @@ class PyGaugeDemo(wx.Panel):
         self.gauge2.SetBackgroundColour(wx.WHITE)
         self.gauge2.SetBorderColor(wx.BLACK)
         self.gauge2.SetBorderPadding(2)
+        self.gauge2.SetDrawValue(draw=True, drawPercent=True, font=wx.SMALL_FONT, colour=wx.BLUE)
+        
         self.gauge2.Update([30,0],2000)
         
         self.gauge3 = PG.PyGauge(self.mainPanel, -1, size=(100,25),style=wx.GA_HORIZONTAL)

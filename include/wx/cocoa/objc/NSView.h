@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2007/04/20 (move from NSView.mm)
-// RCS-ID:      $Id: NSView.h 47792 2007-07-28 19:06:06Z DE $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////

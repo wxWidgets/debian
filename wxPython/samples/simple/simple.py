@@ -14,7 +14,7 @@ class MyFrame(wx.Frame):
     """
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, -1, title,
-                          pos=(150, 150), size=(350, 200))
+                          pos=(150, 150), size=(350, 250))
 
         # Create the menubar
         menuBar = wx.MenuBar()
@@ -60,6 +60,12 @@ class MyFrame(wx.Frame):
         panel.SetSizer(sizer)
         panel.Layout()
 
+        # And also use a sizer to manage the size of the panel such
+        # that it fills the frame
+        sizer = wx.BoxSizer()
+        sizer.Add(panel, 1, wx.EXPAND)
+        self.SetSizer(sizer)
+        
 
     def OnTimeToClose(self, evt):
         """Event handler for the button click."""

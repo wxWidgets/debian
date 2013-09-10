@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     31-October-1999
-// RCS-ID:      $Id: _dataobj.i 58929 2009-02-16 01:10:21Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -546,6 +546,14 @@ the clipboard or the DnD operation.  You can use this method to find
 out what kind of data object was recieved.", "");
     
     %property(ReceivedFormat, GetReceivedFormat, doc="See `GetReceivedFormat`");
+
+    DocDeclStr(
+        wxDataObjectSimple *, GetObject(const wxDataFormat& format,
+                                        wxDataObjectBase::Direction dir = Get) const,
+        "Returns the pointer to the object which supports this format or None.
+TODO: Fix this to use OOR and return the right object type.", "");
+    
+    
 };
 
 //---------------------------------------------------------------------------
@@ -842,6 +850,31 @@ public:
         "Set the URL.", "");
     
     %property(URL, GetURL, SetURL, doc="See `GetURL` and `SetURL`");
+};
+
+
+
+//---------------------------------------------------------------------------
+
+class wxHTMLDataObject : public wxDataObjectSimple
+{
+public:
+    /**
+        Constructor.
+    */
+    wxHTMLDataObject(const wxString& html = wxEmptyString);
+
+    /**
+        Returns the HTML string.
+    */
+    virtual wxString GetHTML() const;
+    
+    /**
+        Sets the HTML string.
+    */
+    virtual void SetHTML(const wxString& html);
+
+    %property(HTML, GetHTML, SetHTML);
 };
 
 //---------------------------------------------------------------------------

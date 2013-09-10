@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxSplitterWindow
 // Author:      panga@freemail.hu, Vaclav Slavik
 // Created:     2003/01/26
-// RCS-ID:      $Id: xh_split.cpp 47263 2007-07-09 14:31:09Z JS $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 panga@freemail.hu, Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,6 +24,8 @@
 #endif
 
 #include "wx/splitter.h"
+
+#include "wx/xml/xml.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxSplitterWindowXmlHandler, wxXmlResourceHandler)
 
@@ -87,7 +89,7 @@ wxObject *wxSplitterWindowXmlHandler::DoCreateResource()
     }
 
     if (win1 == NULL)
-        wxLogError(wxT("wxSplitterWindow node must contain at least one window."));
+        ReportError("wxSplitterWindow node must contain at least one window");
 
     bool horizontal = (GetParamValue(wxT("orientation")) != wxT("vertical"));
     if (win1 && win2)

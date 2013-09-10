@@ -3,7 +3,7 @@
 // Purpose:     XML resource handler for wxFilePickerCtrl
 // Author:      Francesco Montorsi
 // Created:     2006-04-17
-// RCS-ID:      $Id: xh_filepicker.cpp 55531 2008-09-09 19:36:41Z VS $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2006 Francesco Montorsi
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,6 +29,7 @@ wxFilePickerCtrlXmlHandler::wxFilePickerCtrlXmlHandler() : wxXmlResourceHandler(
     XRC_ADD_STYLE(wxFLP_OVERWRITE_PROMPT);
     XRC_ADD_STYLE(wxFLP_FILE_MUST_EXIST);
     XRC_ADD_STYLE(wxFLP_CHANGE_DIR);
+    XRC_ADD_STYLE(wxFLP_SMALL);
     XRC_ADD_STYLE(wxFLP_DEFAULT_STYLE);
     XRC_ADD_STYLE(wxFLP_USE_TEXTCTRL);
     AddWindowStyles();
@@ -44,7 +45,7 @@ wxObject *wxFilePickerCtrlXmlHandler::DoCreateResource()
                   GetText(wxT("message")),
                   GetParamValue(wxT("wildcard")),
                   GetPosition(), GetSize(),
-                  GetStyle(_T("style"), wxFLP_DEFAULT_STYLE),
+                  GetStyle(wxT("style"), wxFLP_DEFAULT_STYLE),
                   wxDefaultValidator,
                   GetName());
 

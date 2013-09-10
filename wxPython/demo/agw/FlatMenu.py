@@ -72,6 +72,24 @@ def switchRGBtoBGR(colour):
 
     return wx.Colour(colour.Blue(), colour.Green(), colour.Red())
 
+
+def CreateBackgroundBitmap():
+
+    mem_dc = wx.MemoryDC()
+    bmp = wx.EmptyBitmap(200, 300)
+    mem_dc.SelectObject(bmp)
+
+    mem_dc.Clear()
+    
+    # colour the menu face with background colour
+    top = wx.NamedColour("blue")
+    bottom = wx.NamedColour("light blue")
+    filRect = wx.Rect(0, 0, 200, 300)
+    mem_dc.GradientFillConcentric(filRect, top, bottom, wx.Point(100, 150))
+
+    mem_dc.SelectObject(wx.NullBitmap)
+    return bmp
+
 #------------------------------------------------------------
 # A custom renderer class for FlatMenu
 #------------------------------------------------------------
@@ -150,7 +168,7 @@ class FlatMenuDemo(wx.Frame):
 
     def __init__(self, parent, log):
 
-        wx.Frame.__init__(self, parent, size=(700, -1), style=wx.DEFAULT_FRAME_STYLE |
+        wx.Frame.__init__(self, parent, size=(700, 500), style=wx.DEFAULT_FRAME_STYLE |
                           wx.NO_FULL_REPAINT_ON_RESIZE)
 
         self.SetIcon(images.Mondrian.GetIcon())
@@ -262,6 +280,7 @@ class FlatMenuDemo(wx.Frame):
         styleMenu = FM.FlatMenu()
         editMenu  = FM.FlatMenu()
         multipleMenu = FM.FlatMenu()
+        historyMenu = FM.FlatMenu()
         subMenu = FM.FlatMenu()
         helpMenu = FM.FlatMenu()
         subMenu1 = FM.FlatMenu()
@@ -376,6 +395,11 @@ class FlatMenuDemo(wx.Frame):
 
         styleMenu.AppendSeparator()
         item = FM.FlatMenuItem(styleMenu, MENU_USE_CUSTOM, "Show Customize DropDown", "Shows the customize drop down arrow", wx.ITEM_CHECK)
+
+        # Demonstrate how to set custom font and text colour to a FlatMenuItem
+        item.SetFont(wx.Font(10, wx.SWISS, wx.ITALIC, wx.BOLD, False, "Courier New"))
+        item.SetTextColour(wx.RED)
+        
         item.Check(True)
         styleMenu.AppendItem(item)
         
@@ -434,23 +458,42 @@ class FlatMenuDemo(wx.Frame):
         maxItems = 17
         numCols = 2
         switch = int(math.ceil(maxItems/float(numCols)))
-        
+
+        fnt = wx.Font(9, wx.SWISS, wx.ITALIC, wx.BOLD, False, "Courier New")
+        colours = [wx.RED, wx.GREEN, wx.BLUE]
         for i in xrange(17):
             row, col = i%switch, i/switch
-            bmp = (random.randint(0, 1) == 1 and [colBmp] or [wx.NullBitmap])[0]
+            result = random.randint(0, 1) == 1
+            bmp = (result and [colBmp] or [wx.NullBitmap])[0]
             item = FM.FlatMenuItem(multipleMenu, wx.ID_ANY, "Row %d, Col %d"%((row+1, col+1)), "", wx.ITEM_NORMAL, None, bmp)
+            if result == 0:
+                # Demonstrate how to set custom font and text colour to a FlatMenuItem
+                col = random.randint(0, 2)
+                item.SetFont(fnt)
+                item.SetTextColour(colours[col])
+                
             multipleMenu.AppendItem(item)
 
         multipleMenu.SetNumberColumns(2)
 
+        historyMenu.Append(wx.ID_OPEN, "&Open...")
+        self.historyMenu = historyMenu
+        self.filehistory = FM.FileHistory()
+        self.filehistory.UseMenu(self.historyMenu)
+
+        self.Bind(FM.EVT_FLAT_MENU_SELECTED, self.OnFileOpenDialog, id=wx.ID_OPEN)
+
         item = FM.FlatMenuItem(helpMenu, MENU_HELP, "&About\tCtrl+A", "About...", wx.ITEM_NORMAL, None, helpImg)
         helpMenu.AppendItem(item)
 
+        fileMenu.SetBackgroundBitmap(CreateBackgroundBitmap())
+        
         # Add menu to the menu bar
         self._mb.Append(fileMenu, "&File")
         self._mb.Append(styleMenu, "&Style")
         self._mb.Append(editMenu, "&Edit")
         self._mb.Append(multipleMenu, "&Multiple Columns")
+        self._mb.Append(historyMenu, "File Histor&y")
         self._mb.Append(helpMenu, "&Help")
 
 
@@ -475,6 +518,8 @@ class FlatMenuDemo(wx.Frame):
         if "__WXMAC__" in wx.Platform:
             self.Bind(wx.EVT_SIZE, self.OnSize)
 
+        self.Bind(FM.EVT_FLAT_MENU_RANGE, self.OnFileHistory, id=wx.ID_FILE1, id2=wx.ID_FILE9+1)
+        
         
     def OnSize(self, event):
         
@@ -728,6 +773,30 @@ class FlatMenuDemo(wx.Frame):
         return userString
 
 
+    def OnFileOpenDialog(self, evt):
+        dlg = wx.FileDialog(self, defaultDir = os.getcwd(),
+                            wildcard = "All Files|*", style = wx.OPEN | wx.CHANGE_DIR)
+
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+            self.log.write("You selected %s\n" % path)
+
+            # add it to the history
+            self.filehistory.AddFileToHistory(path)
+
+        dlg.Destroy()
+
+
+    def OnFileHistory(self, evt):
+        # get the file based on the menu ID
+        fileNum = evt.GetId() - wx.ID_FILE1
+        path = self.filehistory.GetHistoryFile(fileNum)
+        self.log.write("You selected %s\n" % path)
+
+        # add it back to the history so it will be moved up the list
+        self.filehistory.AddFileToHistory(path)
+
+
     def OnEdit(self, event):
         
         if event.GetId() == MENU_REMOVE_MENU:
@@ -755,7 +824,7 @@ class FlatMenuDemo(wx.Frame):
               "Author: Andrea Gavana @ 03 Nov 2006\n\n" + \
               "Please report any bug/requests or improvements\n" + \
               "to Andrea Gavana at the following email addresses:\n\n" + \
-              "andrea.gavana@gmail.com\ngavana@kpo.kz\n\n" + \
+              "andrea.gavana@gmail.com\nandrea.gavana@maerskoil.com\n\n" + \
               "Welcome to wxPython " + wx.VERSION_STRING + "!!"
               
         dlg = wx.MessageDialog(self, msg, "FlatMenu wxPython Demo",

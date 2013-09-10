@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     23-Nov-2001
-// RCS-ID:      $Id: gizmos.i 43425 2006-11-14 22:03:54Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2001 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 #include "wx/wxPython/pyclasses.h"
 
 #include <wx/gizmos/dynamicsash.h>
-#include <wx/gizmos/editlbox.h>
+//#include <wx/gizmos/editlbox.h>
 #include <wx/gizmos/splittree.h>
 #include <wx/gizmos/ledctrl.h>
 #include <wx/gizmos/statpict.h>
@@ -31,7 +31,7 @@
 #include <wx/listctrl.h>
 #include <wx/treectrl.h>
 #include <wx/imaglist.h>
-
+#include <wx/editlbox.h>
 %}
 
 //---------------------------------------------------------------------------
@@ -170,6 +170,8 @@ enum {
     wxEL_ALLOW_NEW,
     wxEL_ALLOW_EDIT,
     wxEL_ALLOW_DELETE,
+    wxEL_NO_REORDER,
+    wxEL_DEFAULT_STYLE
 };
 
 
@@ -190,9 +192,16 @@ public:
                       const wxString& label = wxPyEmptyString,
                       const wxPoint& pos = wxDefaultPosition,
                       const wxSize& size = wxDefaultSize,
-                      long style = wxEL_ALLOW_NEW | wxEL_ALLOW_EDIT | wxEL_ALLOW_DELETE,
+                      long style = wxEL_DEFAULT_STYLE,
                       const wxString& name = wxPyEditableListBoxNameStr);
+    %RenameCtor(PreEditableListBox, wxEditableListBox());
 
+    bool Create(wxWindow *parent, wxWindowID id,
+                const wxString& label,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
+                long style = wxEL_DEFAULT_STYLE,
+                const wxString& name = wxEditableListBoxNameStr);
 
     void SetStrings(const wxArrayString& strings);
 

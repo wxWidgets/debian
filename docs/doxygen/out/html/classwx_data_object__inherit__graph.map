@@ -1,0 +1,11 @@
+<map id="wxDataObject" name="wxDataObject">
+<area shape="rect" id="node3" href="$classwx_data_object_composite.html" title="wxDataObjectComposite is the simplest wxDataObject derivation which may be used to support multiple f..." alt="" coords="157,81,320,109"/>
+<area shape="rect" id="node5" href="$classwx_data_object_simple.html" title="This is the simplest possible implementation of the wxDataObject class." alt="" coords="168,131,309,159"/>
+<area shape="rect" id="node7" href="$classwx_bitmap_data_object.html" title="wxBitmapDataObject is a specialization of wxDataObject for bitmap data." alt="" coords="391,5,532,33"/>
+<area shape="rect" id="node9" href="$classwx_custom_data_object.html" title="wxCustomDataObject is a specialization of wxDataObjectSimple for some application&#45;specific data in ar..." alt="" coords="388,55,535,83"/>
+<area shape="rect" id="node11" href="$classwx_file_data_object.html" title="wxFileDataObject is a specialization of wxDataObject for file names." alt="" coords="400,106,523,134"/>
+<area shape="rect" id="node13" href="$classwx_h_t_m_l_data_object.html" title="wxHTMLDataObject is used for working with HTML&#45;formatted text." alt="" coords="393,157,529,185"/>
+<area shape="rect" id="node15" href="$classwx_rich_text_buffer_data_object.html" title="Implements a rich text data object for clipboard transfer." alt="" coords="368,207,555,235"/>
+<area shape="rect" id="node17" href="$classwx_text_data_object.html" title="wxTextDataObject is a specialization of wxDataObjectSimple for text data." alt="" coords="399,258,524,286"/>
+<area shape="rect" id="node19" href="$classwx_u_r_l_data_object.html" title="wxURLDataObject is a wxDataObject containing an URL and can be used e.g." alt="" coords="604,258,729,286"/>
+</map>

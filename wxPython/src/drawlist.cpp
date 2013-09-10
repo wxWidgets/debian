@@ -5,7 +5,7 @@
 // Author:      Robin Dunn,  Chris Barker
 //
 // Created:
-// RCS-ID:      $Id: drawlist.cpp 32701 2005-03-09 22:28:52Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////

@@ -13,10 +13,12 @@ set DELTYPE=d
 if "%2" == "debug" set DELTYPE=h 
 
 set DLLDIR=vc_dll
-if "%CPU%" == "AMD64" set DLLDIR=vc_amd64_dll
+if "%CPU%" == "AMD64" set DLLDIR=vc_x64_dll
+if "%CPU%" == "X64" set DLLDIR=vc_x64_dll
 
 set PLATFORM=win32
 if "%CPU%" == "AMD64" set PLATFORM=win64
+if "%CPU%" == "X64" set PLATFORM=win64
 
 
 rem **** Make a directory to build up a distribution tree
@@ -85,15 +87,15 @@ rem del /sxzy @del-dirs
 rm del-files
 rm del-dirs
 
-rem *** bundle it all up  TODO: don't hard-code the 2.8
+rem *** bundle it all up  TODO: don't hard-code the 2.9
 set EXT=
 if "%2" == "debug" set EXT="-debug"
-tar cvf ../dist/wxPython2.8-%PLATFORM%-devel-%1%EXT%-msvc%MSVCVER%.tar wxPython-%1
-bzip2 -9 ../dist/wxPython2.8-%PLATFORM%-devel-%1%EXT%-msvc%MSVCVER%.tar
+tar cvf ../dist/wxPython2.9-%PLATFORM%-devel-%1%EXT%-msvc%MSVCVER%.tar wxPython-%1
+bzip2 -9 ../dist/wxPython2.9-%PLATFORM%-devel-%1%EXT%-msvc%MSVCVER%.tar
 
 rem *** cleanup
-rem cd ..
-rem rm -rf _distrib_zip
+cd ..
+rm -rf _distrib_zip
 
 endlocal
 

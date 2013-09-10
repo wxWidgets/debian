@@ -6,7 +6,7 @@
 // Author:      Robin Dunn
 //
 // Created:     1-May-2002
-// RCS-ID:      $Id: embedded.cpp 52942 2008-03-31 17:58:19Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 //----------------------------------------------------------------------

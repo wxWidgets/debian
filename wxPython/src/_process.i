@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _process.i 43425 2006-11-14 22:03:54Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -181,7 +181,7 @@ enum
     // under Windows, don't hide the child even if it's IO is redirected (this
     // is done by default)
     wxEXEC_NOHIDE   = 2,
-
+    
     // under Unix, if the process is the group leader then killing -pid kills
     // all children as well as pid
     wxEXEC_MAKE_GROUP_LEADER = 4,
@@ -189,7 +189,18 @@ enum
     // by default synchronous execution disables all program windows to avoid
     // that the user interacts with the program while the child process is
     // running, you can use this flag to prevent this from happening
-    wxEXEC_NODISABLE = 8
+    wxEXEC_NODISABLE = 8,
+
+    // by default, the event loop is run while waiting for synchronous execution
+    // to complete and this flag can be used to simply block the main process
+    // until the child process finishes
+    wxEXEC_NOEVENTS = 16,
+
+    // convenient synonym for flags given system()-like behaviour
+    wxEXEC_BLOCK = wxEXEC_SYNC | wxEXEC_NOEVENTS,
+
+    wxEXEC_SHOW_CONSOLE,
+    wxEXEC_HIDE_CONSOLE
 };
 
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6-June-2006
-// RCS-ID:      $Id: _picker.i 60609 2009-05-12 20:40:23Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2006 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -486,8 +486,11 @@ enum {
     wxFLP_OVERWRITE_PROMPT,
     wxFLP_FILE_MUST_EXIST,
     wxFLP_CHANGE_DIR,
+    wxFLP_SMALL,
+    
     wxDIRP_DIR_MUST_EXIST,
     wxDIRP_CHANGE_DIR,
+    wxDIRP_SMALL,
 
     wxFLP_USE_TEXTCTRL,
     wxFLP_DEFAULT_STYLE,
@@ -535,10 +538,12 @@ public:
     void SetPath(const wxString &str);
 
     // return true if the given path is valid for this control
-    bool CheckPath(const wxString& path) const;
+    // ?? bool CheckPath(const wxString& path) const;
 
     // Returns the filtered value currently placed in the text control (if present).
     wxString GetTextCtrlValue() const;
+
+    void SetInitialDirectory(const wxString& dir);
 
     %property(Path, GetPath, SetPath, doc="See `GetPath` and `SetPath`");
     %property(TextCtrlValue, GetTextCtrlValue, doc="See `GetTextCtrlValue`");
@@ -580,7 +585,7 @@ public:
     void SetPath(const wxString &str);
     
     // return true if the given path is valid for this control
-    bool CheckPath(const wxString& path) const;
+    // ?? bool CheckPath(const wxString& path) const;
 
     // Returns the filtered value currently placed in the text control (if present).
     wxString GetTextCtrlValue() const;

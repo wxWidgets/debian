@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _checkbox.i 40964 2006-09-02 19:46:44Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -32,13 +32,6 @@ enum {
     // be set programmatically.
     // This style can only be used with 3 state checkboxes.    
     wxCHK_ALLOW_3RD_STATE_FOR_USER,
-};
-
-enum wxCheckBoxState
-{
-    wxCHK_UNCHECKED,
-    wxCHK_CHECKED,
-    wxCHK_UNDETERMINED /* 3-state checkbox only */
 };
 
 

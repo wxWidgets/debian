@@ -31,8 +31,8 @@ attribute that describes the type.
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id: taglib.py 64501 2010-06-06 01:54:09Z CJP $"
-__revision__ = "$Revision: 64501 $"
+__svnid__ = "$Id: taglib.py 69238 2011-09-29 23:30:16Z CJP $"
+__revision__ = "$Revision: 69238 $"
 
 #-----------------------------------------------------------------------------#
 # Code Object Base Classes
@@ -151,13 +151,22 @@ class Scope(Code):
         self.elements = dict()
         self.descript = dict()
         self.prio = dict()
+        self._lscope = self
+
+    #---- Properties ----#
+    LastScope = property(lambda self: self._lscope)
+    #---- End Properties ----#
 
     def AddElement(self, obj, element):
         """Add an element to this scope
-        @param obj: object indentifier string
+        @param obj: object identifier string
         @param element: L{Code} object to add to this scope
 
         """
+        if isinstance(element, Scope):
+            self._lscope = element
+        else:
+            self._lscope = self
         if obj not in self.elements:
             self.elements[obj] = list()
         self.elements[obj].append(element)

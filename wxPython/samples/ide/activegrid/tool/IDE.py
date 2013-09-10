@@ -6,7 +6,7 @@
 #
 # Created:      5/15/03
 # Copyright:    (c) 2003-2005 ActiveGrid, Inc.
-# CVS-ID:       $Id: IDE.py 38852 2006-04-20 06:26:03Z RD $
+# CVS-ID:       $Id$
 # License:      wxWindows License
 #----------------------------------------------------------------------------
 

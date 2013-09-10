@@ -1,8 +1,8 @@
 """EditWindow class."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: editwindow.py 63479 2010-02-14 05:24:22Z RD $"
-__revision__ = "$Revision: 63479 $"[11:-2]
+__cvsid__ = "$Id$"
+__revision__ = "$Revision$"[11:-2]
 
 import wx
 from wx import stc
@@ -46,7 +46,7 @@ elif 'wxMac' in wx.PlatformInfo:
               'mono'      : 'Monaco',
               'helv'      : 'Geneva',
               'other'     : 'new century schoolbook',
-              'size'      : 13,
+              'size'      : 12,
               'lnsize'    : 10,
               'backcol'   : '#FFFFFF',
               'calltipbg' : '#FFFFB8',

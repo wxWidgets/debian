@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _timer.i 63424 2010-02-08 20:14:30Z RD $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -138,10 +138,12 @@ EVT_TIMER = wx.PyEventBinder( wxEVT_TIMER, 1 )
 class wxTimerEvent : public wxEvent
 {
 public:
-    wxTimerEvent(int timerid = 0, int interval = 0);
+    wxTimerEvent(wxTimer& timer);
     int GetInterval() const;
-
+    wxTimer& GetTimer() const;
+    
     %property(Interval, GetInterval, doc="See `GetInterval`");
+    %property(Timer, GetTimer);
 };
 
 
