@@ -31,3 +31,5 @@ img2py-no-display.patch
 disable_media_python.patch
 wx-2.8.12-print-ps-in-latin1-locale-segv-v2.patch
 fix-gcc-c++11-warning.patch
+ar.po.patch
+ta.po.patch
