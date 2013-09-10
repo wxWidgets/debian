@@ -1,15 +1,22 @@
+wxwidgets2.9 (2.9.5.0-1) UNRELEASED; urgency=low
+
+  * New upstream development release.
+  * debian/watch: Don't restrict to just 2.8.x releases.
+
+ -- Olly Betts <olly@survex.com>  Tue, 10 Sep 2013 15:01:20 +1200
+
 wxwidgets2.8 (2.8.12.1-16) unstable; urgency=low
 
-  * Fix warning when compiling with recent GCC in C++11 mode.
-    (Closes: #721184)
-  * Actually apply patches to add Tamil and Arabic i18n.
-  * debian/build_all: Remove unused script.
-  * debian/patches/WX_CONFIG.dpatch: Remove unused, obsolete patch.
-  * debian/patches/dont-check-for-pangox.patch: The check for pangox is only
-    done if building wxX11, which we don't do, so this patch isn't actually
-    necessary, so drop it.
-  * New patch wxpython-=-should-be-==.patch which fixes mishandling of the
-    bitmap depth in the wxPython wrapper code.
+   * Fix warning when compiling with recent GCC in C++11 mode.
+     (Closes: #721184)
+   * Actually apply patches to add Tamil and Arabic i18n.
+   * debian/build_all: Remove unused script.
+   * debian/patches/WX_CONFIG.dpatch: Remove unused, obsolete patch.
+   * debian/patches/dont-check-for-pangox.patch: The check for pangox is only
+     done if building wxX11, which we don't do, so this patch isn't actually
+     necessary, so drop it.
+   * New patch wxpython-=-should-be-==.patch which fixes mishandling of the
+     bitmap depth in the wxPython wrapper code.
 
  -- Olly Betts <olly@survex.com>  Wed, 11 Sep 2013 17:12:37 +1200
 
