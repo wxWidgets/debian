@@ -1,9 +1,11 @@
 Description: drop the building of the media extension of python to avoid the
  dependency on libgtk-media
 Author: Fabrice Coutadeur <coutadeurf@gmail.com>
+Last-Updated: 2013-09-10
+
 --- a/wxPython/setup.py
 +++ b/wxPython/setup.py
-@@ -411,24 +411,6 @@
+@@ -423,24 +423,6 @@
                  )
  wxpExtensions.append(ext)
  

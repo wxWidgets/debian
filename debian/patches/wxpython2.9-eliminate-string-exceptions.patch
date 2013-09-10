@@ -1,0 +1,153 @@
+Description: Eliminate throwing of string exceptions in wxPython
+ This is no longer supported as of Python 2.6, and wasn't reliable before that.
+Author: Olly Betts <olly@survex.com>
+Bug-Debian: http://bugs.debian.org/585339
+Bug: http://trac.wxwidgets.org/ticket/15484
+Forwarded: http://trac.wxwidgets.org/ticket/15484
+Last-Update: 2013-09-10
+Applied-Upstream: no
+
+--- a/wxPython/wx/lib/evtmgr.py
++++ b/wxPython/wx/lib/evtmgr.py
+@@ -79,7 +79,7 @@
+         # 1. Check if the 'event' is actually one of the multi-
+         #    event macros.
+         if _macroInfo.isMultiEvent(event):
+-            raise 'Cannot register the macro, '+`event`+'.  Register instead the individual events.'
++            raise Exception, 'Cannot register the macro, '+`event`+'.  Register instead the individual events.'
+ 
+         # Support a more OO API.  This allows the GUI widget itself to
+         # be specified, and the id to be retrieved from the system,
+--- a/wxPython/wx/lib/ogl/_basic.py
++++ b/wxPython/wx/lib/ogl/_basic.py
+@@ -1717,7 +1717,7 @@
+             shoulder1[1] = neck[1] - totalBranchLength / 2.0
+             shoulder2[1] = neck[1] + totalBranchLength / 2.0
+         else:
+-            raise "Unrecognised attachment point in GetBranchingAttachmentInfo"
++            raise Exception, "Unrecognised attachment point in GetBranchingAttachmentInfo"
+         return root, neck, shoulder1, shoulder2
+ 
+     def GetBranchingAttachmentPoint(self, attachment, n):
+@@ -1752,7 +1752,7 @@
+             stemPt[0] = neck[0]
+             stemPt[1] = pt[1]
+         else:
+-            raise "Unrecognised attachment point in GetBranchingAttachmentPoint"
++            raise Exception, "Unrecognised attachment point in GetBranchingAttachmentPoint"
+ 
+         return pt, stemPt
+ 
+@@ -1788,7 +1788,7 @@
+             root[0] = self.GetX() - width / 2.0
+             root[1] = self.GetY()
+         else:
+-            raise "Unrecognised attachment point in GetBranchingAttachmentRoot"
++            raise Exception, "Unrecognised attachment point in GetBranchingAttachmentRoot"
+ 
+         return root
+ 
+--- a/wxPython/wx/lib/ogl/_lines.py
++++ b/wxPython/wx/lib/ogl/_lines.py
+@@ -752,7 +752,7 @@
+                 elif x2 > x1 and y2 < y1:
+                     theta = 2 * math.pi + math.atan((y2 - y1) / (x2 - x1))
+                 else:
+-                    raise "Unknown arrowhead rotation case"
++                    raise Exception, "Unknown arrowhead rotation case"
+ 
+                 # Rotate about the centre of the object, then place
+                 # the object on the line.
+--- a/wxPython/wx/lib/pubsub/pubsub1/pub.py
++++ b/wxPython/wx/lib/pubsub/pubsub1/pub.py
+@@ -155,7 +155,7 @@
+             try:
+                 return _paramMinCountFunc(callableObject)
+             except exc:
+-                raise 'Cannot determine type of callable: %s' % repr(callableObject)
++                raise Exception, 'Cannot determine type of callable: %s' % repr(callableObject)
+  
+     min, d = _paramMinCountFunc(func)
+     return min-1, d
+--- a/wxPython/wx/lib/rpcMixin.py
++++ b/wxPython/wx/lib/rpcMixin.py
+@@ -261,7 +261,7 @@
+         self.rpcPort = -1
+ 
+     if self.rpcPort == -1:
+-      raise 'RPCMixinError','Cannot initialize server'
++      raise Exception, 'RPCMixinError: Cannot initialize server'
+     self.servThread = _ServerThread(xmlServ,verbose=self.verbose)
+     self.servThread.setName('XML-RPC Server')
+     self.servThread.start()
+--- a/wxPython/wx/tools/Editra/src/extern/pubsub.py
++++ b/wxPython/wx/tools/Editra/src/extern/pubsub.py
+@@ -95,7 +95,7 @@
+     elif isfunction(callableObject):
+         return _paramMinCountFunc(callableObject)
+     else:
+-        raise 'Cannot determine type of callable: '+repr(callableObject)
++        raise Exception, 'Cannot determine type of callable: '+repr(callableObject)
+ 
+ 
+ def _tupleize(items):
+--- a/wxPython/samples/ide/activegrid/util/xmlmarshaller.py
++++ b/wxPython/samples/ide/activegrid/util/xmlmarshaller.py
+@@ -1094,7 +1094,7 @@
+                 if hasattr(obj, "__xmlattrgroups__"):
+                     attrGroups = obj.__xmlattrgroups__.copy()
+                     if (not isinstance(attrGroups, dict)):
+-                        raise "__xmlattrgroups__ is not a dict, but must be"
++                        raise Exception, "__xmlattrgroups__ is not a dict, but must be"
+                     for n in attrGroups.iterkeys():
+                         members_to_skip.extend(attrGroups[n])
+                 else:
+--- a/wxPython/samples/ide/activegrid/tool/process.py
++++ b/wxPython/samples/ide/activegrid/tool/process.py
+@@ -677,7 +677,7 @@
+         elif self._file is not None:
+             return self._file.read(nBytes)
+         else:   
+-            raise "FileHandle.read: no handle to read with"
++            raise Exception, "FileHandle.read: no handle to read with"
+ 
+     def readline(self):
+         if self._descriptor is not None or self._handle is not None:
+@@ -700,7 +700,7 @@
+         elif self._file is not None:
+             return self._file.readline()
+         else:
+-            raise "FileHandle.readline: no handle to read with"
++            raise Exception, "FileHandle.readline: no handle to read with"
+ 
+     def readlines(self):
+         if self._descriptor is not None or self._handle is not None:
+@@ -715,7 +715,7 @@
+         elif self._file is not None:
+             return self._file.readlines()
+         else:
+-            raise "FileHandle.readline: no handle to read with"
++            raise Exception, "FileHandle.readline: no handle to read with"
+ 
+     def write(self, text):
+         if self._descriptor is not None:
+@@ -743,7 +743,7 @@
+         elif self._file is not None:
+             self._file.write(text)
+         else:   
+-            raise "FileHandle.write: nothing to write with"
++            raise Exception, "FileHandle.write: nothing to write with"
+ 
+     def close(self):
+         """Close all associated file objects and handles."""
+--- a/wxPython/demo/agw/FoldPanelBar.py
++++ b/wxPython/demo/agw/FoldPanelBar.py
+@@ -499,7 +499,7 @@
+             style.SetCaptionStyle(fpb.CAPTIONBAR_FILLED_RECTANGLE)
+                 
+         else:
+-            raise "ERROR: Undefined Style Selected For CaptionBar: " + repr(eventid)
++            raise Exception, "ERROR: Undefined Style Selected For CaptionBar: " + repr(eventid)
+ 
+         col1 = wx.Colour(self._rslider1.GetValue(), self._gslider1.GetValue(),
+                          self._bslider1.GetValue())

@@ -1,7 +1,12 @@
-fix build on hurd
+Description: Fix build on hurd
+Author: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Bug-Debian: http://bugs.debian.org/512117
+Bug: http://trac.wxwidgets.org/ticket/15480
+Forwarded: http://trac.wxwidgets.org/attachment/ticket/15480/fix-configure-on-hurd
+Last-Update: 2013-09-10
 
---- wx.orig/build/aclocal/bakefile.m4	2013-06-05 22:32:00.260042986 +1200
-+++ wx/build/aclocal/bakefile.m4	2013-06-05 22:32:06.276043007 +1200
+--- a/build/aclocal/bakefile.m4
++++ b/build/aclocal/bakefile.m4
 @@ -443,7 +443,7 @@
        ;;
  
@@ -20,9 +25,9 @@ fix build on hurd
          if test "x$SUNCXX" = "xyes"; then
              SONAME_FLAG="-h "
          else
---- wx.orig/configure	2013-06-05 22:32:00.260042986 +1200
-+++ wx/configure	2013-06-05 22:32:06.296043007 +1200
-@@ -49131,7 +49131,7 @@
+--- a/configure
++++ b/configure
+@@ -39667,7 +39667,7 @@
        ;;
  
        powerpc-apple-macos* | \
@@ -31,7 +36,7 @@ fix build on hurd
        *-*-mirbsd* | \
        *-*-sunos4* | \
        *-*-osf* | \
-@@ -49175,7 +49175,7 @@
+@@ -39709,7 +39709,7 @@
  
      case "${BAKEFILE_HOST}" in
        *-*-linux* | *-*-freebsd* | *-*-openbsd* | *-*-netbsd* | \
