@@ -93,7 +93,7 @@ endif
 alt_prio  := $(subst .,,$(release))
 
 pytoolkit := gtk2
-wxsubdir  := wx-$(compatible_release)-$(pytoolkit)-unicode
+wxsubdir  := wx-$(compatible_release)-$(pytoolkit)
 
 cross_host  := i586-mingw32msvc
 cross_build := $(shell /usr/share/misc/config.guess)
@@ -147,40 +147,20 @@ MSW_CONFIGURE_OPTIONS += --disable-threads
 
 PY_WX_CONFIG_OPTIONS = --version=$(release) --toolkit=$(pytoolkit) --static=no
 
-WX_UNICODE ?= 1
-# Needed in binary-cross, and perhaps other sub-invocations of debian/rules.
-export WX_UNICODE
-
-ifeq ($(WX_UNICODE),1)
-    COMMON_CONFIGURE_OPTIONS += --enable-unicode
-    MSW_CONFIGURE_OPTIONS += --enable-unicode
-    PY_WX_CONFIG_OPTIONS += --unicode
-    PY_UNICODE="UNICODE=1"
-
-    # for compatibility with the existing 2.6 packages, we don't use "u" in
-    # the Unicode (default) package names
-    unicode_suffix :=
-else
-    # but we do need to use something for non-Unicode packages to distinguish
-    # them
-    PY_UNICODE=
-    unicode_suffix := -ansi
-endif
-
 # Packages to build:
-package_wxbase_lib      := libwxbase$(sorelease)$(unicode_suffix)
-package_wxbase_dev      := libwxbase$(release)$(unicode_suffix)-dev
-package_wxbase_dbg      := libwxbase$(release)$(unicode_suffix)-dbg
+package_wxbase_lib      := libwxbase$(sorelease)
+package_wxbase_dev      := libwxbase$(release)-dev
+package_wxbase_dbg      := libwxbase$(release)-dbg
 
-package_gtk_lib         := libwxgtk$(sorelease)$(unicode_suffix)
-package_gtk_dev         := libwxgtk$(release)$(unicode_suffix)-dev
-package_gtk_dbg         := libwxgtk$(release)$(unicode_suffix)-dbg
+package_gtk_lib         := libwxgtk$(sorelease)
+package_gtk_dev         := libwxgtk$(release)-dev
+package_gtk_dbg         := libwxgtk$(release)-dbg
 
-package_gtkmedia_lib         := libwxgtk-media$(sorelease)$(unicode_suffix)
-package_gtkmedia_dev         := libwxgtk-media$(release)$(unicode_suffix)-dev
-package_gtkmedia_dbg         := libwxgtk-media$(release)$(unicode_suffix)-dbg
+package_gtkmedia_lib         := libwxgtk-media$(sorelease)
+package_gtkmedia_dev         := libwxgtk-media$(release)-dev
+package_gtkmedia_dbg         := libwxgtk-media$(release)-dbg
 
-package_gtk_py_lib      := python-wxgtk$(release)$(unicode_suffix)
+package_gtk_py_lib      := python-wxgtk$(release)
 package_gtk_py_ver       = python-wxversion
 package_gtk_py_tools     = python-wxtools
 
@@ -195,12 +175,12 @@ package_common           = wx-common
 common_packages	:= $(package_common) $(package_gtk_py_ver) $(package_gtk_py_tools)
 
 
-package_gtk_dbg_py      := python-wxgtk$(release)$(unicode_suffix)-dbg
+package_gtk_dbg_py      := python-wxgtk$(release)-dbg
 
 
 
-package_msw_dev         := libwxmsw$(release)$(unicode_suffix)-dev
-package_msw_dbg         := libwxmsw$(release)$(unicode_suffix)-dbg
+package_msw_dev         := libwxmsw$(release)-dev
+package_msw_dbg         := libwxmsw$(release)-dbg
 package_headers_msw     := wx$(release)-headers-msw
 
 # The packages listed here will not be built by default.
@@ -300,7 +280,7 @@ config.guess config.sub:
 	ln -sf /usr/share/misc/config.guess /usr/share/misc/config.sub .
 
 debian/control: debian/control.in
-	sed -e 's/=V/$(release)/g;s/=SOV/$(sorelease)/g;s/=U/$(unicode_suffix)/g'\
+	sed -e 's/=V/$(release)/g;s/=SOV/$(sorelease)/g'\
 		< debian/control.in > debian/control
 
 control-files-stamp: debian/control
@@ -365,7 +345,6 @@ control-files-stamp: debian/control
 #			> debian/$(package_common).menu
 	@echo "generating control file lintian-override";                    \
 		sed -e  's/=V/$(release)/g;s/=SOV/$(sorelease)/g'            \
-		    -e	's/=U/$(unicode_suffix)/'                            \
 			< debian/lintian-override.in                         \
 			> debian/lintian-override;                           \
 	touch $@
@@ -473,7 +452,7 @@ build-gtk-py%-stamp: build-gtk-shared-stamp # purge-dbg-py
 		&& python$* ./setup.py build			\
 						WX_CONFIG='$(wxconfig)'	\
 						WXPORT=$(pytoolkit)	\
-						$(PY_UNICODE)		\
+						UNICODE=1		\
 						FLAVOUR=$(DEBIAN_WXFLAVOUR)
 	touch $@
 
@@ -568,7 +547,7 @@ build-gtk-dbg-py%-stamp: build-gtk-debug-stamp # purge-release-py
 		&& python$*-dbg ./setup.py build			\
 					    WX_CONFIG='$(wxconfig-dbg)' \
 					    WXPORT=$(pytoolkit)		\
-					    $(PY_UNICODE)		\
+					    UNICODE=1			\
 					    FLAVOUR=$(addsuffix -,$(DEBIAN_WXFLAVOUR))dbg
 	touch $@
 
@@ -781,7 +760,7 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 			      WX_CONFIG='$(wxconfig)'				\
 			      SYS_WX_CONFIG='$(py_wxconfig)'			\
 			      WXPORT=$(pytoolkit)				\
-			      $(PY_UNICODE)					\
+			      UNICODE=1						\
 			      FLAVOUR=$(DEBIAN_WXFLAVOUR)
 
 	cp -a include/wx-$(release) \
@@ -937,7 +916,7 @@ install-gtk-dbg-py%: install-gtk-dbg-py-pre build-gtk-dbg-py%-stamp
 			      WX_CONFIG='$(wxconfig-dbg)'			\
 			      SYS_WX_CONFIG='$(pyd_wxconfig)'			\
 			      WXPORT=$(pytoolkit)				\
-			      $(PY_UNICODE)					\
+			      UNICODE=1						\
 			      FLAVOUR=$(addsuffix -,$(DEBIAN_WXFLAVOUR))dbg
 
 	mv debian/$(package_gtk_dbg_py)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)-dbg \
