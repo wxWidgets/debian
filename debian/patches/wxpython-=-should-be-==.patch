@@ -16,3 +16,14 @@ Forwarded: http://trac.wxwidgets.org/attachment/ticket/15490/wxpython-%3D-should
                      MAKE_PIXDATA(wxAlphaPixelData);
                      for (int y=0; y<height; y++) {
                          rowStart = p;
+--- a/wxPython/src/gtk/_gdi_wrap.cpp
++++ b/wxPython/src/gtk/_gdi_wrap.cpp
+@@ -3277,7 +3277,7 @@
+                         p.OffsetY(pixData, 1);
+                     }
+                 }
+-                if (depth = 32) {
++                if (depth == 32) {
+                     MAKE_PIXDATA(wxAlphaPixelData);
+                     for (int y=0; y<height; y++) {
+                         rowStart = p;
