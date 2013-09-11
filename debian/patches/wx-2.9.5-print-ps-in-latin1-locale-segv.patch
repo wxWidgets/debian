@@ -1,9 +1,9 @@
 Description: Fix SEGV printing PostScript in latin-1 locale
 Author: Olly Betts <olly@survex.com>
 Bug-Debian: http://bugs.debian.org/702378
-Bug: http://trac.wxwidgets.org/ticket/15300
-Forwarded: http://trac.wxwidgets.org/ticket/15300
-Last-Update: 2013-09-10
+Bug: http://trac.wxwidgets.org/ticket/15489
+Forwarded: http://trac.wxwidgets.org/ticket/15489
+Last-Update: 2013-09-11
 
 --- a/src/generic/dcpsg.cpp
 +++ b/src/generic/dcpsg.cpp
