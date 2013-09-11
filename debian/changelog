@@ -14,6 +14,9 @@ wxwidgets2.9 (2.9.5.0-1) UNRELEASED; urgency=low
     + New patch to make wxPython build with wxWebView disabled (we really
       don't want to depend on webkit):
       wxpython-build-with-wxwebview-disabled.patch
+  * debian/control: Drop conflicts against packages (or versions of packages)
+    which no longer exist in any supported Debian or Ubuntu release.
+  * debian/control: Drop 'Suggests: editra'.
   * debian/watch: Don't restrict to just 2.8.x releases.
   * debian/rules: Set DEBIAN_WX_DEFAULT_VERSION=2.8.
 
