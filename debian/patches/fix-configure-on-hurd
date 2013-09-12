@@ -1,4 +1,10 @@
-fix build on hurd
+Description: Fix build on hurd
+Author: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Bug-Debian: http://bugs.debian.org/512117
+Bug: http://trac.wxwidgets.org/ticket/15480
+Forwarded: http://trac.wxwidgets.org/attachment/ticket/15480/fix-configure-on-hurd
+Applied-Upstream: http://trac.wxwidgets.org/changeset/74779
+Last-Update: 2013-09-10
 
 --- wx.orig/build/aclocal/bakefile.m4	2013-06-05 22:32:00.260042986 +1200
 +++ wx/build/aclocal/bakefile.m4	2013-06-05 22:32:06.276043007 +1200
