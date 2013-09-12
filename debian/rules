@@ -448,28 +448,10 @@ build-gtk-py%-stamp: build-gtk-shared-stamp # purge-dbg-py
 
 build-doc-stamp: build-gtk-shared-stamp
 	dh_testdir
-	# the tarball may already have the generated docs in it
-	if [ ! -e docs/html/wx/index.html ]; then \
-		$(FAST_MAKE) -C $(objdir_gtk_shared)/utils/tex2rtf/src; \
-		rm -rf $(objdir_doc); \
-		rm -rf $(objdir_doc_cruft); \
-		mkdir $(objdir_doc); \
-		mkdir $(objdir_doc_cruft); \
-		cd $(objdir_doc_cruft); \
-		LD_LIBRARY_PATH=../$(objdir_gtk_shared)/lib:$(LD_LIBRARY_PATH) \
-		   ../$(objdir_gtk_shared)/utils/tex2rtf/src/tex2rtf           \
-		   ../docs/latex/wx/manual.tex                                 \
-		   ../$(objdir_doc)/wx$(release)-manual.html                   \
-		   -twice -html;                                               \
-		cd -; \
-		cp docs/latex/wx/*.gif $(objdir_doc); \
-		rm -rf $(objdir_doc_cruft); \
-		rm -f $(objdir_doc)/wx$(release)-manual.{con,hh*,htx,ref}; \
-	else \
-		mkdir $(objdir_doc); \
-		cp docs/html/wx/* $(objdir_doc); \
-		mv $(objdir_doc)/index.html $(objdir_doc)/wx-$(release)-manual_contents.html; \
-	fi
+	rm -rf $(objdir_doc)
+	mkdir $(objdir_doc)
+	cp -a docs/doxygen/out/html/* $(objdir_doc)
+	# mv $(objdir_doc)/index.html $(objdir_doc)/wx-$(release)-manual_contents.html
 	touch $@
 
 build-examples-stamp: build-gtk-shared-stamp
@@ -493,15 +475,11 @@ build-examples-stamp: build-gtk-shared-stamp
 	rm -f $(objdir_examples)/wxPython/b
 	# Stop files being randomly executable.
 	-chmod a-x \
-		$(objdir_examples)/samples/Info.plist \
 		$(objdir_examples)/samples/aui/descrip.mms \
-		$(objdir_examples)/samples/db/descrip.mms \
 		$(objdir_examples)/samples/docview/docview.r \
 		$(objdir_examples)/samples/internat/ar/internat.mo \
 		$(objdir_examples)/samples/internat/ar/internat.po \
-		$(objdir_examples)/samples/minimal/minimal.plc \
-		$(objdir_examples)/samples/xrc/descrip.mms \
-		$(objdir_examples)/wxPython/bmp_source/customcontrol.png
+		$(objdir_examples)/samples/xrc/descrip.mms
 
 	echo "generating unpack_examples.sh script"
 	sed -e 's/=V/$(release)/g' < debian/unpack_examples.sh.in	\
