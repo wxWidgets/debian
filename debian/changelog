@@ -5,12 +5,13 @@ wxwidgets2.9 (2.9.5.0-1) UNRELEASED; urgency=low
       required - remaining patches are:
       - disable_media_python.patch
       - fix-build-with-python2.6.patch
-      - fix-configure-on-hurd
-      - fix-path-to-some-interpreters
+      - fix-configure-on-hurd.patch
+      - fix-path-to-some-interpreters.patch
       - img2py-no-display.patch
-      - wx-2.8.12-print-ps-in-latin1-locale-segv-v2.patch
-      - wxpython2.8-eliminate-string-exceptions.patch
-      - xrced_bitmaps.dpatch
+      - wx-2.9.5-print-ps-in-latin1-locale-segv.patch
+      - wxpython2.9-eliminate-string-exceptions.patch
+      - wxpython-=-should-be-==.patch
+      - xrced_bitmaps.patch
     + New patch to make wxPython build with wxWebView disabled (we really
       don't want to depend on webkit):
       wxpython-build-with-wxwebview-disabled.patch
@@ -20,7 +21,7 @@ wxwidgets2.9 (2.9.5.0-1) UNRELEASED; urgency=low
   * debian/watch: Don't restrict to just 2.8.x releases.
   * debian/rules: Set DEBIAN_WX_DEFAULT_VERSION=2.8.
 
- -- Olly Betts <olly@survex.com>  Tue, 10 Sep 2013 15:01:20 +1200
+ -- Olly Betts <olly@survex.com>  Thu, 12 Sep 2013 00:14:14 +1200
 
 wxwidgets2.8 (2.8.12.1-16) unstable; urgency=low
 
