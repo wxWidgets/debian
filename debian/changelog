@@ -20,8 +20,9 @@ wxwidgets2.9 (2.9.5.0-1) unstable; urgency=low
   * debian/control: Drop 'Suggests: editra'.
   * debian/watch: Don't restrict to just 2.8.x releases.
   * debian/rules: Set DEBIAN_WX_DEFAULT_VERSION=2.8.
+  * debian/rules: Compress packages using xz.
 
- -- Olly Betts <olly@survex.com>  Thu, 12 Sep 2013 21:33:13 +1200
+ -- Olly Betts <olly@survex.com>  Fri, 13 Sep 2013 00:53:54 +1200
 
 wxwidgets2.8 (2.8.12.1-16) unstable; urgency=low
 

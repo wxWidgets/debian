@@ -988,7 +988,7 @@ endif
 	dh_shlibdeps -ldebian/$(package_wxbase_lib)/usr/lib:debian/$(package_wxbase_dbg)/usr/lib:debian/$(package_gtk_lib)/usr/lib:debian/$(package_gtk_dbg)/usr/lib:debian/$(package_gtkmedia_lib):debian/$(package_gtkmedia_dbg)
 	dh_gencontrol
 	dh_md5sums
-	dh_builddeb
+	dh_builddeb -- -Zxz
 
 # Build architecture-independent files here.
 # Note that you currently can't build the indep packages without first
