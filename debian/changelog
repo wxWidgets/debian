@@ -2,6 +2,9 @@ wxwidgets2.8 (2.8.12.1-16) unstable; urgency=low
 
   * Fix warning when compiling with recent GCC in C++11 mode.
     (Closes: #721184)
+  * debian/copyright: Add missing licences for contrib/src/stc/scintilla,
+    wxPython/wx/tools/Editra/src/extern/pygments and
+    wxPython/contrib/activex/wxie.
   * Actually apply patches to add Tamil and Arabic i18n.
   * debian/build_all: Remove unused script.
   * debian/patches/WX_CONFIG.dpatch: Remove unused, obsolete patch.
@@ -11,7 +14,7 @@ wxwidgets2.8 (2.8.12.1-16) unstable; urgency=low
   * New patch wxpython-=-should-be-==.patch which fixes mishandling of the
     bitmap depth in the wxPython wrapper code.
 
- -- Olly Betts <olly@survex.com>  Wed, 11 Sep 2013 17:12:37 +1200
+ -- Olly Betts <olly@survex.com>  Thu, 12 Sep 2013 16:59:29 +1200
 
 wxwidgets2.8 (2.8.12.1-15) unstable; urgency=low
 
