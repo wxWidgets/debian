@@ -28,7 +28,9 @@ if [ `ls -1 "$UP_BASE" | wc -l` -eq 1 ]; then
 fi
 
 ## Remove stuff
-mv $UP_BASE/debian $UP_BASE/debian-upstream
+
+# This is years out of date - just nuke it.
+rm -rf $UP_BASE/debian
 # There are some non-free DLLs under wxPython.  DLLs aren't useful for us
 # so just nuke any regardless which protects us from any new DLLs which get
 # added by upstream.
@@ -50,9 +52,9 @@ mv "$UP_BASE" "$DIR/$REPACK_DIR"
 
 # Using a pipe hides tar errors!
 tar cfC "$DIR/repacked.tar" "$DIR" "$REPACK_DIR"
-gzip -9 < "$DIR/repacked.tar" > "$DIR/repacked.tar.gz"
+xz -9 < "$DIR/repacked.tar" > "$DIR/repacked.tar.xz"
 
-FILE=$(echo $FILE | sed 's/bz2/gz/')
-mv "$DIR/repacked.tar.gz" "$FILE"
+FILE=$(echo $FILE | sed 's/bz2/xz/')
+mv "$DIR/repacked.tar.xz" "$FILE"
 
 echo "*** $FILE repackaged"
