@@ -386,7 +386,11 @@ build-doc-stamp: build-gtk-shared-stamp
 	rm -rf $(objdir_doc)
 	mkdir $(objdir_doc)
 	cp -a docs/doxygen/out/html/* $(objdir_doc)
-	# mv $(objdir_doc)/index.html $(objdir_doc)/wx-$(release)-manual_contents.html
+
+	# Replace embedded copy of jquery with symlink to packaged version.
+	rm $(objdir_doc)/jquery.js
+	ln -s /usr/share/javascript/jquery/jquery.min.js $(objdir_doc)/jquery.js
+
 	touch $@
 
 build-examples-stamp: build-gtk-shared-stamp

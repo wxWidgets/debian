@@ -252,6 +252,7 @@ Architecture: all
 Section: doc
 Provides: wx-doc
 Depends: ${misc:Depends}
+Recommends: libjs-jquery
 Suggests: doc-base, www-browser
 Description: wxWidgets Cross-platform C++ GUI toolkit (documentation)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
