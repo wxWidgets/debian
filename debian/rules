@@ -136,9 +136,9 @@ package_gtk_lib         := libwxgtk$(sorelease)
 package_gtk_dbg         := libwxgtk$(sorelease)-dbg
 package_gtk_dev         := libwxgtk$(release)-dev
 
-package_gtkmedia_lib         := libwxgtk-media$(sorelease)
-package_gtkmedia_dbg         := libwxgtk-media$(sorelease)-dbg
-package_gtkmedia_dev         := libwxgtk-media$(release)-dev
+package_gtkmedia_lib    := libwxgtk-media$(sorelease)
+package_gtkmedia_dbg    := libwxgtk-media$(sorelease)-dbg
+package_gtkmedia_dev    := libwxgtk-media$(release)-dev
 
 package_gtk_py_lib      := python-wxgtk$(release)
 package_gtk_py_dbg      := python-wxgtk$(release)-dbg
@@ -156,19 +156,13 @@ package_common           = wx-common
 common_packages	:= $(package_common) $(package_gtk_py_ver) $(package_gtk_py_tools)
 
 
-
-
 package_msw_dev         := libwxmsw$(release)-dev
 package_headers_msw     := wx$(release)-headers-msw
 
 # The packages listed here will not be built by default.
-extra_packages := \
-		  $(package_msw_dev) $(package_headers_msw)
-
+extra_packages := $(package_msw_dev) $(package_headers_msw)
 ifdef DEBIAN_WX_DEFAULT_VERSION
-
-  extra_packages += $(common_packages)
-
+extra_packages += $(common_packages)
 endif
 
 
@@ -578,8 +572,7 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 			      UNICODE=1						\
 			      FLAVOUR=$(DEBIAN_WXFLAVOUR)
 
-	cp -a include/wx-$(release) \
-	    debian/$(package_headers)/usr/include
+	cp -a include/wx-$(release) debian/$(package_headers)/usr/include
 
 	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/wx.pth
 
