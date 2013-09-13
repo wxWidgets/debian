@@ -16,7 +16,7 @@ wxwidgets2.9 (2.9.5.0-1) unstable; urgency=low
       don't want to depend on webkit):
       wxpython-build-with-wxwebview-disabled.patch
     + __WXDEBUG__ is now on by default, so our -dbg packages now just contain
-      detached debugging symbols.
+      detached debugging symbols. (Closes: #655251)
   * debian/control: Drop conflicts against packages (or versions of packages)
     which no longer exist in any supported Debian or Ubuntu release.
   * debian/control: Drop 'Suggests: editra'.
@@ -24,7 +24,7 @@ wxwidgets2.9 (2.9.5.0-1) unstable; urgency=low
   * debian/rules: Set DEBIAN_WX_DEFAULT_VERSION=2.8.
   * debian/rules: Compress packages using xz.
 
- -- Olly Betts <olly@survex.com>  Fri, 13 Sep 2013 13:41:44 +1200
+ -- Olly Betts <olly@survex.com>  Fri, 13 Sep 2013 19:21:09 +1200
 
 wxwidgets2.8 (2.8.12.1-16) unstable; urgency=low
 
