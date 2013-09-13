@@ -1,4 +1,4 @@
-wxwidgets2.9 (2.9.5.0-1) unstable; urgency=low
+wxwidgets2.9 (2.9.5.0-1) experimental; urgency=low
 
   * New upstream development release. (Closes: #613431)
     + Update patches for new release and drop patches which are no longer
