@@ -791,14 +791,13 @@ binary-common:
 	dh_link
 	dh_python2
 
-	dh_strip -N$(package_gtk_py_lib) \
-		 -N$(package_wxbase_lib) \
-		 -N$(package_gtk_lib) \
-		 -N$(package_gtkmedia_lib)
-	dh_strip -p$(package_gtk_py_lib) --dbg-package=$(package_gtk_py_dbg)
-	dh_strip -p$(package_wxbase_lib) --dbg-package=$(package_wxbase_dbg)
-	dh_strip -p$(package_gtk_lib) --dbg-package=$(package_gtk_dbg)
-	dh_strip -p$(package_gtkmedia_lib) --dbg-package=$(package_gtkmedia_dbg)
+ifneq (, $(filter -a, $(DH_OPTIONS)))
+	DH_OPTIONS= dh_strip -p$(package_gtk_py_lib) --dbg-package=$(package_gtk_py_dbg)
+	DH_OPTIONS= dh_strip -p$(package_wxbase_lib) --dbg-package=$(package_wxbase_dbg)
+	DH_OPTIONS= dh_strip -p$(package_gtk_lib) --dbg-package=$(package_gtk_dbg)
+	DH_OPTIONS= dh_strip -p$(package_gtkmedia_lib) --dbg-package=$(package_gtkmedia_dbg)
+	dh_strip --remaining-packages
+endif
 
 	dh_compress -X.py
 	dh_fixperms
