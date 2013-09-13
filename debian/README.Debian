@@ -55,21 +55,10 @@ wx-headers-msw		extra headers needed for wxMSW.
 	You can build these extra packages using the binary-cross target
 	in debian/rules.
 
-
-	Finally, because all of these packages can take quite some time to
-	build, the source package supports the use of distcc.  The package
-	builds will automatically parallelise to suit the number of hosts
-	you have listed in DISTCC_HOSTS.  This will work for both native
-	and cross builds of the c++ libraries, if you have the relevant
-	compilers on all your build hosts.
-	You may override that heuristic by setting the CONCURRENCY_LEVEL
-	environment variable to the number of jobs you wish make to fork.
-	That variable is also supported by the kernel-package scripts and
-	is respected for consistency here.
-
-	wxPython builds cannot be parallelised at this stage and will run
-	serially regardless of your configuration.
-
+	Because all of these packages can take quite some time to build, the
+	source package supports parallel building via the standard mechanism of
+	putting parallel=N in the environmental variable DEB_BUILD_OPTIONS.
+	However, note that the wxPython build currently runs serially.
 
  -- Olly Betts <olly@survex.com>, Fri, 13 Sep 2013 14:18:08 +1200
 

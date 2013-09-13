@@ -18,27 +18,7 @@ export DH_OPTIONS
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-
-    # The standard way to specify the number of jobs.
-    JOB_COUNT := $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-
-else ifdef CONCURRENCY_LEVEL
-
-  # A user who knows what they want, that's like gold...
-  # respect their precious opinion of how much blue smoke to use.
-  JOB_COUNT := $(CONCURRENCY_LEVEL)
-
-else ifdef DISTCC_HOSTS
-
- # Otherwise, if they have a cluster, try to put it to good use.
-  JOB_COUNT := $(shell set $${DISTCC_HOSTS} > /dev/null 2>&1 ; echo $$\#)
-
- # Not much faster, but it might keep you warm in winter...
- #JOB_COUNT := $(shell set $${DISTCC_HOSTS} > /dev/null 2>&1 ; echo $$(($$\# + $$\#)))
-
-endif
-
-ifdef JOB_COUNT
+  JOB_COUNT := $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
   FAST_MAKE = $(MAKE) -j $(JOB_COUNT)
 else
   FAST_MAKE = $(MAKE)
