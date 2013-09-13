@@ -453,9 +453,6 @@ clean-py:
 	cd wxPython && \
 	    rm -rf build-options.cache build*/ wx/*.py build_options.py src/wx.pth wx/build/build_options.py
 
-	# What to do about src/__version__.py ???
-
-
 # We do the equivalent of this above by removing build, unfortunately
 # it's not enough by itself to get the tree properly clean again.
 #		&& ./setup.py clean
