@@ -819,38 +819,11 @@ binary-cross: control-files-stamp $(install_all_cross)
 		binary-common
 
 
-############################################################################
-#
-# Some rules to build a subset of the complete list of packages that can be
-# built.  Beware that packages produced with these rules may *NOT*
-# be compatible with packages built using the 'binary' target or even with
-# Debian policy.  Do not distribute packages built with these rules, they
-# are currently useful for rapid in-house testing by developers only.
-
-DH_OPTIONS_GTK := -p$(package_wxbase_lib) -p$(package_gtk_lib) -p$(package_headers)
-
-# libwxgtk shared lib package
-binary-gtk: control-files-stamp install-gtk-lib install-wxbase-lib install-headers install-gtkmedia-lib
-	$(MAKE) -f debian/rules DH_OPTIONS="$(DH_OPTIONS_GTK)" binary-common
-
-binary-gtk-dev: control-files-stamp install-gtk-dev install-gtkmedia-dev install-wxbase-dev install-headers
-	$(MAKE) -f debian/rules \
-	    DH_OPTIONS="-p$(package_wxbase_dev) -p$(package_gtk_dev) -p$(package_gtkmedia_dev) $(DH_OPTIONS_GTK)" \
-	    binary-common
-
-# docs package
-binary-doc: control-files-stamp install-doc
-	$(MAKE) -f debian/rules DH_OPTIONS=-p$(package_doc) binary-common
-
-binary-fast: control-files-stamp install-msw-dev install-headers install-headers-msw
-	$(MAKE) -f debian/rules DH_OPTIONS="-p$(package_gtk_dbg) -p$(package_msw_dev) -p$(package_headers) -p$(package_headers_msw)" binary-common
-
 .PHONY: build build_all build-arch build-indep				\
 	clean clean-py \
 	binary-indep binary-arch binary binary-common			\
-	binary-gtk binary-gtk-dev			\
 	binary-wxbase binary-wxbase-dev		\
-	binary-doc binary-cross						\
+	binary-cross						\
 	install install_arch install-gtk-lib install-gtk-dev		\
 	install-gtkmedia-lib install-gtkmedia-dev	\
 	install-gtk-py install-gtk-py-tools install-gtk-py-ver		\
