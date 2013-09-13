@@ -52,7 +52,7 @@ Description: wxBase library (development) - non-GUI support classes of wxWidgets
  This package provides the files needed to compile apps using the wxBase
  library.
 
-Package: libwxbase=V-dbg
+Package: libwxbase=V-debug
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Section: debug
@@ -103,12 +103,12 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
  .
  This package also provides the wx-config script.
 
-Package: libwxgtk=V-dbg
+Package: libwxgtk=V-debug
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Section: debug
 Priority: extra
-Depends: ${shlibs:Depends}, wx=V-headers (= ${binary:Version}), libwxbase=V-dbg (= ${binary:Version}), ${misc:Depends}
+Depends: ${shlibs:Depends}, wx=V-headers (= ${binary:Version}), libwxbase=V-debug (= ${binary:Version}), ${misc:Depends}
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ debug)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -132,12 +132,12 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ media library runtim
  This package provides the media shared libraries needed to run programs linked
  against libwx_gtk2u_media.
 
-Package: libwxgtk-media=V-dbg
+Package: libwxgtk-media=V-debug
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Section: debug
 Priority: extra
-Depends: ${shlibs:Depends}, wx=V-headers (= ${binary:Version}), libwxgtk=V-dbg (= ${binary:Version}), ${misc:Depends}
+Depends: ${shlibs:Depends}, wx=V-headers (= ${binary:Version}), libwxgtk=V-debug (= ${binary:Version}), ${misc:Depends}
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ media library debug)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -176,7 +176,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding)
  This package provides a Python binding to the wxGTK library and the
  wxPython runtime support libraries.
 
-Package: python-wxgtk=V-dbg
+Package: python-wxgtk=V-debug
 Homepage: http://www.wxpython.org/
 Priority: extra
 Architecture: any
@@ -286,7 +286,7 @@ Depends: wx=V-headers-msw (= ${binary:Version}), ${misc:Depends}
 Description: wxMSW mingw32msvc-cross
  mingw32msvc-cross wxMSW libs.
 
-Package: libwxmsw=V-dbg
+Package: libwxmsw=V-debug
 Architecture: any
 Section: otherosfs
 Depends: wx=V-headers-msw (= ${binary:Version}), ${misc:Depends}

@@ -5,12 +5,12 @@ The following packages are built from the wxWidgets source:
 
 libwxbase		wxBase runtime shared libraries
 libwxbase-dev		extra files and static libs for building wxBase apps
-libwxbase-dbg		wxBase libraries built with -g and __WXDEBUG__
+libwxbase-debug		wxBase libraries built with -g and __WXDEBUG__
 
 libwxgtk		wxGTK runtime shared libraries, including selected
 			contrib libs.
 libwxgtk-dev		extra files required for building wxGTK apps
-libwxgtk-dbg		wxGTK libraries built with -g and __WXDEBUG__
+libwxgtk-debug		wxGTK libraries built with -g and __WXDEBUG__
 
 python-wxgtk		Python binding to wxGTK  (from 2.2.3 onward, this
 			obsoletes the libwxgtk-python-contrib package as
@@ -39,21 +39,21 @@ wx-i18n			message catalogs for native language support
 	find problems and/or have patches to fix them.
 
 libwxmsw-dev		mingw32-cross wxMSW libs.
-libwxmsw-dbg		mingw32-cross wxMSW (debug) libs.
+libwxmsw-debug		mingw32-cross wxMSW (debug) libs.
 wx-headers-msw		extra headers needed for wxMSW.
 
 	You can build these extra packages using the binary-cross target
 	in debian/rules.
 
 
-	It is also possible to build a python-wxgtk-dbg package.
+	It is also possible to build a python-wxgtk-debug package.
 	There are some limitations (like this package cannot be installed
 	concurrently with the release version), but some developers may
 	find such a thing useful in any case.  It will transparently
 	replace the release package for installed apps that depend on the
 	release package, but should NEVER be used when preparing packages
 	for upload.  This package may be created from the source using the
-	binary-dbg-py target in debian/rules.  (note that doing this will
+	binary-debug-py target in debian/rules.  (note that doing this will
 	also destroy any release build that exists in the same tree, they
 	cannot coexist there either yet)
 

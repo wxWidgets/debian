@@ -13,15 +13,15 @@ lintian-override
 unpack_examples.sh
 
 libwxbase2.9-0
-libwxbase2.9-dbg
+libwxbase2.9-debug
 libwxbase2.9-dev
 libwxgtk2.9-0
-libwxgtk2.9-dbg
+libwxgtk2.9-debug
 libwxgtk2.9-dev
-libwxmsw2.9-dbg
+libwxmsw2.9-debug
 libwxmsw2.9-dev
 python-wxaddons
-python-wxgtk2.9-dbg
+python-wxgtk2.9-debug
 python-wxgtk2.9
 python-wxtools
 python-wxversion
