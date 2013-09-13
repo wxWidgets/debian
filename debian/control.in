@@ -174,7 +174,8 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding)
 Package: python-wxgtk=V-dbg
 Architecture: any
 Homepage: http://www.wxpython.org/
-Section: python
+Section: debug
+Priority: extra
 Depends: python-wxgtk=V (= ${binary:Version}), libwxgtk=SOV-dbg, ${misc:Depends}
 Description: debugging symbols for wxPython
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
