@@ -52,13 +52,17 @@ Description: wxBase library (development) - non-GUI support classes of wxWidgets
  This package provides the files needed to compile apps using the wxBase
  library.
 
-Package: libwxbase=V-debug
+Package: libwxbase=SOV-dbg
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Section: debug
 Priority: extra
-Depends: wx=V-headers (= ${binary:Version}), libc6-dev, ${misc:Depends}
-Description: wxBase library (debug) - non-GUI support classes of wxWidgets toolkit
+Depends: libwxbase=SOV (= ${binary:Version}), ${misc:Depends}
+Multi-Arch: same
+Description: debugging symbols for the wxBase library
+ This package contains detached debugging symbols for the wxBase library
+ (part of wxWidgets).
+ .
  wxBase is a collection of C++ classes providing basic data structures
  (strings, lists, arrays), powerful wxDateTime class for date manipulations,
  portable wrappers around many OS-specific functions allowing the same
@@ -67,11 +71,6 @@ Description: wxBase library (debug) - non-GUI support classes of wxWidgets toolk
  .
  wxBase currently supports the following platforms: Generic Unix (Linux,
  FreeBSD, Solaris, HP-UX, ...), Microsoft Windows, and Mac OS X.
- .
- This package provides a debug version of the wxBase library.  It is compiled
- both with -g for normal debugger tracing and with the __WXDEBUG__ flag which
- provides many internal checks by wxWidgets itself that are not performed on
- apps compiled with the 'release version' libs in the -dev package.
 
 Package: libwxgtk=SOV
 Architecture: any
@@ -103,21 +102,19 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
  .
  This package also provides the wx-config script.
 
-Package: libwxgtk=V-debug
+Package: libwxgtk=SOV-dbg
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Section: debug
 Priority: extra
-Depends: ${shlibs:Depends}, wx=V-headers (= ${binary:Version}), libwxbase=V-debug (= ${binary:Version}), ${misc:Depends}
-Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ debug)
+Depends: libwxgtk=SOV (= ${binary:Version}), libwxbase=SOV-dbg (= ${binary:Version}), ${misc:Depends}
+Description: debugging symbols for the wxGTK GUI toolkit library
+ This package contains detached debugging symbols for the wxGTK library
+ (part of wxWidgets).
+ .
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
  unpopular ones as well).
- .
- This package provides a debug version of the wxGTK library.  It is compiled
- both with -g for normal debugger tracing and with the __WXDEBUG__ flag which
- provides many internal checks by wxWidgets itself that are not performed on
- apps compiled with the 'release version' libs in the -dev package.
 
 Package: libwxgtk-media=SOV
 Architecture: any
@@ -132,21 +129,19 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ media library runtim
  This package provides the media shared libraries needed to run programs linked
  against libwx_gtk2u_media.
 
-Package: libwxgtk-media=V-debug
+Package: libwxgtk-media=SOV-dbg
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Section: debug
 Priority: extra
-Depends: ${shlibs:Depends}, wx=V-headers (= ${binary:Version}), libwxgtk=V-debug (= ${binary:Version}), ${misc:Depends}
-Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ media library debug)
+Depends: libwxgtk-media=SOV (= ${binary:Version}), libwxgtk=SOV-dbg (= ${binary:Version}), ${misc:Depends}
+Description: debugging symbols for the wxGTK media library
+ This package contains detached debugging symbols for the wxGTK media library
+ (part of wxWidgets).
+ .
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
  unpopular ones as well).
- .
- This package provides a debug version of the gtk-media library.  It is compiled
- both with -g for normal debugger tracing and with the __WXDEBUG__ flag which
- provides many internal checks by wxWidgets itself that are not performed on
- apps compiled with the 'release version' libs in the -dev package.
 
 Package: libwxgtk-media=V-dev
 Architecture: any
@@ -158,8 +153,8 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ media library develo
  GUI components and other facilities on several popular platforms (and some
  unpopular ones as well).
  .
- This package provides files needed to compile wxWidgets programs using
- wxgtk-media lib.
+ This package provides files needed to compile wxWidgets programs using the
+ wxgtk-media library.
 
 Package: python-wxgtk=V
 Architecture: any
@@ -176,19 +171,18 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding)
  This package provides a Python binding to the wxGTK library and the
  wxPython runtime support libraries.
 
-Package: python-wxgtk=V-debug
-Homepage: http://www.wxpython.org/
-Priority: extra
+Package: python-wxgtk=V-dbg
 Architecture: any
-Section: debug
-Depends: python-wxgtk=V (= ${binary:Version}), python-dbg, ${shlibs:Depends}, ${misc:Depends}
-Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding, debug version)
- wxWidgets is a class library for C++ providing GUI (Graphical User
- Interface) and other facilities on more than one platform.  Version =V
- currently supports GTK+, Motif, X11, Mac OS X, and MS Windows.
+Homepage: http://www.wxpython.org/
+Section: python
+Depends: python-wxgtk=V (= ${binary:Version}), libwxgtk=SOV-dbg, ${misc:Depends}
+Description: debugging symbols for wxPython
+ wxWidgets (formerly known as wxWindows) is a class library for C++ providing
+ GUI components and other facilities on several popular platforms (and some
+ unpopular ones as well).
  .
- This package provides a Python binding to the wxGTK debug library.
- This package contains the extensions built for the Python debug interpreter.
+ This package provides detached debugging symbols for the wxPython binding to
+ the wxGTK library.
 
 Package: python-wxversion
 Homepage: http://www.wxpython.org/
@@ -285,14 +279,6 @@ Section: otherosfs
 Depends: wx=V-headers-msw (= ${binary:Version}), ${misc:Depends}
 Description: wxMSW mingw32msvc-cross
  mingw32msvc-cross wxMSW libs.
-
-Package: libwxmsw=V-debug
-Architecture: any
-Section: otherosfs
-Depends: wx=V-headers-msw (= ${binary:Version}), ${misc:Depends}
-Description: wxMSW mingw32msvc-cross (debug)
- mingw32msvc-cross wxMSW libs.
- __WXDEBUG__ version.
 
 Package: wx=V-headers-msw
 Architecture: any

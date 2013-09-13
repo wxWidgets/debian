@@ -1,29 +1,40 @@
 wxwidgets for Debian
-----------------------
+--------------------
 
 The following packages are built from the wxWidgets source:
 
-libwxbase		wxBase runtime shared libraries
-libwxbase-dev		extra files and static libs for building wxBase apps
-libwxbase-debug		wxBase libraries built with -g and __WXDEBUG__
+libwxbase2.9-<N>	    wxBase runtime shared libraries
+libwxbase2.9-<N>-dbg	    detached debugging symbols for libwxbase2.9-<N>
+libwxbase2.9-dev	    extra files required for building wxBase apps
 
-libwxgtk		wxGTK runtime shared libraries, including selected
-			contrib libs.
-libwxgtk-dev		extra files required for building wxGTK apps
-libwxgtk-debug		wxGTK libraries built with -g and __WXDEBUG__
+libwxgtk2.9-<N>		    wxGTK runtime shared libraries
+libwxgtk2.9-<N>-dbg	    detached debugging symbols for libwxgtk2.9-<N>
+libwxgtk2.9-dev		    extra files required for building wxGTK apps
 
-python-wxgtk		Python binding to wxGTK  (from 2.2.3 onward, this
-			obsoletes the libwxgtk-python-contrib package as
-			all python modules are built into a single monolith)
-python-wxversion	The wxversion.py version selector, new to wxPython2.6
-python-wxtools		The ancillary tools from the wxPython distribution.
+libwxgtk-media2.9-<N>	    wxGTK runtime shared libraries for wxMediaCtrl
+			    - these are in a separate package as they pull
+			    in a lot of large dependencies
+libwxgtk-media2.9-<N>-dbg   detached debugging symbols for libwxgtk-media2.9-<N>
+libwxgtk-media2.9-dev	    extra files required for building wxGTK apps
 
-wx-common		common helper files and support applications.
-wx-headers		common header files for building wxWidgets apps
-wx-doc			HTML version of the wxWidgets manual
-wx-examples		wxWidgets and wxPython demos and samples (source)
-wx-i18n			message catalogs for native language support
+python-wxgtk		    Python binding to wxGTK
+python-wxversion	    The wxversion.py version selector (present since
+			    wxPython2.6)
+python-wxtools		    The ancillary tools from the wxPython distribution.
 
+wx-common		    common helper files and support applications.
+wx-headers		    common header files for building wxWidgets apps
+wx-doc			    HTML version of the wxWidgets manual
+wx-examples 		    wxWidgets and wxPython demos and samples (source)
+wx-i18n			    message catalogs for native language support
+
+	In the wxwidgets2.8 packaging, there were -dbg packages which contained
+	binaries built with __WXDEBUG__ and -g.  Upstream now enable
+	__WXDEBUG__ by default, so now the -dbg packages just contain detached
+	debugging symbols.  For more information on the upstream __WXDEBUG__
+	changes since 2.8, please see:
+
+	  http://docs.wxwidgets.org/3.0.0/overview_debugging.html
 
 	Note that static libraries are no longer supplied in these
 	packages.  Please read, or have understood:
@@ -39,23 +50,10 @@ wx-i18n			message catalogs for native language support
 	find problems and/or have patches to fix them.
 
 libwxmsw-dev		mingw32-cross wxMSW libs.
-libwxmsw-debug		mingw32-cross wxMSW (debug) libs.
 wx-headers-msw		extra headers needed for wxMSW.
 
 	You can build these extra packages using the binary-cross target
 	in debian/rules.
-
-
-	It is also possible to build a python-wxgtk-debug package.
-	There are some limitations (like this package cannot be installed
-	concurrently with the release version), but some developers may
-	find such a thing useful in any case.  It will transparently
-	replace the release package for installed apps that depend on the
-	release package, but should NEVER be used when preparing packages
-	for upload.  This package may be created from the source using the
-	binary-debug-py target in debian/rules.  (note that doing this will
-	also destroy any release build that exists in the same tree, they
-	cannot coexist there either yet)
 
 
 	Finally, because all of these packages can take quite some time to
@@ -73,5 +71,5 @@ wx-headers-msw		extra headers needed for wxMSW.
 	serially regardless of your configuration.
 
 
- -- Ron Lee <ron@debian.org>, Sun, 13 Feb 2000 18:40:00 +1030
+ -- Olly Betts <olly@survex.com>, Fri, 13 Sep 2013 14:18:08 +1200
 

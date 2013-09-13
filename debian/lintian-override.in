@@ -1,9 +1,3 @@
-libwxbase=V-debug: non-dev-pkg-with-shlib-symlink
-libwxbase=V-debug: package-name-doesnt-match-sonames
 libwxbase=SOV: package-name-doesnt-match-sonames
-libwxgtk=V-debug: non-dev-pkg-with-shlib-symlink
-libwxgtk=V-debug: package-name-doesnt-match-sonames
 libwxgtk=SOV: package-name-doesnt-match-sonames
-libwxgtk-media=V-debug: non-dev-pkg-with-shlib-symlink
-libwxgtk-media=V-debug: package-name-doesnt-match-sonames
 libwxgtk-media=SOV: package-name-doesnt-match-sonames

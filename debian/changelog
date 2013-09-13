@@ -15,8 +15,8 @@ wxwidgets2.9 (2.9.5.0-1) unstable; urgency=low
     + New patch to make wxPython build with wxWebView disabled (we really
       don't want to depend on webkit):
       wxpython-build-with-wxwebview-disabled.patch
-  * Rename *-dbg packages to *-debug, since they don't contain detached
-    debugging symbols and packages ending -dbg conventionally do.
+    + __WXDEBUG__ is now on by default, so our -dbg packages now just contain
+      detached debugging symbols.
   * debian/control: Drop conflicts against packages (or versions of packages)
     which no longer exist in any supported Debian or Ubuntu release.
   * debian/control: Drop 'Suggests: editra'.
