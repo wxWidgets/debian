@@ -23,8 +23,10 @@ wxwidgets2.9 (2.9.5.0-1) experimental; urgency=low
   * debian/watch: Don't restrict to just 2.8.x releases.
   * debian/rules: Set DEBIAN_WX_DEFAULT_VERSION=2.8.
   * debian/rules: Compress packages using xz.
+  * debian/wxPython-tools.1: Make the pointer the pydoc documentation slightly
+    more helpful by giving an example pydoc invocation.
 
- -- Olly Betts <olly@survex.com>  Fri, 13 Sep 2013 19:21:09 +1200
+ -- Olly Betts <olly@survex.com>  Sat, 14 Sep 2013 10:40:38 +1200
 
 wxwidgets2.8 (2.8.12.1-16) unstable; urgency=low
 
