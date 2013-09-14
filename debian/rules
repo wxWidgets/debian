@@ -460,7 +460,7 @@ clean: debian/control clean-py
 	dh_testdir
 	dh_testroot
 
-	rm -rf config_deb.cache config_deb_cross.cache *-stamp $(objdirs)
+	rm -rf config_deb.cache config_deb_cross.cache $(objdirs)
 
 	dh_clean
 	rm -f debian/$(package_wxbase_lib).* \
