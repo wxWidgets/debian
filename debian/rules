@@ -580,7 +580,7 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 
 	# This is rather bogus, it's included in the main copyright file now though.
 	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/XRCed/license.txt
-	# has its own package, editra
+	# A more maintained version of editra is packaged separately (see package 'editra')
 	rm -fr debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/Editra
 
 install-gtk-py-ver: DH_OPTIONS=-p$(package_gtk_py_ver)
