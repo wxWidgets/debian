@@ -97,7 +97,7 @@ endif
 
 BASE_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --disable-gui \
-	--libdir=\$${exec_prefix}/lib/$(DEB_HOST_MULTIARCH)
+    --libdir=\$${exec_prefix}/lib/$(DEB_HOST_MULTIARCH)
 
 GTK_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --with-gtk \
@@ -592,7 +592,6 @@ install-gtk-py-ver: install-gtk-py-lib
 	dh_prep
 
 ifndef DEBIAN_WX_DEFAULT_VERSION
-
 	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) \
 		$(foreach pv,$(PYVERS),$(call py_libdir,$(pv))/wxversion.py)
 	for v in $(foreach pv,$(PYVERS),debian/$(package_gtk_py_ver)$(call py_libdir,$(pv))/wx.pth); do \

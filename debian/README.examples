@@ -1,4 +1,3 @@
-
 These examples are provided as extended documentation for the wxWidgets
 package.  If you wish to actually run them rather than just browse them
 as documents you should copy them into a working directory elsewhere
@@ -19,5 +18,3 @@ always apt-get the source of any wx using package for some less contrived
 examples of real world wx applications.
 
   Ron
-
-

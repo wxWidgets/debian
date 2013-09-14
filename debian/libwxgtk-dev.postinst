@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 set -e
 
 update-alternatives --install /usr/bin/wx-config wx-config                \
@@ -6,4 +6,3 @@ update-alternatives --install /usr/bin/wx-config wx-config                \
 			      $(( =PRIO * 10 + 8 ))
 
 #DEBHELPER#
-
