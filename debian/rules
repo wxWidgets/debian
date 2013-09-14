@@ -408,9 +408,8 @@ build-i18n-stamp: build-gtk-shared-stamp
 	# touch .po files first, since if they are not already up
 	# to date then _now_ is not the time to fix it.
 	# That should have been been done before the release was tagged.
-	cd $(objdir_i18n) \
-		&& touch *.po \
-		&& $(MAKE) allmo
+	touch $(objdir_i18n)/*.po
+	$(MAKE) -C $(objdir_i18n) allmo
 	touch $@
 
 configure-msw-shared-stamp: config.guess
@@ -510,8 +509,7 @@ install-wxbase-dev: build-wxbase-shared-stamp install-gtk-shared-stamp
 install-gtk-shared-stamp: build-gtk-shared-stamp build-gtk-shared-contrib-stamp
 	dh_testdir
 	mkdir -p $(objdir_gtk_install)
-	cd $(objdir_gtk_shared) \
-		&& $(MAKE) install prefix=`pwd`/../$(objdir_gtk_install)
+	$(MAKE) -C $(objdir_gtk_shared) install prefix=`pwd`/$(objdir_gtk_install)
 	touch $@
 
 install-gtk-lib: DH_OPTIONS=-p$(package_gtk_lib)
@@ -671,8 +669,7 @@ install-headers: install-gtk-shared-stamp
 # them.  Do that in a scratch dirs, and move the gtk ones last, so at least
 # they win in the result of any uncaught conflict.
 
-#	cd $(objdir_gtk_univ) \
-#		&& $(MAKE) install prefix=`pwd`/../$(objdir_univ_install)/usr
+#	$(MAKE) -C $(objdir_gtk_univ) install prefix=`pwd`/$(objdir_univ_install)/usr
 
 #	dh_movefiles --sourcedir=$(objdir_univ_install)
 	dh_install $(objdir_gtk_install)/include	usr
@@ -734,8 +731,7 @@ install-headers-msw:
 	dh_testroot
 	dh_prep
 
-	cd $(objdir_msw_shared) \
-		&& $(MAKE) install prefix=`pwd`/../$(objdir_msw_install)
+	$(MAKE) -C $(objdir_msw_shared) install prefix=`pwd`/$(objdir_msw_install)
 
 #	Symlink all the headers that will be installed by the main -headers
 #	package to where the cross compiler will expect them.
