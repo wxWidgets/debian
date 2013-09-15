@@ -689,11 +689,6 @@ install-doc: build-doc-stamp
 	dh_testroot
 	dh_prep
 
-	@# Link this monstrosity with an overly obfuscated name
-	@# to something that both people and browsers can expect to find.
-	#dh_link usr/share/doc/$(package_doc)/wx-manual.html/wx-$(release)-manual_contents.html \
-	#	usr/share/doc/$(package_doc)/wx-manual.html/index.html
-
 install-examples: DH_OPTIONS=-p$(package_examples)
 install-examples: build-examples-stamp
 	dh_testdir
