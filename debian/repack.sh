@@ -30,11 +30,14 @@ fi
 ## Remove stuff
 
 # This is years out of date - just nuke it.
-rm -rf $UP_BASE/debian
+rm -rf "$UP_BASE"/debian
 # There are some non-free DLLs under wxPython.  DLLs aren't useful for us
 # so just nuke any regardless which protects us from any new DLLs which get
 # added by upstream.
 find "$UP_BASE" -iname '*.dll' -delete
+# Removed minified jquery.js (non-free without non-minified source).  We
+# symlink in a packaged version of jquery in debian/rules.
+rm -f "$UP_BASE"/docs/doxygen/out/html/jquery.js
 # We don't use the built-in copy of expat and it contains an ancient copy
 # of libtool which lintian warns about, so just delete it.  This also ensures
 # that we don't accidentally start building against it in future.  By similar
