@@ -303,11 +303,9 @@ build: build-stamp build-arch
 build-stamp:
 
 
-# The wx2.6 build system makes us run around in circles to get a separate
-# libwxbase.  We need to configure it here in order to get the correct
-# config files to use it alone, but there is no point building it as the
-# wxgtk build is going to do that again anyway.  We'll move the relevant
-# files out when that is done.
+# Building wxgtk produces the wxbase libraries too, but we also need
+# the config files for wxbase, so we configure a wxbase tree to get
+# these (but we don't need to actually build it).
 
 configure-wxbase-shared-stamp: config.guess
 	dh_testdir
