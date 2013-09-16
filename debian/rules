@@ -229,9 +229,13 @@ install_all := $(install_all_native) $(install_all_cross)
 
 
 # wxPython uses this to build in-tree
-wxconfig     := $(shell pwd)/$(objdir_gtk_shared)/wx-config --no_rpath
+SETUP_PY_COMMON_OPTIONS :=	\
+    WX_CONFIG='$(shell pwd)/$(objdir_gtk_shared)/wx-config --no_rpath' \
+    WXPORT=$(pytoolkit)	\
+    UNICODE=1		\
+    FLAVOUR=$(DEBIAN_WXFLAVOUR)
 
-# and this after it is installed.
+# WX_CONFIG is used to build in-tree, this after installation
 py_wxconfig  := wx-config $(PY_WX_CONFIG_OPTIONS)
 
 
@@ -346,11 +350,7 @@ build-gtk-py%-stamp: build-gtk-shared-stamp
 	dh_testdir
 	touch docs/lgpl.txt
 	cd wxPython \
-		&& python$* ./setup.py build			\
-						WX_CONFIG='$(wxconfig)'	\
-						WXPORT=$(pytoolkit)	\
-						UNICODE=1		\
-						FLAVOUR=$(DEBIAN_WXFLAVOUR)
+		&& python$* ./setup.py build $(SETUP_PY_COMMON_OPTIONS)
 	touch $@
 
 build-doc-stamp: build-gtk-shared-stamp
@@ -559,13 +559,10 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 	dh_installdirs usr/lib/wx/python
 	cd wxPython								\
 		&& python$* ./setup.py install				\
-			      --install-layout=deb \
-			      --prefix=`pwd`/../debian/$(package_gtk_py_lib)/usr \
-			      WX_CONFIG='$(wxconfig)'				\
-			      SYS_WX_CONFIG='$(py_wxconfig)'			\
-			      WXPORT=$(pytoolkit)				\
-			      UNICODE=1						\
-			      FLAVOUR=$(DEBIAN_WXFLAVOUR)
+			--install-layout=deb \
+			--prefix=`pwd`/../debian/$(package_gtk_py_lib)/usr \
+			$(SETUP_PY_COMMON_OPTIONS) \
+			SYS_WX_CONFIG='$(py_wxconfig)'
 
 	cp -a include/wx-$(release) debian/$(package_headers)/usr/include
 
