@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
 
-update-alternatives --remove wx-config /usr/lib/wx/config/=H-msw-unicode-release-=V
+update-alternatives --remove wx-config /usr/lib/wx/config/=H-msw-unicode-=V
 
 #DEBHELPER#
