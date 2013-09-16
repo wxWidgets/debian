@@ -280,9 +280,6 @@ control-files-stamp: debian/control
 			< debian/libwxmsw-dev.$$f                            \
 			> debian/$(package_msw_dev).$$f;                     \
 	done
-#	@echo "generating control file $(package_common).menu";              \
-#		sed -e 's/=V/$(release)/g' < debian/wx-common.menu           \
-#			> debian/$(package_common).menu
 	@echo "generating control file lintian-override";                    \
 		sed -e  's/=V/$(release)/g;s/=SOV/$(sorelease)/g'            \
 			< debian/lintian-override.in                         \
@@ -658,13 +655,6 @@ install-headers: install-gtk-shared-stamp
 	dh_testroot
 	dh_prep
 
-# The only way to be really sure we get the univ headers correct is to install
-# them.  Do that in a scratch dirs, and move the gtk ones last, so at least
-# they win in the result of any uncaught conflict.
-
-#	$(MAKE) -C $(objdir_gtk_univ) install prefix=`pwd`/$(objdir_univ_install)/usr
-
-#	dh_movefiles --sourcedir=$(objdir_univ_install)
 	dh_install $(objdir_gtk_install)/include	usr
 
 install-i18n: DH_OPTIONS=-p$(package_i18n)
