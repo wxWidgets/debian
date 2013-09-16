@@ -1,4 +1,8 @@
-useless changes to make lintian quiet
+Description: Fix incorrect #! line
+Author: Ryan Niebur <ryanryan52@gmail.com>
+Bug: http://trac.wxwidgets.org/ticket/15503
+Forwarded: http://trac.wxwidgets.org/attachment/ticket/15503/wxpython-should-be-usr-bin-env.patch
+Last-Update: 2013-09-16
 
 --- a/wxPython/demo/Main.py
 +++ b/wxPython/demo/Main.py

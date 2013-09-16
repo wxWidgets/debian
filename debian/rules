@@ -384,7 +384,9 @@ build-examples-stamp: build-gtk-shared-stamp
 	cp -a wxPython/demo $(objdir_examples)/wxPython
 	# Remove useless file.
 	rm -f $(objdir_examples)/wxPython/b
-	# Stop files being randomly executable.
+	# Stop files being randomly executable.  Reported upstream at:
+	# http://trac.wxwidgets.org/ticket/15504
+	# http://trac.wxwidgets.org/ticket/15505
 	-chmod a-x \
 		$(objdir_examples)/samples/aui/descrip.mms \
 		$(objdir_examples)/samples/docview/docview.r \

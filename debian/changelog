@@ -1,3 +1,10 @@
+wxwidgets2.9 (2.9.5.0-2) UNRELEASED; urgency=low
+
+  * Forward fix-path-to-some-interpreters.patch and permission changes made in
+    debian/rules to upstream.
+
+ -- Olly Betts <olly@survex.com>  Mon, 16 Sep 2013 19:21:36 +1200
+
 wxwidgets2.9 (2.9.5.0-1) experimental; urgency=low
 
   * New upstream development release. (Closes: #613431)
