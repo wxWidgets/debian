@@ -4,6 +4,7 @@ wxwidgets2.9 (2.9.5.0-2) UNRELEASED; urgency=low
   * Forward fix-path-to-some-interpreters.patch and permission changes made in
     debian/rules to upstream.
   * Fix updating of alternatives for wx-config.
+  * debian/copyright: .orig.tar.gz is now .orig.tar.xz.
 
  -- Olly Betts <olly@survex.com>  Mon, 16 Sep 2013 19:21:36 +1200
 
