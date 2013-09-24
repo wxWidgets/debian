@@ -80,17 +80,6 @@ Applied-Upstream: no
      self.servThread = _ServerThread(xmlServ,verbose=self.verbose)
      self.servThread.setName('XML-RPC Server')
      self.servThread.start()
---- a/wxPython/wx/tools/Editra/src/extern/pubsub.py
-+++ b/wxPython/wx/tools/Editra/src/extern/pubsub.py
-@@ -95,7 +95,7 @@
-     elif isfunction(callableObject):
-         return _paramMinCountFunc(callableObject)
-     else:
--        raise 'Cannot determine type of callable: '+repr(callableObject)
-+        raise Exception, 'Cannot determine type of callable: '+repr(callableObject)
- 
- 
- def _tupleize(items):
 --- a/wxPython/samples/ide/activegrid/util/xmlmarshaller.py
 +++ b/wxPython/samples/ide/activegrid/util/xmlmarshaller.py
 @@ -1094,7 +1094,7 @@

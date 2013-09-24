@@ -1,5 +1,14 @@
-wxwidgets2.9 (2.9.5.0-2) UNRELEASED; urgency=low
+wxwidgets2.9 (2.9.5.0+dfsg-1) UNRELEASED; urgency=low
 
+  * Re-repack upstream to remove editra, which contains a base64 encoded exe
+    file without source code.
+    + New patch fix-editra-removal.patch to fix up build system for removal of
+      editra during repack.
+    + Update wxpython2.9-eliminate-string-exceptions.patch for removal of
+      editra during repack.
+    + debian/copyright: Drop license information for files in editra which we
+      now remove in the repack.
+    + debian/rules: Update for removal of editra during repack.
   * Fix xrced_bitmaps.patch to set path with 2.9 not 2.8 in.
   * Forward fix-path-to-some-interpreters.patch and permission changes made in
     debian/rules to upstream.
