@@ -1,12 +1,14 @@
 wxwidgets2.8 (2.8.12.1+dfsg-1) unstable; urgency=low
 
-  * Re-repack upstream to remove editra, which contains a base64 encoded exe
-    file without source code.
+  * Re-repack upstream to remove unused embedded copy of editra, which
+    contains a base64 encoded exe file without source code. (Closes: #724470)
     + New patch fix-editra-removal.patch to fix up build system for removal of
       editra during repack.
     + debian/copyright: Drop license information for files in editra which we
       now remove in the repack.
     + debian/rules: Update for removal of editra during repack.
+    + Just remove the upstream debian directory while repacking, rather than
+      carefully renaming it to debian-upstream.
   * debian/copyright: Include licence info for wxPython/wx/lib/pubsub.
   * Use xz compression for source and binary packages.
   * debian/wxPython-tools.1: Make the pointer the pydoc documentation slightly
