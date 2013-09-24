@@ -5,6 +5,7 @@ wxwidgets2.9 (2.9.5.0-2) UNRELEASED; urgency=low
     debian/rules to upstream.
   * Fix updating of alternatives for wx-config.
   * debian/copyright: .orig.tar.gz is now .orig.tar.xz.
+  * debian/rules: Remove a couple of unused variables.
 
  -- Olly Betts <olly@survex.com>  Mon, 16 Sep 2013 19:21:36 +1200
 

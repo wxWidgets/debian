@@ -13,8 +13,6 @@ SHELL = /bin/bash
 include /usr/share/python/python.mk
 export DH_OPTIONS
 
-# WXPYTHON_VERSION = $(shell dpkg-parsechangelog | sed -ne '/^Version: /s@Version: \(.*\)@\1@p')
-
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -48,7 +46,6 @@ DEBIAN_WXFLAVOUR := $(shell dpkg-parsechangelog | sed -ne '/^Source: /s@.*wxwidg
 wx_major_version_number := $(shell sed -n 's/^wx_major_version_number=//p' configure.in)
 wx_minor_version_number := $(shell sed -n 's/^wx_minor_version_number=//p' configure.in)
 wx_release_number       := $(shell sed -n 's/^wx_release_number=//p' configure.in)
-wx_subrelease_number    := $(shell sed -n 's/^wx_subrelease_number=//p' configure.in)
 
 release := $(wx_major_version_number).$(wx_minor_version_number)
 
