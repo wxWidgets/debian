@@ -1,4 +1,4 @@
-wxwidgets2.9 (2.9.5.0+dfsg-1) UNRELEASED; urgency=low
+wxwidgets2.9 (2.9.5.0+dfsg-1) experimental; urgency=low
 
   * Re-repack upstream to remove editra, which contains a base64 encoded exe
     file without source code.
@@ -16,7 +16,7 @@ wxwidgets2.9 (2.9.5.0+dfsg-1) UNRELEASED; urgency=low
   * debian/copyright: .orig.tar.gz is now .orig.tar.xz.
   * debian/rules: Remove a couple of unused variables.
 
- -- Olly Betts <olly@survex.com>  Mon, 16 Sep 2013 19:21:36 +1200
+ -- Olly Betts <olly@survex.com>  Tue, 24 Sep 2013 17:11:06 +1200
 
 wxwidgets2.9 (2.9.5.0-1) experimental; urgency=low
 
