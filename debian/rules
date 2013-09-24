@@ -798,8 +798,6 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 
 	# This is rather bogus, it's included in the main copyright file now though.
 	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/XRCed/license.txt
-	# has its own package, editra
-	rm -fr debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/Editra
 
 install-gtk-py-ver: DH_OPTIONS=-p$(package_gtk_py_ver)
 install-gtk-py-ver: install-gtk-py-lib
@@ -845,7 +843,6 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pywrap.1     \
 		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pywxrc.1
 
-	rm debian/$(package_gtk_py_tools)/usr/bin/editra
 	rm debian/$(package_gtk_py_tools)/usr/bin/pyshell
 endif
 	mkdir -p debian/$(package_gtk_py_tools)/usr/share/pixmaps
@@ -1043,7 +1040,7 @@ endif
 	dh_shlibdeps -ldebian/$(package_wxbase_lib)/usr/lib:debian/$(package_wxbase_dbg)/usr/lib:debian/$(package_gtk_lib)/usr/lib:debian/$(package_gtk_dbg)/usr/lib:debian/$(package_gtkmedia_lib):debian/$(package_gtkmedia_dbg)
 	dh_gencontrol
 	dh_md5sums
-	dh_builddeb
+	dh_builddeb -- -Zxz
 
 # Build architecture-independent files here.
 # Note that you currently can't build the indep packages without first

@@ -1,3 +1,19 @@
+wxwidgets2.8 (2.8.12.1+dfsg-1) UNRELEASED; urgency=low
+
+  * Re-repack upstream to remove editra, which contains a base64 encoded exe
+    file without source code.
+    + New patch fix-editra-removal.patch to fix up build system for removal of
+      editra during repack.
+    + debian/copyright: Drop license information for files in editra which we
+      now remove in the repack.
+    + debian/rules: Update for removal of editra during repack.
+  * debian/copyright: Include licence info for wxPython/wx/lib/pubsub.
+  * Use xz compression for source and binary packages.
+  * debian/wxPython-tools.1: Make the pointer the pydoc documentation slightly
+    more helpful by giving an example pydoc invocation.
+
+ -- Olly Betts <olly@survex.com>  Tue, 24 Sep 2013 18:06:15 +1200
+
 wxwidgets2.8 (2.8.12.1-16) unstable; urgency=low
 
   * Fix warning when compiling with recent GCC in C++11 mode.

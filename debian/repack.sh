@@ -28,7 +28,10 @@ if [ `ls -1 "$UP_BASE" | wc -l` -eq 1 ]; then
 fi
 
 ## Remove stuff
-mv $UP_BASE/debian $UP_BASE/debian-upstream
+
+# This is years out of date - just nuke it.
+rm -rf "$UP_BASE"/debian
+
 # There are some non-free DLLs under wxPython.  DLLs aren't useful for us
 # so just nuke any regardless which protects us from any new DLLs which get
 # added by upstream.
@@ -44,15 +47,21 @@ rm -rf "$UP_BASE"/src/jpeg
 rm -rf "$UP_BASE"/src/png
 rm -rf "$UP_BASE"/src/tiff
 rm -rf "$UP_BASE"/src/zlib
-## End
 
+# Editra is packaged separately (as package editra) and contains a
+# base64-encoded .exe without source code, so just nuke it all.
+# We then patch up the wounds with debian/patches/fix-editra-removal.patch
+rm -f "$UP_BASE"/wxPython/scripts/editra
+rm -f "$UP_BASE"/wxPython/distrib/mac/updateEditraPlist.py
+rm -rf "$UP_BASE"/wxPython/wx/tools/Editra
+
+# Now rebuild the tarball.
 mv "$UP_BASE" "$DIR/$REPACK_DIR"
-
 # Using a pipe hides tar errors!
 tar cfC "$DIR/repacked.tar" "$DIR" "$REPACK_DIR"
-gzip -9 < "$DIR/repacked.tar" > "$DIR/repacked.tar.gz"
+xz -9 < "$DIR/repacked.tar" > "$DIR/repacked.tar.xz"
 
-FILE=$(echo $FILE | sed 's/bz2/gz/')
-mv "$DIR/repacked.tar.gz" "$FILE"
+FILE=$(echo $FILE | sed 's/bz2/xz/')
+mv "$DIR/repacked.tar.xz" "$FILE"
 
 echo "*** $FILE repackaged"
