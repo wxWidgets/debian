@@ -1,11 +1,9 @@
 fix-build-with-python2.6.patch
 xrced_bitmaps.patch
-fix-configure-on-hurd.patch
 fix-path-to-some-interpreters.patch
 wxpython2.9-eliminate-string-exceptions.patch
 img2py-no-display.patch
 disable_media_python.patch
-wx-2.9.5-print-ps-in-latin1-locale-segv.patch
 wxpython-=-should-be-==.patch
 wxpython-build-with-wxwebview-disabled.patch
 fix-editra-removal.patch

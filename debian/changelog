@@ -1,5 +1,8 @@
-wxwidgets2.9 (2.9.5.0+dfsg-2) UNRELEASED; urgency=low
+wxwidgets2.9 (3.0.0~rc1-1) UNRELEASED; urgency=low
 
+  * New upstream release candidate.
+    + Drop patches applied upstream: fix-configure-on-hurd.patch,
+      wx-2.9.5-print-ps-in-latin1-locale-segv.patch
   * debian/watch: Add dversionmangle so uscan works with the +dfsg repacked
     tarball.
 
