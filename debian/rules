@@ -48,10 +48,14 @@ wx_minor_version_number := $(shell sed -n 's/^wx_minor_version_number=//p' confi
 wx_release_number       := $(shell sed -n 's/^wx_release_number=//p' configure.in)
 
 release := $(wx_major_version_number).$(wx_minor_version_number)
+# Kludge for the RCs
+release := 2.9
 
 so_cur := $(shell sed 's,<set var="WX_CURRENT">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
 so_age := $(shell sed 's,<set var="WX_AGE">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
 soversion := $(shell expr $(so_cur) - $(so_age))
+# Kludge for the RCs - 2.9.5 was 5, so 3.0.0-rc1 is 6.
+soversion := 6
 
 sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%)-$(soversion)$(addprefix -,$(DEBIAN_WXFLAVOUR))
 
@@ -65,6 +69,9 @@ ifeq ($(shell expr '$(wx_minor_version_number)' : '.*[02468]$$'),0)
 else
     compatible_release := $(release)
 endif
+# Kludge for the RCs
+compatible_release := 2.9.6
+
 
 # Base value for alternative priorities.
 alt_prio  := $(subst .,,$(release))
