@@ -1,3 +1,10 @@
+wxwidgets2.9 (2.9.5.0+dfsg-2) UNRELEASED; urgency=low
+
+  * debian/watch: Add dversionmangle so uscan works with the +dfsg repacked
+    tarball.
+
+ -- Olly Betts <olly@survex.com>  Wed, 09 Oct 2013 10:19:39 +1300
+
 wxwidgets2.9 (2.9.5.0+dfsg-1) experimental; urgency=low
 
   * Re-repack upstream to remove editra, which contains a base64 encoded exe
