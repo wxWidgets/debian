@@ -5,6 +5,8 @@ wxwidgets2.9 (3.0.0~rc1-1) UNRELEASED; urgency=low
       wx-2.9.5-print-ps-in-latin1-locale-segv.patch
   * debian/watch: Add dversionmangle so uscan works with the +dfsg repacked
     tarball.
+  * debian/repack.sh: Upstream no longer embed a copy of iodbc, so we no
+    longer need to remove it during the repack.
 
  -- Olly Betts <olly@survex.com>  Wed, 09 Oct 2013 10:19:39 +1300
 

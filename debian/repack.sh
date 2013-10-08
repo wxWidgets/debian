@@ -47,7 +47,6 @@ rm -f "$UP_BASE"/docs/doxygen/out/html/jquery.js
 # logic, remove other embedded copies of libraries we don't want to use, and
 # which lintian might warn about in future.
 rm -rf "$UP_BASE"/src/expat
-rm -rf "$UP_BASE"/src/iodbc
 rm -rf "$UP_BASE"/src/jpeg
 rm -rf "$UP_BASE"/src/png
 rm -rf "$UP_BASE"/src/tiff
