@@ -37,7 +37,7 @@ rm -rf "$UP_BASE"/debian
 # added by upstream.
 find "$UP_BASE" -iname '*.dll' -delete
 
-# Removed minified jquery.js (non-free without non-minified source).  We
+# Remove minified jquery.js (non-free without non-minified source).  We
 # symlink in a packaged version of jquery in debian/rules.
 rm -f "$UP_BASE"/docs/doxygen/out/html/jquery.js
 
