@@ -1,4 +1,4 @@
-wxwidgets2.9 (2.9.5.0+dfsg-3.0.0~rc1+1) UNRELEASED; urgency=low
+wxwidgets2.9 (2.9.5.0+dfsg2-3.0.0~rc1+1) UNRELEASED; urgency=low
 
   * New upstream release candidate.
     + Drop patches applied upstream: fix-configure-on-hurd.patch,
