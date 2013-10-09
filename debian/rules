@@ -54,8 +54,12 @@ release := 2.9
 so_cur := $(shell sed 's,<set var="WX_CURRENT">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
 so_age := $(shell sed 's,<set var="WX_AGE">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
 soversion := $(shell expr $(so_cur) - $(so_age))
-# Kludge for the RCs - 2.9.5 was 5, so 3.0.0-rc1 is 6.
-soversion := 6
+# Kludge for the RCs - 2.9.x is soversion x (so 2.9.5 was 5).  No further 2.9.x
+# releases are planned, but 31 is mnemonic for 3.0.0-rc1.  Packaging the RCs as
+# wxwidgets2.9 means we can follow upstream's soversions for the 3.0.x release
+# series itself, even if there's an ABI change between 3.0.0-rc1 and the
+# 3.0.0 release proper.
+soversion := 31
 
 sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%)-$(soversion)$(addprefix -,$(DEBIAN_WXFLAVOUR))
 
