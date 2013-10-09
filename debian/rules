@@ -294,6 +294,35 @@ control-files-stamp: debian/control
 			> debian/lintian-override;                           \
 	touch $@
 
+	# Files removed between 2.9.5.0 and 3.0.0-rc1.  We don't have a
+	# wxPython release of RC1 yet, so we use a patch for the new and
+	# changed files and then remove the deleted ones here.
+	rm -rf \
+	    build/bakefiles/formats \
+	    docs/doxygen/doxygen.log \
+	    docs/doxygen/images/appear-listview-gtk.png \
+	    docs/doxygen/images/appear-simplehtmllistbox-gtk.png \
+	    docs/doxygen/out \
+	    gtk/gnome/gprint.h \
+	    gtk/setup0.h \
+	    msw/setup0.h \
+	    osx/setup0.h \
+	    src/cwcopysetup.bat \
+	    src/cwdcopysetup.bat \
+	    src/gtk1/gnome \
+	    src/gtk/gnome/gprint.cpp \
+	    src/wxJpeg.icc \
+	    src/wxPng.icc \
+	    src/wxTiff.icc \
+	    src/Wxwindll.icc \
+	    src/wxWin.icc \
+	    src/wxXpm.icc \
+	    src/wxZlib.icc \
+	    wx/include/wx/gtk/gnome/gprint.h \
+	    wx/include/wx/gtk/setup0.h \
+	    wx/include/wx/msw/setup0.h \
+	    wx/include/wx/osx/setup0.h
+
 build-arch: control-files-stamp $(build_arch_stamps)
 build-indep: control-files-stamp $(build_indep_stamps)
 build_all: control-files-stamp $(build_stamps_native)
