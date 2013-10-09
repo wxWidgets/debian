@@ -133,7 +133,7 @@ MSW_CONFIGURE_OPTIONS = \
 # a threaded application then comment out the next line.
 MSW_CONFIGURE_OPTIONS += --disable-threads
 
-PY_WX_CONFIG_OPTIONS = --version=$(release) --toolkit=$(pytoolkit) --static=no
+PY_WX_CONFIG_OPTIONS = --version=3.0 --toolkit=$(pytoolkit) --static=no
 
 # Packages to build:
 package_wxbase_lib      := libwxbase$(sorelease)

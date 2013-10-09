@@ -9,3 +9,4 @@ wxpython-build-with-wxwebview-disabled.patch
 fix-editra-removal.patch
 3.0.0-rc1.patch
 fix-nonfree-logo-removal.patch
+wxpython-wx-config-version-3.0-bodge.patch
