@@ -1,4 +1,4 @@
-wxwidgets2.9 (2.9.5.0+dfsg2-3.0.0~rc1+1) UNRELEASED; urgency=low
+wxwidgets2.9 (2.9.5.0+dfsg2-3.0.0~rc1+1) experimental; urgency=low
 
   * New upstream release candidate.
     + Drop patches applied upstream: fix-configure-on-hurd.patch,
@@ -10,7 +10,7 @@ wxwidgets2.9 (2.9.5.0+dfsg2-3.0.0~rc1+1) UNRELEASED; urgency=low
   * debian/repack.sh: Upstream no longer embed a copy of iodbc, so we no
     longer need to remove it during the repack.
 
- -- Olly Betts <olly@survex.com>  Wed, 09 Oct 2013 10:19:39 +1300
+ -- Olly Betts <olly@survex.com>  Wed, 09 Oct 2013 15:05:39 +1300
 
 wxwidgets2.9 (2.9.5.0+dfsg-1) experimental; urgency=low
 
