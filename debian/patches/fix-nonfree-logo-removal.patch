@@ -1,0 +1,86 @@
+Description: Fix up references to removed logos
+ Some of the platform logos seem likely to be non-free, so we remove them
+ during the repack.  This patch removes references to them.
+Author: Olly Betts <olly@survex.com>
+Bug: http://trac.wxwidgets.org/ticket/15564
+
+--- wxwidgets2.9-2.9.5.0+dfsg.orig/docs/doxygen/out/html/page_port.html
++++ wxwidgets2.9-2.9.5.0+dfsg/docs/doxygen/out/html/page_port.html
+@@ -101,9 +101,7 @@ wxGTK</h1>
+ <p>For further information, please see the files in <code>docs/gtk</code> in the distribution.</p>
+ <h1><a class="anchor" id="page_port_wxosx"></a>
+ wxOSX</h1>
+- <div class="logo"> <div class="image">
+-<img src="logo_osxleopard.png" alt="logo_osxleopard.png"/>
+-</div>
++ <div class="logo">
+   </div><h2><a class="anchor" id="page_port_wxosx_carbon"></a>
+ wxOSX/Carbon</h2>
+ <p>wxOSX/Carbon is a port of wxWidgets for the Macintosh OS platform. Currently MacOS X 10.5 or higher are supported. wxOSX/Carbon can be compiled both using Apple's command line developer tools as well as Apple's Xcode IDE. wxOSX/Carbon supports both the Intel and PowerPC architectures and can be used to produce "universal binaries" in order create application which can run both architecture. Unfortunately, wxOSX/Carbon does not support any 64-bit architecture since Apple decided not to port its Carbon API entirely to 64-bit.</p>
+@@ -129,16 +127,12 @@ wxX11</h1>
+ <pre class="fragment">configure --with-x11 --with-universal </pre><p>For further information, please see the files in <code>docs/x11</code> in the distribution. There is also a page on the use of wxWidgets for embedded applications on the wxWidgets web site.</p>
+ <h1><a class="anchor" id="page_port_wxmotif"></a>
+ wxMotif</h1>
+- <div class="logo"> <div class="image">
+-<img src="logo_motif.png" alt="logo_motif.png"/>
+-</div>
++ <div class="logo">
+   </div><p>wxMotif is a port of wxWidgets for X11 systems using Motif libraries. Motif libraries provide a clean and fast user interface at the expense of the beauty and candy of newer interfaces like GTK.</p>
+ <p>For further information, please see the files in <code>docs/motif</code> in the distribution.</p>
+ <h1><a class="anchor" id="page_port_wxmsw"></a>
+ wxMSW</h1>
+- <div class="logo"> <div class="image">
+-<img src="logo_win.png" alt="logo_win.png"/>
+-</div>
++ <div class="logo">
+   </div><p>wxMSW is a port of wxWidgets for the Windows platforms including Windows 95, 98, ME, 2000, NT, XP and Vista in ANSI and Unicode modes (for Windows 9x and ME through the MSLU extension library). wxMSW ensures native look and feel for XP when using wxWidgets version 2.3.3 or higher. wxMSW can be compiled with a great variety of compilers including Microsoft Studio VC++, Borland 5.5, MinGW32, Cygwin and Watcom as well as cross-compilation with a Linux-hosted MinGW32 tool chain.</p>
+ <p>For further information, please see the files in docs/msw in the distribution.</p>
+ <h2><a class="anchor" id="page_port_wxmsw_themedborders"></a>
+--- wxwidgets2.9-2.9.5.0+dfsg.orig/docs/doxygen/out/html/index.hhp
++++ wxwidgets2.9-2.9.5.0+dfsg/docs/doxygen/out/html/index.hhp
+@@ -2762,10 +2762,7 @@ gtk-zoom-in.png
+ gtk-zoom-out.png
+ dot_inline_dotgraph_1.png
+ logo_gtk.png
+-logo_osxleopard.png
+ logo_x11.png
+-logo_motif.png
+-logo_win.png
+ overview_events_chain.png
+ overview_events_winstack.png
+ overview_html_contbox.png
+--- wxwidgets2.9-2.9.5.0+dfsg.orig/docs/doxygen/mainpages/platdetails.h
++++ wxwidgets2.9-2.9.5.0+dfsg/docs/doxygen/mainpages/platdetails.h
+@@ -64,10 +64,6 @@ distribution.
+ 
+ @section page_port_wxosx wxOSX
+ 
+-@htmlonly<div class="logo">@endhtmlonly
+-@image html logo_osxleopard.png
+-@htmlonly</div>@endhtmlonly
+-
+ @subsection page_port_wxosx_carbon wxOSX/Carbon
+ 
+ wxOSX/Carbon is a port of wxWidgets for the Macintosh OS platform. Currently
+@@ -144,10 +140,6 @@ applications on the wxWidgets web site.
+ 
+ @section page_port_wxmotif wxMotif
+ 
+-@htmlonly<div class="logo">@endhtmlonly
+-@image html logo_motif.png
+-@htmlonly</div>@endhtmlonly
+-
+ wxMotif is a port of wxWidgets for X11 systems using Motif libraries. Motif
+ libraries provide a clean and fast user interface at the expense of the beauty
+ and candy of newer interfaces like GTK.
+@@ -159,10 +151,6 @@ distribution.
+ 
+ @section page_port_wxmsw wxMSW
+ 
+-@htmlonly<div class="logo">@endhtmlonly
+-@image html logo_win.png
+-@htmlonly</div>@endhtmlonly
+-
+ wxMSW is a port of wxWidgets for the Windows platforms including Windows 95,
+ 98, ME, 2000, NT, XP and Vista in ANSI and Unicode modes (for Windows 9x and ME
+ through the MSLU extension library). wxMSW ensures native look and feel for XP

@@ -41,6 +41,12 @@ find "$UP_BASE" -iname '*.dll' -delete
 # symlink in a packaged version of jquery in debian/rules.
 rm -f "$UP_BASE"/docs/doxygen/out/html/jquery.js
 
+# Remove logo images which seem unlikely to be freely licensed.
+# Query filed upstream: http://trac.wxwidgets.org/ticket/15564
+rm -f "$UP_BASE"/docs/doxygen/images/logo_motif.png
+rm -f "$UP_BASE"/docs/doxygen/images/logo_osxleopard.png
+rm -f "$UP_BASE"/docs/doxygen/images/logo_win.png
+
 # We don't use the built-in copy of expat and it contains an ancient copy
 # of libtool which lintian warns about, so just delete it.  This also ensures
 # that we don't accidentally start building against it in future.  By similar

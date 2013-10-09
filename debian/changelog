@@ -3,6 +3,8 @@ wxwidgets2.9 (2.9.5.0+dfsg-3.0.0~rc1+1) UNRELEASED; urgency=low
   * New upstream release candidate.
     + Drop patches applied upstream: fix-configure-on-hurd.patch,
       wx-2.9.5-print-ps-in-latin1-locale-segv.patch
+  * Update repack to remove logos which are unlikely to have a DFSG compatible
+    licence.
   * debian/watch: Add dversionmangle so uscan works with the +dfsg repacked
     tarball.
   * debian/repack.sh: Upstream no longer embed a copy of iodbc, so we no
