@@ -3,6 +3,7 @@ Description: Fix up references to removed logos
  during the repack.  This patch removes references to them.
 Author: Olly Betts <olly@survex.com>
 Bug: http://trac.wxwidgets.org/ticket/15564
+Applied-Upstream: http://trac.wxwidgets.org/changeset/74972
 
 --- wxwidgets2.9-2.9.5.0+dfsg.orig/docs/doxygen/out/html/page_port.html
 +++ wxwidgets2.9-2.9.5.0+dfsg/docs/doxygen/out/html/page_port.html
