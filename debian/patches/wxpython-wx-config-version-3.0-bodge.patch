@@ -24,3 +24,10 @@ Last-Update: 2013-10-10
      value = os.popen(cmd, 'r').read()[:-1]
      return value
  
+diff --git a/wxPython/src/wx.pth b/wxPython/src/wx.pth
+index 5d012b0..b7b620d 100644
+--- a/wxPython/src/wx.pth
++++ b/wxPython/src/wx.pth
+@@ -1 +1 @@
+-wx-2.9.5-gtk2
++wx-2.9.6-gtk2

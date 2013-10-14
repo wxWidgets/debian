@@ -1,11 +1,15 @@
 wxwidgets2.9 (2.9.5.0+dfsg2-1) experimental; urgency=low
 
   * The non-wxPython code has been updated to match upstream's 3.0.0-rc1 via
-    new patch 3.0.0-rc1.patch.  Packaging the RCs as wxwidgets2.9 means we can
-    follow upstream's soversions for the 3.0.x release series itself, even if
-    there's an ABI change between 3.0.0-rc1 and the 3.0.0 release proper.
+    new patch 3.0.0-rc1.patch and the docs in
+    debian/wxWidgets-3.0.0-rc1-docs-html.tar.bz2.  Packaging the RCs as
+    wxwidgets2.9 means we can follow upstream's soversions for the 3.0.x
+    release series itself, even if there's an ABI change between 3.0.0-rc1 and
+    the 3.0.0 release proper.
     + Drop patches applied upstream: fix-configure-on-hurd.patch,
       wx-2.9.5-print-ps-in-latin1-locale-segv.patch
+    + Regenerate wxPython bindings using SWIG to pick up C++ API changes since
+      wx 2.9.5.
   * Update repack to remove logos which are unlikely to have a DFSG-compatible
     licence and have now been removed in upstream SVN.
   * debian/watch: Add dversionmangle so uscan works with the +dfsg repacked
@@ -13,7 +17,7 @@ wxwidgets2.9 (2.9.5.0+dfsg2-1) experimental; urgency=low
   * debian/repack.sh: Upstream no longer embed a copy of iodbc, so we no
     longer need to remove it during the repack.
 
- -- Olly Betts <olly@survex.com>  Thu, 10 Oct 2013 11:11:02 +1300
+ -- Olly Betts <olly@survex.com>  Wed, 16 Oct 2013 00:00:57 +1300
 
 wxwidgets2.9 (2.9.5.0+dfsg-1) experimental; urgency=low
 

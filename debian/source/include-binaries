@@ -68,3 +68,4 @@ src/tests/image/horse_rle4_flipped.bmp
 src/tests/image/horse_rle8.bmp
 src/tests/image/horse_rle8_flipped.bmp
 src/tests/intl/fr/internat.mo
+debian/wxWidgets-3.0.0-rc1-docs-html.tar.bz2

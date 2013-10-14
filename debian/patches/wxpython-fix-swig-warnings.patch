@@ -1,0 +1,79 @@
+Description: Fix some SWIG warnings
+Forwarded: no
+Last-Update: 2013-10-15
+
+--- wxwidgets2.9-2.9.5.0+dfsg2.orig/wxPython/src/aui.i
++++ wxwidgets2.9-2.9.5.0+dfsg2/wxPython/src/aui.i
+@@ -331,6 +331,7 @@ public:
+ %include auibook.h
+ %include tabmdi.h
+ %include auibar.h
++%include tabart.h
+ 
+ #undef wxColor
+ 
+--- wxwidgets2.9-2.9.5.0+dfsg2.orig/wxPython/src/_defs.i
++++ wxwidgets2.9-2.9.5.0+dfsg2/wxPython/src/_defs.i
+@@ -531,7 +531,7 @@ class ListClass##_iterator
+ {
+ public:
+     //ListClass##_iterator();
+-    ~ListClass_iterator();
++    ~ListClass##_iterator();
+     KeepGIL(next);
+     ItemClass* next();
+ };
+--- wxwidgets2.9-2.9.5.0+dfsg2.orig/wxPython/src/_evtloop.i
++++ wxwidgets2.9-2.9.5.0+dfsg2/wxPython/src/_evtloop.i
+@@ -28,7 +28,7 @@ class wxEventLoopBase
+ {
+ public:
+     // wxEventLoopBase();    *** It's an ABC, can't instantiate
+-    virtual ~wxEventLoop();
++    virtual ~wxEventLoopBase();
+ 
+     // use this to check whether the event loop was successfully created before
+     // using it
+diff --git a/wxPython/src/_dataobj.i b/wxPython/src/_dataobj.i
+index 6a86b63..b217d60 100644
+--- a/wxPython/src/_dataobj.i
++++ b/wxPython/src/_dataobj.i
+@@ -885,6 +885,17 @@ public:
+ #include <wx/metafile.h>
+ %}
+ 
++class wxMetaFile;
++
++class wxMetafileDataObject : public wxDataObjectSimple
++{
++public:
++    wxMetafileDataObject();
++
++    void SetMetafile(const wxMetaFile& metafile);
++    wxMetaFile GetMetafile() const;
++};
++
+ #else
+ %{
+ class wxMetafileDataObject : public wxDataObjectSimple
+@@ -902,20 +913,6 @@ public:
+ 
+ #endif
+ 
+-
+-class wxMetaFile;
+-
+-class wxMetafileDataObject : public wxDataObjectSimple
+-{
+-public:
+-    wxMetafileDataObject();
+-
+-    void SetMetafile(const wxMetaFile& metafile);
+-    wxMetaFile GetMetafile() const;
+-};
+-
+-
+-
+ //---------------------------------------------------------------------------
+ //---------------------------------------------------------------------------
+ 

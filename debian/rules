@@ -380,14 +380,16 @@ build-gtk-py%-stamp: build-gtk-shared-stamp
 	dh_testdir
 	touch docs/lgpl.txt
 	cd wxPython \
-		&& python$* ./setup.py build $(SETUP_PY_COMMON_OPTIONS)
+		&& python$* ./setup.py build $(SETUP_PY_COMMON_OPTIONS) USE_SWIG=1 SWIG=/usr/bin/swig
 	touch $@
 
 build-doc-stamp: build-gtk-shared-stamp
 	dh_testdir
 	rm -rf $(objdir_doc)
 	mkdir $(objdir_doc)
-	cp -a docs/doxygen/out/html/* $(objdir_doc)
+	# Until wxPython is updated:
+	tar -C'$(objdir_doc)' --strip-components=1 -xf debian/wxWidgets-3.0.0-rc1-docs-html.tar.bz2
+	# cp -a docs/doxygen/out/html/* $(objdir_doc)
 
 	# Replace embedded copy of jquery with symlink to packaged version.
 	rm -f $(objdir_doc)/jquery.js
@@ -631,11 +633,11 @@ install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
 
 	# Fix image-file-in-usr-lib lintian warnings.
 	mkdir -p debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
-	cp -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
-	-rm -rf debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/XRCed/plugins/bitmaps
+	cp -rf -v debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/wx-*/wx/tools/XRCed/plugins/bitmaps debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
+	-rm -rf -v debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/wx-*/wx/tools/XRCed/plugins/bitmaps
 
 	# This is rather bogus, it's included in the main copyright file now though.
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/$(wxsubdir)/wx/tools/XRCed/license.txt
+	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/wx-*uuu/wx/tools/XRCed/license.txt
 
 install-gtk-py-ver: DH_OPTIONS=-p$(package_gtk_py_ver)
 install-gtk-py-ver: install-gtk-py-lib
