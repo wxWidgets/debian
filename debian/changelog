@@ -16,6 +16,8 @@ wxwidgets2.9 (2.9.5.0+dfsg2-1) experimental; urgency=low
     tarball.
   * debian/repack.sh: Upstream no longer embed a copy of iodbc, so we no
     longer need to remove it during the repack.
+  * debian/rules: Compressing packages using xz is now the default so no
+    longer needs explicitly specifying.
 
  -- Olly Betts <olly@survex.com>  Wed, 16 Oct 2013 00:00:57 +1300
 
