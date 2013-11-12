@@ -4,21 +4,17 @@ wxwidgets3.0 (3.0.0-1) unstable; urgency=low
     + Incorporates all our patches.
     + __WXDEBUG__ is now on by default, so our -dbg packages now just contain
       detached debugging symbols. (Closes: #655251)
-  * The wxwidgets2.9 source package was based on wxPython, but wxwidgets3.0 is
-    based on wxWidgets.  The major motivation is we don't want to wait until
-    wxPython 3.0.0 is released to package wxWidgets 3.0.0, but it's probably
-    better overall anyway.  Currently the "-doc" package is gone (as these
-    docs aren't in wx source code distribution), but this should reappear in
-    the near future.
+    + Upstream tarball is now DFSG-free, so we no longer repack it.
+  * The wxwidgets2.8 source package was based on wxPython sources, but
+    wxwidgets3.0 is based on wxWidgets.  The major motivation is we don't want
+    to wait until wxPython 3.0.0 is released to package wxWidgets 3.0.0, but
+    it's probably better overall anyway.  Currently the "-doc" package is gone
+    (as these docs aren't in wx source code distribution), but this should
+    reappear in the near future.
   * debian/control: Drop conflicts against packages (or versions of packages)
     which no longer exist in any supported Debian or Ubuntu release.
-  * Fix updating of alternatives for wx-config.
-  * debian/watch: Add dversionmangle so uscan works with the +dfsg repacked
-    tarball.
-  * debian/repack.sh: Upstream no longer embed a copy of iodbc, so we no
-    longer need to remove it during the repack.
 
- -- Olly Betts <olly@survex.com>  Tue, 12 Nov 2013 10:04:12 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 12 Nov 2013 11:38:12 +0000
 
 wxwidgets2.8 (2.8.12.1+dfsg-1) unstable; urgency=low
 

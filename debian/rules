@@ -216,11 +216,6 @@ control-files-stamp: debian/control
 			< debian/libwxgtk-dev.$$f                            \
 			> debian/$(package_gtk_dev).$$f;                     \
 	done
-	@for f in docs doc-base; do                                          \
-		echo "generating control file $(package_doc).$$f";           \
-		sed -e 's/=V/$(release)/g' < debian/wx-doc.$$f               \
-			> debian/$(package_doc).$$f;                         \
-	done
 	@for f in examples; do                                               \
 		echo "generating control file $(package_examples).$$f";      \
 		cp debian/wx-examples.$$f debian/$(package_examples).$$f;    \

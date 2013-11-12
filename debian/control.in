@@ -192,20 +192,6 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (i18n support)
  .
  This package provides the i18n message catalogs for wxWidgets.
 
-Package: wx=V-doc
-Architecture: all
-Section: doc
-Provides: wx-doc
-Depends: ${misc:Depends}
-Recommends: libjs-jquery
-Suggests: doc-base, www-browser
-Description: wxWidgets Cross-platform C++ GUI toolkit (documentation)
- wxWidgets (formerly known as wxWindows) is a class library for C++ providing
- GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).
- .
- This package provides a HTML version of the wxWidgets reference manual.
-
 Package: wx=V-examples
 Architecture: all
 Section: devel

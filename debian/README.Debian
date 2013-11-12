@@ -20,7 +20,7 @@ libwxgtk-media3.0-dev	    extra files required for building wxGTK apps
 wx-common		    common helper files and support applications.
 wx3.0-headers		    common header files for building wxWidgets apps
 wx3.0-examples 		    wxWidgets demos and samples (source)
-wx3.0-i18n			    message catalogs for native language support
+wx3.0-i18n		    message catalogs for native language support
 
 	Note that static libraries are no longer supplied in these
 	packages.  Please read, or have understood:
