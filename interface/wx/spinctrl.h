@@ -2,7 +2,6 @@
 // Name:        spinctrl.h
 // Purpose:     interface of wxSpinCtrl
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -180,12 +179,20 @@ public:
     virtual void SetSelection(long from, long to);
 
     /**
-        Sets the value of the spin control. Use the variant using int instead.
+        Sets the value of the spin control.
+
+        It is recommended to use the overload taking an integer value instead.
+
+        Notice that, unlike wxTextCtrl::SetValue(), but like most of the other
+        setter methods in wxWidgets, calling this method does not generate any
+        events as events are only generated for the user actions.
     */
     virtual void SetValue(const wxString& text);
 
     /**
         Sets the value of the spin control.
+
+        Calling this method doesn't generate any @c wxEVT_SPINCTRL events.
     */
     void SetValue(int value);
 };
@@ -319,12 +326,20 @@ public:
     void SetRange(double minVal, double maxVal);
 
     /**
-        Sets the value of the spin control. Use the variant using double instead.
+        Sets the value of the spin control.
+
+        It is recommended to use the overload taking a double value instead.
+
+        Notice that, unlike wxTextCtrl::SetValue(), but like most of the other
+        setter methods in wxWidgets, calling this method does not generate any
+        events as events are only generated for the user actions.
     */
     virtual void SetValue(const wxString& text);
 
     /**
         Sets the value of the spin control.
+
+        Calling this method doesn't generate any @c wxEVT_SPINCTRLDOUBLE events.
     */
     void SetValue(double value);
 };

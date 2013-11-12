@@ -2,7 +2,6 @@
 // Name:        thread.h
 // Purpose:     interface of all thread-related wxWidgets classes
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -169,6 +168,33 @@ public:
         @see WaitTimeout()
     */
     wxCondError Wait();
+
+    /**
+        Waits until the condition is signalled and the associated condition true.
+
+        This is a convenience overload that may be used to ignore spurious
+        awakenings while waiting for a specific condition to become true.
+
+        Equivalent to
+        @code
+        while ( !predicate() )
+        {
+            wxCondError e = Wait();
+            if ( e != wxCOND_NO_ERROR )
+                return e;
+        }
+        return wxCOND_NO_ERROR;
+        @endcode
+
+        The predicate would typically be a C++11 lambda:
+        @code
+        condvar.Wait([]{return value == 1;});
+        @endcode
+
+        @since 3.0
+    */
+    template<typename Functor>
+    wxCondError Wait(const Functor& predicate);
 
     /**
         Waits until the condition is signalled or the timeout has elapsed.
@@ -1218,9 +1244,9 @@ public:
 
         The following symbolic constants can be used in addition to raw
         values in 0..100 range:
-          - ::wxPRIORITY_MIN: 0
-          - ::wxPRIORITY_DEFAULT: 50
-          - ::wxPRIORITY_MAX: 100
+          - @c wxPRIORITY_MIN: 0
+          - @c wxPRIORITY_DEFAULT: 50
+          - @c wxPRIORITY_MAX: 100
     */
     void SetPriority(unsigned int priority);
 
@@ -1262,7 +1288,7 @@ public:
 
         This function can only be called from another thread context.
 
-        @param waitMode
+        @param flags
             As described in wxThreadWait documentation, wxTHREAD_WAIT_BLOCK
             should be used as the wait mode even although currently
             wxTHREAD_WAIT_YIELD is for compatibility reasons. This parameter is

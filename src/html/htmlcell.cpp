@@ -2,7 +2,6 @@
 // Name:        src/html/htmlcell.cpp
 // Purpose:     wxHtmlCell - basic element of HTML output
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id$
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -196,7 +195,17 @@ wxCursor wxHtmlCell::GetCursor() const
 }
 #endif // WXWIN_COMPATIBILITY_2_6
 
-wxCursor wxHtmlCell::GetMouseCursor(wxHtmlWindowInterface *window) const
+wxCursor
+wxHtmlCell::GetMouseCursor(wxHtmlWindowInterface* WXUNUSED(window)) const
+{
+    // This is never called directly, only from GetMouseCursorAt() and we
+    // return an invalid cursor by default to let it delegate to the window.
+    return wxNullCursor;
+}
+
+wxCursor
+wxHtmlCell::GetMouseCursorAt(wxHtmlWindowInterface *window,
+                             const wxPoint& relPos) const
 {
 #if WXWIN_COMPATIBILITY_2_6
     // NB: Older versions of wx used GetCursor() virtual method in place of
@@ -209,7 +218,11 @@ wxCursor wxHtmlCell::GetMouseCursor(wxHtmlWindowInterface *window) const
         return cur;
 #endif // WXWIN_COMPATIBILITY_2_6
 
-    if ( GetLink() )
+    const wxCursor curCell = GetMouseCursor(window);
+    if ( curCell.IsOk() )
+      return curCell;
+
+    if ( GetLink(relPos.x, relPos.y) )
     {
         return window->GetHTMLCursor(wxHtmlWindowInterface::HTMLCursor_Link);
     }
@@ -1251,9 +1264,9 @@ void wxHtmlContainerCell::InsertCell(wxHtmlCell *f)
 
 void wxHtmlContainerCell::SetAlign(const wxHtmlTag& tag)
 {
-    if (tag.HasParam(wxT("ALIGN")))
+    wxString alg;
+    if (tag.GetParamAsString(wxT("ALIGN"), &alg))
     {
-        wxString alg = tag.GetParam(wxT("ALIGN"));
         alg.MakeUpper();
         if (alg == wxT("CENTER"))
             SetAlignHor(wxHTML_ALIGN_CENTER);
@@ -1271,19 +1284,16 @@ void wxHtmlContainerCell::SetAlign(const wxHtmlTag& tag)
 
 void wxHtmlContainerCell::SetWidthFloat(const wxHtmlTag& tag, double pixel_scale)
 {
-    if (tag.HasParam(wxT("WIDTH")))
+    int wdi;
+    bool wpercent;
+    if (tag.GetParamAsIntOrPercent(wxT("WIDTH"), &wdi, wpercent))
     {
-        int wdi;
-        wxString wd = tag.GetParam(wxT("WIDTH"));
-
-        if (wd[wd.length()-1] == wxT('%'))
+        if (wpercent)
         {
-            wxSscanf(wd.c_str(), wxT("%i%%"), &wdi);
             SetWidthFloat(wdi, wxHTML_UNITS_PERCENT);
         }
         else
         {
-            wxSscanf(wd.c_str(), wxT("%i"), &wdi);
             SetWidthFloat((int)(pixel_scale * (double)wdi), wxHTML_UNITS_PIXELS);
         }
         m_LastLayout = -1;

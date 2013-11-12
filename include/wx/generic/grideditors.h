@@ -4,7 +4,6 @@
 // Author:      Michael Bedward (based on code by Julian Smart, Robin Dunn)
 // Modified by: Santiago Palacios
 // Created:     1/08/1999
-// RCS-ID:      $Id$
 // Copyright:   (c) Michael Bedward
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,6 +14,8 @@
 #include "wx/defs.h"
 
 #if wxUSE_GRID
+
+#include "wx/scopedptr.h"
 
 class wxGridCellEditorEvtHandler : public wxEvtHandler
 {

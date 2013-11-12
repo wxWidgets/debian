@@ -2,7 +2,6 @@
 // Name:        wx/html/htmltag.h
 // Purpose:     wxHtmlTag class (represents single tag)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id$
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -102,6 +101,7 @@ public:
     static bool ParseAsColour(const wxString& str, wxColour *clr);
 
     // Convenience functions:
+    bool GetParamAsString(const wxString& par, wxString *str) const;
     bool GetParamAsColour(const wxString& par, wxColour *clr) const;
     bool GetParamAsInt(const wxString& par, int *clr) const;
     bool GetParamAsIntOrPercent(const wxString& param,

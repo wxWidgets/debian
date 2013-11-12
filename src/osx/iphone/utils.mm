@@ -4,7 +4,6 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -50,13 +49,21 @@
 
 @implementation wxAppDelegate
 
+- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    wxUnusedVar(application);
+    wxUnusedVar(launchOptions);
+    wxTheApp->OSXOnWillFinishLaunching();
+    return YES;
+}
+
 - (void)applicationDidFinishLaunching:(UIApplication *)application {	
-	wxTheApp->OnInit();
+    wxTheApp->OSXOnDidFinishLaunching();
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application { 
-    wxCloseEvent event;
-    wxTheApp->OnEndSession(event);
+    wxUnusedVar(application);
+    wxTheApp->OSXOnWillTerminate();
 }
 
 - (void)dealloc {

@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -441,6 +440,15 @@ WXHBRUSH wxControl::MSWControlColorDisabled(WXHDC pDC)
     return DoMSWControlColor(pDC,
                              wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE),
                              GetHWND());
+}
+
+wxWindow* wxControl::MSWFindItem(long id, WXHWND hWnd) const
+{
+    // is it us or one of our "internal" children?
+    if ( id == GetId() || (GetSubcontrols().Index(id) != wxNOT_FOUND) )
+        return const_cast<wxControl *>(this);
+
+    return wxControlBase::MSWFindItem(id, hWnd);
 }
 
 // ----------------------------------------------------------------------------

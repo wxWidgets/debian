@@ -4,7 +4,6 @@
 // Author:      Stefan Csomor
 // Modified by: Kevin Ollivier
 // Created:     1998-01-01
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -287,6 +286,18 @@ wxTextWidgetImpl * wxTextEntry::GetTextPeer() const
 
     return win ? dynamic_cast<wxTextWidgetImpl *>(win->GetPeer()) : NULL;
 }
+
+bool wxTextEntry::SetHint(const wxString& hint)
+{
+    m_hintString = hint;
+    return GetTextPeer() && GetTextPeer()->SetHint(hint);
+}
+
+wxString wxTextEntry::GetHint() const
+{
+    return m_hintString;
+}
+
 
 // ----------------------------------------------------------------------------
 // Auto-completion

@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.01.01
-// RCS-ID:      $Id$
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -266,8 +265,16 @@ void wxPopupTransientWindow::PopHandlers()
 
 void wxPopupTransientWindow::Popup(wxWindow *winFocus)
 {
+    // If we have a single child, we suppose that it must cover the entire
+    // popup window and hence we give the mouse capture to it instead of
+    // keeping it for ourselves.
+    //
+    // Notice that this works best for combobox-like popups which have a single
+    // control inside them and not so well for popups containing a single
+    // wxPanel with multiple children inside it but OTOH it does no harm in
+    // this case neither and we can't reliably distinguish between them.
     const wxWindowList& children = GetChildren();
-    if ( children.GetCount() )
+    if ( children.GetCount() == 1 )
     {
         m_child = children.GetFirst()->GetData();
     }
@@ -450,21 +457,31 @@ void wxPopupTransientWindow::OnIdle(wxIdleEvent& event)
 
     if (IsShown() && m_child)
     {
-        wxPoint pos = ScreenToClient(wxGetMousePosition());
-        wxRect rect(GetSize());
+        // Store the last mouse position to minimize the number of calls to
+        // wxFindWindowAtPoint() which are quite expensive.
+        static wxPoint s_posLast;
+        const wxPoint pos = wxGetMousePosition();
+        if ( pos != s_posLast )
+        {
+            s_posLast = pos;
 
-        if ( rect.Contains(pos) )
-        {
-            if ( m_child->HasCapture() )
+            wxWindow* const winUnderMouse = wxFindWindowAtPoint(pos);
+
+            // We release the mouse capture while the mouse is inside the popup
+            // itself to allow using it normally with the controls inside it.
+            if ( wxGetTopLevelParent(winUnderMouse) == this )
             {
-                m_child->ReleaseMouse();
+                if ( m_child->HasCapture() )
+                {
+                    m_child->ReleaseMouse();
+                }
             }
-        }
-        else
-        {
-            if ( !m_child->HasCapture() )
+            else // And we reacquire it as soon as the mouse goes outside.
             {
-                m_child->CaptureMouse();
+                if ( !m_child->HasCapture() )
+                {
+                    m_child->CaptureMouse();
+                }
             }
         }
     }

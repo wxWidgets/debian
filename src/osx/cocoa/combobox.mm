@@ -4,7 +4,6 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -249,6 +248,7 @@ wxWidgetImplType* wxWidgetImpl::CreateComboBox( wxComboBox* wxpeer,
 {
     NSRect r = wxOSXGetFrameForControl( wxpeer, pos , size ) ;
     wxNSComboBox* v = [[wxNSComboBox alloc] initWithFrame:r];
+    [v setNumberOfVisibleItems:13];
     if (style & wxCB_READONLY)
         [v setEditable:NO];
     wxNSComboBoxControl* c = new wxNSComboBoxControl( wxpeer, v );

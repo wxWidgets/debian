@@ -4,7 +4,6 @@
 // Author:      Ryan Norton
 // Modified by:
 // Created:     11/11/2003
-// RCS-ID:      $Id$
 // Copyright:   (c) Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -379,7 +378,7 @@ bool wxHIDDevice::IsActive(int nIndex)
 // ----------------------------------------------------------------------------
 bool wxHIDDevice::HasElement(int nIndex)
 {
-    return (void*) m_pCookies[nIndex] != NULL;
+    return m_pCookies[nIndex] != 0;
 }
 
 // ----------------------------------------------------------------------------

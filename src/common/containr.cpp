@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.08.01
-// RCS-ID:      $Id$
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,6 +46,14 @@
 // wxControlContainerBase
 // ----------------------------------------------------------------------------
 
+void wxControlContainerBase::UpdateParentCanFocus()
+{
+    // In the ports where it does something non trivial, the parent window
+    // should only be focusable if it doesn't have any focusable children
+    // (e.g. native focus handling in wxGTK totally breaks down otherwise).
+    m_winParent->SetCanFocus(m_acceptsFocusSelf && !m_acceptsFocusChildren);
+}
+
 bool wxControlContainerBase::UpdateCanFocusChildren()
 {
     const bool acceptsFocusChildren = HasAnyFocusableChildren();
@@ -54,10 +61,7 @@ bool wxControlContainerBase::UpdateCanFocusChildren()
     {
         m_acceptsFocusChildren = acceptsFocusChildren;
 
-        // In the ports where it does something non trivial, the parent window
-        // should only be focusable if it doesn't have any focusable children
-        // (e.g. native focus handling in wxGTK totally breaks down otherwise).
-        m_winParent->SetCanFocus(m_acceptsFocusSelf && !m_acceptsFocusChildren);
+        UpdateParentCanFocus();
     }
 
     return m_acceptsFocusChildren;
@@ -76,6 +80,30 @@ bool wxControlContainerBase::HasAnyFocusableChildren() const
         if ( !m_winParent->IsClientAreaChild(child) )
             continue;
 
+        // Here we check whether the child can accept the focus at all, as we
+        // want to try focusing it later even if it can't accept it right now.
+        if ( child->AcceptsFocusRecursively() )
+            return true;
+    }
+
+    return false;
+}
+
+bool wxControlContainerBase::HasAnyChildrenAcceptingFocus() const
+{
+    const wxWindowList& children = m_winParent->GetChildren();
+    for ( wxWindowList::const_iterator i = children.begin(),
+                                     end = children.end();
+          i != end;
+          ++i )
+    {
+        const wxWindow * const child = *i;
+
+        if ( !m_winParent->IsClientAreaChild(child) )
+            continue;
+
+        // Here we check if the child accepts focus right now as we need to
+        // know if we can give the focus to it or not.
         if ( child->CanAcceptFocus() )
             return true;
     }
@@ -122,6 +150,11 @@ bool wxControlContainerBase::DoSetFocus()
     m_inSetFocus = false;
 
     return ret;
+}
+
+bool wxControlContainerBase::AcceptsFocus() const
+{
+    return m_acceptsFocusSelf && m_winParent->CanBeFocused();
 }
 
 bool wxControlContainerBase::SetFocusToChild()

@@ -2,7 +2,6 @@
 // Name:        libs.h
 // Purpose:     Libraries page of the Doxygen manual
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -20,7 +19,7 @@ wxWidgets library is divided into libraries briefly described below. This
 diagram shows the dependencies between them:
 
 @dot
-digraph Dependancies
+digraph Dependencies
 {
     node [shape = ellipse, fontname = "Courier", fontsize = 10, style = filled];
 

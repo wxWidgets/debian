@@ -2,7 +2,6 @@
 // Name:        config.h
 // Purpose:     interface of wxConfigBase
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -791,7 +790,7 @@ public:
         # config file for my program
         UserData = $HOME/data
 
-        # the following syntax is valud only under Windows
+        # the following syntax is valid only under Windows
         UserData = %windir%\\data.dat
         @endcode
 
@@ -799,7 +798,7 @@ public:
         @c "/home/zeitlin/data" on linux for example.
 
         Although this feature is very useful, it may be annoying if you read a
-        value which containts '$' or '%' symbols (% is used for environment
+        value which contains '$' or '%' symbols (% is used for environment
         variables expansion under Windows) which are not used for environment
         variable expansion. In this situation you may call
         SetExpandEnvVars(@false) just before reading this value and

@@ -5,7 +5,6 @@
 // Author:      Vadim Zeitlin, Vaclav Slavik
 // Modified by:
 // Created:     06.08.01
-// RCS-ID:      $Id$
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //                       Vaclav Slavik <vaclav@wxwidgets.org>
 // Licence:     wxWindows licence
@@ -20,7 +19,6 @@
 
 #include "wx/nonownedwnd.h"
 #include "wx/iconbndl.h"
-#include "wx/containr.h"
 #include "wx/weakref.h"
 
 // the default names for various classes
@@ -157,8 +155,7 @@ enum
 // wxTopLevelWindow: a top level (as opposed to child) window
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxTopLevelWindowBase :
-    public wxNavigationEnabled<wxNonOwnedWindow>
+class WXDLLIMPEXP_CORE wxTopLevelWindowBase : public wxNonOwnedWindow
 {
 public:
     // construction

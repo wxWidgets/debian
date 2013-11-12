@@ -4,7 +4,6 @@
 // Author:      Ryan Norton
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id$
 // Copyright:   (c) Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -77,7 +76,6 @@ wxMacCarbonFontPanelHandler(EventHandlerCallRef WXUNUSED(nextHandler),
         case kEventFontSelection :
         {
             bool setup = false ;
-#if wxOSX_USE_CORE_TEXT
             if ( !setup )
             {
                 CTFontDescriptorRef descr;
@@ -91,7 +89,6 @@ wxMacCarbonFontPanelHandler(EventHandlerCallRef WXUNUSED(nextHandler),
                     setup = true;
                 }
             }
-#endif
 #if wxOSX_USE_ATSU_TEXT
             ATSUFontID fontId = 0 ;
             if ( !setup && (cEvent.GetParameter<ATSUFontID>(kEventParamATSUFontID, &fontId) == noErr) )
@@ -241,24 +238,10 @@ int wxFontDialog::ShowModal()
         font = m_fontData.m_initialFont ;
     }
 
-    bool setup = false;
-#if wxOSX_USE_CORE_TEXT
-    if ( !setup )
-    {
-        CTFontDescriptorRef descr = (CTFontDescriptorRef) CTFontCopyFontDescriptor( (CTFontRef) font.OSXGetCTFont() );
-        err = SetFontInfoForSelection (kFontSelectionCoreTextType,1, &descr , NULL);
-        CFRelease( descr );
-        setup = true;
-    }
-#endif
-#if wxOSX_USE_ATSU_TEXT
-    if ( !setup )
-    {
-        ATSUStyle style = (ATSUStyle)font.MacGetATSUStyle();
-        err = SetFontInfoForSelection (kFontSelectionATSUIType,1, &style , NULL);
-        setup = true;
-    }
-#endif
+    CTFontDescriptorRef descr = (CTFontDescriptorRef) CTFontCopyFontDescriptor( (CTFontRef) font.OSXGetCTFont() );
+    err = SetFontInfoForSelection (kFontSelectionCoreTextType,1, &descr , NULL);
+    CFRelease( descr );
+
     // just clicking on ENTER will not send us any font setting event, therefore we have to make sure
     // that field is already correct
     m_fontData.m_chosenFont = font ;

@@ -811,13 +811,9 @@
 #define wxUSE_PLUGINS 0
 
 /*
- * Use GTK print for printing under GTK+ 2.0
+ * Use GTK print for printing under GTK+ 2.10+
  */
 #define wxUSE_GTKPRINT 0
-/*
- * Use GNOME print for printing under GTK+ 2.0
- */
-#define wxUSE_LIBGNOMEPRINT 0
 /*
  * Use GNOME VFS for MIME types
  */
@@ -1193,12 +1189,6 @@
 
 /* Define this if you have fputws() */
 #undef HAVE_FPUTWS
-
-/* Define this if you have strcasecmp() function in <string.h> */
-#undef HAVE_STRCASECMP_IN_STRING_H
-
-/* Define this if you have strcasecmp() function in <strings.h> */
-#undef HAVE_STRCASECMP_IN_STRINGS_H
 
 /* Define this if you have wprintf() and related functions */
 #undef HAVE_WPRINTF

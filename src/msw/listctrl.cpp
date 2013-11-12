@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by: Agron Selimaj
 // Created:     04/01/98
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -952,7 +951,7 @@ bool wxListCtrl::SetItemColumnImage(long item, long column, int image)
     wxListItem info;
 
     info.m_mask = wxLIST_MASK_IMAGE;
-    info.m_image = image;
+    info.m_image = image == -1 ? I_IMAGENONE : image;
     info.m_itemId = item;
     info.m_col = column;
 
@@ -1752,11 +1751,9 @@ long wxListCtrl::InsertItem(long index, int imageIndex)
 long wxListCtrl::InsertItem(long index, const wxString& label, int imageIndex)
 {
     wxListItem info;
-    info.m_image = imageIndex;
+    info.m_image = imageIndex == -1 ? I_IMAGENONE : imageIndex;
     info.m_text = label;
-    info.m_mask = wxLIST_MASK_TEXT;
-    if (imageIndex > -1)
-        info.m_mask |= wxLIST_MASK_IMAGE;
+    info.m_mask = wxLIST_MASK_TEXT | wxLIST_MASK_IMAGE;
     info.m_itemId = index;
     return InsertItem(info);
 }

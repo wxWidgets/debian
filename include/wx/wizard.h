@@ -9,7 +9,6 @@
 //              Added wxWIZARD_HELP event
 //              Robert Vazan (sizers)
 // Created:     15.08.99
-// RCS-ID:      $Id$
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -114,7 +113,7 @@ private:
 // wxWizardPageSimple just returns the pointers given to the ctor and is useful
 // to create a simple wizard where the order of pages never changes.
 //
-// OTOH, it is also possible to dynamicly decide which page to return (i.e.
+// OTOH, it is also possible to dynamically decide which page to return (i.e.
 // depending on the user's choices) as the wizard sample shows - in order to do
 // this, you must derive from wxWizardPage directly.
 // ----------------------------------------------------------------------------

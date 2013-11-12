@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id$
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -87,8 +86,6 @@ const char *wxLOG_COMPONENT = "";
     type *gs_##name##Ptr = &Get##name()
 
 #if wxUSE_THREADS
-
-wxTLS_TYPE(wxThreadSpecificInfo) wxThreadInfoVar;
 
 namespace
 {

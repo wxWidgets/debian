@@ -4,7 +4,6 @@
  *  Author:      Julian Smart and others
  *  Modified by: Ryan Norton (Converted to C)
  *  Created:     01/02/97
- *  RCS-ID:      $Id$
  *  Copyright:   (c) Julian Smart
  *  Licence:     wxWindows licence
  */
@@ -311,8 +310,10 @@ typedef short int WXTYPE;
     inline T wx_truncate_cast_impl(X x)
     {
         #pragma warning(push)
-        /* conversion from 'X' to 'T', possible loss of data */
+        /* conversion from 'size_t' to 'type', possible loss of data */
         #pragma warning(disable: 4267)
+        /* conversion from 'type1' to 'type2', possible loss of data */
+        #pragma warning(disable: 4242)
 
         return x;
 
@@ -559,14 +560,52 @@ typedef short int WXTYPE;
     #define WX_ATTRIBUTE_UNUSED
 #endif
 
-/*  Macro to issue warning when using deprecated functions with gcc3 or MSVC7: */
-#if wxCHECK_GCC_VERSION(3, 1)
-    #define wxDEPRECATED(x) __attribute__((deprecated)) x
+/*
+    Macros for marking functions as being deprecated.
+
+    The preferred macro in the new code is wxDEPRECATED_MSG() which allows to
+    explain why is the function deprecated. Almost all the existing code uses
+    the older wxDEPRECATED() or its variants currently, but this will hopefully
+    change in the future.
+ */
+
+/* The basic compiler-specific construct to generate a deprecation warning. */
+#ifdef __clang__
+    #define wxDEPRECATED_DECL __attribute__((deprecated))
+#elif wxCHECK_GCC_VERSION(3, 1)
+    #define wxDEPRECATED_DECL __attribute__((deprecated))
 #elif defined(__VISUALC__) && (__VISUALC__ >= 1300)
-    #define wxDEPRECATED(x) __declspec(deprecated) x
+    #define wxDEPRECATED_DECL __declspec(deprecated)
 #else
-    #define wxDEPRECATED(x) x
+    #define wxDEPRECATED_DECL
 #endif
+
+/*
+    Macro taking the deprecation message. It applies to the next declaration.
+
+    If the compiler doesn't support showing the message, this degrades to a
+    simple wxDEPRECATED(), i.e. at least gives a warning, if possible.
+ */
+#if defined(__clang__) && defined(__has_extension)
+    #if __has_extension(attribute_deprecated_with_message)
+        #define wxDEPRECATED_MSG(msg) __attribute__((deprecated(msg)))
+    #else
+        #define wxDEPRECATED_MSG(msg) __attribute__((deprecated))
+    #endif
+#elif wxCHECK_GCC_VERSION(4, 5)
+    #define wxDEPRECATED_MSG(msg) __attribute__((deprecated(msg)))
+#elif wxCHECK_VISUALC_VERSION(8)
+    #define wxDEPRECATED_MSG(msg) __declspec(deprecated("deprecated: " msg))
+#else
+    #define wxDEPRECATED_MSG(msg) wxDEPRECATED_DECL
+#endif
+
+/*
+    Macro taking the declaration that it deprecates. Prefer to use
+    wxDEPRECATED_MSG() instead as it's simpler (wrapping the entire declaration
+    makes the code unclear) and allows to specify the explanation.
+ */
+#define wxDEPRECATED(x) wxDEPRECATED_DECL x
 
 #if defined(__GNUC__) && !wxCHECK_GCC_VERSION(3, 4)
     /*
@@ -1055,7 +1094,7 @@ typedef wxUint32 wxDword;
    architectures to be able to pass wxLongLong_t to the standard functions
    prototyped as taking "long long" such as strtoll().
  */
-#if (defined(__VISUALC__) && defined(__WIN32__))
+#if (defined(__VISUALC__) || defined(__INTELC__)) && defined(__WIN32__)
     #define wxLongLong_t __int64
     #define wxLongLongSuffix i64
     #define wxLongLongFmtSpec "I64"

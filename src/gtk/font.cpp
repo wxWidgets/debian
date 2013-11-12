@@ -2,7 +2,6 @@
 // Name:        src/gtk/font.cpp
 // Purpose:     wxFont for wxGTK
 // Author:      Robert Roebling
-// Id:          $Id$
 // Copyright:   (c) 1998 Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -488,6 +487,7 @@ bool wxFont::GTKSetPangoAttrs(PangoLayout* layout) const
     PangoAttrList* attrs = pango_attr_list_new();
     PangoAttribute* a;
 
+#ifndef __WXGTK3__
     if (wx_pango_version_check(1,16,0))
     {
         // a PangoLayout which has leading/trailing spaces with underlined font
@@ -526,6 +526,8 @@ bool wxFont::GTKSetPangoAttrs(PangoLayout* layout) const
             pango_attr_list_insert(attrs, a);
         }
     }
+#endif // !__WXGTK3__
+
     if (GetUnderlined())
     {
         a = pango_attr_underline_new(PANGO_UNDERLINE_SINGLE);

@@ -5,7 +5,6 @@
 // Modified by: Vadim Zeitlin on 13.05.99: complete refont of message handling,
 //              elimination of Default(), ...
 // Created:     01/02/97
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -207,7 +206,7 @@ public:
     // to understand why does it work, look at SubclassWin() code and comments
     bool IsOfStandardClass() const { return m_oldWndProc != NULL; }
 
-    wxWindow *FindItem(long id) const;
+    wxWindow *FindItem(long id, WXHWND hWnd = NULL) const;
     wxWindow *FindItemByHWND(WXHWND hWnd, bool controlOnly = false) const;
 
     // MSW only: true if this control is part of the main control
@@ -663,6 +662,15 @@ protected:
                                           int& w, int& h) const;
 
     bool MSWEnableHWND(WXHWND hWnd, bool enable);
+
+    // Return the pointer to this window or one of its sub-controls if this ID
+    // and HWND combination belongs to one of them.
+    //
+    // This is used by FindItem() and is overridden in wxControl, see there.
+    virtual wxWindow* MSWFindItem(long WXUNUSED(id), WXHWND WXUNUSED(hWnd)) const
+    {
+        return NULL;
+    }
 
 private:
     // common part of all ctors

@@ -4,7 +4,6 @@
 // Author:      Harm van der Heijden, Robert Roebling, Julian Smart
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id$
 // Copyright:   (c) Harm van der Heijden, Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -801,7 +800,7 @@ void wxGenericDirCtrl::PopulateNode(wxTreeItemId parentId)
 
 #if (defined(__WINDOWS__) && !defined(__WXWINCE__)) || defined(__DOS__) || defined(__OS2__)
     // Check if this is a root directory and if so,
-    // whether the drive is avaiable.
+    // whether the drive is available.
     if (!wxIsDriveAvailable(dirName))
     {
         data->m_isExpanded = false;

@@ -4,7 +4,6 @@
 // Author:      Julian Smart, Robert Roebling
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart, Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -31,10 +30,7 @@
 
 #if wxUSE_UNICODE
 #include "glib.h"
-#include "pango/pangox.h"
-#ifdef HAVE_PANGO_XFT
-    #include "pango/pangoxft.h"
-#endif
+#include "pango/pangoxft.h"
 
 #include "pango_x.cpp"
 #endif
@@ -2322,7 +2318,7 @@ void wxWindowDCImpl::ComputeScaleAndOrigin()
 
     wxDCImpl::ComputeScaleAndOrigin();
 
-    /* CMB: if scale has changed call SetPen to recalulate the line width */
+    /* CMB: if scale has changed call SetPen to recalculate the line width */
     if ((m_scaleX != origScaleX || m_scaleY != origScaleY) &&
         (m_pen.IsOk()))
     {

@@ -2,7 +2,6 @@
 // Name:        src/gtk/textctrl.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id$
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin, 2005 Mart Raudsepp
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1121,11 +1120,7 @@ void wxTextCtrl::WriteText( const wxString &text )
 #endif
 
     // First remove the selection if there is one
-    // TODO:  Is there an easier GTK specific way to do this?
-    long from, to;
-    GetSelection(&from, &to);
-    if (from != to)
-        Remove(from, to);
+    gtk_text_buffer_delete_selection(m_buffer, false, true);
 
     // Insert the text
     wxGtkTextInsert( m_text, m_buffer, m_defaultStyle, buffer );

@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     28.06.99
-// RCS-ID:      $Id$
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -126,7 +125,7 @@ END_EVENT_TABLE()
 wxDialogLayoutAdapter* wxDialogBase::sm_layoutAdapter = NULL;
 bool wxDialogBase::sm_layoutAdaptation = false;
 
-void wxDialogBase::Init()
+wxDialogBase::wxDialogBase()
 {
     m_returnCode = 0;
     m_affirmativeId = wxID_OK;
@@ -518,7 +517,13 @@ IMPLEMENT_DYNAMIC_CLASS(wxWindowModalDialogEvent, wxCommandEvent)
 
 void wxDialogBase::ShowWindowModal ()
 {
-    ShowModal();
+    int retval = ShowModal();
+    // wxWindowModalDialogEvent relies on GetReturnCode() returning correct
+    // code. Rather than doing it manually in all ShowModal() overrides for
+    // native dialogs (and getting accidentally broken again), set it here.
+    // The worst that can happen is that it will be set twice to the same
+    // value.
+    SetReturnCode(retval);
     SendWindowModalDialogEvent ( wxEVT_WINDOW_MODAL_DIALOG_CLOSED  );
 }
 

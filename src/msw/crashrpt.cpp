@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.07.03
-// RCS-ID:      $Id$
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -227,7 +226,9 @@ bool wxCrashReportImpl::Generate(int flags, EXCEPTION_POINTERS *ep)
     }
     else // dbghelp.dll couldn't be loaded
     {
-        Output(wxT("%s"), wxDbgHelpDLL::GetErrorMessage().c_str());
+        Output(wxT("%s"), static_cast<const wxChar*>(
+                    wxDbgHelpDLL::GetErrorMessage().c_str()
+              ));
     }
 #else // !wxUSE_DBGHELP
     wxUnusedVar(flags);

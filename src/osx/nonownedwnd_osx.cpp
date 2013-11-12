@@ -3,7 +3,6 @@
 // Purpose:     implementation of wxNonOwnedWindow
 // Author:      Stefan Csomor
 // Created:     2008-03-24
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor 2008
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -496,6 +495,13 @@ WXWindow wxNonOwnedWindow::GetWXWindow() const
 {
     return m_nowpeer ? m_nowpeer->GetWXWindow() : NULL;
 }
+
+#if wxOSX_USE_COCOA_OR_IPHONE
+void *wxNonOwnedWindow::OSXGetViewOrWindow() const
+{
+    return GetWXWindow();
+}
+#endif
 
 // ---------------------------------------------------------------------------
 // Shape implementation

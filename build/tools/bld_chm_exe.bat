@@ -1,5 +1,5 @@
 rem Uncomment the next line to set the version; used also in wxWidgets.iss
-SET WXW_VER=2.9.5
+SET WXW_VER=3.0.0
 if (%WXW_VER%)==() SET WXW_VER=SVN
 
 echo docs building for %WXW_VER%
@@ -74,6 +74,7 @@ mkdir %INNO%\docs\htmlhelp
 copy %WXWIN%\docs\doxygen\out\wx.chm %INNO%\docs\htmlhelp\wx.chm
 cd %WXWIN%\build\tools
 iscc wxwidgets.iss >> c:\temp.log
+copy %INNO%\..\wxMSW-%WXW_VER%-Setup.exe c:\daily
 
 echo docs built for %WXW_VER%
 echo docs built for %WXW_VER% >> c:\temp.log

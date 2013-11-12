@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin
 // Created:     04/01/98
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -543,6 +542,7 @@ bool wxMenu::DoInsertOrAppend(wxMenuItem *pItem, size_t pos)
 
     // check if we have something more than a simple text item
 #if wxUSE_OWNER_DRAWN
+    bool makeItemOwnerDrawn = false;
     if ( pItem->IsOwnerDrawn() )
     {
 #ifndef __DMC__
@@ -558,7 +558,13 @@ bool wxMenu::DoInsertOrAppend(wxMenuItem *pItem, size_t pos)
                                      pItem->GetBackgroundColour().IsOk() ||
                                      pItem->GetFont().IsOk();
 
-            if ( !mustUseOwnerDrawn )
+            // Windows XP or earlier don't display menu bitmaps bigger than
+            // standard size correctly (they're truncated), so we must use
+            // owner-drawn items to show them correctly there. OTOH Win7
+            // doesn't seem to have any problems with even very large bitmaps
+            // so don't use owner-drawn items unnecessarily there (Vista wasn't
+            // actually tested but I assume it works as 7 rather than as XP).
+            if ( !mustUseOwnerDrawn && winver < wxWinVersion_Vista )
             {
                 const wxBitmap& bmpUnchecked = pItem->GetBitmap(false),
                                 bmpChecked   = pItem->GetBitmap(true);
@@ -696,6 +702,9 @@ bool wxMenu::DoInsertOrAppend(wxMenuItem *pItem, size_t pos)
                 // set menu as ownerdrawn
                 m_ownerDrawn = true;
 
+                // also ensure that the new item itself is made owner drawn
+                makeItemOwnerDrawn = true;
+
                 ResetMaxAccelWidth();
             }
             // only update our margin for equals alignment to other item
@@ -727,6 +736,14 @@ bool wxMenu::DoInsertOrAppend(wxMenuItem *pItem, size_t pos)
 
             return false;
         }
+
+#if wxUSE_OWNER_DRAWN
+        if ( makeItemOwnerDrawn )
+        {
+            SetOwnerDrawnMenuItem(GetHmenu(), pos,
+                                  reinterpret_cast<ULONG_PTR>(pItem), TRUE);
+        }
+#endif
     }
 
 

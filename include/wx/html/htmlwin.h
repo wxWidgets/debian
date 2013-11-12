@@ -2,7 +2,6 @@
 // Name:        wx/html/htmlwin.h
 // Purpose:     wxHtmlWindow class for parsing & displaying HTML
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id$
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -227,8 +226,8 @@ private:
 //                  Purpose of this class is to display HTML page (either local
 //                  file or downloaded via HTTP protocol) in a window. Width of
 //                  window is constant - given in constructor - virtual height
-//                  is changed dynamicly depending on page size.  Once the
-//                  window is created you can set it's content by calling
+//                  is changed dynamically depending on page size.  Once the
+//                  window is created you can set its content by calling
 //                  SetPage(text) or LoadPage(filename).
 // ----------------------------------------------------------------------------
 

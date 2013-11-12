@@ -3,7 +3,6 @@
 // Purpose:     wxMswFileSystemWatcher
 // Author:      Bartosz Bekier
 // Created:     2009-05-26
-// RCS-ID:      $Id$
 // Copyright:   (c) 2009 Bartosz Bekier <bartosz.bekier@gmail.com>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -66,6 +65,11 @@ IMPLEMENT_DYNAMIC_CLASS(wxFileSystemWatcherEvent, wxEvent);
 
 wxString wxFileSystemWatcherEvent::ToString() const
 {
+    if (IsError())
+    {
+        return wxString::Format("FSW_EVT type=%d (%s) message='%s'", m_changeType,
+            GetFSWEventChangeTypeName(m_changeType), GetErrorDescription());
+    }
     return wxString::Format("FSW_EVT type=%d (%s) path='%s'", m_changeType,
             GetFSWEventChangeTypeName(m_changeType), GetPath().GetFullPath());
 }

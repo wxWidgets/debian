@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1949,6 +1948,10 @@ WXLRESULT wxToolBar::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam
                 return 0;
             break;
 #endif // wxHAS_MSW_BACKGROUND_ERASE_HOOK
+
+        case WM_PRINTCLIENT:
+            wxFillRect(GetHwnd(), (HDC)wParam, MSWGetToolbarBgBrush());
+            return 1;
     }
 
     return wxControl::MSWWindowProc(nMsg, wParam, lParam);

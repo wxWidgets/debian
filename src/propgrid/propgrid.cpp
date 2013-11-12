@@ -4,7 +4,6 @@
 // Author:      Jaakko Salli
 // Modified by:
 // Created:     2004-09-25
-// RCS-ID:      $Id$
 // Copyright:   (c) Jaakko Salli
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1298,8 +1297,10 @@ void wxPropertyGrid::CalculateFontAndBitmapStuff( int vspacing )
 
 void wxPropertyGrid::OnSysColourChanged( wxSysColourChangedEvent &WXUNUSED(event) )
 {
-    RegainColours();
-    Refresh();
+    if ((m_iFlags & wxPG_FL_INITIALIZED)!=0) {
+        RegainColours();
+        Refresh();
+    }
 }
 
 // -----------------------------------------------------------------------

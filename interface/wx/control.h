@@ -2,7 +2,6 @@
 // Name:        control.h
 // Purpose:     interface of wxControl
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -104,6 +103,8 @@ public:
             obviously not correctly sized.
         @param style
             Control style. For generic window styles, please see wxWindow.
+        @param validator
+            Control validator. 
         @param name
             Control name.
     */

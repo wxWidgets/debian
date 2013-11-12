@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -256,6 +255,12 @@ bool wxRadioBox::Create(wxWindow *parent,
     const wxSize actualSize = GetSize();
     PositionAllButtons(pos.x, pos.y, actualSize.x, actualSize.y);
 
+    // The base wxStaticBox class never accepts focus, but we do because giving
+    // focus to a wxRadioBox actually gives it to one of its buttons, which are
+    // not visible at wx level and hence are not taken into account by the
+    // logic in wxControlContainer code.
+    m_container.EnableSelfFocus();
+
     return true;
 }
 
@@ -436,6 +441,25 @@ void wxRadioBox::SetFocus()
                                         ? 0
                                         : m_selectedButton]);
     }
+}
+
+bool wxRadioBox::CanBeFocused() const
+{
+    // If the control itself is hidden or disabled, no need to check anything
+    // else.
+    if ( !wxStaticBox::CanBeFocused() )
+        return false;
+
+    // Otherwise, check if we have any buttons that can be focused.
+    for ( size_t item = 0; item < m_radioButtons->GetCount(); item++ )
+    {
+        if ( IsItemEnabled(item) && IsItemShown(item) )
+            return true;
+    }
+
+    // We didn't find any items that can accept focus, so neither can we as a
+    // whole accept it.
+    return false;
 }
 
 // Enable a specific button

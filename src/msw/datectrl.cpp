@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-09
-// RCS-ID:      $Id$
 // Copyright:   (c) 2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -92,10 +91,14 @@ WXDWORD wxDatePickerCtrl::MSWGetStyle(long style, WXDWORD *exstyle) const
 
 // TODO: handle WM_WININICHANGE
 
+#if wxUSE_INTL
+
 wxLocaleInfo wxDatePickerCtrl::MSWGetFormat() const
 {
     return wxLOCALE_SHORT_DATE_FMT;
 }
+
+#endif // wxUSE_INTL
 
 // ----------------------------------------------------------------------------
 // wxDatePickerCtrl operations

@@ -2,7 +2,6 @@
 // Name:        src/html/htmltag.cpp
 // Purpose:     wxHtmlTag class (represents single tag)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id$
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -510,6 +509,19 @@ wxString wxHtmlTag::GetParam(const wxString& par, bool with_quotes) const
     }
     else
         return m_ParamValues[index];
+}
+
+bool wxHtmlTag::GetParamAsString(const wxString& par, wxString *str) const
+{
+    wxCHECK_MSG( str, false, wxT("NULL output string argument") );
+
+    int index = m_ParamNames.Index(par, false);
+    if (index == wxNOT_FOUND)
+        return false;
+
+    *str = m_ParamValues[index];
+
+    return true;
 }
 
 int wxHtmlTag::ScanParam(const wxString& par,

@@ -2,7 +2,6 @@
 // Name:        language.h
 // Purpose:     wxLanguage enum
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +16,7 @@
 */
 enum wxLanguage
 {
-    /// User's default/preffered language as got from OS.
+    /// User's default/preferred language as got from OS.
     wxLANGUAGE_DEFAULT,
 
     /// Unknown language, returned if wxLocale::GetSystemLanguage fails.

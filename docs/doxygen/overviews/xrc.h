@@ -2,7 +2,6 @@
 // Name:        xrc.h
 // Purpose:     topic overview
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -465,7 +464,7 @@ IMPLEMENT_DYNAMIC_CLASS(MyControlXmlHandler, wxXmlResourceHandler)
 
 MyControlXmlHandler::MyControlXmlHandler()
 {
-    // this call adds support for all wxWindows class styles
+    // this call adds support for all wxWidgets class styles
     // (e.g. wxBORDER_SIMPLE, wxBORDER_SUNKEN, wxWS_EX_* etc etc)
     AddWindowStyles();
 

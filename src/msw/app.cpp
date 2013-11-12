@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -645,12 +644,6 @@ bool wxApp::Initialize(int& argc, wxChar **argv)
 
 #if defined(__SMARTPHONE__) || defined(__POCKETPC__)
     SHInitExtraControls();
-#endif
-
-#ifndef __WXWINCE__
-    // Don't show a message box if a function such as SHGetFileInfo
-    // fails to find a device.
-    SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 #endif
 
     wxOleInitialize();

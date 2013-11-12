@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id$
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -400,13 +399,18 @@ public:
         // minimum size, giving priority to the min size components, and
         // returns the results.
     virtual wxSize GetEffectiveMinSize() const;
-    wxDEPRECATED( wxSize GetBestFittingSize() const );  // replaced by GetEffectiveMinSize
-    wxDEPRECATED( wxSize GetAdjustedMinSize() const );  // replaced by GetEffectiveMinSize
+
+    wxDEPRECATED_MSG("use GetEffectiveMinSize() instead")
+    wxSize GetBestFittingSize() const;
+    wxDEPRECATED_MSG("use GetEffectiveMinSize() instead")
+    wxSize GetAdjustedMinSize() const;
 
         // A 'Smart' SetSize that will fill in default size values with 'best'
         // size.  Sets the minsize to what was passed in.
     void SetInitialSize(const wxSize& size=wxDefaultSize);
-    wxDEPRECATED( void SetBestFittingSize(const wxSize& size=wxDefaultSize) );  // replaced by SetInitialSize
+
+    wxDEPRECATED_MSG("use SetInitialSize() instead")
+    void SetBestFittingSize(const wxSize& size=wxDefaultSize);
 
 
         // the generic centre function - centers the window on parent by`
@@ -724,8 +728,13 @@ public:
     virtual bool AcceptsFocusFromKeyboard() const { return AcceptsFocus(); }
 
 
-        // this is mostly a helper for the various functions using it below
-    bool CanBeFocused() const { return IsShown() && IsEnabled(); }
+        // Can this window be focused right now, in its current state? This
+        // shouldn't be called at all if AcceptsFocus() returns false.
+        //
+        // It is a convenient helper for the various functions using it below
+        // but also a hook allowing to override the default logic for some rare
+        // cases (currently just wxRadioBox in wxMSW) when it's inappropriate.
+    virtual bool CanBeFocused() const { return IsShown() && IsEnabled(); }
 
         // can this window itself have focus?
     bool IsFocusable() const { return AcceptsFocus() && CanBeFocused(); }
@@ -1217,11 +1226,7 @@ public:
     // ----------
 
         // can the window have the scrollbar in this orientation?
-    bool CanScroll(int orient) const
-    {
-        return (m_windowStyle &
-                (orient == wxHORIZONTAL ? wxHSCROLL : wxVSCROLL)) != 0;
-    }
+    virtual bool CanScroll(int orient) const;
 
         // does the window have the scrollbar in this orientation?
     bool HasScrollbar(int orient) const;
@@ -1681,8 +1686,10 @@ protected:
     // recalculated each time the value is needed.
     wxSize m_bestSizeCache;
 
-    wxDEPRECATED( void SetBestSize(const wxSize& size) );  // use SetInitialSize
-    wxDEPRECATED( virtual void SetInitialBestSize(const wxSize& size) );  // use SetInitialSize
+    wxDEPRECATED_MSG("use SetInitialSize() instead.")
+    void SetBestSize(const wxSize& size);
+    wxDEPRECATED_MSG("use SetInitialSize() instead.")
+    virtual void SetInitialBestSize(const wxSize& size);
 
 
 
@@ -1826,15 +1833,6 @@ private:
     // base for dialog unit conversion, i.e. average character size
     wxSize GetDlgUnitBase() const;
 
-    // the stack of windows which have captured the mouse
-    static struct WXDLLIMPEXP_FWD_CORE wxWindowNext *ms_winCaptureNext;
-
-    // the window that currently has mouse capture
-    static wxWindow *ms_winCaptureCurrent;
-
-    // indicates if execution is inside CaptureMouse/ReleaseMouse
-    static bool ms_winCaptureChanging;
-
 
     // number of Freeze() calls minus the number of Thaw() calls: we're frozen
     // (i.e. not being updated) if it is positive
@@ -1969,8 +1967,7 @@ extern WXDLLIMPEXP_CORE wxWindow *wxGetActiveWindow();
 WXDLLIMPEXP_CORE wxWindow* wxGetTopLevelParent(wxWindow *win);
 
 #if WXWIN_COMPATIBILITY_2_6
-    // deprecated (doesn't start with 'wx' prefix), use wxWindow::NewControlId()
-    wxDEPRECATED( wxWindowID NewControlId() );
+    wxDEPRECATED_MSG("use wxWindow::NewControlId() instead")
     inline wxWindowID NewControlId() { return wxWindowBase::NewControlId(); }
 #endif // WXWIN_COMPATIBILITY_2_6
 

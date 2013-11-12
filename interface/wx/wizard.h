@@ -2,7 +2,6 @@
 // Name:        wizard.h
 // Purpose:     interface of wxWizardPage, wxWizardEvent,
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -248,6 +247,8 @@ public:
 
         @since 2.9.5
      */
+    wxWizardPageSimple& Chain(wxWizardPageSimple* next);
+
     /**
         A convenience function to make the pages follow each other.
         Example:

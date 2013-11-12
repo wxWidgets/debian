@@ -3,7 +3,6 @@
 // Purpose:     Common dialogs demo
 // Author:      Julian Smart, Vadim Zeitlin, ABX
 // Created:     04/01/98
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 //              (c) 2004 ABX
 //              (c) Vadim Zeitlin
@@ -53,7 +52,7 @@ of MSW, MAC and OS2
     #define USE_WXMAC 0
 #endif
 
-#if defined(__WXMAC_OSX__) && ( MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2) && USE_NATIVE_FONT_DIALOG_FOR_MACOSX
+#if USE_NATIVE_FONT_DIALOG_FOR_MACOSX
     #define USE_WXMACFONTDLG 1
 #else
     #define USE_WXMACFONTDLG 0

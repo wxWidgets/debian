@@ -27,6 +27,9 @@
     <ClCompile Include="..\..\src\common\webviewarchivehandler.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\common\webviewfshandler.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\msw\webview_ie.cpp">
       <Filter>MSW Sources</Filter>
     </ClCompile>
@@ -49,12 +52,12 @@
     <ClInclude Include="..\..\include\wx\webviewarchivehandler.h">
       <Filter>Common Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\wx\webviewfshandler.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\include\wx\msw\setup.h">
-      <Filter>Setup Headers</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\include\wx\univ\setup.h">
       <Filter>Setup Headers</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\include\wx\msw\genrcdefs.h">
