@@ -1,15 +1,2 @@
-fix-build-with-python2.6.patch
-xrced_bitmaps.patch
-fix-path-to-some-interpreters.patch
-wxpython2.9-eliminate-string-exceptions.patch
-img2py-no-display.patch
-disable_media_python.patch
-wxpython-=-should-be-==.patch
-wxpython-build-with-wxwebview-disabled.patch
-fix-editra-removal.patch
 3.0.0-rc1.patch
 fix-nonfree-logo-removal.patch
-wxpython-wx-config-version-3.0-bodge.patch
-wxpython-use-unpatched-swig.patch
-wxpython-fix-swig-warnings.patch
-wxpython-update-for-gregorianadoption-removal.patch

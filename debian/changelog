@@ -1,75 +1,42 @@
-wxwidgets2.9 (2.9.5.0+dfsg2-1) experimental; urgency=low
+wxwidgets3.0 (3.0.0-1) unstable; urgency=low
 
-  * The non-wxPython code has been updated to match upstream's 3.0.0-rc1 via
-    new patch 3.0.0-rc1.patch and the docs in
-    debian/wxWidgets-3.0.0-rc1-docs-html.tar.bz2.  Packaging the RCs as
-    wxwidgets2.9 means we can follow upstream's soversions for the 3.0.x
-    release series itself, even if there's an ABI change between 3.0.0-rc1 and
-    the 3.0.0 release proper.
-    + Drop patches applied upstream: fix-configure-on-hurd.patch,
-      wx-2.9.5-print-ps-in-latin1-locale-segv.patch
-    + Regenerate wxPython bindings using SWIG to pick up C++ API changes since
-      wx 2.9.5.
-  * Update repack to remove logos which are unlikely to have a DFSG-compatible
-    licence and have now been removed in upstream SVN.
+  * New upstream release! (Closes: #613431, #492896)
+    + Incorporates all our patches.
+    + __WXDEBUG__ is now on by default, so our -dbg packages now just contain
+      detached debugging symbols. (Closes: #655251)
+  * The wxwidgets2.9 source package was based on wxPython, but wxwidgets3.0 is
+    based on wxWidgets.  The major motivation is we don't want to wait until
+    wxPython 3.0.0 is released to package wxWidgets 3.0.0, but it's probably
+    better overall anyway.  Currently the "-doc" package is gone (as these
+    docs aren't in wx source code distribution), but this should reappear in
+    the near future.
+  * debian/control: Drop conflicts against packages (or versions of packages)
+    which no longer exist in any supported Debian or Ubuntu release.
+  * Fix updating of alternatives for wx-config.
   * debian/watch: Add dversionmangle so uscan works with the +dfsg repacked
     tarball.
   * debian/repack.sh: Upstream no longer embed a copy of iodbc, so we no
     longer need to remove it during the repack.
-  * debian/rules: Compressing packages using xz is now the default so no
-    longer needs explicitly specifying.
 
- -- Olly Betts <olly@survex.com>  Wed, 16 Oct 2013 00:00:57 +1300
+ -- Olly Betts <olly@survex.com>  Tue, 12 Nov 2013 10:04:12 +0000
 
-wxwidgets2.9 (2.9.5.0+dfsg-1) experimental; urgency=low
+wxwidgets2.8 (2.8.12.1+dfsg-1) unstable; urgency=low
 
-  * Re-repack upstream to remove editra, which contains a base64 encoded exe
-    file without source code.
+  * Re-repack upstream to remove unused embedded copy of editra, which
+    contains a base64 encoded exe file without source code. (Closes: #724470)
     + New patch fix-editra-removal.patch to fix up build system for removal of
-      editra during repack.
-    + Update wxpython2.9-eliminate-string-exceptions.patch for removal of
       editra during repack.
     + debian/copyright: Drop license information for files in editra which we
       now remove in the repack.
     + debian/rules: Update for removal of editra during repack.
-  * Fix xrced_bitmaps.patch to set path with 2.9 not 2.8 in.
-  * Forward fix-path-to-some-interpreters.patch and permission changes made in
-    debian/rules to upstream.
-  * Fix updating of alternatives for wx-config.
-  * debian/copyright: .orig.tar.gz is now .orig.tar.xz.
-  * debian/rules: Remove a couple of unused variables.
-
- -- Olly Betts <olly@survex.com>  Tue, 24 Sep 2013 17:11:06 +1200
-
-wxwidgets2.9 (2.9.5.0-1) experimental; urgency=low
-
-  * New upstream development release. (Closes: #613431)
-    + Update patches for new release and drop patches which are no longer
-      required - remaining patches are:
-      - disable_media_python.patch
-      - fix-build-with-python2.6.patch
-      - fix-configure-on-hurd.patch
-      - fix-path-to-some-interpreters.patch
-      - img2py-no-display.patch
-      - wx-2.9.5-print-ps-in-latin1-locale-segv.patch
-      - wxpython2.9-eliminate-string-exceptions.patch
-      - wxpython-=-should-be-==.patch
-      - xrced_bitmaps.patch
-    + New patch to make wxPython build with wxWebView disabled (we really
-      don't want to depend on webkit):
-      wxpython-build-with-wxwebview-disabled.patch
-    + __WXDEBUG__ is now on by default, so our -dbg packages now just contain
-      detached debugging symbols. (Closes: #655251)
-  * debian/control: Drop conflicts against packages (or versions of packages)
-    which no longer exist in any supported Debian or Ubuntu release.
-  * debian/control: Drop 'Suggests: editra'.
-  * debian/watch: Don't restrict to just 2.8.x releases.
-  * debian/rules: Set DEBIAN_WX_DEFAULT_VERSION=2.8.
-  * debian/rules: Compress packages using xz.
+    + Just remove the upstream debian directory while repacking, rather than
+      carefully renaming it to debian-upstream.
+  * debian/copyright: Include licence info for wxPython/wx/lib/pubsub.
+  * Use xz compression for source and binary packages.
   * debian/wxPython-tools.1: Make the pointer the pydoc documentation slightly
     more helpful by giving an example pydoc invocation.
 
- -- Olly Betts <olly@survex.com>  Sun, 15 Sep 2013 23:59:22 +1200
+ -- Olly Betts <olly@survex.com>  Tue, 24 Sep 2013 18:27:56 +1200
 
 wxwidgets2.8 (2.8.12.1-16) unstable; urgency=low
 

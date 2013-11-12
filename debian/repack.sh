@@ -29,23 +29,10 @@ fi
 
 ## Remove stuff
 
-# This is years out of date - just nuke it.
-rm -rf "$UP_BASE"/debian
-
-# There are some non-free DLLs under wxPython.  DLLs aren't useful for us
-# so just nuke any regardless which protects us from any new DLLs which get
-# added by upstream.
-find "$UP_BASE" -iname '*.dll' -delete
-
 # Remove minified jquery.js (non-free without non-minified source).  We
 # symlink in a packaged version of jquery in debian/rules.
+# FIXME: Not in sources, only in extra docs thing
 rm -f "$UP_BASE"/docs/doxygen/out/html/jquery.js
-
-# Remove logo images which seem unlikely to be freely licensed.
-# Query filed upstream: http://trac.wxwidgets.org/ticket/15564
-rm -f "$UP_BASE"/docs/doxygen/images/logo_motif.png
-rm -f "$UP_BASE"/docs/doxygen/images/logo_osxleopard.png
-rm -f "$UP_BASE"/docs/doxygen/images/logo_win.png
 
 # We don't use the built-in copy of expat and it contains an ancient copy
 # of libtool which lintian warns about, so just delete it.  This also ensures
@@ -57,13 +44,6 @@ rm -rf "$UP_BASE"/src/jpeg
 rm -rf "$UP_BASE"/src/png
 rm -rf "$UP_BASE"/src/tiff
 rm -rf "$UP_BASE"/src/zlib
-
-# Editra is packaged separately (as package editra) and contains a
-# base64-encoded .exe without source code, so just nuke it all.
-# We then patch up the wounds with debian/patches/fix-editra-removal.patch
-rm -f "$UP_BASE"/wxPython/scripts/editra
-rm -f "$UP_BASE"/wxPython/distrib/mac/updateEditraPlist.py
-rm -rf "$UP_BASE"/wxPython/wx/tools/Editra
 
 # Now rebuild the tarball.
 mv "$UP_BASE" "$DIR/$REPACK_DIR"

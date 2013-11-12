@@ -10,7 +10,6 @@ SHELL = /bin/bash
 
 #export DH_VERBOSE=1
 
-include /usr/share/python/python.mk
 export DH_OPTIONS
 
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
@@ -21,8 +20,6 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 else
   FAST_MAKE = $(MAKE)
 endif
-
-PYVERS := $(shell pyversions -vr)
 
 # If another source package is to supply the common binary packages
 # for a particular Debian release, then define this variable to indicate
@@ -48,40 +45,15 @@ wx_minor_version_number := $(shell sed -n 's/^wx_minor_version_number=//p' confi
 wx_release_number       := $(shell sed -n 's/^wx_release_number=//p' configure.in)
 
 release := $(wx_major_version_number).$(wx_minor_version_number)
-# Kludge for the RCs
-release := 2.9
 
 so_cur := $(shell sed 's,<set var="WX_CURRENT">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
 so_age := $(shell sed 's,<set var="WX_AGE">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
 soversion := $(shell expr $(so_cur) - $(so_age))
-# Kludge for the RCs - 2.9.x is soversion x (so 2.9.5 was 5).  No further 2.9.x
-# releases are planned, but 31 is mnemonic for 3.0.0-rc1.  Packaging the RCs as
-# wxwidgets2.9 means we can follow upstream's soversions for the 3.0.x release
-# series itself, even if there's an ABI change between 3.0.0-rc1 and the
-# 3.0.0 release proper.
-soversion := 31
 
 sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%)-$(soversion)$(addprefix -,$(DEBIAN_WXFLAVOUR))
 
-# In some places we use the full version number, including the micro version,
-# for the development releases (which can be incompatible for the same major
-# and minor version) but just the major.minor for the stable releases (which
-# are supposed to be compatible), this variable contains the appropriate value
-ifeq ($(shell expr '$(wx_minor_version_number)' : '.*[02468]$$'),0)
-    # Odd minor version, so development release.
-    compatible_release := $(release).$(wx_release_number)
-else
-    compatible_release := $(release)
-endif
-# Kludge for the RCs
-compatible_release := 2.9.6
-
-
 # Base value for alternative priorities.
 alt_prio  := $(subst .,,$(release))
-
-pytoolkit := gtk2
-wxsubdir  := wx-$(compatible_release)-$(pytoolkit)
 
 cross_host  := i586-mingw32msvc
 cross_build := $(shell /usr/share/misc/config.guess)
@@ -133,8 +105,6 @@ MSW_CONFIGURE_OPTIONS = \
 # a threaded application then comment out the next line.
 MSW_CONFIGURE_OPTIONS += --disable-threads
 
-PY_WX_CONFIG_OPTIONS = --version=3.0 --toolkit=$(pytoolkit) --static=no
-
 # Packages to build:
 package_wxbase_lib      := libwxbase$(sorelease)
 package_wxbase_dbg      := libwxbase$(sorelease)-dbg
@@ -148,11 +118,6 @@ package_gtkmedia_lib    := libwxgtk-media$(sorelease)
 package_gtkmedia_dbg    := libwxgtk-media$(sorelease)-dbg
 package_gtkmedia_dev    := libwxgtk-media$(release)-dev
 
-package_gtk_py_lib      := python-wxgtk$(release)
-package_gtk_py_dbg      := python-wxgtk$(release)-dbg
-package_gtk_py_ver       = python-wxversion
-package_gtk_py_tools     = python-wxtools
-
 package_headers         := wx$(release)-headers
 package_i18n            := wx$(release)-i18n
 package_doc             := wx$(release)-doc
@@ -161,7 +126,7 @@ package_common           = wx-common
 
 # The packages listed here are common to all wx versions, and may be provided
 # by another source package if more than one is in the release simultaneously.
-common_packages	:= $(package_common) $(package_gtk_py_ver) $(package_gtk_py_tools)
+common_packages	:= $(package_common)
 
 
 package_msw_dev         := libwxmsw$(release)-dev
@@ -193,15 +158,12 @@ objdirs := $(objdir_wxbase_shared) $(objdir_gtk_shared) $(objdir_gtk_install) \
 #	note that the i18n package is actually arch indep (once built)
 #	but must be built (and installed) during the arch any phase as
 #	it's pulled out of the wxGTK shared lib package.
-#
-#       similarly some of the wxpython packages are arch indep too, but
-#       all files for it are installed during the arch any phase.
 
 
 # Build stamps:
 build_arch_stamps = build-wxbase-shared-stamp \
                     build-gtk-shared-stamp build-gtk-shared-contrib-stamp \
-                    build-i18n-stamp build-gtk-py-stamp
+                    build-i18n-stamp
 
 build_indep_stamps = build-examples-stamp build-doc-stamp
 
@@ -216,8 +178,7 @@ build_stamps := $(build_stamps_native) $(build_cross_stamps)
 install_all_arch = install-wxbase-lib install-wxbase-dev \
                    install-gtk-lib install-gtk-dev        \
 		   install-gtkmedia-lib install-gtkmedia-dev \
-                   install-headers install-i18n            \
-                   install-gtk-py
+                   install-headers install-i18n
 
 ifndef DEBIAN_WX_DEFAULT_VERSION
   install_all_arch += install-common
@@ -230,17 +191,6 @@ install_all_cross = install-msw-dev install-headers-msw
 install_all_native := $(install_all_arch) $(install_all_indep)
 
 install_all := $(install_all_native) $(install_all_cross)
-
-
-# wxPython uses this to build in-tree
-SETUP_PY_COMMON_OPTIONS :=	\
-    WX_CONFIG='$(shell pwd)/$(objdir_gtk_shared)/wx-config --no_rpath' \
-    WXPORT=$(pytoolkit)	\
-    UNICODE=1		\
-    FLAVOUR=$(DEBIAN_WXFLAVOUR)
-
-# WX_CONFIG is used to build in-tree, this after installation
-py_wxconfig  := wx-config $(PY_WX_CONFIG_OPTIONS)
 
 
 # The Rules:
@@ -266,12 +216,6 @@ control-files-stamp: debian/control
 			< debian/libwxgtk-dev.$$f                            \
 			> debian/$(package_gtk_dev).$$f;                     \
 	done
-	@for f in docs postinst prerm; do                                    \
-		echo "generating control file $(package_gtk_py_lib).$$f";    \
-		sed -e  's/=V/$(release)/g;s/=PRIO/$(alt_prio)/g'            \
-			< debian/python-wxgtk.$$f                            \
-			> debian/$(package_gtk_py_lib).$$f;                  \
-	done
 	@for f in docs doc-base; do                                          \
 		echo "generating control file $(package_doc).$$f";           \
 		sed -e 's/=V/$(release)/g' < debian/wx-doc.$$f               \
@@ -293,35 +237,6 @@ control-files-stamp: debian/control
 			< debian/lintian-override.in                         \
 			> debian/lintian-override;                           \
 	touch $@
-
-	# Files removed between 2.9.5.0 and 3.0.0-rc1.  We don't have a
-	# wxPython release of RC1 yet, so we use a patch for the new and
-	# changed files and then remove the deleted ones here.
-	rm -rf \
-	    build/bakefiles/formats \
-	    docs/doxygen/doxygen.log \
-	    docs/doxygen/images/appear-listview-gtk.png \
-	    docs/doxygen/images/appear-simplehtmllistbox-gtk.png \
-	    docs/doxygen/out \
-	    gtk/gnome/gprint.h \
-	    gtk/setup0.h \
-	    msw/setup0.h \
-	    osx/setup0.h \
-	    src/cwcopysetup.bat \
-	    src/cwdcopysetup.bat \
-	    src/gtk1/gnome \
-	    src/gtk/gnome/gprint.cpp \
-	    src/wxJpeg.icc \
-	    src/wxPng.icc \
-	    src/wxTiff.icc \
-	    src/Wxwindll.icc \
-	    src/wxWin.icc \
-	    src/wxXpm.icc \
-	    src/wxZlib.icc \
-	    wx/include/wx/gtk/gnome/gprint.h \
-	    wx/include/wx/gtk/setup0.h \
-	    wx/include/wx/msw/setup0.h \
-	    wx/include/wx/osx/setup0.h
 
 build-arch: control-files-stamp $(build_arch_stamps)
 build-indep: control-files-stamp $(build_indep_stamps)
@@ -372,28 +287,16 @@ build-gtk-shared-contrib-stamp: build-gtk-shared-stamp
 	$(FAST_MAKE) -C $(objdir_gtk_shared)/utils/wxrc
 	touch $@
 
-
-build-gtk-py-stamp: $(PYVERS:%=build-gtk-py%-stamp)
-	touch $@
-
-build-gtk-py%-stamp: build-gtk-shared-stamp
-	dh_testdir
-	touch docs/lgpl.txt
-	cd wxPython \
-		&& python$* ./setup.py build $(SETUP_PY_COMMON_OPTIONS) USE_SWIG=1 SWIG=/usr/bin/swig
-	touch $@
-
 build-doc-stamp: build-gtk-shared-stamp
 	dh_testdir
 	rm -rf $(objdir_doc)
 	mkdir $(objdir_doc)
-	# Until wxPython is updated:
-	tar -C'$(objdir_doc)' --strip-components=1 -xf debian/wxWidgets-3.0.0-rc1-docs-html.tar.bz2
+	#tar -C'$(objdir_doc)' --strip-components=1 -xf debian/wxWidgets-3.0.0-rc1-docs-html.tar.bz2
 	# cp -a docs/doxygen/out/html/* $(objdir_doc)
 
 	# Replace embedded copy of jquery with symlink to packaged version.
-	rm -f $(objdir_doc)/jquery.js
-	ln -s /usr/share/javascript/jquery/jquery.min.js $(objdir_doc)/jquery.js
+	#rm -f $(objdir_doc)/jquery.js
+	#ln -s /usr/share/javascript/jquery/jquery.min.js $(objdir_doc)/jquery.js
 
 	touch $@
 
@@ -402,8 +305,8 @@ build-examples-stamp: build-gtk-shared-stamp
 	mkdir -p $(objdir_examples)
 
 	# copy all samples and the Makefile generated for libwxgtk.
-	# Some files in the sources are randomly executable, so don't
-	# just use cp -a here.
+	# In the past, some files in the sources were randomly executable, so
+	# don't just use cp -a here in case that recurs.
 	cp -dR --preserve=timestamps samples $(objdir_examples)
 	rm -f $(objdir_examples)/samples/Makefile
 	cp -a $(objdir_gtk_shared)/samples/Makefile $(objdir_examples)/samples
@@ -412,20 +315,6 @@ build-examples-stamp: build-gtk-shared-stamp
 	for f in `find $(objdir_examples)/samples -name makefile.unx` ; do \
 		mv $$f `dirname $$f`/Makefile ; \
 	done
-
-	cp -a wxPython/demo $(objdir_examples)/wxPython
-	# Remove useless file.
-	rm -f $(objdir_examples)/wxPython/b
-	# Stop files being randomly executable.  Reported upstream at:
-	# http://trac.wxwidgets.org/ticket/15504
-	# http://trac.wxwidgets.org/ticket/15505
-	-chmod a-x \
-		$(objdir_examples)/samples/aui/descrip.mms \
-		$(objdir_examples)/samples/docview/docview.r \
-		$(objdir_examples)/samples/internat/ar/internat.mo \
-		$(objdir_examples)/samples/internat/ar/internat.po \
-		$(objdir_examples)/samples/xrc/descrip.mms \
-		$(objdir_examples)/wxPython/bmp_source/*.png
 
 	echo "generating unpack_examples.sh script"
 	sed -e 's/=V/$(release)/g' < debian/unpack_examples.sh.in	\
@@ -480,15 +369,7 @@ build-msw-static-stamp: configure-msw-static-stamp
 	touch $@
 
 
-clean-py:
-	cd wxPython && \
-	    rm -rf build-options.cache build*/ wx/*.py build_options.py src/wx.pth wx/build/build_options.py
-
-# We do the equivalent of this above by removing build, unfortunately
-# it's not enough by itself to get the tree properly clean again.
-#		&& ./setup.py clean
-
-clean: debian/control clean-py
+clean: debian/control
 	dh_testdir
 	dh_testroot
 
@@ -501,47 +382,15 @@ clean: debian/control clean-py
 	      debian/$(package_gtk_lib).* \
 	      debian/$(package_gtk_dev).* \
 	      debian/$(package_gtk_dbg).* \
-	      debian/$(package_gtk_py_lib).* \
 	      debian/$(package_headers).* \
 	      debian/$(package_i18n).* \
 	      debian/$(package_doc).* \
 	      debian/$(package_examples).* \
-	      debian/$(package_gtk_py_dbg).* \
 	      debian/$(package_msw_dev).* \
 	      debian/lintian-override \
 	      debian/unpack_examples.sh \
 	      config.guess config.sub
 	rm -rf include/wx-$(release)
-	find -name '*.py[co]' -delete
-
-	# Files removed between 2.9.5.0 and 3.0.0-rc1.  We don't have a
-	# wxPython release of RC1 yet, so we use a patch for the new and
-	# changed files and then remove the deleted ones here.
-	rm -rf \
-	    build/bakefiles/formats \
-	    docs/doxygen/doxygen.log \
-	    docs/doxygen/images/appear-listview-gtk.png \
-	    docs/doxygen/images/appear-simplehtmllistbox-gtk.png \
-	    docs/doxygen/out \
-	    gtk/gnome/gprint.h \
-	    gtk/setup0.h \
-	    msw/setup0.h \
-	    osx/setup0.h \
-	    src/cwcopysetup.bat \
-	    src/cwdcopysetup.bat \
-	    src/gtk1/gnome \
-	    src/gtk/gnome/gprint.cpp \
-	    src/wxJpeg.icc \
-	    src/wxPng.icc \
-	    src/wxTiff.icc \
-	    src/Wxwindll.icc \
-	    src/wxWin.icc \
-	    src/wxXpm.icc \
-	    src/wxZlib.icc \
-	    wx/include/wx/gtk/gnome/gprint.h \
-	    wx/include/wx/gtk/setup0.h \
-	    wx/include/wx/msw/setup0.h \
-	    wx/include/wx/osx/setup0.h
 
 install_arch: build-arch $(install_all_arch)
 
@@ -606,96 +455,6 @@ install-gtkmedia-dev: install-gtk-shared-stamp
 	dh_testroot
 	dh_prep
 	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*media*.so	usr/lib/$(DEB_HOST_MULTIARCH)
-
-install-gtk-py-lib: DH_OPTIONS=-p$(package_gtk_py_lib)
-install-gtk-py-lib: install-gtk-py-lib-pre $(PYVERS:%=install-gtk-pylib%)
-	/bin/echo -n "$(wxsubdir)" > debian/$(package_gtk_py_lib)/usr/lib/wx/python/wx$(release).pth
-install-gtk-py-lib-pre:
-	dh_testdir
-	dh_testroot
-	dh_prep
-install-gtk-pylib%: install-gtk-py-lib-pre build-gtk-py%-stamp
-	dh_testdir
-	dh_testroot
-	dh_installdirs usr/lib/wx/python
-	cd wxPython								\
-		&& python$* ./setup.py install				\
-			--install-layout=deb \
-			--prefix=`pwd`/../debian/$(package_gtk_py_lib)/usr \
-			$(SETUP_PY_COMMON_OPTIONS) \
-			SYS_WX_CONFIG='$(py_wxconfig)'
-
-	cp -a include/wx-$(release) debian/$(package_headers)/usr/include
-
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/wx.pth
-
-	find debian/$(package_gtk_py_lib)/usr/lib/python$* -name '*.py?' -delete
-
-	# Fix image-file-in-usr-lib lintian warnings.
-	mkdir -p debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
-	cp -rf -v debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/wx-*/wx/tools/XRCed/plugins/bitmaps debian/$(package_gtk_py_lib)/usr/share/$(package_gtk_py_lib)/XRCed/plugins/
-	-rm -rf -v debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/wx-*/wx/tools/XRCed/plugins/bitmaps
-
-	# This is rather bogus, it's included in the main copyright file now though.
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python$*/$(call py_sitename,$*)/wx-*uuu/wx/tools/XRCed/license.txt
-
-install-gtk-py-ver: DH_OPTIONS=-p$(package_gtk_py_ver)
-install-gtk-py-ver: install-gtk-py-lib
-	dh_testdir
-	dh_testroot
-	dh_prep
-
-ifndef DEBIAN_WX_DEFAULT_VERSION
-	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) \
-		$(foreach pv,$(PYVERS),$(call py_libdir,$(pv))/wxversion.py)
-	for v in $(foreach pv,$(PYVERS),debian/$(package_gtk_py_ver)$(call py_libdir,$(pv))/wx.pth); do \
-	  ln -sf ../../wx/python/wx.pth $$v; \
-	done
-else
-	rm -f debian/$(package_gtk_py_lib)/usr/lib/python*/*/wxversion.py
-endif
-
-
-
-install-gtk-py-tools: DH_OPTIONS=-p$(package_gtk_py_tools)
-install-gtk-py-tools: install-gtk-py-ver
-	dh_testdir
-	dh_testroot
-	dh_prep
-
-install-gtk-py: DH_OPTIONS=-p$(package_gtk_py_tools)
-install-gtk-py: install-gtk-py-tools
-
-ifndef DEBIAN_WX_DEFAULT_VERSION
-
-	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) usr/bin
-
-	dh_installman debian/wxPython-tools.1
-	dh_link usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/img2py.1     \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/img2xpm.1    \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/img2png.1    \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pycrust.1    \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/xrced.1      \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/helpviewer.1 \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyalacarte.1 \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pyalamode.1  \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pywrap.1     \
-		usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/pywxrc.1
-
-	rm debian/$(package_gtk_py_tools)/usr/bin/pyshell
-endif
-	mkdir -p debian/$(package_gtk_py_tools)/usr/share/pixmaps
-	mkdir -p debian/$(package_gtk_py_tools)/usr/share/applications
-
-	cp debian/pycrust.xpm                   debian/$(package_gtk_py_tools)/usr/share/pixmaps/pycrust.xpm
-	cp debian/xrced.xpm                     debian/$(package_gtk_py_tools)/usr/share/pixmaps/xrced.xpm
-	cp wxPython/wx/py/PyCrust_32.png        debian/$(package_gtk_py_tools)/usr/share/pixmaps/pycrust.png
-	cp wxPython/wx/tools/XRCed/XRCed_32.png debian/$(package_gtk_py_tools)/usr/share/pixmaps/xrced.png
-	cp debian/pycrust.desktop               debian/$(package_gtk_py_tools)/usr/share/applications
-	cp debian/xrced.desktop                 debian/$(package_gtk_py_tools)/usr/share/applications
-
-	rm -r debian/$(package_gtk_py_lib)/usr/bin
-
 
 install-common: DH_OPTIONS=-p$(package_common)
 install-common: install-gtk-shared-stamp
@@ -796,23 +555,21 @@ binary-common:
 	dh_installexamples
 	dh_installmenu
 	dh_link
-	dh_python2
 
 ifneq (, $(filter -a, $(DH_OPTIONS)))
-	DH_OPTIONS= dh_strip -p$(package_gtk_py_lib) --dbg-package=$(package_gtk_py_dbg)
 	DH_OPTIONS= dh_strip -p$(package_wxbase_lib) --dbg-package=$(package_wxbase_dbg)
 	DH_OPTIONS= dh_strip -p$(package_gtk_lib) --dbg-package=$(package_gtk_dbg)
 	DH_OPTIONS= dh_strip -p$(package_gtkmedia_lib) --dbg-package=$(package_gtkmedia_dbg)
 	dh_strip --remaining-packages
 endif
 
-	dh_compress -X.py
+	dh_compress
 	dh_fixperms
 
-	dh_makeshlibs -N$(package_gtk_py_lib) -V
+	dh_makeshlibs -V
 
 	dh_installdeb
-	dh_shlibdeps -ldebian/$(package_wxbase_lib)/usr/lib:debian/$(package_gtk_lib)/usr/lib:debian/$(package_gtkmedia_lib)
+	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
@@ -847,13 +604,11 @@ binary-cross: control-files-stamp $(install_all_cross)
 
 
 .PHONY: build build_all build-arch build-indep				\
-	clean clean-py \
+	clean \
 	binary-indep binary-arch binary binary-common			\
 	binary-wxbase binary-wxbase-dev		\
 	binary-cross						\
 	install install_arch install-gtk-lib install-gtk-dev		\
 	install-gtkmedia-lib install-gtkmedia-dev	\
-	install-gtk-py install-gtk-py-tools install-gtk-py-ver		\
-	install-gtk-py-lib \
 	install-common install-headers install-i18n install-doc         \
 	install-examples install-msw-dev install-headers-msw

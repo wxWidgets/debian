@@ -2,12 +2,10 @@ Source: wxwidgets=V
 Section: libs
 Priority: optional
 Build-Depends: debhelper (>= 9), gettext, libgtk2.0-dev,
- python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~), python-all-dbg (>= 2.6.6-3~),
- python-libxml2-dbg,
  zlib1g-dev, libjpeg-dev, libpng-dev, libtiff5-dev, libsm-dev,
  libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libesd0-dev,
  autotools-dev, libexpat1-dev, dpkg-dev (>= 1.16.1~),
- libxt-dev, libgstreamer-plugins-base0.10-dev, libgconf2-dev, swig2.0
+ libxt-dev, libgstreamer-plugins-base0.10-dev, libgconf2-dev
 Maintainer: wxWidgets Maintainers <freewx-maint@lists.alioth.debian.org>
 Uploaders: Olly Betts <olly@survex.com>
 Standards-Version: 3.9.4
@@ -156,60 +154,6 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ media library develo
  This package provides files needed to compile wxWidgets programs using the
  wxgtk-media library.
 
-Package: python-wxgtk=V
-Architecture: any
-Homepage: http://www.wxpython.org/
-Section: python
-Depends: python-wxversion, ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
-Suggests: wx=V-doc, wx=V-examples
-Provides: ${python:Provides}
-Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding)
- wxWidgets (formerly known as wxWindows) is a class library for C++ providing
- GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).
- .
- This package provides a Python binding to the wxGTK library and the
- wxPython runtime support libraries.
-
-Package: python-wxgtk=V-dbg
-Architecture: any
-Homepage: http://www.wxpython.org/
-Section: debug
-Priority: extra
-Depends: python-wxgtk=V (= ${binary:Version}), libwxgtk=SOV-dbg, ${misc:Depends}
-Description: debugging symbols for wxPython
- wxWidgets (formerly known as wxWindows) is a class library for C++ providing
- GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).
- .
- This package provides detached debugging symbols for the wxPython binding to
- the wxGTK library.
-
-Package: python-wxversion
-Homepage: http://www.wxpython.org/
-Architecture: all
-Section: python
-Depends: ${python:Depends}, ${misc:Depends}
-Conflicts: python-wxgtk2.8 (<< 2.8.12.1-1~)
-Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython version selector)
- wxWidgets (formerly known as wxWindows) is a class library for C++ providing
- GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).
- .
- This package provides the wxPython version selector.
-
-Package: python-wxtools
-Homepage: http://www.wxpython.org/
-Architecture: all
-Section: python
-Depends: python-wxgtk=V, ${python:Depends}, ${misc:Depends}
-Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython common files)
- wxWidgets (formerly known as wxWindows) is a class library for C++ providing
- GUI components and other facilities on several popular platforms (and some
- unpopular ones as well).
- .
- This package provides support utilities and common files for wxPython=V.
-
 Package: wx-common
 Architecture: any
 Section: devel
@@ -273,7 +217,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (examples)
  unpopular ones as well).
  .
  This package contains examples of using the wxWidgets toolkit in
- C++ and with the wxPython language binding.
+ C++.
 
 Package: libwxmsw=V-dev
 Architecture: any

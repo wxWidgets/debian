@@ -12,9 +12,9 @@ The unpack_examples.sh script is provided to assist with that.
 
 The examples provided here typically show a minimal implementation of
 the feature(s) they are demonstrating.  There are examples of more
-complete (mini) applications, available in the /wxPython/samples and
-/demos directories of the wxWidgets repository), or of course you can
-always apt-get the source of any wx using package for some less contrived
-examples of real world wx applications.
+complete (mini) applications, available in the /demos directories of the
+wxWidgets repository), or of course you can always apt-get the source of
+any wx using package for some less contrived examples of real world wx
+applications.
 
   Ron
