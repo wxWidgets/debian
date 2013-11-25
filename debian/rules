@@ -47,13 +47,14 @@ endif
 PYVERS := $(shell pyversions -vr)
 
 # If another source package is to supply the common binary packages
-# for a particular Debian release, then define this variable to indicate
-# the $(release) that is expected to provide it.  Do not define it at
+# for a particular Debian release, then define these variables to indicate
+# the $(release) that is expected to provide it.  Do not define them at
 # all if this is to be the default (or only) wx source package for the
-# target release.
+# target release.  There are two variables because in wx 3.0, wxPython will be
+# a separate source package.
 
-# DEBIAN_WX_DEFAULT_VERSION = 2.6
-
+DEBIAN_WX_DEFAULT_VERSION = 3.0
+# DEBIAN_WXPYTHON_DEFAULT_VERSION = 3.0
 
 # This will extract a flavour out of the changelog and flavour the
 # packages and binaries with it.  'Official' builds should use a
@@ -190,14 +191,7 @@ package_doc             := wx$(release)-doc
 package_examples        := wx$(release)-examples
 package_common           = wx-common
 
-# The packages listed here are common to all wx versions, and may be provided
-# by another source package if more than one is in the release simultaneously.
-common_packages	:= $(package_common) $(package_gtk_py_ver) $(package_gtk_py_tools)
-
-
 package_gtk_dbg_py      := python-wxgtk$(release)$(unicode_suffix)-dbg
-
-
 
 package_msw_dev         := libwxmsw$(release)$(unicode_suffix)-dev
 package_msw_dbg         := libwxmsw$(release)$(unicode_suffix)-dbg
@@ -209,10 +203,19 @@ extra_packages := \
 
 ifdef DEBIAN_WX_DEFAULT_VERSION
 
-  extra_packages += $(common_packages)
+# The packages listed here are common to all wx versions, and may be provided
+# by another source package if more than one is in the release simultaneously.
+  extra_packages += $(package_common)
 
 endif
 
+ifdef DEBIAN_WXPYTHON_DEFAULT_VERSION
+
+# The packages listed here are common to all wx versions, and may be provided
+# by another source package if more than one is in the release simultaneously.
+  extra_packages += $(package_gtk_py_ver) $(package_gtk_py_tools)
+
+endif
 
 # Build directories:
 objdir_wxbase_shared       = objs_wxbase_sh
@@ -805,7 +808,7 @@ install-gtk-py-ver: install-gtk-py-lib
 	dh_testroot
 	dh_prep
 
-ifndef DEBIAN_WX_DEFAULT_VERSION
+ifndef DEBIAN_WXPYTHON_DEFAULT_VERSION
 
 	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) \
 		$(foreach pv,$(PYVERS),$(call py_libdir,$(pv))/wxversion.py)
@@ -827,7 +830,7 @@ install-gtk-py-tools: install-gtk-py-ver
 install-gtk-py: DH_OPTIONS=-p$(package_gtk_py_tools)
 install-gtk-py: install-gtk-py-tools
 
-ifndef DEBIAN_WX_DEFAULT_VERSION
+ifndef DEBIAN_WXPYTHON_DEFAULT_VERSION
 
 	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) usr/bin
 

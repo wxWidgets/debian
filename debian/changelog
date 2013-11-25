@@ -1,3 +1,11 @@
+wxwidgets2.8 (2.8.12.1+dfsg-2) unstable; urgency=high
+
+  * Don't build binary package wx-common as that's now built by wxwidgets3.0.
+    Upload with urgency=high as wxwidgets3.0 is already in testing, and the
+    only change in this upload is to not build wx-common.  (Closes: #730211)
+
+ -- Olly Betts <olly@survex.com>  Mon, 25 Nov 2013 18:09:23 +1300
+
 wxwidgets2.8 (2.8.12.1+dfsg-1) unstable; urgency=low
 
   * Re-repack upstream to remove unused embedded copy of editra, which
