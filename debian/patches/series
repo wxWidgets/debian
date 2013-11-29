@@ -1,0 +1,3 @@
+fix-wxsocket-waitforaccept.patch
+set-wxinfobargeneric-text-colour-correctly.patch
+fix-wxvector-overallocation.patch

@@ -1,8 +1,15 @@
-wxwidgets3.0 (3.0.0-2) UNRELEASED; urgency=low
+wxwidgets3.0 (3.0.0-2) unstable; urgency=low
 
   * Build wx-common instead of wxwidgets2.8 building it.
   * debian/rules: Strip out no longer used -doc package handling.
   * debian/rules: Rename extra_packages to do_not_build_packages for clarity.
+  * Backport fixes from upstream VCS:
+    + debian/patches/fix-wxsocket-waitforaccept.patch: Fix
+      wxSocket::WaitForAccept() in worker thread.
+    + debian/patches/fix-wxvector-overallocation.patch: Fix wxVector
+      overallocation.
+    + debian/patches/set-wxinfobargeneric-text-colour-correctly.patch: Set
+      wxInfoBarGeneric text colour correctly.
 
  -- Olly Betts <olly@survex.com>  Sat, 30 Nov 2013 10:44:17 +1300
 
