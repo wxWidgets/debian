@@ -1,3 +1,9 @@
+wxwidgets3.0 (3.0.0-2) UNRELEASED; urgency=low
+
+  * Build wx-common instead of wxwidgets2.8 building it.
+
+ -- Olly Betts <olly@survex.com>  Sat, 30 Nov 2013 10:31:36 +1300
+
 wxwidgets3.0 (3.0.0-1) unstable; urgency=low
 
   * New upstream release! (Closes: #613431, #492896)
