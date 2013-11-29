@@ -120,7 +120,6 @@ package_gtkmedia_dev    := libwxgtk-media$(release)-dev
 
 package_headers         := wx$(release)-headers
 package_i18n            := wx$(release)-i18n
-package_doc             := wx$(release)-doc
 package_examples        := wx$(release)-examples
 package_common           = wx-common
 
@@ -143,7 +142,6 @@ endif
 objdir_wxbase_shared       = objs_wxbase_sh
 objdir_gtk_shared          = objs_gtk_sh
 objdir_gtk_install         = objs_gtk_install
-objdir_doc                 = docs/wx-manual.html
 objdir_examples            = docs/examples
 objdir_i18n                = locale
 
@@ -152,7 +150,7 @@ objdir_msw_static          = objs_msw_st
 objdir_msw_install         = objs_msw_install
 
 objdirs := $(objdir_wxbase_shared) $(objdir_gtk_shared) $(objdir_gtk_install) \
-	   $(objdir_doc) $(objdir_examples)                                   \
+	   $(objdir_examples) \
 	   $(objdir_msw_shared) $(objdir_msw_static) $(objdir_msw_install)
 
 #	note that the i18n package is actually arch indep (once built)
@@ -165,7 +163,7 @@ build_arch_stamps = build-wxbase-shared-stamp \
                     build-gtk-shared-stamp build-gtk-shared-contrib-stamp \
                     build-i18n-stamp
 
-build_indep_stamps = build-examples-stamp build-doc-stamp
+build_indep_stamps = build-examples-stamp
 
 build_cross_stamps = build-msw-shared-stamp build-msw-static-stamp
 
@@ -184,7 +182,7 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
   install_all_arch += install-common
 endif
 
-install_all_indep = install-examples install-doc
+install_all_indep = install-examples
 
 install_all_cross = install-msw-dev install-headers-msw
 
@@ -282,19 +280,6 @@ build-gtk-shared-contrib-stamp: build-gtk-shared-stamp
 	$(FAST_MAKE) -C $(objdir_gtk_shared)/utils/wxrc
 	touch $@
 
-build-doc-stamp: build-gtk-shared-stamp
-	dh_testdir
-	rm -rf $(objdir_doc)
-	mkdir $(objdir_doc)
-	#tar -C'$(objdir_doc)' --strip-components=1 -xf debian/wxWidgets-3.0.0-rc1-docs-html.tar.bz2
-	# cp -a docs/doxygen/out/html/* $(objdir_doc)
-
-	# Replace embedded copy of jquery with symlink to packaged version.
-	#rm -f $(objdir_doc)/jquery.js
-	#ln -s /usr/share/javascript/jquery/jquery.min.js $(objdir_doc)/jquery.js
-
-	touch $@
-
 build-examples-stamp: build-gtk-shared-stamp
 	dh_testdir
 	mkdir -p $(objdir_examples)
@@ -379,7 +364,6 @@ clean: debian/control
 	      debian/$(package_gtk_dbg).* \
 	      debian/$(package_headers).* \
 	      debian/$(package_i18n).* \
-	      debian/$(package_doc).* \
 	      debian/$(package_examples).* \
 	      debian/$(package_msw_dev).* \
 	      debian/lintian-override \
@@ -484,12 +468,6 @@ install-i18n: build-i18n-stamp install-gtk-shared-stamp
 	# We end up with usr/share/locale/zh/LC_MESSAGES/ empty in 2.8.12.1.
 	find $(objdir_gtk_install)/share/locale -type d -empty -delete
 	dh_install $(objdir_gtk_install)/share/locale	usr/share
-
-install-doc: DH_OPTIONS=-p$(package_doc)
-install-doc: build-doc-stamp
-	dh_testdir
-	dh_testroot
-	dh_prep
 
 install-examples: DH_OPTIONS=-p$(package_examples)
 install-examples: build-examples-stamp
@@ -605,5 +583,5 @@ binary-cross: control-files-stamp $(install_all_cross)
 	binary-cross						\
 	install install_arch install-gtk-lib install-gtk-dev		\
 	install-gtkmedia-lib install-gtkmedia-dev	\
-	install-common install-headers install-i18n install-doc         \
+	install-common install-headers install-i18n         \
 	install-examples install-msw-dev install-headers-msw
