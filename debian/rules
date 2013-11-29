@@ -132,9 +132,9 @@ package_msw_dev         := libwxmsw$(release)-dev
 package_headers_msw     := wx$(release)-headers-msw
 
 # The packages listed here will not be built by default.
-extra_packages := $(package_msw_dev) $(package_headers_msw)
+do_not_build_packages := $(package_msw_dev) $(package_headers_msw)
 ifdef DEBIAN_WX_DEFAULT_VERSION
-extra_packages += $(common_packages)
+do_not_build_packages += $(common_packages)
 endif
 
 
@@ -552,13 +552,13 @@ endif
 # building the arch specific package files needed to create them.
 binary-indep: build_all install
 	$(MAKE) -f debian/rules \
-		DH_OPTIONS="-i $(addprefix -N,$(extra_packages))" \
+		DH_OPTIONS="-i $(addprefix -N,$(do_not_build_packages))" \
 		binary-common
 
 # Build just the architecture-dependent files here.
 binary-arch: build-arch install_arch
 	$(MAKE) -f debian/rules \
-		DH_OPTIONS="-a $(addprefix -N,$(extra_packages))" \
+		DH_OPTIONS="-a $(addprefix -N,$(do_not_build_packages))" \
 		binary-common
 
 # Build all packages target.

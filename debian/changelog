@@ -1,9 +1,10 @@
-wxwidgets3.0 (3.0.0-3) UNRELEASED; urgency=low
+wxwidgets3.0 (3.0.0-2) UNRELEASED; urgency=low
 
   * Build wx-common instead of wxwidgets2.8 building it.
   * debian/rules: Strip out no longer used -doc package handling.
+  * debian/rules: Rename extra_packages to do_not_build_packages for clarity.
 
- -- Olly Betts <olly@survex.com>  Sat, 30 Nov 2013 10:42:18 +1300
+ -- Olly Betts <olly@survex.com>  Sat, 30 Nov 2013 10:44:17 +1300
 
 wxwidgets3.0 (3.0.0-1) unstable; urgency=low
 
