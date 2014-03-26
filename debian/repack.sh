@@ -9,6 +9,7 @@ set -u
 VER="$2"
 FILE="$3"
 PKG=`dpkg-parsechangelog|sed 's/^Source: //p;d'`
+LOCALVER=`dpkg-parsechangelog|sed 's/^Version: \(.*\)-.*/\1/p;d'`
 
 REPACK_DIR="$PKG-$VER.orig" # DevRef § 6.7.8.2
 
@@ -69,7 +70,7 @@ mv "$UP_BASE" "$DIR/$REPACK_DIR"
 tar cfC "$DIR/repacked.tar" "$DIR" "$REPACK_DIR"
 xz -9 < "$DIR/repacked.tar" > "$DIR/repacked.tar.xz"
 
-FILE=$(echo $FILE | sed 's/bz2/xz/')
+FILE=`dirname "$FILE"`/${PKG}_${LOCALVER}.orig.tar.xz
 mv "$DIR/repacked.tar.xz" "$FILE"
 
 echo "*** $FILE repackaged"
