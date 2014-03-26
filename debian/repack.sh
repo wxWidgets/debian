@@ -55,6 +55,14 @@ rm -f "$UP_BASE"/wxPython/scripts/editra
 rm -f "$UP_BASE"/wxPython/distrib/mac/updateEditraPlist.py
 rm -rf "$UP_BASE"/wxPython/wx/tools/Editra
 
+# No source, licence unclear (http://trac.wxwidgets.org/ticket/15917).
+rm -f "$UP_BASE"/wxPython/demo/data/Asteroid_blaster.swf
+
+# Samples from TV shows (http://trac.wxwidgets.org/ticket/15917).
+rm -f "$UP_BASE"/wxPython/demo/data/anykey.wav
+rm -f "$UP_BASE"/wxPython/demo/data/plan.wav
+rm -f "$UP_BASE"/wxPython/demo/data/testmovie.mpg
+
 # Now rebuild the tarball.
 mv "$UP_BASE" "$DIR/$REPACK_DIR"
 # Using a pipe hides tar errors!
