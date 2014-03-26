@@ -1,4 +1,4 @@
-wxwidgets2.8 (2.8.12.1+dfsg2-1) UNRELEASED; urgency=medium
+wxwidgets2.8 (2.8.12.1+dfsg2-1) unstable; urgency=medium
 
   * Repack to remove non-free files from wxPython. (Closes: #735225)
   * Change section to "oldlibs" to try to encourage new packages to use
@@ -7,7 +7,7 @@ wxwidgets2.8 (2.8.12.1+dfsg2-1) UNRELEASED; urgency=medium
   * "Standards-Version: 3.9.5" - no changes required.
   * debian/watch: Add dversionmangle to account for repacked orig tarball.
 
- -- Olly Betts <olly@survex.com>  Wed, 26 Mar 2014 13:55:43 +1300
+ -- Olly Betts <olly@survex.com>  Wed, 26 Mar 2014 15:08:15 +1300
 
 wxwidgets2.8 (2.8.12.1+dfsg-2) unstable; urgency=high
 
