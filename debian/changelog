@@ -5,6 +5,7 @@ wxwidgets2.8 (2.8.12.1+dfsg2-1) UNRELEASED; urgency=medium
     wx 3.0 instead.
   * Fix warnings building code using wx2.8 with GCC 4.8. (Closes: #740115)
   * "Standards-Version: 3.9.5" - no changes required.
+  * debian/watch: Add dversionmangle to account for repacked orig tarball.
 
  -- Olly Betts <olly@survex.com>  Wed, 26 Mar 2014 13:55:43 +1300
 
