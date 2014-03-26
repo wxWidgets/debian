@@ -1,3 +1,10 @@
+wxwidgets2.8 (2.8.12.1+dfsg-3) UNRELEASED; urgency=medium
+
+  * Change section to "oldlibs" to try to encourage new packages to use
+    wx 3.0 instead.
+
+ -- Olly Betts <olly@survex.com>  Wed, 26 Mar 2014 13:55:43 +1300
+
 wxwidgets2.8 (2.8.12.1+dfsg-2) unstable; urgency=high
 
   * Don't build binary package wx-common as that's now built by wxwidgets3.0.
