@@ -34,3 +34,4 @@ ar.po.patch
 ta.po.patch
 wxpython-=-should-be-==.patch
 fix-editra-removal.patch
+fix-gcc-4.8-unused-typedef-warning.patch

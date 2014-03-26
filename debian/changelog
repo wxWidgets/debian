@@ -3,6 +3,7 @@ wxwidgets2.8 (2.8.12.1+dfsg2-1) UNRELEASED; urgency=medium
   * Repack to remove non-free files from wxPython. (Closes: #735225)
   * Change section to "oldlibs" to try to encourage new packages to use
     wx 3.0 instead.
+  * Fix warnings building code using wx2.8 with GCC 4.8. (Closes: #740115)
 
  -- Olly Betts <olly@survex.com>  Wed, 26 Mar 2014 13:55:43 +1300
 
