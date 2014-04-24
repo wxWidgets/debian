@@ -1,3 +1,13 @@
+wxwidgets3.0 (3.0.0-3) unstable; urgency=medium
+
+  * Team upload
+  * New libwxgtk-webview3.0-0{,-dbg,-dev} packages (Closes: #738849)
+    + debian/control.in: add libwebkitgtk-dev as b-d
+      needed to enable webview support
+    + debian/rules: split webview library in the new package
+
+ -- Gianfranco Costamagna <costamagnagianfranco@yahoo.it>  Thu, 24 Apr 2014 18:30:09 +0200
+
 wxwidgets3.0 (3.0.0-2) unstable; urgency=low
 
   * Build wx-common instead of wxwidgets2.8 building it.
