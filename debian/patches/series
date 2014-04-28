@@ -2,3 +2,4 @@ fix-wxsocket-waitforaccept.patch
 set-wxinfobargeneric-text-colour-correctly.patch
 fix-wxvector-overallocation.patch
 fix-bug-736374.patch
+propgrid-assertion-fixes.patch
