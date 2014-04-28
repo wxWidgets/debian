@@ -1,6 +1,7 @@
 wxwidgets3.0 (3.0.0-3) unstable; urgency=medium
 
   * Team upload
+  * Standards-Version: 3.9.5 (no changes required).
   * New libwxgtk-webview3.0-0{,-dbg,-dev} packages (Closes: #738849)
     + debian/control.in: add libwebkitgtk-dev as b-d
       needed to enable webview support
