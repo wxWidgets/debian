@@ -11,6 +11,7 @@ SHELL = /bin/bash
 #export DH_VERBOSE=1
 
 export DH_OPTIONS
+export DEB_LDFLAGS_APPEND=-Wl,--as-needed dpkg-buildflags --get LDFLAGS
 
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
@@ -69,7 +70,7 @@ COMMON_CONFIGURE_OPTIONS := \
     --with-flavour=$(DEBIAN_WXFLAVOUR) \
     --with-zlib=sys \
     --with-expat=sys \
-    $(shell dpkg-buildflags --export=configure)
+    $(shell DEB_LDFLAGS_APPEND=-Wl,--as-needed dpkg-buildflags --export=configure)
 
 ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 COMMON_CONFIGURE_OPTIONS += --disable-optimise
