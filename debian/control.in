@@ -172,8 +172,8 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Section: debug
 Priority: extra
-Depends: libwxgtk-webview=SOV (= ${binary:Version}), libwxgtk=SOV-dbg (= ${binary:Version})
-Suggests: libwebkitgtk-3.0-0-dbg, ${misc:Depends}
+Depends: libwxgtk-webview=SOV (= ${binary:Version}), libwxgtk=SOV-dbg (= ${binary:Version}), ${misc:Depends}
+Suggests: libwebkitgtk-3.0-0-dbg
 Description: debugging symbols for the wxGTK webview library
  This package contains detached debugging symbols for the wxGTK webview library
  (part of wxWidgets).
