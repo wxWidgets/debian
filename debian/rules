@@ -80,25 +80,25 @@ BASE_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --libdir=\$${exec_prefix}/lib/$(DEB_HOST_MULTIARCH)
 
 GTK_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
-    --with-gtk \
-    --without-gnomeprint \
-    --with-opengl \
-    --enable-sound \
-    --with-sdl \
     --enable-display \
     --enable-geometry \
     --enable-graphics_ctx \
-    --enable-webview \
     --enable-mediactrl \
+    --enable-sound \
+    --enable-webview \
+    --with-gtk \
     --with-libjpeg=sys \
     --with-libpng=sys \
     --with-libtiff=sys \
+    --with-opengl \
+    --with-sdl \
+    --without-gnomeprint \
     --libdir=\$${exec_prefix}/lib/$(DEB_HOST_MULTIARCH)
 
 MSW_CONFIGURE_OPTIONS = \
+    --enable-display \
     --with-msw \
-    --with-opengl \
-    --enable-display
+    --with-opengl
 
 # For the MSW packages, enabling threads in wx means that your application will
 # have a dependency on mingwm10.dll.  If you don't use threads, this is just an
