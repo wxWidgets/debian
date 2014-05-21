@@ -1,7 +1,5 @@
 wxwidgets3.0 (3.0.0-3) unstable; urgency=medium
 
-  * Team upload
-
   [ Gianfranco Costamagna ]
 
   * Standards-Version: 3.9.5 (no changes required).
@@ -16,9 +14,9 @@ wxwidgets3.0 (3.0.0-3) unstable; urgency=medium
   [ Olly Betts ]
 
   * debian/patches/propgrid-assertion-fixes.patch: Fix crash on "Try these"
-    example (Closes: #746192)
+    in the propgrid example (Closes: #746192)
 
- -- Gianfranco Costamagna <costamagnagianfranco@yahoo.it>  Thu, 24 Apr 2014 18:30:09 +0200
+ -- Olly Betts <olly@survex.com>  Wed, 21 May 2014 15:45:59 +1200
 
 wxwidgets3.0 (3.0.0-2) unstable; urgency=low
 
