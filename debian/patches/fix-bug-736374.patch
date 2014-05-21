@@ -15,7 +15,7 @@ work as before.
 Origin: upstream, http://trac.wxwidgets.org/changeset/75191
 Bug-Debian: http://bugs.debian.org/736374
 Forwarded: not-needed
-Last-Update: <2014-04-28>
+Last-Update: 2014-04-28
 
 --- wxwidgets3.0-3.0.0.orig/src/gtk/window.cpp
 +++ wxwidgets3.0-3.0.0/src/gtk/window.cpp
