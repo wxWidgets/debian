@@ -15,13 +15,15 @@ libwxgtk-media3.0-<N>	    wxGTK runtime shared libraries for wxMediaCtrl
 			    - these are in a separate package as they pull
 			    in a lot of large dependencies
 libwxgtk-media3.0-<N>-dbg   detached debugging symbols for libwxgtk-media3.0-<N>
-libwxgtk-media3.0-dev	    extra files required for building wxGTK apps
+libwxgtk-media3.0-dev	    extra files required for building wxGTK apps using
+			    wxMediaCtrl
 
 libwxgtk-webview3.0-<N>	    wxGTK runtime shared libraries for wxWebView
 			    - these are in a separate package as they pull
 			    in a lot of large dependencies
 libwxgtk-webview3.0-<N>-dbg detached debugging symbols for libwxgtk-webview3.0-<N>
-libwxgtk-webview3.0-dev	    extra files required for building wxGTK apps
+libwxgtk-webview3.0-dev	    extra files required for building wxGTK apps using
+			    wxWebView
 
 wx-common		    common helper files and support applications.
 wx3.0-headers		    common header files for building wxWidgets apps
@@ -65,5 +67,5 @@ wx-headers-msw		extra headers needed for wxMSW.
 
 You can build these extra packages using the binary-cross target in debian/rules.
 
- -- Olly Betts <olly@survex.com>  Tue, 12 Nov 2013 10:13:08 +0000
+ -- Olly Betts <olly@survex.com>  Wed, 21 May 2014 03:39:14 +0000
 
