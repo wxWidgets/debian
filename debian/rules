@@ -69,7 +69,7 @@ COMMON_CONFIGURE_OPTIONS := \
     --with-flavour=$(DEBIAN_WXFLAVOUR) \
     --with-zlib=sys \
     --with-expat=sys \
-    $(shell DEB_LDFLAGS_APPEND=-Wl,--as-needed dpkg-buildflags --export=configure)
+    $(shell DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed dpkg-buildflags --export=configure)
 
 ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 COMMON_CONFIGURE_OPTIONS += --disable-optimise
