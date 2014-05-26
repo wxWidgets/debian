@@ -1,3 +1,11 @@
+wxwidgets3.0 (3.0.0-4) unstable; urgency=medium
+
+  * Only include webview in the "std" gui libs if libwxgtk-webview3.0-dev is
+    installed (new patch wx-config-conditionalise-webview-in-std.patch).
+    (Closes: #749292)
+
+ -- Olly Betts <olly@survex.com>  Mon, 26 May 2014 14:03:35 +1200
+
 wxwidgets3.0 (3.0.0-3) unstable; urgency=medium
 
   [ Gianfranco Costamagna ]

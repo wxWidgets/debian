@@ -3,3 +3,4 @@ set-wxinfobargeneric-text-colour-correctly.patch
 fix-wxvector-overallocation.patch
 fix-bug-736374.patch
 propgrid-assertion-fixes.patch
+wx-config-conditionalise-webview-in-std.patch
