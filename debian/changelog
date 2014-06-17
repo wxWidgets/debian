@@ -1,3 +1,11 @@
+wxwidgets3.0 (3.0.1-1) unstable; urgency=medium
+
+  * New upstream release
+    + Incorporates most of the patches we were carrying - only one left is:
+      wx-config-conditionalise-webview-in-std.patch
+
+ -- Olly Betts <olly@survex.com>  Wed, 18 Jun 2014 11:29:41 +1200
+
 wxwidgets3.0 (3.0.0-4) unstable; urgency=medium
 
   * Only include webview in the "std" gui libs if libwxgtk-webview3.0-dev is
