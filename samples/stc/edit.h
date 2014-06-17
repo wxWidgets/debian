@@ -103,6 +103,8 @@ public:
     void OnCharAdded  (wxStyledTextEvent &event);
     void OnKey  (wxStyledTextEvent &event);
 
+    void OnKeyDown(wxKeyEvent &event);
+
     //! language/lexer
     wxString DeterminePrefs (const wxString &filename);
     bool InitializePrefs (const wxString &filename);
@@ -132,7 +134,7 @@ private:
     int m_FoldingMargin;
     int m_DividerID;
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 //----------------------------------------------------------------------------

@@ -60,7 +60,7 @@ const int ANNOTATION_STYLE = wxSTC_STYLE_LASTPREDEFINED + 1;
 // Edit
 //----------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE (Edit, wxStyledTextCtrl)
+wxBEGIN_EVENT_TABLE (Edit, wxStyledTextCtrl)
     // common
     EVT_SIZE (                         Edit::OnSize)
     // edit
@@ -112,7 +112,9 @@ BEGIN_EVENT_TABLE (Edit, wxStyledTextCtrl)
     EVT_STC_MARGINCLICK (wxID_ANY,     Edit::OnMarginClick)
     EVT_STC_CHARADDED (wxID_ANY,       Edit::OnCharAdded)
     EVT_STC_KEY( wxID_ANY , Edit::OnKey )
-END_EVENT_TABLE()
+
+    EVT_KEY_DOWN( Edit::OnKeyDown )
+wxEND_EVENT_TABLE()
 
 Edit::Edit (wxWindow *parent, wxWindowID id,
             const wxPoint &pos,
@@ -208,6 +210,22 @@ void Edit::OnEditClear (wxCommandEvent &WXUNUSED(event)) {
 void Edit::OnKey (wxStyledTextEvent &WXUNUSED(event))
 {
     wxMessageBox("OnKey");
+}
+
+void Edit::OnKeyDown (wxKeyEvent &event)
+{
+    if (CallTipActive())
+        CallTipCancel();
+    if (event.GetKeyCode() == WXK_SPACE && event.ControlDown() && event.ShiftDown())
+    {
+        int pos = GetCurrentPos();
+        CallTipSetBackground(*wxYELLOW);
+        CallTipShow(pos,
+                    "This is a CallTip with multiple lines.\n"
+                    "It is meant to be a context sensitive popup helper for the user.");
+        return;
+    }
+    event.Skip();
 }
 
 void Edit::OnEditCut (wxCommandEvent &WXUNUSED(event)) {

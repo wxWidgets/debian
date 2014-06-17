@@ -97,9 +97,9 @@ bool MyApp::OnInit()
     return true;
 }
 
-BEGIN_EVENT_TABLE(MyCanvas, wxScrolledWindow)
+wxBEGIN_EVENT_TABLE(MyCanvas, wxScrolledWindow)
     EVT_JOYSTICK_EVENTS(MyCanvas::OnJoystickEvent)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 // Define a constructor for my canvas
 MyCanvas::MyCanvas(wxWindow *parent, const wxPoint& pos, const wxSize& size):
@@ -159,9 +159,9 @@ void MyCanvas::OnJoystickEvent(wxJoystickEvent& event)
 #if wxUSE_STATUSBAR
     wxString buf;
     if (event.ButtonDown())
-        buf.Printf(wxT("Joystick (%d, %d) #%i Fire!"), xpos, ypos, event.GetButtonChange());
+        buf.Printf(wxT("Joystick (%ld, %ld) #%i Fire!"), xpos, ypos, event.GetButtonChange());
     else
-        buf.Printf(wxT("Joystick (%d, %d)  "), xpos, ypos);
+        buf.Printf(wxT("Joystick (%ld, %ld)  "), xpos, ypos);
 
 /*
     for(int i = 0; i < nButtons; ++i)
@@ -182,9 +182,9 @@ void MyCanvas::OnJoystickEvent(wxJoystickEvent& event)
 #endif // wxUSE_SOUND
 }
 
-BEGIN_EVENT_TABLE(MyFrame, wxFrame)
+wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(JOYTEST_QUIT, MyFrame::OnQuit)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 MyFrame::MyFrame(wxFrame *parent, const wxString& title, const wxPoint& pos,
     const wxSize& size, const long style)

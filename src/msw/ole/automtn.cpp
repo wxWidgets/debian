@@ -26,7 +26,10 @@
     #include "wx/math.h"
 #endif
 
-#define _FORCENAMELESSUNION
+#ifndef _FORCENAMELESSUNION
+    #define _FORCENAMELESSUNION
+#endif
+
 #include "wx/msw/private.h"
 #include "wx/msw/ole/oleutils.h"
 #include "wx/msw/ole/automtn.h"
@@ -600,12 +603,12 @@ bool wxAutomationObject::CreateInstance(const wxString& progId) const
     return m_dispatchPtr != NULL;
 }
 
-LCID wxAutomationObject::GetLCID() const
+WXLCID wxAutomationObject::GetLCID() const
 {
     return m_lcid;
 }
 
-void wxAutomationObject::SetLCID(LCID lcid)
+void wxAutomationObject::SetLCID(WXLCID lcid)
 {
     m_lcid = lcid;
 }
