@@ -5,11 +5,11 @@ Author: Olly Betts <olly@survex.com>
 Bug-Debian: http://bugs.debian.org/749292
 Bug: http://trac.wxwidgets.org/ticket/16291
 Forwarded: not-needed
-Last-Update: 2014-05-26
+Last-Update: 2014-06-18
 
 --- a/wx-config.in
 +++ b/wx-config.in
-@@ -1199,12 +1199,20 @@
+@@ -1199,6 +1199,14 @@
  # Assume we are using the GUI, unless --libs was specified with no GUI libs
  using_gui=yes
  
@@ -24,14 +24,7 @@ Last-Update: 2014-05-26
  if is_monolithic; then
  
      # Only add additional info if --libs was specified and not just --optional-libs
-     if [ -n "$output_option_libs" ]; then
-         # Core libs are already built into the blob.
--        for i in std @STD_GUI_LIBS@ @STD_BASE_LIBS@; do
-+        for i in std $STD_GUI_LIBS @STD_BASE_LIBS@; do
-             wx_libs=`remove_field $i $wx_libs`
-         done
- 
-@@ -1223,14 +1231,14 @@
+@@ -1225,14 +1233,14 @@
  
      # Import core libs by default, expand std if specified, or add base if omitted.
      if [ -n "$output_option_libs" ] && [ -z "$libs_parameters" ]; then
@@ -48,7 +41,7 @@ Last-Update: 2014-05-26
              wx_libs="`remove_field $i $wx_libs` $i"
          done
      elif not match_field base $wx_libs ; then
-@@ -1243,7 +1251,7 @@
+@@ -1245,7 +1253,7 @@
      if [ -n "$output_option_libs" ]; then
          using_gui=no
          for i in $wx_libs ; do
