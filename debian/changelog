@@ -7,6 +7,8 @@ wxwidgets3.0 (3.0.1-1) unstable; urgency=medium
     this will make the transition to the next wx version harder, and also
     makes backporting to wheezy more work.
   * Mark -dbg packages as "Multi-Arch: same".
+  * Correct short descriptions of the webview packages to not just be
+    copies of the corresponding media package's short description.
 
  -- Olly Betts <olly@survex.com>  Wed, 18 Jun 2014 11:38:09 +1200
 
