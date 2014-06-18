@@ -106,6 +106,7 @@ Pre-Depends: ${misc:Pre-Depends}
 Section: debug
 Priority: extra
 Depends: libwxgtk=SOV (= ${binary:Version}), libwxbase=SOV-dbg (= ${binary:Version}), ${misc:Depends}
+Multi-Arch: same
 Description: debugging symbols for the wxGTK GUI toolkit library
  This package contains detached debugging symbols for the wxGTK library
  (part of wxWidgets).
@@ -133,6 +134,7 @@ Pre-Depends: ${misc:Pre-Depends}
 Section: debug
 Priority: extra
 Depends: libwxgtk-media=SOV (= ${binary:Version}), libwxgtk=SOV-dbg (= ${binary:Version}), ${misc:Depends}
+Multi-Arch: same
 Description: debugging symbols for the wxGTK media library
  This package contains detached debugging symbols for the wxGTK media library
  (part of wxWidgets).
@@ -174,6 +176,7 @@ Section: debug
 Priority: extra
 Depends: libwxgtk-webview=SOV (= ${binary:Version}), libwxgtk=SOV-dbg (= ${binary:Version}), ${misc:Depends}
 Suggests: libwebkitgtk-3.0-0-dbg
+Multi-Arch: same
 Description: debugging symbols for the wxGTK webview library
  This package contains detached debugging symbols for the wxGTK webview library
  (part of wxWidgets).
