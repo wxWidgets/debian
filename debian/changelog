@@ -9,8 +9,9 @@ wxwidgets3.0 (3.0.1-1) unstable; urgency=medium
   * Mark -dbg packages as "Multi-Arch: same".
   * Correct short descriptions of the webview packages to not just be
     copies of the corresponding media package's short description.
+  * Wrap 81 character line in package description.
 
- -- Olly Betts <olly@survex.com>  Wed, 18 Jun 2014 11:38:09 +1200
+ -- Olly Betts <olly@survex.com>  Wed, 18 Jun 2014 12:42:22 +1200
 
 wxwidgets3.0 (3.0.0-4) unstable; urgency=medium
 

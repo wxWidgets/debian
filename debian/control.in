@@ -166,8 +166,8 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (webview library runtime)
  GUI components and other facilities on several popular platforms (and some
  unpopular ones as well).  For more information see http://wxwidgets.org
  .
- This package provides the webview shared libraries needed to run programs linked
- against libwx_gtk2u_webview.
+ This package provides the webview shared libraries needed to run programs
+ linked against libwx_gtk2u_webview.
 
 Package: libwxgtk-webview=SOV-dbg
 Architecture: any
