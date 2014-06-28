@@ -3,6 +3,8 @@
 # Unpack compressed examples from the packaged documentation
 # into a directory where the user can compile and/or run them.
 
+set -e
+
 WX_EXAMPLES_DIR="/usr/share/doc/wx=V-examples/examples"
 
 usage() {
@@ -25,13 +27,13 @@ done
 
 DESTDIR="$1"
 
-if [ -e $DESTDIR ]; then
+if [ -e "$DESTDIR" ]; then
     echo "Destination $DESTDIR already exists. Cowardly exiting."
     exit 2
 fi
 
 if [ -z "$SUBDIRS" ]; then
-    for d in $(cd $WX_EXAMPLES_DIR 2> /dev/null && ls -d * 2> /dev/null); do
+    for d in $(cd "$WX_EXAMPLES_DIR" 2> /dev/null && ls -d * 2> /dev/null); do
         [ -d "$WX_EXAMPLES_DIR/$d" ] && SUBDIRS="$SUBDIRS $d"
     done
 else
@@ -50,13 +52,13 @@ if [ -z "$SUBDIRS" ]; then
     exit 1
 fi
 
-mkdir -p $DESTDIR
+mkdir -p "$DESTDIR"
 for d in $SUBDIRS; do
     echo "Copying $WX_EXAMPLES_DIR/$d to $DESTDIR"
     cp -pr "$WX_EXAMPLES_DIR/$d" "$DESTDIR"
 done
 
 echo -n "Unpacking... "
-find $DESTDIR -name "*.gz" -exec gunzip {} \;
+find "$DESTDIR" -name "*.gz" \! -name "*.dxf.gz" \! -name "*.dat.gz" -print0 | xargs -0 gunzip
 echo "done."
 

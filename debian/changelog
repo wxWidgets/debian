@@ -2,8 +2,11 @@ wxwidgets3.0 (3.0.1-2) unstable; urgency=medium
 
   * New patch gcc4.9-workaround.patch to work around GCC 4.9 bug
     #752733.
+  * debian/unpack_examples.sh.in: Don't uncompress files which are
+    already compressed upstream.  Add missing quoting of filenames.
+    Add "set -e".
 
- -- Olly Betts <olly@survex.com>  Thu, 26 Jun 2014 22:42:43 +1200
+ -- Olly Betts <olly@survex.com>  Sat, 28 Jun 2014 15:00:12 +1200
 
 wxwidgets3.0 (3.0.1-1) unstable; urgency=medium
 
