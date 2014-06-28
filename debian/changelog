@@ -1,3 +1,10 @@
+wxwidgets3.0 (3.0.1-2) unstable; urgency=medium
+
+  * New patch gcc4.9-workaround.patch to work around GCC 4.9 bug
+    #752733.
+
+ -- Olly Betts <olly@survex.com>  Thu, 26 Jun 2014 22:42:43 +1200
+
 wxwidgets3.0 (3.0.1-1) unstable; urgency=medium
 
   * New upstream release
