@@ -6,8 +6,10 @@ Description: Ugly work-around for GCC 4.9 bug
  .
    * New patch fno-visibility-inlines-hidden.patch to work around GCC 4.9 bug.
 Author: Olly Betts <olly@survex.com>
-Forwarded: no
-Last-Update: 2014-06-28
+Forwarded: http://trac.wxwidgets.org/attachment/ticket/16359/gcc4.9-workaround.patch
+Bug: http://trac.wxwidgets.org/ticket/16359
+Bug-Debian: https://bugs.debian.org/752733
+Last-Update: 2014-06-30
 
 --- a/include/wx/event.h
 +++ b/include/wx/event.h
