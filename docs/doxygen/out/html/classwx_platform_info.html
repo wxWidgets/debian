@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -60,9 +60,9 @@
 
 <p><code>#include &lt;wx/platinfo.h&gt;</code></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>This class holds informations about the operating system, the toolkit and the basic architecture of the machine where the application is currently running. </p>
-<p>This class does not only have <em>getters</em> for the informations above, it also has <em>setters</em>. This allows you to e.g. save the current platform informations in a data file (maybe in string form) so that when you later load it, you can easily retrieve (see the static getters for string-&gt;enum conversion functions) and store inside a <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance (using its setters) the signature of the system which generated it.</p>
-<p>In general however you only need to use the static <a class="el" href="classwx_platform_info.html#a094f23606729a3325b5e303eb31ad0b3" title="Returns the global wxPlatformInfo object, initialized with the values for the currently running platf...">Get()</a> function and then access the various informations for the current platform: </p>
+<div class="textblock"><p>This class holds information about the operating system, the toolkit and the basic architecture of the machine where the application is currently running. </p>
+<p>This class does not only have <em>getters</em> for the information above, it also has <em>setters</em>. This allows you to e.g. save the current platform information in a data file (maybe in string form) so that when you later load it, you can easily retrieve (see the static getters for string-&gt;enum conversion functions) and store inside a <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance (using its setters) the signature of the system which generated it.</p>
+<p>In general however you only need to use the static <a class="el" href="classwx_platform_info.html#a094f23606729a3325b5e303eb31ad0b3" title="Returns the global wxPlatformInfo object, initialized with the values for the currently running platf...">Get()</a> function and then access the various information for the current platform: </p>
 <div class="fragment"><div class="line"><a class="code" href="group__group__funcmacro__log.html#ga249358701f3c2d410088ddf7a61d8564" title="For all normal, informational messages.">wxLogMessage</a>(<span class="stringliteral">&quot;This application is running under %s.&quot;</span>,</div>
 <div class="line">             <a class="code" href="classwx_platform_info.html#a094f23606729a3325b5e303eb31ad0b3" title="Returns the global wxPlatformInfo object, initialized with the values for the currently running platf...">wxPlatformInfo::Get</a>().<a class="code" href="classwx_platform_info.html#ae7c90aca295c74184737e50cc673d3fb" title="Returns the operating system name of the OS associated with this wxPlatformInfo instance.">GetOperatingSystemIdName</a>());</div>
 </div><!-- fragment --><h2></h2>
@@ -86,7 +86,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a4d9b774fe3d04983b86d840761c89999"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <span class="literal">true</span> if this instance is fully initialized with valid values.  <a href="#a4d9b774fe3d04983b86d840761c89999"></a><br/></td></tr>
 <tr class="separator:a4d9b774fe3d04983b86d840761c89999"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a180dec50a9037acc1f3d71f3ea188ad4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a180dec50a9037acc1f3d71f3ea188ad4">IsUsingUniversalWidgets</a> () const </td></tr>
-<tr class="memdesc:a180dec50a9037acc1f3d71f3ea188ad4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <span class="literal">true</span> if this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> describes wxUniversal build.  <a href="#a180dec50a9037acc1f3d71f3ea188ad4"></a><br/></td></tr>
+<tr class="memdesc:a180dec50a9037acc1f3d71f3ea188ad4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <span class="literal">true</span> if this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> describes wxUniversal build.  <a href="#a180dec50a9037acc1f3d71f3ea188ad4"></a><br/></td></tr>
 <tr class="separator:a180dec50a9037acc1f3d71f3ea188ad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a026496f60d29c419eacf39247842969d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a026496f60d29c419eacf39247842969d">operator!=</a> (const <a class="el" href="classwx_platform_info.html">wxPlatformInfo</a> &amp;t) const </td></tr>
 <tr class="memdesc:a026496f60d29c419eacf39247842969d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inequality operator.  <a href="#a026496f60d29c419eacf39247842969d"></a><br/></td></tr>
@@ -96,90 +96,90 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a24d4c5e9de8bfbd38b760e84dca00efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Getters</div></td></tr>
 <tr class="memitem:a9fd3beb1951943388600e4364cd12e80"><td class="memItemLeft" align="right" valign="top"><a class="el" href="platinfo_8h.html#ab2b4836af7d22393b06c1d4f110bdb4c">wxArchitecture</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a9fd3beb1951943388600e4364cd12e80">GetArchitecture</a> () const </td></tr>
-<tr class="memdesc:a9fd3beb1951943388600e4364cd12e80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the architecture ID of this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a9fd3beb1951943388600e4364cd12e80"></a><br/></td></tr>
+<tr class="memdesc:a9fd3beb1951943388600e4364cd12e80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the architecture ID of this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a9fd3beb1951943388600e4364cd12e80"></a><br/></td></tr>
 <tr class="separator:a9fd3beb1951943388600e4364cd12e80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a231a99f2c187c6bf876cd83dc33c8829"><td class="memItemLeft" align="right" valign="top"><a class="el" href="platinfo_8h.html#a604702957b3c219643e1c989766f7047">wxEndianness</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a231a99f2c187c6bf876cd83dc33c8829">GetEndianness</a> () const </td></tr>
-<tr class="memdesc:a231a99f2c187c6bf876cd83dc33c8829"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the endianness ID of this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a231a99f2c187c6bf876cd83dc33c8829"></a><br/></td></tr>
+<tr class="memdesc:a231a99f2c187c6bf876cd83dc33c8829"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the endianness ID of this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a231a99f2c187c6bf876cd83dc33c8829"></a><br/></td></tr>
 <tr class="separator:a231a99f2c187c6bf876cd83dc33c8829"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab95e9c7889ae224744cce280d84fe01a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#ab95e9c7889ae224744cce280d84fe01a">GetOSMajorVersion</a> () const </td></tr>
-<tr class="memdesc:ab95e9c7889ae224744cce280d84fe01a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the run-time major version of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#ab95e9c7889ae224744cce280d84fe01a"></a><br/></td></tr>
+<tr class="memdesc:ab95e9c7889ae224744cce280d84fe01a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the run-time major version of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#ab95e9c7889ae224744cce280d84fe01a"></a><br/></td></tr>
 <tr class="separator:ab95e9c7889ae224744cce280d84fe01a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9bc289303d4e13ad9f186d738e1d528"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#aa9bc289303d4e13ad9f186d738e1d528">GetOSMinorVersion</a> () const </td></tr>
-<tr class="memdesc:aa9bc289303d4e13ad9f186d738e1d528"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the run-time minor version of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#aa9bc289303d4e13ad9f186d738e1d528"></a><br/></td></tr>
+<tr class="memdesc:aa9bc289303d4e13ad9f186d738e1d528"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the run-time minor version of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#aa9bc289303d4e13ad9f186d738e1d528"></a><br/></td></tr>
 <tr class="separator:aa9bc289303d4e13ad9f186d738e1d528"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab70a9c0bac9a38f05930e5f05a153cff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="platinfo_8h.html#ae1234f6be0bdb09c90c9ba78251056fd">wxOperatingSystemId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#ab70a9c0bac9a38f05930e5f05a153cff">GetOperatingSystemId</a> () const </td></tr>
-<tr class="memdesc:ab70a9c0bac9a38f05930e5f05a153cff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the operating system ID of this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#ab70a9c0bac9a38f05930e5f05a153cff"></a><br/></td></tr>
+<tr class="memdesc:ab70a9c0bac9a38f05930e5f05a153cff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the operating system ID of this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#ab70a9c0bac9a38f05930e5f05a153cff"></a><br/></td></tr>
 <tr class="separator:ab70a9c0bac9a38f05930e5f05a153cff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6bf561b3421cf7f29c0100a8cf0daa1c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_string.html">wxString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a6bf561b3421cf7f29c0100a8cf0daa1c">GetOperatingSystemDescription</a> () const </td></tr>
-<tr class="memdesc:a6bf561b3421cf7f29c0100a8cf0daa1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the description of the operating system of this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a6bf561b3421cf7f29c0100a8cf0daa1c"></a><br/></td></tr>
+<tr class="memdesc:a6bf561b3421cf7f29c0100a8cf0daa1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the description of the operating system of this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a6bf561b3421cf7f29c0100a8cf0daa1c"></a><br/></td></tr>
 <tr class="separator:a6bf561b3421cf7f29c0100a8cf0daa1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:accb2703f09fe6e28497b47e67630e856"><td class="memItemLeft" align="right" valign="top"><a class="el" href="platinfo_8h.html#a4acbc14b366d6ce2875f809be384757b">wxPortId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#accb2703f09fe6e28497b47e67630e856">GetPortId</a> () const </td></tr>
-<tr class="memdesc:accb2703f09fe6e28497b47e67630e856"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#accb2703f09fe6e28497b47e67630e856"></a><br/></td></tr>
+<tr class="memdesc:accb2703f09fe6e28497b47e67630e856"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#accb2703f09fe6e28497b47e67630e856"></a><br/></td></tr>
 <tr class="separator:accb2703f09fe6e28497b47e67630e856"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79be6e7e9749940c41f208bb29acee3d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structwx_linux_distribution_info.html">wxLinuxDistributionInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a79be6e7e9749940c41f208bb29acee3d">GetLinuxDistributionInfo</a> () const </td></tr>
-<tr class="memdesc:a79be6e7e9749940c41f208bb29acee3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the Linux distribution info associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a79be6e7e9749940c41f208bb29acee3d"></a><br/></td></tr>
+<tr class="memdesc:a79be6e7e9749940c41f208bb29acee3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the Linux distribution info associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a79be6e7e9749940c41f208bb29acee3d"></a><br/></td></tr>
 <tr class="separator:a79be6e7e9749940c41f208bb29acee3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a063a96305c6bd54569b1fa50d8a3d49b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_string.html">wxString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a063a96305c6bd54569b1fa50d8a3d49b">GetDesktopEnvironment</a> () const </td></tr>
-<tr class="memdesc:a063a96305c6bd54569b1fa50d8a3d49b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the desktop environment associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a063a96305c6bd54569b1fa50d8a3d49b"></a><br/></td></tr>
+<tr class="memdesc:a063a96305c6bd54569b1fa50d8a3d49b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the desktop environment associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a063a96305c6bd54569b1fa50d8a3d49b"></a><br/></td></tr>
 <tr class="separator:a063a96305c6bd54569b1fa50d8a3d49b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaae61e2fafb958b19da3738916cb032d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#aaae61e2fafb958b19da3738916cb032d">GetToolkitMajorVersion</a> () const </td></tr>
-<tr class="memdesc:aaae61e2fafb958b19da3738916cb032d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the run-time major version of the toolkit associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#aaae61e2fafb958b19da3738916cb032d"></a><br/></td></tr>
+<tr class="memdesc:aaae61e2fafb958b19da3738916cb032d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the run-time major version of the toolkit associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#aaae61e2fafb958b19da3738916cb032d"></a><br/></td></tr>
 <tr class="separator:aaae61e2fafb958b19da3738916cb032d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a248fe81a2d7d04dc44edc6eb966a4dad"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a248fe81a2d7d04dc44edc6eb966a4dad">GetToolkitMinorVersion</a> () const </td></tr>
-<tr class="memdesc:a248fe81a2d7d04dc44edc6eb966a4dad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the run-time minor version of the toolkit associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a248fe81a2d7d04dc44edc6eb966a4dad"></a><br/></td></tr>
+<tr class="memdesc:a248fe81a2d7d04dc44edc6eb966a4dad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the run-time minor version of the toolkit associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a248fe81a2d7d04dc44edc6eb966a4dad"></a><br/></td></tr>
 <tr class="separator:a248fe81a2d7d04dc44edc6eb966a4dad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">String-form getters</div></td></tr>
 <tr class="memitem:ab50e8b3a0eefdc167875fbb680654ae5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_string.html">wxString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#ab50e8b3a0eefdc167875fbb680654ae5">GetArchName</a> () const </td></tr>
-<tr class="memdesc:ab50e8b3a0eefdc167875fbb680654ae5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the name for the architecture of this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#ab50e8b3a0eefdc167875fbb680654ae5"></a><br/></td></tr>
+<tr class="memdesc:ab50e8b3a0eefdc167875fbb680654ae5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the name for the architecture of this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#ab50e8b3a0eefdc167875fbb680654ae5"></a><br/></td></tr>
 <tr class="separator:ab50e8b3a0eefdc167875fbb680654ae5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff68c13a9018c27a985827fc64dbba10"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_string.html">wxString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#aff68c13a9018c27a985827fc64dbba10">GetEndiannessName</a> () const </td></tr>
-<tr class="memdesc:aff68c13a9018c27a985827fc64dbba10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the name for the endianness of this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#aff68c13a9018c27a985827fc64dbba10"></a><br/></td></tr>
+<tr class="memdesc:aff68c13a9018c27a985827fc64dbba10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the name for the endianness of this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#aff68c13a9018c27a985827fc64dbba10"></a><br/></td></tr>
 <tr class="separator:aff68c13a9018c27a985827fc64dbba10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac275e051d3141036bd921e6a585c1ce4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_string.html">wxString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#ac275e051d3141036bd921e6a585c1ce4">GetOperatingSystemFamilyName</a> () const </td></tr>
-<tr class="memdesc:ac275e051d3141036bd921e6a585c1ce4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the operating system family name of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#ac275e051d3141036bd921e6a585c1ce4"></a><br/></td></tr>
+<tr class="memdesc:ac275e051d3141036bd921e6a585c1ce4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the operating system family name of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#ac275e051d3141036bd921e6a585c1ce4"></a><br/></td></tr>
 <tr class="separator:ac275e051d3141036bd921e6a585c1ce4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7c90aca295c74184737e50cc673d3fb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_string.html">wxString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#ae7c90aca295c74184737e50cc673d3fb">GetOperatingSystemIdName</a> () const </td></tr>
-<tr class="memdesc:ae7c90aca295c74184737e50cc673d3fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the operating system name of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#ae7c90aca295c74184737e50cc673d3fb"></a><br/></td></tr>
+<tr class="memdesc:ae7c90aca295c74184737e50cc673d3fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the operating system name of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#ae7c90aca295c74184737e50cc673d3fb"></a><br/></td></tr>
 <tr class="separator:ae7c90aca295c74184737e50cc673d3fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58ebd975d5da5f8ab956fb0d8e105d3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_string.html">wxString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a58ebd975d5da5f8ab956fb0d8e105d3c">GetPortIdName</a> () const </td></tr>
-<tr class="memdesc:a58ebd975d5da5f8ab956fb0d8e105d3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the name of the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a58ebd975d5da5f8ab956fb0d8e105d3c"></a><br/></td></tr>
+<tr class="memdesc:a58ebd975d5da5f8ab956fb0d8e105d3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the name of the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a58ebd975d5da5f8ab956fb0d8e105d3c"></a><br/></td></tr>
 <tr class="separator:a58ebd975d5da5f8ab956fb0d8e105d3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0f9bd0622aee3aeca59cf4fb3d649ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_string.html">wxString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#af0f9bd0622aee3aeca59cf4fb3d649ce">GetPortIdShortName</a> () const </td></tr>
-<tr class="memdesc:af0f9bd0622aee3aeca59cf4fb3d649ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the short name of the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#af0f9bd0622aee3aeca59cf4fb3d649ce"></a><br/></td></tr>
+<tr class="memdesc:af0f9bd0622aee3aeca59cf4fb3d649ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the short name of the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#af0f9bd0622aee3aeca59cf4fb3d649ce"></a><br/></td></tr>
 <tr class="separator:af0f9bd0622aee3aeca59cf4fb3d649ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Setters</div></td></tr>
 <tr class="memitem:ad2038a9778e0ff8b57020f3cf3403fd4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#ad2038a9778e0ff8b57020f3cf3403fd4">SetArchitecture</a> (<a class="el" href="platinfo_8h.html#ab2b4836af7d22393b06c1d4f110bdb4c">wxArchitecture</a> n)</td></tr>
-<tr class="memdesc:ad2038a9778e0ff8b57020f3cf3403fd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the architecture enum value associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#ad2038a9778e0ff8b57020f3cf3403fd4"></a><br/></td></tr>
+<tr class="memdesc:ad2038a9778e0ff8b57020f3cf3403fd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the architecture enum value associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#ad2038a9778e0ff8b57020f3cf3403fd4"></a><br/></td></tr>
 <tr class="separator:ad2038a9778e0ff8b57020f3cf3403fd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8c63894983b04e8db7fb46a896464a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#aa8c63894983b04e8db7fb46a896464a3">SetEndianness</a> (<a class="el" href="platinfo_8h.html#a604702957b3c219643e1c989766f7047">wxEndianness</a> n)</td></tr>
-<tr class="memdesc:aa8c63894983b04e8db7fb46a896464a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the endianness enum value associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#aa8c63894983b04e8db7fb46a896464a3"></a><br/></td></tr>
+<tr class="memdesc:aa8c63894983b04e8db7fb46a896464a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the endianness enum value associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#aa8c63894983b04e8db7fb46a896464a3"></a><br/></td></tr>
 <tr class="separator:aa8c63894983b04e8db7fb46a896464a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ef41076a7ef19ef5ffebbf7613d1f69"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a5ef41076a7ef19ef5ffebbf7613d1f69">SetOSVersion</a> (int major, int minor)</td></tr>
-<tr class="memdesc:a5ef41076a7ef19ef5ffebbf7613d1f69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the version of the operating system associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a5ef41076a7ef19ef5ffebbf7613d1f69"></a><br/></td></tr>
+<tr class="memdesc:a5ef41076a7ef19ef5ffebbf7613d1f69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the version of the operating system associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a5ef41076a7ef19ef5ffebbf7613d1f69"></a><br/></td></tr>
 <tr class="separator:a5ef41076a7ef19ef5ffebbf7613d1f69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a573b7a06315e62379186dfdd60ee6b86"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a573b7a06315e62379186dfdd60ee6b86">SetOperatingSystemId</a> (<a class="el" href="platinfo_8h.html#ae1234f6be0bdb09c90c9ba78251056fd">wxOperatingSystemId</a> n)</td></tr>
-<tr class="memdesc:a573b7a06315e62379186dfdd60ee6b86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the operating system associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a573b7a06315e62379186dfdd60ee6b86"></a><br/></td></tr>
+<tr class="memdesc:a573b7a06315e62379186dfdd60ee6b86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the operating system associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a573b7a06315e62379186dfdd60ee6b86"></a><br/></td></tr>
 <tr class="separator:a573b7a06315e62379186dfdd60ee6b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3a93e4ad2948a54b9e3f9eb69bfc9fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#ae3a93e4ad2948a54b9e3f9eb69bfc9fb">SetPortId</a> (<a class="el" href="platinfo_8h.html#a4acbc14b366d6ce2875f809be384757b">wxPortId</a> n)</td></tr>
-<tr class="memdesc:ae3a93e4ad2948a54b9e3f9eb69bfc9fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#ae3a93e4ad2948a54b9e3f9eb69bfc9fb"></a><br/></td></tr>
+<tr class="memdesc:ae3a93e4ad2948a54b9e3f9eb69bfc9fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#ae3a93e4ad2948a54b9e3f9eb69bfc9fb"></a><br/></td></tr>
 <tr class="separator:ae3a93e4ad2948a54b9e3f9eb69bfc9fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79d44037394eecbb3880cf9748305ac1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a79d44037394eecbb3880cf9748305ac1">SetToolkitVersion</a> (int major, int minor)</td></tr>
-<tr class="memdesc:a79d44037394eecbb3880cf9748305ac1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the version of the toolkit associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a79d44037394eecbb3880cf9748305ac1"></a><br/></td></tr>
+<tr class="memdesc:a79d44037394eecbb3880cf9748305ac1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the version of the toolkit associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a79d44037394eecbb3880cf9748305ac1"></a><br/></td></tr>
 <tr class="separator:a79d44037394eecbb3880cf9748305ac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0609911ec48b004aac3f89a69e8537b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a0609911ec48b004aac3f89a69e8537b9">SetOperatingSystemDescription</a> (const <a class="el" href="classwx_string.html">wxString</a> &amp;desc)</td></tr>
-<tr class="memdesc:a0609911ec48b004aac3f89a69e8537b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the operating system description associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a0609911ec48b004aac3f89a69e8537b9"></a><br/></td></tr>
+<tr class="memdesc:a0609911ec48b004aac3f89a69e8537b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the operating system description associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a0609911ec48b004aac3f89a69e8537b9"></a><br/></td></tr>
 <tr class="separator:a0609911ec48b004aac3f89a69e8537b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8355d5c12d826b85502c8c431a105bfb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a8355d5c12d826b85502c8c431a105bfb">SetDesktopEnvironment</a> (const <a class="el" href="classwx_string.html">wxString</a> &amp;de)</td></tr>
-<tr class="memdesc:a8355d5c12d826b85502c8c431a105bfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the desktop environment associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a8355d5c12d826b85502c8c431a105bfb"></a><br/></td></tr>
+<tr class="memdesc:a8355d5c12d826b85502c8c431a105bfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the desktop environment associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a8355d5c12d826b85502c8c431a105bfb"></a><br/></td></tr>
 <tr class="separator:a8355d5c12d826b85502c8c431a105bfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7eab116cfe3bd22cd2c189ec95d39f84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a7eab116cfe3bd22cd2c189ec95d39f84">SetLinuxDistributionInfo</a> (const <a class="el" href="structwx_linux_distribution_info.html">wxLinuxDistributionInfo</a> &amp;di)</td></tr>
-<tr class="memdesc:a7eab116cfe3bd22cd2c189ec95d39f84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the linux distribution info associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance.  <a href="#a7eab116cfe3bd22cd2c189ec95d39f84"></a><br/></td></tr>
+<tr class="memdesc:a7eab116cfe3bd22cd2c189ec95d39f84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the linux distribution info associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance.  <a href="#a7eab116cfe3bd22cd2c189ec95d39f84"></a><br/></td></tr>
 <tr class="separator:a7eab116cfe3bd22cd2c189ec95d39f84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a094f23606729a3325b5e303eb31ad0b3"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="classwx_platform_info.html">wxPlatformInfo</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_platform_info.html#a094f23606729a3325b5e303eb31ad0b3">Get</a> ()</td></tr>
-<tr class="memdesc:a094f23606729a3325b5e303eb31ad0b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the global <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> object, initialized with the values for the currently running platform.  <a href="#a094f23606729a3325b5e303eb31ad0b3"></a><br/></td></tr>
+<tr class="memdesc:a094f23606729a3325b5e303eb31ad0b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the global <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> object, initialized with the values for the currently running platform.  <a href="#a094f23606729a3325b5e303eb31ad0b3"></a><br/></td></tr>
 <tr class="separator:a094f23606729a3325b5e303eb31ad0b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Static enum getters</div></td></tr>
 <tr><td colspan="2"><div class="groupText"><p>These getters allow for easy string-to-enumeration-value conversion. </p>
@@ -385,7 +385,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Returns the global <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> object, initialized with the values for the currently running platform. </p>
+<p>Returns the global <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> object, initialized with the values for the currently running platform. </p>
 
 </div>
 </div>
@@ -429,7 +429,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the architecture ID of this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the architecture ID of this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -472,7 +472,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the name for the architecture of this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the name for the architecture of this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -489,7 +489,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the desktop environment associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the desktop environment associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 <p>See <a class="el" href="classwx_app_traits.html#ad333680437446304014c087d2fffedcf" title="This method returns the name of the desktop environment currently running in a Unix desktop...">wxAppTraits::GetDesktopEnvironment()</a> for more info. </p>
 
 </div>
@@ -534,7 +534,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the endianness ID of this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the endianness ID of this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -577,7 +577,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the name for the endianness of this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the name for the endianness of this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -594,8 +594,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the Linux distribution info associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
-<p>See <a class="el" href="group__group__funcmacro__networkuseros.html#ga06f6fb212c396bd20865ee4e2f69aa1f" title="Returns a structure containing informations about the currently running Linux distribution.">wxGetLinuxDistributionInfo()</a> for more info. </p>
+<p>Returns the Linux distribution info associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
+<p>See <a class="el" href="group__group__funcmacro__networkuseros.html#ga06f6fb212c396bd20865ee4e2f69aa1f" title="Returns a structure containing information about the currently running Linux distribution.">wxGetLinuxDistributionInfo()</a> for more info. </p>
 
 </div>
 </div>
@@ -612,7 +612,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the description of the operating system of this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the description of the operating system of this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 <p>See wxGetOSDescription() for more info. </p>
 
 </div>
@@ -682,7 +682,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the operating system family name of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the operating system family name of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -725,7 +725,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the operating system ID of this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the operating system ID of this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 <p>See <a class="el" href="group__group__funcmacro__networkuseros.html#ga2ca585c288b956d80511478dc7b01533" title="Gets the version and the operating system ID for currently running OS.">wxGetOsVersion()</a> for more info. </p>
 
 </div>
@@ -770,7 +770,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the operating system name of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the operating system name of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -787,7 +787,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the run-time major version of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the run-time major version of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__group__funcmacro__networkuseros.html#ga2ca585c288b956d80511478dc7b01533" title="Gets the version and the operating system ID for currently running OS.">wxGetOsVersion()</a>, <a class="el" href="classwx_platform_info.html#a985a4b626e245e6c427605ab12202655" title="Returns true if the OS version is at least major.minor.">CheckOSVersion()</a> </dd></dl>
 
 </div>
@@ -805,7 +805,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the run-time minor version of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the run-time minor version of the OS associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__group__funcmacro__networkuseros.html#ga2ca585c288b956d80511478dc7b01533" title="Gets the version and the operating system ID for currently running OS.">wxGetOsVersion()</a>, <a class="el" href="classwx_platform_info.html#a985a4b626e245e6c427605ab12202655" title="Returns true if the OS version is at least major.minor.">CheckOSVersion()</a> </dd></dl>
 
 </div>
@@ -849,7 +849,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -904,7 +904,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the name of the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the name of the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -959,7 +959,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the short name of the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the short name of the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -976,7 +976,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the run-time major version of the toolkit associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the run-time major version of the toolkit associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 <p>Note that if <a class="el" href="classwx_platform_info.html#a71cf9ba7a98812378a253735043dc72e" title="Converts the given string to a wxWidgets port ID value or to wxPORT_UNKNOWN if the given string does ...">GetPortId()</a> returns <code>wxPORT_BASE</code>, then this value is zero (unless externally modified with <a class="el" href="classwx_platform_info.html#a79d44037394eecbb3880cf9748305ac1" title="Sets the version of the toolkit associated with this wxPlatformInfo instance.">SetToolkitVersion()</a>); that is, no native toolkit is in use. See <a class="el" href="classwx_app_traits.html#ad956ddb5731f7cac51f1430ed53bb0f1" title="Returns the wxWidgets port ID used by the running program and eventually fills the given pointers wit...">wxAppTraits::GetToolkitVersion()</a> for more info.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="classwx_platform_info.html#aeba41fd25f2b4ff6b33aa8dfa67b102d" title="Returns true if the toolkit version is at least major.minor.">CheckToolkitVersion()</a> </dd></dl>
 
@@ -995,7 +995,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the run-time minor version of the toolkit associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Returns the run-time minor version of the toolkit associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 <p>Note that if <a class="el" href="classwx_platform_info.html#a71cf9ba7a98812378a253735043dc72e" title="Converts the given string to a wxWidgets port ID value or to wxPORT_UNKNOWN if the given string does ...">GetPortId()</a> returns <code>wxPORT_BASE</code>, then this value is zero (unless externally modified with <a class="el" href="classwx_platform_info.html#a79d44037394eecbb3880cf9748305ac1" title="Sets the version of the toolkit associated with this wxPlatformInfo instance.">SetToolkitVersion()</a>); that is, no native toolkit is in use. See <a class="el" href="classwx_app_traits.html#ad956ddb5731f7cac51f1430ed53bb0f1" title="Returns the wxWidgets port ID used by the running program and eventually fills the given pointers wit...">wxAppTraits::GetToolkitVersion()</a> for more info.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="classwx_platform_info.html#aeba41fd25f2b4ff6b33aa8dfa67b102d" title="Returns true if the toolkit version is at least major.minor.">CheckToolkitVersion()</a> </dd></dl>
 
@@ -1031,7 +1031,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns <span class="literal">true</span> if this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> describes wxUniversal build. </p>
+<p>Returns <span class="literal">true</span> if this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> describes wxUniversal build. </p>
 
 </div>
 </div>
@@ -1087,7 +1087,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the architecture enum value associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Sets the architecture enum value associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -1105,7 +1105,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the desktop environment associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Sets the desktop environment associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -1123,7 +1123,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the endianness enum value associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Sets the endianness enum value associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -1141,7 +1141,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the linux distribution info associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Sets the linux distribution info associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -1159,7 +1159,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the operating system description associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Sets the operating system description associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -1177,7 +1177,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the operating system associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Sets the operating system associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -1205,7 +1205,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the version of the operating system associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Sets the version of the operating system associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -1223,7 +1223,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Sets the wxWidgets port ID associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -1251,7 +1251,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the version of the toolkit associated with this <a class="el" href="classwx_platform_info.html" title="This class holds informations about the operating system, the toolkit and the basic architecture of t...">wxPlatformInfo</a> instance. </p>
+<p>Sets the version of the toolkit associated with this <a class="el" href="classwx_platform_info.html" title="This class holds information about the operating system, the toolkit and the basic architecture of th...">wxPlatformInfo</a> instance. </p>
 
 </div>
 </div>
@@ -1259,7 +1259,7 @@ Static Public Member Functions</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:23 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:26 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

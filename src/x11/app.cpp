@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     17/09/98
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -660,10 +659,7 @@ bool wxApp::OnInitGui()
 #if wxUSE_UNICODE
 
 #include <pango/pango.h>
-#include <pango/pangox.h>
-#ifdef HAVE_PANGO_XFT
-    #include <pango/pangoxft.h>
-#endif
+#include <pango/pangoxft.h>
 
 PangoContext* wxApp::GetPangoContext()
 {
@@ -671,21 +667,9 @@ PangoContext* wxApp::GetPangoContext()
     if ( !s_pangoContext )
     {
         Display *dpy = wxGlobalDisplay();
-
-#ifdef HAVE_PANGO_XFT
         int xscreen = DefaultScreen(dpy);
-        static int use_xft = -1;
-        if (use_xft == -1)
-        {
-            wxString val = wxGetenv( L"GDK_USE_XFT" );
-            use_xft = val == L"1";
-        }
 
-        if (use_xft)
-            s_pangoContext = pango_xft_get_context(dpy, xscreen);
-        else
-#endif // HAVE_PANGO_XFT
-            s_pangoContext = pango_x_get_context(dpy);
+        s_pangoContext = pango_xft_get_context(dpy, xscreen);
 
         if (!PANGO_IS_CONTEXT(s_pangoContext))
         {

@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id$
 // Copyright:   (c) 1998-2002 wxWidgets dev team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -52,7 +51,6 @@
 #endif
 
 #if defined(__GNUWIN32__)
-    #include <sys/unistd.h>
     #include <sys/stat.h>
 #endif
 

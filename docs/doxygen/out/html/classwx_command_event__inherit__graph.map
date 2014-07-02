@@ -27,7 +27,7 @@
 <area shape="rect" id="node91" href="$classwx_update_u_i_event.html" title="This class is used for pseudo&#45;events which are called by wxWidgets to give an application the chance ..." alt="" coords="453,1271,576,1299"/>
 <area shape="rect" id="node93" href="$classwx_window_create_event.html" title="This event is sent just after the actual window associated with a wxWindow object has been created..." alt="" coords="439,1322,591,1350"/>
 <area shape="rect" id="node95" href="$classwx_window_destroy_event.html" title="This event is sent as early as possible during the window destruction process." alt="" coords="436,1373,593,1401"/>
-<area shape="rect" id="node97" href="$classwx_window_modal_dialog_event.html" title="wxWindowModalDialogEvent" alt="" coords="423,1423,607,1451"/>
+<area shape="rect" id="node97" href="$classwx_window_modal_dialog_event.html" title="Event sent by wxDialog::ShowWindowModal() when the dialog closes." alt="" coords="423,1423,607,1451"/>
 <area shape="rect" id="node2" href="$classwx_event.html" title="An event is a structure holding information about an event passed to a callback or member function..." alt="" coords="128,714,197,742"/>
 <area shape="rect" id="node4" href="$classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="5,714,80,742"/>
 <area shape="rect" id="node21" href="$classwx_calendar_event.html" title="The wxCalendarEvent class is used together with wxCalendarCtrl." alt="" coords="680,309,800,337"/>

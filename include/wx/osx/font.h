@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -153,9 +152,7 @@ public:
     CGFontRef OSXGetCGFont() const;
 #endif
 
-#if wxOSX_USE_CORE_TEXT
     CTFontRef OSXGetCTFont() const;
-#endif
 
 #if wxOSX_USE_ATSU_TEXT
     // Returns an ATSUStyle not ATSUStyle*

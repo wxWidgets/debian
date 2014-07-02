@@ -2,7 +2,6 @@
 // Name:        samples.h
 // Purpose:     Samples page of the Doxygen manual
 // Author:      wxWidgets team
-// RCS-ID:      $Id: utilities.h 52634 2008-03-20 13:45:17Z VS $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -13,7 +12,7 @@
 @tableofcontents
 
 Probably the best way to learn wxWidgets is by reading the source of some 80+
-samples provided with it. Many aspects of wxWidgets programming can be learnt
+samples provided with it. Many aspects of wxWidgets programming can be learned
 from them, but sometimes it is not simple to just choose the right sample to
 look at. This overview aims at describing what each sample does/demonstrates to
 make it easier to find the relevant one if a simple grep through all sources
@@ -921,7 +920,7 @@ control.
 @section page_samples_webview wxWebView Sample
 
 The wxWebView sample demonstarates the various capabilities of the wxWebView
-control. It is set up as a simple single window web broswer, but with support
+control. It is set up as a simple single window web browser, but with support
 for many of the more complex wxWebView features, including browsing through 
 archives.
 

@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -85,7 +85,7 @@ class wxScrolled&lt; T &gt;</h3>
 <p>An additional method of manual control, which requires a little less computation of your own, is to set the total size of the scrolling area by calling either <a class="el" href="classwx_window.html#a37f293b7904bc6668b86cccb0aea5669" title="Sets the virtual size of the window in pixels.">wxWindow::SetVirtualSize()</a>, or <a class="el" href="classwx_window.html#a55aca401aab29d59f7cc53f89ba2e38d" title="Similar to Fit(), but sizes the interior (virtual) size of a window.">wxWindow::FitInside()</a>, and setting the scrolling increments for it by calling <a class="el" href="classwx_scrolled.html#a76286e2efa55d0ba85d37106a44a9401" title="Set the horizontal and vertical scrolling increment only.">SetScrollRate()</a>. Scrolling in some orientation is enabled by setting a non-zero increment for it.</p>
 <p>The most automatic and newest way is to simply let sizers determine the scrolling area. This is now the default when you set an interior sizer into a <a class="el" href="classwx_scrolled.html" title="The wxScrolled class manages scrolling for its client area, transforming the coordinates according to...">wxScrolled</a> with <a class="el" href="classwx_window.html#abc95691b45e29a52c24aa9d33d46dec1" title="Sets the window to have the given layout sizer.">wxWindow::SetSizer()</a>. The scrolling area will be set to the size requested by the sizer and the scrollbars will be assigned for each orientation according to the need for them and the scrolling increment set by <a class="el" href="classwx_scrolled.html#a76286e2efa55d0ba85d37106a44a9401" title="Set the horizontal and vertical scrolling increment only.">SetScrollRate()</a>. As above, scrolling is only enabled in orientations with a non-zero increment. You can influence the minimum size of the scrolled area controlled by a sizer by calling wxWindow::SetVirtualSizeHints(). (Calling <a class="el" href="classwx_scrolled.html#af5d940f364bb5097f20fee4a8e1210bb" title="Sets up vertical and/or horizontal scrollbars.">SetScrollbars()</a> has analogous effects in wxWidgets 2.4 &ndash; in later versions it may not continue to override the sizer.)</p>
 <p>Note that if maximum size hints are still supported by wxWindow::SetVirtualSizeHints(), use them at your own dire risk. They may or may not have been removed for 2.4, but it really only makes sense to set minimum size hints here. We should probably replace wxWindow::SetVirtualSizeHints() with wxWindow::SetMinVirtualSize() or similar and remove it entirely in future.</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000045">Todo:</a></b></dt><dd>review docs for this class replacing SetVirtualSizeHints() with SetMinClientSize().</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000044">Todo:</a></b></dt><dd>review docs for this class replacing SetVirtualSizeHints() with SetMinClientSize().</dd></dl>
 <p>As with all windows, an application can draw onto a <a class="el" href="classwx_scrolled.html" title="The wxScrolled class manages scrolling for its client area, transforming the coordinates according to...">wxScrolled</a> using a <a class="el" href="overview_dc.html">device context</a>.</p>
 <p>You have the option of handling the OnPaint handler or overriding the <a class="el" href="classwx_scrolled.html#a52284d06a6160fb42b0899aedce2c880" title="Called by the default paint event handler to allow the application to define painting behaviour witho...">wxScrolled::OnDraw()</a> function, which is passed a pre-scrolled device context (prepared by <a class="el" href="classwx_scrolled.html#a96a2b41d3bcd07e28491de5f39f9c5cb" title="Call this function to prepare the device context for drawing a scrolled image.">wxScrolled::DoPrepareDC()</a>).</p>
 <p>If you don't wish to calculate your own scrolling, you must call <a class="el" href="classwx_scrolled.html#a96a2b41d3bcd07e28491de5f39f9c5cb" title="Call this function to prepare the device context for drawing a scrolled image.">DoPrepareDC()</a> when not drawing from within <a class="el" href="classwx_scrolled.html#a52284d06a6160fb42b0899aedce2c880" title="Called by the default paint event handler to allow the application to define painting behaviour witho...">OnDraw()</a>, to set the device origin for the device context according to the current scroll position.</p>
@@ -1336,7 +1336,7 @@ template&lt;class T &gt; </div>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:28 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:32 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

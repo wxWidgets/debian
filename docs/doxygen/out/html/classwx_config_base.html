@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -378,10 +378,10 @@ Public Member Functions</h2></td></tr>
 <div class="fragment"><div class="line"><span class="preprocessor"># config file for my program</span></div>
 <div class="line"><span class="preprocessor"></span>UserData = $HOME/data</div>
 <div class="line"></div>
-<div class="line"><span class="preprocessor"># the following syntax is valud only under Windows</span></div>
+<div class="line"><span class="preprocessor"># the following syntax is valid only under Windows</span></div>
 <div class="line"><span class="preprocessor">UserData = %windir%\\data.dat</span></div>
 </div><!-- fragment --><p>The call to Read("UserData") will return something like <code>"/home/zeitlin/data"</code> on linux for example.</p>
-<p>Although this feature is very useful, it may be annoying if you read a value which containts '$' or '' symbols (% is used for environment variables expansion under Windows) which are not used for environment variable expansion. In this situation you may call SetExpandEnvVars(<span class="literal">false</span>) just before reading this value and SetExpandEnvVars(<span class="literal">true</span>) just after. Another solution would be to prefix the offending symbols with a backslash. </p>
+<p>Although this feature is very useful, it may be annoying if you read a value which contains '$' or '' symbols (% is used for environment variables expansion under Windows) which are not used for environment variable expansion. In this situation you may call SetExpandEnvVars(<span class="literal">false</span>) just before reading this value and SetExpandEnvVars(<span class="literal">true</span>) just after. Another solution would be to prefix the offending symbols with a backslash. </p>
 </div></td></tr>
 <tr class="memitem:a1d8cbd33d9d85caeea77de753cb25548"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_config_base.html#a1d8cbd33d9d85caeea77de753cb25548">IsExpandingEnvVars</a> () const </td></tr>
 <tr class="memdesc:a1d8cbd33d9d85caeea77de753cb25548"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <span class="literal">true</span> if we are expanding environment variables in key values.  <a href="#a1d8cbd33d9d85caeea77de753cb25548"></a><br/></td></tr>
@@ -2137,7 +2137,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:16 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:11 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

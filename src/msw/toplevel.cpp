@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     24.09.01
-// RCS-ID:      $Id$
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -1100,6 +1099,12 @@ bool wxTopLevelWindowMSW::ShowFullScreen(bool show, long style)
             offFlags |= WS_CAPTION | WS_SYSMENU;
 
         newStyle &= ~offFlags;
+
+        // Full screen windows should logically be popups as they don't have
+        // decorations (and are definitely not children) and while not using
+        // this style doesn't seem to make any difference for most windows, it
+        // breaks wxGLCanvas in some cases, see #15434, so just always use it.
+        newStyle |= WS_POPUP;
 
         // change our window style to be compatible with full-screen mode
         ::SetWindowLong(GetHwnd(), GWL_STYLE, newStyle);

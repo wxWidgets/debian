@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -80,6 +80,7 @@
 <li><span class="event">EVT_RICHTEXT_LEFT_DCLICK(id,  func)</span>:<div class="eventDesc"> Process a <code>wxEVT_RICHTEXT_LEFT_DCLICK</code> event, generated when the user double-clicks an object. </div></li>
 <li><span class="event">EVT_RICHTEXT_RETURN(id,  func)</span>:<div class="eventDesc"> Process a <code>wxEVT_RICHTEXT_RETURN</code> event, generated when the user presses the return key. Valid event functions: GetFlags, GetPosition. </div></li>
 <li><span class="event">EVT_RICHTEXT_CHARACTER(id,  func)</span>:<div class="eventDesc"> Process a <code>wxEVT_RICHTEXT_CHARACTER</code> event, generated when the user presses a character key. Valid event functions: GetFlags, GetPosition, GetCharacter. </div></li>
+<li><span class="event">EVT_RICHTEXT_CONSUMING_CHARACTER(id,  func)</span>:<div class="eventDesc"> Process a <code>wxEVT_RICHTEXT_CONSUMING_CHARACTER</code> event, generated when the user presses a character key but before it is processed and inserted into the control. Call Veto to prevent normal processing. Valid event functions: GetFlags, GetPosition, GetCharacter, Veto. </div></li>
 <li><span class="event">EVT_RICHTEXT_DELETE(id,  func)</span>:<div class="eventDesc"> Process a <code>wxEVT_RICHTEXT_DELETE</code> event, generated when the user presses the backspace or delete key. Valid event functions: GetFlags, GetPosition. </div></li>
 <li><span class="event">EVT_RICHTEXT_RETURN(id,  func)</span>:<div class="eventDesc"> Process a <code>wxEVT_RICHTEXT_RETURN</code> event, generated when the user presses the return key. Valid event functions: GetFlags, GetPosition. </div></li>
 <li><span class="event">EVT_RICHTEXT_STYLE_CHANGED(id,  func)</span>:<div class="eventDesc"> Process a <code>wxEVT_RICHTEXT_STYLE_CHANGED</code> event, generated when styling has been applied to the control. Valid event functions: GetPosition, GetRange. </div></li>
@@ -364,7 +365,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">commandType</td><td>The type of the event. </td></tr>
-    <tr><td class="paramname">id</td><td>Window identifier. The value <code>wxID_ANY</code> indicates a default value. </td></tr>
+    <tr><td class="paramname">winid</td><td>Window identifier. The value <code>wxID_ANY</code> indicates a default value. </td></tr>
   </table>
   </dd>
 </dl>
@@ -870,7 +871,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:26 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:31 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

@@ -4,7 +4,6 @@
 // Author:      Jaakko Salli
 // Modified by:
 // Created:     2004-09-25
-// RCS-ID:      $Id$
 // Copyright:   (c) Jaakko Salli
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -254,6 +253,7 @@ public:
     void OnCloseEvent( wxCloseEvent& event );
 
     void OnIdle( wxIdleEvent& event );
+    void OnShowPopup( wxCommandEvent& event );
 
     void AddTestProperties( wxPropertyGridPage* pg );
 

@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by: VZ on 13.05.99: no more Default(), MSWOnXXX() reorganisation
 // Created:     04/01/98
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -60,6 +59,7 @@
 #include "wx/hashmap.h"
 #include "wx/evtloop.h"
 #include "wx/power.h"
+#include "wx/scopeguard.h"
 #include "wx/sysopt.h"
 
 #if wxUSE_DRAG_AND_DROP
@@ -241,6 +241,9 @@ EraseBgHooks gs_eraseBgHooks;
 // needed.
 int gs_modalEntryWindowCount = 0;
 
+// Indicates whether we are currently processing WM_CAPTURECHANGED message.
+bool gs_insideCaptureChanged = false;
+
 } // anonymous namespace
 
 // ---------------------------------------------------------------------------
@@ -362,30 +365,21 @@ END_EVENT_TABLE()
 // ---------------------------------------------------------------------------
 
 // Find an item given the MS Windows id
-wxWindow *wxWindowMSW::FindItem(long id) const
+wxWindow *wxWindowMSW::FindItem(long id, WXHWND hWnd) const
 {
-#if wxUSE_CONTROLS
-    wxControl *item = wxDynamicCastThis(wxControl);
-    if ( item )
-    {
-        // is it us or one of our "internal" children?
-        if ( item->GetId() == id
-#ifndef __WXUNIVERSAL__
-                || (item->GetSubcontrols().Index(id) != wxNOT_FOUND)
-#endif // __WXUNIVERSAL__
-           )
-        {
-            return item;
-        }
-    }
-#endif // wxUSE_CONTROLS
+    // First check for the control itself and its Windows-level children which
+    // are mapped to the same wxWindow at wx level.
+    wxWindow *wnd = MSWFindItem(id, hWnd);
+    if ( wnd )
+        return wnd;
 
+    // Then check wx level children.
     wxWindowList::compatibility_iterator current = GetChildren().GetFirst();
     while (current)
     {
         wxWindow *childWin = current->GetData();
 
-        wxWindow *wnd = childWin->FindItem(id);
+        wnd = childWin->FindItem(id, hWnd);
         if ( wnd )
             return wnd;
 
@@ -672,7 +666,8 @@ wxWindowMSW::MSWShowWithEffect(bool show,
                                unsigned timeout)
 {
 #if wxUSE_DYNLIB_CLASS
-    if ( effect == wxSHOW_EFFECT_NONE )
+    if ( effect == wxSHOW_EFFECT_NONE ||
+            (GetParent() && !GetParent()->IsShownOnScreen()) )
         return Show(show);
 
     if ( !wxWindowBase::Show(show) )
@@ -805,6 +800,13 @@ void wxWindowMSW::DoReleaseMouse()
 
 /* static */ wxWindow *wxWindowBase::GetCapture()
 {
+    // When we receive WM_CAPTURECHANGED message, ::GetCapture() still returns
+    // the HWND that is losing the mouse capture. But as we must not release
+    // the capture for it (it's going to happen anyhow), pretend that there is
+    // no capture any more.
+    if ( gs_insideCaptureChanged )
+        return NULL;
+
     HWND hwnd = ::GetCapture();
     return hwnd ? wxFindWinFromHandle(hwnd) : NULL;
 }
@@ -1190,6 +1192,11 @@ void wxWindowMSW::SubclassWin(WXHWND hWnd)
     if ( !wxCheckWindowWndProc(hWnd, (WXFARPROC)wxWndProc) )
     {
         wxSetWindowProc(hwnd, wxWndProc);
+
+        // If the window didn't use our window proc during its creation, the
+        // code in HandleCreate() hasn't been executed, so do it here.
+        if ( wxHasWindowExStyle(this, WS_EX_CONTROLPARENT) )
+            EnsureParentHasControlParentStyle(GetParent());
     }
     else
     {
@@ -2288,7 +2295,14 @@ bool wxWindowMSW::MSWProcessMessage(WXMSG* pMsg)
 {
     // wxUniversal implements tab traversal itself
 #ifndef __WXUNIVERSAL__
-    if ( m_hWnd != 0 && (GetWindowStyleFlag() & wxTAB_TRAVERSAL) )
+    // Notice that we check for both wxTAB_TRAVERSAL and WS_EX_CONTROLPARENT
+    // being set here. While normally the latter should always be set if the
+    // former is, doing it like this also works if there is ever a bug that
+    // results in wxTAB_TRAVERSAL being set but not WS_EX_CONTROLPARENT as we
+    // must not call IsDialogMessage() then, it would simply hang (see #15458).
+    if ( m_hWnd &&
+            HasFlag(wxTAB_TRAVERSAL) &&
+                (wxGetWindowExStyle(this) & WS_EX_CONTROLPARENT) )
     {
         // intercept dialog navigation keys
         MSG *msg = (MSG *)pMsg;
@@ -4029,7 +4043,10 @@ bool wxWindowMSW::HandleActivate(int state,
 {
     wxActivateEvent event(wxEVT_ACTIVATE,
                           (state == WA_ACTIVE) || (state == WA_CLICKACTIVE),
-                          m_windowId);
+                          m_windowId,
+                          state == WA_CLICKACTIVE
+                            ? wxActivateEvent::Reason_Mouse
+                            : wxActivateEvent::Reason_Unknown);
     event.SetEventObject(this);
 
     return HandleWindowEvent(event);
@@ -4545,6 +4562,12 @@ bool wxWindowMSW::HandlePaletteChanged(WXHWND hWndPalChange)
 
 bool wxWindowMSW::HandleCaptureChanged(WXHWND hWndGainedCapture)
 {
+    // Ensure that wxWindow::GetCapture() returns NULL if called from the event
+    // handlers invoked below. This is necessary to avoid wrongly calling
+    // ReleaseMouse() when we're already losing the mouse capture anyhow.
+    gs_insideCaptureChanged = true;
+    wxON_BLOCK_EXIT_SET(gs_insideCaptureChanged, false);
+
     // notify windows on the capture stack about lost capture
     // (see http://sourceforge.net/tracker/index.php?func=detail&aid=1153662&group_id=9863&atid=109863):
     wxWindowBase::NotifyCaptureLost();
@@ -5292,7 +5315,7 @@ bool wxWindowMSW::HandleCommand(WXWORD id_, WXWORD cmd, WXHWND control)
     // try the id
     if ( !win )
     {
-        win = FindItem(id);
+        win = FindItem(id, control);
     }
 
     if ( win )

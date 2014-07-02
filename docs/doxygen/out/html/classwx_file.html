@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -124,9 +124,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4b86bd2e79c8ce3dbdc713949c6b39ca"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_file.html#a4b86bd2e79c8ce3dbdc713949c6b39ca">Create</a> (const <a class="el" href="classwx_string.html">wxString</a> &amp;filename, bool overwrite=false, int access=<a class="el" href="group__group__funcmacro__file.html#gga64460401fb35c137c9df28f3c019694dad36cd32167ca85203a51fba1ec2f31f2">wxS_DEFAULT</a>)</td></tr>
 <tr class="memdesc:a4b86bd2e79c8ce3dbdc713949c6b39ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a file for writing.  <a href="#a4b86bd2e79c8ce3dbdc713949c6b39ca"></a><br/></td></tr>
 <tr class="separator:a4b86bd2e79c8ce3dbdc713949c6b39ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b14a0250f5c792d43aa4a4e572378f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_file.html#a5b14a0250f5c792d43aa4a4e572378f4">Detach</a> ()</td></tr>
-<tr class="memdesc:a5b14a0250f5c792d43aa4a4e572378f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get back a file descriptor from <a class="el" href="classwx_file.html" title="A wxFile performs raw file I/O.">wxFile</a> object - the caller is responsible for closing the file if this descriptor is opened.  <a href="#a5b14a0250f5c792d43aa4a4e572378f4"></a><br/></td></tr>
-<tr class="separator:a5b14a0250f5c792d43aa4a4e572378f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7856410c0304ad24a285a2de76f604b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_file.html#ab7856410c0304ad24a285a2de76f604b">Detach</a> ()</td></tr>
+<tr class="memdesc:ab7856410c0304ad24a285a2de76f604b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get back a file descriptor from <a class="el" href="classwx_file.html" title="A wxFile performs raw file I/O.">wxFile</a> object - the caller is responsible for closing the file if this descriptor is opened.  <a href="#ab7856410c0304ad24a285a2de76f604b"></a><br/></td></tr>
+<tr class="separator:ab7856410c0304ad24a285a2de76f604b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae584442c77415e9d287ca7faec0dcca4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_file.html#ae584442c77415e9d287ca7faec0dcca4">Eof</a> () const </td></tr>
 <tr class="memdesc:ae584442c77415e9d287ca7faec0dcca4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <span class="literal">true</span> if the end of the file has been reached.  <a href="#ae584442c77415e9d287ca7faec0dcca4"></a><br/></td></tr>
 <tr class="separator:ae584442c77415e9d287ca7faec0dcca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -469,12 +469,12 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a5b14a0250f5c792d43aa4a4e572378f4"></a>
+<a class="anchor" id="ab7856410c0304ad24a285a2de76f604b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void wxFile::Detach </td>
+          <td class="memname">int wxFile::Detach </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -483,7 +483,8 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Get back a file descriptor from <a class="el" href="classwx_file.html" title="A wxFile performs raw file I/O.">wxFile</a> object - the caller is responsible for closing the file if this descriptor is opened. </p>
-<p><a class="el" href="classwx_file.html#a91ba1ec486bbc7668f95cb11e13511fb" title="Returns true if the file has been opened.">IsOpened()</a> will return <span class="literal">false</span> after call to <a class="el" href="classwx_file.html#a5b14a0250f5c792d43aa4a4e572378f4" title="Get back a file descriptor from wxFile object - the caller is responsible for closing the file if thi...">Detach()</a>. </p>
+<p><a class="el" href="classwx_file.html#a91ba1ec486bbc7668f95cb11e13511fb" title="Returns true if the file has been opened.">IsOpened()</a> will return <span class="literal">false</span> after call to <a class="el" href="classwx_file.html#ab7856410c0304ad24a285a2de76f604b" title="Get back a file descriptor from wxFile object - the caller is responsible for closing the file if thi...">Detach()</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>The file descriptor (this is new since wxWidgets 3.0.0, in the previous versions this method didn't return anything). </dd></dl>
 
 </div>
 </div>
@@ -904,7 +905,7 @@ Static Public Member Functions</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:17 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:15 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

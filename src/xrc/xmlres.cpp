@@ -3,7 +3,6 @@
 // Purpose:     XRC resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id$
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1963,7 +1962,7 @@ wxImageList *wxXmlResourceHandlerImpl::GetImageList(const wxString& param)
                         size = icon.GetSize();
 
                     // We use the mask by default.
-                    bool mask = !HasParam(wxS("mask")) || GetBool(wxS("mask"));
+                    bool mask = GetBool(wxS("mask"), true);
 
                     imagelist = new wxImageList(size.x, size.y, mask);
                 }

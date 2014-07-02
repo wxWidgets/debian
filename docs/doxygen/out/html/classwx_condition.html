@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -138,6 +138,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad42af860d727aad40cf366eaab9da48d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_2wx_2thread_8h.html#af963862ae0e1bd5cafe4039dccbbd81e">wxCondError</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_condition.html#ad42af860d727aad40cf366eaab9da48d">Wait</a> ()</td></tr>
 <tr class="memdesc:ad42af860d727aad40cf366eaab9da48d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Waits until the condition is signalled.  <a href="#ad42af860d727aad40cf366eaab9da48d"></a><br/></td></tr>
 <tr class="separator:ad42af860d727aad40cf366eaab9da48d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7379efa6047603779717ec8fd4c95c9"><td class="memTemplParams" colspan="2">template&lt;typename Functor &gt; </td></tr>
+<tr class="memitem:af7379efa6047603779717ec8fd4c95c9"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="interface_2wx_2thread_8h.html#af963862ae0e1bd5cafe4039dccbbd81e">wxCondError</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwx_condition.html#af7379efa6047603779717ec8fd4c95c9">Wait</a> (const Functor &amp;predicate)</td></tr>
+<tr class="memdesc:af7379efa6047603779717ec8fd4c95c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Waits until the condition is signalled and the associated condition true.  <a href="#af7379efa6047603779717ec8fd4c95c9"></a><br/></td></tr>
+<tr class="separator:af7379efa6047603779717ec8fd4c95c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a368e40158c732759fad60d46d292bd2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_2wx_2thread_8h.html#af963862ae0e1bd5cafe4039dccbbd81e">wxCondError</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_condition.html#a368e40158c732759fad60d46d292bd2d">WaitTimeout</a> (unsigned long milliseconds)</td></tr>
 <tr class="memdesc:a368e40158c732759fad60d46d292bd2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Waits until the condition is signalled or the timeout has elapsed.  <a href="#a368e40158c732759fad60d46d292bd2d"></a><br/></td></tr>
 <tr class="separator:a368e40158c732759fad60d46d292bd2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -258,6 +262,38 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="af7379efa6047603779717ec8fd4c95c9"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Functor &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="interface_2wx_2thread_8h.html#af963862ae0e1bd5cafe4039dccbbd81e">wxCondError</a> wxCondition::Wait </td>
+          <td>(</td>
+          <td class="paramtype">const Functor &amp;&#160;</td>
+          <td class="paramname"><em>predicate</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Waits until the condition is signalled and the associated condition true. </p>
+<p>This is a convenience overload that may be used to ignore spurious awakenings while waiting for a specific condition to become true.</p>
+<p>Equivalent to </p>
+<div class="fragment"><div class="line"><span class="keywordflow">while</span> ( !predicate() )</div>
+<div class="line">{</div>
+<div class="line">    <a class="code" href="interface_2wx_2thread_8h.html#af963862ae0e1bd5cafe4039dccbbd81e" title="See wxCondition.">wxCondError</a> e = <a class="code" href="classwx_condition.html#ad42af860d727aad40cf366eaab9da48d" title="Waits until the condition is signalled.">Wait</a>();</div>
+<div class="line">    <span class="keywordflow">if</span> ( e != <a class="code" href="interface_2wx_2thread_8h.html#af963862ae0e1bd5cafe4039dccbbd81ea3f408e6093bb067917fb31ad567ad8e5">wxCOND_NO_ERROR</a> )</div>
+<div class="line">        <span class="keywordflow">return</span> e;</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">return</span> <a class="code" href="interface_2wx_2thread_8h.html#af963862ae0e1bd5cafe4039dccbbd81ea3f408e6093bb067917fb31ad567ad8e5">wxCOND_NO_ERROR</a>;</div>
+</div><!-- fragment --><p>The predicate would typically be a C++11 lambda: </p>
+<div class="fragment"><div class="line">condvar.Wait([]{<span class="keywordflow">return</span> value == 1;});</div>
+</div><!-- fragment --><dl class="section since"><dt>Since</dt><dd>3.0 </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a368e40158c732759fad60d46d292bd2d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -288,7 +324,7 @@ Public Member Functions</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:16 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:11 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

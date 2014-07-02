@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin, Stefan Csomor
 // Modified by:
 // Created:     2006-01-12
-// RCS-ID:      $Id$
 // Copyright:   (c) 2006 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -67,10 +66,8 @@ static NSUInteger CalculateNSEventMaskFromEventCategory(wxEventCategory cat)
             NSMouseEnteredMask |
             NSMouseExitedMask |
             NSScrollWheelMask |
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
             NSTabletPointMask |
             NSTabletProximityMask |
-#endif
             NSOtherMouseDownMask |
             NSOtherMouseUpMask |
             NSOtherMouseDraggedMask |
@@ -78,14 +75,12 @@ static NSUInteger CalculateNSEventMaskFromEventCategory(wxEventCategory cat)
             NSKeyDownMask |
             NSKeyUpMask |
             NSFlagsChangedMask |
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
             NSEventMaskGesture |
             NSEventMaskMagnify |
             NSEventMaskSwipe |
             NSEventMaskRotate |
             NSEventMaskBeginGesture |
             NSEventMaskEndGesture |
-#endif
             0;
     }
     

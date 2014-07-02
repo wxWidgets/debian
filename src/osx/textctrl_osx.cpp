@@ -4,7 +4,6 @@
 // Author:      Stefan Csomor
 // Modified by: Ryan Norton (MLTE GetLineLength and GetLineText)
 // Created:     1998-01-01
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -598,21 +597,6 @@ bool wxTextCtrl::MacSetupCursor( const wxPoint& pt )
         return wxWindow::MacSetupCursor( pt ) ;
     else
         return true ;
-}
-
-bool wxTextCtrl::SetHint(const wxString& hint)
-{
-    m_hintString = hint;
-    
-    if ( GetTextPeer() && GetTextPeer()->SetHint(hint) )
-        return true;
-    
-    return false;
-}
-
-wxString wxTextCtrl::GetHint() const
-{
-    return m_hintString;
 }
 
 // ----------------------------------------------------------------------------

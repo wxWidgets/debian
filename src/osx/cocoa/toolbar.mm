@@ -4,7 +4,6 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -255,7 +254,6 @@ public:
 #endif // wxOSX_USE_NATIVE_TOOLBAR
 
 private:
-#if wxOSX_USE_NATIVE_TOOLBAR
     wxFontEncoding GetToolBarFontEncoding() const
     {
         wxFont f;
@@ -263,7 +261,6 @@ private:
             f = GetToolBar()->GetFont();
         return f.IsOk() ? f.GetEncoding() : wxFont::GetDefaultEncoding();
     }
-#endif // wxOSX_USE_NATIVE_TOOLBAR
 
     void Init()
     {
@@ -690,9 +687,11 @@ wxToolBar::~wxToolBar()
         frame->SetToolBar(NULL);
     }
     
+#if wxOSX_USE_NATIVE_TOOLBAR
     [(NSToolbar*)m_macToolbar setDelegate:nil];
     [(NSToolbar*)m_macToolbar release];
     m_macToolbar = NULL;
+#endif // wxOSX_USE_NATIVE_TOOLBAR
 }
 
 bool wxToolBar::Show( bool show )

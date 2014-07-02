@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -72,7 +72,7 @@
 <div class="textblock"><p>A dialog box is a window with a title bar and sometimes a system menu, which can be moved around the screen. </p>
 <p>It can contain controls and other windows and is often used to allow the user to make some choice or to answer a question.</p>
 <p>Dialogs can be made scrollable, automatically, for computers with low resolution screens: please see <a class="el" href="overview_dialog.html#overview_dialog_autoscrolling">Automatic Scrolled Dialogs</a> for further details.</p>
-<p>Dialogs usually contains either a single button allowing to close the dialog or two buttons, one accepting the changes and the other one discarding them (such button, if present, is automatically activated if the user presses the "Esc" key). By default, buttons with the standard wxID_OK and wxID_CANCEL identifiers behave as expected. Starting with wxWidgets 2.7 it is also possible to use a button with a different identifier instead, see <a class="el" href="classwx_dialog.html#a72ea7e269bedb2552bfeaccdbac07939" title="Sets the identifier to be used as OK button.">SetAffirmativeId()</a> and <a class="el" href="classwx_dialog.html#a585869988e308f549128a6a065f387c6" title="Sets the identifier of the button which should work like the standard &quot;Cancel&quot; button in this dialog...">SetEscapeId()</a>.</p>
+<p>Dialogs usually contain either a single button allowing to close the dialog or two buttons, one accepting the changes and the other one discarding them (such button, if present, is automatically activated if the user presses the "Esc" key). By default, buttons with the standard wxID_OK and wxID_CANCEL identifiers behave as expected. Starting with wxWidgets 2.7 it is also possible to use a button with a different identifier instead, see <a class="el" href="classwx_dialog.html#a72ea7e269bedb2552bfeaccdbac07939" title="Sets the identifier to be used as OK button.">SetAffirmativeId()</a> and <a class="el" href="classwx_dialog.html#a585869988e308f549128a6a065f387c6" title="Sets the identifier of the button which should work like the standard &quot;Cancel&quot; button in this dialog...">SetEscapeId()</a>.</p>
 <p>Also notice that the <a class="el" href="classwx_dialog.html#ae362b7c61430593ef8ac5034f1bd92c8" title="Creates a sizer with standard buttons.">CreateButtonSizer()</a> should be used to create the buttons appropriate for the current platform and positioned correctly (including their order which is platform-dependent).</p>
 <h1><a class="anchor" id="dialog_modal"></a>
 Modal and Modeless</h1>
@@ -244,6 +244,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5c61636f657c0ae9503c4dfa534e073e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_dialog.html#a5c61636f657c0ae9503c4dfa534e073e">ShowWindowModal</a> ()</td></tr>
 <tr class="memdesc:a5c61636f657c0ae9503c4dfa534e073e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a dialog modal to the parent top level window only.  <a href="#a5c61636f657c0ae9503c4dfa534e073e"></a><br/></td></tr>
 <tr class="separator:a5c61636f657c0ae9503c4dfa534e073e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea762a9e04e46f5b080903daabe32197"><td class="memTemplParams" colspan="2">template&lt;typename Functor &gt; </td></tr>
+<tr class="memitem:aea762a9e04e46f5b080903daabe32197"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwx_dialog.html#aea762a9e04e46f5b080903daabe32197">ShowWindowModalThenDo</a> (const Functor &amp;onEndModal)</td></tr>
+<tr class="memdesc:aea762a9e04e46f5b080903daabe32197"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a dialog modal to the parent top level window only and call a functor after the dialog is closed.  <a href="#aea762a9e04e46f5b080903daabe32197"></a><br/></td></tr>
+<tr class="separator:aea762a9e04e46f5b080903daabe32197"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classwx_top_level_window"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classwx_top_level_window')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classwx_top_level_window.html">wxTopLevelWindow</a></td></tr>
 <tr class="memitem:abb919ad585057de6fce94bb7d5497256 inherit pub_methods_classwx_top_level_window"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_top_level_window.html#abb919ad585057de6fce94bb7d5497256">wxTopLevelWindow</a> ()</td></tr>
 <tr class="memdesc:abb919ad585057de6fce94bb7d5497256 inherit pub_methods_classwx_top_level_window"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default ctor.  <a href="#abb919ad585057de6fce94bb7d5497256"></a><br/></td></tr>
@@ -1157,6 +1161,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a63c7351618fd77330d80a250b3719519 inherit pub_methods_classwx_evt_handler"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwx_evt_handler.html#a63c7351618fd77330d80a250b3719519">CallAfter</a> (void(T::*method)(T1,...), T1 x1,...)</td></tr>
 <tr class="memdesc:a63c7351618fd77330d80a250b3719519 inherit pub_methods_classwx_evt_handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously call the given method.  <a href="#a63c7351618fd77330d80a250b3719519"></a><br/></td></tr>
 <tr class="separator:a63c7351618fd77330d80a250b3719519 inherit pub_methods_classwx_evt_handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwx_evt_handler.html#a910416e4d0b1f38cec02213b8a0c6a12">CallAfter</a> (const T &amp;functor)</td></tr>
+<tr class="memdesc:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously call the given functor.  <a href="#a910416e4d0b1f38cec02213b8a0c6a12"></a><br/></td></tr>
+<tr class="separator:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0f5d2cb29a04c1f7f82eb6b351f79fb inherit pub_methods_classwx_evt_handler"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_evt_handler.html#ac0f5d2cb29a04c1f7f82eb6b351f79fb">ProcessEventLocally</a> (<a class="el" href="classwx_event.html">wxEvent</a> &amp;event)</td></tr>
 <tr class="memdesc:ac0f5d2cb29a04c1f7f82eb6b351f79fb inherit pub_methods_classwx_evt_handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to process the event in this handler and all those chained to it.  <a href="#ac0f5d2cb29a04c1f7f82eb6b351f79fb"></a><br/></td></tr>
 <tr class="separator:ac0f5d2cb29a04c1f7f82eb6b351f79fb inherit pub_methods_classwx_evt_handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2415,7 +2423,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Notice that it is possible to call <a class="el" href="classwx_dialog.html#a6e078c3d0653f75ad3c34a37c0b54637" title="Shows an application-modal dialog.">ShowModal()</a> for a dialog which had been previously shown with <a class="el" href="classwx_dialog.html#ae8e5fa98d473b812b8d1c2f163b65c67" title="Hides or shows the dialog.">Show()</a>, this allows to make an existing modeless dialog modal. However <a class="el" href="classwx_dialog.html#a6e078c3d0653f75ad3c34a37c0b54637" title="Shows an application-modal dialog.">ShowModal()</a> can't be called twice without intervening <a class="el" href="classwx_dialog.html#a89b6085b05b63e98001311fafcfb21f0" title="Ends a modal dialog, passing a value to be returned from the ShowModal() invocation.">EndModal()</a> calls.</p>
 <p>Note that this function creates a temporary event loop which takes precedence over the application's main event loop (see <a class="el" href="classwx_event_loop_base.html" title="Base class for all event loop implementations.">wxEventLoopBase</a>) and which is destroyed when the dialog is dismissed. This also results in a call to <a class="el" href="classwx_app_console.html#ab62db8e6265c1e841220c47b9778ab7e" title="Process all pending events; it is necessary to call this function to process events posted with wxEvt...">wxApp::ProcessPendingEvents()</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>The value set with <a class="el" href="classwx_dialog.html#a0d04ed85ac5cd271a61514d446340673" title="Sets the return code for this window.">SetReturnCode()</a>.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="classwx_dialog.html#a5c61636f657c0ae9503c4dfa534e073e" title="Shows a dialog modal to the parent top level window only.">ShowWindowModal()</a>, <a class="el" href="classwx_dialog.html#a89b6085b05b63e98001311fafcfb21f0" title="Ends a modal dialog, passing a value to be returned from the ShowModal() invocation.">EndModal()</a>, <a class="el" href="classwx_dialog.html#a5f56f8d3ecc4336df4150aea989343df" title="Gets the return code for this window.">GetReturnCode()</a>, <a class="el" href="classwx_dialog.html#a0d04ed85ac5cd271a61514d446340673" title="Sets the return code for this window.">SetReturnCode()</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="classwx_dialog.html#a5c61636f657c0ae9503c4dfa534e073e" title="Shows a dialog modal to the parent top level window only.">ShowWindowModal()</a>, <a class="el" href="classwx_dialog.html#aea762a9e04e46f5b080903daabe32197" title="Shows a dialog modal to the parent top level window only and call a functor after the dialog is close...">ShowWindowModalThenDo()</a>, <a class="el" href="classwx_dialog.html#a89b6085b05b63e98001311fafcfb21f0" title="Ends a modal dialog, passing a value to be returned from the ShowModal() invocation.">EndModal()</a>, <a class="el" href="classwx_dialog.html#a5f56f8d3ecc4336df4150aea989343df" title="Gets the return code for this window.">GetReturnCode()</a>, <a class="el" href="classwx_dialog.html#a0d04ed85ac5cd271a61514d446340673" title="Sets the return code for this window.">SetReturnCode()</a> </dd></dl>
 
 <p>Reimplemented in <a class="el" href="classwx_file_dialog.html#a04943e4abb27a197a110898d40ddb4f0">wxFileDialog</a>, <a class="el" href="classwx_message_dialog.html#a28e6cea6fb3857df6cc9b103e06dbadf">wxMessageDialog</a>, <a class="el" href="classwx_single_choice_dialog.html#afa4e6462970ed338dfcbc121d9adeb8d">wxSingleChoiceDialog</a>, <a class="el" href="classwx_text_entry_dialog.html#a47e2fdd56ac9034b2720bc74e89fbf82">wxTextEntryDialog</a>, <a class="el" href="classwx_multi_choice_dialog.html#a563ed5633d90460d08fd3d7a76d73534">wxMultiChoiceDialog</a>, <a class="el" href="classwx_dir_dialog.html#a037ba48268fd2632d47369ad80c84da5">wxDirDialog</a>, <a class="el" href="classwx_font_dialog.html#a26f48c5b589f8bc45ec542599546f69a">wxFontDialog</a>, and <a class="el" href="classwx_colour_dialog.html#a06684af732f3a6e60be6a016b96f9c9e">wxColourDialog</a>.</p>
 
@@ -2435,9 +2443,49 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Shows a dialog modal to the parent top level window only. </p>
-<p>Unlike <a class="el" href="classwx_dialog.html#a6e078c3d0653f75ad3c34a37c0b54637" title="Shows an application-modal dialog.">ShowModal()</a>, dialogs shown with this function only prevent the user from interacting with their parent frame only but not with the rest of the application. They also don't block the program execution but instead return immediately, as <a class="el" href="classwx_dialog.html#ae8e5fa98d473b812b8d1c2f163b65c67" title="Hides or shows the dialog.">Show()</a>, and generate a wxEVT_WINDOW_MODAL_DIALOG_CLOSED event later when the dialog is closed.</p>
+<p>Unlike <a class="el" href="classwx_dialog.html#a6e078c3d0653f75ad3c34a37c0b54637" title="Shows an application-modal dialog.">ShowModal()</a>, dialogs shown with this function only prevent the user from interacting with their parent frame only but not with the rest of the application. They also don't block the program execution but instead return immediately, as <a class="el" href="classwx_dialog.html#ae8e5fa98d473b812b8d1c2f163b65c67" title="Hides or shows the dialog.">Show()</a>, and generate a wxEVT_WINDOW_MODAL_DIALOG_CLOSED event (<a class="el" href="classwx_window_modal_dialog_event.html" title="Event sent by wxDialog::ShowWindowModal() when the dialog closes.">wxWindowModalDialogEvent</a>) later when the dialog is closed.</p>
 <p>Currently this function is only fully implemented in wxOSX ports, under the other platforms it behaves like <a class="el" href="classwx_dialog.html#a6e078c3d0653f75ad3c34a37c0b54637" title="Shows an application-modal dialog.">ShowModal()</a> (but also sends the above mentioned event).</p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="classwx_window_modal_dialog_event.html" title="Event sent by wxDialog::ShowWindowModal() when the dialog closes.">wxWindowModalDialogEvent</a>, <a class="el" href="classwx_dialog.html#aea762a9e04e46f5b080903daabe32197" title="Shows a dialog modal to the parent top level window only and call a functor after the dialog is close...">ShowWindowModalThenDo()</a></dd></dl>
 <dl class="section since"><dt>Since</dt><dd>2.9.0 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aea762a9e04e46f5b080903daabe32197"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Functor &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void wxDialog::ShowWindowModalThenDo </td>
+          <td>(</td>
+          <td class="paramtype">const Functor &amp;&#160;</td>
+          <td class="paramname"><em>onEndModal</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Shows a dialog modal to the parent top level window only and call a functor after the dialog is closed. </p>
+<p>Same as the other <a class="el" href="classwx_dialog.html#a5c61636f657c0ae9503c4dfa534e073e" title="Shows a dialog modal to the parent top level window only.">ShowWindowModal()</a> overload, but calls the functor passed as the argument upon completion, instead of generating the wxEVT_WINDOW_MODAL_DIALOG_CLOSED event.</p>
+<p>This form is particularly useful in combination with C++11 lambdas, when it allows writing window-modal very similarly to how <a class="el" href="classwx_dialog.html#a6e078c3d0653f75ad3c34a37c0b54637" title="Shows an application-modal dialog.">ShowModal()</a> is used (with the notable exception of not being able to create the dialog on stack):</p>
+<div class="fragment"><div class="line">wxWindowPtr&lt;wxDialog&gt; dlg(<span class="keyword">new</span> <a class="code" href="classwx_message_dialog.html" title="This class represents a dialog that shows a single or multi-line message, with a choice of OK...">wxMessageDialog</a>(<span class="keyword">this</span>, <span class="stringliteral">&quot;Hello!&quot;</span>));</div>
+<div class="line"></div>
+<div class="line">dlg-&gt;ShowWindowModalThenDo([<span class="keyword">this</span>,dlg](<span class="keywordtype">int</span> retcode){</div>
+<div class="line">    <span class="keywordflow">if</span> ( retcode == <a class="code" href="defs_8h.html#ac66d0a09761e7d86b2ac0b2e0c6a8cbbaeeb1bdf97306d7f0fdffb62c8af3d02f" title="Standard button and menu IDs.">wxID_OK</a> )</div>
+<div class="line">        DoSomething();</div>
+<div class="line">    <span class="comment">// dlg is implicitly destroyed here, because the pointer was</span></div>
+<div class="line">    <span class="comment">// explicitly captured by the lambda</span></div>
+<div class="line">});</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">onEndModal</td><td>Function object to call when the dialog is closed. The functor is called with a single integer argument, dialog's return code.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>The dialog instance must not be destroyed until <em>onEndModal</em> is called. The best way to ensure that is to use wxWindowPtr to hold a pointer and include it in the lambda's capture, by value (not reference!), as shown in the example above.</dd></dl>
+<dl class="section since"><dt>Since</dt><dd>3.0</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="classwx_window_ptr_3_01_t_01_4.html" title="A reference-counted smart pointer for holding wxWindow instances.">wxWindowPtr&lt;T&gt;</a> </dd></dl>
 
 </div>
 </div>
@@ -2445,7 +2493,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:17 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:14 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

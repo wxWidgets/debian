@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -76,28 +76,26 @@
 <li><span class="style">wxOK</span>:<div class="styleDesc"> Puts an Ok button in the message box. May be combined with <code>wxCANCEL</code>. </div></li>
 <li><span class="style">wxCANCEL</span>:<div class="styleDesc"> Puts a Cancel button in the message box. Must be combined with either <code>wxOK</code> or <code>wxYES_NO</code>. </div></li>
 <li><span class="style">wxYES_NO</span>:<div class="styleDesc"> Puts Yes and No buttons in the message box. It is recommended to always use <code>wxCANCEL</code> with this style as otherwise the message box won't have a close button under wxMSW and the user will be forced to answer it. </div></li>
-<li><span class="style">wxHELP</span>:<div class="styleDesc"> Puts a Help button to the message box. This button can have special appearance or be specially positioned if its label is not changed from the default one. Notice that using this button is not supported when showing a message box from non-main thread in wxOSX/Cocoa and it is not supported in wxOSX/Carbon at all. <dl class="section since"><dt>Since</dt><dd>2.9.3. </dd></dl>
-</div></li>
-<li><div class="styleDesc"> <span class="style">wxNO_DEFAULT</span>:<div class="styleDesc"> Makes the "No" button default, can only be used with <code>wxYES_NO</code>. </div></div></li>
-<li><div class="styleDesc"> <span class="style">wxCANCEL_DEFAULT</span>:<div class="styleDesc"> Makes the "Cancel" button default, can only be used with <code>wxCANCEL</code> </div></div></li>
-<li><div class="styleDesc"> <span class="style">wxYES_DEFAULT</span>:<div class="styleDesc"> Makes the "Yes" button default, this is the default behaviour and this flag exists solely for symmetry with <code>wxNO_DEFAULT</code>. </div></div></li>
-<li><div class="styleDesc"> <span class="style">wxOK_DEFAULT</span>:<div class="styleDesc"> Makes the "OK" button default, this is the default behaviour and this flag exists solely for symmetry with <code>wxCANCEL_DEFAULT</code>. </div></div></li>
-<li><div class="styleDesc"> <span class="style">wxICON_NONE</span>:<div class="styleDesc"> Displays no icon in the dialog if possible (an icon might still be displayed if the current platform mandates its use). This style may be used to prevent the dialog from using the default icon based on <code>wxYES_NO</code> presence as explained in <code>wxICON_QUESTION</code> and <code>wxICON_INFORMATION</code> documentation below. </div></div></li>
-<li><div class="styleDesc"> <span class="style">wxICON_EXCLAMATION</span>:<div class="styleDesc"> Displays an exclamation, or warning, icon in the dialog. </div></div></li>
-<li><div class="styleDesc"> <span class="style">wxICON_ERROR</span>:<div class="styleDesc"> Displays an error icon in the dialog. </div></div></li>
-<li><div class="styleDesc"> <span class="style">wxICON_HAND</span>:<div class="styleDesc"> Displays an error symbol, this is a MSW-inspired synonym for <code>wxICON_ERROR</code>. </div></div></li>
-<li><div class="styleDesc"> <span class="style">wxICON_QUESTION</span>:<div class="styleDesc"> Displays a question mark symbol. This icon is automatically used with <code>wxYES_NO</code> so it's usually unnecessary to specify it explicitly. This style is not supported for message dialogs under wxMSW when a task dialog is used to implement them (i.e. when running under Windows Vista or later) because <a href="http://msdn.microsoft.com/en-us/library/aa511273.aspx">Microsoft guidelines</a> indicate that no icon should be used for routine confirmations. If it is specified, no icon will be displayed. </div></div></li>
-<li><div class="styleDesc"> <span class="style">wxICON_INFORMATION</span>:<div class="styleDesc"> Displays an information symbol. This icon is used by default if <code>wxYES_NO</code> is not given so it is usually unnecessary to specify it explicitly. </div></div></li>
-<li><div class="styleDesc"> <span class="style">wxICON_AUTH_NEEDED</span>:<div class="styleDesc"> Displays an authentication needed symbol. This style is only supported for message dialogs under wxMSW when a task dialog is used to implement them (i.e. when running under Windows Vista or later). In other cases the default icon selection logic will be used. Note this can be combined with other styles to provide a fallback. For instance, using wxICON_AUTH_NEEDED | wxICON_QUESTION will show a shield symbol on Windows Vista or above and a question symbol on other platforms. <dl class="section since"><dt>Since</dt><dd>2.9.5 </dd></dl>
-</div></div></li>
-<li><div class="styleDesc"><div class="styleDesc"> <span class="style">wxSTAY_ON_TOP</span>:<div class="styleDesc"> Makes the message box stay on top of all other windows and not only just its parent (currently implemented only under MSW and GTK). </div></div></div></li>
-<li><div class="styleDesc"><div class="styleDesc"> <span class="style">wxCENTRE</span>:<div class="styleDesc"> Centre the message box on its parent or on the screen if parent is not specified. Setting this style under MSW makes no differences as the dialog is always centered on the parent. </div></div></div></li>
+<li><span class="style">wxHELP</span>:<div class="styleDesc"> Puts a Help button to the message box. This button can have special appearance or be specially positioned if its label is not changed from the default one. Notice that using this button is not supported when showing a message box from non-main thread in wxOSX/Cocoa and it is not supported in wxOSX/Carbon at all. Available since wxWidgets 2.9.3. </div></li>
+<li><span class="style">wxNO_DEFAULT</span>:<div class="styleDesc"> Makes the "No" button default, can only be used with <code>wxYES_NO</code>. </div></li>
+<li><span class="style">wxCANCEL_DEFAULT</span>:<div class="styleDesc"> Makes the "Cancel" button default, can only be used with <code>wxCANCEL</code> </div></li>
+<li><span class="style">wxYES_DEFAULT</span>:<div class="styleDesc"> Makes the "Yes" button default, this is the default behaviour and this flag exists solely for symmetry with <code>wxNO_DEFAULT</code>. </div></li>
+<li><span class="style">wxOK_DEFAULT</span>:<div class="styleDesc"> Makes the "OK" button default, this is the default behaviour and this flag exists solely for symmetry with <code>wxCANCEL_DEFAULT</code>. </div></li>
+<li><span class="style">wxICON_NONE</span>:<div class="styleDesc"> Displays no icon in the dialog if possible (an icon might still be displayed if the current platform mandates its use). This style may be used to prevent the dialog from using the default icon based on <code>wxYES_NO</code> presence as explained in <code>wxICON_QUESTION</code> and <code>wxICON_INFORMATION</code> documentation below. </div></li>
+<li><span class="style">wxICON_EXCLAMATION</span>:<div class="styleDesc"> Displays an exclamation, or warning, icon in the dialog. </div></li>
+<li><span class="style">wxICON_ERROR</span>:<div class="styleDesc"> Displays an error icon in the dialog. </div></li>
+<li><span class="style">wxICON_HAND</span>:<div class="styleDesc"> Displays an error symbol, this is a MSW-inspired synonym for <code>wxICON_ERROR</code>. </div></li>
+<li><span class="style">wxICON_QUESTION</span>:<div class="styleDesc"> Displays a question mark symbol. This icon is automatically used with <code>wxYES_NO</code> so it's usually unnecessary to specify it explicitly. This style is not supported for message dialogs under wxMSW when a task dialog is used to implement them (i.e. when running under Windows Vista or later) because <a href="http://msdn.microsoft.com/en-us/library/aa511273.aspx">Microsoft guidelines</a> indicate that no icon should be used for routine confirmations. If it is specified, no icon will be displayed. </div></li>
+<li><span class="style">wxICON_INFORMATION</span>:<div class="styleDesc"> Displays an information symbol. This icon is used by default if <code>wxYES_NO</code> is not given so it is usually unnecessary to specify it explicitly. </div></li>
+<li><span class="style">wxICON_AUTH_NEEDED</span>:<div class="styleDesc"> Displays an authentication needed symbol. This style is only supported for message dialogs under wxMSW when a task dialog is used to implement them (i.e. when running under Windows Vista or later). In other cases the default icon selection logic will be used. Note this can be combined with other styles to provide a fallback. For instance, using wxICON_AUTH_NEEDED | wxICON_QUESTION will show a shield symbol on Windows Vista or above and a question symbol on other platforms. Available since wxWidgets 2.9.5 </div></li>
+<li><span class="style">wxSTAY_ON_TOP</span>:<div class="styleDesc"> Makes the message box stay on top of all other windows and not only just its parent (currently implemented only under MSW and GTK). </div></li>
+<li><span class="style">wxCENTRE</span>:<div class="styleDesc"> Centre the message box on its parent or on the screen if parent is not specified. Setting this style under MSW makes no differences as the dialog is always centered on the parent. </div></li>
 </ul>
 <h2></h2>
-<div class="styleDesc"><div class="styleDesc"><div><span class="lib">Library:</span>&#160;&#160;<span class="lib_text"><a class="el" href="page_libs.html#page_libs_wxcore">wxCore</a></span></div></div></div><div class="styleDesc"><div class="styleDesc"> <div><span class="category">Category:</span>&#160;&#160;<span class="category_text"><a class="el" href="group__group__class__cmndlg.html">Common Dialogs</a></span></div></div></div><div class="styleDesc"><div class="styleDesc"><dl class="section see"><dt>See Also</dt><dd><a class="el" href="overview_cmndlg.html#overview_cmndlg_msg">wxMessageDialog Overview</a> </dd>
+<div><span class="lib">Library:</span>&#160;&#160;<span class="lib_text"><a class="el" href="page_libs.html#page_libs_wxcore">wxCore</a></span></div><div><span class="category">Category:</span>&#160;&#160;<span class="category_text"><a class="el" href="group__group__class__cmndlg.html">Common Dialogs</a></span></div><dl class="section see"><dt>See Also</dt><dd><a class="el" href="overview_cmndlg.html#overview_cmndlg_msg">wxMessageDialog Overview</a> </dd>
 <dd>
 <a class="el" href="classwx_rich_message_dialog.html" title="Extension of wxMessageDialog with additional functionality.">wxRichMessageDialog</a> </dd></dl>
-</div></div></div><table class="memberdecls">
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_message_dialog_1_1_button_label.html">ButtonLabel</a></td></tr>
@@ -270,6 +268,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5c61636f657c0ae9503c4dfa534e073e inherit pub_methods_classwx_dialog"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_dialog.html#a5c61636f657c0ae9503c4dfa534e073e">ShowWindowModal</a> ()</td></tr>
 <tr class="memdesc:a5c61636f657c0ae9503c4dfa534e073e inherit pub_methods_classwx_dialog"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a dialog modal to the parent top level window only.  <a href="#a5c61636f657c0ae9503c4dfa534e073e"></a><br/></td></tr>
 <tr class="separator:a5c61636f657c0ae9503c4dfa534e073e inherit pub_methods_classwx_dialog"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea762a9e04e46f5b080903daabe32197 inherit pub_methods_classwx_dialog"><td class="memTemplParams" colspan="2">template&lt;typename Functor &gt; </td></tr>
+<tr class="memitem:aea762a9e04e46f5b080903daabe32197 inherit pub_methods_classwx_dialog"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwx_dialog.html#aea762a9e04e46f5b080903daabe32197">ShowWindowModalThenDo</a> (const Functor &amp;onEndModal)</td></tr>
+<tr class="memdesc:aea762a9e04e46f5b080903daabe32197 inherit pub_methods_classwx_dialog"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a dialog modal to the parent top level window only and call a functor after the dialog is closed.  <a href="#aea762a9e04e46f5b080903daabe32197"></a><br/></td></tr>
+<tr class="separator:aea762a9e04e46f5b080903daabe32197 inherit pub_methods_classwx_dialog"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classwx_top_level_window"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classwx_top_level_window')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classwx_top_level_window.html">wxTopLevelWindow</a></td></tr>
 <tr class="memitem:abb919ad585057de6fce94bb7d5497256 inherit pub_methods_classwx_top_level_window"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_top_level_window.html#abb919ad585057de6fce94bb7d5497256">wxTopLevelWindow</a> ()</td></tr>
 <tr class="memdesc:abb919ad585057de6fce94bb7d5497256 inherit pub_methods_classwx_top_level_window"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default ctor.  <a href="#abb919ad585057de6fce94bb7d5497256"></a><br/></td></tr>
@@ -1183,6 +1185,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a63c7351618fd77330d80a250b3719519 inherit pub_methods_classwx_evt_handler"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwx_evt_handler.html#a63c7351618fd77330d80a250b3719519">CallAfter</a> (void(T::*method)(T1,...), T1 x1,...)</td></tr>
 <tr class="memdesc:a63c7351618fd77330d80a250b3719519 inherit pub_methods_classwx_evt_handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously call the given method.  <a href="#a63c7351618fd77330d80a250b3719519"></a><br/></td></tr>
 <tr class="separator:a63c7351618fd77330d80a250b3719519 inherit pub_methods_classwx_evt_handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwx_evt_handler.html#a910416e4d0b1f38cec02213b8a0c6a12">CallAfter</a> (const T &amp;functor)</td></tr>
+<tr class="memdesc:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously call the given functor.  <a href="#a910416e4d0b1f38cec02213b8a0c6a12"></a><br/></td></tr>
+<tr class="separator:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0f5d2cb29a04c1f7f82eb6b351f79fb inherit pub_methods_classwx_evt_handler"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_evt_handler.html#ac0f5d2cb29a04c1f7f82eb6b351f79fb">ProcessEventLocally</a> (<a class="el" href="classwx_event.html">wxEvent</a> &amp;event)</td></tr>
 <tr class="memdesc:ac0f5d2cb29a04c1f7f82eb6b351f79fb inherit pub_methods_classwx_evt_handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to process the event in this handler and all those chained to it.  <a href="#ac0f5d2cb29a04c1f7f82eb6b351f79fb"></a><br/></td></tr>
 <tr class="separator:ac0f5d2cb29a04c1f7f82eb6b351f79fb inherit pub_methods_classwx_evt_handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1862,7 +1868,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:22 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:23 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

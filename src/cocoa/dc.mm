@@ -4,7 +4,6 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/04/01
-// RCS-ID:      $Id$
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -650,7 +649,7 @@ void wxCocoaDCImpl::ComputeScaleAndOrigin(void)
   m_scaleX = m_logicalScaleX * m_userScaleX;
   m_scaleY = m_logicalScaleY * m_userScaleY;
 
-  // CMB: if scale has changed call SetPen to recalulate the line width
+  // CMB: if scale has changed call SetPen to recalculate the line width
   if (m_scaleX != origScaleX || m_scaleY != origScaleY)
   {
 #if 0

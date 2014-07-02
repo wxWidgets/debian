@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -286,6 +286,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a207fff9a88e3bde658309d615bd29518 inherit pub_methods_classwx_rich_text_object"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#a207fff9a88e3bde658309d615bd29518">LayoutToBestSize</a> (<a class="el" href="classwx_d_c.html">wxDC</a> &amp;dc, <a class="el" href="classwx_rich_text_drawing_context.html">wxRichTextDrawingContext</a> &amp;context, <a class="el" href="classwx_rich_text_buffer.html">wxRichTextBuffer</a> *buffer, const <a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;parentAttr, const <a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;attr, const <a class="el" href="classwx_rect.html">wxRect</a> &amp;availableParentSpace, const <a class="el" href="classwx_rect.html">wxRect</a> &amp;availableContainerSpace, int style)</td></tr>
 <tr class="memdesc:a207fff9a88e3bde658309d615bd29518 inherit pub_methods_classwx_rich_text_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lays out the object first with a given amount of space, and then if no width was specified in attr, lays out the object again using the minimum size.  <a href="#a207fff9a88e3bde658309d615bd29518"></a><br/></td></tr>
 <tr class="separator:a207fff9a88e3bde658309d615bd29518 inherit pub_methods_classwx_rich_text_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a591ee431cd21bbde31b102231e79d8a1 inherit pub_methods_classwx_rich_text_object"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#a591ee431cd21bbde31b102231e79d8a1">AdjustAttributes</a> (<a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;attr, <a class="el" href="classwx_rich_text_drawing_context.html">wxRichTextDrawingContext</a> &amp;context)</td></tr>
+<tr class="memdesc:a591ee431cd21bbde31b102231e79d8a1 inherit pub_methods_classwx_rich_text_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adjusts the attributes for virtual attribute provision, collapsed borders, etc.  <a href="#a591ee431cd21bbde31b102231e79d8a1"></a><br/></td></tr>
+<tr class="separator:a591ee431cd21bbde31b102231e79d8a1 inherit pub_methods_classwx_rich_text_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4829cfbe45213f9a8f6e66e09e517399 inherit pub_methods_classwx_rich_text_object"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#a4829cfbe45213f9a8f6e66e09e517399">SetAttributes</a> (const <a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;attr)</td></tr>
 <tr class="memdesc:a4829cfbe45213f9a8f6e66e09e517399 inherit pub_methods_classwx_rich_text_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the object's attributes.  <a href="#a4829cfbe45213f9a8f6e66e09e517399"></a><br/></td></tr>
 <tr class="separator:a4829cfbe45213f9a8f6e66e09e517399 inherit pub_methods_classwx_rich_text_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -430,9 +433,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:aa582aba937334f039ab903b826787058 inherit pub_static_methods_classwx_rich_text_object"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#aa582aba937334f039ab903b826787058">ConvertPixelsToTenthsMM</a> (int ppi, int pixels, double scale=1.0)</td></tr>
 <tr class="memdesc:aa582aba937334f039ab903b826787058 inherit pub_static_methods_classwx_rich_text_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert units in pixels to tenths of a millimetre.  <a href="#aa582aba937334f039ab903b826787058"></a><br/></td></tr>
 <tr class="separator:aa582aba937334f039ab903b826787058 inherit pub_static_methods_classwx_rich_text_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a247f00b530db41c841e35a38b0c83817 inherit pub_static_methods_classwx_rich_text_object"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#a247f00b530db41c841e35a38b0c83817">DrawBoxAttributes</a> (<a class="el" href="classwx_d_c.html">wxDC</a> &amp;dc, <a class="el" href="classwx_rich_text_buffer.html">wxRichTextBuffer</a> *buffer, const <a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;attr, const <a class="el" href="classwx_rect.html">wxRect</a> &amp;boxRect, int flags=0)</td></tr>
-<tr class="memdesc:a247f00b530db41c841e35a38b0c83817 inherit pub_static_methods_classwx_rich_text_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the borders and background for the given rectangle and attributes.  <a href="#a247f00b530db41c841e35a38b0c83817"></a><br/></td></tr>
-<tr class="separator:a247f00b530db41c841e35a38b0c83817 inherit pub_static_methods_classwx_rich_text_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b02aac99c7d13b89c8ba3f26229c2e2 inherit pub_static_methods_classwx_rich_text_object"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#a0b02aac99c7d13b89c8ba3f26229c2e2">DrawBoxAttributes</a> (<a class="el" href="classwx_d_c.html">wxDC</a> &amp;dc, <a class="el" href="classwx_rich_text_buffer.html">wxRichTextBuffer</a> *buffer, const <a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;attr, const <a class="el" href="classwx_rect.html">wxRect</a> &amp;boxRect, int flags=0, <a class="el" href="classwx_rich_text_object.html">wxRichTextObject</a> *obj=NULL)</td></tr>
+<tr class="memdesc:a0b02aac99c7d13b89c8ba3f26229c2e2 inherit pub_static_methods_classwx_rich_text_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the borders and background for the given rectangle and attributes.  <a href="#a0b02aac99c7d13b89c8ba3f26229c2e2"></a><br/></td></tr>
+<tr class="separator:a0b02aac99c7d13b89c8ba3f26229c2e2 inherit pub_static_methods_classwx_rich_text_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f415917e184888f4471d752d0353031 inherit pub_static_methods_classwx_rich_text_object"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#a4f415917e184888f4471d752d0353031">DrawBorder</a> (<a class="el" href="classwx_d_c.html">wxDC</a> &amp;dc, <a class="el" href="classwx_rich_text_buffer.html">wxRichTextBuffer</a> *buffer, const <a class="el" href="classwx_text_attr_borders.html">wxTextAttrBorders</a> &amp;attr, const <a class="el" href="classwx_rect.html">wxRect</a> &amp;rect, int flags=0)</td></tr>
 <tr class="memdesc:a4f415917e184888f4471d752d0353031 inherit pub_static_methods_classwx_rich_text_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a border.  <a href="#a4f415917e184888f4471d752d0353031"></a><br/></td></tr>
 <tr class="separator:a4f415917e184888f4471d752d0353031 inherit pub_static_methods_classwx_rich_text_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1127,7 +1130,7 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Lay the item out at the specified position with the given size constraint. </p>
-<p>Layout must set the cached size.  is the available space for the object, and <em>parentRect</em> is the container that is used to determine a relative size or position (for example if a text box must be 50% of the parent text box). </p>
+<p>Layout must set the cached size. <em>rect</em> is the available space for the object, and <em>parentRect</em> is the container that is used to determine a relative size or position (for example if a text box must be 50% of the parent text box). </p>
 
 <p>Implements <a class="el" href="classwx_rich_text_object.html#a4dc323418f095b5a68c0629c77f77d9d">wxRichTextObject</a>.</p>
 
@@ -1279,7 +1282,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:27 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:31 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

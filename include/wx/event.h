@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1470,6 +1469,39 @@ private:
     const ParamType2 m_param2;
 };
 
+// This is a version for calling any functors
+template <typename T>
+class wxAsyncMethodCallEventFunctor : public wxAsyncMethodCallEvent
+{
+public:
+    typedef T FunctorType;
+
+    wxAsyncMethodCallEventFunctor(wxObject *object, const FunctorType& fn)
+        : wxAsyncMethodCallEvent(object),
+          m_fn(fn)
+    {
+    }
+
+    wxAsyncMethodCallEventFunctor(const wxAsyncMethodCallEventFunctor& other)
+        : wxAsyncMethodCallEvent(other),
+          m_fn(other.m_fn)
+    {
+    }
+
+    virtual wxEvent *Clone() const
+    {
+        return new wxAsyncMethodCallEventFunctor(*this);
+    }
+
+    virtual void Execute()
+    {
+        m_fn();
+    }
+
+private:
+    FunctorType m_fn;
+};
+
 #endif // wxHAS_CALL_AFTER
 
 
@@ -2243,19 +2275,36 @@ private:
 class WXDLLIMPEXP_CORE wxActivateEvent : public wxEvent
 {
 public:
-    wxActivateEvent(wxEventType type = wxEVT_NULL, bool active = true, int Id = 0)
-        : wxEvent(Id, type)
-        { m_active = active; }
+    // Type of activation. For now we can only detect if it was by mouse or by
+    // some other method and even this is only available under wxMSW.
+    enum Reason
+    {
+        Reason_Mouse,
+        Reason_Unknown
+    };
+
+    wxActivateEvent(wxEventType type = wxEVT_NULL, bool active = true,
+                    int Id = 0, Reason activationReason = Reason_Unknown)
+        : wxEvent(Id, type),
+        m_activationReason(activationReason)
+    {
+        m_active = active;
+    }
     wxActivateEvent(const wxActivateEvent& event)
         : wxEvent(event)
-    { m_active = event.m_active; }
+    {
+        m_active = event.m_active;
+        m_activationReason = event.m_activationReason;
+    }
 
     bool GetActive() const { return m_active; }
+    Reason GetActivationReason() const { return m_activationReason;}
 
     virtual wxEvent *Clone() const { return new wxActivateEvent(*this); }
 
 private:
     bool m_active;
+    Reason m_activationReason;
 
 private:
     DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxActivateEvent)
@@ -3393,6 +3442,12 @@ public:
             new wxAsyncMethodCallEvent2<T, T1, T2>(
                 static_cast<T*>(this), method, x1, x2)
         );
+    }
+
+    template <typename T>
+    void CallAfter(const T& fn)
+    {
+        QueueEvent(new wxAsyncMethodCallEventFunctor<T>(this, fn));
     }
 #endif // wxHAS_CALL_AFTER
 

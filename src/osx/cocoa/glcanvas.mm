@@ -4,7 +4,6 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,6 +88,7 @@ WXGLPixelFormat WXGLChoosePixelFormat(const int *attribList)
         NSOpenGLPFAColorSize,(NSOpenGLPixelFormatAttribute)8,
         NSOpenGLPFAAlphaSize,(NSOpenGLPixelFormatAttribute)0,
         NSOpenGLPFADepthSize,(NSOpenGLPixelFormatAttribute)8,
+        NSOpenGLPFAAccelerated, // use hardware accelerated context
         (NSOpenGLPixelFormatAttribute)nil
     };
 
@@ -101,6 +101,7 @@ WXGLPixelFormat WXGLChoosePixelFormat(const int *attribList)
     {
         unsigned p = 0;
         data[p++] = NSOpenGLPFAMinimumPolicy; // make _SIZE tags behave more like GLX
+        data[p++] = NSOpenGLPFAAccelerated; // use hardware accelerated context
 
         for ( unsigned arg = 0; attribList[arg] !=0 && p < WXSIZEOF(data); )
         {

@@ -2,7 +2,6 @@
 // Name:        dcgraph.h
 // Purpose:     interface of wxGCDC
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -60,7 +59,7 @@ public:
     wxGraphicsContext* GetGraphicsContext() const;
 
     /**
-       Set the grpahics context to be used for this wxGCDC.
+       Set the graphics context to be used for this wxGCDC.
     */
     void SetGraphicsContext( wxGraphicsContext* ctx );
 

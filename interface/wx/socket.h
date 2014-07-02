@@ -2,7 +2,6 @@
 // Name:        socket.h
 // Purpose:     interface of wxIP*address, wxSocket* classes
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -429,7 +428,7 @@ public:
     virtual ~wxSockAddress();
 
     /**
-        Delete all informations about the address.
+        Delete all information about the address.
     */
     virtual void Clear();
 

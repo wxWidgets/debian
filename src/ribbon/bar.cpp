@@ -4,7 +4,6 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-05-23
-// RCS-ID:      $Id$
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -1270,15 +1269,19 @@ void wxRibbonBar::HitTestRibbonButton(const wxRect& rect, const wxPoint& positio
 
 void wxRibbonBar::HideIfExpanded()
 {
-    if ( m_ribbon_state == wxRIBBON_BAR_EXPANDED )
+    switch ( m_ribbon_state )
     {
-        HidePanels();
-        m_ribbon_state = wxRIBBON_BAR_MINIMIZED;
-    }
-    else
-    {
-        ShowPanels();
-        m_ribbon_state = wxRIBBON_BAR_PINNED;
+        case wxRIBBON_BAR_EXPANDED:
+            m_ribbon_state = wxRIBBON_BAR_MINIMIZED;
+            // Fall through
+
+        case wxRIBBON_BAR_MINIMIZED:
+            HidePanels();
+            break;
+
+        case wxRIBBON_BAR_PINNED:
+            ShowPanels();
+            break;
     }
 }
 

@@ -2,7 +2,6 @@
 // Name:        utilities.h
 // Purpose:     Utilities page of the Doxygen manual
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -48,7 +47,7 @@ You can find Helpview in @c utils/helpview.
 @section page_utils_hhp2cached HHP2Cached
 
 This utility creates a "cached" version of a @c .hhp file; using cached @c .hhp
-files in wxHtmlHelpController can drammatically improve the performances
+files in wxHtmlHelpController can dramatically improve the performance
 of the help viewer. See wxHtmlHelpController for more details.
 
 You can find HHP2Cached in @c utils/hhp2cached.

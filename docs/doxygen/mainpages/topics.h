@@ -2,13 +2,12 @@
 // Name:        topics.h
 // Purpose:     Topic overviews page of the Doxygen manual
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 /**
 
-@page page_topics Topic Overviews
+@page page_topics Programming Guides
 
 @tableofcontents
 
@@ -23,7 +22,6 @@ topics related to building applications with wxWidgets.
 @li @subpage overview_roughguide
 @li @subpage overview_helloworld
 @li @subpage overview_python
-@li @subpage overview_changes_since28
 
 @section page_topics_programming Important wxWidgets Topics
 

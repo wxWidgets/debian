@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -127,10 +127,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:abe917e8aaabd5a0bf05e43625a9ff94a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current short name for the locale (as given to the constructor or the <a class="el" href="classwx_locale.html#a37c254f20d4862b6efea2fedf63a231a" title="Initializes the wxLocale instance.">Init()</a> function).  <a href="#abe917e8aaabd5a0bf05e43625a9ff94a"></a><br/></td></tr>
 <tr class="separator:abe917e8aaabd5a0bf05e43625a9ff94a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7bfa739af4e02181c822039a855ff22"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classwx_string.html">wxString</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_locale.html#ab7bfa739af4e02181c822039a855ff22">GetString</a> (const <a class="el" href="classwx_string.html">wxString</a> &amp;origString, const <a class="el" href="classwx_string.html">wxString</a> &amp;domain=<a class="el" href="interface_2wx_2string_8h.html#a9a321d587166a30017b608dd2d234033">wxEmptyString</a>) const </td></tr>
-<tr class="memdesc:ab7bfa739af4e02181c822039a855ff22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls <a class="el" href="classwx_translations.html#abc65ffea4b238c11c7131e5303f174f2" title="Retrieves the translation for a string in all loaded domains unless the domain parameter is specified...">wxTranslations::GetString(const wxString&amp;, const wxString&amp;) const</a>.  <a href="#ab7bfa739af4e02181c822039a855ff22"></a><br/></td></tr>
+<tr class="memdesc:ab7bfa739af4e02181c822039a855ff22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls <a class="el" href="group__group__funcmacro__string.html#ga223e9aea5b1a2252c7e632613c7b9a74" title="This function returns the translation of string in the current locale().">wxGetTranslation(const wxString&amp;, const wxString&amp;)</a>.  <a href="#ab7bfa739af4e02181c822039a855ff22"></a><br/></td></tr>
 <tr class="separator:ab7bfa739af4e02181c822039a855ff22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73800e8acd6fac2869e1c913b5d80f90"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classwx_string.html">wxString</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_locale.html#a73800e8acd6fac2869e1c913b5d80f90">GetString</a> (const <a class="el" href="classwx_string.html">wxString</a> &amp;origString, const <a class="el" href="classwx_string.html">wxString</a> &amp;origString2, unsigned n, const <a class="el" href="classwx_string.html">wxString</a> &amp;domain=<a class="el" href="interface_2wx_2string_8h.html#a9a321d587166a30017b608dd2d234033">wxEmptyString</a>) const </td></tr>
-<tr class="memdesc:a73800e8acd6fac2869e1c913b5d80f90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls <a class="el" href="classwx_translations.html#a7480771c24a53e0ccf1170a3a70b2ba4" title="Retrieves the translation for a string in all loaded domains unless the domain parameter is specified...">wxTranslations::GetString(const wxString&amp;, const wxString&amp;, unsigned, const wxString&amp;) const</a>.  <a href="#a73800e8acd6fac2869e1c913b5d80f90"></a><br/></td></tr>
+<tr class="memdesc:a73800e8acd6fac2869e1c913b5d80f90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls <a class="el" href="group__group__funcmacro__string.html#ga6810b710e8860fa7088fc454feb9ecb1" title="This is an overloaded version of wxGetTranslation(const wxString&amp;, const wxString&amp;), please see its documentation for general information.">wxGetTranslation(const wxString&amp;, const wxString&amp;, unsigned, const wxString&amp;)</a>.  <a href="#a73800e8acd6fac2869e1c913b5d80f90"></a><br/></td></tr>
 <tr class="separator:a73800e8acd6fac2869e1c913b5d80f90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01a3752dfba43d28ea5d14cda63846da"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_string.html">wxString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_locale.html#a01a3752dfba43d28ea5d14cda63846da">GetSysName</a> () const </td></tr>
 <tr class="memdesc:a01a3752dfba43d28ea5d14cda63846da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns current platform-specific locale name as passed to setlocale().  <a href="#a01a3752dfba43d28ea5d14cda63846da"></a><br/></td></tr>
@@ -716,7 +716,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Calls <a class="el" href="classwx_translations.html#abc65ffea4b238c11c7131e5303f174f2" title="Retrieves the translation for a string in all loaded domains unless the domain parameter is specified...">wxTranslations::GetString(const wxString&amp;, const wxString&amp;) const</a>. </p>
+<p>Calls <a class="el" href="group__group__funcmacro__string.html#ga223e9aea5b1a2252c7e632613c7b9a74" title="This function returns the translation of string in the current locale().">wxGetTranslation(const wxString&amp;, const wxString&amp;)</a>. </p>
 
 </div>
 </div>
@@ -764,7 +764,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Calls <a class="el" href="classwx_translations.html#a7480771c24a53e0ccf1170a3a70b2ba4" title="Retrieves the translation for a string in all loaded domains unless the domain parameter is specified...">wxTranslations::GetString(const wxString&amp;, const wxString&amp;, unsigned, const wxString&amp;) const</a>. </p>
+<p>Calls <a class="el" href="group__group__funcmacro__string.html#ga6810b710e8860fa7088fc454feb9ecb1" title="This is an overloaded version of wxGetTranslation(const wxString&amp;, const wxString&amp;), please see its documentation for general information.">wxGetTranslation(const wxString&amp;, const wxString&amp;, unsigned, const wxString&amp;)</a>. </p>
 
 </div>
 </div>
@@ -947,7 +947,7 @@ Static Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">name</td><td>The name of the locale. Only used in diagnostic messages. </td></tr>
-    <tr><td class="paramname">short</td><td>The standard 2 letter locale abbreviation; it is used as the directory prefix when looking for the message catalog files. </td></tr>
+    <tr><td class="paramname">shortName</td><td>The standard 2 letter locale abbreviation; it is used as the directory prefix when looking for the message catalog files. </td></tr>
     <tr><td class="paramname">locale</td><td>The parameter for the call to setlocale(). Note that it is platform-specific. </td></tr>
     <tr><td class="paramname">bLoadDefault</td><td>May be set to <span class="literal">false</span> to prevent loading of the message catalog for the given locale containing the translations of standard wxWidgets messages. This parameter would be rarely used in normal circumstances. </td></tr>
   </table>
@@ -1024,7 +1024,7 @@ Static Public Member Functions</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:21 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:20 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

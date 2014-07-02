@@ -2,7 +2,6 @@
 // Name:        utils.h
 // Purpose:     interface of various utility classes and functions
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -591,7 +590,7 @@ wxLoadUserResource(const void **outData,
     @param module The @c HINSTANCE of the module to load the resources from.
         The current module is used by default. This parameter is new since
         wxWidgets 2.9.1.
-    @return A pointer to the data to be <tt>delete[]<tt>d by caller on success
+    @return A pointer to the data to be <tt>delete[]</tt>d by caller on success
         or @NULL on error.
 
     This function is available under Windows only.
@@ -907,7 +906,7 @@ bool wxIsPlatform64Bit();
 bool wxIsPlatformLittleEndian();
 
 /**
-    Returns a structure containing informations about the currently running
+    Returns a structure containing information about the currently running
     Linux distribution.
     
     This function uses the @c lsb_release utility which is part of the 
@@ -1278,7 +1277,12 @@ unsigned long wxGetProcessId();
 
     @c wxSIGNONE, @c wxSIGKILL and @c wxSIGTERM have the same meaning under
     both Unix and Windows but all the other signals are equivalent to
-    @c wxSIGTERM under Windows.
+    @c wxSIGTERM under Windows. Moreover, under Windows, @c wxSIGTERM is
+    implemented by posting a message to the application window, so it only
+    works if the application does have windows. If it doesn't, as is notably
+    always the case for the console applications, you need to use @c wxSIGKILL
+    to actually kill the process. Of course, this doesn't allow the process to
+    shut down gracefully and so should be avoided if possible.
 
     Returns 0 on success, -1 on failure. If the @a rc parameter is not @NULL,
     it will be filled with a value from the @c wxKillError enum:

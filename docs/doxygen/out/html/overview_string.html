@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -41,7 +41,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="index.html">Documentation</a></li><li class="navelem"><a class="el" href="page_topics.html">Topic Overviews</a></li>  </ul>
+<li class="navelem"><a class="el" href="index.html">Documentation</a></li><li class="navelem"><a class="el" href="page_topics.html">Programming Guides</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -67,11 +67,10 @@
 <p>The <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> class has been completely rewritten for wxWidgets 3.0 but much work has been done to make existing code using ANSI string literals work as it did in previous versions.</p>
 <h1><a class="anchor" id="overview_string_internal"></a>
 Internal wxString Encoding</h1>
-<p>Since wxWidgets 3.0 <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> internally uses <b>UTF-16</b> (with Unicode code units stored in <code>wchar_t</code>) under Windows and <b>UTF-8</b> (with Unicode code units stored in <code>char</code>) under Unix, Linux and Mac OS X to store its content.</p>
-<p>For definitions of <em>code units</em> and <em>code points</em> terms, please see the <a class="el" href="overview_unicode.html#overview_unicode_encodings">Unicode Representations and Terminology</a> paragraph.</p>
-<p>For simplicity of implementation, <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> when <code>wxUSE_UNICODE_WCHAR==1</code> (e.g. on Windows) uses <em>per code unit indexing</em> instead of <em>per code point indexing</em> and doesn't know anything about surrogate pairs; in other words it always considers code points to be composed by 1 code unit, while this is really true only for characters in the <em>BMP</em> (Basic Multilingual Plane). Thus when iterating over a UTF-16 string stored in a <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> under Windows, the user code has to take care of <em>surrogate pairs</em> himself. (Note however that Windows itself has built-in support for surrogate pairs in UTF-16, such as for drawing strings on screen.)</p>
+<p>Since wxWidgets 3.0 <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> may use any of <code>UTF-16</code> (under Windows, using the native 16 bit <code>wchar_t</code>), <code>UTF-32</code> (under Unix, using the native 32 bit <code>wchar_t</code>) or <code>UTF-8</code> (under both Windows and Unix) to store its content. By default, <code>wchar_t</code> is used under all platforms, but wxWidgets can be compiled with <code>wxUSE_UNICODE_UTF8=1</code> to use UTF-8.</p>
+<p>For simplicity of implementation, <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> uses <em>per code unit indexing</em> instead of <em>per code point indexing</em> when using UTF-16, i.e. in the default <code>wxUSE_UNICODE_WCHAR==1</code> build under Windows and doesn't know anything about surrogate pairs. In other words it always considers code points to be composed by 1 code unit, while this is really true only for characters in the <em>BMP</em> (Basic Multilingual Plane), as explained in more details in the <a class="el" href="overview_unicode.html#overview_unicode_encodings">Unicode Representations and Terminology</a> section. Thus when iterating over a UTF-16 string stored in a <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> under Windows, the user code has to take care of <em>surrogate pairs</em> himself. (Note however that Windows itself has built-in support for surrogate pairs in UTF-16, such as for drawing strings on screen.)</p>
 <dl class="section remark"><dt>Remarks</dt><dd>Note that while the behaviour of <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> when <code>wxUSE_UNICODE_WCHAR==1</code> resembles UCS-2 encoding, it's not completely correct to refer to <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> as UCS-2 encoded since you can encode code points outside the <em>BMP</em> in a <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> as two code units (i.e. as a surrogate pair; as already mentioned however <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> will "see" them as two different code points)</dd></dl>
-<p>When instead <code>wxUSE_UNICODE_UTF8==1</code> (e.g. on Linux and Mac OS X) <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> handles UTF8 multi-bytes sequences just fine also for characters outside the BMP (it implements <em>per code point indexing</em>), so that you can use UTF8 in a completely transparent way:</p>
+<p>In <code>wxUSE_UNICODE_UTF8==1</code> case, <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> handles UTF-8 multi-bytes sequences just fine also for characters outside the BMP (it implements <em>per code point indexing</em>), so that you can use UTF-8 in a completely transparent way:</p>
 <p>Example: </p>
 <div class="fragment"><div class="line"><span class="comment">// first test, using exotic characters outside of the Unicode BMP:</span></div>
 <div class="line"></div>
@@ -191,14 +190,14 @@ Tuning wxString for Your Application</h1>
 <p>It goes without saying that a profiler should be used to measure the precise difference the change to <code>EXTRA_ALLOC</code> makes to your program.</p>
 <h1><a class="anchor" id="overview_string_settings"></a>
 wxString Related Compilation Settings</h1>
-<p>Much work has been done to make existing code using ANSI string literals work as before version 3.0.</p>
-<p>If you nonetheless need to have a <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> that uses <code>wchar_t</code> on Unix and Linux, too, you can specify this on the command line with the <code>configure</code> <code>&ndash;disable-utf8</code> switch or you can consider using <a class="el" href="classwx_u_string.html" title="wxUString is a class representing a Unicode character string where each character is stored using a 3...">wxUString</a> or <code>std::wstring</code> instead.</p>
-<p><code>wxUSE_UNICODE</code> is now defined as <code>1</code> by default to indicate Unicode support. If UTF-8 is used for the internal storage in <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a>, <code>wxUSE_UNICODE_UTF8</code> is also defined, otherwise <code>wxUSE_UNICODE_WCHAR</code> is. See also <a class="el" href="page_wxusedef.html#page_wxusedef_important">Most Important Symbols</a>. </p>
+<p>The main option affecting <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> is <code>wxUSE_UNICODE</code> which is now always defined as <code>1</code> by default to indicate Unicode support. You may set it to 0 to disable Unicode support in <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> and elsewhere in wxWidgets but this is <em>strongly</em> not recommended.</p>
+<p>Another option affecting wxWidgets is <code>wxUSE_UNICODE_WCHAR</code> which is also 1 by default. You may want to set it to 0 and set <code>wxUSE_UNICODE_UTF8</code> to 1 instead to use UTF-8 internally. <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> still provides the same API in this case, but using UTF-8 has performance implications as explained in <a class="el" href="overview_unicode.html#overview_unicode_performance">Performance Implications of Using UTF-8</a>, so it probably shouldn't be enabled for legacy code which might contain a lot of index-using loops.</p>
+<p>See also <a class="el" href="page_wxusedef.html#page_wxusedef_important">Most Important Symbols</a> for a few other options affecting <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a>. </p>
 </div></div><!-- contents -->
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:13 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:08 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

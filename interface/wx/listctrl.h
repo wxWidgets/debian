@@ -2,7 +2,6 @@
 // Name:        wx/listctrl.h
 // Purpose:     interface of wxListCtrl
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -813,7 +812,7 @@ public:
         If @a ptrSubItem is not @NULL and the wxListCtrl is in the report
         mode the subitem (or column) number will also be provided.
         This feature is only available in version 2.7.0 or higher and is currently only
-        implemented under wxMSW and requires at least comctl32.dll of verion 4.70 on
+        implemented under wxMSW and requires at least comctl32.dll of version 4.70 on
         the host system or the value stored in @a ptrSubItem will be always -1.
         To compile this feature into wxWidgets library you need to have access to
         commctrl.h of version 4.70 that is provided by Microsoft.
@@ -1373,7 +1372,7 @@ public:
     /**
         The data.
     */
-    long GetData() const;
+    wxUIntPtr GetData() const;
 
     /**
         The image.
@@ -1537,13 +1536,52 @@ public:
 
     @library{wxcore}
     @category{ctrl}
-    @appearance{listview}
+    @appearance{listctrl}
 
     @see wxListView::SetColumnImage
 */
 class wxListView : public wxListCtrl
 {
 public:
+    /**
+       Default constructor.
+    */
+    wxListView();
+
+    /**
+        Constructor, creating and showing a listview control.
+
+        @param parent
+            Parent window. Must not be @NULL.
+        @param id
+            Window identifier. The value wxID_ANY indicates a default value.
+        @param pos
+            Window position.
+            If ::wxDefaultPosition is specified then a default position is chosen.
+        @param size
+            Window size.
+            If ::wxDefaultSize is specified then the window is sized appropriately.
+        @param style
+            Window style. See wxListCtrl.
+        @param validator
+            Window validator.
+        @param name
+            Window name.
+
+        @see Create(), wxValidator
+    */
+    wxListView(wxWindow* parent, wxWindowID id,
+               const wxPoint& pos = wxDefaultPosition,
+               const wxSize& size = wxDefaultSize,
+               long style = wxLC_ICON,
+               const wxValidator& validator = wxDefaultValidator,
+               const wxString& name = wxListCtrlNameStr);
+
+    /**
+        Destructor, destroying the listview control.
+    */
+    virtual ~wxListView();
+
     /**
         Resets the column image -- after calling this function, no image will be shown.
 
@@ -1623,7 +1661,7 @@ public:
 
     This class stores information about a wxListCtrl item or column.
 
-    wxListItem is a class which contains informations about:
+    wxListItem is a class which contains information about:
     - Zero based item position; see SetId() and GetId().
     - Zero based column index; see SetColumn() and GetColumn().
     - The label (or header for columns); see SetText() and GetText().

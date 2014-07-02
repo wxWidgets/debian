@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2005-09-30
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -495,6 +494,8 @@ public:
 
     /**
         Sets the wxRichTextObject object that currently has the editing focus.
+        @param obj
+            The wxRichTextObject to set focus on.
         @param setCaretPosition
             Optionally set the caret position.
     */
@@ -2233,6 +2234,11 @@ protected:
     @event{EVT_RICHTEXT_CHARACTER(id, func)}
         Process a @c wxEVT_RICHTEXT_CHARACTER event, generated when the user
         presses a character key. Valid event functions: GetFlags, GetPosition, GetCharacter.
+    @event{EVT_RICHTEXT_CONSUMING_CHARACTER(id, func)}
+        Process a @c wxEVT_RICHTEXT_CONSUMING_CHARACTER event, generated when the user
+        presses a character key but before it is processed and inserted into the control.
+        Call Veto to prevent normal processing. Valid event functions: GetFlags, GetPosition,
+        GetCharacter, Veto.
     @event{EVT_RICHTEXT_DELETE(id, func)}
         Process a @c wxEVT_RICHTEXT_DELETE event, generated when the user
         presses the backspace or delete key. Valid event functions: GetFlags, GetPosition.
@@ -2291,7 +2297,7 @@ public:
 
         @param commandType
             The type of the event.
-        @param id
+        @param winid
             Window identifier. The value @c wxID_ANY indicates a default value.
     */
     wxRichTextEvent(wxEventType commandType = wxEVT_NULL, int winid = 0);
@@ -2412,6 +2418,7 @@ wxEventType wxEVT_RICHTEXT_MIDDLE_CLICK;
 wxEventType wxEVT_RICHTEXT_LEFT_DCLICK;
 wxEventType wxEVT_RICHTEXT_RETURN;
 wxEventType wxEVT_RICHTEXT_CHARACTER;
+wxEventType wxEVT_RICHTEXT_CONSUMING_CHARACTER;
 wxEventType wxEVT_RICHTEXT_DELETE;
 
 wxEventType wxEVT_RICHTEXT_STYLESHEET_CHANGING;

@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin, Stefan Csomor
 // Modified by:
 // Created:     2006-01-12
-// RCS-ID:      $Id$
 // Copyright:   (c) 2006 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -55,10 +54,8 @@ static int CalculateUIEventMaskFromEventCategory(wxEventCategory cat)
 	NSMouseEnteredMask		= 1 << NSMouseEntered,
 	NSMouseExitedMask		= 1 << NSMouseExited,
         NSScrollWheelMask		= 1 << NSScrollWheel,
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
 	NSTabletPointMask		= 1 << NSTabletPoint,
 	NSTabletProximityMask		= 1 << NSTabletProximity,
-#endif
 	NSOtherMouseDownMask		= 1 << NSOtherMouseDown,
 	NSOtherMouseUpMask		= 1 << NSOtherMouseUp,
 	NSOtherMouseDraggedMask		= 1 << NSOtherMouseDragged,

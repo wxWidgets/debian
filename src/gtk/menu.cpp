@@ -2,7 +2,6 @@
 // Name:        src/gtk/menu.cpp
 // Purpose:     implementation of wxMenuBar and wxMenu classes for wxGTK
 // Author:      Robert Roebling
-// Id:          $Id$
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -318,11 +317,10 @@ void wxMenuBar::GtkAppend(wxMenu* menu, const wxString& title, int pos)
     else
 #endif // wxUSE_LIBHILDON || wxUSE_LIBHILDON2 /!wxUSE_LIBHILDON && !wxUSE_LIBHILDON2
     {
-        const wxString str(wxConvertMnemonicsToGTK(title));
-
         // This doesn't have much effect right now.
-        menu->SetTitle( str );
+        menu->SetTitle( title );
 
+        const wxString str(wxConvertMnemonicsToGTK(title));
         // The "m_owner" is the "menu item"
         menu->m_owner = gtk_menu_item_new_with_mnemonic( wxGTK_CONV( str ) );
 
@@ -505,10 +503,9 @@ void wxMenuBar::SetMenuLabel( size_t pos, const wxString& label )
 
     wxMenu* menu = node->GetData();
 
+    menu->SetTitle( label );
+
     const wxString str(wxConvertMnemonicsToGTK(label));
-
-    menu->SetTitle( str );
-
     if (menu->m_owner)
         gtk_label_set_text_with_mnemonic(GTK_LABEL(gtk_bin_get_child(GTK_BIN(menu->m_owner))), wxGTK_CONV(str));
 }
@@ -842,6 +839,11 @@ wxLayoutDirection wxMenu::GetLayoutDirection() const
 wxString wxMenu::GetTitle() const
 {
     return wxConvertMnemonicsFromGTK(wxMenuBase::GetTitle());
+}
+
+void wxMenu::SetTitle(const wxString& title)
+{
+    wxMenuBase::SetTitle(wxConvertMnemonicsToGTK(title));
 }
 
 void wxMenu::GtkAppend(wxMenuItem* mitem, int pos)

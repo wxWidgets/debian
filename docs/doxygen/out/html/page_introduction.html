@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -51,108 +51,77 @@
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
 <ul><li class="level1"><a href="#page_introduction_whatis">What is wxWidgets?</a></li>
-<li class="level1"><a href="#page_introduction_why">Why another cross-platform development tool?</a></li>
+<li class="level1"><a href="#page_introduction_why">Why choose wxWidgets?</a></li>
 <li class="level1"><a href="#page_introduction_requirements">wxWidgets Requirements</a></li>
-<li class="level1"><a href="#page_introduction_where">Availability and location of wxWidgets</a></li>
-<li class="level1"><a href="#page_introduction_acknowledgements">Acknowledgements</a></li>
+<li class="level1"><a href="#page_introduction_where">Where to get wxWidgets and support for it</a></li>
 </ul>
 </div>
 <div class="textblock"><h1><a class="anchor" id="page_introduction_whatis"></a>
 What is wxWidgets?</h1>
-<p>wxWidgets is a C++ framework providing GUI (Graphical User Interface) and other facilities on more than one platform. Version 2 and higher currently support all desktop versions of MS Windows, Unix with GTK+ 1.x or 2.x, Unix with Motif, Unix with just X11, Unix with DirectFB, Mac OS X, OS/2.</p>
-<p>wxWidgets was originally developed at the Artificial Intelligence Applications Institute, University of Edinburgh, for internal use, and was first made publicly available in 1992. Version 2 is a vastly improved version written and maintained by Julian Smart, Robert Roebling, Vadim Zeitlin, Vaclav Slavik and many others.</p>
-<p>This manual contains a class reference and topic overviews. For a selection of wxWidgets tutorials, please see the documentation page on the wxWidgets web site: <a href="http://www.wxwidgets.org">http://www.wxwidgets.org</a>.</p>
-<p>Please note that in the following, "MS Windows" often refers to all platforms related to Microsoft Windows, including 32-bit and 64-bit variants, unless otherwise stated. All trademarks are acknowledged.</p>
+<p>wxWidgets is an open source C++ framework allowing to write cross-platform GUI applications with native look and feel in C++ and other languages.</p>
+<p>wxWidgets was originally developed by Julian Smart at the Artificial Intelligence Applications Institute, University of Edinburgh, for internal use, and was first made publicly available in 1992, with a vastly improved version 2 released in 1999. The last major version of the library is 3 and was released in 2013. Currently wxWidgets is developed and maintained by Julian Smart, Vadim Zeitlin, Stefan Csomor, Robert Roebling, Vaclav Slavik and many others.</p>
+<p>More information about wxWidgets is available on its web site at <a href="http://www.wxwidgets.org">http://www.wxwidgets.org</a>.</p>
 <h1><a class="anchor" id="page_introduction_why"></a>
-Why another cross-platform development tool?</h1>
-<p>wxWidgets was developed to provide a cheap and flexible way to maximize investment in GUI application development. While a number of commercial class libraries already existed for cross-platform development, none met all of the following criteria:</p>
+Why choose wxWidgets?</h1>
+<p>Compared to the other similar libraries, wxWidgets is:</p>
+<ol type="1">
+<li>The only C++ GUI library built by wrapping native GUI widgets which results in the best user experience on each platform.</li>
+<li>Written using only the standard C++ and doesn't rely on any custom extensions or preprocessing.</li>
+<li>Open source and free for use in both open source and commercial projects.</li>
+</ol>
+<p>wxWidgets provides a simple, easy to learn, yet very rich API. It is also mature and stable, and the applications written using wxWidgets 2.0 pre-releases almost 20 years ago can still be built today with wxWidgets 3 almost unchanged. wxWidgets has a large, active and friendly community of people, including both the users and developers of the library. It is also available now for more than a dozen other languages, including Python, Perl, Ruby, Lua, Haskell, D, Erlang, PHP, in addition to C++.</p>
+<p>It is impossible to sum up everything included in wxWidgets in a few paragraphs, but here are some of the benefits:</p>
 <ul>
-<li>low price; </li>
-<li>source availability; </li>
-<li>simplicity of programming; </li>
-<li>support for a wide range of compilers.</li>
-</ul>
-<p>Since wxWidgets was started, several other free or almost-free GUI frameworks have emerged. However, none has the range of features, flexibility, documentation and the well-established development team that wxWidgets has.</p>
-<p>As open source software, wxWidgets has benefited from comments, ideas, bug fixes, enhancements and the sheer enthusiasm of users. This gives wxWidgets a certain advantage over its commercial competitors (and over free libraries without an independent development team), plus a robustness against the transience of one individual or company. This openness and availability of source code is especially important when the future of thousands of lines of application code may depend upon the longevity of the underlying class library.</p>
-<p>Version 2 goes much further than previous versions in terms of generality and features, allowing applications to be produced that are often indistinguishable from those produced using single-platform toolkits such as Motif, GTK+ and MFC.</p>
-<p>The importance of using a platform-independent class library cannot be overstated, since GUI application development is very time-consuming, and sustained popularity of particular GUIs cannot be guaranteed. Code can very quickly become obsolete if it addresses the wrong platform or audience. wxWidgets helps to insulate the programmer from these winds of change. Although wxWidgets may not be suitable for every application (such as an OLE-intensive program), it provides access to most of the functionality a GUI program normally requires, plus many extras such as network programming, PostScript output, and HTML rendering; and it can of course be extended as needs dictate. As a bonus, it provides a far cleaner and easier programming interface than the native APIs. Programmers may find it worthwhile to use wxWidgets even if they are developing on only one platform.</p>
-<p>It is impossible to sum up the functionality of wxWidgets in a few paragraphs, but here are some of the benefits:</p>
-<ul>
-<li>Low cost (free, in fact!) </li>
-<li>You get the source. </li>
-<li>Available on a variety of popular platforms. </li>
-<li>Works with almost all popular C++ compilers and Python. </li>
-<li>Over 70 example programs. </li>
-<li>Over 1000 pages of printable and on-line documentation. </li>
-<li>Simple-to-use, object-oriented API. </li>
+<li>Available on all major desktop platforms. </li>
+<li>Free for any use. </li>
+<li>Source is available and easy to read and modify if necessary. </li>
+<li>Over 100 example programs. </li>
+<li>Extensive documentation (almost 200,000 lines of it). </li>
+<li>Straightforward API. </li>
+<li>Simple but powerful layout system. </li>
+<li>Run-time loadable or compile-time embeddable resources. </li>
 <li>Flexible event system. </li>
-<li>Graphics calls include lines, rounded rectangles, splines, polylines, etc. </li>
-<li>Constraint-based and sizer-based layouts. </li>
-<li>Print/preview and document/view architectures. </li>
-<li>Toolbar, notebook, tree control, advanced list control classes. </li>
-<li>PostScript generation under Unix, normal MS Windows printing on the PC. </li>
-<li>MDI (Multiple Document Interface) support. </li>
-<li>Can be used to create DLLs under Windows, dynamic libraries on Unix. </li>
-<li>Common dialogs for file browsing, printing, colour selection, etc. </li>
-<li>Under MS Windows, support for creating metafiles and copying them to the clipboard. </li>
-<li>An API for invoking help from applications. </li>
-<li>Ready-to-use HTML window (supporting a subset of HTML). </li>
-<li>Network support via a family of socket and protocol classes. </li>
-<li>Support for platform independent image processing. </li>
-<li>Built-in support for many file formats (BMP, PNG, JPEG, GIF, XPM, PNM, PCX).</li>
+<li>All the usual and quite a few of more rare GUI controls. </li>
+<li>And also all the standard dialogs. </li>
+<li>2D path-based drawing API with full support for transparency. </li>
+<li>Built-in support for many file formats (BMP, PNG, JPEG, GIF, XPM, PNM, PCX, TGA, ...). </li>
+<li>Printing, help, clipboard, drag-and-drop, document/view, ... support. </li>
+<li>Integration with the native platform HTML rendering engine. </li>
+<li>Dockable windows framework. </li>
+<li>Word processor-like widget. </li>
+<li>Powerful text editing widget with syntax highlighting. </li>
+<li>And much, much more...</li>
 </ul>
 <h1><a class="anchor" id="page_introduction_requirements"></a>
 wxWidgets Requirements</h1>
-<p>To make use of wxWidgets, you currently need one of the following setups.</p>
-<p>(a) MS-Windows:</p>
+<p>wxWidgets first-tier "ports", ie implementations of wxWidgets API, are:</p>
 <ul>
-<li>A 32-bit or 64-bit PC running MS Windows. </li>
-<li>A Windows compiler: MS Visual C++ (embedded Visual C++ for wxWinCE port), Borland C++, Watcom C++, Cygwin, MinGW, Digital Mars C++. See <code>install.txt</code> for details about compiler version supported.</li>
+<li>wxMSW: This is the native port for Microsoft Windows systems (from Windows 95 up to Windows 8.1 with at least Windows XP being recommended), either 32 or 64 bits. The primarily supported compilers are Microsoft Visual C++ (versions 6 up to 2013 are supported, at least 2005 is recommended) and GNU g++ (either from the traditional MinGW, TDM-GCC or MinGW-w64 distributions).</li>
 </ul>
-<p>(b) Unix:</p>
 <ul>
-<li>Almost any C++ compiler, including GNU C++ and many Unix vendors compilers such as Sun CC, HP-UX aCC or SGI mipsPro. </li>
-<li>Almost any Unix workstation, and one of: GTK+ 2.6 or higher (GTK+ 1.2.10 may still be supported but wxGTK1 port is not maintained any longer and lacks many features of wxGTK2; GTK+ 3 is supported but is still experimental), Motif 1.2 or higher or Lesstif. If using the wxX11 port, no such widget set is required.</li>
+<li>wxGTK: wxGTK2 and wxGTK3 are the ports using GTK+ library version 2.x and 3.x respectively. They are very similar, with wxGTK2 being, however, more mature. Both ports work on almost any Unix system (Linux, FreeBSD, OpenBSD, NetBSD, Solaris, AIX, ...) and require GTK+ 2.6 or later or GTK+ 3.x. The primary supported compiler is GNU g++.</li>
 </ul>
-<p>(c) Mac OS/Mac OS X:</p>
 <ul>
-<li>A PowerPC or Intel Mac running Mac OS X 10.4 or higher </li>
-<li>The Apple Developer Tools (eg. GNU C++)</li>
+<li>wxOSX: wxOSX/Cocoa is the primary port for Apple computers, replacing the older and now deprecated wxOSX/Carbon port. wxOSX supports either PowerPC or Intel Macs running OS X 10.5 or higher and can be compiled in either 32 or 64 bits using Apple Developer Tools (both GNU g++ and clang are supported).</li>
 </ul>
-<p>Under all platforms it's recommended to have large amounts of free hard disk space. The exact amount needed depends on the port, compiler and build configurations but to give an example, a debug build of the library may take up to 500MB.</p>
+<p>Other platforms (iOS, Windows CE, OS/2), compilers (Borland C++ under Windows, Sun CC, HP-UX aCC, IBM xlC or SGI mipsPro under Unix) and ports (wxOSX/Carbon, wxGTK1, wxX11, wxDFB, wxPM...) are also supported but to a lesser extent. Please see the <a class="el" href="page_port.html">platform details page</a> for more information.</p>
+<p>There are no CPU speed requirements but the faster (and more) CPU(s) you have, the faster the library will compile. You do need to have enough RAM, especially under Windows platforms, to avoid running out of memory during link phase. Depending on the compiler used, you may need at least 4GB to be able to link. Under all platforms it's recommended to have large amounts of free hard disk space. The exact amount needed depends on the port, compiler and build configurations but at least 1GB and possibly more is required.</p>
 <h1><a class="anchor" id="page_introduction_where"></a>
-Availability and location of wxWidgets</h1>
-<p>wxWidgets is available by anonymous FTP and World Wide Web from <a href="ftp://biolpc22.york.ac.uk/pub">ftp://biolpc22.york.ac.uk/pub</a> and/or <a href="http://www.wxwidgets.org">http://www.wxwidgets.org</a>.</p>
-<p>You can also buy a CD-ROM using the form on the Web site.</p>
-<h1><a class="anchor" id="page_introduction_acknowledgements"></a>
-Acknowledgements</h1>
-<p>The following is the list of the core, active developers of wxWidgets which keep it running and have provided an invaluable, extensive and high-quality amount of changes over the many of years of wxWidgets' life:</p>
+Where to get wxWidgets and support for it</h1>
+<p>The download links can be found at <a href="http://www.wxwidgets.org">http://www.wxwidgets.org</a>. The primary download location is <a href="https://sourceforge.net/downloads/wxwindows/">https://sourceforge.net/downloads/wxwindows/</a> and there is also an FTP mirror at <a href="ftp://ftp.wxwidgets.org/pub/">ftp://ftp.wxwidgets.org/pub/</a>. Additionally, the latest version can always be retrieved from our version control system using either Subversion (<a href="http://svn.wxwidgets.org/svn/wx/wxWidgets/">http://svn.wxwidgets.org/svn/wx/wxWidgets/</a>) or Git (<a href="https://github.com/wxWidgets/wxWidgets">https://github.com/wxWidgets/wxWidgets</a>).</p>
+<p>wxWidgets documentation that you are reading is also available online at <a href="http://docs.wxwidgets.org/trunk/">http://docs.wxwidgets.org/trunk/</a> and please also visit our wiki at <a href="http://wiki.wxwidgets.org/">http://wiki.wxwidgets.org/</a> for user-contributed contents.</p>
+<p>And if you have any questions, you can join wxWidgets community using</p>
 <ul>
-<li>Julian Smart </li>
-<li>Vadim Zeitlin </li>
-<li>Robert Roebling </li>
-<li>Robin Dunn </li>
-<li>Stefan Csomor </li>
-<li>Vaclav Slavik </li>
-<li>Paul Cornett </li>
-<li>Wlodzimierz `ABX' Skiba </li>
-<li>Chris Elliott </li>
-<li>David Elliott </li>
-<li>Kevin Hock </li>
-<li>Stefan Neis </li>
-<li>Michael Wetherell</li>
+<li>Web-based <a href="http://forums.wxwidgets.org/">wxForum</a>.</li>
+<li><a href="http://www.wxwidgets.org/support/maillst2.htm">Mailing lists</a>.</li>
+<li><code>#wxwidgets</code> IRC channel.</li>
+<li>Or asking questions with <code>wxwidgets</code> tag on <a href="http://stackoverflow.com/">http://stackoverflow.com/</a> </li>
 </ul>
-<p>We would particularly like to thank the following peoples for their contributions to wxWidgets, and the many others who have been involved in the project over the years. Apologies for any unintentional omissions from this alphabetic list:</p>
-<p>Yiorgos Adamopoulos, Jamshid Afshar, Alejandro Aguilar-Sierra, AIAI, Patrick Albert, Karsten Ballueder, Mattia Barbon, Michael Bedward, Kai Bendorf, Yura Bidus, Keith Gary Boyce, Chris Breeze, Pete Britton, Ian Brown, C. Buckley, Marco Cavallini, Dmitri Chubraev, Robin Corbet, Cecil Coupe, Andrew Davison, Gilles Depeyrot, Neil Dudman, Hermann Dunkel, Jos van Eijndhoven, Tom Felici, Thomas Fettig, Matthew Flatt, Pasquale Foggia, Josep Fortiana, Todd Fries, Dominic Gallagher, Guillermo Rodriguez Garcia, Wolfram Gloger, Norbert Grotz, Stefan Gunter, Bill Hale, Patrick Halke, Stefan Hammes, Guillaume Helle, Harco de Hilster, Cord Hockemeyer, Markus Holzem, Olaf Klein, Leif Jensen, Bart Jourquin, Guilhem Lavaux, Ron Lee, Jan Lessner, Nicholas Liebmann, Torsten Liermann, Per Lindqvist, Francesco Montorsi, Thomas Runge, Tatu M&auml;nnist&ouml;, Scott Maxwell, Thomas Myers, Oliver Niedung, Ryan Norton, Hernan Otero, Ian Perrigo, Timothy Peters, Giordano Pezzoli, Harri Pasanen, Thomaso Paoletti, Garrett Potts, Marcel Rasche, Dino Scaringella, Jobst Schmalenbach, Arthur Seaton, Paul Shirley, Stein Somers, Petr Smilauer, Neil Smith, Kari Syst&auml;, George Tasker, Arthur Tetzlaff-Deas, Jonathan Tonberg, Jyrki Tuomi, Janos Vegh, Andrea Venturoli, David Webster, Otto Wyss, Xiaokun Zhu, Edward Zimmermann.</p>
-<p>Many thanks also to AIAI for being willing to release the original version of wxWidgets into the public domain, and to our patient partners.</p>
-<p>`Graphplace', the basis for the wxGraphLayout library, is copyright Dr. Jos T.J. van Eijndhoven of Eindhoven University of Technology. The code has been used in wxGraphLayout (not in wxWidgets anymore) with his permission.</p>
-<p>We also acknowledge the author of XFIG, the excellent Unix drawing tool, from the source of which we have borrowed some spline drawing code. His copyright is included below.</p>
-<p><em> XFig2.1 is copyright (c) 1985 by Supoj Sutanthavibul. Permission to use, copy, modify, distribute, and sell this software and its documentation for any purpose is hereby granted without fee, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation, and that the name of M.I.T. not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission. M.I.T. makes no representations about the suitability of this software for any purpose. It is provided ``as is'' without express or implied warranty. </em> </p>
 </div></div><!-- contents -->
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:12 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:30:58 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

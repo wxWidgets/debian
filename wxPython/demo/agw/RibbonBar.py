@@ -12,10 +12,10 @@ except:
 
 sys.path.append(os.path.split(dirName)[0])
 
-##try:
-from agw import ribbon as RB
-##except ImportError: # if it's not there locally, try the wxPython lib.
-##    import wx.lib.agw.ribbon as RB
+try:
+    from agw import ribbon as RB
+except ImportError: # if it's not there locally, try the wxPython lib.
+    import wx.lib.agw.ribbon as RB
 
 from wx.lib.embeddedimage import PyEmbeddedImage
 

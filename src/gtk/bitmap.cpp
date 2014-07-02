@@ -2,7 +2,6 @@
 // Name:        src/gtk/bitmap.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id$
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1048,39 +1047,54 @@ bool wxBitmap::SaveFile( const wxString &name, wxBitmapType type, const wxPalett
 {
     wxCHECK_MSG( IsOk(), false, wxT("invalid bitmap") );
 
-#if wxUSE_IMAGE
-    wxImage image = ConvertToImage();
-    if (image.IsOk() && image.SaveFile(name, type))
-        return true;
-#endif
     const char* type_name = NULL;
     switch (type)
     {
+        case wxBITMAP_TYPE_ANI:  type_name = "ani";  break;
         case wxBITMAP_TYPE_BMP:  type_name = "bmp";  break;
+        case wxBITMAP_TYPE_GIF:  type_name = "gif";  break;
         case wxBITMAP_TYPE_ICO:  type_name = "ico";  break;
         case wxBITMAP_TYPE_JPEG: type_name = "jpeg"; break;
+        case wxBITMAP_TYPE_PCX:  type_name = "pcx";  break;
         case wxBITMAP_TYPE_PNG:  type_name = "png";  break;
+        case wxBITMAP_TYPE_PNM:  type_name = "pnm";  break;
+        case wxBITMAP_TYPE_TGA:  type_name = "tga";  break;
+        case wxBITMAP_TYPE_TIFF: type_name = "tiff"; break;
+        case wxBITMAP_TYPE_XBM:  type_name = "xbm";  break;
+        case wxBITMAP_TYPE_XPM:  type_name = "xpm";  break;
         default: break;
     }
-    return type_name &&
-        gdk_pixbuf_save(GetPixbuf(), wxGTK_CONV_FN(name), type_name, NULL, NULL);
+    if (type_name &&
+        gdk_pixbuf_save(GetPixbuf(), wxGTK_CONV_FN(name), type_name, NULL, NULL))
+    {
+        return true;
+    }
+#if wxUSE_IMAGE
+    return ConvertToImage().SaveFile(name, type);
+#else
+    return false;
+#endif
 }
 
 bool wxBitmap::LoadFile( const wxString &name, wxBitmapType type )
 {
+    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_file(wxGTK_CONV_FN(name), NULL);
+    if (pixbuf)
+    {
+        *this = wxBitmap(pixbuf);
+        return true;
+    }
 #if wxUSE_IMAGE
     wxImage image;
     if (image.LoadFile(name, type) && image.IsOk())
-        *this = wxBitmap(image);
-    else
-#endif
     {
-        wxUnusedVar(type); // The type is detected automatically by GDK.
-
-        *this = wxBitmap(gdk_pixbuf_new_from_file(wxGTK_CONV_FN(name), NULL));
+        *this = wxBitmap(image);
+        return true;
     }
-
-    return IsOk();
+#else
+    wxUnusedVar(type);
+#endif
+    return false;
 }
 
 #if wxUSE_PALETTE

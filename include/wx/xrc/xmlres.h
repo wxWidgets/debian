@@ -3,7 +3,6 @@
 // Purpose:     XML resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id$
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -541,7 +540,7 @@ public:
                          wxWindow *windowToUse = NULL);
 
     // Gets a direction, complains if the value is invalid.
-    wxDirection GetDirection(const wxString& param, wxDirection dir = wxLEFT);
+    wxDirection GetDirection(const wxString& param, wxDirection dirDefault = wxLEFT);
 
     // Gets a bitmap.
     wxBitmap GetBitmap(const wxString& param = wxT("bitmap"),

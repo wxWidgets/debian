@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -60,14 +60,14 @@
 
 <p><code>#include &lt;wx/mimetype.h&gt;</code></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>This class allows the application to retrieve informations about all known MIME types from a system-specific location and the filename extensions to the MIME types and vice versa. </p>
+<div class="textblock"><p>This class allows the application to retrieve information about all known MIME types from a system-specific location and the filename extensions to the MIME types and vice versa. </p>
 <p>MIME stands for "Multipurpose Internet Mail Extensions" and was originally used in mail protocols. It's standardized by several RFCs.</p>
 <p>Under Windows, the MIME type information is queried from registry. Under Linux and Unix, it is queried from the XDG data directories.</p>
-<p>Currently, <a class="el" href="classwx_mime_types_manager.html" title="This class allows the application to retrieve informations about all known MIME types from a system-s...">wxMimeTypesManager</a> is limited to <em>reading</em> MIME type information.</p>
+<p>Currently, <a class="el" href="classwx_mime_types_manager.html" title="This class allows the application to retrieve information about all known MIME types from a system-sp...">wxMimeTypesManager</a> is limited to <em>reading</em> MIME type information.</p>
 <p>The application should not construct its own manager: it should use the object pointer <a class="el" href="mimetype_8h.html#a452e0da90a41ab30e7efe5c981d2522e" title="The global wxMimeTypesManager instance.">wxTheMimeTypesManager</a>. The functions <a class="el" href="classwx_mime_types_manager.html#a5c4bc90bfd1b4355d489bb7eb0ed4a6f" title="Gather information about the files with given MIME type and return the corresponding wxFileType objec...">GetFileTypeFromMimeType()</a> and <a class="el" href="classwx_mime_types_manager.html#a20a5bd44120549886911a6bb34a06feb" title="Gather information about the files with given extension and return the corresponding wxFileType objec...">GetFileTypeFromExtension()</a> return a <a class="el" href="classwx_file_type.html" title="This class holds information about a given file type.">wxFileType</a> object which may be further queried for file description, icon and other attributes.</p>
 <h1><a class="anchor" id="mimetypemanager_helpers"></a>
 Helper functions</h1>
-<p>All of these functions are static (i.e. don't need a <a class="el" href="classwx_mime_types_manager.html" title="This class allows the application to retrieve informations about all known MIME types from a system-s...">wxMimeTypesManager</a> object to call them) and provide some useful operations for string representations of MIME types. Their usage is recommended instead of directly working with MIME types using <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> functions.</p>
+<p>All of these functions are static (i.e. don't need a <a class="el" href="classwx_mime_types_manager.html" title="This class allows the application to retrieve information about all known MIME types from a system-sp...">wxMimeTypesManager</a> object to call them) and provide some useful operations for string representations of MIME types. Their usage is recommended instead of directly working with MIME types using <a class="el" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> functions.</p>
 <ul>
 <li><a class="el" href="classwx_mime_types_manager.html#ad97313fdca56a1896691c3f4b7a9898e" title="This function returns true if either the given mimeType is exactly the same as wildcard or if it has ...">wxMimeTypesManager::IsOfType()</a></li>
 </ul>
@@ -303,7 +303,7 @@ Static Public Member Functions</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:22 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:23 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

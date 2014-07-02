@@ -2,18 +2,18 @@
 // Name:        cat_classes.h
 // Purpose:     Classes-by-category page of the Doxygen manual
 // Author:      wxWidgets team
-// RCS-ID:      $Id: cat_classes.h 52468 2008-03-13 16:30:38Z FM $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 /**
 
-@page page_class_cat Summarized Class List by Category
+@page page_class_cat Overview of Available Classes
 
 @tableofcontents
 
 This page contains a summarized listing of classes, please see the
-@ref group_class page for a full listing.
+@ref group_class page for a full listing by category or the
+<a href="classes.html">full list of classes</a> in alphabetical order.
 
 
 

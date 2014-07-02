@@ -1,0 +1,14 @@
+(lp1
+S'--reswig'
+p2
+aS'--unicode'
+p3
+aS'--build_dir=build/wxbld'
+p4
+aS'--prefix=/opt/wx/2.9'
+p5
+aS'--cairo'
+p6
+aS'--debug'
+p7
+a.

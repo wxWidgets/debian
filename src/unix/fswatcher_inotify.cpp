@@ -3,7 +3,6 @@
 // Purpose:     inotify-based wxFileSystemWatcher implementation
 // Author:      Bartosz Bekier
 // Created:     2009-05-26
-// RCS-ID:      $Id$
 // Copyright:   (c) 2009 Bartosz Bekier <bartosz.bekier@gmail.com>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -257,6 +256,7 @@ protected:
                         event
                         (
                             wxFSW_EVENT_WARNING,
+                            wxFSW_WARNING_GENERAL,
                             wxString::Format
                             (
                              _("Unexpected event for \"%s\": no "
@@ -280,8 +280,19 @@ protected:
         // check out for error/warning condition
         if (flags & wxFSW_EVENT_WARNING || flags & wxFSW_EVENT_ERROR)
         {
-            wxString errMsg = GetErrorDescription(nativeFlags);
-            wxFileSystemWatcherEvent event(flags, errMsg);
+            wxFSWWarningType warningType;
+            if ( flags & wxFSW_EVENT_WARNING )
+            {
+                warningType = nativeFlags & IN_Q_OVERFLOW
+                                ? wxFSW_WARNING_OVERFLOW
+                                : wxFSW_WARNING_GENERAL;
+            }
+            else // It's an error, not a warning.
+            {
+                warningType = wxFSW_WARNING_NONE;
+            }
+
+            wxFileSystemWatcherEvent event(flags, warningType);
             SendEvent(event);
             return;
         }
@@ -294,6 +305,7 @@ protected:
                 event
                 (
                     wxFSW_EVENT_WARNING,
+                    wxFSW_WARNING_GENERAL,
                     wxString::Format
                     (
                         _("Invalid inotify event for \"%s\""),
@@ -627,22 +639,6 @@ protected:
         // never reached
         wxFAIL_MSG(wxString::Format("Unknown inotify event mask %u", flags));
         return -1;
-    }
-
-    /**
-     * Returns error description for specified inotify mask
-     */
-    static const wxString GetErrorDescription(int flag)
-    {
-        switch ( flag )
-        {
-        case IN_Q_OVERFLOW:
-            return _("Event queue overflowed");
-        }
-
-        // never reached
-        wxFAIL_MSG(wxString::Format("Unknown inotify event mask %u", flag));
-        return wxEmptyString;
     }
 
     wxFSWSourceHandler* m_handler;        // handler for inotify event source

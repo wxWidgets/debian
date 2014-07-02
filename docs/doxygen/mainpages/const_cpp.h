@@ -2,7 +2,6 @@
 // Name:        const_cpp.h
 // Purpose:     Preprocessor symbols
 // Author:      Vadim Zeitlin
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -37,7 +36,10 @@ using @ifdef_ and not @if_.
 @itemdef{__WXMAC__, old define, same as @c __WXOSX__}
 @itemdef{__WXMOTIF__, Motif}
 @itemdef{__WXMOTIF20__, Motif 2.0 or higher}
-@itemdef{__WXMSW__, GUI using <a href="http://en.wikipedia.org/wiki/Windows_User">Windows Controls</a>}
+@itemdef{__WXMSW__, GUI using <a href="http://en.wikipedia.org/wiki/Windows_User">Windows Controls</a>.
+Notice that for compatibility reasons, this symbol is defined for console
+applications under Windows as well, but it should only be used in the GUI code
+while @c __WINDOWS__ should be used for the platform tests.}
 @itemdef{__WXOSX__, OS X GUI using any Apple widget framework (Carbon, AppKit or UIKit)}
 @itemdef{__WXOSX_IPHONE__, OS X iPhone (UIKit)}
 @itemdef{__WXOSX_CARBON__, Mac OS X using Carbon}
@@ -148,7 +150,11 @@ compiler used.
 @itemdef{__EVC4__, Embedded Visual C++ 4 (can be only used for building wxWinCE)}
 @itemdef{__GNUG__, Gnu C++ on any platform, see also wxCHECK_GCC_VERSION}
 @itemdef{__GNUWIN32__, Gnu-Win32 compiler, see also wxCHECK_W32API_VERSION}
-@itemdef{__MINGW32__, MinGW}
+@itemdef{__INTELC__, Intel C++ compiler}
+@itemdef{__MINGW32__, Either MinGW32 or MinGW-w64 in either 32 or 64 bits}
+@itemdef{__MINGW32_TOOLCHAIN, MinGW32 only (32 bits only right now)}
+@itemdef{__MINGW64__, MinGW-w64 in 64 bit builds}
+@itemdef{__MINGW64_TOOLCHAIN__, MinGW-w64 in either 32 or 64 bit builds}
 @itemdef{__SUNCC__, Sun CC, see also wxCHECK_SUNCC_VERSION}
 @itemdef{__SYMANTECC__, Symantec C++}
 @itemdef{__VISAGECPP__, IBM Visual Age (OS/2)}
@@ -248,6 +254,12 @@ with the corresponding library. The following symbols are honoured:
 Notice that the base library is always included and the core is always included
 for the GUI applications (i.e. those which don't define @c wxUSE_GUI as 0).
 
+If the makefiles have been used to build the libraries from source and the @c CFG
+variable has been set to specify a different output path for that particular
+configuration of build then the @c wxCFG preprocessor symbol should be set in
+the project that uses wxWidgets to the same value as the @c CFG variable in
+order for the correct @c wx/setup.h file to automatically be included for that
+configuration.
 
 @section page_cppconst_miscellaneous Miscellaneous
 

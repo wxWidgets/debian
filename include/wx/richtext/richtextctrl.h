@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2005-09-30
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -573,6 +572,7 @@ public:
                   int type = wxRICHTEXT_TYPE_ANY);
 #endif
 
+#if wxUSE_FFILE && wxUSE_STREAMS
     /**
         Helper function for LoadFile(). Loads content into the control's buffer using the given type.
 
@@ -582,6 +582,7 @@ public:
         This function looks for a suitable wxRichTextFileHandler object.
     */
     virtual bool DoLoadFile(const wxString& file, int fileType);
+#endif // wxUSE_FFILE && wxUSE_STREAMS
 
 #ifdef DOXYGEN
     /**
@@ -596,6 +597,7 @@ public:
                   int type = wxRICHTEXT_TYPE_ANY);
 #endif
 
+#if wxUSE_FFILE && wxUSE_STREAMS
     /**
         Helper function for SaveFile(). Saves the buffer content using the given type.
 
@@ -606,6 +608,7 @@ public:
     */
     virtual bool DoSaveFile(const wxString& file = wxEmptyString,
                             int fileType = wxRICHTEXT_TYPE_ANY);
+#endif // wxUSE_FFILE && wxUSE_STREAMS
 
     /**
         Sets flags that change the behaviour of loading or saving.
@@ -1538,7 +1541,7 @@ public:
     */
     virtual bool HasCharacterAttributes(const wxRichTextRange& range, const wxRichTextAttr& style) const
     {
-        return GetBuffer().HasCharacterAttributes(range.ToInternal(), style);
+        return GetFocusObject()->HasCharacterAttributes(range.ToInternal(), style);
     }
 
     /**
@@ -1549,7 +1552,7 @@ public:
     */
     virtual bool HasParagraphAttributes(const wxRichTextRange& range, const wxRichTextAttr& style) const
     {
-        return GetBuffer().HasParagraphAttributes(range.ToInternal(), style);
+        return GetFocusObject()->HasParagraphAttributes(range.ToInternal(), style);
     }
 
     /**
@@ -2371,6 +2374,11 @@ protected:
     @event{EVT_RICHTEXT_CHARACTER(id, func)}
         Process a @c wxEVT_RICHTEXT_CHARACTER event, generated when the user
         presses a character key. Valid event functions: GetFlags, GetPosition, GetCharacter.
+    @event{EVT_RICHTEXT_CONSUMING_CHARACTER(id, func)}
+        Process a @c wxEVT_RICHTEXT_CONSUMING_CHARACTER event, generated when the user
+        presses a character key but before it is processed and inserted into the control.
+        Call Veto to prevent normal processing. Valid event functions: GetFlags, GetPosition,
+        GetCharacter, Veto.
     @event{EVT_RICHTEXT_DELETE(id, func)}
         Process a @c wxEVT_RICHTEXT_DELETE event, generated when the user
         presses the backspace or delete key. Valid event functions: GetFlags, GetPosition.
@@ -2560,6 +2568,7 @@ wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_RICHTEXT, wxEVT_RICHTEXT_MIDDLE_CLICK, wxR
 wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_RICHTEXT, wxEVT_RICHTEXT_LEFT_DCLICK, wxRichTextEvent );
 wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_RICHTEXT, wxEVT_RICHTEXT_RETURN, wxRichTextEvent );
 wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_RICHTEXT, wxEVT_RICHTEXT_CHARACTER, wxRichTextEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_RICHTEXT, wxEVT_RICHTEXT_CONSUMING_CHARACTER, wxRichTextEvent );
 wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_RICHTEXT, wxEVT_RICHTEXT_DELETE, wxRichTextEvent );
 
 wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_RICHTEXT, wxEVT_RICHTEXT_STYLESHEET_CHANGING, wxRichTextEvent );
@@ -2586,6 +2595,7 @@ typedef void (wxEvtHandler::*wxRichTextEventFunction)(wxRichTextEvent&);
 #define EVT_RICHTEXT_LEFT_DCLICK(id, fn) wxDECLARE_EVENT_TABLE_ENTRY( wxEVT_RICHTEXT_LEFT_DCLICK, id, -1, wxRichTextEventHandler( fn ), NULL ),
 #define EVT_RICHTEXT_RETURN(id, fn) wxDECLARE_EVENT_TABLE_ENTRY( wxEVT_RICHTEXT_RETURN, id, -1, wxRichTextEventHandler( fn ), NULL ),
 #define EVT_RICHTEXT_CHARACTER(id, fn) wxDECLARE_EVENT_TABLE_ENTRY( wxEVT_RICHTEXT_CHARACTER, id, -1, wxRichTextEventHandler( fn ), NULL ),
+#define EVT_RICHTEXT_CONSUMING_CHARACTER(id, fn) wxDECLARE_EVENT_TABLE_ENTRY( wxEVT_RICHTEXT_CONSUMING_CHARACTER, id, -1, wxRichTextEventHandler( fn ), NULL ),
 #define EVT_RICHTEXT_DELETE(id, fn) wxDECLARE_EVENT_TABLE_ENTRY( wxEVT_RICHTEXT_DELETE, id, -1, wxRichTextEventHandler( fn ), NULL ),
 
 #define EVT_RICHTEXT_STYLESHEET_CHANGING(id, fn) wxDECLARE_EVENT_TABLE_ENTRY( wxEVT_RICHTEXT_STYLESHEET_CHANGING, id, -1, wxRichTextEventHandler( fn ), NULL ),

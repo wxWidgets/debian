@@ -1,18 +1,11 @@
 '''
 
-:copyright: Copyright 2006-2009 by Oliver Schoenborn, all rights reserved.
+:copyright: Copyright since 2006 by Oliver Schoenborn, all rights reserved.
 :license: BSD, see LICENSE.txt for details.
 
 '''
 
 from pubsub import pub
-
-
-def init():
-    '''Do something that changes topic tree so exportTopicTree interesting'''
-    
-    topic = pub.getOrCreateTopic('topic_2.subtopic_21')
-    topic.setDescription( 'description for subtopic 21')
 
 
 def doSomething1():

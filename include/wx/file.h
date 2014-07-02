@@ -5,7 +5,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id$
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -66,7 +65,7 @@ public:
 
   // assign an existing file descriptor and get it back from wxFile object
   void Attach(int lfd) { Close(); m_fd = lfd; m_lasterror = 0; }
-  void Detach()       { m_fd = fd_invalid;  }
+  int  Detach() { int fdOld = m_fd; m_fd = fd_invalid; return fdOld; }
   int  fd() const { return m_fd; }
 
   // read/write (unbuffered)

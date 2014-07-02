@@ -43,7 +43,7 @@
 
 #include <wx/sharedptr.h>
 #include <wx/vector.h>
-
+ 
 
 
 enum wxWebViewZoom
@@ -96,6 +96,8 @@ wxString wxWebViewBackendWebKit("");
 wxString wxWebViewDefaultURLStr("");
 wxString wxWebViewNameStr("");
 
+class wxWebView;
+
 inline void _RaiseError()
 {
     wxPyRaiseNotImplementedMsg("wx.html2 is not available on this platform.");
@@ -146,10 +148,10 @@ class wxWebView : public wxControl
 {
 public:
     virtual bool Create(wxWindow*, wxWindowID, const wxString&, const wxPoint&,
-                        const wxSize&, long style, const wxString&) { _RaiseError(); return false; }
-    static wxWebView* New(wxWebViewBackend) { _RaiseError(); return NULL; }
+                        const wxSize&, long, const wxString&) { _RaiseError(); return false; }
+    static wxWebView* New(const wxString&) { _RaiseError(); return NULL; }
     static wxWebView* New(wxWindow*, wxWindowID, const wxString&, const wxPoint& ,
-                          const wxSize& , const wxString&, long style,
+                          const wxSize& , const wxString&, long,
                           const wxString&) { _RaiseError(); return NULL; }
 
     virtual wxString GetCurrentTitle() const { return wxEmptyString; }
@@ -197,6 +199,8 @@ public:
     virtual wxWebViewZoomType GetZoomType() const { return wxWEBVIEW_ZOOM_TYPE_LAYOUT; }
     virtual void SetZoom(wxWebViewZoom zoom) {}
     virtual void SetZoomType(wxWebViewZoomType zoomType) {}
+    virtual void* GetNativeBackend() const { return NULL; }
+    virtual long Find(const wxString& text, int flags = wxWEBVIEW_FIND_DEFAULT) { return 0; }
 };
 
 
@@ -206,11 +210,19 @@ class wxWebViewEvent : public wxNotifyEvent
 public:
     wxWebViewEvent(wxEventType type, int id, const wxString href,
                    const wxString target) { _RaiseError(); }
-    const wxString& GetTarget() const { return wxEmptyString; }
-    const wxString& GetURL() const { return wxEmptyString; }
+    const wxString& GetTarget() const { return m_empty; }
+    const wxString& GetURL() const { return m_empty; }
+private:
+    wxString m_empty;
 };
 
 
+wxEventType wxEVT_WEBVIEW_NAVIGATING;
+wxEventType wxEVT_WEBVIEW_NAVIGATED;
+wxEventType wxEVT_WEBVIEW_LOADED;
+wxEventType wxEVT_WEBVIEW_ERROR;
+wxEventType wxEVT_WEBVIEW_NEWWINDOW;
+wxEventType wxEVT_WEBVIEW_TITLE_CHANGED;
 
 wxEventType wxEVT_COMMAND_WEBVIEW_NAVIGATING;
 wxEventType wxEVT_COMMAND_WEBVIEW_NAVIGATED;
@@ -681,6 +693,9 @@ public:
                         support all zoom types.
     */
     virtual void SetZoomType(wxWebViewZoomType zoomType);
+
+    virtual void* GetNativeBackend() const;
+    virtual long Find(const wxString& text, int flags = wxWEBVIEW_FIND_DEFAULT);
 };
 
 
@@ -707,6 +722,12 @@ public:
 };
 
 
+%constant wxEventType wxEVT_WEBVIEW_NAVIGATING;
+%constant wxEventType wxEVT_WEBVIEW_NAVIGATED;
+%constant wxEventType wxEVT_WEBVIEW_LOADED;
+%constant wxEventType wxEVT_WEBVIEW_ERROR;
+%constant wxEventType wxEVT_WEBVIEW_NEWWINDOW;
+%constant wxEventType wxEVT_WEBVIEW_TITLE_CHANGED;
 
 %constant wxEventType wxEVT_COMMAND_WEBVIEW_NAVIGATING;
 %constant wxEventType wxEVT_COMMAND_WEBVIEW_NAVIGATED;
@@ -716,12 +737,12 @@ public:
 %constant wxEventType wxEVT_COMMAND_WEBVIEW_TITLE_CHANGED;
 
 %pythoncode {
-    EVT_WEBVIEW_NAVIGATING = wx.PyEventBinder( wxEVT_COMMAND_WEBVIEW_NAVIGATING, 1 )
-    EVT_WEBVIEW_NAVIGATED = wx.PyEventBinder( wxEVT_COMMAND_WEBVIEW_NAVIGATED, 1 )
-    EVT_WEBVIEW_LOADED = wx.PyEventBinder( wxEVT_COMMAND_WEBVIEW_LOADED, 1 )
-    EVT_WEBVIEW_ERROR = wx.PyEventBinder( wxEVT_COMMAND_WEBVIEW_ERROR, 1 )
-    EVT_WEBVIEW_NEWWINDOW = wx.PyEventBinder( wxEVT_COMMAND_WEBVIEW_NEWWINDOW, 1 )
-    EVT_WEBVIEW_TITLE_CHANGED = wx.PyEventBinder( wxEVT_COMMAND_WEBVIEW_TITLE_CHANGED, 1 )
+    EVT_WEBVIEW_NAVIGATING = wx.PyEventBinder( wxEVT_WEBVIEW_NAVIGATING, 1 )
+    EVT_WEBVIEW_NAVIGATED = wx.PyEventBinder( wxEVT_WEBVIEW_NAVIGATED, 1 )
+    EVT_WEBVIEW_LOADED = wx.PyEventBinder( wxEVT_WEBVIEW_LOADED, 1 )
+    EVT_WEBVIEW_ERROR = wx.PyEventBinder( wxEVT_WEBVIEW_ERROR, 1 )
+    EVT_WEBVIEW_NEWWINDOW = wx.PyEventBinder( wxEVT_WEBVIEW_NEWWINDOW, 1 )
+    EVT_WEBVIEW_TITLE_CHANGED = wx.PyEventBinder( wxEVT_WEBVIEW_TITLE_CHANGED, 1 )
 }
 
 //---------------------------------------------------------------------------

@@ -3,7 +3,6 @@
 // Purpose:     wxTextEntry implementation for wxMSW
 // Author:      Vadim Zeitlin
 // Created:     2007-09-26
-// RCS-ID:      $Id$
 // Copyright:   (c) 2007 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,8 +32,6 @@
 #include "wx/textentry.h"
 #include "wx/textcompleter.h"
 #include "wx/dynlib.h"
-
-#include <initguid.h>
 
 #include "wx/msw/private.h"
 
@@ -78,6 +75,11 @@
 #ifndef SHACF_FILESYS_DIRS
     #define SHACF_FILESYS_DIRS 0x00000020
 #endif
+
+// This must be the last header included to only affect the DEFINE_GUID()
+// occurrences below but not any GUIDs declared in the standard files included
+// above.
+#include <initguid.h>
 
 namespace
 {

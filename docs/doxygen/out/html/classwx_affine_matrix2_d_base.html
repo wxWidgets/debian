@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -96,7 +96,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aaad31059aa13923b36524a4bda86ff62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if this is the identity matrix.  <a href="#aaad31059aa13923b36524a4bda86ff62"></a><br/></td></tr>
 <tr class="separator:aaad31059aa13923b36524a4bda86ff62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63905eb441cf1b971a5d6a85f8395710"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_affine_matrix2_d_base.html#a63905eb441cf1b971a5d6a85f8395710">operator!=</a> (const <a class="el" href="classwx_affine_matrix2_d_base.html">wxAffineMatrix2DBase</a> &amp;t) const </td></tr>
-<tr class="memdesc:a63905eb441cf1b971a5d6a85f8395710"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that this matrix differs from .  <a href="#a63905eb441cf1b971a5d6a85f8395710"></a><br/></td></tr>
+<tr class="memdesc:a63905eb441cf1b971a5d6a85f8395710"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that this matrix differs from <em>t</em>.  <a href="#a63905eb441cf1b971a5d6a85f8395710"></a><br/></td></tr>
 <tr class="separator:a63905eb441cf1b971a5d6a85f8395710"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a2ab636aeff6db99cb3b534b0d9ea3a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_affine_matrix2_d_base.html#a5a2ab636aeff6db99cb3b534b0d9ea3a">Translate</a> (<a class="el" href="defs_8h.html#a75a450a943d1f217d7cf24f2b9eeed2e">wxDouble</a> dx, <a class="el" href="defs_8h.html#a75a450a943d1f217d7cf24f2b9eeed2e">wxDouble</a> dy)=0</td></tr>
 <tr class="memdesc:a5a2ab636aeff6db99cb3b534b0d9ea3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add the translation to this matrix.  <a href="#a5a2ab636aeff6db99cb3b534b0d9ea3a"></a><br/></td></tr>
@@ -110,22 +110,22 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab6c40a633a3bd3ad7919aaf5080b94d7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_affine_matrix2_d_base.html#ab6c40a633a3bd3ad7919aaf5080b94d7">Mirror</a> (int direction=<a class="el" href="defs_8h.html#a1e6994f40bd9cb140e292afb165af971ab96154c324ed87cc17e9b227f9248c77">wxHORIZONTAL</a>)</td></tr>
 <tr class="memdesc:ab6c40a633a3bd3ad7919aaf5080b94d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add mirroring to this matrix.  <a href="#ab6c40a633a3bd3ad7919aaf5080b94d7"></a><br/></td></tr>
 <tr class="separator:ab6c40a633a3bd3ad7919aaf5080b94d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67afac0d3527416e2a40a1075122384c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_point2_d_double.html">wxPoint2DDouble</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_affine_matrix2_d_base.html#a67afac0d3527416e2a40a1075122384c">TransformPoint</a> (const <a class="el" href="classwx_point2_d_double.html">wxPoint2DDouble</a> &amp;src) const </td></tr>
-<tr class="memdesc:a67afac0d3527416e2a40a1075122384c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies this matrix to the point.  <a href="#a67afac0d3527416e2a40a1075122384c"></a><br/></td></tr>
-<tr class="separator:a67afac0d3527416e2a40a1075122384c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00b4abff8fe77431fc4ed2a9523660c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_point2_d_double.html">wxPoint2DDouble</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_affine_matrix2_d_base.html#a00b4abff8fe77431fc4ed2a9523660c9">TransformPoint</a> (const <a class="el" href="classwx_point2_d_double.html">wxPoint2DDouble</a> &amp;p) const </td></tr>
+<tr class="memdesc:a00b4abff8fe77431fc4ed2a9523660c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies this matrix to the point.  <a href="#a00b4abff8fe77431fc4ed2a9523660c9"></a><br/></td></tr>
+<tr class="separator:a00b4abff8fe77431fc4ed2a9523660c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace16a72f1378d410936002f40c0a4841"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_affine_matrix2_d_base.html#ace16a72f1378d410936002f40c0a4841">TransformPoint</a> (<a class="el" href="defs_8h.html#a75a450a943d1f217d7cf24f2b9eeed2e">wxDouble</a> *x, <a class="el" href="defs_8h.html#a75a450a943d1f217d7cf24f2b9eeed2e">wxDouble</a> *y) const </td></tr>
 <tr class="separator:ace16a72f1378d410936002f40c0a4841"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af60187201628657ee02ab015ad11b625"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_point2_d_double.html">wxPoint2DDouble</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_affine_matrix2_d_base.html#af60187201628657ee02ab015ad11b625">TransformDistance</a> (const <a class="el" href="classwx_point2_d_double.html">wxPoint2DDouble</a> &amp;src) const </td></tr>
-<tr class="memdesc:af60187201628657ee02ab015ad11b625"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies the linear part of this matrix, i.e. without translation.  <a href="#af60187201628657ee02ab015ad11b625"></a><br/></td></tr>
-<tr class="separator:af60187201628657ee02ab015ad11b625"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6503debd3b857e360d53a375bc7e8429"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_point2_d_double.html">wxPoint2DDouble</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_affine_matrix2_d_base.html#a6503debd3b857e360d53a375bc7e8429">TransformDistance</a> (const <a class="el" href="classwx_point2_d_double.html">wxPoint2DDouble</a> &amp;p) const </td></tr>
+<tr class="memdesc:a6503debd3b857e360d53a375bc7e8429"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies the linear part of this matrix, i.e. without translation.  <a href="#a6503debd3b857e360d53a375bc7e8429"></a><br/></td></tr>
+<tr class="separator:a6503debd3b857e360d53a375bc7e8429"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bd444b69b9f13469793924b66df3bd4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_affine_matrix2_d_base.html#a1bd444b69b9f13469793924b66df3bd4">TransformDistance</a> (<a class="el" href="defs_8h.html#a75a450a943d1f217d7cf24f2b9eeed2e">wxDouble</a> *dx, <a class="el" href="defs_8h.html#a75a450a943d1f217d7cf24f2b9eeed2e">wxDouble</a> *dy) const </td></tr>
 <tr class="separator:a1bd444b69b9f13469793924b66df3bd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader"></div></td></tr>
 <tr class="memitem:a6dd44b7e4efc2263b9579a3d0baa0a3a"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_affine_matrix2_d_base.html#a6dd44b7e4efc2263b9579a3d0baa0a3a">IsEqual</a> (const <a class="el" href="classwx_affine_matrix2_d_base.html">wxAffineMatrix2DBase</a> &amp;t) const =0</td></tr>
-<tr class="memdesc:a6dd44b7e4efc2263b9579a3d0baa0a3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that this matrix is identical with .  <a href="#a6dd44b7e4efc2263b9579a3d0baa0a3a"></a><br/></td></tr>
+<tr class="memdesc:a6dd44b7e4efc2263b9579a3d0baa0a3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that this matrix is identical with <em>t</em>.  <a href="#a6dd44b7e4efc2263b9579a3d0baa0a3a"></a><br/></td></tr>
 <tr class="separator:a6dd44b7e4efc2263b9579a3d0baa0a3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ed1baac03f6fbb0c2560dc4a353b808"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_affine_matrix2_d_base.html#a5ed1baac03f6fbb0c2560dc4a353b808">operator==</a> (const <a class="el" href="classwx_affine_matrix2_d_base.html">wxAffineMatrix2DBase</a> &amp;t) const </td></tr>
-<tr class="memdesc:a5ed1baac03f6fbb0c2560dc4a353b808"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that this matrix is identical with .  <a href="#a5ed1baac03f6fbb0c2560dc4a353b808"></a><br/></td></tr>
+<tr class="memdesc:a5ed1baac03f6fbb0c2560dc4a353b808"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that this matrix is identical with <em>t</em>.  <a href="#a5ed1baac03f6fbb0c2560dc4a353b808"></a><br/></td></tr>
 <tr class="separator:a5ed1baac03f6fbb0c2560dc4a353b808"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -307,7 +307,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Check that this matrix is identical with . </p>
+<p>Check that this matrix is identical with <em>t</em>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">t</td><td>The matrix compared with this. </td></tr>
@@ -382,7 +382,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Check that this matrix differs from . </p>
+<p>Check that this matrix differs from <em>t</em>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">t</td><td>The matrix compared with this. </td></tr>
@@ -406,7 +406,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Check that this matrix is identical with . </p>
+<p>Check that this matrix is identical with <em>t</em>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">t</td><td>The matrix compared with this. </td></tr>
@@ -540,7 +540,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="af60187201628657ee02ab015ad11b625"></a>
+<a class="anchor" id="a6503debd3b857e360d53a375bc7e8429"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -548,7 +548,7 @@ Public Member Functions</h2></td></tr>
           <td class="memname"><a class="el" href="classwx_point2_d_double.html">wxPoint2DDouble</a> wxAffineMatrix2DBase::TransformDistance </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classwx_point2_d_double.html">wxPoint2DDouble</a> &amp;&#160;</td>
-          <td class="paramname"><em>src</em></td><td>)</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -591,7 +591,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a67afac0d3527416e2a40a1075122384c"></a>
+<a class="anchor" id="a00b4abff8fe77431fc4ed2a9523660c9"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -599,7 +599,7 @@ Public Member Functions</h2></td></tr>
           <td class="memname"><a class="el" href="classwx_point2_d_double.html">wxPoint2DDouble</a> wxAffineMatrix2DBase::TransformPoint </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classwx_point2_d_double.html">wxPoint2DDouble</a> &amp;&#160;</td>
-          <td class="paramname"><em>src</em></td><td>)</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -691,7 +691,7 @@ Public Member Functions</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:14 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:09 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

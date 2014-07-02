@@ -6,7 +6,6 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,12 +19,6 @@
     #import <Cocoa/Cocoa.h>
 #endif
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
-// available in 10.4 but not in the headers
-enum {
-    kEventMouseScroll             = 11
-};
-#endif
 //
 // shared between Cocoa and Carbon
 //
@@ -161,6 +154,7 @@ public :
     virtual void                cursorUpdate(WX_NSEvent event, WXWidget slf, void* _cmd);
     virtual void                keyEvent(WX_NSEvent event, WXWidget slf, void* _cmd);
     virtual void                insertText(NSString* text, WXWidget slf, void* _cmd);
+    virtual void                doCommandBySelector(void* sel, WXWidget slf, void* _cmd);
     virtual bool                performKeyEquivalent(WX_NSEvent event, WXWidget slf, void* _cmd);
     virtual bool                acceptsFirstResponder(WXWidget slf, void* _cmd);
     virtual bool                becomeFirstResponder(WXWidget slf, void* _cmd);

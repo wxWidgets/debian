@@ -2,7 +2,6 @@
 // Name:        app.h
 // Purpose:     interface of wxApp
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -445,7 +444,7 @@ public:
 
 
     /**
-        @name Application informations
+        @name Application information
     */
     //@{
 

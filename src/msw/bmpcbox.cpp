@@ -3,7 +3,6 @@
 // Purpose:     wxBitmapComboBox
 // Author:      Jaakko Salli
 // Created:     2008-04-06
-// RCS-ID:      $Id$
 // Copyright:   (c) 2008 Jaakko Salli
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -176,7 +175,7 @@ void wxBitmapComboBox::RecreateControl()
         if ( !objectClientData.empty() )
             SetClientObject(i, objectClientData[i]);
         else if ( !voidClientData.empty() )
-            SetClientData(i, objectClientData[i]);
+            SetClientData(i, voidClientData[i]);
     }
 
     // and make sure it has the same attributes as before

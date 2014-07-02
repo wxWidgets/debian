@@ -2,7 +2,6 @@
 // Name:        src/gtk/dialog.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id$
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,9 +34,7 @@ wxDEFINE_TIED_SCOPED_PTR_TYPE(wxGUIEventLoop)
 void wxDialog::Init()
 {
     m_modalLoop = NULL;
-    m_returnCode = 0;
     m_modalShowing = false;
-    m_themeEnabled = true;
 }
 
 wxDialog::wxDialog( wxWindow *parent,

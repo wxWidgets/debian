@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -1770,7 +1770,7 @@ If the specified encoding isn't available, no font is created (see also <a class
 <tr>
 <td>wxMSW </td><td><code>[light|bold] [italic] [FACE-NAME] [POINTSIZE] [ENCODING]</code> </td><td>Tahoma 10 WINDOWS-1252 </td></tr>
 </table>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000021">Todo:</a></b></dt><dd>add an example for wxMac</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000020">Todo:</a></b></dt><dd>add an example for wxMac</dd></dl>
 <p>For more detailed information about the allowed syntaxes you can look at the documentation of the native API used for font-rendering (e.g. <code>pango_font_description_from_string</code> under GTK, although notice that it doesn't support the "underlined" and "strikethrough" attributes and so those are handled by wxWidgets itself).</p>
 <p>Note that unlike <a class="el" href="classwx_font.html#aaef8dc8fc6c8b81246af000a201b52c5" title="Creates the font corresponding to the given native font description string which must have been previ...">SetNativeFontInfo()</a>, this function doesn't always restore all attributes of the <a class="el" href="classwx_font.html" title="A font is an object which determines the appearance of text.">wxFont</a> object under all platforms; e.g. on wxMSW the font family is not restored (because GetNativeFontInfoUserDesc doesn't return it on wxMSW). If you want to serialize/deserialize a font in string form, you should use <a class="el" href="classwx_font.html#ac78bab66824b38f42669cfc0b4dc7c9f" title="Returns the platform-dependent string completely describing this font.">GetNativeFontInfoDesc()</a> and <a class="el" href="classwx_font.html#aaef8dc8fc6c8b81246af000a201b52c5" title="Creates the font corresponding to the given native font description string which must have been previ...">SetNativeFontInfo()</a> instead.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="classwx_font.html#aaef8dc8fc6c8b81246af000a201b52c5" title="Creates the font corresponding to the given native font description string which must have been previ...">SetNativeFontInfo()</a> </dd></dl>
@@ -2088,7 +2088,7 @@ If the specified encoding isn't available, no font is created (see also <a class
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:18 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:16 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

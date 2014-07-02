@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2005-09-30
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -205,8 +204,9 @@ enum wxTextAttrUnits
     wxTEXT_ATTR_UNITS_PIXELS                = 0x0002,
     wxTEXT_ATTR_UNITS_PERCENTAGE            = 0x0004,
     wxTEXT_ATTR_UNITS_POINTS                = 0x0008,
+    wxTEXT_ATTR_UNITS_HUNDREDTHS_POINT      = 0x0100,
 
-    wxTEXT_ATTR_UNITS_MASK                  = 0x000F
+    wxTEXT_ATTR_UNITS_MASK                  = 0x010F
 };
 
 /**
@@ -794,6 +794,11 @@ public:
     bool IsValid() const { return HasWidth(); }
 
     /**
+        True if the border has no attributes set.
+    */
+    bool IsDefault() const { return (m_flags == 0); }
+
+    /**
         Set the valid flag for this border.
     */
     void MakeValid() { m_borderWidth.SetValid(true); }
@@ -906,7 +911,7 @@ public:
     void CollectCommonAttributes(const wxTextAttrBorders& attr, wxTextAttrBorders& clashingAttr, wxTextAttrBorders& absentAttr);
 
     /**
-        Returns @true if all borders are valid.
+        Returns @true if at least one border is valid.
     */
     bool IsValid() const { return m_left.IsValid() || m_right.IsValid() || m_top.IsValid() || m_bottom.IsValid(); }
 
@@ -1075,12 +1080,12 @@ public:
     bool HasClearMode() const { return HasFlag(wxTEXT_BOX_ATTR_CLEAR); }
 
     /**
-        Returns the collapse mode - whether to collapse borders. Currently unimplemented.
+        Returns the collapse mode - whether to collapse borders.
     */
     wxTextBoxAttrCollapseMode GetCollapseBorders() const { return m_collapseMode; }
 
     /**
-        Sets the collapse mode - whether to collapse borders. Currently unimplemented.
+        Sets the collapse mode - whether to collapse borders.
     */
     void SetCollapseBorders(wxTextBoxAttrCollapseMode collapse) { m_collapseMode = collapse; m_flags |= wxTEXT_BOX_ATTR_COLLAPSE_BORDERS; }
 
@@ -1574,6 +1579,11 @@ public:
         Sets a property by name and string value.
     */
     void SetProperty(const wxString& name, const wxString& value);
+
+    /**
+        Sets a property by name and wxChar* value.
+    */
+    void SetProperty(const wxString& name, const wxChar* value);
 
     /**
         Sets  property by name and long integer value.
@@ -2085,7 +2095,7 @@ public:
 
     /**
         Lay the item out at the specified position with the given size constraint.
-        Layout must set the cached size. @rect is the available space for the object,
+        Layout must set the cached size. @a rect is the available space for the object,
         and @a parentRect is the container that is used to determine a relative size
         or position (for example if a text box must be 50% of the parent text box).
     */
@@ -2458,6 +2468,11 @@ public:
                     const wxRect& availableParentSpace, const wxRect& availableContainerSpace, int style);
 
     /**
+        Adjusts the attributes for virtual attribute provision, collapsed borders, etc.
+    */
+    virtual bool AdjustAttributes(wxRichTextAttr& attr, wxRichTextDrawingContext& context);
+
+    /**
         Sets the object's attributes.
     */
     void SetAttributes(const wxRichTextAttr& attr);
@@ -2582,7 +2597,7 @@ public:
         Draws the borders and background for the given rectangle and attributes.
         @a boxRect is taken to be the outer margin box, not the box around the content.
     */
-    static bool DrawBoxAttributes(wxDC& dc, wxRichTextBuffer* buffer, const wxRichTextAttr& attr, const wxRect& boxRect, int flags = 0);
+    static bool DrawBoxAttributes(wxDC& dc, wxRichTextBuffer* buffer, const wxRichTextAttr& attr, const wxRect& boxRect, int flags = 0, wxRichTextObject* obj = NULL);
 
     /**
         Draws a border.
@@ -2767,7 +2782,7 @@ protected:
 };
 
 /**
-    @class wxRichTextParagraphBox
+    @class wxRichTextParagraphLayoutBox
 
     This class knows how to lay out paragraphs.
 
@@ -3212,6 +3227,11 @@ public:
     virtual bool SetProperties(const wxRichTextRange& range, const wxRichTextProperties& properties, int flags = wxRICHTEXT_SETPROPERTIES_WITH_UNDO);
 
     /**
+        Sets with undo the properties for the given object.
+    */
+    virtual bool SetObjectPropertiesWithUndo(wxRichTextObject& obj, const wxRichTextProperties& properties, wxRichTextObject* objToSet = NULL);
+
+    /**
         Test if this whole range has character attributes of the specified kind. If any
         of the attributes are different within the range, the test fails. You
         can use this to implement, for example, bold button updating. style must have
@@ -3564,7 +3584,7 @@ public:
 
     /**
         Lay the item out at the specified position with the given size constraint.
-        Layout must set the cached size. @rect is the available space for the object,
+        Layout must set the cached size. @a rect is the available space for the object,
         and @a parentRect is the container that is used to determine a relative size
         or position (for example if a text box must be 50% of the parent text box).
     */
@@ -3665,7 +3685,7 @@ public:
     /**
         Constructor, creating a field type definition with a text label.
 
-        @param parent
+        @param name
             The name of the type definition. This must be unique, and is the type
             name used when adding a field to a control.
         @param label
@@ -3681,10 +3701,10 @@ public:
     /**
         Constructor, creating a field type definition with a bitmap label.
 
-        @param parent
+        @param name
             The name of the type definition. This must be unique, and is the type
             name used when adding a field to a control.
-        @param label
+        @param bitmap
             The bitmap label to be shown on the field.
         @param displayStyle
             The display style: one of wxRICHTEXT_FIELD_STYLE_RECTANGLE,
@@ -3729,7 +3749,7 @@ public:
 
     /**
         Lay the item out at the specified position with the given size constraint.
-        Layout must set the cached size. @rect is the available space for the object,
+        Layout must set the cached size. @a rect is the available space for the object,
         and @a parentRect is the container that is used to determine a relative size
         or position (for example if a text box must be 50% of the parent text box).
     */
@@ -5379,7 +5399,7 @@ protected:
     A cell's appearance can be changed via its associated wxRichTextAttr; for example
     its size altered or its background colour set. It also has the properties of
     column- and row-span. By default these are 1, meaning that the cell only spans
-    itself, but can be increased using the SetColspan() and SetRowspan() methods.
+    itself, but can be increased using the SetColSpan() and SetRowSpan() methods.
     Attempts to set too large a span are silently truncated to the table edge.
  */
 
@@ -5404,6 +5424,8 @@ public:
 
     virtual bool Draw(wxDC& dc, wxRichTextDrawingContext& context, const wxRichTextRange& range, const wxRichTextSelection& selection, const wxRect& rect, int descent, int style);
 
+    virtual int HitTest(wxDC& dc, wxRichTextDrawingContext& context, const wxPoint& pt, long& textPosition, wxRichTextObject** obj, wxRichTextObject** contextObj, int flags = 0);
+
     virtual wxString GetXMLNodeName() const { return wxT("cell"); }
 
     virtual bool CanEditProperties() const { return true; }
@@ -5421,9 +5443,9 @@ public:
         
         @since 2.9.5
         
-        @see SetColspan(), GetRowspan()
+        @see SetColSpan(), GetRowSpan()
     */
-    int GetColspan() const;
+    int GetColSpan() const;
 
     /**
         Set the number of columns spanned by the cell.
@@ -5433,9 +5455,9 @@ public:
         
         @since 2.9.5
         
-        @see GetColspan(), SetRowspan()
+        @see GetColSpan(), SetRowSpan()
     */
-    void SetColspan(long span);
+    void SetColSpan(long span);
 
     /**
         Returns the number of rows spanned by the cell.
@@ -5444,9 +5466,9 @@ public:
         
         @since 2.9.5
         
-        @see SetRowspan(), GetColspan()
+        @see SetRowSpan(), GetColSpan()
     */
-    int GetRowspan() const;
+    int GetRowSpan() const;
 
     /**
         Set the number of rows spanned by the cell.
@@ -5456,9 +5478,9 @@ public:
         
         @since 2.9.5
         
-        @see GetRowspan(), SetColspan()
+        @see GetRowSpan(), SetColSpan()
     */
-    void SetRowspan(long span);
+    void SetRowSpan(long span);
 
 // Operations
 
@@ -5499,6 +5521,8 @@ public:
 // Overridables
 
     virtual bool Draw(wxDC& dc, wxRichTextDrawingContext& context, const wxRichTextRange& range, const wxRichTextSelection& selection, const wxRect& rect, int descent, int style);
+
+    virtual int HitTest(wxDC& dc, wxRichTextDrawingContext& context, const wxPoint& pt, long& textPosition, wxRichTextObject** obj, wxRichTextObject** contextObj, int flags = 0);
 
     virtual wxString GetXMLNodeName() const { return wxT("table"); }
 
@@ -5651,6 +5675,55 @@ protected:
     wxRichTextObjectPtrArrayArray   m_cells;
 };
 
+/** @class wxRichTextTableBlock
+
+    Stores the coordinates for a block of cells.
+ */
+
+class wxRichTextTableBlock
+{
+public:
+    wxRichTextTableBlock() { Init(); }
+    wxRichTextTableBlock(int colStart, int colEnd, int rowStart, int rowEnd)
+    { Init(); m_colStart = colStart; m_colEnd = colEnd; m_rowStart = rowStart; m_rowEnd = rowEnd; }
+    wxRichTextTableBlock(const wxRichTextTableBlock& block) { Copy(block); }
+
+    void Init() { m_colStart = 0; m_colEnd = 0; m_rowStart = 0; m_rowEnd = 0; }
+    
+    void Copy(const wxRichTextTableBlock& block)
+    {
+        m_colStart = block.m_colStart; m_colEnd = block.m_colEnd; m_rowStart = block.m_rowStart; m_rowEnd = block.m_rowEnd;
+    }
+    void operator=(const wxRichTextTableBlock& block) { Copy(block); }
+    bool operator==(const wxRichTextTableBlock& block)
+    { return m_colStart == block.m_colStart && m_colEnd == block.m_colEnd && m_rowStart == block.m_rowStart && m_rowEnd == block.m_rowEnd; }
+
+    /// Computes the block given a table (perhaps about to be edited) and a rich text control
+    /// that may have a selection. If no selection, the whole table is used. If just the whole content
+    /// of one cell is selected, this cell only is used. If the cell contents is not selected and
+    /// requireCellSelection is @false, the focused cell will count as a selected cell.
+    bool ComputeBlockForSelection(wxRichTextTable* table, wxRichTextCtrl* ctrl, bool requireCellSelection = true);
+
+    /// Does this block represent the whole table?
+    bool IsWholeTable(wxRichTextTable* table) const;
+
+    /// Returns the cell focused in the table, if any
+    static wxRichTextCell* GetFocusedCell(wxRichTextCtrl* ctrl);
+
+    int& ColStart() { return m_colStart; }
+    int ColStart() const { return m_colStart; }
+
+    int& ColEnd() { return m_colEnd; }
+    int ColEnd() const { return m_colEnd; }
+
+    int& RowStart() { return m_rowStart; }
+    int RowStart() const { return m_rowStart; }
+
+    int& RowEnd() { return m_rowEnd; }
+    int RowEnd() const { return m_rowEnd; }
+
+    int m_colStart, m_colEnd, m_rowStart, m_rowEnd;
+};
 
 /**
     The command identifiers for Do/Undo.
@@ -5881,6 +5954,11 @@ public:
     void MakeObject(wxRichTextObject* obj) { m_objectAddress.Create(m_buffer, obj); }
 
     /**
+        Sets the existing and new objects, for use with wxRICHTEXT_CHANGE_OBJECT.
+    */
+    void SetOldAndNewObjects(wxRichTextObject* oldObj, wxRichTextObject* newObj);
+
+    /**
         Calculate arrays for refresh optimization.
     */
     void CalculateRefreshOptimizations(wxArrayInt& optimizationLineCharPositions, wxArrayInt& optimizationLineYPositions);
@@ -5934,6 +6012,16 @@ public:
         Returns the action name.
     */
     const wxString& GetName() const { return m_name; }
+
+    /**
+        Instructs the first Do() command should be skipped as it's already been applied.
+    */
+    void SetIgnoreFirstTime(bool b);
+
+    /**
+        Returns true if the first Do() command should be skipped as it's already been applied.
+    */
+    bool GetIgnoreFirstTime() const;
 
 protected:
     // Action name

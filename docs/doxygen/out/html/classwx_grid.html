@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -848,6 +848,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac82a0059b9baa385f3143ef5f9504dfd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_grid.html#ac82a0059b9baa385f3143ef5f9504dfd">SetRowAttr</a> (int row, <a class="el" href="classwx_grid_cell_attr.html">wxGridCellAttr</a> *attr)</td></tr>
 <tr class="memdesc:ac82a0059b9baa385f3143ef5f9504dfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the cell attributes for all cells in the specified row.  <a href="#ac82a0059b9baa385f3143ef5f9504dfd"></a><br/></td></tr>
 <tr class="separator:ac82a0059b9baa385f3143ef5f9504dfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c49623cfd89add91f8d5ec8b4909ded"><td class="memItemLeft" align="right" valign="top"><a class="el" href="dynarray_8h.html#add87f199292e36ee87efd6d7f0d4ee66">wxArrayInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_grid.html#a7c49623cfd89add91f8d5ec8b4909ded">CalcRowLabelsExposed</a> (const <a class="el" href="classwx_region.html">wxRegion</a> &amp;reg)</td></tr>
+<tr class="memdesc:a7c49623cfd89add91f8d5ec8b4909ded"><td class="mdescLeft">&#160;</td><td class="mdescRight">Appends one or more new columns to the right of the grid.  <a href="#a7c49623cfd89add91f8d5ec8b4909ded"></a><br/></td></tr>
+<tr class="separator:a7c49623cfd89add91f8d5ec8b4909ded"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb2fd6410f20e3252817e8d0a10ef1ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="dynarray_8h.html#add87f199292e36ee87efd6d7f0d4ee66">wxArrayInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_grid.html#afb2fd6410f20e3252817e8d0a10ef1ae">CalcColLabelsExposed</a> (const <a class="el" href="classwx_region.html">wxRegion</a> &amp;reg)</td></tr>
+<tr class="memdesc:afb2fd6410f20e3252817e8d0a10ef1ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Appends one or more new columns to the right of the grid.  <a href="#afb2fd6410f20e3252817e8d0a10ef1ae"></a><br/></td></tr>
+<tr class="separator:afb2fd6410f20e3252817e8d0a10ef1ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2a11d9d0979b8b7093a4adc179c87f1"><td class="memItemLeft" align="right" valign="top">wxGridCellCoordsArray&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_grid.html#ae2a11d9d0979b8b7093a4adc179c87f1">CalcCellsExposed</a> (const <a class="el" href="classwx_region.html">wxRegion</a> &amp;reg)</td></tr>
+<tr class="memdesc:ae2a11d9d0979b8b7093a4adc179c87f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Appends one or more new columns to the right of the grid.  <a href="#ae2a11d9d0979b8b7093a4adc179c87f1"></a><br/></td></tr>
+<tr class="separator:ae2a11d9d0979b8b7093a4adc179c87f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Sorting support.</div></td></tr>
 <tr><td colspan="2"><div class="groupText"><p><a class="el" href="classwx_grid.html" title="wxGrid and its related classes are used for displaying and editing tabular data.">wxGrid</a> doesn't provide any support for sorting the data but it does generate events allowing the user code to sort it and supports displaying the sort indicator in the column used for sorting.</p>
 <p>To use <a class="el" href="classwx_grid.html" title="wxGrid and its related classes are used for displaying and editing tabular data.">wxGrid</a> sorting support you need to handle wxEVT_GRID_COL_SORT event (and not veto it) and resort the data displayed in the grid. The grid will automatically update the sorting indicator on the column which was clicked.</p>
@@ -1494,6 +1503,66 @@ Protected Member Functions</h2></td></tr>
 <p>Convert grid cell coordinates to grid window pixel coordinates. </p>
 <p>This function returns the rectangle that encloses the block of cells limited by <em>topLeft</em> and <em>bottomRight</em> cell in device coords and clipped to the client size of the grid window.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="classwx_grid.html#a902e8587ed0236e3cb4ed37542aad675" title="Return the rectangle corresponding to the grid cell&#39;s size and position in logical coordinates...">CellToRect()</a> </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ae2a11d9d0979b8b7093a4adc179c87f1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wxGridCellCoordsArray wxGrid::CalcCellsExposed </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classwx_region.html">wxRegion</a> &amp;&#160;</td>
+          <td class="paramname"><em>reg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Appends one or more new columns to the right of the grid. </p>
+<p>The <em>updateLabels</em> argument is not used at present. If you are using a derived grid table class you will need to override <a class="el" href="classwx_grid_table_base.html#a2f70e66794796670b6e5367e200d5168" title="Exactly the same as AppendRows() but for columns.">wxGridTableBase::AppendCols()</a>. See <a class="el" href="classwx_grid.html#a3b0e28c214477430f17313e11ffc845a" title="Inserts one or more new columns into a grid with the first new column at the specified position...">InsertCols()</a> for further information.</p>
+<dl class="section return"><dt>Returns</dt><dd><span class="literal">true</span> on success or <span class="literal">false</span> if appending columns failed. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="afb2fd6410f20e3252817e8d0a10ef1ae"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="dynarray_8h.html#add87f199292e36ee87efd6d7f0d4ee66">wxArrayInt</a> wxGrid::CalcColLabelsExposed </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classwx_region.html">wxRegion</a> &amp;&#160;</td>
+          <td class="paramname"><em>reg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Appends one or more new columns to the right of the grid. </p>
+<p>The <em>updateLabels</em> argument is not used at present. If you are using a derived grid table class you will need to override <a class="el" href="classwx_grid_table_base.html#a2f70e66794796670b6e5367e200d5168" title="Exactly the same as AppendRows() but for columns.">wxGridTableBase::AppendCols()</a>. See <a class="el" href="classwx_grid.html#a3b0e28c214477430f17313e11ffc845a" title="Inserts one or more new columns into a grid with the first new column at the specified position...">InsertCols()</a> for further information.</p>
+<dl class="section return"><dt>Returns</dt><dd><span class="literal">true</span> on success or <span class="literal">false</span> if appending columns failed. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a7c49623cfd89add91f8d5ec8b4909ded"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="dynarray_8h.html#add87f199292e36ee87efd6d7f0d4ee66">wxArrayInt</a> wxGrid::CalcRowLabelsExposed </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classwx_region.html">wxRegion</a> &amp;&#160;</td>
+          <td class="paramname"><em>reg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Appends one or more new columns to the right of the grid. </p>
+<p>The <em>updateLabels</em> argument is not used at present. If you are using a derived grid table class you will need to override <a class="el" href="classwx_grid_table_base.html#a2f70e66794796670b6e5367e200d5168" title="Exactly the same as AppendRows() but for columns.">wxGridTableBase::AppendCols()</a>. See <a class="el" href="classwx_grid.html#a3b0e28c214477430f17313e11ffc845a" title="Inserts one or more new columns into a grid with the first new column at the specified position...">InsertCols()</a> for further information.</p>
+<dl class="section return"><dt>Returns</dt><dd><span class="literal">true</span> on success or <span class="literal">false</span> if appending columns failed. </dd></dl>
 
 </div>
 </div>
@@ -7011,7 +7080,7 @@ Protected Member Functions</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:19 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:17 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

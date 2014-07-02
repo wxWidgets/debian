@@ -2,7 +2,6 @@
 // Name:        src/gtk/minifram.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id$
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -393,11 +392,12 @@ bool wxMiniFrame::Create( wxWindow *parent, wxWindowID id, const wxString &title
     gtk_container_add(GTK_CONTAINER(m_widget), eventbox);
 
     m_gdkDecor = 0;
+    gtk_window_set_decorated(GTK_WINDOW(m_widget), false);
     m_gdkFunc = 0;
     if (style & wxRESIZE_BORDER)
        m_gdkFunc = GDK_FUNC_RESIZE;
     gtk_window_set_default_size(GTK_WINDOW(m_widget), m_width, m_height);
-    m_decorSize.Set(0, 0);
+    memset(&m_decorSize, 0, sizeof(m_decorSize));
     m_deferShow = false;
 
     if (m_parent && (GTK_IS_WINDOW(m_parent->m_widget)))

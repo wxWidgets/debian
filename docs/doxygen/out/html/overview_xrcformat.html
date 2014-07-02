@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -41,7 +41,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="index.html">Documentation</a></li><li class="navelem"><a class="el" href="page_topics.html">Topic Overviews</a></li>  </ul>
+<li class="navelem"><a class="el" href="index.html">Documentation</a></li><li class="navelem"><a class="el" href="page_topics.html">Programming Guides</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -68,6 +68,7 @@
 <li class="level2"><a href="#overview_xrcformat_type_bitmap">Bitmap</a></li>
 <li class="level2"><a href="#overview_xrcformat_type_style">Style</a></li>
 <li class="level2"><a href="#overview_xrcformat_type_font">Font</a></li>
+<li class="level2"><a href="#overview_xrcformat_type_imagelist">Image List</a></li>
 </ul>
 </li>
 <li class="level1"><a href="#overview_xrcformat_windows">Controls and Windows</a><ul><li class="level2"><a href="#overview_xrcformat_std_props">Standard Properties</a></li>
@@ -87,9 +88,11 @@
 <li class="level3"><a href="#xrc_wxcollapsiblepane">wxCollapsiblePane</a></li>
 <li class="level3"><a href="#xrc_wxcolourpickerctrl">wxColourPickerCtrl</a></li>
 <li class="level3"><a href="#xrc_wxcombobox">wxComboBox</a></li>
+<li class="level3"><a href="#xrc_wxcomboctrl">wxComboCtrl</a></li>
 <li class="level3"><a href="#xrc_wxdatepickerctrl">wxDatePickerCtrl</a></li>
 <li class="level3"><a href="#xrc_wxdialog">wxDialog</a></li>
 <li class="level3"><a href="#xrc_wxdirpickerctrl">wxDirPickerCtrl</a></li>
+<li class="level3"><a href="#xrc_wxeditablelistbox">wxEditableListBox</a></li>
 <li class="level3"><a href="#xrc_wxfilectrl">wxFileCtrl</a></li>
 <li class="level3"><a href="#xrc_wxfilepickerctrl">wxFilePickerCtrl</a></li>
 <li class="level3"><a href="#xrc_wxfontpickerctrl">wxFontPickerCtrl</a></li>
@@ -99,7 +102,6 @@
 <li class="level3"><a href="#xrc_wxgrid">wxGrid</a></li>
 <li class="level3"><a href="#xrc_wxhtmlwindow">wxHtmlWindow</a></li>
 <li class="level3"><a href="#xrc_wxhyperlinkctrl">wxHyperlinkCtrl</a></li>
-<li class="level3"><a href="#xrc_wximagelist">wxImageList</a></li>
 <li class="level3"><a href="#xrc_wxlistbox">wxListBox</a></li>
 <li class="level3"><a href="#xrc_wxlistbook">wxListbook</a></li>
 <li class="level3"><a href="#xrc_wxlistctrl">wxListCtrl</a><ul><li class="level4"><a href="#xrc_wxlistcol">listcol</a></li>
@@ -116,7 +118,12 @@
 <li class="level3"><a href="#xrc_wxpropertysheetdialog">wxPropertySheetDialog</a></li>
 <li class="level3"><a href="#xrc_wxradiobutton">wxRadioButton</a></li>
 <li class="level3"><a href="#xrc_wxradiobox">wxRadioBox</a></li>
-<li class="level3"><a href="#xrc_wxribbon">wxRibbon</a></li>
+<li class="level3"><a href="#xrc_wxribbonbar">wxRibbonBar</a></li>
+<li class="level3"><a href="#xrc_wxribbonbuttonbar">wxRibbonButtonBar</a></li>
+<li class="level3"><a href="#xrc_wxribboncontrol">wxRibbonControl</a></li>
+<li class="level3"><a href="#xrc_wxribbongallery">wxRibbonGallery</a></li>
+<li class="level3"><a href="#xrc_wxribbonpage">wxRibbonPage</a></li>
+<li class="level3"><a href="#xrc_wxribbonpanel">wxRibbonPanel</a></li>
 <li class="level3"><a href="#xrc_wxrichtextctrl">wxRichTextCtrl</a></li>
 <li class="level3"><a href="#xrc_wxscrollbar">wxScrollBar</a></li>
 <li class="level3"><a href="#xrc_wxscrolledwindow">wxScrolledWindow</a></li>
@@ -170,6 +177,7 @@
 </ul>
 </div>
 <div class="textblock"><p>This document describes the format of XRC resource files, as used by <a class="el" href="classwx_xml_resource.html" title="This is the main class for interacting with the XML-based resource system.">wxXmlResource</a>.</p>
+<p>Formal description in the form of a RELAX NG schema is located in the <code>misc/schema</code> subdirectory of the wxWidgets sources.</p>
 <p>XRC file is a XML file with all of its elements in the <code><a href="http://www.wxwidgets.org/wxxrc">http://www.wxwidgets.org/wxxrc</a></code> namespace. For backward compatibility, <code><a href="http://www.wxwindows.org/wxxrc">http://www.wxwindows.org/wxxrc</a></code> namespace is accepted as well (and treated as identical to <code><a href="http://www.wxwidgets.org/wxxrc">http://www.wxwidgets.org/wxxrc</a></code>), but it shouldn't be used in new XRC files.</p>
 <p>XRC file contains definitions for one or more <em>objects</em> &ndash; typically windows. The objects may themselves contain child objects.</p>
 <p>Objects defined at the top level, under the <a class="el" href="overview_xrcformat.html#overview_xrcformat_root">root element</a>, can be accessed using <a class="el" href="classwx_xml_resource.html#aa9f2603cb55bfb2c696972be9875e229" title="Loads a dialog.">wxXmlResource::LoadDialog()</a> and other LoadXXX methods. They must have <code>name</code> attribute that is used as LoadXXX's argument (see <a class="el" href="overview_xrcformat.html#overview_xrcformat_object">Object Element</a> for details).</p>
@@ -339,7 +347,7 @@ Bitmap</h2>
 <p>Examples of stock bitmaps usage: </p>
 <div class="fragment"><div class="line">&lt;bitmap stock_id=<span class="stringliteral">&quot;fixed-width&quot;</span>/&gt;        &lt;!-- custom app-specific art --&gt;</div>
 <div class="line">&lt;bitmap stock_id=<span class="stringliteral">&quot;wxART_FILE_OPEN&quot;</span>/&gt;    &lt;!-- standard art --&gt;</div>
-</div><!-- fragment --><p>Specifying the bitmap directly and using <code>stock_id</code> are mutually exclusive.</p>
+</div><!-- fragment --><p>If both specifications are provided, then <code>stock_id</code> is used if it is recognized by <a class="el" href="classwx_art_provider.html" title="wxArtProvider class is used to customize the look of wxWidgets application.">wxArtProvider</a> and the provided bitmap file is used as a fallback.</p>
 <h2><a class="anchor" id="overview_xrcformat_type_style"></a>
 Style</h2>
 <p>Style properties (such as window's style or sizer flags) use syntax similar to C++: the style value is OR-combination of individual flags. Symbolic names identical to those used in C++ code are used for the flags. Flags are separated with "|" (whitespace is allowed but not required around it).</p>
@@ -350,7 +358,7 @@ Style</h2>
 </div><!-- fragment --><h2><a class="anchor" id="overview_xrcformat_type_font"></a>
 Font</h2>
 <p>XRC uses similar, but more flexible, abstract description of fonts to that used by <a class="el" href="classwx_font.html" title="A font is an object which determines the appearance of text.">wxFont</a> class. A font can be described either in terms of its elementary properties, or it can be derived from one of system fonts or the parent window font.</p>
-<p>The font property element is "composite" element: unlike majority of properties, it doesn't have text value but contains several child elements instead. These children are handled in the same way as object properties and can be one of the following "sub-properties":</p>
+<p>The font property element is a "composite" element: unlike majority of properties, it doesn't have text value but contains several child elements instead. These children are handled in the same way as object properties and can be one of the following "sub-properties":</p>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
@@ -390,7 +398,27 @@ Font</h2>
 <div class="line">    &lt;relativesize&gt;1.5&lt;/relativesize&gt;</div>
 <div class="line">&lt;/font&gt;</div>
 </div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>You cannot use <code>inherit</code> for a font that gets used before the enclosing control is created, e.g. if the control gets the font passed as parameter for its constructor, or if the control is not derived from <a class="el" href="classwx_window.html" title="wxWindow is the base class for all windows and represents any visible object on screen.">wxWindow</a>.</dd></dl>
-<h1><a class="anchor" id="overview_xrcformat_windows"></a>
+<h2><a class="anchor" id="overview_xrcformat_type_imagelist"></a>
+Image List</h2>
+<p>Defines a <a class="el" href="classwx_image_list.html" title="A wxImageList contains a list of images, which are stored in an unspecified form.">wxImageList</a>.</p>
+<p>The imagelist property element is a "composite" element: unlike majority of properties, it doesn't have text value but contains several child elements instead. These children are handled similarly to object properties and can be one of the following "sub-properties":</p>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
+<tr>
+<th>property </th><th>type </th><th>description </th></tr>
+<tr>
+<td>mask </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>If masks should be created for all images (default: 1). </td></tr>
+<tr>
+<td>size </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_size">Size</a> </td><td>The size of the images in the list (default: the size of the first bitmap). </td></tr>
+<tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Adds a new image. Unlike normal object properties, <code>bitmap</code> may be used more than once to add multiple images to the list. At least one <code>bitmap</code> value is required. </td></tr>
+</table>
+<p>Example: </p>
+<div class="fragment"><div class="line">&lt;imagelist&gt;</div>
+<div class="line">    &lt;size&gt;32,32&lt;/size&gt;</div>
+<div class="line">    &lt;bitmap stock_id=<span class="stringliteral">&quot;wxART_QUESTION&quot;</span>/&gt;</div>
+<div class="line">    &lt;bitmap stock_id=<span class="stringliteral">&quot;wxART_INFORMATION&quot;</span>/&gt;</div>
+<div class="line">&lt;/imagelist&gt;</div>
+</div><!-- fragment --><h1><a class="anchor" id="overview_xrcformat_windows"></a>
 Controls and Windows</h1>
 <p>This section describes support wxWindow-derived classes in XRC format.</p>
 <h2><a class="anchor" id="overview_xrcformat_std_props"></a>
@@ -418,6 +446,8 @@ Standard Properties</h2>
 <tr>
 <td>enabled </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>If set to 0, the control is disabled (default: 1). </td></tr>
 <tr>
+<td>focused </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>If set to 1, the control has focus initially (default: 0). </td></tr>
+<tr>
 <td>hidden </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>If set to 1, the control is created hidden (default: 0). </td></tr>
 <tr>
 <td>tooltip </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Tooltip to use for the control (default: not set). </td></tr>
@@ -438,7 +468,9 @@ wxAnimationCtrl</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>animation </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_url">URL</a> </td><td>Animation file to load into the control (required). </td></tr>
+<td>animation </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_url">URL</a> </td><td>Animation file to load into the control (default: none). </td></tr>
+<tr>
+<td>inactive-bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap to use when not playing the animation (default: the default). </td></tr>
 </table>
 <h3><a class="anchor" id="xrc_wxauinotebook"></a>
 wxAuiNotebook</h3>
@@ -447,7 +479,7 @@ wxAuiNotebook</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Page label (required). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Page label (default: empty). </td></tr>
 <tr>
 <td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap shown alongside the label (default: none). </td></tr>
 <tr>
@@ -476,17 +508,17 @@ wxBannerWindow</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>direction </td><td><code>wxLEFT|wxRIGHT|wxTOP|wxBOTTOM</code>  </td><td>The side along which the banner will be positioned. </td></tr>
+<td>direction </td><td><code>wxLEFT|wxRIGHT|wxTOP|wxBOTTOM</code>  </td><td>The side along which the banner will be positioned (default: wxLEFT). </td></tr>
 <tr>
-<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap to use as the banner background. </td></tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap to use as the banner background (default: none). </td></tr>
 <tr>
-<td>title </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Banner title, should be single line. </td></tr>
+<td>title </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Banner title, should be single line (default: none). </td></tr>
 <tr>
-<td>message </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Possibly multi-line banner message. </td></tr>
+<td>message </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Possibly multi-line banner message (default: none). </td></tr>
 <tr>
-<td>gradient-start </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_colour">Colour</a> </td><td>Starting colour of the gradient used as banner background. Can't be used if a valid bitmap is specified. </td></tr>
+<td>gradient-start </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_colour">Colour</a> </td><td>Starting colour of the gradient used as banner background. (Optional. Can't be used if a valid bitmap is specified. If used, both gradient values must be set.) </td></tr>
 <tr>
-<td>gradient-end </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_colour">Colour</a> </td><td>End colour of the gradient used as banner background. Can't be used if a valid bitmap is specified. </td></tr>
+<td>gradient-end </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_colour">Colour</a> </td><td>End colour of the gradient used as banner background. (Optional. Can't be used if a valid bitmap is specified. If used, both gradient values must be set.) </td></tr>
 </table>
 <h3><a class="anchor" id="xrc_wxbitmapbutton"></a>
 wxBitmapButton</h3>
@@ -496,7 +528,7 @@ wxBitmapButton</h3>
 <tr>
 <td>default </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Should this button be the default button in dialog (default: 0)? </td></tr>
 <tr>
-<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap to show on the button (required). </td></tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap to show on the button (default: none). </td></tr>
 <tr>
 <td>selected </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap to show when the button is selected (default: none, same as <code>bitmap</code>). </td></tr>
 <tr>
@@ -522,7 +554,7 @@ wxBitmapComboBox</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>text </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Item's label (required). </td></tr>
+<td>text </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Item's label (default: empty). </td></tr>
 <tr>
 <td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Item's bitmap (default: no bitmap). </td></tr>
 </table>
@@ -544,7 +576,7 @@ wxBitmapToggleButton</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Label to display on the button (required). </td></tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Label to display on the button (default: none). </td></tr>
 <tr>
 <td>checked </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Should the button be checked/pressed initially (default: 0)? </td></tr>
 </table>
@@ -554,11 +586,11 @@ wxButton</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to display on the button (may be empty if only bitmap is used). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to display on the button (may be omitted if only the bitmap or stock ID is used). </td></tr>
 <tr>
 <td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap to display in the button (optional). </td></tr>
 <tr>
-<td>bitmapposition </td><td><code>wxLEFT|wxRIGHT|wxTOP|wxBOTTOM</code>  </td><td>Position of the bitmap in the button, see <a class="el" href="classwx_any_button.html#a841c7747f78ea37110338b0ce1aa97dd" title="Set the position at which the bitmap is displayed.">wxButton::SetBitmapPosition()</a>. </td></tr>
+<td>bitmapposition </td><td><code>wxLEFT|wxRIGHT|wxTOP|wxBOTTOM</code>  </td><td>Position of the bitmap in the button, see <a class="el" href="classwx_any_button.html#a841c7747f78ea37110338b0ce1aa97dd" title="Set the position at which the bitmap is displayed.">wxButton::SetBitmapPosition()</a> (default: wxLEFT). </td></tr>
 <tr>
 <td>default </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Should this button be the default button in dialog (default: 0)? </td></tr>
 </table>
@@ -571,7 +603,7 @@ wxCheckBox</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to use for the checkbox (required). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to use for the checkbox (default: empty). </td></tr>
 <tr>
 <td>checked </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Should the checkbox be checked initially (default: 0)? </td></tr>
 </table>
@@ -617,16 +649,23 @@ wxChoice</h3>
 <div class="line">&lt;/<span class="keywordtype">object</span>&gt;</div>
 </div><!-- fragment --><h3><a class="anchor" id="xrc_wxchoicebook"></a>
 wxChoicebook</h3>
-<p>A choicebook can have one or more child objects of the <code>choicebookpage</code> pseudo-class (similarly to <a class="el" href="overview_xrcformat.html#xrc_wxnotebook">wxNotebook</a> and its <code>notebookpage</code>) and one child object of the <a class="el" href="overview_xrcformat.html#xrc_wximagelist">wxImageList</a> class. <code>choicebookpage</code> objects have the following properties:</p>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Sheet page's title (required). </td></tr>
+<td>imagelist </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_imagelist">Image List</a> </td><td>Image list to use for the images (default: none, built implicitly). </td></tr>
+</table>
+<p>Additionally, a choicebook can have one or more child objects of the <code>choicebookpage</code> pseudo-class (similarly to <a class="el" href="overview_xrcformat.html#xrc_wxnotebook">wxNotebook</a> and its <code>notebookpage</code>).</p>
+<p><code>choicebookpage</code> objects have the following properties:</p>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
-<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap shown alongside the label (default: none). </td></tr>
+<th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item into the image list. </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Sheet page's title (default: empty). </td></tr>
+<tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap shown alongside the label (default: none, mutually exclusive with <code>image</code>). </td></tr>
+<tr>
+<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item into the image list (default: none, mutually exclusive with <code>bitmap</code>, only if imagelist was set). </td></tr>
 <tr>
 <td>selected </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Is the page selected initially (only one page can be selected; default: 0)? </td></tr>
 </table>
@@ -638,9 +677,9 @@ wxCommandLinkButton</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>First line of text on the button, typically the label of an action that will be made when the button is pressed.  </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>First line of text on the button, typically the label of an action that will be made when the button is pressed (default: empty).  </td></tr>
 <tr>
-<td>note </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Second line of text describing the action performed when the button is pressed.  </td></tr>
+<td>note </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Second line of text describing the action performed when the button is pressed (default: none).  </td></tr>
 </table>
 <h3><a class="anchor" id="xrc_wxcollapsiblepane"></a>
 wxCollapsiblePane</h3>
@@ -648,7 +687,7 @@ wxCollapsiblePane</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to use for the collapsible section (required). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to use for the collapsible section (default: empty). </td></tr>
 <tr>
 <td>collapsed </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Should the pane be collapsed initially (default: 0)? </td></tr>
 </table>
@@ -685,7 +724,15 @@ wxComboBox</h3>
 <div class="line">        &lt;item&gt;bbedit&lt;/item&gt;</div>
 <div class="line">    &lt;/content&gt;</div>
 <div class="line">&lt;/<span class="keywordtype">object</span>&gt;</div>
-</div><!-- fragment --><h3><a class="anchor" id="xrc_wxdatepickerctrl"></a>
+</div><!-- fragment --><h3><a class="anchor" id="xrc_wxcomboctrl"></a>
+wxComboCtrl</h3>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
+<tr>
+<th>property </th><th>type </th><th>description </th></tr>
+<tr>
+<td>value </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Initial value in the control (default: empty). </td></tr>
+</table>
+<h3><a class="anchor" id="xrc_wxdatepickerctrl"></a>
 wxDatePickerCtrl</h3>
 <p>No additional properties.</p>
 <h3><a class="anchor" id="xrc_wxdialog"></a>
@@ -709,19 +756,41 @@ wxDirPickerCtrl</h3>
 <tr>
 <td>value </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Initial value of the control (default: empty). </td></tr>
 <tr>
-<td>message </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Message shown to the user in <a class="el" href="classwx_dir_dialog.html" title="This class represents the directory chooser dialog.">wxDirDialog</a> shown by the control (required). </td></tr>
+<td>message </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Message shown to the user in <a class="el" href="classwx_dir_dialog.html" title="This class represents the directory chooser dialog.">wxDirDialog</a> shown by the control (default: empty). </td></tr>
 </table>
-<h3><a class="anchor" id="xrc_wxfilectrl"></a>
+<h3><a class="anchor" id="xrc_wxeditablelistbox"></a>
+wxEditableListBox</h3>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
+<tr>
+<th>property </th><th>type </th><th>description </th></tr>
+<tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label shown above the list (default: empty). </td></tr>
+<tr>
+<td>content </td><td>items </td><td>Content of the control; this property has any number of <code>&lt;item&gt;</code> XML elements as its children, with the items text as their text values (default: empty). </td></tr>
+</table>
+<p>Example: </p>
+<div class="fragment"><div class="line">&lt;<span class="keywordtype">object</span> <span class="keyword">class</span>=<span class="stringliteral">&quot;wxEditableListBox&quot;</span> name=<span class="stringliteral">&quot;controls_listbox&quot;</span>&gt;</div>
+<div class="line">    &lt;size&gt;250,160&lt;/size&gt;</div>
+<div class="line">    &lt;label&gt;List of things&lt;/label&gt;</div>
+<div class="line">    &lt;content&gt;</div>
+<div class="line">        &lt;item&gt;Milk&lt;/item&gt;</div>
+<div class="line">        &lt;item&gt;Pizza&lt;/item&gt;</div>
+<div class="line">        &lt;item&gt;Bread&lt;/item&gt;</div>
+<div class="line">        &lt;item&gt;Orange juice&lt;/item&gt;</div>
+<div class="line">        &lt;item&gt;Paper towels&lt;/item&gt;</div>
+<div class="line">    &lt;/content&gt;</div>
+<div class="line">&lt;/<span class="keywordtype">object</span>&gt;</div>
+</div><!-- fragment --><h3><a class="anchor" id="xrc_wxfilectrl"></a>
 wxFileCtrl</h3>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>defaultdirectory </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Sets the current directory displayed in the control.  </td></tr>
+<td>defaultdirectory </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Sets the current directory displayed in the control (default: empty).  </td></tr>
 <tr>
-<td>defaultfilename </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Selects a certain file. </td></tr>
+<td>defaultfilename </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Selects a certain file (default: empty). </td></tr>
 <tr>
-<td>wildcard </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Sets the wildcard, which can contain multiple file types, for example: "BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif". </td></tr>
+<td>wildcard </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Sets the wildcard, which can contain multiple file types, for example: "BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif" (default: all files). </td></tr>
 </table>
 <h3><a class="anchor" id="xrc_wxfilepickerctrl"></a>
 wxFilePickerCtrl</h3>
@@ -731,9 +800,9 @@ wxFilePickerCtrl</h3>
 <tr>
 <td>value </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Initial value of the control (default: empty). </td></tr>
 <tr>
-<td>message </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Message shown to the user in <a class="el" href="classwx_dir_dialog.html" title="This class represents the directory chooser dialog.">wxDirDialog</a> shown by the control (required). </td></tr>
+<td>message </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Message shown to the user in <a class="el" href="classwx_dir_dialog.html" title="This class represents the directory chooser dialog.">wxDirDialog</a> shown by the control (default: empty). </td></tr>
 <tr>
-<td>wildcard </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Sets the wildcard, which can contain multiple file types, for example: "BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif". </td></tr>
+<td>wildcard </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Sets the wildcard, which can contain multiple file types, for example: "BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif" (default: all files). </td></tr>
 </table>
 <h3><a class="anchor" id="xrc_wxfontpickerctrl"></a>
 wxFontPickerCtrl</h3>
@@ -776,7 +845,7 @@ wxGenericDirCtrl</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>defaultfolder </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Initial folder (default: empty). </td></tr>
+<td>defaultfolder </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Initial folder (default: empty). </td></tr>
 <tr>
 <td>filter </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Filter string, using the same syntax as used by <a class="el" href="classwx_file_dialog.html" title="This class represents the file chooser dialog.">wxFileDialog</a>, e.g. "All files (*.*)|*.*|JPEG files (*.jpg)|*.jpg" (default: empty). </td></tr>
 <tr>
@@ -791,9 +860,9 @@ wxHtmlWindow</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>url </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_url">URL</a> </td><td>Page to display in the window. </td></tr>
+<td>url </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_url">URL</a> </td><td>Page to display in the window (default: none). </td></tr>
 <tr>
-<td>htmlcode </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>HTML markup to display in the window. </td></tr>
+<td>htmlcode </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>HTML markup to display in the window (default: none). </td></tr>
 <tr>
 <td>borders </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_dimension">Dimension</a> </td><td>Border around HTML content (default: 0). </td></tr>
 </table>
@@ -804,39 +873,10 @@ wxHyperlinkCtrl</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to display on the control (required). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to display on the control (default: empty). </td></tr>
 <tr>
-<td>url </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_url">URL</a> </td><td>URL to open when the link is clicked (required). </td></tr>
+<td>url </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_url">URL</a> </td><td>URL to open when the link is clicked (default: empty). </td></tr>
 </table>
-<h3><a class="anchor" id="xrc_wximagelist"></a>
-wxImageList</h3>
-<p>The imagelist can be used as a child object for the following classes:</p>
-<ul>
-<li><a class="el" href="overview_xrcformat.html#xrc_wxchoicebook">wxChoicebook</a></li>
-<li><a class="el" href="overview_xrcformat.html#xrc_wxlistbook">wxListbook</a></li>
-<li><a class="el" href="overview_xrcformat.html#xrc_wxlistctrl">wxListCtrl</a></li>
-<li><a class="el" href="overview_xrcformat.html#xrc_wxnotebook">wxNotebook</a></li>
-<li><a class="el" href="overview_xrcformat.html#xrc_wxtreebook">wxTreebook</a></li>
-<li><a class="el" href="overview_xrcformat.html#xrc_wxtreectrl">wxTreeCtrl</a></li>
-</ul>
-<p>The available properties are:</p>
-<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
-<tr>
-<th>property </th><th>type </th><th>description </th></tr>
-<tr>
-<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Adds a new image by keeping its optional mask bitmap (see below). </td></tr>
-<tr>
-<td>mask </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>If masks should be created for all images (default: true). </td></tr>
-<tr>
-<td>size </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_size">Size</a> </td><td>The size of the images in the list (default: the size of the first bitmap). </td></tr>
-</table>
-<p>Example: </p>
-<div class="fragment"><div class="line">&lt;imagelist&gt;</div>
-<div class="line">    &lt;size&gt;32,32&lt;/size&gt;</div>
-<div class="line">    &lt;bitmap stock_id=<span class="stringliteral">&quot;wxART_QUESTION&quot;</span>/&gt;</div>
-<div class="line">    &lt;bitmap stock_id=<span class="stringliteral">&quot;wxART_INFORMATION&quot;</span>/&gt;</div>
-<div class="line">&lt;/imagelist&gt;</div>
-</div><!-- fragment --><p>In the specific case of the <a class="el" href="overview_xrcformat.html#xrc_wxlistctrl">wxListCtrl</a>, the tag can take the name <code>&lt;imagelist-small&gt;</code> to define the 'small' image list, related to the flag <code>wxIMAGE_LIST_SMALL</code> (see <a class="el" href="classwx_list_ctrl.html" title="A list control presents lists in a number of formats: list view, report view, icon view and small ico...">wxListCtrl</a> documentation).</p>
 <h3><a class="anchor" id="xrc_wxlistbox"></a>
 wxListBox</h3>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
@@ -861,34 +901,48 @@ wxListBox</h3>
 <div class="line">&lt;/<span class="keywordtype">object</span>&gt;</div>
 </div><!-- fragment --><h3><a class="anchor" id="xrc_wxlistbook"></a>
 wxListbook</h3>
-<p>A listbook can have one or more child objects of the <code>listbookpage</code> pseudo-class (similarly to <a class="el" href="overview_xrcformat.html#xrc_wxnotebook">wxNotebook</a> and its <code>notebookpage</code>) and one child object of the <a class="el" href="overview_xrcformat.html#xrc_wximagelist">wxImageList</a> class. <code>listbookpage</code> objects have the following properties:</p>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Sheet page's title (required). </td></tr>
+<td>imagelist </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_imagelist">Image List</a> </td><td>Image list to use for the images (default: none, built implicitly). </td></tr>
+</table>
+<p>Additionally, a listbook can have one or more child objects of the <code>listbookpage</code> pseudo-class (similarly to <a class="el" href="overview_xrcformat.html#xrc_wxnotebook">wxNotebook</a> and its <code>notebookpage</code>).</p>
+<p><code>listbookpage</code> objects have the following properties:</p>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
-<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap shown alongside the label (default: none). </td></tr>
+<th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item into the image list. </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Sheet page's title (default: empty). </td></tr>
+<tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap shown alongside the label (default: none, mutually exclusive with <code>image</code>). </td></tr>
+<tr>
+<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item into the image list (default: none, mutually exclusive with <code>bitmap</code>, only if imagelist was set). </td></tr>
 <tr>
 <td>selected </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Is the page selected initially (only one page can be selected; default: 0)? </td></tr>
 </table>
 <p>Each <code>listbookpage</code> has exactly one non-toplevel window as its child.</p>
 <h3><a class="anchor" id="xrc_wxlistctrl"></a>
 wxListCtrl</h3>
-<p>A list control can have one or more child objects of the class <a class="el" href="overview_xrcformat.html#xrc_wxlistitem">listitem</a> and one or more objects of the <a class="el" href="overview_xrcformat.html#xrc_wximagelist">wxImageList</a> class. The latter is defined either using <code>&lt;imagelist&gt;</code> tag for the control with <code>wxLC_ICON</code> style or using <code>&lt;imagelist-small&gt;</code> tag for the control with <code>wxLC_SMALL_ICON</code> style.</p>
-<p>Report mode list controls (i.e. created with <code>wxLC_REPORT</code> style) can in addition have one or more <a class="el" href="overview_xrcformat.html#xrc_wxlistcol">listcol</a> child elements.</p>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
+<tr>
+<th>property </th><th>type </th><th>description </th></tr>
+<tr>
+<td>imagelist </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_imagelist">Image List</a> </td><td>The normal (wxIMAGE_LIST_NORMAL) image list (default: none, built implicitly). </td></tr>
+<tr>
+<td>imagelist-small </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_imagelist">Image List</a> </td><td>The small (wxIMAGE_LIST_SMALL) image list (default: none, built implicitly). </td></tr>
+</table>
+<p>A list control can have optional child objects of the <a class="el" href="overview_xrcformat.html#xrc_wxlistitem">listitem</a> class. Report mode list controls (i.e. created with <code>wxLC_REPORT</code> style) can in addition have optional <a class="el" href="overview_xrcformat.html#xrc_wxlistcol">listcol</a> child objects.</p>
 <h4><a class="anchor" id="xrc_wxlistcol"></a>
 listcol</h4>
-<p>The <code>listcol</code> class can only be used for <a class="el" href="classwx_list_ctrl.html" title="A list control presents lists in a number of formats: list view, report view, icon view and small ico...">wxListCtrl</a> children. It can have the following properties: </p>
+<p>The <code>listcol</code> class can only be used for <a class="el" href="classwx_list_ctrl.html" title="A list control presents lists in a number of formats: list view, report view, icon view and small ico...">wxListCtrl</a> children. It can have the following properties (all of them optional):</p>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
 <td>align </td><td>wxListColumnFormat </td><td>The alignment for the item. Can be one of <code>wxLIST_FORMAT_LEFT</code>, <code>wxLIST_FORMAT_RIGHT</code> or <code>wxLIST_FORMAT_CENTRE</code>. </td></tr>
 <tr>
-<td>text </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>The title of the column.  </td></tr>
+<td>text </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>The title of the column.  </td></tr>
 <tr>
 <td>width </td><td>integer </td><td>The column width.  </td></tr>
 <tr>
@@ -897,7 +951,7 @@ listcol</h4>
 <p>The columns are appended to the control in order of their appearance and may be referenced by 0-based index in the <code>col</code> attributes of subsequent <code>listitem</code> objects.</p>
 <h4><a class="anchor" id="xrc_wxlistitem"></a>
 listitem</h4>
-<p>The <code>listitem</code> is a child object for the class <a class="el" href="overview_xrcformat.html#xrc_wxlistctrl">wxListCtrl</a>. It can have the following properties:</p>
+<p>The <code>listitem</code> is a child object for the class <a class="el" href="overview_xrcformat.html#xrc_wxlistctrl">wxListCtrl</a>. It can have the following properties (all of them optional):</p>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
@@ -906,21 +960,19 @@ listitem</h4>
 <tr>
 <td>bg </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_colour">Colour</a> </td><td>The background color for the item. </td></tr>
 <tr>
-<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Add a bitmap to the (normal) <a class="el" href="overview_xrcformat.html#xrc_wximagelist">wxImageList</a> associated with the <a class="el" href="overview_xrcformat.html#xrc_wxlistctrl">wxListCtrl</a> parent and associate it with this item. If the imagelist is not defined it will be created implicitly. </td></tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Add a bitmap to the (normal) <a class="el" href="overview_xrcformat.html#overview_xrcformat_type_imagelist">Image List</a> associated with the <a class="el" href="overview_xrcformat.html#xrc_wxlistctrl">wxListCtrl</a> parent and associate it with this item. If the imagelist is not defined it will be created implicitly (default: none, mutually exclusive with <code>image</code>). </td></tr>
 <tr>
-<td>bitmap-small </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Add a bitmap in the 'small' <a class="el" href="overview_xrcformat.html#xrc_wximagelist">wxImageList</a> associated with the <a class="el" href="overview_xrcformat.html#xrc_wxlistctrl">wxListCtrl</a> parent and associate it with this item. If the 'small' imagelist is not defined it will be created implicitly. </td></tr>
+<td>bitmap-small </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Add a bitmap in the 'small' <a class="el" href="overview_xrcformat.html#overview_xrcformat_type_imagelist">Image List</a> associated with the <a class="el" href="overview_xrcformat.html#xrc_wxlistctrl">wxListCtrl</a> parent and associate it with this item. If the 'small' imagelist is not defined it will be created implicitly (default: none, mutually exclusive with <code>image-small</code>). </td></tr>
 <tr>
 <td>col </td><td>integer </td><td>The zero-based column index. </td></tr>
 <tr>
-<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item in the (normal) image list. </td></tr>
+<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item in the (normal) image list (default: none, mutually exclusive with <code>bitmap</code>, only if imagelist was set). </td></tr>
 <tr>
-<td>image-small </td><td>integer </td><td>The zero-based index of the image associated with the item in the 'small' image list. </td></tr>
+<td>image-small </td><td>integer </td><td>The zero-based index of the image associated with the item in the 'small' image list (default: none, mutually exclusive with <code>bitmap-small</code>, only if imagelist-small was set). </td></tr>
 <tr>
 <td>data </td><td>integer </td><td>The client data for the item. </td></tr>
 <tr>
 <td>font </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_font">Font</a> </td><td>The font for the item. </td></tr>
-<tr>
-<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item into the image list. </td></tr>
 <tr>
 <td>state </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_style">Style</a> </td><td>The item state. Can be any combination of the following values:<ul>
 <li><code>wxLIST_STATE_FOCUSED:</code> The item has the focus.</li>
@@ -928,7 +980,7 @@ listitem</h4>
 </ul>
 </td></tr>
 <tr>
-<td>text </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>The text label for the item.  </td></tr>
+<td>text </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>The text label for the item.  </td></tr>
 <tr>
 <td>textcolour </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_colour">Colour</a> </td><td>The text colour for the item.  </td></tr>
 </table>
@@ -950,11 +1002,13 @@ wxMenu</h3>
 <tr>
 <td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Menu's label (default: empty, but required for menus other than popup menus). </td></tr>
 <tr>
+<td>style </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_style">Style</a> </td><td>Window style for the menu. </td></tr>
+<tr>
 <td>help </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Help shown in statusbar when the menu is selected (only for submenus of another <a class="el" href="classwx_menu.html" title="A menu is a popup (or pull down) list of items, one of which may be selected before the menu goes awa...">wxMenu</a>, default: none). </td></tr>
 <tr>
 <td>enabled </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Is the submenu item enabled (only for submenus of another <a class="el" href="classwx_menu.html" title="A menu is a popup (or pull down) list of items, one of which may be selected before the menu goes awa...">wxMenu</a>, default: 1)? </td></tr>
 </table>
-<p>Note that unlike most controls, <a class="el" href="classwx_menu.html" title="A menu is a popup (or pull down) list of items, one of which may be selected before the menu goes awa...">wxMenu</a> does <em>not</em> have <a class="el" href="overview_xrcformat.html#overview_xrcformat_std_props">Standard Properties</a>.</p>
+<p>Note that unlike most controls, <a class="el" href="classwx_menu.html" title="A menu is a popup (or pull down) list of items, one of which may be selected before the menu goes awa...">wxMenu</a> does <em>not</em> have <a class="el" href="overview_xrcformat.html#overview_xrcformat_std_props">Standard Properties</a>, with the exception of <code>style</code>.</p>
 <p>A menu object can have one or more child objects of the <a class="el" href="classwx_menu_item.html" title="A menu item represents an item in a menu.">wxMenuItem</a> or <a class="el" href="classwx_menu.html" title="A menu is a popup (or pull down) list of items, one of which may be selected before the menu goes awa...">wxMenu</a> classes or <code>break</code> or <code>separator</code> pseudo-classes.</p>
 <p>The <code>separator</code> pseudo-class is used to insert separators into the menu and has neither properties nor children. Likewise, <code>break</code> inserts a break (see <a class="el" href="classwx_menu.html#a3728d2f96ee825b042e0b6d0e08d21d3" title="Inserts a break in a menu, causing the next appended item to appear in a new column.">wxMenu::Break()</a>).</p>
 <p><a class="el" href="classwx_menu_item.html" title="A menu item represents an item in a menu.">wxMenuItem</a> objects support the following properties:</p>
@@ -962,7 +1016,7 @@ wxMenu</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Item's label (required). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Item's label (may be omitted if stock ID is used). </td></tr>
 <tr>
 <td>accel </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text_notrans">Non-Translatable Text</a> </td><td>Item's accelerator (default: none). </td></tr>
 <tr>
@@ -1005,20 +1059,33 @@ wxMenu</h3>
 <div class="line">&lt;/<span class="keywordtype">object</span>&gt;</div>
 </div><!-- fragment --><h3><a class="anchor" id="xrc_wxmenubar"></a>
 wxMenuBar</h3>
-<p>No properties. Note that unlike most controls, <a class="el" href="classwx_menu_bar.html" title="A menu bar is a series of menus accessible from the top of a frame.">wxMenuBar</a> does <em>not</em> have <a class="el" href="overview_xrcformat.html#overview_xrcformat_std_props">Standard Properties</a>.</p>
-<p>A menubar can have one or more child objects of the <a class="el" href="overview_xrcformat.html#xrc_wxmenu">wxMenu</a> class.</p>
-<h3><a class="anchor" id="xrc_wxnotebook"></a>
-wxNotebook</h3>
-<p>A notebook can have one or more child objects of the <code>notebookpage</code> pseudo-class and one child object of the <a class="el" href="overview_xrcformat.html#xrc_wximagelist">wxImageList</a> class. <code>notebookpage</code> objects have the following properties:</p>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Page's title (required). </td></tr>
+<td>style </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_style">Style</a> </td><td>Window style for the menu bar. </td></tr>
+</table>
+<p>Note that unlike most controls, <a class="el" href="classwx_menu_bar.html" title="A menu bar is a series of menus accessible from the top of a frame.">wxMenuBar</a> does <em>not</em> have <a class="el" href="overview_xrcformat.html#overview_xrcformat_std_props">Standard Properties</a>, with the exception of <code>style</code>.</p>
+<p>A menubar can have one or more child objects of the <a class="el" href="overview_xrcformat.html#xrc_wxmenu">wxMenu</a> class.</p>
+<h3><a class="anchor" id="xrc_wxnotebook"></a>
+wxNotebook</h3>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
-<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap shown alongside the label (default: none). </td></tr>
+<th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item into the image list. </td></tr>
+<td>imagelist </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_imagelist">Image List</a> </td><td>Image list to use for the images (default: none, built implicitly). </td></tr>
+</table>
+<p>A notebook can have one or more child objects of the <code>notebookpage</code> pseudo-class.</p>
+<p><code>notebookpage</code> objects have the following properties:</p>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
+<tr>
+<th>property </th><th>type </th><th>description </th></tr>
+<tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Page's title (default: empty). </td></tr>
+<tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap shown alongside the label (default: none, mutually exclusive with <code>image</code>). </td></tr>
+<tr>
+<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item into the image list (default: none, mutually exclusive with <code>bitmap</code>, only if imagelist was set). </td></tr>
 <tr>
 <td>selected </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Is the page selected initially (only one page can be selected; default: 0)? </td></tr>
 </table>
@@ -1071,7 +1138,7 @@ wxPropertySheetDialog</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Sheet page's title (required). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Sheet page's title (default: empty). </td></tr>
 <tr>
 <td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap shown alongside the label (default: none). </td></tr>
 <tr>
@@ -1084,7 +1151,7 @@ wxRadioButton</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label shown on the radio button (required). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label shown on the radio button (default: empty). </td></tr>
 <tr>
 <td>value </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Initial value of the control (default: 0). </td></tr>
 </table>
@@ -1094,7 +1161,7 @@ wxRadioBox</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label for the whole box (required). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label for the whole box (default: empty). </td></tr>
 <tr>
 <td>dimension </td><td>integer </td><td>Specifies the maximum number of rows (if style contains <code>wxRA_SPECIFY_ROWS</code>) or columns (if style contains <code>wxRA_SPECIFY_COLS</code>) for a two-dimensional radiobox (default: 1). </td></tr>
 <tr>
@@ -1131,9 +1198,15 @@ wxRadioBox</h3>
 <div class="line">        &lt;item hidden=<span class="stringliteral">&quot;1&quot;</span>&gt;Very quit station&lt;/item&gt;</div>
 <div class="line">    &lt;/content&gt;</div>
 <div class="line">&lt;/<span class="keywordtype">object</span>&gt;</div>
-</div><!-- fragment --><h3><a class="anchor" id="xrc_wxribbon"></a>
-wxRibbon</h3>
-<p>A <a class="el" href="classwx_ribbon_bar.html" title="Top-level control in a ribbon user interface.">wxRibbonBar</a> is a container of ribbon pages which, in turn, contain elements that can be <a class="el" href="classwx_ribbon_control.html" title="wxRibbonControl serves as a base class for all controls which share the ribbon characteristics of hav...">wxRibbonControl</a> or <a class="el" href="classwx_ribbon_gallery.html" title="A ribbon gallery is like a wxListBox, but for bitmaps rather than strings.">wxRibbonGallery</a>.</p>
+</div><!-- fragment --><h3><a class="anchor" id="xrc_wxribbonbar"></a>
+wxRibbonBar</h3>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
+<tr>
+<th>property </th><th>type </th><th>description </th></tr>
+<tr>
+<td>art-provider </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>One of <code>default</code>, <code>aui</code> or <code>msw</code> (default: <code>default</code>). </td></tr>
+</table>
+<p>A <a class="el" href="classwx_ribbon_bar.html" title="Top-level control in a ribbon user interface.">wxRibbonBar</a> may have <a class="el" href="overview_xrcformat.html#xrc_wxribbonpage">wxRibbonPage</a> child objects. The <code>page</code> pseudo-class may be used instead of <code><a class="el" href="classwx_ribbon_page.html" title="Container for related ribbon panels, and a tab within a ribbon bar.">wxRibbonPage</a></code> when used as <a class="el" href="classwx_ribbon_bar.html" title="Top-level control in a ribbon user interface.">wxRibbonBar</a> children.</p>
 <p>Example: </p>
 <div class="fragment"><div class="line">&lt;<span class="keywordtype">object</span> <span class="keyword">class</span>=<span class="stringliteral">&quot;wxRibbonBar&quot;</span> name=<span class="stringliteral">&quot;ribbonbar&quot;</span>&gt;</div>
 <div class="line">    &lt;<span class="keywordtype">object</span> <span class="keyword">class</span>=<span class="stringliteral">&quot;page&quot;</span> name=<span class="stringliteral">&quot;FilePage&quot;</span>&gt;</div>
@@ -1163,11 +1236,71 @@ wxRibbon</h3>
 <div class="line">        &lt;/<span class="keywordtype">object</span>&gt;</div>
 <div class="line">    &lt;/<span class="keywordtype">object</span>&gt;</div>
 <div class="line">&lt;/<span class="keywordtype">object</span>&gt;</div>
-</div><!-- fragment --><p>Notice that wxRibbon support in XRC is available in wxWidgets 2.9.5 and later only and you need to explicitly register its handler using </p>
+</div><!-- fragment --><p>Notice that <a class="el" href="classwx_ribbon_bar.html" title="Top-level control in a ribbon user interface.">wxRibbonBar</a> support in XRC is available in wxWidgets 2.9.5 and later only and you need to explicitly register its handler using </p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;wx/xrc/xh_ribbon.h&gt;</span></div>
 <div class="line"></div>
 <div class="line">AddHandler(<span class="keyword">new</span> wxRibbonXmlHandler);</div>
 </div><!-- fragment --><p> to use it.</p>
+<h3><a class="anchor" id="xrc_wxribbonbuttonbar"></a>
+wxRibbonButtonBar</h3>
+<p>No additional properties.</p>
+<p><a class="el" href="classwx_ribbon_button_bar.html" title="A ribbon button bar is similar to a traditional toolbar.">wxRibbonButtonBar</a> can have child objects of the <code>button</code> pseudo-class. <code>button</code> objects have the following properties:</p>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
+<tr>
+<th>property </th><th>type </th><th>description </th></tr>
+<tr>
+<td>hybrid </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>If true, the <code>wxRIBBON_BUTTON_HYBRID</code> kind is used (default: false). </td></tr>
+<tr>
+<td>disabled </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Whether the button should be disabled (default: false). </td></tr>
+<tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Item's label (default: empty). </td></tr>
+<tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Item's bitmap (default: none). </td></tr>
+<tr>
+<td>small-bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Small bitmap (default: none). </td></tr>
+<tr>
+<td>disabled-bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Disabled bitmap (default: none). </td></tr>
+<tr>
+<td>small-disabled-bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Small disabled bitmap (default: none). </td></tr>
+<tr>
+<td>help </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Item's help text (default: none). </td></tr>
+</table>
+<h3><a class="anchor" id="xrc_wxribboncontrol"></a>
+wxRibbonControl</h3>
+<p>No additional properties.</p>
+<p>Objects of this type <em>must</em> be subclassed with the <code>subclass</code> attribute.</p>
+<h3><a class="anchor" id="xrc_wxribbongallery"></a>
+wxRibbonGallery</h3>
+<p>No additional properties.</p>
+<p><a class="el" href="classwx_ribbon_gallery.html" title="A ribbon gallery is like a wxListBox, but for bitmaps rather than strings.">wxRibbonGallery</a> can have child objects of the <code>item</code> pseudo-class. <code>item</code> objects have the following properties:</p>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
+<tr>
+<th>property </th><th>type </th><th>description </th></tr>
+<tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Item's bitmap (default: none). </td></tr>
+</table>
+<h3><a class="anchor" id="xrc_wxribbonpage"></a>
+wxRibbonPage</h3>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
+<tr>
+<th>property </th><th>type </th><th>description </th></tr>
+<tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label (default: none). </td></tr>
+<tr>
+<td>icon </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Icon (default: none). </td></tr>
+</table>
+<p>A <a class="el" href="classwx_ribbon_page.html" title="Container for related ribbon panels, and a tab within a ribbon bar.">wxRibbonPage</a> may have children of any type derived from <a class="el" href="classwx_ribbon_control.html" title="wxRibbonControl serves as a base class for all controls which share the ribbon characteristics of hav...">wxRibbonControl</a>. Most commontly, <a class="el" href="classwx_ribbon_panel.html" title="Serves as a container for a group of (ribbon) controls.">wxRibbonPanel</a> is used. As a special case, the <code>panel</code> pseudo-class may be used instead of <code><a class="el" href="classwx_ribbon_panel.html" title="Serves as a container for a group of (ribbon) controls.">wxRibbonPanel</a></code> when used as <a class="el" href="classwx_ribbon_page.html" title="Container for related ribbon panels, and a tab within a ribbon bar.">wxRibbonPage</a> children.</p>
+<h3><a class="anchor" id="xrc_wxribbonpanel"></a>
+wxRibbonPanel</h3>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
+<tr>
+<th>property </th><th>type </th><th>description </th></tr>
+<tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label (default: none). </td></tr>
+<tr>
+<td>icon </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Icon (default: none). </td></tr>
+</table>
+<p>A <a class="el" href="classwx_ribbon_panel.html" title="Serves as a container for a group of (ribbon) controls.">wxRibbonPanel</a> may have children of any type derived from <a class="el" href="classwx_ribbon_control.html" title="wxRibbonControl serves as a base class for all controls which share the ribbon characteristics of hav...">wxRibbonControl</a> or a single <a class="el" href="classwx_sizer.html" title="wxSizer is the abstract base class used for laying out subwindows in a window.">wxSizer</a> child with non-ribbon windows in it.</p>
 <h3><a class="anchor" id="xrc_wxrichtextctrl"></a>
 wxRichTextCtrl</h3>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
@@ -1274,9 +1407,9 @@ wxSplitterWindow</h3>
 <tr>
 <td>orientation </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Orientation of the splitter, either "vertical" or "horizontal" (default: horizontal). </td></tr>
 <tr>
-<td>sashpos </td><td>integer </td><td>Initial position of the sash (default: 0). </td></tr>
+<td>sashpos </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_dimension">Dimension</a> </td><td>Initial position of the sash (default: 0). </td></tr>
 <tr>
-<td>minsize </td><td>integer </td><td>Minimum child size (default: not set). </td></tr>
+<td>minsize </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_dimension">Dimension</a> </td><td>Minimum child size (default: not set). </td></tr>
 <tr>
 <td>gravity </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_float">Floating-point value</a> </td><td>Sash gravity, see <a class="el" href="classwx_splitter_window.html#a3c52925dffd02509d110086d4bb29373" title="Sets the sash gravity.">wxSplitterWindow::SetSashGravity()</a> (default: not set). </td></tr>
 </table>
@@ -1297,9 +1430,9 @@ wxStatusBar</h3>
 <tr>
 <td>fields </td><td>integer </td><td>Number of status bar fields (default: 1). </td></tr>
 <tr>
-<td>widths </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Comma-separated list of <em>fields</em> integers. Each value specifies width of one field; the values are interpreted using the same convention used by <a class="el" href="classwx_status_bar.html#a9abeb55a396c9ea4f0cea9fc06d124ee" title="Sets the widths of the fields in the status line.">wxStatusBar::SetStatusWidths()</a>. </td></tr>
+<td>widths </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Comma-separated list of <em>fields</em> integers. Each value specifies width of one field; the values are interpreted using the same convention used by <a class="el" href="classwx_status_bar.html#a9abeb55a396c9ea4f0cea9fc06d124ee" title="Sets the widths of the fields in the status line.">wxStatusBar::SetStatusWidths()</a> (default: not set). </td></tr>
 <tr>
-<td>styles </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Comma-separated list of <em>fields</em> flags. Each value specifies status bar fieldd style and can be one of <code>wxSB_NORMAL</code>, <code>wxSB_FLAT</code>, <code>wxSB_RAISED</code> or, since wxWidgets 2.9.5, <code>wxSB_SUNKEN</code>. See <a class="el" href="classwx_status_bar.html#a9b8d7edb05ff64d5feb1889f2e189537" title="Sets the styles of the fields in the status line which can make fields appear flat or raised instead ...">wxStatusBar::SetStatusStyles()</a> for their description. </td></tr>
+<td>styles </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_string">String</a> </td><td>Comma-separated list of <em>fields</em> style values. Each value specifies style of one field and can be one of <code>wxSB_NORMAL</code>, <code>wxSB_FLAT</code>, <code>wxSB_RAISED</code> or <code>wxSB_SUNKEN</code> (default: not set). </td></tr>
 </table>
 <h3><a class="anchor" id="xrc_wxstaticbitmap"></a>
 wxStaticBitmap</h3>
@@ -1315,7 +1448,7 @@ wxStaticBox</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Static box's label (required). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Static box's label (default: empty). </td></tr>
 </table>
 <h3><a class="anchor" id="xrc_wxstaticline"></a>
 wxStaticLine</h3>
@@ -1326,9 +1459,9 @@ wxStaticText</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to display (required). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to display (default: empty). </td></tr>
 <tr>
-<td>wrap </td><td>integer </td><td>Wrap the text so that each line is at most the given number of pixels, see <a class="el" href="classwx_static_text.html#af997df62e849c890f0cac6900ee950f5" title="This functions wraps the controls label so that each of its lines becomes at most width pixels wide i...">wxStaticText::Wrap()</a> (default: no wrap). </td></tr>
+<td>wrap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_dimension">Dimension</a> </td><td>Wrap the text so that each line is at most the given number of pixels, see <a class="el" href="classwx_static_text.html#af997df62e849c890f0cac6900ee950f5" title="This functions wraps the controls label so that each of its lines becomes at most width pixels wide i...">wxStaticText::Wrap()</a> (default: no wrap). </td></tr>
 </table>
 <h3><a class="anchor" id="xrc_wxtextctrl"></a>
 wxTextCtrl</h3>
@@ -1349,7 +1482,7 @@ wxToggleButton</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to display on the button (required). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to display on the button (default: empty). </td></tr>
 <tr>
 <td>checked </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Should the button be checked/pressed initially (default: 0)? </td></tr>
 </table>
@@ -1369,14 +1502,14 @@ wxToolBar</h3>
 <tr>
 <td>dontattachtoframe </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>If set to 0 and the toolbar object is child of a <a class="el" href="classwx_frame.html" title="A frame is a window whose size and position can (usually) be changed by the user.">wxFrame</a>, <a class="el" href="classwx_frame.html#ab4017f727aa97560f51457d7302b0ca5" title="Associates a toolbar with the frame.">wxFrame::SetToolBar()</a> is called; otherwise, you have to add it to a frame manually. The toolbar is attached by default, you have to set this property to 1 to disable this behaviour (default: 0). </td></tr>
 </table>
-<p>A toolbar can have one or more child objects of any wxControl-derived class or one of two pseudo-classes: <code>separator</code> or <code>tool</code>.</p>
+<p>A toolbar can have one or more child objects of any wxControl-derived class or one of three pseudo-classes: <code>separator</code>, <code>space</code> or <code>tool</code>.</p>
 <p>The <code>separator</code> pseudo-class is used to insert separators into the toolbar and has neither properties nor children. Similarly, the <code>space</code> pseudo-class is used for stretchable spaces (see <a class="el" href="classwx_tool_bar.html#adb30df5ae52f2fabc974d0dd1376f5cd" title="Adds a stretchable space to the toolbar.">wxToolBar::AddStretchableSpace()</a>, new since wxWidgets 2.9.1).</p>
 <p>The <code>tool</code> pseudo-class objects specify toolbar buttons and have the following properties:</p>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Tool's bitmap (required). </td></tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Tool's bitmap (default: empty). </td></tr>
 <tr>
 <td>bitmap2 </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap for disabled tool (default: derived from <code>bitmap</code>). </td></tr>
 <tr>
@@ -1398,7 +1531,7 @@ wxToolBar</h3>
 </table>
 <p>The presence of a <code>dropdown</code> property indicates that the tool is of type wxITEM_DROPDOWN. It must be either empty or contain exactly one <a class="el" href="overview_xrcformat.html#xrc_wxmenu">wxMenu</a> child object defining the drop-down button associated menu.</p>
 <p>Notice that <code>radio</code>, <code>toggle</code> and <code>dropdown</code> are mutually exclusive.</p>
-<p>Children that are neither <code>tool</code> nor <code>separator</code> must be instances of classes derived from <a class="el" href="classwx_control.html" title="This is the base class for a control or &quot;widget&quot;.">wxControl</a> and are added to the toolbar using <a class="el" href="classwx_tool_bar.html#aec263a8e47372eb78e91b8db8797731d" title="Adds any control to the toolbar, typically e.g. a wxComboBox.">wxToolBar::AddControl()</a>.</p>
+<p>Children that are not <code>tool</code>, <code>space</code> or <code>separator</code> must be instances of classes derived from <a class="el" href="classwx_control.html" title="This is the base class for a control or &quot;widget&quot;.">wxControl</a> and are added to the toolbar using <a class="el" href="classwx_tool_bar.html#aec263a8e47372eb78e91b8db8797731d" title="Adds any control to the toolbar, typically e.g. a wxComboBox.">wxToolBar::AddControl()</a>.</p>
 <p>Example: </p>
 <div class="fragment"><div class="line">&lt;<span class="keywordtype">object</span> <span class="keyword">class</span>=<span class="stringliteral">&quot;wxToolBar&quot;</span>&gt;</div>
 <div class="line">    &lt;style&gt;<a class="code" href="interface_2wx_2toolbar_8h.html#a84627a72058502328269676b81780f89a7360f1b3df900eb618090c012d1caaea" title="&quot;flat&quot; buttons (Win32/GTK only)">wxTB_FLAT</a>|<a class="code" href="interface_2wx_2toolbar_8h.html#a84627a72058502328269676b81780f89aedd850b575f017547a4d9396b51dd940" title="don&#39;t show the divider between toolbar and the window (Win32 only)">wxTB_NODIVIDER</a>&lt;/style&gt;</div>
@@ -1436,38 +1569,56 @@ wxToolBar</h3>
 <div class="line">&lt;/<span class="keywordtype">object</span>&gt;</div>
 </div><!-- fragment --><h3><a class="anchor" id="xrc_wxtoolbook"></a>
 wxToolbook</h3>
-<p>A toolbook can have one or more child objects of the <code>toolbookpage</code> pseudo-class (similarly to <a class="el" href="overview_xrcformat.html#xrc_wxnotebook">wxNotebook</a> and its <code>notebookpage</code>) and one child object of the <a class="el" href="overview_xrcformat.html#xrc_wximagelist">wxImageList</a> class. <code>toolbookpage</code> objects have the following properties:</p>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Sheet page's title (required). </td></tr>
+<td>imagelist </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_imagelist">Image List</a> </td><td>Image list to use for the images (default: none, built implicitly). </td></tr>
+</table>
+<p>A toolbook can have one or more child objects of the <code>toolbookpage</code> pseudo-class (similarly to <a class="el" href="overview_xrcformat.html#xrc_wxnotebook">wxNotebook</a> and its <code>notebookpage</code>).</p>
+<p><code>toolbookpage</code> objects have the following properties:</p>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
-<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap shown alongside the label (default: none). </td></tr>
+<th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item into the image list. </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Sheet page's title (default: empty). </td></tr>
+<tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap shown alongside the label (default: none, mutually exclusive with <code>image</code>). </td></tr>
+<tr>
+<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item into the image list (default: none, mutually exclusive with <code>bitmap</code>, only if imagelist was set). </td></tr>
 <tr>
 <td>selected </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Is the page selected initially (only one page can be selected; default: 0)? </td></tr>
 </table>
 <p>Each <code>toolbookpage</code> has exactly one non-toplevel window as its child.</p>
 <h3><a class="anchor" id="xrc_wxtreectrl"></a>
 wxTreeCtrl</h3>
-<p>A treectrl can have one child object of the <a class="el" href="overview_xrcformat.html#xrc_wximagelist">wxImageList</a> class.</p>
-<p>No additional properties.</p>
-<h3><a class="anchor" id="xrc_wxtreebook"></a>
-wxTreebook</h3>
-<p>A treebook can have one or more child objects of the <code>treebookpage</code> pseudo-class (similarly to <a class="el" href="overview_xrcformat.html#xrc_wxnotebook">wxNotebook</a> and its <code>notebookpage</code>) and one child object of the <a class="el" href="overview_xrcformat.html#xrc_wximagelist">wxImageList</a> class. <code>treebookpage</code> objects have the following properties:</p>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>depth </td><td>integer </td><td>Page's depth in the labels tree (required; see below). </td></tr>
+<td>imagelist </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_imagelist">Image List</a> </td><td>Image list to use for the images (default: none). </td></tr>
+</table>
+<h3><a class="anchor" id="xrc_wxtreebook"></a>
+wxTreebook</h3>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Sheet page's title (required). </td></tr>
+<th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap shown alongside the label (default: none). </td></tr>
+<td>imagelist </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_imagelist">Image List</a> </td><td>Image list to use for the images (default: none, built implicitly). </td></tr>
+</table>
+<p>A treebook can have one or more child objects of the <code>treebookpage</code> pseudo-class (similarly to <a class="el" href="overview_xrcformat.html#xrc_wxnotebook">wxNotebook</a> and its <code>notebookpage</code>).</p>
+<p><code>treebookpage</code> objects have the following properties:</p>
+<table  class="doctable" border="1" cellspacing="0" cellpadding="3">
 <tr>
-<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item into the image list. </td></tr>
+<th>property </th><th>type </th><th>description </th></tr>
+<tr>
+<td>depth </td><td>integer </td><td>Page's depth in the labels tree (default: 0; see below). </td></tr>
+<tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Sheet page's title (default: empty). </td></tr>
+<tr>
+<td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Bitmap shown alongside the label (default: none, mutually exclusive with <code>image</code>). </td></tr>
+<tr>
+<td>image </td><td>integer </td><td>The zero-based index of the image associated with the item into the image list (default: none, mutually exclusive with <code>bitmap</code>, only if imagelist was set). </td></tr>
 <tr>
 <td>selected </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bool">Boolean</a> </td><td>Is the page selected initially (only one page can be selected; default: 0)? </td></tr>
 <tr>
@@ -1536,8 +1687,11 @@ wxWizard</h3>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
+<td>title </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Wizard window's title (default: none). </td></tr>
+<tr>
 <td>bitmap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_bitmap">Bitmap</a> </td><td>Page-specific bitmap (default: none). </td></tr>
 </table>
+<p><a class="el" href="classwx_wizard_page.html" title="wxWizardPage is one of the screens in wxWizard: it must know what are the following and preceding pag...">wxWizardPage</a> and <a class="el" href="classwx_wizard_page_simple.html" title="wxWizardPageSimple is the simplest possible wxWizardPage implementation: it just returns the pointers...">wxWizardPageSimple</a> nodes may have optional children: either exactly one <a class="el" href="overview_xrcformat.html#overview_xrcformat_sizers">sizer</a> child or any number of non-toplevel window objects.</p>
 <p><a class="el" href="classwx_wizard_page_simple.html" title="wxWizardPageSimple is the simplest possible wxWizardPage implementation: it just returns the pointers...">wxWizardPageSimple</a> pages are automatically chained together; <a class="el" href="classwx_wizard_page.html" title="wxWizardPage is one of the screens in wxWizard: it must know what are the following and preceding pag...">wxWizardPage</a> pages transitions must be handled programmatically.</p>
 <h1><a class="anchor" id="overview_xrcformat_sizers"></a>
 Sizers</h1>
@@ -1550,7 +1704,7 @@ Sizers</h1>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>size </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_size">Size</a> </td><td>Size of the empty space (required). </td></tr>
+<td>size </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_size">Size</a> </td><td>Size of the empty space (default: <code>wxDefaultSize</code>). </td></tr>
 </table>
 <p>Both <code>sizeritem</code> and <code>spacer</code> objects can have any of the following properties:</p>
 <table  class="doctable" border="1" cellspacing="0" cellpadding="3">
@@ -1638,7 +1792,7 @@ wxStaticBoxSizer</h2>
 <tr>
 <td>orient </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_style">Style</a> </td><td>Sizer orientation, "wxHORIZONTAL" or "wxVERTICAL" (default: wxHORIZONTAL). </td></tr>
 <tr>
-<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to be used for the static box around the sizer (required). </td></tr>
+<td>label </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Label to be used for the static box around the sizer (default: empty). </td></tr>
 </table>
 <h2><a class="anchor" id="overview_xrcformat_wxgridsizer"></a>
 wxGridSizer</h2>
@@ -1646,13 +1800,13 @@ wxGridSizer</h2>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>rows </td><td>integer </td><td>Number of rows in the grid (default: 0 - determine automatically). </td></tr>
+<td>rows </td><td>unsigned integer </td><td>Number of rows in the grid (default: 0 - determine automatically). </td></tr>
 <tr>
-<td>cols </td><td>integer </td><td>Number of columns in the grid (default: 0 - determine automatically). </td></tr>
+<td>cols </td><td>unsigned integer </td><td>Number of columns in the grid (default: 0 - determine automatically). </td></tr>
 <tr>
-<td>vgap </td><td>integer </td><td>Vertical gap between children (default: 0). </td></tr>
+<td>vgap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_dimension">Dimension</a> </td><td>Vertical gap between children (default: 0). </td></tr>
 <tr>
-<td>hgap </td><td>integer </td><td>Horizontal gap between children (default: 0). </td></tr>
+<td>hgap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_dimension">Dimension</a> </td><td>Horizontal gap between children (default: 0). </td></tr>
 </table>
 <h2><a class="anchor" id="overview_xrcformat_wxflexgridsizer"></a>
 wxFlexGridSizer</h2>
@@ -1660,13 +1814,13 @@ wxFlexGridSizer</h2>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>rows </td><td>integer </td><td>Number of rows in the grid (default: 0 - determine automatically). </td></tr>
+<td>rows </td><td>unsigned integer </td><td>Number of rows in the grid (default: 0 - determine automatically). </td></tr>
 <tr>
-<td>cols </td><td>integer </td><td>Number of columns in the grid (default: 0 - determine automatically). </td></tr>
+<td>cols </td><td>unsigned integer </td><td>Number of columns in the grid (default: 0 - determine automatically). </td></tr>
 <tr>
-<td>vgap </td><td>integer </td><td>Vertical gap between children (default: 0). </td></tr>
+<td>vgap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_dimension">Dimension</a> </td><td>Vertical gap between children (default: 0). </td></tr>
 <tr>
-<td>hgap </td><td>integer </td><td>Horizontal gap between children (default: 0). </td></tr>
+<td>hgap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_dimension">Dimension</a> </td><td>Horizontal gap between children (default: 0). </td></tr>
 <tr>
 <td>flexibledirection </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_style">Style</a> </td><td>Flexible direction, <code>wxVERTICAL</code>, <code>wxHORIZONTAL</code> or <code>wxBOTH</code> (default). This property is only available since wxWidgets 2.9.5. </td></tr>
 <tr>
@@ -1682,9 +1836,9 @@ wxGridBagSizer</h2>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>vgap </td><td>integer </td><td>Vertical gap between children (default: 0). </td></tr>
+<td>vgap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_dimension">Dimension</a> </td><td>Vertical gap between children (default: 0). </td></tr>
 <tr>
-<td>hgap </td><td>integer </td><td>Horizontal gap between children (default: 0). </td></tr>
+<td>hgap </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_dimension">Dimension</a> </td><td>Horizontal gap between children (default: 0). </td></tr>
 <tr>
 <td>flexibledirection </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_style">Style</a> </td><td>Flexible direction, <code>wxVERTICAL</code>, <code>wxHORIZONTAL</code>, <code>wxBOTH</code> (default: <code>wxBOTH</code>). </td></tr>
 <tr>
@@ -1700,7 +1854,7 @@ wxWrapSizer</h2>
 <tr>
 <th>property </th><th>type </th><th>description </th></tr>
 <tr>
-<td>orient </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_style">Style</a> </td><td>Sizer orientation, "wxHORIZONTAL" or "wxVERTICAL" (required). </td></tr>
+<td>orient </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_style">Style</a> </td><td>Sizer orientation, "wxHORIZONTAL" or "wxVERTICAL" (default: wxHORIZONTAL). </td></tr>
 <tr>
 <td>flag </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_style">Style</a> </td><td><a class="el" href="classwx_wrap_sizer.html" title="A wrap sizer lays out its items in a single line, like a box sizer – as long as there is space availa...">wxWrapSizer</a> flags (default: 0). </td></tr>
 </table>
@@ -1840,7 +1994,7 @@ Versions Before 2.3.0.1</h2>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:13 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:09 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

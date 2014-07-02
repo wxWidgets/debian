@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -110,7 +110,7 @@
 <li><span class="event">EVT_STC_HOTSPOT_RELEASE_CLICK(id,  fn)</span>:<div class="eventDesc"> TOWRITE </div></li>
 </ul>
 <h2></h2>
-<div><span class="lib">Library:</span>&#160;&#160;<span class="lib_text"><a class="el" href="page_libs.html#page_libs_wxbase">wxBase</a></span></div><div><span class="category">Category:</span>&#160;&#160;<span class="category_text"><a class="el" href="group__group__class__stc.html">Scintilla Text Editor</a></span></div><dl class="section see"><dt>See Also</dt><dd><a class="el" href="classwx_styled_text_event.html" title="The type of events sent from wxStyledTextCtrl.">wxStyledTextEvent</a> </dd></dl>
+<div><span class="lib">Library:</span>&#160;&#160;<span class="lib_text"><a class="el" href="page_libs.html#page_libs_wxstc">wxSTC</a></span></div><div><span class="category">Category:</span>&#160;&#160;<span class="category_text"><a class="el" href="group__group__class__stc.html">Scintilla Text Editor</a></span></div><dl class="section see"><dt>See Also</dt><dd><a class="el" href="classwx_styled_text_event.html" title="The type of events sent from wxStyledTextCtrl.">wxStyledTextEvent</a> </dd></dl>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -808,7 +808,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a9f9600dbe5b828f493e323f0dabd67ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the target text with the argument text.  <a href="#a9f9600dbe5b828f493e323f0dabd67ca"></a><br/></td></tr>
 <tr class="separator:a9f9600dbe5b828f493e323f0dabd67ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6e45a7a50bb6e524b79fa3f730765e5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_styled_text_ctrl.html#ae6e45a7a50bb6e524b79fa3f730765e5">ReplaceTargetRE</a> (const <a class="el" href="classwx_string.html">wxString</a> &amp;text)</td></tr>
-<tr class="memdesc:ae6e45a7a50bb6e524b79fa3f730765e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the target text with the argument text after  processing.  <a href="#ae6e45a7a50bb6e524b79fa3f730765e5"></a><br/></td></tr>
+<tr class="memdesc:ae6e45a7a50bb6e524b79fa3f730765e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the target text with the argument text after \d processing.  <a href="#ae6e45a7a50bb6e524b79fa3f730765e5"></a><br/></td></tr>
 <tr class="separator:ae6e45a7a50bb6e524b79fa3f730765e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a741f27ac90f15b36c172708e6b2276da"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_styled_text_ctrl.html#a741f27ac90f15b36c172708e6b2276da">SearchInTarget</a> (const <a class="el" href="classwx_string.html">wxString</a> &amp;text)</td></tr>
 <tr class="memdesc:a741f27ac90f15b36c172708e6b2276da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Search for a counted string in the target and set the target to the found range.  <a href="#a741f27ac90f15b36c172708e6b2276da"></a><br/></td></tr>
@@ -2885,6 +2885,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a63c7351618fd77330d80a250b3719519 inherit pub_methods_classwx_evt_handler"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwx_evt_handler.html#a63c7351618fd77330d80a250b3719519">CallAfter</a> (void(T::*method)(T1,...), T1 x1,...)</td></tr>
 <tr class="memdesc:a63c7351618fd77330d80a250b3719519 inherit pub_methods_classwx_evt_handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously call the given method.  <a href="#a63c7351618fd77330d80a250b3719519"></a><br/></td></tr>
 <tr class="separator:a63c7351618fd77330d80a250b3719519 inherit pub_methods_classwx_evt_handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwx_evt_handler.html#a910416e4d0b1f38cec02213b8a0c6a12">CallAfter</a> (const T &amp;functor)</td></tr>
+<tr class="memdesc:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously call the given functor.  <a href="#a910416e4d0b1f38cec02213b8a0c6a12"></a><br/></td></tr>
+<tr class="separator:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0f5d2cb29a04c1f7f82eb6b351f79fb inherit pub_methods_classwx_evt_handler"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_evt_handler.html#ac0f5d2cb29a04c1f7f82eb6b351f79fb">ProcessEventLocally</a> (<a class="el" href="classwx_event.html">wxEvent</a> &amp;event)</td></tr>
 <tr class="memdesc:ac0f5d2cb29a04c1f7f82eb6b351f79fb inherit pub_methods_classwx_evt_handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to process the event in this handler and all those chained to it.  <a href="#ac0f5d2cb29a04c1f7f82eb6b351f79fb"></a><br/></td></tr>
 <tr class="separator:ac0f5d2cb29a04c1f7f82eb6b351f79fb inherit pub_methods_classwx_evt_handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -11566,8 +11570,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Replace the target text with the argument text after  processing. </p>
-<p>Text is counted so it can contain NULs. Looks for  where d is between 1 and 9 and replaces these with the strings matched in the last search operation which were surrounded by ( and ). Returns the length of the replacement text including any change caused by processing the  patterns. </p>
+<p>Replace the target text with the argument text after \d processing. </p>
+<p>Text is counted so it can contain NULs. Looks for \d where d is between 1 and 9 and replaces these with the strings matched in the last search operation which were surrounded by ( and ). Returns the length of the replacement text including any change caused by processing the \d patterns. </p>
 
 </div>
 </div>
@@ -16715,7 +16719,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:30 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:59 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

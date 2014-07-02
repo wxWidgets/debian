@@ -2,7 +2,6 @@
 // Name:        intl.h
 // Purpose:     interface of wxLocale
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -355,13 +354,13 @@ public:
     const wxString& GetName() const;
 
     /**
-        Calls wxTranslations::GetString(const wxString&, const wxString&) const.
+        Calls wxGetTranslation(const wxString&, const wxString&).
     */
     virtual const wxString& GetString(const wxString& origString,
                                       const wxString& domain = wxEmptyString) const;
 
     /**
-        Calls wxTranslations::GetString(const wxString&, const wxString&, unsigned, const wxString&) const.
+        Calls wxGetTranslation(const wxString&, const wxString&, unsigned, const wxString&).
     */
     virtual const wxString& GetString(const wxString& origString,
                                       const wxString& origString2, unsigned n,
@@ -455,7 +454,7 @@ public:
 
         @param name
             The name of the locale. Only used in diagnostic messages.
-        @param short
+        @param shortName
             The standard 2 letter locale abbreviation; it is used as the
             directory prefix when looking for the message catalog files.
         @param locale

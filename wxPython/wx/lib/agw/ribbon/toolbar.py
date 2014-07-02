@@ -1037,7 +1037,7 @@ class RibbonToolBar(RibbonControl):
         major_axis = ((self._art.GetFlags() & RIBBON_BAR_FLOW_VERTICAL) and [wx.VERTICAL] or [wx.HORIZONTAL])[0]
         self.SetMinSize(wx.Size(0, 0))
 
-        minSize = wx.Size(sys.maxint, sys.maxint)
+        minSize = wx.Size(-1, -1)
 
         # See if we're sizing flexibly (i.e. wrapping), and set min size differently
         sizingFlexibly = False

@@ -2,7 +2,6 @@
 // Name:        htmllbox.h
 // Purpose:     interface of wxHtmlListBox
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -197,7 +196,7 @@ protected:
 
     @library{wxhtml}
     @category{ctrl}
-    @appearance{simplehtmllistbox}
+    @genericAppearance{simplehtmllistbox}
 
     @see wxSimpleHtmlListBox::Create
 */

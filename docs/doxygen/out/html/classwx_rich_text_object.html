@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -67,7 +67,7 @@
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="classwx_rich_text_object__inherit__graph.png" border="0" usemap="#wx_rich_text_object_inherit__map" alt="Inheritance graph"/></div>
 <map name="wx_rich_text_object_inherit__map" id="wx_rich_text_object_inherit__map">
-<area shape="rect" id="node5" href="classwx_rich_text_composite_object.html" title="Objects of this class can contain other objects." alt="" coords="85,161,272,189"/><area shape="rect" id="node21" href="classwx_rich_text_image.html" title="This class implements a graphic object." alt="" coords="296,161,419,189"/><area shape="rect" id="node23" href="classwx_rich_text_plain_text.html" title="This object represents a single piece of text." alt="" coords="443,161,584,189"/><area shape="rect" id="node2" href="classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="320,6,395,34"/><area shape="rect" id="node7" href="classwx_rich_text_paragraph.html" title="This object represents a single paragraph containing various objects such as text content..." alt="" coords="5,238,152,266"/><area shape="rect" id="node9" href="classwx_rich_text_paragraph_layout_box.html" title="wxRichTextParagraphLayoutBox" alt="" coords="176,238,381,266"/><area shape="rect" id="node11" href="classwx_rich_text_box.html" title="This class implements a floating or inline text box, containing paragraphs." alt="" coords="85,315,195,343"/><area shape="rect" id="node17" href="classwx_rich_text_buffer.html" title="This is a kind of paragraph layout box, used to represent the whole buffer." alt="" coords="219,315,339,343"/><area shape="rect" id="node19" href="classwx_rich_text_field.html" title="This class implements the general concept of a field, an object that represents additional functional..." alt="" coords="363,315,477,343"/><area shape="rect" id="node13" href="classwx_rich_text_cell.html" title="wxRichTextCell is the cell in a table, in which the user can type." alt="" coords="16,393,125,421"/><area shape="rect" id="node15" href="classwx_rich_text_table.html" title="wxRichTextTable represents a table with arbitrary columns and rows." alt="" coords="149,393,269,421"/></map>
+<area shape="rect" id="node5" href="classwx_rich_text_composite_object.html" title="Objects of this class can contain other objects." alt="" coords="85,161,272,189"/><area shape="rect" id="node21" href="classwx_rich_text_image.html" title="This class implements a graphic object." alt="" coords="296,161,419,189"/><area shape="rect" id="node23" href="classwx_rich_text_plain_text.html" title="This object represents a single piece of text." alt="" coords="443,161,584,189"/><area shape="rect" id="node2" href="classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="320,6,395,34"/><area shape="rect" id="node7" href="classwx_rich_text_paragraph.html" title="This object represents a single paragraph containing various objects such as text content..." alt="" coords="5,238,152,266"/><area shape="rect" id="node9" href="classwx_rich_text_paragraph_layout_box.html" title="This class knows how to lay out paragraphs." alt="" coords="176,238,381,266"/><area shape="rect" id="node11" href="classwx_rich_text_box.html" title="This class implements a floating or inline text box, containing paragraphs." alt="" coords="85,315,195,343"/><area shape="rect" id="node17" href="classwx_rich_text_buffer.html" title="This is a kind of paragraph layout box, used to represent the whole buffer." alt="" coords="219,315,339,343"/><area shape="rect" id="node19" href="classwx_rich_text_field.html" title="This class implements the general concept of a field, an object that represents additional functional..." alt="" coords="363,315,477,343"/><area shape="rect" id="node13" href="classwx_rich_text_cell.html" title="wxRichTextCell is the cell in a table, in which the user can type." alt="" coords="16,393,125,421"/><area shape="rect" id="node15" href="classwx_rich_text_table.html" title="wxRichTextTable represents a table with arbitrary columns and rows." alt="" coords="149,393,269,421"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This is the base for drawable rich text objects. </p>
@@ -266,6 +266,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a207fff9a88e3bde658309d615bd29518"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#a207fff9a88e3bde658309d615bd29518">LayoutToBestSize</a> (<a class="el" href="classwx_d_c.html">wxDC</a> &amp;dc, <a class="el" href="classwx_rich_text_drawing_context.html">wxRichTextDrawingContext</a> &amp;context, <a class="el" href="classwx_rich_text_buffer.html">wxRichTextBuffer</a> *buffer, const <a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;parentAttr, const <a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;attr, const <a class="el" href="classwx_rect.html">wxRect</a> &amp;availableParentSpace, const <a class="el" href="classwx_rect.html">wxRect</a> &amp;availableContainerSpace, int style)</td></tr>
 <tr class="memdesc:a207fff9a88e3bde658309d615bd29518"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lays out the object first with a given amount of space, and then if no width was specified in attr, lays out the object again using the minimum size.  <a href="#a207fff9a88e3bde658309d615bd29518"></a><br/></td></tr>
 <tr class="separator:a207fff9a88e3bde658309d615bd29518"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a591ee431cd21bbde31b102231e79d8a1"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#a591ee431cd21bbde31b102231e79d8a1">AdjustAttributes</a> (<a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;attr, <a class="el" href="classwx_rich_text_drawing_context.html">wxRichTextDrawingContext</a> &amp;context)</td></tr>
+<tr class="memdesc:a591ee431cd21bbde31b102231e79d8a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adjusts the attributes for virtual attribute provision, collapsed borders, etc.  <a href="#a591ee431cd21bbde31b102231e79d8a1"></a><br/></td></tr>
+<tr class="separator:a591ee431cd21bbde31b102231e79d8a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4829cfbe45213f9a8f6e66e09e517399"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#a4829cfbe45213f9a8f6e66e09e517399">SetAttributes</a> (const <a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;attr)</td></tr>
 <tr class="memdesc:a4829cfbe45213f9a8f6e66e09e517399"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the object's attributes.  <a href="#a4829cfbe45213f9a8f6e66e09e517399"></a><br/></td></tr>
 <tr class="separator:a4829cfbe45213f9a8f6e66e09e517399"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -378,9 +381,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa582aba937334f039ab903b826787058"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#aa582aba937334f039ab903b826787058">ConvertPixelsToTenthsMM</a> (int ppi, int pixels, double scale=1.0)</td></tr>
 <tr class="memdesc:aa582aba937334f039ab903b826787058"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert units in pixels to tenths of a millimetre.  <a href="#aa582aba937334f039ab903b826787058"></a><br/></td></tr>
 <tr class="separator:aa582aba937334f039ab903b826787058"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a247f00b530db41c841e35a38b0c83817"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#a247f00b530db41c841e35a38b0c83817">DrawBoxAttributes</a> (<a class="el" href="classwx_d_c.html">wxDC</a> &amp;dc, <a class="el" href="classwx_rich_text_buffer.html">wxRichTextBuffer</a> *buffer, const <a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;attr, const <a class="el" href="classwx_rect.html">wxRect</a> &amp;boxRect, int flags=0)</td></tr>
-<tr class="memdesc:a247f00b530db41c841e35a38b0c83817"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the borders and background for the given rectangle and attributes.  <a href="#a247f00b530db41c841e35a38b0c83817"></a><br/></td></tr>
-<tr class="separator:a247f00b530db41c841e35a38b0c83817"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b02aac99c7d13b89c8ba3f26229c2e2"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#a0b02aac99c7d13b89c8ba3f26229c2e2">DrawBoxAttributes</a> (<a class="el" href="classwx_d_c.html">wxDC</a> &amp;dc, <a class="el" href="classwx_rich_text_buffer.html">wxRichTextBuffer</a> *buffer, const <a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;attr, const <a class="el" href="classwx_rect.html">wxRect</a> &amp;boxRect, int flags=0, <a class="el" href="classwx_rich_text_object.html">wxRichTextObject</a> *obj=NULL)</td></tr>
+<tr class="memdesc:a0b02aac99c7d13b89c8ba3f26229c2e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the borders and background for the given rectangle and attributes.  <a href="#a0b02aac99c7d13b89c8ba3f26229c2e2"></a><br/></td></tr>
+<tr class="separator:a0b02aac99c7d13b89c8ba3f26229c2e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f415917e184888f4471d752d0353031"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_rich_text_object.html#a4f415917e184888f4471d752d0353031">DrawBorder</a> (<a class="el" href="classwx_d_c.html">wxDC</a> &amp;dc, <a class="el" href="classwx_rich_text_buffer.html">wxRichTextBuffer</a> *buffer, const <a class="el" href="classwx_text_attr_borders.html">wxTextAttrBorders</a> &amp;attr, const <a class="el" href="classwx_rect.html">wxRect</a> &amp;rect, int flags=0)</td></tr>
 <tr class="memdesc:a4f415917e184888f4471d752d0353031"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a border.  <a href="#a4f415917e184888f4471d752d0353031"></a><br/></td></tr>
 <tr class="separator:a4f415917e184888f4471d752d0353031"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -506,6 +509,42 @@ Additional Inherited Members</h2></td></tr>
 <p>For example, containers supporting text, such as a text box object, can accept the focus, but a table can't (set the focus to individual cells instead). </p>
 
 <p>Reimplemented in <a class="el" href="classwx_rich_text_table.html#acd2f531a792809c45b69d37b1b1c3e5f">wxRichTextTable</a>, <a class="el" href="classwx_rich_text_field.html#af0ead778de15010290a2ea3c6d7cbb80">wxRichTextField</a>, and <a class="el" href="classwx_rich_text_paragraph_layout_box.html#ad22e7586b1fe2993e7a6fc622470b3ad">wxRichTextParagraphLayoutBox</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a591ee431cd21bbde31b102231e79d8a1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool wxRichTextObject::AdjustAttributes </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwx_rich_text_attr.html">wxRichTextAttr</a> &amp;&#160;</td>
+          <td class="paramname"><em>attr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwx_rich_text_drawing_context.html">wxRichTextDrawingContext</a> &amp;&#160;</td>
+          <td class="paramname"><em>context</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Adjusts the attributes for virtual attribute provision, collapsed borders, etc. </p>
 
 </div>
 </div>
@@ -1083,7 +1122,7 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a247f00b530db41c841e35a38b0c83817"></a>
+<a class="anchor" id="a0b02aac99c7d13b89c8ba3f26229c2e2"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1118,7 +1157,13 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>flags</em> = <code>0</code>&#160;</td>
+          <td class="paramname"><em>flags</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwx_rich_text_object.html">wxRichTextObject</a> *&#160;</td>
+          <td class="paramname"><em>obj</em> = <code>NULL</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -2358,7 +2403,7 @@ Additional Inherited Members</h2></td></tr>
 <p>The function puts the position in <em>textPosition</em> if one is found. <em>pt</em> is in logical units (a zero y position is at the beginning of the buffer).</p>
 <dl class="section return"><dt>Returns</dt><dd>One of the <a class="el" href="richtextbuffer_8h.html#ad855d173e40a6cffd90b8fe2b78c1490" title="Flags returned from hit-testing, or passed to hit-test function.">wxRichTextHitTestFlags</a> values. </dd></dl>
 
-<p>Reimplemented in <a class="el" href="classwx_rich_text_buffer.html#a2b82943d3a78b564b1d910fa62ee9302">wxRichTextBuffer</a>, <a class="el" href="classwx_rich_text_paragraph.html#a5acd6c4e87eac9512a33c0972fcb03fc">wxRichTextParagraph</a>, <a class="el" href="classwx_rich_text_paragraph_layout_box.html#affec7c54228ff46b74beda1609f444d8">wxRichTextParagraphLayoutBox</a>, and <a class="el" href="classwx_rich_text_composite_object.html#afef3875a33413d27027588f42808ac22">wxRichTextCompositeObject</a>.</p>
+<p>Reimplemented in <a class="el" href="classwx_rich_text_table.html#afd36011ba90432825e0b4121d58ea770">wxRichTextTable</a>, <a class="el" href="classwx_rich_text_cell.html#a7055d07c13a714b8d693ff76edd605f3">wxRichTextCell</a>, <a class="el" href="classwx_rich_text_buffer.html#a2b82943d3a78b564b1d910fa62ee9302">wxRichTextBuffer</a>, <a class="el" href="classwx_rich_text_paragraph.html#a5acd6c4e87eac9512a33c0972fcb03fc">wxRichTextParagraph</a>, <a class="el" href="classwx_rich_text_paragraph_layout_box.html#affec7c54228ff46b74beda1609f444d8">wxRichTextParagraphLayoutBox</a>, and <a class="el" href="classwx_rich_text_composite_object.html#afef3875a33413d27027588f42808ac22">wxRichTextCompositeObject</a>.</p>
 
 </div>
 </div>
@@ -2670,7 +2715,7 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Lay the item out at the specified position with the given size constraint. </p>
-<p>Layout must set the cached size.  is the available space for the object, and <em>parentRect</em> is the container that is used to determine a relative size or position (for example if a text box must be 50% of the parent text box). </p>
+<p>Layout must set the cached size. <em>rect</em> is the available space for the object, and <em>parentRect</em> is the container that is used to determine a relative size or position (for example if a text box must be 50% of the parent text box). </p>
 
 <p>Implemented in <a class="el" href="classwx_rich_text_table.html#a9cfed3a7dc80e664b23b3e18df5bc705">wxRichTextTable</a>, <a class="el" href="classwx_rich_text_image.html#ae409c24c5ab3c4bf3576086d331e0075">wxRichTextImage</a>, <a class="el" href="classwx_rich_text_plain_text.html#a2859bba9bebba925dcb8120ea0a12bf7">wxRichTextPlainText</a>, <a class="el" href="classwx_rich_text_paragraph.html#a6d120d72e8961d365a2f87071be0d3fd">wxRichTextParagraph</a>, <a class="el" href="classwx_rich_text_field.html#a75fbf6af12162f4e4d0b7c9ca0154013">wxRichTextField</a>, and <a class="el" href="classwx_rich_text_paragraph_layout_box.html#a790b7411a1fc83b518f02f9d3ca040d0">wxRichTextParagraphLayoutBox</a>.</p>
 
@@ -3475,7 +3520,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:27 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:31 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

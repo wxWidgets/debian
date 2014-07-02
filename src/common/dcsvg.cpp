@@ -3,7 +3,6 @@
 // Purpose:     SVG sample
 // Author:      Chris Elliott
 // Modified by:
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -27,6 +26,8 @@
 #include "wx/dcsvg.h"
 #include "wx/wfstream.h"
 #include "wx/filename.h"
+
+#include "wx/private/markupparser.h"
 
 // ----------------------------------------------------------
 // Global utilities
@@ -294,7 +295,7 @@ void wxSVGFileDCImpl::DoDrawRotatedText(const wxString& sText, wxCoord x, wxCoor
     //text will be solid, unless alpha value isn't opaque in the foreground colour
     s += wxBrushString(m_textForegroundColour) + wxPenString(m_textForegroundColour);
     sTmp.Printf ( wxT("stroke-width:0;\"  transform=\"rotate( %s %d %d )  \" >"),  NumStr(-angle), x,y );
-    s += sTmp + sText + wxT("</text> ") + wxT("\n");
+    s += sTmp + wxMarkupParser::Quote(sText) + wxT("</text> ") + wxT("\n");
     if (m_OK)
     {
         write(s);

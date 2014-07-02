@@ -3,7 +3,6 @@
 // Purpose:     Controls wxWidgets sample
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id$
 // Copyright:   (c) Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -2059,7 +2058,7 @@ void MyFrame::OnIdle( wxIdleEvent& WXUNUSED(event) )
 #endif
                     , s_windowFocus->GetName().c_str()
 #ifdef __WXMSW__
-                    , (unsigned int) s_windowFocus->GetHWND()
+                    , (unsigned)wxPtrToUInt(s_windowFocus->GetHWND())
 #endif
                       );
         }

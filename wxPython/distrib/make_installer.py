@@ -136,8 +136,6 @@ Source: "wx\lib\pubsub\*.py";                   DestDir: "{app}\%(PKGDIR)s\wx\li
 Source: "wx\lib\pubsub\core\*.py";              DestDir: "{app}\%(PKGDIR)s\wx\lib\pubsub\core"; Components: core
 Source: "wx\lib\pubsub\core\arg1\*.py";         DestDir: "{app}\%(PKGDIR)s\wx\lib\pubsub\core\arg1"; Components: core
 Source: "wx\lib\pubsub\core\kwargs\*.py";       DestDir: "{app}\%(PKGDIR)s\wx\lib\pubsub\core\kwargs"; Components: core
-Source: "wx\lib\pubsub\pubsub1\*.py";           DestDir: "{app}\%(PKGDIR)s\wx\lib\pubsub\pubsub1"; Components: core
-Source: "wx\lib\pubsub\pubsub2\*.py";           DestDir: "{app}\%(PKGDIR)s\wx\lib\pubsub\pubsub2"; Components: core
 Source: "wx\lib\pubsub\utils\*.py";             DestDir: "{app}\%(PKGDIR)s\wx\lib\pubsub\utils"; Components: core
 Source: "wx\py\*.py";                           DestDir: "{app}\%(PKGDIR)s\wx\py"; Components: core
 Source: "wx\py\*.txt";                          DestDir: "{app}\%(PKGDIR)s\wx\py"; Components: core
@@ -287,10 +285,6 @@ Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\pubsub\core\arg1\*.pyc"
 Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\pubsub\core\arg1\*.pyo"
 Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\pubsub\core\kwargs\*.pyc";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\pubsub\core\kwargs\*.pyo";
-Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\pubsub\pubsub1\*.pyc";
-Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\pubsub\pubsub1\*.pyo";
-Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\pubsub\pubsub2\*.pyc";
-Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\pubsub\pubsub2\*.pyo";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\pubsub\utils\*.pyc";
 Type: files; Name: "{app}\%(PKGDIR)s\wx\lib\pubsub\utils\*.pyo";
 
@@ -593,14 +587,13 @@ Source: "samples\hangman\*.py";             DestDir: "{app}\samples\hangman";
 Source: "samples\mainloop\*.py";            DestDir: "{app}\samples\mainloop";
 
 Source: "samples\pubsub\*.bat";            DestDir: "{app}\samples\pubsub";
+Source: "samples\pubsub\*.py";            DestDir: "{app}\samples\pubsub";
 Source: "samples\pubsub\advanced\*.txt";   DestDir: "{app}\samples\advanced";
 Source: "samples\pubsub\advanced\*.py";    DestDir: "{app}\samples\advanced";
 Source: "samples\pubsub\basic_arg1\*.txt";   DestDir: "{app}\samples\basic_arg1";
 Source: "samples\pubsub\basic_arg1\*.py";    DestDir: "{app}\samples\basic_arg1";
 Source: "samples\pubsub\basic_kwargs\*.txt";   DestDir: "{app}\samples\basic_kwargs";
 Source: "samples\pubsub\basic_kwargs\*.py";    DestDir: "{app}\samples\basic_kwargs";
-Source: "samples\pubsub\basic_v1\*.txt";   DestDir: "{app}\samples\basic_v1";
-Source: "samples\pubsub\basic_v1\*.py";    DestDir: "{app}\samples\basic_v1";
 
 Source: "samples\pySketch\*.py";            DestDir: "{app}\samples\pySketch";
 Source: "samples\pySketch\images\*.bmp";    DestDir: "{app}\samples\pySketch\images";
@@ -706,8 +699,8 @@ Type: files; Name: "{app}\samples\pubsub\basic_arg1\*.pyc";
 Type: files; Name: "{app}\samples\pubsub\basic_arg1\*.pyo"; 
 Type: files; Name: "{app}\samples\pubsub\basic_kwargs\*.pyc";
 Type: files; Name: "{app}\samples\pubsub\basic_kwargs\*.pyo"; 
-Type: files; Name: "{app}\samples\pubsub\basic_v1\*.pyc";   
-Type: files; Name: "{app}\samples\pubsub\basic_v1\*.pyo";    
+Type: files; Name: "{app}\samples\pubsub\*.pyc";   
+Type: files; Name: "{app}\samples\pubsub\*.pyo";    
 Type: files; Name: "{app}\samples\pySketch\*.pyc";
 Type: files; Name: "{app}\samples\pySketch\*.pyo";
 Type: files; Name: "{app}\samples\simple\*.pyc";
@@ -768,7 +761,7 @@ def find_DLLs():
     if os.environ.get('CPU', '') in ['AMD64', 'X64']:
         # Just hard-code it for now until a good solution for finding
         # the right dumpbin can be found...
-        return '295u', sys.version[:3]
+        return '30u', sys.version[:3]
         
     WXDLLVER = PYTHONVER = None
 

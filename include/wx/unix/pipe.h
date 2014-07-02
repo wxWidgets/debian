@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     24.06.2003 (extracted from src/unix/utilsunx.cpp)
-// RCS-ID:      $Id$
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,7 +44,7 @@ public:
     {
         if ( pipe(m_fds) == -1 )
         {
-            wxLogSysError(_("Pipe creation failed"));
+            wxLogSysError(wxGetTranslation("Pipe creation failed"));
 
             return false;
         }

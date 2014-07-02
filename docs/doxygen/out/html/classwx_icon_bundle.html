@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -469,7 +469,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Returns the icon with the given size. </p>
 <p>If <em>size</em> is <a class="el" href="gdicmn_8h.html#a33a012cdb075e9f78c93f63bec2dc27b" title="Global instance of a wxSize object initialized to (-1,-1).">wxDefaultSize</a>, it is interpreted as the standard system icon size, i.e. the size returned by <a class="el" href="classwx_system_settings.html#aa18e3b5794dc4193c4b0668d28d4933a" title="Returns the value of a system metric, or -1 if the metric is not supported on the current system...">wxSystemSettings::GetMetric()</a> for <code>wxSYS_ICON_X</code> and <code>wxSYS_ICON_Y</code>.</p>
-<p>If the bundle contains an icon with exactly the requested size, it's always returned. Otherwise, the behaviour depends on the flags. If only ::FALLBACK_NONE is given, the function returns an invalid icon. If ::FALLBACK_SYSTEM is given, it tries to find the icon of standard system size, regardless of the size passed as parameter. Otherwise, or if the icon system size is not found neither, but ::FALLBACK_NEAREST_LARGER flag is specified, the function returns the smallest icon of the size larger than the requested one or, if this fails too, just the icon closest to the specified size.</p>
+<p>If the bundle contains an icon with exactly the requested size, it's always returned. Otherwise, the behaviour depends on the flags. If only <a class="el" href="classwx_icon_bundle.html#a0ced1a78e7f772b4057a0e0f30151336ace97e3a6d1a418f379ff610379db0c3c" title="Return invalid icon if exact size is not found.">wxIconBundle::FALLBACK_NONE</a> is given, the function returns an invalid icon. If <a class="el" href="classwx_icon_bundle.html#a0ced1a78e7f772b4057a0e0f30151336a27467ada8c18746e09ed0125eaffaa74" title="Return the icon of the system icon size if exact size is not found.">wxIconBundle::FALLBACK_SYSTEM</a> is given, it tries to find the icon of standard system size, regardless of the size passed as parameter. Otherwise, or if the icon system size is not found neither, but <a class="el" href="classwx_icon_bundle.html#a0ced1a78e7f772b4057a0e0f30151336a1ae672eced490bb4304c78471e922d69" title="Return the icon of closest larger size or, if there is no icon of larger size in the bundle...">wxIconBundle::FALLBACK_NEAREST_LARGER</a> flag is specified, the function returns the smallest icon of the size larger than the requested one or, if this fails too, just the icon closest to the specified size.</p>
 <p>The <em>flags</em> parameter is available only since wxWidgets 2.9.4. </p>
 
 </div>
@@ -596,7 +596,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:20 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:19 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

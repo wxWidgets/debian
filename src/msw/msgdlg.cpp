@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -43,9 +42,9 @@
 #include "wx/msw/private/metrics.h"
 #include "wx/msw/private/msgdlg.h"
 #include "wx/modalhook.h"
+#include "wx/fontutil.h"
 
 #if wxUSE_MSGBOX_HOOK
-    #include "wx/fontutil.h"
     #include "wx/textbuf.h"
     #include "wx/display.h"
 #endif

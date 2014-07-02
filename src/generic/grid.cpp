@@ -4,7 +4,6 @@
 // Author:      Michael Bedward (based on code by Julian Smart, Robin Dunn)
 // Modified by: Robin Dunn, Vadim Zeitlin, Santiago Palacios
 // Created:     1/08/1999
-// RCS-ID:      $Id$
 // Copyright:   (c) Michael Bedward (mbedward@ozemail.com.au)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -3267,10 +3266,7 @@ void wxGrid::ProcessRowLabelMouseEvent( wxMouseEvent& event )
     if ( event.Dragging() )
     {
         if (!m_isDragging)
-        {
             m_isDragging = true;
-            m_rowLabelWin->CaptureMouse();
-        }
 
         if ( event.LeftIsDown() )
         {
@@ -3320,11 +3316,7 @@ void wxGrid::ProcessRowLabelMouseEvent( wxMouseEvent& event )
         return;
 
     if (m_isDragging)
-    {
-        if (m_rowLabelWin->HasCapture())
-            m_rowLabelWin->ReleaseMouse();
         m_isDragging = false;
-    }
 
     // ------------ Entering or leaving the window
     //
@@ -3551,7 +3543,6 @@ void wxGrid::ProcessColLabelMouseEvent( wxMouseEvent& event )
         if (!m_isDragging)
         {
             m_isDragging = true;
-            GetColLabelWindow()->CaptureMouse();
 
             if ( m_cursorMode == WXGRID_CURSOR_MOVE_COL && col != -1 )
                 DoStartMoveCol(col);
@@ -3642,11 +3633,7 @@ void wxGrid::ProcessColLabelMouseEvent( wxMouseEvent& event )
         return;
 
     if (m_isDragging)
-    {
-        if (GetColLabelWindow()->HasCapture())
-            GetColLabelWindow()->ReleaseMouse();
         m_isDragging = false;
-    }
 
     // ------------ Entering or leaving the window
     //
@@ -8411,11 +8398,17 @@ wxGrid::AutoSizeColOrRow(int colOrRow, bool setAsMin, wxGridDirection direction)
     {
         if ( column )
         {
+            if ( !IsRowShown(rowOrCol) )
+                continue;
+
             row = rowOrCol;
             col = colOrRow;
         }
         else
         {
+            if ( !IsColShown(rowOrCol) )
+                continue;
+
             row = colOrRow;
             col = rowOrCol;
         }

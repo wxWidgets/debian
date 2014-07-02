@@ -4,7 +4,6 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -415,6 +414,9 @@ bool wxWindowMac::Create(wxWindowMac *parent,
         return false;
 
     m_windowVariant = parent->GetWindowVariant() ;
+
+    m_hScrollBarAlwaysShown =
+    m_vScrollBarAlwaysShown = HasFlag(wxALWAYS_SHOW_SB);
 
     if ( m_peer != kOSXNoWidgetImpl )
     {
@@ -2542,6 +2544,13 @@ bool wxWindowMac::OSXHandleClicked( double WXUNUSED(timestampsec) )
 {
     return false;
 }
+
+#if wxOSX_USE_COCOA_OR_IPHONE
+void *wxWindowMac::OSXGetViewOrWindow() const
+{
+    return GetHandle();
+}
+#endif
 
 wxInt32 wxWindowMac::MacControlHit(WXEVENTHANDLERREF WXUNUSED(handler) , WXEVENTREF event )
 {

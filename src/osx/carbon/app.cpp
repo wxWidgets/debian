@@ -4,7 +4,6 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -230,6 +229,8 @@ short wxApp::MacHandleAEPDoc(const WXEVENTREF event , WXEVENTREF WXUNUSED(reply)
 
     wxString fName ;
     FSRef theRef ;
+    
+    wxArrayString fileNames;
 
     for (i = 1; i <= itemsInList; i++)
     {
@@ -241,9 +242,10 @@ short wxApp::MacHandleAEPDoc(const WXEVENTREF event , WXEVENTREF WXUNUSED(reply)
             return err;
         
         fName = wxMacFSRefToPath( &theRef ) ;
-
-        MacPrintFile(fName);
+        fileNames.Add( fName );
     }
+    
+    MacPrintFiles(fileNames);
 
     return noErr;
 }
@@ -306,6 +308,16 @@ void wxApp::MacOpenFile(const wxString & fileName )
 
 void wxApp::MacOpenURL(const wxString & WXUNUSED(url) )
 {
+}
+
+void wxApp::MacPrintFiles(const wxArrayString & fileNames )
+{
+    size_t i;
+    const size_t fileCount = fileNames.GetCount();
+    for (i = 0; i < fileCount; i++)
+    {
+        MacPrintFile(fileNames[i]);
+    }
 }
 
 void wxApp::MacPrintFile(const wxString & fileName )
@@ -400,6 +412,30 @@ void wxApp::MacReopenApp()
 #endif
     }
 }
+
+#if wxOSX_USE_COCOA_OR_IPHONE
+void wxApp::OSXOnWillFinishLaunching()
+{
+}
+
+void wxApp::OSXOnDidFinishLaunching()
+{
+}
+
+void wxApp::OSXOnWillTerminate()
+{
+    wxCloseEvent event;
+    event.SetCanVeto(false);
+    wxTheApp->OnEndSession(event);
+}
+
+bool wxApp::OSXOnShouldTerminate()
+{
+    wxCloseEvent event;
+    wxTheApp->OnQueryEndSession(event);
+    return !event.GetVeto();
+}
+#endif
 
 //----------------------------------------------------------------------
 // Macintosh CommandID support - converting between native and wx IDs
@@ -795,21 +831,6 @@ bool wxApp::Initialize(int& argc, wxChar **argv)
     InstallDebugAssertOutputHandler( NewDebugAssertOutputHandlerUPP( wxMacAssertOutputHandler ) );
 #endif
 
-    // Mac OS X passes a process serial number command line argument when
-    // the application is launched from the Finder. This argument must be
-    // removed from the command line arguments before being handled by the
-    // application (otherwise applications would need to handle it)
-    if ( argc > 1 )
-    {
-        static const wxChar *ARG_PSN = wxT("-psn_");
-        if ( wxStrncmp(argv[1], ARG_PSN, wxStrlen(ARG_PSN)) == 0 )
-        {
-            // remove this argument
-            --argc;
-            memmove(argv + 1, argv + 2, argc * sizeof(wxChar*));
-        }
-    }
-
     /*
      Cocoa supports -Key value options which set the user defaults key "Key"
      to the value "value"  Some of them are very handy for debugging like
@@ -863,7 +884,7 @@ bool wxApp::Initialize(int& argc, wxChar **argv)
     return true;
 }
 
-#if wxOSX_USE_COCOA_OR_CARBON
+#if wxOSX_USE_CARBON
 bool wxApp::CallOnInit()
 {
     wxMacAutoreleasePool autoreleasepool;

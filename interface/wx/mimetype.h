@@ -2,14 +2,13 @@
 // Name:        mimetype.h
 // Purpose:     interface of wxMimeTypesManager
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 /**
     @class wxMimeTypesManager
 
-    This class allows the application to retrieve informations about all known
+    This class allows the application to retrieve information about all known
     MIME types from a system-specific location and the filename extensions to the
     MIME types and vice versa. 
     

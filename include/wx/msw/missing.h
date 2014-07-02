@@ -3,7 +3,6 @@
 // Purpose:     Declarations for parts of the Win32 SDK that are missing in
 //              the versions that come with some compilers
 // Created:     2002/04/23
-// RCS-ID:      $Id$
 // Copyright:   (c) 2002 Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -665,7 +664,7 @@ typedef struct
 #include <_mingw.h>
 #endif
 
-#if defined(__MINGW32__) && !defined(__MINGW64_VERSION_MAJOR)
+#ifdef __MINGW32_TOOLCHAIN__
 typedef enum CommandStateChangeConstants {
     CSC_UPDATECOMMANDS = (int) 0xFFFFFFFF,
     CSC_NAVIGATEFORWARD = 0x1,

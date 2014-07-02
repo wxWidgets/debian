@@ -4,7 +4,6 @@
 // Author:      Jaakko Salli
 // Modified by:
 // Created:     2004-09-25
-// RCS-ID:      $Id$
 // Copyright:   (c) Jaakko Salli
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1519,46 +1518,28 @@ bool wxSystemColourProperty::DoSetAttribute( const wxString& name, wxVariant& va
 
 static const wxChar* const gs_cp_es_normcolour_labels[] = {
     wxT("Black"),
-    wxT("Maroon"),
-    wxT("Navy"),
-    wxT("Purple"),
-    wxT("Teal"),
-    wxT("Gray"),
-    wxT("Green"),
-    wxT("Olive"),
-    wxT("Brown"),
-    wxT("Blue"),
-    wxT("Fuchsia"),
     wxT("Red"),
-    wxT("Orange"),
-    wxT("Silver"),
-    wxT("Lime"),
-    wxT("Aqua"),
+    wxT("Green"),
+    wxT("Blue"),
+    wxT("Cyan"),
+    wxT("Magenta"),
     wxT("Yellow"),
     wxT("White"),
+    wxT("Grey"),
     wxT("Custom"),
     (const wxChar*) NULL
 };
 
 static const unsigned long gs_cp_es_normcolour_colours[] = {
     wxPG_COLOUR(0,0,0),
-    wxPG_COLOUR(128,0,0),
-    wxPG_COLOUR(0,0,128),
-    wxPG_COLOUR(128,0,128),
-    wxPG_COLOUR(0,128,128),
-    wxPG_COLOUR(128,128,128),
-    wxPG_COLOUR(0,128,0),
-    wxPG_COLOUR(128,128,0),
-    wxPG_COLOUR(166,124,81),
-    wxPG_COLOUR(0,0,255),
-    wxPG_COLOUR(255,0,255),
     wxPG_COLOUR(255,0,0),
-    wxPG_COLOUR(247,148,28),
-    wxPG_COLOUR(192,192,192),
     wxPG_COLOUR(0,255,0),
+    wxPG_COLOUR(0,0,255),
     wxPG_COLOUR(0,255,255),
+    wxPG_COLOUR(255,0,255),
     wxPG_COLOUR(255,255,0),
     wxPG_COLOUR(255,255,255),
+    wxPG_COLOUR(128,128,128),
     wxPG_COLOUR(0,0,0)
 };
 
@@ -1828,6 +1809,8 @@ wxImageFileProperty::wxImageFileProperty( const wxString& label, const wxString&
 
     m_pImage = NULL;
     m_pBitmap = NULL;
+
+    LoadImageFromFile();
 }
 
 wxImageFileProperty::~wxImageFileProperty()
@@ -1846,6 +1829,11 @@ void wxImageFileProperty::OnSetValue()
     wxDELETE(m_pImage);
     wxDELETE(m_pBitmap);
 
+    LoadImageFromFile();
+}
+
+void wxImageFileProperty::LoadImageFromFile()
+{
     wxFileName filename = GetFileName();
 
     // Create the image thumbnail

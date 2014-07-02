@@ -3,7 +3,6 @@
 // Purpose:     Generic wxTreeListCtrl implementation.
 // Author:      Vadim Zeitlin
 // Created:     2011-08-19
-// RCS-ID:      $Id$
 // Copyright:   (c) 2011 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -717,8 +716,6 @@ void wxTreeListModel::DeleteItem(Node* item)
 
     Node* const parent = item->GetParent();
 
-    ItemDeleted(ToDVI(parent), ToDVI(item));
-
     Node* previous = parent->GetChild();
     if ( previous == item )
     {
@@ -740,6 +737,8 @@ void wxTreeListModel::DeleteItem(Node* item)
 
         previous->DeleteNext();
     }
+
+    ItemDeleted(ToDVI(parent), ToDVI(item));
 }
 
 void wxTreeListModel::DeleteAllItems()

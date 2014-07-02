@@ -11,7 +11,7 @@ Notes:
 -  this code is probably not a good example to follow, see instead
    basic_kwargs_wx_*.py.
 
-:copyright: Copyright 2006-2009 by Oliver Schoenborn, all rights reserved.
+:copyright: Copyright since 2006 by Oliver Schoenborn, all rights reserved.
 :license: BSD, see LICENSE.txt for details.
 '''
 

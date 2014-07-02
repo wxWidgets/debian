@@ -4,24 +4,12 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.00
-// RCS-ID:      $Id$
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _WX_FILENAME_H_
 #define   _WX_FILENAME_H_
-
-/*
-    TODO:
-
-    1. support for drives under Windows
-    2. more file operations:
-        a) chmod()
-        b) [acm]time() - get and set
-        c) rename()?
-    3. SameFileAs() function to compare inodes under Unix
- */
 
 #include "wx/arrstr.h"
 #include "wx/filefn.h"
@@ -265,6 +253,10 @@ public:
 
     bool IsFileExecutable() const { return wxIsExecutable(GetFullPath()); }
     static bool IsFileExecutable(const wxString &path) { return wxFileExists(path) && wxIsExecutable(path); }
+
+        // set the file permissions to a combination of wxPosixPermissions enum
+        // values
+    bool SetPermissions(int permissions);
 
 
     // time functions
@@ -591,12 +583,12 @@ public:
 
         // returns the size in a human readable form
     wxString
-    GetHumanReadableSize(const wxString& nullsize = _("Not available"),
+    GetHumanReadableSize(const wxString& nullsize = wxGetTranslation("Not available"),
                          int precision = 1,
                          wxSizeConvention conv = wxSIZE_CONV_TRADITIONAL) const;
     static wxString
     GetHumanReadableSize(const wxULongLong& sz,
-                         const wxString& nullsize = _("Not available"),
+                         const wxString& nullsize = wxGetTranslation("Not available"),
                          int precision = 1,
                          wxSizeConvention conv = wxSIZE_CONV_TRADITIONAL);
 #endif // wxUSE_LONGLONG

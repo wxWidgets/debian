@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -50,6 +50,7 @@
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classwx_activate_event-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -80,14 +81,28 @@
 <h2></h2>
 <div><span class="lib">Library:</span>&#160;&#160;<span class="lib_text"><a class="el" href="page_libs.html#page_libs_wxcore">wxCore</a></span></div><div><span class="category">Category:</span>&#160;&#160;<span class="category_text"><a class="el" href="group__group__class__events.html">Events</a></span></div><dl class="section see"><dt>See Also</dt><dd><a class="el" href="overview_events.html">Events and Event Handling</a>, <a class="el" href="classwx_app.html#aa3e51f8e47abc31ee00b0cdfd29b9bdf" title="Returns true if the application is active, i.e. if one of its windows is currently in the foreground...">wxApp::IsActive</a> </dd></dl>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:ab612aed0b0c8e37279438fae68ee59f1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_activate_event.html#ab612aed0b0c8e37279438fae68ee59f1">Reason</a> { <br/>
+&#160;&#160;<a class="el" href="classwx_activate_event.html#ab612aed0b0c8e37279438fae68ee59f1ac883a610e778359e41f645d5854aa91f">Reason_Mouse</a>, 
+<br/>
+&#160;&#160;<a class="el" href="classwx_activate_event.html#ab612aed0b0c8e37279438fae68ee59f1a1f9929ffd0adc6c804aa943afb2e211c">Reason_Unknown</a>
+<br/>
+ }</td></tr>
+<tr class="memdesc:ab612aed0b0c8e37279438fae68ee59f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies the reason for the generation of this event.  <a href="classwx_activate_event.html#ab612aed0b0c8e37279438fae68ee59f1">More...</a><br/></td></tr>
+<tr class="separator:ab612aed0b0c8e37279438fae68ee59f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3018519355d314aac5e10e8b98366dc1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_activate_event.html#a3018519355d314aac5e10e8b98366dc1">wxActivateEvent</a> (<a class="el" href="group__group__funcmacro__events.html#ga6a7fd172612c0d6d9029bfa3aa91aca0">wxEventType</a> eventType=<a class="el" href="group__group__funcmacro__events.html#ga310bc3f7977ae79ac1198c7a287dbffe">wxEVT_NULL</a>, bool active=true, int id=0)</td></tr>
-<tr class="memdesc:a3018519355d314aac5e10e8b98366dc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a3018519355d314aac5e10e8b98366dc1"></a><br/></td></tr>
-<tr class="separator:a3018519355d314aac5e10e8b98366dc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f4a5aa5652474ccecb7bdf2644438c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_activate_event.html#a7f4a5aa5652474ccecb7bdf2644438c8">wxActivateEvent</a> (<a class="el" href="group__group__funcmacro__events.html#ga6a7fd172612c0d6d9029bfa3aa91aca0">wxEventType</a> eventType=<a class="el" href="group__group__funcmacro__events.html#ga310bc3f7977ae79ac1198c7a287dbffe">wxEVT_NULL</a>, bool active=true, int id=0, <a class="el" href="classwx_activate_event.html#ab612aed0b0c8e37279438fae68ee59f1">Reason</a> ActivationReason=<a class="el" href="classwx_activate_event.html#ab612aed0b0c8e37279438fae68ee59f1a1f9929ffd0adc6c804aa943afb2e211c">Reason_Unknown</a>)</td></tr>
+<tr class="memdesc:a7f4a5aa5652474ccecb7bdf2644438c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a7f4a5aa5652474ccecb7bdf2644438c8"></a><br/></td></tr>
+<tr class="separator:a7f4a5aa5652474ccecb7bdf2644438c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfb02665add62f2400c812905c4903fb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_activate_event.html#acfb02665add62f2400c812905c4903fb">GetActive</a> () const </td></tr>
 <tr class="memdesc:acfb02665add62f2400c812905c4903fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <span class="literal">true</span> if the application or window is being activated, <span class="literal">false</span> otherwise.  <a href="#acfb02665add62f2400c812905c4903fb"></a><br/></td></tr>
 <tr class="separator:acfb02665add62f2400c812905c4903fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e9bf61638dd2f21f50b4b9bdb8800cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_activate_event.html#ab612aed0b0c8e37279438fae68ee59f1">Reason</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_activate_event.html#a5e9bf61638dd2f21f50b4b9bdb8800cd">GetActivationReason</a> () const </td></tr>
+<tr class="memdesc:a5e9bf61638dd2f21f50b4b9bdb8800cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allows to check if the window was activated by clicking it with the mouse or in some other way.  <a href="#a5e9bf61638dd2f21f50b4b9bdb8800cd"></a><br/></td></tr>
+<tr class="separator:a5e9bf61638dd2f21f50b4b9bdb8800cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classwx_event"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classwx_event')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classwx_event.html">wxEvent</a></td></tr>
 <tr class="memitem:aaf2a5cf056d006859cea36689ba13d36 inherit pub_methods_classwx_event"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_event.html#aaf2a5cf056d006859cea36689ba13d36">wxEvent</a> (int id=0, <a class="el" href="group__group__funcmacro__events.html#ga6a7fd172612c0d6d9029bfa3aa91aca0">wxEventType</a> eventType=<a class="el" href="group__group__funcmacro__events.html#ga310bc3f7977ae79ac1198c7a287dbffe">wxEVT_NULL</a>)</td></tr>
 <tr class="memdesc:aaf2a5cf056d006859cea36689ba13d36 inherit pub_methods_classwx_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#aaf2a5cf056d006859cea36689ba13d36"></a><br/></td></tr>
@@ -201,8 +216,35 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:ac81911194f1f59e1454c0397b87975d4 inherit pro_attribs_classwx_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates how many levels the event can propagate.  <a href="#ac81911194f1f59e1454c0397b87975d4"></a><br/></td></tr>
 <tr class="separator:ac81911194f1f59e1454c0397b87975d4 inherit pro_attribs_classwx_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a class="anchor" id="ab612aed0b0c8e37279438fae68ee59f1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classwx_activate_event.html#ab612aed0b0c8e37279438fae68ee59f1">wxActivateEvent::Reason</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Specifies the reason for the generation of this event. </p>
+<p>See <a class="el" href="classwx_activate_event.html#a5e9bf61638dd2f21f50b4b9bdb8800cd" title="Allows to check if the window was activated by clicking it with the mouse or in some other way...">GetActivationReason()</a>.</p>
+<dl class="section since"><dt>Since</dt><dd>3.0 </dd></dl>
+<dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" id="ab612aed0b0c8e37279438fae68ee59f1ac883a610e778359e41f645d5854aa91f"></a>Reason_Mouse</em>&nbsp;</td><td>
+<p>Window activated by mouse click. </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ab612aed0b0c8e37279438fae68ee59f1a1f9929ffd0adc6c804aa943afb2e211c"></a>Reason_Unknown</em>&nbsp;</td><td>
+<p>Window was activated with some other method than mouse click. </p>
+</td></tr>
+</table>
+</dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a3018519355d314aac5e10e8b98366dc1"></a>
+<a class="anchor" id="a7f4a5aa5652474ccecb7bdf2644438c8"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -222,7 +264,13 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>id</em> = <code>0</code>&#160;</td>
+          <td class="paramname"><em>id</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwx_activate_event.html#ab612aed0b0c8e37279438fae68ee59f1">Reason</a>&#160;</td>
+          <td class="paramname"><em>ActivationReason</em> = <code><a class="el" href="classwx_activate_event.html#ab612aed0b0c8e37279438fae68ee59f1a1f9929ffd0adc6c804aa943afb2e211c">Reason_Unknown</a></code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -237,6 +285,26 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a5e9bf61638dd2f21f50b4b9bdb8800cd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwx_activate_event.html#ab612aed0b0c8e37279438fae68ee59f1">Reason</a> wxActivateEvent::GetActivationReason </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Allows to check if the window was activated by clicking it with the mouse or in some other way. </p>
+<p>This method is currently only implemented in wxMSW and returns <code>Reason_Mouse</code> there if the window was activated by a mouse click and <code>Reason_Unknown</code> if it was activated in any other way (e.g. from keyboard or programmatically).</p>
+<p>Under all the other platforms, <code>Reason_Unknown</code> is always returned.</p>
+<dl class="section since"><dt>Since</dt><dd>3.0 </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="acfb02665add62f2400c812905c4903fb"></a>
 <div class="memitem">
 <div class="memproto">
@@ -258,7 +326,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:13 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:09 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

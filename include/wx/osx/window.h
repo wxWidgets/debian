@@ -4,7 +4,6 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -278,7 +277,7 @@ public:
     //
     // this is useful for a few Cocoa function which can work with either views
     // or windows indiscriminately, e.g. for setting NSViewAnimationTargetKey
-    virtual void *OSXGetViewOrWindow() const { return GetHandle(); }
+    virtual void *OSXGetViewOrWindow() const;
 #endif // Cocoa
 
     void *              MacGetCGContextRef() { return m_cgContextRef ; }

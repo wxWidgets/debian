@@ -2,7 +2,6 @@
 // Name:        wx/simplebook.h
 // Purpose:     wxSimplebook public API documentation.
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -31,7 +30,7 @@
     wxEVT_BOOKCTRL_PAGE_CHANGED events for the events it generates if
     the program calls SetSelection().
 
-    @library{none}
+    @library{wxcore}
     @category{bookctrl}
 
     @see wxBookCtrl, wxNotebook, @ref page_samples_notebook

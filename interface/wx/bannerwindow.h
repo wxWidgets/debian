@@ -3,7 +3,6 @@
 // Purpose:     wxBannerWindow class documentation
 // Author:      Vadim Zeitlin
 // Created:     2011-08-16
-// RCS-ID:      $Id$
 // Copyright:   (c) 2011 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,7 +44,7 @@
 
     @library{wxadv}
     @category{miscwnd}
-    @genericAppearance{bannerwindow.png}
+    @genericAppearance{bannerwindow}
 
     @since 2.9.3
  */

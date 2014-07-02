@@ -4,7 +4,6 @@
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by: Vadim Zeitlin to make it work :-)
 // Created:     04/22/98
-// RCS-ID:      $Id$
 // Copyright:   (c) Wolfram Gloger (1996, 1997), Guilhem Lavaux (1998);
 //                  Vadim Zeitlin (1999-2002)
 // Licence:     wxWindows licence
@@ -572,7 +571,7 @@ THREAD_RETVAL wxThreadInternal::DoThreadStart(wxThread *thread)
             return THREAD_ERROR_EXIT;
         }
 
-        rc = wxPtrToUInt(thread->Entry());
+        rc = wxPtrToUInt(thread->CallEntry());
     }
     wxCATCH_ALL( wxTheApp->OnUnhandledException(); )
 

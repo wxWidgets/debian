@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.07.01
-// RCS-ID:      $Id$
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -25,6 +24,8 @@
 #endif
 
 #include "wx/evtloop.h"
+#include "wx/private/eventloopsourcesmanager.h"
+#include "wx/apptrait.h"
 
 #ifndef WX_PRECOMP
     #include "wx/app.h"
@@ -75,9 +76,18 @@ int wxGUIEventLoop::DoRun()
     // event loops.  For example, inside this event loop, we may recieve
     // Exit() for a different event loop (which we are currently inside of)
     // That Exit() will cause this gtk_main() to exit so we need to re-enter it.
-    while ( !m_shouldExit )
+#if 0
+   // changed by JJ
+   // this code was intended to support nested event loops. However,
+   // exiting a dialog will result in a application hang (because
+   // gtk_main_quit is called when closing the dialog????)
+   // So for the moment this code is disabled and nested event loops
+   // probably fail for wxGTK1
+   while ( !m_shouldExit )
     {
-        gtk_main();
+#endif
+       gtk_main();
+#if 0
     }
 
     // Force the enclosing event loop to also exit to see if it is done
@@ -90,6 +100,7 @@ int wxGUIEventLoop::DoRun()
     {
         gtk_main_quit();
     }
+#endif
 
     OnExit();
 
@@ -182,4 +193,25 @@ bool wxGUIEventLoop::YieldFor(long eventsToProcess)
     m_isInsideYield = false;
 
     return true;
+}
+
+class wxGUIEventLoopSourcesManager : public wxEventLoopSourcesManagerBase
+{
+ public:
+    wxEventLoopSource *
+    AddSourceForFD(int WXUNUSED(fd),
+                   wxEventLoopSourceHandler* WXUNUSED(handler),
+                   int WXUNUSED(flags))
+    {
+        wxFAIL_MSG("Monitoring FDs in the main loop is not implemented in wxGTK1");
+
+        return NULL;
+    }
+};
+
+wxEventLoopSourcesManagerBase* wxGUIAppTraits::GetEventLoopSourcesManager()
+{
+    static wxGUIEventLoopSourcesManager s_eventLoopSourcesManager;
+
+    return &s_eventLoopSourcesManager;
 }

@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.06.2003 (extracted from common/appcmn.cpp)
-// RCS-ID:      $Id$
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -174,6 +173,10 @@ wxAppConsoleBase::~wxAppConsoleBase()
 
 bool wxAppConsoleBase::Initialize(int& WXUNUSED(argc), wxChar **WXUNUSED(argv))
 {
+#if defined(__WINDOWS__) && !defined(__WXWINCE__)
+    SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
+#endif
+
     return true;
 }
 
@@ -256,6 +259,10 @@ int wxAppConsoleBase::OnRun()
     return MainLoop();
 }
 
+void wxAppConsoleBase::OnLaunched()
+{    
+}
+
 int wxAppConsoleBase::OnExit()
 {
 #if wxUSE_CONFIG
@@ -321,6 +328,9 @@ int wxAppConsoleBase::MainLoop()
 {
     wxEventLoopBaseTiedPtr mainLoop(&m_mainLoop, CreateMainLoop());
 
+    if (wxTheApp)
+        wxTheApp->OnLaunched();
+    
     return m_mainLoop ? m_mainLoop->Run() : -1;
 }
 

@@ -512,6 +512,7 @@ webviewarchivehandler_8h.html
 webviewfshandler_8h.html
 wfstream_8h.html
 windowid_8h.html
+windowptr_8h.html
 withimages_8h.html
 wizard_8h.html
 wrapsizer_8h.html
@@ -1930,7 +1931,6 @@ classwx_rich_text_object_address.html
 classwx_rich_text_object_address-members.html
 classwx_rich_text_paragraph.html
 classwx_rich_text_paragraph-members.html
-classwx_rich_text_paragraph_box.html
 classwx_rich_text_paragraph_layout_box.html
 classwx_rich_text_paragraph_layout_box-members.html
 classwx_rich_text_paragraph_style_definition.html
@@ -1967,6 +1967,8 @@ classwx_rich_text_style_sheet.html
 classwx_rich_text_style_sheet-members.html
 classwx_rich_text_table.html
 classwx_rich_text_table-members.html
+classwx_rich_text_table_block.html
+classwx_rich_text_table_block-members.html
 classwx_rich_text_x_m_l_handler.html
 classwx_rich_text_x_m_l_handler-members.html
 classwx_rich_tool_tip.html
@@ -2347,6 +2349,8 @@ classwx_window_disabler.html
 classwx_window_disabler-members.html
 classwx_window_modal_dialog_event.html
 classwx_window_modal_dialog_event-members.html
+classwx_window_ptr_3_01_t_01_4.html
+classwx_window_ptr_3_01_t_01_4-members.html
 classwx_window_update_locker.html
 classwx_window_update_locker-members.html
 classwx_with_images.html
@@ -2761,11 +2765,6 @@ gtk-zoom-fit.png
 gtk-zoom-in.png
 gtk-zoom-out.png
 dot_inline_dotgraph_1.png
-logo_gtk.png
-logo_osxleopard.png
-logo_x11.png
-logo_motif.png
-logo_win.png
 overview_events_chain.png
 overview_events_winstack.png
 overview_html_contbox.png
@@ -2908,6 +2907,7 @@ classwx_command_event__inherit__graph.png
 classwx_command_link_button__inherit__graph.png
 appear-commandlinkbutton-msw.png
 appear-commandlinkbutton-gtk.png
+appear-commandlinkbutton-mac.png
 classwx_command_processor__inherit__graph.png
 classwx_config_base__inherit__graph.png
 classwx_connection__inherit__graph.png
@@ -3006,7 +3006,9 @@ classwx_f_file_output_stream__inherit__graph.png
 classwx_f_file_stream__inherit__graph.png
 classwx_file_config__inherit__graph.png
 classwx_file_ctrl__inherit__graph.png
+appear-filectrl-msw.png
 appear-filectrl-gtk.png
+appear-filectrl-mac.png
 classwx_file_ctrl_event__inherit__graph.png
 classwx_file_data_object__inherit__graph.png
 classwx_file_dialog__inherit__graph.png
@@ -3196,7 +3198,9 @@ appear-listctrl-mac.png
 classwx_list_event__inherit__graph.png
 classwx_list_item__inherit__graph.png
 classwx_list_view__inherit__graph.png
-appear-listview-gtk.png
+appear-listctrl-msw.png
+appear-listctrl-gtk.png
+appear-listctrl-mac.png
 classwx_log__inherit__graph.png
 classwx_log_buffer__inherit__graph.png
 classwx_log_chain__inherit__graph.png
@@ -3414,11 +3418,12 @@ appear-searchctrl-gtk.png
 appear-searchctrl-mac.png
 classwx_set_cursor_event__inherit__graph.png
 classwx_settable_header_column__inherit__graph.png
+classwx_shared_ptr_3_01_t_01_4__inherit__graph.png
 classwx_show_event__inherit__graph.png
 classwx_simplebook__inherit__graph.png
 classwx_simple_help_provider__inherit__graph.png
 classwx_simple_html_list_box__inherit__graph.png
-appear-simplehtmllistbox-gtk.png
+simplehtmllistbox.png
 classwx_single_choice_dialog__inherit__graph.png
 classwx_size_event__inherit__graph.png
 classwx_sizer__inherit__graph.png
@@ -3571,6 +3576,7 @@ classwx_window_create_event__inherit__graph.png
 classwx_window_d_c__inherit__graph.png
 classwx_window_destroy_event__inherit__graph.png
 classwx_window_modal_dialog_event__inherit__graph.png
+classwx_window_ptr_3_01_t_01_4__inherit__graph.png
 classwx_with_images__inherit__graph.png
 classwx_wizard__inherit__graph.png
 classwx_wizard_event__inherit__graph.png

@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -41,7 +41,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="index.html">Documentation</a></li><li class="navelem"><a class="el" href="page_topics.html">Topic Overviews</a></li>  </ul>
+<li class="navelem"><a class="el" href="index.html">Documentation</a></li><li class="navelem"><a class="el" href="page_topics.html">Programming Guides</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -80,7 +80,7 @@ Unicode Representations and Terminology</h1>
 <img src="overview_unicode_glyphs.png" alt="overview_unicode_glyphs.png"/>
 </div>
 <p>Unicode assigns each character of almost any existing alphabet/script a number, which is called <b><em>code point</em></b>; it's typically indicated in documentation manuals and in the Unicode website as <code>U+xxxx</code> where <code>xxxx</code> is an hexadecimal number.</p>
-<p>Note that typically one character is assigned exactly one code point, but there are exceptions; the so-called <em>precomposed characters</em> (see <a href="http://en.wikipedia.org/wiki/Precomposed_character">http://en.wikipedia.org/wiki/Precomposed_character</a>) or the <em>ligatures</em>. In these cases a single "character" may be mapped to more than one code point or viceversa more characters may be mapped to a single code point.</p>
+<p>Note that typically one character is assigned exactly one code point, but there are exceptions; the so-called <em>precomposed characters</em> (see <a href="http://en.wikipedia.org/wiki/Precomposed_character">http://en.wikipedia.org/wiki/Precomposed_character</a>) or the <em>ligatures</em>. In these cases a single "character" may be mapped to more than one code point or vice versa more than one character may be mapped to a single code point.</p>
 <p>The Unicode standard divides the space of all possible code points in <b><em>planes</em></b>; a plane is a range of 65,536 (1000016) contiguous Unicode code points. Planes are numbered from 0 to 16, where the first one is the <em>BMP</em>, or Basic Multilingual Plane. The BMP contains characters for all modern languages, and a large number of special characters. The other planes in fact contain mainly historic scripts, special-purpose characters or are unused.</p>
 <p>Code points are represented in computer memory as a sequence of one or more <b><em>code units</em></b>, where a code unit is a unit of memory: 8, 16, or 32 bits. More precisely, a code unit is the minimal bit combination that can represent a unit of encoded text for processing or interchange.</p>
 <p>The <b><em>UTF</em></b> or Unicode Transformation Formats are algorithms mapping the Unicode code points to code unit sequences. The simplest of them is <b>UTF-32</b> where each code unit is composed by 32 bits (4 bytes) and each code point is always represented by a single code unit (fixed length encoding). (Note that even UTF-32 is still not completely trivial as the mapping is different for little and big-endian architectures). UTF-32 is commonly used under Unix systems for internal representation of Unicode strings.</p>
@@ -215,7 +215,7 @@ Unicode and the Outside World</h1>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:13 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:08 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

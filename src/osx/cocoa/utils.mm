@@ -4,7 +4,6 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -47,7 +46,8 @@ void wxBell()
 
 @implementation wxNSAppController
 
-- (void)applicationWillFinishLaunching:(NSNotification *)application {	
+- (void)applicationWillFinishLaunching:(NSNotification *)application
+{
     wxUnusedVar(application);
     
     // we must install our handlers later than setting the app delegate, because otherwise our handlers
@@ -61,6 +61,12 @@ void wxBell()
     [appleEventManager setEventHandler:self andSelector:@selector(handleOpenAppEvent:withReplyEvent:)
                          forEventClass:kCoreEventClass andEventID:kAEOpenApplication];
     
+    wxTheApp->OSXOnWillFinishLaunching();
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification *)notification
+{
+    wxTheApp->OSXOnDidFinishLaunching();
 }
 
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)fileNames
@@ -74,15 +80,29 @@ void wxBell()
         fileList.Add( wxCFStringRef::AsStringWithNormalizationFormC([fileNames objectAtIndex:i]) );
     }
 
-    wxTheApp->MacOpenFiles(fileList);
+    if ( wxTheApp->OSXInitWasCalled() )
+        wxTheApp->MacOpenFiles(fileList);
+    else
+        wxTheApp->OSXStoreOpenFiles(fileList);
 }
 
-- (BOOL)application:(NSApplication *)sender printFile:(NSString *)filename
+- (NSApplicationPrintReply)application:(NSApplication *)sender printFiles:(NSArray *)fileNames withSettings:(NSDictionary *)printSettings showPrintPanels:(BOOL)showPrintPanels
 {
     wxUnusedVar(sender);
-    wxCFStringRef cf(wxCFRetain(filename));
-    wxTheApp->MacPrintFile(cf.AsString()) ;
-    return YES;
+    wxArrayString fileList;
+    size_t i;
+    const size_t count = [fileNames count];
+    for (i = 0; i < count; i++)
+    {
+        fileList.Add( wxCFStringRef::AsStringWithNormalizationFormC([fileNames objectAtIndex:i]) );
+    }
+    
+    if ( wxTheApp->OSXInitWasCalled() )
+        wxTheApp->MacPrintFiles(fileList);
+    else
+        wxTheApp->OSXStorePrintFiles(fileList);
+    
+    return NSPrintingSuccess;
 }
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag
@@ -99,14 +119,16 @@ void wxBell()
     wxUnusedVar(replyEvent);
     NSString* url = [[event descriptorAtIndex:1] stringValue];
     wxCFStringRef cf(wxCFRetain(url));
-    wxTheApp->MacOpenURL(cf.AsString()) ;
+    if ( wxTheApp->OSXInitWasCalled() )
+        wxTheApp->MacOpenURL(cf.AsString()) ;
+    else
+        wxTheApp->OSXStoreOpenURL(cf.AsString());
 }
 
 - (void)handleOpenAppEvent:(NSAppleEventDescriptor *)event
            withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
     wxUnusedVar(replyEvent);
-    wxTheApp->MacNewFile() ;
 }
 
 /*
@@ -119,9 +141,7 @@ void wxBell()
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
     wxUnusedVar(sender);
-    wxCloseEvent event;
-    wxTheApp->OnQueryEndSession(event);
-    if ( event.GetVeto() )
+    if ( !wxTheApp->OSXOnShouldTerminate() )
         return NSTerminateCancel;
     
     return NSTerminateNow;
@@ -129,9 +149,7 @@ void wxBell()
 
 - (void)applicationWillTerminate:(NSNotification *)application {
     wxUnusedVar(application);
-    wxCloseEvent event;
-    event.SetCanVeto(false);
-    wxTheApp->OnEndSession(event);
+    wxTheApp->OSXOnWillTerminate();
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender
@@ -240,7 +258,10 @@ void wxBell()
 // here we subclass NSApplication, for the purpose of being able to override sendEvent.
 @interface wxNSApplication : NSApplication
 {
+    BOOL firstPass;
 }
+
+- (id)init;
 
 - (void)sendEvent:(NSEvent *)anEvent;
 
@@ -248,13 +269,28 @@ void wxBell()
 
 @implementation wxNSApplication
 
+- (id)init
+{
+    self = [super init];
+    firstPass = YES;
+    return self;
+}
+
 /* This is needed because otherwise we don't receive any key-up events for command-key
  combinations (an AppKit bug, apparently)			*/
 - (void)sendEvent:(NSEvent *)anEvent
 {
     if ([anEvent type] == NSKeyUp && ([anEvent modifierFlags] & NSCommandKeyMask))
         [[self keyWindow] sendEvent:anEvent];
-    else [super sendEvent:anEvent];
+    else
+        [super sendEvent:anEvent];
+    
+    if ( firstPass )
+    {
+        [NSApp stop:nil];
+        firstPass = NO;
+        return;
+    }
 }
 
 @end
@@ -289,6 +325,28 @@ bool wxApp::DoInitGui()
     gNSLayoutManager = [[NSLayoutManager alloc] init];
     
     return true;
+}
+
+bool wxApp::CallOnInit()
+{
+    wxMacAutoreleasePool autoreleasepool;
+    m_onInitResult = false;
+    m_inited = false;
+    [NSApp run];
+    m_onInitResult = OnInit();
+    m_inited = true;
+    if ( m_onInitResult )
+    {
+        if ( m_openFiles.GetCount() > 0 )
+            MacOpenFiles(m_openFiles);
+        else if ( m_printFiles.GetCount() > 0 )
+            MacPrintFiles(m_printFiles);
+        else if ( m_getURL.Len() > 0 )
+            MacOpenURL(m_getURL);
+        else
+            MacNewFile();
+    }
+    return m_onInitResult;
 }
 
 void wxApp::DoCleanUp()

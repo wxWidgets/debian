@@ -3,7 +3,6 @@
 // Purpose:     interface of wxEvtHandler, wxEventBlocker and many
 //              wxEvent-derived classes
 // Author:      wxWidgets team
-// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -523,9 +522,9 @@ public:
 
          @param method The method to call.
          @param x1 The (optional) first parameter to pass to the method.
-         @param x2 The (optional) second parameter to pass to the method.
-
-         Note that currently only up to 2 arguments can be passed.
+            Currently, 0, 1 or 2 parameters can be passed. If you need to pass
+            more than 2 arguments, you can use the CallAfter<T>(const T& fn)
+            overload that can call any functor.
 
          @note This method is not available with Visual C++ before version 8
                (Visual Studio 2005) as earlier versions of the compiler don't
@@ -535,6 +534,39 @@ public:
      */
     template<typename T, typename T1, ...>
     void CallAfter(void (T::*method)(T1, ...), T1 x1, ...);
+
+    /**
+         Asynchronously call the given functor.
+
+         Calling this function on an object schedules an asynchronous call to
+         the functor specified as CallAfter() argument at a (slightly) later
+         time. This is useful when processing some events as certain actions
+         typically can't be performed inside their handlers, e.g. you shouldn't
+         show a modal dialog from a mouse click event handler as this would
+         break the mouse capture state -- but you can call a function showing
+         this message dialog after the current event handler completes.
+
+         Notice that it is safe to use CallAfter() from other, non-GUI,
+         threads, but that the method will be always called in the main, GUI,
+         thread context.
+
+         This overload is particularly useful in combination with C++11 lambdas:
+         @code
+         wxGetApp().CallAfter([]{
+             wxBell();
+         });
+         @endcode
+
+         @param functor The functor to call.
+
+         @note This method is not available with Visual C++ before version 8
+               (Visual Studio 2005) as earlier versions of the compiler don't
+               have the required support for C++ templates to implement it.
+
+         @since 3.0
+     */
+    template<typename T>
+    void CallAfter(const T& functor);
 
     /**
         Processes an event, searching event tables and calling zero or more suitable
@@ -2945,15 +2977,45 @@ class wxActivateEvent : public wxEvent
 {
 public:
     /**
+        Specifies the reason for the generation of this event.
+
+        See GetActivationReason().
+
+        @since 3.0
+    */
+    enum Reason
+    {
+        /// Window activated by mouse click.
+        Reason_Mouse,
+        /// Window was activated with some other method than mouse click.
+        Reason_Unknown
+    };
+
+    /**
         Constructor.
     */
     wxActivateEvent(wxEventType eventType = wxEVT_NULL, bool active = true,
-                    int id = 0);
+                    int id = 0, Reason ActivationReason = Reason_Unknown);
 
     /**
         Returns @true if the application or window is being activated, @false otherwise.
     */
     bool GetActive() const;
+
+    /**
+        Allows to check if the window was activated by clicking it with the
+        mouse or in some other way.
+
+        This method is currently only implemented in wxMSW and returns @c
+        Reason_Mouse there if the window was activated by a mouse click and @c
+        Reason_Unknown if it was activated in any other way (e.g. from
+        keyboard or programmatically).
+
+        Under all the other platforms, @c Reason_Unknown is always returned.
+
+        @since 3.0
+    */
+    Reason GetActivationReason() const;
 };
 
 
@@ -3436,7 +3498,7 @@ public:
                 wxHelpEvent::Origin origin = Origin_Unknown);
 
     /**
-        Returns the origin of the help event which is one of the ::wxHelpEventOrigin
+        Returns the origin of the help event which is one of the wxHelpEvent::Origin
         values.
 
         The application may handle events generated using the keyboard or mouse
@@ -3852,7 +3914,8 @@ public:
 
     /**
         Sets the flags for this event.
-        The @a flags can be a combination of the ::wxNavigationKeyEventFlags values.
+        The @a flags can be a combination of the 
+        wxNavigationKeyEvent::wxNavigationKeyEventFlags values.
     */
     void SetFlags(long flags);
 
@@ -4039,7 +4102,8 @@ public:
         A menu is about to be opened. On Windows, this is only sent once for each
         navigation of the menubar (up until all menus have closed).
     @event{EVT_MENU_CLOSE(func)}
-        A menu has been just closed.
+        A menu has been just closed. Notice that this event is currently being
+        sent before the menu selection (@c wxEVT_MENU) event, if any.
     @event{EVT_MENU_HIGHLIGHT(id, func)}
         The menu item with the specified id has been highlighted: used to show
         help prompts in the status bar by wxFrame

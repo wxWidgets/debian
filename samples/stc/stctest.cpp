@@ -3,7 +3,6 @@
 // Purpose:     STC test application
 // Maintainer:  Otto Wyss
 // Created:     2003-09-01
-// RCS-ID:      $Id$
 // Copyright:   (c) wxGuide
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -556,7 +555,7 @@ void AppFrame::CreateMenu ()
 
     // Help menu
     wxMenu *menuHelp = new wxMenu;
-    menuHelp->Append (wxID_ABOUT, _("&About ..\tShift+F1"));
+    menuHelp->Append (wxID_ABOUT, _("&About ..\tCtrl+D"));
 
     // construct menu
     m_menuBar->Append (menuFile, _("&File"));

@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -41,7 +41,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="index.html">Documentation</a></li><li class="navelem"><a class="el" href="page_topics.html">Topic Overviews</a></li>  </ul>
+<li class="navelem"><a class="el" href="index.html">Documentation</a></li><li class="navelem"><a class="el" href="page_topics.html">Programming Guides</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -264,7 +264,7 @@ Included Dialogs</h1>
 How wxRichTextCtrl is Implemented</h1>
 <p>Data representation is handled by <a class="el" href="classwx_rich_text_buffer.html" title="This is a kind of paragraph layout box, used to represent the whole buffer.">wxRichTextBuffer</a>, and a <a class="el" href="classwx_rich_text_ctrl.html" title="wxRichTextCtrl provides a generic, ground-up implementation of a text control capable of showing mult...">wxRichTextCtrl</a> always has one such buffer.</p>
 <p>The content is represented by a hierarchy of objects, all derived from <a class="el" href="classwx_rich_text_object.html" title="This is the base for drawable rich text objects.">wxRichTextObject</a>. An object might be an image, a fragment of text, a paragraph, or a further composite object. Objects store a <a class="el" href="classwx_rich_text_attr.html" title="A class representing enhanced attributes for rich text objects.">wxRichTextAttr</a> containing style information; a paragraph object can contain both paragraph and character information, but content objects such as text can only store character information. The final style displayed in the control or in a printout is a combination of base style, paragraph style and content (character) style.</p>
-<p>The top of the hierarchy is the buffer, a kind of <a class="el" href="classwx_rich_text_paragraph_layout_box.html">wxRichTextParagraphLayoutBox</a>, containing further <a class="el" href="classwx_rich_text_paragraph.html" title="This object represents a single paragraph containing various objects such as text content...">wxRichTextParagraph</a> objects, each of which can include text, images and potentially other types of object.</p>
+<p>The top of the hierarchy is the buffer, a kind of <a class="el" href="classwx_rich_text_paragraph_layout_box.html" title="This class knows how to lay out paragraphs.">wxRichTextParagraphLayoutBox</a>, containing further <a class="el" href="classwx_rich_text_paragraph.html" title="This object represents a single paragraph containing various objects such as text content...">wxRichTextParagraph</a> objects, each of which can include text, images and potentially other types of object.</p>
 <p>Each object maintains a range (start and end position) measured from the start of the main parent object.</p>
 <p>When Layout is called on an object, it is given a size which the object must limit itself to, or one or more flexible directions (vertical or horizontal). So, for example, a centred paragraph is given the page width to play with (minus any margins), but can extend indefinitely in the vertical direction. The implementation of Layout caches the calculated size and position.</p>
 <p>When the buffer is modified, a range is invalidated (marked as requiring layout), so that only the minimum amount of layout is performed.</p>
@@ -311,7 +311,7 @@ Features</h2>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:13 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:08 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

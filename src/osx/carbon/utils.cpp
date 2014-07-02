@@ -4,7 +4,6 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     1998-01-01
-// RCS-ID:      $Id$
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -34,9 +33,7 @@
 
 // #include "MoreFilesX.h"
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-    #include <AudioToolbox/AudioServices.h>
-#endif
+#include <AudioToolbox/AudioServices.h>
 
 #include "wx/osx/private.h"
 #if wxUSE_GUI
@@ -50,17 +47,8 @@
 // Emit a beeeeeep
 void wxBell()
 {
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
     if ( AudioServicesPlayAlertSound != NULL )
         AudioServicesPlayAlertSound(kUserPreferredAlert);
-    else
-#endif
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-        AlertSoundPlay();
-#else
-    {
-    }
-#endif
 }
 
 wxTimerImpl* wxGUIAppTraits::CreateTimerImpl(wxTimer *timer)
@@ -157,7 +145,6 @@ void wxGetMousePosition( int* x, int* y )
 
 void wxClientDisplayRect(int *x, int *y, int *width, int *height)
 {
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5
     HIRect bounds ;
     HIWindowGetAvailablePositioningBounds(kCGNullDirectDisplay,kHICoordSpace72DPIGlobal,
             &bounds);
@@ -169,18 +156,6 @@ void wxClientDisplayRect(int *x, int *y, int *width, int *height)
         *width = bounds.size.width;
     if ( height )
         *height = bounds.size.height;
-#else
-    Rect r;
-    GetAvailableWindowPositioningBounds( GetMainDevice() , &r );
-    if ( x )
-        *x = r.left;
-    if ( y )
-        *y = r.top;
-    if ( width )
-        *width = r.right - r.left;
-    if ( height )
-        *height = r.bottom - r.top;
-#endif
 }
 
 #endif // wxUSE_GUI

@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -86,6 +86,14 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a2a632c1c7e22d8092a8f94b3ac95909e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Automation object creation flags.  <a href="automtn_8h.html#a2a632c1c7e22d8092a8f94b3ac95909e">More...</a><br/></td></tr>
 <tr class="separator:a2a632c1c7e22d8092a8f94b3ac95909e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc7384fa01c6eb0bda9f6daba63b5f19"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="automtn_8h.html#abc7384fa01c6eb0bda9f6daba63b5f19">wxOleConvertVariantFlags</a> { <br/>
+&#160;&#160;<a class="el" href="automtn_8h.html#abc7384fa01c6eb0bda9f6daba63b5f19aa1349835207204f3b4ba60c2aae37181">wxOleConvertVariant_Default</a> = 0, 
+<br/>
+&#160;&#160;<a class="el" href="automtn_8h.html#abc7384fa01c6eb0bda9f6daba63b5f19ac9eb2d8b9ff34bf523694dfc2c7481f0">wxOleConvertVariant_ReturnSafeArrays</a> = 1
+<br/>
+ }</td></tr>
+<tr class="memdesc:abc7384fa01c6eb0bda9f6daba63b5f19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flags used for conversions between <a class="el" href="classwx_variant.html" title="The wxVariant class represents a container for any type.">wxVariant</a> and OLE VARIANT.  <a href="automtn_8h.html#abc7384fa01c6eb0bda9f6daba63b5f19">More...</a><br/></td></tr>
+<tr class="separator:abc7384fa01c6eb0bda9f6daba63b5f19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a class="anchor" id="a2a632c1c7e22d8092a8f94b3ac95909e"></a>
@@ -120,11 +128,38 @@ Enumerations</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="abc7384fa01c6eb0bda9f6daba63b5f19"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="automtn_8h.html#abc7384fa01c6eb0bda9f6daba63b5f19">wxOleConvertVariantFlags</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Flags used for conversions between <a class="el" href="classwx_variant.html" title="The wxVariant class represents a container for any type.">wxVariant</a> and OLE VARIANT. </p>
+<p>These flags are used by <a class="el" href="classwx_automation_object.html" title="The wxAutomationObject class represents an OLE automation object containing a single data member...">wxAutomationObject</a> for its wxConvertOleToVariant() calls. They can be obtained by <a class="el" href="classwx_automation_object.html#a6a2cf40b2852a9a47ed4d0b5cc237842" title="Returns the flags used for conversions between wxVariant and OLE VARIANT, see wxOleConvertVariantFlag...">wxAutomationObject::GetConvertVariantFlags()</a> and set by <a class="el" href="classwx_automation_object.html#af68c1dfd67c9c018983e0da3c0385fae" title="Sets the flags used for conversions between wxVariant and OLE VARIANT, see wxOleConvertVariantFlags.">wxAutomationObject::SetConvertVariantFlags()</a>.</p>
+<dl class="section since"><dt>Since</dt><dd>3.0</dd></dl>
+<p>Include file: </p>
+<pre class="fragment">#include &lt;wx/msw/ole/oleutils.h&gt; </pre> <dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" id="abc7384fa01c6eb0bda9f6daba63b5f19aa1349835207204f3b4ba60c2aae37181"></a>wxOleConvertVariant_Default</em>&nbsp;</td><td>
+<p>Default value. </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="abc7384fa01c6eb0bda9f6daba63b5f19ac9eb2d8b9ff34bf523694dfc2c7481f0"></a>wxOleConvertVariant_ReturnSafeArrays</em>&nbsp;</td><td>
+<p>If this flag is used, SAFEARRAYs contained in OLE VARIANTs will be returned as wxVariants with <a class="el" href="classwx_variant_data_safe_array.html" title="This class represents a thin wrapper for Microsoft Windows SAFEARRAY type.">wxVariantDataSafeArray</a> type instead of wxVariants with the list type containing the (flattened) SAFEARRAY's elements. </p>
+</td></tr>
+</table>
+</dd>
+</dl>
+
+</div>
+</div>
 </div><!-- contents -->
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:12 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:30:58 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

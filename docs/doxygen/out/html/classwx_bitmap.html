@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -74,7 +74,7 @@
 <p>Note that many <a class="el" href="classwx_bitmap.html" title="This class encapsulates the concept of a platform-dependent bitmap, either monochrome or colour or co...">wxBitmap</a> functions take a <em>type</em> parameter, which is a value of the <a class="el" href="gdicmn_8h.html#a90a1eb6d85b5044a99b706fd979f27f5" title="Bitmap type flags.">wxBitmapType</a> enumeration. The validity of those values depends however on the platform where your program is running and from the wxWidgets configuration. If all possible wxWidgets settings are used:</p>
 <ul>
 <li>wxMSW supports BMP and ICO files, BMP and ICO resources;</li>
-<li>wxGTK supports XPM files;</li>
+<li>wxGTK supports any file supported by gdk-pixbuf;</li>
 <li>wxMac supports PICT resources;</li>
 <li>wxX11 supports XPM files, XPM data, XBM data;</li>
 </ul>
@@ -507,7 +507,6 @@ Additional Inherited Members</h2></td></tr>
 <p>Creates this bitmap object from the given image. </p>
 <p>This has to be done to actually display an image as you cannot draw an image directly on a window.</p>
 <p>The resulting bitmap will use the provided colour depth (or that of the current system if depth is <a class="el" href="interface_2wx_2bitmap_8h.html#a92f17e2abdf285ce14f0ef47997fdb06" title="In wxBitmap and wxBitmapHandler context this value means: &quot;use the screen depth&quot;.">wxBITMAP_SCREEN_DEPTH</a>) which entails that a colour reduction may take place.</p>
-<p>When in 8-bit mode (PseudoColour mode), the GTK port will use a color cube created on program start-up to look up colors. This ensures a very fast conversion, but the image quality won't be perfect (and could be better for photo images using more sophisticated dithering algorithms).</p>
 <p>On Windows, if there is a palette present (set with SetPalette), it will be used when creating the <a class="el" href="classwx_bitmap.html" title="This class encapsulates the concept of a platform-dependent bitmap, either monochrome or colour or co...">wxBitmap</a> (most useful in 8-bit display mode). On other platforms, the palette is currently ignored.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1353,7 +1352,7 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the depth member (does not affect the bitmap data). </p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000010">Todo:</a></b></dt><dd>since these functions do not affect the bitmap data, why they exist??</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000009">Todo:</a></b></dt><dd>since these functions do not affect the bitmap data, why they exist??</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">depth</td><td>Bitmap depth. </td></tr>
@@ -1493,7 +1492,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:14 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:10 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

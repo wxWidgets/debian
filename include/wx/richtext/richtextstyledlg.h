@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/5/2006 12:05:31 PM
-// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -43,13 +42,11 @@ class WXDLLIMPEXP_FWD_CORE wxCheckBox;
  * Control identifiers
  */
 
-////@begin control identifiers
 #define SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_STYLE wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
-#define SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_TITLE _("Style Organiser")
+#define SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_TITLE wxGetTranslation("Style Organiser")
 #define SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_IDNAME ID_RICHTEXTSTYLEORGANISERDIALOG
 #define SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_SIZE wxSize(400, 300)
 #define SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_POSITION wxDefaultPosition
-////@end control identifiers
 
 /*!
  * Flags for specifying permitted operations

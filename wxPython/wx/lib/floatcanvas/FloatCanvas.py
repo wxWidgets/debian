@@ -198,6 +198,13 @@ class DrawObject(object):
     # interface, and perhaps speed things up by caching all the Pens
     # and Brushes, although that may not help, as I think wx now
     # does that on it's own. Send me a note if you know!
+    ## I'm caching fonts, because on GTK, getting a new font can take a
+    ## while. However, it gets cleared after every full draw as hanging
+    ## on to a bunch of large fonts takes a massive amount of memory.
+
+    ## a dict to cache Font Objects while drawing -- for those that need fonts
+    FontList = {}
+
 
     BrushList = {
             ( None,"Transparent")  : wx.TRANSPARENT_BRUSH,
@@ -292,12 +299,13 @@ class DrawObject(object):
 
     def SetBrush(self, FillColor, FillStyle):
         if FillColor is None or FillStyle is None:
-            self.Brush = wx.TRANSPARENT_BRUSH
+            #self.Brush = wx.TRANSPARENT_BRUSH
+            ## wx.TRANSPARENT_BRUSH seems to have a bug in Phoenix...
+            self.Brush = wx.Brush(wx.Colour(0,0,0),wx.TRANSPARENT)
             ##fixme: should I really re-set the style?
             self.FillStyle = "Transparent"
         else:
             self.Brush = self.BrushList.setdefault( (FillColor,FillStyle),  wx.Brush(FillColor,self.FillStyleList[FillStyle] ) )
-            #print "Setting Brush, BrushList length:", len(self.BrushList)
 
     def SetPen(self,LineColor,LineStyle,LineWidth):
         if (LineColor is None) or (LineStyle is None):
@@ -348,12 +356,14 @@ class DrawObject(object):
             self.InForeground = True
 
     def Hide(self):
-        """! \brief Make an object hidden.
+        """
+        Make an object hidden (not drawn)
         """
         self.Visible = False
 
     def Show(self):
-        """! \brief Make an object visible on the canvas.
+        """
+        Make an object visible on the canvas.
         """
         self.Visible = True
 
@@ -503,13 +513,11 @@ class LineOnlyMixin:
     def SetLineColor(self, LineColor):
         self.LineColor = LineColor
         self.SetPen(LineColor,self.LineStyle,self.LineWidth)
-        print "In SetLineColor setting the pen:", self.LineColor,self.LineStyle,self.LineWidth
     SetColor = SetLineColor# so that it will do something reasonable
     
     def SetLineStyle(self, LineStyle):
         self.LineStyle = LineStyle
         self.SetPen(self.LineColor,LineStyle,self.LineWidth)
-        print "In SetLineStyle setting the pen:", self.LineColor,LineStyle,self.LineWidth
 
     def SetLineWidth(self, LineWidth):
         self.LineWidth = LineWidth
@@ -1224,12 +1232,6 @@ class TextObjectMixin(XYObjectMixin):
 
     """
 
-    ## I'm caching fonts, because on GTK, getting a new font can take a
-    ## while. However, it gets cleared after every full draw as hanging
-    ## on to a bunch of large fonts takes a massive amount of memory.
-
-    FontList = {}
-
     LayoutFontSize = 16 # font size used for calculating layout
 
     def SetFont(self, Size, Family, Style, Weight, Underlined, FaceName):
@@ -1400,10 +1402,10 @@ class ScaledText(TextObjectMixin, DrawObject, ):
     charactor string, indicating where in relation to the coordinates
     the string should be oriented.
 
-    The first letter is: t, c, or b, for top, center and bottom The
-    second letter is: l, c, or r, for left, center and right The
-    position refers to the position relative to the text itself. It
-    defaults to "tl" (top left).
+    The first letter is: t, c, or b, for top, center and bottom.
+    The second letter is: l, c, or r, for left, center and right.
+    The position refers to the position relative to the text itself.
+    It defaults to "tl" (top left).
 
     Size is the size of the font in world coordinates.
 
@@ -1411,7 +1413,7 @@ class ScaledText(TextObjectMixin, DrawObject, ):
       specifying actual facename. One of:
       
             * wx.DEFAULT:  Chooses a default font.
-            * wx.DECORATI: A decorative font.
+            * wx.DECORATIVE: A decorative font.
             * wx.ROMAN: A formal, serif font.
             * wx.SCRIPT: A handwriting font.
             * wx.SWISS: A sans-serif font.
@@ -1421,7 +1423,7 @@ class ScaledText(TextObjectMixin, DrawObject, ):
       
     * Style: One of wx.NORMAL, wx.SLANT and wx.ITALIC.
     * Weight: One of wx.NORMAL, wx.LIGHT and wx.BOLD.
-    * Underlined: The value can be True or False. At present this may have an an
+    * Underlined: The value can be True or False. At present this may have an
       effect on Windows only.
 
 
@@ -1433,8 +1435,8 @@ class ScaledText(TextObjectMixin, DrawObject, ):
 
     Bugs/Limitations:
 
-    As fonts are scaled, the do end up a little different, so you don't
-    get exactly the same picture as you scale up and doen, but it's
+    As fonts are scaled, they do end up a little different, so you don't
+    get exactly the same picture as you scale up and down, but it's
     pretty darn close.
 
     On wxGTK1 on my Linux system, at least, using a font of over about
@@ -1643,7 +1645,6 @@ class ScaledTextBox(TextObjectMixin, DrawObject):
                  Font = None,
                  LineSpacing = 1.0,
                  InForeground = False):
-
         DrawObject.__init__(self,InForeground)
 
         self.XY = N.array(Point, N.float)
@@ -1841,7 +1842,6 @@ class ScaledTextBox(TextObjectMixin, DrawObject):
         ## If so, limit it. Would it be better just to not draw it?
         ## note that this limit is dependent on how much memory you have, etc.
         Size = min(Size, self.MaxFontSize)
-        
         Size = max(Size, self.MinFontSize) # smallest size you want - default to 1
 
         # Draw The Box
@@ -1856,7 +1856,10 @@ class ScaledTextBox(TextObjectMixin, DrawObject):
             dc.SetFont(self.Font)
             dc.SetTextForeground(self.Color)
             dc.SetBackgroundMode(wx.TRANSPARENT)
-            dc.DrawTextList(self.Words, Points)
+            ## NOTE: DrawTextList seems to have a memory leak if you call it with a numpy array.
+            #        This has probably been fixed in the wxPython source (as of 9/4/2013),
+            #        but for older versions it's this way for now.
+            dc.DrawTextList(self.Words, Points.tolist())
 
         # Draw the hit box.
         if HTdc and self.HitAble:
@@ -2007,9 +2010,6 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
         ##fixme: should this have a y = -1 to shift to y-up?
         self.BmpScale = self.bmpWH / self.WH
 
-        #print "bmpWH:", self.bmpWH
-        #print "Width, Height:", self.WH
-        #print "self.BmpScale", self.BmpScale
         self.ShiftFun = self.ShiftFunDict[Position]
         self.CalcBoundingBox()
         self.ScaledBitmap = None # cache of the last existing scaled bitmap
@@ -2044,12 +2044,10 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
         if (self.ScaledBitmap is None) or (self.ScaledBitmap[0] != (0, 0, self.bmpWidth, self.bmpHeight, W, H) ):
         #if True: #fixme: (self.ScaledBitmap is None) or (H <> self.ScaledHeight) :
             self.ScaledHeight = H
-            #print "Scaling to:", W, H
             Img = self.Image.Scale(W, H)
             bmp = wx.BitmapFromImage(Img)
             self.ScaledBitmap = ((0, 0, self.bmpWidth, self.bmpHeight , W, H), bmp)# this defines the cached bitmap
         else:
-            #print "Using Cached bitmap"
             bmp = self.ScaledBitmap[1]
         XY = self.ShiftFun(XY[0], XY[1], W, H)
         dc.DrawBitmapPoint(bmp, XY, True)
@@ -2117,7 +2115,6 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
             #XY = self.ShiftFun(XY[0], XY[1], W, H)
             #fixme: get the shiftfun working!
         else:
-            #print "Using cached bitmap"
             ##fixme: The cached bitmap could be used if the one needed is the same scale, but
             ##       a subset of the cached one.
             bmp = self.ScaledBitmap[1]
@@ -2132,16 +2129,14 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
         BBworld = BBox.asBBox(self._Canvas.ViewPortBB)
         ## first see if entire bitmap is displayed:
         if  BBworld.Inside(self.BoundingBox):
-            #print "Drawing entire bitmap with old code"
+            # use od code to draw entire bitmap
             self._DrawEntireBitmap(dc , WorldToPixel, ScaleWorldToPixel, HTdc)
-            return None
+            return
         elif BBworld.Overlaps(self.BoundingBox):
-            #BBbitmap = BBox.fromPoints(self.WorldToBitmap(BBworld))
-            #print "Drawing a sub-bitmap"
             self._DrawSubBitmap(dc , WorldToPixel, ScaleWorldToPixel, HTdc)
         else:
-            #print "Not Drawing -- no part of image is showing"
-            pass
+            #Not Drawing -- no part of image is showing
+            return
 
 class DotGrid:
     """
@@ -2556,7 +2551,6 @@ class FloatCanvas(wx.Panel):
 
     if wx.__version__ >= "2.8":
         HitTestBitmapDepth = 32
-        #print "Using hit test code for 2.8"
         def GetHitTestColor(self, xy):
             if self._ForegroundHTBitmap:
                 pdata = wx.AlphaPixelData(self._ForegroundHTBitmap)
@@ -2806,7 +2800,7 @@ class FloatCanvas(wx.Panel):
         Note that the buffer will not be re-drawn unless something has
         changed. If you change a DrawObject directly, then the canvas
         will not know anything has changed. In this case, you can force
-        a re-draw by passing int True for the Force flag:
+        a re-draw by passing in True for the Force flag:
 
         Canvas.Draw(Force=True)
 
@@ -2815,7 +2809,7 @@ class FloatCanvas(wx.Panel):
 
         If there are any objects in self._ForeDrawList, then the
         background gets drawn to a new buffer, and the foreground
-        objects get drawn on top of it. The final result if blitted to
+        objects get drawn on top of it. The final result is blitted to
         the screen, and stored for future Paint events.  This is done so
         that you can have a complicated background, but have something
         changing on the foreground, without having to wait for the
@@ -2893,6 +2887,8 @@ class FloatCanvas(wx.Panel):
         ## starts to take up Massive amounts of memory This is mostly a
         ## problem with very large fonts, that you get with scaled text
         ## when zoomed in.
+        ## fixme -- this should probably be in the FLoatCanvas,
+        ##          rather than DrawObject, but it works here.
         DrawObject.FontList = {}
 
     def _ShouldRedraw(DrawList, ViewPortBB): 

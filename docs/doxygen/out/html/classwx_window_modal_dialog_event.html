@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -67,17 +67,23 @@
 <map name="wx_window_modal_dialog_event_inherit__map" id="wx_window_modal_dialog_event_inherit__map">
 <area shape="rect" id="node2" href="classwx_command_event.html" title="This event class contains information about command events, which originate from a variety of simple ..." alt="" coords="33,161,161,189"/><area shape="rect" id="node4" href="classwx_event.html" title="An event is a structure holding information about an event passed to a callback or member function..." alt="" coords="63,83,132,111"/><area shape="rect" id="node6" href="classwx_object.html" title="This is the root class of many of the wxWidgets classes." alt="" coords="60,6,135,34"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
-<table class="memberdecls">
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Event sent by <a class="el" href="classwx_dialog.html#a5c61636f657c0ae9503c4dfa534e073e" title="Shows a dialog modal to the parent top level window only.">wxDialog::ShowWindowModal()</a> when the dialog closes. </p>
+<dl class="section since"><dt>Since</dt><dd>2.9.0 </dd></dl>
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8cf3f6736b736cd8a19f61cd71bbd980"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_window_modal_dialog_event.html#a8cf3f6736b736cd8a19f61cd71bbd980">wxWindowModalDialogEvent</a> (<a class="el" href="group__group__funcmacro__events.html#ga6a7fd172612c0d6d9029bfa3aa91aca0">wxEventType</a> commandType=<a class="el" href="group__group__funcmacro__events.html#ga310bc3f7977ae79ac1198c7a287dbffe">wxEVT_NULL</a>, int id=0)</td></tr>
+<tr class="memdesc:a8cf3f6736b736cd8a19f61cd71bbd980"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a8cf3f6736b736cd8a19f61cd71bbd980"></a><br/></td></tr>
 <tr class="separator:a8cf3f6736b736cd8a19f61cd71bbd980"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85c478d33088cd0ddf6eff9d506204b7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_dialog.html">wxDialog</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_window_modal_dialog_event.html#a85c478d33088cd0ddf6eff9d506204b7">GetDialog</a> () const </td></tr>
+<tr class="memdesc:a85c478d33088cd0ddf6eff9d506204b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the corresponding dialog.  <a href="#a85c478d33088cd0ddf6eff9d506204b7"></a><br/></td></tr>
 <tr class="separator:a85c478d33088cd0ddf6eff9d506204b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a22ba65c38d423046162b7d4a879871"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_window_modal_dialog_event.html#a0a22ba65c38d423046162b7d4a879871">GetReturnCode</a> () const </td></tr>
+<tr class="memdesc:a0a22ba65c38d423046162b7d4a879871"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the dialog's return code.  <a href="#a0a22ba65c38d423046162b7d4a879871"></a><br/></td></tr>
 <tr class="separator:a0a22ba65c38d423046162b7d4a879871"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a091a8dafde1e11074460401426a9a7ce"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classwx_event.html">wxEvent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_window_modal_dialog_event.html#a091a8dafde1e11074460401426a9a7ce">Clone</a> () const </td></tr>
-<tr class="memdesc:a091a8dafde1e11074460401426a9a7ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a copy of the event.  <a href="#a091a8dafde1e11074460401426a9a7ce"></a><br/></td></tr>
+<tr class="memdesc:a091a8dafde1e11074460401426a9a7ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clone the event.  <a href="#a091a8dafde1e11074460401426a9a7ce"></a><br/></td></tr>
 <tr class="separator:a091a8dafde1e11074460401426a9a7ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classwx_command_event"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classwx_command_event')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classwx_command_event.html">wxCommandEvent</a></td></tr>
 <tr class="memitem:aad941347872cd71fedcfc765fae7b2f7 inherit pub_methods_classwx_command_event"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_command_event.html#aad941347872cd71fedcfc765fae7b2f7">wxCommandEvent</a> (<a class="el" href="group__group__funcmacro__events.html#ga6a7fd172612c0d6d9029bfa3aa91aca0">wxEventType</a> commandEventType=<a class="el" href="group__group__funcmacro__events.html#ga310bc3f7977ae79ac1198c7a287dbffe">wxEVT_NULL</a>, int id=0)</td></tr>
@@ -257,6 +263,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Constructor. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -281,12 +289,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Returns a copy of the event. </p>
-<p>Any event that is posted to the wxWidgets event system for later action (via <a class="el" href="classwx_evt_handler.html#a0737c6d2cbcd5ded4b1ecdd53ed0def3" title="Post an event to be processed later.">wxEvtHandler::AddPendingEvent</a>, <a class="el" href="classwx_evt_handler.html#acffd03bf407a856166ea71ef0318b59a" title="Queue event for a later processing.">wxEvtHandler::QueueEvent</a> or <a class="el" href="group__group__funcmacro__events.html#ga0cf60a1ad3a5f1e659f7ae591570f58d" title="In a GUI application, this function posts event to the specified dest object using wxEvtHandler::AddP...">wxPostEvent()</a>) must implement this method.</p>
-<p>All wxWidgets events fully implement this method, but any derived events implemented by the user should also implement this method just in case they (or some event derived from them) are ever posted.</p>
-<p>All wxWidgets events implement a copy constructor, so the easiest way of implementing the Clone function is to implement a copy constructor for a new event (call it MyEvent) and then define the Clone function like this:</p>
-<div class="fragment"><div class="line"><a class="code" href="classwx_event.html" title="An event is a structure holding information about an event passed to a callback or member function...">wxEvent</a> *<a class="code" href="classwx_window_modal_dialog_event.html#a091a8dafde1e11074460401426a9a7ce" title="Returns a copy of the event.">Clone</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">new</span> MyEvent(*<span class="keyword">this</span>); }</div>
-</div><!-- fragment --> 
+<p>Clone the event. </p>
+
 <p>Implements <a class="el" href="classwx_event.html#a26878097a702e8d0368da150125d4158">wxEvent</a>.</p>
 
 </div>
@@ -304,6 +308,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the corresponding dialog. </p>
+
 </div>
 </div>
 <a class="anchor" id="a0a22ba65c38d423046162b7d4a879871"></a>
@@ -319,13 +325,15 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the dialog's return code. </p>
+
 </div>
 </div>
 </div><!-- contents -->
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:35 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:32:18 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

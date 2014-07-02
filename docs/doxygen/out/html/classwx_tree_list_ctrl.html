@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -1070,6 +1070,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a63c7351618fd77330d80a250b3719519 inherit pub_methods_classwx_evt_handler"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwx_evt_handler.html#a63c7351618fd77330d80a250b3719519">CallAfter</a> (void(T::*method)(T1,...), T1 x1,...)</td></tr>
 <tr class="memdesc:a63c7351618fd77330d80a250b3719519 inherit pub_methods_classwx_evt_handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously call the given method.  <a href="#a63c7351618fd77330d80a250b3719519"></a><br/></td></tr>
 <tr class="separator:a63c7351618fd77330d80a250b3719519 inherit pub_methods_classwx_evt_handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwx_evt_handler.html#a910416e4d0b1f38cec02213b8a0c6a12">CallAfter</a> (const T &amp;functor)</td></tr>
+<tr class="memdesc:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchronously call the given functor.  <a href="#a910416e4d0b1f38cec02213b8a0c6a12"></a><br/></td></tr>
+<tr class="separator:a910416e4d0b1f38cec02213b8a0c6a12 inherit pub_methods_classwx_evt_handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0f5d2cb29a04c1f7f82eb6b351f79fb inherit pub_methods_classwx_evt_handler"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_evt_handler.html#ac0f5d2cb29a04c1f7f82eb6b351f79fb">ProcessEventLocally</a> (<a class="el" href="classwx_event.html">wxEvent</a> &amp;event)</td></tr>
 <tr class="memdesc:ac0f5d2cb29a04c1f7f82eb6b351f79fb inherit pub_methods_classwx_evt_handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to process the event in this handler and all those chained to it.  <a href="#ac0f5d2cb29a04c1f7f82eb6b351f79fb"></a><br/></td></tr>
 <tr class="separator:ac0f5d2cb29a04c1f7f82eb6b351f79fb inherit pub_methods_classwx_evt_handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2123,6 +2127,7 @@ Additional Inherited Members</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">parent</td><td>The item parent. Must be valid, may be <a class="el" href="classwx_tree_list_ctrl.html#a6714b7cf9b2c76a8a5bec5a60b51664c" title="Methods for the tree navigation.">GetRootItem()</a>. </td></tr>
     <tr><td class="paramname">previous</td><td>The previous item that this one should be inserted immediately after. It must be valid but may be one of the special values wxTLI_FIRST or wxTLI_LAST indicating that the item should be either inserted before the first child of its parent (if any) or after the last one. </td></tr>
+    <tr><td class="paramname">text</td><td>The item text. </td></tr>
     <tr><td class="paramname">imageClosed</td><td>The normal item image, may be NO_IMAGE to not show any image. </td></tr>
     <tr><td class="paramname">imageOpened</td><td>The item image shown when it's in the expanded state. </td></tr>
     <tr><td class="paramname">data</td><td>Optional client data pointer that can be later retrieved using <a class="el" href="classwx_tree_list_ctrl.html#a34cfeffaed0bea603c77359f22dcaeab" title="Get the data associated with the given item.">GetItemData()</a> and will be deleted by the tree when the item itself is deleted. </td></tr>
@@ -2615,7 +2620,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:34 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:32:01 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

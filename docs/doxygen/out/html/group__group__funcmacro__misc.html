@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -87,13 +87,13 @@ Macros</h2></td></tr>
 <tr class="memdesc:gab5479598285a610e4565c18d927ca299"><td class="mdescLeft">&#160;</td><td class="mdescRight">Analog of <a class="el" href="group__group__funcmacro__misc.html#gaa12aaa924b3e1eb622d1b5fa920ab650" title="Analog of wxDECLARE_NO_COPY_CLASS() for template classes.">wxDECLARE_NO_COPY_TEMPLATE_CLASS()</a> for templates with 2 parameters.  <a href="#gab5479598285a610e4565c18d927ca299"></a><br/></td></tr>
 <tr class="separator:gab5479598285a610e4565c18d927ca299"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae7670c39825278bd22677b42f1589daa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__funcmacro__misc.html#gae7670c39825278bd22677b42f1589daa">wxDEPRECATED</a>(function)</td></tr>
-<tr class="memdesc:gae7670c39825278bd22677b42f1589daa"><td class="mdescLeft">&#160;</td><td class="mdescRight">This macro can be used around a function declaration to generate warnings indicating that this function is deprecated (i.e.  <a href="#gae7670c39825278bd22677b42f1589daa"></a><br/></td></tr>
+<tr class="memdesc:gae7670c39825278bd22677b42f1589daa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate deprecation warning with the given message when a function is used.  <a href="#gae7670c39825278bd22677b42f1589daa"></a><br/></td></tr>
 <tr class="separator:gae7670c39825278bd22677b42f1589daa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga539e5db26516d824523d77ed599fa063"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__funcmacro__misc.html#ga539e5db26516d824523d77ed599fa063">wxDEPRECATED_BUT_USED_INTERNALLY</a>(function)</td></tr>
-<tr class="memdesc:ga539e5db26516d824523d77ed599fa063"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is a special version of <a class="el" href="group__group__funcmacro__misc.html#gae7670c39825278bd22677b42f1589daa" title="This macro can be used around a function declaration to generate warnings indicating that this functi...">wxDEPRECATED()</a> macro which only does something when the deprecated function is used from the code outside wxWidgets itself but doesn't generate warnings when it is used from wxWidgets.  <a href="#ga539e5db26516d824523d77ed599fa063"></a><br/></td></tr>
+<tr class="memdesc:ga539e5db26516d824523d77ed599fa063"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is a special version of <a class="el" href="group__group__funcmacro__misc.html#gae7670c39825278bd22677b42f1589daa" title="Generate deprecation warning with the given message when a function is used.">wxDEPRECATED()</a> macro which only does something when the deprecated function is used from the code outside wxWidgets itself but doesn't generate warnings when it is used from wxWidgets.  <a href="#ga539e5db26516d824523d77ed599fa063"></a><br/></td></tr>
 <tr class="separator:ga539e5db26516d824523d77ed599fa063"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga541c593a183ed38d6d132dd19fe7bad7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__funcmacro__misc.html#ga541c593a183ed38d6d132dd19fe7bad7">wxDEPRECATED_INLINE</a>(func, body)</td></tr>
-<tr class="memdesc:ga541c593a183ed38d6d132dd19fe7bad7"><td class="mdescLeft">&#160;</td><td class="mdescRight">This macro is similar to <a class="el" href="group__group__funcmacro__misc.html#gae7670c39825278bd22677b42f1589daa" title="This macro can be used around a function declaration to generate warnings indicating that this functi...">wxDEPRECATED()</a> but can be used to not only declare the function <em>function</em> as deprecated but to also provide its (inline) implementation <em>body</em>.  <a href="#ga541c593a183ed38d6d132dd19fe7bad7"></a><br/></td></tr>
+<tr class="memdesc:ga541c593a183ed38d6d132dd19fe7bad7"><td class="mdescLeft">&#160;</td><td class="mdescRight">This macro is similar to <a class="el" href="group__group__funcmacro__misc.html#gae7670c39825278bd22677b42f1589daa" title="Generate deprecation warning with the given message when a function is used.">wxDEPRECATED()</a> but can be used to not only declare the function <em>function</em> as deprecated but to also provide its (inline) implementation <em>body</em>.  <a href="#ga541c593a183ed38d6d132dd19fe7bad7"></a><br/></td></tr>
 <tr class="separator:ga541c593a183ed38d6d132dd19fe7bad7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga432cb09293293bc49f0b8fc96f2ca050"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__funcmacro__misc.html#ga432cb09293293bc49f0b8fc96f2ca050">wxDEPRECATED_ACCESSOR</a>(func, what)</td></tr>
 <tr class="memdesc:ga432cb09293293bc49f0b8fc96f2ca050"><td class="mdescLeft">&#160;</td><td class="mdescRight">A helper macro allowing to easily define a simple deprecated accessor.  <a href="#ga432cb09293293bc49f0b8fc96f2ca050"></a><br/></td></tr>
@@ -634,11 +634,21 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This macro can be used around a function declaration to generate warnings indicating that this function is deprecated (i.e. </p>
-<p>obsolete and planned to be removed in the future) when it is used. Only Visual C++ 7 and higher and g++ compilers currently support this functionality.</p>
+<p>Generate deprecation warning with the given message when a function is used. </p>
+<p>This macro can be used to generate a warning indicating that a function is deprecated (i.e. scheduled for removal in the future) and explaining why is it so and/or what should it be replaced with. It applies to the declaration following it, for example: </p>
+<div class="fragment"><div class="line">wxDEPRECATED_MSG(<span class="stringliteral">&quot;use safer overload returning wxString instead&quot;</span>)</div>
+<div class="line">void wxGetSomething(<span class="keywordtype">char</span>* buf, <span class="keywordtype">size_t</span> len);</div>
+<div class="line"></div>
+<div class="line"><a class="code" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> wxGetSomething();</div>
+</div><!-- fragment --><p>For compilers other than clang, g++ 4.5 or later and MSVC 8 (MSVS 2005) or later, the message is ignored and a generic deprecation warning is given if possible, i.e. if the compiler is g++ (any supported version) or MSVC 7 (MSVS 2003) or later.</p>
+<dl class="section since"><dt>Since</dt><dd>3.0</dd></dl>
+<p>Include file: </p>
+<pre class="fragment">#include &lt;wx/defs.h&gt; </pre><p> This macro can be used around a function declaration to generate warnings indicating that this function is deprecated (i.e. obsolete and planned to be removed in the future) when it is used.</p>
+<p>Notice that this macro itself is deprecated in favour of wxDEPRECATED_MSG()!</p>
+<p>Only Visual C++ 7 and higher and g++ compilers currently support this functionality.</p>
 <p>Example of use:</p>
 <div class="fragment"><div class="line"><span class="comment">// old function, use wxString version instead</span></div>
-<div class="line"><a class="code" href="group__group__funcmacro__misc.html#gae7670c39825278bd22677b42f1589daa" title="This macro can be used around a function declaration to generate warnings indicating that this functi...">wxDEPRECATED</a>( <span class="keywordtype">void</span> wxGetSomething(<span class="keywordtype">char</span> *buf, <span class="keywordtype">size_t</span> len) );</div>
+<div class="line"><a class="code" href="group__group__funcmacro__misc.html#gae7670c39825278bd22677b42f1589daa" title="Generate deprecation warning with the given message when a function is used.">wxDEPRECATED</a>( <span class="keywordtype">void</span> wxGetSomething(<span class="keywordtype">char</span> *buf, <span class="keywordtype">size_t</span> len) );</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// ...</span></div>
 <div class="line"><a class="code" href="classwx_string.html" title="String class for passing textual data to or receiving it from wxWidgets.">wxString</a> wxGetSomething();</div>
@@ -701,7 +711,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This is a special version of <a class="el" href="group__group__funcmacro__misc.html#gae7670c39825278bd22677b42f1589daa" title="This macro can be used around a function declaration to generate warnings indicating that this functi...">wxDEPRECATED()</a> macro which only does something when the deprecated function is used from the code outside wxWidgets itself but doesn't generate warnings when it is used from wxWidgets. </p>
+<p>This is a special version of <a class="el" href="group__group__funcmacro__misc.html#gae7670c39825278bd22677b42f1589daa" title="Generate deprecation warning with the given message when a function is used.">wxDEPRECATED()</a> macro which only does something when the deprecated function is used from the code outside wxWidgets itself but doesn't generate warnings when it is used from wxWidgets. </p>
 <p>It is used with the virtual functions which are called by the library itself &ndash; even if such function is deprecated the library still has to call it to ensure that the existing code overriding it continues to work, but the use of this macro ensures that a deprecation warning will be generated if this function is used from the user code or, in case of Visual C++, even when it is simply overridden.</p>
 <p>Include file: </p>
 <pre class="fragment">#include &lt;wx/defs.h&gt; </pre> 
@@ -761,7 +771,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This macro is similar to <a class="el" href="group__group__funcmacro__misc.html#gae7670c39825278bd22677b42f1589daa" title="This macro can be used around a function declaration to generate warnings indicating that this functi...">wxDEPRECATED()</a> but can be used to not only declare the function <em>function</em> as deprecated but to also provide its (inline) implementation <em>body</em>. </p>
+<p>This macro is similar to <a class="el" href="group__group__funcmacro__misc.html#gae7670c39825278bd22677b42f1589daa" title="Generate deprecation warning with the given message when a function is used.">wxDEPRECATED()</a> but can be used to not only declare the function <em>function</em> as deprecated but to also provide its (inline) implementation <em>body</em>. </p>
 <p>It can be used as following:</p>
 <div class="fragment"><div class="line"><span class="keyword">class </span>wxFoo</div>
 <div class="line">{</div>
@@ -2581,16 +2591,11 @@ template&lt;typename T &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A pointer to the data to be <code>delete[]<code>d by caller on success or <span class="literal">NULL</span> on error.</code></code></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A pointer to the data to be <code>delete[]</code>d by caller on success or <span class="literal">NULL</span> on error.</dd></dl>
 <p>This function is available under Windows only.</p>
-<p><code><code></p>
 <h2></h2>
-<p></code></code></p>
-<p><code><code></p>
-<div><span class="lib">Library:</span>&#160;&#160;<span class="lib_text"><a class="el" href="page_libs.html#page_libs_wxbase">wxBase</a></span></div><p></code></code></p>
-<p><code><code>Include file: </p>
-<pre class="fragment">#include &lt;wx/utils.h&gt; </pre><p> </code></code></p>
-
+<div><span class="lib">Library:</span>&#160;&#160;<span class="lib_text"><a class="el" href="page_libs.html#page_libs_wxbase">wxBase</a></span></div><p>Include file: </p>
+<pre class="fragment">#include &lt;wx/utils.h&gt; </pre> 
 </div>
 </div>
 <a class="anchor" id="gae3c4e71b9eb7d1bf7b7cf2eee1832796"></a>
@@ -2928,7 +2933,7 @@ template&lt;typename T &gt; </div>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:13 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:09 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

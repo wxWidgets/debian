@@ -8,7 +8,14 @@ rem use, no dots: 24 for 2.4, 30 for 3.0, etc.
 rem
 rem (C) Oliver Schoenborn 2009
 
-set PYTHON_EXE=c:\python%1%\python
+set PY_VER=%1
+IF "%1" EQU "" (
+  SET PY_VER=26
+  echo Will use Python 2.6. To use other, put version ID as command line arg
+  echo Example: for Python 2.7 put 27, for 3.0 put 30, etc. 
+)
+
+set PYTHON_EXE=python
 echo python exe is %PYTHON_EXE%
 
 echo.
@@ -57,33 +64,11 @@ pause
 
 echo.
 echo.
-echo ######################## basic - v1 (arg1) - console #########################
-echo.
-
-pushd basic_v1
-%PYTHON_EXE% main.py
-popd
-pause
-
-
-echo.
-echo.
-echo ######################## basic - v1 (arg1) - wx #########################
-echo.
-
-pushd basic_v1
-%PYTHON_EXE% wx_main.py
-popd
-pause
-
-
-echo.
-echo.
 echo ######################## advanced - kwargs - console #########################
 echo.
 
 pushd advanced
-%PYTHON_EXE% main.py
+%PYTHON_EXE% main_kwargs.py
 popd
 pause
 
@@ -94,7 +79,7 @@ echo ######################## advanced - arg1 - console ########################
 echo.
 
 pushd advanced
-%PYTHON_EXE% main.py arg1
+%PYTHON_EXE% main_arg1.py
 popd
 pause
 

@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 2.9.5</span>
+   <span id="projectnumber">Version: 3.0.0</span>
   </td>
  </tr>
  </tbody>
@@ -41,7 +41,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="index.html">Documentation</a></li>  </ul>
+<li class="navelem"><a class="el" href="index.html">Documentation</a></li><li class="navelem"><a class="el" href="page_introduction.html">Introduction</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -87,31 +87,25 @@
 <p>Unfortunately native toolkits and hardware do not always support the functionality that the wxWidgets API requires. This chapter collects notes about differences among supported platforms and ports.</p>
 <h1><a class="anchor" id="page_port_wxgtk"></a>
 wxGTK</h1>
- <div class="logo"> <div class="image">
-<img src="logo_gtk.png" alt="logo_gtk.png"/>
-</div>
-  </div><p>wxGTK is a port of wxWidgets using the GTK+ library. It makes use of GTK+'s native widgets wherever possible and uses wxWidgets' generic controls when needed. GTK+ itself has been ported to a number of systems, but so far only the original X11 version is supported. Support for other GTK+ backends is planned, such as the new DirectFB backend.</p>
+<p>wxGTK is a port of wxWidgets using the GTK+ library. It makes use of GTK+'s native widgets wherever possible and uses wxWidgets' generic controls when needed. GTK+ itself has been ported to a number of systems, but so far only the original X11 version is supported. Support for other GTK+ backends is planned, such as the new DirectFB backend.</p>
 <p>All work is being done on GTK+ version 2.0 and above. Support for GTK+ 1.2 will be deprecated in a later release.</p>
 <p>You will need GTK+ 2.6 or higher which is available from:</p>
 <p><a href="http://www.gtk.org">http://www.gtk.org</a></p>
 <p>The newer version of GTK+ you use, the more native widgets and features will be utilized. We have gone to great lengths to allow compiling wxWidgets applications with the latest version of GTK+, with the resulting binary working on systems even with a much earlier version of GTK+. You will have to ensure that the application is launched with lazy symbol binding for that.</p>
 <p>In order to configure wxWidgets to compile wxGTK you will need use the <code>&ndash;with-gtk</code> argument to the <code>configure</code> script. This is the default for many systems.</p>
 <p>GTK+ 1.2 can still be used, albeit discouraged. For that you can pass <code>&ndash;with-gtk=1</code> to the <code>configure</code> script.</p>
-<p>Support for GTK+ 3 is available starting with wxWidgets 2.9.4, use <code>configure</code> option <code>&ndash;with-gtk=3</code> to enable it. It is still under development and may have significant bugs or missing features, and should be considered experimental.</p>
+<p>Support for GTK+ 3 is available starting with wxWidgets 2.9.4, use <code>configure</code> option <code>&ndash;with-gtk=3</code> to enable it.</p>
 <p>For further information, please see the files in <code>docs/gtk</code> in the distribution.</p>
 <h1><a class="anchor" id="page_port_wxosx"></a>
 wxOSX</h1>
- <div class="logo"> <div class="image">
-<img src="logo_osxleopard.png" alt="logo_osxleopard.png"/>
-</div>
-  </div><h2><a class="anchor" id="page_port_wxosx_carbon"></a>
+<h2><a class="anchor" id="page_port_wxosx_carbon"></a>
 wxOSX/Carbon</h2>
-<p>wxOSX/Carbon is a port of wxWidgets for the Macintosh OS platform. Currently MacOS X 10.5 or higher are supported. wxOSX/Carbon can be compiled both using Apple's command line developer tools as well as Apple's Xcode IDE. wxOSX/Carbon supports both the Intel and PowerPC architectures and can be used to produce "universal binaries" in order create application which can run both architecture. Unfortunately, wxOSX/Carbon does not support any 64-bit architecture since Apple decided not to port its Carbon API entirely to 64-bit.</p>
+<p>wxOSX/Carbon is a port of wxWidgets for the Macintosh OS platform. Currently OS X 10.5 or higher are supported. wxOSX/Carbon can be compiled both using Apple's command line developer tools as well as Apple's Xcode IDE. wxOSX/Carbon supports both the Intel and PowerPC architectures and can be used to produce "universal binaries" in order create application which can run both architecture. Unfortunately, wxOSX/Carbon does not support any 64-bit architecture since Apple decided not to port its Carbon API entirely to 64-bit.</p>
 <dl class="section note"><dt>Note</dt><dd>Carbon has been deprecated by Apple as of OS X 10.5 and will likely be removed entirely in a future OS version. It's recommended you look into switching your app over to wxOSX/Cocoa as soon as possible.</dd></dl>
 <p>For further information, please see the files in <code>docs/osx</code> in the distribution.</p>
 <h2><a class="anchor" id="page_port_wxosx_cocoa"></a>
 wxOSX/Cocoa</h2>
-<p>wxOSX/Cocoa is another port of wxWidgets for the Macintosh OS platform. Currently MacOS X 10.5 or higher are supported. In contrast to wxOSX/Carbon, it uses the Cocoa API in place of Carbon. Much work has gone into this port and many controls are functional, but the port has not reached the maturity of the wxOSX/Carbon port yet. It is possible to use wxOSX/Cocoa on 64-bit architectures.</p>
+<p>wxOSX/Cocoa is another port of wxWidgets for the Macintosh OS platform. Currently OS X 10.5 or higher are supported. In contrast to wxOSX/Carbon, it uses the Cocoa API in place of Carbon. Much work has gone into this port and many controls are functional, but the port has not reached the maturity of the wxOSX/Carbon port yet. It is possible to use wxOSX/Cocoa on 64-bit architectures.</p>
 <p>In order to configure wxWidgets to compile wxOSX/Cocoa you will need to type:</p>
 <pre class="fragment">configure --with-osx_cocoa </pre><p>For further information, please see the files in <code>docs/osx</code> in the distribution.</p>
 <dl class="section note"><dt>Note</dt><dd>There was a previous effort towards a Cocoa port called wxCocoa, which was implemented totally with Cocoa API unlike the OSX/Cocoa port which uses OS X C APIs to share code, and while it is no longer being actively developed, docs for it are available in <code>docs/cocoa</code> in the distribution.</dd></dl>
@@ -121,25 +115,16 @@ wxOS2</h1>
 <p>For further information, please see the files in <code>docs/os2</code> in the distribution.</p>
 <h1><a class="anchor" id="page_port_wxx11"></a>
 wxX11</h1>
- <div class="logo"> <div class="image">
-<img src="logo_x11.png" alt="logo_x11.png"/>
-</div>
-  </div><p>wxX11 is a port of wxWidgets using X11 (The X Window System) as the underlying graphics backend. wxX11 draws its widgets using the wxUniversal widget set which is now part of wxWidgets. wxX11 is well-suited for a number of special applications such as those running on systems with few resources (PDAs) or for applications which need to use a special themed look.</p>
+<p>wxX11 is a port of wxWidgets using X11 (The X Window System) as the underlying graphics backend. wxX11 draws its widgets using the wxUniversal widget set which is now part of wxWidgets. wxX11 is well-suited for a number of special applications such as those running on systems with few resources (PDAs) or for applications which need to use a special themed look.</p>
 <p>In order to configure wxWidgets to compile wxX11 you will need to type:</p>
 <pre class="fragment">configure --with-x11 --with-universal </pre><p>For further information, please see the files in <code>docs/x11</code> in the distribution. There is also a page on the use of wxWidgets for embedded applications on the wxWidgets web site.</p>
 <h1><a class="anchor" id="page_port_wxmotif"></a>
 wxMotif</h1>
- <div class="logo"> <div class="image">
-<img src="logo_motif.png" alt="logo_motif.png"/>
-</div>
-  </div><p>wxMotif is a port of wxWidgets for X11 systems using Motif libraries. Motif libraries provide a clean and fast user interface at the expense of the beauty and candy of newer interfaces like GTK.</p>
+<p>wxMotif is a port of wxWidgets for X11 systems using Motif libraries. Motif libraries provide a clean and fast user interface at the expense of the beauty and candy of newer interfaces like GTK.</p>
 <p>For further information, please see the files in <code>docs/motif</code> in the distribution.</p>
 <h1><a class="anchor" id="page_port_wxmsw"></a>
 wxMSW</h1>
- <div class="logo"> <div class="image">
-<img src="logo_win.png" alt="logo_win.png"/>
-</div>
-  </div><p>wxMSW is a port of wxWidgets for the Windows platforms including Windows 95, 98, ME, 2000, NT, XP and Vista in ANSI and Unicode modes (for Windows 9x and ME through the MSLU extension library). wxMSW ensures native look and feel for XP when using wxWidgets version 2.3.3 or higher. wxMSW can be compiled with a great variety of compilers including Microsoft Studio VC++, Borland 5.5, MinGW32, Cygwin and Watcom as well as cross-compilation with a Linux-hosted MinGW32 tool chain.</p>
+<p>wxMSW is a port of wxWidgets for the Windows platforms including Windows 95, 98, ME, 2000, NT, XP and Vista in ANSI and Unicode modes (for Windows 9x and ME through the MSLU extension library). wxMSW ensures native look and feel for XP when using wxWidgets version 2.3.3 or higher. wxMSW can be compiled with a great variety of compilers including Microsoft Studio VC++, Borland 5.5, MinGW32, Cygwin and Watcom as well as cross-compilation with a Linux-hosted MinGW32 tool chain.</p>
 <p>For further information, please see the files in docs/msw in the distribution.</p>
 <h2><a class="anchor" id="page_port_wxmsw_themedborders"></a>
 Themed Borders</h2>
@@ -335,7 +320,7 @@ Native Toolkit Documentation</h1>
 
 <address class="footer">
 	<small>
-		Generated on Sat Aug 31 2013 14:37:13 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Sat Dec 28 2013 01:31:08 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

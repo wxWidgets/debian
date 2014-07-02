@@ -4,7 +4,6 @@
 // Author:      Ron Lee, Jaakko Salli
 // Modified by:
 // Created:     Sep-20-2006
-// RCS-ID:      $Id$
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -149,7 +148,7 @@ void wxBufferedDC::UnMask()
     int width = m_area.GetWidth(),
         height = m_area.GetHeight();
 
-    if (! m_style & wxBUFFER_VIRTUAL_AREA)
+    if (!(m_style & wxBUFFER_VIRTUAL_AREA))
     {
         int widthDC,
             heightDC;
@@ -158,7 +157,8 @@ void wxBufferedDC::UnMask()
         height = wxMin(height, heightDC);
     }
 
-    m_dc->Blit(0, 0, width, height, this, -x, -y);
+    const wxPoint origin = GetLogicalOrigin();
+    m_dc->Blit(-origin.x, -origin.y, width, height, this, -x, -y);
     m_dc = NULL;
 
     if ( m_style & wxBUFFER_USES_SHARED_BUFFER )

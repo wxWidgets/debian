@@ -1,14 +1,16 @@
 '''
 Adapted from wxPython website at http://wiki.wxpython.org/ModelViewController/.
 
-:copyright: Copyright 2006-2009 by Oliver Schoenborn, all rights reserved.
+:copyright: Copyright since 2006 by Oliver Schoenborn, all rights reserved.
 :license: BSD, see LICENSE.txt for details.
 '''
 
 import wx
 
 from pubsub import pub
-print 'pubsub version', pub.VERSION_STR
+from pubsub.py2and3 import print_
+
+print_('pubsub API version', pub.VERSION_API)
 
 # notification
 from pubsub.utils.notification import useNotifyByWriteFile
@@ -66,7 +68,7 @@ if __name__ == "__main__":
     c = Controller()
     sys.stdout = sys.__stdout__
 
-    print '---- Starting main event loop ----'
+    print_('---- Starting main event loop ----')
     app.MainLoop()
-    print '---- Exited main event loop ----'
+    print_('---- Exited main event loop ----')
     
