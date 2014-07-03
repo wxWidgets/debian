@@ -27,11 +27,10 @@ PYVERS := $(shell pyversions -vr)
 # If another source package is to supply the common binary packages
 # for a particular Debian release, then define this variable to indicate
 # the $(release) that is expected to provide it.  Do not define it at
-# all if this is to be the default (or only) wx source package for the
-# target release.
+# all if this is to be the default (or only) source package providing wxPython
+# for the target release.
 
-DEBIAN_WX_DEFAULT_VERSION = 2.8
-
+DEBIAN_WXPYTHON_DEFAULT_VERSION = 2.8
 
 # This will extract a flavour out of the changelog and flavour the
 # packages and binaries with it.  'Official' builds should use a
@@ -48,18 +47,10 @@ wx_minor_version_number := $(shell sed -n 's/^wx_minor_version_number=//p' confi
 wx_release_number       := $(shell sed -n 's/^wx_release_number=//p' configure.in)
 
 release := $(wx_major_version_number).$(wx_minor_version_number)
-# Kludge for the RCs
-release := 2.9
 
 so_cur := $(shell sed 's,<set var="WX_CURRENT">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
 so_age := $(shell sed 's,<set var="WX_AGE">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
 soversion := $(shell expr $(so_cur) - $(so_age))
-# Kludge for the RCs - 2.9.x is soversion x (so 2.9.5 was 5).  No further 2.9.x
-# releases are planned, but 31 is mnemonic for 3.0.0-rc1.  Packaging the RCs as
-# wxwidgets2.9 means we can follow upstream's soversions for the 3.0.x release
-# series itself, even if there's an ABI change between 3.0.0-rc1 and the
-# 3.0.0 release proper.
-soversion := 31
 
 sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%)-$(soversion)$(addprefix -,$(DEBIAN_WXFLAVOUR))
 
@@ -73,9 +64,6 @@ ifeq ($(shell expr '$(wx_minor_version_number)' : '.*[02468]$$'),0)
 else
     compatible_release := $(release)
 endif
-# Kludge for the RCs
-compatible_release := 2.9.6
-
 
 # Base value for alternative priorities.
 alt_prio  := $(subst .,,$(release))
@@ -133,7 +121,7 @@ MSW_CONFIGURE_OPTIONS = \
 # a threaded application then comment out the next line.
 MSW_CONFIGURE_OPTIONS += --disable-threads
 
-PY_WX_CONFIG_OPTIONS = --version=3.0 --toolkit=$(pytoolkit) --static=no
+PY_WX_CONFIG_OPTIONS = --version=$(release) --toolkit=$(pytoolkit) --static=no
 
 # Packages to build:
 package_wxbase_lib      := libwxbase$(sorelease)
@@ -294,35 +282,6 @@ control-files-stamp: debian/control
 			> debian/lintian-override;                           \
 	touch $@
 
-	# Files removed between 2.9.5.0 and 3.0.0-rc1.  We don't have a
-	# wxPython release of RC1 yet, so we use a patch for the new and
-	# changed files and then remove the deleted ones here.
-	rm -rf \
-	    build/bakefiles/formats \
-	    docs/doxygen/doxygen.log \
-	    docs/doxygen/images/appear-listview-gtk.png \
-	    docs/doxygen/images/appear-simplehtmllistbox-gtk.png \
-	    docs/doxygen/out \
-	    gtk/gnome/gprint.h \
-	    gtk/setup0.h \
-	    msw/setup0.h \
-	    osx/setup0.h \
-	    src/cwcopysetup.bat \
-	    src/cwdcopysetup.bat \
-	    src/gtk1/gnome \
-	    src/gtk/gnome/gprint.cpp \
-	    src/wxJpeg.icc \
-	    src/wxPng.icc \
-	    src/wxTiff.icc \
-	    src/Wxwindll.icc \
-	    src/wxWin.icc \
-	    src/wxXpm.icc \
-	    src/wxZlib.icc \
-	    wx/include/wx/gtk/gnome/gprint.h \
-	    wx/include/wx/gtk/setup0.h \
-	    wx/include/wx/msw/setup0.h \
-	    wx/include/wx/osx/setup0.h
-
 build-arch: control-files-stamp $(build_arch_stamps)
 build-indep: control-files-stamp $(build_indep_stamps)
 build_all: control-files-stamp $(build_stamps_native)
@@ -387,14 +346,6 @@ build-doc-stamp: build-gtk-shared-stamp
 	dh_testdir
 	rm -rf $(objdir_doc)
 	mkdir $(objdir_doc)
-	# Until wxPython is updated:
-	tar -C'$(objdir_doc)' --strip-components=1 -xf debian/wxWidgets-3.0.0-rc1-docs-html.tar.bz2
-	# cp -a docs/doxygen/out/html/* $(objdir_doc)
-
-	# Replace embedded copy of jquery with symlink to packaged version.
-	rm -f $(objdir_doc)/jquery.js
-	ln -s /usr/share/javascript/jquery/jquery.min.js $(objdir_doc)/jquery.js
-
 	touch $@
 
 build-examples-stamp: build-gtk-shared-stamp
@@ -419,6 +370,7 @@ build-examples-stamp: build-gtk-shared-stamp
 	# Stop files being randomly executable.  Reported upstream at:
 	# http://trac.wxwidgets.org/ticket/15504
 	# http://trac.wxwidgets.org/ticket/15505
+	# Fixed in 3.0.1?
 	-chmod a-x \
 		$(objdir_examples)/samples/aui/descrip.mms \
 		$(objdir_examples)/samples/docview/docview.r \
@@ -513,35 +465,6 @@ clean: debian/control clean-py
 	      config.guess config.sub
 	rm -rf include/wx-$(release)
 	find -name '*.py[co]' -delete
-
-	# Files removed between 2.9.5.0 and 3.0.0-rc1.  We don't have a
-	# wxPython release of RC1 yet, so we use a patch for the new and
-	# changed files and then remove the deleted ones here.
-	rm -rf \
-	    build/bakefiles/formats \
-	    docs/doxygen/doxygen.log \
-	    docs/doxygen/images/appear-listview-gtk.png \
-	    docs/doxygen/images/appear-simplehtmllistbox-gtk.png \
-	    docs/doxygen/out \
-	    gtk/gnome/gprint.h \
-	    gtk/setup0.h \
-	    msw/setup0.h \
-	    osx/setup0.h \
-	    src/cwcopysetup.bat \
-	    src/cwdcopysetup.bat \
-	    src/gtk1/gnome \
-	    src/gtk/gnome/gprint.cpp \
-	    src/wxJpeg.icc \
-	    src/wxPng.icc \
-	    src/wxTiff.icc \
-	    src/Wxwindll.icc \
-	    src/wxWin.icc \
-	    src/wxXpm.icc \
-	    src/wxZlib.icc \
-	    wx/include/wx/gtk/gnome/gprint.h \
-	    wx/include/wx/gtk/setup0.h \
-	    wx/include/wx/msw/setup0.h \
-	    wx/include/wx/osx/setup0.h
 
 install_arch: build-arch $(install_all_arch)
 

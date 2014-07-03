@@ -12,23 +12,6 @@ control
 lintian-override
 unpack_examples.sh
 
-libwxbase2.9-0
-libwxbase2.9-0-dbg
-libwxbase2.9-dev
-libwxgtk2.9-0
-libwxgtk2.9-0-dbg
-libwxgtk2.9-dev
-libwxgtk-media2.9-0
-libwxgtk-media2.9-0-dbg
-libwxgtk-media2.9-dev
-libwxmsw2.9-0-dbg
-libwxmsw2.9-dev
-python-wxgtk2.9
+python-wxgtk3.0
 python-wxtools
 python-wxversion
-wx-common
-wx2.9-doc
-wx2.9-examples
-wx2.9-headers
-wx2.9-headers-msw
-wx2.9-i18n

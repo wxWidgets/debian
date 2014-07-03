@@ -333,4 +333,4 @@ wxPython/contrib/activex/wxie is licensed as follows:
 -----------------------------------------------------------------------------
 
 .orig.tar.xz file is a repacked tarball generated using
-`uscan --repack --rename --download-current-version`.
+`uscan --download-current-version`.

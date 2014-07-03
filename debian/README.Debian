@@ -1,64 +1,28 @@
-wxwidgets for Debian
---------------------
+wxWidgets for Debian
+====================
 
 The following packages are built from the wxWidgets source:
-
-libwxbase2.9-<N>	    wxBase runtime shared libraries
-libwxbase2.9-<N>-dbg	    detached debugging symbols for libwxbase2.9-<N>
-libwxbase2.9-dev	    extra files required for building wxBase apps
-
-libwxgtk2.9-<N>		    wxGTK runtime shared libraries
-libwxgtk2.9-<N>-dbg	    detached debugging symbols for libwxgtk2.9-<N>
-libwxgtk2.9-dev		    extra files required for building wxGTK apps
-
-libwxgtk-media2.9-<N>	    wxGTK runtime shared libraries for wxMediaCtrl
-			    - these are in a separate package as they pull
-			    in a lot of large dependencies
-libwxgtk-media2.9-<N>-dbg   detached debugging symbols for libwxgtk-media2.9-<N>
-libwxgtk-media2.9-dev	    extra files required for building wxGTK apps
 
 python-wxgtk		    Python binding to wxGTK
 python-wxversion	    The wxversion.py version selector (present since
 			    wxPython2.6)
 python-wxtools		    The ancillary tools from the wxPython distribution.
 
-wx-common		    common helper files and support applications.
-wx-headers		    common header files for building wxWidgets apps
-wx-doc			    HTML version of the wxWidgets manual
-wx-examples 		    wxWidgets and wxPython demos and samples (source)
-wx-i18n			    message catalogs for native language support
+Notable changes from the wxwidgets2.8 packages
+----------------------------------------------
 
-	In the wxwidgets2.8 packaging, there were -dbg packages which contained
-	binaries built with __WXDEBUG__ and -g.  Upstream now enable
-	__WXDEBUG__ by default, so now the -dbg packages just contain detached
-	debugging symbols.  For more information on the upstream __WXDEBUG__
-	changes since 2.8, please see:
+In the wxwidgets2.8 packaging, there were -dbg packages which contained
+binaries built with __WXDEBUG__ and -g.  Upstream now enable __WXDEBUG__ by
+default, so the 3.0 -dbg packages just contain detached debugging symbols.  For
+more information on the upstream __WXDEBUG__ changes since 2.8, please see:
 
 	  http://docs.wxwidgets.org/3.0.0/overview_debugging.html
 
-	Note that static libraries are no longer supplied in these
-	packages.  Please read, or have understood:
-	http://people.redhat.com/drepper/no_static_linking.html
-	among others before reporting this as a bug.
-
-	The following binaries can be built from the source package
-	with the mingw32 cross compiler, but are not distributed
-	as a part of the main Debian distribution.
-
-	Please do *not* file bug reports for these packages to the
-	Debian bts.  But do feel free to email me personally if you
-	find problems and/or have patches to fix them.
-
-libwxmsw-dev		mingw32-cross wxMSW libs.
-wx-headers-msw		extra headers needed for wxMSW.
-
-	You can build these extra packages using the binary-cross target
-	in debian/rules.
 
 	Because all of these packages can take quite some time to build, the
 	source package supports parallel building via the standard mechanism of
 	putting parallel=N in the environmental variable DEB_BUILD_OPTIONS.
 	However, note that the wxPython build currently runs serially.
 
- -- Olly Betts <olly@survex.com>, Fri, 13 Sep 2013 14:18:08 +1200
+ -- Olly Betts <olly@survex.com>  Wed, 21 May 2014 03:39:14 +0000
 

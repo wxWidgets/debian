@@ -9,6 +9,7 @@ set -u
 VER="$2"
 FILE="$3"
 PKG=`dpkg-parsechangelog|sed 's/^Source: //p;d'`
+LOCALVER=`dpkg-parsechangelog|sed 's/^Version: \(.*\)-.*/\1/p;d'`
 
 REPACK_DIR="$PKG-$VER.orig" # DevRef § 6.7.8.2
 
@@ -34,16 +35,6 @@ fi
 # added by upstream.
 find "$UP_BASE" -iname '*.dll' -delete
 
-# Lacking (suitable) source code.  The only one in wxPython is only used
-# by an ActiveX sample, so irrelevant for Debian anyway.
-find "$UP_BASE" -iname '*.swf' -delete
-
-# Samples from TV shows, etc.
-# http://trac.wxwidgets.org/ticket/15917
-rm -f "$UP_BASE"/wxPython/demo/data/anykey.wav
-rm -f "$UP_BASE"/wxPython/demo/data/plan.wav
-rm -f "$UP_BASE"/wxPython/demo/data/testmovie.mpg
-
 # Remove minified jquery.js (non-free without non-minified source).  We
 # symlink in a packaged version of jquery in debian/rules.
 rm -f "$UP_BASE"/docs/doxygen/out/html/jquery.js
@@ -66,13 +57,23 @@ rm -f "$UP_BASE"/wxPython/scripts/editra
 rm -f "$UP_BASE"/wxPython/distrib/mac/updateEditraPlist.py
 rm -rf "$UP_BASE"/wxPython/wx/tools/Editra
 
+# Lacking (suitable) source code.  The only one in wxPython is only used
+# by an ActiveX sample, so irrelevant for Debian anyway
+# (http://trac.wxwidgets.org/ticket/15917).
+find "$UP_BASE" -iname '*.swf' -delete
+
+# Samples from TV shows (http://trac.wxwidgets.org/ticket/15917).
+rm -f "$UP_BASE"/wxPython/demo/data/anykey.wav
+rm -f "$UP_BASE"/wxPython/demo/data/plan.wav
+rm -f "$UP_BASE"/wxPython/demo/data/testmovie.mpg
+
 # Now rebuild the tarball.
 mv "$UP_BASE" "$DIR/$REPACK_DIR"
 # Using a pipe hides tar errors!
 tar cfC "$DIR/repacked.tar" "$DIR" "$REPACK_DIR"
 xz -9 < "$DIR/repacked.tar" > "$DIR/repacked.tar.xz"
 
-FILE=$(echo $FILE | sed 's/bz2/xz/')
+FILE=`dirname "$FILE"`/${PKG}_${LOCALVER}.orig.tar.xz
 mv "$DIR/repacked.tar.xz" "$FILE"
 
 echo "*** $FILE repackaged"
