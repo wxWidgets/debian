@@ -58,17 +58,6 @@ Applied-Upstream: no
  
                  # Rotate about the centre of the object, then place
                  # the object on the line.
---- a/wxPython/wx/lib/pubsub/pubsub1/pub.py
-+++ b/wxPython/wx/lib/pubsub/pubsub1/pub.py
-@@ -155,7 +155,7 @@
-             try:
-                 return _paramMinCountFunc(callableObject)
-             except exc:
--                raise 'Cannot determine type of callable: %s' % repr(callableObject)
-+                raise Exception, 'Cannot determine type of callable: %s' % repr(callableObject)
-  
-     min, d = _paramMinCountFunc(func)
-     return min-1, d
 --- a/wxPython/wx/lib/rpcMixin.py
 +++ b/wxPython/wx/lib/rpcMixin.py
 @@ -261,7 +261,7 @@

@@ -1,11 +1,11 @@
 fix-build-with-python2.6.patch
 xrced_bitmaps.patch
 fix-path-to-some-interpreters.patch
-wxpython2.9-eliminate-string-exceptions.patch
+wxpython3.0-eliminate-string-exceptions.patch
 img2py-no-display.patch
 disable_media_python.patch
 wxpython-=-should-be-==.patch
-wxpython-build-with-wxwebview-disabled.patch
 fix-editra-removal.patch
-wxpython-use-unpatched-swig.patch
-wxpython-fix-swig-warnings.patch
+#wxpython-use-unpatched-swig.patch
+#wxpython-fix-swig-warnings.patch
+wxpython-missing-format-strings.patch

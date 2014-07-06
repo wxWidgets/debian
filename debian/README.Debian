@@ -1,9 +1,11 @@
-wxWidgets for Debian
-====================
+wxPython 3.0 for Debian
+=======================
 
-The following packages are built from the wxWidgets source:
+The following packages are potentially built from the wxpython3.0 source
+package (currently the latter two are provided by wxwidgets2.8, but we
+intend to switch this over before jessie):
 
-python-wxgtk		    Python binding to wxGTK
+python-wxgtk3.0		    Python binding to wxGTK
 python-wxversion	    The wxversion.py version selector (present since
 			    wxPython2.6)
 python-wxtools		    The ancillary tools from the wxPython distribution.
@@ -11,18 +13,21 @@ python-wxtools		    The ancillary tools from the wxPython distribution.
 Notable changes from the wxwidgets2.8 packages
 ----------------------------------------------
 
-In the wxwidgets2.8 packaging, there were -dbg packages which contained
-binaries built with __WXDEBUG__ and -g.  Upstream now enable __WXDEBUG__ by
-default, so the 3.0 -dbg packages just contain detached debugging symbols.  For
-more information on the upstream __WXDEBUG__ changes since 2.8, please see:
+For wxPython 2.8, the wxPython packages were built by the wxwidgets2.8
+source package (which actually contained the wxPython source release).
+
+This always had its problems, but what finally forced a change was that the gap
+between a wxWidgets release and the corresponding wxPython release now seems to
+be several months.
+
+In the wxwidgets2.8 packaging, there was a python-wxgtk2.8-dbg package which
+had a separate build of wxPython built against a separate build of the C++
+library, which had been built with __WXDEBUG__ enabled.  Upstream now enable
+__WXDEBUG__ by default, so we no longer need this parallel build of the C++
+library or wxPython.  For more information on the upstream __WXDEBUG__ changes
+since 2.8, please see:
 
 	  http://docs.wxwidgets.org/3.0.0/overview_debugging.html
 
-
-	Because all of these packages can take quite some time to build, the
-	source package supports parallel building via the standard mechanism of
-	putting parallel=N in the environmental variable DEB_BUILD_OPTIONS.
-	However, note that the wxPython build currently runs serially.
-
- -- Olly Betts <olly@survex.com>  Wed, 21 May 2014 03:39:14 +0000
+ -- Olly Betts <olly@survex.com>  Wed, 02 Jul 2014 18:44:56 +1200
 
