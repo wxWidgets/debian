@@ -1,0 +1,65 @@
+Source: wxpython3.0
+Section: python
+Priority: optional
+Maintainer: wxWidgets Maintainers <freewx-maint@lists.alioth.debian.org>
+Uploaders: Olly Betts <olly@survex.com>
+Build-Depends:
+    debhelper (>= 9),
+    dh-python,
+    libgtk2.0-dev,
+    libwxgtk3.0-dev,
+#    libwxgtk-media3.0-dev,
+#    libwxgtk-webview3.0-dev,
+    python-all,
+    python-all-dev
+Standards-Version: 3.9.5
+Vcs-Git: git://anonscm.debian.org/freewx/wx.git -b wxpy3.0-debian
+Vcs-Browser: https://anonscm.debian.org/gitweb/?p=freewx/wx.git;a=shortlog;h=refs/heads/wxpy3.0-debian
+Homepage: http://wxpython.org/
+
+Package: python-wxgtk3.0
+Architecture: any
+Depends: python-wxversion, ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
+#Suggests: wx3.0-doc, wx3.0-examples
+Provides: ${python:Provides}
+Description: Python interface to the wxWidgets Cross-platform C++ GUI toolkit
+ wxWidgets (formerly known as wxWindows) is a class library for C++ providing
+ GUI components and other facilities on several popular platforms (and some
+ unpopular ones as well).
+ .
+ This package provides a Python interface to the wxGTK library and the
+ wxPython runtime support libraries.
+
+Package: python-wxgtk3.0-dev
+Architecture: all
+Depends: python-wxgtk3.0, ${shlibs:Depends}, ${misc:Depends}
+Description: Development files for wxPython
+ wxPython is a Python interface to the wxWidgets Cross-platform C++ GUI
+ toolkit.
+ .
+ This package contains headers and SWIG interface files needed for building
+ extensions to wxPython.
+
+## Disable python-wxversion and python-wxtools until we switch 2.8 to stop
+## providing them.
+
+#Package: python-wxversion
+#Architecture: all
+#Depends: ${python:Depends}, ${misc:Depends}
+##Conflicts: python-wxgtk2.8 (<< 2.8.12.1-1~)
+#Description: API for selecting the wxPython version to use
+# wxWidgets (formerly known as wxWindows) is a class library for C++ providing
+# GUI components and other facilities on several popular platforms (and some
+# unpopular ones as well).
+# .
+# This package provides the wxPython version selector.
+#
+#Package: python-wxtools
+#Architecture: all
+#Depends: python-wxgtk3.0, ${python:Depends}, ${misc:Depends}
+#Description: Tools from the wxPython distribution
+# wxWidgets (formerly known as wxWindows) is a class library for C++ providing
+# GUI components and other facilities on several popular platforms (and some
+# unpopular ones as well).
+# .
+# This package provides support utilities and common files for wxPython.

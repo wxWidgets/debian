@@ -1,14 +1,4 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ --sourcedirectory=wxPython
-
-override_dh_install:
-	# Move these two files to python-wxversion.
-	for s in debian/tmp/usr/lib/python*/dist-packages ; do \
-	    d=`echo "$$s"|sed 's!/tmp/!/tmp/python-wxversion/!'` ;\
-	    mkdir -p "$$d" ;\
-	    mv "$$s"/wx.pth "$$s"/wxversion.py "$$d" ;\
-	done
-	# Install the rest as per debian/*.install.
-	dh_install
+	dh $@ --with python2 --sourcedirectory=wxPython

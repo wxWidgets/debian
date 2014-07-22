@@ -67,6 +67,14 @@ rm -f "$UP_BASE"/wxPython/demo/data/anykey.wav
 rm -f "$UP_BASE"/wxPython/demo/data/plan.wav
 rm -f "$UP_BASE"/wxPython/demo/data/testmovie.mpg
 
+# Seemingly only rebuildable with non-free tools.
+rm -f "$UP_BASE"/samples/help/doc.chm
+
+# The autotools-based build system for the embedded copy of wxWidgets is
+# unused, but lintian moans about out of date config.* so just nuke them.
+rm -f "$UP_BASE"/config.guess
+rm -f "$UP_BASE"/config.sub
+
 # Now rebuild the tarball.
 mv "$UP_BASE" "$DIR/$REPACK_DIR"
 # Using a pipe hides tar errors!

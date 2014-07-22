@@ -1,4 +1,4 @@
-wxpython3.0 (3.0.0.0-1) unstable; urgency=medium
+wxpython3.0 (3.0.0.0+dfsg-1) unstable; urgency=medium
 
   * New upstream major release (Closes: #734799)
     + Split wxPython into its own source package - previously it was in the
@@ -14,7 +14,7 @@ wxpython3.0 (3.0.0.0-1) unstable; urgency=medium
     which no longer exist in any supported Debian or Ubuntu release.
   * debian/control: Drop 'Suggests: editra'.
 
- -- Olly Betts <olly@survex.com>  Sun, 06 Jul 2014 21:00:35 +1200
+ -- Olly Betts <olly@survex.com>  Wed, 23 Jul 2014 16:22:52 +1200
 
 wxwidgets2.8 (2.8.12.1+dfsg2-1) unstable; urgency=medium
 
