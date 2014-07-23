@@ -1,0 +1,2 @@
+debian/tmp/usr/lib/python*/dist-packages/wx.pth
+debian/tmp/usr/lib/python*/dist-packages/wxversion.py
