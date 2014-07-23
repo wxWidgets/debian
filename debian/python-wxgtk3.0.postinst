@@ -1,7 +1,10 @@
 #!/bin/sh
 set -e
 
+# This should be the version with "." removed - e.g. 30 for wxPython 3.0.
+PRIORITY=30
+
 update-alternatives --install /usr/lib/wx/python/wx.pth  wx.pth	\
-			      /usr/lib/wx/python/wx=V.pth        =PRIO
+			      /usr/lib/wx/python/wx3.0.pth        $PRIORITY
 
 #DEBHELPER#
