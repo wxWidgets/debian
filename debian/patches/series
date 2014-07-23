@@ -1,5 +1,4 @@
 fix-build-with-python2.6.patch
-xrced_bitmaps.patch
 fix-path-to-some-interpreters.patch
 wxpython3.0-eliminate-string-exceptions.patch
 img2py-no-display.patch

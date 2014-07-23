@@ -2,3 +2,23 @@
 
 %:
 	dh $@ --with python2 --sourcedirectory=wxPython
+
+override_dh_auto_install:
+	dh_auto_install
+	# Included in debian/copyright:
+	rm debian/tmp/usr/lib/python*/dist-packages/wx-*/wx/tools/XRCed/license.txt
+	# Fix image-file-in-usr-lib lintian warnings:
+	t=/usr/share/wx-3.0-gtk/XRCed/plugins ;\
+	d=debian/tmp$$t ;\
+	mkdir -p "$$d" ;\
+	for s in debian/tmp/usr/lib/python*/dist-packages/wx-*/wx/tools/XRCed/plugins/bitmaps ; do\
+	    mv "$$s" "$$d"/ ;\
+	    ln -s "$$t"/bitmaps "$$s" ;\
+	done
+	t=/usr/share/wx-3.0-gtk/agw ;\
+	d=debian/tmp$$t ;\
+	mkdir -p "$$d" ;\
+	for s in debian/tmp/usr/lib/python*/dist-packages/wx-*/wx/lib/agw/data ; do\
+	    mv "$$s" "$$d"/ ;\
+	    ln -s "$$t"/data "$$s" ;\
+	done
