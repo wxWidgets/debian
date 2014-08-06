@@ -88,7 +88,7 @@ Package: libwxgtk=V-dev
 Architecture: any
 Section: libdevel
 Depends: wx-common, wx=V-headers (= ${binary:Version}), libwxgtk=SOV (= ${binary:Version}), libwxbase=V-dev (= ${binary:Version}), ${misc:Depends}
-Suggests: wx=V-doc, libstdc++-dev, gettext, libgl1-mesa-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
+Suggests: wx=V-doc, gettext, libgl1-mesa-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -147,7 +147,7 @@ Package: libwxgtk-media=V-dev
 Architecture: any
 Section: libdevel
 Depends: wx-common, wx=V-headers (= ${binary:Version}), libwxgtk-media=SOV (= ${binary:Version}), libwxgtk=V-dev (= ${binary:Version}), ${misc:Depends}
-Suggests: wx=V-doc, libstdc++-dev, gettext, libgl1-mesa-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
+Suggests: wx=V-doc, gettext, libgl1-mesa-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ media library development)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -189,7 +189,7 @@ Package: libwxgtk-webview=V-dev
 Architecture: any
 Section: libdevel
 Depends: wx-common, wx=V-headers (= ${binary:Version}), libwxgtk-webview=SOV (= ${binary:Version}), libwxgtk=V-dev (= ${binary:Version}), ${misc:Depends}
-Suggests: wx=V-doc, libstdc++-dev, gettext, libgl1-mesa-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
+Suggests: wx=V-doc, gettext, libgl1-mesa-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
 Description: wxWidgets Cross-platform C++ GUI toolkit (webview library development)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some

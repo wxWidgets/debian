@@ -2,6 +2,10 @@ wxwidgets3.0 (3.0.1-3) UNRELEASED; urgency=medium
 
   * debian/control.in: Update "Vcs-*" fields to include the branch name.
     (Thanks vcswatch)
+  * debian/control.in: Drop "Suggests: libstdc++-dev" from -dev packages
+    - you need a C++ compiler installed for the -dev packages to be
+    useful, which should ensure the appropriate C++ runtime -dev package
+    is installed.
 
  -- Olly Betts <olly@survex.com>  Tue, 01 Jul 2014 11:46:04 +1200
 
