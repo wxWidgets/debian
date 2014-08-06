@@ -1,11 +1,22 @@
 wxwidgets3.0 (3.0.1-3) UNRELEASED; urgency=medium
 
+  [ Olly Betts ]
+
   * debian/control.in: Update "Vcs-*" fields to include the branch name.
     (Thanks vcswatch)
   * debian/control.in: Drop "Suggests: libstdc++-dev" from -dev packages
     - you need a C++ compiler installed for the -dev packages to be
     useful, which should ensure the appropriate C++ runtime -dev package
     is installed.
+
+  [ Gianfranco Costamagna ]
+
+  * debian/control.in: Promote dependency of libwxgtk3.0-dev on
+    "libgl1-mesa-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev" from
+    "Suggests" to "Depends", as these are required to build code which uses
+    wxGLCanvas.  Drop this dependency entirely from libwxgtk-media3.0-dev
+    and libwxgtk-webview3.0-dev as these both depend on libwxgtk3.0-dev,
+    and it is the latter which actually needs them.
 
  -- Olly Betts <olly@survex.com>  Tue, 01 Jul 2014 11:46:04 +1200
 
