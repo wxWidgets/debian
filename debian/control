@@ -40,26 +40,3 @@ Description: Development files for wxPython
  This package contains headers and SWIG interface files needed for building
  extensions to wxPython.
 
-## Disable python-wxversion and python-wxtools until we switch 2.8 to stop
-## providing them.
-
-#Package: python-wxversion
-#Architecture: all
-#Depends: ${python:Depends}, ${misc:Depends}
-##Conflicts: python-wxgtk2.8 (<< 2.8.12.1-1~)
-#Description: API for selecting the wxPython version to use
-# wxWidgets (formerly known as wxWindows) is a class library for C++ providing
-# GUI components and other facilities on several popular platforms (and some
-# unpopular ones as well).
-# .
-# This package provides the wxPython version selector.
-#
-#Package: python-wxtools
-#Architecture: all
-#Depends: python-wxgtk3.0, ${python:Depends}, ${misc:Depends}
-#Description: Tools from the wxPython distribution
-# wxWidgets (formerly known as wxWindows) is a class library for C++ providing
-# GUI components and other facilities on several popular platforms (and some
-# unpopular ones as well).
-# .
-# This package provides support utilities and common files for wxPython.
