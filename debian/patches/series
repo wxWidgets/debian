@@ -8,3 +8,4 @@ fix-editra-removal.patch
 #wxpython-use-unpatched-swig.patch
 #wxpython-fix-swig-warnings.patch
 wxpython-missing-format-strings.patch
+suppress_warning_about_release_version_mismatch.patch
