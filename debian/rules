@@ -10,6 +10,10 @@ SHELL = /bin/bash
 
 #export DH_VERBOSE=1
 
+# Parallelism in debian/rules causes problems:
+# https://bugs.debian.org/742657
+.NOTPARALLEL:
+
 include /usr/share/python/python.mk
 export DH_OPTIONS
 
