@@ -8,6 +8,10 @@ wxwidgets3.0 (3.0.1-3) unstable; urgency=medium
     - you need a C++ compiler installed for the -dev packages to be
     useful, which should ensure the appropriate C++ runtime -dev package
     is installed.
+  * Split off the msw cross packages into debian/control.msw.in, which we
+    only include in the generated debian/control when building the cross
+    packages.  This avoids source-only uploads erroneously ending up in
+    NEW.
 
   [ Gianfranco Costamagna ]
 
@@ -18,7 +22,7 @@ wxwidgets3.0 (3.0.1-3) unstable; urgency=medium
     and libwxgtk-webview3.0-dev as these both depend on libwxgtk3.0-dev,
     and it is the latter which actually needs them.  (Closes: #757638)
 
- -- Olly Betts <olly@survex.com>  Mon, 11 Aug 2014 15:37:20 +1200
+ -- Olly Betts <olly@survex.com>  Mon, 11 Aug 2014 17:48:06 +1200
 
 wxwidgets3.0 (3.0.1-2) unstable; urgency=medium
 

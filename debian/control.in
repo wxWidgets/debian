@@ -249,17 +249,3 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (examples)
  This package contains examples of using the wxWidgets toolkit in
  C++.
 
-Package: libwxmsw=V-dev
-Architecture: any
-Section: otherosfs
-Depends: wx=V-headers-msw (= ${binary:Version}), ${misc:Depends}
-Description: wxMSW mingw32msvc-cross
- mingw32msvc-cross wxMSW libs.
-
-Package: wx=V-headers-msw
-Architecture: any
-Section: otherosfs
-Depends: wx=V-headers (= ${binary:Version}), ${misc:Depends}
-Description: Extra wxWidgets headers for mingw32msvc-cross
- Headers required by the wxWidgets mingw32msvc-cross libraries.
-

@@ -137,7 +137,7 @@ package_msw_dev         := libwxmsw$(release)-dev
 package_headers_msw     := wx$(release)-headers-msw
 
 # The packages listed here will not be built by default.
-do_not_build_packages := $(package_msw_dev) $(package_headers_msw)
+do_not_build_packages :=
 ifdef DEBIAN_WX_DEFAULT_VERSION
 do_not_build_packages += $(common_packages)
 endif
@@ -594,6 +594,10 @@ binary: binary-arch binary-indep
 # There is an implied build dep on the mingw32 cross compiler
 # that is not in the control file.
 binary-cross: control-files-stamp $(install_all_cross)
+	cat debian/control.in debian/control.msw.in |\
+	    sed -e 's/=V/$(release)/g;s/=SOV/$(sorelease)/g'\
+		> debian/control
+
 	$(MAKE) -f debian/rules \
 		DH_OPTIONS="-p$(package_msw_dev) -p$(package_headers_msw)" \
 		binary-common
