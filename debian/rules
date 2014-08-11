@@ -58,7 +58,7 @@ PYVERS := $(shell pyversions -vr)
 # a separate source package.
 
 DEBIAN_WX_DEFAULT_VERSION = 3.0
-# DEBIAN_WXPYTHON_DEFAULT_VERSION = 3.0
+DEBIAN_WXPYTHON_DEFAULT_VERSION = 3.0
 
 # This will extract a flavour out of the changelog and flavour the
 # packages and binaries with it.  'Official' builds should use a

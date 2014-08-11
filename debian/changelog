@@ -1,8 +1,10 @@
-wxwidgets2.8 (2.8.12.1+dfsg2-2) UNRELEASED; urgency=medium
+wxwidgets2.8 (2.8.12.1+dfsg2-2) unstable; urgency=medium
 
   * Avoid parallelism in debian/rules itself. (Closes: #742657)
+  * Stop building binary packages python-wxversion and python-wxtools -
+    wxpython3.0 will instead.
 
- -- Olly Betts <olly@survex.com>  Mon, 11 Aug 2014 16:34:16 +1200
+ -- Olly Betts <olly@survex.com>  Wed, 13 Aug 2014 16:40:42 +1200
 
 wxwidgets2.8 (2.8.12.1+dfsg2-1) unstable; urgency=medium
 
