@@ -1,4 +1,7 @@
-debian/tmp/usr/lib/python*/dist-packages/wx
+# This directory just duplicates the files in the next one, so don't package
+# it.  FIXME: Should work out what's actually causing this duplication.
+# https://bugs.debian.org/757893 is the Debian bug for this issue.
+#debian/tmp/usr/lib/python*/dist-packages/wx
 debian/tmp/usr/lib/python*/dist-packages/wx-*-gtk*
 debian/tmp/usr/lib/python*/dist-packages/wxPython*.egg-info
 debian/tmp/usr/share

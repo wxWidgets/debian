@@ -2,8 +2,10 @@ wxpython3.0 (3.0.0.0+dfsg-3) unstable; urgency=medium
 
   * debian/control: Build python-wxtools and python-wxversion packages
     instead of wxwidgets2.8 doing so.
+  * debian/python-wxgtk3.0.install: Don't package duplicate tree of .py files.
+    (Closes: #757893)
 
- -- Olly Betts <olly@survex.com>  Wed, 13 Aug 2014 14:56:19 +1200
+ -- Olly Betts <olly@survex.com>  Wed, 13 Aug 2014 16:15:45 +1200
 
 wxpython3.0 (3.0.0.0+dfsg-2) unstable; urgency=medium
 
