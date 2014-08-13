@@ -3,8 +3,10 @@ wxwidgets2.8 (2.8.12.1+dfsg2-2) unstable; urgency=medium
   * Avoid parallelism in debian/rules itself. (Closes: #742657)
   * Stop building binary packages python-wxversion and python-wxtools -
     wxpython3.0 will instead.
+  * Fix format string warnings (promoted to errors) in calls to
+    PyErr_Format().  New patch: wxpython-missing-format-strings.patch
 
- -- Olly Betts <olly@survex.com>  Wed, 13 Aug 2014 16:40:42 +1200
+ -- Olly Betts <olly@survex.com>  Wed, 13 Aug 2014 17:10:46 +1200
 
 wxwidgets2.8 (2.8.12.1+dfsg2-1) unstable; urgency=medium
 

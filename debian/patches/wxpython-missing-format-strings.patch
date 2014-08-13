@@ -1,0 +1,643 @@
+Description: Fix missing format string issues
+Author: Olly Betts <olly@survex.com>
+Forwarded: no
+Last-Update: 2014-08-13
+
+--- a/wxPython/contrib/activex/activex_wrap.cpp
++++ b/wxPython/contrib/activex/activex_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/contrib/gizmos/gtk/gizmos_wrap.cpp
++++ b/wxPython/contrib/gizmos/gtk/gizmos_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/contrib/gizmos/mac/gizmos_wrap.cpp
++++ b/wxPython/contrib/gizmos/mac/gizmos_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/contrib/gizmos/msw/gizmos_wrap.cpp
++++ b/wxPython/contrib/gizmos/msw/gizmos_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/contrib/glcanvas/gtk/glcanvas_wrap.cpp
++++ b/wxPython/contrib/glcanvas/gtk/glcanvas_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/contrib/glcanvas/mac/glcanvas_wrap.cpp
++++ b/wxPython/contrib/glcanvas/mac/glcanvas_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/contrib/glcanvas/msw/glcanvas_wrap.cpp
++++ b/wxPython/contrib/glcanvas/msw/glcanvas_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/contrib/stc/gtk/stc_wrap.cpp
++++ b/wxPython/contrib/stc/gtk/stc_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/contrib/stc/mac/stc_wrap.cpp
++++ b/wxPython/contrib/stc/mac/stc_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/contrib/stc/msw/stc_wrap.cpp
++++ b/wxPython/contrib/stc/msw/stc_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/_controls_wrap.cpp
++++ b/wxPython/src/gtk/_controls_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/_core_wrap.cpp
++++ b/wxPython/src/gtk/_core_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/_gdi_wrap.cpp
++++ b/wxPython/src/gtk/_gdi_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/_misc_wrap.cpp
++++ b/wxPython/src/gtk/_misc_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/_windows_wrap.cpp
++++ b/wxPython/src/gtk/_windows_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/animate_wrap.cpp
++++ b/wxPython/src/gtk/animate_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/aui_wrap.cpp
++++ b/wxPython/src/gtk/aui_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/calendar_wrap.cpp
++++ b/wxPython/src/gtk/calendar_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/combo_wrap.cpp
++++ b/wxPython/src/gtk/combo_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/grid_wrap.cpp
++++ b/wxPython/src/gtk/grid_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/html_wrap.cpp
++++ b/wxPython/src/gtk/html_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/media_wrap.cpp
++++ b/wxPython/src/gtk/media_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/richtext_wrap.cpp
++++ b/wxPython/src/gtk/richtext_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/webkit_wrap.cpp
++++ b/wxPython/src/gtk/webkit_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/wizard_wrap.cpp
++++ b/wxPython/src/gtk/wizard_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/gtk/xrc_wrap.cpp
++++ b/wxPython/src/gtk/xrc_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/_controls_wrap.cpp
++++ b/wxPython/src/mac/_controls_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/_core_wrap.cpp
++++ b/wxPython/src/mac/_core_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/_gdi_wrap.cpp
++++ b/wxPython/src/mac/_gdi_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/_misc_wrap.cpp
++++ b/wxPython/src/mac/_misc_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/_windows_wrap.cpp
++++ b/wxPython/src/mac/_windows_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/animate_wrap.cpp
++++ b/wxPython/src/mac/animate_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/aui_wrap.cpp
++++ b/wxPython/src/mac/aui_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/calendar_wrap.cpp
++++ b/wxPython/src/mac/calendar_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/combo_wrap.cpp
++++ b/wxPython/src/mac/combo_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/grid_wrap.cpp
++++ b/wxPython/src/mac/grid_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/html_wrap.cpp
++++ b/wxPython/src/mac/html_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/media_wrap.cpp
++++ b/wxPython/src/mac/media_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/richtext_wrap.cpp
++++ b/wxPython/src/mac/richtext_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/webkit_wrap.cpp
++++ b/wxPython/src/mac/webkit_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/wizard_wrap.cpp
++++ b/wxPython/src/mac/wizard_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/mac/xrc_wrap.cpp
++++ b/wxPython/src/mac/xrc_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/_controls_wrap.cpp
++++ b/wxPython/src/msw/_controls_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/_core_wrap.cpp
++++ b/wxPython/src/msw/_core_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/_gdi_wrap.cpp
++++ b/wxPython/src/msw/_gdi_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/_misc_wrap.cpp
++++ b/wxPython/src/msw/_misc_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/_windows_wrap.cpp
++++ b/wxPython/src/msw/_windows_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/animate_wrap.cpp
++++ b/wxPython/src/msw/animate_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/aui_wrap.cpp
++++ b/wxPython/src/msw/aui_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/calendar_wrap.cpp
++++ b/wxPython/src/msw/calendar_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/combo_wrap.cpp
++++ b/wxPython/src/msw/combo_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/grid_wrap.cpp
++++ b/wxPython/src/msw/grid_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/html_wrap.cpp
++++ b/wxPython/src/msw/html_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/media_wrap.cpp
++++ b/wxPython/src/msw/media_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/richtext_wrap.cpp
++++ b/wxPython/src/msw/richtext_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/webkit_wrap.cpp
++++ b/wxPython/src/msw/webkit_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/wizard_wrap.cpp
++++ b/wxPython/src/msw/wizard_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
+--- a/wxPython/src/msw/xrc_wrap.cpp
++++ b/wxPython/src/msw/xrc_wrap.cpp
+@@ -861,7 +861,7 @@
+     Py_DECREF(old_str);
+     Py_DECREF(value);
+   } else {
+-    PyErr_Format(PyExc_RuntimeError, mesg);
++    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
+   }
+ }
+ 
