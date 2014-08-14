@@ -1,3 +1,9 @@
+wxpython3.0 (3.0.0.0+dfsg-4) UNRELEASED; urgency=medium
+
+  * New binary package python-gtk-media3.0 for wx.media.  (Closes: #722687)
+
+ -- Olly Betts <olly@survex.com>  Fri, 15 Aug 2014 11:11:35 +1200
+
 wxpython3.0 (3.0.0.0+dfsg-3) unstable; urgency=medium
 
   * debian/control: Build python-wxtools and python-wxversion packages

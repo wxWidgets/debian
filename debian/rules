@@ -22,3 +22,9 @@ override_dh_auto_install:
 	    mv "$$s" "$$d"/ ;\
 	    ln -s "$$t"/data "$$s" ;\
 	done
+
+override_dh_install:
+	dh_install
+	# These are packaged in the -media subpackage:
+	rm -f debian/python-wxgtk3.0/usr/lib/python*/dist-packages/wx-*-gtk*/wx/_media.*so \
+	      debian/python-wxgtk3.0/usr/lib/python*/dist-packages/wx-*-gtk*/wx/media.py

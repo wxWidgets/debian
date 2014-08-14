@@ -1,0 +1,2 @@
+debian/tmp/usr/lib/python*/dist-packages/wx-*-gtk*/wx/_media.*so
+debian/tmp/usr/lib/python*/dist-packages/wx-*-gtk*/wx/media.py

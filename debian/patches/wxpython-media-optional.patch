@@ -1,0 +1,62 @@
+Description: Allow wx.media to be packaged separately
+ Installing it drags in the "libwxgtk-media3.0-0" runtime package which
+ drags in gstreamer and that drags in rather a lot of packages.
+Author: Olly Betts <olly@survex.com>
+Bug-Debian: http://bugs.debian.org/722687
+Forwarded: not-needed
+Last-Update: 2014-08-15
+
+--- wxpython3.0-3.0.0.0+dfsg.orig/wxPython/src/__init__.py
++++ wxpython3.0-3.0.0.0+dfsg/wxPython/src/__init__.py
+@@ -29,7 +29,6 @@ __all__ = [
+     'combo',
+     'grid',
+     'html',
+-    'media',
+     'richtext',
+     'webkit',
+     'wizard',
+@@ -41,6 +40,11 @@ __all__ = [
+     'stc',
+     ]
+ 
++import os
++if os.path.isfile(__file__[0:__file__.rfind('/')] + '/media.py'):
++    __all__.append('media')
++del os
++
+ # Load the package namespace with the core classes and such
+ from wx._core import *
+ del wx
+--- wxpython3.0-3.0.0.0+dfsg.orig/wxPython/wx/lib/agw/persist/persist_handlers.py
++++ wxpython3.0-3.0.0.0+dfsg/wxPython/wx/lib/agw/persist/persist_handlers.py
+@@ -13,7 +13,10 @@ import wx.aui
+ import wx.combo
+ import wx.calendar as calendar
+ import wx.gizmos
+-import wx.media
++try:
++    import wx.media
++except ImportError:
++    pass
+ 
+ import wx.lib.scrolledpanel as scrolled
+ import wx.lib.expando as expando
+@@ -2529,7 +2532,6 @@ HANDLERS = [
+     ("CollapsiblePaneHandler", (wx.CollapsiblePane, PCP.PyCollapsiblePane)), 
+     ("AUIHandler", (wx.Panel, )),
+     ("DatePickerHandler", (wx.DatePickerCtrl, wx.GenericDatePickerCtrl)), 
+-    ("MediaCtrlHandler", (wx.media.MediaCtrl, )), 
+     ("ColourPickerHandler", (wx.ColourPickerCtrl, csel.ColourSelect)), 
+     ("FileDirPickerHandler", (wx.FilePickerCtrl, wx.DirPickerCtrl)), 
+     ("FontPickerHandler", (wx.FontPickerCtrl, )), 
+@@ -2538,6 +2540,9 @@ HANDLERS = [
+                             buttons.GenBitmapToggleButton, buttons.GenBitmapTextToggleButton)), 
+     ]
+ 
++if hasattr(wx, 'media'):
++    HANDLERS.append(("MediaCtrlHandler", (wx.media.MediaCtrl, )))
++
+ STANDALONE_HANDLERS = [
+     ("TreebookHandler", (wx.Treebook, )), 
+     ("CheckListBoxHandler", (wx.CheckListBox, )), 
