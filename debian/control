@@ -42,7 +42,7 @@ Description: Development files for wxPython
 
 Package: python-wxgtk-media3.0
 Architecture: any
-Depends: python-wxgtk-3.0, ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
+Depends: python-wxgtk3.0, ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Provides: ${python:Provides}
 Description: Python interface to the wxWidgets Cross-platform C++ GUI toolkit (wx.media)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
