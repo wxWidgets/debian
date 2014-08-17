@@ -4,5 +4,5 @@
 #debian/tmp/usr/lib/python*/dist-packages/wx
 debian/tmp/usr/lib/python*/dist-packages/wx-*-gtk*
 debian/tmp/usr/lib/python*/dist-packages/wxPython*.egg-info
+debian/tmp/usr/lib/wx/python/wx*.*.pth
 debian/tmp/usr/share
-debian/wx3.0.pth	usr/lib/wx/python/

@@ -5,8 +5,10 @@
 
 override_dh_auto_install:
 	dh_auto_install
+	:
 	# Included in debian/copyright:
 	rm debian/tmp/usr/lib/python*/dist-packages/wx-*/wx/tools/XRCed/license.txt
+	:
 	# Fix image-file-in-usr-lib lintian warnings:
 	t=/usr/share/wx-3.0-gtk/XRCed/plugins ;\
 	d=debian/tmp$$t ;\
@@ -22,6 +24,18 @@ override_dh_auto_install:
 	    mv "$$s" "$$d"/ ;\
 	    ln -s "$$t"/data "$$s" ;\
 	done
+	:
+	# wx.pth is managed by alternatives, so move in to wx3.0.pth in the
+	# appropriate place.
+	mkdir -p debian/tmp/usr/lib/wx/python
+	mv debian/tmp/usr/lib/python*/dist-packages/wx.pth \
+	   debian/tmp/usr/lib/wx/python/wx3.0.pth
+	# Then create a symlink from where wx.pth was to where the alternative
+	# lives.  Create it absolute, since it will likely get moved by
+	# whatever the latest dh*py* tool is, and dh_link will fix it to be
+	# relative for us later on.
+	ln -s /usr/lib/wx/python/wx.pth \
+	    debian/tmp/usr/lib/python*/dist-packages/
 
 override_dh_install:
 	dh_install
