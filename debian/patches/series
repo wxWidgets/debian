@@ -9,3 +9,4 @@ fix-editra-removal.patch
 wxpython-missing-format-strings.patch
 suppress_warning_about_release_version_mismatch.patch
 wxpython-media-optional.patch
+disable-wxdebug-by-default.patch
