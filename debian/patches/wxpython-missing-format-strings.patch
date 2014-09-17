@@ -1,7 +1,7 @@
 Description: Fix missing format string issues
 Author: Olly Betts <olly@survex.com>
 Forwarded: no
-Last-Update: 2014-07-03
+Last-Update: 2014-09-17
 
 --- a/wxPython/src/gtk/_core_wrap.cpp
 +++ b/wxPython/src/gtk/_core_wrap.cpp
@@ -16,17 +16,6 @@ Last-Update: 2014-07-03
  
 --- a/wxPython/src/gtk/_gdi_wrap.cpp
 +++ b/wxPython/src/gtk/_gdi_wrap.cpp
-@@ -861,7 +861,7 @@
-     Py_DECREF(old_str);
-     Py_DECREF(value);
-   } else {
--    PyErr_Format(PyExc_RuntimeError, mesg);
-+    PyErr_Format(PyExc_RuntimeError, "%s", mesg);
-   }
- }
- 
---- a/wxPython/contrib/activex/activex_wrap.cpp
-+++ b/wxPython/contrib/activex/activex_wrap.cpp
 @@ -861,7 +861,7 @@
      Py_DECREF(old_str);
      Py_DECREF(value);

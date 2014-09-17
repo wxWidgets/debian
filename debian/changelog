@@ -8,8 +8,10 @@ wxpython3.0 (3.0.1.1+dfsg-1) unstable; urgency=medium
     + Update img2py-no-display.patch for upstream changes to the code.
   * Fix lintian warning about old FSF address by removing unused code under
     the "wxActiveX Library Licence, Version 3" when we repack.
+    + Update wxpython-missing-format-strings.patch not to patch files now
+      removed in the repack.
 
- -- Olly Betts <olly@survex.com>  Wed, 17 Sep 2014 15:06:28 +1200
+ -- Olly Betts <olly@survex.com>  Wed, 17 Sep 2014 15:18:18 +1200
 
 wxpython3.0 (3.0.0.0+dfsg-4) unstable; urgency=medium
 
