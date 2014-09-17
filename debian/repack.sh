@@ -57,6 +57,10 @@ rm -f "$UP_BASE"/wxPython/scripts/editra
 rm -f "$UP_BASE"/wxPython/distrib/mac/updateEditraPlist.py
 rm -rf "$UP_BASE"/wxPython/wx/tools/Editra
 
+# Not used on Linux, and the "wxActiveX Library Licence, Version 3" has the
+# old FSF address in it.
+rm -rf "$UP_BASE"/wxPython/contrib/activex
+
 # Lacking (suitable) source code.  The only one in wxPython is only used
 # by an ActiveX sample, so irrelevant for Debian anyway
 # (http://trac.wxwidgets.org/ticket/15917).

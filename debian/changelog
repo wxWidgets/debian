@@ -1,3 +1,15 @@
+wxpython3.0 (3.0.1.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream release:
+    + Fixed "wxPyXmlSubclassFactory, no destructor found." error.
+    + Fixed "wxPyHtmlWinTagHandler, no destructor found." error.
+    + Some Pubsub updates.
+    + Includes the newest code from AGW and FloatCanvas.
+  * Fix lintian warning about old FSF address by removing unused code under
+    the "wxActiveX Library Licence, Version 3" when we repack.
+
+ -- Olly Betts <olly@survex.com>  Wed, 17 Sep 2014 14:33:13 +1200
+
 wxpython3.0 (3.0.0.0+dfsg-4) unstable; urgency=medium
 
   * Fix python-wxversion to include wx.pth as a symlink so that 'import wx'
